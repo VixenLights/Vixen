@@ -4,27 +4,31 @@ using Vixen.Factory;
 using Vixen.Sys;
 using Vixen.Sys.Output;
 
-namespace Vixen.IO.Xml.Serializer {
-	class XmlPreviewSerializer : IXmlSerializer<IOutputDevice> {
+namespace Vixen.IO.Xml.Serializer
+{
+	internal class XmlPreviewSerializer : IXmlSerializer<IOutputDevice>
+	{
 		private const string ELEMENT_PREVIEW = "Preview";
 		private const string ATTR_NAME = "name";
 		private const string ATTR_TYPE_ID = "typeId";
 		private const string ATTR_INSTANCE_ID = "instanceId";
 
-		public XElement WriteObject(IOutputDevice value) {
-			OutputPreview preview = (OutputPreview)value;
+		public XElement WriteObject(IOutputDevice value)
+		{
+			OutputPreview preview = (OutputPreview) value;
 
 			XElement element = new XElement(ELEMENT_PREVIEW,
-				new XAttribute(ATTR_NAME, preview.Name),
-				new XAttribute(ATTR_TYPE_ID, preview.ModuleId),
-				new XAttribute(ATTR_INSTANCE_ID, preview.ModuleInstanceId));
+			                                new XAttribute(ATTR_NAME, preview.Name),
+			                                new XAttribute(ATTR_TYPE_ID, preview.ModuleId),
+			                                new XAttribute(ATTR_INSTANCE_ID, preview.ModuleInstanceId));
 
 			return element;
 		}
 
-		public IOutputDevice ReadObject(XElement element) {
+		public IOutputDevice ReadObject(XElement element)
+		{
 			string name = XmlHelper.GetAttribute(element, ATTR_NAME);
-			if(name == null) return null;
+			if (name == null) return null;
 
 			Guid? typeId = XmlHelper.GetGuidAttribute(element, ATTR_TYPE_ID);
 			if (typeId == null) return null;
@@ -33,14 +37,15 @@ namespace Vixen.IO.Xml.Serializer {
 			if (instanceId == null) return null;
 
 			PreviewFactory previewFactory = new PreviewFactory();
-			OutputPreview preview = (OutputPreview)previewFactory.CreateDevice(typeId.Value, instanceId.Value, name);
+			OutputPreview preview = (OutputPreview) previewFactory.CreateDevice(typeId.Value, instanceId.Value, name);
 
 			_Populate(preview, element);
 
 			return preview;
 		}
 
-		private void _Populate(OutputPreview preview, XElement element) {
+		private void _Populate(OutputPreview preview, XElement element)
+		{
 			//XmlModuleLocalDataSetSerializer dataSetSerializer = new XmlModuleLocalDataSetSerializer();
 			//preview.ModuleDataSet = dataSetSerializer.ReadObject(element);
 		}

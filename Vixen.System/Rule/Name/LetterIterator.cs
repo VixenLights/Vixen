@@ -51,6 +51,7 @@ namespace Vixen.Rule.Name
 		}
 
 		private string _letters;
+
 		public string Letters
 		{
 			get { return _letters; }

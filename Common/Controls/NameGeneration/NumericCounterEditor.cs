@@ -18,7 +18,7 @@ namespace Common.Controls.NameGeneration
 		{
 			InitializeComponent();
 			_counter = counter;
-			_oldStepValue = (int)numericUpDownStep.Value;
+			_oldStepValue = (int) numericUpDownStep.Value;
 		}
 
 		private void NumericCounterEditor_Load(object sender, EventArgs e)
@@ -33,17 +33,18 @@ namespace Common.Controls.NameGeneration
 
 		private void numericUpDownStartNumber_ValueChanged(object sender, EventArgs e)
 		{
-			_counter.StartNumber = (int)numericUpDownStartNumber.Value;
+			_counter.StartNumber = (int) numericUpDownStartNumber.Value;
 			OnDataChanged();
 		}
 
 		private void numericUpDownEndNumber_ValueChanged(object sender, EventArgs e)
 		{
-			_counter.EndNumber = (int)numericUpDownEndNumber.Value;
+			_counter.EndNumber = (int) numericUpDownEndNumber.Value;
 			OnDataChanged();
 		}
 
 		private static int _oldStepValue;
+
 		private void numericUpDownStep_ValueChanged(object sender, EventArgs e)
 		{
 			if (numericUpDownStep.Value == 0) {
@@ -52,7 +53,7 @@ namespace Common.Controls.NameGeneration
 				else
 					numericUpDownStep.Value = -1;
 			}
-			_counter.Step = (int)numericUpDownStep.Value;
+			_counter.Step = (int) numericUpDownStep.Value;
 			_oldStepValue = _counter.Step;
 			OnDataChanged();
 		}

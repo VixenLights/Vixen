@@ -1,5 +1,7 @@
-﻿namespace Vixen.IO.Factory {
-	interface IContentMigratorFactory {
+﻿namespace Vixen.IO.Factory
+{
+	internal interface IContentMigratorFactory
+	{
 		IContentMigrator CreateSystemConfigContentMigrator();
 		IContentMigrator CreateModuleStoreContentMigrator();
 		IContentMigrator CreateSystemContextContentMigrator();

@@ -8,7 +8,7 @@ using VixenModules.Sequence.Timed;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
-	class TimedSequenceEditorDescriptor : EditorModuleDescriptorBase
+	internal class TimedSequenceEditorDescriptor : EditorModuleDescriptorBase
 	{
 		private static Guid _typeId = new Guid("{d342eedd-ae39-4b30-b557-b9329e6d3a7c}");
 		internal static Guid _timedSequenceId = new Guid("{296bdba2-9bf3-4bff-a9f2-13efac5c8ecb}");
@@ -26,7 +26,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		public override Type ModuleClass
 		{
-			get { return typeof(TimedSequenceEditor); }
+			get { return typeof (TimedSequenceEditor); }
 		}
 
 		public override string Author
@@ -46,17 +46,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		public override Type EditorUserInterfaceClass
 		{
-			get { return typeof(TimedSequenceEditorForm); }
+			get { return typeof (TimedSequenceEditorForm); }
 		}
 
 		public override Type SequenceType
 		{
-			get { return typeof(TimedSequence); }
+			get { return typeof (TimedSequence); }
 		}
 
 		public override Guid[] Dependencies
 		{
-			get { return new Guid[] { _timedSequenceId, _audioMediaId }; }
+			get { return new Guid[] {_timedSequenceId, _audioMediaId}; }
 		}
 	}
 }

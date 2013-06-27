@@ -26,32 +26,36 @@ using System.Security.Permissions;
 
 namespace ZedGraph
 {
-   /// <summary>
-   /// A class representing all the characteristics of the bar
-   /// segments that make up a curve on the graph.
-   /// </summary>
-   /// 
-   /// <author> John Champion </author>
-   /// <version> $Revision: 3.30 $ $Date: 2007-11-03 04:41:28 $ </version>
-   [Serializable]
-   public class Bar : ICloneable, ISerializable
-   {
-	#region Fields
+	/// <summary>
+	/// A class representing all the characteristics of the bar
+	/// segments that make up a curve on the graph.
+	/// </summary>
+	/// 
+	/// <author> John Champion </author>
+	/// <version> $Revision: 3.30 $ $Date: 2007-11-03 04:41:28 $ </version>
+	[Serializable]
+	public class Bar : ICloneable, ISerializable
+	{
+		#region Fields
+
 		/// <summary>
 		/// Private field that stores the <see cref="ZedGraph.Fill"/> data for this
 		/// <see cref="Bar"/>.  Use the public property <see cref="Fill"/> to
 		/// access this value.
 		/// </summary>
-		private Fill  _fill;
+		private Fill _fill;
+
 		/// <summary>
 		/// Private field that stores the <see cref="Border"/> class that defines the
 		/// properties of the border around this <see cref="BarItem"/>. Use the public
 		/// property <see cref="Border"/> to access this value.
 		/// </summary>
 		private Border _border;
-	#endregion
 
-	#region Defaults
+		#endregion
+
+		#region Defaults
+
 		/// <summary>
 		/// A simple struct that defines the
 		/// default property values for the <see cref="Bar"/> class.
@@ -64,40 +68,48 @@ namespace ZedGraph
 			/// (<see cref="ZedGraph.LineBase.Width"/> property).  Units are points.
 			/// </summary>
 			public static float BorderWidth = 1.0F;
+
 			/// <summary>
 			/// The default fill mode for bars (<see cref="ZedGraph.Fill.Type"/> property).
 			/// </summary>
 			public static FillType FillType = FillType.Brush;
+
 			/// <summary>
 			/// The default border mode for bars (<see cref="ZedGraph.LineBase.IsVisible"/> property).
 			/// true to display frames around bars, false otherwise
 			/// </summary>
 			public static bool IsBorderVisible = true;
+
 			/// <summary>
 			/// The default color for drawing frames around bars
 			/// (<see cref="ZedGraph.LineBase.Color"/> property).
 			/// </summary>
 			public static Color BorderColor = Color.Black;
+
 			/// <summary>
 			/// The default color for filling in the bars
 			/// (<see cref="ZedGraph.Fill.Color"/> property).
 			/// </summary>
 			public static Color FillColor = Color.Red;
+
 			/// <summary>
 			/// The default custom brush for filling in the bars
 			/// (<see cref="ZedGraph.Fill.Brush"/> property).
 			/// </summary>
 			public static Brush FillBrush = null; //new LinearGradientBrush( new Rectangle(0,0,100,100),
+
 			// Color.White, Color.Red, 0F );
 		}
-	#endregion
 
-	#region Constructors
+		#endregion
+
+		#region Constructors
+
 		/// <summary>
 		/// Default constructor that sets all <see cref="Bar"/> properties to default
 		/// values as defined in the <see cref="Default"/> class.
 		/// </summary>
-		public Bar() : this( Color.Empty )
+		public Bar() : this(Color.Empty)
 		{
 		}
 
@@ -114,18 +126,18 @@ namespace ZedGraph
 		/// the <see cref="ZedGraph.Fill.Color"/>
 		/// of the Bar.
 		/// </param>
-		public Bar( Color color )
+		public Bar(Color color)
 		{
-			_border = new Border( Default.IsBorderVisible, Default.BorderColor, Default.BorderWidth );
-			_fill = new Fill( color.IsEmpty ? Default.FillColor : color,
-									Default.FillBrush, Default.FillType );
+			_border = new Border(Default.IsBorderVisible, Default.BorderColor, Default.BorderWidth);
+			_fill = new Fill(color.IsEmpty ? Default.FillColor : color,
+			                 Default.FillBrush, Default.FillType);
 		}
 
 		/// <summary>
 		/// The Copy Constructor
 		/// </summary>
 		/// <param name="rhs">The Bar object from which to copy</param>
-		public Bar( Bar rhs )
+		public Bar(Bar rhs)
 		{
 			_border = (Border) rhs.Border.Clone();
 			_fill = (Fill) rhs.Fill.Clone();
@@ -147,12 +159,13 @@ namespace ZedGraph
 		/// <returns>A new, independent copy of this class</returns>
 		public Bar Clone()
 		{
-			return new Bar( this );
+			return new Bar(this);
 		}
 
-	#endregion
+		#endregion
 
-	#region Serialization
+		#region Serialization
+
 		/// <summary>
 		/// Current schema value that defines the version of the serialized file
 		/// </summary>
@@ -165,30 +178,33 @@ namespace ZedGraph
 		/// </param>
 		/// <param name="context">A <see cref="StreamingContext"/> instance that contains the serialized data
 		/// </param>
-		protected Bar( SerializationInfo info, StreamingContext context )
+		protected Bar(SerializationInfo info, StreamingContext context)
 		{
 			// The schema value is just a file version parameter.  You can use it to make future versions
 			// backwards compatible as new member variables are added to classes
-			int sch = info.GetInt32( "schema" );
+			int sch = info.GetInt32("schema");
 
-			_fill = (Fill) info.GetValue( "fill", typeof(Fill) );
-			_border = (Border) info.GetValue( "border", typeof(Border) );
+			_fill = (Fill) info.GetValue("fill", typeof (Fill));
+			_border = (Border) info.GetValue("border", typeof (Border));
 		}
+
 		/// <summary>
 		/// Populates a <see cref="SerializationInfo"/> instance with the data needed to serialize the target object
 		/// </summary>
 		/// <param name="info">A <see cref="SerializationInfo"/> instance that defines the serialized data</param>
 		/// <param name="context">A <see cref="StreamingContext"/> instance that contains the serialized data</param>
-		[SecurityPermissionAttribute(SecurityAction.Demand,SerializationFormatter=true)]
-		public virtual void GetObjectData( SerializationInfo info, StreamingContext context )
+		[SecurityPermissionAttribute(SecurityAction.Demand, SerializationFormatter = true)]
+		public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
-			info.AddValue( "schema", schema );
-			info.AddValue( "fill", _fill );
-			info.AddValue( "border", _border );
+			info.AddValue("schema", schema);
+			info.AddValue("fill", _fill);
+			info.AddValue("border", _border);
 		}
-	#endregion
 
-	#region Properties
+		#endregion
+
+		#region Properties
+
 		/// <summary>
 		/// The <see cref="Border"/> object used to draw the border around the <see cref="Bar"/>.
 		/// </summary>
@@ -200,6 +216,7 @@ namespace ZedGraph
 			get { return _border; }
 			set { _border = value; }
 		}
+
 		/// <summary>
 		/// Gets or sets the <see cref="ZedGraph.Fill"/> data for this
 		/// <see cref="Bar"/>.
@@ -209,9 +226,10 @@ namespace ZedGraph
 			get { return _fill; }
 			set { _fill = value; }
 		}
-	#endregion
 
-	#region Rendering Methods
+		#endregion
+
+		#region Rendering Methods
 
 		/// <summary>
 		/// Draw the <see cref="Bar"/> to the specified <see cref="Graphics"/> device
@@ -246,47 +264,45 @@ namespace ZedGraph
 		/// <param name="isSelected">Indicates that the <see cref="Bar" /> should be drawn
 		/// with attributes from the <see cref="Selection" /> class.
 		/// </param>
-		public void Draw( Graphics g, GraphPane pane, float left, float right, float top,
-							float bottom, float scaleFactor, bool fullFrame, bool isSelected,
-							PointPair dataValue )
+		public void Draw(Graphics g, GraphPane pane, float left, float right, float top,
+		                 float bottom, float scaleFactor, bool fullFrame, bool isSelected,
+		                 PointPair dataValue)
 		{
 			// Do a sanity check to make sure the top < bottom.  If not, reverse them
-			if ( top > bottom )
-			{
+			if (top > bottom) {
 				float junk = top;
 				top = bottom;
 				bottom = junk;
 			}
 
 			// Do a sanity check to make sure the left < right.  If not, reverse them
-			if ( left > right )
-			{
+			if (left > right) {
 				float junk = right;
 				right = left;
 				left = junk;
 			}
 
-			if ( top < -10000 )
+			if (top < -10000)
 				top = -10000;
-			else if ( top > 10000 )
+			else if (top > 10000)
 				top = 10000;
-			if ( left < -10000 )
+			if (left < -10000)
 				left = -10000;
-			else if ( left > 10000 )
+			else if (left > 10000)
 				left = 10000;
-			if ( right < -10000 )
+			if (right < -10000)
 				right = -10000;
-			else if ( right > 10000 )
+			else if (right > 10000)
 				right = 10000;
-			if ( bottom < -10000 )
+			if (bottom < -10000)
 				bottom = -10000;
-			else if ( bottom > 10000 )
+			else if (bottom > 10000)
 				bottom = 10000;
 
 			// Make a rectangle for the bar and draw it
-			RectangleF rect = new RectangleF( left, top, right - left, bottom - top );
+			RectangleF rect = new RectangleF(left, top, right - left, bottom - top);
 
-			Draw( g, pane, rect, scaleFactor, fullFrame, isSelected, dataValue );      
+			Draw(g, pane, rect, scaleFactor, fullFrame, isSelected, dataValue);
 		}
 
 		/// <summary>
@@ -315,18 +331,16 @@ namespace ZedGraph
 		/// <param name="isSelected">Indicates that the <see cref="Bar" /> should be drawn
 		/// with attributes from the <see cref="Selection" /> class.
 		/// </param>
-		public void Draw( Graphics g, GraphPane pane, RectangleF rect, float scaleFactor,
-							bool fullFrame, bool isSelected, PointPair dataValue )
+		public void Draw(Graphics g, GraphPane pane, RectangleF rect, float scaleFactor,
+		                 bool fullFrame, bool isSelected, PointPair dataValue)
 		{
-			if ( isSelected )
-			{
-				Selection.Fill.Draw( g, rect, dataValue );
-				Selection.Border.Draw( g, pane, scaleFactor, rect );
+			if (isSelected) {
+				Selection.Fill.Draw(g, rect, dataValue);
+				Selection.Border.Draw(g, pane, scaleFactor, rect);
 			}
-			else
-			{
-				_fill.Draw( g, rect, dataValue );
-				_border.Draw( g, pane, scaleFactor, rect );
+			else {
+				_fill.Draw(g, rect, dataValue);
+				_border.Draw(g, pane, scaleFactor, rect);
 			}
 		}
 
@@ -363,20 +377,20 @@ namespace ZedGraph
 		/// <see cref="PaneBase.CalcScaleFactor"/> method, and is used to proportionally adjust
 		/// font sizes, etc. according to the actual size of the graph.
 		/// </param>
-		public void DrawBars( Graphics g, GraphPane pane, CurveItem curve,
-								Axis baseAxis, Axis valueAxis,
-								float barWidth, int pos, float scaleFactor )
+		public void DrawBars(Graphics g, GraphPane pane, CurveItem curve,
+		                     Axis baseAxis, Axis valueAxis,
+		                     float barWidth, int pos, float scaleFactor)
 		{
 			// For non-cluster bar types, the position is always zero since the bars are on top
 			// of eachother
 			BarType barType = pane._barSettings.Type;
-			if ( barType == BarType.Overlay || barType == BarType.Stack || barType == BarType.PercentStack ||
-					barType == BarType.SortedOverlay )
+			if (barType == BarType.Overlay || barType == BarType.Stack || barType == BarType.PercentStack ||
+			    barType == BarType.SortedOverlay)
 				pos = 0;
 
 			// Loop over each defined point and draw the corresponding bar                
-			for ( int i=0; i<curve.Points.Count; i++ )
-				DrawSingleBar( g, pane, curve, i, pos, baseAxis, valueAxis, barWidth, scaleFactor );
+			for (int i = 0; i < curve.Points.Count; i++)
+				DrawSingleBar(g, pane, curve, i, pos, baseAxis, valueAxis, barWidth, scaleFactor);
 		}
 
 		/// <summary>
@@ -415,22 +429,22 @@ namespace ZedGraph
 		/// <see cref="PaneBase.CalcScaleFactor"/> method, and is used to proportionally adjust
 		/// font sizes, etc. according to the actual size of the graph.
 		/// </param>
-		public void DrawSingleBar( Graphics g, GraphPane pane, CurveItem curve,
-									Axis baseAxis, Axis valueAxis,
-									int pos, int index, float barWidth, float scaleFactor )
+		public void DrawSingleBar(Graphics g, GraphPane pane, CurveItem curve,
+		                          Axis baseAxis, Axis valueAxis,
+		                          int pos, int index, float barWidth, float scaleFactor)
 		{
 			// Make sure that a bar value exists for the current curve and current ordinal position
-			if ( index >= curve.Points.Count )
+			if (index >= curve.Points.Count)
 				return;
 
 			// For Overlay and Stack bars, the position is always zero since the bars are on top
 			// of eachother
-			if ( pane._barSettings.Type == BarType.Overlay || pane._barSettings.Type == BarType.Stack ||
-					pane._barSettings.Type == BarType.PercentStack )
+			if (pane._barSettings.Type == BarType.Overlay || pane._barSettings.Type == BarType.Stack ||
+			    pane._barSettings.Type == BarType.PercentStack)
 				pos = 0;
 
 			// Draw the specified bar
-			DrawSingleBar( g, pane, curve, index, pos, baseAxis, valueAxis, barWidth, scaleFactor );
+			DrawSingleBar(g, pane, curve, index, pos, baseAxis, valueAxis, barWidth, scaleFactor);
 		}
 
 		/// <summary>
@@ -467,10 +481,10 @@ namespace ZedGraph
 		/// <see cref="PaneBase.CalcScaleFactor"/> method, and is used to proportionally adjust
 		/// font sizes, etc. according to the actual size of the graph.
 		/// </param>
-		virtual protected void DrawSingleBar( Graphics g, GraphPane pane,
-										CurveItem curve,
-										int index, int pos, Axis baseAxis, Axis valueAxis,
-										float barWidth, float scaleFactor )
+		protected virtual void DrawSingleBar(Graphics g, GraphPane pane,
+		                                     CurveItem curve,
+		                                     int index, int pos, Axis baseAxis, Axis valueAxis,
+		                                     float barWidth, float scaleFactor)
 		{
 			// pixBase = pixel value for the bar center on the base axis
 			// pixHiVal = pixel value for the bar top on the value axis
@@ -479,45 +493,44 @@ namespace ZedGraph
 
 			float clusterWidth = pane.BarSettings.GetClusterWidth();
 			//float barWidth = curve.GetBarWidth( pane );
-			float clusterGap = pane._barSettings.MinClusterGap * barWidth;
-			float barGap = barWidth * pane._barSettings.MinBarGap;
+			float clusterGap = pane._barSettings.MinClusterGap*barWidth;
+			float barGap = barWidth*pane._barSettings.MinBarGap;
 
 			// curBase = the scale value on the base axis of the current bar
 			// curHiVal = the scale value on the value axis of the current bar
 			// curLowVal = the scale value of the bottom of the bar
 			double curBase, curLowVal, curHiVal;
-			ValueHandler valueHandler = new ValueHandler( pane, false );
-			valueHandler.GetValues( curve, index, out curBase, out curLowVal, out curHiVal );
+			ValueHandler valueHandler = new ValueHandler(pane, false);
+			valueHandler.GetValues(curve, index, out curBase, out curLowVal, out curHiVal);
 
 			// Any value set to double max is invalid and should be skipped
 			// This is used for calculated values that are out of range, divide
 			//   by zero, etc.
 			// Also, any value <= zero on a log scale is invalid
 
-			if ( !curve.Points[index].IsInvalid )
-			{
+			if (!curve.Points[index].IsInvalid) {
 				// calculate a pixel value for the top of the bar on value axis
-				pixLowVal = valueAxis.Scale.Transform( curve.IsOverrideOrdinal, index, curLowVal );
-				pixHiVal = valueAxis.Scale.Transform( curve.IsOverrideOrdinal, index, curHiVal );
+				pixLowVal = valueAxis.Scale.Transform(curve.IsOverrideOrdinal, index, curLowVal);
+				pixHiVal = valueAxis.Scale.Transform(curve.IsOverrideOrdinal, index, curHiVal);
 				// calculate a pixel value for the center of the bar on the base axis
-				pixBase = baseAxis.Scale.Transform( curve.IsOverrideOrdinal, index, curBase );
+				pixBase = baseAxis.Scale.Transform(curve.IsOverrideOrdinal, index, curBase);
 
 				// Calculate the pixel location for the side of the bar (on the base axis)
-				float pixSide = pixBase - clusterWidth / 2.0F + clusterGap / 2.0F +
-								pos * ( barWidth + barGap );
+				float pixSide = pixBase - clusterWidth/2.0F + clusterGap/2.0F +
+				                pos*(barWidth + barGap);
 
 				// Draw the bar
-				if ( pane._barSettings.Base == BarBase.X )
-					this.Draw( g, pane, pixSide, pixSide + barWidth, pixLowVal,
-							pixHiVal, scaleFactor, true, curve.IsSelected,
-							curve.Points[index] );
+				if (pane._barSettings.Base == BarBase.X)
+					this.Draw(g, pane, pixSide, pixSide + barWidth, pixLowVal,
+					          pixHiVal, scaleFactor, true, curve.IsSelected,
+					          curve.Points[index]);
 				else
-					this.Draw( g, pane, pixLowVal, pixHiVal, pixSide, pixSide + barWidth,
-							scaleFactor, true, curve.IsSelected,
-							curve.Points[index] );
+					this.Draw(g, pane, pixLowVal, pixHiVal, pixSide, pixSide + barWidth,
+					          scaleFactor, true, curve.IsSelected,
+					          curve.Points[index]);
 			}
 		}
 
-	#endregion
+		#endregion
 	}
 }

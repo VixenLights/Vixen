@@ -11,309 +11,292 @@ using System.Timers;
 
 namespace VixenModules.Media.Audio
 {
-    public class Audio : MediaModuleInstanceBase, ITiming
-    {
-        private FmodInstance _audioSystem;
-        private AudioData _data;
-        public string[] DetectionNotes
-        {
-            get
-            {
-                if (_audioSystem == null) return null;
-                return _audioSystem.NOTE;
-            }
-        }
-        public float[] DetectionNoteFreq
-        {
-            get
-            {
-                if (_audioSystem == null) return null;
-                return _audioSystem.NOTE_FREQ;
-            }
-        }
-        public bool MediaLoaded
-        {
-            get
-            {
-                return _audioSystem != null;
-            }
-        }
-        public bool DetectFrequeniesEnabled
-        {
-            get
-            {
-                if (_audioSystem == null) return false;
-                else return _audioSystem.DetectFrequeniesEnabled;
-            }
-            set
-            {
-                if (_audioSystem != null)
-                    _audioSystem.DetectFrequeniesEnabled = value;
-            }
-        }
-        public bool LowPassFilterEnabled
-        {
-            get
-            {
-                if (_audioSystem == null) return false;
-                else return _audioSystem.LowPassFilterEnabled;
-            }
-            set
-            {
-                if (_audioSystem != null)
-                    _audioSystem.LowPassFilterEnabled = value;
-            }
-        }
-        public float LowPassFilterValue
-        {
-            get
-            {
-                if (_audioSystem == null) return -1;
-                else return _audioSystem.LowPassFilterValue;
-            }
-            set
-            {
-                _audioSystem.LowPassFilterValue = value;
-            }
-        }
-        public float HighPassFilterValue
-        {
-            get
-            {
-                if (_audioSystem == null) return -1;
-                else return _audioSystem.HighPassFilterValue;
-            }
-            set { _audioSystem.HighPassFilterValue = value; }
-        }
-        public bool HighPassFilterEnabled
-        {
-            get
-            {
-                if (_audioSystem == null) return false;
-                else return _audioSystem.HighPassFilterEnabled;
-            }
-            set
-            {
-                if (_audioSystem != null)
-                    _audioSystem.HighPassFilterEnabled = value;
-            }
-        }
+	public class Audio : MediaModuleInstanceBase, ITiming
+	{
+		private FmodInstance _audioSystem;
+		private AudioData _data;
 
-        /// <summary>
-        /// Number of bytes of data each sample contains.
-        /// </summary>
-        public int BytesPerSample
-        {
-            get
-            {
-                if (_audioSystem != null)
-                {
-                    return _audioSystem.BytesPerSample;
-                }
+		public string[] DetectionNotes
+		{
+			get
+			{
+				if (_audioSystem == null) return null;
+				return _audioSystem.NOTE;
+			}
+		}
 
-                return 0;
-            }
-        }
+		public float[] DetectionNoteFreq
+		{
+			get
+			{
+				if (_audioSystem == null) return null;
+				return _audioSystem.NOTE_FREQ;
+			}
+		}
 
-        /// <summary>
-        /// The sample rate of the track.
-        /// </summary>
-        public float Frequency
-        {
-            get
-            {
-                if (_audioSystem != null)
-                {
-                    return _audioSystem.Frequency;
-                }
+		public bool MediaLoaded
+		{
+			get { return _audioSystem != null; }
+		}
 
-                return 0;
-            }
-        }
+		public bool DetectFrequeniesEnabled
+		{
+			get
+			{
+				if (_audioSystem == null) return false;
+				else return _audioSystem.DetectFrequeniesEnabled;
+			}
+			set
+			{
+				if (_audioSystem != null)
+					_audioSystem.DetectFrequeniesEnabled = value;
+			}
+		}
 
-        /// <summary>
-        /// Number of samples the audio track has.
-        /// </summary>
-        public long NumberSamples
-        {
-            get
-            {
-                if (_audioSystem != null)
-                {
-                    return _audioSystem.NumberSamples;
-                }
+		public bool LowPassFilterEnabled
+		{
+			get
+			{
+				if (_audioSystem == null) return false;
+				else return _audioSystem.LowPassFilterEnabled;
+			}
+			set
+			{
+				if (_audioSystem != null)
+					_audioSystem.LowPassFilterEnabled = value;
+			}
+		}
 
-                return 0;
-            }
-        }
+		public float LowPassFilterValue
+		{
+			get
+			{
+				if (_audioSystem == null) return -1;
+				else return _audioSystem.LowPassFilterValue;
+			}
+			set { _audioSystem.LowPassFilterValue = value; }
+		}
 
-        /// <summary>
-        /// Number of channels the audio track has.
-        /// </summary>
-        public int Channels
-        {
-            get
-            {
-                if (_audioSystem != null)
-                {
-                    return _audioSystem.Channels;
-                }
+		public float HighPassFilterValue
+		{
+			get
+			{
+				if (_audioSystem == null) return -1;
+				else return _audioSystem.HighPassFilterValue;
+			}
+			set { _audioSystem.HighPassFilterValue = value; }
+		}
 
-                return 0;
-            }
-        }
+		public bool HighPassFilterEnabled
+		{
+			get
+			{
+				if (_audioSystem == null) return false;
+				else return _audioSystem.HighPassFilterEnabled;
+			}
+			set
+			{
+				if (_audioSystem != null)
+					_audioSystem.HighPassFilterEnabled = value;
+			}
+		}
 
-        /// <summary>
-        /// Get the number samples as a byte array from the starting sample. 
-        /// </summary>
-        /// <param name="startSample">0 based starting sample</param>
-        /// <param name="numSamples">Number of samples to include in the byte array</param>
-        /// <returns></returns>
-        public byte[] GetSamples(int startSample, int numSamples)
-        {
+		/// <summary>
+		/// Number of bytes of data each sample contains.
+		/// </summary>
+		public int BytesPerSample
+		{
+			get
+			{
+				if (_audioSystem != null) {
+					return _audioSystem.BytesPerSample;
+				}
 
-            if (_audioSystem != null)
-            {
-                return _audioSystem.GetSamples(startSample, numSamples);
-            }
-            else
-            {
-                return null;
-            }
+				return 0;
+			}
+		}
 
-        }
+		/// <summary>
+		/// The sample rate of the track.
+		/// </summary>
+		public float Frequency
+		{
+			get
+			{
+				if (_audioSystem != null) {
+					return _audioSystem.Frequency;
+				}
 
-        override public void Start()
-        {
-            if (_audioSystem != null && !_audioSystem.IsPlaying)
-            {
-                _audioSystem.Play();
-            }
-        }
+				return 0;
+			}
+		}
 
-        override public void Stop()
-        {
-            if (_audioSystem != null && _audioSystem.IsPlaying)
-            {
-                _audioSystem.Stop();
-            }
-        }
+		/// <summary>
+		/// Number of samples the audio track has.
+		/// </summary>
+		public long NumberSamples
+		{
+			get
+			{
+				if (_audioSystem != null) {
+					return _audioSystem.NumberSamples;
+				}
 
-        override public void Pause()
-        {
-            if (_audioSystem != null && !_audioSystem.IsPaused)
-            {
-                _audioSystem.Pause();
-            }
-        }
+				return 0;
+			}
+		}
 
-        override public void Resume()
-        {
-            if (_audioSystem != null && _audioSystem.IsPaused)
-            {
-                _audioSystem.Resume();
-            }
-        }
+		/// <summary>
+		/// Number of channels the audio track has.
+		/// </summary>
+		public int Channels
+		{
+			get
+			{
+				if (_audioSystem != null) {
+					return _audioSystem.Channels;
+				}
 
-        override public void Dispose()
-        {
-            _DisposeAudio();
-        }
+				return 0;
+			}
+		}
 
-        private void _DisposeAudio()
-        {
-            if (_audioSystem != null)
-            {
-                _audioSystem.Stop();
-                _audioSystem.FrequencyDetected -= _audioSystem_FrequencyDetected;
-                _audioSystem.Dispose();
-                _audioSystem = null;
-            }
-        }
+		/// <summary>
+		/// Get the number samples as a byte array from the starting sample. 
+		/// </summary>
+		/// <param name="startSample">0 based starting sample</param>
+		/// <param name="numSamples">Number of samples to include in the byte array</param>
+		/// <returns></returns>
+		public byte[] GetSamples(int startSample, int numSamples)
+		{
+			if (_audioSystem != null) {
+				return _audioSystem.GetSamples(startSample, numSamples);
+			}
+			else {
+				return null;
+			}
+		}
 
-        override public ITiming TimingSource
-        {
-            get { return this as ITiming; }
-        }
+		public override void Start()
+		{
+			if (_audioSystem != null && !_audioSystem.IsPlaying) {
+				_audioSystem.Play();
+			}
+		}
 
-        override public IModuleDataModel ModuleData
-        {
-            get { return _data; }
-            set { _data = value as AudioData; }
-        }
+		public override void Stop()
+		{
+			if (_audioSystem != null && _audioSystem.IsPlaying) {
+				_audioSystem.Stop();
+			}
+		}
 
-        override public string MediaFilePath
-        {
-            get { return _data.FilePath; }
-            set { _data.FilePath = value; }
-        }
+		public override void Pause()
+		{
+			if (_audioSystem != null && !_audioSystem.IsPaused) {
+				_audioSystem.Pause();
+			}
+		}
 
-        // If a media file is used as the timing source, it's also being
-        // executed as media for the sequence.
-        // That means we're either media or media and timing, so only
-        // handle media execution entry points.
-        override public void LoadMedia(TimeSpan startTime)
-        {
-            _DisposeAudio();
-            if (File.Exists(MediaFilePath))
-            {
-                _audioSystem = new FmodInstance(MediaFilePath);
-                _audioSystem.FrequencyDetected += _audioSystem_FrequencyDetected;
-                _audioSystem.SetStartTime(startTime);
-            }
-            else
-            {
-                throw new FileNotFoundException("Media file doe not exist: " + MediaFilePath);
-            }
+		public override void Resume()
+		{
+			if (_audioSystem != null && _audioSystem.IsPaused) {
+				_audioSystem.Resume();
+			}
+		}
 
-        }
-        public delegate void FrequencyDetectedHandler(object sender, FrequencyEventArgs e);
-        public event FrequencyDetectedHandler FrequencyDetected;
+		public override void Dispose()
+		{
+			_DisposeAudio();
+		}
 
-        void _audioSystem_FrequencyDetected(object sender, FrequencyEventArgs e)
-        {
-            if (FrequencyDetected != null)
-            {
-                FrequencyDetected(this, e);
-            }
-        }
+		private void _DisposeAudio()
+		{
+			if (_audioSystem != null) {
+				_audioSystem.Stop();
+				_audioSystem.FrequencyDetected -= _audioSystem_FrequencyDetected;
+				_audioSystem.Dispose();
+				_audioSystem = null;
+			}
+		}
 
-        public TimeSpan Position
-        {
-            get
-            {
-                if (_audioSystem != null)
-                {
-                    return TimeSpan.FromMilliseconds(_audioSystem.Position);
-                }
-                return TimeSpan.Zero;
-            }
-            set { }
-        }
+		public override ITiming TimingSource
+		{
+			get { return this as ITiming; }
+		}
 
-        public TimeSpan MediaDuration
-        {
-            get
-            {
-                if (_audioSystem == null)
-                    LoadMedia(TimeSpan.Zero);
+		public override IModuleDataModel ModuleData
+		{
+			get { return _data; }
+			set { _data = value as AudioData; }
+		}
 
-                return _audioSystem.Duration;
-            }
-        }
+		public override string MediaFilePath
+		{
+			get { return _data.FilePath; }
+			set { _data.FilePath = value; }
+		}
 
-        public bool SupportsVariableSpeeds
-        {
-            get { return true; }
-        }
+		// If a media file is used as the timing source, it's also being
+		// executed as media for the sequence.
+		// That means we're either media or media and timing, so only
+		// handle media execution entry points.
+		public override void LoadMedia(TimeSpan startTime)
+		{
+			_DisposeAudio();
+			if (File.Exists(MediaFilePath)) {
+				_audioSystem = new FmodInstance(MediaFilePath);
+				_audioSystem.FrequencyDetected += _audioSystem_FrequencyDetected;
+				_audioSystem.SetStartTime(startTime);
+			}
+			else {
+				throw new FileNotFoundException("Media file doe not exist: " + MediaFilePath);
+			}
+		}
 
-        public float Speed
-        {
-            get { return _audioSystem.Speed; }
-            set { _audioSystem.Speed = value; }
-        }
-    }
+		public delegate void FrequencyDetectedHandler(object sender, FrequencyEventArgs e);
 
+		public event FrequencyDetectedHandler FrequencyDetected;
 
+		private void _audioSystem_FrequencyDetected(object sender, FrequencyEventArgs e)
+		{
+			if (FrequencyDetected != null) {
+				FrequencyDetected(this, e);
+			}
+		}
 
+		public TimeSpan Position
+		{
+			get
+			{
+				if (_audioSystem != null) {
+					return TimeSpan.FromMilliseconds(_audioSystem.Position);
+				}
+				return TimeSpan.Zero;
+			}
+			set { }
+		}
+
+		public TimeSpan MediaDuration
+		{
+			get
+			{
+				if (_audioSystem == null)
+					LoadMedia(TimeSpan.Zero);
+
+				return _audioSystem.Duration;
+			}
+		}
+
+		public bool SupportsVariableSpeeds
+		{
+			get { return true; }
+		}
+
+		public float Speed
+		{
+			get { return _audioSystem.Speed; }
+			set { _audioSystem.Speed = value; }
+		}
+	}
 }

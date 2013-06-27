@@ -8,16 +8,16 @@ using Vixen.Data.Combinator._8Bit;
 
 namespace VixenModules.Output.FGDimmer
 {
-    class FGDimmerDataPolicy : ControllerDataPolicy
-    {
-        protected override IEvaluator GetEvaluator()
-        {
-            return new _8BitEvaluator();
-        }
+	internal class FGDimmerDataPolicy : ControllerDataPolicy
+	{
+		protected override IEvaluator GetEvaluator()
+		{
+			return new _8BitEvaluator();
+		}
 
-        protected override ICombinator GetCombinator()
-        {
-            return new _8BitHighestWinsCombinator();
-        }
-    }
+		protected override ICombinator GetCombinator()
+		{
+			return new _8BitHighestWinsCombinator();
+		}
+	}
 }

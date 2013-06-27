@@ -37,12 +37,12 @@ namespace ZedGraph
 		/// instance that holds the serialized object data about the exception being thrown.</param>
 		/// <param name="context">The <see cref="System.Runtime.Serialization.StreamingContext"/>
 		/// instance that contains contextual information about the source or destination.</param>
-		protected ZedGraphException( System.Runtime.Serialization.SerializationInfo info, 
-										System.Runtime.Serialization.StreamingContext context )
-			: base ( info, context )
+		protected ZedGraphException(System.Runtime.Serialization.SerializationInfo info,
+		                            System.Runtime.Serialization.StreamingContext context)
+			: base(info, context)
 		{
 		}
-		
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Exception"/> class with a specified
 		/// error message and a reference to the inner exception that is the cause of this exception.
@@ -51,25 +51,24 @@ namespace ZedGraph
 		/// <param name="innerException">The exception that is the cause of the current exception.
 		/// If the innerException parameter is not a null reference, the current exception is raised
 		/// in a catch block that handles the inner exception.</param>
-		public ZedGraphException( System.String message, System.Exception innerException )
-			: base ( message, innerException )
+		public ZedGraphException(System.String message, System.Exception innerException)
+			: base(message, innerException)
 		{
-
 		}
-	
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Exception"/> class with a specified error message.
 		/// </summary>
 		/// <param name="message">The error message that explains the reason for the exception.</param>
-		public ZedGraphException ( System.String message ) 
-			: base( message )
+		public ZedGraphException(System.String message)
+			: base(message)
 		{
 		}
-		
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Exception"/> class.
 		/// </summary>
-		public ZedGraphException() 
+		public ZedGraphException()
 			: base()
 		{
 		}

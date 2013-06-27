@@ -2,26 +2,32 @@
 using System.Collections.Generic;
 using System.Threading;
 
-namespace Vixen.Module.Input {
+namespace Vixen.Module.Input
+{
 	/// <summary>
 	/// Base class for trigger module implementations.
 	/// </summary>
-	abstract public class InputModuleInstanceBase : ModuleInstanceBase, IInputModuleInstance, IEquatable<InputModuleInstanceBase>, IEquatable<IInputModuleInstance>, IEqualityComparer<IInputModuleInstance>, IEqualityComparer<InputModuleInstanceBase> {
+	public abstract class InputModuleInstanceBase : ModuleInstanceBase, IInputModuleInstance,
+	                                                IEquatable<InputModuleInstanceBase>, IEquatable<IInputModuleInstance>,
+	                                                IEqualityComparer<IInputModuleInstance>,
+	                                                IEqualityComparer<InputModuleInstanceBase>
+	{
 		//private Thread _stateUpdateThread;
 		private ManualResetEvent _pause = new ManualResetEvent(true);
 
 		public event EventHandler<InputValueChangedEventArgs> InputValueChanged;
 
-		abstract public IInputInput[] Inputs { get; }
+		public abstract IInputInput[] Inputs { get; }
 
 		public abstract string DeviceName { get; }
 
-		public void Start() {
-			if(!IsRunning) {
+		public void Start()
+		{
+			if (!IsRunning) {
 				// Call the subclass first in case its startup creates the triggers.
 				DoStartup();
 				// Subscribe to triggers.
-				foreach(IInputInput input in Inputs) {
+				foreach (IInputInput input in Inputs) {
 					input.ValueChanged += _InputValueChanged;
 				}
 				// Start monitoring the hardware.
@@ -32,16 +38,19 @@ namespace Vixen.Module.Input {
 			}
 		}
 
-		protected virtual void DoStartup() { }
+		protected virtual void DoStartup()
+		{
+		}
 
-		public void Stop() {
+		public void Stop()
+		{
 			// In opposite order of Startup...
-			if(IsRunning) {
+			if (IsRunning) {
 				// Stop monitoring the hardware.
 				Resume();
 				IsRunning = false;
 				// Unsubscribe to triggers.
-				foreach(IInputInput input in Inputs) {
+				foreach (IInputInput input in Inputs) {
 					input.ValueChanged -= _InputValueChanged;
 				}
 				// Notify the subclass.
@@ -49,57 +58,71 @@ namespace Vixen.Module.Input {
 			}
 		}
 
-		protected virtual void DoShutdown() { }
+		protected virtual void DoShutdown()
+		{
+		}
 
-		public void Pause() {
-			if(!IsPaused) {
+		public void Pause()
+		{
+			if (!IsPaused) {
 				IsPaused = true;
 				_pause.Reset();
 				DoPause();
 			}
 		}
 
-		protected virtual void DoPause() { }
+		protected virtual void DoPause()
+		{
+		}
 
-		public void Resume() {
-			if(IsPaused) {
+		public void Resume()
+		{
+			if (IsPaused) {
 				IsPaused = false;
 				_pause.Set();
 				DoResume();
 			}
 		}
 
-		protected virtual void DoResume() { }
+		protected virtual void DoResume()
+		{
+		}
 
 		public bool IsRunning { get; private set; }
 
 		public bool IsPaused { get; private set; }
 
-		virtual public bool HasSetup {
+		public virtual bool HasSetup
+		{
 			get { return false; }
 		}
 
-		virtual public bool Setup() {
+		public virtual bool Setup()
+		{
 			return false;
 		}
 
-		override public void Dispose() {
+		public override void Dispose()
+		{
 			Dispose(true);
 			GC.SuppressFinalize(this);
 		}
 
-		protected virtual void Dispose(bool disposing) {
+		protected virtual void Dispose(bool disposing)
+		{
 			Stop();
 			_pause.Dispose();
 			_pause = null;
 		}
 
-		~InputModuleInstanceBase() {
+		~InputModuleInstanceBase()
+		{
 			Dispose(false);
 		}
 
-		private void _InputValueChanged(object sender, EventArgs e) {
-			if(InputValueChanged != null) {
+		private void _InputValueChanged(object sender, EventArgs e)
+		{
+			if (InputValueChanged != null) {
 				InputValueChanged(this, new InputValueChangedEventArgs(this, sender as IInputInput));
 			}
 		}
@@ -114,27 +137,33 @@ namespace Vixen.Module.Input {
 		//    _stateUpdateThread = null;
 		//}
 
-		public bool Equals(InputModuleInstanceBase other) {
+		public bool Equals(InputModuleInstanceBase other)
+		{
 			return Equals(other as IInputModuleInstance);
 		}
 
-		public bool Equals(IInputModuleInstance other) {
+		public bool Equals(IInputModuleInstance other)
+		{
 			return base.Equals(this, other);
 		}
 
-		public bool Equals(IInputModuleInstance x, IInputModuleInstance y) {
+		public bool Equals(IInputModuleInstance x, IInputModuleInstance y)
+		{
 			return base.Equals(x, y);
 		}
 
-		public int GetHashCode(IInputModuleInstance obj) {
+		public int GetHashCode(IInputModuleInstance obj)
+		{
 			return base.GetHashCode(obj);
 		}
 
-		public bool Equals(InputModuleInstanceBase x, InputModuleInstanceBase y) {
+		public bool Equals(InputModuleInstanceBase x, InputModuleInstanceBase y)
+		{
 			return Equals(x as IInputModuleInstance, y as IInputModuleInstance);
 		}
 
-		public int GetHashCode(InputModuleInstanceBase obj) {
+		public int GetHashCode(InputModuleInstanceBase obj)
+		{
 			return GetHashCode(obj as IInputModuleInstance);
 		}
 	}

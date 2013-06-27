@@ -22,12 +22,15 @@ namespace VixenApplication
 
 		public bool FilterSetupFormHighQualityRendering { get; set; }
 
-		private string DefaultDataFileDirectory {
+		private string DefaultDataFileDirectory
+		{
 			get { return Vixen.Sys.Paths.DataRootPath; }
 		}
 
 		private string _dataFileDirectory;
-		public string DataFileDirectory {
+
+		public string DataFileDirectory
+		{
 			get { return _dataFileDirectory ?? DefaultDataFileDirectory; }
 			set { _dataFileDirectory = value; }
 		}
@@ -76,12 +79,14 @@ namespace VixenApplication
 				int dataFormatVersion = int.Parse(versionElement.Value);
 
 				ReadData(dataFormatVersion, root);
-
-			} catch(FileNotFoundException ex) {
+			}
+			catch (FileNotFoundException ex) {
 				VixenSystem.Logging.Warning("VixenApplication: loading application data, but couldn't find file", ex);
-			} catch (Exception ex) {
+			}
+			catch (Exception ex) {
 				VixenSystem.Logging.Error("VixenApplication: error loading application data", ex);
-			} finally {
+			}
+			finally {
 				if (stream != null)
 					stream.Close();
 			}
@@ -105,11 +110,11 @@ namespace VixenApplication
 				foreach (KeyValuePair<Guid, FilterSetupFormShapePosition> pair in FilterSetupFormShapePositions) {
 					filterShapePositionsElement.Add(
 						new XElement("FilterPosition",
-				             new XAttribute("FilterId", pair.Key),
-				             new XElement("xPositionProportion", pair.Value.xPositionProportion),
-				             new XElement("yPosition", pair.Value.yPosition)
-						)
-					);
+						             new XAttribute("FilterId", pair.Key),
+						             new XElement("xPositionProportion", pair.Value.xPositionProportion),
+						             new XElement("yPosition", pair.Value.yPosition)
+							)
+						);
 				}
 				root.Add(filterShapePositionsElement);
 
@@ -118,19 +123,21 @@ namespace VixenApplication
 				root.Add(filterSetupFormHQRenderingElement);
 
 				root.Save(stream);
-
-			} catch (Exception ex) {
+			}
+			catch (Exception ex) {
 				VixenSystem.Logging.Error("VixenApplication: error saving application data", ex);
-			} finally {
+			}
+			finally {
 				if (stream != null)
-				    stream.Close();
+					stream.Close();
 			}
 		}
 
 		public void ReadData(int dataVersion, XElement rootElement)
 		{
 			if (dataVersion > DATA_FORMAT_VERSION_NUMBER) {
-				VixenSystem.Logging.Error("VixenApplication: error reading application data; given data version was too high: " + dataVersion);
+				VixenSystem.Logging.Error("VixenApplication: error reading application data; given data version was too high: " +
+				                          dataVersion);
 				return;
 			}
 
@@ -152,7 +159,7 @@ namespace VixenApplication
 						FilterSetupFormShapePosition position = new FilterSetupFormShapePosition();
 						position.xPositionProportion = double.Parse(element.Element("xPositionProportion").Value);
 						position.yPosition = int.Parse(element.Element("yPosition").Value);
-						FilterSetupFormShapePositions.Add((Guid)element.Attribute("FilterId"), position);
+						FilterSetupFormShapePositions.Add((Guid) element.Attribute("FilterId"), position);
 					}
 				}
 			}
@@ -164,7 +171,6 @@ namespace VixenApplication
 					FilterSetupFormHighQualityRendering = Boolean.Parse(element.Attribute("value").Value);
 				}
 			}
-
 		}
 	}
 

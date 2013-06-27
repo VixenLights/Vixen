@@ -1,8 +1,11 @@
 ﻿using System.Runtime.Serialization;
 
-namespace Vixen.Execution {
-	public class SelectedTimingProvider {
-		public SelectedTimingProvider(string providerType, string sourceName) {
+namespace Vixen.Execution
+{
+	public class SelectedTimingProvider
+	{
+		public SelectedTimingProvider(string providerType, string sourceName)
+		{
 			ProviderType = providerType;
 			SourceName = sourceName;
 		}
@@ -11,7 +14,8 @@ namespace Vixen.Execution {
 
 		public string SourceName { get; private set; }
 
-		static public bool IsValid(SelectedTimingProvider selectedTimingProvider) {
+		public static bool IsValid(SelectedTimingProvider selectedTimingProvider)
+		{
 			return
 				selectedTimingProvider != null &&
 				!string.IsNullOrEmpty(selectedTimingProvider.ProviderType) &&

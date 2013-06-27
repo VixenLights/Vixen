@@ -13,46 +13,49 @@ using System.IO;
 
 namespace VixenModules.Output.FGDimmer
 {
-	class FGDimmer : ControllerModuleInstanceBase
+	internal class FGDimmer : ControllerModuleInstanceBase
 	{
-		SerialPort _serialPort = null;
+		private SerialPort _serialPort = null;
 
-		int _startChannel;
-		float _multiplier;
-		int _retryCounter;
+		private int _startChannel;
+		private float _multiplier;
+		private int _retryCounter;
 
-		Thread _eventThread;
-		AutoResetEvent _eventTrigger;
-		System.Timers.Timer _retryTimer;
+		private Thread _eventThread;
+		private AutoResetEvent _eventTrigger;
+		private System.Timers.Timer _retryTimer;
 
-		byte[] _channelValues;
-		FGDimmerControlModule[] _modules;
-		ICommand[] _outputStates;
-		byte[][] _packets;
-		byte[] _dimmingCurve = new byte[256] {
-			0,18,20,23,24,27,28,31,31,33,35,37,39,40,42,43,45,
-			46,48,49,50,50,51,52,53,54,54,55,56,56,56,56,56,57,
-			57,56,57,58,58,58,59,58,58,58,59,59,59,59,60,61,60,
-			61,61,61,61,62,62,62,62,63,63,63,63,63,63,63,63,63,
-			63,64,64,64,64,65,65,66,66,67,67,68,68,68,69,69,70,
-			70,71,71,72,73,73,74,74,75,75,77,77,77,78,78,79,80,
-			80,80,80,81,82,83,83,84,85,85,86,87,88,89,91,92,93,
-			94,96,99,101,104,107,109,115,120,135,140,146,148,151,154,156,159,
-			161,162,163,164,166,167,168,169,170,170,171,172,172,173,174,175,175,
-			175,175,176,177,177,178,178,178,180,180,181,181,182,182,183,184,184,
-			185,185,186,186,187,187,187,188,188,189,189,190,190,191,191,191,191,
-			192,192,192,192,192,192,192,192,192,192,193,193,193,193,194,194,194,
-			194,194,195,195,196,196,196,196,196,197,197,197,197,197,197,198,198,
-			198,199,199,199,199,199,199,200,201,201,202,203,204,205,205,206,207,
-			209,210,212,213,215,216,218,220,222,224,224,227,228,231,232,235,237,
-			255};
+		private byte[] _channelValues;
+		private FGDimmerControlModule[] _modules;
+		private ICommand[] _outputStates;
+		private byte[][] _packets;
 
-		bool _holdPort = true;
-		bool _acOperation = false;
-		bool _running = false;
+		private byte[] _dimmingCurve = new byte[256]
+		                               	{
+		                               		0, 18, 20, 23, 24, 27, 28, 31, 31, 33, 35, 37, 39, 40, 42, 43, 45,
+		                               		46, 48, 49, 50, 50, 51, 52, 53, 54, 54, 55, 56, 56, 56, 56, 56, 57,
+		                               		57, 56, 57, 58, 58, 58, 59, 58, 58, 58, 59, 59, 59, 59, 60, 61, 60,
+		                               		61, 61, 61, 61, 62, 62, 62, 62, 63, 63, 63, 63, 63, 63, 63, 63, 63,
+		                               		63, 64, 64, 64, 64, 65, 65, 66, 66, 67, 67, 68, 68, 68, 69, 69, 70,
+		                               		70, 71, 71, 72, 73, 73, 74, 74, 75, 75, 77, 77, 77, 78, 78, 79, 80,
+		                               		80, 80, 80, 81, 82, 83, 83, 84, 85, 85, 86, 87, 88, 89, 91, 92, 93,
+		                               		94, 96, 99, 101, 104, 107, 109, 115, 120, 135, 140, 146, 148, 151, 154, 156, 159,
+		                               		161, 162, 163, 164, 166, 167, 168, 169, 170, 170, 171, 172, 172, 173, 174, 175, 175,
+		                               		175, 175, 176, 177, 177, 178, 178, 178, 180, 180, 181, 181, 182, 182, 183, 184, 184,
+		                               		185, 185, 186, 186, 187, 187, 187, 188, 188, 189, 189, 190, 190, 191, 191, 191, 191,
+		                               		192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 193, 193, 193, 193, 194, 194, 194,
+		                               		194, 194, 195, 195, 196, 196, 196, 196, 196, 197, 197, 197, 197, 197, 197, 198, 198,
+		                               		198, 199, 199, 199, 199, 199, 199, 200, 201, 201, 202, 203, 204, 205, 205, 206, 207,
+		                               		209, 210, 212, 213, 215, 216, 218, 220, 222, 224, 224, 227, 228, 231, 232, 235, 237,
+		                               		255
+		                               	};
 
-		FGDimmerData _moduleData;
-		CommandHandler _commandHandler;
+		private bool _holdPort = true;
+		private bool _acOperation = false;
+		private bool _running = false;
+
+		private FGDimmerData _moduleData;
+		private CommandHandler _commandHandler;
 
 		public FGDimmer()
 		{
@@ -60,28 +63,25 @@ namespace VixenModules.Output.FGDimmer
 			DataPolicyFactory = new FGDimmerDataPolicyFactory();
 
 			_packets = new byte[][]
-            {
-                new byte[34],
-                new byte[34],
-                new byte[34],
-                new byte[34]
-            };
+			           	{
+			           		new byte[34],
+			           		new byte[34],
+			           		new byte[34],
+			           		new byte[34]
+			           	};
 
-			for (int i = 0; i < 4; i++)
-			{
+			for (int i = 0; i < 4; i++) {
 				_packets[i][0] = 0x55;
-				_packets[i][1] = (byte)(i + 1);
-
+				_packets[i][1] = (byte) (i + 1);
 			}
 			_modules = new FGDimmerControlModule[4];
-			for (int i = 0; i < 4; i++)
-			{
+			for (int i = 0; i < 4; i++) {
 				_modules[i] = new FGDimmerControlModule(i + 1);
 			}
 
 			_eventThread = new Thread(new ThreadStart(EventThread));
 			_eventTrigger = new AutoResetEvent(false);
-			_multiplier = (float)100 / 255;
+			_multiplier = (float) 100/255;
 
 			//set 2 minute timer before retrying to access com port
 			_retryTimer = new System.Timers.Timer(120000);
@@ -91,18 +91,13 @@ namespace VixenModules.Output.FGDimmer
 
 		public override bool HasSetup
 		{
-			get
-			{
-				return true;
-			}
+			get { return true; }
 		}
 
 		public override bool Setup()
 		{
-			using (SetupDialog setupDialog = new SetupDialog(_moduleData))
-			{
-				if (setupDialog.ShowDialog() == DialogResult.OK)
-				{
+			using (SetupDialog setupDialog = new SetupDialog(_moduleData)) {
+				if (setupDialog.ShowDialog() == DialogResult.OK) {
 					_serialPort = setupDialog.SelectedPort;
 					_acOperation = setupDialog.ACOperation;
 					_holdPort = setupDialog.HoldPort;
@@ -115,8 +110,7 @@ namespace VixenModules.Output.FGDimmer
 					_moduleData.HoldPortOpen = setupDialog.HoldPort;
 					_moduleData.AcOperation = setupDialog.ACOperation;
 
-					for (int i = 0; i < 4; i++)
-					{
+					for (int i = 0; i < 4; i++) {
 						_modules[i] = setupDialog.Modules[i];
 					}
 					_moduleData.Modules = _modules;
@@ -125,37 +119,32 @@ namespace VixenModules.Output.FGDimmer
 			}
 			return false;
 		}
+
 		public override void UpdateState(int chainIndex, Vixen.Commands.ICommand[] outputStates)
 		{
 			_outputStates = outputStates;
 
-			if (serialPortIsValid)
-			{
-				if (_holdPort)
-				{
+			if (serialPortIsValid) {
+				if (_holdPort) {
 					_eventTrigger.Set();
 				}
-				else
-				{
-					if (serialPortIsValid && !_serialPort.IsOpen)
-					{
+				else {
+					if (serialPortIsValid && !_serialPort.IsOpen) {
 						_OpenComPort();
 					}
-					if (serialPortIsValid && _serialPort != null)
-					{
+					if (serialPortIsValid && _serialPort != null) {
 						FireEvent();
 						_serialPort.Close();
 					}
 				}
 			}
 		}
+
 		public override void Start()
 		{
 			ClearPacketBuffer();
-			if (_holdPort)
-			{
-				if (!_serialPort.IsOpen)
-				{
+			if (_holdPort) {
+				if (!_serialPort.IsOpen) {
 					_OpenComPort();
 				}
 				_running = true;
@@ -165,8 +154,7 @@ namespace VixenModules.Output.FGDimmer
 
 		public override void Stop()
 		{
-			if (_running)
-			{
+			if (_running) {
 				_running = false;
 				_eventTrigger.Set();
 				//give it one second to terminate.
@@ -179,13 +167,10 @@ namespace VixenModules.Output.FGDimmer
 
 		public override IModuleDataModel ModuleData
 		{
-			get
-			{
-				return _moduleData;
-			}
+			get { return _moduleData; }
 			set
 			{
-				_moduleData = (FGDimmerData)value;
+				_moduleData = (FGDimmerData) value;
 				initModule();
 			}
 		}
@@ -198,56 +183,45 @@ namespace VixenModules.Output.FGDimmer
 			//since the controlers are sending out bytes the array starts at 0
 			//and vixen starts at 1, so we need to subtract 1 to get the true start
 			//channel for the controller.
-			if (_moduleData.StartChannel != 0)
-			{
+			if (_moduleData.StartChannel != 0) {
 				_startChannel = _moduleData.StartChannel - 1;
 			}
-			else
-			{
+			else {
 				_startChannel = _moduleData.StartChannel;
 			}
 
-			if (OutputCount == 0 && _moduleData.EndChannel == 0)
-			{
+			if (OutputCount == 0 && _moduleData.EndChannel == 0) {
 				//set this to a max of 128 assuming everybody is using all 4 controllers.
 				_moduleData.EndChannel = 128;
 			}
 			_channelValues = new byte[_moduleData.EndChannel];
 
 
-			if (_moduleData.Modules != null)
-			{
-				for (int i = 0; i < 4; i++)
-				{
-					if (_moduleData.Modules[i] != null)
-					{
+			if (_moduleData.Modules != null) {
+				for (int i = 0; i < 4; i++) {
+					if (_moduleData.Modules[i] != null) {
 						_modules[i].Enabled = _moduleData.Modules[i].Enabled;
-						if (_modules[i].Enabled)
-						{
+						if (_modules[i].Enabled) {
 							_modules[i].StartChannel = _moduleData.Modules[i].StartChannel;
 						}
 					}
 				}
-
 			}
-			else
-			{
+			else {
 				//hasn't been configured yet so lets set some defaults.
 				_moduleData.Modules = _modules;
 			}
 			_holdPort = _moduleData.HoldPortOpen;
 			_acOperation = _moduleData.AcOperation;
 
-			if (serialPortIsValid && IsRunning)
-			{
+			if (serialPortIsValid && IsRunning) {
 				_OpenComPort();
 			}
 		}
 
 		private void dropExistingSerialPort()
 		{
-			if (serialPortIsValid)
-			{
+			if (serialPortIsValid) {
 				_serialPort.Dispose();
 				_serialPort = null;
 			}
@@ -255,8 +229,7 @@ namespace VixenModules.Output.FGDimmer
 
 		private void createSerialPortFromData()
 		{
-			if (_moduleData.IsValid)
-			{
+			if (_moduleData.IsValid) {
 				_serialPort = new SerialPort(
 					_moduleData.PortName,
 					_moduleData.BaudRate,
@@ -267,19 +240,18 @@ namespace VixenModules.Output.FGDimmer
 				_serialPort.Handshake = Handshake.None;
 				_serialPort.Encoding = Encoding.UTF8;
 			}
-			else
-			{
+			else {
 				_serialPort = null;
 			}
 		}
 
 		private void ClearPacketBuffer()
 		{
-			foreach (byte[] packet in _packets)
-			{
+			foreach (byte[] packet in _packets) {
 				Array.Clear(packet, 2, packet.Length - 2);
 			}
 		}
+
 		private bool serialPortIsValid
 		{
 			get { return _serialPort != null; }
@@ -289,41 +261,38 @@ namespace VixenModules.Output.FGDimmer
 		//check if we have an access violation
 		private void _OpenComPort()
 		{
-			try
-			{
+			try {
 				_serialPort.Open();
 
 				//if successfull 
 				//stop the retry counter and log that we got this going
 				//start the controller back up
 
-				if (_serialPort.IsOpen && _retryTimer.Enabled)
-				{
+				if (_serialPort.IsOpen && _retryTimer.Enabled) {
 					_retryCounter = 0;
 					_retryTimer.Stop();
 
-					Vixen.Sys.VixenSystem.Logging.Info(String.Format("Serial Port conflict has been corrected, starting controller {0} on port {1}.", _moduleData.ModuleTypeId, _serialPort.PortName));
+					Vixen.Sys.VixenSystem.Logging.Info(
+						String.Format("Serial Port conflict has been corrected, starting controller {0} on port {1}.",
+						              _moduleData.ModuleTypeId, _serialPort.PortName));
 				}
 			}
-			catch (Exception ex)
-			{
-
+			catch (Exception ex) {
 				if (ex is UnauthorizedAccessException ||
-					ex is InvalidOperationException ||
-					ex is IOException)
-				{
-					Vixen.Sys.VixenSystem.Logging.Error(String.Format("{0} is in use.  Starting controller retry timer for {1}", _serialPort.PortName, _moduleData.ModuleTypeId));
+				    ex is InvalidOperationException ||
+				    ex is IOException) {
+					Vixen.Sys.VixenSystem.Logging.Error(String.Format("{0} is in use.  Starting controller retry timer for {1}",
+					                                                  _serialPort.PortName, _moduleData.ModuleTypeId));
 					Stop();
 					//lets set our retry timer
-					if (_retryCounter < 3)
-					{
+					if (_retryCounter < 3) {
 						_retryCounter++;
 						_retryTimer.Start();
 						Vixen.Sys.VixenSystem.Logging.Info("Starting retry counter for com port access. Retry count is " + _retryCounter);
 					}
-					else
-					{
-						Vixen.Sys.VixenSystem.Logging.Info("Retry counter for com port access has exceeded max tries.  Controller has been stopped.");
+					else {
+						Vixen.Sys.VixenSystem.Logging.Info(
+							"Retry counter for com port access has exceeded max tries.  Controller has been stopped.");
 						_retryTimer.Stop();
 						_retryCounter = 0;
 					}
@@ -333,11 +302,9 @@ namespace VixenModules.Output.FGDimmer
 
 		private void EventThread()
 		{
-			while (_running)
-			{
+			while (_running) {
 				_eventTrigger.WaitOne();
-				if (!_running)
-				{
+				if (!_running) {
 					break;
 				}
 				FireEvent();
@@ -346,46 +313,36 @@ namespace VixenModules.Output.FGDimmer
 
 		private void FireEvent()
 		{
-			if (_serialPort != null && !_serialPort.IsOpen)
-			{
+			if (_serialPort != null && !_serialPort.IsOpen) {
 				_OpenComPort();
 			}
 
-			if (_serialPort != null && _serialPort.IsOpen)
-			{
-				if (_acOperation)
-				{
+			if (_serialPort != null && _serialPort.IsOpen) {
+				if (_acOperation) {
 					//with dimming curve translation
-					for (int i = 0; i < _channelValues.Length; i++)
-					{
+					for (int i = 0; i < _channelValues.Length; i++) {
 						_commandHandler.Reset();
 						ICommand command = _outputStates[i];
-						if (command != null)
-						{
+						if (command != null) {
 							command.Dispatch(_commandHandler);
 						}
-						if (_channelValues != null)
-						{
+						if (_channelValues != null) {
 							_channelValues[i] = _commandHandler.Value;
-							_channelValues[i] = (byte)(_dimmingCurve[_channelValues[i]] * _multiplier + 100);
+							_channelValues[i] = (byte) (_dimmingCurve[_channelValues[i]]*_multiplier + 100);
 						}
 					}
 				}
-				else
-				{
+				else {
 					//no dimming curve
-					for (int i = 0; i < _outputStates.Length; i++)
-					{
+					for (int i = 0; i < _outputStates.Length; i++) {
 						_commandHandler.Reset();
 						ICommand command = _outputStates[i];
-						if (command != null)
-						{
+						if (command != null) {
 							command.Dispatch(_commandHandler);
 						}
-						if (_channelValues != null)
-						{
+						if (_channelValues != null) {
 							_channelValues[i] = _commandHandler.Value;
-							_channelValues[i] = (byte)(_channelValues[i] * _multiplier + 100);
+							_channelValues[i] = (byte) (_channelValues[i]*_multiplier + 100);
 						}
 					}
 				}
@@ -393,11 +350,9 @@ namespace VixenModules.Output.FGDimmer
 				//Distribute the data
 				int count = 0;
 				FGDimmerControlModule module = null;
-				for (int i = 0; i < 4; i++)
-				{
+				for (int i = 0; i < 4; i++) {
 					module = _modules[i];
-					if (!module.Enabled)
-					{
+					if (!module.Enabled) {
 						continue;
 					}
 
@@ -408,8 +363,7 @@ namespace VixenModules.Output.FGDimmer
 
 					//Copy the data to the module's packet
 					//but we need to check and see if the _channelValues are null first.
-					if (_channelValues != null)
-					{
+					if (_channelValues != null) {
 						Array.Copy(_channelValues, module.StartChannel - 1 - _startChannel, _packets[i], 2, count);
 						//update the hardware
 						_serialPort.Write(_packets[i], 0, _packets[i].Length);
@@ -419,15 +373,14 @@ namespace VixenModules.Output.FGDimmer
 				}
 			}
 		}
+
 		public void _retryTimer_Elapsed(object source, ElapsedEventArgs e)
 		{
 			Vixen.Sys.VixenSystem.Logging.Info("Attempting to start controller.");
 			Start();
-			if (!_holdPort)
-			{
+			if (!_holdPort) {
 				_OpenComPort();
 			}
-
 		}
 	}
 }

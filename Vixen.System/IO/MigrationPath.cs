@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace Vixen.IO {
-	class MigrationPath : List<IMigrationSegment> {
+namespace Vixen.IO
+{
+	internal class MigrationPath : List<IMigrationSegment>
+	{
 	}
 }

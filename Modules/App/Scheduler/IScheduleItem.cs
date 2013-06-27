@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace VixenModules.App.Scheduler {
-	public interface IScheduleItem {
+namespace VixenModules.App.Scheduler
+{
+	public interface IScheduleItem
+	{
 		RecurrenceType RecurrenceType { get; set; }
 		int DateUnitCount { get; set; }
 		int DayCount { get; set; }

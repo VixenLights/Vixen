@@ -1,5 +1,7 @@
-﻿namespace VixenModules.Output.Renard {
-	interface IRenardProtocolFormatter {
+﻿namespace VixenModules.Output.Renard
+{
+	internal interface IRenardProtocolFormatter
+	{
 		void StartPacket(int outputCount, int chainIndex);
 		byte[] FinishPacket();
 		int PacketSize { get; }

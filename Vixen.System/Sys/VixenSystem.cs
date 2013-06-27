@@ -8,15 +8,26 @@ using Vixen.Services;
 using Vixen.Sys.Managers;
 using Vixen.Sys.Output;
 
-namespace Vixen.Sys {
-	public class VixenSystem {
-		static private Logging _logging;
+namespace Vixen.Sys
+{
+	public class VixenSystem
+	{
+		private static Logging _logging;
 
-		public enum RunState { Stopped, Starting, Started, Stopping };
-		static private RunState _state = RunState.Stopped;
+		public enum RunState
+		{
+			Stopped,
+			Starting,
+			Started,
+			Stopping
+		};
 
-		static public void Start(IApplication clientApplication, bool openExecution = true, bool disableDevices = false, string dataRootDirectory = null) {
-			if(_state == RunState.Stopped) {
+		private static RunState _state = RunState.Stopped;
+
+		public static void Start(IApplication clientApplication, bool openExecution = true, bool disableDevices = false,
+		                         string dataRootDirectory = null)
+		{
+			if (_state == RunState.Stopped) {
 				try {
 					_state = RunState.Starting;
 					ApplicationServices.ClientApplication = clientApplication;
@@ -33,7 +44,7 @@ namespace Vixen.Sys {
 					ModuleImplementation[] moduleImplementations = Modules.GetImplementations();
 
 					// Build branches for each module type.
-					foreach(ModuleImplementation moduleImplementation in moduleImplementations) {
+					foreach (ModuleImplementation moduleImplementation in moduleImplementations) {
 						Helper.EnsureDirectory(Path.Combine(Modules.Directory, moduleImplementation.TypeOfModule));
 					}
 					// There is going to be a "Common" directory for non-module DLLs.
@@ -53,16 +64,17 @@ namespace Vixen.Sys {
 					// Add modules to repositories.
 					Modules.PopulateRepositories();
 
-					if(disableDevices) {
+					if (disableDevices) {
 						SystemConfig.DisabledDevices = OutputDeviceManagement.Devices;
 					}
-					if(openExecution) {
+					if (openExecution) {
 						Execution.OpenExecution();
 					}
 
 					_state = RunState.Started;
 					Logging.Info("Vixen System successfully started.");
-				} catch(Exception ex) {
+				}
+				catch (Exception ex) {
 					// The client is expected to have subscribed to the logging event
 					// so that it knows that an exception occurred during loading.
 					Logging.Error("Error during system startup; the system has been stopped.", ex);
@@ -71,8 +83,9 @@ namespace Vixen.Sys {
 			}
 		}
 
-		static public void Stop() {
-			if(_state == RunState.Starting || _state == RunState.Started) {
+		public static void Stop()
+		{
+			if (_state == RunState.Starting || _state == RunState.Started) {
 				_state = RunState.Stopping;
 				Logging.Info("Vixen System stopping...");
 				ApplicationServices.ClientApplication = null;
@@ -86,13 +99,14 @@ namespace Vixen.Sys {
 			}
 		}
 
-		static public void SaveDisabledDevices() {
+		public static void SaveDisabledDevices()
+		{
 			if (SystemConfig != null) {
 				SystemConfig.DisabledDevices = OutputDeviceManagement.Devices.Where(x => x != null).Where(x => !x.IsRunning);
 			}
 		}
 
-		static public void SaveSystemConfig()
+		public static void SaveSystemConfig()
 		{
 			if (SystemConfig != null) {
 				// 'copy' the current details (nodes/elements/controllers) from the executing state
@@ -121,7 +135,7 @@ namespace Vixen.Sys {
 			}
 		}
 
-		static public void LoadSystemConfig()
+		public static void LoadSystemConfig()
 		{
 			DataFlow = new DataFlowManager();
 			Elements = new ElementManager();
@@ -164,11 +178,11 @@ namespace Vixen.Sys {
 			Previews.AddRange(SystemConfig.Previews.Cast<OutputPreview>());
 			ControllerLinking.AddRange(SystemConfig.ControllerLinking);
 			Filters.AddRange(SystemConfig.Filters);
-			
+
 			DataFlow.Initialize(SystemConfig.DataFlow);
 		}
 
-		static public void ReloadSystemConfig()
+		public static void ReloadSystemConfig()
 		{
 			bool wasRunning = Execution.IsOpen;
 			Execution.CloseExecution();
@@ -180,7 +194,7 @@ namespace Vixen.Sys {
 				Nodes.RemoveNode(cn, null, true);
 			foreach (OutputController oc in OutputControllers.ToArray())
 				OutputControllers.Remove(oc);
-			foreach(SmartOutputController smartOutputController in SmartOutputControllers.ToArray()) {
+			foreach (SmartOutputController smartOutputController in SmartOutputControllers.ToArray()) {
 				SmartOutputControllers.Remove(smartOutputController);
 			}
 			foreach (OutputPreview outputPreview in Previews.ToArray())
@@ -193,58 +207,67 @@ namespace Vixen.Sys {
 		}
 
 
-		static public RunState State {
+		public static RunState State
+		{
 			get { return _state; }
 		}
 
-		static public string AssemblyFileName {
+		public static string AssemblyFileName
+		{
 			get { return Assembly.GetExecutingAssembly().GetFilePath(); }
 		}
 
-		static public dynamic Logging {
+		public static dynamic Logging
+		{
 			get { return _logging; }
 		}
 
-		static public Logging Logs {
+		public static Logging Logs
+		{
 			get { return _logging; }
 		}
 
-		public static bool AllowFilterEvaluation {
+		public static bool AllowFilterEvaluation
+		{
 			get { return SystemConfig.AllowFilterEvaluation; }
 			set { SystemConfig.AllowFilterEvaluation = value; }
 		}
 
-		static public ElementManager Elements { get; private set; }
-		static public NodeManager Nodes { get; private set; }
-		static public OutputControllerManager OutputControllers { get; private set; }
-		static public SmartOutputControllerManager SmartOutputControllers { get; private set; }
-		static public PreviewManager Previews { get; private set; }
-		static public ContextManager Contexts { get; private set; }
-		static public FilterManager Filters { get; private set; }
-		static public IInstrumentation Instrumentation { get; private set; }
-		static public ControllerLinker ControllerLinking { get; private set; }
-		static public DataFlowManager DataFlow { get; private set; }
-		static public ControllerFacade ControllerManagement { get; private set; }
-		static public OutputDeviceFacade OutputDeviceManagement { get; private set; }
+		public static ElementManager Elements { get; private set; }
+		public static NodeManager Nodes { get; private set; }
+		public static OutputControllerManager OutputControllers { get; private set; }
+		public static SmartOutputControllerManager SmartOutputControllers { get; private set; }
+		public static PreviewManager Previews { get; private set; }
+		public static ContextManager Contexts { get; private set; }
+		public static FilterManager Filters { get; private set; }
+		public static IInstrumentation Instrumentation { get; private set; }
+		public static ControllerLinker ControllerLinking { get; private set; }
+		public static DataFlowManager DataFlow { get; private set; }
+		public static ControllerFacade ControllerManagement { get; private set; }
+		public static OutputDeviceFacade OutputDeviceManagement { get; private set; }
 
-		public static Guid Identity {
+		public static Guid Identity
+		{
 			get { return SystemConfig.Identity; }
 		}
 
-		static internal ModuleStore ModuleStore { get; private set; }
-		static internal SystemConfig SystemConfig { get; private set; }
+		internal static ModuleStore ModuleStore { get; private set; }
+		internal static SystemConfig SystemConfig { get; private set; }
 
-		private static ModuleStore _LoadModuleStore(string systemDataPath) {
+		private static ModuleStore _LoadModuleStore(string systemDataPath)
+		{
 			string moduleStoreFilePath = Path.Combine(systemDataPath, ModuleStore.FileName);
 			return FileService.Instance.LoadModuleStoreFile(moduleStoreFilePath);
 		}
 
-		private static SystemConfig _LoadSystemConfig(string systemDataPath) {
+		private static SystemConfig _LoadSystemConfig(string systemDataPath)
+		{
 			string systemConfigFilePath = Path.Combine(systemDataPath, SystemConfig.FileName);
 			return FileService.Instance.LoadSystemConfigFile(systemConfigFilePath);
 		}
 
-		static private void _InitializeLogging() {
+		private static void _InitializeLogging()
+		{
 			_logging = new Logging();
 			_logging.AddLog(new ErrorLog());
 			_logging.AddLog(new WarningLog());
@@ -252,10 +275,11 @@ namespace Vixen.Sys {
 			_logging.AddLog(new DebugLog());
 		}
 
-		static private string _GetSystemDataPath() {
+		private static string _GetSystemDataPath()
+		{
 			// Look for a user data file in the binary directory.
 			string filePath = Path.Combine(Paths.BinaryRootPath, SystemConfig.FileName);
-			if(_OperatingWithinContext(filePath)) {
+			if (_OperatingWithinContext(filePath)) {
 				// We're going to use the context's user data file and not the
 				// one in the data branch.
 				return Path.GetDirectoryName(filePath);
@@ -265,12 +289,14 @@ namespace Vixen.Sys {
 			return SystemConfig.Directory;
 		}
 
-		static private bool _OperatingWithinContext(string systemConfigFilePath) {
+		private static bool _OperatingWithinContext(string systemConfigFilePath)
+		{
 			SystemConfig systemConfig = FileService.Instance.LoadSystemConfigFile(systemConfigFilePath);
 			return systemConfig != null && systemConfig.IsContext;
 		}
 
-		static private string _GetUserDataPath() {
+		private static string _GetUserDataPath()
+		{
 			string dataPath = System.Configuration.ConfigurationManager.AppSettings["DataPath"];
 			return dataPath ?? Paths.DefaultDataRootPath;
 		}

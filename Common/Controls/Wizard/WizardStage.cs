@@ -11,13 +11,26 @@ namespace Common.Controls.Wizard
 	// permissions may have changed).
 	public class WizardStage : UserControl
 	{
-		public virtual bool CanMoveNext { get { return true; } }
-		public virtual bool CanMovePrevious { get { return true; } }
+		public virtual bool CanMoveNext
+		{
+			get { return true; }
+		}
 
-		public virtual void StageStart() { }
-		public virtual void StageEnd() { }
+		public virtual bool CanMovePrevious
+		{
+			get { return true; }
+		}
+
+		public virtual void StageStart()
+		{
+		}
+
+		public virtual void StageEnd()
+		{
+		}
 
 		public event EventHandler WizardStageChanged;
+
 		protected void _WizardStageChanged()
 		{
 			if (WizardStageChanged != null)

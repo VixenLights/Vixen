@@ -59,7 +59,8 @@ namespace VixenApplication
 			if (!IsIndexValid(outputIndex)) {
 				groupBox.Enabled = false;
 				textBoxName.Text = "";
-			} else {
+			}
+			else {
 				groupBox.Enabled = true;
 				textBoxName.Text = _controller.Outputs[outputIndex].Name;
 			}
@@ -109,17 +110,13 @@ namespace VixenApplication
 				oldNames.Add(selectedItem.SubItems[1].Text);
 			}
 
-			using (NameGenerator nameGenerator = new NameGenerator(oldNames))
-			{
-				if (nameGenerator.ShowDialog() == DialogResult.OK)
-				{
+			using (NameGenerator nameGenerator = new NameGenerator(oldNames)) {
+				if (nameGenerator.ShowDialog() == DialogResult.OK) {
 					//changes were made so set our _changesMade to true;
 					_changesMade = true;
 
-					for (int i = 0; i < listViewOutputs.SelectedItems.Count; i++)
-					{
-						if (i >= nameGenerator.Names.Count)
-						{
+					for (int i = 0; i < listViewOutputs.SelectedItems.Count; i++) {
+						if (i >= nameGenerator.Names.Count) {
 							VixenSystem.Logging.Warning("ConfigControllersOutputs: renaming outputs, and ran out of new names!");
 							break;
 						}
@@ -135,27 +132,23 @@ namespace VixenApplication
 
 		private void ConfigControllersOutputs_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			if (_changesMade)
-			{
-				if (DialogResult == DialogResult.Cancel)
-				{
-					switch (MessageBox.Show(this, "All changes will be lost if you continue, do you wish to continue?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
-					{
-						case DialogResult.No:
-							e.Cancel = true;
-							break;
-						default:
-							break;
+			if (_changesMade) {
+				if (DialogResult == DialogResult.Cancel) {
+					switch (
+						MessageBox.Show(this, "All changes will be lost if you continue, do you wish to continue?", "Are you sure?",
+						                MessageBoxButtons.YesNo, MessageBoxIcon.Question)) {
+						                	case DialogResult.No:
+						                		e.Cancel = true;
+						                		break;
+						                	default:
+						                		break;
 					}
 				}
-				else if (DialogResult == DialogResult.OK)
-				{
+				else if (DialogResult == DialogResult.OK) {
 					e.Cancel = false;
 				}
-				else
-				{
-					switch (e.CloseReason)
-					{
+				else {
+					switch (e.CloseReason) {
 						case CloseReason.UserClosing:
 							e.Cancel = true;
 							break;

@@ -18,17 +18,16 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-
 using Dataweb.NShape.Advanced;
 
 
-namespace Dataweb.NShape {
-
+namespace Dataweb.NShape
+{
 	/// <summary>
 	/// Provides a collection of styles implementing <see cref="T:Dataweb.NShape.ICapStyle" /> and direct access to the standard styles.
 	/// </summary>
-	public interface ICapStyles : IEnumerable<ICapStyle> {
-
+	public interface ICapStyles : IEnumerable<ICapStyle>
+	{
 		/// <summary>
 		/// Provides read only access to the collections elements by the style name.
 		/// </summary>
@@ -52,15 +51,14 @@ namespace Dataweb.NShape {
 
 		/// <ToBeCompleted></ToBeCompleted>
 		ICapStyle Special2 { get; }
-
 	}
 
 
 	/// <summary>
 	/// Provides a collection of styles implementing <see cref="T:Dataweb.NShape.ICharacterStyle" /> and direct access to the standard styles.
 	/// </summary>
-	public interface ICharacterStyles : IEnumerable<ICharacterStyle> {
-
+	public interface ICharacterStyles : IEnumerable<ICharacterStyle>
+	{
 		/// <summary>
 		/// Provides read only access to the collections elements by the style name.
 		/// </summary>
@@ -83,15 +81,14 @@ namespace Dataweb.NShape {
 
 		/// <ToBeCompleted></ToBeCompleted>
 		ICharacterStyle Subtitle { get; }
-
 	}
 
 
 	/// <summary>
 	/// Provides a collection of styles implementing <see cref="T:Dataweb.NShape.IColorStyle" /> and direct access to the standard styles.
 	/// </summary>
-	public interface IColorStyles : IEnumerable<IColorStyle> {
-
+	public interface IColorStyles : IEnumerable<IColorStyle>
+	{
 		/// <summary>
 		/// Provides read only access to the collections elements by the style name.
 		/// </summary>
@@ -147,15 +144,14 @@ namespace Dataweb.NShape {
 
 		/// <ToBeCompleted></ToBeCompleted>
 		IColorStyle Yellow { get; }
-
 	}
 
 
 	/// <summary>
 	/// Provides a collection of styles implementing <see cref="T:Dataweb.NShape.IFillStyle" /> and direct access to the standard styles.
 	/// </summary>
-	public interface IFillStyles : IEnumerable<IFillStyle> {
-
+	public interface IFillStyles : IEnumerable<IFillStyle>
+	{
 		/// <summary>
 		/// Provides read only access to the collections elements by the style name.
 		/// </summary>
@@ -181,15 +177,14 @@ namespace Dataweb.NShape {
 
 		/// <ToBeCompleted></ToBeCompleted>
 		IFillStyle Yellow { get; }
-
 	}
 
 
 	/// <summary>
 	/// Provides a collection of styles implementing <see cref="T:Dataweb.NShape.ILineStyle" /> and direct access to the standard styles.
 	/// </summary>
-	public interface ILineStyles : IEnumerable<ILineStyle> {
-
+	public interface ILineStyles : IEnumerable<ILineStyle>
+	{
 		/// <summary>
 		/// Provides read only access to the collections elements by the style name.
 		/// </summary>
@@ -239,15 +234,14 @@ namespace Dataweb.NShape {
 
 		/// <ToBeCompleted></ToBeCompleted>
 		ILineStyle Yellow { get; }
-
 	}
 
 
 	/// <summary>
 	/// Provides a collection of styles implementing <see cref="T:Dataweb.NShape.IParagraphStyle" /> and direct access to the standard styles.
 	/// </summary>
-	public interface IParagraphStyles : IEnumerable<IParagraphStyle> {
-
+	public interface IParagraphStyles : IEnumerable<IParagraphStyle>
+	{
 		/// <summary>
 		/// Provides read only access to the collections elements by the style name.
 		/// </summary>
@@ -262,15 +256,14 @@ namespace Dataweb.NShape {
 
 		/// <ToBeCompleted></ToBeCompleted>
 		IParagraphStyle Title { get; }
-
 	}
 
 
 	/// <summary>
 	/// Defines a set of styles.
 	/// </summary>
-	public interface IStyleSet {
-
+	public interface IStyleSet
+	{
 		/// <summary>Provides access to a style collection implementing the <see cref="T:Dataweb.NShape.ICapStyles" /> interface.</summary>
 		ICapStyles CapStyles { get; }
 
@@ -306,20 +299,20 @@ namespace Dataweb.NShape {
 
 		/// <summary>Gets a preview style associated with the given style.</summary>
 		IParagraphStyle GetPreviewStyle(IParagraphStyle colorStyle);
-
 	}
 
 
 	/// <summary>
 	/// Defines a set of styles for shapes.
 	/// </summary>
-	[TypeDescriptionProvider(typeof(TypeDescriptionProviderDg))]
-	public class Design : IStyleSet, IEntity {
-
+	[TypeDescriptionProvider(typeof (TypeDescriptionProviderDg))]
+	public class Design : IStyleSet, IEntity
+	{
 		/// <summary>
 		/// Creates an empty <see cref="T:Dataweb.NShape.Design" /> for subsequent loading from the <see cref="T:Dataweb.NShape.Advanced.IRepository" />.
 		/// </summary>
-		internal Design() {
+		internal Design()
+		{
 			name = string.Empty;
 		}
 
@@ -328,19 +321,20 @@ namespace Dataweb.NShape {
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.Design" />. It already includes standard styles.
 		/// </summary>
 		public Design(string name)
-			: this() {
+			: this()
+		{
 			if (string.IsNullOrEmpty(name)) throw new ArgumentNullException("name");
 			this.name = name;
 			CreateStandardStyles();
 		}
-
 
 		#region [Explicit] IEntity Members
 
 		/// <summary>
 		/// The entity type name of <see cref="T:Dataweb.NShape.Design" />.
 		/// </summary>
-		public static string EntityTypeName {
+		public static string EntityTypeName
+		{
 			get { return "Core.Design"; }
 		}
 
@@ -348,19 +342,22 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// Retrieves the persistable properties of <see cref="T:Dataweb.NShape.Design" />.
 		/// </summary>
-		public static IEnumerable<EntityPropertyDefinition> GetPropertyDefinitions(int version) {
-			yield return new EntityFieldDefinition("Name", typeof(string));
-			if (version >= 4) yield return new EntityFieldDefinition("Title", typeof(string));
-			yield return new EntityFieldDefinition("Description", typeof(string));
+		public static IEnumerable<EntityPropertyDefinition> GetPropertyDefinitions(int version)
+		{
+			yield return new EntityFieldDefinition("Name", typeof (string));
+			if (version >= 4) yield return new EntityFieldDefinition("Title", typeof (string));
+			yield return new EntityFieldDefinition("Description", typeof (string));
 		}
 
 
-		object IEntity.Id {
+		object IEntity.Id
+		{
 			get { return id; }
 		}
 
 
-		void IEntity.AssignId(object id) {
+		void IEntity.AssignId(object id)
+		{
 			if (id == null)
 				throw new ArgumentNullException("id");
 			if (this.id != null)
@@ -369,31 +366,36 @@ namespace Dataweb.NShape {
 		}
 
 
-		void IEntity.LoadFields(IRepositoryReader reader, int version) {
+		void IEntity.LoadFields(IRepositoryReader reader, int version)
+		{
 			name = reader.ReadString();
 			if (version >= 4) title = reader.ReadString();
 			description = reader.ReadString();
 		}
 
 
-		void IEntity.SaveFields(IRepositoryWriter writer, int version) {
+		void IEntity.SaveFields(IRepositoryWriter writer, int version)
+		{
 			writer.WriteString(name);
 			if (version >= 4) writer.WriteString(title);
 			writer.WriteString(description);
 		}
 
 
-		void IEntity.LoadInnerObjects(string propertyName, IRepositoryReader reader, int version) {
+		void IEntity.LoadInnerObjects(string propertyName, IRepositoryReader reader, int version)
+		{
 			// nothing to do
 		}
 
 
-		void IEntity.SaveInnerObjects(string propertyName, IRepositoryWriter writer, int version) {
+		void IEntity.SaveInnerObjects(string propertyName, IRepositoryWriter writer, int version)
+		{
 			// nothing to do
 		}
 
 
-		void IEntity.Delete(IRepositoryWriter writer, int version) {
+		void IEntity.Delete(IRepositoryWriter writer, int version)
+		{
 			foreach (EntityPropertyDefinition pi in GetPropertyDefinitions(version)) {
 				if (pi is EntityInnerObjectsDefinition)
 					writer.DeleteInnerObjects();
@@ -402,89 +404,100 @@ namespace Dataweb.NShape {
 
 		#endregion
 
-
 		#region [Public] IStyleSet Members
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public ICapStyle GetPreviewStyle(ICapStyle capStyle) {
+		public ICapStyle GetPreviewStyle(ICapStyle capStyle)
+		{
 			if (capStyle == null) throw new ArgumentNullException("capStyle");
 			return capStyles.GetPreviewStyle(capStyle.Name);
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public ICharacterStyle GetPreviewStyle(ICharacterStyle characterStyle) {
+		public ICharacterStyle GetPreviewStyle(ICharacterStyle characterStyle)
+		{
 			if (characterStyle == null) throw new ArgumentNullException("characterStyle");
 			return characterStyles.GetPreviewStyle(characterStyle.Name);
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public IColorStyle GetPreviewStyle(IColorStyle colorStyle) {
+		public IColorStyle GetPreviewStyle(IColorStyle colorStyle)
+		{
 			if (colorStyle == null) throw new ArgumentNullException("colorStyle");
 			return colorStyles.GetPreviewStyle(colorStyle.Name);
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public IFillStyle GetPreviewStyle(IFillStyle fillStyle) {
+		public IFillStyle GetPreviewStyle(IFillStyle fillStyle)
+		{
 			if (fillStyle == null) throw new ArgumentNullException("fillStyle");
 			return fillStyles.GetPreviewStyle(fillStyle.Name);
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public ILineStyle GetPreviewStyle(ILineStyle lineStyle) {
+		public ILineStyle GetPreviewStyle(ILineStyle lineStyle)
+		{
 			if (lineStyle == null) throw new ArgumentNullException("lineStyle");
 			return lineStyles.GetPreviewStyle(lineStyle.Name);
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public IParagraphStyle GetPreviewStyle(IParagraphStyle paragraphStyle) {
+		public IParagraphStyle GetPreviewStyle(IParagraphStyle paragraphStyle)
+		{
 			if (paragraphStyle == null) throw new ArgumentNullException("paragraphStyle");
 			return paragraphStyles.GetPreviewStyle(paragraphStyle.Name);
 		}
 
 
-		ICapStyles IStyleSet.CapStyles {
+		ICapStyles IStyleSet.CapStyles
+		{
 			get { return capStyles; }
 		}
 
 
-		ICharacterStyles IStyleSet.CharacterStyles {
+		ICharacterStyles IStyleSet.CharacterStyles
+		{
 			get { return characterStyles; }
 		}
 
 
-		IColorStyles IStyleSet.ColorStyles {
+		IColorStyles IStyleSet.ColorStyles
+		{
 			get { return colorStyles; }
 		}
 
 
-		IFillStyles IStyleSet.FillStyles {
+		IFillStyles IStyleSet.FillStyles
+		{
 			get { return fillStyles; }
 		}
 
 
-		ILineStyles IStyleSet.LineStyles {
+		ILineStyles IStyleSet.LineStyles
+		{
 			get { return lineStyles; }
 		}
 
 
-		IParagraphStyles IStyleSet.ParagraphStyles {
+		IParagraphStyles IStyleSet.ParagraphStyles
+		{
 			get { return paragraphStyles; }
 		}
 
 		#endregion
-
 
 		#region [Public] Properties
 
 		/// <summary>
 		/// The name of the <see cref="T:Dataweb.NShape.Design" />.
 		/// </summary>
-		public string Name {
+		public string Name
+		{
 			get { return name; }
 			set { name = value; }
 		}
@@ -493,9 +506,11 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// The title of the <see cref="T:Dataweb.NShape.Design" />.
 		/// </summary>
-		public string Title {
+		public string Title
+		{
 			get { return string.IsNullOrEmpty(title) ? name : title; }
-			set {
+			set
+			{
 				if (value == name || string.IsNullOrEmpty(value))
 					title = null;
 				else title = value;
@@ -506,8 +521,10 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// Returns all <see cref="T:Dataweb.NShape.IStyle" /> instances stored in the <see cref="T:Dataweb.NShape.Design" /> regardless of the style category.
 		/// </summary>
-		public IEnumerable<IStyle> Styles {
-			get {
+		public IEnumerable<IStyle> Styles
+		{
+			get
+			{
 				foreach (IStyle s in colorStyles) yield return s;
 				foreach (IStyle s in capStyles) yield return s;
 				foreach (IStyle s in lineStyles) yield return s;
@@ -519,47 +536,53 @@ namespace Dataweb.NShape {
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public CapStyleCollection CapStyles {
+		public CapStyleCollection CapStyles
+		{
 			get { return capStyles; }
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public CharacterStyleCollection CharacterStyles {
+		public CharacterStyleCollection CharacterStyles
+		{
 			get { return characterStyles; }
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public ColorStyleCollection ColorStyles {
+		public ColorStyleCollection ColorStyles
+		{
 			get { return colorStyles; }
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public FillStyleCollection FillStyles {
+		public FillStyleCollection FillStyles
+		{
 			get { return fillStyles; }
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public LineStyleCollection LineStyles {
+		public LineStyleCollection LineStyles
+		{
 			get { return lineStyles; }
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public ParagraphStyleCollection ParagraphStyles {
+		public ParagraphStyleCollection ParagraphStyles
+		{
 			get { return paragraphStyles; }
 		}
 
 		#endregion
 
-
 		#region [Public] Methods
 
 		/// <override></override>
-		public override string ToString() {
+		public override string ToString()
+		{
 			return Title;
 		}
 
@@ -567,7 +590,8 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// Clears all style collections of the design
 		/// </summary>
-		public void Clear() {
+		public void Clear()
+		{
 			// Clear user defined styles
 			paragraphStyles.Clear();
 			lineStyles.Clear();
@@ -579,39 +603,41 @@ namespace Dataweb.NShape {
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public bool ContainsStyle(IStyle style) {
+		public bool ContainsStyle(IStyle style)
+		{
 			if (style == null) throw new ArgumentNullException("style");
 			if (style is CapStyle)
-				return capStyles.Contains((CapStyle)style);
+				return capStyles.Contains((CapStyle) style);
 			else if (style is CharacterStyle)
-				return characterStyles.Contains((CharacterStyle)style);
+				return characterStyles.Contains((CharacterStyle) style);
 			else if (style is ColorStyle)
-				return colorStyles.Contains((ColorStyle)style);
+				return colorStyles.Contains((ColorStyle) style);
 			else if (style is FillStyle)
-				return fillStyles.Contains((FillStyle)style);
+				return fillStyles.Contains((FillStyle) style);
 			else if (style is LineStyle)
-				return lineStyles.Contains((LineStyle)style);
+				return lineStyles.Contains((LineStyle) style);
 			else if (style is ParagraphStyle)
-				return paragraphStyles.Contains((ParagraphStyle)style);
+				return paragraphStyles.Contains((ParagraphStyle) style);
 			else throw new NShapeUnsupportedValueException(style);
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public bool IsStandardStyle(IStyle style) {
+		public bool IsStandardStyle(IStyle style)
+		{
 			if (style == null) throw new ArgumentNullException("style");
 			if (style is CapStyle)
-				return capStyles.IsStandardStyle((CapStyle)style);
+				return capStyles.IsStandardStyle((CapStyle) style);
 			else if (style is CharacterStyle)
-				return characterStyles.IsStandardStyle((CharacterStyle)style);
+				return characterStyles.IsStandardStyle((CharacterStyle) style);
 			else if (style is ColorStyle)
-				return colorStyles.IsStandardStyle((ColorStyle)style);
+				return colorStyles.IsStandardStyle((ColorStyle) style);
 			else if (style is FillStyle)
-				return fillStyles.IsStandardStyle((FillStyle)style);
+				return fillStyles.IsStandardStyle((FillStyle) style);
 			else if (style is LineStyle)
-				return lineStyles.IsStandardStyle((LineStyle)style);
+				return lineStyles.IsStandardStyle((LineStyle) style);
 			else if (style is ParagraphStyle)
-				return paragraphStyles.IsStandardStyle((ParagraphStyle)style);
+				return paragraphStyles.IsStandardStyle((ParagraphStyle) style);
 			else throw new NShapeUnsupportedValueException(style);
 		}
 
@@ -619,38 +645,46 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// Returns the style of the same type with the same name if there is one in the design's style collection.
 		/// </summary>
-		public IStyle FindMatchingStyle(IStyle style) {
+		public IStyle FindMatchingStyle(IStyle style)
+		{
 			if (style == null) throw new ArgumentNullException("style");
 			if (style is ColorStyle) {
 				if (colorStyles.Contains(style.Name))
 					return colorStyles[style.Name];
 				else return null;
-			} else if (style is CapStyle) {
+			}
+			else if (style is CapStyle) {
 				if (capStyles.Contains(style.Name))
 					return capStyles[style.Name];
 				else return null;
-			} else if (style is FillStyle) {
+			}
+			else if (style is FillStyle) {
 				if (fillStyles.Contains(style.Name))
 					return fillStyles[style.Name];
 				else return null;
-			} else if (style is CharacterStyle) {
+			}
+			else if (style is CharacterStyle) {
 				if (characterStyles.Contains(style.Name))
 					return characterStyles[style.Name];
 				else return null;
-			} else if (style is LineStyle) {
+			}
+			else if (style is LineStyle) {
 				if (lineStyles.Contains(style.Name))
 					return lineStyles[style.Name];
 				else return null;
-			} else if (style is ParagraphStyle) {
+			}
+			else if (style is ParagraphStyle) {
 				if (paragraphStyles.Contains(style.Name))
 					return paragraphStyles[style.Name];
 				else return null;
-			} else throw new NShapeUnsupportedValueException(style);
+			}
+			else throw new NShapeUnsupportedValueException(style);
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public IStyle FindStyleByName(string name, Type styleType) {
+		public IStyle FindStyleByName(string name, Type styleType)
+		{
 			if (name == null) throw new ArgumentNullException("name");
 			if (styleType == null) throw new ArgumentNullException("styleType");
 			return DoFindStyleByName(name, styleType);
@@ -658,59 +692,68 @@ namespace Dataweb.NShape {
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public void AddStyle(IStyle style) {
+		public void AddStyle(IStyle style)
+		{
 			if (style == null) throw new ArgumentNullException("style");
 			AssertValidStyle(style);
 			if (style is CapStyle) {
-				capStyles.Add((CapStyle)style, CreatePreviewStyle((ICapStyle)style));
-			} else if (style is CharacterStyle) {
-				characterStyles.Add((CharacterStyle)style, CreatePreviewStyle((ICharacterStyle)style));
-			} else if (style is ColorStyle) {
-				colorStyles.Add((ColorStyle)style, CreatePreviewStyle((IColorStyle)style));
-			} else if (style is FillStyle) {
-				fillStyles.Add((FillStyle)style, CreatePreviewStyle((IFillStyle)style));
-			} else if (style is LineStyle) {
-				lineStyles.Add((LineStyle)style, CreatePreviewStyle((ILineStyle)style));
-			} else if (style is ParagraphStyle) {
-				paragraphStyles.Add((ParagraphStyle)style, CreatePreviewStyle((IParagraphStyle)style));
-			} else throw new NShapeUnsupportedValueException(style);
-		}
-
-
-		/// <ToBeCompleted></ToBeCompleted>
-		public void RemoveStyle(IStyle style) {
-			if (style == null) throw new ArgumentNullException("style");
-			if (style is CapStyle)
-				capStyles.Remove((CapStyle)style);
-			else if (style is CharacterStyle)
-				characterStyles.Remove((CharacterStyle)style);
-			else if (style is ColorStyle)
-				colorStyles.Remove((ColorStyle)style);
-			else if (style is FillStyle)
-				fillStyles.Remove((FillStyle)style);
-			else if (style is LineStyle)
-				lineStyles.Remove((LineStyle)style);
-			else if (style is ParagraphStyle)
-				paragraphStyles.Remove((ParagraphStyle)style);
+				capStyles.Add((CapStyle) style, CreatePreviewStyle((ICapStyle) style));
+			}
+			else if (style is CharacterStyle) {
+				characterStyles.Add((CharacterStyle) style, CreatePreviewStyle((ICharacterStyle) style));
+			}
+			else if (style is ColorStyle) {
+				colorStyles.Add((ColorStyle) style, CreatePreviewStyle((IColorStyle) style));
+			}
+			else if (style is FillStyle) {
+				fillStyles.Add((FillStyle) style, CreatePreviewStyle((IFillStyle) style));
+			}
+			else if (style is LineStyle) {
+				lineStyles.Add((LineStyle) style, CreatePreviewStyle((ILineStyle) style));
+			}
+			else if (style is ParagraphStyle) {
+				paragraphStyles.Add((ParagraphStyle) style, CreatePreviewStyle((IParagraphStyle) style));
+			}
 			else throw new NShapeUnsupportedValueException(style);
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public void RemoveStyle(string name, Type styleType) {
+		public void RemoveStyle(IStyle style)
+		{
+			if (style == null) throw new ArgumentNullException("style");
+			if (style is CapStyle)
+				capStyles.Remove((CapStyle) style);
+			else if (style is CharacterStyle)
+				characterStyles.Remove((CharacterStyle) style);
+			else if (style is ColorStyle)
+				colorStyles.Remove((ColorStyle) style);
+			else if (style is FillStyle)
+				fillStyles.Remove((FillStyle) style);
+			else if (style is LineStyle)
+				lineStyles.Remove((LineStyle) style);
+			else if (style is ParagraphStyle)
+				paragraphStyles.Remove((ParagraphStyle) style);
+			else throw new NShapeUnsupportedValueException(style);
+		}
+
+
+		/// <ToBeCompleted></ToBeCompleted>
+		public void RemoveStyle(string name, Type styleType)
+		{
 			if (name == null) throw new ArgumentNullException("name");
 			if (styleType == null) throw new ArgumentNullException("styleType");
-			if (styleType == typeof(CapStyle))
+			if (styleType == typeof (CapStyle))
 				capStyles.Remove(name);
-			else if (styleType == typeof(CharacterStyle))
+			else if (styleType == typeof (CharacterStyle))
 				characterStyles.Remove(name);
-			else if (styleType == typeof(ColorStyle))
+			else if (styleType == typeof (ColorStyle))
 				colorStyles.Remove(name);
-			else if (styleType == typeof(FillStyle))
+			else if (styleType == typeof (FillStyle))
 				fillStyles.Remove(name);
-			else if (styleType == typeof(LineStyle))
+			else if (styleType == typeof (LineStyle))
 				lineStyles.Remove(name);
-			else if (styleType == typeof(ParagraphStyle))
+			else if (styleType == typeof (ParagraphStyle))
 				paragraphStyles.Remove(name);
 			else throw new NShapeUnsupportedValueException(styleType);
 		}
@@ -723,7 +766,8 @@ namespace Dataweb.NShape {
 		/// </summary>
 		/// <param name="style">The style that should be assigned to an existing style.</param>
 		/// <returns>Returns true if an existring style was assigned and false if there was no matching style.</returns>
-		public bool AssignStyle(IStyle style) {
+		public bool AssignStyle(IStyle style)
+		{
 			if (style == null) throw new ArgumentNullException("style");
 			AssertValidStyle(style);
 			bool styleFound = ContainsStyle(style);
@@ -732,7 +776,8 @@ namespace Dataweb.NShape {
 				Style existingStyle = DoFindStyleByName(name, styleType);
 				existingStyle.Assign(style, this.FindMatchingStyle);
 				CreateAndSetPreviewStyle(existingStyle);
-			} else {
+			}
+			else {
 				Style newStyle = new CapStyle(style.Name);
 				newStyle.Assign(style, this.FindMatchingStyle);
 				AddStyle(newStyle);
@@ -742,7 +787,8 @@ namespace Dataweb.NShape {
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public CapStyle CreatePreviewStyle(ICapStyle baseStyle) {
+		public CapStyle CreatePreviewStyle(ICapStyle baseStyle)
+		{
 			if (baseStyle == null) throw new ArgumentNullException("baseStyle");
 			CapStyle result = new CapStyle(baseStyle.Name + previewNameSuffix);
 			result.CapShape = baseStyle.CapShape;
@@ -754,7 +800,8 @@ namespace Dataweb.NShape {
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public ColorStyle CreatePreviewStyle(IColorStyle baseStyle) {
+		public ColorStyle CreatePreviewStyle(IColorStyle baseStyle)
+		{
 			if (baseStyle == null) throw new ArgumentNullException("baseStyle");
 			ColorStyle result = new ColorStyle(baseStyle.Name + previewNameSuffix);
 			result.Color = baseStyle.Color;
@@ -765,7 +812,8 @@ namespace Dataweb.NShape {
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public FillStyle CreatePreviewStyle(IFillStyle baseStyle) {
+		public FillStyle CreatePreviewStyle(IFillStyle baseStyle)
+		{
 			if (baseStyle == null) throw new ArgumentNullException("baseStyle");
 			FillStyle result = new FillStyle(baseStyle.Name + previewNameSuffix, ColorStyle.Empty, ColorStyle.Empty);
 			if (baseStyle.AdditionalColorStyle != null)
@@ -777,19 +825,20 @@ namespace Dataweb.NShape {
 			result.FillPattern = baseStyle.FillPattern;
 
 			int newSize = 512;
-			if (baseStyle.Image != null && (baseStyle.Image.Width > 2 * newSize || baseStyle.Image.Height > newSize)) {
+			if (baseStyle.Image != null && (baseStyle.Image.Width > 2*newSize || baseStyle.Image.Height > newSize)) {
 				float scale = Geometry.CalcScaleFactor(
 					baseStyle.Image.Width,
 					baseStyle.Image.Height,
-					baseStyle.Image.Width / Math.Max(1, (baseStyle.Image.Width / newSize)),
-					baseStyle.Image.Height / Math.Max(1, (baseStyle.Image.Height / newSize)));
-				int width = (int)Math.Round(baseStyle.Image.Width * scale);
-				int height = (int)Math.Round(baseStyle.Image.Height * scale);
+					baseStyle.Image.Width/Math.Max(1, (baseStyle.Image.Width/newSize)),
+					baseStyle.Image.Height/Math.Max(1, (baseStyle.Image.Height/newSize)));
+				int width = (int) Math.Round(baseStyle.Image.Width*scale);
+				int height = (int) Math.Round(baseStyle.Image.Height*scale);
 				NamedImage namedImg = new NamedImage();
 				namedImg.Image = baseStyle.Image.Image.GetThumbnailImage(width, height, null, IntPtr.Zero);
 				namedImg.Name = baseStyle.Image.Name;
 				result.Image = namedImg;
-			} else result.Image = baseStyle.Image;
+			}
+			else result.Image = baseStyle.Image;
 
 			result.ImageGammaCorrection = baseStyle.ImageGammaCorrection;
 			result.ImageLayout = baseStyle.ImageLayout;
@@ -799,7 +848,8 @@ namespace Dataweb.NShape {
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public CharacterStyle CreatePreviewStyle(ICharacterStyle baseStyle) {
+		public CharacterStyle CreatePreviewStyle(ICharacterStyle baseStyle)
+		{
 			if (baseStyle == null) throw new ArgumentNullException("baseStyle");
 			CharacterStyle result = new CharacterStyle(baseStyle.Name + previewNameSuffix);
 			if (baseStyle.ColorStyle != null)
@@ -812,7 +862,8 @@ namespace Dataweb.NShape {
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public LineStyle CreatePreviewStyle(ILineStyle baseStyle) {
+		public LineStyle CreatePreviewStyle(ILineStyle baseStyle)
+		{
 			if (baseStyle == null) throw new ArgumentNullException("baseStyle");
 			LineStyle result = new LineStyle(baseStyle.Name + previewNameSuffix);
 			if (baseStyle.ColorStyle != null)
@@ -826,7 +877,8 @@ namespace Dataweb.NShape {
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public ParagraphStyle CreatePreviewStyle(IParagraphStyle baseStyle) {
+		public ParagraphStyle CreatePreviewStyle(IParagraphStyle baseStyle)
+		{
 			if (baseStyle == null) throw new ArgumentNullException("baseStyle");
 			ParagraphStyle result = new ParagraphStyle(baseStyle.Name + previewNameSuffix);
 			result.Alignment = baseStyle.Alignment;
@@ -837,21 +889,23 @@ namespace Dataweb.NShape {
 
 		#endregion
 
-
-		internal static bool PreviewsAsGrayScale {
+		internal static bool PreviewsAsGrayScale
+		{
 			get { return previewAsGrayScale; }
 		}
 
 
-		internal static Byte GetPreviewTransparency(byte baseTransparency) {
-			int result = baseTransparency + (int)Math.Round((100 - baseTransparency) * previewTransparencyFactor);
+		internal static Byte GetPreviewTransparency(byte baseTransparency)
+		{
+			int result = baseTransparency + (int) Math.Round((100 - baseTransparency)*previewTransparencyFactor);
 			if (result < 0) result = 0;
 			else if (result > 100) result = 100;
 			return Convert.ToByte(result);
 		}
 
 
-		internal void CreateStandardStyles() {
+		internal void CreateStandardStyles()
+		{
 			// Create standard styles
 			CreateStandardColorStyles();
 			CreateStandardCapStyles();
@@ -860,92 +914,105 @@ namespace Dataweb.NShape {
 			CreateStandardLineStyles();
 			CreateStandardParagraphStyles();
 		}
-		
-		
-		private Style DoFindStyleByName(string name, Type styleType) {
-			if (IsOfType(styleType, typeof(ICapStyle)))
+
+
+		private Style DoFindStyleByName(string name, Type styleType)
+		{
+			if (IsOfType(styleType, typeof (ICapStyle)))
 				return capStyles.Contains(name) ? capStyles[name] : null;
-			else if (IsOfType(styleType, typeof(ICharacterStyle)))
+			else if (IsOfType(styleType, typeof (ICharacterStyle)))
 				return characterStyles.Contains(name) ? characterStyles[name] : null;
-			else if (IsOfType(styleType, typeof(IColorStyle)))
+			else if (IsOfType(styleType, typeof (IColorStyle)))
 				return colorStyles.Contains(name) ? colorStyles[name] : null;
-			else if (IsOfType(styleType, typeof(IFillStyle)))
+			else if (IsOfType(styleType, typeof (IFillStyle)))
 				return fillStyles.Contains(name) ? fillStyles[name] : null;
-			else if (IsOfType(styleType, typeof(ILineStyle)))
+			else if (IsOfType(styleType, typeof (ILineStyle)))
 				return lineStyles.Contains(name) ? lineStyles[name] : null;
-			else if (styleType == typeof(ParagraphStyle))
+			else if (styleType == typeof (ParagraphStyle))
 				return paragraphStyles.Contains(name) ? paragraphStyles[name] : null;
 			else throw new NShapeException("Unexpected style type '{0}'.", styleType.Name);
 		}
 
 
-		private bool IsOfType(Type objectType, Type targetType) {
+		private bool IsOfType(Type objectType, Type targetType)
+		{
 			return objectType == targetType
-				|| objectType.IsSubclassOf(targetType)
-				|| objectType.GetInterface(targetType.Name, true) != null;
+			       || objectType.IsSubclassOf(targetType)
+			       || objectType.GetInterface(targetType.Name, true) != null;
 		}
 
 
-		private void CreateAndSetPreviewStyle(Style baseStyle) {
+		private void CreateAndSetPreviewStyle(Style baseStyle)
+		{
 			if (baseStyle is CapStyle) {
-				CapStyle style = (CapStyle)baseStyle;
+				CapStyle style = (CapStyle) baseStyle;
 				CapStyle previewStyle = CreatePreviewStyle(style);
 				capStyles.SetPreviewStyle(style, previewStyle);
-			} else if (baseStyle is CharacterStyle) {
-				CharacterStyle style = (CharacterStyle)baseStyle;
+			}
+			else if (baseStyle is CharacterStyle) {
+				CharacterStyle style = (CharacterStyle) baseStyle;
 				CharacterStyle previewStyle = CreatePreviewStyle(style);
 				characterStyles.SetPreviewStyle(style, previewStyle);
-			} else if (baseStyle is ColorStyle) {
-				ColorStyle style = (ColorStyle)baseStyle;
+			}
+			else if (baseStyle is ColorStyle) {
+				ColorStyle style = (ColorStyle) baseStyle;
 				ColorStyle previewStyle = CreatePreviewStyle(style);
 				colorStyles.SetPreviewStyle(style, previewStyle);
-			} else if (baseStyle is FillStyle) {
-				FillStyle style = (FillStyle)baseStyle;
+			}
+			else if (baseStyle is FillStyle) {
+				FillStyle style = (FillStyle) baseStyle;
 				FillStyle previewStyle = CreatePreviewStyle(style);
 				fillStyles.SetPreviewStyle(style, previewStyle);
-			} else if (baseStyle is LineStyle) {
-				LineStyle style = (LineStyle)baseStyle;
+			}
+			else if (baseStyle is LineStyle) {
+				LineStyle style = (LineStyle) baseStyle;
 				LineStyle previewStyle = CreatePreviewStyle(style);
 				lineStyles.SetPreviewStyle(style, previewStyle);
-			} else if (baseStyle is ParagraphStyle) {
-				ParagraphStyle style = (ParagraphStyle)baseStyle;
+			}
+			else if (baseStyle is ParagraphStyle) {
+				ParagraphStyle style = (ParagraphStyle) baseStyle;
 				ParagraphStyle previewStyle = CreatePreviewStyle(style);
 				paragraphStyles.SetPreviewStyle(style, previewStyle);
-			} else throw new NShapeUnsupportedValueException(baseStyle);
+			}
+			else throw new NShapeUnsupportedValueException(baseStyle);
 		}
-
 
 		#region Assert style validity
 
-		private void AssertValidStyle(IStyle style) {
-			if (style is ICapStyle) AssertValidStyle((ICapStyle)style);
-			else if (style is ICharacterStyle) AssertValidStyle((ICharacterStyle)style);
-			else if (style is IColorStyle) AssertValidStyle((IColorStyle)style);
-			else if (style is IFillStyle) AssertValidStyle((IFillStyle)style);
-			else if (style is ILineStyle) AssertValidStyle((ILineStyle)style);
-			else if (style is IParagraphStyle) AssertValidStyle((IParagraphStyle)style);
+		private void AssertValidStyle(IStyle style)
+		{
+			if (style is ICapStyle) AssertValidStyle((ICapStyle) style);
+			else if (style is ICharacterStyle) AssertValidStyle((ICharacterStyle) style);
+			else if (style is IColorStyle) AssertValidStyle((IColorStyle) style);
+			else if (style is IFillStyle) AssertValidStyle((IFillStyle) style);
+			else if (style is ILineStyle) AssertValidStyle((ILineStyle) style);
+			else if (style is IParagraphStyle) AssertValidStyle((IParagraphStyle) style);
 			else Debug.Fail("Unhandled style class!");
 		}
 
 
-		private void AssertValidStyle(ICapStyle style) {
+		private void AssertValidStyle(ICapStyle style)
+		{
 			if (style == null) throw new ArgumentNullException("style");
 			AssertStyleExists(style, style.ColorStyle);
 		}
 
 
-		private void AssertValidStyle(ICharacterStyle style) {
+		private void AssertValidStyle(ICharacterStyle style)
+		{
 			if (style == null) throw new ArgumentNullException("style");
 			AssertStyleExists(style, style.ColorStyle);
 		}
 
 
-		private void AssertValidStyle(IColorStyle style) {
+		private void AssertValidStyle(IColorStyle style)
+		{
 			if (style == null) throw new ArgumentNullException("style");
 		}
 
 
-		private void AssertValidStyle(IFillStyle style) {
+		private void AssertValidStyle(IFillStyle style)
+		{
 			if (style == null) throw new ArgumentNullException("style");
 			if (style.FillMode == FillMode.Gradient || style.FillMode == FillMode.Pattern) {
 				AssertStyleNotEmpty(style, style.AdditionalColorStyle);
@@ -958,52 +1025,61 @@ namespace Dataweb.NShape {
 		}
 
 
-		private void AssertValidStyle(ILineStyle style) {
+		private void AssertValidStyle(ILineStyle style)
+		{
 			if (style == null) throw new ArgumentNullException("style");
 			AssertStyleExists(style, style.ColorStyle);
 		}
 
 
-		private void AssertValidStyle(IParagraphStyle style) {
+		private void AssertValidStyle(IParagraphStyle style)
+		{
 			if (style == null) throw new ArgumentNullException("style");
 		}
 
 
-		private void AssertStyleNotEmpty(IStyle styleToAdd, IStyle requiredStyle) {
+		private void AssertStyleNotEmpty(IStyle styleToAdd, IStyle requiredStyle)
+		{
 			if (requiredStyle.Name == Style.EmptyStyleName)
 				throw new NShapeException(GetErrorMessageStyleIsEmpty(styleToAdd, requiredStyle));
 		}
 
 
-		private void AssertStyleExists(IStyle styleToAdd, IStyle requiredStyle) {
+		private void AssertStyleExists(IStyle styleToAdd, IStyle requiredStyle)
+		{
 			if (requiredStyle.Name != Style.EmptyStyleName && !ContainsStyle(requiredStyle))
 				throw new NShapeException(GetErrorMessageStyleDoesNotExist(styleToAdd, requiredStyle));
 		}
 
 
-		private string GetErrorMessageCannotAddStyle(IStyle styleToAdd) {
+		private string GetErrorMessageCannotAddStyle(IStyle styleToAdd)
+		{
 			const string msgFormatStr = "Cannot add {0} '{1}' to design '{2}'";
 			return string.Format(msgFormatStr, styleToAdd.GetType().Name, styleToAdd.Title, this.Name);
 		}
 
 
-		private string GetErrorMessageStyleIsEmpty(IStyle styleToAdd, IStyle requiredStyle) {
+		private string GetErrorMessageStyleIsEmpty(IStyle styleToAdd, IStyle requiredStyle)
+		{
 			const string msgFormatStr = "{0}: Used {1} is empty (not defined).";
-			return string.Format(msgFormatStr, GetErrorMessageCannotAddStyle(styleToAdd), requiredStyle.GetType().Name, requiredStyle.Title);
+			return string.Format(msgFormatStr, GetErrorMessageCannotAddStyle(styleToAdd), requiredStyle.GetType().Name,
+			                     requiredStyle.Title);
 		}
 
 
-		private string GetErrorMessageStyleDoesNotExist(IStyle styleToAdd, IStyle requiredStyle) {
+		private string GetErrorMessageStyleDoesNotExist(IStyle styleToAdd, IStyle requiredStyle)
+		{
 			const string msgFormatStr = "{0}: Used {1} '{2}' does not exist in design '{3}'.";
-			return string.Format(msgFormatStr, GetErrorMessageCannotAddStyle(styleToAdd), requiredStyle.GetType().Name, requiredStyle.Title, this.Name);
+			return string.Format(msgFormatStr, GetErrorMessageCannotAddStyle(styleToAdd), requiredStyle.GetType().Name,
+			                     requiredStyle.Title, this.Name);
 		}
 
 		#endregion
 
-
 		#region Creating Standard Styles
 
-		private void CreateStandardColorStyles() {
+		private void CreateStandardColorStyles()
+		{
 			ColorStyle colorStyle;
 
 			colorStyle = new ColorStyle(ColorStyle.StandardNames.Background, Color.Silver);
@@ -1059,7 +1135,8 @@ namespace Dataweb.NShape {
 		}
 
 
-		private void CreateStandardCapStyles() {
+		private void CreateStandardCapStyles()
+		{
 			CapStyle capStyle;
 
 			capStyle = new CapStyle(CapStyle.StandardNames.None);
@@ -1094,7 +1171,8 @@ namespace Dataweb.NShape {
 		}
 
 
-		private void CreateStandardCharacterStyles() {
+		private void CreateStandardCharacterStyles()
+		{
 			CharacterStyle charStyle;
 
 			charStyle = new CharacterStyle(CharacterStyle.StandardNames.Caption);
@@ -1141,7 +1219,8 @@ namespace Dataweb.NShape {
 		}
 
 
-		private void CreateStandardFillStyles() {
+		private void CreateStandardFillStyles()
+		{
 			FillStyle fillStyle;
 
 			fillStyle = new FillStyle(FillStyle.StandardNames.Black, colorStyles.Black, colorStyles.White);
@@ -1188,7 +1267,8 @@ namespace Dataweb.NShape {
 		}
 
 
-		private void CreateStandardLineStyles() {
+		private void CreateStandardLineStyles()
+		{
 			LineStyle lineStyle;
 
 			lineStyle = new LineStyle(LineStyle.StandardNames.Blue);
@@ -1313,7 +1393,8 @@ namespace Dataweb.NShape {
 		}
 
 
-		private void CreateStandardParagraphStyles() {
+		private void CreateStandardParagraphStyles()
+		{
 			ParagraphStyle paragraphStyle;
 
 			paragraphStyle = new ParagraphStyle(ParagraphStyle.StandardNames.Label);
@@ -1336,11 +1417,9 @@ namespace Dataweb.NShape {
 			paragraphStyle.Trimming = StringTrimming.EllipsisCharacter;
 			paragraphStyle.WordWrap = true;
 			paragraphStyles.Add(paragraphStyle, CreatePreviewStyle(paragraphStyle));
-
 		}
 
 		#endregion
-
 
 		#region Fields
 
@@ -1364,5 +1443,4 @@ namespace Dataweb.NShape {
 
 		#endregion
 	}
-
 }

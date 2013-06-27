@@ -1,8 +1,10 @@
 ﻿using System;
 using Vixen.Sys;
 
-namespace Vixen.Execution.Context {
-	public interface ISequenceContext : IContext {
+namespace Vixen.Execution.Context
+{
+	public interface ISequenceContext : IContext
+	{
 		event EventHandler<SequenceStartedEventArgs> SequenceStarted;
 		event EventHandler<SequenceEventArgs> SequenceEnded;
 		event EventHandler<ExecutorMessageEventArgs> Message;

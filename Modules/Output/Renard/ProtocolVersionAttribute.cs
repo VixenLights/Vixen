@@ -1,9 +1,12 @@
 ﻿using System;
 
-namespace VixenModules.Output.Renard {
+namespace VixenModules.Output.Renard
+{
 	[AttributeUsage(AttributeTargets.Class)]
-	class ProtocolVersionAttribute : Attribute {
-		public ProtocolVersionAttribute(int version) {
+	internal class ProtocolVersionAttribute : Attribute
+	{
+		public ProtocolVersionAttribute(int version)
+		{
 			Version = version;
 		}
 

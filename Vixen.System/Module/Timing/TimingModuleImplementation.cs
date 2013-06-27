@@ -4,11 +4,14 @@ using System.Linq;
 using System.Text;
 using Vixen.Sys.Attribute;
 
-namespace Vixen.Module.Timing {
+namespace Vixen.Module.Timing
+{
 	[TypeOfModule("Timing")]
-	class TimingModuleImplementation : ModuleImplementation<ITimingModuleInstance> {
+	internal class TimingModuleImplementation : ModuleImplementation<ITimingModuleInstance>
+	{
 		public TimingModuleImplementation()
-			: base(new TimingModuleManagement(), new TimingModuleRepository()) {
+			: base(new TimingModuleManagement(), new TimingModuleRepository())
+		{
 		}
 	}
 }

@@ -4,48 +4,62 @@ using System.Linq;
 using System.Text;
 using Vixen.Sys;
 
-namespace Vixen.Module.Timing {
-	abstract public class TimingModuleInstanceBase : ModuleInstanceBase, ITimingModuleInstance, IEqualityComparer<ITimingModuleInstance>, IEquatable<ITimingModuleInstance>, IEqualityComparer<TimingModuleInstanceBase>, IEquatable<TimingModuleInstanceBase> {
-		abstract public TimeSpan Position { get; set; }
+namespace Vixen.Module.Timing
+{
+	public abstract class TimingModuleInstanceBase : ModuleInstanceBase, ITimingModuleInstance,
+	                                                 IEqualityComparer<ITimingModuleInstance>,
+	                                                 IEquatable<ITimingModuleInstance>,
+	                                                 IEqualityComparer<TimingModuleInstanceBase>,
+	                                                 IEquatable<TimingModuleInstanceBase>
+	{
+		public abstract TimeSpan Position { get; set; }
 
-		abstract public void Start();
+		public abstract void Start();
 
-		abstract public void Stop();
+		public abstract void Stop();
 
-		abstract public void Pause();
+		public abstract void Pause();
 
-		abstract public void Resume();
+		public abstract void Resume();
 
-		virtual public bool SupportsVariableSpeeds {
+		public virtual bool SupportsVariableSpeeds
+		{
 			get { return false; }
 		}
 
-		virtual public float Speed {
+		public virtual float Speed
+		{
 			get { return 1; } // 1 = 100%
 			set { throw new NotSupportedException(); }
 		}
 
-		public bool Equals(ITimingModuleInstance x, ITimingModuleInstance y) {
+		public bool Equals(ITimingModuleInstance x, ITimingModuleInstance y)
+		{
 			return base.Equals(x, y);
 		}
 
-		public int GetHashCode(ITimingModuleInstance obj) {
+		public int GetHashCode(ITimingModuleInstance obj)
+		{
 			return base.GetHashCode(obj);
 		}
 
-		public bool Equals(ITimingModuleInstance other) {
+		public bool Equals(ITimingModuleInstance other)
+		{
 			return base.Equals(other);
 		}
 
-		public bool Equals(TimingModuleInstanceBase x, TimingModuleInstanceBase y) {
+		public bool Equals(TimingModuleInstanceBase x, TimingModuleInstanceBase y)
+		{
 			return Equals(x as ITimingModuleInstance, y as ITimingModuleInstance);
 		}
 
-		public int GetHashCode(TimingModuleInstanceBase obj) {
+		public int GetHashCode(TimingModuleInstanceBase obj)
+		{
 			return GetHashCode(obj as ITimingModuleInstance);
 		}
 
-		public bool Equals(TimingModuleInstanceBase other) {
+		public bool Equals(TimingModuleInstanceBase other)
+		{
 			return Equals(other as ITimingModuleInstance);
 		}
 	}

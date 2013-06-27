@@ -41,18 +41,17 @@ namespace ZedGraph
 	/// <author> John Champion  </author>
 	/// <version> $Revision: 1.13 $ $Date: 2007-11-28 02:38:22 $ </version>
 	[Serializable]
-	class DateAsOrdinalScale : Scale, ISerializable //, ICloneable
+	internal class DateAsOrdinalScale : Scale, ISerializable //, ICloneable
 	{
-
-	#region constructors
+		#region constructors
 
 		/// <summary>
 		/// Default constructor that defines the owner <see cref="Axis" />
 		/// (containing object) for this new object.
 		/// </summary>
 		/// <param name="owner">The owner, or containing object, of this instance</param>
-		public DateAsOrdinalScale( Axis owner )
-			: base( owner )
+		public DateAsOrdinalScale(Axis owner)
+			: base(owner)
 		{
 		}
 
@@ -62,8 +61,8 @@ namespace ZedGraph
 		/// <param name="rhs">The <see cref="DateAsOrdinalScale" /> object from which to copy</param>
 		/// <param name="owner">The <see cref="Axis" /> object that will own the
 		/// new instance of <see cref="DateAsOrdinalScale" /></param>
-		public DateAsOrdinalScale( Scale rhs, Axis owner )
-			: base( rhs, owner )
+		public DateAsOrdinalScale(Scale rhs, Axis owner)
+			: base(rhs, owner)
 		{
 		}
 
@@ -73,14 +72,14 @@ namespace ZedGraph
 		/// <param name="owner">The new <see cref="Axis" /> instance that will be
 		/// the owner of the new Scale</param>
 		/// <returns>A new <see cref="Scale" /> clone.</returns>
-		public override Scale Clone( Axis owner )
+		public override Scale Clone(Axis owner)
 		{
-			return new DateAsOrdinalScale( this, owner );
+			return new DateAsOrdinalScale(this, owner);
 		}
 
-	#endregion
+		#endregion
 
-	#region properties
+		#region properties
 
 		/// <summary>
 		/// Return the <see cref="AxisType" /> for this <see cref="Scale" />, which is
@@ -102,7 +101,11 @@ namespace ZedGraph
 		public override double Min
 		{
 			get { return _min; }
-			set { _min = XDate.MakeValidDate( value ); _minAuto = false; }
+			set
+			{
+				_min = XDate.MakeValidDate(value);
+				_minAuto = false;
+			}
 		}
 
 		/// <summary>
@@ -116,12 +119,16 @@ namespace ZedGraph
 		public override double Max
 		{
 			get { return _max; }
-			set { _max = XDate.MakeValidDate( value ); _maxAuto = false; }
+			set
+			{
+				_max = XDate.MakeValidDate(value);
+				_maxAuto = false;
+			}
 		}
 
-	#endregion
+		#endregion
 
-	#region methods
+		#region methods
 
 		/// <summary>
 		/// Select a reasonable ordinal axis scale given a range of data values, with the expectation that
@@ -154,10 +161,10 @@ namespace ZedGraph
 		/// </param>
 		/// <seealso cref="PickScale"/>
 		/// <seealso cref="AxisType.Ordinal"/>
-		override public void PickScale( GraphPane pane, Graphics g, float scaleFactor )
+		public override void PickScale(GraphPane pane, Graphics g, float scaleFactor)
 		{
 			// call the base class first
-			base.PickScale( pane, g, scaleFactor );
+			base.PickScale(pane, g, scaleFactor);
 
 /*			// First, get the date ranges from the first curve in the list
 			double xMin; // = Double.MaxValue;
@@ -183,79 +190,73 @@ namespace ZedGraph
 */
 			// Set the DateFormat by calling CalcDateStepSize
 			//			DateScale.CalcDateStepSize( range, Default.TargetXSteps, this );
-			SetDateFormat( pane );
+			SetDateFormat(pane);
 
 			// Now, set the axis range based on a ordinal scale
-			base.PickScale( pane, g, scaleFactor );
-			OrdinalScale.PickScale( pane, g, scaleFactor, this );
+			base.PickScale(pane, g, scaleFactor);
+			OrdinalScale.PickScale(pane, g, scaleFactor, this);
 		}
 
-		internal void SetDateFormat( GraphPane pane )
+		internal void SetDateFormat(GraphPane pane)
 		{
-			if ( _formatAuto )
-			{
+			if (_formatAuto) {
 				double range = 10;
 
-				if ( pane.CurveList.Count > 0 && pane.CurveList[0].Points.Count > 1 )
-				{
+				if (pane.CurveList.Count > 0 && pane.CurveList[0].Points.Count > 1) {
 					double val1, val2;
 
 					PointPair pt1 = pane.CurveList[0].Points[0];
 					PointPair pt2 = pane.CurveList[0].Points[pane.CurveList[0].Points.Count - 1];
 					int p1 = 1;
 					int p2 = pane.CurveList[0].Points.Count;
-					if ( pane.IsBoundedRanges )
-					{
-						p1 = (int) Math.Floor( _ownerAxis.Scale.Min );
-						p2 = (int) Math.Ceiling( _ownerAxis.Scale.Max );
-						p1 = Math.Min( Math.Max( p1, 1 ), pane.CurveList[0].Points.Count );
-						p2 = Math.Min( Math.Max( p2, 1 ), pane.CurveList[0].Points.Count );
-						if ( p2 > p1 )
-						{
-							pt1 = pane.CurveList[0].Points[p1-1];
-							pt2 = pane.CurveList[0].Points[p2-1];
+					if (pane.IsBoundedRanges) {
+						p1 = (int) Math.Floor(_ownerAxis.Scale.Min);
+						p2 = (int) Math.Ceiling(_ownerAxis.Scale.Max);
+						p1 = Math.Min(Math.Max(p1, 1), pane.CurveList[0].Points.Count);
+						p2 = Math.Min(Math.Max(p2, 1), pane.CurveList[0].Points.Count);
+						if (p2 > p1) {
+							pt1 = pane.CurveList[0].Points[p1 - 1];
+							pt2 = pane.CurveList[0].Points[p2 - 1];
 						}
 					}
-					if ( _ownerAxis is XAxis || _ownerAxis is X2Axis )
-					{
+					if (_ownerAxis is XAxis || _ownerAxis is X2Axis) {
 						val1 = pt1.X;
 						val2 = pt2.X;
 					}
-					else
-					{
+					else {
 						val1 = pt1.Y;
 						val2 = pt2.Y;
 					}
 
-					if (	val1 != PointPair.Missing &&
-							val2 != PointPair.Missing &&
-							!Double.IsNaN( val1 ) &&
-							!Double.IsNaN( val2 ) &&
-							!Double.IsInfinity( val1 ) &&
-							!Double.IsInfinity( val2 ) &&
-							Math.Abs( val2 - val1 ) > 1e-10 )
-						range = Math.Abs( val2 - val1 );
+					if (val1 != PointPair.Missing &&
+					    val2 != PointPair.Missing &&
+					    !Double.IsNaN(val1) &&
+					    !Double.IsNaN(val2) &&
+					    !Double.IsInfinity(val1) &&
+					    !Double.IsInfinity(val2) &&
+					    Math.Abs(val2 - val1) > 1e-10)
+						range = Math.Abs(val2 - val1);
 				}
 
-				if ( range > Default.RangeYearYear )
+				if (range > Default.RangeYearYear)
 					_format = Default.FormatYearYear;
-				else if ( range > Default.RangeYearMonth )
+				else if (range > Default.RangeYearMonth)
 					_format = Default.FormatYearMonth;
-				else if ( range > Default.RangeMonthMonth )
+				else if (range > Default.RangeMonthMonth)
 					_format = Default.FormatMonthMonth;
-				else if ( range > Default.RangeDayDay )
+				else if (range > Default.RangeDayDay)
 					_format = Default.FormatDayDay;
-				else if ( range > Default.RangeDayHour )
+				else if (range > Default.RangeDayHour)
 					_format = Default.FormatDayHour;
-				else if ( range > Default.RangeHourHour )
+				else if (range > Default.RangeHourHour)
 					_format = Default.FormatHourHour;
-				else if ( range > Default.RangeHourMinute )
+				else if (range > Default.RangeHourMinute)
 					_format = Default.FormatHourMinute;
-				else if ( range > Default.RangeMinuteMinute )
+				else if (range > Default.RangeMinuteMinute)
 					_format = Default.FormatMinuteMinute;
-				else if ( range > Default.RangeMinuteSecond )
+				else if (range > Default.RangeMinuteSecond)
 					_format = Default.FormatMinuteSecond;
-				else if ( range > Default.RangeSecondSecond )
+				else if (range > Default.RangeSecondSecond)
 					_format = Default.FormatSecondSecond;
 				else // MilliSecond
 					_format = Default.FormatMillisecond;
@@ -279,30 +280,30 @@ namespace ZedGraph
 		/// and text (<see cref="Scale.IsText"/>) type axes.
 		/// </param>
 		/// <returns>The resulting value label as a <see cref="string" /></returns>
-		override internal string MakeLabel( GraphPane pane, int index, double dVal )
+		internal override string MakeLabel(GraphPane pane, int index, double dVal)
 		{
-			if ( _format == null )
+			if (_format == null)
 				_format = Scale.Default.Format;
 
 			double val;
 
 			int tmpIndex = (int) dVal - 1;
 
-			if ( pane.CurveList.Count > 0 && pane.CurveList[0].Points.Count > tmpIndex )
-			{
-				if ( _ownerAxis is XAxis || _ownerAxis is X2Axis )
-				val = pane.CurveList[0].Points[tmpIndex].X;
+			if (pane.CurveList.Count > 0 && pane.CurveList[0].Points.Count > tmpIndex) {
+				if (_ownerAxis is XAxis || _ownerAxis is X2Axis)
+					val = pane.CurveList[0].Points[tmpIndex].X;
 				else
 					val = pane.CurveList[0].Points[tmpIndex].Y;
-				return XDate.ToString( val, _format );
+				return XDate.ToString(val, _format);
 			}
 			else
 				return string.Empty;
 		}
 
-	#endregion
+		#endregion
 
-	#region Serialization
+		#region Serialization
+
 		/// <summary>
 		/// Current schema value that defines the version of the serialized file
 		/// </summary>
@@ -315,25 +316,25 @@ namespace ZedGraph
 		/// </param>
 		/// <param name="context">A <see cref="StreamingContext"/> instance that contains the serialized data
 		/// </param>
-		protected DateAsOrdinalScale( SerializationInfo info, StreamingContext context ) : base( info, context )
+		protected DateAsOrdinalScale(SerializationInfo info, StreamingContext context) : base(info, context)
 		{
 			// The schema value is just a file version parameter.  You can use it to make future versions
 			// backwards compatible as new member variables are added to classes
-			int sch = info.GetInt32( "schema2" );
-
+			int sch = info.GetInt32("schema2");
 		}
+
 		/// <summary>
 		/// Populates a <see cref="SerializationInfo"/> instance with the data needed to serialize the target object
 		/// </summary>
 		/// <param name="info">A <see cref="SerializationInfo"/> instance that defines the serialized data</param>
 		/// <param name="context">A <see cref="StreamingContext"/> instance that contains the serialized data</param>
-		[SecurityPermissionAttribute(SecurityAction.Demand,SerializationFormatter=true)]
-		public override void GetObjectData( SerializationInfo info, StreamingContext context )
+		[SecurityPermissionAttribute(SecurityAction.Demand, SerializationFormatter = true)]
+		public override void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
-			base.GetObjectData( info, context );
-			info.AddValue( "schema2", schema2 );
+			base.GetObjectData(info, context);
+			info.AddValue("schema2", schema2);
 		}
-	#endregion
 
+		#endregion
 	}
 }

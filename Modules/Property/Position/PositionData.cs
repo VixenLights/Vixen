@@ -5,14 +5,18 @@ using System.Text;
 using Vixen.Module;
 using System.Runtime.Serialization;
 
-namespace VixenModules.Property.Position {
+namespace VixenModules.Property.Position
+{
 	[DataContract]
-	public class PositionData : ModuleDataModelBase {
-		public PositionData() {
+	public class PositionData : ModuleDataModelBase
+	{
+		public PositionData()
+		{
 			ChildrenPositions = new PositionMap();
 		}
 
-		public override IModuleDataModel Clone() {
+		public override IModuleDataModel Clone()
+		{
 			PositionData newInstance = new PositionData();
 			newInstance.ChildrenPositions.AddRange(this.ChildrenPositions);
 			return newInstance;

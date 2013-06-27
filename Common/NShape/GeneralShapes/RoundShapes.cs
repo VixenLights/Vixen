@@ -16,86 +16,97 @@ using System;
 using Dataweb.NShape.Advanced;
 
 
-namespace Dataweb.NShape.GeneralShapes {
-
-	public class Circle : CircleBase {
-
-		internal static Shape CreateInstance(ShapeType shapeType, Template template) {
+namespace Dataweb.NShape.GeneralShapes
+{
+	public class Circle : CircleBase
+	{
+		internal static Shape CreateInstance(ShapeType shapeType, Template template)
+		{
 			return new Circle(shapeType, template);
 		}
 
 
 		/// <override></override>
-		public override Shape Clone() {
-			Shape result = new Circle(Type, (Template)null);
+		public override Shape Clone()
+		{
+			Shape result = new Circle(Type, (Template) null);
 			result.CopyFrom(this);
 			return result;
 		}
 
 
 		protected internal Circle(ShapeType shapeType, Template template)
-			: base(shapeType, template) {
+			: base(shapeType, template)
+		{
 		}
 
 
 		protected internal Circle(ShapeType shapeType, IStyleSet styleSet)
-			: base(shapeType, styleSet) {
+			: base(shapeType, styleSet)
+		{
 		}
 
 
 		/// <override></override>
-		protected override bool CalculatePath() {
+		protected override bool CalculatePath()
+		{
 			if (base.CalculatePath()) {
-				int left = (int)Math.Round(-Diameter / 2f);
-				int top = (int)Math.Round(-Diameter / 2f);
+				int left = (int) Math.Round(-Diameter/2f);
+				int top = (int) Math.Round(-Diameter/2f);
 				Path.Reset();
 				Path.StartFigure();
 				Path.AddEllipse(left, top, Diameter, Diameter);
 				Path.CloseFigure();
 				return true;
-			} else return false;
+			}
+			else return false;
 		}
 	}
 
 
-	public class Ellipse : EllipseBase {
-
-		internal static Shape CreateInstance(ShapeType shapeType, Template template) {
+	public class Ellipse : EllipseBase
+	{
+		internal static Shape CreateInstance(ShapeType shapeType, Template template)
+		{
 			return new Ellipse(shapeType, template);
 		}
 
 
 		/// <override></override>
-		public override Shape Clone() {
-			Shape result = new Ellipse(Type, (Template)null);
+		public override Shape Clone()
+		{
+			Shape result = new Ellipse(Type, (Template) null);
 			result.CopyFrom(this);
 			return result;
 		}
 
 
 		protected internal Ellipse(ShapeType shapeType, Template template)
-			: base(shapeType, template) {
+			: base(shapeType, template)
+		{
 		}
 
 
 		protected internal Ellipse(ShapeType shapeType, IStyleSet styleSet)
-			: base(shapeType, styleSet) {
+			: base(shapeType, styleSet)
+		{
 		}
 
 
 		/// <override></override>
-		protected override bool CalculatePath() {
+		protected override bool CalculatePath()
+		{
 			if (base.CalculatePath()) {
-				int left = (int)Math.Round(-Width / 2f);
-				int top = (int)Math.Round(-Height / 2f);
+				int left = (int) Math.Round(-Width/2f);
+				int top = (int) Math.Round(-Height/2f);
 
 				Path.Reset();
 				Path.StartFigure();
 				Path.AddEllipse(left, top, Width, Height);
 				Path.CloseFigure();
 				return true;
-			} else return false;
+			}
+			else return false;
 		}
 	}
-
 }

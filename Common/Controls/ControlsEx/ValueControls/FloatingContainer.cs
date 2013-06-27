@@ -12,6 +12,7 @@ namespace Common.Controls.ControlsEx.ValueControls
 	public class PopupForm : Form
 	{
 		#region types
+
 		/// <summary>
 		/// subclass for the mainform of an application,
 		/// needed for proper functionality of the popup form
@@ -19,8 +20,11 @@ namespace Common.Controls.ControlsEx.ValueControls
 		private class ActivationFilter : NativeWindow
 		{
 			#region variables
+
 			private PopupForm _owner;
+
 			#endregion
+
 			/// <summary>
 			/// ctor
 			/// </summary>
@@ -30,34 +34,39 @@ namespace Common.Controls.ControlsEx.ValueControls
 					throw new ArgumentNullException("owner");
 				this._owner = owner;
 			}
+
 			#region public members
+
 			public void AssignHandle(Form mainform)
 			{
-				if(mainform==null)
+				if (mainform == null)
 					throw new ArgumentNullException("mainform");
-				if(this.Handle!=IntPtr.Zero)
+				if (this.Handle != IntPtr.Zero)
 					this.ReleaseHandle();
-				if(mainform.IsHandleCreated)
+				if (mainform.IsHandleCreated)
 					this.AssignHandle(mainform.Handle);
 			}
+
 			#endregion
+
 			#region controller
+
 			protected override void WndProc(ref Message m)
 			{
-				if (m.Msg == Win32.WM_NCACTIVATE)
-				{
+				if (m.Msg == Win32.WM_NCACTIVATE) {
 					if (m.WParam.ToInt32() == 0)
 						m.WParam = new IntPtr(1);
 				}
-				else if (m.Msg == Win32.WM_ACTIVATEAPP)
-				{
+				else if (m.Msg == Win32.WM_ACTIVATEAPP) {
 					if (m.WParam.ToInt32() == 0)
 						_owner.Close();
 				}
 				base.WndProc(ref m);
 			}
+
 			#endregion
 		}
+
 		/// <summary>
 		/// filter for interrupting events that
 		/// cause the closing of the popup form
@@ -65,8 +74,11 @@ namespace Common.Controls.ControlsEx.ValueControls
 		private class MouseFilter : IMessageFilter
 		{
 			#region variables
+
 			private PopupForm _owner;
+
 			#endregion
+
 			/// <summary>
 			/// ctor
 			/// </summary>
@@ -76,11 +88,12 @@ namespace Common.Controls.ControlsEx.ValueControls
 					throw new ArgumentNullException("owner");
 				this._owner = owner;
 			}
+
 			#region controller
+
 			bool IMessageFilter.PreFilterMessage(ref Message m)
 			{
-				switch (m.Msg)
-				{
+				switch (m.Msg) {
 					case Win32.WM_LBUTTONDOWN:
 					case Win32.WM_MBUTTONDOWN:
 					case Win32.WM_RBUTTONDOWN:
@@ -92,6 +105,7 @@ namespace Common.Controls.ControlsEx.ValueControls
 				}
 				return false;
 			}
+
 			/// <summary>
 			/// checks if the cursor is over the client area
 			/// and closes the container, if not
@@ -101,13 +115,19 @@ namespace Common.Controls.ControlsEx.ValueControls
 				if (!_owner.Bounds.Contains(Control.MousePosition))
 					_owner.Close();
 			}
+
 			#endregion
 		}
+
 		#endregion
+
 		#region variables
+
 		private ActivationFilter _activationfilter;
 		private MouseFilter _mousefilter;
+
 		#endregion
+
 		/// <summary>
 		/// ctor
 		/// </summary>
@@ -118,24 +138,29 @@ namespace Common.Controls.ControlsEx.ValueControls
 			this.StartPosition = FormStartPosition.Manual;
 			this.ShowInTaskbar = false;
 			//filters
-			_mousefilter=new MouseFilter(this);
-			_activationfilter=new ActivationFilter(this);
+			_mousefilter = new MouseFilter(this);
+			_activationfilter = new ActivationFilter(this);
 		}
+
 		#region public members
+
 		public void ShowByControl(Control ctl, Point screenpos)
 		{
-			if(ctl==null)
+			if (ctl == null)
 				throw new ArgumentNullException("ctl");
-			this.Location=screenpos;
+			this.Location = screenpos;
 			//filters
 			Application.AddMessageFilter(_mousefilter);
-			Form mainfrm=ctl.FindForm();
-			if(mainfrm!=null)
+			Form mainfrm = ctl.FindForm();
+			if (mainfrm != null)
 				_activationfilter.AssignHandle(mainfrm);
 			base.Show();
 		}
+
 		#endregion
+
 		#region controller
+
 		//don't allow closing, hide instead
 		protected override void OnClosing(CancelEventArgs e)
 		{
@@ -146,33 +171,34 @@ namespace Common.Controls.ControlsEx.ValueControls
 			Application.RemoveMessageFilter(_mousefilter);
 			_activationfilter.ReleaseHandle();
 		}
+
 		protected override CreateParams CreateParams
 		{
 			get
 			{
 				CreateParams cp = base.CreateParams;
-				cp.ClassStyle |= 0x20000;//drop shadow
-				cp.Style=0x800000;
-				cp.Style |= -2147483648;//popup window
+				cp.ClassStyle |= 0x20000; //drop shadow
+				cp.Style = 0x800000;
+				cp.Style |= -2147483648; //popup window
 				return cp;
 			}
 		}
+
 		protected override void WndProc(ref Message m)
 		{
-			if (m.Msg==Win32.WM_NCPAINT)
-			{
+			if (m.Msg == Win32.WM_NCPAINT) {
 				base.DefWndProc(ref m);
-				IntPtr hdc=Win32.GetWindowDC(m.HWnd);
-				if(hdc==IntPtr.Zero) return;
-				Graphics gr=Graphics.FromHdc(hdc);
-				ControlPaint.DrawBorder3D(gr,0,0,this.Width,this.Height,
-					Border3DStyle.RaisedInner,Border3DSide.All);
+				IntPtr hdc = Win32.GetWindowDC(m.HWnd);
+				if (hdc == IntPtr.Zero) return;
+				Graphics gr = Graphics.FromHdc(hdc);
+				ControlPaint.DrawBorder3D(gr, 0, 0, this.Width, this.Height,
+				                          Border3DStyle.RaisedInner, Border3DSide.All);
 				gr.Dispose();
-				Win32.ReleaseDC(m.HWnd,hdc);
-				m.Result=IntPtr.Zero;
+				Win32.ReleaseDC(m.HWnd, hdc);
+				m.Result = IntPtr.Zero;
 			}
 			else
-				base.WndProc (ref m);
+				base.WndProc(ref m);
 		}
 
 		#endregion

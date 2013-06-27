@@ -7,41 +7,45 @@ using Vixen.Module.App;
 
 namespace VixenModules.App.ColorGradients
 {
-	class ColorGradientLibraryDescriptor : AppModuleDescriptorBase
+	internal class ColorGradientLibraryDescriptor : AppModuleDescriptorBase
 	{
 		private static Guid _id = new Guid("{64f4ab26-3ed4-49a3-a004-23656ed0424a}");
 
-		override public string TypeName
+		public override string TypeName
 		{
 			get { return "ColorGradients"; }
 		}
 
-		override public Guid TypeId
+		public override Guid TypeId
 		{
 			get { return _id; }
 		}
 
-		override public Type ModuleClass
+		public override Type ModuleClass
 		{
-			get { return typeof(ColorGradientLibrary); }
+			get { return typeof (ColorGradientLibrary); }
 		}
 
 		public override Type ModuleStaticDataClass
 		{
-			get { return typeof(ColorGradientLibraryStaticData); }
+			get { return typeof (ColorGradientLibraryStaticData); }
 		}
 
-		override public string Author
+		public override string Author
 		{
 			get { return "Vixen Team"; }
 		}
 
-		override public string Description
+		public override string Description
 		{
-			get { return "Provides a data type which represents an arbitrary color gradient/transition over time, and additional functionality (such as a gradient editor and library)."; }
+			get
+			{
+				return
+					"Provides a data type which represents an arbitrary color gradient/transition over time, and additional functionality (such as a gradient editor and library).";
+			}
 		}
 
-		override public string Version
+		public override string Version
 		{
 			get { return "1.0"; }
 		}

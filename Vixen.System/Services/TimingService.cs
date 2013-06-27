@@ -1,19 +1,24 @@
 ﻿using Vixen.Module.Timing;
 using Vixen.Sys;
 
-namespace Vixen.Services {
-	public class TimingService {
-		static private TimingService _instance;
+namespace Vixen.Services
+{
+	public class TimingService
+	{
+		private static TimingService _instance;
 
-		private TimingService() { }
+		private TimingService()
+		{
+		}
 
-		public static TimingService Instance {
+		public static TimingService Instance
+		{
 			get { return _instance ?? (_instance = new TimingService()); }
 		}
 
-		public ITiming GetDefaultSequenceTiming() {
+		public ITiming GetDefaultSequenceTiming()
+		{
 			return Modules.GetManager<ITimingModuleInstance, TimingModuleManagement>().GetDefault();
 		}
-
 	}
 }

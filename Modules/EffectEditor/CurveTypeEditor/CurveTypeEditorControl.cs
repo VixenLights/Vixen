@@ -25,15 +25,16 @@ namespace VixenModules.EffectEditor.CurveTypeEditor
 
 		public object[] EffectParameterValues
 		{
-			get { return new object[] { CurveValue }; }
+			get { return new object[] {CurveValue}; }
 			set
 			{
 				if (value.Length >= 1)
-					CurveValue = (Curve)value[0];
+					CurveValue = (Curve) value[0];
 			}
 		}
 
 		private Curve _curve;
+
 		public Curve CurveValue
 		{
 			get { return _curve; }

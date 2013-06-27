@@ -29,14 +29,17 @@ namespace ZedGraph
 		/// convention:  red=0, yellow=42.5, green=85, cyan=127.5, blue=170, magenta=212.5
 		/// </remarks>
 		public byte H;
+
 		/// <summary>
 		/// The color saturation (intensity) value, ranging from 0 (gray scale) to 255 (most colored).
 		/// </summary>
 		public byte S;
+
 		/// <summary>
 		/// The brightness value, ranging from 0 (black) to 255 (white).
 		/// </summary>
 		public byte B;
+
 		/// <summary>
 		/// The alpha value (opacity), ranging from 0 (transparent) to 255 (opaque).
 		/// </summary>
@@ -50,11 +53,11 @@ namespace ZedGraph
 		/// <param name="s">The color saturation (intensity) value, ranging from 0 (gray scale)
 		/// to 255 (most colored)</param>
 		/// <param name="b">The brightness value, ranging from 0 (black) to 255 (white)</param>
-		public HSBColor( int h, int s, int b )
+		public HSBColor(int h, int s, int b)
 		{
-			this.H = (byte)h;
-			this.S = (byte)s;
-			this.B = (byte)b;
+			this.H = (byte) h;
+			this.S = (byte) s;
+			this.B = (byte) b;
 			this.A = 255;
 		}
 
@@ -68,10 +71,10 @@ namespace ZedGraph
 		/// <param name="b">The brightness value, ranging from 0 (black) to 255 (white)</param>
 		/// <param name="a">The alpha value (opacity), ranging from 0 (transparent) to
 		/// 255 (opaque)</param>
-		public HSBColor( int a, int h, int s, int b )
-			: this( h, s, b )
+		public HSBColor(int a, int h, int s, int b)
+			: this(h, s, b)
 		{
-			this.A = (byte)a;
+			this.A = (byte) a;
 		}
 
 		/// <summary>
@@ -80,9 +83,9 @@ namespace ZedGraph
 		/// </summary>
 		/// <param name="color">An rgb <see cref="Color" /> struct containing the equivalent
 		/// color you want to generate</param>
-		public HSBColor( Color color )
+		public HSBColor(Color color)
 		{
-			this = FromRGB( color );
+			this = FromRGB(color);
 		}
 
 
@@ -93,9 +96,9 @@ namespace ZedGraph
 		/// <param name="hsbColor">The <see cref="HSBColor" /> struct to be converted</param>
 		/// <returns>An equivalent <see cref="Color" /> struct that can be used in the GDI+
 		/// graphics library</returns>
-		public static implicit operator Color( HSBColor hsbColor )
+		public static implicit operator Color(HSBColor hsbColor)
 		{
-			return ToRGB( hsbColor );
+			return ToRGB(hsbColor);
 		}
 
 		/// <summary>
@@ -106,42 +109,41 @@ namespace ZedGraph
 		/// </remarks>
 		/// <param name="hsbColor">The <see cref="HSBColor" /> struct to be converted</param>
 		/// <returns>An equivalent <see cref="Color" /> struct, compatible with the GDI+ library</returns>
-		public static Color ToRGB( HSBColor hsbColor )
+		public static Color ToRGB(HSBColor hsbColor)
 		{
 			Color rgbColor = Color.Black;
 
 			// Determine which sector of the color wheel contains this hue
 			// hsbColor.H ranges from 0 to 255, and there are 6 sectors, so 42.5 per sector
-			int sector = (int) Math.Floor( (double) hsbColor.H / 42.5 );
+			int sector = (int) Math.Floor((double) hsbColor.H/42.5);
 			// Calculate where the hue lies within the sector for interpolation purpose
-			double fraction = (double) hsbColor.H / 42.5 - (double) sector;
+			double fraction = (double) hsbColor.H/42.5 - (double) sector;
 
-			double sFrac = (double) hsbColor.S / 255.0;
-			byte p = (byte) (( (double) hsbColor.B * ( 1.0 - sFrac ) ) + 0.5);
-			byte q = (byte) (( (double) hsbColor.B * ( 1.0 - sFrac * fraction ) ) + 0.5);
-			byte t = (byte) (( (double) hsbColor.B * ( 1.0 - sFrac * ( 1.0 - fraction ) ) ) + 0.5);
+			double sFrac = (double) hsbColor.S/255.0;
+			byte p = (byte) (((double) hsbColor.B*(1.0 - sFrac)) + 0.5);
+			byte q = (byte) (((double) hsbColor.B*(1.0 - sFrac*fraction)) + 0.5);
+			byte t = (byte) (((double) hsbColor.B*(1.0 - sFrac*(1.0 - fraction))) + 0.5);
 
 
-			switch( sector )
-			{
-				case 0:			// red - yellow
-					rgbColor = Color.FromArgb( hsbColor.A, hsbColor.B, t, p );
+			switch (sector) {
+				case 0: // red - yellow
+					rgbColor = Color.FromArgb(hsbColor.A, hsbColor.B, t, p);
 					break;
-				case 1:			// yellow - green
-					rgbColor = Color.FromArgb( hsbColor.A, q, hsbColor.B, p );
+				case 1: // yellow - green
+					rgbColor = Color.FromArgb(hsbColor.A, q, hsbColor.B, p);
 					break;
-				case 2:			// green - cyan
-					rgbColor = Color.FromArgb( hsbColor.A, p, hsbColor.B, t );
+				case 2: // green - cyan
+					rgbColor = Color.FromArgb(hsbColor.A, p, hsbColor.B, t);
 					break;
-				case 3:			// cyan - blue
-					rgbColor = Color.FromArgb( hsbColor.A, p, q, hsbColor.B );
+				case 3: // cyan - blue
+					rgbColor = Color.FromArgb(hsbColor.A, p, q, hsbColor.B);
 					break;
-				case 4:			// blue - magenta
-					rgbColor = Color.FromArgb( hsbColor.A, t, p, hsbColor.B );
+				case 4: // blue - magenta
+					rgbColor = Color.FromArgb(hsbColor.A, t, p, hsbColor.B);
 					break;
 				case 5:
-				default:		// magenta - red
-					rgbColor = Color.FromArgb( hsbColor.A, hsbColor.B, p, q );
+				default: // magenta - red
+					rgbColor = Color.FromArgb(hsbColor.A, hsbColor.B, p, q);
 					break;
 			}
 
@@ -157,9 +159,9 @@ namespace ZedGraph
 		/// <returns>An equivalent <see cref="Color" /> struct, compatible with the GDI+ library</returns>
 		public Color ToRGB()
 		{
-			return ToRGB( this );
+			return ToRGB(this);
 		}
-			
+
 		/// <summary>
 		/// Convert a <see cref="Color" /> value to an equivalent <see cref="HSBColor" /> value.
 		/// </summary>
@@ -169,7 +171,7 @@ namespace ZedGraph
 		/// <returns>An equivalent <see cref="HSBColor" /> struct</returns>
 		public HSBColor FromRGB()
 		{
-			return FromRGB( this );
+			return FromRGB(this);
 		}
 
 		/// <summary>
@@ -180,46 +182,43 @@ namespace ZedGraph
 		/// </remarks>
 		/// <param name="rgbColor">The <see cref="Color" /> struct to be converted</param>
 		/// <returns>An equivalent <see cref="HSBColor" /> struct</returns>
-		public static HSBColor FromRGB( Color rgbColor )
+		public static HSBColor FromRGB(Color rgbColor)
 		{
-			double r = (double) rgbColor.R / 255.0;
-			double g = (double) rgbColor.G / 255.0;
-			double b = (double) rgbColor.B / 255.0;
+			double r = (double) rgbColor.R/255.0;
+			double g = (double) rgbColor.G/255.0;
+			double b = (double) rgbColor.B/255.0;
 
-			double min = Math.Min( Math.Min( r, g ), b );
-			double max = Math.Max( Math.Max( r, g ), b );
+			double min = Math.Min(Math.Min(r, g), b);
+			double max = Math.Max(Math.Max(r, g), b);
 
-			HSBColor hsbColor = new HSBColor( rgbColor.A, 0, 0, 0 );
+			HSBColor hsbColor = new HSBColor(rgbColor.A, 0, 0, 0);
 
-			hsbColor.B = (byte) ( max * 255.0 + 0.5 );
+			hsbColor.B = (byte) (max*255.0 + 0.5);
 
 			double delta = max - min;
 
-			if ( max != 0.0 )
-			{
-				hsbColor.S = (byte) ( delta / max * 255.0 + 0.5 );
+			if (max != 0.0) {
+				hsbColor.S = (byte) (delta/max*255.0 + 0.5);
 			}
-			else
-			{
+			else {
 				hsbColor.S = 0;
 				hsbColor.H = 0;
 				return hsbColor;
 			}
 
 			double h;
-			if ( r == max )
-				h = ( g - b ) / delta;		// between yellow & magenta
-			else if ( g == max )
-				h = 2 + ( b - r ) / delta;	// between cyan & yellow
+			if (r == max)
+				h = (g - b)/delta; // between yellow & magenta
+			else if (g == max)
+				h = 2 + (b - r)/delta; // between cyan & yellow
 			else
-				h = 4 + ( r - g ) / delta;	// between magenta & cyan
+				h = 4 + (r - g)/delta; // between magenta & cyan
 
-			hsbColor.H = (byte) ( h * 42.5 );	
-			if ( hsbColor.H < 0 )
+			hsbColor.H = (byte) (h*42.5);
+			if (hsbColor.H < 0)
 				hsbColor.H += 255;
 
 			return hsbColor;
 		}
-	
 	}
 }

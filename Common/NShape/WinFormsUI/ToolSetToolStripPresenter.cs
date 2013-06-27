@@ -15,22 +15,22 @@
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
-
 using Dataweb.NShape.Advanced;
 using Dataweb.NShape.Controllers;
 
 
-namespace Dataweb.NShape.WinFormsUI {
-	
+namespace Dataweb.NShape.WinFormsUI
+{
 	/// <summary>
 	/// Implementation of a ToolSetPresenter based on a System.Windows.Forms.ToolStrip.
 	/// </summary>
-	public partial class ToolSetToolStripPresenter : ToolStrip {
-		
+	public partial class ToolSetToolStripPresenter : ToolStrip
+	{
 		/// <summary>
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.WinFormsUI.ToolSetToolStripPresenter" />.
 		/// </summary>
-		public ToolSetToolStripPresenter() {
+		public ToolSetToolStripPresenter()
+		{
 			InitializeComponent();
 		}
 
@@ -38,7 +38,8 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// <summary>
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.WinFormsUI.ToolSetToolStripPresenter" />.
 		/// </summary>
-		public ToolSetToolStripPresenter(IContainer container) {
+		public ToolSetToolStripPresenter(IContainer container)
+		{
 			container.Add(this);
 			InitializeComponent();
 		}
@@ -49,7 +50,8 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// </summary>
 		[Category("NShape")]
 		[Browsable(true)]
-		public new string ProductVersion {
+		public new string ProductVersion
+		{
 			get { return base.ProductVersion; }
 		}
 
@@ -58,9 +60,11 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// Specifies the controller for this presenter.
 		/// </summary>
 		[Category("NShape")]
-		public ToolSetController ToolSetController {
+		public ToolSetController ToolSetController
+		{
 			get { return toolSetController; }
-			set {
+			set
+			{
 				if (toolSetController != null) UnregisterToolBoxEventHandlers();
 				toolSetController = value;
 				if (toolSetController != null) RegisterToolBoxEventHandlers();
@@ -72,13 +76,15 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// Specifies whether MenuItemDefs should not appear in the dynamic context menu if they are not granted.
 		/// </summary>
 		[Category("Behavior")]
-		public bool HideDeniedMenuItems {
+		public bool HideDeniedMenuItems
+		{
 			get { return hideMenuItemsIfNotGranted; }
 			set { hideMenuItemsIfNotGranted = value; }
 		}
 
 
-		private ToolStripItem FindItem(Tool tool) {
+		private ToolStripItem FindItem(Tool tool)
+		{
 			for (int i = Items.Count - 1; i >= 0; --i) {
 				if (Items[i].Tag == tool)
 					return Items[i];
@@ -87,7 +93,8 @@ namespace Dataweb.NShape.WinFormsUI {
 		}
 
 
-		private ToolStripItem CreateItem(Tool tool) {
+		private ToolStripItem CreateItem(Tool tool)
+		{
 			ToolStripButton button = new ToolStripButton(null, tool.SmallIcon);
 			button.Tag = tool;
 			button.CheckOnClick = true;
@@ -98,15 +105,16 @@ namespace Dataweb.NShape.WinFormsUI {
 			return button;
 		}
 
-
 		#region [Private] (Un)Registering for events
 
-		private void RegisterToolStripEvents() {
+		private void RegisterToolStripEvents()
+		{
 			this.ItemClicked += new ToolStripItemClickedEventHandler(ToolSetToolStripPresenter_ItemClicked);
 		}
 
 
-		private void RegisterToolBoxEventHandlers() {
+		private void RegisterToolBoxEventHandlers()
+		{
 			toolSetController.Cleared += toolSetController_Cleared;
 			toolSetController.ToolAdded += toolSetController_ToolAdded;
 			toolSetController.ToolChanged += toolSetController_ToolChanged;
@@ -115,7 +123,8 @@ namespace Dataweb.NShape.WinFormsUI {
 		}
 
 
-		private void UnregisterToolBoxEventHandlers() {
+		private void UnregisterToolBoxEventHandlers()
+		{
 			toolSetController.ToolSelected -= toolSetController_ToolSelected;
 			toolSetController.ToolRemoved -= toolSetController_ToolRemoved;
 			toolSetController.ToolChanged -= toolSetController_ToolChanged;
@@ -125,34 +134,37 @@ namespace Dataweb.NShape.WinFormsUI {
 
 		#endregion
 
-
 		#region [Private] ToolStrip event handler implementations
 
-		private void ToolSetToolStripPresenter_ItemClicked(object sender, ToolStripItemClickedEventArgs e) {
-			if (e.ClickedItem.Tag is Tool) toolSetController.SelectTool((Tool)e.ClickedItem.Tag);
+		private void ToolSetToolStripPresenter_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+		{
+			if (e.ClickedItem.Tag is Tool) toolSetController.SelectTool((Tool) e.ClickedItem.Tag);
 		}
 
 
-		private void toolStripItem_Click(object sender, EventArgs e) {
+		private void toolStripItem_Click(object sender, EventArgs e)
+		{
 		}
 
 		#endregion
 
-
 		#region [Private] ToolSetController event handler implementations
 
-		private void toolSetController_ToolSelected(object sender, ToolEventArgs e) {
+		private void toolSetController_ToolSelected(object sender, ToolEventArgs e)
+		{
 			ToolStripItem item = FindItem(e.Tool);
 			if (item != null) item.Select();
 		}
 
 
-		private void toolSetController_Cleared(object sender, EventArgs args) {
+		private void toolSetController_Cleared(object sender, EventArgs args)
+		{
 			Items.Clear();
 		}
 
 
-		private void toolSetController_ToolAdded(object sender, ToolEventArgs e) {
+		private void toolSetController_ToolAdded(object sender, ToolEventArgs e)
+		{
 			// SaveChanges the list view: Move this to ToolSetListViewPresenter
 			if (FindItem(e.Tool) != null)
 				throw new NShapeException(string.Format("Tool {0} already exists.", e.Tool.Title));
@@ -187,7 +199,8 @@ namespace Dataweb.NShape.WinFormsUI {
 		}
 
 
-		private void toolSetController_ToolChanged(object sender, ToolEventArgs e) {
+		private void toolSetController_ToolChanged(object sender, ToolEventArgs e)
+		{
 			//if (listView != null && e.Tool is TemplateTool) {
 			//   listView.BeginUpdate();
 			//   ListViewItem item = FindItem(e.Tool);
@@ -201,7 +214,8 @@ namespace Dataweb.NShape.WinFormsUI {
 		}
 
 
-		private void toolSetController_ToolRemoved(object sender, ToolEventArgs e) {
+		private void toolSetController_ToolRemoved(object sender, ToolEventArgs e)
+		{
 			//listView.SuspendLayout();
 			//ListViewItem item = FindItem(e.Tool);
 			//listView.Items.Remove(item);
@@ -209,7 +223,6 @@ namespace Dataweb.NShape.WinFormsUI {
 		}
 
 		#endregion
-
 
 		private ToolSetController toolSetController;
 		private bool hideMenuItemsIfNotGranted = false;

@@ -7,45 +7,44 @@ namespace VixenModules.Output.DummyLighting
 	{
 		private Guid _typeId = new Guid("{b6ee6308-189c-4268-8996-32a4bab8ab5f}");
 
-		override public Guid TypeId
+		public override Guid TypeId
 		{
 			get { return _typeId; }
 		}
 
-		override public Type ModuleClass
+		public override Type ModuleClass
 		{
-			get { return typeof(DummyLighting); }
+			get { return typeof (DummyLighting); }
 		}
 
-		override public string Author
+		public override string Author
 		{
 			get { return "Vixen Team"; }
 		}
 
-		override public string TypeName
+		public override string TypeName
 		{
 			get { return "Dummy Lighting"; }
 		}
 
-		override public string Description
+		public override string Description
 		{
 			get { return "A dummy/test output module that will display lighting commands in a new window."; }
 		}
 
-		override public string Version
+		public override string Version
 		{
 			get { return "1.0"; }
 		}
 
 		public override Type ModuleDataClass
 		{
-			get { return typeof(DummyLightingData); }
+			get { return typeof (DummyLightingData); }
 		}
 
-		public override int UpdateInterval {
-			get {
-				return 20;
-			}
+		public override int UpdateInterval
+		{
+			get { return 20; }
 		}
 	}
 }

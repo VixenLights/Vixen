@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Xml.Linq;
 
-namespace Vixen.IO.Xml.SystemContext {
+namespace Vixen.IO.Xml.SystemContext
+{
 	using Vixen.Sys;
 
-	class SystemContextXElementReader : IObjectContentReader<XElement, SystemContext> {
-		public XElement ReadContentFromObject(SystemContext obj) {
+	internal class SystemContextXElementReader : IObjectContentReader<XElement, SystemContext>
+	{
+		public XElement ReadContentFromObject(SystemContext obj)
+		{
 			XElement content = new XElement("SystemContext");
 			XmlRootAttributeVersion.SetVersion(content, ObjectVersion.SystemContext);
 			XmlSystemContextFilePolicy xmlFilePolicy = new XmlSystemContextFilePolicy(obj, content);
@@ -13,9 +16,10 @@ namespace Vixen.IO.Xml.SystemContext {
 			return content;
 		}
 
-		object IObjectContentReader.ReadContentFromObject(object obj) {
-			if(!(obj is SystemContext)) throw new InvalidOperationException("Object must be a SystemContext.");
-			return ReadContentFromObject((SystemContext)obj);
+		object IObjectContentReader.ReadContentFromObject(object obj)
+		{
+			if (!(obj is SystemContext)) throw new InvalidOperationException("Object must be a SystemContext.");
+			return ReadContentFromObject((SystemContext) obj);
 		}
 	}
 }

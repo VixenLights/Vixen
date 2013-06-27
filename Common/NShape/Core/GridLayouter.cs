@@ -16,68 +16,75 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
-
 using Dataweb.NShape.Commands;
 using Dataweb.Utilities;
 
 
-namespace Dataweb.NShape.Layouters {
-
+namespace Dataweb.NShape.Layouters
+{
 	/// <summary>
 	/// Positions all shapes on the nodes of a rectangular grid.
 	/// </summary>
 	/// <remarks>Grid layouter looks for the most natural grid distances for the given
 	/// shapes. These distances must be small enough to provide a different node for
 	/// each shape and large enough to look tidy.</remarks>
-	public class GridLayouter : LayouterBase, ILayouter {
-
+	public class GridLayouter : LayouterBase, ILayouter
+	{
 		/// <summary>
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.Layouters.GridLayouter" />.
 		/// </summary>
 		public GridLayouter(Project project)
-			: base(project) {
+			: base(project)
+		{
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public int CoarsenessX {
+		public int CoarsenessX
+		{
 			get { return coarsenessX; }
 			set { coarsenessX = value; }
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public int CoarsenessY {
+		public int CoarsenessY
+		{
 			get { return coarsenessY; }
 			set { coarsenessY = value; }
 		}
 
 
 		/// <override></override>
-		public override string InvariantName {
+		public override string InvariantName
+		{
 			get { return "GridLayouter"; }
 		}
 
 
 		/// <override></override>
-		public override string Description {
+		public override string Description
+		{
 			get { return Resources.GetString("GridLayouter_Description"); }
 		}
 
 
 		/// <override></override>
-		public override void Prepare() {
+		public override void Prepare()
+		{
 			base.Prepare();
 		}
 
 
 		/// <override></override>
-		public override void Unprepare() {
+		public override void Unprepare()
+		{
 		}
 
 
 		/// <override></override>
-		protected override bool ExecuteStepCore() {
+		protected override bool ExecuteStepCore()
+		{
 			// If executing multiple times in a row, we want the layouter to restart from the
 			// original situation.
 			if (lastCommand != null && project.History.IsNextUndoCommand(lastCommand))
@@ -88,7 +95,7 @@ namespace Dataweb.NShape.Layouters {
 			// Find the optimal fit horizontal origin and spacing
 			int originX;
 			int spacingX;
-			FindSpacing2((boundingRectangle.Left + boundingRectangle.Right) / 2, true, out originX, out spacingX);
+			FindSpacing2((boundingRectangle.Left + boundingRectangle.Right)/2, true, out originX, out spacingX);
 			// Find the optimal fit vertical origin and spacing
 			int originY;
 			int spacingY;
@@ -100,42 +107,49 @@ namespace Dataweb.NShape.Layouters {
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		protected struct GridPosition : IEquatable<GridPosition> {
+		protected struct GridPosition : IEquatable<GridPosition>
+		{
 			/// <ToBeCompleted></ToBeCompleted>
 			public int col;
+
 			/// <ToBeCompleted></ToBeCompleted>
 			public int row;
+
 			/// <ToBeCompleted></ToBeCompleted>
 			public int dir; // -1: unknown, 0: node, 1: eastbound edge, 2: northbound edge
+
 			/// <ToBeCompleted></ToBeCompleted>
 			public int idx; // > 0, if there are multiple shapes for that position
+
 			/// <ToBeCompleted></ToBeCompleted>
-			public bool Equals(GridPosition other) {
+			public bool Equals(GridPosition other)
+			{
 				return (other.col == this.col
-					&& other.dir == this.dir
-					&& other.idx == this.idx
-					&& other.row == this.row);
+				        && other.dir == this.dir
+				        && other.idx == this.idx
+				        && other.row == this.row);
 			}
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		protected class GridPositionComparer : IComparer, IComparer<GridPosition> {
-
+		protected class GridPositionComparer : IComparer, IComparer<GridPosition>
+		{
 			#region IComparer Members
 
 			/// <override></override>
-			public int Compare(object x, object y) {
-				return Compare((GridPosition)x, (GridPosition)y);
+			public int Compare(object x, object y)
+			{
+				return Compare((GridPosition) x, (GridPosition) y);
 			}
 
 			#endregion
 
-
 			#region IComparer<GridPosition> Members
 
 			/// <override></override>
-			public int Compare(GridPosition x, GridPosition y) {
+			public int Compare(GridPosition x, GridPosition y)
+			{
 				if (x.col == y.col)
 					if (x.row == y.row)
 						return x.idx.CompareTo(y.idx);
@@ -144,7 +158,6 @@ namespace Dataweb.NShape.Layouters {
 			}
 
 			#endregion
-
 		}
 
 
@@ -157,7 +170,8 @@ namespace Dataweb.NShape.Layouters {
 		/// <param name="horizontal"></param>
 		/// <remarks>Tries all possible spacings between a minimum and maximum value and calculates the one
 		/// where the optimization function has its minimum value.</remarks>
-		protected virtual void FindSpacing2(int center, bool horizontal, out int origin, out int spacing) {
+		protected virtual void FindSpacing2(int center, bool horizontal, out int origin, out int spacing)
+		{
 			int bestEnergy = int.MaxValue;
 			origin = 0;
 			spacing = 1;
@@ -181,20 +195,24 @@ namespace Dataweb.NShape.Layouters {
 		/// <param name="center"></param>
 		/// <param name="horizontal"></param>
 		/// <returns></returns>
-		protected virtual int CalcEnergy(int origin, int spacing, int center, bool horizontal) {
-			return CalcDistanceSum(origin, spacing, horizontal) / selectedShapes.Count + (horizontal? CoarsenessX: CoarsenessY) * 50 / spacing;
+		protected virtual int CalcEnergy(int origin, int spacing, int center, bool horizontal)
+		{
+			return CalcDistanceSum(origin, spacing, horizontal)/selectedShapes.Count +
+			       (horizontal ? CoarsenessX : CoarsenessY)*50/spacing;
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		protected virtual void FindSpacing1(ref int origin, ref int spacing, int center, bool horizontal) {
+		protected virtual void FindSpacing1(ref int origin, ref int spacing, int center, bool horizontal)
+		{
 			FindNextLocalMinimum(ref origin, ref spacing, center, horizontal);
 			spacing = ReduceLocalMinimum(origin, spacing, 40, horizontal);
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		protected virtual int FindNextLocalMinimum(ref int origin, ref int spacing, int avgOrigin, bool horizontal) {
+		protected virtual int FindNextLocalMinimum(ref int origin, ref int spacing, int avgOrigin, bool horizontal)
+		{
 			int newOrigin = OptimizeOrigin(avgOrigin, spacing, horizontal);
 			int newSpacing = spacing;
 			int distanceSum = int.MaxValue;
@@ -217,76 +235,83 @@ namespace Dataweb.NShape.Layouters {
 			// Ergebnis
 			return distanceSum;
 		}
-		
+
 
 		// Searches a quotient, by which the spacing is divided to lead to a distance
 		// sum which is almost the distance sum of the current spacing divided by the quotient.
 		// The spacing must be larger than the average shape size.
 		/// <ToBeCompleted></ToBeCompleted>
-		protected int ReduceLocalMinimum(int origin, int spacing, int minSpacing, bool horizontal) {
+		protected int ReduceLocalMinimum(int origin, int spacing, int minSpacing, bool horizontal)
+		{
 			int distanceSum = CalcDistanceSum(origin, spacing, horizontal);
 			int q = 2;
-			while (spacing / q > minSpacing) {
-				int newDistanceSum = CalcDistanceSum(origin, spacing / q, horizontal);
-				if (newDistanceSum <= distanceSum / q) {
+			while (spacing/q > minSpacing) {
+				int newDistanceSum = CalcDistanceSum(origin, spacing/q, horizontal);
+				if (newDistanceSum <= distanceSum/q) {
 					spacing /= q;
 					distanceSum = newDistanceSum;
 					q = 2;
-				} else ++q;
+				}
+				else ++q;
 			}
 			return spacing;
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		protected virtual int OptimizeOrigin(int origin, int spacing, bool horizontal) {
+		protected virtual int OptimizeOrigin(int origin, int spacing, bool horizontal)
+		{
 			// int result = maxOrigin;
 			// First, we optimize the origin for this spacing
 			int displacementSum = 0;
 			foreach (Shape s in selectedShapes) {
 				// Displacement is the amount of units to move the shape to the nearest grid node. > 0 right/down, < 0 to left/up.
-				int rest = horizontal ? (s.X - origin) % spacing : (s.Y - origin) % spacing;
-				if (rest < 0) displacementSum += 2 * rest > -spacing ? -rest : -spacing - rest;
-				else displacementSum += 2 * rest < spacing ? -rest : spacing - rest;
+				int rest = horizontal ? (s.X - origin)%spacing : (s.Y - origin)%spacing;
+				if (rest < 0) displacementSum += 2*rest > -spacing ? -rest : -spacing - rest;
+				else displacementSum += 2*rest < spacing ? -rest : spacing - rest;
 			}
-			int result = origin - displacementSum / selectedShapes.Count;
+			int result = origin - displacementSum/selectedShapes.Count;
 			return result;
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		protected virtual int CalcDistance(int position, int origin, int spacing) {
-			int rest = Math.Abs((position - origin) % spacing);
+		protected virtual int CalcDistance(int position, int origin, int spacing)
+		{
+			int rest = Math.Abs((position - origin)%spacing);
 			return Math.Min(rest, spacing - rest);
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		protected virtual int CalcDistanceSum(int origin, int spacing, bool horizontal) {
+		protected virtual int CalcDistanceSum(int origin, int spacing, bool horizontal)
+		{
 			int distanceSum = 0;
 			foreach (Shape s in selectedShapes)
-				distanceSum += CalcDistance(horizontal? s.X: s.Y, origin, spacing);
+				distanceSum += CalcDistance(horizontal ? s.X : s.Y, origin, spacing);
 			return distanceSum;
 		}
 
 
 		// Add all seleced shapes into the grid
 		/// <ToBeCompleted></ToBeCompleted>
-		protected virtual void ArrangeShapes(int ox, int oy, int sx, int sy) {
+		protected virtual void ArrangeShapes(int ox, int oy, int sx, int sy)
+		{
 			lastCommand = new MoveShapesCommand();
 
-			SortedList<GridPosition, Shape> positionAssignments 
+			SortedList<GridPosition, Shape> positionAssignments
 				= new SortedList<GridPosition, Shape>(selectedShapes.Count, new GridPositionComparer());
 			foreach (Shape s in selectedShapes) {
 				GridPosition gp;
-				gp.col = (s.X - ox + (s.X > ox? sx/2: -sx/2)) / sx;
-				gp.row = (s.Y - oy + (s.Y > oy? sy/2: -sy/2)) / sy;
+				gp.col = (s.X - ox + (s.X > ox ? sx/2 : -sx/2))/sx;
+				gp.row = (s.Y - oy + (s.Y > oy ? sy/2 : -sy/2))/sy;
 				gp.dir = -1;
 				gp.idx = 0;
 				int i = positionAssignments.IndexOfKey(gp);
 				if (i >= 0) {
 					// Search a free index for this position
-					while (i < positionAssignments.Count && positionAssignments.Keys[i].col == gp.col && positionAssignments.Keys[i].row == gp.row)
+					while (i < positionAssignments.Count && positionAssignments.Keys[i].col == gp.col &&
+					       positionAssignments.Keys[i].row == gp.row)
 						++i;
 					gp.idx = i;
 				}
@@ -299,8 +324,8 @@ namespace Dataweb.NShape.Layouters {
 				int minIdx = 0;
 				int minDist = int.MaxValue;
 				GridPosition gp = positionAssignments.Keys[idx];
-				while (idx < positionAssignments.Count && positionAssignments.Keys[idx].col == gp.col 
-					&& positionAssignments.Keys[idx].row == gp.row) {
+				while (idx < positionAssignments.Count && positionAssignments.Keys[idx].col == gp.col
+				       && positionAssignments.Keys[idx].row == gp.row) {
 					GridPosition p = positionAssignments.Keys[idx];
 					int dist = CalcDistance(positionAssignments[p].X, ox, sx) + CalcDistance(positionAssignments[p].Y, oy, sy);
 					if (dist < minDist) {
@@ -313,7 +338,7 @@ namespace Dataweb.NShape.Layouters {
 				Shape shape = positionAssignments.Values[minIdx];
 				positionAssignments.RemoveAt(minIdx);
 				--idx;
-				lastCommand.AddMove(shape, ox + gp.col * sx - shape.X, oy + gp.row * sy - shape.Y);
+				lastCommand.AddMove(shape, ox + gp.col*sx - shape.X, oy + gp.row*sy - shape.Y);
 			}
 			// CopyFrom the other shapes to edges
 			/*idx = 0;
@@ -329,28 +354,28 @@ namespace Dataweb.NShape.Layouters {
 				GridPosition gp = positionAssignments.Keys[idx];
 				// Count the number of shapes for the same edge
 				int startIdx = idx;
-				while (idx < positionAssignments.Count && positionAssignments.Keys[idx].col == gp.col 
-					&& positionAssignments.Keys[idx].row == gp.row && positionAssignments.Keys[idx].dir == gp.dir)
+				while (idx < positionAssignments.Count && positionAssignments.Keys[idx].col == gp.col
+				       && positionAssignments.Keys[idx].row == gp.row && positionAssignments.Keys[idx].dir == gp.dir)
 					++idx;
 				int count = idx - startIdx;
 				// Distribute the shapes along their respective edge
 				for (int i = startIdx; i < idx; ++i) {
 					if (gp.dir == 0) {
 						// Position on horizontal edge
-						lastCommand.AddMove(positionAssignments[gp], 
-							ox + gp.col * sx + (i - startIdx + 1) * sx / (count + 1) - positionAssignments[gp].X,
-							oy + gp.row * sy - positionAssignments[gp].Y);
-					} else {
+						lastCommand.AddMove(positionAssignments[gp],
+						                    ox + gp.col*sx + (i - startIdx + 1)*sx/(count + 1) - positionAssignments[gp].X,
+						                    oy + gp.row*sy - positionAssignments[gp].Y);
+					}
+					else {
 						// Position on vertical edge
-						lastCommand.AddMove(positionAssignments[gp], 
-							ox + gp.col * sx - positionAssignments[gp].X,
-							oy + gp.row * sy + (i - startIdx + 1) * sy / (count + 1) - positionAssignments[gp].Y);
+						lastCommand.AddMove(positionAssignments[gp],
+						                    ox + gp.col*sx - positionAssignments[gp].X,
+						                    oy + gp.row*sy + (i - startIdx + 1)*sy/(count + 1) - positionAssignments[gp].Y);
 					}
 				}
 			}
 			project.ExecuteCommand(lastCommand);
 		}
-
 
 		#region Fields
 
@@ -359,7 +384,6 @@ namespace Dataweb.NShape.Layouters {
 		private int coarsenessY;
 
 		#endregion
-
 	}
 
 
@@ -489,5 +513,4 @@ namespace Dataweb.NShape.Layouters {
 		private int currentRow;
 		private List<Shape> currentShapes = new List<Shape>();
 	}*/
-
 }

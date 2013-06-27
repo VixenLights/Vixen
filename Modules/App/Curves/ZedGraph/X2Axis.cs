@@ -36,8 +36,8 @@ namespace ZedGraph
 	[Serializable]
 	public class X2Axis : Axis, ICloneable, ISerializable
 	{
-
 		#region Defaults
+
 		/// <summary>
 		/// A simple struct that defines the
 		/// default property values for the <see cref="X2Axis"/> class.
@@ -51,6 +51,7 @@ namespace ZedGraph
 			/// values, title, tic marks, false to hide the axis entirely.
 			/// </summary>
 			public static bool IsVisible = false;
+
 			/// <summary>
 			/// Determines if a line will be drawn at the zero value for the 
 			/// <see cref="X2Axis"/>, that is, a line that
@@ -59,6 +60,7 @@ namespace ZedGraph
 			/// </summary>
 			public static bool IsZeroLine = false;
 		}
+
 		#endregion
 
 		#region Constructors
@@ -68,7 +70,7 @@ namespace ZedGraph
 		/// default values as defined in the <see cref="Default"/> class
 		/// </summary>
 		public X2Axis()
-			: this( "X2 Axis" )
+			: this("X2 Axis")
 		{
 		}
 
@@ -78,8 +80,8 @@ namespace ZedGraph
 		/// for the axis title
 		/// </summary>
 		/// <param name="title">The <see cref="Axis.Title"/> for this axis</param>
-		public X2Axis( string title )
-			: base( title )
+		public X2Axis(string title)
+			: base(title)
 		{
 			_isVisible = Default.IsVisible;
 			_majorGrid._isZeroLine = Default.IsZeroLine;
@@ -91,8 +93,8 @@ namespace ZedGraph
 		/// The Copy Constructor
 		/// </summary>
 		/// <param name="rhs">The X2Axis object from which to copy</param>
-		public X2Axis( X2Axis rhs )
-			: base( rhs )
+		public X2Axis(X2Axis rhs)
+			: base(rhs)
 		{
 		}
 
@@ -112,12 +114,13 @@ namespace ZedGraph
 		/// <returns>A new, independent copy of this class</returns>
 		public X2Axis Clone()
 		{
-			return new X2Axis( this );
+			return new X2Axis(this);
 		}
 
 		#endregion
 
 		#region Serialization
+
 		/// <summary>
 		/// Current schema value that defines the version of the serialized file
 		/// </summary>
@@ -130,28 +133,30 @@ namespace ZedGraph
 		/// </param>
 		/// <param name="context">A <see cref="StreamingContext"/> instance that contains the serialized data
 		/// </param>
-		protected X2Axis( SerializationInfo info, StreamingContext context )
-			: base( info, context )
+		protected X2Axis(SerializationInfo info, StreamingContext context)
+			: base(info, context)
 		{
 			// The schema value is just a file version parameter.  You can use it to make future versions
 			// backwards compatible as new member variables are added to classes
-			int sch = info.GetInt32( "schema2" );
-
+			int sch = info.GetInt32("schema2");
 		}
+
 		/// <summary>
 		/// Populates a <see cref="SerializationInfo"/> instance with the data needed to serialize the target object
 		/// </summary>
 		/// <param name="info">A <see cref="SerializationInfo"/> instance that defines the serialized data</param>
 		/// <param name="context">A <see cref="StreamingContext"/> instance that contains the serialized data</param>
-		[SecurityPermissionAttribute( SecurityAction.Demand, SerializationFormatter = true )]
-		public override void GetObjectData( SerializationInfo info, StreamingContext context )
+		[SecurityPermissionAttribute(SecurityAction.Demand, SerializationFormatter = true)]
+		public override void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
-			base.GetObjectData( info, context );
-			info.AddValue( "schema2", schema2 );
+			base.GetObjectData(info, context);
+			info.AddValue("schema2", schema2);
 		}
+
 		#endregion
 
 		#region Methods
+
 		/// <summary>
 		/// Setup the Transform Matrix to handle drawing of this <see cref="X2Axis"/>
 		/// </summary>
@@ -169,14 +174,14 @@ namespace ZedGraph
 		/// <see cref="PaneBase.CalcScaleFactor"/> method, and is used to proportionally adjust
 		/// font sizes, etc. according to the actual size of the graph.
 		/// </param>
-		override public void SetTransformMatrix( Graphics g, GraphPane pane, float scaleFactor )
+		public override void SetTransformMatrix(Graphics g, GraphPane pane, float scaleFactor)
 		{
 			// Move the origin to the TopLeft of the ChartRect, which is the left
 			// side of the X2 axis (facing from the label side)
-			g.TranslateTransform( pane.Chart._rect.Right, pane.Chart._rect.Top );
+			g.TranslateTransform(pane.Chart._rect.Right, pane.Chart._rect.Top);
 			//g.ScaleTransform( 1.0f, -1.0f );
 			// rotate so this axis is in the right-left direction
-			g.RotateTransform( 180 );
+			g.RotateTransform(180);
 		}
 
 		/// <summary>
@@ -198,7 +203,7 @@ namespace ZedGraph
 		/// </param>
 		/// <returns>true for a primary <see cref="Axis" /> (for the <see cref="X2Axis" />,
 		/// this is always true), false otherwise</returns>
-		override internal bool IsPrimary( GraphPane pane )
+		internal override bool IsPrimary(GraphPane pane)
 		{
 			return this == pane.X2Axis;
 		}
@@ -212,21 +217,23 @@ namespace ZedGraph
 		/// owner of this object.
 		/// </param>
 		/// <returns>The shift amount measured in pixels</returns>
-		internal override float CalcCrossShift( GraphPane pane )
+		internal override float CalcCrossShift(GraphPane pane)
 		{
-			double effCross = EffectiveCrossValue( pane );
+			double effCross = EffectiveCrossValue(pane);
 
-			if ( !_crossAuto )
-				return pane.YAxis.Scale.Transform( effCross ) - pane.YAxis.Scale._maxPix;
+			if (!_crossAuto)
+				return pane.YAxis.Scale.Transform(effCross) - pane.YAxis.Scale._maxPix;
 			else
 				return 0;
 		}
+
 		/*
 				override internal bool IsCrossed( GraphPane pane )
 				{
 					return !this.crossAuto && this.cross > pane.YAxis.Min && this.cross < pane.YAxis.Max;
 				}
 		*/
+
 		/// <summary>
 		/// Gets the "Cross" axis that corresponds to this axis.
 		/// </summary>
@@ -242,7 +249,7 @@ namespace ZedGraph
 		/// A reference to the <see cref="GraphPane"/> object that is the parent or
 		/// owner of this object.
 		/// </param>
-		override public Axis GetCrossAxis( GraphPane pane )
+		public override Axis GetCrossAxis(GraphPane pane)
 		{
 			return pane.YAxis;
 		}
@@ -255,6 +262,3 @@ namespace ZedGraph
 		#endregion
 	}
 }
-
-
-

@@ -1,9 +1,12 @@
 ﻿using System;
 
-namespace Vixen.Sys.Output {
+namespace Vixen.Sys.Output
+{
 	public class OutputCollectionEventArgs<T> : EventArgs
-		where T : Output {
-		public OutputCollectionEventArgs(T output) {
+		where T : Output
+	{
+		public OutputCollectionEventArgs(T output)
+		{
 			Output = output;
 		}
 

@@ -7,9 +7,9 @@ using Vixen.Module.EffectEditor;
 
 namespace VixenModules.EffectEditor.ChaseEffectEditor
 {
-	class ChaseEffectEditor : EffectEditorModuleInstanceBase
+	internal class ChaseEffectEditor : EffectEditorModuleInstanceBase
 	{
-		override public IEffectEditorControl CreateEditorControl()
+		public override IEffectEditorControl CreateEditorControl()
 		{
 			return new ChaseEffectEditorControl();
 		}

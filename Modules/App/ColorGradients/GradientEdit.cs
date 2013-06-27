@@ -14,10 +14,9 @@ namespace VixenModules.App.ColorGradients
 	/// edit control for a gradient
 	/// </summary>
 	[DefaultProperty("Gradient"),
-	DefaultEvent("SelectionChanged")]
+	 DefaultEvent("SelectionChanged")]
 	public class GradientEdit : Control
 	{
-
 		#region variables
 
 		private const int BORDER = 10;
@@ -32,14 +31,12 @@ namespace VixenModules.App.ColorGradients
 
 		#endregion
 
-
 		public GradientEdit()
 		{
 			SetStyle(ControlStyles.AllPaintingInWmPaint |
-				ControlStyles.OptimizedDoubleBuffer |
-				ControlStyles.UserPaint, true);
+			         ControlStyles.OptimizedDoubleBuffer |
+			         ControlStyles.UserPaint, true);
 		}
-
 
 		#region helper
 
@@ -50,12 +47,12 @@ namespace VixenModules.App.ColorGradients
 		{
 			if (_orientation == Orientation.Horizontal)
 				return Math.Max(0.0, Math.Min(1.0,
-					(double)(pt.X - BORDER) /
-					(double)Math.Max(1.0, this.Width - BORDER * 2 - 1)));
+				                              (double) (pt.X - BORDER)/
+				                              (double) Math.Max(1.0, this.Width - BORDER*2 - 1)));
 			//vertical
 			return Math.Max(0.0, Math.Min(1.0,
-				(double)(pt.Y - BORDER) /
-				(double)Math.Max(1.0, this.Height - BORDER * 2 - 1)));
+			                              (double) (pt.Y - BORDER)/
+			                              (double) Math.Max(1.0, this.Height - BORDER*2 - 1)));
 		}
 
 		/// <summary>
@@ -65,12 +62,12 @@ namespace VixenModules.App.ColorGradients
 		{
 			if (_orientation == Orientation.Horizontal)
 				return new Rectangle(
-					(int)(pos * (double)(this.Width - BORDER * 2 - 1)), 0,
-					BORDER * 2, this.Height - 1);
+					(int) (pos*(double) (this.Width - BORDER*2 - 1)), 0,
+					BORDER*2, this.Height - 1);
 			//vertical
 			return new Rectangle(
-				0, (int)(pos * (double)(this.Height - BORDER * 2 - 1)),
-				this.Width - 1, BORDER * 2);
+				0, (int) (pos*(double) (this.Height - BORDER*2 - 1)),
+				this.Width - 1, BORDER*2);
 		}
 
 		/// <summary>
@@ -81,32 +78,36 @@ namespace VixenModules.App.ColorGradients
 			//todo: vertical
 			if (flip)
 				return new Point[]
-						{
-							new Point(fader.X+1,fader.Y),new Point(fader.Right-1,fader.Y),
-							new Point(fader.Right,fader.Y+1),new Point(fader.Right,fader.Y+16),
-							new Point(fader.X+fader.Width/2,fader.Y+20),
-							new Point(fader.X,fader.Y+16),new Point(fader.X,fader.Y+1)
-						};
+				       	{
+				       		new Point(fader.X + 1, fader.Y), new Point(fader.Right - 1, fader.Y),
+				       		new Point(fader.Right, fader.Y + 1), new Point(fader.Right, fader.Y + 16),
+				       		new Point(fader.X + fader.Width/2, fader.Y + 20),
+				       		new Point(fader.X, fader.Y + 16), new Point(fader.X, fader.Y + 1)
+				       	};
 			return new Point[]
-						{
-							new Point(fader.X+1,fader.Bottom),new Point(fader.Right-1,fader.Bottom),
-							new Point(fader.Right,fader.Bottom-1),new Point(fader.Right,fader.Bottom-16),
-							new Point(fader.X+fader.Width/2,fader.Bottom-20),
-							new Point(fader.X,fader.Bottom-16),new Point(fader.X,fader.Bottom-1)
-						};
+			       	{
+			       		new Point(fader.X + 1, fader.Bottom), new Point(fader.Right - 1, fader.Bottom),
+			       		new Point(fader.Right, fader.Bottom - 1), new Point(fader.Right, fader.Bottom - 16),
+			       		new Point(fader.X + fader.Width/2, fader.Bottom - 20),
+			       		new Point(fader.X, fader.Bottom - 16), new Point(fader.X, fader.Bottom - 1)
+			       	};
 		}
 
 		private Point[] GetDiamondPolygon(Rectangle fader, bool flip)
 		{
-			int m = fader.X + fader.Width / 2;
+			int m = fader.X + fader.Width/2;
 			//todo: vertical
 			if (flip)
-				return new Point[] {
-					new Point(m-5,fader.Y+8),new Point(m,fader.Y+3),new Point(m+5,fader.Y+8),new Point(m,fader.Y+13)
-				};
-			return new Point[]{
-					new Point(m-5,fader.Bottom-8),new Point(m,fader.Bottom-3),new Point(m+5,fader.Bottom-8),new Point(m,fader.Bottom-13)
-				};
+				return new Point[]
+				       	{
+				       		new Point(m - 5, fader.Y + 8), new Point(m, fader.Y + 3), new Point(m + 5, fader.Y + 8),
+				       		new Point(m, fader.Y + 13)
+				       	};
+			return new Point[]
+			       	{
+			       		new Point(m - 5, fader.Bottom - 8), new Point(m, fader.Bottom - 3), new Point(m + 5, fader.Bottom - 8),
+			       		new Point(m, fader.Bottom - 13)
+			       	};
 		}
 
 		/// <summary>
@@ -134,8 +135,7 @@ namespace VixenModules.App.ColorGradients
 				Rectangle.Ceiling(field), 1, 1), ButtonState.Flat);
 			if (colors.Any(x => x.A != 255))
 				using (HatchBrush brs = new HatchBrush(HatchStyle.SmallCheckerBoard,
-						Color.Gray, Color.White))
-				{
+				                                       Color.Gray, Color.White)) {
 					gr.RenderingOrigin = Point.Truncate(field.Location);
 					gr.FillRectangle(brs, field);
 				}
@@ -145,13 +145,14 @@ namespace VixenModules.App.ColorGradients
 				using (SolidBrush brs = new SolidBrush(colors.First())) {
 					gr.FillRectangle(brs, field);
 				}
-			} else {
+			}
+			else {
 				using (LinearGradientBrush lgb = new LinearGradientBrush(field, Color.Black, Color.White, 0.0)) {
 					ColorBlend cb = new ColorBlend(count);
-					double increment = 1.0 / (count - 1);
+					double increment = 1.0/(count - 1);
 					cb.Positions = new float[count];
 					for (int i = 0; i < count; i++) {
-						cb.Positions[i] = (float)Math.Min((increment * i), 1.0);
+						cb.Positions[i] = (float) Math.Min((increment*i), 1.0);
 					}
 					cb.Colors = colors.ToArray();
 
@@ -168,8 +169,7 @@ namespace VixenModules.App.ColorGradients
 		/// </summary>
 		private void DrawDiamond(Graphics gr, double pos, bool flip, bool selected)
 		{
-			if (!double.IsNaN(pos))
-			{
+			if (!double.IsNaN(pos)) {
 				Rectangle fader = PosToRectangle(pos);
 				Point[] pts = GetDiamondPolygon(fader, flip);
 				gr.FillPolygon(selected ? SystemBrushes.Highlight : SystemBrushes.Control, pts);
@@ -182,14 +182,13 @@ namespace VixenModules.App.ColorGradients
 		/// </summary>
 		private bool HitsSlider(Graphics gr, double pos, bool flip, bool diamond, Point pt, ref Point offset)
 		{
-			using (GraphicsPath path = new GraphicsPath())
-			{
+			using (GraphicsPath path = new GraphicsPath()) {
 				Rectangle fader = PosToRectangle(pos);
-				offset = new Point(pt.X - (fader.X + fader.Width / 2),
-					pt.Y - (fader.Y + fader.Height / 2));
-				path.AddPolygon(diamond ?
-					GetDiamondPolygon(fader, flip) :
-					GetFaderPolygon(fader, flip));
+				offset = new Point(pt.X - (fader.X + fader.Width/2),
+				                   pt.Y - (fader.Y + fader.Height/2));
+				path.AddPolygon(diamond
+				                	? GetDiamondPolygon(fader, flip)
+				                	: GetFaderPolygon(fader, flip));
 				return path.IsVisible(pt);
 			}
 		}
@@ -201,13 +200,10 @@ namespace VixenModules.App.ColorGradients
 		private List<ColorGradient.Point> GetFadersUnderMouse(Point location, ref Point offset, out bool focus)
 		{
 			focus = false;
-			if (_blend != null)
-			{
-				using (Graphics gr = this.CreateGraphics())
-				{
+			if (_blend != null) {
+				using (Graphics gr = this.CreateGraphics()) {
 					//check selection
-					if (_selection != null && _selection.Count > 0)
-					{
+					if (_selection != null && _selection.Count > 0) {
 						//fader
 						if (_selection.All(x => HitsSlider(gr, x.Position, x is AlphaPoint, false, location, ref _offset)))
 							return _selection;
@@ -250,17 +246,14 @@ namespace VixenModules.App.ColorGradients
 		{
 			if (_blend == null)
 				return false;
-			if (_selection != null && _selection.Count > 0)
-			{
-				if (_focussel)
-				{
+			if (_selection != null && _selection.Count > 0) {
+				if (_focussel) {
 					//move focus point
 					_blend.SetFocusPosition(_selection.First(), PointToPos(new Point(
-							e.X - _offset.X,
-							e.Y - _offset.Y)));
+					                                                       	e.X - _offset.X,
+					                                                       	e.Y - _offset.Y)));
 				}
-				else if (!this.ClientRectangle.Contains(e.Location))
-				{
+				else if (!this.ClientRectangle.Contains(e.Location)) {
 					// don't remove the point if dragged outside the area anymore,
 					// it's bloody annoying and easy to do.
 					////remove point if dragged out
@@ -273,8 +266,7 @@ namespace VixenModules.App.ColorGradients
 					//_selection = null;
 					//RaiseSelectionChanged();
 				}
-				else
-				{
+				else {
 					//move selected point
 					foreach (ColorGradient.Point point in _selection) {
 						point.Position = PointToPos(new Point(e.X - _offset.X, e.Y - _offset.Y));
@@ -288,7 +280,6 @@ namespace VixenModules.App.ColorGradients
 
 		#endregion
 
-
 		#region controller
 
 		//draw gradient and faders
@@ -301,10 +292,10 @@ namespace VixenModules.App.ColorGradients
 				System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 			//draw gradient
 			Rectangle area = new Rectangle(BORDER, BORDER,
-				                            this.Width - BORDER*2 - 1, this.Height - BORDER*2 - 1);
+			                               this.Width - BORDER*2 - 1, this.Height - BORDER*2 - 1);
 			if (_blend != null) {
 				using (HatchBrush brs = new HatchBrush(HatchStyle.LargeCheckerBoard,
-					                                    Color.Silver, Color.White)) {
+				                                       Color.Silver, Color.White)) {
 					e.Graphics.FillRectangle(brs, area);
 				}
 				Bitmap bmp = _blend.GenerateColorGradientImage(area.Size, DiscreteColors);
@@ -327,7 +318,7 @@ namespace VixenModules.App.ColorGradients
 					}
 
 					DrawFader(e.Graphics, currentPoint.Position, currentColors, false,
-						        _selection != null && _selection.Contains(currentPoint) && !_focussel);
+					          _selection != null && _selection.Contains(currentPoint) && !_focussel);
 				}
 
 				////draw color points
@@ -345,28 +336,26 @@ namespace VixenModules.App.ColorGradients
 				// draw selected focus
 				if (_selection != null && _selection.Count > 0)
 					DrawDiamond(e.Graphics, _blend.GetFocusPosition(_selection.First()),
-						        _selection.First() is AlphaPoint, _focussel);
+					            _selection.First() is AlphaPoint, _focussel);
 			}
 		}
 
 		//select or add faders
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
-			if (_blend != null && e.Button == MouseButtons.Left && !ReadOnly)
-			{
+			if (_blend != null && e.Button == MouseButtons.Left && !ReadOnly) {
 				bool foc;
 				Selection = GetFadersUnderMouse(e.Location, ref _offset, out foc);
 				FocusSelection = foc;
-				if (_selection == null || _selection.Count == 0)
-				{
+				if (_selection == null || _selection.Count == 0) {
 					//create new color or alpha point
 					Rectangle area = Rectangle.Inflate(this.ClientRectangle, -BORDER, -BORDER);
 					double pos = PointToPos(e.Location);
 					_offset = Point.Empty;
 					//
-					if (_orientation == Orientation.Horizontal ?
-						e.Y > area.Bottom : e.X > area.Right)
-					{
+					if (_orientation == Orientation.Horizontal
+					    	? e.Y > area.Bottom
+					    	: e.X > area.Right) {
 						List<ColorGradient.Point> newColorPoints;
 						if (DiscreteColors) {
 							List<Color> newColors = new List<Color>();
@@ -386,17 +375,18 @@ namespace VixenModules.App.ColorGradients
 								ColorPoint point = new ColorPoint(newColor, targetPos);
 								newColorPoints.Add(point);
 							}
-						} else {
-							newColorPoints = new List<ColorGradient.Point> { new ColorPoint(_blend.GetColorAt((float)pos), pos) };
+						}
+						else {
+							newColorPoints = new List<ColorGradient.Point> {new ColorPoint(_blend.GetColorAt((float) pos), pos)};
 						}
 						_selection = newColorPoints;
 						foreach (ColorPoint newColorPoint in newColorPoints) {
-							_blend.Colors.Add(newColorPoint);							
+							_blend.Colors.Add(newColorPoint);
 						}
 					}
-					else if (_orientation == Orientation.Horizontal ?
-						e.Y < area.Y : e.X < area.X)
-					{
+					else if (_orientation == Orientation.Horizontal
+					         	? e.Y < area.Y
+					         	: e.X < area.X) {
 						// MS: 25/09/11: disable drawing alpha points, we don't want to use them (yet).
 						//AlphaPoint pnt = new AlphaPoint(_blend.GetColorAt((float)pos).A, pos);
 						//_selection = pnt;
@@ -429,12 +419,12 @@ namespace VixenModules.App.ColorGradients
 				if (underMouse != null && underMouse.Count > 0)
 					//hit fader
 					this.Cursor = Cursors.SizeWE;
-				else if (_orientation == Orientation.Horizontal ?
-						// MS: 25/09/11: disable drawing alpha points, we don't want to use them (yet).
-						//(e.Y < area.Y || e.Y > area.Bottom) :
-						//(e.X < area.X || e.X > area.Right))
-						(e.Y > area.Bottom) :
-						(e.X > area.Right))
+				else if (_orientation == Orientation.Horizontal
+				         	? // MS: 25/09/11: disable drawing alpha points, we don't want to use them (yet).
+				         //(e.Y < area.Y || e.Y > area.Bottom) :
+				         //(e.X < area.X || e.X > area.Right))
+				         (e.Y > area.Bottom)
+				         	: (e.X > area.Right))
 					//create new point
 					this.Cursor = Cursors.Hand;
 				else
@@ -467,7 +457,7 @@ namespace VixenModules.App.ColorGradients
 			//update ui
 			ModifiedEventArgs args = e as ModifiedEventArgs;
 			if (args != null && (args.Action == Action.Cleared ||
-				(args.Action == Action.Removed && _selection.Contains(args.Point))))
+			                     (args.Action == Action.Removed && _selection.Contains(args.Point))))
 				Selection = null;
 			else
 				RaiseGradientChanged();
@@ -475,14 +465,13 @@ namespace VixenModules.App.ColorGradients
 
 		#endregion
 
-
 		#region properties
 
 		/// <summary>
 		/// gets or sets the used color blend
 		/// </summary>
 		[Browsable(false),
-		DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		 DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public ColorGradient Gradient
 		{
 			get { return _blend; }
@@ -490,12 +479,10 @@ namespace VixenModules.App.ColorGradients
 			{
 				//if (value == _blend) return;
 				//prepare
-				if (_blend != null)
-				{
+				if (_blend != null) {
 					_blend.Changed -= new EventHandler(onChanged);
 				}
-				if (value != null)
-				{
+				if (value != null) {
 					value.Changed += new EventHandler(onChanged);
 				}
 				//set
@@ -531,8 +518,7 @@ namespace VixenModules.App.ColorGradients
 					}
 				}
 
-				if (_selection != null && _selection.Count > 0)
-				{
+				if (_selection != null && _selection.Count > 0) {
 					foreach (ColorGradient.Point point in _selection) {
 						Invalidate(PosToRectangle(point.Position));
 					}
@@ -541,8 +527,7 @@ namespace VixenModules.App.ColorGradients
 					if (!double.IsNaN(foc))
 						this.Invalidate(PosToRectangle(foc));
 				}
-				if (value != null && value.Count > 0)
-				{
+				if (value != null && value.Count > 0) {
 					foreach (ColorGradient.Point point in value) {
 						Invalidate(PosToRectangle(point.Position));
 					}
@@ -561,7 +546,7 @@ namespace VixenModules.App.ColorGradients
 		/// gets or sets if the focus point is selected
 		/// </summary>
 		[Browsable(false),
-		DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		 DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool FocusSelection
 		{
 			get { return _focussel; }
@@ -570,10 +555,9 @@ namespace VixenModules.App.ColorGradients
 				if (value == _focussel)
 					return;
 				_focussel = value;
-				if (_selection != null && _selection.Count > 0)
-				{
+				if (_selection != null && _selection.Count > 0) {
 					foreach (ColorGradient.Point point in _selection) {
-						Invalidate(PosToRectangle(point.Position));	
+						Invalidate(PosToRectangle(point.Position));
 					}
 					//update focus
 					double foc = _blend.GetFocusPosition(_selection.First());
@@ -591,7 +575,7 @@ namespace VixenModules.App.ColorGradients
 		/// to length-1
 		/// </summary>
 		[Browsable(false),
-		DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		 DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public int[] SelectedColorIndex
 		{
 			get
@@ -625,7 +609,7 @@ namespace VixenModules.App.ColorGradients
 		/// to length-1
 		/// </summary>
 		[Browsable(false),
-		DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		 DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public int SelectedAlphaIndex
 		{
 			get
@@ -642,7 +626,7 @@ namespace VixenModules.App.ColorGradients
 				if (value == -1)
 					Selection = null;
 				else
-					Selection = new List<ColorGradient.Point> { _blend.Alphas[value] };
+					Selection = new List<ColorGradient.Point> {_blend.Alphas[value]};
 			}
 		}
 
@@ -669,7 +653,6 @@ namespace VixenModules.App.ColorGradients
 		}
 
 		#endregion
-
 
 		#region events
 

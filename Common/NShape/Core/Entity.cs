@@ -17,14 +17,14 @@ using System.Collections.Generic;
 using System.Drawing;
 
 
-namespace Dataweb.NShape.Advanced {
-
+namespace Dataweb.NShape.Advanced
+{
 	/// <summary>
 	/// Defines a type that can be read from and written into a repository.
 	/// </summary>
 	/// <status>reviewed</status>
-	public interface IEntity {
-
+	public interface IEntity
+	{
 		/// <summary>
 		/// Indicates the id of the entity.
 		/// </summary>
@@ -80,12 +80,13 @@ namespace Dataweb.NShape.Advanced {
 	/// Describes a property of an entity.
 	/// </summary>
 	/// <status>reviewed</status>
-	public abstract class EntityPropertyDefinition {
-
+	public abstract class EntityPropertyDefinition
+	{
 		/// <summary>
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.Advanced.EntityPropertyDefinition" />.
 		/// </summary>
-		protected EntityPropertyDefinition(string name) {
+		protected EntityPropertyDefinition(string name)
+		{
 			this.name = name;
 		}
 
@@ -93,7 +94,8 @@ namespace Dataweb.NShape.Advanced {
 		/// <summary>
 		/// Indicates the name of the property.
 		/// </summary>
-		public string Name {
+		public string Name
+		{
 			get { return name; }
 		}
 
@@ -103,11 +105,11 @@ namespace Dataweb.NShape.Advanced {
 		/// </summary>
 		/// <remarks>This is a convenience property for the cache. Applications 
 		/// should never access it.</remarks>
-		public string ElementName {
+		public string ElementName
+		{
 			get { return elementName; }
 			internal set { elementName = value; }
 		}
-		
 
 		#region Fields
 
@@ -118,18 +120,19 @@ namespace Dataweb.NShape.Advanced {
 		#endregion
 	}
 
-	
+
 	/// <summary>
 	/// Describes a single valued property.
 	/// </summary>
 	/// <status>reviewed</status>
-	public class EntityFieldDefinition : EntityPropertyDefinition {
-
+	public class EntityFieldDefinition : EntityPropertyDefinition
+	{
 		/// <summary>
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.Advanced.EntityFieldDefinition" />.
 		/// </summary>
 		public EntityFieldDefinition(string name, Type type)
-			: base(name) {
+			: base(name)
+		{
 			if (type == null) throw new ArgumentNullException("type");
 			this.type = type;
 		}
@@ -138,13 +141,15 @@ namespace Dataweb.NShape.Advanced {
 		/// <summary>
 		/// Specifies the property type.
 		/// </summary>
-		public Type Type {
+		public Type Type
+		{
 			get { return type; }
 		}
 
-
 		#region Fields
+
 		private Type type;
+
 		#endregion
 	}
 
@@ -153,13 +158,15 @@ namespace Dataweb.NShape.Advanced {
 	/// Describes a property which holds a collection of inner objects.
 	/// </summary>
 	/// <status>reviewed</status>
-	public class EntityInnerObjectsDefinition : EntityPropertyDefinition {
-
+	public class EntityInnerObjectsDefinition : EntityPropertyDefinition
+	{
 		/// <summary>
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.Advanced.EntityInnerObjectsDefinition" />.
 		/// </summary>
-		public EntityInnerObjectsDefinition(string name, string entityTypeName, string[] innerFieldNames, Type[] innerFieldTypes)
-			: base(name) {
+		public EntityInnerObjectsDefinition(string name, string entityTypeName, string[] innerFieldNames,
+		                                    Type[] innerFieldTypes)
+			: base(name)
+		{
 			if (innerFieldNames.Length != innerFieldTypes.Length)
 				throw new NShapeException("Number of field names does not match number of field types.");
 			this.entityTypeName = entityTypeName;
@@ -172,7 +179,8 @@ namespace Dataweb.NShape.Advanced {
 		/// <summary>
 		/// Retrieves the entity type name of the inner objects.
 		/// </summary>
-		public string EntityTypeName {
+		public string EntityTypeName
+		{
 			get { return entityTypeName; }
 		}
 
@@ -180,10 +188,10 @@ namespace Dataweb.NShape.Advanced {
 		/// <summary>
 		/// Retrieves the property definitions of the inner objects.
 		/// </summary>
-		public IEnumerable<EntityPropertyDefinition> PropertyDefinitions {
+		public IEnumerable<EntityPropertyDefinition> PropertyDefinitions
+		{
 			get { return fieldInfos; }
 		}
-
 
 		#region Fields
 
@@ -198,25 +206,34 @@ namespace Dataweb.NShape.Advanced {
 	/// Describes the kind of entity.
 	/// </summary>
 	/// <status>reviewed</status>
-	public enum EntityCategory { 
+	public enum EntityCategory
+	{
 		/// <summary>Project settings entity</summary>
-		ProjectSettings, 
+		ProjectSettings,
+
 		/// <summary>Diagram entity</summary>
-		Diagram, 
+		Diagram,
+
 		/// <summary>Shape entity</summary>
-		Shape, 
+		Shape,
+
 		/// <summary>Template entity</summary>
 		Template,
+
 		/// <summary>Model entity</summary>
 		Model,
+
 		/// <summary>Model object entity</summary>
 		ModelObject,
+
 		/// <summary>Model mapping entity</summary>
 		ModelMapping,
+
 		/// <summary>Design entity</summary>
-		Design, 
+		Design,
+
 		/// <summary>Style entity</summary>
-		Style 
+		Style
 	}
 
 
@@ -227,8 +244,8 @@ namespace Dataweb.NShape.Advanced {
 	/// data model. Since the XML document represents that conceptual model, the 
 	/// entity types define the schema of the XML document.</remarks>
 	/// <status>reviewed</status>
-	public interface IEntityType {
-
+	public interface IEntityType
+	{
 		/// <summary>
 		/// Full name of the entity type including the namespace.
 		/// </summary>
@@ -248,7 +265,7 @@ namespace Dataweb.NShape.Advanced {
 		/// Indicates the repository version to be used with the entity type.
 		/// </summary>
 		int RepositoryVersion { get; }
-		
+
 		/// <summary>
 		/// Creates an empty instance of this entity for loading.
 		/// </summary>
@@ -272,7 +289,7 @@ namespace Dataweb.NShape.Advanced {
 	/// </summary>
 	/// <returns></returns>
 	public delegate IEntity CreateInstanceDelegate();
-	
+
 
 	/// <summary>
 	/// Represents a method that retrieves the property definitions of an entity.
@@ -285,13 +302,15 @@ namespace Dataweb.NShape.Advanced {
 	/// <summary>
 	/// Describes the entities of one sort.
 	/// </summary>
-	public class EntityType : IEntityType {
-
+	public class EntityType : IEntityType
+	{
 		/// <summary>
 		/// Constructs an entity type.
 		/// </summary>
-		public EntityType(string entityTypeName, EntityCategory category, int version, 
-			CreateInstanceDelegate createInstanceDelegate, IEnumerable<EntityPropertyDefinition> propertyDefinitions) {
+		public EntityType(string entityTypeName, EntityCategory category, int version,
+		                  CreateInstanceDelegate createInstanceDelegate,
+		                  IEnumerable<EntityPropertyDefinition> propertyDefinitions)
+		{
 			if (entityTypeName == null) throw new ArgumentNullException("entityTypeName");
 			if (createInstanceDelegate == null) throw new ArgumentNullException("createInstanceDelegate");
 			if (propertyDefinitions == null) throw new ArgumentNullException("propertyDefinitions");
@@ -312,45 +331,53 @@ namespace Dataweb.NShape.Advanced {
 		#region IEntityType Members
 
 		/// <override></override>
-		public string FullName {
+		public string FullName
+		{
 			get { return name; }
 		}
 
 
 		/// <override></override>
-		public string ElementName {
+		public string ElementName
+		{
 			get { return elementName; }
 			set { elementName = value; }
 		}
 
 
 		/// <override></override>
-		public EntityCategory Category {
+		public EntityCategory Category
+		{
 			get { return category; }
 		}
 
 
 		/// <override></override>
-		public int RepositoryVersion { 
-			get { return repositoryVersion; } 
+		public int RepositoryVersion
+		{
+			get { return repositoryVersion; }
 		}
 
 
 		/// <override></override>
-		public IEntity CreateInstanceForLoading() {
+		public IEntity CreateInstanceForLoading()
+		{
 			return createInstanceDelegate();
 		}
 
 
 		/// <override></override>
-		public IEnumerable<EntityPropertyDefinition> PropertyDefinitions {
+		public IEnumerable<EntityPropertyDefinition> PropertyDefinitions
+		{
 			get { return propertyDefinitions; }
 		}
 
 
 		/// <override></override>
-		public bool HasInnerObjects {
-			get {
+		public bool HasInnerObjects
+		{
+			get
+			{
 				bool result = false;
 				foreach (EntityPropertyDefinition pi in propertyDefinitions)
 					if (pi is EntityInnerObjectsDefinition) {
@@ -362,7 +389,6 @@ namespace Dataweb.NShape.Advanced {
 		}
 
 		#endregion
-
 
 		#region Fields
 
@@ -381,8 +407,8 @@ namespace Dataweb.NShape.Advanced {
 	/// Writes entities into a cache.
 	/// </summary>
 	/// <status>reviewed</status>
-	public interface IRepositoryWriter {
-
+	public interface IRepositoryWriter
+	{
 		/// <summary>
 		/// Starts writing the next set of inner objects through an additional cache repositoryWriter.
 		/// </summary>
@@ -450,7 +476,6 @@ namespace Dataweb.NShape.Advanced {
 
 		/// <summary>Writes a template.</summary>
 		void WriteTemplate(Template template);
-
 	}
 
 
@@ -458,8 +483,8 @@ namespace Dataweb.NShape.Advanced {
 	/// Reads objects from a cache.
 	/// </summary>
 	/// <status>reviewed</status>
-	public interface IRepositoryReader {
-
+	public interface IRepositoryReader
+	{
 		/// <summary>
 		/// Fetches the next inner object in a set of inner object.
 		/// </summary>
@@ -541,6 +566,5 @@ namespace Dataweb.NShape.Advanced {
 
 		/// <summary>Reads a template.</summary>
 		Template ReadTemplate();
-
 	}
 }

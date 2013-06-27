@@ -13,7 +13,7 @@ using System.Diagnostics;
 
 namespace VixenModules.Output.BlinkyLinky
 {
-	class BlinkyLinky : ControllerModuleInstanceBase
+	internal class BlinkyLinky : ControllerModuleInstanceBase
 	{
 		private Dictionary<int, byte> _lastValues;
 		private Dictionary<int, int> _nullCommands;
@@ -30,7 +30,7 @@ namespace VixenModules.Output.BlinkyLinky
 
 		public static byte COMMAND_SET_VALUES = 0x01;
 
-	
+
 		public BlinkyLinky()
 		{
 			_lastValues = new Dictionary<int, byte>();
@@ -50,18 +50,24 @@ namespace VixenModules.Output.BlinkyLinky
 			}
 		}
 
-		public override int OutputCount {
+		public override int OutputCount
+		{
 			get { return _outputCount; }
-			set {
+			set
+			{
 				_outputCount = value;
-				_setupDataBuffers(); 
+				_setupDataBuffers();
 			}
 		}
 
 		public override IModuleDataModel ModuleData
 		{
 			get { return _data; }
-			set { _data = value as BlinkyLinkyData; CloseConnection(); }
+			set
+			{
+				_data = value as BlinkyLinkyData;
+				CloseConnection();
+			}
 		}
 
 		public override bool HasSetup
@@ -97,15 +103,20 @@ namespace VixenModules.Output.BlinkyLinky
 			try {
 				_tcpClient = new TcpClient();
 				_tcpClient.Connect(_data.Address, _data.Port);
-			} catch (Exception ex) {
-				VixenSystem.Logging.Warning("BlinkyLinky: Failed to connect to remote host " + _data.Address.ToString() + ", " + _data.Port, ex);
+			}
+			catch (Exception ex) {
+				VixenSystem.Logging.Warning(
+					"BlinkyLinky: Failed to connect to remote host " + _data.Address.ToString() + ", " + _data.Port, ex);
 				return false;
 			}
 
 			try {
 				_networkStream = _tcpClient.GetStream();
-			} catch (Exception ex) {
-				VixenSystem.Logging.Warning("BlinkyLinky: Failed to get stream to communicate with remote host " + _data.Address.ToString() + ", " + _data.Port, ex);
+			}
+			catch (Exception ex) {
+				VixenSystem.Logging.Warning(
+					"BlinkyLinky: Failed to get stream to communicate with remote host " + _data.Address.ToString() + ", " + _data.Port,
+					ex);
 				_tcpClient.Close();
 				return false;
 			}
@@ -143,8 +154,9 @@ namespace VixenModules.Output.BlinkyLinky
 		}
 
 
-		public override void UpdateState(int chainIndex, ICommand[] outputStates) {
-			if(_networkStream == null) {
+		public override void UpdateState(int chainIndex, ICommand[] outputStates)
+		{
+			if (_networkStream == null) {
 				bool success = OpenConnection();
 				if (!success) {
 					VixenSystem.Logging.Warning("BlinkyLinky: failed to connect to device, not updating the current state.");
@@ -153,7 +165,7 @@ namespace VixenModules.Output.BlinkyLinky
 			}
 
 			// build up transmission packet
-			byte[] data = new byte[1024];		// overkill, but it'll do
+			byte[] data = new byte[1024]; // overkill, but it'll do
 			int totalPacketLength = 0;
 
 			// protocol is:	4 bytes header
@@ -170,7 +182,7 @@ namespace VixenModules.Output.BlinkyLinky
 			data[totalPacketLength++] = HEADER_4;
 			data[totalPacketLength++] = COMMAND_SET_VALUES;
 
-			data[totalPacketLength++] = (byte)_data.Stream;
+			data[totalPacketLength++] = (byte) _data.Stream;
 			int lengthPosH = totalPacketLength++;
 			int lengthPosL = totalPacketLength++;
 
@@ -184,7 +196,8 @@ namespace VixenModules.Output.BlinkyLinky
 						continue;
 					newValue = command.CommandValue;
 					_nullCommands[i] = 0;
-				} else {
+				}
+				else {
 					// it was a null command. We should turn it off; however, to avoid some potentially nasty flickering,
 					// we will keep track of the null commands for this output, and ignore the first one. Any after that will
 					// actually be sent through.
@@ -196,15 +209,15 @@ namespace VixenModules.Output.BlinkyLinky
 
 				if (_lastValues[i] != newValue) {
 					changed = true;
-					data[totalPacketLength++] = (byte)i;
+					data[totalPacketLength++] = (byte) i;
 					data[totalPacketLength++] = newValue;
 					_lastValues[i] = newValue;
 				}
 			}
 
 			int totalData = totalPacketLength - lengthPosL - 1;
-			data[lengthPosH] = (byte)((totalData >> 8) & 0xFF);
-			data[lengthPosL] = (byte)(totalData & 0xFF);
+			data[lengthPosH] = (byte) ((totalData >> 8) & 0xFF);
+			data[lengthPosL] = (byte) (totalData & 0xFF);
 
 			// don't bother writing anything if we haven't acutally *changed* any values...
 			// (also, send at least a 'null' update command every 10 seconds. I think there's a bug in the micro
@@ -214,8 +227,10 @@ namespace VixenModules.Output.BlinkyLinky
 					_timeoutStopwatch.Restart();
 					_networkStream.Write(data, 0, totalPacketLength);
 					_networkStream.Flush();
-				} catch (Exception ex) {
-					VixenSystem.Logging.Warning("BlinkyLinky: failed to write data to device, this update state may be lost. Closing connection.", ex);
+				}
+				catch (Exception ex) {
+					VixenSystem.Logging.Warning(
+						"BlinkyLinky: failed to write data to device, this update state may be lost. Closing connection.", ex);
 					CloseConnection();
 				}
 			}

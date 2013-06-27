@@ -4,10 +4,13 @@ using System.Linq;
 using System.Text;
 using Vixen.Instrumentation;
 
-namespace Vixen.Sys.Instrumentation {
-	class CommandsQualifiedCountValue : CountValue {
+namespace Vixen.Sys.Instrumentation
+{
+	internal class CommandsQualifiedCountValue : CountValue
+	{
 		public CommandsQualifiedCountValue()
-			: base("Commands - Qualified (count)") {
+			: base("Commands - Qualified (count)")
+		{
 		}
 	}
 }

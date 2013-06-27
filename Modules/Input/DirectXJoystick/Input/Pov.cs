@@ -1,16 +1,20 @@
 ﻿using SlimDX.DirectInput;
 
-namespace VixenModules.Input.DirectXJoystick.Input {
-	class Pov : JoystickInput {
+namespace VixenModules.Input.DirectXJoystick.Input
+{
+	internal class Pov : JoystickInput
+	{
 		private IPovBehavior _povBehavior;
 
-		public enum PovType {
+		public enum PovType
+		{
 			Cardinal,
 			Polar
 		};
 
 		public Pov(string name, int index, PovType type = PovType.Polar)
-			: base(name) {
+			: base(name)
+		{
 			PovIndex = index;
 			Type = type;
 		}
@@ -19,11 +23,13 @@ namespace VixenModules.Input.DirectXJoystick.Input {
 
 		private PovType _povType;
 
-		public PovType Type {
+		public PovType Type
+		{
 			get { return _povType; }
-			set {
+			set
+			{
 				_povType = value;
-				switch(_povType) {
+				switch (_povType) {
 					case PovType.Cardinal:
 						_povBehavior = new CardinalPovBehavior();
 						break;
@@ -34,7 +40,8 @@ namespace VixenModules.Input.DirectXJoystick.Input {
 			}
 		}
 
-		protected override double _GetValue(JoystickState joystickState) {
+		protected override double _GetValue(JoystickState joystickState)
+		{
 			return _povBehavior.GetValue(joystickState, PovIndex);
 		}
 	}

@@ -19,22 +19,22 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
-
 using Dataweb.NShape.Advanced;
 
 
-namespace Dataweb.NShape.WinFormsUI {
-
+namespace Dataweb.NShape.WinFormsUI
+{
 	/// <summary>
 	/// List box for displaying available font families including preview.
 	/// </summary>
 	[ToolboxItem(false)]
-	public partial class FontFamilyListBox : ListBox {
-		
+	public partial class FontFamilyListBox : ListBox
+	{
 		/// <summary>
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.WinFormsUI.FontFamilyListBox" />.
 		/// </summary>
-		public FontFamilyListBox(IWindowsFormsEditorService editorService) {
+		public FontFamilyListBox(IWindowsFormsEditorService editorService)
+		{
 			InitializeComponent();
 			Construct(editorService);
 		}
@@ -43,12 +43,12 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// <summary>
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.WinFormsUI.FontFamilyListBox" />.
 		/// </summary>
-		public FontFamilyListBox(IWindowsFormsEditorService editorService, IContainer container) {
+		public FontFamilyListBox(IWindowsFormsEditorService editorService, IContainer container)
+		{
 			container.Add(this);
 			InitializeComponent();
 			Construct(editorService);
 		}
-
 
 		#region [Public] Properties
 
@@ -57,7 +57,8 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// </summary>
 		[Category("NShape")]
 		[Browsable(true)]
-		public new string ProductVersion {
+		public new string ProductVersion
+		{
 			get { return base.ProductVersion; }
 		}
 
@@ -66,7 +67,8 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// Specifies if 
 		/// </summary>
 		[Category("Behavior")]
-		public bool HighlightItems {
+		public bool HighlightItems
+		{
 			get { return highlightItems; }
 			set { highlightItems = value; }
 		}
@@ -75,9 +77,11 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// <summary>
 		/// Specifies the background color for normal items.
 		/// </summary>
-		public Color ItemBackgroundColor {
+		public Color ItemBackgroundColor
+		{
 			get { return itemBackgroundColor; }
-			set {
+			set
+			{
 				if (itemBackgroundBrush != null) {
 					itemBackgroundBrush.Dispose();
 					itemBackgroundBrush = null;
@@ -90,9 +94,11 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// <summary>
 		/// Specifies the background color for highlighted items.
 		/// </summary>
-		public Color ItemHighlightedColor {
+		public Color ItemHighlightedColor
+		{
 			get { return itemHighlightedColor; }
-			set {
+			set
+			{
 				if (itemHighlightedBrush != null) {
 					itemHighlightedBrush.Dispose();
 					itemHighlightedBrush = null;
@@ -105,9 +111,11 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// <summary>
 		/// Specifies the background color for selected items.
 		/// </summary>
-		public Color ItemSelectedColor {
+		public Color ItemSelectedColor
+		{
 			get { return itemSelectedColor; }
-			set {
+			set
+			{
 				if (itemSelectedBrush != null) {
 					itemSelectedBrush.Dispose();
 					itemSelectedBrush = null;
@@ -120,9 +128,11 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// <summary>
 		/// Specifies the background color of focused items.
 		/// </summary>
-		public Color ItemFocusedColor {
+		public Color ItemFocusedColor
+		{
 			get { return itemFocusedColor; }
-			set {
+			set
+			{
 				if (itemFocusedBrush != null) {
 					itemFocusedBrush.Dispose();
 					itemFocusedBrush = null;
@@ -135,9 +145,11 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// <summary>
 		/// Specifies the border color for focused items.
 		/// </summary>
-		public Color FocusBorderColor {
+		public Color FocusBorderColor
+		{
 			get { return focusBorderColor; }
-			set {
+			set
+			{
 				if (focusBorderPen != null) {
 					focusBorderPen.Dispose();
 					focusBorderPen = null;
@@ -150,9 +162,11 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// <summary>
 		/// Spacifies the border color for normal items.
 		/// </summary>
-		public Color ItemBorderColor {
+		public Color ItemBorderColor
+		{
 			get { return itemBorderColor; }
-			set {
+			set
+			{
 				if (itemBorderPen != null) {
 					itemBorderPen.Dispose();
 					itemBorderPen = null;
@@ -165,9 +179,11 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// <summary>
 		/// Specifies the text color of all items.
 		/// </summary>
-		public Color TextColor {
+		public Color TextColor
+		{
 			get { return textColor; }
-			set {
+			set
+			{
 				if (textBrush != null) {
 					textBrush.Dispose();
 					textBrush = null;
@@ -178,14 +194,14 @@ namespace Dataweb.NShape.WinFormsUI {
 
 		#endregion
 
-
 		#region [Protected] Methods: Overrides
 
 		/// <summary> 
 		/// Clean up any resources being used.
 		/// </summary>
 		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-		protected override void Dispose(bool disposing) {
+		protected override void Dispose(bool disposing)
+		{
 			if (disposing) {
 				// dispose drawing stuff
 				formatter.Dispose();
@@ -200,9 +216,10 @@ namespace Dataweb.NShape.WinFormsUI {
 			base.Dispose(disposing);
 		}
 
-	
+
 		/// <override></override>
-		protected override void OnKeyUp(KeyEventArgs e) {
+		protected override void OnKeyUp(KeyEventArgs e)
+		{
 			base.OnKeyUp(e);
 			if (e.KeyData == Keys.Return || e.KeyData == Keys.Space) {
 				ExecuteSelection();
@@ -211,7 +228,8 @@ namespace Dataweb.NShape.WinFormsUI {
 
 
 		/// <override></override>
-		protected override void OnMouseUp(MouseEventArgs e) {
+		protected override void OnMouseUp(MouseEventArgs e)
+		{
 			base.OnMouseUp(e);
 			if (e.Button == MouseButtons.Left) {
 				for (int i = 0; i < Items.Count; ++i) {
@@ -225,9 +243,10 @@ namespace Dataweb.NShape.WinFormsUI {
 
 
 		/// <override></override>
-		protected override void OnMeasureItem(MeasureItemEventArgs e) {
+		protected override void OnMeasureItem(MeasureItemEventArgs e)
+		{
 			if (e.Index >= 0) {
-				e.ItemHeight = (int)Math.Ceiling(fonts[e.Index].GetHeight(e.Graphics));
+				e.ItemHeight = (int) Math.Ceiling(fonts[e.Index].GetHeight(e.Graphics));
 				e.ItemWidth = Width;
 			}
 			else base.OnMeasureItem(e);
@@ -235,7 +254,8 @@ namespace Dataweb.NShape.WinFormsUI {
 
 
 		/// <override></override>
-		protected override void OnDrawItem(DrawItemEventArgs e) {
+		protected override void OnDrawItem(DrawItemEventArgs e)
+		{
 			itemBounds = e.Bounds;
 			itemBounds.Inflate(-3, -1);
 
@@ -268,11 +288,12 @@ namespace Dataweb.NShape.WinFormsUI {
 
 		#endregion
 
-
 		#region [Private] Properties: Pens and Brushes
 
-		private Brush ItemBackgroundBrush {
-			get {
+		private Brush ItemBackgroundBrush
+		{
+			get
+			{
 				if (itemBackgroundBrush == null)
 					itemBackgroundBrush = new SolidBrush(ItemBackgroundColor);
 				return itemBackgroundBrush;
@@ -280,8 +301,10 @@ namespace Dataweb.NShape.WinFormsUI {
 		}
 
 
-		private Brush ItemHighlightedBrush {
-			get {
+		private Brush ItemHighlightedBrush
+		{
+			get
+			{
 				if (itemHighlightedBrush == null)
 					itemHighlightedBrush = new SolidBrush(itemHighlightedColor);
 				return itemHighlightedBrush;
@@ -289,8 +312,10 @@ namespace Dataweb.NShape.WinFormsUI {
 		}
 
 
-		private Brush ItemSelectedBrush {
-			get {
+		private Brush ItemSelectedBrush
+		{
+			get
+			{
 				if (itemSelectedBrush == null)
 					itemSelectedBrush = new SolidBrush(itemSelectedColor);
 				return itemSelectedBrush;
@@ -298,8 +323,10 @@ namespace Dataweb.NShape.WinFormsUI {
 		}
 
 
-		private Brush TextBrush {
-			get {
+		private Brush TextBrush
+		{
+			get
+			{
 				if (textBrush == null)
 					textBrush = new SolidBrush(textColor);
 				return textBrush;
@@ -307,8 +334,10 @@ namespace Dataweb.NShape.WinFormsUI {
 		}
 
 
-		private Brush ItemFocusedBrush {
-			get {
+		private Brush ItemFocusedBrush
+		{
+			get
+			{
 				if (itemFocusedBrush == null)
 					itemFocusedBrush = new SolidBrush(ItemFocusedColor);
 				return itemFocusedBrush;
@@ -316,8 +345,10 @@ namespace Dataweb.NShape.WinFormsUI {
 		}
 
 
-		private Pen FocusBorderPen {
-			get {
+		private Pen FocusBorderPen
+		{
+			get
+			{
 				if (focusBorderPen == null) {
 					focusBorderPen = new Pen(focusBorderColor);
 					focusBorderPen.Alignment = PenAlignment.Inset;
@@ -327,8 +358,10 @@ namespace Dataweb.NShape.WinFormsUI {
 		}
 
 
-		private Pen ItemBorderPen {
-			get {
+		private Pen ItemBorderPen
+		{
+			get
+			{
 				if (itemBorderPen == null) {
 					itemBorderPen = new Pen(itemBorderColor);
 					itemBorderPen.Alignment = PenAlignment.Inset;
@@ -339,10 +372,10 @@ namespace Dataweb.NShape.WinFormsUI {
 
 		#endregion
 
-
 		#region [Private] Methods
 
-		private void Construct(IWindowsFormsEditorService editorService) {
+		private void Construct(IWindowsFormsEditorService editorService)
+		{
 			if (editorService == null) throw new ArgumentNullException("editorService");
 			this.editorService = editorService;
 
@@ -374,23 +407,24 @@ namespace Dataweb.NShape.WinFormsUI {
 		}
 
 
-		private void ExecuteSelection() {
+		private void ExecuteSelection()
+		{
 			if (editorService != null) editorService.CloseDropDown();
 		}
 
 		#endregion
 
-
 		#region Fields
+
 		private IWindowsFormsEditorService editorService;
 		private bool highlightItems = true;
-		
+
 		// drawing stuff
-		List<Font> fonts = new List<Font>(FontFamily.Families.Length);
-		StringFormat formatter = new StringFormat();
-		
-		const int margin = 2;
-		Rectangle itemBounds = Rectangle.Empty;
+		private List<Font> fonts = new List<Font>(FontFamily.Families.Length);
+		private StringFormat formatter = new StringFormat();
+
+		private const int margin = 2;
+		private Rectangle itemBounds = Rectangle.Empty;
 
 		private Color itemBackgroundColor = Color.FromKnownColor(KnownColor.Window);
 		private Color itemHighlightedColor = Color.FromKnownColor(KnownColor.HighlightText);
@@ -407,6 +441,7 @@ namespace Dataweb.NShape.WinFormsUI {
 		private Brush textBrush;
 		private Pen itemBorderPen;
 		private Pen focusBorderPen;
+
 		#endregion
 	}
 }

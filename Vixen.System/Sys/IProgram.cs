@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Vixen.Sys {
-	public interface IProgram : IEnumerable<ISequence> {
+namespace Vixen.Sys
+{
+	public interface IProgram : IEnumerable<ISequence>
+	{
 		string FilePath { get; set; }
 		string Name { get; }
 		void Add(ISequence sequence);

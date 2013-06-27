@@ -1,10 +1,13 @@
 ﻿using Vixen.Sys.Attribute;
 
-namespace Vixen.Module.Preview {
+namespace Vixen.Module.Preview
+{
 	[TypeOfModule("Preview")]
-	class PreviewModuleImplementation : ModuleImplementation<IPreviewModuleInstance> {
+	internal class PreviewModuleImplementation : ModuleImplementation<IPreviewModuleInstance>
+	{
 		public PreviewModuleImplementation()
-			: base(new PreviewModuleManagement(), new PreviewModuleRepository()) {
+			: base(new PreviewModuleManagement(), new PreviewModuleRepository())
+		{
 		}
 	}
 }

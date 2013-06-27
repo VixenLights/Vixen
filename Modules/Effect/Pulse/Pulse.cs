@@ -50,21 +50,29 @@ namespace VixenModules.Effect.Pulse
 		public Curve LevelCurve
 		{
 			get { return _data.LevelCurve; }
-			set { _data.LevelCurve = value; IsDirty = true; }
+			set
+			{
+				_data.LevelCurve = value;
+				IsDirty = true;
+			}
 		}
 
 		[Value]
 		public ColorGradient ColorGradient
 		{
 			get { return _data.ColorGradient; }
-			set { _data.ColorGradient = value; IsDirty = true; }
+			set
+			{
+				_data.ColorGradient = value;
+				IsDirty = true;
+			}
 		}
 
 		// renders the given node to the internal ElementData dictionary. If the given node is
 		// not a element, will recursively descend until we render its elements.
 		private void RenderNode(ElementNode node)
 		{
-			foreach(ElementNode elementNode in node.GetLeafEnumerator()) {
+			foreach (ElementNode elementNode in node.GetLeafEnumerator()) {
 				// this is probably always going to be a single element for the given node, as
 				// we have iterated down to leaf nodes in RenderNode() above. May as well do
 				// it this way, though, in case something changes in future.
@@ -75,7 +83,8 @@ namespace VixenModules.Effect.Pulse
 
 				if (colorType == ElementColorType.FullColor) {
 					addIntentsToElement(elementNode.Element);
-				} else {
+				}
+				else {
 					IEnumerable<Color> colors = ColorModule.getValidColorsForElementNode(elementNode);
 					foreach (Color color in colors) {
 						addIntentsToElement(elementNode.Element, color);
@@ -96,24 +105,30 @@ namespace VixenModules.Effect.Pulse
 				LightingValue startValue;
 				LightingValue endValue;
 				if (color == null) {
-					startValue = new LightingValue(ColorGradient.GetColorAt(lastPosition), (float) LevelCurve.GetValue(lastPosition*100)/100);
+					startValue = new LightingValue(ColorGradient.GetColorAt(lastPosition),
+					                               (float) LevelCurve.GetValue(lastPosition*100)/100);
 					endValue = new LightingValue(ColorGradient.GetColorAt(position), (float) LevelCurve.GetValue(position*100)/100);
-				} else {
-					startValue = new LightingValue((Color)color,
-						(float)(ColorGradient.GetProportionOfColorAt(lastPosition, (Color)color) * LevelCurve.GetValue(lastPosition * 100) / 100));
-					endValue = new LightingValue((Color)color,
-						(float)(ColorGradient.GetProportionOfColorAt(position, (Color)color) * LevelCurve.GetValue(position * 100) / 100));
+				}
+				else {
+					startValue = new LightingValue((Color) color,
+					                               (float)
+					                               (ColorGradient.GetProportionOfColorAt(lastPosition, (Color) color)*
+					                                LevelCurve.GetValue(lastPosition*100)/100));
+					endValue = new LightingValue((Color) color,
+					                             (float)
+					                             (ColorGradient.GetProportionOfColorAt(position, (Color) color)*
+					                              LevelCurve.GetValue(position*100)/100));
 				}
 
-				TimeSpan startTime = TimeSpan.FromMilliseconds(TimeSpan.TotalMilliseconds * lastPosition);
-				TimeSpan timeSpan = TimeSpan.FromMilliseconds(TimeSpan.TotalMilliseconds * (position - lastPosition));
+				TimeSpan startTime = TimeSpan.FromMilliseconds(TimeSpan.TotalMilliseconds*lastPosition);
+				TimeSpan timeSpan = TimeSpan.FromMilliseconds(TimeSpan.TotalMilliseconds*(position - lastPosition));
 
 				IIntent intent = new LightingIntent(startValue, endValue, timeSpan);
 
 				_elementData.AddIntentForElement(element.Id, intent, startTime);
 
 				lastPosition = position;
-			}			
+			}
 		}
 
 		private IEnumerable<double> _GetAllSignificantDataPoints(Color? color = null)
@@ -123,7 +138,7 @@ namespace VixenModules.Effect.Pulse
 			points.Add(0.0);
 
 			foreach (PointPair point in LevelCurve.Points) {
-				points.Add(point.X / 100);
+				points.Add(point.X/100);
 			}
 			double lastPointPos = 0.0;
 			double lastDistinctPos = 0.0;
@@ -148,7 +163,8 @@ namespace VixenModules.Effect.Pulse
 					}
 
 					lastPointPos = point.Position;
-				} else {
+				}
+				else {
 					points.Add(point.Position);
 				}
 			}

@@ -2,8 +2,10 @@
 using System.Xml.Linq;
 using System.IO;
 
-namespace VixenModules.SequenceType.Vixen2x {
-	class Vixen2SequenceData {
+namespace VixenModules.SequenceType.Vixen2x
+{
+	internal class Vixen2SequenceData
+	{
 		protected internal string FileName { get; private set; }
 
 		protected internal int EventPeriod { get; private set; }
@@ -20,7 +22,8 @@ namespace VixenModules.SequenceType.Vixen2x {
 
 		protected internal int EventsPerElement { get; private set; }
 
-		protected internal Vixen2SequenceData(string fileName) {
+		protected internal Vixen2SequenceData(string fileName)
+		{
 			if (!File.Exists(fileName)) {
 				throw new FileNotFoundException("Cannot Locate " + fileName);
 			}
@@ -28,7 +31,8 @@ namespace VixenModules.SequenceType.Vixen2x {
 			ParseFile();
 		}
 
-		private void ParseFile() {
+		private void ParseFile()
+		{
 			XElement root = null;
 			using (FileStream stream = new FileStream(FileName, FileMode.Open)) {
 				root = XElement.Load(stream);
@@ -53,9 +57,10 @@ namespace VixenModules.SequenceType.Vixen2x {
 				}
 			}
 			// These calculations could have been put in the properties, but then it gets confusing to debug because of all the jumping around.
-			TotalEventsCount = Convert.ToInt32(Math.Ceiling((double)(SeqLengthInMills / EventPeriod))); ;
-			ElementCount = EventData.Length / TotalEventsCount;
-			EventsPerElement = EventData.Length / ElementCount;
+			TotalEventsCount = Convert.ToInt32(Math.Ceiling((double) (SeqLengthInMills/EventPeriod)));
+			;
+			ElementCount = EventData.Length/TotalEventsCount;
+			EventsPerElement = EventData.Length/ElementCount;
 		}
 	}
 }

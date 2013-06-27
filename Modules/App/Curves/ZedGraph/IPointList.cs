@@ -16,6 +16,7 @@
 //License along with this library; if not, write to the Free Software
 //Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //=============================================================================
+
 using System;
 using System.Text;
 
@@ -48,7 +49,8 @@ namespace ZedGraph
 		/// <param name="index">The ordinal position (zero-based) of the
 		/// data point to be accessed.</param>
 		/// <value>A <see cref="PointPair"/> object instance.</value>
-		PointPair this[ int index ]  { get; }
+		PointPair this[int index] { get; }
+
 		/// <summary>
 		/// Gets the number of points available in the list.
 		/// </summary>

@@ -4,9 +4,11 @@ using Vixen.Module.Timing;
 using Vixen.Execution;
 using Vixen.Module;
 
-namespace Vixen.Sys {
-	public interface ISequence : IHasMedia, IHasSequenceFilterNodes {
-        string Name { get; }
+namespace Vixen.Sys
+{
+	public interface ISequence : IHasMedia, IHasSequenceFilterNodes
+	{
+		string Name { get; }
 		void Save();
 		void Save(string fileName);
 		TimeSpan Length { get; set; }

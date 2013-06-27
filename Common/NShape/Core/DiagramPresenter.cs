@@ -16,39 +16,43 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-
 using Dataweb.NShape.Advanced;
 
 
-namespace Dataweb.NShape.Controllers {
-
+namespace Dataweb.NShape.Controllers
+{
 	/// <summary>
 	/// Defines the visual appearance of control point grips.
 	/// </summary>
-	public enum ControlPointShape {
+	public enum ControlPointShape
+	{
 		/// <summary>A rhombical grip.</summary>
 		Diamond = 1,
+
 		/// <summary>A hexangular grip.</summary>
-		Hexagon = 2, 
+		Hexagon = 2,
+
 		/// <summary>A circular grip.</summary>
-		Circle = 3, 
+		Circle = 3,
+
 		/// <summary>A circular arrow grip.</summary>
 		RotateArrow = 4,
+
 		/// <summary>A quadratic grip.</summary>
 		Square = 5
 	}
 
-
 	#region EventArgs
 
 	/// <ToBeCompleted></ToBeCompleted>
-	public class DiagramPresenterShapeClickEventArgs : EventArgs {
-
+	public class DiagramPresenterShapeClickEventArgs : EventArgs
+	{
 		/// <summary>
 		/// Initializing a new instance of <see cref="T:Dataweb.NShape.Controllers.DiagramPresenterShapeClickEventArgs" />
 		/// </summary>
 		public DiagramPresenterShapeClickEventArgs(Shape shape, MouseEventArgsDg mouseEventArgs)
-			: this() {
+			: this()
+		{
 			this.shape = shape;
 			this.mouseEventArgs = mouseEventArgs;
 		}
@@ -56,19 +60,22 @@ namespace Dataweb.NShape.Controllers {
 		/// <summary>
 		/// Initializing a new instance of <see cref="T:Dataweb.NShape.Controllers.DiagramPresenterShapeClickEventArgs" />
 		/// </summary>
-		protected internal DiagramPresenterShapeClickEventArgs() {
+		protected internal DiagramPresenterShapeClickEventArgs()
+		{
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public Shape Shape {
+		public Shape Shape
+		{
 			get { return shape; }
 			protected internal set { shape = value; }
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public MouseEventArgsDg Mouse {
+		public MouseEventArgsDg Mouse
+		{
 			get { return mouseEventArgs; }
 			protected internal set { mouseEventArgs = value; }
 		}
@@ -80,12 +87,13 @@ namespace Dataweb.NShape.Controllers {
 
 
 	/// <ToBeCompleted></ToBeCompleted>
-	public class DiagramPresenterShapesEventArgs : EventArgs {
-
+	public class DiagramPresenterShapesEventArgs : EventArgs
+	{
 		/// <summary>
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.Controllers.DiagramPresenterShapeEventArgs" />.
 		/// </summary>
-		public DiagramPresenterShapesEventArgs(Shape shape) {
+		public DiagramPresenterShapesEventArgs(Shape shape)
+		{
 			this.shapes = new ReadOnlyList<Shape>(1);
 			this.shapes.Add(shape);
 		}
@@ -94,15 +102,18 @@ namespace Dataweb.NShape.Controllers {
 		/// <summary>
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.Controllers.DiagramPresenterShapeEventArgs" />.
 		/// </summary>
-		public DiagramPresenterShapesEventArgs(IEnumerable<Shape> shapes) {
+		public DiagramPresenterShapesEventArgs(IEnumerable<Shape> shapes)
+		{
 			this.shapes = new ReadOnlyList<Shape>(shapes);
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public IReadOnlyCollection<Shape> Shapes {
+		public IReadOnlyCollection<Shape> Shapes
+		{
 			get { return shapes; }
-			set {
+			set
+			{
 				shapes.Clear();
 				shapes.AddRange(value);
 			}
@@ -114,22 +125,22 @@ namespace Dataweb.NShape.Controllers {
 
 
 	/// <ToBeCompleted></ToBeCompleted>
-	public class UserMessageEventArgs : EventArgs {
-
+	public class UserMessageEventArgs : EventArgs
+	{
 		/// <summary>
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.Controllers.UserMessageEventArgs" />.
 		/// </summary>
-		public UserMessageEventArgs(string messageText) {
+		public UserMessageEventArgs(string messageText)
+		{
 			this.messageText = messageText;
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public string MessageText {
+		public string MessageText
+		{
 			get { return messageText; }
-			protected internal set {
-				messageText = value;
-			}
+			protected internal set { messageText = value; }
 		}
 
 
@@ -138,15 +149,14 @@ namespace Dataweb.NShape.Controllers {
 
 	#endregion
 
-
 	// IDiagramPresenter has to be a descendant of IDisplayService because Tools set their IDiagramPresenter as
 	// the preview shape's DisplayService
 	/// <summary>
 	/// Defines the interface between the tool and the diagram presenter.
 	/// </summary>
 	/// <status>reviewed</status>
-	public interface IDiagramPresenter {
-
+	public interface IDiagramPresenter
+	{
 		#region Events
 
 		/// <summary>Raised when the selected shapes changed.</summary>
@@ -186,7 +196,6 @@ namespace Dataweb.NShape.Controllers {
 		event EventHandler<UserMessageEventArgs> UserMessage;
 
 		#endregion
-
 
 		#region Properties
 
@@ -228,7 +237,6 @@ namespace Dataweb.NShape.Controllers {
 
 		#endregion
 
-
 		#region Properties: Visuals
 
 		/// <summary>
@@ -243,7 +251,6 @@ namespace Dataweb.NShape.Controllers {
 		bool HighQualityRendering { get; }
 
 		#endregion
-
 
 		#region Properties: Behavior
 
@@ -313,7 +320,6 @@ namespace Dataweb.NShape.Controllers {
 
 		#endregion
 
-
 		#region Methods: (Un)Selecting shapes
 
 		/// <summary>
@@ -358,7 +364,6 @@ namespace Dataweb.NShape.Controllers {
 		void SelectAll();
 
 		#endregion
-
 
 		#region Methods: Coordinate transformation routines
 
@@ -451,7 +456,6 @@ namespace Dataweb.NShape.Controllers {
 		void ScreenToDiagram(Rectangle sRect, out Rectangle dRect);
 
 		#endregion
-
 
 		#region Methods: Drawing and Invalidating
 
@@ -568,7 +572,6 @@ namespace Dataweb.NShape.Controllers {
 
 		#endregion
 
-
 		#region Methods
 
 		/// <summary>
@@ -676,7 +679,6 @@ namespace Dataweb.NShape.Controllers {
 		bool IsLayerActive(LayerIds layerId);
 
 		#endregion
-
 	}
 
 

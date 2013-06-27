@@ -1,5 +1,7 @@
-﻿namespace Vixen.Sys.Output {
-	public interface IUpdatableOutputCount {
+﻿namespace Vixen.Sys.Output
+{
+	public interface IUpdatableOutputCount
+	{
 		int OutputCount { get; set; }
 	}
 }

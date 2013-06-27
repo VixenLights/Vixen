@@ -16,39 +16,50 @@ using System;
 using System.Collections.Generic;
 
 
-namespace Dataweb.NShape {
-
+namespace Dataweb.NShape
+{
 	/// <summary>
 	/// Specifies the permission.
 	/// </summary>
 	[Flags]
-	public enum Permission {
+	public enum Permission
+	{
 		/// <summary>No permissions are granted.</summary>
 		None = 0x0000,
+
 		/// <summary>Assign a security domain to an <see cref="T:Dataweb.NShape.ISecurityDomainObject" />. This permission is security domain independent.</summary>
 		Security = 0x0001,
+
 		/// <summary>Assign a security domain to any shape. This permission is security domain independent.</summary>
-		[Obsolete("Use Permission.Security instead of Permission.ModifyPermissionSet.")]
-		ModifyPermissionSet = 0x0001,
+		[Obsolete("Use Permission.Security instead of Permission.ModifyPermissionSet.")] ModifyPermissionSet = 0x0001,
+
 		/// <summary>Modify position, size, rotation or z-order of shapes. This permission depends on the shape to modify.</summary>
 		Layout = 0x0002,
+
 		/// <summary>Modify the appearance of the shape (color, line thickness etc.) and assign other styles. This permission depends on the shape to modify.</summary>
 		Present = 0x0004,
+
 		/// <summary>Modify data properties. This permission depends on the <see cref="T:Dataweb.NShape.ISecurityDomainObject" /> to modify.</summary>
 		Data = 0x0008,
+
 		/// <summary>Modify data properties. This permission depends on the <see cref="T:Dataweb.NShape.ISecurityDomainObject" /> to modify.</summary>
-		[Obsolete("Use Permission.Data instead of Permission.ModifyData.")]
-		ModifyData = 0x0008,
+		[Obsolete("Use Permission.Data instead of Permission.ModifyData.")] ModifyData = 0x0008,
+
 		/// <summary>Insert shape into diagram. This permission depends on the <see cref="T:Dataweb.NShape.ISecurityDomainObject" /> to insert.</summary>
 		Insert = 0x0010,
+
 		/// <summary>Remove shape from diagram. This permission depends on the <see cref="T:Dataweb.NShape.ISecurityDomainObject" /> to remove.</summary>
 		Delete = 0x0020,
+
 		/// <summary>Connect or disconnect shapes. This permission depends on the active <see cref="T:Dataweb.NShape.Advanced.Shape" /> of the connection.</summary>
 		Connect = 0x0040,
+
 		/// <summary>Edit, insert and delete templates. This permission is security domain independent.</summary>
 		Templates = 0x0080,
+
 		/// <summary>Edit, insert and delete designs. This permission is security domain independent.</summary>
 		Designs = 0x0100,
+
 		/// <summary>All available permissions are granted.</summary>
 		All = 0xffff
 	}
@@ -57,9 +68,11 @@ namespace Dataweb.NShape {
 	/// <summary>
 	/// Specifies whether a permission is granted for modification or viewing.
 	/// </summary>
-	public enum SecurityAccess {
+	public enum SecurityAccess
+	{
 		/// <summary>Permission for modification</summary>
 		Modify,
+
 		/// <summary>Permission for viewing</summary>
 		View
 	}
@@ -68,20 +81,23 @@ namespace Dataweb.NShape {
 	/// <summary>
 	/// Specifies the set of <see cref="T:Dataweb.NShape.Permission" /> required for changing a property.
 	/// </summary>
-	[AttributeUsage((AttributeTargets.Method | AttributeTargets.Property | AttributeTargets.Field), AllowMultiple = true, Inherited = true)]
-	public class RequiredPermissionAttribute : Attribute {
-		
+	[AttributeUsage((AttributeTargets.Method | AttributeTargets.Property | AttributeTargets.Field), AllowMultiple = true,
+		Inherited = true)]
+	public class RequiredPermissionAttribute : Attribute
+	{
 		/// <summary>
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.RequiredPermissionAttribute" />.
 		/// </summary>
-		public RequiredPermissionAttribute(Permission requiredPermission) {
+		public RequiredPermissionAttribute(Permission requiredPermission)
+		{
 			permission = requiredPermission;
 		}
 
 		/// <summary>
 		/// Specifies the set of <see cref="T:Dataweb.NShape.Permission" /> required required.
 		/// </summary>
-		public Permission Permission {
+		public Permission Permission
+		{
 			get { return permission; }
 		}
 
@@ -92,7 +108,8 @@ namespace Dataweb.NShape {
 	/// <summary>
 	/// Interface for security aware objects.
 	/// </summary>
-	public interface ISecurityDomainObject {
+	public interface ISecurityDomainObject
+	{
 		/// <summary>Specifies the permission set that required permissions are checked against.</summary>
 		char SecurityDomainName { get; }
 	}
@@ -101,8 +118,8 @@ namespace Dataweb.NShape {
 	/// <summary>
 	/// Controls the access to diagram operations.
 	/// </summary>
-	public interface ISecurityManager {
-	
+	public interface ISecurityManager
+	{
 		/// <summary>
 		/// Checks whether the given domain-independent permission is granted by for the current role.
 		/// </summary>
@@ -140,46 +157,53 @@ namespace Dataweb.NShape {
 		/// of a list by the current user permissions.
 		/// </summary>
 		bool IsGranted<TSecurityDomainObject>(Permission permission, IEnumerable<TSecurityDomainObject> securityDomainObjects)
-		    where TSecurityDomainObject : ISecurityDomainObject;
+			where TSecurityDomainObject : ISecurityDomainObject;
 
 		/// <summary>
 		/// Checks whether the specified access for a given permission is granted for the security domain of all 
 		/// <see cref="T:Dataweb.NShape.ISecurityDomainObject" />s in the list.
 		/// </summary>
-		bool IsGranted<TSecurityDomainObject>(Permission permission, SecurityAccess access, IEnumerable<TSecurityDomainObject> securityDomainObjects) 
+		bool IsGranted<TSecurityDomainObject>(Permission permission, SecurityAccess access,
+		                                      IEnumerable<TSecurityDomainObject> securityDomainObjects)
 			where TSecurityDomainObject : ISecurityDomainObject;
-
 	}
 
 
 	/// <summary>
 	/// Defines a standard user role
 	/// </summary>
-	public enum StandardRole {
+	public enum StandardRole
+	{
 		/// <summary>All permissions are granted.</summary>
 		Administrator,
+
 		/// <summary>Most permissions are granted.</summary>
 		SuperUser,
+
 		/// <summary>Permissions required for designing diagrams are granted.</summary>
 		Designer,
+
 		/// <summary>Permissions needed for changing the state of objects are granted.</summary>
 		Operator,
+
 		/// <summary>Nearly no permissions are granted.</summary>
 		Guest,
+
 		/// <summary>Custom permissons are granted.</summary>
 		Custom
 	}
-	
-	
+
+
 	/// <summary>
 	/// SecurityManager implementation based on a fixed set of user roles.
 	/// </summary>
-	public class RoleBasedSecurityManager : ISecurityManager {
-
+	public class RoleBasedSecurityManager : ISecurityManager
+	{
 		/// <summary>
 		/// Creates a default security object with standard roles and domains.
 		/// </summary>
-		public RoleBasedSecurityManager() {
+		public RoleBasedSecurityManager()
+		{
 			char domain;
 
 			AddRole(roleNameAdministrator, "May do anything.");
@@ -199,19 +223,20 @@ namespace Dataweb.NShape {
 
 			// Set permissions for domain A
 			domain = 'A';
-			AddDomain(domain, "SuperUser creates diagrams, Designer only modifies designs and styles, Operator modifies layout and data.");
+			AddDomain(domain,
+			          "SuperUser creates diagrams, Designer only modifies designs and styles, Operator modifies layout and data.");
 			AddPermissions(domain, roleNameAdministrator, Permission.All);
-			AddPermissions(domain, roleNameSuperUser, 
-				Permission.Connect
-				| Permission.Delete
-				| Permission.Insert
-				| Permission.Layout
-				| Permission.Data
-				| Permission.Present);
-			AddPermissions(domain, roleNameDesigner, 
-				Permission.Layout
-				| Permission.Data
-				| Permission.Present);
+			AddPermissions(domain, roleNameSuperUser,
+			               Permission.Connect
+			               | Permission.Delete
+			               | Permission.Insert
+			               | Permission.Layout
+			               | Permission.Data
+			               | Permission.Present);
+			AddPermissions(domain, roleNameDesigner,
+			               Permission.Layout
+			               | Permission.Data
+			               | Permission.Present);
 			AddPermissions(domain, roleNameOperator, Permission.Layout | Permission.Data);
 			AddPermissions(domain, roleNameGuest, Permission.None);
 
@@ -219,20 +244,20 @@ namespace Dataweb.NShape {
 			domain = 'B';
 			AddDomain(domain, "SuperUser and Designer create diagrams, Operator may modify layout and data data.");
 			AddPermissions(domain, roleNameAdministrator, Permission.All);
-			AddPermissions(domain, roleNameSuperUser, 
-				Permission.Connect 
-				| Permission.Delete 
-				| Permission.Insert 
-				| Permission.Layout 
-				| Permission.Data 
-				| Permission.Present);
+			AddPermissions(domain, roleNameSuperUser,
+			               Permission.Connect
+			               | Permission.Delete
+			               | Permission.Insert
+			               | Permission.Layout
+			               | Permission.Data
+			               | Permission.Present);
 			AddPermissions(domain, roleNameDesigner,
-				Permission.Connect
-				| Permission.Delete
-				| Permission.Insert
-				| Permission.Layout
-				| Permission.Data
-				| Permission.Present);
+			               Permission.Connect
+			               | Permission.Delete
+			               | Permission.Insert
+			               | Permission.Layout
+			               | Permission.Data
+			               | Permission.Present);
 			AddPermissions(domain, roleNameOperator, Permission.Layout | Permission.Data);
 			AddPermissions(domain, roleNameGuest, Permission.None);
 			//
@@ -242,28 +267,30 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// Defines the role of the current user.
 		/// </summary>
-		public string CurrentRoleName {
+		public string CurrentRoleName
+		{
 			get { return currentUserRole.name; }
-			set {
+			set
+			{
 				switch (value) {
-						case roleNameAdministrator:
-							currentRole = StandardRole.Administrator;
-							break;
-						case roleNameSuperUser:
-							currentRole = StandardRole.SuperUser;
-							break;
-						case roleNameDesigner:
-							currentRole = StandardRole.Designer;
-							break;
-						case roleNameOperator:
-							currentRole = StandardRole.Operator;
-							break;
-						case roleNameGuest:
-							currentRole = StandardRole.Guest;
-							break;
-						default:
-							currentRole = StandardRole.Custom;
-							break;
+					case roleNameAdministrator:
+						currentRole = StandardRole.Administrator;
+						break;
+					case roleNameSuperUser:
+						currentRole = StandardRole.SuperUser;
+						break;
+					case roleNameDesigner:
+						currentRole = StandardRole.Designer;
+						break;
+					case roleNameOperator:
+						currentRole = StandardRole.Operator;
+						break;
+					case roleNameGuest:
+						currentRole = StandardRole.Guest;
+						break;
+					default:
+						currentRole = StandardRole.Custom;
+						break;
 				}
 				currentUserRole = GetRole(value, true);
 			}
@@ -273,9 +300,11 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// Defines the role of the current user.
 		/// </summary>
-		public StandardRole CurrentRole {
+		public StandardRole CurrentRole
+		{
 			get { return currentRole; }
-			set {
+			set
+			{
 				switch (value) {
 					case StandardRole.Administrator:
 						currentUserRole = GetRole(roleNameAdministrator, true);
@@ -299,57 +328,66 @@ namespace Dataweb.NShape {
 			}
 		}
 
-
 		#region ISecurityManager Members
 
 		/// <override></override>
-		public bool IsGranted(Permission permission) {
-		    return currentUserRole.IsGranted(permission, SecurityAccess.Modify);
+		public bool IsGranted(Permission permission)
+		{
+			return currentUserRole.IsGranted(permission, SecurityAccess.Modify);
 		}
 
 
 		/// <override></override>
-		public bool IsGranted(Permission permission, SecurityAccess access) {
+		public bool IsGranted(Permission permission, SecurityAccess access)
+		{
 			return currentUserRole.IsGranted(permission, access);
 		}
 
 
 		/// <override></override>
-		public bool IsGranted(Permission permission, char domainName) {
-		    return currentUserRole.IsGranted(permission, domainName);
+		public bool IsGranted(Permission permission, char domainName)
+		{
+			return currentUserRole.IsGranted(permission, domainName);
 		}
 
 
 		/// <override></override>
-		public bool IsGranted(Permission permission, SecurityAccess access, char domainName) {
+		public bool IsGranted(Permission permission, SecurityAccess access, char domainName)
+		{
 			return currentUserRole.IsGranted(permission, access, domainName);
 		}
 
 
 		/// <override></override>
-		public bool IsGranted(Permission permission, ISecurityDomainObject shape) {
+		public bool IsGranted(Permission permission, ISecurityDomainObject shape)
+		{
 			if (shape == null) throw new ArgumentNullException("shape");
 			return IsGranted(permission, shape.SecurityDomainName);
 		}
 
 
 		/// <override></override>
-		public bool IsGranted(Permission permission, SecurityAccess access, ISecurityDomainObject securityDomainObject) {
+		public bool IsGranted(Permission permission, SecurityAccess access, ISecurityDomainObject securityDomainObject)
+		{
 			if (securityDomainObject == null) throw new ArgumentNullException("shape");
 			return IsGranted(permission, access, securityDomainObject.SecurityDomainName);
 		}
 
 
 		/// <override></override>
-		public bool IsGranted<TSecurityDomainObject>(Permission permission, IEnumerable<TSecurityDomainObject> securityDomainObjects)
-			where TSecurityDomainObject : ISecurityDomainObject {
+		public bool IsGranted<TSecurityDomainObject>(Permission permission,
+		                                             IEnumerable<TSecurityDomainObject> securityDomainObjects)
+			where TSecurityDomainObject : ISecurityDomainObject
+		{
 			return IsGranted<TSecurityDomainObject>(permission, SecurityAccess.Modify, securityDomainObjects);
 		}
 
 
 		/// <override></override>
-		public bool IsGranted<TSecurityDomainObject>(Permission permission, SecurityAccess access, IEnumerable<TSecurityDomainObject> securityDomainObjects)
-			where TSecurityDomainObject : ISecurityDomainObject {
+		public bool IsGranted<TSecurityDomainObject>(Permission permission, SecurityAccess access,
+		                                             IEnumerable<TSecurityDomainObject> securityDomainObjects)
+			where TSecurityDomainObject : ISecurityDomainObject
+		{
 			bool result = true;
 			bool collectionIsEmpty = true;
 			foreach (TSecurityDomainObject s in securityDomainObjects) {
@@ -359,18 +397,18 @@ namespace Dataweb.NShape {
 					break;
 				}
 			}
-			if (collectionIsEmpty) 
+			if (collectionIsEmpty)
 				result = CouldBeGranted(permission, access);
 			return result;
 		}
 
 		#endregion
 
-
 		/// <summary>
 		/// Adds a domain to the security.
 		/// </summary>
-		public void AddDomain(char name, string description) {
+		public void AddDomain(char name, string description)
+		{
 			if (!IsValidDomainName(name)) throw new ArgumentException("This is not an allowed domain name.");
 			if (description == null) throw new ArgumentNullException("description");
 			if (domains[name - 'A'] != null) throw new ArgumentException("A domain with this name exists already.");
@@ -381,7 +419,8 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// Removes a domain from the security.
 		/// </summary>
-		public void RemoveDomain(char name) {
+		public void RemoveDomain(char name)
+		{
 			if (!IsValidDomainName(name)) throw new ArgumentException("This is not an allowed domain name.");
 			if (domains[name - 'A'] == null) throw new ArgumentException("A domain with this name does not exist.");
 			domains[name - 'A'] = null;
@@ -391,7 +430,8 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// Adds a role to the security.
 		/// </summary>
-		public void AddRole(string name, string description) {
+		public void AddRole(string name, string description)
+		{
 			if (name == null) throw new ArgumentNullException("name");
 			roles.Add(new UserRole(name, description));
 		}
@@ -400,7 +440,8 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// Adds a new security role by copying an existing one.
 		/// </summary>
-		public void AddRole(string name, string description, string sourceRoleName) {
+		public void AddRole(string name, string description, string sourceRoleName)
+		{
 			if (name == null) throw new ArgumentNullException("name");
 			roles.Add(GetRole(sourceRoleName, true).Clone());
 		}
@@ -410,7 +451,8 @@ namespace Dataweb.NShape {
 		/// Adds permissions for the given role.
 		/// </summary>
 		/// <remarks>Security domain independent permissions are checked against the role permissions.</remarks>
-		public void AddPermissions(StandardRole role, Permission permissions) {
+		public void AddPermissions(StandardRole role, Permission permissions)
+		{
 			AddPermissions(role, permissions, SecurityAccess.Modify);
 		}
 
@@ -419,7 +461,8 @@ namespace Dataweb.NShape {
 		/// Adds permissions for the given role.
 		/// </summary>
 		/// <remarks>Security domain independent permissions are checked against the role permissions.</remarks>
-		public void AddPermissions(StandardRole role, Permission permissions, SecurityAccess access) {
+		public void AddPermissions(StandardRole role, Permission permissions, SecurityAccess access)
+		{
 			string roleName = GetRoleName(role);
 			AddPermissions(roleName, permissions, access);
 		}
@@ -429,7 +472,8 @@ namespace Dataweb.NShape {
 		/// Adds permissions for the given role.
 		/// </summary>
 		/// <remarks>Security domain independent permissions are checked against the role permissions.</remarks>
-		public void AddPermissions(string roleName, Permission permissions) {
+		public void AddPermissions(string roleName, Permission permissions)
+		{
 			AddPermissions(roleName, permissions, SecurityAccess.Modify);
 		}
 
@@ -438,7 +482,8 @@ namespace Dataweb.NShape {
 		/// Adds permissions for the given role.
 		/// </summary>
 		/// <remarks>Security domain independent permissions are checked against the role permissions.</remarks>
-		public void AddPermissions(string roleName, Permission permissions, SecurityAccess access) {
+		public void AddPermissions(string roleName, Permission permissions, SecurityAccess access)
+		{
 			if (roleName == null) throw new ArgumentNullException("role");
 			GetRole(roleName, true).AddPermissions(permissions, access);
 		}
@@ -448,7 +493,8 @@ namespace Dataweb.NShape {
 		/// Adds permissions for the given domain and role.
 		/// </summary>
 		/// <remarks>Security domain dependent permissions are checked against the role's domain permissions.</remarks>
-		public void AddPermissions(char domain, StandardRole role, Permission permissions) {
+		public void AddPermissions(char domain, StandardRole role, Permission permissions)
+		{
 			AddPermissions(domain, role, permissions, SecurityAccess.Modify);
 		}
 
@@ -457,7 +503,8 @@ namespace Dataweb.NShape {
 		/// Adds permissions for the given domain and role.
 		/// </summary>
 		/// <remarks>Security domain dependent permissions are checked against the role's domain permissions.</remarks>
-		public void AddPermissions(char domain, StandardRole role, Permission permissions, SecurityAccess access) {
+		public void AddPermissions(char domain, StandardRole role, Permission permissions, SecurityAccess access)
+		{
 			string roleName = GetRoleName(role);
 			AddPermissions(domain, roleName, permissions, access);
 		}
@@ -467,7 +514,8 @@ namespace Dataweb.NShape {
 		/// Adds permissions for the given domain and role.
 		/// </summary>
 		/// <remarks>Security domain dependent permissions are checked against the role's domain permissions.</remarks>
-		public void AddPermissions(char domain, string roleName, Permission permissions) {
+		public void AddPermissions(char domain, string roleName, Permission permissions)
+		{
 			AddPermissions(domain, roleName, permissions, SecurityAccess.Modify);
 		}
 
@@ -476,7 +524,8 @@ namespace Dataweb.NShape {
 		/// Adds permissions for the given domain and role.
 		/// </summary>
 		/// <remarks>Security domain dependent permissions are checked against the role's domain permissions.</remarks>
-		public void AddPermissions(char domain, string roleName, Permission permissions, SecurityAccess access) {
+		public void AddPermissions(char domain, string roleName, Permission permissions, SecurityAccess access)
+		{
 			if (roleName == null) throw new ArgumentNullException("role");
 			GetRole(roleName, true).AddPermissions(domain, permissions, access);
 		}
@@ -486,7 +535,8 @@ namespace Dataweb.NShape {
 		/// Redefines the permissions of the given role.
 		/// </summary>
 		/// <remarks>Security domain independent permissions are checked against the role permissions.</remarks>
-		public void SetPermissions(StandardRole role, Permission permissions) {
+		public void SetPermissions(StandardRole role, Permission permissions)
+		{
 			SetPermissions(role, permissions, SecurityAccess.Modify);
 		}
 
@@ -495,7 +545,8 @@ namespace Dataweb.NShape {
 		/// Redefines the permissions of the given role.
 		/// </summary>
 		/// <remarks>Security domain independent permissions are checked against the role permissions.</remarks>
-		public void SetPermissions(StandardRole role, Permission permissions, SecurityAccess access) {
+		public void SetPermissions(StandardRole role, Permission permissions, SecurityAccess access)
+		{
 			string roleName = GetRoleName(role);
 			SetPermissions(roleName, permissions, access);
 		}
@@ -505,7 +556,8 @@ namespace Dataweb.NShape {
 		/// Redefines the permissions of the given role.
 		/// </summary>
 		/// <remarks>Security domain independent permissions are checked against the role permissions.</remarks>
-		public void SetPermissions(string roleName, Permission permissions) {
+		public void SetPermissions(string roleName, Permission permissions)
+		{
 			SetPermissions(roleName, permissions, SecurityAccess.Modify);
 		}
 
@@ -514,7 +566,8 @@ namespace Dataweb.NShape {
 		/// Redefines the permissions of the given role.
 		/// </summary>
 		/// <remarks>Security domain independent permissions are checked against the role permissions.</remarks>
-		public void SetPermissions(string roleName, Permission permissions, SecurityAccess access) {
+		public void SetPermissions(string roleName, Permission permissions, SecurityAccess access)
+		{
 			if (roleName == null) throw new ArgumentNullException("role");
 			GetRole(roleName, true).SetPermissions(permissions, access);
 		}
@@ -524,7 +577,8 @@ namespace Dataweb.NShape {
 		/// Redefines the permissions of the given domain and role.
 		/// </summary>
 		/// <remarks>Security domain dependent permissions are checked against the role's domain permissions.</remarks>
-		public void SetPermissions(char domain, StandardRole role, Permission permissions) {
+		public void SetPermissions(char domain, StandardRole role, Permission permissions)
+		{
 			SetPermissions(domain, role, permissions, SecurityAccess.Modify);
 		}
 
@@ -533,7 +587,8 @@ namespace Dataweb.NShape {
 		/// Redefines the permissions of the given domain and role.
 		/// </summary>
 		/// <remarks>Security domain dependent permissions are checked against the role's domain permissions.</remarks>
-		public void SetPermissions(char domain, StandardRole role, Permission permissions, SecurityAccess access) {
+		public void SetPermissions(char domain, StandardRole role, Permission permissions, SecurityAccess access)
+		{
 			string roleName = GetRoleName(role);
 			SetPermissions(domain, roleName, permissions, access);
 		}
@@ -543,7 +598,8 @@ namespace Dataweb.NShape {
 		/// Redefines the permissions of the given domain and role.
 		/// </summary>
 		/// <remarks>Security domain dependent permissions are checked against the role's domain permissions.</remarks>
-		public void SetPermissions(char domain, string roleName, Permission permissions) {
+		public void SetPermissions(char domain, string roleName, Permission permissions)
+		{
 			SetPermissions(domain, roleName, permissions, SecurityAccess.Modify);
 		}
 
@@ -552,7 +608,8 @@ namespace Dataweb.NShape {
 		/// Redefines the permissions of the given domain and role.
 		/// </summary>
 		/// <remarks>Security domain dependent permissions are checked against the role's domain permissions.</remarks>
-		public void SetPermissions(char domain, string roleName, Permission permissions, SecurityAccess access) {
+		public void SetPermissions(char domain, string roleName, Permission permissions, SecurityAccess access)
+		{
 			if (roleName == null) throw new ArgumentNullException("role");
 			GetRole(roleName, true).SetPermissions(domain, permissions, access);
 		}
@@ -562,7 +619,8 @@ namespace Dataweb.NShape {
 		/// Removes permissions from the given role.
 		/// </summary>
 		/// <remarks>Security domain independent permissions are checked against the role permissions.</remarks>
-		public void RemovePermissions(StandardRole role, Permission permissions) {
+		public void RemovePermissions(StandardRole role, Permission permissions)
+		{
 			RemovePermissions(role, permissions, SecurityAccess.View);
 		}
 
@@ -571,7 +629,8 @@ namespace Dataweb.NShape {
 		/// Removes permissions from the given role.
 		/// </summary>
 		/// <remarks>Security domain independent permissions are checked against the role permissions.</remarks>
-		public void RemovePermissions(StandardRole role, Permission permissions, SecurityAccess access) {
+		public void RemovePermissions(StandardRole role, Permission permissions, SecurityAccess access)
+		{
 			string roleName = GetRoleName(role);
 			RemovePermissions(roleName, permissions, access);
 		}
@@ -581,7 +640,8 @@ namespace Dataweb.NShape {
 		/// Removes permissions from the given role.
 		/// </summary>
 		/// <remarks>Security domain independent permissions are checked against the role permissions.</remarks>
-		public void RemovePermissions(string roleName, Permission permissions) {
+		public void RemovePermissions(string roleName, Permission permissions)
+		{
 			RemovePermissions(roleName, permissions, SecurityAccess.View);
 		}
 
@@ -590,7 +650,8 @@ namespace Dataweb.NShape {
 		/// Removes permissions from the given role.
 		/// </summary>
 		/// <remarks>Security domain independent permissions are checked against the role permissions.</remarks>
-		public void RemovePermissions(string roleName, Permission permissions, SecurityAccess access) {
+		public void RemovePermissions(string roleName, Permission permissions, SecurityAccess access)
+		{
 			if (roleName == null) throw new ArgumentNullException("role");
 			GetRole(roleName, true).RemovePermissions(permissions, access);
 		}
@@ -600,7 +661,8 @@ namespace Dataweb.NShape {
 		/// Removes permissions from the given domain and role.
 		/// </summary>
 		/// <remarks>Security domain dependent permissions are checked against the role's domain permissions.</remarks>
-		public void RemovePermissions(char domain, StandardRole role, Permission permissions) {
+		public void RemovePermissions(char domain, StandardRole role, Permission permissions)
+		{
 			RemovePermissions(domain, role, permissions, SecurityAccess.View);
 		}
 
@@ -609,7 +671,8 @@ namespace Dataweb.NShape {
 		/// Removes permissions from the given domain and role.
 		/// </summary>
 		/// <remarks>Security domain dependent permissions are checked against the role's domain permissions.</remarks>
-		public void RemovePermissions(char domain, StandardRole role, Permission permissions, SecurityAccess access) {
+		public void RemovePermissions(char domain, StandardRole role, Permission permissions, SecurityAccess access)
+		{
 			string roleName = GetRoleName(role);
 			RemovePermissions(domain, roleName, permissions, access);
 		}
@@ -619,7 +682,8 @@ namespace Dataweb.NShape {
 		/// Removes permissions from the given domain and role.
 		/// </summary>
 		/// <remarks>Security domain dependent permissions are checked against the role's domain permissions.</remarks>
-		public void RemovePermissions(char domain, string roleName, Permission permissions) {
+		public void RemovePermissions(char domain, string roleName, Permission permissions)
+		{
 			RemovePermissions(domain, roleName, permissions, SecurityAccess.View);
 		}
 
@@ -628,7 +692,8 @@ namespace Dataweb.NShape {
 		/// Removes permissions from the given domain and role.
 		/// </summary>
 		/// <remarks>Security domain dependent permissions are checked against the role's domain permissions.</remarks>
-		public void RemovePermissions(char domain, string roleName, Permission permissions, SecurityAccess access) {
+		public void RemovePermissions(char domain, string roleName, Permission permissions, SecurityAccess access)
+		{
 			if (roleName == null) throw new ArgumentNullException("role");
 			GetRole(roleName, true).RemovePermissions(domain, permissions, access);
 		}
@@ -637,32 +702,40 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// Returns the name of the given role.
 		/// </summary>
-		public string GetRoleName(StandardRole role) {
+		public string GetRoleName(StandardRole role)
+		{
 			switch (role) {
-				case StandardRole.Administrator: return roleNameAdministrator;
-				case StandardRole.Designer: return roleNameDesigner;
-				case StandardRole.Guest: return roleNameGuest;
-				case StandardRole.Operator: return roleNameOperator;
-				case StandardRole.SuperUser: return roleNameSuperUser;
-				default: 
+				case StandardRole.Administrator:
+					return roleNameAdministrator;
+				case StandardRole.Designer:
+					return roleNameDesigner;
+				case StandardRole.Guest:
+					return roleNameGuest;
+				case StandardRole.Operator:
+					return roleNameOperator;
+				case StandardRole.SuperUser:
+					return roleNameSuperUser;
+				default:
 					throw new InvalidOperationException(string.Format("{0} is not a valid role for this operation.", role));
 			}
 		}
 
 
-		private class UserRole {
-
+		private class UserRole
+		{
 			public static readonly Permission GeneralPermissions;
 			public static readonly Permission ShapePermissions;
 
 
-			public UserRole(string name, string description) {
+			public UserRole(string name, string description)
+			{
 				this.name = name;
 				this.description = description;
 			}
 
 
-			public UserRole Clone() {
+			public UserRole Clone()
+			{
 				UserRole result = new UserRole(name, description);
 				result.generalPermissionSetModify = generalPermissionSetModify;
 				result.generalPermissionSetView = generalPermissionSetView;
@@ -672,12 +745,14 @@ namespace Dataweb.NShape {
 			}
 
 
-			public void AddPermissions(Permission permissions) {
+			public void AddPermissions(Permission permissions)
+			{
 				AddPermissions(permissions, SecurityAccess.Modify);
 			}
 
 
-			public void AddPermissions(Permission permissions, SecurityAccess access) {
+			public void AddPermissions(Permission permissions, SecurityAccess access)
+			{
 				AssertGeneralPermissionSet(permissions);
 				if (access == SecurityAccess.Modify)
 					generalPermissionSetModify |= permissions;
@@ -685,12 +760,14 @@ namespace Dataweb.NShape {
 			}
 
 
-			public void AddPermissions(char domain, Permission permissions) {
+			public void AddPermissions(char domain, Permission permissions)
+			{
 				AddPermissions(domain, permissions, SecurityAccess.Modify);
 			}
 
 
-			public void AddPermissions(char domain, Permission permissions, SecurityAccess access) {
+			public void AddPermissions(char domain, Permission permissions, SecurityAccess access)
+			{
 				AssertValidDomainQualifier(domain);
 				AssertDomainPermissionSet(permissions);
 				if (access == SecurityAccess.Modify)
@@ -699,25 +776,29 @@ namespace Dataweb.NShape {
 			}
 
 
-			public void SetPermissions(Permission permissions) {
+			public void SetPermissions(Permission permissions)
+			{
 				SetPermissions(permissions, SecurityAccess.Modify);
 			}
 
 
-			public void SetPermissions(Permission permissions, SecurityAccess access) {
+			public void SetPermissions(Permission permissions, SecurityAccess access)
+			{
 				AssertGeneralPermissionSet(permissions);
-				if (access == SecurityAccess.Modify) 
+				if (access == SecurityAccess.Modify)
 					generalPermissionSetModify = permissions;
 				generalPermissionSetView = permissions;
 			}
 
 
-			public void SetPermissions(char domain, Permission permissions) {
+			public void SetPermissions(char domain, Permission permissions)
+			{
 				SetPermissions(domain, permissions, SecurityAccess.Modify);
 			}
 
 
-			public void SetPermissions(char domain, Permission permissions, SecurityAccess access) {
+			public void SetPermissions(char domain, Permission permissions, SecurityAccess access)
+			{
 				AssertValidDomainQualifier(domain);
 				AssertDomainPermissionSet(permissions);
 				domainPermissionSetsModify[domain - 'A'] = (access == SecurityAccess.Modify) ? permissions : Permission.None;
@@ -725,12 +806,14 @@ namespace Dataweb.NShape {
 			}
 
 
-			public void RemovePermissions(Permission permissions) {
+			public void RemovePermissions(Permission permissions)
+			{
 				RemovePermissions(permissions, SecurityAccess.View);
 			}
 
 
-			public void RemovePermissions(Permission permissions, SecurityAccess access) {
+			public void RemovePermissions(Permission permissions, SecurityAccess access)
+			{
 				AssertGeneralPermissionSet(permissions);
 				if (access == SecurityAccess.View)
 					generalPermissionSetView &= ~permissions;
@@ -738,12 +821,14 @@ namespace Dataweb.NShape {
 			}
 
 
-			public void RemovePermissions(char domain, Permission permissions) {
+			public void RemovePermissions(char domain, Permission permissions)
+			{
 				RemovePermissions(domain, permissions, SecurityAccess.View);
 			}
 
 
-			public void RemovePermissions(char domain, Permission permissions, SecurityAccess access) {
+			public void RemovePermissions(char domain, Permission permissions, SecurityAccess access)
+			{
 				AssertValidDomainQualifier(domain);
 				AssertDomainPermissionSet(permissions);
 				if (access == SecurityAccess.View)
@@ -752,12 +837,14 @@ namespace Dataweb.NShape {
 			}
 
 
-			public bool IsGranted(Permission permissions) {
+			public bool IsGranted(Permission permissions)
+			{
 				return IsGranted(permissions, SecurityAccess.Modify);
 			}
 
 
-			public bool IsGranted(Permission permissions, SecurityAccess access) {
+			public bool IsGranted(Permission permissions, SecurityAccess access)
+			{
 				AssertGeneralPermissionSet(permissions);
 				Permission userPermissions = permissions & GeneralPermissions;
 				if (access == SecurityAccess.Modify)
@@ -766,21 +853,24 @@ namespace Dataweb.NShape {
 			}
 
 
-			public bool IsGranted(Permission permissions, char domain) {
+			public bool IsGranted(Permission permissions, char domain)
+			{
 				return IsGranted(permissions, SecurityAccess.Modify, domain);
 			}
 
 
-			public bool IsGranted(Permission permissions, SecurityAccess access, char domain) {
+			public bool IsGranted(Permission permissions, SecurityAccess access, char domain)
+			{
 				AssertValidDomainQualifier(domain);
 				Permission userPermissions = permissions & GeneralPermissions;
 				Permission shapePermissions = permissions & ShapePermissions;
 				if (access == SecurityAccess.Modify) {
 					return ((generalPermissionSetModify & userPermissions) == userPermissions
-						&& (domainPermissionSetsModify[domain - 'A'] & shapePermissions) == shapePermissions);
-				} else {
+					        && (domainPermissionSetsModify[domain - 'A'] & shapePermissions) == shapePermissions);
+				}
+				else {
 					return ((generalPermissionSetView & userPermissions) == userPermissions
-						&& (domainPermissionSetsView[domain - 'A'] & shapePermissions) == shapePermissions);
+					        && (domainPermissionSetsView[domain - 'A'] & shapePermissions) == shapePermissions);
 				}
 			}
 
@@ -793,27 +883,34 @@ namespace Dataweb.NShape {
 			//}
 
 
-			private void AssertValidDomainQualifier(char domain) {
+			private void AssertValidDomainQualifier(char domain)
+			{
 				if (domain < 'A' || domain > 'Z')
 					throw new ArgumentOutOfRangeException("domain", "The domain qualifier has to be an upper case  ANSI letter (A-Z).");
 			}
 
 
-			private void AssertGeneralPermissionSet(Permission permissions) {
-				if (permissions != Permission.All && (permissions & ShapePermissions) != 0) 
-					throw new ArgumentException(string.Format("'{0}' is not a domain independent permission set", (permissions & ShapePermissions)));
+			private void AssertGeneralPermissionSet(Permission permissions)
+			{
+				if (permissions != Permission.All && (permissions & ShapePermissions) != 0)
+					throw new ArgumentException(string.Format("'{0}' is not a domain independent permission set",
+					                                          (permissions & ShapePermissions)));
 			}
 
 
-			private void AssertDomainPermissionSet(Permission permissions) {
+			private void AssertDomainPermissionSet(Permission permissions)
+			{
 				if (permissions != Permission.All && (permissions & GeneralPermissions) != 0)
-					throw new ArgumentException(string.Format("'{0}' is not a domain dependent permission set", (permissions & GeneralPermissions)));
+					throw new ArgumentException(string.Format("'{0}' is not a domain dependent permission set",
+					                                          (permissions & GeneralPermissions)));
 			}
 
 
-			static UserRole() {
+			static UserRole()
+			{
 				GeneralPermissions = Permission.Designs | Permission.Security | Permission.Templates;
-				ShapePermissions = Permission.Connect | Permission.Delete | Permission.Insert | Permission.Layout | Permission.Data | Permission.Present;
+				ShapePermissions = Permission.Connect | Permission.Delete | Permission.Insert | Permission.Layout | Permission.Data |
+				                   Permission.Present;
 			}
 
 
@@ -827,7 +924,8 @@ namespace Dataweb.NShape {
 		}
 
 
-		private UserRole GetRole(string name, bool throwOnNotFound) {
+		private UserRole GetRole(string name, bool throwOnNotFound)
+		{
 			UserRole result = null;
 			foreach (UserRole r in roles) {
 				if (r.name.Equals(name, StringComparison.InvariantCultureIgnoreCase)) {
@@ -835,17 +933,20 @@ namespace Dataweb.NShape {
 					break;
 				}
 			}
-			if (result == null && throwOnNotFound) throw new ArgumentException(string.Format("The role '{0}' does not exist.", name));
+			if (result == null && throwOnNotFound)
+				throw new ArgumentException(string.Format("The role '{0}' does not exist.", name));
 			return result;
 		}
 
 
-		private bool IsValidDomainName(char name) {
+		private bool IsValidDomainName(char name)
+		{
 			return name >= 'A' && name <= 'Z';
 		}
 
 
-		private bool CouldBeGranted(Permission permission) {
+		private bool CouldBeGranted(Permission permission)
+		{
 			for (char dom = 'A'; dom <= 'Z'; ++dom)
 				if (IsGranted(permission, dom))
 					return true;
@@ -853,7 +954,8 @@ namespace Dataweb.NShape {
 		}
 
 
-		private bool CouldBeGranted(Permission permission, SecurityAccess access) {
+		private bool CouldBeGranted(Permission permission, SecurityAccess access)
+		{
 			for (char dom = 'A'; dom <= 'Z'; ++dom)
 				if (IsGranted(permission, access, dom))
 					return true;
@@ -878,5 +980,4 @@ namespace Dataweb.NShape {
 		private const string roleNameOperator = "Operator";
 		private const string roleNameGuest = "Guest";
 	}
-
 }

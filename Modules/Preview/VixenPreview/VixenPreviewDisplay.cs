@@ -21,10 +21,7 @@ namespace VixenModules.Preview.VixenPreview
 				if (!DesignMode)
 					preview.Data = _data;
 			}
-			get
-			{
-				return _data;
-			}
+			get { return _data; }
 		}
 
 		public VixenPreviewDisplay()
@@ -45,7 +42,7 @@ namespace VixenModules.Preview.VixenPreview
 			//this will reset that value if it happens
 
 			var minX = Screen.AllScreens.Min(m => m.Bounds.X);
-			var maxX = Screen.AllScreens.Sum(m => m.Bounds.Width ) + minX;
+			var maxX = Screen.AllScreens.Sum(m => m.Bounds.Width) + minX;
 
 			var minY = Screen.AllScreens.Min(m => m.Bounds.Y);
 			var maxY = Screen.AllScreens.Sum(m => m.Bounds.Height) + minY;
@@ -70,9 +67,9 @@ namespace VixenModules.Preview.VixenPreview
 
 		private void VixenPreviewDisplay_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			if (e.CloseReason == CloseReason.UserClosing)
-			{
-				MessageBox.Show("The preview can only be closed from the Preview Configuration dialog.", "Close", MessageBoxButtons.OKCancel);
+			if (e.CloseReason == CloseReason.UserClosing) {
+				MessageBox.Show("The preview can only be closed from the Preview Configuration dialog.", "Close",
+				                MessageBoxButtons.OKCancel);
 				e.Cancel = true;
 			}
 		}
@@ -93,7 +90,5 @@ namespace VixenModules.Preview.VixenPreview
 		{
 			preview.Reload();
 		}
-
-
 	}
 }

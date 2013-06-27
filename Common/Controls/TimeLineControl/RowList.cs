@@ -10,10 +10,9 @@ using System.Windows.Forms;
 
 namespace Common.Controls.Timeline
 {
-	[System.ComponentModel.DesignerCategory("")]    // Prevent this from showing up in designer.
+	[System.ComponentModel.DesignerCategory("")] // Prevent this from showing up in designer.
 	public class RowList : UserControl
 	{
-
 		public RowList()
 		{
 			VerticalOffset = 0;
@@ -32,6 +31,7 @@ namespace Common.Controls.Timeline
 
 		// the offset at the top (when the control is scrolled)
 		private int m_verticalOffset;
+
 		public int VerticalOffset
 		{
 			get { return m_verticalOffset; }
@@ -54,11 +54,9 @@ namespace Common.Controls.Timeline
 
 		#endregion
 
-
 		#region Events
 
 		#endregion
-
 
 		#region Event Handlers
 
@@ -69,7 +67,7 @@ namespace Common.Controls.Timeline
 
 		protected void RowLabelChangedHandler(object sender, EventArgs e)
 		{
-            DoLayout();
+			DoLayout();
 		}
 
 		protected override void OnLayout(LayoutEventArgs e)
@@ -80,29 +78,29 @@ namespace Common.Controls.Timeline
 
 		protected override void OnVisibleChanged(EventArgs e)
 		{
-            base.OnVisibleChanged(e);
-            if (Visible)
-                DoLayout();
+			base.OnVisibleChanged(e);
+			if (Visible)
+				DoLayout();
 		}
 
 		#endregion
 
-
 		#region Methods
-		delegate void AddRowLabelDelegate(RowLabel trl);
+
+		private delegate void AddRowLabelDelegate(RowLabel trl);
+
 		public void AddRowLabel(RowLabel trl)
 		{
 			if (this.InvokeRequired) {
 				this.Invoke(new AddRowLabelDelegate(AddRowLabel), trl);
 			}
-			else
-			{
+			else {
 				RowLabels.Add(trl);
-                // Addint a control is VERY slow!
+				// Addint a control is VERY slow!
 				Controls.Add(trl);
 
 				trl.VisibleChanged += LabelVisibleChangedHandler;
-                // Don't call DoLayout. It'll get called after all the rows have been added!
+				// Don't call DoLayout. It'll get called after all the rows have been added!
 				//DoLayout();
 			}
 		}
@@ -117,7 +115,6 @@ namespace Common.Controls.Timeline
 
 		#endregion
 
-
 		#region Drawing
 
 		public void DoLayout()
@@ -128,7 +125,7 @@ namespace Common.Controls.Timeline
 			int offset = -VerticalOffset;
 			foreach (RowLabel trl in RowLabels) {
 				if (trl.Visible) {
-					int x = trl.ParentRow.ParentDepth * RowLabel.ToggleTreeButtonWidth;
+					int x = trl.ParentRow.ParentDepth*RowLabel.ToggleTreeButtonWidth;
 					trl.Location = new Point(x, offset);
 					trl.Width = Width - x;
 					offset += trl.Height;
@@ -167,8 +164,8 @@ namespace Common.Controls.Timeline
 					// if this is an indented row, draw a dotted line out and record its
 					// point, to be drawn up later if this is the last point
 					if (depth > 0) {
-						Point lineStart = new Point((int)((Single)(depth - 0.5) * inset), (int)(top + trl.Height * 0.5));
-						Point lineEnd = new Point(depth * inset, lineStart.Y);
+						Point lineStart = new Point((int) ((Single) (depth - 0.5)*inset), (int) (top + trl.Height*0.5));
+						Point lineEnd = new Point(depth*inset, lineStart.Y);
 						e.Graphics.DrawLine(line, lineStart, lineEnd);
 						dottedLineBottoms[depth] = lineStart;
 						dottedLineLevelNeedsDrawing[depth] = true;

@@ -1,10 +1,13 @@
 ﻿using System;
 using Vixen.Execution;
 
-namespace Vixen.Sys.Attribute {
+namespace Vixen.Sys.Attribute
+{
 	[AttributeUsage(AttributeTargets.Class)]
-	class ContextAttribute : System.Attribute {
-		public ContextAttribute(ContextTargetType targetType, ContextCaching caching) {
+	internal class ContextAttribute : System.Attribute
+	{
+		public ContextAttribute(ContextTargetType targetType, ContextCaching caching)
+		{
 			TargetType = targetType;
 			Caching = caching;
 		}

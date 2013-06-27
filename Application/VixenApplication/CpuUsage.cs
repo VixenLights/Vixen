@@ -5,27 +5,30 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Diagnostics;
 
-namespace VixenApplication {
+namespace VixenApplication
+{
 	using ComTypes = System.Runtime.InteropServices.ComTypes;
 
-	public class CpuUsage {
+	public class CpuUsage
+	{
 		[DllImport("kernel32.dll", SetLastError = true)]
-		static extern bool GetSystemTimes(
-					out ComTypes.FILETIME lpIdleTime,
-					out ComTypes.FILETIME lpKernelTime,
-					out ComTypes.FILETIME lpUserTime
-					);
+		private static extern bool GetSystemTimes(
+			out ComTypes.FILETIME lpIdleTime,
+			out ComTypes.FILETIME lpKernelTime,
+			out ComTypes.FILETIME lpUserTime
+			);
 
-		ComTypes.FILETIME _prevSysKernel;
-		ComTypes.FILETIME _prevSysUser;
+		private ComTypes.FILETIME _prevSysKernel;
+		private ComTypes.FILETIME _prevSysUser;
 
-		TimeSpan _prevProcTotal;
+		private TimeSpan _prevProcTotal;
 
-		Int16 _cpuUsage;
-		DateTime _lastRun;
-		long _runCount;
+		private Int16 _cpuUsage;
+		private DateTime _lastRun;
+		private long _runCount;
 
-		public CpuUsage() {
+		public CpuUsage()
+		{
 			_cpuUsage = -1;
 			_lastRun = DateTime.MinValue;
 			_prevSysUser.dwHighDateTime = _prevSysUser.dwLowDateTime = 0;
@@ -34,10 +37,11 @@ namespace VixenApplication {
 			_runCount = 0;
 		}
 
-		public short GetUsage() {
+		public short GetUsage()
+		{
 			short cpuCopy = _cpuUsage;
-			if(Interlocked.Increment(ref _runCount) == 1) {
-				if(!EnoughTimePassed) {
+			if (Interlocked.Increment(ref _runCount) == 1) {
+				if (!EnoughTimePassed) {
 					Interlocked.Decrement(ref _runCount);
 					return cpuCopy;
 				}
@@ -48,12 +52,12 @@ namespace VixenApplication {
 				Process process = Process.GetCurrentProcess();
 				procTime = process.TotalProcessorTime;
 
-				if(!GetSystemTimes(out sysIdle, out sysKernel, out sysUser)) {
+				if (!GetSystemTimes(out sysIdle, out sysKernel, out sysUser)) {
 					Interlocked.Decrement(ref _runCount);
 					return cpuCopy;
 				}
 
-				if(!IsFirstRun) {
+				if (!IsFirstRun) {
 					UInt64 sysKernelDiff = SubtractTimes(sysKernel, _prevSysKernel);
 					UInt64 sysUserDiff = SubtractTimes(sysUser, _prevSysUser);
 
@@ -61,8 +65,8 @@ namespace VixenApplication {
 
 					Int64 procTotal = procTime.Ticks - _prevProcTotal.Ticks;
 
-					if(sysTotal > 0) {
-						_cpuUsage = (short)((100.0 * procTotal) / sysTotal);
+					if (sysTotal > 0) {
+						_cpuUsage = (short) ((100.0*procTotal)/sysTotal);
 					}
 				}
 
@@ -77,28 +81,29 @@ namespace VixenApplication {
 			Interlocked.Decrement(ref _runCount);
 
 			return cpuCopy;
-
 		}
 
-		private UInt64 SubtractTimes(ComTypes.FILETIME a, ComTypes.FILETIME b) {
-			UInt64 aInt = ((UInt64)(a.dwHighDateTime << 32)) | (UInt64)a.dwLowDateTime;
-			UInt64 bInt = ((UInt64)(b.dwHighDateTime << 32)) | (UInt64)b.dwLowDateTime;
+		private UInt64 SubtractTimes(ComTypes.FILETIME a, ComTypes.FILETIME b)
+		{
+			UInt64 aInt = ((UInt64) (a.dwHighDateTime << 32)) | (UInt64) a.dwLowDateTime;
+			UInt64 bInt = ((UInt64) (b.dwHighDateTime << 32)) | (UInt64) b.dwLowDateTime;
 
 			return aInt - bInt;
 		}
 
-		private bool EnoughTimePassed {
-			get {
+		private bool EnoughTimePassed
+		{
+			get
+			{
 				const int minimumElapsedMS = 250;
 				TimeSpan sinceLast = DateTime.Now - _lastRun;
 				return sinceLast.TotalMilliseconds > minimumElapsedMS;
 			}
 		}
 
-		private bool IsFirstRun {
-			get {
-				return (_lastRun == DateTime.MinValue);
-			}
+		private bool IsFirstRun
+		{
+			get { return (_lastRun == DateTime.MinValue); }
 		}
 	}
 }

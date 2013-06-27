@@ -1,19 +1,23 @@
-﻿namespace Vixen.IO.Policy {
-	abstract class ModuleStoreFilePolicy : IFilePolicy {
-		public void Write() {
+﻿namespace Vixen.IO.Policy
+{
+	internal abstract class ModuleStoreFilePolicy : IFilePolicy
+	{
+		public void Write()
+		{
 			WriteModuleTypeDataSet();
 			WriteModuleInstanceDataSet();
 		}
 
-		abstract protected void WriteModuleTypeDataSet();
-		abstract protected void WriteModuleInstanceDataSet();
+		protected abstract void WriteModuleTypeDataSet();
+		protected abstract void WriteModuleInstanceDataSet();
 
-		public void Read() {
+		public void Read()
+		{
 			ReadModuleTypeDataSet();
 			ReadModuleInstanceDataSet();
 		}
 
-		abstract protected void ReadModuleTypeDataSet();
-		abstract protected void ReadModuleInstanceDataSet();
+		protected abstract void ReadModuleTypeDataSet();
+		protected abstract void ReadModuleInstanceDataSet();
 	}
 }

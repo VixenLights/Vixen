@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Vixen.Module.App {
-    public interface IAppModuleInstance : IApp, IModuleInstance {
-    }
+namespace Vixen.Module.App
+{
+	public interface IAppModuleInstance : IApp, IModuleInstance
+	{
+	}
 }

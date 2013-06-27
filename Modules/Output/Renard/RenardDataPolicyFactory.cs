@@ -4,9 +4,12 @@ using System.Linq;
 using System.Text;
 using Vixen.Sys;
 
-namespace VixenModules.Output.Renard {
-	class RenardDataPolicyFactory : IDataPolicyFactory {
-		public IDataPolicy CreateDataPolicy() {
+namespace VixenModules.Output.Renard
+{
+	internal class RenardDataPolicyFactory : IDataPolicyFactory
+	{
+		public IDataPolicy CreateDataPolicy()
+		{
 			return new RenardDataPolicy();
 		}
 	}

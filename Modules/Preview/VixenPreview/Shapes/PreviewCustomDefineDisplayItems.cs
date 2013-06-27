@@ -9,11 +9,11 @@ using System.Windows.Forms;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
-    public partial class PreviewCustomDefineDisplayItems : Form
-    {
-        public PreviewCustomDefineDisplayItems()
-        {
-            InitializeComponent();
-        }
-    }
+	public partial class PreviewCustomDefineDisplayItems : Form
+	{
+		public PreviewCustomDefineDisplayItems()
+		{
+			InitializeComponent();
+		}
+	}
 }

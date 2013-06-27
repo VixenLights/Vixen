@@ -55,6 +55,7 @@ namespace VixenModules.App.Curves
 		}
 
 		private Curve _curve;
+
 		public Curve Curve
 		{
 			get { return _curve; }
@@ -66,6 +67,7 @@ namespace VixenModules.App.Curves
 		}
 
 		private string _libraryCurveName;
+
 		public string LibraryCurveName
 		{
 			get { return _libraryCurveName; }
@@ -77,6 +79,7 @@ namespace VixenModules.App.Curves
 		}
 
 		private CurveLibrary _library;
+
 		private CurveLibrary Library
 		{
 			get
@@ -128,7 +131,8 @@ namespace VixenModules.App.Curves
 			int dragPointIndex;
 
 			// if CTRL is pressed, and we're not near a specific point, add a new point
-			if (Control.ModifierKeys.HasFlag(Keys.Control) && !zedGraphControl.GraphPane.FindNearestPoint(e.Location, out curve, out dragPointIndex)) {
+			if (Control.ModifierKeys.HasFlag(Keys.Control) &&
+			    !zedGraphControl.GraphPane.FindNearestPoint(e.Location, out curve, out dragPointIndex)) {
 				// only add if we've actually clicked on the pane, so make sure the mouse is over it first
 				if (zedGraphControl.MasterPane.FindPane(e.Location) != null) {
 					PointPairList pointList = zedGraphControl.GraphPane.CurveList[0].Points as PointPairList;
@@ -140,7 +144,8 @@ namespace VixenModules.App.Curves
 				}
 			}
 			// if the ALT key was pressed, and we're near a point, delete it -- but only if there would be at least two points left
-			if (Control.ModifierKeys.HasFlag(Keys.Alt) && zedGraphControl.GraphPane.FindNearestPoint(e.Location, out curve, out dragPointIndex)) {
+			if (Control.ModifierKeys.HasFlag(Keys.Alt) &&
+			    zedGraphControl.GraphPane.FindNearestPoint(e.Location, out curve, out dragPointIndex)) {
 				PointPairList pointList = zedGraphControl.GraphPane.CurveList[0].Points as PointPairList;
 				if (pointList.Count > 2) {
 					pointList.RemoveAt(dragPointIndex);
@@ -166,7 +171,8 @@ namespace VixenModules.App.Curves
 				if (LibraryCurveName == null) {
 					labelCurve.Text = "This curve is a library curve.";
 					Text = "Curve Editor: Library Curve";
-				} else {
+				}
+				else {
 					labelCurve.Text = "This curve is the library curve: " + LibraryCurveName;
 					Text = "Curve Editor: Library Curve " + LibraryCurveName;
 				}
@@ -182,13 +188,14 @@ namespace VixenModules.App.Curves
 				labelInstructions2.Visible = true;
 
 				zedGraphControl.GraphPane.Chart.Fill = new Fill(Color.AliceBlue);
-
-			} else {
+			}
+			else {
 				if (curve.IsLibraryReference) {
 					zedGraphControl.GraphPane.CurveList.Clear();
 					zedGraphControl.GraphPane.AddCurve("", curve.Points, Curve.InactiveCurveGridColor);
 					labelCurve.Text = "This curve is linked to the library curve: " + curve.LibraryReferenceName;
-				} else {
+				}
+				else {
 					zedGraphControl.GraphPane.CurveList.Clear();
 					zedGraphControl.GraphPane.AddCurve("", curve.Points, Curve.ActiveCurveGridColor);
 					labelCurve.Text = "This curve is not linked to any in the library.";
@@ -236,14 +243,16 @@ namespace VixenModules.App.Curves
 
 				if (Library.Contains(dialog.Response)) {
 					DialogResult result = MessageBox.Show("There is already a curve with that name. Do you want to overwrite it?",
-						"Overwrite curve?", MessageBoxButtons.YesNoCancel);
+					                                      "Overwrite curve?", MessageBoxButtons.YesNoCancel);
 					if (result == System.Windows.Forms.DialogResult.Yes) {
 						Library.AddCurve(dialog.Response, new Curve(Curve));
 						break;
-					} else if (result == System.Windows.Forms.DialogResult.Cancel) {
+					}
+					else if (result == System.Windows.Forms.DialogResult.Cancel) {
 						break;
 					}
-				} else {
+				}
+				else {
 					Library.AddCurve(dialog.Response, new Curve(Curve));
 					break;
 				}
@@ -261,7 +270,7 @@ namespace VixenModules.App.Curves
 			string libraryName = Curve.LibraryReferenceName;
 
 			Library.EditLibraryCurve(libraryName);
-	
+
 			PopulateFormWithCurve(Curve);
 		}
 	}

@@ -1,11 +1,15 @@
-﻿namespace Vixen.Services {
-	public class OutputFilterService {
-		static private OutputFilterService _instance;
+﻿namespace Vixen.Services
+{
+	public class OutputFilterService
+	{
+		private static OutputFilterService _instance;
 
-		private OutputFilterService() {
+		private OutputFilterService()
+		{
 		}
 
-		public static OutputFilterService Instance {
+		public static OutputFilterService Instance
+		{
 			get { return _instance ?? (_instance = new OutputFilterService()); }
 		}
 	}

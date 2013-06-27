@@ -1,51 +1,64 @@
 ﻿using System;
 using Vixen.Module.Script;
 
-namespace VixenModules.Script.VB {
-	public class VB_Descriptor : ScriptModuleDescriptorBase {
+namespace VixenModules.Script.VB
+{
+	public class VB_Descriptor : ScriptModuleDescriptorBase
+	{
 		private Guid _typeId = new Guid("{413B76C5-1FD6-4a49-BE2A-CF36BDCA7D59}");
 
-		override public string LanguageName {
+		public override string LanguageName
+		{
 			get { return "VB"; }
 		}
 
-		override public string FileExtension {
+		public override string FileExtension
+		{
 			get { return ".vb"; }
 		}
 
-		override public Type SkeletonGenerator {
-			get { return typeof(VB_Skeleton); }
+		public override Type SkeletonGenerator
+		{
+			get { return typeof (VB_Skeleton); }
 		}
 
-		override public Type FrameworkGenerator {
-			get { return typeof(VB_ScriptFramework); }
+		public override Type FrameworkGenerator
+		{
+			get { return typeof (VB_ScriptFramework); }
 		}
 
-		override public Type CodeProvider {
-			get { return typeof(VB_CodeProvider); }
+		public override Type CodeProvider
+		{
+			get { return typeof (VB_CodeProvider); }
 		}
 
-		override public string TypeName {
+		public override string TypeName
+		{
 			get { return "VB script"; }
 		}
 
-		override public Guid TypeId {
+		public override Guid TypeId
+		{
 			get { return _typeId; }
 		}
 
-		override public Type ModuleClass {
-			get { return typeof(VB_Module); }
+		public override Type ModuleClass
+		{
+			get { return typeof (VB_Module); }
 		}
 
-		override public string Author {
+		public override string Author
+		{
 			get { return "Vixen Team"; }
 		}
 
-		override public string Description {
+		public override string Description
+		{
 			get { return "Implementation of the Visual Basic language for scripted sequences."; }
 		}
 
-		override public string Version {
+		public override string Version
+		{
 			get { return "1.0"; }
 		}
 	}

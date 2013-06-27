@@ -1,10 +1,12 @@
 ﻿using System;
 
-namespace Vixen.Sys.Output {
+namespace Vixen.Sys.Output
+{
 	/// <summary>
 	/// Core abstraction for the in-memory output device.
 	/// </summary>
-	public interface IOutputDevice : IHardware, IHasSetup {
+	public interface IOutputDevice : IHardware, IHasSetup
+	{
 		Guid Id { get; }
 		Guid ModuleId { get; }
 		string Name { get; set; }

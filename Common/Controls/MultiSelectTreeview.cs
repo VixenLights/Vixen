@@ -58,8 +58,8 @@ namespace Common.Controls
 
 		#endregion
 
-
 		#region Private members
+
 		private DragDropEffects _dragDefaultMode = DragDropEffects.Move;
 		private Color _dragDestinationNodeForeColor = SystemColors.HighlightText;
 		private Color _dragDestinationNodeBackColor = SystemColors.Highlight;
@@ -77,8 +77,8 @@ namespace Common.Controls
 		private bool _delaySortingSelectedNodes = false;
 		private bool _clickedNodeWasInBounds = false;
 		private bool _selectedNodeWithControlKey = false;
-		#endregion
 
+		#endregion
 
 		#region Drag & Drop properties
 
@@ -86,8 +86,8 @@ namespace Common.Controls
 		/// The custom cursor to use when dragging an item, if UsingCustomDragCursor is set to true.
 		/// </summary>
 		[
-		Description("The custom cursor to use when dragging an item, if UsingCustomDragCursor is set to true."),
-		Category("Drag and drop")
+			Description("The custom cursor to use when dragging an item, if UsingCustomDragCursor is set to true."),
+			Category("Drag and drop")
 		]
 		public Cursor CustomDragCursor
 		{
@@ -99,8 +99,8 @@ namespace Common.Controls
 		/// If a custom cursor should be using while dragging.
 		/// </summary>
 		[
-		Description("If a custom cursor should be using while dragging."),
-		Category("Drag and drop")
+			Description("If a custom cursor should be using while dragging."),
+			Category("Drag and drop")
 		]
 		public bool UsingCustomDragCursor
 		{
@@ -175,28 +175,27 @@ namespace Common.Controls
 
 		public bool DraggingBetweenRows
 		{
-			get { return _dragBetweenState == DragBetweenNodes.DragAboveTargetNode || _dragBetweenState == DragBetweenNodes.DragBelowTargetNode; }
+			get
+			{
+				return _dragBetweenState == DragBetweenNodes.DragAboveTargetNode ||
+				       _dragBetweenState == DragBetweenNodes.DragBelowTargetNode;
+			}
 		}
 
 		#endregion
 
-
 		#region Selected Node(s) Properties
 
-		private List<TreeNode> m_SelectedNodes = null;		
+		private List<TreeNode> m_SelectedNodes = null;
+
 		public List<TreeNode> SelectedNodes
 		{
-			get
-			{
-				return m_SelectedNodes;
-			}
+			get { return m_SelectedNodes; }
 			set
 			{
 				ClearSelectedNodes();
-				if (value != null)
-				{
-					foreach (TreeNode node in value)
-					{
+				if (value != null) {
+					foreach (TreeNode node in value) {
 						ToggleNode(node, true);
 					}
 				}
@@ -205,14 +204,14 @@ namespace Common.Controls
 
 		// Note we use the new keyword to Hide the native treeview's SelectedNode property.
 		private TreeNode m_SelectedNode;
+
 		public new TreeNode SelectedNode
 		{
 			get { return m_SelectedNode; }
 			set
 			{
 				ClearSelectedNodes();
-				if (value != null)
-				{
+				if (value != null) {
 					SelectNode(value);
 				}
 			}
@@ -238,7 +237,6 @@ namespace Common.Controls
 
 		#endregion
 
-
 		public MultiSelectTreeview()
 		{
 			m_SelectedNodes = new List<TreeNode>();
@@ -250,7 +248,6 @@ namespace Common.Controls
 			AllowDrop = true;
 		}
 
-
 		#region Overridden Events
 
 		protected override void OnGotFocus(EventArgs e)
@@ -258,16 +255,14 @@ namespace Common.Controls
 			// Make sure at least one node has a selection
 			// this way we can tab to the ctrl and use the 
 			// keyboard to select nodes
-			try
-			{
+			try {
 				if (m_SelectedNode == null && TopNode != null) {
 					ToggleNode(TopNode, true);
 				}
 
 				base.OnGotFocus(e);
 			}
-			catch (Exception ex)
-			{
+			catch (Exception ex) {
 				HandleException(ex);
 			}
 		}
@@ -277,8 +272,7 @@ namespace Common.Controls
 			_clickedNodeWasInBounds = false;
 
 			// If the user clicks on a node that was not previously selected, select it now.
-			try
-			{
+			try {
 				base.SelectedNode = null;
 
 				TreeNode node = GetNodeAt(e.Location);
@@ -294,7 +288,8 @@ namespace Common.Controls
 						if ((ModifierKeys == Keys.None || ModifierKeys == Keys.Control) && (m_SelectedNodes.Contains(node))) {
 							// Potential Drag Operation
 							// Let Mouse Up do select
-						} else {
+						}
+						else {
 							if (ModifierKeys == Keys.Control)
 								_selectedNodeWithControlKey = true;
 							SelectNode(node);
@@ -307,7 +302,8 @@ namespace Common.Controls
 						if (Deselected != null)
 							Deselected(this, new EventArgs());
 					}
-				} else {
+				}
+				else {
 					ClearSelectedNodes();
 					if (Deselected != null)
 						Deselected(this, new EventArgs());
@@ -315,8 +311,7 @@ namespace Common.Controls
 
 				base.OnMouseDown(e);
 			}
-			catch (Exception ex)
-			{
+			catch (Exception ex) {
 				HandleException(ex);
 			}
 		}
@@ -327,13 +322,12 @@ namespace Common.Controls
 			// selected then, reselect it now. This will clear
 			// any other selected nodes. e.g. A B C D are selected
 			// the user clicks on B, now A C & D are no longer selected.
-			try
-			{
+			try {
 				// Check to see if a node was clicked on 
 				TreeNode node = GetNodeAt(e.Location);
-				if (node != null)
-				{
-					if (ModifierKeys == Keys.None && m_SelectedNodes.Contains(node) && e.Button != MouseButtons.Right && _clickedNodeWasInBounds)
+				if (node != null) {
+					if (ModifierKeys == Keys.None && m_SelectedNodes.Contains(node) && e.Button != MouseButtons.Right &&
+					    _clickedNodeWasInBounds)
 						SelectNode(node);
 					if (ModifierKeys == Keys.Control && !_selectedNodeWithControlKey)
 						SelectNode(node);
@@ -341,8 +335,7 @@ namespace Common.Controls
 
 				base.OnMouseUp(e);
 			}
-			catch (Exception ex)
-			{
+			catch (Exception ex) {
 				HandleException(ex);
 			}
 			_selectedNodeWithControlKey = false;
@@ -372,15 +365,13 @@ namespace Common.Controls
 		protected override void OnBeforeSelect(TreeViewCancelEventArgs e)
 		{
 			// Never allow base.SelectedNode to be set!
-			try
-			{
+			try {
 				base.SelectedNode = null;
 				e.Cancel = true;
 
 				base.OnBeforeSelect(e);
 			}
-			catch (Exception ex)
-			{
+			catch (Exception ex) {
 				HandleException(ex);
 			}
 		}
@@ -388,13 +379,11 @@ namespace Common.Controls
 		protected override void OnAfterSelect(TreeViewEventArgs e)
 		{
 			// Never allow base.SelectedNode to be set!
-			try
-			{
+			try {
 				base.OnAfterSelect(e);
 				base.SelectedNode = null;
 			}
-			catch (Exception ex)
-			{
+			catch (Exception ex) {
 				HandleException(ex);
 			}
 		}
@@ -411,169 +400,133 @@ namespace Common.Controls
 			//BeginUpdate();
 			bool bShift = (ModifierKeys == Keys.Shift);
 
-			try
-			{
+			try {
 				// Nothing is selected in the tree, this isn't a good state
 				// select the top node
-				if (m_SelectedNode == null && TopNode != null)
-				{
+				if (m_SelectedNode == null && TopNode != null) {
 					ToggleNode(TopNode, true);
 				}
 
 				// Nothing is still selected in the tree, this isn't a good state, leave.
 				if (m_SelectedNode == null) return;
 
-				if (e.KeyCode == Keys.Left)
-				{
-					if (m_SelectedNode.IsExpanded && m_SelectedNode.Nodes.Count > 0)
-					{
+				if (e.KeyCode == Keys.Left) {
+					if (m_SelectedNode.IsExpanded && m_SelectedNode.Nodes.Count > 0) {
 						// Collapse an expanded node that has children
 						m_SelectedNode.Collapse();
 					}
-					else if (m_SelectedNode.Parent != null)
-					{
+					else if (m_SelectedNode.Parent != null) {
 						// Node is already collapsed, try to select its parent.
 						SelectSingleNode(m_SelectedNode.Parent);
 					}
 				}
-				else if (e.KeyCode == Keys.Right)
-				{
-					if (!m_SelectedNode.IsExpanded)
-					{
+				else if (e.KeyCode == Keys.Right) {
+					if (!m_SelectedNode.IsExpanded) {
 						// Expand a collpased node's children
 						m_SelectedNode.Expand();
 					}
-					else
-					{
+					else {
 						// Node was already expanded, select the first child
 						SelectSingleNode(m_SelectedNode.FirstNode);
 					}
 				}
-				else if (e.KeyCode == Keys.Up)
-				{
+				else if (e.KeyCode == Keys.Up) {
 					// Select the previous node
-					if (m_SelectedNode.PrevVisibleNode != null)
-					{
+					if (m_SelectedNode.PrevVisibleNode != null) {
 						SelectNode(m_SelectedNode.PrevVisibleNode);
 					}
 				}
-				else if (e.KeyCode == Keys.Down)
-				{
+				else if (e.KeyCode == Keys.Down) {
 					// Select the next node
-					if (m_SelectedNode.NextVisibleNode != null)
-					{
+					if (m_SelectedNode.NextVisibleNode != null) {
 						SelectNode(m_SelectedNode.NextVisibleNode);
 					}
 				}
-				else if (e.KeyCode == Keys.Home)
-				{
-					if (bShift)
-					{
-						if (m_SelectedNode.Parent == null)
-						{
+				else if (e.KeyCode == Keys.Home) {
+					if (bShift) {
+						if (m_SelectedNode.Parent == null) {
 							// Select all of the root nodes up to this point 
-							if (Nodes.Count > 0)
-							{
+							if (Nodes.Count > 0) {
 								SelectNode(Nodes[0]);
 							}
 						}
-						else
-						{
+						else {
 							// Select all of the nodes up to this point under this nodes parent
 							SelectNode(m_SelectedNode.Parent.FirstNode);
 						}
 					}
-					else
-					{
+					else {
 						// Select this first node in the tree
-						if (Nodes.Count > 0)
-						{
+						if (Nodes.Count > 0) {
 							SelectSingleNode(Nodes[0]);
 						}
 					}
 				}
-				else if (e.KeyCode == Keys.End)
-				{
-					if (bShift)
-					{
-						if (m_SelectedNode.Parent == null)
-						{
+				else if (e.KeyCode == Keys.End) {
+					if (bShift) {
+						if (m_SelectedNode.Parent == null) {
 							// Select the last ROOT node in the tree
-							if (Nodes.Count > 0)
-							{
+							if (Nodes.Count > 0) {
 								SelectNode(Nodes[Nodes.Count - 1]);
 							}
 						}
-						else
-						{
+						else {
 							// Select the last node in this branch
 							SelectNode(m_SelectedNode.Parent.LastNode);
 						}
 					}
-					else
-					{
-						if (Nodes.Count > 0)
-						{
+					else {
+						if (Nodes.Count > 0) {
 							// Select the last node visible node in the tree.
 							// Don't expand branches incase the tree is virtual
 							TreeNode ndLast = Nodes[Nodes.Count - 1];
-							while (ndLast.IsExpanded && (ndLast.LastNode != null))
-							{
+							while (ndLast.IsExpanded && (ndLast.LastNode != null)) {
 								ndLast = ndLast.LastNode;
 							}
 							SelectSingleNode(ndLast);
 						}
 					}
 				}
-				else if (e.KeyCode == Keys.PageUp)
-				{
+				else if (e.KeyCode == Keys.PageUp) {
 					// Select the highest node in the display
 					int nCount = VisibleCount;
 					TreeNode ndCurrent = m_SelectedNode;
-					while ((nCount) > 0 && (ndCurrent.PrevVisibleNode != null))
-					{
+					while ((nCount) > 0 && (ndCurrent.PrevVisibleNode != null)) {
 						ndCurrent = ndCurrent.PrevVisibleNode;
 						nCount--;
 					}
 					SelectSingleNode(ndCurrent);
 				}
-				else if (e.KeyCode == Keys.PageDown)
-				{
+				else if (e.KeyCode == Keys.PageDown) {
 					// Select the lowest node in the display
 					int nCount = VisibleCount;
 					TreeNode ndCurrent = m_SelectedNode;
-					while ((nCount) > 0 && (ndCurrent.NextVisibleNode != null))
-					{
+					while ((nCount) > 0 && (ndCurrent.NextVisibleNode != null)) {
 						ndCurrent = ndCurrent.NextVisibleNode;
 						nCount--;
 					}
 					SelectSingleNode(ndCurrent);
 				}
-				else
-				{
+				else {
 					// Assume this is a search character a-z, A-Z, 0-9, etc.
 					// Select the first node after the current node that 
 					// starts with this character
 					string sSearch = ((char) e.KeyValue).ToString();
 
 					TreeNode ndCurrent = m_SelectedNode;
-					while ((ndCurrent.NextVisibleNode != null))
-					{
+					while ((ndCurrent.NextVisibleNode != null)) {
 						ndCurrent = ndCurrent.NextVisibleNode;
-						if (ndCurrent.Text.StartsWith(sSearch))
-						{
+						if (ndCurrent.Text.StartsWith(sSearch)) {
 							SelectSingleNode(ndCurrent);
 							break;
 						}
 					}
 				}
 			}
-			catch (Exception ex)
-			{
+			catch (Exception ex) {
 				HandleException(ex);
 			}
-			finally
-			{
+			finally {
 				EndUpdate();
 			}
 		}
@@ -581,8 +534,8 @@ namespace Common.Controls
 		protected override void WndProc(ref Message m)
 		{
 			// Stop erase background message
-			if (m.Msg == (int)0x0014) {
-				m.Msg = (int)0x0000; // Set to null
+			if (m.Msg == (int) 0x0014) {
+				m.Msg = (int) 0x0000; // Set to null
 			}
 
 			switch (m.Msg) {
@@ -603,7 +556,8 @@ namespace Common.Controls
 					e.UseDefaultCursors = false;
 					Cursor = CustomDragCursor;
 				}
-			} else {
+			}
+			else {
 				e.UseDefaultCursors = true;
 				Cursor = Cursors.Default;
 			}
@@ -625,22 +579,25 @@ namespace Common.Controls
 				// try and figure out if we would be dragging 'between' nodes.
 				if (_dragDestinationNode.Bounds.Contains(pt) && pt.Y - _dragDestinationNode.Bounds.Top <= 3) {
 					_dragBetweenState = DragBetweenNodes.DragAboveTargetNode;
-				} else if (_dragDestinationNode.Bounds.Contains(pt) && _dragDestinationNode.Bounds.Bottom - pt.Y <= 3) {
+				}
+				else if (_dragDestinationNode.Bounds.Contains(pt) && _dragDestinationNode.Bounds.Bottom - pt.Y <= 3) {
 					_dragBetweenState = DragBetweenNodes.DragBelowTargetNode;
-				} else {
+				}
+				else {
 					_dragBetweenState = DragBetweenNodes.DragOnTargetNode;
 				}
 
 				// figure out where to draw the dotted line to show where it would be moving to.
 				if (DraggingBetweenRows) {
-
 					if (_dragBetweenState == DragBetweenNodes.DragAboveTargetNode) {
 						_dragBetweenRowsDrawLineStart = new Point(_dragDestinationNode.Bounds.Left, _dragDestinationNode.Bounds.Top);
 						_dragBetweenRowsDrawLineEnd = new Point(_dragDestinationNode.Bounds.Right + 10, _dragDestinationNode.Bounds.Top);
-					} else if (_dragBetweenState == DragBetweenNodes.DragBelowTargetNode) {
+					}
+					else if (_dragBetweenState == DragBetweenNodes.DragBelowTargetNode) {
 						_dragBetweenRowsDrawLineStart = new Point(_dragDestinationNode.Bounds.Left, _dragDestinationNode.Bounds.Bottom);
 						_dragBetweenRowsDrawLineEnd = new Point(_dragDestinationNode.Bounds.Right + 10, _dragDestinationNode.Bounds.Bottom);
-					} else {
+					}
+					else {
 						_dragBetweenRowsDrawLineStart = new Point(-1, -1);
 						_dragBetweenRowsDrawLineEnd = new Point(-1, -1);
 					}
@@ -650,13 +607,14 @@ namespace Common.Controls
 						_dragLastLineDrawnY = _dragBetweenRowsDrawLineStart.Y;
 					}
 				}
-			} else {
+			}
+			else {
 			}
 
 			// get the nodes that are being dragged from the drag data
 			List<TreeNode> dragNodes = null;
-			if (e.Data.GetDataPresent(typeof(List<TreeNode>))) {
-				dragNodes = (List<TreeNode>)e.Data.GetData(typeof(List<TreeNode>));
+			if (e.Data.GetDataPresent(typeof (List<TreeNode>))) {
+				dragNodes = (List<TreeNode>) e.Data.GetData(typeof (List<TreeNode>));
 			}
 
 			// if the target node is in the dragged nodes, it's not a valid point: don't select it
@@ -678,26 +636,29 @@ namespace Common.Controls
 
 					if (ea.ValidDragTarget) {
 						e.Effect = ea.DragMode;
-					} else {
+					}
+					else {
 						e.Effect = DragDropEffects.None;
 						_dragDestinationNode = null;
 					}
-				} else {
+				}
+				else {
 					e.Effect = _dragDefaultMode;
 				}
 
 				if (_dragDestinationNode != null && !DraggingBetweenRows) {
 					DrawNodeAsDragDestination(_dragDestinationNode);
 				}
-			} else {
+			}
+			else {
 				e.Effect = DragDropEffects.None;
 			}
 
 			// Scrolling down/up
 			if (pt.Y + 10 > ClientSize.Height)
-				SendMessage(Handle, 277, (IntPtr)1, 0);
+				SendMessage(Handle, 277, (IntPtr) 1, 0);
 			else if (pt.Y < Top + 10)
-				SendMessage(Handle, 277, (IntPtr)0, 0);
+				SendMessage(Handle, 277, (IntPtr) 0, 0);
 		}
 
 		protected override void OnDragLeave(EventArgs e)
@@ -721,9 +682,9 @@ namespace Common.Controls
 		protected override void OnDragDrop(DragEventArgs e)
 		{
 			// Check it's a list of nodes being dragged
-			
-			if (e.Data.GetDataPresent(typeof(List<TreeNode>))) {
-				List<TreeNode> dragNodes = (List<TreeNode>)e.Data.GetData(typeof(List<TreeNode>));
+
+			if (e.Data.GetDataPresent(typeof (List<TreeNode>))) {
+				List<TreeNode> dragNodes = (List<TreeNode>) e.Data.GetData(typeof (List<TreeNode>));
 
 				// if there was no target, don't do anything
 				if (_dragDestinationNode == null) {
@@ -736,7 +697,7 @@ namespace Common.Controls
 					CleanupDragVisuals();
 					return;
 				}
-				
+
 				// if we're dragging onto one of our children, then don't do anything
 				foreach (TreeNode node in dragNodes) {
 					// there seems to be a weird bug where we can get multiple nodes as drag data; sometimes
@@ -796,7 +757,8 @@ namespace Common.Controls
 								_dragDestinationNode.Nodes.Insert(i++, node);
 							}
 							_dragDestinationNode.Expand();
-						} else {
+						}
+						else {
 							if (_dragDestinationNode.Parent == null)
 								target = Nodes;
 							else
@@ -852,7 +814,7 @@ namespace Common.Controls
 			base.WndProc(ref m);
 			using (Graphics g = this.CreateGraphics()) {
 				if (DraggingBetweenRows) {
-					Color c = Color.FromArgb((int)(0.5 * byte.MaxValue), Color.Black);
+					Color c = Color.FromArgb((int) (0.5*byte.MaxValue), Color.Black);
 					using (Pen p = new Pen(c, 2)) {
 						p.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
 						if (_dragBetweenRowsDrawLineStart.Y >= 0 && _dragBetweenRowsDrawLineEnd.Y >= 0)
@@ -863,7 +825,6 @@ namespace Common.Controls
 		}
 
 		#endregion
-
 
 		#region Helper Methods
 
@@ -897,7 +858,8 @@ namespace Common.Controls
 			if (SelectedNodes.Contains(node)) {
 				node.ForeColor = SystemColors.HighlightText;
 				node.BackColor = SystemColors.Highlight;
-			} else {
+			}
+			else {
 				node.BackColor = SystemColors.HighlightText;
 				node.ForeColor = SystemColors.ControlText;
 			}
@@ -918,18 +880,15 @@ namespace Common.Controls
 
 		private void SelectNode(TreeNode node)
 		{
-			try
-			{
+			try {
 				this.BeginUpdate();
 
-				if (m_SelectedNode == null || ModifierKeys == Keys.Control)
-				{
+				if (m_SelectedNode == null || ModifierKeys == Keys.Control) {
 					// Ctrl+Click selects an unselected node, or unselects a selected node.
 					bool bIsSelected = m_SelectedNodes.Contains(node);
 					ToggleNode(node, !bIsSelected);
 				}
-				else if (ModifierKeys == Keys.Shift)
-				{
+				else if (ModifierKeys == Keys.Shift) {
 					// Shift+Click selects nodes between the selected node and here.
 					TreeNode ndStart = m_SelectedNode;
 					TreeNode ndEnd = node;
@@ -937,38 +896,31 @@ namespace Common.Controls
 					// sort the selected nodes at the end
 					_delaySortingSelectedNodes = true;
 
-					if (ndStart.Parent == ndEnd.Parent)
-					{
+					if (ndStart.Parent == ndEnd.Parent) {
 						// Selected node and clicked node have same parent, easy case.
-						if (ndStart.Index < ndEnd.Index)
-						{							
+						if (ndStart.Index < ndEnd.Index) {
 							// If the selected node is beneath the clicked node walk down
 							// selecting each Visible node until we reach the end.
-							while (ndStart != ndEnd)
-							{
+							while (ndStart != ndEnd) {
 								ndStart = ndStart.NextVisibleNode;
 								if (ndStart == null) break;
 								ToggleNode(ndStart, true);
 							}
 						}
-						else if (ndStart.Index == ndEnd.Index)
-						{
+						else if (ndStart.Index == ndEnd.Index) {
 							// Clicked same node, do nothing
 						}
-						else
-						{
+						else {
 							// If the selected node is above the clicked node walk up
 							// selecting each Visible node until we reach the end.
-							while (ndStart != ndEnd)
-							{
+							while (ndStart != ndEnd) {
 								ndStart = ndStart.PrevVisibleNode;
 								if (ndStart == null) break;
 								ToggleNode(ndStart, true);
 							}
 						}
 					}
-					else
-					{
+					else {
 						// Selected node and clicked node have same parent, hard case.
 						// We need to find a common parent to determine if we need
 						// to walk down selecting, or walk up selecting.
@@ -978,63 +930,51 @@ namespace Common.Controls
 						int startDepth = Math.Min(ndStartP.Level, ndEndP.Level);
 
 						// Bring lower node up to common depth
-						while (ndStartP.Level > startDepth)
-						{
+						while (ndStartP.Level > startDepth) {
 							ndStartP = ndStartP.Parent;
 						}
 
 						// Bring lower node up to common depth
-						while (ndEndP.Level > startDepth)
-						{
+						while (ndEndP.Level > startDepth) {
 							ndEndP = ndEndP.Parent;
 						}
 
 						// Walk up the tree until we find the common parent
-						while (ndStartP.Parent != ndEndP.Parent)
-						{
+						while (ndStartP.Parent != ndEndP.Parent) {
 							ndStartP = ndStartP.Parent;
 							ndEndP = ndEndP.Parent;
 						}
 
 						// Select the node
-						if (ndStartP.Index < ndEndP.Index)
-						{
+						if (ndStartP.Index < ndEndP.Index) {
 							// If the selected node is beneath the clicked node walk down
 							// selecting each Visible node until we reach the end.
-							while (ndStart != ndEnd)
-							{
+							while (ndStart != ndEnd) {
 								ndStart = ndStart.NextVisibleNode;
 								if (ndStart == null) break;
 								ToggleNode(ndStart, true);
 							}
 						}
-						else if (ndStartP.Index == ndEndP.Index)
-						{
-							if (ndStart.Level < ndEnd.Level)
-							{
-								while (ndStart != ndEnd)
-								{
+						else if (ndStartP.Index == ndEndP.Index) {
+							if (ndStart.Level < ndEnd.Level) {
+								while (ndStart != ndEnd) {
 									ndStart = ndStart.NextVisibleNode;
 									if (ndStart == null) break;
 									ToggleNode(ndStart, true);
 								}
 							}
-							else
-							{
-								while (ndStart != ndEnd)
-								{
+							else {
+								while (ndStart != ndEnd) {
 									ndStart = ndStart.PrevVisibleNode;
 									if (ndStart == null) break;
 									ToggleNode(ndStart, true);
 								}
 							}
 						}
-						else
-						{
+						else {
 							// If the selected node is above the clicked node walk up
 							// selecting each Visible node until we reach the end.
-							while (ndStart != ndEnd)
-							{
+							while (ndStart != ndEnd) {
 								ndStart = ndStart.PrevVisibleNode;
 								if (ndStart == null) break;
 								ToggleNode(ndStart, true);
@@ -1045,32 +985,27 @@ namespace Common.Controls
 					_delaySortingSelectedNodes = false;
 					SortSelectedNodes();
 				}
-				else
-				{
+				else {
 					// Just clicked a node, select it
 					SelectSingleNode(node);
 				}
 
 				OnAfterSelect(new TreeViewEventArgs(m_SelectedNode));
 			}
-			finally
-			{
+			finally {
 				this.EndUpdate();
 			}
 		}
 
 		public void ClearSelectedNodes()
 		{
-			try
-			{
-				foreach (TreeNode node in m_SelectedNodes)
-				{
+			try {
+				foreach (TreeNode node in m_SelectedNodes) {
 					node.BackColor = this.BackColor;
 					node.ForeColor = this.ForeColor;
 				}
 			}
-			finally
-			{
+			finally {
 				m_SelectedNodes.Clear();
 				m_SelectedNode = null;
 			}
@@ -1080,8 +1015,7 @@ namespace Common.Controls
 		{
 			ClearSelectedNodes();
 
-			if (node != null)
-			{
+			if (node != null) {
 				ToggleNode(node, true);
 				node.EnsureVisible();
 			}
@@ -1089,18 +1023,15 @@ namespace Common.Controls
 
 		private void ToggleNode(TreeNode node, bool bSelectNode)
 		{
-			if (bSelectNode)
-			{
+			if (bSelectNode) {
 				m_SelectedNode = node;
-				if (!m_SelectedNodes.Contains(node))
-				{
+				if (!m_SelectedNodes.Contains(node)) {
 					AddNodeToSelectedList(node);
 				}
 				node.BackColor = SystemColors.Highlight;
 				node.ForeColor = SystemColors.HighlightText;
 			}
-			else
-			{
+			else {
 				m_SelectedNodes.Remove(node);
 				node.BackColor = this.BackColor;
 				node.ForeColor = this.ForeColor;
@@ -1115,7 +1046,6 @@ namespace Common.Controls
 		}
 
 		#endregion
-
 	}
 
 	public enum DragBetweenNodes
@@ -1126,9 +1056,13 @@ namespace Common.Controls
 	}
 
 	#region Event classes/delegates
+
 	public delegate void DragCompleteEventHandler(object sender, DragSourceDestinationEventArgs e);
+
 	public delegate void DragItemEventHandler(object sender, DragSourceEventArgs e);
+
 	public delegate void DragVerifyEventHandler(object sender, DragVerifyEventArgs e);
+
 	public delegate void DragFinishingEventHandler(object sender, DragFinishingEventArgs e);
 
 	public class DragFinishingEventArgs : DragSourceDestinationEventArgs
@@ -1234,6 +1168,7 @@ namespace Common.Controls
 
 		private List<TreeNode> _nodes;
 	}
+
 	#endregion
 
 	public class TreeNodeSorter : IComparer<TreeNode>
@@ -1282,4 +1217,3 @@ namespace Common.Controls
 		}
 	}
 }
-

@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Vixen.Module.Editor {
-	class EditorModuleRepository : GenericModuleRepository<IEditorModuleInstance> {
+namespace Vixen.Module.Editor
+{
+	internal class EditorModuleRepository : GenericModuleRepository<IEditorModuleInstance>
+	{
 	}
 }

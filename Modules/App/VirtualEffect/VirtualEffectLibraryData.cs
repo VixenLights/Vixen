@@ -9,8 +9,8 @@ using System.Runtime.Serialization;
 namespace VixenModules.App.VirtualEffect
 {
 	//[DataContract]
-	public class VirtualEffectLibraryData:ModuleDataModelBase
-	{		
+	public class VirtualEffectLibraryData : ModuleDataModelBase
+	{
 		public VirtualEffectLibraryData()
 		{
 			//VirtualEffect ve = new VirtualEffect("test", Guid.NewGuid(), null);
@@ -18,8 +18,8 @@ namespace VixenModules.App.VirtualEffect
 			//Library.Add(Guid.NewGuid(), ve);		
 		}
 
-		[DataMember]
-		private Dictionary<Guid, VirtualEffect> _library;
+		[DataMember] private Dictionary<Guid, VirtualEffect> _library;
+
 		public Dictionary<Guid, VirtualEffect> Library
 		{
 			get
@@ -29,10 +29,7 @@ namespace VixenModules.App.VirtualEffect
 
 				return _library;
 			}
-			set
-			{
-				_library = value;
-			}
+			set { _library = value; }
 		}
 
 		public override IModuleDataModel Clone()

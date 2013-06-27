@@ -20,7 +20,8 @@ namespace VixenModules.EffectEditor.TwinkleEffectEditor
 			ColorGradient = new ColorGradient();
 		}
 
-		IEffect _targetEffect;
+		private IEffect _targetEffect;
+
 		public IEffect TargetEffect
 		{
 			get { return _targetEffect; }
@@ -31,19 +32,20 @@ namespace VixenModules.EffectEditor.TwinkleEffectEditor
 		{
 			get
 			{
-				return new object[] {
-					IndividualElements,
-					MinimumLevel,
-					MaximumLevel,
-					LevelVariation,
-					AveragePulseTime,
-					PulseTimeVariation,
-					AverageCoverage,
-					ColorHandling,
-					StaticColor,
-					ColorGradient,
-					DepthOfEffect
-				};
+				return new object[]
+				       	{
+				       		IndividualElements,
+				       		MinimumLevel,
+				       		MaximumLevel,
+				       		LevelVariation,
+				       		AveragePulseTime,
+				       		PulseTimeVariation,
+				       		AverageCoverage,
+				       		ColorHandling,
+				       		StaticColor,
+				       		ColorGradient,
+				       		DepthOfEffect
+				       	};
 			}
 			set
 			{
@@ -52,24 +54,24 @@ namespace VixenModules.EffectEditor.TwinkleEffectEditor
 					return;
 				}
 
-				IndividualElements = (bool)value[0];
-				MinimumLevel = (double)value[1];
-				MaximumLevel = (double)value[2];
-				LevelVariation = (int)value[3];
-				AveragePulseTime = (int)value[4];
-				PulseTimeVariation = (int)value[5];
-				AverageCoverage = (int)value[6];
-				ColorHandling = (TwinkleColorHandling)value[7];
-				StaticColor = (Color)value[8];
-				ColorGradient = (ColorGradient)value[9];
-				DepthOfEffect = (int)value[10];
+				IndividualElements = (bool) value[0];
+				MinimumLevel = (double) value[1];
+				MaximumLevel = (double) value[2];
+				LevelVariation = (int) value[3];
+				AveragePulseTime = (int) value[4];
+				PulseTimeVariation = (int) value[5];
+				AverageCoverage = (int) value[6];
+				ColorHandling = (TwinkleColorHandling) value[7];
+				StaticColor = (Color) value[8];
+				ColorGradient = (ColorGradient) value[9];
+				DepthOfEffect = (int) value[10];
 			}
 		}
 
 		public bool IndividualElements
 		{
 			get { return radioButtonIndividualElements.Checked || radioButtonApplyToLevel.Checked; }
-			set { UpdateElementHandlingGroupBox(DepthOfEffect, value);  }
+			set { UpdateElementHandlingGroupBox(DepthOfEffect, value); }
 		}
 
 		public double MinimumLevel
@@ -86,25 +88,25 @@ namespace VixenModules.EffectEditor.TwinkleEffectEditor
 
 		public int LevelVariation
 		{
-			get { return (int)numericUpDownLevelVariation.Value; }
+			get { return (int) numericUpDownLevelVariation.Value; }
 			set { numericUpDownLevelVariation.Value = value; }
 		}
 
 		public int AveragePulseTime
 		{
-			get { return (int)numericUpDownAveragePulseTime.Value; }
+			get { return (int) numericUpDownAveragePulseTime.Value; }
 			set { numericUpDownAveragePulseTime.Value = value; }
 		}
 
 		public int PulseTimeVariation
 		{
-			get { return (int)numericUpDownPulseTimeVariation.Value; }
+			get { return (int) numericUpDownPulseTimeVariation.Value; }
 			set { numericUpDownPulseTimeVariation.Value = value; }
 		}
 
 		public int AverageCoverage
 		{
-			get { return (int)numericUpDownCoverage.Value; }
+			get { return (int) numericUpDownCoverage.Value; }
 			set { numericUpDownCoverage.Value = value; }
 		}
 
@@ -162,20 +164,16 @@ namespace VixenModules.EffectEditor.TwinkleEffectEditor
 				if (this.radioButtonIndividualElements.Checked)
 					return 0;
 				else
-					return (int)numericUpDownDepthOfEffect.Value;
+					return (int) numericUpDownDepthOfEffect.Value;
 			}
-			set
-			{
-				UpdateElementHandlingGroupBox(value, IndividualElements);
-			}
+			set { UpdateElementHandlingGroupBox(value, IndividualElements); }
 		}
 
 		private void UpdateElementHandlingGroupBox(int depthOfEffect, bool individualElements)
 		{
 			if (depthOfEffect == 0 && individualElements)
 				radioButtonIndividualElements.Checked = true;
-			else if (individualElements)
-			{
+			else if (individualElements) {
 				radioButtonApplyToLevel.Checked = true;
 				numericUpDownDepthOfEffect.Value = depthOfEffect;
 			}

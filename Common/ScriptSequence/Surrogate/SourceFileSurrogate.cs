@@ -1,10 +1,13 @@
 ﻿using System.Runtime.Serialization;
 using Common.ScriptSequence.Script;
 
-namespace Common.ScriptSequence.Surrogate {
+namespace Common.ScriptSequence.Surrogate
+{
 	[DataContract]
-	class SourceFileSurrogate {
-		public SourceFileSurrogate(SourceFile sourceFile) {
+	internal class SourceFileSurrogate
+	{
+		public SourceFileSurrogate(SourceFile sourceFile)
+		{
 			Name = sourceFile.Name;
 		}
 

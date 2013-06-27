@@ -21,25 +21,27 @@ using System.Drawing.Design;
 using System.Drawing.Drawing2D;
 
 
-namespace Dataweb.NShape.Advanced {
-
+namespace Dataweb.NShape.Advanced
+{
 	/// <summary>
 	/// Displays a text within a shape.
 	/// </summary>
 	/// <status>reviewed</status>
-	public class Caption {
-
+	public class Caption
+	{
 		/// <summary>
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.Advanced.Caption" />.
 		/// </summary>
-		public Caption() {
+		public Caption()
+		{
 		}
 
 
 		/// <summary>
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.Advanced.Caption" />.
 		/// </summary>
-		public Caption(string text) {
+		public Caption(string text)
+		{
 			this.Text = text;
 		}
 
@@ -47,9 +49,11 @@ namespace Dataweb.NShape.Advanced {
 		/// <summary>
 		/// Specifies the text of the caption.
 		/// </summary>
-		public string Text {
+		public string Text
+		{
 			get { return captionText; }
-			set {
+			set
+			{
 				if (string.IsNullOrEmpty(value)) {
 					GdiHelpers.DisposeObject(ref textPath);
 					captionTextSuffix = null;
@@ -66,8 +70,9 @@ namespace Dataweb.NShape.Advanced {
 		/// <summary>
 		/// Calculates the current text's area within the given caption bounds.
 		/// </summary>
-		public Rectangle CalculateTextBounds(Rectangle captionBounds, ICharacterStyle characterStyle, 
-			IParagraphStyle paragraphStyle, IDisplayService displayService) {
+		public Rectangle CalculateTextBounds(Rectangle captionBounds, ICharacterStyle characterStyle,
+		                                     IParagraphStyle paragraphStyle, IDisplayService displayService)
+		{
 			Rectangle textBounds = Rectangle.Empty;
 			Debug.Assert(characterStyle != null);
 			Debug.Assert(paragraphStyle != null);
@@ -76,9 +81,15 @@ namespace Dataweb.NShape.Advanced {
 			//if (float.IsNaN(dpiY)) dpiY = gfx.DpiY;
 			if (displayService != null) {
 				textBounds.Size = TextMeasurer.MeasureText(displayService.InfoGraphics, string.IsNullOrEmpty(captionText)
-						? "Ig" : captionText, ToolCache.GetFont(characterStyle), captionBounds.Size, paragraphStyle);
-			} else textBounds.Size = TextMeasurer.MeasureText(string.IsNullOrEmpty(captionText)
-				? "Ig" : captionText, ToolCache.GetFont(characterStyle), captionBounds.Size, paragraphStyle);
+				                                                                        	? "Ig"
+				                                                                        	: captionText,
+				                                           ToolCache.GetFont(characterStyle), captionBounds.Size, paragraphStyle);
+			}
+			else
+				textBounds.Size = TextMeasurer.MeasureText(string.IsNullOrEmpty(captionText)
+				                                           	? "Ig"
+				                                           	: captionText, ToolCache.GetFont(characterStyle), captionBounds.Size,
+				                                           paragraphStyle);
 
 			// clip text bounds if too large
 			if (textBounds.Width > captionBounds.Width)
@@ -96,14 +107,16 @@ namespace Dataweb.NShape.Advanced {
 				case ContentAlignment.BottomCenter:
 				case ContentAlignment.MiddleCenter:
 				case ContentAlignment.TopCenter:
-					textBounds.X = captionBounds.X + (int)Math.Round((captionBounds.Width - textBounds.Width) / 2f);
+					textBounds.X = captionBounds.X + (int) Math.Round((captionBounds.Width - textBounds.Width)/2f);
 					break;
 				case ContentAlignment.BottomRight:
 				case ContentAlignment.MiddleRight:
 				case ContentAlignment.TopRight:
 					textBounds.X = captionBounds.Right - textBounds.Width;
 					break;
-				default: Debug.Assert(false, "Unhandled switch case"); break;
+				default:
+					Debug.Assert(false, "Unhandled switch case");
+					break;
 			}
 			// set vertical alignment
 			switch (paragraphStyle.Alignment) {
@@ -115,14 +128,16 @@ namespace Dataweb.NShape.Advanced {
 				case ContentAlignment.MiddleCenter:
 				case ContentAlignment.MiddleLeft:
 				case ContentAlignment.MiddleRight:
-					textBounds.Y = captionBounds.Top + (int)Math.Round((captionBounds.Height - textBounds.Height) / 2f);
+					textBounds.Y = captionBounds.Top + (int) Math.Round((captionBounds.Height - textBounds.Height)/2f);
 					break;
 				case ContentAlignment.TopCenter:
 				case ContentAlignment.TopLeft:
 				case ContentAlignment.TopRight:
 					textBounds.Y = captionBounds.Top;
 					break;
-				default: Debug.Assert(false, "Unhandled switch case"); break;
+				default:
+					Debug.Assert(false, "Unhandled switch case");
+					break;
 			}
 			return textBounds;
 		}
@@ -131,7 +146,8 @@ namespace Dataweb.NShape.Advanced {
 		/// <summary>
 		/// Resets the caption path.
 		/// </summary>
-		public void InvalidatePath() {
+		public void InvalidatePath()
+		{
 			if (textPath != null) textPath.Reset();
 		}
 
@@ -146,7 +162,9 @@ namespace Dataweb.NShape.Advanced {
 		/// <param name="characterStyle">Character style of the caption</param>
 		/// <param name="paragraphStyle">Paragraph style of the caption</param>
 		/// <returns></returns>
-		public bool CalculatePath(int layoutX, int layoutY, int layoutW, int layoutH, ICharacterStyle characterStyle, IParagraphStyle paragraphStyle) {
+		public bool CalculatePath(int layoutX, int layoutY, int layoutW, int layoutH, ICharacterStyle characterStyle,
+		                          IParagraphStyle paragraphStyle)
+		{
 			if (characterStyle == null) throw new ArgumentNullException("charStyle");
 			if (paragraphStyle == null) throw new ArgumentNullException("paragraphStyle");
 			if (string.IsNullOrEmpty(captionText))
@@ -163,7 +181,7 @@ namespace Dataweb.NShape.Advanced {
 				// Create text path
 				textPath.Reset();
 				textPath.StartFigure();
-				textPath.AddString(PathText, font.FontFamily, (int)font.Style, characterStyle.Size, textBounds, formatter);
+				textPath.AddString(PathText, font.FontFamily, (int) font.Style, characterStyle.Size, textBounds, formatter);
 				textPath.CloseFigure();
 #if DEBUG_DIAGNOSTICS
 				if (textPath.PointCount == 0 && PathText.Trim() != string.Empty) {
@@ -181,7 +199,8 @@ namespace Dataweb.NShape.Advanced {
 		/// Transforms the text's <see cref="T:System.Drawing.Drawing2D.GraphicsPath" />.
 		/// </summary>
 		/// <param name="matrix"></param>
-		public void TransformPath(Matrix matrix) {
+		public void TransformPath(Matrix matrix)
+		{
 			if (matrix == null) throw new ArgumentNullException("matrix");
 			if (textPath != null) textPath.Transform(matrix);
 		}
@@ -190,7 +209,8 @@ namespace Dataweb.NShape.Advanced {
 		/// <summary>
 		/// Draws the caption.
 		/// </summary>
-		public void Draw(Graphics graphics, ICharacterStyle characterStyle, IParagraphStyle paragraphStyle) {
+		public void Draw(Graphics graphics, ICharacterStyle characterStyle, IParagraphStyle paragraphStyle)
+		{
 			if (graphics == null) throw new ArgumentNullException("graphics");
 			if (characterStyle == null) throw new ArgumentNullException("charStyle");
 			if (paragraphStyle == null) throw new ArgumentNullException("paragraphStyle");
@@ -201,13 +221,14 @@ namespace Dataweb.NShape.Advanced {
 		}
 
 
-		private string PathText {
-			get {
+		private string PathText
+		{
+			get
+			{
 				if (captionText == null) return captionText;
 				else return captionText + captionTextSuffix;
 			}
 		}
-
 
 		#region Fields
 
@@ -222,15 +243,14 @@ namespace Dataweb.NShape.Advanced {
 		#endregion
 	}
 
-
 	#region CaptionedShape interface
 
 	/// <summary>
 	/// Represents a shape with one or more captions in it.
 	/// </summary>
 	/// <status>reviewed</status>
-	public interface ICaptionedShape {
-
+	public interface ICaptionedShape
+	{
 		/// <summary>
 		/// The number of captions the shape currently contains.
 		/// </summary>
@@ -295,8 +315,8 @@ namespace Dataweb.NShape.Advanced {
 		/// True if a non-empty text exists for the specified caption, otherwise false. 
 		/// If the caption's text is empty, placeholder bounds are calculated.
 		/// </returns>
-		bool GetCaptionBounds(int index, out Point topLeft, out Point topRight, out Point bottomRight, 
-			out Point bottomLeft);
+		bool GetCaptionBounds(int index, out Point topLeft, out Point topRight, out Point bottomRight,
+		                      out Point bottomLeft);
 
 		/// <summary>
 		/// Retrieves the transformed bounds of the caption's text in diagram coordinates. 
@@ -311,8 +331,8 @@ namespace Dataweb.NShape.Advanced {
 		/// defining the bounds of the caption</param>
 		/// <param name="bottomLeft">The top bottom left of the transformed rectangle 
 		/// defining the bounds of the caption</param>
-		bool GetCaptionTextBounds(int index, out Point topLeft, out Point topRight, 
-			out Point bottomRight, out Point bottomLeft);
+		bool GetCaptionTextBounds(int index, out Point topLeft, out Point topRight,
+		                          out Point bottomRight, out Point bottomLeft);
 
 		/// <summary>
 		/// Finds a caption which contains the given point.
@@ -323,7 +343,6 @@ namespace Dataweb.NShape.Advanced {
 
 	#endregion
 
-
 	#region CaptionedShapeBase Class
 
 	/// <summary>
@@ -331,8 +350,8 @@ namespace Dataweb.NShape.Advanced {
 	/// </summary>
 	/// <remarks>RequiredPermissions set</remarks>
 	/// <status>reviewed</status>
-	public abstract class CaptionedShapeBase : PathBasedPlanarShape, ICaptionedShape {
-
+	public abstract class CaptionedShapeBase : PathBasedPlanarShape, ICaptionedShape
+	{
 		/// <summary>
 		/// The text of the <see cref="T:Dataweb.NShape.Advanced.Shape" />.
 		/// </summary>
@@ -340,13 +359,16 @@ namespace Dataweb.NShape.Advanced {
 		[Description("Text displayed inside the shape")]
 		[PropertyMappingId(PropertyIdText)]
 		[RequiredPermission(Permission.Data)]
-		[Editor("Dataweb.NShape.WinFormsUI.TextUITypeEditor, Dataweb.NShape.WinFormsUI", typeof(UITypeEditor))]
-		public virtual string Text {
-			get {
+		[Editor("Dataweb.NShape.WinFormsUI.TextUITypeEditor, Dataweb.NShape.WinFormsUI", typeof (UITypeEditor))]
+		public virtual string Text
+		{
+			get
+			{
 				if (caption == null) return string.Empty;
 				else return caption.Text;
 			}
-			set {
+			set
+			{
 				Invalidate();
 				if (caption == null) caption = new Caption(value);
 				else caption.Text = value;
@@ -359,14 +381,20 @@ namespace Dataweb.NShape.Advanced {
 
 		/// <ToBeCompleted></ToBeCompleted>
 		[Category("Appearance")]
-		[Description("Determines the style of the shape's text.\nUse the template editor to modify all shapes of a template.\nUse the design editor to modify and create styles.")]
+		[Description(
+			"Determines the style of the shape's text.\nUse the template editor to modify all shapes of a template.\nUse the design editor to modify and create styles."
+			)]
 		[PropertyMappingId(PropertyIdCharacterStyle)]
 		[RequiredPermission(Permission.Present)]
-		public ICharacterStyle CharacterStyle {
-			get { return privateCharacterStyle ?? ((ICaptionedShape)Template.Shape).GetCaptionCharacterStyle(0); }
-			set {
+		public ICharacterStyle CharacterStyle
+		{
+			get { return privateCharacterStyle ?? ((ICaptionedShape) Template.Shape).GetCaptionCharacterStyle(0); }
+			set
+			{
 				Invalidate();
-				privateCharacterStyle = (Template != null && value == ((ICaptionedShape)Template.Shape).GetCaptionCharacterStyle(0)) ? null : value;
+				privateCharacterStyle = (Template != null && value == ((ICaptionedShape) Template.Shape).GetCaptionCharacterStyle(0))
+				                        	? null
+				                        	: value;
 				InvalidateDrawCache();
 				Invalidate();
 			}
@@ -375,14 +403,20 @@ namespace Dataweb.NShape.Advanced {
 
 		/// <ToBeCompleted></ToBeCompleted>
 		[Category("Appearance")]
-		[Description("Determines the layout of the shape's text.\nUse the template editor to modify all shapes of a template.\nUse the design editor to modify and create styles.")]
+		[Description(
+			"Determines the layout of the shape's text.\nUse the template editor to modify all shapes of a template.\nUse the design editor to modify and create styles."
+			)]
 		[RequiredPermission(Permission.Present)]
 		[PropertyMappingId(PropertyIdParagraphStyle)]
-		public IParagraphStyle ParagraphStyle {
-			get { return privateParagraphStyle ?? ((ICaptionedShape)Template.Shape).GetCaptionParagraphStyle(0); }
-			set {
+		public IParagraphStyle ParagraphStyle
+		{
+			get { return privateParagraphStyle ?? ((ICaptionedShape) Template.Shape).GetCaptionParagraphStyle(0); }
+			set
+			{
 				Invalidate();
-				privateParagraphStyle = (Template != null && value == ((ICaptionedShape)Template.Shape).GetCaptionParagraphStyle(0)) ? null : value;
+				privateParagraphStyle = (Template != null && value == ((ICaptionedShape) Template.Shape).GetCaptionParagraphStyle(0))
+				                        	? null
+				                        	: value;
 				InvalidateDrawCache();
 				Invalidate();
 			}
@@ -390,7 +424,8 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		protected internal override void InitializeToDefault(IStyleSet styleSet) {
+		protected internal override void InitializeToDefault(IStyleSet styleSet)
+		{
 			base.InitializeToDefault(styleSet);
 			CharacterStyle = styleSet.CharacterStyles.Normal;
 			ParagraphStyle = styleSet.ParagraphStyles.Title;
@@ -398,20 +433,28 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		public override void CopyFrom(Shape source) {
+		public override void CopyFrom(Shape source)
+		{
 			base.CopyFrom(source);
 			if (source is ICaptionedShape) {
-				ICaptionedShape src = (ICaptionedShape)source;
+				ICaptionedShape src = (ICaptionedShape) source;
 				// Copy first caption
 				ICharacterStyle charStyle = src.GetCaptionCharacterStyle(0);
-				privateCharacterStyle = (Template != null && charStyle == ((ICaptionedShape)Template.Shape).GetCaptionCharacterStyle(0)) ? null : charStyle;
+				privateCharacterStyle = (Template != null &&
+				                         charStyle == ((ICaptionedShape) Template.Shape).GetCaptionCharacterStyle(0))
+				                        	? null
+				                        	: charStyle;
 				IParagraphStyle paragraphStyle = src.GetCaptionParagraphStyle(0);
-				privateParagraphStyle = (Template != null && paragraphStyle == ((ICaptionedShape)Template.Shape).GetCaptionParagraphStyle(0)) ? null : paragraphStyle;
+				privateParagraphStyle = (Template != null &&
+				                         paragraphStyle == ((ICaptionedShape) Template.Shape).GetCaptionParagraphStyle(0))
+				                        	? null
+				                        	: paragraphStyle;
 				string txt = src.GetCaptionText(0);
 				if (!string.IsNullOrEmpty(txt)) {
 					if (caption == null) caption = new Caption(txt);
 					else caption.Text = txt;
-				} else caption = null;
+				}
+				else caption = null;
 
 				// Copy remaining captions
 				int cnt = Math.Min(CaptionCount, src.CaptionCount);
@@ -425,7 +468,8 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		public override void MakePreview(IStyleSet styleSet) {
+		public override void MakePreview(IStyleSet styleSet)
+		{
 			base.MakePreview(styleSet);
 			privateCharacterStyle = styleSet.GetPreviewStyle(CharacterStyle);
 			privateParagraphStyle = styleSet.GetPreviewStyle(ParagraphStyle);
@@ -433,40 +477,45 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		public override bool HasStyle(IStyle style) {
+		public override bool HasStyle(IStyle style)
+		{
 			if (IsStyleAffected(ParagraphStyle, style) || IsStyleAffected(CharacterStyle, style))
 				return true;
 			else return base.HasStyle(style);
 		}
 
-
 		#region ICaptionedShape Members
 
 		/// <ToBeCompleted></ToBeCompleted>
 		[Browsable(false)]
-		public virtual int CaptionCount {
+		public virtual int CaptionCount
+		{
 			get { return 1; }
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public virtual bool GetCaptionBounds(int index, out Point topLeft, out Point topRight, out Point bottomRight, out Point bottomLeft) {
+		public virtual bool GetCaptionBounds(int index, out Point topLeft, out Point topRight, out Point bottomRight,
+		                                     out Point bottomLeft)
+		{
 			if (index != 0) throw new IndexOutOfRangeException("index");
 			//if (caption == null) {
 			//   topLeft = topRight = bottomLeft = bottomRight = Center;
 			//   return false;
 			//} else {
-				// calc transformed layout caption bounds
-				Rectangle captionBounds = Rectangle.Empty;
-				CalcCaptionBounds(index, out captionBounds);
-				Geometry.TransformRectangle(Center, Angle, captionBounds, out topLeft, out topRight, out bottomRight, out bottomLeft);
-				return true;
+			// calc transformed layout caption bounds
+			Rectangle captionBounds = Rectangle.Empty;
+			CalcCaptionBounds(index, out captionBounds);
+			Geometry.TransformRectangle(Center, Angle, captionBounds, out topLeft, out topRight, out bottomRight, out bottomLeft);
+			return true;
 			//}
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public virtual bool GetCaptionTextBounds(int index, out Point topLeft, out Point topRight, out Point bottomRight, out Point bottomLeft) {
+		public virtual bool GetCaptionTextBounds(int index, out Point topLeft, out Point topRight, out Point bottomRight,
+		                                         out Point bottomLeft)
+		{
 			if (index != 0) throw new IndexOutOfRangeException("index");
 			bool result;
 			Rectangle captionBounds = Rectangle.Empty;
@@ -475,11 +524,12 @@ namespace Dataweb.NShape.Advanced {
 			if (caption != null) {
 				textBounds = caption.CalculateTextBounds(captionBounds, CharacterStyle, ParagraphStyle, DisplayService);
 				result = true;
-			} else {
+			}
+			else {
 				// Calculate placeholder bounds
-				textBounds.Size= TextMeasurer.MeasureText("Iq", CharacterStyle, captionBounds.Size, ParagraphStyle);
-				textBounds.X = (int)Math.Round(captionBounds.X + (captionBounds.Width / 2f) - textBounds.Width / 2f);
-				textBounds.Y = (int)Math.Round(captionBounds.Y + (captionBounds.Height / 2f) - textBounds.Height / 2f);
+				textBounds.Size = TextMeasurer.MeasureText("Iq", CharacterStyle, captionBounds.Size, ParagraphStyle);
+				textBounds.X = (int) Math.Round(captionBounds.X + (captionBounds.Width/2f) - textBounds.Width/2f);
+				textBounds.Y = (int) Math.Round(captionBounds.Y + (captionBounds.Height/2f) - textBounds.Height/2f);
 				result = false;
 			}
 			Geometry.TransformRectangle(Center, Angle, textBounds, out topLeft, out topRight, out bottomRight, out bottomLeft);
@@ -488,49 +538,56 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public virtual string GetCaptionText(int index) {
+		public virtual string GetCaptionText(int index)
+		{
 			if (index != 0) throw new NShapeException(string.Format("Invalid label index: {0}.", index));
 			else return Text;
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public virtual ICharacterStyle GetCaptionCharacterStyle(int index) {
+		public virtual ICharacterStyle GetCaptionCharacterStyle(int index)
+		{
 			if (index != 0) throw new NShapeException(string.Format("Invalid label index: {0}.", index));
 			return CharacterStyle;
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public virtual IParagraphStyle GetCaptionParagraphStyle(int index) {
+		public virtual IParagraphStyle GetCaptionParagraphStyle(int index)
+		{
 			if (index != 0) throw new NShapeException(string.Format("Invalid label index: {0}.", index));
 			return ParagraphStyle;
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public virtual void SetCaptionText(int index, string text) {
+		public virtual void SetCaptionText(int index, string text)
+		{
 			if (index != 0) throw new NShapeException(string.Format("Invalid label index: {0}.", index));
 			else Text = text;
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public virtual void SetCaptionCharacterStyle(int index, ICharacterStyle characterStyle) {
+		public virtual void SetCaptionCharacterStyle(int index, ICharacterStyle characterStyle)
+		{
 			if (index != 0) throw new NShapeException(string.Format("Invalid label index: {0}.", index));
 			CharacterStyle = characterStyle;
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public virtual void SetCaptionParagraphStyle(int index, IParagraphStyle paragraphStyle) {
+		public virtual void SetCaptionParagraphStyle(int index, IParagraphStyle paragraphStyle)
+		{
 			if (index != 0) throw new NShapeException(string.Format("Invalid label index: {0}.", index));
 			ParagraphStyle = paragraphStyle;
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public virtual int FindCaptionFromPoint(int x, int y) {
+		public virtual int FindCaptionFromPoint(int x, int y)
+		{
 			for (int i = 0; i < CaptionCount; ++i) {
 				Point tl = Point.Empty, tr = Point.Empty, br = Point.Empty, bl = Point.Empty;
 				GetCaptionTextBounds(i, out tl, out tr, out br, out bl);
@@ -542,23 +599,24 @@ namespace Dataweb.NShape.Advanced {
 
 		#endregion
 
-
 		#region IEntity Members
 
 		/// <summary>
 		/// Retrieves the persistable properties of <see cref="T:Dataweb.NShape.Advanced.CaptionedShapeBase" />.
 		/// </summary>
-		new public static IEnumerable<EntityPropertyDefinition> GetPropertyDefinitions(int version) {
+		public new static IEnumerable<EntityPropertyDefinition> GetPropertyDefinitions(int version)
+		{
 			foreach (EntityPropertyDefinition pi in PathBasedPlanarShape.GetPropertyDefinitions(version))
 				yield return pi;
-			yield return new EntityFieldDefinition("CharacterStyle", typeof(object));
-			yield return new EntityFieldDefinition("ParagraphStyle", typeof(object));
-			yield return new EntityFieldDefinition("Text", typeof(string));
+			yield return new EntityFieldDefinition("CharacterStyle", typeof (object));
+			yield return new EntityFieldDefinition("ParagraphStyle", typeof (object));
+			yield return new EntityFieldDefinition("Text", typeof (string));
 		}
 
 
 		/// <override></override>
-		protected override void LoadFieldsCore(IRepositoryReader reader, int version) {
+		protected override void LoadFieldsCore(IRepositoryReader reader, int version)
+		{
 			base.LoadFieldsCore(reader, 1);
 
 			// ILabel members
@@ -572,7 +630,8 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		protected override void SaveFieldsCore(IRepositoryWriter writer, int version) {
+		protected override void SaveFieldsCore(IRepositoryWriter writer, int version)
+		{
 			base.SaveFieldsCore(writer, version);
 			// ILabel members
 			writer.WriteStyle(privateCharacterStyle);
@@ -582,12 +641,12 @@ namespace Dataweb.NShape.Advanced {
 
 		#endregion
 
-
 		/// <summary>
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.Advanced.CaptionedShape" />.
 		/// </summary>
 		protected internal CaptionedShapeBase(ShapeType shapeType, Template template)
-			: base(shapeType, template) {
+			: base(shapeType, template)
+		{
 		}
 
 
@@ -595,17 +654,19 @@ namespace Dataweb.NShape.Advanced {
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.Advanced.CaptionedShape" />.
 		/// </summary>
 		protected internal CaptionedShapeBase(ShapeType shapeType, IStyleSet styleSet)
-			: base(shapeType, styleSet) {
+			: base(shapeType, styleSet)
+		{
 		}
 
 
 		/// <override></override>
-		protected override void ProcessExecModelPropertyChange(IModelMapping propertyMapping) {
+		protected override void ProcessExecModelPropertyChange(IModelMapping propertyMapping)
+		{
 			switch (propertyMapping.ShapePropertyId) {
-				case PropertyIdText: 
-					Text = propertyMapping.GetString(); 
+				case PropertyIdText:
+					Text = propertyMapping.GetString();
 					break;
-				case PropertyIdCharacterStyle: 
+				case PropertyIdCharacterStyle:
 					// assign private stylebecause if the style matches the template's style, it would not be assigned.
 					CharacterStyle = propertyMapping.GetStyle() as ICharacterStyle;
 					Invalidate();
@@ -615,8 +676,8 @@ namespace Dataweb.NShape.Advanced {
 					ParagraphStyle = propertyMapping.GetStyle() as IParagraphStyle;
 					Invalidate();
 					break;
-				default: 
-					base.ProcessExecModelPropertyChange(propertyMapping); 
+				default:
+					base.ProcessExecModelPropertyChange(propertyMapping);
 					break;
 			}
 		}
@@ -630,18 +691,20 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		protected override bool CalculatePath() {
+		protected override bool CalculatePath()
+		{
 			if (caption == null) return true;
 			bool result = false;
 			Rectangle layoutRectangle = Rectangle.Empty;
 			CalcCaptionBounds(0, out layoutRectangle);
-			result = caption.CalculatePath(layoutRectangle.X, layoutRectangle.Y, layoutRectangle.Width, layoutRectangle.Height, CharacterStyle, ParagraphStyle);
+			result = caption.CalculatePath(layoutRectangle.X, layoutRectangle.Y, layoutRectangle.Width, layoutRectangle.Height,
+			                               CharacterStyle, ParagraphStyle);
 			if (maintainTextAngle && Angle > 900 && Angle < 2700) {
 				// Flip text in order to maintain its orientation
 				Matrix.Reset();
 				PointF rotationCenter = PointF.Empty;
-				rotationCenter.X = layoutRectangle.X + (layoutRectangle.Width / 2f);
-				rotationCenter.Y = layoutRectangle.Y + (layoutRectangle.Height / 2f);
+				rotationCenter.X = layoutRectangle.X + (layoutRectangle.Width/2f);
+				rotationCenter.Y = layoutRectangle.Y + (layoutRectangle.Height/2f);
 				Matrix.RotateAt(180, rotationCenter, MatrixOrder.Append);
 				caption.TransformPath(Matrix);
 			}
@@ -650,11 +713,13 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		protected override void TransformDrawCache(int deltaX, int deltaY, int deltaAngle, int rotationCenterX, int rotationCenterY) {
+		protected override void TransformDrawCache(int deltaX, int deltaY, int deltaAngle, int rotationCenterX,
+		                                           int rotationCenterY)
+		{
 			base.TransformDrawCache(deltaX, deltaY, deltaAngle, rotationCenterX, rotationCenterY);
 			// transform DrawCache only if the drawCache is valid, otherwise it will be recalculated
 			// at the correct position/size
-			if (!drawCacheIsInvalid && caption != null) 
+			if (!drawCacheIsInvalid && caption != null)
 				caption.TransformPath(Matrix);
 		}
 
@@ -662,19 +727,22 @@ namespace Dataweb.NShape.Advanced {
 		/// <summary>
 		/// Draws the <see cref="T:Dataweb.NShape.Advanced.Caption" /> of the <see cref="T:Dataweb.NShape.Advanced.CaptionShape" />.
 		/// </summary>
-		protected void DrawCaption(Graphics graphics) {
+		protected void DrawCaption(Graphics graphics)
+		{
 			if (caption != null) caption.Draw(graphics, CharacterStyle, ParagraphStyle);
 		}
-
 
 		#region Fields
 
 		/// <ToBeCompleted></ToBeCompleted>
 		protected const int PropertyIdText = 4;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		protected const int PropertyIdCharacterStyle = 5;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		protected const int PropertyIdParagraphStyle = 6;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		protected bool maintainTextAngle = true;
 

@@ -19,26 +19,25 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Threading;
-
 using Dataweb.NShape.Advanced;
 using Dataweb.Utilities;
 
 
-namespace Dataweb.NShape {
-
+namespace Dataweb.NShape
+{
 	/// <summary>
 	/// Interface for all graphical objects.
 	/// </summary>
 	/// <remarks>RequiredPermissions set</remarks>
 	/// <status>reviewed</status>
-	[TypeDescriptionProvider(typeof(TypeDescriptionProviderDg))]
-	public abstract class Shape : IEntity, ISecurityDomainObject, IDisposable, IEquatable<Shape> {
-
+	[TypeDescriptionProvider(typeof (TypeDescriptionProviderDg))]
+	public abstract class Shape : IEntity, ISecurityDomainObject, IDisposable, IEquatable<Shape>
+	{
 		/// <ToBeCompleted></ToBeCompleted>
-		~Shape() {
+		~Shape()
+		{
 			Dispose();
 		}
-
 
 		#region IDisposable Members
 
@@ -47,21 +46,21 @@ namespace Dataweb.NShape {
 
 		#endregion
 
-
 		#region IEquatable<T> Members
 
 		/// <override></override>
-		public bool Equals(Shape other) {
+		public bool Equals(Shape other)
+		{
 			return other == this;
 		}
-		
-		#endregion
 
+		#endregion
 
 		#region Standard Methods
 
 		/// <override></override>
-		public override string ToString() {
+		public override string ToString()
+		{
 			return Type.FullName;
 		}
 
@@ -232,7 +231,8 @@ namespace Dataweb.NShape {
 		/// <param name="toX"></param>
 		/// <param name="toY"></param>
 		/// <returns>True, if move was possible, else false.</returns>
-		public bool MoveTo(int toX, int toY) {
+		public bool MoveTo(int toX, int toY)
+		{
 			return MoveBy(toX - X, toY - Y);
 		}
 
@@ -250,7 +250,8 @@ namespace Dataweb.NShape {
 		/// <param name="toY"></param>
 		/// <param name="modifiers"></param>
 		/// <returns>True, if the control point could be moved, else false.</returns>
-		public bool MoveControlPointTo(ControlPointId pointId, int toX, int toY, ResizeModifiers modifiers) {
+		public bool MoveControlPointTo(ControlPointId pointId, int toX, int toY, ResizeModifiers modifiers)
+		{
 			Point ptPos = GetControlPointPosition(pointId);
 			return MoveControlPointBy(pointId, toX - ptPos.X, toY - ptPos.Y, modifiers);
 		}
@@ -296,7 +297,7 @@ namespace Dataweb.NShape {
 		/// <param name="distance"></param>
 		/// <param name="controlPointCapability"></param>
 		public abstract ControlPointId FindNearestControlPoint(int x, int y, int distance,
-			ControlPointCapabilities controlPointCapability);
+		                                                       ControlPointCapabilities controlPointCapability);
 
 		/// <summary>
 		/// Tests, whether a control point has at least one of a set of given capabilities.
@@ -304,7 +305,7 @@ namespace Dataweb.NShape {
 		/// <param name="controlPointId"></param>
 		/// <param name="controlPointCapability"></param>
 		public abstract bool HasControlPointCapability(ControlPointId controlPointId,
-			ControlPointCapabilities controlPointCapability);
+		                                               ControlPointCapabilities controlPointCapability);
 
 		/// <summary>
 		/// Returns a ReplativePosition structure that representing the position of 
@@ -359,7 +360,6 @@ namespace Dataweb.NShape {
 
 		#endregion
 
-
 		#region Rendering Elements
 
 		/// <summary>
@@ -373,7 +373,9 @@ namespace Dataweb.NShape {
 		/// </summary>
 		/// <remarks>Can be null, if no outline has to be drawn.</remarks>
 		[Category("Appearance")]
-		[Description("Defines the appearence of the shape's outline.\nUse the template editor to modify all shapes of a template.\nUse the design editor to modify and create styles.")]
+		[Description(
+			"Defines the appearence of the shape's outline.\nUse the template editor to modify all shapes of a template.\nUse the design editor to modify and create styles."
+			)]
 		[PropertyMappingId(PropertyIdLineStyle)]
 		[RequiredPermission(Permission.Present)]
 		public abstract ILineStyle LineStyle { get; set; }
@@ -406,7 +408,6 @@ namespace Dataweb.NShape {
 
 		#endregion
 
-
 		#region IEntity Members (protected implementation)
 
 		/// <ToBeCompleted></ToBeCompleted>
@@ -432,43 +433,50 @@ namespace Dataweb.NShape {
 
 		#endregion
 
-
 		#region IEntity Members (explicit implementation)
 
-		object IEntity.Id { get { return IdCore; } }
+		object IEntity.Id
+		{
+			get { return IdCore; }
+		}
 
 
-		void IEntity.AssignId(object id) {
+		void IEntity.AssignId(object id)
+		{
 			AssignIdCore(id);
 		}
 
 
-		void IEntity.LoadFields(IRepositoryReader reader, int version) {
+		void IEntity.LoadFields(IRepositoryReader reader, int version)
+		{
 			LoadFieldsCore(reader, version);
 		}
 
 
-		void IEntity.LoadInnerObjects(string propertyName, IRepositoryReader reader, int version) {
+		void IEntity.LoadInnerObjects(string propertyName, IRepositoryReader reader, int version)
+		{
 			LoadInnerObjectsCore(propertyName, reader, version);
 		}
 
 
-		void IEntity.SaveFields(IRepositoryWriter writer, int version) {
+		void IEntity.SaveFields(IRepositoryWriter writer, int version)
+		{
 			SaveFieldsCore(writer, version);
 		}
 
 
-		void IEntity.SaveInnerObjects(string propertyName, IRepositoryWriter writer, int version) {
+		void IEntity.SaveInnerObjects(string propertyName, IRepositoryWriter writer, int version)
+		{
 			SaveInnerObjectsCore(propertyName, writer, version);
 		}
 
 
-		void IEntity.Delete(IRepositoryWriter writer, int version) {
+		void IEntity.Delete(IRepositoryWriter writer, int version)
+		{
 			DeleteCore(writer, version);
 		}
 
 		#endregion
-
 
 		/// <summary>
 		/// Sets the state of a freshly created shape to the default values.
@@ -476,7 +484,6 @@ namespace Dataweb.NShape {
 		/// <param name="styleSet"></param>
 		/// <remarks>Only used by the ShapeType class.</remarks>
 		protected internal abstract void InitializeToDefault(IStyleSet styleSet);
-
 
 		#region Methods for exclusive Framework Use
 
@@ -493,14 +500,16 @@ namespace Dataweb.NShape {
 		/// <param name="gluePointId">Id of the GluePoint connected to the moved ControlPoint</param>
 		/// <param name="connectedShape">The passive shape of the connection</param>
 		/// <param name="connectedPointId">Id of the ControlPoint that has moved</param>
-		public abstract void FollowConnectionPointWithGluePoint(ControlPointId gluePointId, Shape connectedShape, ControlPointId connectedPointId);
+		public abstract void FollowConnectionPointWithGluePoint(ControlPointId gluePointId, Shape connectedShape,
+		                                                        ControlPointId connectedPointId);
 
 		// For performance reasons the diagram stores the z-order and the layers
 		// of its shapes within the shapes themselves.
 		// These members must not be accessed but by the diagram.
 		[Browsable(false)]
 		[RequiredPermission(Permission.Layout)]
-		public int ZOrder {
+		public int ZOrder
+		{
 			get { return zOrder; }
 			set { zOrder = value; }
 		}
@@ -509,8 +518,10 @@ namespace Dataweb.NShape {
 		[Category("Layout")]
 		[Description("Specifies the layers the shape is part of.")]
 		[RequiredPermission(Permission.Layout)]
-		[Editor("Dataweb.NShape.WinFormsUI.LayerUITypeEditor, Dataweb.NShape.WinFormsUI", typeof(System.Drawing.Design.UITypeEditor))]
-		public LayerIds Layers {
+		[Editor("Dataweb.NShape.WinFormsUI.LayerUITypeEditor, Dataweb.NShape.WinFormsUI",
+			typeof (System.Drawing.Design.UITypeEditor))]
+		public LayerIds Layers
+		{
 			get { return layers; }
 			internal set { layers = value; }
 		}
@@ -526,14 +537,16 @@ namespace Dataweb.NShape {
 		/// Called upon the passive shape of the connection by the active shape. 
 		/// If ownPointId is equal to ControlPointId.Reference, the global connection is meant.
 		/// </summary>
-		protected internal abstract void AttachGluePointToConnectionPoint(ControlPointId ownPointId, Shape otherShape, ControlPointId gluePointId);
+		protected internal abstract void AttachGluePointToConnectionPoint(ControlPointId ownPointId, Shape otherShape,
+		                                                                  ControlPointId gluePointId);
 
 
 		/// <summary>
 		/// Called upon the passive shape of the connection by the active shape. 
 		/// If ownPointId is equal to ControlPointId.Reference, the global connection is meant.
 		/// </summary>
-		protected internal abstract void DetachGluePointFromConnectionPoint(ControlPointId ownPointId, Shape otherShape, ControlPointId gluePointId);
+		protected internal abstract void DetachGluePointFromConnectionPoint(ControlPointId ownPointId, Shape otherShape,
+		                                                                    ControlPointId gluePointId);
 
 
 		/// <summary>
@@ -550,7 +563,6 @@ namespace Dataweb.NShape {
 		private LayerIds layers = LayerIds.None;
 
 		#endregion
-
 	}
 
 
@@ -558,8 +570,8 @@ namespace Dataweb.NShape {
 	/// Represents a two-dimensional shape.
 	/// </summary>
 	/// <status>reviewed</status>
-	public interface IPlanarShape {
-
+	public interface IPlanarShape
+	{
 		/// <summary>
 		/// Rotation angle of the shape. 
 		/// The shape is rotated around its rotation control point in tenths of a degree.
@@ -581,8 +593,8 @@ namespace Dataweb.NShape {
 	/// <summary>
 	/// One-dimensional shape defined by a sequence of vertices.
 	/// </summary>
-	public interface ILinearShape {
-
+	public interface ILinearShape
+	{
 		/// <summary>
 		/// Adds a new ControlPoint to the interior of the shape.
 		/// </summary>
@@ -644,7 +656,6 @@ namespace Dataweb.NShape {
 
 		/// <summary>Indicates if the line has a direction, e.g. a cap on one side.</summary>
 		bool IsDirected { get; }
-
 	}
 
 
@@ -652,28 +663,31 @@ namespace Dataweb.NShape {
 	/// Describes a connection between an active and a passive shape.
 	/// </summary>
 	/// <status>reviewed</status>
-	public struct ShapeConnectionInfo : IEquatable<ShapeConnectionInfo> {
-
+	public struct ShapeConnectionInfo : IEquatable<ShapeConnectionInfo>
+	{
 		/// <ToBeCompleted></ToBeCompleted>
 		public static readonly ShapeConnectionInfo Empty;
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public static bool operator ==(ShapeConnectionInfo x, ShapeConnectionInfo y) {
+		public static bool operator ==(ShapeConnectionInfo x, ShapeConnectionInfo y)
+		{
 			return (x.OwnPointId == y.OwnPointId
-				&& x.OtherShape == y.OtherShape
-				&& x.OtherPointId == y.OtherPointId);
+			        && x.OtherShape == y.OtherShape
+			        && x.OtherPointId == y.OtherPointId);
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public static bool operator !=(ShapeConnectionInfo x, ShapeConnectionInfo y) { 
-			return !(x == y); 
+		public static bool operator !=(ShapeConnectionInfo x, ShapeConnectionInfo y)
+		{
+			return !(x == y);
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public static ShapeConnectionInfo Create(ControlPointId ownPointId, Shape otherShape, ControlPointId otherPointId) {
+		public static ShapeConnectionInfo Create(ControlPointId ownPointId, Shape otherShape, ControlPointId otherPointId)
+		{
 			ShapeConnectionInfo result = ShapeConnectionInfo.Empty;
 			result.ownPointId = ownPointId;
 			result.otherShape = otherShape;
@@ -683,65 +697,75 @@ namespace Dataweb.NShape {
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public ShapeConnectionInfo(ControlPointId ownPointId, Shape otherShape, ControlPointId otherPointId) {
-		   this.ownPointId = ownPointId;
-		   this.otherShape = otherShape;
-		   this.otherPointId = otherPointId;
+		public ShapeConnectionInfo(ControlPointId ownPointId, Shape otherShape, ControlPointId otherPointId)
+		{
+			this.ownPointId = ownPointId;
+			this.otherShape = otherShape;
+			this.otherPointId = otherPointId;
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public Shape OtherShape {
+		public Shape OtherShape
+		{
 			get { return otherShape; }
 			internal set { otherShape = value; }
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public ControlPointId OtherPointId {
+		public ControlPointId OtherPointId
+		{
 			get { return otherPointId; }
 			internal set { otherPointId = value; }
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public ControlPointId OwnPointId {
+		public ControlPointId OwnPointId
+		{
 			get { return ownPointId; }
 			internal set { ownPointId = value; }
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public bool IsEmpty {
-			get {
+		public bool IsEmpty
+		{
+			get
+			{
 				return (this.ownPointId == Empty.ownPointId
-					&& this.otherShape == Empty.otherShape
-					&& this.otherPointId == Empty.otherPointId);
+				        && this.otherShape == Empty.otherShape
+				        && this.otherPointId == Empty.otherPointId);
 			}
 		}
 
 
 		/// <override></override>
-		public override bool Equals(object obj) {
-			return (obj is ShapeConnectionInfo && this == (ShapeConnectionInfo)obj);
+		public override bool Equals(object obj)
+		{
+			return (obj is ShapeConnectionInfo && this == (ShapeConnectionInfo) obj);
 		}
 
 
 		/// <override></override>
-		public bool Equals(ShapeConnectionInfo other) {
+		public bool Equals(ShapeConnectionInfo other)
+		{
 			return other == this;
 		}
 
 
 		/// <override></override>
-		public override int GetHashCode() {
+		public override int GetHashCode()
+		{
 			int result = otherPointId.GetHashCode() ^ ownPointId.GetHashCode();
 			if (otherShape != null) result ^= otherShape.GetHashCode();
 			return result;
 		}
 
 
-		static ShapeConnectionInfo() {
+		static ShapeConnectionInfo()
+		{
 			Empty.OwnPointId = ControlPointId.None;
 			Empty.OtherShape = null;
 			Empty.OtherPointId = ControlPointId.None;
@@ -749,8 +773,10 @@ namespace Dataweb.NShape {
 
 		/// <summary>other shape connected via this connection</summary>
 		private Shape otherShape;
+
 		/// <summary>control point of other shape used to connect</summary>
 		private ControlPointId otherPointId;
+
 		/// <summary>control point of this shape used to connect</summary>
 		private ControlPointId ownPointId;
 	}
@@ -760,21 +786,29 @@ namespace Dataweb.NShape {
 	/// Describes the capabilities of a control point.
 	/// </summary>
 	[Flags]
-	public enum ControlPointCapabilities {
+	public enum ControlPointCapabilities
+	{
 		/// <summary>Nothing</summary>
 		None = 0x0,
+
 		/// <summary>Reference point</summary>
 		Reference = 0x01,
+
 		/// <summary>Can be used to resize the shape.</summary>
 		Resize = 0x02,
+
 		/// <summary>Center for rotations.</summary>
 		Rotate = 0x04,
+
 		/// <summary>Glue points can connect to this point.</summary>
 		Connect = 0x08,
+
 		/// <summary>A control point that can connect to connection points.</summary>
 		Glue = 0x10,
+
 		/// <summary>A control point that can be moved but does not affect the outline of a shape.</summary>
 		Movable = 0x20,
+
 		/// <summary>All capabilities</summary>
 		All = 0xFF
 	}
@@ -786,58 +820,68 @@ namespace Dataweb.NShape {
 	/// <remarks>Regular control points have integer ids greater than 0. Special control point ids are
 	/// -1: First vertex of a linear shape; -2: Last vertex of a linear shape.
 	/// </remarks>
-	public struct ControlPointId : IConvertible, IEquatable<ControlPointId>, IEquatable<int>, IComparable, IComparable<int>, IComparable<ControlPointId> {
-
+	public struct ControlPointId : IConvertible, IEquatable<ControlPointId>, IEquatable<int>, IComparable, IComparable<int>,
+	                               IComparable<ControlPointId>
+	{
 		/// <ToBeCompleted></ToBeCompleted>
-		public static bool operator ==(ControlPointId id1, ControlPointId id2) {
+		public static bool operator ==(ControlPointId id1, ControlPointId id2)
+		{
 			return id1.id == id2.id;
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public static bool operator ==(ControlPointId id1, int id2) {
+		public static bool operator ==(ControlPointId id1, int id2)
+		{
 			return id1.id == id2;
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public static bool operator ==(int id1, ControlPointId id2) {
+		public static bool operator ==(int id1, ControlPointId id2)
+		{
 			return id1 == id2.id;
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public static bool operator !=(ControlPointId id1, ControlPointId id2) {
+		public static bool operator !=(ControlPointId id1, ControlPointId id2)
+		{
 			return id1.id != id2.id;
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public static bool operator !=(ControlPointId id1, int id2) {
+		public static bool operator !=(ControlPointId id1, int id2)
+		{
 			return id1.id != id2;
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public static bool operator !=(int id1, ControlPointId id2) {
+		public static bool operator !=(int id1, ControlPointId id2)
+		{
 			return id1 != id2.id;
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public static implicit operator ControlPointId(int id) {
+		public static implicit operator ControlPointId(int id)
+		{
 			return ControlPointId.Create(id);
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public static implicit operator int(ControlPointId cpi) {
+		public static implicit operator int(ControlPointId cpi)
+		{
 			return cpi.id;
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public static ControlPointId Create(int id) {
+		public static ControlPointId Create(int id)
+		{
 			ControlPointId result = empty;
 			result.id = id;
 			return result;
@@ -845,32 +889,37 @@ namespace Dataweb.NShape {
 
 
 		/// <override></override>
-		public bool Equals(ControlPointId other) {
+		public bool Equals(ControlPointId other)
+		{
 			return other == this;
 		}
 
 
 		/// <override></override>
-		public bool Equals(int other) {
+		public bool Equals(int other)
+		{
 			return other == this.id;
 		}
 
 
 		/// <override></override>
-		public override bool Equals(object obj) {
+		public override bool Equals(object obj)
+		{
 			if (!(obj is ControlPointId)) return false;
-			else return this == (ControlPointId)obj;
+			else return this == (ControlPointId) obj;
 		}
 
 
 		/// <override></override>
-		public override int GetHashCode() {
+		public override int GetHashCode()
+		{
 			return id.GetHashCode();
 		}
 
 
 		/// <override></override>
-		public override string ToString() {
+		public override string ToString()
+		{
 			return id.ToString();
 		}
 
@@ -900,38 +949,38 @@ namespace Dataweb.NShape {
 		/// </summary>
 		public const int LastVertex = -2;
 
-
 		#region IComparable Members
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public int CompareTo(object obj) {
+		public int CompareTo(object obj)
+		{
 			if (obj == null) return 1;
-			if (obj is ControlPointId) 
-				return CompareTo((ControlPointId)obj);
+			if (obj is ControlPointId)
+				return CompareTo((ControlPointId) obj);
 			else if (obj is int || obj is short || obj is byte)
-				return CompareTo((int)obj);
+				return CompareTo((int) obj);
 			else throw new ArgumentException("obj");
 		}
 
 		#endregion
 
-
 		#region IComparable<int> Members
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public int CompareTo(int other) {
+		public int CompareTo(int other)
+		{
 			if (this < other) return -1;
 			if (this > other) return 1;
 			return 0;
 		}
 
 		#endregion
-
 
 		#region IComparable<ControlPointId> Members
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public int CompareTo(ControlPointId other) {
+		public int CompareTo(ControlPointId other)
+		{
 			if (this < other) return -1;
 			if (this > other) return 1;
 			return 0;
@@ -939,83 +988,99 @@ namespace Dataweb.NShape {
 
 		#endregion
 
-
 		#region IConvertible Members
 
-		TypeCode IConvertible.GetTypeCode() {
+		TypeCode IConvertible.GetTypeCode()
+		{
 			return TypeCode.Int32;
 		}
 
-		bool IConvertible.ToBoolean(IFormatProvider provider) {
+		bool IConvertible.ToBoolean(IFormatProvider provider)
+		{
 			throw new InvalidCastException();
 		}
 
-		byte IConvertible.ToByte(IFormatProvider provider) {
+		byte IConvertible.ToByte(IFormatProvider provider)
+		{
 			throw new InvalidCastException();
 		}
 
-		char IConvertible.ToChar(IFormatProvider provider) {
+		char IConvertible.ToChar(IFormatProvider provider)
+		{
 			throw new InvalidCastException();
 		}
 
-		DateTime IConvertible.ToDateTime(IFormatProvider provider) {
+		DateTime IConvertible.ToDateTime(IFormatProvider provider)
+		{
 			throw new InvalidCastException();
 		}
 
-		decimal IConvertible.ToDecimal(IFormatProvider provider) {
+		decimal IConvertible.ToDecimal(IFormatProvider provider)
+		{
 			throw new InvalidCastException();
 		}
 
-		double IConvertible.ToDouble(IFormatProvider provider) {
+		double IConvertible.ToDouble(IFormatProvider provider)
+		{
 			throw new InvalidCastException();
 		}
 
-		short IConvertible.ToInt16(IFormatProvider provider) {
+		short IConvertible.ToInt16(IFormatProvider provider)
+		{
 			throw new InvalidCastException();
 		}
 
-		int IConvertible.ToInt32(IFormatProvider provider) {
+		int IConvertible.ToInt32(IFormatProvider provider)
+		{
 			return id;
 		}
 
-		long IConvertible.ToInt64(IFormatProvider provider) {
+		long IConvertible.ToInt64(IFormatProvider provider)
+		{
 			return id;
 		}
 
-		sbyte IConvertible.ToSByte(IFormatProvider provider) {
+		sbyte IConvertible.ToSByte(IFormatProvider provider)
+		{
 			throw new InvalidCastException();
 		}
 
-		float IConvertible.ToSingle(IFormatProvider provider) {
+		float IConvertible.ToSingle(IFormatProvider provider)
+		{
 			throw new InvalidCastException();
 		}
 
-		string IConvertible.ToString(IFormatProvider provider) {
+		string IConvertible.ToString(IFormatProvider provider)
+		{
 			throw new InvalidCastException();
 		}
 
-		object IConvertible.ToType(Type conversionType, IFormatProvider provider) {
-			if (conversionType == typeof(int)) return id;
-			else if (conversionType == typeof(long)) return id;
+		object IConvertible.ToType(Type conversionType, IFormatProvider provider)
+		{
+			if (conversionType == typeof (int)) return id;
+			else if (conversionType == typeof (long)) return id;
 			else throw new InvalidCastException();
 		}
 
-		ushort IConvertible.ToUInt16(IFormatProvider provider) {
+		ushort IConvertible.ToUInt16(IFormatProvider provider)
+		{
 			throw new InvalidCastException();
 		}
 
-		uint IConvertible.ToUInt32(IFormatProvider provider) {
+		uint IConvertible.ToUInt32(IFormatProvider provider)
+		{
 			throw new InvalidCastException();
 		}
 
-		ulong IConvertible.ToUInt64(IFormatProvider provider) {
-			return (ulong)id;
+		ulong IConvertible.ToUInt64(IFormatProvider provider)
+		{
+			return (ulong) id;
 		}
 
 		#endregion
 
-
-		static ControlPointId() {
+		static ControlPointId()
+		{
 			empty = None;
 		}
 
@@ -1030,11 +1095,14 @@ namespace Dataweb.NShape {
 	/// </summary>
 	/// <status>reviewed</status>
 	[Flags]
-	public enum ResizeModifiers {
+	public enum ResizeModifiers
+	{
 		/// <summary>Standard resizing</summary>
 		None = 0,
+
 		/// <summary>Maintain aspect ratio while resizing</summary>
 		MaintainAspect = 1,
+
 		/// <summary>Resizing is also applied to the opposite side</summary>
 		MirroredResize = 2
 	}
@@ -1045,8 +1113,8 @@ namespace Dataweb.NShape {
 	/// calculated from this relative position depends on the shape.
 	/// </summary>
 	/// <status>reviewed</status>
-	public struct RelativePosition : IEquatable<RelativePosition> {
-
+	public struct RelativePosition : IEquatable<RelativePosition>
+	{
 		/// <ToBeCompleted></ToBeCompleted>
 		public static readonly RelativePosition Empty;
 
@@ -1054,16 +1122,18 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// Tests whether two specified <see cref="T:Dataweb.NShape.Advanced.RelativePosition" /> objects are equivalent.
 		/// </summary>
-		public static bool operator ==(RelativePosition x, RelativePosition y) { 
-			return (x.A == y.A && x.B == y.B && x.C == y.C); 
+		public static bool operator ==(RelativePosition x, RelativePosition y)
+		{
+			return (x.A == y.A && x.B == y.B && x.C == y.C);
 		}
 
 
 		/// <summary>
 		/// Tests whether two specified <see cref="T:Dataweb.NShape.Advanced.RelativePosition" /> objects are not equivalent.
 		/// </summary>
-		public static bool operator !=(RelativePosition x, RelativePosition y) { 
-			return !(x == y); 
+		public static bool operator !=(RelativePosition x, RelativePosition y)
+		{
+			return !(x == y);
 		}
 
 
@@ -1080,28 +1150,31 @@ namespace Dataweb.NShape {
 
 
 		/// <override></override>
-		public override bool Equals(object obj) { 
-			return obj is RelativePosition && this == (RelativePosition)obj; 
+		public override bool Equals(object obj)
+		{
+			return obj is RelativePosition && this == (RelativePosition) obj;
 		}
 
 
 		/// <override></override>
-		public bool Equals(RelativePosition other) {
+		public bool Equals(RelativePosition other)
+		{
 			return other == this;
 		}
 
 
 		/// <override></override>
-		public override int GetHashCode() {
+		public override int GetHashCode()
+		{
 			return (A.GetHashCode() ^ B.GetHashCode() ^ C.GetHashCode());
 		}
 
-		
-		static RelativePosition() {
+
+		static RelativePosition()
+		{
 			Empty.A = int.MinValue;
 			Empty.B = int.MinValue;
 			Empty.C = int.MinValue;
 		}
 	}
-
 }

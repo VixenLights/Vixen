@@ -1,58 +1,68 @@
 ﻿using Vixen.Module;
 
-namespace Vixen.Sys.Output {
-	abstract public class OutputModuleInstanceBase : ModuleInstanceBase, IOutputModule {
+namespace Vixen.Sys.Output
+{
+	public abstract class OutputModuleInstanceBase : ModuleInstanceBase, IOutputModule
+	{
 		/// <summary>
 		/// If overriding this, please also override Start and Stop.
 		/// </summary>
-		virtual public bool IsRunning { get; private set; }
+		public virtual bool IsRunning { get; private set; }
 
 		/// <summary>
 		/// If overriding this, please also override Pause and Resume.
 		/// </summary>
-		virtual public bool IsPaused { get; private set; }
+		public virtual bool IsPaused { get; private set; }
 
-		virtual public bool HasSetup {
+		public virtual bool HasSetup
+		{
 			get { return false; }
 		}
 
-		virtual public bool Setup() {
+		public virtual bool Setup()
+		{
 			return false;
 		}
 
 		/// <summary>
 		/// If overriding this, please also override Stop and IsRunning.
 		/// </summary>
-		virtual public void Start() {
+		public virtual void Start()
+		{
 			IsRunning = true;
 		}
 
 		/// <summary>
 		/// If overriding this, please also override Start and IsRunning.
 		/// </summary>
-		virtual public void Stop() {
+		public virtual void Stop()
+		{
 			IsRunning = false;
 		}
 
 		/// <summary>
 		/// If overriding this, please also override Resume and IsPaused.
 		/// </summary>
-		virtual public void Pause() {
+		public virtual void Pause()
+		{
 			IsPaused = true;
 		}
 
 		/// <summary>
 		/// If overriding this, please also override Pause and IsPaused.
 		/// </summary>
-		virtual public void Resume() {
+		public virtual void Resume()
+		{
 			IsPaused = false;
 		}
 
-		virtual public int UpdateInterval {
-			get { return ((IOutputModuleDescriptor)Descriptor).UpdateInterval; }
+		public virtual int UpdateInterval
+		{
+			get { return ((IOutputModuleDescriptor) Descriptor).UpdateInterval; }
 		}
 
-		virtual public IOutputDeviceUpdateSignaler UpdateSignaler {
+		public virtual IOutputDeviceUpdateSignaler UpdateSignaler
+		{
 			get { return null; }
 		}
 	}

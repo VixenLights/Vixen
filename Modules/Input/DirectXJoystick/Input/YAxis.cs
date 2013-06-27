@@ -1,12 +1,16 @@
 ﻿using SlimDX.DirectInput;
 
-namespace VixenModules.Input.DirectXJoystick.Input {
-	class YAxis : JoystickInput {
+namespace VixenModules.Input.DirectXJoystick.Input
+{
+	internal class YAxis : JoystickInput
+	{
 		public YAxis(string name)
-			: base(name) {
+			: base(name)
+		{
 		}
 
-		protected override double _GetValue(JoystickState joystickState) {
+		protected override double _GetValue(JoystickState joystickState)
+		{
 			return joystickState.Y;
 		}
 	}

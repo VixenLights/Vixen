@@ -1,27 +1,34 @@
 ﻿using Vixen.Sys.State.Execution.Behavior;
 
-namespace Vixen.Sys.State.Execution {
-	public class ClosedState : State {
+namespace Vixen.Sys.State.Execution
+{
+	public class ClosedState : State
+	{
 		public const string StateName = "Closed";
 
 		public ClosedState(ExecutionStateEngine engine)
-			: base(engine) {
+			: base(engine)
+		{
 		}
 
-		public override string Name {
+		public override string Name
+		{
 			get { return StateName; }
 		}
 
-		public override void Enter() {
+		public override void Enter()
+		{
 			StandardClosedBehavior.Run();
 			VixenSystem.Logging.Info("Vixen execution engine entered the closed state.");
 		}
 
-		public override void OnOpen() {
+		public override void OnOpen()
+		{
 			Engine.SetState(Engine.OpeningState);
 		}
 
-		public override void OnTest() {
+		public override void OnTest()
+		{
 			Engine.SetState(Engine.TestOpeningState);
 		}
 	}

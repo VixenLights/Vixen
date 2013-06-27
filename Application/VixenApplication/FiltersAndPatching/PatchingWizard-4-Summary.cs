@@ -60,7 +60,8 @@ namespace VixenApplication.FiltersAndPatching
 					warning1 = "Warning: there are more filter outputs than destination components.";
 					warning2 = "Some filters will not be patched to anything.";
 				}
-			} else {
+			}
+			else {
 				if (_destinationCount > _sourceCount) {
 					warning1 = "Warning: there are more destination components than sources.";
 					warning2 = "Some destination components won't be patched to.";
@@ -123,17 +124,23 @@ namespace VixenApplication.FiltersAndPatching
 			int filterIteration = 0;
 			foreach (IOutputFilterModuleInstance instance in _data.Filters) {
 				// calculate the relative horizontal position the filters should be placed at (for multiple layers)
-				double xPositionProportion = 0.2 + (0.6 * ((double)filterIteration / (_filterCount - 1)));
+				double xPositionProportion = 0.2 + (0.6*((double) filterIteration/(_filterCount - 1)));
 				if (_filterCount <= 1)
 					xPositionProportion = 0.5;
 
-				List<FilterShape> clonedFilters = new List<FilterShape>(_data.FilterSetupForm.DuplicateFilterInstancesToShapes(new[] { instance }, _filterInstanceCount[instance], null, xPositionProportion));
+				List<FilterShape> clonedFilters =
+					new List<FilterShape>(_data.FilterSetupForm.DuplicateFilterInstancesToShapes(new[] {instance},
+					                                                                             _filterInstanceCount[instance], null,
+					                                                                             xPositionProportion));
 				for (int i = 0; i < currentSources.Count; i++) {
 					if (i >= clonedFilters.Count) {
-						VixenSystem.Logging.Error("Patching Wizard: ran out of cloned filters when autopatching. We should have automatically generated enough!");
+						VixenSystem.Logging.Error(
+							"Patching Wizard: ran out of cloned filters when autopatching. We should have automatically generated enough!");
 						return false;
 					}
-					success = VixenSystem.DataFlow.SetComponentSource(clonedFilters[i].FilterInstance, currentSources[i].Item1.DataFlowComponent, currentSources[i].Item2);
+					success = VixenSystem.DataFlow.SetComponentSource(clonedFilters[i].FilterInstance,
+					                                                  currentSources[i].Item1.DataFlowComponent,
+					                                                  currentSources[i].Item2);
 					if (success)
 						_data.FilterSetupForm.ConnectShapes(currentSources[i].Item1, currentSources[i].Item2, clonedFilters[i]);
 					result = result && success;
@@ -151,7 +158,8 @@ namespace VixenApplication.FiltersAndPatching
 
 			// link up the final bunch -- the destinations with whatever sources are left
 			for (int i = 0; i < Math.Min(_destinationCount, currentSources.Count); i++) {
-				success = VixenSystem.DataFlow.SetComponentSource(_data.Destinations[i].DataFlowComponent, currentSources[i].Item1.DataFlowComponent, currentSources[i].Item2);
+				success = VixenSystem.DataFlow.SetComponentSource(_data.Destinations[i].DataFlowComponent,
+				                                                  currentSources[i].Item1.DataFlowComponent, currentSources[i].Item2);
 				if (success)
 					_data.FilterSetupForm.ConnectShapes(currentSources[i].Item1, currentSources[i].Item2, _data.Destinations[i]);
 				result = result && success;
@@ -165,7 +173,8 @@ namespace VixenApplication.FiltersAndPatching
 			bool patchingSuccess = _doPatching();
 
 			if (!patchingSuccess) {
-				MessageBox.Show("There was an error performing some of the patching. Please verify the results.", "Patching error", MessageBoxButtons.OK);
+				MessageBox.Show("There was an error performing some of the patching. Please verify the results.", "Patching error",
+				                MessageBoxButtons.OK);
 			}
 		}
 	}

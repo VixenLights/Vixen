@@ -1,14 +1,17 @@
 ﻿using System.Runtime.Serialization;
 using Vixen.Module;
 
-namespace VixenModules.Effect.ImageGrid {
+namespace VixenModules.Effect.ImageGrid
+{
 	[DataContract]
-	public class Data : ModuleDataModelBase {
+	public class Data : ModuleDataModelBase
+	{
 		[DataMember]
 		public string FilePath { get; set; }
 
-		public override IModuleDataModel Clone() {
-			return (Data)MemberwiseClone();
+		public override IModuleDataModel Clone()
+		{
+			return (Data) MemberwiseClone();
 		}
 	}
 }

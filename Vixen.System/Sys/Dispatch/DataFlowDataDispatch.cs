@@ -1,11 +1,19 @@
 ﻿using Vixen.Data.Flow;
 
-namespace Vixen.Sys.Dispatch {
-	abstract public class DataFlowDataDispatch : IAnyDataFlowDataHandler {
-		virtual public void Handle(CommandDataFlowData obj) { }
+namespace Vixen.Sys.Dispatch
+{
+	public abstract class DataFlowDataDispatch : IAnyDataFlowDataHandler
+	{
+		public virtual void Handle(CommandDataFlowData obj)
+		{
+		}
 
-		virtual public void Handle(CommandsDataFlowData obj) { }
+		public virtual void Handle(CommandsDataFlowData obj)
+		{
+		}
 
-		virtual public void Handle(IntentsDataFlowData obj) { }
+		public virtual void Handle(IntentsDataFlowData obj)
+		{
+		}
 	}
 }

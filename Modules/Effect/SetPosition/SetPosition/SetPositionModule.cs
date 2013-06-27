@@ -7,39 +7,47 @@ using Vixen.Module.Effect;
 using Vixen.Sys;
 using Vixen.Sys.Attribute;
 
-namespace VixenModules.Effect.SetPosition {
-	public class SetPositionModule : EffectModuleInstanceBase {
+namespace VixenModules.Effect.SetPosition
+{
+	public class SetPositionModule : EffectModuleInstanceBase
+	{
 		private SetPositionData _data;
 		private EffectIntents _effectIntents;
 
-		public override IModuleDataModel ModuleData {
+		public override IModuleDataModel ModuleData
+		{
 			get { return _data; }
-			set { _data = (SetPositionData)value; }
+			set { _data = (SetPositionData) value; }
 		}
 
 		[Value]
-		public Percentage StartPosition {
+		public Percentage StartPosition
+		{
 			get { return _data.StartPosition; }
-			set {
+			set
+			{
 				_data.StartPosition = value;
 				IsDirty = true;
 			}
 		}
 
 		[Value]
-		public Percentage EndPosition {
+		public Percentage EndPosition
+		{
 			get { return _data.EndPosition; }
-			set {
+			set
+			{
 				_data.EndPosition = value;
 				IsDirty = true;
 			}
 		}
 
-		protected override void _PreRender() {
+		protected override void _PreRender()
+		{
 			_effectIntents = new EffectIntents();
 
-			foreach(ElementNode node in TargetNodes) {
-				foreach(Element element in node.GetElementEnumerator()) {
+			foreach (ElementNode node in TargetNodes) {
+				foreach (Element element in node.GetElementEnumerator()) {
 					PositionValue startPosition = new PositionValue(StartPosition);
 					PositionValue endPosition = new PositionValue(EndPosition);
 					IIntent intent = new PositionIntent(startPosition, endPosition, TimeSpan);
@@ -48,7 +56,8 @@ namespace VixenModules.Effect.SetPosition {
 			}
 		}
 
-		protected override EffectIntents _Render() {
+		protected override EffectIntents _Render()
+		{
 			return _effectIntents;
 		}
 	}

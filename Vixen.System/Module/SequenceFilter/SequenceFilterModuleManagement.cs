@@ -1,6 +1,8 @@
 ﻿using Vixen.Module.SequenceFilter;
 
-namespace Vixen.Module.SequenceFilter {
-	class SequenceFilterModuleManagement : GenericModuleManagement<ISequenceFilterModuleInstance> {
+namespace Vixen.Module.SequenceFilter
+{
+	internal class SequenceFilterModuleManagement : GenericModuleManagement<ISequenceFilterModuleInstance>
+	{
 	}
 }

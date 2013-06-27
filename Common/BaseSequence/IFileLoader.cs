@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace BaseSequence {
-	interface IFileLoader {
+namespace BaseSequence
+{
+	internal interface IFileLoader
+	{
 		object Load(string filePath);
 	}
 }

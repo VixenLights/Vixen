@@ -17,27 +17,27 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
-
 using Dataweb.NShape.Advanced;
 
 
-namespace Dataweb.NShape.WinFormsUI {
-
+namespace Dataweb.NShape.WinFormsUI
+{
 	/// <summary>
 	/// A simple text editor dialog used by ui type editors for text properties.
 	/// </summary>
 	[ToolboxItem(false)]
-	public partial class TextEditorDialog : Form {
-
+	public partial class TextEditorDialog : Form
+	{
 		/// <summary>
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.WinFormsUI.TextUITypeEditorDialog" />.
 		/// </summary>
-		public TextEditorDialog() {
+		public TextEditorDialog()
+		{
 			SetStyle(ControlStyles.ContainerControl
-						| ControlStyles.OptimizedDoubleBuffer
-						| ControlStyles.ResizeRedraw
-						| ControlStyles.SupportsTransparentBackColor
-						, true);
+			         | ControlStyles.OptimizedDoubleBuffer
+			         | ControlStyles.ResizeRedraw
+			         | ControlStyles.SupportsTransparentBackColor
+			         , true);
 			UpdateStyles();
 			InitializeComponent();
 			Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
@@ -50,7 +50,8 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.WinFormsUI.TextUITypeEditorDialog" />.
 		/// </summary>
 		public TextEditorDialog(string text)
-			: this() {
+			: this()
+		{
 			textBox.Text = text;
 			wantReturn = false;
 		}
@@ -60,7 +61,8 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.WinFormsUI.TextUITypeEditorDialog" />.
 		/// </summary>
 		public TextEditorDialog(IEnumerable<string> lines)
-			: this() {
+			: this()
+		{
 			if (lines == null) throw new ArgumentNullException("lines");
 			foreach (string line in lines)
 				textBox.Text += line + Environment.NewLine;
@@ -72,10 +74,11 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.WinFormsUI.TextUITypeEditorDialog" />.
 		/// </summary>
 		public TextEditorDialog(string text, ICharacterStyle characterStyle)
-			: this(text) {
+			: this(text)
+		{
 			if (characterStyle == null) throw new ArgumentNullException("characterStyle");
 			Font font = ToolCache.GetFont(characterStyle);
-			textBox.Font = (Font)font.Clone();
+			textBox.Font = (Font) font.Clone();
 			font = null;
 		}
 
@@ -84,7 +87,8 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.WinFormsUI.TextUITypeEditorDialog" />.
 		/// </summary>
 		public TextEditorDialog(string text, string fontFamilyName, float fontSizeInPts, System.Drawing.FontStyle fontStyle)
-			: this(text) {
+			: this(text)
+		{
 			if (fontFamilyName == null) throw new ArgumentNullException("fontFamilyName");
 			textBox.Font = new Font(fontFamilyName, fontSizeInPts, fontStyle, GraphicsUnit.Point);
 		}
@@ -94,10 +98,11 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.WinFormsUI.TextUITypeEditorDialog" />.
 		/// </summary>
 		public TextEditorDialog(IEnumerable<string> lines, CharacterStyle characterStyle)
-			: this(lines) {
+			: this(lines)
+		{
 			if (characterStyle == null) throw new ArgumentNullException("characterStyle");
 			Font font = ToolCache.GetFont(characterStyle);
-			textBox.Font = (Font)font.Clone();
+			textBox.Font = (Font) font.Clone();
 			font = null;
 		}
 
@@ -105,19 +110,21 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// <summary>
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.WinFormsUI.TextUITypeEditorDialog" />.
 		/// </summary>
-		public TextEditorDialog(IEnumerable<string> lines, string fontFamilyName, float fontSizeInPts, System.Drawing.FontStyle fontStyle)
-			: this(lines) {
+		public TextEditorDialog(IEnumerable<string> lines, string fontFamilyName, float fontSizeInPts,
+		                        System.Drawing.FontStyle fontStyle)
+			: this(lines)
+		{
 			if (fontFamilyName == null) throw new ArgumentNullException("fontFamilyName");
 			textBox.Font = new Font(fontFamilyName, fontSizeInPts, fontStyle, GraphicsUnit.Point);
 		}
-
 
 		#region [Public] Properties
 
 		/// <summary>
 		/// Indicates whether the displayed text should automatically wrap words to the beginning of the new line when necessary.
 		/// </summary>
-		public bool WordWrap {
+		public bool WordWrap
+		{
 			get { return textBox.WordWrap; }
 			set { textBox.WordWrap = value; }
 		}
@@ -126,9 +133,11 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// <summary>
 		/// Sets the horizontal alignment of the displayed text.
 		/// </summary>
-		public HorizontalAlignment TextAlignment {
+		public HorizontalAlignment TextAlignment
+		{
 			get { return textBox.SelectionAlignment; }
-			set {
+			set
+			{
 				textBox.SuspendLayout();
 				int s = textBox.SelectionStart;
 				int l = textBox.SelectionLength;
@@ -146,8 +155,9 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// <summary>
 		/// Gets or sets the current text to be edited.
 		/// </summary>
-		[TypeConverter(typeof(TextTypeConverter))]
-		public string ResultText {
+		[TypeConverter(typeof (TextTypeConverter))]
+		public string ResultText
+		{
 			get { return textBox.Text; }
 			set { textBox.Text = value; }
 		}
@@ -156,8 +166,9 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// <summary>
 		/// Gets or sets the current multiline text to be edited.
 		/// </summary>
-		[TypeConverter(typeof(TextTypeConverter))]
-		public string[] Lines {
+		[TypeConverter(typeof (TextTypeConverter))]
+		public string[] Lines
+		{
 			get { return textBox.Lines; }
 			set { textBox.Lines = value; }
 		}
@@ -166,7 +177,8 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// <summary>
 		/// Specifies whether the user can insert tab characters into the text using the TAB key.
 		/// </summary>
-		public bool WantTab {
+		public bool WantTab
+		{
 			get { return !textBox.TabStop; }
 			set { textBox.TabStop = !value; }
 		}
@@ -175,32 +187,36 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// <summary>
 		/// Specifies whether the user can insert line breaks using the RETURN key.
 		/// </summary>
-		public bool WantReturn {
+		public bool WantReturn
+		{
 			get { return wantReturn; }
 			set { wantReturn = value; }
 		}
 
 		#endregion
 
-
 		#region [Private] Methods
 
-		private void okButton_Click(object sender, EventArgs e) {
+		private void okButton_Click(object sender, EventArgs e)
+		{
 			DialogResult = DialogResult.OK;
 		}
 
 
-		private void cancelButton_Click(object sender, EventArgs e) {
+		private void cancelButton_Click(object sender, EventArgs e)
+		{
 			DialogResult = DialogResult.Cancel;
 		}
 
 
-		private void TextEditor_FormClosed(object sender, FormClosedEventArgs e) {
+		private void TextEditor_FormClosed(object sender, FormClosedEventArgs e)
+		{
 			textBox.PreviewKeyDown -= textBox_PreviewKeyDown;
 		}
 
 
-		private void textBox_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e) {
+		private void textBox_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+		{
 			switch (e.KeyCode) {
 				case Keys.Return:
 					if (wantReturn) {
@@ -225,22 +241,25 @@ namespace Dataweb.NShape.WinFormsUI {
 
 		#endregion
 
-
 		#region Fields
+
 		private bool wantReturn = false;
+
 		#endregion
 	}
 
 
 	[ToolboxItem(false)]
-	internal class TextEditorTextBox : RichTextBox {
-		
-		public TextEditorTextBox() {
+	internal class TextEditorTextBox : RichTextBox
+	{
+		public TextEditorTextBox()
+		{
 			SetControlStyles();
 		}
 
 
-		public TextEditorTextBox(string text, Font font) {
+		public TextEditorTextBox(string text, Font font)
+		{
 			if (font == null) throw new ArgumentNullException("font");
 			SetControlStyles();
 			Font = font;
@@ -248,7 +267,8 @@ namespace Dataweb.NShape.WinFormsUI {
 		}
 
 
-		public TextEditorTextBox(IEnumerable<string> lines, Font font) {
+		public TextEditorTextBox(IEnumerable<string> lines, Font font)
+		{
 			if (lines == null) throw new ArgumentNullException("lines");
 			if (font == null) throw new ArgumentNullException("font");
 			SetControlStyles();
@@ -258,9 +278,11 @@ namespace Dataweb.NShape.WinFormsUI {
 		}
 
 
-		public HorizontalAlignment TextAlignment {
+		public HorizontalAlignment TextAlignment
+		{
 			get { return SelectionAlignment; }
-			set {
+			set
+			{
 				SuspendLayout();
 				int s = SelectionStart;
 				int l = SelectionLength;
@@ -275,7 +297,8 @@ namespace Dataweb.NShape.WinFormsUI {
 		}
 
 
-		private void SetControlStyles() {
+		private void SetControlStyles()
+		{
 			SetStyle(
 				//ControlStyles.AllPaintingInWmPaint
 				//| ControlStyles.UserPaint
@@ -286,7 +309,7 @@ namespace Dataweb.NShape.WinFormsUI {
 				| ControlStyles.ResizeRedraw
 				| ControlStyles.Selectable
 				| ControlStyles.SupportsTransparentBackColor
-			, true);
+				, true);
 			UpdateStyles();
 		}
 	}

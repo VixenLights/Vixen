@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using Vixen.Sys;
 
-namespace Vixen.Execution {
-	public interface IContext : IExecutionControl, IRuns, IDisposable {
+namespace Vixen.Execution
+{
+	public interface IContext : IExecutionControl, IRuns, IDisposable
+	{
 		event EventHandler ContextStarted;
 		event EventHandler ContextEnded;
 

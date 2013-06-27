@@ -1,16 +1,16 @@
 namespace VixenModules.Preview.DisplayPreview.Model.Shapes
 {
-    using System.ComponentModel;
-    using System.Windows.Media;
+	using System.ComponentModel;
+	using System.Windows.Media;
 
-    public interface IShape : INotifyPropertyChanged
-    {
-        string Name { get; }
+	public interface IShape : INotifyPropertyChanged
+	{
+		string Name { get; }
 
-        Brush Brush { get; set; }
+		Brush Brush { get; set; }
 
-        ShapeType ShapeType { get; }
+		ShapeType ShapeType { get; }
 
-        IShape Clone();
-    }
+		IShape Clone();
+	}
 }

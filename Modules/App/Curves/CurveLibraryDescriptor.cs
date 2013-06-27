@@ -7,41 +7,45 @@ using Vixen.Module.App;
 
 namespace VixenModules.App.Curves
 {
-	class CurveLibraryDescriptor: AppModuleDescriptorBase
+	internal class CurveLibraryDescriptor : AppModuleDescriptorBase
 	{
 		private static Guid _id = new Guid("{4e258de2-7a75-4f0f-aa43-c8182e7f3400}");
 
-		override public string TypeName
+		public override string TypeName
 		{
 			get { return "Curves"; }
 		}
 
-		override public Guid TypeId
+		public override Guid TypeId
 		{
 			get { return _id; }
 		}
 
-		override public Type ModuleClass
+		public override Type ModuleClass
 		{
-			get { return typeof(CurveLibrary); }
+			get { return typeof (CurveLibrary); }
 		}
 
 		public override Type ModuleStaticDataClass
 		{
-			get { return typeof(CurveLibraryStaticData); }
+			get { return typeof (CurveLibraryStaticData); }
 		}
 
-		override public string Author
+		public override string Author
 		{
 			get { return "Vixen Team"; }
 		}
 
-		override public string Description
+		public override string Description
 		{
-			get { return "Provides a data type which represents a curve and additional functionality (such as a curve editor and library)."; }
+			get
+			{
+				return
+					"Provides a data type which represents a curve and additional functionality (such as a curve editor and library).";
+			}
 		}
 
-		override public string Version
+		public override string Version
 		{
 			get { return "1.0"; }
 		}

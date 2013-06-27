@@ -2,53 +2,64 @@
 using System.Runtime.InteropServices;
 using System.Security;
 
-namespace Vixen.Sys {
-	class WindowsMultimedia {
+namespace Vixen.Sys
+{
+	internal class WindowsMultimedia
+	{
 		private IntPtr _avHandle;
 		private int _index;
-		
+
 		[DllImport("winmm.dll", EntryPoint = "timeBeginPeriod")]
-		static extern uint WinMM_BeginPeriod(uint uMilliseconds);
-		[DllImport("winmm.dll", EntryPoint="timeEndPeriod")]
-		static extern uint WinMM_EndPeriod(uint uMilliseconds);
+		private static extern uint WinMM_BeginPeriod(uint uMilliseconds);
+
+		[DllImport("winmm.dll", EntryPoint = "timeEndPeriod")]
+		private static extern uint WinMM_EndPeriod(uint uMilliseconds);
+
 		[DllImport("Avrt.dll"), SuppressUnmanagedCodeSecurity]
-		static extern IntPtr AvSetMmThreadCharacteristics(string task, ref int index);
+		private static extern IntPtr AvSetMmThreadCharacteristics(string task, ref int index);
+
 		[DllImport("Avrt.dll"), SuppressUnmanagedCodeSecurity]
 		[return: MarshalAs(UnmanagedType.Bool)]
-		static extern bool AvRevertMmThreadCharacteristics(IntPtr handle);
+		private static extern bool AvRevertMmThreadCharacteristics(IntPtr handle);
 
 		private const int WINMM_RESOLUTION = 10;
 
-		public void BeginEnhancedResolution() {
-			if(!_IsNtKernel()) return;
+		public void BeginEnhancedResolution()
+		{
+			if (!_IsNtKernel()) return;
 
-			if(Environment.OSVersion.Version >= WindowsVersion.XP) {
-				if(Environment.OSVersion.Version >= WindowsVersion.Vista) {
+			if (Environment.OSVersion.Version >= WindowsVersion.XP) {
+				if (Environment.OSVersion.Version >= WindowsVersion.Vista) {
 					//HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks
 					_avHandle = AvSetMmThreadCharacteristics("Pro Audio", ref _index);
-				} else {
+				}
+				else {
 					WinMM_BeginPeriod(WINMM_RESOLUTION);
 				}
 			}
 		}
 
-		public void EndEnhancedResolution() {
-			if(!_IsNtKernel()) return;
+		public void EndEnhancedResolution()
+		{
+			if (!_IsNtKernel()) return;
 
-			if(Environment.OSVersion.Version >= WindowsVersion.XP) {
-				if(Environment.OSVersion.Version >= WindowsVersion.Vista) {
+			if (Environment.OSVersion.Version >= WindowsVersion.XP) {
+				if (Environment.OSVersion.Version >= WindowsVersion.Vista) {
 					AvRevertMmThreadCharacteristics(_avHandle);
-				} else {
+				}
+				else {
 					WinMM_EndPeriod(WINMM_RESOLUTION);
 				}
 			}
 		}
 
-		private bool _IsNtKernel() {
+		private bool _IsNtKernel()
+		{
 			return Environment.OSVersion.Platform == PlatformID.Win32NT;
 		}
 
-		private static class WindowsVersion {
+		private static class WindowsVersion
+		{
 			//+------------+------------+-------+-------+---------+
 			//| Version    | PlatformId | Major | Minor | Release |
 			//+------------+------------+-------+-------+---------+

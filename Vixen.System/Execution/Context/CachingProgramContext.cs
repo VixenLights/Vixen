@@ -1,30 +1,38 @@
 ﻿using Vixen.Execution.DataSource;
 using Vixen.Sys;
 
-namespace Vixen.Execution.Context {
-	public abstract class CachingProgramContext : ProgramContext {
+namespace Vixen.Execution.Context
+{
+	public abstract class CachingProgramContext : ProgramContext
+	{
 		private PreFilteringBufferingDataSource _dataSource;
 
-		public enum CachingLevel {
+		public enum CachingLevel
+		{
 			Sequence,
 			Context
 		};
 
-		protected CachingProgramContext(CachingLevel cachingLevel) {
+		protected CachingProgramContext(CachingLevel cachingLevel)
+		{
 			_dataSource = new PreFilteringBufferingDataSource(cachingLevel == CachingLevel.Context);
 		}
 
-		public override IMutableDataSource ContextDataSource {
+		public override IMutableDataSource ContextDataSource
+		{
 			get { return _dataSource; }
 		}
 
-		protected override IDataSource _DataSource {
+		protected override IDataSource _DataSource
+		{
 			get { return ContextDataSource; }
 		}
 
-		public override IProgram Program {
+		public override IProgram Program
+		{
 			get { return base.Program; }
-			set {
+			set
+			{
 				base.Program = value;
 				_dataSource.ContextName = value.Name;
 			}

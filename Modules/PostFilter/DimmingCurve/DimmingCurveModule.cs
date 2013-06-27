@@ -32,12 +32,12 @@ namespace VixenModules.OutputFilter.DimmingCurve
 
 		public override Type ModuleClass
 		{
-			get { return typeof(DimmingCurveModule); }
+			get { return typeof (DimmingCurveModule); }
 		}
 
 		public override Type ModuleDataClass
 		{
-			get { return typeof(DimmingCurveData); }
+			get { return typeof (DimmingCurveData); }
 		}
 
 		public override string Author
@@ -47,7 +47,11 @@ namespace VixenModules.OutputFilter.DimmingCurve
 
 		public override string Description
 		{
-			get { return "An output filter that translates lighting intensity values according to a curve (to compensate for non-linear lighting response)."; }
+			get
+			{
+				return
+					"An output filter that translates lighting intensity values according to a curve (to compensate for non-linear lighting response).";
+			}
 		}
 
 		public override string Version
@@ -59,7 +63,6 @@ namespace VixenModules.OutputFilter.DimmingCurve
 
 	public class DimmingCurveModule : OutputFilterModuleInstanceBase
 	{
-
 		private DimmingCurveData _data;
 		private DimmingCurveOutput _output;
 
@@ -80,7 +83,7 @@ namespace VixenModules.OutputFilter.DimmingCurve
 
 		public override IDataFlowOutput[] Outputs
 		{
-			get { return new IDataFlowOutput[] { _output }; }
+			get { return new IDataFlowOutput[] {_output}; }
 		}
 
 		public override IModuleDataModel ModuleData
@@ -88,7 +91,7 @@ namespace VixenModules.OutputFilter.DimmingCurve
 			get { return _data; }
 			set
 			{
-				_data = (DimmingCurveData)value;
+				_data = (DimmingCurveData) value;
 				_CreateOutputs();
 			}
 		}
@@ -136,7 +139,7 @@ namespace VixenModules.OutputFilter.DimmingCurve
 	}
 
 
-	class DimmingCurveFilter : IntentStateDispatch
+	internal class DimmingCurveFilter : IntentStateDispatch
 	{
 		private IIntentState _intentValue;
 		private readonly Curve _curve;
@@ -155,13 +158,13 @@ namespace VixenModules.OutputFilter.DimmingCurve
 		public override void Handle(IIntentState<LightingValue> obj)
 		{
 			LightingValue lightingValue = obj.GetValue();
-			double newValue = _curve.GetValue(lightingValue.Intensity * 100.0) / 100.0;
+			double newValue = _curve.GetValue(lightingValue.Intensity*100.0)/100.0;
 			_intentValue = new StaticIntentState<LightingValue>(obj, new LightingValue(lightingValue.Color, (float) newValue));
 		}
 	}
 
 
-	class DimmingCurveOutput : IDataFlowOutput<IntentsDataFlowData>
+	internal class DimmingCurveOutput : IDataFlowOutput<IntentsDataFlowData>
 	{
 		private readonly Curve _curve;
 		private readonly DimmingCurveFilter _filter;

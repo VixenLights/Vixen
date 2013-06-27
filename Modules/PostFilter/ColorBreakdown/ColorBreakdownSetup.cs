@@ -13,6 +13,7 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 	public partial class ColorBreakdownSetup : Form
 	{
 		private readonly ColorBreakdownData _data;
+
 		public ColorBreakdownSetup(ColorBreakdownData breakdownData)
 		{
 			InitializeComponent();
@@ -23,14 +24,16 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 		{
 			get
 			{
-				return tableLayoutPanelControls.Controls.OfType<ColorBreakdownItemControl>().Select(itemControl => itemControl.ColorBreakdownItem).ToList();
+				return
+					tableLayoutPanelControls.Controls.OfType<ColorBreakdownItemControl>().Select(
+						itemControl => itemControl.ColorBreakdownItem).ToList();
 			}
 		}
 
 		private void ColorBreakdownSetup_Load(object sender, EventArgs e)
 		{
 			tableLayoutPanelControls.Controls.Clear();
-			
+
 			foreach (ColorBreakdownItem breakdownItem in _data.BreakdownItems) {
 				addControl(new ColorBreakdownItemControl(breakdownItem));
 			}
@@ -53,7 +56,7 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 			addControl(new ColorBreakdownItemControl());
 		}
 
-		void control_DeleteRequested(object sender, EventArgs e)
+		private void control_DeleteRequested(object sender, EventArgs e)
 		{
 			ColorBreakdownItemControl control = sender as ColorBreakdownItemControl;
 			if (control == null)

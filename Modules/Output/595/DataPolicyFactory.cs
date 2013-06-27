@@ -4,9 +4,12 @@ using System.Linq;
 using System.Text;
 using Vixen.Sys;
 
-namespace VixenModules.Output.Olsen595 {
-	class DataPolicyFactory : IDataPolicyFactory {
-		public IDataPolicy CreateDataPolicy() {
+namespace VixenModules.Output.Olsen595
+{
+	internal class DataPolicyFactory : IDataPolicyFactory
+	{
+		public IDataPolicy CreateDataPolicy()
+		{
 			return new DataPolicy();
 		}
 	}

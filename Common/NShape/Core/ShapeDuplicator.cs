@@ -15,18 +15,18 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-
 using Dataweb.NShape.Advanced;
 
 
-namespace Dataweb.NShape {
-
+namespace Dataweb.NShape
+{
 	/// <summary>
 	/// Helper class used for cloning shapes including model object(s), all children and their model object(s).
 	/// </summary>
-	public class ShapeDuplicator {
-
-		static ShapeDuplicator() {
+	public class ShapeDuplicator
+	{
+		static ShapeDuplicator()
+		{
 			modelObjectClones = new Dictionary<IModelObject, IModelObject>();
 		}
 
@@ -34,7 +34,8 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// Creates a clone of both, shape and model object.
 		/// </summary>
-		public static Shape CloneShapeAndModelObject(Shape shape) {
+		public static Shape CloneShapeAndModelObject(Shape shape)
+		{
 			if (shape == null) throw new ArgumentNullException("shape");
 			modelObjectClones.Clear();
 			return DoCloneShape(shape, true);
@@ -44,7 +45,8 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// Creates for each shape a clone of both, the shape and it's model object.
 		/// </summary>
-		public static IEnumerable<Shape> CloneShapeAndModelObject(IEnumerable<Shape> shapes) {
+		public static IEnumerable<Shape> CloneShapeAndModelObject(IEnumerable<Shape> shapes)
+		{
 			if (shapes == null) throw new ArgumentNullException("shapes");
 			modelObjectClones.Clear();
 			foreach (Shape s in shapes)
@@ -55,7 +57,8 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// Creates a clone of the given shape. The clone references the source' model object.
 		/// </summary>
-		public static Shape CloneShapeOnly(Shape shape) {
+		public static Shape CloneShapeOnly(Shape shape)
+		{
 			if (shape == null) throw new ArgumentNullException("shape");
 			modelObjectClones.Clear();
 			return DoCloneShape(shape, false);
@@ -65,7 +68,8 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// Creates a clone of the given shapes. The clones reference their source' model object.
 		/// </summary>
-		public static IEnumerable<Shape> CloneShapesOnly(IEnumerable<Shape> shapes) {
+		public static IEnumerable<Shape> CloneShapesOnly(IEnumerable<Shape> shapes)
+		{
 			if (shapes == null) throw new ArgumentNullException("shapes");
 			modelObjectClones.Clear();
 			foreach (Shape s in shapes)
@@ -76,7 +80,8 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// Creates a clone of the given shape's model object.
 		/// </summary>
-		public static void CloneModelObjectOnly(Shape shape) {
+		public static void CloneModelObjectOnly(Shape shape)
+		{
 			if (shape == null) throw new ArgumentNullException("shape");
 			modelObjectClones.Clear();
 			DoCloneShapeModelObject(shape);
@@ -86,7 +91,8 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// Creates a clone of the given shape's model object.
 		/// </summary>
-		public static void CloneModelObjectsOnly(IEnumerable<Shape> shapes) {
+		public static void CloneModelObjectsOnly(IEnumerable<Shape> shapes)
+		{
 			if (shapes == null) throw new ArgumentNullException("shapes");
 			modelObjectClones.Clear();
 			foreach (Shape shape in shapes)
@@ -94,7 +100,8 @@ namespace Dataweb.NShape {
 		}
 
 
-		private static Shape DoCloneShape(Shape shape, bool cloneModelObject) {
+		private static Shape DoCloneShape(Shape shape, bool cloneModelObject)
+		{
 			Shape result = shape.Clone();
 			if (cloneModelObject) DoCloneShapeModelObject(result);
 			else {
@@ -103,9 +110,10 @@ namespace Dataweb.NShape {
 			}
 			return result;
 		}
-		
-		
-		private static void DoCloneShapeModelObject(Shape shape) {
+
+
+		private static void DoCloneShapeModelObject(Shape shape)
+		{
 			if (shape.Children.Count == 0 && shape.ModelObject != null) {
 #if DEBUG_DIAGNOSTICS
 				IModelObject clone = shape.ModelObject.Clone(); 
@@ -114,7 +122,8 @@ namespace Dataweb.NShape {
 #else
 				shape.ModelObject = shape.ModelObject.Clone();
 #endif
-			} else {
+			}
+			else {
 				CreateModelObjectClones(shape);
 				if (modelObjectClones.Count > 0)
 					AssignModelObjectClones(shape);
@@ -122,7 +131,8 @@ namespace Dataweb.NShape {
 		}
 
 
-		private static void CreateModelObjectClones(Shape shape) {
+		private static void CreateModelObjectClones(Shape shape)
+		{
 			Debug.Assert(shape != null);
 			if (shape.ModelObject != null) {
 				modelObjectClones.Add(shape.ModelObject, shape.ModelObject.Clone());
@@ -143,13 +153,15 @@ namespace Dataweb.NShape {
 		}
 
 
-		private static void AssignModelObjectClones(Shape shape) {
+		private static void AssignModelObjectClones(Shape shape)
+		{
 			Debug.Assert(shape != null);
 			IModelObject mo = null;
 			if (shape.ModelObject != null && modelObjectClones.TryGetValue(shape.ModelObject, out mo)) {
-				if (shape.ModelObject.Parent != null 
-					&& modelObjectClones.ContainsKey(shape.ModelObject.Parent)) {
-					Debug.Print("Changing parent of '{0}' from '{1}' to '{2}'", mo.Name, shape.ModelObject.Parent.Name, modelObjectClones[shape.ModelObject.Parent].Name);
+				if (shape.ModelObject.Parent != null
+				    && modelObjectClones.ContainsKey(shape.ModelObject.Parent)) {
+					Debug.Print("Changing parent of '{0}' from '{1}' to '{2}'", mo.Name, shape.ModelObject.Parent.Name,
+					            modelObjectClones[shape.ModelObject.Parent].Name);
 					mo.Parent = modelObjectClones[shape.ModelObject.Parent];
 				}
 				Debug.Print("Replacing shape's model object {0} with {1}", shape.ModelObject.Name, mo.Name);
@@ -164,5 +176,4 @@ namespace Dataweb.NShape {
 
 		private static Dictionary<IModelObject, IModelObject> modelObjectClones;
 	}
-
 }

@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Vixen.Module.Media {
-	class MediaModuleRepository : GenericModuleRepository<IMediaModuleInstance> {
+namespace Vixen.Module.Media
+{
+	internal class MediaModuleRepository : GenericModuleRepository<IMediaModuleInstance>
+	{
 	}
 }

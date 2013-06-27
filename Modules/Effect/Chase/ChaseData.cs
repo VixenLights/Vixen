@@ -20,13 +20,15 @@ namespace VixenModules.Effect.Chase
 		public double DefaultLevel { get; set; }
 
 		private Color _staticColor;
+
 		[DataMember]
 		public Color StaticColor
 		{
 			get { return _staticColor; }
 			set
 			{
-				_staticColor = value; StaticColorGradient = new ColorGradient(_staticColor);
+				_staticColor = value;
+				StaticColorGradient = new ColorGradient(_staticColor);
 			}
 		}
 
@@ -70,7 +72,4 @@ namespace VixenModules.Effect.Chase
 			return result;
 		}
 	}
-
-	
-
 }

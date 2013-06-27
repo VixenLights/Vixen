@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Common.StateMach {
+namespace Common.StateMach
+{
 	public interface IState<in T>
-		where T : class {
+		where T : class
+	{
 		string Name { get; }
 		IEnumerable<ITransition<T>> Transitions { get; }
 		void Entering(T obj);

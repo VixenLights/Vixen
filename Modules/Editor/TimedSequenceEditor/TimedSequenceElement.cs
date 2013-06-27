@@ -31,14 +31,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		// copy ctor
 		public TimedSequenceElement(TimedSequenceElement other)
-			:base(other)
+			: base(other)
 		{
 			//TODO: This needs to be a deep-copy of the effect node.
 			EffectNode = other.EffectNode;
 		}
 
-		[NonSerializedAttribute]
-		private EffectNode _effectNode;
+		[NonSerializedAttribute] private EffectNode _effectNode;
+
 		public EffectNode EffectNode
 		{
 			get { return _effectNode; }
@@ -57,10 +57,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// TODO: this may not be perfectly accurate, since it's possible for someone else to come along and render
 			// the effect, which would make it non-dirty, but we don't know about it yet. Not ideal. Add a serial or GUID to effect rendering, to be able to track it.
 			if (EffectNode.Effect.IsDirty || CachedCanvasContent == null ||
-				CachedCanvasContent.Width != (int)graphics.VisibleClipBounds.Width ||
-				CachedCanvasContent.Height != (int)graphics.VisibleClipBounds.Height)
-			{
-				CachedCanvasContent = new Bitmap((int)graphics.VisibleClipBounds.Width, (int)graphics.VisibleClipBounds.Height);
+			    CachedCanvasContent.Width != (int) graphics.VisibleClipBounds.Width ||
+			    CachedCanvasContent.Height != (int) graphics.VisibleClipBounds.Height) {
+				CachedCanvasContent = new Bitmap((int) graphics.VisibleClipBounds.Width, (int) graphics.VisibleClipBounds.Height);
 				EffectRasterizer effectRasterizer = new EffectRasterizer();
 				using (Graphics g = Graphics.FromImage(CachedCanvasContent)) {
 					effectRasterizer.Rasterize(EffectNode.Effect, g);
@@ -74,28 +73,31 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			using (Brush b = new SolidBrush(TextColor)) {
 				graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
 				graphics.DrawString(EffectNode.Effect.EffectName, f, b, new RectangleF(5, 3, 50, 12));
-				graphics.DrawString(string.Format("Start: {0}", EffectNode.StartTime.ToString(@"m\:ss\.fff")), f, b, new PointF(60, 3));
-				graphics.DrawString(string.Format("Length: {0}" , EffectNode.TimeSpan.ToString(@"m\:ss\.fff")), f, b, new PointF(60, 16));
+				graphics.DrawString(string.Format("Start: {0}", EffectNode.StartTime.ToString(@"m\:ss\.fff")), f, b,
+				                    new PointF(60, 3));
+				graphics.DrawString(string.Format("Length: {0}", EffectNode.TimeSpan.ToString(@"m\:ss\.fff")), f, b,
+				                    new PointF(60, 16));
 			}
 
 			ElementTimeHasChangedSinceDraw = false;
 		}
+
 		protected override bool IsCanvasContentCurrent(Size imageSize)
 		{
-			return base.IsCanvasContentCurrent(imageSize) && !EffectNode.Effect.IsDirty && !ElementTimeHasChangedSinceDraw && CachedCanvasContent != null;
+			return base.IsCanvasContentCurrent(imageSize) && !EffectNode.Effect.IsDirty && !ElementTimeHasChangedSinceDraw &&
+			       CachedCanvasContent != null;
 		}
 
-        protected override void OnTimeChanged()
-        {
-            if (this.EffectNode != null)
-            {
-                this.EffectNode.StartTime = this.StartTime;
-                this.EffectNode.Effect.TimeSpan = this.Duration;
-            }
+		protected override void OnTimeChanged()
+		{
+			if (this.EffectNode != null) {
+				this.EffectNode.StartTime = this.StartTime;
+				this.EffectNode.Effect.TimeSpan = this.Duration;
+			}
 
-        	ElementTimeHasChangedSinceDraw = true;
+			ElementTimeHasChangedSinceDraw = true;
 
-            base.OnTimeChanged();
-        }
+			base.OnTimeChanged();
+		}
 	}
 }

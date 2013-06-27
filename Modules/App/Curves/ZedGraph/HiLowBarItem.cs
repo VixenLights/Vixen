@@ -17,7 +17,6 @@
 //Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //=============================================================================
 
-
 #region Using directives
 
 using System;
@@ -49,8 +48,8 @@ namespace ZedGraph
 	[Serializable]
 	public class HiLowBarItem : BarItem, ICloneable, ISerializable
 	{
+		#region Constructors
 
-	#region Constructors
 		/// <summary>
 		/// Create a new <see cref="HiLowBarItem"/> using the specified properties.
 		/// </summary>
@@ -65,11 +64,11 @@ namespace ZedGraph
 		/// <param name="color">A <see cref="Color"/> value that will be applied to
 		/// the <see cref="ZedGraph.Bar.Fill"/> and <see cref="ZedGraph.Bar.Border"/> properties.
 		/// </param>
-		public HiLowBarItem( string label, double[] x, double[] y, double[] baseVal, Color color ) :
-			this( label, new PointPairList( x, y, baseVal ), color )
+		public HiLowBarItem(string label, double[] x, double[] y, double[] baseVal, Color color) :
+			this(label, new PointPairList(x, y, baseVal), color)
 		{
 		}
-		
+
 		/// <summary>
 		/// Create a new <see cref="HiLowBarItem"/> using the specified properties.
 		/// </summary>
@@ -79,8 +78,8 @@ namespace ZedGraph
 		/// <param name="color">A <see cref="Color"/> value that will be applied to
 		/// the <see cref="ZedGraph.Bar.Fill"/> and <see cref="ZedGraph.Bar.Border"/> properties.
 		/// </param>
-		public HiLowBarItem( string label, IPointList points, Color color )
-			: base( label, points, color )
+		public HiLowBarItem(string label, IPointList points, Color color)
+			: base(label, points, color)
 		{
 		}
 
@@ -88,7 +87,7 @@ namespace ZedGraph
 		/// The Copy Constructor
 		/// </summary>
 		/// <param name="rhs">The <see cref="HiLowBarItem"/> object from which to copy</param>
-		public HiLowBarItem( HiLowBarItem rhs ) : base( rhs )
+		public HiLowBarItem(HiLowBarItem rhs) : base(rhs)
 		{
 			_bar = rhs._bar.Clone(); // new HiLowBar( rhs.Bar );
 		}
@@ -107,14 +106,15 @@ namespace ZedGraph
 		/// Typesafe, deep-copy clone method.
 		/// </summary>
 		/// <returns>A new, independent copy of this class</returns>
-		new public HiLowBarItem Clone()
+		public new HiLowBarItem Clone()
 		{
-			return new HiLowBarItem( this );
+			return new HiLowBarItem(this);
 		}
 
-	#endregion
+		#endregion
 
-	#region Serialization
+		#region Serialization
+
 		/// <summary>
 		/// Current schema value that defines the version of the serialized file
 		/// </summary>
@@ -127,23 +127,24 @@ namespace ZedGraph
 		/// </param>
 		/// <param name="context">A <see cref="StreamingContext"/> instance that contains the serialized data
 		/// </param>
-		protected HiLowBarItem( SerializationInfo info, StreamingContext context ) : base( info, context )
+		protected HiLowBarItem(SerializationInfo info, StreamingContext context) : base(info, context)
 		{
 			// The schema value is just a file version parameter.  You can use it to make future versions
 			// backwards compatible as new member variables are added to classes
-			int sch = info.GetInt32( "schema3" );
+			int sch = info.GetInt32("schema3");
 		}
+
 		/// <summary>
 		/// Populates a <see cref="SerializationInfo"/> instance with the data needed to serialize the target object
 		/// </summary>
 		/// <param name="info">A <see cref="SerializationInfo"/> instance that defines the serialized data</param>
 		/// <param name="context">A <see cref="StreamingContext"/> instance that contains the serialized data</param>
-		[SecurityPermissionAttribute(SecurityAction.Demand,SerializationFormatter=true)]
-		public override void GetObjectData( SerializationInfo info, StreamingContext context )
+		[SecurityPermissionAttribute(SecurityAction.Demand, SerializationFormatter = true)]
+		public override void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
-			base.GetObjectData( info, context );
+			base.GetObjectData(info, context);
 		}
-	#endregion
 
+		#endregion
 	}
 }

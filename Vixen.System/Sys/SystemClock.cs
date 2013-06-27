@@ -5,40 +5,50 @@ using System.Text;
 using System.Diagnostics;
 using Vixen.Module.Timing;
 
-namespace Vixen.Sys {
-	class SystemClock : ITiming {
+namespace Vixen.Sys
+{
+	internal class SystemClock : ITiming
+	{
 		private Stopwatch _time = new Stopwatch();
 
-		public TimeSpan Position {
+		public TimeSpan Position
+		{
 			get { return _time.Elapsed; }
 			set { }
 		}
 
-		public void Start() {
+		public void Start()
+		{
 			_time.Restart();
 		}
 
-		public void Stop() {
+		public void Stop()
+		{
 			_time.Stop();
 		}
 
-		public void Pause() {
+		public void Pause()
+		{
 			_time.Stop();
 		}
 
-		public void Resume() {
+		public void Resume()
+		{
 			_time.Start();
 		}
 
-		public bool IsRunning {
+		public bool IsRunning
+		{
 			get { return _time.IsRunning; }
 		}
 
-		public bool SupportsVariableSpeeds {
+		public bool SupportsVariableSpeeds
+		{
 			get { return false; }
 		}
 
-		public float Speed {
+		public float Speed
+		{
 			get { return 1; } // 1 = 100%
 			set { throw new NotSupportedException(); }
 		}

@@ -16,21 +16,21 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-
 using Dataweb.NShape.Advanced;
 
 
-namespace Dataweb.NShape {
-
+namespace Dataweb.NShape
+{
 	/// <summary>
 	/// Combines a shape and a model object to form a sample for shape creation.
 	/// </summary>
-	public class Template : IEntity {
-
+	public class Template : IEntity
+	{
 		/// <summary>
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.Advanced.Template" />.
 		/// </summary>
-		public Template(string name, Shape shape) {
+		public Template(string name, Shape shape)
+		{
 			if (name == null) throw new ArgumentNullException("name");
 			if (shape == null) throw new ArgumentNullException("shape");
 			this.name = name;
@@ -39,7 +39,8 @@ namespace Dataweb.NShape {
 
 
 		/// <override></override>
-		public override string ToString() {
+		public override string ToString()
+		{
 			return Title;
 		}
 
@@ -47,7 +48,8 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// Creates a new <see cref="T:Dataweb.NShape.Advanced.Template" /> that is a copy of the current instance.
 		/// </summary>
-		public Template Clone() {
+		public Template Clone()
+		{
 			Template result = new Template();
 			result.CopyFrom(this);
 			return result;
@@ -58,16 +60,17 @@ namespace Dataweb.NShape {
 		/// Copies all properties and fields from the source template to this template.
 		/// The shape and the model obejcts will be cloned.
 		/// </summary>
-		public void CopyFrom(Template source) {
+		public void CopyFrom(Template source)
+		{
 			if (source == null) throw new ArgumentNullException("source");
 
 			this.name = source.name;
 			this.title = source.title;
 			this.description = source.description;
-			
+
 			// Clone or copy shape
-			if (this.shape == null)	this.shape = ShapeDuplicator.CloneShapeAndModelObject(source.shape);
-			else this.shape.CopyFrom(source.shape);	// Template will be copied although this is not desirable
+			if (this.shape == null) this.shape = ShapeDuplicator.CloneShapeAndModelObject(source.shape);
+			else this.shape.CopyFrom(source.shape); // Template will be copied although this is not desirable
 
 			// copy connection point mapping
 			this.connectionPointMappings.Clear();
@@ -84,16 +87,18 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// Gets or sets an object that provides additional data.
 		/// </summary>
-		public object Tag {
+		public object Tag
+		{
 			get { return tag; }
 			set { tag = value; }
 		}
-		
-		
+
+
 		/// <summary>
 		/// Specifies the culture independent name.
 		/// </summary>
-		public string Name {
+		public string Name
+		{
 			get { return name; }
 			set { name = value; }
 		}
@@ -102,9 +107,11 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// Specifies the culture dependent display name.
 		/// </summary>
-		public string Title {
+		public string Title
+		{
 			get { return string.IsNullOrEmpty(title) ? name : title; }
-			set {
+			set
+			{
 				if (value == name || string.IsNullOrEmpty(value))
 					title = null;
 				else title = value;
@@ -115,7 +122,8 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// A descriptive text for the template.
 		/// </summary>
-		public string Description {
+		public string Description
+		{
 			get { return description; }
 			set { description = value; }
 		}
@@ -126,20 +134,23 @@ namespace Dataweb.NShape {
 		/// </summary>
 		/// <remarks>Replacing the shape of a template with templated shapes results in 
 		/// errors, if the templated shapes are not updated accordingly.</remarks>
-		public Shape Shape {
+		public Shape Shape
+		{
 			get { return shape; }
-			set {
+			set
+			{
 				if (shape != null) {
-				    if (shape.ModelObject != null && value != null && value.ModelObject != null) {
-				        // If both shapes have ModelObejct instances assigned, 
-				        // try to keep as many mappings as possible
-				        // ToDo: try to copy property mappings
-				        CopyTerminalMappings(shape.ModelObject, value.ModelObject);
-				    } else {
-				        // Delete all mappings to restore default behavior
-				        UnmapAllProperties();
-				        UnmapAllTerminals();
-				    }
+					if (shape.ModelObject != null && value != null && value.ModelObject != null) {
+						// If both shapes have ModelObejct instances assigned, 
+						// try to keep as many mappings as possible
+						// ToDo: try to copy property mappings
+						CopyTerminalMappings(shape.ModelObject, value.ModelObject);
+					}
+					else {
+						// Delete all mappings to restore default behavior
+						UnmapAllProperties();
+						UnmapAllTerminals();
+					}
 				}
 				shape = value;
 			}
@@ -150,7 +161,8 @@ namespace Dataweb.NShape {
 		/// Creates a new shape from this template.
 		/// </summary>
 		/// <returns></returns>
-		public Shape CreateShape() {
+		public Shape CreateShape()
+		{
 			Shape result = shape.Type.CreateInstance(this);
 			if (shape.ModelObject != null)
 				ShapeDuplicator.CloneModelObjectOnly(result);
@@ -163,7 +175,8 @@ namespace Dataweb.NShape {
 		/// </summary>
 		/// <param name="size">Size of tumbnail in pixels</param>
 		/// <param name="margin">Size of margin around shape in pixels</param>
-		public Image CreateThumbnail(int size, int margin) {
+		public Image CreateThumbnail(int size, int margin)
+		{
 			return CreateThumbnail(size, margin, Color.White);
 		}
 
@@ -174,7 +187,8 @@ namespace Dataweb.NShape {
 		/// <param name="size">Size of tumbnail in pixels</param>
 		/// <param name="margin">Size of margin around shape in pixels</param>
 		/// <param name="transparentColor">Specifies a color that will be rendered transparent.</param>
-		public Image CreateThumbnail(int size, int margin, Color transparentColor) {
+		public Image CreateThumbnail(int size, int margin, Color transparentColor)
+		{
 			Image bmp = new Bitmap(size, size);
 			using (Shape shapeClone = Shape.Clone())
 				shapeClone.DrawThumbnail(bmp, margin, transparentColor);
@@ -185,21 +199,23 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// Returns a collection of <see cref="T:Dataweb.NShape.Advanced.MenuItemDef" /> for constructing context menus etc.
 		/// </summary>
-		public IEnumerable<MenuItemDef> GetMenuItemDefs() {
+		public IEnumerable<MenuItemDef> GetMenuItemDefs()
+		{
 			yield break;
 		}
-
 
 		#region Visualization Mapping
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public IEnumerable<IModelMapping> GetPropertyMappings() {
+		public IEnumerable<IModelMapping> GetPropertyMappings()
+		{
 			return propertyMappings.Values;
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public IModelMapping GetPropertyMapping(int modelPropertyId) {
+		public IModelMapping GetPropertyMapping(int modelPropertyId)
+		{
 			IModelMapping result = null;
 			propertyMappings.TryGetValue(modelPropertyId, out result);
 			return result;
@@ -207,7 +223,8 @@ namespace Dataweb.NShape {
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public void MapProperties(IModelMapping propertyMapping) {
+		public void MapProperties(IModelMapping propertyMapping)
+		{
 			if (propertyMapping == null) throw new ArgumentNullException("propertyMapping");
 			if (propertyMappings.ContainsKey(propertyMapping.ModelPropertyId))
 				propertyMappings[propertyMapping.ModelPropertyId] = propertyMapping;
@@ -217,24 +234,26 @@ namespace Dataweb.NShape {
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public void UnmapProperties(IModelMapping propertyMapping) {
+		public void UnmapProperties(IModelMapping propertyMapping)
+		{
 			if (propertyMapping == null) throw new ArgumentNullException("propertyMapping");
 			propertyMappings.Remove(propertyMapping.ModelPropertyId);
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public void UnmapAllProperties() {
+		public void UnmapAllProperties()
+		{
 			propertyMappings.Clear();
 		}
 
 		#endregion
 
-
 		#region Terminal Mapping
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public TerminalId GetMappedTerminalId(ControlPointId connectionPointId) {
+		public TerminalId GetMappedTerminalId(ControlPointId connectionPointId)
+		{
 			// If there is a mapping, return it.
 			TerminalId result;
 			if (connectionPointMappings.TryGetValue(connectionPointId, out result))
@@ -243,18 +262,22 @@ namespace Dataweb.NShape {
 				// if there is no mapping, return default values:
 				if (shape != null) {
 					// - If the given point is no connectionPoint
-					if (!shape.HasControlPointCapability(connectionPointId, ControlPointCapabilities.Connect | ControlPointCapabilities.Glue))
+					if (
+						!shape.HasControlPointCapability(connectionPointId,
+						                                 ControlPointCapabilities.Connect | ControlPointCapabilities.Glue))
 						return TerminalId.Invalid;
-					// - If a shape is set but no ModelObject, all connectionPoints are activated by default
+						// - If a shape is set but no ModelObject, all connectionPoints are activated by default
 					else if (shape.ModelObject == null) return TerminalId.Generic;
 					else return TerminalId.Invalid;
-				} else return TerminalId.Invalid;
+				}
+				else return TerminalId.Invalid;
 			}
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public string GetMappedTerminalName(ControlPointId connectionPointId) {
+		public string GetMappedTerminalName(ControlPointId connectionPointId)
+		{
 			TerminalId terminalId = GetMappedTerminalId(connectionPointId);
 			if (terminalId == TerminalId.Invalid)
 				return null;
@@ -267,11 +290,13 @@ namespace Dataweb.NShape {
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public void MapTerminal(TerminalId terminalId, ControlPointId connectionPointId) {
+		public void MapTerminal(TerminalId terminalId, ControlPointId connectionPointId)
+		{
 			// check if terminalId and connectionPointId are valid values
 			if (shape == null)
 				throw new InvalidOperationException("Template has no shape.");
-			if (!shape.HasControlPointCapability(connectionPointId, ControlPointCapabilities.Glue | ControlPointCapabilities.Connect))
+			if (
+				!shape.HasControlPointCapability(connectionPointId, ControlPointCapabilities.Glue | ControlPointCapabilities.Connect))
 				throw new NShapeException("Control point {0} is not a valid glue- or connection point.", connectionPointId);
 			//
 			if (connectionPointMappings.ContainsKey(connectionPointId))
@@ -284,40 +309,48 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// Clears all mappings between the shape's connection points and the model's terminals.
 		/// </summary>
-		public void UnmapAllTerminals() {
+		public void UnmapAllTerminals()
+		{
 			connectionPointMappings.Clear();
 		}
 
 		#endregion
-
 
 		#region IEntity Members
 
 		/// <summary>
 		/// The entity type name of <see cref="T:Dataweb.NShape.Advanced.Template" />.
 		/// </summary>
-		public static string EntityTypeName { get { return entityTypeName; } }
+		public static string EntityTypeName
+		{
+			get { return entityTypeName; }
+		}
 
 
 		/// <summary>
 		/// Retrieves the persistable properties of <see cref="T:Dataweb.NShape.Advanced.Template" />.
 		/// </summary>
-		public static IEnumerable<EntityPropertyDefinition> GetPropertyDefinitions(int version) {
-			yield return new EntityFieldDefinition("Name", typeof(string));
-			if (version >= 3) yield return new EntityFieldDefinition("Title", typeof(string));
-			yield return new EntityFieldDefinition("Description", typeof(string));
-			yield return new EntityInnerObjectsDefinition(connectionPtMappingName + "s", connectionPtMappingName, connectionPtMappingAttrNames, connectionPtMappingAttrTypes);
+		public static IEnumerable<EntityPropertyDefinition> GetPropertyDefinitions(int version)
+		{
+			yield return new EntityFieldDefinition("Name", typeof (string));
+			if (version >= 3) yield return new EntityFieldDefinition("Title", typeof (string));
+			yield return new EntityFieldDefinition("Description", typeof (string));
+			yield return
+				new EntityInnerObjectsDefinition(connectionPtMappingName + "s", connectionPtMappingName,
+				                                 connectionPtMappingAttrNames, connectionPtMappingAttrTypes);
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public object Id {
+		public object Id
+		{
 			get { return id; }
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public void AssignId(object id) {
+		public void AssignId(object id)
+		{
 			if (id == null) throw new ArgumentNullException("id");
 			if (this.id != null) throw new InvalidOperationException("Template has already an id.");
 			this.id = id;
@@ -325,7 +358,8 @@ namespace Dataweb.NShape {
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public void SaveFields(IRepositoryWriter writer, int version) {
+		public void SaveFields(IRepositoryWriter writer, int version)
+		{
 			if (writer == null) throw new ArgumentNullException("writer");
 			writer.WriteString(name);
 			if (version >= 3) writer.WriteString(title);
@@ -334,7 +368,8 @@ namespace Dataweb.NShape {
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public void LoadFields(IRepositoryReader reader, int version) {
+		public void LoadFields(IRepositoryReader reader, int version)
+		{
 			if (reader == null) throw new ArgumentNullException("reader");
 			name = reader.ReadString();
 			if (version >= 3) title = reader.ReadString();
@@ -343,7 +378,8 @@ namespace Dataweb.NShape {
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public void SaveInnerObjects(string propertyName, IRepositoryWriter writer, int version) {
+		public void SaveInnerObjects(string propertyName, IRepositoryWriter writer, int version)
+		{
 			if (propertyName == null) throw new ArgumentNullException("propertyName");
 			if (writer == null) throw new ArgumentNullException("writer");
 			if (propertyName == "ConnectionPointMappings") {
@@ -351,8 +387,8 @@ namespace Dataweb.NShape {
 				writer.BeginWriteInnerObjects();
 				foreach (KeyValuePair<ControlPointId, TerminalId> item in connectionPointMappings) {
 					writer.BeginWriteInnerObject();
-					writer.WriteInt32((int)item.Key);
-					writer.WriteInt32((int)item.Value);
+					writer.WriteInt32((int) item.Key);
+					writer.WriteInt32((int) item.Value);
 					writer.EndWriteInnerObject();
 				}
 				writer.EndWriteInnerObjects();
@@ -361,7 +397,8 @@ namespace Dataweb.NShape {
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public void LoadInnerObjects(string propertyName, IRepositoryReader reader, int version) {
+		public void LoadInnerObjects(string propertyName, IRepositoryReader reader, int version)
+		{
 			if (propertyName == null) throw new ArgumentNullException("propertyName");
 			if (reader == null) throw new ArgumentNullException("reader");
 			if (propertyName == "ConnectionPointMappings") {
@@ -383,7 +420,8 @@ namespace Dataweb.NShape {
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public void Delete(IRepositoryWriter writer, int version) {
+		public void Delete(IRepositoryWriter writer, int version)
+		{
 			if (writer == null) throw new ArgumentNullException("writer");
 			foreach (EntityPropertyDefinition pi in GetPropertyDefinitions(version)) {
 				if (pi is EntityInnerObjectsDefinition)
@@ -393,13 +431,14 @@ namespace Dataweb.NShape {
 
 		#endregion
 
-
 		// Used to create templates for loading.
-		internal Template() {
+		internal Template()
+		{
 		}
 
 
-		private int CountControlPoints(Shape shape) {
+		private int CountControlPoints(Shape shape)
+		{
 			if (shape == null) throw new ArgumentNullException("shape");
 			int result = 0;
 			foreach (ControlPointId id in shape.GetControlPointIds(ControlPointCapabilities.All))
@@ -411,7 +450,8 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// Checks if the mappings between ConnectionPoints and Terminals can be reused
 		/// </summary>
-		private void CopyTerminalMappings(IModelObject oldModelObject, IModelObject newModelObject) {
+		private void CopyTerminalMappings(IModelObject oldModelObject, IModelObject newModelObject)
+		{
 			if (oldModelObject == null) throw new ArgumentNullException("oldModelObject");
 			if (newModelObject == null) throw new ArgumentNullException("newModelObject");
 			foreach (KeyValuePair<ControlPointId, TerminalId> item in connectionPointMappings) {
@@ -422,14 +462,13 @@ namespace Dataweb.NShape {
 			}
 		}
 
-
 		#region Fields
 
 		private static string entityTypeName = "Core.Template";
 		private static string connectionPtMappingName = "ConnectionPointMapping";
-		
-		private static string[] connectionPtMappingAttrNames = new string[] { "PointId", "TerminalId" };
-		private static Type[] connectionPtMappingAttrTypes = new Type[] { typeof(int), typeof(int) };		
+
+		private static string[] connectionPtMappingAttrNames = new string[] {"PointId", "TerminalId"};
+		private static Type[] connectionPtMappingAttrTypes = new Type[] {typeof (int), typeof (int)};
 
 		private const string deactivatedTag = "Deactivated";
 		private const string activatedTag = "Activated";
@@ -440,11 +479,10 @@ namespace Dataweb.NShape {
 		private string description;
 		private Shape shape;
 		private object tag;
-		
+
 		private Dictionary<ControlPointId, TerminalId> connectionPointMappings = new Dictionary<ControlPointId, TerminalId>();
 		private SortedList<int, IModelMapping> propertyMappings = new SortedList<int, IModelMapping>();
-		
+
 		#endregion
 	}
-
 }

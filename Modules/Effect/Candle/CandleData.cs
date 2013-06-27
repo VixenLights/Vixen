@@ -6,10 +6,13 @@ using System.Text;
 using Vixen.Data.Value;
 using Vixen.Module;
 
-namespace VixenModules.Effect.Candle {
+namespace VixenModules.Effect.Candle
+{
 	[DataContract]
-	public class CandleData : ModuleDataModelBase {
-		public CandleData() {
+	public class CandleData : ModuleDataModelBase
+	{
+		public CandleData()
+		{
 			FlickerFrequency = 20;
 			ChangePercentage = 0.2f;
 			MinLevel = 0.1f;
@@ -37,8 +40,9 @@ namespace VixenModules.Effect.Candle {
 		[DataMember]
 		public float ChangePercentageDeviationCap { get; set; }
 
-		public override IModuleDataModel Clone() {
-			return (CandleData)MemberwiseClone();
+		public override IModuleDataModel Clone()
+		{
+			return (CandleData) MemberwiseClone();
 		}
 	}
 }

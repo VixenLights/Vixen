@@ -38,10 +38,9 @@ namespace Common.Controls
 				control.SelectedChanged += control_SelectedChanged;
 				tableLayoutPanelColors.Controls.Add(control);
 			}
-
 		}
 
-		void control_SelectedChanged(object sender, EventArgs e)
+		private void control_SelectedChanged(object sender, EventArgs e)
 		{
 			if (!SingleColorOnly)
 				return;
@@ -64,13 +63,14 @@ namespace Common.Controls
 		public bool SingleColorOnly { get; set; }
 
 		private IEnumerable<Color> _selectedColors;
+
 		public IEnumerable<Color> SelectedColors
 		{
 			get
 			{
 				List<Color> rv = new List<Color>();
 				foreach (Control control in tableLayoutPanelColors.Controls) {
-					DiscreteColorPickerItem dcpi = (DiscreteColorPickerItem)control;
+					DiscreteColorPickerItem dcpi = (DiscreteColorPickerItem) control;
 					if (dcpi.Selected)
 						rv.Add(dcpi.Color);
 				}

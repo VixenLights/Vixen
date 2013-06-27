@@ -38,7 +38,6 @@ namespace ZedGraph
 	[Serializable]
 	public class YAxisList : List<YAxis>, ICloneable
 	{
-
 		#region Constructors
 
 		/// <summary>
@@ -52,11 +51,10 @@ namespace ZedGraph
 		/// The Copy Constructor
 		/// </summary>
 		/// <param name="rhs">The <see cref="YAxisList"/> object from which to copy</param>
-		public YAxisList( YAxisList rhs )
+		public YAxisList(YAxisList rhs)
 		{
-			foreach ( YAxis item in rhs )
-			{
-				this.Add( item.Clone() );
+			foreach (YAxis item in rhs) {
+				this.Add(item.Clone());
 			}
 		}
 
@@ -76,7 +74,7 @@ namespace ZedGraph
 		/// <returns>A new, independent copy of this class</returns>
 		public YAxisList Clone()
 		{
-			return new YAxisList( this );
+			return new YAxisList(this);
 		}
 
 		#endregion
@@ -92,7 +90,7 @@ namespace ZedGraph
 		/// <value>An <see cref="Axis"/> object reference.</value>
 		public new YAxis this[int index]
 		{
-			get { return ( ( ( index < 0 || index >= this.Count ) ? null : base[index] ) ); }
+			get { return (((index < 0 || index >= this.Count) ? null : base[index])); }
 		}
 
 		/// <summary>
@@ -106,8 +104,8 @@ namespace ZedGraph
 		{
 			get
 			{
-				int index = IndexOf( title );
-				if ( index >= 0 )
+				int index = IndexOf(title);
+				if (index >= 0)
 					return this[index];
 				else
 					return null;
@@ -126,12 +124,11 @@ namespace ZedGraph
 		/// <returns>The zero-based index of the specified <see cref="Axis"/>,
 		/// or -1 if the <see cref="Axis.Title"/> was not found in the list</returns>
 		/// <seealso cref="IndexOfTag"/>
-		public int IndexOf( string title )
+		public int IndexOf(string title)
 		{
 			int index = 0;
-			foreach ( YAxis axis in this )
-			{
-				if ( String.Compare( axis.Title._text, title, true ) == 0 )
+			foreach (YAxis axis in this) {
+				if (String.Compare(axis.Title._text, title, true) == 0)
 					return index;
 				index++;
 			}
@@ -151,13 +148,12 @@ namespace ZedGraph
 		/// </param>
 		/// <returns>The zero-based index of the specified <see cref="Axis" />,
 		/// or -1 if the <see cref="Axis.Tag" /> string is not in the list</returns>
-		public int IndexOfTag( string tagStr )
+		public int IndexOfTag(string tagStr)
 		{
 			int index = 0;
-			foreach ( YAxis axis in this )
-			{
-				if ( axis.Tag is string &&
-					String.Compare( (string)axis.Tag, tagStr, true ) == 0 )
+			foreach (YAxis axis in this) {
+				if (axis.Tag is string &&
+				    String.Compare((string) axis.Tag, tagStr, true) == 0)
 					return index;
 				index++;
 			}
@@ -173,15 +169,14 @@ namespace ZedGraph
 		/// this <see cref="YAxisList" />.  This is the value that you would set the
 		/// <see cref="CurveItem.YAxisIndex" /> property of a given <see cref="CurveItem" /> to 
 		/// assign it to this new <see cref="YAxis" />.</returns>
-		public int Add( string title )
+		public int Add(string title)
 		{
-			YAxis axis = new YAxis( title );
-			Add( axis );
+			YAxis axis = new YAxis(title);
+			Add(axis);
 
 			return Count - 1;
 		}
 
 		#endregion
-
 	}
 }

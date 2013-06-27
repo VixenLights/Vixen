@@ -5,36 +5,44 @@ using System.Linq;
 using System.Text;
 using Vixen.Instrumentation;
 
-namespace Vixen.Sys.Instrumentation {
-	public class Instrumentation : IInstrumentation {
+namespace Vixen.Sys.Instrumentation
+{
+	public class Instrumentation : IInstrumentation
+	{
 		private Dictionary<string, IInstrumentationValue> _values;
 
-		public Instrumentation() {
+		public Instrumentation()
+		{
 			_values = new Dictionary<string, IInstrumentationValue>();
 		}
 
-		public void AddValue(IInstrumentationValue value) {
+		public void AddValue(IInstrumentationValue value)
+		{
 			Debug.Assert(value != null);
-			if(value != null && !_values.ContainsKey(value.Name)) {
+			if (value != null && !_values.ContainsKey(value.Name)) {
 				_values[value.Name] = value;
 			}
 		}
 
-		public void RemoveValue(IInstrumentationValue value) {
-			if(value != null) {
+		public void RemoveValue(IInstrumentationValue value)
+		{
+			if (value != null) {
 				_values.Remove(value.Name);
 			}
 		}
 
-		public IEnumerable<string> ValueNames {
+		public IEnumerable<string> ValueNames
+		{
 			get { return _values.Keys.ToArray(); }
 		}
 
-		public IEnumerable<IInstrumentationValue> Values {
+		public IEnumerable<IInstrumentationValue> Values
+		{
 			get { return _values.Values.ToArray(); }
 		}
 
-		public IInstrumentationValue GetValue(string name) {
+		public IInstrumentationValue GetValue(string name)
+		{
 			Debug.Assert(name != null);
 			IInstrumentationValue value;
 			_values.TryGetValue(name, out value);

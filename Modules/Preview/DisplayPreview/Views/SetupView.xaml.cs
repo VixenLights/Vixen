@@ -1,15 +1,15 @@
 ﻿namespace VixenModules.Preview.DisplayPreview.Views
 {
-    public partial class SetupView
-    {
-        public SetupView()
-        {
-            InitializeComponent();
-        }
+	public partial class SetupView
+	{
+		public SetupView()
+		{
+			InitializeComponent();
+		}
 
-        private void CloseButtonClick(object sender, System.Windows.RoutedEventArgs e)
-        {
-            Close();
-        }
-    }
+		private void CloseButtonClick(object sender, System.Windows.RoutedEventArgs e)
+		{
+			Close();
+		}
+	}
 }

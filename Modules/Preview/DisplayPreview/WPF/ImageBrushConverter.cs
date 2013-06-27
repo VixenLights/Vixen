@@ -6,17 +6,16 @@ using System.Windows.Media.Imaging;
 
 namespace VixenModules.Preview.DisplayPreview.WPF
 {
-	[ValueConversion(typeof(BitmapImage), typeof(ImageBrush))]
+	[ValueConversion(typeof (BitmapImage), typeof (ImageBrush))]
 	public class ImageBrushConverter : IValueConverter
 	{
 		#region IValueConverter Members
-		
+
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			BitmapImage image = (BitmapImage)value;
+			BitmapImage image = (BitmapImage) value;
 			ImageBrush imageBrush = new ImageBrush();
-			if (image != null)
-			{
+			if (image != null) {
 				imageBrush.ImageSource = image;
 			}
 			return imageBrush;
@@ -26,6 +25,7 @@ namespace VixenModules.Preview.DisplayPreview.WPF
 		{
 			throw new NotImplementedException();
 		}
+
 		#endregion
 	}
 }

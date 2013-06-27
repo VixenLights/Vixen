@@ -23,8 +23,11 @@ namespace VixenModules.App.Curves
 		{
 			PopulateListWithCurves();
 			CurveLibraryStaticData data;
-			data = (ApplicationServices.Get<IAppModuleInstance>(CurveLibraryDescriptor.ModuleID) as CurveLibrary).StaticModuleData as CurveLibraryStaticData;
-			if (Screen.GetWorkingArea(this).Contains(data.SelectorWindowBounds) && data.SelectorWindowBounds.Width >= MinimumSize.Width) {
+			data =
+				(ApplicationServices.Get<IAppModuleInstance>(CurveLibraryDescriptor.ModuleID) as CurveLibrary).StaticModuleData as
+				CurveLibraryStaticData;
+			if (Screen.GetWorkingArea(this).Contains(data.SelectorWindowBounds) &&
+			    data.SelectorWindowBounds.Width >= MinimumSize.Width) {
 				Bounds = data.SelectorWindowBounds;
 			}
 		}
@@ -32,7 +35,9 @@ namespace VixenModules.App.Curves
 		private void CurveLibrarySelector_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			CurveLibraryStaticData data;
-			data = (ApplicationServices.Get<IAppModuleInstance>(CurveLibraryDescriptor.ModuleID) as CurveLibrary).StaticModuleData as CurveLibraryStaticData;
+			data =
+				(ApplicationServices.Get<IAppModuleInstance>(CurveLibraryDescriptor.ModuleID) as CurveLibrary).StaticModuleData as
+				CurveLibraryStaticData;
 			data.SelectorWindowBounds = Bounds;
 		}
 
@@ -97,8 +102,10 @@ namespace VixenModules.App.Curves
 			if (listViewCurves.SelectedItems.Count == 0)
 				return;
 
-			DialogResult result = MessageBox.Show("If you delete this library curve, ALL places it is used will be unlinked and will" +
-				" become independent curves. Are you sure you want to continue?", "Delete library curve?", MessageBoxButtons.YesNoCancel);
+			DialogResult result =
+				MessageBox.Show("If you delete this library curve, ALL places it is used will be unlinked and will" +
+				                " become independent curves. Are you sure you want to continue?", "Delete library curve?",
+				                MessageBoxButtons.YesNoCancel);
 
 			if (result == System.Windows.Forms.DialogResult.Yes) {
 				Library.RemoveCurve(listViewCurves.SelectedItems[0].Name);
@@ -113,6 +120,7 @@ namespace VixenModules.App.Curves
 		}
 
 		private CurveLibrary _library;
+
 		private CurveLibrary Library
 		{
 			get

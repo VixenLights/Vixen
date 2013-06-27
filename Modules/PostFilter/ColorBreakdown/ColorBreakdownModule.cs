@@ -31,12 +31,12 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 
 		public override Type ModuleClass
 		{
-			get { return typeof(ColorBreakdownModule); }
+			get { return typeof (ColorBreakdownModule); }
 		}
 
 		public override Type ModuleDataClass
 		{
-			get { return typeof(ColorBreakdownData); }
+			get { return typeof (ColorBreakdownData); }
 		}
 
 		public override string Author
@@ -58,7 +58,6 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 
 	public class ColorBreakdownModule : OutputFilterModuleInstanceBase
 	{
-
 		private ColorBreakdownData _data;
 		private ColorBreakdownOutput[] _outputs;
 
@@ -89,7 +88,7 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 			get { return _data; }
 			set
 			{
-				_data = (ColorBreakdownData)value;
+				_data = (ColorBreakdownData) value;
 				_CreateOutputs();
 			}
 		}
@@ -157,8 +156,7 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 	}
 
 
-
-	class ColorBreakdownFilter : IntentStateDispatch
+	internal class ColorBreakdownFilter : IntentStateDispatch
 	{
 		private IIntentState _intentValue;
 		private readonly ColorBreakdownItem _breakdownItem;
@@ -181,13 +179,13 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 			float result = 1.0f;
 
 			if (_breakdownItem.Color.R > 0)
-				result = Math.Min(result, (float)inputColor.R / _breakdownItem.Color.R);
+				result = Math.Min(result, (float) inputColor.R/_breakdownItem.Color.R);
 
 			if (_breakdownItem.Color.G > 0)
-				result = Math.Min(result, (float)inputColor.G / _breakdownItem.Color.G);
+				result = Math.Min(result, (float) inputColor.G/_breakdownItem.Color.G);
 
 			if (_breakdownItem.Color.B > 0)
-				result = Math.Min(result, (float)inputColor.B / _breakdownItem.Color.B);
+				result = Math.Min(result, (float) inputColor.B/_breakdownItem.Color.B);
 
 			return result;
 		}
@@ -197,12 +195,16 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 			ColorValue colorValue = obj.GetValue();
 			if (_mixColors) {
 				float maxProportion = _getMaxProportion(colorValue.Color);
-				Color finalColor = Color.FromArgb((int)(_breakdownItem.Color.R * maxProportion), (int)(_breakdownItem.Color.G * maxProportion), (int)(_breakdownItem.Color.B * maxProportion));
+				Color finalColor = Color.FromArgb((int) (_breakdownItem.Color.R*maxProportion),
+				                                  (int) (_breakdownItem.Color.G*maxProportion),
+				                                  (int) (_breakdownItem.Color.B*maxProportion));
 				_intentValue = new StaticIntentState<ColorValue>(obj, new ColorValue(finalColor));
-			} else {
+			}
+			else {
 				if (colorValue.Color.ToArgb() == _breakdownItem.Color.ToArgb()) {
 					_intentValue = new StaticIntentState<ColorValue>(obj, colorValue);
-				} else {
+				}
+				else {
 					// TODO: return 'null', or some osrt of empty intent state here instead. (null isn't handled well, and we don't have an 'empty' state class.)
 					_intentValue = new StaticIntentState<ColorValue>(obj, new ColorValue(Color.Black));
 				}
@@ -213,11 +215,16 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 		{
 			LightingValue lightingValue = obj.GetValue();
 			if (_mixColors) {
-				_intentValue = new StaticIntentState<LightingValue>(obj, new LightingValue(_breakdownItem.Color, lightingValue.Intensity * _getMaxProportion(lightingValue.Color)));
-			} else {
+				_intentValue = new StaticIntentState<LightingValue>(obj,
+				                                                    new LightingValue(_breakdownItem.Color,
+				                                                                      lightingValue.Intensity*
+				                                                                      _getMaxProportion(lightingValue.Color)));
+			}
+			else {
 				if (lightingValue.Color.ToArgb() == _breakdownItem.Color.ToArgb()) {
 					_intentValue = new StaticIntentState<LightingValue>(obj, lightingValue);
-				} else {
+				}
+				else {
 					// TODO: return 'null', or some osrt of empty intent state here instead. (null isn't handled well, and we don't have an 'empty' state class.)
 					_intentValue = new StaticIntentState<LightingValue>(obj, new LightingValue(_breakdownItem.Color, 0));
 				}
@@ -226,7 +233,7 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 	}
 
 
-	class ColorBreakdownOutput : IDataFlowOutput<IntentsDataFlowData>
+	internal class ColorBreakdownOutput : IDataFlowOutput<IntentsDataFlowData>
 	{
 		private readonly ColorBreakdownFilter _filter;
 		private readonly ColorBreakdownItem _breakdownItem;

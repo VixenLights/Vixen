@@ -15,7 +15,7 @@ using System.Xml.Serialization;
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
 	[DataContract]
-	public class PreviewPixel: IDisposable
+	public class PreviewPixel : IDisposable
 	{
 		private Color color = Color.White;
 		//public Color editColor = Color.White;
@@ -33,8 +33,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		//public static Hashtable IntentNodeToColor = new Hashtable();
 
-		[XmlIgnore]
-		public static Dictionary<ElementNode, Color> IntentNodeToColor = new Dictionary<ElementNode, Color>();
+		[XmlIgnore] public static Dictionary<ElementNode, Color> IntentNodeToColor = new Dictionary<ElementNode, Color>();
 		//public static Dictionary<Guid, IIntentStates> intentStates = new Dictionary<Guid, IIntentStates>();
 
 		public PreviewPixel()
@@ -51,7 +50,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		}
 
 		[OnDeserialized]
-		void OnDeserialized(StreamingContext context)
+		private void OnDeserialized(StreamingContext context)
 		{
 			//editColor = Color.White;
 		}
@@ -69,11 +68,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public int MaxAlpha
 		{
-			get 
+			get
 			{
 				if (_maxAlpha == 0)
 					_maxAlpha = 255;
-				return _maxAlpha; 
+				return _maxAlpha;
 			}
 			set { _maxAlpha = value; }
 		}
@@ -81,23 +80,18 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		[DataMember]
 		public Guid NodeId
 		{
-			get {
-				return _nodeId; 
-			}
-			set {
-				_nodeId = value;
-			}
+			get { return _nodeId; }
+			set { _nodeId = value; }
 		}
 
 		public ElementNode Node
 		{
-			get 
+			get
 			{
-				if (_node == null)
-				{
+				if (_node == null) {
 					_node = VixenSystem.Nodes.GetElementNode(NodeId);
 				}
-				return _node; 
+				return _node;
 			}
 			set
 			{
@@ -122,7 +116,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public int X
 		{
 			get { return x; }
-			set { 
+			set
+			{
 				x = value;
 				Resize();
 			}
@@ -131,7 +126,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public int Y
 		{
 			get { return y; }
-			set { 
+			set
+			{
 				y = value;
 				Resize();
 			}
@@ -140,35 +136,30 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public int PixelSize
 		{
 			get { return size; }
-			set { 
+			set
+			{
 				size = value;
 				Resize();
-
 			}
 		}
 
 		public Color PixelColor
 		{
 			get { return color; }
-			set
-			{
-				color = value;
-			}
+			set { color = value; }
 		}
 
 		public void Draw(Graphics graphics, Color c)
-		{            
+		{
 			graphics.FillEllipse(new SolidBrush(c), drawArea);
 		}
 
-        public void Draw(FastPixel fp, bool forceDraw)
+		public void Draw(FastPixel fp, bool forceDraw)
 		{
-            if (forceDraw)
-			{
-                Draw(fp, color);
-            } 
-            else if (Node != null)
-            {
+			if (forceDraw) {
+				Draw(fp, color);
+			}
+			else if (Node != null) {
 				//IIntentStates nodeIntentStates;
 				//if (intentStates.TryGetValue(Node.Id, out nodeIntentStates))
 				//{
@@ -180,15 +171,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				//        }
 				//    }
 				//}
-                //Color color;
-				if (PreviewPixel.IntentNodeToColor.TryGetValue(Node, out color))
-				{
+				//Color color;
+				if (PreviewPixel.IntentNodeToColor.TryGetValue(Node, out color)) {
 					//if (nodeIntentStates != null)
 					//{
-						//foreach (IIntentState<LightingValue> intentState in nodeIntentStates)
-						//{
-							Draw(fp, color);
-						//}
+					//foreach (IIntentState<LightingValue> intentState in nodeIntentStates)
+					//{
+					Draw(fp, color);
+					//}
 					//}
 				}
 			}
@@ -214,25 +204,25 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			//}
 		}
 
-        ~PreviewPixel()
-        {
-            Dispose(false);
-        }
-        protected void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                if (brush != null)
-                    brush.Dispose();
+		~PreviewPixel()
+		{
+			Dispose(false);
+		}
 
-            }
-            brush = null;
-            _node = null;
-        }
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
+		protected void Dispose(bool disposing)
+		{
+			if (disposing) {
+				if (brush != null)
+					brush.Dispose();
+			}
+			brush = null;
+			_node = null;
+		}
+
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
 	}
 }

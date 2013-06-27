@@ -1,6 +1,8 @@
 ﻿using Vixen.Module;
 
-namespace Vixen.IO.Xml.Serializer {
-	class XmlModuleLocalDataSetSerializer : XmlModuleDataSetSerializer<ModuleLocalDataSet> {
+namespace Vixen.IO.Xml.Serializer
+{
+	internal class XmlModuleLocalDataSetSerializer : XmlModuleDataSetSerializer<ModuleLocalDataSet>
+	{
 	}
 }

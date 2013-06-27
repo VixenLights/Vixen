@@ -4,8 +4,10 @@ using System.Linq;
 using System.Text;
 using SlimDX.DirectInput;
 
-namespace VixenModules.Input.DirectXJoystick.Input {
-	interface IPovBehavior {
+namespace VixenModules.Input.DirectXJoystick.Input
+{
+	internal interface IPovBehavior
+	{
 		double GetValue(JoystickState joystickState, int povIndex);
 	}
 }

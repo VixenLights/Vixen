@@ -1,7 +1,10 @@
-﻿namespace VixenModules.App.SimpleSchedule {
-	class SchedulerLog : Vixen.Sys.Log {
+﻿namespace VixenModules.App.SimpleSchedule
+{
+	internal class SchedulerLog : Vixen.Sys.Log
+	{
 		public SchedulerLog()
-			: base("SimpleSchedule") {
+			: base("SimpleSchedule")
+		{
 		}
 	}
 }

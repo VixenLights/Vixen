@@ -16,7 +16,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 	public partial class TimedSequenceEditorEffectEditor : Form
 	{
 		private EffectNode _effectNode;
-		private IEnumerable<EffectNode> _effectNodes; 
+		private IEnumerable<EffectNode> _effectNodes;
 		private List<IEffectEditorControl> _controls;
 		private bool _usedSingleControl;
 
@@ -48,7 +48,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			_effectNode = effectNode;
 			_effectNodes = null;
-			IEnumerable<IEffectEditorControl> controls = ApplicationServices.GetEffectEditorControls(_effectNode.Effect.Descriptor.TypeId);
+			IEnumerable<IEffectEditorControl> controls =
+				ApplicationServices.GetEffectEditorControls(_effectNode.Effect.Descriptor.TypeId);
 
 			if (controls == null) {
 				Label l = new Label();
@@ -66,7 +67,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// a single item) then add controls inside a ParameterEditor wrapper using editors for that type, and label them appropriately.
 			// if it was only a single control returned, it must have matched the entire effect (by GUID or signature), so just dump the
 			// control it, and let it deal with everything it needs to.
-			if (controls.Count() > 1 || (controls.Count() == 1 && (_effectNode.Effect.Descriptor as IEffectModuleDescriptor).Parameters.Count == 1)) {
+			if (controls.Count() > 1 ||
+			    (controls.Count() == 1 && (_effectNode.Effect.Descriptor as IEffectModuleDescriptor).Parameters.Count == 1)) {
 				_usedSingleControl = false;
 				int i = 0;
 				foreach (IEffectEditorControl ec in controls) {
@@ -77,16 +79,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 					ec.TargetEffect = effectNode.Effect;
 
-                    if (_effectNode.Effect.Parameters[i].ShowLabel)
-                    {
-                        Label l = new Label();
-                        l.Width = 1;
-                        l.Height = 1;
-                        l.Text = _effectNode.Effect.Parameters[i].Name + ":";
-                        l.AutoSize = true;
-                        l.Anchor = AnchorStyles.None;
-                        tableLayoutPanelEffectEditors.Controls.Add(l);
-                    }
+					if (_effectNode.Effect.Parameters[i].ShowLabel) {
+						Label l = new Label();
+						l.Width = 1;
+						l.Height = 1;
+						l.Text = _effectNode.Effect.Parameters[i].Name + ":";
+						l.AutoSize = true;
+						l.Anchor = AnchorStyles.None;
+						tableLayoutPanelEffectEditors.Controls.Add(l);
+					}
 
 					(ec as Control).Anchor = AnchorStyles.None;
 					tableLayoutPanelEffectEditors.Controls.Add(ec as Control);
@@ -95,7 +96,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					_controls.Add(ec);
 					i++;
 				}
-			} else {
+			}
+			else {
 				_usedSingleControl = true;
 				IEffectEditorControl control = controls.First();
 				control.EffectParameterValues = _effectNode.Effect.ParameterValues;
@@ -119,7 +121,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 					if (_usedSingleControl) {
 						node.Effect.ParameterValues = _controls.First().EffectParameterValues;
-					} else {
+					}
+					else {
 						object[] values = new object[_controls.Count];
 						for (int i = 0; i < _controls.Count; i++) {
 							values[i] = _controls[i].EffectParameterValues.First();

@@ -1,5 +1,7 @@
-﻿namespace Vixen.IO.Factory {
-	interface IFileReaderFactory {
+﻿namespace Vixen.IO.Factory
+{
+	internal interface IFileReaderFactory
+	{
 		IFileReader CreateFileReader();
 	}
 }

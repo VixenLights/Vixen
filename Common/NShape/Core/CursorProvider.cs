@@ -18,26 +18,28 @@ using System.IO;
 using System.Reflection;
 
 
-namespace Dataweb.NShape.Advanced {
-
+namespace Dataweb.NShape.Advanced
+{
 	/// <summary>
 	/// Provides cursors to UI components.
 	/// </summary>
-	public static class CursorProvider {
-
+	public static class CursorProvider
+	{
 		/// <summary>
 		/// Registers a custom cursor that can be used with SetCursor.
 		/// </summary>
 		/// <param name="fileName">The file name of the cursor resource.</param>
 		/// <returns>Id of the cursor.</returns>
-		public static int RegisterCursor(string fileName) {
+		public static int RegisterCursor(string fileName)
+		{
 			if (fileName == null) throw new ArgumentNullException("fileName");
 			byte[] resource = null;
 			FileStream stream = new FileStream(fileName, FileMode.Open);
 			try {
 				resource = new byte[stream.Length];
 				stream.Read(resource, 0, resource.Length);
-			} finally {
+			}
+			finally {
 				stream.Close();
 				stream.Dispose();
 			}
@@ -51,7 +53,8 @@ namespace Dataweb.NShape.Advanced {
 		/// <param name="resourceAssembly">Assembly containing the cursor resource.</param>
 		/// <param name="resourceName">The name of the cursor resource.</param>
 		/// <returns>Id of the cursor.</returns>
-		public static int RegisterCursor(Assembly resourceAssembly, string resourceName) {
+		public static int RegisterCursor(Assembly resourceAssembly, string resourceName)
+		{
 			if (resourceAssembly == null) throw new ArgumentNullException("resourceAssembly");
 			if (resourceName == null) throw new ArgumentNullException("resourceName");
 			byte[] resource = null;
@@ -59,7 +62,8 @@ namespace Dataweb.NShape.Advanced {
 			try {
 				resource = new byte[stream.Length];
 				stream.Read(resource, 0, resource.Length);
-			} finally {
+			}
+			finally {
 				stream.Close();
 				stream.Dispose();
 			}
@@ -72,7 +76,8 @@ namespace Dataweb.NShape.Advanced {
 		/// </summary>
 		/// <param name="resource">The cursor resource.</param>
 		/// <returns>Id of the cursor.</returns>
-		public static int RegisterCursor(byte[] resource) {
+		public static int RegisterCursor(byte[] resource)
+		{
 			if (resource == null) throw new ArgumentNullException("resource");
 			return RegisterCursorResource(resource);
 		}
@@ -82,7 +87,8 @@ namespace Dataweb.NShape.Advanced {
 		/// Returns all registered cursors.
 		/// CursorId 0 means the system's default cursor which is not stored as resource.
 		/// </summary>
-		public static IEnumerable<int> CursorIDs {
+		public static IEnumerable<int> CursorIDs
+		{
 			get { return registeredCursors.Keys; }
 		}
 
@@ -93,7 +99,8 @@ namespace Dataweb.NShape.Advanced {
 		/// </summary>
 		/// <param name="cursorID">ID of the cursor returned by the RegisterCursor method.</param>
 		/// <returns></returns>
-		public static byte[] GetResource(int cursorID) {
+		public static byte[] GetResource(int cursorID)
+		{
 			if (cursorID == DefaultCursorID) return null;
 			return registeredCursors[cursorID];
 		}
@@ -105,7 +112,8 @@ namespace Dataweb.NShape.Advanced {
 		public const int DefaultCursorID = 0;
 
 
-		private static int RegisterCursorResource(byte[] resource) {
+		private static int RegisterCursorResource(byte[] resource)
+		{
 			// Check if the resource was registered
 			foreach (KeyValuePair<int, byte[]> item in registeredCursors) {
 				if (item.Value.Length == resource.Length) {
@@ -128,5 +136,4 @@ namespace Dataweb.NShape.Advanced {
 
 		private static Dictionary<int, byte[]> registeredCursors = new Dictionary<int, byte[]>();
 	}
-
 }

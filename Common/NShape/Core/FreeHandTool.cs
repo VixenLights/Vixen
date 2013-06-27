@@ -19,12 +19,11 @@ using System.Drawing;
 using System.IO;
 using System.Reflection;
 using System.Timers;
-
 using Dataweb.NShape.Controllers;
 
 
-namespace Dataweb.NShape.Advanced {
-
+namespace Dataweb.NShape.Advanced
+{
 #if EXPERIMENTAL
 	/// <summary>
 	/// Lets the user sketch a shape using a pen.
@@ -385,5 +384,4 @@ namespace Dataweb.NShape.Advanced {
 		#endregion
 	}
 #endif
-
 }

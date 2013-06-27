@@ -1,4 +1,6 @@
-﻿namespace Vixen.Module.Service {
-	class ServiceModuleManagement : GenericModuleManagement<IServiceModuleInstance> {
+﻿namespace Vixen.Module.Service
+{
+	internal class ServiceModuleManagement : GenericModuleManagement<IServiceModuleInstance>
+	{
 	}
 }

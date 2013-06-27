@@ -16,8 +16,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			InitializeComponent();
 		}
 
-		public Panel editorPanel { get { return tableLayoutPanel; } }
+		public Panel editorPanel
+		{
+			get { return tableLayoutPanel; }
+		}
 
-		public string labelText { get { return labelParameterType.Text; } set { labelParameterType.Text = value; } }
+		public string labelText
+		{
+			get { return labelParameterType.Text; }
+			set { labelParameterType.Text = value; }
+		}
 	}
 }

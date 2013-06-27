@@ -16,24 +16,24 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
-
 using Dataweb.NShape.Advanced;
 using Dataweb.NShape.Commands;
 
 
-namespace Dataweb.NShape.Controllers {
-
+namespace Dataweb.NShape.Controllers
+{
 	/// <summary>
 	/// A non-visual component for editing templates. 
 	/// </summary>
 	[ToolboxItem(true)]
-	[ToolboxBitmap(typeof(TemplateController), "TemplateController.bmp")]
-	public class TemplateController : Component, IDisplayService {
-
+	[ToolboxBitmap(typeof (TemplateController), "TemplateController.bmp")]
+	public class TemplateController : Component, IDisplayService
+	{
 		/// <summary>
 		/// Creates a new <see cref="T:Dataweb.NShape.Controllers.TemplateController" /> instance
 		/// </summary>
-		public TemplateController() {
+		public TemplateController()
+		{
 			infoGraphics = Graphics.FromHwnd(IntPtr.Zero);
 		}
 
@@ -42,47 +42,54 @@ namespace Dataweb.NShape.Controllers {
 		/// Creates and initializes a new <see cref="T:Dataweb.NShape.Controllers.TemplateController" /> instance
 		/// </summary>
 		public TemplateController(Project project, Template template)
-			: this() {
+			: this()
+		{
 			if (project == null) throw new ArgumentNullException("project");
 			Initialize(project, template);
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		~TemplateController() {
+		~TemplateController()
+		{
 			infoGraphics.Dispose();
 			infoGraphics = null;
 		}
 
-
 		#region IDisplayService Members
 
 		/// <override></override>
-		void IDisplayService.Invalidate(int x, int y, int width, int height) {
+		void IDisplayService.Invalidate(int x, int y, int width, int height)
+		{
 			// nothing to do
 		}
 
 
 		/// <override></override>
-		void IDisplayService.Invalidate(Rectangle rectangle) {
+		void IDisplayService.Invalidate(Rectangle rectangle)
+		{
 			// nothing to do
 		}
 
 
 		/// <override></override>
-		void IDisplayService.NotifyBoundsChanged() { 
+		void IDisplayService.NotifyBoundsChanged()
+		{
 			// nothing to do
 		}
 
 
 		/// <override></override>
-		Graphics IDisplayService.InfoGraphics {
+		Graphics IDisplayService.InfoGraphics
+		{
 			get { return infoGraphics; }
 		}
 
 
-		IFillStyle IDisplayService.HintBackgroundStyle {
-			get {
+		IFillStyle IDisplayService.HintBackgroundStyle
+		{
+			get
+			{
 				if (Project != null && Project.IsOpen)
 					return Project.Design.FillStyles.White;
 				else return null;
@@ -90,8 +97,10 @@ namespace Dataweb.NShape.Controllers {
 		}
 
 
-		ILineStyle IDisplayService.HintForegroundStyle {
-			get {
+		ILineStyle IDisplayService.HintForegroundStyle
+		{
+			get
+			{
 				if (Project != null && Project.IsOpen)
 					return Project.Design.LineStyles.Normal;
 				else return null;
@@ -99,7 +108,6 @@ namespace Dataweb.NShape.Controllers {
 		}
 
 		#endregion
-
 
 		#region [Public] Events
 
@@ -160,14 +168,14 @@ namespace Dataweb.NShape.Controllers {
 
 		#endregion
 
-
 		#region [Public] Properties
 
 		/// <summary>
 		/// Specifies the version of the assembly containing the component.
 		/// </summary>
 		[Category("NShape")]
-		public string ProductVersion {
+		public string ProductVersion
+		{
 			get { return this.GetType().Assembly.GetName().Version.ToString(); }
 		}
 
@@ -176,9 +184,11 @@ namespace Dataweb.NShape.Controllers {
 		/// Provides access to a <see cref="T:Dataweb.NShape.Project" />.
 		/// </summary>
 		[Category("NShape")]
-		public Project Project {
+		public Project Project
+		{
 			get { return project; }
-			set {
+			set
+			{
 				if (project != null) UnregisterProjectEvents();
 				project = value;
 				if (project != null) {
@@ -194,7 +204,8 @@ namespace Dataweb.NShape.Controllers {
 		/// Specified whether the <see cref="T:Dataweb.NShape.Controllers.TemplateController" /> edits an existing or creates a new template.
 		/// </summary>
 		[Browsable(false)]
-		public TemplateControllerEditMode EditMode {
+		public TemplateControllerEditMode EditMode
+		{
 			get { return editMode; }
 		}
 
@@ -203,7 +214,8 @@ namespace Dataweb.NShape.Controllers {
 		/// A list of all shapes available.
 		/// </summary>
 		[Browsable(false)]
-		public IReadOnlyCollection<Shape> Shapes {
+		public IReadOnlyCollection<Shape> Shapes
+		{
 			get { return shapes; }
 		}
 
@@ -212,7 +224,8 @@ namespace Dataweb.NShape.Controllers {
 		/// A list of all model objects available.
 		/// </summary>
 		[Browsable(false)]
-		public IReadOnlyCollection<IModelObject> ModelObjects {
+		public IReadOnlyCollection<IModelObject> ModelObjects
+		{
 			get { return modelObjects; }
 		}
 
@@ -222,7 +235,8 @@ namespace Dataweb.NShape.Controllers {
 		/// When applying the changes, it will be copied into the original template property-by-property .
 		/// </summary>
 		[Browsable(false)]
-		public Template WorkTemplate {
+		public Template WorkTemplate
+		{
 			get { return workTemplate; }
 		}
 
@@ -231,7 +245,8 @@ namespace Dataweb.NShape.Controllers {
 		/// The original template. Remains unchanged until applying changes.
 		/// </summary>
 		[Browsable(false)]
-		public Template OriginalTemplate {
+		public Template OriginalTemplate
+		{
 			get { return originalTemplate; }
 		}
 
@@ -240,19 +255,20 @@ namespace Dataweb.NShape.Controllers {
 		/// Specifies whether the <see cref="T:Dataweb.NShape.Controllers.TemplateController" /> was initialized completly.
 		/// </summary>
 		[Browsable(false)]
-		public bool IsInitialized {
+		public bool IsInitialized
+		{
 			get { return isInitialized; }
 		}
 
 		#endregion
-
 
 		#region [Public] Methods
 
 		/// <summary>
 		/// Calling this method initializes the <see cref="T:Dataweb.NShape.Controllers.TemplateController" />.
 		/// </summary>
-		public void Initialize(Template template) {
+		public void Initialize(Template template)
+		{
 			if (project == null) throw new ArgumentNullException("Property 'Project' is not set.");
 			Initialize(Project, template);
 		}
@@ -261,7 +277,8 @@ namespace Dataweb.NShape.Controllers {
 		/// <summary>
 		/// Calling this method initializes the <see cref="T:Dataweb.NShape.Controllers.TemplateController" />.
 		/// </summary>
-		public void Initialize(Project project, Template template) {
+		public void Initialize(Project project, Template template)
+		{
 			if (isInitializing) {
 				Debug.Fail("Already initializing");
 				return;
@@ -284,7 +301,8 @@ namespace Dataweb.NShape.Controllers {
 						break;
 					}
 				}
-				if (!templateSupportingShapeTypeFound) throw new NShapeException("No template supporting shape types found. Load a shape library first.");
+				if (!templateSupportingShapeTypeFound)
+					throw new NShapeException("No template supporting shape types found. Load a shape library first.");
 
 				// Create a copy of the template
 				if (template != null) {
@@ -293,14 +311,15 @@ namespace Dataweb.NShape.Controllers {
 					workTemplate = new Template(originalTemplate.Name, originalTemplate.Shape.Clone());
 					workTemplate.CopyFrom(originalTemplate);
 					workTemplate.Shape.DisplayService = this;
-				} else {
+				}
+				else {
 					// Create a new Template
 					editMode = TemplateControllerEditMode.CreateTemplate;
 					originalTemplate = null;
 
 					// As a shape is mandatory for every template, find a shape first
-					Shape shape = FindFirstShapeOfType(typeof(IPlanarShape));
-					if (shape == null) shape = FindFirstShapeOfType(typeof(Shape)); // if no planar shape was found, get the first one
+					Shape shape = FindFirstShapeOfType(typeof (IPlanarShape));
+					if (shape == null) shape = FindFirstShapeOfType(typeof (Shape)); // if no planar shape was found, get the first one
 					int templateCnt = 1;
 					foreach (Template t in project.Repository.GetTemplates()) ++templateCnt;
 					workTemplate = new Template(string.Format("Template {0}", templateCnt), shape);
@@ -320,7 +339,8 @@ namespace Dataweb.NShape.Controllers {
 					TemplateControllerInitializingEventArgs eventArgs = new TemplateControllerInitializingEventArgs(editMode, template);
 					Initializing(this, eventArgs);
 				}
-			} finally {
+			}
+			finally {
 				isInitializing = false;
 			}
 		}
@@ -330,7 +350,8 @@ namespace Dataweb.NShape.Controllers {
 		/// Rename the current template.
 		/// </summary>
 		/// <param name="name"></param>
-		public void SetTemplateName(string name) {
+		public void SetTemplateName(string name)
+		{
 			if (workTemplate.Name != name) {
 				string oldName = workTemplate.Name;
 				workTemplate.Name = name;
@@ -344,7 +365,8 @@ namespace Dataweb.NShape.Controllers {
 		/// <summary>
 		/// Change the current template's title.
 		/// </summary>
-		public void SetTemplateTitle(string title) {
+		public void SetTemplateTitle(string title)
+		{
 			if (workTemplate.Title != title) {
 				string oldTitle = workTemplate.Title;
 				workTemplate.Title = title;
@@ -358,7 +380,8 @@ namespace Dataweb.NShape.Controllers {
 		/// <summary>
 		/// Change the current template's description.
 		/// </summary>
-		public void SetTemplateDescription(string description) {
+		public void SetTemplateDescription(string description)
+		{
 			if (workTemplate.Description != description) {
 				string oldDescription = workTemplate.Name;
 				workTemplate.Description = description;
@@ -367,18 +390,19 @@ namespace Dataweb.NShape.Controllers {
 				if (TemplateModified != null) TemplateModified(this, EventArgs.Empty);
 			}
 		}
-		
+
 
 		/// <summary>
 		/// Set the given shape as the template's shape.
 		/// </summary>
-		public void SetTemplateShape(Shape newShape) {
+		public void SetTemplateShape(Shape newShape)
+		{
 			if (newShape == null) throw new ArgumentNullException("newShape");
 			// buffer the current template shape
 			Shape oldShape = workTemplate.Shape;
 			if (oldShape != null)
 				oldShape.Invalidate();
-			
+
 			// set the new template shape
 			newShape.DisplayService = this;
 			newShape.Invalidate();
@@ -397,8 +421,10 @@ namespace Dataweb.NShape.Controllers {
 		/// <summary>
 		/// Set the given Modelobject as the template's ModelObject
 		/// </summary>
-		public void SetTemplateModel(IModelObject newModelObject) {
-			if (workTemplate.Shape == null) throw new NShapeException("The template's shape property is not set to a reference of an object.");
+		public void SetTemplateModel(IModelObject newModelObject)
+		{
+			if (workTemplate.Shape == null)
+				throw new NShapeException("The template's shape property is not set to a reference of an object.");
 			IModelObject oldModelObject = workTemplate.Shape.ModelObject;
 			if (oldModelObject != null) {
 				// ToDo: Implement ModelObject.CopyFrom()
@@ -422,7 +448,8 @@ namespace Dataweb.NShape.Controllers {
 		/// <summary>
 		/// Define a new model-to-shape property mapping.
 		/// </summary>
-		public void SetModelMapping(IModelMapping modelMapping) {
+		public void SetModelMapping(IModelMapping modelMapping)
+		{
 			if (modelMapping == null) throw new ArgumentNullException("modelMapping");
 			workTemplate.MapProperties(modelMapping);
 			TemplateWasChanged = true;
@@ -438,7 +465,8 @@ namespace Dataweb.NShape.Controllers {
 		/// Deletes a model-to-shape property mapping
 		/// </summary>
 		/// <param name="modelMapping"></param>
-		public void DeleteModelMapping(IModelMapping modelMapping) {
+		public void DeleteModelMapping(IModelMapping modelMapping)
+		{
 			if (modelMapping == null) throw new ArgumentNullException("modelMapping");
 			workTemplate.UnmapProperties(modelMapping);
 			TemplateWasChanged = true;
@@ -456,7 +484,8 @@ namespace Dataweb.NShape.Controllers {
 		/// </summary>
 		/// <param name="controlPointId">Id of the shape's ControlPoint</param>
 		/// <param name="terminalId">Id of the Modelobject's Terminal. Pass -1 in order to clear the mapping.</param>
-		public void SetTerminalConnectionPointMapping(ControlPointId controlPointId, TerminalId terminalId) {
+		public void SetTerminalConnectionPointMapping(ControlPointId controlPointId, TerminalId terminalId)
+		{
 			TerminalId oldTerminalId = workTemplate.GetMappedTerminalId(controlPointId);
 			workTemplate.MapTerminal(terminalId, controlPointId);
 			TemplateWasChanged = true;
@@ -473,7 +502,8 @@ namespace Dataweb.NShape.Controllers {
 		/// <summary>
 		/// Applies all changes made on the working template to the original template.
 		/// </summary>
-		public void ApplyChanges() {
+		public void ApplyChanges()
+		{
 			if (string.IsNullOrEmpty(workTemplate.Name)) throw new NShapeException("The template's name must not be empty.");
 			if (TemplateWasChanged) {
 				ICommand cmd = null;
@@ -503,7 +533,8 @@ namespace Dataweb.NShape.Controllers {
 						project.ExecuteCommand(cmd);
 						break;
 
-					default: throw new NShapeUnsupportedValueException(typeof(TemplateControllerEditMode), editMode);
+					default:
+						throw new NShapeUnsupportedValueException(typeof (TemplateControllerEditMode), editMode);
 				}
 				TemplateWasChanged = false;
 				if (ApplyingChanges != null) ApplyingChanges(this, EventArgs.Empty);
@@ -514,7 +545,8 @@ namespace Dataweb.NShape.Controllers {
 		/// <summary>
 		/// Discards all changes made to the working copy of the original template.
 		/// </summary>
-		public void DiscardChanges() {
+		public void DiscardChanges()
+		{
 			if (EditMode == TemplateControllerEditMode.CreateTemplate)
 				Initialize(project, null);
 			else
@@ -526,7 +558,8 @@ namespace Dataweb.NShape.Controllers {
 		/// <summary>
 		/// Clears all buffers and objects used by the <see cref="T:Dataweb.NShape.Controllers.TemplateController" />
 		/// </summary>
-		public void Clear() {
+		public void Clear()
+		{
 			ClearShapeList();
 			ClearModelObjectList();
 
@@ -536,26 +569,28 @@ namespace Dataweb.NShape.Controllers {
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public void NotifyTemplateShapeChanged() {
+		public void NotifyTemplateShapeChanged()
+		{
 			templateWasChanged = true;
 			if (TemplateShapeModified != null) TemplateShapeModified(this, EventArgs.Empty);
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public void NotifyTemplateModelObjectChanged() {
+		public void NotifyTemplateModelObjectChanged()
+		{
 			templateWasChanged = true;
 			if (TemplateModelObjectModified != null) TemplateModelObjectModified(this, EventArgs.Empty);
 		}
 
 		#endregion
 
-
 		/// <summary>
 		/// Clean up any resources being used.
 		/// </summary>
 		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-		protected override void Dispose(bool disposing) {
+		protected override void Dispose(bool disposing)
+		{
 			if (disposing) {
 				Clear();
 				infoGraphics.Dispose();
@@ -564,9 +599,11 @@ namespace Dataweb.NShape.Controllers {
 		}
 
 
-		private bool TemplateWasChanged {
+		private bool TemplateWasChanged
+		{
 			get { return templateWasChanged; }
-			set {
+			set
+			{
 				if (project.SecurityManager.IsGranted(Permission.Templates)) {
 					templateWasChanged = value;
 					if (TemplateModified != null) TemplateModified(this, EventArgs.Empty);
@@ -574,10 +611,10 @@ namespace Dataweb.NShape.Controllers {
 			}
 		}
 
-
 		#region [Private] Methods
 
-		private void RegisterProjectEvents() {
+		private void RegisterProjectEvents()
+		{
 			Debug.Assert(project != null);
 			if (project != null) {
 				project.Closing += project_Closing;
@@ -586,7 +623,8 @@ namespace Dataweb.NShape.Controllers {
 		}
 
 
-		private void UnregisterProjectEvents() {
+		private void UnregisterProjectEvents()
+		{
 			Debug.Assert(project != null);
 			if (project != null) {
 				project.Closing -= project_Closing;
@@ -595,36 +633,40 @@ namespace Dataweb.NShape.Controllers {
 		}
 
 
-		private void project_Opened(object sender, EventArgs e) {
-			
+		private void project_Opened(object sender, EventArgs e)
+		{
 		}
 
 
-		private void project_Closing(object sender, EventArgs e) {
-			
+		private void project_Closing(object sender, EventArgs e)
+		{
 		}
 
 
-		private bool IsOfType(Type type, Type targetType) {
+		private bool IsOfType(Type type, Type targetType)
+		{
 			return (type == targetType || type.IsSubclassOf(targetType) || type.GetInterface(targetType.Name, true) != null);
 		}
-		
-		
-		private void ClearShapeList() {
+
+
+		private void ClearShapeList()
+		{
 			//foreach (Shape shape in shapes)
 			//   shape.Dispose();
 			shapes.Clear();
 		}
 
 
-		private void ClearModelObjectList() {
+		private void ClearModelObjectList()
+		{
 			//foreach (IModelObject modelObject in modelObjects)
 			//   modelObject.Dispose();
 			modelObjects.Clear();
 		}
 
 
-		private void InitShapeList() {
+		private void InitShapeList()
+		{
 			ClearShapeList();
 			foreach (ShapeType shapeType in project.ShapeTypes) {
 				if (!shapeType.SupportsAutoTemplates) continue;
@@ -635,7 +677,8 @@ namespace Dataweb.NShape.Controllers {
 		}
 
 
-		private void InitModelObjectList() {
+		private void InitModelObjectList()
+		{
 			ClearModelObjectList();
 			foreach (ModelObjectType modelObjectType in project.ModelObjectTypes) {
 				IModelObject modelObject = modelObjectType.CreateInstance();
@@ -644,19 +687,20 @@ namespace Dataweb.NShape.Controllers {
 		}
 
 
-		private Shape FindFirstShapeOfType(Type type) {
+		private Shape FindFirstShapeOfType(Type type)
+		{
 			foreach (ShapeType shapeType in project.ShapeTypes) {
 				if (!shapeType.SupportsAutoTemplates) continue;
 				Shape shape = shapeType.CreateInstance();
 				if (IsOfType(shape.GetType(), type)) {
 					if (shape is IPlanarShape) return shape;
-				} else return shape;
+				}
+				else return shape;
 			}
 			return null;
 		}
 
 		#endregion
-
 
 		#region Fields
 
@@ -674,14 +718,19 @@ namespace Dataweb.NShape.Controllers {
 		private bool isInitializing = false;
 		private bool isInitialized = false;
 		// EventArgs buffers
-		private TemplateControllerStringChangedEventArgs stringChangedEventArgs 
+		private TemplateControllerStringChangedEventArgs stringChangedEventArgs
 			= new TemplateControllerStringChangedEventArgs(string.Empty, string.Empty);
-		private TemplateControllerTemplateShapeReplacedEventArgs shapeReplacedEventArgs 
+
+		private TemplateControllerTemplateShapeReplacedEventArgs shapeReplacedEventArgs
 			= new TemplateControllerTemplateShapeReplacedEventArgs(null, null, null);
-		private TemplateControllerModelObjectReplacedEventArgs modelObjectReplacedEventArgs 
+
+		private TemplateControllerModelObjectReplacedEventArgs modelObjectReplacedEventArgs
 			= new TemplateControllerModelObjectReplacedEventArgs(null, null, null);
-		private TemplateControllerPointMappingChangedEventArgs controlPointMappingChangedEventArgs 
-			= new TemplateControllerPointMappingChangedEventArgs(null, ControlPointId.None, TerminalId.Invalid, TerminalId.Invalid);
+
+		private TemplateControllerPointMappingChangedEventArgs controlPointMappingChangedEventArgs
+			= new TemplateControllerPointMappingChangedEventArgs(null, ControlPointId.None, TerminalId.Invalid,
+			                                                     TerminalId.Invalid);
+
 		private TemplateControllerPropertyMappingChangedEventArgs modelMappingChangedEventArgs
 			= new TemplateControllerPropertyMappingChangedEventArgs(null, null);
 
@@ -692,36 +741,40 @@ namespace Dataweb.NShape.Controllers {
 	/// <summary>
 	/// Specifies the edit mode of a <see cref="T:Dataweb.NShape.Controllers.TemplateController" />.
 	/// </summary>
-	public enum TemplateControllerEditMode { 
+	public enum TemplateControllerEditMode
+	{
 		/// <summary>Compose a new template.</summary>
-		CreateTemplate, 
-		/// <summary>Modify an existing template.</summary>
-		EditTemplate 
-	};
+		CreateTemplate,
 
+		/// <summary>Modify an existing template.</summary>
+		EditTemplate
+	};
 
 	#region EventArgs
 
 	/// <summary>
 	/// Encapsulates parameters for an event raised when the <see cref="T:Dataweb.NShape.Controllers.TemplateController" /> is initialized.
 	/// </summary>
-	public class TemplateControllerInitializingEventArgs : EventArgs {
-
+	public class TemplateControllerInitializingEventArgs : EventArgs
+	{
 		/// <ToBeCompleted></ToBeCompleted>
-		public TemplateControllerInitializingEventArgs(TemplateControllerEditMode editMode, Template template) {
+		public TemplateControllerInitializingEventArgs(TemplateControllerEditMode editMode, Template template)
+		{
 			this.editMode = editMode;
 			this.template = template;
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public TemplateControllerEditMode EditMode {
+		public TemplateControllerEditMode EditMode
+		{
 			get { return editMode; }
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public Template Template {
+		public Template Template
+		{
 			get { return template; }
 		}
 
@@ -734,24 +787,27 @@ namespace Dataweb.NShape.Controllers {
 	/// <summary>
 	/// Encapsulates parameters for an event raised when the name of the <see cref="T:Dataweb.NShape.Controllers.TemplateController" />'s template is modified.
 	/// </summary>
-	public class TemplateControllerStringChangedEventArgs : EventArgs {
-
+	public class TemplateControllerStringChangedEventArgs : EventArgs
+	{
 		/// <ToBeCompleted></ToBeCompleted>
-		public TemplateControllerStringChangedEventArgs(string oldString, string newString) {
+		public TemplateControllerStringChangedEventArgs(string oldString, string newString)
+		{
 			this.oldString = oldString;
 			this.newString = newString;
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public string OldString {
+		public string OldString
+		{
 			get { return oldString; }
 			internal set { oldString = value; }
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public string NewString {
+		public string NewString
+		{
 			get { return newString; }
 			internal set { newString = value; }
 		}
@@ -765,16 +821,18 @@ namespace Dataweb.NShape.Controllers {
 	/// <summary>
 	/// Encapsulates parameters for a template-related <see cref="T:Dataweb.NShape.Controllers.TemplateController" /> event.
 	/// </summary>
-	public class TemplateControllerTemplateEventArgs : EventArgs {
-
+	public class TemplateControllerTemplateEventArgs : EventArgs
+	{
 		/// <ToBeCompleted></ToBeCompleted>
-		public TemplateControllerTemplateEventArgs(Template template) {
+		public TemplateControllerTemplateEventArgs(Template template)
+		{
 			this.template = template;
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public Template Template {
+		public Template Template
+		{
 			get { return template; }
 			internal set { template = value; }
 		}
@@ -787,25 +845,29 @@ namespace Dataweb.NShape.Controllers {
 	/// <summary>
 	/// Encapsulates parameters for an event raised when the <see cref="T:Dataweb.NShape.Controllers.TemplateController" />'s template shape is replaced ba a shape of another Type.
 	/// </summary>
-	public class TemplateControllerTemplateShapeReplacedEventArgs : TemplateControllerTemplateEventArgs {
-
+	public class TemplateControllerTemplateShapeReplacedEventArgs : TemplateControllerTemplateEventArgs
+	{
 		/// <ToBeCompleted></ToBeCompleted>
-		public TemplateControllerTemplateShapeReplacedEventArgs(Template template, Shape oldTemplateShape, Shape newTemplateShape)
-			: base(template) {
+		public TemplateControllerTemplateShapeReplacedEventArgs(Template template, Shape oldTemplateShape,
+		                                                        Shape newTemplateShape)
+			: base(template)
+		{
 			this.oldTemplateShape = oldTemplateShape;
 			this.newTemplateShape = newTemplateShape;
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public Shape OldTemplateShape {
+		public Shape OldTemplateShape
+		{
 			get { return oldTemplateShape; }
 			internal set { oldTemplateShape = value; }
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public Shape NewTemplateShape {
+		public Shape NewTemplateShape
+		{
 			get { return newTemplateShape; }
 			internal set { newTemplateShape = value; }
 		}
@@ -819,26 +881,29 @@ namespace Dataweb.NShape.Controllers {
 	/// <summary>
 	/// Encapsulates parameters for an event raised when the <see cref="T:Dataweb.NShape.Controllers.TemplateController" />'s template model object is replaced by a model object of another model object type.
 	/// </summary>
-	public class TemplateControllerModelObjectReplacedEventArgs : TemplateControllerTemplateEventArgs {
-
+	public class TemplateControllerModelObjectReplacedEventArgs : TemplateControllerTemplateEventArgs
+	{
 		/// <ToBeCompleted></ToBeCompleted>
 		public TemplateControllerModelObjectReplacedEventArgs(Template template,
-			IModelObject oldModelObject, IModelObject newModelObject)
-			: base(template) {
+		                                                      IModelObject oldModelObject, IModelObject newModelObject)
+			: base(template)
+		{
 			this.oldModelObject = oldModelObject;
 			this.newModelObject = newModelObject;
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public IModelObject OldModelObject {
+		public IModelObject OldModelObject
+		{
 			get { return oldModelObject; }
 			internal set { oldModelObject = value; }
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public IModelObject NewModelObject {
+		public IModelObject NewModelObject
+		{
 			get { return newModelObject; }
 			internal set { newModelObject = value; }
 		}
@@ -852,16 +917,18 @@ namespace Dataweb.NShape.Controllers {
 	/// Encapsulates parameters for a <see cref="T:Dataweb.NShape.Controllers.TemplateController" /> event raised when 
 	/// the mapping of a <see cref="T:Dataweb.NShape.Advanced.ControlPointId" /> to a <see cref="T:Dataweb.NShape.Advanced.TerminalId" /> is modified.
 	/// </summary>
-	public class TemplateControllerPropertyMappingChangedEventArgs : TemplateControllerTemplateEventArgs {
-
+	public class TemplateControllerPropertyMappingChangedEventArgs : TemplateControllerTemplateEventArgs
+	{
 		/// <ToBeCompleted></ToBeCompleted>
 		public TemplateControllerPropertyMappingChangedEventArgs(Template template, IModelMapping modelMapping)
-			: base(template) {
+			: base(template)
+		{
 			this.propertyMapping = modelMapping;
 		}
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public IModelMapping ModelMapping {
+		public IModelMapping ModelMapping
+		{
 			get { return propertyMapping; }
 			internal set { propertyMapping = value; }
 		}
@@ -873,30 +940,35 @@ namespace Dataweb.NShape.Controllers {
 	/// <summary>
 	/// Encapsulates parameters for a <see cref="T:Dataweb.NShape.Controllers.TemplateController" /> event raised when the mapping of shape's properties to modeloject's properties is modified.
 	/// </summary>
-	public class TemplateControllerPointMappingChangedEventArgs : TemplateControllerTemplateEventArgs {
-
+	public class TemplateControllerPointMappingChangedEventArgs : TemplateControllerTemplateEventArgs
+	{
 		/// <ToBeCompleted></ToBeCompleted>
-		public TemplateControllerPointMappingChangedEventArgs(Template template, ControlPointId controlPointId, TerminalId oldTerminalId, TerminalId newTerminalId)
-			: base(template) {
+		public TemplateControllerPointMappingChangedEventArgs(Template template, ControlPointId controlPointId,
+		                                                      TerminalId oldTerminalId, TerminalId newTerminalId)
+			: base(template)
+		{
 			this.controlPointId = controlPointId;
 			this.oldTerminalId = oldTerminalId;
 			this.newTerminalId = newTerminalId;
 		}
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public ControlPointId ControlPointId {
+		public ControlPointId ControlPointId
+		{
 			get { return controlPointId; }
 			internal set { controlPointId = value; }
 		}
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public TerminalId OldTerminalId {
+		public TerminalId OldTerminalId
+		{
 			get { return oldTerminalId; }
 			internal set { oldTerminalId = value; }
 		}
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public TerminalId NewTerminalId {
+		public TerminalId NewTerminalId
+		{
 			get { return newTerminalId; }
 			internal set { newTerminalId = value; }
 		}
@@ -907,5 +979,4 @@ namespace Dataweb.NShape.Controllers {
 	}
 
 	#endregion
-
 }

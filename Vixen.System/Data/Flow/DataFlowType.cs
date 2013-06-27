@@ -1,5 +1,7 @@
-﻿namespace Vixen.Data.Flow {
-	public enum DataFlowType {
+﻿namespace Vixen.Data.Flow
+{
+	public enum DataFlowType
+	{
 		None,
 		SingleCommand,
 		MultipleCommands,

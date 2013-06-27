@@ -1,15 +1,20 @@
-﻿namespace Vixen.IO {
-	class ObjectPersistorService : IObjectPersistorService {
-		static private ObjectPersistorService _instance;
+﻿namespace Vixen.IO
+{
+	internal class ObjectPersistorService : IObjectPersistorService
+	{
+		private static ObjectPersistorService _instance;
 
-		private ObjectPersistorService() {
+		private ObjectPersistorService()
+		{
 		}
 
-		public static ObjectPersistorService Instance {
+		public static ObjectPersistorService Instance
+		{
 			get { return _instance ?? (_instance = new ObjectPersistorService()); }
 		}
 
-		public void SaveToFile(object obj, IFileWriter fileWriter, IObjectContentReader contentReader, string filePath) {
+		public void SaveToFile(object obj, IFileWriter fileWriter, IObjectContentReader contentReader, string filePath)
+		{
 			object content = contentReader.ReadContentFromObject(obj);
 			fileWriter.WriteFile(filePath, content);
 		}

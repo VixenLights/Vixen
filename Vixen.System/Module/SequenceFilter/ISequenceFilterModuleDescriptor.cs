@@ -1,4 +1,6 @@
-﻿namespace Vixen.Module.SequenceFilter {
-	public interface ISequenceFilterModuleDescriptor : IModuleDescriptor {
+﻿namespace Vixen.Module.SequenceFilter
+{
+	public interface ISequenceFilterModuleDescriptor : IModuleDescriptor
+	{
 	}
 }

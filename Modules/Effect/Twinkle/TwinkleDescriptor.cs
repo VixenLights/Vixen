@@ -17,44 +17,69 @@ namespace VixenModules.Effect.Twinkle
 		private static Guid _ColorGradientId = new Guid("{64f4ab26-3ed4-49a3-a004-23656ed0424a}");
 		private static Guid _PulseId = new Guid("{cbd76d3b-c924-40ff-bad6-d1437b3dbdc0}");
 
-		public override string EffectName { get { return "Twinkle"; } }
+		public override string EffectName
+		{
+			get { return "Twinkle"; }
+		}
 
-		public override Guid TypeId { get { return _typeId; } }
+		public override Guid TypeId
+		{
+			get { return _typeId; }
+		}
 
-		public override Type ModuleClass { get { return typeof(Twinkle); } }
+		public override Type ModuleClass
+		{
+			get { return typeof (Twinkle); }
+		}
 
-		public override Type ModuleDataClass { get { return typeof(TwinkleData); } }
+		public override Type ModuleDataClass
+		{
+			get { return typeof (TwinkleData); }
+		}
 
-		public override string Author { get { return "Vixen Team"; } }
+		public override string Author
+		{
+			get { return "Vixen Team"; }
+		}
 
-		public override string TypeName { get { return EffectName; } }
+		public override string TypeName
+		{
+			get { return EffectName; }
+		}
 
-		public override string Description { get { return "Randomly generates flickering pulses of light on the target elements."; } }
+		public override string Description
+		{
+			get { return "Randomly generates flickering pulses of light on the target elements."; }
+		}
 
-		public override string Version { get { return "1.0"; } }
+		public override string Version
+		{
+			get { return "1.0"; }
+		}
 
-		public override Guid[] Dependencies { get { return new Guid[] { _CurvesId, _ColorGradientId, _PulseId }; } }
+		public override Guid[] Dependencies
+		{
+			get { return new Guid[] {_CurvesId, _ColorGradientId, _PulseId}; }
+		}
 
 		public override ParameterSignature Parameters
 		{
 			get
 			{
 				return new ParameterSignature(
-					new ParameterSpecification("Individual Elements", typeof(bool)),
-					new ParameterSpecification("Minimum Level", typeof(double)),
-					new ParameterSpecification("Maximum Level", typeof(double)),
-					new ParameterSpecification("Level Variation (%)", typeof(int)),
-					new ParameterSpecification("Average Pulse Time (ms)", typeof(int)),
-					new ParameterSpecification("Pulse Time Variation (%)", typeof(int)),
-					new ParameterSpecification("Average Coverage (%)", typeof(int)),
-					new ParameterSpecification("Color Handling", typeof(TwinkleColorHandling)),
-					new ParameterSpecification("Static Color", typeof(Color)),
-					new ParameterSpecification("Color Gradient", typeof(ColorGradient)),
-					new ParameterSpecification("Depth of Effect", typeof(int))
+					new ParameterSpecification("Individual Elements", typeof (bool)),
+					new ParameterSpecification("Minimum Level", typeof (double)),
+					new ParameterSpecification("Maximum Level", typeof (double)),
+					new ParameterSpecification("Level Variation (%)", typeof (int)),
+					new ParameterSpecification("Average Pulse Time (ms)", typeof (int)),
+					new ParameterSpecification("Pulse Time Variation (%)", typeof (int)),
+					new ParameterSpecification("Average Coverage (%)", typeof (int)),
+					new ParameterSpecification("Color Handling", typeof (TwinkleColorHandling)),
+					new ParameterSpecification("Static Color", typeof (Color)),
+					new ParameterSpecification("Color Gradient", typeof (ColorGradient)),
+					new ParameterSpecification("Depth of Effect", typeof (int))
 					);
 			}
 		}
 	}
-
-
 }

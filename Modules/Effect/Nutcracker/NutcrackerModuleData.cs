@@ -14,41 +14,36 @@ namespace VixenModules.Effect.Nutcracker
 	[DataContract, Serializable]
 	public class NutcrackerModuleData : ModuleDataModelBase
 	{
-        NutcrackerData _nutcrackerData = null;
+		private NutcrackerData _nutcrackerData = null;
 
-        public NutcrackerModuleData()
-        {
-            _nutcrackerData = new NutcrackerData();
-        }
+		public NutcrackerModuleData()
+		{
+			_nutcrackerData = new NutcrackerData();
+		}
 
-        [DataMember]
-        public NutcrackerData NutcrackerData
-        {
-            get 
-            {
-                if (_nutcrackerData == null)
-                {
-                    Console.WriteLine("New NutcrackerData");
-                    _nutcrackerData = new NutcrackerData();
-                }
-                return _nutcrackerData;
-            }
-            set
-            {
-                _nutcrackerData = value;
-            }
-        }
+		[DataMember]
+		public NutcrackerData NutcrackerData
+		{
+			get
+			{
+				if (_nutcrackerData == null) {
+					Console.WriteLine("New NutcrackerData");
+					_nutcrackerData = new NutcrackerData();
+				}
+				return _nutcrackerData;
+			}
+			set { _nutcrackerData = value; }
+		}
 
 		public override IModuleDataModel Clone()
 		{
-            Console.WriteLine("Clone NutcrackerModuleData");
-            using (MemoryStream stream = new MemoryStream())
-            {
-                BinaryFormatter formatter = new BinaryFormatter();
-                formatter.Serialize(stream, this);
-                stream.Position = 0;
-                return (NutcrackerModuleData)formatter.Deserialize(stream);
-            }
+			Console.WriteLine("Clone NutcrackerModuleData");
+			using (MemoryStream stream = new MemoryStream()) {
+				BinaryFormatter formatter = new BinaryFormatter();
+				formatter.Serialize(stream, this);
+				stream.Position = 0;
+				return (NutcrackerModuleData) formatter.Deserialize(stream);
+			}
 		}
 	}
 }

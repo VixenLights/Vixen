@@ -50,26 +50,22 @@
 
 namespace VixenModules.Controller.E131
 {
-    using System.Linq;
+	using System.Linq;
 
-    /// <summary>
-    ///   A collection of common functions and constants.
-    /// </summary>
-    public abstract class E131Base
-    {
-        public abstract byte[] PhyBuffer
-        {
-            get;
-            set;
-        }
+	/// <summary>
+	///   A collection of common functions and constants.
+	/// </summary>
+	public abstract class E131Base
+	{
+		public abstract byte[] PhyBuffer { get; set; }
 
-        public override string ToString()
-        {
-            var txt = string.Empty;
-            var buffer = PhyBuffer;
-            return buffer == null
-                       ? string.Empty
-                       : buffer.Aggregate(txt, (current, val) => current + (val.ToString("X2") + ' '));
-        }
-    }
+		public override string ToString()
+		{
+			var txt = string.Empty;
+			var buffer = PhyBuffer;
+			return buffer == null
+			       	? string.Empty
+			       	: buffer.Aggregate(txt, (current, val) => current + (val.ToString("X2") + ' '));
+		}
+	}
 }

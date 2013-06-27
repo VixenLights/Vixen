@@ -1,29 +1,36 @@
 ﻿using System.Collections.Generic;
 
-namespace Vixen.Sys.Enumerator {
-	class LiveListEnumerator<T> : IEnumerator<T> {
+namespace Vixen.Sys.Enumerator
+{
+	internal class LiveListEnumerator<T> : IEnumerator<T>
+	{
 		private List<T> _list;
 		private T _current;
 		private int _index;
 
-		public LiveListEnumerator(List<T> list) {
+		public LiveListEnumerator(List<T> list)
+		{
 			_list = list;
 			Reset();
 		}
 
-		public T Current {
+		public T Current
+		{
 			get { return _current; }
 		}
 
-		public void Dispose() {
+		public void Dispose()
+		{
 		}
 
-		object System.Collections.IEnumerator.Current {
+		object System.Collections.IEnumerator.Current
+		{
 			get { return Current; }
 		}
 
-		public bool MoveNext() {
-			if(_index+1 < _list.Count) {
+		public bool MoveNext()
+		{
+			if (_index + 1 < _list.Count) {
 				_current = _list[++_index];
 				return true;
 			}
@@ -31,7 +38,8 @@ namespace Vixen.Sys.Enumerator {
 			return false;
 		}
 
-		public void Reset() {
+		public void Reset()
+		{
 			_current = default(T);
 			_index = -1;
 		}

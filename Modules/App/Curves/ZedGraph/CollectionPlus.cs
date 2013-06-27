@@ -61,9 +61,9 @@ namespace ZedGraph
 		/// <returns>The zero-based index of the specified object, or -1 if the
 		/// object is not in the list</returns>
 		/// <seealso cref="IList.IndexOf"/>
-		public int IndexOf( object item )
+		public int IndexOf(object item)
 		{
-			return List.IndexOf( item );
+			return List.IndexOf(item);
 		}
 
 		/// <summary>
@@ -74,10 +74,10 @@ namespace ZedGraph
 		/// is located.
 		/// </param>
 		/// <seealso cref="IList.Remove"/>
-		public void Remove( int index )
+		public void Remove(int index)
 		{
-			if ( index >= 0 && index < List.Count )
-				List.RemoveAt( index );
+			if (index >= 0 && index < List.Count)
+				List.RemoveAt(index);
 		}
 
 		/// <summary>
@@ -86,9 +86,9 @@ namespace ZedGraph
 		/// <param name="item">A reference to the object that is to be
 		/// removed.</param>
 		/// <seealso cref="IList.Remove"/>
-		public void Remove( object item )
+		public void Remove(object item)
 		{
-			List.Remove( item );
+			List.Remove(item);
 		}
 
 		/// <summary>
@@ -108,22 +108,22 @@ namespace ZedGraph
 		/// </param>
 		/// <returns>The new position for the object, or -1 if the object
 		/// was not found.</returns>
-		public int Move( int index, int relativePos )
+		public int Move(int index, int relativePos)
 		{
-			if ( index < 0 || index >= List.Count )
+			if (index < 0 || index >= List.Count)
 				return -1;
 			object obj = List[index];
-			List.RemoveAt( index );
+			List.RemoveAt(index);
 			index += relativePos;
-			if ( index < 0 )
+			if (index < 0)
 				index = 0;
-			if ( index > List.Count )
+			if (index > List.Count)
 				index = List.Count;
-			List.Insert( index, obj );
+			List.Insert(index, obj);
 			return index;
 		}
 
-	/*	
+		/*	
 	#region Serialization
 		/// <summary>
 		/// Current schema value that defines the version of the serialized file

@@ -8,8 +8,10 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace VixenModules.App.Scheduler {
-	partial class ScheduleAgendaView : UserControl, ISchedulerView {
+namespace VixenModules.App.Scheduler
+{
+	internal partial class ScheduleAgendaView : UserControl, ISchedulerView
+	{
 		private int _headerHeight = 30;
 		private int _agendaItemHeight = 50;
 
@@ -27,7 +29,8 @@ namespace VixenModules.App.Scheduler {
 		private Rectangle _buttonLeftBounds;
 		private Rectangle _buttonRightBounds;
 
-		public ScheduleAgendaView() {
+		public ScheduleAgendaView()
+		{
 			InitializeComponent();
 
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
@@ -36,83 +39,101 @@ namespace VixenModules.App.Scheduler {
 		}
 
 		[DefaultValue(30)]
-		public int HeaderHeight {
+		public int HeaderHeight
+		{
 			get { return _headerHeight; }
-			set {
+			set
+			{
 				_headerHeight = value;
 				_UpdateScroll();
 				Invalidate();
 			}
 		}
 
-		[DefaultValue(typeof(Font), "Arial, 12pt, style=Bold")]
-		public Font HeaderFont {
+		[DefaultValue(typeof (Font), "Arial, 12pt, style=Bold")]
+		public Font HeaderFont
+		{
 			get { return _dayViewHeaderFont; }
-			set {
+			set
+			{
 				_dayViewHeaderFont.Dispose();
 				_dayViewHeaderFont = value;
 				Invalidate();
 			}
 		}
 
-		[DefaultValue(typeof(Color), "89, 135, 214")]
-		public Color HeaderGradientStart {
+		[DefaultValue(typeof (Color), "89, 135, 214")]
+		public Color HeaderGradientStart
+		{
 			get { return _headerGradientStart; }
-			set {
+			set
+			{
 				_headerGradientStart = value;
 				Invalidate();
 			}
 		}
 
-		[DefaultValue(typeof(Color), "4, 57, 148")]
-		public Color HeaderGradientEnd {
+		[DefaultValue(typeof (Color), "4, 57, 148")]
+		public Color HeaderGradientEnd
+		{
 			get { return _headerGradientEnd; }
-			set {
+			set
+			{
 				_headerGradientEnd = value;
 				Invalidate();
 			}
 		}
 
-		[DefaultValue(typeof(Color), "119, 165, 214")]
-		public Color HoverGradientStart {
+		[DefaultValue(typeof (Color), "119, 165, 214")]
+		public Color HoverGradientStart
+		{
 			get { return _hoverGradientStart; }
-			set {
+			set
+			{
 				_hoverGradientStart = value;
 				Invalidate();
 			}
 		}
 
-		[DefaultValue(typeof(Color), "24, 77, 148")]
-		public Color HoverGradientEnd {
+		[DefaultValue(typeof (Color), "24, 77, 148")]
+		public Color HoverGradientEnd
+		{
 			get { return _hoverGradientEnd; }
-			set {
+			set
+			{
 				_hoverGradientEnd = value;
 				Invalidate();
 			}
 		}
 
 		[DefaultValue(50)]
-		public int AgendaItemHeight {
+		public int AgendaItemHeight
+		{
 			get { return _agendaItemHeight; }
-			set {
+			set
+			{
 				_agendaItemHeight = value;
 				Invalidate();
 			}
 		}
 
-		protected override void OnResize(EventArgs e) {
+		protected override void OnResize(EventArgs e)
+		{
 			Invalidate();
 			_UpdateScroll();
 			base.OnResize(e);
 		}
 
-		protected override void OnPaint(PaintEventArgs e) {
+		protected override void OnPaint(PaintEventArgs e)
+		{
 			Graphics g = e.Graphics; //***
 
 			g.FillRectangle(Brushes.White, 0, _headerHeight, Width, Height - _headerHeight);
 
 			// Header
-			using(LinearGradientBrush headerGradientBrush = new LinearGradientBrush(new Rectangle(0, 0, Width, HeaderHeight), HeaderGradientStart, HeaderGradientEnd, 90)) {
+			using (
+				LinearGradientBrush headerGradientBrush = new LinearGradientBrush(new Rectangle(0, 0, Width, HeaderHeight),
+				                                                                  HeaderGradientStart, HeaderGradientEnd, 90)) {
 				g.FillRectangle(headerGradientBrush, 0, 0, Width, _headerHeight);
 			}
 			_DrawHeaderButtons(g, _inLeftButtonBounds, _inRightButtonBounds);
@@ -146,34 +167,43 @@ namespace VixenModules.App.Scheduler {
 
 
 		//duplicate
-		protected virtual void _DrawHeaderButtons(Graphics g, bool hoverLeft, bool hoverRight) {
+		protected virtual void _DrawHeaderButtons(Graphics g, bool hoverLeft, bool hoverRight)
+		{
 			int buttonWidth = 18;
 			int buttonSpace = 8;
 
 			// Anchored to the right
 			int x = Width - (buttonWidth + buttonSpace + buttonWidth + buttonSpace);
 			// Anchored to the top
-			int y = (HeaderHeight - buttonWidth) / 2;
+			int y = (HeaderHeight - buttonWidth)/2;
 
 			_buttonLeftBounds = new Rectangle(x, y, buttonWidth, buttonWidth);
 			_buttonRightBounds = new Rectangle(x + buttonWidth + buttonSpace, y, buttonWidth, buttonWidth);
 
-			Point[] leftButtonPoints = new Point[] {
-                new Point(x+12, y+5),
-                new Point(x+12, y+13),
-                new Point(x+6, y+9)
-            };
+			Point[] leftButtonPoints = new Point[]
+			                           	{
+			                           		new Point(x + 12, y + 5),
+			                           		new Point(x + 12, y + 13),
+			                           		new Point(x + 6, y + 9)
+			                           	};
 
-			Point[] rightButtonPoints = new Point[] {
-                new Point(x+6+buttonWidth+buttonSpace, y+5),
-                new Point(x+6+buttonWidth+buttonSpace, y+13),
-                new Point(x+12+buttonWidth+buttonSpace, y+9)
-            };
+			Point[] rightButtonPoints = new Point[]
+			                            	{
+			                            		new Point(x + 6 + buttonWidth + buttonSpace, y + 5),
+			                            		new Point(x + 6 + buttonWidth + buttonSpace, y + 13),
+			                            		new Point(x + 12 + buttonWidth + buttonSpace, y + 9)
+			                            	};
 
-			using(LinearGradientBrush flatGradientBrush = new LinearGradientBrush(new Rectangle(x + 1, y + 1, buttonWidth - 1, HeaderHeight), HeaderGradientStart, HeaderGradientEnd, 90),
-									  hoverGradientBrush = new LinearGradientBrush(new Rectangle(x + 1, y + 1, buttonWidth - 1, buttonWidth - 1), HoverGradientStart, HoverGradientEnd, 90)) {
+			using (
+				LinearGradientBrush flatGradientBrush =
+					new LinearGradientBrush(new Rectangle(x + 1, y + 1, buttonWidth - 1, HeaderHeight), HeaderGradientStart,
+					                        HeaderGradientEnd, 90),
+				                    hoverGradientBrush =
+				                    	new LinearGradientBrush(new Rectangle(x + 1, y + 1, buttonWidth - 1, buttonWidth - 1),
+				                    	                        HoverGradientStart, HoverGradientEnd, 90)) {
 				g.FillRectangle(hoverLeft ? hoverGradientBrush : flatGradientBrush, x + 1, y + 1, buttonWidth - 1, buttonWidth - 1);
-				g.FillRectangle(hoverRight ? hoverGradientBrush : flatGradientBrush, x + 1 + buttonWidth + buttonSpace, y + 1, buttonWidth - 1, buttonWidth - 1);
+				g.FillRectangle(hoverRight ? hoverGradientBrush : flatGradientBrush, x + 1 + buttonWidth + buttonSpace, y + 1,
+				                buttonWidth - 1, buttonWidth - 1);
 			}
 
 			_DrawRoundRect(g, Pens.White, x, y, buttonWidth, buttonWidth, 3);
@@ -184,24 +214,26 @@ namespace VixenModules.App.Scheduler {
 		}
 
 		//duplicate
-		private void _DrawRoundRect(Graphics g, Pen p, float X, float Y, float width, float height, float radius) {
+		private void _DrawRoundRect(Graphics g, Pen p, float X, float Y, float width, float height, float radius)
+		{
 			GraphicsPath gp = new GraphicsPath();
 
-			gp.AddLine(X + radius, Y, X + width - (radius * 2), Y);
-			gp.AddArc(X + width - (radius * 2), Y, radius * 2, radius * 2, 270, 90);
-			gp.AddLine(X + width, Y + radius, X + width, Y + height - (radius * 2));
-			gp.AddArc(X + width - (radius * 2), Y + height - (radius * 2), radius * 2, radius * 2, 0, 90);
-			gp.AddLine(X + width - (radius * 2), Y + height, X + radius, Y + height);
-			gp.AddArc(X, Y + height - (radius * 2), radius * 2, radius * 2, 90, 90);
-			gp.AddLine(X, Y + height - (radius * 2), X, Y + radius);
-			gp.AddArc(X, Y, radius * 2, radius * 2, 180, 90);
+			gp.AddLine(X + radius, Y, X + width - (radius*2), Y);
+			gp.AddArc(X + width - (radius*2), Y, radius*2, radius*2, 270, 90);
+			gp.AddLine(X + width, Y + radius, X + width, Y + height - (radius*2));
+			gp.AddArc(X + width - (radius*2), Y + height - (radius*2), radius*2, radius*2, 0, 90);
+			gp.AddLine(X + width - (radius*2), Y + height, X + radius, Y + height);
+			gp.AddArc(X, Y + height - (radius*2), radius*2, radius*2, 90, 90);
+			gp.AddLine(X, Y + height - (radius*2), X, Y + radius);
+			gp.AddArc(X, Y, radius*2, radius*2, 180, 90);
 			gp.CloseFigure();
 
 			g.DrawPath(p, gp);
 			gp.Dispose();
 		}
 
-		private void _UpdateScroll() {
+		private void _UpdateScroll()
+		{
 			vScrollBar.Top = HeaderHeight;
 			vScrollBar.Left = Width - vScrollBar.Width;
 			vScrollBar.Height = Height - HeaderHeight;
@@ -224,19 +256,16 @@ namespace VixenModules.App.Scheduler {
 			vScrollBar.Visible = false;
 		}
 
-		private void vScrollBar_ValueChanged(object sender, EventArgs e) {
+		private void vScrollBar_ValueChanged(object sender, EventArgs e)
+		{
 			Invalidate(new Rectangle(0, HeaderHeight, Width, Height - HeaderHeight));
 		}
 
 
-
-		public IEnumerable<IScheduleItem> Items {
-			get {
-				throw new NotImplementedException();
-			}
-			set {
-				throw new NotImplementedException();
-			}
+		public IEnumerable<IScheduleItem> Items
+		{
+			get { throw new NotImplementedException(); }
+			set { throw new NotImplementedException(); }
 		}
 	}
 }

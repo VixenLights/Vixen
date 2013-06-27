@@ -23,6 +23,7 @@ namespace Common.Controls.Wizard
 		public abstract string WizardTitle { get; }
 
 		private int _currentStageIndex;
+
 		public WizardStage CurrentStage
 		{
 			get
@@ -68,7 +69,7 @@ namespace Common.Controls.Wizard
 			WizardForm.Show();
 		}
 
-		void WizardForm_WizardFormFinished(object sender, EventArgs e)
+		private void WizardForm_WizardFormFinished(object sender, EventArgs e)
 		{
 			WizardActive = false;
 			WizardForm form = sender as WizardForm;
@@ -85,10 +86,7 @@ namespace Common.Controls.Wizard
 
 		public bool CanMoveNext
 		{
-			get
-			{
-				return CurrentStage.CanMoveNext;
-			}
+			get { return CurrentStage.CanMoveNext; }
 		}
 
 		public bool CanMovePrevious
@@ -114,6 +112,7 @@ namespace Common.Controls.Wizard
 		}
 
 		public event EventHandler WizardFinished;
+
 		private void _wizardFinished()
 		{
 			if (WizardFinished != null)

@@ -16,21 +16,21 @@ using System;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
-
 using Dataweb.NShape.Advanced;
 
 
-namespace Dataweb.NShape.WinFormsUI {
-
+namespace Dataweb.NShape.WinFormsUI
+{
 	/// <summary>
 	/// UI type editor for properties of type NamedImage.
 	/// </summary>
-	public partial class ImageEditor : Form {
-
+	public partial class ImageEditor : Form
+	{
 		/// <summary>
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.WinFormsUI.ImageEditor" />.
 		/// </summary>
-		public ImageEditor() {
+		public ImageEditor()
+		{
 			InitializeComponent();
 			Icon = System.Drawing.Icon.ExtractAssociatedIcon(Application.ExecutablePath);
 		}
@@ -40,7 +40,8 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.WinFormsUI.ImageEditor" />.
 		/// </summary>
 		public ImageEditor(string fileName)
-			: this() {
+			: this()
+		{
 			if (fileName == null) throw new ArgumentNullException("fileName");
 			resultImage.Load(fileName);
 		}
@@ -50,10 +51,11 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.WinFormsUI.ImageEditor" />.
 		/// </summary>
 		public ImageEditor(Image image, string path)
-			: this() {
+			: this()
+		{
 			if (image == null) throw new ArgumentNullException("image");
 			if (path == null) throw new ArgumentNullException("name");
-			resultImage.Image = (Image)image.Clone();
+			resultImage.Image = (Image) image.Clone();
 			resultImage.Name = path;
 		}
 
@@ -62,18 +64,20 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.WinFormsUI.ImageEditor" />.
 		/// </summary>
 		public ImageEditor(Image image)
-			: this(image, string.Empty) {
+			: this(image, string.Empty)
+		{
 		}
 
 
 		/// <summary>
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.WinFormsUI.ImageEditor" />.
 		/// </summary>
-		public ImageEditor(NamedImage namedImage) {
+		public ImageEditor(NamedImage namedImage)
+		{
 			InitializeComponent();
 			if (namedImage == null) throw new ArgumentNullException("namedImage");
 			if (namedImage.Image != null)
-				resultImage.Image = (Image)namedImage.Image.Clone();
+				resultImage.Image = (Image) namedImage.Image.Clone();
 			resultImage.Name = namedImage.Name;
 		}
 
@@ -81,47 +85,55 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// <summary>
 		/// Specifies the image selected by the user.
 		/// </summary>
-		public NamedImage Result {
+		public NamedImage Result
+		{
 			get { return resultImage; }
 		}
-		
-		
+
+
 		/// <override></override>
-		protected override void OnShown(EventArgs e) {
+		protected override void OnShown(EventArgs e)
+		{
 			base.OnShown(e);
 			DisplayResult();
 		}
 
 
 		/// <override></override>
-		protected override void OnFormClosed(FormClosedEventArgs e) {
+		protected override void OnFormClosed(FormClosedEventArgs e)
+		{
 			base.OnFormClosed(e);
 			pictureBox.Image = null;
 		}
 
 
-		private Image Image {
+		private Image Image
+		{
 			get { return resultImage.Image; }
-			set {
+			set
+			{
 				resultImage.Image = value;
 				DisplayResult();
 			}
 		}
 
 
-		private void okButton_Click(object sender, EventArgs e) {
+		private void okButton_Click(object sender, EventArgs e)
+		{
 			if (Modal) DialogResult = DialogResult.OK;
 			else Close();
 		}
 
-		
-		private void cancelButton_Click(object sender, EventArgs e) {
+
+		private void cancelButton_Click(object sender, EventArgs e)
+		{
 			if (Modal) DialogResult = DialogResult.Cancel;
 			else Close();
 		}
 
-		
-		private void clearButton_Click(object sender, EventArgs e) {
+
+		private void clearButton_Click(object sender, EventArgs e)
+		{
 			this.SuspendLayout();
 			resultImage.Image = null;
 			resultImage.Name = string.Empty;
@@ -129,14 +141,16 @@ namespace Dataweb.NShape.WinFormsUI {
 			this.ResumeLayout();
 		}
 
-		
-		private void browseButton_Click(object sender, EventArgs e) {
-			openFileDialog.Filter = "Image Files|*.Bmp;*.Emf;*.Exif;*.Gif;*.Ico;*.Jpg;*.Jpeg;*.Png;*.Tiff;*.Wmf|All files (*.*)|*.*";
+
+		private void browseButton_Click(object sender, EventArgs e)
+		{
+			openFileDialog.Filter =
+				"Image Files|*.Bmp;*.Emf;*.Exif;*.Gif;*.Ico;*.Jpg;*.Jpeg;*.Png;*.Tiff;*.Wmf|All files (*.*)|*.*";
 			if (nameTextBox.Text != string.Empty)
 				openFileDialog.InitialDirectory = Path.GetDirectoryName(nameTextBox.Text);
-			
+
 			if (openFileDialog.ShowDialog(this) == DialogResult.OK) {
-				if (resultImage.Image != null) 
+				if (resultImage.Image != null)
 					resultImage.Image.Dispose();
 				resultImage.Load(openFileDialog.FileName);
 				if (string.IsNullOrEmpty(nameTextBox.Text))
@@ -148,12 +162,14 @@ namespace Dataweb.NShape.WinFormsUI {
 		}
 
 
-		private void nameTextBox_TextChanged(object sender, EventArgs e) {
+		private void nameTextBox_TextChanged(object sender, EventArgs e)
+		{
 			resultImage.Name = nameTextBox.Text;
 		}
 
 
-		private void DisplayResult() {
+		private void DisplayResult()
+		{
 			this.SuspendLayout();
 			pictureBox.Image = resultImage.Image;
 			nameTextBox.Text = resultImage.Name;
@@ -163,5 +179,4 @@ namespace Dataweb.NShape.WinFormsUI {
 
 		private NamedImage resultImage = new NamedImage();
 	}
-
 }

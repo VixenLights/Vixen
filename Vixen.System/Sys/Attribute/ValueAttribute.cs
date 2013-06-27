@@ -1,7 +1,9 @@
 ﻿using System;
 
-namespace Vixen.Sys.Attribute {
+namespace Vixen.Sys.Attribute
+{
 	[AttributeUsage(AttributeTargets.Property)]
-	public class ValueAttribute : System.Attribute {
+	public class ValueAttribute : System.Attribute
+	{
 	}
 }

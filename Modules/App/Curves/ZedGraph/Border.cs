@@ -36,7 +36,7 @@ namespace ZedGraph
 	[Serializable]
 	public class Border : LineBase, ISerializable, ICloneable
 	{
-	#region Fields
+		#region Fields
 
 		/// <summary>
 		/// Private field that stores the amount of inflation to be done on the rectangle
@@ -44,16 +44,17 @@ namespace ZedGraph
 		/// the actual rectangle area.  Use the public property <see cref="InflateFactor"/>
 		/// to access this value.
 		/// </summary>
-		private float	_inflateFactor;
+		private float _inflateFactor;
 
-	#endregion
+		#endregion
 
-	#region Defaults
+		#region Defaults
+
 		/// <summary>
 		/// A simple struct that defines the
 		/// default property values for the <see cref="Fill"/> class.
 		/// </summary>
-		new public struct Default
+		public new struct Default
 		{
 			/// <summary>
 			/// The default value for <see cref="Border.InflateFactor"/>, in units of points (1/72 inch).
@@ -61,9 +62,11 @@ namespace ZedGraph
 			/// <seealso cref="Border.InflateFactor"/>
 			public static float InflateFactor = 0.0F;
 		}
-	#endregion
-		
-	#region Constructors
+
+		#endregion
+
+		#region Constructors
+
 		/// <summary>
 		/// The default constructor.  Initialized to default values.
 		/// </summary>
@@ -77,9 +80,9 @@ namespace ZedGraph
 		/// </summary>
 		/// <param name="isVisible">Determines whether or not the Border will be drawn.</param>
 		/// <param name="color">The color of the Border</param>
-        /// <param name="width">The width, in points (1/72 inch), for the Border.</param>
-        public Border( bool isVisible, Color color, float width ) :
-			  base( color )
+		/// <param name="width">The width, in points (1/72 inch), for the Border.</param>
+		public Border(bool isVisible, Color color, float width) :
+			base(color)
 		{
 			_width = width;
 			_isVisible = isVisible;
@@ -89,9 +92,9 @@ namespace ZedGraph
 		/// Constructor that specifies the color and penWidth of the Border.
 		/// </summary>
 		/// <param name="color">The color of the Border</param>
-        /// <param name="width">The width, in points (1/72 inch), for the Border.</param>
-        public Border( Color color, float width ) :
-				this( !color.IsEmpty, color, width )
+		/// <param name="width">The width, in points (1/72 inch), for the Border.</param>
+		public Border(Color color, float width) :
+			this(!color.IsEmpty, color, width)
 		{
 		}
 
@@ -99,7 +102,7 @@ namespace ZedGraph
 		/// The Copy Constructor
 		/// </summary>
 		/// <param name="rhs">The Border object from which to copy</param>
-		public Border( Border rhs ) : base( rhs )
+		public Border(Border rhs) : base(rhs)
 		{
 			_inflateFactor = rhs._inflateFactor;
 		}
@@ -120,12 +123,13 @@ namespace ZedGraph
 		/// <returns>A new, independent copy of this class</returns>
 		public Border Clone()
 		{
-			return new Border( this );
+			return new Border(this);
 		}
 
-	#endregion
+		#endregion
 
-	#region Serialization
+		#region Serialization
+
 		/// <summary>
 		/// Current schema value that defines the version of the serialized file
 		/// </summary>
@@ -138,31 +142,34 @@ namespace ZedGraph
 		/// </param>
 		/// <param name="context">A <see cref="StreamingContext"/> instance that contains the serialized data
 		/// </param>
-		protected Border( SerializationInfo info, StreamingContext context ) :
-			base( info, context )
+		protected Border(SerializationInfo info, StreamingContext context) :
+			base(info, context)
 		{
 			// The schema value is just a file version parameter.  You can use it to make future versions
 			// backwards compatible as new member variables are added to classes
-			int sch = info.GetInt32( "schema" );
+			int sch = info.GetInt32("schema");
 
-			_inflateFactor = info.GetSingle( "inflateFactor" );
+			_inflateFactor = info.GetSingle("inflateFactor");
 		}
+
 		/// <summary>
 		/// Populates a <see cref="SerializationInfo"/> instance with the data needed to serialize the target object
 		/// </summary>
 		/// <param name="info">A <see cref="SerializationInfo"/> instance that defines the serialized data</param>
 		/// <param name="context">A <see cref="StreamingContext"/> instance that contains the serialized data</param>
-		[SecurityPermissionAttribute(SecurityAction.Demand,SerializationFormatter=true)]
-		public override void GetObjectData( SerializationInfo info, StreamingContext context )
+		[SecurityPermissionAttribute(SecurityAction.Demand, SerializationFormatter = true)]
+		public override void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
-			base.GetObjectData( info, context );
+			base.GetObjectData(info, context);
 
-			info.AddValue( "schema", schema );
-			info.AddValue( "inflateFactor", _inflateFactor );
+			info.AddValue("schema", schema);
+			info.AddValue("inflateFactor", _inflateFactor);
 		}
-	#endregion
-		
-	#region Properties
+
+		#endregion
+
+		#region Properties
+
 		/// <summary>
 		/// Gets or sets the amount of inflation to be done on the rectangle
 		/// before rendering.
@@ -175,9 +182,11 @@ namespace ZedGraph
 			get { return _inflateFactor; }
 			set { _inflateFactor = value; }
 		}
-	#endregion
 
-	#region Methods
+		#endregion
+
+		#region Methods
+
 		/*
 		/// <summary>
 		/// Create a new <see cref="Pen"/> object from the properties of this
@@ -202,7 +211,7 @@ namespace ZedGraph
 			return new Pen( _color, scaledPenWidth );
 		}
 		*/
-		
+
 		/// <summary>
 		/// Draw the specified Border (<see cref="RectangleF"/>) using the properties of
 		/// this <see cref="Border"/> object.
@@ -221,30 +230,21 @@ namespace ZedGraph
 		/// represents a linear multiple to be applied to font sizes, symbol sizes, etc.
 		/// </param>
 		/// <param name="rect">A <see cref="RectangleF"/> struct to be drawn.</param>
-		public void Draw( Graphics g, PaneBase pane, float scaleFactor, RectangleF rect )
+		public void Draw(Graphics g, PaneBase pane, float scaleFactor, RectangleF rect)
 		{
 			// Need to use the RectangleF props since rounding it can cause the axisFrame to
 			// not line up properly with the last tic mark
-			if ( _isVisible )
-			{
+			if (_isVisible) {
 				RectangleF tRect = rect;
 
-				float		scaledInflate = (float) ( _inflateFactor * scaleFactor );
-				tRect.Inflate( scaledInflate, scaledInflate );
+				float scaledInflate = (float) (_inflateFactor*scaleFactor);
+				tRect.Inflate(scaledInflate, scaledInflate);
 
-				using ( Pen pen = GetPen( pane, scaleFactor) )
-					g.DrawRectangle( pen, tRect.X, tRect.Y, tRect.Width, tRect.Height );
+				using (Pen pen = GetPen(pane, scaleFactor))
+					g.DrawRectangle(pen, tRect.X, tRect.Y, tRect.Width, tRect.Height);
 			}
 		}
 
-	#endregion
+		#endregion
 	}
 }
-
-
-
-
-
-
-
-

@@ -8,7 +8,7 @@ namespace VixenModules.EffectEditor.LevelTypeEditor
 {
 	public class LevelTypeEditor : EffectEditorModuleInstanceBase
 	{
-		override public IEffectEditorControl CreateEditorControl()
+		public override IEffectEditorControl CreateEditorControl()
 		{
 			return new LevelTypeEditorControl();
 		}

@@ -1,39 +1,63 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="VixenModules.Preview.VixenPreview.Properties" GeneratedClassName="Settings">
-  <Profiles />
-  <Settings>
-    <Setting Name="Help_MegaTree" Type="System.String" Scope="User">
-      <Value Profile="(Default)">http://www.vixenlights.com/vixen-3-documentation/preview/adding-items-to-the-preview/smart-objects/mega-tree/</Value>
-    </Setting>
-    <Setting Name="Help_Star" Type="System.String" Scope="User">
-      <Value Profile="(Default)">http://www.vixenlights.com/vixen-3-documentation/preview/adding-items-to-the-preview/smart-objects/star/</Value>
-    </Setting>
-    <Setting Name="Help_LinkElements" Type="System.String" Scope="User">
-      <Value Profile="(Default)">http://www.vixenlights.com/vixen-3-documentation/preview/how-to/linking-elements/</Value>
-    </Setting>
-    <Setting Name="Help_BackgroundImage" Type="System.String" Scope="User">
-      <Value Profile="(Default)">http://www.vixenlights.com/vixen-3-documentation/preview/background-image/</Value>
-    </Setting>
-    <Setting Name="Help_Main" Type="System.String" Scope="User">
-      <Value Profile="(Default)">http://www.vixenlights.com/vixen-3-documentation/preview/main-preview-screen/</Value>
-    </Setting>
-    <Setting Name="Help_BasicShapes" Type="System.String" Scope="User">
-      <Value Profile="(Default)">http://www.vixenlights.com/vixen-3-documentation/preview/adding-items-to-the-preview/basic-shapes/</Value>
-    </Setting>
-    <Setting Name="Help_Net" Type="System.String" Scope="User">
-      <Value Profile="(Default)">http://www.vixenlights.com/vixen-3-documentation/preview/adding-items-to-the-preview/smart-objects/net/</Value>
-    </Setting>
-    <Setting Name="Help_Arch" Type="System.String" Scope="User">
-      <Value Profile="(Default)">http://www.vixenlights.com/vixen-3-documentation/preview/adding-items-to-the-preview/smart-objects/arch/</Value>
-    </Setting>
-    <Setting Name="Help_Cane" Type="System.String" Scope="User">
-      <Value Profile="(Default)">http://www.vixenlights.com/vixen-3-documentation/preview/adding-items-to-the-preview/smart-objects/candy-cane/</Value>
-    </Setting>
-    <Setting Name="Help_ResizeBackground" Type="System.String" Scope="User">
-      <Value Profile="(Default)">http://www.vixenlights.com/vixen-3-documentation/preview/how-to/resize-the-preview-image/</Value>
-    </Setting>
-    <Setting Name="Help_CustomShape" Type="System.String" Scope="User">
-      <Value Profile="(Default)">http://www.vixenlights.com/vixen-3-documentation/preview/custom-props/</Value>
-    </Setting>
-  </Settings>
+
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)"
+              GeneratedClassNamespace="VixenModules.Preview.VixenPreview.Properties" GeneratedClassName="Settings">
+	<Profiles />
+	<Settings>
+		<Setting Name="Help_MegaTree" Type="System.String" Scope="User">
+			<Value Profile="(Default)">
+				http://www.vixenlights.com/vixen-3-documentation/preview/adding-items-to-the-preview/smart-objects/mega-tree/
+			</Value>
+		</Setting>
+		<Setting Name="Help_Star" Type="System.String" Scope="User">
+			<Value Profile="(Default)">
+				http://www.vixenlights.com/vixen-3-documentation/preview/adding-items-to-the-preview/smart-objects/star/
+			</Value>
+		</Setting>
+		<Setting Name="Help_LinkElements" Type="System.String" Scope="User">
+			<Value Profile="(Default)">
+				http://www.vixenlights.com/vixen-3-documentation/preview/how-to/linking-elements/
+			</Value>
+		</Setting>
+		<Setting Name="Help_BackgroundImage" Type="System.String" Scope="User">
+			<Value Profile="(Default)">
+				http://www.vixenlights.com/vixen-3-documentation/preview/background-image/
+			</Value>
+		</Setting>
+		<Setting Name="Help_Main" Type="System.String" Scope="User">
+			<Value Profile="(Default)">
+				http://www.vixenlights.com/vixen-3-documentation/preview/main-preview-screen/
+			</Value>
+		</Setting>
+		<Setting Name="Help_BasicShapes" Type="System.String" Scope="User">
+			<Value Profile="(Default)">
+				http://www.vixenlights.com/vixen-3-documentation/preview/adding-items-to-the-preview/basic-shapes/
+			</Value>
+		</Setting>
+		<Setting Name="Help_Net" Type="System.String" Scope="User">
+			<Value Profile="(Default)">
+				http://www.vixenlights.com/vixen-3-documentation/preview/adding-items-to-the-preview/smart-objects/net/
+			</Value>
+		</Setting>
+		<Setting Name="Help_Arch" Type="System.String" Scope="User">
+			<Value Profile="(Default)">
+				http://www.vixenlights.com/vixen-3-documentation/preview/adding-items-to-the-preview/smart-objects/arch/
+			</Value>
+		</Setting>
+		<Setting Name="Help_Cane" Type="System.String" Scope="User">
+			<Value Profile="(Default)">
+				http://www.vixenlights.com/vixen-3-documentation/preview/adding-items-to-the-preview/smart-objects/candy-cane/
+			</Value>
+		</Setting>
+		<Setting Name="Help_ResizeBackground" Type="System.String" Scope="User">
+			<Value Profile="(Default)">
+				http://www.vixenlights.com/vixen-3-documentation/preview/how-to/resize-the-preview-image/
+			</Value>
+		</Setting>
+		<Setting Name="Help_CustomShape" Type="System.String" Scope="User">
+			<Value Profile="(Default)">
+				http://www.vixenlights.com/vixen-3-documentation/preview/custom-props/
+			</Value>
+		</Setting>
+	</Settings>
 </SettingsFile>

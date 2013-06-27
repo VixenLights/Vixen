@@ -7,8 +7,8 @@ using System.Drawing;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
-    [System.ComponentModel.DesignerCategory("")]    // Prevent this from showing up in designer.
-	class TimedSequenceRowLabel : Common.Controls.Timeline.RowLabel
+	[System.ComponentModel.DesignerCategory("")] // Prevent this from showing up in designer.
+	internal class TimedSequenceRowLabel : Common.Controls.Timeline.RowLabel
 	{
 		protected override void OnPaint(System.Windows.Forms.PaintEventArgs e)
 		{
@@ -20,8 +20,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				else
 					icon = TimedSequenceEditorResources.plus_button;
 
-				int x = (IconArea.Width - icon.Width) / 2;
-				int y = (IconArea.Height - icon.Height) / 2;
+				int x = (IconArea.Width - icon.Width)/2;
+				int y = (IconArea.Height - icon.Height)/2;
 				e.Graphics.DrawImage(icon, new Point(x, y));
 			}
 		}

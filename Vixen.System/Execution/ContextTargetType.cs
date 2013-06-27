@@ -1,5 +1,7 @@
-﻿namespace Vixen.Execution {
-	public enum ContextTargetType {
+﻿namespace Vixen.Execution
+{
+	public enum ContextTargetType
+	{
 		Sequence,
 		Program
 	}

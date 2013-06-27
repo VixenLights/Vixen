@@ -15,7 +15,7 @@ namespace VixenModules.App.VirtualEffect
 
 		public override Vixen.Sys.IApplication Application
 		{
-			set {  }
+			set { }
 		}
 
 		public override void Loading()
@@ -28,18 +28,11 @@ namespace VixenModules.App.VirtualEffect
 
 		public override IModuleDataModel StaticModuleData
 		{
-			get
-			{
-				return _data;
-			}
-			set
-			{
-				_data = value as VirtualEffectLibraryData;
-			}
+			get { return _data; }
+			set { _data = value as VirtualEffectLibraryData; }
 		}
 
-
-#region VirtualEffect public members
+		#region VirtualEffect public members
 
 		public Dictionary<Guid, VirtualEffect> Library
 		{
@@ -58,12 +51,10 @@ namespace VixenModules.App.VirtualEffect
 
 		public VirtualEffect GetVirtualEffect(Guid virtualEffectId)
 		{
-			if (this.ContainsEffect(virtualEffectId))
-			{
+			if (this.ContainsEffect(virtualEffectId)) {
 				return Library[virtualEffectId];
 			}
-			else
-			{
+			else {
 				return null;
 			}
 		}
@@ -73,7 +64,7 @@ namespace VixenModules.App.VirtualEffect
 			return Library.ContainsKey(effectId);
 		}
 
-#endregion
+		#endregion
 
 		public IEnumerator<KeyValuePair<Guid, VirtualEffect>> GetEnumerator()
 		{
@@ -84,6 +75,5 @@ namespace VixenModules.App.VirtualEffect
 		{
 			return Library.GetEnumerator();
 		}
-
 	}
 }

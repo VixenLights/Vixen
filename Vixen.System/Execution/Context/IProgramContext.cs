@@ -2,8 +2,10 @@
 using Vixen.Execution.DataSource;
 using Vixen.Sys;
 
-namespace Vixen.Execution.Context {
-	public interface IProgramContext : IContext {
+namespace Vixen.Execution.Context
+{
+	public interface IProgramContext : IContext
+	{
 		event EventHandler<SequenceStartedEventArgs> SequenceStarted;
 		event EventHandler<SequenceEventArgs> SequenceEnded;
 		event EventHandler<ProgramEventArgs> ProgramStarted;

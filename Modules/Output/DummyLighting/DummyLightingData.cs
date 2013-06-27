@@ -4,7 +4,7 @@ using Vixen.Module;
 namespace VixenModules.Output.DummyLighting
 {
 	[DataContract]
-	class DummyLightingData : ModuleDataModelBase
+	internal class DummyLightingData : ModuleDataModelBase
 	{
 		[DataMember]
 		public RenderStyle RenderStyle { get; set; }

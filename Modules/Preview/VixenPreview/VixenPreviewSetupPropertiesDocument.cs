@@ -10,26 +10,24 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace VixenModules.Preview.VixenPreview
 {
-    public partial class VixenPreviewSetupPropertiesDocument : DockContent
-    {
-        public VixenPreviewSetupPropertiesDocument()
-        {
-            InitializeComponent();
-        }
+	public partial class VixenPreviewSetupPropertiesDocument : DockContent
+	{
+		public VixenPreviewSetupPropertiesDocument()
+		{
+			InitializeComponent();
+		}
 
-        public void ShowSetupControl(VixenModules.Preview.VixenPreview.Shapes.DisplayItemBaseControl setupControl) 
-        {
-            Controls.Clear();
-            if (setupControl != null)
-            {
-                Controls.Add(setupControl);
-                setupControl.Dock = DockStyle.Fill;
-                Text = setupControl.Title;
-            }
-            else
-            {
-                Text = "Properties";
-            }
-        }
-    }
+		public void ShowSetupControl(VixenModules.Preview.VixenPreview.Shapes.DisplayItemBaseControl setupControl)
+		{
+			Controls.Clear();
+			if (setupControl != null) {
+				Controls.Add(setupControl);
+				setupControl.Dock = DockStyle.Fill;
+				Text = setupControl.Title;
+			}
+			else {
+				Text = "Properties";
+			}
+		}
+	}
 }

@@ -7,15 +7,22 @@ using Vixen.Module.App;
 
 namespace VixenModules.App.ColorGradients
 {
-	class ColorGradientLibrary : AppModuleInstanceBase, IEnumerable<KeyValuePair<string, ColorGradient>>
+	internal class ColorGradientLibrary : AppModuleInstanceBase, IEnumerable<KeyValuePair<string, ColorGradient>>
 	{
 		private ColorGradientLibraryStaticData _data;
 
-		public override void Loading() { }
+		public override void Loading()
+		{
+		}
 
-		public override void Unloading() { }
+		public override void Unloading()
+		{
+		}
 
-		public override Vixen.Sys.IApplication Application { set { } }
+		public override Vixen.Sys.IApplication Application
+		{
+			set { }
+		}
 
 		public override IModuleDataModel StaticModuleData
 		{
@@ -95,6 +102,5 @@ namespace VixenModules.App.ColorGradients
 		{
 			return Library.GetEnumerator();
 		}
-
 	}
 }

@@ -4,10 +4,13 @@ using System.Linq;
 using System.Text;
 using Vixen.Instrumentation;
 
-namespace Vixen.Sys.Instrumentation {
-	class CommandsQualifiedPercentValue : PercentValue {
+namespace Vixen.Sys.Instrumentation
+{
+	internal class CommandsQualifiedPercentValue : PercentValue
+	{
 		public CommandsQualifiedPercentValue()
-			: base("Commands - Qualified (%)") {
+			: base("Commands - Qualified (%)")
+		{
 		}
 	}
 }

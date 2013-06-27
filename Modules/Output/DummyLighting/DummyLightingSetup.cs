@@ -18,7 +18,8 @@ namespace VixenModules.Output.DummyLighting
 			FormTitle = formTitle;
 		}
 
-		RenderStyle _style;
+		private RenderStyle _style;
+
 		public RenderStyle RenderStyle
 		{
 			get { return _style; }
@@ -31,7 +32,7 @@ namespace VixenModules.Output.DummyLighting
 					radioButtonMultiRGB.Checked = true;
 				else if (_style == RenderStyle.RGBSingleChannel)
 					radioButtonSingleRGB.Checked = true;
-			}	
+			}
 		}
 
 		public string FormTitle

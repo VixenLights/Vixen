@@ -24,16 +24,15 @@ using System.Threading;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Text;
-
 using System.Runtime.InteropServices;
+
 //using System.Diagnostics;
 
 namespace ZedGraph
 {
 	partial class ZedGraphControl
 	{
-
-	#region ContextMenu
+		#region ContextMenu
 
 		// Revision: JCarpenter 10/06
 		/// <summary>
@@ -46,10 +45,12 @@ namespace ZedGraph
 			/// The object is an Inactive Curve Item at the Context Menu's mouse position
 			/// </summary>
 			InactiveSelection,
+
 			/// <summary>
 			/// The object is an active Curve Item at the Context Menu's mouse position
 			/// </summary>
 			ActiveSelection,
+
 			/// <summary>
 			/// There is no selectable object present at the Context Menu's mouse position
 			/// </summary>
@@ -65,21 +66,18 @@ namespace ZedGraph
 			ContextMenuObjectState objState = ContextMenuObjectState.Background;
 
 			// Determine object state
-			Point mousePt = this.PointToClient( Control.MousePosition );
+			Point mousePt = this.PointToClient(Control.MousePosition);
 			int iPt;
 			GraphPane pane;
 			object nearestObj;
 
-			using ( Graphics g = this.CreateGraphics() )
-			{
-				if ( this.MasterPane.FindNearestPaneObject( mousePt, g, out pane,
-						out nearestObj, out iPt ) )
-				{
+			using (Graphics g = this.CreateGraphics()) {
+				if (this.MasterPane.FindNearestPaneObject(mousePt, g, out pane,
+				                                          out nearestObj, out iPt)) {
 					CurveItem item = nearestObj as CurveItem;
 
-					if ( item != null && iPt >= 0 )
-					{
-						if ( item.IsSelected )
+					if (item != null && iPt >= 0) {
+						if (item.IsSelected)
 							objState = ContextMenuObjectState.ActiveSelection;
 						else
 							objState = ContextMenuObjectState.InactiveSelection;
@@ -95,7 +93,7 @@ namespace ZedGraph
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void contextMenuStrip1_Opening( object sender, CancelEventArgs e )
+		private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
 		{
 			// disable context menu by default
 			e.Cancel = true;
@@ -104,76 +102,72 @@ namespace ZedGraph
 			//Revision: JCarpenter 10/06
 			ContextMenuObjectState objState = GetObjectState();
 
-			if ( _masterPane != null && menuStrip != null )
-			{
+			if (_masterPane != null && menuStrip != null) {
 				menuStrip.Items.Clear();
 
 				_isZooming = false;
 				_isPanning = false;
 				Cursor.Current = Cursors.Default;
 
-				_menuClickPt = this.PointToClient( Control.MousePosition );
-				GraphPane pane = _masterPane.FindPane( _menuClickPt );
+				_menuClickPt = this.PointToClient(Control.MousePosition);
+				GraphPane pane = _masterPane.FindPane(_menuClickPt);
 
-				if ( _isShowContextMenu )
-				{
+				if (_isShowContextMenu) {
 					string menuStr = string.Empty;
 
 					ToolStripMenuItem item = new ToolStripMenuItem();
 					item.Name = "copy";
 					item.Tag = "copy";
-					item.Text = _resourceManager.GetString( "copy" );
-					item.Click += new System.EventHandler( this.MenuClick_Copy );
-					menuStrip.Items.Add( item );
+					item.Text = _resourceManager.GetString("copy");
+					item.Click += new System.EventHandler(this.MenuClick_Copy);
+					menuStrip.Items.Add(item);
 
 					item = new ToolStripMenuItem();
 					item.Name = "save_as";
 					item.Tag = "save_as";
-					item.Text = _resourceManager.GetString( "save_as" );
-					item.Click += new System.EventHandler( this.MenuClick_SaveAs );
-					menuStrip.Items.Add( item );
+					item.Text = _resourceManager.GetString("save_as");
+					item.Click += new System.EventHandler(this.MenuClick_SaveAs);
+					menuStrip.Items.Add(item);
 
 					item = new ToolStripMenuItem();
 					item.Name = "page_setup";
 					item.Tag = "page_setup";
-					item.Text = _resourceManager.GetString( "page_setup" );
-					item.Click += new System.EventHandler( this.MenuClick_PageSetup );
-					menuStrip.Items.Add( item );
+					item.Text = _resourceManager.GetString("page_setup");
+					item.Click += new System.EventHandler(this.MenuClick_PageSetup);
+					menuStrip.Items.Add(item);
 
 					item = new ToolStripMenuItem();
 					item.Name = "print";
 					item.Tag = "print";
-					item.Text = _resourceManager.GetString( "print" );
-					item.Click += new System.EventHandler( this.MenuClick_Print );
-					menuStrip.Items.Add( item );
+					item.Text = _resourceManager.GetString("print");
+					item.Click += new System.EventHandler(this.MenuClick_Print);
+					menuStrip.Items.Add(item);
 
 					item = new ToolStripMenuItem();
 					item.Name = "show_val";
 					item.Tag = "show_val";
-					item.Text = _resourceManager.GetString( "show_val" );
-					item.Click += new System.EventHandler( this.MenuClick_ShowValues );
+					item.Text = _resourceManager.GetString("show_val");
+					item.Click += new System.EventHandler(this.MenuClick_ShowValues);
 					item.Checked = this.IsShowPointValues;
-					menuStrip.Items.Add( item );
+					menuStrip.Items.Add(item);
 
 					item = new ToolStripMenuItem();
 					item.Name = "unzoom";
 					item.Tag = "unzoom";
 
-					if ( pane == null || pane.ZoomStack.IsEmpty )
-						menuStr = _resourceManager.GetString( "unzoom" );
-					else
-					{
-						switch ( pane.ZoomStack.Top.Type )
-						{
+					if (pane == null || pane.ZoomStack.IsEmpty)
+						menuStr = _resourceManager.GetString("unzoom");
+					else {
+						switch (pane.ZoomStack.Top.Type) {
 							case ZoomState.StateType.Zoom:
 							case ZoomState.StateType.WheelZoom:
-								menuStr = _resourceManager.GetString( "unzoom" );
+								menuStr = _resourceManager.GetString("unzoom");
 								break;
 							case ZoomState.StateType.Pan:
-								menuStr = _resourceManager.GetString( "unpan" );
+								menuStr = _resourceManager.GetString("unpan");
 								break;
 							case ZoomState.StateType.Scroll:
-								menuStr = _resourceManager.GetString( "unscroll" );
+								menuStr = _resourceManager.GetString("unscroll");
 								break;
 						}
 					}
@@ -181,30 +175,30 @@ namespace ZedGraph
 					//menuItem.Text = "Un-" + ( ( pane == null || pane.zoomStack.IsEmpty ) ?
 					//	"Zoom" : pane.zoomStack.Top.TypeString );
 					item.Text = menuStr;
-					item.Click += new EventHandler( this.MenuClick_ZoomOut );
-					if ( pane == null || pane.ZoomStack.IsEmpty )
+					item.Click += new EventHandler(this.MenuClick_ZoomOut);
+					if (pane == null || pane.ZoomStack.IsEmpty)
 						item.Enabled = false;
-					menuStrip.Items.Add( item );
+					menuStrip.Items.Add(item);
 
 					item = new ToolStripMenuItem();
 					item.Name = "undo_all";
 					item.Tag = "undo_all";
-					menuStr = _resourceManager.GetString( "undo_all" );
+					menuStr = _resourceManager.GetString("undo_all");
 					item.Text = menuStr;
-					item.Click += new EventHandler( this.MenuClick_ZoomOutAll );
-					if ( pane == null || pane.ZoomStack.IsEmpty )
+					item.Click += new EventHandler(this.MenuClick_ZoomOutAll);
+					if (pane == null || pane.ZoomStack.IsEmpty)
 						item.Enabled = false;
-					menuStrip.Items.Add( item );
+					menuStrip.Items.Add(item);
 
 					item = new ToolStripMenuItem();
 					item.Name = "set_default";
 					item.Tag = "set_default";
-					menuStr = _resourceManager.GetString( "set_default" );
+					menuStr = _resourceManager.GetString("set_default");
 					item.Text = menuStr;
-					item.Click += new EventHandler( this.MenuClick_RestoreScale );
-					if ( pane == null )
+					item.Click += new EventHandler(this.MenuClick_RestoreScale);
+					if (pane == null)
 						item.Enabled = false;
-					menuStrip.Items.Add( item );
+					menuStrip.Items.Add(item);
 
 					// if e.Cancel is set to false, the context menu does not display
 					// it is initially set to false because the context menu has no items
@@ -212,8 +206,8 @@ namespace ZedGraph
 
 					// Provide Callback for User to edit the context menu
 					//Revision: JCarpenter 10/06 - add ContextMenuObjectState objState
-					if ( this.ContextMenuBuilder != null )
-						this.ContextMenuBuilder( this, menuStrip, _menuClickPt, objState );
+					if (this.ContextMenuBuilder != null)
+						this.ContextMenuBuilder(this, menuStrip, _menuClickPt, objState);
 				}
 			}
 		}
@@ -224,9 +218,9 @@ namespace ZedGraph
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		protected void MenuClick_Copy( System.Object sender, System.EventArgs e )
+		protected void MenuClick_Copy(System.Object sender, System.EventArgs e)
 		{
-			Copy( _isShowCopyMessage );
+			Copy(_isShowCopyMessage);
 		}
 
 		/// <summary>
@@ -235,25 +229,23 @@ namespace ZedGraph
 		/// </summary>
 		/// <param name="isShowMessage">boolean value that determines whether or not a prompt will be
 		/// displayed.  true to show a message of "Image Copied to ClipBoard".</param>
-		public void Copy( bool isShowMessage )
+		public void Copy(bool isShowMessage)
 		{
-			if ( _masterPane != null )
-			{
+			if (_masterPane != null) {
 				//Clipboard.SetDataObject( _masterPane.GetImage(), true );
 
 				// Threaded copy mode to avoid crash with MTA
 				// Contributed by Dave Moor
-				Thread ct = new Thread( new ThreadStart( this.ClipboardCopyThread ) );
+				Thread ct = new Thread(new ThreadStart(this.ClipboardCopyThread));
 				//ct.ApartmentState = ApartmentState.STA;
-				ct.SetApartmentState( ApartmentState.STA );
+				ct.SetApartmentState(ApartmentState.STA);
 				ct.Start();
 				ct.Join();
 
-				if ( isShowMessage )
-				{
-					string str = _resourceManager.GetString( "copied_to_clip" );
+				if (isShowMessage) {
+					string str = _resourceManager.GetString("copied_to_clip");
 					//MessageBox.Show( "Image Copied to ClipBoard" );
-					MessageBox.Show( str );
+					MessageBox.Show(str);
 				}
 			}
 		}
@@ -263,7 +255,7 @@ namespace ZedGraph
 		/// </summary>
 		private void ClipboardCopyThread()
 		{
-			Clipboard.SetDataObject( ImageRender(), true );
+			Clipboard.SetDataObject(ImageRender(), true);
 		}
 
 		// 
@@ -274,7 +266,7 @@ namespace ZedGraph
 		/// <returns></returns>
 		private Image ImageRender()
 		{
-			return _masterPane.GetImage( _masterPane.IsAntiAlias );
+			return _masterPane.GetImage(_masterPane.IsAntiAlias);
 		}
 
 		/// <summary>
@@ -286,8 +278,7 @@ namespace ZedGraph
 		/// displayed.  true to show a message of "Image Copied to ClipBoard".</param>
 		public void CopyEmf(bool isShowMessage)
 		{
-			if (_masterPane != null)
-			{
+			if (_masterPane != null) {
 				// Threaded copy mode to avoid crash with MTA
 				// Contributed by Dave Moor
 				Thread ct = new Thread(new ThreadStart(this.ClipboardCopyThreadEmf));
@@ -296,8 +287,7 @@ namespace ZedGraph
 				ct.Start();
 				ct.Join();
 
-				if (isShowMessage)
-				{
+				if (isShowMessage) {
 					string str = _resourceManager.GetString("copied_to_clip");
 					MessageBox.Show(str);
 				}
@@ -309,19 +299,17 @@ namespace ZedGraph
 		/// </summary>
 		private void ClipboardCopyThreadEmf()
 		{
-			using (Graphics g = this.CreateGraphics())
-			{
+			using (Graphics g = this.CreateGraphics()) {
 				IntPtr hdc = g.GetHdc();
 				Metafile metaFile = new Metafile(hdc, EmfType.EmfPlusOnly);
 				g.ReleaseHdc(hdc);
 
-				using (Graphics gMeta = Graphics.FromImage(metaFile))
-				{
-					this._masterPane.Draw( gMeta );
+				using (Graphics gMeta = Graphics.FromImage(metaFile)) {
+					this._masterPane.Draw(gMeta);
 				}
 
 				//IntPtr hMeta = metaFile.GetHenhmetafile();
-				ClipboardMetafileHelper.PutEnhMetafileOnClipboard( this.Handle, metaFile );
+				ClipboardMetafileHelper.PutEnhMetafileOnClipboard(this.Handle, metaFile);
 				//System.Windows.Forms.Clipboard.SetDataObject(hMeta, true);
 
 				//g.Dispose();
@@ -334,7 +322,7 @@ namespace ZedGraph
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		protected void MenuClick_SaveAs( System.Object sender, System.EventArgs e )
+		protected void MenuClick_SaveAs(System.Object sender, System.EventArgs e)
 		{
 			SaveAs();
 		}
@@ -349,7 +337,7 @@ namespace ZedGraph
 		/// </remarks>
 		public void SaveAs()
 		{
-			SaveAs( null );
+			SaveAs(null);
 		}
 
 		/// <summary>
@@ -366,10 +354,9 @@ namespace ZedGraph
 		/// Note that <see cref="SaveAsBitmap" /> and <see cref="SaveAsEmf" /> methods are provided
 		/// which allow for Bitmap-only or Emf-only handling of the "Save As" context menu item.
 		/// </remarks>
-		public String SaveAs( String DefaultFileName )
+		public String SaveAs(String DefaultFileName)
 		{
-			if ( _masterPane != null )
-			{
+			if (_masterPane != null) {
 				_saveFileDialog.Filter =
 					"Emf Format (*.emf)|*.emf|" +
 					"PNG Format (*.png)|*.png|" +
@@ -378,54 +365,68 @@ namespace ZedGraph
 					"Tiff Format (*.tif)|*.tif|" +
 					"Bmp Format (*.bmp)|*.bmp";
 
-				if ( DefaultFileName != null && DefaultFileName.Length > 0 )
-				{
-					String ext = System.IO.Path.GetExtension( DefaultFileName ).ToLower();
-					switch (ext)
-					{
-						case ".emf": _saveFileDialog.FilterIndex = 1; break;
-						case ".png": _saveFileDialog.FilterIndex = 2; break;
-						case ".gif": _saveFileDialog.FilterIndex = 3; break;
+				if (DefaultFileName != null && DefaultFileName.Length > 0) {
+					String ext = System.IO.Path.GetExtension(DefaultFileName).ToLower();
+					switch (ext) {
+						case ".emf":
+							_saveFileDialog.FilterIndex = 1;
+							break;
+						case ".png":
+							_saveFileDialog.FilterIndex = 2;
+							break;
+						case ".gif":
+							_saveFileDialog.FilterIndex = 3;
+							break;
 						case ".jpeg":
-						case ".jpg": _saveFileDialog.FilterIndex = 4; break;
+						case ".jpg":
+							_saveFileDialog.FilterIndex = 4;
+							break;
 						case ".tiff":
-						case ".tif": _saveFileDialog.FilterIndex = 5; break;
-						case ".bmp": _saveFileDialog.FilterIndex = 6; break;
+						case ".tif":
+							_saveFileDialog.FilterIndex = 5;
+							break;
+						case ".bmp":
+							_saveFileDialog.FilterIndex = 6;
+							break;
 					}
 					//If we were passed a file name, not just an extension, use it
-					if ( DefaultFileName.Length > ext.Length )
-					{
+					if (DefaultFileName.Length > ext.Length) {
 						_saveFileDialog.FileName = DefaultFileName;
 					}
 				}
 
-				if ( _saveFileDialog.ShowDialog() == DialogResult.OK )
-				{
+				if (_saveFileDialog.ShowDialog() == DialogResult.OK) {
 					Stream myStream = _saveFileDialog.OpenFile();
-					if ( myStream != null )
-					{
-						if ( _saveFileDialog.FilterIndex == 1 )
-						{
+					if (myStream != null) {
+						if (_saveFileDialog.FilterIndex == 1) {
 							myStream.Close();
-							SaveEmfFile( _saveFileDialog.FileName );
+							SaveEmfFile(_saveFileDialog.FileName);
 						}
-						else
-						{
+						else {
 							ImageFormat format = ImageFormat.Png;
-                            switch (_saveFileDialog.FilterIndex)
-							{
-								case 2: format = ImageFormat.Png; break;
-								case 3: format = ImageFormat.Gif; break;
-								case 4: format = ImageFormat.Jpeg; break;
-								case 5: format = ImageFormat.Tiff; break;
-								case 6: format = ImageFormat.Bmp; break;
+							switch (_saveFileDialog.FilterIndex) {
+								case 2:
+									format = ImageFormat.Png;
+									break;
+								case 3:
+									format = ImageFormat.Gif;
+									break;
+								case 4:
+									format = ImageFormat.Jpeg;
+									break;
+								case 5:
+									format = ImageFormat.Tiff;
+									break;
+								case 6:
+									format = ImageFormat.Bmp;
+									break;
 							}
 
-							ImageRender().Save( myStream, format );
+							ImageRender().Save(myStream, format);
 							//_masterPane.GetImage().Save( myStream, format );
 							myStream.Close();
 						}
-                        return _saveFileDialog.FileName;
+						return _saveFileDialog.FileName;
 					}
 				}
 			}
@@ -442,8 +443,7 @@ namespace ZedGraph
 		/// </remarks>
 		public void SaveAsBitmap()
 		{
-			if ( _masterPane != null )
-			{
+			if (_masterPane != null) {
 				_saveFileDialog.Filter =
 					"PNG Format (*.png)|*.png|" +
 					"Gif Format (*.gif)|*.gif|" +
@@ -451,23 +451,21 @@ namespace ZedGraph
 					"Tiff Format (*.tif)|*.tif|" +
 					"Bmp Format (*.bmp)|*.bmp";
 
-				if ( _saveFileDialog.ShowDialog() == DialogResult.OK )
-				{
+				if (_saveFileDialog.ShowDialog() == DialogResult.OK) {
 					ImageFormat format = ImageFormat.Png;
-					if ( _saveFileDialog.FilterIndex == 2 )
+					if (_saveFileDialog.FilterIndex == 2)
 						format = ImageFormat.Gif;
-					else if ( _saveFileDialog.FilterIndex == 3 )
+					else if (_saveFileDialog.FilterIndex == 3)
 						format = ImageFormat.Jpeg;
-					else if ( _saveFileDialog.FilterIndex == 4 )
+					else if (_saveFileDialog.FilterIndex == 4)
 						format = ImageFormat.Tiff;
-					else if ( _saveFileDialog.FilterIndex == 5 )
+					else if (_saveFileDialog.FilterIndex == 5)
 						format = ImageFormat.Bmp;
 
 					Stream myStream = _saveFileDialog.OpenFile();
-					if ( myStream != null )
-					{
+					if (myStream != null) {
 						//_masterPane.GetImage().Save( myStream, format );
-						ImageRender().Save( myStream, format );
+						ImageRender().Save(myStream, format);
 						myStream.Close();
 					}
 				}
@@ -484,15 +482,12 @@ namespace ZedGraph
 		/// </remarks>
 		public void SaveAsEmf()
 		{
-			if ( _masterPane != null )
-			{
+			if (_masterPane != null) {
 				_saveFileDialog.Filter = "Emf Format (*.emf)|*.emf";
 
-				if ( _saveFileDialog.ShowDialog() == DialogResult.OK )
-				{
+				if (_saveFileDialog.ShowDialog() == DialogResult.OK) {
 					Stream myStream = _saveFileDialog.OpenFile();
-					if ( myStream != null )
-					{
+					if (myStream != null) {
 						myStream.Close();
 						//_masterPane.GetMetafile().Save( _saveFileDialog.FileName );
 						SaveEmfFile(_saveFileDialog.FileName);
@@ -509,14 +504,12 @@ namespace ZedGraph
 		/// Note that this handler saves as an Emf format only.  The default handler is
 		/// <see cref="SaveAs()" />, which allows for Bitmap or EMF formats.
 		/// </remarks>
-		internal void SaveEmfFile( string fileName )
+		internal void SaveEmfFile(string fileName)
 		{
-			using (Graphics g = this.CreateGraphics())
-			{
+			using (Graphics g = this.CreateGraphics()) {
 				IntPtr hdc = g.GetHdc();
 				Metafile metaFile = new Metafile(hdc, EmfType.EmfPlusOnly);
-				using (Graphics gMeta = Graphics.FromImage(metaFile))
-				{
+				using (Graphics gMeta = Graphics.FromImage(metaFile)) {
 					//PaneBase.SetAntiAliasMode( gMeta, IsAntiAlias );
 					//gMeta.CompositingMode = CompositingMode.SourceCopy; 
 					//gMeta.CompositingQuality = CompositingQuality.HighQuality;
@@ -527,36 +520,39 @@ namespace ZedGraph
 					//gMeta.Dispose();
 				}
 
-				ClipboardMetafileHelper.SaveEnhMetafileToFile(metaFile, fileName );
+				ClipboardMetafileHelper.SaveEnhMetafileToFile(metaFile, fileName);
 
 				g.ReleaseHdc(hdc);
 				//g.Dispose();
 			}
-
 		}
 
 		internal class ClipboardMetafileHelper
 		{
 			[DllImport("user32.dll")]
-			static extern bool OpenClipboard(IntPtr hWndNewOwner);
-			[DllImport("user32.dll")]
-			static extern bool EmptyClipboard();
-			[DllImport("user32.dll")]
-			static extern IntPtr SetClipboardData(uint uFormat, IntPtr hMem);
-			[DllImport("user32.dll")]
-			static extern bool CloseClipboard();
-			[DllImport("gdi32.dll")]
-			static extern IntPtr CopyEnhMetaFile(IntPtr hemfSrc, System.Text.StringBuilder hNULL);
-			[DllImport("gdi32.dll")]
-			static extern bool DeleteEnhMetaFile(IntPtr hemf);
+			private static extern bool OpenClipboard(IntPtr hWndNewOwner);
 
-			static internal bool SaveEnhMetafileToFile( Metafile mf, string fileName )
+			[DllImport("user32.dll")]
+			private static extern bool EmptyClipboard();
+
+			[DllImport("user32.dll")]
+			private static extern IntPtr SetClipboardData(uint uFormat, IntPtr hMem);
+
+			[DllImport("user32.dll")]
+			private static extern bool CloseClipboard();
+
+			[DllImport("gdi32.dll")]
+			private static extern IntPtr CopyEnhMetaFile(IntPtr hemfSrc, System.Text.StringBuilder hNULL);
+
+			[DllImport("gdi32.dll")]
+			private static extern bool DeleteEnhMetaFile(IntPtr hemf);
+
+			internal static bool SaveEnhMetafileToFile(Metafile mf, string fileName)
 			{
 				bool bResult = false;
 				IntPtr hEMF;
 				hEMF = mf.GetHenhmetafile(); // invalidates mf 
-				if (!hEMF.Equals(new IntPtr(0)))
-				{
+				if (!hEMF.Equals(new IntPtr(0))) {
 					StringBuilder tempName = new StringBuilder(fileName);
 					CopyEnhMetaFile(hEMF, tempName);
 					DeleteEnhMetaFile(hEMF);
@@ -564,18 +560,16 @@ namespace ZedGraph
 				return bResult;
 			}
 
-			static internal bool SaveEnhMetafileToFile(Metafile mf)
+			internal static bool SaveEnhMetafileToFile(Metafile mf)
 			{
 				bool bResult = false;
 				IntPtr hEMF;
 				hEMF = mf.GetHenhmetafile(); // invalidates mf 
-				if (!hEMF.Equals(new IntPtr(0)))
-				{
+				if (!hEMF.Equals(new IntPtr(0))) {
 					SaveFileDialog sfd = new SaveFileDialog();
 					sfd.Filter = "Extended Metafile (*.emf)|*.emf";
 					sfd.DefaultExt = ".emf";
-					if (sfd.ShowDialog() == DialogResult.OK)
-					{
+					if (sfd.ShowDialog() == DialogResult.OK) {
 						StringBuilder temp = new StringBuilder(sfd.FileName);
 						CopyEnhMetaFile(hEMF, temp);
 					}
@@ -585,20 +579,16 @@ namespace ZedGraph
 			}
 
 			// Metafile mf is set to a state that is not valid inside this function. 
-			static internal bool PutEnhMetafileOnClipboard(IntPtr hWnd, Metafile mf)
+			internal static bool PutEnhMetafileOnClipboard(IntPtr hWnd, Metafile mf)
 			{
 				bool bResult = false;
 				IntPtr hEMF, hEMF2;
 				hEMF = mf.GetHenhmetafile(); // invalidates mf 
-				if (!hEMF.Equals(new IntPtr(0)))
-				{
+				if (!hEMF.Equals(new IntPtr(0))) {
 					hEMF2 = CopyEnhMetaFile(hEMF, null);
-					if (!hEMF2.Equals(new IntPtr(0)))
-					{
-						if (OpenClipboard(hWnd))
-						{
-							if (EmptyClipboard())
-							{
+					if (!hEMF2.Equals(new IntPtr(0))) {
+						if (OpenClipboard(hWnd)) {
+							if (EmptyClipboard()) {
 								IntPtr hRes = SetClipboardData(14 /*CF_ENHMETAFILE*/, hEMF2);
 								bResult = hRes.Equals(hEMF2);
 								CloseClipboard();
@@ -617,10 +607,10 @@ namespace ZedGraph
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		protected void MenuClick_ShowValues( object sender, System.EventArgs e )
+		protected void MenuClick_ShowValues(object sender, System.EventArgs e)
 		{
 			ToolStripMenuItem item = sender as ToolStripMenuItem;
-			if ( item != null )
+			if (item != null)
 				this.IsShowPointValues = !item.Checked;
 		}
 
@@ -635,12 +625,11 @@ namespace ZedGraph
 		/// </remarks>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		protected void MenuClick_RestoreScale( object sender, EventArgs e )
+		protected void MenuClick_RestoreScale(object sender, EventArgs e)
 		{
-			if ( _masterPane != null )
-			{
-				GraphPane pane = _masterPane.FindPane( _menuClickPt );
-				RestoreScale( pane );
+			if (_masterPane != null) {
+				GraphPane pane = _masterPane.FindPane(_menuClickPt);
+				RestoreScale(pane);
 			}
 		}
 
@@ -655,33 +644,28 @@ namespace ZedGraph
 		/// </remarks>
 		/// <param name="primaryPane">The <see cref="GraphPane" /> object which is to have the
 		/// scale restored</param>
-		public void RestoreScale( GraphPane primaryPane )
+		public void RestoreScale(GraphPane primaryPane)
 		{
-			if ( primaryPane != null )
-			{
+			if (primaryPane != null) {
 				//Go ahead and save the old zoomstates, which provides an "undo"-like capability
 				//ZoomState oldState = primaryPane.ZoomStack.Push( primaryPane, ZoomState.StateType.Zoom );
-				ZoomState oldState = new ZoomState( primaryPane, ZoomState.StateType.Zoom );
+				ZoomState oldState = new ZoomState(primaryPane, ZoomState.StateType.Zoom);
 
-				using ( Graphics g = this.CreateGraphics() )
-				{
-					if ( _isSynchronizeXAxes || _isSynchronizeYAxes )
-					{
-						foreach ( GraphPane pane in _masterPane._paneList )
-						{
-							pane.ZoomStack.Push( pane, ZoomState.StateType.Zoom );
-							ResetAutoScale( pane, g );
+				using (Graphics g = this.CreateGraphics()) {
+					if (_isSynchronizeXAxes || _isSynchronizeYAxes) {
+						foreach (GraphPane pane in _masterPane._paneList) {
+							pane.ZoomStack.Push(pane, ZoomState.StateType.Zoom);
+							ResetAutoScale(pane, g);
 						}
 					}
-					else
-					{
-						primaryPane.ZoomStack.Push( primaryPane, ZoomState.StateType.Zoom );
-						ResetAutoScale( primaryPane, g );
+					else {
+						primaryPane.ZoomStack.Push(primaryPane, ZoomState.StateType.Zoom);
+						ResetAutoScale(primaryPane, g);
 					}
 
 					// Provide Callback to notify the user of zoom events
-					if ( this.ZoomEvent != null )
-						this.ZoomEvent( this, oldState, new ZoomState( primaryPane, ZoomState.StateType.Zoom ) );
+					if (this.ZoomEvent != null)
+						this.ZoomEvent(this, oldState, new ZoomState(primaryPane, ZoomState.StateType.Zoom));
 
 					//g.Dispose();
 				}
@@ -689,14 +673,14 @@ namespace ZedGraph
 			}
 		}
 
-		private void ResetAutoScale( GraphPane pane, Graphics g )
+		private void ResetAutoScale(GraphPane pane, Graphics g)
 		{
-			pane.XAxis.ResetAutoScale( pane, g );
-			pane.X2Axis.ResetAutoScale( pane, g );
-			foreach ( YAxis axis in pane.YAxisList )
-				axis.ResetAutoScale( pane, g );
-			foreach ( Y2Axis axis in pane.Y2AxisList )
-				axis.ResetAutoScale( pane, g );
+			pane.XAxis.ResetAutoScale(pane, g);
+			pane.X2Axis.ResetAutoScale(pane, g);
+			foreach (YAxis axis in pane.YAxisList)
+				axis.ResetAutoScale(pane, g);
+			foreach (Y2Axis axis in pane.Y2AxisList)
+				axis.ResetAutoScale(pane, g);
 		}
 
 		/*
@@ -778,12 +762,11 @@ namespace ZedGraph
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		protected void MenuClick_ZoomOut( System.Object sender, System.EventArgs e )
+		protected void MenuClick_ZoomOut(System.Object sender, System.EventArgs e)
 		{
-			if ( _masterPane != null )
-			{
-				GraphPane pane = _masterPane.FindPane( _menuClickPt );
-				ZoomOut( pane );
+			if (_masterPane != null) {
+				GraphPane pane = _masterPane.FindPane(_menuClickPt);
+				ZoomOut(pane);
 			}
 		}
 
@@ -799,29 +782,26 @@ namespace ZedGraph
 		/// </remarks>
 		/// <param name="primaryPane">The primary <see cref="GraphPane" /> object which is to be
 		/// zoomed out</param>
-		public void ZoomOut( GraphPane primaryPane )
+		public void ZoomOut(GraphPane primaryPane)
 		{
-			if ( primaryPane != null && !primaryPane.ZoomStack.IsEmpty )
-			{
+			if (primaryPane != null && !primaryPane.ZoomStack.IsEmpty) {
 				ZoomState.StateType type = primaryPane.ZoomStack.Top.Type;
 
-				ZoomState oldState = new ZoomState( primaryPane, type );
+				ZoomState oldState = new ZoomState(primaryPane, type);
 				ZoomState newState = null;
-				if ( _isSynchronizeXAxes || _isSynchronizeYAxes )
-				{
-					foreach ( GraphPane pane in _masterPane._paneList )
-					{
-						ZoomState state = pane.ZoomStack.Pop( pane );
-						if ( pane == primaryPane )
+				if (_isSynchronizeXAxes || _isSynchronizeYAxes) {
+					foreach (GraphPane pane in _masterPane._paneList) {
+						ZoomState state = pane.ZoomStack.Pop(pane);
+						if (pane == primaryPane)
 							newState = state;
 					}
 				}
 				else
-					newState = primaryPane.ZoomStack.Pop( primaryPane );
+					newState = primaryPane.ZoomStack.Pop(primaryPane);
 
 				// Provide Callback to notify the user of zoom events
-				if ( this.ZoomEvent != null )
-					this.ZoomEvent( this, oldState, newState );
+				if (this.ZoomEvent != null)
+					this.ZoomEvent(this, oldState, newState);
 
 				Refresh();
 			}
@@ -838,12 +818,11 @@ namespace ZedGraph
 		/// </remarks>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		protected void MenuClick_ZoomOutAll( System.Object sender, System.EventArgs e )
+		protected void MenuClick_ZoomOutAll(System.Object sender, System.EventArgs e)
 		{
-			if ( _masterPane != null )
-			{
-				GraphPane pane = _masterPane.FindPane( _menuClickPt );
-				ZoomOutAll( pane );
+			if (_masterPane != null) {
+				GraphPane pane = _masterPane.FindPane(_menuClickPt);
+				ZoomOutAll(pane);
 			}
 		}
 
@@ -857,36 +836,32 @@ namespace ZedGraph
 		/// sets the scales to full auto mode (regardless of what the initial setting may have been).
 		/// </remarks>
 		/// <param name="primaryPane">The <see cref="GraphPane" /> object which is to be zoomed out</param>
-		public void ZoomOutAll( GraphPane primaryPane )
+		public void ZoomOutAll(GraphPane primaryPane)
 		{
-			if ( primaryPane != null && !primaryPane.ZoomStack.IsEmpty )
-			{
+			if (primaryPane != null && !primaryPane.ZoomStack.IsEmpty) {
 				ZoomState.StateType type = primaryPane.ZoomStack.Top.Type;
 
-				ZoomState oldState = new ZoomState( primaryPane, type );
+				ZoomState oldState = new ZoomState(primaryPane, type);
 				//ZoomState newState = pane.ZoomStack.PopAll( pane );
 				ZoomState newState = null;
-				if ( _isSynchronizeXAxes || _isSynchronizeYAxes )
-				{
-					foreach ( GraphPane pane in _masterPane._paneList )
-					{
-						ZoomState state = pane.ZoomStack.PopAll( pane );
-						if ( pane == primaryPane )
+				if (_isSynchronizeXAxes || _isSynchronizeYAxes) {
+					foreach (GraphPane pane in _masterPane._paneList) {
+						ZoomState state = pane.ZoomStack.PopAll(pane);
+						if (pane == primaryPane)
 							newState = state;
 					}
 				}
 				else
-					newState = primaryPane.ZoomStack.PopAll( primaryPane );
+					newState = primaryPane.ZoomStack.PopAll(primaryPane);
 
 				// Provide Callback to notify the user of zoom events
-				if ( this.ZoomEvent != null )
-					this.ZoomEvent( this, oldState, newState );
+				if (this.ZoomEvent != null)
+					this.ZoomEvent(this, oldState, newState);
 
 				Refresh();
 			}
 		}
 
-	#endregion
-
+		#endregion
 	}
 }

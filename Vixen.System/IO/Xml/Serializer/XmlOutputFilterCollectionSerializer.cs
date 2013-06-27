@@ -4,28 +4,33 @@ using System.Xml.Linq;
 using Vixen.Module.OutputFilter;
 using Vixen.Sys;
 
-namespace Vixen.IO.Xml.Serializer {
-	class XmlOutputFilterCollectionSerializer : IXmlSerializer<IEnumerable<IOutputFilterModuleInstance>> {
+namespace Vixen.IO.Xml.Serializer
+{
+	internal class XmlOutputFilterCollectionSerializer : IXmlSerializer<IEnumerable<IOutputFilterModuleInstance>>
+	{
 		private const string ELEMENT_FILTERS = "Filters";
 
-		public XElement WriteObject(IEnumerable<IOutputFilterModuleInstance> value) {
+		public XElement WriteObject(IEnumerable<IOutputFilterModuleInstance> value)
+		{
 			XmlOutputFilterSerializer serializer = new XmlOutputFilterSerializer();
 			IEnumerable<XElement> elements = value.Select(serializer.WriteObject);
 			return new XElement(ELEMENT_FILTERS, elements);
 		}
 
-		public IEnumerable<IOutputFilterModuleInstance> ReadObject(XElement element) {
+		public IEnumerable<IOutputFilterModuleInstance> ReadObject(XElement element)
+		{
 			List<IOutputFilterModuleInstance> filters = new List<IOutputFilterModuleInstance>();
 
 			XElement filtersElement = element.Element(ELEMENT_FILTERS);
-			if(filtersElement != null) {
+			if (filtersElement != null) {
 				filters.AddRange(ReadUnwrappedCollection(filtersElement));
 			}
 
 			return filters;
 		}
 
-		public IEnumerable<IOutputFilterModuleInstance> ReadUnwrappedCollection(XElement element) {
+		public IEnumerable<IOutputFilterModuleInstance> ReadUnwrappedCollection(XElement element)
+		{
 			List<IOutputFilterModuleInstance> filters = new List<IOutputFilterModuleInstance>();
 
 			XmlOutputFilterSerializer serializer = new XmlOutputFilterSerializer();
@@ -34,6 +39,7 @@ namespace Vixen.IO.Xml.Serializer {
 			return filters;
 		}
 	}
+
 	//class XmlOutputFilterCollectionSerializer : IXmlSerializer<OutputFilterCollection> {
 	//    private const string ELEMENT_FILTERS = "Filters";
 

@@ -4,11 +4,14 @@ using System.Linq;
 using System.Text;
 using Vixen.Sys.Attribute;
 
-namespace Vixen.Module.Media {
+namespace Vixen.Module.Media
+{
 	[TypeOfModule("Media")]
-	class MediaModuleImplementation : ModuleImplementation<IMediaModuleInstance> {
+	internal class MediaModuleImplementation : ModuleImplementation<IMediaModuleInstance>
+	{
 		public MediaModuleImplementation()
-			: base(new MediaModuleManagement(), new MediaModuleRepository()) {
+			: base(new MediaModuleManagement(), new MediaModuleRepository())
+		{
 		}
 	}
 }

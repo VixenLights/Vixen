@@ -34,16 +34,15 @@ namespace ZedGraph
 	[Serializable]
 	public class MinorGrid : ICloneable, ISerializable
 	{
-		internal bool	_isVisible;
+		internal bool _isVisible;
 
 		internal float _dashOn,
-							_dashOff,
-							_penWidth;
+		               _dashOff,
+		               _penWidth;
 
 		internal Color _color;
 
-
-	#region Constructors
+		#region Constructors
 
 		/// <summary>
 		/// Default constructor
@@ -61,7 +60,7 @@ namespace ZedGraph
 		/// Copy constructor
 		/// </summary>
 		/// <param name="rhs">The source <see cref="MinorGrid" /> to be copied.</param>
-		public MinorGrid( MinorGrid rhs )
+		public MinorGrid(MinorGrid rhs)
 		{
 			_dashOn = rhs._dashOn;
 			_dashOff = rhs._dashOff;
@@ -88,12 +87,12 @@ namespace ZedGraph
 		/// <returns>A new, independent copy of this class</returns>
 		public MinorGrid Clone()
 		{
-			return new MinorGrid( this );
+			return new MinorGrid(this);
 		}
 
-	#endregion
+		#endregion
 
-	#region Properties
+		#region Properties
 
 		/// <summary>
 		/// Gets or sets a value that determines if the major <see cref="Axis"/> gridlines
@@ -128,6 +127,7 @@ namespace ZedGraph
 			get { return _dashOn; }
 			set { _dashOn = value; }
 		}
+
 		/// <summary>
 		/// The "Dash Off" mode for drawing the grid.
 		/// </summary>
@@ -145,6 +145,7 @@ namespace ZedGraph
 			get { return _dashOff; }
 			set { _dashOff = value; }
 		}
+
 		/// <summary>
 		/// The pen width used for drawing the grid lines.
 		/// </summary>
@@ -157,6 +158,7 @@ namespace ZedGraph
 			get { return _penWidth; }
 			set { _penWidth = value; }
 		}
+
 		/// <summary>
 		/// The color to use for drawing this <see cref="Axis"/> grid.
 		/// </summary>
@@ -170,9 +172,9 @@ namespace ZedGraph
 			set { _color = value; }
 		}
 
-	#endregion
+		#endregion
 
-	#region Serialization
+		#region Serialization
 
 		/// <summary>
 		/// Current schema value that defines the version of the serialized file
@@ -186,42 +188,43 @@ namespace ZedGraph
 		/// </param>
 		/// <param name="context">A <see cref="StreamingContext"/> instance that contains the serialized data
 		/// </param>
-		protected MinorGrid( SerializationInfo info, StreamingContext context )
+		protected MinorGrid(SerializationInfo info, StreamingContext context)
 		{
 			// The schema value is just a file version parameter.  You can use it to make future versions
 			// backwards compatible as new member variables are added to classes
-			int sch = info.GetInt32( "schema" );
+			int sch = info.GetInt32("schema");
 
-			_isVisible = info.GetBoolean( "isVisible" );
+			_isVisible = info.GetBoolean("isVisible");
 
-			_dashOn = info.GetSingle( "dashOn" );
-			_dashOff = info.GetSingle( "dashOff" );
-			_penWidth = info.GetSingle( "penWidth" );
+			_dashOn = info.GetSingle("dashOn");
+			_dashOff = info.GetSingle("dashOff");
+			_penWidth = info.GetSingle("penWidth");
 
-			_color = (Color)info.GetValue( "color", typeof( Color ) );
+			_color = (Color) info.GetValue("color", typeof (Color));
 		}
+
 		/// <summary>
 		/// Populates a <see cref="SerializationInfo"/> instance with the data needed to serialize the target object
 		/// </summary>
 		/// <param name="info">A <see cref="SerializationInfo"/> instance that defines the serialized data</param>
 		/// <param name="context">A <see cref="StreamingContext"/> instance that contains the serialized data</param>
-		[SecurityPermissionAttribute( SecurityAction.Demand, SerializationFormatter = true )]
-		public virtual void GetObjectData( SerializationInfo info, StreamingContext context )
+		[SecurityPermissionAttribute(SecurityAction.Demand, SerializationFormatter = true)]
+		public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
-			info.AddValue( "schema", schema );
+			info.AddValue("schema", schema);
 
-			info.AddValue( "isVisible", _isVisible );
+			info.AddValue("isVisible", _isVisible);
 
-			info.AddValue( "dashOn", _dashOn );
-			info.AddValue( "dashOff", _dashOff );
-			info.AddValue( "penWidth", _penWidth );
+			info.AddValue("dashOn", _dashOn);
+			info.AddValue("dashOff", _dashOff);
+			info.AddValue("penWidth", _penWidth);
 
-			info.AddValue( "color", _color );
+			info.AddValue("color", _color);
 		}
 
-	#endregion
+		#endregion
 
-	#region Defaults
+		#region Defaults
 
 		/// <summary>
 		/// A simple struct that defines the
@@ -234,16 +237,19 @@ namespace ZedGraph
 			/// (<see cref="MinorGrid.DashOn"/> property). Units are in points (1/72 inch).
 			/// </summary>
 			public static float DashOn = 1.0F;
+
 			/// <summary>
 			/// The default "dash off" size for drawing the <see cref="Axis"/> minor grid
 			/// (<see cref="MinorGrid.DashOff"/> property). Units are in points (1/72 inch).
 			/// </summary>
 			public static float DashOff = 10.0F;
+
 			/// <summary>
 			/// The default pen width for drawing the <see cref="Axis"/> minor grid
 			/// (<see cref="MinorGrid.PenWidth"/> property). Units are in points (1/72 inch).
 			/// </summary>
 			public static float PenWidth = 1.0F;
+
 			/// <summary>
 			/// The default color for the <see cref="Axis"/> minor grid lines
 			/// (<see cref="MinorGrid.Color"/> property).  This color only affects the
@@ -257,27 +263,25 @@ namespace ZedGraph
 			/// to show the minor grid lines, false to hide them.
 			/// </summary>
 			public static bool IsVisible = false;
-
 		}
 
-	#endregion
+		#endregion
 
-	#region Methods
+		#region Methods
 
-		internal void Draw( Graphics g, Pen pen, float pixVal, float topPix )
+		internal void Draw(Graphics g, Pen pen, float pixVal, float topPix)
 		{
 			// draw the minor grid
-			if ( _isVisible )
-				g.DrawLine( pen, pixVal, 0.0F, pixVal, topPix );
+			if (_isVisible)
+				g.DrawLine(pen, pixVal, 0.0F, pixVal, topPix);
 		}
 
-		internal Pen GetPen( GraphPane pane, float scaleFactor )
+		internal Pen GetPen(GraphPane pane, float scaleFactor)
 		{
-			Pen pen = new Pen( _color,
-						pane.ScaledPenWidth( _penWidth, scaleFactor ) );
+			Pen pen = new Pen(_color,
+			                  pane.ScaledPenWidth(_penWidth, scaleFactor));
 
-			if ( _dashOff > 1e-10 && _dashOn > 1e-10 )
-			{
+			if (_dashOff > 1e-10 && _dashOn > 1e-10) {
 				pen.DashStyle = DashStyle.Custom;
 				float[] pattern = new float[2];
 				pattern[0] = _dashOn;
@@ -288,7 +292,6 @@ namespace ZedGraph
 			return pen;
 		}
 
-	#endregion
-
+		#endregion
 	}
 }

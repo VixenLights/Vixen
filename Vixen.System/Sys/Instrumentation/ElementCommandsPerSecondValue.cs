@@ -6,14 +6,14 @@ using Vixen.Instrumentation;
 
 namespace Vixen.Sys.Instrumentation
 {
-    class ElementCommandsPerSecondValue : RateValue
-    {
-        private Element _element;
+	internal class ElementCommandsPerSecondValue : RateValue
+	{
+		private Element _element;
 
-        public ElementCommandsPerSecondValue(Element element)
-            : base(string.Format("Element Commands Per Second - {0}", element.Name))
-        {
-            _element = element;
-        }
-    }
+		public ElementCommandsPerSecondValue(Element element)
+			: base(string.Format("Element Commands Per Second - {0}", element.Name))
+		{
+			_element = element;
+		}
+	}
 }

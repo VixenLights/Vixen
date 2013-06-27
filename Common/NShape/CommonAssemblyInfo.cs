@@ -18,6 +18,7 @@ using System.Runtime.InteropServices;
 // General Information about an library is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an library.
+
 [assembly: AssemblyCompany("dataweb GmbH - www.dataweb.de")]
 [assembly: AssemblyCopyright("Copyright © dataweb GmbH 2009-2012")]
 [assembly: AssemblyCulture("")]
@@ -35,5 +36,6 @@ using System.Runtime.InteropServices;
 //      Revision
 //
 //[assembly: AssemblyVersion("2.0.0.*")]
+
 [assembly: AssemblyVersion("2.0.1.0")]
 [assembly: AssemblyFileVersion("2.0.1.0")]

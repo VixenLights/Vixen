@@ -13,7 +13,7 @@ namespace Common.Controls.ControlsEx
 	/// </summary>
 	/// <typeparam name="Base">BaseType</typeparam>
 	/// <typeparam name="Type">Type</typeparam>
-	public class SuperList<B,T>:IList<T> where T:B
+	public class SuperList<B, T> : IList<T> where T : B
 	{
 		private IList<B> _inner;
 
@@ -23,6 +23,7 @@ namespace Common.Controls.ControlsEx
 				throw new ArgumentNullException("inner");
 			_inner = inner;
 		}
+
 		#region IList<Type> Member
 
 		public int IndexOf(T item)
@@ -42,14 +43,8 @@ namespace Common.Controls.ControlsEx
 
 		public T this[int index]
 		{
-			get
-			{
-				throw new NotImplementedException("contravariant generic class, not readable");
-			}
-			set
-			{
-				_inner[index] = value;
-			}
+			get { throw new NotImplementedException("contravariant generic class, not readable"); }
+			set { _inner[index] = value; }
 		}
 
 		#endregion
@@ -123,38 +118,63 @@ namespace Common.Controls.ControlsEx
 	public class ExtendsList<B, T> : IList<B> where T : B
 	{
 		#region types
+
 		/// <summary>
 		/// wraps a non generic enumerator into a generic one
 		/// </summary>
-		private class ExtendsEnumerator<Base,Type> : IEnumerator<Base> where Type:Base
+		private class ExtendsEnumerator<Base, Type> : IEnumerator<Base> where Type : Base
 		{
 			private IEnumerator<Type> _inner;
+
 			public ExtendsEnumerator(IEnumerator<Type> inner)
 			{
 				if (inner == null)
 					throw new ArgumentNullException("inner");
 				_inner = inner;
 			}
-			public Base Current { get { return _inner.Current; } }
-			public void Dispose() { }
-			object IEnumerator.Current { get { return _inner.Current; } }
-			public bool MoveNext() { return _inner.MoveNext(); }
-			public void Reset() { _inner.Reset(); }
+
+			public Base Current
+			{
+				get { return _inner.Current; }
+			}
+
+			public void Dispose()
+			{
+			}
+
+			object IEnumerator.Current
+			{
+				get { return _inner.Current; }
+			}
+
+			public bool MoveNext()
+			{
+				return _inner.MoveNext();
+			}
+
+			public void Reset()
+			{
+				_inner.Reset();
+			}
 		}
+
 		#endregion
+
 		private IList<T> _inner;
+
 		public ExtendsList(IList<T> inner)
 		{
 			if (inner == null)
 				throw new ArgumentNullException("inner");
 			_inner = inner;
 		}
+
 		#region IList<Base> Member
 
 		public int IndexOf(B item)
 		{
 			if (item is T)
-				return _inner.IndexOf((T)item);
+				return _inner.IndexOf((T) item);
 			return -1;
 		}
 
@@ -170,14 +190,8 @@ namespace Common.Controls.ControlsEx
 
 		public B this[int index]
 		{
-			get
-			{
-				return _inner[index];
-			}
-			set
-			{
-				throw new NotImplementedException("covariant class, cannot write");
-			}
+			get { return _inner[index]; }
+			set { throw new NotImplementedException("covariant class, cannot write"); }
 		}
 
 		#endregion
@@ -197,15 +211,14 @@ namespace Common.Controls.ControlsEx
 		public bool Contains(B item)
 		{
 			if (item is T)
-				return _inner.Contains((T)item);
+				return _inner.Contains((T) item);
 			return false;
 		}
 
 		public void CopyTo(B[] array, int arrayIndex)
 		{
-			if(array!=null)
-				foreach (T item in _inner)
-				{
+			if (array != null)
+				foreach (T item in _inner) {
 					if (arrayIndex >= array.Length) return;
 					array[arrayIndex++] = item;
 				}
@@ -224,7 +237,7 @@ namespace Common.Controls.ControlsEx
 		public bool Remove(B item)
 		{
 			if (item is T)
-				return _inner.Remove((T)item);
+				return _inner.Remove((T) item);
 			return false;
 		}
 

@@ -25,8 +25,9 @@ namespace VixenModules.EffectEditor.ColorTypeEditor
 
 		private bool _discreteColors;
 		private IEnumerable<Color> _validDiscreteColors;
-		
+
 		private IEffect _targetEffect;
+
 		public IEffect TargetEffect
 		{
 			get { return _targetEffect; }
@@ -48,8 +49,7 @@ namespace VixenModules.EffectEditor.ColorTypeEditor
 		private HashSet<Color> GetValidColorsForElementNode(ElementNode elementNode)
 		{
 			HashSet<Color> validColors = new HashSet<Color>();
-			switch (ColorModule.getColorTypeForElementNode(elementNode))
-			{
+			switch (ColorModule.getColorTypeForElementNode(elementNode)) {
 				case ElementColorType.FullColor:
 					break;
 
@@ -61,8 +61,7 @@ namespace VixenModules.EffectEditor.ColorTypeEditor
 			}
 
 			//recurse the children
-			if (elementNode.Children.Any())
-			{
+			if (elementNode.Children.Any()) {
 				validColors.AddRange(elementNode.Children.SelectMany(x => GetValidColorsForElementNode(x)));
 			}
 
@@ -72,19 +71,24 @@ namespace VixenModules.EffectEditor.ColorTypeEditor
 
 		public object[] EffectParameterValues
 		{
-			get { return new object[] { ColorValue }; }
+			get { return new object[] {ColorValue}; }
 			set
 			{
 				if (value.Length >= 1)
-					ColorValue = (Color)value[0];
+					ColorValue = (Color) value[0];
 			}
 		}
 
 		private Color _color;
+
 		public Color ColorValue
 		{
 			get { return _color; }
-			set { _color = value; panelColor.BackColor = value; }
+			set
+			{
+				_color = value;
+				panelColor.BackColor = value;
+			}
 		}
 
 		private void panelColor_Click(object sender, EventArgs e)
@@ -93,17 +97,19 @@ namespace VixenModules.EffectEditor.ColorTypeEditor
 				using (DiscreteColorPicker dcp = new DiscreteColorPicker()) {
 					dcp.ValidColors = _validDiscreteColors;
 					dcp.SingleColorOnly = true;
-					dcp.SelectedColors = new List<Color>{ColorValue};
+					dcp.SelectedColors = new List<Color> {ColorValue};
 					DialogResult result = dcp.ShowDialog();
 					if (result == DialogResult.OK) {
 						if (dcp.SelectedColors.Count() == 0) {
 							ColorValue = Color.White;
-						} else {
+						}
+						else {
 							ColorValue = dcp.SelectedColors.First();
 						}
 					}
 				}
-			} else {
+			}
+			else {
 				using (ColorPicker cp = new ColorPicker()) {
 					cp.LockValue_V = true;
 					cp.Color = XYZ.FromRGB(ColorValue);

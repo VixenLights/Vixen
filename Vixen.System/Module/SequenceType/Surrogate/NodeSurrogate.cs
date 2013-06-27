@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace Vixen.Module.SequenceType.Surrogate {
+namespace Vixen.Module.SequenceType.Surrogate
+{
 	[DataContract(Namespace = "")]
-	abstract class NodeSurrogate {
+	internal abstract class NodeSurrogate
+	{
 		[DataMember]
 		public Guid TypeId { get; protected set; }
 

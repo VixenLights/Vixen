@@ -8,24 +8,21 @@ using System.Windows.Ink;
 
 namespace VixenModules.Preview.DisplayPreview.WPF
 {
-	[ValueConversion(typeof(StrokeCollection), typeof(GeometryCollection))]
+	[ValueConversion(typeof (StrokeCollection), typeof (GeometryCollection))]
 	public class StrokesToGeometryCollection : IValueConverter
 	{
-
 		#region IValueConverter Members
 
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			StrokeCollection strokes = value as StrokeCollection;
 			GeometryCollection gc = new GeometryCollection();
-			foreach (Stroke stroke in strokes)
-			{
+			foreach (Stroke stroke in strokes) {
 				Path path = StrokeToPath(stroke);
 				gc.Add(path.Data);
 			}
-			
-			return gc;
 
+			return gc;
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -56,8 +53,7 @@ namespace VixenModules.Preview.DisplayPreview.WPF
 
 			// Make small line segment L if there is only one point in the Stroke (workaround).
 			// Data with only M is not shown.
-			if (n == 1)
-			{
+			if (n == 1) {
 				myLineSegment = new LineSegment();
 				myLineSegment.Point =
 					new Point(oStroke.StylusPoints[0].X + 1, oStroke.StylusPoints[0].Y + 1);
@@ -65,8 +61,7 @@ namespace VixenModules.Preview.DisplayPreview.WPF
 			}
 
 			// The other points are line segments (L, items 1..n-1).
-			for (int i = 1; i < n; i++)
-			{
+			for (int i = 1; i < n; i++) {
 				myLineSegment = new LineSegment();
 				myLineSegment.Point = new Point(oStroke.StylusPoints[i].X, oStroke.StylusPoints[i].Y);
 				myPathSegmentCollection.Add(myLineSegment);
@@ -80,19 +75,19 @@ namespace VixenModules.Preview.DisplayPreview.WPF
 			Path oPath = new Path();
 
 			// Add the data to the Path.
-			oPath.Data = myPathGeometry;                    // <-|
+			oPath.Data = myPathGeometry; // <-|
 
 			// Copy Stroke properties to Path.
 			// ----------------------------------------
 			// Stroke color.
-			Color oC = oStroke.DrawingAttributes.Color;     // Stroke color.
+			Color oC = oStroke.DrawingAttributes.Color; // Stroke color.
 			SolidColorBrush oBr = new SolidColorBrush();
 			oBr.Color = oC;
 			oPath.Stroke = oBr;
 
 			// Stroke thickness.
-			double dW = oStroke.DrawingAttributes.Width;    // Width of stylus.
-			double dH = oStroke.DrawingAttributes.Height;   // Height of stylus.
+			double dW = oStroke.DrawingAttributes.Width; // Width of stylus.
+			double dH = oStroke.DrawingAttributes.Height; // Height of stylus.
 			oPath.StrokeThickness = dW;
 
 			// Attribute FitToCurve.

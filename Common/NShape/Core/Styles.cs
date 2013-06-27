@@ -25,24 +25,31 @@ using System.Runtime.InteropServices;
 using Dataweb.NShape.Advanced;
 
 
-namespace Dataweb.NShape {
+namespace Dataweb.NShape
+{
 
 	#region ***   Enums, Structs and Delegates   ***
 
 	/// <summary>
 	/// Specifies the category of a style.
 	/// </summary>
-	public enum StyleCategory {
+	public enum StyleCategory
+	{
 		/// <summary>Specifies a line cap style.</summary>
 		CapStyle,
+
 		/// <summary>Specifies a character style.</summary>
 		CharacterStyle,
+
 		/// <summary>Specifies a color style.</summary>
 		ColorStyle,
+
 		/// <summary>Specifies a fill style.</summary>
 		FillStyle,
+
 		/// <summary>Specifies a line style.</summary>
 		LineStyle,
+
 		/// <summary>Specifies a paragraph style.</summary>
 		ParagraphStyle
 	}
@@ -51,65 +58,88 @@ namespace Dataweb.NShape {
 	/// <summary>
 	/// Specifies the layout of an image inside its display bounds.
 	/// </summary>
-	public enum ImageLayoutMode { 
+	public enum ImageLayoutMode
+	{
 		/// <summary>The image is displayed unscaled and aligned to the upper left corner.</summary>
-		Original, 
+		Original,
+
 		/// <summary>The image is displayed unscaled and centered.</summary>
 		Center,
+
 		/// <summary>The image is stretched to the display bounds.</summary>
-		Stretch, 
+		Stretch,
+
 		/// <summary>The image is fitted into the display bounds maintaining the aspect ratio of the image.</summary>
-		Fit, 
+		Fit,
+
 		/// <summary>The image is displayed as tiles.</summary>
-		Tile, 
+		Tile,
+
 		/// <summary>The image is displayed as tiles where one tile will be centered.</summary>
-		CenterTile, 
+		CenterTile,
+
 		/// <summary>The image is displayed as tiles. Tiles are flipped so the tile bounds match each other.</summary>
-		FlipTile 
+		FlipTile
 	}
 
 
 	/// <summary>
 	/// Specifies the fill mode of a <see cref="T:Dataweb.NShape.IFillStyle" />.
 	/// </summary>
-	public enum FillMode {
+	public enum FillMode
+	{
 		/// <summary>The area is filled with a color.</summary>
-		Solid, 
+		Solid,
+
 		/// <summary>The area is filled with a color gradient.</summary>
-		Gradient, 
+		Gradient,
+
 		/// <summary>The area is filled with a pattern.</summary>
-		Pattern, 
+		Pattern,
+
 		/// <summary>The area is filled with an image.</summary>
-		Image 
+		Image
 	}
 
 
 	/// <summary>
 	/// Specifies the shape of a line cap.
 	/// </summary>
-	public enum CapShape { 
+	public enum CapShape
+	{
 		/// <summary>No line cap (equals 'Round').</summary>
-		None, 
+		None,
+
 		/// <summary>A triangle shaped arrow cap.</summary>
-		ClosedArrow, 
+		ClosedArrow,
+
 		/// <summary>A V-shaped arrow cap.</summary>
-		OpenArrow, 
+		OpenArrow,
+
 		/// <summary>A circular line cap.</summary>
-		Circle, 
+		Circle,
+
 		/// <summary>A triangle shaped cap. The triangle's base line is located at the line's cap.</summary>
-		Triangle, 
+		Triangle,
+
 		/// <summary>A rhombical line cap.</summary>
-		Diamond, 
+		Diamond,
+
 		/// <summary>A quadratic line cap.</summary>
-		Square, 
+		Square,
+
 		/// <summary>A circular line cap. The circle's center is located at the line's cap.</summary>
-		CenteredCircle, 
+		CenteredCircle,
+
 		/// <summary>A half circle shapes line cap. The circle's center is located at the line's cap.</summary>
 		CenteredHalfCircle,
+
 		/// <summary>A rounded line cap.</summary>
 		Round,
+
 		/// <summary>A flattened line cap.</summary>
 		Flat,
+
 		/// <summary>A peaked line cap</summary>
 		Peak
 	}
@@ -118,17 +148,22 @@ namespace Dataweb.NShape {
 	/// <summary>
 	/// Specifies the dashes of a line.
 	/// </summary>
-	public enum DashType { 
+	public enum DashType
+	{
 		/// <summary>Specifies a solid line.</summary>
 		Solid,
+
 		/// <summary>Specifies a line consisting of dashes.</summary>
 		Dash,
+
 		/// <summary>Specifies a line consisting of dots.</summary>
 		Dot,
+
 		/// <summary>Specifies a line consisting of a repeating pattern of dash-dot.</summary>
 		DashDot,
+
 		/// <summary>Specifies a line consisting of a repeating pattern of dash-dot-dot.</summary>
-		DashDotDot 
+		DashDotDot
 	}
 
 
@@ -137,8 +172,8 @@ namespace Dataweb.NShape {
 	/// </summary>
 	[TypeConverter("Dataweb.NShape.WinFormsUI.TextPaddingTypeConverter, Dataweb.NShape.WinFormsUI")]
 	[Serializable, StructLayout(LayoutKind.Sequential)]
-	public struct TextPadding : IEquatable<TextPadding> {
-
+	public struct TextPadding : IEquatable<TextPadding>
+	{
 		/// <summary>
 		/// Provides a <see cref="T:Dataweb.NShape.TextPadding" /> object with no padding.
 		/// </summary>
@@ -148,18 +183,20 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// Tests whether two specified <see cref="T:Dataweb.NShape.TextPadding" /> objects are equivalent.
 		/// </summary>
-		public static bool operator ==(TextPadding a, TextPadding b) {
+		public static bool operator ==(TextPadding a, TextPadding b)
+		{
 			return (a.Left == b.Left
-				&& a.Top == b.Top
-				&& a.Right == b.Right
-				&& a.Bottom == b.Bottom);
+			        && a.Top == b.Top
+			        && a.Right == b.Right
+			        && a.Bottom == b.Bottom);
 		}
 
 
 		/// <summary>
 		/// Tests whether two specified <see cref="T:Dataweb.NShape.TextPadding" /> objects are not equivalent.
 		/// </summary>
-		public static bool operator !=(TextPadding a, TextPadding b) {
+		public static bool operator !=(TextPadding a, TextPadding b)
+		{
 			return !(a == b);
 		}
 
@@ -167,7 +204,8 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// Generates a hash code for the current <see cref="T:Dataweb.NShape.TextPadding" />.
 		/// </summary>
-		public override int GetHashCode() {
+		public override int GetHashCode()
+		{
 			return base.GetHashCode();
 		}
 
@@ -175,7 +213,8 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.TextPadding" />.
 		/// </summary>
-		public TextPadding(int all) {
+		public TextPadding(int all)
+		{
 			if (all < 0) throw new ArgumentOutOfRangeException("all");
 			this.all = true;
 			this.left = this.top = this.right = this.bottom = all;
@@ -185,7 +224,8 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.TextPadding" />.
 		/// </summary>
-		public TextPadding(int left, int top, int right, int bottom) {
+		public TextPadding(int left, int top, int right, int bottom)
+		{
 			if (left < 0) throw new ArgumentOutOfRangeException("left");
 			if (top < 0) throw new ArgumentOutOfRangeException("top");
 			if (right < 0) throw new ArgumentOutOfRangeException("right");
@@ -203,9 +243,11 @@ namespace Dataweb.NShape {
 		/// Gets or sets the padding value for the left edge.
 		/// </summary>
 		[RefreshProperties(RefreshProperties.All)]
-		public int Left {
+		public int Left
+		{
 			get { return left; }
-			set {
+			set
+			{
 				if (value < 0) throw new ArgumentOutOfRangeException();
 				if (all || left != value) {
 					left = value;
@@ -219,9 +261,11 @@ namespace Dataweb.NShape {
 		/// Gets or sets the padding value for the top edge.
 		/// </summary>
 		[RefreshProperties(RefreshProperties.All)]
-		public int Top {
+		public int Top
+		{
 			get { return all ? left : top; }
-			set {
+			set
+			{
 				if (value < 0) throw new ArgumentOutOfRangeException();
 				if (all || top != value) {
 					top = value;
@@ -235,9 +279,11 @@ namespace Dataweb.NShape {
 		/// Gets or sets the padding value for the right edge.
 		/// </summary>
 		[RefreshProperties(RefreshProperties.All)]
-		public int Right {
+		public int Right
+		{
 			get { return all ? left : right; }
-			set {
+			set
+			{
 				if (value < 0) throw new ArgumentOutOfRangeException();
 				if (all || right != value) {
 					right = value;
@@ -251,9 +297,11 @@ namespace Dataweb.NShape {
 		/// Gets or sets the padding value for the bottom edge.
 		/// </summary>
 		[RefreshProperties(RefreshProperties.All)]
-		public int Bottom {
+		public int Bottom
+		{
 			get { return all ? left : bottom; }
-			set {
+			set
+			{
 				if (value < 0) throw new ArgumentOutOfRangeException();
 				if (all || bottom != value) {
 					bottom = value;
@@ -267,9 +315,11 @@ namespace Dataweb.NShape {
 		/// Gets or sets the padding value for all edges.
 		/// </summary>
 		[RefreshProperties(RefreshProperties.All)]
-		public int All {
+		public int All
+		{
 			get { return all ? left : -1; }
-			set {
+			set
+			{
 				if (value < 0) throw new ArgumentOutOfRangeException();
 				left = top = right = bottom = value;
 				CheckAll();
@@ -281,7 +331,8 @@ namespace Dataweb.NShape {
 		/// Gets the combined padding for the right and left edges.
 		/// </summary>
 		[Browsable(false)]
-		public int Horizontal {
+		public int Horizontal
+		{
 			get { return left + right; }
 		}
 
@@ -290,33 +341,38 @@ namespace Dataweb.NShape {
 		/// Gets the combined padding for the top and bottom edges.
 		/// </summary>
 		[Browsable(false)]
-		public int Vertical {
+		public int Vertical
+		{
 			get { return top + bottom; }
 		}
 
 
 		/// <override></override>
-		public override bool Equals(object obj) {
-			return (obj is TextPadding && ((TextPadding)obj) == this);
+		public override bool Equals(object obj)
+		{
+			return (obj is TextPadding && ((TextPadding) obj) == this);
 		}
 
 
 		/// <override></override>
-		public bool Equals(TextPadding other) {
+		public bool Equals(TextPadding other)
+		{
 			return other == this;
 		}
 
-		
-		static TextPadding() {
+
+		static TextPadding()
+		{
 			Empty.left =
-			Empty.top =
-			Empty.right =
-			Empty.bottom = 0;
+				Empty.top =
+				Empty.right =
+				Empty.bottom = 0;
 			Empty.all = true;
 		}
 
 
-		private void CheckAll() {
+		private void CheckAll()
+		{
 			all = (left == top && left == right && left == bottom);
 		}
 
@@ -337,56 +393,57 @@ namespace Dataweb.NShape {
 
 	#endregion
 
-
 	#region ***   Type Description Classes   ***
 
 	/// <summary>
 	/// A type description provider that calls type converters and/or ui type editors registered with the TypeDescriptorRegistrar.
 	/// </summary>
-	public class StyleTypeDescriptionProvider : TypeDescriptionProvider {
-
+	public class StyleTypeDescriptionProvider : TypeDescriptionProvider
+	{
 		/// <summary>
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.StyleTypeDescriptionProvider" />.
 		/// </summary>
 		public StyleTypeDescriptionProvider()
-			: base(TypeDescriptor.GetProvider(typeof(Style))) {
+			: base(TypeDescriptor.GetProvider(typeof (Style)))
+		{
 		}
 
 
 		/// <override></override>
-		public override ICustomTypeDescriptor GetTypeDescriptor(Type objectType, object instance) {
+		public override ICustomTypeDescriptor GetTypeDescriptor(Type objectType, object instance)
+		{
 			return new StyleTypeDescriptor(base.GetTypeDescriptor(objectType, instance));
 		}
-
 	}
 
 
 	/// <ToBeCompleted></ToBeCompleted>
-	public class StyleTypeDescriptor : CustomTypeDescriptor {
-
+	public class StyleTypeDescriptor : CustomTypeDescriptor
+	{
 		/// <summary>
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.StyleTypeDescriptor" />.
 		/// </summary>
 		public StyleTypeDescriptor(ICustomTypeDescriptor parent)
-			: base(parent) {
+			: base(parent)
+		{
 		}
 
 
 		/// <override></override>
-		public override object GetEditor(Type editorBaseType) {
+		public override object GetEditor(Type editorBaseType)
+		{
 			return TypeDescriptorRegistrar.GetRegisteredUITypeEditor(editorBaseType) ?? base.GetEditor(editorBaseType);
 		}
 
 
 		/// <override></override>
-		public override TypeConverter GetConverter() {
-			return TypeDescriptorRegistrar.GetRegisteredTypeConverter(typeof(IStyle)) ?? base.GetConverter();
+		public override TypeConverter GetConverter()
+		{
+			return TypeDescriptorRegistrar.GetRegisteredTypeConverter(typeof (IStyle)) ?? base.GetConverter();
 		}
-
 	}
 
 	#endregion
-
 
 	#region ***   Style Interfaces   ***
 
@@ -394,15 +451,15 @@ namespace Dataweb.NShape {
 	/// Provides read-only access to a styles that define the appearance of shapes.
 	/// </summary>
 	[TypeConverter("Dataweb.NShape.WinFormsUI.StyleTypeConverter, Dataweb.NShape.WinFormsUI")]
-	public interface IStyle : IEntity, IDisposable {
-		
+	public interface IStyle : IEntity, IDisposable
+	{
 		/// <summary>Specifies the culture independent name of the style. Used for identifying it within a style collection. Has to be unique inside a style collection.</summary>
 		[Browsable(false)]
 		string Name { get; }
-		
+
 		/// <summary>Specifies the culture dependent title of the style.</summary>
 		string Title { get; }
-		
+
 		/// <override></override>
 		string ToString();
 	}
@@ -411,27 +468,26 @@ namespace Dataweb.NShape {
 	/// <summary>
 	/// Provides read-only access to a style that defines the appearance of line caps.
 	/// </summary>
-	[Editor("Dataweb.NShape.WinFormsUI.StyleUITypeEditor, Dataweb.NShape.WinFormsUI", typeof(UITypeEditor))]
-	public interface ICapStyle : IStyle {
-		
+	[Editor("Dataweb.NShape.WinFormsUI.StyleUITypeEditor, Dataweb.NShape.WinFormsUI", typeof (UITypeEditor))]
+	public interface ICapStyle : IStyle
+	{
 		/// <summary>Specifies the shape of the line cap.</summary>
 		CapShape CapShape { get; }
 
 		/// <summary>Specifies the diameter of the cap.</summary>
 		short CapSize { get; }
-		
+
 		/// <summary>Specifies the interior fill color of the cap.</summary>
 		IColorStyle ColorStyle { get; }
-
 	}
 
 
 	/// <summary>
 	/// Provides read-only access to a style that defines the appearance of text.
 	/// </summary>
-	[Editor("Dataweb.NShape.WinFormsUI.StyleUITypeEditor, Dataweb.NShape.WinFormsUI", typeof(UITypeEditor))]
-	public interface ICharacterStyle : IStyle {
-
+	[Editor("Dataweb.NShape.WinFormsUI.StyleUITypeEditor, Dataweb.NShape.WinFormsUI", typeof (UITypeEditor))]
+	public interface ICharacterStyle : IStyle
+	{
 		/// <summary>Specifies the name of the font family.</summary>
 		string FontName { get; }
 
@@ -455,15 +511,15 @@ namespace Dataweb.NShape {
 	/// <summary>
 	/// Provides read-only access to a style that defines colors.
 	/// </summary>
-	[Editor("Dataweb.NShape.WinFormsUI.StyleUITypeEditor, Dataweb.NShape.WinFormsUI", typeof(UITypeEditor))]
-	public interface IColorStyle : IStyle {
-
+	[Editor("Dataweb.NShape.WinFormsUI.StyleUITypeEditor, Dataweb.NShape.WinFormsUI", typeof (UITypeEditor))]
+	public interface IColorStyle : IStyle
+	{
 		/// <summary>Specifies the color value of the color.</summary>
 		Color Color { get; }
-		
+
 		/// <summary>Specifies transparency in percentage. Valid value range is 0 to 100.</summary>
 		byte Transparency { get; }
-		
+
 		/// <summary>Specifies if the color value should be converted to a gray scale value.</summary>
 		bool ConvertToGray { get; }
 	}
@@ -472,9 +528,9 @@ namespace Dataweb.NShape {
 	/// <summary>
 	/// Provides read-only access to a style that defines the filling of a shape.
 	/// </summary>
-	[Editor("Dataweb.NShape.WinFormsUI.StyleUITypeEditor, Dataweb.NShape.WinFormsUI", typeof(UITypeEditor))]
-	public interface IFillStyle : IStyle {
-
+	[Editor("Dataweb.NShape.WinFormsUI.StyleUITypeEditor, Dataweb.NShape.WinFormsUI", typeof (UITypeEditor))]
+	public interface IFillStyle : IStyle
+	{
 		/// <summary>
 		/// Specifies the base color of the fill style. 
 		/// Depending on the FillMode this means 
@@ -535,9 +591,9 @@ namespace Dataweb.NShape {
 	/// <summary>
 	/// Provides read-only access to a style that the appearance of lines and outlines.
 	/// </summary>
-	[Editor("Dataweb.NShape.WinFormsUI.StyleUITypeEditor, Dataweb.NShape.WinFormsUI", typeof(UITypeEditor))]
-	public interface ILineStyle : IStyle {
-
+	[Editor("Dataweb.NShape.WinFormsUI.StyleUITypeEditor, Dataweb.NShape.WinFormsUI", typeof (UITypeEditor))]
+	public interface ILineStyle : IStyle
+	{
 		/// <summary>Specifies the thickness of the line in display units.</summary>
 		int LineWidth { get; }
 
@@ -561,9 +617,9 @@ namespace Dataweb.NShape {
 	/// <summary>
 	/// Provides read-only access to a style that defines the layout of text.
 	/// </summary>
-	[Editor("Dataweb.NShape.WinFormsUI.StyleUITypeEditor, Dataweb.NShape.WinFormsUI", typeof(UITypeEditor))]
-	public interface IParagraphStyle : IStyle {
-
+	[Editor("Dataweb.NShape.WinFormsUI.StyleUITypeEditor, Dataweb.NShape.WinFormsUI", typeof (UITypeEditor))]
+	public interface IParagraphStyle : IStyle
+	{
 		/// <summary>Specifies the alignment of the text inside a given area.</summary>
 		ContentAlignment Alignment { get; }
 
@@ -575,11 +631,9 @@ namespace Dataweb.NShape {
 
 		/// <summary>Specifies whether text should be wrapped automatically if the text does not fit into the layout area.</summary>
 		bool WordWrap { get; }
-
 	}
 
 	#endregion
-
 
 	#region ***   StandardStyle Definitions   ***
 
@@ -588,23 +642,26 @@ namespace Dataweb.NShape {
 	/// Implements all methods. Derived classes only have to define 
 	/// public readonly string fields named like the standard style name.
 	/// </summary>
-	public abstract class StandardStyleNames {
-
+	public abstract class StandardStyleNames
+	{
 		/// <summary>
 		/// Base constructor of all derived StandardStyleNames.
 		/// Initializes all public readonly string fields with their field names
 		/// and creates the names string array.
 		/// </summary>
-		protected StandardStyleNames() {
+		protected StandardStyleNames()
+		{
 			FieldInfo[] fieldInfos = this.GetType().GetFields();
 			Array.Resize<string>(ref names, fieldInfos.Length);
 			int idx = -1;
 			for (int i = fieldInfos.Length - 1; i >= 0; --i) {
 				if (fieldInfos[i].IsInitOnly && fieldInfos[i].IsPublic &&
-					fieldInfos[i].FieldType == typeof(string)) {
+				    fieldInfos[i].FieldType == typeof (string)) {
 					names[++idx] = fieldInfos[i].Name;
 					fieldInfos[i].SetValue(this, fieldInfos[i].Name);
-				} else { }
+				}
+				else {
+				}
 			}
 			if (idx + 1 < names.Length) Array.Resize<string>(ref names, idx + 1);
 		}
@@ -613,8 +670,10 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// Provides index based access to the items of the collection.
 		/// </summary>
-		public string this[int index] {
-			get {
+		public string this[int index]
+		{
+			get
+			{
 				if (index >= names.Length) throw new IndexOutOfRangeException();
 				return names[index];
 			}
@@ -624,7 +683,8 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// Specifies the number of items in the collection.
 		/// </summary>
-		public int Count {
+		public int Count
+		{
 			get { return names.Length; }
 		}
 
@@ -632,7 +692,8 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// Returns true if the given name equals any of the items in the collection.
 		/// </summary>
-		public bool EqualsAny(string name) {
+		public bool EqualsAny(string name)
+		{
 			Debug.Assert(names != null);
 			if (name == Style.EmptyStyleName) return true;
 			for (int i = names.Length - 1; i >= 0; --i)
@@ -649,18 +710,23 @@ namespace Dataweb.NShape {
 	/// <summary>
 	/// Defines the standard cap style names.
 	/// </summary>
-	public sealed class StandardCapStyleNames : StandardStyleNames {
+	public sealed class StandardCapStyleNames : StandardStyleNames
+	{
 		/// <ToBeCompleted></ToBeCompleted>
-		[Obsolete("This name will be removed in future versions. Use ArrowClosed instead.")]
-		public readonly string Arrow;
+		[Obsolete("This name will be removed in future versions. Use ArrowClosed instead.")] public readonly string Arrow;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string ArrowClosed;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string ArrowOpen;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string None;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string Special1;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string Special2;
 	}
@@ -669,17 +735,23 @@ namespace Dataweb.NShape {
 	/// <summary>
 	/// Defines the standard character style names.
 	/// </summary>
-	public sealed class StandardCharacterStyleNames : StandardStyleNames {
+	public sealed class StandardCharacterStyleNames : StandardStyleNames
+	{
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string Caption;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string Heading1;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string Heading2;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string Heading3;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string Normal;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string Subtitle;
 	}
@@ -688,39 +760,56 @@ namespace Dataweb.NShape {
 	/// <summary>
 	/// Defines the standard color style names.
 	/// </summary>
-	public sealed class StandardColorStyleNames : StandardStyleNames {
+	public sealed class StandardColorStyleNames : StandardStyleNames
+	{
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string Background;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string Black;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string Blue;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string Gray;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string Green;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string Highlight;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string HighlightText;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string LightBlue;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string LightGray;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string LightGreen;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string LightRed;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string LightYellow;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string Red;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string Text;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string Transparent;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string White;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string Yellow;
 	}
@@ -729,19 +818,26 @@ namespace Dataweb.NShape {
 	/// <summary>
 	/// Defines the standard fill style names.
 	/// </summary>
-	public sealed class StandardFillStyleNames : StandardStyleNames {
+	public sealed class StandardFillStyleNames : StandardStyleNames
+	{
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string Black;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string Blue;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string Green;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string Red;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string Transparent;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string White;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string Yellow;
 	}
@@ -750,35 +846,50 @@ namespace Dataweb.NShape {
 	/// <summary>
 	/// Defines the standard line style names.
 	/// </summary>
-	public sealed class StandardLineStyleNames : StandardStyleNames {
+	public sealed class StandardLineStyleNames : StandardStyleNames
+	{
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string Blue;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string Dashed;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string Dotted;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string Green;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string Highlight;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string HighlightDashed;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string HighlightDotted;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string HighlightThick;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string None;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string Normal;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string Red;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string Special1;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string Special2;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string Thick;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string Yellow;
 	}
@@ -787,36 +898,44 @@ namespace Dataweb.NShape {
 	/// <summary>
 	/// Defines the standard paragraph style names.
 	/// </summary>
-	public sealed class StandardParagraphStyleNames : StandardStyleNames {
+	public sealed class StandardParagraphStyleNames : StandardStyleNames
+	{
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string Label;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string Text;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		public readonly string Title;
 	}
 
 	#endregion
 
-
 	#region ***   Style Classes   ***
 
 	/// <summary>
 	/// Provides a base class for <see cref="T:Dataweb.NShape.IStyle" /> implementations.
 	/// </summary>
-	[TypeDescriptionProvider(typeof(TypeDescriptionProviderDg))]
-	public abstract class Style : IStyle, IEquatable<IStyle>, IEquatable<Style> {
-
+	[TypeDescriptionProvider(typeof (TypeDescriptionProviderDg))]
+	public abstract class Style : IStyle, IEquatable<IStyle>, IEquatable<Style>
+	{
 		/// <override></override>
-		[Description("The name of the style, used for identifying this style in the style set. Has to unique inside its style set.")]
+		[Description(
+			"The name of the style, used for identifying this style in the style set. Has to unique inside its style set.")]
 		[RequiredPermission(Permission.Designs)]
 		[Category("General")]
-		public string Name {
+		public string Name
+		{
 			get { return name; }
-			set {
-				if (string.IsNullOrEmpty(value) || value == EmptyStyleName) throw new ArgumentException(string.Format("'{0}' is not a valid Style name.", value));
+			set
+			{
+				if (string.IsNullOrEmpty(value) || value == EmptyStyleName)
+					throw new ArgumentException(string.Format("'{0}' is not a valid Style name.", value));
 				if (!renameable) throw new InvalidOperationException("Standard styles must not be renamed.");
-				else if (IsStandardName(value)) throw new ArgumentException(string.Format("'{0}' is a standard style name and therefore not valid for a custom style.", value));
+				else if (IsStandardName(value))
+					throw new ArgumentException(
+						string.Format("'{0}' is a standard style name and therefore not valid for a custom style.", value));
 				name = value;
 			}
 		}
@@ -826,9 +945,11 @@ namespace Dataweb.NShape {
 		[Description("The title of the style.")]
 		[RequiredPermission(Permission.Designs)]
 		[Category("General")]
-		public string Title {
+		public string Title
+		{
 			get { return string.IsNullOrEmpty(title) ? name : title; }
-			set {
+			set
+			{
 				if (value == name || string.IsNullOrEmpty(value))
 					title = null;
 				else title = value;
@@ -841,7 +962,8 @@ namespace Dataweb.NShape {
 		/// </summary>
 		/// <param name="style">Specifies the copy source.</param>
 		/// <param name="findStyleCallback">A callback method that obtains a style.</param>
-		public virtual void Assign(IStyle style, FindStyleCallback findStyleCallback) {
+		public virtual void Assign(IStyle style, FindStyleCallback findStyleCallback)
+		{
 			if (style == null) throw new ArgumentNullException("style");
 			if (findStyleCallback == null) throw new ArgumentNullException("findStyleCallback");
 			if (this.Name != style.Name) this.Name = style.Name;
@@ -850,19 +972,22 @@ namespace Dataweb.NShape {
 
 
 		/// <override></override>
-		public override string ToString() {
+		public override string ToString()
+		{
 			return Title;
 		}
 
 
 		/// <override></override>
-		public bool Equals(IStyle other) {
+		public bool Equals(IStyle other)
+		{
 			return other == this;
 		}
 
 
 		/// <override></override>
-		public bool Equals(Style other) {
+		public bool Equals(Style other)
+		{
 			return other == this;
 		}
 
@@ -871,14 +996,16 @@ namespace Dataweb.NShape {
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.Style" />.
 		/// </summary>
 		protected Style()
-			: this(string.Empty) {
+			: this(string.Empty)
+		{
 		}
 
 
 		/// <summary>
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.Style" />.
 		/// </summary>
-		protected Style(string name) {
+		protected Style(string name)
+		{
 			this.renameable = !IsStandardName(name);
 			this.name = name;
 			this.title = string.Empty;
@@ -888,7 +1015,8 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// Finalizer of <see cref="T:Dataweb.NShape.Style" />.
 		/// </summary>
-		~Style() {
+		~Style()
+		{
 			Dispose();
 		}
 
@@ -904,7 +1032,6 @@ namespace Dataweb.NShape {
 		/// </summary>
 		protected internal const string EmptyStyleName = "0";
 
-
 		#region IDisposable Members
 
 		/// <override></override>
@@ -912,27 +1039,29 @@ namespace Dataweb.NShape {
 
 		#endregion
 
-
 		#region IEntity Members
 
 		/// <summary>
 		/// Retrieves the persistable properties of <see cref="T:Dataweb.NShape.Style" />.
 		/// </summary>
-		public static IEnumerable<EntityPropertyDefinition> GetPropertyDefinitions(int version) {
-			yield return new EntityFieldDefinition("Name", typeof(string));
-			if (version >= 3) yield return new EntityFieldDefinition("Title", typeof(string));
+		public static IEnumerable<EntityPropertyDefinition> GetPropertyDefinitions(int version)
+		{
+			yield return new EntityFieldDefinition("Name", typeof (string));
+			if (version >= 3) yield return new EntityFieldDefinition("Title", typeof (string));
 		}
 
 
 		/// <override></override>
 		[Browsable(false)]
-		public virtual object Id {
+		public virtual object Id
+		{
 			get { return id; }
 		}
 
 
 		/// <override></override>
-		public virtual void AssignId(object id) {
+		public virtual void AssignId(object id)
+		{
 			if (id == null) throw new ArgumentNullException("id");
 			if (this.id != null)
 				throw new InvalidOperationException("Style has already an id.");
@@ -941,7 +1070,8 @@ namespace Dataweb.NShape {
 
 
 		/// <override></override>
-		public virtual void LoadFields(IRepositoryReader reader, int version) {
+		public virtual void LoadFields(IRepositoryReader reader, int version)
+		{
 			if (reader == null) throw new ArgumentNullException("reader");
 			name = reader.ReadString();
 			if (version >= 3) title = reader.ReadString();
@@ -950,7 +1080,8 @@ namespace Dataweb.NShape {
 
 
 		/// <override></override>
-		public virtual void LoadInnerObjects(string propertyName, IRepositoryReader reader, int version) {
+		public virtual void LoadInnerObjects(string propertyName, IRepositoryReader reader, int version)
+		{
 			if (propertyName == null) throw new ArgumentNullException("propertyName");
 			if (reader == null) throw new ArgumentNullException("reader");
 			// nothing to do
@@ -958,7 +1089,8 @@ namespace Dataweb.NShape {
 
 
 		/// <override></override>
-		public virtual void SaveFields(IRepositoryWriter writer, int version) {
+		public virtual void SaveFields(IRepositoryWriter writer, int version)
+		{
 			if (writer == null) throw new ArgumentNullException("writer");
 			writer.WriteString(name);
 			if (version >= 3) writer.WriteString(title);
@@ -966,7 +1098,8 @@ namespace Dataweb.NShape {
 
 
 		/// <override></override>
-		public virtual void SaveInnerObjects(string propertyName, IRepositoryWriter writer, int version) {
+		public virtual void SaveInnerObjects(string propertyName, IRepositoryWriter writer, int version)
+		{
 			if (propertyName == null) throw new ArgumentNullException("propertyName");
 			if (writer == null) throw new ArgumentNullException("writer");
 			// nothing to do
@@ -974,7 +1107,8 @@ namespace Dataweb.NShape {
 
 
 		/// <override></override>
-		public virtual void Delete(IRepositoryWriter writer, int version) {
+		public virtual void Delete(IRepositoryWriter writer, int version)
+		{
 			if (writer == null) throw new ArgumentNullException("writer");
 			foreach (EntityPropertyDefinition pi in GetPropertyDefinitions(version)) {
 				if (pi is EntityInnerObjectsDefinition)
@@ -983,7 +1117,6 @@ namespace Dataweb.NShape {
 		}
 
 		#endregion
-
 
 		#region Fields
 
@@ -999,8 +1132,8 @@ namespace Dataweb.NShape {
 	/// <summary>
 	/// Provides the definition of line cap.
 	/// </summary>
-	public sealed class CapStyle : Style, ICapStyle, IEquatable<ICapStyle>, IEquatable<CapStyle> {
-
+	public sealed class CapStyle : Style, ICapStyle, IEquatable<ICapStyle>, IEquatable<CapStyle>
+	{
 		/// <summary>
 		/// This static read-only field represents a default and not initialized cap style.
 		/// </summary>
@@ -1017,30 +1150,35 @@ namespace Dataweb.NShape {
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.CapStyle" />.
 		/// </summary>
 		public CapStyle()
-			: base() { }
+			: base()
+		{
+		}
 
 
 		/// <summary>
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.CapStyle" />.
 		/// </summary>
 		public CapStyle(string name)
-			: base(name) { }
+			: base(name)
+		{
+		}
 
 
 		/// <summary>
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.CapStyle" />.
 		/// </summary>
 		public CapStyle(string name, CapShape capShape, IColorStyle colorStyle)
-			: base(name) {
+			: base(name)
+		{
 			this.CapShape = capShape;
 			this.ColorStyle = colorStyle;
 		}
 
-
 		#region IDisposable Members
 
 		/// <override></override>
-		public override void Dispose() {
+		public override void Dispose()
+		{
 			if (colorStyle != null) {
 				colorStyle.Dispose();
 				colorStyle = null;
@@ -1049,22 +1187,23 @@ namespace Dataweb.NShape {
 
 		#endregion
 
-
 		#region IEntity Members
 
 		/// <override></override>
-		public override void LoadFields(IRepositoryReader reader, int version) {
+		public override void LoadFields(IRepositoryReader reader, int version)
+		{
 			base.LoadFields(reader, version);
-			CapShape = (CapShape)reader.ReadByte();
+			CapShape = (CapShape) reader.ReadByte();
 			CapSize = reader.ReadInt16();
-			ColorStyle = (IColorStyle)reader.ReadColorStyle();
+			ColorStyle = (IColorStyle) reader.ReadColorStyle();
 		}
 
 
 		/// <override></override>
-		public override void SaveFields(IRepositoryWriter writer, int version) {
+		public override void SaveFields(IRepositoryWriter writer, int version)
+		{
 			base.SaveFields(writer, version);
-			writer.WriteByte((byte)capShape);
+			writer.WriteByte((byte) capShape);
 			writer.WriteInt16(capSize);
 			writer.WriteStyle(colorStyle);
 		}
@@ -1073,7 +1212,8 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// The entity type name of <see cref="T:Dataweb.NShape.CapStyle" />.
 		/// </summary>
-		public static string EntityTypeName {
+		public static string EntityTypeName
+		{
 			get { return "Core.CapStyle"; }
 		}
 
@@ -1081,22 +1221,23 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// Retrieves the persistable properties of <see cref="T:Dataweb.NShape.CapStyle" />.
 		/// </summary>
-		new public static IEnumerable<EntityPropertyDefinition> GetPropertyDefinitions(int version) {
+		public new static IEnumerable<EntityPropertyDefinition> GetPropertyDefinitions(int version)
+		{
 			foreach (EntityPropertyDefinition pi in Style.GetPropertyDefinitions(version))
 				yield return pi;
-			yield return new EntityFieldDefinition("CapShape", typeof(byte));
-			yield return new EntityFieldDefinition("CapSize", typeof(short));
-			yield return new EntityFieldDefinition("ColorStyle", typeof(object));
+			yield return new EntityFieldDefinition("CapShape", typeof (byte));
+			yield return new EntityFieldDefinition("CapSize", typeof (short));
+			yield return new EntityFieldDefinition("ColorStyle", typeof (object));
 		}
 
 		#endregion
-
 
 		/// <override></override>
 		[Category("Appearance")]
 		[Description("Shape of the line cap. If none, the cap of the line depends on the line style's LineJoin setting.")]
 		[RequiredPermission(Permission.Designs)]
-		public CapShape CapShape {
+		public CapShape CapShape
+		{
 			get { return capShape; }
 			set { capShape = value; }
 		}
@@ -1106,9 +1247,11 @@ namespace Dataweb.NShape {
 		[Category("Appearance")]
 		[Description("Size of the line cap in display units.")]
 		[RequiredPermission(Permission.Designs)]
-		public short CapSize {
+		public short CapSize
+		{
 			get { return capSize; }
-			set {
+			set
+			{
 				if (value < 0)
 					throw new ArgumentException("Value has to be greater than 0.");
 				capSize = value;
@@ -1120,9 +1263,11 @@ namespace Dataweb.NShape {
 		[Category("Appearance")]
 		[Description("Color of the line cap's interior.")]
 		[RequiredPermission(Permission.Designs)]
-		public IColorStyle ColorStyle {
+		public IColorStyle ColorStyle
+		{
 			get { return colorStyle ?? Dataweb.NShape.ColorStyle.Empty; }
-			set {
+			set
+			{
 				if (value == Dataweb.NShape.ColorStyle.Empty)
 					colorStyle = null;
 				else colorStyle = value;
@@ -1131,40 +1276,46 @@ namespace Dataweb.NShape {
 
 
 		/// <override></override>
-		public override void Assign(IStyle style, FindStyleCallback findStyleCallback) {
+		public override void Assign(IStyle style, FindStyleCallback findStyleCallback)
+		{
 			if (style is CapStyle) {
 				// Delete GDI+ objects based on the current style
 				ToolCache.NotifyStyleChanged(this);
 
 				base.Assign(style, findStyleCallback);
-				this.CapShape = ((CapStyle)style).CapShape;
-				this.CapSize = ((CapStyle)style).CapSize;
-				IColorStyle colorStyle = (IColorStyle)findStyleCallback(((CapStyle)style).ColorStyle);
+				this.CapShape = ((CapStyle) style).CapShape;
+				this.CapSize = ((CapStyle) style).CapSize;
+				IColorStyle colorStyle = (IColorStyle) findStyleCallback(((CapStyle) style).ColorStyle);
 				if (colorStyle != null) this.ColorStyle = colorStyle;
-				else this.ColorStyle = ((CapStyle)style).ColorStyle;
-			} else throw new NShapeException("Style is not of the required type.");
+				else this.ColorStyle = ((CapStyle) style).ColorStyle;
+			}
+			else throw new NShapeException("Style is not of the required type.");
 		}
 
 
 		/// <override></override>
-		public bool Equals(ICapStyle other) {
+		public bool Equals(ICapStyle other)
+		{
 			return other == this;
 		}
 
 
 		/// <override></override>
-		public bool Equals(CapStyle other) {
+		public bool Equals(CapStyle other)
+		{
 			return other == this;
 		}
 
 
 		/// <override></override>
-		protected override bool IsStandardName(string name) {
+		protected override bool IsStandardName(string name)
+		{
 			return StandardNames.EqualsAny(name);
 		}
 
 
-		static CapStyle() {
+		static CapStyle()
+		{
 			StandardNames = new StandardCapStyleNames();
 
 			Default = new CapStyle(EmptyStyleName);
@@ -1174,7 +1325,8 @@ namespace Dataweb.NShape {
 		}
 
 
-		private int GetCapShapePointCount(CapShape capShape) {
+		private int GetCapShapePointCount(CapShape capShape)
+		{
 			switch (capShape) {
 				case CapShape.OpenArrow:
 				case CapShape.ClosedArrow:
@@ -1194,7 +1346,6 @@ namespace Dataweb.NShape {
 			}
 		}
 
-
 		#region Fields
 
 		private CapShape capShape = CapShape.None;
@@ -1208,8 +1359,8 @@ namespace Dataweb.NShape {
 	/// <summary>
 	/// Provides the definition of text appearance.
 	/// </summary>
-	public sealed class CharacterStyle : Style, ICharacterStyle, IEquatable<ICharacterStyle>, IEquatable<CharacterStyle> {
-
+	public sealed class CharacterStyle : Style, ICharacterStyle, IEquatable<ICharacterStyle>, IEquatable<CharacterStyle>
+	{
 		/// <summary>
 		/// This static read-only field represents a default and not initialized character style.
 		/// </summary>
@@ -1226,7 +1377,8 @@ namespace Dataweb.NShape {
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.CharacterStyle" />.
 		/// </summary>
 		public CharacterStyle()
-			: base() {
+			: base()
+		{
 			Construct();
 		}
 
@@ -1235,7 +1387,8 @@ namespace Dataweb.NShape {
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.CharacterStyle" />.
 		/// </summary>
 		public CharacterStyle(string name)
-			: base(name) {
+			: base(name)
+		{
 			Construct();
 		}
 
@@ -1244,17 +1397,18 @@ namespace Dataweb.NShape {
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.CharacterStyle" />.
 		/// </summary>
 		public CharacterStyle(string name, float sizeInPoints, IColorStyle colorStyle)
-			: base(name) {
+			: base(name)
+		{
 			this.ColorStyle = colorStyle;
 			this.fontSizeInPoints = sizeInPoints;
 			Construct();
 		}
 
-
 		#region IDisposable Members
 
 		/// <override></override>
-		public override void Dispose() {
+		public override void Dispose()
+		{
 			if (colorStyle != null) {
 				colorStyle.Dispose();
 				colorStyle = null;
@@ -1263,26 +1417,27 @@ namespace Dataweb.NShape {
 
 		#endregion
 
-
 		#region IEntity Members
 
 		/// <override></override>
-		public override void LoadFields(IRepositoryReader reader, int version) {
+		public override void LoadFields(IRepositoryReader reader, int version)
+		{
 			base.LoadFields(reader, version);
 			fontFamily = FindFontFamily(reader.ReadString());
-			fontSizeInPoints = reader.ReadInt32() / 100f;
+			fontSizeInPoints = reader.ReadInt32()/100f;
 			fontSize = Geometry.PointToPixel(fontSizeInPoints, dpi);
-			fontStyle = (FontStyle)reader.ReadByte();
-			ColorStyle = (IColorStyle)reader.ReadColorStyle();	// Set Property!
+			fontStyle = (FontStyle) reader.ReadByte();
+			ColorStyle = (IColorStyle) reader.ReadColorStyle(); // Set Property!
 		}
 
 
 		/// <override></override>
-		public override void SaveFields(IRepositoryWriter writer, int version) {
+		public override void SaveFields(IRepositoryWriter writer, int version)
+		{
 			base.SaveFields(writer, version);
 			writer.WriteString(fontFamily.Name);
-			writer.WriteInt32((int)(100 * fontSizeInPoints));
-			writer.WriteByte((byte)fontStyle);
+			writer.WriteInt32((int) (100*fontSizeInPoints));
+			writer.WriteByte((byte) fontStyle);
 			writer.WriteStyle(colorStyle);
 		}
 
@@ -1290,7 +1445,8 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// The type name of <see cref="T:Dataweb.NShape.CharacterStyle" />.
 		/// </summary>
-		public static string EntityTypeName {
+		public static string EntityTypeName
+		{
 			get { return "Core.CharacterStyle"; }
 		}
 
@@ -1298,25 +1454,27 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// Retrieves the persistable properties of <see cref="T:Dataweb.NShape.CharacterStyle" />.
 		/// </summary>
-		public static new IEnumerable<EntityPropertyDefinition> GetPropertyDefinitions(int version) {
+		public new static IEnumerable<EntityPropertyDefinition> GetPropertyDefinitions(int version)
+		{
 			foreach (EntityPropertyDefinition pi in Dataweb.NShape.Style.GetPropertyDefinitions(version))
 				yield return pi;
-			yield return new EntityFieldDefinition("FontName", typeof(string));
-			yield return new EntityFieldDefinition("Size", typeof(int));
-			yield return new EntityFieldDefinition("Decoration", typeof(byte));
-			yield return new EntityFieldDefinition("ColorStyle", typeof(object));
+			yield return new EntityFieldDefinition("FontName", typeof (string));
+			yield return new EntityFieldDefinition("Size", typeof (int));
+			yield return new EntityFieldDefinition("Decoration", typeof (byte));
+			yield return new EntityFieldDefinition("ColorStyle", typeof (object));
 		}
 
 		#endregion
-
 
 		/// <override></override>
 		[Category("Appearance")]
 		[Description("The color of the style's font.")]
 		[RequiredPermission(Permission.Designs)]
-		public IColorStyle ColorStyle {
+		public IColorStyle ColorStyle
+		{
 			get { return colorStyle ?? Dataweb.NShape.ColorStyle.Empty; }
-			set {
+			set
+			{
 				if (value == Dataweb.NShape.ColorStyle.Empty)
 					colorStyle = null;
 				else colorStyle = value;
@@ -1328,7 +1486,8 @@ namespace Dataweb.NShape {
 		[Browsable(false)]
 		[Category("Appearance")]
 		[RequiredPermission(Permission.Designs)]
-		public FontFamily FontFamily {
+		public FontFamily FontFamily
+		{
 			get { return fontFamily; }
 			set { fontFamily = value; }
 		}
@@ -1338,8 +1497,9 @@ namespace Dataweb.NShape {
 		[Category("Appearance")]
 		[Description("Name of the style's font.")]
 		[RequiredPermission(Permission.Designs)]
-		[Editor("Dataweb.NShape.WinFormsUI.FontFamilyUITypeEditor, Dataweb.NShape.WinFormsUI", typeof(UITypeEditor))]
-		public string FontName {
+		[Editor("Dataweb.NShape.WinFormsUI.FontFamilyUITypeEditor, Dataweb.NShape.WinFormsUI", typeof (UITypeEditor))]
+		public string FontName
+		{
 			get { return fontFamily.Name; }
 			set { fontFamily = FindFontFamily(value); }
 		}
@@ -1349,9 +1509,11 @@ namespace Dataweb.NShape {
 		[Category("Appearance")]
 		[Description("Size of the style's font in display units.")]
 		[RequiredPermission(Permission.Designs)]
-		public int Size {
+		public int Size
+		{
 			get { return fontSize; }
-			set {
+			set
+			{
 				fontSize = value;
 				fontSizeInPoints = Geometry.PixelToPoint(value, dpi);
 			}
@@ -1364,9 +1526,11 @@ namespace Dataweb.NShape {
 		[Category("Appearance")]
 		[Description("Size of the style's font in points.")]
 		[RequiredPermission(Permission.Designs)]
-		public float SizeInPoints {
+		public float SizeInPoints
+		{
 			get { return fontSizeInPoints; }
-			set {
+			set
+			{
 				fontSizeInPoints = value;
 				fontSize = Geometry.PointToPixel(value, dpi);
 			}
@@ -1377,9 +1541,11 @@ namespace Dataweb.NShape {
 		[Category("Appearance")]
 		[Description("Style of the style's font.")]
 		[RequiredPermission(Permission.Designs)]
-		public FontStyle Style {
+		public FontStyle Style
+		{
 			get { return fontStyle; }
-			set {
+			set
+			{
 				if (value == FontStyle.Regular)
 					fontStyle = FontStyle.Regular;
 				else
@@ -1389,43 +1555,49 @@ namespace Dataweb.NShape {
 
 
 		/// <override></override>
-		public override void Assign(IStyle style, FindStyleCallback findStyleCallback) {
+		public override void Assign(IStyle style, FindStyleCallback findStyleCallback)
+		{
 			if (style is CharacterStyle) {
 				// Delete GDI+ objects based on the current style
 				ToolCache.NotifyStyleChanged(this);
 
 				base.Assign(style, findStyleCallback);
 
-				IColorStyle colorStyle = (IColorStyle)findStyleCallback(((CharacterStyle)style).ColorStyle);
+				IColorStyle colorStyle = (IColorStyle) findStyleCallback(((CharacterStyle) style).ColorStyle);
 				if (colorStyle != null) this.ColorStyle = colorStyle;
-				else this.ColorStyle = ((CharacterStyle)style).ColorStyle;
+				else this.ColorStyle = ((CharacterStyle) style).ColorStyle;
 
-				this.FontName = ((CharacterStyle)style).FontName;
-				this.SizeInPoints = ((CharacterStyle)style).SizeInPoints;
-				this.Style = ((CharacterStyle)style).Style;
-			} else throw new NShapeException("Style is not of the required type.");
+				this.FontName = ((CharacterStyle) style).FontName;
+				this.SizeInPoints = ((CharacterStyle) style).SizeInPoints;
+				this.Style = ((CharacterStyle) style).Style;
+			}
+			else throw new NShapeException("Style is not of the required type.");
 		}
 
 
 		/// <override></override>
-		public bool Equals(ICharacterStyle other) {
+		public bool Equals(ICharacterStyle other)
+		{
 			return other == this;
 		}
 
 
 		/// <override></override>
-		public bool Equals(CharacterStyle other) {
+		public bool Equals(CharacterStyle other)
+		{
 			return other == this;
 		}
 
 
 		/// <override></override>
-		protected override bool IsStandardName(string name) {
+		protected override bool IsStandardName(string name)
+		{
 			return CharacterStyle.StandardNames.EqualsAny(name);
 		}
 
 
-		static CharacterStyle() {
+		static CharacterStyle()
+		{
 			StandardNames = new StandardCharacterStyleNames();
 			using (Graphics gfx = Graphics.FromHwnd(IntPtr.Zero))
 				dpi = gfx.DpiY;
@@ -1437,14 +1609,16 @@ namespace Dataweb.NShape {
 		}
 
 
-		private void Construct() {
+		private void Construct()
+		{
 			// Get the system's default GenericSansSerif font family
 			fontFamily = FindFontFamily(string.Empty);
 			fontSize = Geometry.PointToPixel(fontSizeInPoints, dpi);
 		}
 
 
-		private FontFamily FindFontFamily(string fontName) {
+		private FontFamily FindFontFamily(string fontName)
+		{
 			FontFamily result = null;
 			if (!string.IsNullOrEmpty(fontName)) {
 				FontFamily[] families = FontFamily.Families;
@@ -1458,8 +1632,8 @@ namespace Dataweb.NShape {
 			return result ?? FontFamily.GenericSansSerif;
 		}
 
-
 		#region Fields
+
 		private static readonly float dpi;
 
 		private float fontSizeInPoints = 8.25f;
@@ -1467,15 +1641,16 @@ namespace Dataweb.NShape {
 		private FontStyle fontStyle = 0;
 		private FontFamily fontFamily = null;
 		private IColorStyle colorStyle = null;
+
 		#endregion
 	}
 
-	
+
 	/// <summary>
 	/// Provides the definition of a color.
 	/// </summary>
-	public sealed class ColorStyle : Style, IColorStyle, IEquatable<IColorStyle>, IEquatable<ColorStyle> {
-
+	public sealed class ColorStyle : Style, IColorStyle, IEquatable<IColorStyle>, IEquatable<ColorStyle>
+	{
 		/// <summary>
 		/// This static read-only field represents a default and not initialized color style.
 		/// </summary>
@@ -1492,7 +1667,8 @@ namespace Dataweb.NShape {
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.ColorStyle" />.
 		/// </summary>
 		public ColorStyle()
-			: this(string.Empty, Color.Empty) {
+			: this(string.Empty, Color.Empty)
+		{
 		}
 
 
@@ -1500,7 +1676,8 @@ namespace Dataweb.NShape {
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.ColorStyle" />.
 		/// </summary>
 		public ColorStyle(string name)
-			: this(name, Color.Empty) {
+			: this(name, Color.Empty)
+		{
 		}
 
 
@@ -1508,7 +1685,8 @@ namespace Dataweb.NShape {
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.ColorStyle" />.
 		/// </summary>
 		public ColorStyle(string name, Color color)
-			: base(name) {
+			: base(name)
+		{
 			Construct(color, AlphaToTransparency(color.A));
 		}
 
@@ -1517,25 +1695,26 @@ namespace Dataweb.NShape {
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.ColorStyle" />.
 		/// </summary>
 		public ColorStyle(string name, Color color, byte transparency)
-			: base(name) {
+			: base(name)
+		{
 			Construct(color, transparency);
 		}
-
 
 		#region IDisposable Members
 
 		/// <override></override>
-		public override void Dispose() {
+		public override void Dispose()
+		{
 			// nothing to do
 		}
 
 		#endregion
 
-
 		#region IEntity Members
 
 		/// <override></override>
-		public override void LoadFields(IRepositoryReader reader, int version) {
+		public override void LoadFields(IRepositoryReader reader, int version)
+		{
 			base.LoadFields(reader, version);
 			color = Color.FromArgb(reader.ReadInt32());
 			transparency = reader.ReadByte();
@@ -1544,18 +1723,20 @@ namespace Dataweb.NShape {
 
 
 		/// <override></override>
-		public override void SaveFields(IRepositoryWriter writer, int version) {
+		public override void SaveFields(IRepositoryWriter writer, int version)
+		{
 			base.SaveFields(writer, version);
 			writer.WriteInt32(color.ToArgb());
 			writer.WriteByte(transparency);
-			if (version >= 3) writer.WriteBool(convertToGray);	
+			if (version >= 3) writer.WriteBool(convertToGray);
 		}
 
 
 		/// <summary>
 		/// The entity type name of <see cref="T:Dataweb.NShape.ColorStyle" />.
 		/// </summary>
-		public static string EntityTypeName {
+		public static string EntityTypeName
+		{
 			get { return "Core.ColorStyle"; }
 		}
 
@@ -1563,24 +1744,26 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// Retrieves the persistable properties of <see cref="T:Dataweb.NShape.ColorStyle" />.
 		/// </summary>
-		public static new IEnumerable<EntityPropertyDefinition> GetPropertyDefinitions(int version) {
+		public new static IEnumerable<EntityPropertyDefinition> GetPropertyDefinitions(int version)
+		{
 			foreach (EntityPropertyDefinition pi in Style.GetPropertyDefinitions(version))
 				yield return pi;
-			yield return new EntityFieldDefinition("Color", typeof(Color));
-			yield return new EntityFieldDefinition("Transparency", typeof(byte));
-			if (version >= 3) yield return new EntityFieldDefinition("ConvertToGray", typeof(bool));
+			yield return new EntityFieldDefinition("Color", typeof (Color));
+			yield return new EntityFieldDefinition("Transparency", typeof (byte));
+			if (version >= 3) yield return new EntityFieldDefinition("ConvertToGray", typeof (bool));
 		}
 
 		#endregion
-
 
 		/// <override></override>
 		[Category("Appearance")]
 		[Description("The style's color.")]
 		[RequiredPermission(Permission.Designs)]
-		public Color Color {
+		public Color Color
+		{
 			get { return color; }
-			set {
+			set
+			{
 				color = value;
 				transparency = AlphaToTransparency(color.A);
 			}
@@ -1593,7 +1776,8 @@ namespace Dataweb.NShape {
 		[Browsable(false)]
 		[Category("Appearance")]
 		[RequiredPermission(Permission.Designs)]
-		public bool ConvertToGray {
+		public bool ConvertToGray
+		{
 			get { return convertToGray; }
 			set { convertToGray = value; }
 		}
@@ -1605,9 +1789,11 @@ namespace Dataweb.NShape {
 		[Category("Appearance")]
 		[Description("Transparency of the style's color in percentage. 100 is 100% transparent and therefore invisible.")]
 		[RequiredPermission(Permission.Designs)]
-		public byte Transparency {
+		public byte Transparency
+		{
 			get { return transparency; }
-			set {
+			set
+			{
 				if (value < 0 || value > 100) throw new NShapeException("Value has to be between 0 and 100.");
 				transparency = value;
 				color = Color.FromArgb(TransparencyToAlpha(transparency), color);
@@ -1616,66 +1802,77 @@ namespace Dataweb.NShape {
 
 
 		/// <override></override>
-		public override void Assign(IStyle style, FindStyleCallback findStyleCallback) {
+		public override void Assign(IStyle style, FindStyleCallback findStyleCallback)
+		{
 			if (style is ColorStyle) {
 				// Delete GDI+ objects based on the current style
 				ToolCache.NotifyStyleChanged(this);
 
 				base.Assign(style, findStyleCallback);
-				this.Color = ((ColorStyle)style).Color;
-				this.Transparency = ((ColorStyle)style).Transparency;
-				this.ConvertToGray = ((ColorStyle)style).ConvertToGray;
-			} else throw new NShapeException("Style is not of the required type.");
+				this.Color = ((ColorStyle) style).Color;
+				this.Transparency = ((ColorStyle) style).Transparency;
+				this.ConvertToGray = ((ColorStyle) style).ConvertToGray;
+			}
+			else throw new NShapeException("Style is not of the required type.");
 		}
 
 
 		/// <override></override>
-		public bool Equals(IColorStyle other) {
+		public bool Equals(IColorStyle other)
+		{
 			return other == this;
 		}
 
 
 		/// <override></override>
-		public bool Equals(ColorStyle other) {
+		public bool Equals(ColorStyle other)
+		{
 			return other == this;
 		}
 
 
 		/// <override></override>
-		protected override bool IsStandardName(string name) {
+		protected override bool IsStandardName(string name)
+		{
 			return StandardNames.EqualsAny(name);
 		}
 
 
-		static ColorStyle() {
+		static ColorStyle()
+		{
 			StandardNames = new StandardColorStyleNames();
 			Empty = new ColorStyle(EmptyStyleName, Color.Empty);
 		}
 
 
-		private void Construct(Color color, byte transparency) {
-			if (transparency < 0 || transparency > 100) throw new ArgumentOutOfRangeException("Argument 'transparency' has to be between 0 and 100.");
+		private void Construct(Color color, byte transparency)
+		{
+			if (transparency < 0 || transparency > 100)
+				throw new ArgumentOutOfRangeException("Argument 'transparency' has to be between 0 and 100.");
 			this.transparency = transparency;
 			this.color = Color.FromArgb(TransparencyToAlpha(transparency), color);
 		}
 
 
-		private byte AlphaToTransparency(byte alpha) {
-			return (byte)(100 - Math.Round(alpha / 2.55f));
+		private byte AlphaToTransparency(byte alpha)
+		{
+			return (byte) (100 - Math.Round(alpha/2.55f));
 		}
 
 
-		private byte TransparencyToAlpha(byte transparency) {
+		private byte TransparencyToAlpha(byte transparency)
+		{
 			if (transparency < 0 || transparency > 100)
 				throw new ArgumentOutOfRangeException("Value has to be between 0 and 100.");
-			return Convert.ToByte(255 - (transparency * 2.55f));
+			return Convert.ToByte(255 - (transparency*2.55f));
 		}
 
-
 		#region Fields
+
 		private Color color = Color.White;
 		private byte transparency = 0;
 		private bool convertToGray = false;
+
 		#endregion
 	}
 
@@ -1683,8 +1880,8 @@ namespace Dataweb.NShape {
 	/// <summary>
 	/// Provides the definition of filling.
 	/// </summary>
-	public sealed class FillStyle : Style, IFillStyle, IEquatable<IFillStyle>, IEquatable<FillStyle> {
-
+	public sealed class FillStyle : Style, IFillStyle, IEquatable<IFillStyle>, IEquatable<FillStyle>
+	{
 		/// <summary>
 		/// This static read-only field represents a default and not initialized fill style.
 		/// </summary>
@@ -1701,7 +1898,8 @@ namespace Dataweb.NShape {
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.FillStyle" />.
 		/// </summary>
 		public FillStyle()
-			: this(string.Empty) {
+			: this(string.Empty)
+		{
 		}
 
 
@@ -1709,7 +1907,8 @@ namespace Dataweb.NShape {
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.FillStyle" />.
 		/// </summary>
 		public FillStyle(string name)
-			: this(name, ColorStyle.Empty, ColorStyle.Empty) {
+			: this(name, ColorStyle.Empty, ColorStyle.Empty)
+		{
 		}
 
 
@@ -1717,7 +1916,8 @@ namespace Dataweb.NShape {
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.FillStyle" />.
 		/// </summary>
 		public FillStyle(string name, IColorStyle baseColorStyle, IColorStyle additionalColorStyle)
-			: base(name) {
+			: base(name)
+		{
 			Construct(baseColorStyle, additionalColorStyle);
 		}
 
@@ -1726,15 +1926,16 @@ namespace Dataweb.NShape {
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.FillStyle" />.
 		/// </summary>
 		public FillStyle(string name, NamedImage image)
-			: base(name) {
+			: base(name)
+		{
 			Construct(image);
 		}
-
 
 		#region IDisposable Members
 
 		/// <override></override>
-		public override void Dispose() {
+		public override void Dispose()
+		{
 			if (baseColorStyle != null) {
 				baseColorStyle.Dispose();
 				baseColorStyle = null;
@@ -1751,18 +1952,18 @@ namespace Dataweb.NShape {
 
 		#endregion
 
-
 		#region IEntity Members
 
 		/// <override></override>
-		public override void LoadFields(IRepositoryReader reader, int version) {
+		public override void LoadFields(IRepositoryReader reader, int version)
+		{
 			base.LoadFields(reader, version);
-			BaseColorStyle = (IColorStyle)reader.ReadColorStyle();	// Set property!
-			AdditionalColorStyle = (IColorStyle)reader.ReadColorStyle();	// Set property!
-			fillMode = (FillMode)reader.ReadByte();
-			fillPattern = (HatchStyle)reader.ReadByte();
-			if (version >= 3)  convertToGrayScale = reader.ReadBool();
-			imageLayout = (ImageLayoutMode)reader.ReadByte();
+			BaseColorStyle = (IColorStyle) reader.ReadColorStyle(); // Set property!
+			AdditionalColorStyle = (IColorStyle) reader.ReadColorStyle(); // Set property!
+			fillMode = (FillMode) reader.ReadByte();
+			fillPattern = (HatchStyle) reader.ReadByte();
+			if (version >= 3) convertToGrayScale = reader.ReadBool();
+			imageLayout = (ImageLayoutMode) reader.ReadByte();
 			imageTransparency = reader.ReadByte();
 			imageGamma = reader.ReadFloat();
 			imageCompressionQuality = reader.ReadByte();
@@ -1773,21 +1974,23 @@ namespace Dataweb.NShape {
 
 
 		/// <override></override>
-		public override void SaveFields(IRepositoryWriter writer, int version) {
+		public override void SaveFields(IRepositoryWriter writer, int version)
+		{
 			base.SaveFields(writer, version);
 			writer.WriteStyle(baseColorStyle);
 			writer.WriteStyle(additionalColorStyle);
-			writer.WriteByte((byte)fillMode);
-			writer.WriteByte((byte)fillPattern);
+			writer.WriteByte((byte) fillMode);
+			writer.WriteByte((byte) fillPattern);
 			if (version >= 3) writer.WriteBool(convertToGrayScale);
-			writer.WriteByte((byte)imageLayout);
+			writer.WriteByte((byte) imageLayout);
 			writer.WriteByte(imageTransparency);
 			writer.WriteFloat(imageGamma);
 			writer.WriteByte(imageCompressionQuality);
 			if (NamedImage.IsNullOrEmpty(image)) {
 				writer.WriteString(string.Empty);
 				writer.WriteImage(null);
-			} else {
+			}
+			else {
 				writer.WriteString(image.Name);
 				object imgTag = image.Image.Tag;
 				image.Image.Tag = image.Name;
@@ -1800,7 +2003,8 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// The entity type name of <see cref="T:Dataweb.NShape.FillStyle" />.
 		/// </summary>
-		public static string EntityTypeName {
+		public static string EntityTypeName
+		{
 			get { return "Core.FillStyle"; }
 		}
 
@@ -1808,32 +2012,36 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// Retrieves the persistable properties of <see cref="T:Dataweb.NShape.FillStyle" />.
 		/// </summary>
-		public static new IEnumerable<EntityPropertyDefinition> GetPropertyDefinitions(int version) {
+		public new static IEnumerable<EntityPropertyDefinition> GetPropertyDefinitions(int version)
+		{
 			foreach (EntityPropertyDefinition pi in Style.GetPropertyDefinitions(version))
 				yield return pi;
-			yield return new EntityFieldDefinition("BaseColorStyle", typeof(object));
-			yield return new EntityFieldDefinition("AdditionalColorStyle", typeof(object));
-			yield return new EntityFieldDefinition("FillMode", typeof(byte));
-			yield return new EntityFieldDefinition("FillPattern", typeof(byte));
-			if (version >= 3) yield return new EntityFieldDefinition("ConvertToGrayScale", typeof(bool));
-			yield return new EntityFieldDefinition("ImageLayout", typeof(byte));
-			yield return new EntityFieldDefinition("ImageTransparency", typeof(byte));
-			yield return new EntityFieldDefinition("ImageGammaCorrection", typeof(float));
-			yield return new EntityFieldDefinition("ImageCompressionQuality", typeof(byte));
-			yield return new EntityFieldDefinition("ImageFileName", typeof(string));
-			yield return new EntityFieldDefinition("Image", typeof(Image));
+			yield return new EntityFieldDefinition("BaseColorStyle", typeof (object));
+			yield return new EntityFieldDefinition("AdditionalColorStyle", typeof (object));
+			yield return new EntityFieldDefinition("FillMode", typeof (byte));
+			yield return new EntityFieldDefinition("FillPattern", typeof (byte));
+			if (version >= 3) yield return new EntityFieldDefinition("ConvertToGrayScale", typeof (bool));
+			yield return new EntityFieldDefinition("ImageLayout", typeof (byte));
+			yield return new EntityFieldDefinition("ImageTransparency", typeof (byte));
+			yield return new EntityFieldDefinition("ImageGammaCorrection", typeof (float));
+			yield return new EntityFieldDefinition("ImageCompressionQuality", typeof (byte));
+			yield return new EntityFieldDefinition("ImageFileName", typeof (string));
+			yield return new EntityFieldDefinition("Image", typeof (Image));
 		}
 
 		#endregion
 
-
 		/// <override></override>
 		[Category("Appearance")]
-		[Description("The additional color of the style. Depends on the style's FillMode: For gradients, it is the color of the upper left edge. In case of a pattern, this is the foreground color. For all other fill modes it will be ignored.")]
+		[Description(
+			"The additional color of the style. Depends on the style's FillMode: For gradients, it is the color of the upper left edge. In case of a pattern, this is the foreground color. For all other fill modes it will be ignored."
+			)]
 		[RequiredPermission(Permission.Designs)]
-		public IColorStyle AdditionalColorStyle {
+		public IColorStyle AdditionalColorStyle
+		{
 			get { return additionalColorStyle ?? Dataweb.NShape.ColorStyle.Empty; }
-			set {
+			set
+			{
 				if (value == Dataweb.NShape.ColorStyle.Empty)
 					additionalColorStyle = null;
 				else additionalColorStyle = value;
@@ -1843,11 +2051,15 @@ namespace Dataweb.NShape {
 
 		/// <override></override>
 		[Category("Appearance")]
-		[Description("The base color of the style. Depends on the style's FillMode: For gradients, it is the color of the lower right edge. In case of a pattern, this is the background color. For the solid fill mode it is the fill color and otherwise it will be ignored.")]
+		[Description(
+			"The base color of the style. Depends on the style's FillMode: For gradients, it is the color of the lower right edge. In case of a pattern, this is the background color. For the solid fill mode it is the fill color and otherwise it will be ignored."
+			)]
 		[RequiredPermission(Permission.Designs)]
-		public IColorStyle BaseColorStyle {
+		public IColorStyle BaseColorStyle
+		{
 			get { return baseColorStyle ?? Dataweb.NShape.ColorStyle.Empty; }
-			set {
+			set
+			{
 				if (value == Dataweb.NShape.ColorStyle.Empty)
 					baseColorStyle = null;
 				else baseColorStyle = value;
@@ -1859,9 +2071,12 @@ namespace Dataweb.NShape {
 		/// If true, the Image is shown as grayscale image
 		/// </summary>
 		[Category("Appearance")]
-		[Description("Specifies if the style's image should be displayed as grayscale image. Will be ignored if the fill mode is not image.")]
+		[Description(
+			"Specifies if the style's image should be displayed as grayscale image. Will be ignored if the fill mode is not image."
+			)]
 		[RequiredPermission(Permission.Designs)]
-		public bool ConvertToGrayScale {
+		public bool ConvertToGrayScale
+		{
 			get { return convertToGrayScale; }
 			set { convertToGrayScale = value; }
 		}
@@ -1871,7 +2086,8 @@ namespace Dataweb.NShape {
 		[Category("Appearance")]
 		[Description("Specifies the fill mode of the style.")]
 		[RequiredPermission(Permission.Designs)]
-		public FillMode FillMode {
+		public FillMode FillMode
+		{
 			get { return fillMode; }
 			set { fillMode = value; }
 		}
@@ -1881,7 +2097,8 @@ namespace Dataweb.NShape {
 		[Category("Appearance")]
 		[Description("Specifies the fill pattern of the style. Will be ignored if the fill mode is not pattern.")]
 		[RequiredPermission(Permission.Designs)]
-		public HatchStyle FillPattern {
+		public HatchStyle FillPattern
+		{
 			get { return fillPattern; }
 			set { fillPattern = value; }
 		}
@@ -1889,17 +2106,21 @@ namespace Dataweb.NShape {
 
 		/// <override></override>
 		[Browsable(true)]
-		public short GradientAngle {
+		public short GradientAngle
+		{
 			get { return gradientAngle; }
 		}
 
 
 		/// <override></override>
 		[Category("Appearance")]
-		[Description("The Image of the fill style. Will be ignored if the fill mode is not image. Supports both bitmap and vector images.")]
+		[Description(
+			"The Image of the fill style. Will be ignored if the fill mode is not image. Supports both bitmap and vector images."
+			)]
 		[RequiredPermission(Permission.Designs)]
-		[Editor("Dataweb.NShape.WinFormsUI.NamedImageUITypeEditor, Dataweb.NShape.WinFormsUI", typeof(UITypeEditor))]
-		public NamedImage Image {
+		[Editor("Dataweb.NShape.WinFormsUI.NamedImageUITypeEditor, Dataweb.NShape.WinFormsUI", typeof (UITypeEditor))]
+		public NamedImage Image
+		{
 			get { return image; }
 			set { image = value; }
 		}
@@ -1910,11 +2131,15 @@ namespace Dataweb.NShape {
 		/// </summary>
 		[Browsable(false)]
 		[Category("Appearance")]
-		[Description("Specifies the compression quality in percentage when saving the style's image with a lossy compression file format. Will be ignored if the fill mode is not image.")]
+		[Description(
+			"Specifies the compression quality in percentage when saving the style's image with a lossy compression file format. Will be ignored if the fill mode is not image."
+			)]
 		[RequiredPermission(Permission.Designs)]
-		public byte ImageCompressionQuality {
+		public byte ImageCompressionQuality
+		{
 			get { return imageCompressionQuality; }
-			set {
+			set
+			{
 				if (value < 0 || value > 100)
 					throw new NShapeException("Value has to be between 0 and 100.");
 				imageCompressionQuality = value;
@@ -1926,11 +2151,13 @@ namespace Dataweb.NShape {
 		[Category("Appearance")]
 		[Description("Gamma correction for the style's image. Will be ignored if the fill mode is not image.")]
 		[RequiredPermission(Permission.Designs)]
-		public float ImageGammaCorrection {
+		public float ImageGammaCorrection
+		{
 			get { return imageGamma; }
-			set {
+			set
+			{
 				if (value <= 0) throw new ArgumentException("Value has to be greater than 0.");
-				imageGamma = value; 
+				imageGamma = value;
 			}
 		}
 
@@ -1939,7 +2166,8 @@ namespace Dataweb.NShape {
 		[Category("Appearance")]
 		[Description("Layout of the style's image. Will be ignored if the fill mode is not image.")]
 		[RequiredPermission(Permission.Designs)]
-		public ImageLayoutMode ImageLayout {
+		public ImageLayoutMode ImageLayout
+		{
 			get { return imageLayout; }
 			set { imageLayout = value; }
 		}
@@ -1949,9 +2177,11 @@ namespace Dataweb.NShape {
 		[Category("Appearance")]
 		[Description("Transparency of the style's image. Will be ignored if the fill mode is not image.")]
 		[RequiredPermission(Permission.Designs)]
-		public byte ImageTransparency {
+		public byte ImageTransparency
+		{
 			get { return imageTransparency; }
-			set {
+			set
+			{
 				if (value < 0 || value > 100)
 					throw new ArgumentException("The value has to be between 0 and 100.");
 				imageTransparency = value;
@@ -1960,56 +2190,62 @@ namespace Dataweb.NShape {
 
 
 		/// <override></override>
-		public override void Assign(IStyle style, FindStyleCallback findStyleCallback) {
+		public override void Assign(IStyle style, FindStyleCallback findStyleCallback)
+		{
 			if (style is FillStyle) {
 				// Delete GDI+ objects based on the current style
 				ToolCache.NotifyStyleChanged(this);
 
 				base.Assign(style, findStyleCallback);
 				IColorStyle colorStyle;
-				if (((FillStyle)style).AdditionalColorStyle != null) {
-					colorStyle = (IColorStyle)findStyleCallback(((FillStyle)style).AdditionalColorStyle);
+				if (((FillStyle) style).AdditionalColorStyle != null) {
+					colorStyle = (IColorStyle) findStyleCallback(((FillStyle) style).AdditionalColorStyle);
 					if (colorStyle != null) this.AdditionalColorStyle = colorStyle;
-					else this.AdditionalColorStyle = ((FillStyle)style).AdditionalColorStyle;
+					else this.AdditionalColorStyle = ((FillStyle) style).AdditionalColorStyle;
 				}
-				if (((FillStyle)style).BaseColorStyle != null) {
-					colorStyle = (IColorStyle)findStyleCallback(((FillStyle)style).BaseColorStyle);
+				if (((FillStyle) style).BaseColorStyle != null) {
+					colorStyle = (IColorStyle) findStyleCallback(((FillStyle) style).BaseColorStyle);
 					if (colorStyle != null) this.BaseColorStyle = colorStyle;
-					else this.BaseColorStyle = ((FillStyle)style).BaseColorStyle;
+					else this.BaseColorStyle = ((FillStyle) style).BaseColorStyle;
 				}
 
-				this.ConvertToGrayScale = ((FillStyle)style).ConvertToGrayScale;
-				this.FillMode = ((FillStyle)style).FillMode;
-				this.FillPattern = ((FillStyle)style).FillPattern;
+				this.ConvertToGrayScale = ((FillStyle) style).ConvertToGrayScale;
+				this.FillMode = ((FillStyle) style).FillMode;
+				this.FillPattern = ((FillStyle) style).FillPattern;
 				if (this.Image != null) this.Image.Dispose();
-				this.Image = ((FillStyle)style).Image;
-				this.ImageCompressionQuality = ((FillStyle)style).ImageCompressionQuality;
-				this.ImageGammaCorrection = ((FillStyle)style).ImageGammaCorrection;
-				this.ImageLayout = ((FillStyle)style).ImageLayout;
-				this.ImageTransparency = ((FillStyle)style).ImageTransparency;
-			} else throw new NShapeException("Style is not of the required Type.");
+				this.Image = ((FillStyle) style).Image;
+				this.ImageCompressionQuality = ((FillStyle) style).ImageCompressionQuality;
+				this.ImageGammaCorrection = ((FillStyle) style).ImageGammaCorrection;
+				this.ImageLayout = ((FillStyle) style).ImageLayout;
+				this.ImageTransparency = ((FillStyle) style).ImageTransparency;
+			}
+			else throw new NShapeException("Style is not of the required Type.");
 		}
 
 
 		/// <override></override>
-		public bool Equals(IFillStyle other) {
+		public bool Equals(IFillStyle other)
+		{
 			return other == this;
 		}
 
 
 		/// <override></override>
-		public bool Equals(FillStyle other) {
+		public bool Equals(FillStyle other)
+		{
 			return other == this;
 		}
 
 
 		/// <override></override>
-		protected override bool IsStandardName(string name) {
+		protected override bool IsStandardName(string name)
+		{
 			return FillStyle.StandardNames.EqualsAny(name);
 		}
 
 
-		private void Construct(IColorStyle baseColorStyle, IColorStyle additionalColorStyle) {
+		private void Construct(IColorStyle baseColorStyle, IColorStyle additionalColorStyle)
+		{
 			if (baseColorStyle == null) throw new ArgumentNullException("baseColorStyle");
 			if (additionalColorStyle == null) throw new ArgumentNullException("additionalColorStyle");
 			this.BaseColorStyle = baseColorStyle;
@@ -2017,13 +2253,15 @@ namespace Dataweb.NShape {
 		}
 
 
-		private void Construct(NamedImage image) {
+		private void Construct(NamedImage image)
+		{
 			if (image == null) throw new ArgumentNullException("image");
 			this.image = image;
 		}
 
 
-		static FillStyle() {
+		static FillStyle()
+		{
 			StandardNames = new StandardFillStyleNames();
 
 			Empty = new FillStyle(EmptyStyleName);
@@ -2035,7 +2273,6 @@ namespace Dataweb.NShape {
 			Empty.Image = null;
 			Empty.ImageLayout = ImageLayoutMode.Original;
 		}
-
 
 		#region Fields
 
@@ -2060,8 +2297,8 @@ namespace Dataweb.NShape {
 	/// <summary>
 	/// Provides the definition of lines and outlines.
 	/// </summary>
-	public sealed class LineStyle : Style, ILineStyle, IEquatable<ILineStyle>, IEquatable<LineStyle> {
-
+	public sealed class LineStyle : Style, ILineStyle, IEquatable<ILineStyle>, IEquatable<LineStyle>
+	{
 		/// <summary>
 		/// This static read-only field represents a default and not initialized line style.
 		/// </summary>
@@ -2078,7 +2315,8 @@ namespace Dataweb.NShape {
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.LineStyle" />.
 		/// </summary>
 		public LineStyle(string name, int lineWidth, IColorStyle colorStyle)
-			: base(name) {
+			: base(name)
+		{
 			this.lineWidth = lineWidth;
 			this.colorStyle = colorStyle;
 		}
@@ -2088,7 +2326,8 @@ namespace Dataweb.NShape {
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.LineStyle" />.
 		/// </summary>
 		public LineStyle(string name)
-			: base(name) {
+			: base(name)
+		{
 		}
 
 
@@ -2096,14 +2335,15 @@ namespace Dataweb.NShape {
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.LineStyle" />.
 		/// </summary>
 		public LineStyle()
-			: base() {
+			: base()
+		{
 		}
-
 
 		#region IDisposable Members
 
 		/// <override></override>
-		public override void Dispose() {
+		public override void Dispose()
+		{
 			if (colorStyle != null) {
 				colorStyle.Dispose();
 				colorStyle = null;
@@ -2114,27 +2354,28 @@ namespace Dataweb.NShape {
 
 		#endregion
 
-
 		#region IPersistable Members
 
 		/// <override></override>
-		public override void LoadFields(IRepositoryReader reader, int version) {
+		public override void LoadFields(IRepositoryReader reader, int version)
+		{
 			base.LoadFields(reader, version);
 			LineWidth = reader.ReadInt32();
-			DashType = (DashType)reader.ReadByte();
-			DashCap = (DashCap)reader.ReadByte();			// set property instead of member var in order to create DashPattern array
-			LineJoin = (LineJoin)reader.ReadByte();
-			ColorStyle = (IColorStyle)reader.ReadColorStyle();	// Set property!
+			DashType = (DashType) reader.ReadByte();
+			DashCap = (DashCap) reader.ReadByte(); // set property instead of member var in order to create DashPattern array
+			LineJoin = (LineJoin) reader.ReadByte();
+			ColorStyle = (IColorStyle) reader.ReadColorStyle(); // Set property!
 		}
 
 
 		/// <override></override>
-		public override void SaveFields(IRepositoryWriter writer, int version) {
+		public override void SaveFields(IRepositoryWriter writer, int version)
+		{
 			base.SaveFields(writer, version);
 			writer.WriteInt32(lineWidth);
-			writer.WriteByte((byte)dashStyle);
-			writer.WriteByte((byte)dashCap);
-			writer.WriteByte((byte)lineJoin);
+			writer.WriteByte((byte) dashStyle);
+			writer.WriteByte((byte) dashCap);
+			writer.WriteByte((byte) lineJoin);
 			writer.WriteStyle(colorStyle);
 		}
 
@@ -2142,7 +2383,8 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// The entity type name of <see cref="T:Dataweb.NShape.LineStyle" />.
 		/// </summary>
-		public static string EntityTypeName {
+		public static string EntityTypeName
+		{
 			get { return "Core.LineStyle"; }
 		}
 
@@ -2150,26 +2392,28 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// Retrieves the persistable properties of <see cref="T:Dataweb.NShape.LineStyle" />.
 		/// </summary>
-		public static new IEnumerable<EntityPropertyDefinition> GetPropertyDefinitions(int version) {
+		public new static IEnumerable<EntityPropertyDefinition> GetPropertyDefinitions(int version)
+		{
 			foreach (EntityPropertyDefinition pi in Style.GetPropertyDefinitions(version))
 				yield return pi;
-			yield return new EntityFieldDefinition("LineWidth", typeof(int));
-			yield return new EntityFieldDefinition("DashType", typeof(byte));
-			yield return new EntityFieldDefinition("DashCap", typeof(byte));
-			yield return new EntityFieldDefinition("LineJoin", typeof(byte));
-			yield return new EntityFieldDefinition("ColorStyle", typeof(object));
+			yield return new EntityFieldDefinition("LineWidth", typeof (int));
+			yield return new EntityFieldDefinition("DashType", typeof (byte));
+			yield return new EntityFieldDefinition("DashCap", typeof (byte));
+			yield return new EntityFieldDefinition("LineJoin", typeof (byte));
+			yield return new EntityFieldDefinition("ColorStyle", typeof (object));
 		}
 
 		#endregion
-
 
 		/// <override></override>
 		[Category("Appearance")]
 		[Description("Color of the line.")]
 		[RequiredPermission(Permission.Designs)]
-		public IColorStyle ColorStyle {
+		public IColorStyle ColorStyle
+		{
 			get { return colorStyle ?? Dataweb.NShape.ColorStyle.Empty; }
-			set {
+			set
+			{
 				if (value == Dataweb.NShape.ColorStyle.Empty)
 					colorStyle = null;
 				else colorStyle = value;
@@ -2181,7 +2425,8 @@ namespace Dataweb.NShape {
 		[Category("Appearance")]
 		[Description("Caps of a dashed line's dashes.")]
 		[RequiredPermission(Permission.Designs)]
-		public DashCap DashCap {
+		public DashCap DashCap
+		{
 			get { return dashCap; }
 			set { dashCap = value; }
 		}
@@ -2189,7 +2434,8 @@ namespace Dataweb.NShape {
 
 		/// <override></override>
 		[Browsable(false)]
-		public float[] DashPattern {
+		public float[] DashPattern
+		{
 			get { return dashPattern; }
 		}
 
@@ -2198,25 +2444,27 @@ namespace Dataweb.NShape {
 		[Category("Appearance")]
 		[Description("Dash type of the line.")]
 		[RequiredPermission(Permission.Designs)]
-		public DashType DashType {
+		public DashType DashType
+		{
 			get { return dashStyle; }
-			set {
+			set
+			{
 				dashStyle = value;
 				switch (dashStyle) {
 					case DashType.Solid:
 						dashPattern = new float[0];
 						break;
 					case DashType.Dash:
-						dashPattern = new float[2] { lineDashLen, lineDashSpace };
+						dashPattern = new float[2] {lineDashLen, lineDashSpace};
 						break;
 					case DashType.DashDot:
-						dashPattern = new float[4] { lineDashLen, lineDashSpace, lineDotLen, lineDashSpace };
+						dashPattern = new float[4] {lineDashLen, lineDashSpace, lineDotLen, lineDashSpace};
 						break;
 					case DashType.DashDotDot:
-						dashPattern = new float[6] { lineDashLen, lineDashSpace, lineDotLen, lineDotSpace, lineDotLen, lineDashSpace };
+						dashPattern = new float[6] {lineDashLen, lineDashSpace, lineDotLen, lineDotSpace, lineDotLen, lineDashSpace};
 						break;
 					case DashType.Dot:
-						dashPattern = new float[2] { lineDotLen, lineDotSpace };
+						dashPattern = new float[2] {lineDotLen, lineDotSpace};
 						break;
 					default:
 						throw new NShapeUnsupportedValueException(dashStyle);
@@ -2229,7 +2477,8 @@ namespace Dataweb.NShape {
 		[Category("Appearance")]
 		[Description("Shape of the line's edges and caps.")]
 		[RequiredPermission(Permission.Designs)]
-		public LineJoin LineJoin {
+		public LineJoin LineJoin
+		{
 			get { return lineJoin; }
 			set { lineJoin = value; }
 		}
@@ -2239,9 +2488,11 @@ namespace Dataweb.NShape {
 		[Category("Appearance")]
 		[Description("Thickness of the line.")]
 		[RequiredPermission(Permission.Designs)]
-		public int LineWidth {
+		public int LineWidth
+		{
 			get { return lineWidth; }
-			set {
+			set
+			{
 				if (value <= 0)
 					throw new NShapeException("Value has to be greater than 0.");
 				lineWidth = value;
@@ -2250,43 +2501,49 @@ namespace Dataweb.NShape {
 
 
 		/// <override></override>
-		public override void Assign(IStyle style, FindStyleCallback findStyleCallback) {
+		public override void Assign(IStyle style, FindStyleCallback findStyleCallback)
+		{
 			if (style is LineStyle) {
 				// Delete GDI+ objects based on the current style
 				ToolCache.NotifyStyleChanged(this);
 
 				base.Assign(style, findStyleCallback);
-				IColorStyle colorStyle = (IColorStyle)findStyleCallback(((LineStyle)style).ColorStyle);
+				IColorStyle colorStyle = (IColorStyle) findStyleCallback(((LineStyle) style).ColorStyle);
 				if (colorStyle != null) this.ColorStyle = colorStyle;
-				else this.ColorStyle = ((LineStyle)style).ColorStyle;
+				else this.ColorStyle = ((LineStyle) style).ColorStyle;
 
-				this.DashCap = ((LineStyle)style).DashCap;
-				this.DashType = ((LineStyle)style).DashType;
-				this.LineJoin = ((LineStyle)style).LineJoin;
-				this.LineWidth = ((LineStyle)style).LineWidth;
-			} else throw new NShapeException("Style is not of the required type.");
+				this.DashCap = ((LineStyle) style).DashCap;
+				this.DashType = ((LineStyle) style).DashType;
+				this.LineJoin = ((LineStyle) style).LineJoin;
+				this.LineWidth = ((LineStyle) style).LineWidth;
+			}
+			else throw new NShapeException("Style is not of the required type.");
 		}
 
 
 		/// <override></override>
-		public bool Equals(ILineStyle other) {
+		public bool Equals(ILineStyle other)
+		{
 			return other == this;
 		}
 
 
 		/// <override></override>
-		public bool Equals(LineStyle other) {
+		public bool Equals(LineStyle other)
+		{
 			return other == this;
 		}
 
 
 		/// <override></override>
-		protected override bool IsStandardName(string name) {
+		protected override bool IsStandardName(string name)
+		{
 			return LineStyle.StandardNames.EqualsAny(name);
 		}
 
 
-		static LineStyle() {
+		static LineStyle()
+		{
 			StandardNames = new StandardLineStyleNames();
 
 			Empty = new LineStyle(EmptyStyleName);
@@ -2296,7 +2553,6 @@ namespace Dataweb.NShape {
 			Empty.LineJoin = LineJoin.Round;
 			Empty.LineWidth = 1;
 		}
-
 
 		#region Fields
 
@@ -2319,8 +2575,8 @@ namespace Dataweb.NShape {
 	/// <summary>
 	/// Provides the definition of text layout.
 	/// </summary>
-	public sealed class ParagraphStyle : Style, IParagraphStyle, IEquatable<IParagraphStyle>, IEquatable<ParagraphStyle> {
-
+	public sealed class ParagraphStyle : Style, IParagraphStyle, IEquatable<IParagraphStyle>, IEquatable<ParagraphStyle>
+	{
 		/// <summary>
 		/// This static read-only field represents a default and not initialized paragraph style.
 		/// </summary>
@@ -2337,7 +2593,8 @@ namespace Dataweb.NShape {
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.ParagraphStyle" />.
 		/// </summary>
 		public ParagraphStyle(string name)
-			: base(name) {
+			: base(name)
+		{
 		}
 
 
@@ -2345,37 +2602,39 @@ namespace Dataweb.NShape {
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.ParagraphStyle" />.
 		/// </summary>
 		public ParagraphStyle()
-			: base() {
+			: base()
+		{
 		}
-
 
 		#region IDisposable Members
 
 		/// <override></override>
-		public override void Dispose() {
+		public override void Dispose()
+		{
 			// nothing to do
 		}
 
 		#endregion
 
-
 		#region IEntity Members
 
 		/// <override></override>
-		public override void LoadFields(IRepositoryReader reader, int version) {
+		public override void LoadFields(IRepositoryReader reader, int version)
+		{
 			base.LoadFields(reader, version);
-			Alignment = (ContentAlignment)reader.ReadByte();
-			Trimming = (StringTrimming)reader.ReadByte();
+			Alignment = (ContentAlignment) reader.ReadByte();
+			Trimming = (StringTrimming) reader.ReadByte();
 			Padding = new TextPadding(reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32());
 			WordWrap = reader.ReadBool();
 		}
 
 
 		/// <override></override>
-		public override void SaveFields(IRepositoryWriter writer, int version) {
+		public override void SaveFields(IRepositoryWriter writer, int version)
+		{
 			base.SaveFields(writer, version);
-			writer.WriteByte((byte)alignment);
-			writer.WriteByte((byte)trimming);
+			writer.WriteByte((byte) alignment);
+			writer.WriteByte((byte) trimming);
 			writer.WriteInt32(padding.Left);
 			writer.WriteInt32(padding.Top);
 			writer.WriteInt32(padding.Right);
@@ -2387,7 +2646,8 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// The entity type name of <see cref="T:Dataweb.NShape.ParagraphStyle" />.
 		/// </summary>
-		public static string EntityTypeName {
+		public static string EntityTypeName
+		{
 			get { return "Core.ParagraphStyle"; }
 		}
 
@@ -2395,26 +2655,27 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// Retrieves the persistable properties of <see cref="T:Dataweb.NShape.ParagraphStyle" />.
 		/// </summary>
-		public static new IEnumerable<EntityPropertyDefinition> GetPropertyDefinitions(int version) {
+		public new static IEnumerable<EntityPropertyDefinition> GetPropertyDefinitions(int version)
+		{
 			foreach (EntityPropertyDefinition pi in Style.GetPropertyDefinitions(version))
 				yield return pi;
-			yield return new EntityFieldDefinition("Alignment", typeof(byte));
-			yield return new EntityFieldDefinition("Trimming", typeof(byte));
-			yield return new EntityFieldDefinition("PaddingLeft", typeof(int));
-			yield return new EntityFieldDefinition("PaddingTop", typeof(int));
-			yield return new EntityFieldDefinition("PaddingRight", typeof(int));
-			yield return new EntityFieldDefinition("PaddingBottom", typeof(int));
-			yield return new EntityFieldDefinition("WordWrap", typeof(bool));
+			yield return new EntityFieldDefinition("Alignment", typeof (byte));
+			yield return new EntityFieldDefinition("Trimming", typeof (byte));
+			yield return new EntityFieldDefinition("PaddingLeft", typeof (int));
+			yield return new EntityFieldDefinition("PaddingTop", typeof (int));
+			yield return new EntityFieldDefinition("PaddingRight", typeof (int));
+			yield return new EntityFieldDefinition("PaddingBottom", typeof (int));
+			yield return new EntityFieldDefinition("WordWrap", typeof (bool));
 		}
 
 		#endregion
-
 
 		/// <override></override>
 		[Category("Appearance")]
 		[Description("Alignment of the text.")]
 		[RequiredPermission(Permission.Designs)]
-		public ContentAlignment Alignment {
+		public ContentAlignment Alignment
+		{
 			get { return alignment; }
 			set { alignment = value; }
 		}
@@ -2424,7 +2685,8 @@ namespace Dataweb.NShape {
 		[Category("Appearance")]
 		[Description("Trimming of the text if it requires more space than available.")]
 		[RequiredPermission(Permission.Designs)]
-		public StringTrimming Trimming {
+		public StringTrimming Trimming
+		{
 			get { return trimming; }
 			set { trimming = value; }
 		}
@@ -2434,7 +2696,8 @@ namespace Dataweb.NShape {
 		[Category("Appearance")]
 		[Description("Distance of the text from its layout rectangle.")]
 		[RequiredPermission(Permission.Designs)]
-		public TextPadding Padding {
+		public TextPadding Padding
+		{
 			get { return padding; }
 			set { padding = value; }
 		}
@@ -2444,46 +2707,53 @@ namespace Dataweb.NShape {
 		[Category("Appearance")]
 		[Description("Specifies if automatic line breaks should be enabled.")]
 		[RequiredPermission(Permission.Designs)]
-		public bool WordWrap {
+		public bool WordWrap
+		{
 			get { return wordWrap; }
 			set { wordWrap = value; }
 		}
 
 
 		/// <override></override>
-		public override void Assign(IStyle style, FindStyleCallback findStyleCallback) {
+		public override void Assign(IStyle style, FindStyleCallback findStyleCallback)
+		{
 			if (style is ParagraphStyle) {
 				// Delete GDI+ objects based on the current style
 				ToolCache.NotifyStyleChanged(this);
 
 				base.Assign(style, findStyleCallback);
-				this.Alignment = ((ParagraphStyle)style).Alignment;
-				this.Padding = ((ParagraphStyle)style).Padding;
-				this.Trimming = ((ParagraphStyle)style).Trimming;
-				this.WordWrap = ((ParagraphStyle)style).WordWrap;
-			} else throw new NShapeException("Style is not of the required type.");
+				this.Alignment = ((ParagraphStyle) style).Alignment;
+				this.Padding = ((ParagraphStyle) style).Padding;
+				this.Trimming = ((ParagraphStyle) style).Trimming;
+				this.WordWrap = ((ParagraphStyle) style).WordWrap;
+			}
+			else throw new NShapeException("Style is not of the required type.");
 		}
 
 
 		/// <override></override>
-		public bool Equals(IParagraphStyle other) {
+		public bool Equals(IParagraphStyle other)
+		{
 			return other == this;
 		}
 
 
 		/// <override></override>
-		public bool Equals(ParagraphStyle other) {
+		public bool Equals(ParagraphStyle other)
+		{
 			return other == this;
 		}
 
 
 		/// <override></override>
-		protected override bool IsStandardName(string name) {
+		protected override bool IsStandardName(string name)
+		{
 			return ParagraphStyle.StandardNames.EqualsAny(name);
 		}
 
 
-		static ParagraphStyle() {
+		static ParagraphStyle()
+		{
 			StandardNames = new StandardParagraphStyleNames();
 
 			Empty = new ParagraphStyle(EmptyStyleName);
@@ -2492,7 +2762,6 @@ namespace Dataweb.NShape {
 			Empty.Trimming = StringTrimming.None;
 			Empty.WordWrap = true;
 		}
-
 
 		#region Fields
 
@@ -2506,18 +2775,18 @@ namespace Dataweb.NShape {
 
 	#endregion
 
-
 	#region ***   StyleCollection Classes   ***
 
 	/// <summary>
 	/// A collection of <see cref="T:Dataweb.NShape.IStyle" /> sorted by name.
 	/// </summary>
-	public abstract class StyleCollection<TStyle> where TStyle : class, IStyle {
-
+	public abstract class StyleCollection<TStyle> where TStyle : class, IStyle
+	{
 		/// <summary>
 		/// Initialize a new instance of <see cref="T:Dataweb.NShape.StyleCollection`1" />.
 		/// </summary>
-		public StyleCollection() {
+		public StyleCollection()
+		{
 			Construct(-1);
 		}
 
@@ -2525,7 +2794,8 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// Initialize a new instance of <see cref="T:Dataweb.NShape.StyleCollection`1" />.
 		/// </summary>
-		public StyleCollection(int capacity) {
+		public StyleCollection(int capacity)
+		{
 			Construct(capacity);
 		}
 
@@ -2534,7 +2804,8 @@ namespace Dataweb.NShape {
 		/// Provides index based direct access to the items of the collection.
 		/// </summary>
 		/// <param name="index">Zero-based index.</param>
-		public TStyle this[int index] {
+		public TStyle this[int index]
+		{
 			get { return internalList[internalList.Keys[index]].Style; }
 		}
 
@@ -2543,7 +2814,8 @@ namespace Dataweb.NShape {
 		/// Provides index based direct access to the items of the collection.
 		/// </summary>
 		/// <param name="name">The name of the style.</param>
-		public TStyle this[string name] {
+		public TStyle this[string name]
+		{
 			get { return internalList[name].Style; }
 		}
 
@@ -2551,27 +2823,31 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// Returns the number of items in the collection.
 		/// </summary>
-		public int Count {
+		public int Count
+		{
 			get { return internalList.Count; }
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public TStyle GetPreviewStyle(TStyle style) {
+		public TStyle GetPreviewStyle(TStyle style)
+		{
 			if (style == null) throw new ArgumentNullException("style");
 			return internalList[style.Name].PreviewStyle;
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public TStyle GetPreviewStyle(string styleName) {
+		public TStyle GetPreviewStyle(string styleName)
+		{
 			if (styleName == null) throw new ArgumentNullException("styleName");
 			return internalList[styleName].PreviewStyle;
 		}
 
 
 		/// <override></override>
-		public void Add(TStyle style, TStyle previewStyle) {
+		public void Add(TStyle style, TStyle previewStyle)
+		{
 			if (style == null) throw new ArgumentNullException("style");
 			if (previewStyle == null) throw new ArgumentNullException("previewStyle");
 			internalList.Add(style.Name, new StyleCollection<TStyle>.StylePair<TStyle>(style, previewStyle));
@@ -2579,7 +2855,8 @@ namespace Dataweb.NShape {
 
 
 		/// <override></override>
-		public void Clear() {
+		public void Clear()
+		{
 			foreach (KeyValuePair<string, StylePair<TStyle>> item in internalList) {
 				IStyle baseStyle = item.Value.Style;
 				IStyle previewStyle = item.Value.PreviewStyle;
@@ -2592,11 +2869,12 @@ namespace Dataweb.NShape {
 
 
 		/// <override></override>
-		public bool Contains(TStyle style) {
+		public bool Contains(TStyle style)
+		{
 			if (style == null) throw new ArgumentNullException("style");
 			for (int i = internalList.Values.Count - 1; i >= 0; --i) {
 				if (internalList.Values[i].Style == style
-					|| internalList.Values[i].PreviewStyle == style)
+				    || internalList.Values[i].PreviewStyle == style)
 					return true;
 			}
 			return false;
@@ -2604,14 +2882,16 @@ namespace Dataweb.NShape {
 
 
 		/// <override></override>
-		public bool Contains(string name) {
+		public bool Contains(string name)
+		{
 			if (name == null) throw new ArgumentNullException("name");
 			return internalList.ContainsKey(name);
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public bool ContainsPreviewStyle(TStyle style) {
+		public bool ContainsPreviewStyle(TStyle style)
+		{
 			if (style == null) throw new ArgumentNullException("style");
 			for (int i = internalList.Values.Count - 1; i >= 0; --i) {
 				if (internalList.Values[i].Style == style)
@@ -2624,7 +2904,8 @@ namespace Dataweb.NShape {
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public bool ContainsPreviewStyle(string name) {
+		public bool ContainsPreviewStyle(string name)
+		{
 			if (name == null) throw new ArgumentNullException("name");
 			if (internalList.ContainsKey(name))
 				return (internalList[name].PreviewStyle != null);
@@ -2633,11 +2914,12 @@ namespace Dataweb.NShape {
 
 
 		/// <override></override>
-		public int IndexOf(TStyle item) {
+		public int IndexOf(TStyle item)
+		{
 			if (item == null) throw new ArgumentNullException("item");
 			for (int i = internalList.Values.Count - 1; i >= 0; --i) {
 				if (internalList.Values[i].Style == item
-					|| internalList.Values[i].PreviewStyle == item)
+				    || internalList.Values[i].PreviewStyle == item)
 					return internalList.IndexOfKey(internalList.Values[i].Style.Name);
 			}
 			return -1;
@@ -2645,27 +2927,31 @@ namespace Dataweb.NShape {
 
 
 		/// <override></override>
-		public int IndexOf(string styleName) {
+		public int IndexOf(string styleName)
+		{
 			if (styleName == null) throw new ArgumentNullException("styleName");
 			return internalList.IndexOfKey(styleName);
 		}
 
 
 		/// <override></override>
-		public bool Remove(TStyle item) {
+		public bool Remove(TStyle item)
+		{
 			if (item == null) throw new ArgumentNullException("item");
 			return internalList.Remove(item.Name);
 		}
 
 
 		/// <override></override>
-		public bool Remove(string styleName) {
+		public bool Remove(string styleName)
+		{
 			return internalList.Remove(styleName);
 		}
 
 
 		/// <override></override>
-		public void RemoveAt(int index) {
+		public void RemoveAt(int index)
+		{
 			string key = internalList.Keys[index];
 			internalList.Remove(key);
 		}
@@ -2676,7 +2962,8 @@ namespace Dataweb.NShape {
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public void SetPreviewStyle(string baseStyleName, TStyle value) {
+		public void SetPreviewStyle(string baseStyleName, TStyle value)
+		{
 			if (baseStyleName == null) throw new ArgumentNullException("baseStyle");
 			if (value == null) throw new ArgumentNullException("value");
 			internalList[baseStyleName].PreviewStyle = value;
@@ -2684,7 +2971,8 @@ namespace Dataweb.NShape {
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public void SetPreviewStyle(TStyle baseStyle, TStyle value) {
+		public void SetPreviewStyle(TStyle baseStyle, TStyle value)
+		{
 			if (baseStyle == null) throw new ArgumentNullException("baseStyle");
 			if (value == null) throw new ArgumentNullException("value");
 			internalList[baseStyle.Name].PreviewStyle = value;
@@ -2692,7 +2980,8 @@ namespace Dataweb.NShape {
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		protected void SetStyle(TStyle style, TStyle previewStyle) {
+		protected void SetStyle(TStyle style, TStyle previewStyle)
+		{
 			if (style == null) throw new ArgumentNullException("style");
 			if (previewStyle == null) throw new ArgumentNullException("previewStyle");
 			internalList[style.Name].Style = style;
@@ -2700,7 +2989,8 @@ namespace Dataweb.NShape {
 		}
 
 
-		private void Construct(int capacity) {
+		private void Construct(int capacity)
+		{
 			if (capacity > 0)
 				internalList = new SortedList<string, StylePair<TStyle>>(capacity);
 			else internalList = new SortedList<string, StylePair<TStyle>>();
@@ -2708,10 +2998,11 @@ namespace Dataweb.NShape {
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		protected class StylePair<T> where T : class, IStyle {
-
+		protected class StylePair<T> where T : class, IStyle
+		{
 			/// <ToBeCompleted></ToBeCompleted>
-			public StylePair(T baseStyle, T previewStyle) {
+			public StylePair(T baseStyle, T previewStyle)
+			{
 				this.Style = baseStyle;
 				this.PreviewStyle = previewStyle;
 			}
@@ -2721,7 +3012,6 @@ namespace Dataweb.NShape {
 
 			/// <ToBeCompleted></ToBeCompleted>
 			public T PreviewStyle;
-
 		}
 
 
@@ -2733,13 +3023,14 @@ namespace Dataweb.NShape {
 	/// <summary>
 	/// A collection of <see cref="T:Dataweb.NShape.CapStyle" /> sorted by name.
 	/// </summary>
-	public class CapStyleCollection : StyleCollection<CapStyle>, ICapStyles {
-
+	public class CapStyleCollection : StyleCollection<CapStyle>, ICapStyles
+	{
 		/// <summary>
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.CapStyleCollection" />.
 		/// </summary>
 		public CapStyleCollection()
-			: base(CapStyle.StandardNames.Count) {
+			: base(CapStyle.StandardNames.Count)
+		{
 		}
 
 
@@ -2747,87 +3038,95 @@ namespace Dataweb.NShape {
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.CapStyleCollection" />.
 		/// </summary>
 		public CapStyleCollection(int capacity)
-			: base(capacity) {
+			: base(capacity)
+		{
 		}
 
 
 		/// <override></override>
-		public override bool IsStandardStyle(CapStyle style) {
+		public override bool IsStandardStyle(CapStyle style)
+		{
 			if (style == null) throw new ArgumentNullException("style");
 			return CapStyle.StandardNames.EqualsAny(style.Name);
 		}
 
-
 		#region ICapStyles Members
 
-		ICapStyle ICapStyles.this[string name] {
+		ICapStyle ICapStyles.this[string name]
+		{
 			get { return internalList[name].Style; }
 		}
 
 
 		/// <override></override>
-		public ICapStyle None {
+		public ICapStyle None
+		{
 			get { return internalList[CapStyle.StandardNames.None].Style; }
 		}
 
 
 		/// <override></override>
 		[Obsolete("This property will be removed in future versions. Use ArrowClosed instead.")]
-		public ICapStyle Arrow {
+		public ICapStyle Arrow
+		{
 			get { return ClosedArrow; }
 		}
 
 
 		/// <override></override>
-		public ICapStyle ClosedArrow {
+		public ICapStyle ClosedArrow
+		{
 			get { return internalList[CapStyle.StandardNames.ArrowClosed].Style; }
 		}
 
 
 		/// <override></override>
-		public ICapStyle OpenArrow {
+		public ICapStyle OpenArrow
+		{
 			get { return internalList[CapStyle.StandardNames.ArrowOpen].Style; }
 		}
 
 
 		/// <override></override>
-		public ICapStyle Special1 {
+		public ICapStyle Special1
+		{
 			get { return internalList[CapStyle.StandardNames.Special1].Style; }
 		}
 
 
 		/// <override></override>
-		public ICapStyle Special2 {
+		public ICapStyle Special2
+		{
 			get { return internalList[CapStyle.StandardNames.Special2].Style; }
 		}
 
 		#endregion
 
-
 		#region IEnumerable<ICapStyle> Members
 
 		/// <override></override>
-		public IEnumerator<ICapStyle> GetEnumerator() {
+		public IEnumerator<ICapStyle> GetEnumerator()
+		{
 			return Enumerator.Create(this);
 		}
 
 		#endregion
-
 
 		#region IEnumerable Members
 
-		IEnumerator IEnumerable.GetEnumerator() {
+		IEnumerator IEnumerable.GetEnumerator()
+		{
 			return Enumerator.Create(this);
 		}
 
 		#endregion
 
-
-		private struct Enumerator : IEnumerator<ICapStyle> {
-
+		private struct Enumerator : IEnumerator<ICapStyle>
+		{
 			public static readonly Enumerator Empty;
 
-			public static Enumerator Create(CapStyleCollection collection) {
+			public static Enumerator Create(CapStyleCollection collection)
+			{
 				if (collection == null) throw new ArgumentNullException("collection");
 				Enumerator result = Enumerator.Empty;
 				result.collection = collection;
@@ -2836,7 +3135,8 @@ namespace Dataweb.NShape {
 				return result;
 			}
 
-			public Enumerator(CapStyleCollection collection) {
+			public Enumerator(CapStyleCollection collection)
+			{
 				if (collection == null) throw new ArgumentNullException("collection");
 				this.collection = collection;
 				this.cnt = collection.Count;
@@ -2845,7 +3145,8 @@ namespace Dataweb.NShape {
 
 			#region IEnumerator<ICapStyle> Members
 
-			public ICapStyle Current {
+			public ICapStyle Current
+			{
 				get { return collection[idx]; }
 			}
 
@@ -2853,7 +3154,8 @@ namespace Dataweb.NShape {
 
 			#region IDisposable Members
 
-			public void Dispose() {
+			public void Dispose()
+			{
 				collection = null;
 			}
 
@@ -2861,21 +3163,25 @@ namespace Dataweb.NShape {
 
 			#region IEnumerator Members
 
-			object IEnumerator.Current {
+			object IEnumerator.Current
+			{
 				get { return collection[idx]; }
 			}
 
-			public bool MoveNext() {
+			public bool MoveNext()
+			{
 				return (++idx < cnt);
 			}
 
-			public void Reset() {
+			public void Reset()
+			{
 				idx = -1;
 			}
 
 			#endregion
 
-			static Enumerator() {
+			static Enumerator()
+			{
 				Empty.collection = null;
 				Empty.cnt = 0;
 				Empty.idx = -1;
@@ -2891,13 +3197,14 @@ namespace Dataweb.NShape {
 	/// <summary>
 	/// A collection of <see cref="T:Dataweb.NShape.CharacterStyle" /> sorted by name.
 	/// </summary>
-	public class CharacterStyleCollection : StyleCollection<CharacterStyle>, ICharacterStyles {
-
+	public class CharacterStyleCollection : StyleCollection<CharacterStyle>, ICharacterStyles
+	{
 		/// <summary>
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.CharacterStyleCollection" />.
 		/// </summary>
 		public CharacterStyleCollection()
-			: base(CharacterStyle.StandardNames.Count) {
+			: base(CharacterStyle.StandardNames.Count)
+		{
 		}
 
 
@@ -2905,86 +3212,94 @@ namespace Dataweb.NShape {
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.CharacterStyleCollection" />.
 		/// </summary>
 		public CharacterStyleCollection(int capacity)
-			: base(capacity) {
+			: base(capacity)
+		{
 		}
 
 
 		/// <override></override>
-		public override bool IsStandardStyle(CharacterStyle style) {
+		public override bool IsStandardStyle(CharacterStyle style)
+		{
 			if (style == null) throw new ArgumentNullException("style");
 			return CharacterStyle.StandardNames.EqualsAny(style.Name);
 		}
 
-
 		#region ICharacterStyles Members
 
-		ICharacterStyle ICharacterStyles.this[string name] {
+		ICharacterStyle ICharacterStyles.this[string name]
+		{
 			get { return this[name]; }
 		}
 
 
 		/// <override></override>
-		public ICharacterStyle Normal {
+		public ICharacterStyle Normal
+		{
 			get { return internalList[CharacterStyle.StandardNames.Normal].Style; }
 		}
 
 
 		/// <override></override>
-		public ICharacterStyle Caption {
+		public ICharacterStyle Caption
+		{
 			get { return internalList[CharacterStyle.StandardNames.Caption].Style; }
 		}
 
 
 		/// <override></override>
-		public ICharacterStyle Subtitle {
+		public ICharacterStyle Subtitle
+		{
 			get { return internalList[CharacterStyle.StandardNames.Subtitle].Style; }
 		}
 
 
 		/// <override></override>
-		public ICharacterStyle Heading3 {
+		public ICharacterStyle Heading3
+		{
 			get { return internalList[CharacterStyle.StandardNames.Heading3].Style; }
 		}
 
 
 		/// <override></override>
-		public ICharacterStyle Heading2 {
+		public ICharacterStyle Heading2
+		{
 			get { return internalList[CharacterStyle.StandardNames.Heading2].Style; }
 		}
 
 
 		/// <override></override>
-		public ICharacterStyle Heading1 {
+		public ICharacterStyle Heading1
+		{
 			get { return internalList[CharacterStyle.StandardNames.Heading1].Style; }
 		}
 
 		#endregion
 
-
 		#region IEnumerable<ICharacterStyle> Members
 
 		/// <override></override>
-		public IEnumerator<ICharacterStyle> GetEnumerator() {
+		public IEnumerator<ICharacterStyle> GetEnumerator()
+		{
 			return Enumerator.Create(this);
 		}
 
 		#endregion
-
 
 		#region IEnumerable Members
 
-		IEnumerator IEnumerable.GetEnumerator() {
+		IEnumerator IEnumerable.GetEnumerator()
+		{
 			return Enumerator.Create(this);
 		}
 
 		#endregion
 
-
-		private struct Enumerator : IEnumerator<ICharacterStyle> {
-
+		private struct Enumerator : IEnumerator<ICharacterStyle>
+		{
 			public static readonly Enumerator Empty;
 
-			public static Enumerator Create(CharacterStyleCollection collection) {
+			public static Enumerator Create(CharacterStyleCollection collection)
+			{
 				if (collection == null) throw new ArgumentNullException("collection");
 				Enumerator result = Enumerator.Empty;
 				result.collection = collection;
@@ -2993,7 +3308,8 @@ namespace Dataweb.NShape {
 				return result;
 			}
 
-			public Enumerator(CharacterStyleCollection collection) {
+			public Enumerator(CharacterStyleCollection collection)
+			{
 				if (collection == null) throw new ArgumentNullException("collection");
 				this.collection = collection;
 				this.cnt = collection.Count;
@@ -3002,7 +3318,8 @@ namespace Dataweb.NShape {
 
 			#region IEnumerator<ICapStyle> Members
 
-			public ICharacterStyle Current {
+			public ICharacterStyle Current
+			{
 				get { return collection[idx]; }
 			}
 
@@ -3010,7 +3327,8 @@ namespace Dataweb.NShape {
 
 			#region IDisposable Members
 
-			public void Dispose() {
+			public void Dispose()
+			{
 				collection = null;
 			}
 
@@ -3018,21 +3336,25 @@ namespace Dataweb.NShape {
 
 			#region IEnumerator Members
 
-			object IEnumerator.Current {
+			object IEnumerator.Current
+			{
 				get { return collection[idx]; }
 			}
 
-			public bool MoveNext() {
+			public bool MoveNext()
+			{
 				return (++idx < cnt);
 			}
 
-			public void Reset() {
+			public void Reset()
+			{
 				idx = -1;
 			}
 
 			#endregion
 
-			static Enumerator() {
+			static Enumerator()
+			{
 				Empty.collection = null;
 				Empty.cnt = 0;
 				Empty.idx = -1;
@@ -3045,17 +3367,17 @@ namespace Dataweb.NShape {
 	}
 
 
-	
 	/// <summary>
 	/// A collection of <see cref="T:Dataweb.NShape.ColorStyle" /> sorted by name.
 	/// </summary>
-	public class ColorStyleCollection : StyleCollection<ColorStyle>, IColorStyles {
-
+	public class ColorStyleCollection : StyleCollection<ColorStyle>, IColorStyles
+	{
 		/// <summary>
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.ColorStyleCollection" />.
 		/// </summary>
 		public ColorStyleCollection()
-			: base(ColorStyle.StandardNames.Count) {
+			: base(ColorStyle.StandardNames.Count)
+		{
 		}
 
 
@@ -3063,135 +3385,154 @@ namespace Dataweb.NShape {
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.ColorStyleCollection" />.
 		/// </summary>
 		public ColorStyleCollection(int capacity)
-			: base(capacity) {
+			: base(capacity)
+		{
 		}
 
 
 		/// <override></override>
-		public override bool IsStandardStyle(ColorStyle style) {
+		public override bool IsStandardStyle(ColorStyle style)
+		{
 			if (style == null) throw new ArgumentNullException("style");
 			return ColorStyle.StandardNames.EqualsAny(style.Name);
 		}
 
-
 		#region IColorStyles Members
 
-		IColorStyle IColorStyles.this[string name] {
+		IColorStyle IColorStyles.this[string name]
+		{
 			get { return this[name]; }
 		}
 
 		/// <override></override>
-		public IColorStyle Transparent {
+		public IColorStyle Transparent
+		{
 			get { return internalList[ColorStyle.StandardNames.Transparent].Style; }
 		}
 
 		/// <override></override>
-		public IColorStyle Background {
+		public IColorStyle Background
+		{
 			get { return internalList[ColorStyle.StandardNames.Background].Style; }
 		}
 
 		/// <override></override>
-		public IColorStyle Highlight {
+		public IColorStyle Highlight
+		{
 			get { return internalList[ColorStyle.StandardNames.Highlight].Style; }
 		}
 
 		/// <override></override>
-		public IColorStyle Text {
+		public IColorStyle Text
+		{
 			get { return internalList[ColorStyle.StandardNames.Text].Style; }
 		}
 
 		/// <override></override>
-		public IColorStyle HighlightText {
+		public IColorStyle HighlightText
+		{
 			get { return internalList[ColorStyle.StandardNames.HighlightText].Style; }
 		}
 
 		/// <override></override>
-		public IColorStyle Black {
+		public IColorStyle Black
+		{
 			get { return internalList[ColorStyle.StandardNames.Black].Style; }
 		}
 
 		/// <override></override>
-		public IColorStyle White {
+		public IColorStyle White
+		{
 			get { return internalList[ColorStyle.StandardNames.White].Style; }
 		}
 
 		/// <override></override>
-		public IColorStyle Gray {
+		public IColorStyle Gray
+		{
 			get { return internalList[ColorStyle.StandardNames.Gray].Style; }
 		}
 
 		/// <override></override>
-		public IColorStyle LightGray {
+		public IColorStyle LightGray
+		{
 			get { return internalList[ColorStyle.StandardNames.LightGray].Style; }
 		}
 
 		/// <override></override>
-		public IColorStyle Red {
+		public IColorStyle Red
+		{
 			get { return internalList[ColorStyle.StandardNames.Red].Style; }
 		}
 
 		/// <override></override>
-		public IColorStyle LightRed {
+		public IColorStyle LightRed
+		{
 			get { return internalList[ColorStyle.StandardNames.LightRed].Style; }
 		}
 
 		/// <override></override>
-		public IColorStyle Blue {
+		public IColorStyle Blue
+		{
 			get { return internalList[ColorStyle.StandardNames.Blue].Style; }
 		}
 
 		/// <override></override>
-		public IColorStyle LightBlue {
+		public IColorStyle LightBlue
+		{
 			get { return internalList[ColorStyle.StandardNames.LightBlue].Style; }
 		}
 
 		/// <override></override>
-		public IColorStyle Green {
+		public IColorStyle Green
+		{
 			get { return internalList[ColorStyle.StandardNames.Green].Style; }
 		}
 
 		/// <override></override>
-		public IColorStyle LightGreen {
+		public IColorStyle LightGreen
+		{
 			get { return internalList[ColorStyle.StandardNames.LightGreen].Style; }
 		}
 
 		/// <override></override>
-		public IColorStyle Yellow {
+		public IColorStyle Yellow
+		{
 			get { return internalList[ColorStyle.StandardNames.Yellow].Style; }
 		}
 
 		/// <override></override>
-		public IColorStyle LightYellow {
+		public IColorStyle LightYellow
+		{
 			get { return internalList[ColorStyle.StandardNames.LightYellow].Style; }
 		}
 
 		#endregion
 
-
 		#region IEnumerable<IColorStyle> Members
 
 		/// <override></override>
-		public IEnumerator<IColorStyle> GetEnumerator() {
+		public IEnumerator<IColorStyle> GetEnumerator()
+		{
 			return Enumerator.Create(this);
 		}
 
 		#endregion
-
 
 		#region IEnumerable Members
 
-		IEnumerator IEnumerable.GetEnumerator() {
+		IEnumerator IEnumerable.GetEnumerator()
+		{
 			return Enumerator.Create(this);
 		}
 
 		#endregion
 
-
-		private struct Enumerator : IEnumerator<IColorStyle> {
-
+		private struct Enumerator : IEnumerator<IColorStyle>
+		{
 			public static readonly Enumerator Empty;
 
-			public static Enumerator Create(ColorStyleCollection collection) {
+			public static Enumerator Create(ColorStyleCollection collection)
+			{
 				if (collection == null) throw new ArgumentNullException("collection");
 				Enumerator result = Enumerator.Empty;
 				result.collection = collection;
@@ -3200,17 +3541,18 @@ namespace Dataweb.NShape {
 				return result;
 			}
 
-			public Enumerator(ColorStyleCollection collection) {
+			public Enumerator(ColorStyleCollection collection)
+			{
 				if (collection == null) throw new ArgumentNullException("collection");
 				this.collection = collection;
 				this.cnt = collection.Count;
 				this.idx = -1;
 			}
 
-
 			#region IEnumerator<IColorStyle> Members
 
-			public IColorStyle Current {
+			public IColorStyle Current
+			{
 				get { return collection[idx]; }
 			}
 
@@ -3218,7 +3560,8 @@ namespace Dataweb.NShape {
 
 			#region IDisposable Members
 
-			public void Dispose() {
+			public void Dispose()
+			{
 				collection = null;
 			}
 
@@ -3226,21 +3569,25 @@ namespace Dataweb.NShape {
 
 			#region IEnumerator Members
 
-			object IEnumerator.Current {
+			object IEnumerator.Current
+			{
 				get { return collection[idx]; }
 			}
 
-			public bool MoveNext() {
+			public bool MoveNext()
+			{
 				return (++idx < cnt);
 			}
 
-			public void Reset() {
+			public void Reset()
+			{
 				idx = -1;
 			}
 
 			#endregion
 
-			static Enumerator() {
+			static Enumerator()
+			{
 				Empty.collection = null;
 				Empty.idx = -1;
 				Empty.cnt = 0;
@@ -3256,13 +3603,14 @@ namespace Dataweb.NShape {
 	/// <summary>
 	/// A collection of <see cref="T:Dataweb.NShape.FillStyle" /> sorted by name.
 	/// </summary>
-	public class FillStyleCollection : StyleCollection<FillStyle>, IFillStyles {
-
+	public class FillStyleCollection : StyleCollection<FillStyle>, IFillStyles
+	{
 		/// <summary>
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.FillStyleCollection" />.
 		/// </summary>
 		public FillStyleCollection()
-			: base(FillStyle.StandardNames.Count) {
+			: base(FillStyle.StandardNames.Count)
+		{
 		}
 
 
@@ -3270,85 +3618,94 @@ namespace Dataweb.NShape {
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.FillStyleCollection" />.
 		/// </summary>
 		public FillStyleCollection(int capacity)
-			: base(capacity) {
+			: base(capacity)
+		{
 		}
 
 
 		/// <override></override>
-		public override bool IsStandardStyle(FillStyle style) {
+		public override bool IsStandardStyle(FillStyle style)
+		{
 			if (style == null) throw new ArgumentNullException("style");
 			return FillStyle.StandardNames.EqualsAny(style.Name);
 		}
 
-
 		#region IFillStyles Members
 
-		IFillStyle IFillStyles.this[string name] {
+		IFillStyle IFillStyles.this[string name]
+		{
 			get { return this[name]; }
 		}
 
 		/// <override></override>
-		public IFillStyle Transparent {
+		public IFillStyle Transparent
+		{
 			get { return internalList[FillStyle.StandardNames.Transparent].Style; }
 		}
 
 		/// <override></override>
-		public IFillStyle Black {
+		public IFillStyle Black
+		{
 			get { return internalList[FillStyle.StandardNames.Black].Style; }
 		}
 
 		/// <override></override>
-		public IFillStyle White {
+		public IFillStyle White
+		{
 			get { return internalList[FillStyle.StandardNames.White].Style; }
 		}
 
 		/// <override></override>
-		public IFillStyle Red {
+		public IFillStyle Red
+		{
 			get { return internalList[FillStyle.StandardNames.Red].Style; }
 		}
 
 		/// <override></override>
-		public IFillStyle Blue {
+		public IFillStyle Blue
+		{
 			get { return internalList[FillStyle.StandardNames.Blue].Style; }
 		}
 
 		/// <override></override>
-		public IFillStyle Green {
+		public IFillStyle Green
+		{
 			get { return internalList[FillStyle.StandardNames.Green].Style; }
 		}
 
 		/// <override></override>
-		public IFillStyle Yellow {
+		public IFillStyle Yellow
+		{
 			get { return internalList[FillStyle.StandardNames.Yellow].Style; }
 		}
 
 		#endregion
 
-
 		#region IEnumerable<IFillStyle> Members
 
 		/// <override></override>
-		public IEnumerator<IFillStyle> GetEnumerator() {
+		public IEnumerator<IFillStyle> GetEnumerator()
+		{
 			return Enumerator.Create(this);
 		}
 
 		#endregion
-
 
 		#region IEnumerable Members
 
-		IEnumerator IEnumerable.GetEnumerator() {
+		IEnumerator IEnumerable.GetEnumerator()
+		{
 			return Enumerator.Create(this);
 		}
 
 		#endregion
 
-
-		private struct Enumerator : IEnumerator<IFillStyle> {
-
+		private struct Enumerator : IEnumerator<IFillStyle>
+		{
 			public static readonly Enumerator Empty;
 
-			public static Enumerator Create(FillStyleCollection collection) {
+			public static Enumerator Create(FillStyleCollection collection)
+			{
 				if (collection == null) throw new ArgumentNullException("collection");
 				Enumerator result = Enumerator.Empty;
 				result.collection = collection;
@@ -3357,50 +3714,53 @@ namespace Dataweb.NShape {
 				return result;
 			}
 
-			public Enumerator(FillStyleCollection collection) {
+			public Enumerator(FillStyleCollection collection)
+			{
 				if (collection == null) throw new ArgumentNullException("collection");
 				this.collection = collection;
 				this.cnt = collection.Count;
 				this.idx = -1;
 			}
 
-
 			#region IEnumerator<ICapStyle> Members
 
-			public IFillStyle Current {
+			public IFillStyle Current
+			{
 				get { return collection[idx]; }
 			}
 
 			#endregion
 
-
 			#region IDisposable Members
 
-			public void Dispose() {
+			public void Dispose()
+			{
 				collection = null;
 			}
 
 			#endregion
 
-
 			#region IEnumerator Members
 
-			object IEnumerator.Current {
+			object IEnumerator.Current
+			{
 				get { return collection[idx]; }
 			}
 
-			public bool MoveNext() {
+			public bool MoveNext()
+			{
 				return (++idx < cnt);
 			}
 
-			public void Reset() {
+			public void Reset()
+			{
 				idx = -1;
 			}
 
 			#endregion
 
-
-			static Enumerator() {
+			static Enumerator()
+			{
 				Empty.collection = null;
 				Empty.cnt = 0;
 				Empty.idx = -1;
@@ -3416,13 +3776,14 @@ namespace Dataweb.NShape {
 	/// <summary>
 	/// A collection of <see cref="T:Dataweb.NShape.LineStyle" /> sorted by name.
 	/// </summary>
-	public class LineStyleCollection : StyleCollection<LineStyle>, ILineStyles {
-
+	public class LineStyleCollection : StyleCollection<LineStyle>, ILineStyles
+	{
 		/// <summary>
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.LineStyleCollection" />.
 		/// </summary>
 		public LineStyleCollection()
-			: base(LineStyle.StandardNames.Count) {
+			: base(LineStyle.StandardNames.Count)
+		{
 		}
 
 
@@ -3430,125 +3791,142 @@ namespace Dataweb.NShape {
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.LineStyleCollection" />.
 		/// </summary>
 		public LineStyleCollection(int capacity)
-			: base(capacity) {
+			: base(capacity)
+		{
 		}
 
 
 		/// <override></override>
-		public override bool IsStandardStyle(LineStyle style) {
+		public override bool IsStandardStyle(LineStyle style)
+		{
 			if (style == null) throw new ArgumentNullException("style");
 			return LineStyle.StandardNames.EqualsAny(style.Name);
 		}
 
-
 		#region ILineStyles Members
 
-		ILineStyle ILineStyles.this[string name] {
+		ILineStyle ILineStyles.this[string name]
+		{
 			get { return this[name]; }
 		}
 
 		/// <override></override>
-		public ILineStyle None {
+		public ILineStyle None
+		{
 			get { return internalList[LineStyle.StandardNames.None].Style; }
 		}
 
 		/// <override></override>
-		public ILineStyle Normal {
+		public ILineStyle Normal
+		{
 			get { return internalList[LineStyle.StandardNames.Normal].Style; }
 		}
 
 		/// <override></override>
-		public ILineStyle Thick {
+		public ILineStyle Thick
+		{
 			get { return internalList[LineStyle.StandardNames.Thick].Style; }
 		}
 
 		/// <override></override>
-		public ILineStyle Dotted {
+		public ILineStyle Dotted
+		{
 			get { return internalList[LineStyle.StandardNames.Dotted].Style; }
 		}
 
 		/// <override></override>
-		public ILineStyle Dashed {
+		public ILineStyle Dashed
+		{
 			get { return internalList[LineStyle.StandardNames.Dashed].Style; }
 		}
 
 		/// <override></override>
-		public ILineStyle Highlight {
+		public ILineStyle Highlight
+		{
 			get { return internalList[LineStyle.StandardNames.Highlight].Style; }
 		}
 
 		/// <override></override>
-		public ILineStyle HighlightThick {
+		public ILineStyle HighlightThick
+		{
 			get { return internalList[LineStyle.StandardNames.HighlightThick].Style; }
 		}
 
 		/// <override></override>
-		public ILineStyle HighlightDotted {
+		public ILineStyle HighlightDotted
+		{
 			get { return internalList[LineStyle.StandardNames.HighlightDotted].Style; }
 		}
 
 		/// <override></override>
-		public ILineStyle HighlightDashed {
+		public ILineStyle HighlightDashed
+		{
 			get { return internalList[LineStyle.StandardNames.HighlightDashed].Style; }
 		}
 
 		/// <override></override>
-		public ILineStyle Red {
+		public ILineStyle Red
+		{
 			get { return internalList[LineStyle.StandardNames.Red].Style; }
 		}
 
 		/// <override></override>
-		public ILineStyle Blue {
+		public ILineStyle Blue
+		{
 			get { return internalList[LineStyle.StandardNames.Blue].Style; }
 		}
 
 		/// <override></override>
-		public ILineStyle Green {
+		public ILineStyle Green
+		{
 			get { return internalList[LineStyle.StandardNames.Green].Style; }
 		}
 
 		/// <override></override>
-		public ILineStyle Yellow {
+		public ILineStyle Yellow
+		{
 			get { return internalList[LineStyle.StandardNames.Yellow].Style; }
 		}
 
 		/// <override></override>
-		public ILineStyle Special1 {
+		public ILineStyle Special1
+		{
 			get { return internalList[LineStyle.StandardNames.Special1].Style; }
 		}
 
 		/// <override></override>
-		public ILineStyle Special2 {
+		public ILineStyle Special2
+		{
 			get { return internalList[LineStyle.StandardNames.Special2].Style; }
 		}
 
 		#endregion
 
-
 		#region IEnumerable<ILineStyle> Members
 
 		/// <override></override>
-		public IEnumerator<ILineStyle> GetEnumerator() {
+		public IEnumerator<ILineStyle> GetEnumerator()
+		{
 			return Enumerator.Create(this);
 		}
 
 		#endregion
-
 
 		#region IEnumerable Members
 
-		IEnumerator IEnumerable.GetEnumerator() {
+		IEnumerator IEnumerable.GetEnumerator()
+		{
 			return Enumerator.Create(this);
 		}
 
 		#endregion
 
-
-		private struct Enumerator : IEnumerator<ILineStyle> {
-
+		private struct Enumerator : IEnumerator<ILineStyle>
+		{
 			public static readonly Enumerator Empty;
 
-			public static Enumerator Create(LineStyleCollection collection) {
+			public static Enumerator Create(LineStyleCollection collection)
+			{
 				if (collection == null) throw new ArgumentNullException("collection");
 				Enumerator result = Enumerator.Empty;
 				result.collection = collection;
@@ -3557,7 +3935,8 @@ namespace Dataweb.NShape {
 				return result;
 			}
 
-			public Enumerator(LineStyleCollection collection) {
+			public Enumerator(LineStyleCollection collection)
+			{
 				if (collection == null) throw new ArgumentNullException("collection");
 				this.collection = collection;
 				this.cnt = collection.Count;
@@ -3566,7 +3945,8 @@ namespace Dataweb.NShape {
 
 			#region IEnumerator<ICapStyle> Members
 
-			public ILineStyle Current {
+			public ILineStyle Current
+			{
 				get { return collection[idx]; }
 			}
 
@@ -3574,7 +3954,8 @@ namespace Dataweb.NShape {
 
 			#region IDisposable Members
 
-			public void Dispose() {
+			public void Dispose()
+			{
 				collection = null;
 			}
 
@@ -3582,21 +3963,25 @@ namespace Dataweb.NShape {
 
 			#region IEnumerator Members
 
-			object IEnumerator.Current {
+			object IEnumerator.Current
+			{
 				get { return collection[idx]; }
 			}
 
-			public bool MoveNext() {
+			public bool MoveNext()
+			{
 				return (++idx < cnt);
 			}
 
-			public void Reset() {
+			public void Reset()
+			{
 				idx = -1;
 			}
 
 			#endregion
 
-			static Enumerator() {
+			static Enumerator()
+			{
 				Empty.collection = null;
 				Empty.cnt = 0;
 				Empty.idx = -1;
@@ -3612,13 +3997,14 @@ namespace Dataweb.NShape {
 	/// <summary>
 	/// A collection of <see cref="T:Dataweb.NShape.ParagraphStyle" /> sorted by name.
 	/// </summary>
-	public class ParagraphStyleCollection : StyleCollection<ParagraphStyle>, IParagraphStyles {
-
+	public class ParagraphStyleCollection : StyleCollection<ParagraphStyle>, IParagraphStyles
+	{
 		/// <summary>
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.ParagraphStyleCollection" />.
 		/// </summary>
 		public ParagraphStyleCollection()
-			: base(ParagraphStyle.StandardNames.Count) {
+			: base(ParagraphStyle.StandardNames.Count)
+		{
 		}
 
 
@@ -3626,65 +4012,70 @@ namespace Dataweb.NShape {
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.ParagraphStyleCollection" />.
 		/// </summary>
 		public ParagraphStyleCollection(int capacity)
-			: base(capacity) {
+			: base(capacity)
+		{
 		}
 
 
 		/// <override></override>
-		public override bool IsStandardStyle(ParagraphStyle style) {
+		public override bool IsStandardStyle(ParagraphStyle style)
+		{
 			if (style == null) throw new ArgumentNullException("style");
 			return ParagraphStyle.StandardNames.EqualsAny(style.Name);
 		}
 
-
 		#region IParagraphStyles Members
 
-		IParagraphStyle IParagraphStyles.this[string name] {
+		IParagraphStyle IParagraphStyles.this[string name]
+		{
 			get { return this[name]; }
 		}
 
 		/// <override></override>
-		public IParagraphStyle Label {
+		public IParagraphStyle Label
+		{
 			get { return internalList[ParagraphStyle.StandardNames.Label].Style; }
 		}
 
 		/// <override></override>
-		public IParagraphStyle Text {
+		public IParagraphStyle Text
+		{
 			get { return internalList[ParagraphStyle.StandardNames.Text].Style; }
 		}
 
 		/// <override></override>
-		public IParagraphStyle Title {
+		public IParagraphStyle Title
+		{
 			get { return internalList[ParagraphStyle.StandardNames.Title].Style; }
 		}
 
 		#endregion
 
-
 		#region IEnumerable<IParagraphStyle> Members
 
 		/// <override></override>
-		public IEnumerator<IParagraphStyle> GetEnumerator() {
+		public IEnumerator<IParagraphStyle> GetEnumerator()
+		{
 			return Enumerator.Create(this);
 		}
 
 		#endregion
-
 
 		#region IEnumerable Members
 
-		IEnumerator IEnumerable.GetEnumerator() {
+		IEnumerator IEnumerable.GetEnumerator()
+		{
 			return Enumerator.Create(this);
 		}
 
 		#endregion
 
-
-		private struct Enumerator : IEnumerator<IParagraphStyle> {
-
+		private struct Enumerator : IEnumerator<IParagraphStyle>
+		{
 			public static readonly Enumerator Empty;
 
-			public static Enumerator Create(ParagraphStyleCollection collection) {
+			public static Enumerator Create(ParagraphStyleCollection collection)
+			{
 				if (collection == null) throw new ArgumentNullException("collection");
 				Enumerator result = Enumerator.Empty;
 				result.collection = collection;
@@ -3693,7 +4084,8 @@ namespace Dataweb.NShape {
 				return result;
 			}
 
-			public Enumerator(ParagraphStyleCollection collection) {
+			public Enumerator(ParagraphStyleCollection collection)
+			{
 				if (collection == null) throw new ArgumentNullException("collection");
 				this.collection = collection;
 				this.cnt = collection.Count;
@@ -3702,7 +4094,8 @@ namespace Dataweb.NShape {
 
 			#region IEnumerator<ICapStyle> Members
 
-			public IParagraphStyle Current {
+			public IParagraphStyle Current
+			{
 				get { return collection[idx]; }
 			}
 
@@ -3710,7 +4103,8 @@ namespace Dataweb.NShape {
 
 			#region IDisposable Members
 
-			public void Dispose() {
+			public void Dispose()
+			{
 				collection = null;
 			}
 
@@ -3718,23 +4112,27 @@ namespace Dataweb.NShape {
 
 			#region IEnumerator Members
 
-			object IEnumerator.Current {
+			object IEnumerator.Current
+			{
 				get { return collection[idx]; }
 			}
 
 
-			public bool MoveNext() {
+			public bool MoveNext()
+			{
 				return (++idx < cnt);
 			}
 
 
-			public void Reset() {
+			public void Reset()
+			{
 				idx = -1;
 			}
 
 			#endregion
 
-			static Enumerator() {
+			static Enumerator()
+			{
 				Empty.collection = null;
 				Empty.cnt = 0;
 				Empty.idx = -1;
@@ -3747,5 +4145,4 @@ namespace Dataweb.NShape {
 	}
 
 	#endregion
-
 }

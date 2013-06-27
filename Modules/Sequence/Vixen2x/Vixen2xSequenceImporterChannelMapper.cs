@@ -26,7 +26,7 @@ namespace VixenModules.SequenceType.Vixen2x
 			listViewMapping.BeginUpdate();
 
 			listViewMapping.Items.Clear();
-			
+
 			foreach (ChannelMapping mapping in _mappings) {
 				ListViewItem item = new ListViewItem(mapping.ChannelName);
 				if (mapping.ElementNode != null)

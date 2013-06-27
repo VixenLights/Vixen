@@ -10,7 +10,7 @@ namespace VixenModules.EffectEditor.ColorTypeEditor
 {
 	public class ColorTypeEditor : EffectEditorModuleInstanceBase
 	{
-		override public IEffectEditorControl CreateEditorControl()
+		public override IEffectEditorControl CreateEditorControl()
 		{
 			return new ColorTypeEditorControl();
 		}

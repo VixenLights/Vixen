@@ -1,10 +1,13 @@
 ﻿using Vixen.Sys.Attribute;
 
-namespace Vixen.Module.SequenceType {
+namespace Vixen.Module.SequenceType
+{
 	[TypeOfModule("SequenceType")]
-	class SequenceTypeModuleImplementation : ModuleImplementation<ISequenceTypeModuleInstance> {
+	internal class SequenceTypeModuleImplementation : ModuleImplementation<ISequenceTypeModuleInstance>
+	{
 		public SequenceTypeModuleImplementation()
-			: base(new SequenceTypeModuleManagement(), new SequenceTypeModuleRepository()) {
+			: base(new SequenceTypeModuleManagement(), new SequenceTypeModuleRepository())
+		{
 		}
 	}
 }

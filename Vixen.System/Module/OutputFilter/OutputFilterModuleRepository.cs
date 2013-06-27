@@ -1,4 +1,6 @@
-﻿namespace Vixen.Module.OutputFilter {
-	class OutputFilterModuleRepository : GenericModuleRepository<IOutputFilterModuleInstance> {
+﻿namespace Vixen.Module.OutputFilter
+{
+	internal class OutputFilterModuleRepository : GenericModuleRepository<IOutputFilterModuleInstance>
+	{
 	}
 }

@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Vixen.IO {
-	interface IFileReader<out T> : IFileReader
-		where T : class {
+namespace Vixen.IO
+{
+	internal interface IFileReader<out T> : IFileReader
+		where T : class
+	{
 		T ReadFile(string filePath);
 	}
 
-	interface IFileReader {
+	internal interface IFileReader
+	{
 		object ReadFile(string filePath);
 	}
 }

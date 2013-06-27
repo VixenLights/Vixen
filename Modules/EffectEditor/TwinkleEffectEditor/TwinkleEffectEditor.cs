@@ -8,9 +8,9 @@ using Vixen.Module.EffectEditor;
 
 namespace VixenModules.EffectEditor.TwinkleEffectEditor
 {
-	class TwinkleEffectEditor : EffectEditorModuleInstanceBase
+	internal class TwinkleEffectEditor : EffectEditorModuleInstanceBase
 	{
-		override public IEffectEditorControl CreateEditorControl()
+		public override IEffectEditorControl CreateEditorControl()
 		{
 			return new TwinkleEffectEditorControl();
 		}

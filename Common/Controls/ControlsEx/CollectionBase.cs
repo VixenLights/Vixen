@@ -19,11 +19,14 @@ namespace Common.Controls.ControlsEx
 		{
 			_list = new List<T>();
 		}
+
 		public CollectionBase(int capacity)
 		{
 			_list = new List<T>(capacity);
 		}
+
 		#region virtuals
+
 		protected virtual void OnClear()
 		{
 		}
@@ -58,8 +61,8 @@ namespace Common.Controls.ControlsEx
 
 		protected virtual void OnValidate(T value)
 		{
-
 		}
+
 		#endregion
 
 		#region IList<Type> Member
@@ -76,8 +79,13 @@ namespace Common.Controls.ControlsEx
 			OnValidate(item);
 			OnInsert(index, item);
 			_list.Insert(index, item);
-			try { OnInsertComplete(index, item); }
-			catch { _list.RemoveAt(index); throw; }
+			try {
+				OnInsertComplete(index, item);
+			}
+			catch {
+				_list.RemoveAt(index);
+				throw;
+			}
 		}
 
 		public void RemoveAt(int index)
@@ -88,16 +96,18 @@ namespace Common.Controls.ControlsEx
 			OnValidate(oldvalue);
 			OnRemove(index, oldvalue);
 			_list.RemoveAt(index);
-			try { OnRemoveComplete(index, oldvalue); }
-			catch { _list.Insert(index, oldvalue); throw; }
+			try {
+				OnRemoveComplete(index, oldvalue);
+			}
+			catch {
+				_list.Insert(index, oldvalue);
+				throw;
+			}
 		}
 
 		public T this[int index]
 		{
-			get
-			{
-				return _list[index];
-			}
+			get { return _list[index]; }
 			set
 			{
 				if (index < 0 || index >= _list.Count)
@@ -107,8 +117,12 @@ namespace Common.Controls.ControlsEx
 				OnSet(index, olditem, value);
 				_list[index] = value;
 				//
-				try { OnSetComplete(index, olditem, value); }
-				catch { _list[index] = olditem; }
+				try {
+					OnSetComplete(index, olditem, value);
+				}
+				catch {
+					_list[index] = olditem;
+				}
 			}
 		}
 
@@ -122,12 +136,10 @@ namespace Common.Controls.ControlsEx
 			int index = _list.Count;
 			OnInsert(index, item);
 			_list.Insert(index, item);
-			try
-			{
+			try {
 				OnInsertComplete(index, item);
 			}
-			catch
-			{
+			catch {
 				_list.RemoveAt(index);
 				throw;
 			}
@@ -168,12 +180,10 @@ namespace Common.Controls.ControlsEx
 				return false;
 			OnRemove(index, item);
 			_list.RemoveAt(index);
-			try
-			{
+			try {
 				OnRemoveComplete(index, item);
 			}
-			catch
-			{
+			catch {
 				_list.Insert(index, item);
 				throw;
 			}
@@ -199,10 +209,12 @@ namespace Common.Controls.ControlsEx
 		}
 
 		#endregion
+
 		private bool IsCompatible(object value)
 		{
-			return (value is T) || ((value == null) && !typeof(T).IsValueType);
+			return (value is T) || ((value == null) && !typeof (T).IsValueType);
 		}
+
 		private void Verify(object value)
 		{
 			if (!IsCompatible(value))
@@ -210,83 +222,94 @@ namespace Common.Controls.ControlsEx
 		}
 
 		#region IList Member
+
 		int IList.Add(object item)
 		{
 			Verify(item);
-			this.Add((T)item);
+			this.Add((T) item);
 			return (this.Count - 1);
 		}
+
 		bool IList.Contains(object item)
 		{
-			return (IsCompatible(item) && this.Contains((T)item));
+			return (IsCompatible(item) && this.Contains((T) item));
 		}
+
 		int IList.IndexOf(object item)
 		{
 			if (!IsCompatible(item))
 				return -1;
-			return this.IndexOf((T)item);
+			return this.IndexOf((T) item);
 		}
+
 		void IList.Insert(int index, object item)
 		{
 			Verify(item);
-			this.Insert(index, (T)item);
+			this.Insert(index, (T) item);
 		}
+
 		void IList.Remove(object item)
 		{
 			if (IsCompatible(item))
-				this.Remove((T)item);
+				this.Remove((T) item);
 		}
+
 		object IList.this[int index]
 		{
 			get { return this[index]; }
 			set
 			{
 				Verify(value);
-				this[index] = (T)value;
+				this[index] = (T) value;
 			}
 		}
+
 		bool IList.IsReadOnly
 		{
 			get { return false; }
 		}
+
 		bool IList.IsFixedSize
 		{
 			get { return false; }
 		}
+
 		#endregion
+
 		#region ICollection Member
+
 		void ICollection.CopyTo(Array array, int arrayIndex)
 		{
-			((ICollection)_list).CopyTo(array, arrayIndex);
+			((ICollection) _list).CopyTo(array, arrayIndex);
 		}
+
 		object ICollection.SyncRoot
 		{
-			get { return ((ICollection)_list).SyncRoot; }
+			get { return ((ICollection) _list).SyncRoot; }
 		}
+
 		bool ICollection.IsSynchronized
 		{
 			get { return false; }
 		}
+
 		#endregion
 
 		#region properties
+
 		protected List<T> InnerList
 		{
-			get
-			{
-				return _list;
-			}
+			get { return _list; }
 		}
 
 		protected IList<T> List
 		{
-			get
-			{
-				return this;
-			}
+			get { return this; }
 		}
+
 		#endregion
 	}
+
 	/// <summary>
 	/// generic collectionbase including an owner
 	/// </summary>
@@ -295,8 +318,11 @@ namespace Common.Controls.ControlsEx
 	public class CollectionBase<TOwner, TItem> : CollectionBase<TItem>
 	{
 		#region variables
+
 		private TOwner _owner;
+
 		#endregion
+
 		public CollectionBase(TOwner owner)
 		{
 			if (owner == null)

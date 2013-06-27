@@ -38,20 +38,22 @@ namespace ZedGraph
 	[Serializable]
 	public class BasicArrayPointList : IPointList
 	{
-	#region Fields
+		#region Fields
 
 		/// <summary>
 		/// Instance of an array of x values
 		/// </summary>
 		public double[] x;
+
 		/// <summary>
 		/// Instance of an array of x values
 		/// </summary>
 		public double[] y;
 
-	#endregion
+		#endregion
 
-	#region Properties
+		#region Properties
+
 		/// <summary>
 		/// Indexer to access the specified <see cref="PointPair"/> object by
 		/// its ordinal position in the list.
@@ -63,27 +65,27 @@ namespace ZedGraph
 		/// <param name="index">The ordinal position (zero-based) of the
 		/// <see cref="PointPair"/> object to be accessed.</param>
 		/// <value>A <see cref="PointPair"/> object reference.</value>
-		public PointPair this[ int index ]  
+		public PointPair this[int index]
 		{
 			get
 			{
 				double xVal, yVal;
-				if ( index >= 0 && index < x.Length )
+				if (index >= 0 && index < x.Length)
 					xVal = x[index];
 				else
 					xVal = PointPair.Missing;
 
-				if ( index >= 0 && index < y.Length )
+				if (index >= 0 && index < y.Length)
 					yVal = y[index];
 				else
 					yVal = PointPair.Missing;
-				return new PointPair( xVal, yVal, PointPair.Missing, null );
+				return new PointPair(xVal, yVal, PointPair.Missing, null);
 			}
 			set
 			{
-				if ( index >= 0 && index < x.Length )
+				if (index >= 0 && index < x.Length)
 					x[index] = value.X;
-				if ( index >= 0 && index < y.Length )
+				if (index >= 0 && index < y.Length)
 					y[index] = value.Y;
 			}
 		}
@@ -97,15 +99,15 @@ namespace ZedGraph
 			get { return x.Length > y.Length ? x.Length : y.Length; }
 		}
 
-	#endregion
+		#endregion
 
-	#region Constructors
+		#region Constructors
 
 		/// <summary>
 		/// Constructor to initialize the PointPairList from two arrays of
 		/// type double.
 		/// </summary>
-		public BasicArrayPointList( double[] x, double[] y )
+		public BasicArrayPointList(double[] x, double[] y)
 		{
 			this.x = x;
 			this.y = y;
@@ -115,7 +117,7 @@ namespace ZedGraph
 		/// The Copy Constructor
 		/// </summary>
 		/// <param name="rhs">The PointPairList from which to copy</param>
-		public BasicArrayPointList( BasicArrayPointList rhs )
+		public BasicArrayPointList(BasicArrayPointList rhs)
 		{
 			x = (double[]) rhs.x.Clone();
 			y = (double[]) rhs.y.Clone();
@@ -137,11 +139,9 @@ namespace ZedGraph
 		/// <returns>A new, independent copy of this class</returns>
 		public BasicArrayPointList Clone()
 		{
-			return new BasicArrayPointList( this );
+			return new BasicArrayPointList(this);
 		}
 
-		
-	#endregion
-
+		#endregion
 	}
 }

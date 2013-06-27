@@ -48,6 +48,7 @@ namespace Common.Controls
 		}
 
 		public event EventHandler<EventArgs> SelectedChanged;
+
 		public void OnSelectedChanged()
 		{
 			if (SelectedChanged != null)

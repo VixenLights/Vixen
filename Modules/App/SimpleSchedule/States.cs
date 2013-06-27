@@ -1,11 +1,13 @@
 ﻿using Common.StateMach;
 
-namespace VixenModules.App.SimpleSchedule {
-	static class States {
-		static public IState<IScheduledItemStateObject> WaitingState;
-		static public IState<IScheduledItemStateObject> PreExecuteState;
-		static public IState<IScheduledItemStateObject> ExecutingState;
-		static public IState<IScheduledItemStateObject> PostExecuteState;
-		static public IState<IScheduledItemStateObject> CompletedState;
+namespace VixenModules.App.SimpleSchedule
+{
+	internal static class States
+	{
+		public static IState<IScheduledItemStateObject> WaitingState;
+		public static IState<IScheduledItemStateObject> PreExecuteState;
+		public static IState<IScheduledItemStateObject> ExecutingState;
+		public static IState<IScheduledItemStateObject> PostExecuteState;
+		public static IState<IScheduledItemStateObject> CompletedState;
 	}
 }

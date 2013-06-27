@@ -44,7 +44,8 @@ namespace Common.Controls
 		{
 			if (listBoxItems.SelectedIndex >= 0) {
 				buttonOk.Enabled = true;
-			} else {
+			}
+			else {
 				buttonOk.Enabled = false;
 			}
 		}
@@ -59,10 +60,11 @@ namespace Common.Controls
 
 		private void ListSelectDialog_KeyPress(object sender, KeyPressEventArgs e)
 		{
-			if (e.KeyChar == (char)Keys.Enter && listBoxItems.SelectedIndex >= 0) {
+			if (e.KeyChar == (char) Keys.Enter && listBoxItems.SelectedIndex >= 0) {
 				this.DialogResult = DialogResult.OK;
 				this.Close();
-			} else if (e.KeyChar == (char)Keys.Escape) {
+			}
+			else if (e.KeyChar == (char) Keys.Escape) {
 				this.DialogResult = DialogResult.Cancel;
 				this.Close();
 			}

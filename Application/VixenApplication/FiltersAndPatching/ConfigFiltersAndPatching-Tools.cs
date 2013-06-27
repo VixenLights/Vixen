@@ -21,7 +21,6 @@ namespace VixenApplication
 			Construct();
 		}
 
-
 		#region [Public] Tool Members
 
 		public override void RefreshIcons()
@@ -61,10 +60,14 @@ namespace VixenApplication
 						result = ProcessMouseUp(diagramPresenter, newMouseState);
 						break;
 
-					default: throw new NShapeUnsupportedValueException(e.EventType);
+					default:
+						throw new NShapeUnsupportedValueException(e.EventType);
 				}
 				//}
-			} finally { diagramPresenter.ResumeUpdate(); }
+			}
+			finally {
+				diagramPresenter.ResumeUpdate();
+			}
 			base.ProcessMouseEvent(diagramPresenter, e);
 			return result;
 		}
@@ -82,27 +85,30 @@ namespace VixenApplication
 					break;
 				case KeyEventType.KeyDown:
 				case KeyEventType.KeyUp:
-					if ((KeysDg)e.KeyCode == KeysDg.Delete) {
+					if ((KeysDg) e.KeyCode == KeysDg.Delete) {
 						// Update selected shape unter the mouse cursor because it was propably deleted
-						if (!selectedShapeAtCursorInfo.IsEmpty && !diagramPresenter.SelectedShapes.Contains(selectedShapeAtCursorInfo.Shape)) {
-							SetSelectedShapeAtCursor(diagramPresenter, CurrentMouseState.X, CurrentMouseState.Y, diagramPresenter.ZoomedGripSize, ControlPointCapabilities.All);
+						if (!selectedShapeAtCursorInfo.IsEmpty &&
+						    !diagramPresenter.SelectedShapes.Contains(selectedShapeAtCursorInfo.Shape)) {
+							SetSelectedShapeAtCursor(diagramPresenter, CurrentMouseState.X, CurrentMouseState.Y,
+							                         diagramPresenter.ZoomedGripSize, ControlPointCapabilities.All);
 							Invalidate(diagramPresenter);
 						}
 					}
 
 					// Update Cursor when modifier keys are pressed or released
-					if (((KeysDg)e.KeyCode & KeysDg.Shift) == KeysDg.Shift
-						|| ((KeysDg)e.KeyCode & KeysDg.ShiftKey) == KeysDg.ShiftKey
-						|| ((KeysDg)e.KeyCode & KeysDg.Control) == KeysDg.Control
-						|| ((KeysDg)e.KeyCode & KeysDg.ControlKey) == KeysDg.ControlKey
-						|| ((KeysDg)e.KeyCode & KeysDg.Alt) == KeysDg.Alt) {
+					if (((KeysDg) e.KeyCode & KeysDg.Shift) == KeysDg.Shift
+					    || ((KeysDg) e.KeyCode & KeysDg.ShiftKey) == KeysDg.ShiftKey
+					    || ((KeysDg) e.KeyCode & KeysDg.Control) == KeysDg.Control
+					    || ((KeysDg) e.KeyCode & KeysDg.ControlKey) == KeysDg.ControlKey
+					    || ((KeysDg) e.KeyCode & KeysDg.Alt) == KeysDg.Alt) {
 						MouseState mouseState = CurrentMouseState;
-						mouseState.Modifiers = (KeysDg)e.Modifiers;
+						mouseState.Modifiers = (KeysDg) e.Modifiers;
 						int cursorId = DetermineCursor(diagramPresenter, mouseState);
 						diagramPresenter.SetCursor(cursorId);
 					}
 					break;
-				default: throw new NShapeUnsupportedValueException(e.EventType);
+				default:
+					throw new NShapeUnsupportedValueException(e.EventType);
 			}
 			if (base.ProcessKeyEvent(diagramPresenter, e)) result = true;
 			return result;
@@ -146,7 +152,8 @@ namespace VixenApplication
 						}
 					}
 				}
-			} finally {
+			}
+			finally {
 				diagramPresenter.RestoreTransformation();
 			}
 
@@ -163,7 +170,10 @@ namespace VixenApplication
 					diagramPresenter.ResetTransformation();
 					try {
 						diagramPresenter.DrawSelectionFrame(frameRect);
-					} finally { diagramPresenter.RestoreTransformation(); }
+					}
+					finally {
+						diagramPresenter.RestoreTransformation();
+					}
 					break;
 
 				case Action.MoveShape:
@@ -182,7 +192,8 @@ namespace VixenApplication
 						if (preview.HasControlPointCapability(selectedShapeAtCursorInfo.ControlPointId, ControlPointCapabilities.Glue)) {
 							// Find and highlight valid connection targets in range
 							Point p = preview.GetControlPointPosition(selectedShapeAtCursorInfo.ControlPointId);
-							DrawConnectionTargets(ActionDiagramPresenter, selectedShapeAtCursorInfo.Shape, selectedShapeAtCursorInfo.ControlPointId, p, ActionDiagramPresenter.SelectedShapes);
+							DrawConnectionTargets(ActionDiagramPresenter, selectedShapeAtCursorInfo.Shape,
+							                      selectedShapeAtCursorInfo.ControlPointId, p, ActionDiagramPresenter.SelectedShapes);
 						}
 					}
 					break;
@@ -193,7 +204,8 @@ namespace VixenApplication
 						FilterSetupShapeBase shape = connectionInfo.OtherShape as FilterSetupShapeBase;
 						if (shape != null) {
 							FilterSetupShapeBase.FilterShapeControlPointType type = shape.GetTypeForControlPoint(connectionInfo.OtherPointId);
-							if (type == FilterSetupShapeBase.FilterShapeControlPointType.Input || type == FilterSetupShapeBase.FilterShapeControlPointType.Output) {
+							if (type == FilterSetupShapeBase.FilterShapeControlPointType.Input ||
+							    type == FilterSetupShapeBase.FilterShapeControlPointType.Output) {
 								diagramPresenter.ResetTransformation();
 								diagramPresenter.DrawConnectionPoint(IndicatorDrawMode.Highlighted, shape, connectionInfo.OtherPointId);
 								diagramPresenter.RestoreTransformation();
@@ -243,7 +255,7 @@ namespace VixenApplication
 					break;
 
 				default:
-					throw new NShapeUnsupportedValueException(typeof(MenuItemDef), CurrentAction);
+					throw new NShapeUnsupportedValueException(typeof (MenuItemDef), CurrentAction);
 			}
 		}
 
@@ -257,10 +269,10 @@ namespace VixenApplication
 
 		#endregion
 
-
 		#region [Protected] Tool Members
 
-		protected override void StartToolAction(IDiagramPresenter diagramPresenter, int action, MouseState mouseState, bool wantAutoScroll)
+		protected override void StartToolAction(IDiagramPresenter diagramPresenter, int action, MouseState mouseState,
+		                                        bool wantAutoScroll)
 		{
 			base.StartToolAction(diagramPresenter, action, mouseState, wantAutoScroll);
 			// Empty selection frame
@@ -278,7 +290,6 @@ namespace VixenApplication
 
 		#endregion
 
-
 		#region [Private] Properties
 
 		private Action CurrentAction
@@ -286,14 +297,12 @@ namespace VixenApplication
 			get
 			{
 				if (IsToolActionPending)
-					return (Action)CurrentToolAction.Action;
+					return (Action) CurrentToolAction.Action;
 				else return Action.None;
 			}
 		}
 
-
 		#endregion
-
 
 		#region [Private] MouseEvent processing implementation
 
@@ -301,8 +310,10 @@ namespace VixenApplication
 		{
 			// Check if the selected shape at cursor is still valid
 			if (!selectedShapeAtCursorInfo.IsEmpty
-				&& (!diagramPresenter.SelectedShapes.Contains(selectedShapeAtCursorInfo.Shape)
-					|| selectedShapeAtCursorInfo.Shape.HitTest(mouseState.X, mouseState.Y, ControlPointCapabilities.All, diagramPresenter.ZoomedGripSize) == ControlPointId.None)) {
+			    && (!diagramPresenter.SelectedShapes.Contains(selectedShapeAtCursorInfo.Shape)
+			        ||
+			        selectedShapeAtCursorInfo.Shape.HitTest(mouseState.X, mouseState.Y, ControlPointCapabilities.All,
+			                                                diagramPresenter.ZoomedGripSize) == ControlPointId.None)) {
 				selectedShapeAtCursorInfo.Clear();
 			}
 
@@ -311,7 +322,7 @@ namespace VixenApplication
 				// Get suitable action (depending on the currently selected shape under the mouse cursor)
 				Action newAction = DetermineMouseDownAction(diagramPresenter, mouseState);
 				if (newAction != Action.None) {
-					StartToolAction(diagramPresenter, (int)newAction, mouseState, false);
+					StartToolAction(diagramPresenter, (int) newAction, mouseState, false);
 					Invalidate(ActionDiagramPresenter);
 				}
 			}
@@ -324,50 +335,53 @@ namespace VixenApplication
 			bool result = true;
 
 			if (!selectedShapeAtCursorInfo.IsEmpty &&
-				!diagramPresenter.SelectedShapes.Contains(selectedShapeAtCursorInfo.Shape))
+			    !diagramPresenter.SelectedShapes.Contains(selectedShapeAtCursorInfo.Shape))
 				selectedShapeAtCursorInfo.Clear();
 
 			switch (CurrentAction) {
 				case Action.None:
 					result = false;
-					SetSelectedShapeAtCursor(diagramPresenter, mouseState.X, mouseState.Y, diagramPresenter.ZoomedGripSize, ControlPointCapabilities.All);
+					SetSelectedShapeAtCursor(diagramPresenter, mouseState.X, mouseState.Y, diagramPresenter.ZoomedGripSize,
+					                         ControlPointCapabilities.All);
 					Invalidate(diagramPresenter);
 					break;
 
 				case Action.Select:
 
 					ShapeAtCursorInfo shapeAtActionStartInfo =
-						FindShapeAtCursor(ActionDiagramPresenter, ActionStartMouseState.X, ActionStartMouseState.Y, ControlPointCapabilities.Connect, 3, false);
+						FindShapeAtCursor(ActionDiagramPresenter, ActionStartMouseState.X, ActionStartMouseState.Y,
+						                  ControlPointCapabilities.Connect, 3, false);
 
 					Action newAction = DetermineMouseMoveAction(ActionDiagramPresenter, mouseState, shapeAtActionStartInfo);
 
 					// If the action has changed, prepare and start the new action
 					if (newAction != CurrentAction) {
 						switch (newAction) {
-							// Select --> SelectWithFrame
+								// Select --> SelectWithFrame
 							case Action.SelectWithFrame:
-								StartToolAction(diagramPresenter, (int)newAction, ActionStartMouseState, true);
+								StartToolAction(diagramPresenter, (int) newAction, ActionStartMouseState, true);
 								PrepareSelectionFrame(ActionDiagramPresenter, ActionStartMouseState);
 								break;
 
-							// Select --> (Select shape and) move shape
+								// Select --> (Select shape and) move shape
 							case Action.MoveShape:
 							case Action.MoveHandle:
 								if (selectedShapeAtCursorInfo.IsEmpty) {
 									// Select shape at cursor before start dragging it
 									PerformSelection(ActionDiagramPresenter, ActionStartMouseState, shapeAtActionStartInfo);
-									SetSelectedShapeAtCursor(diagramPresenter, ActionStartMouseState.X, ActionStartMouseState.Y, 0, ControlPointCapabilities.None);
+									SetSelectedShapeAtCursor(diagramPresenter, ActionStartMouseState.X, ActionStartMouseState.Y, 0,
+									                         ControlPointCapabilities.None);
 								}
 								// Init moving shape
 								CreatePreviewShapes(ActionDiagramPresenter);
-								StartToolAction(diagramPresenter, (int)newAction, ActionStartMouseState, true);
+								StartToolAction(diagramPresenter, (int) newAction, ActionStartMouseState, true);
 								PrepareMoveShapePreview(ActionDiagramPresenter, ActionStartMouseState);
 								break;
 
 							case Action.ConnectShapes:
 								bool connectionStarted = PrepareConnection(diagramPresenter, mouseState, shapeAtActionStartInfo, newAction);
 								if (connectionStarted)
-									StartToolAction(diagramPresenter, (int)newAction, ActionStartMouseState, true);
+									StartToolAction(diagramPresenter, (int) newAction, ActionStartMouseState, true);
 								break;
 
 							case Action.None:
@@ -395,7 +409,9 @@ namespace VixenApplication
 
 				case Action.ConnectShapes:
 					FilterSetupShapeBase filterShape = null;
-					foreach (var shape in FindShapesSortedByZOrder(ActionDiagramPresenter, mouseState.X, mouseState.Y, ControlPointCapabilities.None, 5)) {
+					foreach (
+						var shape in
+							FindShapesSortedByZOrder(ActionDiagramPresenter, mouseState.X, mouseState.Y, ControlPointCapabilities.None, 5)) {
 						filterShape = shape as FilterSetupShapeBase;
 						if (filterShape != null)
 							break;
@@ -404,7 +420,7 @@ namespace VixenApplication
 					break;
 
 				default:
-					throw new NShapeUnsupportedValueException(typeof(Action), CurrentAction);
+					throw new NShapeUnsupportedValueException(typeof (Action), CurrentAction);
 			}
 
 			int cursorId = DetermineCursor(diagramPresenter, mouseState);
@@ -420,7 +436,7 @@ namespace VixenApplication
 			bool result = false;
 
 			if (!selectedShapeAtCursorInfo.IsEmpty &&
-				!diagramPresenter.SelectedShapes.Contains(selectedShapeAtCursorInfo.Shape))
+			    !diagramPresenter.SelectedShapes.Contains(selectedShapeAtCursorInfo.Shape))
 				selectedShapeAtCursorInfo.Clear();
 
 			switch (CurrentAction) {
@@ -433,9 +449,11 @@ namespace VixenApplication
 					// initiated on right mouse earlier (in ProcessMouseDown) to allow it to 'refine' into other drag actions. If it's
 					// still a select by MouseUp, then we can ignore it.)
 					if (!mouseState.IsButtonDown(MouseButtonsDg.Right)) {
-						ShapeAtCursorInfo shapeAtCursorInfo = FindShapeAtCursor(diagramPresenter, mouseState.X, mouseState.Y, ControlPointCapabilities.None, 0, false);
+						ShapeAtCursorInfo shapeAtCursorInfo = FindShapeAtCursor(diagramPresenter, mouseState.X, mouseState.Y,
+						                                                        ControlPointCapabilities.None, 0, false);
 						result = PerformSelection(ActionDiagramPresenter, mouseState, shapeAtCursorInfo);
-						SetSelectedShapeAtCursor(ActionDiagramPresenter, mouseState.X, mouseState.Y, ActionDiagramPresenter.ZoomedGripSize, ControlPointCapabilities.All);
+						SetSelectedShapeAtCursor(ActionDiagramPresenter, mouseState.X, mouseState.Y, ActionDiagramPresenter.ZoomedGripSize,
+						                         ControlPointCapabilities.All);
 					}
 					EndToolAction();
 					break;
@@ -469,16 +487,15 @@ namespace VixenApplication
 					throw new NShapeUnsupportedValueException(CurrentAction);
 			}
 
-			SetSelectedShapeAtCursor(diagramPresenter, mouseState.X, mouseState.Y, diagramPresenter.ZoomedGripSize, ControlPointCapabilities.All);
+			SetSelectedShapeAtCursor(diagramPresenter, mouseState.X, mouseState.Y, diagramPresenter.ZoomedGripSize,
+			                         ControlPointCapabilities.All);
 			diagramPresenter.SetCursor(DetermineCursor(diagramPresenter, mouseState));
 
 			OnToolExecuted(ExecutedEventArgs);
 			return result;
 		}
 
-
 		#endregion
-
 
 		#region [Private] Determine action depending on mouse state and event type
 
@@ -501,7 +518,8 @@ namespace VixenApplication
 		/// <summary>
 		/// Decide which tool action is suitable for the current mouse state.
 		/// </summary>
-		private Action DetermineMouseMoveAction(IDiagramPresenter diagramPresenter, MouseState mouseState, ShapeAtCursorInfo shapeAtCursorInfo)
+		private Action DetermineMouseMoveAction(IDiagramPresenter diagramPresenter, MouseState mouseState,
+		                                        ShapeAtCursorInfo shapeAtCursorInfo)
 		{
 			switch (CurrentAction) {
 				case Action.None:
@@ -525,21 +543,24 @@ namespace VixenApplication
 								return Action.MoveHandle;
 							else
 								return Action.SelectWithFrame;
-						} else {
+						}
+						else {
 							// If there is no shape under the cursor, start a SelectWithFrame action,
 							// otherwise start a MoveShape action
 							bool canMove = false;
 							if (!selectedShapeAtCursorInfo.IsEmpty) {
 								// If there are selected shapes, check these shapes...
 								canMove = IsMoveShapeFeasible(diagramPresenter, mouseState, selectedShapeAtCursorInfo);
-							} else {
+							}
+							else {
 								// ... otherwise check the shape under the cursor as it will be selected 
 								// before starting a move action
 								canMove = IsMoveShapeFeasible(diagramPresenter, mouseState, shapeAtCursorInfo);
 							}
 							return canMove ? Action.MoveShape : Action.SelectWithFrame;
 						}
-					} else if (mouseState.IsButtonDown(MouseButtonsDg.Right)) {
+					}
+					else if (mouseState.IsButtonDown(MouseButtonsDg.Right)) {
 						if (IsConnectFromShapeFeasible(diagramPresenter, mouseState, shapeAtCursorInfo)) {
 							return Action.ConnectShapes;
 						}
@@ -553,13 +574,13 @@ namespace VixenApplication
 
 		#endregion
 
-
 		#region [Private] Action implementations
 
 		#region Selecting Shapes
 
 		// (Un)Select shape unter the mouse pointer
-		private bool PerformSelection(IDiagramPresenter diagramPresenter, MouseState mouseState, ShapeAtCursorInfo shapeAtCursorInfo)
+		private bool PerformSelection(IDiagramPresenter diagramPresenter, MouseState mouseState,
+		                              ShapeAtCursorInfo shapeAtCursorInfo)
 		{
 			bool result = false;
 			bool multiSelect = mouseState.IsKeyPressed(KeysDg.Control) || mouseState.IsKeyPressed(KeysDg.Shift);
@@ -576,14 +597,18 @@ namespace VixenApplication
 				if (multiSelect) shapeToSelect = selectedShapeAtCursorInfo.Shape;
 				else {
 					// First, check if the selected shape under the cursor has children that can be selected
-					shapeToSelect = selectedShapeAtCursorInfo.Shape.Children.FindShape(mouseState.X, mouseState.Y, capabilities, range, null);
+					shapeToSelect = selectedShapeAtCursorInfo.Shape.Children.FindShape(mouseState.X, mouseState.Y, capabilities, range,
+					                                                                   null);
 					// Second, check if the selected shape under the cursor has siblings that can be selected
 					if (shapeToSelect == null && selectedShapeAtCursorInfo.Shape.Parent != null) {
-						shapeToSelect = selectedShapeAtCursorInfo.Shape.Parent.Children.FindShape(mouseState.X, mouseState.Y, capabilities, range, selectedShapeAtCursorInfo.Shape);
+						shapeToSelect = selectedShapeAtCursorInfo.Shape.Parent.Children.FindShape(mouseState.X, mouseState.Y, capabilities,
+						                                                                          range, selectedShapeAtCursorInfo.Shape);
 						// Discard found shape if it is the selected shape at cursor
 						if (shapeToSelect == selectedShapeAtCursorInfo.Shape) shapeToSelect = null;
 						if (shapeToSelect == null) {
-							foreach (Shape shape in selectedShapeAtCursorInfo.Shape.Parent.Children.FindShapes(mouseState.X, mouseState.Y, capabilities, range)) {
+							foreach (
+								Shape shape in
+									selectedShapeAtCursorInfo.Shape.Parent.Children.FindShapes(mouseState.X, mouseState.Y, capabilities, range)) {
 								if (shape == selectedShapeAtCursorInfo.Shape) continue;
 								// Ignore layer visibility for child shapes
 								shapeToSelect = shape;
@@ -598,7 +623,7 @@ namespace VixenApplication
 			// (a child or a sibling of the selected shape or a shape below it),
 			// try to select the first non-selected shape under the cursor
 			if (shapeToSelect == null && shapeAtCursorInfo.Shape != null
-				&& shapeAtCursorInfo.Shape.ContainsPoint(mouseState.X, mouseState.Y))
+			    && shapeAtCursorInfo.Shape.ContainsPoint(mouseState.X, mouseState.Y))
 				shapeToSelect = shapeAtCursorInfo.Shape;
 
 			// If a new shape to select was found, perform selection
@@ -611,20 +636,23 @@ namespace VixenApplication
 						diagramPresenter.UnselectShape(shapeToSelect);
 						RemovePreviewOf(shapeToSelect);
 						result = true;
-					} else {
+					}
+					else {
 						// If object is not selected -> add to selection
 						diagramPresenter.SelectShape(shapeToSelect, true);
 						result = true;
 					}
-				} else {
+				}
+				else {
 					// ... otherwise deselect all selectedShapes but the clicked object
 					ClearPreviews();
 					// check if the clicked shape is a child of an already selected shape
 					Shape childShape = null;
 					if (diagramPresenter.SelectedShapes.Count == 1
-						&& diagramPresenter.SelectedShapes.TopMost.Children != null
-						&& diagramPresenter.SelectedShapes.TopMost.Children.Count > 0) {
-						childShape = diagramPresenter.SelectedShapes.TopMost.Children.FindShape(mouseState.X, mouseState.Y, ControlPointCapabilities.None, 0, null);
+					    && diagramPresenter.SelectedShapes.TopMost.Children != null
+					    && diagramPresenter.SelectedShapes.TopMost.Children.Count > 0) {
+						childShape = diagramPresenter.SelectedShapes.TopMost.Children.FindShape(mouseState.X, mouseState.Y,
+						                                                                        ControlPointCapabilities.None, 0, null);
 					}
 					diagramPresenter.SelectShape(childShape ?? shapeToSelect, false);
 					result = true;
@@ -636,7 +664,8 @@ namespace VixenApplication
 						if (diagramPresenter.SelectedShapes.Contains(shapeToSelect.Parent))
 							shapeToSelect = shapeToSelect.Parent;
 				}
-			} else if (selectedShapeAtCursorInfo.IsEmpty) {
+			}
+			else if (selectedShapeAtCursorInfo.IsEmpty) {
 				// if there was no other shape to select and none of the selected shapes is under the cursor,
 				// clear selection
 				if (!multiSelect) {
@@ -676,10 +705,10 @@ namespace VixenApplication
 
 		#endregion
 
-
 		#region Connecting / Disconnecting Shapes
 
-		private bool PrepareConnection(IDiagramPresenter diagramPresenter, MouseState mouseState, ShapeAtCursorInfo shapeAtCursorInfo, Action action)
+		private bool PrepareConnection(IDiagramPresenter diagramPresenter, MouseState mouseState,
+		                               ShapeAtCursorInfo shapeAtCursorInfo, Action action)
 		{
 			// if we're not dealing with filter shapes... well, what the fuck?! get out of here!
 			FilterSetupShapeBase shape = shapeAtCursorInfo.Shape as FilterSetupShapeBase;
@@ -692,9 +721,12 @@ namespace VixenApplication
 			// get the starting control point for the line; ie. the first unused output for the shape, or the selected control point (if the mouse is over an output)
 			ControlPointId connectionPoint = ControlPointId.None;
 
-			if (shapeAtCursorInfo.IsCursorAtConnectionPoint && shape.GetTypeForControlPoint(shapeAtCursorInfo.ControlPointId) == FilterSetupShapeBase.FilterShapeControlPointType.Output) {
+			if (shapeAtCursorInfo.IsCursorAtConnectionPoint &&
+			    shape.GetTypeForControlPoint(shapeAtCursorInfo.ControlPointId) ==
+			    FilterSetupShapeBase.FilterShapeControlPointType.Output) {
 				connectionPoint = shapeAtCursorInfo.ControlPointId;
-			} else {
+			}
+			else {
 				// try and find the first unconnected output if the mouse isn't over a specific control point
 				for (int i = 0; i < shape.OutputCount; i++) {
 					ControlPointId currentPoint = shape.GetControlPointIdForOutput(i);
@@ -710,12 +742,15 @@ namespace VixenApplication
 				}
 			}
 
-			DataFlowConnectionLine line = (DataFlowConnectionLine)diagramPresenter.Project.ShapeTypes["DataFlowConnectionLine"].CreateInstance();
+			DataFlowConnectionLine line =
+				(DataFlowConnectionLine) diagramPresenter.Project.ShapeTypes["DataFlowConnectionLine"].CreateInstance();
 			diagramPresenter.InsertShape(line);
 			diagramPresenter.Diagram.Shapes.SetZOrder(line, 100);
 			line.SecurityDomainName = ConfigFiltersAndPatching.SECURITY_DOMAIN_MOVABLE_SHAPE_WITH_CONNECTIONS;
 			line.EndCapStyle = diagramPresenter.Project.Design.CapStyles.ClosedArrow;
-			line.SourceDataFlowComponentReference = new DataFlowComponentReference(shape.DataFlowComponent, shape.GetOutputNumberForControlPoint(connectionPoint));
+			line.SourceDataFlowComponentReference = new DataFlowComponentReference(shape.DataFlowComponent,
+			                                                                       shape.GetOutputNumberForControlPoint(
+			                                                                       	connectionPoint));
 			line.DestinationDataComponent = null;
 
 			line.Connect(ControlPointId.FirstVertex, shape, connectionPoint);
@@ -723,7 +758,7 @@ namespace VixenApplication
 			line.MoveControlPointTo(ControlPointId.LastVertex, mouseState.X, mouseState.Y, ResizeModifiers.None);
 			currentConnectionLine = line;
 
-			StartToolAction(diagramPresenter, (int)action, ActionStartMouseState, true);
+			StartToolAction(diagramPresenter, (int) action, ActionStartMouseState, true);
 			return true;
 		}
 
@@ -750,7 +785,8 @@ namespace VixenApplication
 						}
 					}
 
-					FilterSetupShapeBase sourceShape = currentConnectionLine.GetConnectionInfo(ControlPointId.FirstVertex, null).OtherShape as FilterSetupShapeBase;
+					FilterSetupShapeBase sourceShape =
+						currentConnectionLine.GetConnectionInfo(ControlPointId.FirstVertex, null).OtherShape as FilterSetupShapeBase;
 
 					// check to see if it's pointing at itself
 					if (sourceShape == filterShape) {
@@ -758,14 +794,15 @@ namespace VixenApplication
 					}
 
 					// check to see if targeting this shape would create a circular dependency
-					if (sourceShape != null && VixenSystem.DataFlow.CheckComponentSourceForCircularDependency(filterShape.DataFlowComponent, sourceShape.DataFlowComponent)) {
+					if (sourceShape != null &&
+					    VixenSystem.DataFlow.CheckComponentSourceForCircularDependency(filterShape.DataFlowComponent,
+					                                                                   sourceShape.DataFlowComponent)) {
 						skipConnection = true;
 					}
 
 					if (!skipConnection) {
 						if (currentConnectionLine.GetConnectionInfo(ControlPointId.LastVertex, null).OtherPointId != point ||
-							currentConnectionLine.GetConnectionInfo(ControlPointId.LastVertex, null).OtherShape != filterShape)
-						{
+						    currentConnectionLine.GetConnectionInfo(ControlPointId.LastVertex, null).OtherShape != filterShape) {
 							currentConnectionLine.Disconnect(ControlPointId.LastVertex);
 							currentConnectionLine.Connect(ControlPointId.LastVertex, filterShape, point);
 							currentConnectionLine.DestinationDataComponent = filterShape.DataFlowComponent;
@@ -787,11 +824,13 @@ namespace VixenApplication
 		private bool FinishConnection(IDiagramPresenter diagramPresenter)
 		{
 			bool result = false;
-			if (currentConnectionLine.DestinationDataComponent != null && currentConnectionLine.SourceDataFlowComponentReference != null) {
+			if (currentConnectionLine.DestinationDataComponent != null &&
+			    currentConnectionLine.SourceDataFlowComponentReference != null) {
 				// check to see if what we're connecting it to is already connected to something (else): if so, remove that line.
 				// (we don't need to remove the dataflow component as source; since a component can only have a single source, it
 				// will be updated/overwritten by the 'SetComponentSource' below.)
-				FilterSetupShapeBase otherShape = currentConnectionLine.GetConnectionInfo(ControlPointId.LastVertex, null).OtherShape as FilterSetupShapeBase;
+				FilterSetupShapeBase otherShape =
+					currentConnectionLine.GetConnectionInfo(ControlPointId.LastVertex, null).OtherShape as FilterSetupShapeBase;
 				ControlPointId pointId = currentConnectionLine.GetConnectionInfo(ControlPointId.LastVertex, null).OtherPointId;
 				if (otherShape != null) {
 					foreach (ShapeConnectionInfo ci in otherShape.GetConnectionInfos(pointId, null)) {
@@ -801,12 +840,15 @@ namespace VixenApplication
 					}
 				}
 
-				currentConnectionLine.SecurityDomainName = ConfigFiltersAndPatching.SECURITY_DOMAIN_FIXED_SHAPE_NO_CONNECTIONS_DELETABLE;
+				currentConnectionLine.SecurityDomainName =
+					ConfigFiltersAndPatching.SECURITY_DOMAIN_FIXED_SHAPE_NO_CONNECTIONS_DELETABLE;
 
-				VixenSystem.DataFlow.SetComponentSource(currentConnectionLine.DestinationDataComponent, currentConnectionLine.SourceDataFlowComponentReference);
+				VixenSystem.DataFlow.SetComponentSource(currentConnectionLine.DestinationDataComponent,
+				                                        currentConnectionLine.SourceDataFlowComponentReference);
 
 				result = true;
-			} else {
+			}
+			else {
 				currentConnectionLine.Disconnect(ControlPointId.FirstVertex);
 				currentConnectionLine.Disconnect(ControlPointId.LastVertex);
 				diagramPresenter.DeleteShape(currentConnectionLine, false);
@@ -815,9 +857,7 @@ namespace VixenApplication
 			return result;
 		}
 
-
 		#endregion
-
 
 		#region Moving Shapes
 
@@ -830,7 +870,8 @@ namespace VixenApplication
 			// calculate "Snap to Grid" offset
 			snapDeltaX = snapDeltaY = 0;
 			if (diagramPresenter.SnapToGrid && !selectedShapeAtCursorInfo.IsEmpty) {
-				FindNearestSnapPoint(diagramPresenter, selectedShapeAtCursorInfo.Shape, distanceX, distanceY, out snapDeltaX, out snapDeltaY);
+				FindNearestSnapPoint(diagramPresenter, selectedShapeAtCursorInfo.Shape, distanceX, distanceY, out snapDeltaX,
+				                     out snapDeltaY);
 				distanceX += snapDeltaX;
 				distanceY += snapDeltaY;
 			}
@@ -866,7 +907,8 @@ namespace VixenApplication
 				//if (diagramPresenter.SnapToGrid)
 				//   FindNearestSnapPoint(diagramPresenter, SelectedShapeAtCursorInfo.Shape, distanceX, distanceY, out snapDeltaX, out snapDeltaY, ControlPointCapabilities.All);
 
-				ICommand cmd = new MoveShapeByCommand(diagramPresenter.SelectedShapes, distanceX + snapDeltaX, distanceY + snapDeltaY);
+				ICommand cmd = new MoveShapeByCommand(diagramPresenter.SelectedShapes, distanceX + snapDeltaX,
+				                                      distanceY + snapDeltaY);
 				diagramPresenter.Project.ExecuteCommand(cmd);
 
 				snapDeltaX = snapDeltaY = 0;
@@ -877,7 +919,6 @@ namespace VixenApplication
 		}
 
 		#endregion
-
 
 		#region Moving ControlPoints
 
@@ -893,9 +934,14 @@ namespace VixenApplication
 			snapDeltaX = snapDeltaY = 0;
 			if (selectedShapeAtCursorInfo.IsCursorAtGluePoint) {
 				ControlPointId targetPtId;
-				Shape targetShape = FindNearestControlPoint(diagramPresenter, selectedShapeAtCursorInfo.Shape, selectedShapeAtCursorInfo.ControlPointId, ControlPointCapabilities.Connect, distanceX, distanceY, out snapDeltaX, out snapDeltaY, out targetPtId);
-			} else
-				FindNearestSnapPoint(diagramPresenter, selectedShapeAtCursorInfo.Shape, selectedShapeAtCursorInfo.ControlPointId, distanceX, distanceY, out snapDeltaX, out snapDeltaY);
+				Shape targetShape = FindNearestControlPoint(diagramPresenter, selectedShapeAtCursorInfo.Shape,
+				                                            selectedShapeAtCursorInfo.ControlPointId,
+				                                            ControlPointCapabilities.Connect, distanceX, distanceY, out snapDeltaX,
+				                                            out snapDeltaY, out targetPtId);
+			}
+			else
+				FindNearestSnapPoint(diagramPresenter, selectedShapeAtCursorInfo.Shape, selectedShapeAtCursorInfo.ControlPointId,
+				                     distanceX, distanceY, out snapDeltaX, out snapDeltaY);
 			distanceX += snapDeltaX;
 			distanceY += snapDeltaY;
 
@@ -928,16 +974,19 @@ namespace VixenApplication
 			// if the moved ControlPoint is a single GluePoint, snap to ConnectionPoints
 			bool isGluePoint = false;
 			if (diagramPresenter.SelectedShapes.Count == 1)
-				isGluePoint = selectedShapeAtCursorInfo.Shape.HasControlPointCapability(selectedShapeAtCursorInfo.ControlPointId, ControlPointCapabilities.Glue);
+				isGluePoint = selectedShapeAtCursorInfo.Shape.HasControlPointCapability(selectedShapeAtCursorInfo.ControlPointId,
+				                                                                        ControlPointCapabilities.Glue);
 
 			// Snap to Grid or ControlPoint
 			bool calcSnapDistance = true;
 			ShapeAtCursorInfo targetShapeInfo = ShapeAtCursorInfo.Empty;
 			if (isGluePoint) {
-				Point currentPtPos = selectedShapeAtCursorInfo.Shape.GetControlPointPosition(selectedShapeAtCursorInfo.ControlPointId);
+				Point currentPtPos =
+					selectedShapeAtCursorInfo.Shape.GetControlPointPosition(selectedShapeAtCursorInfo.ControlPointId);
 				Point newPtPos = Point.Empty;
 				newPtPos.Offset(currentPtPos.X + distanceX, currentPtPos.Y + distanceY);
-				targetShapeInfo = FindConnectionTarget(ActionDiagramPresenter, selectedShapeAtCursorInfo.Shape, selectedShapeAtCursorInfo.ControlPointId, newPtPos, true, true);
+				targetShapeInfo = FindConnectionTarget(ActionDiagramPresenter, selectedShapeAtCursorInfo.Shape,
+				                                       selectedShapeAtCursorInfo.ControlPointId, newPtPos, true, true);
 				if (!targetShapeInfo.IsEmpty) {
 					// If there is a target shape to connect to, get the position of the target connection point 
 					// and move the gluepoint exactly to this position
@@ -946,7 +995,8 @@ namespace VixenApplication
 						Point pt = targetShapeInfo.Shape.GetControlPointPosition(targetShapeInfo.ControlPointId);
 						distanceX = pt.X - currentPtPos.X;
 						distanceY = pt.Y - currentPtPos.Y;
-					} else {
+					}
+					else {
 						// If the target point is the reference point, use the previously calculated snap distance
 						// ToDo: We need a solution for calculating the nearest point on the target shape's outline
 						distanceX += snapDeltaX;
@@ -955,17 +1005,23 @@ namespace VixenApplication
 				}
 			}
 			if (calcSnapDistance) {
-				FindNearestSnapPoint(diagramPresenter, selectedShapeAtCursorInfo.Shape, selectedShapeAtCursorInfo.ControlPointId, distanceX, distanceY, out snapDeltaX, out snapDeltaY);
+				FindNearestSnapPoint(diagramPresenter, selectedShapeAtCursorInfo.Shape, selectedShapeAtCursorInfo.ControlPointId,
+				                     distanceX, distanceY, out snapDeltaX, out snapDeltaY);
 				distanceX += snapDeltaX;
 				distanceY += snapDeltaY;
 			}
 
 			ResizeModifiers resizeModifier = GetResizeModifier(CurrentMouseState);
 			if (isGluePoint) {
-				ICommand cmd = new MoveGluePointCommand(selectedShapeAtCursorInfo.Shape, selectedShapeAtCursorInfo.ControlPointId, targetShapeInfo.Shape, targetShapeInfo.ControlPointId, distanceX, distanceY, resizeModifier);
+				ICommand cmd = new MoveGluePointCommand(selectedShapeAtCursorInfo.Shape, selectedShapeAtCursorInfo.ControlPointId,
+				                                        targetShapeInfo.Shape, targetShapeInfo.ControlPointId, distanceX, distanceY,
+				                                        resizeModifier);
 				diagramPresenter.Project.ExecuteCommand(cmd);
-			} else {
-				ICommand cmd = new MoveControlPointCommand(ActionDiagramPresenter.SelectedShapes, selectedShapeAtCursorInfo.ControlPointId, distanceX, distanceY, resizeModifier);
+			}
+			else {
+				ICommand cmd = new MoveControlPointCommand(ActionDiagramPresenter.SelectedShapes,
+				                                           selectedShapeAtCursorInfo.ControlPointId, distanceX, distanceY,
+				                                           resizeModifier);
 				diagramPresenter.Project.ExecuteCommand(cmd);
 			}
 
@@ -978,9 +1034,7 @@ namespace VixenApplication
 
 		#endregion
 
-
 		#endregion
-
 
 		#region [Private] Preview management implementation
 
@@ -1074,7 +1128,7 @@ namespace VixenApplication
 			foreach (ControlPointId gluePointId in shape.GetControlPointIds(ControlPointCapabilities.Glue)) {
 				ShapeConnectionInfo sci = shape.GetConnectionInfo(gluePointId, null);
 				if (!sci.IsEmpty
-					&& !diagramPresenter.SelectedShapes.Contains(sci.OtherShape))
+				    && !diagramPresenter.SelectedShapes.Contains(sci.OtherShape))
 					return true;
 			}
 			return false;
@@ -1106,14 +1160,17 @@ namespace VixenApplication
 							preview.Connect(connectionInfo.OwnPointId, targetPreview, connectionInfo.OtherPointId);
 						}
 					}
-				} else {
+				}
+				else {
 					// Connect preview of shape to a non-selected shape if it is a single shape 
 					// that has a glue point (e.g. a Label)
 					if (preview.HasControlPointCapability(connectionInfo.OwnPointId, ControlPointCapabilities.Glue)) {
 						// Only connect if the control point to be connected is not the control point to be moved
-						if (shape == selectedShapeAtCursorInfo.Shape && connectionInfo.OwnPointId != selectedShapeAtCursorInfo.ControlPointId)
+						if (shape == selectedShapeAtCursorInfo.Shape &&
+						    connectionInfo.OwnPointId != selectedShapeAtCursorInfo.ControlPointId)
 							preview.Connect(connectionInfo.OwnPointId, connectionInfo.OtherShape, connectionInfo.OtherPointId);
-					} else
+					}
+					else
 						// Create a preview of the shape that is connected to the preview (recursive call)
 						CreateConnectedTargetPreviewShape(diagramPresenter, preview, connectionInfo);
 				}
@@ -1124,7 +1181,8 @@ namespace VixenApplication
 		/// <summary>
 		/// Creates (or finds) a preview of the connection's PassiveShape and connects it to the current preview shape
 		/// </summary>
-		private void CreateConnectedTargetPreviewShape(IDiagramPresenter diagramPresenter, Shape previewShape, ShapeConnectionInfo connectionInfo)
+		private void CreateConnectedTargetPreviewShape(IDiagramPresenter diagramPresenter, Shape previewShape,
+		                                               ShapeConnectionInfo connectionInfo)
 		{
 			// Check if any other selected shape is connected to the same non-selected shape
 			Shape previewTargetShape;
@@ -1161,8 +1219,10 @@ namespace VixenApplication
 								Shape s = FindPreviewOfShape(connectorCI.OtherShape);
 								if (s.IsConnected(connectorCI.OtherPointId, previewTargetShape) == ControlPointId.None)
 									previewTargetShape.Connect(connectorCI.OwnPointId, s, connectorCI.OtherPointId);
-							} else continue;
-						} else if (connectorCI.OtherShape.HasControlPointCapability(connectorCI.OtherPointId, ControlPointCapabilities.Glue))
+							}
+							else continue;
+						}
+						else if (connectorCI.OtherShape.HasControlPointCapability(connectorCI.OtherPointId, ControlPointCapabilities.Glue))
 							// Connect connectors connected to the previewTargetShape
 							CreateConnectedTargetPreviewShape(diagramPresenter, previewTargetShape, connectorCI);
 						else if (connectorCI.OtherPointId == ControlPointId.Reference) {
@@ -1175,30 +1235,36 @@ namespace VixenApplication
 			}
 		}
 
-
 		#endregion
-
 
 		#region [Private] Helper Methods
 
-		private void SetSelectedShapeAtCursor(IDiagramPresenter diagramPresenter, int mouseX, int mouseY, int handleRadius, ControlPointCapabilities handleCapabilities)
+		private void SetSelectedShapeAtCursor(IDiagramPresenter diagramPresenter, int mouseX, int mouseY, int handleRadius,
+		                                      ControlPointCapabilities handleCapabilities)
 		{
 			// Find the shape under the cursor
 			selectedShapeAtCursorInfo.Clear();
-			selectedShapeAtCursorInfo.Shape = diagramPresenter.SelectedShapes.FindShape(mouseX, mouseY, handleCapabilities, handleRadius, null);
+			selectedShapeAtCursorInfo.Shape = diagramPresenter.SelectedShapes.FindShape(mouseX, mouseY, handleCapabilities,
+			                                                                            handleRadius, null);
 
 			// If there is a shape under the cursor, find the nearest control point and caption
 			if (!selectedShapeAtCursorInfo.IsEmpty) {
 				ControlPointCapabilities capabilities;
-				if (CurrentMouseState.IsKeyPressed(KeysDg.Control)) capabilities = ControlPointCapabilities.Resize /*| ControlPointCapabilities.Movable*/;
+				if (CurrentMouseState.IsKeyPressed(KeysDg.Control))
+					capabilities = ControlPointCapabilities.Resize /*| ControlPointCapabilities.Movable*/;
 				else if (CurrentMouseState.IsKeyPressed(KeysDg.Shift)) capabilities = ControlPointCapabilities.Rotate;
 				else capabilities = gripCapabilities;
 
 				// Find control point at cursor that belongs to the selected shape at cursor
-				selectedShapeAtCursorInfo.ControlPointId = selectedShapeAtCursorInfo.Shape.FindNearestControlPoint(mouseX, mouseY, diagramPresenter.ZoomedGripSize, capabilities);
+				selectedShapeAtCursorInfo.ControlPointId = selectedShapeAtCursorInfo.Shape.FindNearestControlPoint(mouseX, mouseY,
+				                                                                                                   diagramPresenter.
+				                                                                                                   	ZoomedGripSize,
+				                                                                                                   capabilities);
 				// Find caption at cursor (if the shape is a captioned shape)
-				if (selectedShapeAtCursorInfo.Shape is ICaptionedShape && ((ICaptionedShape)selectedShapeAtCursorInfo.Shape).CaptionCount > 0)
-					selectedShapeAtCursorInfo.CaptionIndex = ((ICaptionedShape)selectedShapeAtCursorInfo.Shape).FindCaptionFromPoint(mouseX, mouseY);
+				if (selectedShapeAtCursorInfo.Shape is ICaptionedShape &&
+				    ((ICaptionedShape) selectedShapeAtCursorInfo.Shape).CaptionCount > 0)
+					selectedShapeAtCursorInfo.CaptionIndex =
+						((ICaptionedShape) selectedShapeAtCursorInfo.Shape).FindCaptionFromPoint(mouseX, mouseY);
 			}
 		}
 
@@ -1329,13 +1395,15 @@ namespace VixenApplication
 		}
 
 
-		private bool IsMoveShapeFeasible(IDiagramPresenter diagramPresenter, MouseState mouseState, ShapeAtCursorInfo shapeAtCursorInfo)
+		private bool IsMoveShapeFeasible(IDiagramPresenter diagramPresenter, MouseState mouseState,
+		                                 ShapeAtCursorInfo shapeAtCursorInfo)
 		{
 			if (shapeAtCursorInfo.IsEmpty || mouseState.IsEmpty)
 				return false;
 			if (!diagramPresenter.Project.SecurityManager.IsGranted(Permission.Layout, shapeAtCursorInfo.Shape))
 				return false;
-			if (diagramPresenter.SelectedShapes.Count > 0 && !diagramPresenter.Project.SecurityManager.IsGranted(Permission.Layout, diagramPresenter.SelectedShapes))
+			if (diagramPresenter.SelectedShapes.Count > 0 &&
+			    !diagramPresenter.Project.SecurityManager.IsGranted(Permission.Layout, diagramPresenter.SelectedShapes))
 				return false;
 			if (!shapeAtCursorInfo.Shape.ContainsPoint(mouseState.X, mouseState.Y))
 				return false;
@@ -1347,7 +1415,8 @@ namespace VixenApplication
 				// Check if the non-selected shape at cursor (which will be selected) owns glue points connected to other shapes
 				foreach (ControlPointId id in shapeAtCursorInfo.Shape.GetControlPointIds(ControlPointCapabilities.Glue))
 					if (shapeAtCursorInfo.Shape.IsConnected(id, null) != ControlPointId.None) return false;
-			} else if (diagramPresenter.SelectedShapes.Contains(shapeAtCursorInfo.Shape)) {
+			}
+			else if (diagramPresenter.SelectedShapes.Contains(shapeAtCursorInfo.Shape)) {
 				// ToDo: If there are *many* shapes selected (e.g. 10000), this check will be extremly slow...
 				if (diagramPresenter.SelectedShapes.Count < 10000) {
 					// LinearShapes that own connected gluePoints may not be moved.
@@ -1368,7 +1437,8 @@ namespace VixenApplication
 			return true;
 		}
 
-		private bool IsConnectFromShapeFeasible(IDiagramPresenter diagramPresenter, MouseState mouseState, ShapeAtCursorInfo shapeAtCursorInfo)
+		private bool IsConnectFromShapeFeasible(IDiagramPresenter diagramPresenter, MouseState mouseState,
+		                                        ShapeAtCursorInfo shapeAtCursorInfo)
 		{
 			if (shapeAtCursorInfo.IsEmpty || mouseState.IsEmpty)
 				return false;
@@ -1386,7 +1456,8 @@ namespace VixenApplication
 		}
 
 
-		private bool IsMoveHandleFeasible(IDiagramPresenter diagramPresenter, MouseState mouseState, ShapeAtCursorInfo shapeAtCursorInfo)
+		private bool IsMoveHandleFeasible(IDiagramPresenter diagramPresenter, MouseState mouseState,
+		                                  ShapeAtCursorInfo shapeAtCursorInfo)
 		{
 			if (shapeAtCursorInfo.IsEmpty)
 				return false;
@@ -1395,15 +1466,20 @@ namespace VixenApplication
 			if (shapeAtCursorInfo.Shape.HasControlPointCapability(shapeAtCursorInfo.ControlPointId, ControlPointCapabilities.Glue)) {
 				if (!diagramPresenter.Project.SecurityManager.IsGranted(Permission.Connect, diagramPresenter.SelectedShapes))
 					return false;
-			} else {
+			}
+			else {
 				if (!diagramPresenter.Project.SecurityManager.IsGranted(Permission.Layout, diagramPresenter.SelectedShapes))
 					return false;
 			}
-			if (!shapeAtCursorInfo.Shape.HasControlPointCapability(shapeAtCursorInfo.ControlPointId, ControlPointCapabilities.Resize | ControlPointCapabilities.Glue /*| ControlPointCapabilities.Movable*/))
+			if (
+				!shapeAtCursorInfo.Shape.HasControlPointCapability(shapeAtCursorInfo.ControlPointId,
+				                                                   ControlPointCapabilities.Resize | ControlPointCapabilities.Glue
+				 	/*| ControlPointCapabilities.Movable*/))
 				return false;
 			if (diagramPresenter.SelectedShapes.Count > 1) {
 				// GluePoints may only be moved alone
-				if (shapeAtCursorInfo.Shape.HasControlPointCapability(shapeAtCursorInfo.ControlPointId, ControlPointCapabilities.Glue))
+				if (shapeAtCursorInfo.Shape.HasControlPointCapability(shapeAtCursorInfo.ControlPointId,
+				                                                      ControlPointCapabilities.Glue))
 					return false;
 				// Check if all shapes that are going to be resizes are of the same type
 				Shape lastShape = null;
@@ -1416,15 +1492,13 @@ namespace VixenApplication
 			return true;
 		}
 
-		public IEnumerable<Shape> FindShapesSortedByZOrder(IDiagramPresenter diagramPresenter, int x, int y, ControlPointCapabilities pointCapabilities, int distance)
+		public IEnumerable<Shape> FindShapesSortedByZOrder(IDiagramPresenter diagramPresenter, int x, int y,
+		                                                   ControlPointCapabilities pointCapabilities, int distance)
 		{
 			return FindVisibleShapes(diagramPresenter, x, y, pointCapabilities, distance).OrderByDescending(s => s.ZOrder);
 		}
 
-
-
 		#endregion
-
 
 		#region [Private] Construction
 
@@ -1443,9 +1517,9 @@ namespace VixenApplication
 		{
 			Title = "Pointer";
 			ToolTipText = "Select one or more objects by holding shift while clicking or drawing a frame."
-				+ Environment.NewLine
-				+ "Selected objects can be moved by dragging them to the target position or resized by dragging "
-				+ "a control point to the target position.";
+			              + Environment.NewLine
+			              + "Selected objects can be moved by dragging them to the target position or resized by dragging "
+			              + "a control point to the target position.";
 
 			//SmallIcon = global::Dataweb.NShape.Properties.Resources.PointerIconSmall;
 			//SmallIcon.MakeTransparent(Color.Fuchsia);
@@ -1457,7 +1531,6 @@ namespace VixenApplication
 		}
 
 		#endregion
-
 
 		#region [Private] Types
 
@@ -1480,16 +1553,15 @@ namespace VixenApplication
 			Connect,
 		}
 
-
 		#endregion
-
 
 		#region Fields
 
 		// --- Description of the tool ---
 		private static Dictionary<ToolCursor, int> cursors;
 		//
-		private ControlPointCapabilities gripCapabilities = ControlPointCapabilities.Resize | ControlPointCapabilities.Rotate /*| ControlPointCapabilities.Movable*/;
+		private ControlPointCapabilities gripCapabilities = ControlPointCapabilities.Resize | ControlPointCapabilities.Rotate
+		                                 /*| ControlPointCapabilities.Movable*/;
 
 		// --- State after the last ProcessMouseEvent ---
 		// selected shape under the mouse cursor, being highlighted in the next drawing

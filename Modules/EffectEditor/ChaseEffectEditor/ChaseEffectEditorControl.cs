@@ -25,8 +25,8 @@ namespace VixenModules.EffectEditor.ChaseEffectEditor
 		}
 
 
+		private IEffect _targetEffect;
 
-				IEffect _targetEffect;
 		public IEffect TargetEffect
 		{
 			get { return _targetEffect; }
@@ -37,16 +37,17 @@ namespace VixenModules.EffectEditor.ChaseEffectEditor
 		{
 			get
 			{
-				return new object[] {
-					ColorHandling,
-					PulseOverlap,
-					DefaultLevel,
-					StaticColor,
-					ColorGradient,
-					PulseCurve,
-					ChaseMovement,
-					DepthOfEffect
-				};
+				return new object[]
+				       	{
+				       		ColorHandling,
+				       		PulseOverlap,
+				       		DefaultLevel,
+				       		StaticColor,
+				       		ColorGradient,
+				       		PulseCurve,
+				       		ChaseMovement,
+				       		DepthOfEffect
+				       	};
 			}
 			set
 			{
@@ -55,14 +56,14 @@ namespace VixenModules.EffectEditor.ChaseEffectEditor
 					return;
 				}
 
-				ColorHandling = (ChaseColorHandling)value[0];
-				PulseOverlap = (int)value[1];
-				DefaultLevel = (double)value[2];
-				StaticColor = (Color)value[3];
-				ColorGradient = (ColorGradient)value[4];
-				PulseCurve = (Curve)value[5];
-				ChaseMovement = (Curve)value[6];
-				DepthOfEffect = (int)value[7];
+				ColorHandling = (ChaseColorHandling) value[0];
+				PulseOverlap = (int) value[1];
+				DefaultLevel = (double) value[2];
+				StaticColor = (Color) value[3];
+				ColorGradient = (ColorGradient) value[4];
+				PulseCurve = (Curve) value[5];
+				ChaseMovement = (Curve) value[6];
+				DepthOfEffect = (int) value[7];
 			}
 		}
 
@@ -105,13 +106,13 @@ namespace VixenModules.EffectEditor.ChaseEffectEditor
 
 		public int PulseOverlap
 		{
-			get { return (int)numericUpDownPulseTimeOverlap.Value; }
+			get { return (int) numericUpDownPulseTimeOverlap.Value; }
 			set
 			{
-				if (value < (int)numericUpDownPulseTimeOverlap.Minimum)
-					value = (int)numericUpDownPulseTimeOverlap.Minimum;
-				if (value > (int)numericUpDownPulseTimeOverlap.Maximum)
-					value = (int)numericUpDownPulseTimeOverlap.Maximum;
+				if (value < (int) numericUpDownPulseTimeOverlap.Minimum)
+					value = (int) numericUpDownPulseTimeOverlap.Minimum;
+				if (value > (int) numericUpDownPulseTimeOverlap.Maximum)
+					value = (int) numericUpDownPulseTimeOverlap.Maximum;
 
 				numericUpDownPulseTimeOverlap.Value = value;
 			}
@@ -149,17 +150,18 @@ namespace VixenModules.EffectEditor.ChaseEffectEditor
 
 		public int DepthOfEffect
 		{
-			get	{
+			get
+			{
 				if (radioButtonApplyToAllElements.Checked)
 					return 0;
 				else
-					return (int)numericUpDownDepthOfEffect.Value;
+					return (int) numericUpDownDepthOfEffect.Value;
 			}
-			set	{
+			set
+			{
 				if (value == 0)
 					radioButtonApplyToAllElements.Checked = true;
-				else
-				{
+				else {
 					radioButtonApplyToLevel.Checked = true;
 					numericUpDownDepthOfEffect.Value = value;
 				}
@@ -170,6 +172,5 @@ namespace VixenModules.EffectEditor.ChaseEffectEditor
 		{
 			numericUpDownDepthOfEffect.Enabled = radioButtonApplyToLevel.Checked;
 		}
-
 	}
 }

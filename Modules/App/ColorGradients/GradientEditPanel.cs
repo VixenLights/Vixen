@@ -24,7 +24,6 @@ namespace VixenModules.App.ColorGradients
 
 		#endregion
 
-
 		public GradientEditPanel()
 		{
 			InitializeComponent();
@@ -32,35 +31,34 @@ namespace VixenModules.App.ColorGradients
 			LockColorEditorHSV_Value = true;
 		}
 
-
 		#region handlers
+
 		//updates all controls
 		private void UpdateUI()
 		{
-			if (edit.Gradient == null)
-			{
+			if (edit.Gradient == null) {
 				grpStops.Enabled = false;
 			}
-			else
-			{
+			else {
 				grpStops.Enabled = true;
 				//ColorPoint cpt = edit.Selection as ColorPoint;
-				if (edit.Selection.Count > 0)
-				{
+				if (edit.Selection.Count > 0) {
 					vColorLoc.Enabled = true;
 					lblColorSelect.Enabled = btnDeleteColor.Enabled = !edit.FocusSelection;
 					//
-					vColorLoc.Value = (int)((edit.FocusSelection ? edit.Selection.First().Focus : edit.Selection.First().Position) * 100.0);
+					vColorLoc.Value =
+						(int) ((edit.FocusSelection ? edit.Selection.First().Focus : edit.Selection.First().Position)*100.0);
 
 					if (edit.Selection.Count == 0)
 						lblColorSelect.Color = Color.DimGray;
 					else {
 						ColorPoint cpt = edit.Selection.First() as ColorPoint;
-						lblColorSelect.Color = edit.FocusSelection ? Color.DimGray : lblColorSelect.OldColor = (_xyz = cpt.Color).ToRGB().ToArgb();
+						lblColorSelect.Color = edit.FocusSelection
+						                       	? Color.DimGray
+						                       	: lblColorSelect.OldColor = (_xyz = cpt.Color).ToRGB().ToArgb();
 					}
 				}
-				else
-				{
+				else {
 					lblColorSelect.Enabled = vColorLoc.Enabled = btnDeleteColor.Enabled = false;
 					lblColorSelect.Color = lblColorSelect.OldColor = Color.DimGray;
 					vColorLoc.Value = 0;
@@ -116,13 +114,15 @@ namespace VixenModules.App.ColorGradients
 					if (picker.ShowDialog() == DialogResult.OK) {
 						if (picker.SelectedColors.Count() == 0) {
 							DeleteColor();
-						} else if (picker.SelectedColors.Count() == selectedColors.Count) {
+						}
+						else if (picker.SelectedColors.Count() == selectedColors.Count) {
 							int i = 0;
 							foreach (Color selectedColor in picker.SelectedColors) {
 								ColorPoint pt = edit.Selection[i] as ColorPoint;
 								pt.Color = XYZ.FromRGB(selectedColor);
 							}
-						} else {
+						}
+						else {
 							double position = edit.Selection.First().Position;
 
 							foreach (ColorGradient.Point point in edit.Selection) {
@@ -132,13 +132,12 @@ namespace VixenModules.App.ColorGradients
 							foreach (Color selectedColor in picker.SelectedColors) {
 								ColorPoint newPoint = new ColorPoint(selectedColor, position);
 								edit.Gradient.Colors.Add(newPoint);
-							}	
+							}
 						}
 					}
 				}
-
-
-			} else {
+			}
+			else {
 				if (edit.Selection.Count > 1)
 					MessageBox.Show("Non-discrete color gradient, >1 selected point. oops! please report it.");
 				ColorPoint pt = edit.Selection.FirstOrDefault() as ColorPoint;
@@ -182,9 +181,9 @@ namespace VixenModules.App.ColorGradients
 				if (pt == null)
 					return;
 				if (edit.FocusSelection)
-					pt.Focus = (double)vColorLoc.Value / 100.0;
+					pt.Focus = (double) vColorLoc.Value/100.0;
 				else
-					pt.Position = (double)vColorLoc.Value / 100.0;
+					pt.Position = (double) vColorLoc.Value/100.0;
 			}
 		}
 
@@ -207,35 +206,47 @@ namespace VixenModules.App.ColorGradients
 
 		#endregion
 
-
 		#region properties
 
 		/// <summary>
 		/// gets or sets the gradient object
 		/// </summary>
 		[Browsable(false),
-		DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		 DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public ColorGradient Gradient
 		{
 			get { return edit.Gradient; }
-			set { edit.Gradient = value; UpdateUI(); }
+			set
+			{
+				edit.Gradient = value;
+				UpdateUI();
+			}
 		}
 
 		public IEnumerable<Color> ValidDiscreteColors
 		{
 			get { return edit.ValidDiscreteColors; }
-			set { edit.ValidDiscreteColors = value; UpdateUI(); }
+			set
+			{
+				edit.ValidDiscreteColors = value;
+				UpdateUI();
+			}
 		}
 
 		public bool DiscreteColors
 		{
 			get { return edit.DiscreteColors; }
-			set { edit.DiscreteColors = value; UpdateUI(); }
+			set
+			{
+				edit.DiscreteColors = value;
+				UpdateUI();
+			}
 		}
 
 		public bool LockColorEditorHSV_Value { get; set; }
 
 		private bool _readonly;
+
 		public bool ReadOnly
 		{
 			get { return _readonly; }
@@ -249,7 +260,6 @@ namespace VixenModules.App.ColorGradients
 		}
 
 		#endregion
-
 
 		/// <summary>
 		/// triggered if gradient changed

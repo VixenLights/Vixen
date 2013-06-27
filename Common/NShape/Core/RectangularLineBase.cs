@@ -18,17 +18,18 @@ using System.Diagnostics;
 using System.Drawing;
 
 
-namespace Dataweb.NShape.Advanced {
-
+namespace Dataweb.NShape.Advanced
+{
 	/// <summary>
 	/// Base class for lines that connect their vertices with rectangular lines.
 	/// </summary>
-	public abstract class RectangularLineBase : LineShapeBase {
-
+	public abstract class RectangularLineBase : LineShapeBase
+	{
 		#region Shape Members
 
 		/// <summary>Overriden method. Check base class for documentation.</summary>
-		public override void CopyFrom(Shape source) {
+		public override void CopyFrom(Shape source)
+		{
 			base.CopyFrom(source);
 			if (source is PolylineBase) {
 				// Vertices and CapStyles will be copied by the base class
@@ -38,7 +39,8 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <summary>Overriden method. Check base class for documentation.</summary>
-		public override void Fit(int x, int y, int width, int height) {
+		public override void Fit(int x, int y, int width, int height)
+		{
 			Rectangle bounds = GetBoundingRectangle(true);
 			// First, scale to the desired size
 			//float scale;
@@ -57,7 +59,7 @@ namespace Dataweb.NShape.Advanced {
 				if (IsFirstVertex(ptId) || IsLastVertex(ptId)) continue;
 				ptNr = 1;
 				Point pos = GetControlPointPosition(ptId);
-				pos = Geometry.VectorLinearInterpolation(topLeft, bottomRight, ptNr / (float)(VertexCount - 1));
+				pos = Geometry.VectorLinearInterpolation(topLeft, bottomRight, ptNr/(float) (VertexCount - 1));
 				MoveControlPointTo(ptId, pos.X, pos.Y, ResizeModifiers.None);
 			}
 			InvalidateDrawCache();
@@ -65,9 +67,11 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <summary>Overriden method. Check base class for documentation.</summary>
-		public override int X {
+		public override int X
+		{
 			get { return GetControlPoint(0).GetPosition().X; }
-			set {
+			set
+			{
 				int origValue = GetControlPoint(0).GetPosition().X;
 				if (!MoveTo(value, Y)) MoveTo(origValue, Y);
 			}
@@ -75,9 +79,11 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <summary>Overriden method. Check base class for documentation.</summary>
-		public override int Y {
+		public override int Y
+		{
 			get { return GetControlPoint(0).GetPosition().Y; }
-			set {
+			set
+			{
 				int origValue = GetControlPoint(0).GetPosition().Y;
 				if (!MoveTo(X, value)) MoveTo(X, origValue);
 			}
@@ -86,7 +92,8 @@ namespace Dataweb.NShape.Advanced {
 
 		/// <summary>Overriden method. Check base class for documentation.</summary>
 		/// <remarks>See <see cref="CalculateRelativePosition">CalcRelativePosition</see> for definition of relative positions for rectangular lines.</remarks>
-		public override Point CalculateAbsolutePosition(RelativePosition relativePosition) {
+		public override Point CalculateAbsolutePosition(RelativePosition relativePosition)
+		{
 			if (relativePosition == RelativePosition.Empty) throw new ArgumentOutOfRangeException("relativePosition");
 			Point result = Point.Empty;
 			//
@@ -95,8 +102,8 @@ namespace Dataweb.NShape.Advanced {
 			FindSegment(relativePosition.A, out knee1, out knee2);
 			//
 			// Calculate the perpendicular foot
-			int fX = knee1.X + relativePosition.B * (knee2.X - knee1.X) / 100;
-			int fY = knee1.Y + relativePosition.B * (knee2.Y - knee1.Y) / 100;
+			int fX = knee1.X + relativePosition.B*(knee2.X - knee1.X)/100;
+			int fY = knee1.Y + relativePosition.B*(knee2.Y - knee1.Y)/100;
 			// 
 			// Calculate absolute position on the perpendicular in distance relativePosition.C
 			int pX, pY;
@@ -114,7 +121,8 @@ namespace Dataweb.NShape.Advanced {
 		///     as the percentage of the line segment length.
 		/// C = Distance between the point and the base point.
 		/// </remarks>
-		public override RelativePosition CalculateRelativePosition(int x, int y) {
+		public override RelativePosition CalculateRelativePosition(int x, int y)
+		{
 			if (!Geometry.IsValid(x, y)) throw new ArgumentOutOfRangeException("x / y");
 			RelativePosition result = RelativePosition.Empty;
 			Point p = Point.Empty;
@@ -131,7 +139,8 @@ namespace Dataweb.NShape.Advanced {
 			Geometry.CalcDroppedPerpendicularFoot(x, y, knee1.X, knee1.Y, knee2.X, knee2.Y, out fX, out fY);
 			result.A = segmentIndex;
 			// B is the distance of p to knee1 in percent of the total length
-			result.B = 100 * Geometry.DistancePointPointFast(fX, fY, knee1.X, knee1.Y) / Geometry.DistancePointPointFast(knee2.X, knee2.Y, knee1.X, knee1.Y);
+			result.B = 100*Geometry.DistancePointPointFast(fX, fY, knee1.X, knee1.Y)/
+			           Geometry.DistancePointPointFast(knee2.X, knee2.Y, knee1.X, knee1.Y);
 			// C is the distance of p to knee1 - knee2
 			result.C = Geometry.DistancePointPointFast(x, y, fX, fY);
 			return result;
@@ -140,7 +149,8 @@ namespace Dataweb.NShape.Advanced {
 
 		/// <summary>Overriden method. Check base class for documentation.</summary>
 		/// <remarks>Connection foot is simple the nearest point on the nearest segment</remarks>
-		public override Point CalculateConnectionFoot(int fromX, int fromY) {
+		public override Point CalculateConnectionFoot(int fromX, int fromY)
+		{
 			Point result = Point.Empty;
 			//
 			// Find the nearest line segment
@@ -162,7 +172,8 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <summary>Overriden method. Check base class for documentation.</summary>
-		public override ControlPointId HitTest(int x, int y, ControlPointCapabilities controlPointCapability, int range) {
+		public override ControlPointId HitTest(int x, int y, ControlPointCapabilities controlPointCapability, int range)
+		{
 			ControlPointId result = ControlPointId.None;
 			//
 			// We first search for a hit control point
@@ -177,7 +188,7 @@ namespace Dataweb.NShape.Advanced {
 				}
 			}
 			if (result == ControlPointId.None) {
-				int lineRange = (int)Math.Ceiling(LineStyle.LineWidth / 2f) + 1;
+				int lineRange = (int) Math.Ceiling(LineStyle.LineWidth/2f) + 1;
 				Point lastKnee;
 				int cpIdx = -1;
 				FindNextKnee(ref cpIdx, out lastKnee);
@@ -196,7 +207,8 @@ namespace Dataweb.NShape.Advanced {
 
 		/// <summary>Overriden method. Check base class for documentation.</summary>
 		// TODO 2: This implementation might also be used by PolylineBase.
-		public override Point CalcNormalVector(Point point) {
+		public override Point CalcNormalVector(Point point)
+		{
 			Point result = Point.Empty;
 			int segmentIndex;
 			Point knee1, knee2;
@@ -209,7 +221,8 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <summary>Overriden method. Check base class for documentation.</summary>
-		public override void Invalidate() {
+		public override void Invalidate()
+		{
 			base.Invalidate();
 			if (DisplayService != null) {
 				Point knee1, knee2;
@@ -225,7 +238,8 @@ namespace Dataweb.NShape.Advanced {
 
 		/// <summary>Overriden method. Check base class for documentation.</summary>
 		// TODO 2: This function is identical to the one in Polyline.
-		public override void Draw(Graphics graphics) {
+		public override void Draw(Graphics graphics)
+		{
 			if (graphics == null) throw new ArgumentNullException("graphics");
 			UpdateDrawCache();
 			int lastIdx = shapePoints.Length - 1;
@@ -244,7 +258,8 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <summary>Overriden method. Check base class for documentation.</summary>
-		public override void DrawOutline(Graphics graphics, Pen pen) {
+		public override void DrawOutline(Graphics graphics, Pen pen)
+		{
 			if (graphics == null) throw new ArgumentNullException("graphics");
 			if (pen == null) throw new ArgumentNullException("pen");
 			base.DrawOutline(graphics, pen);
@@ -253,7 +268,8 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <summary>Overriden method. Check base class for documentation.</summary>
-		public override void DrawThumbnail(Image image, int margin, Color transparentColor) {
+		public override void DrawThumbnail(Image image, int margin, Color transparentColor)
+		{
 			if (image == null) throw new ArgumentNullException("image");
 			using (Graphics g = Graphics.FromImage(image)) {
 				GdiHelpers.ApplyGraphicsSettings(g, RenderingQuality.MaximumQuality);
@@ -262,25 +278,26 @@ namespace Dataweb.NShape.Advanced {
 				int startCapSize = IsShapedLineCap(StartCapStyleInternal) ? StartCapStyleInternal.CapSize : 0;
 				int endCapSize = IsShapedLineCap(EndCapStyleInternal) ? EndCapStyleInternal.CapSize : 0;
 
-				int s = (int)Math.Max(startCapSize, endCapSize) * 4;
-				int width = Math.Max(image.Width * 2, s);
-				int height = Math.Max(image.Height * 2, s);
-				float scale = Math.Max((float)image.Width / width, (float)image.Height / height);
+				int s = (int) Math.Max(startCapSize, endCapSize)*4;
+				int width = Math.Max(image.Width*2, s);
+				int height = Math.Max(image.Height*2, s);
+				float scale = Math.Max((float) image.Width/width, (float) image.Height/height);
 				g.ScaleTransform(scale, scale);
 
-				int m = (int)Math.Round(Math.Max(margin / scale, Math.Max(startCapSize / 2f, endCapSize / 2f)));
+				int m = (int) Math.Round(Math.Max(margin/scale, Math.Max(startCapSize/2f, endCapSize/2f)));
 				Rectangle r = Rectangle.Empty;
-				r.Width = width; r.Height = height;
+				r.Width = width;
+				r.Height = height;
 				r.Inflate(-m, -m);
 				// Create and draw shape
-				using (RectangularLineBase line = (RectangularLineBase)this.Clone()) {
+				using (RectangularLineBase line = (RectangularLineBase) this.Clone()) {
 					while (line.VertexCount > 2) line.RemoveVertex(line.GetPreviousVertexId(ControlPointId.LastVertex));
 					// Move vertices
-					int dh = r.Height / 8;
+					int dh = r.Height/8;
 					line.MoveControlPointTo(ControlPointId.FirstVertex, r.Left, r.Top + dh, ResizeModifiers.None);
 					line.MoveControlPointTo(ControlPointId.LastVertex, r.Right, r.Bottom - dh, ResizeModifiers.None);
 					// Add vertices
-					line.InsertVertex(ControlPointId.LastVertex, r.Left + r.Width / 2, r.Top + r.Height / 2);
+					line.InsertVertex(ControlPointId.LastVertex, r.Left + r.Width/2, r.Top + r.Height/2);
 					line.Draw(g);
 				}
 			}
@@ -288,20 +305,23 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <summary>Overriden method. Check base class for documentation.</summary>
-		protected internal override void InitializeToDefault(IStyleSet styleSet) {
+		protected internal override void InitializeToDefault(IStyleSet styleSet)
+		{
 			base.InitializeToDefault(styleSet);
 		}
 
 
 		/// <summary>Overriden method. Check base class for documentation.</summary>
-		protected override void InvalidateDrawCache() {
+		protected override void InvalidateDrawCache()
+		{
 			base.InvalidateDrawCache();
 			shapePointsAreInvalid = drawCacheIsInvalid;
 		}
 
 
 		/// <summary>Overriden method. Check base class for documentation.</summary>
-		protected internal override IEnumerable<Point> CalculateCells(int cellSize) {
+		protected internal override IEnumerable<Point> CalculateCells(int cellSize)
+		{
 			Point result = Point.Empty;
 			// Base class call
 			foreach (Point p in base.CalculateCommonCells(cellSize))
@@ -309,7 +329,7 @@ namespace Dataweb.NShape.Advanced {
 			// Now add the cells of the lines. We do not care about duplicate entries. They are theoretically
 			// possible but should be rare in real life.
 			RecalcBendings();
-			int range = (int)Math.Ceiling(LineStyle.LineWidth / 2f);
+			int range = (int) Math.Ceiling(LineStyle.LineWidth/2f);
 			int cpIdx = -1;
 			Point knee1;
 			FindNextKnee(ref cpIdx, out knee1);
@@ -325,15 +345,17 @@ namespace Dataweb.NShape.Advanced {
 				int otherDeltaY = 0;
 				if (knee2.X == knee1.X) {
 					// Vertical line
-					int x = Math.Abs(knee1.X % cellSize);
+					int x = Math.Abs(knee1.X%cellSize);
 					if (x - range < 0) otherDeltaX = -1;
 					else if (x + range >= cellSize) otherDeltaX = +1;
-				} else if (knee2.Y == knee1.Y) {
+				}
+				else if (knee2.Y == knee1.Y) {
 					// Horizontal line
-					int y = Math.Abs(knee1.Y % cellSize);
+					int y = Math.Abs(knee1.Y%cellSize);
 					if (y - range < 0) otherDeltaY = -1;
 					else if (y + range >= cellSize) otherDeltaY = +1;
-				} else Debug.Assert(false);
+				}
+				else Debug.Assert(false);
 				//
 				// Now advance from the starting point to the end point return the cells.
 				// If intersects with the neighbour cell (otherDelta != 0), return the additional cells.
@@ -352,23 +374,25 @@ namespace Dataweb.NShape.Advanced {
 
 		#endregion
 
-
 		#region ILinearShape Members
 
 		/// <summary>Overriden method. Check base class for documentation.</summary>
-		public override int MinVertexCount {
+		public override int MinVertexCount
+		{
 			get { return 2; }
 		}
 
 
 		/// <summary>Overriden method. Check base class for documentation.</summary>
-		public override int MaxVertexCount {
+		public override int MaxVertexCount
+		{
 			get { return int.MaxValue; }
 		}
 
 
 		/// <summary>Overriden method. Check base class for documentation.</summary>
-		public override ControlPointId InsertVertex(ControlPointId beforePointId, int x, int y) {
+		public override ControlPointId InsertVertex(ControlPointId beforePointId, int x, int y)
+		{
 			ControlPointId newPointId = ControlPointId.None;
 			if (IsFirstVertex(beforePointId) || beforePointId == ControlPointId.Reference || beforePointId == ControlPointId.None)
 				throw new ArgumentException(string.Format("{0} is not a valid control point id for this operation.", beforePointId));
@@ -385,7 +409,8 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <summary>Overriden method. Check base class for documentation.</summary>
-		public override ControlPointId InsertVertex(ControlPointId beforePointId, ControlPointId newVertexId, int x, int y) {
+		public override ControlPointId InsertVertex(ControlPointId beforePointId, ControlPointId newVertexId, int x, int y)
+		{
 			ControlPointId newPointId = ControlPointId.None;
 			if (IsFirstVertex(beforePointId) || beforePointId == ControlPointId.Reference || beforePointId == ControlPointId.None)
 				throw new ArgumentException(string.Format("{0} is not a valid control point id for this operation.", beforePointId));
@@ -407,10 +432,11 @@ namespace Dataweb.NShape.Advanced {
 				LineControlPoint ctrlPoint = GetControlPoint(i);
 				if (ctrlPoint is VertexControlPoint) {
 					refVertexId = ctrlPoint.Id;
-				} else if (ctrlPoint is DynamicConnectionPoint) {
-					RelativePosition relPos = ((DynamicConnectionPoint)ctrlPoint).RelativePosition;
+				}
+				else if (ctrlPoint is DynamicConnectionPoint) {
+					RelativePosition relPos = ((DynamicConnectionPoint) ctrlPoint).RelativePosition;
 					relPos.A = refVertexId;
-					((DynamicConnectionPoint)ctrlPoint).RelativePosition = relPos;
+					((DynamicConnectionPoint) ctrlPoint).RelativePosition = relPos;
 				}
 			}
 
@@ -421,7 +447,8 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <summary>Overriden method. Check base class for documentation.</summary>
-		public override ControlPointId AddVertex(int x, int y) {
+		public override ControlPointId AddVertex(int x, int y)
+		{
 			Invalidate();
 
 			// ToDo: Falls die Distanz des Punktes x|y > 0 ist: Ausrechnen wo der Punkt sein muss (entlang der Lotrechten durch den Punkt verschieben)
@@ -435,21 +462,24 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <summary>Overriden method. Check base class for documentation.</summary>
-		public override void RemoveVertex(ControlPointId controlPointId) {
+		public override void RemoveVertex(ControlPointId controlPointId)
+		{
 			Invalidate();
 			InvalidateDrawCache();
 
-			if (controlPointId == ControlPointId.Any || controlPointId == ControlPointId.Reference || controlPointId == ControlPointId.None)
+			if (controlPointId == ControlPointId.Any || controlPointId == ControlPointId.Reference ||
+			    controlPointId == ControlPointId.None)
 				throw new ArgumentException(string.Format("{0} is not a valid ControlPointId for this operation.", controlPointId));
 			if (IsFirstVertex(controlPointId) || IsLastVertex(controlPointId))
-				throw new InvalidOperationException(string.Format("ControlPoint {0} is a GluePoint and therefore must not be removed.", controlPointId));
+				throw new InvalidOperationException(
+					string.Format("ControlPoint {0} is a GluePoint and therefore must not be removed.", controlPointId));
 
 			// Maintain relative positions of dynamic control points
 			ControlPointId prevVertexId = GetPreviousVertexId(controlPointId);
 			for (int i = ControlPointCount - 1; i >= 0; --i) {
 				LineControlPoint ctrlPoint = GetControlPoint(i);
 				if (ctrlPoint is DynamicConnectionPoint) {
-					DynamicConnectionPoint dynPoint = (DynamicConnectionPoint)ctrlPoint;
+					DynamicConnectionPoint dynPoint = (DynamicConnectionPoint) ctrlPoint;
 					if (dynPoint.RelativePosition.A == controlPointId) {
 						RelativePosition relPos = dynPoint.RelativePosition;
 						relPos.A = prevVertexId;
@@ -467,7 +497,8 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <summary>Overriden method. Check base class for documentation.</summary>
-		public override ControlPointId AddConnectionPoint(int x, int y) {
+		public override ControlPointId AddConnectionPoint(int x, int y)
+		{
 			if (!ContainsPoint(x, y)) throw new NShapeException("Coordinates {0},{1} are not on the shape.", x, y);
 
 			ControlPointId pointId = GetNewControlPointId();
@@ -486,29 +517,37 @@ namespace Dataweb.NShape.Advanced {
 
 		#endregion
 
-
 		#region Protected Types
 
 		/// <summary>
 		/// Defines how a segment of the rectangular line is bent.
 		/// </summary>
-		protected enum VertexBending {
+		protected enum VertexBending
+		{
 			/// <summary>No bending defined</summary>
 			None,
+
 			/// <summary>Line segment goes upwards.</summary>
 			Up,
+
 			/// <summary>Line segment goes downwards.</summary>
 			Down,
+
 			/// <summary>Line segment goes to the right.</summary>
 			Right,
+
 			/// <summary>Line segment goes to the left.</summary>
 			Left,
+
 			/// <summary>Line segment is the base of an upwards open U.</summary>
 			UpU,
+
 			/// <summary>Line segment is the base of a downwards open U.</summary>
 			DownU,
+
 			/// <summary>Line segment is the base of a rightsided open U.</summary>
 			RightU,
+
 			/// <summary>Line segment is the base of a leftsided open U.</summary>
 			LeftU
 		}
@@ -517,49 +556,64 @@ namespace Dataweb.NShape.Advanced {
 		/// <summary>
 		/// Defines a vertex with bending information.
 		/// </summary>
-		protected class RectVertexControlPoint : VertexControlPoint {
+		protected class RectVertexControlPoint : VertexControlPoint
+		{
 			/// <ToBeCompleted></ToBeCompleted>
-			public RectVertexControlPoint(AbsoluteLineControlPoint source) : base(source) { }
-			/// <ToBeCompleted></ToBeCompleted>
-			public RectVertexControlPoint(ControlPointId pointId, Point position) : base(pointId, position) { }
-			/// <ToBeCompleted></ToBeCompleted>
-			public RectVertexControlPoint(ControlPointId pointId, int x, int y) : base(pointId, x, y) { }
+			public RectVertexControlPoint(AbsoluteLineControlPoint source) : base(source)
+			{
+			}
 
 			/// <ToBeCompleted></ToBeCompleted>
-			public override LineControlPoint Clone() {
+			public RectVertexControlPoint(ControlPointId pointId, Point position) : base(pointId, position)
+			{
+			}
+
+			/// <ToBeCompleted></ToBeCompleted>
+			public RectVertexControlPoint(ControlPointId pointId, int x, int y) : base(pointId, x, y)
+			{
+			}
+
+			/// <ToBeCompleted></ToBeCompleted>
+			public override LineControlPoint Clone()
+			{
 				return new RectVertexControlPoint(this);
 			}
 
 			/// <ToBeCompleted></ToBeCompleted>
-			public override void CopyFrom(LineControlPoint source) {
+			public override void CopyFrom(LineControlPoint source)
+			{
 				base.CopyFrom(source);
 				if (source is RectVertexControlPoint)
-					this.bending = ((RectVertexControlPoint)source).bending;
+					this.bending = ((RectVertexControlPoint) source).bending;
 			}
 
 			/// <summary>
 			/// Indicates whether the vertex has a vertical or a horizontal line segment
 			/// </summary>
-			public bool IsVertical {
-				get { return bending == VertexBending.Up || bending == VertexBending.Down || bending == VertexBending.RightU || bending == VertexBending.LeftU; }
+			public bool IsVertical
+			{
+				get
+				{
+					return bending == VertexBending.Up || bending == VertexBending.Down || bending == VertexBending.RightU ||
+					       bending == VertexBending.LeftU;
+				}
 			}
 
 			/// <summary>
 			/// Indicates the bending in this vertex.
 			/// </summary>
 			public VertexBending bending;
-
 		}
 
 		#endregion
-
 
 		#region New Protected Methods
 
 		/// <summary>
 		/// A hopefully faster iterator over the vertices who does not need to create an object each time.
 		/// </summary>
-		protected bool FindNextVertex(ref int controlPointIndex, out RectVertexControlPoint vertex) {
+		protected bool FindNextVertex(ref int controlPointIndex, out RectVertexControlPoint vertex)
+		{
 			bool result = false;
 			LineControlPoint lcp = null;
 			while (controlPointIndex < ControlPointCount - 1) {
@@ -570,7 +624,7 @@ namespace Dataweb.NShape.Advanced {
 					break;
 				}
 			}
-			vertex = (RectVertexControlPoint)lcp;
+			vertex = (RectVertexControlPoint) lcp;
 			return result;
 		}
 
@@ -578,7 +632,8 @@ namespace Dataweb.NShape.Advanced {
 		/// <summary>
 		/// A hopefully faster iterator over the vertices who does not need to create an object each time.
 		/// </summary>
-		protected bool FindPrevVertex(ref int controlPointIndex, out RectVertexControlPoint vertex) {
+		protected bool FindPrevVertex(ref int controlPointIndex, out RectVertexControlPoint vertex)
+		{
 			bool result = false;
 			LineControlPoint lcp = null;
 			while (controlPointIndex > 0) {
@@ -589,7 +644,7 @@ namespace Dataweb.NShape.Advanced {
 					break;
 				}
 			}
-			vertex = (RectVertexControlPoint)lcp;
+			vertex = (RectVertexControlPoint) lcp;
 			return result;
 		}
 
@@ -599,7 +654,8 @@ namespace Dataweb.NShape.Advanced {
 		/// Start with -1 and make no assumptions regardings its meaning.
 		/// </summary>
 		// Currently the magicIndex is twice the controlPointIndex, but that might change.
-		protected bool FindNextKnee(ref int magicIndex, out Point knee) {
+		protected bool FindNextKnee(ref int magicIndex, out Point knee)
+		{
 			bool result = false;
 			RectVertexControlPoint rvcp;
 			if (magicIndex < 0) {
@@ -608,52 +664,58 @@ namespace Dataweb.NShape.Advanced {
 				knee = rvcp.GetPosition();
 				magicIndex *= 2;
 				result = true;
-			} else if (magicIndex < 2 * ControlPointCount) {
-				if (magicIndex % 2 != 0) {
+			}
+			else if (magicIndex < 2*ControlPointCount) {
+				if (magicIndex%2 != 0) {
 					// The current vertex requires two knees. The second one is calculated here.
-					int newIndex = magicIndex / 2;
+					int newIndex = magicIndex/2;
 					// This must succeed, it did the last time.
 					FindNextVertex(ref newIndex, out rvcp);
-					RectVertexControlPoint prevVertex = (RectVertexControlPoint)GetControlPoint(magicIndex / 2);
+					RectVertexControlPoint prevVertex = (RectVertexControlPoint) GetControlPoint(magicIndex/2);
 					knee = rvcp.GetPosition();
 					if (rvcp.IsVertical)
-						knee.Y = (prevVertex.GetPosition().Y + rvcp.GetPosition().Y) / 2;
-					else knee.X = (prevVertex.GetPosition().X + rvcp.GetPosition().X) / 2;
-					magicIndex = newIndex * 2;
+						knee.Y = (prevVertex.GetPosition().Y + rvcp.GetPosition().Y)/2;
+					else knee.X = (prevVertex.GetPosition().X + rvcp.GetPosition().X)/2;
+					magicIndex = newIndex*2;
 					result = true;
-				} else {
+				}
+				else {
 					// Finished with vertex, advance to next one.
-					int newIndex = magicIndex / 2;
+					int newIndex = magicIndex/2;
 					if (FindNextVertex(ref newIndex, out rvcp)) {
 						// If this vertex and the previous one have the same orientation, we must add two knees
-						RectVertexControlPoint prevVertex = (RectVertexControlPoint)GetControlPoint(magicIndex / 2);
+						RectVertexControlPoint prevVertex = (RectVertexControlPoint) GetControlPoint(magicIndex/2);
 						if (rvcp.IsVertical == prevVertex.IsVertical) {
 							// We need two knees, the first one is calculated here
 							knee = prevVertex.GetPosition();
 							if (rvcp.IsVertical)
-								knee.Y = (prevVertex.GetPosition().Y + rvcp.GetPosition().Y) / 2;
-							else knee.X = (prevVertex.GetPosition().X + rvcp.GetPosition().X) / 2;
+								knee.Y = (prevVertex.GetPosition().Y + rvcp.GetPosition().Y)/2;
+							else knee.X = (prevVertex.GetPosition().X + rvcp.GetPosition().X)/2;
 							magicIndex += 1;
-						} else {
+						}
+						else {
 							// One knee is sufficient
 							if (rvcp.IsVertical) {
 								knee = rvcp.GetPosition();
-								knee.Y = GetControlPoint(magicIndex / 2).GetPosition().Y;
-							} else {
-								knee = rvcp.GetPosition();
-								knee.X = GetControlPoint(magicIndex / 2).GetPosition().X;
+								knee.Y = GetControlPoint(magicIndex/2).GetPosition().Y;
 							}
-							magicIndex = newIndex * 2;
+							else {
+								knee = rvcp.GetPosition();
+								knee.X = GetControlPoint(magicIndex/2).GetPosition().X;
+							}
+							magicIndex = newIndex*2;
 						}
 						result = true;
-					} else {
+					}
+					else {
 						// End point
-						knee = GetControlPoint(magicIndex / 2).GetPosition();
-						magicIndex = ControlPointCount * 2;
+						knee = GetControlPoint(magicIndex/2).GetPosition();
+						magicIndex = ControlPointCount*2;
 						result = true;
 					}
 				}
-			} else knee = Geometry.InvalidPoint;
+			}
+			else knee = Geometry.InvalidPoint;
 			return result;
 		}
 
@@ -661,7 +723,8 @@ namespace Dataweb.NShape.Advanced {
 		/// <summary>
 		/// A hopefully faster iterator over the line segments.
 		/// </summary>
-		protected bool FindNextSegment(ref int magicIndex, ref Point p1, ref Point p2) {
+		protected bool FindNextSegment(ref int magicIndex, ref Point p1, ref Point p2)
+		{
 			if (magicIndex < 0)
 				FindNextKnee(ref magicIndex, out p1);
 			else p1 = p2;
@@ -672,14 +735,15 @@ namespace Dataweb.NShape.Advanced {
 		/// <summary>
 		/// Finds the segment of the line, which is nearest to the point.
 		/// </summary>
-		protected void FindNearestLineSegment(int x, int y, out int segmentIndex, out Point knee1, out Point knee2) {
+		protected void FindNearestLineSegment(int x, int y, out int segmentIndex, out Point knee1, out Point knee2)
+		{
 			// Search nearest segment
 			int magicIdx = -1;
 			FindNextKnee(ref magicIdx, out knee1);
 			int bestMagicIdx = -1;
 			int bestD = int.MaxValue;
 			while (FindNextKnee(ref magicIdx, out knee2)) {
-				int d = (int)Geometry.DistancePointLine(x, y, knee1.X, knee1.Y, knee2.X, knee2.Y, true);
+				int d = (int) Geometry.DistancePointLine(x, y, knee1.X, knee1.Y, knee2.X, knee2.Y, true);
 				if (d < bestD) {
 					bestMagicIdx = magicIdx;
 					bestD = d;
@@ -701,7 +765,8 @@ namespace Dataweb.NShape.Advanced {
 		/// <summary>
 		/// Finds the segment with the given index.
 		/// </summary>
-		protected void FindSegment(int segmentIndex, out Point p1, out Point p2) {
+		protected void FindSegment(int segmentIndex, out Point p1, out Point p2)
+		{
 			int segIdx = -1;
 			p1 = Geometry.InvalidPoint;
 			p2 = Geometry.InvalidPoint;
@@ -716,7 +781,8 @@ namespace Dataweb.NShape.Advanced {
 		/// <summary>
 		/// Rotates the bending 90 degree clockwise.
 		/// </summary>
-		protected VertexBending RotateBending(VertexBending bending, int count) {
+		protected VertexBending RotateBending(VertexBending bending, int count)
+		{
 			VertexBending result = bending;
 			for (int i = 0; i < count; ++i) {
 				switch (result) {
@@ -760,7 +826,8 @@ namespace Dataweb.NShape.Advanced {
 		/// <summary>
 		/// Rotates the v1 around origin by 90 degree clockwise.
 		/// </summary>
-		protected void RotateVertex(RectVertexControlPoint v, RectVertexControlPoint origin, int count) {
+		protected void RotateVertex(RectVertexControlPoint v, RectVertexControlPoint origin, int count)
+		{
 			Point p = v.GetPosition();
 			Point o = origin.GetPosition();
 			for (int i = 0; i < count; ++i) {
@@ -782,7 +849,8 @@ namespace Dataweb.NShape.Advanced {
 		/// ----|----
 		///  II | I
 		/// </remarks>
-		protected int RotateVertices(RectVertexControlPoint v1, RectVertexControlPoint v2, RectVertexControlPoint v3) {
+		protected int RotateVertices(RectVertexControlPoint v1, RectVertexControlPoint v2, RectVertexControlPoint v3)
+		{
 			int result = 0;
 			while (Geometry.CalcRelativeQuadrant(v3.GetPosition(), v2.GetPosition()) != 1) {
 				RotateVertex(v3, v2, 1);
@@ -797,9 +865,11 @@ namespace Dataweb.NShape.Advanced {
 		/// <summary>
 		/// Rotates the vertices counterclockwise for the number of count quarter rotations.
 		/// </summary>
-		protected void UnrotateVertices(int count, RectVertexControlPoint v1, RectVertexControlPoint v2, RectVertexControlPoint v3) {
+		protected void UnrotateVertices(int count, RectVertexControlPoint v1, RectVertexControlPoint v2,
+		                                RectVertexControlPoint v3)
+		{
 			// We rotate 4-count times clockwise
-			for (int i = 0; i < (4 - count) % 4; ++i) {
+			for (int i = 0; i < (4 - count)%4; ++i) {
 				if (v1 != null) RotateVertex(v1, v2, 1);
 				RotateVertex(v3, v2, 1);
 				v2.bending = RotateBending(v2.bending, 1);
@@ -810,7 +880,8 @@ namespace Dataweb.NShape.Advanced {
 		/// <summary>
 		/// Assignes the bending.
 		/// </summary>
-		protected void AssignBending(RectVertexControlPoint currentVertex, RectVertexControlPoint nextVertex) {
+		protected void AssignBending(RectVertexControlPoint currentVertex, RectVertexControlPoint nextVertex)
+		{
 			int r = RotateVertices(null, currentVertex, nextVertex);
 			switch (nextVertex.bending) {
 				case VertexBending.None:
@@ -833,7 +904,8 @@ namespace Dataweb.NShape.Advanced {
 		/// <param name="v1"></param>
 		/// <param name="v2"></param>
 		/// <param name="v3"></param>
-		protected void AssignBending(RectVertexControlPoint v1, RectVertexControlPoint v2, RectVertexControlPoint v3) {
+		protected void AssignBending(RectVertexControlPoint v1, RectVertexControlPoint v2, RectVertexControlPoint v3)
+		{
 			// Rotate the points such that the connection from v2 to v3 is in the first quadrant
 			int r = RotateVertices(v1, v2, v3);
 			// 
@@ -937,7 +1009,8 @@ namespace Dataweb.NShape.Advanced {
 		/// <summary>
 		/// Calculates how the connections between the vertices bend.
 		/// </summary>
-		protected virtual void RecalcBendings() {
+		protected virtual void RecalcBendings()
+		{
 			// Initialize bendings
 			int idx = -1;
 			RectVertexControlPoint prevVertex1, prevVertex2;
@@ -1007,7 +1080,8 @@ namespace Dataweb.NShape.Advanced {
 					prevVertex1.bending = RotateBending(prevVertex1.bending, 2);
 					prevVertex2 = prevVertex1;
 				}
-			} else {
+			}
+			else {
 				// The first vertex's orientation is free. The following two vertices lie in the same relative quadrant.
 				// We want to make the middle segment shorter than the other two together.
 				idx = -1;
@@ -1035,7 +1109,8 @@ namespace Dataweb.NShape.Advanced {
 		/// <summary>
 		/// Invalidates a line segment between ptA and ptB
 		/// </summary>
-		protected void InvalidateLineSegment(Point ptA, Point ptB) {
+		protected void InvalidateLineSegment(Point ptA, Point ptB)
+		{
 			InvalidateLineSegment(ptA.X, ptA.Y, ptB.X, ptB.Y);
 		}
 
@@ -1043,7 +1118,8 @@ namespace Dataweb.NShape.Advanced {
 		/// <summary>
 		/// Invalidates a line segment between (x1, y1) and (x2, y2)
 		/// </summary>
-		protected void InvalidateLineSegment(int x1, int y1, int x2, int y2) {
+		protected void InvalidateLineSegment(int x1, int y1, int x2, int y2)
+		{
 			if (DisplayService != null) {
 				int xMin, xMax, yMin, yMax;
 				xMin = Math.Min(x1, x2);
@@ -1052,50 +1128,53 @@ namespace Dataweb.NShape.Advanced {
 				yMax = Math.Max(y1, y2);
 				int margin = 1;
 				if (LineStyle != null) margin = LineStyle.LineWidth + 1;
-				DisplayService.Invalidate(xMin - margin, yMin - margin, (xMax - xMin) + (margin + margin), (yMax - yMin) + (margin + margin));
+				DisplayService.Invalidate(xMin - margin, yMin - margin, (xMax - xMin) + (margin + margin),
+				                          (yMax - yMin) + (margin + margin));
 			}
 		}
 
 		#endregion
 
-
 		#region Protected Constructors
 
 		/// <ToBeCompleted></ToBeCompleted>
 		protected internal RectangularLineBase(ShapeType shapeType, Template template)
-			: base(shapeType, template) {
+			: base(shapeType, template)
+		{
 			// nothing to do
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
 		protected internal RectangularLineBase(ShapeType shapeType, IStyleSet styleSet)
-			: base(shapeType, styleSet) {
+			: base(shapeType, styleSet)
+		{
 			// nothing to do
 		}
 
 		#endregion
 
-
 		#region protected LineShapeBase overrides
 
 		/// <summary>Overriden method. Check base class for documentation.</summary>
-		protected override Point CalcGluePoint(ControlPointId gluePointId, Shape shape) {
+		protected override Point CalcGluePoint(ControlPointId gluePointId, Shape shape)
+		{
 			// We must calculate a start point where the last line segment into the shape begins.
 			// This is the last knee of the rectangular line.
-			RectVertexControlPoint endCtrlPt = (RectVertexControlPoint)GetControlPoint(GetControlPointIndex(gluePointId));
+			RectVertexControlPoint endCtrlPt = (RectVertexControlPoint) GetControlPoint(GetControlPointIndex(gluePointId));
 			ControlPointId prevCtrlPtId = ControlPointId.None;
 			if (IsFirstVertex(gluePointId))
 				prevCtrlPtId = GetNextVertexId(gluePointId);
 			else if (IsLastVertex(gluePointId))
 				prevCtrlPtId = GetPreviousVertexId(gluePointId);
 			Debug.Assert(prevCtrlPtId != ControlPointId.None);
-			RectVertexControlPoint rvcp = (RectVertexControlPoint)GetControlPoint(GetControlPointIndex(prevCtrlPtId));
+			RectVertexControlPoint rvcp = (RectVertexControlPoint) GetControlPoint(GetControlPointIndex(prevCtrlPtId));
 			Point startPoint;
 			if (endCtrlPt.IsVertical) {
 				startPoint = rvcp.GetPosition();
 				startPoint.X = shape.X;
-			} else {
+			}
+			else {
 				startPoint = rvcp.GetPosition();
 				startPoint.Y = shape.Y;
 			}
@@ -1104,7 +1183,8 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <summary>Overriden method. Check base class for documentation.</summary>
-		protected override Rectangle CalculateBoundingRectangleCore(bool tight) {
+		protected override Rectangle CalculateBoundingRectangleCore(bool tight)
+		{
 			Rectangle result = Geometry.InvalidRectangle;
 			result.Location = GetControlPointPosition(ControlPointId.FirstVertex);
 			//
@@ -1124,7 +1204,8 @@ namespace Dataweb.NShape.Advanced {
 				if (!Geometry.IsValid(result)) {
 					result.Location = knee;
 					result.Size = Size.Empty;
-				} else
+				}
+				else
 					Geometry.IncludeRectanglePoint(ref result, knee);
 			}
 			// 
@@ -1134,21 +1215,24 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <summary>Overriden method. Check base class for documentation.</summary>
-		protected override bool ContainsPointCore(int x, int y) {
+		protected override bool ContainsPointCore(int x, int y)
+		{
 			return base.ContainsPointCore(x, y) || HitTest(x, y, ControlPointCapabilities.None, 0) != ControlPointId.None;
 		}
 
 
 		/// <summary>Overriden method. Check base class for documentation.</summary>
-		protected override LineControlPoint CreateVertex(ControlPointId id, Point position) {
+		protected override LineControlPoint CreateVertex(ControlPointId id, Point position)
+		{
 			return new RectVertexControlPoint(id, position);
 		}
 
 
 		/// <summary>Overriden method. Check base class for documentation.</summary>
-		protected override float CalcCapAngle(ControlPointId pointId) {
+		protected override float CalcCapAngle(ControlPointId pointId)
+		{
 			float result = float.NaN;
-			if (shapePointsAreInvalid) 
+			if (shapePointsAreInvalid)
 				RecalcShapePoints();
 			Pen pen = ToolCache.GetPen(LineStyle, StartCapStyleInternal, EndCapStyleInternal);
 			result = ShapeUtils.CalcLineCapAngle(shapePoints, pointId, pen);
@@ -1157,7 +1241,8 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <summary>Overriden method. Check base class for documentation.</summary>
-		protected override bool IntersectsWithCore(int x, int y, int width, int height) {
+		protected override bool IntersectsWithCore(int x, int y, int width, int height)
+		{
 			Rectangle rectangle = Rectangle.Empty;
 			rectangle.X = x;
 			rectangle.Y = y;
@@ -1181,7 +1266,8 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <summary>Overriden method. Check base class for documentation.</summary>
-		protected override bool MovePointByCore(ControlPointId pointId, int deltaX, int deltaY, ResizeModifiers modifiers) {
+		protected override bool MovePointByCore(ControlPointId pointId, int deltaX, int deltaY, ResizeModifiers modifiers)
+		{
 			int idx = GetControlPointIndex(pointId);
 			GetControlPoint(idx).Offset(deltaX, deltaY);
 			return true;
@@ -1189,13 +1275,13 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <summary>Overriden method. Check base class for documentation.</summary>
-		protected override void RecalcDrawCache() {
+		protected override void RecalcDrawCache()
+		{
 			RecalcShapePoints();
 			base.RecalcDrawCache();
 		}
 
 		#endregion
-
 
 		#region Private Methods
 
@@ -1206,10 +1292,11 @@ namespace Dataweb.NShape.Advanced {
 		/// <param name="y">Y coordinate of new insertion point</param>
 		/// <param name="insertBefore">Indicates whether point is to inserted before or after the respective control point.</param>
 		/// <returns></returns>
-		private ControlPointId FindInsertionPointId(int x, int y, bool insertBefore) {
+		private ControlPointId FindInsertionPointId(int x, int y, bool insertBefore)
+		{
 			// Find the point before which the new point has to be inserted
 			ControlPointId result = ControlPointId.None;
-			int range = (int)Math.Ceiling(LineStyle.LineWidth / 2f) + 1;
+			int range = (int) Math.Ceiling(LineStyle.LineWidth/2f) + 1;
 			int idx = -1;
 			int prevIdx = idx;
 			Point knee1;
@@ -1219,15 +1306,16 @@ namespace Dataweb.NShape.Advanced {
 			while (FindNextKnee(ref idx, out knee2)) {
 				if (Geometry.LineContainsPoint(knee1, knee2, true, x, y, range)) {
 					// Index of control point that lies on the segment defined by knee1 and knee2
-					int ctrlPtIdx = (idx + 1) / 2 - 1;
+					int ctrlPtIdx = (idx + 1)/2 - 1;
 					// Decide whether (x, y) comes before or after the control point on this segement
 					// Only a question if we are not on an intermediate double-knee
 					if (idx - prevIdx == 2) {
-						RectVertexControlPoint rvcp = (RectVertexControlPoint)GetControlPoint(ctrlPtIdx);
+						RectVertexControlPoint rvcp = (RectVertexControlPoint) GetControlPoint(ctrlPtIdx);
 						if (rvcp.IsVertical) {
 							if (Math.Sign(knee1.Y - rvcp.GetPosition().Y) == Math.Sign(y - rvcp.GetPosition().Y))
 								--ctrlPtIdx;
-						} else {
+						}
+						else {
 							if (Math.Sign(knee1.X - rvcp.GetPosition().X) == Math.Sign(x - rvcp.GetPosition().X))
 								--ctrlPtIdx;
 						}
@@ -1244,7 +1332,8 @@ namespace Dataweb.NShape.Advanced {
 		}
 
 
-		private void RecalcShapePoints() {
+		private void RecalcShapePoints()
+		{
 			if (shapePointsAreInvalid) {
 				RecalcBendings();
 				//
@@ -1254,7 +1343,7 @@ namespace Dataweb.NShape.Advanced {
 				Point knee;
 				while (FindNextKnee(ref magicIdx, out knee)) {
 					++pointIdx;
-					if (pointIdx >= shapePoints.Length) Array.Resize(ref shapePoints, 2 * VertexCount + 1);
+					if (pointIdx >= shapePoints.Length) Array.Resize(ref shapePoints, 2*VertexCount + 1);
 					knee.Offset(-refPos.X, -refPos.Y);
 					shapePoints[pointIdx] = knee;
 				}
@@ -1265,8 +1354,6 @@ namespace Dataweb.NShape.Advanced {
 
 		#endregion
 
-
 		private bool shapePointsAreInvalid = true;
 	}
-
 }

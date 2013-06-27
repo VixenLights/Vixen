@@ -15,23 +15,23 @@
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
-
 using Dataweb.NShape.Advanced;
 using Dataweb.NShape.Controllers;
 
 
-namespace Dataweb.NShape.WinFormsUI {
-
+namespace Dataweb.NShape.WinFormsUI
+{
 	/// <summary>
 	/// Dialog used for creating and editing templates.
 	/// </summary>
 	[ToolboxItem(false)]
-	public partial class TemplateEditorDialog : Form {
-
+	public partial class TemplateEditorDialog : Form
+	{
 		/// <summary>
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.WinFormsUI.TemplateEditorDialog" />.
 		/// </summary>
-		public TemplateEditorDialog() {
+		public TemplateEditorDialog()
+		{
 			InitializeComponent();
 			DoubleBuffered = true;
 			Icon = System.Drawing.Icon.ExtractAssociatedIcon(Application.ExecutablePath);
@@ -42,7 +42,8 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.WinFormsUI.TemplateEditorDialog" />.
 		/// </summary>
 		public TemplateEditorDialog(Project project, Template template)
-			: this() {
+			: this()
+		{
 			if (project == null) throw new ArgumentNullException("project");
 			templateController.Initialize(project, template);
 		}
@@ -52,14 +53,17 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.WinFormsUI.TemplateEditorDialog" />.
 		/// </summary>
 		public TemplateEditorDialog(Project project)
-			: this(project, null) { }
+			: this(project, null)
+		{
+		}
 
 
 		/// <summary>
 		/// Provides access to a <see cref="T:Dataweb.NShape.Project" />.
 		/// </summary>
 		[Category("NShape")]
-		public Project Project {
+		public Project Project
+		{
 			get { return templateController.Project; }
 			set { templateController.Project = value; }
 		}
@@ -68,79 +72,96 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// <summary>
 		/// Specifies the template being edited.
 		/// </summary>
-		public Template Template {
+		public Template Template
+		{
 			get { return template; }
-			set { 
+			set
+			{
 				template = value;
 				if (template != null && Project != null)
 					templateController.Initialize(Project, template);
 			}
 		}
-		
 
-		private void EnableButtons() {
+
+		private void EnableButtons()
+		{
 			if (templateController.Project != null) {
 				okButton.Enabled =
-				applyButton.Enabled = 
-					(templatePresenter.TemplateWasModified 
+					applyButton.Enabled =
+					(templatePresenter.TemplateWasModified
 					 && Project.SecurityManager.IsGranted(Permission.Templates));
-			} else {
+			}
+			else {
 				okButton.Enabled =
-				applyButton.Enabled = false;
+					applyButton.Enabled = false;
 			}
 			cancelButton.Enabled = true;
 		}
 
-
 		#region [Private] Methods: TemplateController event handler implementations
 
-		private void templateController_TemplateShapeChanged(object sender, TemplateControllerTemplateShapeReplacedEventArgs e) {
+		private void templateController_TemplateShapeChanged(object sender, TemplateControllerTemplateShapeReplacedEventArgs e)
+		{
 			EnableButtons();
 		}
 
 
-		private void templateController_TemplateModelObjectChanged(object sender, TemplateControllerModelObjectReplacedEventArgs e) {
+		private void templateController_TemplateModelObjectChanged(object sender,
+		                                                           TemplateControllerModelObjectReplacedEventArgs e)
+		{
 			EnableButtons();
 		}
 
 
-		private void templateController_TemplateShapeControlPointMappingModified(object sender, TemplateControllerPointMappingChangedEventArgs e) {
+		private void templateController_TemplateShapeControlPointMappingModified(object sender,
+		                                                                         TemplateControllerPointMappingChangedEventArgs
+		                                                                         	e)
+		{
 			EnableButtons();
 		}
 
 
-		private void templateController_TemplateShapePropertyMappingDeleted(object sender, TemplateControllerPropertyMappingChangedEventArgs e) {
+		private void templateController_TemplateShapePropertyMappingDeleted(object sender,
+		                                                                    TemplateControllerPropertyMappingChangedEventArgs
+		                                                                    	e)
+		{
 			EnableButtons();
 		}
 
 
-		private void templateController_TemplateShapePropertyMappingSet(object sender, TemplateControllerPropertyMappingChangedEventArgs e) {
+		private void templateController_TemplateShapePropertyMappingSet(object sender,
+		                                                                TemplateControllerPropertyMappingChangedEventArgs e)
+		{
 			EnableButtons();
 		}
 
 
-		private void templateController_TemplateModified(object sender, EventArgs e) {
+		private void templateController_TemplateModified(object sender, EventArgs e)
+		{
 			EnableButtons();
 		}
 
 		#endregion
 
-
 		#region [Private] Methods: Form and control event handler implementations
 
-		private void TemplateEditorDialog_Shown(object sender, EventArgs e) {
+		private void TemplateEditorDialog_Shown(object sender, EventArgs e)
+		{
 			EnableButtons();
 		}
 
 
-		private void TemplateEditorDialog_FormClosed(object sender, FormClosedEventArgs e) {
+		private void TemplateEditorDialog_FormClosed(object sender, FormClosedEventArgs e)
+		{
 			templateController.Clear();
 			templateController.Project = null;
 			template = null;
 		}
 
 
-		private void applyButton_Click(object sender, EventArgs e) {
+		private void applyButton_Click(object sender, EventArgs e)
+		{
 			if (string.IsNullOrEmpty(templatePresenter.TemplateController.WorkTemplate.Name))
 				MessageBox.Show(this, "The template name must not be empty.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			else {
@@ -151,7 +172,8 @@ namespace Dataweb.NShape.WinFormsUI {
 		}
 
 
-		private void okButton_Click(object sender, EventArgs e) {
+		private void okButton_Click(object sender, EventArgs e)
+		{
 			applyButton_Click(sender, e);
 			if (!string.IsNullOrEmpty(templatePresenter.TemplateController.WorkTemplate.Name)) {
 				if (Modal) DialogResult = DialogResult.OK;
@@ -160,14 +182,14 @@ namespace Dataweb.NShape.WinFormsUI {
 		}
 
 
-		private void cancelButton_Click(object sender, EventArgs e) {
+		private void cancelButton_Click(object sender, EventArgs e)
+		{
 			templatePresenter.DiscardChanges();
 			if (Modal) DialogResult = DialogResult.Cancel;
 			else Close();
 		}
 
 		#endregion
-
 
 		private Template template = null;
 	}

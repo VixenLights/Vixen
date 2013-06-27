@@ -1,66 +1,59 @@
 namespace VixenModules.Preview.DisplayPreview.Model.Shapes
 {
-    using System.Runtime.Serialization;
+	using System.Runtime.Serialization;
 
-    [DataContract]
-    internal class Arc : Shape
-    {
-        private double _strokeThickness;
+	[DataContract]
+	internal class Arc : Shape
+	{
+		private double _strokeThickness;
 
-        public Arc()
-        {
-            Initialize();
-        }
+		public Arc()
+		{
+			Initialize();
+		}
 
-        public override string Name
-        {
-            get
-            {
-                return "Arc";
-            }
-        }
+		public override string Name
+		{
+			get { return "Arc"; }
+		}
 
-        public override ShapeType ShapeType
-        {
-            get
-            {
-                return ShapeType.Arc;
-            }
-        }
+		public override ShapeType ShapeType
+		{
+			get { return ShapeType.Arc; }
+		}
 
-        public double StrokeThickness
-        {
-            get
-            {
-                if (_strokeThickness <= 0)
-                {
-                    _strokeThickness = 5;
-                }
+		public double StrokeThickness
+		{
+			get
+			{
+				if (_strokeThickness <= 0) {
+					_strokeThickness = 5;
+				}
 
-                return _strokeThickness;
-            }
+				return _strokeThickness;
+			}
 
-            set
-            {
-                _strokeThickness = value;
-                NotifyPropertyChanged("StrokeThickness");
-            }
-        }
+			set
+			{
+				_strokeThickness = value;
+				NotifyPropertyChanged("StrokeThickness");
+			}
+		}
 
-        public override IShape Clone()
-        {
-            return new Arc();
-        }
+		public override IShape Clone()
+		{
+			return new Arc();
+		}
 
-        private void Initialize()
-        {
-            _strokeThickness = 5;
-        }
+		private void Initialize()
+		{
+			_strokeThickness = 5;
+		}
 
-        [OnDeserializing]
-        private void OnDeserializing(StreamingContext context)
-        {
-            Initialize();
-        }
-    }
+		[OnDeserializing]
+		private void OnDeserializing(StreamingContext context)
+		{
+			Initialize();
+		}
+	}
 }

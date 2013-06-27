@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
 using Vixen.Module.Script;
 
-namespace Common.ScriptSequence.Script {
-	class ScriptCompilerParameters : ICompilerParameters {
-		public ScriptCompilerParameters() {
+namespace Common.ScriptSequence.Script
+{
+	internal class ScriptCompilerParameters : ICompilerParameters
+	{
+		public ScriptCompilerParameters()
+		{
 			ReferencedAssemblies = new List<string>();
 		}
 

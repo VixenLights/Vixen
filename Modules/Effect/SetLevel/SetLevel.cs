@@ -47,22 +47,30 @@ namespace VixenModules.Effect.SetLevel
 		public double IntensityLevel
 		{
 			get { return _data.level; }
-			set { _data.level = value; IsDirty = true; }
+			set
+			{
+				_data.level = value;
+				IsDirty = true;
+			}
 		}
 
 		[Value]
 		public Color Color
 		{
 			get { return _data.color; }
-			set { _data.color = value; IsDirty = true; }
+			set
+			{
+				_data.color = value;
+				IsDirty = true;
+			}
 		}
 
 		// renders the given node to the internal ElementData dictionary. If the given node is
 		// not a element, will recursively descend until we render its elements.
 		private void RenderNode(ElementNode node)
 		{
-			foreach(ElementNode elementNode in node.GetLeafEnumerator()) {
-				LightingValue lightingValue = new LightingValue(Color, (float)IntensityLevel);
+			foreach (ElementNode elementNode in node.GetLeafEnumerator()) {
+				LightingValue lightingValue = new LightingValue(Color, (float) IntensityLevel);
 				IIntent intent = new LightingIntent(lightingValue, lightingValue, TimeSpan);
 				_elementData.AddIntentForElement(elementNode.Element.Id, intent, TimeSpan.Zero);
 			}

@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using Vixen.Sys.Output;
 
-namespace Vixen.Sys.Managers {
-	interface IOutputDeviceExecution<in T>
-		where T : class, IOutputDevice {
+namespace Vixen.Sys.Managers
+{
+	internal interface IOutputDeviceExecution<in T>
+		where T : class, IOutputDevice
+	{
 		void Start(T outputDevice);
 		void Stop(T outputDevice);
 		void Pause(T outputDevice);

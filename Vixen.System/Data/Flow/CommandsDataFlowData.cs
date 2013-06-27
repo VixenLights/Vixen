@@ -2,15 +2,19 @@
 using Vixen.Commands;
 using Vixen.Sys;
 
-namespace Vixen.Data.Flow {
-	public class CommandsDataFlowData : Dispatchable<CommandsDataFlowData>, IDataFlowData<IEnumerable<ICommand>> {
-		public CommandsDataFlowData(IEnumerable<ICommand> commands) {
+namespace Vixen.Data.Flow
+{
+	public class CommandsDataFlowData : Dispatchable<CommandsDataFlowData>, IDataFlowData<IEnumerable<ICommand>>
+	{
+		public CommandsDataFlowData(IEnumerable<ICommand> commands)
+		{
 			Value = commands;
 		}
 
 		public IEnumerable<ICommand> Value { get; private set; }
 
-		object IDataFlowData.Value {
+		object IDataFlowData.Value
+		{
 			get { return Value; }
 		}
 	}

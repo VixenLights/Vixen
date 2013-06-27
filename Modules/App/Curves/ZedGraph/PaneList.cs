@@ -38,8 +38,7 @@ namespace ZedGraph
 	[Serializable]
 	public class PaneList : List<GraphPane>, ICloneable
 	{
-
-	#region Constructors
+		#region Constructors
 
 		/// <summary>
 		/// Default constructor for the collection class.
@@ -52,11 +51,10 @@ namespace ZedGraph
 		/// The Copy Constructor
 		/// </summary>
 		/// <param name="rhs">The <see cref="PaneList"/> object from which to copy</param>
-		public PaneList( PaneList rhs )
+		public PaneList(PaneList rhs)
 		{
-			foreach ( GraphPane item in rhs )
-			{
-				this.Add( item.Clone() );
+			foreach (GraphPane item in rhs) {
+				this.Add(item.Clone());
 			}
 		}
 
@@ -76,13 +74,13 @@ namespace ZedGraph
 		/// <returns>A new, independent copy of this class</returns>
 		public PaneList Clone()
 		{
-			return new PaneList( this );
+			return new PaneList(this);
 		}
 
-		
-	#endregion
+		#endregion
 
-	#region Serialization
+		#region Serialization
+
 		/// <summary>
 		/// Current schema value that defines the version of the serialized file
 		/// </summary>
@@ -95,25 +93,28 @@ namespace ZedGraph
 		/// </param>
 		/// <param name="context">A <see cref="StreamingContext"/> instance that contains the serialized data
 		/// </param>
-		protected PaneList( SerializationInfo info, StreamingContext context )
+		protected PaneList(SerializationInfo info, StreamingContext context)
 		{
 			// The schema value is just a file version parameter.  You can use it to make future versions
 			// backwards compatible as new member variables are added to classes
-			int sch = info.GetInt32( "schema" );
+			int sch = info.GetInt32("schema");
 		}
+
 		/// <summary>
 		/// Populates a <see cref="SerializationInfo"/> instance with the data needed to serialize the target object
 		/// </summary>
 		/// <param name="info">A <see cref="SerializationInfo"/> instance that defines the serialized data</param>
 		/// <param name="context">A <see cref="StreamingContext"/> instance that contains the serialized data</param>
-		[SecurityPermissionAttribute(SecurityAction.Demand,SerializationFormatter=true)]
-		public virtual void GetObjectData( SerializationInfo info, StreamingContext context )
+		[SecurityPermissionAttribute(SecurityAction.Demand, SerializationFormatter = true)]
+		public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
-			info.AddValue( "schema", schema );
+			info.AddValue("schema", schema);
 		}
-	#endregion
 
-	#region List Methods
+		#endregion
+
+		#region List Methods
+
 /*		/// <summary>
 		/// Indexer to access the specified <see cref="GraphPane"/> object by
 		/// its ordinal position in the list.
@@ -127,6 +128,7 @@ namespace ZedGraph
 			set { List[index] = value; }
 		}
 */
+
 		/// <summary>
 		/// Indexer to access the specified <see cref="GraphPane"/> object by
 		/// its <see cref="PaneBase.Title"/> string.
@@ -134,17 +136,18 @@ namespace ZedGraph
 		/// <param name="title">The string title of the
 		/// <see cref="GraphPane"/> object to be accessed.</param>
 		/// <value>A <see cref="GraphPane"/> object reference.</value>
-		public GraphPane this[ string title ]  
+		public GraphPane this[string title]
 		{
 			get
 			{
-				int index = IndexOf( title );
-				if ( index >= 0 )
-					return( (GraphPane) this[index]  );
+				int index = IndexOf(title);
+				if (index >= 0)
+					return ((GraphPane) this[index]);
 				else
 					return null;
 			}
 		}
+
 /*
 		/// <summary>
 		/// Add a <see cref="GraphPane"/> object to the collection at the end of the list.
@@ -181,6 +184,7 @@ namespace ZedGraph
 			List.Insert( index, pane );
 		}
 */
+
 		/// <summary>
 		/// Return the zero-based position index of the
 		/// <see cref="GraphPane"/> with the specified <see cref="PaneBase.Title"/>.
@@ -193,12 +197,11 @@ namespace ZedGraph
 		/// <returns>The zero-based index of the specified <see cref="GraphPane"/>,
 		/// or -1 if the <see cref="PaneBase.Title"/> was not found in the list</returns>
 		/// <seealso cref="IndexOfTag"/>
-		public int IndexOf( string title )
+		public int IndexOf(string title)
 		{
 			int index = 0;
-			foreach ( GraphPane pane in this )
-			{
-				if ( String.Compare( pane.Title.Text, title, true ) == 0 )
+			foreach (GraphPane pane in this) {
+				if (String.Compare(pane.Title.Text, title, true) == 0)
 					return index;
 				index++;
 			}
@@ -217,13 +220,12 @@ namespace ZedGraph
 		/// </param>
 		/// <returns>The zero-based index of the specified <see cref="GraphPane"/>,
 		/// or -1 if the <see cref="PaneBase.Tag"/> string is not in the list</returns>
-		public int IndexOfTag( string tagStr )
+		public int IndexOfTag(string tagStr)
 		{
 			int index = 0;
-			foreach ( GraphPane pane in this )
-			{
-				if ( pane.Tag is string &&
-						String.Compare( (string) pane.Tag, tagStr, true ) == 0 )
+			foreach (GraphPane pane in this) {
+				if (pane.Tag is string &&
+				    String.Compare((string) pane.Tag, tagStr, true) == 0)
 					return index;
 				index++;
 			}
@@ -231,7 +233,6 @@ namespace ZedGraph
 			return -1;
 		}
 
-	#endregion
-
+		#endregion
 	}
 }

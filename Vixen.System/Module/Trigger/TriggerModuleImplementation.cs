@@ -4,11 +4,14 @@ using System.Linq;
 using System.Text;
 using Vixen.Sys.Attribute;
 
-namespace Vixen.Module.Trigger {
+namespace Vixen.Module.Trigger
+{
 	[TypeOfModule("Trigger")]
-	class TriggerModuleImplementation : ModuleImplementation<ITriggerModuleInstance> {
+	internal class TriggerModuleImplementation : ModuleImplementation<ITriggerModuleInstance>
+	{
 		public TriggerModuleImplementation()
-			: base(new TriggerModuleManagement(), new TriggerModuleRepository()) {
+			: base(new TriggerModuleManagement(), new TriggerModuleRepository())
+		{
 		}
 	}
 }

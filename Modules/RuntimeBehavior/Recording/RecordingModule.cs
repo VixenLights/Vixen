@@ -4,8 +4,10 @@ using Vixen.Sys;
 using Vixen.Module;
 using Vixen.Module.RuntimeBehavior;
 
-namespace Recording {
-	public class RecordingModule : RuntimeBehaviorModuleInstanceBase {
+namespace Recording
+{
+	public class RecordingModule : RuntimeBehaviorModuleInstanceBase
+	{
 		private Tuple<string, Action>[] _actions;
 		private ISequence _sequence;
 		private List<IEffectNode> _buffer = new List<IEffectNode>();
@@ -14,21 +16,25 @@ namespace Recording {
 		private DataStream _recordingStream;
 		private RecordingData _moduleData;
 
-		public RecordingModule() {
-			_actions = new[] {
-				new Tuple<string,Action>("Clear buffer", Clear),
-				new Tuple<string,Action>("Commit", Commit)
-			};
+		public RecordingModule()
+		{
+			_actions = new[]
+			           	{
+			           		new Tuple<string, Action>("Clear buffer", Clear),
+			           		new Tuple<string, Action>("Commit", Commit)
+			           	};
 		}
 
-		override public void Startup(ISequence sequence) {
+		public override void Startup(ISequence sequence)
+		{
 			_sequence = sequence;
 			_bufferItems = _buffer.Count;
 		}
 
-		override public void Shutdown() {
+		public override void Shutdown()
+		{
 			// If data in the buffer has changed...
-			if(_bufferItems != _buffer.Count) {
+			if (_bufferItems != _buffer.Count) {
 				//// Get a channel into the sequence's input channels.
 				//Guid sequenceChannelId = _GetSequenceChannelId();
 				//// Clear it.
@@ -44,8 +50,9 @@ namespace Recording {
 			}
 		}
 
-		private DataStream _GetRecordingStream() {
-			if(_recordingStream == null) {
+		private DataStream _GetRecordingStream()
+		{
+			if (_recordingStream == null) {
 				_recordingStream = _sequence.SequenceData.DataStreams.CreateStream("Recording");
 			}
 			return _recordingStream;
@@ -58,33 +65,39 @@ namespace Recording {
 		//    return _sequenceChannelId;
 		//}
 
-		override public void Handle(IEffectNode effectNode) {
+		public override void Handle(IEffectNode effectNode)
+		{
 			_buffer.Add(effectNode);
 		}
 
-		override public bool Enabled {
+		public override bool Enabled
+		{
 			get { return _moduleData.Enabled; }
 			set { _moduleData.Enabled = value; }
 		}
 
-		override public Tuple<string, Action>[] BehaviorActions {
+		public override Tuple<string, Action>[] BehaviorActions
+		{
 			get { return _actions; }
 		}
 
-		override public IModuleDataModel ModuleData { 
+		public override IModuleDataModel ModuleData
+		{
 			get { return _moduleData; }
 			set { _moduleData = value as RecordingData; }
 		}
 
 
 		// ------- Actions -------
-		public void Clear() {
+		public void Clear()
+		{
 			//_RemoveSequenceChannel();
 			_RemoveRecordingStream();
 			_buffer.Clear();
 		}
 
-		public void Commit() {
+		public void Commit()
+		{
 			//_RemoveSequenceChannel();
 			_RemoveRecordingStream();
 			_sequence.InsertData(_buffer);
@@ -97,8 +110,9 @@ namespace Recording {
 		//        _sequenceChannelId = Guid.Empty;
 		//    }
 		//}
-		private void _RemoveRecordingStream() {
-			if(_recordingStream != null) {
+		private void _RemoveRecordingStream()
+		{
+			if (_recordingStream != null) {
 				_sequence.SequenceData.DataStreams.RemoveStream(_recordingStream);
 				_recordingStream = null;
 			}

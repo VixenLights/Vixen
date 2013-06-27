@@ -23,14 +23,14 @@ namespace VixenModules.EffectEditor.LevelTypeEditor
 
 		public object[] EffectParameterValues
 		{
-			get { return new object[] { LevelValue }; }
+			get { return new object[] {LevelValue}; }
 			set { LevelValue = Convert.ToDouble(value[0]); }
 		}
 
 		public double LevelValue
 		{
-			get { return (double)valueUpDown.Value / 100; }
-			set { valueUpDown.Value = (int)(value * 100); }
+			get { return (double) valueUpDown.Value/100; }
+			set { valueUpDown.Value = (int) (value*100); }
 		}
 	}
 }

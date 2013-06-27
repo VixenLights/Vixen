@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace Vixen.Module {
+namespace Vixen.Module
+{
 	[DataContract]
-	public class ModuleStaticDataSet : ModuleDataSet {
-		override protected Type _GetDataModelType(IModuleDescriptor descriptor) {
+	public class ModuleStaticDataSet : ModuleDataSet
+	{
+		protected override Type _GetDataModelType(IModuleDescriptor descriptor)
+		{
 			return descriptor.ModuleStaticDataClass;
 		}
 
-		override protected IModuleDataModel _GetDataInstance(IModuleInstance module) {
+		protected override IModuleDataModel _GetDataInstance(IModuleInstance module)
+		{
 			return module.StaticModuleData;
 		}
 	}

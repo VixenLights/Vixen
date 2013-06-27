@@ -1,5 +1,7 @@
-﻿namespace Vixen.Module.Script {
-	public interface ICompilerError {
+﻿namespace Vixen.Module.Script
+{
+	public interface ICompilerError
+	{
 		int Column { get; set; }
 		string ErrorNumber { get; set; }
 		string ErrorText { get; set; }

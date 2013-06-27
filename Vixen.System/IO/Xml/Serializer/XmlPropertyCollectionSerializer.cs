@@ -5,8 +5,10 @@ using System.Xml.Linq;
 using Vixen.Module.Property;
 using Vixen.Sys;
 
-namespace Vixen.IO.Xml.Serializer {
-	class XmlPropertyCollectionSerializer : IXmlSerializer<IEnumerable<IPropertyModuleInstance>> {
+namespace Vixen.IO.Xml.Serializer
+{
+	internal class XmlPropertyCollectionSerializer : IXmlSerializer<IEnumerable<IPropertyModuleInstance>>
+	{
 		private const string ELEMENT_PROPERTIES = "Properties";
 		private const string ELEMENT_PROPERTY = "Property";
 		private const string ELEMENT_TYPE_ID = "typeId";
@@ -35,8 +37,7 @@ namespace Vixen.IO.Xml.Serializer {
 			if (element == null)
 				return properties;
 
-			foreach (XElement prop in element.Elements(ELEMENT_PROPERTY))
-			{
+			foreach (XElement prop in element.Elements(ELEMENT_PROPERTY)) {
 				//figure out how to get props.
 				Guid? typeId = XmlHelper.GetGuidAttribute(prop, ELEMENT_TYPE_ID);
 				if (typeId == null) continue;
@@ -45,13 +46,12 @@ namespace Vixen.IO.Xml.Serializer {
 				if (instanceId == null) continue;
 
 				IPropertyModuleInstance property = Modules.ModuleManagement.GetProperty(typeId);
-				if (property != null)
-				{
+				if (property != null) {
 					property.InstanceId = instanceId.Value;
 					properties.Add(property);
 				}
 			}
-			
+
 			return properties;
 		}
 	}

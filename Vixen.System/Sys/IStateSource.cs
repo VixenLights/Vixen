@@ -1,5 +1,7 @@
-﻿namespace Vixen.Sys {
-	public interface IStateSource<out V> {
+﻿namespace Vixen.Sys
+{
+	public interface IStateSource<out V>
+	{
 		V State { get; }
 	}
 }

@@ -4,11 +4,14 @@ using System.Linq;
 using System.Text;
 using Vixen.Sys.Attribute;
 
-namespace Vixen.Module.RuntimeBehavior {
+namespace Vixen.Module.RuntimeBehavior
+{
 	//[TypeOfModule("RuntimeBehavior")]
-	class RuntimeBehaviorModuleImplementation : ModuleImplementation<IRuntimeBehaviorModuleInstance> {
+	internal class RuntimeBehaviorModuleImplementation : ModuleImplementation<IRuntimeBehaviorModuleInstance>
+	{
 		public RuntimeBehaviorModuleImplementation()
-			: base(new RuntimeBehaviorModuleManagement(), new RuntimeBehaviorModuleRepository()) {
+			: base(new RuntimeBehaviorModuleManagement(), new RuntimeBehaviorModuleRepository())
+		{
 		}
 	}
 }

@@ -1,5 +1,7 @@
-﻿namespace Vixen.Rule {
-	public interface INamingGenerator {
+﻿namespace Vixen.Rule
+{
+	public interface INamingGenerator
+	{
 		// The name of the naming generator.
 		// eg. "Numeric Counter"
 		string Name { get; }

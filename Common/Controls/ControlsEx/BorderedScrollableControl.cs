@@ -10,7 +10,7 @@ namespace Common.Controls.ControlsEx
 	/// BorderedScrollableControl paints a thin border
 	/// </summary>
 	[ToolboxItem(false)]
-	public class BorderedScrollableControl:ScrollableControl
+	public class BorderedScrollableControl : ScrollableControl
 	{
 		//#region ctor
 		///// <summary>

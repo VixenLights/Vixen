@@ -11,18 +11,22 @@ namespace Common.Controls.ControlsEx.ListControls
 	public abstract class SingleLineDisplayList : DisplayList
 	{
 		#region variables
+
 		protected int _aspect = 80;
 		protected Size _fieldsize = new Size(10, 8);
 		//
 		protected Rectangle _cachebounds;
 		protected int _cacheindex = int.MinValue;
+
 		#endregion
+
 		#region properties
+
 		/// <summary>
 		/// specifies the aspect rate every item has, except if scrollbars are visible
 		/// </summary>
 		[Description("specifies the aspect rate every item has, except if scrollbars are visible"),
-		DefaultValue(80)]
+		 DefaultValue(80)]
 		public int Aspect
 		{
 			get { return _aspect; }
@@ -37,8 +41,10 @@ namespace Common.Controls.ControlsEx.ListControls
 					this.Refresh();
 			}
 		}
+
 		#endregion
 	}
+
 	/// <summary>
 	/// HDisplayList displays DisplayElement in a horizontal row
 	/// </summary>
@@ -46,6 +52,7 @@ namespace Common.Controls.ControlsEx.ListControls
 	public class HDisplayList : SingleLineDisplayList
 	{
 		#region overrides
+
 		/// <summary>
 		/// adjusts the scrollbars to content
 		/// </summary>
@@ -55,23 +62,25 @@ namespace Common.Controls.ControlsEx.ListControls
 			//item covers full clientheight (without border, scrollbar)
 			base._fieldsize.Height = Math.Max(10, clientsize.Height - 2);
 			//width is calculated by aspect rate
-			base._fieldsize.Width = Math.Max(10, ((clientsize.Height - 4) * 100) / _aspect);
+			base._fieldsize.Width = Math.Max(10, ((clientsize.Height - 4)*100)/_aspect);
 			//width
-			int w = 1 + count * (base._fieldsize.Width + 1);
+			int w = 1 + count*(base._fieldsize.Width + 1);
 			if (w > clientsize.Width)
 				_fieldsize.Height = Math.Max(10,
-					_fieldsize.Height - SystemInformation.HorizontalScrollBarHeight);
+				                             _fieldsize.Height - SystemInformation.HorizontalScrollBarHeight);
 			//
 			return new Size(w, 0);
 		}
+
 		/// <summary>
 		/// returns the index of the item at the specified position.
 		/// collection boundaries are checked
 		/// </summary>
 		protected override int GetIndexAt(int x, int y)
 		{
-			return x / (base._fieldsize.Width + 1);
+			return x/(base._fieldsize.Width + 1);
 		}
+
 		/// <summary>
 		/// returns the bounds of the item at the specified position.
 		/// collection boundaries are not checked.
@@ -79,24 +88,26 @@ namespace Common.Controls.ControlsEx.ListControls
 		protected override Rectangle GetBoundsAt(int index)
 		{
 			//optimization for drawing
-			if (index == _cacheindex + 1)
-			{
+			if (index == _cacheindex + 1) {
 				_cacheindex = index;
 				_cachebounds.X += _fieldsize.Width + 1;
 				return _cachebounds;
 			}
 			_cacheindex = index;
 			return _cachebounds = new Rectangle(
-				(index * (base._fieldsize.Width + 1)) + 1, 1,
-				base._fieldsize.Width, base._fieldsize.Height);
+			                      	(index*(base._fieldsize.Width + 1)) + 1, 1,
+			                      	base._fieldsize.Width, base._fieldsize.Height);
 		}
+
 		protected override void GetDrawingInterval(Rectangle clip, out int start, out int stop)
 		{
 			start = this.GetIndexAt(clip.X, 0);
 			stop = this.GetIndexAt(clip.Right, 0);
 		}
+
 		#endregion
 	}
+
 	/// <summary>
 	/// VDisplayList displays DisplayElement in a vertical row
 	/// </summary>
@@ -104,6 +115,7 @@ namespace Common.Controls.ControlsEx.ListControls
 	public class VDisplayList : SingleLineDisplayList
 	{
 		#region overrides
+
 		/// <summary>
 		/// adjusts the scrollbars to content
 		/// </summary>
@@ -113,23 +125,25 @@ namespace Common.Controls.ControlsEx.ListControls
 			//item covers full clientwidth (without border, scrollbar)
 			base._fieldsize.Width = Math.Max(10, clientsize.Width - 2);
 			//calculate height by aspect rate
-			base._fieldsize.Height = Math.Max(10, ((clientsize.Width - 4) * _aspect) / 100);
+			base._fieldsize.Height = Math.Max(10, ((clientsize.Width - 4)*_aspect)/100);
 			//height
-			int h = 1 + count * (base._fieldsize.Height + 1);
+			int h = 1 + count*(base._fieldsize.Height + 1);
 			if (h > clientsize.Height)
 				_fieldsize.Width = Math.Max(10,
-					_fieldsize.Width - SystemInformation.VerticalScrollBarWidth);
+				                            _fieldsize.Width - SystemInformation.VerticalScrollBarWidth);
 			//
 			return new Size(0, h);
 		}
+
 		/// <summary>
 		/// gets the index of the item at the specified position.
 		/// collection boundaries are checked.
 		/// </summary>
 		protected override int GetIndexAt(int x, int y)
 		{
-			return y / (base._fieldsize.Height + 1);
+			return y/(base._fieldsize.Height + 1);
 		}
+
 		/// <summary>
 		/// returns the bounds of the item at the specified position.
 		/// collection boundaries are not checked.
@@ -137,22 +151,23 @@ namespace Common.Controls.ControlsEx.ListControls
 		protected override Rectangle GetBoundsAt(int index)
 		{
 			//optimization for drawing
-			if (index == _cacheindex + 1)
-			{
+			if (index == _cacheindex + 1) {
 				_cacheindex = index;
 				_cachebounds.Y += _fieldsize.Height + 1;
 				return _cachebounds;
 			}
 			_cacheindex = index;
 			return _cachebounds = new Rectangle(
-				1, (index * (base._fieldsize.Height + 1)) + 1,
-				base._fieldsize.Width, base._fieldsize.Height);
+			                      	1, (index*(base._fieldsize.Height + 1)) + 1,
+			                      	base._fieldsize.Width, base._fieldsize.Height);
 		}
+
 		protected override void GetDrawingInterval(Rectangle clip, out int start, out int stop)
 		{
 			start = this.GetIndexAt(0, clip.Y);
 			stop = this.GetIndexAt(0, clip.Bottom);
 		}
+
 		#endregion
 	}
 }

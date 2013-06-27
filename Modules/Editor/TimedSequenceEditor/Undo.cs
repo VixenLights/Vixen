@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
 using Common.Controls;
 using Common.Controls.Timeline;
 using Vixen.Module.Effect;
@@ -11,51 +10,47 @@ using Element = Common.Controls.Timeline.Element;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
-    public class ElementsTimeChangedUndoAction : Common.Controls.UndoAction
-    {
-        private Dictionary<Element, ElementTimeInfo> m_changedElements;
-        private ElementMoveType m_moveType;
+	public class ElementsTimeChangedUndoAction : Common.Controls.UndoAction
+	{
+		private Dictionary<Element, ElementTimeInfo> m_changedElements;
+		private ElementMoveType m_moveType;
 
-        public ElementsTimeChangedUndoAction(Dictionary<Element, ElementTimeInfo> changedElements, ElementMoveType moveType)
-            :base()
-        {
-            m_changedElements = changedElements;
-            m_moveType = moveType;
-        }
+		public ElementsTimeChangedUndoAction(Dictionary<Element, ElementTimeInfo> changedElements, ElementMoveType moveType)
+			: base()
+		{
+			m_changedElements = changedElements;
+			m_moveType = moveType;
+		}
 
 
-
-        public override void Undo()
-        {
-            foreach (KeyValuePair<Element,ElementTimeInfo> e in m_changedElements)
-            {
-                // Key is reference to actual element. Value is class with its times before move.
-                // Swap the element's times with the saved times from before the move, so we can restore them later in redo.
-                ElementTimeInfo.SwapTimes(e.Key, e.Value);
-            }
-
-            base.Undo();
-        }
-
-        public override void Redo()
-        {
-            foreach (KeyValuePair<Element, ElementTimeInfo> e in m_changedElements)
-            {
-                // Key is reference to actual element. Value is class with the times before undo.
-                // Swap the element's times with the saved times from before the undo, essentially re-doing the original action.
+		public override void Undo()
+		{
+			foreach (KeyValuePair<Element, ElementTimeInfo> e in m_changedElements) {
+				// Key is reference to actual element. Value is class with its times before move.
+				// Swap the element's times with the saved times from before the move, so we can restore them later in redo.
 				ElementTimeInfo.SwapTimes(e.Key, e.Value);
-            }
+			}
 
-            base.Redo();
-        }
+			base.Undo();
+		}
 
-        public override string Description
-        {
-            get
-            {
+		public override void Redo()
+		{
+			foreach (KeyValuePair<Element, ElementTimeInfo> e in m_changedElements) {
+				// Key is reference to actual element. Value is class with the times before undo.
+				// Swap the element's times with the saved times from before the undo, essentially re-doing the original action.
+				ElementTimeInfo.SwapTimes(e.Key, e.Value);
+			}
+
+			base.Redo();
+		}
+
+		public override string Description
+		{
+			get
+			{
 				string s = (m_changedElements.Count == 1 ? "" : "s");
-				switch (m_moveType)
-				{
+				switch (m_moveType) {
 					case ElementMoveType.Move:
 						return String.Format("Move {0} effect{1} horizontally", m_changedElements.Count, s);
 					case ElementMoveType.Resize:
@@ -64,11 +59,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						throw new Exception("Unknown ElementMoveType!");
 				}
 			}
-        }
-
-    }
-
-
+		}
+	}
 
 
 	public class EffectsAddedRemovedUndoAction : Common.Controls.UndoAction
@@ -96,7 +88,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				m_form.AddEffectNode(node);
 		}
 
-		protected int Count { get { return m_count; } }
+		protected int Count
+		{
+			get { return m_count; }
+		}
 	}
 
 	public class EffectsAddedUndoAction : EffectsAddedRemovedUndoAction
@@ -120,7 +115,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		public override string Description
 		{
-			get { return String.Format("Added {0} effect{1}", Count, (Count==1 ? "" : "s")); }
+			get { return String.Format("Added {0} effect{1}", Count, (Count == 1 ? "" : "s")); }
 		}
 	}
 
@@ -148,6 +143,4 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			get { return String.Format("Removed {0} effect{1}", Count, (Count == 1 ? "" : "s")); }
 		}
 	}
-
- 
 }

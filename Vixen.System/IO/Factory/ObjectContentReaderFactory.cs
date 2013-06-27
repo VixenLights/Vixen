@@ -5,38 +5,48 @@ using Vixen.IO.Xml.Sequence;
 using Vixen.IO.Xml.SystemConfig;
 using Vixen.IO.Xml.SystemContext;
 
-namespace Vixen.IO.Factory {
-	class ObjectContentReaderFactory : IObjectContentReaderFactory {
-		static private ObjectContentReaderFactory _instance;
+namespace Vixen.IO.Factory
+{
+	internal class ObjectContentReaderFactory : IObjectContentReaderFactory
+	{
+		private static ObjectContentReaderFactory _instance;
 
-		private ObjectContentReaderFactory() {
+		private ObjectContentReaderFactory()
+		{
 		}
 
-		public static ObjectContentReaderFactory Instance {
+		public static ObjectContentReaderFactory Instance
+		{
 			get { return _instance ?? (_instance = new ObjectContentReaderFactory()); }
 		}
 
-		public IObjectContentReader CreateSystemConfigContentReader() {
+		public IObjectContentReader CreateSystemConfigContentReader()
+		{
 			return new SystemConfigXElementReader();
 		}
 
-		public IObjectContentReader CreateModuleStoreContentReader() {
+		public IObjectContentReader CreateModuleStoreContentReader()
+		{
 			return new ModuleStoreXElementReader();
 		}
 
-		public IObjectContentReader CreateSystemContextContentReader() {
+		public IObjectContentReader CreateSystemContextContentReader()
+		{
 			return new SystemContextXElementReader();
 		}
 
-		public IObjectContentReader CreateProgramContentReader() {
+		public IObjectContentReader CreateProgramContentReader()
+		{
 			return new ProgramXElementReader();
 		}
 
-		public IObjectContentReader CreateElementNodeTemplateContentReader() {
+		public IObjectContentReader CreateElementNodeTemplateContentReader()
+		{
 			return new ElementNodeTemplateXElementReader();
 		}
 
-		public IObjectContentReader CreateSequenceContentReader(string fileType) {
+		public IObjectContentReader CreateSequenceContentReader(string fileType)
+		{
 			return new SequenceXElementReader(fileType);
 		}
 	}

@@ -7,7 +7,8 @@ using System.Windows.Forms;
 using Vixen.Module;
 using Vixen.Sys;
 
-namespace VixenModules.Property.Color {
+namespace VixenModules.Property.Color
+{
 	public class ColorModule : PropertyModuleInstanceBase
 	{
 		private ColorData _data;
@@ -19,12 +20,12 @@ namespace VixenModules.Property.Color {
 
 		~ColorModule()
 		{
-			ColorStaticData.ColorSetChanged -=  ColorSetChangedHandler;
+			ColorStaticData.ColorSetChanged -= ColorSetChangedHandler;
 		}
 
 		// if the color sets in the static data ("library") change, clear our reference to it,
 		// and re-get it the next time we need it.
-		void ColorSetChangedHandler(object sender, StringEventArgs e)
+		private void ColorSetChangedHandler(object sender, StringEventArgs e)
 		{
 			ColorData instanceData = (ModuleData as ColorData);
 
@@ -41,7 +42,8 @@ namespace VixenModules.Property.Color {
 		{
 			ColorModule source = sourceProperty as ColorModule;
 			if (source == null) {
-				Vixen.Sys.VixenSystem.Logging.Error("ColorModule: trying to CloneValues from another property, but it's not a ColorModule!");
+				Vixen.Sys.VixenSystem.Logging.Error(
+					"ColorModule: trying to CloneValues from another property, but it's not a ColorModule!");
 				return;
 			}
 
@@ -68,7 +70,7 @@ namespace VixenModules.Property.Color {
 		public override IModuleDataModel ModuleData
 		{
 			get { return _data; }
-			set { _data = (ColorData)value; }
+			set { _data = (ColorData) value; }
 		}
 
 
@@ -91,8 +93,8 @@ namespace VixenModules.Property.Color {
 		}
 
 
-
 		private ColorSet _cachedColorSetReference = null;
+
 		public ColorSet Colors
 		{
 			get
@@ -109,11 +111,12 @@ namespace VixenModules.Property.Color {
 
 					if (staticData.ContainsColorSet(instanceData.ColorSetName)) {
 						_cachedColorSetReference = staticData.GetColorSet(instanceData.ColorSetName);
-					} else {
-						Vixen.Sys.VixenSystem.Logging.Error("ColorProperty: can't find '" + instanceData.ColorSetName + "' in the static data color sets. That's.... unexpected. Maybe the color set was deleted?");
+					}
+					else {
+						Vixen.Sys.VixenSystem.Logging.Error("ColorProperty: can't find '" + instanceData.ColorSetName +
+						                                    "' in the static data color sets. That's.... unexpected. Maybe the color set was deleted?");
 						_cachedColorSetReference = new ColorSet();
 					}
-
 				}
 				return _cachedColorSetReference;
 			}
@@ -158,10 +161,8 @@ namespace VixenModules.Property.Color {
 	}
 
 
-
-
-
-	public class ColorDescriptor : PropertyModuleDescriptorBase {
+	public class ColorDescriptor : PropertyModuleDescriptorBase
+	{
 		private static Guid _typeId = new Guid("{BFF34727-6B88-4F87-82B7-68424498C725}");
 
 		public override string TypeName
@@ -210,10 +211,10 @@ namespace VixenModules.Property.Color {
 		}
 	}
 
-	
 
 	[DataContract]
-	public class ColorData : ModuleDataModelBase {
+	public class ColorData : ModuleDataModelBase
+	{
 		[DataMember]
 		public ElementColorType ElementColorType { get; set; }
 
@@ -230,8 +231,9 @@ namespace VixenModules.Property.Color {
 			ColorSetName = "";
 		}
 
-		public override IModuleDataModel Clone() {
-			return (ColorData)MemberwiseClone();
+		public override IModuleDataModel Clone()
+		{
+			return (ColorData) MemberwiseClone();
 		}
 	}
 
@@ -291,11 +293,11 @@ namespace VixenModules.Property.Color {
 		{
 			return ColorSets.Keys.ToList();
 		}
-		
+
 
 		public override IModuleDataModel Clone()
 		{
-			return (ColorStaticData)MemberwiseClone();
+			return (ColorStaticData) MemberwiseClone();
 		}
 	}
 
@@ -303,7 +305,7 @@ namespace VixenModules.Property.Color {
 	{
 	}
 
-	public class StringEventArgs: EventArgs
+	public class StringEventArgs : EventArgs
 	{
 		public StringEventArgs(string value)
 		{
@@ -320,5 +322,3 @@ namespace VixenModules.Property.Color {
 		FullColor
 	}
 }
-
-

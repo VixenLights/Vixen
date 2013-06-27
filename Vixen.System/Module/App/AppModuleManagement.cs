@@ -1,4 +1,6 @@
-﻿namespace Vixen.Module.App {
-	class AppModuleManagement : GenericModuleManagement<IAppModuleInstance> {
+﻿namespace Vixen.Module.App
+{
+	internal class AppModuleManagement : GenericModuleManagement<IAppModuleInstance>
+	{
 	}
 }

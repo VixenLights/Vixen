@@ -1,14 +1,17 @@
 ﻿using System;
 using Vixen.Sys;
 
-namespace Vixen.Module {
-	class ModuleConsumer<T> : IModuleConsumer<T>
-		where T : class, IModuleInstance {
+namespace Vixen.Module
+{
+	internal class ModuleConsumer<T> : IModuleConsumer<T>
+		where T : class, IModuleInstance
+	{
 		private IModuleDataRetriever _moduleDataRetriever;
 		private IModuleInstance _module;
 
-		public ModuleConsumer(Guid moduleId, Guid moduleInstanceId, IModuleDataRetriever moduleDataRetriever) {
-			if(moduleDataRetriever == null) throw new ArgumentNullException("moduleDataRetriever");
+		public ModuleConsumer(Guid moduleId, Guid moduleInstanceId, IModuleDataRetriever moduleDataRetriever)
+		{
+			if (moduleDataRetriever == null) throw new ArgumentNullException("moduleDataRetriever");
 
 			ModuleId = moduleId;
 			ModuleInstanceId = moduleInstanceId;
@@ -19,17 +22,19 @@ namespace Vixen.Module {
 
 		public Guid ModuleInstanceId { get; private set; }
 
-		virtual public T Module {
-			get {
-				if(_module == null) {
+		public virtual T Module
+		{
+			get
+			{
+				if (_module == null) {
 					IModuleManagement moduleTypeManager = Modules.GetManager<T>();
-					_module = (T)moduleTypeManager.Get(ModuleId);
+					_module = (T) moduleTypeManager.Get(ModuleId);
 					_module.InstanceId = ModuleInstanceId;
-					if(_module != null) {
+					if (_module != null) {
 						_moduleDataRetriever.AssignModuleData(_module);
 					}
 				}
-				return (T)_module;
+				return (T) _module;
 			}
 		}
 	}

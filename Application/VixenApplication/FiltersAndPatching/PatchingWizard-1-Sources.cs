@@ -22,7 +22,7 @@ namespace VixenApplication.FiltersAndPatching
 			InitializeComponent();
 		}
 
-		void FilterSetupForm_DiagramShapesSelected(object sender, EventArgs e)
+		private void FilterSetupForm_DiagramShapesSelected(object sender, EventArgs e)
 		{
 			_searchAndPopulateShapes();
 		}

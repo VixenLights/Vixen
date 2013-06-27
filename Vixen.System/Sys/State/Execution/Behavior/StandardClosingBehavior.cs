@@ -1,6 +1,9 @@
-﻿namespace Vixen.Sys.State.Execution.Behavior {
-	class StandardClosingBehavior {
-		static public void Run() {
+﻿namespace Vixen.Sys.State.Execution.Behavior
+{
+	internal class StandardClosingBehavior
+	{
+		public static void Run()
+		{
 			Sys.Execution.Shutdown();
 
 			WindowsMultimedia wm = new WindowsMultimedia();

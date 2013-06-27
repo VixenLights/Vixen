@@ -12,14 +12,17 @@ namespace Common.Controls.ControlsEx.ListControls
 		/// within the bounds of <pre>clientsize</pre>
 		/// </summary>
 		Size GetTotalSize(Size size, int count);
+
 		/// <summary>
 		/// gets the selected index at the given postion
 		/// </summary>
 		int GetIndexAt(Point pt);
+
 		/// <summary>
 		/// gets the bounds at the selected index
 		/// </summary>
 		Rectangle GetBoundsAt(int index);
+
 		/// <summary>
 		/// gets the interval of elements that
 		/// are in the given clip rectangle

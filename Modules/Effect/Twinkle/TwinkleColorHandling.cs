@@ -5,11 +5,11 @@ using System.Text;
 
 namespace VixenModules.Effect.Twinkle
 {
-    public enum TwinkleColorHandling
-    {
-        StaticColor,
-        GradientThroughWholeEffect,
-        GradientForEachPulse,
-        ColorAcrossItems
-    }
+	public enum TwinkleColorHandling
+	{
+		StaticColor,
+		GradientThroughWholeEffect,
+		GradientForEachPulse,
+		ColorAcrossItems
+	}
 }

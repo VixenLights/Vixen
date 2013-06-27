@@ -2,12 +2,15 @@
 using Vixen.IO;
 using Vixen.Sys;
 
-namespace Vixen.Module.SequenceType {
-	public interface ISequenceType {
+namespace Vixen.Module.SequenceType
+{
+	public interface ISequenceType
+	{
 		/// <summary>
 		/// Includes the leading period.
 		/// </summary>
 		string FileExtension { get; }
+
 		ISequence CreateSequence();
 		IContentMigrator CreateMigrator();
 		ISequenceExecutor CreateExecutor();

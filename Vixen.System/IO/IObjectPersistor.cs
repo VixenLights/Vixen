@@ -1,9 +1,12 @@
-﻿namespace Vixen.IO {
-	interface IObjectPersistor<in T> : IObjectPersistor {
+﻿namespace Vixen.IO
+{
+	internal interface IObjectPersistor<in T> : IObjectPersistor
+	{
 		void SaveToFile(T obj, string filePath);
 	}
 
-	interface IObjectPersistor {
+	internal interface IObjectPersistor
+	{
 		void SaveToFile(object obj, string filePath);
 	}
 }

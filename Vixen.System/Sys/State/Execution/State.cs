@@ -1,17 +1,33 @@
-﻿namespace Vixen.Sys.State.Execution {
-	public abstract class State {
-		protected State(ExecutionStateEngine engine) {
+﻿namespace Vixen.Sys.State.Execution
+{
+	public abstract class State
+	{
+		protected State(ExecutionStateEngine engine)
+		{
 			Engine = engine;
 		}
 
-		abstract public string Name { get; }
+		public abstract string Name { get; }
 
-		virtual public void Enter() { }
-		virtual public void Leave() { }
+		public virtual void Enter()
+		{
+		}
 
-		virtual public void OnOpen() { }
-		virtual public void OnClose() { }
-		virtual public void OnTest() { }
+		public virtual void Leave()
+		{
+		}
+
+		public virtual void OnOpen()
+		{
+		}
+
+		public virtual void OnClose()
+		{
+		}
+
+		public virtual void OnTest()
+		{
+		}
 
 		protected ExecutionStateEngine Engine { get; private set; }
 	}

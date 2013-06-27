@@ -41,26 +41,30 @@ namespace ZedGraph
 	[Serializable]
 	public class ImageObj : GraphObj, ICloneable, ISerializable
 	{
-	#region Fields
+		#region Fields
+
 		/// <summary>
 		/// Private field that stores the image.  Use the public property <see cref="Image"/>
 		/// to access this value.
 		/// </summary>
-		private Image		_image;
+		private Image _image;
+
 		/// <summary>
 		/// Private field that determines if the image will be scaled to the output rectangle.
 		/// </summary>
 		/// <value>true to scale the image, false to draw the image unscaled, but clipped
 		/// to the destination rectangle</value>
-		private bool		_isScaled;
-	#endregion
+		private bool _isScaled;
 
-	#region Defaults
+		#endregion
+
+		#region Defaults
+
 		/// <summary>
 		/// A simple struct that defines the
 		/// default property values for the <see cref="ImageObj"/> class.
 		/// </summary>
-		new public struct Default
+		public new struct Default
 		{
 			// Default text item properties
 			/// <summary>
@@ -69,18 +73,21 @@ namespace ZedGraph
 			/// </summary>
 			public static bool IsScaled = true;
 		}
-	#endregion
 
-	#region Properties
+		#endregion
+
+		#region Properties
+
 		/// <summary>
 		/// The <see cref="System.Drawing.Image"/> object.
 		/// </summary>
-        /// <value> A <see cref="System.Drawing.Image"/> class reference. </value>
+		/// <value> A <see cref="System.Drawing.Image"/> class reference. </value>
 		public Image Image
 		{
 			get { return _image; }
 			set { _image = value; }
 		}
+
 		/// <summary>
 		/// Gets or sets a property that determines if the image will be scaled to the
 		/// output rectangle (see <see cref="Location"/>).
@@ -92,16 +99,18 @@ namespace ZedGraph
 			get { return _isScaled; }
 			set { _isScaled = value; }
 		}
-	#endregion
-	
-	#region Constructors
+
+		#endregion
+
+		#region Constructors
+
 		/// <overloads>Constructors for the <see cref="ImageObj"/> object</overloads>
 		/// <summary>
 		/// A default constructor that places a null <see cref="System.Drawing.Image"/> at a
 		/// default <see cref="RectangleF"/> of (0,0,1,1)
 		/// </summary>
 		public ImageObj() :
-			this( null, 0, 0, 1, 1 )
+			this(null, 0, 0, 1, 1)
 		{
 		}
 
@@ -115,8 +124,8 @@ namespace ZedGraph
 		/// <param name="rect">A <see cref="RectangleF"/> struct that defines the
 		/// image location, specifed in units based on the
 		/// <see cref="Location.CoordinateFrame"/> property.</param>
-		public ImageObj( Image image, RectangleF rect ) :
-			this( image, rect.X, rect.Y, rect.Width, rect.Height )
+		public ImageObj(Image image, RectangleF rect) :
+			this(image, rect.X, rect.Y, rect.Width, rect.Height)
 		{
 		}
 
@@ -138,10 +147,10 @@ namespace ZedGraph
 		/// the horizontal alignment of the object with respect to the (x,y) location</param>
 		/// <param name="alignV">The <see cref="ZedGraph.AlignV"/> enum that specifies
 		/// the vertical alignment of the object with respect to the (x,y) location</param>
-		public ImageObj( Image image, RectangleF rect, CoordType coordType,
-					AlignH alignH, AlignV alignV ) :
-				base( rect.X, rect.Y, rect.Width, rect.Height, coordType,
-					alignH, alignV )
+		public ImageObj(Image image, RectangleF rect, CoordType coordType,
+		                AlignH alignH, AlignV alignV) :
+		                	base(rect.X, rect.Y, rect.Width, rect.Height, coordType,
+		                	     alignH, alignV)
 		{
 			_image = image;
 			_isScaled = Default.IsScaled;
@@ -167,9 +176,9 @@ namespace ZedGraph
 		/// <param name="height">The height of the rectangle that defines the
 		/// <see cref="ImageObj"/> location.  The units of this position are specified by the
 		/// <see cref="Location.CoordinateFrame"/> property.</param>
-		public ImageObj( Image image, double left, double top,
-					double width, double height ) :
-				base( left, top, width, height )
+		public ImageObj(Image image, double left, double top,
+		                double width, double height) :
+		                	base(left, top, width, height)
 		{
 			_image = image;
 			_isScaled = Default.IsScaled;
@@ -179,7 +188,7 @@ namespace ZedGraph
 		/// The Copy Constructor
 		/// </summary>
 		/// <param name="rhs">The <see cref="ImageObj"/> object from which to copy</param>
-		public ImageObj( ImageObj rhs ) : base( rhs )
+		public ImageObj(ImageObj rhs) : base(rhs)
 		{
 			_image = rhs._image;
 			_isScaled = rhs.IsScaled;
@@ -201,11 +210,13 @@ namespace ZedGraph
 		/// <returns>A new, independent copy of this class</returns>
 		public ImageObj Clone()
 		{
-			return new ImageObj( this );
+			return new ImageObj(this);
 		}
-	#endregion
 
-	#region Serialization
+		#endregion
+
+		#region Serialization
+
 		/// <summary>
 		/// Current schema value that defines the version of the serialized file
 		/// </summary>
@@ -218,31 +229,34 @@ namespace ZedGraph
 		/// </param>
 		/// <param name="context">A <see cref="StreamingContext"/> instance that contains the serialized data
 		/// </param>
-		protected ImageObj( SerializationInfo info, StreamingContext context ) : base( info, context )
+		protected ImageObj(SerializationInfo info, StreamingContext context) : base(info, context)
 		{
 			// The schema value is just a file version parameter.  You can use it to make future versions
 			// backwards compatible as new member variables are added to classes
-			int sch = info.GetInt32( "schema2" );
+			int sch = info.GetInt32("schema2");
 
-			_image = (Image) info.GetValue( "image", typeof(Image) );
-			_isScaled = info.GetBoolean( "isScaled" );
+			_image = (Image) info.GetValue("image", typeof (Image));
+			_isScaled = info.GetBoolean("isScaled");
 		}
+
 		/// <summary>
 		/// Populates a <see cref="SerializationInfo"/> instance with the data needed to serialize the target object
 		/// </summary>
 		/// <param name="info">A <see cref="SerializationInfo"/> instance that defines the serialized data</param>
 		/// <param name="context">A <see cref="StreamingContext"/> instance that contains the serialized data</param>
-		[SecurityPermissionAttribute(SecurityAction.Demand,SerializationFormatter=true)]
-		public override void GetObjectData( SerializationInfo info, StreamingContext context )
+		[SecurityPermissionAttribute(SecurityAction.Demand, SerializationFormatter = true)]
+		public override void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
-			base.GetObjectData( info, context );
-			info.AddValue( "schema2", schema2 );
-			info.AddValue( "image", _image );
-			info.AddValue( "isScaled", _isScaled );
+			base.GetObjectData(info, context);
+			info.AddValue("schema2", schema2);
+			info.AddValue("image", _image);
+			info.AddValue("isScaled", _isScaled);
 		}
-	#endregion
-	
-	#region Rendering Methods
+
+		#endregion
+
+		#region Rendering Methods
+
 		/// <summary>
 		/// Render this object to the specified <see cref="Graphics"/> device
 		/// This method is normally only called by the Draw method
@@ -262,28 +276,25 @@ namespace ZedGraph
 		/// <see cref="PaneBase.CalcScaleFactor"/> method, and is used to proportionally adjust
 		/// font sizes, etc. according to the actual size of the graph.
 		/// </param>
-		override public void Draw( Graphics g, PaneBase pane, float scaleFactor )
+		public override void Draw(Graphics g, PaneBase pane, float scaleFactor)
 		{
-			if ( _image != null )
-			{
+			if (_image != null) {
 				// Convert the rectangle coordinates from the user coordinate system
 				// to the screen coordinate system
-				RectangleF tmpRect = _location.TransformRect( pane );
+				RectangleF tmpRect = _location.TransformRect(pane);
 
-				if ( _isScaled )
-					g.DrawImage( _image, tmpRect );
-				else
-				{
+				if (_isScaled)
+					g.DrawImage(_image, tmpRect);
+				else {
 					Region clip = g.Clip;
-					g.SetClip( tmpRect );
-					g.DrawImageUnscaled( _image, Rectangle.Round( tmpRect ) );
-					g.SetClip( clip, CombineMode.Replace );
+					g.SetClip(tmpRect);
+					g.DrawImageUnscaled(_image, Rectangle.Round(tmpRect));
+					g.SetClip(clip, CombineMode.Replace);
 					//g.DrawImageUnscaledAndClipped( image, Rectangle.Round( tmpRect ) );
 				}
 			}
-
 		}
-		
+
 		/// <summary>
 		/// Determine if the specified screen point lies inside the bounding box of this
 		/// <see cref="ArrowObj"/>.  The bounding box is calculated assuming a distance
@@ -305,18 +316,17 @@ namespace ZedGraph
 		/// font sizes, etc. according to the actual size of the graph.
 		/// </param>
 		/// <returns>true if the point lies in the bounding box, false otherwise</returns>
-		override public bool PointInBox( PointF pt, PaneBase pane, Graphics g, float scaleFactor )
+		public override bool PointInBox(PointF pt, PaneBase pane, Graphics g, float scaleFactor)
 		{
-			if ( _image != null )
-			{
-				if ( ! base.PointInBox(pt, pane, g, scaleFactor ) )
+			if (_image != null) {
+				if (! base.PointInBox(pt, pane, g, scaleFactor))
 					return false;
 
 				// transform the x,y location from the user-defined
 				// coordinate frame to the screen pixel location
-				RectangleF tmpRect = _location.TransformRect( pane );
+				RectangleF tmpRect = _location.TransformRect(pane);
 
-				return tmpRect.Contains( pt );
+				return tmpRect.Contains(pt);
 			}
 			else
 				return false;
@@ -325,18 +335,18 @@ namespace ZedGraph
 		/// <summary>
 		/// Determines the shape type and Coords values for this GraphObj
 		/// </summary>
-		override public void GetCoords( PaneBase pane, Graphics g, float scaleFactor,
-				out string shape, out string coords )
+		public override void GetCoords(PaneBase pane, Graphics g, float scaleFactor,
+		                               out string shape, out string coords)
 		{
 			// transform the x,y location from the user-defined
 			// coordinate frame to the screen pixel location
-			RectangleF pixRect = _location.TransformRect( pane );
+			RectangleF pixRect = _location.TransformRect(pane);
 
 			shape = "rect";
-			coords = String.Format( "{0:f0},{1:f0},{2:f0},{3:f0}",
-						pixRect.Left, pixRect.Top, pixRect.Right, pixRect.Bottom );
+			coords = String.Format("{0:f0},{1:f0},{2:f0},{3:f0}",
+			                       pixRect.Left, pixRect.Top, pixRect.Right, pixRect.Bottom);
 		}
 
-	#endregion
+		#endregion
 	}
 }

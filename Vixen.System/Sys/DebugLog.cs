@@ -3,17 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Vixen.Sys {
-	class DebugLog : Log {
+namespace Vixen.Sys
+{
+	internal class DebugLog : Log
+	{
 		public DebugLog()
-			: base("Debug") {
+			: base("Debug")
+		{
 		}
 
-		public override void Write(Exception ex) {
+		public override void Write(Exception ex)
+		{
 			base.Write(ex.ToString());
 		}
 
-		public override void Write(string qualifyingMessage, Exception ex) {
+		public override void Write(string qualifyingMessage, Exception ex)
+		{
 			base.Write(ex.ToString());
 		}
 	}

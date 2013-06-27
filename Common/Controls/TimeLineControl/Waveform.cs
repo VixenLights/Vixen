@@ -13,29 +13,28 @@ namespace Common.Controls.Timeline
 	/// <summary>
 	/// Waveform visualizer class
 	/// </summary>
-	[System.ComponentModel.DesignerCategory("")]    // Prevent this from showing up in designer.
+	[System.ComponentModel.DesignerCategory("")] // Prevent this from showing up in designer.
 	public sealed class Waveform : TimelineControlBase
 	{
 		private double samplesPerPixel;
 		private SampleAggregator samples = new SampleAggregator();
 		private Audio audio;
 		private BackgroundWorker bw;
+
 		/// <summary>
 		/// Creates a waveform view of the <code>Audio</code> that is associated scaled to the timeinfo.
 		/// </summary>
 		/// <param name="timeinfo"></param>
 		public Waveform(TimeInfo timeinfo)
-			:base(timeinfo)
+			: base(timeinfo)
 		{
 			BackColor = Color.Gray;
 			Visible = false;
-			
 		}
 
 		private void CreateWorker()
 		{
-			if (bw != null)
-			{
+			if (bw != null) {
 				bw.DoWork -= new DoWorkEventHandler(bw_createScaleSamples);
 				bw.RunWorkerCompleted -= new RunWorkerCompletedEventHandler(bw_RunWorkerCompleted);
 			}
@@ -50,19 +49,18 @@ namespace Common.Controls.Timeline
 		private void bw_createScaleSamples(object sender, DoWorkEventArgs args)
 		{
 			BackgroundWorker worker = sender as BackgroundWorker;
-			if (audio == null) { return; }
-			if (!audio.MediaLoaded)
-			{
+			if (audio == null) {
+				return;
+			}
+			if (!audio.MediaLoaded) {
 				audio.LoadMedia(TimeSpan.MinValue);
 			}
-			samplesPerPixel = (double)pixelsToTime(1).Ticks / TimeSpan.TicksPerMillisecond * audio.Frequency / 1000;
+			samplesPerPixel = (double) pixelsToTime(1).Ticks/TimeSpan.TicksPerMillisecond*audio.Frequency/1000;
 			int step = audio.BytesPerSample;
 			samples.Clear();
 			double samplesRead = 0;
-			while (samplesRead < audio.NumberSamples)
-			{
-				if ((worker.CancellationPending == true))
-				{
+			while (samplesRead < audio.NumberSamples) {
+				if ((worker.CancellationPending == true)) {
 					args.Cancel = true;
 					break;
 				}
@@ -72,76 +70,62 @@ namespace Common.Controls.Timeline
 				//the counter tries to maintian some sanity. A few random samples might be off at some zoom levels,
 				//but we are doing a fair amount of averaging to begin with. The farther in the zoom the more chances 
 				//a artifact might be visible.
-				byte[] waveData = audio.GetSamples((int)samplesRead, (int)samplesPerPixel);
+				byte[] waveData = audio.GetSamples((int) samplesRead, (int) samplesPerPixel);
 				samplesRead += samplesPerPixel;
 				if (waveData == null)
 					break;
 
-				for (int n = 0; n < waveData.Length; n += step)
-				{
+				for (int n = 0; n < waveData.Length; n += step) {
 					//Allow for 16 or 32 bit data. Should be 16 most of the time.
 					int sample = step == 2 ? BitConverter.ToInt16(waveData, n) : BitConverter.ToInt32(waveData, n);
 
 					if (sample < low) low = sample;
 					if (sample > high) high = sample;
 				}
-				samples.Add(new SampleAggregator.Sample { High = high, Low = low });
-
+				samples.Add(new SampleAggregator.Sample {High = high, Low = low});
 			}
 		}
 
 		private void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
 		{
 			//invalidate the control after the samples are created
-			this.Invalidate();	
+			this.Invalidate();
 		}
-		
-		 
+
 
 		/// <summary>
 		/// sets the associated audio module to produce a waveform on
 		/// </summary>
 		public Audio Audio
 		{
-			set
-			{
-				SetAudio(value);
-				 
-			}
+			set { SetAudio(value); }
 
 			get { return audio; }
 		}
 
-		delegate void SetAudioDelegate(VixenModules.Media.Audio.Audio value);
-		
-        private void SetAudio(VixenModules.Media.Audio.Audio value)
+		private delegate void SetAudioDelegate(VixenModules.Media.Audio.Audio value);
+
+		private void SetAudio(VixenModules.Media.Audio.Audio value)
 		{
 			if (this.InvokeRequired)
 				this.Invoke(new SetAudioDelegate(SetAudio), value);
-			else
-			{
+			else {
 				//Clean up any existing audio. 
-				if (audio != null)
-				{
+				if (audio != null) {
 					audio.Dispose();
 				}
 				audio = value;
-				if (audio != null)
-				{
-					if (bw != null && bw.IsBusy)
-					{
+				if (audio != null) {
+					if (bw != null && bw.IsBusy) {
 						bw.CancelAsync();
 					}
 					CreateWorker();
 					bw.RunWorkerAsync();
 					Visible = true;
 					// Make us visible if we have audio to display.
-
 				}
-				else
-				{
+				else {
 					Visible = false;
-
 				}
 
 				this.Invalidate();
@@ -160,12 +144,11 @@ namespace Common.Controls.Timeline
 
 		protected override void OnTimePerPixelChanged(object sender, EventArgs e)
 		{
-			if (bw != null && bw.IsBusy)
-			{
+			if (bw != null && bw.IsBusy) {
 				bw.CancelAsync();
 			}
 			base.OnTimePerPixelChanged(sender, e);
-			
+
 			CreateWorker();
 			bw.RunWorkerAsync();
 		}
@@ -177,30 +160,29 @@ namespace Common.Controls.Timeline
 
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			if (samples.Count > 0 && !bw.IsBusy)
-			{
+			if (samples.Count > 0 && !bw.IsBusy) {
 				e.Graphics.TranslateTransform(-timeToPixels(VisibleTimeStart), 0);
 				float maxSample = Math.Max(Math.Abs(samples.Low), samples.High);
-				int workingHeight = Height - (int)(Height * .1); //Leave a little margin
-				float factor = (float)(workingHeight) / maxSample;
+				int workingHeight = Height - (int) (Height*.1); //Leave a little margin
+				float factor = (float) (workingHeight)/maxSample;
 
-				float maxValue = 2 * maxSample * factor;
-				float minValue = -maxSample * factor;
-				int start = (int)timeToPixels(VisibleTimeStart);
-				int end = (int)timeToPixels(VisibleTimeEnd);
+				float maxValue = 2*maxSample*factor;
+				float minValue = -maxSample*factor;
+				int start = (int) timeToPixels(VisibleTimeStart);
+				int end = (int) timeToPixels(VisibleTimeEnd);
 
-				for (int x = start; x < end; x += 1)
-				{
-					float lowPercent = ((((float)samples[x].Low * factor) - minValue) / maxValue);
-					float highPercent = ((((float)samples[x].High * factor) - minValue) / maxValue);
-					e.Graphics.DrawLine(Pens.Black, x, workingHeight * lowPercent, x, workingHeight * highPercent);
+				for (int x = start; x < end; x += 1) {
+					float lowPercent = ((((float) samples[x].Low*factor) - minValue)/maxValue);
+					float highPercent = ((((float) samples[x].High*factor) - minValue)/maxValue);
+					e.Graphics.DrawLine(Pens.Black, x, workingHeight*lowPercent, x, workingHeight*highPercent);
 				}
 			}
-			else
-			{
-				using (Font f = new Font(this.Font.FontFamily, 10f, FontStyle.Regular))
-				{
-					e.Graphics.DrawString("Building waveform.....", f, Brushes.Black, new Point((int)timeToPixels(VisibleTimeStart) + 15, (int)(Height - f.GetHeight(e.Graphics)) / 2 ), new StringFormat { Alignment = StringAlignment.Near });
+			else {
+				using (Font f = new Font(this.Font.FontFamily, 10f, FontStyle.Regular)) {
+					e.Graphics.DrawString("Building waveform.....", f, Brushes.Black,
+					                      new Point((int) timeToPixels(VisibleTimeStart) + 15,
+					                                (int) (Height - f.GetHeight(e.Graphics))/2),
+					                      new StringFormat {Alignment = StringAlignment.Near});
 				}
 			}
 
@@ -210,6 +192,7 @@ namespace Common.Controls.Timeline
 		private class SampleAggregator : IList<SampleAggregator.Sample>
 		{
 			private readonly List<Sample> samples = new List<Sample>();
+
 			public struct Sample
 			{
 				public int Low;
@@ -224,12 +207,10 @@ namespace Common.Controls.Timeline
 			public void Add(Sample sample)
 			{
 				samples.Add(sample);
-				if (sample.Low < Low)
-				{
+				if (sample.Low < Low) {
 					Low = sample.Low;
 				}
-				if (sample.High > High)
-				{
+				if (sample.High > High) {
 					High = sample.High;
 				}
 			}

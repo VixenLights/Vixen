@@ -4,18 +4,22 @@ using System.Linq;
 using System.Text;
 using System.Runtime.Serialization;
 
-namespace Vixen.Module.Trigger {
+namespace Vixen.Module.Trigger
+{
 	[DataContract]
-	public class AnalogTriggerInput : TriggerInput {
+	public class AnalogTriggerInput : TriggerInput
+	{
 		private double _value;
 		private bool _wasTriggered = false;
 
 		public AnalogTriggerInput(Guid id)
-			: base(TriggerInputType.Analog, id) {
+			: base(TriggerInputType.Analog, id)
+		{
 		}
 
 		public AnalogTriggerInput()
-			: base(TriggerInputType.Analog) {
+			: base(TriggerInputType.Analog)
+		{
 			// Required for serialization.
 		}
 
@@ -31,28 +35,33 @@ namespace Vixen.Module.Trigger {
 		[DataMember]
 		public double RangeHigh { get; set; }
 
-		public override double Value {
+		public override double Value
+		{
 			get { return _value; }
-			set {
-				if(_value != value) {
+			set
+			{
+				if (_value != value) {
 					_value = value;
 					// Only trigger if going from the untriggered to the
 					// triggered state.
-					if(_IsTriggered) {
-						if(!_wasTriggered) {
+					if (_IsTriggered) {
+						if (!_wasTriggered) {
 							OnTriggered(EventArgs.Empty);
 							_wasTriggered = true;
 						}
-					} else {
+					}
+					else {
 						_wasTriggered = false;
 					}
 				}
 			}
 		}
 
-		private bool _IsTriggered {
-			get {
-				switch(TriggerCondition) {
+		private bool _IsTriggered
+		{
+			get
+			{
+				switch (TriggerCondition) {
 					case AnalogInputTriggerCondition.ExceedsThreshold:
 						return _value >= ThresholdValue;
 					case AnalogInputTriggerCondition.SubcedesThreshold:
@@ -61,7 +70,8 @@ namespace Vixen.Module.Trigger {
 						return (_value >= RangeLow) && (_value <= RangeHigh);
 					case AnalogInputTriggerCondition.WithoutRange:
 						return (_value < RangeLow) || (_value > RangeHigh);
-				};
+				}
+				;
 				return false;
 			}
 		}

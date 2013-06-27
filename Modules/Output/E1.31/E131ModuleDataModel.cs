@@ -1,18 +1,17 @@
 namespace VixenModules.Output.E131
 {
-    using System.Runtime.Serialization;
+	using System.Runtime.Serialization;
+	using Vixen.Module;
 
-    using Vixen.Module;
+	[DataContract]
+	public class E131ModuleDataModel : ModuleDataModelBase
+	{
+		[DataMember]
+		public int OutputCount { get; set; }
 
-    [DataContract]
-    public class E131ModuleDataModel : ModuleDataModelBase
-    {
-        [DataMember]
-        public int OutputCount { get; set; }
-
-        public override IModuleDataModel Clone()
-        {
-            return new E131ModuleDataModel { OutputCount = OutputCount };
-        }
-    }
+		public override IModuleDataModel Clone()
+		{
+			return new E131ModuleDataModel {OutputCount = OutputCount};
+		}
+	}
 }

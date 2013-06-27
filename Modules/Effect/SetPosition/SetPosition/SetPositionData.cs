@@ -1,11 +1,14 @@
 ﻿using System.Runtime.Serialization;
 using Vixen.Module;
 
-namespace VixenModules.Effect.SetPosition {
+namespace VixenModules.Effect.SetPosition
+{
 	[DataContract]
-	public class SetPositionData : ModuleDataModelBase {
-		public override IModuleDataModel Clone() {
-			return (SetPositionData)MemberwiseClone();
+	public class SetPositionData : ModuleDataModelBase
+	{
+		public override IModuleDataModel Clone()
+		{
+			return (SetPositionData) MemberwiseClone();
 		}
 
 		[DataMember]

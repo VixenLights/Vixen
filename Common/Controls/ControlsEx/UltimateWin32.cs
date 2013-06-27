@@ -10,7 +10,9 @@ namespace Common.Controls.ControlsEx
 		private Win32()
 		{
 		}
+
 		#region functions
+
 		[DllImport("user32.dll", CharSet = CharSet.Ansi, SetLastError = true, ExactSpelling = true)]
 		public static extern int CallNextHookEx(IntPtr hookHandle, int code, IntPtr wparam, ref CWPSTRUCT cwp);
 
@@ -25,18 +27,20 @@ namespace Common.Controls.ControlsEx
 
 		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
 		public static extern int ScrollWindowEx(HandleRef hWnd,
-			int nXAmount, int nYAmount,
-			COMRECT rectScrollRegion, ref RECT rectClip,
-			HandleRef hrgnUpdate, ref RECT prcUpdate, int flags);
+		                                        int nXAmount, int nYAmount,
+		                                        COMRECT rectScrollRegion, ref RECT rectClip,
+		                                        HandleRef hrgnUpdate, ref RECT prcUpdate, int flags);
 
 		[DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
 		public static extern bool GetScrollInfo(HandleRef hWnd, int fnBar, SCROLLINFO si);
 
-		[DllImport("user32.dll", EntryPoint = "GetClassNameA", CharSet = CharSet.Ansi, SetLastError = true, ExactSpelling = true)]
+		[DllImport("user32.dll", EntryPoint = "GetClassNameA", CharSet = CharSet.Ansi, SetLastError = true,
+			ExactSpelling = true)]
 		public static extern int GetClassName(IntPtr hwnd, StringBuilder className, int maxCount);
 
 		[DllImport("kernel32.dll", EntryPoint = "GetPrivateProfileStringA")]
-		public static extern int GetPrivateProfileString(string lpApplicationName, string lpKeyName, string lpDefault, StringBuilder lpReturnedString, int nSize, string lpFileName);
+		public static extern int GetPrivateProfileString(string lpApplicationName, string lpKeyName, string lpDefault,
+		                                                 StringBuilder lpReturnedString, int nSize, string lpFileName);
 
 		[DllImport("user32", CharSet = CharSet.Ansi, SetLastError = true, ExactSpelling = true)]
 		public static extern IntPtr GetWindowDC(IntPtr hwnd);
@@ -65,32 +69,39 @@ namespace Common.Controls.ControlsEx
 		[DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
 		public static extern int SetScrollInfo(HandleRef hWnd, int fnBar, [In, Out] SCROLLINFO si, bool redraw);
 
-		[DllImport("user32.dll", EntryPoint = "SetWindowsHookExA", CharSet = CharSet.Ansi, SetLastError = true, ExactSpelling = true)]
+		[DllImport("user32.dll", EntryPoint = "SetWindowsHookExA", CharSet = CharSet.Ansi, SetLastError = true,
+			ExactSpelling = true)]
 		public static extern IntPtr SetWindowsHookEx(int type, CallWndProc hook, IntPtr instance, int threadID);
 
 		[DllImport("user32.dll", CharSet = CharSet.Ansi, SetLastError = true, ExactSpelling = true)]
 		public static extern bool UnhookWindowsHookEx(IntPtr hookHandle);
 
 		[DllImport("kernel32.dll", EntryPoint = "WritePrivateProfileStringA")]
-		public static extern int WritePrivateProfileString(string lpApplicationName, string lpKeyName, string lpString, string lpFileName);
-
+		public static extern int WritePrivateProfileString(string lpApplicationName, string lpKeyName, string lpString,
+		                                                   string lpFileName);
 
 
 		//open theme
 		[DllImport("uxtheme.dll")]
 		private static extern IntPtr OpenThemeData(IntPtr hWnd, [MarshalAs(UnmanagedType.LPTStr)] string classList);
+
 		//close theme
 		[DllImport("uxtheme.dll")]
 		private static extern void CloseThemeData(IntPtr hTheme);
+
 		//fill rectangle with theme
 		[DllImport("uxtheme.dll")]
-		private static extern void DrawThemeBackground(IntPtr hTheme, IntPtr hDC, int partId, int stateId, ref RECT rect, ref RECT clipRect);
+		private static extern void DrawThemeBackground(IntPtr hTheme, IntPtr hDC, int partId, int stateId, ref RECT rect,
+		                                               ref RECT clipRect);
+
 		//get theme color
 		[DllImport("uxtheme.dll")]
 		public static extern int GetThemeColor(IntPtr hTheme, int iPartId, int iStateId, int iPropId, ref int pColor);
+
 		#endregion
 
 		#region constants
+
 		public const int DCX_WINDOW = 0x1;
 		public const int DCX_USESTYLE = 0x10000;
 		public const int DCX_INTERSECTRGN = 0x80;
@@ -136,8 +147,11 @@ namespace Common.Controls.ControlsEx
 		public const int WVR_HREDRAW = 0x100;
 		public const int WVR_REDRAW = (WVR_HREDRAW | WVR_VREDRAW);
 		public const int WVR_VREDRAW = 0x200;
+
 		#endregion
+
 		#region types
+
 		[StructLayout(LayoutKind.Sequential)]
 		public class COMRECT
 		{
@@ -145,6 +159,7 @@ namespace Common.Controls.ControlsEx
 			public int Top;
 			public int Right;
 			public int Bottom;
+
 			public COMRECT(int x, int y, int width, int height)
 			{
 				this.Left = x;
@@ -153,6 +168,7 @@ namespace Common.Controls.ControlsEx
 				this.Bottom = y + height;
 			}
 		}
+
 		[StructLayout(LayoutKind.Sequential)]
 		public struct CWPSTRUCT
 		{
@@ -161,6 +177,7 @@ namespace Common.Controls.ControlsEx
 			public int message;
 			public IntPtr hwnd;
 		}
+
 		[StructLayout(LayoutKind.Sequential)]
 		public struct NCCALCSIZE_PARAMS
 		{
@@ -169,6 +186,7 @@ namespace Common.Controls.ControlsEx
 			public RECT oldclientbounds;
 			public IntPtr lppos;
 		}
+
 		[StructLayout(LayoutKind.Sequential)]
 		public struct POINTAPI
 		{
@@ -177,13 +195,16 @@ namespace Common.Controls.ControlsEx
 				this.x = pt.X;
 				this.y = pt.Y;
 			}
+
 			internal int x;
 			internal int y;
+
 			public static implicit operator Point(POINTAPI pt)
 			{
 				return new Point(pt.x, pt.y);
 			}
 		}
+
 		[StructLayout(LayoutKind.Sequential)]
 		public struct RECT
 		{
@@ -199,49 +220,70 @@ namespace Common.Controls.ControlsEx
 				this.Right = x + width;
 				this.Bottom = y + height;
 			}
+
 			public void Inflate(int width, int height)
 			{
-				this.Left -= width; this.Right += width;
-				this.Top -= height; this.Bottom += height;
+				this.Left -= width;
+				this.Right += width;
+				this.Top -= height;
+				this.Bottom += height;
 			}
+
 			public void Offset(int x, int y)
 			{
-				this.Left += x; this.Right += x;
-				this.Top += y; this.Bottom += y;
+				this.Left += x;
+				this.Right += x;
+				this.Top += y;
+				this.Bottom += y;
 			}
+
 			#region operators
+
 			public static implicit operator Rectangle(RECT rct)
 			{
 				return Rectangle.FromLTRB(rct.Left, rct.Top, rct.Right, rct.Bottom);
 			}
+
 			public static implicit operator RECT(Rectangle rct)
 			{
 				return new RECT(rct.X, rct.Y, rct.Width, rct.Height);
 			}
+
 			public static bool operator ==(RECT r1, RECT r2)
 			{
 				return r1.Left == r2.Left && r1.Top == r2.Top &&
-					r1.Right == r2.Right && r1.Bottom == r2.Bottom;
+				       r1.Right == r2.Right && r1.Bottom == r2.Bottom;
 			}
+
 			public static bool operator !=(RECT r1, RECT r2)
 			{
 				return !(r1 == r2);
 			}
+
 			public override bool Equals(object obj)
 			{
-				return ((RECT)obj) == this;
+				return ((RECT) obj) == this;
 			}
+
 			public override int GetHashCode()
 			{
 				return Left << 24 | Right << 16 | Top << 8 | Bottom;
 			}
+
 			#endregion
+
 			#region properties
+
 			public Size Size
 			{
 				get { return new Size(this.Width, this.Height); }
-				set { this.Width = value.Width; this.Height = value.Height; }
+				set
+				{
+					this.Width = value.Width;
+					this.Height = value.Height;
+				}
 			}
+
 			/// <summary>
 			/// width of rectangle
 			/// </summary>
@@ -250,6 +292,7 @@ namespace Common.Controls.ControlsEx
 				get { return Right - Left; }
 				set { Right = Left + value; }
 			}
+
 			/// <summary>
 			/// height of rectangle
 			/// </summary>
@@ -258,8 +301,10 @@ namespace Common.Controls.ControlsEx
 				get { return Bottom - Top; }
 				set { Bottom = Top + value; }
 			}
+
 			#endregion
 		}
+
 		[StructLayout(LayoutKind.Sequential)]
 		public class SCROLLINFO
 		{
@@ -270,14 +315,15 @@ namespace Common.Controls.ControlsEx
 			public int nPage;
 			public int nPos;
 			public int nTrackPos;
+
 			public SCROLLINFO()
 			{
-				this.cbSize = Marshal.SizeOf(typeof(SCROLLINFO));
+				this.cbSize = Marshal.SizeOf(typeof (SCROLLINFO));
 			}
 
 			public SCROLLINFO(int mask, int min, int max, int page, int pos)
 			{
-				this.cbSize = Marshal.SizeOf(typeof(SCROLLINFO));
+				this.cbSize = Marshal.SizeOf(typeof (SCROLLINFO));
 				this.fMask = mask;
 				this.nMin = min;
 				this.nMax = max;
@@ -285,6 +331,7 @@ namespace Common.Controls.ControlsEx
 				this.nPos = pos;
 			}
 		}
+
 		[StructLayout(LayoutKind.Sequential)]
 		public struct WINDOWPOS
 		{
@@ -296,8 +343,11 @@ namespace Common.Controls.ControlsEx
 			internal int cy;
 			internal int flags;
 		}
+
 		#endregion
+
 		#region user functions
+
 		/// <summary>
 		/// maps the given point on the given graphics to the screen
 		/// </summary>
@@ -306,14 +356,14 @@ namespace Common.Controls.ControlsEx
 			if (gr == null) return Point.Empty;
 			IntPtr hdc = gr.GetHdc();
 			POINTAPI org;
-			if (GetDCOrgEx(hdc, out org) != 0)
-			{
+			if (GetDCOrgEx(hdc, out org) != 0) {
 				pt.X += org.x;
 				pt.Y += org.y;
 			}
 			gr.ReleaseHdc(hdc);
 			return pt;
 		}
+
 		/// <summary>
 		/// maps the given point to the specified graphics
 		/// </summary>
@@ -322,50 +372,71 @@ namespace Common.Controls.ControlsEx
 			if (gr == null) return Point.Empty;
 			IntPtr hdc = gr.GetHdc();
 			POINTAPI org;
-			if (GetDCOrgEx(hdc, out org) != 0)
-			{
+			if (GetDCOrgEx(hdc, out org) != 0) {
 				pt.X -= org.x;
 				pt.Y -= org.y;
 			}
 			gr.ReleaseHdc(hdc);
 			return pt;
 		}
+
 		/// <summary>
 		/// opens a winxp theme for drawing into a dc
 		/// </summary>
 		public static IntPtr OpenThemeData2(IntPtr hWnd, [MarshalAs(UnmanagedType.LPTStr)] string classList)
 		{
-			try { return OpenThemeData(hWnd, classList); }
-			catch { return IntPtr.Zero; }
+			try {
+				return OpenThemeData(hWnd, classList);
+			}
+			catch {
+				return IntPtr.Zero;
+			}
 		}
+
 		/// <summary>
 		/// closes the specified theme
 		/// </summary>
 		public static void CloseThemeData2(IntPtr hTheme)
 		{
-			try { CloseThemeData(hTheme); }
-			catch { return; }
+			try {
+				CloseThemeData(hTheme);
+			}
+			catch {
+				return;
+			}
 		}
+
 		/// <summary>
 		/// fills a rectangle with the specified theme
 		/// </summary>
 		public static void DrawThemeBackground2(IntPtr hTheme, IntPtr hDC, int partId, int stateId, ref RECT rect)
 		{
-			try { DrawThemeBackground(hTheme, hDC, partId, stateId, ref rect, ref rect); }
-			catch { return; }
+			try {
+				DrawThemeBackground(hTheme, hDC, partId, stateId, ref rect, ref rect);
+			}
+			catch {
+				return;
+			}
 		}
+
 		#endregion
+
 		#region user types
+
 		/// <summary>
 		/// Double Buffered Graphics class
 		/// </summary>
 		public class NCGraphics : IDisposable
 		{
 			#region variables
+
 			private Graphics _targetgraphics,
-				_memgraphics;
+			                 _memgraphics;
+
 			private Bitmap _membitmap;
+
 			#endregion
+
 			public NCGraphics(IntPtr hdc)
 			{
 				this._targetgraphics = Graphics.FromHdc(hdc);
@@ -373,6 +444,7 @@ namespace Common.Controls.ControlsEx
 				this._membitmap = new Bitmap(size.Width, size.Height);
 				this._memgraphics = Graphics.FromImage(this._membitmap);
 			}
+
 			public void Dispose()
 			{
 				//render
@@ -382,6 +454,7 @@ namespace Common.Controls.ControlsEx
 				this._membitmap.Dispose();
 				this._targetgraphics.Dispose();
 			}
+
 			/// <summary>
 			/// gets the graphics buffer to render on
 			/// </summary>
@@ -390,9 +463,13 @@ namespace Common.Controls.ControlsEx
 				get { return this._memgraphics; }
 			}
 		}
+
 		#endregion
+
 		#region delegates
+
 		public delegate int CallWndProc(int code, IntPtr wparam, ref CWPSTRUCT cwp);
+
 		#endregion
 	}
 }

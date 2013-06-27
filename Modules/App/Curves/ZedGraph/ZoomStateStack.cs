@@ -46,11 +46,10 @@ namespace ZedGraph
 		/// The Copy Constructor
 		/// </summary>
 		/// <param name="rhs">The <see cref="ZoomStateStack"/> object from which to copy</param>
-		public ZoomStateStack( ZoomStateStack rhs )
+		public ZoomStateStack(ZoomStateStack rhs)
 		{
-			foreach ( ZoomState state in rhs )
-			{
-				Add( new ZoomState( state ) );
+			foreach (ZoomState state in rhs) {
+				Add(new ZoomState(state));
 			}
 		}
 
@@ -70,7 +69,7 @@ namespace ZedGraph
 		/// <returns>A new, independent copy of this class</returns>
 		public ZoomStateStack Clone()
 		{
-			return new ZoomStateStack( this );
+			return new ZoomStateStack(this);
 		}
 
 
@@ -92,10 +91,10 @@ namespace ZedGraph
 		/// <param name="type">A <see cref="ZoomState.StateType"/> enumeration that indicates whether this
 		/// state is the result of a zoom or pan operation.</param>
 		/// <returns>The resultant <see cref="ZoomState"/> object that was pushed on the stack.</returns>
-		public ZoomState Push( GraphPane pane, ZoomState.StateType type )
+		public ZoomState Push(GraphPane pane, ZoomState.StateType type)
 		{
-			ZoomState state = new ZoomState( pane, type );
-			this.Add( state );
+			ZoomState state = new ZoomState(pane, type);
+			this.Add(state);
 			return state;
 		}
 
@@ -106,9 +105,9 @@ namespace ZedGraph
 		/// <param name="state">The <see cref="ZoomState"/> object to be placed on the stack.</param>
 		/// <returns>The <see cref="ZoomState"/> object (same as the <see paramref="state"/>
 		/// parameter).</returns>
-		public ZoomState Push( ZoomState state )
+		public ZoomState Push(ZoomState state)
 		{
-			this.Add( state );
+			this.Add(state);
 			return state;
 		}
 
@@ -121,14 +120,13 @@ namespace ZedGraph
 		/// <returns>The <see cref="ZoomState"/> object that was "popped" from the stack and applied
 		/// to the specified <see cref="GraphPane"/>.  null if no <see cref="ZoomState"/> was
 		/// available (the stack was empty).</returns>
-		public ZoomState Pop( GraphPane pane )
+		public ZoomState Pop(GraphPane pane)
 		{
-			if ( !this.IsEmpty )
-			{
-				ZoomState state = (ZoomState) this[ this.Count - 1 ];
-				this.RemoveAt( this.Count - 1 );
+			if (!this.IsEmpty) {
+				ZoomState state = (ZoomState) this[this.Count - 1];
+				this.RemoveAt(this.Count - 1);
 
-				state.ApplyState( pane );
+				state.ApplyState(pane);
 				return state;
 			}
 			else
@@ -144,14 +142,13 @@ namespace ZedGraph
 		/// <returns>The <see cref="ZoomState"/> object at the bottom of the stack that was applied
 		/// to the specified <see cref="GraphPane"/>.  null if no <see cref="ZoomState"/> was
 		/// available (the stack was empty).</returns>
-		public ZoomState PopAll( GraphPane pane )
+		public ZoomState PopAll(GraphPane pane)
 		{
-			if ( !this.IsEmpty )
-			{
-				ZoomState state = (ZoomState) this[ 0 ];
+			if (!this.IsEmpty) {
+				ZoomState state = (ZoomState) this[0];
 				this.Clear();
 
-				state.ApplyState( pane );
+				state.ApplyState(pane);
 
 				return state;
 			}
@@ -168,8 +165,8 @@ namespace ZedGraph
 		{
 			get
 			{
-				if ( !this.IsEmpty )
-					return (ZoomState) this[ this.Count - 1 ];
+				if (!this.IsEmpty)
+					return (ZoomState) this[this.Count - 1];
 				else
 					return null;
 			}

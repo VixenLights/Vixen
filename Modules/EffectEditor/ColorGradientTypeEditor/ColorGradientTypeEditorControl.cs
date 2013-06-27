@@ -17,7 +17,7 @@ namespace VixenModules.EffectEditor.ColorGradientTypeEditor
 	public partial class ColorGradientTypeEditorControl : UserControl, IEffectEditorControl
 	{
 		private bool _discreteColors;
-		private IEnumerable<Color> _validDiscreteColors; 
+		private IEnumerable<Color> _validDiscreteColors;
 
 		public ColorGradientTypeEditorControl()
 		{
@@ -27,6 +27,7 @@ namespace VixenModules.EffectEditor.ColorGradientTypeEditor
 		}
 
 		private IEffect _targetEffect;
+
 		public IEffect TargetEffect
 		{
 			get { return _targetEffect; }
@@ -50,8 +51,7 @@ namespace VixenModules.EffectEditor.ColorGradientTypeEditor
 		private HashSet<Color> GetValidColorsForElementNode(ElementNode elementNode)
 		{
 			HashSet<Color> validColors = new HashSet<Color>();
-			switch (ColorModule.getColorTypeForElementNode(elementNode))
-			{
+			switch (ColorModule.getColorTypeForElementNode(elementNode)) {
 				case ElementColorType.FullColor:
 					break;
 
@@ -63,8 +63,7 @@ namespace VixenModules.EffectEditor.ColorGradientTypeEditor
 			}
 
 			//recurse the children
-			if (elementNode.Children.Any())
-			{
+			if (elementNode.Children.Any()) {
 				validColors.AddRange(elementNode.Children.SelectMany(x => GetValidColorsForElementNode(x)));
 			}
 
@@ -73,15 +72,16 @@ namespace VixenModules.EffectEditor.ColorGradientTypeEditor
 
 		public object[] EffectParameterValues
 		{
-			get { return new object[] { ColorGradientValue }; }
+			get { return new object[] {ColorGradientValue}; }
 			set
 			{
 				if (value.Length >= 1)
-					ColorGradientValue = (ColorGradient)value[0];
+					ColorGradientValue = (ColorGradient) value[0];
 			}
 		}
 
 		private ColorGradient _gradient;
+
 		public ColorGradient ColorGradientValue
 		{
 			get { return _gradient; }
@@ -106,6 +106,5 @@ namespace VixenModules.EffectEditor.ColorGradientTypeEditor
 				}
 			}
 		}
-
 	}
 }

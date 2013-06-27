@@ -14,8 +14,7 @@ namespace VixenModules.App.VirtualEffect
 		public VirtualEffectRemoveDialog(VirtualEffectLibrary library)
 		{
 			InitializeComponent();
-			foreach (KeyValuePair<Guid, VirtualEffect> pair in library)
-			{
+			foreach (KeyValuePair<Guid, VirtualEffect> pair in library) {
 				ListViewItem lvItem = new ListViewItem(pair.Value.Name);
 				lvItem.SubItems.Add(pair.Key.ToString());
 				listViewVirtualEffects.Items.Add(lvItem);
@@ -24,12 +23,10 @@ namespace VixenModules.App.VirtualEffect
 
 		private void listViewVirtualEffects_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
 		{
-			if (listViewVirtualEffects.SelectedIndices.Count == 0)
-			{
+			if (listViewVirtualEffects.SelectedIndices.Count == 0) {
 				buttonRemove.Enabled = false;
 			}
-			else
-			{
+			else {
 				buttonRemove.Enabled = true;
 			}
 		}
@@ -37,8 +34,7 @@ namespace VixenModules.App.VirtualEffect
 		private List<Guid> getRemoveList()
 		{
 			List<Guid> itemGuids = new List<Guid>();
-			foreach(ListViewItem lvItem in listViewVirtualEffects.SelectedItems)
-			{
+			foreach (ListViewItem lvItem in listViewVirtualEffects.SelectedItems) {
 				itemGuids.Add(new Guid(lvItem.SubItems[1].Text));
 			}
 			return itemGuids;
@@ -49,5 +45,4 @@ namespace VixenModules.App.VirtualEffect
 			get { return getRemoveList(); }
 		}
 	}
-
 }

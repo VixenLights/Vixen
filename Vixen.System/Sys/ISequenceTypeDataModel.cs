@@ -4,8 +4,10 @@ using Vixen.Execution;
 using Vixen.Module;
 using Vixen.Module.Media;
 
-namespace Vixen.Sys {
-	public interface ISequenceTypeDataModel{
+namespace Vixen.Sys
+{
+	public interface ISequenceTypeDataModel
+	{
 		//int Version { get; set; }
 		TimeSpan Length { get; set; }
 		SelectedTimingProvider SelectedTimingProvider { get; set; }

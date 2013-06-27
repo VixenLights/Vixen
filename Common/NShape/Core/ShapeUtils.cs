@@ -18,17 +18,18 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 
 
-namespace Dataweb.NShape.Advanced {
-
+namespace Dataweb.NShape.Advanced
+{
 	/// <summary>
 	/// Helper methods for calculating shapes
 	/// </summary>
-	public static class ShapeUtils {
-
+	public static class ShapeUtils
+	{
 		/// <summary>
 		/// Calculates the cell for a shape map (spacial index) from the given coordinates.
 		/// </summary>
-		public static Point CalcCell(Point pos, int cellSize) {
+		public static Point CalcCell(Point pos, int cellSize)
+		{
 			return CalcCell(pos.X, pos.Y, cellSize);
 		}
 
@@ -36,16 +37,17 @@ namespace Dataweb.NShape.Advanced {
 		/// <summary>
 		/// Calculates the cell for a shape map (spacial index) from the given coordinates.
 		/// </summary>
-		public static Point CalcCell(int x, int y, int cellSize) {
+		public static Point CalcCell(int x, int y, int cellSize)
+		{
 			// Optimization:
 			// Use integer division for values >= 0 (>20 times faster than floored float divisions)
 			// Use integer division and subtract 1 for values < 0 (otherwise calculating intersection with cell 
 			// bounds will not work as expected as 0.5f / 1 is 0 instead of the expected result 1)
 			Point cell = Point.Empty;
 			cell.Offset(
-				(x >= 0) ? (x / cellSize) : (x / cellSize) - 1,
-				(y >= 0) ? (y / cellSize) : (y / cellSize) - 1
-			);
+				(x >= 0) ? (x/cellSize) : (x/cellSize) - 1,
+				(y >= 0) ? (y/cellSize) : (y/cellSize) - 1
+				);
 			return cell;
 		}
 
@@ -53,24 +55,26 @@ namespace Dataweb.NShape.Advanced {
 		/// <summary>
 		/// Calculates the cell for a shape map (spacial index) from the given coordinates.
 		/// </summary>
-		public static void CalcCell(int x, int y, int cellSize, out int cellX, out int cellY) {
+		public static void CalcCell(int x, int y, int cellSize, out int cellX, out int cellY)
+		{
 			// Optimization:
 			// Use integer division for values >= 0 (>20 times faster than floored float divisions)
 			// Use integer division and subtract 1 for values < 0 (otherwise calculating intersection with cell 
 			// bounds will not work as expected as 0.5f / 1 is 0 instead of the expected result 1)
-			cellX = (x >= 0) ? (x / cellSize) : (x / cellSize) - 1;
-			cellY = (y >= 0) ? (y / cellSize) : (y / cellSize) - 1;
+			cellX = (x >= 0) ? (x/cellSize) : (x/cellSize) - 1;
+			cellY = (y >= 0) ? (y/cellSize) : (y/cellSize) - 1;
 		}
 
 
 		/// <summary>
 		/// Inflates the bounding rectangle by the width of the given line style.
 		/// </summary>
-		public static void InflateBoundingRectangle(ref Rectangle boundingRectangle, ILineStyle lineStyle) {
+		public static void InflateBoundingRectangle(ref Rectangle boundingRectangle, ILineStyle lineStyle)
+		{
 			if (lineStyle == null) throw new ArgumentNullException("lineStyle");
 			Geometry.AssertIsValid(boundingRectangle);
 			if (lineStyle.LineWidth > 2) {
-				int halfLineWidth = (int)Math.Ceiling(lineStyle.LineWidth / 2f) - 1;
+				int halfLineWidth = (int) Math.Ceiling(lineStyle.LineWidth/2f) - 1;
 				boundingRectangle.Inflate(halfLineWidth, halfLineWidth);
 			}
 		}
@@ -81,10 +85,12 @@ namespace Dataweb.NShape.Advanced {
 		/// If the predecessor of the line's end vertex is inside the line cap, the intersection point between the line cap and
 		/// the rest of the line is calculated, like GDI+ does.
 		/// </summary>
-		public static float CalcLineCapAngle(Point[] points, ControlPointId pointId, Pen pen) {
+		public static float CalcLineCapAngle(Point[] points, ControlPointId pointId, Pen pen)
+		{
 			if (points == null) throw new ArgumentNullException("points");
 			if (points.Length < 2) throw new ArgumentException("Parameter points must have at least 2 elements.");
-			if (pointId != ControlPointId.FirstVertex && pointId != ControlPointId.LastVertex) throw new ArgumentException("pointId");
+			if (pointId != ControlPointId.FirstVertex && pointId != ControlPointId.LastVertex)
+				throw new ArgumentException("pointId");
 			float result = float.NaN;
 
 			// Get required infos: Size of the cap, start point and point processing direction
@@ -94,13 +100,15 @@ namespace Dataweb.NShape.Advanced {
 				startIdx = 0;
 				step = 1;
 				if (pen.StartCap == LineCap.Custom)
-					capInset = pen.CustomStartCap.BaseInset * pen.Width;
-			} else if (pointId == ControlPointId.LastVertex) {
+					capInset = pen.CustomStartCap.BaseInset*pen.Width;
+			}
+			else if (pointId == ControlPointId.LastVertex) {
 				startIdx = points.Length - 1;
 				step = -1;
 				if (pen.EndCap == LineCap.Custom)
-					capInset = pen.CustomEndCap.BaseInset * pen.Width;
-			} else throw new NotSupportedException();
+					capInset = pen.CustomEndCap.BaseInset*pen.Width;
+			}
+			else throw new NotSupportedException();
 			// Store point where the line cap is located
 			Point capPoint = points[startIdx];
 			int maxIdx = points.Length - 1;
@@ -119,7 +127,5 @@ namespace Dataweb.NShape.Advanced {
 			Debug.Assert(!float.IsNaN(result));
 			return result;
 		}
-
 	}
-
 }

@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using Vixen.Sys.Output;
 
-namespace Vixen.Sys.Managers {
-	public interface IOutputDeviceFacadeParticipant {
+namespace Vixen.Sys.Managers
+{
+	public interface IOutputDeviceFacadeParticipant
+	{
 		void StartOnly(IEnumerable<IOutputDevice> outputDevices);
 		void StartAll();
 		void StopAll();

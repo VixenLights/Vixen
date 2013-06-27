@@ -43,15 +43,12 @@ namespace VixenModules.App.VirtualEffect
 
 		public override Type ModuleClass
 		{
-			get { return typeof(VirtualEffectLibrary); }
+			get { return typeof (VirtualEffectLibrary); }
 		}
 
 		public override Type ModuleStaticDataClass
 		{
-			get
-			{
-				return typeof(VirtualEffectLibraryData);
-			}
+			get { return typeof (VirtualEffectLibraryData); }
 		}
 	}
 }

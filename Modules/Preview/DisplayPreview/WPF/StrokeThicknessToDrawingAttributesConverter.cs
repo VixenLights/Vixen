@@ -9,13 +9,14 @@ using System.Windows.Media;
 
 namespace VixenModules.Preview.DisplayPreview.WPF
 {
-	[ValueConversion(typeof(double), typeof(DrawingAttributes))]
+	[ValueConversion(typeof (double), typeof (DrawingAttributes))]
 	public class StrokeThicknessToDrawingAttributesConverter : IValueConverter
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			double thickness = (double)value;
-			DrawingAttributes attr = new DrawingAttributes {Width = thickness, Height = thickness, FitToCurve = false, Color = Colors.White};
+			double thickness = (double) value;
+			DrawingAttributes attr = new DrawingAttributes
+			                         	{Width = thickness, Height = thickness, FitToCurve = false, Color = Colors.White};
 			return attr;
 		}
 

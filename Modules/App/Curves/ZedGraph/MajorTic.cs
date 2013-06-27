@@ -34,9 +34,9 @@ namespace ZedGraph
 	[Serializable]
 	public class MajorTic : MinorTic, ICloneable, ISerializable
 	{
-		internal bool	_isBetweenLabels;
+		internal bool _isBetweenLabels;
 
-	#region Constructors
+		#region Constructors
 
 		/// <summary>
 		/// Default constructor for <see cref="MajorTic" />.
@@ -60,8 +60,8 @@ namespace ZedGraph
 		/// Copy constructor.
 		/// </summary>
 		/// <param name="rhs">The <see cref="MajorTic" /> that is to be copied.</param>
-		public MajorTic( MajorTic rhs )
-			: base( rhs )
+		public MajorTic(MajorTic rhs)
+			: base(rhs)
 		{
 			_isBetweenLabels = rhs._isBetweenLabels;
 		}
@@ -82,12 +82,12 @@ namespace ZedGraph
 		/// <returns>A new, independent copy of this class</returns>
 		public new MajorTic Clone()
 		{
-			return new MajorTic( this );
+			return new MajorTic(this);
 		}
 
-	#endregion
+		#endregion
 
-	#region Properties
+		#region Properties
 
 		/// <summary>
 		/// Gets or sets a property that determines whether or not the major tics will be drawn
@@ -109,9 +109,9 @@ namespace ZedGraph
 			set { _isBetweenLabels = value; }
 		}
 
-	#endregion
+		#endregion
 
-	#region Serialization
+		#region Serialization
 
 		/// <summary>
 		/// Current schema value that defines the version of the serialized file
@@ -125,14 +125,14 @@ namespace ZedGraph
 		/// </param>
 		/// <param name="context">A <see cref="StreamingContext"/> instance that contains the serialized data
 		/// </param>
-		protected MajorTic( SerializationInfo info, StreamingContext context ) :
-			base( info, context )
+		protected MajorTic(SerializationInfo info, StreamingContext context) :
+			base(info, context)
 		{
 			// The schema value is just a file version parameter.  You can use it to make future versions
 			// backwards compatible as new member variables are added to classes
-			int sch2 = info.GetInt32( "schema2" );
+			int sch2 = info.GetInt32("schema2");
 
-			_isBetweenLabels = info.GetBoolean( "isBetweenLabels" );
+			_isBetweenLabels = info.GetBoolean("isBetweenLabels");
 		}
 
 		/// <summary>
@@ -140,19 +140,19 @@ namespace ZedGraph
 		/// </summary>
 		/// <param name="info">A <see cref="SerializationInfo"/> instance that defines the serialized data</param>
 		/// <param name="context">A <see cref="StreamingContext"/> instance that contains the serialized data</param>
-		[SecurityPermissionAttribute( SecurityAction.Demand, SerializationFormatter = true )]
-		public override void GetObjectData( SerializationInfo info, StreamingContext context )
+		[SecurityPermissionAttribute(SecurityAction.Demand, SerializationFormatter = true)]
+		public override void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
-			base.GetObjectData( info, context );
+			base.GetObjectData(info, context);
 
-			info.AddValue( "schema2", schema2 );
+			info.AddValue("schema2", schema2);
 
-			info.AddValue( "isBetweenLabels", _isBetweenLabels );
+			info.AddValue("isBetweenLabels", _isBetweenLabels);
 		}
 
-	#endregion
+		#endregion
 
-	#region Defaults
+		#region Defaults
 
 		/// <summary>
 		/// A simple struct that defines the
@@ -166,11 +166,13 @@ namespace ZedGraph
 			/// (<see cref="MinorTic.Size"/> property). Units are in points (1/72 inch).
 			/// </summary>
 			public static float Size = 5;
+
 			/// <summary>
 			/// The default pen width for drawing the <see cref="Axis"/> tic marks.
 			/// (<see cref="MinorTic.PenWidth"/> property). Units are in points (1/72 inch).
 			/// </summary>
 			public static float PenWidth = 1.0F;
+
 			/// <summary>
 			/// The display mode for the <see cref="Axis"/> major outside tic marks
 			/// (<see cref="MinorTic.IsOutside"/> property).
@@ -179,6 +181,7 @@ namespace ZedGraph
 			/// <value>true to show the major tic marks (outside the axis),
 			/// false otherwise</value>
 			public static bool IsOutside = true;
+
 			/// <summary>
 			/// The display mode for the <see cref="Axis"/> major inside tic marks
 			/// (<see cref="MinorTic.IsInside"/> property).
@@ -187,6 +190,7 @@ namespace ZedGraph
 			/// <value>true to show the major tic marks (inside the axis),
 			/// false otherwise</value>
 			public static bool IsInside = true;
+
 			/// <summary>
 			/// The display mode for the <see cref="Axis"/> major opposite tic marks
 			/// (<see cref="MinorTic.IsOpposite"/> property).
@@ -214,6 +218,7 @@ namespace ZedGraph
 			/// </remarks>
 			/// <value>true to show the major cross tic marks, false otherwise</value>
 			public static bool IsCrossOutside = false;
+
 			/// <summary>
 			/// The default display mode for the <see cref="Axis"/> major inside 
 			/// "cross" tic marks (<see cref="MinorTic.IsCrossInside"/> property).
@@ -238,7 +243,6 @@ namespace ZedGraph
 			public static Color Color = Color.Black;
 		}
 
-	#endregion
-
+		#endregion
 	}
 }

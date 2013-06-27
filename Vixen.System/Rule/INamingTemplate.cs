@@ -8,7 +8,7 @@ namespace Vixen.Rule
 		IEnumerable<INamingGenerator> Generators { get; }
 
 		// the format string for the template.
-		string Format { get;  }
+		string Format { get; }
 
 		// the user-readable name of this template.
 		string Name { get; }

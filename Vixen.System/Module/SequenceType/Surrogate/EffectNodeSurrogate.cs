@@ -5,10 +5,13 @@ using System.Runtime.Serialization;
 using Vixen.Module.Effect;
 using Vixen.Sys;
 
-namespace Vixen.Module.SequenceType.Surrogate {
+namespace Vixen.Module.SequenceType.Surrogate
+{
 	[DataContract(Namespace = "")]
-	class EffectNodeSurrogate : NodeSurrogate {
-		public EffectNodeSurrogate(IEffectNode effectNode) {
+	internal class EffectNodeSurrogate : NodeSurrogate
+	{
+		public EffectNodeSurrogate(IEffectNode effectNode)
+		{
 			StartTime = effectNode.StartTime;
 			TypeId = effectNode.Effect.Descriptor.TypeId;
 			InstanceId = effectNode.Effect.InstanceId;
@@ -16,7 +19,8 @@ namespace Vixen.Module.SequenceType.Surrogate {
 			TargetNodes = effectNode.Effect.TargetNodes.Select(x => new ChannelNodeReferenceSurrogate(x)).ToArray();
 		}
 
-		public IEffectNode CreateEffectNode() {
+		public IEffectNode CreateEffectNode()
+		{
 			// Create a element node lookup of elements that are currently valid.
 			var elementNodes = VixenSystem.Nodes.Distinct().ToDictionary(x => x.Id);
 

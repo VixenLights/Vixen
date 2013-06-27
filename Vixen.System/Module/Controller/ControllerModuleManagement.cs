@@ -1,4 +1,6 @@
-﻿namespace Vixen.Module.Controller {
-	class ControllerModuleManagement : GenericModuleManagement<IControllerModuleInstance> {
+﻿namespace Vixen.Module.Controller
+{
+	internal class ControllerModuleManagement : GenericModuleManagement<IControllerModuleInstance>
+	{
 	}
 }

@@ -8,51 +8,63 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace VixenModules.App.Scheduler {
-	partial class ScheduleDayView : UserControl, ISchedulerView {
+namespace VixenModules.App.Scheduler
+{
+	internal partial class ScheduleDayView : UserControl, ISchedulerView
+	{
 		private DateTime _currentDate;
 
-		public ScheduleDayView() {
+		public ScheduleDayView()
+		{
 			InitializeComponent();
 		}
 
-		protected override void OnLoad(EventArgs e) {
+		protected override void OnLoad(EventArgs e)
+		{
 			base.OnLoad(e);
 			CurrentDate = DateTime.Today;
 		}
 
-		public event EventHandler<ScheduleEventArgs> TimeDoubleClick {
+		public event EventHandler<ScheduleEventArgs> TimeDoubleClick
+		{
 			add { dayPanel.TimeDoubleClick += value; }
 			remove { dayPanel.TimeDoubleClick -= value; }
 		}
 
-		public event EventHandler<ScheduleItemArgs> ItemDoubleClick {
+		public event EventHandler<ScheduleItemArgs> ItemDoubleClick
+		{
 			add { dayPanel.ItemDoubleClick += value; }
 			remove { dayPanel.ItemDoubleClick -= value; }
 		}
 
-		public event EventHandler<ScheduleItemArgs> ItemClick {
+		public event EventHandler<ScheduleItemArgs> ItemClick
+		{
 			add { dayPanel.ItemClick += value; }
 			remove { dayPanel.ItemClick -= value; }
 		}
 
-		public event EventHandler LeftButtonClick {
+		public event EventHandler LeftButtonClick
+		{
 			add { headerPanel.LeftButtonClick += value; }
 			remove { headerPanel.LeftButtonClick -= value; }
 		}
 
-		public event EventHandler RightButtonClick {
+		public event EventHandler RightButtonClick
+		{
 			add { headerPanel.RightButtonClick += value; }
 			remove { headerPanel.RightButtonClick -= value; }
 		}
 
-		public IScheduleItem SelectedItem {
+		public IScheduleItem SelectedItem
+		{
 			get { return dayPanel.SelectedItem; }
 		}
 
-		public DateTime CurrentDate {
+		public DateTime CurrentDate
+		{
 			get { return _currentDate; }
-			set {
+			set
+			{
 				_currentDate = value;
 				headerPanel.Text = value.ToLongDateString();
 				Refresh();
@@ -61,10 +73,10 @@ namespace VixenModules.App.Scheduler {
 
 		[Browsable(false)]
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public IEnumerable<IScheduleItem> Items {
+		public IEnumerable<IScheduleItem> Items
+		{
 			get { return dayPanel.Items; }
 			set { dayPanel.Items = value; }
 		}
-
 	}
 }

@@ -1,36 +1,44 @@
 ﻿using System.Collections.Generic;
 
-namespace Vixen.Sys.Enumerator {
+namespace Vixen.Sys.Enumerator
+{
 	/// <summary>
 	/// 
 	/// </summary>
 	/// <typeparam name="T">Element type</typeparam>
 	/// <typeparam name="U">Collection type</typeparam>
-	abstract class LiveEnumerator<T,U> : IEnumerator<T> {
+	internal abstract class LiveEnumerator<T, U> : IEnumerator<T>
+	{
 		private T _current;
 		private T _next;
 		private bool _nextIsValid;
 		private bool _currentIsValid;
 
-		abstract protected bool _GetNext(out T value);
+		protected abstract bool _GetNext(out T value);
 		protected U Collection { get; private set; }
 
-		public LiveEnumerator(U collection) {
+		public LiveEnumerator(U collection)
+		{
 			Collection = collection;
 			Reset();
 		}
 
-		public T Current {
+		public T Current
+		{
 			get { return _current; }
 		}
 
-		public void Dispose() { }
+		public void Dispose()
+		{
+		}
 
-		object System.Collections.IEnumerator.Current {
+		object System.Collections.IEnumerator.Current
+		{
 			get { return Current; }
 		}
 
-		public bool MoveNext() {
+		public bool MoveNext()
+		{
 			_current = _next;
 			// The default of CommandData is valid data being used to clear outputs.
 			_currentIsValid = _nextIsValid;
@@ -45,7 +53,8 @@ namespace Vixen.Sys.Enumerator {
 			return _currentIsValid;
 		}
 
-		public void Reset() {
+		public void Reset()
+		{
 			_current = default(T);
 			_currentIsValid = false;
 			// Iterate once to get the next ptr set, not the current ptr.

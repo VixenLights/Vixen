@@ -10,7 +10,7 @@ namespace VixenModules.EffectEditor.CurveTypeEditor
 {
 	public class CurveTypeEditor : EffectEditorModuleInstanceBase
 	{
-		override public IEffectEditorControl CreateEditorControl()
+		public override IEffectEditorControl CreateEditorControl()
 		{
 			return new CurveTypeEditorControl();
 		}

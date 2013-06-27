@@ -1,7 +1,9 @@
 ﻿using System;
 
-namespace Vixen.Module.SequenceType {
-	public interface ISequenceTypeModuleDescriptor : IModuleDescriptor {
+namespace Vixen.Module.SequenceType
+{
+	public interface ISequenceTypeModuleDescriptor : IModuleDescriptor
+	{
 		/// <summary>
 		/// Includes the leading period.
 		/// </summary>

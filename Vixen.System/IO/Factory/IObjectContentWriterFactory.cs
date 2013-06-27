@@ -1,5 +1,7 @@
-﻿namespace Vixen.IO.Factory {
-	interface IObjectContentWriterFactory {
+﻿namespace Vixen.IO.Factory
+{
+	internal interface IObjectContentWriterFactory
+	{
 		IObjectContentWriter CreateSystemConfigContentWriter();
 		IObjectContentWriter CreateModuleStoreContentWriter();
 		IObjectContentWriter CreateSystemContextContentWriter();

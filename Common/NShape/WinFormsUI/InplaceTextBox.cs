@@ -17,31 +17,33 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
-
 using Dataweb.NShape.Advanced;
 using Dataweb.NShape.Controllers;
 
 
-namespace Dataweb.NShape.WinFormsUI {
-
+namespace Dataweb.NShape.WinFormsUI
+{
 	/// <summary>
 	/// RichTextBox control used for editing captions of shapes on the diagram.
 	/// </summary>
 	[ToolboxItem(false)]
-	public partial class InPlaceTextBox : RichTextBox {
-
+	public partial class InPlaceTextBox : RichTextBox
+	{
 		/// <summary>
 		/// Creates a new instance of Dataweb.NShape.WinFormsUI.InPlaceTextBox.
 		/// </summary>
 		public InPlaceTextBox(IDiagramPresenter owner, ICaptionedShape shape, int captionIndex, string currentText)
-			: this(owner, shape, captionIndex, currentText, null) {
+			: this(owner, shape, captionIndex, currentText, null)
+		{
 		}
 
 
 		/// <summary>
 		/// Creates a new instance of Dataweb.NShape.WinFormsUI.InPlaceTextBox.
 		/// </summary>
-		public InPlaceTextBox(IDiagramPresenter owner, ICaptionedShape shape, int captionIndex, string currentText, string newText) {
+		public InPlaceTextBox(IDiagramPresenter owner, ICaptionedShape shape, int captionIndex, string currentText,
+		                      string newText)
+		{
 			Construct(owner, shape, captionIndex, currentText, newText);
 			// Set Text
 			originalText = currentText;
@@ -49,13 +51,13 @@ namespace Dataweb.NShape.WinFormsUI {
 				// Preselect the whole text if the user has not started typing yet
 				base.Text = currentText;
 				SelectAll();
-			} else {
+			}
+			else {
 				// Set the types text and place the cursor at the end of the text
 				base.Text = newText;
 				SelectionStart = Text.Length;
 			}
 		}
-
 
 		#region [Public] Properties
 
@@ -64,7 +66,8 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// </summary>
 		[Category("NShape")]
 		[Browsable(true)]
-		public new string ProductVersion {
+		public new string ProductVersion
+		{
 			get { return base.ProductVersion; }
 		}
 
@@ -74,7 +77,7 @@ namespace Dataweb.NShape.WinFormsUI {
 		//   get { return drawBounds; }
 		//   private set {
 		//      drawBounds = value;
-				
+
 		//      // RichTextbox ignores the Padding property, 
 		//      // so we shrink the whole control to maintain the correct padding
 		//      value.Inflate(-paragraphStyle.Padding.Horizontal, 0); //-paragraphStyle.Padding.Vertical);
@@ -105,9 +108,11 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// <summary>
 		/// Specifies the text's alignment
 		/// </summary>
-		public ContentAlignment TextAlignment {
+		public ContentAlignment TextAlignment
+		{
 			get { return ConvertToContentAlignment(SelectionAlignment); }
-			set {
+			set
+			{
 				contentAlignment = value;
 				this.SuspendLayout();
 				SelectAll();
@@ -122,22 +127,26 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// <summary>
 		/// Specifies the initial, unmodified text.
 		/// </summary>
-		public string OriginalText {
+		public string OriginalText
+		{
 			get { return originalText; }
-			set {
+			set
+			{
 				originalText = value;
 				if (Text == string.Empty)
 					Text = value;
 			}
 		}
-		
-		
+
+
 		/// <summary>
 		/// Specifies the text to be edited.
 		/// </summary>
-		public override string Text {
+		public override string Text
+		{
 			get { return base.Text; }
-			set {
+			set
+			{
 				base.Text = value;
 				if (originalText == string.Empty)
 					originalText = value;
@@ -147,24 +156,27 @@ namespace Dataweb.NShape.WinFormsUI {
 
 		#endregion
 
-
 		#region [Protected] Methods
 
 		/// <summary>
 		/// Extended version of the Invalidate method, invalidates the control itself and its parent control.
 		/// </summary>
-		protected void InvalidateEx() {
+		protected void InvalidateEx()
+		{
 			if (Parent != null) {
 				Rectangle rect = Bounds;
 				rect.Inflate(SystemInformation.Border3DSize.Width, SystemInformation.Border3DSize.Height);
 				Parent.Invalidate(rect, true);
-			} else Invalidate();
+			}
+			else Invalidate();
 		}
 
 
 		/// <override></override>
-		protected override CreateParams CreateParams {
-			get {
+		protected override CreateParams CreateParams
+		{
+			get
+			{
 				CreateParams cp = base.CreateParams;
 				cp.ExStyle |= 0x00000020; //WS_EX_TRANSPARENT
 				return cp;
@@ -173,13 +185,15 @@ namespace Dataweb.NShape.WinFormsUI {
 
 
 		/// <override></override>
-		protected override Padding DefaultPadding {
+		protected override Padding DefaultPadding
+		{
 			get { return defaultPadding; }
 		}
 
 
 		/// <override></override>
-		protected override void OnMove(EventArgs e) {
+		protected override void OnMove(EventArgs e)
+		{
 			InvalidateEx();
 			base.OnMove(e);
 			InvalidateEx();
@@ -187,7 +201,8 @@ namespace Dataweb.NShape.WinFormsUI {
 
 
 		/// <override></override>
-		protected override void OnResize(EventArgs eventargs) {
+		protected override void OnResize(EventArgs eventargs)
+		{
 			InvalidateEx();
 			base.OnResize(eventargs);
 			InvalidateEx();
@@ -195,33 +210,38 @@ namespace Dataweb.NShape.WinFormsUI {
 
 
 		/// <override></override>
-		protected override void OnHScroll(EventArgs e) {
+		protected override void OnHScroll(EventArgs e)
+		{
 			base.OnHScroll(e);
 			InvalidateEx();
 		}
 
 
 		/// <override></override>
-		protected override void OnVScroll(EventArgs e) {
+		protected override void OnVScroll(EventArgs e)
+		{
 			base.OnVScroll(e);
 			InvalidateEx();
 		}
 
 
 		/// <override></override>
-		protected override void NotifyInvalidate(Rectangle invalidatedArea) {
+		protected override void NotifyInvalidate(Rectangle invalidatedArea)
+		{
 			base.NotifyInvalidate(invalidatedArea);
 		}
 
 
 		/// <override></override>
-		protected override void OnInvalidated(InvalidateEventArgs e) {
+		protected override void OnInvalidated(InvalidateEventArgs e)
+		{
 			base.OnInvalidated(e);
 		}
 
 
 		/// <override></override>
-		protected override void OnTextChanged(EventArgs e) {
+		protected override void OnTextChanged(EventArgs e)
+		{
 			owner.SuspendUpdate();
 			base.OnTextChanged(e);
 
@@ -234,38 +254,41 @@ namespace Dataweb.NShape.WinFormsUI {
 
 
 		/// <override></override>
-		protected override void OnSelectionChanged(EventArgs e) {
+		protected override void OnSelectionChanged(EventArgs e)
+		{
 			base.OnSelectionChanged(e);
 			InvalidateEx();
 		}
 
 
 		/// <override></override>
-		protected override void OnVisibleChanged(EventArgs e) {
+		protected override void OnVisibleChanged(EventArgs e)
+		{
 			base.OnVisibleChanged(e);
 			InvalidateEx();
 		}
 
 		#endregion
 
-
 		#region [Private] Methods
 
-		private void Construct(IDiagramPresenter owner, ICaptionedShape shape, int captionIndex, string currentText, string newText) {
+		private void Construct(IDiagramPresenter owner, ICaptionedShape shape, int captionIndex, string currentText,
+		                       string newText)
+		{
 			if (owner == null) throw new ArgumentNullException("owner");
 			if (shape == null) throw new ArgumentNullException("shape");
 			if (captionIndex < 0 || captionIndex >= shape.CaptionCount) throw new ArgumentOutOfRangeException("captionIndex");
 			// Set control styles
 			SetStyle(ControlStyles.ResizeRedraw | ControlStyles.SupportsTransparentBackColor, true);
 			UpdateStyles();
-			
+
 			// Set caption / style specific properties
 			this.owner = owner;
 			this.shape = shape;
 			this.captionIndex = captionIndex;
 
 			// Set general properties
-			this.BackColor = Color.Transparent;	// Does not matter - see CreateParams()
+			this.BackColor = Color.Transparent; // Does not matter - see CreateParams()
 			this.AutoScrollOffset = Point.Empty;
 			this.ScrollBars = RichTextBoxScrollBars.None;
 			this.BorderStyle = BorderStyle.None;
@@ -279,10 +302,10 @@ namespace Dataweb.NShape.WinFormsUI {
 			try {
 				this.WordWrap = paragraphStyle.WordWrap;
 				this.Font = ToolCache.GetFont(characterStyle);
-				this.ZoomFactor = owner.ZoomLevel / 100f;
+				this.ZoomFactor = owner.ZoomLevel/100f;
 
 				// Get line height
-				Size textSize = TextRenderer.MeasureText(((IDisplayService)owner).InfoGraphics, "Iq", Font);
+				Size textSize = TextRenderer.MeasureText(((IDisplayService) owner).InfoGraphics, "Iq", Font);
 				owner.DiagramToControl(textSize, out textSize);
 				lineHeight = textSize.Height;
 
@@ -291,14 +314,16 @@ namespace Dataweb.NShape.WinFormsUI {
 				SelectAll();
 				SelectionAlignment = ConvertToHorizontalAlignment(paragraphStyle.Alignment);
 				DeselectAll();
-			} finally {
+			}
+			finally {
 				ResumeLayout();
 			}
 			OnPaddingChanged(EventArgs.Empty);
 		}
 
 
-		private void DoUpdateBounds() {
+		private void DoUpdateBounds()
+		{
 			Debug.Assert(shape != null);
 			Debug.Assert(paragraphStyle != null);
 			Debug.Assert(captionIndex >= 0);
@@ -312,9 +337,9 @@ namespace Dataweb.NShape.WinFormsUI {
 			angle = Geometry.RadiansToDegrees(Geometry.Angle(tl.X, tl.Y, tr.X, tr.Y));
 			tl = Geometry.RotatePoint(center, -angle, tl);
 			br = Geometry.RotatePoint(center, -angle, br);
-			
+
 			// Calculate unrotated layout area for the text
-			Rectangle layoutArea  = Rectangle.Empty;
+			Rectangle layoutArea = Rectangle.Empty;
 			layoutArea.Location = tl;
 			layoutArea.Width = br.X - tl.X;
 			layoutArea.Height = br.Y - tl.Y;
@@ -324,7 +349,7 @@ namespace Dataweb.NShape.WinFormsUI {
 			// Transform layout area and text size to control coordinates
 			owner.DiagramToControl(layoutArea, out layoutArea);
 			owner.DiagramToControl(textSize, out textSize);
-			
+
 			// Calculate new bounds for the text editor based on the shape's caption layout rectangle
 			Rectangle newBounds = Rectangle.Empty;
 			newBounds.X = layoutArea.X;
@@ -340,7 +365,7 @@ namespace Dataweb.NShape.WinFormsUI {
 				case ContentAlignment.MiddleCenter:
 				case ContentAlignment.MiddleLeft:
 				case ContentAlignment.MiddleRight:
-					newBounds.Y = layoutArea.Y + (int)Math.Round((layoutArea.Height - newBounds.Height) / 2f);
+					newBounds.Y = layoutArea.Y + (int) Math.Round((layoutArea.Height - newBounds.Height)/2f);
 					break;
 				case ContentAlignment.TopCenter:
 				case ContentAlignment.TopLeft:
@@ -358,17 +383,19 @@ namespace Dataweb.NShape.WinFormsUI {
 			newBounds.Width -= paragraphStyle.Padding.Horizontal;
 			newBounds.Height -= paragraphStyle.Padding.Vertical;
 			newBounds.Inflate(1, 1);
-			
+
 			// Update control bounds 
 			// (No need to Invalidate here, this is done by OnResize())
 			SuspendLayout();
 			Bounds = newBounds;
-			defaultPadding = new Padding(paragraphStyle.Padding.Left, paragraphStyle.Padding.Top, paragraphStyle.Padding.Right, paragraphStyle.Padding.Bottom);
+			defaultPadding = new Padding(paragraphStyle.Padding.Left, paragraphStyle.Padding.Top, paragraphStyle.Padding.Right,
+			                             paragraphStyle.Padding.Bottom);
 			ResumeLayout();
 		}
 
 
-		private HorizontalAlignment ConvertToHorizontalAlignment(ContentAlignment contentAlignment) {
+		private HorizontalAlignment ConvertToHorizontalAlignment(ContentAlignment contentAlignment)
+		{
 			switch (contentAlignment) {
 				case ContentAlignment.BottomCenter:
 				case ContentAlignment.MiddleCenter:
@@ -382,55 +409,61 @@ namespace Dataweb.NShape.WinFormsUI {
 				case ContentAlignment.MiddleRight:
 				case ContentAlignment.TopRight:
 					return HorizontalAlignment.Right;
-				default: throw new NShapeUnsupportedValueException(typeof(ContentAlignment), contentAlignment);
+				default:
+					throw new NShapeUnsupportedValueException(typeof (ContentAlignment), contentAlignment);
 			}
 		}
 
 
-		private ContentAlignment ConvertToContentAlignment(HorizontalAlignment horizontalAlignment) {
+		private ContentAlignment ConvertToContentAlignment(HorizontalAlignment horizontalAlignment)
+		{
 			switch (horizontalAlignment) {
 				case HorizontalAlignment.Center:
-					switch(contentAlignment) {
+					switch (contentAlignment) {
 						case ContentAlignment.BottomCenter:
 							return ContentAlignment.BottomCenter;
 						case ContentAlignment.MiddleCenter:
 							return ContentAlignment.MiddleCenter;
 						case ContentAlignment.TopCenter:
 							return ContentAlignment.TopCenter;
-						default: throw new NShapeUnsupportedValueException(typeof(ContentAlignment), contentAlignment);
+						default:
+							throw new NShapeUnsupportedValueException(typeof (ContentAlignment), contentAlignment);
 					}
 				case HorizontalAlignment.Left:
-					switch(contentAlignment) {
+					switch (contentAlignment) {
 						case ContentAlignment.BottomLeft:
 							return ContentAlignment.BottomLeft;
 						case ContentAlignment.MiddleLeft:
 							return ContentAlignment.MiddleLeft;
 						case ContentAlignment.TopLeft:
 							return ContentAlignment.TopLeft;
-						default: throw new NShapeUnsupportedValueException(typeof(ContentAlignment), contentAlignment);
+						default:
+							throw new NShapeUnsupportedValueException(typeof (ContentAlignment), contentAlignment);
 					}
 				case HorizontalAlignment.Right:
-					switch(contentAlignment) {
+					switch (contentAlignment) {
 						case ContentAlignment.BottomRight:
 							return ContentAlignment.BottomRight;
 						case ContentAlignment.MiddleRight:
 							return ContentAlignment.MiddleRight;
 						case ContentAlignment.TopRight:
 							return ContentAlignment.TopRight;
-						default: throw new NShapeUnsupportedValueException(typeof(ContentAlignment), contentAlignment);
+						default:
+							throw new NShapeUnsupportedValueException(typeof (ContentAlignment), contentAlignment);
 					}
-				default: throw new NShapeUnsupportedValueException(typeof(HorizontalAlignment), horizontalAlignment);
+				default:
+					throw new NShapeUnsupportedValueException(typeof (HorizontalAlignment), horizontalAlignment);
 			}
 		}
 
 		#endregion
 
-
 		#region Fields
+
 		private IDiagramPresenter owner;
 		private ICaptionedShape shape;
 		private int captionIndex;
-		
+
 		private string originalText = string.Empty;
 		private IParagraphStyle paragraphStyle;
 		private ICharacterStyle characterStyle;
@@ -440,7 +473,7 @@ namespace Dataweb.NShape.WinFormsUI {
 		private Padding defaultPadding = Padding.Empty;
 		private ContentAlignment contentAlignment;
 		private TextPaddingTypeConverter paddingConverter = new TextPaddingTypeConverter();
+
 		#endregion
 	}
-
 }

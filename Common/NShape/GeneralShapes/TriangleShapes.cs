@@ -15,58 +15,64 @@
 using Dataweb.NShape.Advanced;
 
 
-namespace Dataweb.NShape.GeneralShapes {
-
-	public class IsoscelesTriangle : IsoscelesTriangleBase {
-
-		internal static Shape CreateInstance(ShapeType shapeType, Template template) {
+namespace Dataweb.NShape.GeneralShapes
+{
+	public class IsoscelesTriangle : IsoscelesTriangleBase
+	{
+		internal static Shape CreateInstance(ShapeType shapeType, Template template)
+		{
 			return new IsoscelesTriangle(shapeType, template);
 		}
 
 
 		/// <override></override>
-		public override Shape Clone() {
-			Shape result = new IsoscelesTriangle(Type, (Template)null);
+		public override Shape Clone()
+		{
+			Shape result = new IsoscelesTriangle(Type, (Template) null);
 			result.CopyFrom(this);
 			return result;
 		}
 
 
 		protected internal IsoscelesTriangle(ShapeType shapeType, Template template)
-			: base(shapeType, template) {
+			: base(shapeType, template)
+		{
 		}
 
 
 		protected internal IsoscelesTriangle(ShapeType shapeType, IStyleSet styleSet)
-			: base(shapeType, styleSet) {
+			: base(shapeType, styleSet)
+		{
 		}
 	}
 
 
-	public class FreeTriangle : TriangleBase {
-
+	public class FreeTriangle : TriangleBase
+	{
 		/// <ToBeCompleted></ToBeCompleted>
-		public static Shape CreateInstance(ShapeType shapeType, Template template) {
+		public static Shape CreateInstance(ShapeType shapeType, Template template)
+		{
 			return new FreeTriangle(shapeType, template);
 		}
 
 
-		public override Shape Clone() {
-			Shape result = new FreeTriangle(Type, (Template)null);
+		public override Shape Clone()
+		{
+			Shape result = new FreeTriangle(Type, (Template) null);
 			result.CopyFrom(this);
 			return result;
 		}
 
 
 		protected FreeTriangle(ShapeType shapeType, Template template)
-			: base(shapeType, template) {
+			: base(shapeType, template)
+		{
 		}
 
 
 		protected FreeTriangle(ShapeType shapeType, IStyleSet styleSet)
-			: base(shapeType, styleSet) {
+			: base(shapeType, styleSet)
+		{
 		}
-
 	}
-
 }

@@ -11,10 +11,11 @@ namespace VixenModules.App.VirtualEffect
 	{
 		[DataMember]
 		public Guid EffectGuid { get; set; }
+
 		[DataMember]
 		public String Name { get; set; }
-		[DataMember]
-		private object[] _virtualParams;
+
+		[DataMember] private object[] _virtualParams;
 
 		public object[] VirtualParams
 		{
@@ -22,13 +23,12 @@ namespace VixenModules.App.VirtualEffect
 			set
 			{
 				List<object> objList = new List<object>();
-				foreach (object o in value)
-				{
+				foreach (object o in value) {
 					objList.Add(o);
 				}
 				_virtualParams = objList.ToArray();
 			}
-		}		
+		}
 
 		public VirtualEffect(String name, Guid effectGuid, object[] virtualParams)
 		{

@@ -20,23 +20,23 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
-
 using Dataweb.NShape.Advanced;
 using Dataweb.NShape.Controllers;
 
 
-namespace Dataweb.NShape.WinFormsUI {
-
+namespace Dataweb.NShape.WinFormsUI
+{
 	/// <summary>
 	/// Connects a Windows.Forms.TreeView control to a model controller.
 	/// </summary>
 	[ToolboxItem(true)]
-	public partial class ModelTreeViewPresenter : Component {
-
+	public partial class ModelTreeViewPresenter : Component
+	{
 		/// <summary>
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.WinFormsUI.ModelTreeViewPresenter" />.
 		/// </summary>
-		public ModelTreeViewPresenter() {
+		public ModelTreeViewPresenter()
+		{
 			InitializeComponent();
 
 			imageList = new ImageList();
@@ -44,10 +44,11 @@ namespace Dataweb.NShape.WinFormsUI {
 			imageList.TransparentColor = Color.White;
 			imageList.ImageSize = new Size(imageSize, imageSize);
 
-			imgDifferentShapes = GdiHelpers.GetIconBitmap(Properties.Resources.ModelObjectAttached, Color.Fuchsia, imageList.TransparentColor);
-			imgNoShapes = GdiHelpers.GetIconBitmap(Properties.Resources.ModelObjectDetached, Color.Fuchsia, imageList.TransparentColor);
+			imgDifferentShapes = GdiHelpers.GetIconBitmap(Properties.Resources.ModelObjectAttached, Color.Fuchsia,
+			                                              imageList.TransparentColor);
+			imgNoShapes = GdiHelpers.GetIconBitmap(Properties.Resources.ModelObjectDetached, Color.Fuchsia,
+			                                       imageList.TransparentColor);
 		}
-
 
 		#region [Public] Events
 
@@ -58,14 +59,14 @@ namespace Dataweb.NShape.WinFormsUI {
 
 		#endregion
 
-
 		#region [Public] Properties
 
 		/// <summary>
 		/// Specifies the version of the assembly containing the component.
 		/// </summary>
 		[Category("NShape")]
-		public string ProductVersion {
+		public string ProductVersion
+		{
 			get { return this.GetType().Assembly.GetName().Version.ToString(); }
 		}
 
@@ -74,9 +75,11 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// Specifies the model controller for this presenter.
 		/// </summary>
 		[Category("NShape")]
-		public ModelController ModelTreeController {
+		public ModelController ModelTreeController
+		{
 			get { return modelTreeController; }
-			set {
+			set
+			{
 				UnregisterModelTreeControllerEvents();
 				modelTreeController = value;
 				RegisterModelTreeControllerEvents();
@@ -88,18 +91,21 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// Specifies a property controller for editing properties of the selected model object (optional).
 		/// </summary>
 		[Category("NShape")]
-		public PropertyController PropertyController {
+		public PropertyController PropertyController
+		{
 			get { return propertyController; }
 			set { propertyController = value; }
 		}
-		
-		
+
+
 		/// <summary>
 		/// Specifies a TreeView used as user interface for this presenter.
 		/// </summary>
-		public TreeView TreeView {
+		public TreeView TreeView
+		{
 			get { return treeView; }
-			set {
+			set
+			{
 				if (treeView != null) {
 					treeView.ImageList = null;
 					treeView.ContextMenuStrip = null;
@@ -121,7 +127,8 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// Gets a readonly collection of selected model objects.
 		/// </summary>
 		[Browsable(false)]
-		public IReadOnlyCollection<IModelObject> SelectedModelObjects {
+		public IReadOnlyCollection<IModelObject> SelectedModelObjects
+		{
 			get { return selectedModelObjects; }
 		}
 
@@ -130,7 +137,8 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// Specifies if MenuItemDefs that are not granted should appear as MenuItems in the dynamic context menu.
 		/// </summary>
 		[Category("Behavior")]
-		public bool HideDeniedMenuItems {
+		public bool HideDeniedMenuItems
+		{
 			get { return hideMenuItemsIfNotGranted; }
 			set { hideMenuItemsIfNotGranted = value; }
 		}
@@ -140,13 +148,13 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// Specifies whether the default context menu (created dynamically from MenuItemDefs)  or a user defined context menu is displayed.
 		/// </summary>
 		[Category("Behavior")]
-		public bool ShowDefaultContextMenu {
+		public bool ShowDefaultContextMenu
+		{
 			get { return showDefaultContextMenu; }
 			set { showDefaultContextMenu = value; }
 		}
 
 		#endregion
-
 
 		#region [Public] Methods
 
@@ -155,7 +163,8 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// </summary>
 		/// <param name="modelObject">Model object to be selected.</param>
 		/// <param name="addToSelection">Specifies if the model object should be added to the current selection or should replace it.</param>
-		public void SelectModelObject(IModelObject modelObject, bool addToSelection) {
+		public void SelectModelObject(IModelObject modelObject, bool addToSelection)
+		{
 			if (modelObject == null) throw new ArgumentNullException("modelObject");
 
 			// perform selection
@@ -172,13 +181,14 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// <summary>
 		/// Removes the given model object from the current selection.
 		/// </summary>
-		public void UnselectModelObject(IModelObject modelObject) {
+		public void UnselectModelObject(IModelObject modelObject)
+		{
 			if (modelObject == null) throw new ArgumentNullException("modelObject");
 			if (selectedModelObjects.Contains(modelObject))
 				selectedModelObjects.Remove(modelObject);
 
 			// Notify propertyPresenter (if attached) that a modelOject was selected
-			if (propertyController != null)propertyController.SetObjects(1, selectedModelObjects);
+			if (propertyController != null) propertyController.SetObjects(1, selectedModelObjects);
 			if (SelectionChanged != null) SelectionChanged(this, EventArgs.Empty);
 		}
 
@@ -186,7 +196,8 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// <summary>
 		/// Clears all selected model objects.
 		/// </summary>
-		public void UnselectAllModelObjects() {
+		public void UnselectAllModelObjects()
+		{
 			selectedModelObjects.Clear();
 			// Notify propertyPresenter (if attached) that all modelOjects were unselected
 			if (propertyController != null) propertyController.SetObjects(1, selectedModelObjects);
@@ -198,16 +209,18 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// Find all loaded shapes in all loaded diagrams assigned to any of the given model objects.
 		/// </summary>
 		/// <param name="modelObjects"></param>
-		public void FindShapes(IEnumerable<IModelObject> modelObjects) {
+		public void FindShapes(IEnumerable<IModelObject> modelObjects)
+		{
 			if (modelObjects == null) throw new ArgumentNullException("modelObjects");
-		   modelTreeController.FindShapes(modelObjects);
+			modelTreeController.FindShapes(modelObjects);
 		}
 
 
 		/// <summary>
 		/// Returns a collection of <see cref="T:Dataweb.NShape.Advanced.MenuItemDef" /> for constructing context menus etc.
 		/// </summary>
-		public IEnumerable<MenuItemDef> GetMenuItemDefs() {
+		public IEnumerable<MenuItemDef> GetMenuItemDefs()
+		{
 			foreach (MenuItemDef action in modelTreeController.GetMenuItemDefs(selectedModelObjects))
 				yield return action;
 			// ToDo: Add presenter's actions
@@ -215,10 +228,10 @@ namespace Dataweb.NShape.WinFormsUI {
 
 		#endregion
 
-
 		#region [Private] Methods
 
-		private void InitializeComponent() {
+		private void InitializeComponent()
+		{
 			this.components = new System.ComponentModel.Container();
 			this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.dummyItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -226,11 +239,14 @@ namespace Dataweb.NShape.WinFormsUI {
 			// 
 			// contextMenuStrip
 			// 
-			this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.dummyItem});
+			this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[]
+			                                     	{
+			                                     		this.dummyItem
+			                                     	});
 			this.contextMenuStrip.Name = "contextMenuStrip1";
 			this.contextMenuStrip.Size = new System.Drawing.Size(142, 26);
-			this.contextMenuStrip.Closed += new System.Windows.Forms.ToolStripDropDownClosedEventHandler(this.contextMenuStrip_Closed);
+			this.contextMenuStrip.Closed +=
+				new System.Windows.Forms.ToolStripDropDownClosedEventHandler(this.contextMenuStrip_Closed);
 			this.contextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip_Opening);
 			// 
 			// dummyItem
@@ -239,11 +255,11 @@ namespace Dataweb.NShape.WinFormsUI {
 			this.dummyItem.Size = new System.Drawing.Size(141, 22);
 			this.dummyItem.Text = "dummyItem";
 			this.contextMenuStrip.ResumeLayout(false);
-
 		}
 
 
-		private void FillTree() {
+		private void FillTree()
+		{
 			if (treeView == null) throw new NShapePropertyNotSetException(this, "TreeView");
 			if (modelTreeController == null) throw new NShapePropertyNotSetException(this, "ModelTreeController");
 			Debug.Assert(modelTreeController.Project.Repository.IsOpen);
@@ -253,49 +269,56 @@ namespace Dataweb.NShape.WinFormsUI {
 				AddModelObjectNode(modelObject);
 		}
 
-		
-		private void Clear() {
+
+		private void Clear()
+		{
 			treeView.Nodes.Clear();
 		}
 
 
-		private void SelectNode(TreeNode node) {
+		private void SelectNode(TreeNode node)
+		{
 			treeView.SelectedNode = node;
 			if (node == null) UnselectAllModelObjects();
 			else {
 				Debug.Assert(node.Tag is IModelObject);
-				SelectModelObject((IModelObject)node.Tag, false);
+				SelectModelObject((IModelObject) node.Tag, false);
 			}
 		}
 
-		
-		private void AddModelObjectNode(IModelObject modelObject) {
+
+		private void AddModelObjectNode(IModelObject modelObject)
+		{
 			if (modelObject == null) throw new ArgumentNullException("modelObject");
 			foreach (Shape s in modelObject.Shapes) {
 				// do not add nodes of template shapes
 				// ToDo: Find a better way of determining whether the model belongs to a template.
-				if (s.Template == null) return;	
+				if (s.Template == null) return;
 			}
 			if (modelObject.Parent != null) {
 				TreeNode node = FindTreeNode(treeView.Nodes, modelObject.Parent);
 				if (node != null && (node.IsExpanded || node.Nodes.Count == 0))
 					node.Nodes.Add(CreateNode(modelObject));
-			} else treeView.Nodes.Add(CreateNode(modelObject));
+			}
+			else treeView.Nodes.Add(CreateNode(modelObject));
 		}
 
 
-		private void AddModelObjectNodes(IEnumerable<IModelObject> modelObjects) {
+		private void AddModelObjectNodes(IEnumerable<IModelObject> modelObjects)
+		{
 			try {
 				treeView.BeginUpdate();
 				foreach (IModelObject modelObject in modelObjects)
 					AddModelObjectNode(modelObject);
-			} finally {
+			}
+			finally {
 				treeView.EndUpdate();
 			}
 		}
 
 
-		private void UpdateModelObjectNode(IModelObject modelObject) {
+		private void UpdateModelObjectNode(IModelObject modelObject)
+		{
 			TreeNode node = FindTreeNode(treeView.Nodes, modelObject);
 			if (node != null) {
 				bool isSelected = (treeView.SelectedNode == node);
@@ -307,7 +330,8 @@ namespace Dataweb.NShape.WinFormsUI {
 					if (parentNode == null) {
 						position = treeView.Nodes.IndexOf(node);
 						treeView.Nodes.RemoveAt(position);
-					} else {
+					}
+					else {
 						position = parentNode.Nodes.IndexOf(node);
 						parentNode.Nodes.RemoveAt(position);
 					}
@@ -324,13 +348,15 @@ namespace Dataweb.NShape.WinFormsUI {
 						if (modelObject.Parent == null) {
 							// Re-insert at the original root position
 							treeView.Nodes.Insert(position, newNode);
-						} else {
+						}
+						else {
 							// Add to the new parent node
 							parentNode = FindTreeNode(treeView.Nodes, modelObject.Parent);
 							Debug.Assert(parentNode != null);
 							parentNode.Nodes.Add(newNode);
 						}
-					} else {
+					}
+					else {
 						if (modelObject.Parent == null)
 							// Add to root
 							treeView.Nodes.Add(newNode);
@@ -350,19 +376,22 @@ namespace Dataweb.NShape.WinFormsUI {
 		}
 
 
-		private void UpdateModelObjectNodes(IEnumerable<IModelObject> modelObjects) {
+		private void UpdateModelObjectNodes(IEnumerable<IModelObject> modelObjects)
+		{
 			Debug.Assert(TreeView != null);
 			try {
 				treeView.BeginUpdate();
 				foreach (IModelObject modelObject in modelObjects)
 					UpdateModelObjectNode(modelObject);
-			} finally {
+			}
+			finally {
 				treeView.EndUpdate();
 			}
 		}
 
 
-		private void DeleteModelObjectNode(IModelObject modelObject) {
+		private void DeleteModelObjectNode(IModelObject modelObject)
+		{
 			TreeNode node = FindTreeNode(treeView.Nodes, modelObject);
 			if (node != null) {
 				TreeNode parentNode = node.Parent;
@@ -374,18 +403,21 @@ namespace Dataweb.NShape.WinFormsUI {
 		}
 
 
-		private void DeleteModelObjectNodes(IEnumerable<IModelObject> modelObjects) {
+		private void DeleteModelObjectNodes(IEnumerable<IModelObject> modelObjects)
+		{
 			try {
 				treeView.BeginUpdate();
 				foreach (IModelObject modelObject in modelObjects)
 					DeleteModelObjectNode(modelObject);
-			} finally {
+			}
+			finally {
 				treeView.EndUpdate();
 			}
 		}
 
 
-		private void DeleteNodeImage(string imageKey) {
+		private void DeleteNodeImage(string imageKey)
+		{
 			if (string.IsNullOrEmpty(imageKey)) throw new ArgumentNullException("imageKey");
 			if (imageList.Images.ContainsKey(imageKey)) {
 				Image img = imageList.Images[imageKey];
@@ -396,7 +428,8 @@ namespace Dataweb.NShape.WinFormsUI {
 		}
 
 
-		private void RedrawNodes(IEnumerable<TreeNode> treeNodes) {
+		private void RedrawNodes(IEnumerable<TreeNode> treeNodes)
+		{
 			// create and assign new icon(s)
 			if (treeView.SelectedNode != null) {
 				treeView.SelectedNode.SelectedImageKey = string.Empty;
@@ -404,12 +437,13 @@ namespace Dataweb.NShape.WinFormsUI {
 			}
 			foreach (TreeNode node in treeNodes) {
 				Debug.Assert(node.Tag is IModelObject);
-				node.SelectedImageKey = node.ImageKey = CreateNodeImage((IModelObject)node.Tag);
+				node.SelectedImageKey = node.ImageKey = CreateNodeImage((IModelObject) node.Tag);
 			}
 		}
 
 
-		private TreeNode CreateNode(IModelObject modelObject) {
+		private TreeNode CreateNode(IModelObject modelObject)
+		{
 			TreeNode result = new TreeNode(modelObject.Name);
 			result.Name = modelObject.Name;
 			result.Text = modelObject.Name;
@@ -420,7 +454,8 @@ namespace Dataweb.NShape.WinFormsUI {
 		}
 
 
-		private string CreateNodeImage(IModelObject modelObject) {
+		private string CreateNodeImage(IModelObject modelObject)
+		{
 			string imageKey = imgKeyNoShape;
 			// check if all registered shapes are created from the same template
 			Template template = null;
@@ -428,7 +463,8 @@ namespace Dataweb.NShape.WinFormsUI {
 				if (template == null && shape.Template != null) {
 					template = shape.Template;
 					imageKey = template.Name;
-				} else if (template != shape.Template) {
+				}
+				else if (template != shape.Template) {
 					template = null;
 					imageKey = imgKeyDifferentShapes;
 					break;
@@ -446,7 +482,8 @@ namespace Dataweb.NShape.WinFormsUI {
 		}
 
 
-		private TreeNode FindTreeNode(TreeNodeCollection nodesCollection, IModelObject modelObject) {
+		private TreeNode FindTreeNode(TreeNodeCollection nodesCollection, IModelObject modelObject)
+		{
 			if (nodesCollection == null) throw new ArgumentNullException("nodesCollection");
 			if (modelObject == null) throw new ArgumentNullException("modelObject");
 			TreeNode result = null;
@@ -466,7 +503,8 @@ namespace Dataweb.NShape.WinFormsUI {
 		}
 
 
-		private IEnumerable<TreeNode> FindTreeNodes(TreeNodeCollection nodesCollection, Shape shape) {
+		private IEnumerable<TreeNode> FindTreeNodes(TreeNodeCollection nodesCollection, Shape shape)
+		{
 			if (nodesCollection == null) throw new ArgumentNullException("nodesCollection");
 			if (shape == null) throw new ArgumentNullException("shape");
 			int dummyNodeIdx = nodesCollection.IndexOfKey(keyDummyNode);
@@ -476,7 +514,7 @@ namespace Dataweb.NShape.WinFormsUI {
 				Debug.Assert(node.Tag is IModelObject);
 				//
 				// search all registered shapes of the node's ModelObject
-				IModelObject modelObject = (IModelObject)node.Tag;
+				IModelObject modelObject = (IModelObject) node.Tag;
 				foreach (Shape s in modelObject.Shapes) {
 					if (s == shape) {
 						yield return node;
@@ -491,7 +529,8 @@ namespace Dataweb.NShape.WinFormsUI {
 		}
 
 
-		private IEnumerable<TreeNode> FindTreeNodes(TreeNodeCollection nodesCollection, Template template) {
+		private IEnumerable<TreeNode> FindTreeNodes(TreeNodeCollection nodesCollection, Template template)
+		{
 			if (nodesCollection == null) throw new ArgumentNullException("nodesCollection");
 			if (template == null) throw new ArgumentNullException("template");
 			int dummyNodeIdx = nodesCollection.IndexOfKey(keyDummyNode);
@@ -501,7 +540,7 @@ namespace Dataweb.NShape.WinFormsUI {
 				Debug.Assert(node.Tag is IModelObject);
 				//
 				// search all registered shapes of the node's ModelObject
-				IModelObject modelObject = (IModelObject)node.Tag;
+				IModelObject modelObject = (IModelObject) node.Tag;
 				foreach (Shape shape in modelObject.Shapes) {
 					if (shape.Template != null && shape.Template == template) {
 						yield return node;
@@ -515,29 +554,29 @@ namespace Dataweb.NShape.WinFormsUI {
 			}
 		}
 
-
 		#endregion
-
 
 		#region [Private] Methods: (Un)Registering for events
 
-		private void RegisterTreeViewEvents() {
+		private void RegisterTreeViewEvents()
+		{
 			treeView.AfterCollapse += treeView_AfterCollapse;
 			treeView.BeforeExpand += treeView_BeforeExpand;
-			
+
 			treeView.ItemDrag += treeView_ItemDrag;
 			treeView.DragEnter += treeView_DragEnter;
 			treeView.DragOver += treeView_DragOver;
 			treeView.DragLeave += treeView_DragLeave;
 			treeView.DragDrop += treeView_DragDrop;
-			
+
 			treeView.DoubleClick += treeView_DoubleClick;
 			treeView.MouseDown += treeView_MouseDown;
 			treeView.MouseUp += treeView_MouseUp;
 		}
 
 
-		private void UnregisterTreeViewEvents() {
+		private void UnregisterTreeViewEvents()
+		{
 			treeView.AfterCollapse -= treeView_AfterCollapse;
 			treeView.BeforeExpand -= treeView_BeforeExpand;
 
@@ -546,14 +585,15 @@ namespace Dataweb.NShape.WinFormsUI {
 			treeView.DragOver -= treeView_DragOver;
 			treeView.DragLeave -= treeView_DragLeave;
 			treeView.DragDrop -= treeView_DragDrop;
-			
+
 			treeView.DoubleClick -= treeView_DoubleClick;
 			treeView.MouseDown -= treeView_MouseDown;
 			treeView.MouseUp -= treeView_MouseUp;
 		}
 
 
-		private void RegisterModelTreeControllerEvents() {
+		private void RegisterModelTreeControllerEvents()
+		{
 			if (modelTreeController != null) {
 				modelTreeController.Initialized += modelTreeController_Initialized;
 				modelTreeController.Uninitialized += modelTreeController_Uninitialized;
@@ -565,7 +605,8 @@ namespace Dataweb.NShape.WinFormsUI {
 		}
 
 
-		private void UnregisterModelTreeControllerEvents() {
+		private void UnregisterModelTreeControllerEvents()
+		{
 			if (modelTreeController != null) {
 				modelTreeController.Initialized -= modelTreeController_Initialized;
 				modelTreeController.Uninitialized -= modelTreeController_Uninitialized;
@@ -578,20 +619,22 @@ namespace Dataweb.NShape.WinFormsUI {
 
 		#endregion
 
-
 		#region [Private] Methods: ModelTreeController event handler implementations
 
-		private void modelTreeController_Initialized(object sender, EventArgs e) {
+		private void modelTreeController_Initialized(object sender, EventArgs e)
+		{
 			FillTree();
 		}
 
 
-		private void modelTreeController_Uninitialized(object sender, EventArgs e) {
+		private void modelTreeController_Uninitialized(object sender, EventArgs e)
+		{
 			Clear();
 		}
 
 
-		private void modelTreeController_Changed(object sender, EventArgs e) {
+		private void modelTreeController_Changed(object sender, EventArgs e)
+		{
 			// ToDo:
 			// Replace this dummy implementation by a real one
 			treeView.SuspendLayout();
@@ -601,14 +644,16 @@ namespace Dataweb.NShape.WinFormsUI {
 			}
 			treeView.ResumeLayout();
 		}
-		
-		
-		private void modelTreeController_ModelObjectsSelected(object sender, ModelObjectSelectedEventArgs e) {
+
+
+		private void modelTreeController_ModelObjectsSelected(object sender, ModelObjectSelectedEventArgs e)
+		{
 			// nothing to do
 		}
 
 
-		private void modelTreeController_TemplateShapeReplaced(object sender, RepositoryTemplateShapeReplacedEventArgs e) {
+		private void modelTreeController_TemplateShapeReplaced(object sender, RepositoryTemplateShapeReplacedEventArgs e)
+		{
 			treeView.SuspendLayout();
 			DeleteNodeImage(e.Template.Name);
 			RedrawNodes(FindTreeNodes(treeView.Nodes, e.Template));
@@ -616,7 +661,8 @@ namespace Dataweb.NShape.WinFormsUI {
 		}
 
 
-		private void modelTreeController_TemplateUpdated(object sender, RepositoryTemplateEventArgs e) {
+		private void modelTreeController_TemplateUpdated(object sender, RepositoryTemplateEventArgs e)
+		{
 			treeView.SuspendLayout();
 			DeleteNodeImage(e.Template.Name);
 			RedrawNodes(FindTreeNodes(treeView.Nodes, e.Template));
@@ -624,50 +670,55 @@ namespace Dataweb.NShape.WinFormsUI {
 		}
 
 
-		private void modelTreeController_ModelObjectsAdded(object sender, RepositoryModelObjectsEventArgs e) {
+		private void modelTreeController_ModelObjectsAdded(object sender, RepositoryModelObjectsEventArgs e)
+		{
 			AddModelObjectNodes(e.ModelObjects);
 		}
 
 
-		private void modelTreeController_ModelObjectsUpdated(object sender, RepositoryModelObjectsEventArgs e) {
+		private void modelTreeController_ModelObjectsUpdated(object sender, RepositoryModelObjectsEventArgs e)
+		{
 			UpdateModelObjectNodes(e.ModelObjects);
 		}
 
 
-		private void modelTreeController_ModelObjectsDeleted(object sender, RepositoryModelObjectsEventArgs e) {
+		private void modelTreeController_ModelObjectsDeleted(object sender, RepositoryModelObjectsEventArgs e)
+		{
 			DeleteModelObjectNodes(e.ModelObjects);
 		}
 
 		#endregion
 
-
 		#region [Private] Methods: ContextMenu event handler implementation
 
-		private void contextMenuStrip_Opening(object sender, CancelEventArgs e) {
+		private void contextMenuStrip_Opening(object sender, CancelEventArgs e)
+		{
 			if (showDefaultContextMenu && treeView != null && treeView.ContextMenuStrip != null) {
 				if (modelTreeController != null && modelTreeController.Project != null) {
 					// Remove DummyItem
 					if (contextMenuStrip.Items.Contains(dummyItem))
 						contextMenuStrip.Items.Remove(dummyItem);
 					// Collect all actions provided by the display itself
-					WinFormHelpers.BuildContextMenu(contextMenuStrip, GetMenuItemDefs(), modelTreeController.Project, hideMenuItemsIfNotGranted);
+					WinFormHelpers.BuildContextMenu(contextMenuStrip, GetMenuItemDefs(), modelTreeController.Project,
+					                                hideMenuItemsIfNotGranted);
 				}
 			}
 		}
 
 
-		private void contextMenuStrip_Closed(object sender, ToolStripDropDownClosedEventArgs e) {
+		private void contextMenuStrip_Closed(object sender, ToolStripDropDownClosedEventArgs e)
+		{
 			contextMenuStrip.Items.Clear();
 			contextMenuStrip.Items.Add(dummyItem);
 		}
 
 		#endregion
 
-
 		#region [Private] Methods: TreeView event handler implementations
 
 		// Expanding / collapsing model object nodes
-		private void treeView_AfterCollapse(object sender, TreeViewEventArgs e) {
+		private void treeView_AfterCollapse(object sender, TreeViewEventArgs e)
+		{
 			treeView.SuspendLayout();
 			e.Node.Nodes.Clear();
 			e.Node.Nodes.Add(keyDummyNode, string.Empty);
@@ -675,29 +726,34 @@ namespace Dataweb.NShape.WinFormsUI {
 		}
 
 
-		private void treeView_BeforeExpand(object sender, TreeViewCancelEventArgs e) {
+		private void treeView_BeforeExpand(object sender, TreeViewCancelEventArgs e)
+		{
 			treeView.SuspendLayout();
 			if (e.Node.Nodes.Count > 0)
-				e.Node.Nodes.Clear();			
-			List<IModelObject> childs = new List<IModelObject>(modelTreeController.Project.Repository.GetModelObjects((IModelObject)e.Node.Tag));
+				e.Node.Nodes.Clear();
+			List<IModelObject> childs =
+				new List<IModelObject>(modelTreeController.Project.Repository.GetModelObjects((IModelObject) e.Node.Tag));
 			foreach (IModelObject child in childs)
 				e.Node.Nodes.Add(CreateNode(child));
 			treeView.ResumeLayout();
 		}
 
 
-		private void treeView_DoubleClick(object sender, EventArgs e) {
+		private void treeView_DoubleClick(object sender, EventArgs e)
+		{
 			FindShapes(SelectedModelObjects);
 		}
 
 
 		// Mouse event handling
-		private void treeView_MouseUp(object sender, MouseEventArgs e) {
+		private void treeView_MouseUp(object sender, MouseEventArgs e)
+		{
 			// nothing to do...
 		}
 
-		
-		private void treeView_MouseDown(object sender, MouseEventArgs e) {
+
+		private void treeView_MouseDown(object sender, MouseEventArgs e)
+		{
 			if (e.Button == MouseButtons.Left || e.Button == MouseButtons.Right) {
 				// Select the clicked node
 				TreeViewHitTestInfo hitTestInfo = treeView.HitTest(e.Location);
@@ -707,37 +763,44 @@ namespace Dataweb.NShape.WinFormsUI {
 
 
 		// Drag'n'drop handling
-		private void treeView_ItemDrag(object sender, ItemDragEventArgs e) {
+		private void treeView_ItemDrag(object sender, ItemDragEventArgs e)
+		{
 			if (e.Button == MouseButtons.Left) {
 				if (treeView.SelectedNode != null) {
-					IModelObject selectedModelObject = (IModelObject)treeView.SelectedNode.Tag;
-					treeView.DoDragDrop(new ModelObjectDragInfo(selectedModelObject), DragDropEffects.Move | DragDropEffects.Link | DragDropEffects.Scroll);
+					IModelObject selectedModelObject = (IModelObject) treeView.SelectedNode.Tag;
+					treeView.DoDragDrop(new ModelObjectDragInfo(selectedModelObject),
+					                    DragDropEffects.Move | DragDropEffects.Link | DragDropEffects.Scroll);
 				}
 			}
 		}
 
 
-		private void treeView_DragEnter(object sender, DragEventArgs e) {
+		private void treeView_DragEnter(object sender, DragEventArgs e)
+		{
 			// nothing to do
 		}
 
 
-		private void treeView_DragOver(object sender, DragEventArgs e) {
-			if (e.Data.GetDataPresent(typeof(ModelObjectDragInfo))) {
+		private void treeView_DragOver(object sender, DragEventArgs e)
+		{
+			if (e.Data.GetDataPresent(typeof (ModelObjectDragInfo))) {
 				e.Effect = DragDropEffects.Move;
-			} else e.Effect = DragDropEffects.None;
+			}
+			else e.Effect = DragDropEffects.None;
 		}
 
 
-		private void treeView_DragLeave(object sender, EventArgs e) {
+		private void treeView_DragLeave(object sender, EventArgs e)
+		{
 			// Do nothing...
 		}
 
 
-		private void treeView_DragDrop(object sender, DragEventArgs e) {
-			if (e.Data.GetDataPresent(typeof(ModelObjectDragInfo)) && e.Effect == DragDropEffects.Move) {
+		private void treeView_DragDrop(object sender, DragEventArgs e)
+		{
+			if (e.Data.GetDataPresent(typeof (ModelObjectDragInfo)) && e.Effect == DragDropEffects.Move) {
 				// Get dragged data
-				ModelObjectDragInfo dragInfo = (ModelObjectDragInfo)e.Data.GetData(typeof(ModelObjectDragInfo));
+				ModelObjectDragInfo dragInfo = (ModelObjectDragInfo) e.Data.GetData(typeof (ModelObjectDragInfo));
 				IModelObject parentModelObject = null;
 
 				// Find the target node
@@ -746,7 +809,7 @@ namespace Dataweb.NShape.WinFormsUI {
 				mousePos = treeView.PointToClient(mousePos);
 				TreeViewHitTestInfo hitTestInfo = treeView.HitTest(mousePos);
 				if (hitTestInfo.Node != null && dragInfo.ModelObject != hitTestInfo.Node.Tag)
-					parentModelObject = (IModelObject)hitTestInfo.Node.Tag;
+					parentModelObject = (IModelObject) hitTestInfo.Node.Tag;
 
 				if (dragInfo.ModelObject.Parent != parentModelObject)
 					ModelTreeController.SetModelObjectParent(dragInfo.ModelObject, parentModelObject);
@@ -755,27 +818,35 @@ namespace Dataweb.NShape.WinFormsUI {
 
 		#endregion
 
-
 		#region [Private] Enumerator for ModelTree Items
 
-		private class Enumerator : IEnumerator<IModelObject> {
-
-			public Enumerator(TreeView treeView) {
+		private class Enumerator : IEnumerator<IModelObject>
+		{
+			public Enumerator(TreeView treeView)
+			{
 				this.treeView = treeView;
 				index = -1;
 			}
 
 			#region IEnumerator<IModelObject> Members
 
-			public bool MoveNext() { return (bool)(++index < 1); }
+			public bool MoveNext()
+			{
+				return (bool) (++index < 1);
+			}
 
-			public void Reset() { index = -1; }
+			public void Reset()
+			{
+				index = -1;
+			}
 
-			IModelObject IEnumerator<IModelObject>.Current {
-				get {
+			IModelObject IEnumerator<IModelObject>.Current
+			{
+				get
+				{
 					IModelObject modelObject = null;
 					if (treeView.SelectedNode != null)
-						modelObject = (IModelObject)treeView.SelectedNode.Tag;
+						modelObject = (IModelObject) treeView.SelectedNode.Tag;
 					return modelObject;
 				}
 			}
@@ -783,25 +854,34 @@ namespace Dataweb.NShape.WinFormsUI {
 			#endregion
 
 			#region IDisposable Members
-			public void Dispose() { }
+
+			public void Dispose()
+			{
+			}
+
 			#endregion
 
 			#region IEnumerator Members
 
-			object IEnumerator.Current { get { return (IModelObject)treeView.SelectedNode.Tag; } }
+			object IEnumerator.Current
+			{
+				get { return (IModelObject) treeView.SelectedNode.Tag; }
+			}
 
 			#endregion
 
 			#region Fields
+
 			private TreeView treeView;
 			private int index;
+
 			#endregion
 		}
 
 		#endregion
 
-
 		#region Fields
+
 		// Constants
 		private const int imageSize = 16;
 		private const int imgMargin = 2;
@@ -820,13 +900,14 @@ namespace Dataweb.NShape.WinFormsUI {
 		private ReadOnlyList<IModelObject> selectedModelObjects = new ReadOnlyList<IModelObject>();
 
 		private List<IModelObject> modelObjectBuffer = new List<IModelObject>();
-		
+
 		private ImageList imageList;
 		private Image imgDifferentShapes;
 		private Image imgNoShapes;
 		private IContainer components;
 		private TreeView treeView;
 		private ContextMenuStrip contextMenuStrip;
+
 		#endregion
 	}
 
@@ -834,13 +915,14 @@ namespace Dataweb.NShape.WinFormsUI {
 	/// <summary>
 	/// Drag'n'Drop info for dragging model objects out of the model tree presenter
 	/// </summary>
-	public class ModelObjectDragInfo {
-
+	public class ModelObjectDragInfo
+	{
 		/// <summary>
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.WinFormsUI.ModelObjectDragInfo" />.
 		/// </summary>
 		/// <param name="modelObject"></param>
-		public ModelObjectDragInfo(IModelObject modelObject) {
+		public ModelObjectDragInfo(IModelObject modelObject)
+		{
 			if (modelObject == null) throw new ArgumentNullException("modelObject");
 			this.modelObject = modelObject;
 		}
@@ -849,7 +931,8 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// <summary>
 		/// Specifies the dragged model object.
 		/// </summary>
-		public IModelObject ModelObject {
+		public IModelObject ModelObject
+		{
 			get { return modelObject; }
 		}
 
@@ -857,18 +940,19 @@ namespace Dataweb.NShape.WinFormsUI {
 		private IModelObject modelObject;
 	}
 
-
 	#region ModelTreeSelectedObjects
 
-	internal class ModelTreeAdapterSelectedObjects : ICollection<IModelObject> {
-
-		public ModelTreeAdapterSelectedObjects(TreeView treeView) {
+	internal class ModelTreeAdapterSelectedObjects : ICollection<IModelObject>
+	{
+		public ModelTreeAdapterSelectedObjects(TreeView treeView)
+		{
 			this.treeView = treeView;
 		}
 
 		#region ICollection<IModelObject> Members
 
-		public void Add(IModelObject item) {
+		public void Add(IModelObject item)
+		{
 			TreeNode node = null;
 			foreach (TreeNode n in treeView.Nodes) {
 				if (n.Tag == item) {
@@ -879,29 +963,35 @@ namespace Dataweb.NShape.WinFormsUI {
 			treeView.SelectedNode = node;
 		}
 
-		public void Clear() {
+		public void Clear()
+		{
 			treeView.SelectedNode = null;
 		}
 
-		public bool Contains(IModelObject item) {
+		public bool Contains(IModelObject item)
+		{
 			return (treeView.SelectedNode.Tag == item);
 		}
 
-		public void CopyTo(IModelObject[] array, int arrayIndex) {
+		public void CopyTo(IModelObject[] array, int arrayIndex)
+		{
 			if (arrayIndex >= array.Length)
 				throw new IndexOutOfRangeException();
-			array[arrayIndex] = (IModelObject)treeView.SelectedNode.Tag;
+			array[arrayIndex] = (IModelObject) treeView.SelectedNode.Tag;
 		}
 
-		public int Count {
+		public int Count
+		{
 			get { return (treeView.SelectedNode == null) ? 0 : 1; }
 		}
 
-		public bool IsReadOnly {
+		public bool IsReadOnly
+		{
 			get { return true; }
 		}
 
-		public bool Remove(IModelObject item) {
+		public bool Remove(IModelObject item)
+		{
 			bool result = false;
 			if (treeView.SelectedNode != null) {
 				treeView.SelectedNode = null;
@@ -914,9 +1004,10 @@ namespace Dataweb.NShape.WinFormsUI {
 
 		#region IEnumerable<IModelObject> Members
 
-		public IEnumerator<IModelObject> GetEnumerator() {
+		public IEnumerator<IModelObject> GetEnumerator()
+		{
 			foreach (TreeNode node in treeView.Nodes)
-				yield return (IModelObject)node.Tag;
+				yield return (IModelObject) node.Tag;
 			//return new ModelTreeWindowsEnumerator(treeView);
 		}
 
@@ -924,17 +1015,21 @@ namespace Dataweb.NShape.WinFormsUI {
 
 		#region IEnumerable Members
 
-		IEnumerator IEnumerable.GetEnumerator() {
+		IEnumerator IEnumerable.GetEnumerator()
+		{
 			foreach (TreeNode node in treeView.Nodes)
-				yield return (IModelObject)node.Tag;
+				yield return (IModelObject) node.Tag;
 			//return new ModelTreeWindowsEnumerator(treeView);
 		}
 
 		#endregion
 
 		#region Fields
+
 		private TreeView treeView;
+
 		#endregion
 	}
+
 	#endregion
 }

@@ -7,10 +7,13 @@ using Vixen.Module.Media;
 using Vixen.Module.SequenceType.Surrogate;
 using Vixen.Sys;
 
-namespace Vixen.Module.SequenceType {
+namespace Vixen.Module.SequenceType
+{
 	[DataContract(Namespace = "")]
-	public class SequenceTypeDataModelBase : ModuleDataModelBase, ISequenceTypeDataModel {
-		public SequenceTypeDataModelBase() {
+	public class SequenceTypeDataModelBase : ModuleDataModelBase, ISequenceTypeDataModel
+	{
+		public SequenceTypeDataModelBase()
+		{
 			Media = new MediaCollection();
 			LocalDataSet = new ModuleLocalDataSet();
 			_InitDataStreams();
@@ -22,34 +25,31 @@ namespace Vixen.Module.SequenceType {
 		[DataMember]
 		public TimeSpan Length { get; set; }
 
-		[DataMember]
-		private SelectedTimingProviderSurrogate _selectedTimingProviderSurrogate;
+		[DataMember] private SelectedTimingProviderSurrogate _selectedTimingProviderSurrogate;
 		public SelectedTimingProvider SelectedTimingProvider { get; set; }
 
-		[DataMember]
-		private IModuleDataModel[] _dataModels;
+		[DataMember] private IModuleDataModel[] _dataModels;
 		public ModuleLocalDataSet LocalDataSet { get; set; }
 
-		[DataMember]
-		private MediaSurrogate[] _mediaSurrogates;
+		[DataMember] private MediaSurrogate[] _mediaSurrogates;
 		public List<IMediaModuleInstance> Media { get; set; }
 
-		[DataMember]
-		private EffectNodeSurrogate[] _effectNodeSurrogates;
+		[DataMember] private EffectNodeSurrogate[] _effectNodeSurrogates;
 		public DataStream EffectData { get; set; }
 
-		[DataMember]
-		private FilterNodeSurrogate[] _filterNodeSurrogates;
+		[DataMember] private FilterNodeSurrogate[] _filterNodeSurrogates;
 		public DataStream SequenceFilterData { get; set; }
 
 		public DataStreams DataStreams { get; private set; }
 
-		public override IModuleDataModel Clone() {
+		public override IModuleDataModel Clone()
+		{
 			throw new NotImplementedException();
 			SequenceTypeDataModelBase newInstance = new SequenceTypeDataModelBase();
 			newInstance.Version = Version;
 			newInstance.Length = Length;
-			newInstance.SelectedTimingProvider = new SelectedTimingProvider(SelectedTimingProvider.ProviderType, SelectedTimingProvider.SourceName);
+			newInstance.SelectedTimingProvider = new SelectedTimingProvider(SelectedTimingProvider.ProviderType,
+			                                                                SelectedTimingProvider.SourceName);
 			newInstance.Media = new MediaCollection(Media);
 			//newInstance.EffectData = 
 			//newInstance.SequenceFilterData = 
@@ -57,39 +57,42 @@ namespace Vixen.Module.SequenceType {
 			return newInstance;
 		}
 
-		private void _InitDataStreams() {
+		private void _InitDataStreams()
+		{
 			DataStreams = new DataStreams();
 			EffectData = DataStreams.GetDataStream(null);
 			SequenceFilterData = DataStreams.CreateStream("SequenceFilter");
 		}
 
 		[OnSerializing]
-		void SurrogateWrite(StreamingContext context) {
+		private void SurrogateWrite(StreamingContext context)
+		{
 			// while saving module instance data, load the instance IDs of the modules in the sequence into a set. Then, when saving the
 			// data set for all the modules, we can check if the module data is actually *being used* by anything; if not, we can remove it.
 			HashSet<Guid> activeInstances = new HashSet<Guid>();
 
 			_selectedTimingProviderSurrogate = new SelectedTimingProviderSurrogate(SelectedTimingProvider);
-			if(Media != null) {
+			if (Media != null) {
 				_mediaSurrogates = Media.Select(x => new MediaSurrogate(x)).ToArray();
 				Media.ForEach(x => activeInstances.Add(x.InstanceId));
 			}
-			if(EffectData != null) {
-				_effectNodeSurrogates = EffectData.Select(x => new EffectNodeSurrogate((IEffectNode)x)).ToArray();
+			if (EffectData != null) {
+				_effectNodeSurrogates = EffectData.Select(x => new EffectNodeSurrogate((IEffectNode) x)).ToArray();
 				foreach (IDataNode dataNode in EffectData) {
-					activeInstances.Add(((IEffectNode)dataNode).Effect.InstanceId);
+					activeInstances.Add(((IEffectNode) dataNode).Effect.InstanceId);
 				}
 			}
 			if (LocalDataSet != null) {
 				_dataModels = LocalDataSet.DataModels.Where(x => activeInstances.Contains(x.ModuleInstanceId)).ToArray();
 			}
 			if (SequenceFilterData != null) {
-				_filterNodeSurrogates = SequenceFilterData.Select(x => new FilterNodeSurrogate((ISequenceFilterNode)x)).ToArray();
+				_filterNodeSurrogates = SequenceFilterData.Select(x => new FilterNodeSurrogate((ISequenceFilterNode) x)).ToArray();
 			}
 		}
 
 		[OnDeserialized]
-		void SurrogateRead(StreamingContext context) {
+		private void SurrogateRead(StreamingContext context)
+		{
 			SelectedTimingProvider = _selectedTimingProviderSurrogate.CreateSelectedTimingProvider();
 			Media = new MediaCollection(_mediaSurrogates.Select(x => x.CreateMedia()));
 
@@ -103,10 +106,10 @@ namespace Vixen.Module.SequenceType {
 
 			// Connect them to their respective data from the data store.
 			// This was previously being done by adding the data to the sequence after loading the data.
-			foreach(var effectNode in effectNodes) {
+			foreach (var effectNode in effectNodes) {
 				LocalDataSet.AssignModuleInstanceData(effectNode.Effect);
 			}
-			foreach(var sequenceFilterNode in sequenceFilterNodes) {
+			foreach (var sequenceFilterNode in sequenceFilterNodes) {
 				LocalDataSet.AssignModuleInstanceData(sequenceFilterNode.Filter);
 			}
 
@@ -115,7 +118,5 @@ namespace Vixen.Module.SequenceType {
 			EffectData.AddData(effectNodes);
 			SequenceFilterData.AddData(sequenceFilterNodes);
 		}
-
-		
 	}
 }

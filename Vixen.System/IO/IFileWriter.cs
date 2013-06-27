@@ -1,10 +1,13 @@
-﻿namespace Vixen.IO {
-	interface IFileWriter<in T> : IFileWriter
-		where T : class {
+﻿namespace Vixen.IO
+{
+	internal interface IFileWriter<in T> : IFileWriter
+		where T : class
+	{
 		void WriteFile(string filePath, T content);
 	}
 
-	interface IFileWriter {
+	internal interface IFileWriter
+	{
 		void WriteFile(string filePath, object content);
 	}
 }

@@ -1,187 +1,156 @@
 ﻿<Window x:Class="VixenModules.Preview.DisplayPreview.Views.NodeEditorView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:System="clr-namespace:System;assembly=mscorlib"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:System="clr-namespace:System;assembly=mscorlib"
         xmlns:WPF1="clr-namespace:VixenModules.Preview.DisplayPreview.WPF"
         xmlns:Model1="clr-namespace:VixenModules.Preview.DisplayPreview.Model"
         xmlns:Shapes1="clr-namespace:VixenModules.Preview.DisplayPreview.Model.Shapes"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:ViewModels="clr-namespace:VixenModules.Preview.DisplayPreview.ViewModels"
-        mc:Ignorable="d"
-        SizeToContent="WidthAndHeight"
-        Title="Node Editor"
-        d:DataContext="{d:DesignInstance ViewModels:NodeEditorViewModel}">
-    <Window.Resources>
-        <ResourceDictionary>
-            <ObjectDataProvider MethodName="GetValues"
-                                ObjectType="{x:Type System:Enum}"
-                                x:Key="ShapeTypeValues">
-                <ObjectDataProvider.MethodParameters>
-                    <x:Type TypeName="Shapes1:ShapeType" />
-                </ObjectDataProvider.MethodParameters>
-            </ObjectDataProvider>
+        xmlns:ViewModels="clr-namespace:VixenModules.Preview.DisplayPreview.ViewModels" mc:Ignorable="d"
+        SizeToContent="WidthAndHeight" Title="Node Editor" d:DataContext="{d:DesignInstance ViewModels:NodeEditorViewModel}">
+	<Window.Resources>
+		<ResourceDictionary>
+			<ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type System:Enum}" x:Key="ShapeTypeValues">
+				<ObjectDataProvider.MethodParameters>
+					<x:Type TypeName="Shapes1:ShapeType" />
+				</ObjectDataProvider.MethodParameters>
+			</ObjectDataProvider>
 
-            <WPF1:ShapeToShapeTypeConverter x:Key="ShapeToShapeTypeConverter" />
-			<WPF1:StrokeThicknessToDrawingAttributesConverter x:Key="StrokeThicknessToDrawingAttributesConverter"/>
+			<WPF1:ShapeToShapeTypeConverter x:Key="ShapeToShapeTypeConverter" />
+			<WPF1:StrokeThicknessToDrawingAttributesConverter x:Key="StrokeThicknessToDrawingAttributesConverter" />
 			<!--Define an array containing some DrawingAttributes.-->
 			<x:Array x:Key="MyDrawingAttributes" x:Type="{x:Type DrawingAttributes}">
-				<DrawingAttributes Color="White" FitToCurve="true" Width="6" Height="6"/>
-				<DrawingAttributes Color="White" FitToCurve="true" Width="8" Height="8"/>
-				<DrawingAttributes Color="White" FitToCurve="true" Width="10" Height="10"/>
-				<DrawingAttributes Color="White" FitToCurve="true" Width="12" Height="12"/>
+				<DrawingAttributes Color="White" FitToCurve="true" Width="6" Height="6" />
+				<DrawingAttributes Color="White" FitToCurve="true" Width="8" Height="8" />
+				<DrawingAttributes Color="White" FitToCurve="true" Width="10" Height="10" />
+				<DrawingAttributes Color="White" FitToCurve="true" Width="12" Height="12" />
 			</x:Array>
-			
-			
-            <DataTemplate DataType="{x:Type Shapes1:OutlinedCircle}">
-                <GroupBox Header="Stroke Thickness">
-                    <TextBox Text="{Binding StrokeThickness, Mode=TwoWay}"
-                             VerticalAlignment="Center"
-                             HorizontalAlignment="Stretch" />
-                </GroupBox>
-            </DataTemplate>
 
-            <DataTemplate DataType="{x:Type Shapes1:SolidCircle}">
-                <TextBlock Text="Nothing to configure" />
-            </DataTemplate>
 
-            <DataTemplate DataType="{x:Type Shapes1:SolidRectangle}">
-                <TextBlock Text="Nothing to configure" />
-            </DataTemplate>
+			<DataTemplate DataType="{x:Type Shapes1:OutlinedCircle}">
+				<GroupBox Header="Stroke Thickness">
+					<TextBox Text="{Binding StrokeThickness, Mode=TwoWay}" VerticalAlignment="Center"
+					         HorizontalAlignment="Stretch" />
+				</GroupBox>
+			</DataTemplate>
 
-            <DataTemplate DataType="{x:Type Shapes1:SolidStar}">
-                <TextBlock Text="Nothing to configure" />
-            </DataTemplate>
+			<DataTemplate DataType="{x:Type Shapes1:SolidCircle}">
+				<TextBlock Text="Nothing to configure" />
+			</DataTemplate>
 
-            <DataTemplate DataType="{x:Type Shapes1:CandyCane}">
-                <TextBlock Text="Nothing to configure" />
-            </DataTemplate>
+			<DataTemplate DataType="{x:Type Shapes1:SolidRectangle}">
+				<TextBlock Text="Nothing to configure" />
+			</DataTemplate>
 
-            <DataTemplate DataType="{x:Type Shapes1:SolidTriangle}">
-                <TextBlock Text="Nothing to configure" />
-            </DataTemplate>
+			<DataTemplate DataType="{x:Type Shapes1:SolidStar}">
+				<TextBlock Text="Nothing to configure" />
+			</DataTemplate>
 
-            <DataTemplate DataType="{x:Type Shapes1:Arc}">
-                <GroupBox Header="Stroke Thickness">
-                    <TextBox Text="{Binding StrokeThickness, Mode=TwoWay}"
-                             VerticalAlignment="Center"
-                             HorizontalAlignment="Stretch" />
-                </GroupBox>
-            </DataTemplate>
+			<DataTemplate DataType="{x:Type Shapes1:CandyCane}">
+				<TextBlock Text="Nothing to configure" />
+			</DataTemplate>
 
-            <DataTemplate DataType="{x:Type Shapes1:OutlinedTriangle}">
-                <GroupBox Header="Stroke Thickness">
-                    <TextBox Text="{Binding StrokeThickness, Mode=TwoWay}"
-                             VerticalAlignment="Center"
-                             HorizontalAlignment="Stretch" />
-                </GroupBox>
-            </DataTemplate>
+			<DataTemplate DataType="{x:Type Shapes1:SolidTriangle}">
+				<TextBlock Text="Nothing to configure" />
+			</DataTemplate>
 
-            <DataTemplate DataType="{x:Type Shapes1:OutlinedRectangle}">
-                <GroupBox Header="Stroke Thickness">
-                    <TextBox Text="{Binding StrokeThickness, Mode=TwoWay}"
-                             VerticalAlignment="Center"
-                             HorizontalAlignment="Stretch" />
-                </GroupBox>
-            </DataTemplate>
+			<DataTemplate DataType="{x:Type Shapes1:Arc}">
+				<GroupBox Header="Stroke Thickness">
+					<TextBox Text="{Binding StrokeThickness, Mode=TwoWay}" VerticalAlignment="Center"
+					         HorizontalAlignment="Stretch" />
+				</GroupBox>
+			</DataTemplate>
 
-            <DataTemplate DataType="{x:Type Shapes1:OutlinedStar}">
-                <GroupBox Header="Stroke Thickness">
-                    <TextBox Text="{Binding StrokeThickness, Mode=TwoWay}"
-                             VerticalAlignment="Center"
-                             HorizontalAlignment="Stretch" />
-                </GroupBox>
-            </DataTemplate>
+			<DataTemplate DataType="{x:Type Shapes1:OutlinedTriangle}">
+				<GroupBox Header="Stroke Thickness">
+					<TextBox Text="{Binding StrokeThickness, Mode=TwoWay}" VerticalAlignment="Center"
+					         HorizontalAlignment="Stretch" />
+				</GroupBox>
+			</DataTemplate>
 
-            <DataTemplate DataType="{x:Type Shapes1:Line}">
-                <StackPanel>
-                    <GroupBox Header="Stroke Thickness">
-                        <TextBox Text="{Binding StrokeThickness, Mode=TwoWay}"
-                                 VerticalAlignment="Center"
-                                 HorizontalAlignment="Stretch" />
-                    </GroupBox>
-                    <GroupBox Header="Angle"
-                              Padding="2"
-                              HorizontalContentAlignment="Stretch">
-                        <Slider Value="{Binding Angle, Mode=TwoWay}"
-                                HorizontalAlignment="Stretch"
-                                Minimum="0"
-                                Maximum="360" />
-                    </GroupBox>
-                </StackPanel>
-            </DataTemplate>
+			<DataTemplate DataType="{x:Type Shapes1:OutlinedRectangle}">
+				<GroupBox Header="Stroke Thickness">
+					<TextBox Text="{Binding StrokeThickness, Mode=TwoWay}" VerticalAlignment="Center"
+					         HorizontalAlignment="Stretch" />
+				</GroupBox>
+			</DataTemplate>
+
+			<DataTemplate DataType="{x:Type Shapes1:OutlinedStar}">
+				<GroupBox Header="Stroke Thickness">
+					<TextBox Text="{Binding StrokeThickness, Mode=TwoWay}" VerticalAlignment="Center"
+					         HorizontalAlignment="Stretch" />
+				</GroupBox>
+			</DataTemplate>
+
+			<DataTemplate DataType="{x:Type Shapes1:Line}">
+				<StackPanel>
+					<GroupBox Header="Stroke Thickness">
+						<TextBox Text="{Binding StrokeThickness, Mode=TwoWay}" VerticalAlignment="Center"
+						         HorizontalAlignment="Stretch" />
+					</GroupBox>
+					<GroupBox Header="Angle" Padding="2" HorizontalContentAlignment="Stretch">
+						<Slider Value="{Binding Angle, Mode=TwoWay}" HorizontalAlignment="Stretch" Minimum="0"
+						        Maximum="360" />
+					</GroupBox>
+				</StackPanel>
+			</DataTemplate>
 			<DataTemplate DataType="{x:Type Shapes1:UserDefinedShape}">
 
 				<StackPanel>
 					<GroupBox Header="Stroke Thickness">
-						<ComboBox Name="cboStrokeThickness" 
-								  ItemsSource="{Binding StrokeThicknesses}"
-								  SelectedValue="{Binding StrokeThickness}">
-						</ComboBox>
+						<ComboBox Name="cboStrokeThickness" ItemsSource="{Binding StrokeThicknesses}"
+						          SelectedValue="{Binding StrokeThickness}"></ComboBox>
 					</GroupBox>
 					<GroupBox Header="Edit Mode">
 						<StackPanel>
 							<RadioButton IsChecked="True" Name="radioBtnWrite" Click="radioBtnWrite_Click">Write</RadioButton>
-							<RadioButton Name="radioBtnErase" Click="radioBtnErase_Click">Erase</RadioButton>	
+							<RadioButton Name="radioBtnErase" Click="radioBtnErase_Click">Erase</RadioButton>
 						</StackPanel>
-						
+
 					</GroupBox>
 					<Viewbox Stretch="None">
-						<InkCanvas Name="inkCanvas" Strokes="{Binding Strokes}"  
-								   Background="Black" 
-								   Width="200" 
-								   Height="200"
-								   DefaultDrawingAttributes="{Binding StrokeThickness, Converter={StaticResource StrokeThicknessToDrawingAttributesConverter}}">
-
-						</InkCanvas>
+						<InkCanvas Name="inkCanvas" Strokes="{Binding Strokes}" Background="Black" Width="200" Height="200"
+						           DefaultDrawingAttributes="{Binding StrokeThickness, Converter={StaticResource StrokeThicknessToDrawingAttributesConverter}}"></InkCanvas>
 					</Viewbox>
 				</StackPanel>
 			</DataTemplate>
 		</ResourceDictionary>
-    </Window.Resources>
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-        <ContentControl Content="{Binding NodeLayout}">
-            <ContentControl.ContentTemplate>
-                <DataTemplate DataType="{x:Type Model1:NodeLayout}">
-                    <GroupBox Header="{Binding NodeName}">
-                        <StackPanel>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <GroupBox Header="Width"
-                                          Padding="2"
-                                          HorizontalContentAlignment="Stretch">
-                                    <TextBox Text="{Binding Width, Mode=TwoWay}" />
-                                </GroupBox>
-                                <GroupBox Header="Height"
-                                          Grid.Column="1"
-                                          Padding="2"
-                                          HorizontalContentAlignment="Stretch">
-                                    <TextBox Text="{Binding Height, Mode=TwoWay}" />
-                                </GroupBox>
-                            </Grid>
-                            <GroupBox Header="Shape">
-                                <StackPanel>
-                                    <ComboBox ItemsSource="{Binding Source={StaticResource ShapeTypeValues}}"
-                                              SelectedItem="{Binding Shape, Mode=TwoWay, Converter={StaticResource ShapeToShapeTypeConverter}}"
-                                              Width="200" />
-                                    <ContentControl Content="{Binding Shape}" />
-                                </StackPanel>
-                            </GroupBox>
-                        </StackPanel>
-                    </GroupBox>
-                </DataTemplate>
-            </ContentControl.ContentTemplate>
-        </ContentControl>
-        <Button Margin="2"
-                Grid.Row="1"
-                Content="Close"
-                Click="CloseButtonClick" />
-    </Grid>
+	</Window.Resources>
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+		<ContentControl Content="{Binding NodeLayout}">
+			<ContentControl.ContentTemplate>
+				<DataTemplate DataType="{x:Type Model1:NodeLayout}">
+					<GroupBox Header="{Binding NodeName}">
+						<StackPanel>
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="*" />
+									<ColumnDefinition Width="*" />
+								</Grid.ColumnDefinitions>
+								<GroupBox Header="Width" Padding="2" HorizontalContentAlignment="Stretch">
+									<TextBox Text="{Binding Width, Mode=TwoWay}" />
+								</GroupBox>
+								<GroupBox Header="Height" Grid.Column="1" Padding="2"
+								          HorizontalContentAlignment="Stretch">
+									<TextBox Text="{Binding Height, Mode=TwoWay}" />
+								</GroupBox>
+							</Grid>
+							<GroupBox Header="Shape">
+								<StackPanel>
+									<ComboBox ItemsSource="{Binding Source={StaticResource ShapeTypeValues}}"
+									          SelectedItem="{Binding Shape, Mode=TwoWay, Converter={StaticResource ShapeToShapeTypeConverter}}" Width="200" />
+									<ContentControl Content="{Binding Shape}" />
+								</StackPanel>
+							</GroupBox>
+						</StackPanel>
+					</GroupBox>
+				</DataTemplate>
+			</ContentControl.ContentTemplate>
+		</ContentControl>
+		<Button Margin="2" Grid.Row="1" Content="Close" Click="CloseButtonClick" />
+	</Grid>
 </Window>

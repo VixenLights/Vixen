@@ -9,11 +9,14 @@
 
 using Vixen.Sys.Attribute;
 
-namespace Vixen.Module.Script {
+namespace Vixen.Module.Script
+{
 	[TypeOfModule("Script")]
-	class ScriptModuleImplementation : ModuleImplementation<IScriptModuleInstance> {
+	internal class ScriptModuleImplementation : ModuleImplementation<IScriptModuleInstance>
+	{
 		public ScriptModuleImplementation()
-			: base(new ScriptModuleManagement(), new ScriptModuleRepository()) {
+			: base(new ScriptModuleManagement(), new ScriptModuleRepository())
+		{
 		}
 	}
 }

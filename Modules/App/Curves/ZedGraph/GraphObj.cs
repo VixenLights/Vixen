@@ -35,9 +35,10 @@ namespace ZedGraph
 	/// <author> John Champion </author>
 	/// <version> $Revision: 3.1 $ $Date: 2006-06-24 20:26:44 $ </version>
 	[Serializable]
-	abstract public class GraphObj : ISerializable, ICloneable
+	public abstract class GraphObj : ISerializable, ICloneable
 	{
-	#region Fields
+		#region Fields
+
 		/// <summary>
 		/// Protected field that stores the location of this <see cref="GraphObj"/>.
 		/// Use the public property <see cref="Location"/> to access this value.
@@ -50,14 +51,14 @@ namespace ZedGraph
 		/// access this value.
 		/// </summary>
 		protected bool _isVisible;
-		
+
 		/// <summary>
 		/// Protected field that determines whether or not the rendering of this <see cref="GraphObj"/>
 		/// will be clipped to the ChartRect.  Use the public property <see cref="IsClippedToChartRect"/> to
 		/// access this value.
 		/// </summary>
 		protected bool _isClippedToChartRect;
-		
+
 		/// <summary>
 		/// A tag object for use by the user.  This can be used to store additional
 		/// information associated with the <see cref="GraphObj"/>.  ZedGraph does
@@ -82,9 +83,10 @@ namespace ZedGraph
 		/// </summary>
 		internal Link _link;
 
-	#endregion
+		#endregion
 
-	#region Defaults
+		#region Defaults
+
 		/// <summary>
 		/// A simple struct that defines the
 		/// default property values for the <see cref="GraphObj"/> class.
@@ -99,6 +101,7 @@ namespace ZedGraph
 			/// using the <see cref="AlignV"/> enum type.
 			/// </summary>
 			public static AlignV AlignV = AlignV.Center;
+
 			/// <summary>
 			/// Default value for the horizontal <see cref="GraphObj"/>
 			/// text alignment (<see cref="GraphObj.Location"/> property).
@@ -106,6 +109,7 @@ namespace ZedGraph
 			/// using the <see cref="AlignH"/> enum type.
 			/// </summary>
 			public static AlignH AlignH = AlignH.Center;
+
 			/// <summary>
 			/// The default coordinate system to be used for defining the
 			/// <see cref="GraphObj"/> location coordinates
@@ -114,14 +118,17 @@ namespace ZedGraph
 			/// <value> The coordinate system is defined with the <see cref="CoordType"/>
 			/// enum</value>
 			public static CoordType CoordFrame = CoordType.AxisXYScale;
+
 			/// <summary>
 			/// The default value for <see cref="GraphObj.IsClippedToChartRect"/>.
 			/// </summary>
 			public static bool IsClippedToChartRect = false;
 		}
-	#endregion
 
-	#region Properties
+		#endregion
+
+		#region Properties
+
 		/// <summary>
 		/// The <see cref="ZedGraph.Location"/> struct that describes the location
 		/// for this <see cref="GraphObj"/>.
@@ -148,7 +155,7 @@ namespace ZedGraph
 			get { return _zOrder; }
 			set { _zOrder = value; }
 		}
-		
+
 		/// <summary>
 		/// Gets or sets a value that determines if this <see cref="GraphObj"/> will be
 		/// visible in the graph.  true displays the item, false hides it.
@@ -189,15 +196,16 @@ namespace ZedGraph
 		{
 			get
 			{
-				return	_zOrder == ZOrder.A_InFront ||
-							_zOrder == ZOrder.B_BehindLegend ||
-							_zOrder == ZOrder.C_BehindChartBorder;
+				return _zOrder == ZOrder.A_InFront ||
+				       _zOrder == ZOrder.B_BehindLegend ||
+				       _zOrder == ZOrder.C_BehindChartBorder;
 			}
 		}
 
-	#endregion
-	
-	#region Constructors
+		#endregion
+
+		#region Constructors
+
 		/// <overloads>
 		/// Constructors for the <see cref="GraphObj"/> class.
 		/// </overloads>
@@ -206,7 +214,7 @@ namespace ZedGraph
 		/// values as defined in the <see cref="Default"/> class.
 		/// </summary>
 		public GraphObj() :
-			this( 0, 0, Default.CoordFrame, Default.AlignH, Default.AlignV )
+			this(0, 0, Default.CoordFrame, Default.AlignH, Default.AlignV)
 		{
 		}
 
@@ -224,8 +232,8 @@ namespace ZedGraph
 		/// <see cref="ZedGraph.Location.CoordinateFrame"/> property.  The text will be
 		/// aligned to this position based on the
 		/// <see cref="AlignV"/> property.</param>
-		public GraphObj( double x, double y ) :
-			this( x, y, Default.CoordFrame, Default.AlignH, Default.AlignV )
+		public GraphObj(double x, double y) :
+			this(x, y, Default.CoordFrame, Default.AlignH, Default.AlignV)
 		{
 		}
 
@@ -246,8 +254,8 @@ namespace ZedGraph
 		/// <param name="y">The y position of the item.</param>
 		/// <param name="x2">The x2 position of the item.</param>
 		/// <param name="y2">The x2 position of the item.</param>
-		public GraphObj( double x, double y, double x2, double y2 ) :
-			this( x, y, x2, y2, Default.CoordFrame, Default.AlignH, Default.AlignV )
+		public GraphObj(double x, double y, double x2, double y2) :
+			this(x, y, x2, y2, Default.CoordFrame, Default.AlignH, Default.AlignV)
 		{
 		}
 
@@ -270,11 +278,11 @@ namespace ZedGraph
 		/// <param name="coordType">The <see cref="CoordType"/> enum value that
 		/// indicates what type of coordinate system the x and y parameters are
 		/// referenced to.</param>
-		public GraphObj( double x, double y, CoordType coordType ) :
-			this( x, y, coordType, Default.AlignH, Default.AlignV )
+		public GraphObj(double x, double y, CoordType coordType) :
+			this(x, y, coordType, Default.AlignH, Default.AlignV)
 		{
 		}
-		
+
 		/// <summary>
 		/// Constructor that creates a <see cref="GraphObj"/> with the specified
 		/// position, <see cref="CoordType"/>, <see cref="AlignH"/>, and <see cref="AlignV"/>.
@@ -300,13 +308,13 @@ namespace ZedGraph
 		/// the horizontal alignment of the object with respect to the (x,y) location</param>
 		/// <param name="alignV">The <see cref="ZedGraph.AlignV"/> enum that specifies
 		/// the vertical alignment of the object with respect to the (x,y) location</param>
-		public GraphObj( double x, double y, CoordType coordType, AlignH alignH, AlignV alignV )
+		public GraphObj(double x, double y, CoordType coordType, AlignH alignH, AlignV alignV)
 		{
 			_isVisible = true;
 			_isClippedToChartRect = Default.IsClippedToChartRect;
 			this.Tag = null;
 			_zOrder = ZOrder.A_InFront;
-			_location = new Location( x, y, coordType, alignH, alignV );
+			_location = new Location(x, y, coordType, alignH, alignV);
 			_link = new Link();
 		}
 
@@ -334,14 +342,14 @@ namespace ZedGraph
 		/// the horizontal alignment of the object with respect to the (x,y) location</param>
 		/// <param name="alignV">The <see cref="ZedGraph.AlignV"/> enum that specifies
 		/// the vertical alignment of the object with respect to the (x,y) location</param>
-		public GraphObj( double x, double y, double x2, double y2, CoordType coordType,
-					AlignH alignH, AlignV alignV )
+		public GraphObj(double x, double y, double x2, double y2, CoordType coordType,
+		                AlignH alignH, AlignV alignV)
 		{
 			_isVisible = true;
 			_isClippedToChartRect = Default.IsClippedToChartRect;
 			this.Tag = null;
 			_zOrder = ZOrder.A_InFront;
-			_location = new Location( x, y, x2, y2, coordType, alignH, alignV );
+			_location = new Location(x, y, x2, y2, coordType, alignH, alignV);
 			_link = new Link();
 		}
 
@@ -349,7 +357,7 @@ namespace ZedGraph
 		/// The Copy Constructor
 		/// </summary>
 		/// <param name="rhs">The <see cref="GraphObj"/> object from which to copy</param>
-		public GraphObj( GraphObj rhs )
+		public GraphObj(GraphObj rhs)
 		{
 			// Copy value types
 			_isVisible = rhs.IsVisible;
@@ -357,7 +365,7 @@ namespace ZedGraph
 			_zOrder = rhs.ZOrder;
 
 			// copy reference types by cloning
-			if ( rhs.Tag is ICloneable )
+			if (rhs.Tag is ICloneable)
 				this.Tag = ((ICloneable) rhs.Tag).Clone();
 			else
 				this.Tag = rhs.Tag;
@@ -384,13 +392,14 @@ namespace ZedGraph
 		/// <returns>A deep copy of this object</returns>
 		object ICloneable.Clone()
 		{
-			throw new NotImplementedException( "Can't clone an abstract base type -- child types must implement ICloneable" );
+			throw new NotImplementedException("Can't clone an abstract base type -- child types must implement ICloneable");
 			//return new PaneBase( this );
 		}
 
-	#endregion
+		#endregion
 
-	#region Serialization
+		#region Serialization
+
 		/// <summary>
 		/// Current schema value that defines the version of the serialized file
 		/// </summary>
@@ -406,40 +415,43 @@ namespace ZedGraph
 		/// </param>
 		/// <param name="context">A <see cref="StreamingContext"/> instance that contains the serialized data
 		/// </param>
-		protected GraphObj( SerializationInfo info, StreamingContext context )
+		protected GraphObj(SerializationInfo info, StreamingContext context)
 		{
 			// The schema value is just a file version parameter.  You can use it to make future versions
 			// backwards compatible as new member variables are added to classes
-			int sch = info.GetInt32( "schema" );
+			int sch = info.GetInt32("schema");
 
-			_location = (Location) info.GetValue( "location", typeof(Location) );
-			_isVisible = info.GetBoolean( "isVisible" );
-			Tag = info.GetValue( "Tag", typeof(object) );
-			_zOrder = (ZOrder) info.GetValue( "zOrder", typeof(ZOrder) );
+			_location = (Location) info.GetValue("location", typeof (Location));
+			_isVisible = info.GetBoolean("isVisible");
+			Tag = info.GetValue("Tag", typeof (object));
+			_zOrder = (ZOrder) info.GetValue("zOrder", typeof (ZOrder));
 
-			_isClippedToChartRect = info.GetBoolean( "isClippedToChartRect" );
-			_link = (Link) info.GetValue( "link", typeof( Link ) );
+			_isClippedToChartRect = info.GetBoolean("isClippedToChartRect");
+			_link = (Link) info.GetValue("link", typeof (Link));
 		}
+
 		/// <summary>
 		/// Populates a <see cref="SerializationInfo"/> instance with the data needed to serialize the target object
 		/// </summary>
 		/// <param name="info">A <see cref="SerializationInfo"/> instance that defines the serialized data</param>
 		/// <param name="context">A <see cref="StreamingContext"/> instance that contains the serialized data</param>
-		[SecurityPermissionAttribute(SecurityAction.Demand,SerializationFormatter=true)]
-		public virtual void GetObjectData( SerializationInfo info, StreamingContext context )
+		[SecurityPermissionAttribute(SecurityAction.Demand, SerializationFormatter = true)]
+		public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
-			info.AddValue( "schema", schema );
-			info.AddValue( "location", _location );
-			info.AddValue( "isVisible", _isVisible );
-			info.AddValue( "Tag", Tag );
-			info.AddValue( "zOrder", _zOrder );
+			info.AddValue("schema", schema);
+			info.AddValue("location", _location);
+			info.AddValue("isVisible", _isVisible);
+			info.AddValue("Tag", Tag);
+			info.AddValue("zOrder", _zOrder);
 
-			info.AddValue( "isClippedToChartRect", _isClippedToChartRect );
-			info.AddValue( "link", _link );
+			info.AddValue("isClippedToChartRect", _isClippedToChartRect);
+			info.AddValue("link", _link);
 		}
-	#endregion
 
-	#region Rendering Methods
+		#endregion
+
+		#region Rendering Methods
+
 		/// <summary>
 		/// Render this <see cref="GraphObj"/> object to the specified <see cref="Graphics"/> device.
 		/// </summary>
@@ -461,8 +473,8 @@ namespace ZedGraph
 		/// <see cref="PaneBase.CalcScaleFactor"/> method, and is used to proportionally adjust
 		/// font sizes, etc. according to the actual size of the graph.
 		/// </param>
-		abstract public void Draw( Graphics g, PaneBase pane, float scaleFactor );
-		
+		public abstract void Draw(Graphics g, PaneBase pane, float scaleFactor);
+
 		/// <summary>
 		/// Determine if the specified screen point lies inside the bounding box of this
 		/// <see cref="GraphObj"/>.
@@ -483,11 +495,11 @@ namespace ZedGraph
 		/// font sizes, etc. according to the actual size of the graph.
 		/// </param>
 		/// <returns>true if the point lies in the bounding box, false otherwise</returns>
-		virtual public bool PointInBox( PointF pt, PaneBase pane, Graphics g, float scaleFactor )
+		public virtual bool PointInBox(PointF pt, PaneBase pane, Graphics g, float scaleFactor)
 		{
 			GraphPane gPane = pane as GraphPane;
 
-			if ( gPane != null && _isClippedToChartRect && !gPane.Chart.Rect.Contains( pt ) )
+			if (gPane != null && _isClippedToChartRect && !gPane.Chart.Rect.Contains(pt))
 				return false;
 
 			return true;
@@ -496,10 +508,9 @@ namespace ZedGraph
 		/// <summary>
 		/// Determines the shape type and Coords values for this GraphObj
 		/// </summary>
-		abstract public void GetCoords( PaneBase pane, Graphics g, float scaleFactor,
-				out string shape, out string coords );
+		public abstract void GetCoords(PaneBase pane, Graphics g, float scaleFactor,
+		                               out string shape, out string coords);
 
-	#endregion
-	
+		#endregion
 	}
 }

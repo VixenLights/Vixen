@@ -15,30 +15,32 @@
 using System.Collections.Generic;
 
 
-namespace Dataweb.Utilities {
-
+namespace Dataweb.Utilities
+{
 	/// <summary>
 	/// Implements a list, whose index is a hash value and which can have multiple items
 	/// per index value.
 	/// </summary>
-	public class MultiHashList<T>  {
-
+	public class MultiHashList<T>
+	{
 		/// <summary>
 		/// Initializes a new instance of <see cref="T:Dataweb.Utilities.MultiHashList`1" />.
 		/// </summary>
 		/// <param name="capacity"></param>
-		public MultiHashList(int capacity) {
-			listCapacity = capacity / order;
+		public MultiHashList(int capacity)
+		{
+			listCapacity = capacity/order;
 			list = new List<Element>(listCapacity);
 			for (int i = 0; i < listCapacity; ++i) list.Add(null);
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public void Add(uint key, T value) {
+		public void Add(uint key, T value)
+		{
 			Element newElement = new Element(key, value);
-			if (list[(int)(key % listCapacity)] == null)
-				list[(int)(key % listCapacity)] = newElement;
+			if (list[(int) (key%listCapacity)] == null)
+				list[(int) (key%listCapacity)] = newElement;
 			else {
 				Element e;
 #if DEBUG_DIAGNOSTICS
@@ -48,7 +50,7 @@ namespace Dataweb.Utilities {
 				if (cnt > maxListLen) maxListLen = cnt;
 				else if (cnt > 0 && cnt < minListLen) minListLen = cnt;
 #else
-				for (e = list[(int)(key % listCapacity)]; !(e.item.Equals(value) && e.key == key) && e.next != null; e = e.next) ;
+				for (e = list[(int) (key%listCapacity)]; !(e.item.Equals(value) && e.key == key) && e.next != null; e = e.next) ;
 #endif
 				// Do not insert the same shape with the same key a second time.
 				// TODO 2: Optimize the second comparison.
@@ -58,16 +60,18 @@ namespace Dataweb.Utilities {
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public bool Remove(uint key, T value) {
-			if (list[(int)(key % listCapacity)] == null) return false;
+		public bool Remove(uint key, T value)
+		{
+			if (list[(int) (key%listCapacity)] == null) return false;
 			Element e;
-			if (list[(int)(key % listCapacity)].item.Equals(value)) {
-				list[(int)(key % listCapacity)] = list[(int)(key % list.Capacity)].next;
+			if (list[(int) (key%listCapacity)].item.Equals(value)) {
+				list[(int) (key%listCapacity)] = list[(int) (key%list.Capacity)].next;
 				return true;
-			} else {
-				for (e = list[(int)(key % list.Capacity)]; 
-					e.next != null && (e.next.key != key || !e.next.item.Equals(value)); 
-					e = e.next) ;
+			}
+			else {
+				for (e = list[(int) (key%list.Capacity)];
+				     e.next != null && (e.next.key != key || !e.next.item.Equals(value));
+				     e = e.next) ;
 				// Either e.next is null or the one we are searching for
 				if (e.next == null) return false;
 				e.next = e.next.next;
@@ -77,17 +81,20 @@ namespace Dataweb.Utilities {
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public void Clear() {
+		public void Clear()
+		{
 			// Clear list by overwriting all items with null
 			for (int i = list.Count - 1; i >= 0; --i) list[i] = null;
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public IEnumerable<T> this[uint key] {
-			get {
-				if (list[(int)(key % listCapacity)] == null) yield break;
-				for (Element e = list[(int)(key % listCapacity)]; e != null; e = e.next)
+		public IEnumerable<T> this[uint key]
+		{
+			get
+			{
+				if (list[(int) (key%listCapacity)] == null) yield break;
+				for (Element e = list[(int) (key%listCapacity)]; e != null; e = e.next)
 					if (e.key == key) yield return e.item;
 			}
 		}
@@ -95,9 +102,9 @@ namespace Dataweb.Utilities {
 
 #if DEBUG_DIAGNOSTICS
 		
-		/// <summary>
-		/// Returns the number of entries in the longest list.
-		/// </summary>
+	/// <summary>
+	/// Returns the number of entries in the longest list.
+	/// </summary>
 		public int MaxListLength {
 			get { return maxListLen; }
 		}
@@ -117,13 +124,16 @@ namespace Dataweb.Utilities {
 		}
 
 #endif
-		
-		
-		private class Element {
-			public Element(uint key, T item) {
+
+
+		private class Element
+		{
+			public Element(uint key, T item)
+			{
 				this.key = key;
 				this.item = item;
 			}
+
 			public uint key;
 			public T item;
 			public Element next;
@@ -138,5 +148,4 @@ namespace Dataweb.Utilities {
 		private int minListLen = 0;
 #endif
 	}
-
 }

@@ -4,8 +4,10 @@ using Vixen.Execution.DataSource;
 using Vixen.Module.Timing;
 using Vixen.Sys;
 
-namespace Vixen.Execution.Context {
-	abstract public class ContextBase : IContext, IStateSourceCollection<Guid, IIntentStates> {
+namespace Vixen.Execution.Context
+{
+	public abstract class ContextBase : IContext, IStateSourceCollection<Guid, IIntentStates>
+	{
 		private ElementStateSourceCollection _elementStates;
 		private IContextCurrentEffects _currentEffects;
 		private IntentStateBuilder _elementStateBuilder;
@@ -14,9 +16,10 @@ namespace Vixen.Execution.Context {
 		public event EventHandler ContextStarted;
 		public event EventHandler ContextEnded;
 
-		delegate void IntentDiscoveryAction(Guid elementId, IIntentNode intentNode, TimeSpan intentRelativeTime);
+		private delegate void IntentDiscoveryAction(Guid elementId, IIntentNode intentNode, TimeSpan intentRelativeTime);
 
-		protected ContextBase() {
+		protected ContextBase()
+		{
 			Id = Guid.NewGuid();
 
 			_elementStates = new ElementStateSourceCollection();
@@ -30,31 +33,36 @@ namespace Vixen.Execution.Context {
 
 		public abstract string Name { get; }
 
-		public void Start() {
+		public void Start()
+		{
 			try {
 				_OnStart();
 				IsRunning = true;
-			} catch(Exception ex) {
+			}
+			catch (Exception ex) {
 				VixenSystem.Logging.Error(ex);
 			}
 		}
 
-		public void Pause() {
-			if(IsRunning && !IsPaused) {
+		public void Pause()
+		{
+			if (IsRunning && !IsPaused) {
 				IsPaused = true;
 				_OnPause();
 			}
 		}
 
-		public void Resume() {
-			if(IsPaused) {
+		public void Resume()
+		{
+			if (IsPaused) {
 				_OnResume();
 				IsPaused = false;
 			}
 		}
 
-		public void Stop() {
-			if(IsRunning) {
+		public void Stop()
+		{
+			if (IsRunning) {
 				_OnStop();
 				_ResetElementStates();
 				IsPaused = false;
@@ -66,16 +74,18 @@ namespace Vixen.Execution.Context {
 
 		// A context may or may not wrap a sequence, so the state of this property cannot be
 		// dependent upon a sequence starting.
-		virtual public bool IsRunning { get; private set; }
+		public virtual bool IsRunning { get; private set; }
 
-		public TimeSpan GetTimeSnapshot() {
+		public TimeSpan GetTimeSnapshot()
+		{
 			return (_SequenceTiming != null) ? _SequenceTiming.Position : TimeSpan.Zero;
 		}
 
-		public IEnumerable<Guid> UpdateElementStates(TimeSpan currentTime) {
+		public IEnumerable<Guid> UpdateElementStates(TimeSpan currentTime)
+		{
 			Guid[] affectedElements = null;
 
-			if(IsRunning && !IsPaused) {
+			if (IsRunning && !IsPaused) {
 				affectedElements = _UpdateCurrentEffectList(currentTime);
 				_RepopulateElementBuffer(currentTime, affectedElements);
 			}
@@ -83,38 +93,44 @@ namespace Vixen.Execution.Context {
 			return affectedElements;
 		}
 
-		public IStateSource<IIntentStates> GetState(Guid key) {
+		public IStateSource<IIntentStates> GetState(Guid key)
+		{
 			return _elementStates.GetState(key);
 		}
 
-		private Guid[] _UpdateCurrentEffectList(TimeSpan currentTime) {
+		private Guid[] _UpdateCurrentEffectList(TimeSpan currentTime)
+		{
 			// We have an object that does this for us.
 			return _currentEffects.UpdateCurrentEffects(_DataSource, currentTime);
 		}
 
-		private void _RepopulateElementBuffer(TimeSpan currentTime, IEnumerable<Guid> affectedElementIds) {
+		private void _RepopulateElementBuffer(TimeSpan currentTime, IEnumerable<Guid> affectedElementIds)
+		{
 			_InitializeElementStateBuilder();
 			_DiscoverIntentsFromCurrentEffects(currentTime, _AddIntentToElementStateBuilder);
 			_LatchElementStatesFromBuilder(affectedElementIds);
 		}
 
-		private void _DiscoverIntentsFromCurrentEffects(TimeSpan currentTime, IntentDiscoveryAction intentDiscoveryAction) {
+		private void _DiscoverIntentsFromCurrentEffects(TimeSpan currentTime, IntentDiscoveryAction intentDiscoveryAction)
+		{
 			_DiscoverIntentsFromEffects(currentTime, _currentEffects, intentDiscoveryAction);
 		}
 
-		private void _DiscoverIntentsFromEffects(TimeSpan currentTime, IEnumerable<IEffectNode> effects, IntentDiscoveryAction intentDiscoveryAction) {
+		private void _DiscoverIntentsFromEffects(TimeSpan currentTime, IEnumerable<IEffectNode> effects,
+		                                         IntentDiscoveryAction intentDiscoveryAction)
+		{
 			// For each effect in the in-effect list for the context...
-			foreach(IEffectNode effectNode in effects) {
+			foreach (IEffectNode effectNode in effects) {
 				// Get a time value relative to the start of the effect.
 				TimeSpan effectRelativeTime = Helper.GetEffectRelativeTime(currentTime, effectNode);
 				// Get the elements the effect affects at this time and the ways it will do so.
 				ElementIntents elementIntents = effectNode.Effect.GetElementIntents(effectRelativeTime);
 				// For each element...
-				foreach(Guid elementId in elementIntents.ElementIds) {
+				foreach (Guid elementId in elementIntents.ElementIds) {
 					// Get the intent nodes.
 					IIntentNode[] intentNodes = elementIntents[elementId];
 					// For each intent node.
-					foreach(IIntentNode intentNode in intentNodes) {
+					foreach (IIntentNode intentNode in intentNodes) {
 						// Get a timing value relative to the intent.
 						TimeSpan intentRelativeTime = Helper.GetIntentRelativeTime(effectRelativeTime, intentNode);
 						// Do whatever is going to be done.
@@ -124,22 +140,26 @@ namespace Vixen.Execution.Context {
 			}
 		}
 
-		private void _InitializeElementStateBuilder() {
+		private void _InitializeElementStateBuilder()
+		{
 			_elementStateBuilder.Clear();
 		}
 
-		private void _AddIntentToElementStateBuilder(Guid elementId, IIntentNode intentNode, TimeSpan intentRelativeTime) {
+		private void _AddIntentToElementStateBuilder(Guid elementId, IIntentNode intentNode, TimeSpan intentRelativeTime)
+		{
 			IIntentState intentState = intentNode.CreateIntentState(intentRelativeTime);
 			_elementStateBuilder.AddElementState(elementId, intentState);
 		}
 
-		private void _LatchElementStatesFromBuilder(IEnumerable<Guid> affectedElementIds) {
-			foreach(Guid elementId in affectedElementIds) {
+		private void _LatchElementStatesFromBuilder(IEnumerable<Guid> affectedElementIds)
+		{
+			foreach (Guid elementId in affectedElementIds) {
 				_elementStates.SetValue(elementId, _elementStateBuilder.GetElementState(elementId));
 			}
 		}
 
-		private void _ResetElementStates() {
+		private void _ResetElementStates()
+		{
 			_InitializeElementStateBuilder();
 			_LatchElementStatesFromBuilder(_elementStates.ElementsInCollection);
 		}
@@ -148,39 +168,52 @@ namespace Vixen.Execution.Context {
 
 		protected abstract ITiming _SequenceTiming { get; }
 
-		protected virtual void _OnStart() { }
+		protected virtual void _OnStart()
+		{
+		}
 
-		protected virtual void _OnPause() { }
+		protected virtual void _OnPause()
+		{
+		}
 
-		protected virtual void _OnResume() { }
+		protected virtual void _OnResume()
+		{
+		}
 
-		protected virtual void _OnStop() { }
+		protected virtual void _OnStop()
+		{
+		}
 
-		protected virtual void OnContextStarted(EventArgs e) {
-			if(ContextStarted != null) {
+		protected virtual void OnContextStarted(EventArgs e)
+		{
+			if (ContextStarted != null) {
 				ContextStarted(this, e);
 			}
 		}
 
-		protected virtual void OnContextEnded(EventArgs e) {
-			if(ContextEnded != null) {
+		protected virtual void OnContextEnded(EventArgs e)
+		{
+			if (ContextEnded != null) {
 				ContextEnded(this, e);
 			}
 		}
 
-		public void Dispose() {
+		public void Dispose()
+		{
 			Dispose(true);
 			GC.SuppressFinalize(this);
 		}
 
-		protected virtual void Dispose(bool disposing) {
-			if(!_disposed) {
+		protected virtual void Dispose(bool disposing)
+		{
+			if (!_disposed) {
 				Stop();
 				_disposed = true;
 			}
 		}
 
-		~ContextBase() {
+		~ContextBase()
+		{
 			Dispose(false);
 		}
 	}

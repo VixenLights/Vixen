@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Vixen.Module.Timing {
-	public interface ITimingModuleInstance : ITiming, IModuleInstance {
+namespace Vixen.Module.Timing
+{
+	public interface ITimingModuleInstance : ITiming, IModuleInstance
+	{
 	}
 }

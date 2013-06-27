@@ -14,29 +14,33 @@
 
 using System;
 
-namespace Dataweb.NShape.Advanced {
-
+namespace Dataweb.NShape.Advanced
+{
 	/// <summary>
 	/// Basic operations for fuzzy logic
 	/// </summary>
-	internal class Fuzzy {
-
-		internal static byte Or(byte v1, byte v2) {
+	internal class Fuzzy
+	{
+		internal static byte Or(byte v1, byte v2)
+		{
 			return Math.Max(v1, v2);
 		}
 
 
-		internal static byte Or(byte v1, byte v2, byte v3) {
+		internal static byte Or(byte v1, byte v2, byte v3)
+		{
 			return Math.Max(Math.Max(v1, v2), v3);
 		}
 
 
-		internal static byte And(byte v1, byte v2) {
+		internal static byte And(byte v1, byte v2)
+		{
 			return Math.Min(v1, v2);
 		}
 
 
-		internal static byte And(byte v1, byte v2, byte v3) {
+		internal static byte And(byte v1, byte v2, byte v3)
+		{
 			return Math.Min(Math.Min(v1, v2), v3);
 		}
 
@@ -48,17 +52,16 @@ namespace Dataweb.NShape.Advanced {
 		/// <param name="falseValue">Untergrenze, ab der der Fuzyy-Wert 0 wird</param>
 		/// <param name="trueValue">Obergrenze, ab der der Fuzzy-Wert 100 wird</param>
 		/// <returns>Fuzzy-Wert</returns>
-		internal static byte MapToFuzzy(double value, float falseValue, float trueValue) {
+		internal static byte MapToFuzzy(double value, float falseValue, float trueValue)
+		{
 			byte result;
 			if (value <= falseValue)
 				result = 0;
 			else if (value >= trueValue)
 				result = 100;
 			else
-				result = (byte)(100.0 * (value - falseValue) / (trueValue - falseValue));
+				result = (byte) (100.0*(value - falseValue)/(trueValue - falseValue));
 			return result;
 		}
-
 	}
-
 }

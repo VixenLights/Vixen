@@ -14,7 +14,7 @@ namespace Common.Controls.Timeline
 		private Color m_borderColor = Color.Black;
 		private object m_tag = null;
 		private bool m_selected = false;
-        static private System.Object drawLock = new System.Object();
+		private static System.Object drawLock = new System.Object();
 		//private bool m_redraw = false;
 		//private bool m_rendered = false;
 
@@ -35,7 +35,6 @@ namespace Common.Controls.Timeline
 			m_selected = other.m_selected;
 		}
 
-
 		#region Begin/End update
 
 		private TimeSpan m_origStartTime, m_origDuration;
@@ -49,19 +48,16 @@ namespace Common.Controls.Timeline
 
 		public void EndUpdate()
 		{
-			if ((StartTime != m_origStartTime) || (Duration != m_origDuration))
-			{
+			if ((StartTime != m_origStartTime) || (Duration != m_origDuration)) {
 				OnTimeChanged();
 			}
 		}
 
 		#endregion
 
-
-
 		#region Properties
 
-        public Row Row { get; set; }
+		public Row Row { get; set; }
 
 		/// <summary>
 		/// Gets or sets the starting time of this element (left side).
@@ -116,7 +112,7 @@ namespace Common.Controls.Timeline
 			{
 				m_backColor = value;
 				CachedCanvasIsCurrent = false;
-                Changed = true;
+				Changed = true;
 				OnContentChanged();
 			}
 		}
@@ -128,15 +124,19 @@ namespace Common.Controls.Timeline
 			{
 				m_borderColor = value;
 				CachedCanvasIsCurrent = false;
-                Changed = true;
-                OnContentChanged();
+				Changed = true;
+				OnContentChanged();
 			}
 		}
 
 		public object Tag
 		{
 			get { return m_tag; }
-			set { m_tag = value; OnContentChanged(); }
+			set
+			{
+				m_tag = value;
+				OnContentChanged();
+			}
 		}
 
 		public bool Selected
@@ -147,28 +147,28 @@ namespace Common.Controls.Timeline
 				if (m_selected == value)
 					return;
 
-                m_selected = value;
+				m_selected = value;
 				//m_redraw = true;
 				//CachedCanvasIsCurrent = false;
 				OnSelectedChanged();
 			}
 		}
 
-        private bool _changed = true;
-        public bool Changed
-        {
-            set
-            {
-                if (value)
-                {
-                    //m_redraw = true;
-                    CachedCanvasIsCurrent = false;
-                }
-                //Console.WriteLine("Changed");
-                _changed = value;
-            }
-            get { return _changed; }
-        }
+		private bool _changed = true;
+
+		public bool Changed
+		{
+			set
+			{
+				if (value) {
+					//m_redraw = true;
+					CachedCanvasIsCurrent = false;
+				}
+				//Console.WriteLine("Changed");
+				_changed = value;
+			}
+			get { return _changed; }
+		}
 
 		#endregion
 
@@ -222,7 +222,6 @@ namespace Common.Controls.Timeline
 
 		#endregion
 
-
 		#region Methods
 
 		public int CompareTo(Element other)
@@ -245,7 +244,6 @@ namespace Common.Controls.Timeline
 
 		#endregion
 
-
 		#region Drawing
 
 		private Bitmap CachedElementCanvas { get; set; }
@@ -254,20 +252,15 @@ namespace Common.Controls.Timeline
 
 		protected virtual Bitmap SetupCanvas(Size imageSize)
 		{
-			using (Bitmap result = new Bitmap(imageSize.Width, imageSize.Height))
-			{
-
-				using (Graphics g = Graphics.FromImage(result))
-				{
-					using (Brush b = new SolidBrush(BackColor))
-					{
+			using (Bitmap result = new Bitmap(imageSize.Width, imageSize.Height)) {
+				using (Graphics g = Graphics.FromImage(result)) {
+					using (Brush b = new SolidBrush(BackColor)) {
 						g.FillRectangle(b, 0, 0, imageSize.Width, imageSize.Height);
 					}
 
 					return new Bitmap(result);
 				}
 			}
-
 		}
 
 		protected virtual void AddSelectionOverlayToCanvas(Graphics g)
@@ -277,106 +270,101 @@ namespace Common.Controls.Timeline
 
 			// Adjust the rect such that the border is completely inside it.
 			Rectangle b_rect = new Rectangle(
-				(b_wd / 2),
-				(b_wd / 2),
-				(int)g.VisibleClipBounds.Width - b_wd,
-				(int)g.VisibleClipBounds.Height - b_wd
+				(b_wd/2),
+				(b_wd/2),
+				(int) g.VisibleClipBounds.Width - b_wd,
+				(int) g.VisibleClipBounds.Height - b_wd
 				);
 
 			// Draw it!
-			using (Pen border = new Pen(BorderColor))
-			{
+			using (Pen border = new Pen(BorderColor)) {
 				border.Width = b_wd;
 				g.DrawRectangle(border, b_rect);
 			}
 		}
 
-		protected virtual void DrawCanvasContent(Graphics graphics) { }
+		protected virtual void DrawCanvasContent(Graphics graphics)
+		{
+		}
 
 		protected virtual bool IsCanvasContentCurrent(Size imageSize)
 		{
-			return (CachedCanvasIsCurrent || CachedElementCanvas.Width != imageSize.Width || CachedElementCanvas.Height != imageSize.Height);
+			return (CachedCanvasIsCurrent || CachedElementCanvas.Width != imageSize.Width ||
+			        CachedElementCanvas.Height != imageSize.Height);
 		}
 
-        public Bitmap SetupCachedImage(Size imageSize)
-        {
-            if (CachedElementCanvas == null || !IsCanvasContentCurrent(imageSize) || Changed)
-            {
-                Bitmap b;
-                lock (drawLock)
-                {
-                    CachedElementCanvas = SetupCanvas(imageSize);
-                    using (Graphics g = Graphics.FromImage(CachedElementCanvas))
-                    {
-                        DrawCanvasContent(g);
-                    }
+		public Bitmap SetupCachedImage(Size imageSize)
+		{
+			if (CachedElementCanvas == null || !IsCanvasContentCurrent(imageSize) || Changed) {
+				Bitmap b;
+				lock (drawLock) {
+					CachedElementCanvas = SetupCanvas(imageSize);
+					using (Graphics g = Graphics.FromImage(CachedElementCanvas)) {
+						DrawCanvasContent(g);
+					}
 
-                    b = new Bitmap(CachedElementCanvas);
-                    using (Graphics g = Graphics.FromImage(b))
-                    {
-                        AddSelectionOverlayToCanvas(g);
-                    }
-                }
-                CachedCanvasIsCurrent = true;
-                Changed = false;
-                return b;
-            }
-            return CachedElementCanvas;
-        }
+					b = new Bitmap(CachedElementCanvas);
+					using (Graphics g = Graphics.FromImage(b)) {
+						AddSelectionOverlayToCanvas(g);
+					}
+				}
+				CachedCanvasIsCurrent = true;
+				Changed = false;
+				return b;
+			}
+			return CachedElementCanvas;
+		}
 
-        public void DrawPlaceholder(Graphics g) 
-        {
-            g.FillRectangle(new SolidBrush(Color.FromArgb(122,122,122)), new Rectangle((int)g.VisibleClipBounds.Left, (int)g.VisibleClipBounds.Top, (int)g.VisibleClipBounds.Width, (int)g.VisibleClipBounds.Height));
-        }
+		public void DrawPlaceholder(Graphics g)
+		{
+			g.FillRectangle(new SolidBrush(Color.FromArgb(122, 122, 122)),
+			                new Rectangle((int) g.VisibleClipBounds.Left, (int) g.VisibleClipBounds.Top,
+			                              (int) g.VisibleClipBounds.Width, (int) g.VisibleClipBounds.Height));
+		}
 
-        public Bitmap Draw(Size imageSize)
-        {
-            if (CachedElementCanvas == null || !IsCanvasContentCurrent(imageSize))
-            {
-                Bitmap b = SetupCanvas(imageSize);
-                using (Graphics g = Graphics.FromImage(b))
-                {
-                    DrawPlaceholder(g);
-                    AddSelectionOverlayToCanvas(g);
-                    if (!m_selected)
-                    {
-                        Changed = true;
-                    }
-                }
-                return b;
-            }
-            else if (m_selected)
-            {
-                Bitmap b = new Bitmap(CachedElementCanvas);
-                using (Graphics g = Graphics.FromImage(b))
-                {
-                    AddSelectionOverlayToCanvas(g);
-                }
-                return b;
-            }
-            return CachedElementCanvas;
-        }    
+		public Bitmap Draw(Size imageSize)
+		{
+			if (CachedElementCanvas == null || !IsCanvasContentCurrent(imageSize)) {
+				Bitmap b = SetupCanvas(imageSize);
+				using (Graphics g = Graphics.FromImage(b)) {
+					DrawPlaceholder(g);
+					AddSelectionOverlayToCanvas(g);
+					if (!m_selected) {
+						Changed = true;
+					}
+				}
+				return b;
+			}
+			else if (m_selected) {
+				Bitmap b = new Bitmap(CachedElementCanvas);
+				using (Graphics g = Graphics.FromImage(b)) {
+					AddSelectionOverlayToCanvas(g);
+				}
+				return b;
+			}
+			return CachedElementCanvas;
+		}
 
 		#endregion
+
 		~Element()
 		{
 			Dispose(false);
 		}
+
 		protected void Dispose(bool disposing)
 		{
-			if (disposing)
-			{
-
+			if (disposing) {
 			}
 			if (CachedElementCanvas != null)
 				CachedElementCanvas.Dispose();
 		}
+
 		public void Dispose()
 		{
 			Dispose(true);
 		}
 	}
-
 
 
 	public class ElementTimeInfo : ITimePeriod
@@ -386,9 +374,14 @@ namespace Common.Controls.Timeline
 			StartTime = elem.StartTime;
 			Duration = elem.Duration;
 		}
+
 		public TimeSpan StartTime { get; set; }
 		public TimeSpan Duration { get; set; }
-		public TimeSpan EndTime { get { return StartTime + Duration; } }
+
+		public TimeSpan EndTime
+		{
+			get { return StartTime + Duration; }
+		}
 
 		public static void SwapTimes(ITimePeriod lhs, ITimePeriod rhs)
 		{

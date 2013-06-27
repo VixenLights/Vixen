@@ -1,4 +1,6 @@
-﻿namespace Vixen.Sys {
-	public interface IOutputStateSource : IStateSource<IIntentStates> {
+﻿namespace Vixen.Sys
+{
+	public interface IOutputStateSource : IStateSource<IIntentStates>
+	{
 	}
 }

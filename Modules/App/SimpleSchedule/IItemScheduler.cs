@@ -1,5 +1,7 @@
-﻿namespace VixenModules.App.SimpleSchedule {
-	interface IItemScheduler {
+﻿namespace VixenModules.App.SimpleSchedule
+{
+	internal interface IItemScheduler
+	{
 		void AddSequence(IScheduledItem item);
 		void AddProgram(IScheduledItem item);
 		void UpdateSequence(IScheduledItem item);

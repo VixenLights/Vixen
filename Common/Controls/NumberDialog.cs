@@ -25,6 +25,5 @@ namespace Common.Controls
 		{
 			get { return decimal.ToInt32(numericUpDownChooser.Value); }
 		}
-
 	}
 }

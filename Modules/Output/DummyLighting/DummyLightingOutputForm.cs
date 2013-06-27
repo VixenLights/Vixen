@@ -35,7 +35,11 @@ namespace VixenModules.Output.DummyLighting
 		public RenderStyle renderingStyle
 		{
 			get { return _renderingStyle; }
-			set { _renderingStyle = value; _generateValues(OutputCount); }
+			set
+			{
+				_renderingStyle = value;
+				_generateValues(OutputCount);
+			}
 		}
 
 		public int OutputCount
@@ -60,7 +64,7 @@ namespace VixenModules.Output.DummyLighting
 					_values = new byte[outputs];
 					_colorValues = null;
 					// pretend we only have 1/3 the outputs we were told for calculations below, as 3 outputs == 1 square
-					outputs = (int)Math.Ceiling(outputs / 3.0);
+					outputs = (int) Math.Ceiling(outputs/3.0);
 					break;
 
 				case RenderStyle.RGBSingleChannel:
@@ -70,31 +74,33 @@ namespace VixenModules.Output.DummyLighting
 			}
 
 			if (outputs > 0) {
-				_across = (int)Math.Sqrt(outputs);
-				_down = (int)Math.Round((double)outputs / _across, MidpointRounding.AwayFromZero);
-				_boxWidth = (ClientRectangle.Width / _across) - 1;
-				_boxHeight = (ClientRectangle.Height / _down) - 1;
-			} else {
+				_across = (int) Math.Sqrt(outputs);
+				_down = (int) Math.Round((double) outputs/_across, MidpointRounding.AwayFromZero);
+				_boxWidth = (ClientRectangle.Width/_across) - 1;
+				_boxHeight = (ClientRectangle.Height/_down) - 1;
+			}
+			else {
 				_across = 0;
 				_down = 0;
 				_boxWidth = 0;
 				_boxHeight = 0;
 			}
-
 		}
 
-		protected override void OnVisibleChanged(EventArgs e) {
-			if(Visible) {
+		protected override void OnVisibleChanged(EventArgs e)
+		{
+			if (Visible) {
 				// Reset state.
 				_count = 0;
-				if(_values != null)
+				if (_values != null)
 					Array.Clear(_values, 0, _values.Length);
-				if(_colorValues != null)
+				if (_colorValues != null)
 					Array.Clear(_colorValues, 0, _colorValues.Length);
 			}
 		}
 
 		private double _fps;
+
 		public void UpdateState(double fps, ICommand[] outputStates)
 		{
 			_count++;
@@ -104,22 +110,21 @@ namespace VixenModules.Output.DummyLighting
 				_commandHandler.Reset();
 
 				ICommand command = outputStates[i];
-				if(command != null) {
+				if (command != null) {
 					command.Dispatch(_commandHandler);
 				}
 
-				if(_values != null) {
+				if (_values != null) {
 					_values[i] = _commandHandler.ByteValue;
 				}
-				if(_colorValues != null) {
+				if (_colorValues != null) {
 					_colorValues[i] = _commandHandler.ColorValue;
 				}
 			}
 
-			if (!IsDisposed)
-		    {
-		        BeginInvoke(new MethodInvoker(Refresh));
-		    }
+			if (!IsDisposed) {
+				BeginInvoke(new MethodInvoker(Refresh));
+			}
 		}
 
 		protected override void OnPaint(PaintEventArgs e)
@@ -133,7 +138,7 @@ namespace VixenModules.Output.DummyLighting
 					for (int i = 0; i < _values.Length; i++) {
 						color = System.Drawing.Color.FromArgb(_values[i], System.Drawing.Color.White);
 						_brush.Color = color;
-						e.Graphics.FillRectangle(_brush, (i % _across) * (_boxWidth + 1), (i / _across) * (_boxHeight + 1), _boxWidth, _boxHeight);
+						e.Graphics.FillRectangle(_brush, (i%_across)*(_boxWidth + 1), (i/_across)*(_boxHeight + 1), _boxWidth, _boxHeight);
 					}
 					break;
 
@@ -146,8 +151,9 @@ namespace VixenModules.Output.DummyLighting
 						color = System.Drawing.Color.FromArgb(R, G, B);
 						_brush.Color = color;
 
-						int square = i / 3;
-						e.Graphics.FillRectangle(_brush, (square % _across) * (_boxWidth + 1), (square / _across) * (_boxHeight + 1), _boxWidth, _boxHeight);
+						int square = i/3;
+						e.Graphics.FillRectangle(_brush, (square%_across)*(_boxWidth + 1), (square/_across)*(_boxHeight + 1), _boxWidth,
+						                         _boxHeight);
 					}
 					break;
 
@@ -155,7 +161,7 @@ namespace VixenModules.Output.DummyLighting
 					for (int i = 0; i < _colorValues.Length; i++) {
 						color = _colorValues[i];
 						_brush.Color = color;
-						e.Graphics.FillRectangle(_brush, (i % _across) * (_boxWidth + 1), (i / _across) * (_boxHeight + 1), _boxWidth, _boxHeight);
+						e.Graphics.FillRectangle(_brush, (i%_across)*(_boxWidth + 1), (i/_across)*(_boxHeight + 1), _boxWidth, _boxHeight);
 					}
 					break;
 			}
@@ -177,4 +183,3 @@ namespace VixenModules.Output.DummyLighting
 		RGBSingleChannel
 	}
 }
-

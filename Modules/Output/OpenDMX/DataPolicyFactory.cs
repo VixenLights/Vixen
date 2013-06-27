@@ -2,8 +2,10 @@
 
 namespace VixenModules.Controller.OpenDMX
 {
-	class DataPolicyFactory : IDataPolicyFactory {
-		public IDataPolicy CreateDataPolicy() {
+	internal class DataPolicyFactory : IDataPolicyFactory
+	{
+		public IDataPolicy CreateDataPolicy()
+		{
 			return new DataPolicy();
 		}
 	}

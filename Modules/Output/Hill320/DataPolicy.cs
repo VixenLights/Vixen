@@ -3,13 +3,17 @@ using Vixen.Data.Evaluator;
 using Vixen.Data.Policy;
 using Vixen.Sys;
 
-namespace VixenModules.Output.Hill320 {
-	class DataPolicy : ControllerDataPolicy {
-		protected override IEvaluator GetEvaluator() {
+namespace VixenModules.Output.Hill320
+{
+	internal class DataPolicy : ControllerDataPolicy
+	{
+		protected override IEvaluator GetEvaluator()
+		{
 			return new _8BitEvaluator();
 		}
 
-		protected override ICombinator GetCombinator() {
+		protected override ICombinator GetCombinator()
+		{
 			return new _8BitHighestWinsCombinator();
 		}
 	}

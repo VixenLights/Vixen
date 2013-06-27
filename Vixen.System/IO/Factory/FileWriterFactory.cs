@@ -1,8 +1,11 @@
 ﻿using Vixen.IO.Xml;
 
-namespace Vixen.IO.Factory {
-	class FileWriterFactory {
-		static public IFileWriter CreateFileWriter() {
+namespace Vixen.IO.Factory
+{
+	internal class FileWriterFactory
+	{
+		public static IFileWriter CreateFileWriter()
+		{
 			return new XElementFileWriter();
 		}
 	}

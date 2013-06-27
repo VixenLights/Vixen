@@ -39,7 +39,7 @@ namespace VixenModules.Effect.Twinkle
 
 			foreach (ElementNode node in targetNodes) {
 				if (node != null)
-					_elementData.Add(RenderElement(node, i++ / (double)totalNodes, twinkles));
+					_elementData.Add(RenderElement(node, i++/(double) totalNodes, twinkles));
 			}
 		}
 
@@ -63,90 +63,132 @@ namespace VixenModules.Effect.Twinkle
 
 				return base.IsDirty;
 			}
-			protected set
-			{
-				base.IsDirty = value;
-			}
+			protected set { base.IsDirty = value; }
 		}
 
 		[Value]
 		public bool IndividualElements
 		{
 			get { return _data.IndividualChannels; }
-			set { _data.IndividualChannels = value; IsDirty = true; }
+			set
+			{
+				_data.IndividualChannels = value;
+				IsDirty = true;
+			}
 		}
 
 		[Value]
 		public double MinimumLevel
 		{
 			get { return _data.MinimumLevel; }
-			set { _data.MinimumLevel = value; IsDirty = true; }
+			set
+			{
+				_data.MinimumLevel = value;
+				IsDirty = true;
+			}
 		}
 
 		[Value]
 		public double MaximumLevel
 		{
 			get { return _data.MaximumLevel; }
-			set { _data.MaximumLevel = value; IsDirty = true; }
+			set
+			{
+				_data.MaximumLevel = value;
+				IsDirty = true;
+			}
 		}
 
 		[Value]
 		public int LevelVariation
 		{
 			get { return _data.LevelVariation; }
-			set { _data.LevelVariation = value; IsDirty = true; }
+			set
+			{
+				_data.LevelVariation = value;
+				IsDirty = true;
+			}
 		}
 
 		[Value]
 		public int AveragePulseTime
 		{
 			get { return _data.AveragePulseTime; }
-			set { _data.AveragePulseTime = value; IsDirty = true; }
+			set
+			{
+				_data.AveragePulseTime = value;
+				IsDirty = true;
+			}
 		}
 
 		[Value]
 		public int PulseTimeVariation
 		{
 			get { return _data.PulseTimeVariation; }
-			set { _data.PulseTimeVariation = value; IsDirty = true; }
+			set
+			{
+				_data.PulseTimeVariation = value;
+				IsDirty = true;
+			}
 		}
 
 		[Value]
 		public int AverageCoverage
 		{
 			get { return _data.AverageCoverage; }
-			set { _data.AverageCoverage = value; IsDirty = true; }
+			set
+			{
+				_data.AverageCoverage = value;
+				IsDirty = true;
+			}
 		}
 
 		[Value]
 		public TwinkleColorHandling ColorHandling
 		{
 			get { return _data.ColorHandling; }
-			set { _data.ColorHandling = value; IsDirty = true; }
+			set
+			{
+				_data.ColorHandling = value;
+				IsDirty = true;
+			}
 		}
 
 		[Value]
 		public Color StaticColor
 		{
 			get { return _data.StaticColor; }
-			set { _data.StaticColor = value; IsDirty = true; }
+			set
+			{
+				_data.StaticColor = value;
+				IsDirty = true;
+			}
 		}
 
 		[Value]
 		public ColorGradient ColorGradient
 		{
 			get { return _data.ColorGradient; }
-			set { _data.ColorGradient = value; IsDirty = true; }
+			set
+			{
+				_data.ColorGradient = value;
+				IsDirty = true;
+			}
 		}
 
 		[Value]
 		public int DepthOfEffect
 		{
 			get { return _data.DepthOfEffect; }
-			set { _data.DepthOfEffect = value; IsDirty = true; }
+			set
+			{
+				_data.DepthOfEffect = value;
+				IsDirty = true;
+			}
 		}
 
-		private EffectIntents RenderElement(ElementNode node, double positionWithinGroup, List<IndividualTwinkleDetails> twinkles = null)
+		private EffectIntents RenderElement(ElementNode node, double positionWithinGroup,
+		                                    List<IndividualTwinkleDetails> twinkles = null)
 		{
 			if (node == null)
 				return null;
@@ -158,9 +200,10 @@ namespace VixenModules.Effect.Twinkle
 
 			// render the flat 'minimum value' across the entire effect
 			Pulse.Pulse pulse = new Pulse.Pulse();
-			pulse.TargetNodes = new ElementNode[] { node };
+			pulse.TargetNodes = new ElementNode[] {node};
 			pulse.TimeSpan = TimeSpan;
-			pulse.LevelCurve = new Curve(new PointPairList(new double[] { 0, 100 }, new double[] { MinimumLevel * 100.0, MinimumLevel * 100.0 }));
+			pulse.LevelCurve =
+				new Curve(new PointPairList(new double[] {0, 100}, new double[] {MinimumLevel*100.0, MinimumLevel*100.0}));
 
 			// figure out what color gradient to use for the pulse
 			switch (ColorHandling) {
@@ -189,7 +232,7 @@ namespace VixenModules.Effect.Twinkle
 				{
 					// make a pulse for it
 					pulse = new Pulse.Pulse();
-					pulse.TargetNodes = new ElementNode[] { node };
+					pulse.TargetNodes = new ElementNode[] {node};
 					pulse.TimeSpan = twinkle.Duration;
 					pulse.LevelCurve = twinkle.TwinkleCurve;
 
@@ -200,8 +243,8 @@ namespace VixenModules.Effect.Twinkle
 							break;
 
 						case TwinkleColorHandling.GradientThroughWholeEffect:
-							double startPos = ((double)twinkle.StartTime.Ticks / (double)TimeSpan.Ticks);
-							double endPos = ((double)(twinkle.StartTime + twinkle.Duration).Ticks / (double)TimeSpan.Ticks);
+							double startPos = ((double) twinkle.StartTime.Ticks/(double) TimeSpan.Ticks);
+							double endPos = ((double) (twinkle.StartTime + twinkle.Duration).Ticks/(double) TimeSpan.Ticks);
 							pulse.ColorGradient = ColorGradient.GetSubGradient(startPos, endPos);
 							break;
 
@@ -230,17 +273,16 @@ namespace VixenModules.Effect.Twinkle
 
 			// the mean interval between individual flickers (used for random generation later)
 			// avoid any divide-by-zeros -- if it was <= 0, cap it to 1% at least
-			double averageCoverage = ((AverageCoverage <= 0) ? 1.0 : AverageCoverage) / 100.0;
-			double meanMillisecondsBetweenTwinkles = AveragePulseTime / averageCoverage / 2.0;
-			double maxMillisecondsBetweenTwinkles = AveragePulseTime / averageCoverage;
+			double averageCoverage = ((AverageCoverage <= 0) ? 1.0 : AverageCoverage)/100.0;
+			double meanMillisecondsBetweenTwinkles = AveragePulseTime/averageCoverage/2.0;
+			double maxMillisecondsBetweenTwinkles = AveragePulseTime/averageCoverage;
 
 			// the maximum amount of time an individual flicker/twinkle can vary off the average by
-			int maxDurationVariation = (int)((PulseTimeVariation / 100.0) * AveragePulseTime);
+			int maxDurationVariation = (int) ((PulseTimeVariation/100.0)*AveragePulseTime);
 
-			for (TimeSpan current = TimeSpan.Zero; current < TimeSpan; ) {
-
+			for (TimeSpan current = TimeSpan.Zero; current < TimeSpan;) {
 				// calculate how long until the next flicker, and clamp it (since there's a small chance it's huge)
-				double nextTime = Math.Log(1.0 - _random.NextDouble()) * -meanMillisecondsBetweenTwinkles;
+				double nextTime = Math.Log(1.0 - _random.NextDouble())*-meanMillisecondsBetweenTwinkles;
 				if (nextTime > maxMillisecondsBetweenTwinkles)
 					nextTime = maxMillisecondsBetweenTwinkles;
 
@@ -250,7 +292,8 @@ namespace VixenModules.Effect.Twinkle
 					break;
 
 				// generate a time length for it (all in ms)
-				int twinkleDurationMs = _random.Next(AveragePulseTime - maxDurationVariation, AveragePulseTime + maxDurationVariation + 1);
+				int twinkleDurationMs = _random.Next(AveragePulseTime - maxDurationVariation,
+				                                     AveragePulseTime + maxDurationVariation + 1);
 				TimeSpan twinkleDuration = TimeSpan.FromMilliseconds(twinkleDurationMs);
 
 				// it might have to be capped to fit within the duration of the whole effect, so figure that out
@@ -258,7 +301,8 @@ namespace VixenModules.Effect.Twinkle
 					// it's past the end of the effect. If it can be reduced to fit in the acceptable range, do that, otherwise skip it
 					if ((TimeSpan - current).TotalMilliseconds >= AveragePulseTime - maxDurationVariation) {
 						twinkleDuration = (TimeSpan - current);
-					} else {
+					}
+					else {
 						// if we can't fit anything else into this time gap, not much point continuing the iteration
 						break;
 					}
@@ -266,10 +310,11 @@ namespace VixenModules.Effect.Twinkle
 
 				// generate the levels/curve for it
 				double minLevel = MinimumLevel;
-				int maxLevelVariation = (int)((LevelVariation / 100.0) * (MaximumLevel - MinimumLevel));
+				int maxLevelVariation = (int) ((LevelVariation/100.0)*(MaximumLevel - MinimumLevel));
 				int reduction = _random.Next(maxLevelVariation);
 				double maxLevel = MaximumLevel - reduction;
-				Curve curve = new Curve(new PointPairList(new double[] { 0, 50, 100 }, new double[] { minLevel * 100, maxLevel * 100, minLevel * 100 }));
+				Curve curve =
+					new Curve(new PointPairList(new double[] {0, 50, 100}, new double[] {minLevel*100, maxLevel*100, minLevel*100}));
 
 				IndividualTwinkleDetails occurance = new IndividualTwinkleDetails();
 				occurance.StartTime = current;
@@ -286,18 +331,14 @@ namespace VixenModules.Effect.Twinkle
 		{
 			IEnumerable<ElementNode> renderNodes = null;
 
-			if (DepthOfEffect == 0 || !IndividualElements)
-			{
+			if (DepthOfEffect == 0 || !IndividualElements) {
 				renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator()).Distinct();
 			}
-			else
-			{
+			else {
 				renderNodes = TargetNodes;
-				for (int i = 0; i < DepthOfEffect; i++)
-				{
+				for (int i = 0; i < DepthOfEffect; i++) {
 					renderNodes = renderNodes.SelectMany(x => x.Children).Distinct();
 				}
-
 			}
 
 			// If the given DepthOfEffect results in no nodes (because it goes "too deep" and misses all nodes), 

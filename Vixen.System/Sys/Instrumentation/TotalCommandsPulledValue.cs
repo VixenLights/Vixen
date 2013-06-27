@@ -4,10 +4,13 @@ using System.Linq;
 using System.Text;
 using Vixen.Instrumentation;
 
-namespace Vixen.Sys.Instrumentation {
-	class TotalCommandsPulledValue : CountValue {
+namespace Vixen.Sys.Instrumentation
+{
+	internal class TotalCommandsPulledValue : CountValue
+	{
 		public TotalCommandsPulledValue()
-			: base("Total Commands Pulled") {
+			: base("Total Commands Pulled")
+		{
 		}
 	}
 }

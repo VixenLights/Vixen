@@ -59,17 +59,17 @@ namespace ZedGraph
 		{
 			get
 			{
-				if ( index < 0 || index >= _bindingSource.Count )
-					throw new System.ArgumentOutOfRangeException( "Error: Index out of range" );
+				if (index < 0 || index >= _bindingSource.Count)
+					throw new System.ArgumentOutOfRangeException("Error: Index out of range");
 
 				object row = _bindingSource[index];
 
-				double x = GetDouble( row, _xDataMember, index );
-				double y = GetDouble( row, _yDataMember, index );
-				double z = GetDouble( row, _zDataMember, index );
-				object tag = GetObject( row, _tagDataMember );
+				double x = GetDouble(row, _xDataMember, index);
+				double y = GetDouble(row, _yDataMember, index);
+				double z = GetDouble(row, _zDataMember, index);
+				object tag = GetObject(row, _tagDataMember);
 
-				PointPair pt = new PointPair( x, y, z );
+				PointPair pt = new PointPair(x, y, z);
 				pt.Tag = tag;
 				return pt;
 			}
@@ -82,7 +82,7 @@ namespace ZedGraph
 		{
 			get
 			{
-				if ( _bindingSource != null )
+				if (_bindingSource != null)
 					return _bindingSource.Count;
 				else
 					return 0;
@@ -187,18 +187,18 @@ namespace ZedGraph
 		/// Constructor to initialize the DataSourcePointList from an 
 		/// existing <see cref="DataSourcePointList" /> 
 		/// </summary> 
-		public DataSourcePointList( DataSourcePointList rhs )
+		public DataSourcePointList(DataSourcePointList rhs)
 			: this()
 		{
 			_bindingSource.DataSource = rhs._bindingSource.DataSource;
-			if ( rhs._xDataMember != null )
-				_xDataMember = (string)rhs._xDataMember.Clone();
-			if ( rhs._yDataMember != null )
-				_yDataMember = (string)rhs._yDataMember.Clone();
-			if ( rhs._zDataMember != null )
-				_zDataMember = (string)rhs._zDataMember.Clone();
-			if ( rhs._tagDataMember != null )
-				_tagDataMember = (string)rhs._tagDataMember.Clone();
+			if (rhs._xDataMember != null)
+				_xDataMember = (string) rhs._xDataMember.Clone();
+			if (rhs._yDataMember != null)
+				_yDataMember = (string) rhs._yDataMember.Clone();
+			if (rhs._zDataMember != null)
+				_zDataMember = (string) rhs._zDataMember.Clone();
+			if (rhs._tagDataMember != null)
+				_tagDataMember = (string) rhs._tagDataMember.Clone();
 		}
 
 		/// <summary> 
@@ -217,9 +217,8 @@ namespace ZedGraph
 		/// <returns>A new, independent copy of this class</returns> 
 		public DataSourcePointList Clone()
 		{
-			return new DataSourcePointList( this );
+			return new DataSourcePointList(this);
 		}
-
 
 		#endregion
 
@@ -234,38 +233,38 @@ namespace ZedGraph
 		/// to be extracted</param> 
 		/// <param name="index">The zero-based index of the point to be extracted. 
 		/// </param> 
-		private double GetDouble( object row, string dataMember, int index )
+		private double GetDouble(object row, string dataMember, int index)
 		{
-			if ( dataMember == null || dataMember == string.Empty )
+			if (dataMember == null || dataMember == string.Empty)
 				return index + 1;
 
 			//Type myType = row.GetType();
 			DataRowView drv = row as DataRowView;
 			PropertyInfo pInfo = null;
-			if ( drv == null )
-				pInfo = row.GetType().GetProperty( dataMember );
+			if (drv == null)
+				pInfo = row.GetType().GetProperty(dataMember);
 
 			object val = null;
 
-			if ( pInfo != null )
-				val = pInfo.GetValue( row, null );
-			else if ( drv != null )
+			if (pInfo != null)
+				val = pInfo.GetValue(row, null);
+			else if (drv != null)
 				val = drv[dataMember];
-			else if ( pInfo == null )
-				throw new System.Exception( "Can't find DataMember '" + dataMember + "' in DataSource" );
+			else if (pInfo == null)
+				throw new System.Exception("Can't find DataMember '" + dataMember + "' in DataSource");
 
 			// if ( val == null ) 
 			// throw new System.Exception( "Can't find DataMember '" + dataMember + "' in DataSource" ); 
 
 			double x;
-			if ( val == null || val == DBNull.Value )
+			if (val == null || val == DBNull.Value)
 				x = PointPair.Missing;
-			else if ( val.GetType() == typeof( DateTime ) )
-				x = ( (DateTime)val ).ToOADate();
-			else if ( val.GetType() == typeof( string ) )
+			else if (val.GetType() == typeof (DateTime))
+				x = ((DateTime) val).ToOADate();
+			else if (val.GetType() == typeof (string))
 				x = index + 1;
 			else
-				x = Convert.ToDouble( val );
+				x = Convert.ToDouble(val);
 
 			return x;
 		}
@@ -277,27 +276,26 @@ namespace ZedGraph
 		/// <param name="row">The data object from which to extract the object</param> 
 		/// <param name="dataMember">The property name or column name of the object 
 		/// to be extracted</param> 
-		private object GetObject( object row, string dataMember )
+		private object GetObject(object row, string dataMember)
 		{
-			if ( dataMember == null || dataMember == string.Empty )
+			if (dataMember == null || dataMember == string.Empty)
 				return null;
 
-			PropertyInfo pInfo = row.GetType().GetProperty( dataMember );
+			PropertyInfo pInfo = row.GetType().GetProperty(dataMember);
 			DataRowView drv = row as DataRowView;
 
 			object val = null;
 
-			if ( pInfo != null )
-				val = pInfo.GetValue( row, null );
-			else if ( drv != null )
+			if (pInfo != null)
+				val = pInfo.GetValue(row, null);
+			else if (drv != null)
 				val = drv[dataMember];
 
-			if ( val == null )
-				throw new System.Exception( "Can't find DataMember '" + dataMember + "' in DataSource" );
+			if (val == null)
+				throw new System.Exception("Can't find DataMember '" + dataMember + "' in DataSource");
 
 			return val;
 		}
-
 
 		#endregion
 	}

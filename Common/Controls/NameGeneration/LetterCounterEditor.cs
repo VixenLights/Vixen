@@ -28,7 +28,7 @@ namespace Common.Controls.NameGeneration
 
 		private void numericUpDownSteps_ValueChanged(object sender, EventArgs e)
 		{
-			_counter.Count = (int)numericUpDownSteps.Value;
+			_counter.Count = (int) numericUpDownSteps.Value;
 			OnDataChanged();
 		}
 

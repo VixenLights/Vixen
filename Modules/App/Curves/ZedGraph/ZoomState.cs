@@ -50,14 +50,17 @@ namespace ZedGraph
 			/// Indicates the <see cref="ZoomState"/> object is from a Zoom operation
 			/// </summary>
 			Zoom,
+
 			/// <summary>
 			/// Indicates the <see cref="ZoomState"/> object is from a Wheel Zoom operation
 			/// </summary>
 			WheelZoom,
+
 			/// <summary>
 			/// Indicates the <see cref="ZoomState"/> object is from a Pan operation
 			/// </summary>
 			Pan,
+
 			/// <summary>
 			/// Indicates the <see cref="ZoomState"/> object is from a Scroll operation
 			/// </summary>
@@ -67,13 +70,15 @@ namespace ZedGraph
 		/// <summary>
 		/// <see cref="ScaleState"/> objects to store the state data from the axes.
 		/// </summary>
-		private ScaleState	_xAxis, _x2Axis;
+		private ScaleState _xAxis, _x2Axis;
+
 		private ScaleStateList _yAxis, _y2Axis;
+
 		/// <summary>
 		/// An enum value indicating the type of adjustment being made to the
 		/// scale range state.
 		/// </summary>
-		private StateType	_type;
+		private StateType _type;
 
 		/// <summary>
 		/// Gets a <see cref="StateType" /> value indicating the type of action (zoom or pan)
@@ -94,8 +99,7 @@ namespace ZedGraph
 		{
 			get
 			{
-				switch ( _type )
-				{
+				switch (_type) {
 					case StateType.Pan:
 						return "Pan";
 					case StateType.WheelZoom:
@@ -118,13 +122,12 @@ namespace ZedGraph
 		/// </param>
 		/// <param name="type">A <see cref="StateType"/> enumeration that indicates whether
 		/// this saved state is from a pan or zoom.</param>
-		public ZoomState( GraphPane pane, StateType type )
+		public ZoomState(GraphPane pane, StateType type)
 		{
-
-			_xAxis = new ScaleState( pane.XAxis );
-			_x2Axis = new ScaleState( pane.X2Axis );
-			_yAxis = new ScaleStateList( pane.YAxisList );
-			_y2Axis = new ScaleStateList( pane.Y2AxisList );
+			_xAxis = new ScaleState(pane.XAxis);
+			_x2Axis = new ScaleState(pane.X2Axis);
+			_yAxis = new ScaleStateList(pane.YAxisList);
+			_y2Axis = new ScaleStateList(pane.Y2AxisList);
 			_type = type;
 		}
 
@@ -132,12 +135,12 @@ namespace ZedGraph
 		/// The Copy Constructor
 		/// </summary>
 		/// <param name="rhs">The <see cref="ZoomState"/> object from which to copy</param>
-		public ZoomState( ZoomState rhs )
+		public ZoomState(ZoomState rhs)
 		{
-			_xAxis = new ScaleState( rhs._xAxis );
-			_x2Axis = new ScaleState( rhs._x2Axis );
-			_yAxis = new ScaleStateList( rhs._yAxis );
-			_y2Axis = new ScaleStateList( rhs._y2Axis );
+			_xAxis = new ScaleState(rhs._xAxis);
+			_x2Axis = new ScaleState(rhs._x2Axis);
+			_yAxis = new ScaleStateList(rhs._yAxis);
+			_y2Axis = new ScaleStateList(rhs._y2Axis);
 		}
 
 		/// <summary>
@@ -156,7 +159,7 @@ namespace ZedGraph
 		/// <returns>A new, independent copy of this class</returns>
 		public ZoomState Clone()
 		{
-			return new ZoomState( this );
+			return new ZoomState(this);
 		}
 
 
@@ -165,12 +168,12 @@ namespace ZedGraph
 		/// </summary>
 		/// <param name="pane">The <see cref="GraphPane"/> to which the scale range properties should be
 		/// copied.</param>
-		public void ApplyState( GraphPane pane )
+		public void ApplyState(GraphPane pane)
 		{
-			_xAxis.ApplyScale( pane.XAxis );
-			_x2Axis.ApplyScale( pane.X2Axis );
-			_yAxis.ApplyScale( pane.YAxisList );
-			_y2Axis.ApplyScale( pane.Y2AxisList );
+			_xAxis.ApplyScale(pane.XAxis);
+			_x2Axis.ApplyScale(pane.X2Axis);
+			_yAxis.ApplyScale(pane.YAxisList);
+			_y2Axis.ApplyScale(pane.Y2AxisList);
 		}
 
 		/// <summary>
@@ -179,13 +182,12 @@ namespace ZedGraph
 		/// </summary>
 		/// <param name="pane">The <see cref="GraphPane"/> object with which to compare states.</param>
 		/// <returns>true if the states are different, false otherwise</returns>
-		public bool IsChanged( GraphPane pane )
+		public bool IsChanged(GraphPane pane)
 		{
-			return _xAxis.IsChanged( pane.XAxis ) ||
-					_x2Axis.IsChanged( pane.X2Axis ) ||
-					_yAxis.IsChanged( pane.YAxisList ) ||
-					_y2Axis.IsChanged( pane.Y2AxisList );
+			return _xAxis.IsChanged(pane.XAxis) ||
+			       _x2Axis.IsChanged(pane.X2Axis) ||
+			       _yAxis.IsChanged(pane.YAxisList) ||
+			       _y2Axis.IsChanged(pane.Y2AxisList);
 		}
-
 	}
 }

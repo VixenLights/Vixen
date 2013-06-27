@@ -10,15 +10,15 @@ using System.Runtime.Serialization;
 namespace VixenModules.App.Curves
 {
 	[DataContract]
-	class CurveLibraryStaticData : ModuleDataModelBase
+	internal class CurveLibraryStaticData : ModuleDataModelBase
 	{
 		public CurveLibraryStaticData()
 		{
 			Library = new Dictionary<string, Curve>();
 		}
 
-		[DataMember]
-		private Dictionary<string, Curve> _library;
+		[DataMember] private Dictionary<string, Curve> _library;
+
 		public Dictionary<string, Curve> Library
 		{
 			get
@@ -28,10 +28,7 @@ namespace VixenModules.App.Curves
 
 				return _library;
 			}
-			set
-			{
-				_library = value;
-			}
+			set { _library = value; }
 		}
 
 		[DataMember]
@@ -43,6 +40,5 @@ namespace VixenModules.App.Curves
 			result.Library = new Dictionary<string, Curve>(Library);
 			return result;
 		}
-
 	}
 }

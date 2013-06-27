@@ -18,24 +18,27 @@ using System.Collections.Generic;
 using System.Diagnostics;
 
 
-namespace Dataweb.NShape.Advanced {
-
+namespace Dataweb.NShape.Advanced
+{
 	/// <summary>
 	/// A generic readonly collection of items providing an enumerator and the total number of items in the collection
 	/// </summary>
-	public interface IReadOnlyCollection<T> : IEnumerable<T>, ICollection { }
+	public interface IReadOnlyCollection<T> : IEnumerable<T>, ICollection
+	{
+	}
 
 
 	/// <summary>
 	/// A list based class implementing the IReadOnlyCollection interface
 	/// </summary>
-	public class ReadOnlyList<T> : List<T>, IReadOnlyCollection<T> {
-		
+	public class ReadOnlyList<T> : List<T>, IReadOnlyCollection<T>
+	{
 		/// <summary>
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.Advanced.ReadOnlyList`1" />.
 		/// </summary>
 		public ReadOnlyList()
-			: base() {
+			: base()
+		{
 		}
 
 
@@ -43,7 +46,8 @@ namespace Dataweb.NShape.Advanced {
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.Advanced.ReadOnlyList`1" />.
 		/// </summary>
 		public ReadOnlyList(int capacity)
-			: base(capacity) {
+			: base(capacity)
+		{
 		}
 
 
@@ -51,9 +55,9 @@ namespace Dataweb.NShape.Advanced {
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.Advanced.ReadOnlyList`1" />.
 		/// </summary>
 		public ReadOnlyList(IEnumerable<T> collection)
-			: base(collection) {
+			: base(collection)
+		{
 		}
-
 	}
 
 
@@ -61,8 +65,8 @@ namespace Dataweb.NShape.Advanced {
 	/// Defines methods for an editable collection of layers.
 	/// </summary>
 	/// <status>reviewed</status>
-	public interface ILayerCollection : ICollection<Layer> {
-
+	public interface ILayerCollection : ICollection<Layer>
+	{
 		/// <summary>
 		/// Retrieve the <see cref="T:Dataweb.NShape.Layer" /> instance associated with the given <see cref="T:Dataweb.NShape.LayerIds" />.
 		/// </summary>
@@ -72,7 +76,7 @@ namespace Dataweb.NShape.Advanced {
 		/// Retrieve the <see cref="T:Dataweb.NShape.Layer" /> instance with the given name.
 		/// </summary>
 		Layer this[string name] { get; }
-		
+
 		/// <summary>
 		/// Retrieve the <see cref="T:Dataweb.NShape.Layer" /> instance associated with the given <see cref="T:Dataweb.NShape.LayerIds" />.
 		/// </summary>
@@ -92,29 +96,30 @@ namespace Dataweb.NShape.Advanced {
 		/// Rename the specified <see cref="T:Dataweb.NShape.Layer" />.
 		/// </summary>
 		bool RenameLayer(string previousName, string newName);
-
 	}
 
 
 	/// <summary>
 	/// Holds a list of layers.
 	/// </summary>
-	internal class LayerCollection : ILayerCollection {
-
-		internal LayerCollection(Diagram diagram) {
+	internal class LayerCollection : ILayerCollection
+	{
+		internal LayerCollection(Diagram diagram)
+		{
 			this.diagram = diagram;
 			// create an entry for each layer so that the layer can be addressed directly
-			foreach (LayerIds layerId in Enum.GetValues(typeof(LayerIds))) {
+			foreach (LayerIds layerId in Enum.GetValues(typeof (LayerIds))) {
 				if (layerId == LayerIds.None || layerId == LayerIds.All) continue;
 				layers.Add(null);
 			}
 		}
 
-
 		#region ILayerCollection Members
 
-		public Layer this[LayerIds layerId] {
-			get { 
+		public Layer this[LayerIds layerId]
+		{
+			get
+			{
 				Layer result = GetLayer(layerId);
 				if (result == null) throw new ItemNotFoundException<Layer>(result);
 				return result;
@@ -122,16 +127,19 @@ namespace Dataweb.NShape.Advanced {
 		}
 
 
-		public Layer this[string name] {
-			get {
+		public Layer this[string name]
+		{
+			get
+			{
 				Layer result = FindLayer(name);
 				if (result == null) throw new ItemNotFoundException<Layer>(result);
 				return result;
 			}
 		}
 
-		
-		public Layer FindLayer(string name) {
+
+		public Layer FindLayer(string name)
+		{
 			if (name == null) throw new ArgumentNullException("name");
 			int cnt = layers.Count;
 			for (int i = 0; i < cnt; ++i) {
@@ -142,14 +150,16 @@ namespace Dataweb.NShape.Advanced {
 		}
 
 
-		public Layer GetLayer(LayerIds layerId) {
+		public Layer GetLayer(LayerIds layerId)
+		{
 			int layerBit = GetLayerBit(layerId);
 			if (layerBit < 0) throw new ItemNotFoundException<LayerIds>(layerId);
 			return layers[layerBit];
 		}
 
 
-		public IEnumerable<Layer> GetLayers(LayerIds layerId) {
+		public IEnumerable<Layer> GetLayers(LayerIds layerId)
+		{
 			foreach (int layerBit in GetLayerBits(layerId)) {
 				if (layerBit == -1) continue;
 				if (layers[layerBit] != null)
@@ -158,27 +168,30 @@ namespace Dataweb.NShape.Advanced {
 		}
 
 
-		public bool RenameLayer(string previousName, string newName) {
+		public bool RenameLayer(string previousName, string newName)
+		{
 			if (string.IsNullOrEmpty(previousName)) throw new ArgumentNullException("previousName");
 			if (string.IsNullOrEmpty(newName)) throw new ArgumentNullException("newName");
-			if (FindLayer(newName) != null) throw new ArgumentException(string.Format("A layer named '{0}' already exists.", newName));
+			if (FindLayer(newName) != null)
+				throw new ArgumentException(string.Format("A layer named '{0}' already exists.", newName));
 			Layer layer = FindLayer(previousName);
 			if (layer != null) {
 				layer.Name = newName;
 				return true;
-			} else return false;
+			}
+			else return false;
 		}
 
 		#endregion
 
-
 		#region ICollection<Layer> Members
 
-		public void Add(Layer item) {
+		public void Add(Layer item)
+		{
 			if (item == null) throw new ArgumentNullException("item");
 			for (int i = 0; i < layers.Count; ++i) {
 				if (layers[i] == null) {
-					item.Id = (LayerIds)Math.Pow(2, i);
+					item.Id = (LayerIds) Math.Pow(2, i);
 					layers[i] = item;
 					++layerCount;
 					break;
@@ -187,30 +200,36 @@ namespace Dataweb.NShape.Advanced {
 			Debug.Assert(item.Id != LayerIds.None);
 		}
 
-		public void Clear() {
+		public void Clear()
+		{
 			for (int i = 0; i < layers.Count; ++i)
 				layers[i] = null;
 			layerCount = 0;
 		}
 
-		public bool Contains(Layer item) {
+		public bool Contains(Layer item)
+		{
 			return layers.Contains(item);
 		}
 
-		public void CopyTo(Layer[] array, int arrayIndex) {
+		public void CopyTo(Layer[] array, int arrayIndex)
+		{
 			if (array == null) throw new ArgumentNullException("array");
 			layers.CopyTo(array, arrayIndex);
 		}
 
-		public int Count {
+		public int Count
+		{
 			get { return layerCount; }
 		}
 
-		public bool IsReadOnly {
+		public bool IsReadOnly
+		{
 			get { return false; }
 		}
 
-		public bool Remove(Layer item) {
+		public bool Remove(Layer item)
+		{
 			if (item == null) throw new ArgumentNullException("item");
 			int layerBit = GetLayerBit(item.Id);
 			if (layerBit >= 0) {
@@ -218,33 +237,34 @@ namespace Dataweb.NShape.Advanced {
 				layers[layerBit] = null;
 				--layerCount;
 				return true;
-			} else return false;
+			}
+			else return false;
 		}
 
 		#endregion
 
-
 		#region IEnumerable<Layer> Members
 
-		public IEnumerator<Layer> GetEnumerator() {
+		public IEnumerator<Layer> GetEnumerator()
+		{
 			return Enumerator.Create(layers);
 		}
 
 		#endregion
 
-
 		#region IEnumerable Members
 
-		IEnumerator IEnumerable.GetEnumerator() {
+		IEnumerator IEnumerable.GetEnumerator()
+		{
 			return layers.GetEnumerator();
 		}
 
 		#endregion
 
-
 		#region [Private] Methods
 
-		private int GetLayerBit(LayerIds layerId) {
+		private int GetLayerBit(LayerIds layerId)
+		{
 			int result = -1;
 			foreach (int layerBit in GetLayerBits(layerId)) {
 				if (result < 0) result = layerBit;
@@ -254,10 +274,11 @@ namespace Dataweb.NShape.Advanced {
 		}
 
 
-		private IEnumerable<int> GetLayerBits(LayerIds layerIds) {
+		private IEnumerable<int> GetLayerBits(LayerIds layerIds)
+		{
 			if (layerIds == LayerIds.None) yield break;
 			int bitNo = 0;
-			foreach (LayerIds id in Enum.GetValues(typeof(LayerIds))) {
+			foreach (LayerIds id in Enum.GetValues(typeof (LayerIds))) {
 				if (id == LayerIds.None || id == LayerIds.All) continue;
 				if ((layerIds & id) != 0)
 					yield return bitNo;
@@ -267,12 +288,12 @@ namespace Dataweb.NShape.Advanced {
 
 		#endregion
 
-
 		#region [Private] Types and Fields
 
-		private struct Enumerator : IEnumerator<Layer>, IEnumerator {
-
-			public static Enumerator Create(List<Layer> layerList) {
+		private struct Enumerator : IEnumerator<Layer>, IEnumerator
+		{
+			public static Enumerator Create(List<Layer> layerList)
+			{
 				if (layerList == null) throw new ArgumentNullException("layerList");
 				Enumerator result = Enumerator.Empty;
 				result.layerList = layerList;
@@ -286,7 +307,8 @@ namespace Dataweb.NShape.Advanced {
 			public static readonly Enumerator Empty;
 
 
-			public Enumerator(List<Layer> layerList) {
+			public Enumerator(List<Layer> layerList)
+			{
 				if (layerList == null) throw new ArgumentNullException("layerList");
 				this.layerList = layerList;
 				this.layerCount = layerList.Count;
@@ -294,28 +316,33 @@ namespace Dataweb.NShape.Advanced {
 				this.currentLayer = null;
 			}
 
-
 			#region IEnumerator<Layer> Members
 
-			public Layer Current { get { return currentLayer; } }
+			public Layer Current
+			{
+				get { return currentLayer; }
+			}
 
 			#endregion
 
-
 			#region IDisposable Members
 
-			public void Dispose() {
+			public void Dispose()
+			{
 				// nothing to do
 			}
 
 			#endregion
 
-
 			#region IEnumerator Members
 
-			object IEnumerator.Current { get { return currentLayer; } }
+			object IEnumerator.Current
+			{
+				get { return currentLayer; }
+			}
 
-			public bool MoveNext() {
+			public bool MoveNext()
+			{
 				bool result = false;
 				currentLayer = null;
 				while (currentIdx < layerCount - 1 && !result) {
@@ -325,15 +352,16 @@ namespace Dataweb.NShape.Advanced {
 				return result;
 			}
 
-			public void Reset() {
+			public void Reset()
+			{
 				currentIdx = -1;
 				currentLayer = null;
 			}
 
 			#endregion
 
-
-			static Enumerator() {
+			static Enumerator()
+			{
 				Empty.layerList = null;
 				Empty.layerCount = 0;
 				Empty.currentIdx = -1;
@@ -341,10 +369,12 @@ namespace Dataweb.NShape.Advanced {
 			}
 
 			#region Fields
+
 			private List<Layer> layerList;
 			private int layerCount;
 			private int currentIdx;
 			private Layer currentLayer;
+
 			#endregion
 		}
 
@@ -352,8 +382,7 @@ namespace Dataweb.NShape.Advanced {
 		private List<Layer> layers = new List<Layer>(31);
 		private int layerCount = 0;
 		private Diagram diagram = null;
-		
+
 		#endregion
 	}
-
 }

@@ -4,68 +4,46 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:Model1="clr-namespace:VixenModules.Preview.DisplayPreview.Model"
-        xmlns:ViewModels="clr-namespace:VixenModules.Preview.DisplayPreview.ViewModels"
-        mc:Ignorable="d"
-        Title="Display Preview Preferences"
-        SizeToContent="WidthAndHeight"
+        xmlns:ViewModels="clr-namespace:VixenModules.Preview.DisplayPreview.ViewModels" mc:Ignorable="d"
+        Title="Display Preview Preferences" SizeToContent="WidthAndHeight"
         d:DataContext="{d:DesignInstance ViewModels:PreferencesViewModel}">
-    <ContentControl Content="{Binding Preferences}">
-        <ContentControl.ContentTemplate>
-            <DataTemplate DataType="{x:Type Model1:Preferences}">
-                <StackPanel>
-                    <GroupBox Header="Display Item Defaults"
-                              Padding="2">
+	<ContentControl Content="{Binding Preferences}">
+		<ContentControl.ContentTemplate>
+			<DataTemplate DataType="{x:Type Model1:Preferences}">
+				<StackPanel>
+					<GroupBox Header="Display Item Defaults" Padding="2">
 
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Text="Width"
-                                       Margin="2" />
-                            <TextBox Grid.Column="1"
-                                     Margin="2"
-                                     Width="40"
-                                     Text="{Binding DisplayItemWidthDefault}" />
-                            <TextBlock Grid.Column="2"
-                                       Margin="2"
-                                       Text="Height" />
-                            <TextBox Grid.Column="3"
-                                     Width="40"
-                                     Margin="2"
-                                     Text="{Binding DisplayItemHeightDefault}" />
-                        </Grid>
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition Width="*" />
+								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition Width="*" />
+							</Grid.ColumnDefinitions>
+							<TextBlock Text="Width" Margin="2" />
+							<TextBox Grid.Column="1" Margin="2" Width="40" Text="{Binding DisplayItemWidthDefault}" />
+							<TextBlock Grid.Column="2" Margin="2" Text="Height" />
+							<TextBox Grid.Column="3" Width="40" Margin="2" Text="{Binding DisplayItemHeightDefault}" />
+						</Grid>
 
-                    </GroupBox>
-                    <GroupBox Header="Element Defaults"
-                              Padding="2">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Text="Width"
-                                       Margin="2" />
-                            <TextBox Grid.Column="1"
-                                     Margin="2"
-                                     Width="40"
-                                     Text="{Binding ElementWidthDefault}" />
-                            <TextBlock Grid.Column="2"
-                                       Margin="2"
-                                       Text="Height" />
-                            <TextBox Grid.Column="3"
-                                     Margin="2"
-                                     Width="40"
-                                     Text="{Binding ElementHeightDefault}" />
+					</GroupBox>
+					<GroupBox Header="Element Defaults" Padding="2">
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition Width="*" />
+								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition Width="*" />
+							</Grid.ColumnDefinitions>
+							<TextBlock Text="Width" Margin="2" />
+							<TextBox Grid.Column="1" Margin="2" Width="40" Text="{Binding ElementWidthDefault}" />
+							<TextBlock Grid.Column="2" Margin="2" Text="Height" />
+							<TextBox Grid.Column="3" Margin="2" Width="40" Text="{Binding ElementHeightDefault}" />
 
-                        </Grid>
-                    </GroupBox>
-                </StackPanel>
-            </DataTemplate>
-        </ContentControl.ContentTemplate>
-    </ContentControl>
+						</Grid>
+					</GroupBox>
+				</StackPanel>
+			</DataTemplate>
+		</ContentControl.ContentTemplate>
+	</ContentControl>
 </Window>

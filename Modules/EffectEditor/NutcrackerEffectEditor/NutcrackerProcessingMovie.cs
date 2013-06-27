@@ -9,11 +9,11 @@ using System.Windows.Forms;
 
 namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 {
-    public partial class NutcrackerProcessingMovie : Form
-    {
-        public NutcrackerProcessingMovie()
-        {
-            InitializeComponent();
-        }
-    }
+	public partial class NutcrackerProcessingMovie : Form
+	{
+		public NutcrackerProcessingMovie()
+		{
+			InitializeComponent();
+		}
+	}
 }

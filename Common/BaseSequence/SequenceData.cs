@@ -1,8 +1,10 @@
 ﻿using System.Runtime.Serialization;
 using Vixen.Module.SequenceType;
 
-namespace BaseSequence {
+namespace BaseSequence
+{
 	[DataContract]
-	public class SequenceData : SequenceTypeDataModelBase {
+	public class SequenceData : SequenceTypeDataModelBase
+	{
 	}
 }

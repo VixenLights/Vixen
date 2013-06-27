@@ -27,8 +27,7 @@ namespace ZedGraph
 {
 	partial class ZedGraphControl
 	{
-
-	#region Printing
+		#region Printing
 
 		/// <summary>
 		/// Handler for the "Page Setup..." context menu item.   Displays a
@@ -36,7 +35,7 @@ namespace ZedGraph
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		protected void MenuClick_PageSetup( object sender, EventArgs e )
+		protected void MenuClick_PageSetup(object sender, EventArgs e)
 		{
 			DoPageSetup();
 		}
@@ -47,7 +46,7 @@ namespace ZedGraph
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		protected void MenuClick_Print( object sender, EventArgs e )
+		protected void MenuClick_Print(object sender, EventArgs e)
 		{
 			DoPrint();
 		}
@@ -59,7 +58,7 @@ namespace ZedGraph
 		/// <param name="e">A <see cref="PrintPageEventArgs" /> instance providing
 		/// page bounds, margins, and a Graphics instance for this printed output.
 		/// </param>
-		private void Graph_PrintPage( object sender, PrintPageEventArgs e )
+		private void Graph_PrintPage(object sender, PrintPageEventArgs e)
 		{
 			PrintDocument pd = sender as PrintDocument;
 
@@ -68,12 +67,10 @@ namespace ZedGraph
 			bool[] isFontSave = new bool[mPane.PaneList.Count + 1];
 			isPenSave[0] = mPane.IsPenWidthScaled;
 			isFontSave[0] = mPane.IsFontsScaled;
-			for ( int i = 0; i < mPane.PaneList.Count; i++ )
-			{
+			for (int i = 0; i < mPane.PaneList.Count; i++) {
 				isPenSave[i + 1] = mPane[i].IsPenWidthScaled;
 				isFontSave[i + 1] = mPane[i].IsFontsScaled;
-				if ( _isPrintScaleAll )
-				{
+				if (_isPrintScaleAll) {
 					mPane[i].IsPenWidthScaled = true;
 					mPane[i].IsFontsScaled = true;
 				}
@@ -81,32 +78,29 @@ namespace ZedGraph
 
 			RectangleF saveRect = mPane.Rect;
 			SizeF newSize = mPane.Rect.Size;
-			if ( _isPrintFillPage && _isPrintKeepAspectRatio )
-			{
-				float xRatio = (float)e.MarginBounds.Width / (float)newSize.Width;
-				float yRatio = (float)e.MarginBounds.Height / (float)newSize.Height;
-				float ratio = Math.Min( xRatio, yRatio );
+			if (_isPrintFillPage && _isPrintKeepAspectRatio) {
+				float xRatio = (float) e.MarginBounds.Width/(float) newSize.Width;
+				float yRatio = (float) e.MarginBounds.Height/(float) newSize.Height;
+				float ratio = Math.Min(xRatio, yRatio);
 
 				newSize.Width *= ratio;
 				newSize.Height *= ratio;
 			}
-			else if ( _isPrintFillPage )
+			else if (_isPrintFillPage)
 				newSize = e.MarginBounds.Size;
 
-			mPane.ReSize( e.Graphics, new RectangleF( e.MarginBounds.Left,
-				e.MarginBounds.Top, newSize.Width, newSize.Height ) );
-			mPane.Draw( e.Graphics );
+			mPane.ReSize(e.Graphics, new RectangleF(e.MarginBounds.Left,
+			                                        e.MarginBounds.Top, newSize.Width, newSize.Height));
+			mPane.Draw(e.Graphics);
 
-			using ( Graphics g = this.CreateGraphics() )
-			{
-				mPane.ReSize( g, saveRect );
+			using (Graphics g = this.CreateGraphics()) {
+				mPane.ReSize(g, saveRect);
 				//g.Dispose();
 			}
 
 			mPane.IsPenWidthScaled = isPenSave[0];
 			mPane.IsFontsScaled = isFontSave[0];
-			for ( int i = 0; i < mPane.PaneList.Count; i++ )
-			{
+			for (int i = 0; i < mPane.PaneList.Count; i++) {
 				mPane[i].IsPenWidthScaled = isPenSave[i + 1];
 				mPane[i].IsFontsScaled = isFontSave[i + 1];
 			}
@@ -121,17 +115,14 @@ namespace ZedGraph
 			get
 			{
 				// Add a try/catch pair since the users of the control can't catch this one
-				try
-				{
-					if ( _pdSave == null )
-					{
+				try {
+					if (_pdSave == null) {
 						_pdSave = new PrintDocument();
-						_pdSave.PrintPage += new PrintPageEventHandler( Graph_PrintPage );
+						_pdSave.PrintPage += new PrintPageEventHandler(Graph_PrintPage);
 					}
 				}
-				catch ( Exception exception )
-				{
-					MessageBox.Show( exception.Message );
+				catch (Exception exception) {
+					MessageBox.Show(exception.Message);
 				}
 
 				return _pdSave;
@@ -148,16 +139,13 @@ namespace ZedGraph
 			PrintDocument pd = PrintDocument;
 
 			// Add a try/catch pair since the users of the control can't catch this one
-			try
-			{
-				if ( pd != null )
-				{
+			try {
+				if (pd != null) {
 					//pd.PrintPage += new PrintPageEventHandler( GraphPrintPage );
 					PageSetupDialog setupDlg = new PageSetupDialog();
 					setupDlg.Document = pd;
 
-					if ( setupDlg.ShowDialog() == DialogResult.OK )
-					{
+					if (setupDlg.ShowDialog() == DialogResult.OK) {
 						pd.PrinterSettings = setupDlg.PrinterSettings;
 						pd.DefaultPageSettings = setupDlg.PageSettings;
 
@@ -174,9 +162,8 @@ namespace ZedGraph
 				}
 			}
 
-			catch ( Exception exception )
-			{
-				MessageBox.Show( exception.Message );
+			catch (Exception exception) {
+				MessageBox.Show(exception.Message);
 			}
 		}
 
@@ -188,24 +175,20 @@ namespace ZedGraph
 		public void DoPrint()
 		{
 			// Add a try/catch pair since the users of the control can't catch this one
-			try
-			{
+			try {
 				PrintDocument pd = PrintDocument;
 
-				if ( pd != null )
-				{
+				if (pd != null) {
 					//pd.PrintPage += new PrintPageEventHandler( Graph_PrintPage );
 					PrintDialog pDlg = new PrintDialog();
 					pDlg.Document = pd;
-					if ( pDlg.ShowDialog() == DialogResult.OK )
+					if (pDlg.ShowDialog() == DialogResult.OK)
 						pd.Print();
 				}
 			}
-			catch ( Exception exception )
-			{
-				MessageBox.Show( exception.Message );
+			catch (Exception exception) {
+				MessageBox.Show(exception.Message);
 			}
-
 		}
 
 		/// <summary>
@@ -216,25 +199,21 @@ namespace ZedGraph
 		public void DoPrintPreview()
 		{
 			// Add a try/catch pair since the users of the control can't catch this one
-			try
-			{
+			try {
 				PrintDocument pd = PrintDocument;
 
-				if ( pd != null )
-				{
+				if (pd != null) {
 					PrintPreviewDialog ppd = new PrintPreviewDialog();
 					//pd.PrintPage += new PrintPageEventHandler( Graph_PrintPage );
 					ppd.Document = pd;
-					ppd.Show( this );
+					ppd.Show(this);
 				}
 			}
-			catch ( Exception exception )
-			{
-				MessageBox.Show( exception.Message );
+			catch (Exception exception) {
+				MessageBox.Show(exception.Message);
 			}
 		}
 
-	#endregion
-
+		#endregion
 	}
 }

@@ -7,9 +7,12 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace Common.Controls {
-	public partial class TextDialog : Form {
-		public TextDialog(string prompt) {
+namespace Common.Controls
+{
+	public partial class TextDialog : Form
+	{
+		public TextDialog(string prompt)
+		{
 			InitializeComponent();
 			labelPrompt.Text = prompt;
 		}
@@ -30,11 +33,12 @@ namespace Common.Controls {
 
 		private void TextDialog_KeyDown(object sender, KeyEventArgs e)
 		{
-			if(e.KeyCode == Keys.Escape) DialogResult = DialogResult.Cancel;
-			else if(e.KeyCode == Keys.Enter) DialogResult = DialogResult.OK;
+			if (e.KeyCode == Keys.Escape) DialogResult = DialogResult.Cancel;
+			else if (e.KeyCode == Keys.Enter) DialogResult = DialogResult.OK;
 		}
 
-		public string Response {
+		public string Response
+		{
 			get { return textBoxResponse.Text; }
 		}
 	}

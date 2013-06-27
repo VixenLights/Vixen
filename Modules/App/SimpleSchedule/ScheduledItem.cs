@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace VixenModules.App.SimpleSchedule {
+namespace VixenModules.App.SimpleSchedule
+{
 	[DataContract]
-	public class ScheduledItem : IScheduledItem {
-		public ScheduledItem(Guid id, string itemFilePath, int dayOfWeek, TimeSpan startTime, TimeSpan runLength) {
+	public class ScheduledItem : IScheduledItem
+	{
+		public ScheduledItem(Guid id, string itemFilePath, int dayOfWeek, TimeSpan startTime, TimeSpan runLength)
+		{
 			Id = id;
 			ItemFilePath = itemFilePath;
 			DayOfWeek = dayOfWeek;
@@ -27,7 +30,7 @@ namespace VixenModules.App.SimpleSchedule {
 		[DataMember]
 		public TimeSpan RunLength { get; set; }
 
-        [DataMember]
-        public DateTime ScheduledItemStartDate { get; set; }
+		[DataMember]
+		public DateTime ScheduledItemStartDate { get; set; }
 	}
 }

@@ -4,54 +4,69 @@ using System.Linq;
 using Vixen.Data.Flow;
 using Vixen.Sys.Output;
 
-namespace Vixen.Sys.Managers {
-	public class ControllerFacade : IControllerFacadeParticipant {
+namespace Vixen.Sys.Managers
+{
+	public class ControllerFacade : IControllerFacadeParticipant
+	{
 		private OutputDeviceFacade _outputDeviceFacade;
-		private List<IControllerFacadeParticipant> _controllerFacadeParticipants; 
+		private List<IControllerFacadeParticipant> _controllerFacadeParticipants;
 
-		public ControllerFacade() {
+		public ControllerFacade()
+		{
 			_outputDeviceFacade = new OutputDeviceFacade();
 			_controllerFacadeParticipants = new List<IControllerFacadeParticipant>();
 		}
 
-		public void AddParticipant(IControllerFacadeParticipant participant) {
+		public void AddParticipant(IControllerFacadeParticipant participant)
+		{
 			_outputDeviceFacade.AddParticipant(participant);
 			_controllerFacadeParticipants.Add(participant);
 		}
 
-		public void StartOnly(IEnumerable<IOutputDevice> outputDevices) {
+		public void StartOnly(IEnumerable<IOutputDevice> outputDevices)
+		{
 			_outputDeviceFacade.StartOnly(outputDevices);
 		}
 
-		public void StartAll() {
+		public void StartAll()
+		{
 			_outputDeviceFacade.StartAll();
 		}
 
-		public void StopAll() {
+		public void StopAll()
+		{
 			_outputDeviceFacade.StopAll();
 		}
 
-		public void PauseAll() {
+		public void PauseAll()
+		{
 			_outputDeviceFacade.PauseAll();
 		}
 
-		public void ResumeAll() {
+		public void ResumeAll()
+		{
 			_outputDeviceFacade.ResumeAll();
 		}
 
-		public IDataFlowComponent GetDataFlowComponentForOutput(IOutputDevice controller, int outputIndex) {
-			return _controllerFacadeParticipants.Select(x => x.GetDataFlowComponentForOutput(controller, outputIndex)).Where(x => x != null).FirstOrDefault();
+		public IDataFlowComponent GetDataFlowComponentForOutput(IOutputDevice controller, int outputIndex)
+		{
+			return
+				_controllerFacadeParticipants.Select(x => x.GetDataFlowComponentForOutput(controller, outputIndex)).Where(
+					x => x != null).FirstOrDefault();
 		}
 
-		public IEnumerable<IOutputDevice> Devices {
+		public IEnumerable<IOutputDevice> Devices
+		{
 			get { return _outputDeviceFacade.Devices; }
 		}
 
-		public IOutputDevice GetDevice(Guid id) {
+		public IOutputDevice GetDevice(Guid id)
+		{
 			return _outputDeviceFacade.GetDevice(id);
 		}
 
-		public IOutputDevice GetController(Guid id) {
+		public IOutputDevice GetController(Guid id)
+		{
 			return _outputDeviceFacade.GetDevice(id);
 		}
 	}

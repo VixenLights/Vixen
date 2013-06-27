@@ -4,21 +4,25 @@ using Vixen.Data.Flow;
 using Vixen.Sys;
 using Vixen.Sys.Dispatch;
 
-namespace Vixen.Data.Policy {
-	class SmartControllerDataPolicy : DataFlowDataDispatch {
+namespace Vixen.Data.Policy
+{
+	internal class SmartControllerDataPolicy : DataFlowDataDispatch
+	{
 		public IIntent[] OutputCurrentState;
 
-		public override void Handle(IntentsDataFlowData obj) {
+		public override void Handle(IntentsDataFlowData obj)
+		{
 			IntentChangeCollection intentChanges = null;
 			IIntent[] newState = obj.Value.Select(x => x.Intent).ToArray();
 
-			if(_OutputHasStateToCompare) {
-				if(_OutputStateDiffersFrom(newState)) {
+			if (_OutputHasStateToCompare) {
+				if (_OutputStateDiffersFrom(newState)) {
 					IEnumerable<IIntent> addedIntents = newState.Except(OutputCurrentState);
 					IEnumerable<IIntent> removedIntents = OutputCurrentState.Except(newState);
 					intentChanges = new IntentChangeCollection(addedIntents, removedIntents);
 				}
-			} else {
+			}
+			else {
 				intentChanges = new IntentChangeCollection(newState, null);
 			}
 
@@ -26,23 +30,27 @@ namespace Vixen.Data.Policy {
 			Result = intentChanges;
 		}
 
-		public override void Handle(CommandDataFlowData obj) {
+		public override void Handle(CommandDataFlowData obj)
+		{
 			OutputCurrentState = null;
 			Result = null;
 		}
 
-		public override void Handle(CommandsDataFlowData obj) {
+		public override void Handle(CommandsDataFlowData obj)
+		{
 			OutputCurrentState = null;
 			Result = null;
 		}
 
 		public IntentChangeCollection Result { get; private set; }
 
-		private bool _OutputHasStateToCompare {
+		private bool _OutputHasStateToCompare
+		{
 			get { return OutputCurrentState != null; }
 		}
 
-		private bool _OutputStateDiffersFrom(IEnumerable<IIntent> state) {
+		private bool _OutputStateDiffersFrom(IEnumerable<IIntent> state)
+		{
 			//*** test the effectiveness of this
 			return !OutputCurrentState.SequenceEqual(state);
 		}

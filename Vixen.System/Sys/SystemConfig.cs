@@ -8,8 +8,10 @@ using Vixen.Services;
 using Vixen.Sys.Attribute;
 using Vixen.Sys.Output;
 
-namespace Vixen.Sys {
-	class SystemConfig {
+namespace Vixen.Sys
+{
+	internal class SystemConfig
+	{
 		private IEnumerable<Element> _elements;
 		private IEnumerable<ElementNode> _nodes;
 		private IEnumerable<IOutputDevice> _controllers;
@@ -20,12 +22,12 @@ namespace Vixen.Sys {
 		private IEnumerable<DataFlowPatch> _dataFlow;
 		private List<Guid> _disabledDevicesIds;
 
-		[DataPath]
-		static public readonly string Directory = Path.Combine(Paths.DataRootPath, "SystemData");
+		[DataPath] public static readonly string Directory = Path.Combine(Paths.DataRootPath, "SystemData");
 		public const string FileName = "SystemConfig.xml";
-		static public readonly string DefaultFilePath = Path.Combine(Directory, FileName);
+		public static readonly string DefaultFilePath = Path.Combine(Directory, FileName);
 
-		public SystemConfig() {
+		public SystemConfig()
+		{
 			Identity = Guid.NewGuid();
 			_disabledDevicesIds = new List<Guid>();
 			//*** is not in the data
@@ -38,9 +40,11 @@ namespace Vixen.Sys {
 		public Guid Identity { get; set; }
 
 		// Doing it this way means that Elements and Nodes will never be null.
-		public IEnumerable<Element> Elements {
-			get {
-				if(_elements == null) {
+		public IEnumerable<Element> Elements
+		{
+			get
+			{
+				if (_elements == null) {
 					_elements = new Element[0];
 				}
 				return _elements;
@@ -48,9 +52,11 @@ namespace Vixen.Sys {
 			set { _elements = value; }
 		}
 
-		public IEnumerable<ElementNode> Nodes {
-			get {
-				if(_nodes == null) {
+		public IEnumerable<ElementNode> Nodes
+		{
+			get
+			{
+				if (_nodes == null) {
 					_nodes = new ElementNode[0];
 				}
 				return _nodes;
@@ -58,9 +64,11 @@ namespace Vixen.Sys {
 			set { _nodes = value; }
 		}
 
-		public IEnumerable<IOutputDevice> OutputControllers {
-			get {
-				if(_controllers == null) {
+		public IEnumerable<IOutputDevice> OutputControllers
+		{
+			get
+			{
+				if (_controllers == null) {
 					_controllers = new IOutputDevice[0];
 				}
 				return _controllers;
@@ -68,9 +76,11 @@ namespace Vixen.Sys {
 			set { _controllers = value; }
 		}
 
-		public IEnumerable<IOutputDevice> Previews {
-			get {
-				if(_previews == null) {
+		public IEnumerable<IOutputDevice> Previews
+		{
+			get
+			{
+				if (_previews == null) {
 					_previews = new IOutputDevice[0];
 				}
 				return _previews;
@@ -78,9 +88,11 @@ namespace Vixen.Sys {
 			set { _previews = value; }
 		}
 
-		public IEnumerable<IOutputDevice> SmartOutputControllers {
-			get {
-				if(_smartControllers == null) {
+		public IEnumerable<IOutputDevice> SmartOutputControllers
+		{
+			get
+			{
+				if (_smartControllers == null) {
 					_smartControllers = new IOutputDevice[0];
 				}
 				return _smartControllers;
@@ -89,9 +101,11 @@ namespace Vixen.Sys {
 		}
 
 		//classes to handle each of these responsibilities?
-		public IEnumerable<IOutputFilterModuleInstance> Filters {
-			get {
-				if(_filters == null) {
+		public IEnumerable<IOutputFilterModuleInstance> Filters
+		{
+			get
+			{
+				if (_filters == null) {
 					_filters = new IOutputFilterModuleInstance[0];
 				}
 				return _filters;
@@ -99,9 +113,11 @@ namespace Vixen.Sys {
 			set { _filters = value; }
 		}
 
-		public IEnumerable<ControllerLink> ControllerLinking {
-			get {
-				if(_controllerLinking == null) {
+		public IEnumerable<ControllerLink> ControllerLinking
+		{
+			get
+			{
+				if (_controllerLinking == null) {
 					_controllerLinking = new ControllerLink[0];
 				}
 				return _controllerLinking;
@@ -109,9 +125,11 @@ namespace Vixen.Sys {
 			set { _controllerLinking = value; }
 		}
 
-		public IEnumerable<DataFlowPatch> DataFlow {
-			get {
-				if(_dataFlow == null) {
+		public IEnumerable<DataFlowPatch> DataFlow
+		{
+			get
+			{
+				if (_dataFlow == null) {
 					_dataFlow = new DataFlowPatch[0];
 				}
 				return _dataFlow;
@@ -119,12 +137,14 @@ namespace Vixen.Sys {
 			set { _dataFlow = value; }
 		}
 
-		public IEnumerable<IOutputDevice> DisabledDevices {
+		public IEnumerable<IOutputDevice> DisabledDevices
+		{
 			get { return _GetDisabledDevices(_disabledDevicesIds); }
 			set { _disabledDevicesIds = new List<Guid>(value.Select(x => x.Id)); }
 		}
 
-		public IEnumerable<Guid> DisabledDeviceIds {
+		public IEnumerable<Guid> DisabledDeviceIds
+		{
 			get { return _disabledDevicesIds.ToArray(); }
 			set { _disabledDevicesIds = new List<Guid>(value); }
 		}
@@ -135,15 +155,17 @@ namespace Vixen.Sys {
 
 		public bool AllowFilterEvaluation { get; set; }
 
-		public void Save() {
+		public void Save()
+		{
 			FileService.Instance.SaveSystemConfigFile(this);
 		}
 
-		private IEnumerable<IOutputDevice> _GetDisabledDevices(IEnumerable<Guid> deviceIds) {
+		private IEnumerable<IOutputDevice> _GetDisabledDevices(IEnumerable<Guid> deviceIds)
+		{
 			return deviceIds.Select(x =>
-				_controllers.FirstOrDefault(y => y.Id == x) ??
-				_smartControllers.FirstOrDefault(y => y.Id == x) ??
-				_previews.FirstOrDefault(y => y.Id == x)).Where(x => x != null);
+			                        _controllers.FirstOrDefault(y => y.Id == x) ??
+			                        _smartControllers.FirstOrDefault(y => y.Id == x) ??
+			                        _previews.FirstOrDefault(y => y.Id == x)).Where(x => x != null);
 		}
 	}
 }

@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Drawing;
 using Vixen.Sys;
 
-namespace Vixen.Module.Effect {
+namespace Vixen.Module.Effect
+{
 	// Effect instances are no longer singletons that render for all, they now contain
 	// state necessary for rendering per-instance.
-    public interface IEffect {
+	public interface IEffect
+	{
 		bool IsDirty { get; }
 
 		/// <summary>
@@ -34,5 +36,5 @@ namespace Vixen.Module.Effect {
 		ParameterSignature Parameters { get; }
 		void GenerateVisualRepresentation(Graphics g, Rectangle clipRectangle);
 		ElementIntents GetElementIntents(TimeSpan currentTime);
-    }
+	}
 }

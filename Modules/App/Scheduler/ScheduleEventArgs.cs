@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace VixenModules.App.Scheduler {
-	class ScheduleEventArgs : EventArgs {
-		public ScheduleEventArgs(int dayOffset, TimeSpan timeOffset) {
+namespace VixenModules.App.Scheduler
+{
+	internal class ScheduleEventArgs : EventArgs
+	{
+		public ScheduleEventArgs(int dayOffset, TimeSpan timeOffset)
+		{
 			DayOffset = dayOffset;
 			TimeOffset = timeOffset;
 		}

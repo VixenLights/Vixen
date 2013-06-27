@@ -1,21 +1,27 @@
 ﻿using Vixen.Module.Media;
 using Vixen.Sys;
 
-namespace Vixen.Services {
-	public class MediaService {
-		static private MediaService _instance;
+namespace Vixen.Services
+{
+	public class MediaService
+	{
+		private static MediaService _instance;
 
-		private MediaService() { }
+		private MediaService()
+		{
+		}
 
-		public static MediaService Instance {
+		public static MediaService Instance
+		{
 			get { return _instance ?? (_instance = new MediaService()); }
 		}
 
-		public IMediaModuleInstance GetMedia(string filePath) {
+		public IMediaModuleInstance GetMedia(string filePath)
+		{
 			MediaModuleManagement manager = Modules.GetManager<IMediaModuleInstance, MediaModuleManagement>();
 			IMediaModuleInstance module = manager.Get(filePath);
 
-			if(module != null) {
+			if (module != null) {
 				// Set the file in the instance.
 				module.MediaFilePath = filePath;
 			}

@@ -16,13 +16,13 @@ using System;
 using System.Drawing;
 
 
-namespace Dataweb.NShape.Advanced {
-
+namespace Dataweb.NShape.Advanced
+{
 	/// <summary>
 	/// Measures the extent of strings.
 	/// </summary>
-	public class TextMeasurer {
-
+	public class TextMeasurer
+	{
 		/// <summary>
 		/// Measures the given text and returns its size.
 		/// </summary>
@@ -31,9 +31,12 @@ namespace Dataweb.NShape.Advanced {
 		/// <param name="proposedSize">The layout area of the text. Size.Empty means no fitting in area.</param>
 		/// <param name="paragraphStyle">The paragraph layout of the text</param>
 		/// <returns></returns>
-		public static Size MeasureText(string text, ICharacterStyle characterStyle, Size proposedSize, IParagraphStyle paragraphStyle) {
+		public static Size MeasureText(string text, ICharacterStyle characterStyle, Size proposedSize,
+		                               IParagraphStyle paragraphStyle)
+		{
 			using (Graphics graphics = Graphics.FromHwnd(IntPtr.Zero))
-				return MeasureText(graphics, text, ToolCache.GetFont(characterStyle), proposedSize, ToolCache.GetStringFormat(paragraphStyle));
+				return MeasureText(graphics, text, ToolCache.GetFont(characterStyle), proposedSize,
+				                   ToolCache.GetStringFormat(paragraphStyle));
 		}
 
 
@@ -45,7 +48,8 @@ namespace Dataweb.NShape.Advanced {
 		/// <param name="proposedSize">The layout area of the text. Size.Empty means no fitting in area.</param>
 		/// <param name="paragraphStyle">The paragraph layout of the text</param>
 		/// <returns></returns>
-		public static Size MeasureText(string text, Font font, Size proposedSize, IParagraphStyle paragraphStyle) {
+		public static Size MeasureText(string text, Font font, Size proposedSize, IParagraphStyle paragraphStyle)
+		{
 			using (Graphics graphics = Graphics.FromHwnd(IntPtr.Zero))
 				return MeasureText(graphics, text, font, proposedSize, paragraphStyle);
 		}
@@ -59,7 +63,8 @@ namespace Dataweb.NShape.Advanced {
 		/// <param name="proposedSize">The layout area of the text. Size.Empty means no fitting in area.</param>
 		/// <param name="format">StringFormat object defining the layout of the text</param>
 		/// <returns></returns>
-		public static Size MeasureText(string text, Font font, Size proposedSize, StringFormat format) {
+		public static Size MeasureText(string text, Font font, Size proposedSize, StringFormat format)
+		{
 			using (Graphics graphics = Graphics.FromHwnd(IntPtr.Zero))
 				return MeasureText(graphics, text, font, proposedSize, format);
 		}
@@ -74,9 +79,12 @@ namespace Dataweb.NShape.Advanced {
 		/// <param name="proposedSize">The layout area of the text. Size.Empty means no fitting in area.</param>
 		/// <param name="paragraphStyle">The paragraph layout of the text</param>
 		/// <returns></returns>
-		public static Size MeasureText(Graphics graphics, string text, ICharacterStyle characterStyle, Size proposedSize, IParagraphStyle paragraphStyle) {
+		public static Size MeasureText(Graphics graphics, string text, ICharacterStyle characterStyle, Size proposedSize,
+		                               IParagraphStyle paragraphStyle)
+		{
 			if (paragraphStyle == null) throw new ArgumentNullException("paragraphStyle");
-			return MeasureText(graphics, text, ToolCache.GetFont(characterStyle), proposedSize, ToolCache.GetStringFormat(paragraphStyle));
+			return MeasureText(graphics, text, ToolCache.GetFont(characterStyle), proposedSize,
+			                   ToolCache.GetStringFormat(paragraphStyle));
 		}
 
 
@@ -89,7 +97,9 @@ namespace Dataweb.NShape.Advanced {
 		/// <param name="proposedSize">The layout area of the text. Size.Empty means no fitting in area.</param>
 		/// <param name="paragraphStyle">The paragraph layout of the text</param>
 		/// <returns></returns>
-		public static Size MeasureText(Graphics graphics, string text, Font font, Size proposedSize, IParagraphStyle paragraphStyle) {
+		public static Size MeasureText(Graphics graphics, string text, Font font, Size proposedSize,
+		                               IParagraphStyle paragraphStyle)
+		{
 			if (paragraphStyle == null) throw new ArgumentNullException("paragraphStyle");
 			return MeasureText(graphics, text, font, proposedSize, ToolCache.GetStringFormat(paragraphStyle));
 		}
@@ -104,7 +114,8 @@ namespace Dataweb.NShape.Advanced {
 		/// <param name="proposedSize">The layout area of the text. Size.Empty means no fitting in area.</param>
 		/// <param name="format">StringFormat object defining the layout of the text</param>
 		/// <returns></returns>
-		public static Size MeasureText(Graphics graphics, string text, Font font, Size proposedSize, StringFormat format) {
+		public static Size MeasureText(Graphics graphics, string text, Font font, Size proposedSize, StringFormat format)
+		{
 			if (graphics == null) throw new ArgumentNullException("graphics");
 			if (font == null) throw new ArgumentNullException("font");
 			if (text == null) throw new ArgumentNullException("text");
@@ -130,14 +141,16 @@ namespace Dataweb.NShape.Advanced {
 		}
 
 
-		private static bool AddFlag(ref StringFormatFlags formatFlags, StringFormatFlags flag) {
+		private static bool AddFlag(ref StringFormatFlags formatFlags, StringFormatFlags flag)
+		{
 			if ((formatFlags & flag) == flag) return false;
 			formatFlags |= flag;
 			return true;
 		}
 
 
-		private static bool RemoveFlag(ref StringFormatFlags formatFlags, StringFormatFlags flag) {
+		private static bool RemoveFlag(ref StringFormatFlags formatFlags, StringFormatFlags flag)
+		{
 			if ((formatFlags & flag) != flag) return false;
 			formatFlags ^= flag;
 			return true;

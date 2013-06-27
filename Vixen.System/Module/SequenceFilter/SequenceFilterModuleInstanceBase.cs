@@ -2,62 +2,83 @@
 using System.Collections.Generic;
 using Vixen.Sys;
 
-namespace Vixen.Module.SequenceFilter {
-	abstract public class SequenceFilterModuleInstanceBase : ModuleInstanceBase, ISequenceFilterModuleInstance, IEqualityComparer<ISequenceFilterModuleInstance>, IEquatable<ISequenceFilterModuleInstance>, IEqualityComparer<SequenceFilterModuleInstanceBase>, IEquatable<SequenceFilterModuleInstanceBase> {
+namespace Vixen.Module.SequenceFilter
+{
+	public abstract class SequenceFilterModuleInstanceBase : ModuleInstanceBase, ISequenceFilterModuleInstance,
+	                                                         IEqualityComparer<ISequenceFilterModuleInstance>,
+	                                                         IEquatable<ISequenceFilterModuleInstance>,
+	                                                         IEqualityComparer<SequenceFilterModuleInstanceBase>,
+	                                                         IEquatable<SequenceFilterModuleInstanceBase>
+	{
 		private ElementNode[] _targetNodes;
 		private TimeSpan _timeSpan;
 
-		public TimeSpan TimeSpan {
+		public TimeSpan TimeSpan
+		{
 			get { return _timeSpan; }
-			set {
-				if(value != _timeSpan) {
+			set
+			{
+				if (value != _timeSpan) {
 					_timeSpan = value;
 					IsDirty = true;
 				}
 			}
 		}
 
-		public ElementNode[] TargetNodes {
+		public ElementNode[] TargetNodes
+		{
 			get { return _targetNodes; }
-			set {
-				if(value != _targetNodes) {
+			set
+			{
+				if (value != _targetNodes) {
 					_targetNodes = value;
 					IsDirty = true;
 				}
 			}
 		}
 
-		virtual public bool HasSetup {
+		public virtual bool HasSetup
+		{
 			get { return false; }
 		}
 
-		virtual public bool Setup() { return false; }
+		public virtual bool Setup()
+		{
+			return false;
+		}
 
 		public bool IsDirty { get; protected set; }
 
-		abstract public void AffectIntent(IIntentSegment intentSegment, TimeSpan filterRelativeStartTime, TimeSpan filterRelativeEndTime);
+		public abstract void AffectIntent(IIntentSegment intentSegment, TimeSpan filterRelativeStartTime,
+		                                  TimeSpan filterRelativeEndTime);
 
-		public bool Equals(ISequenceFilterModuleInstance x, ISequenceFilterModuleInstance y) {
+		public bool Equals(ISequenceFilterModuleInstance x, ISequenceFilterModuleInstance y)
+		{
 			return base.Equals(x, y);
 		}
 
-		public int GetHashCode(ISequenceFilterModuleInstance obj) {
+		public int GetHashCode(ISequenceFilterModuleInstance obj)
+		{
 			return base.GetHashCode(obj);
 		}
 
-		public bool Equals(ISequenceFilterModuleInstance other) {
+		public bool Equals(ISequenceFilterModuleInstance other)
+		{
 			return base.Equals(other);
 		}
 
-		public bool Equals(SequenceFilterModuleInstanceBase x, SequenceFilterModuleInstanceBase y) {
+		public bool Equals(SequenceFilterModuleInstanceBase x, SequenceFilterModuleInstanceBase y)
+		{
 			return Equals(x as ISequenceFilterModuleInstance, y as ISequenceFilterModuleInstance);
 		}
 
-		public int GetHashCode(SequenceFilterModuleInstanceBase obj) {
+		public int GetHashCode(SequenceFilterModuleInstanceBase obj)
+		{
 			return GetHashCode(obj as ISequenceFilterModuleInstance);
 		}
 
-		public bool Equals(SequenceFilterModuleInstanceBase other) {
+		public bool Equals(SequenceFilterModuleInstanceBase other)
+		{
 			return Equals(other as ISequenceFilterModuleInstance);
 		}
 	}

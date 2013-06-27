@@ -28,101 +28,91 @@
 
 namespace VixenModules.Controller.E131
 {
-    using System;
-    using System.Diagnostics;
-    using System.Net.NetworkInformation;
-    using System.Net.Sockets;
-    using System.Text;
-    using System.Windows.Forms;
+	using System;
+	using System.Diagnostics;
+	using System.Net.NetworkInformation;
+	using System.Net.Sockets;
+	using System.Text;
+	using System.Windows.Forms;
+	using VixenModules.Controller.E131.J1Sys;
 
-    using VixenModules.Controller.E131.J1Sys;
+	internal static class Help
+	{
+		// --------------------------------------------------------------------
+		// AboutClick() - command to run the about dialog
+		// --------------------------------------------------------------------
+		public static void AboutClick(object sender, EventArgs e)
+		{
+			using (var aboutBox = new AboutBox()) {
+				aboutBox.ShowDialog();
+			}
+		}
 
-    internal static class Help
-    {
-        // --------------------------------------------------------------------
-        // AboutClick() - command to run the about dialog
-        // --------------------------------------------------------------------
-        public static void AboutClick(object sender, EventArgs e)
-        {
-            using (var aboutBox = new AboutBox())
-            {
-                aboutBox.ShowDialog();
-            }
-        }
+		// --------------------------------------------------------------------
+		// ShowSysClick() - command to show system info
+		// --------------------------------------------------------------------
+		public static void ShowSysClick(object sender, EventArgs e)
+		{
+			var txt = new StringBuilder();
+			var p = Process.GetCurrentProcess();
 
-        // --------------------------------------------------------------------
-        // ShowSysClick() - command to show system info
-        // --------------------------------------------------------------------
-        public static void ShowSysClick(object sender, EventArgs e)
-        {
-            var txt = new StringBuilder();
-            var p = Process.GetCurrentProcess();
+			txt.AppendLine("Process: " + p.ProcessName);
+			txt.Append("Threads: " + p.Threads.Count);
+			txt.AppendLine("  Handles: " + p.HandleCount);
 
-            txt.AppendLine("Process: " + p.ProcessName);
-            txt.Append("Threads: " + p.Threads.Count);
-            txt.AppendLine("  Handles: " + p.HandleCount);
+			if (Environment.OSVersion.Platform
+			    == PlatformID.Win32NT) {
+				txt.Append("PMemory: " + p.PrivateMemorySize64);
+				txt.AppendLine("  WMemory: " + p.WorkingSet64);
+			}
 
-            if (Environment.OSVersion.Platform
-                == PlatformID.Win32NT)
-            {
-                txt.Append("PMemory: " + p.PrivateMemorySize64);
-                txt.AppendLine("  WMemory: " + p.WorkingSet64);
-            }
+			txt.AppendLine();
 
-            txt.AppendLine();
+			var computerProperties = IPGlobalProperties.GetIPGlobalProperties();
 
-            var computerProperties = IPGlobalProperties.GetIPGlobalProperties();
+			txt.Append("HostName: " + computerProperties.HostName);
+			txt.AppendLine("  DomainName: " + computerProperties.DomainName);
 
-            txt.Append("HostName: " + computerProperties.HostName);
-            txt.AppendLine("  DomainName: " + computerProperties.DomainName);
+			var nics = NetworkInterface.GetAllNetworkInterfaces();
+			if (nics.Length > 0) {
+				foreach (var nic in nics) {
+					if (nic.NetworkInterfaceType.CompareTo(NetworkInterfaceType.Tunnel) != 0) {
+						txt.AppendLine();
+						txt.AppendLine(nic.Description + ":");
+						txt.AppendLine("  ID: " + nic.Id);
+						txt.AppendLine("  Name: " + nic.Name);
+						txt.Append("  Interface Type: " + nic.NetworkInterfaceType);
+						txt.Append("  Physical Address: " + nic.GetPhysicalAddress());
+						txt.AppendLine();
+						txt.Append("  Operational Status: " + nic.OperationalStatus);
+						txt.Append("  Supports Multicast: " + nic.SupportsMulticast);
+						txt.AppendLine();
 
-            var nics = NetworkInterface.GetAllNetworkInterfaces();
-            if (nics.Length > 0)
-            {
-                foreach (var nic in nics)
-                {
-                    if (nic.NetworkInterfaceType.CompareTo(NetworkInterfaceType.Tunnel) != 0)
-                    {
-                        txt.AppendLine();
-                        txt.AppendLine(nic.Description + ":");
-                        txt.AppendLine("  ID: " + nic.Id);
-                        txt.AppendLine("  Name: " + nic.Name);
-                        txt.Append("  Interface Type: " + nic.NetworkInterfaceType);
-                        txt.Append("  Physical Address: " + nic.GetPhysicalAddress());
-                        txt.AppendLine();
-                        txt.Append("  Operational Status: " + nic.OperationalStatus);
-                        txt.Append("  Supports Multicast: " + nic.SupportsMulticast);
-                        txt.AppendLine();
+						var uniCasts = nic.GetIPProperties().UnicastAddresses;
 
-                        var uniCasts = nic.GetIPProperties().UnicastAddresses;
+						bool prefix = false;
 
-                        bool prefix = false;
+						foreach (var uniCast in uniCasts) {
+							if (uniCast.Address.AddressFamily.CompareTo(AddressFamily.InterNetwork) == 0) {
+								if (!prefix) {
+									txt.Append("  IP Address: ");
+									prefix = true;
+								}
 
-                        foreach (var uniCast in uniCasts)
-                        {
-                            if (uniCast.Address.AddressFamily.CompareTo(AddressFamily.InterNetwork) == 0)
-                            {
-                                if (!prefix)
-                                {
-                                    txt.Append("  IP Address: ");
-                                    prefix = true;
-                                }
+								txt.Append(" " + uniCast.Address);
+							}
+						}
 
-                                txt.Append(" " + uniCast.Address);
-                            }
-                        }
+						if (prefix) {
+							txt.AppendLine();
+						}
+					}
+				}
+			}
 
-                        if (prefix)
-                        {
-                            txt.AppendLine();
-                        }
-                    }
-                }
-            }
-
-            txt.AppendLine();
-            txt.AppendLine("That's All Folks!!!");
-            J1MsgBox.ShowMsg(string.Empty, txt.ToString(), "Show System Info", MessageBoxButtons.OK, MessageBoxIcon.None);
-        }
-    }
+			txt.AppendLine();
+			txt.AppendLine("That's All Folks!!!");
+			J1MsgBox.ShowMsg(string.Empty, txt.ToString(), "Show System Info", MessageBoxButtons.OK, MessageBoxIcon.None);
+		}
+	}
 }

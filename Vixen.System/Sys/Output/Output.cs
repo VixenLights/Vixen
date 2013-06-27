@@ -1,9 +1,12 @@
 ﻿using System;
 using Vixen.Data.Flow;
 
-namespace Vixen.Sys.Output {
-	abstract public class Output {
-		internal protected Output(Guid id, string name, int index) {
+namespace Vixen.Sys.Output
+{
+	public abstract class Output
+	{
+		protected internal Output(Guid id, string name, int index)
+		{
 			Id = id;
 			Name = name;
 			Index = index;
@@ -16,8 +19,9 @@ namespace Vixen.Sys.Output {
 
 		public int Index { get; private set; }
 
-		public void Update() {
-			if(Source != null) {
+		public void Update()
+		{
+			if (Source != null) {
 				State = Source.GetOutputState();
 			}
 		}

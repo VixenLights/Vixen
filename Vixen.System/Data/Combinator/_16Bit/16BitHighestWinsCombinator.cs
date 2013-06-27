@@ -2,52 +2,64 @@
 using Vixen.Commands;
 using Vixen.Data.Value;
 
-namespace Vixen.Data.Combinator._16Bit {
-	public class _16BitHighestWinsCombinator : Combinator<_16BitHighestWinsCombinator, ushort> {
-		public override void Handle(_8BitCommand obj) {
-			if(CombinatorValue == null) {
+namespace Vixen.Data.Combinator._16Bit
+{
+	public class _16BitHighestWinsCombinator : Combinator<_16BitHighestWinsCombinator, ushort>
+	{
+		public override void Handle(_8BitCommand obj)
+		{
+			if (CombinatorValue == null) {
 				CombinatorValue = new _16BitCommand(obj.CommandValue);
-			} else {
+			}
+			else {
 				ushort value1 = CombinatorValue.CommandValue;
 				ushort value2 = obj.CommandValue;
 				CombinatorValue = new _16BitCommand(Math.Max(value1, value2));
 			}
 		}
 
-		public override void Handle(ColorCommand obj) {
-			if(CombinatorValue == null) {
+		public override void Handle(ColorCommand obj)
+		{
+			if (CombinatorValue == null) {
 				CombinatorValue = new _16BitCommand(ColorValue.GetGrayscaleLevel(obj.CommandValue));
-			} else {
+			}
+			else {
 				ushort value1 = CombinatorValue.CommandValue;
 				ushort value2 = ColorValue.GetGrayscaleLevel(obj.CommandValue);
 				CombinatorValue = new _16BitCommand(Math.Max(value1, value2));
 			}
 		}
 
-		public override void Handle(_32BitCommand obj) {
-			if(CombinatorValue == null) {
+		public override void Handle(_32BitCommand obj)
+		{
+			if (CombinatorValue == null) {
 				CombinatorValue = new _16BitCommand(obj.CommandValue);
-			} else {
+			}
+			else {
 				ushort value1 = CombinatorValue.CommandValue;
-				ushort value2 = (ushort)obj.CommandValue;
+				ushort value2 = (ushort) obj.CommandValue;
 				CombinatorValue = new _16BitCommand(Math.Max(value1, value2));
 			}
 		}
 
-		public override void Handle(_64BitCommand obj) {
-			if(CombinatorValue == null) {
+		public override void Handle(_64BitCommand obj)
+		{
+			if (CombinatorValue == null) {
 				CombinatorValue = new _16BitCommand(obj.CommandValue);
-			} else {
+			}
+			else {
 				ushort value1 = CombinatorValue.CommandValue;
-				ushort value2 = (ushort)obj.CommandValue;
+				ushort value2 = (ushort) obj.CommandValue;
 				CombinatorValue = new _16BitCommand(Math.Max(value1, value2));
 			}
 		}
 
-		public override void Handle(_16BitCommand obj) {
-			if(CombinatorValue == null) {
+		public override void Handle(_16BitCommand obj)
+		{
+			if (CombinatorValue == null) {
 				CombinatorValue = obj;
-			} else {
+			}
+			else {
 				ushort value1 = CombinatorValue.CommandValue;
 				ushort value2 = obj.CommandValue;
 				CombinatorValue = new _16BitCommand(Math.Max(value1, value2));

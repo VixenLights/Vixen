@@ -2,10 +2,13 @@
 using System.Runtime.Serialization;
 using Vixen.Sys;
 
-namespace Vixen.Module.SequenceType.Surrogate {
+namespace Vixen.Module.SequenceType.Surrogate
+{
 	[DataContract(Namespace = "")]
-	class ChannelNodeReferenceSurrogate {
-		public ChannelNodeReferenceSurrogate(ElementNode elementNode) {
+	internal class ChannelNodeReferenceSurrogate
+	{
+		public ChannelNodeReferenceSurrogate(ElementNode elementNode)
+		{
 			NodeId = elementNode.Id;
 		}
 

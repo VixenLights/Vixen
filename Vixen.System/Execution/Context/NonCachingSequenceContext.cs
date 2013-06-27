@@ -4,7 +4,7 @@ using Vixen.Sys.Attribute;
 namespace Vixen.Execution.Context
 {
 	[Context(ContextTargetType.Sequence, ContextCaching.NoCaching)]
-	class NonCachingSequenceContext : SequenceContext
+	internal class NonCachingSequenceContext : SequenceContext
 	{
 		private SequenceDataPump _dataSource;
 
@@ -30,10 +30,10 @@ namespace Vixen.Execution.Context
 			_dataSource.Stop();
 			base.OnSequenceEnded(e);
 		}
+
 		protected override void Dispose(bool disposing)
 		{
-			if (disposing)
-			{
+			if (disposing) {
 				if (_DataSource != null)
 					_dataSource.Dispose();
 

@@ -6,9 +6,12 @@ using Vixen.Sys;
 using Vixen.Module.Effect;
 using Vixen.Commands;
 
-namespace Vixen.Module.EffectEditor {
-	class EffectEditorModuleManagement : GenericModuleManagement<IEffectEditorModuleInstance> {
-		public IEnumerable<IEffectEditorControl> GetEffectEditors(Guid effectId) {
+namespace Vixen.Module.EffectEditor
+{
+	internal class EffectEditorModuleManagement : GenericModuleManagement<IEffectEditorModuleInstance>
+	{
+		public IEnumerable<IEffectEditorControl> GetEffectEditors(Guid effectId)
+		{
 			IEffectModuleDescriptor descriptor = Modules.GetDescriptorById<IEffectModuleDescriptor>(effectId);
 
 			// 1. Is there an editor for this specific effect by id?
@@ -23,24 +26,30 @@ namespace Vixen.Module.EffectEditor {
 			return editorControls;
 		}
 
-		private IEnumerable<IEffectEditorControl> _GetEditorByEffect(IEffectModuleDescriptor descriptor) {
+		private IEnumerable<IEffectEditorControl> _GetEditorByEffect(IEffectModuleDescriptor descriptor)
+		{
 			// Need the type-specific repository reference, doing more than basic
 			// repository operations.
-			EffectEditorModuleRepository repository = Modules.GetRepository<IEffectEditorModuleInstance, EffectEditorModuleRepository>();
+			EffectEditorModuleRepository repository =
+				Modules.GetRepository<IEffectEditorModuleInstance, EffectEditorModuleRepository>();
 			IEffectEditorModuleInstance instance = repository.GetByEffectId(descriptor.TypeId);
 			return (instance != null) ? instance.CreateEditorControl().AsEnumerable() : null;
 		}
 
-		private IEnumerable<IEffectEditorControl> _GetEditorBySignature(IEffectModuleDescriptor descriptor) {
-			EffectEditorModuleRepository repository = Modules.GetRepository<IEffectEditorModuleInstance, EffectEditorModuleRepository>();
+		private IEnumerable<IEffectEditorControl> _GetEditorBySignature(IEffectModuleDescriptor descriptor)
+		{
+			EffectEditorModuleRepository repository =
+				Modules.GetRepository<IEffectEditorModuleInstance, EffectEditorModuleRepository>();
 			IEffectEditorModuleInstance instance = repository.Get(descriptor.Parameters.Select(x => x.Type));
 			return (instance != null) ? instance.CreateEditorControl().AsEnumerable() : null;
 		}
 
-		private IEnumerable<IEffectEditorControl> _GetEditorsByParameter(IEffectModuleDescriptor descriptor) {
-			EffectEditorModuleRepository repository = Modules.GetRepository<IEffectEditorModuleInstance, EffectEditorModuleRepository>();
+		private IEnumerable<IEffectEditorControl> _GetEditorsByParameter(IEffectModuleDescriptor descriptor)
+		{
+			EffectEditorModuleRepository repository =
+				Modules.GetRepository<IEffectEditorModuleInstance, EffectEditorModuleRepository>();
 			IEnumerable<IEffectEditorModuleInstance> instances = descriptor.Parameters.Select(x => repository.Get(x.Type));
-			if(!instances.Any(x => x == null)) {
+			if (!instances.Any(x => x == null)) {
 				return instances.Select(x => x.CreateEditorControl());
 			}
 			return null;

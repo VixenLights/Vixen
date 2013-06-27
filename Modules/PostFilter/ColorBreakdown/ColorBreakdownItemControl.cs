@@ -48,6 +48,7 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 
 
 		public event EventHandler DeleteRequested;
+
 		private void buttonDelete_Click(object sender, EventArgs e)
 		{
 			if (DeleteRequested != null)

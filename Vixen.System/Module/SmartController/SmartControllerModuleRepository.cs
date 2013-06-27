@@ -1,4 +1,6 @@
-﻿namespace Vixen.Module.SmartController {
-	class SmartControllerModuleRepository : GenericModuleRepository<ISmartControllerModuleInstance> {
+﻿namespace Vixen.Module.SmartController
+{
+	internal class SmartControllerModuleRepository : GenericModuleRepository<ISmartControllerModuleInstance>
+	{
 	}
 }

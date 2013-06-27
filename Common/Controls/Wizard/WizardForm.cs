@@ -16,7 +16,6 @@ namespace Common.Controls.Wizard
 		{
 			InitializeComponent();
 			_wizard = wizard;
-
 		}
 
 		private void WizardForm_Load(object sender, EventArgs e)
@@ -64,7 +63,7 @@ namespace Common.Controls.Wizard
 			_updateButtons();
 		}
 
-		void CurrentStage_WizardStageChanged(object sender, EventArgs e)
+		private void CurrentStage_WizardStageChanged(object sender, EventArgs e)
 		{
 			_updateButtons();
 		}
@@ -83,6 +82,7 @@ namespace Common.Controls.Wizard
 		}
 
 		public event EventHandler WizardFormFinished;
+
 		private void _wizardFinished()
 		{
 			if (WizardFormFinished != null)

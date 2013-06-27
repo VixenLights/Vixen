@@ -1,9 +1,12 @@
 ﻿using System.Diagnostics;
 using System.Drawing;
 
-namespace Vixen.Data.Value {
-	public struct LightingValue : IIntentDataType {
-		public LightingValue(Color color, float intensity) {
+namespace Vixen.Data.Value
+{
+	public struct LightingValue : IIntentDataType
+	{
+		public LightingValue(Color color, float intensity)
+		{
 			Color = color;
 			Intensity = intensity;
 		}
@@ -19,8 +22,9 @@ namespace Vixen.Data.Value {
 		/// Gets the lighting value as a color with the intensity value applied. Results in an opaque color,
 		/// between black (0,0,0) for a lighting value with an intensity of 0 and the solid color with an intensity of 100%.
 		/// </summary>
-		public Color GetOpaqueIntensityAffectedColor() {
-			return Color.FromArgb((int)(Color.R * Intensity), (int)(Color.G * Intensity), (int)(Color.B * Intensity));
+		public Color GetOpaqueIntensityAffectedColor()
+		{
+			return Color.FromArgb((int) (Color.R*Intensity), (int) (Color.G*Intensity), (int) (Color.B*Intensity));
 		}
 
 		/// <summary>
@@ -30,7 +34,7 @@ namespace Vixen.Data.Value {
 		public Color GetAlphaChannelIntensityAffectedColor()
 		{
 			// as this is a lighting value, the lower the intensity (brightness), the more transparent it should be.
-			return Color.FromArgb((int)(Intensity * byte.MaxValue), Color.R, Color.G, Color.B);
+			return Color.FromArgb((int) (Intensity*byte.MaxValue), Color.R, Color.G, Color.B);
 		}
 	}
 }

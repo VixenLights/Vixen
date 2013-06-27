@@ -3,10 +3,13 @@ using System.Linq;
 using System.Runtime.Serialization;
 using Vixen.Module;
 
-namespace VixenModules.App.SimpleSchedule {
+namespace VixenModules.App.SimpleSchedule
+{
 	[DataContract]
-	public class SimpleSchedulerData : ModuleDataModelBase {
-		public SimpleSchedulerData() {
+	public class SimpleSchedulerData : ModuleDataModelBase
+	{
+		public SimpleSchedulerData()
+		{
 			IsEnabled = false;
 			CheckIntervalInSeconds = 10;
 			ScheduledItems = new List<ScheduledItem>();
@@ -21,8 +24,9 @@ namespace VixenModules.App.SimpleSchedule {
 		[DataMember]
 		public List<ScheduledItem> ScheduledItems { get; set; }
 
-		public override IModuleDataModel Clone() {
-			SimpleSchedulerData newData = (SimpleSchedulerData)MemberwiseClone();
+		public override IModuleDataModel Clone()
+		{
+			SimpleSchedulerData newData = (SimpleSchedulerData) MemberwiseClone();
 			newData.ScheduledItems = ScheduledItems.ToList();
 			return newData;
 		}

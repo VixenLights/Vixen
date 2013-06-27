@@ -1,5 +1,7 @@
-﻿namespace Vixen.Sys {
-	public interface IDataPolicyFactory {
+﻿namespace Vixen.Sys
+{
+	public interface IDataPolicyFactory
+	{
 		IDataPolicy CreateDataPolicy();
 	}
 }

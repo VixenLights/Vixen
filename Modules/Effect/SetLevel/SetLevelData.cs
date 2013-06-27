@@ -10,7 +10,7 @@ using Vixen.Module;
 namespace VixenModules.Effect.SetLevel
 {
 	[DataContract]
-	class SetLevelData : ModuleDataModelBase
+	internal class SetLevelData : ModuleDataModelBase
 	{
 		[DataMember]
 		public double level { get; set; }

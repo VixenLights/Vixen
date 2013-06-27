@@ -19,15 +19,17 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 
 
-namespace Dataweb.NShape.Advanced {
-
+namespace Dataweb.NShape.Advanced
+{
 	/// <ToBeCompleted></ToBeCompleted>
-	public class RegularPolygoneBase : CaptionedShapeBase {
-
+	public class RegularPolygoneBase : CaptionedShapeBase
+	{
 		/// <ToBeCompleted></ToBeCompleted>
-		public int VertexCount {
+		public int VertexCount
+		{
 			get { return pointCount; }
-			set {
+			set
+			{
 				if (value < 3) throw new ArgumentOutOfRangeException("VertexCount has to be >= 3");
 				if (pointCount != value) {
 					BeginResize();
@@ -43,10 +45,11 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		public override void CopyFrom(Shape source) {
+		public override void CopyFrom(Shape source)
+		{
 			base.CopyFrom(source);
 			if (source is RegularPolygoneBase) {
-				RegularPolygoneBase src = (RegularPolygoneBase)source;
+				RegularPolygoneBase src = (RegularPolygoneBase) source;
 				VertexCount = src.VertexCount;
 				diameter = src.diameter;
 				if (pointCount != src.pointCount)
@@ -61,35 +64,44 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		public override Shape Clone() {
-			Shape result = new RegularPolygoneBase(Type, (Template)null);
+		public override Shape Clone()
+		{
+			Shape result = new RegularPolygoneBase(Type, (Template) null);
 			result.CopyFrom(this);
 			return result;
 		}
 
 
 		/// <override></override>
-		public override IEnumerable<ControlPointId> GetControlPointIds(ControlPointCapabilities controlPointCapability) {
+		public override IEnumerable<ControlPointId> GetControlPointIds(ControlPointCapabilities controlPointCapability)
+		{
 			return base.GetControlPointIds(controlPointCapability);
 		}
 
 
 		/// <override></override>
-		public override bool HasControlPointCapability(ControlPointId controlPointId, ControlPointCapabilities controlPointCapability) {
+		public override bool HasControlPointCapability(ControlPointId controlPointId,
+		                                               ControlPointCapabilities controlPointCapability)
+		{
 			if (controlPointId == controlPoints.Length) {
 				return ((controlPointCapability & ControlPointCapabilities.Rotate) > 0
-							|| (controlPointCapability & ControlPointCapabilities.Reference) > 0
-							|| ((controlPointCapability & ControlPointCapabilities.Connect) > 0 && IsConnectionPointEnabled(controlPointId)));
-			} else if (controlPointId >= 1) {
+				        || (controlPointCapability & ControlPointCapabilities.Reference) > 0
+				        ||
+				        ((controlPointCapability & ControlPointCapabilities.Connect) > 0 && IsConnectionPointEnabled(controlPointId)));
+			}
+			else if (controlPointId >= 1) {
 				return ((controlPointCapability & ControlPointCapabilities.Resize) > 0
-								|| ((controlPointCapability & ControlPointCapabilities.Connect) > 0 && IsConnectionPointEnabled(controlPointId)));
-			} else
+				        ||
+				        ((controlPointCapability & ControlPointCapabilities.Connect) > 0 && IsConnectionPointEnabled(controlPointId)));
+			}
+			else
 				return base.HasControlPointCapability(controlPointId, controlPointCapability);
 		}
 
 
 		/// <override></override>
-		public override Point CalculateConnectionFoot(int startX, int startY) {
+		public override Point CalculateConnectionFoot(int startX, int startY)
+		{
 			if (X == startX && Y == startY)
 				return Center;
 			else {
@@ -99,14 +111,16 @@ namespace Dataweb.NShape.Advanced {
 				Matrix.Translate(X, Y, MatrixOrder.Append);
 				Matrix.TransformPoints(pointBuffer);
 
-				Point result = Geometry.GetNearestPoint(startX, startY, Geometry.IntersectPolygonLine(pointBuffer, X, Y, startX, startY, false));
+				Point result = Geometry.GetNearestPoint(startX, startY,
+				                                        Geometry.IntersectPolygonLine(pointBuffer, X, Y, startX, startY, false));
 				return result;
 			}
 		}
 
 
 		/// <override></override>
-		public override RelativePosition CalculateRelativePosition(int x, int y) {
+		public override RelativePosition CalculateRelativePosition(int x, int y)
+		{
 			// Definition of the relative position:
 			// Let posA be thwe intersection point of A|xy and B|C
 			// Let posB be the intersection point of B|xy and A|C
@@ -116,17 +130,18 @@ namespace Dataweb.NShape.Advanced {
 			// RelativePosition.B = Tenths of percentage of AC
 
 			float angle = Geometry.RadiansToDegrees(Geometry.Angle(X, Y, x, y));
-			float dist = Geometry.DistancePointPoint(X, Y, x, y) / diameter;
+			float dist = Geometry.DistancePointPoint(X, Y, x, y)/diameter;
 
 			RelativePosition result = RelativePosition.Empty;
-			result.A = (int)Math.Round(angle * 1000);
-			result.B = (int)Math.Round(dist * 1000);
+			result.A = (int) Math.Round(angle*1000);
+			result.B = (int) Math.Round(dist*1000);
 			return result;
 		}
 
 
 		/// <override></override>
-		public override Point CalculateAbsolutePosition(RelativePosition relativePosition) {
+		public override Point CalculateAbsolutePosition(RelativePosition relativePosition)
+		{
 			// Definition of the relative position:
 			// Let posA be thwe intersection point of A|xy and B|C
 			// Let posB be the intersection point of B|xy and A|C
@@ -135,15 +150,16 @@ namespace Dataweb.NShape.Advanced {
 			// RelativePosition.A = Tenths of percentage of BC
 			// RelativePosition.B = Tenths of percentage of AC
 			float angle = Geometry.TenthsOfDegreeToDegrees(relativePosition.A);
-			float dist = (relativePosition.B / 1000f) * diameter;
-			
+			float dist = (relativePosition.B/1000f)*diameter;
+
 			Point result = Point.Round(Geometry.CalcPoint(X, Y, angle, dist));
 			return result;
 		}
 
 
 		/// <override></override>
-		public override ControlPointId HitTest(int x, int y, ControlPointCapabilities controlPointCapability, int range) {
+		public override ControlPointId HitTest(int x, int y, ControlPointCapabilities controlPointCapability, int range)
+		{
 			ControlPointId result = base.HitTest(x, y, controlPointCapability, range);
 			if (result != ControlPointId.None)
 				return result;
@@ -164,37 +180,40 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		public override void Draw(Graphics graphics) {
+		public override void Draw(Graphics graphics)
+		{
 			if (graphics == null) throw new ArgumentNullException("graphics");
 			DrawPath(graphics, LineStyle, FillStyle);
 			DrawCaption(graphics);
-			base.Draw(graphics);	// Draw children and outline
+			base.Draw(graphics); // Draw children and outline
 		}
 
 
 		/// <override></override>
-		public override void Fit(int x, int y, int width, int height) {
+		public override void Fit(int x, int y, int width, int height)
+		{
 			Rectangle dstBounds = Rectangle.Empty;
 			dstBounds.Offset(x, y);
-			dstBounds.Width = width; dstBounds.Height = height;
-			
+			dstBounds.Width = width;
+			dstBounds.Height = height;
+
 			// Get current bounds
 			Rectangle srcBounds = CalculateBoundingRectangle(true);
 
 			InvalidateDrawCache();
-			float scaleFactor = Math.Min(dstBounds.Width / (float)srcBounds.Width, dstBounds.Height / (float)srcBounds.Height);
-			diameter = (int)Math.Round(diameter * scaleFactor);
+			float scaleFactor = Math.Min(dstBounds.Width/(float) srcBounds.Width, dstBounds.Height/(float) srcBounds.Height);
+			diameter = (int) Math.Round(diameter*scaleFactor);
 			UpdateShapePoints();
 
 			// Scale shape to the desired size
-			MoveTo(dstBounds.X + (int)Math.Round(dstBounds.Width / 2f), dstBounds.Y + (int)Math.Round(dstBounds.Height / 2f));
+			MoveTo(dstBounds.X + (int) Math.Round(dstBounds.Width/2f), dstBounds.Y + (int) Math.Round(dstBounds.Height/2f));
 		}
-
 
 		#region IEntity Members
 
 		/// <override></override>
-		protected override void LoadFieldsCore(IRepositoryReader reader, int version) {
+		protected override void LoadFieldsCore(IRepositoryReader reader, int version)
+		{
 			base.LoadFieldsCore(reader, version);
 			diameter = reader.ReadFloat();
 			VertexCount = reader.ReadInt32();
@@ -202,7 +221,8 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		protected override void SaveFieldsCore(IRepositoryWriter writer, int version) {
+		protected override void SaveFieldsCore(IRepositoryWriter writer, int version)
+		{
 			base.SaveFieldsCore(writer, version);
 			writer.WriteFloat(diameter);
 			writer.WriteInt32(VertexCount);
@@ -212,63 +232,71 @@ namespace Dataweb.NShape.Advanced {
 		/// <summary>
 		/// Retrieves the persistable properties of <see cref="T:Dataweb.NShape.Advanced.RegularPolygonBase" />.
 		/// </summary>
-		new public static IEnumerable<EntityPropertyDefinition> GetPropertyDefinitions(int version) {
+		public new static IEnumerable<EntityPropertyDefinition> GetPropertyDefinitions(int version)
+		{
 			foreach (EntityPropertyDefinition pi in CaptionedShapeBase.GetPropertyDefinitions(version))
 				yield return pi;
-			yield return new EntityFieldDefinition("Diameter", typeof(float));
-			yield return new EntityFieldDefinition("VertexCount", typeof(int));
+			yield return new EntityFieldDefinition("Diameter", typeof (float));
+			yield return new EntityFieldDefinition("VertexCount", typeof (int));
 		}
 
 		#endregion
 
-
 		/// <override></override>
-		protected internal override int ControlPointCount {
+		protected internal override int ControlPointCount
+		{
 			get { return pointCount + 1; }
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
 		protected internal RegularPolygoneBase(ShapeType shapeType, Template template)
-			: base(shapeType, template) {
+			: base(shapeType, template)
+		{
 			Construct();
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
 		protected internal RegularPolygoneBase(ShapeType shapeType, IStyleSet styleSet)
-			: base(shapeType, styleSet) {
+			: base(shapeType, styleSet)
+		{
 			Construct();
 		}
 
 
 		/// <override></override>
-		protected internal override void InitializeToDefault(IStyleSet styleSet) {
+		protected internal override void InitializeToDefault(IStyleSet styleSet)
+		{
 			base.InitializeToDefault(styleSet);
 			FillStyle = styleSet.FillStyles.Blue;
 		}
 
 
 		/// <override></override>
-		protected override int DivFactorX {
-			get {
-				if (pointCount % 2 == 0) return 2;
-				else if (pointCount % 3 == 0) return 3;
-				else if (pointCount % 5 == 0) return 5;
-				else if (pointCount % 7 == 0) return 7;
+		protected override int DivFactorX
+		{
+			get
+			{
+				if (pointCount%2 == 0) return 2;
+				else if (pointCount%3 == 0) return 3;
+				else if (pointCount%5 == 0) return 5;
+				else if (pointCount%7 == 0) return 7;
 				else return 1;
 			}
 		}
 
 
 		/// <override></override>
-		protected override int DivFactorY {
+		protected override int DivFactorY
+		{
 			get { return DivFactorX; }
 		}
 
 
 		/// <override></override>
-		protected override Rectangle CalculateBoundingRectangle(bool tight) {
+		protected override Rectangle CalculateBoundingRectangle(bool tight)
+		{
 			Rectangle result;
 			Array.Copy(shapePoints, pointBuffer, pointBuffer.Length);
 			Matrix.Reset();
@@ -284,7 +312,8 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		protected override bool ContainsPointCore(int x, int y) {
+		protected override bool ContainsPointCore(int x, int y)
+		{
 			// Transform x|y to 0|0 before comparing with (the untransformed) polygon.
 			// Instead of rotating the triangle, we rotate the point in the opposite direction.
 			if (Geometry.IsValid(x, y)) {
@@ -292,12 +321,14 @@ namespace Dataweb.NShape.Advanced {
 				p.Offset(x - X, y - Y);
 				p = Geometry.RotatePoint(Point.Empty, Geometry.TenthsOfDegreeToDegrees(-Angle), p);
 				return Geometry.PolygonContainsPoint(shapePoints, p.X, p.Y);
-			} else return false;
+			}
+			else return false;
 		}
 
 
 		/// <override></override>
-		protected override bool IntersectsWithCore(int x, int y, int width, int height) {
+		protected override bool IntersectsWithCore(int x, int y, int width, int height)
+		{
 			// Transform the rectangle 0|0 before comparing it with the (untransformed) shapePoints
 			float angleDeg = Geometry.TenthsOfDegreeToDegrees(Angle);
 			Debug.Assert(pointCount == pointBuffer.Length);
@@ -311,14 +342,16 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		protected override bool MovePointByCore(ControlPointId pointId, float transformedDeltaX, float transformedDeltaY, float sin, float cos, ResizeModifiers modifiers) {
+		protected override bool MovePointByCore(ControlPointId pointId, float transformedDeltaX, float transformedDeltaY,
+		                                        float sin, float cos, ResizeModifiers modifiers)
+		{
 			int idx = GetControlPointIndex(pointId);
 			Debug.Assert(idx >= 0);
 
 			// Normalize the movement to the first vector
-			float segmentAngle = 360 / (float)pointCount;
-			float ptAngle = (pointId - 1) * segmentAngle;
-			float normalizedDeltaX= transformedDeltaX;
+			float segmentAngle = 360/(float) pointCount;
+			float ptAngle = (pointId - 1)*segmentAngle;
+			float normalizedDeltaX = transformedDeltaX;
 			float normalizedDeltaY = transformedDeltaY;
 			Geometry.RotatePoint(0, 0, -ptAngle, ref normalizedDeltaX, ref normalizedDeltaY);
 
@@ -328,20 +361,21 @@ namespace Dataweb.NShape.Advanced {
 			//float movementCorrectionFactor = (float)Math.Round(Geometry.DistancePointPoint(0, 0, p.X, p.Y) / diameter, 1);
 
 			float dx = 0;
-			float dy = (normalizedDeltaY / 2); // * movementCorrectionFactor;
-			diameter = (int)Math.Round(diameter - (normalizedDeltaY - dy));
+			float dy = (normalizedDeltaY/2); // * movementCorrectionFactor;
+			diameter = (int) Math.Round(diameter - (normalizedDeltaY - dy));
 			UpdateShapePoints();
 
 			// Update shape position
 			Geometry.RotatePoint(0, 0, ptAngle, ref dx, ref dy);
-			MoveByCore((int)Math.Round((dx * cos) - (dy * sin)), (int)Math.Round((dx * sin) + (dy * cos)));
-			
+			MoveByCore((int) Math.Round((dx*cos) - (dy*sin)), (int) Math.Round((dx*sin) + (dy*cos)));
+
 			return (normalizedDeltaX == 0);
 		}
 
 
 		/// <override></override>
-		protected override void CalcCaptionBounds(int index, out Rectangle captionBounds) {
+		protected override void CalcCaptionBounds(int index, out Rectangle captionBounds)
+		{
 			captionBounds = Geometry.InvalidRectangle;
 			//Geometry.CalcBoundingRectangle(shapePoints, out captionBounds);
 			// Calculate the inner circle
@@ -349,11 +383,13 @@ namespace Dataweb.NShape.Advanced {
 			int j;
 			for (int i = shapePoints.Length - 1; i >= 0; --i) {
 				j = (i == 0) ? shapePoints.Length - 1 : i - 1;
-				int x1 = shapePoints[i].X; int y1 = shapePoints[i].Y;
-				int x2 = shapePoints[j].X; int y2 = shapePoints[j].Y;
-				Point p = Geometry.CalcPointOnLine(x1, y1, x2, y2, Geometry.DistancePointPoint(x1, y1, x2, y2) / 2f);
+				int x1 = shapePoints[i].X;
+				int y1 = shapePoints[i].Y;
+				int x2 = shapePoints[j].X;
+				int y2 = shapePoints[j].Y;
+				Point p = Geometry.CalcPointOnLine(x1, y1, x2, y2, Geometry.DistancePointPoint(x1, y1, x2, y2)/2f);
 				float dist = Geometry.DistancePointPoint(Point.Empty, p);
-				if (dist > circleRadius) circleRadius = (int)Math.Round(dist);
+				if (dist > circleRadius) circleRadius = (int) Math.Round(dist);
 			}
 			captionBounds.X = -circleRadius;
 			captionBounds.Y = -circleRadius;
@@ -368,7 +404,8 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		protected override void CalcControlPoints() {
+		protected override void CalcControlPoints()
+		{
 			if (controlPoints.Length != ControlPointCount)
 				Array.Resize(ref controlPoints, ControlPointCount);
 			int cnt = pointCount;
@@ -381,35 +418,38 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		protected override bool CalculatePath() {
+		protected override bool CalculatePath()
+		{
 			if (base.CalculatePath()) {
 				Path.Reset();
 				Path.StartFigure();
 				Path.AddPolygon(shapePoints);
 				Path.CloseFigure();
 				return true;
-			} else return false;
+			}
+			else return false;
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		protected virtual void Construct() {
+		protected virtual void Construct()
+		{
 			VertexCount = 6;
 			UpdateShapePoints();
 		}
 
 
-		private void UpdateShapePoints() {
-			if (shapePoints.Length != pointCount) 
+		private void UpdateShapePoints()
+		{
+			if (shapePoints.Length != pointCount)
 				Array.Resize(ref shapePoints, pointCount);
-			if (pointBuffer.Length != pointCount) 
+			if (pointBuffer.Length != pointCount)
 				Array.Resize(ref pointBuffer, pointCount);
 
-			float ptAngle = 360 / (float)pointCount;
+			float ptAngle = 360/(float) pointCount;
 			for (int i = 0; i < pointCount; ++i)
-				shapePoints[i] = Point.Round(Geometry.RotatePoint(0, 0, -90 + (i * ptAngle), diameter, 0));
+				shapePoints[i] = Point.Round(Geometry.RotatePoint(0, 0, -90 + (i*ptAngle), diameter, 0));
 		}
-
 
 		#region Fields
 
@@ -418,11 +458,11 @@ namespace Dataweb.NShape.Advanced {
 		// The vertices contain the (unrotated) points of the triangle relative to 0|0.
 		private Point[] shapePoints = new Point[0];
 		private Point[] pointBuffer = new Point[0];
-		
+
 		#endregion
 	}
-	
-	
+
+
 	//public abstract class PolygonBase : CaptionedShapeBase {
 
 	//   protected PolygonBase(ShapeType shapeType, IStyleSet styleSet)
@@ -482,270 +522,269 @@ namespace Dataweb.NShape.Advanced {
 	//}
 
 
-		//public override void CopyFrom(Shape source) {
-		//   base.CopyFrom(source);
-		//   if (source is PolygonBase) {
-		//      shapePoints = new Point[((PolygonBase)source).PointCount];
-		//      for (int i = 0; i < shapePoints.Length; ++i) {
-		//         shapePoints[i].X = ((PolygonBase)source).shapePoints[i].X;
-		//         shapePoints[i].Y = ((PolygonBase)source).shapePoints[i].Y;
-		//      }
-		//      center = Geometry.CalcPolygonBalancePoint(shapePoints);
-		//   }
-		//}
+	//public override void CopyFrom(Shape source) {
+	//   base.CopyFrom(source);
+	//   if (source is PolygonBase) {
+	//      shapePoints = new Point[((PolygonBase)source).PointCount];
+	//      for (int i = 0; i < shapePoints.Length; ++i) {
+	//         shapePoints[i].X = ((PolygonBase)source).shapePoints[i].X;
+	//         shapePoints[i].Y = ((PolygonBase)source).shapePoints[i].Y;
+	//      }
+	//      center = Geometry.CalcPolygonBalancePoint(shapePoints);
+	//   }
+	//}
 
 
-		//#region IEntity Members
+	//#region IEntity Members
 
-		//protected override void LoadFieldsCore(IRepositoryReader reader, int version) {
-		//   base.LoadFieldsCore(reader, version);
-		//   int pointCount = reader.ReadInt32();
-		//   if (pointCount != shapePoints.Length)
-		//      Array.Resize(ref shapePoints, pointCount);
-		//}
-
-
-		//protected override void LoadInnerObjectsCore(string propertyName, IRepositoryReader reader, int version) {
-		//   switch (propertyName) {
-		//      case "Vertices":
-		//         // load Vertices
-		//         reader.BeginReadInnerObjects();
-		//         while (reader.BeginReadInnerObject()) {
-		//            int ptIdx = reader.ReadInt32();
-		//            int ptId = reader.ReadInt32();
-		//            int x = reader.ReadInt32();
-		//            int y = reader.ReadInt32();
-		//            MoveControlPointTo(ptId, x, y, ResizeModifiers.None);
-		//            reader.EndReadInnerObject();
-		//         }
-		//         reader.EndReadInnerObjects();
-		//         break;
-		//      default:
-		//         base.LoadInnerObjectsCore(propertyName, reader, version);
-		//         break;
-		//   }
-		//}
+	//protected override void LoadFieldsCore(IRepositoryReader reader, int version) {
+	//   base.LoadFieldsCore(reader, version);
+	//   int pointCount = reader.ReadInt32();
+	//   if (pointCount != shapePoints.Length)
+	//      Array.Resize(ref shapePoints, pointCount);
+	//}
 
 
-		//protected override void SaveFieldsCore(IRepositoryWriter writer, int version) {
-		//   base.SaveFieldsCore(writer, version);
-		//}
+	//protected override void LoadInnerObjectsCore(string propertyName, IRepositoryReader reader, int version) {
+	//   switch (propertyName) {
+	//      case "Vertices":
+	//         // load Vertices
+	//         reader.BeginReadInnerObjects();
+	//         while (reader.BeginReadInnerObject()) {
+	//            int ptIdx = reader.ReadInt32();
+	//            int ptId = reader.ReadInt32();
+	//            int x = reader.ReadInt32();
+	//            int y = reader.ReadInt32();
+	//            MoveControlPointTo(ptId, x, y, ResizeModifiers.None);
+	//            reader.EndReadInnerObject();
+	//         }
+	//         reader.EndReadInnerObjects();
+	//         break;
+	//      default:
+	//         base.LoadInnerObjectsCore(propertyName, reader, version);
+	//         break;
+	//   }
+	//}
 
 
-		//protected override void SaveInnerObjectsCore(string propertyName, IRepositoryWriter writer, int version) {
-		//   switch (propertyName) {
-		//      case "Vertices":
-		//         // save Vertices
-		//         writer.BeginWriteInnerObjects();
-		//         foreach (ControlPointId pointId in GetControlPointIds(ControlPointCapabilities.All)) {
-		//            Point p = GetControlPointPosition(pointId);
-		//            writer.BeginWriteInnerObject();
-		//            writer.WriteInt32(pointId - 1);
-		//            writer.WriteInt32(pointId);
-		//            writer.WriteInt32(p.X);
-		//            writer.WriteInt32(p.Y);
-		//            writer.EndWriteInnerObject();
-		//         }
-		//         writer.EndWriteInnerObjects();
-		//         break;
-		//      default:
-		//         base.SaveInnerObjectsCore(propertyName, writer, version);
-		//         break;
-		//   }
-		//}
+	//protected override void SaveFieldsCore(IRepositoryWriter writer, int version) {
+	//   base.SaveFieldsCore(writer, version);
+	//}
 
 
-		//new public static IEnumerable<EntityPropertyDefinition> GetPropertyDefinitions(int version) {
-		//   foreach (EntityPropertyDefinition pi in CaptionedShapeBase.GetPropertyDefinitions(version))
-		//      yield return pi;
-		//   yield return new EntityFieldDefinition("PointCount", typeof(int));
-		//   yield return new EntityInnerObjectsDefinition(attrNameVertices, pointTypeName, pointAttrNames, pointAttrTypes);
-		//}
-
-		//#endregion
-
-
-		//public virtual int PointCount {
-		//   get { return shapePoints.Length; }
-		//}
-
-
-		//protected internal override int ControlPointCount {
-		//   get { return shapePoints.Length + 1; }
-		//}
-
-
-		//public override bool HasControlPointCapability(ControlPointId controlPointId, ControlPointCapabilities controlPointCapability) {
-		//   if (controlPointId == 1)
-		//      return ((controlPointCapability & ControlPointCapabilities.Rotate) != 0 || (controlPointCapability & ControlPointCapabilities.Reference) != 0);
-		//   else if (controlPointId > 1 && controlPointId <= ControlPointCount)
-		//      return ((controlPointCapability & ControlPointCapabilities.Resize) != 0) || ((controlPointCapability & ControlPointCapabilities.Connect) != 0 && IsConnectionPointEnabled(controlPointId));
-		//   else return base.HasControlPointCapability(controlPointId, controlPointCapability);
-		//}
+	//protected override void SaveInnerObjectsCore(string propertyName, IRepositoryWriter writer, int version) {
+	//   switch (propertyName) {
+	//      case "Vertices":
+	//         // save Vertices
+	//         writer.BeginWriteInnerObjects();
+	//         foreach (ControlPointId pointId in GetControlPointIds(ControlPointCapabilities.All)) {
+	//            Point p = GetControlPointPosition(pointId);
+	//            writer.BeginWriteInnerObject();
+	//            writer.WriteInt32(pointId - 1);
+	//            writer.WriteInt32(pointId);
+	//            writer.WriteInt32(p.X);
+	//            writer.WriteInt32(p.Y);
+	//            writer.EndWriteInnerObject();
+	//         }
+	//         writer.EndWriteInnerObjects();
+	//         break;
+	//      default:
+	//         base.SaveInnerObjectsCore(propertyName, writer, version);
+	//         break;
+	//   }
+	//}
 
 
-		//public override Point CalculateAbsolutePosition(RelativePosition relativePosition) {
-		//   throw new NotImplementedException();
-		//}
+	//new public static IEnumerable<EntityPropertyDefinition> GetPropertyDefinitions(int version) {
+	//   foreach (EntityPropertyDefinition pi in CaptionedShapeBase.GetPropertyDefinitions(version))
+	//      yield return pi;
+	//   yield return new EntityFieldDefinition("PointCount", typeof(int));
+	//   yield return new EntityInnerObjectsDefinition(attrNameVertices, pointTypeName, pointAttrNames, pointAttrTypes);
+	//}
+
+	//#endregion
 
 
-		//public override RelativePosition CalculateRelativePosition(int x, int y) {
-		//   throw new NotImplementedException();
-		//}
+	//public virtual int PointCount {
+	//   get { return shapePoints.Length; }
+	//}
 
 
-		//public override void Draw(Graphics graphics) {
-		//   if (graphics == null) throw new ArgumentNullException("graphics");
-		//   DrawPath(graphics, LineStyle, FillStyle);
-		//   DrawCaption(graphics);
-
-		//   //graphics.DrawLine(Pens.Red, X - 3, Y, X + 3, Y);
-		//   //graphics.DrawLine(Pens.Red, X, Y - 3, X, Y + 3);
+	//protected internal override int ControlPointCount {
+	//   get { return shapePoints.Length + 1; }
+	//}
 
 
-		//   //Point[] pts = new Point[shapePoints.Length];
-		//   //int width = (int)Math.Round(0.7f * Bounds.Width);
-		//   //int height = (int)Math.Round(0.7f * Bounds.Height);
-		//   //int x = (int)Math.Round(0.7f * Bounds.X);
-		//   //int y = (int)Math.Round(0.7f * Bounds.Y);
-		//   //UpdateGraphicalObjects();
-		//   //float scaleFactor = Geometry.CalcScaleFactor(Bounds.Width, Bounds.Height, width, height);
-		//   //for (int i = 0; i < shapePoints.Length; ++i) {
-		//   //   float deltaX = (shapePoints[i].X - Bounds.left) * scaleFactor;
-		//   //   float deltaY = (shapePoints[i].Y - Bounds.top) * scaleFactor;
-		//   //   pts[i].X = (int)Math.Round(x + deltaX);
-		//   //   pts[i].Y = (int)Math.Round(y + deltaY);
-		//   //}
-		//   //Point c = Geometry.CalcPolygonBalancePoint(pts);
-
-		//   //graphics.DrawRectangle(Pens.Red, Bounds);
-
-		//   //graphics.DrawPolygon(Pens.Green, pts);
-		//   //graphics.DrawLine(Pens.Red, c.X - 3, c.Y, c.X + 3, c.Y);
-		//   //graphics.DrawLine(Pens.Red, c.X, c.Y - 3, c.X, c.Y + 3);
-
-		//   base.Draw(graphics);
-		//}
+	//public override bool HasControlPointCapability(ControlPointId controlPointId, ControlPointCapabilities controlPointCapability) {
+	//   if (controlPointId == 1)
+	//      return ((controlPointCapability & ControlPointCapabilities.Rotate) != 0 || (controlPointCapability & ControlPointCapabilities.Reference) != 0);
+	//   else if (controlPointId > 1 && controlPointId <= ControlPointCount)
+	//      return ((controlPointCapability & ControlPointCapabilities.Resize) != 0) || ((controlPointCapability & ControlPointCapabilities.Connect) != 0 && IsConnectionPointEnabled(controlPointId));
+	//   else return base.HasControlPointCapability(controlPointId, controlPointCapability);
+	//}
 
 
-		//protected internal override void InitializeToDefault(IStyleSet styleSet) {
-		//   base.InitializeToDefault(styleSet);
-		//   ControlPoints = new Point[ControlPointCount];
-		//   shapePoints[0].X = 0;
-		//   shapePoints[0].Y = -20;
-		//   shapePoints[1].X = -20;
-		//   shapePoints[1].Y = 20;
-		//   shapePoints[2].X = 20;
-		//   shapePoints[2].Y = 20;
-		//   Center = Geometry.CalcPolygonBalancePoint(shapePoints);
-		//}
+	//public override Point CalculateAbsolutePosition(RelativePosition relativePosition) {
+	//   throw new NotImplementedException();
+	//}
 
 
-		//protected internal PolygonBase(ShapeType shapeType, Template template)
-		//   : base(shapeType, template) {
-		//}
+	//public override RelativePosition CalculateRelativePosition(int x, int y) {
+	//   throw new NotImplementedException();
+	//}
 
 
-		//protected internal PolygonBase(ShapeType shapeType, IStyleSet styleSet)
-		//   : base(shapeType, styleSet) {
-		//}
+	//public override void Draw(Graphics graphics) {
+	//   if (graphics == null) throw new ArgumentNullException("graphics");
+	//   DrawPath(graphics, LineStyle, FillStyle);
+	//   DrawCaption(graphics);
+
+	//   //graphics.DrawLine(Pens.Red, X - 3, Y, X + 3, Y);
+	//   //graphics.DrawLine(Pens.Red, X, Y - 3, X, Y + 3);
 
 
-		//protected Point[] ShapePoints {
-		//   get { return shapePoints; }
-		//   set { shapePoints = value; }
-		//}
+	//   //Point[] pts = new Point[shapePoints.Length];
+	//   //int width = (int)Math.Round(0.7f * Bounds.Width);
+	//   //int height = (int)Math.Round(0.7f * Bounds.Height);
+	//   //int x = (int)Math.Round(0.7f * Bounds.X);
+	//   //int y = (int)Math.Round(0.7f * Bounds.Y);
+	//   //UpdateGraphicalObjects();
+	//   //float scaleFactor = Geometry.CalcScaleFactor(Bounds.Width, Bounds.Height, width, height);
+	//   //for (int i = 0; i < shapePoints.Length; ++i) {
+	//   //   float deltaX = (shapePoints[i].X - Bounds.left) * scaleFactor;
+	//   //   float deltaY = (shapePoints[i].Y - Bounds.top) * scaleFactor;
+	//   //   pts[i].X = (int)Math.Round(x + deltaX);
+	//   //   pts[i].Y = (int)Math.Round(y + deltaY);
+	//   //}
+	//   //Point c = Geometry.CalcPolygonBalancePoint(pts);
+
+	//   //graphics.DrawRectangle(Pens.Red, Bounds);
+
+	//   //graphics.DrawPolygon(Pens.Green, pts);
+	//   //graphics.DrawLine(Pens.Red, c.X - 3, c.Y, c.X + 3, c.Y);
+	//   //graphics.DrawLine(Pens.Red, c.X, c.Y - 3, c.X, c.Y + 3);
+
+	//   base.Draw(graphics);
+	//}
 
 
-		//protected override bool ContainsPointCore(int x, int y) {
-		//   if (Path.PointCount == 0)
-		//      return Geometry.ConvexPolygonContainsPoint(shapePoints, x, y);
-		//   else
-		//      return Geometry.ConvexPolygonContainsPoint(Path.PathPoints, x, y);
-		//}
+	//protected internal override void InitializeToDefault(IStyleSet styleSet) {
+	//   base.InitializeToDefault(styleSet);
+	//   ControlPoints = new Point[ControlPointCount];
+	//   shapePoints[0].X = 0;
+	//   shapePoints[0].Y = -20;
+	//   shapePoints[1].X = -20;
+	//   shapePoints[1].Y = 20;
+	//   shapePoints[2].X = 20;
+	//   shapePoints[2].Y = 20;
+	//   Center = Geometry.CalcPolygonBalancePoint(shapePoints);
+	//}
 
 
-		//protected override bool IntersectsWithCore(int x, int y, int width, int height) {
-		//   Rectangle rectangle = Rectangle.Empty;
-		//   rectangle.X = x;
-		//   rectangle.Y = y;
-		//   rectangle.Width = width;
-		//   rectangle.Height = height;
-		//   if (Path.PointCount == 0) {
-		//      if (Geometry.PolygonIntersectsWithRectangle(shapePoints, rectangle))
-		//         return true;
-		//   } else {
-		//      if (Geometry.PolygonIntersectsWithRectangle(Path.PathPoints, rectangle))
-		//         return true;
-		//   }
-		//   return false;
-		//}
+	//protected internal PolygonBase(ShapeType shapeType, Template template)
+	//   : base(shapeType, template) {
+	//}
 
 
-		//protected override bool MoveByCore(int deltaX, int deltaY) {
-		//   return base.MoveByCore(deltaX, deltaY);
-		//}
+	//protected internal PolygonBase(ShapeType shapeType, IStyleSet styleSet)
+	//   : base(shapeType, styleSet) {
+	//}
 
 
-		//protected override bool MovePointByCore(ControlPointId pointId, float transformedDeltaX, float transformedDeltaY, float sin, float cos, ResizeModifiers modifiers) {
-		//   bool result = true;
-		//   switch (pointId) {
-		//      case 1:
-		//         result = false;
-		//         break;
-		//      default:
-		//         shapePoints[pointId - 2].X += (int)Math.Round(transformedDeltaX);
-		//         shapePoints[pointId - 2].Y += (int)Math.Round(transformedDeltaY);
-
-		//         Center = Geometry.CalcPolygonBalancePoint(shapePoints);
-		//         InvalidateDrawCache();
-
-		//         ControlPointsHaveMoved();
-		//         break;
-		//   }
-		//   return result;
-		//}
+	//protected Point[] ShapePoints {
+	//   get { return shapePoints; }
+	//   set { shapePoints = value; }
+	//}
 
 
-		//protected override void CalcCaptionBounds(int index, out Rectangle captionBounds) {
-		//   if (index != 0) throw new IndexOutOfRangeException();
-		//   Geometry.CalcBoundingRectangle(shapePoints, out captionBounds);
-		//}
+	//protected override bool ContainsPointCore(int x, int y) {
+	//   if (Path.PointCount == 0)
+	//      return Geometry.ConvexPolygonContainsPoint(shapePoints, x, y);
+	//   else
+	//      return Geometry.ConvexPolygonContainsPoint(Path.PathPoints, x, y);
+	//}
 
 
-		//protected override void CalcControlPoints() {
-		//   // rotation handle
-		//   Center = Geometry.CalcPolygonBalancePoint(shapePoints);
-
-		//   ControlPoints[0].X = Center.X;
-		//   ControlPoints[0].Y = Center.Y;
-		//   // resize handles
-		//   for (int i = 0; i < shapePoints.Length; ++i) {
-		//      ControlPoints[i + 1].X = shapePoints[i].X;
-		//      ControlPoints[i + 1].Y = shapePoints[i].Y;
-		//   }
-		//}
-
-
-		//protected override bool CalculatePath() {
-		//   if (base.CalculatePath()) {
-		//      Path.StartFigure();
-		//      Path.AddPolygon(shapePoints);
-		//      Path.CloseFigure();
-		//      return true;
-		//   } else return false;
-		//}
+	//protected override bool IntersectsWithCore(int x, int y, int width, int height) {
+	//   Rectangle rectangle = Rectangle.Empty;
+	//   rectangle.X = x;
+	//   rectangle.Y = y;
+	//   rectangle.Width = width;
+	//   rectangle.Height = height;
+	//   if (Path.PointCount == 0) {
+	//      if (Geometry.PolygonIntersectsWithRectangle(shapePoints, rectangle))
+	//         return true;
+	//   } else {
+	//      if (Geometry.PolygonIntersectsWithRectangle(Path.PathPoints, rectangle))
+	//         return true;
+	//   }
+	//   return false;
+	//}
 
 
-		//#region Fields
+	//protected override bool MoveByCore(int deltaX, int deltaY) {
+	//   return base.MoveByCore(deltaX, deltaY);
+	//}
 
-		//private static string pointTypeName = "Point";
-		//private static string[] pointAttrNames = new string[] { "PointIndex", "PointId", "X", "Y" };
-		//private static Type[] pointAttrTypes = new Type[] { typeof(int), typeof(int), typeof(int), typeof(int) };
 
-		//private Point[] shapePoints = new Point[3];
-		//private Point center = Point.Empty;
+	//protected override bool MovePointByCore(ControlPointId pointId, float transformedDeltaX, float transformedDeltaY, float sin, float cos, ResizeModifiers modifiers) {
+	//   bool result = true;
+	//   switch (pointId) {
+	//      case 1:
+	//         result = false;
+	//         break;
+	//      default:
+	//         shapePoints[pointId - 2].X += (int)Math.Round(transformedDeltaX);
+	//         shapePoints[pointId - 2].Y += (int)Math.Round(transformedDeltaY);
 
-		//#endregion
+	//         Center = Geometry.CalcPolygonBalancePoint(shapePoints);
+	//         InvalidateDrawCache();
 
+	//         ControlPointsHaveMoved();
+	//         break;
+	//   }
+	//   return result;
+	//}
+
+
+	//protected override void CalcCaptionBounds(int index, out Rectangle captionBounds) {
+	//   if (index != 0) throw new IndexOutOfRangeException();
+	//   Geometry.CalcBoundingRectangle(shapePoints, out captionBounds);
+	//}
+
+
+	//protected override void CalcControlPoints() {
+	//   // rotation handle
+	//   Center = Geometry.CalcPolygonBalancePoint(shapePoints);
+
+	//   ControlPoints[0].X = Center.X;
+	//   ControlPoints[0].Y = Center.Y;
+	//   // resize handles
+	//   for (int i = 0; i < shapePoints.Length; ++i) {
+	//      ControlPoints[i + 1].X = shapePoints[i].X;
+	//      ControlPoints[i + 1].Y = shapePoints[i].Y;
+	//   }
+	//}
+
+
+	//protected override bool CalculatePath() {
+	//   if (base.CalculatePath()) {
+	//      Path.StartFigure();
+	//      Path.AddPolygon(shapePoints);
+	//      Path.CloseFigure();
+	//      return true;
+	//   } else return false;
+	//}
+
+
+	//#region Fields
+
+	//private static string pointTypeName = "Point";
+	//private static string[] pointAttrNames = new string[] { "PointIndex", "PointId", "X", "Y" };
+	//private static Type[] pointAttrTypes = new Type[] { typeof(int), typeof(int), typeof(int), typeof(int) };
+
+	//private Point[] shapePoints = new Point[3];
+	//private Point center = Point.Empty;
+
+	//#endregion
 }

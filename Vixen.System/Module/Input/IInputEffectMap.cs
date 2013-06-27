@@ -1,7 +1,9 @@
 ﻿using System;
 
-namespace Vixen.Module.Input {
-	public interface IInputEffectMap {
+namespace Vixen.Module.Input
+{
+	public interface IInputEffectMap
+	{
 		Guid InputModuleId { get; set; }
 		string InputId { get; set; }
 		Guid EffectModuleId { get; set; }

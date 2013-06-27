@@ -38,18 +38,17 @@ namespace ZedGraph
 	/// <author> John Champion with contributions by jackply </author>
 	/// <version> $Revision: 1.8 $ $Date: 2007-04-16 00:03:01 $ </version>
 	[Serializable]
-	class ExponentScale : Scale, ISerializable //, ICloneable
+	internal class ExponentScale : Scale, ISerializable //, ICloneable
 	{
-
-	#region constructors
+		#region constructors
 
 		/// <summary>
 		/// Default constructor that defines the owner <see cref="Axis" />
 		/// (containing object) for this new object.
 		/// </summary>
 		/// <param name="owner">The owner, or containing object, of this instance</param>
-		public ExponentScale( Axis owner )
-			: base( owner )
+		public ExponentScale(Axis owner)
+			: base(owner)
 		{
 		}
 
@@ -59,8 +58,8 @@ namespace ZedGraph
 		/// <param name="rhs">The <see cref="ExponentScale" /> object from which to copy</param>
 		/// <param name="owner">The <see cref="Axis" /> object that will own the
 		/// new instance of <see cref="ExponentScale" /></param>
-		public ExponentScale( Scale rhs, Axis owner )
-			: base( rhs, owner )
+		public ExponentScale(Scale rhs, Axis owner)
+			: base(rhs, owner)
 		{
 		}
 
@@ -70,23 +69,23 @@ namespace ZedGraph
 		/// <param name="owner">The new <see cref="Axis" /> instance that will be
 		/// the owner of the new Scale</param>
 		/// <returns>A new <see cref="Scale" /> clone.</returns>
-		public override Scale Clone( Axis owner )
+		public override Scale Clone(Axis owner)
 		{
-			return new ExponentScale( this, owner );
+			return new ExponentScale(this, owner);
 		}
 
-	#endregion
+		#endregion
 
-	#region properties
+		#region properties
 
 		public override AxisType Type
 		{
 			get { return AxisType.Exponent; }
 		}
 
-	#endregion
+		#endregion
 
-	#region methods
+		#region methods
 
 		/// <summary>
 		/// Setup some temporary transform values in preparation for rendering the <see cref="Axis"/>.
@@ -105,19 +104,17 @@ namespace ZedGraph
 		/// <param name="axis">
 		/// The parent <see cref="Axis" /> for this <see cref="Scale" />
 		/// </param>
-		override public void SetupScaleData( GraphPane pane, Axis axis )
+		public override void SetupScaleData(GraphPane pane, Axis axis)
 		{
-			base.SetupScaleData( pane, axis );
+			base.SetupScaleData(pane, axis);
 
-			if (  _exponent > 0 )
-			{
-				_minLinTemp = Linearize( _min );
-				_maxLinTemp = Linearize( _max );
+			if (_exponent > 0) {
+				_minLinTemp = Linearize(_min);
+				_maxLinTemp = Linearize(_max);
 			}
-			else if ( _exponent < 0 )
-			{
-				_minLinTemp = Linearize( _max );
-				_maxLinTemp = Linearize( _min );
+			else if (_exponent < 0) {
+				_minLinTemp = Linearize(_max);
+				_maxLinTemp = Linearize(_min);
 			}
 		}
 
@@ -130,9 +127,9 @@ namespace ZedGraph
 		/// it returns the log or power equivalent.
 		/// </remarks>
 		/// <param name="val">The value to be converted</param>
-		override public double Linearize( double val )
+		public override double Linearize(double val)
 		{
-			return SafeExp( val, _exponent );
+			return SafeExp(val, _exponent);
 		}
 
 		/// <summary>
@@ -145,9 +142,9 @@ namespace ZedGraph
 		/// it returns the anti-log or inverse-power equivalent.
 		/// </remarks>
 		/// <param name="val">The value to be converted</param>
-		override public double DeLinearize( double val )
+		public override double DeLinearize(double val)
 		{
-			return Math.Pow( val, 1 / _exponent );
+			return Math.Pow(val, 1/_exponent);
 		}
 
 		/// <summary>
@@ -166,18 +163,16 @@ namespace ZedGraph
 		/// <returns>
 		/// The specified major tic value (floating point double).
 		/// </returns>
-		override internal double CalcMajorTicValue( double baseVal, double tic )
+		internal override double CalcMajorTicValue(double baseVal, double tic)
 		{
-			if ( _exponent > 0.0 )
-			{
+			if (_exponent > 0.0) {
 				//return baseVal + Math.Pow ( (double) this.majorStep * tic, exp );
 				//baseVal is got from CalBase..., and it is exp..
-				return Math.Pow( Math.Pow( baseVal, 1 / _exponent ) + _majorStep * tic, _exponent );
+				return Math.Pow(Math.Pow(baseVal, 1/_exponent) + _majorStep*tic, _exponent);
 			}
-			else if ( _exponent < 0.0 )
-			{
+			else if (_exponent < 0.0) {
 				//baseVal is got from CalBase..., and it is exp..
-				return Math.Pow( Math.Pow( baseVal, 1 / _exponent ) + _majorStep * tic, _exponent );
+				return Math.Pow(Math.Pow(baseVal, 1/_exponent) + _majorStep*tic, _exponent);
 			}
 
 			return 1.0;
@@ -200,9 +195,9 @@ namespace ZedGraph
 		/// <returns>
 		/// The specified minor tic value (floating point double).
 		/// </returns>
-		override internal double CalcMinorTicValue( double baseVal, int iTic )
+		internal override double CalcMinorTicValue(double baseVal, int iTic)
 		{
-			return baseVal + Math.Pow( (double) _majorStep * (double) iTic, _exponent );
+			return baseVal + Math.Pow((double) _majorStep*(double) iTic, _exponent);
 		}
 
 		/// <summary>
@@ -216,9 +211,9 @@ namespace ZedGraph
 		/// This value can be negative (e.g., -3 means the first minor tic is 3 minor step
 		/// increments before the first major tic.
 		/// </returns>
-		override internal int CalcMinorStart( double baseVal )
+		internal override int CalcMinorStart(double baseVal)
 		{
-			return (int) ( ( Math.Pow( _min, _exponent ) - baseVal ) / Math.Pow( _minorStep, _exponent ) );
+			return (int) ((Math.Pow(_min, _exponent) - baseVal)/Math.Pow(_minorStep, _exponent));
 		}
 
 		/// <summary>
@@ -245,94 +240,92 @@ namespace ZedGraph
 		/// </remarks>
 		/// <seealso cref="Scale.PickScale"/>
 		/// <seealso cref="AxisType.Exponent"/>
-		override public void PickScale( GraphPane pane, Graphics g, float scaleFactor )
+		public override void PickScale(GraphPane pane, Graphics g, float scaleFactor)
 		{
 			// call the base class first
-			base.PickScale( pane, g, scaleFactor );
+			base.PickScale(pane, g, scaleFactor);
 
 			// Test for trivial condition of range = 0 and pick a suitable default
-			if ( _max - _min < 1.0e-20 )
-			{
-				if ( _maxAuto )
-					_max = _max + 0.2 * ( _max == 0 ? 1.0 : Math.Abs( _max ) );
-				if ( _minAuto )
-					_min = _min - 0.2 * ( _min == 0 ? 1.0 : Math.Abs( _min ) );
+			if (_max - _min < 1.0e-20) {
+				if (_maxAuto)
+					_max = _max + 0.2*(_max == 0 ? 1.0 : Math.Abs(_max));
+				if (_minAuto)
+					_min = _min - 0.2*(_min == 0 ? 1.0 : Math.Abs(_min));
 			}
 
 			// This is the zero-lever test.  If minVal is within the zero lever fraction
 			// of the data range, then use zero.
 
-			if ( _minAuto && _min > 0 &&
-				_min / ( _max - _min ) < Default.ZeroLever )
+			if (_minAuto && _min > 0 &&
+			    _min/(_max - _min) < Default.ZeroLever)
 				_min = 0;
 
 			// Repeat the zero-lever test for cases where the maxVal is less than zero
-			if ( _maxAuto && _max < 0 &&
-				Math.Abs( _max / ( _max - _min ) ) <
-				Default.ZeroLever )
+			if (_maxAuto && _max < 0 &&
+			    Math.Abs(_max/(_max - _min)) <
+			    Default.ZeroLever)
 				_max = 0;
 
 			// Calculate the new step size
-			if ( _majorStepAuto )
-			{
-				double targetSteps = ( _ownerAxis is XAxis || _ownerAxis is X2Axis ) ?
-						Default.TargetXSteps : Default.TargetYSteps;
+			if (_majorStepAuto) {
+				double targetSteps = (_ownerAxis is XAxis || _ownerAxis is X2Axis)
+				                     	? Default.TargetXSteps
+				                     	: Default.TargetYSteps;
 
 				// Calculate the step size based on target steps
-				_majorStep = CalcStepSize( _max - _min, targetSteps );
+				_majorStep = CalcStepSize(_max - _min, targetSteps);
 
-				if ( _isPreventLabelOverlap )
-				{
+				if (_isPreventLabelOverlap) {
 					// Calculate the maximum number of labels
-					double maxLabels = (double) this.CalcMaxLabels( g, pane, scaleFactor );
+					double maxLabels = (double) this.CalcMaxLabels(g, pane, scaleFactor);
 
-					if ( maxLabels < ( _max - _min ) / _majorStep )
-						_majorStep = CalcBoundedStepSize( _max - _min, maxLabels );
+					if (maxLabels < (_max - _min)/_majorStep)
+						_majorStep = CalcBoundedStepSize(_max - _min, maxLabels);
 				}
 			}
 
 			// Calculate the new step size
-			if ( _minorStepAuto )
-				_minorStep = CalcStepSize( _majorStep,
-					( _ownerAxis is XAxis || _ownerAxis is X2Axis ) ?
-							Default.TargetMinorXSteps : Default.TargetMinorYSteps );
+			if (_minorStepAuto)
+				_minorStep = CalcStepSize(_majorStep,
+				                          (_ownerAxis is XAxis || _ownerAxis is X2Axis)
+				                          	? Default.TargetMinorXSteps
+				                          	: Default.TargetMinorYSteps);
 
 			// Calculate the scale minimum
-			if ( _minAuto )
-				_min = _min - MyMod( _min, _majorStep );
+			if (_minAuto)
+				_min = _min - MyMod(_min, _majorStep);
 
 			// Calculate the scale maximum
-			if ( _maxAuto )
-				_max = MyMod( _max, _majorStep ) == 0.0 ? _max :
-					_max + _majorStep - MyMod( _max, _majorStep );
+			if (_maxAuto)
+				_max = MyMod(_max, _majorStep) == 0.0
+				       	? _max
+				       	: _max + _majorStep - MyMod(_max, _majorStep);
 
 			// set the scale magnitude if required
-			if ( _magAuto )
-			{
+			if (_magAuto) {
 				// Find the optimal scale display multiple
 				double mag = 0;
 				double mag2 = 0;
 
-				if ( Math.Abs( _min ) > 1.0e-10 )
-					mag = Math.Floor( Math.Log10( Math.Abs( _min ) ) );
-				if ( Math.Abs( _max ) > 1.0e-10 )
-					mag2 = Math.Floor( Math.Log10( Math.Abs( _max ) ) );
-				if ( Math.Abs( mag2 ) > Math.Abs( mag ) )
+				if (Math.Abs(_min) > 1.0e-10)
+					mag = Math.Floor(Math.Log10(Math.Abs(_min)));
+				if (Math.Abs(_max) > 1.0e-10)
+					mag2 = Math.Floor(Math.Log10(Math.Abs(_max)));
+				if (Math.Abs(mag2) > Math.Abs(mag))
 					mag = mag2;
 
 				// Do not use scale multiples for magnitudes below 4
-				if ( Math.Abs( mag ) <= 3 )
+				if (Math.Abs(mag) <= 3)
 					mag = 0;
 
 				// Use a power of 10 that is a multiple of 3 (engineering scale)
-				_mag = (int) ( Math.Floor( mag / 3.0 ) * 3.0 );
+				_mag = (int) (Math.Floor(mag/3.0)*3.0);
 			}
 
 			// Calculate the appropriate number of dec places to display if required
-			if ( _formatAuto )
-			{
-				int numDec = 0 - (int) ( Math.Floor( Math.Log10( _majorStep ) ) - _mag );
-				if ( numDec < 0 )
+			if (_formatAuto) {
+				int numDec = 0 - (int) (Math.Floor(Math.Log10(_majorStep)) - _mag);
+				if (numDec < 0)
 					numDec = 0;
 				_format = "f" + numDec.ToString();
 			}
@@ -354,20 +347,20 @@ namespace ZedGraph
 		/// and text (<see cref="Scale.IsText"/>) type axes.
 		/// </param>
 		/// <returns>The resulting value label as a <see cref="string" /></returns>
-		override internal string MakeLabel( GraphPane pane, int index, double dVal )
+		internal override string MakeLabel(GraphPane pane, int index, double dVal)
 		{
-			if ( _format == null )
+			if (_format == null)
 				_format = Scale.Default.Format;
 
-			double scaleMult = Math.Pow( (double) 10.0, _mag );
-			double val = Math.Pow( dVal, 1 / _exponent ) / scaleMult;
-			return val.ToString( _format );
+			double scaleMult = Math.Pow((double) 10.0, _mag);
+			double val = Math.Pow(dVal, 1/_exponent)/scaleMult;
+			return val.ToString(_format);
 		}
 
+		#endregion
 
-	#endregion
+		#region Serialization
 
-	#region Serialization
 		/// <summary>
 		/// Current schema value that defines the version of the serialized file
 		/// </summary>
@@ -380,25 +373,25 @@ namespace ZedGraph
 		/// </param>
 		/// <param name="context">A <see cref="StreamingContext"/> instance that contains the serialized data
 		/// </param>
-		protected ExponentScale( SerializationInfo info, StreamingContext context ) : base( info, context )
+		protected ExponentScale(SerializationInfo info, StreamingContext context) : base(info, context)
 		{
 			// The schema value is just a file version parameter.  You can use it to make future versions
 			// backwards compatible as new member variables are added to classes
-			int sch = info.GetInt32( "schema2" );
-
+			int sch = info.GetInt32("schema2");
 		}
+
 		/// <summary>
 		/// Populates a <see cref="SerializationInfo"/> instance with the data needed to serialize the target object
 		/// </summary>
 		/// <param name="info">A <see cref="SerializationInfo"/> instance that defines the serialized data</param>
 		/// <param name="context">A <see cref="StreamingContext"/> instance that contains the serialized data</param>
-		[SecurityPermissionAttribute(SecurityAction.Demand,SerializationFormatter=true)]
-		public override void GetObjectData( SerializationInfo info, StreamingContext context )
+		[SecurityPermissionAttribute(SecurityAction.Demand, SerializationFormatter = true)]
+		public override void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
-			base.GetObjectData( info, context );
-			info.AddValue( "schema2", schema2 );
+			base.GetObjectData(info, context);
+			info.AddValue("schema2", schema2);
 		}
-	#endregion
 
+		#endregion
 	}
 }

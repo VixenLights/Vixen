@@ -1,4 +1,6 @@
-﻿namespace Vixen.Module.Preview {
-	class PreviewModuleRepository : GenericModuleRepository<IPreviewModuleInstance> {
+﻿namespace Vixen.Module.Preview
+{
+	internal class PreviewModuleRepository : GenericModuleRepository<IPreviewModuleInstance>
+	{
 	}
 }

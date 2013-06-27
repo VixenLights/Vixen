@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using Vixen.Sys;
 
-namespace Vixen.Module.Input {
-	public interface IInputModuleInstance : IInput, IHardwareModule {
+namespace Vixen.Module.Input
+{
+	public interface IInputModuleInstance : IInput, IHardwareModule
+	{
 	}
 }

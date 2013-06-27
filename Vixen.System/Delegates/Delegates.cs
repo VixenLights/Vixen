@@ -8,6 +8,7 @@ namespace Vixen
 	public class Delegates
 	{
 		public delegate void GenericDelegate();
-        public delegate void GenericValue(object dyn);
+
+		public delegate void GenericValue(object dyn);
 	}
 }

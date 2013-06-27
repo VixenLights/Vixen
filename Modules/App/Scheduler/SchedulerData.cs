@@ -5,34 +5,38 @@ using System.Text;
 using System.Runtime.Serialization;
 using Vixen.Module;
 
-namespace VixenModules.App.Scheduler {
+namespace VixenModules.App.Scheduler
+{
 	[DataContract]
-	[KnownType(typeof(ScheduleItem))]
-	public class SchedulerData : ModuleDataModelBase {
+	[KnownType(typeof (ScheduleItem))]
+	public class SchedulerData : ModuleDataModelBase
+	{
 		private int _interval = 2;
 
-		public SchedulerData() {
+		public SchedulerData()
+		{
 			Initialize();
 		}
 
-		[DataMember]
-		public bool IsEnabled;
+		[DataMember] public bool IsEnabled;
+
+		[DataMember] public List<IScheduleItem> Items;
 
 		[DataMember]
-		public List<IScheduleItem> Items;
-
-		[DataMember]
-		public int CheckIntervalInSeconds {
+		public int CheckIntervalInSeconds
+		{
 			get { return _interval; }
-			set {
-				if(_interval != value && value != 0) {
+			set
+			{
+				if (_interval != value && value != 0) {
 					_interval = value;
 				}
 			}
 		}
 
 		[OnDeserializing]
-		private void OnDeserializing(StreamingContext context) {
+		private void OnDeserializing(StreamingContext context)
+		{
 			Initialize();
 		}
 
@@ -40,11 +44,13 @@ namespace VixenModules.App.Scheduler {
 		//private void OnDeserialized(StreamingContext context) {
 		//}
 
-		private void Initialize() {
+		private void Initialize()
+		{
 			Items = new List<IScheduleItem>();
 		}
 
-		public override IModuleDataModel Clone() {
+		public override IModuleDataModel Clone()
+		{
 			return MemberwiseClone() as IModuleDataModel;
 		}
 	}

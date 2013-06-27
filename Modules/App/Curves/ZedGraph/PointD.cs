@@ -39,6 +39,7 @@ namespace ZedGraph
 		/// The X coordinate
 		/// </summary>
 		public double X;
+
 		/// <summary>
 		/// The Y coordinate
 		/// </summary>
@@ -49,11 +50,10 @@ namespace ZedGraph
 		/// </summary>
 		/// <param name="x">The X coordinate</param>
 		/// <param name="y">The Y coordinate</param>
-		public PointD( double x, double y )
+		public PointD(double x, double y)
 		{
 			X = x;
 			Y = y;
 		}
 	}
 }
-

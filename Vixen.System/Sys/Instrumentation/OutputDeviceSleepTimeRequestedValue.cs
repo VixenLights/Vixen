@@ -1,14 +1,18 @@
 ﻿using Vixen.Instrumentation;
 using Vixen.Sys.Output;
 
-namespace Vixen.Sys.Instrumentation {
-	class OutputDeviceSleepTimeRequestedValue : DoubleValue {
+namespace Vixen.Sys.Instrumentation
+{
+	internal class OutputDeviceSleepTimeRequestedValue : DoubleValue
+	{
 		public OutputDeviceSleepTimeRequestedValue(IOutputDevice outputDevice)
-			: base("Output device sleep time (requested) [" + outputDevice.Name + "]") {
+			: base("Output device sleep time (requested) [" + outputDevice.Name + "]")
+		{
 		}
 
-		protected override string _GetFormattedValue() {
-			return ((int)_GetValue()) + " ms";
+		protected override string _GetFormattedValue()
+		{
+			return ((int) _GetValue()) + " ms";
 		}
-}
+	}
 }

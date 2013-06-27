@@ -8,9 +8,9 @@ using Vixen.Module.EffectEditor;
 
 namespace VixenModules.EffectEditor.SpinEffectEditor
 {
-	class SpinEffectEditor : EffectEditorModuleInstanceBase
+	internal class SpinEffectEditor : EffectEditorModuleInstanceBase
 	{
-		override public IEffectEditorControl CreateEditorControl()
+		public override IEffectEditorControl CreateEditorControl()
 		{
 			return new SpinEffectEditorControl();
 		}

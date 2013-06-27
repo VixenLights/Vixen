@@ -15,23 +15,23 @@
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
-
 using Dataweb.NShape.Controllers;
 
 
-namespace Dataweb.NShape.WinFormsUI {
-
+namespace Dataweb.NShape.WinFormsUI
+{
 	/// <summary>
 	/// UserControl for editing layers.
 	/// </summary>
 	[ToolboxItem(true)]
-	[ToolboxBitmap(typeof(LayerEditor), "LayerEditor.bmp")]
-	public partial class LayerEditor : UserControl {
-
+	[ToolboxBitmap(typeof (LayerEditor), "LayerEditor.bmp")]
+	public partial class LayerEditor : UserControl
+	{
 		/// <summary>
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.WinFormsUI.LayerEditor" />.
 		/// </summary>
-		public LayerEditor() {
+		public LayerEditor()
+		{
 			InitializeComponent();
 		}
 
@@ -41,7 +41,8 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// </summary>
 		[Category("NShape")]
 		[Browsable(true)]
-		public new string ProductVersion {
+		public new string ProductVersion
+		{
 			get { return base.ProductVersion; }
 		}
 
@@ -50,7 +51,8 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// Specifies the DiagramPresenter for this layer editor.
 		/// </summary>
 		[Category("NShape")]
-		public IDiagramPresenter DiagramPresenter {
+		public IDiagramPresenter DiagramPresenter
+		{
 			get { return presenter.DiagramPresenter; }
 			set { presenter.DiagramPresenter = value; }
 		}
@@ -60,13 +62,14 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// Specifies a DiagramSetController which provides the diagrams, this layer editor refers to.
 		/// </summary>
 		[Category("NShape")]
-		public DiagramSetController DiagramSetController {
+		public DiagramSetController DiagramSetController
+		{
 			get { return controller.DiagramSetController; }
 			set { controller.DiagramSetController = value; }
 		}
 
-
 		#region Fields
+
 		#endregion
 	}
 }

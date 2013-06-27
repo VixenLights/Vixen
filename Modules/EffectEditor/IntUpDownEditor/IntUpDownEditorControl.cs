@@ -9,15 +9,19 @@ using System.Windows.Forms;
 using Vixen.Module.Effect;
 using Vixen.Module.EffectEditor;
 
-namespace VixenModules.EffectEditor.IntUpDownEditor {
-	public partial class IntUpDownEditorControl : UserControl, IEffectEditorControl {
-		public IntUpDownEditorControl() {
+namespace VixenModules.EffectEditor.IntUpDownEditor
+{
+	public partial class IntUpDownEditorControl : UserControl, IEffectEditorControl
+	{
+		public IntUpDownEditorControl()
+		{
 			InitializeComponent();
 		}
 
-		public object[] EffectParameterValues {
-			get { return new object[] { (int)nudValue.Value };}
-			set { nudValue.Value = (int)value[0]; }
+		public object[] EffectParameterValues
+		{
+			get { return new object[] {(int) nudValue.Value}; }
+			set { nudValue.Value = (int) value[0]; }
 		}
 
 		public IEffect TargetEffect { get; set; }

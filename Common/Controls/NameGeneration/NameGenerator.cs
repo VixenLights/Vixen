@@ -13,7 +13,9 @@ namespace Common.Controls
 		private List<string> OldNames { get; set; }
 
 		private int _fixedCount;
-		private int FixedCount {
+
+		private int FixedCount
+		{
 			get { return _fixedCount; }
 			set
 			{
@@ -21,7 +23,8 @@ namespace Common.Controls
 				if (_fixedCount > 0) {
 					numericUpDownItemCount.Value = _fixedCount;
 					numericUpDownItemCount.Enabled = false;
-				} else {
+				}
+				else {
 					numericUpDownItemCount.Value = 1;
 					numericUpDownItemCount.Enabled = true;
 				}
@@ -45,8 +48,8 @@ namespace Common.Controls
 			OldNames = new List<string>(oldNames);
 			FixedCount = OldNames.Count();
 			listViewNames.Columns.Clear();
-			listViewNames.Columns.Add(new ColumnHeader { Text = "Old Name" });
-			listViewNames.Columns.Add(new ColumnHeader { Text = "New Name" });
+			listViewNames.Columns.Add(new ColumnHeader {Text = "Old Name"});
+			listViewNames.Columns.Add(new ColumnHeader {Text = "New Name"});
 		}
 
 		public NameGenerator(int fixedCount)
@@ -77,7 +80,7 @@ namespace Common.Controls
 
 		private void ResizeListviewColumns()
 		{
-			int width = (listViewNames.Width - SystemInformation.VerticalScrollBarWidth - 6) / listViewNames.Columns.Count;
+			int width = (listViewNames.Width - SystemInformation.VerticalScrollBarWidth - 6)/listViewNames.Columns.Count;
 			foreach (ColumnHeader column in listViewNames.Columns) {
 				column.Width = width;
 			}
@@ -119,11 +122,14 @@ namespace Common.Controls
 			NameGeneratorEditor newControl = null;
 			if (generator is NumericCounter) {
 				newControl = new NumericCounterEditor(generator as NumericCounter);
-			} else if (generator is LetterCounter) {
+			}
+			else if (generator is LetterCounter) {
 				newControl = new LetterCounterEditor(generator as LetterCounter);
-			} else if (generator is LetterIterator) {
+			}
+			else if (generator is LetterIterator) {
 				newControl = new LetterIteratorEditor(generator as LetterIterator);
-			} else if (generator is WordIterator) {
+			}
+			else if (generator is WordIterator) {
 				newControl = new WordIteratorEditor(generator as WordIterator);
 			}
 
@@ -150,7 +156,7 @@ namespace Common.Controls
 			DisplayNamingGenerator(null);
 		}
 
-		void NameGeneratorEditor_DataChanged(object sender, EventArgs e)
+		private void NameGeneratorEditor_DataChanged(object sender, EventArgs e)
 		{
 			PopulateNames();
 		}
@@ -167,7 +173,7 @@ namespace Common.Controls
 
 			return decimal.ToInt32(numericUpDownItemCount.Value);
 		}
-		
+
 		private void PopulateNames()
 		{
 			Names = new List<string>(GenerateNames());
@@ -182,7 +188,8 @@ namespace Common.Controls
 					item.SubItems.Add(Names.Count > i ? Names[i] : "-");
 					listViewNames.Items.Add(item);
 				}
-			} else {
+			}
+			else {
 				foreach (var name in Names) {
 					ListViewItem item = new ListViewItem();
 					item.Text = name;
@@ -216,7 +223,8 @@ namespace Common.Controls
 				string substitution;
 				if (generator.EndlessCycle) {
 					substitution = generator.GenerateName(i);
-				} else {
+				}
+				else {
 					substitution = names[i];
 				}
 
@@ -256,8 +264,8 @@ namespace Common.Controls
 				return;
 			}
 
-			INamingGenerator ng = (INamingGenerator)comboBoxRuleTypes.SelectedItem;
-			INamingGenerator newGenerator = (INamingGenerator)Activator.CreateInstance(ng.GetType());
+			INamingGenerator ng = (INamingGenerator) comboBoxRuleTypes.SelectedItem;
+			INamingGenerator newGenerator = (INamingGenerator) Activator.CreateInstance(ng.GetType());
 
 			AddNewNamingGenerator(newGenerator);
 			listViewGenerators.Items[listViewGenerators.Items.Count - 1].Selected = true;
@@ -318,7 +326,7 @@ namespace Common.Controls
 				return;
 			}
 
-			DisplayNamingGenerator((INamingGenerator)listViewGenerators.SelectedItems[0].Tag);
+			DisplayNamingGenerator((INamingGenerator) listViewGenerators.SelectedItems[0].Tag);
 		}
 
 		private void textBoxNameFormat_TextChanged(object sender, EventArgs e)
@@ -328,7 +336,7 @@ namespace Common.Controls
 
 		private void comboBoxTemplates_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			INamingTemplate template = (INamingTemplate)comboBoxTemplates.SelectedItem;
+			INamingTemplate template = (INamingTemplate) comboBoxTemplates.SelectedItem;
 			LoadNamingTemplate(template);
 		}
 

@@ -1,5 +1,7 @@
-﻿namespace Vixen.IO.Factory {
-	interface IObjectContentReaderFactory {
+﻿namespace Vixen.IO.Factory
+{
+	internal interface IObjectContentReaderFactory
+	{
 		IObjectContentReader CreateSystemConfigContentReader();
 		IObjectContentReader CreateModuleStoreContentReader();
 		IObjectContentReader CreateSystemContextContentReader();

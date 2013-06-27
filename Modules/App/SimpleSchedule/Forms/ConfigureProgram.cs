@@ -8,21 +8,25 @@ using Vixen.Sys;
 
 namespace VixenModules.App.SimpleSchedule.Forms
 {
-	public partial class ConfigureProgram : Form {
+	public partial class ConfigureProgram : Form
+	{
 		private Program _originalProgram;
 		private Program _editingProgram;
 
-		public ConfigureProgram(Program program) {
-			if(program == null) throw new ArgumentNullException("program");
+		public ConfigureProgram(Program program)
+		{
+			if (program == null) throw new ArgumentNullException("program");
 			InitializeComponent();
 
 			_Program = program;
 			_SystemSequences = SequenceService.Instance.GetAllSequenceFileNames().Select(System.IO.Path.GetFileName);
 		}
 
-		private Program _Program {
+		private Program _Program
+		{
 			get { return _editingProgram; }
-			set {
+			set
+			{
 				_originalProgram = value;
 				_editingProgram = new Program(_originalProgram);
 				_ProgramName = _editingProgram.Name;
@@ -30,78 +34,95 @@ namespace VixenModules.App.SimpleSchedule.Forms
 			}
 		}
 
-		private IEnumerable<string> _SystemSequences {
+		private IEnumerable<string> _SystemSequences
+		{
 			get { return listBoxSequences.Items.Cast<string>(); }
-			set {
+			set
+			{
 				listBoxSequences.Items.Clear();
 				listBoxSequences.Items.AddRange(value.ToArray());
 			}
 		}
 
-		private IEnumerable<string> _ProgramSequences {
+		private IEnumerable<string> _ProgramSequences
+		{
 			get { return listBoxProgram.Items.Cast<string>(); }
-			set {
+			set
+			{
 				listBoxProgram.Items.Clear();
 				listBoxProgram.Items.AddRange(value.ToArray());
 			}
 		}
 
-		private string _ProgramName {
+		private string _ProgramName
+		{
 			get { return textBoxProgramName.Text; }
 			set { textBoxProgramName.Text = value; }
 		}
 
-		private void _Move(ListBox from, ListBox to) {
-			if(from.SelectedItem != null) {
+		private void _Move(ListBox from, ListBox to)
+		{
+			if (from.SelectedItem != null) {
 				to.Items.Add(from.SelectedItem);
 				from.Items.Remove(from.SelectedItem);
 			}
 		}
 
-		private void listBoxSequences_SelectedIndexChanged(object sender, EventArgs e) {
+		private void listBoxSequences_SelectedIndexChanged(object sender, EventArgs e)
+		{
 			buttonMoveRight.Enabled = _CanMoveRight;
 		}
 
-		private void listBoxProgram_SelectedIndexChanged(object sender, EventArgs e) {
+		private void listBoxProgram_SelectedIndexChanged(object sender, EventArgs e)
+		{
 			buttonMoveLeft.Enabled = _CanMoveLeft;
 			buttonMoveUp.Enabled = _CanMoveUp;
 			buttonMoveDown.Enabled = _CanMoveDown;
 			buttonDelete.Enabled = _CanDelete;
 		}
 
-		private bool _CanMoveLeft {
+		private bool _CanMoveLeft
+		{
 			get { return listBoxProgram.SelectedItem != null; }
 		}
 
-		private bool _CanMoveRight {
+		private bool _CanMoveRight
+		{
 			get { return listBoxSequences.SelectedItem != null; }
 		}
 
-		private bool _CanMoveUp {
-			get {
+		private bool _CanMoveUp
+		{
+			get
+			{
 				return
 					listBoxProgram.SelectedItems.Count == 1 &&
 					listBoxProgram.SelectedIndex > 0;
 			}
 		}
 
-		private bool _CanMoveDown {
-			get {
+		private bool _CanMoveDown
+		{
+			get
+			{
 				return
 					listBoxProgram.SelectedItems.Count == 1 &&
 					listBoxProgram.SelectedIndex < listBoxProgram.Items.Count - 1;
 			}
 		}
 
-		private bool _CanDelete {
+		private bool _CanDelete
+		{
 			get { return listBoxProgram.SelectedItem != null; }
 		}
 
-		private void buttonMoveRight_Click(object sender, EventArgs e) {
+		private void buttonMoveRight_Click(object sender, EventArgs e)
+		{
 			_Move(listBoxSequences, listBoxProgram);
 		}
 
-		private void _MoveUp() {
+		private void _MoveUp()
+		{
 			object item = listBoxProgram.SelectedItem;
 			int index = listBoxProgram.SelectedIndex;
 
@@ -110,7 +131,8 @@ namespace VixenModules.App.SimpleSchedule.Forms
 			listBoxProgram.Items.Insert(index, item);
 		}
 
-		private void _MoveDown() {
+		private void _MoveDown()
+		{
 			object item = listBoxProgram.SelectedItem;
 			int index = listBoxProgram.SelectedIndex;
 
@@ -119,75 +141,74 @@ namespace VixenModules.App.SimpleSchedule.Forms
 			listBoxProgram.Items.Insert(index, item);
 		}
 
-		private bool _Validate() {
+		private bool _Validate()
+		{
 			List<string> messages = new List<string>();
 
-			if(string.IsNullOrWhiteSpace(_ProgramName)) {
+			if (string.IsNullOrWhiteSpace(_ProgramName)) {
 				messages.Add("* Program does not have a name.");
 			}
 
-			if(_ProgramSequences.Count() == 0) {
+			if (_ProgramSequences.Count() == 0) {
 				messages.Add("* The program has no sequences.");
 			}
 
-			if(messages.Count > 0) {
+			if (messages.Count > 0) {
 				messages.Insert(0, "The following problems need to be corrected:");
 				messages.Insert(1, Environment.NewLine);
-				MessageBox.Show(string.Join(Environment.NewLine, messages), "Vixen Program", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+				MessageBox.Show(string.Join(Environment.NewLine, messages), "Vixen Program", MessageBoxButtons.OK,
+				                MessageBoxIcon.Stop);
 				return false;
 			}
 
 			return true;
 		}
 
-		private void buttonMoveLeft_Click(object sender, EventArgs e) {
+		private void buttonMoveLeft_Click(object sender, EventArgs e)
+		{
 			_Move(listBoxProgram, listBoxSequences);
 		}
 
-		private void buttonMoveUp_Click(object sender, EventArgs e) {
+		private void buttonMoveUp_Click(object sender, EventArgs e)
+		{
 			_MoveUp();
 		}
 
-		private void buttonMoveDown_Click(object sender, EventArgs e) {
+		private void buttonMoveDown_Click(object sender, EventArgs e)
+		{
 			_MoveDown();
 		}
 
-		private void buttonDelete_Click(object sender, EventArgs e) {
+		private void buttonDelete_Click(object sender, EventArgs e)
+		{
 		}
 
-		private void buttonOK_Click(object sender, EventArgs e) {
-			if(_Validate()) {
+		private void buttonOK_Click(object sender, EventArgs e)
+		{
+			if (_Validate()) {
 				Cursor = Cursors.WaitCursor;
 				try {
 					_originalProgram.Clear();
 
-                    foreach (string item in _ProgramSequences)
-                    {
-                        string filepath = SequenceService.SequenceDirectory + "\\" + item;
-						ISequence seq =  SequenceService.Instance.Load(filepath);
-                        _originalProgram.Sequences.Add(SequenceService.Instance.Load(filepath));
-
-                    }
+					foreach (string item in _ProgramSequences) {
+						string filepath = SequenceService.SequenceDirectory + "\\" + item;
+						ISequence seq = SequenceService.Instance.Load(filepath);
+						_originalProgram.Sequences.Add(SequenceService.Instance.Load(filepath));
+					}
 					_originalProgram.Save(_ProgramName);
-                    ProgramName = _originalProgram.FilePath;
+					ProgramName = _originalProgram.FilePath;
 					ProgramDuration = _originalProgram.Length.Ticks;
-				} catch(Exception ex) {
+				}
+				catch (Exception ex) {
 					MessageBox.Show(ex.Message, "Vixen Program", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-				} finally {
+				}
+				finally {
 					Cursor = Cursors.Default;
 				}
 			}
 		}
 
-        public string ProgramName
-        {
-            get;
-            set;
-        }
-		public long ProgramDuration
-		{
-			get;
-			set;
-		}
+		public string ProgramName { get; set; }
+		public long ProgramDuration { get; set; }
 	}
 }

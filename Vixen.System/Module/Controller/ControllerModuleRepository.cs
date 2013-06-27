@@ -1,4 +1,6 @@
-﻿namespace Vixen.Module.Controller {
-	class ControllerModuleRepository : GenericModuleRepository<IControllerModuleInstance> {
+﻿namespace Vixen.Module.Controller
+{
+	internal class ControllerModuleRepository : GenericModuleRepository<IControllerModuleInstance>
+	{
 	}
 }

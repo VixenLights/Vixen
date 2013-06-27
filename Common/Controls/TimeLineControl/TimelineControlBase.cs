@@ -9,11 +9,10 @@ using System.ComponentModel;
 
 namespace Common.Controls.Timeline
 {
-
 	/// <summary>
 	/// The base class for all time-related controls in the TimelineControl.
 	/// </summary>
-	[System.ComponentModel.DesignerCategory("")]    // Prevent this from showing up in designer.
+	[System.ComponentModel.DesignerCategory("")] // Prevent this from showing up in designer.
 	public abstract class TimelineControlBase : UserControl
 	{
 		protected TimelineControlBase(TimeInfo timeinfo)
@@ -42,7 +41,7 @@ namespace Common.Controls.Timeline
 		/// <summary>
 		/// The beginning time of the visible region.
 		/// </summary>
-        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		[Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public virtual TimeSpan VisibleTimeStart
 		{
 			get { return TimeInfo.VisibleTimeStart; }
@@ -51,8 +50,8 @@ namespace Common.Controls.Timeline
 				if (value < TimeSpan.Zero)
 					value = TimeSpan.Zero;
 
-                if (value > TotalTime - VisibleTimeSpan)
-                    value = Util.Max(TotalTime - VisibleTimeSpan, TimeSpan.Zero);
+				if (value > TotalTime - VisibleTimeSpan)
+					value = Util.Max(TotalTime - VisibleTimeSpan, TimeSpan.Zero);
 
 				TimeInfo.VisibleTimeStart = value;
 			}
@@ -61,7 +60,7 @@ namespace Common.Controls.Timeline
 		/// <summary>
 		/// The amount of time represented by one (horizontal pixel)
 		/// </summary>
-        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		[Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public virtual TimeSpan TimePerPixel
 		{
 			get { return TimeInfo.TimePerPixel; }
@@ -72,7 +71,7 @@ namespace Common.Controls.Timeline
 		/// <summary>
 		/// The total time represented in the user controls
 		/// </summary>
-        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		[Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public virtual TimeSpan TotalTime
 		{
 			get { return TimeInfo.TotalTime; }
@@ -104,20 +103,20 @@ namespace Common.Controls.Timeline
 		/// <summary>
 		/// The amount of time currently visible.
 		/// </summary>
-        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)] 
+		[Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public virtual TimeSpan VisibleTimeSpan
 		{
-			get { return TimeSpan.FromTicks(ClientSize.Width * TimePerPixel.Ticks); }
+			get { return TimeSpan.FromTicks(ClientSize.Width*TimePerPixel.Ticks); }
 		}
 
 		/// <summary>
 		/// The ending time of the visible region.
 		/// </summary>
-        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		[Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public TimeSpan VisibleTimeEnd
 		{
 			//get { return VisibleTimeStart + VisibleTimeSpan; }
-            get { return Util.Min(VisibleTimeStart + VisibleTimeSpan, TotalTime); }
+			get { return Util.Min(VisibleTimeStart + VisibleTimeSpan, TotalTime); }
 		}
 
 		#endregion
@@ -134,7 +133,7 @@ namespace Common.Controls.Timeline
 			if (TimePerPixel.Ticks == 0)
 				throw new DivideByZeroException("Time per pixel is zero!");
 
-			return (Single)t.Ticks / (Single)TimePerPixel.Ticks;
+			return (Single) t.Ticks/(Single) TimePerPixel.Ticks;
 		}
 
 		/// <summary>
@@ -144,12 +143,13 @@ namespace Common.Controls.Timeline
 		/// <returns></returns>
 		protected TimeSpan pixelsToTime(int px)
 		{
-			return TimeSpan.FromTicks(px * TimePerPixel.Ticks);
+			return TimeSpan.FromTicks(px*TimePerPixel.Ticks);
 		}
 
 		#endregion
 
 		#region Overridable event handlers and their events
+
 		protected virtual void OnVisibleTimeStartChanged(object sender, EventArgs e)
 		{
 			if (VisibleTimeStartChanged != null)
@@ -210,41 +210,36 @@ namespace Common.Controls.Timeline
 		private static Int16 HIWORD(IntPtr ptr)
 		{
 			Int32 val32 = ptr.ToInt32();
-			return (Int16)((val32 >> 16) & 0xFFFF);
+			return (Int16) ((val32 >> 16) & 0xFFFF);
 		}
 
 		private static Int16 LOWORD(IntPtr ptr)
 		{
 			Int32 val32 = ptr.ToInt32();
-			return (Int16)(val32 & 0xFFFF);
+			return (Int16) (val32 & 0xFFFF);
 		}
 
 		protected override void WndProc(ref Message m)
 		{
 			base.WndProc(ref m);
-            try
-            {
-                if (m.HWnd != this.Handle)
-                {
-                    return;
-                }
-                switch (m.Msg)
-                {
-                    case WM_MOUSEHWHEEL:
-                        mouseHWheelMsg(m.WParam, m.LParam);
-                        m.Result = (IntPtr)1;
-                        break;
+			try {
+				if (m.HWnd != this.Handle) {
+					return;
+				}
+				switch (m.Msg) {
+					case WM_MOUSEHWHEEL:
+						mouseHWheelMsg(m.WParam, m.LParam);
+						m.Result = (IntPtr) 1;
+						break;
 
-                    default:
-                        break;
-
-                }
-            }
-            catch
-            {
-                // This even fires when the grid is disposed and gives an error.
-                // Not entirely sure how to check for this so, try/catch
-            }
+					default:
+						break;
+				}
+			}
+			catch {
+				// This even fires when the grid is disposed and gives an error.
+				// Not entirely sure how to check for this so, try/catch
+			}
 		}
 
 		public event EventHandler<MouseEventArgs> MouseHWheel;
@@ -267,14 +262,11 @@ namespace Common.Controls.Timeline
 
 		protected virtual void OnMouseHWheel(MouseEventArgs args)
 		{
-			if (MouseHWheel != null)
-			{
+			if (MouseHWheel != null) {
 				MouseHWheel(this, args);
 			}
 		}
 
 		#endregion
-
 	}
-
 }

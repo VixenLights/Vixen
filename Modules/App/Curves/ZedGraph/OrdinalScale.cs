@@ -40,18 +40,17 @@ namespace ZedGraph
 	/// <author> John Champion  </author>
 	/// <version> $Revision: 1.8 $ $Date: 2007-04-16 00:03:02 $ </version>
 	[Serializable]
-	class OrdinalScale : Scale, ISerializable //, ICloneable
+	internal class OrdinalScale : Scale, ISerializable //, ICloneable
 	{
-
-	#region constructors
+		#region constructors
 
 		/// <summary>
 		/// Default constructor that defines the owner <see cref="Axis" />
 		/// (containing object) for this new object.
 		/// </summary>
 		/// <param name="owner">The owner, or containing object, of this instance</param>
-		public OrdinalScale( Axis owner )
-			: base( owner )
+		public OrdinalScale(Axis owner)
+			: base(owner)
 		{
 		}
 
@@ -61,8 +60,8 @@ namespace ZedGraph
 		/// <param name="rhs">The <see cref="OrdinalScale" /> object from which to copy</param>
 		/// <param name="owner">The <see cref="Axis" /> object that will own the
 		/// new instance of <see cref="OrdinalScale" /></param>
-		public OrdinalScale( Scale rhs, Axis owner )
-			: base( rhs, owner )
+		public OrdinalScale(Scale rhs, Axis owner)
+			: base(rhs, owner)
 		{
 		}
 
@@ -72,14 +71,14 @@ namespace ZedGraph
 		/// <param name="owner">The new <see cref="Axis" /> instance that will be
 		/// the owner of the new Scale</param>
 		/// <returns>A new <see cref="Scale" /> clone.</returns>
-		public override Scale Clone( Axis owner )
+		public override Scale Clone(Axis owner)
 		{
-			return new OrdinalScale( this, owner );
+			return new OrdinalScale(this, owner);
 		}
 
-	#endregion
+		#endregion
 
-	#region properties
+		#region properties
 
 		/// <summary>
 		/// Return the <see cref="AxisType" /> for this <see cref="Scale" />, which is
@@ -90,9 +89,9 @@ namespace ZedGraph
 			get { return AxisType.Ordinal; }
 		}
 
-	#endregion
+		#endregion
 
-	#region methods
+		#region methods
 
 		/// <summary>
 		/// Select a reasonable ordinal axis scale given a range of data values.
@@ -133,70 +132,67 @@ namespace ZedGraph
 		/// font sizes, etc. according to the actual size of the graph.
 		/// </param>
 		/// <seealso cref="AxisType.Ordinal"/>
-		override public void PickScale( GraphPane pane, Graphics g, float scaleFactor )
+		public override void PickScale(GraphPane pane, Graphics g, float scaleFactor)
 		{
 			// call the base class first
-			base.PickScale( pane, g, scaleFactor );
+			base.PickScale(pane, g, scaleFactor);
 
-			PickScale( pane, g, scaleFactor, this );
+			PickScale(pane, g, scaleFactor, this);
 		}
 
-		internal static void PickScale( GraphPane pane, Graphics g, float scaleFactor, Scale scale )
+		internal static void PickScale(GraphPane pane, Graphics g, float scaleFactor, Scale scale)
 		{
 			// Test for trivial condition of range = 0 and pick a suitable default
-			if ( scale._max - scale._min < 1.0 )
-			{
-				if ( scale._maxAuto )
+			if (scale._max - scale._min < 1.0) {
+				if (scale._maxAuto)
 					scale._max = scale._min + 0.5;
 				else
 					scale._min = scale._max - 0.5;
 			}
-			else
-			{
+			else {
 				// Calculate the new step size
-				if ( scale._majorStepAuto )
-				{
+				if (scale._majorStepAuto) {
 					// Calculate the step size based on targetSteps
-					scale._majorStep = Scale.CalcStepSize( scale._max - scale._min,
-						( scale._ownerAxis is XAxis || scale._ownerAxis is X2Axis ) ?
-								Default.TargetXSteps : Default.TargetYSteps );
+					scale._majorStep = Scale.CalcStepSize(scale._max - scale._min,
+					                                      (scale._ownerAxis is XAxis || scale._ownerAxis is X2Axis)
+					                                      	? Default.TargetXSteps
+					                                      	: Default.TargetYSteps);
 
-					if ( scale.IsPreventLabelOverlap )
-					{
+					if (scale.IsPreventLabelOverlap) {
 						// Calculate the maximum number of labels
-						double maxLabels = (double) scale.CalcMaxLabels( g, pane, scaleFactor );
+						double maxLabels = (double) scale.CalcMaxLabels(g, pane, scaleFactor);
 
 						// Calculate a step size based on the width of the labels
-						double tmpStep = Math.Ceiling( ( scale._max - scale._min ) / maxLabels );
+						double tmpStep = Math.Ceiling((scale._max - scale._min)/maxLabels);
 
 						// Use the greater of the two step sizes
-						if ( tmpStep > scale._majorStep )
+						if (tmpStep > scale._majorStep)
 							scale._majorStep = tmpStep;
 					}
-
 				}
 
-				scale._majorStep = (int)scale._majorStep;
-				if ( scale._majorStep < 1.0 )
+				scale._majorStep = (int) scale._majorStep;
+				if (scale._majorStep < 1.0)
 					scale._majorStep = 1.0;
 
 				// Calculate the new minor step size
-				if ( scale._minorStepAuto )
-					scale._minorStep = Scale.CalcStepSize( scale._majorStep,
-						( scale._ownerAxis is XAxis || scale._ownerAxis is X2Axis ) ?
-								Default.TargetMinorXSteps : Default.TargetMinorYSteps );
+				if (scale._minorStepAuto)
+					scale._minorStep = Scale.CalcStepSize(scale._majorStep,
+					                                      (scale._ownerAxis is XAxis || scale._ownerAxis is X2Axis)
+					                                      	? Default.TargetMinorXSteps
+					                                      	: Default.TargetMinorYSteps);
 
-				if ( scale._minAuto )
+				if (scale._minAuto)
 					scale._min -= 0.5;
-				if ( scale._maxAuto )
+				if (scale._maxAuto)
 					scale._max += 0.5;
 			}
 		}
 
+		#endregion
 
-	#endregion
+		#region Serialization
 
-	#region Serialization
 		/// <summary>
 		/// Current schema value that defines the version of the serialized file
 		/// </summary>
@@ -209,25 +205,25 @@ namespace ZedGraph
 		/// </param>
 		/// <param name="context">A <see cref="StreamingContext"/> instance that contains the serialized data
 		/// </param>
-		protected OrdinalScale( SerializationInfo info, StreamingContext context ) : base( info, context )
+		protected OrdinalScale(SerializationInfo info, StreamingContext context) : base(info, context)
 		{
 			// The schema value is just a file version parameter.  You can use it to make future versions
 			// backwards compatible as new member variables are added to classes
-			int sch = info.GetInt32( "schema2" );
-
+			int sch = info.GetInt32("schema2");
 		}
+
 		/// <summary>
 		/// Populates a <see cref="SerializationInfo"/> instance with the data needed to serialize the target object
 		/// </summary>
 		/// <param name="info">A <see cref="SerializationInfo"/> instance that defines the serialized data</param>
 		/// <param name="context">A <see cref="StreamingContext"/> instance that contains the serialized data</param>
-		[SecurityPermissionAttribute(SecurityAction.Demand,SerializationFormatter=true)]
-		public override void GetObjectData( SerializationInfo info, StreamingContext context )
+		[SecurityPermissionAttribute(SecurityAction.Demand, SerializationFormatter = true)]
+		public override void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
-			base.GetObjectData( info, context );
-			info.AddValue( "schema2", schema2 );
+			base.GetObjectData(info, context);
+			info.AddValue("schema2", schema2);
 		}
-	#endregion
 
+		#endregion
 	}
 }

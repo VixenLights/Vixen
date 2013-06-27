@@ -1,22 +1,27 @@
-﻿namespace Vixen.IO.Policy {
-	abstract class OutputFilterTemplatePolicy : IFilePolicy {
-		public void Write() {
+﻿namespace Vixen.IO.Policy
+{
+	internal abstract class OutputFilterTemplatePolicy : IFilePolicy
+	{
+		public void Write()
+		{
 			WriteModuleDataSet();
 			WriteOutputFilterCollections();
 		}
 
-		abstract protected void WriteModuleDataSet();
-		abstract protected void WriteOutputFilterCollections();
+		protected abstract void WriteModuleDataSet();
+		protected abstract void WriteOutputFilterCollections();
 
-		public void Read() {
+		public void Read()
+		{
 			ReadModuleDataSet();
 			ReadOutputFilterCollections();
 		}
 
-		abstract protected void ReadModuleDataSet();
-		abstract protected void ReadOutputFilterCollections();
+		protected abstract void ReadModuleDataSet();
+		protected abstract void ReadOutputFilterCollections();
 
-		public int Version {
+		public int Version
+		{
 			get { return 1; }
 		}
 	}

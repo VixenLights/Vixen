@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Vixen.Sys {
-	abstract public class GroupNode<T> : IEnumerable<T> {
+namespace Vixen.Sys
+{
+	public abstract class GroupNode<T> : IEnumerable<T>
+	{
 		private List<GroupNode<T>> _children;
 		private List<GroupNode<T>> _parents;
 
-		protected GroupNode(string name, IEnumerable<GroupNode<T>> content) {
+		protected GroupNode(string name, IEnumerable<GroupNode<T>> content)
+		{
 			Name = name;
 			_children = new List<GroupNode<T>>(content ?? Enumerable.Empty<GroupNode<T>>());
 			_parents = new List<GroupNode<T>>(Enumerable.Empty<GroupNode<T>>());
@@ -16,21 +19,24 @@ namespace Vixen.Sys {
 				child.AddParent(this);
 			}
 		}
-		
+
 		protected GroupNode(string name, params GroupNode<T>[] content)
-			: this(name, (IEnumerable<GroupNode<T>>)content) {
+			: this(name, (IEnumerable<GroupNode<T>>) content)
+		{
 		}
 
-		virtual public string Name { get; set; }
+		public virtual string Name { get; set; }
 
-		virtual public void AddChild(GroupNode<T> node) {
+		public virtual void AddChild(GroupNode<T> node)
+		{
 			if (!_children.Contains(node)) {
 				_children.Add(node);
 				node.AddParent(this);
 			}
 		}
 
-		virtual public void InsertChild(int index, GroupNode<T> node) {
+		public virtual void InsertChild(int index, GroupNode<T> node)
+		{
 			if (!_children.Contains(node)) {
 				_children.Insert(index, node);
 				node.AddParent(this);
@@ -44,7 +50,8 @@ namespace Vixen.Sys {
 			}
 		}
 
-		virtual public bool RemoveFromParent(GroupNode<T> parent, bool cleanupIfFloating) {
+		public virtual bool RemoveFromParent(GroupNode<T> parent, bool cleanupIfFloating)
+		{
 			// try to remove this node from the given parent.
 			if (!parent.RemoveChild(this)) {
 				return false;
@@ -62,26 +69,30 @@ namespace Vixen.Sys {
 			return true;
 		}
 
-		virtual public bool RemoveChild(GroupNode<T> node) {
-			if(_children.Remove(node)) {
+		public virtual bool RemoveChild(GroupNode<T> node)
+		{
+			if (_children.Remove(node)) {
 				node.RemoveParent(this);
 				return true;
 			}
 			return false;
 		}
 
-		private bool RemoveParent(GroupNode<T> parent) {
+		private bool RemoveParent(GroupNode<T> parent)
+		{
 			if (_parents.Remove(parent)) {
 				return true;
 			}
 			return false;
 		}
 
-		virtual public GroupNode<T> Get(int index) {
+		public virtual GroupNode<T> Get(int index)
+		{
 			return _children[index];
 		}
 
-		virtual public int IndexOfChild(GroupNode<T> child) {
+		public virtual int IndexOfChild(GroupNode<T> child)
+		{
 			return _children.IndexOf(child);
 		}
 
@@ -90,7 +101,8 @@ namespace Vixen.Sys {
 		/// </summary>
 		/// <param name="node">The node to search for.</param>
 		/// <returns>True if the node is contained anywhere below this node.</returns>
-		virtual public bool ContainsNode(GroupNode<T> node) {
+		public virtual bool ContainsNode(GroupNode<T> node)
+		{
 			foreach (GroupNode<T> child in Children) {
 				if (child.ContainsNode(node))
 					return true;
@@ -99,27 +111,33 @@ namespace Vixen.Sys {
 			return Children.Contains(node);
 		}
 
-		virtual public GroupNode<T> Find(string childName) {
+		public virtual GroupNode<T> Find(string childName)
+		{
 			return _children.FirstOrDefault(x => x.Name.Equals(childName, StringComparison.OrdinalIgnoreCase));
 		}
 
-		virtual public IEnumerable<GroupNode<T>> Children {
+		public virtual IEnumerable<GroupNode<T>> Children
+		{
 			get { return _children; }
 		}
 
-		virtual public IEnumerable<GroupNode<T>> Parents {
+		public virtual IEnumerable<GroupNode<T>> Parents
+		{
 			get { return _parents; }
 		}
 
-		virtual public IEnumerator<T> GetEnumerator() {
+		public virtual IEnumerator<T> GetEnumerator()
+		{
 			return _children.SelectMany(x => x).GetEnumerator();
 		}
 
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
+		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		{
 			return GetEnumerator();
 		}
 
-		override public string ToString() {
+		public override string ToString()
+		{
 			return Name;
 		}
 	}

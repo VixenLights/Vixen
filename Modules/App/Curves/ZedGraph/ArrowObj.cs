@@ -37,11 +37,13 @@ namespace ZedGraph
 	public class ArrowObj : LineObj, ICloneable, ISerializable
 	{
 		#region Fields
+
 		/// <summary>
 		/// Private field that stores the arrowhead size, measured in points.
 		/// Use the public property <see cref="Size"/> to access this value.
 		/// </summary>
 		private float _size;
+
 		/// <summary>
 		/// Private boolean field that stores the arrowhead state.
 		/// Use the public property <see cref="IsArrowHead"/> to access this value.
@@ -52,17 +54,19 @@ namespace ZedGraph
 		#endregion
 
 		#region Defaults
+
 		/// <summary>
 		/// A simple struct that defines the
 		/// default property values for the <see cref="ArrowObj"/> class.
 		/// </summary>
-		new public struct Default
+		public new struct Default
 		{
 			/// <summary>
 			/// The default size for the <see cref="ArrowObj"/> item arrowhead
 			/// (<see cref="ArrowObj.Size"/> property).  Units are in points (1/72 inch).
 			/// </summary>
 			public static float Size = 12.0F;
+
 			/// <summary>
 			/// The default display mode for the <see cref="ArrowObj"/> item arrowhead
 			/// (<see cref="ArrowObj.IsArrowHead"/> property).  true to show the
@@ -70,9 +74,11 @@ namespace ZedGraph
 			/// </summary>
 			public static bool IsArrowHead = true;
 		}
+
 		#endregion
 
 		#region Properties
+
 		/// <summary>
 		/// The size of the arrowhead.
 		/// </summary>
@@ -86,6 +92,7 @@ namespace ZedGraph
 			get { return _size; }
 			set { _size = value; }
 		}
+
 		/// <summary>
 		/// Determines whether or not to draw an arrowhead
 		/// </summary>
@@ -97,9 +104,11 @@ namespace ZedGraph
 			get { return _isArrowHead; }
 			set { _isArrowHead = value; }
 		}
+
 		#endregion
 
 		#region Constructors
+
 		/// <overloads>Constructors for the <see cref="ArrowObj"/> object</overloads>
 		/// <summary>
 		/// A constructor that allows the position, color, and size of the
@@ -120,9 +129,9 @@ namespace ZedGraph
 		/// <param name="y2">The y position of the ending point that defines the
 		/// arrow.  The units of this position are specified by the
 		/// <see cref="Location.CoordinateFrame"/> property.</param>
-		public ArrowObj( Color color, float size, double x1, double y1,
-					double x2, double y2 )
-			: base( color, x1, y1, x2, y2 )
+		public ArrowObj(Color color, float size, double x1, double y1,
+		                double x2, double y2)
+			: base(color, x1, y1, x2, y2)
 		{
 			_isArrowHead = Default.IsArrowHead;
 			_size = size;
@@ -145,8 +154,8 @@ namespace ZedGraph
 		/// <param name="y2">The y position of the ending point that defines the
 		/// <see cref="ArrowObj"/>.  The units of this position are specified by the
 		/// <see cref="Location.CoordinateFrame"/> property.</param>
-		public ArrowObj( double x1, double y1, double x2, double y2 )
-			: this( LineBase.Default.Color, Default.Size, x1, y1, x2, y2 )
+		public ArrowObj(double x1, double y1, double x2, double y2)
+			: this(LineBase.Default.Color, Default.Size, x1, y1, x2, y2)
 		{
 		}
 
@@ -156,7 +165,7 @@ namespace ZedGraph
 		/// </summary>
 		public ArrowObj()
 			:
-			this( LineBase.Default.Color, Default.Size, 0, 0, 1, 1 )
+				this(LineBase.Default.Color, Default.Size, 0, 0, 1, 1)
 		{
 		}
 
@@ -164,8 +173,8 @@ namespace ZedGraph
 		/// The Copy Constructor
 		/// </summary>
 		/// <param name="rhs">The <see cref="ArrowObj"/> object from which to copy</param>
-		public ArrowObj( ArrowObj rhs )
-			: base( rhs )
+		public ArrowObj(ArrowObj rhs)
+			: base(rhs)
 		{
 			_size = rhs.Size;
 			_isArrowHead = rhs.IsArrowHead;
@@ -187,12 +196,13 @@ namespace ZedGraph
 		/// <returns>A new, independent copy of this class</returns>
 		public new ArrowObj Clone()
 		{
-			return new ArrowObj( this );
+			return new ArrowObj(this);
 		}
 
 		#endregion
 
 		#region Serialization
+
 		/// <summary>
 		/// Current schema value that defines the version of the serialized file
 		/// </summary>
@@ -205,32 +215,35 @@ namespace ZedGraph
 		/// </param>
 		/// <param name="context">A <see cref="StreamingContext"/> instance that contains the serialized data
 		/// </param>
-		protected ArrowObj( SerializationInfo info, StreamingContext context )
-			: base( info, context )
+		protected ArrowObj(SerializationInfo info, StreamingContext context)
+			: base(info, context)
 		{
 			// The schema value is just a file version parameter.  You can use it to make future versions
 			// backwards compatible as new member variables are added to classes
-			int sch = info.GetInt32( "schema3" );
+			int sch = info.GetInt32("schema3");
 
-			_size = info.GetSingle( "size" );
-			_isArrowHead = info.GetBoolean( "isArrowHead" );
+			_size = info.GetSingle("size");
+			_isArrowHead = info.GetBoolean("isArrowHead");
 		}
+
 		/// <summary>
 		/// Populates a <see cref="SerializationInfo"/> instance with the data needed to serialize the target object
 		/// </summary>
 		/// <param name="info">A <see cref="SerializationInfo"/> instance that defines the serialized data</param>
 		/// <param name="context">A <see cref="StreamingContext"/> instance that contains the serialized data</param>
-		[SecurityPermissionAttribute( SecurityAction.Demand, SerializationFormatter = true )]
-		public override void GetObjectData( SerializationInfo info, StreamingContext context )
+		[SecurityPermissionAttribute(SecurityAction.Demand, SerializationFormatter = true)]
+		public override void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
-			base.GetObjectData( info, context );
-			info.AddValue( "schema3", schema2 );
-			info.AddValue( "size", _size );
-			info.AddValue( "isArrowHead", _isArrowHead );
+			base.GetObjectData(info, context);
+			info.AddValue("schema3", schema2);
+			info.AddValue("size", _size);
+			info.AddValue("isArrowHead", _isArrowHead);
 		}
+
 		#endregion
 
 		#region Rendering Methods
+
 		/// <summary>
 		/// Render this object to the specified <see cref="Graphics"/> device.
 		/// </summary>
@@ -252,50 +265,48 @@ namespace ZedGraph
 		/// <see cref="PaneBase.CalcScaleFactor"/> method, and is used to proportionally adjust
 		/// font sizes, etc. according to the actual size of the graph.
 		/// </param>
-		override public void Draw( Graphics g, PaneBase pane, float scaleFactor )
+		public override void Draw(Graphics g, PaneBase pane, float scaleFactor)
 		{
 			// Convert the arrow coordinates from the user coordinate system
 			// to the screen coordinate system
-			PointF pix1 = this.Location.TransformTopLeft( pane );
-			PointF pix2 = this.Location.TransformBottomRight( pane );
+			PointF pix1 = this.Location.TransformTopLeft(pane);
+			PointF pix2 = this.Location.TransformBottomRight(pane);
 
-			if ( pix1.X > -10000 && pix1.X < 100000 && pix1.Y > -100000 && pix1.Y < 100000 &&
-				pix2.X > -10000 && pix2.X < 100000 && pix2.Y > -100000 && pix2.Y < 100000 )
-			{
+			if (pix1.X > -10000 && pix1.X < 100000 && pix1.Y > -100000 && pix1.Y < 100000 &&
+			    pix2.X > -10000 && pix2.X < 100000 && pix2.Y > -100000 && pix2.Y < 100000) {
 				// get a scaled size for the arrowhead
-				float scaledSize = (float)( _size * scaleFactor );
+				float scaledSize = (float) (_size*scaleFactor);
 
 				// calculate the length and the angle of the arrow "vector"
 				double dy = pix2.Y - pix1.Y;
 				double dx = pix2.X - pix1.X;
-				float angle = (float)Math.Atan2( dy, dx ) * 180.0F / (float)Math.PI;
-				float length = (float)Math.Sqrt( dx * dx + dy * dy );
+				float angle = (float) Math.Atan2(dy, dx)*180.0F/(float) Math.PI;
+				float length = (float) Math.Sqrt(dx*dx + dy*dy);
 
 				// Save the old transform matrix
 				Matrix transform = g.Transform;
 				// Move the coordinate system so it is located at the starting point
 				// of this arrow
-				g.TranslateTransform( pix1.X, pix1.Y );
+				g.TranslateTransform(pix1.X, pix1.Y);
 				// Rotate the coordinate system according to the angle of this arrow
 				// about the starting point
-				g.RotateTransform( angle );
+				g.RotateTransform(angle);
 
 				// get a pen according to this arrow properties
-				using ( Pen pen = _line.GetPen( pane, scaleFactor ) )
+				using (Pen pen = _line.GetPen(pane, scaleFactor))
 					//new Pen( _color, pane.ScaledPenWidth( _penWidth, scaleFactor ) ) )
 				{
 					//pen.DashStyle = _style;
 
 					// Only show the arrowhead if required
-					if ( _isArrowHead )
-					{
+					if (_isArrowHead) {
 						// Draw the line segment for this arrow
-						g.DrawLine( pen, 0, 0, length - scaledSize + 1, 0 );
+						g.DrawLine(pen, 0, 0, length - scaledSize + 1, 0);
 
 						// Create a polygon representing the arrowhead based on the scaled
 						// size
 						PointF[] polyPt = new PointF[4];
-						float hsize = scaledSize / 3.0F;
+						float hsize = scaledSize/3.0F;
 						polyPt[0].X = length;
 						polyPt[0].Y = 0;
 						polyPt[1].X = length - scaledSize;
@@ -304,12 +315,12 @@ namespace ZedGraph
 						polyPt[2].Y = -hsize;
 						polyPt[3] = polyPt[0];
 
-						using ( SolidBrush brush = new SolidBrush( _line._color ) )
+						using (SolidBrush brush = new SolidBrush(_line._color))
 							// render the arrowhead
-							g.FillPolygon( brush, polyPt );
+							g.FillPolygon(brush, polyPt);
 					}
 					else
-						g.DrawLine( pen, 0, 0, length, 0 );
+						g.DrawLine(pen, 0, 0, length, 0);
 				}
 
 				// Restore the transform matrix back to its original state
@@ -318,6 +329,5 @@ namespace ZedGraph
 		}
 
 		#endregion
-
 	}
 }

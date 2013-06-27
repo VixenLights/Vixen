@@ -5,8 +5,10 @@ using System.Text;
 using System.Xml.Linq;
 using Vixen.IO;
 
-namespace Vixen.Module {
-    public interface IModuleDataSet {
+namespace Vixen.Module
+{
+	public interface IModuleDataSet
+	{
 		void AssignModuleTypeData(IModuleInstance module);
 		IModuleDataModel GetTypeData(IModuleInstance module);
 		void AssignModuleInstanceData(IModuleInstance module);

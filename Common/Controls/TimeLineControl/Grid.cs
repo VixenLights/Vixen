@@ -17,37 +17,40 @@ using System.Collections.Concurrent;
 
 namespace Common.Controls.Timeline
 {
-
 	/// <summary>
 	/// Makes up the main part of the TimelineControl. A scrollable container which presents rows which contain elements.
 	/// </summary>
-	[System.ComponentModel.DesignerCategory("")]    // Prevent this from showing up in designer.
+	[System.ComponentModel.DesignerCategory("")] // Prevent this from showing up in designer.
 	public partial class Grid : TimelineControlBase, IEnumerable<Row>, IDisposable
 	{
 		#region Members
 
-		private List<Row> m_rows;								// the rows in the grid
-		private DragState m_dragState = DragState.Normal;		// the current dragging state
+		private List<Row> m_rows; // the rows in the grid
+		private DragState m_dragState = DragState.Normal; // the current dragging state
 
-		private Point m_selectionRectangleStart;				// the location (on the grid canvas) where the selection box starts.
-		private Rectangle m_ignoreDragArea;						// the area in which move movements should be ignored, before we start dragging
-		private List<Element> m_mouseDownElements;				// the elements under the cursor on a mouse click
-		private Row m_mouseDownElementRow = null;				// the row that the clicked m_mouseDownElement belongs to (a single element may be in multiple rows)
-		private TimeSpan m_cursorPosition;						// the current grid 'cursor' position (line drawn vertically)
+		private Point m_selectionRectangleStart; // the location (on the grid canvas) where the selection box starts.
+		private Rectangle m_ignoreDragArea; // the area in which move movements should be ignored, before we start dragging
+		private List<Element> m_mouseDownElements; // the elements under the cursor on a mouse click
+
+		private Row m_mouseDownElementRow = null;
+		            // the row that the clicked m_mouseDownElement belongs to (a single element may be in multiple rows)
+
+		private TimeSpan m_cursorPosition; // the current grid 'cursor' position (line drawn vertically)
 
 		#endregion
 
-        private ElementMoveInfo m_elemMoveInfo;
-        BackgroundWorker renderWorker = null;
-        public ISequenceContext Context = null;
+		private ElementMoveInfo m_elemMoveInfo;
+		private BackgroundWorker renderWorker = null;
+		public ISequenceContext Context = null;
 		public bool SequenceLoading { get; set; }
+
 		#region Initialization
 
 		public Grid(TimeInfo timeinfo)
-			:base(timeinfo)
+			: base(timeinfo)
 		{
 			this.AutoScroll = true;
-            AllowGridResize = true;
+			AllowGridResize = true;
 			AutoScrollMargin = new Size(24, 24);
 			TotalTime = TimeSpan.FromMinutes(1);
 			RowSeparatorColor = Color.Black;
@@ -67,7 +70,7 @@ namespace Common.Controls.Timeline
 
 			m_rows = new List<Row>();
 
-            InitAutoScrollTimer();
+			InitAutoScrollTimer();
 
 			// thse changed events are static for the class. If we make them per element or row
 			//  later, we will need to attach/detach from each event manually.
@@ -82,23 +85,22 @@ namespace Common.Controls.Timeline
 			DragDrop += TimelineGrid_DragDrop;
 		}
 
-        protected override void Dispose(bool disposing)
-        {
-            // Cancel the background worker
-            if (renderWorker != null)
-            {
-                renderWorker.CancelAsync();
-                while (renderWorker.IsBusy) Application.DoEvents();
-            }
+		protected override void Dispose(bool disposing)
+		{
+			// Cancel the background worker
+			if (renderWorker != null) {
+				renderWorker.CancelAsync();
+				while (renderWorker.IsBusy) Application.DoEvents();
+			}
 
-            base.Dispose(disposing);
-        }
+			base.Dispose(disposing);
+		}
 
-        #endregion
+		#endregion
 
 		protected override void OnVisibleTimeStartChanged(object sender, EventArgs e)
 		{
-			AutoScrollPosition = new Point((int)timeToPixels(VisibleTimeStart), -AutoScrollPosition.Y);
+			AutoScrollPosition = new Point((int) timeToPixels(VisibleTimeStart), -AutoScrollPosition.Y);
 			base.OnVisibleTimeStartChanged(sender, e);
 		}
 
@@ -121,21 +123,19 @@ namespace Common.Controls.Timeline
 		{
 			if (this.InvokeRequired)
 				this.Invoke(new Vixen.Delegates.GenericDelegate(ResizeGridHorizontally));
-			else
-			{
+			else {
 				// resize the scroll canvas to be the new size of the whole display time, and cap it to not go past the end
-				AutoScrollMinSize = new Size((int)timeToPixels(TotalTime), AutoScrollMinSize.Height);
+				AutoScrollMinSize = new Size((int) timeToPixels(TotalTime), AutoScrollMinSize.Height);
 
 				if (VisibleTimeEnd > TotalTime)
 					VisibleTimeStart = TotalTime - VisibleTimeSpan;
 
 				//shuffle the grid position to line up with where the visible time start should be
-				AutoScrollPosition = new Point((int)timeToPixels(VisibleTimeStart), -AutoScrollPosition.Y);
+				AutoScrollPosition = new Point((int) timeToPixels(VisibleTimeStart), -AutoScrollPosition.Y);
 			}
 		}
 
-
-        #region Properties
+		#region Properties
 
 		public int VerticalOffset
 		{
@@ -179,10 +179,7 @@ namespace Common.Controls.Timeline
 
 		public IEnumerable<Row> VisibleRows
 		{
-			get
-			{
-				return Rows.Where(x => x.Visible);
-			}
+			get { return Rows.Where(x => x.Visible); }
 			set
 			{
 				foreach (Row row in Rows)
@@ -203,7 +200,12 @@ namespace Common.Controls.Timeline
 		public TimeSpan CursorPosition
 		{
 			get { return m_cursorPosition; }
-			set { m_cursorPosition = value; _CursorMoved(value); Invalidate(); }
+			set
+			{
+				m_cursorPosition = value;
+				_CursorMoved(value);
+				Invalidate();
+			}
 		}
 
 		public TimeSpan GridlineInterval { get; set; }
@@ -212,7 +214,7 @@ namespace Common.Controls.Timeline
 		public int DragThreshold { get; set; }
 		public Rectangle SelectionArea { get; set; }
 		public bool ClickingGridSetsCursor { get; set; }
-	
+
 		// drawing colours, information, etc.
 		public Color RowSeparatorColor { get; set; }
 		public Color MajorGridlineColor { get; set; }
@@ -222,14 +224,16 @@ namespace Common.Controls.Timeline
 		public Single CursorWidth { get; set; }
 
 		// private properties
-		private bool CtrlPressed { get { return Form.ModifierKeys.HasFlag(Keys.Control); } }
+		private bool CtrlPressed
+		{
+			get { return Form.ModifierKeys.HasFlag(Keys.Control); }
+		}
+
 		private int CurrentRowIndexUnderMouse { get; set; }
 		private SortedDictionary<TimeSpan, List<SnapDetails>> StaticSnapPoints { get; set; }
 		private SortedDictionary<TimeSpan, List<SnapDetails>> CurrentDragSnapPoints { get; set; }
 
-
 		#endregion
-
 
 		#region Events
 
@@ -240,11 +244,11 @@ namespace Common.Controls.Timeline
 		public event EventHandler VerticalOffsetChanged;
 		public event EventHandler<ElementRowChangeEventArgs> ElementChangedRows;
 		public event EventHandler<ElementsSelectedEventArgs> ElementsSelected;
-        public event EventHandler<RenderElementEventArgs> RenderProgressChanged;
+		public event EventHandler<RenderElementEventArgs> RenderProgressChanged;
 
 		private void _SelectionChanged()
 		{
-			if(SelectionChanged != null)
+			if (SelectionChanged != null)
 				SelectionChanged(this, EventArgs.Empty);
 		}
 
@@ -293,25 +297,23 @@ namespace Common.Controls.Timeline
 			return true;
 		}
 
-        private void _RenderProgressChanged(int percent)
-        {
-            if (RenderProgressChanged != null)
-            {
-                EventArgs args = new EventArgs();
-                RenderProgressChanged(this, new RenderElementEventArgs(percent));
-            }
-        }
+		private void _RenderProgressChanged(int percent)
+		{
+			if (RenderProgressChanged != null) {
+				EventArgs args = new EventArgs();
+				RenderProgressChanged(this, new RenderElementEventArgs(percent));
+			}
+		}
 
-        #endregion
-
+		#endregion
 
 		#region Event Handlers - non-mouse events
 
 		protected void RowChangedHandler(object sender, EventArgs e)
 		{
 			// when dragging, the control will invalidate after it's done, in case multiple elements are changing.
-            if (m_dragState != DragState.Moving && !SequenceLoading)
-                Invalidate();
+			if (m_dragState != DragState.Moving && !SequenceLoading)
+				Invalidate();
 		}
 
 		protected void RowSelectedChangedHandler(object sender, ModifierKeysEventArgs e)
@@ -333,47 +335,45 @@ namespace Common.Controls.Timeline
 		{
 			base.OnKeyPress(e);
 
-			if (e.KeyChar == (char)27)  // ESC
-            {
-                elementsCancelMove();
+			if (e.KeyChar == (char) 27) // ESC
+			{
+				elementsCancelMove();
 			}
 		}
 
 		protected override void OnScroll(ScrollEventArgs se)
 		{
-            // These functions are broken out so they can be called manually elsewhere.
-			if (se.ScrollOrientation == ScrollOrientation.HorizontalScroll)
-            {
-                HandleHorizontalScroll();
+			// These functions are broken out so they can be called manually elsewhere.
+			if (se.ScrollOrientation == ScrollOrientation.HorizontalScroll) {
+				HandleHorizontalScroll();
 			}
-            else if (se.ScrollOrientation == ScrollOrientation.VerticalScroll)
-            {
-                HandleVerticalScroll();
-            }
+			else if (se.ScrollOrientation == ScrollOrientation.VerticalScroll) {
+				HandleVerticalScroll();
+			}
 
-            base.OnScroll(se);
+			base.OnScroll(se);
 		}
 
-        private void HandleVerticalScroll()
-        {
-            _VerticalOffsetChanged();
-        }
+		private void HandleVerticalScroll()
+		{
+			_VerticalOffsetChanged();
+		}
 
-        ///<summary>Should be called whenever the scroll position of the grid changes, be it 
-        ///via OnScroll event, or manually.</summary>
-        private void HandleHorizontalScroll()
-        {
-            VisibleTimeStart = pixelsToTime(-AutoScrollPosition.X);
-        }
+		///<summary>Should be called whenever the scroll position of the grid changes, be it 
+		///via OnScroll event, or manually.</summary>
+		private void HandleHorizontalScroll()
+		{
+			VisibleTimeStart = pixelsToTime(-AutoScrollPosition.X);
+		}
 
 
 		protected override void OnResize(EventArgs e)
 		{
-            // If the *would be* Visible end time is past the total time, adjust the start
-            // such that the visible end remains at the total time.
-            // Note: we cannot use VisibleTimeEnd because it protects against this out-of-bounds condition (Min).
-            if (VisibleTimeStart + VisibleTimeSpan > TotalTime)
-                VisibleTimeStart = TotalTime - VisibleTimeSpan;
+			// If the *would be* Visible end time is past the total time, adjust the start
+			// such that the visible end remains at the total time.
+			// Note: we cannot use VisibleTimeEnd because it protects against this out-of-bounds condition (Min).
+			if (VisibleTimeStart + VisibleTimeSpan > TotalTime)
+				VisibleTimeStart = TotalTime - VisibleTimeSpan;
 
 			base.OnResize(e);
 			_VerticalOffsetChanged();
@@ -391,10 +391,9 @@ namespace Common.Controls.Timeline
 
 		#endregion
 
+		#region Methods - Rows, Elements
 
-        #region Methods - Rows, Elements
-
-        public IEnumerator<Row> GetEnumerator()
+		public IEnumerator<Row> GetEnumerator()
 		{
 			return Rows.GetEnumerator();
 		}
@@ -408,32 +407,32 @@ namespace Common.Controls.Timeline
 		{
 			foreach (Element te in SelectedElements.ToArray())
 				te.Selected = false;
-            Invalidate();
+			Invalidate();
 			_SelectionChanged();
 		}
 
 		public void ClearSelectedRows(Row leaveRowSelected = null)
 		{
 			foreach (Row row in Rows) {
-                if (row != leaveRowSelected)
+				if (row != leaveRowSelected)
 					row.Selected = false;
 			}
-            Invalidate();
+			Invalidate();
 			_SelectionChanged();
 		}
 
 		public void AddRow(Row row)
 		{
-            Rows.Add(row);
-            ResizeGridHeight();
-            Invalidate();
+			Rows.Add(row);
+			ResizeGridHeight();
+			Invalidate();
 		}
 
 		public bool RemoveRow(Row row)
 		{
 			bool rv = Rows.Remove(row);
 			ResizeGridHeight();
-            Invalidate();
+			Invalidate();
 			return rv;
 		}
 
@@ -460,24 +459,20 @@ namespace Common.Controls.Timeline
 			foreach (Element elem in elements) {
 				elem.BeginUpdate();
 				elem.StartTime += offset;
-                elem.EndUpdate();
+				elem.EndUpdate();
 			}
 
-			MultiElementEventArgs evargs = new MultiElementEventArgs { Elements = elements };
-            _ElementsFinishedMoving(evargs);
+			MultiElementEventArgs evargs = new MultiElementEventArgs {Elements = elements};
+			_ElementsFinishedMoving(evargs);
 
-            if (ElementsMovedNew != null)
-                ElementsMovedNew(this, new ElementsChangedTimesEventArgs(m_elemMoveInfo, ElementMoveType.Move));
+			if (ElementsMovedNew != null)
+				ElementsMovedNew(this, new ElementsChangedTimesEventArgs(m_elemMoveInfo, ElementMoveType.Move));
 
-            m_elemMoveInfo = null;
-        }
-
-
-        //TODO: Move me
-        
+			m_elemMoveInfo = null;
+		}
 
 
-
+		//TODO: Move me
 
 
 		/// <summary>
@@ -604,9 +599,9 @@ namespace Common.Controls.Timeline
 			bool startFound = false, endFound = false;
 			foreach (var row in Rows) {
 				if (
-					!row.Visible ||					// row is invisible
-					endFound ||					// we already passed the end row
-					(!startFound && (row != startRow))	//we haven't found the first row, and this isn't it
+					!row.Visible || // row is invisible
+					endFound || // we already passed the end row
+					(!startFound && (row != startRow)) //we haven't found the first row, and this isn't it
 					) {
 					continue;
 				}
@@ -625,7 +620,6 @@ namespace Common.Controls.Timeline
 						continue;
 					}
 				}
-
 			} // end foreach
 
 			_SelectionChanged();
@@ -666,7 +660,7 @@ namespace Common.Controls.Timeline
 		/// <param name="skipDuplicatesUnlessInRow">Optional: a row which limits the duplicate element consideration to a max/min of this row.</param>
 		/// <returns></returns>
 		private Row GetVerticalLimitRowForElements(
-			IEnumerable<Element> elements, 
+			IEnumerable<Element> elements,
 			bool findTopLimitRow,
 			bool visibleOnly,
 			Dictionary<Element, int> elementInstanceCounts,
@@ -677,7 +671,7 @@ namespace Common.Controls.Timeline
 			if (skipDuplicatesUnlessInRow == null && elementInstanceCounts != null)
 				throw new Exception("GetVerticalLimitRowForElements: two last parameters need to be either both set, or both null!");
 
-			Dictionary<Element, int> elementsLeft = new Dictionary<Element,int>();
+			Dictionary<Element, int> elementsLeft = new Dictionary<Element, int>();
 			if (elementInstanceCounts != null) {
 				// copy the given instance counts of each element into a new dictionary; we'll decrement the
 				// counts as we go to find the 'last' possible item
@@ -687,10 +681,8 @@ namespace Common.Controls.Timeline
 			// we either go forwards through the row list to find the highest row possible, or backwards to find the
 			// lowest, based on which one was requested through findTopLimitRow
 			for (int i = findTopLimitRow ? 0 : Rows.Count - 1;
-				findTopLimitRow ? (i < Rows.Count) : (i >= 0);
-				i += (findTopLimitRow ? 1 : -1))
-			{
-
+			     findTopLimitRow ? (i < Rows.Count) : (i >= 0);
+			     i += (findTopLimitRow ? 1 : -1)) {
 				// skip this row if it's not visible
 				if (visibleOnly && !Rows[i].Visible)
 					continue;
@@ -747,7 +739,7 @@ namespace Common.Controls.Timeline
 			TimeSpan earliest = EarliestStartTime(SelectedElements);
 
 			// Find the earliest time of each row
-			var rowsToStartTimes = new Dictionary<Row,TimeSpan>();
+			var rowsToStartTimes = new Dictionary<Row, TimeSpan>();
 			foreach (Row row in Rows) {
 				TimeSpan time = EarliestStartTime(row.SelectedElements);
 
@@ -758,8 +750,7 @@ namespace Common.Controls.Timeline
 
 			// Now adjust all elements in each row, such that the leftmost element (in this row)
 			// is at the same start time as the alltogether leftmost element.
-			foreach (KeyValuePair<Row, TimeSpan> kvp in rowsToStartTimes)
-			{
+			foreach (KeyValuePair<Row, TimeSpan> kvp in rowsToStartTimes) {
 				// calculate how much to offset elements of this row
 				TimeSpan thisRowAdjust = kvp.Value - earliest;
 
@@ -769,7 +760,6 @@ namespace Common.Controls.Timeline
 				foreach (Element elem in kvp.Key.SelectedElements)
 					elem.StartTime -= thisRowAdjust;
 			}
-
 		}
 
 		/// <summary>
@@ -797,7 +787,8 @@ namespace Common.Controls.Timeline
 					if (targetRow.ContainsElement(element))
 						elementsToCheckSnapping.Add(new Tuple<Element, Row>(element, targetRow));
 				}
-			} else {
+			}
+			else {
 				foreach (Element element in elements) {
 					elementsToCheckSnapping.Add(new Tuple<Element, Row>(element, RowContainingElement(element)));
 				}
@@ -812,7 +803,8 @@ namespace Common.Controls.Timeline
 				ElementTimeInfo orig = m_elemMoveInfo.OriginalElements[element];
 
 				if (orig == null) {
-					throw new Exception("Timeline Control: trying to find snap point for element, but can't find original time location!");
+					throw new Exception(
+						"Timeline Control: trying to find snap point for element, but can't find original time location!");
 				}
 
 				foreach (KeyValuePair<TimeSpan, List<SnapDetails>> kvp in CurrentDragSnapPoints) {
@@ -844,7 +836,8 @@ namespace Common.Controls.Timeline
 								snappedOffset = details.SnapTime - orig.StartTime;
 							else
 								snappedOffset = details.SnapTime - orig.EndTime;
-						} else {
+						}
+						else {
 							if (startInRange)
 								snappedOffset = details.SnapTime - orig.StartTime;
 							else
@@ -857,8 +850,8 @@ namespace Common.Controls.Timeline
 			}
 
 			return snappedOffset;
-		} 
-	
+		}
+
 		public void MoveElementsVerticallyToLocation(IEnumerable<Element> elements, Point gridLocation)
 		{
 			Row destRow = rowAt(gridLocation);
@@ -867,7 +860,7 @@ namespace Common.Controls.Timeline
 				return;
 
 			if (Rows.IndexOf(destRow) == CurrentRowIndexUnderMouse)
-			    return;
+				return;
 
 			List<Row> visibleRows = new List<Row>();
 
@@ -883,8 +876,10 @@ namespace Common.Controls.Timeline
 
 			// find the highest and lowest visible rows with selected elements in them, but ignore duplicates unless they
 			// are in the row that the mouse down element is in, or it's the last instance of the element
-			int topElementVisibleRowIndex = visibleRows.IndexOf(GetVerticalLimitRowForElements(elements, true, true, elementCounts, m_mouseDownElementRow));
-			int bottomElementVisibleRowIndex = visibleRows.IndexOf(GetVerticalLimitRowForElements(elements, false, true, elementCounts, m_mouseDownElementRow));
+			int topElementVisibleRowIndex =
+				visibleRows.IndexOf(GetVerticalLimitRowForElements(elements, true, true, elementCounts, m_mouseDownElementRow));
+			int bottomElementVisibleRowIndex =
+				visibleRows.IndexOf(GetVerticalLimitRowForElements(elements, false, true, elementCounts, m_mouseDownElementRow));
 
 			if (visibleRowsToMove < 0 && -visibleRowsToMove > topElementVisibleRowIndex)
 				visibleRowsToMove = -topElementVisibleRowIndex;
@@ -941,7 +936,6 @@ namespace Common.Controls.Timeline
 					// if the current element is in the current visble row, move it to wherever it needs
 					// to go, and also flag that it has been moved
 					if (visibleRows[i].ContainsElement(element)) {
-
 						// note that we've seen another of this type of element
 						elementCounts[element]--;
 
@@ -949,7 +943,8 @@ namespace Common.Controls.Timeline
 						// be another instance later: there should be, otherwise the calculations were wrong before!)
 						if (i + visibleRowsToMove < 0 || i + visibleRowsToMove >= visibleRows.Count) {
 							if (elementCounts[element] <= 0)
-								throw new Exception("Trying to move element off-grid, but there's no more instances of this element to move instead!");
+								throw new Exception(
+									"Trying to move element off-grid, but there's no more instances of this element to move instead!");
 							continue;
 						}
 
@@ -968,7 +963,8 @@ namespace Common.Controls.Timeline
 					elementsToMove[e] = true;
 			}
 
-			CurrentRowIndexUnderMouse = Rows.IndexOf(visibleRows[(visibleRows.IndexOf(Rows[CurrentRowIndexUnderMouse]) + visibleRowsToMove)]);
+			CurrentRowIndexUnderMouse =
+				Rows.IndexOf(visibleRows[(visibleRows.IndexOf(Rows[CurrentRowIndexUnderMouse]) + visibleRowsToMove)]);
 			m_mouseDownElementRow = newMouseDownRow;
 
 			Invalidate();
@@ -998,15 +994,15 @@ namespace Common.Controls.Timeline
 
 			// the start time and end times for specified points are 2 pixels
 			// per snap level away from the snap time.
-			result.SnapStart = snapTime - TimeSpan.FromTicks(TimePerPixel.Ticks * level * 2);
-			result.SnapEnd = snapTime + TimeSpan.FromTicks(TimePerPixel.Ticks * level * 2);
+			result.SnapStart = snapTime - TimeSpan.FromTicks(TimePerPixel.Ticks*level*2);
+			result.SnapEnd = snapTime + TimeSpan.FromTicks(TimePerPixel.Ticks*level*2);
 			return result;
 		}
 
 		public void AddSnapPoint(TimeSpan snapTime, int level, Color color)
 		{
 			if (!StaticSnapPoints.ContainsKey(snapTime))
-				StaticSnapPoints.Add(snapTime, new List<SnapDetails> { CalculateSnapDetailsForPoint(snapTime, level, color) });
+				StaticSnapPoints.Add(snapTime, new List<SnapDetails> {CalculateSnapDetailsForPoint(snapTime, level, color)});
 			else
 				StaticSnapPoints[snapTime].Add(CalculateSnapDetailsForPoint(snapTime, level, color));
 
@@ -1036,25 +1032,24 @@ namespace Common.Controls.Timeline
 
 				total += row.Height;
 			}
-			
+
 			return total;
 		}
-        public bool AllowGridResize { get; set; }
-        public void ResizeGridHeight()
-        {
-            if (AllowGridResize)
-            {
-                if (this.InvokeRequired)
-                {
-                    this.Invoke(new Vixen.Delegates.GenericDelegate(ResizeGridHeight));
-                }
-                else
-                {
-                    AutoScrollMinSize = new Size((int)timeToPixels(TotalTime), CalculateAllRowsHeight());
-                    Invalidate();
-                }
-            }
-        }
+
+		public bool AllowGridResize { get; set; }
+
+		public void ResizeGridHeight()
+		{
+			if (AllowGridResize) {
+				if (this.InvokeRequired) {
+					this.Invoke(new Vixen.Delegates.GenericDelegate(ResizeGridHeight));
+				}
+				else {
+					AutoScrollMinSize = new Size((int) timeToPixels(TotalTime), CalculateAllRowsHeight());
+					Invalidate();
+				}
+			}
+		}
 
 		public void SelectElement(Element element)
 		{
@@ -1076,7 +1071,6 @@ namespace Common.Controls.Timeline
 
 		#endregion
 
-
 		#region Drawing
 
 		private void _drawRows(Graphics g)
@@ -1085,10 +1079,8 @@ namespace Common.Controls.Timeline
 
 			// Draw row separators
 			using (Pen p = new Pen(RowSeparatorColor))
-			using (SolidBrush b = new SolidBrush(SelectionColor))
-			{
-				foreach (Row row in Rows)
-				{
+			using (SolidBrush b = new SolidBrush(SelectionColor)) {
+				foreach (Row row in Rows) {
 					if (!row.Visible)
 						continue;
 
@@ -1097,7 +1089,7 @@ namespace Common.Controls.Timeline
 					Point selectedBottomRight = new Point((-AutoScrollPosition.X) + Width, curY);
 					Point lineLeft = new Point((-AutoScrollPosition.X), curY);
 					Point lineRight = new Point((-AutoScrollPosition.X) + Width, curY);
-					
+
 					if (row.Selected)
 						g.FillRectangle(b, Util.RectangleFromPoints(selectedTopLeft, selectedBottomRight));
 					g.DrawLine(p, lineLeft.X, lineLeft.Y - 1, lineRight.X, lineRight.Y - 1);
@@ -1112,14 +1104,12 @@ namespace Common.Controls.Timeline
 
 			// calculate first tick - (it is the first multiple of interval greater than start)
 			// believe it or not, this math is correct :-)
-			Single start = timeToPixels(VisibleTimeStart) - (timeToPixels(VisibleTimeStart) % interval) + interval;
-            Single end = timeToPixels(VisibleTimeEnd);
+			Single start = timeToPixels(VisibleTimeStart) - (timeToPixels(VisibleTimeStart)%interval) + interval;
+			Single end = timeToPixels(VisibleTimeEnd);
 
-			using (Pen p = new Pen(MajorGridlineColor))
-			{
+			using (Pen p = new Pen(MajorGridlineColor)) {
 				p.DashStyle = DashStyle.Dash;
-				for (Single x = start; x <= end; x += interval)
-				{
+				for (Single x = start; x <= end; x += interval) {
 					g.DrawLine(p, x, (-AutoScrollPosition.Y), x, (-AutoScrollPosition.Y) + Height);
 				}
 			}
@@ -1130,434 +1120,390 @@ namespace Common.Controls.Timeline
 			Pen p;
 
 			// iterate through all snap points, and if it's visible, draw it
-			foreach (KeyValuePair<TimeSpan, List<SnapDetails>> kvp in StaticSnapPoints)
-			{
+			foreach (KeyValuePair<TimeSpan, List<SnapDetails>> kvp in StaticSnapPoints) {
 				SnapDetails details = null;
 				foreach (SnapDetails d in kvp.Value) {
 					if (details == null || (d.SnapLevel > details.SnapLevel && d.SnapColor != Color.Empty))
 						details = d;
 				}
-				if (kvp.Key >= VisibleTimeStart && kvp.Key < VisibleTimeEnd)
-				{
+				if (kvp.Key >= VisibleTimeStart && kvp.Key < VisibleTimeEnd) {
 					p = new Pen(details.SnapColor);
 					Single x = timeToPixels(kvp.Key);
-					p.DashPattern = new float[] { details.SnapLevel, details.SnapLevel };
+					p.DashPattern = new float[] {details.SnapLevel, details.SnapLevel};
 					g.DrawLine(p, x, 0, x, AutoScrollMinSize.Height);
 				}
 			}
 		}
 
-        #region Element rendering background worker
-
-        private void renderWorker_DoWork(object sender, DoWorkEventArgs e)
-        {
-            Bitmap elementImage;
-
-            // Continue looping through the elements to see if they need to be rendered.
-            // They will the first time and when a row is expanded.
-            while (!renderWorker.CancellationPending)
-            {
-                // Count the rows for progress reporting
-                int totalElements = 0;
-                foreach (Row row in Rows)
-                {
-                    if (row.Visible)
-                    {
-                        for (int i = 0; i < row.ElementCount; i++)
-                        {
-                            if (row.GetElementAtIndex(i).Changed)
-                                totalElements += 1;
-                        }
-                    }
-                }
-
-                if (totalElements == 1)
-                    renderWorker.ReportProgress(50);
-
-                int currentElementNum = 0;
-                foreach (Row row in Rows)
-                {
-                    if (row.Visible)
-                    {
-                        for (int i = 0; i < row.ElementCount; i++)
-                        {
-                            if (renderWorker.CancellationPending)
-                                return;
-
-                            // If we have a sequence playing, stop rendering the effects in the background
-                            while (Context != null && Context.IsRunning)
-                                Thread.Sleep(250);
-
-                            Element currentElement = row.GetElementAtIndex(i);
-                            Size size = new Size((int)Math.Ceiling(timeToPixels(currentElement.Duration)), row.Height - 1);
-                            if (currentElement.Changed || !currentElement.CachedCanvasIsCurrent)
-                            {
-                                elementImage = currentElement.SetupCachedImage(size);
-                                if (currentElement.StartTime <= VisibleTimeEnd && currentElement.EndTime >= VisibleTimeStart)
-                                    Invalidate();
-                                renderWorker.ReportProgress((int)((double)(currentElementNum) / (double)totalElements * 100.0));
-                            }
-
-                            currentElementNum++;
-                        }
-
-                        Thread.Sleep(5);
-                        Application.DoEvents();
-                    }
-                }
-
-                // Turn off the progress reporting if it is on
-                renderWorker.ReportProgress(100);
-
-                // Sleep between each iteration
-                Thread.Sleep(250);
-            }
-        }
-
-        private void renderWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
-        {
-            _RenderProgressChanged(e.ProgressPercentage);
-        }
-
-        public void StartBackgroundRendering()
-        {
-            if (this.InvokeRequired)
-                this.Invoke(new Vixen.Delegates.GenericDelegate(StartBackgroundRendering));
-            else
-            {
-
-                if (renderWorker != null)
-                {
-                    //while (renderWorker.IsBusy) { Thread.Sleep(10); }; 
-                    if (!renderWorker.IsBusy)
-                        renderWorker.RunWorkerAsync();
-                }
-                else
-                {
-                    renderWorker = new BackgroundWorker();
-                    renderWorker.WorkerReportsProgress = true;
-                    renderWorker.WorkerSupportsCancellation = true;
-                    renderWorker.DoWork += new DoWorkEventHandler(renderWorker_DoWork);
-                    //renderWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(renderWorker_RunWorkerCompleted);
-                    renderWorker.ProgressChanged += new ProgressChangedEventHandler(renderWorker_ProgressChanged);
-                    renderWorker.RunWorkerAsync();
-                }
-            }
-        }
-
-        #endregion
-
-        //static public System.Object drawLock = new System.Object();
-        private void _drawElements(Graphics g)
-        {
-            // Draw each row
-            int top = 0;    // y-coord of top of current row
-            foreach (Row row in Rows)
-            {
-                if (!row.Visible)
-                    continue;
-
-                if (top < VerticalOffset || top > VerticalOffset + ClientSize.Height)
-                {
-                    top += row.Height;  // next row starts just below this row
-                    continue;
-                }
-
-                // a list of generated bitmaps, with starttime and endtime for where they are supposed to be drawn.
-                List<BitmapDrawDetails> bitmapsToDraw = new List<BitmapDrawDetails>();
-                TimeSpan currentlyDrawnTo = TimeSpan.Zero;
-                TimeSpan desiredDrawTo = TimeSpan.Zero;
-                bool lastItemDrawn = false;
-
-                for (int i = 0; i < row.ElementCount; i++)
-                {
-                    Element currentElement = row.GetElementAtIndex(i);
-                    if (currentElement.EndTime < VisibleTimeStart)
-                        continue;
-
-                    if (currentElement.StartTime > VisibleTimeEnd)
-                    {
-                        if (lastItemDrawn)
-                        {
-                            continue;
-                        }
-                        else
-                            lastItemDrawn = true;
-                    }
-
-                    desiredDrawTo = currentElement.StartTime;
-
-                    // if this is the last element, draw everything
-                    if (i == row.ElementCount - 1)
-                    {
-                        desiredDrawTo = TotalTime;
-                    }
-
-                    Size size = new Size((int)Math.Ceiling(timeToPixels(currentElement.Duration)), row.Height - 1);
-                    //Bitmap elementImage = currentElement.Draw(size, Context.IsRunning);
-                    //Bitmap elementImage = currentElement.Draw(size, true);
-                    Bitmap elementImage = currentElement.Draw(size);
-
-                    Point pt = new Point((int)Math.Floor(timeToPixels(currentElement.StartTime)), top);
-
-                    bitmapsToDraw.Add(new BitmapDrawDetails() { bmp = elementImage, startTime = currentElement.StartTime, duration = currentElement.Duration });
-
-
-                    //
-                    //// Everything below combines the bitmaps to display them
-                    //
-
-                    // oh god make it stop
-                    int iterations = 0;
-
-                    while (currentlyDrawnTo < desiredDrawTo)
-                    {
-                        // if there's nothing left to draw, the rest of it is empty; skip to the desired draw point
-                        if (bitmapsToDraw.Count == 0)
-                        {
-                            currentlyDrawnTo = desiredDrawTo;
-                            break;
-                        }
-
-                        TimeSpan processingSegmentDuration = TimeSpan.MaxValue;
-                        TimeSpan drawingSegmentDuration;
-                        TimeSpan earliestStart = TimeSpan.MaxValue;
-
-                        // these handle the fact that our pixels don't perfectly align with exact start times of elements, and are used to
-                        // capture any timespan that's within the single pixel range of the 'current drawn to' point
-                        int lowerBoundPixels = (int)Math.Floor(timeToPixels(currentlyDrawnTo));
-                        int upperBoundPixels = (int)Math.Ceiling(timeToPixels(currentlyDrawnTo));
-                        if (upperBoundPixels <= lowerBoundPixels)
-                            upperBoundPixels = lowerBoundPixels + 1;
-                        TimeSpan currentlyDrawnMin = pixelsToTime(lowerBoundPixels);
-                        TimeSpan currentlyDrawnMax = pixelsToTime(upperBoundPixels);
-
-
-
-                        // find how many bitmaps are going to be in this next segment, and also figure out the smallest whole section
-                        // to draw before another element starts or until one of the current ones end
-                        int bitmapLayers = 0;
-                        TimeSpan smallestDrawingDuration = TimeSpan.MaxValue;
-                        foreach (BitmapDrawDetails drawDetails in bitmapsToDraw)
-                        {
-                            TimeSpan start = drawDetails.startTime;
-                            TimeSpan duration = drawDetails.duration;
-
-                            // dodgy workaround: if the current element somehow has a start time BEFORE the currently drawn to time,
-                            // something went wrong. Set it to the currently drawn time, and it shouldget picked up as part of the process.
-                            if (start <= currentlyDrawnMin)
-                                drawDetails.startTime = start = currentlyDrawnTo;
-
-                            // if this bitmap is within the single pixel range that is currently drawing, we'll be drawing it.
-                            // check the duration to make sure we're drawing the smallest possible slice of elements.
-                            if (start >= currentlyDrawnMin && start <= currentlyDrawnMax)
-                            {
-                                bitmapLayers++;
-                                if (duration < smallestDrawingDuration)
-                                    smallestDrawingDuration = duration;
-                            }
-
-                            // record the earliest start time for drawable blocks we've found; if we
-                            // don't draw anything here, we just skip through to this time later
-                            if (start < earliestStart)
-                                earliestStart = start;
-                        }
-
-                        TimeSpan earliestTimeToNextDrawing = TimeSpan.MaxValue;
-                        foreach (BitmapDrawDetails drawDetails in bitmapsToDraw.ToArray())
-                        {
-                            TimeSpan start = drawDetails.startTime;
-
-                            // check if the start for this one is out of range (too early); if it is, delete it
-                            // workaround -- if the currently drawn one actually starts EARLIER than we're up to, something
-                            // went wrong, don't draw it. I can't track the issue down...
-                            // (for Future Me: I think the problem is down below, where it crops the bitmap into smaller ones.)
-                            if (start < currentlyDrawnTo)
-                            {
-                                //Debugger.Break();
-                                bitmapsToDraw.Remove(drawDetails);
-                                continue;
-                            }
-
-
-
-                            // if this drawing bitmap isn't starting at the current point, it might be the next one; check if we can
-                            // cut down the current drawing segment as another one will be starting soon
-                            if (start > currentlyDrawnMax && start - currentlyDrawnTo < earliestTimeToNextDrawing)
-                            {
-                                earliestTimeToNextDrawing = start - currentlyDrawnTo;
-                            }
-                        }
-
-                        if (smallestDrawingDuration < earliestTimeToNextDrawing)
-                            processingSegmentDuration = smallestDrawingDuration;
-                        else
-                            processingSegmentDuration = earliestTimeToNextDrawing;
-
-                        bool firstDraw = true;
-                        Bitmap finalBitmap = null;
-                        BitmapData finalBitmapData = null;
-                        Point? finalDrawLocation = null;
-
-                        foreach (BitmapDrawDetails drawDetails in bitmapsToDraw.ToArray())
-                        {
-                            Bitmap bmp = drawDetails.bmp;
-                            TimeSpan start = drawDetails.startTime;
-                            TimeSpan duration = drawDetails.duration;
-                            bool bitmapContinuesPastCurrentDrawDuration = false;
-
-                            // only draw elements that are at the point we are currently drawing from
-                            if (start < currentlyDrawnMin || start > currentlyDrawnMax)
-                                continue;
-
-                            if (duration != processingSegmentDuration)
-                            {
-                                // it must be longer; crop the bitmap into a smaller one
-                                int croppedWidth = (int)Math.Ceiling(timeToPixels(processingSegmentDuration));
-                                drawingSegmentDuration = pixelsToTime(croppedWidth);
-                                if (croppedWidth > 0 && bmp.Width - croppedWidth > 0)
-                                {
-                                    bitmapContinuesPastCurrentDrawDuration = true;
-                                    Bitmap croppedBitmap = bmp.Clone(new Rectangle(0, 0, croppedWidth, bmp.Height), PixelFormat.Format32bppArgb);
-                                    drawDetails.bmp = bmp.Clone(new Rectangle(croppedWidth, 0, bmp.Width - croppedWidth, bmp.Height), bmp.PixelFormat);
-                                    //if (start + drawingSegmentDuration < currentlyDrawnTo + processingSegmentDuration) Debugger.Break();
-                                    drawDetails.startTime = start + drawingSegmentDuration;
-                                    drawDetails.duration = duration - drawingSegmentDuration;
-                                    bmp = croppedBitmap;
-                                }
-                            }
-
-                            try
-                            {
-                                // for the first time around, set up the final bitmap data item and lock it
-                                if (firstDraw)
-                                {
-                                    finalBitmap = new Bitmap((int)Math.Ceiling(timeToPixels(processingSegmentDuration)), bmp.Height);
-                                    finalDrawLocation = new Point((int)Math.Floor(timeToPixels(start)), top);
-                                    firstDraw = false;
-
-                                }
-                            }
-                            catch (Exception e) { Debugger.Break(); }
-
-                            if (bitmapLayers == 1)
-                            {
-                                g.DrawImage(bmp, (Point)finalDrawLocation);
-                            }
-                            else
-                            {
-                                if (finalBitmapData == null)
-                                {
-                                    finalBitmapData = finalBitmap.LockBits(new Rectangle(0, 0, finalBitmap.Width, finalBitmap.Height), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
-                                }
-
-                                unsafe
-                                {
-                                    // get the drawing bitmap data in a nice, quick format, and blat it onto the final bitmap
-                                    // (http://stackoverflow.com/questions/12170894/drawing-image-with-additive-blending/12210258#12210258)
-                                    BitmapData bmpdata = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
-                                    byte* pbmp = (byte*)bmpdata.Scan0.ToPointer();
-                                    byte* pfinal = (byte*)finalBitmapData.Scan0.ToPointer();
-
-                                    int bmpBPP = bmpdata.Stride / bmpdata.Width;
-                                    int finalBPP = finalBitmapData.Stride / finalBitmapData.Width;
-
-                                    // we're going to assume that the final bitmap data is the same size as the bmpdata (they should be!)
-                                    // and iterate over them both at the same time
-                                    for (int j = 0; j < bmpdata.Height; j++)
-                                    {
-                                        for (int k = 0; k < bmpdata.Width; k++)
-                                        {
-
-                                            //double scaleB = (double)*(pbmp + 3) / byte.MaxValue;
-                                            //double scaleF = (double)*(pfinal + 3) / byte.MaxValue;
-
-                                            //Color c = Color.FromArgb(
-                                            //    Math.Max((byte)(*(pbmp + 2) * scaleB), (byte)(*(pfinal + 2) * scaleF)),
-                                            //    Math.Max((byte)(*(pbmp + 1) * scaleB), (byte)(*(pfinal + 1) * scaleF)),
-                                            //    Math.Max((byte)(*(pbmp + 0) * scaleB), (byte)(*(pfinal + 0) * scaleF))
-                                            //    );
-
-                                            //byte intensity = (byte)(HSV.FromRGB(c).V * byte.MaxValue);
-
-                                            //*(pfinal + 0) = c.B;
-                                            //*(pfinal + 1) = c.G;
-                                            //*(pfinal + 2) = c.R;
-                                            //*(pfinal + 3) = intensity;
-
-
-
-                                            // get the scale of the alpha to apply to the other input components
-                                            double inputIntensityScale = (double)*(pbmp + 3) / byte.MaxValue;
-
-                                            // do alpha byte. It should be the max of any pixel at the position (ie. be as opaque as possible)
-                                            *(pfinal + 3) = Math.Max(*(pfinal + 3), *(pbmp + 3));
-
-                                            // do RGB components of the pixel. Scale any incoming data by the alpha of its channel (to dial the intensity back
-                                            // to what it would really be), then try and find the highest of any individual component to get the final color.
-                                            *(pfinal + 0) = Math.Max(*(pfinal + 0), (byte)(*(pbmp + 0) * inputIntensityScale));
-                                            *(pfinal + 1) = Math.Max(*(pfinal + 1), (byte)(*(pbmp + 1) * inputIntensityScale));
-                                            *(pfinal + 2) = Math.Max(*(pfinal + 2), (byte)(*(pbmp + 2) * inputIntensityScale));
-
-
-
-                                            pfinal += finalBPP;
-                                            pbmp += bmpBPP;
-                                        }
-                                    }
-
-                                    bmp.UnlockBits(bmpdata);
-                                }
-                            }
-
-                            if (!bitmapContinuesPastCurrentDrawDuration)
-                            {
-                                bitmapsToDraw.Remove(drawDetails);
-                            }
-                        }
-
-                        if (finalBitmap != null)
-                        {
-                            if (finalBitmapData != null)
-                            {
-                                finalBitmap.UnlockBits(finalBitmapData);
-                            }
-                            g.DrawImage(finalBitmap, (Point)finalDrawLocation);
-                        }
-
-                        if (processingSegmentDuration < TimeSpan.MaxValue)
-                            currentlyDrawnTo += processingSegmentDuration;
-                        else
-                            currentlyDrawnTo = earliestStart;
-
-                        // dodgy, dodgy hack to avoid infinite loops and hangs: if we are looping too long, bail!
-                        if (iterations > 10000)
-                        {
-                            currentlyDrawnTo = desiredDrawTo;
-                        }
-                        else
-                            iterations++;
-                    }
-
-
-                    //// TO HERE
-                }
-
-                top += row.Height;  // next row starts just below this row
-            }
-        }
+		#region Element rendering background worker
+
+		private void renderWorker_DoWork(object sender, DoWorkEventArgs e)
+		{
+			Bitmap elementImage;
+
+			// Continue looping through the elements to see if they need to be rendered.
+			// They will the first time and when a row is expanded.
+			while (!renderWorker.CancellationPending) {
+				// Count the rows for progress reporting
+				int totalElements = 0;
+				foreach (Row row in Rows) {
+					if (row.Visible) {
+						for (int i = 0; i < row.ElementCount; i++) {
+							if (row.GetElementAtIndex(i).Changed)
+								totalElements += 1;
+						}
+					}
+				}
+
+				if (totalElements == 1)
+					renderWorker.ReportProgress(50);
+
+				int currentElementNum = 0;
+				foreach (Row row in Rows) {
+					if (row.Visible) {
+						for (int i = 0; i < row.ElementCount; i++) {
+							if (renderWorker.CancellationPending)
+								return;
+
+							// If we have a sequence playing, stop rendering the effects in the background
+							while (Context != null && Context.IsRunning)
+								Thread.Sleep(250);
+
+							Element currentElement = row.GetElementAtIndex(i);
+							Size size = new Size((int) Math.Ceiling(timeToPixels(currentElement.Duration)), row.Height - 1);
+							if (currentElement.Changed || !currentElement.CachedCanvasIsCurrent) {
+								elementImage = currentElement.SetupCachedImage(size);
+								if (currentElement.StartTime <= VisibleTimeEnd && currentElement.EndTime >= VisibleTimeStart)
+									Invalidate();
+								renderWorker.ReportProgress((int) ((double) (currentElementNum)/(double) totalElements*100.0));
+							}
+
+							currentElementNum++;
+						}
+
+						Thread.Sleep(5);
+						Application.DoEvents();
+					}
+				}
+
+				// Turn off the progress reporting if it is on
+				renderWorker.ReportProgress(100);
+
+				// Sleep between each iteration
+				Thread.Sleep(250);
+			}
+		}
+
+		private void renderWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+		{
+			_RenderProgressChanged(e.ProgressPercentage);
+		}
+
+		public void StartBackgroundRendering()
+		{
+			if (this.InvokeRequired)
+				this.Invoke(new Vixen.Delegates.GenericDelegate(StartBackgroundRendering));
+			else {
+				if (renderWorker != null) {
+					//while (renderWorker.IsBusy) { Thread.Sleep(10); }; 
+					if (!renderWorker.IsBusy)
+						renderWorker.RunWorkerAsync();
+				}
+				else {
+					renderWorker = new BackgroundWorker();
+					renderWorker.WorkerReportsProgress = true;
+					renderWorker.WorkerSupportsCancellation = true;
+					renderWorker.DoWork += new DoWorkEventHandler(renderWorker_DoWork);
+					//renderWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(renderWorker_RunWorkerCompleted);
+					renderWorker.ProgressChanged += new ProgressChangedEventHandler(renderWorker_ProgressChanged);
+					renderWorker.RunWorkerAsync();
+				}
+			}
+		}
+
+		#endregion
+
+		//static public System.Object drawLock = new System.Object();
+		private void _drawElements(Graphics g)
+		{
+			// Draw each row
+			int top = 0; // y-coord of top of current row
+			foreach (Row row in Rows) {
+				if (!row.Visible)
+					continue;
+
+				if (top < VerticalOffset || top > VerticalOffset + ClientSize.Height) {
+					top += row.Height; // next row starts just below this row
+					continue;
+				}
+
+				// a list of generated bitmaps, with starttime and endtime for where they are supposed to be drawn.
+				List<BitmapDrawDetails> bitmapsToDraw = new List<BitmapDrawDetails>();
+				TimeSpan currentlyDrawnTo = TimeSpan.Zero;
+				TimeSpan desiredDrawTo = TimeSpan.Zero;
+				bool lastItemDrawn = false;
+
+				for (int i = 0; i < row.ElementCount; i++) {
+					Element currentElement = row.GetElementAtIndex(i);
+					if (currentElement.EndTime < VisibleTimeStart)
+						continue;
+
+					if (currentElement.StartTime > VisibleTimeEnd) {
+						if (lastItemDrawn) {
+							continue;
+						}
+						else
+							lastItemDrawn = true;
+					}
+
+					desiredDrawTo = currentElement.StartTime;
+
+					// if this is the last element, draw everything
+					if (i == row.ElementCount - 1) {
+						desiredDrawTo = TotalTime;
+					}
+
+					Size size = new Size((int) Math.Ceiling(timeToPixels(currentElement.Duration)), row.Height - 1);
+					//Bitmap elementImage = currentElement.Draw(size, Context.IsRunning);
+					//Bitmap elementImage = currentElement.Draw(size, true);
+					Bitmap elementImage = currentElement.Draw(size);
+
+					Point pt = new Point((int) Math.Floor(timeToPixels(currentElement.StartTime)), top);
+
+					bitmapsToDraw.Add(new BitmapDrawDetails()
+					                  	{bmp = elementImage, startTime = currentElement.StartTime, duration = currentElement.Duration});
+
+
+					//
+					//// Everything below combines the bitmaps to display them
+					//
+
+					// oh god make it stop
+					int iterations = 0;
+
+					while (currentlyDrawnTo < desiredDrawTo) {
+						// if there's nothing left to draw, the rest of it is empty; skip to the desired draw point
+						if (bitmapsToDraw.Count == 0) {
+							currentlyDrawnTo = desiredDrawTo;
+							break;
+						}
+
+						TimeSpan processingSegmentDuration = TimeSpan.MaxValue;
+						TimeSpan drawingSegmentDuration;
+						TimeSpan earliestStart = TimeSpan.MaxValue;
+
+						// these handle the fact that our pixels don't perfectly align with exact start times of elements, and are used to
+						// capture any timespan that's within the single pixel range of the 'current drawn to' point
+						int lowerBoundPixels = (int) Math.Floor(timeToPixels(currentlyDrawnTo));
+						int upperBoundPixels = (int) Math.Ceiling(timeToPixels(currentlyDrawnTo));
+						if (upperBoundPixels <= lowerBoundPixels)
+							upperBoundPixels = lowerBoundPixels + 1;
+						TimeSpan currentlyDrawnMin = pixelsToTime(lowerBoundPixels);
+						TimeSpan currentlyDrawnMax = pixelsToTime(upperBoundPixels);
+
+
+						// find how many bitmaps are going to be in this next segment, and also figure out the smallest whole section
+						// to draw before another element starts or until one of the current ones end
+						int bitmapLayers = 0;
+						TimeSpan smallestDrawingDuration = TimeSpan.MaxValue;
+						foreach (BitmapDrawDetails drawDetails in bitmapsToDraw) {
+							TimeSpan start = drawDetails.startTime;
+							TimeSpan duration = drawDetails.duration;
+
+							// dodgy workaround: if the current element somehow has a start time BEFORE the currently drawn to time,
+							// something went wrong. Set it to the currently drawn time, and it shouldget picked up as part of the process.
+							if (start <= currentlyDrawnMin)
+								drawDetails.startTime = start = currentlyDrawnTo;
+
+							// if this bitmap is within the single pixel range that is currently drawing, we'll be drawing it.
+							// check the duration to make sure we're drawing the smallest possible slice of elements.
+							if (start >= currentlyDrawnMin && start <= currentlyDrawnMax) {
+								bitmapLayers++;
+								if (duration < smallestDrawingDuration)
+									smallestDrawingDuration = duration;
+							}
+
+							// record the earliest start time for drawable blocks we've found; if we
+							// don't draw anything here, we just skip through to this time later
+							if (start < earliestStart)
+								earliestStart = start;
+						}
+
+						TimeSpan earliestTimeToNextDrawing = TimeSpan.MaxValue;
+						foreach (BitmapDrawDetails drawDetails in bitmapsToDraw.ToArray()) {
+							TimeSpan start = drawDetails.startTime;
+
+							// check if the start for this one is out of range (too early); if it is, delete it
+							// workaround -- if the currently drawn one actually starts EARLIER than we're up to, something
+							// went wrong, don't draw it. I can't track the issue down...
+							// (for Future Me: I think the problem is down below, where it crops the bitmap into smaller ones.)
+							if (start < currentlyDrawnTo) {
+								//Debugger.Break();
+								bitmapsToDraw.Remove(drawDetails);
+								continue;
+							}
+
+
+							// if this drawing bitmap isn't starting at the current point, it might be the next one; check if we can
+							// cut down the current drawing segment as another one will be starting soon
+							if (start > currentlyDrawnMax && start - currentlyDrawnTo < earliestTimeToNextDrawing) {
+								earliestTimeToNextDrawing = start - currentlyDrawnTo;
+							}
+						}
+
+						if (smallestDrawingDuration < earliestTimeToNextDrawing)
+							processingSegmentDuration = smallestDrawingDuration;
+						else
+							processingSegmentDuration = earliestTimeToNextDrawing;
+
+						bool firstDraw = true;
+						Bitmap finalBitmap = null;
+						BitmapData finalBitmapData = null;
+						Point? finalDrawLocation = null;
+
+						foreach (BitmapDrawDetails drawDetails in bitmapsToDraw.ToArray()) {
+							Bitmap bmp = drawDetails.bmp;
+							TimeSpan start = drawDetails.startTime;
+							TimeSpan duration = drawDetails.duration;
+							bool bitmapContinuesPastCurrentDrawDuration = false;
+
+							// only draw elements that are at the point we are currently drawing from
+							if (start < currentlyDrawnMin || start > currentlyDrawnMax)
+								continue;
+
+							if (duration != processingSegmentDuration) {
+								// it must be longer; crop the bitmap into a smaller one
+								int croppedWidth = (int) Math.Ceiling(timeToPixels(processingSegmentDuration));
+								drawingSegmentDuration = pixelsToTime(croppedWidth);
+								if (croppedWidth > 0 && bmp.Width - croppedWidth > 0) {
+									bitmapContinuesPastCurrentDrawDuration = true;
+									Bitmap croppedBitmap = bmp.Clone(new Rectangle(0, 0, croppedWidth, bmp.Height), PixelFormat.Format32bppArgb);
+									drawDetails.bmp = bmp.Clone(new Rectangle(croppedWidth, 0, bmp.Width - croppedWidth, bmp.Height),
+									                            bmp.PixelFormat);
+									//if (start + drawingSegmentDuration < currentlyDrawnTo + processingSegmentDuration) Debugger.Break();
+									drawDetails.startTime = start + drawingSegmentDuration;
+									drawDetails.duration = duration - drawingSegmentDuration;
+									bmp = croppedBitmap;
+								}
+							}
+
+							try {
+								// for the first time around, set up the final bitmap data item and lock it
+								if (firstDraw) {
+									finalBitmap = new Bitmap((int) Math.Ceiling(timeToPixels(processingSegmentDuration)), bmp.Height);
+									finalDrawLocation = new Point((int) Math.Floor(timeToPixels(start)), top);
+									firstDraw = false;
+								}
+							}
+							catch (Exception e) {
+								Debugger.Break();
+							}
+
+							if (bitmapLayers == 1) {
+								g.DrawImage(bmp, (Point) finalDrawLocation);
+							}
+							else {
+								if (finalBitmapData == null) {
+									finalBitmapData = finalBitmap.LockBits(new Rectangle(0, 0, finalBitmap.Width, finalBitmap.Height),
+									                                       ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
+								}
+
+								unsafe {
+									// get the drawing bitmap data in a nice, quick format, and blat it onto the final bitmap
+									// (http://stackoverflow.com/questions/12170894/drawing-image-with-additive-blending/12210258#12210258)
+									BitmapData bmpdata = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.ReadWrite,
+									                                  PixelFormat.Format32bppArgb);
+									byte* pbmp = (byte*) bmpdata.Scan0.ToPointer();
+									byte* pfinal = (byte*) finalBitmapData.Scan0.ToPointer();
+
+									int bmpBPP = bmpdata.Stride/bmpdata.Width;
+									int finalBPP = finalBitmapData.Stride/finalBitmapData.Width;
+
+									// we're going to assume that the final bitmap data is the same size as the bmpdata (they should be!)
+									// and iterate over them both at the same time
+									for (int j = 0; j < bmpdata.Height; j++) {
+										for (int k = 0; k < bmpdata.Width; k++) {
+											//double scaleB = (double)*(pbmp + 3) / byte.MaxValue;
+											//double scaleF = (double)*(pfinal + 3) / byte.MaxValue;
+
+											//Color c = Color.FromArgb(
+											//    Math.Max((byte)(*(pbmp + 2) * scaleB), (byte)(*(pfinal + 2) * scaleF)),
+											//    Math.Max((byte)(*(pbmp + 1) * scaleB), (byte)(*(pfinal + 1) * scaleF)),
+											//    Math.Max((byte)(*(pbmp + 0) * scaleB), (byte)(*(pfinal + 0) * scaleF))
+											//    );
+
+											//byte intensity = (byte)(HSV.FromRGB(c).V * byte.MaxValue);
+
+											//*(pfinal + 0) = c.B;
+											//*(pfinal + 1) = c.G;
+											//*(pfinal + 2) = c.R;
+											//*(pfinal + 3) = intensity;
+
+
+											// get the scale of the alpha to apply to the other input components
+											double inputIntensityScale = (double) *(pbmp + 3)/byte.MaxValue;
+
+											// do alpha byte. It should be the max of any pixel at the position (ie. be as opaque as possible)
+											*(pfinal + 3) = Math.Max(*(pfinal + 3), *(pbmp + 3));
+
+											// do RGB components of the pixel. Scale any incoming data by the alpha of its channel (to dial the intensity back
+											// to what it would really be), then try and find the highest of any individual component to get the final color.
+											*(pfinal + 0) = Math.Max(*(pfinal + 0), (byte) (*(pbmp + 0)*inputIntensityScale));
+											*(pfinal + 1) = Math.Max(*(pfinal + 1), (byte) (*(pbmp + 1)*inputIntensityScale));
+											*(pfinal + 2) = Math.Max(*(pfinal + 2), (byte) (*(pbmp + 2)*inputIntensityScale));
+
+
+											pfinal += finalBPP;
+											pbmp += bmpBPP;
+										}
+									}
+
+									bmp.UnlockBits(bmpdata);
+								}
+							}
+
+							if (!bitmapContinuesPastCurrentDrawDuration) {
+								bitmapsToDraw.Remove(drawDetails);
+							}
+						}
+
+						if (finalBitmap != null) {
+							if (finalBitmapData != null) {
+								finalBitmap.UnlockBits(finalBitmapData);
+							}
+							g.DrawImage(finalBitmap, (Point) finalDrawLocation);
+						}
+
+						if (processingSegmentDuration < TimeSpan.MaxValue)
+							currentlyDrawnTo += processingSegmentDuration;
+						else
+							currentlyDrawnTo = earliestStart;
+
+						// dodgy, dodgy hack to avoid infinite loops and hangs: if we are looping too long, bail!
+						if (iterations > 10000) {
+							currentlyDrawnTo = desiredDrawTo;
+						}
+						else
+							iterations++;
+					}
+
+
+					//// TO HERE
+				}
+
+				top += row.Height; // next row starts just below this row
+			}
+		}
 
 		private void _drawSelection(Graphics g)
 		{
 			if (SelectionArea == null)
 				return;
 
-			using (SolidBrush b = new SolidBrush(SelectionColor))
-			{
+			using (SolidBrush b = new SolidBrush(SelectionColor)) {
 				g.FillRectangle(b, SelectionArea);
 			}
-			using (Pen p = new Pen(SelectionBorder))
-			{
+			using (Pen p = new Pen(SelectionBorder)) {
 				g.DrawRectangle(p, SelectionArea);
 			}
 		}
@@ -1571,8 +1517,7 @@ namespace Common.Controls.Timeline
 				g.DrawLine(p, curPos, 0, curPos, AutoScrollMinSize.Height);
 			}
 
-			if (PlaybackCurrentTime.HasValue)
-			{
+			if (PlaybackCurrentTime.HasValue) {
 				curPos = timeToPixels(PlaybackCurrentTime.Value);
 				g.DrawLine(Pens.Green, curPos, 0, curPos, AutoScrollMinSize.Height);
 			}
@@ -1582,35 +1527,32 @@ namespace Common.Controls.Timeline
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			if (!SequenceLoading)
-			try
-			{
-				e.Graphics.TranslateTransform(this.AutoScrollPosition.X, this.AutoScrollPosition.Y);
+				try {
+					e.Graphics.TranslateTransform(this.AutoScrollPosition.X, this.AutoScrollPosition.Y);
 
-                Stopwatch s = new Stopwatch();
-                s.Start();
-                
-                _drawGridlines(e.Graphics);
-                _drawRows(e.Graphics);
-                _drawSnapPoints(e.Graphics);
-                _drawElements(e.Graphics);
-                _drawSelection(e.Graphics);
-                _drawCursors(e.Graphics);
+					Stopwatch s = new Stopwatch();
+					s.Start();
 
-                s.Stop();
-                //Vixen.Sys.VixenSystem.Logging.Info("OnPaint: " + s.ElapsedMilliseconds);
-            }
-			catch (Exception ex)
-			{
-				MessageBox.Show("Exception in TimelineGrid.OnPaint():\n\n\t" + ex.Message + "\n\nBacktrace:\n\n\t" + ex.StackTrace);
-			}
+					_drawGridlines(e.Graphics);
+					_drawRows(e.Graphics);
+					_drawSnapPoints(e.Graphics);
+					_drawElements(e.Graphics);
+					_drawSelection(e.Graphics);
+					_drawCursors(e.Graphics);
+
+					s.Stop();
+					//Vixen.Sys.VixenSystem.Logging.Info("OnPaint: " + s.ElapsedMilliseconds);
+				}
+				catch (Exception ex) {
+					MessageBox.Show("Exception in TimelineGrid.OnPaint():\n\n\t" + ex.Message + "\n\nBacktrace:\n\n\t" + ex.StackTrace);
+				}
 		}
 
 		#endregion
 
-
 		#region External Drag/Drop
 
-		void TimelineGrid_DragDrop(object sender, DragEventArgs e)
+		private void TimelineGrid_DragDrop(object sender, DragEventArgs e)
 		{
 			Point client = PointToClient(new Point(e.X, e.Y));
 			Point gridPoint = translateLocation(client);
@@ -1623,7 +1565,7 @@ namespace Common.Controls.Timeline
 				DataDropped(this, new TimelineDropEventArgs(row, time, data));
 		}
 
-		void TimelineGrid_DragEnter(object sender, DragEventArgs e)
+		private void TimelineGrid_DragEnter(object sender, DragEventArgs e)
 		{
 			e.Effect = DragDropEffects.Copy;
 		}
@@ -1631,27 +1573,27 @@ namespace Common.Controls.Timeline
 		internal event EventHandler<TimelineDropEventArgs> DataDropped;
 
 		#endregion
-    }
-
-	class SnapDetails
-	{
-		public TimeSpan SnapTime;	// the particular time to snap to
-		public TimeSpan SnapStart;	// the start time that should snap to this time; ie. before or equal to the snap time
-		public TimeSpan SnapEnd;	// the end time that should snap to this time; ie. after or equal to the snap time
-		public int SnapLevel;		// the "priority" of this snap point; bigger is higher priority
-		public Row SnapRow;			// the rows that this point should affect; null if all rows
-		public Color SnapColor;		// the color to draw the snap point
 	}
 
-	class BitmapDrawDetails
+	internal class SnapDetails
 	{
-		public Bitmap bmp;			// the bitmap to be drawn from the start time onwards
-		public TimeSpan startTime;	// the start time that this bitmap should be drawn from
-		public TimeSpan duration;	// how long (time) this bitmap should be drawn for
+		public TimeSpan SnapTime; // the particular time to snap to
+		public TimeSpan SnapStart; // the start time that should snap to this time; ie. before or equal to the snap time
+		public TimeSpan SnapEnd; // the end time that should snap to this time; ie. after or equal to the snap time
+		public int SnapLevel; // the "priority" of this snap point; bigger is higher priority
+		public Row SnapRow; // the rows that this point should affect; null if all rows
+		public Color SnapColor; // the color to draw the snap point
+	}
+
+	internal class BitmapDrawDetails
+	{
+		public Bitmap bmp; // the bitmap to be drawn from the start time onwards
+		public TimeSpan startTime; // the start time that this bitmap should be drawn from
+		public TimeSpan duration; // how long (time) this bitmap should be drawn for
 	}
 
 	// Enumerations
-	enum DragState
+	internal enum DragState
 	{
 		///<summary>Not dragging, mouse is up.</summary>
 		Normal = 0,
@@ -1667,7 +1609,6 @@ namespace Common.Controls.Timeline
 
 		///<summary>Dragging the mouse horizontally to resize an object in time.</summary>
 		HResizing,
-
 	}
 
 
@@ -1685,36 +1626,28 @@ namespace Common.Controls.Timeline
 	};
 
 
+	///<summary>Maintains all necessary information during the user modification of selected Elements.</summary>
+	public class ElementMoveInfo
+	{
+		public ElementMoveInfo(Point initGridLocation, IEnumerable<Element> modifyingElements, TimeSpan visibleTimeStart)
+		{
+			InitialGridLocation = initGridLocation;
+
+			OriginalElements = new Dictionary<Element, ElementTimeInfo>();
+			foreach (var elem in modifyingElements) {
+				OriginalElements.Add(elem, new ElementTimeInfo(elem));
+			}
+
+			VisibleTimeStart = visibleTimeStart;
+		}
 
 
+		///<summary>The point on the grid where the mouse first went down.</summary>
+		public Point InitialGridLocation { get; private set; }
 
-    ///<summary>Maintains all necessary information during the user modification of selected Elements.</summary>
-    public class ElementMoveInfo
-    {
-        public ElementMoveInfo(Point initGridLocation, IEnumerable<Element> modifyingElements, TimeSpan visibleTimeStart)
-        {
-            InitialGridLocation = initGridLocation;
+		///<summary>All elements being modified and their original parameters.</summary>
+		public Dictionary<Element, ElementTimeInfo> OriginalElements { get; private set; }
 
-            OriginalElements = new Dictionary<Element, ElementTimeInfo>();
-            foreach (var elem in modifyingElements)
-            {
-                OriginalElements.Add(elem, new ElementTimeInfo(elem));
-            }
-
-            VisibleTimeStart = visibleTimeStart;
-        }
-
-
-        ///<summary>The point on the grid where the mouse first went down.</summary>
-        public Point InitialGridLocation { get; private set; }
-
-        ///<summary>All elements being modified and their original parameters.</summary>
-        public Dictionary<Element, ElementTimeInfo> OriginalElements { get; private set; }
-
-        public TimeSpan VisibleTimeStart { get; private set; }
-    }
-
-
-
-
+		public TimeSpan VisibleTimeStart { get; private set; }
+	}
 }

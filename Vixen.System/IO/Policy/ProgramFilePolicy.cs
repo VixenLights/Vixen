@@ -1,15 +1,19 @@
-﻿namespace Vixen.IO.Policy {
-	abstract class ProgramFilePolicy : IFilePolicy {
-		virtual public void Write() {
+﻿namespace Vixen.IO.Policy
+{
+	internal abstract class ProgramFilePolicy : IFilePolicy
+	{
+		public virtual void Write()
+		{
 			WriteSequences();
 		}
 
-		abstract protected void WriteSequences();
+		protected abstract void WriteSequences();
 
-		virtual public void Read() {
+		public virtual void Read()
+		{
 			ReadSequences();
 		}
 
-		abstract protected void ReadSequences();
+		protected abstract void ReadSequences();
 	}
 }

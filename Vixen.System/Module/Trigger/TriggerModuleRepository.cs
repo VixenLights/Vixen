@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Vixen.Module.Trigger {
-	class TriggerModuleRepository : GenericModuleRepository<ITriggerModuleInstance> {
+namespace Vixen.Module.Trigger
+{
+	internal class TriggerModuleRepository : GenericModuleRepository<ITriggerModuleInstance>
+	{
 	}
 }

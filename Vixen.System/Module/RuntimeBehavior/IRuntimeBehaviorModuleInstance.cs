@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Vixen.Module.RuntimeBehavior {
-	public interface IRuntimeBehaviorModuleInstance : IRuntimeBehavior, IModuleInstance {
+namespace Vixen.Module.RuntimeBehavior
+{
+	public interface IRuntimeBehaviorModuleInstance : IRuntimeBehavior, IModuleInstance
+	{
 	}
 }

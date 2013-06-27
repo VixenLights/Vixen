@@ -10,18 +10,27 @@ namespace Common.Controls.ControlsEx
 	/// Bordered control paintsa thin border width the specified pen
 	/// </summary>
 	[ToolboxItem(false)]
-	public class BorderedControl:Control
+	public class BorderedControl : Control
 	{
 		#region variables
-		private bool _border=true;
+
+		private bool _border = true;
+
 		#endregion
+
 		#region ctor
+
 		/// <summary>
 		/// constructs a bordered scrollable control with control.dark border
 		/// </summary>
-		public BorderedControl(){}
+		public BorderedControl()
+		{
+		}
+
 		#endregion
+
 		#region controller
+
 		//override wndproc
 		//protected override void WndProc(ref Message m)
 		//{
@@ -66,23 +75,27 @@ namespace Common.Controls.ControlsEx
 		//    }
 		//    base.WndProc (ref m);
 		//}
+
 		#endregion
+
 		#region properties
+
 		/// <summary>
 		/// gets or sets whether the thin border is enabled
 		/// </summary>
 		[Description("gets or sets whether the thin border is enabled"),
-		DefaultValue(true)]
+		 DefaultValue(true)]
 		public bool Border
 		{
-			get{return _border;}
+			get { return _border; }
 			set
 			{
-				if(value==_border) return;
-				_border=value;
+				if (value == _border) return;
+				_border = value;
 				this.RecreateHandle();
 			}
 		}
+
 		#endregion
 	}
 }

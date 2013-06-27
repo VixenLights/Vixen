@@ -73,7 +73,6 @@ namespace Common.Controls.Timeline
 	}
 
 
-
 	public class TimelineEventArgs : EventArgs
 	{
 		public TimelineEventArgs(Row row, TimeSpan time)
@@ -81,7 +80,7 @@ namespace Common.Controls.Timeline
 			Row = row;
 			Time = time;
 		}
-		
+
 		public Row Row { get; private set; }
 		public TimeSpan Time { get; private set; }
 	}
@@ -98,19 +97,23 @@ namespace Common.Controls.Timeline
 	}
 
 
+	public class ElementsChangedTimesEventArgs : EventArgs
+	{
+		public ElementsChangedTimesEventArgs(ElementMoveInfo info, ElementMoveType type)
+		{
+			PreviousTimes = info.OriginalElements;
+			Type = type;
+		}
 
-    public class ElementsChangedTimesEventArgs : EventArgs
-    {
-        public ElementsChangedTimesEventArgs(ElementMoveInfo info, ElementMoveType type)
-        {
-            PreviousTimes = info.OriginalElements;
-            Type = type;
-        }
+		public Dictionary<Element, ElementTimeInfo> PreviousTimes { get; private set; }
 
-        public Dictionary<Element, ElementTimeInfo> PreviousTimes { get; private set; }
-        public IEnumerable<Element> Elements { get { return PreviousTimes.Keys; } }
-        public ElementMoveType Type { get; private set; }
-    }
+		public IEnumerable<Element> Elements
+		{
+			get { return PreviousTimes.Keys; }
+		}
+
+		public ElementMoveType Type { get; private set; }
+	}
 
 	public class ElementsSelectedEventArgs : EventArgs
 	{
@@ -124,12 +127,13 @@ namespace Common.Controls.Timeline
 		public bool AutomaticallyHandleSelection { get; set; }
 	}
 
-    public class RenderElementEventArgs : EventArgs
-    {
-        public RenderElementEventArgs(int percent)
-        {
-            Percent = percent;
-        }
-        public int Percent { get; set; }
-    }
+	public class RenderElementEventArgs : EventArgs
+	{
+		public RenderElementEventArgs(int percent)
+		{
+			Percent = percent;
+		}
+
+		public int Percent { get; set; }
+	}
 }

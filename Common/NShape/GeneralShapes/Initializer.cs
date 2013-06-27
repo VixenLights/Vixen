@@ -16,78 +16,78 @@ using System;
 using Dataweb.NShape.Advanced;
 
 
-namespace Dataweb.NShape.GeneralShapes {
-
-	public static class NShapeLibraryInitializer {
-
-		public static void Initialize(IRegistrar registrar) {
+namespace Dataweb.NShape.GeneralShapes
+{
+	public static class NShapeLibraryInitializer
+	{
+		public static void Initialize(IRegistrar registrar)
+		{
 			if (registrar == null) throw new ArgumentNullException("registrar");
 			registrar.RegisterLibrary(namespaceName, preferredRepositoryVersion);
 
 			// Register linear shapes
 			registrar.RegisterShapeType(new ShapeType("Polyline", namespaceName, namespaceName,
-				Polyline.CreateInstance, Polyline.GetPropertyDefinitions));
+			                                          Polyline.CreateInstance, Polyline.GetPropertyDefinitions));
 			registrar.RegisterShapeType(new ShapeType("RectangularLine", namespaceName, namespaceName,
-				RectangularLine.CreateInstance, RectangularLine.GetPropertyDefinitions));
+			                                          RectangularLine.CreateInstance, RectangularLine.GetPropertyDefinitions));
 			registrar.RegisterShapeType(new ShapeType("CircularArc", namespaceName, namespaceName,
-				"With only two points, it behaves like a straight line, with all three points, it behaves like a circular arc.",
-				CircularArc.CreateInstance, CircularArc.GetPropertyDefinitions));
+			                                          "With only two points, it behaves like a straight line, with all three points, it behaves like a circular arc.",
+			                                          CircularArc.CreateInstance, CircularArc.GetPropertyDefinitions));
 			// new Type(typeof(BezierLine).Name, BezierLine.CreateInstance, 
 			// BezierLine.GetPropertyDefinitions(null)).Register(registrar);
 			// Planar GeneralShapes
 
 			// Register text shapes
 			registrar.RegisterShapeType(new ShapeType("Text", namespaceName, namespaceName,
-				"Supports automatic sizing to its text.",
-				Text.CreateInstance, Text.GetPropertyDefinitions,
-				Dataweb.NShape.GeneralShapes.Properties.Resources.ShaperReferenceQuadrangle));
+			                                          "Supports automatic sizing to its text.",
+			                                          Text.CreateInstance, Text.GetPropertyDefinitions,
+			                                          Dataweb.NShape.GeneralShapes.Properties.Resources.ShaperReferenceQuadrangle));
 			registrar.RegisterShapeType(new ShapeType("Label", namespaceName, namespaceName,
-				"Supports autosizing to its text and connecting to other shapes. If the label's 'pin' is connected to a shape, the label will move with its partner shape.",
-				Label.CreateInstance, Label.GetPropertyDefinitions,
-				Dataweb.NShape.GeneralShapes.Properties.Resources.ShaperReferenceQuadrangle));
+			                                          "Supports autosizing to its text and connecting to other shapes. If the label's 'pin' is connected to a shape, the label will move with its partner shape.",
+			                                          Label.CreateInstance, Label.GetPropertyDefinitions,
+			                                          Dataweb.NShape.GeneralShapes.Properties.Resources.ShaperReferenceQuadrangle));
 
 			registrar.RegisterShapeType(new ShapeType("RegularPolygone", namespaceName, namespaceName,
-				RegularPolygone.CreateInstance, RegularPolygone.GetPropertyDefinitions));
+			                                          RegularPolygone.CreateInstance, RegularPolygone.GetPropertyDefinitions));
 
 			// Register triangle shapes
 			registrar.RegisterShapeType(new ShapeType("FreeTriangle", namespaceName, namespaceName,
-				FreeTriangle.CreateInstance, FreeTriangle.GetPropertyDefinitions,
-				Dataweb.NShape.GeneralShapes.Properties.Resources.ShaperReferenceTriangle));
+			                                          FreeTriangle.CreateInstance, FreeTriangle.GetPropertyDefinitions,
+			                                          Dataweb.NShape.GeneralShapes.Properties.Resources.ShaperReferenceTriangle));
 			registrar.RegisterShapeType(new ShapeType("IsoscelesTriangle", namespaceName, namespaceName,
-				IsoscelesTriangle.CreateInstance, IsoscelesTriangle.GetPropertyDefinitions,
-				Dataweb.NShape.GeneralShapes.Properties.Resources.ShaperReferenceTriangle));
+			                                          IsoscelesTriangle.CreateInstance, IsoscelesTriangle.GetPropertyDefinitions,
+			                                          Dataweb.NShape.GeneralShapes.Properties.Resources.ShaperReferenceTriangle));
 
 			// Register round shapes
 			registrar.RegisterShapeType(new ShapeType("Circle", namespaceName, namespaceName,
-				Circle.CreateInstance, Circle.GetPropertyDefinitions,
-				Dataweb.NShape.GeneralShapes.Properties.Resources.ShaperReferenceCircle));
+			                                          Circle.CreateInstance, Circle.GetPropertyDefinitions,
+			                                          Dataweb.NShape.GeneralShapes.Properties.Resources.ShaperReferenceCircle));
 			registrar.RegisterShapeType(new ShapeType("Ellipse", namespaceName, namespaceName,
-				Ellipse.CreateInstance, Ellipse.GetPropertyDefinitions,
-				Dataweb.NShape.GeneralShapes.Properties.Resources.ShaperReferenceCircle));
+			                                          Ellipse.CreateInstance, Ellipse.GetPropertyDefinitions,
+			                                          Dataweb.NShape.GeneralShapes.Properties.Resources.ShaperReferenceCircle));
 
 			// Register quadrangle shapes
 			registrar.RegisterShapeType(new ShapeType("Square", namespaceName, namespaceName,
-				Square.CreateInstance, Square.GetPropertyDefinitions,
-				Dataweb.NShape.GeneralShapes.Properties.Resources.ShaperReferenceQuadrangle));
+			                                          Square.CreateInstance, Square.GetPropertyDefinitions,
+			                                          Dataweb.NShape.GeneralShapes.Properties.Resources.ShaperReferenceQuadrangle));
 			registrar.RegisterShapeType(new ShapeType("Box", namespaceName, namespaceName,
-				Box.CreateInstance, Box.GetPropertyDefinitions,
-				Dataweb.NShape.GeneralShapes.Properties.Resources.ShaperReferenceQuadrangle));
+			                                          Box.CreateInstance, Box.GetPropertyDefinitions,
+			                                          Dataweb.NShape.GeneralShapes.Properties.Resources.ShaperReferenceQuadrangle));
 			registrar.RegisterShapeType(new ShapeType("RoundedBox", namespaceName, namespaceName,
-				RoundedBox.CreateInstance, RoundedBox.GetPropertyDefinitions,
-				Dataweb.NShape.GeneralShapes.Properties.Resources.ShaperReferenceQuadrangle));
+			                                          RoundedBox.CreateInstance, RoundedBox.GetPropertyDefinitions,
+			                                          Dataweb.NShape.GeneralShapes.Properties.Resources.ShaperReferenceQuadrangle));
 			registrar.RegisterShapeType(new ShapeType("Diamond", namespaceName, namespaceName,
-				Diamond.CreateInstance, Diamond.GetPropertyDefinitions,
-				Dataweb.NShape.GeneralShapes.Properties.Resources.ShaperReferenceDiamond));
+			                                          Diamond.CreateInstance, Diamond.GetPropertyDefinitions,
+			                                          Dataweb.NShape.GeneralShapes.Properties.Resources.ShaperReferenceDiamond));
 
 			// Register other shapes
 			registrar.RegisterShapeType(new ShapeType("ThickArrow", namespaceName, namespaceName,
-				delegate(ShapeType shapeType, Template t) { return (Shape)new ThickArrow(shapeType, t); },
-				ThickArrow.GetPropertyDefinitions));
+			                                          delegate(ShapeType shapeType, Template t) { return (Shape) new ThickArrow(shapeType, t); },
+			                                          ThickArrow.GetPropertyDefinitions));
 			registrar.RegisterShapeType(new ShapeType("Picture", namespaceName, namespaceName,
-				Picture.CreateInstance, Picture.GetPropertyDefinitions,
-				Dataweb.NShape.GeneralShapes.Properties.Resources.ShaperReferenceQuadrangle));
+			                                          Picture.CreateInstance, Picture.GetPropertyDefinitions,
+			                                          Dataweb.NShape.GeneralShapes.Properties.Resources.ShaperReferenceQuadrangle));
 		}
-
 
 		#region Fields
 
@@ -97,5 +97,4 @@ namespace Dataweb.NShape.GeneralShapes {
 
 		#endregion
 	}
-
 }

@@ -27,8 +27,7 @@ namespace VixenModules.Property.Color
 
 		private void ColorPanel_Click(object sender, EventArgs e)
 		{
-			using (ColorPicker picker = new ColorPicker())
-			{
+			using (ColorPicker picker = new ColorPicker()) {
 				picker.Color = XYZ.FromRGB(Color);
 				if (picker.ShowDialog() == DialogResult.OK) {
 					Color = picker.Color.ToRGB();
@@ -37,6 +36,7 @@ namespace VixenModules.Property.Color
 		}
 
 		private System.Drawing.Color _color = System.Drawing.Color.Black;
+
 		public System.Drawing.Color Color
 		{
 			get { return _color; }
@@ -50,6 +50,7 @@ namespace VixenModules.Property.Color
 
 
 		public event EventHandler<ColorPanelEventArgs> ColorChanged;
+
 		public void OnColorChanged(System.Drawing.Color args)
 		{
 			if (ColorChanged != null)

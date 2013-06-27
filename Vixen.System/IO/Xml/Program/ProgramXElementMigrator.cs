@@ -1,6 +1,8 @@
 ﻿using System.Xml.Linq;
 
-namespace Vixen.IO.Xml.Program {
-	class ProgramXElementMigrator : EmptyMigrator<XElement> {
+namespace Vixen.IO.Xml.Program
+{
+	internal class ProgramXElementMigrator : EmptyMigrator<XElement>
+	{
 	}
 }

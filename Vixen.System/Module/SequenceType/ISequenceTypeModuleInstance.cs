@@ -1,4 +1,6 @@
-﻿namespace Vixen.Module.SequenceType {
-	public interface ISequenceTypeModuleInstance : ISequenceType, IModuleInstance {
+﻿namespace Vixen.Module.SequenceType
+{
+	public interface ISequenceTypeModuleInstance : ISequenceType, IModuleInstance
+	{
 	}
 }

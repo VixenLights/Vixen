@@ -2,52 +2,63 @@
 using System.Collections.Generic;
 using Vixen.Sys;
 
-namespace Vixen.Execution.DataSource {
-	class PreFilteringBufferingDataSource : IMutableDataSource, IDisposable {
+namespace Vixen.Execution.DataSource
+{
+	internal class PreFilteringBufferingDataSource : IMutableDataSource, IDisposable
+	{
 		private IntentPreFilter _intentPreFilter;
 		private EffectNodeBuffer _intentBuffer;
 		private bool _persistPreFilterCache;
 
-		public PreFilteringBufferingDataSource(bool persistPreFilterCache) {
+		public PreFilteringBufferingDataSource(bool persistPreFilterCache)
+		{
 			_persistPreFilterCache = persistPreFilterCache;
 			_intentPreFilter = new IntentPreFilter();
 			_intentBuffer = new EffectNodeBuffer(_intentPreFilter);
 		}
 
-		public void SetSequence(ISequence sequence) {
+		public void SetSequence(ISequence sequence)
+		{
 			_UseSequenceData(sequence);
 			_UseSequenceFilters(sequence);
 		}
 
-		private void _UseSequenceData(ISequence sequence) {
-			if(!_persistPreFilterCache) {
+		private void _UseSequenceData(ISequence sequence)
+		{
+			if (!_persistPreFilterCache) {
 				_intentPreFilter.ClearCache();
 			}
 			_intentPreFilter.Data = sequence.SequenceData.EffectData;
 		}
 
-		private void _UseSequenceFilters(ISequence sequence) {
+		private void _UseSequenceFilters(ISequence sequence)
+		{
 			_intentPreFilter.Filters = sequence.GetAllSequenceFilters();
 		}
 
-		public string ContextName {
+		public string ContextName
+		{
 			set { _intentPreFilter.ContextName = value; }
 		}
 
-		public void Start() {
+		public void Start()
+		{
 			_intentBuffer.Start();
 		}
 
-		public void Stop() {
+		public void Stop()
+		{
 			_intentBuffer.Stop();
 		}
 
-		public IEnumerable<IEffectNode> GetDataAt(TimeSpan time) {
+		public IEnumerable<IEffectNode> GetDataAt(TimeSpan time)
+		{
 			return _intentBuffer.GetDataAt(time);
 		}
 
-		public void Dispose() {
-			if(_intentPreFilter != null) {
+		public void Dispose()
+		{
+			if (_intentPreFilter != null) {
 				_intentPreFilter.Dispose();
 				_intentPreFilter = null;
 			}

@@ -63,7 +63,8 @@ namespace VixenModules.Property.Color
 			if (selected) {
 				string name = listViewColorSets.SelectedItems[0].Text;
 				UpdateGroupBoxWithColorSet(name, _data.GetColorSet(name));
-			} else {
+			}
+			else {
 				UpdateGroupBoxWithColorSet(null, null);
 			}
 
@@ -107,12 +108,13 @@ namespace VixenModules.Property.Color
 			ColorSet newColorSet = new ColorSet();
 
 			if (name.Length <= 0) {
-				MessageBox.Show("You must enter a name for the Color Set.", "Name Requred", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show("You must enter a name for the Color Set.", "Name Requred", MessageBoxButtons.OK,
+				                MessageBoxIcon.Error);
 				return;
 			}
 
 			foreach (var control in tableLayoutPanelColors.Controls) {
-				ColorPanel cp = (ColorPanel)control;
+				ColorPanel cp = (ColorPanel) control;
 				newColorSet.Add(cp.Color);
 			}
 
@@ -130,10 +132,11 @@ namespace VixenModules.Property.Color
 		{
 			if (textBoxName.Text.Length <= 0)
 				return;
-			
+
 			if (_data.ContainsColorSet(textBoxName.Text)) {
 				buttonUpdate.Text = "Update Color Set";
-			} else {
+			}
+			else {
 				buttonUpdate.Text = "Make New Color Set";
 			}
 		}

@@ -4,11 +4,14 @@ using System.Linq;
 using System.Text;
 using Vixen.Sys.Attribute;
 
-namespace Vixen.Module.Editor {
+namespace Vixen.Module.Editor
+{
 	[TypeOfModule("Editor")]
-	class EditorModuleImplementation : ModuleImplementation<IEditorModuleInstance> {
+	internal class EditorModuleImplementation : ModuleImplementation<IEditorModuleInstance>
+	{
 		public EditorModuleImplementation()
-			: base(new EditorModuleManagement(), new EditorModuleRepository()) {
+			: base(new EditorModuleManagement(), new EditorModuleRepository())
+		{
 		}
 	}
 }

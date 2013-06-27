@@ -5,8 +5,10 @@ using System.IO;
 using Vixen.Services;
 using Vixen.Sys.Attribute;
 
-namespace Vixen.Sys {
-	public class Program : IProgram {
+namespace Vixen.Sys
+{
+	public class Program : IProgram
+	{
 		private const string DIRECTORY_NAME = "Program";
 
 		private List<ISequence> _sequences = new List<ISequence>();
@@ -14,66 +16,81 @@ namespace Vixen.Sys {
 		public const string Extension = ".pro";
 
 		[DataPath]
-		static public string ProgramDirectory {
+		public static string ProgramDirectory
+		{
 			get { return Path.Combine(Paths.DataRootPath, DIRECTORY_NAME); }
 		}
 
-		static public IEnumerable<Program> GetAll() {
+		public static IEnumerable<Program> GetAll()
+		{
 			return Directory.GetFiles(ProgramDirectory, "*" + Extension).Select(FileService.Instance.LoadProgramFile);
 		}
 
-		public Program() {
+		public Program()
+		{
 		}
 
-		public Program(string name) {
+		public Program(string name)
+		{
 			FilePath = Path.Combine(ProgramDirectory, Path.ChangeExtension(name, Extension));
 		}
 
 		public Program(ISequence sequence)
-			: this(sequence.Name) {
+			: this(sequence.Name)
+		{
 			Add(sequence);
 		}
 
-		public Program(IProgram original) {
+		public Program(IProgram original)
+		{
 			FilePath = original.FilePath;
 			_sequences.AddRange(original.Sequences);
 		}
 
 		public string FilePath { get; set; }
 
-		public string Name {
+		public string Name
+		{
 			get { return Path.GetFileNameWithoutExtension(FilePath); }
 		}
 
-		public void Add(ISequence sequence) {
+		public void Add(ISequence sequence)
+		{
 			_sequences.Add(sequence);
 		}
 
-		public void Clear() {
+		public void Clear()
+		{
 			_sequences.Clear();
 		}
 
-		public List<ISequence> Sequences {
+		public List<ISequence> Sequences
+		{
 			get { return _sequences; }
 		}
 
-		public void Save(string filePath) {
+		public void Save(string filePath)
+		{
 			FileService.Instance.SaveProgramFile(this, filePath);
 		}
 
-		public void Save() {
+		public void Save()
+		{
 			Save(FilePath);
 		}
 
-		public TimeSpan Length {
+		public TimeSpan Length
+		{
 			get { return _sequences.Aggregate(TimeSpan.Zero, (value, sequence) => value + sequence.Length); }
 		}
 
-		public IEnumerator<ISequence> GetEnumerator() {
+		public IEnumerator<ISequence> GetEnumerator()
+		{
 			return _sequences.GetEnumerator();
 		}
 
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
+		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		{
 			return GetEnumerator();
 		}
 	}

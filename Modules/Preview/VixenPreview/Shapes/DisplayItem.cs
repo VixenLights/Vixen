@@ -15,63 +15,67 @@ using Vixen.Sys.Output;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
-    [DataContract]
-    [KnownType(typeof(PreviewLine))]
-    [KnownType(typeof(PreviewEllipse))]
-    [KnownType(typeof(PreviewArch))]
-    [KnownType(typeof(PreviewRectangle))]
-    [KnownType(typeof(PreviewSingle))]
-    [KnownType(typeof(PreviewEllipse))]
-    [KnownType(typeof(PreviewTriangle))]
-    [KnownType(typeof(PreviewNet))]
-    [KnownType(typeof(PreviewFlood))]
-    [KnownType(typeof(PreviewCane))]
-    [KnownType(typeof(PreviewStar))]
-    [KnownType(typeof(PreviewMegaTree))]
-    [KnownType(typeof(PreviewCustom))]
-    [KnownType(typeof(PreviewPixelGrid))]
-    public class DisplayItem : IHandler<IIntentState<LightingValue>>, IHandler<IIntentState<CommandValue>>, IDisposable
-    {
-        private PreviewBaseShape _shape;
+	[DataContract]
+	[KnownType(typeof (PreviewLine))]
+	[KnownType(typeof (PreviewEllipse))]
+	[KnownType(typeof (PreviewArch))]
+	[KnownType(typeof (PreviewRectangle))]
+	[KnownType(typeof (PreviewSingle))]
+	[KnownType(typeof (PreviewEllipse))]
+	[KnownType(typeof (PreviewTriangle))]
+	[KnownType(typeof (PreviewNet))]
+	[KnownType(typeof (PreviewFlood))]
+	[KnownType(typeof (PreviewCane))]
+	[KnownType(typeof (PreviewStar))]
+	[KnownType(typeof (PreviewMegaTree))]
+	[KnownType(typeof (PreviewCustom))]
+	[KnownType(typeof (PreviewPixelGrid))]
+	public class DisplayItem : IHandler<IIntentState<LightingValue>>, IHandler<IIntentState<CommandValue>>, IDisposable
+	{
+		private PreviewBaseShape _shape;
 
-        public DisplayItem()
-        {
-            _shape = new PreviewLine(new PreviewPoint(1, 1), new PreviewPoint(10, 10), 1, null);
-        }
+		public DisplayItem()
+		{
+			_shape = new PreviewLine(new PreviewPoint(1, 1), new PreviewPoint(10, 10), 1, null);
+		}
 
-        [DataMember]
-        public PreviewBaseShape Shape
-        {
-            get { return _shape; }
-            set { _shape = value; }
-        }
+		[DataMember]
+		public PreviewBaseShape Shape
+		{
+			get { return _shape; }
+			set { _shape = value; }
+		}
 
-        public void Draw(FastPixel fp, bool editMode, List<ElementNode> highlightedElements, bool selected, bool forceDraw)
-        {
-            _shape.Draw(fp, editMode, highlightedElements, selected, forceDraw);
-        }
+		public void Draw(FastPixel fp, bool editMode, List<ElementNode> highlightedElements, bool selected, bool forceDraw)
+		{
+			_shape.Draw(fp, editMode, highlightedElements, selected, forceDraw);
+		}
 
-        public void Handle(IIntentState<LightingValue> state)
-        {
-            //System.Drawing.Color color = state.GetValue().GetOpaqueIntensityAffectedColor();
-            //AddColorToNode(Color.FromArgb(color.A, color.R, color.G, color.B));
-        }
+		public void Handle(IIntentState<LightingValue> state)
+		{
+			//System.Drawing.Color color = state.GetValue().GetOpaqueIntensityAffectedColor();
+			//AddColorToNode(Color.FromArgb(color.A, color.R, color.G, color.B));
+		}
 
-        public void Handle(IIntentState<CommandValue> state)
-        {
-            Console.WriteLine("Handle 2");
-        }
+		public void Handle(IIntentState<CommandValue> state)
+		{
+			Console.WriteLine("Handle 2");
+		}
 
-		~DisplayItem() {
+		~DisplayItem()
+		{
 			Dispose(false);
 		}
-		protected void Dispose(bool disposing) {
+
+		protected void Dispose(bool disposing)
+		{
 			if (disposing) {
 				if (_shape != null)
 					_shape.Dispose();
 			}
 			_shape = null;
 		}
+
 		public void Dispose()
 		{
 			Dispose(true);

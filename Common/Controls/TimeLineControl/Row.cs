@@ -5,9 +5,9 @@ using System.Windows.Forms;
 
 namespace Common.Controls.Timeline
 {
-    /// <summary>
-    /// Represents a row in a TimelineControl, which contains TimelineElements.
-    /// </summary>
+	/// <summary>
+	/// Represents a row in a TimelineControl, which contains TimelineElements.
+	/// </summary>
 	public class Row : IEnumerable<Element>
 	{
 		// the elements contained in this row. Must be kept sorted; however, we can't use a SortedList
@@ -33,29 +33,40 @@ namespace Common.Controls.Timeline
 		#region Properties
 
 		private int m_height;
+
 		public int Height
 		{
 			get { return m_height; }
 			set
 			{
 				// cap the height to a minimum of 10 pixels
-				RowLabel.Height = m_height = Math.Max(value, 10); ;
+				RowLabel.Height = m_height = Math.Max(value, 10);
+				;
 				//_RowChanged();
 				_RowHeightChanged();
 			}
 		}
 
 		private object m_tag;
+
 		public object Tag
 		{
 			get { return m_tag; }
-			set { m_tag = value; _RowChanged(); }
+			set
+			{
+				m_tag = value;
+				_RowChanged();
+			}
 		}
 
 		public string Name
 		{
 			get { return RowLabel.Name; }
-			set { RowLabel.Name = value; _RowChanged(); }
+			set
+			{
+				RowLabel.Name = value;
+				_RowChanged();
+			}
 		}
 
 		protected IEnumerable<Element> Elements
@@ -74,6 +85,7 @@ namespace Common.Controls.Timeline
 		}
 
 		private RowLabel m_rowLabel;
+
 		public RowLabel RowLabel
 		{
 			get { return m_rowLabel; }
@@ -97,6 +109,7 @@ namespace Common.Controls.Timeline
 		}
 
 		private Row m_parentRow;
+
 		public Row ParentRow
 		{
 			get { return m_parentRow; }
@@ -117,6 +130,7 @@ namespace Common.Controls.Timeline
 		public List<Row> ChildRows { get; set; }
 
 		private bool m_treeOpen;
+
 		public bool TreeOpen
 		{
 			get { return m_treeOpen; }
@@ -136,6 +150,7 @@ namespace Common.Controls.Timeline
 		}
 
 		private bool m_visible = true;
+
 		public bool Visible
 		{
 			get { return m_visible; }
@@ -145,7 +160,7 @@ namespace Common.Controls.Timeline
 				// or opened), then show or hide all our children. However, only
 				// show them if our tree is currently open as well.
 				foreach (Row row in ChildRows)
-				    row.Visible = value && TreeOpen;
+					row.Visible = value && TreeOpen;
 
 				RowLabel.Visible = value;
 				m_visible = value;
@@ -154,6 +169,7 @@ namespace Common.Controls.Timeline
 		}
 
 		private bool m_selected;
+
 		public bool Selected
 		{
 			get { return m_selected; }
@@ -167,10 +183,12 @@ namespace Common.Controls.Timeline
 			}
 		}
 
-		public int ElementCount { get { return m_elements.Count; } }
+		public int ElementCount
+		{
+			get { return m_elements.Count; }
+		}
 
 		#endregion
-
 
 		#region Events
 
@@ -181,15 +199,37 @@ namespace Common.Controls.Timeline
 		public static event EventHandler RowHeightChanged;
 		public static event EventHandler<ModifierKeysEventArgs> RowSelectedChanged;
 
-		private void _ElementAdded(Element te) { if (ElementAdded != null) ElementAdded(this, new ElementEventArgs(te)); }
-		private void _ElementRemoved(Element te) { if (ElementRemoved != null) ElementRemoved(this, new ElementEventArgs(te)); }
-		private void _RowToggled() { if (RowToggled != null) RowToggled(this, EventArgs.Empty); }
-		private void _RowChanged() { if (RowChanged != null) RowChanged(this, EventArgs.Empty); }
-		private void _RowHeightChanged() { if (RowHeightChanged != null) RowHeightChanged(this, EventArgs.Empty); }
-		private void _RowSelectedChanged(Keys k) { if (RowSelectedChanged != null) RowSelectedChanged(this, new ModifierKeysEventArgs(k)); }
+		private void _ElementAdded(Element te)
+		{
+			if (ElementAdded != null) ElementAdded(this, new ElementEventArgs(te));
+		}
+
+		private void _ElementRemoved(Element te)
+		{
+			if (ElementRemoved != null) ElementRemoved(this, new ElementEventArgs(te));
+		}
+
+		private void _RowToggled()
+		{
+			if (RowToggled != null) RowToggled(this, EventArgs.Empty);
+		}
+
+		private void _RowChanged()
+		{
+			if (RowChanged != null) RowChanged(this, EventArgs.Empty);
+		}
+
+		private void _RowHeightChanged()
+		{
+			if (RowHeightChanged != null) RowHeightChanged(this, EventArgs.Empty);
+		}
+
+		private void _RowSelectedChanged(Keys k)
+		{
+			if (RowSelectedChanged != null) RowSelectedChanged(this, new ModifierKeysEventArgs(k));
+		}
 
 		#endregion
-
 
 		#region Event Handlers
 
@@ -229,7 +269,8 @@ namespace Common.Controls.Timeline
 		{
 			if (e.ModifierKeys.HasFlag(Keys.Control)) {
 				Selected = !Selected;
-			} else {
+			}
+			else {
 				Selected = true;
 			}
 
@@ -238,7 +279,6 @@ namespace Common.Controls.Timeline
 
 		#endregion
 
-
 		#region Methods
 
 		public void AddElement(Element element)
@@ -246,7 +286,7 @@ namespace Common.Controls.Timeline
 			m_elements.Add(element);
 			if (element.Selected)
 				m_selectedElements.Add(element);
-            element.Row = this;
+			element.Row = this;
 			element.ContentChanged += ElementContentChangedHandler;
 			element.TimeChanged += ElementMovedHandler;
 			element.SelectedChanged += ElementSelectedHandler;

@@ -1,15 +1,19 @@
-﻿namespace Vixen.IO.Policy {
-	abstract class ElementNodeTemplateFilePolicy : IFilePolicy {
-		public void Write() {
+﻿namespace Vixen.IO.Policy
+{
+	internal abstract class ElementNodeTemplateFilePolicy : IFilePolicy
+	{
+		public void Write()
+		{
 			WriteElementNode();
 		}
 
-		abstract protected void WriteElementNode();
+		protected abstract void WriteElementNode();
 
-		public void Read() {
+		public void Read()
+		{
 			ReadElementNode();
 		}
 
-		abstract protected void ReadElementNode();
+		protected abstract void ReadElementNode();
 	}
 }

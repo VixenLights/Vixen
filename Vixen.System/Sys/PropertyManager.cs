@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using Vixen.Module;
 using Vixen.Module.Property;
 
-namespace Vixen.Sys {
-	public class PropertyManager : IEnumerable<IPropertyModuleInstance> {
+namespace Vixen.Sys
+{
+	public class PropertyManager : IEnumerable<IPropertyModuleInstance>
+	{
 		private Dictionary<Guid, IPropertyModuleInstance> _items = new Dictionary<Guid, IPropertyModuleInstance>();
 		//private ModuleLocalDataSet _propertyData;
 		private ElementNode _owner;
 
-		public PropertyManager(ElementNode owner) {
+		public PropertyManager(ElementNode owner)
+		{
 			_owner = owner;
 			//PropertyData = new ModuleLocalDataSet();
 		}
@@ -18,11 +21,9 @@ namespace Vixen.Sys {
 		{
 			//IPropertyModuleInstance instance = null;
 
-			if (!_items.ContainsKey(instance.TypeId))
-			{
+			if (!_items.ContainsKey(instance.TypeId)) {
 				//instance = Modules.ModuleManagement.GetProperty(id);
-				if (instance != null)
-				{
+				if (instance != null) {
 					instance.Owner = _owner;
 					instance.SetDefaultValues();
 					_items[instance.TypeId] = instance;
@@ -33,12 +34,13 @@ namespace Vixen.Sys {
 			return instance;
 		}
 
-		public IPropertyModuleInstance Add(Guid id) {
+		public IPropertyModuleInstance Add(Guid id)
+		{
 			IPropertyModuleInstance instance = null;
 
-			if(!_items.ContainsKey(id)) {
+			if (!_items.ContainsKey(id)) {
 				instance = Modules.ModuleManagement.GetProperty(id);
-				if(instance != null) {
+				if (instance != null) {
 					instance.Owner = _owner;
 					instance.SetDefaultValues();
 					_items[id] = instance;
@@ -49,33 +51,39 @@ namespace Vixen.Sys {
 			return instance;
 		}
 
-		public void Remove(Guid id) {
+		public void Remove(Guid id)
+		{
 			IPropertyModuleInstance instance;
-			if(_items.TryGetValue(id, out instance)) {
+			if (_items.TryGetValue(id, out instance)) {
 				instance.Owner = null;
 				_items.Remove(id);
 				PropertyData.RemoveModuleTypeData(instance);
 			}
 		}
 
-		public void Clear() {
+		public void Clear()
+		{
 			_items.Clear();
 			PropertyData.Clear();
 		}
 
-		public IPropertyModuleInstance Get(Guid propertyTypeId) {
+		public IPropertyModuleInstance Get(Guid propertyTypeId)
+		{
 			IPropertyModuleInstance instance;
 			_items.TryGetValue(propertyTypeId, out instance);
 			return instance;
 		}
 
-		public bool Contains(Guid propertyTypeId) {
+		public bool Contains(Guid propertyTypeId)
+		{
 			return _items.ContainsKey(propertyTypeId);
 		}
 
-		public ModuleLocalDataSet PropertyData {
+		public ModuleLocalDataSet PropertyData
+		{
 			get { return VixenSystem.ModuleStore.InstanceData; }
 		}
+
 		//public ModuleLocalDataSet PropertyData {
 		//    get { return _propertyData; }
 		//    set {
@@ -87,11 +95,13 @@ namespace Vixen.Sys {
 		//    }
 		//}
 
-		public IEnumerator<IPropertyModuleInstance> GetEnumerator() {
+		public IEnumerator<IPropertyModuleInstance> GetEnumerator()
+		{
 			return _items.Values.GetEnumerator();
 		}
 
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
+		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		{
 			return GetEnumerator();
 		}
 	}

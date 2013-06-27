@@ -1,10 +1,13 @@
 ﻿using System;
 
-namespace Vixen.Sys.State.Execution {
-	public class ExecutionStateEngine {
+namespace Vixen.Sys.State.Execution
+{
+	public class ExecutionStateEngine
+	{
 		public event EventHandler StateChanged;
 
-		public ExecutionStateEngine() {
+		public ExecutionStateEngine()
+		{
 			OpeningState = new OpeningState(this);
 			ClosingState = new ClosingState(this);
 			TestOpeningState = new TestOpeningState(this);
@@ -17,10 +20,11 @@ namespace Vixen.Sys.State.Execution {
 
 		public State CurrentState { get; private set; }
 
-		public void SetState(State state) {
+		public void SetState(State state)
+		{
 			// Current state driven entirely by the state objects, which define the
 			// state machine.
-			if(state != CurrentState) {
+			if (state != CurrentState) {
 				CurrentState.Leave();
 				CurrentState = state;
 				OnStateChanged(EventArgs.Empty);
@@ -28,23 +32,28 @@ namespace Vixen.Sys.State.Execution {
 			}
 		}
 
-		public bool IsRunning {
-			get {
+		public bool IsRunning
+		{
+			get
+			{
 				return
 					CurrentState != ClosingState &&
 					CurrentState != ClosedState;
 			}
 		}
 
-		public void ToOpen() {
+		public void ToOpen()
+		{
 			CurrentState.OnOpen();
 		}
 
-		public void ToClosed() {
+		public void ToClosed()
+		{
 			CurrentState.OnClose();
 		}
 
-		public void ToTest() {
+		public void ToTest()
+		{
 			CurrentState.OnTest();
 		}
 
@@ -55,8 +64,9 @@ namespace Vixen.Sys.State.Execution {
 		public State ClosedState { get; private set; }
 		public State TestOpenState { get; private set; }
 
-		protected virtual void OnStateChanged(EventArgs e) {
-			if(StateChanged != null) {
+		protected virtual void OnStateChanged(EventArgs e)
+		{
+			if (StateChanged != null) {
 				StateChanged(this, e);
 			}
 		}

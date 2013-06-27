@@ -15,9 +15,10 @@ namespace Common.Controls.ControlsEx.ListControls
 		public override void Initialize(System.ComponentModel.IComponent component)
 		{
 			base.Initialize(component as DisplayList);
-			((DisplayList)component).Items.Add(new DesignerDisplayItem());
+			((DisplayList) component).Items.Add(new DesignerDisplayItem());
 		}
 	}
+
 	/// <summary>
 	/// dummy element for designer
 	/// </summary>
@@ -27,8 +28,9 @@ namespace Common.Controls.ControlsEx.ListControls
 		{
 			gr.SmoothingMode = SmoothingMode.AntiAlias;
 			gr.DrawEllipse(Pens.Black, rct.X, rct.Y,
-				rct.Width - 1, rct.Height - 1);
+			               rct.Width - 1, rct.Height - 1);
 		}
+
 		protected override void OnDrawUnscaled(Graphics gr, int x, int y)
 		{
 			gr.DrawEllipse(Pens.Black, 0, 0, 56, 56);
@@ -39,10 +41,10 @@ namespace Common.Controls.ControlsEx.ListControls
 			get { return "Sample Item"; }
 			set { }
 		}
+
 		public override Size Size
 		{
 			get { return new Size(56, 56); }
 		}
-
 	}
 }

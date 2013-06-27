@@ -17,7 +17,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 
 
-namespace Dataweb.NShape.Advanced {
+namespace Dataweb.NShape.Advanced
+{
 
 	#region IStoreCache Interface
 
@@ -25,8 +26,8 @@ namespace Dataweb.NShape.Advanced {
 	/// Provides access to NShape entities of one type for stores.
 	/// </summary>
 	/// <typeparam name="TEntity"></typeparam>
-	public interface ICacheCollection<TEntity> : IEnumerable<EntityBucket<TEntity>> where TEntity : IEntity {
-
+	public interface ICacheCollection<TEntity> : IEnumerable<EntityBucket<TEntity>> where TEntity : IEntity
+	{
 		/// <ToBeCompleted></ToBeCompleted>
 		bool Contains(object id);
 
@@ -38,15 +39,14 @@ namespace Dataweb.NShape.Advanced {
 
 		/// <ToBeCompleted></ToBeCompleted>
 		void Add(EntityBucket<TEntity> bucket);
-
 	}
 
 
 	/// <summary>
 	/// Provides access to NShape entities for stores.
 	/// </summary>
-	public interface IStoreCache {
-
+	public interface IStoreCache
+	{
 		/// <ToBeCompleted></ToBeCompleted>
 		object ProjectId { get; }
 
@@ -94,7 +94,7 @@ namespace Dataweb.NShape.Advanced {
 
 		/// <ToBeCompleted></ToBeCompleted>
 		bool ModelExists();
-		
+
 		/// <ToBeCompleted></ToBeCompleted>
 		Model GetModel();
 
@@ -174,11 +174,9 @@ namespace Dataweb.NShape.Advanced {
 
 		/// <ToBeCompleted></ToBeCompleted>
 		IEnumerable<KeyValuePair<IModelObject, IEntity>> NewModelObjects { get; }
-
 	}
-	
-	#endregion
 
+	#endregion
 
 	#region Store Class
 
@@ -189,8 +187,8 @@ namespace Dataweb.NShape.Advanced {
 	/// <summary>
 	/// Stores cache data persistently in a data source.
 	/// </summary>
-	public abstract class Store : Component {
-
+	public abstract class Store : Component
+	{
 		/// <summary>
 		/// Specifies the name of the project.
 		/// </summary>
@@ -229,7 +227,8 @@ namespace Dataweb.NShape.Advanced {
 		/// Closes the project store.
 		/// </summary>
 		/// <param name="storeCache"></param>
-		public virtual void Close(IStoreCache storeCache) {
+		public virtual void Close(IStoreCache storeCache)
+		{
 			if (storeCache == null) throw new ArgumentNullException("storeCache");
 			// Nothing to do yet.
 		}
@@ -376,9 +375,7 @@ namespace Dataweb.NShape.Advanced {
 		/// Specifies the main version of the storage format.
 		/// </summary>
 		protected internal abstract int Version { get; set; }
-
 	}
 
 	#endregion
-
 }

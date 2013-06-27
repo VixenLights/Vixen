@@ -24,9 +24,9 @@ namespace Common.Controls.ColorManagement.ColorPicker
 		/// </summary>
 		public static Color GetScreenPixel(int x, int y)
 		{
-			IntPtr descdc=GetDC(IntPtr.Zero);
-			Color res=ColorTranslator.FromWin32(GetPixel(descdc,x,y));
-			ReleaseDC(IntPtr.Zero,descdc);
+			IntPtr descdc = GetDC(IntPtr.Zero);
+			Color res = ColorTranslator.FromWin32(GetPixel(descdc, x, y));
+			ReleaseDC(IntPtr.Zero, descdc);
 			return res;
 		}
 	}

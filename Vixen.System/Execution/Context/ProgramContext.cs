@@ -3,8 +3,10 @@ using Vixen.Execution.DataSource;
 using Vixen.Module.Timing;
 using Vixen.Sys;
 
-namespace Vixen.Execution.Context {
-	abstract public class ProgramContext : ContextBase, IProgramContext {
+namespace Vixen.Execution.Context
+{
+	public abstract class ProgramContext : ContextBase, IProgramContext
+	{
 		private IProgramExecutor _programExecutor;
 		private IProgram _program;
 
@@ -15,27 +17,31 @@ namespace Vixen.Execution.Context {
 		public event EventHandler<ExecutorMessageEventArgs> Message;
 		public event EventHandler<ExecutorMessageEventArgs> Error;
 
-		virtual public IProgram Program {
+		public virtual IProgram Program
+		{
 			get { return _program; }
-			set {
+			set
+			{
 				_program = value;
 				_AssignProgramToExecutor();
 			}
 		}
 
-		public override IExecutor Executor {
-			set {
-				if(_programExecutor != null) {
+		public override IExecutor Executor
+		{
+			set
+			{
+				if (_programExecutor != null) {
 					_DisposeProgramExecutor();
 				}
 
-				if(!(value is IProgramExecutor)) {
+				if (!(value is IProgramExecutor)) {
 					throw new InvalidOperationException("Attempt to use a non-program executor with a program context.");
 				}
 
-				_programExecutor = (IProgramExecutor)value;
+				_programExecutor = (IProgramExecutor) value;
 
-				if(_programExecutor != null) {
+				if (_programExecutor != null) {
 					_AssignProgramToExecutor();
 					_AssignEventHandlers();
 					_programExecutor.DataSource = ContextDataSource;
@@ -43,59 +49,71 @@ namespace Vixen.Execution.Context {
 			}
 		}
 
-		public override string Name {
+		public override string Name
+		{
 			get { return (_programExecutor != null) ? _programExecutor.Name : null; }
 		}
 
-		public override bool IsRunning {
+		public override bool IsRunning
+		{
 			get { return _ProgramExecutorIsPlaying() && _DataIsReady(); }
 		}
 
-		public override bool IsPaused {
+		public override bool IsPaused
+		{
 			get { return _ProgramExecutorIsPaused(); }
 		}
 
 		public abstract IMutableDataSource ContextDataSource { get; }
 
 		/// <returns>The resulting length of the queue.  0 if it cannot be added.</returns>
-		public int Queue(ISequence sequence) {
-			if(_programExecutor != null) {
+		public int Queue(ISequence sequence)
+		{
+			if (_programExecutor != null) {
 				return _programExecutor.Queue(sequence);
 			}
 			return 0;
 		}
 
-		protected override void _OnStart() {
+		protected override void _OnStart()
+		{
 			_programExecutor.Start();
 		}
 
-		protected override void _OnPause() {
+		protected override void _OnPause()
+		{
 			_programExecutor.Pause();
 		}
 
-		protected override void _OnResume() {
+		protected override void _OnResume()
+		{
 			_programExecutor.Resume();
 		}
 
-		protected override void _OnStop() {
+		protected override void _OnStop()
+		{
 			_programExecutor.Stop();
 		}
 
-		protected override IDataSource _DataSource {
+		protected override IDataSource _DataSource
+		{
 			get { return ContextDataSource; }
 		}
 
-		protected override ITiming _SequenceTiming {
+		protected override ITiming _SequenceTiming
+		{
 			get { return _programExecutor != null ? _programExecutor.TimingSource : null; }
 		}
 
-		private void _AssignProgramToExecutor() {
-			if(_programExecutor != null) {
+		private void _AssignProgramToExecutor()
+		{
+			if (_programExecutor != null) {
 				_programExecutor.Program = Program;
 			}
 		}
 
-		private void _AssignEventHandlers() {
+		private void _AssignEventHandlers()
+		{
 			_programExecutor.SequenceStarted += _ProgramExecutorSequenceStarted;
 			_programExecutor.SequenceEnded += _ProgramExecutorSequenceEnded;
 			_programExecutor.ProgramStarted += _ProgramExecutorProgramStarted;
@@ -104,7 +122,8 @@ namespace Vixen.Execution.Context {
 			_programExecutor.Error += _ProgramExecutorError;
 		}
 
-		private void _RemoveEventHandlers() {
+		private void _RemoveEventHandlers()
+		{
 			_programExecutor.SequenceStarted -= _ProgramExecutorSequenceStarted;
 			_programExecutor.SequenceEnded -= _ProgramExecutorSequenceEnded;
 			_programExecutor.ProgramStarted -= _ProgramExecutorProgramStarted;
@@ -113,94 +132,113 @@ namespace Vixen.Execution.Context {
 			_programExecutor.Error -= _ProgramExecutorError;
 		}
 
-		private void _DisposeProgramExecutor() {
+		private void _DisposeProgramExecutor()
+		{
 			_RemoveEventHandlers();
 			_programExecutor.Dispose();
 			_programExecutor = null;
 		}
 
-		private bool _ProgramExecutorIsPlaying() {
+		private bool _ProgramExecutorIsPlaying()
+		{
 			return _programExecutor != null && _programExecutor.IsRunning;
 		}
 
-		private bool _ProgramExecutorIsPaused() {
+		private bool _ProgramExecutorIsPaused()
+		{
 			return _programExecutor != null && _programExecutor.IsPaused;
 		}
 
-		private bool _DataIsReady() {
+		private bool _DataIsReady()
+		{
 			return _DataSource != null && _SequenceTiming != null;
 		}
 
 		#region Events
-		private void _ProgramExecutorProgramStarted(object sender, ProgramEventArgs e) {
+
+		private void _ProgramExecutorProgramStarted(object sender, ProgramEventArgs e)
+		{
 			OnContextStarted(EventArgs.Empty);
 			OnProgramStarted(e);
 		}
 
-		protected virtual void OnProgramStarted(ProgramEventArgs e) {
-			if(ProgramStarted != null) {
+		protected virtual void OnProgramStarted(ProgramEventArgs e)
+		{
+			if (ProgramStarted != null) {
 				ProgramStarted(this, e);
 			}
 		}
 
-		private void _ProgramExecutorProgramEnded(object sender, ProgramEventArgs e) {
+		private void _ProgramExecutorProgramEnded(object sender, ProgramEventArgs e)
+		{
 			OnProgramEnded(e);
 			OnContextEnded(EventArgs.Empty);
 		}
 
-		protected virtual void OnProgramEnded(ProgramEventArgs e) {
-			if(ProgramEnded != null) {
+		protected virtual void OnProgramEnded(ProgramEventArgs e)
+		{
+			if (ProgramEnded != null) {
 				ProgramEnded(this, e);
 			}
 		}
 
-		private void _ProgramExecutorMessage(object sender, ExecutorMessageEventArgs e) {
+		private void _ProgramExecutorMessage(object sender, ExecutorMessageEventArgs e)
+		{
 			OnMessage(e);
 		}
 
-		protected virtual void OnMessage(ExecutorMessageEventArgs e) {
-			if(Message != null) {
+		protected virtual void OnMessage(ExecutorMessageEventArgs e)
+		{
+			if (Message != null) {
 				Message(this, e);
 			}
 		}
 
-		private void _ProgramExecutorError(object sender, ExecutorMessageEventArgs e) {
+		private void _ProgramExecutorError(object sender, ExecutorMessageEventArgs e)
+		{
 			OnError(e);
 		}
 
-		protected virtual void OnError(ExecutorMessageEventArgs e) {
-			if(Error != null) {
+		protected virtual void OnError(ExecutorMessageEventArgs e)
+		{
+			if (Error != null) {
 				Error(this, e);
 			}
 		}
 
-		private void _ProgramExecutorSequenceStarted(object sender, SequenceStartedEventArgs e) {
+		private void _ProgramExecutorSequenceStarted(object sender, SequenceStartedEventArgs e)
+		{
 			OnSequenceStarted(e);
 		}
 
-		protected virtual void OnSequenceStarted(SequenceStartedEventArgs e) {
-			if(SequenceStarted != null) {
+		protected virtual void OnSequenceStarted(SequenceStartedEventArgs e)
+		{
+			if (SequenceStarted != null) {
 				SequenceStarted(this, e);
 			}
 		}
 
-		private void _ProgramExecutorSequenceEnded(object sender, SequenceEventArgs e) {
+		private void _ProgramExecutorSequenceEnded(object sender, SequenceEventArgs e)
+		{
 			OnSequenceEnded(e);
 		}
 
-		protected virtual void OnSequenceEnded(SequenceEventArgs e) {
-			if(SequenceEnded != null) {
+		protected virtual void OnSequenceEnded(SequenceEventArgs e)
+		{
+			if (SequenceEnded != null) {
 				SequenceEnded(this, e);
 			}
 		}
 
 		#endregion
 
-		~ProgramContext() {
+		~ProgramContext()
+		{
 			Dispose();
 		}
 
-		override protected void Dispose(bool disposing) {
+		protected override void Dispose(bool disposing)
+		{
 			_DisposeProgramExecutor();
 			// In case we're being disposed by something other than the
 			// act of being released.

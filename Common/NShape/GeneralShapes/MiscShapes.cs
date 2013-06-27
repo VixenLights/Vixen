@@ -18,42 +18,45 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-
 using Dataweb.NShape.Advanced;
 
 
-namespace Dataweb.NShape.GeneralShapes {
-
-	public class ThickArrow : RectangleBase {
-
+namespace Dataweb.NShape.GeneralShapes
+{
+	public class ThickArrow : RectangleBase
+	{
 		/// <override></override>
-		protected override void InitializeToDefault(IStyleSet styleSet) {
+		protected override void InitializeToDefault(IStyleSet styleSet)
+		{
 			base.InitializeToDefault(styleSet);
-			bodyHeightRatio = 1d / 3d;
-			headWidth = (int)Math.Round(Width / 2f);
+			bodyHeightRatio = 1d/3d;
+			headWidth = (int) Math.Round(Width/2f);
 		}
 
 
 		/// <override></override>
-		public override void CopyFrom(Shape source) {
+		public override void CopyFrom(Shape source)
+		{
 			base.CopyFrom(source);
 			if (source is ThickArrow) {
-				this.headWidth = ((ThickArrow)source).headWidth;
-				this.bodyHeightRatio = ((ThickArrow)source).bodyHeightRatio;
+				this.headWidth = ((ThickArrow) source).headWidth;
+				this.bodyHeightRatio = ((ThickArrow) source).bodyHeightRatio;
 			}
 			InvalidateDrawCache();
 		}
 
 
 		/// <override></override>
-		public override Shape Clone() {
-			Shape result = new ThickArrow(Type, (Template)null);
+		public override Shape Clone()
+		{
+			Shape result = new ThickArrow(Type, (Template) null);
 			result.CopyFrom(this);
 			return result;
 		}
 
 
-		public int BodyWidth {
+		public int BodyWidth
+		{
 			get { return Width - headWidth; }
 		}
 
@@ -62,15 +65,17 @@ namespace Dataweb.NShape.GeneralShapes {
 		[Description("The height of the arrow's body.")]
 		[PropertyMappingId(PropertyIdBodyHeight)]
 		[RequiredPermission(Permission.Layout)]
-		public int BodyHeight {
-			get { return (int)Math.Round(Height * bodyHeightRatio); }
-			set {
+		public int BodyHeight
+		{
+			get { return (int) Math.Round(Height*bodyHeightRatio); }
+			set
+			{
 				Invalidate();
 				if (value > Height) throw new ArgumentOutOfRangeException("BodyHeight");
 
 				if (Height == 0) bodyHeightRatio = 0;
-				else bodyHeightRatio = value / (float)Height;
-				
+				else bodyHeightRatio = value/(float) Height;
+
 				InvalidateDrawCache();
 				Invalidate();
 			}
@@ -81,9 +86,11 @@ namespace Dataweb.NShape.GeneralShapes {
 		[Description("The width of the arrow's tip.")]
 		[PropertyMappingId(PropertyIdHeadWidth)]
 		[RequiredPermission(Permission.Layout)]
-		public int HeadWidth {
+		public int HeadWidth
+		{
 			get { return headWidth; }
-			set {
+			set
+			{
 				Invalidate();
 				headWidth = value;
 				InvalidateDrawCache();
@@ -93,33 +100,38 @@ namespace Dataweb.NShape.GeneralShapes {
 
 
 		/// <override></override>
-		protected override int ControlPointCount {
+		protected override int ControlPointCount
+		{
 			get { return 7; }
 		}
 
 
 		/// <override></override>
-		public override bool HasControlPointCapability(ControlPointId controlPointId, ControlPointCapabilities controlPointCapability) {
+		public override bool HasControlPointCapability(ControlPointId controlPointId,
+		                                               ControlPointCapabilities controlPointCapability)
+		{
 			switch (controlPointId) {
 				case ArrowTipControlPoint:
 				case BodyEndControlPoint:
 					// ToDo: Implement GluePoint behavior for ThickArrows
 					return ((controlPointCapability & ControlPointCapabilities.Resize) != 0
-						//|| (controlPointCapability & ControlPointCapabilities.Glue) != 0
-						|| ((controlPointCapability & ControlPointCapabilities.Connect) != 0 && IsConnectionPointEnabled(controlPointId)));
+					        //|| (controlPointCapability & ControlPointCapabilities.Glue) != 0
+					        ||
+					        ((controlPointCapability & ControlPointCapabilities.Connect) != 0 &&
+					         IsConnectionPointEnabled(controlPointId)));
 				case ArrowTopControlPoint:
 				case BodyTopControlPoint:
 				case BodyBottomControlPoint:
 				case ArrowBottomControlPoint:
 					return ((controlPointCapability & ControlPointCapabilities.Resize) != 0
-								|| ((controlPointCapability & ControlPointCapabilities.Connect) != 0
-								&& IsConnectionPointEnabled(controlPointId)));
+					        || ((controlPointCapability & ControlPointCapabilities.Connect) != 0
+					            && IsConnectionPointEnabled(controlPointId)));
 
 				case RotateControlPoint:
 					return ((controlPointCapability & ControlPointCapabilities.Reference) != 0
-								|| (controlPointCapability & ControlPointCapabilities.Rotate) != 0
-								|| ((controlPointCapability & ControlPointCapabilities.Connect) != 0 
-									&& IsConnectionPointEnabled(controlPointId)));
+					        || (controlPointCapability & ControlPointCapabilities.Rotate) != 0
+					        || ((controlPointCapability & ControlPointCapabilities.Connect) != 0
+					            && IsConnectionPointEnabled(controlPointId)));
 				default:
 					return base.HasControlPointCapability(controlPointId, controlPointCapability);
 			}
@@ -127,15 +139,17 @@ namespace Dataweb.NShape.GeneralShapes {
 
 
 		/// <override></override>
-		public override void Fit(int x, int y, int width, int height) {
-			float headWidthRatio = this.HeadWidth / (float)Width;
-			HeadWidth = (int)Math.Round(width * headWidthRatio);
+		public override void Fit(int x, int y, int width, int height)
+		{
+			float headWidthRatio = this.HeadWidth/(float) Width;
+			HeadWidth = (int) Math.Round(width*headWidthRatio);
 			base.Fit(x, y, width, height);
 		}
 
 
 		/// <override></override>
-		public override Point CalculateConnectionFoot(int startX, int startY) {
+		public override Point CalculateConnectionFoot(int startX, int startY)
+		{
 			CalcShapePoints();
 			PointF rotationCenter = PointF.Empty;
 			rotationCenter.X = X;
@@ -149,16 +163,17 @@ namespace Dataweb.NShape.GeneralShapes {
 			Point startPoint = Point.Empty;
 			startPoint.X = startX;
 			startPoint.Y = startY;
-			Point result = Geometry.GetNearestPoint(startPoint, Geometry.IntersectPolygonLine(shapePoints, startX, startY, X, Y, true));
+			Point result = Geometry.GetNearestPoint(startPoint,
+			                                        Geometry.IntersectPolygonLine(shapePoints, startX, startY, X, Y, true));
 			if (!Geometry.IsValid(result)) result = Center;
 			return result;
 		}
 
-
 		#region IEntity Members
 
 		/// <override></override>
-		protected override void LoadFieldsCore(IRepositoryReader reader, int version) {
+		protected override void LoadFieldsCore(IRepositoryReader reader, int version)
+		{
 			base.LoadFieldsCore(reader, version);
 			HeadWidth = reader.ReadInt32();
 			BodyHeight = reader.ReadInt32();
@@ -166,7 +181,8 @@ namespace Dataweb.NShape.GeneralShapes {
 
 
 		/// <override></override>
-		protected override void SaveFieldsCore(IRepositoryWriter writer, int version) {
+		protected override void SaveFieldsCore(IRepositoryWriter writer, int version)
+		{
 			base.SaveFieldsCore(writer, version);
 			writer.WriteInt32(HeadWidth);
 			writer.WriteInt32(BodyHeight);
@@ -176,34 +192,37 @@ namespace Dataweb.NShape.GeneralShapes {
 		/// <summary>
 		/// Retrieves the persistable properties of <see cref="T:Dataweb.NShape.Advanced.ThickArrow" />.
 		/// </summary>
-		new public static IEnumerable<EntityPropertyDefinition> GetPropertyDefinitions(int version) {
+		public new static IEnumerable<EntityPropertyDefinition> GetPropertyDefinitions(int version)
+		{
 			foreach (EntityPropertyDefinition pi in RectangleBase.GetPropertyDefinitions(version))
 				yield return pi;
-			yield return new EntityFieldDefinition("HeadWidth", typeof(int));
-			yield return new EntityFieldDefinition("BodyHeight", typeof(int));
+			yield return new EntityFieldDefinition("HeadWidth", typeof (int));
+			yield return new EntityFieldDefinition("BodyHeight", typeof (int));
 		}
 
 		#endregion
 
-
 		protected internal ThickArrow(ShapeType shapeType, Template template)
-			: base(shapeType, template) {
+			: base(shapeType, template)
+		{
 		}
 
 
 		protected internal ThickArrow(ShapeType shapeType, IStyleSet styleSet)
-			: base(shapeType, styleSet) {
+			: base(shapeType, styleSet)
+		{
 		}
 
 
 		/// <override></override>
-		protected override void CalcCaptionBounds(int index, out Rectangle captionBounds) {
+		protected override void CalcCaptionBounds(int index, out Rectangle captionBounds)
+		{
 			if (index != 0) throw new IndexOutOfRangeException();
 			captionBounds = Rectangle.Empty;
-			captionBounds.Width = (int)Math.Round(Width - (HeadWidth / 3f));
+			captionBounds.Width = (int) Math.Round(Width - (HeadWidth/3f));
 			captionBounds.Height = BodyHeight;
-			captionBounds.X = -(int)Math.Round((Width / 2f) - (HeadWidth / 3f));
-			captionBounds.Y = -(int)Math.Round(captionBounds.Height / 2f);
+			captionBounds.X = -(int) Math.Round((Width/2f) - (HeadWidth/3f));
+			captionBounds.Y = -(int) Math.Round(captionBounds.Height/2f);
 			if (ParagraphStyle != null) {
 				captionBounds.X += ParagraphStyle.Padding.Left;
 				captionBounds.Y += ParagraphStyle.Padding.Top;
@@ -214,7 +233,8 @@ namespace Dataweb.NShape.GeneralShapes {
 
 
 		/// <override></override>
-		protected override bool CalculatePath() {
+		protected override bool CalculatePath()
+		{
 			if (base.CalculatePath()) {
 				Path.Reset();
 				CalcShapePoints();
@@ -222,11 +242,13 @@ namespace Dataweb.NShape.GeneralShapes {
 				Path.AddPolygon(shapePoints);
 				Path.CloseFigure();
 				return true;
-			} else return false;
+			}
+			else return false;
 		}
 
 
-		protected override bool ContainsPointCore(int x, int y) {
+		protected override bool ContainsPointCore(int x, int y)
+		{
 			if (base.ContainsPointCore(x, y)) {
 				CalcShapePoints();
 				// Transform points
@@ -236,12 +258,14 @@ namespace Dataweb.NShape.GeneralShapes {
 				Matrix.TransformPoints(shapePoints);
 
 				return Geometry.PolygonContainsPoint(shapePoints, x, y);
-			} return false;
+			}
+			return false;
 		}
 
 
 		/// <override></override>
-		protected override Rectangle CalculateBoundingRectangle(bool tight) {
+		protected override Rectangle CalculateBoundingRectangle(bool tight)
+		{
 			Rectangle result = Geometry.InvalidRectangle;
 			if (Width >= 0 && Height >= 0) {
 				CalcShapePoints();
@@ -256,15 +280,23 @@ namespace Dataweb.NShape.GeneralShapes {
 
 
 		/// <override></override>
-		protected override int GetControlPointIndex(ControlPointId id) {
+		protected override int GetControlPointIndex(ControlPointId id)
+		{
 			switch (id) {
-				case ArrowTipControlPoint: return 0;
-				case ArrowTopControlPoint: return 1;
-				case BodyTopControlPoint: return 2;
-				case BodyEndControlPoint: return 3;
-				case BodyBottomControlPoint: return 4;
-				case ArrowBottomControlPoint: return 5;
-				case RotateControlPoint: return 6;
+				case ArrowTipControlPoint:
+					return 0;
+				case ArrowTopControlPoint:
+					return 1;
+				case BodyTopControlPoint:
+					return 2;
+				case BodyEndControlPoint:
+					return 3;
+				case BodyBottomControlPoint:
+					return 4;
+				case ArrowBottomControlPoint:
+					return 5;
+				case RotateControlPoint:
+					return 6;
 				default:
 					return base.GetControlPointIndex(id);
 			}
@@ -272,13 +304,14 @@ namespace Dataweb.NShape.GeneralShapes {
 
 
 		/// <override></override>
-		protected override void CalcControlPoints() {
-			int left = -(int)Math.Round(Width / 2f);
+		protected override void CalcControlPoints()
+		{
+			int left = -(int) Math.Round(Width/2f);
 			int right = left + Width;
-			int top = -(int)Math.Round(Height / 2f);
+			int top = -(int) Math.Round(Height/2f);
 			int bottom = top + Height;
-			int halfBodyWidth = (int)Math.Round(BodyWidth / 2f);
-			int halfBodyHeight = (int)Math.Round(BodyHeight / 2f);
+			int halfBodyWidth = (int) Math.Round(BodyWidth/2f);
+			int halfBodyHeight = (int) Math.Round(BodyHeight/2f);
 
 			int i = 0;
 			controlPoints[i].X = left;
@@ -305,7 +338,8 @@ namespace Dataweb.NShape.GeneralShapes {
 
 
 		/// <override></override>
-		protected override bool MovePointByCore(ControlPointId pointId, int deltaX, int deltaY, ResizeModifiers modifiers) {
+		protected override bool MovePointByCore(ControlPointId pointId, int deltaX, int deltaY, ResizeModifiers modifiers)
+		{
 			if (pointId == ArrowTipControlPoint || pointId == BodyEndControlPoint) {
 				bool result = true;
 				int dx = 0, dy = 0;
@@ -315,20 +349,25 @@ namespace Dataweb.NShape.GeneralShapes {
 				Point endPt = GetControlPointPosition(BodyEndControlPoint);
 
 				if (pointId == ArrowTipControlPoint)
-					result = Geometry.MoveArrowPoint(Center, tipPt, endPt, angle, headWidth, 0.5f, deltaX, deltaY, modifiers, out dx, out dy, out width, out angle);
+					result = Geometry.MoveArrowPoint(Center, tipPt, endPt, angle, headWidth, 0.5f, deltaX, deltaY, modifiers, out dx,
+					                                 out dy, out width, out angle);
 				else
-					result = Geometry.MoveArrowPoint(Center, endPt, tipPt, angle, headWidth, 0.5f, deltaX, deltaY, modifiers, out dx, out dy, out width, out angle);
+					result = Geometry.MoveArrowPoint(Center, endPt, tipPt, angle, headWidth, 0.5f, deltaX, deltaY, modifiers, out dx,
+					                                 out dy, out width, out angle);
 
 				RotateCore(angle - Angle, X, Y);
 				MoveByCore(dx, dy);
 				Width = width;
 				return result;
-			} else return base.MovePointByCore(pointId, deltaX, deltaY, modifiers);
+			}
+			else return base.MovePointByCore(pointId, deltaX, deltaY, modifiers);
 		}
 
 
 		/// <override></override>
-		protected override bool MovePointByCore(ControlPointId pointId, float transformedDeltaX, float transformedDeltaY, float sin, float cos, ResizeModifiers modifiers) {
+		protected override bool MovePointByCore(ControlPointId pointId, float transformedDeltaX, float transformedDeltaY,
+		                                        float sin, float cos, ResizeModifiers modifiers)
+		{
 			bool result = true;
 			int dx = 0, dy = 0;
 			int width = Width;
@@ -338,18 +377,24 @@ namespace Dataweb.NShape.GeneralShapes {
 				case ArrowBottomControlPoint:
 					if (pointId == ArrowTopControlPoint) {
 						//result = (transformedDeltaX == 0);
-						if (!Geometry.MoveRectangleTop(width, height, transformedDeltaX, transformedDeltaY, cos, sin, modifiers, out dx, out dy, out width, out height))
-							result = false;
-					} else {
-						//result = (transformedDeltaX == 0);
-						if (!Geometry.MoveRectangleBottom(width, height, transformedDeltaX, transformedDeltaY, cos, sin, modifiers, out dx, out dy, out width, out height))
+						if (
+							!Geometry.MoveRectangleTop(width, height, transformedDeltaX, transformedDeltaY, cos, sin, modifiers, out dx,
+							                           out dy, out width, out height))
 							result = false;
 					}
-					int newHeadWidth = HeadWidth + (int)Math.Round(transformedDeltaX);
+					else {
+						//result = (transformedDeltaX == 0);
+						if (
+							!Geometry.MoveRectangleBottom(width, height, transformedDeltaX, transformedDeltaY, cos, sin, modifiers, out dx,
+							                              out dy, out width, out height))
+							result = false;
+					}
+					int newHeadWidth = HeadWidth + (int) Math.Round(transformedDeltaX);
 					if (newHeadWidth < 0) {
 						newHeadWidth = 0;
 						result = false;
-					} else if (newHeadWidth > Width) {
+					}
+					else if (newHeadWidth > Width) {
 						newHeadWidth = Width;
 						result = false;
 					}
@@ -360,13 +405,14 @@ namespace Dataweb.NShape.GeneralShapes {
 					result = (transformedDeltaX == 0);
 					int newBodyHeight = 0;
 					if (pointId == BodyTopControlPoint)
-						newBodyHeight = (int)Math.Round(BodyHeight - (transformedDeltaY * 2));
+						newBodyHeight = (int) Math.Round(BodyHeight - (transformedDeltaY*2));
 					else
-						newBodyHeight = (int)Math.Round(BodyHeight + (transformedDeltaY * 2));
+						newBodyHeight = (int) Math.Round(BodyHeight + (transformedDeltaY*2));
 					if (newBodyHeight > Height) {
 						newBodyHeight = Height;
 						result = false;
-					} else if (newBodyHeight < 0) {
+					}
+					else if (newBodyHeight < 0) {
 						newBodyHeight = 0;
 						result = false;
 					}
@@ -387,7 +433,8 @@ namespace Dataweb.NShape.GeneralShapes {
 
 
 		/// <override></override>
-		protected override void ProcessExecModelPropertyChange(IModelMapping propertyMapping) {
+		protected override void ProcessExecModelPropertyChange(IModelMapping propertyMapping)
+		{
 			switch (propertyMapping.ShapePropertyId) {
 				case PropertyIdBodyHeight:
 					BodyHeight = propertyMapping.GetInteger();
@@ -400,14 +447,15 @@ namespace Dataweb.NShape.GeneralShapes {
 					break;
 			}
 		}
-		
-		
-		private void CalcShapePoints() {
-			int left = -(int)Math.Round(Width / 2f);
+
+
+		private void CalcShapePoints()
+		{
+			int left = -(int) Math.Round(Width/2f);
 			int right = left + Width;
-			int top = -(int)Math.Round(Height / 2f);
+			int top = -(int) Math.Round(Height/2f);
 			int bottom = top + Height;
-			int halfBodyHeight = (int)Math.Round(BodyHeight / 2f);
+			int halfBodyHeight = (int) Math.Round(BodyHeight/2f);
 
 			// head tip
 			shapePoints[0].X = left;
@@ -438,7 +486,6 @@ namespace Dataweb.NShape.GeneralShapes {
 			shapePoints[6].Y = bottom;
 		}
 
-
 		#region Fields
 
 		protected const int PropertyIdBodyHeight = 9;
@@ -458,68 +505,75 @@ namespace Dataweb.NShape.GeneralShapes {
 		private Point[] shapePoints = new Point[7];
 		private int headWidth;
 		private double bodyHeightRatio;
+
 		#endregion
 	}
 
 
-	public class Picture : PictureBase {
-		
-		internal static Shape CreateInstance(ShapeType shapeType, Template template) {
+	public class Picture : PictureBase
+	{
+		internal static Shape CreateInstance(ShapeType shapeType, Template template)
+		{
 			return new Picture(shapeType, template);
 		}
 
 
 		/// <override></override>
-		public override Shape Clone() {
-			Shape result = new Picture(Type, (Template)null);
+		public override Shape Clone()
+		{
+			Shape result = new Picture(Type, (Template) null);
 			result.CopyFrom(this);
 			return result;
 		}
 
 
 		protected internal Picture(ShapeType shapeType, Template template)
-			: base(shapeType, template) {
+			: base(shapeType, template)
+		{
 			Construct();
 		}
 
 
 		protected internal Picture(ShapeType shapeType, IStyleSet styleSet)
-			: base(shapeType, styleSet) {
+			: base(shapeType, styleSet)
+		{
 			Construct();
 		}
 
 
-		private void Construct() {
+		private void Construct()
+		{
 			//Image = new NamedImage();
 		}
-
 	}
 
 
-	public class RegularPolygone : RegularPolygoneBase {
-		
+	public class RegularPolygone : RegularPolygoneBase
+	{
 		/// <ToBeCompleted></ToBeCompleted>
-		public static Shape CreateInstance(ShapeType shapeType, Template template) {
+		public static Shape CreateInstance(ShapeType shapeType, Template template)
+		{
 			return new RegularPolygone(shapeType, template);
 		}
 
 
-		public override Shape Clone() {
-			Shape result = new RegularPolygone(Type, (Template)null);
+		public override Shape Clone()
+		{
+			Shape result = new RegularPolygone(Type, (Template) null);
 			result.CopyFrom(this);
 			return result;
 		}
 
 
 		protected RegularPolygone(ShapeType shapeType, Template template)
-			: base(shapeType, template) {
+			: base(shapeType, template)
+		{
 		}
 
 
 		protected RegularPolygone(ShapeType shapeType, IStyleSet styleSet)
-			: base(shapeType, styleSet) {
+			: base(shapeType, styleSet)
+		{
 		}
-
 	}
-
 }

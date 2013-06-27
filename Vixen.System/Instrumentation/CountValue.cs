@@ -1,17 +1,22 @@
-﻿namespace Vixen.Instrumentation {
-	abstract public class CountValue : InstrumentationValue {
+﻿namespace Vixen.Instrumentation
+{
+	public abstract class CountValue : InstrumentationValue
+	{
 		private double _value;
 
 		protected CountValue(string name)
-			: base(name) {
+			: base(name)
+		{
 		}
 
 		// Simple count.
-		override protected double _GetValue() {
+		protected override double _GetValue()
+		{
 			return _value;
 		}
-		
-		public void Add(double value) {
+
+		public void Add(double value)
+		{
 			_value += value;
 		}
 	}

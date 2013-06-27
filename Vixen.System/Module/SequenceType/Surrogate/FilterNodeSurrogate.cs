@@ -5,10 +5,13 @@ using System.Runtime.Serialization;
 using Vixen.Module.SequenceFilter;
 using Vixen.Sys;
 
-namespace Vixen.Module.SequenceType.Surrogate {
+namespace Vixen.Module.SequenceType.Surrogate
+{
 	[DataContract(Namespace = "")]
-	class FilterNodeSurrogate : NodeSurrogate {
-		public FilterNodeSurrogate(ISequenceFilterNode filterNode) {
+	internal class FilterNodeSurrogate : NodeSurrogate
+	{
+		public FilterNodeSurrogate(ISequenceFilterNode filterNode)
+		{
 			StartTime = filterNode.StartTime;
 			TypeId = filterNode.Filter.Descriptor.TypeId;
 			InstanceId = filterNode.Filter.InstanceId;
@@ -16,7 +19,8 @@ namespace Vixen.Module.SequenceType.Surrogate {
 			TargetNodes = filterNode.Filter.TargetNodes.Select(x => new ChannelNodeReferenceSurrogate(x)).ToArray();
 		}
 
-		public ISequenceFilterNode CreateFilterNode() {
+		public ISequenceFilterNode CreateFilterNode()
+		{
 			var elementNodes = VixenSystem.Nodes.Distinct().ToDictionary(x => x.Id);
 
 			IEnumerable<Guid> targetNodeIds = TargetNodes.Select(x => x.NodeId);

@@ -1,6 +1,9 @@
-﻿namespace Vixen.IO.Policy {
-	abstract class SystemContextFilePolicy : IFilePolicy {
-		public void Write() {
+﻿namespace Vixen.IO.Policy
+{
+	internal abstract class SystemContextFilePolicy : IFilePolicy
+	{
+		public void Write()
+		{
 			WriteSourceIdentity();
 			WriteContextName();
 			WriteContextDescription();
@@ -12,7 +15,8 @@
 		protected abstract void WriteContextDescription();
 		protected abstract void WriteFiles();
 
-		public void Read() {
+		public void Read()
+		{
 			ReadSourceIdentity();
 			ReadContextName();
 			ReadContextDescription();

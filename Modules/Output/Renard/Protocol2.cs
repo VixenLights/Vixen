@@ -5,9 +5,12 @@ using System.Text;
 using Vixen.Commands;
 
 //TODO: This.
-namespace VixenModules.Output.Renard {
+
+namespace VixenModules.Output.Renard
+{
 	//[ProtocolVersion(2)]
-	class Protocol2 {
+	internal class Protocol2
+	{
 		//private byte[] _p2Packet;
 		//private byte[] _p2Zeroes;
 		//private int _outputCount;

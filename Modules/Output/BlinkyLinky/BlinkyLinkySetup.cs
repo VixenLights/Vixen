@@ -41,13 +41,13 @@ namespace VixenModules.Output.BlinkyLinky
 
 		public int Port
 		{
-			get { return (int)numericUpDownPort.Value; }
+			get { return (int) numericUpDownPort.Value; }
 			set
 			{
 				if (value > numericUpDownPort.Maximum)
-					value = (int)numericUpDownPort.Maximum;
+					value = (int) numericUpDownPort.Maximum;
 				if (value < numericUpDownPort.Minimum)
-					value = (int)numericUpDownPort.Minimum;
+					value = (int) numericUpDownPort.Minimum;
 
 				numericUpDownPort.Value = value;
 			}
@@ -55,19 +55,16 @@ namespace VixenModules.Output.BlinkyLinky
 
 		public int Stream
 		{
-			get { return (int)numericUpDownStream.Value; }
+			get { return (int) numericUpDownStream.Value; }
 			set
 			{
 				if (value > numericUpDownStream.Maximum)
-					value = (int)numericUpDownStream.Maximum;
+					value = (int) numericUpDownStream.Maximum;
 				if (value < numericUpDownStream.Minimum)
-					value = (int)numericUpDownStream.Minimum;
+					value = (int) numericUpDownStream.Minimum;
 
 				numericUpDownStream.Value = value;
 			}
 		}
-
-
-
 	}
 }

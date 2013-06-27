@@ -1,7 +1,9 @@
 ﻿using System;
 
-namespace Vixen.Data.Flow {
-	public interface IDataFlowComponent {
+namespace Vixen.Data.Flow
+{
+	public interface IDataFlowComponent
+	{
 		Guid DataFlowComponentId { get; }
 		DataFlowType InputDataType { get; }
 		DataFlowType OutputDataType { get; }
@@ -11,7 +13,8 @@ namespace Vixen.Data.Flow {
 	}
 
 	public interface IDataFlowComponent<T> : IDataFlowComponent
-		where T : IDataFlowData {
+		where T : IDataFlowData
+	{
 		IDataFlowOutput<T>[] Outputs { get; }
 		IDataFlowComponentReference<T> Source { get; set; }
 	}

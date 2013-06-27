@@ -10,15 +10,15 @@ using System.Runtime.Serialization;
 namespace VixenModules.App.ColorGradients
 {
 	[DataContract]
-	class ColorGradientLibraryStaticData : ModuleDataModelBase
+	internal class ColorGradientLibraryStaticData : ModuleDataModelBase
 	{
 		public ColorGradientLibraryStaticData()
 		{
 			Library = new Dictionary<string, ColorGradient>();
 		}
 
-		[DataMember]
-		private Dictionary<string, ColorGradient> _library;
+		[DataMember] private Dictionary<string, ColorGradient> _library;
+
 		public Dictionary<string, ColorGradient> Library
 		{
 			get
@@ -28,10 +28,7 @@ namespace VixenModules.App.ColorGradients
 
 				return _library;
 			}
-			set
-			{
-				_library = value;
-			}
+			set { _library = value; }
 		}
 
 		[DataMember]

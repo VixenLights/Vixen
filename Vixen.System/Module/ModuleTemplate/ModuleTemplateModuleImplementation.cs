@@ -4,11 +4,14 @@ using System.Linq;
 using System.Text;
 using Vixen.Sys.Attribute;
 
-namespace Vixen.Module.ModuleTemplate {
+namespace Vixen.Module.ModuleTemplate
+{
 	[TypeOfModule("ModuleTemplate")]
-	class ModuleTemplateModuleImplementation : ModuleImplementation<IModuleTemplateModuleInstance> {
+	internal class ModuleTemplateModuleImplementation : ModuleImplementation<IModuleTemplateModuleInstance>
+	{
 		public ModuleTemplateModuleImplementation()
-			: base(new ModuleTemplateModuleManagement(), new ModuleTemplateModuleRepository()) {
+			: base(new ModuleTemplateModuleManagement(), new ModuleTemplateModuleRepository())
+		{
 		}
 	}
 }

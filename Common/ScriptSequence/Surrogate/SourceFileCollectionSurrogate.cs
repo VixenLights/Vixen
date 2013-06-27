@@ -2,10 +2,13 @@
 using System.Runtime.Serialization;
 using Common.ScriptSequence.Script;
 
-namespace Common.ScriptSequence.Surrogate {
+namespace Common.ScriptSequence.Surrogate
+{
 	[DataContract]
-	class SourceFileCollectionSurrogate {
-		public SourceFileCollectionSurrogate(SourceFileCollection sourceFileCollection) {
+	internal class SourceFileCollectionSurrogate
+	{
+		public SourceFileCollectionSurrogate(SourceFileCollection sourceFileCollection)
+		{
 			SourceFiles = sourceFileCollection.Select(x => new SourceFileSurrogate(x)).ToArray();
 		}
 

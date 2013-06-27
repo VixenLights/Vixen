@@ -41,14 +41,14 @@ namespace ZedGraph
 	[Serializable]
 	public class HiLowBar : Bar, ICloneable, ISerializable
 	{
+		#region Fields
 
-	#region Fields
 		/// <summary>
 		/// Private field that stores the size (width) of this
-        /// <see cref="HiLowBar"/> in points (1/72 inch).  Use the public
-        /// property <see cref="Size"/> to access this value.
+		/// <see cref="HiLowBar"/> in points (1/72 inch).  Use the public
+		/// property <see cref="Size"/> to access this value.
 		/// </summary>
-		private float		_size;
+		private float _size;
 
 		/// <summary>
 		/// Private field that determines whether the bar width will be based on
@@ -64,14 +64,15 @@ namespace ZedGraph
 		/// </summary>
 		internal double _userScaleSize = 1.0;
 
-	#endregion
+		#endregion
 
-	#region Default
+		#region Default
+
 		/// <summary>
 		/// A simple struct that defines the
 		/// default property values for the <see cref="ZedGraph.HiLowBar"/> class.
 		/// </summary>
-		new public struct Default
+		public new struct Default
 		{
 			// Default HiLowBar properties
 			/// <summary>
@@ -85,14 +86,16 @@ namespace ZedGraph
 			/// </summary>
 			public static bool IsAutoSize = true;
 		}
-	#endregion
 
-	#region Constructors
+		#endregion
+
+		#region Constructors
+
 		/// <summary>
 		/// Default constructor that sets all <see cref="HiLowBar"/> properties to default
 		/// values as defined in the <see cref="Bar.Default"/> class.
 		/// </summary>
-		public HiLowBar() : this( Color.Empty )
+		public HiLowBar() : this(Color.Empty)
 		{
 		}
 
@@ -109,7 +112,7 @@ namespace ZedGraph
 		/// the <see cref="ZedGraph.Fill.Color"/>
 		/// of the Bar.
 		/// </param>
-		public HiLowBar( Color color ) : this( color, Default.Size )
+		public HiLowBar(Color color) : this(color, Default.Size)
 		{
 		}
 
@@ -128,7 +131,7 @@ namespace ZedGraph
 		/// </param>
 		/// <param name="size">The size (width) of the <see cref="HiLowBar"/>'s, in points
 		/// (1/72nd inch)</param>
-		public HiLowBar( Color color, float size ) : base( color )
+		public HiLowBar(Color color, float size) : base(color)
 		{
 			_size = size;
 			_isAutoSize = Default.IsAutoSize;
@@ -138,7 +141,7 @@ namespace ZedGraph
 		/// The Copy Constructor
 		/// </summary>
 		/// <param name="rhs">The <see cref="HiLowBar"/> object from which to copy</param>
-		public HiLowBar( HiLowBar rhs ) : base( rhs )
+		public HiLowBar(HiLowBar rhs) : base(rhs)
 		{
 			_size = rhs._size;
 			_isAutoSize = rhs._isAutoSize;
@@ -158,14 +161,15 @@ namespace ZedGraph
 		/// Typesafe, deep-copy clone method.
 		/// </summary>
 		/// <returns>A new, independent copy of this class</returns>
-		new public HiLowBar Clone()
+		public new HiLowBar Clone()
 		{
-			return new HiLowBar( this );
+			return new HiLowBar(this);
 		}
 
-	#endregion
+		#endregion
 
-	#region Serialization
+		#region Serialization
+
 		/// <summary>
 		/// Current schema value that defines the version of the serialized file
 		/// </summary>
@@ -178,31 +182,34 @@ namespace ZedGraph
 		/// </param>
 		/// <param name="context">A <see cref="StreamingContext"/> instance that contains the serialized data
 		/// </param>
-		protected HiLowBar( SerializationInfo info, StreamingContext context ) : base( info, context )
+		protected HiLowBar(SerializationInfo info, StreamingContext context) : base(info, context)
 		{
 			// The schema value is just a file version parameter.  You can use it to make future versions
 			// backwards compatible as new member variables are added to classes
-			int sch = info.GetInt32( "schema2" );
+			int sch = info.GetInt32("schema2");
 
-			_size = info.GetSingle( "size" );
-			_isAutoSize = info.GetBoolean( "isAutoSize" );
+			_size = info.GetSingle("size");
+			_isAutoSize = info.GetBoolean("isAutoSize");
 		}
+
 		/// <summary>
 		/// Populates a <see cref="SerializationInfo"/> instance with the data needed to serialize the target object
 		/// </summary>
 		/// <param name="info">A <see cref="SerializationInfo"/> instance that defines the serialized data</param>
 		/// <param name="context">A <see cref="StreamingContext"/> instance that contains the serialized data</param>
-		[SecurityPermissionAttribute(SecurityAction.Demand,SerializationFormatter=true)]
-		public override void GetObjectData( SerializationInfo info, StreamingContext context )
+		[SecurityPermissionAttribute(SecurityAction.Demand, SerializationFormatter = true)]
+		public override void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
-			base.GetObjectData( info, context );
-			info.AddValue( "schema2", schema2 );
-			info.AddValue( "size", _size );
-			info.AddValue( "isAutoSize", _isAutoSize );
+			base.GetObjectData(info, context);
+			info.AddValue("schema2", schema2);
+			info.AddValue("size", _size);
+			info.AddValue("isAutoSize", _isAutoSize);
 		}
-	#endregion
 
-	#region Properties
+		#endregion
+
+		#region Properties
+
 		/// <summary>
 		/// Gets or sets the size of the <see cref="HiLowBar"/>
 		/// </summary>
@@ -217,12 +224,16 @@ namespace ZedGraph
 		/// <see cref="Size"/> will be ignored.  If you modify the value of Size,
 		/// then <see cref="IsAutoSize" /> will be automatically set to false.
 		/// </remarks>
-      /// <value>Size in points (1/72 inch)</value>
-      /// <seealso cref="Default.Size"/>
+		/// <value>Size in points (1/72 inch)</value>
+		/// <seealso cref="Default.Size"/>
 		public float Size
 		{
 			get { return _size; }
-			set { _size = value; _isAutoSize = false; }
+			set
+			{
+				_size = value;
+				_isAutoSize = false;
+			}
 		}
 
 		/// <summary>
@@ -241,9 +252,11 @@ namespace ZedGraph
 			get { return _isAutoSize; }
 			set { _isAutoSize = value; }
 		}
-	#endregion
 
-	#region Methods
+		#endregion
+
+		#region Methods
+
 		/*
 		/// <summary>
 		/// Protected internal routine that draws the specified single bar (an individual "point")
@@ -357,22 +370,20 @@ namespace ZedGraph
 		/// font sizes, etc. according to the actual size of the graph.
 		/// </param>
 		/// <returns>The width of each bar, in pixel units</returns>
-		public float GetBarWidth( GraphPane pane, Axis baseAxis, float scaleFactor )
+		public float GetBarWidth(GraphPane pane, Axis baseAxis, float scaleFactor)
 		{
 			float width;
 
-			if ( _isAutoSize )
-				width = baseAxis._scale.GetClusterWidth( _userScaleSize ) /
-								( 1.0F + pane._barSettings.MinClusterGap );
+			if (_isAutoSize)
+				width = baseAxis._scale.GetClusterWidth(_userScaleSize)/
+				        (1.0F + pane._barSettings.MinClusterGap);
 			else
-				width = (float) ( _size * scaleFactor );
+				width = (float) (_size*scaleFactor);
 
 			// use integral size
-			return (int)( width + 0.5f );
+			return (int) (width + 0.5f);
 		}
-		
 
-	#endregion
-
+		#endregion
 	}
 }

@@ -20,20 +20,22 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 
 
-namespace Dataweb.NShape.Advanced {
-
+namespace Dataweb.NShape.Advanced
+{
 	/// <summary>
 	/// Title shape.
 	/// </summary>
 	/// <remarks>RequiredPermissions set</remarks>
-	public abstract class TextBase : RectangleBase {
-
+	public abstract class TextBase : RectangleBase
+	{
 		#region [Public] Properties
 
 		/// <override></override>
-		public override string Text {
+		public override string Text
+		{
 			get { return base.Text; }
-			set {
+			set
+			{
 				base.Text = value;
 				if (autoSize) FitShapeToText();
 			}
@@ -42,11 +44,15 @@ namespace Dataweb.NShape.Advanced {
 
 		/// <ToBeCompleted></ToBeCompleted>
 		[Category("Layout")]
-		[Description("Enables automatic resizing based on the text's size. If enabled, the WordWrap property of ParagraphStyles has no effect.")]
+		[Description(
+			"Enables automatic resizing based on the text's size. If enabled, the WordWrap property of ParagraphStyles has no effect."
+			)]
 		[RequiredPermission(Permission.Layout)]
-		public bool AutoSize {
+		public bool AutoSize
+		{
 			get { return autoSize; }
-			set {
+			set
+			{
 				Invalidate();
 				autoSize = value;
 				if (autoSize) {
@@ -59,41 +65,46 @@ namespace Dataweb.NShape.Advanced {
 
 		#endregion
 
-
 		#region [Public] Methods
 
 		/// <override></override>
-		public override void CopyFrom(Shape source) {
+		public override void CopyFrom(Shape source)
+		{
 			base.CopyFrom(source);
 			if (source is TextBase)
-				this.AutoSize = ((TextBase)source).AutoSize;
+				this.AutoSize = ((TextBase) source).AutoSize;
 		}
 
 
 		/// <override></override>
-		protected override bool MovePointByCore(ControlPointId pointId, int deltaX, int deltaY, ResizeModifiers modifiers) {
-			if (autoSize && pointId != ControlPointId.Reference) 
+		protected override bool MovePointByCore(ControlPointId pointId, int deltaX, int deltaY, ResizeModifiers modifiers)
+		{
+			if (autoSize && pointId != ControlPointId.Reference)
 				return false;
 			else return base.MovePointByCore(pointId, deltaX, deltaY, modifiers);
 		}
 
 
 		/// <override></override>
-		public override void SetCaptionCharacterStyle(int index, ICharacterStyle characterStyle) {
+		public override void SetCaptionCharacterStyle(int index, ICharacterStyle characterStyle)
+		{
 			base.SetCaptionCharacterStyle(index, characterStyle);
 			if (autoSize) FitShapeToText();
 		}
 
 
 		/// <override></override>
-		public override void SetCaptionParagraphStyle(int index, IParagraphStyle paragraphStyle) {
+		public override void SetCaptionParagraphStyle(int index, IParagraphStyle paragraphStyle)
+		{
 			base.SetCaptionParagraphStyle(index, paragraphStyle);
 			if (autoSize) FitShapeToText();
 		}
 
 
 		/// <override></override>
-		public override bool HasControlPointCapability(ControlPointId controlPointId, ControlPointCapabilities controlPointCapability) {
+		public override bool HasControlPointCapability(ControlPointId controlPointId,
+		                                               ControlPointCapabilities controlPointCapability)
+		{
 			switch (controlPointId) {
 				case TopLeftControlPoint:
 				case TopCenterControlPoint:
@@ -107,8 +118,8 @@ namespace Dataweb.NShape.Advanced {
 				case ControlPointId.Reference:
 				case MiddleCenterControlPoint:
 					return ((controlPointCapability & ControlPointCapabilities.Reference) != 0
-						|| (controlPointCapability & ControlPointCapabilities.Rotate) != 0
-						|| (controlPointCapability & ControlPointCapabilities.Connect) != 0);
+					        || (controlPointCapability & ControlPointCapabilities.Rotate) != 0
+					        || (controlPointCapability & ControlPointCapabilities.Connect) != 0);
 				default:
 					return base.HasControlPointCapability(controlPointId, controlPointCapability);
 			}
@@ -116,23 +127,27 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		public override IEnumerable<ControlPointId> GetControlPointIds(ControlPointCapabilities controlPointCapability) {
+		public override IEnumerable<ControlPointId> GetControlPointIds(ControlPointCapabilities controlPointCapability)
+		{
 			return base.GetControlPointIds(controlPointCapability);
 		}
 
 
 		/// <override></override>
-		protected internal override bool NotifyStyleChanged(IStyle style) {
+		protected internal override bool NotifyStyleChanged(IStyle style)
+		{
 			if (base.NotifyStyleChanged(style)) {
 				if (autoSize && (style is ICharacterStyle || style is IParagraphStyle))
 					FitShapeToText();
 				return true;
-			} else return false;
+			}
+			else return false;
 		}
 
 
 		/// <override></override>
-		public override void Draw(Graphics graphics) {
+		public override void Draw(Graphics graphics)
+		{
 			if (graphics == null) throw new ArgumentNullException("graphics");
 			DrawPath(graphics, LineStyle, FillStyle);
 			DrawCaption(graphics);
@@ -140,7 +155,8 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		public override void DrawThumbnail(Image image, int margin, Color transparentColor) {
+		public override void DrawThumbnail(Image image, int margin, Color transparentColor)
+		{
 			AutoSize = false;
 			Text = "ab";
 
@@ -166,23 +182,25 @@ namespace Dataweb.NShape.Advanced {
 
 		#endregion
 
-
 		#region [Protected] Methods
 
 		/// <override></override>
 		protected internal TextBase(ShapeType shapeType, Template template)
-			: base(shapeType, template) {
+			: base(shapeType, template)
+		{
 		}
 
 
 		/// <override></override>
 		protected internal TextBase(ShapeType shapeType, IStyleSet styleSet)
-			: base(shapeType, styleSet) {
+			: base(shapeType, styleSet)
+		{
 		}
 
 
 		/// <override></override>
-		protected internal override void InitializeToDefault(IStyleSet styleSet) {
+		protected internal override void InitializeToDefault(IStyleSet styleSet)
+		{
 			base.InitializeToDefault(styleSet);
 			AutoSize = true;
 			Text = "Text";
@@ -193,20 +211,23 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		protected override void CalcCaptionBounds(int index, out Rectangle captionBounds) {
+		protected override void CalcCaptionBounds(int index, out Rectangle captionBounds)
+		{
 			captionBounds = Rectangle.Empty;
 			if (autoSize) {
 				captionBounds.Size = TextMeasurer.MeasureText(Text, CharacterStyle, Size.Empty, ParagraphStyle);
 				captionBounds.Width += ParagraphStyle.Padding.Horizontal;
 				captionBounds.Height += ParagraphStyle.Padding.Vertical;
-				captionBounds.X = (int)Math.Round(-captionBounds.Width / 2f);
-				captionBounds.Y = (int)Math.Round(-captionBounds.Height / 2f);
-			} else base.CalcCaptionBounds(index, out captionBounds);
+				captionBounds.X = (int) Math.Round(-captionBounds.Width/2f);
+				captionBounds.Y = (int) Math.Round(-captionBounds.Height/2f);
+			}
+			else base.CalcCaptionBounds(index, out captionBounds);
 		}
 
 
 		/// <override></override>
-		protected override bool IntersectsWithCore(int x, int y, int width, int height) {
+		protected override bool IntersectsWithCore(int x, int y, int width, int height)
+		{
 			if (autoSize && !string.IsNullOrEmpty(Text)) {
 				RectangleF rectangle = RectangleF.Empty;
 				rectangle.X = x;
@@ -214,7 +235,7 @@ namespace Dataweb.NShape.Advanced {
 				rectangle.Width = width;
 				rectangle.Height = height;
 
-				if (Angle % 900 == 0)
+				if (Angle%900 == 0)
 					return Geometry.RectangleIntersectsWithRectangle(rectangle, GetBoundingRectangle(true));
 				else {
 					float angleDeg = Geometry.TenthsOfDegreeToDegrees(Angle);
@@ -223,10 +244,10 @@ namespace Dataweb.NShape.Advanced {
 					CalcCaptionBounds(0, out layoutRectangle);
 					Geometry.TransformRectangle(Center, Angle, layoutRectangle, out tl, out tr, out br, out bl);
 
-					if (Geometry.RectangleContainsPoint(rectangle, tl) 
-						|| Geometry.RectangleContainsPoint(rectangle, tr) 
-						|| Geometry.RectangleContainsPoint(rectangle, bl) 
-						|| Geometry.RectangleContainsPoint(rectangle, br))
+					if (Geometry.RectangleContainsPoint(rectangle, tl)
+					    || Geometry.RectangleContainsPoint(rectangle, tr)
+					    || Geometry.RectangleContainsPoint(rectangle, bl)
+					    || Geometry.RectangleContainsPoint(rectangle, br))
 						return true;
 					else {
 						if (Geometry.RectangleIntersectsWithLine(rectangle, tl.X, tl.Y, tr.X, tr.Y, true))
@@ -240,25 +261,28 @@ namespace Dataweb.NShape.Advanced {
 					}
 					return false;
 				}
-			} else
+			}
+			else
 				return base.IntersectsWithCore(x, y, width, height);
 		}
 
 
 		/// <override></override>
-		protected override void RecalcDrawCache() {
+		protected override void RecalcDrawCache()
+		{
 			base.RecalcDrawCache();
 			if (autoSize) FitShapeToText();
 		}
 
 
 		/// <override></override>
-		protected override bool CalculatePath() {
+		protected override bool CalculatePath()
+		{
 			if (base.CalculatePath()) {
 				Path.Reset();
 				Rectangle shapeBuffer = Rectangle.Empty;
-				shapeBuffer.X = (int)Math.Round(-Width / 2f);
-				shapeBuffer.Y = (int)Math.Round(-Height / 2f);
+				shapeBuffer.X = (int) Math.Round(-Width/2f);
+				shapeBuffer.Y = (int) Math.Round(-Height/2f);
 				shapeBuffer.Width = Width;
 				shapeBuffer.Height = Height;
 
@@ -273,36 +297,38 @@ namespace Dataweb.NShape.Advanced {
 
 		#endregion
 
-
 		#region IEntity Members
 
 		/// <summary>
 		/// Retrieves the persistable properties of <see cref="T:Dataweb.NShape.Advanced.TextBase" />.
 		/// </summary>
-		new public static IEnumerable<EntityPropertyDefinition> GetPropertyDefinitions(int version) {
+		public new static IEnumerable<EntityPropertyDefinition> GetPropertyDefinitions(int version)
+		{
 			foreach (EntityPropertyDefinition pi in RectangleBase.GetPropertyDefinitions(version))
 				yield return pi;
-			yield return new EntityFieldDefinition("AutoSize", typeof(bool));
+			yield return new EntityFieldDefinition("AutoSize", typeof (bool));
 		}
 
 
 		/// <override></override>
-		protected override void LoadFieldsCore(IRepositoryReader reader, int version) {
+		protected override void LoadFieldsCore(IRepositoryReader reader, int version)
+		{
 			base.LoadFieldsCore(reader, version);
 			AutoSize = reader.ReadBool();
 		}
 
 
 		/// <override></override>
-		protected override void SaveFieldsCore(IRepositoryWriter writer, int version) {
+		protected override void SaveFieldsCore(IRepositoryWriter writer, int version)
+		{
 			base.SaveFieldsCore(writer, version);
 			writer.WriteBool(AutoSize);
 		}
 
 		#endregion
 
-
-		private void FitShapeToText() {
+		private void FitShapeToText()
+		{
 			System.Diagnostics.Debug.Assert(CharacterStyle != null);
 			System.Diagnostics.Debug.Assert(ParagraphStyle != null);
 			if (!string.IsNullOrEmpty(Text) && CharacterStyle != null && ParagraphStyle != null) {
@@ -311,7 +337,6 @@ namespace Dataweb.NShape.Advanced {
 				Height = textSize.Height + ParagraphStyle.Padding.Vertical;
 			}
 		}
-
 
 		#region Fields
 
@@ -325,24 +350,29 @@ namespace Dataweb.NShape.Advanced {
 		private const int BottomCenterControlPoint = 7;
 		private const int BottomRightControlPoint = 8;
 		private const int MiddleCenterControlPoint = 9;
-		
+
 		private bool autoSize = true;
+
 		#endregion
 	}
 
 
 	/// <ToBeCompleted></ToBeCompleted>
-	public abstract class LabelBase : TextBase {
-
+	public abstract class LabelBase : TextBase
+	{
 		#region [Public] Properties
 
 		/// <ToBeCompleted></ToBeCompleted>
 		[Category("Layout")]
-		[Description("If false, the label maintains its angle if it is attached to an other shape (in case the attached shape is beeing rotated).")]
+		[Description(
+			"If false, the label maintains its angle if it is attached to an other shape (in case the attached shape is beeing rotated)."
+			)]
 		[RequiredPermission(Permission.Layout)]
-		public bool MaintainOrientation {
+		public bool MaintainOrientation
+		{
 			get { return maintainOrientation; }
-			set {
+			set
+			{
 				Invalidate();
 				maintainOrientation = value;
 				InvalidateDrawCache();
@@ -365,16 +395,16 @@ namespace Dataweb.NShape.Advanced {
 
 		#endregion
 
-
 		#region [Public] Shape Members
 
 		/// <override></override>
-		public override void CopyFrom(Shape source) {
+		public override void CopyFrom(Shape source)
+		{
 			// Prevent recalculating GluePointCalcInfo when moving shape while copying X/Y position
 			followingConnectedShape = true;
 			base.CopyFrom(source);
 			if (source is LabelBase) {
-				LabelBase src = (LabelBase)source;
+				LabelBase src = (LabelBase) source;
 				this.maintainOrientation = src.maintainOrientation;
 				this.showGluePointLine = src.showGluePointLine;
 				this.gluePointPos = src.gluePointPos;
@@ -385,13 +415,14 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		public override ControlPointId HitTest(int x, int y, ControlPointCapabilities controlPointCapabilities, int range) {
+		public override ControlPointId HitTest(int x, int y, ControlPointCapabilities controlPointCapabilities, int range)
+		{
 			if ((controlPointCapabilities & ControlPointCapabilities.Glue) != 0
-				|| (controlPointCapabilities & ControlPointCapabilities.Resize) != 0) {
+			    || (controlPointCapabilities & ControlPointCapabilities.Resize) != 0) {
 				if (Geometry.DistancePointPoint(x, y, gluePointPos.X, gluePointPos.Y) <= range)
 					return GlueControlPoint;
 				if (IsConnected(GlueControlPoint, null) == ControlPointId.None
-					&& (pinPath != null && pinPath.IsVisible(x, y)))
+				    && (pinPath != null && pinPath.IsVisible(x, y)))
 					return GlueControlPoint;
 			}
 			return base.HitTest(x, y, controlPointCapabilities, range);
@@ -399,16 +430,19 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		public override bool HasControlPointCapability(ControlPointId controlPointId, ControlPointCapabilities controlPointCapability) {
+		public override bool HasControlPointCapability(ControlPointId controlPointId,
+		                                               ControlPointCapabilities controlPointCapability)
+		{
 			if (controlPointId == GlueControlPoint)
-				return ((controlPointCapability & ControlPointCapabilities.Glue) != 0 
-					|| (controlPointCapability & ControlPointCapabilities.Resize) != 0);
+				return ((controlPointCapability & ControlPointCapabilities.Glue) != 0
+				        || (controlPointCapability & ControlPointCapabilities.Resize) != 0);
 			else return base.HasControlPointCapability(controlPointId, controlPointCapability);
 		}
 
 
 		/// <override></override>
-		public override void Connect(ControlPointId ownPointId, Shape otherShape, ControlPointId otherPointId) {
+		public override void Connect(ControlPointId ownPointId, Shape otherShape, ControlPointId otherPointId)
+		{
 			if (otherShape == null) throw new ArgumentNullException("otherShape");
 			// Calculate the relative position of the gluePoint on the other shape
 			CalcGluePointCalcInfo(ownPointId, otherShape, otherPointId);
@@ -418,14 +452,16 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		public override void Disconnect(ControlPointId gluePointId) {
+		public override void Disconnect(ControlPointId gluePointId)
+		{
 			base.Disconnect(gluePointId);
 			calcInfo = GluePointCalcInfo.Empty;
 		}
 
 
 		/// <override></override>
-		public override Point GetControlPointPosition(ControlPointId controlPointId) {
+		public override Point GetControlPointPosition(ControlPointId controlPointId)
+		{
 			if (controlPointId == GlueControlPoint)
 				return gluePointPos;
 			else return base.GetControlPointPosition(controlPointId);
@@ -433,7 +469,9 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		public override void FollowConnectionPointWithGluePoint(ControlPointId gluePointId, Shape connectedShape, ControlPointId movedPointId) {
+		public override void FollowConnectionPointWithGluePoint(ControlPointId gluePointId, Shape connectedShape,
+		                                                        ControlPointId movedPointId)
+		{
 			if (connectedShape == null) throw new ArgumentNullException("connectedShape");
 			try {
 				followingConnectedShape = true;
@@ -455,18 +493,24 @@ namespace Dataweb.NShape.Advanced {
 				// Calculate new target outline intersection point along with old and new anchor point position
 				int shapeAngle;
 				if (connectedShape is ILinearShape) {
-					Point normalVector = ((ILinearShape)connectedShape).CalcNormalVector(newGluePtPos);
-					shapeAngle = Geometry.RadiansToTenthsOfDegree(Geometry.Angle(newGluePtPos.X, newGluePtPos.Y, normalVector.X, normalVector.Y)) - 900;
-				} else if (connectedShape is IPlanarShape) {
-					shapeAngle = ((IPlanarShape)connectedShape).Angle;
-				} else shapeAngle = 0; // There is no way to get an angle from a generic shape
+					Point normalVector = ((ILinearShape) connectedShape).CalcNormalVector(newGluePtPos);
+					shapeAngle =
+						Geometry.RadiansToTenthsOfDegree(Geometry.Angle(newGluePtPos.X, newGluePtPos.Y, normalVector.X, normalVector.Y)) -
+						900;
+				}
+				else if (connectedShape is IPlanarShape) {
+					shapeAngle = ((IPlanarShape) connectedShape).Angle;
+				}
+				else shapeAngle = 0; // There is no way to get an angle from a generic shape
 
 				// Move the glue point to the new position
 				int dx, dy;
 				dx = newGluePtPos.X - currGluePtPos.X;
 				dy = newGluePtPos.Y - currGluePtPos.Y;
 				// Calculate new position of the GlueLabel (calculation method depends on the desired behavior)
-				Point newCenter = Point.Round(Geometry.CalcPoint(newGluePtPos.X, newGluePtPos.Y, calcInfo.Alpha + Geometry.TenthsOfDegreeToDegrees(shapeAngle), calcInfo.Distance));
+				Point newCenter =
+					Point.Round(Geometry.CalcPoint(newGluePtPos.X, newGluePtPos.Y,
+					                               calcInfo.Alpha + Geometry.TenthsOfDegreeToDegrees(shapeAngle), calcInfo.Distance));
 				// Move GlueLabel and update GluePointPos
 				MoveTo(newCenter.X, newCenter.Y);
 				this.gluePointPos = newGluePtPos;
@@ -476,12 +520,16 @@ namespace Dataweb.NShape.Advanced {
 					int newAngle = this.calcInfo.LabelAngle + shapeAngle;
 					if (Angle != newAngle) Angle = newAngle;
 				}
-			} finally { followingConnectedShape = false; }
+			}
+			finally {
+				followingConnectedShape = false;
+			}
 		}
 
 
 		/// <override></override>
-		public override void Invalidate() {
+		public override void Invalidate()
+		{
 			base.Invalidate();
 			if (DisplayService != null) {
 				// Invalidate line to GluePoint
@@ -494,8 +542,8 @@ namespace Dataweb.NShape.Advanced {
 				DisplayService.Invalidate(b);
 
 				// Invalidate GluePoint 'Pin' hint
-				int left = Math.Min(gluePointPos.X - (int)Math.Round(pinSize / 2f), X);
-				int right = Math.Max(gluePointPos.X + (int)Math.Round(pinSize / 2f), X);
+				int left = Math.Min(gluePointPos.X - (int) Math.Round(pinSize/2f), X);
+				int right = Math.Max(gluePointPos.X + (int) Math.Round(pinSize/2f), X);
 				int top = Math.Min(gluePointPos.Y - pinSize, Y);
 				int bottom = Math.Max(gluePointPos.Y, Y);
 				DisplayService.Invalidate(left, top, right - left, bottom - top);
@@ -504,13 +552,14 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		public override void Draw(Graphics graphics) {
+		public override void Draw(Graphics graphics)
+		{
 			// Draw hint
 			DrawHint(graphics);
 			// Draw shape and text
 			base.Draw(graphics);
 			// Draw line to GluePoint
-			if (showGluePointLine) 
+			if (showGluePointLine)
 				DrawGluePointLine(graphics, LineStyle, null);
 #if DEBUG_DIAGNOSTICS
 			//else {
@@ -549,9 +598,10 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		public override void DrawThumbnail(Image image, int margin, Color transparentColor) {
-			gluePointPos.X = X - Width / 2;
-			gluePointPos.Y = Y - Height / 2;
+		public override void DrawThumbnail(Image image, int margin, Color transparentColor)
+		{
+			gluePointPos.X = X - Width/2;
+			gluePointPos.Y = Y - Height/2;
 			InvalidateDrawCache();
 			UpdateDrawCache();
 			base.DrawThumbnail(image, margin, transparentColor);
@@ -559,51 +609,56 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		public override void DrawOutline(Graphics graphics, Pen pen) {
+		public override void DrawOutline(Graphics graphics, Pen pen)
+		{
 			base.DrawOutline(graphics, pen);
 			DrawGluePointLine(graphics, pen);
 		}
 
 		#endregion
 
-
 		#region [Protected] Methods (Inherited)
 
 		/// <override></override>
 		protected internal LabelBase(ShapeType shapeType, Template template)
-			: base(shapeType, template) {
+			: base(shapeType, template)
+		{
 		}
 
 
 		/// <override></override>
 		protected internal LabelBase(ShapeType shapeType, IStyleSet styleSet)
-			: base(shapeType, styleSet) {
+			: base(shapeType, styleSet)
+		{
 		}
 
 
 		/// <override></override>
-		protected internal override void InitializeToDefault(IStyleSet styleSet) {
+		protected internal override void InitializeToDefault(IStyleSet styleSet)
+		{
 			base.InitializeToDefault(styleSet);
-			gluePointPos.X = (int)Math.Round(X - (Width / 2f)) - 10;
-			gluePointPos.Y = (int)Math.Round(Y - (Height / 2f)) - 10;
+			gluePointPos.X = (int) Math.Round(X - (Width/2f)) - 10;
+			gluePointPos.Y = (int) Math.Round(Y - (Height/2f)) - 10;
 			calcInfo = GluePointCalcInfo.Empty;
 			maintainOrientation = true;
 		}
 
 
 		/// <override></override>
-		protected internal override int ControlPointCount {
+		protected internal override int ControlPointCount
+		{
 			get { return base.ControlPointCount + 1; }
 		}
 
 
 		/// <override></override>
-		protected override Rectangle CalculateBoundingRectangle(bool tight) {
+		protected override Rectangle CalculateBoundingRectangle(bool tight)
+		{
 			Rectangle result = base.CalculateBoundingRectangle(tight);
 			if (Geometry.IsValid(gluePointPos)) {
 				if (!tight && IsConnected(GlueControlPoint, null) == ControlPointId.None) {
-					tl.X = bl.X = gluePointPos.X - pinSize / 2;
-					tr.X = br.X = gluePointPos.X + pinSize / 2;
+					tl.X = bl.X = gluePointPos.X - pinSize/2;
+					tr.X = br.X = gluePointPos.X + pinSize/2;
 					tl.Y = tr.Y = gluePointPos.Y - pinSize;
 					bl.Y = br.Y = gluePointPos.Y;
 					tl = Geometry.RotatePoint(gluePointPos, pinAngle, tl);
@@ -613,7 +668,7 @@ namespace Dataweb.NShape.Advanced {
 					Rectangle pinBounds;
 					Geometry.CalcBoundingRectangle(tl, tr, br, bl, out pinBounds);
 					result = Geometry.UniteRectangles(result, pinBounds);
-				} 
+				}
 				//else result = Geometry.UniteRectangles(gluePointPos.X, gluePointPos.Y, gluePointPos.X, gluePointPos.Y, result);
 			}
 			return result;
@@ -621,18 +676,20 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		protected override bool ContainsPointCore(int x, int y) {
+		protected override bool ContainsPointCore(int x, int y)
+		{
 			bool result = base.ContainsPointCore(x, y);
 			if (!result) {
 				if (showGluePointLine)
-					result = Geometry.LineContainsPoint(gluePointPos.X, gluePointPos.Y, X, Y, true, x, y, (int)Math.Ceiling(LineStyle.LineWidth / 2f));
+					result = Geometry.LineContainsPoint(gluePointPos.X, gluePointPos.Y, X, Y, true, x, y,
+					                                    (int) Math.Ceiling(LineStyle.LineWidth/2f));
 				if (IsConnected(GlueControlPoint, null) == ControlPointId.None) {
 					if (pinPath != null) result = pinPath.IsVisible(x, y);
 					else {
 						// Fallback solution: Test on bounding rectangle of the 'pin'
-						float halfPinSize = pinSize / 2;
+						float halfPinSize = pinSize/2;
 						return (gluePointPos.X - halfPinSize <= x && x <= gluePointPos.X + halfPinSize
-							&& gluePointPos.Y - pinSize <= y && y <= gluePointPos.Y);
+						        && gluePointPos.Y - pinSize <= y && y <= gluePointPos.Y);
 					}
 				}
 			}
@@ -641,21 +698,25 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		protected override bool IntersectsWithCore(int x, int y, int width, int height) {
+		protected override bool IntersectsWithCore(int x, int y, int width, int height)
+		{
 			bool result = base.IntersectsWithCore(x, y, width, height);
 			if (!result) {
-				int boundsX = gluePointPos.X - (pinSize / 2);
+				int boundsX = gluePointPos.X - (pinSize/2);
 				int boundsY = gluePointPos.Y - pinSize;
 				result = Geometry.RectangleIntersectsWithRectangle(x, y, width, height, boundsX, boundsY, pinSize, pinSize)
-					|| Geometry.RectangleContainsRectangle(x, y, width, height, boundsX, boundsY, pinSize, pinSize)
-					|| Geometry.RectangleIntersectsWithLine(x, y, x + width, y + height, X, Y, gluePointPos.X, gluePointPos.Y, true);
+				         || Geometry.RectangleContainsRectangle(x, y, width, height, boundsX, boundsY, pinSize, pinSize)
+				         ||
+				         Geometry.RectangleIntersectsWithLine(x, y, x + width, y + height, X, Y, gluePointPos.X, gluePointPos.Y,
+				                                              true);
 			}
 			return result;
 		}
 
 
 		/// <override></override>
-		protected override bool MoveByCore(int deltaX, int deltaY) {
+		protected override bool MoveByCore(int deltaX, int deltaY)
+		{
 			bool result = base.MoveByCore(deltaX, deltaY);
 			// If the glue point is not connected, move it with the shape
 			ShapeConnectionInfo ci = GetConnectionInfo(GlueControlPoint, null);
@@ -664,7 +725,8 @@ namespace Dataweb.NShape.Advanced {
 					gluePointPos.X += deltaX;
 					gluePointPos.Y += deltaY;
 				}
-			} else {
+			}
+			else {
 				// If the gluePoint is connected and the shape is not
 				// following the connected shape, recalculate GluePointCalcInfo
 				if (!followingConnectedShape) {
@@ -677,7 +739,9 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		protected override bool MovePointByCore(ControlPointId pointId, int origDeltaX, int origDeltaY, ResizeModifiers modifiers) {
+		protected override bool MovePointByCore(ControlPointId pointId, int origDeltaX, int origDeltaY,
+		                                        ResizeModifiers modifiers)
+		{
 			if (pointId == GlueControlPoint) {
 				bool result = false;
 				// If the glue ponit is connected, recalculate glue point calculation info
@@ -690,17 +754,20 @@ namespace Dataweb.NShape.Advanced {
 						InvalidateDrawCache();
 						result = true;
 					}
-				} else {
+				}
+				else {
 					if (ci.OtherPointId != ControlPointId.Reference)
 						CalcGluePoint(GlueControlPoint, ci.OtherShape);
 				}
 				return result;
-			} else return base.MovePointByCore(pointId, origDeltaX, origDeltaY, modifiers);
+			}
+			else return base.MovePointByCore(pointId, origDeltaX, origDeltaY, modifiers);
 		}
 
 
 		/// <override></override>
-		protected override bool RotateCore(int deltaAngle, int x, int y) {
+		protected override bool RotateCore(int deltaAngle, int x, int y)
+		{
 			bool result = base.RotateCore(deltaAngle, x, y);
 			if (!followingConnectedShape) {
 				ShapeConnectionInfo ci = GetConnectionInfo(GlueControlPoint, null);
@@ -715,19 +782,23 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		protected override void InvalidateDrawCache() {
+		protected override void InvalidateDrawCache()
+		{
 			base.InvalidateDrawCache();
 			if (pinPath != null) {
 				if (IsConnected(GlueControlPoint, null) != ControlPointId.None) {
 					pinPath.Dispose();
 					pinPath = null;
-				} else pinPath.Reset();
+				}
+				else pinPath.Reset();
 			}
 		}
 
 
 		/// <override></override>
-		protected override void TransformDrawCache(int deltaX, int deltaY, int deltaAngle, int rotationCenterX, int rotationCenterY) {
+		protected override void TransformDrawCache(int deltaX, int deltaY, int deltaAngle, int rotationCenterX,
+		                                           int rotationCenterY)
+		{
 			base.TransformDrawCache(deltaX, deltaY, deltaAngle, rotationCenterX, rotationCenterY);
 
 			Matrix.Reset();
@@ -737,7 +808,8 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		protected override bool CalculatePath() {
+		protected override bool CalculatePath()
+		{
 			if (base.CalculatePath()) {
 				// The pin path 
 				if (pinPath == null) pinPath = new GraphicsPath();
@@ -745,12 +817,19 @@ namespace Dataweb.NShape.Advanced {
 					int gpX = gluePointPos.X - X;
 					int gpY = gluePointPos.Y - Y;
 
-					float halfPinSize = pinSize / 2f;
-					float quaterPinSize = pinSize / 4f;
+					float halfPinSize = pinSize/2f;
+					float quaterPinSize = pinSize/4f;
 					PointF[] pts = new PointF[3];
-					pts[0] = Geometry.GetNearestPoint(gpX, gpY, Geometry.IntersectEllipseLine(gpX, gpY - pinSize + (halfPinSize / 2f), pinSize, halfPinSize, 0, gpX, gpY, gpX - quaterPinSize, gpY - pinSize, false));
-					pts[1].X = gpX; pts[1].Y = gpY;
-					pts[2] = Geometry.GetNearestPoint(gpX, gpY, Geometry.IntersectEllipseLine(gpX, gpY - pinSize + (halfPinSize / 2f), pinSize, halfPinSize, 0, gpX, gpY, gpX + quaterPinSize, gpY - pinSize, false));
+					pts[0] = Geometry.GetNearestPoint(gpX, gpY,
+					                                  Geometry.IntersectEllipseLine(gpX, gpY - pinSize + (halfPinSize/2f), pinSize,
+					                                                                halfPinSize, 0, gpX, gpY, gpX - quaterPinSize,
+					                                                                gpY - pinSize, false));
+					pts[1].X = gpX;
+					pts[1].Y = gpY;
+					pts[2] = Geometry.GetNearestPoint(gpX, gpY,
+					                                  Geometry.IntersectEllipseLine(gpX, gpY - pinSize + (halfPinSize/2f), pinSize,
+					                                                                halfPinSize, 0, gpX, gpY, gpX + quaterPinSize,
+					                                                                gpY - pinSize, false));
 					pinPath.Reset();
 					pinPath.StartFigure();
 					pinPath.AddLines(pts);
@@ -765,19 +844,22 @@ namespace Dataweb.NShape.Advanced {
 					Matrix.Reset();
 				}
 				return true;
-			} else return false;
+			}
+			else return false;
 		}
 
 
 		/// <override></override>
-		protected override void CalcControlPoints() {
+		protected override void CalcControlPoints()
+		{
 			base.CalcControlPoints();
 			ControlPoints[ControlPointCount - 1] = gluePointPos;
 		}
 
 
 		/// <override></override>
-		protected override Point CalcGluePoint(ControlPointId gluePointId, Shape shape) {
+		protected override Point CalcGluePoint(ControlPointId gluePointId, Shape shape)
+		{
 			InvalidateDrawCache();
 			// Get current position of the GluePoint and the new position of the GluePoint
 			Point result = Geometry.InvalidPoint;
@@ -794,7 +876,8 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		protected virtual void DrawGluePointLine(Graphics graphics, ILineStyle lineStyle, ICapStyle capStyle) {
+		protected virtual void DrawGluePointLine(Graphics graphics, ILineStyle lineStyle, ICapStyle capStyle)
+		{
 			if (lineStyle == null) throw new ArgumentNullException("lineStyle");
 			Pen pen = ToolCache.GetPen(LineStyle, null, capStyle);
 			DrawGluePointLine(graphics, pen);
@@ -802,16 +885,18 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		protected virtual void DrawGluePointLine(Graphics graphics, Pen pen){
+		protected virtual void DrawGluePointLine(Graphics graphics, Pen pen)
+		{
 			if (graphics == null) throw new ArgumentNullException("graphics");
 			Point p = CalculateConnectionFoot(gluePointPos.X, gluePointPos.Y);
-			if (pen != null && Geometry.IsValid(p)) 
+			if (pen != null && Geometry.IsValid(p))
 				graphics.DrawLine(pen, p, gluePointPos);
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		protected virtual void DrawHint(Graphics graphics) {
+		protected virtual void DrawHint(Graphics graphics)
+		{
 			// Draw connection point hints
 			if (IsConnected(GlueControlPoint, null) == ControlPointId.None) {
 				if (DisplayService != null) {
@@ -827,11 +912,11 @@ namespace Dataweb.NShape.Advanced {
 
 		#endregion
 
-
 		#region IEntity Members (Explicit Implementation)
 
 		/// <override></override>
-		protected override void LoadFieldsCore(IRepositoryReader reader, int version) {
+		protected override void LoadFieldsCore(IRepositoryReader reader, int version)
+		{
 			base.LoadFieldsCore(reader, version);
 			gluePointPos.X = reader.ReadInt32();
 			gluePointPos.Y = reader.ReadInt32();
@@ -840,7 +925,8 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		protected override void SaveFieldsCore(IRepositoryWriter writer, int version) {
+		protected override void SaveFieldsCore(IRepositoryWriter writer, int version)
+		{
 			base.SaveFieldsCore(writer, version);
 			writer.WriteInt32(gluePointPos.X);
 			writer.WriteInt32(gluePointPos.Y);
@@ -851,18 +937,19 @@ namespace Dataweb.NShape.Advanced {
 		/// <summary>
 		/// Retrieves the persistable properties of <see cref="T:Dataweb.NShape.Advanced.LabelBase" />.
 		/// </summary>
-		new public static IEnumerable<EntityPropertyDefinition> GetPropertyDefinitions(int version) {
+		public new static IEnumerable<EntityPropertyDefinition> GetPropertyDefinitions(int version)
+		{
 			foreach (EntityPropertyDefinition pi in TextBase.GetPropertyDefinitions(version))
 				yield return pi;
-			yield return new EntityFieldDefinition("GluePointX", typeof(int));
-			yield return new EntityFieldDefinition("GluePointY", typeof(int));
-			if (version >= 3) yield return new EntityFieldDefinition("MaintainOrientation", typeof(bool));
+			yield return new EntityFieldDefinition("GluePointX", typeof (int));
+			yield return new EntityFieldDefinition("GluePointY", typeof (int));
+			if (version >= 3) yield return new EntityFieldDefinition("MaintainOrientation", typeof (bool));
 		}
 
 		#endregion
 
-
-		private void CalcGluePointCalcInfo(ControlPointId gluePointId, Shape otherShape, ControlPointId otherPointId) {
+		private void CalcGluePointCalcInfo(ControlPointId gluePointId, Shape otherShape, ControlPointId otherPointId)
+		{
 			// Calculate GluePoint position and AnchorPoint position
 			Point gluePtPos = GetControlPointPosition(gluePointId);
 			Point labelPos = Point.Empty;
@@ -873,17 +960,20 @@ namespace Dataweb.NShape.Advanced {
 			float alpha = float.NaN, beta = float.NaN;
 			if (otherShape is ILinearShape) {
 				// ToDo: Check if the point is on the line, if not, calculate an intersection point
-				Point normalVector = ((ILinearShape)otherShape).CalcNormalVector(gluePtPos);
-				float shapeAngleDeg = Geometry.RadiansToDegrees(Geometry.Angle(gluePtPos.X, gluePtPos.Y, normalVector.X, normalVector.Y)) - 90;
+				Point normalVector = ((ILinearShape) otherShape).CalcNormalVector(gluePtPos);
+				float shapeAngleDeg =
+					Geometry.RadiansToDegrees(Geometry.Angle(gluePtPos.X, gluePtPos.Y, normalVector.X, normalVector.Y)) - 90;
 				alpha = 360 - shapeAngleDeg + Geometry.RadiansToDegrees(Geometry.Angle(gluePtPos, labelPos));
 				beta = Geometry.RadiansToDegrees(Geometry.Angle(labelPos, gluePtPos));
 				labelAngle = Angle - Geometry.DegreesToTenthsOfDegree(shapeAngleDeg);
-			} else if (otherShape is IPlanarShape) {
-				float shapeAngleDeg = Geometry.TenthsOfDegreeToDegrees(((IPlanarShape)otherShape).Angle);
+			}
+			else if (otherShape is IPlanarShape) {
+				float shapeAngleDeg = Geometry.TenthsOfDegreeToDegrees(((IPlanarShape) otherShape).Angle);
 				alpha = 360 - shapeAngleDeg + Geometry.RadiansToDegrees(Geometry.Angle(gluePtPos, labelPos));
 				beta = Geometry.RadiansToDegrees(Geometry.Angle(labelPos, gluePtPos));
-				labelAngle = Angle - ((IPlanarShape)otherShape).Angle;
-			} else {
+				labelAngle = Angle - ((IPlanarShape) otherShape).Angle;
+			}
+			else {
 				alpha = 360 - Geometry.RadiansToDegrees(Geometry.Angle(gluePtPos, labelPos));
 				beta = Geometry.RadiansToDegrees(Geometry.Angle(labelPos, gluePtPos));
 				labelAngle = Angle;
@@ -892,8 +982,8 @@ namespace Dataweb.NShape.Advanced {
 			float distance = Geometry.DistancePointPoint(gluePtPos, labelPos);
 
 			// Store all calculated values in the GluePointCalcInfo structure
-			this.calcInfo.Alpha = alpha % 360;
-			this.calcInfo.Beta = beta % 360;
+			this.calcInfo.Alpha = alpha%360;
+			this.calcInfo.Beta = beta%360;
 			this.calcInfo.Distance = distance;
 			this.calcInfo.RelativePosition = relativePos;
 			this.calcInfo.LabelAngle = labelAngle;
@@ -904,24 +994,28 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		protected struct GluePointCalcInfo : IEquatable<GluePointCalcInfo> {
-
+		protected struct GluePointCalcInfo : IEquatable<GluePointCalcInfo>
+		{
 			/// <ToBeCompleted></ToBeCompleted>
 			public static readonly GluePointCalcInfo Empty;
 
 			/// <ToBeCompleted></ToBeCompleted>
-			public static bool operator !=(GluePointCalcInfo x, GluePointCalcInfo y) { return !(x == y); }
+			public static bool operator !=(GluePointCalcInfo x, GluePointCalcInfo y)
+			{
+				return !(x == y);
+			}
 
 			/// <ToBeCompleted></ToBeCompleted>
-			public static bool operator ==(GluePointCalcInfo x, GluePointCalcInfo y) {
+			public static bool operator ==(GluePointCalcInfo x, GluePointCalcInfo y)
+			{
 				return (
-					((float.IsNaN(x.Alpha) == float.IsNaN(y.Alpha) && float.IsNaN(x.Alpha))
-					 || (x.Alpha == y.Alpha && !float.IsNaN(x.Alpha)))
-					&& ((float.IsNaN(x.Beta) == float.IsNaN(y.Beta) && float.IsNaN(x.Beta))
-					 || (x.Beta == y.Beta && !float.IsNaN(x.Beta)))
-					&& x.RelativePosition == y.RelativePosition
-					&& ((float.IsNaN(x.Distance) &&  float.IsNaN(y.Distance) && float.IsNaN(x.Distance))
-					|| (x.Distance == y.Distance && !float.IsNaN(x.Distance))));
+				       	((float.IsNaN(x.Alpha) == float.IsNaN(y.Alpha) && float.IsNaN(x.Alpha))
+				       	 || (x.Alpha == y.Alpha && !float.IsNaN(x.Alpha)))
+				       	&& ((float.IsNaN(x.Beta) == float.IsNaN(y.Beta) && float.IsNaN(x.Beta))
+				       	    || (x.Beta == y.Beta && !float.IsNaN(x.Beta)))
+				       	&& x.RelativePosition == y.RelativePosition
+				       	&& ((float.IsNaN(x.Distance) && float.IsNaN(y.Distance) && float.IsNaN(x.Distance))
+				       	    || (x.Distance == y.Distance && !float.IsNaN(x.Distance))));
 			}
 
 			/// <summary>
@@ -950,47 +1044,52 @@ namespace Dataweb.NShape.Advanced {
 			public int LabelAngle;
 
 			/// <override></override>
-			public override bool Equals(object obj) {
-				return obj is GluePointCalcInfo && this == (GluePointCalcInfo)obj;
+			public override bool Equals(object obj)
+			{
+				return obj is GluePointCalcInfo && this == (GluePointCalcInfo) obj;
 			}
 
 			/// <override></override>
-			public bool Equals(GluePointCalcInfo other) {
+			public bool Equals(GluePointCalcInfo other)
+			{
 				return other == this;
 			}
 
 			/// <override></override>
-			public override int GetHashCode() {
+			public override int GetHashCode()
+			{
 				return (Distance.GetHashCode()
-					^ RelativePosition.GetHashCode()
-					^ Alpha.GetHashCode()
-					^ Beta.GetHashCode()
-					^ LabelAngle.GetHashCode());
+				        ^ RelativePosition.GetHashCode()
+				        ^ Alpha.GetHashCode()
+				        ^ Beta.GetHashCode()
+				        ^ LabelAngle.GetHashCode());
 			}
 
-			static GluePointCalcInfo() {
+			static GluePointCalcInfo()
+			{
 				Empty.Alpha = float.NaN;
 				Empty.Beta = float.NaN;
 				Empty.RelativePosition = RelativePosition.Empty;
 				Empty.Distance = float.NaN;
 				Empty.LabelAngle = 0;
 			}
-
 		}
-
 
 		#region Fields
 
 		/// <ToBeCompleted></ToBeCompleted>
 		protected const int GlueControlPoint = 10;
+
 		// Position of glue point (unrotated)
 		/// <ToBeCompleted></ToBeCompleted>
 		protected Point gluePointPos = Geometry.InvalidPoint;
+
 		/// <ToBeCompleted></ToBeCompleted>
 		protected GluePointCalcInfo calcInfo = GluePointCalcInfo.Empty;
 
 		/// <summary>Specifies whether the shape maintains its orientation if the connected shape is rotated</summary>
 		protected bool maintainOrientation;
+
 		/// <summary>Specifies whether the shape shows the line between the shape's outline and its GluePoint</summary>
 		protected bool showGluePointLine = false;
 
@@ -1003,8 +1102,8 @@ namespace Dataweb.NShape.Advanced {
 		private bool followingConnectedShape = false;
 
 		// Buffers
-		Point tl = Point.Empty, tr = Point.Empty, bl = Point.Empty, br = Point.Empty;
+		private Point tl = Point.Empty, tr = Point.Empty, bl = Point.Empty, br = Point.Empty;
+
 		#endregion
 	}
-
 }

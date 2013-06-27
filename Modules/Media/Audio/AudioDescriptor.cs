@@ -6,51 +6,51 @@ using Vixen.Module.Media;
 
 namespace VixenModules.Media.Audio
 {
-    public class AudioDescriptor : MediaModuleDescriptorBase
+	public class AudioDescriptor : MediaModuleDescriptorBase
 	{
 		private Guid _typeId = new Guid("{fe460392-3fab-4c63-99dd-d76c48354150}");
 
-        override public Guid TypeId
+		public override Guid TypeId
 		{
-            get { return _typeId; }
-        }
+			get { return _typeId; }
+		}
 
-		override public Type ModuleClass
+		public override Type ModuleClass
 		{
-            get { return typeof(Audio); }
-        }
+			get { return typeof (Audio); }
+		}
 
-		override public Type ModuleDataClass
+		public override Type ModuleDataClass
 		{
-            get { return typeof(AudioData); }
-        }
+			get { return typeof (AudioData); }
+		}
 
-		override public string Author
+		public override string Author
 		{
 			get { return "Vixen Team"; }
 		}
 
-		override public string Description
+		public override string Description
 		{
 			get { return "Allows an audio file to be used as a media item in a sequence."; }
 		}
 
-		override public string Version
+		public override string Version
 		{
 			get { return "1.0"; }
 		}
 
-		override public string TypeName
+		public override string TypeName
 		{
-            get { return "Audio"; }
-        }
-
-		override public string[] FileExtensions
-		{
-			get { return new string[] { ".mp3", ".wma", ".aiff", ".flac", ".ogg", ".wav", }; }
+			get { return "Audio"; }
 		}
 
-		override public bool IsTimingSource
+		public override string[] FileExtensions
+		{
+			get { return new string[] {".mp3", ".wma", ".aiff", ".flac", ".ogg", ".wav",}; }
+		}
+
+		public override bool IsTimingSource
 		{
 			get { return true; }
 		}

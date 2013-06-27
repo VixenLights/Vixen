@@ -1,31 +1,39 @@
 ﻿using Vixen.Sys;
 
-namespace Vixen.Commands {
-	public class _64BitCommand : Dispatchable<_64BitCommand>, ICommand<ulong> {
-		public _64BitCommand(ulong value) {
+namespace Vixen.Commands
+{
+	public class _64BitCommand : Dispatchable<_64BitCommand>, ICommand<ulong>
+	{
+		public _64BitCommand(ulong value)
+		{
 			CommandValue = value;
-			SignedValue = (long)value;
+			SignedValue = (long) value;
 			UnsignedValue = value;
 		}
 
 		public _64BitCommand(byte value)
-			: this((ulong)value) {
+			: this((ulong) value)
+		{
 		}
 
 		public _64BitCommand(short value)
-			: this((ulong)value) {
+			: this((ulong) value)
+		{
 		}
 
 		public _64BitCommand(int value)
-			: this((ulong)value) {
+			: this((ulong) value)
+		{
 		}
 
 		public _64BitCommand(float value)
-			: this((ulong)value) {
+			: this((ulong) value)
+		{
 		}
 
 		public _64BitCommand(double value)
-			: this((ulong)value) {
+			: this((ulong) value)
+		{
 		}
 
 		public ulong CommandValue { get; set; }
@@ -34,9 +42,10 @@ namespace Vixen.Commands {
 
 		public ulong UnsignedValue { get; private set; }
 
-		object ICommand.CommandValue {
+		object ICommand.CommandValue
+		{
 			get { return CommandValue; }
-			set { CommandValue = (ulong)value; }
+			set { CommandValue = (ulong) value; }
 		}
 	}
 }

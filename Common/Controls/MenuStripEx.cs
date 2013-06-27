@@ -11,7 +11,6 @@ namespace Common.Controls
 	/// </summary>
 	public class MenuStripEx : MenuStrip
 	{
-
 		private bool clickThrough = true;
 
 		/// <summary>
@@ -29,18 +28,10 @@ namespace Common.Controls
 			base.WndProc(ref m);
 
 			if (this.clickThrough &&
-				m.Msg == NativeConstants.WM_MOUSEACTIVATE &&
-				m.Result == (IntPtr)NativeConstants.MA_ACTIVATEANDEAT) {
-				m.Result = (IntPtr)NativeConstants.MA_ACTIVATE;
+			    m.Msg == NativeConstants.WM_MOUSEACTIVATE &&
+			    m.Result == (IntPtr) NativeConstants.MA_ACTIVATEANDEAT) {
+				m.Result = (IntPtr) NativeConstants.MA_ACTIVATE;
 			}
 		}
 	}
 }
-
-
-
-
-
-
-
-

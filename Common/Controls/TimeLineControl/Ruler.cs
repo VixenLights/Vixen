@@ -11,7 +11,7 @@ using System.Diagnostics;
 
 namespace Common.Controls.Timeline
 {
-	[System.ComponentModel.DesignerCategory("")]    // Prevent this from showing up in designer.
+	[System.ComponentModel.DesignerCategory("")] // Prevent this from showing up in designer.
 	public class Ruler : TimelineControlBase
 	{
 		private const int minPxBetweenTimeLabels = 10;
@@ -31,8 +31,15 @@ namespace Common.Controls.Timeline
 		private TimeSpan m_MinorTick;
 		private int m_minorTicksPerMajor;
 
-		private TimeSpan MinorTick { get { return m_MinorTick; } }
-		private TimeSpan MajorTick { get { return m_MinorTick.Scale(m_minorTicksPerMajor); } }
+		private TimeSpan MinorTick
+		{
+			get { return m_MinorTick; }
+		}
+
+		private TimeSpan MajorTick
+		{
+			get { return m_MinorTick.Scale(m_minorTicksPerMajor); }
+		}
 
 
 		protected override Size DefaultSize
@@ -40,13 +47,11 @@ namespace Common.Controls.Timeline
 			get { return new Size(400, 40); }
 		}
 
-
 		#region Drawing
 
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			try
-			{
+			try {
 				// Translate the graphics to work the same way the timeline grid does
 				// (ie. Drawing coordinates take into account where we start at in time)
 				e.Graphics.TranslateTransform(-timeToPixels(VisibleTimeStart), 0);
@@ -55,15 +60,13 @@ namespace Common.Controls.Timeline
 				drawTicks(e.Graphics, MinorTick, 1, 0.25);
 				drawTimes(e.Graphics);
 
-				using (Pen p = new Pen(Color.Black, 2))
-				{
+				using (Pen p = new Pen(Color.Black, 2)) {
 					e.Graphics.DrawLine(p, 0, Height - 1, timeToPixels(TotalTime), Height - 1);
 				}
 
 				drawPlaybackIndicators(e.Graphics);
 			}
-			catch (Exception ex)
-			{
+			catch (Exception ex) {
 				MessageBox.Show("Exception in Timeline.Ruler.OnPaint():\n\n\t" + ex.Message + "\n\nBacktrace:\n\n\t" + ex.StackTrace);
 			}
 		}
@@ -74,16 +77,14 @@ namespace Common.Controls.Timeline
 
 			// calculate first tick - (it is the first multiple of interval greater than start)
 			// believe it or not, this math is correct :-)
-			Single start = timeToPixels(VisibleTimeStart) - (timeToPixels(VisibleTimeStart) % pxint) + pxint;
+			Single start = timeToPixels(VisibleTimeStart) - (timeToPixels(VisibleTimeStart)%pxint) + pxint;
 			Single end = timeToPixels(VisibleTimeEnd);
 
-			for (Single x = start; x <= end; x += pxint)
-			{
+			for (Single x = start; x <= end; x += pxint) {
 				Pen p = new Pen(Color.Black);
 				p.Width = width;
 				p.Alignment = PenAlignment.Right;
-				graphics.DrawLine(p, x, (Single)(Height * (1.0 - height)), x, Height);
-
+				graphics.DrawLine(p, x, (Single) (Height*(1.0 - height)), x, Height);
 			}
 		}
 
@@ -96,27 +97,29 @@ namespace Common.Controls.Timeline
 			// to display times without overlapping. Then we can make sure we only use those intervals
 			// to draw strings.
 			stringSize = graphics.MeasureString(labelString(VisibleTimeEnd), m_font);
-			int timeDisplayInterval = (int)((stringSize.Width + minPxBetweenTimeLabels) / timeToPixels(MajorTick)) + 1;
-			TimeSpan drawnInterval = TimeSpan.FromTicks(MajorTick.Ticks * timeDisplayInterval);
+			int timeDisplayInterval = (int) ((stringSize.Width + minPxBetweenTimeLabels)/timeToPixels(MajorTick)) + 1;
+			TimeSpan drawnInterval = TimeSpan.FromTicks(MajorTick.Ticks*timeDisplayInterval);
 
 			// get the time of the first tick that is: visible, on a major tick interval, and a multiple of the number of interval ticks
-			TimeSpan firstMajor = TimeSpan.FromTicks(VisibleTimeStart.Ticks - (VisibleTimeStart.Ticks % drawnInterval.Ticks) + drawnInterval.Ticks);
+			TimeSpan firstMajor =
+				TimeSpan.FromTicks(VisibleTimeStart.Ticks - (VisibleTimeStart.Ticks%drawnInterval.Ticks) + drawnInterval.Ticks);
 
-			for (TimeSpan curTime = firstMajor;             // start at the first major tick
-				(curTime <= VisibleTimeEnd);                // current time is in the visible region
-				curTime += drawnInterval)                   // increment by the drawnInterval
+			for (TimeSpan curTime = firstMajor;
+			     // start at the first major tick
+			     (curTime <= VisibleTimeEnd);
+			     // current time is in the visible region
+			     curTime += drawnInterval) // increment by the drawnInterval
 			{
 				string timeStr = labelString(curTime);
 
 				stringSize = graphics.MeasureString(timeStr, m_font);
-				Single posOffset = (stringSize.Width / 2);
+				Single posOffset = (stringSize.Width/2);
 				Single curPixelCentre = timeToPixels(curTime);
 
 				// if drawing the string wouldn't overlap the last, then draw it
-				if (lastPixel + minPxBetweenTimeLabels + posOffset < curPixelCentre)
-				{
-					graphics.DrawString(timeStr, m_font, m_textBrush, curPixelCentre - posOffset, (Height / 4) - (stringSize.Height / 2));
-					lastPixel = (int)(curPixelCentre + posOffset);
+				if (lastPixel + minPxBetweenTimeLabels + posOffset < curPixelCentre) {
+					graphics.DrawString(timeStr, m_font, m_textBrush, curPixelCentre - posOffset, (Height/4) - (stringSize.Height/2));
+					lastPixel = (int) (curPixelCentre + posOffset);
 				}
 			}
 		}
@@ -127,44 +130,41 @@ namespace Common.Controls.Timeline
 		private void drawPlaybackIndicators(Graphics g)
 		{
 			// Playback start/end arrows
-			if (PlaybackStartTime.HasValue || PlaybackEndTime.HasValue)
-			{
+			if (PlaybackStartTime.HasValue || PlaybackEndTime.HasValue) {
 				GraphicsState gstate = g.Save();
-				g.TranslateTransform(0, -ArrowBase / 2);
+				g.TranslateTransform(0, -ArrowBase/2);
 
-				if (PlaybackStartTime.HasValue)
-				{
+				if (PlaybackStartTime.HasValue) {
 					// start arrow (faces left)  |<|
-					int x = (int)timeToPixels(PlaybackStartTime.Value);
-					g.FillPolygon(Brushes.DarkGray, new Point[] {
-						new Point(x, Height-ArrowBase/2),				// left mid point
-						new Point(x+ArrowLength, Height-ArrowBase),	// right top point
-						new Point(x+ArrowLength, Height)					// right bottom point
-					});
+					int x = (int) timeToPixels(PlaybackStartTime.Value);
+					g.FillPolygon(Brushes.DarkGray, new Point[]
+					                                	{
+					                                		new Point(x, Height - ArrowBase/2), // left mid point
+					                                		new Point(x + ArrowLength, Height - ArrowBase), // right top point
+					                                		new Point(x + ArrowLength, Height) // right bottom point
+					                                	});
 					g.DrawLine(Pens.DarkGray, x, Height - ArrowBase, x, Height);
 				}
 
-				if (PlaybackEndTime.HasValue)
-				{
+				if (PlaybackEndTime.HasValue) {
 					// end arrow (faces right)   |>|
-					int x = (int)timeToPixels(PlaybackEndTime.Value);
-					g.FillPolygon(Brushes.DarkGray, new Point[] {
-						new Point(x, Height-ArrowBase/2),				// right mid point
-						new Point(x-ArrowLength, Height-ArrowBase),	// left top point
-						new Point(x-ArrowLength, Height)					// left bottom point
-					});
+					int x = (int) timeToPixels(PlaybackEndTime.Value);
+					g.FillPolygon(Brushes.DarkGray, new Point[]
+					                                	{
+					                                		new Point(x, Height - ArrowBase/2), // right mid point
+					                                		new Point(x - ArrowLength, Height - ArrowBase), // left top point
+					                                		new Point(x - ArrowLength, Height) // left bottom point
+					                                	});
 					g.DrawLine(Pens.DarkGray, x, Height - ArrowBase, x, Height);
 				}
 
-				if (PlaybackStartTime.HasValue && PlaybackEndTime.HasValue)
-				{
+				if (PlaybackStartTime.HasValue && PlaybackEndTime.HasValue) {
 					// line between the two
-					using (Pen p = new Pen(Color.DarkGray))
-					{
+					using (Pen p = new Pen(Color.DarkGray)) {
 						p.Width = 4;
-						int x1 = (int)timeToPixels(PlaybackStartTime.Value) + ArrowLength;
-						int x2 = (int)timeToPixels(PlaybackEndTime.Value) - ArrowLength;
-						int y = Height - ArrowBase / 2;
+						int x1 = (int) timeToPixels(PlaybackStartTime.Value) + ArrowLength;
+						int x2 = (int) timeToPixels(PlaybackEndTime.Value) - ArrowLength;
+						int y = Height - ArrowBase/2;
 						g.DrawLine(p, x1, y, x2, y);
 					}
 				}
@@ -173,20 +173,18 @@ namespace Common.Controls.Timeline
 			}
 
 			// Current position arrow
-			if (PlaybackCurrentTime.HasValue)
-			{
-				int x = (int)timeToPixels(PlaybackCurrentTime.Value);
-				g.FillPolygon(Brushes.Green, new Point[] {
-					new Point(x, ArrowLength),		// bottom mid point
-					new Point(x-ArrowBase/2, 0),	// top left point
-					new Point(x+ArrowBase/2, 0),	// top right point
-				});
-
+			if (PlaybackCurrentTime.HasValue) {
+				int x = (int) timeToPixels(PlaybackCurrentTime.Value);
+				g.FillPolygon(Brushes.Green, new Point[]
+				                             	{
+				                             		new Point(x, ArrowLength), // bottom mid point
+				                             		new Point(x - ArrowBase/2, 0), // top left point
+				                             		new Point(x + ArrowBase/2, 0), // top right point
+				                             	});
 			}
 		}
 
 		#endregion
-
 
 		protected override void OnResize(EventArgs e)
 		{
@@ -211,7 +209,7 @@ namespace Common.Controls.Timeline
 		private void recalculate()
 		{
 			// Calculate the correct font size based on height
-			int desiredPixelHeight = (this.Size.Height / 3);
+			int desiredPixelHeight = (this.Size.Height/3);
 
 			if (m_font != null)
 				m_font.Dispose();
@@ -226,117 +224,94 @@ namespace Common.Controls.Timeline
 			// As a heuristic, we want at least 10 pixels between each minor tick
 			var t = pixelsToTime(10);
 
-			if (t.TotalSeconds > 0.05)
-			{
-				if (t.TotalSeconds < 0.1)
-				{
+			if (t.TotalSeconds > 0.05) {
+				if (t.TotalSeconds < 0.1) {
 					m_MinorTick = TimeSpan.FromMilliseconds(100);
 					m_minorTicksPerMajor = 5;
 				}
-				else if (t.TotalSeconds < 0.25)
-				{
+				else if (t.TotalSeconds < 0.25) {
 					m_MinorTick = TimeSpan.FromMilliseconds(250);
 					m_minorTicksPerMajor = 4;
 				}
-				else if (t.TotalSeconds < 0.5)
-				{
+				else if (t.TotalSeconds < 0.5) {
 					m_MinorTick = TimeSpan.FromMilliseconds(500);
 					m_minorTicksPerMajor = 4;
 				}
-				else if (t.TotalSeconds < 1)
-				{
+				else if (t.TotalSeconds < 1) {
 					m_MinorTick = TimeSpan.FromSeconds(1);
 					m_minorTicksPerMajor = 5;
 				}
-				else if (t.TotalSeconds < 5)
-				{
+				else if (t.TotalSeconds < 5) {
 					m_MinorTick = TimeSpan.FromSeconds(5);
 					m_minorTicksPerMajor = 6; //major = 30.0;
 				}
-				else if (t.TotalSeconds < 10)
-				{
+				else if (t.TotalSeconds < 10) {
 					m_MinorTick = TimeSpan.FromSeconds(10);
 					m_minorTicksPerMajor = 6; //major = 60.0;
 				}
-				else if (t.TotalSeconds < 15)
-				{
+				else if (t.TotalSeconds < 15) {
 					m_MinorTick = TimeSpan.FromSeconds(15);
 					m_minorTicksPerMajor = 4; //major = 60.0;
 				}
-				else if (t.TotalSeconds < 30)
-				{
+				else if (t.TotalSeconds < 30) {
 					m_MinorTick = TimeSpan.FromSeconds(30);
 					m_minorTicksPerMajor = 4; //major = 120.0;
 				}
-				else if (t.TotalMinutes < 1)
-				{
+				else if (t.TotalMinutes < 1) {
 					m_MinorTick = TimeSpan.FromMinutes(1);
-					m_minorTicksPerMajor = 5;	//major = 300.0;
+					m_minorTicksPerMajor = 5; //major = 300.0;
 				}
-				else if (t.TotalMinutes < 5)
-				{
+				else if (t.TotalMinutes < 5) {
 					m_MinorTick = TimeSpan.FromMinutes(5);
-					m_minorTicksPerMajor = 3;	//major = 900.0;
+					m_minorTicksPerMajor = 3; //major = 900.0;
 				}
-				else if (t.TotalMinutes < 10)
-				{
+				else if (t.TotalMinutes < 10) {
 					m_MinorTick = TimeSpan.FromMinutes(10);
-					m_minorTicksPerMajor = 3;	//major = 1800.0;
+					m_minorTicksPerMajor = 3; //major = 1800.0;
 				}
-				else if (t.TotalMinutes < 15)
-				{
+				else if (t.TotalMinutes < 15) {
 					m_MinorTick = TimeSpan.FromMinutes(15);
-					m_minorTicksPerMajor = 4;	//major = 3600.0;
+					m_minorTicksPerMajor = 4; //major = 3600.0;
 				}
-				else if (t.TotalMinutes < 30)
-				{
+				else if (t.TotalMinutes < 30) {
 					m_MinorTick = TimeSpan.FromMinutes(30);
-					m_minorTicksPerMajor = 2;	//major = 3600.0;
+					m_minorTicksPerMajor = 2; //major = 3600.0;
 				}
-				else if (t.TotalHours < 1)
-				{
+				else if (t.TotalHours < 1) {
 					m_MinorTick = TimeSpan.FromHours(1);
-					m_minorTicksPerMajor = 6;	//major = 6 * 3600.0;
+					m_minorTicksPerMajor = 6; //major = 6 * 3600.0;
 				}
-				else if (t.TotalHours < 6)
-				{
+				else if (t.TotalHours < 6) {
 					m_MinorTick = TimeSpan.FromHours(6);
-					m_minorTicksPerMajor = 4;	//major = 24 * 3600.0;
+					m_minorTicksPerMajor = 4; //major = 24 * 3600.0;
 				}
-				else if (t.TotalDays < 1)
-				{
+				else if (t.TotalDays < 1) {
 					m_MinorTick = TimeSpan.FromDays(1);
-					m_minorTicksPerMajor = 7;	//major = 7 * 24 * 3600.0;
+					m_minorTicksPerMajor = 7; //major = 7 * 24 * 3600.0;
 				}
-				else
-				{
+				else {
 					m_MinorTick = TimeSpan.FromDays(7);
-					m_minorTicksPerMajor = 1;	//major = 24.0 * 7.0 * 3600.0;
+					m_minorTicksPerMajor = 1; //major = 24.0 * 7.0 * 3600.0;
 				}
 			}
-			else
-			{
+			else {
 				// Fractional seconds
 				double d = 0.000001;
-				for (; ; )
-				{
-					if (t.TotalSeconds < d)
-					{
-						m_MinorTick = TimeSpan.FromTicks((long)(TimeSpan.TicksPerMillisecond * 1000 * d));
+				for (;;) {
+					if (t.TotalSeconds < d) {
+						m_MinorTick = TimeSpan.FromTicks((long) (TimeSpan.TicksPerMillisecond*1000*d));
 						m_minorTicksPerMajor = 5; //major = d * 5.0;
 						break;
 					}
 					d *= 5.0;
-					if (t.TotalSeconds < d)
-					{
-						m_MinorTick = TimeSpan.FromTicks((long)(TimeSpan.TicksPerMillisecond * 1000 * d));
+					if (t.TotalSeconds < d) {
+						m_MinorTick = TimeSpan.FromTicks((long) (TimeSpan.TicksPerMillisecond*1000*d));
 						m_minorTicksPerMajor = 5; //major = d * 5.0;
 						break;
 					}
 					d *= 5.0;
-					if (t.TotalSeconds < d)
-					{
-						m_MinorTick = TimeSpan.FromTicks((long)(TimeSpan.TicksPerMillisecond * 1000 * d));
+					if (t.TotalSeconds < d) {
+						m_MinorTick = TimeSpan.FromTicks((long) (TimeSpan.TicksPerMillisecond*1000*d));
 						m_minorTicksPerMajor = 4; //major = d * 4.0;
 						break;
 					}
@@ -353,34 +328,30 @@ namespace Common.Controls.Timeline
 
 			string timeFormat = string.Empty;
 
-			if (m_MinorTick >= TimeSpan.FromHours(1))
-			{
+			if (m_MinorTick >= TimeSpan.FromHours(1)) {
 				// Round time to nearest hour
-				t = TimeSpan.FromHours((int)t.TotalHours);
+				t = TimeSpan.FromHours((int) t.TotalHours);
 				timeFormat = @"h\:mm";
 			}
-			else if (m_MinorTick >= TimeSpan.FromMinutes(1))
-			{
+			else if (m_MinorTick >= TimeSpan.FromMinutes(1)) {
 				// Round time to nearest minute
-				t = TimeSpan.FromMinutes((int)t.TotalMinutes);
+				t = TimeSpan.FromMinutes((int) t.TotalMinutes);
 
 				if (t >= TimeSpan.FromHours(1))
 					timeFormat = @"h\:mm\:ss";
 				else
 					timeFormat = @"m\:ss";
 			}
-			else if (m_MinorTick >= TimeSpan.FromSeconds(1))
-			{
+			else if (m_MinorTick >= TimeSpan.FromSeconds(1)) {
 				// Round time to nearest second
-				t = TimeSpan.FromSeconds((int)t.TotalSeconds);
+				t = TimeSpan.FromSeconds((int) t.TotalSeconds);
 
 				if (t >= TimeSpan.FromHours(1))
 					timeFormat = @"h\:mm\:ss";
 				else
 					timeFormat = @"m\:ss";
 			}
-			else if (m_MinorTick >= TimeSpan.FromMilliseconds(100))
-			{
+			else if (m_MinorTick >= TimeSpan.FromMilliseconds(100)) {
 				if (t >= TimeSpan.FromHours(1))
 					timeFormat = @"h\:mm\:ss\.f";
 				else if (t >= TimeSpan.FromMinutes(1))
@@ -388,8 +359,7 @@ namespace Common.Controls.Timeline
 				else
 					timeFormat = @"s\.f";
 			}
-			else if (m_MinorTick >= TimeSpan.FromMilliseconds(10))
-			{
+			else if (m_MinorTick >= TimeSpan.FromMilliseconds(10)) {
 				if (t >= TimeSpan.FromHours(1))
 					timeFormat = @"h\:mm\:ss\.ff";
 				else if (t >= TimeSpan.FromMinutes(1))
@@ -397,8 +367,7 @@ namespace Common.Controls.Timeline
 				else
 					timeFormat = @"s\.ff";
 			}
-			else if (m_MinorTick >= TimeSpan.FromMilliseconds(1))
-			{
+			else if (m_MinorTick >= TimeSpan.FromMilliseconds(1)) {
 				if (t >= TimeSpan.FromHours(1))
 					timeFormat = @"h\:mm\:ss\.fff";
 				else if (t >= TimeSpan.FromMinutes(1))
@@ -406,8 +375,7 @@ namespace Common.Controls.Timeline
 				else
 					timeFormat = @"s\.fff";
 			}
-			else
-			{
+			else {
 				if (t >= TimeSpan.FromHours(1))
 					timeFormat = @"h\:mm\:ss\.ffffff";
 				else if (t >= TimeSpan.FromMinutes(1))
@@ -419,13 +387,15 @@ namespace Common.Controls.Timeline
 			return t.ToString(timeFormat);
 		}
 
-
-
-
-
 		#region Mouse
 
-		private enum MouseState { Normal, DragWait, Dragging }
+		private enum MouseState
+		{
+			Normal,
+			DragWait,
+			Dragging
+		}
+
 		private MouseState m_mouseState = MouseState.Normal;
 
 		private int m_mouseDownX;
@@ -442,8 +412,7 @@ namespace Common.Controls.Timeline
 		{
 			base.OnMouseMove(e);
 
-			switch (m_mouseState)
-			{
+			switch (m_mouseState) {
 				case MouseState.Normal:
 					return;
 
@@ -459,14 +428,12 @@ namespace Common.Controls.Timeline
 
 				case MouseState.Dragging:
 					int start, end;
-					if (e.X > m_mouseDownX)
-					{
+					if (e.X > m_mouseDownX) {
 						// Start @ mouse down, end @ mouse current
 						start = m_mouseDownX;
 						end = e.X;
 					}
-					else
-					{
+					else {
 						// Start @ mouse current, end @ mouse down
 						start = e.X;
 						end = m_mouseDownX;
@@ -482,16 +449,14 @@ namespace Common.Controls.Timeline
 		}
 
 
-
 		protected override void OnMouseUp(MouseEventArgs e)
 		{
 			if (e.Button != MouseButtons.Left)
 				return;
-			switch (m_mouseState)
-			{
+			switch (m_mouseState) {
 				case MouseState.Normal:
 					break; // this is okay and will happen
-				//throw new Exception("MouseUp in MouseState.Normal - WTF?");
+					//throw new Exception("MouseUp in MouseState.Normal - WTF?");
 
 				case MouseState.DragWait:
 					// Didn't move enough to be considered dragging. Just a click.
@@ -523,9 +488,6 @@ namespace Common.Controls.Timeline
 		}
 
 
-
-
-
 		public event EventHandler<RulerClickedEventArgs> ClickedAtTime;
 		public event EventHandler<ModifierKeysEventArgs> TimeRangeDragged;
 		public event EventHandler BeginDragTimeRange;
@@ -548,15 +510,11 @@ namespace Common.Controls.Timeline
 				BeginDragTimeRange(this, EventArgs.Empty);
 		}
 
-
 		#endregion
-
-
 
 		protected override void Dispose(bool disposing)
 		{
-			if (disposing)
-			{
+			if (disposing) {
 				if (m_font != null)
 					m_font.Dispose();
 				if (m_textBrush != null)
@@ -566,7 +524,6 @@ namespace Common.Controls.Timeline
 			}
 			base.Dispose(disposing);
 		}
-
 	}
 
 
@@ -578,6 +535,7 @@ namespace Common.Controls.Timeline
 			EndTime = end;
 			ModifierKeys = modifiers;
 		}
+
 		public TimeSpan StartTime { get; private set; }
 		public TimeSpan EndTime { get; private set; }
 		public Keys ModifierKeys { get; private set; }
@@ -590,8 +548,8 @@ namespace Common.Controls.Timeline
 			Time = time;
 			ModifierKeys = modifiers;
 		}
+
 		public TimeSpan Time { get; private set; }
 		public Keys ModifierKeys { get; private set; }
 	}
-
 }

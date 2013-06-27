@@ -17,47 +17,51 @@ namespace VixenModules.Output.Olsen595
 
 		public static short outputData(ushort port, short data)
 		{
-			if (Environment.Is64BitOperatingSystem)
-			{
+			if (Environment.Is64BitOperatingSystem) {
 				return Out64(port, data);
 			}
-			else
-			{
+			else {
 				return Out32(port, data);
 			}
 		}
 	}
-	public class Module : ControllerModuleInstanceBase {
+
+	public class Module : ControllerModuleInstanceBase
+	{
 		private Data _moduleData;
 		private CommandHandler _commandHandler;
 
-		public Module() {
+		public Module()
+		{
 			_commandHandler = new CommandHandler();
 			DataPolicyFactory = new DataPolicyFactory();
 		}
 
-		public override bool Setup() {
-			using(SetupDialog setupDialog = new SetupDialog(_moduleData)) {
+		public override bool Setup()
+		{
+			using (SetupDialog setupDialog = new SetupDialog(_moduleData)) {
 				setupDialog.ShowDialog();
 			}
 			return true;
 		}
 
-		public override IModuleDataModel ModuleData {
+		public override IModuleDataModel ModuleData
+		{
 			get { return _moduleData; }
 			set { _moduleData = value as Data; }
 		}
 
-		public override void UpdateState(int chainIndex, ICommand[] outputStates) {
-			if(_moduleData.Port != 0) {
+		public override void UpdateState(int chainIndex, ICommand[] outputStates)
+		{
+			if (_moduleData.Port != 0) {
 				// The first bit clocked will end up on the last channel, so the channels 
 				// need to be traversed backwards, from high to low.
 				outputStates = outputStates.Reverse().ToArray();
-				ushort controlPort = (ushort)(_moduleData.Port + 2);
+				ushort controlPort = (ushort) (_moduleData.Port + 2);
 
 				foreach (ICommand command in outputStates) {
 					_commandHandler.Reset();
-					if(command != null) {
+					if (command != null) {
 						command.Dispatch(_commandHandler);
 					}
 

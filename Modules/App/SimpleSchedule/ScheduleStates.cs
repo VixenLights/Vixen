@@ -6,13 +6,16 @@ using Vixen.Sys;
 using VixenModules.App.SimpleSchedule.Service;
 using VixenModules.App.SimpleSchedule.State;
 
-namespace VixenModules.App.SimpleSchedule {
-	class ScheduleStates : IItemScheduler {
+namespace VixenModules.App.SimpleSchedule
+{
+	internal class ScheduleStates : IItemScheduler
+	{
 		private Machine<IScheduledItemStateObject> _stateMachine;
 		private HashSet<IScheduledItemStateObject> _waitingItems;
 		private HashSet<IScheduledItemStateObject> _executingItems;
 
-		public ScheduleStates() {
+		public ScheduleStates()
+		{
 			_waitingItems = new HashSet<IScheduledItemStateObject>();
 			_executingItems = new HashSet<IScheduledItemStateObject>();
 
@@ -31,56 +34,65 @@ namespace VixenModules.App.SimpleSchedule {
 			_stateMachine.AddState(States.CompletedState);
 		}
 
-		public void AddSequence(IScheduledItem item) {
-			if(item == null) throw new ArgumentNullException("item");
+		public void AddSequence(IScheduledItem item)
+		{
+			if (item == null) throw new ArgumentNullException("item");
 
 			IScheduledItemStateObject scheduledSequence = ScheduledItemService.Instance.CreateSequenceStateObject(item);
 			_AddItem(scheduledSequence);
 		}
 
-		public void AddProgram(IScheduledItem item) {
-			if(item == null) throw new ArgumentNullException("item");
+		public void AddProgram(IScheduledItem item)
+		{
+			if (item == null) throw new ArgumentNullException("item");
 
 			IScheduledItemStateObject scheduledProgram = ScheduledItemService.Instance.CreateProgramStateObject(item);
 			_AddItem(scheduledProgram);
 		}
 
-		public void UpdateSequence(IScheduledItem item) {
-			if(item == null) throw new ArgumentNullException("item");
+		public void UpdateSequence(IScheduledItem item)
+		{
+			if (item == null) throw new ArgumentNullException("item");
 
 			_UpdateItem(item);
 		}
 
-		public void UpdateProgram(IScheduledItem item) {
-			if(item == null) throw new ArgumentNullException("item");
+		public void UpdateProgram(IScheduledItem item)
+		{
+			if (item == null) throw new ArgumentNullException("item");
 
 			_UpdateItem(item);
 		}
 
-		public void RemoveSequence(IScheduledItem item) {
-			if(item == null) throw new ArgumentNullException("item");
+		public void RemoveSequence(IScheduledItem item)
+		{
+			if (item == null) throw new ArgumentNullException("item");
 
 			_RemoveItem(_FindStateObject(item));
 		}
 
-		public void RemoveProgram(IScheduledItem item) {
-			if(item == null) throw new ArgumentNullException("item");
+		public void RemoveProgram(IScheduledItem item)
+		{
+			if (item == null) throw new ArgumentNullException("item");
 
 			_RemoveItem(_FindStateObject(item));
 		}
 
-		public void Update() {
+		public void Update()
+		{
 			_stateMachine.Update();
 		}
 
-		public void TerminateAll() {
-			foreach(IScheduledItemStateObject item in _executingItems.ToArray()) {
+		public void TerminateAll()
+		{
+			foreach (IScheduledItemStateObject item in _executingItems.ToArray()) {
 				_stateMachine.SetState(item, States.CompletedState);
 				_stateMachine.SetState(item, States.WaitingState);
 			}
 		}
 
-		public void Refresh(IEnumerable<IScheduledItem> items) {
+		public void Refresh(IEnumerable<IScheduledItem> items)
+		{
 			_TerminateDeletedItems(items);
 			_UpdateExecutingItems(items);
 
@@ -90,83 +102,95 @@ namespace VixenModules.App.SimpleSchedule {
 			var itemsToRemove = statedObjects.Where(x => !items.Any(y => y.Id == x.Id));
 			var itemsToUpdate = items.Where(x => statedObjects.FirstOrDefault(y => y.Id == x.Id) != null);
 
-			foreach(var item in itemsToAdd) {
+			foreach (var item in itemsToAdd) {
 				_AddItem(item);
 			}
 
-			foreach(var item in itemsToRemove) {
+			foreach (var item in itemsToRemove) {
 				_RemoveItem(item);
 			}
 
-			foreach(var item in itemsToUpdate) {
+			foreach (var item in itemsToUpdate) {
 				_UpdateItem(item);
 			}
 		}
 
-		private void _TerminateDeletedItems(IEnumerable<IScheduledItem> items) {
+		private void _TerminateDeletedItems(IEnumerable<IScheduledItem> items)
+		{
 			IEnumerable<IScheduledItemStateObject> currentItems = items.Select(_FindStateObject).Where(x => x != null);
 			IEnumerable<IScheduledItemStateObject> deletedItems = _executingItems.Except(currentItems);
-			foreach(IScheduledItemStateObject item in deletedItems) {
+			foreach (IScheduledItemStateObject item in deletedItems) {
 				_RemoveItem(item);
 			}
 		}
 
-		private void _UpdateExecutingItems(IEnumerable<IScheduledItem> items) {
-			foreach(var item in items) {
+		private void _UpdateExecutingItems(IEnumerable<IScheduledItem> items)
+		{
+			foreach (var item in items) {
 				_UpdateItem(item);
 			}
 		}
 
-		private bool _IsItemAProgram(IScheduledItem item) {
+		private bool _IsItemAProgram(IScheduledItem item)
+		{
 			return item.ItemFilePath.EndsWith(Program.Extension);
 		}
 
-		private IScheduledItemStateObject _FindStateObject(IScheduledItem item) {
+		private IScheduledItemStateObject _FindStateObject(IScheduledItem item)
+		{
 			return _stateMachine.GetStatedObjects().FirstOrDefault(x => x.Id.Equals(item.Id));
 		}
 
-		private void _AddItem(IScheduledItemStateObject item) {
+		private void _AddItem(IScheduledItemStateObject item)
+		{
 			_stateMachine.AddStatedObject(item, States.WaitingState);
 		}
 
-		private void _AddItem(IScheduledItem item) {
-			if(_IsItemAProgram(item)) {
+		private void _AddItem(IScheduledItem item)
+		{
+			if (_IsItemAProgram(item)) {
 				AddProgram(item);
-			} else {
+			}
+			else {
 				AddSequence(item);
 			}
 		}
 
-		private void _UpdateItem(IScheduledItem item) {
+		private void _UpdateItem(IScheduledItem item)
+		{
 			Func<IScheduledItem, IScheduledItemStateObject> newStatedObjectCreator;
 
-			if(_IsItemAProgram(item)) {
+			if (_IsItemAProgram(item)) {
 				newStatedObjectCreator = ScheduledItemService.Instance.CreateProgramStateObject;
-			} else {
+			}
+			else {
 				newStatedObjectCreator = ScheduledItemService.Instance.CreateSequenceStateObject;
 			}
 
 			IScheduledItemStateObject scheduledItemStateObject = _FindStateObject(item);
 			IScheduledItemStateObject newScheduledItemStateObject = newStatedObjectCreator(item);
 
-			if(scheduledItemStateObject == null || newScheduledItemStateObject == null) return;
+			if (scheduledItemStateObject == null || newScheduledItemStateObject == null) return;
 
-			if(ScheduledItemService.Instance.ScheduledItemQualifiesForExecution(newScheduledItemStateObject)) {
+			if (ScheduledItemService.Instance.ScheduledItemQualifiesForExecution(newScheduledItemStateObject)) {
 				_ReplaceItem(scheduledItemStateObject, newScheduledItemStateObject);
-			} else {
+			}
+			else {
 				_RemoveItem(scheduledItemStateObject);
 				_AddItem(newScheduledItemStateObject);
 			}
 		}
 
-		private void _RemoveItem(IScheduledItemStateObject item) {
-			if(item != null) {
+		private void _RemoveItem(IScheduledItemStateObject item)
+		{
+			if (item != null) {
 				_stateMachine.SetState(item, States.CompletedState);
 				_stateMachine.RemoveStatedObject(item);
 			}
 		}
 
-		private void _ReplaceItem(IScheduledItemStateObject oldItem, IScheduledItemStateObject newItem) {
+		private void _ReplaceItem(IScheduledItemStateObject oldItem, IScheduledItemStateObject newItem)
+		{
 			_stateMachine.ReplaceStatedObject(oldItem, newItem);
 		}
 	}

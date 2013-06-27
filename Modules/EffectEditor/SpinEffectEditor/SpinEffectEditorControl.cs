@@ -22,7 +22,8 @@ namespace VixenModules.EffectEditor.SpinEffectEditor
 			InitializeComponent();
 		}
 
-		IEffect _targetEffect;
+		private IEffect _targetEffect;
+
 		public IEffect TargetEffect
 		{
 			get { return _targetEffect; }
@@ -33,22 +34,23 @@ namespace VixenModules.EffectEditor.SpinEffectEditor
 		{
 			get
 			{
-				return new object[] {
-					SpeedFormat,
-					PulseLengthFormat,
-					ColorHandling,
-					RevolutionCount,
-					RevolutionFrequency,
-					RevolutionTime,
-					PulseTime,
-					PulsePercentage,
-					DefaultLevel,
-					StaticColor,
-					ColorGradient,
-					PulseCurve,
-					ReverseSpin,
-					DepthOfEffect
-				};
+				return new object[]
+				       	{
+				       		SpeedFormat,
+				       		PulseLengthFormat,
+				       		ColorHandling,
+				       		RevolutionCount,
+				       		RevolutionFrequency,
+				       		RevolutionTime,
+				       		PulseTime,
+				       		PulsePercentage,
+				       		DefaultLevel,
+				       		StaticColor,
+				       		ColorGradient,
+				       		PulseCurve,
+				       		ReverseSpin,
+				       		DepthOfEffect
+				       	};
 			}
 			set
 			{
@@ -57,22 +59,22 @@ namespace VixenModules.EffectEditor.SpinEffectEditor
 					return;
 				}
 
-				ColorHandling = (SpinColorHandling)value[2];
-				RevolutionCount = (double)value[3];
-				RevolutionFrequency = (double)value[4];
-				RevolutionTime = (int)value[5];
-				PulseTime = (int)value[6];
-				PulsePercentage = (int)value[7];
-				DefaultLevel = (double)value[8];
-				StaticColor = (Color)value[9];
-				ColorGradient = (ColorGradient)value[10];
-				PulseCurve = (Curve)value[11];
-				ReverseSpin = (bool)value[12];
-				DepthOfEffect = (int)value[13];
+				ColorHandling = (SpinColorHandling) value[2];
+				RevolutionCount = (double) value[3];
+				RevolutionFrequency = (double) value[4];
+				RevolutionTime = (int) value[5];
+				PulseTime = (int) value[6];
+				PulsePercentage = (int) value[7];
+				DefaultLevel = (double) value[8];
+				StaticColor = (Color) value[9];
+				ColorGradient = (ColorGradient) value[10];
+				PulseCurve = (Curve) value[11];
+				ReverseSpin = (bool) value[12];
+				DepthOfEffect = (int) value[13];
 
 				// set these last: setting them results in some of the other values being auto-calculated on the form.
-				SpeedFormat = (SpinSpeedFormat)value[0];
-				PulseLengthFormat = (SpinPulseLengthFormat)value[1];
+				SpeedFormat = (SpinSpeedFormat) value[0];
+				PulseLengthFormat = (SpinPulseLengthFormat) value[1];
 			}
 		}
 
@@ -177,41 +179,41 @@ namespace VixenModules.EffectEditor.SpinEffectEditor
 
 		public double RevolutionCount
 		{
-			get { return (double)numericUpDownRevolutionCount.Value; }
+			get { return (double) numericUpDownRevolutionCount.Value; }
 			set
 			{
-				if (value < (double)numericUpDownRevolutionCount.Minimum)
-					value = (double)numericUpDownRevolutionCount.Minimum;
-				if (value > (double)numericUpDownRevolutionCount.Maximum)
-					value = (double)numericUpDownRevolutionCount.Maximum;
+				if (value < (double) numericUpDownRevolutionCount.Minimum)
+					value = (double) numericUpDownRevolutionCount.Minimum;
+				if (value > (double) numericUpDownRevolutionCount.Maximum)
+					value = (double) numericUpDownRevolutionCount.Maximum;
 
-				numericUpDownRevolutionCount.Value = (decimal)value;
+				numericUpDownRevolutionCount.Value = (decimal) value;
 			}
 		}
 
 		public double RevolutionFrequency
 		{
-			get { return (double)numericUpDownRevolutionFrequency.Value; }
+			get { return (double) numericUpDownRevolutionFrequency.Value; }
 			set
 			{
-				if (value < (double)numericUpDownRevolutionFrequency.Minimum)
-					value = (double)numericUpDownRevolutionFrequency.Minimum;
-				if (value > (double)numericUpDownRevolutionFrequency.Maximum)
-					value = (double)numericUpDownRevolutionFrequency.Maximum;
+				if (value < (double) numericUpDownRevolutionFrequency.Minimum)
+					value = (double) numericUpDownRevolutionFrequency.Minimum;
+				if (value > (double) numericUpDownRevolutionFrequency.Maximum)
+					value = (double) numericUpDownRevolutionFrequency.Maximum;
 
-				numericUpDownRevolutionFrequency.Value = (decimal)value;
+				numericUpDownRevolutionFrequency.Value = (decimal) value;
 			}
 		}
 
 		public int RevolutionTime
 		{
-			get { return (int)numericUpDownRevolutionTime.Value; }
+			get { return (int) numericUpDownRevolutionTime.Value; }
 			set
 			{
-				if (value < (int)numericUpDownRevolutionTime.Minimum)
-					value = (int)numericUpDownRevolutionTime.Minimum;
-				if (value > (int)numericUpDownRevolutionTime.Maximum)
-					value = (int)numericUpDownRevolutionTime.Maximum;
+				if (value < (int) numericUpDownRevolutionTime.Minimum)
+					value = (int) numericUpDownRevolutionTime.Minimum;
+				if (value > (int) numericUpDownRevolutionTime.Maximum)
+					value = (int) numericUpDownRevolutionTime.Maximum;
 
 				numericUpDownRevolutionTime.Value = value;
 			}
@@ -219,13 +221,13 @@ namespace VixenModules.EffectEditor.SpinEffectEditor
 
 		public int PulseTime
 		{
-			get { return (int)numericUpDownPulseTime.Value; }
+			get { return (int) numericUpDownPulseTime.Value; }
 			set
 			{
-				if (value < (int)numericUpDownPulseTime.Minimum)
-					value = (int)numericUpDownPulseTime.Minimum;
-				if (value > (int)numericUpDownPulseTime.Maximum)
-					value = (int)numericUpDownPulseTime.Maximum;
+				if (value < (int) numericUpDownPulseTime.Minimum)
+					value = (int) numericUpDownPulseTime.Minimum;
+				if (value > (int) numericUpDownPulseTime.Maximum)
+					value = (int) numericUpDownPulseTime.Maximum;
 
 				numericUpDownPulseTime.Value = value;
 			}
@@ -233,13 +235,13 @@ namespace VixenModules.EffectEditor.SpinEffectEditor
 
 		public int PulsePercentage
 		{
-			get { return (int)numericUpDownPulsePercentage.Value; }
+			get { return (int) numericUpDownPulsePercentage.Value; }
 			set
 			{
-				if (value < (int)numericUpDownPulsePercentage.Minimum)
-					value = (int)numericUpDownPulsePercentage.Minimum;
-				if (value > (int)numericUpDownPulsePercentage.Maximum)
-					value = (int)numericUpDownPulsePercentage.Maximum;
+				if (value < (int) numericUpDownPulsePercentage.Minimum)
+					value = (int) numericUpDownPulsePercentage.Minimum;
+				if (value > (int) numericUpDownPulsePercentage.Maximum)
+					value = (int) numericUpDownPulsePercentage.Maximum;
 
 				numericUpDownPulsePercentage.Value = value;
 			}
@@ -282,14 +284,13 @@ namespace VixenModules.EffectEditor.SpinEffectEditor
 				if (radioButtonApplyToAllElements.Checked)
 					return 0;
 				else
-					return (int)numericUpDownDepthOfEffect.Value;
+					return (int) numericUpDownDepthOfEffect.Value;
 			}
 			set
 			{
 				if (value == 0)
 					radioButtonApplyToAllElements.Checked = true;
-				else
-				{
+				else {
 					radioButtonApplyToLevel.Checked = true;
 					numericUpDownDepthOfEffect.Value = value;
 				}
@@ -344,50 +345,54 @@ namespace VixenModules.EffectEditor.SpinEffectEditor
 			//int targetNodeCount = renderNodes.Count;
 
 			double totalTime = TargetEffect.TimeSpan.TotalMilliseconds;
-			double pulseConstant = 0;			// how much of each pulse is a constant time
-			double pulseFractional = 0;			// how much of each pulse is a fraction of a single spin
-			double revCount = 0;				// number of revolutions
-			double revTime = 0;					// single revolution time (ms)
+			double pulseConstant = 0; // how much of each pulse is a constant time
+			double pulseFractional = 0; // how much of each pulse is a fraction of a single spin
+			double revCount = 0; // number of revolutions
+			double revTime = 0; // single revolution time (ms)
 
 			// figure out the relative length of a individual pulse
 			if (radioButtonPulseFixedTime.Checked) {
 				pulseConstant = PulseTime;
-			} else if (radioButtonPulsePercentage.Checked) {
-				pulseFractional = PulsePercentage / 100.0;
-			} else if (radioButtonPulseEvenlyDistributed.Checked) {
-				pulseFractional = 1.0d / TargetEffect.TargetNodes.Length;
+			}
+			else if (radioButtonPulsePercentage.Checked) {
+				pulseFractional = PulsePercentage/100.0;
+			}
+			else if (radioButtonPulseEvenlyDistributed.Checked) {
+				pulseFractional = 1.0d/TargetEffect.TargetNodes.Length;
 			}
 
 			// figure out either the revolution count or time, based on what data we have
 			if (radioButtonRevolutionCount.Checked) {
 				revCount = RevolutionCount;
-				revTime = (totalTime - pulseConstant) / (revCount + pulseFractional);
-			} else if (radioButtonRevolutionFrequency.Checked) {
-				revTime = (1.0 / RevolutionFrequency) * 1000.0;	// convert Hz to period ms
-				revCount = ((totalTime - pulseConstant) / revTime) - pulseFractional;
-			} else if (radioButtonRevolutionTime.Checked) {
+				revTime = (totalTime - pulseConstant)/(revCount + pulseFractional);
+			}
+			else if (radioButtonRevolutionFrequency.Checked) {
+				revTime = (1.0/RevolutionFrequency)*1000.0; // convert Hz to period ms
+				revCount = ((totalTime - pulseConstant)/revTime) - pulseFractional;
+			}
+			else if (radioButtonRevolutionTime.Checked) {
 				revTime = RevolutionTime;
-				revCount = ((totalTime - pulseConstant) / revTime) - pulseFractional;
+				revCount = ((totalTime - pulseConstant)/revTime) - pulseFractional;
 			}
 
-			double pulTime = pulseConstant + (revTime * pulseFractional);
-			double pulPercent = pulTime / revTime * 100.0;
+			double pulTime = pulseConstant + (revTime*pulseFractional);
+			double pulPercent = pulTime/revTime*100.0;
 
 			// now update the appropriate other value boxes, based on which one is selected
 			if (!radioButtonPulseFixedTime.Checked) {
-				PulseTime = (int)Math.Round(pulTime);
+				PulseTime = (int) Math.Round(pulTime);
 			}
 			if (!radioButtonPulsePercentage.Checked) {
-				PulsePercentage = (int)Math.Round(pulPercent);
+				PulsePercentage = (int) Math.Round(pulPercent);
 			}
 			if (!radioButtonRevolutionCount.Checked) {
 				RevolutionCount = revCount;
 			}
 			if (!radioButtonRevolutionFrequency.Checked) {
-				RevolutionFrequency = 1.0 / (revTime / 1000.0);
+				RevolutionFrequency = 1.0/(revTime/1000.0);
 			}
 			if (!radioButtonRevolutionTime.Checked) {
-				RevolutionTime = (int)Math.Round(revTime);
+				RevolutionTime = (int) Math.Round(revTime);
 			}
 		}
 

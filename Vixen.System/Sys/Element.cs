@@ -2,22 +2,26 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Vixen.Sys {
+namespace Vixen.Sys
+{
 	// Need to implement IEquatable<T> so that IEnumerable<T>.Except() will not use
 	// the default Object Equals() and GetHashCode().
 	/// <summary>
 	/// A logical channel of low-level CommandData that is intended to be executed by a controller.
 	/// </summary>
 	[Serializable]
-	public class Element : IOutputStateSource, IEqualityComparer<Element>, IEquatable<Element> {
+	public class Element : IOutputStateSource, IEqualityComparer<Element>, IEquatable<Element>
+	{
 		private ElementContextSource _dataSource;
 		private IIntentStates _state;
 
 		internal Element(string name)
-			: this(Guid.NewGuid(), name) {
+			: this(Guid.NewGuid(), name)
+		{
 		}
 
-		internal Element(Guid id, string name) {
+		internal Element(Guid id, string name)
+		{
 			Id = id;
 			Name = name;
 			_dataSource = new ElementContextSource(Id);
@@ -30,23 +34,28 @@ namespace Vixen.Sys {
 
 		public bool Masked { get; set; }
 
-		public void Update() {
+		public void Update()
+		{
 			_state = _AggregateStateFromContexts();
 		}
 
-		public IIntentStates State {
+		public IIntentStates State
+		{
 			get { return _state; }
 		}
 
-		public override string ToString() {
+		public override string ToString()
+		{
 			return Name;
 		}
 
-		public bool Equals(Element x, Element y) {
+		public bool Equals(Element x, Element y)
+		{
 			return x.Id == y.Id;
 		}
 
-		public int GetHashCode(Element obj) {
+		public int GetHashCode(Element obj)
+		{
 			return obj.Id.GetHashCode();
 		}
 
@@ -54,15 +63,18 @@ namespace Vixen.Sys {
 		// Equals(<type>) for IEquatable and GetHashCode() because that's needed anytime
 		// Equals(object) is overridden (which it really isn't, but this is what is said and
 		// it doesn't work otherwise).
-		public bool Equals(Element other) {
+		public bool Equals(Element other)
+		{
 			return Id == other.Id;
 		}
 
-		public override int GetHashCode() {
+		public override int GetHashCode()
+		{
 			return Id.GetHashCode();
 		}
 
-		private IIntentStates _AggregateStateFromContexts() {
+		private IIntentStates _AggregateStateFromContexts()
+		{
 			//In reality, all this needs to do is call GetElementState on each context
 			//and put them all into a single collection.
 			// NotNull() - filter out any null lists resulting from the context not yet having

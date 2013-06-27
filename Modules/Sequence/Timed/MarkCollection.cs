@@ -19,7 +19,8 @@ namespace VixenModules.Sequence.Timed
 			Enabled = true;
 		}
 
-		public MarkCollection(MarkCollection original) {
+		public MarkCollection(MarkCollection original)
+		{
 			Marks = new List<TimeSpan>(original.Marks);
 			Id = Guid.NewGuid();
 			MarkColor = original.MarkColor;
@@ -51,9 +52,9 @@ namespace VixenModules.Sequence.Timed
 			get { return Marks.Count; }
 		}
 
-        public int IndexOf(TimeSpan time)
-        {
-            return Marks.IndexOf(time);
-        }
+		public int IndexOf(TimeSpan time)
+		{
+			return Marks.IndexOf(time);
+		}
 	}
 }

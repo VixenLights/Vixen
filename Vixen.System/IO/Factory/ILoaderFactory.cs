@@ -1,7 +1,9 @@
 ﻿using Vixen.Sys;
 
-namespace Vixen.IO.Factory {
-	interface ILoaderFactory {
+namespace Vixen.IO.Factory
+{
+	internal interface ILoaderFactory
+	{
 		IObjectLoader<SystemConfig> CreateSystemConfigLoader();
 		IObjectLoader<ModuleStore> CreateModuleStoreLoader();
 		IObjectLoader<SystemContext> CreateSystemContextLoader();

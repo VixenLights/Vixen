@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Vixen.Rule.Name
 {
-	class NumberedNamingTemplate : INamingTemplate
+	internal class NumberedNamingTemplate : INamingTemplate
 	{
 		public IEnumerable<INamingGenerator> Generators
 		{

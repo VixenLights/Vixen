@@ -29,107 +29,98 @@
 
 namespace VixenModules.Controller.E131
 {
-    using System.IO;
-    using System.Reflection;
-    using System.Windows.Forms;
+	using System.IO;
+	using System.Reflection;
+	using System.Windows.Forms;
 
-    internal partial class AboutBox : Form
-    {
-        public AboutBox()
-        {
-            InitializeComponent();
-            SetText();
-            labelProductName.Text = AssemblyProduct;
-            labelVersion.Text = string.Format("Version {0}", AssemblyVersion);
-            textBoxDescription.Text = AssemblyDescription;
-        }
+	internal partial class AboutBox : Form
+	{
+		public AboutBox()
+		{
+			InitializeComponent();
+			SetText();
+			labelProductName.Text = AssemblyProduct;
+			labelVersion.Text = string.Format("Version {0}", AssemblyVersion);
+			textBoxDescription.Text = AssemblyDescription;
+		}
 
-        public string AssemblyCompany
-        {
-            get
-            {
-                var attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyCompanyAttribute), false);
-                if (attributes.Length == 0)
-                {
-                    return string.Empty;
-                }
+		public string AssemblyCompany
+		{
+			get
+			{
+				var attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof (AssemblyCompanyAttribute), false);
+				if (attributes.Length == 0) {
+					return string.Empty;
+				}
 
-                return ((AssemblyCompanyAttribute)attributes[0]).Company;
-            }
-        }
+				return ((AssemblyCompanyAttribute) attributes[0]).Company;
+			}
+		}
 
-        public string AssemblyCopyright
-        {
-            get
-            {
-                var attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyCopyrightAttribute), false);
-                if (attributes.Length == 0)
-                {
-                    return string.Empty;
-                }
+		public string AssemblyCopyright
+		{
+			get
+			{
+				var attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof (AssemblyCopyrightAttribute), false);
+				if (attributes.Length == 0) {
+					return string.Empty;
+				}
 
-                return ((AssemblyCopyrightAttribute)attributes[0]).Copyright;
-            }
-        }
+				return ((AssemblyCopyrightAttribute) attributes[0]).Copyright;
+			}
+		}
 
-        public string AssemblyTitle
-        {
-            get
-            {
-                var attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyTitleAttribute), false);
-                if (attributes.Length > 0)
-                {
-                    var titleAttribute = (AssemblyTitleAttribute)attributes[0];
-                    if (titleAttribute.Title
-                        != string.Empty)
-                    {
-                        return titleAttribute.Title;
-                    }
-                }
+		public string AssemblyTitle
+		{
+			get
+			{
+				var attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof (AssemblyTitleAttribute), false);
+				if (attributes.Length > 0) {
+					var titleAttribute = (AssemblyTitleAttribute) attributes[0];
+					if (titleAttribute.Title
+					    != string.Empty) {
+						return titleAttribute.Title;
+					}
+				}
 
-                return Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().CodeBase);
-            }
-        }
+				return Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().CodeBase);
+			}
+		}
 
-        private static string AssemblyProduct
-        {
-            get
-            {
-                var attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyProductAttribute), false);
-                if (attributes.Length == 0)
-                {
-                    return string.Empty;
-                }
+		private static string AssemblyProduct
+		{
+			get
+			{
+				var attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof (AssemblyProductAttribute), false);
+				if (attributes.Length == 0) {
+					return string.Empty;
+				}
 
-                return ((AssemblyProductAttribute)attributes[0]).Product;
-            }
-        }
+				return ((AssemblyProductAttribute) attributes[0]).Product;
+			}
+		}
 
-        private static string AssemblyVersion
-        {
-            get
-            {
-                return Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            }
-        }
+		private static string AssemblyVersion
+		{
+			get { return Assembly.GetExecutingAssembly().GetName().Version.ToString(); }
+		}
 
-        private static string AssemblyDescription
-        {
-            get
-            {
-                var attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyDescriptionAttribute), false);
-                if (attributes.Length == 0)
-                {
-                    return string.Empty;
-                }
+		private static string AssemblyDescription
+		{
+			get
+			{
+				var attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof (AssemblyDescriptionAttribute), false);
+				if (attributes.Length == 0) {
+					return string.Empty;
+				}
 
-                return ((AssemblyDescriptionAttribute)attributes[0]).Description;
-            }
-        }
+				return ((AssemblyDescriptionAttribute) attributes[0]).Description;
+			}
+		}
 
-        private void SetText()
-        {
-            Text = string.Format("About {0}", AssemblyProduct);
-        }
-    }
+		private void SetText()
+		{
+			Text = string.Format("About {0}", AssemblyProduct);
+		}
+	}
 }

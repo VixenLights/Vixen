@@ -7,29 +7,33 @@ using Vixen.Sys;
 using System.Reflection;
 using Vixen.Module.Script;
 
-namespace Common.ScriptSequence.Script {
-	class ScriptHostGenerator {
+namespace Common.ScriptSequence.Script
+{
+	internal class ScriptHostGenerator
+	{
 		private List<string> _errors = new List<string>();
+
 		private string[] _standardReferences = {
-            "System.dll",
-            "System.Drawing.dll",
-			"System.Core.dll", 
-            "Vixen.dll",
-            "Common\\Controls.dll",
-            "Modules\\App\\ColorGradients.dll",
-            "Modules\\App\\Curves.dll",
-            "Modules\\Effect\\Candle.dll",
-            "Modules\\Effect\\Chase.dll",
-            "Modules\\Effect\\Nutcracker.dll",
-            "Modules\\Effect\\Spin.dll",
-            "Modules\\Effect\\Twinkle.dll",
-            //"Modules\\Effect\\SetPosition.dll",
-			"Microsoft.CSharp.dll" // Required for dynamic.
-        };
+		                                       	"System.dll",
+		                                       	"System.Drawing.dll",
+		                                       	"System.Core.dll",
+		                                       	"Vixen.dll",
+		                                       	"Common\\Controls.dll",
+		                                       	"Modules\\App\\ColorGradients.dll",
+		                                       	"Modules\\App\\Curves.dll",
+		                                       	"Modules\\Effect\\Candle.dll",
+		                                       	"Modules\\Effect\\Chase.dll",
+		                                       	"Modules\\Effect\\Nutcracker.dll",
+		                                       	"Modules\\Effect\\Spin.dll",
+		                                       	"Modules\\Effect\\Twinkle.dll",
+		                                       	//"Modules\\Effect\\SetPosition.dll",
+		                                       	"Microsoft.CSharp.dll" // Required for dynamic.
+		                                       };
 
-		static public readonly string UserScriptNamespace = "Vixen.User";
+		public static readonly string UserScriptNamespace = "Vixen.User";
 
-		public IUserScriptHost GenerateScript(ScriptSequence sequence) {
+		public IUserScriptHost GenerateScript(ScriptSequence sequence)
+		{
 			List<string> files = new List<string>();
 
 			Assembly assembly;
@@ -44,7 +48,7 @@ namespace Common.ScriptSequence.Script {
 				files.Add(fileName);
 
 				// Add the user's source files.
-				foreach(SourceFile sourceFile in sequence.SourceFiles) {
+				foreach (SourceFile sourceFile in sequence.SourceFiles) {
 					fileName = Path.Combine(Path.GetTempPath(), sourceFile.Name);
 					File.WriteAllText(fileName, sourceFile.Contents);
 					files.Add(fileName);
@@ -52,26 +56,28 @@ namespace Common.ScriptSequence.Script {
 
 				// Compile the sources.
 				assembly = _Compile(files.ToArray(), _GetReferencedAssemblies(sequence), sequence.Language);
-			} finally {
+			}
+			finally {
 				// Delete the temp files.
-				foreach(string tempFile in files) {
+				foreach (string tempFile in files) {
 					File.Delete(tempFile);
 				}
 			}
 
-			if(assembly != null) {
+			if (assembly != null) {
 				// Get the generated type.
 				Type type = assembly.GetType(string.Format("{0}.{1}", nameSpace, sequence.ClassName));
-				if(type != null) {
+				if (type != null) {
 					// Create and return an instance.
-					return (IUserScriptHost)Activator.CreateInstance(type);
+					return (IUserScriptHost) Activator.CreateInstance(type);
 				}
 			}
 
 			return null;
 		}
 
-		private IEnumerable<string> _GetReferencedAssemblies(ScriptSequence sequence) {
+		private IEnumerable<string> _GetReferencedAssemblies(ScriptSequence sequence)
+		{
 			List<string> assemblyReferences = new List<string>();
 
 			assemblyReferences.AddRange(sequence.FrameworkAssemblies);
@@ -83,17 +89,21 @@ namespace Common.ScriptSequence.Script {
 			return assemblyReferences;
 		}
 
-		private IEnumerable<string> _GetEffectParameterAssemblies() {
-			var effectParameterTypes = Vixen.Services.ApplicationServices.GetAll<IEffectModuleInstance>().SelectMany(x => x.Parameters.Select(y => y.Type));
+		private IEnumerable<string> _GetEffectParameterAssemblies()
+		{
+			var effectParameterTypes =
+				Vixen.Services.ApplicationServices.GetAll<IEffectModuleInstance>().SelectMany(x => x.Parameters.Select(y => y.Type));
 			return effectParameterTypes.Select(x => x.Assembly.GetFilePath());
 		}
 
-		public IEnumerable<string> Errors {
+		public IEnumerable<string> Errors
+		{
 			get { return _errors; }
 		}
 
 		/// <returns>The file name of the compiled assembly.</returns>
-		private Assembly _Compile(string[] files, IEnumerable<string> assemblyReferences, IScriptModuleInstance language) {
+		private Assembly _Compile(string[] files, IEnumerable<string> assemblyReferences, IScriptModuleInstance language)
+		{
 			// Assembly references come in two flavors:
 			// 1. Framework assemblies -- need only the file name.
 			// 2. Other assemblies -- need the qualified file name.
@@ -101,37 +111,41 @@ namespace Common.ScriptSequence.Script {
 
 			HashSet<string> uniqueAssemblyReferences = new HashSet<string>(assemblyReferences);
 			// Remove .NET framework and GAC assemblies.
-			uniqueAssemblyReferences.RemoveWhere(x => x.StartsWith(Environment.GetFolderPath(Environment.SpecialFolder.Windows), StringComparison.OrdinalIgnoreCase));
+			uniqueAssemblyReferences.RemoveWhere(
+				x => x.StartsWith(Environment.GetFolderPath(Environment.SpecialFolder.Windows), StringComparison.OrdinalIgnoreCase));
 
-			ICompilerParameters compilerParameters = new ScriptCompilerParameters {
-				GenerateInMemory = true,
-				//IncludeDebugInformation = true
-			};
+			ICompilerParameters compilerParameters = new ScriptCompilerParameters
+			                                         	{
+			                                         		GenerateInMemory = true,
+			                                         		//IncludeDebugInformation = true
+			                                         	};
 			compilerParameters.ReferencedAssemblies.AddRange(uniqueAssemblyReferences.ToArray());
 
 			ICompilerResults results = language.CodeProvider.CompileAssemblyFromFile(compilerParameters, files);
 
 			// Get any errors.
-			foreach(ICompilerError error in results.Errors) {
+			foreach (ICompilerError error in results.Errors) {
 				_errors.Add(string.Format("{0} [{1}]: {2}", Path.GetFileName(error.FileName), error.Line, error.ErrorText));
 			}
 
 			return results.HasErrors ? null : results.CompiledAssembly;
 		}
 
-		static public string Mangle(string str) {
-			if(string.IsNullOrWhiteSpace(str)) throw new ArgumentException("Name cannot be empty.");
+		public static string Mangle(string str)
+		{
+			if (string.IsNullOrWhiteSpace(str)) throw new ArgumentException("Name cannot be empty.");
 
 			List<char> chars = new List<char>();
 
-			if(!char.IsLetter(str[0]) && str[0] != '_') {
+			if (!char.IsLetter(str[0]) && str[0] != '_') {
 				chars.Add('_');
 			}
 
-			foreach(char ch in str) {
-				if(_IsValidSymbolChar(ch)) {
+			foreach (char ch in str) {
+				if (_IsValidSymbolChar(ch)) {
 					chars.Add(ch);
-				} else {
+				}
+				else {
 					chars.Add('_');
 				}
 			}
@@ -139,7 +153,8 @@ namespace Common.ScriptSequence.Script {
 			return new string(chars.ToArray());
 		}
 
-		static private bool _IsValidSymbolChar(char ch) {
+		private static bool _IsValidSymbolChar(char ch)
+		{
 			return char.IsLetterOrDigit(ch) || ch == '_';
 		}
 	}

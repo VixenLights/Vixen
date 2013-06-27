@@ -1,6 +1,9 @@
-﻿namespace Vixen.IO.Policy {
-	abstract class SystemConfigFilePolicy : IFilePolicy {
-		public void Write() {
+﻿namespace Vixen.IO.Policy
+{
+	internal abstract class SystemConfigFilePolicy : IFilePolicy
+	{
+		public void Write()
+		{
 			WriteContextFlag();
 			WriteIdentity();
 			WriteFilterEvaluationAllowance();
@@ -28,7 +31,8 @@
 		protected abstract void WriteDataFlowPatching();
 		protected abstract void WriteDisabledDevices();
 
-		public void Read() {
+		public void Read()
+		{
 			ReadContextFlag();
 			ReadIdentity();
 			ReadFilterEvaluationAllowance();

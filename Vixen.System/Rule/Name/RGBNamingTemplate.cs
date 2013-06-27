@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Vixen.Rule.Name
 {
-	class RGBNamingTemplate : INamingTemplate
+	internal class RGBNamingTemplate : INamingTemplate
 	{
 		public IEnumerable<INamingGenerator> Generators
 		{

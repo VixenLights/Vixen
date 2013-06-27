@@ -18,20 +18,22 @@ using System.Diagnostics;
 using System.Drawing;
 
 
-namespace Dataweb.NShape.Advanced {
+namespace Dataweb.NShape.Advanced
+{
 
 	#region ShapeAggregation abstract base class
 
 	/// <summary>
 	/// Defines a set of shapes aggregated into another shape.
 	/// </summary>
-	public abstract class ShapeAggregation : ShapeCollection {
-
+	public abstract class ShapeAggregation : ShapeCollection
+	{
 		/// <summary>
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.Advanced.ShapeAggregation" />.
 		/// </summary>
 		protected ShapeAggregation(Shape owner)
-			: base() {
+			: base()
+		{
 			Construct(owner);
 		}
 
@@ -40,7 +42,8 @@ namespace Dataweb.NShape.Advanced {
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.Advanced.ShapeAggregation" />.
 		/// </summary>
 		protected ShapeAggregation(Shape owner, int capacity)
-			: base(capacity) {
+			: base(capacity)
+		{
 			Construct(owner, capacity);
 		}
 
@@ -49,22 +52,24 @@ namespace Dataweb.NShape.Advanced {
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.Advanced.ShapeAggregation" />.
 		/// </summary>
 		protected ShapeAggregation(Shape owner, IEnumerable<Shape> collection)
-			: base(collection) {
+			: base(collection)
+		{
 			Construct(owner, shapes.Capacity);
 		}
-
 
 		#region ShapeAggregation Members called by the owner shape
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public Shape Owner {
+		public Shape Owner
+		{
 			get { return owner; }
 			protected set { owner = value; }
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public virtual void CopyFrom(IShapeCollection source) {
+		public virtual void CopyFrom(IShapeCollection source)
+		{
 			if (source == null) throw new ArgumentNullException("source");
 			Clear();
 			foreach (Shape shape in source.BottomUp) {
@@ -75,7 +80,8 @@ namespace Dataweb.NShape.Advanced {
 				if (Owner.Template == null) {
 					shapeClone = shape.Type.CreateInstance();
 					shapeClone.CopyFrom(shape);
-				} else shapeClone = shape.Clone();
+				}
+				else shapeClone = shape.Clone();
 				shapeClone.ZOrder = shape.ZOrder;
 				shapeClone.Parent = this.Owner;
 				shapeClone.DisplayService = this.Owner.DisplayService;
@@ -111,7 +117,7 @@ namespace Dataweb.NShape.Advanced {
 			//}
 
 			if (source is ShapeAggregation) {
-				ShapeAggregation src = (ShapeAggregation)source;
+				ShapeAggregation src = (ShapeAggregation) source;
 				this.aggregationAngle = src.aggregationAngle;
 				this.rotationCenter = src.rotationCenter;
 				// Copy center points of the shapes
@@ -120,7 +126,8 @@ namespace Dataweb.NShape.Advanced {
 					Point shapePos = src.shapePositions[src.shapes[i]];
 					this.shapePositions.Add(this.shapes[i], shapePos);
 				}
-			} else {
+			}
+			else {
 				// if the source ShapeCollection is not a ShapeAggregation, 
 				// store unrotated ShapePositions nevertheless
 				this.shapePositions.Clear();
@@ -134,7 +141,8 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public void SetPreviewStyles(IStyleSet styleSet) {
+		public void SetPreviewStyles(IStyleSet styleSet)
+		{
 			if (styleSet == null) throw new ArgumentNullException("styleSet");
 			foreach (Shape shape in shapes)
 				shape.MakePreview(styleSet);
@@ -142,7 +150,8 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public bool ContainsPoint(int x, int y) {
+		public bool ContainsPoint(int x, int y)
+		{
 			// TODO 2: Could be optimized using the shapeMap.
 			foreach (Shape shape in TopDown) {
 				if (shape.ContainsPoint(x, y))
@@ -153,7 +162,8 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public bool IntersectsWith(int x, int y, int width, int height) {
+		public bool IntersectsWith(int x, int y, int width, int height)
+		{
 			foreach (Shape shape in TopDown)
 				if (shape.IntersectsWith(x, y, width, height))
 					return true;
@@ -162,7 +172,8 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public bool NotifyStyleChanged(IStyle style) {
+		public bool NotifyStyleChanged(IStyle style)
+		{
 			bool result = false;
 			foreach (Shape shape in shapes)
 				if (shape.NotifyStyleChanged(style)) result = true;
@@ -171,7 +182,8 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public void Draw(Graphics graphics) {
+		public void Draw(Graphics graphics)
+		{
 			if (graphics == null) throw new ArgumentNullException("graphics");
 			foreach (Shape shape in BottomUp)
 				shape.Draw(graphics);
@@ -188,7 +200,8 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public void DrawOutline(Graphics graphics, Pen pen) {
+		public void DrawOutline(Graphics graphics, Pen pen)
+		{
 			if (graphics == null) throw new ArgumentNullException("graphics");
 			if (pen == null) throw new ArgumentNullException("pen");
 			foreach (Shape shape in BottomUp) shape.DrawOutline(graphics, pen);
@@ -196,7 +209,8 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		protected internal void Invalidate() {
+		protected internal void Invalidate()
+		{
 			foreach (Shape shape in shapes)
 				shape.Invalidate();
 		}
@@ -206,7 +220,6 @@ namespace Dataweb.NShape.Advanced {
 		//}
 
 		#endregion
-
 
 		#region Methods called by the owner
 
@@ -218,14 +231,15 @@ namespace Dataweb.NShape.Advanced {
 		//}
 
 
- 		/// <summary>
+		/// <summary>
 		/// Notifies the child shapes that their parent has been rotated. Rotates all children according to the parent's rotation.
 		/// </summary>
 		/// <returns>
 		/// True if all child shapes have rotated in the desired way. 
 		/// False if the child shapes cannot move as desired due to restrictions (such as connections).
 		/// </returns>
-		public virtual bool NotifyParentRotated(int angle, int rotationCenterX, int rotationCenterY) {
+		public virtual bool NotifyParentRotated(int angle, int rotationCenterX, int rotationCenterY)
+		{
 			if (shapes.Count == 0) return false;
 			else {
 				bool result = true;
@@ -234,18 +248,21 @@ namespace Dataweb.NShape.Advanced {
 					RevertRotation();
 
 					// set new rotation center and angle
-					aggregationAngle = (aggregationAngle + angle) % 3600;
+					aggregationAngle = (aggregationAngle + angle)%3600;
 					rotationCenter.X = rotationCenterX;
 					rotationCenter.Y = rotationCenterY;
 
 					// rotate child shapes around the parent's center
-					for (int i = shapes.Count-1; i >= 0 ; --i) {
+					for (int i = shapes.Count - 1; i >= 0; --i) {
 						if (!shapes[i].Rotate(aggregationAngle, rotationCenter.X, rotationCenter.Y))
 							result = false;
 					}
 					// Reset bounding rectangles
 					boundingRectangleTight = boundingRectangleLoose = Geometry.InvalidRectangle;
-				} finally { ResumeUpdate(); }
+				}
+				finally {
+					ResumeUpdate();
+				}
 				return result;
 			}
 		}
@@ -266,7 +283,8 @@ namespace Dataweb.NShape.Advanced {
 		/// True if all child shapes have moved in the desired way. 
 		/// False if the child shapes cannot move as desired due to restrictions (such as connections).
 		/// </returns>
-		public virtual bool NotifyParentMoved(int deltaX, int deltaY) {
+		public virtual bool NotifyParentMoved(int deltaX, int deltaY)
+		{
 			if (shapes.Count == 0) return true;
 			else {
 				bool result = true;
@@ -287,7 +305,10 @@ namespace Dataweb.NShape.Advanced {
 						boundingRectangleTight.Offset(deltaX, deltaY);
 					if (Geometry.IsValid(boundingRectangleLoose))
 						boundingRectangleLoose.Offset(deltaX, deltaY);
-				} finally { ResumeUpdate(); }
+				}
+				finally {
+					ResumeUpdate();
+				}
 				return result;
 			}
 		}
@@ -312,17 +333,17 @@ namespace Dataweb.NShape.Advanced {
 
 		#endregion
 
-
 		#region ShapeAggregation Methods called by the child shapes
 
 		/// <override></override>
-		public override void NotifyChildMoved(Shape shape) {
+		public override void NotifyChildMoved(Shape shape)
+		{
 			base.NotifyChildMoved(shape);
 			// reset rotation of the ShapeAggregation if any of the Children are changed directly
 			if (!UpdateSuspended) {
 				// reset rotation info and re-assign (unrotated) shape position
 				//ResetRotation();	// ToDo: Only reset position of the particular shape
-				
+
 				UpdateShapePosition(shape);
 				boundingRectangleTight = boundingRectangleLoose = Geometry.InvalidRectangle;
 			}
@@ -330,7 +351,8 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		public override void NotifyChildResized(Shape shape) {
+		public override void NotifyChildResized(Shape shape)
+		{
 			base.NotifyChildResized(shape);
 			// reset rotation of the ShapeAggregation if any of the Children are changed directly
 			if (!UpdateSuspended) {
@@ -344,7 +366,8 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		public override void NotifyChildRotated(Shape shape) {
+		public override void NotifyChildRotated(Shape shape)
+		{
 			base.NotifyChildRotated(shape);
 			if (!UpdateSuspended)
 				boundingRectangleTight = boundingRectangleLoose = Geometry.InvalidRectangle;
@@ -352,11 +375,11 @@ namespace Dataweb.NShape.Advanced {
 
 		#endregion
 
-
 		#region Overridden methods (protected)
 
 		/// <override></override>
-		protected override void ClearCore() {
+		protected override void ClearCore()
+		{
 			foreach (Shape shape in shapes) {
 				shape.Invalidate();
 				shape.Parent = null;
@@ -368,7 +391,8 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		protected override int InsertCore(int index, Shape shape) {
+		protected override int InsertCore(int index, Shape shape)
+		{
 			int result = base.InsertCore(index, shape);
 			// Store position of the (unrotated) shape and reset bounding rectangle
 			AddShapePosition(shape);
@@ -380,7 +404,8 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		protected override bool RemoveCore(Shape shape) {
+		protected override bool RemoveCore(Shape shape)
+		{
 			bool result = base.RemoveCore(shape);
 			if (result) {
 				// RemoveRange position of the (unrotated) shape and reset bounding rectangle
@@ -394,7 +419,8 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		protected override void ReplaceCore(Shape oldShape, Shape newShape) {
+		protected override void ReplaceCore(Shape oldShape, Shape newShape)
+		{
 			base.ReplaceCore(oldShape, newShape);
 			// Reset old shape's Parent and DisplayService
 			oldShape.Parent = null;
@@ -406,39 +432,46 @@ namespace Dataweb.NShape.Advanced {
 
 		#endregion
 
-
 		/// <ToBeCompleted></ToBeCompleted>
-		protected void SuspendUpdate() {
+		protected void SuspendUpdate()
+		{
 			++suspendCounter;
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		protected void ResumeUpdate() {
+		protected void ResumeUpdate()
+		{
 			Debug.Assert(suspendCounter > 0);
 			--suspendCounter;
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		protected bool UpdateSuspended { get { return suspendCounter > 0; } }
+		protected bool UpdateSuspended
+		{
+			get { return suspendCounter > 0; }
+		}
 
 
-		private void Construct(Shape owner) {
+		private void Construct(Shape owner)
+		{
 			Construct(owner, -1);
 		}
 
 
-		private void Construct(Shape owner, int capacity) {
+		private void Construct(Shape owner, int capacity)
+		{
 			if (owner == null) throw new ArgumentNullException("owner");
 			this.owner = owner;
-			if (capacity <= 0) 
+			if (capacity <= 0)
 				shapePositions = new Dictionary<Shape, Point>();
 			else shapePositions = new Dictionary<Shape, Point>(capacity);
 		}
 
 
-		private void AddShapePosition(Shape shape) {
+		private void AddShapePosition(Shape shape)
+		{
 			// get the shape's original center point (for restoring the unrotated position)
 			Point shapeCenter = Point.Empty;
 			shapeCenter.X = shape.X;
@@ -447,7 +480,8 @@ namespace Dataweb.NShape.Advanced {
 		}
 
 
-		private void RevertRotation() {
+		private void RevertRotation()
+		{
 			for (int i = shapes.Count - 1; i >= 0; --i) {
 				Point unrotatedShapeCenter = shapePositions[shapes[i]];
 				shapes[i].Rotate(-aggregationAngle, shapes[i].X, shapes[i].Y);
@@ -456,17 +490,17 @@ namespace Dataweb.NShape.Advanced {
 		}
 
 
-		private void UpdateShapePosition(Shape shape) {
+		private void UpdateShapePosition(Shape shape)
+		{
 			// Calculate the new unrotated shape position and 
 			// update it in the shapePositions dictionary
 			Point currentPos = Point.Empty;
 			currentPos.Offset(shape.X, shape.Y);
 			if (aggregationAngle != 0)
 				currentPos = Geometry.RotatePoint(rotationCenter,
-					-Geometry.TenthsOfDegreeToDegrees(aggregationAngle), currentPos);
+				                                  -Geometry.TenthsOfDegreeToDegrees(aggregationAngle), currentPos);
 			shapePositions[shape] = currentPos;
 		}
-
 
 		#region Fields
 
@@ -483,41 +517,44 @@ namespace Dataweb.NShape.Advanced {
 
 	#endregion
 
-
 	/// <ToBeCompleted></ToBeCompleted>
-	public abstract class ResizableShapeAggregation : ShapeAggregation {
-	
+	public abstract class ResizableShapeAggregation : ShapeAggregation
+	{
 		/// <ToBeCompleted></ToBeCompleted>
 		public ResizableShapeAggregation(Shape owner)
-			: base(owner) {
+			: base(owner)
+		{
 			relativePositions = new Dictionary<Shape, PointPositions>();
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
 		public ResizableShapeAggregation(Shape owner, int capacity)
-			: base(owner, capacity) {
+			: base(owner, capacity)
+		{
 			relativePositions = new Dictionary<Shape, PointPositions>(capacity);
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
 		public ResizableShapeAggregation(Shape owner, IEnumerable<Shape> collection)
-			: base(owner, (collection is ICollection<Shape>) ? ((ICollection<Shape>)collection).Count : -1) {
+			: base(owner, (collection is ICollection<Shape>) ? ((ICollection<Shape>) collection).Count : -1)
+		{
 			if (collection == null) throw new ArgumentNullException("collection");
 			// if collection provides an indexer, use it in order to reduce overhead
 			if (collection is IList<Shape>) {
-				IList<Shape> shapeList = (IList<Shape>)collection;
+				IList<Shape> shapeList = (IList<Shape>) collection;
 				int cnt = shapeList.Count;
 				// Create dictionary of relative positions
 				relativePositions = new Dictionary<Shape, PointPositions>(cnt);
 				// Add shapes
 				for (int i = 0; i < cnt; ++i)
 					Add(shapeList[i]);
-			} else {
+			}
+			else {
 				// Create dictionary of relative positions
 				if (collection is ICollection<Shape>)
-					relativePositions = new Dictionary<Shape, PointPositions>(((ICollection<Shape>)collection).Count);
+					relativePositions = new Dictionary<Shape, PointPositions>(((ICollection<Shape>) collection).Count);
 				else relativePositions = new Dictionary<Shape, PointPositions>();
 				// Add shapes
 				foreach (Shape shape in collection)
@@ -527,10 +564,11 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		public override void CopyFrom(IShapeCollection source) {
+		public override void CopyFrom(IShapeCollection source)
+		{
 			base.CopyFrom(source);
 			if (source is CompositeShapeAggregation) {
-				ResizableShapeAggregation src = (ResizableShapeAggregation)source;
+				ResizableShapeAggregation src = (ResizableShapeAggregation) source;
 				// Copy relative positions of the children
 				relativePositions.Clear();
 				int cnt = shapes.Count;
@@ -547,13 +585,15 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		public override bool NotifyParentSized(int deltaX, int deltaY) {
+		public override bool NotifyParentSized(int deltaX, int deltaY)
+		{
 			return RestoreCildrenPositions();
 		}
 
 
 		/// <override></override>
-		public override bool NotifyParentRotated(int angle, int rotationCenterX, int rotationCenterY) {
+		public override bool NotifyParentRotated(int angle, int rotationCenterX, int rotationCenterY)
+		{
 			if (base.NotifyParentRotated(angle, rotationCenterX, rotationCenterY))
 				return RestoreCildrenPositions();
 			else return false;
@@ -561,7 +601,8 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		protected override int InsertCore(int index, Shape shape) {
+		protected override int InsertCore(int index, Shape shape)
+		{
 			int result = base.InsertCore(index, shape);
 			AddRelativePosition(shape);
 			return result;
@@ -569,7 +610,8 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		protected override bool RemoveCore(Shape shape) {
+		protected override bool RemoveCore(Shape shape)
+		{
 			bool result = base.RemoveCore(shape);
 			relativePositions.Remove(shape);
 			return result;
@@ -577,19 +619,22 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		protected override void ClearCore() {
+		protected override void ClearCore()
+		{
 			relativePositions.Clear();
 			base.ClearCore();
 		}
 
 
-		private void AddRelativePosition(Shape shape) {
+		private void AddRelativePosition(Shape shape)
+		{
 			PointPositions ptPositions = new PointPositions(shape, Owner);
 			relativePositions.Add(shape, ptPositions);
 		}
 
 
-		private bool RestoreCildrenPositions() {
+		private bool RestoreCildrenPositions()
+		{
 			bool result = true;
 			try {
 				SuspendUpdate();
@@ -607,21 +652,24 @@ namespace Dataweb.NShape.Advanced {
 					}
 				}
 				boundingRectangleLoose = boundingRectangleTight = Geometry.InvalidRectangle;
-			} finally {
+			}
+			finally {
 				ResumeUpdate();
 			}
 			return result;
 		}
 
 
-		private class PointPositions {
-
-			public PointPositions() {
+		private class PointPositions
+		{
+			public PointPositions()
+			{
 				items = new SortedList<ControlPointId, RelativePosition>();
 			}
 
 			public PointPositions(Shape shape, Shape owner)
-				: this() {
+				: this()
+			{
 				if (shape == null) throw new ArgumentNullException("shape");
 				if (owner == null) throw new ArgumentNullException("owner");
 				// First, store position of reference point
@@ -638,73 +686,86 @@ namespace Dataweb.NShape.Advanced {
 				}
 			}
 
-			public SortedList<ControlPointId, RelativePosition> Items {
+			public SortedList<ControlPointId, RelativePosition> Items
+			{
 				get { return items; }
 			}
 
 			private SortedList<ControlPointId, RelativePosition> items;
 		}
-		
-		
+
 		#region Fields
+
 		private Dictionary<Shape, PointPositions> relativePositions;
+
 		#endregion
 	}
-
 
 	#region GroupAggregation class
 
 	/// <ToBeCompleted></ToBeCompleted>
-	public class GroupShapeAggregation : ShapeAggregation {
-
+	public class GroupShapeAggregation : ShapeAggregation
+	{
 		/// <ToBeCompleted></ToBeCompleted>
 		public GroupShapeAggregation(Shape owner)
-			: base(owner) {
+			: base(owner)
+		{
 			if (owner == null) throw new ArgumentNullException("owner");
 			if (!(owner is IShapeGroup)) throw new ArgumentException("owner");
 		}
 
 
 		/// <override></override>
-		public override void CopyFrom(IShapeCollection source) {
+		public override void CopyFrom(IShapeCollection source)
+		{
 			base.CopyFrom(source);
 			if (source is GroupShapeAggregation)
-			   this.center = ((GroupShapeAggregation)source).Center;
+				this.center = ((GroupShapeAggregation) source).Center;
 			else CalcCenter();
 		}
 
 
 		/// <override></override>
-		public override bool NotifyParentMoved(int deltaX, int deltaY) {
+		public override bool NotifyParentMoved(int deltaX, int deltaY)
+		{
 			bool result = true;
 			try {
 				SuspendUpdate();
 				base.NotifyParentMoved(deltaX, deltaY);
 				center.Offset(deltaX, deltaY);
-			} finally { ResumeUpdate(); }
+			}
+			finally {
+				ResumeUpdate();
+			}
 			return result;
 		}
 
 
 		/// <override></override>
-		public override bool NotifyParentSized(int deltaX, int deltaY) {
+		public override bool NotifyParentSized(int deltaX, int deltaY)
+		{
 			try {
 				SuspendUpdate();
 				// Nothing to do
-			} finally { ResumeUpdate(); }
+			}
+			finally {
+				ResumeUpdate();
+			}
 			return false;
 		}
 
 
 		/// <override></override>
-		public override void NotifyChildMoving(Shape shape) {
+		public override void NotifyChildMoving(Shape shape)
+		{
 			base.NotifyChildMoving(shape);
 			if (!UpdateSuspended && Owner != null) Owner.NotifyChildLayoutChanging();
 		}
 
 
 		/// <override></override>
-		public override void NotifyChildMoved(Shape shape) {
+		public override void NotifyChildMoved(Shape shape)
+		{
 			base.NotifyChildMoved(shape);
 			if (!UpdateSuspended) {
 				CalcCenter();
@@ -714,14 +775,16 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		public override void NotifyChildResizing(Shape shape) {
+		public override void NotifyChildResizing(Shape shape)
+		{
 			base.NotifyChildResizing(shape);
 			if (!UpdateSuspended && Owner != null) Owner.NotifyChildLayoutChanging();
 		}
 
 
 		/// <override></override>
-		public override void NotifyChildResized(Shape shape) {
+		public override void NotifyChildResized(Shape shape)
+		{
 			base.NotifyChildResized(shape);
 			if (!UpdateSuspended) {
 				CalcCenter();
@@ -731,14 +794,16 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		public override void NotifyChildRotating(Shape shape) {
+		public override void NotifyChildRotating(Shape shape)
+		{
 			base.NotifyChildRotating(shape);
 			if (!UpdateSuspended && Owner != null) Owner.NotifyChildLayoutChanging();
 		}
 
 
 		/// <override></override>
-		public override void NotifyChildRotated(Shape shape) {
+		public override void NotifyChildRotated(Shape shape)
+		{
 			base.NotifyChildRotated(shape);
 			if (!UpdateSuspended) {
 				CalcCenter();
@@ -748,15 +813,16 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public Point Center {
+		public Point Center
+		{
 			get { return center; }
 		}
-
 
 		#region Overidden protected methods
 
 		/// <override></override>
-		protected override int InsertCore(int index, Shape shape) {
+		protected override int InsertCore(int index, Shape shape)
+		{
 			int result = base.InsertCore(index, shape);
 			if (!UpdateSuspended) {
 				if (Owner != null) Owner.NotifyChildLayoutChanging();
@@ -768,12 +834,16 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		protected override void AddRangeCore(IEnumerable<Shape> collection) {
+		protected override void AddRangeCore(IEnumerable<Shape> collection)
+		{
 			if (!UpdateSuspended && Owner != null) Owner.NotifyChildLayoutChanging();
 			try {
 				SuspendUpdate();
 				base.AddRangeCore(collection);
-			} finally { ResumeUpdate(); }
+			}
+			finally {
+				ResumeUpdate();
+			}
 			if (!UpdateSuspended) {
 				CalcCenter();
 				if (Owner != null) Owner.NotifyChildLayoutChanged();
@@ -782,7 +852,8 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		protected override bool RemoveCore(Shape shape) {
+		protected override bool RemoveCore(Shape shape)
+		{
 			bool result = base.RemoveCore(shape);
 			if (!UpdateSuspended) {
 				if (Owner != null) Owner.NotifyChildLayoutChanging();
@@ -794,13 +865,17 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		protected override bool RemoveRangeCore(IEnumerable<Shape> shapes) {
+		protected override bool RemoveRangeCore(IEnumerable<Shape> shapes)
+		{
 			if (!UpdateSuspended && Owner != null) Owner.NotifyChildLayoutChanging();
 			bool result = false;
 			try {
 				SuspendUpdate();
 				result = base.RemoveRangeCore(shapes);
-			} finally { ResumeUpdate(); }
+			}
+			finally {
+				ResumeUpdate();
+			}
 			if (!UpdateSuspended) {
 				CalcCenter();
 				if (Owner != null) Owner.NotifyChildLayoutChanged();
@@ -810,7 +885,8 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		protected override void ReplaceCore(Shape oldShape, Shape newShape) {
+		protected override void ReplaceCore(Shape oldShape, Shape newShape)
+		{
 			base.ReplaceCore(oldShape, newShape);
 			if (!UpdateSuspended) {
 				if (Owner != null) Owner.NotifyChildLayoutChanging();
@@ -821,12 +897,16 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		protected override void ReplaceRangeCore(IEnumerable<Shape> oldShapes, IEnumerable<Shape> newShapes) {
+		protected override void ReplaceRangeCore(IEnumerable<Shape> oldShapes, IEnumerable<Shape> newShapes)
+		{
 			if (!UpdateSuspended && Owner != null) Owner.NotifyChildLayoutChanging();
 			try {
 				SuspendUpdate();
 				base.ReplaceRangeCore(oldShapes, newShapes);
-			} finally { ResumeUpdate(); }
+			}
+			finally {
+				ResumeUpdate();
+			}
 			if (!UpdateSuspended) {
 				CalcCenter();
 				if (Owner != null) Owner.NotifyChildLayoutChanged();
@@ -835,7 +915,8 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		protected override void ClearCore() {
+		protected override void ClearCore()
+		{
 			base.ClearCore();
 			if (!UpdateSuspended) {
 				if (Owner != null) Owner.NotifyChildLayoutChanging();
@@ -846,64 +927,69 @@ namespace Dataweb.NShape.Advanced {
 
 		#endregion
 
-
 		/// <ToBeCompleted></ToBeCompleted>
-		protected new IShapeGroup Owner {
-			get { return (IShapeGroup)base.Owner; }
-		}
-		
-		
-		private void CalcCenter() {
-			Rectangle r = GetBoundingRectangle(true);
-			center.X = r.X + (int)Math.Round(r.Width / 2f);
-			center.Y = r.Y + (int)Math.Round(r.Height / 2f);
+		protected new IShapeGroup Owner
+		{
+			get { return (IShapeGroup) base.Owner; }
 		}
 
+
+		private void CalcCenter()
+		{
+			Rectangle r = GetBoundingRectangle(true);
+			center.X = r.X + (int) Math.Round(r.Width/2f);
+			center.Y = r.Y + (int) Math.Round(r.Height/2f);
+		}
 
 		#region Fields
+
 		private Point center = Point.Empty;
+
 		#endregion
 	}
 
 	#endregion
 
-
 	#region CompositeShapeAggregation class
 
 	/// <ToBeCompleted></ToBeCompleted>
-	public class CompositeShapeAggregation : ShapeAggregation {
-
+	public class CompositeShapeAggregation : ShapeAggregation
+	{
 		/// <ToBeCompleted></ToBeCompleted>
 		public CompositeShapeAggregation(Shape owner)
-			: base(owner) {
+			: base(owner)
+		{
 			relativePositions = new Dictionary<Shape, PointPositions>();
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
 		public CompositeShapeAggregation(Shape owner, int capacity)
-			: base(owner, capacity) {
+			: base(owner, capacity)
+		{
 			relativePositions = new Dictionary<Shape, PointPositions>(capacity);
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
 		public CompositeShapeAggregation(Shape owner, IEnumerable<Shape> collection)
-			: base(owner, (collection is ICollection<Shape>) ? ((ICollection<Shape>)collection).Count : -1) {
+			: base(owner, (collection is ICollection<Shape>) ? ((ICollection<Shape>) collection).Count : -1)
+		{
 			if (collection == null) throw new ArgumentNullException("collection");
 			// if collection provides an indexer, use it in order to reduce overhead
 			if (collection is IList<Shape>) {
-				IList<Shape> shapeList = (IList<Shape>)collection;
+				IList<Shape> shapeList = (IList<Shape>) collection;
 				int cnt = shapeList.Count;
 				// Create dictionary of relative positions
 				relativePositions = new Dictionary<Shape, PointPositions>(cnt);
 				// Add shapes
 				for (int i = 0; i < cnt; ++i)
 					Add(shapeList[i]);
-			} else {
+			}
+			else {
 				// Create dictionary of relative positions
 				if (collection is ICollection<Shape>)
-					relativePositions = new Dictionary<Shape, PointPositions>(((ICollection<Shape>)collection).Count);
+					relativePositions = new Dictionary<Shape, PointPositions>(((ICollection<Shape>) collection).Count);
 				else relativePositions = new Dictionary<Shape, PointPositions>();
 				// Add shapes
 				foreach (Shape shape in collection)
@@ -913,10 +999,11 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		public override void CopyFrom(IShapeCollection source) {
+		public override void CopyFrom(IShapeCollection source)
+		{
 			base.CopyFrom(source);
 			if (source is CompositeShapeAggregation) {
-				CompositeShapeAggregation src = (CompositeShapeAggregation)source;
+				CompositeShapeAggregation src = (CompositeShapeAggregation) source;
 				// Copy relative positions of the children
 				relativePositions.Clear();
 				int cnt = shapes.Count;
@@ -933,13 +1020,15 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		public override bool NotifyParentSized(int deltaX, int deltaY) {
+		public override bool NotifyParentSized(int deltaX, int deltaY)
+		{
 			return RestoreCildrenPositions();
 		}
 
 
 		/// <override></override>
-		public override bool NotifyParentRotated(int angle, int rotationCenterX, int rotationCenterY) {
+		public override bool NotifyParentRotated(int angle, int rotationCenterX, int rotationCenterY)
+		{
 			if (base.NotifyParentRotated(angle, rotationCenterX, rotationCenterY))
 				return RestoreCildrenPositions();
 			else return false;
@@ -947,7 +1036,8 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		protected override int InsertCore(int index, Shape shape) {
+		protected override int InsertCore(int index, Shape shape)
+		{
 			int result = base.InsertCore(index, shape);
 			AddRelativePosition(shape);
 			return result;
@@ -955,7 +1045,8 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		protected override bool RemoveCore(Shape shape) {
+		protected override bool RemoveCore(Shape shape)
+		{
 			bool result = base.RemoveCore(shape);
 			relativePositions.Remove(shape);
 			return result;
@@ -963,19 +1054,22 @@ namespace Dataweb.NShape.Advanced {
 
 
 		/// <override></override>
-		protected override void ClearCore() {
+		protected override void ClearCore()
+		{
 			relativePositions.Clear();
 			base.ClearCore();
 		}
 
 
-		private void AddRelativePosition(Shape shape) {
+		private void AddRelativePosition(Shape shape)
+		{
 			PointPositions ptPositions = new PointPositions(shape, Owner);
 			relativePositions.Add(shape, ptPositions);
 		}
 
 
-		private bool RestoreCildrenPositions() {
+		private bool RestoreCildrenPositions()
+		{
 			bool result = true;
 			try {
 				SuspendUpdate();
@@ -993,21 +1087,24 @@ namespace Dataweb.NShape.Advanced {
 					}
 				}
 				boundingRectangleLoose = boundingRectangleTight = Geometry.InvalidRectangle;
-			} finally {
+			}
+			finally {
 				ResumeUpdate();
 			}
 			return result;
 		}
 
 
-		private class PointPositions {
-
-			public PointPositions() {
+		private class PointPositions
+		{
+			public PointPositions()
+			{
 				items = new SortedList<ControlPointId, RelativePosition>();
 			}
 
 			public PointPositions(Shape shape, Shape owner)
-				: this() {
+				: this()
+			{
 				if (shape == null) throw new ArgumentNullException("shape");
 				if (owner == null) throw new ArgumentNullException("owner");
 				// First, store position of reference point
@@ -1024,19 +1121,20 @@ namespace Dataweb.NShape.Advanced {
 				}
 			}
 
-			public SortedList<ControlPointId, RelativePosition> Items {
+			public SortedList<ControlPointId, RelativePosition> Items
+			{
 				get { return items; }
 			}
 
 			private SortedList<ControlPointId, RelativePosition> items;
 		}
-		
-		
+
 		#region Fields
+
 		private Dictionary<Shape, PointPositions> relativePositions;
+
 		#endregion
 	}
 
 	#endregion
-
 }

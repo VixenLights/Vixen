@@ -5,49 +5,65 @@ using System.Text;
 using Vixen.Sys;
 using Vixen.Module.Timing;
 
-namespace Vixen.Module.Media {
-	abstract public class MediaModuleInstanceBase : ModuleInstanceBase, IMediaModuleInstance, IEqualityComparer<IMediaModuleInstance>, IEquatable<IMediaModuleInstance>, IEqualityComparer<MediaModuleInstanceBase>, IEquatable<MediaModuleInstanceBase> {
-		abstract public string MediaFilePath { get; set; }
+namespace Vixen.Module.Media
+{
+	public abstract class MediaModuleInstanceBase : ModuleInstanceBase, IMediaModuleInstance,
+	                                                IEqualityComparer<IMediaModuleInstance>,
+	                                                IEquatable<IMediaModuleInstance>,
+	                                                IEqualityComparer<MediaModuleInstanceBase>,
+	                                                IEquatable<MediaModuleInstanceBase>
+	{
+		public abstract string MediaFilePath { get; set; }
 
-		abstract public void LoadMedia(TimeSpan startTime);
+		public abstract void LoadMedia(TimeSpan startTime);
 
-		abstract public ITiming TimingSource { get; }
+		public abstract ITiming TimingSource { get; }
 
-		virtual public bool HasSetup {
+		public virtual bool HasSetup
+		{
 			get { return false; }
 		}
 
-		virtual public bool Setup() { return false; }
+		public virtual bool Setup()
+		{
+			return false;
+		}
 
-		abstract public void Start();
+		public abstract void Start();
 
-		abstract public void Stop();
+		public abstract void Stop();
 
-		abstract public void Pause();
+		public abstract void Pause();
 
-		abstract public void Resume();
+		public abstract void Resume();
 
-		public bool Equals(IMediaModuleInstance x, IMediaModuleInstance y) {
+		public bool Equals(IMediaModuleInstance x, IMediaModuleInstance y)
+		{
 			return base.Equals(x, y);
 		}
 
-		public int GetHashCode(IMediaModuleInstance obj) {
+		public int GetHashCode(IMediaModuleInstance obj)
+		{
 			return base.GetHashCode(obj);
 		}
 
-		public bool Equals(IMediaModuleInstance other) {
+		public bool Equals(IMediaModuleInstance other)
+		{
 			return base.Equals(other);
 		}
 
-		public bool Equals(MediaModuleInstanceBase x, MediaModuleInstanceBase y) {
+		public bool Equals(MediaModuleInstanceBase x, MediaModuleInstanceBase y)
+		{
 			return Equals(x as IMediaModuleInstance, y as IMediaModuleInstance);
 		}
 
-		public int GetHashCode(MediaModuleInstanceBase obj) {
+		public int GetHashCode(MediaModuleInstanceBase obj)
+		{
 			return GetHashCode(obj as IMediaModuleInstance);
 		}
 
-		public bool Equals(MediaModuleInstanceBase other) {
+		public bool Equals(MediaModuleInstanceBase other)
+		{
 			return Equals(other as IMediaModuleInstance);
 		}
 	}

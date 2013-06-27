@@ -5,38 +5,48 @@ using Vixen.IO.Xml.Sequence;
 using Vixen.IO.Xml.SystemConfig;
 using Vixen.IO.Xml.SystemContext;
 
-namespace Vixen.IO.Factory {
-	class ObjectContentWriterFactory : IObjectContentWriterFactory {
-		static private ObjectContentWriterFactory _instance;
+namespace Vixen.IO.Factory
+{
+	internal class ObjectContentWriterFactory : IObjectContentWriterFactory
+	{
+		private static ObjectContentWriterFactory _instance;
 
-		private ObjectContentWriterFactory() {
+		private ObjectContentWriterFactory()
+		{
 		}
 
-		public static ObjectContentWriterFactory Instance {
+		public static ObjectContentWriterFactory Instance
+		{
 			get { return _instance ?? (_instance = new ObjectContentWriterFactory()); }
 		}
 
-		public IObjectContentWriter CreateSystemConfigContentWriter() {
+		public IObjectContentWriter CreateSystemConfigContentWriter()
+		{
 			return new SystemConfigXElementWriter();
 		}
 
-		public IObjectContentWriter CreateModuleStoreContentWriter() {
+		public IObjectContentWriter CreateModuleStoreContentWriter()
+		{
 			return new ModuleStoreXElementWriter();
 		}
 
-		public IObjectContentWriter CreateSystemContextContentWriter() {
+		public IObjectContentWriter CreateSystemContextContentWriter()
+		{
 			return new SystemContextXElementWriter();
 		}
 
-		public IObjectContentWriter CreateProgramContentWriter() {
+		public IObjectContentWriter CreateProgramContentWriter()
+		{
 			return new ProgramXElementWriter();
 		}
 
-		public IObjectContentWriter CreateElementNodeTemplateContentWriter() {
+		public IObjectContentWriter CreateElementNodeTemplateContentWriter()
+		{
 			return new ElementNodeTemplateXElementWriter();
 		}
 
-		public IObjectContentWriter CreateSequenceContentWriter(string filePath) {
+		public IObjectContentWriter CreateSequenceContentWriter(string filePath)
+		{
 			return new SequenceXElementWriter(filePath);
 		}
 	}

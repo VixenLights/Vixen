@@ -7,7 +7,7 @@ using Vixen.Sys.Instrumentation;
 
 namespace Vixen.Execution.DataSource
 {
-	class IntentPreFilter : IDisposable, IEnumerable<IEffectNode>
+	internal class IntentPreFilter : IDisposable, IEnumerable<IEffectNode>
 	{
 		private IEnumerable<IDataNode> _effectNodes;
 		private SequenceFilterLookup _filterLookup;
@@ -43,13 +43,12 @@ namespace Vixen.Execution.DataSource
 		public IEnumerator<IEffectNode> GetEnumerator()
 		{
 			if (_effectNodes == null) throw new InvalidOperationException("No data has been provided.");
-			if (VixenSystem.AllowFilterEvaluation && _filterLookup == null) throw new InvalidOperationException("Filtering is enabled, but no filters have been provided.");
+			if (VixenSystem.AllowFilterEvaluation && _filterLookup == null)
+				throw new InvalidOperationException("Filtering is enabled, but no filters have been provided.");
 
-			using (IEnumerator<IDataNode> enumerator = _effectNodes.GetEnumerator())
-			{
-				while (enumerator.MoveNext())
-				{
-					IEffectNode effectNode = (IEffectNode)enumerator.Current;
+			using (IEnumerator<IDataNode> enumerator = _effectNodes.GetEnumerator()) {
+				while (enumerator.MoveNext()) {
+					IEffectNode effectNode = (IEffectNode) enumerator.Current;
 					_PreFilter(effectNode);
 					yield return effectNode;
 				}
@@ -81,25 +80,21 @@ namespace Vixen.Execution.DataSource
 
 		private void _RemoveInstrumentationValues()
 		{
-			if (_cacheHitPercentValue != null)
-			{
+			if (_cacheHitPercentValue != null) {
 				VixenSystem.Instrumentation.RemoveValue(_cacheHitPercentValue);
 			}
 		}
 
 		private void _PreFilter(IEffectNode effectNode)
 		{
-			if (_EffectNeedsToBeFiltered(effectNode))
-			{
+			if (_EffectNeedsToBeFiltered(effectNode)) {
 				_cacheHitPercentValue.IncrementUnqualifying();
-				if (VixenSystem.AllowFilterEvaluation)
-				{
+				if (VixenSystem.AllowFilterEvaluation) {
 					_FilterEffectIntents(effectNode);
 				}
 				_Add(effectNode);
 			}
-			else
-			{
+			else {
 				_cacheHitPercentValue.IncrementQualifying();
 			}
 		}
@@ -123,7 +118,8 @@ namespace Vixen.Execution.DataSource
 		private void _FilterEffectIntents(IEffectNode effectNode)
 		{
 			EffectIntents effectIntents = effectNode.Effect.Render();
-			effectIntents.ElementIds.AsParallel().ForAll(elementId => _ApplyFiltersForElementToIntents(effectIntents, elementId, effectNode.StartTime));
+			effectIntents.ElementIds.AsParallel().ForAll(
+				elementId => _ApplyFiltersForElementToIntents(effectIntents, elementId, effectNode.StartTime));
 			//foreach(Guid elementId in effectIntents.ElementIds) {
 			//	_ApplyFiltersForElementToIntents(effectIntents, elementId, effectNode.StartTime);
 			//}
@@ -132,10 +128,15 @@ namespace Vixen.Execution.DataSource
 		private void _ApplyFiltersForElementToIntents(EffectIntents effectIntents, Guid elementId, TimeSpan effectStartTime)
 		{
 			effectIntents.GetIntentNodesForElement(elementId).AsParallel().ForAll(intentNode =>
-			{
-				var elementFilters = _filterLookup.GetFiltersForElement(elementId, intentNode);
-				elementFilters.AsParallel().ForAll(filter => intentNode.ApplyFilter(filter, effectStartTime));
-			});
+			                                                                      	{
+			                                                                      		var elementFilters =
+			                                                                      			_filterLookup.GetFiltersForElement(
+			                                                                      				elementId, intentNode);
+			                                                                      		elementFilters.AsParallel().ForAll(
+			                                                                      			filter =>
+			                                                                      			intentNode.ApplyFilter(filter,
+			                                                                      			                       effectStartTime));
+			                                                                      	});
 			//foreach(IntentNode intentNode in effectIntents.GetIntentNodesForElement(elementId)) {
 			//	ISequenceFilterNode[] elementFilters = _filterLookup.GetFiltersForElement(elementId, intentNode).ToArray();
 			//	foreach(var filter in elementFilters) {

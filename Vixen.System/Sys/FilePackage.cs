@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Vixen.Sys {
-	abstract public class FilePackage : IEnumerable<IPackageFileContent> {
-		protected FilePackage(Guid sourceIdentity) {
+namespace Vixen.Sys
+{
+	public abstract class FilePackage : IEnumerable<IPackageFileContent>
+	{
+		protected FilePackage(Guid sourceIdentity)
+		{
 			SourceIdentity = sourceIdentity;
 		}
 
@@ -11,23 +14,28 @@ namespace Vixen.Sys {
 
 		public Guid SourceIdentity { get; set; }
 
-		public void AddFile(IPackageFileContent contextFile) {
+		public void AddFile(IPackageFileContent contextFile)
+		{
 			_files.Add(contextFile);
 		}
 
-		public byte[] GetFile(int index) {
+		public byte[] GetFile(int index)
+		{
 			return _files[index].FileContent;
 		}
 
-		public int Count {
+		public int Count
+		{
 			get { return _files.Count; }
 		}
 
-		public IEnumerator<IPackageFileContent> GetEnumerator() {
+		public IEnumerator<IPackageFileContent> GetEnumerator()
+		{
 			return _files.GetEnumerator();
 		}
 
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
+		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		{
 			return GetEnumerator();
 		}
 	}

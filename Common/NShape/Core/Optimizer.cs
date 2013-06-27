@@ -15,43 +15,51 @@
 using System;
 
 
-namespace Dataweb.Utilities {
+namespace Dataweb.Utilities
+{
 
 	#region Simulated Annealing
 
 	/// <summary>
 	/// Defines the problem for the simulated annealing algorithm.
 	/// </summary>
-	public interface ISimulatedAnnealingProblem {
+	public interface ISimulatedAnnealingProblem
+	{
 		/// <ToBeCompleted></ToBeCompleted>
 		object FindInitialState();
+
 		/// <ToBeCompleted></ToBeCompleted>
 		object FindNeighbourState(object state);
+
 		/// <ToBeCompleted></ToBeCompleted>
 		object SetState(object state);
+
 		/// <ToBeCompleted></ToBeCompleted>
 		float CalculateEnergy(object state);
 	}
 
 
 	/// <ToBeCompleted></ToBeCompleted>
-	public class SimulatedAnnealingSolver {
-
+	public class SimulatedAnnealingSolver
+	{
 		/// <summary>
 		/// Initializes a new instance of <see cref="T:Dataweb.Utilities.SimulatedAnnealingSolver" />.
 		/// </summary>
-		public SimulatedAnnealingSolver() {
+		public SimulatedAnnealingSolver()
+		{
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public void Reset(ISimulatedAnnealingProblem problem, float maxEnergy) {
+		public void Reset(ISimulatedAnnealingProblem problem, float maxEnergy)
+		{
 			this.problem = problem;
 			this.maxEnergy = maxEnergy;
 		}
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public void Run() {
+		public void Run()
+		{
 			object state = problem.FindInitialState();
 			float energy = problem.CalculateEnergy(state);
 			object bestState = state;
@@ -64,7 +72,7 @@ namespace Dataweb.Utilities {
 					bestState = nextState;
 					bestEnergy = nextEnergy;
 				}
-				if (AcceptanceProbability(energy, nextEnergy, Temperature(loops / 1000)) > random.NextDouble()) {
+				if (AcceptanceProbability(energy, nextEnergy, Temperature(loops/1000)) > random.NextDouble()) {
 					state = nextState;
 					energy = nextEnergy;
 				}
@@ -74,16 +82,18 @@ namespace Dataweb.Utilities {
 		}
 
 
-		private float Temperature(float time) {
-			return 1000 * (1.0F - time);
+		private float Temperature(float time)
+		{
+			return 1000*(1.0F - time);
 		}
 
 
-		private float AcceptanceProbability(float currentEnergy, float newEnergy, float temperature) {
+		private float AcceptanceProbability(float currentEnergy, float newEnergy, float temperature)
+		{
 			float result;
 			if (newEnergy < currentEnergy) result = 1.0F;
 			else if (temperature < 0.0001F) result = 0.0F;
-			else result = (float)Math.Exp((currentEnergy - newEnergy) / temperature);
+			else result = (float) Math.Exp((currentEnergy - newEnergy)/temperature);
 			return result;
 		}
 
@@ -93,9 +103,7 @@ namespace Dataweb.Utilities {
 		private float maxEnergy;
 
 		private Random random = new Random();
-
 	}
 
 	#endregion
-
 }

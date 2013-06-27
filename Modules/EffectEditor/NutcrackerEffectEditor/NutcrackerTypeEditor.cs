@@ -8,9 +8,9 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 {
 	public class NutcrackerTypeEditor : EffectEditorModuleInstanceBase
 	{
-		override public IEffectEditorControl CreateEditorControl()
+		public override IEffectEditorControl CreateEditorControl()
 		{
-            return new NutcrackerTypeEditorControl();
+			return new NutcrackerTypeEditorControl();
 		}
 	}
 }

@@ -38,7 +38,7 @@ namespace ZedGraph
 	{
 		internal float _gap;
 
-	#region Constructors
+		#region Constructors
 
 		/// <summary>
 		/// Constructor to build a <see cref="GapLabel" /> from the text and the
@@ -54,9 +54,9 @@ namespace ZedGraph
 		/// <param name="isBold">true for a bold font face</param>
 		/// <param name="isItalic">true for an italic font face</param>
 		/// <param name="isUnderline">true for an underline font face</param>
-		public GapLabel( string text, string fontFamily, float fontSize, Color color, bool isBold,
-								bool isItalic, bool isUnderline )
-			: base( text, fontFamily, fontSize, color, isBold, isItalic, isUnderline )
+		public GapLabel(string text, string fontFamily, float fontSize, Color color, bool isBold,
+		                bool isItalic, bool isUnderline)
+			: base(text, fontFamily, fontSize, color, isBold, isItalic, isUnderline)
 		{
 			_gap = Default.Gap;
 		}
@@ -65,8 +65,8 @@ namespace ZedGraph
 		/// Copy constructor
 		/// </summary>
 		/// <param name="rhs">the <see cref="AxisLabel" /> instance to be copied.</param>
-		public GapLabel( GapLabel rhs )
-			: base( rhs )
+		public GapLabel(GapLabel rhs)
+			: base(rhs)
 		{
 			_gap = rhs._gap;
 		}
@@ -87,12 +87,12 @@ namespace ZedGraph
 		/// <returns>A new, independent copy of this class</returns>
 		public new GapLabel Clone()
 		{
-			return new GapLabel( this );
+			return new GapLabel(this);
 		}
 
-	#endregion
+		#endregion
 
-	#region Properties
+		#region Properties
 
 		/// <summary>
 		/// Gets or sets the gap factor between this label and the opposing <see cref="Axis" />
@@ -112,14 +112,14 @@ namespace ZedGraph
 		/// height, in pixel units and scaled according to <see paramref="scalefactor" />.
 		/// </summary>
 		/// <param name="scaleFactor">The scaling factor to be applied</param>
-		public float GetScaledGap( float scaleFactor )
+		public float GetScaledGap(float scaleFactor)
 		{
-			return _fontSpec.GetHeight( scaleFactor ) * _gap;
+			return _fontSpec.GetHeight(scaleFactor)*_gap;
 		}
 
-	#endregion
+		#endregion
 
-	#region Serialization
+		#region Serialization
 
 		/// <summary>
 		/// Current schema value that defines the version of the serialized file
@@ -133,31 +133,34 @@ namespace ZedGraph
 		/// </param>
 		/// <param name="context">A <see cref="StreamingContext"/> instance that contains the serialized data
 		/// </param>
-		protected GapLabel( SerializationInfo info, StreamingContext context )
-			: base( info, context )
+		protected GapLabel(SerializationInfo info, StreamingContext context)
+			: base(info, context)
 		{
 			// The schema value is just a file version parameter.  You can use it to make future versions
 			// backwards compatible as new member variables are added to classes
-			int sch2 = info.GetInt32( "schema2" );
+			int sch2 = info.GetInt32("schema2");
 
-			_gap = info.GetSingle( "gap" );
+			_gap = info.GetSingle("gap");
 		}
+
 		/// <summary>
 		/// Populates a <see cref="SerializationInfo"/> instance with the data needed to serialize the target object
 		/// </summary>
 		/// <param name="info">A <see cref="SerializationInfo"/> instance that defines the serialized data</param>
 		/// <param name="context">A <see cref="StreamingContext"/> instance that contains the serialized data</param>
-		[SecurityPermissionAttribute( SecurityAction.Demand, SerializationFormatter = true )]
-		public override void GetObjectData( SerializationInfo info, StreamingContext context )
+		[SecurityPermissionAttribute(SecurityAction.Demand, SerializationFormatter = true)]
+		public override void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
-			base.GetObjectData( info, context );
+			base.GetObjectData(info, context);
 
-			info.AddValue( "schema2", schema2 );
-			info.AddValue( "gap", _gap );
+			info.AddValue("schema2", schema2);
+			info.AddValue("gap", _gap);
 		}
-	#endregion
 
-	#region Default
+		#endregion
+
+		#region Default
+
 		/// <summary>
 		/// A simple struct that defines the
 		/// default property values for the <see cref="GapLabel"/> class.
@@ -169,8 +172,7 @@ namespace ZedGraph
 			/// </summary>
 			public static float Gap = 0.3f;
 		}
-	#endregion
 
-
+		#endregion
 	}
 }

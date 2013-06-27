@@ -51,8 +51,8 @@ namespace Vixen.Rule.Name
 			cyclePosition += _alphabetIndex;
 
 			while (cyclePosition > 0) {
-				int index = cyclePosition % Alphabet.Length;
-				cyclePosition = (cyclePosition - index) / Alphabet.Length;
+				int index = cyclePosition%Alphabet.Length;
+				cyclePosition = (cyclePosition - index)/Alphabet.Length;
 				result = Alphabet[index] + result;
 			}
 
@@ -61,6 +61,7 @@ namespace Vixen.Rule.Name
 
 		private static readonly char[] Alphabet = "abcdefghijklmnopqrstuvwxyz".ToCharArray();
 		private int _alphabetIndex;
+
 		public char StartLetter
 		{
 			get
@@ -90,6 +91,5 @@ namespace Vixen.Rule.Name
 
 		private bool Uppercase { get; set; }
 		public int Count { get; set; }
-
 	}
 }

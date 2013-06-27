@@ -5,45 +5,49 @@ using Vixen.Module.SequenceType;
 using Vixen.Services;
 using Vixen.Sys;
 
-namespace Vixen.IO.Loader {
-	class SequenceLoader : IObjectLoader {
-		public ISequence LoadFromFile(string filePath) {
-			if(filePath == null) throw new InvalidOperationException("Cannot load from a null file path.");
-			if(!File.Exists(filePath)) throw new InvalidOperationException("File does not exist.");
+namespace Vixen.IO.Loader
+{
+	internal class SequenceLoader : IObjectLoader
+	{
+		public ISequence LoadFromFile(string filePath)
+		{
+			if (filePath == null) throw new InvalidOperationException("Cannot load from a null file path.");
+			if (!File.Exists(filePath)) throw new InvalidOperationException("File does not exist.");
 
 			IFileReader fileReader = FileReaderFactory.Instance.CreateFileReader();
-			if(fileReader == null) return null;
+			if (fileReader == null) return null;
 
 			IObjectContentWriter contentWriter = ObjectContentWriterFactory.Instance.CreateSequenceContentWriter(filePath);
-			if(contentWriter == null) return null;
+			if (contentWriter == null) return null;
 
 			IContentMigrator contentMigrator = ContentMigratorFactory.Instance.CreateSequenceContentMigrator(filePath);
-			if(contentMigrator == null) return null;
+			if (contentMigrator == null) return null;
 
 			ISequenceTypeModuleInstance sequenceTypeModule = SequenceTypeService.Instance.CreateSequenceFactory(filePath);
-			if(sequenceTypeModule == null) return null;
+			if (sequenceTypeModule == null) return null;
 
 			ISequence sequence = sequenceTypeModule.CreateSequence();
-			if(sequence == null) return null;
+			if (sequence == null) return null;
 
-			sequence = MigratingObjectLoaderService.Instance.LoadFromFile(sequence, filePath, fileReader, contentWriter, contentMigrator, sequenceTypeModule.ClassVersion);
+			sequence = MigratingObjectLoaderService.Instance.LoadFromFile(sequence, filePath, fileReader, contentWriter,
+			                                                              contentMigrator, sequenceTypeModule.ClassVersion);
 
-			if(sequence != null) sequence.FilePath = filePath;
+			if (sequence != null) sequence.FilePath = filePath;
 
 			return sequence;
 		}
 
-		object IObjectLoader.LoadFromFile(string filePath) {
+		object IObjectLoader.LoadFromFile(string filePath)
+		{
 			ISequenceTypeModuleInstance sequenceTypeModule = SequenceTypeService.Instance.CreateSequenceFactory(filePath);
 
 			if (sequenceTypeModule == null) return null;
 
-			if (sequenceTypeModule.IsCustomSequenceLoader)
-			{
+			if (sequenceTypeModule.IsCustomSequenceLoader) {
 				return sequenceTypeModule.LoadSequenceFromFile(filePath);
 			}
 
-			return LoadFromFile(filePath); 
+			return LoadFromFile(filePath);
 		}
 	}
 }

@@ -9,7 +9,7 @@ using Vixen.Sys;
 
 namespace VixenApplication.FiltersAndPatching
 {
-	class PatchingWizard : Wizard
+	internal class PatchingWizard : Wizard
 	{
 		private readonly List<WizardStage> _stages;
 
@@ -17,12 +17,13 @@ namespace VixenApplication.FiltersAndPatching
 		{
 			PatchingWizardData data = new PatchingWizardData(filterSetupForm);
 
-			_stages = new List<WizardStage> {
-				new PatchingWizard_1_Sources(data),
-				new PatchingWizard_2_Filters(data),
-				new PatchingWizard_3_Destinations(data),
-				new PatchingWizard_4_Summary(data),
-			};
+			_stages = new List<WizardStage>
+			          	{
+			          		new PatchingWizard_1_Sources(data),
+			          		new PatchingWizard_2_Filters(data),
+			          		new PatchingWizard_3_Destinations(data),
+			          		new PatchingWizard_4_Summary(data),
+			          	};
 		}
 
 		protected override List<WizardStage> Stages
@@ -40,7 +41,7 @@ namespace VixenApplication.FiltersAndPatching
 	{
 		public ConfigFiltersAndPatching FilterSetupForm { get; private set; }
 
-		public List< Tuple<FilterSetupShapeBase, int> > Sources { get; set; }
+		public List<Tuple<FilterSetupShapeBase, int>> Sources { get; set; }
 
 		public List<FilterSetupShapeBase> Destinations { get; set; }
 

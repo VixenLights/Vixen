@@ -17,35 +17,35 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
-
 using Dataweb.NShape.Advanced;
 using Dataweb.NShape.Controllers;
 
 
-namespace Dataweb.NShape.WinFormsUI {
-
+namespace Dataweb.NShape.WinFormsUI
+{
 	/// <summary>
 	/// A DesignPresenter user control.
 	/// </summary>
 	[ToolboxItem(true)]
-	[ToolboxBitmap(typeof(DesignPresenter), "DesignPresenter.bmp")]
-	public partial class DesignPresenter : UserControl, IDisplayService {
-
+	[ToolboxBitmap(typeof (DesignPresenter), "DesignPresenter.bmp")]
+	public partial class DesignPresenter : UserControl, IDisplayService
+	{
 		/// <summary>
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.WinFormsUI.DesignPresenter" />.
 		/// </summary>
-		public DesignPresenter() {
+		public DesignPresenter()
+		{
 			SetStyle(ControlStyles.ResizeRedraw
-				| ControlStyles.AllPaintingInWmPaint
-				| ControlStyles.OptimizedDoubleBuffer
-				| ControlStyles.SupportsTransparentBackColor
-				, true);
+			         | ControlStyles.AllPaintingInWmPaint
+			         | ControlStyles.OptimizedDoubleBuffer
+			         | ControlStyles.SupportsTransparentBackColor
+			         , true);
 			UpdateStyles();
 
 			// Initialize Components
 			InitializeComponent();
 			infoGraphics = Graphics.FromHwnd(Handle);
-			
+
 			this.matrix = new Matrix();
 			this.formatterFlags = 0 | StringFormatFlags.NoWrap;
 			this.formatter = new StringFormat(formatterFlags);
@@ -61,31 +61,43 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// <summary>
 		/// Finalizer of Dataweb.NShape.WinFormsUI.DesignPresenter
 		/// </summary>
-		~DesignPresenter() {
+		~DesignPresenter()
+		{
 			infoGraphics.Dispose();
 			infoGraphics = null;
 		}
 
-
 		#region IDisplayService Members
 
 		/// <override></override>
-		void IDisplayService.Invalidate(int x, int y, int width, int height) { /* nothing to do */ }
+		void IDisplayService.Invalidate(int x, int y, int width, int height)
+		{
+			/* nothing to do */
+		}
 
 		/// <override></override>
-		void IDisplayService.Invalidate(Rectangle rectangle) { /* nothing to do */ }
+		void IDisplayService.Invalidate(Rectangle rectangle)
+		{
+			/* nothing to do */
+		}
 
 		/// <override></override>
-		void IDisplayService.NotifyBoundsChanged() { /* nothing to do */ }
-		
+		void IDisplayService.NotifyBoundsChanged()
+		{
+			/* nothing to do */
+		}
+
 		/// <override></override>
-		Graphics IDisplayService.InfoGraphics {
+		Graphics IDisplayService.InfoGraphics
+		{
 			get { return infoGraphics; }
 		}
 
 		/// <override></override>
-		IFillStyle IDisplayService.HintBackgroundStyle {
-			get {
+		IFillStyle IDisplayService.HintBackgroundStyle
+		{
+			get
+			{
 				if (Project != null && Project.IsOpen)
 					return Project.Design.FillStyles.White;
 				else return null;
@@ -93,8 +105,10 @@ namespace Dataweb.NShape.WinFormsUI {
 		}
 
 		/// <override></override>
-		ILineStyle IDisplayService.HintForegroundStyle {
-			get {
+		ILineStyle IDisplayService.HintForegroundStyle
+		{
+			get
+			{
 				if (Project != null && Project.IsOpen)
 					return Project.Design.LineStyles.Normal;
 				else return null;
@@ -102,7 +116,6 @@ namespace Dataweb.NShape.WinFormsUI {
 		}
 
 		#endregion
-
 
 		#region [Public] Events
 
@@ -118,7 +131,6 @@ namespace Dataweb.NShape.WinFormsUI {
 
 		#endregion
 
-
 		#region [Public] Properties: DesignPresenter
 
 		/// <summary>
@@ -126,7 +138,8 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// </summary>
 		[Category("NShape")]
 		[Browsable(true)]
-		public new string ProductVersion {
+		public new string ProductVersion
+		{
 			get { return base.ProductVersion; }
 		}
 
@@ -135,7 +148,8 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// Provides access to a <see cref="T:Dataweb.NShape.Project" />.
 		/// </summary>
 		[Category("NShape")]
-		public Project Project {
+		public Project Project
+		{
 			get { return (designController == null) ? null : designController.Project; }
 		}
 
@@ -144,9 +158,11 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// The design controller component
 		/// </summary>
 		[Category("NShape")]
-		public DesignController DesignController {
+		public DesignController DesignController
+		{
 			get { return designController; }
-			set {
+			set
+			{
 				if (designController != null) UnregisterDesignControllerEventHandlers();
 				designController = value;
 				if (designController != null) RegisterDesignControllerEventHandlers();
@@ -158,13 +174,15 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// The selected design.
 		/// </summary>
 		[Browsable(false)]
-		public Design SelectedDesign {
+		public Design SelectedDesign
+		{
 			get { return selectedDesign; }
-			set {
+			set
+			{
 				if (selectedDesign != value) {
 					SelectedStyle = null;
 					selectedDesign = value;
-					
+
 					StyleUITypeEditor.Design = selectedDesign;
 					InitializeStyleCollectionList();
 				}
@@ -177,9 +195,11 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// The selected style
 		/// </summary>
 		[Browsable(false)]
-		public StyleCategory SelectedStyleCategory {
+		public StyleCategory SelectedStyleCategory
+		{
 			get { return styleListBox.StyleCategory; }
-			set {
+			set
+			{
 				if (styleListBox.StyleCategory != value) {
 					switch (value) {
 						case StyleCategory.CapStyle:
@@ -200,7 +220,8 @@ namespace Dataweb.NShape.WinFormsUI {
 						case StyleCategory.ParagraphStyle:
 							styleCollectionListBox.SelectedIndex = paragraphStylesItemIdx;
 							break;
-						default: throw new NShapeUnsupportedValueException(value);
+						default:
+							throw new NShapeUnsupportedValueException(value);
 					}
 				}
 			}
@@ -211,9 +232,11 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// The selected style
 		/// </summary>
 		[Browsable(false)]
-		public Style SelectedStyle {
+		public Style SelectedStyle
+		{
 			get { return selectedStyle; }
-			private set {
+			private set
+			{
 				if (selectedStyle != value) {
 					selectedStyle = value;
 					if (propertyController != null) propertyController.SetObject(0, selectedStyle);
@@ -224,17 +247,16 @@ namespace Dataweb.NShape.WinFormsUI {
 
 		#endregion
 
-
 		#region [Public] Properties: Visuals
 
 		/// <summary>
 		/// Background color of inactive items
 		/// </summary>
-		public Color InactiveItemBackgroundColor {
-			get {
-				return backgroundColor;
-			}
-			set {
+		public Color InactiveItemBackgroundColor
+		{
+			get { return backgroundColor; }
+			set
+			{
 				if (backgroundBrush != null) {
 					backgroundBrush.Dispose();
 					backgroundBrush = null;
@@ -247,9 +269,11 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// <summary>
 		/// Fill color of highlighted items
 		/// </summary>
-		public Color HighlightedItemColor {
+		public Color HighlightedItemColor
+		{
 			get { return highlightedItemColor; }
-			set {
+			set
+			{
 				if (highlightedItemBrush != null) {
 					highlightedItemBrush.Dispose();
 					highlightedItemBrush = null;
@@ -262,9 +286,11 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// <summary>
 		/// Fill color of selected items
 		/// </summary>
-		public Color SelectedItemColor {
+		public Color SelectedItemColor
+		{
 			get { return selectedItemColor; }
-			set {
+			set
+			{
 				if (selectedItemBrush != null) {
 					selectedItemBrush.Dispose();
 					selectedItemBrush = null;
@@ -277,9 +303,11 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// <summary>
 		/// Border color of inactive items
 		/// </summary>
-		public Color InactiveItemBorderColor {
+		public Color InactiveItemBorderColor
+		{
 			get { return itemBorderColor; }
-			set {
+			set
+			{
 				if (itemBorderPen != null) {
 					itemBorderPen.Dispose();
 					itemBorderPen = null;
@@ -292,9 +320,11 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// <summary>
 		/// Fill color of focused items
 		/// </summary>
-		public Color FocusedItemColor {
+		public Color FocusedItemColor
+		{
 			get { return focusBackgroundColor; }
-			set {
+			set
+			{
 				if (focusBackgroundBrush != null) {
 					focusBackgroundBrush.Dispose();
 					focusBackgroundBrush = null;
@@ -307,9 +337,11 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// <summary>
 		/// Border color of focused items
 		/// </summary>
-		public Color FocusBorderColor {
+		public Color FocusBorderColor
+		{
 			get { return focusBorderColor; }
-			set {
+			set
+			{
 				if (selectedBorderPen != null) {
 					selectedBorderPen.Dispose();
 					selectedBorderPen = null;
@@ -322,9 +354,11 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// <summary>
 		/// Text color of selected items
 		/// </summary>
-		public Color SelectedItemTextColor {
+		public Color SelectedItemTextColor
+		{
 			get { return selectedTextColor; }
-			set {
+			set
+			{
 				if (selectedTextBrush != null) {
 					selectedTextBrush.Dispose();
 					selectedTextBrush = null;
@@ -337,9 +371,11 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// <summary>
 		/// Text color of selected items
 		/// </summary>
-		public Color InactiveItemTextColor {
+		public Color InactiveItemTextColor
+		{
 			get { return itemTextColor; }
-			set {
+			set
+			{
 				if (itemTextBrush != null) {
 					itemTextBrush.Dispose();
 					itemTextBrush = null;
@@ -352,20 +388,21 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// <summary>
 		/// Specifies if Items should be highlighted.
 		/// </summary>
-		public bool HighlightItems {
+		public bool HighlightItems
+		{
 			get { return highlightItems; }
 			set { highlightItems = value; }
 		}
 
 		#endregion
 
-
 		#region [Public] Methods
 
 		/// <summary>
 		/// Creates a new design.
 		/// </summary>
-		public void CreateDesign() {
+		public void CreateDesign()
+		{
 			designController.CreateDesign();
 		}
 
@@ -373,7 +410,8 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// <summary>
 		/// Deletes the selected design.
 		/// </summary>
-		public void DeleteSelectedDesign() {
+		public void DeleteSelectedDesign()
+		{
 			if (selectedDesign != Project.Design) {
 				designController.DeleteDesign(selectedDesign);
 				SelectedDesign = Project.Design;
@@ -384,7 +422,8 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// <summary>
 		/// Create an new style.
 		/// </summary>
-		public void CreateStyle() {
+		public void CreateStyle()
+		{
 			designController.CreateStyle(selectedDesign, styleListBox.StyleCategory);
 		}
 
@@ -392,9 +431,11 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// <summary>
 		/// Delete the selected style.
 		/// </summary>
-		public void DeleteSelectedStyle() {
+		public void DeleteSelectedStyle()
+		{
 			if (designController.Project.Repository.IsStyleInUse(selectedStyle))
-				MessageBox.Show(this, string.Format("Style '{0}' is still in use.", selectedStyle.Title), "", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				MessageBox.Show(this, string.Format("Style '{0}' is still in use.", selectedStyle.Title), "", MessageBoxButtons.OK,
+				                MessageBoxIcon.Warning);
 			else designController.DeleteStyle(selectedDesign, selectedStyle);
 		}
 
@@ -403,18 +444,19 @@ namespace Dataweb.NShape.WinFormsUI {
 		///  Activates the selected design as the project's design.
 		/// </summary>
 		/// <param name="design"></param>
-		public void ActivateDesign(Design design) {
+		public void ActivateDesign(Design design)
+		{
 			if (Project.Design != design) Project.ApplyDesign(design);
 		}
 
 		#endregion
 
-
 		/// <summary>
 		/// Clean up any resources being used.
 		/// </summary>
 		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-		protected override void Dispose(bool disposing) {
+		protected override void Dispose(bool disposing)
+		{
 			if (disposing) {
 				if (components != null)
 					components.Dispose();
@@ -423,7 +465,8 @@ namespace Dataweb.NShape.WinFormsUI {
 		}
 
 
-		private void InitializeStyleCollectionList() {
+		private void InitializeStyleCollectionList()
+		{
 			styleCollectionListBox.Items.Clear();
 			styleCollectionListBox.Items.Insert(colorStylesItemIdx, "Color Styles");
 			styleCollectionListBox.Items.Insert(fillStylesItemIdx, "Fill Styles");
@@ -436,10 +479,10 @@ namespace Dataweb.NShape.WinFormsUI {
 			styleCollectionListBox.Invalidate();
 		}
 
-
 		#region [Private] Methods: (Un)Register events
 
-		private void RegisterDesignControllerEventHandlers() {
+		private void RegisterDesignControllerEventHandlers()
+		{
 			if (designController != null) {
 				designController.Initialized += designController_Initialized;
 				designController.Uninitialized += designController_Uninitialized;
@@ -453,7 +496,8 @@ namespace Dataweb.NShape.WinFormsUI {
 		}
 
 
-		private void UnregisterDesignControllerEventHandlers() {
+		private void UnregisterDesignControllerEventHandlers()
+		{
 			if (designController != null) {
 				designController.Initialized -= designController_Initialized;
 				designController.Uninitialized -= designController_Uninitialized;
@@ -468,17 +512,18 @@ namespace Dataweb.NShape.WinFormsUI {
 
 		#endregion
 
-
 		#region [Private] Methods: DesignController event handler implementations
 
-		private void designController_Initialized(object sender, EventArgs e) {
+		private void designController_Initialized(object sender, EventArgs e)
+		{
 			propertyController.Project = Project;
 			InitializeStyleCollectionList();
 			SelectedDesign = designController.Project.Design;
 		}
 
 
-		private void designController_Uninitialized(object sender, EventArgs e) {
+		private void designController_Uninitialized(object sender, EventArgs e)
+		{
 			selectedStyle = null;
 			selectedDesign = null;
 			styleListBox.Items.Clear();
@@ -488,7 +533,8 @@ namespace Dataweb.NShape.WinFormsUI {
 		}
 
 
-		private void designController_StyleCreated(object sender, StyleEventArgs e) {
+		private void designController_StyleCreated(object sender, StyleEventArgs e)
+		{
 			if (!styleListBox.Items.Contains(e.Style)) {
 				styleListBox.SuspendLayout();
 				styleListBox.Items.Add(e.Style);
@@ -498,7 +544,8 @@ namespace Dataweb.NShape.WinFormsUI {
 		}
 
 
-		private void designController_StyleChanged(object sender, StyleEventArgs e) {
+		private void designController_StyleChanged(object sender, StyleEventArgs e)
+		{
 			int idx = styleListBox.Items.IndexOf(e.Style);
 			if (idx >= 0) {
 				bool isSelectedStyle = (styleListBox.SelectedItem == e.Style);
@@ -515,7 +562,8 @@ namespace Dataweb.NShape.WinFormsUI {
 		}
 
 
-		private void designController_StyleDeleted(object sender, StyleEventArgs e) {
+		private void designController_StyleDeleted(object sender, StyleEventArgs e)
+		{
 			if (styleListBox.Items.Contains(e.Style)) {
 				propertyGrid.SuspendLayout();
 				styleListBox.SuspendLayout();
@@ -538,26 +586,29 @@ namespace Dataweb.NShape.WinFormsUI {
 		}
 
 
-		private void designController_DesignCreated(object sender, DesignEventArgs e) {
+		private void designController_DesignCreated(object sender, DesignEventArgs e)
+		{
 			// nothing to do
 		}
 
 
-		private void designController_DesignChanged(object sender, DesignEventArgs e) {
+		private void designController_DesignChanged(object sender, DesignEventArgs e)
+		{
 			// nothing to do
 		}
 
 
-		private void designController_DesignDeleted(object sender, DesignEventArgs e) {
+		private void designController_DesignDeleted(object sender, DesignEventArgs e)
+		{
 			// nothing to do
 		}
 
 		#endregion
 
-
 		#region [Private] Methods: Event handler implementations
 
-		private void styleCollectionListBox_SelectedIndexChanged(object sender, System.EventArgs e) {
+		private void styleCollectionListBox_SelectedIndexChanged(object sender, System.EventArgs e)
+		{
 			//propertyGrid.SelectedObject = null;
 			if (propertyController != null) propertyController.SetObject(0, null);
 			//
@@ -570,30 +621,45 @@ namespace Dataweb.NShape.WinFormsUI {
 				case -1:
 					//nothing to do
 					break;
-				case capStylesItemIdx: styleListBox.StyleCategory = StyleCategory.CapStyle; break;
-				case charStylesItemIdx: styleListBox.StyleCategory = StyleCategory.CharacterStyle; break;
-				case colorStylesItemIdx: styleListBox.StyleCategory = StyleCategory.ColorStyle; break;
-				case fillStylesItemIdx: styleListBox.StyleCategory = StyleCategory.FillStyle; break;
-				case lineStylesItemIdx: styleListBox.StyleCategory = StyleCategory.LineStyle; break;
-				case paragraphStylesItemIdx: styleListBox.StyleCategory = StyleCategory.ParagraphStyle; break;
-				default: throw new NShapeException("Unexpected value.");
+				case capStylesItemIdx:
+					styleListBox.StyleCategory = StyleCategory.CapStyle;
+					break;
+				case charStylesItemIdx:
+					styleListBox.StyleCategory = StyleCategory.CharacterStyle;
+					break;
+				case colorStylesItemIdx:
+					styleListBox.StyleCategory = StyleCategory.ColorStyle;
+					break;
+				case fillStylesItemIdx:
+					styleListBox.StyleCategory = StyleCategory.FillStyle;
+					break;
+				case lineStylesItemIdx:
+					styleListBox.StyleCategory = StyleCategory.LineStyle;
+					break;
+				case paragraphStylesItemIdx:
+					styleListBox.StyleCategory = StyleCategory.ParagraphStyle;
+					break;
+				default:
+					throw new NShapeException("Unexpected value.");
 			}
 			if (styleListBox.Items.Count > 0) styleListBox.SelectedIndex = 0;
 		}
 
 
-		private void styleListBox_SelectedIndexChanged(object sender, EventArgs e) {
+		private void styleListBox_SelectedIndexChanged(object sender, EventArgs e)
+		{
 			SelectedStyle = styleListBox.SelectedStyle;
 		}
 
-	
-		private void propertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e) {
+
+		private void propertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
+		{
 		}
 
 		#endregion
 
-
 		#region Fields
+
 		private Graphics infoGraphics;
 
 		private DesignController designController = null;
@@ -625,13 +691,14 @@ namespace Dataweb.NShape.WinFormsUI {
 		private StringFormat formatter;
 		private StringFormatFlags formatterFlags;
 
-		const int noneSelectedItemIdx = -1;
-		const int colorStylesItemIdx = 0;
-		const int fillStylesItemIdx = 1;
-		const int lineStylesItemIdx = 2;
-		const int capStylesItemIdx = 3;
-		const int charStylesItemIdx = 4;
-		const int paragraphStylesItemIdx = 5;
+		private const int noneSelectedItemIdx = -1;
+		private const int colorStylesItemIdx = 0;
+		private const int fillStylesItemIdx = 1;
+		private const int lineStylesItemIdx = 2;
+		private const int capStylesItemIdx = 3;
+		private const int charStylesItemIdx = 4;
+		private const int paragraphStylesItemIdx = 5;
+
 		#endregion
 	}
 }

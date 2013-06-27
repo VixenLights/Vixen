@@ -3,8 +3,7 @@
                     xmlns:WPF1="clr-namespace:VixenModules.Preview.DisplayPreview.WPF">
 
 	<BooleanToVisibilityConverter x:Key="boolConverter" />
-	<ControlTemplate x:Key="MoveThumbTemplate"
-	                 TargetType="{x:Type WPF1:MoveThumb}">
+	<ControlTemplate x:Key="MoveThumbTemplate" TargetType="{x:Type WPF1:MoveThumb}">
 		<Rectangle Fill="Transparent"
 		           Visibility="{Binding Path=IsSelected, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}, Converter={StaticResource boolConverter}}" />
 	</ControlTemplate>

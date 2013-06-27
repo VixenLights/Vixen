@@ -2,27 +2,33 @@
 using Vixen.Sys;
 using Vixen.Sys.Attribute;
 
-namespace Vixen.Execution.Context {
+namespace Vixen.Execution.Context
+{
 	[Context(ContextTargetType.Sequence, ContextCaching.ContextLevelCaching)]
-	class CachingSequenceContext : SequenceContext {
+	internal class CachingSequenceContext : SequenceContext
+	{
 		private PreFilteringBufferingDataSource _dataSource;
 
-		public CachingSequenceContext() {
+		public CachingSequenceContext()
+		{
 			_dataSource = new PreFilteringBufferingDataSource(true);
 		}
 
-		protected override IDataSource _DataSource {
+		protected override IDataSource _DataSource
+		{
 			get { return _dataSource; }
 		}
 
-		protected override void OnSequenceStarted(SequenceStartedEventArgs e) {
+		protected override void OnSequenceStarted(SequenceStartedEventArgs e)
+		{
 			_dataSource.ContextName = Name;
 			_dataSource.SetSequence(Sequence);
 			_dataSource.Start();
 			base.OnSequenceStarted(e);
 		}
 
-		protected override void OnSequenceEnded(SequenceEventArgs e) {
+		protected override void OnSequenceEnded(SequenceEventArgs e)
+		{
 			base.OnSequenceEnded(e);
 			_dataSource.Stop();
 		}

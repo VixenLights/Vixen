@@ -2,13 +2,16 @@
 using Vixen.Module;
 using Vixen.Services;
 
-namespace Vixen.Sys {
-	class ModuleStore {
-		static public readonly string Directory = SystemConfig.Directory;
+namespace Vixen.Sys
+{
+	internal class ModuleStore
+	{
+		public static readonly string Directory = SystemConfig.Directory;
 		public const string FileName = "ModuleStore.xml";
-		static public readonly string DefaultFilePath = Path.Combine(Directory, FileName);
+		public static readonly string DefaultFilePath = Path.Combine(Directory, FileName);
 
-		public ModuleStore() {
+		public ModuleStore()
+		{
 			TypeData = new ModuleStaticDataSet();
 			InstanceData = new ModuleLocalDataSet();
 		}
@@ -19,7 +22,8 @@ namespace Vixen.Sys {
 
 		public ModuleLocalDataSet InstanceData { get; set; }
 
-		public void Save() {
+		public void Save()
+		{
 			FileService.Instance.SaveModuleStoreFile(this);
 		}
 	}

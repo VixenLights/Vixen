@@ -33,8 +33,7 @@ namespace ZedGraph
 	[Serializable]
 	public class StockPointList : List<StockPt>, IPointList, IPointListEdit
 	{
-
-	#region Properties
+		#region Properties
 
 		/// <summary>
 		/// Indexer to access the specified <see cref="StockPt"/> object by
@@ -46,12 +45,12 @@ namespace ZedGraph
 		public new PointPair this[int index]
 		{
 			get { return base[index]; }
-			set { base[index] = new StockPt( value ); }
+			set { base[index] = new StockPt(value); }
 		}
 
-	#endregion
+		#endregion
 
-	#region Constructors
+		#region Constructors
 
 		/// <summary>
 		/// Default constructor for the collection class
@@ -64,12 +63,11 @@ namespace ZedGraph
 		/// The Copy Constructor
 		/// </summary>
 		/// <param name="rhs">The StockPointList from which to copy</param>
-		public StockPointList( StockPointList rhs )
+		public StockPointList(StockPointList rhs)
 		{
-			for ( int i = 0; i < rhs.Count; i++ )
-			{
-				StockPt pt = new StockPt( rhs[i] );
-				this.Add( pt );
+			for (int i = 0; i < rhs.Count; i++) {
+				StockPt pt = new StockPt(rhs[i]);
+				this.Add(pt);
 			}
 		}
 
@@ -89,32 +87,32 @@ namespace ZedGraph
 		/// <returns>A new, independent copy of this class</returns>
 		public StockPointList Clone()
 		{
-			return new StockPointList( this );
+			return new StockPointList(this);
 		}
 
-	#endregion
+		#endregion
 
-	#region Methods
+		#region Methods
 
 		/// <summary>
 		/// Add a <see cref="StockPt"/> object to the collection at the end of the list.
 		/// </summary>
 		/// <param name="point">The <see cref="StockPt"/> object to
 		/// be added</param>
-		new public void Add( StockPt point )
+		public new void Add(StockPt point)
 		{
-			base.Add( new StockPt( point ) );
+			base.Add(new StockPt(point));
 		}
 
 		/// <summary>
 		/// Add a <see cref="PointPair"/> object to the collection at the end of the list.
 		/// </summary>
 		/// <param name="point">The <see cref="PointPair"/> object to be added</param>
-		public void Add( PointPair point )
+		public void Add(PointPair point)
 		{
 //			throw new ArgumentException( "Error: Only the StockPt type can be added to StockPointList" +
 //				".  An ordinary PointPair is not allowed" );
-			base.Add( new StockPt( point ) );
+			base.Add(new StockPt(point));
 		}
 
 		/// <summary>
@@ -125,10 +123,10 @@ namespace ZedGraph
 		/// <param name="date">An <see cref="XDate" /> value</param>
 		/// <param name="high">The high value for the day</param>
 		/// <returns>The zero-based ordinal index where the point was added in the list.</returns>
-		public void Add( double date, double high )
+		public void Add(double date, double high)
 		{
-			Add( new StockPt( date, high, PointPair.Missing, PointPair.Missing,
-				PointPair.Missing, PointPair.Missing ) );
+			Add(new StockPt(date, high, PointPair.Missing, PointPair.Missing,
+			                PointPair.Missing, PointPair.Missing));
 		}
 
 		/// <summary>
@@ -141,10 +139,10 @@ namespace ZedGraph
 		/// <param name="close">The closing value for the day</param>
 		/// <param name="vol">The trading volume for the day</param>
 		/// <returns>The zero-based ordinal index where the point was added in the list.</returns>
-		public void Add( double date, double high, double low, double open, double close, double vol )
+		public void Add(double date, double high, double low, double open, double close, double vol)
 		{
-			StockPt point = new StockPt( date, high, low, open, close, vol );
-			Add( point );
+			StockPt point = new StockPt(date, high, low, open, close, vol);
+			Add(point);
 		}
 
 		/// <summary>
@@ -159,13 +157,11 @@ namespace ZedGraph
 		/// <param name="index">The ordinal position (zero-based) in the list</param>
 		/// <returns>The specified <see cref="StockPt" />.
 		/// </returns>
-		public StockPt GetAt( int index )
+		public StockPt GetAt(int index)
 		{
 			return base[index];
 		}
 
-	#endregion
+		#endregion
 	}
 }
-
-

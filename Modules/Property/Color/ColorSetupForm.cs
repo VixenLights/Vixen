@@ -76,9 +76,11 @@ namespace VixenModules.Property.Color
 
 			if (radioButtonOptionSingle.Checked) {
 				ColorModule.ColorType = ElementColorType.SingleColor;
-			} else if (radioButtonOptionMultiple.Checked) {
+			}
+			else if (radioButtonOptionMultiple.Checked) {
 				ColorModule.ColorType = ElementColorType.MultipleDiscreteColors;
-			} else if (radioButtonOptionFullColor.Checked) {
+			}
+			else if (radioButtonOptionFullColor.Checked) {
 				ColorModule.ColorType = ElementColorType.FullColor;
 			}
 		}

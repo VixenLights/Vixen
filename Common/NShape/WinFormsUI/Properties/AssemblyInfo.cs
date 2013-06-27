@@ -18,6 +18,7 @@ using System.Runtime.InteropServices;
 // General Information about an library is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an library.
+
 [assembly: AssemblyTitle("NShape WinForms UI Components")]
 [assembly: AssemblyDescription("NShape UI Components for .NET 2.0")]
 [assembly: AssemblyConfiguration("")]
@@ -27,7 +28,9 @@ using System.Runtime.InteropServices;
 // Setting ComVisible to false makes the types in this library not visible 
 // to COM components.  If you need to access a type in this library from 
 // COM, set the ComVisible attribute to true on that type.
+
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
+
 [assembly: Guid("727cde07-6a54-4ac1-b95d-6c466890cecb")]

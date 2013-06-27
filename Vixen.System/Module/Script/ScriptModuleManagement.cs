@@ -1,4 +1,6 @@
-﻿namespace Vixen.Module.Script {
-	class ScriptModuleManagement : GenericModuleManagement<IScriptModuleInstance> {
+﻿namespace Vixen.Module.Script
+{
+	internal class ScriptModuleManagement : GenericModuleManagement<IScriptModuleInstance>
+	{
 	}
 }

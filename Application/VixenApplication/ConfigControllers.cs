@@ -34,7 +34,7 @@ namespace VixenApplication
 			listViewControllers.BeginUpdate();
 			listViewControllers.Items.Clear();
 
-			foreach(OutputController oc in VixenSystem.OutputControllers) {
+			foreach (OutputController oc in VixenSystem.OutputControllers) {
 				ListViewItem item = new ListViewItem();
 				item.Text = oc.Name;
 				item.Checked = oc.IsRunning;
@@ -64,7 +64,8 @@ namespace VixenApplication
 				numericUpDownOutputCount.Value = 0;
 				buttonDeleteController.Enabled = false;
 				groupBoxSelectedController.Enabled = false;
-			} else {
+			}
+			else {
 				textBoxName.Text = oc.Name;
 				numericUpDownOutputCount.Value = oc.OutputCount;
 				buttonDeleteController.Enabled = true;
@@ -86,10 +87,10 @@ namespace VixenApplication
 			}
 			Common.Controls.ListSelectDialog addForm = new Common.Controls.ListSelectDialog("Add Controller", (outputModules));
 			if (addForm.ShowDialog() == DialogResult.OK) {
-				IModuleDescriptor moduleDescriptor = ApplicationServices.GetModuleDescriptor((Guid)addForm.SelectedItem);
+				IModuleDescriptor moduleDescriptor = ApplicationServices.GetModuleDescriptor((Guid) addForm.SelectedItem);
 				string name = moduleDescriptor.TypeName;
 				ControllerFactory controllerFactory = new ControllerFactory();
-				OutputController oc = (OutputController)controllerFactory.CreateDevice((Guid)addForm.SelectedItem, name);
+				OutputController oc = (OutputController) controllerFactory.CreateDevice((Guid) addForm.SelectedItem, name);
 				VixenSystem.OutputControllers.Add(oc);
 				// In the case of a controller that has a form, the form will not be shown
 				// until this event handler completes.  To make sure it's in a visible state
@@ -113,7 +114,8 @@ namespace VixenApplication
 			if (listViewControllers.SelectedItems.Count > 1) {
 				message = "Are you sure you want to delete the selected controllers?";
 				title = "Delete Controllers?";
-			} else {
+			}
+			else {
 				message = "Are you sure you want to delete the selected controller?";
 				title = "Delete Controller?";
 			}
@@ -141,10 +143,9 @@ namespace VixenApplication
 
 			// iterate through the outputs, and add new outputs with default names if needed
 			int oldCount = _displayedController.OutputCount;
-			int newCount = (int)numericUpDownOutputCount.Value;
+			int newCount = (int) numericUpDownOutputCount.Value;
 			_displayedController.OutputCount = newCount;
-			for (int i = oldCount; i < newCount; i++)
-			{
+			for (int i = oldCount; i < newCount; i++) {
 				_displayedController.Outputs[i].Name = String.Format("{0}-{1}", _displayedController.Name, (i + 1));
 			}
 
@@ -163,19 +164,19 @@ namespace VixenApplication
 		{
 			if (listViewControllers.SelectedItems.Count > 1 || listViewControllers.SelectedItems.Count == 0) {
 				_PopulateFormWithController(null);
-			} else {
+			}
+			else {
 				_PopulateFormWithController(listViewControllers.SelectedItems[0].Tag as OutputController);
 			}
 		}
 
 		private void buttonConfigureOutputs_Click(object sender, EventArgs e)
 		{
-			if (listViewControllers.SelectedItems.Count > 0)
-			{
-				using (ConfigControllersOutputs outputsForm = new ConfigControllersOutputs(listViewControllers.SelectedItems[0].Tag as OutputController))
-				{
-					if(outputsForm.ShowDialog()==DialogResult.OK)
-					{
+			if (listViewControllers.SelectedItems.Count > 0) {
+				using (
+					ConfigControllersOutputs outputsForm =
+						new ConfigControllersOutputs(listViewControllers.SelectedItems[0].Tag as OutputController)) {
+					if (outputsForm.ShowDialog() == DialogResult.OK) {
 						//make the assumption that changes were made in the Controller channel setup
 						_changesMade = true;
 					}
@@ -198,13 +199,15 @@ namespace VixenApplication
 			}
 		}
 
-		private void listViewControllers_ItemChecked(object sender, ItemCheckedEventArgs e) {
+		private void listViewControllers_ItemChecked(object sender, ItemCheckedEventArgs e)
+		{
 			// This is going to be fired every time something is added to the listview.
-			if(!_internal) {
+			if (!_internal) {
 				OutputController controller = e.Item.Tag as OutputController;
-				if(e.Item.Checked) {
+				if (e.Item.Checked) {
 					VixenSystem.OutputControllers.Start(controller);
-				} else {
+				}
+				else {
 					VixenSystem.OutputControllers.Stop(controller);
 				}
 			}
@@ -212,27 +215,23 @@ namespace VixenApplication
 
 		private void ConfigControllers_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			if (_changesMade)
-			{
-				if (DialogResult == DialogResult.Cancel)
-				{
-					switch (MessageBox.Show(this, "All changes will be lost if you continue, do you wish to continue?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
-					{
-						case DialogResult.No:
-							e.Cancel = true;
-							break;
-						default:
-							break;
+			if (_changesMade) {
+				if (DialogResult == DialogResult.Cancel) {
+					switch (
+						MessageBox.Show(this, "All changes will be lost if you continue, do you wish to continue?", "Are you sure?",
+						                MessageBoxButtons.YesNo, MessageBoxIcon.Question)) {
+						                	case DialogResult.No:
+						                		e.Cancel = true;
+						                		break;
+						                	default:
+						                		break;
 					}
 				}
-				else if (DialogResult == DialogResult.OK)
-				{
+				else if (DialogResult == DialogResult.OK) {
 					e.Cancel = false;
 				}
-				else
-				{
-					switch (e.CloseReason)
-					{
+				else {
+					switch (e.CloseReason) {
 						case CloseReason.UserClosing:
 							e.Cancel = true;
 							break;

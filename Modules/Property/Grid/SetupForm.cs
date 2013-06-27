@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace VixenModules.Property.Grid {
-	partial class SetupForm : Form {
+namespace VixenModules.Property.Grid
+{
+	internal partial class SetupForm : Form
+	{
 		private int _productRequired;
 
-		public SetupForm(int width, int height, int productRequired) {
+		public SetupForm(int width, int height, int productRequired)
+		{
 			InitializeComponent();
 			_Width = width;
 			_Height = height;
@@ -16,47 +19,57 @@ namespace VixenModules.Property.Grid {
 
 		public int SelectedHeight { get; private set; }
 
-		private int _Width {
-			get { return (int)nudWidth.Value; }
+		private int _Width
+		{
+			get { return (int) nudWidth.Value; }
 			set { nudWidth.Value = value; }
 		}
 
-		private int _Height {
-			get { return (int)nudHeight.Value; }
+		private int _Height
+		{
+			get { return (int) nudHeight.Value; }
 			set { nudHeight.Value = value; }
 		}
 
-		private int _ProductRequired {
+		private int _ProductRequired
+		{
 			get { return _productRequired; }
-			set {
+			set
+			{
 				_productRequired = value;
 				labelProduct.Text = "The product of these needs to be " + value;
 			}
 		}
 
-		private void _CheckProduct() {
-			bool productIsCorrect = _Width * _Height == _ProductRequired;
+		private void _CheckProduct()
+		{
+			bool productIsCorrect = _Width*_Height == _ProductRequired;
 			labelProduct.Visible = !productIsCorrect;
 			buttonOK.Enabled = productIsCorrect;
 		}
 
-		private void nudWidth_ValueChanged(object sender, EventArgs e) {
+		private void nudWidth_ValueChanged(object sender, EventArgs e)
+		{
 			_CheckProduct();
 		}
 
-		private void nudHeight_ValueChanged(object sender, EventArgs e) {
+		private void nudHeight_ValueChanged(object sender, EventArgs e)
+		{
 			_CheckProduct();
 		}
 
-		private void nudWidth_Leave(object sender, EventArgs e) {
+		private void nudWidth_Leave(object sender, EventArgs e)
+		{
 			_CheckProduct();
 		}
 
-		private void nudHeight_Leave(object sender, EventArgs e) {
+		private void nudHeight_Leave(object sender, EventArgs e)
+		{
 			_CheckProduct();
 		}
 
-		private void buttonOK_Click(object sender, EventArgs e) {
+		private void buttonOK_Click(object sender, EventArgs e)
+		{
 			SelectedWidth = _Width;
 			SelectedHeight = _Height;
 		}

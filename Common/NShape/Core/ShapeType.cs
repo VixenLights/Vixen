@@ -19,13 +19,14 @@ using System.Drawing;
 using System.Diagnostics;
 
 
-namespace Dataweb.NShape.Advanced {
-
+namespace Dataweb.NShape.Advanced
+{
 	/// <summary>
 	/// Provides a set of styles.
 	/// </summary>
 	/// <status>reviewed</status>
-	public interface IStyleSetProvider {
+	public interface IStyleSetProvider
+	{
 		/// <summary>
 		/// Retrives a style set.
 		/// </summary>
@@ -45,16 +46,18 @@ namespace Dataweb.NShape.Advanced {
 	/// <summary>
 	/// Describes a shape type.
 	/// </summary>
-	public sealed class ShapeType {
-
+	public sealed class ShapeType
+	{
 		/// <summary>
 		/// Constructs a shape type.
 		/// </summary>
 		public ShapeType(string name, string libraryName,
-			ResourceString categoryTitle,
-			CreateShapeDelegate createShapeDelegate,
-			GetPropertyDefinitionsDelegate getPropertyDefinitionsDelegate)
-			: this(name, libraryName, categoryTitle, string.Empty, createShapeDelegate, getPropertyDefinitionsDelegate, null, true) {
+		                 ResourceString categoryTitle,
+		                 CreateShapeDelegate createShapeDelegate,
+		                 GetPropertyDefinitionsDelegate getPropertyDefinitionsDelegate)
+			: this(
+				name, libraryName, categoryTitle, string.Empty, createShapeDelegate, getPropertyDefinitionsDelegate, null, true)
+		{
 		}
 
 
@@ -62,11 +65,13 @@ namespace Dataweb.NShape.Advanced {
 		/// Constructs a shape type.
 		/// </summary>
 		public ShapeType(string name, string libraryName,
-			ResourceString categoryTitle,
-			ResourceString description,
-			CreateShapeDelegate createShapeDelegate,
-			GetPropertyDefinitionsDelegate getPropertyDefinitionsDelegate)
-			: this(name, libraryName, categoryTitle, description, createShapeDelegate, getPropertyDefinitionsDelegate, null, true) {
+		                 ResourceString categoryTitle,
+		                 ResourceString description,
+		                 CreateShapeDelegate createShapeDelegate,
+		                 GetPropertyDefinitionsDelegate getPropertyDefinitionsDelegate)
+			: this(name, libraryName, categoryTitle, description, createShapeDelegate, getPropertyDefinitionsDelegate, null, true
+				)
+		{
 		}
 
 
@@ -74,23 +79,14 @@ namespace Dataweb.NShape.Advanced {
 		/// Constructs a shape type.
 		/// </summary>
 		public ShapeType(string name, string libraryName,
-			ResourceString categoryTitle,
-			CreateShapeDelegate createShapeDelegate,
-			GetPropertyDefinitionsDelegate getPropertyDefinitionsDelegate,
-			bool supportsTemplates)
-			: this(name, libraryName, categoryTitle, string.Empty, createShapeDelegate, getPropertyDefinitionsDelegate, null, supportsTemplates) {
-		}
-
-
-		/// <summary>
-		/// Constructs a shape type.
-		/// </summary>
-		public ShapeType(string name, string libraryName, 
-			ResourceString categoryTitle,
-			CreateShapeDelegate createShapeDelegate, 
-			GetPropertyDefinitionsDelegate getPropertyDefinitionsDelegate,
-			Bitmap freehandReferenceImage)
-			: this(name, libraryName, categoryTitle, string.Empty, createShapeDelegate, getPropertyDefinitionsDelegate, freehandReferenceImage, true) {
+		                 ResourceString categoryTitle,
+		                 CreateShapeDelegate createShapeDelegate,
+		                 GetPropertyDefinitionsDelegate getPropertyDefinitionsDelegate,
+		                 bool supportsTemplates)
+			: this(
+				name, libraryName, categoryTitle, string.Empty, createShapeDelegate, getPropertyDefinitionsDelegate, null,
+				supportsTemplates)
+		{
 		}
 
 
@@ -98,12 +94,14 @@ namespace Dataweb.NShape.Advanced {
 		/// Constructs a shape type.
 		/// </summary>
 		public ShapeType(string name, string libraryName,
-			ResourceString categoryTitle,
-			ResourceString description,
-			CreateShapeDelegate createShapeDelegate,
-			GetPropertyDefinitionsDelegate getPropertyDefinitionsDelegate,
-			Bitmap freehandReferenceImage)
-			: this(name, libraryName, categoryTitle, description, createShapeDelegate, getPropertyDefinitionsDelegate, freehandReferenceImage, true) {
+		                 ResourceString categoryTitle,
+		                 CreateShapeDelegate createShapeDelegate,
+		                 GetPropertyDefinitionsDelegate getPropertyDefinitionsDelegate,
+		                 Bitmap freehandReferenceImage)
+			: this(
+				name, libraryName, categoryTitle, string.Empty, createShapeDelegate, getPropertyDefinitionsDelegate,
+				freehandReferenceImage, true)
+		{
 		}
 
 
@@ -111,12 +109,15 @@ namespace Dataweb.NShape.Advanced {
 		/// Constructs a shape type.
 		/// </summary>
 		public ShapeType(string name, string libraryName,
-			ResourceString categoryTitle,
-			CreateShapeDelegate createShapeDelegate,
-			GetPropertyDefinitionsDelegate getPropertyDefinitionsDelegate,
-			Bitmap freehandReferenceImage,
-			bool supportsTemplates)
-			: this(name, libraryName, categoryTitle, string.Empty, createShapeDelegate, getPropertyDefinitionsDelegate, freehandReferenceImage, supportsTemplates) {
+		                 ResourceString categoryTitle,
+		                 ResourceString description,
+		                 CreateShapeDelegate createShapeDelegate,
+		                 GetPropertyDefinitionsDelegate getPropertyDefinitionsDelegate,
+		                 Bitmap freehandReferenceImage)
+			: this(
+				name, libraryName, categoryTitle, description, createShapeDelegate, getPropertyDefinitionsDelegate,
+				freehandReferenceImage, true)
+		{
 		}
 
 
@@ -124,12 +125,29 @@ namespace Dataweb.NShape.Advanced {
 		/// Constructs a shape type.
 		/// </summary>
 		public ShapeType(string name, string libraryName,
-			ResourceString categoryTitle,
-			ResourceString description,
-			CreateShapeDelegate createShapeDelegate,
-			GetPropertyDefinitionsDelegate getPropertyDefinitionsDelegate,
-			Bitmap freehandReferenceImage,
-			bool supportsTemplates) {
+		                 ResourceString categoryTitle,
+		                 CreateShapeDelegate createShapeDelegate,
+		                 GetPropertyDefinitionsDelegate getPropertyDefinitionsDelegate,
+		                 Bitmap freehandReferenceImage,
+		                 bool supportsTemplates)
+			: this(
+				name, libraryName, categoryTitle, string.Empty, createShapeDelegate, getPropertyDefinitionsDelegate,
+				freehandReferenceImage, supportsTemplates)
+		{
+		}
+
+
+		/// <summary>
+		/// Constructs a shape type.
+		/// </summary>
+		public ShapeType(string name, string libraryName,
+		                 ResourceString categoryTitle,
+		                 ResourceString description,
+		                 CreateShapeDelegate createShapeDelegate,
+		                 GetPropertyDefinitionsDelegate getPropertyDefinitionsDelegate,
+		                 Bitmap freehandReferenceImage,
+		                 bool supportsTemplates)
+		{
 			// Sanity check
 			if (name == null) throw new ArgumentNullException("Shape type name");
 			if (!Project.IsValidName(name))
@@ -154,15 +172,17 @@ namespace Dataweb.NShape.Advanced {
 		/// <summary>
 		/// Name of shape type, used to identify a shape type for creating shapes.
 		/// </summary>
-		public string Name { 
-			get { return name; } 
+		public string Name
+		{
+			get { return name; }
 		}
 
 
 		/// <summary>
 		/// Indicates the name of the library this shape type is implemented in.
 		/// </summary>
-		public string LibraryName {
+		public string LibraryName
+		{
 			get { return libraryName; }
 		}
 
@@ -170,7 +190,8 @@ namespace Dataweb.NShape.Advanced {
 		/// <summary>
 		/// Indicates the complete unique name of the shape type.
 		/// </summary>
-		public string FullName {
+		public string FullName
+		{
 			get { return string.Format("{0}.{1}", libraryName, name); }
 		}
 
@@ -178,15 +199,17 @@ namespace Dataweb.NShape.Advanced {
 		/// <summary>
 		/// Indicates the default culture depending name for the toolbox category.
 		/// </summary>
-		public string DefaultCategoryTitle { 
-			get { return categoryTitle.Value; } 
+		public string DefaultCategoryTitle
+		{
+			get { return categoryTitle.Value; }
 		}
 
 
 		/// <summary>
 		/// Specifies the culture depending description of the shape type.
 		/// </summary>
-		public string Description {
+		public string Description
+		{
 			get { return description.Value; }
 			set { description = value; }
 		}
@@ -196,7 +219,8 @@ namespace Dataweb.NShape.Advanced {
 		/// Indicates whether it makes sense to create an automatic template for this 
 		/// shape type.
 		/// </summary>
-		public bool SupportsAutoTemplates {
+		public bool SupportsAutoTemplates
+		{
 			get { return supportsAutoTemplates; }
 		}
 
@@ -205,7 +229,8 @@ namespace Dataweb.NShape.Advanced {
 		/// Indicates the pattern bitmap for freehand drawing.
 		/// </summary>
 		/// <returns></returns>
-		public Bitmap FreehandReferenceImage {
+		public Bitmap FreehandReferenceImage
+		{
 			get { return freehandReferenceImage; }
 		}
 
@@ -213,10 +238,12 @@ namespace Dataweb.NShape.Advanced {
 		/// <summary>
 		/// Create a completely new shape instance which will be initialized with the standard styles.
 		/// </summary>
-		public Shape CreateInstance() {
+		public Shape CreateInstance()
+		{
 			if (styleSetProvider == null)
 				throw new InvalidOperationException(string.Format("No style set provider found for shape type '{0}'. "
-				+ "Probably the shape type is not registered with the project.", FullName));
+				                                                  + "Probably the shape type is not registered with the project.",
+				                                                  FullName));
 			Shape result = createShapeDelegate(this, null);
 			result.InitializeToDefault(styleSetProvider.StyleSet);
 			return result;
@@ -226,10 +253,11 @@ namespace Dataweb.NShape.Advanced {
 		/// <summary>
 		/// Create a new shape based on a template. The shape will use the template's styles.
 		/// </summary>
-		public Shape CreateInstance(Template template) {
+		public Shape CreateInstance(Template template)
+		{
 			if (template == null) throw new ArgumentNullException("template");
 			Shape result = createShapeDelegate(this, template);
-			result.CopyFrom(template.Shape);	// Template will not be copied
+			result.CopyFrom(template.Shape); // Template will not be copied
 			return result;
 		}
 
@@ -237,7 +265,8 @@ namespace Dataweb.NShape.Advanced {
 		/// <summary>
 		/// Creates an exact clone of the given shape that uses preview styles.
 		/// </summary>
-		public Shape CreatePreviewInstance(Shape shape) {
+		public Shape CreatePreviewInstance(Shape shape)
+		{
 			if (shape == null) throw new ArgumentNullException("shape");
 			Shape result = ShapeDuplicator.CloneShapeAndModelObject(shape);
 			Debug.Assert(shape.ModelObject == null || shape.ModelObject != result.ModelObject);
@@ -252,7 +281,8 @@ namespace Dataweb.NShape.Advanced {
 		/// <param name="version">
 		/// Repository version for which the property definitions are to be fetched.
 		/// </param>
-		public IEnumerable<EntityPropertyDefinition> GetPropertyDefinitions(int version) {
+		public IEnumerable<EntityPropertyDefinition> GetPropertyDefinitions(int version)
+		{
 			return getPropertyDefinitionsDelegate(version);
 		}
 
@@ -260,7 +290,8 @@ namespace Dataweb.NShape.Advanced {
 		/// <summary>
 		/// Converts the value of this instance to a string.
 		/// </summary>
-		public override string ToString() {
+		public override string ToString()
+		{
 			return FullName;
 		}
 
@@ -268,7 +299,8 @@ namespace Dataweb.NShape.Advanced {
 		/// <summary>
 		/// Used by the project to supplement a design.
 		/// </summary>
-		internal IStyleSetProvider StyleSetProvider {
+		internal IStyleSetProvider StyleSetProvider
+		{
 			get { return styleSetProvider; }
 			set { styleSetProvider = value; }
 		}
@@ -278,10 +310,10 @@ namespace Dataweb.NShape.Advanced {
 		/// Creates an empty instance for subsequent loading from a repository.
 		/// </summary>
 		/// <returns></returns>
-		internal Shape CreateInstanceForLoading() {
+		internal Shape CreateInstanceForLoading()
+		{
 			return this.createShapeDelegate(this, null);
 		}
-
 
 		#region Fields
 
@@ -302,7 +334,7 @@ namespace Dataweb.NShape.Advanced {
 		// Image used by the FreeHandTool to identify a drawn shape
 		private Bitmap freehandReferenceImage = null;
 		// True, if automatic templates make sense for this shape type
-		bool supportsAutoTemplates = true;
+		private bool supportsAutoTemplates = true;
 
 		#endregion
 	}
@@ -311,90 +343,96 @@ namespace Dataweb.NShape.Advanced {
 	/// <summary>
 	/// Provides reading access to a collection of shape types.
 	/// </summary>
-	public interface IReadOnlyShapeTypeCollection : IReadOnlyCollection<ShapeType> {
-
+	public interface IReadOnlyShapeTypeCollection : IReadOnlyCollection<ShapeType>
+	{
 		/// <ToBeCompleted></ToBeCompleted>
 		ShapeType this[string shapeTypeName] { get; }
-
 	}
 
 
 	/// <summary>
 	/// Manages a list of shape types.
 	/// </summary>
-	internal class ShapeTypeCollection : IReadOnlyShapeTypeCollection {
-
-		internal ShapeTypeCollection() {
+	internal class ShapeTypeCollection : IReadOnlyShapeTypeCollection
+	{
+		internal ShapeTypeCollection()
+		{
 		}
 
 
 		/// <summary>
 		/// Adds a shape type to the collection.
 		/// </summary>
-		public void Add(ShapeType shapeType) {
+		public void Add(ShapeType shapeType)
+		{
 			if (shapeType == null) throw new ArgumentNullException("shapeType");
 			shapeTypes.Add(shapeType.FullName, shapeType);
 		}
 
 
-		public bool Remove(ShapeType shapeType) {
+		public bool Remove(ShapeType shapeType)
+		{
 			if (shapeType == null) throw new ArgumentNullException("shapeType");
 			return shapeTypes.Remove(shapeType.FullName);
 		}
 
 
-		public ShapeType this[string shapeTypeName] {
+		public ShapeType this[string shapeTypeName]
+		{
 			get { return GetShapeType(shapeTypeName); }
 		}
 
 
-		public int Count {
+		public int Count
+		{
 			get { return shapeTypes.Count; }
 		}
 
 
-		public void Clear() {
+		public void Clear()
+		{
 			shapeTypes.Clear();
 		}
 
-
 		#region IEnumerable<Type> Members
 
-		public IEnumerator<ShapeType> GetEnumerator() {
+		public IEnumerator<ShapeType> GetEnumerator()
+		{
 			return shapeTypes.Values.GetEnumerator();
 		}
 
 		#endregion
-
 
 		#region IEnumerable Members
 
-		IEnumerator IEnumerable.GetEnumerator() {
+		IEnumerator IEnumerable.GetEnumerator()
+		{
 			return shapeTypes.Values.GetEnumerator();
 		}
 
 		#endregion
 
-
 		#region ICollection Members
 
-		public void CopyTo(Array array, int index) {
+		public void CopyTo(Array array, int index)
+		{
 			if (array == null) throw new ArgumentNullException("array");
-			shapeTypes.Values.CopyTo((ShapeType[])array, index);
+			shapeTypes.Values.CopyTo((ShapeType[]) array, index);
 		}
 
 
-		public bool IsSynchronized {
+		public bool IsSynchronized
+		{
 			get { return false; }
 		}
 
 
-		public object SyncRoot {
+		public object SyncRoot
+		{
 			get { throw new NotImplementedException(); }
 		}
 
 		#endregion
-
 
 		/// <summary>
 		/// Retrieves the shape type with the given name.
@@ -403,7 +441,8 @@ namespace Dataweb.NShape.Advanced {
 		/// Either a full (i.e. including the namespace) or partial shape type name
 		/// </param>
 		/// <returns>Shape type with given name.</returns>
-		protected ShapeType GetShapeType(string typeName) {
+		protected ShapeType GetShapeType(string typeName)
+		{
 			ShapeType result = null;
 			if (!shapeTypes.TryGetValue(typeName, out result)) {
 				foreach (KeyValuePair<string, ShapeType> item in shapeTypes) {
@@ -419,15 +458,12 @@ namespace Dataweb.NShape.Advanced {
 			return result;
 		}
 
-
 		#region Fields
 
 		// Files shape types under their names.
-		private Dictionary<string, ShapeType> shapeTypes 
+		private Dictionary<string, ShapeType> shapeTypes
 			= new Dictionary<string, ShapeType>(StringComparer.InvariantCultureIgnoreCase);
 
 		#endregion
-
 	}
-
 }

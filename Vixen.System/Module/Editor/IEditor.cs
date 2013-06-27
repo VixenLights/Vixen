@@ -9,7 +9,10 @@ using System.Text;
 // This interface is empty because everything has been moved to IEditorUserInterface
 // while allowing the editor module type to follow the same pattern as the other
 // module types.
-namespace Vixen.Module.Editor {
-	public interface IEditor {
+
+namespace Vixen.Module.Editor
+{
+	public interface IEditor
+	{
 	}
 }

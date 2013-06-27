@@ -43,7 +43,8 @@ namespace VixenApplication.FiltersAndPatching
 
 		private void buttonAddFilter_Click(object sender, EventArgs e)
 		{
-			ConfigFiltersAndPatching.FilterTypeComboBoxEntry item = comboBoxNewFilterTypes.SelectedItem as ConfigFiltersAndPatching.FilterTypeComboBoxEntry;
+			ConfigFiltersAndPatching.FilterTypeComboBoxEntry item =
+				comboBoxNewFilterTypes.SelectedItem as ConfigFiltersAndPatching.FilterTypeComboBoxEntry;
 			if (item == null) {
 				MessageBox.Show("Please select a filter type first.", "Select filter type");
 				return;
@@ -90,7 +91,8 @@ namespace VixenApplication.FiltersAndPatching
 
 		private void buttonMoveDown_Click(object sender, EventArgs e)
 		{
-			if (listViewFilters.SelectedIndices.Count != 1 || listViewFilters.SelectedIndices[0] >= (listViewFilters.Items.Count - 1))
+			if (listViewFilters.SelectedIndices.Count != 1 ||
+			    listViewFilters.SelectedIndices[0] >= (listViewFilters.Items.Count - 1))
 				return;
 
 			int index = listViewFilters.SelectedIndices[0];
@@ -115,7 +117,8 @@ namespace VixenApplication.FiltersAndPatching
 				buttonMoveUp.Enabled = false;
 				buttonDeleteSelected.Enabled = false;
 				buttonSetupFilter.Enabled = false;
-			} else {
+			}
+			else {
 				groupBoxSelectedFilter.Enabled = true;
 				buttonMoveDown.Enabled = listViewFilters.SelectedIndices[0] < (listViewFilters.Items.Count - 1);
 				buttonMoveUp.Enabled = listViewFilters.SelectedIndices[0] > 0;

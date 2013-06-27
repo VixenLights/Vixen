@@ -3,32 +3,39 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Vixen.Instrumentation {
-	abstract public class InstrumentationValue : IInstrumentationValue {
-		protected InstrumentationValue(string name) {
+namespace Vixen.Instrumentation
+{
+	public abstract class InstrumentationValue : IInstrumentationValue
+	{
+		protected InstrumentationValue(string name)
+		{
 			Minimum = 0;
 			Maximum = 0;
 			Name = name;
 		}
 
-		public double Value { 
-			get {
+		public double Value
+		{
+			get
+			{
 				double value = _GetValue();
-				if(value < Minimum) Minimum = value;
-				if(value > Maximum) Maximum = value;
+				if (value < Minimum) Minimum = value;
+				if (value > Maximum) Maximum = value;
 				return value;
 			}
 		}
 
-		public string FormattedValue {
+		public string FormattedValue
+		{
 			get { return _GetFormattedValue(); }
 		}
 
 		public string Name { get; private set; }
 
-		abstract protected double _GetValue();
-		
-		virtual protected string _GetFormattedValue() {
+		protected abstract double _GetValue();
+
+		protected virtual string _GetFormattedValue()
+		{
 			return _GetValue().ToString();
 		}
 

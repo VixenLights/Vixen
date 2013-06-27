@@ -10,13 +10,16 @@ using Vixen.Module;
 using Vixen.Module.Editor;
 using VixenModules.SequenceType.Script;
 
-namespace VixenModules.Editor.ScriptEditor {
-	public partial class ScriptEditor : Form, IEditorUserInterface {
+namespace VixenModules.Editor.ScriptEditor
+{
+	public partial class ScriptEditor : Form, IEditorUserInterface
+	{
 		private ScriptSequenceType _sequence;
 		private ISequenceContext _context;
 		private List<SourceFileTabPage> _sources = new List<SourceFileTabPage>();
 
-		public ScriptEditor() {
+		public ScriptEditor()
+		{
 			InitializeComponent();
 		}
 
@@ -26,17 +29,20 @@ namespace VixenModules.Editor.ScriptEditor {
 
 		public IModuleDescriptor Descriptor { get; set; }
 
-		public void Save(string filePath = null) {
+		public void Save(string filePath = null)
+		{
 			_CommitChanges();
 
-			if(string.IsNullOrWhiteSpace(filePath)) {
+			if (string.IsNullOrWhiteSpace(filePath)) {
 				_sequence.Save();
-			} else {
+			}
+			else {
 				_sequence.Save(filePath);
 			}
 		}
 
-		public bool IsModified {
+		public bool IsModified
+		{
 			get { return _sources.Any(x => x.IsModified); }
 		}
 
@@ -46,34 +52,39 @@ namespace VixenModules.Editor.ScriptEditor {
 
 		public IEditorModuleInstance OwnerModule { get; set; }
 
-		public void Start() {
-			if(_LoadFromSequence(Sequence)) {
+		public void Start()
+		{
+			if (_LoadFromSequence(Sequence)) {
 				Show();
-			} else {
+			}
+			else {
 				Close();
 			}
 		}
 
-		private bool _LoadFromSequence(ISequence sequence) {
-			if((_sequence = sequence as ScriptSequenceType) != null) {
-				if(_sequence.SourceFiles.Any()) {
+		private bool _LoadFromSequence(ISequence sequence)
+		{
+			if ((_sequence = sequence as ScriptSequenceType) != null) {
+				if (_sequence.SourceFiles.Any()) {
 					// Display any source files.
-					foreach(SourceFile sourceFile in _sequence.SourceFiles) {
+					foreach (SourceFile sourceFile in _sequence.SourceFiles) {
 						_AddFileTab(sourceFile);
 					}
-				} else {
-					if(!_AddInitialFile()) return false;
+				}
+				else {
+					if (!_AddInitialFile()) return false;
 				}
 			}
 
 			return true;
 		}
 
-		private bool _AddInitialFile() {
-			if(_sequence == null) return false;
+		private bool _AddInitialFile()
+		{
+			if (_sequence == null) return false;
 
-			using(ProjectConfigForm projectConfigForm = new ProjectConfigForm()) {
-				if(projectConfigForm.ShowDialog() == DialogResult.OK) {
+			using (ProjectConfigForm projectConfigForm = new ProjectConfigForm()) {
+				if (projectConfigForm.ShowDialog() == DialogResult.OK) {
 					_sequence.FilePath = projectConfigForm.SelectedProjectName + _sequence.FileExtension;
 					_sequence.Language = projectConfigForm.SelectedLanguage;
 					// Add the initial file.
@@ -85,8 +96,9 @@ namespace VixenModules.Editor.ScriptEditor {
 			}
 		}
 
-		private void _AddFileTab(SourceFile sourceFile) {
-			if(sourceFile == null) return;
+		private void _AddFileTab(SourceFile sourceFile)
+		{
+			if (sourceFile == null) return;
 
 			TabPage tabPage = new TabPage(sourceFile.Name);
 			SourceFileTabPage sourceControl = new SourceFileTabPage(sourceFile);
@@ -97,14 +109,16 @@ namespace VixenModules.Editor.ScriptEditor {
 			tabControl.TabPages.Add(tabPage);
 		}
 
-		private void _CommitChanges() {
+		private void _CommitChanges()
+		{
 			// Get the source back into the source objects.
-			foreach(SourceFileTabPage source in _sources) {
+			foreach (SourceFileTabPage source in _sources) {
 				source.Commit();
 			}
 		}
 
-		private void _Execute(TimeSpan startTime, TimeSpan endTime) {
+		private void _Execute(TimeSpan startTime, TimeSpan endTime)
+		{
 			_CommitChanges();
 
 			Cursor = Cursors.WaitCursor;
@@ -112,50 +126,61 @@ namespace VixenModules.Editor.ScriptEditor {
 				listBoxRuntimeErrors.Items.Clear();
 
 				_context = VixenSystem.Contexts.CreateSequenceContext(new ContextFeatures(ContextCaching.NoCaching), Sequence);
-				if(_context == null) {
-					MessageBox.Show(this, "Unable to play this sequence.  See error log for details.", "Script Editor", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+				if (_context == null) {
+					MessageBox.Show(this, "Unable to play this sequence.  See error log for details.", "Script Editor",
+					                MessageBoxButtons.OK, MessageBoxIcon.Stop);
 					return;
 				}
 				_context.SequenceEnded += _context_SequenceEnded;
 				_context.Message += _context_Message;
 				_context.Error += _context_Error;
 				_context.Play(startTime, endTime);
-			} catch(Exception ex) {
+			}
+			catch (Exception ex) {
 				MessageBox.Show(ex.Message);
-			} finally {
+			}
+			finally {
 				Cursor = Cursors.Default;
 			}
 		}
 
-		private void _Stop() {
-			if(_context != null) {
+		private void _Stop()
+		{
+			if (_context != null) {
 				_context.Stop();
 			}
 		}
 
-		private void _context_Error(object sender, ExecutorMessageEventArgs e) {
-			if(InvokeRequired) {
-				BeginInvoke((MethodInvoker)(() => _context_Error(sender, e)));
-			} else {
+		private void _context_Error(object sender, ExecutorMessageEventArgs e)
+		{
+			if (InvokeRequired) {
+				BeginInvoke((MethodInvoker) (() => _context_Error(sender, e)));
+			}
+			else {
 				listBoxRuntimeErrors.Items.Add(e.Message);
 				tabControlErrors.SelectedTab = tabPageRuntimeErrors;
 				splitContainer.Panel2Collapsed = false;
 			}
 		}
 
-		private void _context_Message(object sender, ExecutorMessageEventArgs e) {
-			if(InvokeRequired) {
-				BeginInvoke((MethodInvoker)(() => _context_Message(sender, e)));
-			} else {
-				if(string.IsNullOrEmpty(e.Message)) {
-					listBoxCompileErrors.DataSource = new[] { DateTime.Now.ToShortTimeString() + "  No errors." };
-				} else {
-					listBoxCompileErrors.DataSource = e.Message.Split(new [] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+		private void _context_Message(object sender, ExecutorMessageEventArgs e)
+		{
+			if (InvokeRequired) {
+				BeginInvoke((MethodInvoker) (() => _context_Message(sender, e)));
+			}
+			else {
+				if (string.IsNullOrEmpty(e.Message)) {
+					listBoxCompileErrors.DataSource = new[] {DateTime.Now.ToShortTimeString() + "  No errors."};
+				}
+				else {
+					listBoxCompileErrors.DataSource = e.Message.Split(new[] {Environment.NewLine},
+					                                                  StringSplitOptions.RemoveEmptyEntries);
 				}
 			}
 		}
 
-		private void _context_SequenceEnded(object sender, SequenceEventArgs e) {
+		private void _context_SequenceEnded(object sender, SequenceEventArgs e)
+		{
 			_context.Error -= _context_Error;
 			_context.Message -= _context_Message;
 			_context.SequenceEnded -= _context_SequenceEnded;
@@ -163,21 +188,26 @@ namespace VixenModules.Editor.ScriptEditor {
 			_context = null;
 		}
 
-		private void buttonStop_Click(object sender, EventArgs e) {
+		private void buttonStop_Click(object sender, EventArgs e)
+		{
 			_Stop();
 		}
 
-		private void SourceSelectionChanged(object sender, EventArgs e) {
-			SourceFileTabPage sourceControl = (SourceFileTabPage)sender;
-			labelCaretLocation.Text = string.Format("{0}, {1}", sourceControl.CaretLocation.X + 1, sourceControl.CaretLocation.Y + 1);
+		private void SourceSelectionChanged(object sender, EventArgs e)
+		{
+			SourceFileTabPage sourceControl = (SourceFileTabPage) sender;
+			labelCaretLocation.Text = string.Format("{0}, {1}", sourceControl.CaretLocation.X + 1,
+			                                        sourceControl.CaretLocation.Y + 1);
 		}
 
-		private void buttonRun_Click(object sender, EventArgs e) {
+		private void buttonRun_Click(object sender, EventArgs e)
+		{
 			_Stop();
 			_Execute(TimeSpan.Zero, Sequence.Length);
 		}
 
-		private void buttonCompile_Click(object sender, EventArgs e) {
+		private void buttonCompile_Click(object sender, EventArgs e)
+		{
 			// Specify an end time < start time to compile only.
 			// This is the only way we have to signal a "compile only" condition
 			// to the script executor.
@@ -186,11 +216,13 @@ namespace VixenModules.Editor.ScriptEditor {
 			_Execute(TimeSpan.FromMilliseconds(1), TimeSpan.Zero);
 		}
 
-		private void buttonSave_Click(object sender, EventArgs e) {
+		private void buttonSave_Click(object sender, EventArgs e)
+		{
 			try {
 				Save();
 				MessageBox.Show("Project saved.");
-			} catch(Exception ex) {
+			}
+			catch (Exception ex) {
 				MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}

@@ -38,11 +38,12 @@ namespace VixenModules.App.Curves
 
 		// default Curve constructor makes a ramp with x = y.
 		public Curve()
-			: this(new PointPairList(new double[] { 2.0, 98.0 }, new double[] { 2.0, 98.0 }))
+			: this(new PointPairList(new double[] {2.0, 98.0}, new double[] {2.0, 98.0}))
 		{
 		}
 
 		private PointPairList _points;
+
 		[DataMember]
 		public PointPairList Points
 		{
@@ -51,19 +52,13 @@ namespace VixenModules.App.Curves
 				CheckLibraryReference();
 				return _points;
 			}
-			internal set
-			{
-				_points = value;
-			}
+			internal set { _points = value; }
 		}
 
-		protected Curve LibraryReferencedCurve
-		{
-			get;
-			set;
-		}
+		protected Curve LibraryReferencedCurve { get; set; }
 
 		private CurveLibrary _library;
+
 		private CurveLibrary Library
 		{
 			get
@@ -76,8 +71,8 @@ namespace VixenModules.App.Curves
 		}
 
 
-		[DataMember]
-		protected string _libraryReferenceName;
+		[DataMember] protected string _libraryReferenceName;
+
 		public string LibraryReferenceName
 		{
 			get
@@ -87,12 +82,9 @@ namespace VixenModules.App.Curves
 				else
 					return _libraryReferenceName;
 			}
-			set
-			{
-				_libraryReferenceName = value;
-			}
+			set { _libraryReferenceName = value; }
 		}
-		
+
 		public bool IsLibraryReference
 		{
 			get { return LibraryReferenceName.Length > 0; }
@@ -117,7 +109,8 @@ namespace VixenModules.App.Curves
 				if (!LibraryReferencedCurve.IsCurrentLibraryCurve) {
 					return !UpdateLibraryReference();
 				}
-			} else {
+			}
+			else {
 				return !UpdateLibraryReference();
 			}
 
@@ -165,17 +158,17 @@ namespace VixenModules.App.Curves
 
 		public double GetValue(int x)
 		{
-			return GetValue((double)x);
+			return GetValue((double) x);
 		}
 
 		public int GetIntValue(double x)
 		{
-			return (int)Math.Round(GetValue(x), 0);
+			return (int) Math.Round(GetValue(x), 0);
 		}
 
 		public int GetIntValue(int x)
 		{
-			return GetIntValue((double)x);
+			return GetIntValue((double) x);
 		}
 
 		public void UnlinkFromLibraryCurve()

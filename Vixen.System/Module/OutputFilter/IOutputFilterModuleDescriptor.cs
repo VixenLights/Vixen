@@ -1,4 +1,6 @@
-﻿namespace Vixen.Module.OutputFilter {
-	public interface IOutputFilterModuleDescriptor : IModuleDescriptor {
+﻿namespace Vixen.Module.OutputFilter
+{
+	public interface IOutputFilterModuleDescriptor : IModuleDescriptor
+	{
 	}
 }

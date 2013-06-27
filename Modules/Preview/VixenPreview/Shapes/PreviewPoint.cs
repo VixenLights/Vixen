@@ -7,65 +7,66 @@ using System.Drawing;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
-    [DataContract]
-    public class PreviewPoint
-    {
-        int _x = 0;
-        int _y = 0;
-        private PointTypes _pointType = PointTypes.None;
-        public enum PointTypes
-        {
-            None,
-            Size,
-            SkewNS,
-            SkewWE
-        }
+	[DataContract]
+	public class PreviewPoint
+	{
+		private int _x = 0;
+		private int _y = 0;
+		private PointTypes _pointType = PointTypes.None;
 
-        public PreviewPoint()
-        {
-        }
+		public enum PointTypes
+		{
+			None,
+			Size,
+			SkewNS,
+			SkewWE
+		}
 
-        public PointTypes PointType
-        {
-            get { return _pointType; }
-            set { _pointType = value; }
-        }
+		public PreviewPoint()
+		{
+		}
 
-        public PreviewPoint(int x, int y)
-        {
-            _x = x;
-            _y = y;
-        }
+		public PointTypes PointType
+		{
+			get { return _pointType; }
+			set { _pointType = value; }
+		}
 
-        public PreviewPoint(PreviewPoint pointToClone)
-        {
-            _x = pointToClone.X;
-            _y = pointToClone.Y;
-        }
+		public PreviewPoint(int x, int y)
+		{
+			_x = x;
+			_y = y;
+		}
 
-        public PreviewPoint(Point point)
-        {
-            _x = point.X;
-            _y = point.Y;
-        }
+		public PreviewPoint(PreviewPoint pointToClone)
+		{
+			_x = pointToClone.X;
+			_y = pointToClone.Y;
+		}
 
-        [DataMember]
-        public int X
-        {
-            get { return _x; }
-            set { _x = value; }
-        }
+		public PreviewPoint(Point point)
+		{
+			_x = point.X;
+			_y = point.Y;
+		}
 
-        [DataMember]
-        public int Y
-        {
-            get { return _y; }
-            set { _y = value; }
-        }
+		[DataMember]
+		public int X
+		{
+			get { return _x; }
+			set { _x = value; }
+		}
 
-        public Point ToPoint()
-        {
-            return new Point(_x, _y);
-        }
-    }
+		[DataMember]
+		public int Y
+		{
+			get { return _y; }
+			set { _y = value; }
+		}
+
+		public Point ToPoint()
+		{
+			return new Point(_x, _y);
+		}
+	}
 }

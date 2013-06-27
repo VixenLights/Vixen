@@ -20,26 +20,26 @@ using System.Drawing;
 using System.Drawing.Design;
 using System.IO;
 using System.Reflection;
-
 using Dataweb.NShape.Advanced;
 using Dataweb.NShape.Commands;
 
 
-namespace Dataweb.NShape {
-
+namespace Dataweb.NShape
+{
 	/// <summary>
 	/// Collection of elements making up a NShape project.
 	/// </summary>
 	/// <status>reviewed</status>
 	[ToolboxItem(true)]
-	[ToolboxBitmap(typeof(Project), "Project.bmp")]
-	public sealed class Project : Component, IRegistrar, IStyleSetProvider {
-
+	[ToolboxBitmap(typeof (Project), "Project.bmp")]
+	public sealed class Project : Component, IRegistrar, IStyleSetProvider
+	{
 		/// <summary>
 		/// Checks whether a name is a valid identifier for NShape.
 		/// </summary>
 		/// <param name="name"></param>
-		public static bool IsValidName(string name) {
+		public static bool IsValidName(string name)
+		{
 			if (name == null) return false;
 			foreach (char c in name) {
 				if (c >= 'a' && c <= 'z') continue;
@@ -55,7 +55,8 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// Constructs a new project instance.
 		/// </summary>
-		public Project() {
+		public Project()
+		{
 			Construct();
 		}
 
@@ -64,11 +65,11 @@ namespace Dataweb.NShape {
 		/// Constructs a new project instance.
 		/// </summary>
 		/// <param name="container"></param>
-		public Project(IContainer container) {
+		public Project(IContainer container)
+		{
 			container.Add(this);
 			Construct();
 		}
-
 
 		#region Events
 
@@ -99,14 +100,14 @@ namespace Dataweb.NShape {
 
 		#endregion
 
-
 		#region [Public] Properties
 
 		/// <summary>
 		/// Specifies the version of the assembly containing the component.
 		/// </summary>
 		[Category("NShape")]
-		public string ProductVersion {
+		public string ProductVersion
+		{
 			get { return this.GetType().Assembly.GetName().Version.ToString(); }
 		}
 
@@ -116,9 +117,11 @@ namespace Dataweb.NShape {
 		/// </summary>
 		/// <remarks>The name is used as the repository name as well.</remarks>
 		[Category("NShape")]
-		public string Name {
+		public string Name
+		{
 			get { return name; }
-			set {
+			set
+			{
 				name = value;
 				if (repository != null) repository.ProjectName = value;
 			}
@@ -131,10 +134,12 @@ namespace Dataweb.NShape {
 		[Category("NShape")]
 		[Description("A collection of paths where shape and model library assemblies are expected to be found.")]
 		[TypeConverter("Dataweb.NShape.WinFormsUI.TextTypeConverter, Dataweb.NShape.WinFormsUI")]
-		[Editor("Dataweb.NShape.WinFormsUI.TextUITypeEditor, Dataweb.NShape.WinFormsUI", typeof(UITypeEditor))]
-		public IList<string> LibrarySearchPaths {
+		[Editor("Dataweb.NShape.WinFormsUI.TextUITypeEditor, Dataweb.NShape.WinFormsUI", typeof (UITypeEditor))]
+		public IList<string> LibrarySearchPaths
+		{
 			get { return librarySearchPaths; }
-			set {
+			set
+			{
 				if (value == null) librarySearchPaths = new List<string>();
 				else librarySearchPaths = value;
 			}
@@ -146,9 +151,11 @@ namespace Dataweb.NShape {
 		/// </summary>
 		[Category("NShape")]
 		[Description("Specifies the IRepository class used for loading/saving project and diagram data.")]
-		public IRepository Repository {
+		public IRepository Repository
+		{
 			get { return repository; }
-			set {
+			set
+			{
 				if (IsOpen) throw new InvalidOperationException("Project is still open.");
 				if (repository != null) {
 					repository.StyleUpdated -= repository_StyleUpdated;
@@ -170,7 +177,8 @@ namespace Dataweb.NShape {
 		/// </summary>
 		[Category("Behavior")]
 		[DefaultValue(true)]
-		public bool AutoGenerateTemplates {
+		public bool AutoGenerateTemplates
+		{
 			get { return autoCreateTemplates; }
 			set { autoCreateTemplates = value; }
 		}
@@ -181,7 +189,8 @@ namespace Dataweb.NShape {
 		/// </summary>
 		[Category("Behavior")]
 		[DefaultValue(false)]
-		public bool AutoLoadLibraries {
+		public bool AutoLoadLibraries
+		{
 			get { return autoLoadLibraries; }
 			set { autoLoadLibraries = value; }
 		}
@@ -191,7 +200,8 @@ namespace Dataweb.NShape {
 		/// Provides access to the registered model object types.
 		/// </summary>
 		[Browsable(false)]
-		public IReadOnlyModelObjectTypeCollection ModelObjectTypes {
+		public IReadOnlyModelObjectTypeCollection ModelObjectTypes
+		{
 			get { return modelObjectTypes; }
 		}
 
@@ -200,7 +210,8 @@ namespace Dataweb.NShape {
 		/// Provides access to the registered shape types.
 		/// </summary>
 		[Browsable(false)]
-		public IReadOnlyShapeTypeCollection ShapeTypes {
+		public IReadOnlyShapeTypeCollection ShapeTypes
+		{
 			get { return shapeTypes; }
 		}
 
@@ -209,7 +220,8 @@ namespace Dataweb.NShape {
 		/// Provides undo/redo capability for the project.
 		/// </summary>
 		[Browsable(false)]
-		public History History {
+		public History History
+		{
 			get { return history; }
 		}
 
@@ -218,9 +230,11 @@ namespace Dataweb.NShape {
 		/// Specifies the security manager used with this project.
 		/// </summary>
 		[Browsable(false)]
-		public ISecurityManager SecurityManager {
+		public ISecurityManager SecurityManager
+		{
 			get { return security; }
-			set {
+			set
+			{
 				AssertClosed();
 				if (value == null) throw new ArgumentNullException("Security");
 				security = value;
@@ -232,7 +246,8 @@ namespace Dataweb.NShape {
 		/// Accesses the project settings.
 		/// </summary>
 		[Browsable(false)]
-		public ProjectSettings Settings {
+		public ProjectSettings Settings
+		{
 			get { return settings; }
 		}
 
@@ -241,8 +256,10 @@ namespace Dataweb.NShape {
 		/// Accesses the styles used for the project.
 		/// </summary>
 		[Browsable(false)]
-		public Design Design {
-			get {
+		public Design Design
+		{
+			get
+			{
 				AssertOpen();
 				return repository.GetDesign(null);
 			}
@@ -253,12 +270,12 @@ namespace Dataweb.NShape {
 		/// Retrieves the registered libraries.
 		/// </summary>
 		[Browsable(false)]
-		public IEnumerable<Assembly> Libraries {
+		public IEnumerable<Assembly> Libraries
+		{
 			get { foreach (Library l in libraries) yield return l.Assembly; }
 		}
 
 		#endregion
-
 
 		#region [Public] Methods
 
@@ -266,7 +283,8 @@ namespace Dataweb.NShape {
 		/// Uses the given design for the project.
 		/// </summary>
 		/// <param name="newDesign"></param>
-		public void ApplyDesign(Design newDesign) {
+		public void ApplyDesign(Design newDesign)
+		{
 			if (newDesign == null) throw new ArgumentNullException("newDesign");
 			Design design = repository.GetDesign(null);
 			bool styleFound = false;
@@ -286,7 +304,8 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// Uses the given design for the project.
 		/// </summary>
-		public void ApplyDesign(string designName) {
+		public void ApplyDesign(string designName)
+		{
 			if (designName == null) throw new ArgumentNullException("designName");
 			Design design = null;
 			foreach (Design d in repository.GetDesigns()) {
@@ -302,25 +321,30 @@ namespace Dataweb.NShape {
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public bool IsValidLibrary(string assemblyPath) {
+		public bool IsValidLibrary(string assemblyPath)
+		{
 			try {
 				string fullAssemblyPath = GetFullAssemblyPath(assemblyPath);
 				AssemblyName assemblyName = AssemblyName.GetAssemblyName(assemblyPath);
 				if (assemblyName != null) {
 					Assembly assembly = Assembly.Load(assemblyName.FullName);
 					return (GetInitializerType(assembly) != null);
-				} else return false;
-			} catch (Exception) {
+				}
+				else return false;
+			}
+			catch (Exception) {
 				return false;
 			}
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public bool IsValidLibrary(Assembly assembly) {
+		public bool IsValidLibrary(Assembly assembly)
+		{
 			try {
 				return (GetInitializerType(assembly) != null);
-			} catch (Exception) {
+			}
+			catch (Exception) {
 				return false;
 			}
 		}
@@ -334,7 +358,8 @@ namespace Dataweb.NShape {
 		/// Specifies whether the library should be unloaded when closing the project.
 		/// When setting AutoLoadLibraries to false, libraries should not be unloaded when closing the project.
 		/// </param>
-		public void AddLibrary(Assembly assembly, bool unloadOnClose) {
+		public void AddLibrary(Assembly assembly, bool unloadOnClose)
+		{
 			if (assembly == null) throw new ArgumentNullException("assembly");
 			DoLoadLibrary(assembly, unloadOnClose);
 			if (IsOpen) {
@@ -353,7 +378,8 @@ namespace Dataweb.NShape {
 		/// Specifies whether the library should be unloaded when closing the project.
 		/// When setting AutoLoadLibraries to false, libraries should not be unloaded when closing the project.
 		/// </param>
-		public void AddLibraryByName(string assemblyName, bool unloadOnClose) {
+		public void AddLibraryByName(string assemblyName, bool unloadOnClose)
+		{
 			if (string.IsNullOrEmpty(assemblyName)) throw new ArgumentNullException("assemblyName");
 			Assembly a = Assembly.Load(assemblyName);
 			AddLibrary(a, unloadOnClose);
@@ -368,7 +394,8 @@ namespace Dataweb.NShape {
 		/// Specifies whether the library should be unloaded when closing the project.
 		/// When setting AutoLoadLibraries to false, libraries should not be unloaded when closing the project.
 		/// </param>
-		public void AddLibraryByFilePath(string assemblyPath, bool unloadOnClose) {
+		public void AddLibraryByFilePath(string assemblyPath, bool unloadOnClose)
+		{
 			Assembly a = Assembly.LoadFile(GetFullAssemblyPath(assemblyPath));
 			AddLibrary(a, unloadOnClose);
 		}
@@ -377,7 +404,8 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// Unloads and removes the given library.
 		/// </summary>
-		public void RemoveLibrary(Assembly assembly) {
+		public void RemoveLibrary(Assembly assembly)
+		{
 			for (int i = libraries.Count - 1; i >= 0; --i) {
 				if (libraries[i].Assembly == assembly)
 					RemoveLibrary(libraries[i]);
@@ -388,7 +416,8 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// Unloads and removes all libraries.
 		/// </summary>
-		public void RemoveAllLibraries() {
+		public void RemoveAllLibraries()
+		{
 			AssertClosed();
 			shapeTypes.Clear();
 			modelObjectTypes.Clear();
@@ -400,7 +429,8 @@ namespace Dataweb.NShape {
 		/// Executes a command and adds it to the project's history.
 		/// </summary>
 		/// <param name="command"></param>
-		public void ExecuteCommand(ICommand command) {
+		public void ExecuteCommand(ICommand command)
+		{
 			if (command == null) throw new ArgumentNullException("command");
 			Exception exc = command.CheckAllowed(security);
 			if (exc != null) throw exc;
@@ -412,7 +442,8 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// Opens a new project.
 		/// </summary>
-		public void Create() {
+		public void Create()
+		{
 			DoOpen(true);
 		}
 
@@ -420,7 +451,8 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// Opens an existing project.
 		/// </summary>
-		public void Open() {
+		public void Open()
+		{
 			DoOpen(false);
 		}
 
@@ -428,12 +460,13 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// Closes the project.
 		/// </summary>
-		public void Close() {
+		public void Close()
+		{
 			if (Closing != null) Closing(this, EventArgs.Empty);
 			if (IsOpen) {
 				if (repository.IsOpen) {
 					// Get styleSet before closing the repository
-					IStyleSet styleSet = ((IStyleSetProvider)this).StyleSet;
+					IStyleSet styleSet = ((IStyleSetProvider) this).StyleSet;
 					// Delete GDI+ objects created from styles
 					ToolCache.RemoveStyleSetTools(styleSet);
 
@@ -461,7 +494,8 @@ namespace Dataweb.NShape {
 		/// Indicates whether the project is open.
 		/// </summary>
 		[Browsable(false)]
-		public bool IsOpen {
+		public bool IsOpen
+		{
 			get { return repository != null && repository.IsOpen; }
 		}
 
@@ -469,32 +503,37 @@ namespace Dataweb.NShape {
 		/// <summary>
 		/// Registers all entities with the repository.
 		/// </summary>
-		public void RegisterEntityTypes() {
+		public void RegisterEntityTypes()
+		{
 			RegisterEntityTypesCore(true);
 		}
 
 		#endregion
 
-
 		#region IRegistrar Members
 
 		/// <override></override>
-		void IRegistrar.RegisterLibrary(string name, int defaultRepositoryVersion) {
-			if (!Project.IsValidName(name)) throw new ArgumentException(string.Format("'{0}' is not a valid library name.", name));
+		void IRegistrar.RegisterLibrary(string name, int defaultRepositoryVersion)
+		{
+			if (!Project.IsValidName(name))
+				throw new ArgumentException(string.Format("'{0}' is not a valid library name.", name));
 			initializingLibrary.Name = name;
 			if (addingLibrary) settings.AddLibrary(name, initializingLibrary.Assembly.FullName, defaultRepositoryVersion);
 		}
 
 
 		/// <override></override>
-		void IRegistrar.RegisterShapeType(ShapeType shapeType) {
+		void IRegistrar.RegisterShapeType(ShapeType shapeType)
+		{
 			if (initializingLibrary == null)
 				throw new InvalidOperationException("RegisterShapeType can only be called while a library is initializing.");
 			if (string.IsNullOrEmpty(initializingLibrary.Name))
 				throw new InvalidOperationException("RegisterLibrary has not been called or the library has an empty library name.");
 			if (shapeType == null) throw new ArgumentNullException("shapeType");
 			if (shapeType.LibraryName != initializingLibrary.Name)
-				throw new InvalidOperationException(string.Format("The library name of shape type '{0}' is '{1}' instead of '{2}'.", shapeType.GetType().Name, shapeType.LibraryName, initializingLibrary.Name));
+				throw new InvalidOperationException(string.Format(
+					"The library name of shape type '{0}' is '{1}' instead of '{2}'.", shapeType.GetType().Name, shapeType.LibraryName,
+					initializingLibrary.Name));
 			//
 			shapeType.StyleSetProvider = this;
 			shapeTypes.Add(shapeType);
@@ -508,7 +547,8 @@ namespace Dataweb.NShape {
 
 
 		/// <override></override>
-		void IRegistrar.RegisterModelObjectType(ModelObjectType modelObjectType) {
+		void IRegistrar.RegisterModelObjectType(ModelObjectType modelObjectType)
+		{
 			if (initializingLibrary == null)
 				throw new InvalidOperationException("RegisterModelObjectType can only be called while a library is initializing.");
 			if (string.IsNullOrEmpty(initializingLibrary.Name))
@@ -517,9 +557,12 @@ namespace Dataweb.NShape {
 			if (!Project.IsValidName(modelObjectType.Name))
 				throw new ArgumentException("'{0}' is not a valid model object type name.", modelObjectType.Name);
 			if (modelObjectType.LibraryName != initializingLibrary.Name)
-				throw new InvalidOperationException("All model objects of a registering library must have the library's library name.");
+				throw new InvalidOperationException(
+					"All model objects of a registering library must have the library's library name.");
 			if (modelObjectType.LibraryName != initializingLibrary.Name)
-				throw new InvalidOperationException(string.Format("The library name of model object type '{0}' is '{1}' instead of '{2}'.", modelObjectType.GetType().Name, modelObjectType.LibraryName, initializingLibrary.Name));
+				throw new InvalidOperationException(
+					string.Format("The library name of model object type '{0}' is '{1}' instead of '{2}'.",
+					              modelObjectType.GetType().Name, modelObjectType.LibraryName, initializingLibrary.Name));
 			//
 			modelObjectTypes.Add(modelObjectType);
 			// Create a delegate that adds required parameters to the CreateModelObjectDelegate 
@@ -531,46 +574,50 @@ namespace Dataweb.NShape {
 
 		#endregion
 
-
 		#region IStyleSetProvider Members
 
 		/// <override></override>
 		[Browsable(false)]
-		IStyleSet IStyleSetProvider.StyleSet {
-			get {
+		IStyleSet IStyleSetProvider.StyleSet
+		{
+			get
+			{
 				AssertOpen();
-				return (IStyleSet)repository.GetDesign(null);
+				return (IStyleSet) repository.GetDesign(null);
 			}
 		}
 
 		#endregion
 
-
 		/// <ToBeCompleted></ToBeCompleted>
-		internal static void AssertSupportedVersion(bool save, int version) {
+		internal static void AssertSupportedVersion(bool save, int version)
+		{
 			int minVersion = save ? FirstSupportedSaveVersion : FirstSupportedLoadVersion;
 			int maxVersion = save ? LastSupportedSaveVersion : LastSupportedLoadVersion;
 			if (version < minVersion || version > maxVersion) {
-				string msg = string.Format("{0}ing repository failed: The repository is version {1} but this application only supports repositories version {2} to {3}.",
-					(save) ? "Save" : "Load", version, minVersion, maxVersion);
+				string msg =
+					string.Format(
+						"{0}ing repository failed: The repository is version {1} but this application only supports repositories version {2} to {3}.",
+						(save) ? "Save" : "Load", version, minVersion, maxVersion);
 				throw new NShapeException(msg);
 			}
 		}
-
 
 		#region [Private] Library Class
 
 		/// <summary>
 		/// Describes a shape or model object library.
 		/// </summary>
-		private class Library {
-
+		private class Library
+		{
 			public Library(Assembly assembly)
-				: this(assembly, true) {
+				: this(assembly, true)
+			{
 			}
 
 
-			public Library(Assembly assembly, bool unloadOnClose) {
+			public Library(Assembly assembly, bool unloadOnClose)
+			{
 				if (assembly == null) throw new ArgumentNullException("assembly");
 				this.assembly = assembly;
 				this.name = null;
@@ -581,7 +628,8 @@ namespace Dataweb.NShape {
 			/// <summary>
 			/// User-defined name to identify the library.
 			/// </summary>
-			public string Name {
+			public string Name
+			{
 				get { return name; }
 				set { name = value; }
 			}
@@ -590,7 +638,8 @@ namespace Dataweb.NShape {
 			/// <summary>
 			/// Specifies the assembly used for the library.
 			/// </summary>
-			public Assembly Assembly {
+			public Assembly Assembly
+			{
 				get { return assembly; }
 				set { assembly = value; }
 			}
@@ -599,10 +648,10 @@ namespace Dataweb.NShape {
 			/// <summary>
 			/// Specifies whether the library will be unloaded when the project is closed.
 			/// </summary>
-			public bool UnloadOnClose {
+			public bool UnloadOnClose
+			{
 				get { return unloadOnClose; }
 			}
-
 
 			#region Fields
 
@@ -615,43 +664,50 @@ namespace Dataweb.NShape {
 
 		#endregion
 
-
 		#region [Private] Implementation
 
-		private void Construct() {
+		private void Construct()
+		{
 			settings = new ProjectSettings();
 			history = new History();
-			registerArgs = new object[1] { ((IRegistrar)this) };
+			registerArgs = new object[1] {((IRegistrar) this)};
 		}
 
 
-		private void AssertOpen() {
+		private void AssertOpen()
+		{
 			if (!IsOpen) throw new InvalidOperationException("Project must be open to execute this operation.");
 		}
 
 
-		private void AssertClosed() {
+		private void AssertClosed()
+		{
 			if (IsOpen) throw new InvalidOperationException("Project must not be open to execute this operation.");
 		}
 
 
-		private void RegisterShapeEntityType(ShapeType shapeType, bool create) {
+		private void RegisterShapeEntityType(ShapeType shapeType, bool create)
+		{
 			int version = FindLibraryVersion(shapeType.LibraryName, create);
 			IEntityType entityType = new EntityType(shapeType.FullName, EntityCategory.Shape,
-				version, () => shapeType.CreateInstanceForLoading(), shapeType.GetPropertyDefinitions(version));
+			                                        version, () => shapeType.CreateInstanceForLoading(),
+			                                        shapeType.GetPropertyDefinitions(version));
 			repository.AddEntityType(entityType);
 		}
 
 
-		private void RegisterModelObjectEntityType(ModelObjectType modelObjectType, bool create) {
+		private void RegisterModelObjectEntityType(ModelObjectType modelObjectType, bool create)
+		{
 			int version = FindLibraryVersion(modelObjectType.LibraryName, create);
 			IEntityType entityType = new EntityType(modelObjectType.FullName, EntityCategory.ModelObject,
-				version, () => modelObjectType.CreateInstance(), modelObjectType.GetPropertyDefinitions(version));
+			                                        version, () => modelObjectType.CreateInstance(),
+			                                        modelObjectType.GetPropertyDefinitions(version));
 			repository.AddEntityType(entityType);
 		}
 
 
-		private Library FindLibraryByAssemblyName(string assemblyName) {
+		private Library FindLibraryByAssemblyName(string assemblyName)
+		{
 			// Check whether already loaded
 			AssemblyName soughtAssemblyName = new AssemblyName(assemblyName);
 			foreach (Library l in libraries) {
@@ -663,7 +719,8 @@ namespace Dataweb.NShape {
 		}
 
 
-		private Assembly FindAssemblyInSearchPath(string assemblyName) {
+		private Assembly FindAssemblyInSearchPath(string assemblyName)
+		{
 			if (!autoLoadLibraries)
 				return null;
 			AssemblyName soughtAssemblyName = new AssemblyName(assemblyName);
@@ -680,12 +737,14 @@ namespace Dataweb.NShape {
 							// for a detailed description on the problem.
 							return Assembly.Load(foundAssemblyName);
 						}
-					} catch (BadImageFormatException ex) {
+					}
+					catch (BadImageFormatException ex) {
 						Debug.Print(string.Format("An exception occured while searching assembly '{0}' in path {1}: {2}",
-							assemblyName, files[fileIdx], ex.Message));
-					} catch (NotImplementedException ex) {
+						                          assemblyName, files[fileIdx], ex.Message));
+					}
+					catch (NotImplementedException ex) {
 						Debug.Print(string.Format("A NotImplementedException occured while searching assembly '{0}' in path {1}: {2}",
-							assemblyName, files[fileIdx], ex.Message));
+						                          assemblyName, files[fileIdx], ex.Message));
 					}
 				}
 			}
@@ -693,7 +752,8 @@ namespace Dataweb.NShape {
 		}
 
 
-		private void DoOpen(bool create) {
+		private void DoOpen(bool create)
+		{
 			if (IsOpen)
 				throw new InvalidOperationException("Project is already open.");
 			if (string.IsNullOrEmpty(Name))
@@ -702,7 +762,8 @@ namespace Dataweb.NShape {
 			if (repository == null) {
 				repository = new CachedRepository();
 				repository.ProjectName = Name;
-			} else {
+			}
+			else {
 				Debug.Assert(!repository.IsOpen);
 				repository.Close();
 				repository.RemoveAllEntityTypes();
@@ -732,12 +793,14 @@ namespace Dataweb.NShape {
 						}
 						repository.Update();
 					}
-				} catch (Exception exc) {
+				}
+				catch (Exception exc) {
 					Debug.Print(exc.Message);
 					repository.Close();
 					throw;
 				}
-			} else {
+			}
+			else {
 				// We unload all shape and model object types here. Only the ones defined by the
 				// project will be usable.
 				repository.ReadVersion();
@@ -755,21 +818,25 @@ namespace Dataweb.NShape {
 								Assembly a = null;
 								try {
 									a = Assembly.Load(ln);
-								} catch (FileLoadException exc) {
+								}
+								catch (FileLoadException exc) {
 									a = FindAssemblyInSearchPath(ln);
 									if (a == null) throw new LoadLibraryException(ln, exc);
-								} catch (FileNotFoundException exc) {
+								}
+								catch (FileNotFoundException exc) {
 									a = FindAssemblyInSearchPath(ln);
 									if (a == null) throw new LoadLibraryException(ln, exc);
 								}
 								Debug.Assert(a != null);
 								lib = DoLoadLibrary(a, true);
-							} else throw new LoadLibraryException(ln);
+							}
+							else throw new LoadLibraryException(ln);
 						}
 						Debug.Assert(lib != null);
 						DoRegisterLibrary(lib, false);
 					}
-				} catch (Exception exc) {
+				}
+				catch (Exception exc) {
 					Debug.Print(exc.Message);
 					repository.Close();
 					throw;
@@ -779,7 +846,8 @@ namespace Dataweb.NShape {
 		}
 
 
-		private void RegisterEntityTypesCore(bool create) {
+		private void RegisterEntityTypesCore(bool create)
+		{
 			repository.RemoveAllEntityTypes();
 			RegisterBaseLibraryTypes(create);
 			foreach (Library l in libraries)
@@ -798,7 +866,8 @@ namespace Dataweb.NShape {
 
 		// Registers entity types for styles, designs, projectData, templates and diagramControllers 
 		// with the cache.
-		private void RegisterBaseLibraryTypes(bool create) {
+		private void RegisterBaseLibraryTypes(bool create)
+		{
 			int version;
 			// When creating a repository without a valid version, we use the last supported save version.
 			if (create && repository.Version <= 0)
@@ -806,48 +875,55 @@ namespace Dataweb.NShape {
 			version = repository.Version;
 			//
 			repository.AddEntityType(new EntityType(CapStyle.EntityTypeName, EntityCategory.Style,
-				version, () => new CapStyle(), CapStyle.GetPropertyDefinitions(version)));
+			                                        version, () => new CapStyle(), CapStyle.GetPropertyDefinitions(version)));
 			repository.AddEntityType(new EntityType(CharacterStyle.EntityTypeName, EntityCategory.Style,
-				version, () => new CharacterStyle(), CharacterStyle.GetPropertyDefinitions(version)));
+			                                        version, () => new CharacterStyle(),
+			                                        CharacterStyle.GetPropertyDefinitions(version)));
 			repository.AddEntityType(new EntityType(ColorStyle.EntityTypeName, EntityCategory.Style,
-				version, () => new ColorStyle(), ColorStyle.GetPropertyDefinitions(version)));
+			                                        version, () => new ColorStyle(), ColorStyle.GetPropertyDefinitions(version)));
 			repository.AddEntityType(new EntityType(FillStyle.EntityTypeName, EntityCategory.Style,
-				version, () => new FillStyle(), FillStyle.GetPropertyDefinitions(version)));
+			                                        version, () => new FillStyle(), FillStyle.GetPropertyDefinitions(version)));
 			repository.AddEntityType(new EntityType(LineStyle.EntityTypeName, EntityCategory.Style,
-				version, () => new LineStyle(), LineStyle.GetPropertyDefinitions(version)));
+			                                        version, () => new LineStyle(), LineStyle.GetPropertyDefinitions(version)));
 			repository.AddEntityType(new EntityType(ParagraphStyle.EntityTypeName, EntityCategory.Style,
-				version, () => new ParagraphStyle(), ParagraphStyle.GetPropertyDefinitions(version)));
+			                                        version, () => new ParagraphStyle(),
+			                                        ParagraphStyle.GetPropertyDefinitions(version)));
 			repository.AddEntityType(new EntityType(Design.EntityTypeName, EntityCategory.Design,
-				version, () => new Design(), Design.GetPropertyDefinitions(version)));
+			                                        version, () => new Design(), Design.GetPropertyDefinitions(version)));
 			repository.AddEntityType(new EntityType(ProjectSettings.EntityTypeName, EntityCategory.ProjectSettings,
-				version, () => new ProjectSettings(), ProjectSettings.GetPropertyDefinitions(version)));
+			                                        version, () => new ProjectSettings(),
+			                                        ProjectSettings.GetPropertyDefinitions(version)));
 			repository.AddEntityType(new EntityType(Template.EntityTypeName, EntityCategory.Template,
-				version, () => new Template(), Template.GetPropertyDefinitions(version)));
+			                                        version, () => new Template(), Template.GetPropertyDefinitions(version)));
 			repository.AddEntityType(new EntityType(Diagram.EntityTypeName, EntityCategory.Diagram,
-				version, () => new Diagram(""), Diagram.GetPropertyDefinitions(version)));
+			                                        version, () => new Diagram(""), Diagram.GetPropertyDefinitions(version)));
 			// Register ModelMapping types
 			// Create mandatory Model type
 			repository.AddEntityType(new EntityType(Model.EntityTypeName, EntityCategory.Model,
-				version, () => new Model(), Model.GetPropertyDefinitions(version)));
+			                                        version, () => new Model(), Model.GetPropertyDefinitions(version)));
 			// Register mandatory ModelMapping types
 			repository.AddEntityType(new EntityType(NumericModelMapping.EntityTypeName, EntityCategory.ModelMapping,
-				version, () => new NumericModelMapping(), NumericModelMapping.GetPropertyDefinitions(version)));
+			                                        version, () => new NumericModelMapping(),
+			                                        NumericModelMapping.GetPropertyDefinitions(version)));
 			repository.AddEntityType(new EntityType(FormatModelMapping.EntityTypeName, EntityCategory.ModelMapping,
-				version, () => new FormatModelMapping(), FormatModelMapping.GetPropertyDefinitions(version)));
+			                                        version, () => new FormatModelMapping(),
+			                                        FormatModelMapping.GetPropertyDefinitions(version)));
 			repository.AddEntityType(new EntityType(StyleModelMapping.EntityTypeName, EntityCategory.ModelMapping,
-				version, () => new StyleModelMapping(), StyleModelMapping.GetPropertyDefinitions(version)));
+			                                        version, () => new StyleModelMapping(),
+			                                        StyleModelMapping.GetPropertyDefinitions(version)));
 
 			//
 			// Create the mandatory shape types
 			initializingLibrary = new Library(GetType().Assembly);
-			((IRegistrar)this).RegisterLibrary("Core", LastSupportedSaveVersion);
+			((IRegistrar) this).RegisterLibrary("Core", LastSupportedSaveVersion);
 			ShapeType groupShapeType = new ShapeType(
 				"ShapeGroup", "Core", "Core", ShapeGroup.CreateInstance, ShapeGroup.GetPropertyDefinitions, false);
-			((IRegistrar)this).RegisterShapeType(groupShapeType);
+			((IRegistrar) this).RegisterShapeType(groupShapeType);
 			// Create mandatory model object types
 			ModelObjectType genericModelObjectType = new GenericModelObjectType(
-				"GenericModelObject", "Core", "Core", GenericModelObject.CreateInstance, GenericModelObject.GetPropertyDefinitions, 4);
-			((IRegistrar)this).RegisterModelObjectType(genericModelObjectType);
+				"GenericModelObject", "Core", "Core", GenericModelObject.CreateInstance, GenericModelObject.GetPropertyDefinitions,
+				4);
+			((IRegistrar) this).RegisterModelObjectType(genericModelObjectType);
 			initializingLibrary = null;
 			//
 			// Register static model entity types
@@ -859,25 +935,30 @@ namespace Dataweb.NShape {
 		}
 
 
-		private Library DoLoadLibrary(Assembly a, bool unloadOnCLose) {
+		private Library DoLoadLibrary(Assembly a, bool unloadOnCLose)
+		{
 			if (a == null) throw new ArgumentNullException("a");
 			Library result = FindLibraryByAssemblyName(a.FullName);
-			if (result != null) throw new InvalidOperationException(string.Format("Library '{0}' is already loaded.", a.FullName));
+			if (result != null)
+				throw new InvalidOperationException(string.Format("Library '{0}' is already loaded.", a.FullName));
 			result = new Library(a, unloadOnCLose);
 			libraries.Add(result);
 			return result;
 		}
 
 
-		private void DoRegisterLibrary(Library library, bool adding) {
+		private void DoRegisterLibrary(Library library, bool adding)
+		{
 			addingLibrary = adding;
 			initializingLibrary = library;
 			try {
 				InitializeLibrary(library);
-			} catch (Exception exc) {
+			}
+			catch (Exception exc) {
 				DoRemoveLibrary(library);
 				throw exc;
-			} finally {
+			}
+			finally {
 				addingLibrary = false;
 				initializingLibrary = null;
 			}
@@ -885,13 +966,15 @@ namespace Dataweb.NShape {
 
 
 		// ToDo: Implement RemoveLibrary, RemoveLibraryByPath and RemoveLibraryByName
-		private void DoRemoveLibrary(Library l) {
+		private void DoRemoveLibrary(Library l)
+		{
 			if (l == null) throw new ArgumentNullException("l");
 			libraries.Remove(l);
 		}
 
 
-		private void RemoveLibrary(Library library) {
+		private void RemoveLibrary(Library library)
+		{
 			if (library == null) throw new ArgumentNullException("library");
 			List<ShapeType> registeredShapeTypes = new List<ShapeType>(GetRegisteredShapeTypes(library));
 			List<ModelObjectType> registeredModelObjectTypes = new List<ModelObjectType>(GetRegisteredModelObjectTypes(library));
@@ -912,11 +995,15 @@ namespace Dataweb.NShape {
 			// Check if there are shapes without templates 
 			if (Repository.IsShapeTypeInUse(registeredShapeTypes)) {
 				canRemove = false;
-				throw new NShapeException("Unable to unload library '{0}': At least one shape type of the library is still in use.", library.Assembly.GetName().Name);
+				throw new NShapeException(
+					"Unable to unload library '{0}': At least one shape type of the library is still in use.",
+					library.Assembly.GetName().Name);
 			}
 			if (Repository.IsModelObjectTypeInUse(registeredModelObjectTypes)) {
 				canRemove = false;
-				throw new NShapeException("Unable to unload library '{0}': At least one model object type of the library is still in use.", library.Assembly.GetName().Name);
+				throw new NShapeException(
+					"Unable to unload library '{0}': At least one model object type of the library is still in use.",
+					library.Assembly.GetName().Name);
 			}
 
 			if (canRemove) {
@@ -942,7 +1029,8 @@ namespace Dataweb.NShape {
 		}
 
 
-		private bool IsShapeOfType(Shape shape, ShapeType shapeType) {
+		private bool IsShapeOfType(Shape shape, ShapeType shapeType)
+		{
 			if (shape == null) throw new ArgumentNullException("shape");
 			if (shapeType == null) throw new ArgumentNullException("shapeType");
 			bool result = false;
@@ -959,12 +1047,14 @@ namespace Dataweb.NShape {
 		}
 
 
-		private IEnumerable<ShapeType> GetRegisteredShapeTypes(Library library) {
+		private IEnumerable<ShapeType> GetRegisteredShapeTypes(Library library)
+		{
 			return GetRegisteredShapeTypes(SingleInstanceEnumerator<Library>.Create(library));
 		}
 
 
-		private IEnumerable<ShapeType> GetRegisteredShapeTypes(IEnumerable<Library> libraries) {
+		private IEnumerable<ShapeType> GetRegisteredShapeTypes(IEnumerable<Library> libraries)
+		{
 			foreach (ShapeType shapeType in shapeTypes) {
 				foreach (Library library in libraries) {
 					if (shapeType.LibraryName == library.Name)
@@ -974,12 +1064,14 @@ namespace Dataweb.NShape {
 		}
 
 
-		private IEnumerable<ModelObjectType> GetRegisteredModelObjectTypes(Library library) {
+		private IEnumerable<ModelObjectType> GetRegisteredModelObjectTypes(Library library)
+		{
 			return GetRegisteredModelObjectTypes(SingleInstanceEnumerator<Library>.Create(library));
 		}
 
 
-		private IEnumerable<ModelObjectType> GetRegisteredModelObjectTypes(IEnumerable<Library> libraries) {
+		private IEnumerable<ModelObjectType> GetRegisteredModelObjectTypes(IEnumerable<Library> libraries)
+		{
 			foreach (ModelObjectType modelObjectType in modelObjectTypes) {
 				foreach (Library library in libraries) {
 					if (modelObjectType.LibraryName == library.Name)
@@ -989,7 +1081,8 @@ namespace Dataweb.NShape {
 		}
 
 
-		private string GetFullAssemblyPath(string assemblyPath) {
+		private string GetFullAssemblyPath(string assemblyPath)
+		{
 			if (assemblyPath == null) throw new ArgumentNullException("libraryFilePath");
 			if (!Path.HasExtension(assemblyPath)) assemblyPath += ".dll";
 			if (!Path.IsPathRooted(assemblyPath)) {
@@ -1015,7 +1108,8 @@ namespace Dataweb.NShape {
 		}
 
 
-		private Type GetInitializerType(Assembly assembly) {
+		private Type GetInitializerType(Assembly assembly)
+		{
 			if (assembly == null) throw new ArgumentNullException("assembly");
 			Type initializerType = null;
 			foreach (Type t in assembly.GetTypes()) {
@@ -1027,22 +1121,31 @@ namespace Dataweb.NShape {
 				}
 			}
 			if (initializerType == null)
-				throw new ArgumentException(string.Format("Assembly '{0}' is not a NShape library. (It does not implement static class {1}).", assembly.Location, NShapeLibraryInitializerClassName));
+				throw new ArgumentException(
+					string.Format("Assembly '{0}' is not a NShape library. (It does not implement static class {1}).",
+					              assembly.Location, NShapeLibraryInitializerClassName));
 			MethodInfo methodInfo = initializerType.GetMethod(InitializeMethodName);
 			if (methodInfo == null)
-				throw new ArgumentException(string.Format("Assembly '{0}' is not a NShape library. (It does not implement {1}.{2}).", assembly.FullName, NShapeLibraryInitializerClassName, InitializeMethodName));
+				throw new ArgumentException(string.Format(
+					"Assembly '{0}' is not a NShape library. (It does not implement {1}.{2}).", assembly.FullName,
+					NShapeLibraryInitializerClassName, InitializeMethodName));
 			return initializerType;
 		}
 
 
-		private void InitializeLibrary(Library library) {
+		private void InitializeLibrary(Library library)
+		{
 			Type initializerType = GetInitializerType(library.Assembly);
 			this.initializingLibrary = library;
 			try {
-				initializerType.InvokeMember(InitializeMethodName, BindingFlags.Public | BindingFlags.InvokeMethod | BindingFlags.Static, null, null, registerArgs);
-			} catch (TargetInvocationException ex) {
+				initializerType.InvokeMember(InitializeMethodName,
+				                             BindingFlags.Public | BindingFlags.InvokeMethod | BindingFlags.Static, null, null,
+				                             registerArgs);
+			}
+			catch (TargetInvocationException ex) {
 				throw ex.InnerException;
-			} finally {
+			}
+			finally {
 				initializingLibrary = null;
 			}
 		}
@@ -1053,7 +1156,8 @@ namespace Dataweb.NShape {
 		/// These automatically created templates are not stored by the cache.
 		/// </summary>
 		/// <param name="shapeType"></param>
-		private void CreateDefaultTemplate(ShapeType shapeType) {
+		private void CreateDefaultTemplate(ShapeType shapeType)
+		{
 			if (shapeType.SupportsAutoTemplates) {
 				Template template = new Template(shapeType.Name, shapeType.CreateInstance());
 				Repository.InsertAll(template);
@@ -1063,7 +1167,8 @@ namespace Dataweb.NShape {
 
 		// Notify ToolCache that a style has changed
 		// Invalidate all (loaded) shapes using the changed style
-		private void repository_StyleUpdated(object sender, RepositoryStyleEventArgs e) {
+		private void repository_StyleUpdated(object sender, RepositoryStyleEventArgs e)
+		{
 			IStyle changedStyle = e.Style;
 			Design design = null;
 			foreach (Design d in repository.GetDesigns()) {
@@ -1075,23 +1180,30 @@ namespace Dataweb.NShape {
 			// Update Toolcache and PreviewStyle
 			if (design != null) {
 				if (changedStyle is CapStyle) {
-					DoNotifyStyleChanged(design.CapStyles, (CapStyle)changedStyle);
-					design.CapStyles.SetPreviewStyle((CapStyle)changedStyle, design.CreatePreviewStyle((ICapStyle)changedStyle));
-				} else if (changedStyle is CharacterStyle) {
-					DoNotifyStyleChanged(design.CharacterStyles, (CharacterStyle)changedStyle);
-					design.CharacterStyles.SetPreviewStyle((CharacterStyle)changedStyle, design.CreatePreviewStyle((ICharacterStyle)changedStyle));
-				} else if (changedStyle is ColorStyle) {
-					DoNotifyStyleChanged(design.ColorStyles, (ColorStyle)changedStyle);
-					design.ColorStyles.SetPreviewStyle((ColorStyle)changedStyle, design.CreatePreviewStyle((IColorStyle)changedStyle));
-				} else if (changedStyle is FillStyle) {
-					DoNotifyStyleChanged(design.FillStyles, (FillStyle)changedStyle);
-					design.FillStyles.SetPreviewStyle((FillStyle)changedStyle, design.CreatePreviewStyle((IFillStyle)changedStyle));
-				} else if (changedStyle is LineStyle) {
-					DoNotifyStyleChanged(design.LineStyles, (LineStyle)changedStyle);
-					design.LineStyles.SetPreviewStyle((LineStyle)changedStyle, design.CreatePreviewStyle((ILineStyle)changedStyle));
-				} else if (changedStyle is ParagraphStyle) {
-					DoNotifyStyleChanged(design.ParagraphStyles, (ParagraphStyle)changedStyle);
-					design.ParagraphStyles.SetPreviewStyle((ParagraphStyle)changedStyle, design.CreatePreviewStyle((IParagraphStyle)changedStyle));
+					DoNotifyStyleChanged(design.CapStyles, (CapStyle) changedStyle);
+					design.CapStyles.SetPreviewStyle((CapStyle) changedStyle, design.CreatePreviewStyle((ICapStyle) changedStyle));
+				}
+				else if (changedStyle is CharacterStyle) {
+					DoNotifyStyleChanged(design.CharacterStyles, (CharacterStyle) changedStyle);
+					design.CharacterStyles.SetPreviewStyle((CharacterStyle) changedStyle,
+					                                       design.CreatePreviewStyle((ICharacterStyle) changedStyle));
+				}
+				else if (changedStyle is ColorStyle) {
+					DoNotifyStyleChanged(design.ColorStyles, (ColorStyle) changedStyle);
+					design.ColorStyles.SetPreviewStyle((ColorStyle) changedStyle, design.CreatePreviewStyle((IColorStyle) changedStyle));
+				}
+				else if (changedStyle is FillStyle) {
+					DoNotifyStyleChanged(design.FillStyles, (FillStyle) changedStyle);
+					design.FillStyles.SetPreviewStyle((FillStyle) changedStyle, design.CreatePreviewStyle((IFillStyle) changedStyle));
+				}
+				else if (changedStyle is LineStyle) {
+					DoNotifyStyleChanged(design.LineStyles, (LineStyle) changedStyle);
+					design.LineStyles.SetPreviewStyle((LineStyle) changedStyle, design.CreatePreviewStyle((ILineStyle) changedStyle));
+				}
+				else if (changedStyle is ParagraphStyle) {
+					DoNotifyStyleChanged(design.ParagraphStyles, (ParagraphStyle) changedStyle);
+					design.ParagraphStyles.SetPreviewStyle((ParagraphStyle) changedStyle,
+					                                       design.CreatePreviewStyle((IParagraphStyle) changedStyle));
 				}
 			}
 
@@ -1107,7 +1219,9 @@ namespace Dataweb.NShape {
 		}
 
 
-		private void DoNotifyStyleChanged<TStyle>(StyleCollection<TStyle> styleCollection, TStyle style) where TStyle : class, IStyle {
+		private void DoNotifyStyleChanged<TStyle>(StyleCollection<TStyle> styleCollection, TStyle style)
+			where TStyle : class, IStyle
+		{
 			if (styleCollection == null) throw new ArgumentNullException("styleCollection");
 			if (style == null) throw new ArgumentNullException("style");
 			// create and set new PreviewStyle if the style is in the currently active design
@@ -1120,13 +1234,15 @@ namespace Dataweb.NShape {
 		}
 
 
-		private void repository_StyleDeleted(object sender, RepositoryStyleEventArgs e) {
+		private void repository_StyleDeleted(object sender, RepositoryStyleEventArgs e)
+		{
 			ToolCache.NotifyStyleChanged(e.Style);
 		}
 
 
 		// Determines the repository version to use for the given library.
-		private int FindLibraryVersion(string libraryName, bool create) {
+		private int FindLibraryVersion(string libraryName, bool create)
+		{
 			int result;
 			if (libraryName.Equals("Core", StringComparison.InvariantCultureIgnoreCase))
 				result = repository.Version;
@@ -1137,7 +1253,6 @@ namespace Dataweb.NShape {
 
 		#endregion
 
-
 		// Supported repository versions of the Core library
 		internal const int FirstSupportedSaveVersion = 1;
 		internal const int LastSupportedSaveVersion = 4;
@@ -1146,13 +1261,14 @@ namespace Dataweb.NShape {
 
 		/// <ToBeCompleted></ToBeCompleted>
 		public const string NShapeLibraryInitializerClassName = "NShapeLibraryInitializer";
+
 		/// <ToBeCompleted></ToBeCompleted>
 		public const string InitializeMethodName = "Initialize";
 
 		#region Fields
 
 		private const string entityTypeName = "Project";
-		private string[] attributeNames = new string[] { "Name", "Date", "DesignId" };
+		private string[] attributeNames = new string[] {"Name", "Date", "DesignId"};
 
 		// -- Constituting Sub-Objects --
 		private ShapeTypeCollection shapeTypes = new ShapeTypeCollection();
@@ -1192,20 +1308,21 @@ namespace Dataweb.NShape {
 	/// Provides information for the LibraryLoaded event.
 	/// </summary>
 	/// <status>reviewed</status>
-	public class LibraryLoadedEventArgs : EventArgs {
-
+	public class LibraryLoadedEventArgs : EventArgs
+	{
 		/// <ToBeCompleted></ToBeCompleted>
-		public LibraryLoadedEventArgs(string libraryName) {
+		public LibraryLoadedEventArgs(string libraryName)
+		{
 			if (libraryName == null) throw new ArgumentNullException("libraryName");
 			this.libraryName = libraryName;
 		}
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public string LibraryName {
+		public string LibraryName
+		{
 			get { return libraryName; }
 		}
 
 		private string libraryName;
 	}
-
 }

@@ -3,30 +3,36 @@ using System.Linq;
 using System.Xml.Linq;
 using Vixen.Sys;
 
-namespace Vixen.IO.Xml.Serializer {
-	class XmlElementNodeCollectionSerializer : IXmlSerializer<IEnumerable<ElementNode>> {
+namespace Vixen.IO.Xml.Serializer
+{
+	internal class XmlElementNodeCollectionSerializer : IXmlSerializer<IEnumerable<ElementNode>>
+	{
 		private IEnumerable<Element> _elements;
 
 		private const string ELEMENT_NODES = "Nodes";
 
-		public XmlElementNodeCollectionSerializer(IEnumerable<Element> elements) {
+		public XmlElementNodeCollectionSerializer(IEnumerable<Element> elements)
+		{
 			_elements = elements;
 		}
 
-		public XElement WriteObject(IEnumerable<ElementNode> value) {
+		public XElement WriteObject(IEnumerable<ElementNode> value)
+		{
 			XmlElementNodeSerializer elementNodeSerializer = new XmlElementNodeSerializer(_elements);
 			IEnumerable<XElement> elements = value.Select(elementNodeSerializer.WriteObject);
 			return new XElement(ELEMENT_NODES, elements);
 		}
 
-		public IEnumerable<ElementNode> ReadObject(XElement element) {
+		public IEnumerable<ElementNode> ReadObject(XElement element)
+		{
 			// Any references to non-existent elements will be pruned by this operation.
 			List<ElementNode> elementNodes = new List<ElementNode>();
 
 			XElement parentNode = element.Element(ELEMENT_NODES);
-			if(parentNode != null) {
+			if (parentNode != null) {
 				XmlElementNodeSerializer elementNodeSerializer = new XmlElementNodeSerializer(_elements);
-				IEnumerable<ElementNode> childNodes = parentNode.Elements().Select(elementNodeSerializer.ReadObject).Where(x => x != null);
+				IEnumerable<ElementNode> childNodes =
+					parentNode.Elements().Select(elementNodeSerializer.ReadObject).Where(x => x != null);
 				elementNodes.AddRange(childNodes);
 			}
 

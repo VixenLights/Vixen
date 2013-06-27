@@ -1,31 +1,39 @@
 ﻿using Vixen.Sys;
 
-namespace Vixen.Commands {
-	public class _8BitCommand : Dispatchable<_8BitCommand>, ICommand<byte> {
-		public _8BitCommand(byte value) {
+namespace Vixen.Commands
+{
+	public class _8BitCommand : Dispatchable<_8BitCommand>, ICommand<byte>
+	{
+		public _8BitCommand(byte value)
+		{
 			CommandValue = value;
-			SignedValue = (sbyte)value;
+			SignedValue = (sbyte) value;
 			UnsignedValue = value;
 		}
 
 		public _8BitCommand(short value)
-			: this((byte)value) {
+			: this((byte) value)
+		{
 		}
 
 		public _8BitCommand(int value)
-			: this((byte)value) {
+			: this((byte) value)
+		{
 		}
 
 		public _8BitCommand(long value)
-			: this((byte)value) {
+			: this((byte) value)
+		{
 		}
 
 		public _8BitCommand(float value)
-			: this((byte)value) {
+			: this((byte) value)
+		{
 		}
 
 		public _8BitCommand(double value)
-			: this((byte)value) {
+			: this((byte) value)
+		{
 		}
 
 		public byte CommandValue { get; set; }
@@ -34,9 +42,10 @@ namespace Vixen.Commands {
 
 		public byte UnsignedValue { get; private set; }
 
-		object ICommand.CommandValue {
+		object ICommand.CommandValue
+		{
 			get { return CommandValue; }
-			set { CommandValue = (byte)value; }
+			set { CommandValue = (byte) value; }
 		}
 	}
 }

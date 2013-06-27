@@ -35,6 +35,7 @@ namespace ZedGraph
 		/// The X value for the point, stored as a double type.
 		/// </summary>
 		public double X;
+
 		/// <summary>
 		/// The Y value for the point, stored as a double type.
 		/// </summary>
@@ -63,6 +64,7 @@ namespace ZedGraph
 		/// access this value.
 		/// </summary>
 		protected bool _isFiltered;
+
 		/// <summary>
 		/// Protected field that stores the number of data points after filtering (e.g.,
 		/// <see cref="FilterData" /> has been called).  The <see cref="Count" /> property
@@ -70,6 +72,7 @@ namespace ZedGraph
 		/// for a dataset that has been filtered.
 		/// </summary>
 		protected int _filteredCount;
+
 		/// <summary>
 		/// Protected array of indices for all the points that are currently visible.  This only
 		/// applies if <see cref="IsFiltered" /> is true.
@@ -132,17 +135,17 @@ namespace ZedGraph
 			get
 			{
 				int j = index;
-				if ( _isFiltered )
+				if (_isFiltered)
 					j = _visibleIndicies[index];
 
 				DataPoint dp = base[j];
-				PointPair pt = new PointPair( dp.X, dp.Y );
+				PointPair pt = new PointPair(dp.X, dp.Y);
 				return pt;
 			}
 			set
 			{
 				int j = index;
-				if ( _isFiltered )
+				if (_isFiltered)
 					j = _visibleIndicies[index];
 
 				DataPoint dp;
@@ -161,7 +164,7 @@ namespace ZedGraph
 		{
 			get
 			{
-				if ( !_isFiltered )
+				if (!_isFiltered)
 					return base.Count;
 				else
 					return _filteredCount;
@@ -181,12 +184,12 @@ namespace ZedGraph
 		/// Append a data point to the collection
 		/// </summary>
 		/// <param name="pt">The <see cref="PointPair" /> value to append</param>
-		public void Add( PointPair pt )
+		public void Add(PointPair pt)
 		{
 			DataPoint dp = new DataPoint();
 			dp.X = pt.X;
 			dp.Y = pt.Y;
-			Add( dp );
+			Add(dp);
 		}
 
 
@@ -195,12 +198,12 @@ namespace ZedGraph
 		/// </summary>
 		/// <param name="x">The x value of the point to append</param>
 		/// <param name="y">The y value of the point to append</param>
-		public void Add( double x, double y )
+		public void Add(double x, double y)
 		{
 			DataPoint dp = new DataPoint();
 			dp.X = x;
 			dp.Y = y;
-			Add( dp );
+			Add(dp);
 		}
 
 
@@ -218,7 +221,7 @@ namespace ZedGraph
 		/// </returns>
 		public NoDupePointList Clone()
 		{
-			return new NoDupePointList( this );
+			return new NoDupePointList(this);
 		}
 
 		/// <summary>
@@ -237,17 +240,17 @@ namespace ZedGraph
 		/// but it does not duplicate the data (it just keeps a reference to the original)
 		/// </summary>
 		/// <param name="rhs">The NoDupePointList to be copied</param>
-		public NoDupePointList( NoDupePointList rhs )
+		public NoDupePointList(NoDupePointList rhs)
 		{
 			int count = rhs.TotalCount;
-			for ( int i = 0; i < count; i++ )
-				Add( rhs.GetDataPointAt( i ) );
+			for (int i = 0; i < count; i++)
+				Add(rhs.GetDataPointAt(i));
 
 			_filteredCount = rhs._filteredCount;
 			_isFiltered = rhs._isFiltered;
 			_filterMode = rhs._filterMode;
 
-			if ( rhs._visibleIndicies != null )
+			if (rhs._visibleIndicies != null)
 				_visibleIndicies = (int[]) rhs._visibleIndicies.Clone();
 			else
 				_visibleIndicies = null;
@@ -258,7 +261,7 @@ namespace ZedGraph
 		/// translation to a PointPair.
 		/// </summary>
 		/// <param name="index">The ordinal position of the DataPoint of interest</param>
-		protected DataPoint GetDataPointAt( int index )
+		protected DataPoint GetDataPointAt(int index)
 		{
 			return base[index];
 		}
@@ -302,51 +305,47 @@ namespace ZedGraph
 		/// for plotting these data.  This can be an <see cref="XAxis" /> or a 
 		/// <see cref="X2Axis" />.
 		/// </param>
-		public void FilterData( GraphPane pane, Axis xAxis, Axis yAxis )
+		public void FilterData(GraphPane pane, Axis xAxis, Axis yAxis)
 		{
-			if ( _visibleIndicies == null || _visibleIndicies.Length < base.Count )
+			if (_visibleIndicies == null || _visibleIndicies.Length < base.Count)
 				_visibleIndicies = new int[base.Count];
 
 			_filteredCount = 0;
 			_isFiltered = true;
 
-			int width = (int)pane.Chart.Rect.Width;
-			int height = (int)pane.Chart.Rect.Height;
-			if ( width <= 0 || height <= 0 )
-				throw new IndexOutOfRangeException( "Error in FilterData: Chart rect not valid" );
+			int width = (int) pane.Chart.Rect.Width;
+			int height = (int) pane.Chart.Rect.Height;
+			if (width <= 0 || height <= 0)
+				throw new IndexOutOfRangeException("Error in FilterData: Chart rect not valid");
 
-			bool[,] usedArray = new bool[width, height];
-			for ( int i = 0; i < width; i++ )
-				for ( int j = 0; j < height; j++ )
+			bool[,] usedArray = new bool[width,height];
+			for (int i = 0; i < width; i++)
+				for (int j = 0; j < height; j++)
 					usedArray[i, j] = false;
 
-			xAxis.Scale.SetupScaleData( pane, xAxis );
-			yAxis.Scale.SetupScaleData( pane, yAxis );
+			xAxis.Scale.SetupScaleData(pane, xAxis);
+			yAxis.Scale.SetupScaleData(pane, yAxis);
 
 			int n = _filterMode < 0 ? 0 : _filterMode;
-			int left = (int)pane.Chart.Rect.Left;
-			int top = (int)pane.Chart.Rect.Top;
+			int left = (int) pane.Chart.Rect.Left;
+			int top = (int) pane.Chart.Rect.Top;
 
-			for ( int i=0; i<base.Count; i++ )
-			{
+			for (int i = 0; i < base.Count; i++) {
 				DataPoint dp = base[i];
-				int x = (int)( xAxis.Scale.Transform( dp.X ) + 0.5 ) - left;
-				int y = (int)( yAxis.Scale.Transform( dp.Y ) + 0.5 ) - top;
+				int x = (int) (xAxis.Scale.Transform(dp.X) + 0.5) - left;
+				int y = (int) (yAxis.Scale.Transform(dp.Y) + 0.5) - top;
 
-				if ( x >= 0 && x < width && y >= 0 && y < height )
-				{
+				if (x >= 0 && x < width && y >= 0 && y < height) {
 					bool used = false;
-					if ( n <= 0 )
+					if (n <= 0)
 						used = usedArray[x, y];
-					else
-					{
-						for ( int ix = x - n; ix <= x + n; ix++ )
-							for ( int iy = y - n; iy <= y + n; iy++ )
-								used |= ( ix >= 0 && ix < width && iy >= 0 && iy < height && usedArray[ix, iy] );
+					else {
+						for (int ix = x - n; ix <= x + n; ix++)
+							for (int iy = y - n; iy <= y + n; iy++)
+								used |= (ix >= 0 && ix < width && iy >= 0 && iy < height && usedArray[ix, iy]);
 					}
 
-					if ( !used )
-					{
+					if (!used) {
 						usedArray[x, y] = true;
 						_visibleIndicies[_filteredCount] = i;
 						_filteredCount++;

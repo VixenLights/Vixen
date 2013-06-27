@@ -1,9 +1,12 @@
 ﻿using System.IO;
 using System.Xml.Linq;
 
-namespace Vixen.IO.Xml {
-	class XElementFileReader : IFileReader<XElement> {
-		public XElement ReadFile(string filePath) {
+namespace Vixen.IO.Xml
+{
+	internal class XElementFileReader : IFileReader<XElement>
+	{
+		public XElement ReadFile(string filePath)
+		{
 			if (!File.Exists(filePath)) return null;
 
 			using (FileStream fileStream = new FileStream(filePath, FileMode.Open)) {
@@ -25,7 +28,8 @@ namespace Vixen.IO.Xml {
 			return null;
 		}
 
-		object IFileReader.ReadFile(string filePath) {
+		object IFileReader.ReadFile(string filePath)
+		{
 			return ReadFile(filePath);
 		}
 	}

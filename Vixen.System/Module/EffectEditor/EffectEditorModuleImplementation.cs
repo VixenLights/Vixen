@@ -4,11 +4,14 @@ using System.Linq;
 using System.Text;
 using Vixen.Sys.Attribute;
 
-namespace Vixen.Module.EffectEditor {
+namespace Vixen.Module.EffectEditor
+{
 	[TypeOfModule("EffectEditor")]
-	class EffectEditorModuleImplementation : ModuleImplementation<IEffectEditorModuleInstance> {
+	internal class EffectEditorModuleImplementation : ModuleImplementation<IEffectEditorModuleInstance>
+	{
 		public EffectEditorModuleImplementation()
-			: base(new EffectEditorModuleManagement(), new EffectEditorModuleRepository()) {
+			: base(new EffectEditorModuleManagement(), new EffectEditorModuleRepository())
+		{
 		}
 	}
 }

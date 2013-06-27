@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Vixen.Rule.Name
 {
-	class GridNamingTemplate : INamingTemplate
+	internal class GridNamingTemplate : INamingTemplate
 	{
 		public IEnumerable<INamingGenerator> Generators
 		{

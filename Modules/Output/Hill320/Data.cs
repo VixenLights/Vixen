@@ -5,22 +5,22 @@ using Vixen.Module;
 
 namespace VixenModules.Output.Hill320
 {
-   [DataContract]
-    class Data : ModuleDataModelBase
-    {
+	[DataContract]
+	internal class Data : ModuleDataModelBase
+	{
 		private ushort _controlPort;
 		private ushort _dataPort;
 		private ushort _statusPort;
 
-        [DataMember]
-        public ushort PortAddress 
+		[DataMember]
+		public ushort PortAddress
 		{
 			get { return _dataPort; }
-			set{_dataPort = value;}
+			set { _dataPort = value; }
 		}
 
-        [DataMember]
-        public ushort ControlPort
+		[DataMember]
+		public ushort ControlPort
 		{
 			get { return _controlPort; }
 			set { _controlPort = value; }
@@ -36,7 +36,7 @@ namespace VixenModules.Output.Hill320
 
 		public override IModuleDataModel Clone()
 		{
-			return new Data() { PortAddress = PortAddress, ControlPort = ControlPort, StatusPort = StatusPort };
+			return new Data() {PortAddress = PortAddress, ControlPort = ControlPort, StatusPort = StatusPort};
 		}
-    }
+	}
 }

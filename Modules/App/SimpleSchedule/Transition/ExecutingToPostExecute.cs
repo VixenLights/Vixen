@@ -1,17 +1,22 @@
 ﻿using System;
 using Common.StateMach;
 
-namespace VixenModules.App.SimpleSchedule.Transition {
-	class ExecutingToPostExecute : ITransition<IScheduledItemStateObject> {
-		public Predicate<IScheduledItemStateObject> Condition {
+namespace VixenModules.App.SimpleSchedule.Transition
+{
+	internal class ExecutingToPostExecute : ITransition<IScheduledItemStateObject>
+	{
+		public Predicate<IScheduledItemStateObject> Condition
+		{
 			get { return _TransitionCondition; }
 		}
 
-		public IState<IScheduledItemStateObject> TargetState {
+		public IState<IScheduledItemStateObject> TargetState
+		{
 			get { return States.PostExecuteState; }
 		}
 
-		private bool _TransitionCondition(IScheduledItemStateObject item) {
+		private bool _TransitionCondition(IScheduledItemStateObject item)
+		{
 			return !item.Context.IsRunning;
 		}
 	}

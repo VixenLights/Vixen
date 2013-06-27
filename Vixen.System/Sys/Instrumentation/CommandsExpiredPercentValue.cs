@@ -4,10 +4,13 @@ using System.Linq;
 using System.Text;
 using Vixen.Instrumentation;
 
-namespace Vixen.Sys.Instrumentation {
-	class CommandsExpiredPercentValue : PercentValue {
+namespace Vixen.Sys.Instrumentation
+{
+	internal class CommandsExpiredPercentValue : PercentValue
+	{
 		public CommandsExpiredPercentValue()
-			: base("Commands - Expired (%)") {
+			: base("Commands - Expired (%)")
+		{
 		}
 	}
 }

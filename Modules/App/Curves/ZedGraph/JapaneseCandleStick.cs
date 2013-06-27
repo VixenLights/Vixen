@@ -39,7 +39,7 @@ namespace ZedGraph
 	[Serializable]
 	public class JapaneseCandleStick : OHLCBar, ICloneable, ISerializable
 	{
-	#region Fields
+		#region Fields
 
 		/// <summary>
 		/// Private field to store the <see cref="Fill" /> class to be used for filling the
@@ -48,6 +48,7 @@ namespace ZedGraph
 		/// <see cref="RisingFill" /> to access this value.
 		/// </summary>
 		private Fill _risingFill;
+
 		/// <summary>
 		/// Private field to store the <see cref="Fill" /> class to be used for filling the
 		/// candlestick "bars" when the <see cref="StockPt.Close" /> value is less than
@@ -63,6 +64,7 @@ namespace ZedGraph
 		/// <see cref="RisingBorder" /> to access this value.
 		/// </summary>
 		private Border _risingBorder;
+
 		/// <summary>
 		/// Private field to store the <see cref="Border" /> class to be used for drawing the
 		/// candlestick "bars" when the <see cref="StockPt.Close" /> value is less than
@@ -77,9 +79,10 @@ namespace ZedGraph
 		/// property <see cref="FallingColor"/> to access this value.
 		/// </summary>
 		protected Color _fallingColor;
-	#endregion
 
-	#region Defaults
+		#endregion
+
+		#region Defaults
 
 		/// <summary>
 		/// A simple struct that defines the
@@ -92,6 +95,7 @@ namespace ZedGraph
 			/// (<see cref="JapaneseCandleStick.RisingFill"/> property).
 			/// </summary>
 			public static Color RisingColor = Color.White;
+
 			/// <summary>
 			/// The default fillcolor for drawing the falling case CandleSticks
 			/// (<see cref="JapaneseCandleStick.FallingFill"/> property).
@@ -103,6 +107,7 @@ namespace ZedGraph
 			/// (<see cref="JapaneseCandleStick.RisingBorder" /> property).
 			/// </summary>
 			public static Color RisingBorder = Color.Black;
+
 			/// <summary>
 			/// The default color for the border of the falling CandleSticks
 			/// (<see cref="JapaneseCandleStick.FallingBorder" /> property).
@@ -110,9 +115,9 @@ namespace ZedGraph
 			public static Color FallingBorder = Color.Black;
 		}
 
-	#endregion
+		#endregion
 
-	#region Properties
+		#region Properties
 
 		/// <summary>
 		/// Gets or sets the <see cref="Fill" /> class that is used to fill the candlestick
@@ -124,6 +129,7 @@ namespace ZedGraph
 			get { return _risingFill; }
 			set { _risingFill = value; }
 		}
+
 		/// <summary>
 		/// Gets or sets the <see cref="Fill" /> class that is used to fill the candlestick
 		/// "bars" when the <see cref="StockPt.Close" /> value is less than the
@@ -145,6 +151,7 @@ namespace ZedGraph
 			get { return _risingBorder; }
 			set { _risingBorder = value; }
 		}
+
 		/// <summary>
 		/// The <see cref="Border" /> instance to be used for drawing the border frame of
 		/// the candlestick "bars" when the <see cref="StockPt.Close" /> value is less than the
@@ -171,9 +178,9 @@ namespace ZedGraph
 			set { _fallingColor = value; }
 		}
 
-	#endregion
+		#endregion
 
-	#region Constructors
+		#region Constructors
 
 		/// <summary>
 		/// Default constructor that sets all <see cref="JapaneseCandleStick"/> properties to
@@ -181,11 +188,11 @@ namespace ZedGraph
 		/// </summary>
 		public JapaneseCandleStick() : base()
 		{
-			_risingFill = new Fill( Default.RisingColor );
-			_fallingFill = new Fill( Default.FallingColor );
+			_risingFill = new Fill(Default.RisingColor);
+			_fallingFill = new Fill(Default.FallingColor);
 
-			_risingBorder = new Border( Default.RisingBorder, LineBase.Default.Width );
-			_fallingBorder = new Border( Default.FallingBorder, LineBase.Default.Width );
+			_risingBorder = new Border(Default.RisingBorder, LineBase.Default.Width);
+			_fallingBorder = new Border(Default.FallingBorder, LineBase.Default.Width);
 
 			_fallingColor = Default.FallingColor;
 		}
@@ -194,7 +201,7 @@ namespace ZedGraph
 		/// The Copy Constructor
 		/// </summary>
 		/// <param name="rhs">The <see cref="JapaneseCandleStick"/> object from which to copy</param>
-		public JapaneseCandleStick( JapaneseCandleStick rhs ) : base( rhs )
+		public JapaneseCandleStick(JapaneseCandleStick rhs) : base(rhs)
 		{
 			_risingFill = rhs._risingFill.Clone();
 			_fallingFill = rhs._fallingFill.Clone();
@@ -221,12 +228,12 @@ namespace ZedGraph
 		/// <returns>A new, independent copy of this class</returns>
 		public new JapaneseCandleStick Clone()
 		{
-			return new JapaneseCandleStick( this );
+			return new JapaneseCandleStick(this);
 		}
 
-	#endregion
+		#endregion
 
-	#region Serialization
+		#region Serialization
 
 		/// <summary>
 		/// Current schema value that defines the version of the serialized file
@@ -240,42 +247,43 @@ namespace ZedGraph
 		/// </param>
 		/// <param name="context">A <see cref="StreamingContext"/> instance that contains the serialized data
 		/// </param>
-		protected JapaneseCandleStick( SerializationInfo info, StreamingContext context ) :
-			base( info, context )
+		protected JapaneseCandleStick(SerializationInfo info, StreamingContext context) :
+			base(info, context)
 		{
 			// The schema value is just a file version parameter.  You can use it to make future versions
 			// backwards compatible as new member variables are added to classes
-			int sch = info.GetInt32( "schema2" );
+			int sch = info.GetInt32("schema2");
 
-			_risingFill = (Fill)info.GetValue( "risingFill", typeof( Fill ) );
-			_fallingFill = (Fill)info.GetValue( "fallingFill", typeof( Fill ) );
-			_risingBorder = (Border)info.GetValue( "risingBorder", typeof( Border ) );
-			_fallingBorder = (Border)info.GetValue( "fallingBorder", typeof( Border ) );
+			_risingFill = (Fill) info.GetValue("risingFill", typeof (Fill));
+			_fallingFill = (Fill) info.GetValue("fallingFill", typeof (Fill));
+			_risingBorder = (Border) info.GetValue("risingBorder", typeof (Border));
+			_fallingBorder = (Border) info.GetValue("fallingBorder", typeof (Border));
 
-			if ( schema2 >= 11 )
-				_fallingColor = (Color) info.GetValue( "fallingColor", typeof( Color ) );
+			if (schema2 >= 11)
+				_fallingColor = (Color) info.GetValue("fallingColor", typeof (Color));
 		}
+
 		/// <summary>
 		/// Populates a <see cref="SerializationInfo"/> instance with the data needed to serialize the target object
 		/// </summary>
 		/// <param name="info">A <see cref="SerializationInfo"/> instance that defines the serialized data</param>
 		/// <param name="context">A <see cref="StreamingContext"/> instance that contains the serialized data</param>
-		[SecurityPermissionAttribute( SecurityAction.Demand, SerializationFormatter = true )]
-		public override void GetObjectData( SerializationInfo info, StreamingContext context )
+		[SecurityPermissionAttribute(SecurityAction.Demand, SerializationFormatter = true)]
+		public override void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
-			base.GetObjectData( info, context );
+			base.GetObjectData(info, context);
 
-			info.AddValue( "schema2", schema2 );
-			info.AddValue( "risingFill", _risingFill );
-			info.AddValue( "fallingFill", _fallingFill );
-			info.AddValue( "risingBorder", _risingBorder );
-			info.AddValue( "fallingBorder", _fallingBorder );
-			info.AddValue( "fallingColor", _fallingColor );
+			info.AddValue("schema2", schema2);
+			info.AddValue("risingFill", _risingFill);
+			info.AddValue("fallingFill", _fallingFill);
+			info.AddValue("risingBorder", _risingBorder);
+			info.AddValue("fallingBorder", _fallingBorder);
+			info.AddValue("fallingColor", _fallingColor);
 		}
 
-	#endregion
+		#endregion
 
-	#region Rendering Methods
+		#region Rendering Methods
 
 		/// <summary>
 		/// Draw the <see cref="JapaneseCandleStick"/> to the specified <see cref="Graphics"/>
@@ -319,42 +327,38 @@ namespace ZedGraph
 		/// <see cref="Fill" />, just in case it's a <see cref="FillType.GradientByX" />,
 		/// <see cref="FillType.GradientByY" />, or
 		/// <see cref="FillType.GradientByZ" /> <see cref="FillType" /></param>
-		public void Draw( Graphics g, GraphPane pane, bool isXBase,
-								float pixBase, float pixHigh, float pixLow,
-								float pixOpen, float pixClose, float halfSize,
-								float scaleFactor, Pen pen, Fill fill, Border border, PointPair pt )
+		public void Draw(Graphics g, GraphPane pane, bool isXBase,
+		                 float pixBase, float pixHigh, float pixLow,
+		                 float pixOpen, float pixClose, float halfSize,
+		                 float scaleFactor, Pen pen, Fill fill, Border border, PointPair pt)
 		{
 			//float halfSize = (int) ( _size * scaleFactor / 2.0f + 0.5f );
 
-			if ( pixBase != PointPair.Missing && Math.Abs( pixLow ) < 1000000 &&
-						Math.Abs( pixHigh ) < 1000000)
-			{
+			if (pixBase != PointPair.Missing && Math.Abs(pixLow) < 1000000 &&
+			    Math.Abs(pixHigh) < 1000000) {
 				RectangleF rect;
-				if ( isXBase )
-				{
-					rect = new RectangleF( pixBase - halfSize, Math.Min( pixOpen, pixClose ),
-								halfSize * 2.0f, Math.Abs( pixOpen - pixClose ) );
+				if (isXBase) {
+					rect = new RectangleF(pixBase - halfSize, Math.Min(pixOpen, pixClose),
+					                      halfSize*2.0f, Math.Abs(pixOpen - pixClose));
 
-					g.DrawLine( pen, pixBase, pixHigh, pixBase, pixLow );
+					g.DrawLine(pen, pixBase, pixHigh, pixBase, pixLow);
 				}
-				else
-				{
-					rect = new RectangleF( Math.Min( pixOpen, pixClose ), pixBase - halfSize,
-								Math.Abs( pixOpen - pixClose ), halfSize * 2.0f );
+				else {
+					rect = new RectangleF(Math.Min(pixOpen, pixClose), pixBase - halfSize,
+					                      Math.Abs(pixOpen - pixClose), halfSize*2.0f);
 
-					g.DrawLine( pen, pixHigh, pixBase, pixLow, pixBase );
+					g.DrawLine(pen, pixHigh, pixBase, pixLow, pixBase);
 				}
 
-				if ( _isOpenCloseVisible && Math.Abs( pixOpen ) < 1000000 &&
-							Math.Abs( pixClose ) < 1000000 )
-				{
-					if ( rect.Width == 0 )
+				if (_isOpenCloseVisible && Math.Abs(pixOpen) < 1000000 &&
+				    Math.Abs(pixClose) < 1000000) {
+					if (rect.Width == 0)
 						rect.Width = 1;
-					if ( rect.Height == 0 )
+					if (rect.Height == 0)
 						rect.Height = 1;
 
-					fill.Draw( g, rect, pt );
-					border.Draw( g, pane, scaleFactor, rect );
+					fill.Draw(g, rect, pt);
+					border.Draw(g, pane, scaleFactor, rect);
 				}
 			}
 		}
@@ -384,17 +388,16 @@ namespace ZedGraph
 		/// <see cref="PaneBase.CalcScaleFactor"/> method, and is used to proportionally adjust
 		/// font sizes, etc. according to the actual size of the graph.
 		/// </param>
-		public void Draw( Graphics g, GraphPane pane, JapaneseCandleStickItem curve,
-							Axis baseAxis, Axis valueAxis, float scaleFactor )
+		public void Draw(Graphics g, GraphPane pane, JapaneseCandleStickItem curve,
+		                 Axis baseAxis, Axis valueAxis, float scaleFactor)
 		{
 			//ValueHandler valueHandler = new ValueHandler( pane, false );
 
 			float pixBase, pixHigh, pixLow, pixOpen, pixClose;
 
-			if ( curve.Points != null )
-			{
+			if (curve.Points != null) {
 				//float halfSize = _size * scaleFactor;
-				float halfSize = GetBarWidth( pane, baseAxis, scaleFactor );
+				float halfSize = GetBarWidth(pane, baseAxis, scaleFactor);
 
 				Color tColor = _color;
 				Color tFallingColor = _fallingColor;
@@ -403,8 +406,7 @@ namespace ZedGraph
 				Fill tFallingFill = _fallingFill;
 				Border tRisingBorder = _risingBorder;
 				Border tFallingBorder = _fallingBorder;
-				if ( curve.IsSelected )
-				{
+				if (curve.IsSelected) {
 					tColor = Selection.Border.Color;
 					tFallingColor = Selection.Border.Color;
 					tPenWidth = Selection.Border.Width;
@@ -412,25 +414,21 @@ namespace ZedGraph
 					tFallingFill = Selection.Fill;
 					tRisingBorder = Selection.Border;
 					tFallingBorder = Selection.Border;
-
 				}
 
-				using ( Pen risingPen = new Pen(  tColor, tPenWidth ) )
-				using ( Pen fallingPen = new Pen( tFallingColor, tPenWidth ) )
-				{
+				using (Pen risingPen = new Pen(tColor, tPenWidth))
+				using (Pen fallingPen = new Pen(tFallingColor, tPenWidth)) {
 					// Loop over each defined point							
-					for ( int i = 0; i < curve.Points.Count; i++ )
-					{
+					for (int i = 0; i < curve.Points.Count; i++) {
 						PointPair pt = curve.Points[i];
 						double date = pt.X;
 						double high = pt.Y;
 						double low = pt.Z;
 						double open = PointPair.Missing;
 						double close = PointPair.Missing;
-						if ( pt is StockPt )
-						{
-							open = ( pt as StockPt ).Open;
-							close = ( pt as StockPt ).Close;
+						if (pt is StockPt) {
+							open = (pt as StockPt).Open;
+							close = (pt as StockPt).Close;
 						}
 
 						// Any value set to double max is invalid and should be skipped
@@ -438,41 +436,39 @@ namespace ZedGraph
 						//   by zero, etc.
 						// Also, any value <= zero on a log scale is invalid
 
-						if ( !curve.Points[i].IsInvalid3D &&
-								( date > 0 || !baseAxis._scale.IsLog ) &&
-								( ( high > 0 && low > 0 ) || !valueAxis._scale.IsLog ) )
-						{
-							pixBase = (int) ( baseAxis.Scale.Transform( curve.IsOverrideOrdinal, i, date ) + 0.5 );
+						if (!curve.Points[i].IsInvalid3D &&
+						    (date > 0 || !baseAxis._scale.IsLog) &&
+						    ((high > 0 && low > 0) || !valueAxis._scale.IsLog)) {
+							pixBase = (int) (baseAxis.Scale.Transform(curve.IsOverrideOrdinal, i, date) + 0.5);
 							//pixBase = baseAxis.Scale.Transform( curve.IsOverrideOrdinal, i, date );
-							pixHigh = valueAxis.Scale.Transform( curve.IsOverrideOrdinal, i, high );
-							pixLow = valueAxis.Scale.Transform( curve.IsOverrideOrdinal, i, low );
-							if ( PointPair.IsValueInvalid( open ) )
+							pixHigh = valueAxis.Scale.Transform(curve.IsOverrideOrdinal, i, high);
+							pixLow = valueAxis.Scale.Transform(curve.IsOverrideOrdinal, i, low);
+							if (PointPair.IsValueInvalid(open))
 								pixOpen = Single.MaxValue;
 							else
-								pixOpen = valueAxis.Scale.Transform( curve.IsOverrideOrdinal, i, open );
+								pixOpen = valueAxis.Scale.Transform(curve.IsOverrideOrdinal, i, open);
 
-							if ( PointPair.IsValueInvalid( close ) )
+							if (PointPair.IsValueInvalid(close))
 								pixClose = Single.MaxValue;
 							else
-								pixClose = valueAxis.Scale.Transform( curve.IsOverrideOrdinal, i, close );
+								pixClose = valueAxis.Scale.Transform(curve.IsOverrideOrdinal, i, close);
 
-							if ( !curve.IsSelected && this._gradientFill.IsGradientValueType )
-							{
-								using ( Pen tPen = GetPen( pane, scaleFactor, pt ) )
-									Draw( g, pane, baseAxis is XAxis || baseAxis is X2Axis,
-										pixBase, pixHigh, pixLow, pixOpen,
-										pixClose, halfSize, scaleFactor,
-										( tPen ),
-										( close > open ? tRisingFill : tFallingFill ),
-										( close > open ? tRisingBorder : tFallingBorder ), pt );
+							if (!curve.IsSelected && this._gradientFill.IsGradientValueType) {
+								using (Pen tPen = GetPen(pane, scaleFactor, pt))
+									Draw(g, pane, baseAxis is XAxis || baseAxis is X2Axis,
+									     pixBase, pixHigh, pixLow, pixOpen,
+									     pixClose, halfSize, scaleFactor,
+									     (tPen),
+									     (close > open ? tRisingFill : tFallingFill),
+									     (close > open ? tRisingBorder : tFallingBorder), pt);
 							}
 							else
-								Draw( g, pane, baseAxis is XAxis || baseAxis is X2Axis,
-									pixBase, pixHigh, pixLow, pixOpen,
-									pixClose, halfSize, scaleFactor,
-									( close > open ? risingPen : fallingPen ),
-									( close > open ? tRisingFill : tFallingFill ),
-									( close > open ? tRisingBorder : tFallingBorder ), pt );
+								Draw(g, pane, baseAxis is XAxis || baseAxis is X2Axis,
+								     pixBase, pixHigh, pixLow, pixOpen,
+								     pixClose, halfSize, scaleFactor,
+								     (close > open ? risingPen : fallingPen),
+								     (close > open ? tRisingFill : tFallingFill),
+								     (close > open ? tRisingBorder : tFallingBorder), pt);
 						}
 					}
 				}
@@ -480,6 +476,5 @@ namespace ZedGraph
 		}
 
 		#endregion
-
 	}
 }

@@ -1,38 +1,48 @@
 ﻿using Vixen.IO.Loader;
 using Vixen.Sys;
 
-namespace Vixen.IO.Factory {
-	class LoaderFactory : ILoaderFactory {
-		static private LoaderFactory _instance;
+namespace Vixen.IO.Factory
+{
+	internal class LoaderFactory : ILoaderFactory
+	{
+		private static LoaderFactory _instance;
 
-		private LoaderFactory() {
+		private LoaderFactory()
+		{
 		}
 
-		public static LoaderFactory Instance {
+		public static LoaderFactory Instance
+		{
 			get { return _instance ?? (_instance = new LoaderFactory()); }
 		}
 
-		public IObjectLoader<SystemConfig> CreateSystemConfigLoader() {
+		public IObjectLoader<SystemConfig> CreateSystemConfigLoader()
+		{
 			return new SystemConfigLoader();
 		}
 
-		public IObjectLoader<ModuleStore> CreateModuleStoreLoader() {
+		public IObjectLoader<ModuleStore> CreateModuleStoreLoader()
+		{
 			return new ModuleStoreLoader();
 		}
 
-		public IObjectLoader<SystemContext> CreateSystemContextLoader() {
+		public IObjectLoader<SystemContext> CreateSystemContextLoader()
+		{
 			return new SystemContextLoader();
 		}
 
-		public IObjectLoader<Program> CreateProgramLoader() {
+		public IObjectLoader<Program> CreateProgramLoader()
+		{
 			return new ProgramLoader();
 		}
 
-		public IObjectLoader<ElementNodeTemplate> CreateElementNodeTemplateLoader() {
+		public IObjectLoader<ElementNodeTemplate> CreateElementNodeTemplateLoader()
+		{
 			return new ElementNodeTemplateLoader();
 		}
 
-		public IObjectLoader CreateSequenceLoader() {
+		public IObjectLoader CreateSequenceLoader()
+		{
 			return new SequenceLoader();
 		}
 	}

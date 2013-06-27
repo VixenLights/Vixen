@@ -6,263 +6,195 @@
         xmlns:ViewModels="clr-namespace:VixenModules.Preview.DisplayPreview.ViewModels"
         xmlns:Behaviors1="clr-namespace:VixenModules.Preview.DisplayPreview.Behaviors"
         xmlns:Model1="clr-namespace:VixenModules.Preview.DisplayPreview.Model"
-        xmlns:Shapes1="clr-namespace:VixenModules.Preview.DisplayPreview.Model.Shapes"
-        mc:Ignorable="d"
+        xmlns:Shapes1="clr-namespace:VixenModules.Preview.DisplayPreview.Model.Shapes" mc:Ignorable="d"
         MaxHeight="{Binding Source={x:Static SystemParameters.WorkArea}, Path=Height}"
-        MaxWidth="{Binding Source={x:Static SystemParameters.WorkArea}, Path=Width}"
-        Title="Display Item and Element Editor"
-        SizeToContent="Width"
-		Height="480"
-        d:DataContext="{d:DesignInstance ViewModels:DisplayItemEditorViewModel}">
-    <Window.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Resources/DesignerItem.xaml" />
-                <ResourceDictionary Source="Resources/Shapes.xaml" />
-            </ResourceDictionary.MergedDictionaries>
+        MaxWidth="{Binding Source={x:Static SystemParameters.WorkArea}, Path=Width}" Title="Display Item and Element Editor"
+        SizeToContent="Width" Height="480" d:DataContext="{d:DesignInstance ViewModels:DisplayItemEditorViewModel}">
+	<Window.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="Resources/DesignerItem.xaml" />
+				<ResourceDictionary Source="Resources/Shapes.xaml" />
+			</ResourceDictionary.MergedDictionaries>
 
-            <DataTemplate DataType="{x:Type Model1:NodeLayout}">
-                <ContentControl Content="{Binding Shape}"
-                                Width="{Binding Width}"
-                                Height="{Binding Height}"
-                                ClipToBounds="True"
-                                ToolTip="{Binding NodeName}" />
-            </DataTemplate>
-        </ResourceDictionary>
-    </Window.Resources>
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="250" />
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="Auto" />
-        </Grid.ColumnDefinitions>
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="15*"/>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
-            <GroupBox Header="Available Nodes">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="8*"/>
-                        <RowDefinition/>
-                    </Grid.RowDefinitions>
-                    <TreeView ItemsSource="{Binding NodeSources}"
-                              x:Name="treeview"
-                              HorizontalContentAlignment="Stretch"
-                              VerticalContentAlignment="Stretch"
-							  ScrollViewer.VerticalScrollBarVisibility="Auto">
-                        <TreeView.ItemContainerStyle>
-                            <Style TargetType="{x:Type TreeViewItem}">
-                                <Setter Property="FontWeight"
-                                        Value="Normal" />
-                                <Style.Triggers>
-                                    <Trigger Property="IsSelected"
-                                             Value="True">
-                                        <Setter Property="FontWeight"
-                                                Value="Bold" />
-                                        <Setter Property="Foreground"
-                                                Value="White" />
-                                        <Setter Property="Background"
-                                                Value="Black" />
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TreeView.ItemContainerStyle>
+			<DataTemplate DataType="{x:Type Model1:NodeLayout}">
+				<ContentControl Content="{Binding Shape}" Width="{Binding Width}" Height="{Binding Height}"
+				                ClipToBounds="True" ToolTip="{Binding NodeName}" />
+			</DataTemplate>
+		</ResourceDictionary>
+	</Window.Resources>
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="250" />
+			<ColumnDefinition Width="Auto" />
+			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="Auto" />
+		</Grid.ColumnDefinitions>
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="15*" />
+				<RowDefinition />
+			</Grid.RowDefinitions>
+			<GroupBox Header="Available Nodes">
+				<Grid>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="8*" />
+						<RowDefinition />
+					</Grid.RowDefinitions>
+					<TreeView ItemsSource="{Binding NodeSources}" x:Name="treeview"
+					          HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Auto">
+						<TreeView.ItemContainerStyle>
+							<Style TargetType="{x:Type TreeViewItem}">
+								<Setter Property="FontWeight" Value="Normal" />
+								<Style.Triggers>
+									<Trigger Property="IsSelected" Value="True">
+										<Setter Property="FontWeight" Value="Bold" />
+										<Setter Property="Foreground" Value="White" />
+										<Setter Property="Background" Value="Black" />
+									</Trigger>
+								</Style.Triggers>
+							</Style>
+						</TreeView.ItemContainerStyle>
 
-                        <TreeView.ItemTemplate>
-                            <HierarchicalDataTemplate ItemsSource="{Binding Children}"
-                                                      DataType="{x:Type Model1:NodeSource}">
-                                <Border Background="#01FFFFFF"
-                                        Behaviors1:DragSourceBehaviour.DragSource="{Binding Source}">
-                                    <TextBlock Text="{Binding NodeName}"
-                                               Behaviors1:DragSourceBehaviour.DragSource="{Binding Source}"
-                                               HorizontalAlignment="Stretch" />
-                                </Border>
-                            </HierarchicalDataTemplate>
-                        </TreeView.ItemTemplate>
-                    </TreeView>
-                    <TextBlock Grid.Row="1"
-                               TextWrapping="WrapWithOverflow"
-                               Width="{Binding ElementName=treeview, Path=ActualWidth}"
-							   VerticalAlignment="Bottom">
-                        Drag a node to the Display Item Canvas
-                    </TextBlock>
-                </Grid>
-            </GroupBox>
-            <Button Content="Close"
-                    Click="CloseButtonClick"
-                    Grid.Row="1"
-					MinHeight="20"
-					VerticalAlignment="Bottom"/>
-        </Grid>
-        <GridSplitter Grid.Column="1"
-                      ResizeBehavior="PreviousAndNext"
-                      Width="5"
-                      ResizeDirection="Columns"
-                      HorizontalAlignment="Right" />
-        <Grid Grid.Column="2">
-            <Grid.RowDefinitions>
-				<RowDefinition Height="Auto"/>
-				<RowDefinition/>
-            </Grid.RowDefinitions>
-            <StackPanel Orientation="Horizontal">
-                <ContentControl Content="{Binding DisplayItem}">
-                    <ContentControl.ContentTemplate>
-                        <DataTemplate DataType="{x:Type Model1:DisplayItem}">
-                            <GroupBox Header="Display Item Settings"
-                                      Margin="2"
-                                      Padding="2">
-                                <StackPanel Orientation="Horizontal">
-                                    <GroupBox Header="Name"
-                                              Width="125"
-                                              Padding="2"
-                                              HorizontalContentAlignment="Stretch">
-                                        <TextBox Text="{Binding Name, Mode=TwoWay}" />
-                                    </GroupBox>
-                                    <GroupBox Header="Width"
-                                              Padding="2"
-                                              HorizontalContentAlignment="Stretch">
-                                        <TextBox Text="{Binding Width, Mode=TwoWay}" />
-                                    </GroupBox>
-                                    <GroupBox Header="Height"
-                                              Padding="2"
-                                              HorizontalContentAlignment="Stretch">
-                                        <TextBox Text="{Binding Height, Mode=TwoWay}" />
-                                    </GroupBox>
+						<TreeView.ItemTemplate>
+							<HierarchicalDataTemplate ItemsSource="{Binding Children}"
+							                          DataType="{x:Type Model1:NodeSource}">
+								<Border Background="#01FFFFFF"
+								        Behaviors1:DragSourceBehaviour.DragSource="{Binding Source}">
+									<TextBlock Text="{Binding NodeName}"
+									           Behaviors1:DragSourceBehaviour.DragSource="{Binding Source}" HorizontalAlignment="Stretch" />
+								</Border>
+							</HierarchicalDataTemplate>
+						</TreeView.ItemTemplate>
+					</TreeView>
+					<TextBlock Grid.Row="1" TextWrapping="WrapWithOverflow"
+					           Width="{Binding ElementName=treeview, Path=ActualWidth}" VerticalAlignment="Bottom">
+						Drag a node to the Display Item Canvas
+					</TextBlock>
+				</Grid>
+			</GroupBox>
+			<Button Content="Close" Click="CloseButtonClick" Grid.Row="1" MinHeight="20" VerticalAlignment="Bottom" />
+		</Grid>
+		<GridSplitter Grid.Column="1" ResizeBehavior="PreviousAndNext" Width="5" ResizeDirection="Columns"
+		              HorizontalAlignment="Right" />
+		<Grid Grid.Column="2">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition />
+			</Grid.RowDefinitions>
+			<StackPanel Orientation="Horizontal">
+				<ContentControl Content="{Binding DisplayItem}">
+					<ContentControl.ContentTemplate>
+						<DataTemplate DataType="{x:Type Model1:DisplayItem}">
+							<GroupBox Header="Display Item Settings" Margin="2" Padding="2">
+								<StackPanel Orientation="Horizontal">
+									<GroupBox Header="Name" Width="125" Padding="2"
+									          HorizontalContentAlignment="Stretch">
+										<TextBox Text="{Binding Name, Mode=TwoWay}" />
+									</GroupBox>
+									<GroupBox Header="Width" Padding="2" HorizontalContentAlignment="Stretch">
+										<TextBox Text="{Binding Width, Mode=TwoWay}" />
+									</GroupBox>
+									<GroupBox Header="Height" Padding="2" HorizontalContentAlignment="Stretch">
+										<TextBox Text="{Binding Height, Mode=TwoWay}" />
+									</GroupBox>
 
-                                </StackPanel>
-                            </GroupBox>
-                        </DataTemplate>
-                    </ContentControl.ContentTemplate>
-                </ContentControl>
-                <ContentControl Content="{Binding SelectedNodeLayout}">
-                    <ContentControl.ContentTemplate>
-                        <DataTemplate DataType="{x:Type Model1:NodeLayout}">
-                            <GroupBox Header="Node Settings"
-                                      Margin="2"
-                                      Padding="2">
-                                <StackPanel Orientation="Horizontal">
-                                    <GroupBox Header="Width"
-                                              Padding="2"
-                                              HorizontalContentAlignment="Stretch">
-                                        <TextBox Text="{Binding Width, Mode=TwoWay}" />
-                                    </GroupBox>
-                                    <GroupBox Header="Height"
-                                              Padding="2"
-                                              HorizontalContentAlignment="Stretch">
-                                        <TextBox Text="{Binding Height, Mode=TwoWay}" />
-                                    </GroupBox>
-                                    <GroupBox Header="Shape">
-                                        <ContentControl Content="{Binding Shape}">
-                                            <ContentControl.ContentTemplate>
-                                                <DataTemplate DataType="{x:Type Shapes1:IShape}">
-                                                    <TextBlock VerticalAlignment="Center"
-                                                               Text="{Binding Name}" />
-                                                </DataTemplate>
-                                            </ContentControl.ContentTemplate>
-                                        </ContentControl>
-                                    </GroupBox>
-                                </StackPanel>
-                            </GroupBox>
-                        </DataTemplate>
-                    </ContentControl.ContentTemplate>
-                </ContentControl>
-            </StackPanel>
-            <GroupBox Header="Display Item Canvas"
-                      Grid.Row="1">
-                <ContentControl Content="{Binding DisplayItem}"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Top"
-                                AllowDrop="True">
-                    <ContentControl.ContentTemplate>
-                        <DataTemplate DataType="{x:Type Model1:DisplayItem}">
-                            <Border BorderBrush="Black"
-                                    CornerRadius="5"
-                                    Padding="2"
-                                    BorderThickness="2">
-                                <ListView ItemsSource="{Binding NodeLayouts}"
-                                          SelectionMode="Single"
-                                          Behaviors1:DropTargetBehaviour.DropTarget="{Binding Target}"
-                                          Width="{Binding Width}"
-                                          IsSynchronizedWithCurrentItem="True"
-                                          Height="{Binding Height}"
-                                          ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                                          ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                          Background="Black"
-                                          AllowDrop="True">
-                                    <ListView.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <Canvas ClipToBounds="True"
-                                                    HorizontalAlignment="Left"
-                                                    MaxWidth="{Binding Width}"
-                                                    MaxHeight="{Binding Height}"
-                                                    MinWidth="{Binding Width}"
-                                                    MinHeight="{Binding Height}"
-                                                    Width="{Binding Width}"
-                                                    Height="{Binding Height}">
-                                            </Canvas>
-                                        </ItemsPanelTemplate>
-                                    </ListView.ItemsPanel>
-                                    <ListView.ItemContainerStyle>
-                                        <Style TargetType="ListViewItem"
-                                               BasedOn="{StaticResource DesignerItemStyle}">
-                                            <Setter Property="Canvas.Left"
-                                                    Value="{Binding Path=LeftOffset, Mode=TwoWay}" />
-                                            <Setter Property="Canvas.Top"
-                                                    Value="{Binding Path=TopOffset, Mode=TwoWay}" />
-                                            <Setter Property="Width"
-                                                    Value="{Binding Width, Mode=TwoWay}" />
-                                            <Setter Property="Height"
-                                                    Value="{Binding Height, Mode=TwoWay}" />
-                                        </Style>
-                                    </ListView.ItemContainerStyle>
-                                </ListView>
-                            </Border>
-                        </DataTemplate>
-                    </ContentControl.ContentTemplate>
-                </ContentControl>
-            </GroupBox>
-        </Grid>
-        <ContentControl Content="{Binding}"
-                        Grid.Column="3">
-            <ContentControl.ContentTemplate>
-                <DataTemplate DataType="{x:Type ViewModels:DisplayItemEditorViewModel}">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <GroupBox Header="Nodes in use">
-                            <ListView ItemsSource="{Binding NodeLayouts}"
-                                      SelectionMode="Single"
-                                      IsSynchronizedWithCurrentItem="True"
-                                      SelectedItem="{Binding SelectedNodeLayout}">
-                                <ListView.ItemTemplate>
-                                    <DataTemplate DataType="{x:Type Model1:NodeLayout}">
-                                        <TextBlock Text="{Binding NodeName}" />
-                                    </DataTemplate>
-                                </ListView.ItemTemplate>
-                            </ListView>
+								</StackPanel>
+							</GroupBox>
+						</DataTemplate>
+					</ContentControl.ContentTemplate>
+				</ContentControl>
+				<ContentControl Content="{Binding SelectedNodeLayout}">
+					<ContentControl.ContentTemplate>
+						<DataTemplate DataType="{x:Type Model1:NodeLayout}">
+							<GroupBox Header="Node Settings" Margin="2" Padding="2">
+								<StackPanel Orientation="Horizontal">
+									<GroupBox Header="Width" Padding="2" HorizontalContentAlignment="Stretch">
+										<TextBox Text="{Binding Width, Mode=TwoWay}" />
+									</GroupBox>
+									<GroupBox Header="Height" Padding="2" HorizontalContentAlignment="Stretch">
+										<TextBox Text="{Binding Height, Mode=TwoWay}" />
+									</GroupBox>
+									<GroupBox Header="Shape">
+										<ContentControl Content="{Binding Shape}">
+											<ContentControl.ContentTemplate>
+												<DataTemplate DataType="{x:Type Shapes1:IShape}">
+													<TextBlock VerticalAlignment="Center" Text="{Binding Name}" />
+												</DataTemplate>
+											</ContentControl.ContentTemplate>
+										</ContentControl>
+									</GroupBox>
+								</StackPanel>
+							</GroupBox>
+						</DataTemplate>
+					</ContentControl.ContentTemplate>
+				</ContentControl>
+			</StackPanel>
+			<GroupBox Header="Display Item Canvas" Grid.Row="1">
+				<ContentControl Content="{Binding DisplayItem}" HorizontalAlignment="Left" VerticalAlignment="Top"
+				                AllowDrop="True">
+					<ContentControl.ContentTemplate>
+						<DataTemplate DataType="{x:Type Model1:DisplayItem}">
+							<Border BorderBrush="Black" CornerRadius="5" Padding="2" BorderThickness="2">
+								<ListView ItemsSource="{Binding NodeLayouts}" SelectionMode="Single"
+								          Behaviors1:DropTargetBehaviour.DropTarget="{Binding Target}" Width="{Binding Width}"
+								          IsSynchronizedWithCurrentItem="True" Height="{Binding Height}" ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+								          ScrollViewer.VerticalScrollBarVisibility="Hidden" Background="Black" AllowDrop="True">
+									<ListView.ItemsPanel>
+										<ItemsPanelTemplate>
+											<Canvas ClipToBounds="True" HorizontalAlignment="Left"
+											        MaxWidth="{Binding Width}" MaxHeight="{Binding Height}" MinWidth="{Binding Width}" MinHeight="{Binding Height}"
+											        Width="{Binding Width}" Height="{Binding Height}">
+											</Canvas>
+										</ItemsPanelTemplate>
+									</ListView.ItemsPanel>
+									<ListView.ItemContainerStyle>
+										<Style TargetType="ListViewItem" BasedOn="{StaticResource DesignerItemStyle}">
+											<Setter Property="Canvas.Left"
+											        Value="{Binding Path=LeftOffset, Mode=TwoWay}" />
+											<Setter Property="Canvas.Top" Value="{Binding Path=TopOffset, Mode=TwoWay}" />
+											<Setter Property="Width" Value="{Binding Width, Mode=TwoWay}" />
+											<Setter Property="Height" Value="{Binding Height, Mode=TwoWay}" />
+										</Style>
+									</ListView.ItemContainerStyle>
+								</ListView>
+							</Border>
+						</DataTemplate>
+					</ContentControl.ContentTemplate>
+				</ContentControl>
+			</GroupBox>
+		</Grid>
+		<ContentControl Content="{Binding}" Grid.Column="3">
+			<ContentControl.ContentTemplate>
+				<DataTemplate DataType="{x:Type ViewModels:DisplayItemEditorViewModel}">
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="*" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+						</Grid.RowDefinitions>
+						<GroupBox Header="Nodes in use">
+							<ListView ItemsSource="{Binding NodeLayouts}" SelectionMode="Single"
+							          IsSynchronizedWithCurrentItem="True" SelectedItem="{Binding SelectedNodeLayout}">
+								<ListView.ItemTemplate>
+									<DataTemplate DataType="{x:Type Model1:NodeLayout}">
+										<TextBlock Text="{Binding NodeName}" />
+									</DataTemplate>
+								</ListView.ItemTemplate>
+							</ListView>
 
-                        </GroupBox>
-                        <Button Margin="2"
-                                Grid.Row="1"
-                                Command="{Binding EditNodeCommand}">
-                            Edit Node
-                        </Button>
-                        <Button Margin="2"
-                                Grid.Row="2"
-                                Command="{Binding RemoveNodeCommand}">
-                            Remove Node
-                        </Button>
-                    </Grid>
-                </DataTemplate>
-            </ContentControl.ContentTemplate>
-        </ContentControl>
+						</GroupBox>
+						<Button Margin="2" Grid.Row="1" Command="{Binding EditNodeCommand}">
+							Edit Node
+						</Button>
+						<Button Margin="2" Grid.Row="2" Command="{Binding RemoveNodeCommand}">
+							Remove Node
+						</Button>
+					</Grid>
+				</DataTemplate>
+			</ContentControl.ContentTemplate>
+		</ContentControl>
 
-    </Grid>
+	</Grid>
 
 </Window>

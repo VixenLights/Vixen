@@ -13,18 +13,22 @@ namespace ZedGraph
 		/// Designates the "Time" property will be used
 		/// </summary>
 		Time,
+
 		/// <summary>
 		/// Designates the "Position" property will be used
 		/// </summary>
 		Position,
+
 		/// <summary>
 		/// Designates the Instantaneous Velocity property will be used
 		/// </summary>
 		VelocityInst,
+
 		/// <summary>
 		/// Designates the "Time since start" property will be used
 		/// </summary>
 		TimeDiff,
+
 		/// <summary>
 		/// Designates the Average Velocity property will be used
 		/// </summary>
@@ -36,9 +40,9 @@ namespace ZedGraph
 	/// </summary>
 	public class Sample : System.Object
 	{
-		private DateTime	_time;
-		private double		_position;
-		private double		_velocity;
+		private DateTime _time;
+		private double _position;
+		private double _velocity;
 
 		/// <summary>
 		/// The time of the sample
@@ -48,6 +52,7 @@ namespace ZedGraph
 			get { return _time; }
 			set { _time = value; }
 		}
+
 		/// <summary>
 		/// The position at sample time
 		/// </summary>
@@ -56,6 +61,7 @@ namespace ZedGraph
 			get { return _position; }
 			set { _position = value; }
 		}
+
 		/// <summary>
 		/// The instantaneous velocity at sample time
 		/// </summary>
@@ -76,6 +82,7 @@ namespace ZedGraph
 		/// Determines what data type gets plotted for the X values
 		/// </summary>
 		public SampleType XType;
+
 		/// <summary>
 		/// Determines what data type gets plotted for the Y values
 		/// </summary>
@@ -97,8 +104,8 @@ namespace ZedGraph
 			{
 				PointPair pt = new PointPair();
 				Sample sample = (Sample) list[index];
-				pt.X = GetValue( sample, XType );
-				pt.Y = GetValue( sample, YType );
+				pt.X = GetValue(sample, XType);
+				pt.Y = GetValue(sample, YType);
 				return pt;
 			}
 		}
@@ -117,22 +124,21 @@ namespace ZedGraph
 		/// <param name="sample">The sample instance of interest</param>
 		/// <param name="type">The data type to be extracted from the sample</param>
 		/// <returns>A double value representing the requested data</returns>
-		public double GetValue( Sample sample, SampleType type )
+		public double GetValue(Sample sample, SampleType type)
 		{
-			switch ( type )
-			{
+			switch (type) {
 				case SampleType.Position:
 					return sample.Position;
 				case SampleType.Time:
 					return sample.Time.ToOADate();
 				case SampleType.TimeDiff:
-					return sample.Time.ToOADate() - ( (Sample)list[0] ).Time.ToOADate();
+					return sample.Time.ToOADate() - ((Sample) list[0]).Time.ToOADate();
 				case SampleType.VelocityAvg:
-					double timeDiff = sample.Time.ToOADate() - ( (Sample)list[0] ).Time.ToOADate();
-					if ( timeDiff <= 0 )
+					double timeDiff = sample.Time.ToOADate() - ((Sample) list[0]).Time.ToOADate();
+					if (timeDiff <= 0)
 						return PointPair.Missing;
 					else
-						return ( sample.Position - ( (Sample)list[0] ).Position ) / timeDiff;
+						return (sample.Position - ((Sample) list[0]).Position)/timeDiff;
 				case SampleType.VelocityInst:
 					return sample.Velocity;
 				default:
@@ -145,9 +151,9 @@ namespace ZedGraph
 		/// </summary>
 		/// <param name="sample">The sample to append</param>
 		/// <returns>The ordinal position at which the sample was added</returns>
-		public int Add( Sample sample )
+		public int Add(Sample sample)
 		{
-			return list.Add( sample );
+			return list.Add(sample);
 		}
 
 		// generic Clone: just call the typesafe version
@@ -164,7 +170,7 @@ namespace ZedGraph
 		/// </returns>
 		public SamplePointList Clone()
 		{
-			return new SamplePointList( this );
+			return new SamplePointList(this);
 		}
 
 		/// <summary>
@@ -182,7 +188,7 @@ namespace ZedGraph
 		/// but it does not duplicate the data (it just keeps a reference to the original)
 		/// </summary>
 		/// <param name="rhs">The SamplePointList to be copied</param>
-		public SamplePointList( SamplePointList rhs )
+		public SamplePointList(SamplePointList rhs)
 		{
 			XType = rhs.XType;
 			YType = rhs.YType;
@@ -193,6 +199,5 @@ namespace ZedGraph
 			//foreach ( Sample sample in rhs )
 			//	list.Add( sample );
 		}
-
 	}
 }

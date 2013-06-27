@@ -7,17 +7,22 @@ using Vixen.IO;
 using Vixen.Module.SequenceType;
 using Vixen.Sys;
 
-namespace VixenModules.Sequence.Timed {
-	public class TimedSequenceTypeModule : SequenceTypeModuleInstanceBase {
-		public override ISequence CreateSequence() {
+namespace VixenModules.Sequence.Timed
+{
+	public class TimedSequenceTypeModule : SequenceTypeModuleInstanceBase
+	{
+		public override ISequence CreateSequence()
+		{
 			return new TimedSequence();
 		}
 
-		public override IContentMigrator CreateMigrator() {
+		public override IContentMigrator CreateMigrator()
+		{
 			return new SequenceMigrator();
 		}
 
-		public override ISequenceExecutor CreateExecutor() {
+		public override ISequenceExecutor CreateExecutor()
+		{
 			return new Executor();
 		}
 	}

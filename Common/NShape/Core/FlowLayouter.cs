@@ -17,12 +17,11 @@ using System.Collections.Generic;
 using System.Text;
 using System.Diagnostics;
 using System.Drawing;
-
 using Dataweb.NShape.Advanced;
 
 
-namespace Dataweb.NShape.Layouters {
-
+namespace Dataweb.NShape.Layouters
+{
 	/// <summary>
 	/// Orders the shapes into layers, such that most of the arrows point downwards and if possible also 
 	/// only to the next layer.
@@ -39,49 +38,59 @@ namespace Dataweb.NShape.Layouters {
 	/// Positioning: Positions shapes within one layer such that there connected shapes are nearer.
 	/// These phases are repeated until a stable state or the maximum number of steps is reached.
 	/// </remarks>
-	public class FlowLayouter : LayouterBase, ILayouter {
-
+	public class FlowLayouter : LayouterBase, ILayouter
+	{
 		/// <ToBeCompleted></ToBeCompleted>
-		public enum FlowDirection {
+		public enum FlowDirection
+		{
 			/// <ToBeCompleted></ToBeCompleted>
 			BottomUp,
+
 			/// <ToBeCompleted></ToBeCompleted>
 			LeftToRight,
+
 			/// <ToBeCompleted></ToBeCompleted>
 			TopDown,
+
 			/// <ToBeCompleted></ToBeCompleted>
 			RightToLeft
 		};
 
 		/// <ToBeCompleted></ToBeCompleted>
 		public FlowLayouter(Project project)
-			: base(project) {
+			: base(project)
+		{
 			shapeByXComparer = new ShapeByXComparer(this);
 			shapeByValueComparer = new ShapeByValueComparer();
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public FlowDirection Direction {
+		public FlowDirection Direction
+		{
 			get { return flowDirection; }
 			set { flowDirection = value; }
 		}
 
 
 		/// <summary>Indicates the distance between layers.</summary>
-		public int LayerDistance {
+		public int LayerDistance
+		{
 			get { return layerDistance; }
-			set {
+			set
+			{
 				if (value <= 0) throw new ArgumentException("Layer distance must be greater than zero");
-				layerDistance = value; 
+				layerDistance = value;
 			}
 		}
 
 
 		/// <summary>Indicates the distance between shapes within a layer.</summary>
-		public int RowDistance {
+		public int RowDistance
+		{
 			get { return rowDistance; }
-			set {
+			set
+			{
 				if (value <= 0) throw new ArgumentException("Row distance must be greater than zero");
 				rowDistance = value;
 			}
@@ -89,19 +98,22 @@ namespace Dataweb.NShape.Layouters {
 
 
 		/// <override></override>
-		public override string InvariantName {
+		public override string InvariantName
+		{
 			get { return "Flow"; }
 		}
 
 
 		/// <override></override>
-		public override string Description {
+		public override string Description
+		{
 			get { return "Orders the shapes such that the majority of the arrows points in a given direction."; }
 		}
 
 
 		/// <override></override>
-		public override void Prepare() {
+		public override void Prepare()
+		{
 			base.Prepare();
 			PrepareLayering();
 			phase = Phase.OptimizeLevels;
@@ -109,14 +121,16 @@ namespace Dataweb.NShape.Layouters {
 
 
 		/// <override></override>
-		public override void Unprepare() {
+		public override void Unprepare()
+		{
 			foreach (Shape s in selectedShapes)
 				s.InternalTag = null;
 		}
 
 
 		/// <override></override>
-		protected override bool ExecuteStepCore() {
+		protected override bool ExecuteStepCore()
+		{
 			bool result = true;
 			switch (phase) {
 				case Phase.OptimizeLevels:
@@ -144,40 +158,41 @@ namespace Dataweb.NShape.Layouters {
 
 		// Calculates the fields firstLayerPos, layerDistance, layerCount and initially assigns shapes 
 		// to layers.
-		private void PrepareLayering() {
+		private void PrepareLayering()
+		{
 			Rectangle layoutRect = CalcLayoutArea();
 			switch (flowDirection) {
 				case FlowDirection.TopDown:
 					firstLayerPos = layoutRect.Top;
-					layerCount = layoutRect.Height / layerDistance;
+					layerCount = layoutRect.Height/layerDistance;
 					break;
 				case FlowDirection.LeftToRight:
 					firstLayerPos = layoutRect.Left;
-					layerCount = layoutRect.Width / layerDistance;
+					layerCount = layoutRect.Width/layerDistance;
 					break;
 				case FlowDirection.BottomUp:
 					firstLayerPos = -layoutRect.Bottom;
-					layerCount = layoutRect.Height / layerDistance;
+					layerCount = layoutRect.Height/layerDistance;
 					break;
 				case FlowDirection.RightToLeft:
 					firstLayerPos = -layoutRect.Right;
-					layerCount = layoutRect.Width / layerDistance;
+					layerCount = layoutRect.Width/layerDistance;
 					break;
 				default:
 					Debug.Fail("Unexpected flow direction in PrepareLayering");
 					break;
 			}
-			disturbanceLevel = layerCount / 2;
+			disturbanceLevel = layerCount/2;
 			disturbanceCount = 0;
 			// Now assign initial layers
 			foreach (Shape s in selectedShapes) {
 				s.InternalTag = new LayerInfo();
 				int fy = GetFlowY(s);
-				int layerIndex = (fy - firstLayerPos + layerDistance / 2) / layerDistance;
+				int layerIndex = (fy - firstLayerPos + layerDistance/2)/layerDistance;
 				Debug.Assert(layerIndex >= 0);
-				((LayerInfo)s.InternalTag).layer = layerIndex;
+				((LayerInfo) s.InternalTag).layer = layerIndex;
 				if (layerIndex >= layerCount) layerCount = layerIndex + 1;
-				MoveShapeFlowY(s, firstLayerPos + ((LayerInfo)s.InternalTag).layer * layerDistance);
+				MoveShapeFlowY(s, firstLayerPos + ((LayerInfo) s.InternalTag).layer*layerDistance);
 			}
 			// All direct neighbors of the selected shapes need a layer info too
 			foreach (Shape s in selectedShapes) {
@@ -185,9 +200,9 @@ namespace Dataweb.NShape.Layouters {
 					if (os.InternalTag == null) {
 						os.InternalTag = new LayerInfo();
 						int fy = GetFlowY(s);
-						int layerIndex = (fy - firstLayerPos + layerDistance / 2) / layerDistance;
+						int layerIndex = (fy - firstLayerPos + layerDistance/2)/layerDistance;
 						Debug.Assert(layerIndex >= 0);
-						((LayerInfo)s.InternalTag).layer = layerIndex;
+						((LayerInfo) s.InternalTag).layer = layerIndex;
 						if (layerIndex >= layerCount) layerCount = layerIndex + 1;
 					}
 			}
@@ -198,7 +213,8 @@ namespace Dataweb.NShape.Layouters {
 		/// Uses gradient descent to distribute shapes over the layers in the best way.
 		/// </summary>
 		/// <returns>True, if the at least one shape has been moved from a layer to another.</returns>
-		private bool ImproveShapeDistribution() {
+		private bool ImproveShapeDistribution()
+		{
 			bool result = false;
 			foreach (Shape s in selectedShapes) {
 				if (ExcludeFromFitting(s)) continue;
@@ -210,7 +226,8 @@ namespace Dataweb.NShape.Layouters {
 				if (ovdu < ovb && ovdu < ovdd) {
 					MoveShapeLayerFlow(s, -1);
 					result = true;
-				} else if (ovdd < ovb && ovdd < ovdu) {
+				}
+				else if (ovdd < ovb && ovdd < ovdu) {
 					MoveShapeLayerFlow(s, +1);
 					result = true;
 				}
@@ -223,9 +240,10 @@ namespace Dataweb.NShape.Layouters {
 		/// <summary>
 		/// Returns true, if a move could be performed.
 		/// </summary>
-		private bool PerformRandomMove() {
+		private bool PerformRandomMove()
+		{
 			bool result;
-			if (disturbanceLevel > 0) { 
+			if (disturbanceLevel > 0) {
 				// Determine the number of layers (+1..+maximumLayerDelta)
 				int layerDelta = random.Next(disturbanceLevel) + 1;
 				// Determine the sign of the move
@@ -236,29 +254,31 @@ namespace Dataweb.NShape.Layouters {
 					shape = selectedShapes[random.Next(selectedShapes.Count)];
 				} while (ExcludeFromFitting(shape));
 				// Check it is not moved out of the current layers.
-				int shapeLayer = ((LayerInfo)shape.InternalTag).layer;
+				int shapeLayer = ((LayerInfo) shape.InternalTag).layer;
 				if (shapeLayer + layerDelta < 0) layerDelta = -shapeLayer;
 				else if (shapeLayer + layerDelta >= layerCount) layerDelta = layerCount - 1 - shapeLayer;
 				MoveShapeLayerFlow(shape, layerDelta);
 				// We perform a disturbance for every four shapes before we reduce the disturbance level.
 				++disturbanceCount;
-				if (disturbanceCount > selectedShapes.Count / 4) {
+				if (disturbanceCount > selectedShapes.Count/4) {
 					--disturbanceLevel;
 					disturbanceCount = 0;
 				}
 				result = true;
-			} else result = false;
+			}
+			else result = false;
 			return result;
 		}
 
 
 		// Creates the data structures for the layout on layer level and already sorts the top layer.
-		private void PrepareOrdering() {
+		private void PrepareOrdering()
+		{
 			layers.Clear();
 			foreach (Shape s in selectedShapes) {
 				if (ExcludeFromFitting(s)) continue;
 
-				int li = ((LayerInfo)s.InternalTag).layer;
+				int li = ((LayerInfo) s.InternalTag).layer;
 				while (layers.Count <= li)
 					layers.Add(new List<Shape>());
 				int i = layers[li].BinarySearch(s, shapeByXComparer);
@@ -274,10 +294,11 @@ namespace Dataweb.NShape.Layouters {
 
 
 		// Uses Sugiyamas idea of barycenters to sort shapes within the layer such that crossings are minimized.
-		private bool OrderShapesWithinLayers() {
+		private bool OrderShapesWithinLayers()
+		{
 			// Do nothing if there is only one layer.
 			if (currentLayer >= layers.Count) return false;
-			int layerDelta = positioningRun % 2 == 0 ? -1 : +1;
+			int layerDelta = positioningRun%2 == 0 ? -1 : +1;
 			// Calculate the barycenter for the current layer. The barycenter is defined here as the average 
 			// index of connected shapes. If a shape has no connection to the other layer, its barycenter is 
 			// set to the joker value -1.
@@ -285,31 +306,33 @@ namespace Dataweb.NShape.Layouters {
 				int bc = 0;
 				int n = 0;
 				foreach (Shape s in GetConnectedShapes(shape, Orientation.None)) {
-					if (((LayerInfo)s.InternalTag).layer != currentLayer + layerDelta) continue;
+					if (((LayerInfo) s.InternalTag).layer != currentLayer + layerDelta) continue;
 					++n;
 					bc += layers[currentLayer + layerDelta].IndexOf(s) + 1;
 				}
-				if (n == 0) ((LayerInfo)shape.InternalTag).value = -1;
-				else ((LayerInfo)shape.InternalTag).value = (float)bc / n;
+				if (n == 0) ((LayerInfo) shape.InternalTag).value = -1;
+				else ((LayerInfo) shape.InternalTag).value = (float) bc/n;
 			}
 			// Sort shapes after ascending barycenter values. In order to not move well positioned shapes 
 			// unnecessarily, we insert the shapes geometrically.
 			float mbc = 0; // Maximum barycenter
 			for (int i = 0; i < layers[currentLayer].Count; ++i) {
 				Shape shape = layers[currentLayer][i];
-				if (((LayerInfo)shape.InternalTag).value < 0) {
+				if (((LayerInfo) shape.InternalTag).value < 0) {
 					// Its a joker, set to fitting value.
-					((LayerInfo)shape.InternalTag).value = mbc;
-				} else if (((LayerInfo)shape.InternalTag).value < mbc) {
+					((LayerInfo) shape.InternalTag).value = mbc;
+				}
+				else if (((LayerInfo) shape.InternalTag).value < mbc) {
 					// Sorted in the wrong order
 					int index = layers[currentLayer].BinarySearch(0, i, shape, shapeByValueComparer);
 					if (index < 0) index = ~index;
 					layers[currentLayer].Remove(shape);
 					layers[currentLayer].Insert(index, shape);
 					if (index == 0) MoveShapeFlowX(shape, GetFlowX(layers[currentLayer][0]) - 10);
-					else MoveShapeFlowX(shape, (GetFlowX(layers[currentLayer][index - 1]) + GetFlowX(layers[currentLayer][index])) / 2);
-				} else {
-					mbc = ((LayerInfo)shape.InternalTag).value;
+					else MoveShapeFlowX(shape, (GetFlowX(layers[currentLayer][index - 1]) + GetFlowX(layers[currentLayer][index]))/2);
+				}
+				else {
+					mbc = ((LayerInfo) shape.InternalTag).value;
 				}
 			}
 			// Determine next layer to process
@@ -319,7 +342,8 @@ namespace Dataweb.NShape.Layouters {
 					++positioningRun;
 					currentLayer = layers.Count - 2;
 				}
-			} else {
+			}
+			else {
 				--currentLayer;
 				if (currentLayer < 0) {
 					++positioningRun;
@@ -334,13 +358,14 @@ namespace Dataweb.NShape.Layouters {
 		// During positioning we assume that the row index corresponds directly to the shape index
 		// through rowIdx == leastRowIdx + shapeIdx. This method ensures this constraint.
 		// The order of shapes within the layer is not changed.
-		private void PreparePositioning() {
+		private void PreparePositioning()
+		{
 			// First find the least row index. At the end rowIdx == leastRowIdx + shapeIdx will be valid for all shapes.
 			int leastRowIdx = int.MaxValue;
 			for (int layerIdx = 0; layerIdx < layers.Count; ++layerIdx) {
 				for (int shapeIdx = 0; shapeIdx < layers[layerIdx].Count; ++shapeIdx) {
 					Shape shape = layers[layerIdx][shapeIdx];
-					int rowIdx = (GetFlowX(shape) - firstRowPos + rowDistance / 2) / rowDistance;
+					int rowIdx = (GetFlowX(shape) - firstRowPos + rowDistance/2)/rowDistance;
 					if (rowIdx < leastRowIdx) leastRowIdx = rowIdx;
 				}
 			}
@@ -349,7 +374,7 @@ namespace Dataweb.NShape.Layouters {
 			for (int layerIdx = 0; layerIdx < layers.Count; ++layerIdx) {
 				if (layers[layerIdx].Count <= 0) continue;
 				Shape firstShape = layers[layerIdx][0];
-				int firstRowIdx = (GetFlowX(firstShape) - firstRowPos + rowDistance / 2) / rowDistance;
+				int firstRowIdx = (GetFlowX(firstShape) - firstRowPos + rowDistance/2)/rowDistance;
 				for (int j = 0; j < firstRowIdx - leastRowIdx; ++j)
 					layers[layerIdx].Insert(0, null);
 				// All shapes in the layer have to be aligned to the row distance
@@ -357,13 +382,14 @@ namespace Dataweb.NShape.Layouters {
 				for (int shapeIdx = 0; shapeIdx < layers[layerIdx].Count; ++shapeIdx) {
 					Shape shape = layers[layerIdx][shapeIdx];
 					if (shape == null) continue;
-					int rowIdx = (GetFlowX(shape) - firstRowPos + rowDistance / 2) / rowDistance;
+					int rowIdx = (GetFlowX(shape) - firstRowPos + rowDistance/2)/rowDistance;
 					// If the natural row index is alreay occupied we assign the next free row index.
 					if (rowIdx < nextFreeRowIdx) {
 						rowIdx = nextFreeRowIdx;
 						++nextFreeRowIdx;
-					} else nextFreeRowIdx = rowIdx + 1;
-					MoveShapeFlowX(shape, firstRowPos + rowIdx * rowDistance);
+					}
+					else nextFreeRowIdx = rowIdx + 1;
+					MoveShapeFlowX(shape, firstRowPos + rowIdx*rowDistance);
 				}
 			}
 			// First positioning is in layer 1 with respect to layer 0.
@@ -378,11 +404,12 @@ namespace Dataweb.NShape.Layouters {
 		/// are small.
 		/// </summary>
 		/// <returns></returns>
-		private bool PositionShapesWithinLayers() {
+		private bool PositionShapesWithinLayers()
+		{
 			// If there is only one layer, nothing to do.
 			if (currentLayer >= layers.Count) return false;
 			//
-			int layerDelta = positioningRun % 2 == 0 ? -1 : +1;
+			int layerDelta = positioningRun%2 == 0 ? -1 : +1;
 			List<Shape> shapeList = layers[currentLayer];
 			// Loop from left to right and move shapes to the correct place if possible.
 			for (int si = 0; si < shapeList.Count; ++si) {
@@ -390,13 +417,13 @@ namespace Dataweb.NShape.Layouters {
 				int m = 0;
 				int n = 0;
 				foreach (Shape s in GetConnectedShapes(shapeList[si], Orientation.None)) {
-					if (((LayerInfo)s.InternalTag).layer != currentLayer + layerDelta) continue;
+					if (((LayerInfo) s.InternalTag).layer != currentLayer + layerDelta) continue;
 					// Make sure to perform integer division in the positive numbers, otherwise it is rounded towards 0.
 					m += (GetFlowX(s) - firstRowPos)/rowDistance - (GetFlowX(shapeList[si]) - firstRowPos)/rowDistance;
 					++n;
 				}
 				// Move the shape if there is a free row.
-				if (n > 0 && m / n != 0) TryMoveShapeRow(shapeList, si, m / n, false);
+				if (n > 0 && m/n != 0) TryMoveShapeRow(shapeList, si, m/n, false);
 			}
 			// Determine next layer to process
 			if (layerDelta < 0) {
@@ -405,7 +432,8 @@ namespace Dataweb.NShape.Layouters {
 					++positioningRun;
 					currentLayer = layers.Count - 2;
 				}
-			} else {
+			}
+			else {
 				--currentLayer;
 				if (currentLayer < 0) {
 					++positioningRun;
@@ -418,48 +446,84 @@ namespace Dataweb.NShape.Layouters {
 
 
 		// Returns the shape's coordinate orthogonal to the flow (called to the right)
-		private int GetFlowX(Shape s) {
+		private int GetFlowX(Shape s)
+		{
 			switch (flowDirection) {
-				case FlowDirection.TopDown: return s.X;
-				case FlowDirection.LeftToRight: return -s.Y;
-				case FlowDirection.BottomUp: return -s.X;
-				case FlowDirection.RightToLeft: return s.Y;
-				default: Debug.Fail("Unexpected flow direction"); return 0;
+				case FlowDirection.TopDown:
+					return s.X;
+				case FlowDirection.LeftToRight:
+					return -s.Y;
+				case FlowDirection.BottomUp:
+					return -s.X;
+				case FlowDirection.RightToLeft:
+					return s.Y;
+				default:
+					Debug.Fail("Unexpected flow direction");
+					return 0;
 			}
 		}
 
 
 		// Returns the coordinate in the direction of the flow (called downwards)
-		private int GetFlowY(Shape s) {
+		private int GetFlowY(Shape s)
+		{
 			switch (flowDirection) {
-				case FlowDirection.TopDown: return s.Y;
-				case FlowDirection.LeftToRight: return s.X;
-				case FlowDirection.BottomUp: return -s.Y;
-				case FlowDirection.RightToLeft: return -s.X;
-				default: Debug.Fail("Unexpected flow direction"); return 0;
+				case FlowDirection.TopDown:
+					return s.Y;
+				case FlowDirection.LeftToRight:
+					return s.X;
+				case FlowDirection.BottomUp:
+					return -s.Y;
+				case FlowDirection.RightToLeft:
+					return -s.X;
+				default:
+					Debug.Fail("Unexpected flow direction");
+					return 0;
 			}
 		}
 
 
 		// Moves the shape in the direction orthogonal to the flow (called to the right)
-		private void MoveShapeFlowX(Shape shape, int x) {
+		private void MoveShapeFlowX(Shape shape, int x)
+		{
 			switch (flowDirection) {
-				case FlowDirection.TopDown: shape.X = x; break;
-				case FlowDirection.LeftToRight: shape.Y = -x; break;
-				case FlowDirection.BottomUp: shape.X = -x; break;
-				case FlowDirection.RightToLeft: shape.Y = x; break;
-				default: Debug.Fail("Unexpected flow direction"); break;
+				case FlowDirection.TopDown:
+					shape.X = x;
+					break;
+				case FlowDirection.LeftToRight:
+					shape.Y = -x;
+					break;
+				case FlowDirection.BottomUp:
+					shape.X = -x;
+					break;
+				case FlowDirection.RightToLeft:
+					shape.Y = x;
+					break;
+				default:
+					Debug.Fail("Unexpected flow direction");
+					break;
 			}
 		}
 
 
-		private void MoveShapeFlowY(Shape shape, int y) {
+		private void MoveShapeFlowY(Shape shape, int y)
+		{
 			switch (flowDirection) {
-				case FlowDirection.TopDown: shape.Y = y; break;
-				case FlowDirection.LeftToRight: shape.X = y; break;
-				case FlowDirection.BottomUp: shape.Y = -y; break;
-				case FlowDirection.RightToLeft: shape.X = -y; break;
-				default: Debug.Fail("Unexpected flow direction"); break;
+				case FlowDirection.TopDown:
+					shape.Y = y;
+					break;
+				case FlowDirection.LeftToRight:
+					shape.X = y;
+					break;
+				case FlowDirection.BottomUp:
+					shape.Y = -y;
+					break;
+				case FlowDirection.RightToLeft:
+					shape.X = -y;
+					break;
+				default:
+					Debug.Fail("Unexpected flow direction");
+					break;
 			}
 		}
 
@@ -469,22 +533,24 @@ namespace Dataweb.NShape.Layouters {
 		/// </summary>
 		/// <param name="shape">shape to move</param>
 		/// <param name="layerDelta">number of layers to move in flow direction, negative to move "upwards"</param>
-		private void MoveShapeLayerFlow(Shape shape, int layerDelta) {
+		private void MoveShapeLayerFlow(Shape shape, int layerDelta)
+		{
 			// Do we need a new layer
-			if (((LayerInfo)shape.InternalTag).layer + layerDelta < 0)
+			if (((LayerInfo) shape.InternalTag).layer + layerDelta < 0)
 				InsertLayer(0);
-			else if (((LayerInfo)shape.InternalTag).layer + layerDelta >= layerCount)
+			else if (((LayerInfo) shape.InternalTag).layer + layerDelta >= layerCount)
 				InsertLayer(layerCount);
 			// Move shape to its new layer
-			((LayerInfo)shape.InternalTag).layer += layerDelta;
-			MoveShapeFlowY(shape, firstLayerPos + ((LayerInfo)shape.InternalTag).layer * layerDistance);
+			((LayerInfo) shape.InternalTag).layer += layerDelta;
+			MoveShapeFlowY(shape, firstLayerPos + ((LayerInfo) shape.InternalTag).layer*layerDistance);
 		}
 
 
 		/// <summary>
 		/// Used to attach layer information to a shape (via InternalTag)
 		/// </summary>
-		private class LayerInfo {
+		private class LayerInfo
+		{
 			// Index of the layer (starting at 0)
 			public int layer;
 			// Current value. When sorting Bary center.
@@ -495,7 +561,8 @@ namespace Dataweb.NShape.Layouters {
 		/// <summary>
 		/// Returns all shapes that have an arrow from or to this shape.
 		/// </summary>
-		private IEnumerable<Shape> GetConnectedShapes(Shape shape, Orientation orientation) {
+		private IEnumerable<Shape> GetConnectedShapes(Shape shape, Orientation orientation)
+		{
 			foreach (ShapeConnectionInfo sci in shape.GetConnectionInfos(ControlPointId.Reference, null)) {
 				if (!(sci.OtherShape is LineShapeBase)) continue;
 				Orientation arrowOrientation;
@@ -503,10 +570,12 @@ namespace Dataweb.NShape.Layouters {
 				if (sci.OtherPointId == ControlPointId.FirstVertex) {
 					arrowOrientation = Orientation.Outgoing;
 					arrowEndId = ControlPointId.LastVertex;
-				} else if (sci.OtherPointId == ControlPointId.LastVertex) {
+				}
+				else if (sci.OtherPointId == ControlPointId.LastVertex) {
 					arrowOrientation = Orientation.Incoming;
 					arrowEndId = ControlPointId.FirstVertex;
-				} else continue;
+				}
+				else continue;
 				if (orientation == Orientation.None || arrowOrientation == orientation) {
 					foreach (ShapeConnectionInfo aci in sci.OtherShape.GetConnectionInfos(arrowEndId, null)) {
 						if (aci.OtherShape != null)
@@ -519,7 +588,8 @@ namespace Dataweb.NShape.Layouters {
 
 		// Tries to move the shape from index by delta rows. In this task existing shapes may be pushed 
 		// together. The function does that as far as possible and returns the number of performed moves.
-		private int TryMoveShapeRow(List<Shape> shapeList, int index, int delta, bool allowPushing) {
+		private int TryMoveShapeRow(List<Shape> shapeList, int index, int delta, bool allowPushing)
+		{
 			int newIndex = index;
 			while (shapeList.Count <= index + delta) shapeList.Add(null);
 			// 
@@ -535,7 +605,7 @@ namespace Dataweb.NShape.Layouters {
 			if (newIndex != index) {
 				shapeList[newIndex] = shapeList[index];
 				shapeList[index] = null;
-				MoveShapeFlowX(shapeList[newIndex], GetFlowX(shapeList[newIndex]) + (newIndex - index) * rowDistance);
+				MoveShapeFlowX(shapeList[newIndex], GetFlowX(shapeList[newIndex]) + (newIndex - index)*rowDistance);
 			}
 			return newIndex - index;
 		}
@@ -544,11 +614,12 @@ namespace Dataweb.NShape.Layouters {
 		/// <summary>
 		/// Inserts a layer before the indicated one.
 		/// </summary>
-		private void InsertLayer(int layerIndex) {
+		private void InsertLayer(int layerIndex)
+		{
 			foreach (Shape s in selectedShapes) {
 				if (ExcludeFromFitting(s)) continue;
-				if (((LayerInfo)s.InternalTag).layer >= layerIndex) {
-					++((LayerInfo)s.InternalTag).layer;
+				if (((LayerInfo) s.InternalTag).layer >= layerIndex) {
+					++((LayerInfo) s.InternalTag).layer;
 				}
 			}
 			// Currently we only insert layers at the top and at the bottom.
@@ -557,14 +628,16 @@ namespace Dataweb.NShape.Layouters {
 		}
 
 
-		private class ShapeByXComparer : IComparer<Shape> {
-
-			public ShapeByXComparer(FlowLayouter flowLayouter) {
+		private class ShapeByXComparer : IComparer<Shape>
+		{
+			public ShapeByXComparer(FlowLayouter flowLayouter)
+			{
 				this.flowLayouter = flowLayouter;
 			}
 
 
-			public int Compare(Shape s1, Shape s2) {
+			public int Compare(Shape s1, Shape s2)
+			{
 				int x1 = flowLayouter.GetFlowX(s1);
 				int x2 = flowLayouter.GetFlowX(s2);
 				return x1 > x2 ? +1 : x2 > x1 ? -1 : 0;
@@ -575,18 +648,23 @@ namespace Dataweb.NShape.Layouters {
 		}
 
 
-		private class ShapeByValueComparer : IComparer<Shape> {
-
-			public int Compare(Shape s1, Shape s2) {
-				float v1 = ((LayerInfo)s1.InternalTag).value;
-				float v2 = ((LayerInfo)s2.InternalTag).value;
+		private class ShapeByValueComparer : IComparer<Shape>
+		{
+			public int Compare(Shape s1, Shape s2)
+			{
+				float v1 = ((LayerInfo) s1.InternalTag).value;
+				float v2 = ((LayerInfo) s2.InternalTag).value;
 				return v1 > v2 ? +1 : v2 > v1 ? -1 : 0;
 			}
-
 		}
 
 
-		private enum Phase { OptimizeLevels, Ordering, Positioning };
+		private enum Phase
+		{
+			OptimizeLevels,
+			Ordering,
+			Positioning
+		};
 
 
 		/// <summary>
@@ -602,29 +680,31 @@ namespace Dataweb.NShape.Layouters {
 		/// - Bidirectional arrow on same level: 0 points
 		/// - Bidirectional arrow up or down multiple levels: 1 point for each level
 		/// </remarks>
-		private float CalcOptimizationValue(Shape shape, int layerDelta) {
+		private float CalcOptimizationValue(Shape shape, int layerDelta)
+		{
 			float result = 0;
-			int shapeLayer = ((LayerInfo)shape.InternalTag).layer + layerDelta;
+			int shapeLayer = ((LayerInfo) shape.InternalTag).layer + layerDelta;
 			//
 			// Loop through outgoing arrows and count points
 			foreach (Shape targetShape in GetConnectedShapes(shape, Orientation.Outgoing)) {
-				result += CalcDirectedArrowPenalty(shapeLayer, ((LayerInfo)targetShape.InternalTag).layer);
+				result += CalcDirectedArrowPenalty(shapeLayer, ((LayerInfo) targetShape.InternalTag).layer);
 			}
 			// Loop through bidirectional arrows and count points
 			foreach (Shape otherShape in GetConnectedShapes(shape, Orientation.Both)) {
-				int sourceLayer = ((LayerInfo)shape.InternalTag).layer;
-				int targetLayer = ((LayerInfo)otherShape.InternalTag).layer;
+				int sourceLayer = ((LayerInfo) shape.InternalTag).layer;
+				int targetLayer = ((LayerInfo) otherShape.InternalTag).layer;
 				result += Math.Abs(targetLayer - shapeLayer);
 			}
 			// Loop through incoming arrows and count points
 			foreach (Shape sourceShape in GetConnectedShapes(shape, Orientation.Incoming)) {
-				result += CalcDirectedArrowPenalty(((LayerInfo)sourceShape.InternalTag).layer, shapeLayer);
+				result += CalcDirectedArrowPenalty(((LayerInfo) sourceShape.InternalTag).layer, shapeLayer);
 			}
 			return result;
 		}
 
 
-		private float CalcDirectedArrowPenalty(int sourceLayer, int targetLayer) {
+		private float CalcDirectedArrowPenalty(int sourceLayer, int targetLayer)
+		{
 			const float penaltyOneLevelUp = 3.0f;
 			const float penaltyMoreLevelUp = 1.0f;
 			const float penaltyMoreLevelDown = 1.0f;
@@ -632,16 +712,22 @@ namespace Dataweb.NShape.Layouters {
 			//
 			float result = 0;
 			if (targetLayer < sourceLayer)
-				result += penaltyOneLevelUp + penaltyMoreLevelUp * (sourceLayer - targetLayer - 1);
+				result += penaltyOneLevelUp + penaltyMoreLevelUp*(sourceLayer - targetLayer - 1);
 			else if (targetLayer == sourceLayer)
 				result += penaltySameLevel;
 			else
-				result += penaltyMoreLevelDown * (targetLayer - sourceLayer - 1);
+				result += penaltyMoreLevelDown*(targetLayer - sourceLayer - 1);
 			return result;
 		}
 
 
-		private enum Orientation { None, Incoming, Outgoing, Both };
+		private enum Orientation
+		{
+			None,
+			Incoming,
+			Outgoing,
+			Both
+		};
 
 		private ShapeByXComparer shapeByXComparer;
 		private ShapeByValueComparer shapeByValueComparer;
@@ -687,8 +773,7 @@ namespace Dataweb.NShape.Layouters {
 		// Number of disturbances already performed on the current level.
 		private int disturbanceCount = 0;
 
-		List<List<Shape>> layers = new List<List<Shape>>();
-		List<Shape> layerShapes = new List<Shape>();
+		private List<List<Shape>> layers = new List<List<Shape>>();
+		private List<Shape> layerShapes = new List<Shape>();
 	}
-
 }

@@ -22,9 +22,10 @@ using System.Collections;
 using System.Text;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
-
-#if ( !DOTNET1 )	// Is this a .Net 2 compilation?
+#if ( !DOTNET1 )
+	// Is this a .Net 2 compilation?
 using System.Collections.Generic;
+
 #endif
 
 namespace ZedGraph
@@ -38,8 +39,7 @@ namespace ZedGraph
 	/// </summary>
 	public class PointPairCV : PointPair
 	{
-
-	#region Properties
+		#region Properties
 
 		/// <summary>
 		/// This is a user value that can be anything.  It is used to provide special 
@@ -47,9 +47,9 @@ namespace ZedGraph
 		/// </summary>
 		private double _colorValue;
 
-	#endregion
+		#endregion
 
-	#region Constructors
+		#region Constructors
 
 		/// <summary>
 		/// Creates a point pair with the specified X, Y, and base value.
@@ -57,14 +57,14 @@ namespace ZedGraph
 		/// <param name="x">This pair's x coordinate.</param>
 		/// <param name="y">This pair's y coordinate.</param>
 		/// <param name="z">This pair's z or lower dependent coordinate.</param>
-		public PointPairCV( double x, double y, double z )
-			: base( x, y, z, null )
+		public PointPairCV(double x, double y, double z)
+			: base(x, y, z, null)
 		{
 		}
 
-	#endregion
+		#endregion
 
-	#region Serialization
+		#region Serialization
 
 		/// <summary>
 		/// Current schema value that defines the version of the serialized file
@@ -78,14 +78,14 @@ namespace ZedGraph
 		/// </param>
 		/// <param name="context">A <see cref="StreamingContext"/> instance that contains the serialized data
 		/// </param>
-		protected PointPairCV( SerializationInfo info, StreamingContext context )
-			: base( info, context )
+		protected PointPairCV(SerializationInfo info, StreamingContext context)
+			: base(info, context)
 		{
 			// The schema value is just a file version parameter.  You can use it to make future versions
 			// backwards compatible as new member variables are added to classes
-			int sch = info.GetInt32( "schema3" );
+			int sch = info.GetInt32("schema3");
 
-			ColorValue = info.GetDouble( "ColorValue" );
+			ColorValue = info.GetDouble("ColorValue");
 		}
 
 		/// <summary>
@@ -93,30 +93,28 @@ namespace ZedGraph
 		/// </summary>
 		/// <param name="info">A <see cref="SerializationInfo"/> instance that defines the serialized data</param>
 		/// <param name="context">A <see cref="StreamingContext"/> instance that contains the serialized data</param>
-		[SecurityPermissionAttribute( SecurityAction.Demand, SerializationFormatter = true )]
-		public override void GetObjectData( SerializationInfo info, StreamingContext context )
+		[SecurityPermissionAttribute(SecurityAction.Demand, SerializationFormatter = true)]
+		public override void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
-			base.GetObjectData( info, context );
-			info.AddValue( "schema3", schema2 );
-			info.AddValue( "ColorValue", ColorValue );
+			base.GetObjectData(info, context);
+			info.AddValue("schema3", schema2);
+			info.AddValue("ColorValue", ColorValue);
 		}
 
-	#endregion
+		#endregion
 
-
-	#region Properties
+		#region Properties
 
 		/// <summary>
 		/// The ColorValue property.  This is used with the
 		/// <see cref="FillType.GradientByColorValue" /> option.
 		/// </summary>
-		override public double ColorValue
+		public override double ColorValue
 		{
 			get { return _colorValue; }
 			set { _colorValue = value; }
 		}
 
-	#endregion
-
+		#endregion
 	}
 }

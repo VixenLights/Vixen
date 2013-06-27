@@ -1,17 +1,22 @@
 ﻿using Vixen.IO.Xml;
 
-namespace Vixen.IO.Factory {
-	class FileReaderFactory : IFileReaderFactory {
-		static private FileReaderFactory _instance;
+namespace Vixen.IO.Factory
+{
+	internal class FileReaderFactory : IFileReaderFactory
+	{
+		private static FileReaderFactory _instance;
 
-		private FileReaderFactory() {
+		private FileReaderFactory()
+		{
 		}
 
-		public static FileReaderFactory Instance {
+		public static FileReaderFactory Instance
+		{
 			get { return _instance ?? (_instance = new FileReaderFactory()); }
 		}
 
-		public IFileReader CreateFileReader() {
+		public IFileReader CreateFileReader()
+		{
 			return new XElementFileReader();
 		}
 	}

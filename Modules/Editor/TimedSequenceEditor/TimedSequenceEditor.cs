@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
-	class TimedSequenceEditor : EditorModuleInstanceBase
+	internal class TimedSequenceEditor : EditorModuleInstanceBase
 	{
 	}
 }

@@ -3,61 +3,75 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Collections.Concurrent;
 
-namespace Vixen.Sys {
-	public class EffectIntents : ConcurrentDictionary<Guid, IntentNodeCollection> {
-		public EffectIntents() {
+namespace Vixen.Sys
+{
+	public class EffectIntents : ConcurrentDictionary<Guid, IntentNodeCollection>
+	{
+		public EffectIntents()
+		{
 		}
 
 		public EffectIntents(IDictionary<Guid, IntentNodeCollection> data)
-			: base(data) {
+			: base(data)
+		{
 		}
 
-		public IEnumerable<Guid> ElementIds {
+		public IEnumerable<Guid> ElementIds
+		{
 			get { return Keys; }
 		}
 
-		public IntentNodeCollection GetIntentNodesForElement(Guid elementId) {
+		public IntentNodeCollection GetIntentNodesForElement(Guid elementId)
+		{
 			IntentNodeCollection intentNodeCollection;
 			TryGetValue(elementId, out intentNodeCollection);
 			return intentNodeCollection;
 		}
 
-		public IIntentNode[] GetElementIntentsAtTime(Guid elementId, TimeSpan effectRelativeTime) {
+		public IIntentNode[] GetElementIntentsAtTime(Guid elementId, TimeSpan effectRelativeTime)
+		{
 			IntentNodeCollection elementIntents;
-			if(TryGetValue(elementId, out elementIntents)) {
+			if (TryGetValue(elementId, out elementIntents)) {
 				return elementIntents.Where(x => TimeNode.IntersectsInclusively(x, effectRelativeTime)).ToArray();
 			}
 			return null;
 		}
 
-		public void AddIntentForElement(Guid elementId, IIntent intent, TimeSpan startTime) {
+		public void AddIntentForElement(Guid elementId, IIntent intent, TimeSpan startTime)
+		{
 			_AddIntentForElement(elementId, new IntentNode(intent, startTime));
 		}
 
-		private void _AddIntentForElement(Guid elementId, IIntentNode intentNode) {
-			if(ContainsKey(elementId)) {
+		private void _AddIntentForElement(Guid elementId, IIntentNode intentNode)
+		{
+			if (ContainsKey(elementId)) {
 				this[elementId].Add(intentNode);
-			} else {
-				this[elementId] = new IntentNodeCollection(new[] { intentNode });
+			}
+			else {
+				this[elementId] = new IntentNodeCollection(new[] {intentNode});
 			}
 		}
 
-		private void _AddIntentsForElement(Guid elementId, IEnumerable<IIntentNode> intentNodes) {
-			if(ContainsKey(elementId)) {
+		private void _AddIntentsForElement(Guid elementId, IEnumerable<IIntentNode> intentNodes)
+		{
+			if (ContainsKey(elementId)) {
 				this[elementId].AddRange(intentNodes);
-			} else {
+			}
+			else {
 				this[elementId] = new IntentNodeCollection(intentNodes);
 			}
 		}
 
-		public void Add(EffectIntents other) {
-			foreach(Guid elementId in other.Keys) {
+		public void Add(EffectIntents other)
+		{
+			foreach (Guid elementId in other.Keys) {
 				_AddIntentsForElement(elementId, other[elementId]);
 			}
 		}
 
-		public void OffsetAllCommandsByTime(TimeSpan offset) {
-			foreach(IntentNodeCollection intentNodes in Values) {
+		public void OffsetAllCommandsByTime(TimeSpan offset)
+		{
+			foreach (IntentNodeCollection intentNodes in Values) {
 				IntentNode[] newIntentNodes = intentNodes.Select(x => new IntentNode(x.Intent, x.StartTime + offset)).ToArray();
 				intentNodes.Clear();
 				intentNodes.AddRange(newIntentNodes);
@@ -70,7 +84,8 @@ namespace Vixen.Sys {
 			//}
 		}
 
-		static public EffectIntents Restrict(EffectIntents effectIntents, TimeSpan startTime, TimeSpan endTime) {
+		public static EffectIntents Restrict(EffectIntents effectIntents, TimeSpan startTime, TimeSpan endTime)
+		{
 			return new EffectIntents(effectIntents.ToDictionary(
 				x => x.Key,
 				x => new IntentNodeCollection(x.Value.Where(y => !(y.StartTime >= endTime || y.EndTime < startTime)))));

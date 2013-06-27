@@ -1,12 +1,15 @@
 ﻿using System.Diagnostics;
 using System.Threading;
 
-namespace Vixen.Sys.Output {
-	class IntervalUpdateSignaler : IOutputDeviceUpdateSignaler {
+namespace Vixen.Sys.Output
+{
+	internal class IntervalUpdateSignaler : IOutputDeviceUpdateSignaler
+	{
 		private Stopwatch _stopwatch;
 		private long _lastUpdateTime;
 
-		public IntervalUpdateSignaler() {
+		public IntervalUpdateSignaler()
+		{
 			_stopwatch = Stopwatch.StartNew();
 			_lastUpdateTime = 0;
 		}
@@ -15,16 +18,18 @@ namespace Vixen.Sys.Output {
 
 		public EventWaitHandle UpdateSignal { private get; set; }
 
-		public void RaiseSignal() {
+		public void RaiseSignal()
+		{
 			long timeLeft = OutputDevice.UpdateInterval - (_stopwatch.ElapsedMilliseconds - _lastUpdateTime);
 			_Sleep(timeLeft);
 			_lastUpdateTime = _stopwatch.ElapsedMilliseconds;
 			UpdateSignal.Set();
 		}
 
-		private void _Sleep(long timeInMs) {
-			if(timeInMs > 1) {
-				Thread.Sleep((int)timeInMs);
+		private void _Sleep(long timeInMs)
+		{
+			if (timeInMs > 1) {
+				Thread.Sleep((int) timeInMs);
 			}
 		}
 	}

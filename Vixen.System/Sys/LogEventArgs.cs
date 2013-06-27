@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Vixen.Sys {
-	public class LogEventArgs : EventArgs {
-		public LogEventArgs(string logName, string text) {
+namespace Vixen.Sys
+{
+	public class LogEventArgs : EventArgs
+	{
+		public LogEventArgs(string logName, string text)
+		{
 			LogName = logName;
 			Text = text;
 		}

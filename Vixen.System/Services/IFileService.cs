@@ -1,7 +1,9 @@
 ﻿using Vixen.Sys;
 
-namespace Vixen.Services {
-	interface IFileService {
+namespace Vixen.Services
+{
+	internal interface IFileService
+	{
 		SystemConfig LoadSystemConfigFile(string filePath);
 		void SaveSystemConfigFile(SystemConfig systemConfig);
 		void SaveSystemConfigFile(SystemConfig systemConfig, string filePath);

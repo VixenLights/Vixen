@@ -1,4 +1,6 @@
-﻿namespace Vixen.Sys.Dispatch {
-	interface IAnyEvaluatorHandler : IHandler<IEvaluator> {
+﻿namespace Vixen.Sys.Dispatch
+{
+	internal interface IAnyEvaluatorHandler : IHandler<IEvaluator>
+	{
 	}
 }

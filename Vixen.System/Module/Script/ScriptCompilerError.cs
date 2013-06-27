@@ -1,11 +1,15 @@
 ﻿using System.CodeDom.Compiler;
 
-namespace Vixen.Module.Script {
-	public class ScriptCompilerError : ICompilerError {
-		public ScriptCompilerError() {
+namespace Vixen.Module.Script
+{
+	public class ScriptCompilerError : ICompilerError
+	{
+		public ScriptCompilerError()
+		{
 		}
 
-		public ScriptCompilerError(CompilerError compilerError) {
+		public ScriptCompilerError(CompilerError compilerError)
+		{
 			Column = compilerError.Column;
 			ErrorNumber = compilerError.ErrorNumber;
 			ErrorText = compilerError.ErrorText;

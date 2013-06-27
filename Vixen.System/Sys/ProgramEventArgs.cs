@@ -1,8 +1,11 @@
 ﻿using System;
 
-namespace Vixen.Sys {
-	public class ProgramEventArgs : EventArgs {
-		public ProgramEventArgs(IProgram program) {
+namespace Vixen.Sys
+{
+	public class ProgramEventArgs : EventArgs
+	{
+		public ProgramEventArgs(IProgram program)
+		{
 			Program = program;
 		}
 

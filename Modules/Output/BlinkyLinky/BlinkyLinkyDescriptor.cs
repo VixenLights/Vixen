@@ -8,7 +8,7 @@ using System.Net;
 
 namespace VixenModules.Output.BlinkyLinky
 {
-	class BlinkyLinkyDescriptor : ControllerModuleDescriptorBase
+	internal class BlinkyLinkyDescriptor : ControllerModuleDescriptorBase
 	{
 		private Guid _typeId = new Guid("{b9d5d3a1-c746-4395-8e19-a0c975ced438}");
 
@@ -24,12 +24,12 @@ namespace VixenModules.Output.BlinkyLinky
 
 		public override Type ModuleClass
 		{
-			get { return typeof(BlinkyLinky); }
+			get { return typeof (BlinkyLinky); }
 		}
 
 		public override Type ModuleDataClass
 		{
-			get { return typeof(BlinkyLinkyData); }
+			get { return typeof (BlinkyLinkyData); }
 		}
 
 		public override Guid TypeId

@@ -1,4 +1,6 @@
-﻿namespace Vixen.Data.Value {
-	public interface IIntentDataType {
+﻿namespace Vixen.Data.Value
+{
+	public interface IIntentDataType
+	{
 	}
 }

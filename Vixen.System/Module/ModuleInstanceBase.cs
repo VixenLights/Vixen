@@ -1,66 +1,83 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Vixen.Module {
+namespace Vixen.Module
+{
 	[Serializable]
-	public abstract class ModuleInstanceBase : IModuleInstance, IEqualityComparer<IModuleInstance>, IEquatable<IModuleInstance>, IEqualityComparer<ModuleInstanceBase>, IEquatable<ModuleInstanceBase> {
-		protected ModuleInstanceBase() {
+	public abstract class ModuleInstanceBase : IModuleInstance, IEqualityComparer<IModuleInstance>,
+	                                           IEquatable<IModuleInstance>, IEqualityComparer<ModuleInstanceBase>,
+	                                           IEquatable<ModuleInstanceBase>
+	{
+		protected ModuleInstanceBase()
+		{
 			InstanceId = Guid.NewGuid();
 		}
 
 		public Guid InstanceId { get; set; }
 
-		public Guid TypeId {
+		public Guid TypeId
+		{
 			get { return Descriptor.TypeId; }
 		}
 
-		virtual public IModuleDataModel ModuleData { get; set; }
+		public virtual IModuleDataModel ModuleData { get; set; }
 
-		virtual public IModuleDataModel StaticModuleData { get; set; }
+		public virtual IModuleDataModel StaticModuleData { get; set; }
 
-		virtual public IModuleDescriptor Descriptor { get; set; }
+		public virtual IModuleDescriptor Descriptor { get; set; }
 
-		virtual public void Dispose() { }
+		public virtual void Dispose()
+		{
+		}
 
-		virtual public IModuleInstance Clone() {
-			IModuleInstance newInstance = (IModuleInstance)MemberwiseClone();
+		public virtual IModuleInstance Clone()
+		{
+			IModuleInstance newInstance = (IModuleInstance) MemberwiseClone();
 			newInstance.InstanceId = Guid.NewGuid();
 			newInstance.ModuleData = ModuleData.Clone();
 			return newInstance;
 		}
 
-		public bool Equals(IModuleInstance x, IModuleInstance y) {
+		public bool Equals(IModuleInstance x, IModuleInstance y)
+		{
 			return x.InstanceId == y.InstanceId;
 		}
 
-		public int GetHashCode(IModuleInstance obj) {
+		public int GetHashCode(IModuleInstance obj)
+		{
 			return obj.InstanceId.GetHashCode();
 		}
 
-		public bool Equals(IModuleInstance other) {
+		public bool Equals(IModuleInstance other)
+		{
 			return Equals(this, other);
 		}
 
-		public bool Equals(ModuleInstanceBase x, ModuleInstanceBase y) {
+		public bool Equals(ModuleInstanceBase x, ModuleInstanceBase y)
+		{
 			return Equals(x as IModuleInstance, y as IModuleInstance);
 		}
 
-		public int GetHashCode(ModuleInstanceBase obj) {
+		public int GetHashCode(ModuleInstanceBase obj)
+		{
 			return GetHashCode(obj as IModuleInstance);
 		}
 
-		public bool Equals(ModuleInstanceBase other) {
+		public bool Equals(ModuleInstanceBase other)
+		{
 			return Equals(other as IModuleInstance);
 		}
 
-		public override bool Equals(object obj) {
-			if(obj is IModuleInstance) {
+		public override bool Equals(object obj)
+		{
+			if (obj is IModuleInstance) {
 				return Equals(obj as IModuleInstance);
 			}
 			return base.Equals(obj);
 		}
 
-		public override int GetHashCode() {
+		public override int GetHashCode()
+		{
 			return GetHashCode(this as IModuleInstance);
 		}
 	}

@@ -23,8 +23,11 @@ namespace VixenModules.App.ColorGradients
 		{
 			PopulateListWithColorGradients();
 			ColorGradientLibraryStaticData data;
-			data = (ApplicationServices.Get<IAppModuleInstance>(ColorGradientLibraryDescriptor.ModuleID) as ColorGradientLibrary).StaticModuleData as ColorGradientLibraryStaticData;
-			if (Screen.GetWorkingArea(this).Contains(data.SelectorWindowBounds) && data.SelectorWindowBounds.Width >= MinimumSize.Width) {
+			data =
+				(ApplicationServices.Get<IAppModuleInstance>(ColorGradientLibraryDescriptor.ModuleID) as ColorGradientLibrary).
+					StaticModuleData as ColorGradientLibraryStaticData;
+			if (Screen.GetWorkingArea(this).Contains(data.SelectorWindowBounds) &&
+			    data.SelectorWindowBounds.Width >= MinimumSize.Width) {
 				Bounds = data.SelectorWindowBounds;
 			}
 		}
@@ -32,7 +35,9 @@ namespace VixenModules.App.ColorGradients
 		private void ColorGradientLibrarySelector_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			ColorGradientLibraryStaticData data;
-			data = (ApplicationServices.Get<IAppModuleInstance>(ColorGradientLibraryDescriptor.ModuleID) as ColorGradientLibrary).StaticModuleData as ColorGradientLibraryStaticData;
+			data =
+				(ApplicationServices.Get<IAppModuleInstance>(ColorGradientLibraryDescriptor.ModuleID) as ColorGradientLibrary).
+					StaticModuleData as ColorGradientLibraryStaticData;
 			data.SelectorWindowBounds = Bounds;
 		}
 
@@ -79,7 +84,8 @@ namespace VixenModules.App.ColorGradients
 				if (listViewColorGradients.SelectedItems.Count == 0)
 					return null;
 
-				return new Tuple<string, ColorGradient>(listViewColorGradients.SelectedItems[0].Name, listViewColorGradients.SelectedItems[0].Tag as ColorGradient);
+				return new Tuple<string, ColorGradient>(listViewColorGradients.SelectedItems[0].Name,
+				                                        listViewColorGradients.SelectedItems[0].Tag as ColorGradient);
 			}
 		}
 
@@ -98,8 +104,10 @@ namespace VixenModules.App.ColorGradients
 			if (listViewColorGradients.SelectedItems.Count == 0)
 				return;
 
-			DialogResult result = MessageBox.Show("If you delete this library gradient, ALL places it is used will be unlinked and will" +
-				" become independent gradients. Are you sure you want to continue?", "Delete library gradient?", MessageBoxButtons.YesNoCancel);
+			DialogResult result =
+				MessageBox.Show("If you delete this library gradient, ALL places it is used will be unlinked and will" +
+				                " become independent gradients. Are you sure you want to continue?", "Delete library gradient?",
+				                MessageBoxButtons.YesNoCancel);
 
 			if (result == System.Windows.Forms.DialogResult.Yes) {
 				Library.RemoveColorGradient(listViewColorGradients.SelectedItems[0].Name);
@@ -114,12 +122,14 @@ namespace VixenModules.App.ColorGradients
 		}
 
 		private ColorGradientLibrary _library;
+
 		private ColorGradientLibrary Library
 		{
 			get
 			{
 				if (_library == null)
-					_library = ApplicationServices.Get<IAppModuleInstance>(ColorGradientLibraryDescriptor.ModuleID) as ColorGradientLibrary;
+					_library =
+						ApplicationServices.Get<IAppModuleInstance>(ColorGradientLibraryDescriptor.ModuleID) as ColorGradientLibrary;
 
 				return _library;
 			}

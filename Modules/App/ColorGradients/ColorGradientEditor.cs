@@ -16,7 +16,7 @@ namespace VixenModules.App.ColorGradients
 	{
 		private bool _discreteColors;
 		private IEnumerable<Color> _validDiscreteColors;
-		
+
 		public ColorGradientEditor(ColorGradient gradient, bool discreteColors, IEnumerable<Color> validDiscreteColors)
 		{
 			InitializeComponent();
@@ -28,12 +28,10 @@ namespace VixenModules.App.ColorGradients
 		}
 
 		private ColorGradient _gradient;
+
 		public ColorGradient Gradient
 		{
-			get
-			{
-				return _gradient;
-			}
+			get { return _gradient; }
 			set
 			{
 				_gradient = new ColorGradient(value);
@@ -42,6 +40,7 @@ namespace VixenModules.App.ColorGradients
 		}
 
 		private string _libraryItemName;
+
 		public string LibraryItemName
 		{
 			get { return _libraryItemName; }
@@ -53,12 +52,14 @@ namespace VixenModules.App.ColorGradients
 		}
 
 		private ColorGradientLibrary _library;
+
 		private ColorGradientLibrary Library
 		{
 			get
 			{
 				if (_library == null)
-					_library = ApplicationServices.Get<IAppModuleInstance>(ColorGradientLibraryDescriptor.ModuleID) as ColorGradientLibrary;
+					_library =
+						ApplicationServices.Get<IAppModuleInstance>(ColorGradientLibraryDescriptor.ModuleID) as ColorGradientLibrary;
 
 				return _library;
 			}
@@ -82,8 +83,9 @@ namespace VixenModules.App.ColorGradients
 				if (LibraryItemName == null) {
 					labelCurve.Text = "This gradient is a library gradient.";
 					Text = "Color Gradient Editor: Library Gradient";
-				} else {
-					labelCurve.Text = string.Format("This gradient is the library gradient: {0}" , LibraryItemName);
+				}
+				else {
+					labelCurve.Text = string.Format("This gradient is the library gradient: {0}", LibraryItemName);
 					Text = string.Format("Color Gradient Editor: Library Gradient {0}", LibraryItemName);
 				}
 
@@ -92,11 +94,12 @@ namespace VixenModules.App.ColorGradients
 				buttonLoadFromLibrary.Enabled = false;
 				buttonUnlink.Enabled = false;
 				buttonEditLibraryItem.Enabled = false;
-
-			} else {
+			}
+			else {
 				if (item.IsLibraryReference) {
 					labelCurve.Text = string.Format("This gradient is linked to the library: {0}", item.LibraryReferenceName);
-				} else {
+				}
+				else {
 					labelCurve.Text = "This gradient is not linked to any in the library.";
 				}
 
@@ -113,7 +116,6 @@ namespace VixenModules.App.ColorGradients
 		}
 
 
-
 		private void buttonLoadFromLibrary_Click(object sender, EventArgs e)
 		{
 			ColorGradientLibrarySelector selector = new ColorGradientLibrarySelector();
@@ -124,7 +126,6 @@ namespace VixenModules.App.ColorGradients
 				newGradient.IsCurrentLibraryGradient = false;
 				Gradient = newGradient;
 			}
-
 		}
 
 		private void buttonSaveToLibrary_Click(object sender, EventArgs e)
@@ -139,14 +140,16 @@ namespace VixenModules.App.ColorGradients
 
 				if (Library.Contains(dialog.Response)) {
 					DialogResult result = MessageBox.Show("There is already a gradient with that name. Do you want to overwrite it?",
-						"Overwrite gradient?", MessageBoxButtons.YesNoCancel);
+					                                      "Overwrite gradient?", MessageBoxButtons.YesNoCancel);
 					if (result == System.Windows.Forms.DialogResult.Yes) {
 						Library.AddColorGradient(dialog.Response, new ColorGradient(Gradient));
 						break;
-					} else if (result == System.Windows.Forms.DialogResult.Cancel) {
+					}
+					else if (result == System.Windows.Forms.DialogResult.Cancel) {
 						break;
 					}
-				} else {
+				}
+				else {
 					Library.AddColorGradient(dialog.Response, new ColorGradient(Gradient));
 					break;
 				}
@@ -157,7 +160,6 @@ namespace VixenModules.App.ColorGradients
 		{
 			Gradient.UnlinkFromLibrary();
 			PopulateFormWithGradient(Gradient);
-
 		}
 
 		private void buttonEditLibraryItem_Click(object sender, EventArgs e)
@@ -172,7 +174,7 @@ namespace VixenModules.App.ColorGradients
 			if (e.KeyCode == Keys.Enter)
 				DialogResult = DialogResult.OK;
 			if (e.KeyCode == Keys.Escape)
-				DialogResult = DialogResult.Cancel;			
+				DialogResult = DialogResult.Cancel;
 		}
 	}
 }

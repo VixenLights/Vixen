@@ -1,10 +1,13 @@
 ﻿using Vixen.Sys.Attribute;
 
-namespace Vixen.Module.SmartController {
+namespace Vixen.Module.SmartController
+{
 	[TypeOfModule("SmartController")]
-	class SmartControllerModuleImplementation : ModuleImplementation<ISmartControllerModuleInstance> {
+	internal class SmartControllerModuleImplementation : ModuleImplementation<ISmartControllerModuleInstance>
+	{
 		public SmartControllerModuleImplementation()
-			: base(new SmartControllerModuleManagement(), new SmartControllerModuleRepository()) {
+			: base(new SmartControllerModuleManagement(), new SmartControllerModuleRepository())
+		{
 		}
 	}
 }

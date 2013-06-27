@@ -11,11 +11,18 @@ namespace VixenModules.App.Curves
 	{
 		private CurveLibraryStaticData _data;
 
-		public override void Loading() { }
+		public override void Loading()
+		{
+		}
 
-		public override void Unloading() { }
+		public override void Unloading()
+		{
+		}
 
-		public override Vixen.Sys.IApplication Application { set { } }
+		public override Vixen.Sys.IApplication Application
+		{
+			set { }
+		}
 
 		public override IModuleDataModel StaticModuleData
 		{

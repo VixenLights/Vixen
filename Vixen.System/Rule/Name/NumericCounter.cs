@@ -27,7 +27,7 @@ namespace Vixen.Rule.Name
 				if (EndlessCycle)
 					return -1;
 
-				return (int)Math.Floor((EndNumber - StartNumber) / (double)Step) + 1;
+				return (int) Math.Floor((EndNumber - StartNumber)/(double) Step) + 1;
 			}
 		}
 
@@ -57,7 +57,7 @@ namespace Vixen.Rule.Name
 
 		public string GenerateName(int cyclePosition)
 		{
-			return (StartNumber + (Step * cyclePosition)).ToString();
+			return (StartNumber + (Step*cyclePosition)).ToString();
 		}
 
 		public bool Endless { get; set; }
@@ -65,7 +65,9 @@ namespace Vixen.Rule.Name
 		public int EndNumber { get; set; }
 
 		private int _step;
-		public int Step { 
+
+		public int Step
+		{
 			get { return _step; }
 			set
 			{

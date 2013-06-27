@@ -8,12 +8,14 @@ using Vixen.Module;
 namespace VixenModules.Output.Olsen595
 {
 	[DataContract]
-	public class Data : ModuleDataModelBase {
+	public class Data : ModuleDataModelBase
+	{
 		[DataMember]
 		public ushort Port { get; set; }
 
-		public override IModuleDataModel Clone() {
-			Data newInstance = new Data() { Port = Port };
+		public override IModuleDataModel Clone()
+		{
+			Data newInstance = new Data() {Port = Port};
 			return newInstance;
 		}
 	}

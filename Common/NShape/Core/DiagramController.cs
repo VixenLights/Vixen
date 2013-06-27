@@ -14,29 +14,29 @@
 
 using System;
 using System.Collections.Generic;
-
 using Dataweb.NShape.Advanced;
 
 
-namespace Dataweb.NShape.Controllers {
-
+namespace Dataweb.NShape.Controllers
+{
 	/// <ToBeCompleted></ToBeCompleted>
-	public class DiagramController {
-
+	public class DiagramController
+	{
 		/// <summary>
 		/// Initializes a new instance of <see cref="T:Dataweb.NShape.Controllers.DiagramController" />.
 		/// </summary>
 		/// <param name="owner"></param>
 		/// <param name="diagram"></param>
-		public DiagramController(DiagramSetController owner, Diagram diagram) {
+		public DiagramController(DiagramSetController owner, Diagram diagram)
+		{
 			if (owner == null) throw new ArgumentNullException("owner");
-			if (owner.Project == null) throw new InvalidOperationException("DiagramSetController's Project property is not set.");
+			if (owner.Project == null)
+				throw new InvalidOperationException("DiagramSetController's Project property is not set.");
 			this.owner = owner;
 			this.diagram = diagram;
-			if (((IEntity)diagram).Id != null)
+			if (((IEntity) diagram).Id != null)
 				owner.Project.Repository.GetDiagramShapes(this.diagram);
 		}
-
 
 		#region [Public] Events
 
@@ -48,11 +48,11 @@ namespace Dataweb.NShape.Controllers {
 
 		#endregion
 
-
 		#region [Public] Properties
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public DiagramSetController Owner {
+		public DiagramSetController Owner
+		{
 			get { return owner; }
 		}
 
@@ -60,18 +60,21 @@ namespace Dataweb.NShape.Controllers {
 		/// <summary>
 		/// Provides access to a <see cref="T:Dataweb.NShape.Project" />.
 		/// </summary>
-		public Project Project {
+		public Project Project
+		{
 			get { return (owner == null) ? null : owner.Project; }
 		}
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public Diagram Diagram { 
+		public Diagram Diagram
+		{
 			get { return diagram; }
-			set {
+			set
+			{
 				if (DiagramChanging != null) DiagramChanging(this, EventArgs.Empty);
 				diagram = value;
-				if (diagram != null) 
+				if (diagram != null)
 					owner.Project.Repository.GetDiagramShapes(diagram);
 				if (DiagramChanged != null) DiagramChanged(this, EventArgs.Empty);
 			}
@@ -79,18 +82,19 @@ namespace Dataweb.NShape.Controllers {
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public Tool Tool {
+		public Tool Tool
+		{
 			get { return owner.ActiveTool; }
 			set { owner.ActiveTool = value; }
 		}
 
 		#endregion
 
-
 		#region [Public] Methods
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public void CreateDiagram(string name) {
+		public void CreateDiagram(string name)
+		{
 			diagram = new Diagram(name);
 			owner.Project.Repository.Insert(diagram);
 			Diagram = diagram;
@@ -98,7 +102,8 @@ namespace Dataweb.NShape.Controllers {
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public void OpenDiagram(string name) {
+		public void OpenDiagram(string name)
+		{
 			Diagram = owner.Project.Repository.GetDiagram(name);
 		}
 
@@ -106,13 +111,13 @@ namespace Dataweb.NShape.Controllers {
 		/// <summary>
 		/// Returns a collection of <see cref="T:Dataweb.NShape.Advanced.MenuItemDef" /> for constructing context menus etc.
 		/// </summary>
-		public IEnumerable<MenuItemDef> GetMenuItemDefs(IShapeCollection selectedShapes) {
+		public IEnumerable<MenuItemDef> GetMenuItemDefs(IShapeCollection selectedShapes)
+		{
 			// ToDo: No actions at the moment
 			yield break;
 		}
 
 		#endregion
-
 
 		#region Fields
 
@@ -121,5 +126,4 @@ namespace Dataweb.NShape.Controllers {
 
 		#endregion
 	}
-
 }

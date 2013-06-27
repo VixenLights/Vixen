@@ -8,331 +8,311 @@ using FMOD;
 
 namespace VixenModules.Media.Audio
 {
-    internal partial class FmodInstance : IDisposable
-    {
-        private fmod _audioSystem;
-        private FMOD.DSP dsplowpass = null;
-        private FMOD.DSP dsphighpass = null;
-        private FMOD.DSPConnection dspconnectiontemp = null;
-      
-        private SoundChannel _channel;
-        private TimeSpan _startTime;
-        private uint lengthPcmBytes;
-        private int channels = 0;
-        private int bits = 0;
-        private float freq;
+	internal partial class FmodInstance : IDisposable
+	{
+		private fmod _audioSystem;
+		private FMOD.DSP dsplowpass = null;
+		private FMOD.DSP dsphighpass = null;
+		private FMOD.DSPConnection dspconnectiontemp = null;
 
-        static bool lowPassFilterEnabled = false;
-        static bool highPassFilterEnabled = false;
+		private SoundChannel _channel;
+		private TimeSpan _startTime;
+		private uint lengthPcmBytes;
+		private int channels = 0;
+		private int bits = 0;
+		private float freq;
 
-        private Timer fmodUpdateTimer;
+		private static bool lowPassFilterEnabled = false;
+		private static bool highPassFilterEnabled = false;
 
-
-        public FmodInstance(string fileName)
-        {
-            _audioSystem = fmod.GetInstance(-1);
-            _audioSystem.SystemObject.createDSPByType(FMOD.DSP_TYPE.LOWPASS, ref dsplowpass);
-            _audioSystem.SystemObject.createDSPByType(FMOD.DSP_TYPE.HIGHPASS, ref dsphighpass);
-
-            //Load(fileName);
-            //Changed from the above to allow sampling of the data. Could not extract data for waveform from the default
-            //Is there another way to get the data with the default wrapper method.
-            LoadAsSample(fileName);
-            populateStats();
-
-            fmodUpdateTimer = new Timer();
-            fmodUpdateTimer.Elapsed += fmodUpdateTimer_Elapsed;
-            fmodUpdateTimer.Interval = 100;
-            fmodUpdateTimer.Enabled = true;
-
-        }
-
-        void fmodUpdateTimer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            if (_audioSystem != null && _audioSystem.SystemObject != null)
-                _audioSystem.SystemObject.update();
-        }
-
-        public bool LowPassFilterEnabled
-        {
-            get
-            {
-                return lowPassFilterEnabled;
-            }
-            set
-            {
-
-                lowPassFilterEnabled = value;
-                CheckIfFilterIsEnabled();
-            }
-        }
+		private Timer fmodUpdateTimer;
 
 
-        public bool HighPassFilterEnabled
-        {
-            get { return highPassFilterEnabled; }
-            set
-            {
+		public FmodInstance(string fileName)
+		{
+			_audioSystem = fmod.GetInstance(-1);
+			_audioSystem.SystemObject.createDSPByType(FMOD.DSP_TYPE.LOWPASS, ref dsplowpass);
+			_audioSystem.SystemObject.createDSPByType(FMOD.DSP_TYPE.HIGHPASS, ref dsphighpass);
 
-                highPassFilterEnabled = value;
-                CheckIfFilterIsEnabled();
+			//Load(fileName);
+			//Changed from the above to allow sampling of the data. Could not extract data for waveform from the default
+			//Is there another way to get the data with the default wrapper method.
+			LoadAsSample(fileName);
+			populateStats();
 
-            }
-        }
-        public float LowPassFilterValue
-        {
-            get
-            {
-                float val = 0;
-                StringBuilder sb = new StringBuilder();
-                int len = 0;
+			fmodUpdateTimer = new Timer();
+			fmodUpdateTimer.Elapsed += fmodUpdateTimer_Elapsed;
+			fmodUpdateTimer.Interval = 100;
+			fmodUpdateTimer.Enabled = true;
+		}
 
-                dsplowpass.getParameter(0, ref val, sb, len);
-                return val;
+		private void fmodUpdateTimer_Elapsed(object sender, ElapsedEventArgs e)
+		{
+			if (_audioSystem != null && _audioSystem.SystemObject != null)
+				_audioSystem.SystemObject.update();
+		}
 
-            }
-            set { dsplowpass.setParameter(0, value); }
-        }
-        public float HighPassFilterValue
-        {
-            get
-            {
-                float val = 0;
-                StringBuilder sb = new StringBuilder();
-                int len = 0;
-
-                dsphighpass.getParameter(0, ref val, sb, len);
-                return val;
-
-            }
-            set { dsphighpass.setParameter(0, value); }
-        }
-
-        private void CheckIfFilterIsEnabled()
-        {
-            bool active = false;
-
-            dsphighpass.getActive(ref active);
-
-            if (!highPassFilterEnabled && active)
-                dsphighpass.remove();
-            if (highPassFilterEnabled && !active)
-                _audioSystem.SystemObject.addDSP(dsphighpass, ref dspconnectiontemp);
-
-            active = false;
-            dsplowpass.getActive(ref active);
-
-            if (!lowPassFilterEnabled && active)
-                dsplowpass.remove();
-            if (lowPassFilterEnabled && !active)
-                _audioSystem.SystemObject.addDSP(dsplowpass, ref dspconnectiontemp);
-
-        }
+		public bool LowPassFilterEnabled
+		{
+			get { return lowPassFilterEnabled; }
+			set
+			{
+				lowPassFilterEnabled = value;
+				CheckIfFilterIsEnabled();
+			}
+		}
 
 
+		public bool HighPassFilterEnabled
+		{
+			get { return highPassFilterEnabled; }
+			set
+			{
+				highPassFilterEnabled = value;
+				CheckIfFilterIsEnabled();
+			}
+		}
 
-        public byte[] GetSamples(int startSample, int numSamples)
-        {
-            int bufferSize = BytesPerSample * numSamples;
-            int startByte = BytesPerSample * startSample;
+		public float LowPassFilterValue
+		{
+			get
+			{
+				float val = 0;
+				StringBuilder sb = new StringBuilder();
+				int len = 0;
 
-            IntPtr ptr1 = IntPtr.Zero, ptr2 = IntPtr.Zero;
-            uint len1 = 0, len2 = 0;
+				dsplowpass.getParameter(0, ref val, sb, len);
+				return val;
+			}
+			set { dsplowpass.setParameter(0, value); }
+		}
 
-            checkErrors(_channel.Sound.@lock((uint)startByte, (uint)bufferSize, ref ptr1, ref ptr2, ref len1, ref len2));
-            byte[] sampleBytes1 = new byte[len1];
-            byte[] sampleBytes2 = new byte[len2];
-            System.Runtime.InteropServices.Marshal.Copy(ptr1, sampleBytes1, 0, (int)len1);
-            if (len2 > 0)
-            {
-                System.Runtime.InteropServices.Marshal.Copy(ptr2, sampleBytes2, 0, (int)len2);
-            }
+		public float HighPassFilterValue
+		{
+			get
+			{
+				float val = 0;
+				StringBuilder sb = new StringBuilder();
+				int len = 0;
 
-            _channel.Sound.unlock(ptr1, ptr2, len1, len2);
-            byte[] sampleBytes = new byte[sampleBytes1.Length + sampleBytes2.Length];
-            System.Buffer.BlockCopy(sampleBytes1, 0, sampleBytes, 0, sampleBytes1.Length);
-            System.Buffer.BlockCopy(sampleBytes2, 0, sampleBytes, sampleBytes1.Length, sampleBytes2.Length);
+				dsphighpass.getParameter(0, ref val, sb, len);
+				return val;
+			}
+			set { dsphighpass.setParameter(0, value); }
+		}
 
-            return sampleBytes;
-        }
+		private void CheckIfFilterIsEnabled()
+		{
+			bool active = false;
 
-        private void populateStats()
-        {
-            float fZero = 0;
-            int iZero = 0;
-            SOUND_TYPE type = SOUND_TYPE.RAW;
-            SOUND_FORMAT format = SOUND_FORMAT.NONE;
-            _channel.Sound.getFormat(ref type, ref format, ref channels, ref bits);
-            _channel.Sound.getLength(ref lengthPcmBytes, TIMEUNIT.PCMBYTES);
-            _channel.Sound.getDefaults(ref freq, ref fZero, ref fZero, ref iZero);
+			dsphighpass.getActive(ref active);
 
-        }
+			if (!highPassFilterEnabled && active)
+				dsphighpass.remove();
+			if (highPassFilterEnabled && !active)
+				_audioSystem.SystemObject.addDSP(dsphighpass, ref dspconnectiontemp);
 
-        public int Channels
-        {
-            get { return channels; }
-            set { channels = value; }
-        }
+			active = false;
+			dsplowpass.getActive(ref active);
 
-        public long NumberSamples
-        {
-            get { return lengthPcmBytes / BytesPerSample; }
-        }
-        public int BytesPerSample
-        {
-            get { return (bits / 8) * channels; }
-        }
-        public float Frequency
-        {
-            get { return freq; }
-        }
+			if (!lowPassFilterEnabled && active)
+				dsplowpass.remove();
+			if (lowPassFilterEnabled && !active)
+				_audioSystem.SystemObject.addDSP(dsplowpass, ref dspconnectiontemp);
+		}
 
-        public void LoadAsSample(string fileName)
-        {
-            //Adapted this code from the fmod wrappers loadsound method. Changed mode to CREATESAMPLE
-            if (_channel != null && _channel.IsPlaying)
-            {
-                Stop();
-            }
-            if (_audioSystem == null) return;
 
-            if (fileName == null || !File.Exists(fileName))
-            {
-                return;
-            }
+		public byte[] GetSamples(int startSample, int numSamples)
+		{
+			int bufferSize = BytesPerSample*numSamples;
+			int startByte = BytesPerSample*startSample;
 
-            Sound sound = null;
-            checkErrors(_audioSystem.SystemObject.createSound(fileName, (FMOD.MODE._2D | FMOD.MODE.HARDWARE | FMOD.MODE.CREATESAMPLE | MODE.ACCURATETIME), ref sound));
-            if (_channel == null)
-            {
-                _channel = new SoundChannel(sound);
+			IntPtr ptr1 = IntPtr.Zero, ptr2 = IntPtr.Zero;
+			uint len1 = 0, len2 = 0;
 
-            }
-            else
-            {
-                _channel.Sound = sound;
-            }
-        }
+			checkErrors(_channel.Sound.@lock((uint) startByte, (uint) bufferSize, ref ptr1, ref ptr2, ref len1, ref len2));
+			byte[] sampleBytes1 = new byte[len1];
+			byte[] sampleBytes2 = new byte[len2];
+			System.Runtime.InteropServices.Marshal.Copy(ptr1, sampleBytes1, 0, (int) len1);
+			if (len2 > 0) {
+				System.Runtime.InteropServices.Marshal.Copy(ptr2, sampleBytes2, 0, (int) len2);
+			}
 
-        private void checkErrors(FMOD.RESULT result)
-        {
-            if (result != FMOD.RESULT.OK)
-            {
-                throw new Exception(string.Format("Sound system error ({0})\n\n{1}", result, FMOD.Error.String(result)));
-            }
-        }
+			_channel.Sound.unlock(ptr1, ptr2, len1, len2);
+			byte[] sampleBytes = new byte[sampleBytes1.Length + sampleBytes2.Length];
+			System.Buffer.BlockCopy(sampleBytes1, 0, sampleBytes, 0, sampleBytes1.Length);
+			System.Buffer.BlockCopy(sampleBytes2, 0, sampleBytes, sampleBytes1.Length, sampleBytes2.Length);
 
-        public void Load(string fileName)
-        {
-            if (_channel != null && _channel.IsPlaying)
-            {
-                Stop();
-            }
-            _channel = _audioSystem.LoadSound(fileName, _channel);
-            if (_channel == null)
-            {
-                Vixen.Sys.VixenSystem.Logging.Warning("Audio: can't load file '" + fileName + "' for playback. Does it exist?");
-            }
-            _startTime = TimeSpan.Zero;
-        }
+			return sampleBytes;
+		}
 
-        public void SetStartTime(TimeSpan time)
-        {
-            _startTime = TimeSpan.Zero > time ? TimeSpan.Zero : time;
-        }
+		private void populateStats()
+		{
+			float fZero = 0;
+			int iZero = 0;
+			SOUND_TYPE type = SOUND_TYPE.RAW;
+			SOUND_FORMAT format = SOUND_FORMAT.NONE;
+			_channel.Sound.getFormat(ref type, ref format, ref channels, ref bits);
+			_channel.Sound.getLength(ref lengthPcmBytes, TIMEUNIT.PCMBYTES);
+			_channel.Sound.getDefaults(ref freq, ref fZero, ref fZero, ref iZero);
+		}
 
-        public void Play()
-        {
-            if (_channel != null && !_channel.IsPlaying)
-            {
-                SetStartTime(_startTime);
-                _audioSystem.Play(_channel, true);
-                _channel.Position = (uint)_startTime.TotalMilliseconds;
-                _channel.Paused = false;
-                IsFrequencyDetectionEnabled();
-            }
-        }
+		public int Channels
+		{
+			get { return channels; }
+			set { channels = value; }
+		}
 
-        public void Pause()
-        {
-            if (_channel != null && _channel.IsPlaying)
-            {
-                _channel.Paused = true;
-            }
-        }
+		public long NumberSamples
+		{
+			get { return lengthPcmBytes/BytesPerSample; }
+		}
 
-        public void Resume()
-        {
-            if (_channel != null && _channel.Paused)
-            {
-                _channel.Paused = false;
-            }
-        }
+		public int BytesPerSample
+		{
+			get { return (bits/8)*channels; }
+		}
 
-        public void Stop()
-        {
-            if (_channel != null && _channel.IsPlaying)
-            {
-                _audioSystem.Stop(_channel);
-            }
-        }
+		public float Frequency
+		{
+			get { return freq; }
+		}
 
-        public long Position
-        {
-            get
-            {
-                if (_channel != null)
-                {
-                    return _channel.Position;
-                }
-                return 0;
-            }
-        }
+		public void LoadAsSample(string fileName)
+		{
+			//Adapted this code from the fmod wrappers loadsound method. Changed mode to CREATESAMPLE
+			if (_channel != null && _channel.IsPlaying) {
+				Stop();
+			}
+			if (_audioSystem == null) return;
 
-        public bool IsPlaying
-        {
-            get { return _channel != null && _channel.IsPlaying; }
-        }
-        public bool IsPaused
-        {
-            get { return _channel != null && _channel.Paused; }
-        }
+			if (fileName == null || !File.Exists(fileName)) {
+				return;
+			}
 
-        ~FmodInstance()
-        {
-            Dispose();
-        }
+			Sound sound = null;
+			checkErrors(_audioSystem.SystemObject.createSound(fileName,
+			                                                  (FMOD.MODE._2D | FMOD.MODE.HARDWARE | FMOD.MODE.CREATESAMPLE |
+			                                                   MODE.ACCURATETIME), ref sound));
+			if (_channel == null) {
+				_channel = new SoundChannel(sound);
+			}
+			else {
+				_channel.Sound = sound;
+			}
+		}
 
-        public void Dispose()
-        {
-            //*** channel need to be disposed?  If so, then should reloading the channel
-            //    cause an intermediate disposal?
-            _audioSystem.Stop(_channel);
-            if (_channel != null)
-            {
-                _audioSystem.ReleaseSound(_channel);
-            }
-            _audioSystem.Shutdown();
-            _audioSystem = null;
+		private void checkErrors(FMOD.RESULT result)
+		{
+			if (result != FMOD.RESULT.OK) {
+				throw new Exception(string.Format("Sound system error ({0})\n\n{1}", result, FMOD.Error.String(result)));
+			}
+		}
 
-            GC.SuppressFinalize(this);
-        }
+		public void Load(string fileName)
+		{
+			if (_channel != null && _channel.IsPlaying) {
+				Stop();
+			}
+			_channel = _audioSystem.LoadSound(fileName, _channel);
+			if (_channel == null) {
+				Vixen.Sys.VixenSystem.Logging.Warning("Audio: can't load file '" + fileName + "' for playback. Does it exist?");
+			}
+			_startTime = TimeSpan.Zero;
+		}
 
-        public TimeSpan Duration
-        {
-            get
-            {
-                if (_channel != null)
-                    return TimeSpan.FromMilliseconds(_channel.SoundLength);
-                else
-                    return TimeSpan.Zero;
-            }
-        }
+		public void SetStartTime(TimeSpan time)
+		{
+			_startTime = TimeSpan.Zero > time ? TimeSpan.Zero : time;
+		}
 
-        public float Speed
-        {
-            get { return _channel.Frequency; }
-            set { _channel.Frequency = value; }
-        }
-    }
+		public void Play()
+		{
+			if (_channel != null && !_channel.IsPlaying) {
+				SetStartTime(_startTime);
+				_audioSystem.Play(_channel, true);
+				_channel.Position = (uint) _startTime.TotalMilliseconds;
+				_channel.Paused = false;
+				IsFrequencyDetectionEnabled();
+			}
+		}
+
+		public void Pause()
+		{
+			if (_channel != null && _channel.IsPlaying) {
+				_channel.Paused = true;
+			}
+		}
+
+		public void Resume()
+		{
+			if (_channel != null && _channel.Paused) {
+				_channel.Paused = false;
+			}
+		}
+
+		public void Stop()
+		{
+			if (_channel != null && _channel.IsPlaying) {
+				_audioSystem.Stop(_channel);
+			}
+		}
+
+		public long Position
+		{
+			get
+			{
+				if (_channel != null) {
+					return _channel.Position;
+				}
+				return 0;
+			}
+		}
+
+		public bool IsPlaying
+		{
+			get { return _channel != null && _channel.IsPlaying; }
+		}
+
+		public bool IsPaused
+		{
+			get { return _channel != null && _channel.Paused; }
+		}
+
+		~FmodInstance()
+		{
+			Dispose();
+		}
+
+		public void Dispose()
+		{
+			//*** channel need to be disposed?  If so, then should reloading the channel
+			//    cause an intermediate disposal?
+			_audioSystem.Stop(_channel);
+			if (_channel != null) {
+				_audioSystem.ReleaseSound(_channel);
+			}
+			_audioSystem.Shutdown();
+			_audioSystem = null;
+
+			GC.SuppressFinalize(this);
+		}
+
+		public TimeSpan Duration
+		{
+			get
+			{
+				if (_channel != null)
+					return TimeSpan.FromMilliseconds(_channel.SoundLength);
+				else
+					return TimeSpan.Zero;
+			}
+		}
+
+		public float Speed
+		{
+			get { return _channel.Frequency; }
+			set { _channel.Frequency = value; }
+		}
+	}
 }

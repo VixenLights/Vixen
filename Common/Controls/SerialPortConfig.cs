@@ -9,35 +9,27 @@ namespace Common.Controls
 {
 	public partial class SerialPortConfig : Form
 	{
-
-
-		public SerialPortConfig(SerialPort serialPort, bool allowPortEdit = true, bool allowBaudEdit = true, bool allowParityEdit = true, bool allowDataEdit = true, bool allowStopEdit = true)
+		public SerialPortConfig(SerialPort serialPort, bool allowPortEdit = true, bool allowBaudEdit = true,
+		                        bool allowParityEdit = true, bool allowDataEdit = true, bool allowStopEdit = true)
 		{
 			InitializeComponent();
 
 			//lets try and open the serial port if it can't be opened then it
 			//must be in use so label it as in use
-			foreach (string s in SerialPort.GetPortNames())
-			{
-				try
-				{
-
-					using (SerialPort checkPort = new SerialPort(s))
-					{
+			foreach (string s in SerialPort.GetPortNames()) {
+				try {
+					using (SerialPort checkPort = new SerialPort(s)) {
 						checkPort.Open();
 						checkPort.Close();
 					}
 					comboBoxPortName.Items.Add(s);
-
 				}
-				//catch the exception in case we want to use it
-				//or log it.
-				catch (UnauthorizedAccessException uae)
-				{
+					//catch the exception in case we want to use it
+					//or log it.
+				catch (UnauthorizedAccessException uae) {
 					comboBoxPortName.Items.Add(s + " (IN USE)");
 					continue;
 				}
-
 			}
 			comboBoxPortName.Enabled = allowPortEdit;
 			comboBoxBaudRate.Enabled = allowBaudEdit;
@@ -45,48 +37,41 @@ namespace Common.Controls
 			textBoxDataBits.Enabled = allowDataEdit;
 			comboBoxStopBits.Enabled = allowStopEdit;
 
-			comboBoxParity.Items.AddRange(Enum.GetValues(typeof(Parity)).Cast<object>().ToArray());
-			comboBoxStopBits.Items.AddRange(Enum.GetValues(typeof(StopBits)).Cast<object>().ToArray());
+			comboBoxParity.Items.AddRange(Enum.GetValues(typeof (Parity)).Cast<object>().ToArray());
+			comboBoxStopBits.Items.AddRange(Enum.GetValues(typeof (StopBits)).Cast<object>().ToArray());
 
 			//set our text value
-			if (serialPort != null)
-			{
+			if (serialPort != null) {
 				configuredPortValueLabel.Text = serialPort.PortName;
 			}
-			else
-			{
+			else {
 				configuredPortValueLabel.Text = "None";
 			}
-			
-			if (serialPort == null && SerialPort.GetPortNames().Count() > 0)
-			{
+
+			if (serialPort == null && SerialPort.GetPortNames().Count() > 0) {
 				serialPort = new SerialPort(SerialPort.GetPortNames().FirstOrDefault(), 57600, Parity.None, 8, StopBits.One);
 			}
 
 			SelectedPort = serialPort;
 
 			//set our first item in the combobox if we have one
-			if (comboBoxPortName.Items.Count > 0)
-			{
+			if (comboBoxPortName.Items.Count > 0) {
 				comboBoxPortName.SelectedIndex = 0;
 			}
-	
 		}
 
 		public SerialPort SelectedPort
 		{
 			get
 			{
-				if (_HavePorts)
-				{
+				if (_HavePorts) {
 					return new SerialPort(_PortName, _BaudRate, _Parity, _DataBits, _StopBits);
 				}
 				return null;
 			}
 			set
 			{
-				if (value != null)
-				{
+				if (value != null) {
 					_HavePorts = true;
 					_PortName = value.PortName;
 					_BaudRate = value.BaudRate;
@@ -94,8 +79,7 @@ namespace Common.Controls
 					_DataBits = value.DataBits;
 					_StopBits = value.StopBits;
 				}
-				else
-				{
+				else {
 					_HavePorts = false;
 				}
 			}
@@ -111,25 +95,20 @@ namespace Common.Controls
 		{
 			get
 			{
-				
-				if (comboBoxPortName.SelectedItem != null)
-				{
+				if (comboBoxPortName.SelectedItem != null) {
 					//if the portname has (IN USE) we need to strip it so we have
 					//a valid serial port name.
-                    string value;
+					string value;
 					string port = comboBoxPortName.SelectedItem as string;
-					if (port.Contains("(IN USE)"))
-					{
+					if (port.Contains("(IN USE)")) {
 						value = port.Replace("(IN USE)", "").Trim();
 						return value;
 					}
-					else
-					{
+					else {
 						return comboBoxPortName.SelectedItem as string;
 					}
 				}
-				else
-				{
+				else {
 					return null;
 				}
 			}
@@ -141,8 +120,7 @@ namespace Common.Controls
 			get
 			{
 				int value;
-				if (int.TryParse(comboBoxBaudRate.SelectedItem as string, out value))
-				{
+				if (int.TryParse(comboBoxBaudRate.SelectedItem as string, out value)) {
 					return value;
 				}
 				return -1;
@@ -152,7 +130,7 @@ namespace Common.Controls
 
 		private Parity _Parity
 		{
-			get { return (Parity)comboBoxParity.SelectedItem; }
+			get { return (Parity) comboBoxParity.SelectedItem; }
 			set { comboBoxParity.SelectedItem = value; }
 		}
 
@@ -161,8 +139,7 @@ namespace Common.Controls
 			get
 			{
 				int value;
-				if (int.TryParse(textBoxDataBits.Text, out value))
-				{
+				if (int.TryParse(textBoxDataBits.Text, out value)) {
 					return value;
 				}
 				return -1;
@@ -172,36 +149,31 @@ namespace Common.Controls
 
 		private StopBits _StopBits
 		{
-			get { return (StopBits)comboBoxStopBits.SelectedItem; }
+			get { return (StopBits) comboBoxStopBits.SelectedItem; }
 			set { comboBoxStopBits.SelectedItem = value; }
 		}
 
 		private bool _Validate()
 		{
-			if (_HavePorts)
-			{
+			if (_HavePorts) {
 				StringBuilder sb = new StringBuilder();
 
-				if (string.IsNullOrWhiteSpace(_PortName))
-				{
+				if (string.IsNullOrWhiteSpace(_PortName)) {
 					sb.AppendLine("* Port name has not been selected.");
 				}
-				if (_BaudRate == -1)
-				{
+				if (_BaudRate == -1) {
 					sb.AppendLine("* Baud rate has not been selected.");
 				}
-				if (_DataBits == -1)
-				{
+				if (_DataBits == -1) {
 					sb.AppendLine("* Invalid value for data bits.");
 				}
 
-				if (sb.Length > 0)
-				{
-					MessageBox.Show(String.Format("The following items need to be resolved:{0}{0}{1}", Environment.NewLine, sb), "Serial Port", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+				if (sb.Length > 0) {
+					MessageBox.Show(String.Format("The following items need to be resolved:{0}{0}{1}", Environment.NewLine, sb),
+					                "Serial Port", MessageBoxButtons.OK, MessageBoxIcon.Stop);
 					return false;
 				}
-				else
-				{
+				else {
 					return true;
 				}
 			}
@@ -211,23 +183,20 @@ namespace Common.Controls
 
 		private void buttonOK_Click(object sender, EventArgs e)
 		{
-			if (!_Validate())
-			{
+			if (!_Validate()) {
 				DialogResult = DialogResult.None;
 			}
-			else
-			{
+			else {
 				//Since we strip out the (IN USE) in the getter/setter
 				//we need to go ahead and pull from the combo box to check
 				//if we have an in use port.  If we do, just let the user know
 				//and allow them to continue.  We will handle the access violations
 				//in the module classes
 				string port = comboBoxPortName.SelectedItem as string;
-				if (port.Contains("(IN USE)"))
-				{
-					DialogResult result = MessageBox.Show("Serial Port may be in use, do you wish to continue?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-					if (result == DialogResult.No)
-					{
+				if (port.Contains("(IN USE)")) {
+					DialogResult result = MessageBox.Show("Serial Port may be in use, do you wish to continue?", "Warning",
+					                                      MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+					if (result == DialogResult.No) {
 						DialogResult = DialogResult.None;
 					}
 				}

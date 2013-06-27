@@ -17,22 +17,22 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
-
 using Dataweb.NShape.Advanced;
 using Dataweb.NShape.Controllers;
 
 
-namespace Dataweb.NShape.WinFormsUI {
-
+namespace Dataweb.NShape.WinFormsUI
+{
 	/// <ToBeCompleted></ToBeCompleted>
 	[ToolboxItem(false)]
-	public partial class ShapeInfoDialog : Form {
-		
+	public partial class ShapeInfoDialog : Form
+	{
 		/// <summary>
 		/// Displays a dialog showing various information on the given shape:
 		/// Template, shape type, shape library and the shape's control points including their capabilities and connected shapes.
 		/// </summary>
-		public ShapeInfoDialog(Project project, Shape shape) {
+		public ShapeInfoDialog(Project project, Shape shape)
+		{
 			if (project == null) throw new ArgumentNullException("project");
 			if (shape == null) throw new ArgumentNullException("shape");
 			InitializeComponent();
@@ -60,22 +60,23 @@ namespace Dataweb.NShape.WinFormsUI {
 		}
 
 
-		private void UpdateShapeInfo() {
+		private void UpdateShapeInfo()
+		{
 			templateNameLbl.Text = (shape.Template != null) ? shape.Template.Title : string.Empty;
 			shapeTypeLbl.Text = shape.Type.Name;
 			libraryNameLbl.Text = shape.Type.LibraryName;
 			fullNameLbl.Text = shape.Type.FullName;
 
 			permissionsLbl.Text = string.Empty;
-			foreach (Permission permission in Enum.GetValues(typeof(Permission))) {
-				if (permission == Permission.All || permission == Permission.None) 
+			foreach (Permission permission in Enum.GetValues(typeof (Permission))) {
+				if (permission == Permission.All || permission == Permission.None)
 					continue;
 				if (project.SecurityManager.IsGranted(permission, shape.SecurityDomainName)) {
 					if (permissionsLbl.Text.Length > 0) permissionsLbl.Text += ", ";
 					permissionsLbl.Text += permission.ToString();
 				}
 			}
-			if (string.IsNullOrEmpty(permissionsLbl.Text)) 
+			if (string.IsNullOrEmpty(permissionsLbl.Text))
 				permissionsLbl.Text = "None";
 
 			foreach (ControlPointId ptId in shape.GetControlPointIds(ControlPointCapabilities.All)) {
@@ -88,31 +89,36 @@ namespace Dataweb.NShape.WinFormsUI {
 		}
 
 
-		private string GetControlPointCapabilities(ControlPointId id) {
-				ControlPointCapabilities capabilities = ControlPointCapabilities.None;
-				foreach (ControlPointCapabilities capability in Enum.GetValues(typeof(ControlPointCapabilities))) {
-					if (capability == ControlPointCapabilities.All || capability == ControlPointCapabilities.None)
-						continue;
-					if (shape.HasControlPointCapability(id, capability))
-						capabilities |= capability;
-				}
-				return capabilities.ToString();
+		private string GetControlPointCapabilities(ControlPointId id)
+		{
+			ControlPointCapabilities capabilities = ControlPointCapabilities.None;
+			foreach (ControlPointCapabilities capability in Enum.GetValues(typeof (ControlPointCapabilities))) {
+				if (capability == ControlPointCapabilities.All || capability == ControlPointCapabilities.None)
+					continue;
+				if (shape.HasControlPointCapability(id, capability))
+					capabilities |= capability;
+			}
+			return capabilities.ToString();
 		}
 
 
-		private string GetConnectedShapes(ControlPointId id) {
+		private string GetConnectedShapes(ControlPointId id)
+		{
 			//msgTxt += "Shape is connected to" + Environment.NewLine;
 			string result = string.Empty;
 			foreach (ShapeConnectionInfo sci in shape.GetConnectionInfos(id, null))
 				result += string.Format("{0}{1} with Point {2}",
-					(result.Length > 0) ? ", " : "",
-					(sci.OtherShape.Template != null) ? sci.OtherShape.Template.ToString() : sci.OtherShape.Type.Name,
-					sci.OtherPointId);
+				                        (result.Length > 0) ? ", " : "",
+				                        (sci.OtherShape.Template != null)
+				                        	? sci.OtherShape.Template.ToString()
+				                        	: sci.OtherShape.Type.Name,
+				                        sci.OtherPointId);
 			return result;
 		}
 
 
-		private void ctrlPointListView_SelectedIndexChanged(object sender, EventArgs e) {
+		private void ctrlPointListView_SelectedIndexChanged(object sender, EventArgs e)
+		{
 			int selectedPtId = ControlPointId.None;
 			if (ctrlPointListView.SelectedItems.Count > 0)
 				int.TryParse(ctrlPointListView.SelectedItems[0].SubItems[0].Text, out selectedPtId);
@@ -129,31 +135,33 @@ namespace Dataweb.NShape.WinFormsUI {
 	}
 
 
-	internal class PointHighlightingTool : Tool {
+	internal class PointHighlightingTool : Tool
+	{
+		public ControlPointId SelectedPointId { get; set; }
 
-		public ControlPointId SelectedPointId {
-			get;
-			set;
-		}
-
-		public override void EnterDisplay(IDiagramPresenter diagramPresenter) {
+		public override void EnterDisplay(IDiagramPresenter diagramPresenter)
+		{
 			// Nothing to do
 		}
 
-		public override void LeaveDisplay(IDiagramPresenter diagramPresenter) {
+		public override void LeaveDisplay(IDiagramPresenter diagramPresenter)
+		{
 			// Nothing to do
 		}
 
-		public override IEnumerable<MenuItemDef> GetMenuItemDefs(IDiagramPresenter diagramPresenter) {
+		public override IEnumerable<MenuItemDef> GetMenuItemDefs(IDiagramPresenter diagramPresenter)
+		{
 			// Nothing to do
 			yield break;
 		}
 
-		public override void Invalidate(IDiagramPresenter diagramPresenter) {
+		public override void Invalidate(IDiagramPresenter diagramPresenter)
+		{
 			// Nothing to do
 		}
 
-		public override void Draw(IDiagramPresenter diagramPresenter) {
+		public override void Draw(IDiagramPresenter diagramPresenter)
+		{
 			Shape shape = null;
 			if (diagramPresenter.Diagram != null && diagramPresenter.Diagram.Shapes.Count > 0)
 				shape = diagramPresenter.Diagram.Shapes.TopMost;
@@ -170,20 +178,22 @@ namespace Dataweb.NShape.WinFormsUI {
 						if (shape.HasControlPointCapability(id, ControlPointCapabilities.Rotate))
 							diagramPresenter.DrawRotateGrip(drawMode, shape, id);
 					}
-				} finally {
+				}
+				finally {
 					diagramPresenter.RestoreTransformation();
 				}
 			}
 		}
 
 
-		public override void RefreshIcons() {
+		public override void RefreshIcons()
+		{
 			// Nothing to do
 		}
 
-		protected override void CancelCore() {
+		protected override void CancelCore()
+		{
 			// Nothing to do
 		}
 	}
-
 }

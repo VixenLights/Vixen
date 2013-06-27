@@ -1,13 +1,16 @@
 ﻿using System;
 using Vixen.Interpolator;
 
-namespace Vixen.Sys {
+namespace Vixen.Sys
+{
 	// Times are relative to the start of the owning Intent.
-	class IntentSegment<T> : Dispatchable<IntentSegment<T>>, IIntentSegment<T> {
+	internal class IntentSegment<T> : Dispatchable<IntentSegment<T>>, IIntentSegment<T>
+	{
 		private Interpolator<T> _interpolator;
 
-		public IntentSegment(T startValue, T endValue, TimeSpan timeSpan, Interpolator<T> interpolator) {
-			if(interpolator == null) throw new ArgumentNullException("interpolator");
+		public IntentSegment(T startValue, T endValue, TimeSpan timeSpan, Interpolator<T> interpolator)
+		{
+			if (interpolator == null) throw new ArgumentNullException("interpolator");
 			StartValue = startValue;
 			EndValue = endValue;
 			TimeSpan = timeSpan;
@@ -22,22 +25,25 @@ namespace Vixen.Sys {
 
 		public TimeSpan TimeSpan { get; private set; }
 
-		virtual public T GetStateAt(TimeSpan segmentRelativeTime) {
+		public virtual T GetStateAt(TimeSpan segmentRelativeTime)
+		{
 			T value;
-			if(_interpolator.Interpolate(segmentRelativeTime, TimeSpan, StartValue, EndValue, out value)) {
+			if (_interpolator.Interpolate(segmentRelativeTime, TimeSpan, StartValue, EndValue, out value)) {
 				return value;
 			}
 			return default(T);
 		}
 
-		object IIntentSegment.StartValue {
+		object IIntentSegment.StartValue
+		{
 			get { return StartValue; }
-			set { StartValue = (T)value; }
+			set { StartValue = (T) value; }
 		}
 
-		object IIntentSegment.EndValue {
+		object IIntentSegment.EndValue
+		{
 			get { return EndValue; }
-			set { EndValue = (T)value; }
+			set { EndValue = (T) value; }
 		}
 	}
 }

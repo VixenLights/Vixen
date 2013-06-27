@@ -5,11 +5,14 @@ using System.Runtime.Serialization;
 using System.Text;
 using Vixen.Module;
 
-namespace FadeOut {
+namespace FadeOut
+{
 	[DataContract]
-	public class FadeOutData : ModuleDataModelBase {
-		public override IModuleDataModel Clone() {
-			return (FadeOutData)MemberwiseClone();
+	public class FadeOutData : ModuleDataModelBase
+	{
+		public override IModuleDataModel Clone()
+		{
+			return (FadeOutData) MemberwiseClone();
 		}
 	}
 }

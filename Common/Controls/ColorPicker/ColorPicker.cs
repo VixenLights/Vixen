@@ -50,39 +50,42 @@ namespace Common.Controls.ColorManagement.ColorPicker
 		private Button redButton;
 		private IContainer components;
 
-		public ColorPicker():this(Mode.HSV_RGB,Fader.HSV_H){}
+		public ColorPicker() : this(Mode.HSV_RGB, Fader.HSV_H)
+		{
+		}
+
 		public ColorPicker(Mode mode, Fader fader)
 		{
-			_mode=mode;
-			_fader=fader;
+			_mode = mode;
+			_fader = fader;
 
 			InitializeComponent();
 
 			UpdateUI();
-			filter=new ShiftKeyFilter();
-			filter.ShiftStateChanged+=new EventHandler(filter_ShiftStateChanged);
+			filter = new ShiftKeyFilter();
+			filter.ShiftStateChanged += new EventHandler(filter_ShiftStateChanged);
 			Application.AddMessageFilter(filter);
 		}
+
 		/// <summary>
 		/// Die verwendeten Ressourcen bereinigen.
 		/// </summary>
-		protected override void Dispose( bool disposing )
+		protected override void Dispose(bool disposing)
 		{
-			if( disposing )
-			{
-				if(components != null)
-				{
+			if (disposing) {
+				if (components != null) {
 					components.Dispose();
 				}
 			}
-			if(filter!=null)
-			{
+			if (filter != null) {
 				Application.RemoveMessageFilter(filter);
-				filter=null;
+				filter = null;
 			}
-			base.Dispose( disposing );
+			base.Dispose(disposing);
 		}
+
 		#region Vom Windows Form-Designer generierter Code
+
 		/// <summary>
 		/// Erforderliche Methode für die Designerunterstützung. 
 		/// Der Inhalt der Methode darf nicht mit dem Code-Editor geändert werden.
@@ -90,7 +93,8 @@ namespace Common.Controls.ColorManagement.ColorPicker
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ColorPicker));
+			System.ComponentModel.ComponentResourceManager resources =
+				new System.ComponentModel.ComponentResourceManager(typeof (ColorPicker));
 			this.label1 = new System.Windows.Forms.Label();
 			this.btnCancel = new System.Windows.Forms.Button();
 			this.btnOK = new System.Windows.Forms.Button();
@@ -149,12 +153,14 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			// 
 			// contextMenu
 			// 
-			this.contextMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-            this.ctxHSV_RGB,
-            this.ctxHSV_LAB,
-            this.separator1,
-            this.ctxPrevColor,
-            this.ctxCopy});
+			this.contextMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[]
+			                                    	{
+			                                    		this.ctxHSV_RGB,
+			                                    		this.ctxHSV_LAB,
+			                                    		this.separator1,
+			                                    		this.ctxPrevColor,
+			                                    		this.ctxCopy
+			                                    	});
 			// 
 			// ctxHSV_RGB
 			// 
@@ -341,10 +347,12 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			// lblColorOut
 			// 
 			resources.ApplyResources(this.lblColorOut, "lblColorOut");
-			this.lblColorOut.Color = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+			this.lblColorOut.Color = System.Drawing.Color.FromArgb(((int) (((byte) (255)))), ((int) (((byte) (255)))),
+			                                                       ((int) (((byte) (255)))));
 			this.lblColorOut.ContextMenu = this.contextMenu;
 			this.lblColorOut.Name = "lblColorOut";
-			this.lblColorOut.OldColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+			this.lblColorOut.OldColor = System.Drawing.Color.FromArgb(((int) (((byte) (255)))), ((int) (((byte) (255)))),
+			                                                          ((int) (((byte) (255)))));
 			this.toolTip.SetToolTip(this.lblColorOut, resources.GetString("lblColorOut.ToolTip"));
 			this.lblColorOut.ColorChanged += new System.EventHandler(this.lblColorOut_ColorChanged);
 			// 
@@ -400,68 +408,77 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			this.quickPickBox.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
-
 		}
+
 		#endregion
 
 		#region types
-		private class ShiftKeyFilter:IMessageFilter
+
+		private class ShiftKeyFilter : IMessageFilter
 		{
 			private const int WM_KEYDOWN = 0x100;
 			private const int WM_KEYUP = 0x101;
 
 			public bool PreFilterMessage(ref Message m)
 			{
-				switch(m.Msg)
-				{
+				switch (m.Msg) {
 					case WM_KEYDOWN:
-						if(m.WParam.ToInt32()==(int)Keys.ShiftKey)
-						{
+						if (m.WParam.ToInt32() == (int) Keys.ShiftKey) {
 							RaiseShiftStateChanged();
 							return true;
-						}break;
+						}
+						break;
 					case WM_KEYUP:
-						if(m.WParam.ToInt32()==(int)Keys.ShiftKey)
-						{
+						if (m.WParam.ToInt32() == (int) Keys.ShiftKey) {
 							RaiseShiftStateChanged();
 							return true;
-						}break;
+						}
+						break;
 				}
 				return false;
 			}
+
 			private void RaiseShiftStateChanged()
 			{
-				if(ShiftStateChanged!=null)
-							ShiftStateChanged(this,EventArgs.Empty);
+				if (ShiftStateChanged != null)
+					ShiftStateChanged(this, EventArgs.Empty);
 			}
+
 			public event EventHandler ShiftStateChanged;
 		}
 
 		public enum Fader
 		{
-			HSV_H=0,
-			HSV_S=1,
-			HSV_V=2,
+			HSV_H = 0,
+			HSV_S = 1,
+			HSV_V = 2,
 
-			Second_1=3,
-			Second_2=4,
-			Second_3=5
+			Second_1 = 3,
+			Second_2 = 4,
+			Second_3 = 5
 		}
+
 		public enum Mode
 		{
-			HSV_RGB=0,
-			HSV_LAB=1
+			HSV_RGB = 0,
+			HSV_LAB = 1
 		}
+
 		#endregion
+
 		#region variables
+
 		private ShiftKeyFilter filter;
 		private ColorSelectionModule _module;
-		private XYZ _color=XYZ.White;
-		private Mode _mode=Mode.HSV_RGB;
-		private Fader _fader=Fader.HSV_H;
+		private XYZ _color = XYZ.White;
+		private Mode _mode = Mode.HSV_RGB;
+		private Fader _fader = Fader.HSV_H;
 		private bool lockValueV = false;
+
 		#endregion
+
 		#region ui updating
+
 		public void UpdateUI()
 		{
 			ChangeModule();
@@ -469,265 +486,284 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			UpdaterdFader();
 			UpdatectxOptions();
 			UpdatetbValue(null);
-			
-			_module.XYZ=InternalColor;
+
+			_module.XYZ = InternalColor;
 			lblColorOut.Color = lblColorOut.OldColor = InternalColor.ToRGB();
 		}
+
 		#region module
+
 		private void ChangeModule(ColorSelectionModule value)
 		{
-			if(value==_module) return;
-			if(_module!=null)
-			{
-				_module.ColorChanged-=new EventHandler(_module_ColorChanged);
-				_module.ColorSelectionFader=null;
-				_module.ColorSelectionPlane=null;
+			if (value == _module) return;
+			if (_module != null) {
+				_module.ColorChanged -= new EventHandler(_module_ColorChanged);
+				_module.ColorSelectionFader = null;
+				_module.ColorSelectionPlane = null;
 			}
-			_module=value;
-			if(_module!=null)
-			{
-				_module.ColorChanged+=new EventHandler(_module_ColorChanged);
+			_module = value;
+			if (_module != null) {
+				_module.ColorChanged += new EventHandler(_module_ColorChanged);
 				_module.XYZ = InternalColor;
-				_module.ColorSelectionFader=colorSelectionFader1;
-				_module.ColorSelectionPlane=colorSelectionPlane1;
+				_module.ColorSelectionFader = colorSelectionFader1;
+				_module.ColorSelectionPlane = colorSelectionPlane1;
 			}
-
 		}
+
 		private void ChangeModule()
 		{
-			switch(_fader)
-			{
-				case Fader.HSV_H: ChangeModule(new ColorSelectionModuleHSV_H()); break;
-				case Fader.HSV_S: ChangeModule(new ColorSelectionModuleHSV_S()); break;
-				case Fader.HSV_V: ChangeModule(new ColorSelectionModuleHSV_V()); break;
+			switch (_fader) {
+				case Fader.HSV_H:
+					ChangeModule(new ColorSelectionModuleHSV_H());
+					break;
+				case Fader.HSV_S:
+					ChangeModule(new ColorSelectionModuleHSV_S());
+					break;
+				case Fader.HSV_V:
+					ChangeModule(new ColorSelectionModuleHSV_V());
+					break;
 				case Fader.Second_1:
-					if(_mode==Mode.HSV_RGB)
+					if (_mode == Mode.HSV_RGB)
 						ChangeModule(new ColorSelectionModuleRGB_R());
 					else
 						ChangeModule(new ColorSelectionModuleLAB_L());
 					break;
 				case Fader.Second_2:
-					if(_mode==Mode.HSV_RGB)
+					if (_mode == Mode.HSV_RGB)
 						ChangeModule(new ColorSelectionModuleRGB_G());
 					else
 						ChangeModule(new ColorSelectionModuleLAB_a());
 					break;
 				default:
-					if(_mode==Mode.HSV_RGB)
+					if (_mode == Mode.HSV_RGB)
 						ChangeModule(new ColorSelectionModuleRGB_B());
 					else
-						ChangeModule(new ColorSelectionModuleLAB_b()); break;
+						ChangeModule(new ColorSelectionModuleLAB_b());
+					break;
 			}
 		}
+
 		private void ChangeDescriptions()
 		{
-			switch(_mode)
-			{
+			switch (_mode) {
 				case Mode.HSV_RGB:
-					rdSecond_1.Text="R";
-					rdSecond_2.Text="G";
-					rdSecond_3.Text="B";
+					rdSecond_1.Text = "R";
+					rdSecond_2.Text = "G";
+					rdSecond_3.Text = "B";
 					break;
 				default:
-					rdSecond_1.Text="L";
-					rdSecond_2.Text="a*";
-					rdSecond_3.Text="b*";
+					rdSecond_1.Text = "L";
+					rdSecond_2.Text = "a*";
+					rdSecond_3.Text = "b*";
 					break;
 			}
 		}
+
 		#endregion
+
 		#region contextmenu
+
 		private void ctxOptions_Click(object sender, System.EventArgs e)
 		{
-			Mode newmode=_mode;
-			if(sender==ctxPrevColor)
-			{
-				Color=XYZ.FromRGB(lblColorOut.OldColor);
+			Mode newmode = _mode;
+			if (sender == ctxPrevColor) {
+				Color = XYZ.FromRGB(lblColorOut.OldColor);
 				return;
 			}
-			else if(sender==ctxCopy)
-			{
-				string str=ColorLabel.ColorToHexString(lblColorOut.Color);
-				try
-				{
-					Clipboard.SetDataObject(str,true);
+			else if (sender == ctxCopy) {
+				string str = ColorLabel.ColorToHexString(lblColorOut.Color);
+				try {
+					Clipboard.SetDataObject(str, true);
 				}
-				catch{}
+				catch {
+				}
 				return;
 			}
-			//read checkbox
-			else if(sender==ctxHSV_RGB)
-				newmode=Mode.HSV_RGB;
-			else if(sender==ctxHSV_LAB)
-				newmode=Mode.HSV_LAB;
+				//read checkbox
+			else if (sender == ctxHSV_RGB)
+				newmode = Mode.HSV_RGB;
+			else if (sender == ctxHSV_LAB)
+				newmode = Mode.HSV_LAB;
 			//compare to old
-			if(newmode==_mode) return;
+			if (newmode == _mode) return;
 			//update ui
-			_mode=newmode;
+			_mode = newmode;
 			UpdatectxOptions();
 			ChangeDescriptions();
 			ChangeModule();
 			UpdatetbValue(null);
 		}
+
 		private void UpdatectxOptions()
 		{
-			ctxHSV_RGB.Checked=_mode==Mode.HSV_RGB;
-			ctxHSV_LAB.Checked=_mode==Mode.HSV_LAB;
+			ctxHSV_RGB.Checked = _mode == Mode.HSV_RGB;
+			ctxHSV_LAB.Checked = _mode == Mode.HSV_LAB;
 		}
+
 		#endregion
+
 		#region rdFader
+
 		private void UpdaterdFaderedChanged(object sender, System.EventArgs e)
 		{
-			if(sender==rdHSV_H)
-				_fader=Fader.HSV_H;
-			else if(sender==rdHSV_S)
-				_fader=Fader.HSV_S;
-			else if(sender==rdHSV_V)
-				_fader=Fader.HSV_V;
+			if (sender == rdHSV_H)
+				_fader = Fader.HSV_H;
+			else if (sender == rdHSV_S)
+				_fader = Fader.HSV_S;
+			else if (sender == rdHSV_V)
+				_fader = Fader.HSV_V;
 				//secondary faders
-			else if(sender==rdSecond_1)
-				_fader=Fader.Second_1;
-			else if(sender==rdSecond_2)
-				_fader=Fader.Second_2;
-			else//(sender==rdSecond_3)
-				_fader=Fader.Second_3;
+			else if (sender == rdSecond_1)
+				_fader = Fader.Second_1;
+			else if (sender == rdSecond_2)
+				_fader = Fader.Second_2;
+			else //(sender==rdSecond_3)
+				_fader = Fader.Second_3;
 
-            ChangeModule();
+			ChangeModule();
 		}
+
 		private void UpdaterdFader()
 		{
-			if(_fader==Fader.HSV_H)
-				rdHSV_H.Checked=true;
-			else if(_fader==Fader.HSV_S)
-				rdHSV_S.Checked=true;
-			else if(_fader==Fader.HSV_V)
-				rdHSV_V.Checked=true;
-			else if(_fader==Fader.Second_1)
-				rdSecond_1.Checked=true;
-			else if(_fader==Fader.Second_2)
-				rdSecond_2.Checked=true;
-			else if(_fader==Fader.Second_3)
-				rdSecond_3.Checked=true;
+			if (_fader == Fader.HSV_H)
+				rdHSV_H.Checked = true;
+			else if (_fader == Fader.HSV_S)
+				rdHSV_S.Checked = true;
+			else if (_fader == Fader.HSV_V)
+				rdHSV_V.Checked = true;
+			else if (_fader == Fader.Second_1)
+				rdSecond_1.Checked = true;
+			else if (_fader == Fader.Second_2)
+				rdSecond_2.Checked = true;
+			else if (_fader == Fader.Second_3)
+				rdSecond_3.Checked = true;
 		}
+
 		#endregion
+
 		#region tbValue
+
 		private void tbValue_KeyUp(object sender, System.Windows.Forms.KeyEventArgs e)
 		{
-			if(!(sender is TextBox)) return;
-			if(e.KeyCode==Keys.Return)
-			{
+			if (!(sender is TextBox)) return;
+			if (e.KeyCode == Keys.Return) {
 				UpdatetbValue(null);
-				e.Handled=true;
+				e.Handled = true;
 				return;
 			}
 			double value;
-			if(!double.TryParse(((TextBox)sender).Text,
-				System.Globalization.NumberStyles.Integer,
-				null,out value)) return;
+			if (!double.TryParse(((TextBox) sender).Text,
+			                     System.Globalization.NumberStyles.Integer,
+			                     null, out value)) return;
+
 			#region hsv  textboxes
-			if(sender==tbHSV_H)
-			{
+
+			if (sender == tbHSV_H) {
 				HSV chsv = HSV.FromRGB(InternalColor.ToRGB());
-				chsv.H=value/360.0;
+				chsv.H = value/360.0;
 				InternalColor = XYZ.FromRGB(chsv.ToRGB());
 			}
-			else if(sender==tbHSV_S)
-			{
+			else if (sender == tbHSV_S) {
 				HSV chsv = HSV.FromRGB(InternalColor.ToRGB());
-				chsv.S=value/100.0;
+				chsv.S = value/100.0;
 				InternalColor = XYZ.FromRGB(chsv.ToRGB());
 			}
-			else if(sender==tbHSV_V)
-			{
+			else if (sender == tbHSV_V) {
 				HSV chsv = HSV.FromRGB(InternalColor.ToRGB());
-				chsv.V=value/100.0;
+				chsv.V = value/100.0;
 				InternalColor = XYZ.FromRGB(chsv.ToRGB());
 			}
-			#endregion
-			#region secondary textboxes
-			else if(_mode==Mode.HSV_RGB)
-			{
+				#endregion
+				#region secondary textboxes
+
+			else if (_mode == Mode.HSV_RGB) {
 				RGB crgb = InternalColor.ToRGB();
-				if(sender==tbSecond_1)
-				{
-					crgb.R=value/255.0;
+				if (sender == tbSecond_1) {
+					crgb.R = value/255.0;
 				}
-				else if(sender==tbSecond_2)
-				{
-					crgb.G=value/255.0;
+				else if (sender == tbSecond_2) {
+					crgb.G = value/255.0;
 				}
 				else //sender==tbSecond_3
 				{
-					crgb.B=value/255.0;
+					crgb.B = value/255.0;
 				}
 				InternalColor = XYZ.FromRGB(crgb);
 			}
-			else if(_mode==Mode.HSV_LAB)
-			{
+			else if (_mode == Mode.HSV_LAB) {
 				LAB clab = LAB.FromXYZ(InternalColor);
-				if(sender==tbSecond_1)
-				{
-					clab.L=value;
+				if (sender == tbSecond_1) {
+					clab.L = value;
 				}
-				else if(sender==tbSecond_2)
-				{
-					clab.a=value;
+				else if (sender == tbSecond_2) {
+					clab.a = value;
 				}
 				else //sender==tbSecond_3
 				{
-					clab.b=value;
+					clab.b = value;
 				}
 				InternalColor = clab.ToXYZ();
 			}
+
 			#endregion
+
 			//update ui
 			_module.XYZ = InternalColor;
 			lblColorOut.Color = InternalColor.ToRGB();
-			UpdatetbValue((TextBox)sender);
-		}		
+			UpdatetbValue((TextBox) sender);
+		}
+
 		private void tbValue_Leave(object sender, System.EventArgs e)
 		{
 			UpdatetbValue(null);
 		}
+
 		private void UpdatetbValue(TextBox skipupdate)
 		{
 			#region hsv textboxes
+
 			HSV chsv = HSV.FromRGB(InternalColor.ToRGB());
-			if(skipupdate!=tbHSV_H)
-				tbHSV_H.Text=(chsv.H*360.0).ToString("0");
-			if(skipupdate!=tbHSV_S)
-				tbHSV_S.Text=(chsv.S*100.0).ToString("0");
-			if(skipupdate!=tbHSV_V)
-				tbHSV_V.Text=(chsv.V*100.0).ToString("0");
+			if (skipupdate != tbHSV_H)
+				tbHSV_H.Text = (chsv.H*360.0).ToString("0");
+			if (skipupdate != tbHSV_S)
+				tbHSV_S.Text = (chsv.S*100.0).ToString("0");
+			if (skipupdate != tbHSV_V)
+				tbHSV_V.Text = (chsv.V*100.0).ToString("0");
+
 			#endregion
+
 			#region secondary textboxes
-			if(_mode==Mode.HSV_RGB)
-			{
+
+			if (_mode == Mode.HSV_RGB) {
 				RGB crgb = InternalColor.ToRGB();
-				if(skipupdate!=tbSecond_1)
-					tbSecond_1.Text=(crgb.R*255.0).ToString("0");
-				if(skipupdate!=tbSecond_2)
-					tbSecond_2.Text=(crgb.G*255.0).ToString("0");
-				if(skipupdate!=tbSecond_3)
-					tbSecond_3.Text=(crgb.B*255.0).ToString("0");
+				if (skipupdate != tbSecond_1)
+					tbSecond_1.Text = (crgb.R*255.0).ToString("0");
+				if (skipupdate != tbSecond_2)
+					tbSecond_2.Text = (crgb.G*255.0).ToString("0");
+				if (skipupdate != tbSecond_3)
+					tbSecond_3.Text = (crgb.B*255.0).ToString("0");
 			}
-			else//(_mode==Mode.HSV_LAB)
+			else //(_mode==Mode.HSV_LAB)
 			{
 				LAB clab = LAB.FromXYZ(InternalColor);
-				if(skipupdate!=tbSecond_1)
-					tbSecond_1.Text=clab.L.ToString("0");
-				if(skipupdate!=tbSecond_2)
-					tbSecond_2.Text=clab.a.ToString("0");
-				if(skipupdate!=tbSecond_3)
-					tbSecond_3.Text=clab.b.ToString("0");
+				if (skipupdate != tbSecond_1)
+					tbSecond_1.Text = clab.L.ToString("0");
+				if (skipupdate != tbSecond_2)
+					tbSecond_2.Text = clab.a.ToString("0");
+				if (skipupdate != tbSecond_3)
+					tbSecond_3.Text = clab.b.ToString("0");
 			}
+
 			#endregion
 		}
+
 		#endregion
+
 		#region module & lbl
+
 		private void _module_ColorChanged(object sender, EventArgs e)
 		{
-			if(_module==null) return;
+			if (_module == null) return;
 			InternalColor = _module.XYZ;
 			lblColorOut.Color = InternalColor.ToRGB();
 			UpdatetbValue(null);
@@ -739,9 +775,13 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			_module.XYZ = InternalColor;
 			UpdatetbValue(null);
 		}
+
 		#endregion
+
 		#endregion
+
 		#region properties
+
 		/// <summary>
 		/// gets or sets the color as device-independent CIE-XYZ color
 		/// </summary>
@@ -758,6 +798,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 				UpdatetbValue(null);
 			}
 		}
+
 		/// <summary>
 		/// An internal call for setting the color, so it can be filtered if needed (locked to ranges, etc.)
 		/// </summary>
@@ -792,7 +833,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 		[Browsable(false)]
 		public Fader PrimaryFader
 		{
-			get{return _fader;}
+			get { return _fader; }
 //			set
 //			{
 //				if(value==_fader) return;
@@ -801,10 +842,11 @@ namespace Common.Controls.ColorManagement.ColorPicker
 //				ChangeModule();
 //			}
 		}
+
 		[Browsable(false)]
 		public Mode SecondaryMode
 		{
-			get{return _mode;}
+			get { return _mode; }
 //			set
 //			{
 //				if(value==_mode) return;
@@ -814,7 +856,9 @@ namespace Common.Controls.ColorManagement.ColorPicker
 //				UpdatetbValue(null);
 //			}
 		}
+
 		#endregion
+
 		private void filter_ShiftStateChanged(object sender, EventArgs e)
 		{
 			colorSelectionPlane1.Refresh();
@@ -827,12 +871,14 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			lblColorOut.Color = InternalColor.ToRGB();
 			UpdatetbValue(null);
 		}
+
 		private void greenButton_Click(object sender, EventArgs e)
 		{
 			InternalColor = XYZ.FromRGB(new RGB(0, 255, 0));
 			lblColorOut.Color = InternalColor.ToRGB();
 			UpdatetbValue(null);
 		}
+
 		private void blueButton_Click(object sender, EventArgs e)
 		{
 			InternalColor = XYZ.FromRGB(new RGB(0, 0, 255));
