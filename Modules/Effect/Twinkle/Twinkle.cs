@@ -9,6 +9,7 @@ using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using System.Drawing;
 using ZedGraph;
+using VixenModules.Property.Color;
 
 namespace VixenModules.Effect.Twinkle
 {
@@ -29,6 +30,18 @@ namespace VixenModules.Effect.Twinkle
 			_elementData = new EffectIntents();
 
 			IEnumerable<ElementNode> targetNodes = GetNodesToRenderOn();
+
+			if (StaticColor.IsEmpty) //We have a new effect
+			{
+				//Try to set a default color gradient from our available colors if we have discrete colors
+				HashSet<Color> validColors = new HashSet<Color>();
+				validColors.AddRange(targetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
+				ColorGradient = new ColorGradient(validColors.DefaultIfEmpty(Color.White).First());
+
+				//Set a default color 
+				StaticColor = validColors.DefaultIfEmpty(Color.White).First();
+
+			}
 
 			List<IndividualTwinkleDetails> twinkles = null;
 			if (!IndividualElements)

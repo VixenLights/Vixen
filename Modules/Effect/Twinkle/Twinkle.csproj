@@ -66,6 +66,11 @@
       <Name>Curves</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\Property\Color\Color.csproj">
+      <Project>{73068A83-B3B7-4A2C-923D-71C7886CD5E3}</Project>
+      <Name>Color</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\Pulse\Pulse.csproj">
       <Project>{A815A79E-305D-4167-A0BC-FFA590BB4644}</Project>
       <Name>Pulse</Name>
