@@ -6,11 +6,11 @@ using Vixen.Module.EffectEditor;
 
 namespace VixenModules.EffectEditor.AlternatingEditor
 {
-    class AlternatingEffect : EffectEditorModuleInstanceBase
-    {
-        override public IEffectEditorControl CreateEditorControl()
-        {
-            return new AlternatingEffectEditorControl();
-        }
-    }
+	internal class AlternatingEffect : EffectEditorModuleInstanceBase
+	{
+		public override IEffectEditorControl CreateEditorControl()
+		{
+			return new AlternatingEffectEditorControl();
+		}
+	}
 }
