@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{707775B8-B381-4F05-A75D-806AEF3B6FEF}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VixenModules.EffectEditor.AlternatingEditor</RootNamespace>
+    <AssemblyName>AlternatingEditor</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\..\Output\Modules\EffectEditor\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\..\Release\Modules\EffectEditor\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AlternatingEffect.cs" />
+    <Compile Include="AlternatingEffectEditorControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="AlternatingEffectEditorControl.Designer.cs">
+      <DependentUpon>AlternatingEffectEditorControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AlternatingEffectEditorDescriptor.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Common\Controls\Controls.csproj">
+      <Project>{a54fb6a1-a9c3-488c-b961-41b8dbc81b36}</Project>
+      <Name>Controls</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Common\ValueTypes\ValueTypes.csproj">
+      <Project>{d9a7e8bc-5617-486d-9da5-89c5861a0f88}</Project>
+      <Name>ValueTypes</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Vixen.System\Vixen.csproj">
+      <Project>{50b78623-fcf4-48af-93ff-fa87c937028f}</Project>
+      <Name>Vixen</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\App\ColorGradients\ColorGradients.csproj">
+      <Project>{1b189b36-02af-4a57-9e1b-6dc833212725}</Project>
+      <Name>ColorGradients</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\ColorGradientTypeEditor\ColorGradientTypeEditor.csproj">
+      <Project>{48cf28ec-8dc9-44f8-a258-bd264df187d9}</Project>
+      <Name>ColorGradientTypeEditor</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\ColorTypeEditor\ColorTypeEditor.csproj">
+      <Project>{3b7309d6-5d6a-4265-a0b9-b65e0ddfcb12}</Project>
+      <Name>ColorTypeEditor</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\LevelTypeEditor\LevelTypeEditor.csproj">
+      <Project>{5fe12ee4-49cb-4008-9a30-96960704a9c5}</Project>
+      <Name>LevelTypeEditor</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="AlternatingEffectEditorControl.resx">
+      <DependentUpon>AlternatingEffectEditorControl.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
