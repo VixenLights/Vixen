@@ -15,7 +15,6 @@ namespace VixenModules.Effect.Nutcracker
 
 		private bool _isAlpha = false;
 		private Bitmap _bitmap;
-		//private Bitmap _emptyBitmap;
 		private int _width;
 		private int _height;
 
@@ -65,9 +64,7 @@ namespace VixenModules.Effect.Nutcracker
 
 		public void SetupBitmap(int width, int height)
 		{
-			//_bitmap = new Bitmap(width, height, PixelFormat.Format32bppPArgb);
 			_bitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
-			//_alphaBackground = new Bitmap(_background.Width, _background.Height, PixelFormat.Format32bppPArgb);
 			if (_bitmap.PixelFormat == (_bitmap.PixelFormat | PixelFormat.Indexed))
 				throw new Exception("Cannot lock an Indexed image.");
 
@@ -146,11 +143,6 @@ namespace VixenModules.Effect.Nutcracker
 
 			if (x >= 0 && x < _width && y >= 0 && y < _height) {
 				if (this.IsAlphaBitmap) {
-					//displayColor = sourceColor×alpha / 255 + backgroundColor×(255 – alpha) / 255 
-					//New_R = CInt((255 - R) * (A / 255.0) + R)
-					//New_G = CInt((255 - G) * (A / 255.0) + G)
-					//New_B = CInt((255 - G) * (A / 255.0) + B)
-					//Final Color = (Source Color x alpha / 255) + [Background Color x (255 - alpha) / 255]
 					int index = ((y*this.Width + x)*4);
 
 					float b = rgbValues[index];
@@ -158,19 +150,12 @@ namespace VixenModules.Effect.Nutcracker
 					float r = rgbValues[index + 2];
 					float a = rgbValues[index + 3];
 
-					//float New_R = ((255f-color.R) * (color.A / 255f) + color.R);
-					//float New_G = ((255f - color.G) * (color.A / 255f) + color.G);
-					//float New_B = ((255f - color.B) * (color.A / 255f) + color.B);
 					float New_R = color.R*color.A/255 + r*(255 - color.A)/255;
 					float New_G = color.G*color.A/255 + g*(255 - color.A)/255;
 					float New_B = color.B*color.A/255 + b*(255 - color.A)/255;
 					rgbValues[index] = (byte) New_B;
 					rgbValues[index + 1] = (byte) New_G;
 					rgbValues[index + 2] = (byte) New_R;
-					//this.rgbValues[index + 0] = (byte)(((float)color.B * ((float)color.A / 255f)) + ((float)rgbValues[index + 0] * (255f - (float)color.A) / 255f));
-					//this.rgbValues[index + 1] = (byte)(((float)color.G * ((float)color.A / 255f)) + ((float)rgbValues[index + 1] * (255f - (float)color.A) / 255f));
-					//this.rgbValues[index + 1] = (byte)(((float)color.R * ((float)color.A / 255f)) + ((float)rgbValues[index + 2] * (255f - (float)color.A) / 255f));
-					//this.rgbValues[index+3] = (byte)((color.A * (color.A / 255)) + (rgbValues[index+3] * (255 - color.A) / 255));
 				}
 				else {
 					int index = ((y*this.Width + x)*3);
@@ -249,8 +234,6 @@ namespace VixenModules.Effect.Nutcracker
 
 		public void DrawCircle(Rectangle rect, Color color)
 		{
-			//lock (Shapes.PreviewTools.renderLock)
-			//{
 			if (rect.Width > 0 && rect.Height > 0) {
 				// Default drawing tools don't draw circles that are either 1 or 2 pixels,
 				// so we do it manually
@@ -281,42 +264,12 @@ namespace VixenModules.Effect.Nutcracker
 					// Row 2
 					SetPixel(rect.Left + 1, rect.Top + 1, color);
 				}
-					//else if (rect.Width == 5)
-					//{
-					//    // Row 1
-					//    SetPixel(rect.Left, rect.Top, color);
-					//    // Row 1
-					//    SetPixel(rect.Left + 1, rect.Top, color);
-					//    // Row 1
-					//    SetPixel(rect.Left + 2, rect.Top, color);
-					//    // Row 2
-					//    SetPixel(rect.Left, rect.Top + 1, color);
-					//    // Row 2
-					//    SetPixel(rect.Left + 1, rect.Top + 1, color);
-					//}
-					//else if (rect.Width == 6)
-					//{
-					//    // Row 1
-					//    SetPixel(rect.Left, rect.Top, color);
-					//    // Row 1
-					//    SetPixel(rect.Left + 1, rect.Top, color);
-					//    // Row 1
-					//    SetPixel(rect.Left + 2, rect.Top, color);
-					//    // Row 2
-					//    SetPixel(rect.Left, rect.Top + 1, color);
-					//    // Row 2
-					//    SetPixel(rect.Left + 1, rect.Top + 1, color);
-					//    // Row 3
-					//    SetPixel(rect.Left + 2, rect.Top + 1, color);
-					//}
 				else {
 					Bitmap b;
 					FastPixel fp;
 					if (!FastPixel.circleCache.TryGetValue(rect.Width, out fp)) {
 						b = new Bitmap(rect.Width, rect.Height);
 						Graphics g = Graphics.FromImage(b);
-						//g.Clear(Color.Transparent);
-						//SolidBrush brush = new SolidBrush(Color.White);
 						g.FillEllipse(Brushes.White, new Rectangle(0, 0, rect.Width - 1, rect.Height - 1));
 						fp = new FastPixel(b);
 						FastPixel.circleCache.Add(rect.Width, fp);
@@ -332,7 +285,6 @@ namespace VixenModules.Effect.Nutcracker
 					fp.Unlock(false);
 				}
 			}
-			//}
 		}
 	}
 }
