@@ -20,8 +20,8 @@
 	</DataTemplate>
 	<DataTemplate DataType="{x:Type Shapes1:OutlinedTriangle}">
 		<Viewbox Stretch="Fill">
-			<Path Data="M60,0 L0,120 L120,120 Z" Margin="{Binding StrokeThickness}" Fill="Transparent" HorizontalAlignment="Center"
-			      Stroke="{Binding Brush}" StrokeThickness="{Binding StrokeThickness}" />
+			<Path Data="M60,0 L0,120 L120,120 Z" Margin="{Binding StrokeThickness}" Fill="Transparent"
+			      HorizontalAlignment="Center" Stroke="{Binding Brush}" StrokeThickness="{Binding StrokeThickness}" />
 		</Viewbox>
 	</DataTemplate>
 	<DataTemplate DataType="{x:Type Shapes1:OutlinedRectangle}">
@@ -51,7 +51,8 @@ Fill="Transparent" Stroke="{Binding Brush}" StrokeThickness="{Binding StrokeThic
 	</DataTemplate>
 	<DataTemplate DataType="{x:Type Shapes1:Arc}">
 		<Viewbox Stretch="Fill">
-			<Ellipse Width="100" Height="100" Stretch="Fill" StrokeThickness="{Binding StrokeThickness}" Stroke="{Binding Brush}">
+			<Ellipse Width="100" Height="100" Stretch="Fill" StrokeThickness="{Binding StrokeThickness}"
+			         Stroke="{Binding Brush}">
 				<Ellipse.Clip>
 					<RectangleGeometry Rect="0,0,100,50" />
 				</Ellipse.Clip>

@@ -4,10 +4,8 @@
 
 	<ControlTemplate x:Key="ResizeDecoratorTemplate" TargetType="{x:Type Control}">
 		<Grid SnapsToDevicePixels="True" Opacity="1">
-			<WPF1:ResizeThumb Height="3" Cursor="SizeNS" Margin="0 -4 0 0" VerticalAlignment="Top"
-			                  HorizontalAlignment="Stretch" />
-			<WPF1:ResizeThumb Width="3" Cursor="SizeWE" Margin="-4 0 0 0" VerticalAlignment="Stretch"
-			                  HorizontalAlignment="Left" />
+			<WPF1:ResizeThumb Height="3" Cursor="SizeNS" Margin="0 -4 0 0" VerticalAlignment="Top" HorizontalAlignment="Stretch" />
+			<WPF1:ResizeThumb Width="3" Cursor="SizeWE" Margin="-4 0 0 0" VerticalAlignment="Stretch" HorizontalAlignment="Left" />
 			<WPF1:ResizeThumb Width="3" Cursor="SizeWE" Margin="0 0 -4 0" VerticalAlignment="Stretch"
 			                  HorizontalAlignment="Right" />
 			<WPF1:ResizeThumb Height="3" Cursor="SizeNS" Margin="0 0 0 -4" VerticalAlignment="Bottom"

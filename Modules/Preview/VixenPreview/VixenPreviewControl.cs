@@ -846,7 +846,7 @@ namespace VixenModules.Preview.VixenPreview
 				string xml = PreviewTools.SerializeToString(_selectedDisplayItem);
 				Clipboard.SetData(DataFormats.Text, xml);
 			}
-			}
+		}
 
 		#endregion
 
@@ -947,58 +947,58 @@ namespace VixenModules.Preview.VixenPreview
 
 		#endregion
 
-        //#region "Update in a BeginInvoke"
-        //public void ProcessUpdate(ElementIntentStates elementStates)
-        //{
-        //    renderTimer.Reset();
-        //    renderTimer.Start();
-        //    if (!_paused)
-        //    {
-        //        FastPixel fp = new FastPixel(new Bitmap(_alphaBackground));
+		//#region "Update in a BeginInvoke"
+		//public void ProcessUpdate(ElementIntentStates elementStates)
+		//{
+		//    renderTimer.Reset();
+		//    renderTimer.Start();
+		//    if (!_paused)
+		//    {
+		//        FastPixel fp = new FastPixel(new Bitmap(_alphaBackground));
 
-        //        fp.Lock();
-        //        Color c;
-        //        foreach (var channelIntentState in elementStates)
-        //        {
-        //            var elementId = channelIntentState.Key;
-        //            Element element = VixenSystem.Elements.GetElement(elementId);
-        //            if (element == null) continue;
-        //            ElementNode node = VixenSystem.Elements.GetElementNodeForElement(element);
-        //            if (node == null) continue;
+		//        fp.Lock();
+		//        Color c;
+		//        foreach (var channelIntentState in elementStates)
+		//        {
+		//            var elementId = channelIntentState.Key;
+		//            Element element = VixenSystem.Elements.GetElement(elementId);
+		//            if (element == null) continue;
+		//            ElementNode node = VixenSystem.Elements.GetElementNodeForElement(element);
+		//            if (node == null) continue;
 
-        //            foreach (IIntentState<LightingValue> intentState in channelIntentState.Value)
-        //            {
-        //                c = intentState.GetValue().GetAlphaChannelIntensityAffectedColor();
-        //                if (_background != null)
-        //                {
-        //                    List<PreviewPixel> pixels;
-        //                    if (NodeToPixel.TryGetValue(node, out pixels))
-        //                    {
-        //                        foreach (PreviewPixel pixel in pixels)
-        //                        {
-        //                            pixel.Draw(fp, c);
-        //                        }
-        //                    }
-        //                }
-        //            }
-        //        }
+		//            foreach (IIntentState<LightingValue> intentState in channelIntentState.Value)
+		//            {
+		//                c = intentState.GetValue().GetAlphaChannelIntensityAffectedColor();
+		//                if (_background != null)
+		//                {
+		//                    List<PreviewPixel> pixels;
+		//                    if (NodeToPixel.TryGetValue(node, out pixels))
+		//                    {
+		//                        foreach (PreviewPixel pixel in pixels)
+		//                        {
+		//                            pixel.Draw(fp, c);
+		//                        }
+		//                    }
+		//                }
+		//            }
+		//        }
 
-        //        fp.Unlock(true);
+		//        fp.Unlock(true);
 
-        //        // First, draw our background image opaque
-        //        bufferedGraphics.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
-        //        bufferedGraphics.Graphics.DrawImage(fp.Bitmap, 0, 0, fp.Width, fp.Height);
+		//        // First, draw our background image opaque
+		//        bufferedGraphics.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
+		//        bufferedGraphics.Graphics.DrawImage(fp.Bitmap, 0, 0, fp.Width, fp.Height);
 
-        //        if (!this.Disposing && bufferedGraphics != null)
-        //            bufferedGraphics.Render(Graphics.FromHwnd(this.Handle));
+		//        if (!this.Disposing && bufferedGraphics != null)
+		//            bufferedGraphics.Render(Graphics.FromHwnd(this.Handle));
 
-        //        fp = null;
-        //    }
+		//        fp = null;
+		//    }
 
-        //    renderTimer.Stop();
-        //    lastRenderUpdateTime = renderTimer.ElapsedMilliseconds;
-        //}
-        //#endregion
+		//    renderTimer.Stop();
+		//    lastRenderUpdateTime = renderTimer.ElapsedMilliseconds;
+		//}
+		//#endregion
 
 		public void ProcessUpdateParallel(ElementIntentStates elementStates)
 		{
@@ -1006,13 +1006,12 @@ namespace VixenModules.Preview.VixenPreview
 			renderTimer.Start();
 			CancellationTokenSource tokenSource = new CancellationTokenSource();
 			if (!_paused) {
-                Bitmap clone = (Bitmap)_alphaBackground.Clone();
+				Bitmap clone = (Bitmap) _alphaBackground.Clone();
 				//BitmapData odata = _alphaBackground.LockBits(new Rectangle(0, 0, _alphaBackground.Width, _alphaBackground.Height), ImageLockMode.ReadWrite, _alphaBackground.PixelFormat);
 				//BitmapData cdata = clone.LockBits(new Rectangle(0, 0, clone.Width, clone.Height), ImageLockMode.ReadWrite, clone.PixelFormat);
 				//Assert.AreNotEqual(odata.Scan0, cdata.Scan0);
 				//using (FastPixel fp = new FastPixel(new Bitmap(_alphaBackground)))
-                using (FastPixel fp = new FastPixel(clone))
-				{
+				using (FastPixel fp = new FastPixel(clone)) {
 					try {
 						//Console.WriteLine("0: " + renderTimer.ElapsedMilliseconds);
 						fp.Lock();
@@ -1051,7 +1050,7 @@ namespace VixenModules.Preview.VixenPreview
 						                                                                      			}
 						                                                                      		}
 						                                                                      	});
-                        //Console.WriteLine("2: " + renderTimer.ElapsedMilliseconds);renderTimer.Reset();
+						//Console.WriteLine("2: " + renderTimer.ElapsedMilliseconds);renderTimer.Reset();
 						fp.Unlock(true);
 						RenderBufferedGraphics(fp);
 					}
@@ -1095,84 +1094,84 @@ namespace VixenModules.Preview.VixenPreview
 		//        NodeToPixel = new Dictionary<ElementNode, List<PreviewPixel>>();
 		//    else
 		//        NodeToPixel.Clear();
-        //#region "Update in a Task"
-        //public void ProcessUpdateInTask(ElementIntentStates elementStates)
-        //{
-        //    Task taskWithInActualMethodAndState =
-        //        new Task(() => { ProcessUpdatesTask(elementStates); });
-        //    taskWithInActualMethodAndState.Start();
-        //}
+		//#region "Update in a Task"
+		//public void ProcessUpdateInTask(ElementIntentStates elementStates)
+		//{
+		//    Task taskWithInActualMethodAndState =
+		//        new Task(() => { ProcessUpdatesTask(elementStates); });
+		//    taskWithInActualMethodAndState.Start();
+		//}
 
-        //delegate void RenderDelegate(Bitmap bitmap);
-        //private void Render(Bitmap bitmap)
-        //{
-        //    if (bufferedGraphics != null)
-        //    {
-        //        // First, draw our background image opaque
-        //        bufferedGraphics.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
-        //        bufferedGraphics.Graphics.DrawImage(bitmap, 0, 0, bitmap.Width, bitmap.Height);
+		//delegate void RenderDelegate(Bitmap bitmap);
+		//private void Render(Bitmap bitmap)
+		//{
+		//    if (bufferedGraphics != null)
+		//    {
+		//        // First, draw our background image opaque
+		//        bufferedGraphics.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
+		//        bufferedGraphics.Graphics.DrawImage(bitmap, 0, 0, bitmap.Width, bitmap.Height);
 
-        //        if (!this.Disposing && bufferedGraphics != null)
-        //            bufferedGraphics.Render(Graphics.FromHwnd(this.Handle));
-        //    }
-        //}
+		//        if (!this.Disposing && bufferedGraphics != null)
+		//            bufferedGraphics.Render(Graphics.FromHwnd(this.Handle));
+		//    }
+		//}
 
-        //private void ProcessUpdatesTask(ElementIntentStates elementStates)
-        //{
-        //    lock (PreviewTools.renderLock)
-        //    {
-        //        renderTimer.Reset();
-        //        renderTimer.Start();
-        //        if (!_paused)
-        //        {
-        //            FastPixel fp = null;
-        //            fp = new FastPixel(new Bitmap(_alphaBackground));
-        //            fp.Lock();
+		//private void ProcessUpdatesTask(ElementIntentStates elementStates)
+		//{
+		//    lock (PreviewTools.renderLock)
+		//    {
+		//        renderTimer.Reset();
+		//        renderTimer.Start();
+		//        if (!_paused)
+		//        {
+		//            FastPixel fp = null;
+		//            fp = new FastPixel(new Bitmap(_alphaBackground));
+		//            fp.Lock();
 
-        //            Color c;
-        //            foreach (var channelIntentState in elementStates)
-        //            {
-        //                var elementId = channelIntentState.Key;
-        //                Element element = VixenSystem.Elements.GetElement(elementId);
-        //                if (element == null) continue;
-        //                ElementNode node = VixenSystem.Elements.GetElementNodeForElement(element);
-        //                if (node == null) continue;
+		//            Color c;
+		//            foreach (var channelIntentState in elementStates)
+		//            {
+		//                var elementId = channelIntentState.Key;
+		//                Element element = VixenSystem.Elements.GetElement(elementId);
+		//                if (element == null) continue;
+		//                ElementNode node = VixenSystem.Elements.GetElementNodeForElement(element);
+		//                if (node == null) continue;
 
-        //                foreach (IIntentState<LightingValue> intentState in channelIntentState.Value)
-        //                {
-        //                    c = intentState.GetValue().GetAlphaChannelIntensityAffectedColor();
-        //                    if (_background != null)
-        //                    {
-        //                        List<PreviewPixel> pixels;
-        //                        if (NodeToPixel.TryGetValue(node, out pixels))
-        //                        {
-        //                            foreach (PreviewPixel pixel in pixels)
-        //                            {
-        //                                pixel.Draw(fp, c);
-        //                            }
-        //                        }
-        //                    }
-        //                }
-        //            }
+		//                foreach (IIntentState<LightingValue> intentState in channelIntentState.Value)
+		//                {
+		//                    c = intentState.GetValue().GetAlphaChannelIntensityAffectedColor();
+		//                    if (_background != null)
+		//                    {
+		//                        List<PreviewPixel> pixels;
+		//                        if (NodeToPixel.TryGetValue(node, out pixels))
+		//                        {
+		//                            foreach (PreviewPixel pixel in pixels)
+		//                            {
+		//                                pixel.Draw(fp, c);
+		//                            }
+		//                        }
+		//                    }
+		//                }
+		//            }
 
-        //            fp.Unlock(true);
+		//            fp.Unlock(true);
 
-        //            // Need to trap an error here -- it happens when exiting Vixen.
-        //            // Nothing I've tried prevents this error.
-        //            try
-        //            {
-        //                BeginInvoke(new RenderDelegate(Render), new object[] { fp.Bitmap });
-        //            }
-        //            catch
-        //            {
-        //            }
-        //        }
+		//            // Need to trap an error here -- it happens when exiting Vixen.
+		//            // Nothing I've tried prevents this error.
+		//            try
+		//            {
+		//                BeginInvoke(new RenderDelegate(Render), new object[] { fp.Bitmap });
+		//            }
+		//            catch
+		//            {
+		//            }
+		//        }
 
-        //        renderTimer.Stop();
-        //        lastRenderUpdateTime = renderTimer.ElapsedMilliseconds;
-        //    }
-        //}
-        //#endregion
+		//        renderTimer.Stop();
+		//        lastRenderUpdateTime = renderTimer.ElapsedMilliseconds;
+		//    }
+		//}
+		//#endregion
 
 		#region "Foreground updates"
 
@@ -1258,6 +1257,5 @@ namespace VixenModules.Preview.VixenPreview
 		}
 
 		#endregion
-
 	}
 }

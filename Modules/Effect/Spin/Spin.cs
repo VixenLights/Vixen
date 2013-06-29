@@ -35,7 +35,6 @@ namespace VixenModules.Effect.Spin
 
 				//Set a default color 
 				StaticColor = validColors.DefaultIfEmpty(Color.White).First();
-
 			}
 			DoRendering();
 		}

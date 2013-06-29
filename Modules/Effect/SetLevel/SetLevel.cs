@@ -33,7 +33,6 @@ namespace VixenModules.Effect.SetLevel
 				HashSet<Color> validColors = new HashSet<Color>();
 				validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
 				Color = validColors.DefaultIfEmpty(Color.White).First();
-				
 			}
 
 			foreach (ElementNode node in TargetNodes) {
@@ -85,7 +84,5 @@ namespace VixenModules.Effect.SetLevel
 				_elementData.AddIntentForElement(elementNode.Element.Id, intent, TimeSpan.Zero);
 			}
 		}
-
-		
 	}
 }

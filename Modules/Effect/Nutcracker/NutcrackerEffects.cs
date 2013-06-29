@@ -14,7 +14,7 @@ namespace VixenModules.Effect.Nutcracker
 {
 	public class NutcrackerEffects
 	{
-        #region Variables
+		#region Variables
 
 		private NutcrackerData _data = null;
 		private long _state;
@@ -63,7 +63,7 @@ namespace VixenModules.Effect.Nutcracker
 			Grid
 		}
 
-        #endregion // Variables
+		#endregion // Variables
 
 		public NutcrackerEffects()
 		{
@@ -339,7 +339,7 @@ namespace VixenModules.Effect.Nutcracker
 		public void SetPixel(int x, int y, HSV hsv)
 		{
 			Color color = HSV.HSVtoColor(hsv);
-            SetPixel(x, y, color);            
+			SetPixel(x, y, color);
 		}
 
 		public Color GetPixel(int pixelToGet)
@@ -714,10 +714,10 @@ namespace VixenModules.Effect.Nutcracker
 			for (y = 0; y < BufferHt; y++) {
 				for (x = 0; x < BufferWi; x++) {
 					//SetPixel(x,y,FirePalette[y]);
-                    Color color = FirePalette[GetFireBuffer(x, y)];
-                    if (color.R == 0 && color.G == 0 && color.B == 0)
-                        color = Color.Transparent;
-                    SetPixel(x,y,color);
+					Color color = FirePalette[GetFireBuffer(x, y)];
+					if (color.R == 0 && color.G == 0 && color.B == 0)
+						color = Color.Transparent;
+					SetPixel(x, y, color);
 				}
 			}
 		}

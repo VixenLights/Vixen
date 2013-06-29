@@ -29,8 +29,7 @@
 
 			<DataTemplate DataType="{x:Type Shapes1:OutlinedCircle}">
 				<GroupBox Header="Stroke Thickness">
-					<TextBox Text="{Binding StrokeThickness, Mode=TwoWay}" VerticalAlignment="Center"
-					         HorizontalAlignment="Stretch" />
+					<TextBox Text="{Binding StrokeThickness, Mode=TwoWay}" VerticalAlignment="Center" HorizontalAlignment="Stretch" />
 				</GroupBox>
 			</DataTemplate>
 
@@ -56,41 +55,35 @@
 
 			<DataTemplate DataType="{x:Type Shapes1:Arc}">
 				<GroupBox Header="Stroke Thickness">
-					<TextBox Text="{Binding StrokeThickness, Mode=TwoWay}" VerticalAlignment="Center"
-					         HorizontalAlignment="Stretch" />
+					<TextBox Text="{Binding StrokeThickness, Mode=TwoWay}" VerticalAlignment="Center" HorizontalAlignment="Stretch" />
 				</GroupBox>
 			</DataTemplate>
 
 			<DataTemplate DataType="{x:Type Shapes1:OutlinedTriangle}">
 				<GroupBox Header="Stroke Thickness">
-					<TextBox Text="{Binding StrokeThickness, Mode=TwoWay}" VerticalAlignment="Center"
-					         HorizontalAlignment="Stretch" />
+					<TextBox Text="{Binding StrokeThickness, Mode=TwoWay}" VerticalAlignment="Center" HorizontalAlignment="Stretch" />
 				</GroupBox>
 			</DataTemplate>
 
 			<DataTemplate DataType="{x:Type Shapes1:OutlinedRectangle}">
 				<GroupBox Header="Stroke Thickness">
-					<TextBox Text="{Binding StrokeThickness, Mode=TwoWay}" VerticalAlignment="Center"
-					         HorizontalAlignment="Stretch" />
+					<TextBox Text="{Binding StrokeThickness, Mode=TwoWay}" VerticalAlignment="Center" HorizontalAlignment="Stretch" />
 				</GroupBox>
 			</DataTemplate>
 
 			<DataTemplate DataType="{x:Type Shapes1:OutlinedStar}">
 				<GroupBox Header="Stroke Thickness">
-					<TextBox Text="{Binding StrokeThickness, Mode=TwoWay}" VerticalAlignment="Center"
-					         HorizontalAlignment="Stretch" />
+					<TextBox Text="{Binding StrokeThickness, Mode=TwoWay}" VerticalAlignment="Center" HorizontalAlignment="Stretch" />
 				</GroupBox>
 			</DataTemplate>
 
 			<DataTemplate DataType="{x:Type Shapes1:Line}">
 				<StackPanel>
 					<GroupBox Header="Stroke Thickness">
-						<TextBox Text="{Binding StrokeThickness, Mode=TwoWay}" VerticalAlignment="Center"
-						         HorizontalAlignment="Stretch" />
+						<TextBox Text="{Binding StrokeThickness, Mode=TwoWay}" VerticalAlignment="Center" HorizontalAlignment="Stretch" />
 					</GroupBox>
 					<GroupBox Header="Angle" Padding="2" HorizontalContentAlignment="Stretch">
-						<Slider Value="{Binding Angle, Mode=TwoWay}" HorizontalAlignment="Stretch" Minimum="0"
-						        Maximum="360" />
+						<Slider Value="{Binding Angle, Mode=TwoWay}" HorizontalAlignment="Stretch" Minimum="0" Maximum="360" />
 					</GroupBox>
 				</StackPanel>
 			</DataTemplate>
@@ -134,8 +127,7 @@
 								<GroupBox Header="Width" Padding="2" HorizontalContentAlignment="Stretch">
 									<TextBox Text="{Binding Width, Mode=TwoWay}" />
 								</GroupBox>
-								<GroupBox Header="Height" Grid.Column="1" Padding="2"
-								          HorizontalContentAlignment="Stretch">
+								<GroupBox Header="Height" Grid.Column="1" Padding="2" HorizontalContentAlignment="Stretch">
 									<TextBox Text="{Binding Height, Mode=TwoWay}" />
 								</GroupBox>
 							</Grid>

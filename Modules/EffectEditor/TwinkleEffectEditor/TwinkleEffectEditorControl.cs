@@ -25,7 +25,8 @@ namespace VixenModules.EffectEditor.TwinkleEffectEditor
 		public IEffect TargetEffect
 		{
 			get { return _targetEffect; }
-			set { 
+			set
+			{
 				_targetEffect = value;
 				//Ensure target effect is passed through as these editors need it.
 				colorTypeEditorControlStaticColor.TargetEffect = _targetEffect;

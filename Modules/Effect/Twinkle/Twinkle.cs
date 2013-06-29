@@ -40,7 +40,6 @@ namespace VixenModules.Effect.Twinkle
 
 				//Set a default color 
 				StaticColor = validColors.DefaultIfEmpty(Color.White).First();
-
 			}
 
 			List<IndividualTwinkleDetails> twinkles = null;

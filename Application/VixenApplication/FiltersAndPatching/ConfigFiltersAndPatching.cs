@@ -868,7 +868,7 @@ namespace VixenApplication
 
 			diagramDisplay.InsertShape(filterShape);
 			diagramDisplay.Diagram.Shapes.SetZOrder(filterShape, 10);
-				// Z Order of 10; should be above other elements/outputs, but under lines
+			// Z Order of 10; should be above other elements/outputs, but under lines
 			diagramDisplay.Diagram.AddShapeToLayers(filterShape, _visibleLayer.Id);
 
 			if (filterShape.DataFlowComponent != null) {

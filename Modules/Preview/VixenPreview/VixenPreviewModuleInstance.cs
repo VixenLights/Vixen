@@ -111,7 +111,6 @@ namespace VixenModules.Preview.VixenPreview
 				programContext.ProgramEnded += ProgramContextProgramEnded;
 				programContext.SequenceStarted += context_SequenceStarted;
 				programContext.SequenceEnded += context_SequenceEnded;
-
 			}
 		}
 

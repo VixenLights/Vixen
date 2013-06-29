@@ -18,8 +18,8 @@
 			</ResourceDictionary.MergedDictionaries>
 
 			<DataTemplate DataType="{x:Type Model1:NodeLayout}">
-				<ContentControl Content="{Binding Shape}" Width="{Binding Width}" Height="{Binding Height}"
-				                ClipToBounds="True" ToolTip="{Binding NodeName}" />
+				<ContentControl Content="{Binding Shape}" Width="{Binding Width}" Height="{Binding Height}" ClipToBounds="True"
+				                ToolTip="{Binding NodeName}" />
 			</DataTemplate>
 		</ResourceDictionary>
 	</Window.Resources>
@@ -41,8 +41,8 @@
 						<RowDefinition Height="8*" />
 						<RowDefinition />
 					</Grid.RowDefinitions>
-					<TreeView ItemsSource="{Binding NodeSources}" x:Name="treeview"
-					          HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Auto">
+					<TreeView ItemsSource="{Binding NodeSources}" x:Name="treeview" HorizontalContentAlignment="Stretch"
+					          VerticalContentAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Auto">
 						<TreeView.ItemContainerStyle>
 							<Style TargetType="{x:Type TreeViewItem}">
 								<Setter Property="FontWeight" Value="Normal" />
@@ -57,18 +57,16 @@
 						</TreeView.ItemContainerStyle>
 
 						<TreeView.ItemTemplate>
-							<HierarchicalDataTemplate ItemsSource="{Binding Children}"
-							                          DataType="{x:Type Model1:NodeSource}">
-								<Border Background="#01FFFFFF"
-								        Behaviors1:DragSourceBehaviour.DragSource="{Binding Source}">
-									<TextBlock Text="{Binding NodeName}"
-									           Behaviors1:DragSourceBehaviour.DragSource="{Binding Source}" HorizontalAlignment="Stretch" />
+							<HierarchicalDataTemplate ItemsSource="{Binding Children}" DataType="{x:Type Model1:NodeSource}">
+								<Border Background="#01FFFFFF" Behaviors1:DragSourceBehaviour.DragSource="{Binding Source}">
+									<TextBlock Text="{Binding NodeName}" Behaviors1:DragSourceBehaviour.DragSource="{Binding Source}"
+									           HorizontalAlignment="Stretch" />
 								</Border>
 							</HierarchicalDataTemplate>
 						</TreeView.ItemTemplate>
 					</TreeView>
-					<TextBlock Grid.Row="1" TextWrapping="WrapWithOverflow"
-					           Width="{Binding ElementName=treeview, Path=ActualWidth}" VerticalAlignment="Bottom">
+					<TextBlock Grid.Row="1" TextWrapping="WrapWithOverflow" Width="{Binding ElementName=treeview, Path=ActualWidth}"
+					           VerticalAlignment="Bottom">
 						Drag a node to the Display Item Canvas
 					</TextBlock>
 				</Grid>
@@ -88,8 +86,7 @@
 						<DataTemplate DataType="{x:Type Model1:DisplayItem}">
 							<GroupBox Header="Display Item Settings" Margin="2" Padding="2">
 								<StackPanel Orientation="Horizontal">
-									<GroupBox Header="Name" Width="125" Padding="2"
-									          HorizontalContentAlignment="Stretch">
+									<GroupBox Header="Name" Width="125" Padding="2" HorizontalContentAlignment="Stretch">
 										<TextBox Text="{Binding Name, Mode=TwoWay}" />
 									</GroupBox>
 									<GroupBox Header="Width" Padding="2" HorizontalContentAlignment="Stretch">
@@ -131,8 +128,7 @@
 				</ContentControl>
 			</StackPanel>
 			<GroupBox Header="Display Item Canvas" Grid.Row="1">
-				<ContentControl Content="{Binding DisplayItem}" HorizontalAlignment="Left" VerticalAlignment="Top"
-				                AllowDrop="True">
+				<ContentControl Content="{Binding DisplayItem}" HorizontalAlignment="Left" VerticalAlignment="Top" AllowDrop="True">
 					<ContentControl.ContentTemplate>
 						<DataTemplate DataType="{x:Type Model1:DisplayItem}">
 							<Border BorderBrush="Black" CornerRadius="5" Padding="2" BorderThickness="2">
@@ -142,16 +138,14 @@
 								          ScrollViewer.VerticalScrollBarVisibility="Hidden" Background="Black" AllowDrop="True">
 									<ListView.ItemsPanel>
 										<ItemsPanelTemplate>
-											<Canvas ClipToBounds="True" HorizontalAlignment="Left"
-											        MaxWidth="{Binding Width}" MaxHeight="{Binding Height}" MinWidth="{Binding Width}" MinHeight="{Binding Height}"
-											        Width="{Binding Width}" Height="{Binding Height}">
-											</Canvas>
+											<Canvas ClipToBounds="True" HorizontalAlignment="Left" MaxWidth="{Binding Width}"
+											        MaxHeight="{Binding Height}" MinWidth="{Binding Width}" MinHeight="{Binding Height}" Width="{Binding Width}"
+											        Height="{Binding Height}"></Canvas>
 										</ItemsPanelTemplate>
 									</ListView.ItemsPanel>
 									<ListView.ItemContainerStyle>
 										<Style TargetType="ListViewItem" BasedOn="{StaticResource DesignerItemStyle}">
-											<Setter Property="Canvas.Left"
-											        Value="{Binding Path=LeftOffset, Mode=TwoWay}" />
+											<Setter Property="Canvas.Left" Value="{Binding Path=LeftOffset, Mode=TwoWay}" />
 											<Setter Property="Canvas.Top" Value="{Binding Path=TopOffset, Mode=TwoWay}" />
 											<Setter Property="Width" Value="{Binding Width, Mode=TwoWay}" />
 											<Setter Property="Height" Value="{Binding Height, Mode=TwoWay}" />
@@ -174,8 +168,8 @@
 							<RowDefinition Height="Auto" />
 						</Grid.RowDefinitions>
 						<GroupBox Header="Nodes in use">
-							<ListView ItemsSource="{Binding NodeLayouts}" SelectionMode="Single"
-							          IsSynchronizedWithCurrentItem="True" SelectedItem="{Binding SelectedNodeLayout}">
+							<ListView ItemsSource="{Binding NodeLayouts}" SelectionMode="Single" IsSynchronizedWithCurrentItem="True"
+							          SelectedItem="{Binding SelectedNodeLayout}">
 								<ListView.ItemTemplate>
 									<DataTemplate DataType="{x:Type Model1:NodeLayout}">
 										<TextBlock Text="{Binding NodeName}" />
@@ -185,8 +179,7 @@
 
 						</GroupBox>
 						<Button Margin="2" Grid.Row="1" Command="{Binding EditNodeCommand}">
-							Edit Node
-						</Button>
+							Edit Node</Button>
 						<Button Margin="2" Grid.Row="2" Command="{Binding RemoveNodeCommand}">
 							Remove Node
 						</Button>

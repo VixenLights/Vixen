@@ -17,7 +17,7 @@ namespace VixenModules.EffectEditor.ColorGradientTypeEditor
 	public partial class ColorGradientTypeEditorControl : UserControl, IEffectEditorControl
 	{
 		private bool _discreteColors;
-		private IEnumerable<Color> _validDiscreteColors; 
+		private IEnumerable<Color> _validDiscreteColors;
 
 		public ColorGradientTypeEditorControl()
 		{
@@ -27,6 +27,7 @@ namespace VixenModules.EffectEditor.ColorGradientTypeEditor
 		}
 
 		private IEffect _targetEffect;
+
 		public IEffect TargetEffect
 		{
 			get { return _targetEffect; }
@@ -35,8 +36,8 @@ namespace VixenModules.EffectEditor.ColorGradientTypeEditor
 				_targetEffect = value;
 				_discreteColors = false;
 				if (_targetEffect == null) return;
-				
-				
+
+
 				HashSet<Color> validColors = new HashSet<Color>();
 
 				// look for the color property of the target effect element, and restrict the gradient.
@@ -52,15 +53,16 @@ namespace VixenModules.EffectEditor.ColorGradientTypeEditor
 
 		public object[] EffectParameterValues
 		{
-			get { return new object[] { ColorGradientValue }; }
+			get { return new object[] {ColorGradientValue}; }
 			set
 			{
 				if (value.Length >= 1)
-					ColorGradientValue = (ColorGradient)value[0];
+					ColorGradientValue = (ColorGradient) value[0];
 			}
 		}
 
 		private ColorGradient _gradient;
+
 		public ColorGradient ColorGradientValue
 		{
 			get { return _gradient; }
@@ -85,6 +87,5 @@ namespace VixenModules.EffectEditor.ColorGradientTypeEditor
 				}
 			}
 		}
-
 	}
 }

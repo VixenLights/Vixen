@@ -26,8 +26,8 @@
 			<WPF:ImageBrushConverter x:Key="ImageBrushConverter" />
 
 			<DataTemplate DataType="{x:Type Model:NodeLayout}">
-				<ContentControl Content="{Binding Shape}" Width="{Binding Width}" Height="{Binding Height}"
-				                ClipToBounds="True" ToolTip="{Binding NodeName}" />
+				<ContentControl Content="{Binding Shape}" Width="{Binding Width}" Height="{Binding Height}" ClipToBounds="True"
+				                ToolTip="{Binding NodeName}" />
 			</DataTemplate>
 
 			<DataTemplate DataType="{x:Type Model:DisplayItem}">
@@ -37,10 +37,8 @@
 					              VerticalContentAlignment="Stretch">
 						<ItemsControl.ItemsPanel>
 							<ItemsPanelTemplate>
-								<Canvas ClipToBounds="True" HorizontalAlignment="Left" MaxWidth="{Binding Width}"
-								        MaxHeight="{Binding Height}" MinWidth="{Binding Width}" MinHeight="{Binding Height}" Width="{Binding Width}"
-								        Height="{Binding Height}">
-								</Canvas>
+								<Canvas ClipToBounds="True" HorizontalAlignment="Left" MaxWidth="{Binding Width}" MaxHeight="{Binding Height}"
+								        MinWidth="{Binding Width}" MinHeight="{Binding Height}" Width="{Binding Width}" Height="{Binding Height}"></Canvas>
 							</ItemsPanelTemplate>
 						</ItemsControl.ItemsPanel>
 						<ItemsControl.ItemContainerStyle>
@@ -105,14 +103,13 @@
 							<Grid>
 								<Grid
 Visibility="{Binding Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}}">
-									<Border Margin="2" Padding="2" BorderBrush="Red" SnapsToDevicePixels="True"
-									        BorderThickness="2" Background="Black" CornerRadius="3">
+									<Border Margin="2" Padding="2" BorderBrush="Red" SnapsToDevicePixels="True" BorderThickness="2"
+									        Background="Black" CornerRadius="3">
 										<StackPanel>
 											<TextBlock Foreground="White" Text="{Binding Name}" />
 											<TextBlock Foreground="White">
 												<TextBlock.Resources>
-													<Style TargetType="Hyperlink"
-													       BasedOn="{StaticResource {x:Type Hyperlink}}">
+													<Style TargetType="Hyperlink" BasedOn="{StaticResource {x:Type Hyperlink}}">
 														<Setter Property="Foreground" Value="LightSkyBlue" />
 														<Style.Triggers>
 															<MultiTrigger>
@@ -126,8 +123,7 @@ Visibility="{Binding Path=IsSelected, Converter={StaticResource BooleanToVisibil
 														</Style.Triggers>
 													</Style>
 												</TextBlock.Resources>
-												<Hyperlink
-Command="{Binding Path=DataContext.MoveUpCommand, ElementName=Instance}">Move Up</Hyperlink>
+												<Hyperlink Command="{Binding Path=DataContext.MoveUpCommand, ElementName=Instance}">Move Up</Hyperlink>
 												•
 												<Hyperlink Command="{Binding Path=DataContext.MoveDownCommand, ElementName=Instance}">Move Down</Hyperlink>
 												• Movable
@@ -139,8 +135,8 @@ Command="{Binding Path=DataContext.MoveUpCommand, ElementName=Instance}">Move Up
 
 								<Grid
 Visibility="{Binding Path=IsSelected, Converter={StaticResource BooleanToCollapsedConverter}, RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}}">
-									<Border Margin="2" Padding="2" BorderBrush="Gray" SnapsToDevicePixels="True"
-									        BorderThickness="2" Background="Transparent" CornerRadius="3">
+									<Border Margin="2" Padding="2" BorderBrush="Gray" SnapsToDevicePixels="True" BorderThickness="2"
+									        Background="Transparent" CornerRadius="3">
 										<TextBlock Foreground="Black" Text="{Binding Name}" />
 									</Border>
 								</Grid>
@@ -173,15 +169,15 @@ Visibility="{Binding Path=IsSelected, Converter={StaticResource BooleanToCollaps
 				<ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
 				              HorizontalContentAlignment="Left" VerticalContentAlignment="Top" Width="{Binding ElementName=scrollborder, Path=Width}"
 				              Height="{Binding ElementName=scrollborder, Path=Height}">
-					<GroupBox Header="Display Layout" BorderBrush="Black" HorizontalAlignment="Left"
-					          VerticalAlignment="Top" BorderThickness="2">
+					<GroupBox Header="Display Layout" BorderBrush="Black" HorizontalAlignment="Left" VerticalAlignment="Top"
+					          BorderThickness="2">
 						<ListView Background="Black" SelectionMode="Single" IsSynchronizedWithCurrentItem="True"
 						          SelectedItem="{Binding CurrentDisplayElement}" ItemsSource="{Binding DisplayItems}">
 							<ListView.ItemsPanel>
 								<ItemsPanelTemplate>
-									<Canvas ClipToBounds="True" HorizontalAlignment="Left"
-									        MaxWidth="{Binding DisplayWidth}" MaxHeight="{Binding DisplayHeight}" MinWidth="{Binding DisplayWidth}"
-									        MinHeight="{Binding DisplayHeight}" Width="{Binding DisplayWidth}" Height="{Binding DisplayHeight}">
+									<Canvas ClipToBounds="True" HorizontalAlignment="Left" MaxWidth="{Binding DisplayWidth}"
+									        MaxHeight="{Binding DisplayHeight}" MinWidth="{Binding DisplayWidth}" MinHeight="{Binding DisplayHeight}"
+									        Width="{Binding DisplayWidth}" Height="{Binding DisplayHeight}">
 										<Canvas.Background>
 											<ImageBrush ImageSource="{Binding BackgroundImage}" Opacity="{Binding Opacity}" Stretch="Fill" />
 										</Canvas.Background>
@@ -194,8 +190,7 @@ Visibility="{Binding Path=IsSelected, Converter={StaticResource BooleanToCollaps
 									<Setter Property="Canvas.Top" Value="{Binding Path=TopOffset, Mode=TwoWay}" />
 									<Setter Property="Width" Value="{Binding Width, Mode=TwoWay}" />
 									<Setter Property="Height" Value="{Binding Height, Mode=TwoWay}" />
-									<Setter Property="WPF:DragCanvas.CanBeDragged"
-									        Value="{Binding Path=IsUnlocked, Mode=TwoWay}" />
+									<Setter Property="WPF:DragCanvas.CanBeDragged" Value="{Binding Path=IsUnlocked, Mode=TwoWay}" />
 								</Style>
 							</ListView.ItemContainerStyle>
 						</ListView>
