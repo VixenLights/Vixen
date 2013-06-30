@@ -182,28 +182,53 @@ namespace VixenModules.Effect.Chase
 			int i = 0;
 			foreach (ElementNode target in renderNodes) {
 				if (target != null) {
+					bool discreteColors = ColorModule.isElementNodeDiscreteColored(target);
+
 					pulse = new Pulse.Pulse();
 					pulse.TargetNodes = new ElementNode[] {target};
 					pulse.TimeSpan = TimeSpan;
-					pulse.LevelCurve =
-						new Curve(new PointPairList(new double[] {0, 100}, new double[] {DefaultLevel*100, DefaultLevel*100}));
+					double level = DefaultLevel * 100.0;
 
 					// figure out what color gradient to use for the pulse
 					switch (ColorHandling) {
 						case ChaseColorHandling.GradientForEachPulse:
 							pulse.ColorGradient = StaticColorGradient;
+							pulse.LevelCurve = new Curve(new PointPairList(new double[] { 0, 100 }, new double[] { level, level }));
+							pulseData = pulse.Render();
+							_elementData.Add(pulseData);
 							break;
 
 						case ChaseColorHandling.GradientThroughWholeEffect:
 							pulse.ColorGradient = ColorGradient;
+							pulse.LevelCurve = new Curve(new PointPairList(new double[] { 0, 100 }, new double[] { level, level }));
+							pulseData = pulse.Render();
+							_elementData.Add(pulseData);
 							break;
 
 						case ChaseColorHandling.StaticColor:
 							pulse.ColorGradient = StaticColorGradient;
+							pulse.LevelCurve = new Curve(new PointPairList(new double[] { 0, 100 }, new double[] { level, level }));
+							pulseData = pulse.Render();
+							_elementData.Add(pulseData);
 							break;
 
 						case ChaseColorHandling.ColorAcrossItems:
-							pulse.ColorGradient = new ColorGradient(ColorGradient.GetColorAt((double) i/(double) targetNodeCount));
+							double positionWithinGroup =  i / (double)targetNodeCount;
+							if (discreteColors) {
+								List<Tuple<Color, float>> colorsAtPosition = ColorGradient.GetDiscreteColorsAndProportionsAt(positionWithinGroup);
+								foreach (Tuple<Color, float> colorProportion in colorsAtPosition) {
+									double value = level * colorProportion.Item2;
+									pulse.LevelCurve = new Curve(new PointPairList(new double[] { 0, 100 }, new double[] { value, value }));
+									pulse.ColorGradient = new ColorGradient(colorProportion.Item1);
+									pulseData = pulse.Render();
+									_elementData.Add(pulseData);
+								}
+							} else {
+								pulse.ColorGradient = new ColorGradient(ColorGradient.GetColorAt(positionWithinGroup));
+								pulse.LevelCurve = new Curve(new PointPairList(new double[] {0, 100}, new double[] {level, level}));
+								pulseData = pulse.Render();
+								_elementData.Add(pulseData);
+							}
 							break;
 					}
 
@@ -298,10 +323,15 @@ namespace VixenModules.Effect.Chase
 			pulse.TimeSpan = duration;
 			pulse.LevelCurve = new Curve(PulseCurve);
 
+			bool discreteColors = ColorModule.isElementNodeDiscreteColored(target);
+
 			// figure out what color gradient to use for the pulse
 			switch (ColorHandling) {
 				case ChaseColorHandling.GradientForEachPulse:
 					pulse.ColorGradient = ColorGradient;
+					result = pulse.Render();
+					result.OffsetAllCommandsByTime(startTime);
+					_elementData.Add(result);
 					break;
 
 				case ChaseColorHandling.GradientThroughWholeEffect:
@@ -309,21 +339,70 @@ namespace VixenModules.Effect.Chase
 					double endPos = ((double) (startTime + duration).Ticks/(double) TimeSpan.Ticks);
 					if (startPos < 0.0) startPos = 0.0;
 					if (endPos > 1.0) endPos = 1.0;
-					pulse.ColorGradient = ColorGradient.GetSubGradient(startPos, endPos);
+
+					if (discreteColors) {
+						double range = endPos - startPos;
+						if (range <= 0.0) {
+							VixenSystem.Logging.Error("Chase: bad range: " + range + " (SP=" + startPos + ", EP=" + endPos + ")");
+							break;
+						}
+
+						ColorGradient cg = ColorGradient.GetSubGradientWithDiscreteColors(startPos, endPos);
+
+						foreach (Color color in cg.GetColorsInGradient()) {
+							Curve newCurve = new Curve(pulse.LevelCurve.Points);
+							foreach (PointPair point in newCurve.Points) {
+								double effectRelativePosition = startPos + ((point.X / 100.0) * range);
+								double proportion = ColorGradient.GetProportionOfColorAt(effectRelativePosition, color);
+								point.Y *= proportion;
+							}
+							pulse.LevelCurve = newCurve;
+							pulse.ColorGradient = new ColorGradient(color);
+							result = pulse.Render();
+							result.OffsetAllCommandsByTime(startTime);
+							_elementData.Add(result);
+						}
+					} else {
+						pulse.ColorGradient = ColorGradient.GetSubGradient(startPos, endPos);
+						result = pulse.Render();
+						result.OffsetAllCommandsByTime(startTime);
+						_elementData.Add(result);
+					}
+
 					break;
 
 				case ChaseColorHandling.StaticColor:
 					pulse.ColorGradient = StaticColorGradient;
+					result = pulse.Render();
+					result.OffsetAllCommandsByTime(startTime);
+					_elementData.Add(result);
 					break;
 
 				case ChaseColorHandling.ColorAcrossItems:
-					pulse.ColorGradient = new ColorGradient(ColorGradient.GetColorAt(currentMovementPosition/100.0));
+					if (discreteColors) {
+						List<Tuple<Color, float>> colorsAtPosition = ColorGradient.GetDiscreteColorsAndProportionsAt(currentMovementPosition / 100.0);
+						foreach (Tuple<Color, float> colorProportion in colorsAtPosition) {
+							float proportion = colorProportion.Item2;
+							// scale all levels of the pulse curve by the proportion that is applicable to this color
+							Curve newCurve = new Curve(pulse.LevelCurve.Points);
+							foreach (PointPair pointPair in newCurve.Points) {
+								pointPair.Y *= proportion;
+							}
+							pulse.LevelCurve = newCurve;
+							pulse.ColorGradient = new ColorGradient(colorProportion.Item1);
+							result = pulse.Render();
+							result.OffsetAllCommandsByTime(startTime);
+							_elementData.Add(result);
+						}
+					} else {
+						pulse.ColorGradient = new ColorGradient(ColorGradient.GetColorAt(currentMovementPosition/100.0));
+						result = pulse.Render();
+						result.OffsetAllCommandsByTime(startTime);
+						_elementData.Add(result);
+					}
 					break;
 			}
 
-			result = pulse.Render();
-			result.OffsetAllCommandsByTime(startTime);
-			_elementData.Add(result);
 		}
 	}
 }

@@ -253,6 +253,27 @@ namespace VixenModules.App.ColorGradients
 			_colors.Add(new ColorPoint(staticColor, 0));
 		}
 
+		public ColorGradient(IEnumerable<Color> colors)
+			: this()
+		{
+			_colors.Clear();
+			foreach (Color c in colors) {
+				_colors.Add(new ColorPoint(c, 0));
+			}
+		}
+
+		public ColorGradient(IEnumerable<Tuple<Color, float>> colorsAndProportions)
+			: this()
+		{
+			_colors.Clear();
+			foreach (Tuple<Color, float> t in colorsAndProportions) {
+				Color color = t.Item1;
+				float proportion = t.Item2;
+				color = Color.FromArgb((int) (color.R*proportion), (int) (color.G*proportion), (int) (color.B*proportion));
+				_colors.Add(new ColorPoint(color, 0));
+			}
+		}
+
 		[OnDeserialized]
 		private void OnDeserialization(StreamingContext context)
 		{
@@ -603,6 +624,67 @@ namespace VixenModules.App.ColorGradients
 			return Interpolate(blend.Colors, blend.Positions, a, b, pos);
 		}
 
+		public List<Color> GetColorsExactlyAt(float pos)
+		{
+			List<Color> rv = new List<Color>();
+			ColorBlend blend = GetColorBlend();
+			pos = Clamp(pos);
+
+			for (int i = 0; i < blend.Colors.Length && i < blend.Positions.Length; i++) {
+				if (blend.Positions[i] == pos) {
+					rv.Add(blend.Colors[i]);
+				}
+			}
+
+			return rv;
+		}
+
+		public HashSet<Color> GetColorsInGradient()
+		{
+			HashSet<Color> result = new HashSet<Color>();
+			foreach (ColorPoint colorPoint in Colors) {
+				result.Add(colorPoint.Color.ToRGB());
+			}
+			return result;
+		}
+
+
+		public List<Tuple<Color, float>> GetDiscreteColorsAndProportionsAt(float pos)
+		{
+			List<Tuple<Color, float>> rv = new List<Tuple<Color, float>>();
+
+			ColorBlend blend = GetColorBlend();
+			pos = Clamp(pos);
+
+			// get the indices into the position list for the desired position
+			int a, b;
+			SearchPos<float, float>(blend.Positions, pos, out a, out b);
+			
+			HashSet<Color> colors = new HashSet<Color>();
+
+			// if b < a, something went horribly wrong.
+			if (b < a) {
+				return rv;
+			}
+
+			// if they matched, the desired position was exactly on a point. Get all those matching it.
+			if (a == b) {
+				colors.AddRange(GetColorsExactlyAt(blend.Positions[a]));
+			} else {
+				// if the indices didn't match, the desired position was between 'a' and 'b'. Get all colors
+				// at the position at index 'a', and all at position of index 'b'.
+				colors.AddRange(GetColorsExactlyAt(blend.Positions[a]));
+				colors.AddRange(GetColorsExactlyAt(blend.Positions[b]));
+			}
+
+			// now that we know what colors _might_ be involved, get the proportions for them all.
+			foreach (Color color in colors) {
+				rv.Add(new Tuple<Color, float>(color, GetProportionOfColorAt(pos, color)));
+			}
+
+			return rv;
+		}
+
 		public float GetProportionOfColorAt(float pos, Color color)
 		{
 			ColorBlend blend = GetColorBlend(color);
@@ -622,6 +704,11 @@ namespace VixenModules.App.ColorGradients
 		public double GetProportionOfColorAt(double pos, Color color)
 		{
 			return GetProportionOfColorAt((float) pos, color);
+		}
+
+		public List<Tuple<Color, float>> GetDiscreteColorsAndProportionsAt(double pos)
+		{
+			return GetDiscreteColorsAndProportionsAt((float) pos);
 		}
 
 		#region properties
@@ -743,15 +830,66 @@ namespace VixenModules.App.ColorGradients
 
 		public ColorGradient GetSubGradient(double start, double end)
 		{
+			double range = end - start;
+			if (range < 0) {
+				throw new ArgumentException("end must be after start");
+			}
+
 			ColorGradient result = new ColorGradient();
 			result.Colors.Clear();
 
-			result.Colors.Add(new ColorPoint(GetColorAt(start), start));
+			result.Colors.Add(new ColorPoint(GetColorAt(start), 0));
 			foreach (ColorPoint cp in Colors) {
-				if (cp.Position > start && cp.Position < end)
-					result.Colors.Add(new ColorPoint(cp));
+				if (cp.Position > start && cp.Position < end) {
+					double scaledPos = (cp.Position - start)/range;
+					if (scaledPos > 1.0 || scaledPos < 0.0) {
+						throw new Exception("Error  calculating position: " + scaledPos + " out of range");
+					}
+					result.Colors.Add(new ColorPoint(cp.Color.ToRGB(), scaledPos));
+				}
 			}
-			result.Colors.Add(new ColorPoint(GetColorAt(end), end));
+			result.Colors.Add(new ColorPoint(GetColorAt(end), 1));
+
+			return result;
+		}
+
+		// note: the start and end points returned will _not_ be scaled correctly, as the color gradients have
+		// no concept of 'level', only color. Being discrete colors, they need to keep their 'full' intensity.
+		public ColorGradient GetSubGradientWithDiscreteColors(double start, double end)
+		{
+			double range = end - start;
+			if (range < 0) {
+				throw new ArgumentException("end must be after start");
+			}
+
+			ColorGradient result = new ColorGradient();
+			result.Colors.Clear();
+
+			List<Tuple<Color, float>> startPoint = GetDiscreteColorsAndProportionsAt(start);
+			List<Tuple<Color, float>> endPoint = GetDiscreteColorsAndProportionsAt(end);
+
+			// hmm.. should these colors at the start and end be the discrete colors, exactly?
+			// or should they be scaled based on the intensity? This whole thing is pretty dodgy,
+			// since it's taking a bunch of assumed knowledge about how it needs to be working
+			// elsewhere and applying it here (keeping the color exactly, since discrete filtering
+			// matches by color).
+			foreach (Tuple<Color, float> tuple in startPoint) {
+				result.Colors.Add(new ColorPoint(tuple.Item1, 0.0));
+			}
+
+			foreach (ColorPoint cp in Colors) {
+				if (cp.Position > start && cp.Position < end) {
+					double scaledPos = (cp.Position - start) / range;
+					if (scaledPos > 1.0 || scaledPos < 0.0) {
+						throw new Exception("Error calculating position: " + scaledPos + " out of range");
+					}
+					result.Colors.Add(new ColorPoint(cp.Color.ToRGB(), scaledPos));
+				}
+			}
+
+			foreach (Tuple<Color, float> tuple in endPoint) {
+				result.Colors.Add(new ColorPoint(tuple.Item1, 1.0));
+			}
 
 			return result;
 		}

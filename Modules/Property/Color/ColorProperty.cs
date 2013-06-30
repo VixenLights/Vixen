@@ -133,6 +133,16 @@ namespace VixenModules.Property.Color
 			return ElementColorType.FullColor;
 		}
 
+		// static 'helper' methods in the color property
+		// a simpler version of the getColorTypeForElementNode call -- often, we only care if an element should be discretely colored or not.
+		public static bool isElementNodeDiscreteColored(ElementNode element)
+		{
+			ElementColorType type = getColorTypeForElementNode(element);
+			if (type == ElementColorType.MultipleDiscreteColors || type == ElementColorType.SingleColor)
+				return true;
+			return false;
+		}
+
 		// gets a enumerable of valid colors for the given element node. If the element is full color, an empty enumeration
 		// will be returned; otherwise one of more colors will be returned (for single or multiple discrete colors).
 		// wIt will recurse the children to collect from all parts of the element
