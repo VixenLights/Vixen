@@ -98,8 +98,6 @@ namespace VixenModules.Effect.Nutcracker
 		private int PixelsPerString()
 		{
 			int pps = PixelsPerString(TargetNodes.FirstOrDefault());
-			//Console.WriteLine("StringCount:" + StringCount);
-			//Console.WriteLine("PixelsPerString:" + pps);
 			return pps;
 		}
 
@@ -150,7 +148,7 @@ namespace VixenModules.Effect.Nutcracker
 				// Parallel works well here
 				// ElementAt is slow so convert it to a list first!
 				List<Element> elements = node.ToList();
-				int elementCount = node.Count() - 1;
+				int elementCount = node.Count();
 				Parallel.For(0, elementCount, elementNum =>
 				                              	{
 				                              		int stringNum = stringCount - (elementNum/pixelsPerString);
@@ -170,7 +168,7 @@ namespace VixenModules.Effect.Nutcracker
 			}
 			;
 			timer.Stop();
-			Console.WriteLine("Nutcracker Render:" + timer.ElapsedMilliseconds + "ms Frames:" + framesToRender);
+			//Console.WriteLine("Nutcracker Render:" + timer.ElapsedMilliseconds + "ms Frames:" + framesToRender);
 		}
 	}
 }
