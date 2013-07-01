@@ -77,7 +77,7 @@ namespace Common.Controls.Timeline
 			Row.RowChanged += RowChangedHandler;
 			Row.RowSelectedChanged += RowSelectedChangedHandler;
 			Row.RowToggled += RowToggledHandler;
-			Row.RowHeightChanged += RowHeightChangedHandler;
+            Row.RowHeightChanged += RowHeightChangedHandler;
 
 			// Drag & Drop
 			AllowDrop = true;
@@ -387,13 +387,20 @@ namespace Common.Controls.Timeline
 		private void RowHeightChangedHandler(object sender, EventArgs e)
 		{
 			ResizeGridHeight();
+
+            Row row = sender as Row;
+            for (int i = 0; i < row.ElementCount; i++)
+            {
+                Element element = row.ElementAt(i);
+                element.Changed = true;
+            }
 		}
 
-		#endregion
+        #endregion
 
-		#region Methods - Rows, Elements
+        #region Methods - Rows, Elements
 
-		public IEnumerator<Row> GetEnumerator()
+        public IEnumerator<Row> GetEnumerator()
 		{
 			return Rows.GetEnumerator();
 		}
@@ -1165,19 +1172,23 @@ namespace Common.Controls.Timeline
 							if (renderWorker.CancellationPending)
 								return;
 
-							// If we have a sequence playing, stop rendering the effects in the background
-							while (Context != null && Context.IsRunning)
-								Thread.Sleep(250);
+                            if (MouseButtons != System.Windows.Forms.MouseButtons.Left)
+                            {
 
-							Element currentElement = row.GetElementAtIndex(i);
-							Size size = new Size((int) Math.Ceiling(timeToPixels(currentElement.Duration)), row.Height - 1);
-							if (currentElement.Changed || !currentElement.CachedCanvasIsCurrent) {
-								elementImage = currentElement.SetupCachedImage(size);
-								if (currentElement.StartTime <= VisibleTimeEnd && currentElement.EndTime >= VisibleTimeStart)
-									Invalidate();
-								renderWorker.ReportProgress((int) ((double) (currentElementNum)/(double) totalElements*100.0));
-							}
+                                // If we have a sequence playing, stop rendering the effects in the background
+                                while (Context != null && Context.IsRunning)
+                                    Thread.Sleep(250);
 
+                                Element currentElement = row.GetElementAtIndex(i);
+                                Size size = new Size((int)Math.Ceiling(timeToPixels(currentElement.Duration)), row.Height - 1);
+                                if (currentElement.Changed || !currentElement.CachedCanvasIsCurrent)
+                                {
+                                    elementImage = currentElement.SetupCachedImage(size);
+                                    if (currentElement.StartTime <= VisibleTimeEnd && currentElement.EndTime >= VisibleTimeStart)
+                                        Invalidate();
+                                    renderWorker.ReportProgress((int)((double)(currentElementNum) / (double)totalElements * 100.0));
+                                }
+                            }
 							currentElementNum++;
 						}
 
