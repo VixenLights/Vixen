@@ -344,9 +344,13 @@ namespace VixenModules.Effect.Nutcracker
 
 		public Color GetPixel(int pixelToGet)
 		{
-			int x = pixelToGet/BufferHt;
-			int y = pixelToGet%BufferHt;
-			Color color = _pixels[x][y];
+            Color color = Color.Transparent;
+            int x = pixelToGet / BufferHt;
+            int y = pixelToGet % BufferHt;
+            if (x >= 0 && x < BufferWi && y >= 0 && y < BufferHt)
+            {
+                color = _pixels[x][y];
+            }
 			return color;
 		}
 
