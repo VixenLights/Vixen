@@ -91,6 +91,10 @@ namespace VixenModules.Effect.Nutcracker
 				if (childCount == 0 && TargetNodes.FirstOrDefault().Children.Count() > 0) {
 					childCount = 1;
 				}
+
+                if (childCount == 0)
+                    childCount = 1;
+
 				return childCount;
 			}
 		}
@@ -121,6 +125,10 @@ namespace VixenModules.Effect.Nutcracker
 			else {
 				pps = PixelsPerString(parentNode.Children.FirstOrDefault());
 			}
+
+            if (pps == 0)
+                pps = 1;
+
 			return pps;
 		}
 

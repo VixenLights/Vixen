@@ -264,6 +264,11 @@ namespace VixenModules.Effect.Nutcracker
 
 		public void InitBuffer(int bufferWidth, int bufferHeight)
 		{
+            if (bufferWidth == 0)
+                bufferWidth = 1;
+            if (bufferHeight == 0)
+                bufferHeight = 0;
+
 			_pixels.Clear();
 			_tempbuf.Clear();
 
