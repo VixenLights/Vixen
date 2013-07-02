@@ -106,8 +106,10 @@ namespace Common.Controls.Timeline
 
 		protected override void OnTimePerPixelChanged(object sender, EventArgs e)
 		{
-			RecalculateAllStaticSnapPoints();
+            //ResetAllElements();
+            RecalculateAllStaticSnapPoints();
 			ResizeGridHorizontally();
+            ResetAllElements();
 			base.OnTimePerPixelChanged(sender, e);
 		}
 
@@ -1232,6 +1234,18 @@ namespace Common.Controls.Timeline
 			}
 		}
 
+        private void ResetAllElements()
+        {
+            foreach (Row row in Rows)
+            {
+                for (int i = 0; i < row.ElementCount; i++)
+                {
+                    Element currentElement = row.GetElementAtIndex(i);
+                    currentElement.Changed = true;
+                }
+            }
+        }
+
 		#endregion
 
 		//static public System.Object drawLock = new System.Object();
@@ -1482,7 +1496,10 @@ namespace Common.Controls.Timeline
 							if (finalBitmapData != null) {
 								finalBitmap.UnlockBits(finalBitmapData);
 							}
-							g.DrawImage(finalBitmap, (Point) finalDrawLocation);
+                            //lock (finalBitmap)
+                            //{
+                                g.DrawImage(finalBitmap, (Point)finalDrawLocation);
+                            //}
 						}
 
 						if (processingSegmentDuration < TimeSpan.MaxValue)

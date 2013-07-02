@@ -79,7 +79,11 @@ namespace VixenModules.Preview.VixenPreview
 
 		#region "Events"
 
-		public delegate void SelectDisplayItemEventHandler(object sender, DisplayItem displayItem);
+        public delegate void ElementsChangedEventHandler(object sender, EventArgs e);
+
+        public event ElementsChangedEventHandler OnElementsChanged;
+        
+        public delegate void SelectDisplayItemEventHandler(object sender, DisplayItem displayItem);
 
 		public event SelectDisplayItemEventHandler OnSelectDisplayItem;
 
@@ -285,6 +289,8 @@ namespace VixenModules.Preview.VixenPreview
 
 		public void AddDisplayItem(DisplayItem displayItem)
 		{
+            if (OnElementsChanged != null)
+                OnElementsChanged(this, new EventArgs());
 			DisplayItems.Add(displayItem);
 		}
 
@@ -1005,61 +1011,61 @@ namespace VixenModules.Preview.VixenPreview
 			renderTimer.Reset();
 			renderTimer.Start();
 			CancellationTokenSource tokenSource = new CancellationTokenSource();
-			if (!_paused) {
-				Bitmap clone = (Bitmap) _alphaBackground.Clone();
-				//BitmapData odata = _alphaBackground.LockBits(new Rectangle(0, 0, _alphaBackground.Width, _alphaBackground.Height), ImageLockMode.ReadWrite, _alphaBackground.PixelFormat);
-				//BitmapData cdata = clone.LockBits(new Rectangle(0, 0, clone.Width, clone.Height), ImageLockMode.ReadWrite, clone.PixelFormat);
-				//Assert.AreNotEqual(odata.Scan0, cdata.Scan0);
-				//using (FastPixel fp = new FastPixel(new Bitmap(_alphaBackground)))
-				using (FastPixel fp = new FastPixel(clone)) {
-					try {
-						//Console.WriteLine("0: " + renderTimer.ElapsedMilliseconds);
-						fp.Lock();
-						//Console.WriteLine("1: " + renderTimer.ElapsedMilliseconds);
-						elementStates.AsParallel().WithCancellation(tokenSource.Token).ForAll(channelIntentState =>
-						                                                                      	{
-						                                                                      		var elementId = channelIntentState.Key;
-						                                                                      		Element element =
-						                                                                      			VixenSystem.Elements.GetElement(elementId);
+            if (!_paused)
+            {
+                Bitmap clone = (Bitmap)_alphaBackground.Clone();
+                //BitmapData odata = _alphaBackground.LockBits(new Rectangle(0, 0, _alphaBackground.Width, _alphaBackground.Height), ImageLockMode.ReadWrite, _alphaBackground.PixelFormat);
+                //BitmapData cdata = clone.LockBits(new Rectangle(0, 0, clone.Width, clone.Height), ImageLockMode.ReadWrite, clone.PixelFormat);
+                //Assert.AreNotEqual(odata.Scan0, cdata.Scan0);
+                //using (FastPixel fp = new FastPixel(new Bitmap(_alphaBackground)))
+                using (FastPixel fp = new FastPixel(clone))
+                {
+                    try
+                    {
+                        //Console.WriteLine("0: " + renderTimer.ElapsedMilliseconds);
+                        fp.Lock();
+                        //Console.WriteLine("1: " + renderTimer.ElapsedMilliseconds);
+                        elementStates.AsParallel().WithCancellation(tokenSource.Token).ForAll(channelIntentState =>
+                        {
+                            var elementId = channelIntentState.Key;
+                            Element element = VixenSystem.Elements.GetElement(elementId);
 
-						                                                                      		if (element != null) {
-						                                                                      			ElementNode node =
-						                                                                      				VixenSystem.Elements.
-						                                                                      					GetElementNodeForElement(element);
+                            if (element != null)
+                            {
+                                ElementNode node = VixenSystem.Elements.GetElementNodeForElement(element);
 
-						                                                                      			if (node != null) {
-						                                                                      				foreach (
-						                                                                      					IIntentState<LightingValue> intentState
-						                                                                      						in channelIntentState.Value) {
-						                                                                      					Color c =
-						                                                                      						((IIntentState<LightingValue>)
-						                                                                      						 intentState).GetValue().
-						                                                                      							GetAlphaChannelIntensityAffectedColor
-						                                                                      							();
-						                                                                      					if (_background != null) {
-						                                                                      						List<PreviewPixel> pixels;
-						                                                                      						if (NodeToPixel.TryGetValue(node,
-						                                                                      						                            out pixels)) {
-						                                                                      							foreach (PreviewPixel pixel in pixels
-						                                                                      								) {
-						                                                                      								pixel.Draw(fp, c);
-						                                                                      							}
-						                                                                      						}
-						                                                                      					}
-						                                                                      				}
-						                                                                      			}
-						                                                                      		}
-						                                                                      	});
-						//Console.WriteLine("2: " + renderTimer.ElapsedMilliseconds);renderTimer.Reset();
-						fp.Unlock(true);
-						RenderBufferedGraphics(fp);
-					}
-					catch (Exception e) {
-						tokenSource.Cancel();
-						//Console.WriteLine(e.Message);
-					}
-				}
-			}
+                                if (node != null)
+                                {
+                                    foreach (IIntentState<LightingValue> intentState in channelIntentState.Value)
+                                    {
+                                        //if (node.Maskex)
+                                        Color c = ((IIntentState<LightingValue>)intentState).GetValue().GetAlphaChannelIntensityAffectedColor();
+                                        if (_background != null)
+                                        {
+                                            List<PreviewPixel> pixels;
+                                            if (NodeToPixel.TryGetValue(node, out pixels))
+                                            {
+                                                foreach (PreviewPixel pixel in pixels)
+                                                {
+                                                    pixel.Draw(fp, c);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                        //Console.WriteLine("2: " + renderTimer.ElapsedMilliseconds);renderTimer.Reset();
+                        fp.Unlock(true);
+                        RenderBufferedGraphics(fp);
+                    }
+                    catch (Exception e)
+                    {
+                        tokenSource.Cancel();
+                        //Console.WriteLine(e.Message);
+                    }
+                }
+            }
 
 			renderTimer.Stop();
 			lastRenderUpdateTime = renderTimer.ElapsedMilliseconds;

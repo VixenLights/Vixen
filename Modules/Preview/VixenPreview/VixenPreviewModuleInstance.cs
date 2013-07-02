@@ -47,7 +47,7 @@ namespace VixenModules.Preview.VixenPreview
 
 		protected override Form Initialize()
 		{
-			//Execution.NodesChanged += ExecutionNodesChanged;
+			Execution.NodesChanged += ExecutionNodesChanged;
 			VixenSystem.Contexts.ContextCreated += ProgramContextCreated;
 			VixenSystem.Contexts.ContextReleased += ProgramContextReleased;
 
@@ -98,6 +98,15 @@ namespace VixenModules.Preview.VixenPreview
 			VixenSystem.Contexts.ContextReleased -= ProgramContextReleased;
 			base.Dispose();
 		}
+
+        private void ExecutionNodesChanged(object sender, EventArgs e)
+        {
+            //Console.WriteLine("hanged");
+            //if (setupForm != null)
+            //{
+            //    setupForm.elementsForm.PopulateElementTree();
+            //}
+        }
 
 		private void ProgramContextCreated(object sender, ContextEventArgs contextEventArgs)
 		{
