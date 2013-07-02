@@ -1022,36 +1022,40 @@ namespace VixenModules.Preview.VixenPreview
                 {
                     try
                     {
-                        //Console.WriteLine("0: " + renderTimer.ElapsedMilliseconds);
                         fp.Lock();
-                        //Console.WriteLine("1: " + renderTimer.ElapsedMilliseconds);
                         elementStates.AsParallel().WithCancellation(tokenSource.Token).ForAll(channelIntentState =>
                         {
                             var elementId = channelIntentState.Key;
                             Element element = VixenSystem.Elements.GetElement(elementId);
-
                             if (element != null)
                             {
                                 ElementNode node = VixenSystem.Elements.GetElementNodeForElement(element);
-
                                 if (node != null)
                                 {
-                                    foreach (IIntentState<LightingValue> intentState in channelIntentState.Value)
+                                    List<PreviewPixel> pixels;
+                                    if (NodeToPixel.TryGetValue(node, out pixels))
                                     {
-                                        //if (node.Maskex)
-                                        Color c = ((IIntentState<LightingValue>)intentState).GetValue().GetAlphaChannelIntensityAffectedColor();
-                                        if (_background != null)
+                                        foreach (PreviewPixel pixel in pixels)
                                         {
-                                            List<PreviewPixel> pixels;
-                                            if (NodeToPixel.TryGetValue(node, out pixels))
-                                            {
-                                                foreach (PreviewPixel pixel in pixels)
-                                                {
-                                                    pixel.Draw(fp, c);
-                                                }
-                                            }
+                                            pixel.Draw(fp, channelIntentState.Value);
                                         }
                                     }
+
+                                    //foreach (IIntentState<LightingValue> intentState in channelIntentState.Value)
+                                    //{
+                                    //    Color c = ((IIntentState<LightingValue>)intentState).GetValue().GetAlphaChannelIntensityAffectedColor();
+                                    //    if (_background != null)
+                                    //    {
+                                    //        List<PreviewPixel> pixels;
+                                    //        if (NodeToPixel.TryGetValue(node, out pixels))
+                                    //        {
+                                    //            foreach (PreviewPixel pixel in pixels)
+                                    //            {
+                                    //                pixel.Draw(fp, c);
+                                    //            }
+                                    //        }
+                                    //    }
+                                    //}
                                 }
                             }
                         });
