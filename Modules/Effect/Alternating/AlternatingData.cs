@@ -61,15 +61,15 @@ namespace VixenModules.Effect.Alternating
 		{
 			Level1 = 1;
 			Level2 = 1;
-			Color1 = Color.White;
-			Color2 = Color.Red;
+			Color1 = Color.Empty;		// default to a 'null' value, when populate when first rendered
+			Color2 = Color.Empty;
 			Enable = true;
 			Interval = 500;
 			DepthOfEffect = 0;
 			GroupEffect = 1;
 			StaticColor1 = StaticColor2 = true;
-			ColorGradient1 = new ColorGradient(ColorGradient1);
-			ColorGradient2 = new ColorGradient(ColorGradient2);
+			ColorGradient1 = new ColorGradient();
+			ColorGradient2 = new ColorGradient();
 		}
 
 		public override IModuleDataModel Clone()

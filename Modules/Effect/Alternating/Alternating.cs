@@ -11,6 +11,7 @@ using Vixen.Sys;
 using Vixen.Sys.Attribute;
 using System.Threading.Tasks;
 using VixenModules.App.ColorGradients;
+using VixenModules.Property.Color;
 
 namespace VixenModules.Effect.Alternating
 {
@@ -27,6 +28,22 @@ namespace VixenModules.Effect.Alternating
 		protected override void _PreRender()
 		{
 			_elementData = new EffectIntents();
+
+			// check for sane default colors when first rendering it
+			if (Color1 == Color.Empty || Color2 == Color.Empty) {
+				HashSet<Color> validColors = new HashSet<Color>();
+				validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
+
+				Color1 = validColors.DefaultIfEmpty(Color.White).First();
+				ColorGradient1 = new ColorGradient(validColors.DefaultIfEmpty(Color.White).First());
+				if (validColors.Count > 1) {
+					Color2 = validColors.ElementAt(1);
+					ColorGradient2 = new ColorGradient(validColors.ElementAt(1));
+				} else {
+					Color2 = validColors.DefaultIfEmpty(Color.White).First();
+					ColorGradient2 = new ColorGradient(validColors.DefaultIfEmpty(Color.White).First());
+				}
+			}
 
 			foreach (ElementNode node in TargetNodes) {
 				if (node != null)
@@ -272,7 +289,6 @@ namespace VixenModules.Effect.Alternating
 			HashSet<double> allPoints = new HashSet<double>();
 
 			allPoints.Add(0.0);
-
 
 			foreach (ColorPoint point in gradient.Colors) {
 				allPoints.Add(point.Position);

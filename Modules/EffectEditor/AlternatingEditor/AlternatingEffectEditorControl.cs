@@ -67,11 +67,17 @@ namespace VixenModules.EffectEditor.AlternatingEditor
 
 
 		private IEffect _targetEffect;
-
 		public IEffect TargetEffect
 		{
 			get { return _targetEffect; }
-			set { _targetEffect = value; }
+			set
+			{
+				_targetEffect = value;
+				colorTypeEditorControl1.TargetEffect = value;
+				colorTypeEditorControl2.TargetEffect = value;
+				gradient1.TargetEffect = value;
+				gradient2.TargetEffect = value;
+			}
 		}
 
 		public int Interval

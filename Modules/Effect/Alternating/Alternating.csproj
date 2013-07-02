@@ -63,6 +63,11 @@
       <Name>ColorGradients</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\Property\Color\Color.csproj">
+      <Project>{73068A83-B3B7-4A2C-923D-71C7886CD5E3}</Project>
+      <Name>Color</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\SetLevel\SetLevel.csproj">
       <Project>{8910163e-a2a3-4f8b-b5d8-0e311166b8ba}</Project>
       <Name>SetLevel</Name>
