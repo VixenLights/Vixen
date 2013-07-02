@@ -264,6 +264,11 @@ namespace VixenModules.Effect.Nutcracker
 
 		public void InitBuffer(int bufferWidth, int bufferHeight)
 		{
+            if (bufferWidth == 0)
+                bufferWidth = 1;
+            if (bufferHeight == 0)
+                bufferHeight = 0;
+
 			_pixels.Clear();
 			_tempbuf.Clear();
 
@@ -344,9 +349,13 @@ namespace VixenModules.Effect.Nutcracker
 
 		public Color GetPixel(int pixelToGet)
 		{
-			int x = pixelToGet/BufferHt;
-			int y = pixelToGet%BufferHt;
-			Color color = _pixels[x][y];
+            Color color = Color.Transparent;
+            int x = pixelToGet / BufferHt;
+            int y = pixelToGet % BufferHt;
+            if (x >= 0 && x < BufferWi && y >= 0 && y < BufferHt)
+            {
+                color = _pixels[x][y];
+            }
 			return color;
 		}
 
