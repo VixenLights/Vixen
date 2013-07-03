@@ -1,6 +1,7 @@
 ﻿using System;
 using Vixen.Module.SequenceType;
 using VixenModules.Sequence.Timed;
+using VixenModules.SequenceType.Vixen2x;
 
 namespace VixenModules.Sequence.Vixen2x {
 	public class Vixen2xSequenceModuleDescriptor : SequenceTypeModuleDescriptorBase {
@@ -21,6 +22,14 @@ namespace VixenModules.Sequence.Vixen2x {
 		override public Type ModuleDataClass {
 			get { return typeof(TimedSequenceData); }
 		}
+
+        public override Type ModuleStaticDataClass
+        {
+            get
+            {
+                return typeof(Vixen2xSequenceStaticData);
+            }
+        }
 
 		override public string Author {
 			get { return "John McAdams"; }

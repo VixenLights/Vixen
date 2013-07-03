@@ -659,10 +659,14 @@ namespace Common.Controls
 				dragNodes = (List<TreeNode>)e.Data.GetData(typeof(List<TreeNode>));
 			}
 
-			// if the target node is in the dragged nodes, it's not a valid point: don't select it
-			if (_dragDestinationNode != null && dragNodes.Contains(_dragDestinationNode)) {
-				_dragDestinationNode = null;
-			}
+            if (dragNodes != null)
+            {
+                // if the target node is in the dragged nodes, it's not a valid point: don't select it
+                if (_dragDestinationNode != null && dragNodes.Contains(_dragDestinationNode))
+                {
+                    _dragDestinationNode = null;
+                }
+            }
 
 			if (dragNodes != null && _dragDestinationNode != null) {
 				// if there's been a verification call setup, call it to check that the
