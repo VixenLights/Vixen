@@ -118,6 +118,11 @@ namespace VixenModules.Effect.Nutcracker
 
 		#region Nutcracker Utilities
 
+		public static bool IsNutcrackerResource(string s) 
+		{
+			return s.Contains("VixenModules.Effect.Nutcracker");
+		}
+		
 		private int rand()
 		{
 			return random.Next();
@@ -1949,10 +1954,18 @@ namespace VixenModules.Effect.Nutcracker
 			}
 
 			if (NewPictureName != PictureName || scale != lastScale) {
-				if (!System.IO.File.Exists(NewPictureName)) {
+				if (IsNutcrackerResource(NewPictureName))
+				{
+					image = Image.FromStream(typeof(Nutcracker).Assembly.GetManifestResourceStream(NewPictureName));     
+				}
+				else if (System.IO.File.Exists(NewPictureName))
+				{
+					image = Image.FromFile(NewPictureName);
+				}
+				else
+				{
 					return;
 				}
-				image = Image.FromFile(NewPictureName);
 				if (scale != 0.0) {
 					image = ScaleImage(image, scale/100);
 				}

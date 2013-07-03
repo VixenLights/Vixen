@@ -68,45 +68,19 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Content Include="PictureTiles\Blue Glow Dots.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="PictureTiles\Bubbles.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="PictureTiles\Checkers.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="PictureTiles\Damask by Pixels and Ice Cream.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="PictureTiles\Diamonds.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="PictureTiles\Rain.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="PictureTiles\Snowflakes 1.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="PictureTiles\Snowflakes 2.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="PictureTiles\Stripes 1.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="PictureTiles\Stripes 2.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="PictureTiles\Tutti Fruitti by Pixels and Ice Cream Pattern 1.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="PictureTiles\Tutti Fruitti by Pixels and Ice Cream Pattern 2.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="PictureTiles\Tutti Fruitti by Pixels and Ice Cream Pattern 3.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <EmbeddedResource Include="PictureTiles\Blue Glow Dots.png" />
+    <EmbeddedResource Include="PictureTiles\Bubbles.png" />
+    <EmbeddedResource Include="PictureTiles\Checkers.png" />
+    <EmbeddedResource Include="PictureTiles\Damask by Pixels and Ice Cream.png" />
+    <EmbeddedResource Include="PictureTiles\Diamonds.png" />
+    <EmbeddedResource Include="PictureTiles\Rain.png" />
+    <EmbeddedResource Include="PictureTiles\Snowflakes 1.png" />
+    <EmbeddedResource Include="PictureTiles\Snowflakes 2.png" />
+    <EmbeddedResource Include="PictureTiles\Stripes 1.png" />
+    <EmbeddedResource Include="PictureTiles\Stripes 2.png" />
+    <EmbeddedResource Include="PictureTiles\Tutti Fruitti by Pixels and Ice Cream Pattern 1.png" />
+    <EmbeddedResource Include="PictureTiles\Tutti Fruitti by Pixels and Ice Cream Pattern 2.png" />
+    <EmbeddedResource Include="PictureTiles\Tutti Fruitti by Pixels and Ice Cream Pattern 3.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

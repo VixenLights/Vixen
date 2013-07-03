@@ -966,30 +966,55 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 
 		#region PictureTile
 
+		//private void LoadPictureTile()
+		//{
+		//    string folder = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Modules\\Effect\\PictureTiles");
+		//    //System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\Modules\\Effect\\PictureTiles";
+		//    Console.WriteLine(folder);
+		//    System.IO.DirectoryInfo folderInfo = new System.IO.DirectoryInfo(folder);
+
+		//    foreach (System.IO.FileInfo file in folderInfo.GetFiles()) {
+		//        // TODO: check for valid image formats
+		//        if (file.Extension.ToLower() != ".db") {
+		//            string title = file.Name;
+		//            PictureComboBoxItem item = new PictureComboBoxItem(title, file, comboBoxPictureTileFileName.ItemHeight,
+		//                                                               comboBoxPictureTileFileName.ItemHeight);
+		//            comboBoxPictureTileFileName.Items.Add(item);
+
+		//            if (item.File.FullName == Data.PictureTile_FileName) {
+		//                comboBoxPictureTileFileName.SelectedIndex = comboBoxPictureTileFileName.Items.Count - 1;
+		//            }
+		//        }
+		//    }
+
+		//    if (comboBoxPictureTileFileName.Items.Count > 0 && comboBoxPictureTileFileName.SelectedIndex < 0)
+		//        comboBoxPictureTileFileName.SelectedIndex = 0;
+
+		//    trackPictureTileMovementDirection.Value = Data.PictureTile_Direction;
+		//    numericPictureTileScale.Value = Convert.ToDecimal(Data.PictureTile_Scaling);
+		//    checkPictureTileReplaceColor.Checked = Data.PictureTile_ReplaceColor;
+		//    checkPictureTileCopySaturation.Checked = Data.PictureTile_UseSaturation;
+		//}
+
+		private const string IMAGE_RESX_SOURCE = "VixenModules.Effect.Nutcracker.PictureTiles";
 		private void LoadPictureTile()
 		{
-			string folder = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Modules\\Effect\\PictureTiles");
-			//System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\Modules\\Effect\\PictureTiles";
-			Console.WriteLine(folder);
-			System.IO.DirectoryInfo folderInfo = new System.IO.DirectoryInfo(folder);
-
-			foreach (System.IO.FileInfo file in folderInfo.GetFiles()) {
-				// TODO: check for valid image formats
-				if (file.Extension.ToLower() != ".db") {
-					string title = file.Name;
-					PictureComboBoxItem item = new PictureComboBoxItem(title, file, comboBoxPictureTileFileName.ItemHeight,
-					                                                   comboBoxPictureTileFileName.ItemHeight);
-					comboBoxPictureTileFileName.Items.Add(item);
-
-					if (item.File.FullName == Data.PictureTile_FileName) {
-						comboBoxPictureTileFileName.SelectedIndex = comboBoxPictureTileFileName.Items.Count - 1;
-					}
+			string[] resourceNames = typeof(Nutcracker).Assembly.GetManifestResourceNames();
+			foreach (var res in resourceNames)
+			{
+				string title = res.Replace(IMAGE_RESX_SOURCE + ".", string.Empty); ;
+				PictureComboBoxItem item = new PictureComboBoxItem(title, res, comboBoxPictureTileFileName.ItemHeight,
+																									comboBoxPictureTileFileName.ItemHeight, typeof(Nutcracker));
+				comboBoxPictureTileFileName.Items.Add(item);
+				//if (!Data.PictureFile_Custom && item.ResourceName == Data.PictureTile_FileName)
+				if (item.ResourceName == Data.PictureTile_FileName)
+				{
+					comboBoxPictureTileFileName.SelectedIndex = comboBoxPictureTileFileName.Items.Count - 1;
 				}
-			}
 
+			}
 			if (comboBoxPictureTileFileName.Items.Count > 0 && comboBoxPictureTileFileName.SelectedIndex < 0)
 				comboBoxPictureTileFileName.SelectedIndex = 0;
-
 			trackPictureTileMovementDirection.Value = Data.PictureTile_Direction;
 			numericPictureTileScale.Value = Convert.ToDecimal(Data.PictureTile_Scaling);
 			checkPictureTileReplaceColor.Checked = Data.PictureTile_ReplaceColor;
@@ -1001,9 +1026,9 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			if (loading) return;
 			PictureComboBoxItem item = comboBoxPictureTileFileName.SelectedItem as PictureComboBoxItem;
 			if (item != null) {
-				FileInfo file = item.File;
-				Data.PictureTile_FileName = file.FullName;
-				//Data.PictureTile_Direction = 1;
+				//FileInfo file = item.File;
+				//Data.PictureTile_FileName = file.FullName;
+				Data.PictureTile_FileName = item.ResourceName;
 			}
 			effect.SetNextState(true);
 		}
