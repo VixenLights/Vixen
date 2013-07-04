@@ -73,6 +73,11 @@
       <Name>ColorGradients</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\App\Curves\Curves.csproj">
+      <Project>{f0ba7127-61b4-453a-802b-abcb5a0d3d54}</Project>
+      <Name>Curves</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\ColorGradientTypeEditor\ColorGradientTypeEditor.csproj">
       <Project>{48cf28ec-8dc9-44f8-a258-bd264df187d9}</Project>
       <Name>ColorGradientTypeEditor</Name>
@@ -81,6 +86,11 @@
     <ProjectReference Include="..\ColorTypeEditor\ColorTypeEditor.csproj">
       <Project>{3b7309d6-5d6a-4265-a0b9-b65e0ddfcb12}</Project>
       <Name>ColorTypeEditor</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\CurveTypeEditor\CurveTypeEditor.csproj">
+      <Project>{34df4090-8439-416f-a719-a74430e4e0c0}</Project>
+      <Name>CurveTypeEditor</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\LevelTypeEditor\LevelTypeEditor.csproj">

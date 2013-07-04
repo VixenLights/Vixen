@@ -12,6 +12,8 @@ using Vixen.Sys.Attribute;
 using System.Threading.Tasks;
 using VixenModules.App.ColorGradients;
 using VixenModules.Property.Color;
+using VixenModules.App.Curves;
+using ZedGraph;
 
 namespace VixenModules.Effect.Alternating
 {
@@ -19,7 +21,7 @@ namespace VixenModules.Effect.Alternating
 	{
 		private AlternatingData _data;
 		private EffectIntents _elementData = null;
-
+		private Element element;
 		public Alternating()
 		{
 			_data = new AlternatingData();
@@ -33,15 +35,15 @@ namespace VixenModules.Effect.Alternating
 			if (Color1 == Color.Empty || Color2 == Color.Empty) {
 				HashSet<Color> validColors = new HashSet<Color>();
 				validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
-
-				Color1 = validColors.DefaultIfEmpty(Color.White).First();
+								Color1 = validColors.DefaultIfEmpty(Color.White).First();
 				ColorGradient1 = new ColorGradient(validColors.DefaultIfEmpty(Color.White).First());
+			
 				if (validColors.Count > 1) {
 					Color2 = validColors.ElementAt(1);
 					ColorGradient2 = new ColorGradient(validColors.ElementAt(1));
 				} else {
-					Color2 = validColors.DefaultIfEmpty(Color.White).First();
-					ColorGradient2 = new ColorGradient(validColors.DefaultIfEmpty(Color.White).First());
+					Color2 = validColors.DefaultIfEmpty(Color.Red).First();
+					ColorGradient2 = new ColorGradient(validColors.DefaultIfEmpty(Color.Red).First());
 				}
 			}
 
@@ -194,6 +196,27 @@ namespace VixenModules.Effect.Alternating
 			}
 		}
 
+		[Value]
+		public Curve Curve1
+		{
+			get { return _data.Curve1; }
+			set
+			{
+				_data.Curve1 = value;
+				IsDirty = true;
+			}
+		}
+
+		[Value]
+		public Curve Curve2
+		{
+			get { return _data.Curve2; }
+			set
+			{
+				_data.Curve2 = value;
+				IsDirty = true;
+			}
+		}
 
 		// renders the given node to the internal ElementData dictionary. If the given node is
 		// not a element, will recursively descend until we render its elements.
@@ -206,39 +229,34 @@ namespace VixenModules.Effect.Alternating
 
 			if (Enable) {
 				//intervals = Math.DivRem((long)TimeSpan.TotalMilliseconds, (long)Interval, out rem);
-				intervals = Math.Ceiling(TimeSpan.TotalMilliseconds/(double) Interval);
+				intervals = Math.Ceiling(TimeSpan.TotalMilliseconds / (double)Interval);
 			}
 
 			TimeSpan startTime = TimeSpan.Zero;
+			for (int i = 0; i < intervals; i++) {
 
+			}
 			for (int i = 0; i < intervals; i++) {
 				altColor = startingColor;
 				var intervalTime = intervals == 1
-				                   	? TimeSpan
-				                   	: TimeSpan.FromMilliseconds(i == intervals - 1 ? Interval + rem : Interval);
+									? TimeSpan
+									: TimeSpan.FromMilliseconds(i == intervals - 1 ? Interval + rem : Interval);
 
 				LightingValue? lightingValue = null;
-				double[] gradient1Points = GetDataPoints(ColorGradient1).ToArray();
-				double[] gradient2Points = GetDataPoints(ColorGradient2).ToArray();
-				double groupLastPosition = 0;
-				double groupPosition = 0;
+
 				int totalElements = node.Count();
 				int currentNode = 0;
-				while (currentNode < totalElements) {
-					var elements = node.Skip(currentNode).Take(GroupEffect);
-					currentNode += GroupEffect;
-					int cNode = 0;
-					elements.ToList().ForEach(element =>
-					                          	{
-					                          		double lastPosition = groupLastPosition;
-					                          		double position = groupPosition;
 
-					                          		RenderElement(altColor, ref startTime, ref intervalTime, ref lightingValue,
-					                          		              gradient1Points, gradient2Points, element, ref lastPosition, ref position);
-					                          		if (cNode == 0) groupLastPosition = lastPosition;
-					                          		if (cNode == 0) groupPosition = position;
-					                          		cNode++;
-					                          	});
+				while (currentNode < totalElements) {
+
+					var elements = node.GetLeafEnumerator().Skip(currentNode).Take(GroupEffect);
+					currentNode += GroupEffect;
+
+					int cNode = 0;
+					elements.ToList().ForEach(element => {
+						RenderElement(altColor, ref startTime, ref intervalTime, ref lightingValue, element);
+						cNode++;
+					});
 					altColor = !altColor;
 				}
 
@@ -249,54 +267,30 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		private void RenderElement(bool altColor, ref TimeSpan startTime, ref System.TimeSpan intervalTime,
-		                           ref LightingValue? lightingValue, double[] gradient1Points, double[] gradient2Points,
-		                           Element element, ref double lastPosition, ref double position)
+								   ref LightingValue? lightingValue, ElementNode element)
 		{
+			EffectIntents result;
+
 			if ((StaticColor1 && altColor) || StaticColor2 && !altColor) {
-				lightingValue = new LightingValue(altColor ? Color1 : Color2,
-				                                  altColor ? (float) IntensityLevel1 : (float) IntensityLevel2);
-				IIntent intent = new LightingIntent(lightingValue.Value, lightingValue.Value, intervalTime);
-				_elementData.AddIntentForElement(element.Id, intent, startTime);
-			}
-			else {
-				var x =
-					TimeSpan.FromMilliseconds(
-						Math.Ceiling(intervalTime.TotalMilliseconds/(altColor ? gradient1Points.Length : gradient2Points.Length)));
-				TimeSpan startTime2 = startTime;
-				lastPosition = altColor ? gradient1Points[0] : gradient2Points[0];
-				for (int j = 0; j < (altColor ? gradient1Points.Length : gradient2Points.Length); j++) {
-					position = altColor ? gradient1Points[j] : gradient2Points[j];
 
-					LightingValue startValue =
-						new LightingValue(altColor ? ColorGradient1.GetColorAt(lastPosition) : ColorGradient2.GetColorAt(lastPosition),
-						                  altColor ? (float) IntensityLevel1 : (float) IntensityLevel2);
-					LightingValue endValue =
-						new LightingValue(altColor ? ColorGradient1.GetColorAt(position) : ColorGradient2.GetColorAt(position),
-						                  altColor ? (float) IntensityLevel1 : (float) IntensityLevel2);
+				var level = new SetLevel.SetLevel();
+				level.TargetNodes = new ElementNode[] { element };
+				level.Color = altColor ? Color1 : Color2;
+				level.TimeSpan = intervalTime;
+				
+				result = level.Render();
 
-					IIntent intent = new LightingIntent(startValue, endValue, x);
-
-					_elementData.AddIntentForElement(element.Id, intent, startTime2);
-
-					lastPosition = position;
-					startTime2 += x;
-				}
-			}
-		}
-
-		private IEnumerable<double> GetDataPoints(ColorGradient gradient)
-		{
-			HashSet<double> allPoints = new HashSet<double>();
-
-			allPoints.Add(0.0);
-
-			foreach (ColorPoint point in gradient.Colors) {
-				allPoints.Add(point.Position);
+			} else {
+				var pulse = new Pulse.Pulse();
+				pulse.TargetNodes = new ElementNode[] { element };
+				pulse.TimeSpan = intervalTime;
+				pulse.ColorGradient = altColor ? ColorGradient1 : ColorGradient2;
+				pulse.LevelCurve = altColor ? Curve1 : Curve2;
+				result = pulse.Render();
 			}
 
-			allPoints.Add(1.0);
-
-			return allPoints.OrderBy(x => x);
+			result.OffsetAllCommandsByTime(startTime);
+			_elementData.Add(result);
 		}
 	}
 }
