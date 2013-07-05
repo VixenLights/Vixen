@@ -10,11 +10,12 @@ using Vixen.Sys.Attribute;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Effect.Pulse;
+using VixenModules.Property.Location;
 
 namespace VixenModules.Effect.Wipe {
 	public class WipeModule : EffectModuleInstanceBase {
-		public WipeModule() { 
-		
+		public WipeModule() {
+
 		}
 		WipeData _data = new WipeData();
 		private EffectIntents _elementData = null;
@@ -25,34 +26,119 @@ namespace VixenModules.Effect.Wipe {
 
 			IEnumerable<IGrouping<int, ElementNode>> renderNodes = null;
 
+
 			switch (_data.Direction) {
 				case WipeDirection.Up:
 					renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator())
-						.OrderByDescending(x => x.NodeLocation.Y)
-						.ThenBy(x => x.NodeLocation.X)
-						.GroupBy(x => x.NodeLocation.Y)
-						.Distinct();
+												.OrderByDescending(x => {
+													var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
+													if (prop != null) {
+														return ((LocationData)prop.ModuleData).Y;
+													}
+													else
+														return 1;
+												})
+												.ThenBy(x => {
+													var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
+													if (prop != null) {
+														return ((LocationData)prop.ModuleData).X;
+													}
+													else
+														return 1;
+												})
+												.GroupBy(x => {
+													var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
+													if (prop != null) {
+														return ((LocationData)prop.ModuleData).Y;
+													}
+													else
+														return 1;
+												})
+												.Distinct();
 					break;
 				case WipeDirection.Down:
+
 					renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator())
-						.OrderBy(x => x.NodeLocation.Y)
-						.ThenBy(x => x.NodeLocation.X)
-						.GroupBy(x => x.NodeLocation.Y)
-						.Distinct();
+												.OrderBy(x => {
+													var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
+													if (prop != null) {
+														return ((LocationData)prop.ModuleData).Y;
+													}
+													else
+														return 1;
+												})
+												.ThenBy(x => {
+													var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
+													if (prop != null) {
+														return ((LocationData)prop.ModuleData).X;
+													}
+													else
+														return 1;
+												})
+												.GroupBy(x => {
+													var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
+													if (prop != null) {
+														return ((LocationData)prop.ModuleData).Y;
+													}
+													else
+														return 1;
+												})
+												.Distinct();
 					break;
 				case WipeDirection.Right:
+
 					renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator())
-						.OrderByDescending(x => x.NodeLocation.X)
-						.ThenBy(x => x.NodeLocation.Y)
-						.GroupBy(x => x.NodeLocation.X)
-						.Distinct();
+												.OrderBy(x => {
+													var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
+													if (prop != null) {
+														return ((LocationData)prop.ModuleData).X;
+													}
+													else
+														return 1;
+												})
+												.ThenBy(x => {
+													var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
+													if (prop != null) {
+														return ((LocationData)prop.ModuleData).Y;
+													}
+													else
+														return 1;
+												})
+												.GroupBy(x => {
+													var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
+													if (prop != null) {
+														return ((LocationData)prop.ModuleData).X;
+													}
+													else
+														return 1;
+												})
+												.Distinct();
 					break;
 				case WipeDirection.Left:
+
 					renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator())
-						.OrderBy(x => x.NodeLocation.X)
-						.ThenBy(x => x.NodeLocation.Y)
-						.GroupBy(x => x.NodeLocation.X)
-						.Distinct();
+												.OrderByDescending(x => {
+													var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
+													if (prop != null) {
+														return ((LocationData)prop.ModuleData).X;
+													}
+													return 1;
+												})
+												.ThenBy(x => {
+													var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
+													if (prop != null) {
+														return ((LocationData)prop.ModuleData).Y;
+													}
+													return 1;
+												})
+												.GroupBy(x => {
+													var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
+													if (prop != null) {
+														return ((LocationData)prop.ModuleData).X;
+													}
+													return 1;
+												})
+												.Distinct();
 					break;
 				default:
 					break;
@@ -61,7 +147,7 @@ namespace VixenModules.Effect.Wipe {
 
 			if (renderNodes != null) {
 				double intervals = (double)TimeSpan.TotalMilliseconds / (double)renderNodes.Count();
-			
+
 				TimeSpan effectTime = TimeSpan.Zero;
 				foreach (var item in renderNodes) {
 					EffectIntents result;
