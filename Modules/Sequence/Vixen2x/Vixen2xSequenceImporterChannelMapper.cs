@@ -198,7 +198,7 @@ namespace VixenModules.SequenceType.Vixen2x
                        vixen2Color,
                         itemrow.SubItems[0].Text,
                         itemrow.SubItems[1].Text,
-                        node,
+                        node.Id,
                         Vixen3Color));
 
                 }
@@ -208,7 +208,7 @@ namespace VixenModules.SequenceType.Vixen2x
                       vixen2Color,
                        itemrow.SubItems[0].Text,
                        itemrow.SubItems[1].Text,
-                       null,
+                       Guid.Empty,
                        Vixen3Color));
                 }
             }

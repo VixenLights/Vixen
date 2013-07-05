@@ -14,16 +14,16 @@ namespace VixenModules.SequenceType.Vixen2x
         public string ChannelOutput;
         public string ChannelNumber;
         public Color DestinationColor;
-        public ElementNode ElementNode;
-  
+        public Guid ElementNodeId;
 
-        public ChannelMapping(string channelName, Color channelColor, string channelNumber, string channelOutput, ElementNode node, Color destinationColor)
+
+		public ChannelMapping(string channelName, Color channelColor, string channelNumber, string channelOutput, Guid nodeId, Color destinationColor)
         {
             ChannelName = channelName;
             ChannelColor = channelColor;
             ChannelOutput = channelOutput;
             ChannelNumber = channelNumber;
-            ElementNode = node;
+            ElementNodeId = nodeId;
             DestinationColor = destinationColor;
 
         }

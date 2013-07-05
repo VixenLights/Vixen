@@ -210,7 +210,7 @@ namespace VixenModules.SequenceType.Vixen2x
 
         private void addEvent(patternType pattern, int chan, int startPos, int startValue, int endPos, int endValue = 0)
         {
-            ElementNode targetNode = mappings[chan].ElementNode;
+			ElementNode targetNode = VixenSystem.Nodes.GetElementNode(mappings[chan].ElementNodeId);
 
             if (targetNode != null)
             {
