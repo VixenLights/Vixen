@@ -13,13 +13,14 @@ namespace VixenModules.SequenceType.Vixen2x
     public partial class Vixen2xSequenceImporterChannelMapper : Form
     {
         private MultiSelectTreeview treeview;
+		private bool MapExists;
 
-
-        public Vixen2xSequenceImporterChannelMapper(List<ChannelMapping> mappings)
+        public Vixen2xSequenceImporterChannelMapper(List<ChannelMapping> mappings,bool mapExists)
         {
             InitializeComponent();
 
             Mappings = mappings;
+			MapExists = mapExists;
         }
 
         public List<ChannelMapping> Mappings { get; set; }
@@ -103,9 +104,19 @@ namespace VixenModules.SequenceType.Vixen2x
                 item.SubItems.Add(GetColorName(mapping.ChannelColor));
                 item.SubItems[3].BackColor = (Color)TypeDescriptor.GetConverter(typeof(Color)).ConvertFromString(GetColorName(mapping.ChannelColor));
 
-                //just add empty items here so I don't have to mess with checking for them later
-                item.SubItems.Add("");
-                item.SubItems.Add("");
+				if (MapExists)
+				{
+					ElementNode targetNode = VixenSystem.Nodes.GetElementNode(mapping.ElementNodeId);
+					item.SubItems.Add(targetNode.Element.Name);
+					item.SubItems[4].Tag = targetNode;
+
+					item.SubItems.Add(GetColorName(mapping.DestinationColor));
+				}
+				else
+				{
+					item.SubItems.Add("");
+					item.SubItems.Add("");
+				}
 
                 listViewMapping.Items.Add(item);
             }

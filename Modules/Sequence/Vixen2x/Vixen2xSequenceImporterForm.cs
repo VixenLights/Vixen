@@ -10,7 +10,10 @@ namespace VixenModules.SequenceType.Vixen2x {
 		
         public ISequence Sequence { get; set; }
 
+		private bool mapExists;
         private string vixen2ImportFile;
+		private List<ChannelMapping> channelMappings;
+
 		private Vixen2SequenceData parsedV2Sequence = null;
         private Vixen3SequenceCreator vixen3SequenceCreator = null;
         private Vixen2xSequenceStaticData StaticModuleData;
@@ -18,6 +21,8 @@ namespace VixenModules.SequenceType.Vixen2x {
         public Vixen2xSequenceImporterForm(string Vixen2File, Vixen.Module.IModuleDataModel staticModuleData)
         {
 			InitializeComponent();
+
+			channelMappings = new List<ChannelMapping>();
 
             //I think this was the correct way to implement this.
             StaticModuleData = (Vixen2xSequenceStaticData)staticModuleData;
@@ -30,9 +35,29 @@ namespace VixenModules.SequenceType.Vixen2x {
             //Go ahead and build the map for the sequence that we have.
             ParseV2SequenceData();
 
-            //not really used at this time.  May be used if we decide to clear an existing map and
-            //create a new one.
-            LoadMap();
+			if (StaticModuleData.Vixen2xMappings.Count > 0)
+			{
+				LoadMap();
+			}
+		}
+
+		private void LoadMap()
+		{
+			DialogResult result = MessageBox.Show("A mapping already exists, do you wish to keep it?", "Mapping Exists", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+			if (result == DialogResult.No)
+			{
+				//Send the vixen 2 parsed data and let the user create a new map.
+				mapExists = false;
+				channelMappings = parsedV2Sequence.mappings;
+			}
+			else
+			{
+				//we have a map so lets enable the convert button and set the channel mappings to
+				//our mapped data.
+				mapExists = true;
+				covertButton.Enabled = true;
+				channelMappings = StaticModuleData.Vixen2xMappings;
+			}
 		}
 
         private void ParseV2SequenceData()
@@ -41,53 +66,24 @@ namespace VixenModules.SequenceType.Vixen2x {
 
             vixen2ProfileTextBox.Text = parsedV2Sequence.ProfileName;
         }
-
-        private void LoadMap()
-        {
-            //if (StaticModuleData.Vixen2xMappings.Count > 0)
-            //{
-            //    createMapButton.Enabled = false;
-            //}
-
-        }
     
-        private void loadMapButton_Click(object sender, EventArgs e)
-        {
-            //not enabled at this time.
-        }
-
         private void createMapButton_Click(object sender, EventArgs e)
         {
-            List<ChannelMapping> mappings = new List<ChannelMapping>();
-
-            //For now we are going to assume that the map has already been done and somebody just
-            //wants to make a change.  We are not considering another profile from outside the system
-            //at this time.
-            if (StaticModuleData.Vixen2xMappings.Count > 0)
+		   using (Vixen2xSequenceImporterChannelMapper mappingForm = new Vixen2xSequenceImporterChannelMapper(channelMappings,mapExists))
             {
-                mappings = StaticModuleData.Vixen2xMappings;
-            }
-            else
-            {
-                mappings = parsedV2Sequence.mappings;
-            }
+				if (mappingForm.ShowDialog() == DialogResult.OK)
+				{
+					//Now that we have our mapping lets clear out what we have
+					//and save it to our static module data
+					StaticModuleData.Vixen2xMappings.Clear();
+					StaticModuleData.Vixen2xMappings = mappingForm.Mappings;
 
-            using (Vixen2xSequenceImporterChannelMapper mappingForm = new Vixen2xSequenceImporterChannelMapper(mappings))
-            {
-                if (mappingForm.ShowDialog() == DialogResult.OK)
-                {
-                    try
-                    {
-                        //Create our Vixen 3 sequences.
-                        StaticModuleData.Vixen2xMappings.Clear();
-                        StaticModuleData.Vixen2xMappings = mappingForm.Mappings;
-                    }
-                    catch (Exception ex)
-                    {
-                        int x = 0;
-                    }
-
-                }
+				}
+				else
+				{
+					//The user cancelled out so leave our current map in place
+					MessageBox.Show("No changes will be stored since you cancelled the operation", "Cancelled Form", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				}
             }
         }
 
@@ -99,19 +95,23 @@ namespace VixenModules.SequenceType.Vixen2x {
         private void covertButton_Click(object sender, EventArgs e)
         {
             //check to see if the mapping table is there.
-            if (StaticModuleData.Vixen2xMappings.Count > 0)
-            {
-                vixen3SequenceCreator = new Vixen3SequenceCreator(parsedV2Sequence, StaticModuleData.Vixen2xMappings);
+			if (StaticModuleData.Vixen2xMappings.Count > 0)
+			{
+				vixen3SequenceCreator = new Vixen3SequenceCreator(parsedV2Sequence, StaticModuleData.Vixen2xMappings);
 
-                Sequence = vixen3SequenceCreator.Sequence;
+				Sequence = vixen3SequenceCreator.Sequence;
 
-                if (Sequence.SequenceData != null)
-                {
-                    //we got this baby converted so close it out and load up the Sequence
-                    DialogResult = System.Windows.Forms.DialogResult.OK;
-                    Close();
-                }
-            }
+				if (Sequence.SequenceData != null)
+				{
+					//we got this baby converted so close it out and load up the Sequence
+					DialogResult = System.Windows.Forms.DialogResult.OK;
+					Close();
+				}
+			}
+			else
+			{
+				MessageBox.Show("Mapping data is missing, please try again...", "No Mapping Data", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+			}
         }
 	}
 }
