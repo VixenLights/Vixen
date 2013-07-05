@@ -19,10 +19,8 @@ namespace VixenModules.Effect.Wipe {
 			Curve.Points.Add(50, 100);
 			Curve.Points.Add(100, 1);
 			Direction = WipeDirection.Right;
-			ColorHandling = WipeColorHandling.StaticColor;
-			Color = new RGB(System.Drawing.Color.White);
 			ColorGradient = new ColorGradient();
-			PulseTime = 50;
+			PulseTime = 1000;
 		}
 
 		[DataMember]
@@ -37,12 +35,7 @@ namespace VixenModules.Effect.Wipe {
 		[DataMember]
 		public int PulseTime { get; set; }
 
-		[DataMember]
-		public WipeColorHandling ColorHandling { get; set; }
-
-		[DataMember]
-		public RGB Color { get; set; }
-
+ 
 		public override IModuleDataModel Clone() {
 			return (WipeData)MemberwiseClone();
 		}

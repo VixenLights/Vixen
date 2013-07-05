@@ -31,13 +31,7 @@
 			this.curveTypeEditorControlEachPulse = new VixenModules.EffectEditor.CurveTypeEditor.CurveTypeEditorControl();
 			this.numericUpDownPulseLength = new System.Windows.Forms.NumericUpDown();
 			this.groupBoxColor = new System.Windows.Forms.GroupBox();
-			this.radioButtonGradientAcrossItems = new System.Windows.Forms.RadioButton();
-			this.colorTypeEditorControlStaticColor = new VixenModules.EffectEditor.ColorTypeEditor.ColorTypeEditorControl();
-			this.radioButtonStaticColor = new System.Windows.Forms.RadioButton();
-			this.label7 = new System.Windows.Forms.Label();
-			this.radioButtonGradientIndividual = new System.Windows.Forms.RadioButton();
 			this.colorGradientTypeEditorControlGradient = new VixenModules.EffectEditor.ColorGradientTypeEditor.ColorGradientTypeEditorControl();
-			this.radioButtonGradientOverWhole = new System.Windows.Forms.RadioButton();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.radioWipeLeft = new System.Windows.Forms.RadioButton();
 			this.radioWipeRight = new System.Windows.Forms.RadioButton();
@@ -122,72 +116,13 @@
 			// 
 			// groupBoxColor
 			// 
-			this.groupBoxColor.Controls.Add(this.radioButtonGradientAcrossItems);
-			this.groupBoxColor.Controls.Add(this.colorTypeEditorControlStaticColor);
-			this.groupBoxColor.Controls.Add(this.radioButtonStaticColor);
-			this.groupBoxColor.Controls.Add(this.label7);
-			this.groupBoxColor.Controls.Add(this.radioButtonGradientIndividual);
 			this.groupBoxColor.Controls.Add(this.colorGradientTypeEditorControlGradient);
-			this.groupBoxColor.Controls.Add(this.radioButtonGradientOverWhole);
-			this.groupBoxColor.Location = new System.Drawing.Point(277, 3);
+			this.groupBoxColor.Location = new System.Drawing.Point(3, 163);
 			this.groupBoxColor.Name = "groupBoxColor";
-			this.groupBoxColor.Size = new System.Drawing.Size(295, 205);
+			this.groupBoxColor.Size = new System.Drawing.Size(268, 98);
 			this.groupBoxColor.TabIndex = 16;
 			this.groupBoxColor.TabStop = false;
 			this.groupBoxColor.Text = "Color Handling";
-			// 
-			// radioButtonGradientAcrossItems
-			// 
-			this.radioButtonGradientAcrossItems.AutoSize = true;
-			this.radioButtonGradientAcrossItems.Location = new System.Drawing.Point(6, 126);
-			this.radioButtonGradientAcrossItems.Name = "radioButtonGradientAcrossItems";
-			this.radioButtonGradientAcrossItems.Size = new System.Drawing.Size(282, 17);
-			this.radioButtonGradientAcrossItems.TabIndex = 9;
-			this.radioButtonGradientAcrossItems.TabStop = true;
-			this.radioButtonGradientAcrossItems.Text = "The gradient is spread over the range of sub-elements.";
-			this.radioButtonGradientAcrossItems.UseVisualStyleBackColor = true;
-			// 
-			// colorTypeEditorControlStaticColor
-			// 
-			this.colorTypeEditorControlStaticColor.ColorValue = System.Drawing.Color.Empty;
-			this.colorTypeEditorControlStaticColor.EffectParameterValues = new object[] {
-        ((object)(System.Drawing.Color.Empty))};
-			this.colorTypeEditorControlStaticColor.Location = new System.Drawing.Point(94, 20);
-			this.colorTypeEditorControlStaticColor.Name = "colorTypeEditorControlStaticColor";
-			this.colorTypeEditorControlStaticColor.Size = new System.Drawing.Size(40, 40);
-			this.colorTypeEditorControlStaticColor.TabIndex = 8;
-			this.colorTypeEditorControlStaticColor.TargetEffect = null;
-			// 
-			// radioButtonStaticColor
-			// 
-			this.radioButtonStaticColor.AutoSize = true;
-			this.radioButtonStaticColor.Location = new System.Drawing.Point(6, 32);
-			this.radioButtonStaticColor.Name = "radioButtonStaticColor";
-			this.radioButtonStaticColor.Size = new System.Drawing.Size(82, 17);
-			this.radioButtonStaticColor.TabIndex = 7;
-			this.radioButtonStaticColor.TabStop = true;
-			this.radioButtonStaticColor.Text = "Static Color:";
-			this.radioButtonStaticColor.UseVisualStyleBackColor = true;
-			// 
-			// label7
-			// 
-			this.label7.AutoSize = true;
-			this.label7.Location = new System.Drawing.Point(38, 166);
-			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(50, 13);
-			this.label7.TabIndex = 6;
-			this.label7.Text = "Gradient:";
-			// 
-			// radioButtonGradientIndividual
-			// 
-			this.radioButtonGradientIndividual.AutoSize = true;
-			this.radioButtonGradientIndividual.Location = new System.Drawing.Point(6, 103);
-			this.radioButtonGradientIndividual.Name = "radioButtonGradientIndividual";
-			this.radioButtonGradientIndividual.Size = new System.Drawing.Size(241, 17);
-			this.radioButtonGradientIndividual.TabIndex = 2;
-			this.radioButtonGradientIndividual.TabStop = true;
-			this.radioButtonGradientIndividual.Text = "Each individual pulse uses the entire gradient.";
-			this.radioButtonGradientIndividual.UseVisualStyleBackColor = true;
 			// 
 			// colorGradientTypeEditorControlGradient
 			// 
@@ -198,23 +133,11 @@
 			this.colorGradientTypeEditorControlGradient.ColorGradientValue = colorGradient1;
 			this.colorGradientTypeEditorControlGradient.EffectParameterValues = new object[] {
         ((object)(colorGradient1))};
-			this.colorGradientTypeEditorControlGradient.Location = new System.Drawing.Point(94, 152);
+			this.colorGradientTypeEditorControlGradient.Location = new System.Drawing.Point(6, 23);
 			this.colorGradientTypeEditorControlGradient.Name = "colorGradientTypeEditorControlGradient";
-			this.colorGradientTypeEditorControlGradient.Size = new System.Drawing.Size(100, 40);
+			this.colorGradientTypeEditorControlGradient.Size = new System.Drawing.Size(249, 61);
 			this.colorGradientTypeEditorControlGradient.TabIndex = 1;
 			this.colorGradientTypeEditorControlGradient.TargetEffect = null;
-			// 
-			// radioButtonGradientOverWhole
-			// 
-			this.radioButtonGradientOverWhole.AutoSize = true;
-			this.radioButtonGradientOverWhole.Location = new System.Drawing.Point(6, 67);
-			this.radioButtonGradientOverWhole.Name = "radioButtonGradientOverWhole";
-			this.radioButtonGradientOverWhole.Size = new System.Drawing.Size(263, 30);
-			this.radioButtonGradientOverWhole.TabIndex = 0;
-			this.radioButtonGradientOverWhole.TabStop = true;
-			this.radioButtonGradientOverWhole.Text = "The gradient is shown over the whole effect.\r\nAll elements display the same color" +
-    " at a given time.";
-			this.radioButtonGradientOverWhole.UseVisualStyleBackColor = true;
 			// 
 			// groupBox1
 			// 
@@ -222,7 +145,7 @@
 			this.groupBox1.Controls.Add(this.radioWipeRight);
 			this.groupBox1.Controls.Add(this.radioWipeDown);
 			this.groupBox1.Controls.Add(this.radioWipeUp);
-			this.groupBox1.Location = new System.Drawing.Point(4, 164);
+			this.groupBox1.Location = new System.Drawing.Point(3, 267);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(267, 44);
 			this.groupBox1.TabIndex = 17;
@@ -281,12 +204,11 @@
 			this.Controls.Add(this.groupBoxColor);
 			this.Controls.Add(this.groupBoxPulse);
 			this.Name = "WipeEditorControl";
-			this.Size = new System.Drawing.Size(579, 216);
+			this.Size = new System.Drawing.Size(277, 319);
 			this.groupBoxPulse.ResumeLayout(false);
 			this.groupBoxPulse.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownPulseLength)).EndInit();
 			this.groupBoxColor.ResumeLayout(false);
-			this.groupBoxColor.PerformLayout();
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
 			this.ResumeLayout(false);
@@ -299,13 +221,7 @@
 		private System.Windows.Forms.Label label1;
 		private CurveTypeEditor.CurveTypeEditorControl curveTypeEditorControlEachPulse;
 		private System.Windows.Forms.GroupBox groupBoxColor;
-		private System.Windows.Forms.RadioButton radioButtonGradientAcrossItems;
-		private ColorTypeEditor.ColorTypeEditorControl colorTypeEditorControlStaticColor;
-		private System.Windows.Forms.RadioButton radioButtonStaticColor;
-		private System.Windows.Forms.Label label7;
-		private System.Windows.Forms.RadioButton radioButtonGradientIndividual;
 		private ColorGradientTypeEditor.ColorGradientTypeEditorControl colorGradientTypeEditorControlGradient;
-		private System.Windows.Forms.RadioButton radioButtonGradientOverWhole;
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.NumericUpDown numericUpDownPulseLength;
 		private System.Windows.Forms.GroupBox groupBox1;

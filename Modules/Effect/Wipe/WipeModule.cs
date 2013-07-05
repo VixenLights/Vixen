@@ -134,24 +134,32 @@ namespace VixenModules.Effect.Wipe {
 
 
 			if (renderNodes != null) {
+
 				double intervals = (double)TimeSpan.TotalMilliseconds / (double)renderNodes.Count();
+
 				var intervalTime = TimeSpan.FromMilliseconds(intervals);
 
 				TimeSpan effectTime = TimeSpan.Zero;
+
+
 				foreach (var item in renderNodes) {
 					EffectIntents result;
 
 					foreach (var element in item) {
-						var pulse = new Pulse.Pulse();
-						pulse.TargetNodes = new ElementNode[] { element };
-						pulse.TimeSpan = TimeSpan;
-						pulse.ColorGradient = _data.ColorGradient;
-						pulse.LevelCurve = _data.Curve;
-						result = pulse.Render();
-						result.OffsetAllCommandsByTime(effectTime);
-						_elementData.Add(result);
+						if (element != null) {
+							var pulse = new Pulse.Pulse();
+							pulse.TargetNodes = new ElementNode[] { element };
+							pulse.TimeSpan = TimeSpan;
+							pulse.ColorGradient = _data.ColorGradient;
+							pulse.LevelCurve = _data.Curve;
+							result = pulse.Render();
+							result.OffsetAllCommandsByTime(effectTime);
+							_elementData.Add(result);
+						}
 					}
 					effectTime += intervalTime;
+
+
 				}
 			}
 		}
@@ -203,22 +211,5 @@ namespace VixenModules.Effect.Wipe {
 			}
 		}
 
-		[Value]
-		public RGB Color {
-			get { return _data.Color; }
-			set {
-				_data.Color = value;
-				IsDirty = true;
-			}
-		}
-
-		[Value]
-		public WipeColorHandling ColorHandling {
-			get { return _data.ColorHandling; }
-			set {
-				_data.ColorHandling = value;
-				IsDirty = true;
-			}
-		}
 	}
 }

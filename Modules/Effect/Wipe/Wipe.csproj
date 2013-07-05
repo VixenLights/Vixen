@@ -42,7 +42,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="WipeDirection.cs" />
-    <Compile Include="WipeColorHandling.cs" />
     <Compile Include="WipeData.cs" />
     <Compile Include="WipeDescriptor.cs" />
     <Compile Include="WipeModule.cs" />

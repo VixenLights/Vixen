@@ -26,15 +26,13 @@ namespace VixenModules.EffectEditor.WipeEditor {
 					ColorGradient,
 					WipeDirection,
 					Curve,
-					PulseTime,
-					Color,
-					ColorHandling
+					PulseTime
 
 				};
 			}
 			set {
 
-				if (value.Length != 6) {
+				if (value.Length != 4) {
 					VixenSystem.Logging.Warning("Wipe effect parameters set with " + value.Length + " parameters");
 					return;
 				}
@@ -43,8 +41,6 @@ namespace VixenModules.EffectEditor.WipeEditor {
 				WipeDirection = (WipeDirection)value[1];
 				Curve = (Curve)value[2];
 				PulseTime = (int)value[3];
-				Color = (RGB)value[4];
-				ColorHandling = (WipeColorHandling)value[5];
 
 			}
 		}
@@ -56,52 +52,10 @@ namespace VixenModules.EffectEditor.WipeEditor {
 			set {
 				_targetEffect = value;
 				//Ensure target effect is passed through as these editors need it.
-				colorTypeEditorControlStaticColor.TargetEffect = _targetEffect;
 				colorGradientTypeEditorControlGradient.TargetEffect = _targetEffect;
 			}
 		}
-
-		public WipeColorHandling ColorHandling {
-			get {
-				if (radioButtonStaticColor.Checked)
-					return WipeColorHandling.StaticColor;
-				if (radioButtonGradientOverWhole.Checked)
-					return WipeColorHandling.GradientThroughWholeEffect;
-				if (radioButtonGradientIndividual.Checked)
-					return WipeColorHandling.GradientForEachPulse;
-				if (radioButtonGradientAcrossItems.Checked)
-					return WipeColorHandling.ColorAcrossItems;
-
-				return WipeColorHandling.StaticColor;
-			}
-			set {
-				switch (value) {
-					case WipeColorHandling.StaticColor:
-						radioButtonStaticColor.Checked = true;
-						break;
-
-					case WipeColorHandling.GradientThroughWholeEffect:
-						radioButtonGradientOverWhole.Checked = true;
-						break;
-
-					case WipeColorHandling.GradientForEachPulse:
-						radioButtonGradientIndividual.Checked = true;
-						break;
-
-					case WipeColorHandling.ColorAcrossItems:
-						radioButtonGradientAcrossItems.Checked = true;
-						break;
-				}
-			}
-		}
-		public RGB Color {
-			get {
-				return new RGB(colorTypeEditorControlStaticColor.ColorValue);
-			}
-			set {
-				colorTypeEditorControlStaticColor.ColorValue = value;
-			}
-		}
+	
 		public ColorGradient ColorGradient {
 			get { return this.colorGradientTypeEditorControlGradient.ColorGradientValue; }
 			set { this.colorGradientTypeEditorControlGradient.ColorGradientValue = value; }

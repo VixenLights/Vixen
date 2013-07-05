@@ -57,10 +57,7 @@ namespace VixenModules.Effect.Wipe {
 					new ParameterSpecification("Color Gradient", typeof(ColorGradient)),
 					new ParameterSpecification("Direction", typeof(WipeDirection)),
 					new ParameterSpecification("Curve", typeof(Curve)),
-					new ParameterSpecification("Pulse Time", typeof(int)),
-					new ParameterSpecification("Color",typeof(RGB)),
-					new ParameterSpecification("Color Handling",typeof(WipeColorHandling))
-
+					new ParameterSpecification("Pulse Time", typeof(int))					
 					);
 			}
 		}
