@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 
 namespace Vixen.Sys
@@ -33,6 +34,8 @@ namespace Vixen.Sys
 		public Guid Id { get; protected set; }
 
 		public bool Masked { get; set; }
+
+		public Point Location { get; set; }
 
 		public void Update()
 		{

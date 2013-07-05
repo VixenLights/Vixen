@@ -225,31 +225,31 @@ namespace VixenModules.Effect.Alternating
 			bool altColor = false;
 			bool startingColor = false;
 			double intervals = 1;
-			long rem = 0;
-
+			 
 			if (Enable) {
 				//intervals = Math.DivRem((long)TimeSpan.TotalMilliseconds, (long)Interval, out rem);
 				intervals = Math.Ceiling(TimeSpan.TotalMilliseconds / (double)Interval);
 			}
 
 			TimeSpan startTime = TimeSpan.Zero;
-			for (int i = 0; i < intervals; i++) {
-
-			}
+		 
 			for (int i = 0; i < intervals; i++) {
 				altColor = startingColor;
 				var intervalTime = intervals == 1
 									? TimeSpan
-									: TimeSpan.FromMilliseconds(i == intervals - 1 ? Interval + rem : Interval);
+									: TimeSpan.FromMilliseconds(Interval);
 
 				LightingValue? lightingValue = null;
 
 				int totalElements = node.Count();
 				int currentNode = 0;
 
+				var nodes = node.GetLeafEnumerator();
+
 				while (currentNode < totalElements) {
 
-					var elements = node.GetLeafEnumerator().Skip(currentNode).Take(GroupEffect);
+					var elements = nodes.Skip(currentNode).Take(GroupEffect);
+
 					currentNode += GroupEffect;
 
 					int cNode = 0;
