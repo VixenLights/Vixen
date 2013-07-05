@@ -30,92 +30,81 @@ namespace VixenModules.Effect.Wipe {
 			switch (_data.Direction) {
 				case WipeDirection.Up:
 					renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator())
-												.OrderByDescending(x => {
-													var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
-													if (prop != null) {
-														return ((LocationData)prop.ModuleData).Y;
-													}
-													else
-														return 1;
-												})
-												.ThenBy(x => {
-													var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
-													if (prop != null) {
-														return ((LocationData)prop.ModuleData).X;
-													}
-													else
-														return 1;
-												})
-												.GroupBy(x => {
-													var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
-													if (prop != null) {
-														return ((LocationData)prop.ModuleData).Y;
-													}
-													else
-														return 1;
-												})
-												.Distinct();
+									.OrderByDescending(x => {
+										var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
+										if (prop != null) {
+											return ((LocationData)prop.ModuleData).Y;
+										}
+										return 1;
+									})
+									.ThenBy(x => {
+										var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
+										if (prop != null) {
+											return ((LocationData)prop.ModuleData).X;
+										}
+										return 1;
+									})
+									.GroupBy(x => {
+										var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
+										if (prop != null) {
+											return ((LocationData)prop.ModuleData).Y;
+										}
+										return 1;
+									})
+									.Distinct();
 					break;
 				case WipeDirection.Down:
-
 					renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator())
-												.OrderBy(x => {
-													var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
-													if (prop != null) {
-														return ((LocationData)prop.ModuleData).Y;
-													}
-													else
-														return 1;
-												})
-												.ThenBy(x => {
-													var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
-													if (prop != null) {
-														return ((LocationData)prop.ModuleData).X;
-													}
-													else
-														return 1;
-												})
-												.GroupBy(x => {
-													var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
-													if (prop != null) {
-														return ((LocationData)prop.ModuleData).Y;
-													}
-													else
-														return 1;
-												})
-												.Distinct();
+														.OrderBy(x => {
+															var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
+															if (prop != null) {
+																return ((LocationData)prop.ModuleData).Y;
+															}
+															return 1;
+														})
+														.ThenBy(x => {
+															var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
+															if (prop != null) {
+																return ((LocationData)prop.ModuleData).X;
+															}
+															return 1;
+														})
+														.GroupBy(x => {
+															var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
+															if (prop != null) {
+																return ((LocationData)prop.ModuleData).Y;
+															}
+															return 1;
+														})
+														.Distinct();
 					break;
 				case WipeDirection.Right:
-
 					renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator())
-												.OrderBy(x => {
-													var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
-													if (prop != null) {
-														return ((LocationData)prop.ModuleData).X;
-													}
-													else
-														return 1;
-												})
-												.ThenBy(x => {
-													var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
-													if (prop != null) {
-														return ((LocationData)prop.ModuleData).Y;
-													}
-													else
-														return 1;
-												})
-												.GroupBy(x => {
-													var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
-													if (prop != null) {
-														return ((LocationData)prop.ModuleData).X;
-													}
-													else
-														return 1;
-												})
-												.Distinct();
+											.OrderBy(x => {
+												var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
+												if (prop != null) {
+													return ((LocationData)prop.ModuleData).X;
+												}
+												return 1;
+											})
+											.ThenBy(x => {
+												var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
+												if (prop != null) {
+													return ((LocationData)prop.ModuleData).Y;
+												}
+												return 1;
+											})
+											.GroupBy(x => {
+												var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
+												if (prop != null) {
+													return ((LocationData)prop.ModuleData).X;
+												}
+												return 1;
+											})
+											.Distinct();
 					break;
 				case WipeDirection.Left:
-
+				default:
 					renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator())
 												.OrderByDescending(x => {
 													var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
@@ -140,32 +129,28 @@ namespace VixenModules.Effect.Wipe {
 												})
 												.Distinct();
 					break;
-				default:
-					break;
+
 			}
 
 
 			if (renderNodes != null) {
 				double intervals = (double)TimeSpan.TotalMilliseconds / (double)renderNodes.Count();
+				var intervalTime = TimeSpan.FromMilliseconds(intervals);
 
 				TimeSpan effectTime = TimeSpan.Zero;
 				foreach (var item in renderNodes) {
 					EffectIntents result;
-					var intervalTime = TimeSpan.FromMilliseconds(intervals);
-					item.ToList().ForEach(element => {
+
+					foreach (var element in item) {
 						var pulse = new Pulse.Pulse();
 						pulse.TargetNodes = new ElementNode[] { element };
-						pulse.TimeSpan = new TimeSpan(PulseTime);
+						pulse.TimeSpan = TimeSpan;
 						pulse.ColorGradient = _data.ColorGradient;
 						pulse.LevelCurve = _data.Curve;
-
-
-
 						result = pulse.Render();
 						result.OffsetAllCommandsByTime(effectTime);
 						_elementData.Add(result);
-					});
-
+					}
 					effectTime += intervalTime;
 				}
 			}
