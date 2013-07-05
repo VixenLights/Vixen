@@ -1936,6 +1936,7 @@ namespace VixenModules.Effect.Nutcracker
 		private double movementY = 0.0;
 		private int lastState = 0;
 		private double lastScale = -1;
+		private string PictureTilePictureName = "";
 
 		public void RenderPictureTile(int dir, double scale, bool useColor, bool useAlpha, int ColorReplacementSensitivity,
 		                              string NewPictureName)
@@ -1953,7 +1954,7 @@ namespace VixenModules.Effect.Nutcracker
 				lastScale = -1;
 			}
 
-			if (NewPictureName != PictureName || scale != lastScale) {
+			if (NewPictureName != PictureTilePictureName || scale != lastScale) {
 				if (IsNutcrackerResource(NewPictureName))
 				{
 					image = Image.FromStream(typeof(Nutcracker).Assembly.GetManifestResourceStream(NewPictureName));     
@@ -1974,7 +1975,7 @@ namespace VixenModules.Effect.Nutcracker
 				}
 				fp = new FastPixel(new Bitmap(image));
 
-				PictureName = NewPictureName;
+				PictureTilePictureName = NewPictureName;
 				lastScale = scale;
 			}
 
@@ -2062,7 +2063,8 @@ namespace VixenModules.Effect.Nutcracker
 								else {
 									//fpColor = Color.FromArgb(255, fpColor);
 								}
-								SetPixel(x, y, fpColor);
+								// Tree is up-side down, so draw the bitmp up-side down so it is right-side up.
+								SetPixel(BufferWi - x - 1, BufferHt - y - 1, fpColor);
 							}
 						}
 					}
