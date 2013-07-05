@@ -12,20 +12,17 @@ using Vixen.Data.Value;
 using Vixen.Sys;
 using System.IO;
 using VixenModules.Preview.VixenPreview.Shapes;
+using VixenModules.Property.Location;
 
-namespace VixenModules.Preview.VixenPreview
-{
-	public partial class VixenPreviewSetup3 : Form
-	{
+namespace VixenModules.Preview.VixenPreview {
+	public partial class VixenPreviewSetup3 : Form {
 		private VixenPreviewData _data;
 		private VixenPreviewSetupDocument previewForm;
 		private VixenPreviewSetupElementsDocument elementsForm;
 		private VixenPreviewSetupPropertiesDocument propertiesForm;
 
-		public VixenPreviewData Data
-		{
-			set
-			{
+		public VixenPreviewData Data {
+			set {
 				_data = value;
 				if (!DesignMode && previewForm != null)
 					previewForm.Preview.Data = _data;
@@ -33,13 +30,11 @@ namespace VixenModules.Preview.VixenPreview
 			get { return _data; }
 		}
 
-		public VixenPreviewSetup3()
-		{
+		public VixenPreviewSetup3() {
 			InitializeComponent();
 		}
 
-		private void VixenPreviewSetup3_Load(object sender, EventArgs e)
-		{
+		private void VixenPreviewSetup3_Load(object sender, EventArgs e) {
 			previewForm = new VixenPreviewSetupDocument();
 			if (!DesignMode && previewForm != null)
 				previewForm.Preview.Data = _data;
@@ -64,8 +59,7 @@ namespace VixenModules.Preview.VixenPreview
 			Setup();
 		}
 
-		private void buttonSetBackground_Click(object sender, EventArgs e)
-		{
+		private void buttonSetBackground_Click(object sender, EventArgs e) {
 			if (dialogSelectBackground.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
 				// Copy the file to the Vixen folder
 				var imageFile = new System.IO.FileInfo(dialogSelectBackground.FileName);
@@ -83,13 +77,11 @@ namespace VixenModules.Preview.VixenPreview
 			}
 		}
 
-		private void OnDeSelectDisplayItem(object sender, Shapes.DisplayItem displayItem)
-		{
+		private void OnDeSelectDisplayItem(object sender, Shapes.DisplayItem displayItem) {
 			propertiesForm.ShowSetupControl(null);
 		}
 
-		private void OnSelectDisplayItem(object sender, Shapes.DisplayItem displayItem)
-		{
+		private void OnSelectDisplayItem(object sender, Shapes.DisplayItem displayItem) {
 			Shapes.DisplayItemBaseControl setupControl = displayItem.Shape.GetSetupControl();
 
 			if (setupControl != null) {
@@ -97,13 +89,12 @@ namespace VixenModules.Preview.VixenPreview
 			}
 		}
 
-		private void toolbarButton_Click(object sender, EventArgs e)
-		{
+		private void toolbarButton_Click(object sender, EventArgs e) {
 			Button button = sender as Button;
 			// Select Button
 			if (button == buttonSelect)
 				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Select;
-				// Standard Buttons
+			// Standard Buttons
 			else if (button == buttonDrawPixel)
 				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Single;
 			else if (button == buttonLine)
@@ -118,8 +109,8 @@ namespace VixenModules.Preview.VixenPreview
 				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Triangle;
 			else if (button == buttonNet)
 				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Net;
-				//else if (button == buttonFlood)
-				//    previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Flood;
+			//else if (button == buttonFlood)
+			//    previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Flood;
 			else if (button == buttonCane)
 				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Cane;
 			else if (button == buttonStar)
@@ -132,65 +123,54 @@ namespace VixenModules.Preview.VixenPreview
 				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.PixelGrid;
 		}
 
-		private void trackBarBackgroundAlpha_ValueChanged(object sender, EventArgs e)
-		{
+		private void trackBarBackgroundAlpha_ValueChanged(object sender, EventArgs e) {
 			previewForm.Preview.BackgroundAlpha = trackBarBackgroundAlpha.Value;
 		}
 
-		public void Setup()
-		{
+		public void Setup() {
 			SetDesktopLocation(Data.SetupLeft, Data.SetupTop);
 			Size = new Size(Data.SetupWidth, Data.SetupHeight);
 		}
 
-		private void buttonSave_Click(object sender, EventArgs e)
-		{
+		private void buttonSave_Click(object sender, EventArgs e) {
 			DialogResult = System.Windows.Forms.DialogResult.OK;
 			previewForm.Close();
 			Close();
 		}
 
-		private void VixenPreviewSetup3_Move(object sender, EventArgs e)
-		{
+		private void VixenPreviewSetup3_Move(object sender, EventArgs e) {
 			Data.SetupTop = Top;
 			Data.SetupLeft = Left;
 		}
 
-		private void VixenPreviewSetup3_Resize(object sender, EventArgs e)
-		{
+		private void VixenPreviewSetup3_Resize(object sender, EventArgs e) {
 			Data.SetupWidth = Width;
 			Data.SetupHeight = Height;
 		}
 
-		private void copyToolStripMenuItem_Click(object sender, EventArgs e)
-		{
+		private void copyToolStripMenuItem_Click(object sender, EventArgs e) {
 			previewForm.Preview.Cut();
 		}
 
-		private void copyToolStripMenuItem1_Click(object sender, EventArgs e)
-		{
+		private void copyToolStripMenuItem1_Click(object sender, EventArgs e) {
 			previewForm.Preview.Copy();
 		}
 
-		private void pasteToolStripMenuItem_Click(object sender, EventArgs e)
-		{
+		private void pasteToolStripMenuItem_Click(object sender, EventArgs e) {
 			previewForm.Preview.Paste();
 		}
 
-		private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
-		{
+		private void deleteToolStripMenuItem_Click(object sender, EventArgs e) {
 			previewForm.Preview.Delete();
 		}
 
-		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
-		{
+		private void exitToolStripMenuItem_Click(object sender, EventArgs e) {
 			Close();
 		}
 
-		private void backgroundPropertiesToolStripMenuItem_Click(object sender, EventArgs e)
-		{
+		private void backgroundPropertiesToolStripMenuItem_Click(object sender, EventArgs e) {
 			ResizePreviewForm resizeForm = new ResizePreviewForm(previewForm.Preview.Background.Width,
-			                                                     previewForm.Preview.Background.Height);
+																 previewForm.Preview.Background.Height);
 			if (resizeForm.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
 				previewForm.Preview.ResizeBackground(resizeForm.Width, resizeForm.Height);
 			}
@@ -198,8 +178,7 @@ namespace VixenModules.Preview.VixenPreview
 
 		#region Templates
 
-		private void PopulateTemplateList()
-		{
+		private void PopulateTemplateList() {
 			TemplateComboBoxItem selectedTemplateItem = comboBoxTemplates.SelectedItem as TemplateComboBoxItem;
 			comboBoxTemplates.Items.Clear();
 
@@ -209,13 +188,13 @@ namespace VixenModules.Preview.VixenPreview
 				try {
 					// Read the entire template file (stoopid waste of resources, but how else?)
 					string xml = System.IO.File.ReadAllText(fileName);
-					DisplayItem newDisplayItem = (DisplayItem) PreviewTools.DeSerializeToObject(xml, typeof (DisplayItem));
+					DisplayItem newDisplayItem = (DisplayItem)PreviewTools.DeSerializeToObject(xml, typeof(DisplayItem));
 					TemplateComboBoxItem newTemplateItem = new TemplateComboBoxItem(newDisplayItem.Shape.Name, fileName);
 					comboBoxTemplates.Items.Add(newTemplateItem);
 				}
 				catch (Exception ex) {
 					MessageBox.Show("There was an error loading the template file (" + file + "): " + ex.Message,
-					                "Error Loading Template", MessageBoxButtons.OKCancel);
+									"Error Loading Template", MessageBoxButtons.OKCancel);
 				}
 				finally {
 					if (selectedTemplateItem != null && comboBoxTemplates.Items.IndexOf(selectedTemplateItem) >= 0) {
@@ -228,28 +207,25 @@ namespace VixenModules.Preview.VixenPreview
 			}
 		}
 
-		private void buttonAddTemplate_Click(object sender, EventArgs e)
-		{
+		private void buttonAddTemplate_Click(object sender, EventArgs e) {
 			previewForm.Preview.CreateTemplate();
 			PopulateTemplateList();
 		}
 
-		private void buttonAddToPreview_Click(object sender, EventArgs e)
-		{
+		private void buttonAddToPreview_Click(object sender, EventArgs e) {
 			TemplateComboBoxItem templateItem = comboBoxTemplates.SelectedItem as TemplateComboBoxItem;
 			if (templateItem != null) {
 				previewForm.Preview.AddTtemplateToPreview(templateItem.FileName);
 			}
 		}
 
-		private void buttonDeleteTemplate_Click(object sender, EventArgs e)
-		{
+		private void buttonDeleteTemplate_Click(object sender, EventArgs e) {
 			TemplateComboBoxItem templateItem = comboBoxTemplates.SelectedItem as TemplateComboBoxItem;
 			if (templateItem != null) {
 				if (System.IO.File.Exists(templateItem.FileName)) {
 					if (
 						MessageBox.Show("Are you sure you want to delete the template '" + templateItem.FileName + "'", "Delete Template",
-						                MessageBoxButtons.YesNoCancel) == System.Windows.Forms.DialogResult.Yes) {
+										MessageBoxButtons.YesNoCancel) == System.Windows.Forms.DialogResult.Yes) {
 						System.IO.File.Delete(templateItem.FileName);
 						PopulateTemplateList();
 					}
@@ -257,16 +233,37 @@ namespace VixenModules.Preview.VixenPreview
 			}
 		}
 
-		private void buttonTemplateHelp_Click(object sender, EventArgs e)
-		{
+		private void buttonTemplateHelp_Click(object sender, EventArgs e) {
 			Shapes.PreviewTools.ShowHelp(Properties.Settings.Default.Help_CustomShape);
 		}
 
 		#endregion // Templates
 
-		private void buttonSelect_Click(object sender, EventArgs e)
-		{
+		private void buttonSelect_Click(object sender, EventArgs e) {
 			previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Select;
+		}
+
+		private void saveLocationDataToElementsToolStripMenuItem_Click(object sender, EventArgs e) {
+			Cursor = Cursors.WaitCursor;
+			foreach (var d in _data.DisplayItems) {
+				//_data.DisplayItems.ForEach(d => {
+				foreach (var p in d.Shape.Pixels.Where(pi => pi != null && pi.Node != null)) {
+
+					//LocationModule prop= null;
+					if (!p.Node.Properties.Contains(LocationDescriptor._typeId))
+						p.Node.Properties.Add(LocationDescriptor._typeId);
+
+					//d.Shape._pixels.ForEach(p => {
+
+					var prop = p.Node.Properties.Get(LocationDescriptor._typeId);
+					((LocationData)prop.ModuleData).X = p.X;
+					((LocationData)prop.ModuleData).Y = p.Y;
+
+					//});
+					//});
+				}
+			}
+			Cursor = Cursors.Default;
 		}
 	}
 }

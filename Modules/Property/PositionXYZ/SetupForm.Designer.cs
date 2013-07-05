@@ -61,6 +61,11 @@
 			// numericUpDownXPosition
 			// 
 			this.numericUpDownXPosition.Location = new System.Drawing.Point(91, 46);
+			this.numericUpDownXPosition.Maximum = new decimal(new int[] {
+            276447231,
+            23283,
+            0,
+            0});
 			this.numericUpDownXPosition.Name = "numericUpDownXPosition";
 			this.numericUpDownXPosition.Size = new System.Drawing.Size(71, 20);
 			this.numericUpDownXPosition.TabIndex = 7;
@@ -86,6 +91,11 @@
 			// numericUpDownYPosition
 			// 
 			this.numericUpDownYPosition.Location = new System.Drawing.Point(91, 76);
+			this.numericUpDownYPosition.Maximum = new decimal(new int[] {
+            276447231,
+            23283,
+            0,
+            0});
 			this.numericUpDownYPosition.Name = "numericUpDownYPosition";
 			this.numericUpDownYPosition.Size = new System.Drawing.Size(71, 20);
 			this.numericUpDownYPosition.TabIndex = 9;
@@ -102,6 +112,11 @@
 			// numericUpDownZPosition
 			// 
 			this.numericUpDownZPosition.Location = new System.Drawing.Point(91, 106);
+			this.numericUpDownZPosition.Maximum = new decimal(new int[] {
+            276447231,
+            23283,
+            0,
+            0});
 			this.numericUpDownZPosition.Name = "numericUpDownZPosition";
 			this.numericUpDownZPosition.Size = new System.Drawing.Size(71, 20);
 			this.numericUpDownZPosition.TabIndex = 11;
