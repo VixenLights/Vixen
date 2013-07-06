@@ -154,7 +154,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			graphics.FillEllipse(new SolidBrush(c), drawArea);
 		}
 
-		public void Draw(FastPixel fp, bool forceDraw)
+		public void Draw(FastPixel.FastPixel fp, bool forceDraw)
 		{
 			if (forceDraw) {
 				Draw(fp, color);
@@ -184,12 +184,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		public void Draw(FastPixel fp, Color newColor)
+		public void Draw(FastPixel.FastPixel fp, Color newColor)
 		{
 			fp.DrawCircle(drawArea, newColor);
 		}
 
-        public void Draw(FastPixel fp, IIntentStates states)
+        public void Draw(FastPixel.FastPixel fp, IIntentStates states)
         {
             Rectangle drawRect = new Rectangle(drawArea.X, drawArea.Y, drawArea.Width, drawArea.Height);
             int col = 0;

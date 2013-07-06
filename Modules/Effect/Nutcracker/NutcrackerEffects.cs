@@ -63,6 +63,12 @@ namespace VixenModules.Effect.Nutcracker
 			Grid
 		}
 
+		public enum StringDirection
+		{
+			Clockwise,
+			CounterClockwise
+		}
+
 		#endregion // Variables
 
 		public NutcrackerEffects()
@@ -1575,7 +1581,7 @@ namespace VixenModules.Effect.Nutcracker
 		#region Pictures
 
 		private string PictureName = "";
-		private FastPixel fp;
+		private FastPixel.FastPixel fp;
 		//
 		// TODO: Load animated GIF images
 		//
@@ -1586,7 +1592,7 @@ namespace VixenModules.Effect.Nutcracker
 
 			if (NewPictureName != PictureName) {
 				image = Image.FromFile(NewPictureName);
-				fp = new FastPixel(new Bitmap(image));
+				fp = new FastPixel.FastPixel(new Bitmap(image));
 
 				//Console.WriteLine("Loaded picture: " + NewPictureName);
 				//    imageCount = wxImage::GetImageCount(NewPictureName);
@@ -1836,18 +1842,18 @@ namespace VixenModules.Effect.Nutcracker
 
 		#region Movie
 
-		private List<FastPixel> moviePictures;
+		private List<FastPixel.FastPixel> moviePictures;
 
 		public void LoadPictures(string DataFilePath)
 		{
-			moviePictures = new List<FastPixel>();
+			moviePictures = new List<FastPixel.FastPixel>();
 			if (Data.Movie_DataPath.Length > 0) {
 				var imageFolder = System.IO.Path.Combine(NutcrackerDescriptor.ModulePath, DataFilePath);
 				List<string> sortedFiles = Directory.GetFiles(imageFolder).OrderBy(f => f).ToList();
 
 				foreach (string file in sortedFiles) {
 					Image image = Image.FromFile(file);
-					FastPixel imageFp = new FastPixel(new Bitmap(image));
+					FastPixel.FastPixel imageFp = new FastPixel.FastPixel(new Bitmap(image));
 					moviePictures.Add(imageFp);
 				}
 			}
@@ -1883,7 +1889,7 @@ namespace VixenModules.Effect.Nutcracker
 			if (Convert.ToInt32(currentMovieImageNum) >= pictureCount || Convert.ToInt32(currentMovieImageNum) < 0)
 				currentMovieImageNum = 0;
 
-			FastPixel currentMovieImage = moviePictures[Convert.ToInt32(currentMovieImageNum)];
+			FastPixel.FastPixel currentMovieImage = moviePictures[Convert.ToInt32(currentMovieImageNum)];
 			if (currentMovieImage != null) {
 				int imgwidth = currentMovieImage.Width;
 				int imght = currentMovieImage.Height;
@@ -1973,7 +1979,7 @@ namespace VixenModules.Effect.Nutcracker
 				if (useColor) {
 					image = ConvertToGrayScale(image);
 				}
-				fp = new FastPixel(new Bitmap(image));
+				fp = new FastPixel.FastPixel(new Bitmap(image));
 
 				PictureTilePictureName = NewPictureName;
 				lastScale = scale;

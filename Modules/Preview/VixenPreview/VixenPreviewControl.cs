@@ -1018,7 +1018,7 @@ namespace VixenModules.Preview.VixenPreview
                 //BitmapData cdata = clone.LockBits(new Rectangle(0, 0, clone.Width, clone.Height), ImageLockMode.ReadWrite, clone.PixelFormat);
                 //Assert.AreNotEqual(odata.Scan0, cdata.Scan0);
                 //using (FastPixel fp = new FastPixel(new Bitmap(_alphaBackground)))
-                using (FastPixel fp = new FastPixel(clone))
+				using (FastPixel.FastPixel fp = new FastPixel.FastPixel(clone))
                 {
                     try
                     {
@@ -1077,9 +1077,9 @@ namespace VixenModules.Preview.VixenPreview
 
 		private object lockObject = new object();
 
-		private delegate void RenderBufferedGraphicsDelgate(FastPixel fp /*, Bitmap floodBG*/);
+		private delegate void RenderBufferedGraphicsDelgate(FastPixel.FastPixel fp /*, Bitmap floodBG*/);
 
-		private void RenderBufferedGraphics(FastPixel fp /*, Bitmap floodBG*/)
+		private void RenderBufferedGraphics(FastPixel.FastPixel fp /*, Bitmap floodBG*/)
 		{
 			if (this.InvokeRequired) {
 				this.Invoke(new RenderBufferedGraphicsDelgate(RenderBufferedGraphics), fp /*, floodBG*/);
@@ -1197,7 +1197,7 @@ namespace VixenModules.Preview.VixenPreview
 			AllocateGraphicsBuffer();
 
 			if (_background != null) {
-				FastPixel fp = new FastPixel(new Bitmap(_alphaBackground));
+				FastPixel.FastPixel fp = new FastPixel.FastPixel(new Bitmap(_alphaBackground));
 				fp.Lock();
 				foreach (DisplayItem displayItem in DisplayItems) {
 					if (_editMode) {
@@ -1231,8 +1231,8 @@ namespace VixenModules.Preview.VixenPreview
 			renderTimer.Reset();
 			renderTimer.Start();
 			if (!_paused) {
-				FastPixel fp = null;
-				fp = new FastPixel(new Bitmap(_alphaBackground));
+				FastPixel.FastPixel fp = null;
+				fp = new FastPixel.FastPixel(new Bitmap(_alphaBackground));
 				fp.Lock();
 
 				Color c;

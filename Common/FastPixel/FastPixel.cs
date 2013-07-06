@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Collections.Concurrent;
 
-namespace VixenModules.Preview.VixenPreview
+namespace FastPixel
 {
 	public class FastPixel : IDisposable
 	{
@@ -15,7 +15,6 @@ namespace VixenModules.Preview.VixenPreview
 
 		private bool _isAlpha = false;
 		private Bitmap _bitmap;
-		//private Bitmap _emptyBitmap;
 		private int _width;
 		private int _height;
 
@@ -66,9 +65,7 @@ namespace VixenModules.Preview.VixenPreview
 
 		public void SetupBitmap(int width, int height)
 		{
-			//_bitmap = new Bitmap(width, height, PixelFormat.Format32bppPArgb);
 			_bitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
-			//_alphaBackground = new Bitmap(_background.Width, _background.Height, PixelFormat.Format32bppPArgb);
 			if (_bitmap.PixelFormat == (_bitmap.PixelFormat | PixelFormat.Indexed))
 				throw new Exception("Cannot lock an Indexed image.");
 
@@ -113,31 +110,31 @@ namespace VixenModules.Preview.VixenPreview
 			this.locked = false;
 		}
 
-		public void Clear(Color colour)
+		public void Clear(Color color)
 		{
 			if (!this.locked)
 				throw new Exception("Bitmap not locked.");
 
 			if (this.IsAlphaBitmap) {
 				for (int index = 0; index < this.rgbValues.Length; index += 4) {
-					this.rgbValues[index] = colour.B;
-					this.rgbValues[index + 1] = colour.G;
-					this.rgbValues[index + 2] = colour.R;
-					this.rgbValues[index + 3] = colour.A;
+					this.rgbValues[index] = color.B;
+					this.rgbValues[index + 1] = color.G;
+					this.rgbValues[index + 2] = color.R;
+					this.rgbValues[index + 3] = color.A;
 				}
 			}
 			else {
 				for (int index = 0; index < this.rgbValues.Length; index += 3) {
-					this.rgbValues[index] = colour.B;
-					this.rgbValues[index + 1] = colour.G;
-					this.rgbValues[index + 2] = colour.R;
+					this.rgbValues[index] = color.B;
+					this.rgbValues[index + 1] = color.G;
+					this.rgbValues[index + 2] = color.R;
 				}
 			}
 		}
 
-		public void SetPixel(Point location, Color colour)
+		public void SetPixel(Point location, Color color)
 		{
-			this.SetPixel(location.X, location.Y, colour);
+			this.SetPixel(location.X, location.Y, color);
 		}
 
 		public void SetPixelAlpha(int x, int y, Color color)
@@ -182,28 +179,9 @@ namespace VixenModules.Preview.VixenPreview
 			}
 		}
 
-		public void SetPixel(int x, int y, Color colour)
+		public void SetPixel(int x, int y, Color color)
 		{
-			SetPixelAlpha(x, y, colour);
-			return;
-			if (!this.locked)
-				throw new Exception("Bitmap not locked.");
-
-			if (x >= 0 && x < _width && y >= 0 && y < _height) {
-				if (this.IsAlphaBitmap) {
-					int index = ((y*this.Width + x)*4);
-					this.rgbValues[index] = colour.B;
-					this.rgbValues[index + 1] = colour.G;
-					this.rgbValues[index + 2] = colour.R;
-					this.rgbValues[index + 3] = colour.A;
-				}
-				else {
-					int index = ((y*this.Width + x)*3);
-					this.rgbValues[index] = colour.B;
-					this.rgbValues[index + 1] = colour.G;
-					this.rgbValues[index + 2] = colour.R;
-				}
-			}
+			SetPixelAlpha(x, y, color);
 		}
 
 		public Color GetPixel(Point location)
@@ -246,7 +224,7 @@ namespace VixenModules.Preview.VixenPreview
 			}
 		}
 
-		public static ConcurrentDictionary<int, FastPixel> circleCache = new ConcurrentDictionary<int, FastPixel>();
+		//public static ConcurrentDictionary<int, FastPixel> circleCache = new ConcurrentDictionary<int, FastPixel>();
 
 		public void DrawCircle(Rectangle rect, Color color)
 		{
@@ -283,7 +261,7 @@ namespace VixenModules.Preview.VixenPreview
 				else {
 					Bitmap b;
 					FastPixel fp;
-					if (!FastPixel.circleCache.TryGetValue(rect.Width, out fp)) {
+					//if (!FastPixel.circleCache.TryGetValue(rect.Width, out fp)) {
 						b = new Bitmap(rect.Width, rect.Height);
 						using (Graphics g = Graphics.FromImage(b)) {
 							g.FillEllipse(Brushes.White, new Rectangle(0, 0, rect.Width - 1, rect.Height - 1));
@@ -292,9 +270,9 @@ namespace VixenModules.Preview.VixenPreview
 							// and leave it that way because we'll never need to unlock it
 							// to modify it -- it is just a circle after all
 							fp.Lock();
-							FastPixel.circleCache.TryAdd(rect.Width, fp);
+							//FastPixel.circleCache.TryAdd(rect.Width, fp);
 						}
-					}
+					//}
 					for (int x = 0; x < rect.Width; x++) {
 						for (int y = 0; y < rect.Height; y++) {
 							Color newColor = fp.GetPixel(x, y);

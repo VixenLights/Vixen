@@ -6,6 +6,10 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Collections;
+using System.Globalization;
+using System.Resources;
+using System.IO;
 using Vixen.Module.EffectEditor;
 using Vixen.Module.Effect;
 using Vixen.Sys;
@@ -13,10 +17,6 @@ using VixenModules.Preview.VixenPreview;
 using VixenModules.Preview.VixenPreview.Shapes;
 using VixenModules.Effect.Nutcracker;
 using Common.Controls;
-using System.Collections;
-using System.Globalization;
-using System.Resources;
-using System.IO;
 
 namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 {
@@ -66,9 +66,10 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 					PreviewMegaTree tree = displayItem.Shape as PreviewMegaTree;
 					for (int stringNum = 0; stringNum < stringCount; stringNum++) {
 						int currentString = stringCount - stringNum - 1;
-						//Console.WriteLine("sc:" + StringCount + " sn:" + Convert.ToInt32(stringNum+1).ToString() + " cs:" + currentString);
 						PreviewBaseShape treeString = tree._strings[currentString];
-						for (int pixelNum = 0; pixelNum < treeString.Pixels.Count; pixelNum++) {
+						//PreviewBaseShape treeString = tree._strings[stringNum];
+						for (int pixelNum = 0; pixelNum < treeString.Pixels.Count; pixelNum++)
+						{
 							treeString.Pixels[pixelNum].PixelColor = effect.Pixels[stringNum][pixelNum];
 						}
 					}
@@ -76,9 +77,11 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 				if (displayItem.Shape is PreviewPixelGrid) {
 					PreviewPixelGrid grid = displayItem.Shape as PreviewPixelGrid;
 					for (int stringNum = 0; stringNum < stringCount; stringNum++) {
-						int currentString = stringCount - stringNum - 1;
-						PreviewBaseShape gridString = grid._strings[currentString];
-						for (int pixelNum = 0; pixelNum < gridString.Pixels.Count; pixelNum++) {
+						//int currentString = stringCount - stringNum - 1;
+						//PreviewBaseShape gridString = grid._strings[currentString];
+						PreviewBaseShape gridString = grid._strings[stringNum];
+						for (int pixelNum = 0; pixelNum < gridString.Pixels.Count; pixelNum++)
+						{
 							gridString.Pixels[pixelNum].PixelColor = effect.Pixels[stringNum][pixelNum];
 						}
 					}
@@ -99,20 +102,25 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			preview.RenderInForeground();
 		}
 
-		private bool loading = true;
-
-		private void NutcrackerTypeEditorControl_Load(object sender, EventArgs e)
+		private void PopulateEffectComboBox()
 		{
-			foreach (NutcrackerEffects.Effects nutcrackerEffect in Enum.GetValues(typeof (NutcrackerEffects.Effects))) {
+			foreach (NutcrackerEffects.Effects nutcrackerEffect in Enum.GetValues(typeof(NutcrackerEffects.Effects)))
+			{
 				comboBoxEffect.Items.Add(nutcrackerEffect.ToString());
 			}
+		}
 
-			foreach (ElementNode node in Data.TargetNodes) {
-				if (node != null) {
-					Console.WriteLine(node.Name);
-					//RenderNode(node);
-				}
-			}
+		private bool loading = true;
+		private void NutcrackerTypeEditorControl_Load(object sender, EventArgs e)
+		{
+			PopulateEffectComboBox();
+			
+			//foreach (ElementNode node in Data.TargetNodes) {
+			//    if (node != null) {
+			//        Console.WriteLine(node.Name);
+			//        //RenderNode(node);
+			//    }
+			//}
 
 
 			effect.Data = Data;
@@ -1085,5 +1093,6 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			Data.PixelSize = scrollPixelSize.Value;
 			displayItem.Shape.PixelSize = Data.PixelSize;
 		}
+
 	}
 }
