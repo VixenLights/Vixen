@@ -52,20 +52,7 @@ namespace VixenModules.Effect.Wipe {
 			get { return new Guid[] { _CurvesId, _ColorGradientId, _PulseId }; }
 		}
 
-		public override System.Drawing.Image GetRepresentativeImage(int desiredWidth, int desiredHeight) {
-			//typeof(WipeDescriptor).Assembly.GetManifestResourceNames().ToList().ForEach(a => Console.WriteLine(a));
-		 
-			int maxDimension = Math.Max(desiredWidth, desiredHeight);
-			if (maxDimension <= 16) {
-				return Image.FromStream(typeof(WipeDescriptor).Assembly.GetManifestResourceStream("VixenModules.Effect.Wipe.Images.Image16.png"));
-			}
-			else if (maxDimension <= 48) {
-				return Image.FromStream(typeof(WipeDescriptor).Assembly.GetManifestResourceStream("VixenModules.Effect.Wipe.Images.Image48.png"));
-			}
-			else {
-				return Image.FromStream(typeof(WipeDescriptor).Assembly.GetManifestResourceStream("VixenModules.Effect.Wipe.Images.Image64.png"));
-			}
-		}
+
 		public override ParameterSignature Parameters {
 			get {
 				return new ParameterSignature(

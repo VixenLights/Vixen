@@ -657,7 +657,7 @@
 			// toolStripContainer.ContentPanel
 			// 
 			this.toolStripContainer.ContentPanel.Controls.Add(this.timelineControl);
-			this.toolStripContainer.ContentPanel.Size = new System.Drawing.Size(886, 461);
+			this.toolStripContainer.ContentPanel.Size = new System.Drawing.Size(886, 486);
 			this.toolStripContainer.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.toolStripContainer.LeftToolStripPanelVisible = false;
 			this.toolStripContainer.Location = new System.Drawing.Point(0, 24);
@@ -672,10 +672,10 @@
 			this.toolStripContainer.TopToolStripPanel.Controls.Add(this.toolStripEffects);
 			this.toolStripContainer.TopToolStripPanel.Controls.Add(this.toolStripOperations);
 			this.toolStripContainer.TopToolStripPanel.Controls.Add(this.toolStripTiming);
-			//this.toolStripContainer.TopToolStripPanel.Controls.Add(this.toolStripExVirtualEffects);
 			// 
 			// timelineControl
 			// 
+			this.timelineControl.AllowGridResize = true;
 			this.timelineControl.Audio = null;
 			this.timelineControl.AutoSize = true;
 			this.timelineControl.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
@@ -684,7 +684,7 @@
 			this.timelineControl.Margin = new System.Windows.Forms.Padding(0);
 			this.timelineControl.Name = "timelineControl";
 			this.timelineControl.SequenceLoading = false;
-			this.timelineControl.Size = new System.Drawing.Size(886, 461);
+			this.timelineControl.Size = new System.Drawing.Size(886, 486);
 			this.timelineControl.TabIndex = 2;
 			// 
 			// toolStripEffects
@@ -693,9 +693,10 @@
 			this.toolStripEffects.Dock = System.Windows.Forms.DockStyle.None;
 			this.toolStripEffects.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripLabel1});
+			this.toolStripEffects.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
 			this.toolStripEffects.Location = new System.Drawing.Point(3, 0);
 			this.toolStripEffects.Name = "toolStripEffects";
-			this.toolStripEffects.Size = new System.Drawing.Size(128, 25);
+			this.toolStripEffects.Size = new System.Drawing.Size(159, 25);
 			this.toolStripEffects.TabIndex = 5;
 			this.toolStripEffects.Text = "Effects";
 			// 

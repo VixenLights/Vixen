@@ -179,7 +179,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				tsItem.MouseDown += toolStripEffects_Item_MouseDown;
 				tsItem.MouseMove += toolStripEffects_Item_MouseMove;
 				tsItem.Click += toolStripEffects_Item_Click;
-				tsItem.Image = effectDesriptor.GetRepresentativeImage(16, 16);
+				tsItem.Image = effectDesriptor.GetRepresentativeImage(48, 48);
 
 				toolStripEffects.Items.Add(tsItem);
 			}

@@ -55,20 +55,7 @@ namespace VixenModules.Effect.Alternating
 		{
 			get { return "1.0"; }
 		}
-		public override System.Drawing.Image GetRepresentativeImage(int desiredWidth, int desiredHeight) {
-			//typeof(WipeDescriptor).Assembly.GetManifestResourceNames().ToList().ForEach(a => Console.WriteLine(a));
 
-			int maxDimension = Math.Max(desiredWidth, desiredHeight);
-			if (maxDimension <= 16) {
-				return Image.FromStream(typeof(AlternatingDescriptor).Assembly.GetManifestResourceStream("VixenModules.Effect.Alternating.Images.Image16.png"));
-			}
-			else if (maxDimension <= 48) {
-				return Image.FromStream(typeof(AlternatingDescriptor).Assembly.GetManifestResourceStream("VixenModules.Effect.Alternating.Images.Image48.png"));
-			}
-			else {
-				return Image.FromStream(typeof(AlternatingDescriptor).Assembly.GetManifestResourceStream("VixenModules.Effect.Alternating.Images.Image64.png"));
-			}
-		}
 		public override Guid[] Dependencies
 		{
 			get { return new Guid[] { _ColorGradientId }; }
