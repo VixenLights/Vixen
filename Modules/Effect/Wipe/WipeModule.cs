@@ -19,7 +19,7 @@ namespace VixenModules.Effect.Wipe {
 		}
 		WipeData _data = new WipeData();
 		private EffectIntents _elementData = null;
-
+		
 		protected override void _PreRender() {
 
 			_elementData = new EffectIntents();

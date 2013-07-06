@@ -38,16 +38,18 @@ namespace Vixen.Module.Effect
 
 		public virtual Image GetRepresentativeImage(int desiredWidth, int desiredHeight)
 		{
-			int maxDimension = Math.Max(desiredWidth, desiredHeight);
-			if (maxDimension <= 16) {
-				return ImageResource.Effect16;
-			}
-			else if (maxDimension <= 48) {
-				return ImageResource.Effect48;
-			}
-			else {
-				return ImageResource.Effect64;
-			}
+			//Default to Null image
+			return null;
+			//int maxDimension = Math.Max(desiredWidth, desiredHeight);
+			//if (maxDimension <= 16) {
+			//	return ImageResource.Effect16;
+			//}
+			//else if (maxDimension <= 48) {
+			//	return ImageResource.Effect48;
+			//}
+			//else {
+			//	return ImageResource.Effect64;
+			//}
 		}
 
 		public bool Equals(IEffectModuleDescriptor x, IEffectModuleDescriptor y)

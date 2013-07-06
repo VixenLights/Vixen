@@ -149,6 +149,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				tsItem.MouseDown += toolStripEffects_Item_MouseDown;
 				tsItem.MouseMove += toolStripEffects_Item_MouseMove;
 				tsItem.Click += toolStripEffects_Item_Click;
+				
 				toolStripEffects.Items.Add(tsItem);
 				toolStripExVirtualEffects.Items.Add(tsItem);
 			}
@@ -178,6 +179,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				tsItem.MouseDown += toolStripEffects_Item_MouseDown;
 				tsItem.MouseMove += toolStripEffects_Item_MouseMove;
 				tsItem.Click += toolStripEffects_Item_Click;
+				tsItem.Image = effectDesriptor.GetRepresentativeImage(16, 16);
+
 				toolStripEffects.Items.Add(tsItem);
 			}
 		}
