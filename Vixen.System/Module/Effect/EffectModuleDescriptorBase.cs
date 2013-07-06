@@ -34,44 +34,39 @@ namespace Vixen.Module.Effect {
 		public virtual Guid[] PropertyDependencies { get; private set; }
 
 		public virtual Image GetRepresentativeImage(int desiredWidth, int desiredHeight) {
-			//Default to Null image
-			var resources = this.Assembly.GetManifestResourceNames().ToList();
-			resources.ToList().ForEach(a => Console.WriteLine(a));
-			int maxDimension = Math.Max(desiredWidth, desiredHeight);
-			if (maxDimension <= 16) {
-				var resName = resources.Where(r => r.ContainsString(".Effect16.", StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();
-				if (!string.IsNullOrWhiteSpace(resName))
-					return Image.FromStream(this.Assembly.GetManifestResourceStream(resName));
-				else return null;
+			try {
+
+				//Default to Null image
+				var resources = this.Assembly.GetManifestResourceNames().ToList();
+				resources.ToList().ForEach(a => Console.WriteLine(a));
+				int maxDimension = Math.Max(desiredWidth, desiredHeight);
+				if (maxDimension <= 16) {
+					var resName = resources.Where(r => r.ContainsString(".Effect16.", StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();
+					if (!string.IsNullOrWhiteSpace(resName))
+						return Image.FromStream(this.Assembly.GetManifestResourceStream(resName));
+					else return null;
+
+				}
+				else if (maxDimension <= 48) {
+					var resName = resources.Where(r => r.ContainsString(".Effect48.", StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();
+					if (!string.IsNullOrWhiteSpace(resName))
+						return Image.FromStream(this.Assembly.GetManifestResourceStream(resName));
+					else return null;
+				}
+				else {
+					var resName = resources.Where(r => r.ContainsString(".Effect64.", StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();
+					if (!string.IsNullOrWhiteSpace(resName))
+						return Image.FromStream(this.Assembly.GetManifestResourceStream(resName));
+					else return null;
+				}
 
 			}
-			else if (maxDimension <= 48) {
-				var resName = resources.Where(r => r.ContainsString("Effect48", StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();
-				if (!string.IsNullOrWhiteSpace(resName))
-					return Image.FromStream(this.Assembly.GetManifestResourceStream(resName));
-				else return null;
-			}
-			else {
-				var resName = resources.Where(r => r.ContainsString("Effect64", StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();
-				if (!string.IsNullOrWhiteSpace(resName))
-					return Image.FromStream(this.Assembly.GetManifestResourceStream(resName));
-				else return null;
+			catch (Exception e) {
+				VixenSystem.Logging.Error(e.Message, e);
+				return null;
 			}
 		}
-		//public override System.Drawing.Image GetRepresentativeImage(int desiredWidth, int desiredHeight) {
-		//	//typeof(WipeDescriptor).Assembly.GetManifestResourceNames().ToList().ForEach(a => Console.WriteLine(a));
-
-		//	int maxDimension = Math.Max(desiredWidth, desiredHeight);
-		//	if (maxDimension <= 16) {
-		//		return Image.FromStream(typeof(AlternatingDescriptor).Assembly.GetManifestResourceStream("VixenModules.Effect.Alternating.Images.Image16.png"));
-		//	}
-		//	else if (maxDimension <= 48) {
-		//		return Image.FromStream(typeof(AlternatingDescriptor).Assembly.GetManifestResourceStream("VixenModules.Effect.Alternating.Images.Image48.png"));
-		//	}
-		//	else {
-		//		return Image.FromStream(typeof(AlternatingDescriptor).Assembly.GetManifestResourceStream("VixenModules.Effect.Alternating.Images.Image64.png"));
-		//	}
-		//}
+		
 		public bool Equals(IEffectModuleDescriptor x, IEffectModuleDescriptor y) {
 			return base.Equals(x, y);
 		}
