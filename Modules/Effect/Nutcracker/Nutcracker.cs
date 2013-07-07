@@ -174,18 +174,16 @@ namespace VixenModules.Effect.Nutcracker
 					int pixelNum = (stringNum * pixelsPerString) -
 									(pixelsPerString - (elementNum % pixelsPerString));
 				    Color color = effect.GetPixel(pixelNum);
-
-				    LightingValue lightingValue = new LightingValue(color,
-				                              		                (float)
-				                              		                ((float) color.A/
-				                              		                    (float) byte.MaxValue));
+					
+				    LightingValue lightingValue = new LightingValue(color,(float)((float) color.A / (float) byte.MaxValue));
 				    IIntent intent = new LightingIntent(lightingValue, lightingValue, ms50);
+					
 				    _elementData.AddIntentForElement(elements[elementNum].Id, intent, startTime);
 				});
 
 				startTime = startTime.Add(ms50);
-			}
-			;
+			};
+
 			timer.Stop();
 			//Console.WriteLine("Nutcracker Render:" + timer.ElapsedMilliseconds + "ms Frames:" + framesToRender);
 		}
