@@ -2,6 +2,9 @@
 using System.Drawing;
 using System.Collections.Generic;
 using Common.Controls.ControlsEx;
+using Vixen.Module.Editor;
+using Vixen.Module.Effect;
+using Vixen.Sys;
 
 namespace Common.Controls.Timeline
 {
@@ -56,6 +59,18 @@ namespace Common.Controls.Timeline
 		#endregion
 
 		#region Properties
+
+		public int DisplayTop { get; set; }
+		public int DisplayHeight { get; set; }
+
+		[NonSerializedAttribute]
+		public EffectNode _effectNode;
+
+		public EffectNode EffectNode
+		{
+			get { return _effectNode; }
+			set { _effectNode = value; }
+		}
 
 		public Row Row { get; set; }
 
@@ -287,7 +302,7 @@ namespace Common.Controls.Timeline
 		{
 		}
 
-		protected virtual bool IsCanvasContentCurrent(Size imageSize)
+		public virtual bool IsCanvasContentCurrent(Size imageSize)
 		{
 			return (CachedCanvasIsCurrent || CachedElementCanvas.Width != imageSize.Width ||
 			        CachedElementCanvas.Height != imageSize.Height);
@@ -320,6 +335,38 @@ namespace Common.Controls.Timeline
 			g.FillRectangle(new SolidBrush(Color.FromArgb(122, 122, 122)),
 			                new Rectangle((int) g.VisibleClipBounds.Left, (int) g.VisibleClipBounds.Top,
 			                              (int) g.VisibleClipBounds.Width, (int) g.VisibleClipBounds.Height));
+		}
+
+		public void DrawInfo(Graphics g, Rectangle rect) 
+		{
+			Color TextColor = Color.FromArgb(60, 60, 60);
+
+			// add text describing the effect
+			using (Font f = new Font("Arial", 7))
+			using (Brush b = new SolidBrush(TextColor))
+			{
+				g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
+
+				string s;
+
+				s = EffectNode.Effect.EffectName + "\r\n" +
+					string.Format("Start: {0}", EffectNode.StartTime.ToString(@"m\:ss\.fff")) + "\r\n" +
+					string.Format("Length: {0}", EffectNode.TimeSpan.ToString(@"m\:ss\.fff"));
+				//if (rect.Height > g.MeasureString("\r\n\r\n", f).Width)
+				//    s += "\r\n" + string.Format("Start: {0}", EffectNode.StartTime.ToString(@"m\:ss\.fff"));
+				//if (rect.Height > g.MeasureString("\r\n\r\n\r\n", f).Width)
+				//    s += "\r\n" + string.Format("Length: {0}", EffectNode.TimeSpan.ToString(@"m\:ss\.fff"));
+				SizeF textSize = g.MeasureString(s, f);
+				g.FillRectangle(Brushes.White, new Rectangle(rect.Left, rect.Top, (int)Math.Min(textSize.Width + 2, rect.Width), (int)Math.Min(textSize.Height + 2, rect.Height)));
+				g.DrawString(s, f, b, new Rectangle(rect.Left + 1, rect.Top + 1, rect.Width-2, rect.Height-2));
+				//g.DrawString(s, f, b, new Rectangle(rect.Left + 1, rect.Top + 1, rect.Width, rect.Height));
+				
+				
+				//g.DrawString(string.Format("Start: {0}", EffectNode.StartTime.ToString(@"m\:ss\.fff")), f, b,
+				//                    new PointF(60, 3));
+				//g.DrawString(string.Format("Length: {0}", EffectNode.TimeSpan.ToString(@"m\:ss\.fff")), f, b,
+				//                    new PointF(60, 16));
+			}
 		}
 
 		public Bitmap Draw(Size imageSize)
