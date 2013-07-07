@@ -1,43 +1,51 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Vixen.Module;
 using System.Runtime.Serialization;
 
 namespace VixenModules.SequenceType.Vixen2x
 {
-    [DataContract]
-    public class Vixen2xSequenceStaticData : ModuleDataModelBase
-    {
+	[DataContract]
+	public class Vixen2xSequenceStaticData : ModuleDataModelBase
+	{
 
-       [DataMember]
-        private List<ChannelMapping> _vixen2xMappings;
-        
-        public List<ChannelMapping> Vixen2xMappings
-        {
-            get
-            {
-                if(_vixen2xMappings == null)
-                    _vixen2xMappings = new List<ChannelMapping>();
-                return _vixen2xMappings;
-            }
-            set
-            {
-                _vixen2xMappings = value;
-            }
-        }
+		[DataMember]
+		private Dictionary<string, List<ChannelMapping>> vixen2xMappings;
+		//private string[] mappingName;
 
-        public Vixen2xSequenceStaticData()
-        {
-            Vixen2xMappings = new List<ChannelMapping>();
-        }
+		public Dictionary<string, List<ChannelMapping>> Vixen2xMappings
+		{
+			get
+			{
+				if (vixen2xMappings == null)
+					vixen2xMappings = new Dictionary<string, List<ChannelMapping>>();
+				return vixen2xMappings;
+			}
+			set
+			{
+				vixen2xMappings = value;
+			}
+		}
 
-        public override IModuleDataModel Clone()
-        {
-            Vixen2xSequenceStaticData data = new Vixen2xSequenceStaticData();
-            data.Vixen2xMappings = new List<ChannelMapping>(Vixen2xMappings);
-            return data;
-        }
-    }
+		//public string[] MappingName
+		//{
+		//    get { return mappingName; }
+		//    set { mappingName = value; }
+		//}
+
+		public Vixen2xSequenceStaticData()
+		{
+			Vixen2xMappings = new Dictionary<string, List<ChannelMapping>>();
+			//MappingName = new string[1];
+		}
+
+		public override IModuleDataModel Clone()
+		{
+			Vixen2xSequenceStaticData data = new Vixen2xSequenceStaticData();
+			data.Vixen2xMappings = new Dictionary<string, List<ChannelMapping>>(Vixen2xMappings);
+			//data.MappingName = string.Empty;
+			return data;
+		}
+	}
 }

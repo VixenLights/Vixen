@@ -219,11 +219,11 @@ namespace VixenModules.SequenceType.Vixen2x
                 {
                     case patternType.SetLevelTrend:
                     case patternType.SingleSetLevel:
-                        node = GenerateSetLevelEffect(startValue, startPos, endPos, targetNode,parsedV2Sequence.mappings[chan].DestinationColor);
+                        node = GenerateSetLevelEffect(startValue, startPos, endPos, targetNode, mappings[chan].DestinationColor);
                         break;
                     case patternType.PulseFadeTrend:
                     case patternType.PulseRampTrend:
-                        node = GeneratePulseEffect(startValue, endValue, startPos, endPos, targetNode);
+						node = GeneratePulseEffect(startValue, endValue, startPos, endPos, targetNode, mappings[chan].DestinationColor);
                         break;
                 }
                 if (node != null)
@@ -246,7 +246,7 @@ namespace VixenModules.SequenceType.Vixen2x
             return effectNode;
         }
 
-        private EffectNode GeneratePulseEffect(int eventStartValue, int eventEndValue, int startEvent, int endEvent, ElementNode targetNode)
+        private EffectNode GeneratePulseEffect(int eventStartValue, int eventEndValue, int startEvent, int endEvent, ElementNode targetNode, Color v3color)
         {
             IEffectModuleInstance pulseInstance = ApplicationServices.Get<IEffectModuleInstance>(Guid.Parse("cbd76d3b-c924-40ff-bad6-d1437b3dbdc0")); // Clone() Doesn't work! :(
             pulseInstance.TargetNodes = new ElementNode[] { targetNode };
@@ -255,7 +255,7 @@ namespace VixenModules.SequenceType.Vixen2x
             EffectNode effectNode = new EffectNode(pulseInstance, TimeSpan.FromMilliseconds(parsedV2Sequence.EventPeriod * startEvent));
             effectNode.Effect.ParameterValues = new Object[] { 
 				new Curve(new PointPairList(new double[] { startX, endX }, new double[] { getY(eventStartValue), getY(eventEndValue) })), 
-				new ColorGradient() 
+				new ColorGradient(v3color)
 			};
 
             return effectNode;

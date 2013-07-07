@@ -15,7 +15,7 @@ namespace VixenModules.Sequence.Vixen2x {
 
         private Vixen2xSequenceStaticData _mappingData;
 
-        public List<ChannelMapping> Vixen2xMappings
+		public Dictionary<string, List<ChannelMapping>> Vixen2xMappings
         {
             get { return _mappingData.Vixen2xMappings; }
         }

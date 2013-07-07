@@ -14,8 +14,8 @@ namespace VixenModules.SequenceType.Vixen2x {
         private string vixen2ImportFile;
 		private List<ChannelMapping> channelMappings;
 
-		private Vixen2SequenceData parsedV2Sequence = null;
-        private Vixen3SequenceCreator vixen3SequenceCreator = null;
+		private Vixen2SequenceData parsedV2Sequence;
+		private Vixen3SequenceCreator vixen3SequenceCreator;
         private Vixen2xSequenceStaticData StaticModuleData;
 
         public Vixen2xSequenceImporterForm(string Vixen2File, Vixen.Module.IModuleDataModel staticModuleData)
@@ -39,24 +39,25 @@ namespace VixenModules.SequenceType.Vixen2x {
 			{
 				LoadMap();
 			}
+			else
+			{
+				channelMappings = parsedV2Sequence.mappings;
+				mapExists = false;
+				vixen2ToVixen3MappingTextBox.Text = "None";
+			}
+
 		}
 
 		private void LoadMap()
 		{
-			DialogResult result = MessageBox.Show("A mapping already exists, do you wish to keep it?", "Mapping Exists", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
-			if (result == DialogResult.No)
+			mapExists = true;
+			convertButton.Enabled = true;
+
+			//iterate over the dictionary to poplulate the listbox with the mappings
+			foreach(KeyValuePair<string,List<ChannelMapping>> kvp in StaticModuleData.Vixen2xMappings)
 			{
-				//Send the vixen 2 parsed data and let the user create a new map.
-				mapExists = false;
-				channelMappings = parsedV2Sequence.mappings;
-			}
-			else
-			{
-				//we have a map so lets enable the convert button and set the channel mappings to
-				//our mapped data.
-				mapExists = true;
-				covertButton.Enabled = true;
-				channelMappings = StaticModuleData.Vixen2xMappings;
+				vixen2ToVixen3MappingListBox.Items.Add(kvp.Key);
+
 			}
 		}
 
@@ -69,15 +70,13 @@ namespace VixenModules.SequenceType.Vixen2x {
     
         private void createMapButton_Click(object sender, EventArgs e)
         {
-		   using (Vixen2xSequenceImporterChannelMapper mappingForm = new Vixen2xSequenceImporterChannelMapper(channelMappings,mapExists))
+		   using (Vixen2xSequenceImporterChannelMapper mappingForm = new Vixen2xSequenceImporterChannelMapper(channelMappings,mapExists,vixen2ToVixen3MappingTextBox.Text))
             {
 				if (mappingForm.ShowDialog() == DialogResult.OK)
 				{
-					//Now that we have our mapping lets clear out what we have
-					//and save it to our static module data
-					StaticModuleData.Vixen2xMappings.Clear();
-					StaticModuleData.Vixen2xMappings = mappingForm.Mappings;
-
+					//add to or update the dictionary
+					AddDictionaryEntry(mappingForm.MappingName, mappingForm.Mappings);
+					convertButton.Enabled = true;
 				}
 				else
 				{
@@ -92,12 +91,12 @@ namespace VixenModules.SequenceType.Vixen2x {
             Sequence = null;
         }
 
-        private void covertButton_Click(object sender, EventArgs e)
+        private void convertButton_Click(object sender, EventArgs e)
         {
             //check to see if the mapping table is there.
 			if (StaticModuleData.Vixen2xMappings.Count > 0)
 			{
-				vixen3SequenceCreator = new Vixen3SequenceCreator(parsedV2Sequence, StaticModuleData.Vixen2xMappings);
+				vixen3SequenceCreator = new Vixen3SequenceCreator(parsedV2Sequence, StaticModuleData.Vixen2xMappings[vixen2ToVixen3MappingTextBox.Text]);
 
 				Sequence = vixen3SequenceCreator.Sequence;
 
@@ -113,5 +112,23 @@ namespace VixenModules.SequenceType.Vixen2x {
 				MessageBox.Show("Mapping data is missing, please try again...", "No Mapping Data", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 			}
         }
+
+		private void AddDictionaryEntry(string key, List<ChannelMapping> value)
+		{
+			if (StaticModuleData.Vixen2xMappings.ContainsKey(key))
+			{
+				StaticModuleData.Vixen2xMappings[key] = value;
+			}
+			else
+			{
+				StaticModuleData.Vixen2xMappings.Add(key, value);
+			}
+		}
+
+		private void vixen2ToVixen3MappingListBox_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			vixen2ToVixen3MappingTextBox.Text = vixen2ToVixen3MappingListBox.SelectedItem.ToString();
+			channelMappings = StaticModuleData.Vixen2xMappings[vixen2ToVixen3MappingListBox.SelectedItem.ToString()];
+		}
 	}
 }

@@ -36,16 +36,16 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("group1", System.Windows.Forms.HorizontalAlignment.Left);
-			System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("group2", System.Windows.Forms.HorizontalAlignment.Left);
-			System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("group3", System.Windows.Forms.HorizontalAlignment.Left);
-			System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("qwerqewr");
-			System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem(new System.Windows.Forms.ListViewItem.ListViewSubItem[] {
+			System.Windows.Forms.ListViewGroup listViewGroup7 = new System.Windows.Forms.ListViewGroup("group1", System.Windows.Forms.HorizontalAlignment.Left);
+			System.Windows.Forms.ListViewGroup listViewGroup8 = new System.Windows.Forms.ListViewGroup("group2", System.Windows.Forms.HorizontalAlignment.Left);
+			System.Windows.Forms.ListViewGroup listViewGroup9 = new System.Windows.Forms.ListViewGroup("group3", System.Windows.Forms.HorizontalAlignment.Left);
+			System.Windows.Forms.ListViewItem listViewItem9 = new System.Windows.Forms.ListViewItem("qwerqewr");
+			System.Windows.Forms.ListViewItem listViewItem10 = new System.Windows.Forms.ListViewItem(new System.Windows.Forms.ListViewItem.ListViewSubItem[] {
             new System.Windows.Forms.ListViewItem.ListViewSubItem(null, "asdfasdf"),
             new System.Windows.Forms.ListViewItem.ListViewSubItem(null, "sub1", System.Drawing.SystemColors.Info, System.Drawing.SystemColors.HotTrack, new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)))),
             new System.Windows.Forms.ListViewItem.ListViewSubItem(null, "sub2")}, -1);
-			System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem("jjjjjjjjjjjjjj");
-			System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem("hhhhhhhhhhhhhh");
+			System.Windows.Forms.ListViewItem listViewItem11 = new System.Windows.Forms.ListViewItem("jjjjjjjjjjjjjj");
+			System.Windows.Forms.ListViewItem listViewItem12 = new System.Windows.Forms.ListViewItem("hhhhhhhhhhhhhh");
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Vixen2xSequenceImporterChannelMapper));
 			this.listViewMapping = new System.Windows.Forms.ListView();
 			this.v2Channel = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -58,6 +58,8 @@
 			this.buttonOK = new System.Windows.Forms.Button();
 			this.multiSelectTreeview1 = new Common.Controls.MultiSelectTreeview();
 			this.destinationColorButton = new System.Windows.Forms.Button();
+			this.mappingNameLabel = new System.Windows.Forms.Label();
+			this.mappingNameTextBox = new System.Windows.Forms.TextBox();
 			this.SuspendLayout();
 			// 
 			// listViewMapping
@@ -74,23 +76,23 @@
             this.destinationColor});
 			this.listViewMapping.FullRowSelect = true;
 			this.listViewMapping.GridLines = true;
-			listViewGroup1.Header = "group1";
-			listViewGroup1.Name = "listViewGroup1";
-			listViewGroup2.Header = "group2";
-			listViewGroup2.Name = "listViewGroup2";
-			listViewGroup3.Header = "group3";
-			listViewGroup3.Name = "listViewGroup3";
+			listViewGroup7.Header = "group1";
+			listViewGroup7.Name = "listViewGroup1";
+			listViewGroup8.Header = "group2";
+			listViewGroup8.Name = "listViewGroup2";
+			listViewGroup9.Header = "group3";
+			listViewGroup9.Name = "listViewGroup3";
 			this.listViewMapping.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup1,
-            listViewGroup2,
-            listViewGroup3});
+            listViewGroup7,
+            listViewGroup8,
+            listViewGroup9});
 			this.listViewMapping.HideSelection = false;
 			this.listViewMapping.HoverSelection = true;
 			this.listViewMapping.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1,
-            listViewItem2,
-            listViewItem3,
-            listViewItem4});
+            listViewItem9,
+            listViewItem10,
+            listViewItem11,
+            listViewItem12});
 			this.listViewMapping.Location = new System.Drawing.Point(12, 12);
 			this.listViewMapping.Name = "listViewMapping";
 			this.listViewMapping.ShowGroups = false;
@@ -187,6 +189,24 @@
 			this.destinationColorButton.UseVisualStyleBackColor = true;
 			this.destinationColorButton.Click += new System.EventHandler(this.destinationColorButton_Click);
 			// 
+			// mappingNameLabel
+			// 
+			this.mappingNameLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.mappingNameLabel.AutoSize = true;
+			this.mappingNameLabel.Location = new System.Drawing.Point(12, 496);
+			this.mappingNameLabel.Name = "mappingNameLabel";
+			this.mappingNameLabel.Size = new System.Drawing.Size(82, 13);
+			this.mappingNameLabel.TabIndex = 7;
+			this.mappingNameLabel.Text = "Mapping Name:";
+			// 
+			// mappingNameTextBox
+			// 
+			this.mappingNameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.mappingNameTextBox.Location = new System.Drawing.Point(100, 488);
+			this.mappingNameTextBox.Name = "mappingNameTextBox";
+			this.mappingNameTextBox.Size = new System.Drawing.Size(298, 20);
+			this.mappingNameTextBox.TabIndex = 8;
+			// 
 			// Vixen2xSequenceImporterChannelMapper
 			// 
 			this.AcceptButton = this.buttonOK;
@@ -194,6 +214,8 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.buttonCancel;
 			this.ClientSize = new System.Drawing.Size(896, 526);
+			this.Controls.Add(this.mappingNameTextBox);
+			this.Controls.Add(this.mappingNameLabel);
 			this.Controls.Add(this.destinationColorButton);
 			this.Controls.Add(this.multiSelectTreeview1);
 			this.Controls.Add(this.buttonOK);
@@ -205,6 +227,7 @@
 			this.Text = "Vixen 2.x Channel Mapping";
 			this.Load += new System.EventHandler(this.Vixen2xSequenceImporterChannelMapper_Load);
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 
@@ -221,5 +244,7 @@
 		private Common.Controls.MultiSelectTreeview multiSelectTreeview1;
         private System.Windows.Forms.ColumnHeader destinationColor;
         private System.Windows.Forms.Button destinationColorButton;
+		private System.Windows.Forms.Label mappingNameLabel;
+		private System.Windows.Forms.TextBox mappingNameTextBox;
 	}
 }
