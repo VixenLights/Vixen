@@ -627,7 +627,7 @@ Global
 		{86572287-5AD9-4941-AEB1-939C3F787978}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{86572287-5AD9-4941-AEB1-939C3F787978}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{86572287-5AD9-4941-AEB1-939C3F787978}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0AE9E4AA-3FB7-4EAA-A699-C3071A58EE77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU		
+		{0AE9E4AA-3FB7-4EAA-A699-C3071A58EE77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0AE9E4AA-3FB7-4EAA-A699-C3071A58EE77}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0AE9E4AA-3FB7-4EAA-A699-C3071A58EE77}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0AE9E4AA-3FB7-4EAA-A699-C3071A58EE77}.Release|Any CPU.Build.0 = Release|Any CPU
@@ -645,7 +645,8 @@ Global
 		{4EA5025B-5FFC-4FF8-9001-D0F64655BFB6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE	EndGlobalSection
+		HideSolutionNode = FALSE
+	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{FFEF21BE-17BF-4C68-AE19-409AE444AC53} = {F1B3198B-977F-40CD-85B3-CAA3F5B5C948}
 		{25A1ED22-180F-4B61-84FC-55790AA11254} = {F1B3198B-977F-40CD-85B3-CAA3F5B5C948}
