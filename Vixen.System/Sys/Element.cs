@@ -35,8 +35,6 @@ namespace Vixen.Sys
 
 		public bool Masked { get; set; }
 
-		public Point Location { get; set; }
-
 		public void Update()
 		{
 			_state = _AggregateStateFromContexts();
