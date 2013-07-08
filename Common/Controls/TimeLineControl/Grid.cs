@@ -524,8 +524,16 @@ namespace Common.Controls.Timeline
 			foreach (Element elem in containingRow) {
 				Single elemX = timeToPixels(elem.StartTime);
 				Single elemW = timeToPixels(elem.Duration);
-				if (p.X >= elemX && p.X <= elemX + elemW)
+				if (p.X >= elemX &&
+					p.X <= elemX + elemW &&
+					p.Y >= elem.DisplayTop &&
+					p.Y < elem.DisplayTop + elem.DisplayHeight)
+				{
+					//Single elemX = timeToPixels(elem.StartTime);
+					//Single elemW = timeToPixels(elem.Duration);
+					//if (p.X >= elemX && p.X <= elemX + elemW)
 					return elem;
+				}
 			}
 
 			return null;
