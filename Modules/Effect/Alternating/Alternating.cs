@@ -30,7 +30,8 @@ namespace VixenModules.Effect.Alternating
 			_elementData = new EffectIntents();
 
 			// check for sane default colors when first rendering it
-			if (Color1 == Color.Empty || Color2 == Color.Empty) {
+			//As we have RGB underlying we have to check for Black/Empty at the RGB level. Simple empty check does not work.
+			if (Color1.ToArgb() == Color.Black.ToArgb() && Color2.ToArgb() == Color.Black.ToArgb()) {
 				HashSet<Color> validColors = new HashSet<Color>();
 				validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
 

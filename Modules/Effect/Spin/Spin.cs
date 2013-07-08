@@ -186,6 +186,13 @@ namespace VixenModules.Effect.Spin
 			}
 		}
 
+		//Created to hold a ColorGradient version of color rather than continually creating them from Color for static colors.
+		protected ColorGradient StaticColorGradient
+		{
+			get { return _data.StaticColorGradient; }
+			set { _data.StaticColorGradient = value; }
+		}
+
 		[Value]
 		public Curve PulseCurve
 		{
@@ -245,7 +252,7 @@ namespace VixenModules.Effect.Spin
 					// figure out what color gradient to use for the pulse
 					switch (ColorHandling) {
 						case SpinColorHandling.GradientForEachPulse:
-							pulse.ColorGradient = new ColorGradient(StaticColor);
+							pulse.ColorGradient = StaticColorGradient;
 							pulse.LevelCurve = new Curve(new PointPairList(new double[] { 0, 100 }, new double[] { level, level }));
 							pulseData = pulse.Render();
 							_elementData.Add(pulseData);
@@ -259,7 +266,7 @@ namespace VixenModules.Effect.Spin
 							break;
 
 						case SpinColorHandling.StaticColor:
-							pulse.ColorGradient = new ColorGradient(StaticColor);
+							pulse.ColorGradient = StaticColorGradient;
 							pulse.LevelCurve = new Curve(new PointPairList(new double[] { 0, 100 }, new double[] { level, level }));
 							pulseData = pulse.Render();
 							_elementData.Add(pulseData);
@@ -410,7 +417,7 @@ namespace VixenModules.Effect.Spin
 						break;
 
 					case SpinColorHandling.StaticColor:
-						pulse.ColorGradient = new ColorGradient(StaticColor);
+						pulse.ColorGradient = StaticColorGradient;
 						pulseData = pulse.Render();
 						pulseData.OffsetAllCommandsByTime(current);
 						_elementData.Add(pulseData);
