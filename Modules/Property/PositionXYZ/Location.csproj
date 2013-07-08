@@ -4,20 +4,19 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{86572287-5AD9-4941-AEB1-939C3F787978}</ProjectGuid>
+    <ProjectGuid>{7D5D4BE4-576A-4092-A3E2-1A6F27CDC213}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>VixenModules.Effect.Alternating</RootNamespace>
-    <AssemblyName>Alternating</AssemblyName>
+    <RootNamespace>VixenModules.Property.Location</RootNamespace>
+    <AssemblyName>PositionXYZ</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>$(SolutionDir)\Output\Modules\Effect\</OutputPath>
+    <OutputPath>$(SolutionDir)\Output\Modules\Property\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -25,7 +24,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>$(SolutionDir)\Release\Modules\Effect\</OutputPath>
+    <OutputPath>$(SolutionDir)\Release\Modules\Property\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -35,6 +34,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -42,52 +42,28 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LocationDescriptor.cs" />
+    <Compile Include="LocationData.cs" />
+    <Compile Include="LocationModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Alternating.cs" />
-    <Compile Include="AlternatingData.cs" />
-    <Compile Include="AlternatingDescriptor.cs" />
+    <Compile Include="SetupForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SetupForm.Designer.cs">
+      <DependentUpon>SetupForm.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Common\Controls\Controls.csproj">
-      <Project>{a54fb6a1-a9c3-488c-b961-41b8dbc81b36}</Project>
-      <Name>Controls</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\Vixen.System\Vixen.csproj">
       <Project>{50b78623-fcf4-48af-93ff-fa87c937028f}</Project>
       <Name>Vixen</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\App\ColorGradients\ColorGradients.csproj">
-      <Project>{1b189b36-02af-4a57-9e1b-6dc833212725}</Project>
-      <Name>ColorGradients</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\App\Curves\Curves.csproj">
-      <Project>{f0ba7127-61b4-453a-802b-abcb5a0d3d54}</Project>
-      <Name>Curves</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Property\Color\Color.csproj">
-      <Project>{73068A83-B3B7-4A2C-923D-71C7886CD5E3}</Project>
-      <Name>Color</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Pulse\Pulse.csproj">
-      <Project>{a815a79e-305d-4167-a0bc-ffa590bb4644}</Project>
-      <Name>Pulse</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\SetLevel\SetLevel.csproj">
-      <Project>{8910163e-a2a3-4f8b-b5d8-0e311166b8ba}</Project>
-      <Name>SetLevel</Name>
-      <Private>False</Private>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Images\Effect16.png" />
-    <EmbeddedResource Include="Images\Effect48.png" />
-    <EmbeddedResource Include="Images\Effect64.png" />
+    <EmbeddedResource Include="SetupForm.resx">
+      <DependentUpon>SetupForm.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

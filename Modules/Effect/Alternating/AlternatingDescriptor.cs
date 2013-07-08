@@ -6,6 +6,7 @@ using System.Text;
 using Vixen.Module.Effect;
 using Vixen.Sys;
 using VixenModules.App.ColorGradients;
+using VixenModules.App.Curves;
 
 namespace VixenModules.Effect.Alternating
 {
@@ -27,12 +28,12 @@ namespace VixenModules.Effect.Alternating
 
 		public override Type ModuleClass
 		{
-			get { return typeof (Alternating); }
+			get { return typeof(Alternating); }
 		}
 
 		public override Type ModuleDataClass
 		{
-			get { return typeof (AlternatingData); }
+			get { return typeof(AlternatingData); }
 		}
 
 		public override string Author
@@ -57,7 +58,7 @@ namespace VixenModules.Effect.Alternating
 
 		public override Guid[] Dependencies
 		{
-			get { return new Guid[] {_ColorGradientId}; }
+			get { return new Guid[] { _ColorGradientId }; }
 		}
 
 		public override ParameterSignature Parameters
@@ -65,19 +66,20 @@ namespace VixenModules.Effect.Alternating
 			get
 			{
 				return new ParameterSignature(
-					new ParameterSpecification("Level1", typeof (double)),
-					new ParameterSpecification("Color1", typeof (Color)),
-					new ParameterSpecification("Level2", typeof (double)),
-					new ParameterSpecification("Color2", typeof (Color)),
-					new ParameterSpecification("Interval", typeof (double)),
-					new ParameterSpecification("Enable", typeof (bool)),
-					new ParameterSpecification("DepthOfEffect", typeof (int)),
-					new ParameterSpecification("GroupEffect", typeof (int)),
-					new ParameterSpecification("StaticColor1", typeof (bool)),
-					new ParameterSpecification("StaticColor2", typeof (bool)),
-					new ParameterSpecification("ColorGradient1", typeof (ColorGradient)),
-					new ParameterSpecification("ColorGradient2", typeof (ColorGradient))
-					);
+					new ParameterSpecification("Level1", typeof(double)),
+					new ParameterSpecification("Color1", typeof(Color)),
+					new ParameterSpecification("Level2", typeof(double)),
+					new ParameterSpecification("Color2", typeof(Color)),
+					new ParameterSpecification("Interval", typeof(double)),
+					new ParameterSpecification("Enable", typeof(bool)),
+					new ParameterSpecification("DepthOfEffect", typeof(int)),
+					new ParameterSpecification("GroupEffect", typeof(int)),
+					new ParameterSpecification("StaticColor1", typeof(bool)),
+					new ParameterSpecification("StaticColor2", typeof(bool)),
+					new ParameterSpecification("ColorGradient1", typeof(ColorGradient)),
+					new ParameterSpecification("ColorGradient2", typeof(ColorGradient)),
+					new ParameterSpecification("Curve1", typeof(Curve)),
+					new ParameterSpecification("Curve2", typeof(Curve)));
 			}
 		}
 	}

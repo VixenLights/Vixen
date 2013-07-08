@@ -104,22 +104,8 @@ namespace VixenModules.Property.Color
 
 		private void buttonUpdate_Click(object sender, EventArgs e)
 		{
-			string name = textBoxName.Text;
-			ColorSet newColorSet = new ColorSet();
-
-			if (name.Length <= 0) {
-				MessageBox.Show("You must enter a name for the Color Set.", "Name Requred", MessageBoxButtons.OK,
-				                MessageBoxIcon.Error);
-				return;
-			}
-
-			foreach (var control in tableLayoutPanelColors.Controls) {
-				ColorPanel cp = (ColorPanel) control;
-				newColorSet.Add(cp.Color);
-			}
-
-			_data.SetColorSet(textBoxName.Text, newColorSet);
-			UpdateColorSetsList();
+			if (SaveDisplayedColorSet())
+				UpdateColorSetsList();
 		}
 
 		private void buttonAddColor_Click(object sender, EventArgs e)
@@ -138,6 +124,78 @@ namespace VixenModules.Property.Color
 			}
 			else {
 				buttonUpdate.Text = "Make New Color Set";
+			}
+		}
+
+		private bool displayedColorSetHasDifferences()
+		{
+			if (!groupBoxColorSet.Enabled)
+				return false;
+
+			if (_data.ContainsColorSet(textBoxName.Text)) {
+				ColorSet cs = _data.GetColorSet(textBoxName.Text);
+
+				int i = 0;
+				foreach (var control in tableLayoutPanelColors.Controls) {
+					if (cs.Count <= i)
+						return true;
+
+					ColorPanel cp = (ColorPanel)control;
+					if (cs[i].ToArgb() != cp.Color.ToArgb())
+						return true;
+
+					i++;
+				}
+
+				if (cs.Count != i)
+					return true;
+
+				return false;
+			}
+
+			return true;
+		}
+
+		private bool SaveDisplayedColorSet()
+		{
+			string name = textBoxName.Text;
+			ColorSet newColorSet = new ColorSet();
+
+			if (name.Length <= 0) {
+				MessageBox.Show("You must enter a name for the Color Set.", "Name Requred", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return false;
+			}
+
+			foreach (var control in tableLayoutPanelColors.Controls) {
+				ColorPanel cp = (ColorPanel)control;
+				newColorSet.Add(cp.Color);
+			}
+
+			_data.SetColorSet(textBoxName.Text, newColorSet);
+
+			return true;
+		}
+
+		private void ColorSetsSetupForm_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			if (displayedColorSetHasDifferences()) {
+				DialogResult dr = MessageBox.Show("Do you want to save changes to the displayed color set?", "Save Changes?",
+				                                  MessageBoxButtons.YesNoCancel);
+
+				switch (dr) {
+					case DialogResult.Yes:
+						if (!SaveDisplayedColorSet()) {
+							e.Cancel = true;
+						}
+						break;
+
+					case DialogResult.No:
+						break;
+
+					case DialogResult.Cancel:
+						e.Cancel = true;
+						break;
+				}
 			}
 		}
 	}

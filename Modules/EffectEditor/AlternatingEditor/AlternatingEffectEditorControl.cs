@@ -11,6 +11,7 @@ using Vixen.Module.Effect;
 using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Sys;
 using VixenModules.App.ColorGradients;
+using VixenModules.App.Curves;
 
 namespace VixenModules.EffectEditor.AlternatingEditor
 {
@@ -40,38 +41,49 @@ namespace VixenModules.EffectEditor.AlternatingEditor
 				       		StaticColor1,
 				       		StaticColor2,
 				       		ColorGradient1,
-				       		ColorGradient2
+				       		ColorGradient2, 
+							Curve1,
+							Curve2
 				       	};
 			}
 			set
 			{
-				if (value.Length != 12) {
+				if (value.Length != 14) {
 					VixenSystem.Logging.Warning("Alternating effect parameters set with " + value.Length + " parameters");
 					return;
 				}
 				var val = value;
-				Level1 = (double) value[0];
-				Color1 = (Color) value[1];
-				Level2 = (double) value[2];
-				Color2 = (Color) value[3];
-				Interval = (int) value[4];
-				DepthOfEffect = (int) value[5];
-				GroupInterval = (int) value[6];
-				Enabled = (bool) value[7];
-				StaticColor1 = (bool) value[8];
-				StaticColor2 = (bool) value[9];
-				ColorGradient1 = (ColorGradient) value[10];
-				ColorGradient2 = (ColorGradient) value[11];
+				Level1 = (double)value[0];
+				Color1 = (Color)value[1];
+				Level2 = (double)value[2];
+				Color2 = (Color)value[3];
+				Interval = (int)value[4];
+				DepthOfEffect = (int)value[5];
+				GroupInterval = (int)value[6];
+				Enabled = (bool)value[7];
+				StaticColor1 = (bool)value[8];
+				StaticColor2 = (bool)value[9];
+				ColorGradient1 = (ColorGradient)value[10];
+				ColorGradient2 = (ColorGradient)value[11];
+				Curve1 = (Curve)value[12];
+				Curve2 = (Curve)value[13];
 			}
 		}
 
 
 		private IEffect _targetEffect;
-
 		public IEffect TargetEffect
 		{
 			get { return _targetEffect; }
-			set { _targetEffect = value; }
+			set
+			{
+				_targetEffect = value;
+				colorTypeEditorControl1.TargetEffect = value;
+				colorTypeEditorControl2.TargetEffect = value;
+				gradient1.TargetEffect = value;
+				gradient2.TargetEffect = value;
+				
+			}
 		}
 
 		public int Interval
@@ -122,6 +134,18 @@ namespace VixenModules.EffectEditor.AlternatingEditor
 			set { this.gradient2.ColorGradientValue = value; }
 		}
 
+		public Curve Curve1
+		{
+			get { return this.curveTypeEditorControl1.CurveValue; }
+			set { this.curveTypeEditorControl1.CurveValue = value; }
+		}
+
+		public Curve Curve2
+		{
+			get { return this.curveTypeEditorControl2.CurveValue; }
+			set { this.curveTypeEditorControl2.CurveValue = value; }
+		}
+
 		public bool StaticColor1
 		{
 			get
@@ -148,7 +172,7 @@ namespace VixenModules.EffectEditor.AlternatingEditor
 
 		public int GroupInterval
 		{
-			get { return (int) numGroup.Value; }
+			get { return (int)numGroup.Value; }
 			set { numGroup.Value = value; }
 		}
 
@@ -161,7 +185,26 @@ namespace VixenModules.EffectEditor.AlternatingEditor
 
 		private void numericUpDown1_ValueChanged(object sender, EventArgs e)
 		{
-			trackBarInterval.Value = (int) numChangeInterval.Value;
+			trackBarInterval.Value = (int)numChangeInterval.Value;
 		}
+
+		private void radio1_CheckedChanged(object sender, EventArgs e)
+		{
+			colorTypeEditorControl1.Enabled = levelTypeEditorControl1.Enabled = radioStatic1.Checked;
+			curveTypeEditorControl1.Enabled = gradient1.Enabled = radioGradient1.Checked;
+		}
+
+		private void radio2_CheckedChanged(object sender, EventArgs e)
+		{
+			colorTypeEditorControl2.Enabled = levelTypeEditorControl2.Enabled = radioStatic2.Checked;
+			curveTypeEditorControl2.Enabled = gradient2.Enabled = radioGradient2.Checked;
+		}
+
+		
+
+
+
+
+
 	}
 }

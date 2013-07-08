@@ -27,10 +27,11 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.Windows.Forms.ListViewItem listViewItem10 = new System.Windows.Forms.ListViewItem("lkjhlkjh");
-			System.Windows.Forms.ListViewItem listViewItem11 = new System.Windows.Forms.ListViewItem("kvgvhgv");
-			System.Windows.Forms.ListViewItem listViewItem12 = new System.Windows.Forms.ListViewItem("uytruyt");
+			System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("lkjhlkjh");
+			System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("kvgvhgv");
+			System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem("uytruyt");
 			this.listViewColorSets = new System.Windows.Forms.ListView();
+			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.label1 = new System.Windows.Forms.Label();
 			this.groupBoxColorSet = new System.Windows.Forms.GroupBox();
 			this.buttonAddColor = new System.Windows.Forms.Button();
@@ -42,7 +43,6 @@
 			this.button1 = new System.Windows.Forms.Button();
 			this.buttonRemoveColorSet = new System.Windows.Forms.Button();
 			this.buttonAddColorSet = new System.Windows.Forms.Button();
-			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.groupBoxColorSet.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -54,9 +54,9 @@
 			this.listViewColorSets.GridLines = true;
 			this.listViewColorSets.HideSelection = false;
 			this.listViewColorSets.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem10,
-            listViewItem11,
-            listViewItem12});
+            listViewItem1,
+            listViewItem2,
+            listViewItem3});
 			this.listViewColorSets.Location = new System.Drawing.Point(14, 30);
 			this.listViewColorSets.MultiSelect = false;
 			this.listViewColorSets.Name = "listViewColorSets";
@@ -201,6 +201,7 @@
 			this.Name = "ColorSetsSetupForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Color Sets";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ColorSetsSetupForm_FormClosing);
 			this.Load += new System.EventHandler(this.ColorSetsSetupForm_Load);
 			this.groupBoxColorSet.ResumeLayout(false);
 			this.groupBoxColorSet.PerformLayout();

@@ -7,6 +7,7 @@ using Vixen.IO;
 using Vixen.Module.SequenceFilter;
 using Vixen.Sys;
 using Vixen.Module.Property;
+using System.Drawing;
 
 namespace Vixen.Sys
 {

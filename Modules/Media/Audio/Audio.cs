@@ -250,7 +250,7 @@ namespace VixenModules.Media.Audio
 				_audioSystem.SetStartTime(startTime);
 			}
 			else {
-				throw new FileNotFoundException("Media file doe not exist: " + MediaFilePath);
+				Vixen.Sys.VixenSystem.Logging.Error("Media file doe not exist: " + MediaFilePath);
 			}
 		}
 

@@ -4,17 +4,14 @@ using System.Linq;
 using System.Drawing;
 using Vixen.Sys;
 
-namespace Vixen.Module.Effect
-{
+namespace Vixen.Module.Effect {
 	[Serializable]
 	public abstract class EffectModuleDescriptorBase : ModuleDescriptorBase, IEffectModuleDescriptor,
-	                                                   IEqualityComparer<IEffectModuleDescriptor>,
-	                                                   IEquatable<IEffectModuleDescriptor>,
-	                                                   IEqualityComparer<EffectModuleDescriptorBase>,
-	                                                   IEquatable<EffectModuleDescriptorBase>
-	{
-		protected EffectModuleDescriptorBase()
-		{
+													   IEqualityComparer<IEffectModuleDescriptor>,
+													   IEquatable<IEffectModuleDescriptor>,
+													   IEqualityComparer<EffectModuleDescriptorBase>,
+													   IEquatable<EffectModuleDescriptorBase> {
+		protected EffectModuleDescriptorBase() {
 			PropertyDependencies = new Guid[0];
 		}
 
@@ -36,47 +33,61 @@ namespace Vixen.Module.Effect
 
 		public virtual Guid[] PropertyDependencies { get; private set; }
 
-		public virtual Image GetRepresentativeImage(int desiredWidth, int desiredHeight)
-		{
-			int maxDimension = Math.Max(desiredWidth, desiredHeight);
-			if (maxDimension <= 16) {
-				return ImageResource.Effect16;
+		public virtual Image GetRepresentativeImage(int desiredWidth, int desiredHeight) {
+			try {
+
+				//Default to Null image
+				var resources = this.Assembly.GetManifestResourceNames().ToList();
+				resources.ToList().ForEach(a => Console.WriteLine(a));
+				int maxDimension = Math.Max(desiredWidth, desiredHeight);
+				if (maxDimension <= 16) {
+					var resName = resources.Where(r => r.ContainsString(".Effect16.", StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();
+					if (!string.IsNullOrWhiteSpace(resName))
+						return Image.FromStream(this.Assembly.GetManifestResourceStream(resName));
+					else return null;
+
+				}
+				else if (maxDimension <= 48) {
+					var resName = resources.Where(r => r.ContainsString(".Effect48.", StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();
+					if (!string.IsNullOrWhiteSpace(resName))
+						return Image.FromStream(this.Assembly.GetManifestResourceStream(resName));
+					else return null;
+				}
+				else {
+					var resName = resources.Where(r => r.ContainsString(".Effect64.", StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();
+					if (!string.IsNullOrWhiteSpace(resName))
+						return Image.FromStream(this.Assembly.GetManifestResourceStream(resName));
+					else return null;
+				}
+
 			}
-			else if (maxDimension <= 48) {
-				return ImageResource.Effect48;
-			}
-			else {
-				return ImageResource.Effect64;
+			catch (Exception e) {
+				VixenSystem.Logging.Error(e.Message, e);
+				return null;
 			}
 		}
-
-		public bool Equals(IEffectModuleDescriptor x, IEffectModuleDescriptor y)
-		{
+		
+		public bool Equals(IEffectModuleDescriptor x, IEffectModuleDescriptor y) {
 			return base.Equals(x, y);
 		}
 
-		public int GetHashCode(IEffectModuleDescriptor obj)
-		{
+		public int GetHashCode(IEffectModuleDescriptor obj) {
 			return base.GetHashCode();
 		}
 
-		public bool Equals(IEffectModuleDescriptor other)
-		{
+		public bool Equals(IEffectModuleDescriptor other) {
 			return base.Equals(other);
 		}
 
-		public bool Equals(EffectModuleDescriptorBase x, EffectModuleDescriptorBase y)
-		{
+		public bool Equals(EffectModuleDescriptorBase x, EffectModuleDescriptorBase y) {
 			return Equals(x as IEffectModuleDescriptor, y as IEffectModuleDescriptor);
 		}
 
-		public int GetHashCode(EffectModuleDescriptorBase obj)
-		{
+		public int GetHashCode(EffectModuleDescriptorBase obj) {
 			return GetHashCode(obj as IEffectModuleDescriptor);
 		}
 
-		public bool Equals(EffectModuleDescriptorBase other)
-		{
+		public bool Equals(EffectModuleDescriptorBase other) {
 			return Equals(other as IEffectModuleDescriptor);
 		}
 	}

@@ -4,14 +4,13 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{86572287-5AD9-4941-AEB1-939C3F787978}</ProjectGuid>
+    <ProjectGuid>{0AE9E4AA-3FB7-4EAA-A699-C3071A58EE77}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>VixenModules.Effect.Alternating</RootNamespace>
-    <AssemblyName>Alternating</AssemblyName>
+    <RootNamespace>VixenModules.Effect.Wipe</RootNamespace>
+    <AssemblyName>Wipe</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -42,20 +41,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="WipeDirection.cs" />
+    <Compile Include="WipeData.cs" />
+    <Compile Include="WipeDescriptor.cs" />
+    <Compile Include="WipeModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Alternating.cs" />
-    <Compile Include="AlternatingData.cs" />
-    <Compile Include="AlternatingDescriptor.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Common\Controls\Controls.csproj">
       <Project>{a54fb6a1-a9c3-488c-b961-41b8dbc81b36}</Project>
       <Name>Controls</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Vixen.System\Vixen.csproj">
-      <Project>{50b78623-fcf4-48af-93ff-fa87c937028f}</Project>
-      <Name>Vixen</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\App\ColorGradients\ColorGradients.csproj">
@@ -68,9 +63,14 @@
       <Name>Curves</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\Property\Color\Color.csproj">
-      <Project>{73068A83-B3B7-4A2C-923D-71C7886CD5E3}</Project>
-      <Name>Color</Name>
+    <ProjectReference Include="..\..\Property\PositionXYZ\Location.csproj">
+      <Project>{7d5d4be4-576a-4092-a3e2-1a6f27cdc213}</Project>
+      <Name>Location</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Chase\Chase.csproj">
+      <Project>{27ec771c-d03c-4c94-915b-e18e33cb6c43}</Project>
+      <Name>Chase</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Pulse\Pulse.csproj">
@@ -78,16 +78,18 @@
       <Name>Pulse</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\SetLevel\SetLevel.csproj">
-      <Project>{8910163e-a2a3-4f8b-b5d8-0e311166b8ba}</Project>
-      <Name>SetLevel</Name>
+    <ProjectReference Include="..\..\..\Vixen.System\Vixen.csproj">
+      <Project>{50b78623-fcf4-48af-93ff-fa87c937028f}</Project>
+      <Name>Vixen</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Images\Effect16.png" />
-    <EmbeddedResource Include="Images\Effect48.png" />
     <EmbeddedResource Include="Images\Effect64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\Effect48.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
