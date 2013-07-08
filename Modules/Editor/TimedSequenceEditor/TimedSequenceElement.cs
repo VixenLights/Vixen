@@ -37,14 +37,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			EffectNode = other.EffectNode;
 		}
 
-		[NonSerializedAttribute] private EffectNode _effectNode;
-
-		public EffectNode EffectNode
-		{
-			get { return _effectNode; }
-			set { _effectNode = value; }
-		}
-
 		public Color TextColor { get; set; }
 
 		private Bitmap CachedCanvasContent { get; set; }
@@ -69,20 +61,20 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			graphics.DrawImage(CachedCanvasContent, 0, 0);
 
 			// add text describing the effect
-			using (Font f = new Font("Arial", 7))
-			using (Brush b = new SolidBrush(TextColor)) {
-				graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
-				graphics.DrawString(EffectNode.Effect.EffectName, f, b, new RectangleF(5, 3, 50, 12));
-				graphics.DrawString(string.Format("Start: {0}", EffectNode.StartTime.ToString(@"m\:ss\.fff")), f, b,
-				                    new PointF(60, 3));
-				graphics.DrawString(string.Format("Length: {0}", EffectNode.TimeSpan.ToString(@"m\:ss\.fff")), f, b,
-				                    new PointF(60, 16));
-			}
+			//using (Font f = new Font("Arial", 7))
+			//using (Brush b = new SolidBrush(TextColor)) {
+			//    graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
+			//    graphics.DrawString(EffectNode.Effect.EffectName, f, b, new RectangleF(5, 3, 50, 12));
+			//    graphics.DrawString(string.Format("Start: {0}", EffectNode.StartTime.ToString(@"m\:ss\.fff")), f, b,
+			//                        new PointF(60, 3));
+			//    graphics.DrawString(string.Format("Length: {0}", EffectNode.TimeSpan.ToString(@"m\:ss\.fff")), f, b,
+			//                        new PointF(60, 16));
+			//}
 
 			ElementTimeHasChangedSinceDraw = false;
 		}
 
-		protected override bool IsCanvasContentCurrent(Size imageSize)
+		public override bool IsCanvasContentCurrent(Size imageSize)
 		{
 			return base.IsCanvasContentCurrent(imageSize) && !EffectNode.Effect.IsDirty && !ElementTimeHasChangedSinceDraw &&
 			       CachedCanvasContent != null;

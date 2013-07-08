@@ -63,6 +63,12 @@ namespace VixenModules.Effect.Nutcracker
 			Grid
 		}
 
+		public enum StringDirection
+		{
+			Clockwise,
+			CounterClockwise
+		}
+
 		#endregion // Variables
 
 		public NutcrackerEffects()
@@ -118,6 +124,11 @@ namespace VixenModules.Effect.Nutcracker
 
 		#region Nutcracker Utilities
 
+		public static bool IsNutcrackerResource(string s) 
+		{
+			return s.Contains("VixenModules.Effect.Nutcracker");
+		}
+		
 		private int rand()
 		{
 			return random.Next();
@@ -1570,7 +1581,7 @@ namespace VixenModules.Effect.Nutcracker
 		#region Pictures
 
 		private string PictureName = "";
-		private FastPixel fp;
+		private FastPixel.FastPixel fp;
 		//
 		// TODO: Load animated GIF images
 		//
@@ -1581,7 +1592,7 @@ namespace VixenModules.Effect.Nutcracker
 
 			if (NewPictureName != PictureName) {
 				image = Image.FromFile(NewPictureName);
-				fp = new FastPixel(new Bitmap(image));
+				fp = new FastPixel.FastPixel(new Bitmap(image));
 
 				//Console.WriteLine("Loaded picture: " + NewPictureName);
 				//    imageCount = wxImage::GetImageCount(NewPictureName);
@@ -1831,18 +1842,18 @@ namespace VixenModules.Effect.Nutcracker
 
 		#region Movie
 
-		private List<FastPixel> moviePictures;
+		private List<FastPixel.FastPixel> moviePictures;
 
 		public void LoadPictures(string DataFilePath)
 		{
-			moviePictures = new List<FastPixel>();
+			moviePictures = new List<FastPixel.FastPixel>();
 			if (Data.Movie_DataPath.Length > 0) {
 				var imageFolder = System.IO.Path.Combine(NutcrackerDescriptor.ModulePath, DataFilePath);
 				List<string> sortedFiles = Directory.GetFiles(imageFolder).OrderBy(f => f).ToList();
 
 				foreach (string file in sortedFiles) {
 					Image image = Image.FromFile(file);
-					FastPixel imageFp = new FastPixel(new Bitmap(image));
+					FastPixel.FastPixel imageFp = new FastPixel.FastPixel(new Bitmap(image));
 					moviePictures.Add(imageFp);
 				}
 			}
@@ -1878,7 +1889,7 @@ namespace VixenModules.Effect.Nutcracker
 			if (Convert.ToInt32(currentMovieImageNum) >= pictureCount || Convert.ToInt32(currentMovieImageNum) < 0)
 				currentMovieImageNum = 0;
 
-			FastPixel currentMovieImage = moviePictures[Convert.ToInt32(currentMovieImageNum)];
+			FastPixel.FastPixel currentMovieImage = moviePictures[Convert.ToInt32(currentMovieImageNum)];
 			if (currentMovieImage != null) {
 				int imgwidth = currentMovieImage.Width;
 				int imght = currentMovieImage.Height;
@@ -1931,6 +1942,7 @@ namespace VixenModules.Effect.Nutcracker
 		private double movementY = 0.0;
 		private int lastState = 0;
 		private double lastScale = -1;
+		private string PictureTilePictureName = "";
 
 		public void RenderPictureTile(int dir, double scale, bool useColor, bool useAlpha, int ColorReplacementSensitivity,
 		                              string NewPictureName)
@@ -1948,20 +1960,28 @@ namespace VixenModules.Effect.Nutcracker
 				lastScale = -1;
 			}
 
-			if (NewPictureName != PictureName || scale != lastScale) {
-				if (!System.IO.File.Exists(NewPictureName)) {
+			if (NewPictureName != PictureTilePictureName || scale != lastScale) {
+				if (IsNutcrackerResource(NewPictureName))
+				{
+					image = Image.FromStream(typeof(Nutcracker).Assembly.GetManifestResourceStream(NewPictureName));     
+				}
+				else if (System.IO.File.Exists(NewPictureName))
+				{
+					image = Image.FromFile(NewPictureName);
+				}
+				else
+				{
 					return;
 				}
-				image = Image.FromFile(NewPictureName);
 				if (scale != 0.0) {
 					image = ScaleImage(image, scale/100);
 				}
 				if (useColor) {
 					image = ConvertToGrayScale(image);
 				}
-				fp = new FastPixel(new Bitmap(image));
+				fp = new FastPixel.FastPixel(new Bitmap(image));
 
-				PictureName = NewPictureName;
+				PictureTilePictureName = NewPictureName;
 				lastScale = scale;
 			}
 
@@ -2049,7 +2069,8 @@ namespace VixenModules.Effect.Nutcracker
 								else {
 									//fpColor = Color.FromArgb(255, fpColor);
 								}
-								SetPixel(x, y, fpColor);
+								// Tree is up-side down, so draw the bitmp up-side down so it is right-side up.
+								SetPixel(BufferWi - x - 1, BufferHt - y - 1, fpColor);
 							}
 						}
 					}

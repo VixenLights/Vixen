@@ -188,6 +188,13 @@ namespace VixenModules.Effect.Twinkle
 			}
 		}
 
+		//Created to hold a ColorGradient version of color rather than continually creating them from Color for static colors.
+		protected ColorGradient StaticColorGradient
+		{
+			get { return _data.StaticColorGradient; }
+			set { _data.StaticColorGradient = value; }
+		}
+
 		[Value]
 		public int DepthOfEffect
 		{
@@ -248,7 +255,7 @@ namespace VixenModules.Effect.Twinkle
 
 				case TwinkleColorHandling.StaticColor:
 					pulse.LevelCurve = new Curve(new PointPairList(new double[] { 0, 100 }, new double[] { minPulseValue, minPulseValue }));
-					pulse.ColorGradient = new ColorGradient(StaticColor);
+					pulse.ColorGradient = StaticColorGradient;
 					pulseData = pulse.Render();
 					result.Add(pulseData);
 					break;
@@ -327,7 +334,7 @@ namespace VixenModules.Effect.Twinkle
 							break;
 
 						case TwinkleColorHandling.StaticColor:
-							pulse.ColorGradient = new ColorGradient(StaticColor);
+							pulse.ColorGradient = StaticColorGradient;
 							pulseData = pulse.Render();
 							pulseData.OffsetAllCommandsByTime(twinkle.StartTime);
 							result.Add(pulseData);

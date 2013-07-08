@@ -80,10 +80,11 @@ namespace Common.Controls.Timeline
 			Single start = timeToPixels(VisibleTimeStart) - (timeToPixels(VisibleTimeStart)%pxint) + pxint;
 			Single end = timeToPixels(VisibleTimeEnd);
 
-			for (Single x = start; x <= end; x += pxint) {
-				Pen p = new Pen(Color.Black);
-				p.Width = width;
-				p.Alignment = PenAlignment.Right;
+			Pen p = new Pen(Color.Black);
+			p.Width = width;
+			p.Alignment = PenAlignment.Right;
+
+			for (Single x = start; x <= end; x += pxint) {	
 				graphics.DrawLine(p, x, (Single) (Height*(1.0 - height)), x, Height);
 			}
 		}

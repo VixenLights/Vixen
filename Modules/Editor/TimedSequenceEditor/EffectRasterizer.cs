@@ -47,6 +47,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					IntentNodeCollection elementIntents = effectIntents.GetIntentNodesForElement(element.Id);
 					if (elementIntents != null) {
 						foreach (IntentNode elementIntentNode in elementIntents) {
+							if (elementIntentNode == null) {
+								VixenSystem.Logging.Error("Error: elementIntentNode was null when Rasterizing an effect (ID: " + effect.InstanceId + ")");
+								continue;
+							}
 							double startPixelX = width*_GetPercentage(elementIntentNode.StartTime, effect.TimeSpan);
 							double widthPixelX = width*_GetPercentage(elementIntentNode.TimeSpan, effect.TimeSpan);
 

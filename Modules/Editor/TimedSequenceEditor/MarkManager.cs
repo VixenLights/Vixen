@@ -11,6 +11,7 @@ using Vixen.Execution;
 using Vixen.Module.Timing;
 using VixenModules.Media.Audio;
 using System.Collections.Concurrent;
+using System.IO;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -174,18 +175,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void buttonAddCollection_Click(object sender, EventArgs e)
 		{
-			MarkCollection newCollection = new MarkCollection();
-			newCollection.Name = "New Collection";
-			MarkCollections.Add(newCollection);
+			AddNewCollection(Color.Green);
+			//MarkCollection newCollection = new MarkCollection();
+			//newCollection.Name = "New Collection";
+			//MarkCollections.Add(newCollection);
 
-			// populate the form with the new collection first, *then* update the collection list,
-			// so that the displayed collection is remembered and selected in the list.
-			PopulateFormWithMarkCollection(newCollection);
-			PopulateMarkCollectionsList();
+			//// populate the form with the new collection first, *then* update the collection list,
+			//// so that the displayed collection is remembered and selected in the list.
+			//PopulateFormWithMarkCollection(newCollection);
+			//PopulateMarkCollectionsList();
 
-			//enable Tapper as long as a collection is selected.
-			radioButtonTapper.Enabled = (listViewMarkCollections.SelectedItems.Count > 0);
-			radioButtonPlayback.Checked = true;
+			////enable Tapper as long as a collection is selected.
+			//radioButtonTapper.Enabled = (listViewMarkCollections.SelectedItems.Count > 0);
+			//radioButtonPlayback.Checked = true;
 		}
 
 		private void buttonRemoveCollection_Click(object sender, EventArgs e)
@@ -1035,6 +1037,87 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					MarkCollections.Add(collection);
 				}
 			}
+		}
+
+		static string lastFolder = "";
+		private void buttonImportAudacity_Click(object sender, EventArgs e)
+		{
+			openFileDialog.DefaultExt = ".txt";
+			openFileDialog.Filter = "Audacity Labels|*.txt|All Files|*.*";
+			openFileDialog.FilterIndex = 0;
+			openFileDialog.InitialDirectory = lastFolder;
+			if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+			{
+				lastFolder = System.IO.Path.GetDirectoryName(openFileDialog.FileName);
+				try
+				{
+					String everything;
+					using (StreamReader sr = new StreamReader(openFileDialog.FileName))
+					{
+						everything = sr.ReadToEnd();
+					}
+					string[] lines = everything.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+					if (lines.Count() > 0)
+					{
+						MarkCollection marks = AddNewCollection(Color.Yellow, "Audacity Marks");
+						foreach (string line in lines)
+						{
+							string mark = line.Split('\t')[0];
+							TimeSpan time = TimeSpan.FromSeconds(Convert.ToDouble(mark));
+							mark = time.Minutes.ToString() + ":" + time.Seconds.ToString().PadLeft(2, '0') + "." + time.Milliseconds.ToString();
+							AddMark(mark);
+						}
+						UpdateMarkListBox();
+					}
+				}
+				catch (Exception ex)
+				{
+					string msg = "There was an error importing the Audacity beat marks: " + ex.Message;
+					Vixen.Sys.VixenSystem.Logging.Error(msg);
+					MessageBox.Show(msg, "Audacity Import Error", MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
+				}
+			}
+		}
+
+		private MarkCollection AddNewCollection(Color color, string name = "New Collection")
+		{
+			MarkCollection newCollection = new MarkCollection();
+			newCollection.Name = name;
+			newCollection.MarkColor = color;
+			MarkCollections.Add(newCollection);
+
+			// populate the form with the new collection first, *then* update the collection list,
+			// so that the displayed collection is remembered and selected in the list.
+			PopulateFormWithMarkCollection(newCollection);
+			PopulateMarkCollectionsList();
+
+			//enable Tapper as long as a collection is selected.
+			radioButtonTapper.Enabled = (listViewMarkCollections.SelectedItems.Count > 0);
+			radioButtonPlayback.Checked = true;
+
+			return newCollection;
+		}
+
+		private void AddMark(string markText)
+		{
+			TimeSpan time;
+			bool success = TimeSpan.TryParseExact(markText, TimeFormats.PositiveFormats, null, out time);
+			if (success)
+			{
+				_displayedCollection.Marks.Add(time);
+			}
+			else
+			{
+				MessageBox.Show("Error parsing time: please use the format '<minutes>:<seconds>.<milliseconds>'",
+								"Error parsing time");
+			}
+		}
+
+		private void UpdateMarkListBox()
+		{
+			_displayedCollection.Marks.Sort();
+			PopulateMarkListFromMarkCollection(_displayedCollection);
+			UpdateMarkCollectionInList(_displayedCollection);
 		}
 	}
 }

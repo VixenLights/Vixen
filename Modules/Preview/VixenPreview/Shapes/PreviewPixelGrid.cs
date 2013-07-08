@@ -248,15 +248,15 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			int width = _bottomRight.X - _topLeft.X;
 			int height = _bottomRight.Y - _topLeft.Y;
 			int stringCount = _strings.Count;
-			int stringXSpacing = width/stringCount;
+			double stringXSpacing = (double)width / (double)stringCount;
 			int x = _topLeft.X;
 			int y = _topLeft.Y;
 			for (int stringNum = 0; stringNum < (int) _stringCount; stringNum++) {
 				PreviewLine line = _strings[stringNum] as PreviewLine;
-				line.SetPoint0(x, y);
-				line.SetPoint1(x, y + height);
+				line.SetPoint0(x, y + height);
+				line.SetPoint1(x, y);
 				line.Layout();
-				x += stringXSpacing;
+				x += (int)stringXSpacing;
 			}
 		}
 
@@ -334,7 +334,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			_selectedPoint = _bottomRight;
 		}
 
-		public override void Draw(FastPixel fp, bool editMode, List<ElementNode> highlightedElements, bool selected,
+		public override void Draw(FastPixel.FastPixel fp, bool editMode, List<ElementNode> highlightedElements, bool selected,
 		                          bool forceDraw)
 		{
 			if (_strings != null) {

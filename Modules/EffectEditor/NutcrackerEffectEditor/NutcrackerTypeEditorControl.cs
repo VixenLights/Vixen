@@ -6,6 +6,10 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Collections;
+using System.Globalization;
+using System.Resources;
+using System.IO;
 using Vixen.Module.EffectEditor;
 using Vixen.Module.Effect;
 using Vixen.Sys;
@@ -13,10 +17,6 @@ using VixenModules.Preview.VixenPreview;
 using VixenModules.Preview.VixenPreview.Shapes;
 using VixenModules.Effect.Nutcracker;
 using Common.Controls;
-using System.Collections;
-using System.Globalization;
-using System.Resources;
-using System.IO;
 
 namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 {
@@ -66,9 +66,10 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 					PreviewMegaTree tree = displayItem.Shape as PreviewMegaTree;
 					for (int stringNum = 0; stringNum < stringCount; stringNum++) {
 						int currentString = stringCount - stringNum - 1;
-						//Console.WriteLine("sc:" + StringCount + " sn:" + Convert.ToInt32(stringNum+1).ToString() + " cs:" + currentString);
 						PreviewBaseShape treeString = tree._strings[currentString];
-						for (int pixelNum = 0; pixelNum < treeString.Pixels.Count; pixelNum++) {
+						//PreviewBaseShape treeString = tree._strings[stringNum];
+						for (int pixelNum = 0; pixelNum < treeString.Pixels.Count; pixelNum++)
+						{
 							treeString.Pixels[pixelNum].PixelColor = effect.Pixels[stringNum][pixelNum];
 						}
 					}
@@ -76,9 +77,11 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 				if (displayItem.Shape is PreviewPixelGrid) {
 					PreviewPixelGrid grid = displayItem.Shape as PreviewPixelGrid;
 					for (int stringNum = 0; stringNum < stringCount; stringNum++) {
-						int currentString = stringCount - stringNum - 1;
-						PreviewBaseShape gridString = grid._strings[currentString];
-						for (int pixelNum = 0; pixelNum < gridString.Pixels.Count; pixelNum++) {
+						//int currentString = stringCount - stringNum - 1;
+						//PreviewBaseShape gridString = grid._strings[currentString];
+						PreviewBaseShape gridString = grid._strings[stringNum];
+						for (int pixelNum = 0; pixelNum < gridString.Pixels.Count; pixelNum++)
+						{
 							gridString.Pixels[pixelNum].PixelColor = effect.Pixels[stringNum][pixelNum];
 						}
 					}
@@ -99,20 +102,25 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			preview.RenderInForeground();
 		}
 
-		private bool loading = true;
-
-		private void NutcrackerTypeEditorControl_Load(object sender, EventArgs e)
+		private void PopulateEffectComboBox()
 		{
-			foreach (NutcrackerEffects.Effects nutcrackerEffect in Enum.GetValues(typeof (NutcrackerEffects.Effects))) {
+			foreach (NutcrackerEffects.Effects nutcrackerEffect in Enum.GetValues(typeof(NutcrackerEffects.Effects)))
+			{
 				comboBoxEffect.Items.Add(nutcrackerEffect.ToString());
 			}
+		}
 
-			foreach (ElementNode node in Data.TargetNodes) {
-				if (node != null) {
-					Console.WriteLine(node.Name);
-					//RenderNode(node);
-				}
-			}
+		private bool loading = true;
+		private void NutcrackerTypeEditorControl_Load(object sender, EventArgs e)
+		{
+			PopulateEffectComboBox();
+			
+			//foreach (ElementNode node in Data.TargetNodes) {
+			//    if (node != null) {
+			//        Console.WriteLine(node.Name);
+			//        //RenderNode(node);
+			//    }
+			//}
 
 
 			effect.Data = Data;
@@ -966,30 +974,55 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 
 		#region PictureTile
 
+		//private void LoadPictureTile()
+		//{
+		//    string folder = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Modules\\Effect\\PictureTiles");
+		//    //System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\Modules\\Effect\\PictureTiles";
+		//    Console.WriteLine(folder);
+		//    System.IO.DirectoryInfo folderInfo = new System.IO.DirectoryInfo(folder);
+
+		//    foreach (System.IO.FileInfo file in folderInfo.GetFiles()) {
+		//        // TODO: check for valid image formats
+		//        if (file.Extension.ToLower() != ".db") {
+		//            string title = file.Name;
+		//            PictureComboBoxItem item = new PictureComboBoxItem(title, file, comboBoxPictureTileFileName.ItemHeight,
+		//                                                               comboBoxPictureTileFileName.ItemHeight);
+		//            comboBoxPictureTileFileName.Items.Add(item);
+
+		//            if (item.File.FullName == Data.PictureTile_FileName) {
+		//                comboBoxPictureTileFileName.SelectedIndex = comboBoxPictureTileFileName.Items.Count - 1;
+		//            }
+		//        }
+		//    }
+
+		//    if (comboBoxPictureTileFileName.Items.Count > 0 && comboBoxPictureTileFileName.SelectedIndex < 0)
+		//        comboBoxPictureTileFileName.SelectedIndex = 0;
+
+		//    trackPictureTileMovementDirection.Value = Data.PictureTile_Direction;
+		//    numericPictureTileScale.Value = Convert.ToDecimal(Data.PictureTile_Scaling);
+		//    checkPictureTileReplaceColor.Checked = Data.PictureTile_ReplaceColor;
+		//    checkPictureTileCopySaturation.Checked = Data.PictureTile_UseSaturation;
+		//}
+
+		private const string IMAGE_RESX_SOURCE = "VixenModules.Effect.Nutcracker.PictureTiles";
 		private void LoadPictureTile()
 		{
-			string folder = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Modules\\Effect\\PictureTiles");
-			//System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\Modules\\Effect\\PictureTiles";
-			Console.WriteLine(folder);
-			System.IO.DirectoryInfo folderInfo = new System.IO.DirectoryInfo(folder);
-
-			foreach (System.IO.FileInfo file in folderInfo.GetFiles()) {
-				// TODO: check for valid image formats
-				if (file.Extension.ToLower() != ".db") {
-					string title = file.Name;
-					PictureComboBoxItem item = new PictureComboBoxItem(title, file, comboBoxPictureTileFileName.ItemHeight,
-					                                                   comboBoxPictureTileFileName.ItemHeight);
-					comboBoxPictureTileFileName.Items.Add(item);
-
-					if (item.File.FullName == Data.PictureTile_FileName) {
-						comboBoxPictureTileFileName.SelectedIndex = comboBoxPictureTileFileName.Items.Count - 1;
-					}
+			string[] resourceNames = typeof(Nutcracker).Assembly.GetManifestResourceNames();
+			foreach (var res in resourceNames)
+			{
+				string title = res.Replace(IMAGE_RESX_SOURCE + ".", string.Empty); ;
+				PictureComboBoxItem item = new PictureComboBoxItem(title, res, comboBoxPictureTileFileName.ItemHeight,
+																									comboBoxPictureTileFileName.ItemHeight, typeof(Nutcracker));
+				comboBoxPictureTileFileName.Items.Add(item);
+				//if (!Data.PictureFile_Custom && item.ResourceName == Data.PictureTile_FileName)
+				if (item.ResourceName == Data.PictureTile_FileName)
+				{
+					comboBoxPictureTileFileName.SelectedIndex = comboBoxPictureTileFileName.Items.Count - 1;
 				}
-			}
 
+			}
 			if (comboBoxPictureTileFileName.Items.Count > 0 && comboBoxPictureTileFileName.SelectedIndex < 0)
 				comboBoxPictureTileFileName.SelectedIndex = 0;
-
 			trackPictureTileMovementDirection.Value = Data.PictureTile_Direction;
 			numericPictureTileScale.Value = Convert.ToDecimal(Data.PictureTile_Scaling);
 			checkPictureTileReplaceColor.Checked = Data.PictureTile_ReplaceColor;
@@ -1001,9 +1034,9 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			if (loading) return;
 			PictureComboBoxItem item = comboBoxPictureTileFileName.SelectedItem as PictureComboBoxItem;
 			if (item != null) {
-				FileInfo file = item.File;
-				Data.PictureTile_FileName = file.FullName;
-				//Data.PictureTile_Direction = 1;
+				//FileInfo file = item.File;
+				//Data.PictureTile_FileName = file.FullName;
+				Data.PictureTile_FileName = item.ResourceName;
 			}
 			effect.SetNextState(true);
 		}
@@ -1060,5 +1093,6 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			Data.PixelSize = scrollPixelSize.Value;
 			displayItem.Shape.PixelSize = Data.PixelSize;
 		}
+
 	}
 }

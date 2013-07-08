@@ -27,7 +27,6 @@ namespace VixenModules.Effect.Nutcracker
 			get
 			{
 				if (_nutcrackerData == null) {
-					Console.WriteLine("New NutcrackerData");
 					_nutcrackerData = new NutcrackerData();
 				}
 				return _nutcrackerData;

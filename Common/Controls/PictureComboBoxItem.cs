@@ -19,6 +19,7 @@ namespace Common.Controls
 			File = file;
 			_width = width;
 			_height = height;
+			IsResource = false;
 			if (System.IO.File.Exists(file.FullName)) {
 				try {
 					Image = Image.FromFile(file.FullName);
@@ -28,6 +29,23 @@ namespace Common.Controls
 				}
 			}
 		}
+
+		public PictureComboBoxItem(string text, string resourceName, int width, int height, Type source)
+		{
+			Text = text;
+			_width = width;
+			_height = height;
+			ResourceName = resourceName;
+			SourceType = source;
+			IsResource = true;
+			Image = Image.FromStream(source.Assembly.GetManifestResourceStream(resourceName));
+		}
+
+		public string ResourceName { get; set; }
+		
+		public bool IsResource { get; set; }
+		
+		public Type SourceType { get; set; }
 
 		public Image Image
 		{

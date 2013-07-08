@@ -160,12 +160,6 @@ namespace Vixen.Sys
 
 		public PropertyManager Properties { get; private set; }
 
-		public Point Location {
-			get { return Element.Location; } 
-			set { Element.Location = value; } 
-		}
-		
-
 		#region Overrides
 
 		public override void AddChild(GroupNode<Element> node)

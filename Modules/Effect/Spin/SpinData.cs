@@ -37,11 +37,23 @@ namespace VixenModules.Effect.Spin
 		[DataMember]
 		public double DefaultLevel { get; set; }
 
+		private Color _staticColor;
+
 		[DataMember]
-		public Color StaticColor { get; set; }
+		public Color StaticColor
+		{
+			get { return _staticColor; }
+			set
+			{
+				_staticColor = value;
+				StaticColorGradient = new ColorGradient(_staticColor);
+			}
+		}
 
 		[DataMember]
 		public ColorGradient ColorGradient { get; set; }
+
+		public ColorGradient StaticColorGradient { get; set; }
 
 		[DataMember]
 		public Curve PulseCurve { get; set; }

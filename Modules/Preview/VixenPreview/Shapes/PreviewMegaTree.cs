@@ -480,7 +480,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		//    base.Draw(fp);
 		//}
 
-		public override void Draw(FastPixel fp, bool editMode, List<ElementNode> highlightedElements, bool selected,
+		public override void Draw(FastPixel.FastPixel fp, bool editMode, List<ElementNode> highlightedElements, bool selected,
 		                          bool forceDraw)
 		{
 			if (_strings != null) {
