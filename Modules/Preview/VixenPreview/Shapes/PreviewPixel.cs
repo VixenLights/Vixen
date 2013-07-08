@@ -189,41 +189,81 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			fp.DrawCircle(drawArea, newColor);
 		}
 
+		public Color GetColorForIntents(IIntentStates states)
+		{
+			Color c = Color.Empty;
+
+			foreach (IIntentState<LightingValue> intentState in states)
+			{
+				Color intentColor = ((IIntentState<LightingValue>)intentState).GetValue().GetAlphaChannelIntensityAffectedColor();
+				c = Color.FromArgb(Math.Max(c.A, intentColor.A),
+								   Math.Max(c.R, intentColor.R),
+								   Math.Max(c.G, intentColor.G),
+								   Math.Max(c.B, intentColor.B)
+								  );
+			}
+
+			if (c == Color.Empty || c == Color.Black)
+				c = Color.Transparent;
+
+			return c;
+		}
+
+		public bool IsDiscretePixel()
+		{
+			if (_node != null && _node.Properties.Contains(VixenModules.Property.Color.ColorDescriptor._typeId))
+			{
+				return true;
+			}
+			return false;
+		}
+
         public void Draw(FastPixel.FastPixel fp, IIntentStates states)
         {
-            Rectangle drawRect = new Rectangle(drawArea.X, drawArea.Y, drawArea.Width, drawArea.Height);
-            int col = 0;
+			Rectangle drawRect = new Rectangle(drawArea.X, drawArea.Y, drawArea.Width, drawArea.Height);
+			int col = 0;
 
-            foreach (IIntentState<LightingValue> intentState in states)
-            {
-                Color c = ((IIntentState<LightingValue>)intentState).GetValue().GetAlphaChannelIntensityAffectedColor();
-                if (col == 0)
-                {
-                    drawRect.X = drawArea.X;
-                    col = 1;
-                }
-                else
-                {
-                    if (drawArea.Width == 3)
-                        drawRect.X = drawArea.X + 2;
-                    else if (drawArea.Width == 4)
-                        drawRect.X = drawArea.X + 2;
-                    else
-                        drawRect.X += drawArea.Width-2;
+			//if (states.Count > 0)
+			//	Console.WriteLine(states.Count);
 
-                    col = 0;
-                }
+			if (IsDiscretePixel())
+			{
+				foreach (IIntentState<LightingValue> intentState in states)
+				{
+					Color c = ((IIntentState<LightingValue>)intentState).GetValue().GetAlphaChannelIntensityAffectedColor();
+					if (col == 0)
+					{
+						drawRect.X = drawArea.X;
+						col = 1;
+					}
+					else
+					{
+						if (drawArea.Width == 3)
+							drawRect.X = drawArea.X + 2;
+						else if (drawArea.Width == 4)
+							drawRect.X = drawArea.X + 2;
+						else
+							drawRect.X += drawArea.Width - 2;
 
-                fp.DrawCircle(drawRect, c);
-                
-                if (col == 0)
-                    if (drawArea.Height == 3)
-                        drawRect.Y += 2;
-                    else if (drawArea.Height == 4)
-                        drawRect.Y += 2;
-                    else
-                        drawRect.Y += drawArea.Height-2;
-            }
+						col = 0;
+					}
+
+					fp.DrawCircle(drawRect, c);
+
+					if (col == 0)
+						if (drawArea.Height == 3)
+							drawRect.Y += 2;
+						else if (drawArea.Height == 4)
+							drawRect.Y += 2;
+						else
+							drawRect.Y += drawArea.Height - 2;
+				}
+			}
+			else
+			{
+				Color intentColor = GetColorForIntents(states);
+				fp.DrawCircle(drawRect, intentColor);
+			}
         }
         
         ~PreviewPixel()
