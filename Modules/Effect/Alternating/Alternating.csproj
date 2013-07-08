@@ -63,9 +63,19 @@
       <Name>ColorGradients</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\App\Curves\Curves.csproj">
+      <Project>{f0ba7127-61b4-453a-802b-abcb5a0d3d54}</Project>
+      <Name>Curves</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\Property\Color\Color.csproj">
       <Project>{73068A83-B3B7-4A2C-923D-71C7886CD5E3}</Project>
       <Name>Color</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Pulse\Pulse.csproj">
+      <Project>{a815a79e-305d-4167-a0bc-ffa590bb4644}</Project>
+      <Name>Pulse</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\SetLevel\SetLevel.csproj">
@@ -73,6 +83,11 @@
       <Name>SetLevel</Name>
       <Private>False</Private>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\Effect16.png" />
+    <EmbeddedResource Include="Images\Effect48.png" />
+    <EmbeddedResource Include="Images\Effect64.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

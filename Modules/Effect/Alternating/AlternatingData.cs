@@ -7,12 +7,14 @@ using System.Text;
 using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Module;
 using VixenModules.App.ColorGradients;
+using VixenModules.App.Curves;
 
 namespace VixenModules.Effect.Alternating
 {
 	[DataContract]
 	internal class AlternatingData : ModuleDataModelBase
 	{
+		
 		[DataMember]
 		public RGB Color1 { get; set; }
 
@@ -57,12 +59,17 @@ namespace VixenModules.Effect.Alternating
 		[DataMember]
 		public ColorGradient ColorGradient2 { get; set; }
 
+		[DataMember]
+		public Curve Curve1 { get; set; }
+		[DataMember]
+		public Curve Curve2 { get; set; }
+
 		public AlternatingData()
 		{
 			Level1 = 1;
 			Level2 = 1;
-			Color1 = Color.Empty;		// default to a 'null' value, when populate when first rendered
-			Color2 = Color.Empty;
+			Color1 = Color.White;		
+			Color2 = Color.Red;
 			Enable = true;
 			Interval = 500;
 			DepthOfEffect = 0;
@@ -70,6 +77,8 @@ namespace VixenModules.Effect.Alternating
 			StaticColor1 = StaticColor2 = true;
 			ColorGradient1 = new ColorGradient();
 			ColorGradient2 = new ColorGradient();
+			Curve1 = new Curve();
+			Curve2 = new Curve();
 		}
 
 		public override IModuleDataModel Clone()
@@ -85,6 +94,9 @@ namespace VixenModules.Effect.Alternating
 			result.GroupEffect = GroupEffect;
 			result.StaticColor2 = StaticColor2;
 			result.StaticColor1 = StaticColor1;
+			result.Curve2 = Curve2;
+			result.Curve1 = Curve1;
+
 			//if (ColorGradient1 != null)
 			//    result.ColorGradient1 = (ColorGradient)ColorGradient1.Clone();
 			//if (ColorGradient2 != null)
