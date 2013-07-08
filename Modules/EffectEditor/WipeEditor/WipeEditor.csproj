@@ -16,7 +16,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\Output\Modules\EffectEditor\</OutputPath>
+    <OutputPath>$(SolutionDir)\Output\Modules\EffectEditor\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -24,7 +24,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\..\Release\Modules\EffectEditor\</OutputPath>
+    <OutputPath>$(SolutionDir)\Release\Modules\EffectEditor\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -56,6 +56,7 @@
     <ProjectReference Include="..\..\..\Common\Controls\Controls.csproj">
       <Project>{a54fb6a1-a9c3-488c-b961-41b8dbc81b36}</Project>
       <Name>Controls</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Vixen.System\Vixen.csproj">
       <Project>{50b78623-fcf4-48af-93ff-fa87c937028f}</Project>
@@ -73,7 +74,7 @@
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Effect\Wipe\Wipe.csproj">
-      <Project>{0ae9e4aa-3fb7-4eaa-a699-c3071a58ee77}</Project>
+      <Project>{0AE9E4AA-3FB7-4EAA-A699-C3071A58EE77}</Project>
       <Name>Wipe</Name>
       <Private>False</Private>
     </ProjectReference>
@@ -85,6 +86,7 @@
     <ProjectReference Include="..\ColorTypeEditor\ColorTypeEditor.csproj">
       <Project>{3b7309d6-5d6a-4265-a0b9-b65e0ddfcb12}</Project>
       <Name>ColorTypeEditor</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\CurveTypeEditor\CurveTypeEditor.csproj">
       <Project>{34df4090-8439-416f-a719-a74430e4e0c0}</Project>
