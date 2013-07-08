@@ -49,6 +49,10 @@
       <Name>Location</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\Common\FastPixel\FastPixel.csproj">
+      <Project>{4EA5025B-5FFC-4FF8-9001-D0F64655BFB6}</Project>
+      <Name>FastPixel</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.VisualBasic" />
@@ -75,7 +79,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DebugTimer.cs" />
-    <Compile Include="FastPixel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResizePreviewForm.cs">
       <SubType>Form</SubType>

@@ -196,13 +196,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 			if (rect.Width > 0 && rect.Height > 0) {
 				Bitmap b;
-				FastPixel fp;
+				FastPixel.FastPixel fp;
 
 				b = new Bitmap(rect.Width, rect.Height);
 				Graphics g = Graphics.FromImage(b);
 				g.Clear(Color.Transparent);
 				g.FillPolygon(Brushes.White, points);
-				fp = new FastPixel(b);
+				fp = new FastPixel.FastPixel(b);
 				fp.Lock();
 				int xCount = 1;
 				int spacingY = _pixelSpacing;

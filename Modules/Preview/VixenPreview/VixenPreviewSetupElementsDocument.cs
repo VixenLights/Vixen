@@ -26,19 +26,31 @@ namespace VixenModules.Preview.VixenPreview
 			_preview = preview;
 			_preview.OnSelectDisplayItem += OnSelectDisplayItem;
 			_preview.OnDeSelectDisplayItem += OnDeSelectDisplayItem;
+            _preview.OnElementsChanged += OnElementsChanged;
 		}
 
 		private void VixenPreviewSetupElementsDocument_Load(object sender, EventArgs e)
 		{
-			Shapes.PreviewTools.PopulateElementTree(treeElements);
+            PopulateElementTree();	
 		}
+
+        public void PopulateElementTree()
+        {
+            treeElements.Nodes.Clear();
+            Shapes.PreviewTools.PopulateElementTree(treeElements);
+        }
 
 		private void OnDeSelectDisplayItem(object sender, Shapes.DisplayItem displayItem)
 		{
 			treeElements.SelectedNodes = null;
 		}
 
-		//
+        private void OnElementsChanged(object sender, EventArgs e)
+        {
+            PopulateElementTree();
+        }
+    
+        //
 		//
 		// This is just very slow, so I've disabled it...
 		//

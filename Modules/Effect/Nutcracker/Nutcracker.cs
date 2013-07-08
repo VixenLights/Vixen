@@ -158,23 +158,32 @@ namespace VixenModules.Effect.Nutcracker
 				List<Element> elements = node.ToList();
 				int elementCount = node.Count();
 				Parallel.For(0, elementCount, elementNum =>
-				                              	{
-				                              		int stringNum = stringCount - (elementNum/pixelsPerString);
-				                              		int pixelNum = (stringNum*pixelsPerString) -
-				                              		               (pixelsPerString - (elementNum%pixelsPerString));
-				                              		Color color = effect.GetPixel(pixelNum);
-
-				                              		LightingValue lightingValue = new LightingValue(color,
-				                              		                                                (float)
-				                              		                                                ((float) color.A/
-				                              		                                                 (float) byte.MaxValue));
-				                              		IIntent intent = new LightingIntent(lightingValue, lightingValue, ms50);
-				                              		_elementData.AddIntentForElement(elements[elementNum].Id, intent, startTime);
-				                              	});
+				{
+					int stringNum = 0;
+					if (NutcrackerData.PreviewType == NutcrackerEffects.PreviewType.Tree90 ||
+						NutcrackerData.PreviewType == NutcrackerEffects.PreviewType.Tree180 ||
+						NutcrackerData.PreviewType == NutcrackerEffects.PreviewType.Tree270 ||
+						NutcrackerData.PreviewType == NutcrackerEffects.PreviewType.Tree360)
+					{
+						stringNum = stringCount - (elementNum / pixelsPerString);
+					}
+					else
+					{
+						stringNum = (elementNum / pixelsPerString);
+					}
+					int pixelNum = (stringNum * pixelsPerString) -
+									(pixelsPerString - (elementNum % pixelsPerString));
+				    Color color = effect.GetPixel(pixelNum);
+					
+				    LightingValue lightingValue = new LightingValue(color,(float)((float) color.A / (float) byte.MaxValue));
+				    IIntent intent = new LightingIntent(lightingValue, lightingValue, ms50);
+					
+				    _elementData.AddIntentForElement(elements[elementNum].Id, intent, startTime);
+				});
 
 				startTime = startTime.Add(ms50);
-			}
-			;
+			};
+
 			timer.Stop();
 			//Console.WriteLine("Nutcracker Render:" + timer.ElapsedMilliseconds + "ms Frames:" + framesToRender);
 		}

@@ -154,7 +154,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			graphics.FillEllipse(new SolidBrush(c), drawArea);
 		}
 
-		public void Draw(FastPixel fp, bool forceDraw)
+		public void Draw(FastPixel.FastPixel fp, bool forceDraw)
 		{
 			if (forceDraw) {
 				Draw(fp, color);
@@ -184,27 +184,49 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		public void Draw(FastPixel fp, Color newColor)
+		public void Draw(FastPixel.FastPixel fp, Color newColor)
 		{
 			fp.DrawCircle(drawArea, newColor);
-
-			//if (newColor.A > 0)
-			//{
-			//    if (MaxAlpha != 255)
-			//    {
-			//        double newAlpha = ((double)newColor.A / 255) * (double)MaxAlpha;
-			//        Color outColor = Color.FromArgb((int)newAlpha, newColor.R, newColor.G, newColor.B);
-			//        fp.DrawCircle(drawArea, outColor);
-			//    }
-			//    else
-			//    {
-			//        fp.DrawCircle(drawArea, newColor);
-			//    }
-			//    color = newColor;
-			//}
 		}
 
-		~PreviewPixel()
+        public void Draw(FastPixel.FastPixel fp, IIntentStates states)
+        {
+            Rectangle drawRect = new Rectangle(drawArea.X, drawArea.Y, drawArea.Width, drawArea.Height);
+            int col = 0;
+
+            foreach (IIntentState<LightingValue> intentState in states)
+            {
+                Color c = ((IIntentState<LightingValue>)intentState).GetValue().GetAlphaChannelIntensityAffectedColor();
+                if (col == 0)
+                {
+                    drawRect.X = drawArea.X;
+                    col = 1;
+                }
+                else
+                {
+                    if (drawArea.Width == 3)
+                        drawRect.X = drawArea.X + 2;
+                    else if (drawArea.Width == 4)
+                        drawRect.X = drawArea.X + 2;
+                    else
+                        drawRect.X += drawArea.Width-2;
+
+                    col = 0;
+                }
+
+                fp.DrawCircle(drawRect, c);
+                
+                if (col == 0)
+                    if (drawArea.Height == 3)
+                        drawRect.Y += 2;
+                    else if (drawArea.Height == 4)
+                        drawRect.Y += 2;
+                    else
+                        drawRect.Y += drawArea.Height-2;
+            }
+        }
+        
+        ~PreviewPixel()
 		{
 			Dispose(false);
 		}

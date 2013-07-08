@@ -367,7 +367,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			throw new NotImplementedException();
 		}
 
-		public virtual void DrawPixel(PreviewPixel pixel, FastPixel fp, bool editMode, List<ElementNode> highlightedElements,
+		public virtual void DrawPixel(PreviewPixel pixel, FastPixel.FastPixel fp, bool editMode, List<ElementNode> highlightedElements,
 		                              bool selected, bool forceDraw)
 		{
 			if (forceDraw) {
@@ -384,7 +384,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		public virtual void Draw(FastPixel fp, bool editMode, List<ElementNode> highlightedElements, bool selected,
+		public virtual void Draw(FastPixel.FastPixel fp, bool editMode, List<ElementNode> highlightedElements, bool selected,
 		                         bool forceDraw)
 		{
 			//Pixels.AsParallel().ForAll(pixel => {
@@ -396,7 +396,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			DrawSelectPoints(fp);
 		}
 
-		public void DrawSelectPoints(FastPixel fp)
+		public void DrawSelectPoints(FastPixel.FastPixel fp)
 		{
 			if (_selectPoints != null) {
 				foreach (PreviewPoint point in _selectPoints) {

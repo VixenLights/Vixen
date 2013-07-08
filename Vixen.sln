@@ -1,5 +1,5 @@
-Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vixen", "Vixen.System\Vixen.csproj", "{50B78623-FCF4-48AF-93FF-FA87C937028F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VixenModules", "VixenModules", "{F1B3198B-977F-40CD-85B3-CAA3F5B5C948}"
@@ -342,8 +342,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WipeEditor", "Modules\Effec
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Location", "Modules\Property\PositionXYZ\Location.csproj", "{7D5D4BE4-576A-4092-A3E2-1A6F27CDC213}"
 EndProject
-Global
-	GlobalSection(TestCaseManagementSettings) = postSolution
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastPixel", "Common\FastPixel\FastPixel.csproj", "{4EA5025B-5FFC-4FF8-9001-D0F64655BFB6}"
+EndProject
+Global	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Everything.vsmdi
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -625,8 +626,7 @@ Global
 		{86572287-5AD9-4941-AEB1-939C3F787978}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{86572287-5AD9-4941-AEB1-939C3F787978}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{86572287-5AD9-4941-AEB1-939C3F787978}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0AE9E4AA-3FB7-4EAA-A699-C3071A58EE77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0AE9E4AA-3FB7-4EAA-A699-C3071A58EE77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0AE9E4AA-3FB7-4EAA-A699-C3071A58EE77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU		{0AE9E4AA-3FB7-4EAA-A699-C3071A58EE77}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0AE9E4AA-3FB7-4EAA-A699-C3071A58EE77}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0AE9E4AA-3FB7-4EAA-A699-C3071A58EE77}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8AEA79C7-38F9-48C4-A38D-F80F42A38643}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -637,8 +637,11 @@ Global
 		{7D5D4BE4-576A-4092-A3E2-1A6F27CDC213}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7D5D4BE4-576A-4092-A3E2-1A6F27CDC213}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7D5D4BE4-576A-4092-A3E2-1A6F27CDC213}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
+		{4EA5025B-5FFC-4FF8-9001-D0F64655BFB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4EA5025B-5FFC-4FF8-9001-D0F64655BFB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4EA5025B-5FFC-4FF8-9001-D0F64655BFB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4EA5025B-5FFC-4FF8-9001-D0F64655BFB6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
@@ -726,6 +729,7 @@ Global
 		{D9A7E8BC-5617-486D-9DA5-89C5861A0F88} = {25A1ED22-180F-4B61-84FC-55790AA11254}
 		{8F61BFE3-8D89-41E8-B296-C01537B03707} = {25A1ED22-180F-4B61-84FC-55790AA11254}
 		{E2A22920-D333-4D92-936C-CA1782E1F042} = {25A1ED22-180F-4B61-84FC-55790AA11254}
+		{4EA5025B-5FFC-4FF8-9001-D0F64655BFB6} = {25A1ED22-180F-4B61-84FC-55790AA11254}
 		{1B0458F3-7668-4D71-A63E-88BEFC03925C} = {E61E332D-B9E1-45C4-875A-521031406B07}
 		{A1B55A53-64C2-464A-923A-13059F0852CD} = {9C03E0DA-6464-4AF2-A9B8-223114A2A2AA}
 		{76641C50-FFDA-4690-8DB5-84CCA417B29D} = {3503C3B1-AD83-405E-9776-2DE1D3B8075F}
