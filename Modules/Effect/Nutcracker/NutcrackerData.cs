@@ -86,9 +86,9 @@ namespace VixenModules.Effect.Nutcracker
 
 		// Spirals
 		[DataMember] public int Spirals_PaletteRepeat = 1;
-		[DataMember] public int Spirals_Direction = 0;
-		[DataMember] public int Spirals_Rotation = 1;
-		[DataMember] public int Spirals_Thickness = 5;
+		[DataMember] public int Spirals_Direction = 1;
+		[DataMember] public int Spirals_Rotation = 20;
+		[DataMember] public int Spirals_Thickness = 60;
 		[DataMember] public bool Spirals_Blend = false;
 		[DataMember] public bool Spirals_3D = false;
 
