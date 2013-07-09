@@ -14,6 +14,7 @@ namespace VixenModules.SequenceType.Vixen2x
 	{
 		private MultiSelectTreeview treeview;
 		private bool MapExists;
+		private int startingIndex;
 
 		public Vixen2xSequenceImporterChannelMapper(List<ChannelMapping> mappings, bool mapExists, string mappingName)
 		{
@@ -59,28 +60,51 @@ namespace VixenModules.SequenceType.Vixen2x
 			}
 		}
 
-		private void AddVixen3ElementToVixen2Channel(int startingIndex)
+		private void AddVixen3ElementToVixen2Channel(TreeNode node)
 		{
-			if (startingIndex + treeview.SelectedNodes.Count > listViewMapping.Items.Count)
+			ElementNode enode = (ElementNode)node.Tag;
+			ListViewItem item = listViewMapping.Items[startingIndex];
+
+			item.SubItems[4].Text = enode.Element.Name;
+
+			item.SubItems[4].Tag = enode;
+			startingIndex++;
+
+		}
+
+		private void ParseNodes(List<TreeNode> nodes)
+		{
+			foreach (TreeNode node in treeview.SelectedNodes)
 			{
-				//to many nodes were selected so we can't paste them into our control
-				MessageBox.Show("Too many elements were selected, unable to paste into the allotted space.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-			}
-			else
-			{
-				foreach (TreeNode node in treeview.SelectedNodes)
+				//if we have node nodes assocatied with the node then this is a child node
+				//so lets get our information and add it.
+				if (node.Nodes.Count == 0)
 				{
-					ElementNode enode = (ElementNode)node.Tag;
-					ListViewItem item = listViewMapping.Items[startingIndex];
-
-					item.SubItems[4].Text = enode.Element.Name;
-
-					item.SubItems[4].Tag = enode;
-
-					startingIndex++;
+					//We have a node with no children so let's add it to our listviewMapping
+					AddVixen3ElementToVixen2Channel(node);
+				}
+				else
+				{
+					//lets parse it till we get to the child node
+					ParseNode(node);
 				}
 			}
 
+		}
+
+		private void ParseNode(TreeNode node)
+		{
+			foreach (TreeNode tn in node.Nodes)
+			{
+				if (tn.Nodes.Count != 0)
+				{
+					ParseNode(tn);
+				}
+				else
+				{
+					AddVixen3ElementToVixen2Channel(tn);
+				}
+			}
 		}
 
 		private static String GetColorName(Color color)
@@ -171,14 +195,10 @@ namespace VixenModules.SequenceType.Vixen2x
 
 		}
 
-
-
-
 		#region Drag drop events
 		private void listViewMapping_DragDrop(object sender, DragEventArgs e)
 		{
 			Point cp = listViewMapping.PointToClient(new Point(e.X, e.Y));
-			int dropIndex = 0;
 
 			if (listViewMapping.HitTest(cp).Location.ToString() == "None")
 			{
@@ -187,7 +207,7 @@ namespace VixenModules.SequenceType.Vixen2x
 			else
 			{
 				ListViewItem dragToItem = listViewMapping.GetItemAt(cp.X, cp.Y);
-				dropIndex = dragToItem.Index;
+				startingIndex = dragToItem.Index;
 			}
 
 			//Lets see how many nodes we brought over and if more than one let the user know they will
@@ -197,12 +217,16 @@ namespace VixenModules.SequenceType.Vixen2x
 				DialogResult result = MessageBox.Show("You have selected more than one item to map.  Items will be mapped starting at the selected Vixen 2.x Channel", "Warning", MessageBoxButtons.OKCancel);
 				if (result == System.Windows.Forms.DialogResult.OK)
 				{
-					AddVixen3ElementToVixen2Channel(dropIndex);
+					//We have more than one node so we could have parents and childs so lets call
+					//a different method to handle this.
+					ParseNodes(treeview.SelectedNodes);
+					//AddVixen3ElementToVixen2Channel(dropIndex);
 				}
 			}
 			else
 			{
-				AddVixen3ElementToVixen2Channel(dropIndex);
+				//AddVixen3ElementToVixen2Channel(treeview.SelectedNode);
+				ParseNodes(treeview.SelectedNodes);
 			}
 
 		}

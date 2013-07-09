@@ -55,7 +55,7 @@
 			this.vixen2SequenceTextBox.Location = new System.Drawing.Point(12, 25);
 			this.vixen2SequenceTextBox.Name = "vixen2SequenceTextBox";
 			this.vixen2SequenceTextBox.ReadOnly = true;
-			this.vixen2SequenceTextBox.Size = new System.Drawing.Size(442, 20);
+			this.vixen2SequenceTextBox.Size = new System.Drawing.Size(464, 20);
 			this.vixen2SequenceTextBox.TabIndex = 5;
 			// 
 			// vixen2ProfileLabel
@@ -69,31 +69,31 @@
 			// 
 			// createMapButton
 			// 
-			this.createMapButton.Location = new System.Drawing.Point(365, 141);
+			this.createMapButton.Location = new System.Drawing.Point(12, 131);
 			this.createMapButton.Name = "createMapButton";
-			this.createMapButton.Size = new System.Drawing.Size(75, 23);
+			this.createMapButton.Size = new System.Drawing.Size(75, 35);
 			this.createMapButton.TabIndex = 13;
-			this.createMapButton.Text = "Create Map";
+			this.createMapButton.Text = "Create\\Edit Map";
 			this.createMapButton.UseVisualStyleBackColor = true;
 			this.createMapButton.Click += new System.EventHandler(this.createMapButton_Click);
 			// 
 			// convertButton
 			// 
 			this.convertButton.Enabled = false;
-			this.convertButton.Location = new System.Drawing.Point(446, 141);
+			this.convertButton.Location = new System.Drawing.Point(93, 131);
 			this.convertButton.Name = "convertButton";
-			this.convertButton.Size = new System.Drawing.Size(75, 23);
+			this.convertButton.Size = new System.Drawing.Size(75, 35);
 			this.convertButton.TabIndex = 14;
-			this.convertButton.Text = "Convert";
+			this.convertButton.Text = "Convert Sequence";
 			this.convertButton.UseVisualStyleBackColor = true;
 			this.convertButton.Click += new System.EventHandler(this.convertButton_Click);
 			// 
 			// cancelButton
 			// 
 			this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancelButton.Location = new System.Drawing.Point(527, 141);
+			this.cancelButton.Location = new System.Drawing.Point(174, 131);
 			this.cancelButton.Name = "cancelButton";
-			this.cancelButton.Size = new System.Drawing.Size(75, 23);
+			this.cancelButton.Size = new System.Drawing.Size(75, 35);
 			this.cancelButton.TabIndex = 15;
 			this.cancelButton.Text = "Cancel";
 			this.cancelButton.UseVisualStyleBackColor = true;
@@ -110,10 +110,9 @@
 			// 
 			// vixen2ToVixen3MappingListBox
 			// 
-			this.vixen2ToVixen3MappingListBox.FormattingEnabled = true;
 			this.vixen2ToVixen3MappingListBox.Location = new System.Drawing.Point(482, 28);
 			this.vixen2ToVixen3MappingListBox.Name = "vixen2ToVixen3MappingListBox";
-			this.vixen2ToVixen3MappingListBox.Size = new System.Drawing.Size(120, 95);
+			this.vixen2ToVixen3MappingListBox.Size = new System.Drawing.Size(127, 134);
 			this.vixen2ToVixen3MappingListBox.TabIndex = 17;
 			this.vixen2ToVixen3MappingListBox.SelectedIndexChanged += new System.EventHandler(this.vixen2ToVixen3MappingListBox_SelectedIndexChanged);
 			// 
@@ -122,7 +121,7 @@
 			this.vixen2ProfileTextBox.Location = new System.Drawing.Point(12, 64);
 			this.vixen2ProfileTextBox.Name = "vixen2ProfileTextBox";
 			this.vixen2ProfileTextBox.ReadOnly = true;
-			this.vixen2ProfileTextBox.Size = new System.Drawing.Size(442, 20);
+			this.vixen2ProfileTextBox.Size = new System.Drawing.Size(464, 20);
 			this.vixen2ProfileTextBox.TabIndex = 8;
 			// 
 			// vixen2ToVixen3MappingTextBox
@@ -130,7 +129,7 @@
 			this.vixen2ToVixen3MappingTextBox.Location = new System.Drawing.Point(12, 103);
 			this.vixen2ToVixen3MappingTextBox.Name = "vixen2ToVixen3MappingTextBox";
 			this.vixen2ToVixen3MappingTextBox.ReadOnly = true;
-			this.vixen2ToVixen3MappingTextBox.Size = new System.Drawing.Size(442, 20);
+			this.vixen2ToVixen3MappingTextBox.Size = new System.Drawing.Size(464, 20);
 			this.vixen2ToVixen3MappingTextBox.TabIndex = 18;
 			// 
 			// label2
