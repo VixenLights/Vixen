@@ -74,8 +74,18 @@ namespace VixenModules.SequenceType.Vixen2x
 					case "Channel":
 						if (element.FirstAttribute.Name.LocalName.Equals("name"))
 						{
-							CreateMappingList(element);
+							CreateMappingList(element, 2);
 						}
+						else if (element.FirstAttribute.Name.LocalName.Equals("number"))
+						{
+							//just break out of hear cause this is in the older verison of vixen
+							break;
+						}
+						else
+						{
+							CreateMappingList(element, 1);
+						}
+						
 						break;
 					default:
 						//ignore
@@ -116,10 +126,24 @@ namespace VixenModules.SequenceType.Vixen2x
 							switch (element.Name.ToString())
 							{
 								case "Channel":
+									//This exists in the 2.5.x versions of Vixen
+									//<Channel name="Mini Tree Red 1" color="-65536" output="0" id="5576725746726704001" enabled="True" />
 									if (element.FirstAttribute.Name.LocalName.Equals("name"))
 									{
-										CreateMappingList(element);
+										CreateMappingList(element,2);
 									}
+									else if (element.FirstAttribute.Name.LocalName.Equals("number"))
+									{
+										//just break out of hear cause this is in the older verison of vixen
+										break;
+									}
+									//This is exists in the older versions
+									//<Channel color="-262330" output="0" id="633580705216250000" enabled="True">FenceIcicles-1</Channel>
+									else
+									{
+										CreateMappingList(element, 1);
+									}
+								
 									break;
 								default:
 									//ignore
@@ -142,14 +166,28 @@ namespace VixenModules.SequenceType.Vixen2x
 				}
 			}
 		}
-		
 
-        private void CreateMappingList(XElement element)
-        {
-            mappings.Add(new ChannelMapping(element.Attribute("name").Value,
-                      Color.FromArgb(int.Parse(element.Attribute("color").Value)),
-					  (mappings.Count + 1).ToString(),
-                      element.Attribute("output").Value));
-        }
+
+		private void CreateMappingList(XElement element, int version)
+		{
+			//if version == 1 then we have an old profile that we are dealing with so we have
+ 			//to get the node value for the channel name
+			if (version == 1)
+			{
+				mappings.Add(new ChannelMapping( element.FirstNode.ToString(),
+						  Color.FromArgb(int.Parse(element.Attribute("color").Value)),
+						  (mappings.Count + 1).ToString(),
+						  element.Attribute("output").Value));
+			}
+				//must be version 2.5 so get the channel name from attribute 'name'
+			else
+			{
+				mappings.Add(new ChannelMapping(element.Attribute("name").Value,
+										  Color.FromArgb(int.Parse(element.Attribute("color").Value)),
+										  (mappings.Count + 1).ToString(),
+										  element.Attribute("output").Value));
+
+			}
+		}
     }
 }

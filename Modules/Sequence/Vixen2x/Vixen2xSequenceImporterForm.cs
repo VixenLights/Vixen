@@ -31,6 +31,7 @@ namespace VixenModules.SequenceType.Vixen2x {
 
             //Add known information:
             vixen2SequenceTextBox.Text = vixen2ImportFile;
+			
 
             //Go ahead and build the map for the sequence that we have.
             ParseV2SequenceData();
@@ -43,7 +44,9 @@ namespace VixenModules.SequenceType.Vixen2x {
 			{
 				channelMappings = parsedV2Sequence.mappings;
 				mapExists = false;
-				vixen2ToVixen3MappingTextBox.Text = "None";
+
+				//use the profilename for now
+				vixen2ToVixen3MappingTextBox.Text = parsedV2Sequence.ProfileName;
 			}
 
 		}
@@ -65,7 +68,8 @@ namespace VixenModules.SequenceType.Vixen2x {
         {
             parsedV2Sequence = new Vixen2SequenceData(vixen2ImportFile);
 
-            vixen2ProfileTextBox.Text = parsedV2Sequence.ProfileName;
+            vixen2ProfileTextBox.Text = String.Format(@"{0}\{1}.pro", parsedV2Sequence.ProfilePath, parsedV2Sequence.ProfileName);
+			vixen2ToVixen3MappingListBox.Text = parsedV2Sequence.ProfileName;
         }
     
         private void createMapButton_Click(object sender, EventArgs e)
