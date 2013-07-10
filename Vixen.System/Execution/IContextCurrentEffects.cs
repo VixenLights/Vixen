@@ -8,5 +8,6 @@ namespace Vixen.Execution
 	internal interface IContextCurrentEffects : IEnumerable<IEffectNode>
 	{
 		Guid[] UpdateCurrentEffects(IDataSource dataSource, TimeSpan currentTime);
+		void Reset();
 	}
 }

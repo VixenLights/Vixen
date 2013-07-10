@@ -160,6 +160,7 @@ namespace Vixen.Execution.Context
 
 		private void _ResetElementStates()
 		{
+			_currentEffects.Reset();
 			_InitializeElementStateBuilder();
 			_LatchElementStatesFromBuilder(_elementStates.ElementsInCollection);
 		}
