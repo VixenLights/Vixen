@@ -70,7 +70,9 @@ namespace VixenModules.SequenceType.Vixen2x
             };
 
             // TODO: use this mark collection (maybe generate a grid?)
+			//I am not sure what to do with this, but it looks like John had a plan.
             MarkCollection mc = new MarkCollection();
+
             Sequence.Length = TimeSpan.FromMilliseconds(parsedV2Sequence.SeqLengthInMills);
 
             var songFileName = parsedV2Sequence.SongPath + parsedV2Sequence.SongFileName;

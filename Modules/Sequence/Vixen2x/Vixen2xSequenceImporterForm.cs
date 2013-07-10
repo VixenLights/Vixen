@@ -36,15 +36,17 @@ namespace VixenModules.SequenceType.Vixen2x {
             //Go ahead and build the map for the sequence that we have.
             ParseV2SequenceData();
 
+			//we parsed the sequence so go ahead and for now set our ChannelMappings to the parsed data
+			//If the user selects one from the listbox we will make an adjustment.
+			channelMappings = parsedV2Sequence.mappings;
+
 			if (StaticModuleData.Vixen2xMappings.Count > 0)
 			{
 				LoadMap();
 			}
 			else
 			{
-				channelMappings = parsedV2Sequence.mappings;
 				mapExists = false;
-
 				//use the profilename for now
 				vixen2ToVixen3MappingTextBox.Text = parsedV2Sequence.ProfileName;
 			}
@@ -132,6 +134,8 @@ namespace VixenModules.SequenceType.Vixen2x {
 		private void vixen2ToVixen3MappingListBox_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			vixen2ToVixen3MappingTextBox.Text = vixen2ToVixen3MappingListBox.SelectedItem.ToString();
+			
+			//user selected a pre-existing mapping so use it now.
 			channelMappings = StaticModuleData.Vixen2xMappings[vixen2ToVixen3MappingListBox.SelectedItem.ToString()];
 		}
 	}

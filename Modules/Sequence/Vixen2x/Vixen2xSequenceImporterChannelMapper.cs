@@ -74,7 +74,7 @@ namespace VixenModules.SequenceType.Vixen2x
 
 		private void ParseNodes(List<TreeNode> nodes)
 		{
-			foreach (TreeNode node in treeview.SelectedNodes)
+			foreach (TreeNode node in nodes)
 			{
 				//if we have node nodes assocatied with the node then this is a child node
 				//so lets get our information and add it.
@@ -208,27 +208,25 @@ namespace VixenModules.SequenceType.Vixen2x
 			{
 				ListViewItem dragToItem = listViewMapping.GetItemAt(cp.X, cp.Y);
 				startingIndex = dragToItem.Index;
-			}
-
-			//Lets see how many nodes we brought over and if more than one let the user know they will
-			//be added sequentially starting at the selected node.
-			if (treeview.SelectedNodes.Count > 1)
-			{
-				DialogResult result = MessageBox.Show("You have selected more than one item to map.  Items will be mapped starting at the selected Vixen 2.x Channel", "Warning", MessageBoxButtons.OKCancel);
-				if (result == System.Windows.Forms.DialogResult.OK)
+				//Lets see how many nodes we brought over and if more than one let the user know they will
+				//be added sequentially starting at the selected node.
+				if (treeview.SelectedNodes.Count > 1)
 				{
-					//We have more than one node so we could have parents and childs so lets call
-					//a different method to handle this.
+					DialogResult result = MessageBox.Show("You have selected more than one item to map.  Items will be mapped starting at the selected Vixen 2.x Channel", "Warning", MessageBoxButtons.OKCancel);
+					if (result == System.Windows.Forms.DialogResult.OK)
+					{
+						//We have more than one node so we could have parents and childs so lets call
+						//a different method to handle this.
+						ParseNodes(treeview.SelectedNodes);
+						//AddVixen3ElementToVixen2Channel(dropIndex);
+					}
+				}
+				else
+				{
+					//AddVixen3ElementToVixen2Channel(treeview.SelectedNode);
 					ParseNodes(treeview.SelectedNodes);
-					//AddVixen3ElementToVixen2Channel(dropIndex);
 				}
 			}
-			else
-			{
-				//AddVixen3ElementToVixen2Channel(treeview.SelectedNode);
-				ParseNodes(treeview.SelectedNodes);
-			}
-
 		}
 
 		private void listViewMapping_DragEnter(object sender, DragEventArgs e)
@@ -262,7 +260,7 @@ namespace VixenModules.SequenceType.Vixen2x
 			if (String.IsNullOrEmpty(mappingNameTextBox.Text))
 			{
 				MessageBox.Show("Please enter name of Map.", "Missing Name", MessageBoxButtons.OKCancel, MessageBoxIcon.Stop);
-				this.DialogResult = System.Windows.Forms.DialogResult.None;
+				DialogResult = System.Windows.Forms.DialogResult.None;
 			}
 			else
 			{
@@ -273,11 +271,14 @@ namespace VixenModules.SequenceType.Vixen2x
 
 		private void destinationColorButton_Click(object sender, EventArgs e)
 		{
-			ColorDialog colorDlg = new ColorDialog();
-			colorDlg.AllowFullOpen = true;
-			colorDlg.AnyColor = true;
-			colorDlg.SolidColorOnly = false;
-			colorDlg.Color = Color.Red;
+			ColorDialog colorDlg = new ColorDialog()
+			{
+				AllowFullOpen = true,
+				AnyColor = true,
+				SolidColorOnly = false,
+				Color = Color.Red
+			};
+
 			if (colorDlg.ShowDialog() == DialogResult.OK)
 			{
 				foreach (ListViewItem itemrow in listViewMapping.SelectedItems)

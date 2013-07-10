@@ -172,22 +172,21 @@ namespace VixenModules.SequenceType.Vixen2x
 		{
 			//if version == 1 then we have an old profile that we are dealing with so we have
  			//to get the node value for the channel name
+			var channelname = string.Empty;
 			if (version == 1)
 			{
-				mappings.Add(new ChannelMapping( element.FirstNode.ToString(),
+				channelname = element.FirstNode.ToString();
+			}
+				//must be version 2.5 so get the channel name from attribute 'name'
+			else if (version == 2)
+			{
+				channelname = element.Attribute("name").Value;
+			}
+
+			mappings.Add(new ChannelMapping(channelname,
 						  Color.FromArgb(int.Parse(element.Attribute("color").Value)),
 						  (mappings.Count + 1).ToString(),
 						  element.Attribute("output").Value));
-			}
-				//must be version 2.5 so get the channel name from attribute 'name'
-			else
-			{
-				mappings.Add(new ChannelMapping(element.Attribute("name").Value,
-										  Color.FromArgb(int.Parse(element.Attribute("color").Value)),
-										  (mappings.Count + 1).ToString(),
-										  element.Attribute("output").Value));
-
-			}
 		}
     }
 }
