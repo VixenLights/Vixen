@@ -18,18 +18,17 @@ namespace Vixen.Intent
 
 			foreach (IIntentState<LightingValue> intentState in states)
 			{
-				Color intentColor = ((IIntentState<LightingValue>)intentState).GetValue().GetAlphaChannelIntensityAffectedColor();
-				c = Color.FromArgb(Math.Max(c.A, intentColor.A),
-								   Math.Max(c.R, intentColor.R),
+				Color intentColor = ((IIntentState<LightingValue>)intentState).GetValue().GetOpaqueIntensityAffectedColor();
+				c = Color.FromArgb(Math.Max(c.R, intentColor.R),
 								   Math.Max(c.G, intentColor.G),
 								   Math.Max(c.B, intentColor.B)
-								  );
+								   );
 			}
 
-			if (c == Color.Empty || c == Color.Black)
-				c = Color.Transparent;
+			c = Color.FromArgb((c.R + c.G + c.B) / 3, c.R, c.G, c.B);
 
 			return c;
+
 		}
 
 	}
