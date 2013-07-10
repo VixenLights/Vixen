@@ -36,16 +36,16 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.Windows.Forms.ListViewGroup listViewGroup7 = new System.Windows.Forms.ListViewGroup("group1", System.Windows.Forms.HorizontalAlignment.Left);
-			System.Windows.Forms.ListViewGroup listViewGroup8 = new System.Windows.Forms.ListViewGroup("group2", System.Windows.Forms.HorizontalAlignment.Left);
-			System.Windows.Forms.ListViewGroup listViewGroup9 = new System.Windows.Forms.ListViewGroup("group3", System.Windows.Forms.HorizontalAlignment.Left);
-			System.Windows.Forms.ListViewItem listViewItem9 = new System.Windows.Forms.ListViewItem("qwerqewr");
-			System.Windows.Forms.ListViewItem listViewItem10 = new System.Windows.Forms.ListViewItem(new System.Windows.Forms.ListViewItem.ListViewSubItem[] {
+			System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("group1", System.Windows.Forms.HorizontalAlignment.Left);
+			System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("group2", System.Windows.Forms.HorizontalAlignment.Left);
+			System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("group3", System.Windows.Forms.HorizontalAlignment.Left);
+			System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("qwerqewr");
+			System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem(new System.Windows.Forms.ListViewItem.ListViewSubItem[] {
             new System.Windows.Forms.ListViewItem.ListViewSubItem(null, "asdfasdf"),
             new System.Windows.Forms.ListViewItem.ListViewSubItem(null, "sub1", System.Drawing.SystemColors.Info, System.Drawing.SystemColors.HotTrack, new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)))),
             new System.Windows.Forms.ListViewItem.ListViewSubItem(null, "sub2")}, -1);
-			System.Windows.Forms.ListViewItem listViewItem11 = new System.Windows.Forms.ListViewItem("jjjjjjjjjjjjjj");
-			System.Windows.Forms.ListViewItem listViewItem12 = new System.Windows.Forms.ListViewItem("hhhhhhhhhhhhhh");
+			System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem("jjjjjjjjjjjjjj");
+			System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem("hhhhhhhhhhhhhh");
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Vixen2xSequenceImporterChannelMapper));
 			this.listViewMapping = new System.Windows.Forms.ListView();
 			this.v2Channel = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -76,23 +76,22 @@
             this.destinationColor});
 			this.listViewMapping.FullRowSelect = true;
 			this.listViewMapping.GridLines = true;
-			listViewGroup7.Header = "group1";
-			listViewGroup7.Name = "listViewGroup1";
-			listViewGroup8.Header = "group2";
-			listViewGroup8.Name = "listViewGroup2";
-			listViewGroup9.Header = "group3";
-			listViewGroup9.Name = "listViewGroup3";
+			listViewGroup1.Header = "group1";
+			listViewGroup1.Name = "listViewGroup1";
+			listViewGroup2.Header = "group2";
+			listViewGroup2.Name = "listViewGroup2";
+			listViewGroup3.Header = "group3";
+			listViewGroup3.Name = "listViewGroup3";
 			this.listViewMapping.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup7,
-            listViewGroup8,
-            listViewGroup9});
+            listViewGroup1,
+            listViewGroup2,
+            listViewGroup3});
 			this.listViewMapping.HideSelection = false;
-			this.listViewMapping.HoverSelection = true;
 			this.listViewMapping.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem9,
-            listViewItem10,
-            listViewItem11,
-            listViewItem12});
+            listViewItem1,
+            listViewItem2,
+            listViewItem3,
+            listViewItem4});
 			this.listViewMapping.Location = new System.Drawing.Point(12, 12);
 			this.listViewMapping.Name = "listViewMapping";
 			this.listViewMapping.ShowGroups = false;

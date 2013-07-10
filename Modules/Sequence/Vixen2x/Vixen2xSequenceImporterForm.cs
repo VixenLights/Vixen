@@ -84,11 +84,6 @@ namespace VixenModules.SequenceType.Vixen2x {
 					AddDictionaryEntry(mappingForm.MappingName, mappingForm.Mappings);
 					convertButton.Enabled = true;
 				}
-				else
-				{
-					//The user cancelled out so leave our current map in place
-					MessageBox.Show("No changes will be stored since you cancelled the operation", "Cancelled Form", MessageBoxButtons.OK, MessageBoxIcon.Information);
-				}
             }
         }
 

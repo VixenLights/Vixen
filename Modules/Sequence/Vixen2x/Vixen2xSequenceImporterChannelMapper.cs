@@ -68,6 +68,9 @@ namespace VixenModules.SequenceType.Vixen2x
 			item.SubItems[4].Text = enode.Element.Name;
 
 			item.SubItems[4].Tag = enode;
+			//item.SubItems[5].Text = GetColorName(enode.Element.Id mapping.ChannelColor));
+			//item.SubItems[3].BackColor = (Color)TypeDescriptor.GetConverter(typeof(Color)).ConvertFromString(GetColorName(mapping.ChannelColor));
+
 			startingIndex++;
 
 		}
@@ -208,24 +211,7 @@ namespace VixenModules.SequenceType.Vixen2x
 			{
 				ListViewItem dragToItem = listViewMapping.GetItemAt(cp.X, cp.Y);
 				startingIndex = dragToItem.Index;
-				//Lets see how many nodes we brought over and if more than one let the user know they will
-				//be added sequentially starting at the selected node.
-				if (treeview.SelectedNodes.Count > 1)
-				{
-					DialogResult result = MessageBox.Show("You have selected more than one item to map.  Items will be mapped starting at the selected Vixen 2.x Channel", "Warning", MessageBoxButtons.OKCancel);
-					if (result == System.Windows.Forms.DialogResult.OK)
-					{
-						//We have more than one node so we could have parents and childs so lets call
-						//a different method to handle this.
-						ParseNodes(treeview.SelectedNodes);
-						//AddVixen3ElementToVixen2Channel(dropIndex);
-					}
-				}
-				else
-				{
-					//AddVixen3ElementToVixen2Channel(treeview.SelectedNode);
-					ParseNodes(treeview.SelectedNodes);
-				}
+				ParseNodes(treeview.SelectedNodes);
 			}
 		}
 

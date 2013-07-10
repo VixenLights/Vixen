@@ -95,12 +95,21 @@ namespace VixenModules.SequenceType.Vixen2x
 
 			if (!String.IsNullOrEmpty(SongFileName))
 				MessageBox.Show(String.Format("Audio File {0} is associated with this sequence, please select the location of the audio file.", SongFileName), "Select Audio Location", MessageBoxButtons.OK, MessageBoxIcon.Information);
-			var dialog = new FolderBrowserDialog();
+			var dialog = new OpenFileDialog
+			{
+				Multiselect = false,
+				Title = "Open Vixen 2.x Audio",
+				Filter = "Audio|*.mp3|All Files (*.*)|*.*",
+				RestoreDirectory = true,
+				InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Vixen\Audio"
+			};
+
 			using (dialog)
 			{
 				if (dialog.ShowDialog() == DialogResult.OK)
 				{
-					SongPath = dialog.SelectedPath + "\\";
+					SongFileName = dialog.SafeFileName;
+					SongPath = Path.GetDirectoryName(dialog.FileName);
 				}
 			}
 
@@ -109,15 +118,24 @@ namespace VixenModules.SequenceType.Vixen2x
 			if (!String.IsNullOrEmpty(ProfileName))
 			{
 				MessageBox.Show(String.Format("Vixen {0}.pro is associated with this sequence, please select the location of the profile.", ProfileName), "Select Profile Location", MessageBoxButtons.OK, MessageBoxIcon.Information);
-				dialog = new FolderBrowserDialog();
+				dialog = new OpenFileDialog
+				{
+					Multiselect = false,
+					Title = "Open Vixen 2.x Profile",
+					Filter = "Profile|*.pro",
+					RestoreDirectory = true,
+					InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Vixen\Profiles"
+				};
 				
 				using (dialog)
 				{
 					if (dialog.ShowDialog() == DialogResult.OK)
 					{
-						ProfilePath = dialog.SelectedPath;
+						ProfilePath = Path.GetDirectoryName(dialog.FileName);
+						ProfileName = dialog.SafeFileName;
+
 						root = null;
-						using (FileStream stream = new FileStream(String.Format(@"{0}\{1}.pro", ProfilePath, ProfileName), FileMode.Open))
+						using (FileStream stream = new FileStream(dialog.FileName, FileMode.Open))
 						{
 							root = XElement.Load(stream);
 						}

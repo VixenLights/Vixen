@@ -12,7 +12,6 @@ namespace VixenModules.SequenceType.Vixen2x
 
 		[DataMember]
 		private Dictionary<string, List<ChannelMapping>> vixen2xMappings;
-		//private string[] mappingName;
 
 		public Dictionary<string, List<ChannelMapping>> Vixen2xMappings
 		{
@@ -28,23 +27,15 @@ namespace VixenModules.SequenceType.Vixen2x
 			}
 		}
 
-		//public string[] MappingName
-		//{
-		//    get { return mappingName; }
-		//    set { mappingName = value; }
-		//}
-
 		public Vixen2xSequenceStaticData()
 		{
 			Vixen2xMappings = new Dictionary<string, List<ChannelMapping>>();
-			//MappingName = new string[1];
 		}
 
 		public override IModuleDataModel Clone()
 		{
 			Vixen2xSequenceStaticData data = new Vixen2xSequenceStaticData();
 			data.Vixen2xMappings = new Dictionary<string, List<ChannelMapping>>(Vixen2xMappings);
-			//data.MappingName = string.Empty;
 			return data;
 		}
 	}
