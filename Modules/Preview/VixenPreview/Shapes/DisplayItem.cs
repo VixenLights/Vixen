@@ -51,6 +51,25 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			_shape.Draw(fp, editMode, highlightedElements, selected, forceDraw);
 		}
 
+		public void DrawInfo(Graphics g)
+		{
+			if (Shape.Pixels.Count > 0) 
+			{
+				int margin = 1;
+				string info;
+				info = "Z:" + Shape.Pixels[0].Z;
+				Font font = new Font("Arial", 7);
+				SizeF textSize = g.MeasureString(info, font);
+				Rectangle rect = new Rectangle(Shape.Left, Shape.Top, (int)textSize.Width + (margin * 2), (int)textSize.Height + (margin * 2));
+
+				Rectangle propRect = new Rectangle(Shape.Left, Shape.Top, Shape.Right - Shape.Left, Shape.Bottom - Shape.Top);
+				g.DrawRectangle(Pens.LightBlue, propRect);
+
+				g.FillRectangle(Brushes.White, rect);
+				g.DrawString(info, font, Brushes.Black, new PointF(Shape.Left+margin, Shape.Top+margin));
+			}
+		}
+
 		public void Handle(IIntentState<LightingValue> state)
 		{
 			//System.Drawing.Color color = state.GetValue().GetOpaqueIntensityAffectedColor();

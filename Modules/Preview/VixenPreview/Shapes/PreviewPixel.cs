@@ -20,8 +20,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		private Color color = Color.White;
 		//public Color editColor = Color.White;
 		private Brush brush;
-		private int x = 0;
-		private int y = 0;
+		private int _x = 0;
+		private int _y = 0;
+		private int _z = 0;
 		private int size = 3;
 		private Rectangle drawArea;
 		private ElementNode _node = null;
@@ -40,10 +41,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 		}
 
-		public PreviewPixel(int xPosition, int yPositoin, int pixelSize)
+		public PreviewPixel(int xPosition, int yPositoin, int zPosition, int pixelSize)
 		{
-			x = xPosition;
-			y = yPositoin;
+			X = xPosition;
+			Y = yPositoin;
+			Z = zPosition;
 			size = pixelSize;
 			brush = new SolidBrush(Color.White);
 			Resize();
@@ -57,7 +59,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public PreviewPixel Clone()
 		{
-			PreviewPixel p = new PreviewPixel(x, y, size);
+			PreviewPixel p = new PreviewPixel(X, Y, Z, size);
 			p.color = color;
 			p.drawArea = new Rectangle(drawArea.X, drawArea.Y, drawArea.Width, drawArea.Height);
 			p.Node = Node;
@@ -110,29 +112,40 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public void Resize()
 		{
-			drawArea = new Rectangle(x, y, size, size);
+			drawArea = new Rectangle(X, Y, size, size);
 		}
 
 		public int X
 		{
-			get { return x; }
+			get { return _x; }
 			set
 			{
-				x = value;
+				_x = value;
 				Resize();
 			}
 		}
 
 		public int Y
 		{
-			get { return y; }
+			get { return _y; }
 			set
 			{
-				y = value;
+				_y = value;
 				Resize();
 			}
 		}
 
+		[DataMember]
+		public int Z
+		{
+			get { return _z; }
+			set
+			{
+				_z = value;
+				Resize();
+			}
+		}
+		
 		public int PixelSize
 		{
 			get { return size; }
@@ -261,7 +274,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 			else
 			{
-				Color intentColor = GetColorForIntents(states);
+				Color intentColor = Vixen.Intent.ColorIntent.GetColorForIntents(states);
 				fp.DrawCircle(drawRect, intentColor);
 			}
         }

@@ -218,7 +218,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 							if ((x + xDiv)%_pixelSpacing == 0) {
 								Color newColor = fp.GetPixel(x, y);
 								if (newColor.A != 0) {
-									PreviewPixel pixel = new PreviewPixel(x + boundsTopLeft.X, y + boundsTopLeft.Y, PixelSize);
+									PreviewPixel pixel = new PreviewPixel(x + boundsTopLeft.X, y + boundsTopLeft.Y, 0, PixelSize);
 									pixel.Node = node;
 									_pixels.Add(pixel);
 								}
