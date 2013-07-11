@@ -56,12 +56,17 @@ namespace VixenModules.SequenceType.Vixen2x {
 		private void LoadMaps()
 		{
 			mapExists = true;
+			//disable the convertButton
+			convertButton.Enabled = false;
+
 			PopulateListBox();
 		}
 
 		private void PopulateListBox()
 		{
 			vixen2ToVixen3MappingListBox.Items.Clear();
+
+			vixen2ToVixen3MappingTextBox.Text = string.Empty;
 
 			//iterate over the dictionary to poplulate the listbox with the mappings
 			foreach (KeyValuePair<string, List<ChannelMapping>> kvp in StaticModuleData.Vixen2xMappings)
@@ -75,8 +80,15 @@ namespace VixenModules.SequenceType.Vixen2x {
         {
             parsedV2Sequence = new Vixen2SequenceData(vixen2ImportFile);
 
-            vixen2ProfileTextBox.Text = String.Format(@"{0}\{1}.pro", parsedV2Sequence.ProfilePath, parsedV2Sequence.ProfileName);
-			vixen2ToVixen3MappingListBox.Text = parsedV2Sequence.ProfileName;
+			if (!String.IsNullOrEmpty(parsedV2Sequence.ProfilePath))
+			{
+				vixen2ProfileTextBox.Text = String.Format(@"{0}\{1}.pro", parsedV2Sequence.ProfilePath, parsedV2Sequence.ProfileName);
+				vixen2ToVixen3MappingListBox.Text = parsedV2Sequence.ProfileName;
+			}
+			else
+			{
+				vixen2ProfileTextBox.Text = parsedV2Sequence.ProfileName;
+			}
         }
 
 		private void AddDictionaryEntry(string key, List<ChannelMapping> value)
@@ -102,15 +114,11 @@ namespace VixenModules.SequenceType.Vixen2x {
 
 					//Clear out the text box and make the user re-select the mapping
 					vixen2ToVixen3MappingTextBox.Text = string.Empty;
+				}
 
-					//we have a new mapping so lets clean out the listbox and then re-add new data.
-					LoadMaps();
-				}
-				else
-				{
-					//Clear out the text box and make the user re-select the mapping
-					vixen2ToVixen3MappingTextBox.Text = string.Empty;
-				}
+			   //User either created a new map or canceled out of the form so lets reload our
+			   //maps which will disable the convert button and clean out the Vixen 2 to Vixen 3 Map text box
+				LoadMaps();
             }
         }
 
@@ -141,15 +149,30 @@ namespace VixenModules.SequenceType.Vixen2x {
 			}
         }
 
-		private void vixen2ToVixen3MappingListBox_SelectedIndexChanged(object sender, EventArgs e)
+		private void vixen2ToVixen3MappingListBox_MouseClick(object sender, MouseEventArgs e)
 		{
-			vixen2ToVixen3MappingTextBox.Text = vixen2ToVixen3MappingListBox.SelectedItem.ToString();
-			
-			//user selected a pre-existing mapping so use it now.
-			channelMappings = StaticModuleData.Vixen2xMappings[vixen2ToVixen3MappingListBox.SelectedItem.ToString()];
+			if (vixen2ToVixen3MappingListBox.SelectedIndex < 0 || !vixen2ToVixen3MappingListBox.GetItemRectangle(vixen2ToVixen3MappingListBox.SelectedIndex).Contains(e.Location))
+			{
+				vixen2ToVixen3MappingListBox.SelectedIndex = -1;
+				vixen2ToVixen3MappingTextBox.Text = string.Empty;
 
-			//user selected a map so enable the convert button
-			convertButton.Enabled = true;
+				//do not use the static mapping use the parsed sequence mapping
+				//cuase the user must want to start over.
+				channelMappings = parsedV2Sequence.mappings;
+
+				//disable the convert button cause we do not have a map selected
+				convertButton.Enabled = false;
+			}
+			else
+			{
+				vixen2ToVixen3MappingTextBox.Text = vixen2ToVixen3MappingListBox.SelectedItem.ToString();
+
+				//user selected a pre-existing mapping so use it now.
+				channelMappings = StaticModuleData.Vixen2xMappings[vixen2ToVixen3MappingListBox.SelectedItem.ToString()];
+
+				//user selected a map so enable the convert button
+				convertButton.Enabled = true;
+			}
 		}
 	}
 }

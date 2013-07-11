@@ -220,6 +220,7 @@
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.listViewMapping);
+			this.DoubleBuffered = true;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "Vixen2xSequenceImporterChannelMapper";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

@@ -114,7 +114,7 @@
 			this.vixen2ToVixen3MappingListBox.Name = "vixen2ToVixen3MappingListBox";
 			this.vixen2ToVixen3MappingListBox.Size = new System.Drawing.Size(127, 134);
 			this.vixen2ToVixen3MappingListBox.TabIndex = 17;
-			this.vixen2ToVixen3MappingListBox.SelectedIndexChanged += new System.EventHandler(this.vixen2ToVixen3MappingListBox_SelectedIndexChanged);
+			this.vixen2ToVixen3MappingListBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.vixen2ToVixen3MappingListBox_MouseClick);
 			// 
 			// vixen2ProfileTextBox
 			// 
@@ -158,6 +158,7 @@
 			this.Controls.Add(this.vixen2ProfileLabel);
 			this.Controls.Add(this.vixen2SequenceTextBox);
 			this.Controls.Add(this.sequenceToConvertLabel);
+			this.DoubleBuffered = true;
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MinimizeBox = false;
 			this.Name = "Vixen2xSequenceImporterForm";

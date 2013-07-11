@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using Vixen.Sys;
 using System.Drawing;
+using System.Xml.Serialization;
 
 namespace VixenModules.SequenceType.Vixen2x
 {
     [Serializable]
     public class ChannelMapping
     {
-        public string ChannelName;
+		public string ChannelName;
         public Color ChannelColor;
         public string ChannelOutput;
         public string ChannelNumber;

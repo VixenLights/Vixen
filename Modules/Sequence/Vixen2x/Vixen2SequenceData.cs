@@ -100,7 +100,7 @@ namespace VixenModules.SequenceType.Vixen2x
 			var dialog = new OpenFileDialog
 			{
 				Multiselect = false,
-				Title = "Open Vixen 2.x Audio",
+				Title = String.Format("Open Vixen 2.x Audio  [{0}]", SongFileName),
 				Filter = "Audio|*.mp3|All Files (*.*)|*.*",
 				RestoreDirectory = true,
 				InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Vixen\Audio"
@@ -123,7 +123,7 @@ namespace VixenModules.SequenceType.Vixen2x
 				dialog = new OpenFileDialog
 				{
 					Multiselect = false,
-					Title = "Open Vixen 2.x Profile",
+					Title = String.Format("Open Vixen 2.x Profile [{0}]", ProfileName),
 					Filter = "Profile|*.pro",
 					RestoreDirectory = true,
 					InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Vixen\Profiles"
@@ -172,18 +172,17 @@ namespace VixenModules.SequenceType.Vixen2x
 
 					}
 				}
-
-				// These calculations could have been put in the properties, but then it gets confusing to debug because of all the jumping around.
-				TotalEventsCount = Convert.ToInt32(Math.Ceiling((double)(SeqLengthInMills / EventPeriod))); ;
-				ElementCount = EventData.Length / TotalEventsCount;
-				EventsPerElement = EventData.Length / ElementCount;
-
-				//if the profile name is null or empty then the sequence must have been flattened so indicate that.
-				if (String.IsNullOrEmpty(ProfileName))
-				{
-					ProfileName = "Sequence has been flattened no profile is available";
-				}
 			}
+			else
+			//if the profile name is null or empty then the sequence must have been flattened so indicate that.
+			{
+				ProfileName = "Sequence has been flattened no profile is available";
+			}
+
+			// These calculations could have been put in the properties, but then it gets confusing to debug because of all the jumping around.
+			TotalEventsCount = Convert.ToInt32(Math.Ceiling((double)(SeqLengthInMills / EventPeriod))); ;
+			ElementCount = EventData.Length / TotalEventsCount;
+			EventsPerElement = EventData.Length / ElementCount;
 		}
 
 
@@ -201,6 +200,7 @@ namespace VixenModules.SequenceType.Vixen2x
 			{
 				channelname = element.Attribute("name").Value;
 			}
+
 
 			mappings.Add(new ChannelMapping(channelname,
 						  Color.FromArgb(int.Parse(element.Attribute("color").Value)),

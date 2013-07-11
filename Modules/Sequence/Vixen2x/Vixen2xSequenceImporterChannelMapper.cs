@@ -117,7 +117,9 @@ namespace VixenModules.SequenceType.Vixen2x
 			var predefined = typeof(Color).GetProperties(BindingFlags.Public | BindingFlags.Static);
 			var match = (from p in predefined where ((Color)p.GetValue(null, null)).ToArgb() == color.ToArgb() select (Color)p.GetValue(null, null));
 			if (match.Any())
+			{
 				return match.First().Name;
+			}
 			return String.Empty;
 		}
 
@@ -133,7 +135,8 @@ namespace VixenModules.SequenceType.Vixen2x
 				item.SubItems.Add(mapping.ChannelOutput);
 				item.SubItems.Add(mapping.ChannelName);
 				item.SubItems.Add(GetColorName(mapping.ChannelColor));
-				item.SubItems[3].BackColor = (Color)TypeDescriptor.GetConverter(typeof(Color)).ConvertFromString(GetColorName(mapping.ChannelColor));
+				//item.SubItems[3].BackColor = (Color)TypeDescriptor.GetConverter(typeof(Color)).ConvertFromString(GetColorName(mapping.ChannelColor));
+				item.SubItems[3].BackColor = mapping.ChannelColor;
 
 				if (MapExists && mapping.ElementNodeId != Guid.Empty)
 				{
@@ -142,7 +145,8 @@ namespace VixenModules.SequenceType.Vixen2x
 					item.SubItems[4].Tag = targetNode;
 
 					item.SubItems.Add(GetColorName(mapping.DestinationColor));
-					item.SubItems[5].BackColor = (Color)TypeDescriptor.GetConverter(typeof(Color)).ConvertFromString(GetColorName(mapping.DestinationColor));
+					//item.SubItems[5].BackColor = (Color)TypeDescriptor.GetConverter(typeof(Color)).ConvertFromString(GetColorName(mapping.DestinationColor));
+					item.SubItems[5].BackColor = mapping.DestinationColor;
 				}
 				else
 				{
@@ -150,6 +154,11 @@ namespace VixenModules.SequenceType.Vixen2x
 					item.SubItems.Add("");
 				}
 
+				//set the v2 columns to readonly
+				item.SubItems[0].BackColor = Color.LightGray;
+				item.SubItems[1].BackColor = Color.LightGray;
+				item.SubItems[2].BackColor = Color.LightGray;
+	
 				listViewMapping.Items.Add(item);
 			}
 			listViewMapping.EndUpdate();
@@ -160,22 +169,18 @@ namespace VixenModules.SequenceType.Vixen2x
 		private void CreateV2toV3MappingTable()
 		{
 			//default these to white
-			Color vixen2Color = Color.White;
-			Color Vixen3Color = Color.White;
+			Color vixen2Color = Color.Empty;
+			Color Vixen3Color = Color.Empty;
 
 			Mappings = new List<ChannelMapping>();
 			foreach (ListViewItem itemrow in listViewMapping.Items)
 			{
-				vixen2Color = (Color)TypeDescriptor.GetConverter(typeof(Color)).ConvertFromString(itemrow.SubItems[3].Text);
+				vixen2Color = itemrow.SubItems[3].BackColor;
 
 				if (!String.IsNullOrEmpty(itemrow.SubItems[4].Text))
 				{
 					ElementNode node = (ElementNode)itemrow.SubItems[4].Tag;
-
-					if (!String.IsNullOrEmpty(itemrow.SubItems[5].Text))
-					{
-						Vixen3Color = (Color)TypeDescriptor.GetConverter(typeof(Color)).ConvertFromString(itemrow.SubItems[5].Text);
-					}
+					Vixen3Color = itemrow.SubItems[5].BackColor;
 
 					Mappings.Add(new ChannelMapping(itemrow.SubItems[2].Text,
 					   vixen2Color,
