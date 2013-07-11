@@ -7,42 +7,42 @@ using System.Windows.Forms;
 
 namespace VixenModules.SequenceType.Vixen2x
 {
-    public class Vixen2SequenceData
-    {
-        protected internal string FileName { get; private set; }
+	public class Vixen2SequenceData
+	{
+		protected internal string FileName { get; private set; }
 
-        protected internal string ProfileName { get; private set; }
+		protected internal string ProfileName { get; private set; }
 
 		protected internal string ProfilePath { get; private set; }
 
-        protected internal int EventPeriod { get; private set; }
+		protected internal int EventPeriod { get; private set; }
 
-        protected internal byte[] EventData { get; private set; }
+		protected internal byte[] EventData { get; private set; }
 
-        protected internal string SongFileName { get; private set; }
+		protected internal string SongFileName { get; private set; }
 
 		protected internal string SongPath { get; private set; }
 
-        protected internal int SeqLengthInMills { get; private set; }
+		protected internal int SeqLengthInMills { get; private set; }
 
-        protected internal int TotalEventsCount { get; private set; }
+		protected internal int TotalEventsCount { get; private set; }
 
-        protected internal int ElementCount { get; private set; }
+		protected internal int ElementCount { get; private set; }
 
-        protected internal int EventsPerElement { get; private set; }
+		protected internal int EventsPerElement { get; private set; }
 
-        protected internal List<ChannelMapping> mappings { get; private set; }
+		protected internal List<ChannelMapping> mappings { get; private set; }
 
-        protected internal Vixen2SequenceData(string fileName)
-        {
-            if (!File.Exists(fileName))
-            {
-                throw new FileNotFoundException("Cannot Locate " + fileName);
-            }
-            FileName = fileName;
-            mappings = new List<ChannelMapping>();
-            ParseFile();
-        }
+		protected internal Vixen2SequenceData(string fileName)
+		{
+			if (!File.Exists(fileName))
+			{
+				throw new FileNotFoundException("Cannot Locate " + fileName);
+			}
+			FileName = fileName;
+			mappings = new List<ChannelMapping>();
+			ParseFile();
+		}
 
 		private void ParseFile()
 		{
@@ -72,20 +72,22 @@ namespace VixenModules.SequenceType.Vixen2x
 						break;
 					// This node will exist if we have a flattend profile so load the channel information
 					case "Channel":
-						if (element.FirstAttribute.Name.LocalName.Equals("name"))
+						XAttribute nameAttrib = element.Attribute("name");
+						XAttribute colorAttrib = element.Attribute("color");
+
+						//This exists in the 2.5.x versions of Vixen
+						//<Channel name="Mini Tree Red 1" color="-65536" output="0" id="5576725746726704001" enabled="True" />
+						if (nameAttrib != null)
 						{
 							CreateMappingList(element, 2);
 						}
-						else if (element.FirstAttribute.Name.LocalName.Equals("number"))
-						{
-							//just break out of hear cause this is in the older verison of vixen
-							break;
-						}
-						else
+						//This exists in the older versions
+						//<Channel color="-262330" output="0" id="633580705216250000" enabled="True">FenceIcicles-1</Channel>
+						else if (colorAttrib != null)
 						{
 							CreateMappingList(element, 1);
 						}
-						
+
 						break;
 					default:
 						//ignore
@@ -126,7 +128,7 @@ namespace VixenModules.SequenceType.Vixen2x
 					RestoreDirectory = true,
 					InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Vixen\Profiles"
 				};
-				
+
 				using (dialog)
 				{
 					if (dialog.ShowDialog() == DialogResult.OK)
@@ -144,24 +146,23 @@ namespace VixenModules.SequenceType.Vixen2x
 							switch (element.Name.ToString())
 							{
 								case "Channel":
+
+									XAttribute nameAttrib = element.Attribute("name");
+									XAttribute colorAttrib = element.Attribute("color");
+
 									//This exists in the 2.5.x versions of Vixen
 									//<Channel name="Mini Tree Red 1" color="-65536" output="0" id="5576725746726704001" enabled="True" />
-									if (element.FirstAttribute.Name.LocalName.Equals("name"))
+									if (nameAttrib != null)
 									{
-										CreateMappingList(element,2);
+										CreateMappingList(element, 2);
 									}
-									else if (element.FirstAttribute.Name.LocalName.Equals("number"))
-									{
-										//just break out of hear cause this is in the older verison of vixen
-										break;
-									}
-									//This is exists in the older versions
+									//This exists in the older versions
 									//<Channel color="-262330" output="0" id="633580705216250000" enabled="True">FenceIcicles-1</Channel>
-									else
+									else if (colorAttrib != null)
 									{
 										CreateMappingList(element, 1);
 									}
-								
+
 									break;
 								default:
 									//ignore
@@ -189,13 +190,13 @@ namespace VixenModules.SequenceType.Vixen2x
 		private void CreateMappingList(XElement element, int version)
 		{
 			//if version == 1 then we have an old profile that we are dealing with so we have
- 			//to get the node value for the channel name
+			//to get the node value for the channel name
 			var channelname = string.Empty;
 			if (version == 1)
 			{
 				channelname = element.FirstNode.ToString();
 			}
-				//must be version 2.5 so get the channel name from attribute 'name'
+			//must be version 2.5 so get the channel name from attribute 'name'
 			else if (version == 2)
 			{
 				channelname = element.Attribute("name").Value;
@@ -206,5 +207,5 @@ namespace VixenModules.SequenceType.Vixen2x
 						  (mappings.Count + 1).ToString(),
 						  element.Attribute("output").Value));
 		}
-    }
+	}
 }

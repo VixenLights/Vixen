@@ -42,7 +42,7 @@ namespace VixenModules.SequenceType.Vixen2x {
 
 			if (StaticModuleData.Vixen2xMappings.Count > 0)
 			{
-				LoadMap();
+				LoadMaps();
 			}
 			else
 			{
@@ -53,13 +53,18 @@ namespace VixenModules.SequenceType.Vixen2x {
 
 		}
 
-		private void LoadMap()
+		private void LoadMaps()
 		{
 			mapExists = true;
-			convertButton.Enabled = true;
+			PopulateListBox();
+		}
+
+		private void PopulateListBox()
+		{
+			vixen2ToVixen3MappingListBox.Items.Clear();
 
 			//iterate over the dictionary to poplulate the listbox with the mappings
-			foreach(KeyValuePair<string,List<ChannelMapping>> kvp in StaticModuleData.Vixen2xMappings)
+			foreach (KeyValuePair<string, List<ChannelMapping>> kvp in StaticModuleData.Vixen2xMappings)
 			{
 				vixen2ToVixen3MappingListBox.Items.Add(kvp.Key);
 
@@ -73,6 +78,18 @@ namespace VixenModules.SequenceType.Vixen2x {
             vixen2ProfileTextBox.Text = String.Format(@"{0}\{1}.pro", parsedV2Sequence.ProfilePath, parsedV2Sequence.ProfileName);
 			vixen2ToVixen3MappingListBox.Text = parsedV2Sequence.ProfileName;
         }
+
+		private void AddDictionaryEntry(string key, List<ChannelMapping> value)
+		{
+			if (StaticModuleData.Vixen2xMappings.ContainsKey(key))
+			{
+				StaticModuleData.Vixen2xMappings[key] = value;
+			}
+			else
+			{
+				StaticModuleData.Vixen2xMappings.Add(key, value);
+			}
+		}
     
         private void createMapButton_Click(object sender, EventArgs e)
         {
@@ -82,7 +99,17 @@ namespace VixenModules.SequenceType.Vixen2x {
 				{
 					//add to or update the dictionary
 					AddDictionaryEntry(mappingForm.MappingName, mappingForm.Mappings);
-					convertButton.Enabled = true;
+
+					//Clear out the text box and make the user re-select the mapping
+					vixen2ToVixen3MappingTextBox.Text = string.Empty;
+
+					//we have a new mapping so lets clean out the listbox and then re-add new data.
+					LoadMaps();
+				}
+				else
+				{
+					//Clear out the text box and make the user re-select the mapping
+					vixen2ToVixen3MappingTextBox.Text = string.Empty;
 				}
             }
         }
@@ -114,24 +141,15 @@ namespace VixenModules.SequenceType.Vixen2x {
 			}
         }
 
-		private void AddDictionaryEntry(string key, List<ChannelMapping> value)
-		{
-			if (StaticModuleData.Vixen2xMappings.ContainsKey(key))
-			{
-				StaticModuleData.Vixen2xMappings[key] = value;
-			}
-			else
-			{
-				StaticModuleData.Vixen2xMappings.Add(key, value);
-			}
-		}
-
 		private void vixen2ToVixen3MappingListBox_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			vixen2ToVixen3MappingTextBox.Text = vixen2ToVixen3MappingListBox.SelectedItem.ToString();
 			
 			//user selected a pre-existing mapping so use it now.
 			channelMappings = StaticModuleData.Vixen2xMappings[vixen2ToVixen3MappingListBox.SelectedItem.ToString()];
+
+			//user selected a map so enable the convert button
+			convertButton.Enabled = true;
 		}
 	}
 }

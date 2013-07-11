@@ -5,8 +5,8 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.Reflection;
 using Vixen.Sys;
-using Common.Controls;
 using System.ComponentModel;
+using Common.Controls;
 
 namespace VixenModules.SequenceType.Vixen2x
 {
@@ -68,8 +68,10 @@ namespace VixenModules.SequenceType.Vixen2x
 			item.SubItems[4].Text = enode.Element.Name;
 
 			item.SubItems[4].Tag = enode;
-			//item.SubItems[5].Text = GetColorName(enode.Element.Id mapping.ChannelColor));
-			//item.SubItems[3].BackColor = (Color)TypeDescriptor.GetConverter(typeof(Color)).ConvertFromString(GetColorName(mapping.ChannelColor));
+			
+			//Not sure where to get a node color from Vixen 3 stuff so if we have one in Vixen 2 just use it
+			item.SubItems[5].Text = item.SubItems[3].Text;
+			item.SubItems[5].BackColor = item.SubItems[3].BackColor;
 
 			startingIndex++;
 
@@ -140,6 +142,7 @@ namespace VixenModules.SequenceType.Vixen2x
 					item.SubItems[4].Tag = targetNode;
 
 					item.SubItems.Add(GetColorName(mapping.DestinationColor));
+					item.SubItems[5].BackColor = (Color)TypeDescriptor.GetConverter(typeof(Color)).ConvertFromString(GetColorName(mapping.DestinationColor));
 				}
 				else
 				{
@@ -184,6 +187,7 @@ namespace VixenModules.SequenceType.Vixen2x
 				}
 				else
 				{
+					//we are using this because we do not have a V3 map.
 					Mappings.Add(new ChannelMapping(itemrow.SubItems[2].Text,
 					  vixen2Color,
 					   itemrow.SubItems[0].Text,
@@ -210,8 +214,22 @@ namespace VixenModules.SequenceType.Vixen2x
 			else
 			{
 				ListViewItem dragToItem = listViewMapping.GetItemAt(cp.X, cp.Y);
-				startingIndex = dragToItem.Index;
-				ParseNodes(treeview.SelectedNodes);
+
+				//let the user know if we have items already here and we are about to overwrite them
+				if (!String.IsNullOrEmpty(dragToItem.SubItems[4].Text))
+				{
+					DialogResult result = MessageBox.Show("You are about to over write existing items.  Do you wish to continue?", "Continue", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+					if (result == System.Windows.Forms.DialogResult.OK)
+					{
+						startingIndex = dragToItem.Index;
+						ParseNodes(treeview.SelectedNodes);
+					}
+				}
+				else
+				{
+					startingIndex = dragToItem.Index;
+					ParseNodes(treeview.SelectedNodes);
+				}
 			}
 		}
 
@@ -253,7 +271,6 @@ namespace VixenModules.SequenceType.Vixen2x
 				CreateV2toV3MappingTable();
 			}
 		}
-		#endregion
 
 		private void destinationColorButton_Click(object sender, EventArgs e)
 		{
@@ -277,5 +294,6 @@ namespace VixenModules.SequenceType.Vixen2x
 				}
 			}
 		}
+		#endregion
 	}
 }

@@ -86,9 +86,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Aga.Controls">
-      <HintPath>.\Aga.Controls.dll</HintPath>
-    </Reference>
     <Reference Include="Controls">
       <HintPath>..\..\..\Common\Controls\obj\Debug\Controls.dll</HintPath>
     </Reference>
