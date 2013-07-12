@@ -1,6 +1,7 @@
 ﻿using System;
 using Vixen.Module.SequenceType;
 using VixenModules.Sequence.Timed;
+using VixenModules.SequenceType.Vixen2x;
 
 namespace VixenModules.Sequence.Vixen2x
 {
@@ -26,6 +27,11 @@ namespace VixenModules.Sequence.Vixen2x
 		public override Type ModuleDataClass
 		{
 			get { return typeof (TimedSequenceData); }
+		}
+
+		public override Type ModuleStaticDataClass
+		{
+			get { return typeof (Vixen2xSequenceStaticData); }
 		}
 
 		public override string Author
