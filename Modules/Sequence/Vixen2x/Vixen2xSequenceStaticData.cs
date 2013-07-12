@@ -9,9 +9,7 @@ namespace VixenModules.SequenceType.Vixen2x
 	[DataContract]
 	public class Vixen2xSequenceStaticData : ModuleDataModelBase
 	{
-
-		[DataMember]
-		private Dictionary<string, List<ChannelMapping>> vixen2xMappings;
+		[DataMember] private Dictionary<string, List<ChannelMapping>> vixen2xMappings;
 
 		public Dictionary<string, List<ChannelMapping>> Vixen2xMappings
 		{
@@ -21,10 +19,7 @@ namespace VixenModules.SequenceType.Vixen2x
 					vixen2xMappings = new Dictionary<string, List<ChannelMapping>>();
 				return vixen2xMappings;
 			}
-			set
-			{
-				vixen2xMappings = value;
-			}
+			set { vixen2xMappings = value; }
 		}
 
 		public Vixen2xSequenceStaticData()

@@ -9,27 +9,29 @@ using System.Windows.Forms;
 
 namespace VixenModules.SequenceType.Vixen2x
 {
-    public partial class CoversionProgressForm : Form
-    {
-        public string StatusLineLabel { set { lblStatusLine.Text = value; } }
+	public partial class CoversionProgressForm : Form
+	{
+		public string StatusLineLabel
+		{
+			set { lblStatusLine.Text = value; }
+		}
 
 
-        public CoversionProgressForm()
-        {
-            InitializeComponent();
-        }
+		public CoversionProgressForm()
+		{
+			InitializeComponent();
+		}
 
-        public void UpdateProgressBar(int value)
-        {
-            pbImport.Value = value;
+		public void UpdateProgressBar(int value)
+		{
+			pbImport.Value = value;
+		}
 
-        }
-
-        public void SetupProgressBar(int min, int max)
-        {
-            pbImport.Minimum = min;
-            pbImport.Maximum = max;
-            pbImport.Value = 0;
-        }
-    }
+		public void SetupProgressBar(int min, int max)
+		{
+			pbImport.Minimum = min;
+			pbImport.Maximum = max;
+			pbImport.Value = 0;
+		}
+	}
 }

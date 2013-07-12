@@ -29,15 +29,13 @@ namespace VixenModules.Sequence.Vixen2x
 			get { return typeof (TimedSequenceData); }
 		}
 
-        public override Type ModuleStaticDataClass
-        {
-            get
-            {
-                return typeof(Vixen2xSequenceStaticData);
-            }
-        }
+		public override Type ModuleStaticDataClass
+		{
+			get { return typeof (Vixen2xSequenceStaticData); }
+		}
 
-		override public string Author {
+		public override string Author
+		{
 			get { return "John McAdams"; }
 		}
 

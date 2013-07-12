@@ -10,23 +10,25 @@ using Vixen.Module;
 using Vixen.Services;
 using Vixen.Module.App;
 
-namespace VixenModules.Sequence.Vixen2x {
-	public class Vixen2xSequenceTypeModule : SequenceTypeModuleInstanceBase {
-
-        private Vixen2xSequenceStaticData _mappingData;
+namespace VixenModules.Sequence.Vixen2x
+{
+	public class Vixen2xSequenceTypeModule : SequenceTypeModuleInstanceBase
+	{
+		private Vixen2xSequenceStaticData _mappingData;
 
 		public Dictionary<string, List<ChannelMapping>> Vixen2xMappings
-        {
-            get { return _mappingData.Vixen2xMappings; }
-        }
+		{
+			get { return _mappingData.Vixen2xMappings; }
+		}
 
-        public override IModuleDataModel StaticModuleData
-        {
-            get { return _mappingData; }
-            set { _mappingData = value as Vixen2xSequenceStaticData; }
-        }
+		public override IModuleDataModel StaticModuleData
+		{
+			get { return _mappingData; }
+			set { _mappingData = value as Vixen2xSequenceStaticData; }
+		}
 
-		public override ISequence CreateSequence() {
+		public override ISequence CreateSequence()
+		{
 			return new TimedSequence();
 		}
 
@@ -47,26 +49,21 @@ namespace VixenModules.Sequence.Vixen2x {
 
 		public override ISequence LoadSequenceFromFile(string Vixen2File)
 		{
-            try
-            {
-                using (Vixen2xSequenceImporterForm v2ImporterForm = new Vixen2xSequenceImporterForm(Vixen2File, StaticModuleData))
-                {
-                    if (v2ImporterForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                    {
-                        return v2ImporterForm.Sequence;
-                    }
-                    else
-                    {
-                        //This will return a null sequence not sure we can do that.
-                        return null;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                int x = 0;
-                return null;
-            }
+			try {
+				using (Vixen2xSequenceImporterForm v2ImporterForm = new Vixen2xSequenceImporterForm(Vixen2File, StaticModuleData)) {
+					if (v2ImporterForm.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+						return v2ImporterForm.Sequence;
+					}
+					else {
+						//This will return a null sequence not sure we can do that.
+						return null;
+					}
+				}
+			}
+			catch (Exception ex) {
+				int x = 0;
+				return null;
+			}
 		}
 	}
 }
