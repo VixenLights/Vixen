@@ -62,6 +62,8 @@ namespace Common.Controls.Timeline
 
 		public int DisplayTop { get; set; }
 		public int DisplayHeight { get; set; }
+		public Rectangle DisplayRect { get; set; }
+		public bool MouseCaptured { get; set; }
 
 		[NonSerializedAttribute]
 		public EffectNode _effectNode;
@@ -339,33 +341,42 @@ namespace Common.Controls.Timeline
 
 		public void DrawInfo(Graphics g, Rectangle rect) 
 		{
-			Color TextColor = Color.FromArgb(60, 60, 60);
-
-			// add text describing the effect
-			using (Font f = new Font("Arial", 7))
-			using (Brush b = new SolidBrush(TextColor))
+			const int margin = 2;
+			if (MouseCaptured)
 			{
-				g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
+				Color TextColor = Color.FromArgb(60, 60, 60);
 
-				string s;
+				// add text describing the effect
+				using (Font f = new Font("Arial", 7))
+				using (Brush b = new SolidBrush(TextColor))
+				{
+					g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
 
-				s = EffectNode.Effect.EffectName + "\r\n" +
-					string.Format("Start: {0}", EffectNode.StartTime.ToString(@"m\:ss\.fff")) + "\r\n" +
-					string.Format("Length: {0}", EffectNode.TimeSpan.ToString(@"m\:ss\.fff"));
-				//if (rect.Height > g.MeasureString("\r\n\r\n", f).Width)
-				//    s += "\r\n" + string.Format("Start: {0}", EffectNode.StartTime.ToString(@"m\:ss\.fff"));
-				//if (rect.Height > g.MeasureString("\r\n\r\n\r\n", f).Width)
-				//    s += "\r\n" + string.Format("Length: {0}", EffectNode.TimeSpan.ToString(@"m\:ss\.fff"));
-				SizeF textSize = g.MeasureString(s, f);
-				g.FillRectangle(Brushes.White, new Rectangle(rect.Left, rect.Top, (int)Math.Min(textSize.Width + 2, rect.Width), (int)Math.Min(textSize.Height + 2, rect.Height)));
-				g.DrawString(s, f, b, new Rectangle(rect.Left + 1, rect.Top + 1, rect.Width-2, rect.Height-2));
-				//g.DrawString(s, f, b, new Rectangle(rect.Left + 1, rect.Top + 1, rect.Width, rect.Height));
-				
-				
-				//g.DrawString(string.Format("Start: {0}", EffectNode.StartTime.ToString(@"m\:ss\.fff")), f, b,
-				//                    new PointF(60, 3));
-				//g.DrawString(string.Format("Length: {0}", EffectNode.TimeSpan.ToString(@"m\:ss\.fff")), f, b,
-				//                    new PointF(60, 16));
+					string s;
+
+					s = EffectNode.Effect.EffectName + "\r\n" +
+						string.Format("Start: {0}", EffectNode.StartTime.ToString(@"m\:ss\.fff")) + "\r\n" +
+						string.Format("Length: {0}", EffectNode.TimeSpan.ToString(@"m\:ss\.fff"));
+
+					SizeF textSize = g.MeasureString(s, f);
+					Rectangle destRect = new Rectangle(rect.X, rect.Y, rect.Width, rect.Height);
+					if (rect.Y < destRect.Height)
+					{
+						// Display the text below the effect
+						destRect.Y += rect.Height + margin - 8;
+					}
+					else
+					{
+						// Display the text above the effect
+						destRect.Y -= (int)textSize.Height + margin - 4;
+					}
+					// Full size info box. Comment out next two lines to clip
+					destRect.Width = (int)textSize.Width + margin;
+					destRect.Height = (int)textSize.Height + margin;
+					
+					g.FillRectangle(Brushes.White, new Rectangle(destRect.Left, destRect.Top, (int)Math.Min(textSize.Width + margin, destRect.Width), (int)Math.Min(textSize.Height + margin, destRect.Height)));
+					g.DrawString(s, f, b, new Rectangle(destRect.Left + margin/2, destRect.Top + margin/2, destRect.Width - margin, destRect.Height - margin));
+				}
 			}
 		}
 

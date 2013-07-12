@@ -265,5 +265,11 @@ namespace VixenModules.Preview.VixenPreview {
 			}
 			Cursor = Cursors.Default;
 		}
+
+		private void propInformationToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			previewForm.Preview.ShowInfo = !previewForm.Preview.ShowInfo;
+			propInformationToolStripMenuItem.Checked = previewForm.Preview.ShowInfo;
+		}
 	}
 }

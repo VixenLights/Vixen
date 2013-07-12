@@ -217,7 +217,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			if (comboBoxStringType.SelectedIndex >= 0) {
 				string text = comboBoxStringType.Items[comboBoxStringType.SelectedIndex].ToString();
-				Console.WriteLine("Selected Text: " + text);
 				_tree.StringType = PreviewTools.ParseEnum<PreviewBaseShape.StringTypes>(text);
 			}
 		}

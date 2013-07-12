@@ -326,7 +326,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		// Add a pxiel at a specific location
 		public PreviewPixel AddPixel(int x, int y)
 		{
-			PreviewPixel pixel = new PreviewPixel(x, y, PixelSize);
+			PreviewPixel pixel = new PreviewPixel(x, y, 0, PixelSize);
 			pixel.PixelColor = PixelColor;
 			Pixels.Add(pixel);
 			return pixel;

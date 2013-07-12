@@ -1352,14 +1352,40 @@ namespace Common.Controls.Timeline
 
 			Rectangle srcRect = new Rectangle(0, 0, elementImage.Width, elementImage.Height);
 			Rectangle destRect = new Rectangle(finalDrawLocation.X, finalDrawLocation.Y, elementImage.Width, currentElement.DisplayHeight);
+			currentElement.DisplayRect = destRect;
 			g.DrawImage(elementImage, 
 						destRect,
 						srcRect, 
 						GraphicsUnit.Pixel);
-			currentElement.DrawInfo(g, destRect);
+			//currentElement.DrawInfo(g, destRect);
 
 			lastStartTime = currentElement.StartTime;
 			lastEndTime = currentElement.EndTime;
+		}
+
+		private void _drawInfo(Graphics g)
+		{
+			foreach (Row row in Rows)
+			{
+				if (!row.Visible)
+					continue;
+
+				int top = 0;
+				for (int i = 0; i < row.ElementCount; i++)
+				{
+					Element element = row.GetElementAtIndex(i);
+					if (!element.MouseCaptured)
+						continue;
+
+					if (top < VerticalOffset || top > VerticalOffset + ClientSize.Height)
+					{
+						top += row.Height; // next row starts just below this row
+						continue;
+					}
+
+					element.DrawInfo(g, element.DisplayRect);
+				}
+			}
 		}
 
 		//static public System.Object drawLock = new System.Object();
@@ -1382,8 +1408,6 @@ namespace Common.Controls.Timeline
 				TimeSpan desiredDrawTo = TimeSpan.Zero;
 				bool lastItemDrawn = false;
 
-
-				//return;
 				TimeSpan lastStartTime = TimeSpan.Zero;
 				TimeSpan lastEndTime = TimeSpan.Zero;
 				for (int i = 0; i < row.ElementCount; i++) {
@@ -1709,6 +1733,7 @@ namespace Common.Controls.Timeline
 					_drawRows(e.Graphics);
 					_drawSnapPoints(e.Graphics);
 					_drawElements(e.Graphics);
+					_drawInfo(e.Graphics);
 					_drawSelection(e.Graphics);
 					_drawCursors(e.Graphics);
 

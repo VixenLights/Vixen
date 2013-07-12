@@ -119,7 +119,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					Pixels.RemoveAt(Pixels.Count - 1);
 				}
 				while (Pixels.Count < value) {
-					PreviewPixel pixel = new PreviewPixel(10, 10, PixelSize);
+					PreviewPixel pixel = new PreviewPixel(10, 10, 0, PixelSize);
 					Pixels.Add(pixel);
 				}
 				Layout();

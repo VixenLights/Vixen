@@ -14,6 +14,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Collections.Concurrent;
+using VixenModules.Property.Location;
 
 namespace VixenModules.Preview.VixenPreview
 {
@@ -97,6 +98,8 @@ namespace VixenModules.Preview.VixenPreview
 		public ISequenceContext vixenContext = null;
 
 		#endregion
+
+		public bool ShowInfo { get; set; }
 
 		public List<ElementNode> HighlightedElements
 		{
@@ -304,6 +307,22 @@ namespace VixenModules.Preview.VixenPreview
 			return false;
 		}
 
+		private void SelectItemUnderPoint(PreviewPoint point)
+		{
+			if (!_mouseCaptured)
+			{
+				// First, deselect any currently selected item
+				DeSelectSelectedDisplayItem();
+
+				_selectedDisplayItem = DisplayItemAtPoint(point);
+				if (_selectedDisplayItem != null)
+				{
+					_selectedDisplayItem.Shape.Select(true);
+					OnSelectDisplayItem(this, _selectedDisplayItem);
+				}
+			}
+		}
+
 		private bool _mouseCaptured = false;
 		private bool _banding = false;
 
@@ -345,13 +364,14 @@ namespace VixenModules.Preview.VixenPreview
 							}
 						}
 
-						if (!_mouseCaptured) {
-							_selectedDisplayItem = DisplayItemAtPoint(point);
-							if (_selectedDisplayItem != null) {
-								_selectedDisplayItem.Shape.Select(true);
-								OnSelectDisplayItem(this, _selectedDisplayItem);
-							}
-						}
+						//if (!_mouseCaptured) {
+						//    _selectedDisplayItem = DisplayItemAtPoint(point);
+						//    if (_selectedDisplayItem != null) {
+						//        _selectedDisplayItem.Shape.Select(true);
+						//        OnSelectDisplayItem(this, _selectedDisplayItem);
+						//    }
+						//}
+						SelectItemUnderPoint(point);
 
 						// If we get this far, and we've got nothing selected, we're drawing a rubber band!
 						if (_selectedDisplayItem == null && SelectedDisplayItems.Count == 0) {
@@ -437,6 +457,8 @@ namespace VixenModules.Preview.VixenPreview
 					ContextMenu menu = null;
 					MenuItem item;
 
+					SelectItemUnderPoint(point);
+
 					if (_selectedDisplayItem != null) {
 						PreviewPoint selectedPoint = _selectedDisplayItem.Shape.PointInSelectPoint(point);
 						if (_selectedDisplayItem.Shape.PointInShape(point)) {
@@ -485,6 +507,43 @@ namespace VixenModules.Preview.VixenPreview
 						item.Tag = "Delete";
 						menu.MenuItems.Add(item);
 
+						item = new MenuItem("-");
+						menu.MenuItems.Add(item);
+
+						// Z location menu
+						MenuItem locationItem = new MenuItem("Set Z Location to");
+						menu.MenuItems.Add(locationItem);
+						item = new MenuItem("0 Front", OnItemContextMenuClick);
+						item.Tag = "0";
+						locationItem.MenuItems.Add(item);
+						item = new MenuItem("1", OnItemContextMenuClick);
+						item.Tag = "1";
+						locationItem.MenuItems.Add(item);
+						item = new MenuItem("2", OnItemContextMenuClick);
+						item.Tag = "2";
+						locationItem.MenuItems.Add(item);
+						item = new MenuItem("3", OnItemContextMenuClick);
+						item.Tag = "3";
+						locationItem.MenuItems.Add(item);
+						item = new MenuItem("4 Middle", OnItemContextMenuClick);
+						item.Tag = "4";
+						locationItem.MenuItems.Add(item);
+						item = new MenuItem("5", OnItemContextMenuClick);
+						item.Tag = "5";
+						locationItem.MenuItems.Add(item);
+						item = new MenuItem("6", OnItemContextMenuClick);
+						item.Tag = "6";
+						locationItem.MenuItems.Add(item);
+						item = new MenuItem("7", OnItemContextMenuClick);
+						item.Tag = "7";
+						locationItem.MenuItems.Add(item);
+						item = new MenuItem("8", OnItemContextMenuClick);
+						item.Tag = "8";
+						locationItem.MenuItems.Add(item);
+						item = new MenuItem("9 Back", OnItemContextMenuClick);
+						item.Tag = "9";
+						locationItem.MenuItems.Add(item);
+
 						menu.Show(this, new Point(e.X, e.Y));
 					}
 				}
@@ -493,7 +552,9 @@ namespace VixenModules.Preview.VixenPreview
 
 		public void OnItemContextMenuClick(Object sender, EventArgs e)
 		{
-			switch ((sender as MenuItem).Tag.ToString()) {
+			string tag = (sender as MenuItem).Tag.ToString();
+			//Console.WriteLine(tag);
+			switch (tag) {
 				case "CreateTemplate":
 					_selectedDisplayItem = CreateTemplate();
 					if (_selectedDisplayItem != null) {
@@ -522,6 +583,45 @@ namespace VixenModules.Preview.VixenPreview
 				case "Delete":
 					Delete();
 					break;
+				case "0":
+				case "1":
+				case "2":
+				case "3":
+				case "4":
+				case "5":
+				case "6":
+				case "7":
+				case "8":
+				case "9":
+					SetZForSelectedItems(Convert.ToInt32(tag));
+					break;
+			}
+		}
+
+		private void SetZForSelectedItems(int pos)
+		{
+			if (SelectedDisplayItems.Count > 0)
+			{
+				foreach (DisplayItem displayItem in SelectedDisplayItems)
+				{
+					SetDisplayItemZ(displayItem, pos);
+				}
+				SaveLocations(SelectedDisplayItems);
+			}
+			else if (_selectedDisplayItem != null)
+			{
+				SetDisplayItemZ(_selectedDisplayItem, pos);
+				SelectedDisplayItems.Add(_selectedDisplayItem);
+				SaveLocations(SelectedDisplayItems);
+				SelectedDisplayItems.Clear();
+			}
+		}
+
+		private void SetDisplayItemZ(DisplayItem displayItem, int pos)
+		{
+			foreach (PreviewPixel p in displayItem.Shape.Pixels)
+			{
+				p.Z = pos;
 			}
 		}
 
@@ -1209,6 +1309,15 @@ namespace VixenModules.Preview.VixenPreview
 				}
 				fp.Unlock(true);
 
+				if (ShowInfo && _editMode)
+				{
+					foreach (DisplayItem displayItem in DisplayItems)
+					{
+						Graphics g = Graphics.FromImage(fp.Bitmap);
+						displayItem.DrawInfo(g);
+					}
+				}
+
 				// Finally, are we drawing a banded rectangle?
 				if (_mouseCaptured && _selectedDisplayItem == null) {
 					Graphics g = Graphics.FromImage(fp.Bitmap);
@@ -1267,5 +1376,21 @@ namespace VixenModules.Preview.VixenPreview
 		}
 
 		#endregion
+
+		public void SaveLocations(List<DisplayItem> displayItems)
+		{
+			foreach (DisplayItem displayItem in displayItems)
+			{
+				foreach (var p in displayItem.Shape.Pixels.Where(pi => pi != null && pi.Node != null))
+				{
+					if (!p.Node.Properties.Contains(LocationDescriptor._typeId))
+						p.Node.Properties.Add(LocationDescriptor._typeId);
+					var prop = p.Node.Properties.Get(LocationDescriptor._typeId);
+					((LocationData)prop.ModuleData).X = p.X;
+					((LocationData)prop.ModuleData).Y = p.Y;
+					((LocationData)prop.ModuleData).Y = p.Z;
+				}
+			}
+		}
 	}
 }
