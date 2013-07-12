@@ -129,16 +129,16 @@
 			// 
 			// destinationColor
 			// 
-			this.destinationColor.Text = "Destination Color";
+			this.destinationColor.Text = "Import Color";
 			this.destinationColor.Width = 120;
 			// 
 			// buttonCancel
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(678, 491);
+			this.buttonCancel.Location = new System.Drawing.Point(704, 489);
 			this.buttonCancel.Name = "buttonCancel";
-			this.buttonCancel.Size = new System.Drawing.Size(100, 23);
+			this.buttonCancel.Size = new System.Drawing.Size(90, 25);
 			this.buttonCancel.TabIndex = 2;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
@@ -148,9 +148,9 @@
 			// 
 			this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOK.Location = new System.Drawing.Point(784, 491);
+			this.buttonOK.Location = new System.Drawing.Point(800, 489);
 			this.buttonOK.Name = "buttonOK";
-			this.buttonOK.Size = new System.Drawing.Size(100, 23);
+			this.buttonOK.Size = new System.Drawing.Size(90, 25);
 			this.buttonOK.TabIndex = 4;
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
@@ -179,12 +179,12 @@
 			// 
 			// destinationColorButton
 			// 
-			this.destinationColorButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.destinationColorButton.Location = new System.Drawing.Point(572, 491);
+			this.destinationColorButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.destinationColorButton.Location = new System.Drawing.Point(550, 489);
 			this.destinationColorButton.Name = "destinationColorButton";
-			this.destinationColorButton.Size = new System.Drawing.Size(100, 23);
+			this.destinationColorButton.Size = new System.Drawing.Size(90, 25);
 			this.destinationColorButton.TabIndex = 6;
-			this.destinationColorButton.Text = "Destination Color";
+			this.destinationColorButton.Text = "Set Import Color";
 			this.destinationColorButton.UseVisualStyleBackColor = true;
 			this.destinationColorButton.Click += new System.EventHandler(this.destinationColorButton_Click);
 			// 
@@ -192,7 +192,7 @@
 			// 
 			this.mappingNameLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.mappingNameLabel.AutoSize = true;
-			this.mappingNameLabel.Location = new System.Drawing.Point(12, 496);
+			this.mappingNameLabel.Location = new System.Drawing.Point(12, 495);
 			this.mappingNameLabel.Name = "mappingNameLabel";
 			this.mappingNameLabel.Size = new System.Drawing.Size(82, 13);
 			this.mappingNameLabel.TabIndex = 7;
@@ -201,7 +201,7 @@
 			// mappingNameTextBox
 			// 
 			this.mappingNameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.mappingNameTextBox.Location = new System.Drawing.Point(100, 488);
+			this.mappingNameTextBox.Location = new System.Drawing.Point(100, 492);
 			this.mappingNameTextBox.Name = "mappingNameTextBox";
 			this.mappingNameTextBox.Size = new System.Drawing.Size(298, 20);
 			this.mappingNameTextBox.TabIndex = 8;

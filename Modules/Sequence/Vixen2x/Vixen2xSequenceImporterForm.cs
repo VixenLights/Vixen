@@ -134,7 +134,7 @@ namespace VixenModules.SequenceType.Vixen2x
 				}
 			}
 			else {
-				MessageBox.Show("Mapping data is missing, please try again...", "No Mapping Data", MessageBoxButtons.OK,
+				MessageBox.Show("Mapping data is missing, please try again.", "No Mapping Data", MessageBoxButtons.OK,
 				                MessageBoxIcon.Warning);
 			}
 		}
@@ -152,6 +152,7 @@ namespace VixenModules.SequenceType.Vixen2x
 
 				//disable the convert button cause we do not have a map selected
 				convertButton.Enabled = false;
+				createMapButton.Text = "Create New Map";
 			}
 			else {
 				vixen2ToVixen3MappingTextBox.Text = vixen2ToVixen3MappingListBox.SelectedItem.ToString();
@@ -161,6 +162,7 @@ namespace VixenModules.SequenceType.Vixen2x
 
 				//user selected a map so enable the convert button
 				convertButton.Enabled = true;
+				createMapButton.Text = "Edit Selected Map";
 			}
 		}
 	}
