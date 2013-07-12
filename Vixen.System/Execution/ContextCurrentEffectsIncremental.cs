@@ -38,6 +38,12 @@ namespace Vixen.Execution
 			return affectedElements;
 		}
 
+		public void Reset()
+		{
+			if (_currentEffects != null)
+				_currentEffects.Clear();
+		}
+
 		private Guid[] _GetElementsAffected(IEnumerable<IEffectNode> effects)
 		{
 			return

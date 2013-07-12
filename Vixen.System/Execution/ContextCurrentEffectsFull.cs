@@ -42,6 +42,11 @@ namespace Vixen.Execution
 			return allAffectedElements.ToArray();
 		}
 
+		public void Reset()
+		{
+			_currentEffects.Clear();
+		}
+
 		private IEnumerable<Guid> _GetAffectedElements(IEnumerable<IEffectNode> effectNodes)
 		{
 			return effectNodes.SelectMany(x => x.Effect.TargetNodes).SelectMany(y => y.GetElementEnumerator()).Select(z => z.Id);
