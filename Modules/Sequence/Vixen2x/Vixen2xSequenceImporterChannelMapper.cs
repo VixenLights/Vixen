@@ -62,6 +62,11 @@ namespace VixenModules.SequenceType.Vixen2x
 
 		private void AddVixen3ElementToVixen2Channel(TreeNode node)
 		{
+			// if the user drags a large number of items to start at a position that
+			// doesn't have enough 'room' off the end for them all, this can go OOR
+			if (listViewMapping.Items.Count <= startingIndex)
+				return;
+
 			ElementNode enode = (ElementNode)node.Tag;
 			ListViewItem item = listViewMapping.Items[startingIndex];
 
