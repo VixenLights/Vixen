@@ -4,13 +4,29 @@ using Vixen.Module.SequenceType;
 using Vixen.Sys;
 using VixenModules.Sequence.Timed;
 using VixenModules.SequenceType.Vixen2x;
+using System;
+using System.Collections.Generic;
+using Vixen.Module;
+using Vixen.Services;
+using Vixen.Module.App;
 
-namespace VixenModules.Sequence.Vixen2x
-{
-	public class Vixen2xSequenceTypeModule : SequenceTypeModuleInstanceBase
-	{
-		public override ISequence CreateSequence()
-		{
+namespace VixenModules.Sequence.Vixen2x {
+	public class Vixen2xSequenceTypeModule : SequenceTypeModuleInstanceBase {
+
+        private Vixen2xSequenceStaticData _mappingData;
+
+		public Dictionary<string, List<ChannelMapping>> Vixen2xMappings
+        {
+            get { return _mappingData.Vixen2xMappings; }
+        }
+
+        public override IModuleDataModel StaticModuleData
+        {
+            get { return _mappingData; }
+            set { _mappingData = value as Vixen2xSequenceStaticData; }
+        }
+
+		public override ISequence CreateSequence() {
 			return new TimedSequence();
 		}
 
@@ -31,11 +47,26 @@ namespace VixenModules.Sequence.Vixen2x
 
 		public override ISequence LoadSequenceFromFile(string Vixen2File)
 		{
-			Vixen2xSequenceImporterForm v2ImporterForm = new Vixen2xSequenceImporterForm();
-			if (!v2ImporterForm.ProcessFile(Vixen2File)) {
-				throw new System.FormatException("Not enough channel nodes to import file");
-			}
-			return v2ImporterForm.Sequence;
+            try
+            {
+                using (Vixen2xSequenceImporterForm v2ImporterForm = new Vixen2xSequenceImporterForm(Vixen2File, StaticModuleData))
+                {
+                    if (v2ImporterForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                    {
+                        return v2ImporterForm.Sequence;
+                    }
+                    else
+                    {
+                        //This will return a null sequence not sure we can do that.
+                        return null;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                int x = 0;
+                return null;
+            }
 		}
 	}
 }

@@ -1,297 +1,177 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using Vixen.Module.Effect;
-using Vixen.Services;
 using Vixen.Sys;
-using VixenModules.Sequence.Timed;
-using VixenModules.App.Curves;
-using ZedGraph;
-using VixenModules.App.ColorGradients;
 
 
-namespace VixenModules.SequenceType.Vixen2x
-{
-	public partial class Vixen2xSequenceImporterForm : Form
-	{
-		public ISequence Sequence { get; set; }
+namespace VixenModules.SequenceType.Vixen2x {
+	public partial class Vixen2xSequenceImporterForm : Form {
+		
+        public ISequence Sequence { get; set; }
 
-		private Vixen2SequenceData parsedV2Sequence = null;
-		private List<ChannelMapping> mappings;
+		private bool mapExists;
+        private string vixen2ImportFile;
+		private List<ChannelMapping> channelMappings;
 
-		private enum patternType
-		{
-			[DescriptionAttribute("Groups of Similar Values")] SetLevelTrend,
-			[DescriptionAttribute("Fades")] PulseFadeTrend,
-			[DescriptionAttribute("Ramps")] PulseRampTrend,
-			[DescriptionAttribute("Single Cells")] SingleSetLevel
-		};
+		private Vixen2SequenceData parsedV2Sequence;
+		private Vixen3SequenceCreator vixen3SequenceCreator;
+        private Vixen2xSequenceStaticData StaticModuleData;
 
-		private const double curveDivisor = byte.MaxValue/100.0;
-		private const double startX = 0.0;
-		private const double endX = 100.0;
-		private const int resetEventPosition = 0;
-		private const int zeroEventValue = 0;
-
-		public Vixen2xSequenceImporterForm()
-		{
+        public Vixen2xSequenceImporterForm(string Vixen2File, Vixen.Module.IModuleDataModel staticModuleData)
+        {
 			InitializeComponent();
-		}
 
-		public bool ProcessFile(string Vixen2File)
-		{
-			var result = false;
-			this.Show();
-			this.Text = "Importing " + Path.GetFileName(Vixen2File);
+			channelMappings = new List<ChannelMapping>();
 
-			parsedV2Sequence = new Vixen2SequenceData(Vixen2File);
+            //I think this was the correct way to implement this.
+            StaticModuleData = (Vixen2xSequenceStaticData)staticModuleData;
+            
+            vixen2ImportFile = Vixen2File;
 
-			// make a channel mapping, and present that to the user. Not editable at the moment.
-			mappings = new List<ChannelMapping>();
+            //Add known information:
+            vixen2SequenceTextBox.Text = vixen2ImportFile;
+			
 
-			foreach (ElementNode element in VixenSystem.Nodes.GetLeafNodes()) {
-				if (mappings.Count >= parsedV2Sequence.ElementCount)
-					break;
+            //Go ahead and build the map for the sequence that we have.
+            ParseV2SequenceData();
 
-				string newName = "Channel " + (mappings.Count + 1).ToString();
-				mappings.Add(new ChannelMapping(newName, element));
+			//we parsed the sequence so go ahead and for now set our ChannelMappings to the parsed data
+			//If the user selects one from the listbox we will make an adjustment.
+			channelMappings = parsedV2Sequence.mappings;
+
+			if (StaticModuleData.Vixen2xMappings.Count > 0)
+			{
+				LoadMaps();
+			}
+			else
+			{
+				mapExists = false;
+				//use the profilename for now
+				vixen2ToVixen3MappingTextBox.Text = parsedV2Sequence.ProfileName;
 			}
 
-			// pad out the mappings with null elements; we want to be able to not map some stuff (later on)
-			while (mappings.Count < parsedV2Sequence.ElementCount) {
-				string newName = "Channel " + (mappings.Count + 1).ToString();
-				mappings.Add(new ChannelMapping(newName, null));
-			}
-
-			initializeProgressBar();
-
-			// show the user the mapping form
-			Vixen2xSequenceImporterChannelMapper mappingForm = new Vixen2xSequenceImporterChannelMapper(mappings);
-			mappingForm.ShowDialog();
-
-			createTimedSequence();
-			importSequenceData(mappings);
-
-			result = true;
-
-			Close();
-
-			return result;
 		}
 
-		private void initializeProgressBar()
+		private void LoadMaps()
 		{
-			pbImport.Minimum = 0;
-			pbImport.Maximum = sizeof (patternType)*parsedV2Sequence.ElementCount;
-			pbImport.Value = 0;
+			mapExists = true;
+			//disable the convertButton
+			convertButton.Enabled = false;
 
-			lblStatusLine.Text = "";
+			PopulateListBox();
 		}
 
-		private void createTimedSequence()
+		private void PopulateListBox()
 		{
-			Sequence = new TimedSequence();
-			Sequence.SequenceData = new TimedSequenceData();
-			// TODO: use this mark collection (maybe generate a grid?)
-			MarkCollection mc = new MarkCollection();
-			Sequence.Length = TimeSpan.FromMilliseconds(parsedV2Sequence.SeqLengthInMills);
+			vixen2ToVixen3MappingListBox.Items.Clear();
 
-			var songFileName = parsedV2Sequence.SongFileName;
-			if (songFileName != null) {
-				if (File.Exists(songFileName)) {
-					Sequence.AddMedia(MediaService.Instance.GetMedia(songFileName));
-				}
-				else {
-					var message = String.Format("Could not locate the audio file '{0}'; please add it manually " +
-					                            "after import (Under Tools -> Associate Audio).", Path.GetFileName(songFileName));
-					MessageBox.Show(message, "Couldn't find audio");
-				}
+			vixen2ToVixen3MappingTextBox.Text = string.Empty;
+
+			//iterate over the dictionary to poplulate the listbox with the mappings
+			foreach (KeyValuePair<string, List<ChannelMapping>> kvp in StaticModuleData.Vixen2xMappings)
+			{
+				vixen2ToVixen3MappingListBox.Items.Add(kvp.Key);
+
 			}
 		}
 
-		private void importSequenceData(List<ChannelMapping> mappings)
+        private void ParseV2SequenceData()
+        {
+            parsedV2Sequence = new Vixen2SequenceData(vixen2ImportFile);
+
+			if (!String.IsNullOrEmpty(parsedV2Sequence.ProfilePath))
+			{
+				vixen2ProfileTextBox.Text = String.Format(@"{0}\{1}.pro", parsedV2Sequence.ProfilePath, parsedV2Sequence.ProfileName);
+				vixen2ToVixen3MappingListBox.Text = parsedV2Sequence.ProfileName;
+			}
+			else
+			{
+				vixen2ProfileTextBox.Text = parsedV2Sequence.ProfileName;
+			}
+        }
+
+		private void AddDictionaryEntry(string key, List<ChannelMapping> value)
 		{
-			int startEventPosition = resetEventPosition;
-			var endEventPosition = resetEventPosition;
-			var priorEventNum = resetEventPosition;
-
-			var startEventValue = zeroEventValue;
-			var endEventValue = zeroEventValue;
-			var priorEventValue = zeroEventValue;
-			var currentEventValue = zeroEventValue;
-
-			var pbImportValue = 0;
-
-			// These flags are here just to make the code below easier to read, at least for me.
-			var patternFound = false;
-			var processingSingleEvents = false;
-			var processingGroupEvents = false;
-			var processingRamps = false;
-			var processingFades = false;
-			var currentEventIsZero = true;
-			var currentEventIsNotZero = false;
-			var priorEventisNotZero = false;
-
-			foreach (patternType pattern in Enum.GetValues(typeof (patternType))) {
-				processingSingleEvents = pattern == patternType.SingleSetLevel;
-				processingGroupEvents = pattern == patternType.SetLevelTrend;
-				processingRamps = pattern == patternType.PulseRampTrend;
-				processingFades = pattern == patternType.PulseFadeTrend;
-
-				var patternText = ((DescriptionAttribute) ((pattern.GetType().GetMember(pattern.ToString()))[0]
-				                                          	.GetCustomAttributes(typeof (DescriptionAttribute), false)[0])).
-					Description;
-
-				currentEventValue = zeroEventValue;
-				for (var currentElementNum = 0; currentElementNum < parsedV2Sequence.ElementCount; currentElementNum++) {
-					lblStatusLine.Text = String.Format("Finding {0} on Element {1}", patternText, currentElementNum + 1);
-					pbImport.Value = ++pbImportValue;
-
-					patternFound = false;
-					priorEventValue = zeroEventValue;
-					priorEventNum = resetEventPosition;
-
-					for (var currentEventNum = 0; currentEventNum < parsedV2Sequence.EventsPerElement; currentEventNum++) {
-						// To keep the progress bar looking snappy
-						if ((currentEventNum%10) == 0) {
-							Application.DoEvents();
-						}
-						currentEventValue =
-							parsedV2Sequence.EventData[currentElementNum*parsedV2Sequence.EventsPerElement + currentEventNum];
-
-						currentEventIsZero = currentEventValue == zeroEventValue;
-						currentEventIsNotZero = !currentEventIsZero;
-						priorEventisNotZero = priorEventValue != zeroEventValue;
-
-						// Add a non zero single set level event.
-						if (processingSingleEvents && currentEventIsNotZero) {
-							addEvent(pattern, currentElementNum, currentEventNum, currentEventValue, currentEventNum);
-
-							startEventPosition = resetEventPosition;
-							endEventPosition = resetEventPosition;
-						}
-							// Add a ramp, fade or multi set level event since it just ended (a zero event was found)
-						else if (patternFound && !processingSingleEvents && currentEventIsZero && endEventPosition != resetEventPosition) {
-							addEvent(pattern, currentElementNum, startEventPosition, startEventValue, endEventPosition, endEventValue);
-
-							patternFound = false;
-							startEventPosition = resetEventPosition;
-							endEventPosition = resetEventPosition;
-						}
-							// Beggining of a pattern found, set flag and start event postion and value
-						else if (!patternFound && currentEventNum > resetEventPosition
-						         && ((processingGroupEvents && currentEventIsNotZero && currentEventValue == priorEventValue)
-						             || (processingFades && currentEventIsNotZero && currentEventValue < priorEventValue)
-						             || (processingRamps && priorEventisNotZero && currentEventValue > priorEventValue))) {
-							patternFound = true;
-							startEventPosition = currentEventNum - 1;
-							startEventValue = priorEventValue;
-							endEventPosition = currentEventNum;
-							endEventValue = currentEventValue;
-						}
-							// Pattern continuing, update the end event postion and value.
-						else if (patternFound
-						         && ((processingGroupEvents && currentEventValue == priorEventValue)
-						             || (processingFades && currentEventValue < priorEventValue)
-						             || (processingRamps && priorEventisNotZero && currentEventValue > priorEventValue))) {
-							endEventPosition = currentEventNum;
-							endEventValue = currentEventValue;
-						}
-							// End of a pattern because none of the other conditions were met.
-						else if (patternFound) {
-							addEvent(pattern, currentElementNum, startEventPosition, startEventValue, priorEventNum, priorEventValue);
-
-							patternFound = false;
-							startEventPosition = resetEventPosition;
-							endEventPosition = resetEventPosition;
-						}
-						priorEventValue = currentEventValue;
-						priorEventNum = currentEventNum;
-					} // for currentEvent
-
-					// End of the Element, so process any existing patterns.
-					if (patternFound) {
-						addEvent(pattern, currentElementNum, startEventPosition, priorEventValue, priorEventNum);
-					}
-				} // for currentElementNum
-			} // foreach patternType
+			if (StaticModuleData.Vixen2xMappings.ContainsKey(key))
+			{
+				StaticModuleData.Vixen2xMappings[key] = value;
+			}
+			else
+			{
+				StaticModuleData.Vixen2xMappings.Add(key, value);
+			}
 		}
+    
+        private void createMapButton_Click(object sender, EventArgs e)
+        {
+		   using (Vixen2xSequenceImporterChannelMapper mappingForm = new Vixen2xSequenceImporterChannelMapper(channelMappings,mapExists,vixen2ToVixen3MappingTextBox.Text))
+            {
+				if (mappingForm.ShowDialog() == DialogResult.OK)
+				{
+					//add to or update the dictionary
+					AddDictionaryEntry(mappingForm.MappingName, mappingForm.Mappings);
 
-		private void addEvent(patternType pattern, int chan, int startPos, int startValue, int endPos, int endValue = 0)
-		{
-			//System.Diagnostics.Debug.Print("Pattern: {0}, SPos (Val): {1}({2}), EPos (Val): {3}({4}), Chan: {5}", pattern, startPos, startValue, endPos, endValue, chan);
-			ElementNode targetNode = mappings[chan].ElementNode;
-
-			if (targetNode != null) {
-				EffectNode node = null;
-				switch (pattern) {
-					case patternType.SetLevelTrend:
-					case patternType.SingleSetLevel:
-						node = GenerateSetLevelEffect(startValue, startPos, endPos, targetNode);
-						break;
-					case patternType.PulseFadeTrend:
-					case patternType.PulseRampTrend:
-						node = GeneratePulseEffect(startValue, endValue, startPos, endPos, targetNode);
-						break;
+					//Clear out the text box and make the user re-select the mapping
+					vixen2ToVixen3MappingTextBox.Text = string.Empty;
 				}
-				if (node != null) {
-					Sequence.InsertData(node);
+
+			   //User either created a new map or canceled out of the form so lets reload our
+			   //maps which will disable the convert button and clean out the Vixen 2 to Vixen 3 Map text box
+				LoadMaps();
+            }
+        }
+
+        private void cancelButton_Click(object sender, EventArgs e)
+        {
+            Sequence = null;
+        }
+
+        private void convertButton_Click(object sender, EventArgs e)
+        {
+            //check to see if the mapping table is there.
+			if (StaticModuleData.Vixen2xMappings.Count > 0)
+			{
+				vixen3SequenceCreator = new Vixen3SequenceCreator(parsedV2Sequence, StaticModuleData.Vixen2xMappings[vixen2ToVixen3MappingTextBox.Text]);
+
+				Sequence = vixen3SequenceCreator.Sequence;
+
+				if (Sequence.SequenceData != null)
+				{
+					//we got this baby converted so close it out and load up the Sequence
+					DialogResult = System.Windows.Forms.DialogResult.OK;
+					Close();
 				}
 			}
-			markEventsProcessed(chan*parsedV2Sequence.EventsPerElement + startPos,
-			                    chan*parsedV2Sequence.EventsPerElement + endPos);
-		}
+			else
+			{
+				MessageBox.Show("Mapping data is missing, please try again...", "No Mapping Data", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+			}
+        }
 
-		private EffectNode GenerateSetLevelEffect(int eventValue, int startEvent, int endEvent, ElementNode targetNode)
+		private void vixen2ToVixen3MappingListBox_MouseClick(object sender, MouseEventArgs e)
 		{
-			IEffectModuleInstance setLevelInstance =
-				ApplicationServices.Get<IEffectModuleInstance>(Guid.Parse("32cff8e0-5b10-4466-a093-0d232c55aac0"));
-				// Clone() Doesn't work! :(
-			setLevelInstance.TargetNodes = new ElementNode[] {targetNode};
-			setLevelInstance.TimeSpan = TimeSpan.FromMilliseconds(parsedV2Sequence.EventPeriod*(endEvent - startEvent + 1));
+			if (vixen2ToVixen3MappingListBox.SelectedIndex < 0 || !vixen2ToVixen3MappingListBox.GetItemRectangle(vixen2ToVixen3MappingListBox.SelectedIndex).Contains(e.Location))
+			{
+				vixen2ToVixen3MappingListBox.SelectedIndex = -1;
+				vixen2ToVixen3MappingTextBox.Text = string.Empty;
 
-			EffectNode effectNode = new EffectNode(setLevelInstance,
-			                                       TimeSpan.FromMilliseconds(parsedV2Sequence.EventPeriod*startEvent));
-			effectNode.Effect.ParameterValues = new object[] {((double) eventValue/byte.MaxValue), Color.White};
+				//do not use the static mapping use the parsed sequence mapping
+				//cuase the user must want to start over.
+				channelMappings = parsedV2Sequence.mappings;
 
-			return effectNode;
-		}
+				//disable the convert button cause we do not have a map selected
+				convertButton.Enabled = false;
+			}
+			else
+			{
+				vixen2ToVixen3MappingTextBox.Text = vixen2ToVixen3MappingListBox.SelectedItem.ToString();
 
-		private EffectNode GeneratePulseEffect(int eventStartValue, int eventEndValue, int startEvent, int endEvent,
-		                                       ElementNode targetNode)
-		{
-			IEffectModuleInstance pulseInstance =
-				ApplicationServices.Get<IEffectModuleInstance>(Guid.Parse("cbd76d3b-c924-40ff-bad6-d1437b3dbdc0"));
-				// Clone() Doesn't work! :(
-			pulseInstance.TargetNodes = new ElementNode[] {targetNode};
-			pulseInstance.TimeSpan = TimeSpan.FromMilliseconds(parsedV2Sequence.EventPeriod*(endEvent - startEvent + 1));
+				//user selected a pre-existing mapping so use it now.
+				channelMappings = StaticModuleData.Vixen2xMappings[vixen2ToVixen3MappingListBox.SelectedItem.ToString()];
 
-			EffectNode effectNode = new EffectNode(pulseInstance,
-			                                       TimeSpan.FromMilliseconds(parsedV2Sequence.EventPeriod*startEvent));
-			effectNode.Effect.ParameterValues = new Object[]
-			                                    	{
-			                                    		new Curve(new PointPairList(new double[] {startX, endX},
-			                                    		                            new double[]
-			                                    		                            	{getY(eventStartValue), getY(eventEndValue)})),
-			                                    		new ColorGradient()
-			                                    	};
-
-			return effectNode;
-		}
-
-		private double getY(int value)
-		{
-			return value/curveDivisor;
-		}
-
-		private void markEventsProcessed(int StartEvent, int EndEvent)
-		{
-			for (var i = StartEvent; i <= EndEvent; i++) {
-				parsedV2Sequence.EventData[i] = zeroEventValue;
+				//user selected a map so enable the convert button
+				convertButton.Enabled = true;
 			}
 		}
 	}
