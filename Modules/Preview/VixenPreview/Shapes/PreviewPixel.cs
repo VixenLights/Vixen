@@ -221,7 +221,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 			else
 			{
-				Color intentColor = Vixen.Intent.ColorIntent.GetColorForIntents(states);
+				Color intentColor = Vixen.Intent.ColorIntent.GetAlphaColorForIntents(states);
 				if (intentColor != Color.Transparent && intentColor.A > 0)
 				{
 					fp.DrawCircle(drawRect, intentColor);
