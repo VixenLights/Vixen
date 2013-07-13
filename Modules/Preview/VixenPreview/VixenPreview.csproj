@@ -44,6 +44,10 @@
       <Name>Vixen</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\Common\Help\VixenHelp.csproj">
+      <Project>{BD12BFFC-7039-4C79-ABA0-51F99773A916}</Project>
+      <Name>VixenHelp</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Property\Color\Color.csproj">
       <Project>{73068A83-B3B7-4A2C-923D-71C7886CD5E3}</Project>
       <Name>Color</Name>
@@ -376,6 +380,9 @@
     <Content Include="WeifenLuo.WinFormsUI.Docking.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
