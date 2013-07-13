@@ -1335,46 +1335,6 @@ namespace VixenModules.Preview.VixenPreview
 			lastRenderUpdateTime = renderTimer.ElapsedMilliseconds;
 		}
 
-		public void RenderInForeground(ElementIntentStates elementStates)
-		{
-			renderTimer.Reset();
-			renderTimer.Start();
-			if (!_paused) {
-				FastPixel.FastPixel fp = null;
-				fp = new FastPixel.FastPixel(new Bitmap(_alphaBackground));
-				fp.Lock();
-
-				Color c;
-				foreach (var channelIntentState in elementStates) {
-					var elementId = channelIntentState.Key;
-					Element element = VixenSystem.Elements.GetElement(elementId);
-					if (element == null) continue;
-					ElementNode node = VixenSystem.Elements.GetElementNodeForElement(element);
-					if (node == null) continue;
-
-					foreach (IIntentState<LightingValue> intentState in channelIntentState.Value) {
-						c = intentState.GetValue().GetAlphaChannelIntensityAffectedColor();
-						if (_background != null) {
-							List<PreviewPixel> pixels;
-							if (NodeToPixel.TryGetValue(node, out pixels)) {
-								foreach (PreviewPixel pixel in pixels) {
-									pixel.Draw(fp, c);
-								}
-							}
-						}
-					}
-				}
-
-				fp.Unlock(true);
-
-				//Render(fp.Bitmap);
-				RenderBufferedGraphics(fp);
-			}
-
-			renderTimer.Stop();
-			lastRenderUpdateTime = renderTimer.ElapsedMilliseconds;
-		}
-
 		#endregion
 
 		public void SaveLocations(List<DisplayItem> displayItems)
