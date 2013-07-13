@@ -44,21 +44,19 @@ namespace Vixen.Sys
 
 		private void _AddIntentForElement(Guid elementId, IIntentNode intentNode)
 		{
-			if (ContainsKey(elementId)) {
-				this[elementId].Add(intentNode);
-			}
-			else {
-				this[elementId] = new IntentNodeCollection(new[] {intentNode});
-			}
+		   _AddIntentsForElement(elementId, new IIntentNode[] { intentNode });
 		}
+		ConcurrentDictionary<Guid, object> ArrayLocks = new ConcurrentDictionary<Guid, object>();
+		private void _AddIntentsForElement(Guid elementId, IEnumerable<IIntentNode> intentNodes) {
 
-		private void _AddIntentsForElement(Guid elementId, IEnumerable<IIntentNode> intentNodes)
-		{
-			if (ContainsKey(elementId)) {
-				this[elementId].AddRange(intentNodes);
-			}
-			else {
-				this[elementId] = new IntentNodeCollection(intentNodes);
+			ArrayLocks.TryAdd(elementId, new object());
+			lock (ArrayLocks[elementId]) {
+				if (ContainsKey(elementId)) {
+					this[elementId].AddRange(intentNodes);
+				}
+				else {
+					this[elementId] = new IntentNodeCollection(intentNodes);
+				}
 			}
 		}
 
