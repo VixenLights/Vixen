@@ -1,4 +1,5 @@
 ﻿using System;
+using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Data.Value;
 using Vixen.Sys;
 using System.Drawing;
@@ -31,7 +32,16 @@ namespace Vixen.Intent
 					}
 				}
 
-				c = Color.FromArgb((c.R + c.G + c.B) / 3, c.R, c.G, c.B);
+				// have calculated the desired hue/saturation from combining the color components above (in a
+				// 'highest-wins in each of R/G/B' fashion). Now we need to figure out the appropriate alpha channel
+				// value for the given color. To do that, convert the RGB color to HSL, get the L value to use as
+				// our intensity, and apply that to the alpha channel.
+				// TODO: using the RGB class is bad. It's an external module which means the Vixen DLL is dependent on it;
+				// if there's anything added to the external module which depends on Vixen.System, we'll have dependency fun.
+				// to fix it, we really should strip out color models and management and use them within the Vixen system itself.
+				HSV hsv = HSV.FromRGB(c);
+
+				c = Color.FromArgb((byte)(hsv.V * byte.MaxValue), c.R, c.G, c.B);
 			}
 			else
 			{
