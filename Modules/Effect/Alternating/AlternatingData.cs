@@ -9,12 +9,10 @@ using Vixen.Module;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 
-namespace VixenModules.Effect.Alternating
-{
+namespace VixenModules.Effect.Alternating {
 	[DataContract]
-	internal class AlternatingData : ModuleDataModelBase
-	{
-		
+	internal class AlternatingData : ModuleDataModelBase {
+
 		[DataMember]
 		public RGB Color1 { get; set; }
 
@@ -39,8 +37,7 @@ namespace VixenModules.Effect.Alternating
 		public int DepthOfEffect { get; set; }
 
 		[DataMember]
-		public int GroupEffect
-		{
+		public int GroupEffect {
 			get { return groupEffect < 1 ? 1 : groupEffect; }
 			set { groupEffect = value < 0 ? 1 : value; }
 		}
@@ -59,16 +56,32 @@ namespace VixenModules.Effect.Alternating
 		[DataMember]
 		public ColorGradient ColorGradient2 { get; set; }
 
+		Curve curve1 = null;
+		Curve curve2 = null;
 		[DataMember]
-		public Curve Curve1 { get; set; }
+		public Curve Curve1 {
+			get {
+				if (curve1 == null)
+					curve1 = new Curve();
+				return curve1;
+			}
+			set { curve1 = value; }
+		}
 		[DataMember]
-		public Curve Curve2 { get; set; }
+		public Curve Curve2 {
+			get {
 
-		public AlternatingData()
-		{
+				if (curve2 == null)
+					curve2 = new Curve();
+				return curve2;
+			}
+			set { curve2 = value; }
+		}
+
+		public AlternatingData() {
 			Level1 = 1;
 			Level2 = 1;
-			Color1 = Color.White;		
+			Color1 = Color.White;
 			Color2 = Color.Red;
 			Enable = true;
 			Interval = 500;
@@ -81,8 +94,7 @@ namespace VixenModules.Effect.Alternating
 			Curve2 = new Curve();
 		}
 
-		public override IModuleDataModel Clone()
-		{
+		public override IModuleDataModel Clone() {
 			AlternatingData result = new AlternatingData();
 			result.Level1 = Level1;
 			result.Level2 = Level2;
