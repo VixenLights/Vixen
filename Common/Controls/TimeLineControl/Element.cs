@@ -313,21 +313,15 @@ namespace Common.Controls.Timeline
 		public Bitmap SetupCachedImage(Size imageSize)
 		{
 			if (CachedElementCanvas == null || !IsCanvasContentCurrent(imageSize) || Changed) {
-				Bitmap b;
 				lock (drawLock) {
 					CachedElementCanvas = SetupCanvas(imageSize);
 					using (Graphics g = Graphics.FromImage(CachedElementCanvas)) {
 						DrawCanvasContent(g);
-					}
-
-					b = new Bitmap(CachedElementCanvas);
-					using (Graphics g = Graphics.FromImage(b)) {
 						AddSelectionOverlayToCanvas(g);
 					}
 				}
 				CachedCanvasIsCurrent = true;
 				Changed = false;
-				return b;
 			}
 			return CachedElementCanvas;
 		}

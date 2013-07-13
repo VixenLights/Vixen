@@ -192,25 +192,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			return c;
 		}
 
-		public bool IsDiscretePixel()
-		{
-			if (_node != null && _node.Properties.Contains(VixenModules.Property.Color.ColorDescriptor._typeId))
-			{
-				return true;
-			}
-			return false;
-		}
-
         public void Draw(FastPixel.FastPixel fp, IIntentStates states)
         {
 			Rectangle drawRect = new Rectangle(drawArea.X, drawArea.Y, drawArea.Width, drawArea.Height);
-			if (IsDiscretePixel())
+
+			if (VixenModules.Property.Color.ColorModule.isElementNodeDiscreteColored(_node))
 			{
 				int col = 1;
 				foreach (IIntentState<LightingValue> intentState in states)
 				{
 					Color c = ((IIntentState<LightingValue>)intentState).GetValue().GetAlphaChannelIntensityAffectedColor();
-
 					if (c != Color.Transparent && intentState.GetValue().Intensity > 0f) {
 						fp.DrawCircle(drawRect, c);
 
@@ -231,7 +222,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			else
 			{
 				Color intentColor = Vixen.Intent.ColorIntent.GetColorForIntents(states);
-				fp.DrawCircle(drawRect, intentColor);
+				if (intentColor != Color.Transparent && intentColor.A > 0)
+				{
+					fp.DrawCircle(drawRect, intentColor);
+				}
 			}
         }
         
