@@ -35,6 +35,8 @@ namespace Common.VixenHelp
 			Preview_CustomShape,
 			[Description("http://www.vixenlights.com/vixen-3-documentation/show-scheduler/")]
 			Scheduler_Main,
+			[Description("http://www.vixenlights.com/vixen-3-documentation/show-editor/")]
+			Show_Editor,
 			[Description("http://www.vixenlights.com/vixen-3-documentation/sequencer/effects/nutcracker-effects/")]
 			Effect_Nutcracker
 		}
