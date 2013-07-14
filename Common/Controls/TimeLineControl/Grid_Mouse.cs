@@ -10,6 +10,8 @@ namespace Common.Controls.Timeline
 {
 	public partial class Grid
 	{
+		Form toolForm = new Form();
+
 		#region General Mouse Event-Related
 
 		/// <summary>
@@ -23,7 +25,6 @@ namespace Common.Controls.Timeline
 			p.Offset(-AutoScrollPosition.X, -AutoScrollPosition.Y);
 			return p;
 		}
-
 
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
@@ -158,8 +159,49 @@ namespace Common.Controls.Timeline
 		///<summary>The last location on the grid the mouse was at.</summary>
 		private Point m_lastGridLocation;
 
+		protected void ShowToolTip(Point location) 
+		{
+			Point gridLocation = translateLocation(location);
+			List<Element> elements = elementsAt(gridLocation);
+			bool changed = false;
+
+			Element currentElement = null;
+			if (elements.Count > 0)
+			{
+				currentElement = elements.ElementAt(0);
+				if (!currentElement.MouseCaptured)
+				{
+					currentElement.MouseCaptured = true;
+					changed = true;
+				}
+			}
+			// Iterate through everything (yea, I know, stupid, but it seems fast enough)
+			// and turn off the mouse capture on all the elements our mouse is not over
+			foreach (Row row in Rows)
+			{
+				for (int i = 0; i < row.Count(); i++)
+				{
+					Element element = row.GetElementAtIndex(i);
+					if (element != currentElement)
+					{
+						if (element.MouseCaptured)
+						{
+							element.MouseCaptured = false;
+							changed = true;
+						}
+					}
+				}
+			}
+			if (changed)
+			{
+				Invalidate();
+			}
+		}
+
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
+			ShowToolTip(e.Location);
+
 			// Determine if we need to start auto-drag
 			switch (m_dragState) {
 				case DragState.Moving:

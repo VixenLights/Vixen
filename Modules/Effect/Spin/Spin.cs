@@ -238,61 +238,65 @@ namespace VixenModules.Effect.Spin
 			Pulse.Pulse pulse;
 			EffectIntents pulseData;
 
-			// apply the 'background' values to all targets
-			int i = 0;
-			foreach (ElementNode target in renderNodes) {
-				bool discreteColors = ColorModule.isElementNodeDiscreteColored(target);
+			// apply the 'background' values to all targets if nonzero
+			if (DefaultLevel > 0) {
+				int i = 0;
+				foreach (ElementNode target in renderNodes) {
+					bool discreteColors = ColorModule.isElementNodeDiscreteColored(target);
 
-				if (target != null) {
-					pulse = new Pulse.Pulse();
-					pulse.TargetNodes = new ElementNode[] {target};
-					pulse.TimeSpan = TimeSpan;
-					double level = DefaultLevel * 100.0;
+					if (target != null) {
+						pulse = new Pulse.Pulse();
+						pulse.TargetNodes = new ElementNode[] {target};
+						pulse.TimeSpan = TimeSpan;
+						double level = DefaultLevel*100.0;
 
-					// figure out what color gradient to use for the pulse
-					switch (ColorHandling) {
-						case SpinColorHandling.GradientForEachPulse:
-							pulse.ColorGradient = StaticColorGradient;
-							pulse.LevelCurve = new Curve(new PointPairList(new double[] { 0, 100 }, new double[] { level, level }));
-							pulseData = pulse.Render();
-							_elementData.Add(pulseData);
-							break;
-
-						case SpinColorHandling.GradientThroughWholeEffect:
-							pulse.ColorGradient = ColorGradient;
-							pulse.LevelCurve = new Curve(new PointPairList(new double[] { 0, 100 }, new double[] { level, level }));
-							pulseData = pulse.Render();
-							_elementData.Add(pulseData);
-							break;
-
-						case SpinColorHandling.StaticColor:
-							pulse.ColorGradient = StaticColorGradient;
-							pulse.LevelCurve = new Curve(new PointPairList(new double[] { 0, 100 }, new double[] { level, level }));
-							pulseData = pulse.Render();
-							_elementData.Add(pulseData);
-							break;
-
-						case SpinColorHandling.ColorAcrossItems:
-							double positionWithinGroup = i / (double)targetNodeCount;
-							if (discreteColors) {
-								List<Tuple<Color, float>> colorsAtPosition = ColorGradient.GetDiscreteColorsAndProportionsAt(positionWithinGroup);
-								foreach (Tuple<Color, float> colorProportion in colorsAtPosition) {
-									double value = level * colorProportion.Item2;
-									pulse.LevelCurve = new Curve(new PointPairList(new double[] { 0, 100 }, new double[] { value, value }));
-									pulse.ColorGradient = new ColorGradient(colorProportion.Item1);
-									pulseData = pulse.Render();
-									_elementData.Add(pulseData);
-								}
-							} else {
-								pulse.ColorGradient = new ColorGradient(ColorGradient.GetColorAt(positionWithinGroup));
+						// figure out what color gradient to use for the pulse
+						switch (ColorHandling) {
+							case SpinColorHandling.GradientForEachPulse:
+								pulse.ColorGradient = StaticColorGradient;
 								pulse.LevelCurve = new Curve(new PointPairList(new double[] {0, 100}, new double[] {level, level}));
 								pulseData = pulse.Render();
 								_elementData.Add(pulseData);
-							}
-							break;
-					}
+								break;
 
-					i++;
+							case SpinColorHandling.GradientThroughWholeEffect:
+								pulse.ColorGradient = ColorGradient;
+								pulse.LevelCurve = new Curve(new PointPairList(new double[] {0, 100}, new double[] {level, level}));
+								pulseData = pulse.Render();
+								_elementData.Add(pulseData);
+								break;
+
+							case SpinColorHandling.StaticColor:
+								pulse.ColorGradient = StaticColorGradient;
+								pulse.LevelCurve = new Curve(new PointPairList(new double[] {0, 100}, new double[] {level, level}));
+								pulseData = pulse.Render();
+								_elementData.Add(pulseData);
+								break;
+
+							case SpinColorHandling.ColorAcrossItems:
+								double positionWithinGroup = i/(double) targetNodeCount;
+								if (discreteColors) {
+									List<Tuple<Color, float>> colorsAtPosition =
+										ColorGradient.GetDiscreteColorsAndProportionsAt(positionWithinGroup);
+									foreach (Tuple<Color, float> colorProportion in colorsAtPosition) {
+										double value = level*colorProportion.Item2;
+										pulse.LevelCurve = new Curve(new PointPairList(new double[] {0, 100}, new double[] {value, value}));
+										pulse.ColorGradient = new ColorGradient(colorProportion.Item1);
+										pulseData = pulse.Render();
+										_elementData.Add(pulseData);
+									}
+								}
+								else {
+									pulse.ColorGradient = new ColorGradient(ColorGradient.GetColorAt(positionWithinGroup));
+									pulse.LevelCurve = new Curve(new PointPairList(new double[] {0, 100}, new double[] {level, level}));
+									pulseData = pulse.Render();
+									_elementData.Add(pulseData);
+								}
+								break;
+						}
+
+						i++;
+					}
 				}
 			}
 
