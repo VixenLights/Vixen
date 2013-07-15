@@ -58,7 +58,7 @@ namespace VixenModules.Controller.E131 {
 	using Vixen.Module.Controller;
 	using VixenModules.Controller.E131.J1Sys;
 	using VixenModules.Output.E131;
-
+	using System.Linq;
 	// -----------------------------------------------------------------
 	// 
 	// OutputPlugin - the output plugin class for vixen
@@ -470,51 +470,14 @@ namespace VixenModules.Controller.E131 {
 			return (E131ModuleDataModel)this.ModuleData;
 		}
 
-		ConcurrentDictionary<int, Tuple<int, DateTime>> outputStateDictionary = new ConcurrentDictionary<int, Tuple<int, DateTime>>();
+		ConcurrentDictionary<int, DateTime> outputStateDictionary = new ConcurrentDictionary<int, DateTime>();
 
 		public override void UpdateState(int chainIndex, ICommand[] outputStates) {
 			UpdateState(chainIndex, outputStates.ToChannelValuesAsBytes());
-			if (resetOutputTimer == null) {
-				resetOutputTimer = new System.Timers.Timer();
-				resetOutputTimer.Elapsed += resetOutputTimer_Tick;
 
-				resetOutputTimer.Interval = 1000;
-				resetOutputTimer.Enabled = true;
-			}
 		}
 
-		void resetOutputTimer_Tick(object sender, EventArgs e) {
-			resetOutputTimer.Enabled = false;
-			Console.WriteLine("resetOutputTimer_Tick {0}", DateTime.Now.ToShortTimeString());
-			if (outputStateDictionary != null && outputStateDictionary.Count > 0) {
-				Tuple<int, DateTime> output;
-				foreach (var item in outputStateDictionary.Keys) {
-					if (outputStateDictionary.TryGetValue(item, out output)) {
-						if (output.Item2.AddSeconds(1) < DateTime.Now)
-							ResetOutputState(item);
-					}
-				}
-				resetOutputTimer.Enabled = true;
-			}
-			else {
-				resetOutputTimer.Dispose();
-				resetOutputTimer = null;
-			}
-		}
-		System.Timers.Timer resetOutputTimer = null;
 
-		private void ResetOutputState(int chainIndex) {
-			Console.WriteLine("Reset E.131 State {0}", chainIndex);
-
-			Tuple<int, DateTime> output;
-			if (outputStateDictionary.TryRemove(chainIndex, out output)) {
-				byte[] channelValues = new byte[output.Item1];
-				for (int i = 0; i < channelValues.Length; i++) {
-					channelValues[i] = 0;
-				}
-				UpdateState(chainIndex, channelValues);
-			}
-		}
 
 		public void UpdateState(int chainIndex, byte[] channelValues) {
 			Stopwatch stopWatch = Stopwatch.StartNew();
@@ -523,10 +486,19 @@ namespace VixenModules.Controller.E131 {
 			if (isSetupOpen && hasStarted) {
 				return;
 			}
+			DateTime lastUpdate;
 
-			outputStateDictionary[chainIndex] = new Tuple<int, DateTime>(channelValues.Length, DateTime.Now);
+			if (channelValues.Where(w => w == 0).Count() == channelValues.Length) {
 
-
+				if (outputStateDictionary.TryGetValue(chainIndex, out lastUpdate)) {
+					return;
+				}
+				else
+					outputStateDictionary[chainIndex] = DateTime.Now;
+			}
+			else {
+				outputStateDictionary.TryRemove(chainIndex, out lastUpdate);
+			}
 			int universeSize = 0;
 
 			this._eventCnt++;

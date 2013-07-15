@@ -35,11 +35,8 @@ using System.Collections.Concurrent;
 
 				channelValues[index] = command.CommandValue;
 			}
-		
-			if (channelValues.Where(w => w == 0).Count() == outputStates.Length)
-				return new byte[0];
-			else
-				return channelValues;
+			
+			return channelValues;
 		}
 
 		internal static Guid BufferToGuid(byte[] bfr, int offset)
