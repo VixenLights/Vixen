@@ -43,9 +43,9 @@
 
 using Vixen.Sys;
 
-namespace VixenModules.Controller.E131
-{
+namespace VixenModules.Controller.E131 {
 	using System;
+	using System.Collections.Concurrent;
 	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.Net;
@@ -58,15 +58,14 @@ namespace VixenModules.Controller.E131
 	using Vixen.Module.Controller;
 	using VixenModules.Controller.E131.J1Sys;
 	using VixenModules.Output.E131;
-
+	using System.Linq;
 	// -----------------------------------------------------------------
 	// 
 	// OutputPlugin - the output plugin class for vixen
 	// 
 	// -----------------------------------------------------------------
 
-	public class E131OutputPlugin : ControllerModuleInstanceBase
-	{
+	public class E131OutputPlugin : ControllerModuleInstanceBase {
 		// our option settings
 		private int _eventCnt;
 
@@ -97,15 +96,13 @@ namespace VixenModules.Controller.E131
 		private bool isSetupOpen;
 		private bool hasStarted;
 
-		public E131OutputPlugin()
-		{
+		public E131OutputPlugin() {
 			DataPolicyFactory = new DataPolicyFactory();
 			isSetupOpen = false;
 			hasStarted = false;
 		}
 
-		public void Initialize()
-		{
+		public void Initialize() {
 			// load all of our xml into working objects
 			this.LoadSetupNodeInfo();
 
@@ -126,8 +123,7 @@ namespace VixenModules.Controller.E131
 		// 			  the plugin instance
 		// 
 		// -------------------------------------------------------------
-		public override bool Setup()
-		{
+		public override bool Setup() {
 			//initialize setupNode
 
 
@@ -220,8 +216,7 @@ namespace VixenModules.Controller.E131
 			return true;
 		}
 
-		public override bool HasSetup
-		{
+		public override bool HasSetup {
 			get { return true; }
 		}
 
@@ -232,8 +227,7 @@ namespace VixenModules.Controller.E131
 		// 				 referenced
 		// 
 		// -------------------------------------------------------------
-		public void Shutdown()
-		{
+		public void Shutdown() {
 			// keep track of interface ids we have shutdown
 			var idList = new SortedList<string, int>();
 
@@ -307,8 +301,7 @@ namespace VixenModules.Controller.E131
 		//      3) Sequence # should be per universe
 		// 	
 		// -------------------------------------------------------------
-		public override void Start()
-		{
+		public override void Start() {
 			// working copy of networkinterface object
 			NetworkInterface networkInterface;
 
@@ -365,7 +358,7 @@ namespace VixenModules.Controller.E131
 					if (uE.Multicast != null) {
 						// create an ipaddress object based on multicast universe ip rules
 						var multicastIpAddress =
-							new IPAddress(new byte[] {239, 255, (byte) (uE.Universe >> 8), (byte) (uE.Universe & 0xff)});
+							new IPAddress(new byte[] { 239, 255, (byte)(uE.Universe >> 8), (byte)(uE.Universe & 0xff) });
 
 						// create an ipendpoint object based on multicast universe ip/port rules
 						var multicastIpEndPoint = new IPEndPoint(multicastIpAddress, 5568);
@@ -389,7 +382,7 @@ namespace VixenModules.Controller.E131
 								// setup destipendpoint based on multicast universe ip rules
 								uE.DestIpEndPoint = multicastIpEndPoint;
 							}
-								// is the interface up?
+							// is the interface up?
 							else if (networkInterface.OperationalStatus != OperationalStatus.Up) {
 								// no - deactivate and scream & yell!!
 								uE.Active = false;
@@ -443,7 +436,7 @@ namespace VixenModules.Controller.E131
 					// if still active we need to create an empty packet
 					if (uE.Active) {
 						var zeroBfr = new byte[uE.Size];
-						var e131Packet = new E131Packet(this._guid, string.Empty, 0, (ushort) uE.Universe, zeroBfr, 0, uE.Size);
+						var e131Packet = new E131Packet(this._guid, string.Empty, 0, (ushort)uE.Universe, zeroBfr, 0, uE.Size);
 						uE.PhyBuffer = e131Packet.PhyBuffer;
 					}
 				}
@@ -473,23 +466,39 @@ namespace VixenModules.Controller.E131
 #endif
 		}
 
-		private E131ModuleDataModel GetDataModel()
-		{
-			return (E131ModuleDataModel) this.ModuleData;
+		private E131ModuleDataModel GetDataModel() {
+			return (E131ModuleDataModel)this.ModuleData;
 		}
 
-		public override void UpdateState(int chainIndex, ICommand[] outputStates)
-		{
+		ConcurrentDictionary<int, DateTime> outputStateDictionary = new ConcurrentDictionary<int, DateTime>();
+
+		public override void UpdateState(int chainIndex, ICommand[] outputStates) {
+			UpdateState(chainIndex, outputStates.ToChannelValuesAsBytes());
+
+		}
+
+
+
+		public void UpdateState(int chainIndex, byte[] channelValues) {
 			Stopwatch stopWatch = Stopwatch.StartNew();
 
 			//Make sure the setup form is closed & the plugin has started
 			if (isSetupOpen && hasStarted) {
 				return;
 			}
+			DateTime lastUpdate;
 
+			if (channelValues.Where(w => w == 0).Count() == channelValues.Length) {
 
-			var channelValues = outputStates.ToChannelValuesAsBytes();
-
+				if (outputStateDictionary.TryGetValue(chainIndex, out lastUpdate)) {
+					return;
+				}
+				else
+					outputStateDictionary[chainIndex] = DateTime.Now;
+			}
+			else {
+				outputStateDictionary.TryRemove(chainIndex, out lastUpdate);
+			}
 			int universeSize = 0;
 
 			this._eventCnt++;
@@ -538,8 +547,7 @@ namespace VixenModules.Controller.E131
 			this._totalTicks += stopWatch.ElapsedTicks;
 		}
 
-		private void LoadSetupNodeInfo()
-		{
+		private void LoadSetupNodeInfo() {
 			int rowNum = 1;
 
 			this._universeTable = new List<UniverseEntry>();

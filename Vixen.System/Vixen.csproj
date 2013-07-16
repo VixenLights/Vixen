@@ -53,10 +53,6 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Controls">
-      <HintPath>..\Output\Modules\Preview\Controls.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -84,6 +80,8 @@
     <Compile Include="Commands\8BitCommand.cs" />
     <Compile Include="Commands\ColorCommand.cs" />
     <Compile Include="Commands\UnknownValueCommand.cs" />
+    <Compile Include="Common\ColorSpaces.cs" />
+    <Compile Include="Common\ColorSpaceTypeConverter.cs" />
     <Compile Include="Data\Combinator\Color\NaiveColorCombinator.cs" />
     <Compile Include="Data\Combinator\_16Bit\16BitHighestWinsCombinator.cs" />
     <Compile Include="Data\Combinator\_16Bit\16BitAverageCombinator.cs" />

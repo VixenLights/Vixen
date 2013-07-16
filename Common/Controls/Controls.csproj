@@ -153,8 +153,6 @@
     <Compile Include="ColorPicker\ColorSelectionPlane.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ColorPicker\ColorSpaces.cs" />
-    <Compile Include="ColorPicker\ColorSpaceTypeConverter.cs" />
     <Compile Include="ColorPicker\ColorUtility.cs" />
     <Compile Include="ColorPicker\GDI32.cs" />
     <Compile Include="ControlsEx\BorderedControl.cs">

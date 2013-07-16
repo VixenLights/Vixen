@@ -4,6 +4,7 @@ namespace VixenModules.Controller.E131
 	using System.Text;
 	using System.Linq;
 	using Vixen.Commands;
+using System.Collections.Concurrent;
 
 	public static class Extensions
 	{
@@ -16,7 +17,7 @@ namespace VixenModules.Controller.E131
 
 			return converted;
 		}
-
+		
 		public static byte[] ToChannelValuesAsBytes(this ICommand[] outputStates)
 		{
 			if (outputStates == null) {
@@ -34,10 +35,8 @@ namespace VixenModules.Controller.E131
 
 				channelValues[index] = command.CommandValue;
 			}
-			if (channelValues.Where(w => w == 0).Count() == outputStates.Length)
-				return new byte[0];
-			else
-				return channelValues;
+			
+			return channelValues;
 		}
 
 		internal static Guid BufferToGuid(byte[] bfr, int offset)

@@ -1,8 +1,9 @@
 ﻿using System;
-using Common.Controls.ColorManagement.ColorModels;
+//using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Data.Value;
 using Vixen.Sys;
 using System.Drawing;
+using Common.Controls.ColorManagement.ColorModels;
 
 namespace Vixen.Intent
 {
