@@ -185,7 +185,9 @@ namespace VixenModules.Effect.Nutcracker
 			};
 
 			timer.Stop();
-			//Console.WriteLine("Nutcracker Render:" + timer.ElapsedMilliseconds + "ms Frames:" + framesToRender);
-		}
+#if DEBUG
+			Console.WriteLine("Nutcracker Render:" + timer.ElapsedMilliseconds + "ms Frames:" + framesToRender);
+#endif
+			}
 	}
 }
