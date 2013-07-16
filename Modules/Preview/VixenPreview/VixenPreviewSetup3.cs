@@ -116,7 +116,7 @@ namespace VixenModules.Preview.VixenPreview {
 			else if (button == buttonStar)
 				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Star;
 			else if (button == buttonHelp)
-				Shapes.PreviewTools.ShowHelp(Properties.Settings.Default.Help_Main);
+				Common.VixenHelp.VixenHelp.ShowHelp(Common.VixenHelp.VixenHelp.HelpStrings.Preview_Main);
 			else if (button == buttonMegaTree)
 				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.MegaTree;
 			else if (button == buttonPixelGrid)
@@ -234,7 +234,7 @@ namespace VixenModules.Preview.VixenPreview {
 		}
 
 		private void buttonTemplateHelp_Click(object sender, EventArgs e) {
-			Shapes.PreviewTools.ShowHelp(Properties.Settings.Default.Help_CustomShape);
+			Common.VixenHelp.VixenHelp.ShowHelp(Common.VixenHelp.VixenHelp.HelpStrings.Preview_CustomShape);
 		}
 
 		#endregion // Templates
