@@ -88,6 +88,7 @@
   <ItemGroup>
     <Reference Include="Controls">
       <HintPath>..\..\..\Common\Controls\obj\Debug\Controls.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
