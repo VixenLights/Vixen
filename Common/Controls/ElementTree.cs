@@ -28,6 +28,9 @@ namespace Common.Controls
 
 			treeview.DragFinishing += treeviewDragFinishingHandler;
 			treeview.DragOverVerify += treeviewDragVerifyHandler;
+			treeview.DragStart += treeview_DragStart;
+
+			AllowDragging = true;
 		}
 
 		private void ElementTree_Load(object sender, EventArgs e)
@@ -35,6 +38,18 @@ namespace Common.Controls
 			PopulateNodeTree();
 		}
 
+
+
+		#region Control features
+
+		// this contains all the 'features' of the control, as they may need to be customized to allow
+		// different things in different places.  For example, dragging to reorder elements might not be
+		// desired, or icons might not be wanted, or only groups displayed, etc., etc.
+
+		public bool AllowDragging { get; set; }
+
+
+		#endregion
 
 
 
@@ -254,6 +269,11 @@ namespace Common.Controls
 
 
 		#region Drag handlers
+
+		void treeview_DragStart(object sender, DragStartEventArgs e)
+		{
+			e.CancelDrag = !AllowDragging;
+		}
 
 		private void treeviewDragFinishingHandler(object sender, DragFinishingEventArgs e)
 		{
