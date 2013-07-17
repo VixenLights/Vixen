@@ -32,6 +32,12 @@ namespace Vixen.Data.Evaluator
 		{
 		}
 
+		public virtual void Handle(IIntentState<DynamicValue> obj)
+		{
+		}
+
 		protected ICommand EvaluatorValue { get; set; }
+
+		
 	}
 }

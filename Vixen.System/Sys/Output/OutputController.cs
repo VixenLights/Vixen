@@ -271,6 +271,7 @@ namespace Vixen.Sys.Output
 
 		private ICommand _GenerateOutputCommand(CommandOutput output)
 		{
+		
 			IDataPolicy effectiveDataPolicy = _dataPolicyProvider.GetDataPolicyForOutput(output);
 			return effectiveDataPolicy.GenerateCommand(output.State);
 		}

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Vixen.Module.Effect;
+using Vixen.Sys;
 
 namespace VixenModules.Effect.RDS {
 	public class RDSDescriptor : EffectModuleDescriptorBase {
@@ -48,7 +49,12 @@ namespace VixenModules.Effect.RDS {
 
 
 		public override Vixen.Sys.ParameterSignature Parameters {
-			get { return null; }
+			get
+			{
+				return new ParameterSignature(
+						new ParameterSpecification("Text", typeof(string)) 
+						);
+			}
 		}
 	}
 }

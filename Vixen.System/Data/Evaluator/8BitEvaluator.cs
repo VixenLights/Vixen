@@ -54,5 +54,11 @@ namespace Vixen.Data.Evaluator
 		{
 			EvaluatorValue = new _8BitCommand(ColorValue.GetGrayscaleLevel(obj.CommandValue));
 		}
+
+
+		public void Handle(DynamicCommand obj)
+		{
+			throw new System.NotImplementedException();
+		}
 	}
 }

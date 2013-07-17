@@ -11,9 +11,10 @@ using System.Linq;
 namespace VixenModules.Output.RDSController {
 	public class Module : ControllerModuleInstanceBase {
 		private Data _Data;
+		private CommandHandler _commandHandler;
 		public Module() {
 			DataPolicyFactory = new DataPolicyFactory();
-
+			_commandHandler = new CommandHandler();
 		}
 
 
@@ -26,15 +27,21 @@ namespace VixenModules.Output.RDSController {
 				}
 			}
 		}
-
-		public override bool HasSetup {
+				
+		public override bool HasSetup
+		{
 			get { return true; }
 		}
+		
+		public override bool Setup()
+		{
+			
+			using (var setupForm = new SetupForm()) {
+				setupForm.ShowDialog();
+				return true;
+			}
 
-		public override bool Setup() {
-
-
-			return false;
+		//	return false;
 		}
 
 		public override IModuleDataModel ModuleData {

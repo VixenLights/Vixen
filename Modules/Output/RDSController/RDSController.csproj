@@ -32,7 +32,9 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -40,12 +42,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandHandler.cs" />
     <Compile Include="Data.cs" />
     <Compile Include="DataPolicy.cs" />
     <Compile Include="DataPolicyFactory.cs" />
     <Compile Include="Descriptor.cs" />
     <Compile Include="Module.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SetupForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SetupForm.Designer.cs">
+      <DependentUpon>SetupForm.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Vixen.System\Vixen.csproj">

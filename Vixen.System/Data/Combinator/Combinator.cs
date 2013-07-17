@@ -13,7 +13,8 @@ namespace Vixen.Data.Combinator
 			CombinatorValue = null;
 
 			foreach (ICommand command in commands) {
-				command.Dispatch(this);
+				if (command != null)
+					command.Dispatch(this);
 			}
 
 			return CombinatorValue;
@@ -44,8 +45,12 @@ namespace Vixen.Data.Combinator
 		{
 		}
 
+		public virtual void Handle(DynamicCommand obj) { }
+
 		// ResultType generic parameter is used by the combinators so the value wrapped
 		// by the command can be known.
 		protected ICommand<ResultType> CombinatorValue { get; set; }
+
+
 	}
 }

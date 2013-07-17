@@ -27,8 +27,8 @@ namespace VixenModules.Effect.RDS {
 			if (string.IsNullOrWhiteSpace(_data.Text))
 				_data.Text="Debug Command " + DateTime.Now.ToString();
 #endif
-			var intent = new CommandIntent(new Vixen.Data.Value.CommandValue(new UnknownValueCommand(_data.Text)), this.TimeSpan);
-			
+			//var intent = new CommandIntent(new Vixen.Data.Value.CommandValue(new UnknownValueCommand(_data.Text)), this.TimeSpan);
+			var intent = new DynamicIntent(new Vixen.Data.Value.DynamicValue() { Value= _data.Text }, TimeSpan);
 			foreach (ElementNode node in TargetNodes.Where(n => n != null)) {
 				_elementData.AddIntentForElement(node.Id, intent, TimeSpan.Zero);
 

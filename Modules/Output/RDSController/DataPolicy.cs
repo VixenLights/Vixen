@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Vixen.Data.Combinator._8Bit;
+using Vixen.Data.Combinator.Commands;
 using Vixen.Data.Evaluator;
 using Vixen.Data.Policy;
 using Vixen.Sys;
@@ -11,11 +11,11 @@ using Vixen.Sys;
 namespace VixenModules.Output.RDSController {
 	internal class DataPolicy : ControllerDataPolicy {
 		protected override IEvaluator GetEvaluator() {
-			return new _8BitEvaluator();
+			return new  DynamicEvaluator();
 		}
 
 		protected override ICombinator GetCombinator() {
-			return new _8BitHighestWinsCombinator();
+			return new DynamicCombinator();
 		}
 	}
 }
