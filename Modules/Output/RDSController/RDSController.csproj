@@ -43,6 +43,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandHandler.cs" />
+    <Compile Include="CustomSerialPort.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Data.cs" />
     <Compile Include="DataPolicy.cs" />
     <Compile Include="DataPolicyFactory.cs" />

@@ -31,7 +31,7 @@ namespace VixenModules.Effect.RDS {
 			var intent = new CustomIntent(new Vixen.Data.Value.CustomValue() { Value= _data.Text }, TimeSpan);
 			foreach (ElementNode node in TargetNodes.Where(n => n != null)) {
 				_elementData.AddIntentForElement(node.Id, intent, TimeSpan.Zero);
-
+			
 			}
 		}
 
