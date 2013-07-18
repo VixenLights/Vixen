@@ -32,7 +32,7 @@ namespace Vixen.Data.Evaluator
 		{
 		}
 
-		public virtual void Handle(IIntentState<DynamicValue> obj)
+		public virtual void Handle(IIntentState<CustomValue> obj)
 		{
 		}
 

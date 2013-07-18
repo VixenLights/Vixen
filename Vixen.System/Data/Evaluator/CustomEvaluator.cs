@@ -7,7 +7,7 @@ using Vixen.Sys.Dispatch;
 
 namespace Vixen.Data.Evaluator
 {
-	public class DynamicEvaluator : Evaluator, IAnyCommandHandler
+	public class CustomEvaluator : Evaluator, IAnyCommandHandler
 	{
 		public void Handle(Commands._8BitCommand obj)
 		{
@@ -34,9 +34,9 @@ namespace Vixen.Data.Evaluator
 			throw new NotImplementedException();
 		}
 
-		public void Handle(DynamicCommand obj)
+		public void Handle(CustomCommand obj)
 		{
-			EvaluatorValue = new DynamicCommand(obj.CommandValue);
+			EvaluatorValue = new CustomCommand(obj.CommandValue);
 		}
 
 		 

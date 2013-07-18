@@ -5,12 +5,12 @@ using System.Text;
 
 namespace Vixen.Data.Value
 {
-	public struct DynamicValue : IIntentDataType
+	public struct CustomValue : IIntentDataType
 	{
-		public DynamicValue(dynamic value) {
+		public CustomValue(object value) {
 			Value = value;
 		}
-		public dynamic Value;
+		public object Value;
 
 	}
 }

@@ -11,11 +11,11 @@ using Vixen.Sys;
 namespace VixenModules.Output.RDSController {
 	internal class DataPolicy : ControllerDataPolicy {
 		protected override IEvaluator GetEvaluator() {
-			return new  DynamicEvaluator();
+			return new  CustomEvaluator();
 		}
 
 		protected override ICombinator GetCombinator() {
-			return new DynamicCombinator();
+			return new CustomCombinator();
 		}
 	}
 }

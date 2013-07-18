@@ -79,12 +79,12 @@
     <Compile Include="Commands\64BitCommand.cs" />
     <Compile Include="Commands\8BitCommand.cs" />
     <Compile Include="Commands\ColorCommand.cs" />
-    <Compile Include="Commands\DynamicCommand.cs" />
+    <Compile Include="Commands\CustomCommand.cs" />
     <Compile Include="Commands\UnknownValueCommand.cs" />
     <Compile Include="Common\ColorSpaces.cs" />
     <Compile Include="Common\ColorSpaceTypeConverter.cs" />
     <Compile Include="Data\Combinator\Color\NaiveColorCombinator.cs" />
-    <Compile Include="Data\Combinator\Dynamic\DynamicCombinator.cs" />
+    <Compile Include="Data\Combinator\Custom\CustomCombinator.cs" />
     <Compile Include="Data\Combinator\_16Bit\16BitHighestWinsCombinator.cs" />
     <Compile Include="Data\Combinator\_16Bit\16BitAverageCombinator.cs" />
     <Compile Include="Data\Combinator\_32Bit\32BitHighestWinsCombinator.cs" />
@@ -98,7 +98,7 @@
     <Compile Include="Data\Evaluator\8BitEvaluator.cs" />
     <Compile Include="Data\Evaluator\ColorEvaluator.cs" />
     <Compile Include="Data\Evaluator\CommandEvaluator.cs" />
-    <Compile Include="Data\Evaluator\DynamicEvaluator.cs" />
+    <Compile Include="Data\Evaluator\CustomEvaluator.cs" />
     <Compile Include="Data\Evaluator\Evaluator.cs" />
     <Compile Include="Data\Flow\ElementDataFlowAdapter.cs" />
     <Compile Include="Data\Flow\ElementDataFlowOutputAdapter.cs" />
@@ -118,7 +118,7 @@
     <Compile Include="Data\Flow\IDataFlowData.cs" />
     <Compile Include="Data\Policy\DataFlowDataDispatchingDataPolicy.cs" />
     <Compile Include="Data\Policy\SmartControllerDataPolicy.cs" />
-    <Compile Include="Data\Value\DynamicValue.cs" />
+    <Compile Include="Data\Value\CustomValue.cs" />
     <Compile Include="Delegates\Delegates.cs" />
     <Compile Include="Execution\ContextCurrentEffectsFull.cs" />
     <Compile Include="Execution\ContextFeatures.cs" />
@@ -154,7 +154,7 @@
     <Compile Include="Factory\SmartControllerFactory.cs" />
     <Compile Include="Intent\ColorIntent.cs" />
     <Compile Include="Intent\CommandIntent.cs" />
-    <Compile Include="Intent\DynamicIntent.cs" />
+    <Compile Include="Intent\CustomIntent.cs" />
     <Compile Include="Intent\IntentState.cs" />
     <Compile Include="Intent\LightingIntent.cs" />
     <Compile Include="Intent\PositionIntent.cs" />

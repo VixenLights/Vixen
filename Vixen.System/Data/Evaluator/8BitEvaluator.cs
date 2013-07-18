@@ -56,7 +56,7 @@ namespace Vixen.Data.Evaluator
 		}
 
 
-		public void Handle(DynamicCommand obj)
+		public void Handle(CustomCommand obj)
 		{
 			throw new System.NotImplementedException();
 		}

@@ -6,12 +6,12 @@ using Vixen.Data.Value;
 
 namespace Vixen.Interpolator
 {
-	[Vixen.Sys.Attribute.Interpolator(typeof(DynamicValue))]
-	internal class DynamicValueInterpolator :Interpolator<DynamicValue>
+	[Vixen.Sys.Attribute.Interpolator(typeof(CustomValue))]
+	internal class DynamicValueInterpolator :Interpolator<CustomValue>
 	{
-		protected override DynamicValue InterpolateValue(double percent, DynamicValue startValue, DynamicValue endValue)
+		protected override CustomValue InterpolateValue(double percent, CustomValue startValue, CustomValue endValue)
 		{
-			return new DynamicValue(startValue);
+			return new CustomValue(startValue);
 		}
 	}
 }

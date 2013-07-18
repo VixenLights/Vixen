@@ -11,14 +11,14 @@ namespace VixenModules.Output.RDSController
 
 	internal class CommandHandler : CommandDispatch
 	{
-		public DynamicCommand Value { get; private set; }
+		public CustomCommand Value { get; private set; }
 
 		public void Reset()
 		{
 			Value = null;
 		}
 
-		public override void Handle(DynamicCommand obj)
+		public override void Handle(CustomCommand obj)
 		{
 			Value = obj;
 		}

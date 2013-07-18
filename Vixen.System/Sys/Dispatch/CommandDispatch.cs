@@ -24,7 +24,7 @@ namespace Vixen.Sys.Dispatch
 		{
 		}
 
-		public virtual void Handle(DynamicCommand obj) 
+		public virtual void Handle(CustomCommand obj) 
 		{
 		}
 	}

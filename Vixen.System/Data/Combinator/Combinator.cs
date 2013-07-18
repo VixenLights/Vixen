@@ -45,7 +45,7 @@ namespace Vixen.Data.Combinator
 		{
 		}
 
-		public virtual void Handle(DynamicCommand obj) { }
+		public virtual void Handle(CustomCommand obj) { }
 
 		// ResultType generic parameter is used by the combinators so the value wrapped
 		// by the command can be known.
