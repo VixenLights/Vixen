@@ -72,6 +72,7 @@
       <DependentUpon>PictureComboBox.cs</DependentUpon>
     </Compile>
     <Compile Include="PictureComboBoxItem.cs" />
+    <Compile Include="TimelineControl\ElementDrawQueue.cs" />
     <Compile Include="Wizard\Wizard.cs" />
     <Compile Include="Wizard\WizardForm.cs">
       <SubType>Form</SubType>
