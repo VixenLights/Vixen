@@ -10,7 +10,7 @@ namespace VixenModules.Preview.VixenPreview
 	public partial class VixenPreviewModuleInstance : FormPreviewModuleInstanceBase
 	{
 		private VixenPreviewSetup3 setupForm;
-		private VixenPreviewDisplay displayForm;
+		private VixenPreviewDisplayD2D displayForm;
 
 		public VixenPreviewModuleInstance()
 		{
@@ -51,9 +51,10 @@ namespace VixenModules.Preview.VixenPreview
 			VixenSystem.Contexts.ContextCreated += ProgramContextCreated;
 			VixenSystem.Contexts.ContextReleased += ProgramContextReleased;
 
-			displayForm = new VixenPreviewDisplay();
+			displayForm = new VixenPreviewDisplayD2D();
 			displayForm.Data = GetDataModel();
 			displayForm.Setup();
+
 			return displayForm;
 		}
 
@@ -75,16 +76,19 @@ namespace VixenModules.Preview.VixenPreview
 			setupForm.Data = GetDataModel();
 
 			if (displayForm != null)
-				displayForm.PreviewControl.Paused = true;
+				displayForm.direct2DControlWinForm1.Paused = true;
+			 
 
 			setupForm.ShowDialog();
 
 			if (displayForm != null)
-				displayForm.PreviewControl.Paused = false;
+				displayForm.direct2DControlWinForm1.Paused = false;
+
+
 
 			if (setupForm.DialogResult == DialogResult.OK) {
 				if (displayForm != null)
-					displayForm.PreviewControl.Reload();
+					displayForm.Reload();
 			}
 
 			return base.Setup();
@@ -154,7 +158,7 @@ namespace VixenModules.Preview.VixenPreview
 
 		protected override void Update()
 		{
-			displayForm.PreviewControl.ProcessUpdateParallel(ElementStates);
+			displayForm.ProcessUpdateParallel(ElementStates);
 		}
 	}
 }

@@ -286,15 +286,17 @@ namespace VixenModules.Media.Audio
 
 		public void Dispose()
 		{
-			//*** channel need to be disposed?  If so, then should reloading the channel
-			//    cause an intermediate disposal?
-			_audioSystem.Stop(_channel);
-			if (_channel != null) {
-				_audioSystem.ReleaseSound(_channel);
-			}
-			_audioSystem.Shutdown();
-			_audioSystem = null;
+			if (_audioSystem != null) {
+				//*** channel need to be disposed?  If so, then should reloading the channel
+				//    cause an intermediate disposal?
+				_audioSystem.Stop(_channel);
 
+				if (_channel != null) {
+					_audioSystem.ReleaseSound(_channel);
+				}
+				_audioSystem.Shutdown();
+				_audioSystem = null;
+			}
 			GC.SuppressFinalize(this);
 		}
 

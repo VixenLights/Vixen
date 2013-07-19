@@ -32,6 +32,26 @@
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>..\..\Release\Common\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="$(SolutionDir)\Vixen.System\Vixen.csproj">
       <Project>{50B78623-FCF4-48AF-93FF-FA87C937028F}</Project>
@@ -40,19 +60,51 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.WindowsAPICodePack.DirectX, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\Microsoft.WindowsAPICodePack.DirectX.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="UIAutomationProvider" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Direct2D\AnimatedScene.cs" />
+    <Compile Include="Direct2D\D3D10Image.cs" />
+    <Compile Include="Direct2D\Direct2DControl.cs" />
+    <Compile Include="Direct2D\Direct2DControlWinForm.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Direct2D\Direct2DControlWinForm.Designer.cs">
+      <DependentUpon>Direct2DControlWinForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Direct2D\DisplayScene.cs" />
+    <Compile Include="Direct2D\Extensions.cs" />
+    <Compile Include="Direct2D\Interop\ComInterface.cs" />
+    <Compile Include="Direct2D\Interop\Direct3D9Ex.cs" />
+    <Compile Include="Direct2D\Interop\Direct3DDevice9Ex.cs" />
+    <Compile Include="Direct2D\Interop\Direct3DSurface9.cs" />
+    <Compile Include="Direct2D\Interop\Direct3DTexture9.cs" />
+    <Compile Include="Direct2D\Interop\NativeMethods.cs" />
+    <Compile Include="Direct2D\Interop\NativeStructs.cs" />
+    <Compile Include="Direct2D\Scene.cs" />
+    <Compile Include="Direct2D\Direct2DControlWPF.xaml.cs">
+      <DependentUpon>Direct2DControlWPF.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DiscreteColorPicker.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -268,6 +320,9 @@
     <EmbeddedResource Include="ColorPicker\ColorSelectionPlane.resx">
       <DependentUpon>ColorSelectionPlane.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Direct2D\Direct2DControlWinForm.resx">
+      <DependentUpon>Direct2DControlWinForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="DiscreteColorPicker.resx">
       <DependentUpon>DiscreteColorPicker.cs</DependentUpon>
     </EmbeddedResource>
@@ -344,6 +399,7 @@
     <Content Include="ColorPicker\ColorPicker.cur" />
     <Content Include="ControlsEx\std_zoomin.png" />
     <Content Include="ControlsEx\std_zoomout.png" />
+    <None Include="Microsoft.WindowsAPICodePack.DirectX.dll" />
     <None Include="Resources\UpArrowShort_Blue_48x48.png" />
     <None Include="Resources\UpArrowShort_Blue_32x32.png" />
     <None Include="Resources\UpArrowShort_Blue_24x24.png" />
@@ -361,6 +417,12 @@
       <Name>Audio</Name>
       <Private>False</Private>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Direct2D\Direct2DControlWPF.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
