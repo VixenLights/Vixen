@@ -85,6 +85,9 @@
   <ItemGroup>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Microsoft.VisualBasic.PowerPacks.Vs, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.WindowsAPICodePack.DirectX">
+      <HintPath>..\..\..\Common\Controls\Microsoft.WindowsAPICodePack.DirectX.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -104,14 +107,31 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="VixenPreviewDisplayD2D.cs">
-      <SubType>Form</SubType>
+    <Compile Include="Direct2D\AnimatedScene.cs" />
+    <Compile Include="Direct2D\D3D10Image.cs" />
+    <Compile Include="Direct2D\Direct2DControl.cs" />
+    <Compile Include="Direct2D\DisplayScene.cs" />
+    <Compile Include="Direct2D\Extensions.cs" />
+    <Compile Include="Direct2D\Interop\ComInterface.cs" />
+    <Compile Include="Direct2D\Interop\Direct3D9Ex.cs" />
+    <Compile Include="Direct2D\Interop\Direct3DDevice9Ex.cs" />
+    <Compile Include="Direct2D\Interop\Direct3DSurface9.cs" />
+    <Compile Include="Direct2D\Interop\Direct3DTexture9.cs" />
+    <Compile Include="Direct2D\Interop\NativeMethods.cs" />
+    <Compile Include="Direct2D\Interop\NativeStructs.cs" />
+    <Compile Include="Direct2D\PreviewWinform.cs">
+      <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="VixenPreviewDisplayD2D.Designer.cs">
-      <DependentUpon>VixenPreviewDisplayD2D.cs</DependentUpon>
+    <Compile Include="Direct2D\PreviewWinform.Designer.cs">
+      <DependentUpon>PreviewWinform.cs</DependentUpon>
     </Compile>
+    <Compile Include="Direct2D\PreviewWPF.xaml.cs">
+      <DependentUpon>PreviewWPF.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Direct2D\Scene.cs" />
     <Compile Include="DebugTimer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResizePreviewForm.cs">
@@ -257,6 +277,12 @@
     <Compile Include="VixenPreviewDisplay.Designer.cs">
       <DependentUpon>VixenPreviewDisplay.cs</DependentUpon>
     </Compile>
+    <Compile Include="VixenPreviewDisplayD2D.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="VixenPreviewDisplayD2D.Designer.cs">
+      <DependentUpon>VixenPreviewDisplayD2D.cs</DependentUpon>
+    </Compile>
     <Compile Include="VixenPreviewSetup.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -291,8 +317,8 @@
     <Compile Include="VixenPreviewSetupPropertiesDocument.Designer.cs">
       <DependentUpon>VixenPreviewSetupPropertiesDocument.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="VixenPreviewDisplayD2D.resx">
-      <DependentUpon>VixenPreviewDisplayD2D.cs</DependentUpon>
+    <EmbeddedResource Include="Direct2D\PreviewWinform.resx">
+      <DependentUpon>PreviewWinform.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -361,6 +387,9 @@
     <EmbeddedResource Include="VixenPreviewDisplay.resx">
       <DependentUpon>VixenPreviewDisplay.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="VixenPreviewDisplayD2D.resx">
+      <DependentUpon>VixenPreviewDisplayD2D.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="VixenPreviewModuleInstance.resx">
       <DependentUpon>VixenPreviewModuleInstance.cs</DependentUpon>
     </EmbeddedResource>
@@ -407,6 +436,12 @@
     <Content Include="WeifenLuo.WinFormsUI.Docking.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Direct2D\PreviewWPF.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

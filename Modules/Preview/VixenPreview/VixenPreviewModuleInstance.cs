@@ -4,6 +4,7 @@ using System.Diagnostics;
 using Vixen.Execution.Context;
 using Vixen.Module.Preview;
 using Vixen.Sys;
+using VixenModules.Preview.VixenPreview.Direct2D;
 
 namespace VixenModules.Preview.VixenPreview
 {
@@ -76,20 +77,21 @@ namespace VixenModules.Preview.VixenPreview
 			setupForm.Data = GetDataModel();
 
 			if (displayForm != null)
-				displayForm.direct2DControlWinForm1.Paused = true;
-			 
+				displayForm.Scene.IsAnimating = false;
+
+
 
 			setupForm.ShowDialog();
 
-			if (displayForm != null)
-				displayForm.direct2DControlWinForm1.Paused = false;
-
-
 
 			if (setupForm.DialogResult == DialogResult.OK) {
-				if (displayForm != null)
-					displayForm.Reload();
+				if (displayForm != null && displayForm.Scene != null) {
+					displayForm.Scene.Reload();
+				}
 			}
+			if (displayForm != null)
+				displayForm.Scene.IsAnimating = true;
+
 
 			return base.Setup();
 		}
@@ -103,14 +105,14 @@ namespace VixenModules.Preview.VixenPreview
 			base.Dispose();
 		}
 
-        private void ExecutionNodesChanged(object sender, EventArgs e)
-        {
-            //Console.WriteLine("hanged");
-            //if (setupForm != null)
-            //{
-            //    setupForm.elementsForm.PopulateElementTree();
-            //}
-        }
+		private void ExecutionNodesChanged(object sender, EventArgs e)
+		{
+			//Console.WriteLine("hanged");
+			//if (setupForm != null)
+			//{
+			//    setupForm.elementsForm.PopulateElementTree();
+			//}
+		}
 
 		private void ProgramContextCreated(object sender, ContextEventArgs contextEventArgs)
 		{
@@ -158,7 +160,15 @@ namespace VixenModules.Preview.VixenPreview
 
 		protected override void Update()
 		{
-			displayForm.ProcessUpdateParallel(ElementStates);
+			try {
+				Console.WriteLine("Update");
+				displayForm.Scene.ElementStates = ElementStates;
+
+			} catch (Exception e) {
+
+				Console.WriteLine(e.ToString());
+			}
+
 		}
 	}
 }

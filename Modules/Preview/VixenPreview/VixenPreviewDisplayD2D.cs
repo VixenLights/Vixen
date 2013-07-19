@@ -8,31 +8,63 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-using Common.Controls.Direct2D;
+using VixenModules.Preview.VixenPreview.Direct2D;
 using Vixen.Sys;
 using VixenModules.Preview.VixenPreview.Shapes;
 
-namespace VixenModules.Preview.VixenPreview {
-	public partial class VixenPreviewDisplayD2D : Form {
-		private VixenPreviewData _data;
+namespace VixenModules.Preview.VixenPreview
+{
+	public partial class VixenPreviewDisplayD2D : Form
+	{
+	
 
-		public VixenPreviewData Data {
-			set {
-				_data = value;
+		public VixenPreviewDisplayD2D()
+		{
+			InitializeComponent();
+			//direct2DControlWinForm1. = new DisplayScene(null, DisplayID);
+			Scene = new DisplayScene(null );
+			Scene.IsAnimating = true;
+		}
+
+
+		public Direct2D.DisplayScene Scene { get { return (DisplayScene)previewWinform1.Scene; } set { previewWinform1.Scene = value; } }
+
+	 
+	    public VixenPreviewData Data
+		{
+			set
+			{
+				Scene.Data = value;
 
 			}
-			get { return _data; }
+			get { return Scene.Data; }
 		}
 
 
-		public VixenPreviewDisplayD2D() {
-			InitializeComponent();
+		
+		public override Image BackgroundImage
+		{
+			get
+			{
+				return Scene.BackgroundImage;
+			}
+			set
+			{
+				if (Scene == null) {
+					Scene = new DisplayScene(value);
+					Scene.IsAnimating = true;
+				}
+				Scene.BackgroundImage = value;
+			}
 		}
 
-
-
-		public void Setup() {
-			direct2DControlWinForm1.BackgroundImage = Image.FromFile(Data.BackgroundFileName);
+		public void Setup()
+		{
+			if (System.IO.File.Exists(Data.BackgroundFileName)) {
+				//	direct2DControlWinForm1.Scene = new DisplayScene(Image.FromFile(Data.BackgroundFileName), DisplayID);
+				BackgroundImage = Image.FromFile(Data.BackgroundFileName);
+			} else
+				BackgroundImage = null;
 
 			//Sometimes the preview shows up outside the bounds of the display....
 			//this will reset that value if it happens
@@ -49,101 +81,18 @@ namespace VixenModules.Preview.VixenPreview {
 				Data.Top = 0;
 
 			SetDesktopLocation(Data.Left, Data.Top);
-			Size = new Size(direct2DControlWinForm1.BackgroundImage.Width, direct2DControlWinForm1.BackgroundImage.Height);
-			Reload();
+			if (BackgroundImage != null)
+				Size = new Size(this.previewWinform1.BackgroundImage.Width, previewWinform1.BackgroundImage.Height);
+			else
+				Size = new System.Drawing.Size(Data.Width, Data.Height);
+
+			Scene.Reload();
+			Scene.IsAnimating = true;
 		}
 
 
-		public ConcurrentDictionary<ElementNode, List<PreviewPixel>> NodeToPixel = new ConcurrentDictionary<ElementNode, List<PreviewPixel>>();
-		public List<DisplayItem> DisplayItems {
-			get {
-				if (Data != null) {
-					return Data.DisplayItems;
-				}
-				else {
-					return null;
-				}
-			}
-		}
-		public void Reload() {
-			//lock (PreviewTools.renderLock)
-			//{
-			if (NodeToPixel == null) PreviewTools.Throw("PreviewBase.NodeToPixel == null");
-			NodeToPixel.Clear();
-
-			if (DisplayItems == null) PreviewTools.Throw("DisplayItems == null");
-			foreach (DisplayItem item in DisplayItems) {
-				if (item.Shape.Pixels == null) PreviewTools.Throw("item.Shape.Pixels == null");
-				foreach (PreviewPixel pixel in item.Shape.Pixels) {
-					if (pixel.Node != null) {
-						List<PreviewPixel> pixels;
-						if (NodeToPixel.TryGetValue(pixel.Node, out pixels)) {
-							if (!pixels.Contains(pixel)) {
-								pixels.Add(pixel);
-							}
-						}
-						else {
-							pixels = new List<PreviewPixel>();
-							pixels.Add(pixel);
-							NodeToPixel.TryAdd(pixel.Node, pixels);
-						}
-					}
-				}
-			}
-			//LoadBackground();
-			//}
-		}
-		public void ProcessUpdateParallel(ElementIntentStates elementStates) {
-			CancellationTokenSource tokenSource = new CancellationTokenSource();
-			if (!direct2DControlWinForm1.Paused) {
-
-				try {
-					direct2DControlWinForm1.Points = new List<DisplayScene.DisplayPoint>();
-
-					//elementStates.AsParallel().WithCancellation(tokenSource.Token).ForAll(channelIntentState => {
-					elementStates.ToList().ForEach(channelIntentState => {
-						var elementId = channelIntentState.Key;
-						Element element = VixenSystem.Elements.GetElement(elementId);
-						if (element != null) {
-							ElementNode node = VixenSystem.Elements.GetElementNodeForElement(element);
-							if (node != null) {
-								List<PreviewPixel> pixels;
-								if (NodeToPixel.TryGetValue(node, out pixels)) {
-
-
-									foreach (PreviewPixel pixel in pixels) {
-										 Points.Add(new DisplayScene.DisplayPoint() {
-											Color = pixel.PixelColor,
-											PixelSize = pixel.PixelSize,
-											Shape = new Rectangle() {
-												X = pixel.X,
-												Y = pixel.Y,
-												Height = pixel.PixelSize,
-												Width = pixel.PixelSize
-											}
-										});
-									}
-								}
-
-
-							}
-						}
-					});
-					direct2DControlWinForm1.WritePoints(Points);
-					Points.Clear();
-				}
-				catch (Exception e) {
-					tokenSource.Cancel();
-					//Console.WriteLine(e.Message);
-				}
-			}
-
-
-		}
-
-		List<DisplayScene.DisplayPoint> Points = new List<DisplayScene.DisplayPoint>();
-
-		private void VixenPreviewDisplay_FormClosing(object sender, FormClosingEventArgs e) {
+		private void VixenPreviewDisplay_FormClosing(object sender, FormClosingEventArgs e)
+		{
 			if (e.CloseReason == CloseReason.UserClosing) {
 				MessageBox.Show("The preview can only be closed from the Preview Configuration dialog.", "Close",
 								MessageBoxButtons.OKCancel);

@@ -12,7 +12,9 @@ using System.Threading;
 
 namespace Common.Controls.Direct2D {
 	public partial class Direct2DControlWinForm : UserControl {
+		Guid DisplayID;
 		Image backgroundImage = null;
+
 		public new Image BackgroundImage {
 			get {
 				return backgroundImage;
@@ -20,25 +22,15 @@ namespace Common.Controls.Direct2D {
 			}
 			set {
 				backgroundImage = value;
-				direct2DControlWPF1.BackgroundImage = backgroundImage;
-
+			
 			}
 		}
-		public List<DisplayScene.DisplayPoint> Points { get; set; }
-
-		public bool Paused { get { return direct2DControlWPF1.Paused; } set { direct2DControlWPF1.Paused = value; } }
 
 
-		public void WritePoints(List<DisplayScene.DisplayPoint> Points) {
-		 
-			 
-			direct2DControlWPF1.WritePoints(Points);
+		public Direct2DControlWinForm(Guid displayID) {
+			
+			DisplayID = displayID;
 
-		}
-
-
-		public Direct2DControlWinForm() {
-			Points = new List<DisplayScene.DisplayPoint>();
 			InitializeComponent();
 		}
 	}

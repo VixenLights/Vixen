@@ -92,6 +92,9 @@
     <Compile Include="Direct2D\Direct2DControlWinForm.Designer.cs">
       <DependentUpon>Direct2DControlWinForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Direct2D\Direct2DControlWPF.xaml.cs">
+      <DependentUpon>Direct2DControlWPF.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Direct2D\DisplayScene.cs" />
     <Compile Include="Direct2D\Extensions.cs" />
     <Compile Include="Direct2D\Interop\ComInterface.cs" />
@@ -102,9 +105,6 @@
     <Compile Include="Direct2D\Interop\NativeMethods.cs" />
     <Compile Include="Direct2D\Interop\NativeStructs.cs" />
     <Compile Include="Direct2D\Scene.cs" />
-    <Compile Include="Direct2D\Direct2DControlWPF.xaml.cs">
-      <DependentUpon>Direct2DControlWPF.xaml</DependentUpon>
-    </Compile>
     <Compile Include="DiscreteColorPicker.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -420,8 +420,8 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Direct2D\Direct2DControlWPF.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

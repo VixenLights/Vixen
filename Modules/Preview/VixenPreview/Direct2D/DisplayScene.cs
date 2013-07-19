@@ -11,8 +11,12 @@ using System.Drawing;
 using System.Timers;
 using System.Diagnostics;
 using System.Drawing.Imaging;
+using Vixen.Sys;
+using System.Threading;
+using VixenModules.Preview.VixenPreview.Shapes;
+using Vixen.Data.Value;
 
-namespace Common.Controls.Direct2D
+namespace VixenModules.Preview.VixenPreview.Direct2D
 {
 	public sealed class DisplayScene : Direct2D.AnimatedScene
 	{
@@ -24,20 +28,26 @@ namespace Common.Controls.Direct2D
 		private DateTime time;
 		private int frameCount;
 		private int fps;
-		private Guid DisplayID;
-		public DisplayScene(System.Drawing.Image backgroundImage, Guid displayID)
+		private Guid DisplayID = Guid.Empty;
+		public DisplayScene(System.Drawing.Image backgroundImage)
 			: base(100) // Will probably only be about 67 fps due to the limitations of the timer
 		{
 			this.writeFactory = DWrite.DWriteFactory.CreateFactory();
 
-			DisplayID = displayID;
+
 			BackgroundImage = backgroundImage;
 			BackgroundAlpha = 128;
-			if (Points == null)
-				Points = new ConcurrentDictionary<Guid, ConcurrentDictionary<Guid, List<DisplayPoint>>>();
-			ConcurrentDictionary<Guid, List<DisplayPoint>> dic;
-			Points.TryRemove(displayID, out dic);
-			Points.TryAdd(displayID, new ConcurrentDictionary<Guid, List<DisplayPoint>>());
+
+		}
+		private VixenPreviewData _data;
+		public VixenPreviewData Data
+		{
+			set
+			{
+				_data = value;
+
+			}
+			get { return _data; }
 		}
 
 		protected override void Dispose(bool disposing)
@@ -88,6 +98,7 @@ namespace Common.Controls.Direct2D
 				return background;
 			}
 		}
+		public bool Enabled { get { return IsAnimating; } set { IsAnimating = value; } }
 
 		private void TryCreateBackgroundBitmap()
 		{
@@ -144,32 +155,64 @@ namespace Common.Controls.Direct2D
 					//} else
 					//	this.RenderTarget.RestoreDrawingState(currentState);
 				}
+				if (NodeToPixel.Count == 0)
+					Reload();
 
-				var points = Points[DisplayID].SelectMany(s => s.Value.ToList()).ToList();
-				Random r = new Random();
-				points.ForEach(p => {
-					var rect = new D2D.RectF();
-					rect.Top = p.Shape.Top;
-					rect.Bottom = p.Shape.Bottom;
-					rect.Left = p.Shape.Left;
-					rect.Right = p.Shape.Right;
-					rect.Height = p.Shape.Height;
-					rect.Width = p.Shape.Width;
+				CancellationTokenSource tokenSource = new CancellationTokenSource();
 
-					p.Color = Color.FromArgb(r.Next(0, 255), r.Next(0, 255), r.Next(0, 255), r.Next(0, 255));
+				if (IsAnimating) {
 
-					using (var brush = this.RenderTarget.CreateSolidColorBrush(p.Color.ToColorF())) {
-						//this.RenderTarget.DrawRectangle(rect, brush, .5f);
-						//this.RenderTarget.FillRectangle(rect, brush);
-						this.RenderTarget.FillEllipse(new D2D.Ellipse() { Point = new D2D.Point2F(p.Shape.Location.X, p.Shape.Location.Y), RadiusX = p.PixelSize / 2, RadiusY = p.PixelSize / 2 }, brush);
+					try {
+
+						//elementStates.AsParallel().WithCancellation(tokenSource.Token).ForAll(channelIntentState => {
+						ElementIntentStates states = null;
+						lock (ElementStates) {
+							states = ElementStates;
+						}
+						foreach (var channelIntentState in ElementStates) {
+
+							var elementId = channelIntentState.Key;
+							Element element = VixenSystem.Elements.GetElement(elementId);
+							if (element != null) {
+								ElementNode node = VixenSystem.Elements.GetElementNodeForElement(element);
+								if (node != null) {
+									List<PreviewPixel> pixels;
+									if (NodeToPixel.TryGetValue(node, out pixels)) {
+
+
+										foreach (PreviewPixel p in pixels) {
+
+											Color pixColor;
+
+
+											//TODO: Discrete Colors
+											pixColor = Vixen.Intent.ColorIntent.GetAlphaColorForIntents(channelIntentState.Value);
+
+											using (var brush = this.RenderTarget.CreateSolidColorBrush(pixColor.ToColorF())) {
+												//this.RenderTarget.DrawRectangle(rect, brush, .5f);
+												//this.RenderTarget.FillRectangle(rect, brush);
+												this.RenderTarget.FillEllipse(new D2D.Ellipse() { Point = new D2D.Point2F(p.X, p.Y), RadiusX = p.PixelSize / 2, RadiusY = p.PixelSize / 2 }, brush);
+											}
+
+										}
+									}
+								}
+							}
+						}
+
+					} catch (Exception e) {
+						tokenSource.Cancel();
+						//Console.WriteLine(e.Message);
 					}
-				});
+				}
+
+
 
 
 
 				w.Stop();
 				// Draw a little FPS in the top left corner
-				string text = string.Format("FPS {0} Points {1} ElapsedMS: {2}", this.fps, Points[DisplayID].Count(), w.ElapsedMilliseconds);
+				string text = string.Format("FPS {0} Points {1}", this.fps, ElementStates.Count());
 
 				using (var textBrush = this.RenderTarget.CreateSolidColorBrush(Color.White.ToColorF())) {
 					this.RenderTarget.DrawText(text, this.textFormat, new D2D.RectF(10, 10, 100, 20), textBrush);
@@ -187,11 +230,6 @@ namespace Common.Controls.Direct2D
 				Console.WriteLine(e.Message);
 			}
 		}
-
-
-
-		public static ConcurrentDictionary<Guid, ConcurrentDictionary<Guid, List<DisplayPoint>>> Points = new ConcurrentDictionary<Guid, ConcurrentDictionary<Guid, List<DisplayPoint>>>();
-		public static ConcurrentDictionary<Guid, bool> Paused = new ConcurrentDictionary<Guid, bool>();
 
 
 		//private void GenerateDemoPoints()
@@ -242,6 +280,62 @@ namespace Common.Controls.Direct2D
 			public int PixelSize { get; set; }
 
 		}
+
+
+		#region Old Update Stuff
+
+		public ConcurrentDictionary<ElementNode, List<PreviewPixel>> NodeToPixel = new ConcurrentDictionary<ElementNode, List<PreviewPixel>>();
+		public List<DisplayItem> DisplayItems
+		{
+			get
+			{
+				if (Data != null) {
+					return Data.DisplayItems;
+				} else {
+					return null;
+				}
+			}
+		}
+		public void Reload()
+		{
+			//lock (PreviewTools.renderLock)
+			//{
+			if (NodeToPixel == null) PreviewTools.Throw("PreviewBase.NodeToPixel == null");
+			NodeToPixel.Clear();
+
+			if (DisplayItems == null) PreviewTools.Throw("DisplayItems == null");
+			foreach (DisplayItem item in DisplayItems) {
+				if (item.Shape.Pixels == null) PreviewTools.Throw("item.Shape.Pixels == null");
+				foreach (PreviewPixel pixel in item.Shape.Pixels) {
+					if (pixel.Node != null) {
+						List<PreviewPixel> pixels;
+						if (NodeToPixel.TryGetValue(pixel.Node, out pixels)) {
+							if (!pixels.Contains(pixel)) {
+								pixels.Add(pixel);
+							}
+						} else {
+							pixels = new List<PreviewPixel>();
+							pixels.Add(pixel);
+							NodeToPixel.TryAdd(pixel.Node, pixels);
+						}
+					}
+				}
+			}
+
+			if (System.IO.File.Exists(Data.BackgroundFileName))
+				BackgroundImage = Image.FromFile(Data.BackgroundFileName);
+			else
+				BackgroundImage = null;
+
+			//LoadBackground();
+			//}
+
+		}
+
+		public ElementIntentStates ElementStates { get; set; }
+
+
+		#endregion
 
 
 	}

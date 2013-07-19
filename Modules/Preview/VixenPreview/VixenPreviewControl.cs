@@ -866,7 +866,7 @@ namespace VixenModules.Preview.VixenPreview
 		{
 			//lock (PreviewTools.renderLock)
 			//{
-			if (NodeToPixel == null) PreviewTools.Throw("PreviewBase.NodeToPixel == null");
+			if (NodeToPixel == null) NodeToPixel = new ConcurrentDictionary<ElementNode, List<PreviewPixel>>();
 			NodeToPixel.Clear();
 
 			if (DisplayItems == null) PreviewTools.Throw("DisplayItems == null");
