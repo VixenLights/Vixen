@@ -64,6 +64,7 @@ using Common.Controls.Direct2D;
             set { this.SetValue(SceneProperty, value); }
         }
 
+
         /// <summary>
         /// Gets the number of visual child elements within this element.
         /// </summary>

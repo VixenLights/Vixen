@@ -16,11 +16,11 @@ using System.Threading;
 using VixenModules.Preview.VixenPreview.Shapes;
 using Vixen.Data.Value;
 using Common.Controls.Direct2D;
+using System.Drawing.Drawing2D;
+using System.IO;
 
-namespace VixenModules.Preview.VixenPreview.Direct2D
-{
-	public sealed class DisplayScene :  AnimatedScene
-	{
+namespace VixenModules.Preview.VixenPreview.Direct2D {
+	public sealed class DisplayScene : AnimatedScene {
 
 		private DWrite.TextFormat textFormat;
 		private DWrite.DWriteFactory writeFactory;
@@ -37,22 +37,19 @@ namespace VixenModules.Preview.VixenPreview.Direct2D
 
 
 			BackgroundImage = backgroundImage;
-			BackgroundAlpha = 128;
+
 
 		}
 		private VixenPreviewData _data;
-		public VixenPreviewData Data
-		{
-			set
-			{
+		public VixenPreviewData Data {
+			set {
 				_data = value;
 
 			}
 			get { return _data; }
 		}
 
-		protected override void Dispose(bool disposing)
-		{
+		protected override void Dispose(bool disposing) {
 			if (disposing) {
 				this.writeFactory.Dispose();
 
@@ -61,8 +58,7 @@ namespace VixenModules.Preview.VixenPreview.Direct2D
 			base.Dispose(disposing);
 		}
 
-		protected override void OnCreateResources()
-		{
+		protected override void OnCreateResources() {
 			// We don't need to free any resources because the base class will
 			// call OnFreeResources if necessary before calling this method.
 
@@ -71,44 +67,74 @@ namespace VixenModules.Preview.VixenPreview.Direct2D
 			base.OnCreateResources(); // Call this last to start the animation
 		}
 
-		protected override void OnFreeResources()
-		{
+		protected override void OnFreeResources() {
 			base.OnFreeResources(); // Call this first to stop the animation
 
 		}
 		System.Drawing.Image backgroundImage;
-		public System.Drawing.Image BackgroundImage
-		{
+
+		public System.Drawing.Image BackgroundImage {
 			get { return backgroundImage; }
-			set
-			{
+			set {
 				backgroundImage = value;
 				isDirty = true;
 			}
 		}
 
-		public byte BackgroundAlpha { get; set; }
 		bool isDirty = true;
 		D2D.D2DBitmap background = null;
 
-		public D2D.D2DBitmap Background
-		{
-			get
-			{
+		public D2D.D2DBitmap Background {
+			get {
 				TryCreateBackgroundBitmap();
 				return background;
 			}
 		}
+
 		public bool Enabled { get { return IsAnimating; } set { IsAnimating = value; } }
 
-		private void TryCreateBackgroundBitmap()
-		{
+		public void ConvertImageToStreamAndAdjustBrightness(Image image, int value, MemoryStream stream) {
+
+			if (value == 0) // No change, so just return
+				return;
+
+			using (Image img = image) {
+
+				float sb = (((float)value - 255) / 255F) * .7f;
+
+				float[][] colorMatrixElements =
+				  {
+                        new float[] {1,  0,  0,  0, 0},
+                        new float[] {0,  1,  0,  0, 0},
+                        new float[] {0,  0,  1,  0, 0},
+                        new float[] {0,  0,  0,  1, 0},
+                        new float[] {sb, sb, sb, 1, 1}
+
+                  };
+
+				ColorMatrix cm = new ColorMatrix(colorMatrixElements);
+
+				using (ImageAttributes imgattr = new ImageAttributes()) {
+					Rectangle rc = new Rectangle(0, 0, img.Width, img.Height);
+					using (Graphics g = Graphics.FromImage(img)) {
+						g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+						imgattr.SetColorMatrix(cm);
+						g.DrawImage(img, rc, 0, 0, img.Width, img.Height, GraphicsUnit.Pixel, imgattr);
+					}
+				}
+
+				img.Save(stream, img.RawFormat);
+			}
+		}
+
+		private void TryCreateBackgroundBitmap() {
 			if (RenderTarget != null && ((isDirty && BackgroundImage != null) || (background == null && BackgroundImage != null))) {
+
 				using (var ms = new System.IO.MemoryStream()) {
 
-					backgroundImage.Save(ms, backgroundImage.RawFormat);
-
+					ConvertImageToStreamAndAdjustBrightness(BackgroundImage, Data.BackgroundAlpha, ms);
 					ms.Position = 0;
+
 					using (var factory = WIC.ImagingFactory.Create()) {
 						using (WIC.BitmapDecoder decoder = factory.CreateDecoderFromStream(ms, WIC.DecodeMetadataCacheOption.OnDemand)) {
 							using (WIC.BitmapFrameDecode source = decoder.GetFrame(0)) {
@@ -126,8 +152,7 @@ namespace VixenModules.Preview.VixenPreview.Direct2D
 
 
 
-		protected override void OnRender()
-		{
+		protected override void OnRender() {
 
 			try {
 				Stopwatch w = Stopwatch.StartNew();
@@ -201,7 +226,8 @@ namespace VixenModules.Preview.VixenPreview.Direct2D
 							}
 						}
 
-					} catch (Exception e) {
+					}
+					catch (Exception e) {
 						tokenSource.Cancel();
 						//Console.WriteLine(e.Message);
 					}
@@ -226,7 +252,8 @@ namespace VixenModules.Preview.VixenPreview.Direct2D
 
 
 
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 
 				Console.WriteLine(e.Message);
 			}
@@ -273,8 +300,7 @@ namespace VixenModules.Preview.VixenPreview.Direct2D
 
 		//}
 
-		public struct DisplayPoint
-		{
+		public struct DisplayPoint {
 			public Rectangle Shape { get; set; }
 			public System.Drawing.Color Color { get; set; }
 			public string Identifier { get { return string.Format("{0}-{1}-{2}-{3}", Shape.X, Shape.Y, Shape.Width, Shape.Height); } }
@@ -286,19 +312,17 @@ namespace VixenModules.Preview.VixenPreview.Direct2D
 		#region Old Update Stuff
 
 		public ConcurrentDictionary<ElementNode, List<PreviewPixel>> NodeToPixel = new ConcurrentDictionary<ElementNode, List<PreviewPixel>>();
-		public List<DisplayItem> DisplayItems
-		{
-			get
-			{
+		public List<DisplayItem> DisplayItems {
+			get {
 				if (Data != null) {
 					return Data.DisplayItems;
-				} else {
+				}
+				else {
 					return null;
 				}
 			}
 		}
-		public void Reload()
-		{
+		public void Reload() {
 			//lock (PreviewTools.renderLock)
 			//{
 			if (NodeToPixel == null) PreviewTools.Throw("PreviewBase.NodeToPixel == null");
@@ -314,7 +338,8 @@ namespace VixenModules.Preview.VixenPreview.Direct2D
 							if (!pixels.Contains(pixel)) {
 								pixels.Add(pixel);
 							}
-						} else {
+						}
+						else {
 							pixels = new List<PreviewPixel>();
 							pixels.Add(pixel);
 							NodeToPixel.TryAdd(pixel.Node, pixels);

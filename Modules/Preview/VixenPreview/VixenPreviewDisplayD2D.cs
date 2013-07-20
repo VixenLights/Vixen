@@ -12,44 +12,56 @@ using VixenModules.Preview.VixenPreview.Direct2D;
 using Vixen.Sys;
 using VixenModules.Preview.VixenPreview.Shapes;
 
-namespace VixenModules.Preview.VixenPreview
-{
-	public partial class VixenPreviewDisplayD2D : Form
-	{
-	
+namespace VixenModules.Preview.VixenPreview {
+	public partial class VixenPreviewDisplayD2D : Form {
 
-		public VixenPreviewDisplayD2D()
-		{
+
+		public VixenPreviewDisplayD2D() {
 			InitializeComponent();
 			//direct2DControlWinForm1. = new DisplayScene(null, DisplayID);
-			Scene = new DisplayScene(null );
+			Scene = new DisplayScene(null);
 			Scene.IsAnimating = true;
 		}
 
 
 		public Direct2D.DisplayScene Scene { get { return (DisplayScene)previewWinform1.Scene; } set { previewWinform1.Scene = value; } }
 
-	 
-	    public VixenPreviewData Data
-		{
-			set
-			{
-				Scene.Data = value;
+		VixenPreviewData _data;
+		private void setSceneData() {
+			if (this.InvokeRequired)
+				this.Invoke(new Vixen.Delegates.GenericDelegate(setSceneData));
+			else
+				Scene.Data = _data;
+		}
 
+		public VixenPreviewData Data {
+			set {
+
+				_data = value;
+				setSceneData();
+				Reload();
 			}
-			get { return Scene.Data; }
+			get { return _data; }
 		}
 
 
-		
-		public override Image BackgroundImage
-		{
-			get
-			{
+		public void IsAnimating(bool enabled) {
+			if (this.InvokeRequired)
+				this.Invoke(new Vixen.Delegates.GenericBool(IsAnimating), enabled);
+			else
+				Scene.IsAnimating = enabled;
+		}
+		public void Reload() {
+			if (this.InvokeRequired)
+				this.Invoke(new Vixen.Delegates.GenericDelegate(Reload));
+			else
+				Scene.Reload();
+		}
+		public override Image BackgroundImage {
+			get {
 				return Scene.BackgroundImage;
 			}
-			set
-			{
+			set {
 				if (Scene == null) {
 					Scene = new DisplayScene(value);
 					Scene.IsAnimating = true;
@@ -58,12 +70,12 @@ namespace VixenModules.Preview.VixenPreview
 			}
 		}
 
-		public void Setup()
-		{
+		public void Setup() {
 			if (System.IO.File.Exists(Data.BackgroundFileName)) {
 				//	direct2DControlWinForm1.Scene = new DisplayScene(Image.FromFile(Data.BackgroundFileName), DisplayID);
 				BackgroundImage = Image.FromFile(Data.BackgroundFileName);
-			} else
+			}
+			else
 				BackgroundImage = null;
 
 			//Sometimes the preview shows up outside the bounds of the display....
@@ -93,8 +105,7 @@ namespace VixenModules.Preview.VixenPreview
 		}
 
 
-		private void VixenPreviewDisplay_FormClosing(object sender, FormClosingEventArgs e)
-		{
+		private void VixenPreviewDisplay_FormClosing(object sender, FormClosingEventArgs e) {
 			if (e.CloseReason == CloseReason.UserClosing) {
 				MessageBox.Show("The preview can only be closed from the Preview Configuration dialog.", "Close",
 								MessageBoxButtons.OKCancel);
