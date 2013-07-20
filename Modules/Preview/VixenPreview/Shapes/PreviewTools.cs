@@ -216,12 +216,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				throw;
 			}
 		}
-
-		public static void Throw(string message)
-		{
-			throw new System.ArgumentException(message);
-		}
-
+ 
 		public static Bitmap Copy32BPPBitmapSafe(Bitmap srcBitmap)
 		{
 			Bitmap result = new Bitmap(srcBitmap.Width, srcBitmap.Height, PixelFormat.Format32bppArgb);

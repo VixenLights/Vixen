@@ -191,8 +191,8 @@ namespace VixenModules.Preview.VixenPreview.Direct2D {
 					try {
 
 						ElementStates.AsParallel().WithCancellation(tokenSource.Token).ForAll(channelIntentState => {
-					
-						//foreach (var channelIntentState in ElementStates) {
+
+							//foreach (var channelIntentState in ElementStates) {
 
 							var elementId = channelIntentState.Key;
 							Element element = VixenSystem.Elements.GetElement(elementId);
@@ -319,31 +319,39 @@ namespace VixenModules.Preview.VixenPreview.Direct2D {
 				}
 			}
 		}
+
 		public void Reload() {
 			//lock (PreviewTools.renderLock)
 			//{
-			if (NodeToPixel == null) PreviewTools.Throw("PreviewBase.NodeToPixel == null");
+			if (NodeToPixel == null)
+				throw new System.ArgumentException("PreviewBase.NodeToPixel == null");
+
 			NodeToPixel.Clear();
 
-			if (DisplayItems == null) PreviewTools.Throw("DisplayItems == null");
-			foreach (DisplayItem item in DisplayItems) {
-				if (item.Shape.Pixels == null) PreviewTools.Throw("item.Shape.Pixels == null");
-				foreach (PreviewPixel pixel in item.Shape.Pixels) {
-					if (pixel.Node != null) {
-						List<PreviewPixel> pixels;
-						if (NodeToPixel.TryGetValue(pixel.Node, out pixels)) {
-							if (!pixels.Contains(pixel)) {
-								pixels.Add(pixel);
+			if (DisplayItems == null)
+				throw new System.ArgumentException("DisplayItems == null");
+
+			if (DisplayItems != null)
+				foreach (DisplayItem item in DisplayItems) {
+					if (item.Shape.Pixels == null)
+						throw new System.ArgumentException("item.Shape.Pixels == null");
+
+					foreach (PreviewPixel pixel in item.Shape.Pixels) {
+						if (pixel.Node != null) {
+							List<PreviewPixel> pixels;
+							if (NodeToPixel.TryGetValue(pixel.Node, out pixels)) {
+								if (!pixels.Contains(pixel)) {
+									pixels.Add(pixel);
+								}
 							}
-						}
-						else {
-							pixels = new List<PreviewPixel>();
-							pixels.Add(pixel);
-							NodeToPixel.TryAdd(pixel.Node, pixels);
+							else {
+								pixels = new List<PreviewPixel>();
+								pixels.Add(pixel);
+								NodeToPixel.TryAdd(pixel.Node, pixels);
+							}
 						}
 					}
 				}
-			}
 
 			if (System.IO.File.Exists(Data.BackgroundFileName))
 				BackgroundImage = Image.FromFile(Data.BackgroundFileName);
