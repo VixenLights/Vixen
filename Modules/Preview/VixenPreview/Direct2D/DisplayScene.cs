@@ -190,12 +190,9 @@ namespace VixenModules.Preview.VixenPreview.Direct2D {
 
 					try {
 
-						//elementStates.AsParallel().WithCancellation(tokenSource.Token).ForAll(channelIntentState => {
-						ElementIntentStates states = null;
-						lock (ElementStates) {
-							states = ElementStates;
-						}
-						foreach (var channelIntentState in ElementStates) {
+						ElementStates.AsParallel().WithCancellation(tokenSource.Token).ForAll(channelIntentState => {
+					
+						//foreach (var channelIntentState in ElementStates) {
 
 							var elementId = channelIntentState.Key;
 							Element element = VixenSystem.Elements.GetElement(elementId);
@@ -224,7 +221,7 @@ namespace VixenModules.Preview.VixenPreview.Direct2D {
 									}
 								}
 							}
-						}
+						});
 
 					}
 					catch (Exception e) {
