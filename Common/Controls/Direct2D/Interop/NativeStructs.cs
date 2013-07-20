@@ -6,7 +6,7 @@ namespace Common.Controls.Direct2D.Interop
     // These structs are taken from the DirectX SDK
     // In the SDK unsigned int (uint in c#) is used, however, we're only going
     // to use normal ints so we are CLR compliant.
-    internal static class NativeStructs
+    public static class NativeStructs
     {
         [StructLayout(LayoutKind.Sequential)]
         public sealed class D3DDISPLAYMODEEX

@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 namespace Common.Controls.Direct2D.Interop
 {
     // These are the declarations taken from the DirectX SDK
-    internal static class ComInterface
+    public static class ComInterface
     {
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
         public delegate int CreateDeviceEx(IDirect3D9Ex d3D9, uint Adapter, int DeviceType, IntPtr hFocusWindow, int BehaviorFlags, NativeStructs.D3DPRESENT_PARAMETERS pPresentationParameters, NativeStructs.D3DDISPLAYMODEEX pFullscreenDisplayMode, out IDirect3DDevice9Ex ppReturnedDeviceInterface);

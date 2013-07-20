@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
+using Common.Controls.Direct2D;
  
 
   namespace VixenModules.Preview.VixenPreview.Direct2D
@@ -37,7 +38,7 @@ using System.Windows.Threading;
             this.resizeTimer.Interval = ResizeInterval;
             this.resizeTimer.Tick += this.ResizeTimerTick;
 
-            this.imageSource = new Direct2D.D3D10Image();
+            this.imageSource = new  D3D10Image();
             this.imageSource.IsFrontBufferAvailableChanged += OnIsFrontBufferAvailableChanged;
 
             this.image = new Image();

@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Common.Controls.Direct2D.Interop
 {
-    internal sealed class Direct3DSurface9 : IDisposable
+    public sealed class Direct3DSurface9 : IDisposable
     {
         private ComInterface.IDirect3DSurface9 comObject;
         private IntPtr native;

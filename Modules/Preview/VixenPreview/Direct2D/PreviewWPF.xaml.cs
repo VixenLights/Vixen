@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Common.Controls.Direct2D;
 
 namespace VixenModules.Preview.VixenPreview.Direct2D
 {

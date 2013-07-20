@@ -81,8 +81,10 @@ namespace VixenModules.Preview.VixenPreview
 				Data.Top = 0;
 
 			SetDesktopLocation(Data.Left, Data.Top);
-			if (BackgroundImage != null)
+			if (BackgroundImage != null) {
+				this.previewWinform1.BackgroundImage = BackgroundImage;
 				Size = new Size(this.previewWinform1.BackgroundImage.Width, previewWinform1.BackgroundImage.Height);
+			}
 			else
 				Size = new System.Drawing.Size(Data.Width, Data.Height);
 

@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls.Direct2D;
 
 namespace VixenModules.Preview.VixenPreview.Direct2D
 {

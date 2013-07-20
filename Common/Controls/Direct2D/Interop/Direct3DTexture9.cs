@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Common.Controls.Direct2D.Interop
 {
-    internal sealed class Direct3DTexture9 : IDisposable
+    public sealed class Direct3DTexture9 : IDisposable
     {
         private ComInterface.IDirect3DTexture9 comObject;
         private ComInterface.GetSurfaceLevel getSurfaceLevel;

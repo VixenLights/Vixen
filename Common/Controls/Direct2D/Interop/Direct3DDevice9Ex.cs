@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Common.Controls.Direct2D.Interop
 {
-    internal sealed class Direct3DDevice9Ex : IDisposable
+    public sealed class Direct3DDevice9Ex : IDisposable
     {
         private ComInterface.IDirect3DDevice9Ex comObject;
         private ComInterface.CreateTexture createTexture;

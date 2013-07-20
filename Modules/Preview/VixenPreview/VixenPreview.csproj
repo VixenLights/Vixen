@@ -111,18 +111,10 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Direct2D\AnimatedScene.cs" />
-    <Compile Include="Direct2D\D3D10Image.cs" />
-    <Compile Include="Direct2D\Direct2DControl.cs" />
+    <Compile Include="Direct2D\Direct2DControl.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Direct2D\DisplayScene.cs" />
-    <Compile Include="Direct2D\Extensions.cs" />
-    <Compile Include="Direct2D\Interop\ComInterface.cs" />
-    <Compile Include="Direct2D\Interop\Direct3D9Ex.cs" />
-    <Compile Include="Direct2D\Interop\Direct3DDevice9Ex.cs" />
-    <Compile Include="Direct2D\Interop\Direct3DSurface9.cs" />
-    <Compile Include="Direct2D\Interop\Direct3DTexture9.cs" />
-    <Compile Include="Direct2D\Interop\NativeMethods.cs" />
-    <Compile Include="Direct2D\Interop\NativeStructs.cs" />
     <Compile Include="Direct2D\PreviewWinform.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -132,7 +124,6 @@
     <Compile Include="Direct2D\PreviewWPF.xaml.cs">
       <DependentUpon>PreviewWPF.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Direct2D\Scene.cs" />
     <Compile Include="DebugTimer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResizePreviewForm.cs">

@@ -15,10 +15,11 @@ using Vixen.Sys;
 using System.Threading;
 using VixenModules.Preview.VixenPreview.Shapes;
 using Vixen.Data.Value;
+using Common.Controls.Direct2D;
 
 namespace VixenModules.Preview.VixenPreview.Direct2D
 {
-	public sealed class DisplayScene : Direct2D.AnimatedScene
+	public sealed class DisplayScene :  AnimatedScene
 	{
 
 		private DWrite.TextFormat textFormat;
