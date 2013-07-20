@@ -190,15 +190,18 @@ namespace VixenModules.Preview.VixenPreview.Direct2D {
 
 					try {
 
-						ElementStates.AsParallel().WithCancellation(tokenSource.Token).ForAll(channelIntentState => {
+						//ElementStates.AsParallel().WithCancellation(tokenSource.Token).ForAll(channelIntentState => {
 
-							//foreach (var channelIntentState in ElementStates) {
+						foreach (var channelIntentState in ElementStates) {
 
 							var elementId = channelIntentState.Key;
 							Element element = VixenSystem.Elements.GetElement(elementId);
+							
 							if (element != null) {
+							
 								ElementNode node = VixenSystem.Elements.GetElementNodeForElement(element);
 								if (node != null) {
+							
 									List<PreviewPixel> pixels;
 									if (NodeToPixel.TryGetValue(node, out pixels)) {
 
@@ -221,7 +224,8 @@ namespace VixenModules.Preview.VixenPreview.Direct2D {
 									}
 								}
 							}
-						});
+						}
+						//});
 
 					}
 					catch (Exception e) {

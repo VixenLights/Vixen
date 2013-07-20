@@ -124,6 +124,9 @@
       <DependentUpon>PictureComboBox.cs</DependentUpon>
     </Compile>
     <Compile Include="PictureComboBoxItem.cs" />
+    <Compile Include="TimelineControl\Grid.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Wizard\Wizard.cs" />
     <Compile Include="Wizard\WizardForm.cs">
       <SubType>Form</SubType>
@@ -291,7 +294,6 @@
     <Compile Include="TimelineControl\TimeInfo.cs" />
     <Compile Include="TimelineControl\TimelineControl.cs" />
     <Compile Include="TimelineControl\TimelineControlBase.cs" />
-    <Compile Include="TimelineControl\Grid.cs" />
     <Compile Include="TimelineControl\Ruler.cs" />
     <Compile Include="Undo\UndoAction.cs" />
     <Compile Include="Undo\UndoButton.cs" />
