@@ -38,6 +38,7 @@
 			this.previewWinform1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.previewWinform1.Location = new System.Drawing.Point(0, 0);
 			this.previewWinform1.Name = "previewWinform1";
+			this.previewWinform1.Scene = null;
 			this.previewWinform1.Size = new System.Drawing.Size(878, 442);
 			this.previewWinform1.TabIndex = 0;
 			// 
@@ -47,6 +48,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(878, 442);
 			this.Controls.Add(this.previewWinform1);
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.MinimumSize = new System.Drawing.Size(640, 480);
 			this.Name = "VixenPreviewDisplayD2D";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
