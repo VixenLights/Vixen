@@ -72,11 +72,17 @@ namespace VixenModules.Preview.VixenPreview.Direct2D {
 
 		}
 		System.Drawing.Image backgroundImage;
-
+		int? imageHash;
+		int? lastImageHash;
 		public System.Drawing.Image BackgroundImage {
 			get { return backgroundImage; }
 			set {
 				backgroundImage = value;
+				if (value != null)
+					imageHash = value.GetHashCode();
+				else
+					imageHash = null;
+
 				isDirty = true;
 			}
 		}
@@ -128,8 +134,8 @@ namespace VixenModules.Preview.VixenPreview.Direct2D {
 		}
 
 		private void TryCreateBackgroundBitmap() {
-			if (RenderTarget != null && ((isDirty && BackgroundImage != null) || (background == null && BackgroundImage != null))) {
-
+			if (RenderTarget != null && (imageHash != lastImageHash) && ((isDirty && BackgroundImage != null) || (background == null && BackgroundImage != null))) {
+				Console.WriteLine("TryCreateBackgroundBitmap");
 				using (var ms = new System.IO.MemoryStream()) {
 
 					ConvertImageToStreamAndAdjustBrightness(BackgroundImage, Data.BackgroundAlpha, ms);
@@ -142,6 +148,7 @@ namespace VixenModules.Preview.VixenPreview.Direct2D {
 									converter.Initialize(source.ToBitmapSource(), WIC.PixelFormats.Pbgra32Bpp, WIC.BitmapDitherType.None, WIC.BitmapPaletteType.MedianCut);
 									background = RenderTarget.CreateBitmapFromWicBitmap(converter.ToBitmapSource());
 									isDirty = false;
+									lastImageHash = imageHash;
 								}
 							}
 						}
@@ -196,12 +203,12 @@ namespace VixenModules.Preview.VixenPreview.Direct2D {
 
 							var elementId = channelIntentState.Key;
 							Element element = VixenSystem.Elements.GetElement(elementId);
-							
+
 							if (element != null) {
-							
+
 								ElementNode node = VixenSystem.Elements.GetElementNodeForElement(element);
 								if (node != null) {
-							
+
 									List<PreviewPixel> pixels;
 									if (NodeToPixel.TryGetValue(node, out pixels)) {
 
