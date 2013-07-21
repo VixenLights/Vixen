@@ -834,7 +834,9 @@
   <ItemGroup>
     <None Include="Resources\Effect64.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Compile Include="Commands\StringCommand.cs" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy "$(SolutionDir)\Release Notes.txt" $(OutDir)</PostBuildEvent>

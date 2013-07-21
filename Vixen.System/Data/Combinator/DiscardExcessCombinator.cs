@@ -32,5 +32,10 @@ namespace Vixen.Data.Combinator
 		{
 			CombinatorValue = obj;
 		}
+
+		public override void Handle(Commands.StringCommand obj)
+		{
+			CombinatorValue = obj;
+		}
 	}
 }
