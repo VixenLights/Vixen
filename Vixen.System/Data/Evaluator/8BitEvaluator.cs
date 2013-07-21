@@ -16,7 +16,7 @@ namespace Vixen.Data.Evaluator
 
 		public override void Handle(IIntentState<LightingValue> obj)
 		{
-			EvaluatorValue = new _8BitCommand(obj.GetValue().Intensity*byte.MaxValue);
+			EvaluatorValue = new _8BitCommand((byte)(byte.MaxValue * obj.GetValue().Intensity));
 		}
 
 		public override void Handle(IIntentState<PositionValue> obj)
