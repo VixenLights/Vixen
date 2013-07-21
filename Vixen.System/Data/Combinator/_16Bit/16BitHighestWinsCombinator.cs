@@ -12,7 +12,7 @@ namespace Vixen.Data.Combinator._16Bit
 				CombinatorValue = new _16BitCommand(obj.CommandValue);
 			}
 			else {
-				ushort value1 = (CombinatorValue.CommandValue as _16BitCommand).CommandValue;
+				ushort value1 = (CombinatorValue as _16BitCommand).CommandValue;
 				ushort value2 = obj.CommandValue;
 				CombinatorValue = new _16BitCommand(Math.Max(value1, value2));
 			}
@@ -24,7 +24,7 @@ namespace Vixen.Data.Combinator._16Bit
 				CombinatorValue = new _16BitCommand(ColorValue.GetGrayscaleLevel(obj.CommandValue));
 			}
 			else {
-				ushort value1 = (CombinatorValue.CommandValue as _16BitCommand).CommandValue;
+				ushort value1 = (CombinatorValue as _16BitCommand).CommandValue;
 				ushort value2 = ColorValue.GetGrayscaleLevel(obj.CommandValue);
 				CombinatorValue = new _16BitCommand(Math.Max(value1, value2));
 			}
@@ -36,7 +36,7 @@ namespace Vixen.Data.Combinator._16Bit
 				CombinatorValue = new _16BitCommand(obj.CommandValue);
 			}
 			else {
-				ushort value1 = (CombinatorValue.CommandValue as _16BitCommand).CommandValue;
+				ushort value1 = (CombinatorValue as _16BitCommand).CommandValue;
 				ushort value2 = (ushort) obj.CommandValue;
 				CombinatorValue = new _16BitCommand(Math.Max(value1, value2));
 			}
@@ -48,7 +48,7 @@ namespace Vixen.Data.Combinator._16Bit
 				CombinatorValue = new _16BitCommand(obj.CommandValue);
 			}
 			else {
-				ushort value1 = (CombinatorValue.CommandValue as _16BitCommand).CommandValue;
+				ushort value1 = (CombinatorValue as _16BitCommand).CommandValue;
 				ushort value2 = (ushort) obj.CommandValue;
 				CombinatorValue = new _16BitCommand(Math.Max(value1, value2));
 			}
@@ -60,7 +60,7 @@ namespace Vixen.Data.Combinator._16Bit
 				CombinatorValue = obj;
 			}
 			else {
-				ushort value1 = (CombinatorValue.CommandValue as _16BitCommand).CommandValue;
+				ushort value1 = (CombinatorValue as _16BitCommand).CommandValue;
 				ushort value2 = obj.CommandValue;
 				CombinatorValue = new _16BitCommand(Math.Max(value1, value2));
 			}

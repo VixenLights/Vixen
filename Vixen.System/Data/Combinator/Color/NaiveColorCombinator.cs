@@ -11,7 +11,7 @@ namespace Vixen.Data.Combinator.Color
 				CombinatorValue = obj;
 			}
 			else {
-				System.Drawing.Color value1 = (CombinatorValue.CommandValue as ColorCommand).CommandValue;
+				System.Drawing.Color value1 = (CombinatorValue as ColorCommand).CommandValue;
 				System.Drawing.Color value2 = obj.CommandValue;
 				CombinatorValue = _MergeColorNaively(value1, value2);
 			}

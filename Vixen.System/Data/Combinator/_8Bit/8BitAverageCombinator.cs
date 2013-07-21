@@ -10,7 +10,7 @@ namespace Vixen.Data.Combinator._8Bit
 				CombinatorValue = obj;
 			}
 			else {
-				byte value1 = (CombinatorValue.CommandValue as _8BitCommand).CommandValue;
+				byte value1 = (CombinatorValue as _8BitCommand).CommandValue;
 				byte value2 = obj.CommandValue;
 				CombinatorValue = new _8BitCommand((value1 + value2) >> 1);
 			}
