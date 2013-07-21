@@ -153,6 +153,7 @@
     <Compile Include="Intent\IntentState.cs" />
     <Compile Include="Intent\LightingIntent.cs" />
     <Compile Include="Intent\PositionIntent.cs" />
+    <Compile Include="Intent\StaticIntent.cs" />
     <Compile Include="Intent\StaticIntentState.cs" />
     <Compile Include="Interpolator\ColorInterpolator.cs" />
     <Compile Include="Interpolator\PositionValueInterpolator.cs" />
