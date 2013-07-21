@@ -2,7 +2,7 @@
 
 namespace Vixen.Commands
 {
-	public class _64BitCommand : Dispatchable<_64BitCommand>, ICommand<ulong>
+	public class _64BitCommand : Dispatchable<_64BitCommand>, ICommand
 	{
 		public _64BitCommand(ulong value)
 		{

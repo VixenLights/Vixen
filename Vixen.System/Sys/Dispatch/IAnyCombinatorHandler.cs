@@ -2,9 +2,7 @@
 
 namespace Vixen.Sys.Dispatch
 {
-	internal interface IAnyCombinatorHandler : IHandler<ICombinator<byte>>, IHandler<ICombinator<ushort>>,
-	                                           IHandler<ICombinator<uint>>, IHandler<ICombinator<ulong>>,
-	                                           IHandler<ICombinator<Color>>
+	internal interface IAnyCombinatorHandler : IHandler<ICombinator>
 	{
 	}
 }

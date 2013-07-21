@@ -2,7 +2,7 @@
 
 namespace Vixen.Commands
 {
-	public class _32BitCommand : Dispatchable<_32BitCommand>, ICommand<uint>
+	public class _32BitCommand : Dispatchable<_32BitCommand>, ICommand
 	{
 		public _32BitCommand(uint value)
 		{

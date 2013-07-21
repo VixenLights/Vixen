@@ -2,7 +2,7 @@
 
 namespace Vixen.Commands
 {
-	public class UnknownValueCommand : Dispatchable<UnknownValueCommand>, ICommand<object>
+	public class UnknownValueCommand : Dispatchable<UnknownValueCommand>, ICommand
 	{
 		public UnknownValueCommand(object value)
 		{
