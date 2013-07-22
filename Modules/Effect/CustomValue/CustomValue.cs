@@ -177,7 +177,7 @@ namespace VixenModules.Effect.CustomValue
 
 			foreach (ElementNode node in TargetNodes) {
 				IIntent intent = new CommandIntent(value, TimeSpan);
-				_elementData.AddIntentForElement(node.Id, intent, TimeSpan.Zero);
+				_elementData.AddIntentForElement(node.Element.Id, intent, TimeSpan.Zero);
 			}
 		}
 
