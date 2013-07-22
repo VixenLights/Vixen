@@ -54,7 +54,7 @@ namespace VixenModules.Preview.VixenPreview
 
 		private void buttonHelp_Click(object sender, EventArgs e)
 		{
-			Shapes.PreviewTools.ShowHelp(Properties.Settings.Default.Help_BackgroundImage);
+			Common.VixenHelp.VixenHelp.ShowHelp(Common.VixenHelp.VixenHelp.HelpStrings.Preview_Background);
 		}
 	}
 }

@@ -2,7 +2,7 @@
 
 namespace Vixen.Commands
 {
-	public class _16BitCommand : Dispatchable<_16BitCommand>, ICommand<ushort>
+	public class _16BitCommand : Dispatchable<_16BitCommand>, ICommand
 	{
 		public _16BitCommand(ushort value)
 		{

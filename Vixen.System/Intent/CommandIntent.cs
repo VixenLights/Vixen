@@ -4,10 +4,10 @@ using Vixen.Interpolator;
 
 namespace Vixen.Intent
 {
-	public class CommandIntent : LinearIntent<CommandValue>
+	public class CommandIntent : StaticIntent<CommandValue>
 	{
 		public CommandIntent(CommandValue command, TimeSpan timeSpan)
-			: base(command, command, timeSpan, new StaticValueInterpolator<CommandValue>())
+			: base(command, timeSpan)
 		{
 		}
 	}

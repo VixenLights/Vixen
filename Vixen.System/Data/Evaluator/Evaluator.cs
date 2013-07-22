@@ -30,6 +30,7 @@ namespace Vixen.Data.Evaluator
 
 		public virtual void Handle(IIntentState<CommandValue> obj)
 		{
+			EvaluatorValue = obj.GetValue().Command;
 		}
 
 		protected ICommand EvaluatorValue { get; set; }

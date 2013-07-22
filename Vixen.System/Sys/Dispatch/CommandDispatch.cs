@@ -23,5 +23,9 @@ namespace Vixen.Sys.Dispatch
 		public virtual void Handle(ColorCommand obj)
 		{
 		}
+
+		public virtual void Handle(StringCommand obj)
+		{
+		}
 	}
 }

@@ -4,7 +4,7 @@ using Vixen.Data.Value;
 
 namespace Vixen.Data.Combinator._64Bit
 {
-	public class _64BitHighestWinsCombinator : Combinator<_64BitHighestWinsCombinator, ulong>
+	public class _64BitHighestWinsCombinator : Combinator<_64BitHighestWinsCombinator>
 	{
 		public override void Handle(_8BitCommand obj)
 		{
@@ -12,7 +12,7 @@ namespace Vixen.Data.Combinator._64Bit
 				CombinatorValue = new _64BitCommand(obj.CommandValue);
 			}
 			else {
-				ulong value1 = CombinatorValue.CommandValue;
+				ulong value1 = (CombinatorValue as _64BitCommand).CommandValue;
 				ulong value2 = obj.CommandValue;
 				CombinatorValue = new _64BitCommand(Math.Max(value1, value2));
 			}
@@ -24,7 +24,7 @@ namespace Vixen.Data.Combinator._64Bit
 				CombinatorValue = new _64BitCommand(ColorValue.GetGrayscaleLevel(obj.CommandValue));
 			}
 			else {
-				ulong value1 = CombinatorValue.CommandValue;
+				ulong value1 = (CombinatorValue as _64BitCommand).CommandValue;
 				ulong value2 = ColorValue.GetGrayscaleLevel(obj.CommandValue);
 				CombinatorValue = new _64BitCommand(Math.Max(value1, value2));
 			}
@@ -36,7 +36,7 @@ namespace Vixen.Data.Combinator._64Bit
 				CombinatorValue = new _64BitCommand(obj.CommandValue);
 			}
 			else {
-				ulong value1 = CombinatorValue.CommandValue;
+				ulong value1 = (CombinatorValue as _64BitCommand).CommandValue;
 				ulong value2 = (byte) obj.CommandValue;
 				CombinatorValue = new _64BitCommand(Math.Max(value1, value2));
 			}
@@ -48,7 +48,7 @@ namespace Vixen.Data.Combinator._64Bit
 				CombinatorValue = obj;
 			}
 			else {
-				ulong value1 = CombinatorValue.CommandValue;
+				ulong value1 = (CombinatorValue as _64BitCommand).CommandValue;
 				ulong value2 = (byte) obj.CommandValue;
 				CombinatorValue = new _64BitCommand(Math.Max(value1, value2));
 			}
@@ -60,7 +60,7 @@ namespace Vixen.Data.Combinator._64Bit
 				CombinatorValue = new _64BitCommand(obj.CommandValue);
 			}
 			else {
-				ulong value1 = CombinatorValue.CommandValue;
+				ulong value1 = (CombinatorValue as _64BitCommand).CommandValue;
 				ulong value2 = (byte) obj.CommandValue;
 				CombinatorValue = new _64BitCommand(Math.Max(value1, value2));
 			}

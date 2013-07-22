@@ -7,9 +7,4 @@ namespace Vixen.Sys
 	{
 		ICommand Combine(IEnumerable<ICommand> commands);
 	}
-
-	public interface ICombinator<T> : ICombinator
-	{
-		ICommand<T> Combine(IEnumerable<ICommand> commands);
-	}
 }

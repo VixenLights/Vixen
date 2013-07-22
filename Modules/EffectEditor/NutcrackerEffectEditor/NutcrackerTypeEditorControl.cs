@@ -1084,7 +1084,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 
 		private void buttonHelp_Click(object sender, EventArgs e)
 		{
-			System.Diagnostics.Process.Start(buttonHelp.Tag.ToString());
+			Common.VixenHelp.VixenHelp.ShowHelp(Common.VixenHelp.VixenHelp.HelpStrings.Effect_Nutcracker);	
 		}
 
 		private void scrollPixelSize_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender,
