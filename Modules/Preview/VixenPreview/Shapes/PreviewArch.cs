@@ -150,6 +150,38 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
+		[CategoryAttribute("Size"),
+		 DisplayName("Width"),
+		 DescriptionAttribute("An arch is defined by a 2 points of a rectangle. This is the width of those points.")]
+		public int Width
+		{
+			get
+			{
+				return _bottomRight.X -_bottomLeft.X;
+			}
+			set
+			{
+				_topRight.X = _bottomRight.X = _topLeft.X + value;
+				Layout();
+			}
+		}
+
+		[CategoryAttribute("Size"),
+		 DisplayName("Height"),
+		 DescriptionAttribute("An arch is defined by a 2 points of a rectangle. This is the height of those points.")]
+		public int Height
+		{
+			get
+			{
+				return _bottomLeft.Y - _topLeft.Y;
+			}
+			set
+			{
+				_topLeft.Y = _topRight.Y = _bottomLeft.Y - value;
+				Layout();
+			}
+		}
+
 		[CategoryAttribute("Settings"),
 		 DisplayName("Light Count"),
 		 DescriptionAttribute("Number of pixels or lights in the arch.")]
