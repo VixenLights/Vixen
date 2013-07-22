@@ -49,12 +49,19 @@ namespace VixenModules.EffectEditor.CustomValueEditor
 				Value64Bit = (ulong)value[4];
 				ColorValue = (Color)value[5];
 				StringValue = (string)value[6];
+
+				UpdateControlsEnabled();
 			}
 		}
 
 		public IEffect TargetEffect { get; set; }
 
 		private void radioButtonTypes_CheckedChanged(object sender, EventArgs e)
+		{
+			UpdateControlsEnabled();
+		}
+
+		private void UpdateControlsEnabled()
 		{
 			numericUpDown8bit.Enabled = radioButton8bit.Checked;
 			numericUpDown16bit.Enabled = radioButton16bit.Checked;
