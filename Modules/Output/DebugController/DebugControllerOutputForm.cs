@@ -64,7 +64,9 @@ namespace VixenModules.Output.DebugController
 				} else if (command is _64BitCommand) {
 					line += "64-bit: " + (command as _64BitCommand).CommandValue;
 				} else if (command is ColorCommand) {
-					line += "Color: " + (command as ColorCommand).CommandValue;		
+					line += "Color: " + (command as ColorCommand).CommandValue;
+				} else if (command is StringCommand) {
+					line += "String: " + (command as StringCommand).CommandValue;
 				} else {
 					line += "Unknown command type";
 				}
