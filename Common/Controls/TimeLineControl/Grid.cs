@@ -106,10 +106,9 @@ namespace Common.Controls.Timeline
 
 		protected override void OnTimePerPixelChanged(object sender, EventArgs e)
 		{
-            //ResetAllElements();
             RecalculateAllStaticSnapPoints();
 			ResizeGridHorizontally();
-            ResetAllElements();
+            //ResetAllElements();
 			base.OnTimePerPixelChanged(sender, e);
 		}
 
@@ -138,6 +137,8 @@ namespace Common.Controls.Timeline
 		}
 
 		#region Properties
+
+		public bool SuppressInvalidate { get; set; }
 
 		public int VerticalOffset
 		{
@@ -315,7 +316,7 @@ namespace Common.Controls.Timeline
 		{
 			// when dragging, the control will invalidate after it's done, in case multiple elements are changing.
 			if (m_dragState != DragState.Moving && !SequenceLoading)
-				Invalidate();
+				if (!SuppressInvalidate) Invalidate();
 		}
 
 		protected void RowSelectedChangedHandler(object sender, ModifierKeysEventArgs e)
@@ -384,18 +385,21 @@ namespace Common.Controls.Timeline
 		private void RowToggledHandler(object sender, EventArgs e)
 		{
 			ResizeGridHeight();
+			if (!SuppressInvalidate) Invalidate();
 		}
 
 		private void RowHeightChangedHandler(object sender, EventArgs e)
 		{
 			ResizeGridHeight();
-
-            Row row = sender as Row;
-            for (int i = 0; i < row.ElementCount; i++)
-            {
-                Element element = row.ElementAt(i);
-                element.Changed = true;
-            }
+			if (!SuppressInvalidate) Invalidate();
+			// Code below tells the background rendering engine to re-process the elements.
+			// DB: I took this out... The original bitmap now gets used instead, but is just resized.
+			//Row row = sender as Row;
+			//for (int i = 0; i < row.ElementCount; i++)
+			//{
+			//    Element element = row.ElementAt(i);
+			//    element.Changed = true;
+			//}
 		}
 
         #endregion
@@ -434,14 +438,14 @@ namespace Common.Controls.Timeline
 		{
 			Rows.Add(row);
 			ResizeGridHeight();
-			Invalidate();
+			if (!SuppressInvalidate) Invalidate();
 		}
 
 		public bool RemoveRow(Row row)
 		{
 			bool rv = Rows.Remove(row);
 			ResizeGridHeight();
-			Invalidate();
+			if (!SuppressInvalidate) Invalidate();
 			return rv;
 		}
 
@@ -989,7 +993,7 @@ namespace Common.Controls.Timeline
 				Rows.IndexOf(visibleRows[(visibleRows.IndexOf(Rows[CurrentRowIndexUnderMouse]) + visibleRowsToMove)]);
 			m_mouseDownElementRow = newMouseDownRow;
 
-			Invalidate();
+			if (!SuppressInvalidate) Invalidate();
 		}
 
 		private void RecalculateAllStaticSnapPoints()
@@ -1028,20 +1032,20 @@ namespace Common.Controls.Timeline
 			else
 				StaticSnapPoints[snapTime].Add(CalculateSnapDetailsForPoint(snapTime, level, color));
 
-			Invalidate();
+			if (!SuppressInvalidate) Invalidate();
 		}
 
 		public bool RemoveSnapPoint(TimeSpan snapTime)
 		{
 			bool rv = StaticSnapPoints.Remove(snapTime);
-			Invalidate();
+			if (!SuppressInvalidate) Invalidate();
 			return rv;
 		}
 
 		public void ClearSnapPoints()
 		{
 			StaticSnapPoints.Clear();
-			Invalidate();
+			if (!SuppressInvalidate) Invalidate();
 		}
 
 		private int CalculateAllRowsHeight(bool visibleRowsOnly = true)
@@ -1067,8 +1071,8 @@ namespace Common.Controls.Timeline
 					this.Invoke(new Vixen.Delegates.GenericDelegate(ResizeGridHeight));
 				}
 				else {
-					AutoScrollMinSize = new Size((int) timeToPixels(TotalTime), CalculateAllRowsHeight());
-					Invalidate();
+					AutoScrollMinSize = new Size((int)timeToPixels(TotalTime), CalculateAllRowsHeight());
+					//Invalidate();
 				}
 			}
 		}
@@ -1094,6 +1098,17 @@ namespace Common.Controls.Timeline
 		#endregion
 
 		#region Drawing
+
+		public void BeginDraw()
+		{
+			SuppressInvalidate = true;
+		}
+
+		public void EndDraw()
+		{
+			SuppressInvalidate = false;
+			Invalidate();
+		}
 
 		private void _drawRows(Graphics g)
 		{
@@ -1205,10 +1220,10 @@ namespace Common.Controls.Timeline
                                 if (currentElement.Changed || !currentElement.CachedCanvasIsCurrent)
 								//if (currentElement.Changed || !currentElement.IsCanvasContentCurrent(size))
                                 {
-                                    elementImage = currentElement.SetupCachedImage(size);
-                                    if (currentElement.StartTime <= VisibleTimeEnd && currentElement.EndTime >= VisibleTimeStart)
-                                        Invalidate();
-                                    renderWorker.ReportProgress((int)((double)(currentElementNum) / (double)totalElements * 100.0));
+									elementImage = currentElement.SetupCachedImage(size);
+									if (currentElement.StartTime <= VisibleTimeEnd && currentElement.EndTime >= VisibleTimeStart)
+										Invalidate();
+									renderWorker.ReportProgress((int)((double)(currentElementNum) / (double)totalElements * 100.0));
                                 }
                             }
 							currentElementNum++;
@@ -1307,57 +1322,30 @@ namespace Common.Controls.Timeline
 			if (elements.Count == inCount)
 				return elements;
 
-			//List<Element> newElementList = new List<Element>();
-			//newElementList = elements.ToList();
-			//foreach (Element e in elements.ToList())
-			//{
-			//    elements = GetOverlappingElements(row, e, elements);
-			//}
-
 			return elements;
 		}
-
-		//public Size GetImageSize(Row row, Element currentElement, int top, out int newTop)
-		//{
-		//    newTop = top;
-		//    List<Element> elements = GetOverlappingElements(row, currentElement);
-		//    //Console.WriteLine("Overlapping Elements:");
-		//    //foreach (Element q in elements)
-		//    //	Console.WriteLine("     " + q.StartTime);
-		//    int effectHeight = (row.Height - 1) / elements.Count();
-		//    if (elements.Count > 0)
-		//    {
-		//        newTop = top + (effectHeight * elements.IndexOf(currentElement));
-		//    }
-		//    //int effectHeight = row.Height - 1;
-		//    Size size = new Size((int)Math.Ceiling(timeToPixels(currentElement.Duration)), effectHeight);
-		//    return size;
-		//}
 
 		private void DrawElement(Graphics g, Row row, Element currentElement, int top,
 								 ref TimeSpan lastStartTime, ref TimeSpan lastEndTime)
 		{
-			//int effectHeight = row.Height - 1;
-			//Size size = GetImageSize(row, currentElement, top, out newTop);
 			List<Element> elements = GetOverlappingElements(row, currentElement);
 
 			currentElement.DisplayHeight = (row.Height - 1) / elements.Count();
 			currentElement.DisplayTop = top + (currentElement.DisplayHeight * elements.IndexOf(currentElement));
 
 			Size size = new Size((int)Math.Ceiling(timeToPixels(currentElement.Duration)), row.Height - 1);
-			//Size size = new Size((int)Math.Ceiling(timeToPixels(currentElement.Duration)), 75);
-			Bitmap elementImage = currentElement.Draw(size);
+			//Bitmap elementImage = currentElement.Draw(size);
+			Bitmap elementImage = currentElement.Draw(size, false);
 			Point finalDrawLocation = new Point((int)Math.Floor(timeToPixels(currentElement.StartTime)), currentElement.DisplayTop);
-			//g.DrawImage(elementImage, (Point)finalDrawLocation);
 
 			Rectangle srcRect = new Rectangle(0, 0, elementImage.Width, elementImage.Height);
-			Rectangle destRect = new Rectangle(finalDrawLocation.X, finalDrawLocation.Y, elementImage.Width, currentElement.DisplayHeight);
+			//Rectangle destRect = new Rectangle(finalDrawLocation.X, finalDrawLocation.Y, elementImage.Width, currentElement.DisplayHeight);
+			Rectangle destRect = new Rectangle(finalDrawLocation.X, finalDrawLocation.Y, size.Width, currentElement.DisplayHeight);
 			currentElement.DisplayRect = destRect;
 			g.DrawImage(elementImage, 
 						destRect,
 						srcRect, 
 						GraphicsUnit.Pixel);
-			//currentElement.DrawInfo(g, destRect);
 
 			lastStartTime = currentElement.StartTime;
 			lastEndTime = currentElement.EndTime;
@@ -1388,7 +1376,6 @@ namespace Common.Controls.Timeline
 			}
 		}
 
-		//static public System.Object drawLock = new System.Object();
 		private void _drawElements(Graphics g)
 		{
 			// Draw each row
@@ -1423,268 +1410,7 @@ namespace Common.Controls.Timeline
 							lastItemDrawn = true;
 					}
 
-
-
-
-					//List<Element> elements = GetOverlappingElements(row, currentElement);
-					//int effectHeight = (row.Height - 1) / elements.Count();
-					//int effectHeight = row.Height - 1;
-					//Size size = GetImageSize(row, currentElement);
-					//Bitmap elementImage = currentElement.Draw(size);
-					//Point finalDrawLocation = new Point((int)Math.Floor(timeToPixels(currentElement.StartTime)), top);
-					//g.DrawImage(elementImage, (Point)finalDrawLocation);
-
-
-					//lastStartTime = currentElement.StartTime;
-					//lastEndTime = currentElement.EndTime;
-
 					DrawElement(g, row, currentElement, top, ref lastStartTime, ref lastEndTime);
-					
-
-
-
-
-
-
-
-
-
-					//desiredDrawTo = currentElement.StartTime;
-
-					//// if this is the last element, draw everything
-					//if (i == row.ElementCount - 1) {
-					//    desiredDrawTo = TotalTime;
-					//}
-
-					//Size size = new Size((int) Math.Ceiling(timeToPixels(currentElement.Duration)), row.Height - 1);
-					////Size size = new Size((int) Math.Ceiling(timeToPixels(currentElement.Duration)), (row.Height - 1) / row.ElementCount);
-					////Bitmap elementImage = currentElement.Draw(size, Context.IsRunning);
-					////Bitmap elementImage = currentElement.Draw(size, true);
-					//Bitmap elementImage = currentElement.Draw(size);
-
-					//Point pt = new Point((int) Math.Floor(timeToPixels(currentElement.StartTime)), top);
-
-					//bitmapsToDraw.Add(new BitmapDrawDetails() { bmp = elementImage, startTime = currentElement.StartTime, duration = currentElement.Duration });
-
-
-					////
-					////// Everything below combines the bitmaps to display them
-					////
-
-					//// oh god make it stop
-					//int iterations = 0;
-
-					//while (currentlyDrawnTo < desiredDrawTo) {
-					//    // if there's nothing left to draw, the rest of it is empty; skip to the desired draw point
-					//    if (bitmapsToDraw.Count == 0) {
-					//        currentlyDrawnTo = desiredDrawTo;
-					//        break;
-					//    }
-
-					//    TimeSpan processingSegmentDuration = TimeSpan.MaxValue;
-					//    TimeSpan drawingSegmentDuration;
-					//    TimeSpan earliestStart = TimeSpan.MaxValue;
-
-					//    // these handle the fact that our pixels don't perfectly align with exact start times of elements, and are used to
-					//    // capture any timespan that's within the single pixel range of the 'current drawn to' point
-					//    int lowerBoundPixels = (int) Math.Floor(timeToPixels(currentlyDrawnTo));
-					//    int upperBoundPixels = (int) Math.Ceiling(timeToPixels(currentlyDrawnTo));
-					//    if (upperBoundPixels <= lowerBoundPixels)
-					//        upperBoundPixels = lowerBoundPixels + 1;
-					//    TimeSpan currentlyDrawnMin = pixelsToTime(lowerBoundPixels);
-					//    TimeSpan currentlyDrawnMax = pixelsToTime(upperBoundPixels);
-
-
-					//    // find how many bitmaps are going to be in this next segment, and also figure out the smallest whole section
-					//    // to draw before another element starts or until one of the current ones end
-					//    int bitmapLayers = 0;
-					//    TimeSpan smallestDrawingDuration = TimeSpan.MaxValue;
-					//    foreach (BitmapDrawDetails drawDetails in bitmapsToDraw) {
-					//        TimeSpan start = drawDetails.startTime;
-					//        TimeSpan duration = drawDetails.duration;
-
-					//        // dodgy workaround: if the current element somehow has a start time BEFORE the currently drawn to time,
-					//        // something went wrong. Set it to the currently drawn time, and it shouldget picked up as part of the process.
-					//        if (start <= currentlyDrawnMin)
-					//            drawDetails.startTime = start = currentlyDrawnTo;
-
-					//        // if this bitmap is within the single pixel range that is currently drawing, we'll be drawing it.
-					//        // check the duration to make sure we're drawing the smallest possible slice of elements.
-					//        if (start >= currentlyDrawnMin && start <= currentlyDrawnMax) {
-					//            bitmapLayers++;
-					//            if (duration < smallestDrawingDuration)
-					//                smallestDrawingDuration = duration;
-					//        }
-
-					//        // record the earliest start time for drawable blocks we've found; if we
-					//        // don't draw anything here, we just skip through to this time later
-					//        if (start < earliestStart)
-					//            earliestStart = start;
-					//    }
-
-					//    TimeSpan earliestTimeToNextDrawing = TimeSpan.MaxValue;
-					//    foreach (BitmapDrawDetails drawDetails in bitmapsToDraw.ToArray()) {
-					//        TimeSpan start = drawDetails.startTime;
-
-					//        // check if the start for this one is out of range (too early); if it is, delete it
-					//        // workaround -- if the currently drawn one actually starts EARLIER than we're up to, something
-					//        // went wrong, don't draw it. I can't track the issue down...
-					//        // (for Future Me: I think the problem is down below, where it crops the bitmap into smaller ones.)
-					//        if (start < currentlyDrawnTo) {
-					//            //Debugger.Break();
-					//            bitmapsToDraw.Remove(drawDetails);
-					//            continue;
-					//        }
-
-
-					//        // if this drawing bitmap isn't starting at the current point, it might be the next one; check if we can
-					//        // cut down the current drawing segment as another one will be starting soon
-					//        if (start > currentlyDrawnMax && start - currentlyDrawnTo < earliestTimeToNextDrawing) {
-					//            earliestTimeToNextDrawing = start - currentlyDrawnTo;
-					//        }
-					//    }
-
-					//    if (smallestDrawingDuration < earliestTimeToNextDrawing)
-					//        processingSegmentDuration = smallestDrawingDuration;
-					//    else
-					//        processingSegmentDuration = earliestTimeToNextDrawing;
-
-					//    bool firstDraw = true;
-					//    Bitmap finalBitmap = null;
-					//    BitmapData finalBitmapData = null;
-					//    Point? finalDrawLocation = null;
-
-					//    foreach (BitmapDrawDetails drawDetails in bitmapsToDraw.ToArray()) {
-					//        Bitmap bmp = drawDetails.bmp;
-					//        TimeSpan start = drawDetails.startTime;
-					//        TimeSpan duration = drawDetails.duration;
-					//        bool bitmapContinuesPastCurrentDrawDuration = false;
-
-					//        // only draw elements that are at the point we are currently drawing from
-					//        if (start < currentlyDrawnMin || start > currentlyDrawnMax)
-					//            continue;
-
-					//        if (duration != processingSegmentDuration) {
-					//            // it must be longer; crop the bitmap into a smaller one
-					//            int croppedWidth = (int) Math.Ceiling(timeToPixels(processingSegmentDuration));
-					//            drawingSegmentDuration = pixelsToTime(croppedWidth);
-					//            if (croppedWidth > 0 && bmp.Width - croppedWidth > 0) {
-					//                bitmapContinuesPastCurrentDrawDuration = true;
-					//                Bitmap croppedBitmap = bmp.Clone(new Rectangle(0, 0, croppedWidth, bmp.Height), PixelFormat.Format32bppArgb);
-					//                drawDetails.bmp = bmp.Clone(new Rectangle(croppedWidth, 0, bmp.Width - croppedWidth, bmp.Height),
-					//                                            bmp.PixelFormat);
-					//                //if (start + drawingSegmentDuration < currentlyDrawnTo + processingSegmentDuration) Debugger.Break();
-					//                drawDetails.startTime = start + drawingSegmentDuration;
-					//                drawDetails.duration = duration - drawingSegmentDuration;
-					//                bmp = croppedBitmap;
-					//            }
-					//        }
-
-					//        try {
-					//            // for the first time around, set up the final bitmap data item and lock it
-					//            if (firstDraw) {
-					//                finalBitmap = new Bitmap((int) Math.Ceiling(timeToPixels(processingSegmentDuration)), bmp.Height);
-					//                finalDrawLocation = new Point((int) Math.Floor(timeToPixels(start)), top);
-					//                firstDraw = false;
-					//            }
-					//        }
-					//        catch (Exception e) {
-					//            Debugger.Break();
-					//        }
-
-					//        if (bitmapLayers == 1) {
-					//            g.DrawImage(bmp, (Point) finalDrawLocation);
-					//        }
-					//        else {
-					//            if (finalBitmapData == null) {
-					//                finalBitmapData = finalBitmap.LockBits(new Rectangle(0, 0, finalBitmap.Width, finalBitmap.Height),
-					//                                                       ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
-					//            }
-
-					//            unsafe {
-					//                // get the drawing bitmap data in a nice, quick format, and blat it onto the final bitmap
-					//                // (http://stackoverflow.com/questions/12170894/drawing-image-with-additive-blending/12210258#12210258)
-					//                BitmapData bmpdata = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.ReadWrite,
-					//                                                  PixelFormat.Format32bppArgb);
-					//                byte* pbmp = (byte*) bmpdata.Scan0.ToPointer();
-					//                byte* pfinal = (byte*) finalBitmapData.Scan0.ToPointer();
-
-					//                int bmpBPP = bmpdata.Stride/bmpdata.Width;
-					//                int finalBPP = finalBitmapData.Stride/finalBitmapData.Width;
-
-					//                // we're going to assume that the final bitmap data is the same size as the bmpdata (they should be!)
-					//                // and iterate over them both at the same time
-					//                for (int j = 0; j < bmpdata.Height; j++) {
-					//                    for (int k = 0; k < bmpdata.Width; k++) {
-					//                        //double scaleB = (double)*(pbmp + 3) / byte.MaxValue;
-					//                        //double scaleF = (double)*(pfinal + 3) / byte.MaxValue;
-
-					//                        //Color c = Color.FromArgb(
-					//                        //    Math.Max((byte)(*(pbmp + 2) * scaleB), (byte)(*(pfinal + 2) * scaleF)),
-					//                        //    Math.Max((byte)(*(pbmp + 1) * scaleB), (byte)(*(pfinal + 1) * scaleF)),
-					//                        //    Math.Max((byte)(*(pbmp + 0) * scaleB), (byte)(*(pfinal + 0) * scaleF))
-					//                        //    );
-
-					//                        //byte intensity = (byte)(HSV.FromRGB(c).V * byte.MaxValue);
-
-					//                        //*(pfinal + 0) = c.B;
-					//                        //*(pfinal + 1) = c.G;
-					//                        //*(pfinal + 2) = c.R;
-					//                        //*(pfinal + 3) = intensity;
-
-
-					//                        // get the scale of the alpha to apply to the other input components
-					//                        double inputIntensityScale = (double) *(pbmp + 3)/byte.MaxValue;
-
-					//                        // do alpha byte. It should be the max of any pixel at the position (ie. be as opaque as possible)
-					//                        *(pfinal + 3) = Math.Max(*(pfinal + 3), *(pbmp + 3));
-
-					//                        // do RGB components of the pixel. Scale any incoming data by the alpha of its channel (to dial the intensity back
-					//                        // to what it would really be), then try and find the highest of any individual component to get the final color.
-					//                        *(pfinal + 0) = Math.Max(*(pfinal + 0), (byte) (*(pbmp + 0)*inputIntensityScale));
-					//                        *(pfinal + 1) = Math.Max(*(pfinal + 1), (byte) (*(pbmp + 1)*inputIntensityScale));
-					//                        *(pfinal + 2) = Math.Max(*(pfinal + 2), (byte) (*(pbmp + 2)*inputIntensityScale));
-
-
-					//                        pfinal += finalBPP;
-					//                        pbmp += bmpBPP;
-					//                    }
-					//                }
-
-					//                bmp.UnlockBits(bmpdata);
-					//            }
-					//        }
-
-					//        if (!bitmapContinuesPastCurrentDrawDuration) {
-					//            bitmapsToDraw.Remove(drawDetails);
-					//        }
-					//    }
-
-					//    if (finalBitmap != null) {
-					//        if (finalBitmapData != null) {
-					//            finalBitmap.UnlockBits(finalBitmapData);
-					//        }
-					//        //lock (finalBitmap)
-					//        //{
-					//            g.DrawImage(finalBitmap, (Point)finalDrawLocation);
-					//        //}
-					//    }
-
-					//    if (processingSegmentDuration < TimeSpan.MaxValue)
-					//        currentlyDrawnTo += processingSegmentDuration;
-					//    else
-					//        currentlyDrawnTo = earliestStart;
-
-					//    // dodgy, dodgy hack to avoid infinite loops and hangs: if we are looping too long, bail!
-					//    if (iterations > 10000) {
-					//        currentlyDrawnTo = desiredDrawTo;
-					//    }
-					//    else
-					//        iterations++;
-					//}
-
-
-					//// TO HERE
 				}
 
 				top += row.Height; // next row starts just below this row

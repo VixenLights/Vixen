@@ -6,9 +6,4 @@ namespace Vixen.Commands
 	{
 		object CommandValue { get; set; }
 	}
-
-	public interface ICommand<T> : ICommand
-	{
-		T CommandValue { get; set; }
-	}
 }

@@ -5,7 +5,7 @@ using Vixen.Sys.Dispatch;
 
 namespace Vixen.Data.Evaluator
 {
-	public class _8BitEvaluator : Evaluator, IAnyCommandHandler
+	public class _8BitEvaluator : Evaluator
 	{
 		// Handling intents as an evaluator.
 		public override void Handle(IIntentState<ColorValue> obj)
@@ -16,49 +16,12 @@ namespace Vixen.Data.Evaluator
 
 		public override void Handle(IIntentState<LightingValue> obj)
 		{
-			EvaluatorValue = new _8BitCommand(obj.GetValue().Intensity*byte.MaxValue);
+			EvaluatorValue = new _8BitCommand((byte)(byte.MaxValue * obj.GetValue().Intensity));
 		}
 
 		public override void Handle(IIntentState<PositionValue> obj)
 		{
 			EvaluatorValue = new _8BitCommand((byte) (byte.MaxValue*obj.GetValue().Position));
-		}
-
-		public override void Handle(IIntentState<CommandValue> obj)
-		{
-			obj.GetValue().Command.Dispatch(this);
-		}
-
-		// Additionally dispatching command intents and handling the command they wrap.
-		public void Handle(_8BitCommand obj)
-		{
-			EvaluatorValue = obj;
-		}
-
-		public void Handle(_16BitCommand obj)
-		{
-			EvaluatorValue = new _8BitCommand(obj.CommandValue);
-		}
-
-		public void Handle(_32BitCommand obj)
-		{
-			EvaluatorValue = new _8BitCommand(obj.CommandValue);
-		}
-
-		public void Handle(_64BitCommand obj)
-		{
-			EvaluatorValue = new _8BitCommand(obj.CommandValue);
-		}
-
-		public void Handle(ColorCommand obj)
-		{
-			EvaluatorValue = new _8BitCommand(ColorValue.GetGrayscaleLevel(obj.CommandValue));
-		}
-
-
-		public void Handle(CustomCommand obj)
-		{
-			throw new System.NotImplementedException();
 		}
 	}
 }

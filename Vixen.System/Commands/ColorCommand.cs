@@ -3,7 +3,7 @@ using Vixen.Sys;
 
 namespace Vixen.Commands
 {
-	public class ColorCommand : Dispatchable<ColorCommand>, ICommand<Color>
+	public class ColorCommand : Dispatchable<ColorCommand>, ICommand
 	{
 		public ColorCommand(Color value)
 		{
