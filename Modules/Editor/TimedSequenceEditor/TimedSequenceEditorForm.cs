@@ -1210,6 +1210,20 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						timelineControl.MoveSelectedElementsByTime(timelineControl.TimePerPixel.Scale(2));
 					break;
 
+				case Keys.OemMinus:
+					if (e.Control && e.Shift)
+						timelineControl.ZoomRows(.8);
+					else if (e.Control)
+						timelineControl.Zoom(1.25);
+					break;
+
+				case Keys.Oemplus:
+					if (e.Control && e.Shift)
+						timelineControl.ZoomRows(1.25);
+					else if (e.Control)
+						timelineControl.Zoom(.8);
+					break;
+
 				default:
 					break;
 			}

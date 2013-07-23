@@ -306,8 +306,10 @@ namespace Common.Controls.Timeline
 
 		public virtual bool IsCanvasContentCurrent(Size imageSize)
 		{
-			return (CachedCanvasIsCurrent || CachedElementCanvas.Width != imageSize.Width ||
-			        CachedElementCanvas.Height != imageSize.Height);
+			// DB: removed below. We don't care if the height is current. We stretch the bitmap anyway.
+			//return (CachedCanvasIsCurrent || CachedElementCanvas.Width != imageSize.Width ||
+			//        CachedElementCanvas.Height != imageSize.Height);
+			return (CachedCanvasIsCurrent || CachedElementCanvas.Width != imageSize.Width);
 		}
 
 		public Bitmap SetupCachedImage(Size imageSize)
@@ -371,6 +373,19 @@ namespace Common.Controls.Timeline
 					g.FillRectangle(Brushes.White, new Rectangle(destRect.Left, destRect.Top, (int)Math.Min(textSize.Width + margin, destRect.Width), (int)Math.Min(textSize.Height + margin, destRect.Height)));
 					g.DrawString(s, f, b, new Rectangle(destRect.Left + margin/2, destRect.Top + margin/2, destRect.Width - margin, destRect.Height - margin));
 				}
+			}
+		}
+
+		public Bitmap Draw(Size imageSize, bool useImageSize)
+		{
+			if (CachedElementCanvas == null)
+			{
+				return Draw(imageSize);
+			}
+			else
+			{
+				Size size = new Size(CachedElementCanvas.Width, CachedElementCanvas.Height);
+				return Draw(size);
 			}
 		}
 

@@ -78,6 +78,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Common\Controls\Controls.csproj">
+      <Project>{A54FB6A1-A9C3-488C-B961-41B8DBC81B36}</Project>
+      <Name>Controls</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Common\ValueTypes\ValueTypes.csproj">
       <Project>{d9a7e8bc-5617-486d-9da5-89c5861a0f88}</Project>
       <Name>ValueTypes</Name>

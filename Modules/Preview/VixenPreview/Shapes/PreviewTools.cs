@@ -277,11 +277,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		//    return result;
 		//}
 
-		public static void ShowHelp(string target)
-		{
-			System.Diagnostics.Process.Start(target);
-		}
-
 		public static List<ElementNode> GetLeafNodes(ElementNode node)
 		{
 			List<ElementNode> children = new List<ElementNode>();

@@ -66,6 +66,10 @@
       <Name>Vixen</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\Common\Help\VixenHelp.csproj">
+      <Project>{bd12bffc-7039-4c79-aba0-51f99773a916}</Project>
+      <Name>VixenHelp</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Property\Color\Color.csproj">
       <Project>{73068A83-B3B7-4A2C-923D-71C7886CD5E3}</Project>
       <Name>Color</Name>

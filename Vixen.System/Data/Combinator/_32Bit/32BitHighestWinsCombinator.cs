@@ -4,7 +4,7 @@ using Vixen.Data.Value;
 
 namespace Vixen.Data.Combinator._32Bit
 {
-	public class _32BitHighestWinsCombinator : Combinator<_32BitHighestWinsCombinator, uint>
+	public class _32BitHighestWinsCombinator : Combinator<_32BitHighestWinsCombinator>
 	{
 		public override void Handle(_8BitCommand obj)
 		{
@@ -12,7 +12,7 @@ namespace Vixen.Data.Combinator._32Bit
 				CombinatorValue = new _32BitCommand(obj.CommandValue);
 			}
 			else {
-				uint value1 = CombinatorValue.CommandValue;
+				uint value1 = (CombinatorValue as _32BitCommand).CommandValue;
 				uint value2 = obj.CommandValue;
 				CombinatorValue = new _32BitCommand(Math.Max(value1, value2));
 			}
@@ -24,7 +24,7 @@ namespace Vixen.Data.Combinator._32Bit
 				CombinatorValue = new _32BitCommand(ColorValue.GetGrayscaleLevel(obj.CommandValue));
 			}
 			else {
-				uint value1 = CombinatorValue.CommandValue;
+				uint value1 = (CombinatorValue as _32BitCommand).CommandValue;
 				uint value2 = ColorValue.GetGrayscaleLevel(obj.CommandValue);
 				CombinatorValue = new _32BitCommand(Math.Max(value1, value2));
 			}
@@ -36,7 +36,7 @@ namespace Vixen.Data.Combinator._32Bit
 				CombinatorValue = obj;
 			}
 			else {
-				uint value1 = CombinatorValue.CommandValue;
+				uint value1 = (CombinatorValue as _32BitCommand).CommandValue;
 				uint value2 = (byte) obj.CommandValue;
 				CombinatorValue = new _32BitCommand(Math.Max(value1, value2));
 			}
@@ -48,7 +48,7 @@ namespace Vixen.Data.Combinator._32Bit
 				CombinatorValue = new _32BitCommand(obj.CommandValue);
 			}
 			else {
-				uint value1 = CombinatorValue.CommandValue;
+				uint value1 = (CombinatorValue as _32BitCommand).CommandValue;
 				uint value2 = (byte) obj.CommandValue;
 				CombinatorValue = new _32BitCommand(Math.Max(value1, value2));
 			}
@@ -60,7 +60,7 @@ namespace Vixen.Data.Combinator._32Bit
 				CombinatorValue = new _32BitCommand(obj.CommandValue);
 			}
 			else {
-				uint value1 = CombinatorValue.CommandValue;
+				uint value1 = (CombinatorValue as _32BitCommand).CommandValue;
 				uint value2 = (byte) obj.CommandValue;
 				CombinatorValue = new _32BitCommand(Math.Max(value1, value2));
 			}

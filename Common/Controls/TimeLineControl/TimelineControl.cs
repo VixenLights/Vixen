@@ -266,9 +266,11 @@ namespace Common.Controls.Timeline
 			if (scale <= 0.0)
 				return;
 
+			grid.BeginDraw();
 			foreach (Row r in Rows) {
 				r.Height = (int) (r.Height*scale);
 			}
+			grid.EndDraw();
 		}
 
 		public void ResizeGrid()

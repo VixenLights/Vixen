@@ -5,10 +5,10 @@ using Vixen.Sys.Dispatch;
 
 namespace Vixen.Data.Combinator
 {
-	public abstract class Combinator<T, ResultType> : Dispatchable<T>, ICombinator<ResultType>, IAnyCommandHandler
-		where T : Combinator<T, ResultType>
+	public abstract class Combinator<T> : Dispatchable<T>, ICombinator, IAnyCommandHandler
+		where T : Combinator<T>
 	{
-		public ICommand<ResultType> Combine(IEnumerable<ICommand> commands)
+		public ICommand Combine(IEnumerable<ICommand> commands)
 		{
 			CombinatorValue = null;
 
@@ -44,8 +44,12 @@ namespace Vixen.Data.Combinator
 		{
 		}
 
+		public virtual void Handle(StringCommand obj)
+		{
+		}
+
 		// ResultType generic parameter is used by the combinators so the value wrapped
 		// by the command can be known.
-		protected ICommand<ResultType> CombinatorValue { get; set; }
+		protected ICommand CombinatorValue { get; set; }
 	}
 }

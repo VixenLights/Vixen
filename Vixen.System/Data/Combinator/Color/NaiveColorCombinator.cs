@@ -3,7 +3,7 @@ using Vixen.Commands;
 
 namespace Vixen.Data.Combinator.Color
 {
-	public class NaiveColorCombinator : Combinator<NaiveColorCombinator, System.Drawing.Color>
+	public class NaiveColorCombinator : Combinator<NaiveColorCombinator>
 	{
 		public override void Handle(ColorCommand obj)
 		{
@@ -11,13 +11,13 @@ namespace Vixen.Data.Combinator.Color
 				CombinatorValue = obj;
 			}
 			else {
-				System.Drawing.Color value1 = CombinatorValue.CommandValue;
+				System.Drawing.Color value1 = (CombinatorValue as ColorCommand).CommandValue;
 				System.Drawing.Color value2 = obj.CommandValue;
 				CombinatorValue = _MergeColorNaively(value1, value2);
 			}
 		}
 
-		private ICommand<System.Drawing.Color> _MergeColorNaively(System.Drawing.Color value1, System.Drawing.Color value2)
+		private ICommand _MergeColorNaively(System.Drawing.Color value1, System.Drawing.Color value2)
 		{
 			int a = Math.Max(value1.A, value2.A);
 			int r = (value1.R + value2.R) >> 1;
