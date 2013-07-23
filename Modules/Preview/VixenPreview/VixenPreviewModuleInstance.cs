@@ -131,8 +131,8 @@ namespace VixenModules.Preview.VixenPreview {
 
 		protected override void Update() {
 			try {
-				displayForm.Scene.ElementStates = ElementStates;
-
+				// displayForm.Scene.ElementStates = ElementStates;
+				displayForm.Scene.Update(ElementStates);
 			}
 			catch (Exception e) {
 

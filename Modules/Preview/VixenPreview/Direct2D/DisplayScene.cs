@@ -158,8 +158,8 @@ namespace VixenModules.Preview.VixenPreview.Direct2D {
 		}
 
 
-
-		protected override void OnRender() {
+		protected override void OnRender() { }
+		public void Update(ElementIntentStates ElementStates) {
 
 			try {
 				Stopwatch w = Stopwatch.StartNew();
@@ -373,9 +373,7 @@ namespace VixenModules.Preview.VixenPreview.Direct2D {
 			//}
 
 		}
-
-		public ElementIntentStates ElementStates { get; set; }
-
+ 
 
 		#endregion
 
