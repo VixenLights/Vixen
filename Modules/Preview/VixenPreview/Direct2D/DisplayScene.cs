@@ -27,12 +27,11 @@ namespace VixenModules.Preview.VixenPreview.Direct2D {
 		private const int PIXEL_SIZE = 2;
 		// These are used for tracking an accurate frames per second
 		private DateTime time;
-		private int frameCount;
-		private int fps;
+		private long frameCount;
+		private long fps;
 		private Guid DisplayID = Guid.Empty;
 		public DisplayScene(System.Drawing.Image backgroundImage)
-			: base(100) // Will probably only be about 67 fps due to the limitations of the timer
-		{
+			: base(100) {
 			this.writeFactory = DWrite.DWriteFactory.CreateFactory();
 
 
@@ -74,6 +73,7 @@ namespace VixenModules.Preview.VixenPreview.Direct2D {
 		System.Drawing.Image backgroundImage;
 		int? imageHash;
 		int? lastImageHash;
+
 		public System.Drawing.Image BackgroundImage {
 			get { return backgroundImage; }
 			set {
@@ -83,7 +83,8 @@ namespace VixenModules.Preview.VixenPreview.Direct2D {
 				else
 					imageHash = null;
 
-				isDirty = true;
+				if (imageHash != lastImageHash)
+					isDirty = true;
 			}
 		}
 
@@ -97,7 +98,6 @@ namespace VixenModules.Preview.VixenPreview.Direct2D {
 			}
 		}
 
-		public bool Enabled { get { return IsAnimating; } set { IsAnimating = value; } }
 
 		public void ConvertImageToStreamAndAdjustBrightness(Image image, int value, MemoryStream stream) {
 
@@ -157,8 +157,22 @@ namespace VixenModules.Preview.VixenPreview.Direct2D {
 			}
 		}
 
+		public static ConcurrentDictionary<Guid, ElementNode> ElementNodeCache = new ConcurrentDictionary<Guid, ElementNode>();
 
 		protected override void OnRender() { }
+		Queue<long> updatTimes = new Queue<long>();
+		long maxUpdateTime = 0;
+		TimeSpan maxUpdateTimeposition = TimeSpan.Zero;
+
+		public Queue<long> UpdateTimes {
+			get { return updatTimes; }
+			set {
+				updatTimes = value;
+				while (updatTimes.Count() > 1000) {
+					var i = updatTimes.Dequeue();
+				}
+			}
+		}
 		public void Update(ElementIntentStates ElementStates) {
 
 			try {
@@ -172,7 +186,7 @@ namespace VixenModules.Preview.VixenPreview.Direct2D {
 					this.frameCount = 0;
 					this.time = DateTime.UtcNow;
 				}
-
+				int iPixels = 0;
 
 				this.RenderTarget.BeginDraw();
 
@@ -180,66 +194,67 @@ namespace VixenModules.Preview.VixenPreview.Direct2D {
 				//this.RenderTarget.Clear();
 
 				if (Background != null) {
-					//if (isDirty || currentState == null) {
-					//	currentState = this.Factory.CreateDrawingStateBlock();
 					this.RenderTarget.DrawBitmap(Background);
-					//	this.RenderTarget.SaveDrawingState(currentState);
-					//	isDirty = false;
-					//} else
-					//	this.RenderTarget.RestoreDrawingState(currentState);
 				}
 				if (NodeToPixel.Count == 0)
 					Reload();
 
 				CancellationTokenSource tokenSource = new CancellationTokenSource();
 
-				if (IsAnimating) {
 
-					try {
 
-						//ElementStates.AsParallel().WithCancellation(tokenSource.Token).ForAll(channelIntentState => {
+				try {
 
-						foreach (var channelIntentState in ElementStates) {
+					ElementStates.AsParallel().WithCancellation(tokenSource.Token).ForAll(channelIntentState => {
 
-							var elementId = channelIntentState.Key;
-							Element element = VixenSystem.Elements.GetElement(elementId);
+						//foreach (var channelIntentState in ElementStates) {
 
+						ElementNode node;
+
+						if (!ElementNodeCache.TryGetValue(channelIntentState.Key, out node)) {
+							Element element = VixenSystem.Elements.GetElement(channelIntentState.Key);
 							if (element != null) {
 
-								ElementNode node = VixenSystem.Elements.GetElementNodeForElement(element);
-								if (node != null) {
+								node = VixenSystem.Elements.GetElementNodeForElement(element);
+								if (node != null)
+									ElementNodeCache.TryAdd(channelIntentState.Key, node);
+							}
+						}
+
+
+						if (node != null) {
+							Color pixColor;
+
+
+							//TODO: Discrete Colors
+							pixColor = Vixen.Intent.ColorIntent.GetAlphaColorForIntents(channelIntentState.Value);
+
+							if (pixColor.A > 0)
+								using (var brush = this.RenderTarget.CreateSolidColorBrush(pixColor.ToColorF())) {
 
 									List<PreviewPixel> pixels;
 									if (NodeToPixel.TryGetValue(node, out pixels)) {
+										//if (pixels.Count < 50)
+										iPixels += pixels.Count;
+										pixels.ForEach(p => RenderPixel(channelIntentState, p, brush));
 
-
-										foreach (PreviewPixel p in pixels) {
-
-											Color pixColor;
-
-
-											//TODO: Discrete Colors
-											pixColor = Vixen.Intent.ColorIntent.GetAlphaColorForIntents(channelIntentState.Value);
-
-											using (var brush = this.RenderTarget.CreateSolidColorBrush(pixColor.ToColorF())) {
-												//this.RenderTarget.DrawRectangle(rect, brush, .5f);
-												//this.RenderTarget.FillRectangle(rect, brush);
-												this.RenderTarget.FillEllipse(new D2D.Ellipse() { Point = new D2D.Point2F(p.X, p.Y), RadiusX = p.PixelSize / 2, RadiusY = p.PixelSize / 2 }, brush);
-											}
-
-										}
+										//else {
+										//	//Console.WriteLine("Element {1}, Pixels: {0}",pixels.Count, element.Name);
+										//	pixels.AsParallel().WithCancellation(tokenSource.Token).ForAll(p => RenderPixel(channelIntentState, p, brush));
+										//}
 									}
 								}
-							}
 						}
-						//});
 
-					}
-					catch (Exception e) {
-						tokenSource.Cancel();
-						//Console.WriteLine(e.Message);
-					}
+						//}
+					});
+
 				}
+				catch (Exception e) {
+					tokenSource.Cancel();
+					//Console.WriteLine(e.Message);
+				}
+
 
 
 
@@ -247,7 +262,12 @@ namespace VixenModules.Preview.VixenPreview.Direct2D {
 
 				w.Stop();
 				// Draw a little FPS in the top left corner
-				string text = string.Format("FPS {0} Points {1}", this.fps, ElementStates.Count());
+				var ms = w.ElapsedMilliseconds;
+				UpdateTimes.Enqueue(ms);
+				if (maxUpdateTime < ms) {
+					maxUpdateTime = ms;
+				}
+				string text = string.Format("FPS {0} \nPoints {1} \nPixels {3} \nRender Time:{2} \nMax Render: {4} \nAvg Render: {5}", this.fps, ElementStates.Count(), w.ElapsedMilliseconds, iPixels, maxUpdateTime, UpdateTimes.Average().ToString("0.00"));
 
 				using (var textBrush = this.RenderTarget.CreateSolidColorBrush(Color.White.ToColorF())) {
 					this.RenderTarget.DrawText(text, this.textFormat, new D2D.RectF(10, 10, 100, 20), textBrush);
@@ -267,52 +287,11 @@ namespace VixenModules.Preview.VixenPreview.Direct2D {
 			}
 		}
 
-
-		//private void GenerateDemoPoints()
-		//{
-		//	if (Points == null) Points = new ConcurrentBag< DisplayPoint>();
-
-
-		//	Stopwatch w = Stopwatch.StartNew();
-
-
-		//	var size = this.RenderTarget.Size;
-
-		//	if (size.Width > 1 && size.Height > 1) {
-
-		//		Random rnd = new Random((int)((double)DateTime.Now.Millisecond * Math.PI));
-
-		//		for (int i = 0; i < size.Width; i++) {
-		//			for (int j = 1; j < size.Height + 1; j++) {
-		//				if (rnd.Next(1, 100) <= 5) {
-		//					DisplayPoint p = new DisplayPoint();
-
-		//					p = new DisplayPoint() {
-		//						Shape = new Rectangle() {
-		//							Height = PIXEL_SIZE,
-		//							Width = PIXEL_SIZE,
-		//							X = (int)i * PIXEL_SIZE,
-		//							Y = (int)j * PIXEL_SIZE,
-		//						},
-		//						Identifier = (float)i + ((float)j / 100),
-		//						Color = System.Drawing.Color.FromArgb(rnd.Next(0, 255), rnd.Next(0, 255), rnd.Next(0, 255), rnd.Next(0, 255))
-		//					};
-
-		//					Points[p.Identifier] = p;
-		//				}
-		//			}
-		//		}
-		//		Console.WriteLine("Generated {1} Points In {0}", w.Elapsed, Points.Count());
-
-		//	}
-
-		//}
-
-		public struct DisplayPoint {
-			public Rectangle Shape { get; set; }
-			public System.Drawing.Color Color { get; set; }
-			public string Identifier { get { return string.Format("{0}-{1}-{2}-{3}", Shape.X, Shape.Y, Shape.Width, Shape.Height); } }
-			public int PixelSize { get; set; }
+		private void RenderPixel(KeyValuePair<Guid, IIntentStates> channelIntentState, PreviewPixel p, D2D.SolidColorBrush brush) {
+			if (p.PixelSize <= 4)
+				this.RenderTarget.DrawLine(new D2D.Point2F(p.X, p.Y), new D2D.Point2F(p.X + 1, p.Y + 1), brush, p.PixelSize);
+			else
+				this.RenderTarget.FillEllipse(new D2D.Ellipse() { Point = new D2D.Point2F(p.X, p.Y), RadiusX = p.PixelSize / 2, RadiusY = p.PixelSize / 2 }, brush);
 
 		}
 
@@ -373,7 +352,7 @@ namespace VixenModules.Preview.VixenPreview.Direct2D {
 			//}
 
 		}
- 
+
 
 		#endregion
 
