@@ -83,7 +83,7 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="WeifenLuo.WinFormsUI.Docking">
-      <HintPath>..\..\..\Common\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
+      <HintPath>..\..\..\Common\Libraries\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="WindowsBase" />
@@ -376,11 +376,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Flood.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="WeifenLuo.WinFormsUI.Docking.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

@@ -38,9 +38,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="ScintillaNET, Version=2.5.0.0, Culture=neutral, PublicKeyToken=948d6c9751444115, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\ScintillaNET.dll</HintPath>
+    <Reference Include="ScintillaNET">
+      <HintPath>..\..\..\Common\Libraries\ScintillaNET.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -108,17 +107,6 @@
       <Name>Script %28VixenModules\Modules\Sequence\Script%29</Name>
       <Private>False</Private>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="SciLexer.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SciLexer64.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="ScintillaNET.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
