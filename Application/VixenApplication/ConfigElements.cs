@@ -28,7 +28,6 @@ namespace VixenApplication
 			InitializeComponent();
 			_displayedNode = null;
 			_tooltip = new ToolTip();
-
 		}
 
 		private void ConfigElements_Load(object sender, EventArgs e)

@@ -35,7 +35,9 @@ namespace Common.Controls
 
 		private void ElementTree_Load(object sender, EventArgs e)
 		{
-			PopulateNodeTree();
+			if (!(DesignMode || LicenseManager.UsageMode == LicenseUsageMode.Designtime)) {
+				PopulateNodeTree();
+			}
 		}
 
 
