@@ -147,7 +147,7 @@ namespace VixenModules.Preview.VixenPreview {
 
 		private void VixenPreviewSetup3_Move(object sender, EventArgs e) {
 			if (Data == null) {
-				VixenSystem.Logging.Warning("VixenPreviewSetup3_Move: Data is null. abandoning resize. (Thread ID: " +
+				VixenSystem.Logging.Warning("VixenPreviewSetup3_Move: Data is null. abandoning move. (Thread ID: " +
 				                            System.Threading.Thread.CurrentThread.ManagedThreadId + ")");
 				return;
 			}
