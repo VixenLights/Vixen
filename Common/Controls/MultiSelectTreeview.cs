@@ -23,7 +23,7 @@ namespace Common.Controls
 		/// Occurs when an item is starting to be dragged. This
 		/// event can be used to cancel dragging of particular items.
 		/// </summary>
-		public event DragItemEventHandler DragStart;
+		public event DragStartEventHandler DragStart;
 
 		/// <summary>
 		/// Occurs when an item is dragged and dropped onto another.
@@ -351,9 +351,12 @@ namespace Common.Controls
 
 			// Call dragstart event
 			if (DragStart != null) {
-				DragSourceEventArgs ea = new DragSourceEventArgs();
+				DragStartEventArgs ea = new DragStartEventArgs();
 				ea.Nodes = SelectedNodes;
 				DragStart(this, ea);
+
+				if (ea.CancelDrag)
+					return;
 			}
 
 			DrawSelectedNodesAsDragSource();
@@ -1065,6 +1068,8 @@ namespace Common.Controls
 
 	public delegate void DragItemEventHandler(object sender, DragSourceEventArgs e);
 
+	public delegate void DragStartEventHandler(object sender, DragStartEventArgs e);
+
 	public delegate void DragVerifyEventHandler(object sender, DragVerifyEventArgs e);
 
 	public delegate void DragFinishingEventHandler(object sender, DragFinishingEventArgs e);
@@ -1171,6 +1176,27 @@ namespace Common.Controls
 		}
 
 		private List<TreeNode> _nodes;
+	}
+
+	public class DragStartEventArgs : EventArgs
+	{
+		public DragStartEventArgs()
+		{
+			CancelDrag = false;
+		}
+
+		/// <summary>
+		/// The nodes that were/are being dragged
+		/// </summary>
+		public List<TreeNode> Nodes
+		{
+			get { return _nodes; }
+			set { _nodes = value; }
+		}
+
+		private List<TreeNode> _nodes;
+
+		public bool CancelDrag { get; set; }
 	}
 
 	#endregion
