@@ -31,11 +31,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-	<ProjectReference Include="$(SolutionDir)\Vixen.System\Vixen.csproj">
-		<Project>{50B78623-FCF4-48AF-93FF-FA87C937028F}</Project>
-		<Name>Vixen</Name>
-		<Private>False</Private>
-	</ProjectReference>
+    <ProjectReference Include="$(SolutionDir)\Vixen.System\Vixen.csproj">
+      <Project>{50B78623-FCF4-48AF-93FF-FA87C937028F}</Project>
+      <Name>Vixen</Name>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -44,7 +44,8 @@
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Forms.Calendar35">
-      <HintPath>..\..\..\Common\System.Windows.Forms.Calendar35.dll</HintPath>
+      <HintPath>..\..\..\Common\Libraries\System.Windows.Forms.Calendar35.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />

@@ -11,10 +11,10 @@ namespace VixenModules.Output.Hill320
 {
 	internal class LoadInpOutDLL
 	{
-		[DllImport("inpout32", EntryPoint = "Out32")]
+		[DllImport("Common\\inpout32.dll", EntryPoint = "Out32")]
 		private static extern short Out32(ushort port, ushort data);
 
-		[DllImport("inpoutx64", EntryPoint = "Out32")]
+		[DllImport("Common\\inpoutx64.dll", EntryPoint = "Out32")]
 		private static extern short Out64(ushort port, ushort data);
 
 		public static short outputData(ushort port, ushort data)

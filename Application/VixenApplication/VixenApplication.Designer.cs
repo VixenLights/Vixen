@@ -67,6 +67,7 @@
 			this.toolStripStatusLabel_memory = new System.Windows.Forms.ToolStripStatusLabel();
 			this.label1 = new System.Windows.Forms.Label();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
+			this.labelDebugVersion = new System.Windows.Forms.Label();
 			this.menuStripMain.SuspendLayout();
 			this.groupBoxSequences.SuspendLayout();
 			this.groupBoxSystemConfig.SuspendLayout();
@@ -355,11 +356,23 @@
 			this.pictureBox1.TabIndex = 14;
 			this.pictureBox1.TabStop = false;
 			// 
+			// labelDebugVersion
+			// 
+			this.labelDebugVersion.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.labelDebugVersion.ForeColor = System.Drawing.Color.Black;
+			this.labelDebugVersion.Location = new System.Drawing.Point(262, 150);
+			this.labelDebugVersion.Name = "labelDebugVersion";
+			this.labelDebugVersion.Size = new System.Drawing.Size(126, 22);
+			this.labelDebugVersion.TabIndex = 16;
+			this.labelDebugVersion.Text = "[0.0.0]";
+			this.labelDebugVersion.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
 			// VixenApplication
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(461, 465);
+			this.Controls.Add(this.labelDebugVersion);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.statusStrip);
 			this.Controls.Add(this.labelVersion);
@@ -424,6 +437,7 @@
 		private System.Windows.Forms.PictureBox pictureBox1;
 		private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ToolStripMenuItem profilesToolStripMenuItem;
+		private System.Windows.Forms.Label labelDebugVersion;
 	}
 }
 

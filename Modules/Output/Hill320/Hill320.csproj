@@ -32,11 +32,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-	<ProjectReference Include="$(SolutionDir)\Vixen.System\Vixen.csproj">
-		<Project>{50B78623-FCF4-48AF-93FF-FA87C937028F}</Project>
-		<Name>Vixen</Name>
-		<Private>False</Private>
-	</ProjectReference>
+    <ProjectReference Include="$(SolutionDir)\Vixen.System\Vixen.csproj">
+      <Project>{50B78623-FCF4-48AF-93FF-FA87C937028F}</Project>
+      <Name>Vixen</Name>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -54,10 +54,6 @@
     <Compile Include="Data.cs" />
     <Compile Include="Module.cs" />
     <Compile Include="Descriptor.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="inpout32.dll" />
-    <Content Include="inpoutx64.dll" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Common\Controls\Controls.csproj">
