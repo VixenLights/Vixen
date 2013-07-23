@@ -75,6 +75,7 @@ namespace Common.Controls
 		// a bit hackey: tracks a 'state' marking if we should be sorting lists. Used for mass-selections, etc.,
 		// to avoid sorting the list every time.
 		private bool _delaySortingSelectedNodes = false;
+		private bool _sortSelectedNodesWhenUpdateEnds = false;
 		private bool _clickedNodeWasInBounds = false;
 		private bool _selectedNodeWithControlKey = false;
 
@@ -231,11 +232,30 @@ namespace Common.Controls
 
 		private void SortSelectedNodes()
 		{
-			if (!_delaySortingSelectedNodes)
+			if (_delaySortingSelectedNodes) {
+				_sortSelectedNodesWhenUpdateEnds = true;
+			} else {
 				m_SelectedNodes.Sort(new TreeNodeSorter(this));
+			}
 		}
 
 		#endregion
+
+		public new void BeginUpdate()
+		{
+			base.BeginUpdate();
+			_delaySortingSelectedNodes = true;
+		}
+
+		public new void EndUpdate()
+		{
+			_delaySortingSelectedNodes = false;
+			if (_sortSelectedNodesWhenUpdateEnds) {
+				SortSelectedNodes();
+			}
+			base.EndUpdate();
+		}
+
 
 		public MultiSelectTreeview()
 		{
@@ -888,7 +908,7 @@ namespace Common.Controls
 		private void SelectNode(TreeNode node)
 		{
 			try {
-				this.BeginUpdate();
+				BeginUpdate();
 
 				if (m_SelectedNode == null || ModifierKeys == Keys.Control) {
 					// Ctrl+Click selects an unselected node, or unselects a selected node.
@@ -899,9 +919,6 @@ namespace Common.Controls
 					// Shift+Click selects nodes between the selected node and here.
 					TreeNode ndStart = m_SelectedNode;
 					TreeNode ndEnd = node;
-
-					// sort the selected nodes at the end
-					_delaySortingSelectedNodes = true;
 
 					if (ndStart.Parent == ndEnd.Parent) {
 						// Selected node and clicked node have same parent, easy case.
@@ -989,7 +1006,6 @@ namespace Common.Controls
 						}
 					}
 
-					_delaySortingSelectedNodes = false;
 					SortSelectedNodes();
 				}
 				else {
@@ -1000,7 +1016,7 @@ namespace Common.Controls
 				OnAfterSelect(new TreeViewEventArgs(m_SelectedNode));
 			}
 			finally {
-				this.EndUpdate();
+				EndUpdate();
 			}
 		}
 
