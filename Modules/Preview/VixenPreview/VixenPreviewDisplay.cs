@@ -18,11 +18,23 @@ namespace VixenModules.Preview.VixenPreview
 		{
 			set
 			{
+				if (value == null) {
+					VixenSystem.Logging.Warning("VixenPreviewDisplay: Data set as null! (Thread ID: " +
+					                            System.Threading.Thread.CurrentThread.ManagedThreadId + ")");
+				}
 				_data = value;
 				if (!DesignMode)
 					preview.Data = _data;
 			}
-			get { return _data; }
+			get
+			{
+				if (_data == null) {
+					VixenSystem.Logging.Warning("VixenPreviewDisplay: Data get, _data is null! (Thread ID: " +
+					                            System.Threading.Thread.CurrentThread.ManagedThreadId + ")");
+				}
+				return _data;
+			}
+
 		}
 
 		public VixenPreviewDisplay()
