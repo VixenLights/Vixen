@@ -4,23 +4,26 @@ using System.Linq;
 using System.Text;
 using Kayak;
 using Kayak.Http;
+using Newtonsoft.Json.Linq;
+using Vixen.Execution;
+using Vixen.Execution.Context;
+using Vixen.Services;
+using Vixen.Sys;
 
-namespace VixenModules.App.WebServer.HTTP
-{
-	class RequestDelegate : IHttpRequestDelegate
-	{
+namespace VixenModules.App.WebServer.HTTP {
+	class RequestDelegate : IHttpRequestDelegate {
 		public void OnRequest(HttpRequestHead request, IDataProducer requestBody,
-			IHttpResponseDelegate response)
-		{
-			if (request.Method.ToUpperInvariant() == "POST" && request.Uri.StartsWith("/bufferedecho")) {
-				request = BufferedEchoPost(request, requestBody, response);
-			} else if (request.Method.ToUpperInvariant() == "POST" && request.Uri.StartsWith("/echo")) {
+			IHttpResponseDelegate response) {
+			if (request.Method.ToUpperInvariant() == "POST" && request.Uri.StartsWith("/sequence", StringComparison.CurrentCultureIgnoreCase)) {
+				request = SequencePost(request, requestBody, response);
+			}
+			else if (request.Method.ToUpperInvariant() == "POST" && request.Uri.StartsWith("/element")) {
 				request = EchoPost(request, requestBody, response);
-			} else if (request.Uri.StartsWith("/Elements")) {
-				request = ElementResponse(request, response);
-			} else if (request.Uri.StartsWith("/")) {
+			}
+			else if (request.Uri.StartsWith("/")) {
 				request = GenericResponse(request, response);
-			} else {
+			}
+			else {
 				var responseBody = "The resource you requested ('" + request.Uri + "') could not be found.";
 				var headers = new HttpResponseHead() {
 					Status = "404 Not Found",
@@ -36,31 +39,30 @@ namespace VixenModules.App.WebServer.HTTP
 			}
 		}
 
-		private static HttpRequestHead BufferedEchoPost(HttpRequestHead request, IDataProducer requestBody, IHttpResponseDelegate response)
-		{
+		static ISequenceContext _context = null;
+		private static HttpRequestHead SequencePost(HttpRequestHead request, IDataProducer requestBody, IHttpResponseDelegate response) {
+
+
 			// when you subecribe to the request body before calling OnResponse,
 			// the server will automatically send 100-continue if the client is 
 			// expecting it.
-			requestBody.Connect(new BufferedConsumer(bufferedBody => {
-				var headers = new HttpResponseHead() {
-					Status = "200 OK",
-					Headers = new Dictionary<string, string>() 
-								{
-									{ "Content-Type", "text/plain" },
-									{ "Content-Length", request.Headers["Content-Length"] },
-									{ "Connection", "close" }
-								}
-				};
-				response.OnResponse(headers, new BufferedProducer(bufferedBody));
-			}, error => {
-				// XXX
-				// uh oh, what happens?
-			}));
-			return request;
-		}
+			var sequenceFile = request.Uri.ToLower().Remove(0, 10);
+			var sequenceFileNames = SequenceService.Instance.GetAllSequenceFileNames();
+			var sequenceFilePath = sequenceFileNames.Where(x => System.IO.Path.GetFileName(x).Equals(sequenceFile, StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();
+			if (System.IO.File.Exists(sequenceFilePath)) {
+				var sequence = SequenceService.Instance.Load(sequenceFilePath);
+				if (_context != null && _context.IsRunning)
+					_context.Stop();
+				if (_context.Name != sequence.Name) {
 
-		private static HttpRequestHead EchoPost(HttpRequestHead request, IDataProducer requestBody, IHttpResponseDelegate response)
-		{
+					_context = VixenSystem.Contexts.CreateSequenceContext(new ContextFeatures(ContextCaching.NoCaching), sequence);
+					 
+				}
+
+
+				_context.Play(TimeSpan.Zero, sequence.Length);
+
+			}
 			var headers = new HttpResponseHead() {
 				Status = "200 OK",
 				Headers = new Dictionary<string, string>() 
@@ -77,30 +79,55 @@ namespace VixenModules.App.WebServer.HTTP
 			// per rfc2616 this response must have a 'final' status code,
 			// but the server does not enforce it.
 			response.OnResponse(headers, requestBody);
+
 			return request;
 		}
-		 
-		private static HttpRequestHead ElementResponse(HttpRequestHead request, IHttpResponseDelegate response)
-		{
+
+		private static HttpRequestHead EchoPost(HttpRequestHead request, IDataProducer requestBody, IHttpResponseDelegate response) {
+			var headers = new HttpResponseHead() {
+				Status = "200 OK",
+				Headers = new Dictionary<string, string>() 
+						{
+							{ "Content-Type", "text/plain" },
+							{ "Connection", "close" }
+						}
+			};
+			if (request.Headers.ContainsKey("Content-Length"))
+				headers.Headers["Content-Length"] = request.Headers["Content-Length"];
+
+			// if you call OnResponse before subscribing to the request body,
+			// 100-continue will not be sent before the response is sent.
+			// per rfc2616 this response must have a 'final' status code,
+			// but the server does not enforce it.
+			response.OnResponse(headers, requestBody);
+
+			return request;
+		}
+		private static HttpRequestHead GenericResponse(HttpRequestHead request, IHttpResponseDelegate response) {
+
+			//List<Nodes> nodes = new List<Nodes>();
+
+			//foreach (ElementNode element in VixenSystem.Nodes.GetRootNodes()) {
+			//	nodes.Add(AddNode(element));
+			//}
 			StringBuilder sb = new StringBuilder();
 			sb.AppendLine("<html>");
 			sb.AppendLine("<head>");
-			sb.AppendLine("<script src=\"//ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery.min.js\"></script>");
-			sb.AppendLine("<script src=\"//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js\"></script>");
-			sb.AppendLine("<script src=\"//code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.js\"></script>");
-			sb.AppendLine("<link rel=\"stylesheet\"  type=\"text/css\" media=\"all\" href=\"//code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.css\" />");
+			sb.AppendLine("<title>Vixen 3 Web Interface</title>");
+			sb.AppendLine("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
+
+			sb.AppendLine("<script src=\"http://code.jquery.com/jquery-1.9.1.min.js\"></script>");
+			sb.AppendLine("<script src=\"http://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.js\"></script>");
+			sb.AppendLine("<link rel=\"stylesheet\" href=\"http://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.css\" />");
 
 			sb.AppendLine("</head>");
 			sb.AppendLine("<body>");
-			sb.AppendLine( string.Format(
-							"Elements Hello world.<br/>Hello.<hr/><br/>Uri: {0}<br/>Path: {1}<br/>Query:{2}<br/>Fragment: {3}<br/>",
-							request.Uri,
-							request.Path,
-							request.QueryString,
-							request.Fragment));
+			GenerateSequencesHtml(sb);
+			GenerateElementsHtml(sb);
 			sb.AppendLine("</body>");
+
 			sb.AppendLine("</html>");
-	
+
 
 
 			var headers = new HttpResponseHead() {
@@ -111,29 +138,97 @@ namespace VixenModules.App.WebServer.HTTP
 						{ "Content-Length", sb.Length.ToString() },
 					}
 			};
-			
+
 			response.OnResponse(headers, new BufferedProducer(sb.ToString()));
 			return request;
 		}
-		private static HttpRequestHead GenericResponse(HttpRequestHead request, IHttpResponseDelegate response)
-		{
-			var body = string.Format(
-							"Hello world.\r\nHello.\r\n\r\nUri: {0}\r\nPath: {1}\r\nQuery:{2}\r\nFragment: {3}\r\n",
-							request.Uri,
-							request.Path,
-							request.QueryString,
-							request.Fragment);
 
-			var headers = new HttpResponseHead() {
-				Status = "200 OK",
-				Headers = new Dictionary<string, string>() 
-					{
-						{ "Content-Type", "text/plain" },
-						{ "Content-Length", body.Length.ToString() },
-					}
-			};
-			response.OnResponse(headers, new BufferedProducer(body));
-			return request;
+		private static void GenerateNavBar(StringBuilder sb) {
+			sb.AppendLine("<div data-role=\"navbar\">");
+			sb.AppendLine("<ul>");
+			sb.AppendLine("<li><a href=\"#\">Home</a></li>");
+			sb.AppendLine("<li><a href=\"#Elements\">Elements</a></li>");
+			sb.AppendLine("<li><a href=\"#Sequences\">Sequences</a></li>");
+			sb.AppendLine("</ul>");
+			sb.AppendLine("</div>");
 		}
+		#region Elements
+
+		private static void GenerateElementsHtml(StringBuilder sb) {
+			sb.AppendLine("<div data-role=\"page\" id=\"Elements\">");
+
+			sb.AppendLine("<script  type=\"text/javascript\">");
+			sb.AppendLine("function turnElementOnOff(id, state) {");
+			sb.AppendLine("alert('Element =' + id + ' State = ' + state);");
+			sb.AppendLine("}");
+
+			sb.AppendLine("</script>");
+			sb.AppendLine("<div data-role=\"header\"><h1>Vixen 3 Elements</h1></div>");
+			GenerateNavBar(sb);
+			sb.AppendLine("<div data-role=\"content\">");
+
+			sb.AppendLine("<p>Test Elements</p>");
+
+			foreach (ElementNode element in VixenSystem.Nodes.GetRootNodes()) {
+				AddNodeToTree(sb, element);
+			}
+
+			sb.AppendLine("</div>");
+			sb.AppendLine("</div>");
+		}
+
+
+		private static void AddNodeToTree(StringBuilder sb, ElementNode elementNode) {
+
+			sb.AppendLine("<div data-role=\"collapsible\">");
+
+			sb.AppendFormat("<h4>{0}</h4>", elementNode.Name);
+			sb.AppendFormat("<p>ElementID = {0}</p>", elementNode.Id);
+			//sb.AppendFormat("<a href=\"#\" data-role=\"button\" onclick=\"turnElementOnOff('{0}','{1}')\">Turn {1}</a>", elementNode.Id, "On");
+			//sb.AppendFormat("<a href=\"#\" data-role=\"button\" onclick=\"turnElementOnOff('{0}','{1}')\">Turn {1}</a>", elementNode.Id, "Off");
+
+			foreach (ElementNode childNode in elementNode.Children) {
+				AddNodeToTree(sb, childNode);
+			}
+
+			sb.AppendLine("</div>");
+		}
+
+		#endregion
+		#region Sequences
+
+		private static void GenerateSequencesHtml(StringBuilder sb) {
+			sb.AppendLine("<div data-role=\"page\" id=\"Sequences\">");
+			sb.AppendLine("<script  type=\"text/javascript\">");
+			sb.AppendLine("function playSequence(id ) {");
+			sb.AppendLine("$.post('/sequence/' + id);");
+
+			sb.AppendLine("}");
+
+			sb.AppendLine("</script>");
+			sb.AppendLine("<div data-role=\"header\"><h1>Vixen 3 Sequences</h1></div>");
+			GenerateNavBar(sb);
+
+			sb.AppendLine("<div data-role=\"content\">");
+
+			var sequences = SequenceService.Instance.GetAllSequenceFileNames().Select(x => System.IO.Path.GetFileName(x));
+			sequences.ToList().ForEach(sequence => {
+				sb.AppendLine("<div data-role=\"collapsible\">");
+
+				sb.AppendFormat("<h4>{0}</h4>", sequence);
+				//sb.AppendFormat("<a href=\"#\" data-role=\"button\" onclick=\"playSequence('{0}')\">Play</a>", sequence);
+				//sb.AppendFormat("<a href=\"#\" data-role=\"button\" onclick=\"turnElementOnOff('{0}','{1}')\">Turn {1}</a>", elementNode.Id, "Off");
+
+				sb.AppendLine("</div>");
+
+
+			});
+
+			sb.AppendLine("</div>");
+			sb.AppendLine("</div>");
+		}
+
+		#endregion
+
 	}
 }
