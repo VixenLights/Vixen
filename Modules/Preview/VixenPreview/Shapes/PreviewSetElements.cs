@@ -59,11 +59,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		private void PopulateStringList()
 		{
 			if (connectStandardStrings && _shapes[0].StringType == PreviewBaseShape.StringTypes.Standard) {
-				comboStrings.Items.Add(new ComboBoxItem(_strings[0].StringName, _strings[0]));
+				comboStrings.Items.Add(new Common.Controls.ComboBoxItem(_strings[0].StringName, _strings[0]));
 			}
 			else {
 				foreach (PreviewSetElementString lightString in _strings) {
-					comboStrings.Items.Add(new ComboBoxItem(lightString.StringName, lightString));
+					comboStrings.Items.Add(new Common.Controls.ComboBoxItem(lightString.StringName, lightString));
 				}
 			}
 			if (_strings.Count > 0)
@@ -135,7 +135,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		private void UpdateListLinkedElements()
 		{
 			listLinkedElements.Items.Clear();
-			ComboBoxItem comboBoxItem = comboStrings.SelectedItem as ComboBoxItem;
+			Common.Controls.ComboBoxItem comboBoxItem = comboStrings.SelectedItem as Common.Controls.ComboBoxItem;
 			if (comboBoxItem != null) {
 				PreviewSetElementString elementString = comboBoxItem.Value as PreviewSetElementString;
 				if (elementString != null) {
@@ -220,7 +220,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			else {
 				for (int i = 0; i < _shapes.Count; i++) {
 					//Console.WriteLine("i=" + i.ToString());
-					ComboBoxItem item = comboStrings.Items[i] as ComboBoxItem;
+					Common.Controls.ComboBoxItem item = comboStrings.Items[i] as Common.Controls.ComboBoxItem;
 					PreviewSetElementString lightString = item.Value as PreviewSetElementString;
 					PreviewBaseShape shape = _shapes[i];
 					for (int pixelNum = 0; pixelNum < lightString.Pixels.Count; pixelNum++) {

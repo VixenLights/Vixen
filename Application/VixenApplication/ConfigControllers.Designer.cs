@@ -73,6 +73,7 @@
 			this.listViewControllers.Name = "listViewControllers";
 			this.listViewControllers.ShowGroups = false;
 			this.listViewControllers.Size = new System.Drawing.Size(395, 207);
+			this.listViewControllers.Sorting = System.Windows.Forms.SortOrder.Ascending;
 			this.listViewControllers.TabIndex = 0;
 			this.listViewControllers.UseCompatibleStateImageBehavior = false;
 			this.listViewControllers.View = System.Windows.Forms.View.Details;

@@ -28,7 +28,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		private void OnPropertiesChanged(object sender, PreviewBaseShape shape)
 		{
-			PopulatePropList((comboBoxStringToEdit.SelectedItem as ComboBoxItem).Value as PreviewBaseShape);
+			PopulatePropList((comboBoxStringToEdit.SelectedItem as Common.Controls.ComboBoxItem).Value as PreviewBaseShape);
 		}
 
 		private void buttonHelp_Click(object sender, EventArgs e)
@@ -45,7 +45,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			comboBoxStringToEdit.Items.Clear();
 			foreach (PreviewBaseShape shape in Shape._strings) {
-				ComboBoxItem item = new ComboBoxItem(shape.Name, shape);
+				Common.Controls.ComboBoxItem item = new Common.Controls.ComboBoxItem(shape.Name, shape);
 				if (item.Text == null) {
 					item.Text = shape.GetType().ToString();
 					item.Text = item.Text.Substring(item.Text.LastIndexOf('.') + 1);
@@ -54,7 +54,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 			if (comboBoxStringToEdit.Items.Count > 0) {
 				if (selectedShape != null) {
-					foreach (ComboBoxItem item in comboBoxStringToEdit.Items) {
+					foreach (Common.Controls.ComboBoxItem item in comboBoxStringToEdit.Items)
+					{
 						if ((item.Value as PreviewBaseShape) == selectedShape) {
 							comboBoxStringToEdit.SelectedItem = item;
 							return;
@@ -79,7 +80,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		private void comboBoxStringToEdit_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			ComboBoxItem item = comboBoxStringToEdit.SelectedItem as ComboBoxItem;
+			Common.Controls.ComboBoxItem item = comboBoxStringToEdit.SelectedItem as Common.Controls.ComboBoxItem;
 			if (item != null) {
 				PreviewBaseShape shape = item.Value as PreviewBaseShape;
 				if (shape != null) {

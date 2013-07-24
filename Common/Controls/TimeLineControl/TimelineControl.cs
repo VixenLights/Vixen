@@ -259,6 +259,7 @@ namespace Common.Controls.Timeline
 				if (VisibleTimeEnd > TotalTime)
 					VisibleTimeStart = TotalTime - VisibleTimeSpan;
 			}
+			grid.ResetAllElements();
 		}
 
 		public void ZoomRows(double scale)
@@ -271,6 +272,8 @@ namespace Common.Controls.Timeline
 				r.Height = (int) (r.Height*scale);
 			}
 			grid.EndDraw();
+
+			grid.ResetAllElements();
 		}
 
 		public void ResizeGrid()
