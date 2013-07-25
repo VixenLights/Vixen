@@ -66,6 +66,12 @@
     <Compile Include="DiscreteColorPickerItem.Designer.cs">
       <DependentUpon>DiscreteColorPickerItem.cs</DependentUpon>
     </Compile>
+    <Compile Include="ElementTree.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ElementTree.Designer.cs">
+      <DependentUpon>ElementTree.cs</DependentUpon>
+    </Compile>
     <Compile Include="PictureComboBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -275,6 +281,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DiscreteColorPickerItem.resx">
       <DependentUpon>DiscreteColorPickerItem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ElementTree.resx">
+      <DependentUpon>ElementTree.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Wizard\WizardForm.resx">
       <DependentUpon>WizardForm.cs</DependentUpon>

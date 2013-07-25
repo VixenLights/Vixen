@@ -2,7 +2,7 @@
 
 namespace Vixen.Commands
 {
-	public class _8BitCommand : Dispatchable<_8BitCommand>, ICommand<byte>
+	public class _8BitCommand : Dispatchable<_8BitCommand>, ICommand
 	{
 		public _8BitCommand(byte value)
 		{

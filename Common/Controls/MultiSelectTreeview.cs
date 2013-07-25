@@ -23,7 +23,7 @@ namespace Common.Controls
 		/// Occurs when an item is starting to be dragged. This
 		/// event can be used to cancel dragging of particular items.
 		/// </summary>
-		public event DragItemEventHandler DragStart;
+		public event DragStartEventHandler DragStart;
 
 		/// <summary>
 		/// Occurs when an item is dragged and dropped onto another.
@@ -75,6 +75,7 @@ namespace Common.Controls
 		// a bit hackey: tracks a 'state' marking if we should be sorting lists. Used for mass-selections, etc.,
 		// to avoid sorting the list every time.
 		private bool _delaySortingSelectedNodes = false;
+		private bool _sortSelectedNodesWhenUpdateEnds = false;
 		private bool _clickedNodeWasInBounds = false;
 		private bool _selectedNodeWithControlKey = false;
 
@@ -231,11 +232,30 @@ namespace Common.Controls
 
 		private void SortSelectedNodes()
 		{
-			if (!_delaySortingSelectedNodes)
+			if (_delaySortingSelectedNodes) {
+				_sortSelectedNodesWhenUpdateEnds = true;
+			} else {
 				m_SelectedNodes.Sort(new TreeNodeSorter(this));
+			}
 		}
 
 		#endregion
+
+		public new void BeginUpdate()
+		{
+			base.BeginUpdate();
+			_delaySortingSelectedNodes = true;
+		}
+
+		public new void EndUpdate()
+		{
+			_delaySortingSelectedNodes = false;
+			if (_sortSelectedNodesWhenUpdateEnds) {
+				SortSelectedNodes();
+			}
+			base.EndUpdate();
+		}
+
 
 		public MultiSelectTreeview()
 		{
@@ -351,9 +371,12 @@ namespace Common.Controls
 
 			// Call dragstart event
 			if (DragStart != null) {
-				DragSourceEventArgs ea = new DragSourceEventArgs();
+				DragStartEventArgs ea = new DragStartEventArgs();
 				ea.Nodes = SelectedNodes;
 				DragStart(this, ea);
+
+				if (ea.CancelDrag)
+					return;
 			}
 
 			DrawSelectedNodesAsDragSource();
@@ -885,7 +908,7 @@ namespace Common.Controls
 		private void SelectNode(TreeNode node)
 		{
 			try {
-				this.BeginUpdate();
+				BeginUpdate();
 
 				if (m_SelectedNode == null || ModifierKeys == Keys.Control) {
 					// Ctrl+Click selects an unselected node, or unselects a selected node.
@@ -896,9 +919,6 @@ namespace Common.Controls
 					// Shift+Click selects nodes between the selected node and here.
 					TreeNode ndStart = m_SelectedNode;
 					TreeNode ndEnd = node;
-
-					// sort the selected nodes at the end
-					_delaySortingSelectedNodes = true;
 
 					if (ndStart.Parent == ndEnd.Parent) {
 						// Selected node and clicked node have same parent, easy case.
@@ -986,7 +1006,6 @@ namespace Common.Controls
 						}
 					}
 
-					_delaySortingSelectedNodes = false;
 					SortSelectedNodes();
 				}
 				else {
@@ -997,7 +1016,7 @@ namespace Common.Controls
 				OnAfterSelect(new TreeViewEventArgs(m_SelectedNode));
 			}
 			finally {
-				this.EndUpdate();
+				EndUpdate();
 			}
 		}
 
@@ -1064,6 +1083,8 @@ namespace Common.Controls
 	public delegate void DragCompleteEventHandler(object sender, DragSourceDestinationEventArgs e);
 
 	public delegate void DragItemEventHandler(object sender, DragSourceEventArgs e);
+
+	public delegate void DragStartEventHandler(object sender, DragStartEventArgs e);
 
 	public delegate void DragVerifyEventHandler(object sender, DragVerifyEventArgs e);
 
@@ -1171,6 +1192,27 @@ namespace Common.Controls
 		}
 
 		private List<TreeNode> _nodes;
+	}
+
+	public class DragStartEventArgs : EventArgs
+	{
+		public DragStartEventArgs()
+		{
+			CancelDrag = false;
+		}
+
+		/// <summary>
+		/// The nodes that were/are being dragged
+		/// </summary>
+		public List<TreeNode> Nodes
+		{
+			get { return _nodes; }
+			set { _nodes = value; }
+		}
+
+		private List<TreeNode> _nodes;
+
+		public bool CancelDrag { get; set; }
 	}
 
 	#endregion

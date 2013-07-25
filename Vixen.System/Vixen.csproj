@@ -83,6 +83,7 @@
     <Compile Include="Common\ColorSpaces.cs" />
     <Compile Include="Common\ColorSpaceTypeConverter.cs" />
     <Compile Include="Data\Combinator\Color\NaiveColorCombinator.cs" />
+    <Compile Include="Data\Combinator\DiscardExcessCombinator.cs" />
     <Compile Include="Data\Combinator\_16Bit\16BitHighestWinsCombinator.cs" />
     <Compile Include="Data\Combinator\_16Bit\16BitAverageCombinator.cs" />
     <Compile Include="Data\Combinator\_32Bit\32BitHighestWinsCombinator.cs" />
@@ -152,6 +153,7 @@
     <Compile Include="Intent\IntentState.cs" />
     <Compile Include="Intent\LightingIntent.cs" />
     <Compile Include="Intent\PositionIntent.cs" />
+    <Compile Include="Intent\StaticIntent.cs" />
     <Compile Include="Intent\StaticIntentState.cs" />
     <Compile Include="Interpolator\ColorInterpolator.cs" />
     <Compile Include="Interpolator\PositionValueInterpolator.cs" />
@@ -833,7 +835,9 @@
   <ItemGroup>
     <None Include="Resources\Effect64.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Compile Include="Commands\StringCommand.cs" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy "$(SolutionDir)\Release Notes.txt" $(OutDir)</PostBuildEvent>
