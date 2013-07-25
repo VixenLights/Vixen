@@ -13,6 +13,7 @@ namespace Vixen.Services
 	{
 		// There is no longer a Sequence class in the core assembly.  Better place for this?
 		[DataPath] public static readonly string SequenceDirectory = Path.Combine(Paths.DataRootPath, "Sequence");
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		private static SequenceService _instance;
 
@@ -83,7 +84,7 @@ namespace Vixen.Services
 			if (sequenceFactory != null) {
 				IModuleDataModel sequenceTypeData = ModuleLocalDataSet.CreateModuleDataInstance(sequenceFactory);
 				if (sequenceTypeData != null && !(sequenceTypeData is ISequenceTypeDataModel)) {
-					VixenSystem.Logging.Warning(
+					Logging.Warn(
 						"Could not create appropriate sequence data for new sequence due to the object type.  File type: " + fileType);
 				}
 				else {

@@ -14,6 +14,7 @@ namespace Vixen.Module.Effect {
 		protected EffectModuleDescriptorBase() {
 			PropertyDependencies = new Guid[0];
 		}
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		public abstract override string TypeName { get; }
 
@@ -62,7 +63,7 @@ namespace Vixen.Module.Effect {
 
 			}
 			catch (Exception e) {
-				VixenSystem.Logging.Error(e.Message, e);
+				Logging.ErrorException(e.Message, e);
 				return null;
 			}
 		}

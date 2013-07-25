@@ -10,11 +10,14 @@ using Vixen.Module.Editor;
 using Vixen.Module.SequenceType;
 using Vixen.Services;
 using Vixen.Sys;
+using NLog;
 
 namespace VixenApplication
 {
 	public partial class VixenApplication : Form, IApplication
 	{
+		private static NLog.Logger Logging = LogManager.GetCurrentClassLogger();
+
 		private Guid _guid = new Guid("7b903272-73d0-416c-94b1-6932758b1963");
 		private bool stopping;
 		private bool _openExecution = true;
@@ -61,9 +64,11 @@ namespace VixenApplication
 			openFileDialog.InitialDirectory = SequenceService.SequenceDirectory;
 
 			// Add menu items for the logs.
-			foreach (string logName in VixenSystem.Logs.LogNames) {
+			var di = new System.IO.DirectoryInfo(Path.Combine(_rootDataDirectory, "Logs"));
+
+			foreach (string logName in di.GetFiles().Select(x => x.Name)) {
 				logsToolStripMenuItem.DropDownItems.Add(logName, null,
-				                                        (menuSender, menuArgs) => _ViewLog(((ToolStripMenuItem) menuSender).Text));
+														(menuSender, menuArgs) => _ViewLog(((ToolStripMenuItem)menuSender).Text));
 			}
 
 			PopulateRecentSequencesList();
@@ -96,8 +101,7 @@ namespace VixenApplication
 				case "data_dir":
 					if (argParts.Length > 1) {
 						_rootDataDirectory = argParts[1];
-					}
-					else {
+					} else {
 						_rootDataDirectory = null;
 					}
 					break;
@@ -116,27 +120,61 @@ namespace VixenApplication
 				if (f.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
 					_rootDataDirectory = f.DataFolder;
 				}
-			}
-			else 
-				// So we're to use the "selected" one...
+			} else
+			// So we're to use the "selected" one...
 			{
 				// If we don't have any profiles, get outta here
 				if (profileCount == 0 || profileToLoad < 0) {
 					return;
-				}
-				else {
+				} else {
 					if (profileToLoad < profileCount) {
 						_rootDataDirectory = profile.GetSetting("Profiles/Profile" + profileToLoad.ToString() + "/DataFolder", "");
 						if (_rootDataDirectory != "") {
 							if (!System.IO.Directory.Exists(_rootDataDirectory))
 								System.IO.Directory.CreateDirectory(_rootDataDirectory);
-						}
-						else {
+						} else {
 							_rootDataDirectory = null;
 						}
 					}
 				}
 			}
+			SetLogFilePaths();
+		}
+
+		/// <summary>
+		/// Sets the log file paths to the appropriate profile log directory
+		/// </summary>
+		private void SetLogFilePaths()
+		{
+			NLog.Config.LoggingConfiguration config = NLog.LogManager.Configuration;
+			config.AllTargets.ToList().ForEach(t => {
+				var target = t as NLog.Targets.FileTarget;
+				if (target != null) {
+
+					var strFileName = target.FileName.ToString().Replace("[VIXENPROFILEDIR]", _rootDataDirectory).Replace('/', '\\').Replace("'", "");
+					var strArchiveFileName = target.FileName.ToString().Replace("[VIXENPROFILEDIR]", _rootDataDirectory).Replace('/', '\\').Replace("'", "");
+
+					target.FileName = strFileName;
+					target.ArchiveFileName = strArchiveFileName;
+
+				}
+
+			});
+			NLog.LogManager.Configuration = config;
+#if DEBUG
+
+			Logging.Debug("Test");
+			Logging.Info("Test");
+			Logging.Warn("Test");
+			Logging.Error("Test");
+			Logging.Fatal("Test");
+			try {
+				throw new ApplicationException("Test Exception");
+			} catch (Exception e) {
+
+				Logging.ErrorException(e.Message, e);
+			}
+#endif
 		}
 
 		#region IApplication implemetation
@@ -186,20 +224,18 @@ namespace VixenApplication
 
 				if (descriptor.CanCreateNew) {
 					item.Tag = descriptor.FileExtension;
-					item.Click += (sender, e) =>
-					              	{
-					              		ToolStripMenuItem menuItem = sender as ToolStripMenuItem;
-					              		string fileType = (string) menuItem.Tag;
-					              		IEditorUserInterface editor = EditorService.Instance.CreateEditor(fileType);
-					              		if (editor == null) {
-					              			VixenSystem.Logging.Error("Can't find an appropriate editor to open file of type " + fileType);
-					              			MessageBox.Show("Can't find an editor to open this file type. (\"" + fileType + "\")",
-					              			                "Error opening file", MessageBoxButtons.OK);
-					              		}
-					              		else {
-					              			_OpenEditor(editor);
-					              		}
-					              	};
+					item.Click += (sender, e) => {
+						ToolStripMenuItem menuItem = sender as ToolStripMenuItem;
+						string fileType = (string)menuItem.Tag;
+						IEditorUserInterface editor = EditorService.Instance.CreateEditor(fileType);
+						if (editor == null) {
+							Logging.Error("Can't find an appropriate editor to open file of type " + fileType);
+							MessageBox.Show("Can't find an editor to open this file type. (\"" + fileType + "\")",
+											"Error opening file", MessageBoxButtons.OK);
+						} else {
+							_OpenEditor(editor);
+						}
+					};
 					contextMenuStripNewSequence.Items.Add(item);
 				}
 			}
@@ -209,12 +245,11 @@ namespace VixenApplication
 		{
 			_openEditors.Add(editorUI);
 
-			editorUI.Closing += (sender, e) =>
-			                    	{
-			                    		if (!_CloseEditor(sender as IEditorUserInterface)) {
-			                    			e.Cancel = true;
-			                    		}
-			                    	};
+			editorUI.Closing += (sender, e) => {
+				if (!_CloseEditor(sender as IEditorUserInterface)) {
+					e.Cancel = true;
+				}
+			};
 
 			editorUI.Activated += (sender, e) => { _activeEditor = sender as IEditorUserInterface; };
 
@@ -225,7 +260,7 @@ namespace VixenApplication
 		{
 			if (editor.IsModified) {
 				DialogResult result = MessageBox.Show("Save changes to the sequence?", "Save Changes?",
-				                                      MessageBoxButtons.YesNoCancel);
+													  MessageBoxButtons.YesNoCancel);
 				if (result == System.Windows.Forms.DialogResult.Cancel)
 					return false;
 
@@ -283,16 +318,14 @@ namespace VixenApplication
 				IEditorUserInterface editor = EditorService.Instance.CreateEditor(filename);
 
 				if (editor == null) {
-					VixenSystem.Logging.Error("Can't find an appropriate editor to open file " + filename);
+					Logging.Error("Can't find an appropriate editor to open file " + filename);
 					MessageBox.Show("Can't find an editor to open this file type. (\"" + Path.GetFileName(filename) + "\")",
-					                "Error opening file", MessageBoxButtons.OK);
-				}
-				else {
+									"Error opening file", MessageBoxButtons.OK);
+				} else {
 					_OpenEditor(editor);
 				}
-			}
-			catch (Exception ex) {
-				VixenSystem.Logging.Error("Error trying to open file '" + filename + "': ", ex);
+			} catch (Exception ex) {
+				Logging.Error("Error trying to open file '" + filename + "': ", ex);
 				MessageBox.Show("Error trying to open file '" + filename + "'.", "Error opening file", MessageBoxButtons.OK);
 			}
 		}
@@ -303,8 +336,7 @@ namespace VixenApplication
 			DialogResult result = form.ShowDialog();
 			if (result == DialogResult.OK) {
 				VixenSystem.SaveSystemConfig();
-			}
-			else {
+			} else {
 				VixenSystem.ReloadSystemConfig();
 			}
 		}
@@ -315,8 +347,7 @@ namespace VixenApplication
 			DialogResult result = form.ShowDialog();
 			if (result == DialogResult.OK) {
 				VixenSystem.SaveSystemConfig();
-			}
-			else {
+			} else {
 				VixenSystem.ReloadSystemConfig();
 			}
 		}
@@ -327,8 +358,7 @@ namespace VixenApplication
 			DialogResult result = form.ShowDialog();
 			if (result == DialogResult.OK) {
 				VixenSystem.SaveSystemConfig();
-			}
-			else {
+			} else {
 				VixenSystem.ReloadSystemConfig();
 			}
 		}
@@ -339,8 +369,7 @@ namespace VixenApplication
 			DialogResult result = form.ShowDialog();
 			if (result == DialogResult.OK) {
 				VixenSystem.SaveSystemConfig();
-			}
-			else {
+			} else {
 				VixenSystem.ReloadSystemConfig();
 			}
 		}
@@ -383,14 +412,11 @@ namespace VixenApplication
 
 			if (Execution.IsOpen) {
 				toolStripStatusLabelExecutionLight.BackColor = Color.ForestGreen;
-			}
-			else if (Execution.IsClosed) {
+			} else if (Execution.IsClosed) {
 				toolStripStatusLabelExecutionLight.BackColor = Color.Firebrick;
-			}
-			else if (Execution.IsInTest) {
+			} else if (Execution.IsInTest) {
 				toolStripStatusLabelExecutionLight.BackColor = Color.DodgerBlue;
-			}
-			else {
+			} else {
 				toolStripStatusLabelExecutionLight.BackColor = Color.Gold;
 			}
 
@@ -400,13 +426,23 @@ namespace VixenApplication
 
 		private void _ViewLog(string logName)
 		{
-			string tempFilePath = Path.Combine(Path.GetTempPath(), logName);
-			IEnumerable<string> logContents = VixenSystem.Logs.RetrieveLogContents(logName);
-			File.WriteAllLines(tempFilePath, logContents);
+			string tempFilePath = Path.Combine(Path.GetTempPath(), "Logs", logName);
+			if (File.Exists(System.IO.Path.Combine(_rootDataDirectory, logName)))
+				using (var sr = new StreamReader(System.IO.Path.Combine(_rootDataDirectory, "Logs", logName))) {
+					using (var sw = new StreamWriter(tempFilePath)) {
+						while (!sr.EndOfStream) {
+							sw.WriteLine(sr.ReadLine());
+						}
+					}
+				}
+
 			using (Process process = new Process()) {
 				process.StartInfo = new ProcessStartInfo("notepad.exe", tempFilePath);
 				process.Start();
+
 			}
+			if (File.Exists(tempFilePath))
+				File.Delete(tempFilePath);
 		}
 
 		#region Recent Sequences list
@@ -422,8 +458,7 @@ namespace VixenApplication
 
 			if (File.Exists(file)) {
 				OpenSequenceFromFile(file);
-			}
-			else {
+			} else {
 				MessageBox.Show("Can't find selected sequence.");
 			}
 		}
@@ -441,7 +476,7 @@ namespace VixenApplication
 
 			if (_applicationData.RecentSequences.Count > _maxRecentSequences)
 				_applicationData.RecentSequences.RemoveRange(_maxRecentSequences,
-				                                             _applicationData.RecentSequences.Count - _maxRecentSequences);
+															 _applicationData.RecentSequences.Count - _maxRecentSequences);
 
 			_applicationData.SaveData();
 			PopulateRecentSequencesList();
@@ -493,11 +528,11 @@ namespace VixenApplication
 
 		private void statsTimer_Tick(object sender, EventArgs e)
 		{
-			long memUsage = _thisProc.PrivateMemorySize64/1024/1024;
-			long sharedMem = _thisProc.VirtualMemorySize64/1024/1024;
+			long memUsage = _thisProc.PrivateMemorySize64 / 1024 / 1024;
+			long sharedMem = _thisProc.VirtualMemorySize64 / 1024 / 1024;
 
 			toolStripStatusLabel_memory.Text = String.Format("Mem: {0}/{2} MB   CPU: {1}%",
-			                                                 memUsage, _cpuUsage.GetUsage(), sharedMem);
+															 memUsage, _cpuUsage.GetUsage(), sharedMem);
 		}
 
 		#endregion

@@ -17,6 +17,7 @@ namespace VixenApplication.FiltersAndPatching
 	public partial class PatchingWizard_4_Summary : WizardStage
 	{
 		private readonly PatchingWizardData _data;
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		public PatchingWizard_4_Summary(PatchingWizardData data)
 		{
@@ -134,7 +135,7 @@ namespace VixenApplication.FiltersAndPatching
 					                                                                             xPositionProportion));
 				for (int i = 0; i < currentSources.Count; i++) {
 					if (i >= clonedFilters.Count) {
-						VixenSystem.Logging.Error(
+						Logging.Error(
 							"Patching Wizard: ran out of cloned filters when autopatching. We should have automatically generated enough!");
 						return false;
 					}

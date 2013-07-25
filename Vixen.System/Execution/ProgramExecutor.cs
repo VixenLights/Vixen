@@ -12,6 +12,7 @@ namespace Vixen.Execution
 		private QueuingSequenceEnumerator _sequenceEnumerator;
 		private ISequenceExecutor _sequenceExecutor;
 		private RunState _state;
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		private enum RunState
 		{
@@ -226,7 +227,7 @@ namespace Vixen.Execution
 				}
 			}
 			catch (Exception ex) {
-				VixenSystem.Logging.Error(ex);
+				Logging.ErrorException(ex.Message,ex);
 				_DisposeSequenceExecutor();
 			}
 			finally {

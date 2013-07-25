@@ -11,6 +11,7 @@ namespace VixenModules.Preview.VixenPreview
 	{
 		private VixenPreviewSetup3 setupForm;
 		private VixenPreviewDisplay displayForm;
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		public VixenPreviewModuleInstance()
 		{
@@ -51,7 +52,7 @@ namespace VixenModules.Preview.VixenPreview
 			{
 				if (base.ModuleData == null) {
 					base.ModuleData = new VixenPreviewData();
-					VixenSystem.Logging.Warning("VixenPreview: access of null ModuleData. Creating new one. (Thread ID: " +
+					Logging.Warn("VixenPreview: access of null ModuleData. Creating new one. (Thread ID: " +
 					                            System.Threading.Thread.CurrentThread.ManagedThreadId + ")");
 				}
 				return base.ModuleData;

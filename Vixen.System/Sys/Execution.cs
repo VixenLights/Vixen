@@ -12,7 +12,7 @@ namespace Vixen.Sys
 		internal static SystemClock SystemTime = new SystemClock();
 		private static ExecutionStateEngine _state;
 		private static ControllerUpdateAdjudicator _updateAdjudicator;
-
+		
 		// These are system-level events.
 		public static event EventHandler NodesChanged
 		{

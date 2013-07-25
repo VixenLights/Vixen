@@ -11,6 +11,7 @@ namespace Vixen.IO.Xml.SystemConfig
 	{
 		private SystemConfig _systemConfig;
 		private XElement _content;
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		private const string ELEMENT_IDENTITY = "Identity";
 		private const string ELEMENT_EVAL_FILTERS = "AllowFilterEvaluation";
@@ -116,7 +117,7 @@ namespace Vixen.IO.Xml.SystemConfig
 				_systemConfig.Identity = Guid.Parse(identityElement.Value);
 			}
 			else {
-				VixenSystem.Logging.Warning("System config does not have an identity value.");
+				Logging.Warn("System config does not have an identity value.");
 			}
 		}
 

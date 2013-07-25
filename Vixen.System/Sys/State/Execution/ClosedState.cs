@@ -4,6 +4,7 @@ namespace Vixen.Sys.State.Execution
 {
 	public class ClosedState : State
 	{
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		public const string StateName = "Closed";
 
 		public ClosedState(ExecutionStateEngine engine)
@@ -19,7 +20,7 @@ namespace Vixen.Sys.State.Execution
 		public override void Enter()
 		{
 			StandardClosedBehavior.Run();
-			VixenSystem.Logging.Info("Vixen execution engine entered the closed state.");
+			Logging.Info("Vixen execution engine entered the closed state.");
 		}
 
 		public override void OnOpen()

@@ -9,6 +9,7 @@ namespace Vixen.Sys.Managers
 		where T : class, IOutputDevice
 	{
 		private Dictionary<Guid, HardwareUpdateThread> _updateThreads;
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		public OutputDeviceExecution()
 		{
@@ -124,7 +125,7 @@ namespace Vixen.Sys.Managers
 					_StartDevice(outputDevice);
 				}
 				catch (Exception ex) {
-					VixenSystem.Logging.Error("Error starting device " + outputDevice.Name, ex);
+					Logging.ErrorException("Error starting device " + outputDevice.Name, ex);
 				}
 			}
 		}
@@ -136,7 +137,7 @@ namespace Vixen.Sys.Managers
 					_StopDevice(outputDevice);
 				}
 				catch (Exception ex) {
-					VixenSystem.Logging.Error("Error trying to stop device " + outputDevice.Name, ex);
+					Logging.ErrorException("Error trying to stop device " + outputDevice.Name, ex);
 				}
 			}
 		}
@@ -148,7 +149,7 @@ namespace Vixen.Sys.Managers
 					_PauseDevice(outputDevice);
 				}
 				catch (Exception ex) {
-					VixenSystem.Logging.Error("Error trying to pause device " + outputDevice.Name, ex);
+					Logging.ErrorException("Error trying to pause device " + outputDevice.Name, ex);
 				}
 			}
 		}
@@ -160,7 +161,7 @@ namespace Vixen.Sys.Managers
 					_ResumeDevice(outputDevice);
 				}
 				catch (Exception ex) {
-					VixenSystem.Logging.Error("Error trying to resume device " + outputDevice.Name, ex);
+					Logging.ErrorException("Error trying to resume device " + outputDevice.Name, ex);
 				}
 			}
 		}
@@ -249,7 +250,7 @@ namespace Vixen.Sys.Managers
 		{
 			HardwareUpdateThread hardwareUpdateThread = (HardwareUpdateThread) sender;
 			_Stop((T) hardwareUpdateThread.OutputDevice);
-			VixenSystem.Logging.Error("Device " + hardwareUpdateThread.OutputDevice.Name +
+			Logging.Error("Device " + hardwareUpdateThread.OutputDevice.Name +
 			                          " experienced an error during execution and was shutdown.");
 		}
 	}

@@ -18,6 +18,7 @@ namespace VixenModules.App.SimpleSchedule
 		private SynchronizationContext _synchronizationContext;
 		private LatchedAppCommand _enabledCommand;
 		private AppCommand _showCommand;
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		private const string MENU_ID_ROOT = "SchedulerRoot";
 
@@ -26,14 +27,13 @@ namespace VixenModules.App.SimpleSchedule
 			_stateMachine = new ScheduleStates();
 			_synchronizationContext = SynchronizationContext.Current;
 
-			VixenSystem.Logs.AddLog(new SchedulerLog());
-
+		 
 			foreach (ScheduledItem scheduledItem in _data.ScheduledItems) {
 				try {
 					_AddScheduledItemToStateMachine(scheduledItem);
 				}
 				catch (Exception ex) {
-					VixenSystem.Logging.SimpleSchedule("Could not add item '" + scheduledItem.ItemFilePath + "'; " + ex.Message + ".");
+					Logging.ErrorException("Could not add item '" + scheduledItem.ItemFilePath + "'; " + ex.Message + ".", ex);
 				}
 			}
 

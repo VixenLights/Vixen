@@ -21,6 +21,7 @@ namespace VixenModules.App.Scheduler
 		private readonly Dictionary<IProgramContext, ScheduleItem> _currentContexts;
 		private readonly Dictionary<string, IProgramContext> _cachedPrograms;
 		private SynchronizationContext _synchronizationContext;
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		private const string ID_ROOT = "SchedulerRoot";
 
@@ -33,19 +34,19 @@ namespace VixenModules.App.Scheduler
 
 		public override void Loading()
 		{
-			VixenSystem.Logs.AddLog(new SchedulerLog());
+			
 			_AddApplicationMenu();
 			_SetEnableState(_data.IsEnabled);
 			_synchronizationContext = SynchronizationContext.Current;
-			VixenSystem.Logging.Schedule("Scheduler module loaded.");
+			Logging.Info("Scheduler module loaded.");
 		}
 
 		public override void Unloading()
 		{
 			_RemoveApplicationMenu();
 			_SetEnableState(false);
-			VixenSystem.Logging.Schedule("Scheduler module unloaded.");
-			VixenSystem.Logs.RemoveLog("Schedule");
+			Logging.Info("Scheduler module unloaded.");
+			
 		}
 
 		public override IApplication Application
@@ -93,21 +94,21 @@ namespace VixenModules.App.Scheduler
 				_SetEnableState(false);
 
 				string filepath = item.FilePath;
-				VixenSystem.Logging.Schedule("Executing scheduled item: " + filepath);
+				Logging.Info("Executing scheduled item: " + filepath);
 				IProgramContext context;
 
 				if (_cachedPrograms.ContainsKey(filepath)) {
-					VixenSystem.Logging.Schedule("Item found in cached programs. Reusing.");
+					Logging.Info("Item found in cached programs. Reusing.");
 					context = _cachedPrograms[filepath];
 				}
 				else {
-					VixenSystem.Logging.Schedule("Item NOT found in cached programs. Generating...");
+					Logging.Info("Item NOT found in cached programs. Generating...");
 					Program program = Vixen.Services.ApplicationServices.LoadProgram(filepath);
 					context = VixenSystem.Contexts.CreateProgramContext(new ContextFeatures(ContextCaching.ContextLevelCaching),
 					                                                    program);
 
 					foreach (ISequence sequence in context.Program.Sequences) {
-						VixenSystem.Logging.Schedule("  - Prerendering effects for sequence: " + sequence.Name);
+						Logging.Info("  - Prerendering effects for sequence: " + sequence.Name);
 						foreach (IEffectNode effectNode in sequence.SequenceData.EffectData.Cast<IEffectNode>()) {
 							effectNode.Effect.PreRender();
 						}
@@ -122,13 +123,13 @@ namespace VixenModules.App.Scheduler
 				item.IsExecuting = true;
 				item.LastExecutedAt = DateTime.Now;
 
-				VixenSystem.Logging.Schedule("Starting execution.");
+				Logging.Info("Starting execution.");
 				context.Start();
 
 				_SetEnableState(true);
 			}
 			catch (Exception ex) {
-				VixenSystem.Logging.Schedule("Could not execute sequence " + item.FilePath + "; " + ex.Message);
+				Logging.ErrorException("Could not execute sequence " + item.FilePath + "; " , ex);
 			}
 		}
 
@@ -137,11 +138,11 @@ namespace VixenModules.App.Scheduler
 			ProgramContext context = sender as ProgramContext;
 			context.ProgramEnded -= context_ProgramEnded;
 			if (!_cachedPrograms.ContainsValue(context)) {
-				VixenSystem.Logging.Schedule("Context wasn't cached, so releasing and cleaning up context.");
+				Logging.Info("Context wasn't cached, so releasing and cleaning up context.");
 				VixenSystem.Contexts.ReleaseContext(context);
 			}
 			else {
-				VixenSystem.Logging.Schedule("Context is cached, so not cleaning up; will potentially reuse.");
+				Logging.Info("Context is cached, so not cleaning up; will potentially reuse.");
 			}
 			ScheduleItem item;
 			if (_currentContexts.TryGetValue(context, out item)) {
@@ -152,7 +153,7 @@ namespace VixenModules.App.Scheduler
 
 		private void _SetEnableState(bool value)
 		{
-			VixenSystem.Logging.Schedule("Turning scheduler " + (value ? "ON" : "OFF"));
+			Logging.Info("Turning scheduler " + (value ? "ON" : "OFF"));
 			Timer.Enabled = value;
 		}
 

@@ -10,6 +10,7 @@ namespace Vixen.Sys.State.Execution
 	public class TestOpeningState : State
 	{
 		public const string StateName = "Opening for testing";
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		public TestOpeningState(ExecutionStateEngine engine)
 			: base(engine)
@@ -23,7 +24,7 @@ namespace Vixen.Sys.State.Execution
 
 		public override void Enter()
 		{
-			VixenSystem.Logging.Info("Vixen execution engine entering the testing state...");
+			Logging.Info("Vixen execution engine entering the testing state...");
 
 			//StandardOpeningBehavior<NonExpiringElementEnumerator>.Run();
 			StandardOpeningBehavior.Run();

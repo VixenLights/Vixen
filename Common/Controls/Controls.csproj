@@ -40,6 +40,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="NLog">
+      <HintPath>..\..\packages\NLog.2.0.1.2\lib\net40\NLog.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Design" />
@@ -353,6 +357,7 @@
     <Content Include="ColorPicker\ColorPicker.cur" />
     <Content Include="ControlsEx\std_zoomin.png" />
     <Content Include="ControlsEx\std_zoomout.png" />
+    <None Include="packages.config" />
     <None Include="Resources\UpArrowShort_Blue_48x48.png" />
     <None Include="Resources\UpArrowShort_Blue_32x32.png" />
     <None Include="Resources\UpArrowShort_Blue_24x24.png" />
