@@ -40,10 +40,12 @@ namespace VixenModules.Preview.VixenPreview {
 				_data = value;
 				setSceneData();
 				Reload();
+
 			}
 			get { return _data; }
 		}
 
+		 
 
 		public void IsAnimating(bool enabled) {
 			if (this.InvokeRequired)
@@ -57,6 +59,7 @@ namespace VixenModules.Preview.VixenPreview {
 			else
 				Scene.Reload();
 		}
+
 		public override Image BackgroundImage {
 			get {
 				return Scene.BackgroundImage;
@@ -113,8 +116,27 @@ namespace VixenModules.Preview.VixenPreview {
 			}
 		}
 
+		private void VixenPreviewDisplay_Move(object sender, EventArgs e) {
+			if (Data == null) {
+				VixenSystem.Logging.Warning("VixenPreviewDisplay_Move: Data is null. abandoning move. (Thread ID: " +
+											System.Threading.Thread.CurrentThread.ManagedThreadId + ")");
+				return;
+			}
 
+			Data.Top = Top;
+			Data.Left = Left;
+		}
 
+		private void VixenPreviewDisplay_Resize(object sender, EventArgs e) {
+			if (Data == null) {
+				VixenSystem.Logging.Warning("VixenPreviewDisplay_Resize: Data is null. abandoning resize. (Thread ID: " +
+											System.Threading.Thread.CurrentThread.ManagedThreadId + ")");
+				return;
+			}
+
+			Data.Width = Width;
+			Data.Height = Height;
+		}
 
 	}
 }

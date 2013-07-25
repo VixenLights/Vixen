@@ -49,11 +49,13 @@
 			this.ClientSize = new System.Drawing.Size(878, 442);
 			this.Controls.Add(this.previewWinform1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-			this.MinimumSize = new System.Drawing.Size(640, 480);
+			this.MinimumSize = new System.Drawing.Size(400, 200);
 			this.Name = "VixenPreviewDisplayD2D";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "Preview";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.VixenPreviewDisplay_FormClosing);
+			this.Move += new System.EventHandler(this.VixenPreviewDisplay_Move);
+			this.Resize += new System.EventHandler(this.VixenPreviewDisplay_Resize);
 			this.ResumeLayout(false);
 
         }
