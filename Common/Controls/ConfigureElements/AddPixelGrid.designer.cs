@@ -1,6 +1,6 @@
-﻿namespace VixenApplication.ConfigureElements
+﻿namespace Common.Controls.ConfigureElements
 {
-    partial class AddMegatree
+    partial class AddPixelGrid
     {
         /// <summary>
         /// Required designer variable.
@@ -35,7 +35,7 @@
             this.buttonOK = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
-            this.textTreeName = new System.Windows.Forms.TextBox();
+            this.textGridName = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.Strings)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.LightsPerString)).BeginInit();
             this.SuspendLayout();
@@ -45,9 +45,9 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(12, 34);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(42, 13);
+            this.label1.Size = new System.Drawing.Size(50, 13);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Strings:";
+            this.label1.Text = "Columns:";
             // 
             // Strings
             // 
@@ -56,7 +56,7 @@
             this.Strings.Size = new System.Drawing.Size(49, 20);
             this.Strings.TabIndex = 1;
             this.Strings.Value = new decimal(new int[] {
-            10,
+            25,
             0,
             0,
             0});
@@ -68,7 +68,7 @@
             this.LightsPerString.Size = new System.Drawing.Size(49, 20);
             this.LightsPerString.TabIndex = 3;
             this.LightsPerString.Value = new decimal(new int[] {
-            50,
+            25,
             0,
             0,
             0});
@@ -78,9 +78,9 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(12, 60);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(86, 13);
+            this.label2.Size = new System.Drawing.Size(37, 13);
             this.label2.TabIndex = 2;
-            this.label2.Text = "Lights per String:";
+            this.label2.Text = "Rows:";
             // 
             // buttonOK
             // 
@@ -111,26 +111,26 @@
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(12, 9);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(63, 13);
+            this.label3.Size = new System.Drawing.Size(60, 13);
             this.label3.TabIndex = 6;
-            this.label3.Text = "Tree Name:";
+            this.label3.Text = "Grid Name:";
             // 
-            // textTreeName
+            // textGridName
             // 
-            this.textTreeName.Location = new System.Drawing.Point(104, 6);
-            this.textTreeName.Name = "textTreeName";
-            this.textTreeName.Size = new System.Drawing.Size(100, 20);
-            this.textTreeName.TabIndex = 0;
-            this.textTreeName.Text = "Mega Tree";
+            this.textGridName.Location = new System.Drawing.Point(104, 6);
+            this.textGridName.Name = "textGridName";
+            this.textGridName.Size = new System.Drawing.Size(100, 20);
+            this.textGridName.TabIndex = 0;
+            this.textGridName.Text = "Pixel Grid";
             // 
-            // AddMegatree
+            // AddPixelGrid
             // 
             this.AcceptButton = this.buttonOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(218, 124);
-            this.Controls.Add(this.textTreeName);
+            this.Controls.Add(this.textGridName);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonOK);
@@ -141,9 +141,9 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "AddMegatree";
+            this.Name = "AddPixelGrid";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Add Mega Tree";
+            this.Text = "Add Pixel Grid";
             ((System.ComponentModel.ISupportInitialize)(this.Strings)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.LightsPerString)).EndInit();
             this.ResumeLayout(false);
@@ -160,6 +160,6 @@
         private System.Windows.Forms.Button buttonOK;
         private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox textTreeName;
+        private System.Windows.Forms.TextBox textGridName;
     }
 }
