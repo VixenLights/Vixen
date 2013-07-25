@@ -37,11 +37,30 @@ namespace VixenModules.Preview.VixenPreview {
 			get { return base.HasSetup; }
 		}
 
-		protected override Form Initialize() {
+		public override Vixen.Module.IModuleDataModel ModuleData
+		{
+			get
+			{
+				if (base.ModuleData == null) {
+					base.ModuleData = new VixenPreviewData();
+					VixenSystem.Logging.Warning("VixenPreview: access of null ModuleData. Creating new one. (Thread ID: " +
+					                            System.Threading.Thread.CurrentThread.ManagedThreadId + ")");
+				}
+				return base.ModuleData;
+			}
+			set
+			{
+				base.ModuleData = value;
+			}
+		}
+
+		protected override Form Initialize()
+		{
 			Execution.NodesChanged += ExecutionNodesChanged;
 			VixenSystem.Contexts.ContextCreated += ProgramContextCreated;
 			VixenSystem.Contexts.ContextReleased += ProgramContextReleased;
 
+			//displayForm = new VixenPreviewDisplay();
 			displayForm = new VixenPreviewDisplayD2D();
 			displayForm.Data = GetDataModel();
 			displayForm.Setup();
@@ -55,7 +74,6 @@ namespace VixenModules.Preview.VixenPreview {
 
 		public override void Start() {
 			//System.Runtime.GCSettings.LatencyMode = System.Runtime.GCLatencyMode.LowLatency;
-			var dataModel = GetDataModel();
 			base.Start();
 		}
 
@@ -130,6 +148,7 @@ namespace VixenModules.Preview.VixenPreview {
 		}
 
 		protected override void Update() {
+			
 			try {
 				// displayForm.Scene.ElementStates = ElementStates;
 				displayForm.Scene.Update(ElementStates);

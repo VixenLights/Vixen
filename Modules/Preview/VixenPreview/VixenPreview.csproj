@@ -87,8 +87,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.VisualBasic" />
-    <Reference Include="Microsoft.VisualBasic.PowerPacks.Vs, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.WindowsAPICodePack.DirectX">
       <HintPath>..\..\..\Common\Controls\Microsoft.WindowsAPICodePack.DirectX.dll</HintPath>
       <Private>False</Private>
@@ -108,7 +106,7 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="WeifenLuo.WinFormsUI.Docking">
-      <HintPath>..\..\..\Common\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
+      <HintPath>..\..\..\Common\Libraries\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="WindowsBase" />
@@ -427,11 +425,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Flood.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="WeifenLuo.WinFormsUI.Docking.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <Page Include="Direct2D\PreviewWPF.xaml">

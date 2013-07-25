@@ -82,10 +82,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="inpout32.dll" />
-    <Content Include="inpoutx64.dll" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="SetupDialog.resx">
       <DependentUpon>SetupDialog.cs</DependentUpon>
     </EmbeddedResource>

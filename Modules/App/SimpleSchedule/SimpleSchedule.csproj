@@ -62,7 +62,8 @@
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Forms.Calendar35">
-      <HintPath>..\..\..\Common\System.Windows.Forms.Calendar35.dll</HintPath>
+      <HintPath>..\..\..\Common\Libraries\System.Windows.Forms.Calendar35.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />

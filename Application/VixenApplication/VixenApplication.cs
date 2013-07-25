@@ -38,7 +38,7 @@ namespace VixenApplication
 
 			stopping = false;
 			InitializeComponent();
-			labelVersion.Text = _GetVersionString(VixenSystem.AssemblyFileName);
+			PopulateVersionStrings();
 			AppCommands = new AppCommand(this);
 			Execution.ExecutionStateChanged += executionStateChangedHandler;
 			VixenSystem.Start(this, _openExecution, _disableControllers, _applicationData.DataFileDirectory);
@@ -69,11 +69,18 @@ namespace VixenApplication
 			PopulateRecentSequencesList();
 		}
 
-		private string _GetVersionString(string assemblyFileName)
+		private void PopulateVersionStrings()
 		{
-			System.Reflection.Assembly assembly = System.Reflection.Assembly.LoadFile(assemblyFileName);
+			System.Reflection.Assembly assembly = System.Reflection.Assembly.LoadFile(VixenSystem.AssemblyFileName);
 			Version version = assembly.GetName().Version;
-			return version.Major + "." + version.Minor + "." + version.Build;
+			string result = version.Major + "." + version.Minor + "." + version.Build;
+
+			labelDebugVersion.Visible = version.Revision > 0;
+			if (version.Revision > 0) {
+				labelDebugVersion.Text = " [debug build " + version.Revision + "]";
+			}
+
+			labelVersion.Text = result;
 		}
 
 		private void _ProcessArg(string arg)
