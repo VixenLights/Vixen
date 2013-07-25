@@ -320,7 +320,7 @@
 			// 
 			colorGradient1.Gammacorrected = false;
 			colorGradient1.IsCurrentLibraryGradient = false;
-			colorGradient1.LibraryReferenceName = "";
+			colorGradient1.LibraryReferenceName = string.Empty;
 			colorGradient1.Title = null;
 			this.colorGradientTypeEditorControlGradient.ColorGradientValue = colorGradient1;
 			this.colorGradientTypeEditorControlGradient.EffectParameterValues = new object[] {

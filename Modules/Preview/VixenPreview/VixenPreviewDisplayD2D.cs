@@ -21,8 +21,12 @@ namespace VixenModules.Preview.VixenPreview {
 			//direct2DControlWinForm1. = new DisplayScene(null, DisplayID);
 			Scene = new DisplayScene(null);
 			Scene.IsAnimating = true;
+			 
 		}
 
+	 
+
+		System.Windows.Forms.Timer zombieTimer;
 
 		public Direct2D.DisplayScene Scene { get { return (DisplayScene)previewWinform1.Scene; } set { previewWinform1.Scene = value; } }
 

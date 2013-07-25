@@ -144,7 +144,7 @@ namespace VixenApplication
 			_displayedController = oc;
 
 			if (oc == null) {
-				textBoxName.Text = "";
+				textBoxName.Text = string.Empty;
 				buttonDeleteController.Enabled = false;
 				groupBoxSelectedController.Enabled = false;
 			}

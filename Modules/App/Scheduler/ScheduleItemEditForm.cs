@@ -72,7 +72,7 @@ namespace VixenModules.App.Scheduler
 				if (checkBoxInterval.Checked) return int.Parse(textBoxInterval.Text);
 				return null;
 			}
-			set { textBoxInterval.Text = (value != null) ? value.ToString() : ""; }
+			set { textBoxInterval.Text = (value != null) ? value.ToString() : string.Empty; }
 		}
 
 		private RecurrenceType _RecurrenceType
@@ -338,7 +338,7 @@ namespace VixenModules.App.Scheduler
 
 		private string _TimeSpanToString(TimeSpan? value)
 		{
-			return (value != null) ? _TimeSpanToDateTime(value.Value).ToShortTimeString() : "";
+			return (value != null) ? _TimeSpanToDateTime(value.Value).ToShortTimeString() : string.Empty;
 		}
 
 		private bool _Validate()

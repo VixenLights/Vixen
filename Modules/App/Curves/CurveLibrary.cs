@@ -50,7 +50,7 @@ namespace VixenModules.App.Curves
 
 		public bool AddCurve(string name, Curve curve)
 		{
-			if (name == "")
+			if (name == string.Empty)
 				return false;
 
 			bool inLibrary = Contains(name);
@@ -58,7 +58,7 @@ namespace VixenModules.App.Curves
 				Library[name].IsCurrentLibraryCurve = false;
 			}
 			curve.IsCurrentLibraryCurve = true;
-			curve.LibraryReferenceName = "";
+			curve.LibraryReferenceName = string.Empty;
 			Library[name] = curve;
 			return inLibrary;
 		}

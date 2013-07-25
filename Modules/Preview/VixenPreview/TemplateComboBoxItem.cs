@@ -7,8 +7,8 @@ namespace VixenModules.Preview.VixenPreview
 {
 	internal class TemplateComboBoxItem
 	{
-		private string _caption = "";
-		private string _fileName = "";
+		private string _caption = string.Empty;
+		private string _fileName = string.Empty;
 
 		public TemplateComboBoxItem(string caption, string fileName)
 		{

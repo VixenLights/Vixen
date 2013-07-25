@@ -144,7 +144,7 @@
 			// 
 			colorGradient5.Gammacorrected = false;
 			colorGradient5.IsCurrentLibraryGradient = false;
-			colorGradient5.LibraryReferenceName = "";
+			colorGradient5.LibraryReferenceName = string.Empty;
 			colorGradient5.Title = null;
 			this.colorGradientTypeEditorControlGradient.ColorGradientValue = colorGradient5;
 			this.colorGradientTypeEditorControlGradient.EffectParameterValues = new object[] {
@@ -322,7 +322,7 @@
 			// curveTypeEditorControlEachPulse
 			// 
 			curve5.IsCurrentLibraryCurve = false;
-			curve5.LibraryReferenceName = "";
+			curve5.LibraryReferenceName = string.Empty;
 			this.curveTypeEditorControlEachPulse.CurveValue = curve5;
 			this.curveTypeEditorControlEachPulse.EffectParameterValues = new object[] {
         ((object)(curve5))};

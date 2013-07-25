@@ -443,7 +443,7 @@ namespace Common.Controls
 			using (TextDialog textDialog = new TextDialog("Element Name?")) {
 				if (textDialog.ShowDialog() == DialogResult.OK) {
 					string newName;
-					if (textDialog.Response == "")
+					if (textDialog.Response == string.Empty)
 						newName = "New Element";
 					else
 						newName = textDialog.Response;
@@ -695,7 +695,7 @@ namespace Common.Controls
 			if (SelectedTreeNodes.Count == 1) {
 				using (TextDialog dialog = new TextDialog("Item name?", "Rename item", (SelectedNode).Name, true)) {
 					if (dialog.ShowDialog() == DialogResult.OK) {
-						if (dialog.Response != "" && dialog.Response != SelectedNode.Name)
+						if (dialog.Response != string.Empty && dialog.Response != SelectedNode.Name)
 							VixenSystem.Nodes.RenameNode(SelectedNode, dialog.Response);
 					}
 				}

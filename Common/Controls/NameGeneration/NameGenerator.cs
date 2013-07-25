@@ -62,12 +62,12 @@ namespace Common.Controls
 		{
 			INamingGenerator[] namingGenerators = Vixen.Services.ApplicationServices.GetAllNamingGenerators();
 			comboBoxRuleTypes.DisplayMember = "Name";
-			comboBoxRuleTypes.ValueMember = "";
+			comboBoxRuleTypes.ValueMember = string.Empty;
 			comboBoxRuleTypes.DataSource = namingGenerators;
 
 			INamingTemplate[] namingTemplates = Vixen.Services.ApplicationServices.GetAllNamingTemplates();
 			comboBoxTemplates.DisplayMember = "Name";
-			comboBoxTemplates.ValueMember = "";
+			comboBoxTemplates.ValueMember = string.Empty;
 			comboBoxTemplates.DataSource = namingTemplates;
 
 			ResizeListviewColumns();

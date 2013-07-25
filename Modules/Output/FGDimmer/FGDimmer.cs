@@ -273,7 +273,7 @@ namespace VixenModules.Output.FGDimmer
 					_retryTimer.Stop();
 
 					Vixen.Sys.VixenSystem.Logging.Info(
-						String.Format("Serial Port conflict has been corrected, starting controller {0} on port {1}.",
+						string.Format("Serial Port conflict has been corrected, starting controller {0} on port {1}.",
 						              _moduleData.ModuleTypeId, _serialPort.PortName));
 				}
 			}
@@ -281,7 +281,7 @@ namespace VixenModules.Output.FGDimmer
 				if (ex is UnauthorizedAccessException ||
 				    ex is InvalidOperationException ||
 				    ex is IOException) {
-					Vixen.Sys.VixenSystem.Logging.Error(String.Format("{0} is in use.  Starting controller retry timer for {1}",
+					Vixen.Sys.VixenSystem.Logging.Error(string.Format("{0} is in use.  Starting controller retry timer for {1}",
 					                                                  _serialPort.PortName, _moduleData.ModuleTypeId));
 					Stop();
 					//lets set our retry timer

@@ -613,7 +613,7 @@ namespace Dataweb.NShape
 			{
 				++PropertyIndex;
 				if (image == null) {
-					XmlAddAttributeString(GetXmlAttributeName(PropertyIndex), "");
+					XmlAddAttributeString(GetXmlAttributeName(PropertyIndex), string.Empty);
 				}
 				else {
 					// Retrieve image directory name and image name

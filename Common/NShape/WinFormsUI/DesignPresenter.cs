@@ -434,7 +434,7 @@ namespace Dataweb.NShape.WinFormsUI
 		public void DeleteSelectedStyle()
 		{
 			if (designController.Project.Repository.IsStyleInUse(selectedStyle))
-				MessageBox.Show(this, string.Format("Style '{0}' is still in use.", selectedStyle.Title), "", MessageBoxButtons.OK,
+				MessageBox.Show(this, string.Format("Style '{0}' is still in use.", selectedStyle.Title), string.Empty, MessageBoxButtons.OK,
 				                MessageBoxIcon.Warning);
 			else designController.DeleteStyle(selectedDesign, selectedStyle);
 		}

@@ -118,24 +118,24 @@ namespace VixenApplication
 			((RoleBasedSecurityManager) diagramDisplay.Project.SecurityManager).CurrentRole = StandardRole.Operator;
 
 			FillStyle styleElementGroup = new FillStyle("ElementGroup",
-			                                            new ColorStyle("", Color.FromArgb(120, 160, 240)),
-			                                            new ColorStyle("", Color.FromArgb(90, 120, 180)));
+			                                            new ColorStyle(string.Empty, Color.FromArgb(120, 160, 240)),
+			                                            new ColorStyle(string.Empty, Color.FromArgb(90, 120, 180)));
 			styleElementGroup.FillMode = FillMode.Gradient;
 			FillStyle styleElementLeaf = new FillStyle("ElementLeaf",
-			                                           new ColorStyle("", Color.FromArgb(200, 220, 255)),
-			                                           new ColorStyle("", Color.FromArgb(140, 160, 200)));
+			                                           new ColorStyle(string.Empty, Color.FromArgb(200, 220, 255)),
+			                                           new ColorStyle(string.Empty, Color.FromArgb(140, 160, 200)));
 			styleElementLeaf.FillMode = FillMode.Gradient;
 			FillStyle styleFilter = new FillStyle("Filter",
-			                                      new ColorStyle("", Color.FromArgb(255, 220, 150)),
-			                                      new ColorStyle("", Color.FromArgb(230, 200, 100)));
+			                                      new ColorStyle(string.Empty, Color.FromArgb(255, 220, 150)),
+			                                      new ColorStyle(string.Empty, Color.FromArgb(230, 200, 100)));
 			styleFilter.FillMode = FillMode.Gradient;
 			FillStyle styleController = new FillStyle("Controller",
-			                                          new ColorStyle("", Color.FromArgb(100, 200, 100)),
-			                                          new ColorStyle("", Color.FromArgb(50, 200, 50)));
+			                                          new ColorStyle(string.Empty, Color.FromArgb(100, 200, 100)),
+			                                          new ColorStyle(string.Empty, Color.FromArgb(50, 200, 50)));
 			styleController.FillMode = FillMode.Gradient;
 			FillStyle styleOutput = new FillStyle("Output",
-			                                      new ColorStyle("", Color.FromArgb(180, 230, 180)),
-			                                      new ColorStyle("", Color.FromArgb(120, 210, 120)));
+			                                      new ColorStyle(string.Empty, Color.FromArgb(180, 230, 180)),
+			                                      new ColorStyle(string.Empty, Color.FromArgb(120, 210, 120)));
 			styleOutput.FillMode = FillMode.Gradient;
 
 			project.Design.FillStyles.Add(styleElementGroup, styleElementGroup);
@@ -844,7 +844,7 @@ namespace VixenApplication
 				outputShape.FillStyle = project.Design.FillStyles["Output"];
 
 				if (output.Name.Length <= 0)
-					outputShape.Title = String.Format("{0} [{1}]", outputController.Name, (i + 1));
+					outputShape.Title = string.Format("{0} [{1}]", outputController.Name, (i + 1));
 				else
 					outputShape.Title = output.Name;
 

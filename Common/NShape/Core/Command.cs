@@ -2093,7 +2093,7 @@ namespace Dataweb.NShape.Commands
 		/// <override></override>
 		public override string Description
 		{
-			get { return string.Format("Move {0} shape{1}", shapeMoves.Count, (shapeMoves.Count > 1) ? "s" : ""); }
+			get { return string.Format("Move {0} shape{1}", shapeMoves.Count, (shapeMoves.Count > 1) ? "s" : string.Empty); }
 		}
 
 
@@ -2220,7 +2220,7 @@ namespace Dataweb.NShape.Commands
 		/// <override></override>
 		public override string Description
 		{
-			get { return string.Format("Move {0} shape{1}", shapeMoves.Count, (shapeMoves.Count > 1) ? "s" : ""); }
+			get { return string.Format("Move {0} shape{1}", shapeMoves.Count, (shapeMoves.Count > 1) ? "s" : string.Empty); }
 		}
 
 
@@ -2332,7 +2332,7 @@ namespace Dataweb.NShape.Commands
 		                               ResizeModifiers modifiers)
 			: base(repository, shapes)
 		{
-			this.description = string.Format("Move {0} control point{1}", this.shapes.Count, this.shapes.Count > 1 ? "s" : "");
+			this.description = string.Format("Move {0} control point{1}", this.shapes.Count, this.shapes.Count > 1 ? "s" : string.Empty);
 			int cnt = this.shapes.Count;
 			moveInfos = new List<PointMoveInfo>(cnt);
 			for (int i = 0; i < cnt; ++i)
@@ -5579,7 +5579,7 @@ namespace Dataweb.NShape.Commands
 				newVal = newStrValue;
 			}
 			else {
-				quotes = "";
+				quotes = string.Empty;
 				oldVal = oldIntValue.ToString();
 				newVal = newIntValue.ToString();
 			}

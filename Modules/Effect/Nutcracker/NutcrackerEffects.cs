@@ -1583,7 +1583,7 @@ namespace VixenModules.Effect.Nutcracker
 
 		#region Pictures
 
-		private string PictureName = "";
+		private string PictureName = string.Empty;
 		private FastPixel.FastPixel fp;
 		//
 		// TODO: Load animated GIF images
@@ -1945,7 +1945,7 @@ namespace VixenModules.Effect.Nutcracker
 		private double movementY = 0.0;
 		private int lastState = 0;
 		private double lastScale = -1;
-		private string PictureTilePictureName = "";
+		private string PictureTilePictureName = string.Empty;
 
 		public void RenderPictureTile(int dir, double scale, bool useColor, bool useAlpha, int ColorReplacementSensitivity,
 		                              string NewPictureName)

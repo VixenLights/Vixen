@@ -91,12 +91,12 @@ namespace VixenModules.SequenceType.Vixen2x
 
 			if (!String.IsNullOrEmpty(SongFileName))
 				MessageBox.Show(
-					String.Format("Audio File {0} is associated with this sequence, please select the location of the audio file.",
+					string.Format("Audio File {0} is associated with this sequence, please select the location of the audio file.",
 					              SongFileName), "Select Audio Location", MessageBoxButtons.OK, MessageBoxIcon.Information);
 			var dialog = new OpenFileDialog
 			             	{
 			             		Multiselect = false,
-			             		Title = String.Format("Open Vixen 2.x Audio  [{0}]", SongFileName),
+			             		Title = string.Format("Open Vixen 2.x Audio  [{0}]", SongFileName),
 			             		Filter = "Audio|*.mp3|All Files (*.*)|*.*",
 			             		RestoreDirectory = true,
 			             		InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Vixen\Audio"
@@ -113,12 +113,12 @@ namespace VixenModules.SequenceType.Vixen2x
 			//can let us load the data
 			if (!String.IsNullOrEmpty(ProfileName)) {
 				MessageBox.Show(
-					String.Format("Vixen {0}.pro is associated with this sequence, please select the location of the profile.",
+					string.Format("Vixen {0}.pro is associated with this sequence, please select the location of the profile.",
 					              ProfileName), "Select Profile Location", MessageBoxButtons.OK, MessageBoxIcon.Information);
 				dialog = new OpenFileDialog
 				         	{
 				         		Multiselect = false,
-				         		Title = String.Format("Open Vixen 2.x Profile [{0}]", ProfileName),
+				         		Title = string.Format("Open Vixen 2.x Profile [{0}]", ProfileName),
 				         		Filter = "Profile|*.pro",
 				         		RestoreDirectory = true,
 				         		InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Vixen\Profiles"

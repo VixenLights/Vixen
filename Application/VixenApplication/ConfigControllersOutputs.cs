@@ -58,7 +58,7 @@ namespace VixenApplication
 
 			if (!IsIndexValid(outputIndex)) {
 				groupBox.Enabled = false;
-				textBoxName.Text = "";
+				textBoxName.Text = string.Empty;
 			}
 			else {
 				groupBox.Enabled = true;

@@ -53,6 +53,7 @@ namespace VixenApplication
 			VixenSystem.Stop();
 
 			_applicationData.SaveData();
+			Application.Exit();
 		}
 
 		private void VixenApplication_Load(object sender, EventArgs e)
@@ -126,8 +127,8 @@ namespace VixenApplication
 				}
 				else {
 					if (profileToLoad < profileCount) {
-						_rootDataDirectory = profile.GetSetting("Profiles/Profile" + profileToLoad.ToString() + "/DataFolder", "");
-						if (_rootDataDirectory != "") {
+						_rootDataDirectory = profile.GetSetting("Profiles/Profile" + profileToLoad.ToString() + "/DataFolder", string.Empty);
+						if (_rootDataDirectory != string.Empty) {
 							if (!System.IO.Directory.Exists(_rootDataDirectory))
 								System.IO.Directory.CreateDirectory(_rootDataDirectory);
 						}
@@ -254,8 +255,8 @@ namespace VixenApplication
 		private void buttonOpenSequence_Click(object sender, EventArgs e)
 		{
 			// configure the open file dialog with a filter for currently available sequence types
-			string filter = "";
-			string allTypes = "";
+			string filter = string.Empty;
+			string allTypes = string.Empty;
 			IEnumerable<ISequenceTypeModuleDescriptor> sequenceDescriptors =
 				ApplicationServices.GetModuleDescriptors<ISequenceTypeModuleInstance>().Cast<ISequenceTypeModuleDescriptor>();
 			foreach (ISequenceTypeModuleDescriptor descriptor in sequenceDescriptors) {
@@ -496,7 +497,7 @@ namespace VixenApplication
 			long memUsage = _thisProc.PrivateMemorySize64/1024/1024;
 			long sharedMem = _thisProc.VirtualMemorySize64/1024/1024;
 
-			toolStripStatusLabel_memory.Text = String.Format("Mem: {0}/{2} MB   CPU: {1}%",
+			toolStripStatusLabel_memory.Text = string.Format("Mem: {0}/{2} MB   CPU: {1}%",
 			                                                 memUsage, _cpuUsage.GetUsage(), sharedMem);
 		}
 
@@ -510,5 +511,9 @@ namespace VixenApplication
 				MessageBox.Show("You must re-start Vixen for the changes to take effect.", "Profiles Changed", MessageBoxButtons.OK);
 			}
 		}
+
+		 
+
+	 
 	}
 }

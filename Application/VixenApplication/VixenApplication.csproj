@@ -30,7 +30,6 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
-
   <PropertyGroup>
     <StartupObject>VixenApplication.Program</StartupObject>
   </PropertyGroup>
@@ -235,6 +234,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ConfigElements.resx">
       <DependentUpon>ConfigElements.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="ConfigControllers.resx">
       <DependentUpon>ConfigControllers.cs</DependentUpon>

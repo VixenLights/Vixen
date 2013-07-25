@@ -23,8 +23,7 @@ using System.Runtime.Serialization;
 using System.Security.Permissions;
 using IComparer = System.Collections.IComparer;
 
-namespace ZedGraph
-{
+namespace ZedGraph {
 	/// <summary>
 	/// The basic <see cref="PointPair" /> class holds three data values (X, Y, Z).  This
 	/// class extends the basic PointPair to contain four data values (X, Y, Z, T).
@@ -33,8 +32,7 @@ namespace ZedGraph
 	/// <author> John Champion </author>
 	/// <version> $Revision: 3.3 $ $Date: 2007-03-17 18:43:44 $ </version>
 	[Serializable]
-	public class PointPair4 : PointPair, ISerializable
-	{
+	public class PointPair4 : PointPair, ISerializable {
 		#region Member variables
 
 		/// <summary>
@@ -49,8 +47,8 @@ namespace ZedGraph
 		/// <summary>
 		/// Default Constructor
 		/// </summary>
-		public PointPair4() : base()
-		{
+		public PointPair4()
+			: base() {
 			this.T = 0;
 		}
 
@@ -61,8 +59,8 @@ namespace ZedGraph
 		/// <param name="y">This pair's y coordinate.</param>
 		/// <param name="z">This pair's z coordinate.</param>
 		/// <param name="t">This pair's t coordinate.</param>
-		public PointPair4(double x, double y, double z, double t) : base(x, y, z)
-		{
+		public PointPair4(double x, double y, double z, double t)
+			: base(x, y, z) {
 			this.T = t;
 		}
 
@@ -76,8 +74,7 @@ namespace ZedGraph
 		/// <param name="t">This pair's t coordinate.</param>
 		/// <param name="label">This pair's string label (<see cref="PointPair.Tag"/>)</param>
 		public PointPair4(double x, double y, double z, double t, string label) :
-			base(x, y, z, label)
-		{
+			base(x, y, z, label) {
 			this.T = t;
 		}
 
@@ -85,8 +82,8 @@ namespace ZedGraph
 		/// The PointPair4 copy constructor.
 		/// </summary>
 		/// <param name="rhs">The basis for the copy.</param>
-		public PointPair4(PointPair4 rhs) : base(rhs)
-		{
+		public PointPair4(PointPair4 rhs)
+			: base(rhs) {
 			this.T = rhs.T;
 		}
 
@@ -106,8 +103,8 @@ namespace ZedGraph
 		/// </param>
 		/// <param name="context">A <see cref="StreamingContext"/> instance that contains the serialized data
 		/// </param>
-		protected PointPair4(SerializationInfo info, StreamingContext context) : base(info, context)
-		{
+		protected PointPair4(SerializationInfo info, StreamingContext context)
+			: base(info, context) {
 			// The schema value is just a file version parameter.  You can use it to make future versions
 			// backwards compatible as new member variables are added to classes
 			int sch = info.GetInt32("schema3");
@@ -121,8 +118,7 @@ namespace ZedGraph
 		/// <param name="info">A <see cref="SerializationInfo"/> instance that defines the serialized data</param>
 		/// <param name="context">A <see cref="StreamingContext"/> instance that contains the serialized data</param>
 		[SecurityPermissionAttribute(SecurityAction.Demand, SerializationFormatter = true)]
-		public override void GetObjectData(SerializationInfo info, StreamingContext context)
-		{
+		public override void GetObjectData(SerializationInfo info, StreamingContext context) {
 			base.GetObjectData(info, context);
 			info.AddValue("schema2", schema3);
 			info.AddValue("T", T);
@@ -139,22 +135,20 @@ namespace ZedGraph
 		/// Infinity, or NaN.
 		/// </summary>
 		/// <returns>true if any value is invalid</returns>
-		public bool IsInvalid4D
-		{
-			get
-			{
+		public bool IsInvalid4D {
+			get {
 				return this.X == PointPair.Missing ||
-				       this.Y == PointPair.Missing ||
-				       this.Z == PointPair.Missing ||
-				       this.T == PointPair.Missing ||
-				       Double.IsInfinity(this.X) ||
-				       Double.IsInfinity(this.Y) ||
-				       Double.IsInfinity(this.Z) ||
-				       Double.IsInfinity(this.T) ||
-				       Double.IsNaN(this.X) ||
-				       Double.IsNaN(this.Y) ||
-				       Double.IsNaN(this.Z) ||
-				       Double.IsNaN(this.T);
+					   this.Y == PointPair.Missing ||
+					   this.Z == PointPair.Missing ||
+					   this.T == PointPair.Missing ||
+					   Double.IsInfinity(this.X) ||
+					   Double.IsInfinity(this.Y) ||
+					   Double.IsInfinity(this.Z) ||
+					   Double.IsInfinity(this.T) ||
+					   Double.IsNaN(this.X) ||
+					   Double.IsNaN(this.Y) ||
+					   Double.IsNaN(this.Z) ||
+					   Double.IsNaN(this.T);
 			}
 		}
 
@@ -168,8 +162,7 @@ namespace ZedGraph
 		/// </summary>
 		/// <param name="isShowZT">true to show the third "Z" and fourth "T" value coordinates</param>
 		/// <returns>A string representation of the PointPair4</returns>
-		public new string ToString(bool isShowZT)
-		{
+		public new string ToString(bool isShowZT) {
 			return this.ToString(PointPair.DefaultFormat, isShowZT);
 		}
 
@@ -183,14 +176,9 @@ namespace ZedGraph
 		/// the two double type values (see <see cref="System.Double.ToString()"/>).</param>
 		/// <returns>A string representation of the PointPair</returns>
 		/// <param name="isShowZT">true to show the third "Z" or low dependent value coordinate</param>
-		public new string ToString(string format, bool isShowZT)
-		{
-			return "( " + this.X.ToString(format) +
-			       ", " + this.Y.ToString(format) +
-			       (isShowZT
-			        	? (", " + this.Z.ToString(format) +
-			        	   ", " + this.T.ToString(format))
-			        	: "") + " )";
+		public new string ToString(string format, bool isShowZT) {
+			return string.Format("({0}, {1}{2})", X.ToString(format), Y.ToString(format), isShowZT ? string.Format(", {0},{1}", Z.ToString(format), T.ToString(format)) : string.Empty);
+
 		}
 
 		/// <summary>
@@ -206,13 +194,12 @@ namespace ZedGraph
 		/// <param name="formatT">A format string that will be used to format the T
 		/// double type value (see <see cref="System.Double.ToString()"/>).</param>
 		/// <returns>A string representation of the PointPair</returns>
-		public string ToString(string formatX, string formatY, string formatZ, string formatT)
-		{
+		public string ToString(string formatX, string formatY, string formatZ, string formatT) {
 			return "( " + this.X.ToString(formatX) +
-			       ", " + this.Y.ToString(formatY) +
-			       ", " + this.Z.ToString(formatZ) +
-			       ", " + this.T.ToString(formatT) +
-			       " )";
+				   ", " + this.Y.ToString(formatY) +
+				   ", " + this.Z.ToString(formatZ) +
+				   ", " + this.T.ToString(formatT) +
+				   " )";
 		}
 
 		#endregion

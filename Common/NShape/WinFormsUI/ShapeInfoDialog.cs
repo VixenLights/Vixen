@@ -108,7 +108,7 @@ namespace Dataweb.NShape.WinFormsUI
 			string result = string.Empty;
 			foreach (ShapeConnectionInfo sci in shape.GetConnectionInfos(id, null))
 				result += string.Format("{0}{1} with Point {2}",
-				                        (result.Length > 0) ? ", " : "",
+				                        (result.Length > 0) ? ", " : string.Empty,
 				                        (sci.OtherShape.Template != null)
 				                        	? sci.OtherShape.Template.ToString()
 				                        	: sci.OtherShape.Type.Name,
@@ -130,7 +130,7 @@ namespace Dataweb.NShape.WinFormsUI
 		private Project project = null;
 		private Shape shape = null;
 		private Shape shapeClone = null;
-		private Diagram diagram = new Diagram("");
+		private Diagram diagram = new Diagram(string.Empty);
 		private PointHighlightingTool tool = new PointHighlightingTool();
 	}
 

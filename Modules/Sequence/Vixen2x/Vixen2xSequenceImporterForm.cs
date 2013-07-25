@@ -77,7 +77,7 @@ namespace VixenModules.SequenceType.Vixen2x
 			parsedV2Sequence = new Vixen2SequenceData(vixen2ImportFile);
 
 			if (!String.IsNullOrEmpty(parsedV2Sequence.ProfilePath)) {
-				vixen2ProfileTextBox.Text = String.Format(@"{0}\{1}.pro", parsedV2Sequence.ProfilePath, parsedV2Sequence.ProfileName);
+				vixen2ProfileTextBox.Text = string.Format(@"{0}\{1}.pro", parsedV2Sequence.ProfilePath, parsedV2Sequence.ProfileName);
 				vixen2ToVixen3MappingListBox.Text = parsedV2Sequence.ProfileName;
 			}
 			else {
