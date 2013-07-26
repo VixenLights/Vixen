@@ -158,7 +158,7 @@ namespace VixenModules.Output.Renard
 					_retryTimer.Stop();
 
 					Logging.Info(
-						String.Format("Serial Port conflict has been corrected, starting controller {0} on port {1}.",
+						string.Format("Serial Port conflict has been corrected, starting controller {0} on port {1}.",
 						              _moduleData.ModuleTypeId, _port.PortName));
 				}
 			}

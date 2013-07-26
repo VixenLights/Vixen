@@ -1389,8 +1389,6 @@ namespace Common.Controls.Timeline
 					continue;
 				}
 
-				// a list of generated bitmaps, with starttime and endtime for where they are supposed to be drawn.
-				List<BitmapDrawDetails> bitmapsToDraw = new List<BitmapDrawDetails>();
 				TimeSpan currentlyDrawnTo = TimeSpan.Zero;
 				TimeSpan desiredDrawTo = TimeSpan.Zero;
 				bool lastItemDrawn = false;
@@ -1508,12 +1506,6 @@ namespace Common.Controls.Timeline
 		public Color SnapColor; // the color to draw the snap point
 	}
 
-	internal class BitmapDrawDetails
-	{
-		public Bitmap bmp; // the bitmap to be drawn from the start time onwards
-		public TimeSpan startTime; // the start time that this bitmap should be drawn from
-		public TimeSpan duration; // how long (time) this bitmap should be drawn for
-	}
 
 	// Enumerations
 	internal enum DragState

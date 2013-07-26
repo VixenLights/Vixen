@@ -51,7 +51,7 @@ namespace VixenModules.App.ColorGradients
 
 		public bool AddColorGradient(string name, ColorGradient cg)
 		{
-			if (name == "")
+			if (name == string.Empty)
 				return false;
 
 			bool inLibrary = Contains(name);
@@ -59,7 +59,7 @@ namespace VixenModules.App.ColorGradients
 				Library[name].IsCurrentLibraryGradient = false;
 			}
 			cg.IsCurrentLibraryGradient = true;
-			cg.LibraryReferenceName = "";
+			cg.LibraryReferenceName = string.Empty;
 			Library[name] = cg;
 			return inLibrary;
 		}

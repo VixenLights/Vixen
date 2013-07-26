@@ -695,7 +695,7 @@ namespace Dataweb.Utilities
 		// In 1.1 gibts das bei String noch nicht.
 		public static bool IsNullOrEmpty(string s)
 		{
-			return s == null || s == "";
+			return s == null || s == string.Empty;
 		}
 
 
@@ -942,7 +942,7 @@ namespace Dataweb.Utilities
 		/// <param name="separator">Trennzeichen</param>
 		/// <param name="word">Das gefunden Wort</param>
 		/// <returns>True, wenn noch ein Wort gefunden wurde</returns>
-		/// <remarks>Wörter der Länge 0 dürfen in der Zeichenkette nicht vorkommen.""</remarks>
+		/// <remarks>Wörter der Länge 0 dürfen in der Zeichenkette nicht vorkommen.string.Empty</remarks>
 		internal static bool SplitSeparatedList(string list, char separator, ref int position, out string word)
 		{
 			bool result;
@@ -972,7 +972,7 @@ namespace Dataweb.Utilities
 		/// <param name="quote">Anführungszeichen</param>
 		/// <param name="word">Das gefunden Wort</param>
 		/// <returns>True, wenn noch ein Wort gefunden wurde</returns>
-		/// <remarks>Wörter der Länge 0 dürfen in der Zeichenkette nicht vorkommen.""</remarks>
+		/// <remarks>Wörter der Länge 0 dürfen in der Zeichenkette nicht vorkommen.string.Empty</remarks>
 		internal static bool SplitSeparatedList(string list, char separator, char quote, ref int position, out string word)
 		{
 			bool result;
@@ -1005,7 +1005,7 @@ namespace Dataweb.Utilities
 				word = sb.ToString();
 			}
 			else {
-				word = "";
+				word = string.Empty;
 				result = false;
 			}
 			return result;

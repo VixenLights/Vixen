@@ -847,7 +847,7 @@ namespace Dataweb.NShape.Advanced
 
 		/// <ToBeCompleted></ToBeCompleted>
 		public MultiLineFigureShape(Point[] points)
-			: base(String.Format("Multiline with {0} segments", (points != null) ? points.Length - 1 : 0))
+			: base(string.Format("Multiline with {0} segments", (points != null) ? points.Length - 1 : 0))
 		{
 			if (points == null) throw new ArgumentNullException("points");
 			this.points = (Point[]) points.Clone();
@@ -1068,7 +1068,7 @@ namespace Dataweb.NShape.Advanced
 		{
 			if (bitmap != null) {
 				StrokeSequence strokeSet = CreateStrokeSetFromBitmap(bitmap);
-				if (strokeSet.Count <= 0) throw new Exception(String.Format("The bitmap for figure '{0}' is invalid", name));
+				if (strokeSet.Count <= 0) throw new Exception(string.Format("The bitmap for figure '{0}' is invalid", name));
 				figureList.Add(new NamedFigure(name, IdentifyShapes(strokeSet)));
 			}
 		}

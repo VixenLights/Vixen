@@ -7,7 +7,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 {
 	internal class PreviewSetElementString
 	{
-		private string _stringName = "";
+		private string _stringName = string.Empty;
 		private List<PreviewPixel> _pixels = new List<PreviewPixel>();
 
 		public string StringName

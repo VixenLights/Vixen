@@ -11,38 +11,35 @@ using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Module.App;
 
-namespace VixenModules.App.ColorGradients
-{
+namespace VixenModules.App.ColorGradients {
 	/// <summary>
 	/// ColorBlend object
 	/// </summary>
 	[DataContract]
-	public class ColorGradient : ICloneable
-	{
+	public class ColorGradient : ICloneable {
 		/// <summary>
 		/// class for holding a gradient point
 		/// </summary>
 		[DataContract]
-		public abstract class Point : IComparable<double>
-		{
-			[DataMember] private double _position;
-			[DataMember] private double _focus;
+		public abstract class Point : IComparable<double> {
+			[DataMember]
+			private double _position;
+			[DataMember]
+			private double _focus;
 
 			/// <summary>
 			/// ctor
 			/// </summary>
 			public Point(double position)
-				: this(position, 0.5)
-			{
+				: this(position, 0.5) {
 			}
 
 			/// <summary>
 			/// ctor
 			/// </summary>
-			public Point(double position, double focus)
-			{
+			public Point(double position, double focus) {
 				if (!ColorGradient.isValid(position) ||
-				    !ColorGradient.isValid(focus))
+					!ColorGradient.isValid(focus))
 					throw new ArgumentException("position or focus");
 				_position = position;
 				_focus = focus;
@@ -58,11 +55,9 @@ namespace VixenModules.App.ColorGradients
 			/// <summary>
 			/// gets or sets the position
 			/// </summary>
-			public double Position
-			{
+			public double Position {
 				get { return _position; }
-				set
-				{
+				set {
 					if (!ColorGradient.isValid(value))
 						throw new ArgumentException("point");
 					if (value == _position)
@@ -75,11 +70,9 @@ namespace VixenModules.App.ColorGradients
 			/// <summary>
 			/// gets or sets the focus
 			/// </summary>
-			public double Focus
-			{
+			public double Focus {
 				get { return _focus; }
-				set
-				{
+				set {
 					if (!ColorGradient.isValid(value))
 						throw new ArgumentException("focus");
 					if (value == _focus)
@@ -93,26 +86,23 @@ namespace VixenModules.App.ColorGradients
 
 			#region api
 
-			public override bool Equals(object obj)
-			{
+			public override bool Equals(object obj) {
 				Point grd = obj as Point;
 				if (grd == null)
 					return false;
 				return grd._focus == this._focus &&
-				       grd._position == this._position;
+					   grd._position == this._position;
 			}
 
-			public override int GetHashCode()
-			{
+			public override int GetHashCode() {
 				return _focus.GetHashCode() << 16 ^
-				       _position.GetHashCode();
+					   _position.GetHashCode();
 			}
 
 			/// <summary>
 			/// IComparable
 			/// </summary>
-			int IComparable<double>.CompareTo(double other)
-			{
+			int IComparable<double>.CompareTo(double other) {
 				return _position.CompareTo(other);
 			}
 
@@ -121,8 +111,7 @@ namespace VixenModules.App.ColorGradients
 			/// <summary>
 			/// raises change event
 			/// </summary>
-			protected void RaiseChange()
-			{
+			protected void RaiseChange() {
 				if (Changed != null)
 					Changed(this, new ModifiedEventArgs(Action.Modified, this));
 			}
@@ -136,66 +125,55 @@ namespace VixenModules.App.ColorGradients
 		/// controls connected to this colorblend
 		/// </summary>
 		[CollectionDataContract]
-		public class PointList<T> : CollectionBase<T> where T : Point, IComparable<T>
-		{
+		public class PointList<T> : CollectionBase<T> where T : Point, IComparable<T> {
 			#region change events
 
 			public event EventHandler<ModifiedEventArgs> Changed;
 
-			public void PointChangedHandler(object sender, ModifiedEventArgs e)
-			{
+			public void PointChangedHandler(object sender, ModifiedEventArgs e) {
 				if (Changed != null)
 					Changed(this, e);
 			}
 
 			//update owner property
-			protected override void OnInsert(int index, T value)
-			{
+			protected override void OnInsert(int index, T value) {
 				value.Changed += PointChangedHandler;
 			}
 
-			protected override void OnSet(int index, T oldValue, T newValue)
-			{
+			protected override void OnSet(int index, T oldValue, T newValue) {
 				oldValue.Changed -= PointChangedHandler;
 				newValue.Changed += PointChangedHandler;
 			}
 
-			protected override void OnRemove(int index, T value)
-			{
+			protected override void OnRemove(int index, T value) {
 				value.Changed -= PointChangedHandler;
 			}
 
-			protected override void OnClear()
-			{
+			protected override void OnClear() {
 				foreach (Point grd in this)
 					grd.Changed -= PointChangedHandler;
 			}
 
 			//update edit controls
-			protected override void OnValidate(T value)
-			{
+			protected override void OnValidate(T value) {
 				if (value == null)
 					throw new ArgumentNullException("value");
 			}
 
-			protected override void OnClearComplete()
-			{
+			protected override void OnClearComplete() {
 				PointChangedHandler(this, new ModifiedEventArgs(Action.Cleared, null));
 			}
 
-			protected override void OnSetComplete(int index, T oldValue, T newValue)
-			{
+			protected override void OnSetComplete(int index, T oldValue, T newValue) {
 				PointChangedHandler(this, new ModifiedEventArgs(Action.Removed, oldValue));
 				PointChangedHandler(this, new ModifiedEventArgs(Action.Added, newValue));
 			}
 
-			protected override void OnRemoveComplete(int index, T value)
-			{
+			protected override void OnRemoveComplete(int index, T value) {
 				PointChangedHandler(this, new ModifiedEventArgs(Action.Removed, value));
 			}
 
-			protected override void OnInsertComplete(int index, T value)
-			{
+			protected override void OnInsertComplete(int index, T value) {
 				PointChangedHandler(this, new ModifiedEventArgs(Action.Added, value));
 			}
 
@@ -204,8 +182,7 @@ namespace VixenModules.App.ColorGradients
 			/// <summary> 
 			/// gets a sorted copy
 			/// </summary>
-			public T[] SortedArray()
-			{
+			public T[] SortedArray() {
 				T[] ret = new T[Count];
 				CopyTo(ret, 0);
 				Array.Sort(ret);
@@ -215,10 +192,14 @@ namespace VixenModules.App.ColorGradients
 
 		#region variables
 
-		[DataMember] private PointList<ColorPoint> _colors;
-		[DataMember] private PointList<AlphaPoint> _alphas;
-		[DataMember] private bool _gammacorrected = false;
-		[DataMember] private String _title = null;
+		[DataMember]
+		private PointList<ColorPoint> _colors;
+		[DataMember]
+		private PointList<AlphaPoint> _alphas;
+		[DataMember]
+		private bool _gammacorrected = false;
+		[DataMember]
+		private String _title = null;
 
 		// doesn't get serialized; it's instantiated as needed.
 		private ColorBlend _blend = null;
@@ -226,8 +207,7 @@ namespace VixenModules.App.ColorGradients
 
 		#endregion
 
-		public ColorGradient()
-		{
+		public ColorGradient() {
 			_colors = new PointList<ColorPoint>();
 			_alphas = new PointList<AlphaPoint>();
 			SetEventHandlers();
@@ -241,21 +221,18 @@ namespace VixenModules.App.ColorGradients
 		/// Deep copy constructor.
 		/// </summary>
 		/// <param name="other"></param>
-		public ColorGradient(ColorGradient other)
-		{
+		public ColorGradient(ColorGradient other) {
 			CloneFrom(other);
 		}
 
 		public ColorGradient(Color staticColor)
-			: this()
-		{
+			: this() {
 			_colors.Clear();
 			_colors.Add(new ColorPoint(staticColor, 0));
 		}
 
 		public ColorGradient(IEnumerable<Color> colors)
-			: this()
-		{
+			: this() {
 			_colors.Clear();
 			foreach (Color c in colors) {
 				_colors.Add(new ColorPoint(c, 0));
@@ -263,25 +240,22 @@ namespace VixenModules.App.ColorGradients
 		}
 
 		public ColorGradient(IEnumerable<Tuple<Color, float>> colorsAndProportions)
-			: this()
-		{
+			: this() {
 			_colors.Clear();
 			foreach (Tuple<Color, float> t in colorsAndProportions) {
 				Color color = t.Item1;
 				float proportion = t.Item2;
-				color = Color.FromArgb((int) (color.R*proportion), (int) (color.G*proportion), (int) (color.B*proportion));
+				color = Color.FromArgb((int)(color.R * proportion), (int)(color.G * proportion), (int)(color.B * proportion));
 				_colors.Add(new ColorPoint(color, 0));
 			}
 		}
 
 		[OnDeserialized]
-		private void OnDeserialization(StreamingContext context)
-		{
+		private void OnDeserialization(StreamingContext context) {
 			SetEventHandlers();
 		}
 
-		private void SetEventHandlers()
-		{
+		private void SetEventHandlers() {
 			_colors.Changed += ChangedPointHandler;
 			_alphas.Changed += ChangedPointHandler;
 		}
@@ -291,10 +265,9 @@ namespace VixenModules.App.ColorGradients
 		/// <summary>
 		/// clamps the value to [0; 1]
 		/// </summary>
-		public static float Clamp(float value)
-		{
+		public static float Clamp(float value) {
 			if (float.IsNaN(value) ||
-			    float.IsNegativeInfinity(value) || value < 0f)
+				float.IsNegativeInfinity(value) || value < 0f)
 				return 0f;
 			if (float.IsPositiveInfinity(value) || value > 1f)
 				return 1f;
@@ -304,19 +277,17 @@ namespace VixenModules.App.ColorGradients
 		/// <summary>
 		/// gets if double value is valid and between 0 and 1
 		/// </summary>
-		public static bool isValid(double value)
-		{
+		public static bool isValid(double value) {
 			return !(double.IsNaN(value) ||
-			         double.IsInfinity(value) ||
-			         value < .0 || value > 1.0);
+					 double.IsInfinity(value) ||
+					 value < .0 || value > 1.0);
 		}
 
 		/// <summary>
 		/// creates color blend out of color point data
 		/// </summary>
 		/// <returns></returns>
-		private ColorBlend CreateColorBlend(Color? filterColor = null)
-		{
+		private ColorBlend CreateColorBlend(Color? filterColor = null) {
 			//sort all points
 			ColorPoint[] colpoints = Colors.SortedArray();
 			AlphaPoint[] alphapoints = Alphas.SortedArray();
@@ -327,7 +298,7 @@ namespace VixenModules.App.ColorGradients
 			if (filterColor != null) {
 				List<ColorPoint> newColorPoints = new List<ColorPoint>();
 				foreach (ColorPoint colorPoint in colpoints) {
-					ColorPoint newPoint = (ColorPoint) colorPoint.Clone();
+					ColorPoint newPoint = (ColorPoint)colorPoint.Clone();
 					if (newPoint.Color.ToRGB().ToArgb() != filterColor) {
 						// it's not the desired color. Make it black and add it, but only if there's
 						// not an entry in the list with this position already
@@ -351,7 +322,7 @@ namespace VixenModules.App.ColorGradients
 				// focus point; if filtered, non-standard focus points aren't supported.
 				if (c > 0 && colpoints[c].Focus != .5 && filterColor == null) {
 					AddPosition(colpoints, alphapoints, positions,
-					            colpoints[c - 1].Position + (colpoints[c].Position - colpoints[c - 1].Position)*colpoints[c].Focus);
+								colpoints[c - 1].Position + (colpoints[c].Position - colpoints[c - 1].Position) * colpoints[c].Focus);
 				}
 				//color
 				AddPosition(colpoints, alphapoints, positions, colpoints[c].Position);
@@ -392,7 +363,7 @@ namespace VixenModules.App.ColorGradients
 
 			if (positions.Count < 2) {
 				Color c = positions.Values[0];
-				if (filterColor != null && c.ToArgb() != ((Color) filterColor).ToArgb())
+				if (filterColor != null && c.ToArgb() != ((Color)filterColor).ToArgb())
 					c = Color.Black;
 				positions.Add(1f, c);
 			}
@@ -427,29 +398,27 @@ namespace VixenModules.App.ColorGradients
 		/// <summary>
 		/// adds all colors of the given blend
 		/// </summary>
-		private void AddColors(ColorBlend blend)
-		{
+		private void AddColors(ColorBlend blend) {
 			if (blend == null ||
-			    blend.Colors == null || blend.Positions == null ||
-			    blend.Colors.Length != blend.Positions.Length)
+				blend.Colors == null || blend.Positions == null ||
+				blend.Colors.Length != blend.Positions.Length)
 				throw new ArgumentException("blend is invalid");
 			//
 			for (int i = 0; i < blend.Colors.Length; i++) {
 				if (blend.Colors[i].A != 255)
-					Alphas.Add(new AlphaPoint((byte) blend.Colors[i].A,
-					                          (double) blend.Positions[i]));
+					Alphas.Add(new AlphaPoint((byte)blend.Colors[i].A,
+											  (double)blend.Positions[i]));
 				Colors.Add(new ColorPoint(blend.Colors[i],
-				                          (double) blend.Positions[i]));
+										  (double)blend.Positions[i]));
 			}
 		}
 
 		#region interpolation helpers
 
 		//compute balance out of focus point
-		private double FocusToBalance(double a, double b, double focus, double pos)
-		{
+		private double FocusToBalance(double a, double b, double focus, double pos) {
 			if (a >= b || pos <= a) return .0;
-			double ret = (pos - a)/(b - a);
+			double ret = (pos - a) / (b - a);
 			if (focus != .5) {
 				//focus influences the breakpoint of
 				//linear interpolations
@@ -457,21 +426,20 @@ namespace VixenModules.App.ColorGradients
 					return .5;
 				else if (ret < focus)
 					//ret cannot be 0 when ret<focus
-					return .5*ret/focus;
+					return .5 * ret / focus;
 				else
 					//ret cannot be 1 when ret>focus
-					return .5*(1.0 + (ret - focus)/(1.0 - focus));
+					return .5 * (1.0 + (ret - focus) / (1.0 - focus));
 			}
 			return ret;
 		}
 
 		//adds a new position to the list
 		private void AddPosition(ColorPoint[] colpoints, AlphaPoint[] alphapoints,
-		                         SortedList<float, Color> positions, double pos)
-		{
-			if (positions.ContainsKey((float) pos)) {
-				if (positions[(float) pos].ToArgb() == Color.Black.ToArgb()) {
-					positions.Remove((float) pos);
+								 SortedList<float, Color> positions, double pos) {
+			if (positions.ContainsKey((float)pos)) {
+				if (positions[(float)pos].ToArgb() == Color.Black.ToArgb()) {
+					positions.Remove((float)pos);
 				}
 				else {
 					return;
@@ -483,57 +451,53 @@ namespace VixenModules.App.ColorGradients
 			SearchPos<AlphaPoint, double>(alphapoints, pos, out alpha_a, out alpha_b);
 			SearchPos<ColorPoint, double>(colpoints, pos, out color_a, out color_b);
 			//interpolate
-			positions.Add((float) pos, Color.FromArgb(
+			positions.Add((float)pos, Color.FromArgb(
 				Interpolate(alphapoints, alpha_a, alpha_b, pos),
 				Interpolate(colpoints, color_a, color_b, pos)));
 		}
 
 		// interpolates alpha list
-		private byte Interpolate(AlphaPoint[] list, int a, int b, double pos)
-		{
+		private byte Interpolate(AlphaPoint[] list, int a, int b, double pos) {
 			if (b < a)
 				return 0;
-			if (a == b) return (byte) (list[a].Alpha*255.0);
+			if (a == b) return (byte)(list[a].Alpha * 255.0);
 			//compute involving focus position
-			return (byte) XYZ.ClipValue(
+			return (byte)XYZ.ClipValue(
 				(list[a].Alpha + FocusToBalance(list[a].Position, list[b].Position, list[b].Focus, pos)
-				 *(list[b].Alpha - list[a].Alpha))*255.0, 0.0, 255.0);
+				 * (list[b].Alpha - list[a].Alpha)) * 255.0, 0.0, 255.0);
 		}
 
 		// interpolate on color list.
-		private Color Interpolate(ColorPoint[] list, int a, int b, double pos)
-		{
+		private Color Interpolate(ColorPoint[] list, int a, int b, double pos) {
 			if (b < a)
 				return Color.Black;
 			else if (a == b) return list[a].Color.ToRGB().ToArgb();
 			double bal = FocusToBalance(list[a].Position, list[b].Position, list[b].Focus, pos);
 			//compute
 			RGB col_a = list[a].Color.ToRGB(),
-			    col_b = list[b].Color.ToRGB();
-			return new RGB(col_a.R + bal*(col_b.R - col_a.R),
-			               col_a.G + bal*(col_b.G - col_a.G),
-			               col_a.B + bal*(col_b.B - col_a.B)).ToArgb();
+				col_b = list[b].Color.ToRGB();
+			return new RGB(col_a.R + bal * (col_b.R - col_a.R),
+						   col_a.G + bal * (col_b.G - col_a.G),
+						   col_a.B + bal * (col_b.B - col_a.B)).ToArgb();
 		}
 
 		// interpolate on colorblend
-		private Color Interpolate(Color[] list, float[] positions, int a, int b, float pos)
-		{
+		private Color Interpolate(Color[] list, float[] positions, int a, int b, float pos) {
 			if (b < a)
 				return Color.Black;
 			else if (a == b) return list[a];
 			if (positions[a] >= positions[b]) return list[a];
-			float bal = (pos - positions[a])/(positions[b] - positions[a]);
+			float bal = (pos - positions[a]) / (positions[b] - positions[a]);
 			//
 			return Color.FromArgb(
-				(int) ((float) list[a].A + bal*(float) (list[b].A - list[a].A)),
-				(int) ((float) list[a].R + bal*(float) (list[b].R - list[a].R)),
-				(int) ((float) list[a].G + bal*(float) (list[b].G - list[a].G)),
-				(int) ((float) list[a].B + bal*(float) (list[b].B - list[a].B)));
+				(int)((float)list[a].A + bal * (float)(list[b].A - list[a].A)),
+				(int)((float)list[a].R + bal * (float)(list[b].R - list[a].R)),
+				(int)((float)list[a].G + bal * (float)(list[b].G - list[a].G)),
+				(int)((float)list[a].B + bal * (float)(list[b].B - list[a].B)));
 		}
 
 		// interpolate a fractional proportion of a given color at the given position
-		private float InterpolateProportionOfColor(Color color, Color[] list, float[] positions, int a, int b, float pos)
-		{
+		private float InterpolateProportionOfColor(Color color, Color[] list, float[] positions, int a, int b, float pos) {
 			if (b < a)
 				return 0;
 
@@ -549,21 +513,20 @@ namespace VixenModules.App.ColorGradients
 				return 0;
 			}
 
-			float bal = (pos - positions[a])/(positions[b] - positions[a]);
+			float bal = (pos - positions[a]) / (positions[b] - positions[a]);
 
 			if (list[a].ToArgb() == color.ToArgb()) {
-				return (float) (1.0 - bal);
+				return (float)(1.0 - bal);
 			}
 
 			return (bal);
 		}
 
 		//generic interval searching in O(log(n))
-		private void SearchPos<T, K>(T[] list, K pos, out int a, out int b) where T : IComparable<K>
-		{
+		private void SearchPos<T, K>(T[] list, K pos, out int a, out int b) where T : IComparable<K> {
 			int start = a = 0, end = b = list.Length - 1;
 			while (end >= start) {
-				int mid = start + (end - start)/2;
+				int mid = start + (end - start) / 2;
 				switch (list[mid].CompareTo(pos)) {
 					case 0: //found point
 						a = b = mid;
@@ -585,13 +548,11 @@ namespace VixenModules.App.ColorGradients
 
 		#endregion
 
-		public static implicit operator ColorBlend(ColorGradient blend)
-		{
+		public static implicit operator ColorBlend(ColorGradient blend) {
 			return blend.GetColorBlend();
 		}
 
-		public static implicit operator ColorGradient(ColorBlend blend)
-		{
+		public static implicit operator ColorGradient(ColorBlend blend) {
 			ColorGradient ret = new ColorGradient();
 			ret.AddColors(blend);
 			return ret;
@@ -601,8 +562,7 @@ namespace VixenModules.App.ColorGradients
 		/// creates a System.Drawing.Drawing2D.ColorBlend
 		/// out of this gradient
 		/// </summary>
-		public ColorBlend GetColorBlend(Color? filterColor = null)
-		{
+		public ColorBlend GetColorBlend(Color? filterColor = null) {
 			CheckLibraryReference();
 			if (_blend == null || _blendFilterColor != filterColor) {
 				_blend = CreateColorBlend(filterColor);
@@ -614,18 +574,16 @@ namespace VixenModules.App.ColorGradients
 		/// <summary>
 		/// gets the color at the specified position
 		/// </summary>
-		public Color GetColorAt(float pos)
-		{
+		public Color GetColorAt(float pos) {
 			ColorBlend blend = GetColorBlend();
 			pos = Clamp(pos);
 			//
 			int a, b;
-			SearchPos<float, float>(blend.Positions, (float) pos, out a, out b);
+			SearchPos<float, float>(blend.Positions, (float)pos, out a, out b);
 			return Interpolate(blend.Colors, blend.Positions, a, b, pos);
 		}
 
-		public List<Color> GetColorsExactlyAt(float pos)
-		{
+		public List<Color> GetColorsExactlyAt(float pos) {
 			List<Color> rv = new List<Color>();
 			ColorBlend blend = GetColorBlend();
 			pos = Clamp(pos);
@@ -639,8 +597,7 @@ namespace VixenModules.App.ColorGradients
 			return rv;
 		}
 
-		public HashSet<Color> GetColorsInGradient()
-		{
+		public HashSet<Color> GetColorsInGradient() {
 			HashSet<Color> result = new HashSet<Color>();
 			foreach (ColorPoint colorPoint in Colors) {
 				result.Add(colorPoint.Color.ToRGB());
@@ -649,8 +606,7 @@ namespace VixenModules.App.ColorGradients
 		}
 
 
-		public List<Tuple<Color, float>> GetDiscreteColorsAndProportionsAt(float pos)
-		{
+		public List<Tuple<Color, float>> GetDiscreteColorsAndProportionsAt(float pos) {
 			List<Tuple<Color, float>> rv = new List<Tuple<Color, float>>();
 
 			ColorBlend blend = GetColorBlend();
@@ -659,7 +615,7 @@ namespace VixenModules.App.ColorGradients
 			// get the indices into the position list for the desired position
 			int a, b;
 			SearchPos<float, float>(blend.Positions, pos, out a, out b);
-			
+
 			HashSet<Color> colors = new HashSet<Color>();
 
 			// if b < a, something went horribly wrong.
@@ -670,7 +626,8 @@ namespace VixenModules.App.ColorGradients
 			// if they matched, the desired position was exactly on a point. Get all those matching it.
 			if (a == b) {
 				colors.AddRange(GetColorsExactlyAt(blend.Positions[a]));
-			} else {
+			}
+			else {
 				// if the indices didn't match, the desired position was between 'a' and 'b'. Get all colors
 				// at the position at index 'a', and all at position of index 'b'.
 				colors.AddRange(GetColorsExactlyAt(blend.Positions[a]));
@@ -685,8 +642,7 @@ namespace VixenModules.App.ColorGradients
 			return rv;
 		}
 
-		public float GetProportionOfColorAt(float pos, Color color)
-		{
+		public float GetProportionOfColorAt(float pos, Color color) {
 			ColorBlend blend = GetColorBlend(color);
 			pos = Clamp(pos);
 
@@ -696,19 +652,16 @@ namespace VixenModules.App.ColorGradients
 			return InterpolateProportionOfColor(color, blend.Colors, blend.Positions, a, b, pos);
 		}
 
-		public Color GetColorAt(double pos)
-		{
-			return GetColorAt((float) pos);
+		public Color GetColorAt(double pos) {
+			return GetColorAt((float)pos);
 		}
 
-		public double GetProportionOfColorAt(double pos, Color color)
-		{
-			return GetProportionOfColorAt((float) pos, color);
+		public double GetProportionOfColorAt(double pos, Color color) {
+			return GetProportionOfColorAt((float)pos, color);
 		}
 
-		public List<Tuple<Color, float>> GetDiscreteColorsAndProportionsAt(double pos)
-		{
-			return GetDiscreteColorsAndProportionsAt((float) pos);
+		public List<Tuple<Color, float>> GetDiscreteColorsAndProportionsAt(double pos) {
+			return GetDiscreteColorsAndProportionsAt((float)pos);
 		}
 
 		#region properties
@@ -716,39 +669,31 @@ namespace VixenModules.App.ColorGradients
 		/// <summary>
 		/// gets or sets
 		/// </summary>
-		public bool Gammacorrected
-		{
-			get
-			{
+		public bool Gammacorrected {
+			get {
 				CheckLibraryReference();
 				return _gammacorrected;
 			}
 			set { _gammacorrected = value; }
 		}
 
-		public String Title
-		{
-			get
-			{
+		public String Title {
+			get {
 				CheckLibraryReference();
 				return _title;
 			}
 			set { _title = value; }
 		}
 
-		public PointList<AlphaPoint> Alphas
-		{
-			get
-			{
+		public PointList<AlphaPoint> Alphas {
+			get {
 				CheckLibraryReference();
 				return _alphas;
 			}
 		}
 
-		public PointList<ColorPoint> Colors
-		{
-			get
-			{
+		public PointList<ColorPoint> Colors {
+			get {
 				CheckLibraryReference();
 				return _colors;
 			}
@@ -758,8 +703,7 @@ namespace VixenModules.App.ColorGradients
 
 		#region event handling
 
-		private void ChangedPointHandler(object sender, EventArgs e)
-		{
+		private void ChangedPointHandler(object sender, EventArgs e) {
 			_blend = null;
 			if (Changed != null)
 				Changed(this, e);
@@ -774,18 +718,17 @@ namespace VixenModules.App.ColorGradients
 		/// <summary>
 		/// returns a copy of all gradient points and parameters
 		/// </summary>
-		public object Clone()
-		{
+		public object Clone() {
 			ColorGradient ret = new ColorGradient();
 
 			if (_title != null)
-				ret._title = (string) _title.Clone();
+				ret._title = (string)_title.Clone();
 			ret._gammacorrected = _gammacorrected;
 
 			foreach (ColorPoint cp in _colors)
-				ret._colors.Add((ColorPoint) cp.Clone());
+				ret._colors.Add((ColorPoint)cp.Clone());
 			foreach (AlphaPoint ap in _alphas)
-				ret._alphas.Add((AlphaPoint) ap.Clone());
+				ret._alphas.Add((AlphaPoint)ap.Clone());
 
 			// grab all the library-linking details as well
 			ret.LibraryReferenceName = LibraryReferenceName;
@@ -798,8 +741,7 @@ namespace VixenModules.App.ColorGradients
 		/// deep copy clone: clones this object from another given one.
 		/// </summary>
 		/// <param name="other"></param>
-		public void CloneFrom(ColorGradient other)
-		{
+		public void CloneFrom(ColorGradient other) {
 			CloneDataFrom(other);
 
 			// grab all the library-linking details as well
@@ -811,8 +753,7 @@ namespace VixenModules.App.ColorGradients
 		/// deep copy clone: clones the data only from another given gradient.
 		/// </summary>
 		/// <param name="other"></param>
-		public void CloneDataFrom(ColorGradient other)
-		{
+		public void CloneDataFrom(ColorGradient other) {
 			_colors = new PointList<ColorPoint>();
 			foreach (ColorPoint cp in other.Colors) {
 				_colors.Add(new ColorPoint(cp));
@@ -828,8 +769,7 @@ namespace VixenModules.App.ColorGradients
 			SetEventHandlers();
 		}
 
-		public ColorGradient GetSubGradient(double start, double end)
-		{
+		public ColorGradient GetSubGradient(double start, double end) {
 			double range = end - start;
 			if (range < 0) {
 				throw new ArgumentException("end must be after start");
@@ -841,9 +781,9 @@ namespace VixenModules.App.ColorGradients
 			result.Colors.Add(new ColorPoint(GetColorAt(start), 0));
 			foreach (ColorPoint cp in Colors) {
 				if (cp.Position > start && cp.Position < end) {
-					double scaledPos = (cp.Position - start)/range;
+					double scaledPos = (cp.Position - start) / range;
 					if (scaledPos > 1.0 || scaledPos < 0.0) {
-						throw new Exception("Error  calculating position: " + scaledPos + " out of range");
+						throw new Exception(string.Format("Error  calculating position: {0} out of range", scaledPos));
 					}
 					result.Colors.Add(new ColorPoint(cp.Color.ToRGB(), scaledPos));
 				}
@@ -855,8 +795,7 @@ namespace VixenModules.App.ColorGradients
 
 		// note: the start and end points returned will _not_ be scaled correctly, as the color gradients have
 		// no concept of 'level', only color. Being discrete colors, they need to keep their 'full' intensity.
-		public ColorGradient GetSubGradientWithDiscreteColors(double start, double end)
-		{
+		public ColorGradient GetSubGradientWithDiscreteColors(double start, double end) {
 			double range = end - start;
 			if (range < 0) {
 				throw new ArgumentException("end must be after start");
@@ -881,7 +820,7 @@ namespace VixenModules.App.ColorGradients
 				if (cp.Position > start && cp.Position < end) {
 					double scaledPos = (cp.Position - start) / range;
 					if (scaledPos > 1.0 || scaledPos < 0.0) {
-						throw new Exception("Error calculating position: " + scaledPos + " out of range");
+						throw new Exception(string.Format("Error calculating position: {0} out of range", scaledPos));
 					}
 					result.Colors.Add(new ColorPoint(cp.Color.ToRGB(), scaledPos));
 				}
@@ -900,8 +839,7 @@ namespace VixenModules.App.ColorGradients
 		/// gets the absolute focus point of a point
 		/// </summary>
 		//protected double GetFocusPosition<T>(PointList<T> coll, T value) where T : Point, IComparable<T>
-		public double GetFocusPosition(Point value)
-		{
+		public double GetFocusPosition(Point value) {
 			if (value == null)
 				throw new ArgumentException();
 			if (value is AlphaPoint)
@@ -912,8 +850,7 @@ namespace VixenModules.App.ColorGradients
 				throw new ArgumentException();
 		}
 
-		private double GetFocusPosition<T>(PointList<T> coll, T value) where T : Point, IComparable<T>
-		{
+		private double GetFocusPosition<T>(PointList<T> coll, T value) where T : Point, IComparable<T> {
 			if (coll == null || value == null)
 				throw new ArgumentNullException();
 			//
@@ -921,12 +858,11 @@ namespace VixenModules.App.ColorGradients
 			int i = Array.IndexOf<T>(sorted, value);
 			if (i < 1) //first point or not found
 				return double.NaN;
-			return sorted[i - 1].Position + value.Focus*
-			       (sorted[i].Position - sorted[i - 1].Position);
+			return sorted[i - 1].Position + value.Focus *
+				   (sorted[i].Position - sorted[i - 1].Position);
 		}
 
-		public void SetFocusPosition(Point value, double focuspos)
-		{
+		public void SetFocusPosition(Point value, double focuspos) {
 			if (value == null || focuspos == double.NaN)
 				throw new ArgumentException();
 			if (value is AlphaPoint)
@@ -937,8 +873,7 @@ namespace VixenModules.App.ColorGradients
 				throw new ArgumentException();
 		}
 
-		private void SetFocusPosition<T>(PointList<T> coll, T value, double focuspos) where T : Point, IComparable<T>
-		{
+		private void SetFocusPosition<T>(PointList<T> coll, T value, double focuspos) where T : Point, IComparable<T> {
 			if (coll == null || value == null)
 				throw new ArgumentNullException("coll or value");
 			if (!ColorGradient.isValid(focuspos))
@@ -953,12 +888,11 @@ namespace VixenModules.App.ColorGradients
 					value.Focus = .5;
 				else
 					value.Focus = Math.Max(.0, Math.Min(1.0,
-					                                    (focuspos - sorted[i - 1].Position)/w));
+														(focuspos - sorted[i - 1].Position) / w));
 			}
 		}
 
-		public Bitmap GenerateColorGradientImage(Size size, bool discreteColors)
-		{
+		public Bitmap GenerateColorGradientImage(Size size, bool discreteColors) {
 			Bitmap result = new Bitmap(size.Width, size.Height);
 
 			if (discreteColors) {
@@ -969,14 +903,14 @@ namespace VixenModules.App.ColorGradients
 					if (!uniqueColors.ContainsKey(colorHash))
 						uniqueColors.Add(colorHash, colorPoint.Color);
 				}
-				float sliceHeight = size.Height/(float) uniqueColors.Count;
+				float sliceHeight = size.Height / (float)uniqueColors.Count;
 
 				using (Graphics g = Graphics.FromImage(result)) {
 					int i = 0;
 					foreach (XYZ color in uniqueColors.Values) {
-						float startY = sliceHeight*i;
-						float endY = sliceHeight*(i + 1);
-						float midY = (startY + endY)/2;
+						float startY = sliceHeight * i;
+						float endY = sliceHeight * (i + 1);
+						float midY = (startY + endY) / 2;
 						PointF point1 = new PointF(0, midY);
 						PointF point2 = new PointF(size.Width, midY);
 
@@ -992,8 +926,8 @@ namespace VixenModules.App.ColorGradients
 				}
 			}
 			else {
-				System.Drawing.Point point1 = new System.Drawing.Point(0, size.Height/2);
-				System.Drawing.Point point2 = new System.Drawing.Point(size.Width, size.Height/2);
+				System.Drawing.Point point1 = new System.Drawing.Point(0, size.Height / 2);
+				System.Drawing.Point point2 = new System.Drawing.Point(size.Width, size.Height / 2);
 
 				using (LinearGradientBrush lnbrs = new LinearGradientBrush(point1, point2, Color.Transparent, Color.Transparent))
 				using (Graphics g = Graphics.FromImage(result)) {
@@ -1011,10 +945,8 @@ namespace VixenModules.App.ColorGradients
 
 		private ColorGradientLibrary _library;
 
-		private ColorGradientLibrary Library
-		{
-			get
-			{
+		private ColorGradientLibrary Library {
+			get {
 				if (_library == null)
 					_library =
 						ApplicationServices.Get<IAppModuleInstance>(ColorGradientLibraryDescriptor.ModuleID) as ColorGradientLibrary;
@@ -1023,22 +955,20 @@ namespace VixenModules.App.ColorGradients
 			}
 		}
 
-		[DataMember] private string _libraryReferenceName;
+		[DataMember]
+		private string _libraryReferenceName;
 
-		public string LibraryReferenceName
-		{
-			get
-			{
+		public string LibraryReferenceName {
+			get {
 				if (_libraryReferenceName == null)
-					return "";
+					return string.Empty;
 				else
 					return _libraryReferenceName;
 			}
 			set { _libraryReferenceName = value; }
 		}
 
-		public bool IsLibraryReference
-		{
+		public bool IsLibraryReference {
 			get { return LibraryReferenceName.Length > 0; }
 		}
 
@@ -1049,8 +979,7 @@ namespace VixenModules.App.ColorGradients
 		/// Checks that the library reference is still valid and current.
 		/// </summary>
 		/// <returns>true if the library reference is valid and current (data content hasn't changed), false if it has.</returns>
-		public bool CheckLibraryReference()
-		{
+		public bool CheckLibraryReference() {
 			// If we have a reference to a library item, try and use that to check if it's still valid.
 			if (_libraryReferencedGradient != null) {
 				if (!_libraryReferencedGradient.IsCurrentLibraryGradient) {
@@ -1069,8 +998,7 @@ namespace VixenModules.App.ColorGradients
 		/// </summary>
 		/// <returns>true if successfully updated the library reference, and the data has changed. False if
 		/// not (no reference, library doesn't contain the item, etc.)</returns>
-		public bool UpdateLibraryReference()
-		{
+		public bool UpdateLibraryReference() {
 			_libraryReferencedGradient = null;
 
 			// if we have a name, try and find it in the library. Otherwise, remove the reference.
@@ -1081,16 +1009,15 @@ namespace VixenModules.App.ColorGradients
 					return true;
 				}
 				else {
-					LibraryReferenceName = "";
+					LibraryReferenceName = string.Empty;
 				}
 			}
 
 			return false;
 		}
 
-		public void UnlinkFromLibrary()
-		{
-			LibraryReferenceName = "";
+		public void UnlinkFromLibrary() {
+			LibraryReferenceName = string.Empty;
 			_libraryReferencedGradient = null;
 		}
 
@@ -1102,52 +1029,46 @@ namespace VixenModules.App.ColorGradients
 	/// encapsulates an alpha value with focus point
 	/// </summary>
 	[DataContract]
-	public class AlphaPoint : ColorGradient.Point, IComparable<AlphaPoint>, ICloneable
-	{
+	public class AlphaPoint : ColorGradient.Point, IComparable<AlphaPoint>, ICloneable {
 		//variables
-		[DataMember] private double _alpha;
+		[DataMember]
+		private double _alpha;
 
 		/// <summary>
 		/// ctor
 		/// </summary>
 		public AlphaPoint(byte alpha, double point)
-			: this((double) alpha/255.0, .5, point)
-		{
+			: this((double)alpha / 255.0, .5, point) {
 		}
 
 		/// <summary>
 		/// ctor
 		/// </summary>
 		public AlphaPoint(double alpha, double focus, double point)
-			: base(point, focus)
-		{
+			: base(point, focus) {
 			if (!ColorGradient.isValid(alpha))
 				throw new ArgumentException("alpha");
 			_alpha = alpha;
 		}
 
 		public AlphaPoint(AlphaPoint other)
-			: this(other.Alpha, other.Focus, other.Position)
-		{
+			: this(other.Alpha, other.Focus, other.Position) {
 		}
 
 		/// <summary>
 		/// get color
 		/// </summary>
-		public override Color GetColor(Color basecolor)
-		{
-			return Color.FromArgb((int) (_alpha*255.0),
-			                      basecolor);
+		public override Color GetColor(Color basecolor) {
+			return Color.FromArgb((int)(_alpha * 255.0),
+								  basecolor);
 		}
 
 		/// <summary>
 		/// gets or sets the alpha
 		/// </summary>
-		public double Alpha
-		{
+		public double Alpha {
 			get { return _alpha; }
-			set
-			{
+			set {
 				if (value == _alpha)
 					return;
 				_alpha = value;
@@ -1157,31 +1078,27 @@ namespace VixenModules.App.ColorGradients
 
 		#region api
 
-		public override bool Equals(object obj)
-		{
+		public override bool Equals(object obj) {
 			return base.Equals(obj) &&
-			       ((AlphaPoint) obj)._alpha == this._alpha;
+				   ((AlphaPoint)obj)._alpha == this._alpha;
 		}
 
-		public override int GetHashCode()
-		{
+		public override int GetHashCode() {
 			return base.GetHashCode() ^
-			       _alpha.GetHashCode();
+				   _alpha.GetHashCode();
 		}
 
 		/// <summary>
 		/// IComparable
 		/// </summary>
-		int IComparable<AlphaPoint>.CompareTo(AlphaPoint other)
-		{
+		int IComparable<AlphaPoint>.CompareTo(AlphaPoint other) {
 			return Position.CompareTo(other.Position);
 		}
 
 		/// <summary>
 		/// ICloneable
 		/// </summary>
-		public object Clone()
-		{
+		public object Clone() {
 			return new AlphaPoint(Alpha, Focus, Position);
 		}
 
@@ -1193,50 +1110,44 @@ namespace VixenModules.App.ColorGradients
 	/// encapsulates a color value with focus point
 	/// </summary>
 	[DataContract]
-	public class ColorPoint : ColorGradient.Point, IComparable<ColorPoint>, ICloneable
-	{
+	public class ColorPoint : ColorGradient.Point, IComparable<ColorPoint>, ICloneable {
 		//variables
-		[DataMember] private XYZ _color;
+		[DataMember]
+		private XYZ _color;
 
 		/// <summary>
 		/// ctor
 		/// </summary>
 		public ColorPoint(Color color, double point)
-			: this(XYZ.FromRGB(new RGB(color)), .5, point)
-		{
+			: this(XYZ.FromRGB(new RGB(color)), .5, point) {
 		}
 
 		/// <summary>
 		/// ctor
 		/// </summary>
 		public ColorPoint(XYZ color, double focus, double point)
-			: base(point, focus)
-		{
+			: base(point, focus) {
 			_color = color;
 		}
 
 		public ColorPoint(ColorPoint other)
-			: this(other.Color, other.Focus, other.Position)
-		{
+			: this(other.Color, other.Focus, other.Position) {
 		}
 
 		/// <summary>
 		/// get color
 		/// </summary>
-		public override Color GetColor(Color basecolor)
-		{
+		public override Color GetColor(Color basecolor) {
 			return System.Drawing.Color.FromArgb(basecolor.A,
-			                                     _color.ToRGB().ToArgb());
+												 _color.ToRGB().ToArgb());
 		}
 
 		/// <summary>
 		/// gets or sets the color
 		/// </summary>
-		public XYZ Color
-		{
+		public XYZ Color {
 			get { return _color; }
-			set
-			{
+			set {
 				if (value == _color)
 					return;
 				_color = value;
@@ -1246,31 +1157,27 @@ namespace VixenModules.App.ColorGradients
 
 		#region api
 
-		public override bool Equals(object obj)
-		{
+		public override bool Equals(object obj) {
 			return base.Equals(obj) &&
-			       ((ColorPoint) obj)._color == this._color;
+				   ((ColorPoint)obj)._color == this._color;
 		}
 
-		public override int GetHashCode()
-		{
+		public override int GetHashCode() {
 			return base.GetHashCode() ^
-			       _color.GetHashCode();
+				   _color.GetHashCode();
 		}
 
 		/// <summary>
 		/// IComparable
 		/// </summary>
-		int IComparable<ColorPoint>.CompareTo(ColorPoint other)
-		{
+		int IComparable<ColorPoint>.CompareTo(ColorPoint other) {
 			return Position.CompareTo(other.Position);
 		}
 
 		/// <summary>
 		/// ICloneable
 		/// </summary>
-		public object Clone()
-		{
+		public object Clone() {
 			return new ColorPoint(Color, Focus, Position);
 		}
 
@@ -1281,8 +1188,7 @@ namespace VixenModules.App.ColorGradients
 	/// <summary>
 	/// events for collection modification
 	/// </summary>
-	public enum Action
-	{
+	public enum Action {
 		Added,
 		Removed,
 		Cleared,
@@ -1293,24 +1199,20 @@ namespace VixenModules.App.ColorGradients
 	/// <summary>
 	/// event handling class for insert, delete and clear
 	/// </summary>
-	public class ModifiedEventArgs : EventArgs
-	{
+	public class ModifiedEventArgs : EventArgs {
 		private Action _action;
 		private ColorGradient.Point _pt;
 
-		public ModifiedEventArgs(Action action, ColorGradient.Point pt)
-		{
+		public ModifiedEventArgs(Action action, ColorGradient.Point pt) {
 			_action = action;
 			_pt = pt;
 		}
 
-		public ColorGradient.Point Point
-		{
+		public ColorGradient.Point Point {
 			get { return _pt; }
 		}
 
-		public Action Action
-		{
+		public Action Action {
 			get { return _action; }
 		}
 	}

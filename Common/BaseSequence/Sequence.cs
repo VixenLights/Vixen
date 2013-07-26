@@ -19,7 +19,7 @@ namespace BaseSequence
 
 		public Sequence()
 		{
-			FilePath = "";
+			FilePath = string.Empty;
 			InsertDataListener = new InsertDataListenerStack();
 			InsertDataListener += _DataListener;
 		}

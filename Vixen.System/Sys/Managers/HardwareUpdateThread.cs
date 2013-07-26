@@ -4,10 +4,8 @@ using System.Threading;
 using Vixen.Sys.Instrumentation;
 using Vixen.Sys.Output;
 
-namespace Vixen.Sys.Managers
-{
-	internal class HardwareUpdateThread : IDisposable
-	{
+namespace Vixen.Sys.Managers {
+	internal class HardwareUpdateThread : IDisposable {
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private Thread _thread;
 		private ExecutionState _threadState = ExecutionState.Stopped;
@@ -24,10 +22,9 @@ namespace Vixen.Sys.Managers
 
 		public event EventHandler Error;
 
-		public HardwareUpdateThread(IOutputDevice outputDevice)
-		{
+		public HardwareUpdateThread(IOutputDevice outputDevice) {
 			OutputDevice = outputDevice;
-			_thread = new Thread(_ThreadFunc) {Name = outputDevice.Name + " update", IsBackground = true};
+			_thread = new Thread(_ThreadFunc) { Name = string.Format("{0} update", outputDevice.Name), IsBackground = true };
 			_finished = new EventWaitHandle(false, EventResetMode.ManualReset);
 			_updateSignalerSync = new AutoResetEvent(false);
 			_pauseSignal = new ManualResetEvent(true);
@@ -36,8 +33,7 @@ namespace Vixen.Sys.Managers
 
 		public IOutputDevice OutputDevice { get; private set; }
 
-		public void Start()
-		{
+		public void Start() {
 			if (_threadState == ExecutionState.Stopped) {
 				_threadState = ExecutionState.Started;
 				OutputDevice.Start();
@@ -48,8 +44,7 @@ namespace Vixen.Sys.Managers
 			}
 		}
 
-		public void Stop()
-		{
+		public void Stop() {
 			if (_threadState == ExecutionState.Started) {
 				_threadState = ExecutionState.Stopping;
 				_updateSignalerSync.Set();
@@ -60,29 +55,25 @@ namespace Vixen.Sys.Managers
 			}
 		}
 
-		public void Pause()
-		{
+		public void Pause() {
 			OutputDevice.Pause();
 			_pauseSignal.Reset();
 		}
 
-		public void Resume()
-		{
+		public void Resume() {
 			OutputDevice.Resume();
 			_pauseSignal.Set();
 		}
 
-		public void WaitForFinish()
-		{
+		public void WaitForFinish() {
 			if (!_finished.WaitOne(STOP_TIMEOUT)) {
 				// Timed out waiting for a stop.
 				//(This will prevent hangs in stopping, due to controller code failing to stop).
-				throw new TimeoutException("Controller " + OutputDevice.Name + " failed to stop in the required amount of time.");
+				throw new TimeoutException(string.Format("Controller {0} failed to stop in the required amount of time.", OutputDevice.Name));
 			}
 		}
 
-		private void _ThreadFunc()
-		{
+		private void _ThreadFunc() {
 			// Thread main loop
 			try {
 				IOutputDeviceUpdateSignaler signaler = _CreateOutputDeviceUpdateSignaler();
@@ -105,13 +96,12 @@ namespace Vixen.Sys.Managers
 				_threadState = ExecutionState.Stopped;
 				_finished.Set();
 
-				Logging.ErrorException("Controller " + OutputDevice.Name + " error", ex);
+				Logging.Error(string.Format("Controller {0} error", OutputDevice.Name), ex);
 				OnError();
 			}
 		}
 
-		private IOutputDeviceUpdateSignaler _CreateOutputDeviceUpdateSignaler()
-		{
+		private IOutputDeviceUpdateSignaler _CreateOutputDeviceUpdateSignaler() {
 			IOutputDeviceUpdateSignaler signaler = OutputDevice.UpdateSignaler ?? new IntervalUpdateSignaler();
 			signaler.OutputDevice = OutputDevice;
 			signaler.UpdateSignal = _updateSignalerSync;
@@ -119,8 +109,7 @@ namespace Vixen.Sys.Managers
 			return signaler;
 		}
 
-		private void _UpdateOutputDevice()
-		{
+		private void _UpdateOutputDevice() {
 			_refreshRateValue.Increment();
 
 			long timeBeforeUpdate = _localTime.ElapsedMilliseconds;
@@ -130,8 +119,7 @@ namespace Vixen.Sys.Managers
 			_updateTimeValue.Set(_localTime.ElapsedMilliseconds - timeBeforeUpdate);
 		}
 
-		private void _WaitOnSignal(IOutputDeviceUpdateSignaler signaler)
-		{
+		private void _WaitOnSignal(IOutputDeviceUpdateSignaler signaler) {
 			long timeBeforeSignal = _localTime.ElapsedMilliseconds;
 
 			signaler.RaiseSignal();
@@ -141,13 +129,11 @@ namespace Vixen.Sys.Managers
 			_sleepTimeActualValue.Set(timeAfterSignal - timeBeforeSignal);
 		}
 
-		private void _WaitOnPause()
-		{
+		private void _WaitOnPause() {
 			_pauseSignal.WaitOne();
 		}
 
-		private void _CreatePerformanceValues()
-		{
+		private void _CreatePerformanceValues() {
 			_sleepTimeActualValue = new OutputDeviceSleepTimeActualValue(OutputDevice);
 			VixenSystem.Instrumentation.AddValue(_sleepTimeActualValue);
 			_refreshRateValue = new OutputDeviceRefreshRateValue(OutputDevice);
@@ -156,8 +142,7 @@ namespace Vixen.Sys.Managers
 			VixenSystem.Instrumentation.AddValue(_updateTimeValue);
 		}
 
-		private void _RemovePerformanceValues()
-		{
+		private void _RemovePerformanceValues() {
 			if (_refreshRateValue != null) {
 				VixenSystem.Instrumentation.RemoveValue(_refreshRateValue);
 			}
@@ -169,26 +154,22 @@ namespace Vixen.Sys.Managers
 			}
 		}
 
-		protected virtual void OnError()
-		{
+		protected virtual void OnError() {
 			if (Error != null) {
 				Error.Raise(this, EventArgs.Empty);
 			}
 		}
 
-		public void Dispose()
-		{
+		public void Dispose() {
 			_Dispose();
 		}
 
-		~HardwareUpdateThread()
-		{
+		~HardwareUpdateThread() {
 			_Dispose();
 			GC.SuppressFinalize(this);
 		}
 
-		private void _Dispose()
-		{
+		private void _Dispose() {
 			_finished.Dispose();
 			_updateSignalerSync.Dispose();
 			_pauseSignal.Dispose();

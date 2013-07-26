@@ -330,7 +330,7 @@ namespace Common.Controls.ControlsEx.ListControls
 			bounds.Inflate(-2, -2);
 			string text = Items[index].Text;
 			if (text == null)
-				text = "";
+				text = string.Empty;
 			if (_includeindex)
 				gr.DrawString((index + 1).ToString() + ">> " + text,
 				              base.Font, Brushes.Black, bounds, fmt);

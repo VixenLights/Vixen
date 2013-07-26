@@ -8,17 +8,14 @@ using System.Text;
 using System.Windows.Forms;
 using Vixen.Sys;
 
-namespace VixenModules.Preview.VixenPreview
-{
-	public partial class VixenPreviewDisplay : Form
-	{
+namespace VixenModules.Preview.VixenPreview {
+	public partial class VixenPreviewDisplay : Form {
 		private VixenPreviewData _data;
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
-		public VixenPreviewData Data
-		{
-			set
-			{
+		public VixenPreviewData Data {
+			set {
+				 
 				if (value == null) {
 					Logging.Warn("VixenPreviewDisplay: Data set as null! (Thread ID: " +
 					                            System.Threading.Thread.CurrentThread.ManagedThreadId + ")");
@@ -43,13 +40,11 @@ namespace VixenModules.Preview.VixenPreview
 			InitializeComponent();
 		}
 
-		public VixenPreviewControl PreviewControl
-		{
+		public VixenPreviewControl PreviewControl {
 			get { return preview; }
 		}
 
-		public void Setup()
-		{
+		public void Setup() {
 			preview.LoadBackground(Data.BackgroundFileName);
 
 			//Sometimes the preview shows up outside the bounds of the display....
@@ -70,26 +65,24 @@ namespace VixenModules.Preview.VixenPreview
 			Size = new Size(Data.Width, Data.Height);
 		}
 
-		private void timerStatus_Tick(object sender, EventArgs e)
-		{
+		private void timerStatus_Tick(object sender, EventArgs e) {
 			toolStripStatusLabel1.Text = "Lights: " + preview.PixelCount.ToString();
 			//toolStripAverageUpdate.Text = "Average: " + Math.Round(VixenPreviewControl.averageUpdateTime).ToString() + "ms";
 			//toolStripStatusCurrentUpdate.Text = "Last: " + Math.Round(VixenPreviewControl.lastUpdateTime).ToString() + "ms";
 			//toolStripStatusLastRenderTime.Text = "Render: " + Math.Round(lastRenderTime).ToString() + "ms";
-			toolStripStatusLastRenderTime.Text = "Render: " + Math.Round(preview.lastRenderUpdateTime).ToString() + "ms";
+			toolStripStatusLastRenderTime.Text = string.Format("Render: {0} ms", Math.Round(preview.lastRenderUpdateTime));
 		}
 
-		private void VixenPreviewDisplay_FormClosing(object sender, FormClosingEventArgs e)
-		{
+		private void VixenPreviewDisplay_FormClosing(object sender, FormClosingEventArgs e) {
 			if (e.CloseReason == CloseReason.UserClosing) {
 				MessageBox.Show("The preview can only be closed from the Preview Configuration dialog.", "Close",
-				                MessageBoxButtons.OKCancel);
+								MessageBoxButtons.OKCancel);
 				e.Cancel = true;
 			}
 		}
 
-		private void VixenPreviewDisplay_Move(object sender, EventArgs e)
-		{
+		private void VixenPreviewDisplay_Move(object sender, EventArgs e) {
+		
 			if (Data == null) {
 				Logging.Warn("VixenPreviewDisplay_Move: Data is null. abandoning move. (Thread ID: " +
 											System.Threading.Thread.CurrentThread.ManagedThreadId + ")");
@@ -100,8 +93,8 @@ namespace VixenModules.Preview.VixenPreview
 			Data.Left = Left;
 		}
 
-		private void VixenPreviewDisplay_Resize(object sender, EventArgs e)
-		{
+		private void VixenPreviewDisplay_Resize(object sender, EventArgs e) {
+		
 			if (Data == null) {
 				Logging.Warn("VixenPreviewDisplay_Resize: Data is null. abandoning resize. (Thread ID: " +
 											System.Threading.Thread.CurrentThread.ManagedThreadId + ")");
@@ -112,8 +105,7 @@ namespace VixenModules.Preview.VixenPreview
 			Data.Height = Height;
 		}
 
-		private void VixenPreviewDisplay_Load(object sender, EventArgs e)
-		{
+		private void VixenPreviewDisplay_Load(object sender, EventArgs e) {
 			preview.Reload();
 		}
 	}

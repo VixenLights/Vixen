@@ -868,12 +868,17 @@ namespace VixenModules.Preview.VixenPreview
 		{
 			//lock (PreviewTools.renderLock)
 			//{
-			if (NodeToPixel == null) PreviewTools.Throw("PreviewBase.NodeToPixel == null");
+			if (NodeToPixel == null) NodeToPixel = new ConcurrentDictionary<ElementNode, List<PreviewPixel>>();
 			NodeToPixel.Clear();
 
-			if (DisplayItems == null) PreviewTools.Throw("DisplayItems == null");
+			if (DisplayItems == null)
+				throw new System.ArgumentException("DisplayItems == null");
+				
 			foreach (DisplayItem item in DisplayItems) {
-				if (item.Shape.Pixels == null) PreviewTools.Throw("item.Shape.Pixels == null");
+				if (item.Shape.Pixels == null)
+					throw new System.ArgumentException("item.Shape.Pixels == null");
+				
+				 
 				foreach (PreviewPixel pixel in item.Shape.Pixels) {
 					if (pixel.Node != null) {
 						List<PreviewPixel> pixels;

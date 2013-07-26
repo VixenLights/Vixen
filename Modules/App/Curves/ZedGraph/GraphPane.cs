@@ -394,7 +394,7 @@ namespace ZedGraph
 		/// strings.
 		/// </summary>
 		public GraphPane()
-			: this(new RectangleF(0, 0, 500, 375), "", "", "")
+			: this(new RectangleF(0, 0, 500, 375), string.Empty, string.Empty, string.Empty)
 		{
 		}
 
@@ -415,7 +415,7 @@ namespace ZedGraph
 			: base(title, rect)
 		{
 			_xAxis = new XAxis(xTitle);
-			_x2Axis = new X2Axis("");
+			_x2Axis = new X2Axis(string.Empty);
 
 			_yAxisList = new YAxisList();
 			_y2AxisList = new Y2AxisList();
@@ -517,7 +517,7 @@ namespace ZedGraph
 			if (sch >= 11)
 				_x2Axis = (X2Axis) info.GetValue("x2Axis", typeof (X2Axis));
 			else
-				_x2Axis = new X2Axis("");
+				_x2Axis = new X2Axis(string.Empty);
 
 			_yAxisList = (YAxisList) info.GetValue("yAxisList", typeof (YAxisList));
 			_y2AxisList = (Y2AxisList) info.GetValue("y2AxisList", typeof (Y2AxisList));

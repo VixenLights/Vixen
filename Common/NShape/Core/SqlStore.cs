@@ -860,9 +860,9 @@ namespace Dataweb.NShape
 			// Build CheckStyleInUse and CheckTemplateInUse command
 			const string checkShapeCmdFmt =
 				"EXISTS(SELECT {0}.Id FROM {0} WHERE {0}.Id IN (SELECT Shape FROM DiagramShape JOIN Diagram ON DiagramShape.Diagram = Diagram.Id WHERE Diagram.Project = @Project AND Diagram.Id = @Diagram) {1})";
-			string styleExistsStatement = "";
-			string templateExistsStatement = "";
-			string modelObjExistsStatement = "";
+			string styleExistsStatement = string.Empty;
+			string templateExistsStatement = string.Empty;
+			string modelObjExistsStatement = string.Empty;
 			foreach (IEntityType et in storeCache.EntityTypes) {
 				if (et.Category != EntityCategory.Shape) continue;
 				if (et.FullName == "Core.ShapeGroup") continue;
@@ -922,7 +922,7 @@ namespace Dataweb.NShape
 				           CreateCommand("SELECT CASE WHEN (" +
 				                         string.Format(
 				                         	(et.Category == EntityCategory.Shape) ? checkShapeCmdFmt : checkModelObjCmdFmt,
-				                         	SqlTableNameForEntityName(et.FullName), "")
+				                         	SqlTableNameForEntityName(et.FullName), string.Empty)
 				                         + ") THEN 1 ELSE 0 END",
 				                         CreateParameter("Project", DbType.Int32),
 				                         CreateParameter("Diagram", DbType.Int32)

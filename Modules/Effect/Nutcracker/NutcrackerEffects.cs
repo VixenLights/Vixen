@@ -1496,82 +1496,85 @@ namespace VixenModules.Effect.Nutcracker
 		public void RenderText(int Top, int Left, string Line1, string Line2, Font font, int dir, int TextRotation)
 		{
 			Color c;
-			Bitmap bitmap = new Bitmap(BufferWi, BufferHt);
-			Graphics graphics = Graphics.FromImage(bitmap);
-			int ColorIdx, itmp;
-			int colorcnt = GetColorCount();
-			srand(1); // always have the same random numbers for each frame (state)
-			HSV hsv; //   we will define an hsv color model. The RGB colot model would have been "wxColour color;"
-			Point point;
+			using (Bitmap bitmap = new Bitmap(BufferWi, BufferHt)) {
+				using (Graphics graphics = Graphics.FromImage(bitmap)) {
+					int ColorIdx, itmp;
+					int colorcnt = GetColorCount();
+					srand(1); // always have the same random numbers for each frame (state)
+					HSV hsv; //   we will define an hsv color model. The RGB colot model would have been "wxColour color;"
+					Point point;
 
-			ColorIdx = rand()%colorcnt;
-			// Select random numbers from 0 up to number of colors the user has checked. 0-5 if 6 boxes checked
-			hsv = Palette.GetHSV(ColorIdx); // Now go and get the hsv value for this ColorIdx
+					ColorIdx = rand() % colorcnt;
+					// Select random numbers from 0 up to number of colors the user has checked. 0-5 if 6 boxes checked
+					hsv = Palette.GetHSV(ColorIdx); // Now go and get the hsv value for this ColorIdx
 
-			c = Palette.GetColor(0);
-			Brush brush = new SolidBrush(c);
+					c = Palette.GetColor(0);
+					using (Brush brush = new SolidBrush(c)) {
 
-			string msg = Line1;
+						string msg = Line1;
 
-			if (Line2.Length > 0) {
-				if (colorcnt > 1) {
-					//  palette.GetColor(1,c);
-				}
-				msg += "\n" + Line2;
-				//      dc.SetTextForeground(c);
-			}
+						if (Line2.Length > 0) {
+							if (colorcnt > 1) {
+								//  palette.GetColor(1,c);
+							}
+							msg += "\n" + Line2;
+							//      dc.SetTextForeground(c);
+						}
 
-			SizeF sz1 = graphics.MeasureString(Line1, font);
-			SizeF sz2 = graphics.MeasureString(Line2, font);
-			int maxwidth = Convert.ToInt32(sz1.Width > sz2.Width ? sz1.Width : sz2.Width);
-			int maxht = Convert.ToInt32(sz1.Height > sz2.Height ? sz1.Height : sz2.Height);
-			if (TextRotation == 1) {
-				itmp = maxwidth;
-				maxwidth = maxht;
-				maxht = itmp;
-			}
-			int dctop = Top*BufferHt/50 - BufferHt/2;
-			int xlimit = (BufferWi + maxwidth)*8 + 1;
-			int ylimit = (BufferHt + maxht)*8 + 1;
-			int xcentered = Left*BufferWi/50 - BufferWi/2;
+						SizeF sz1 = graphics.MeasureString(Line1, font);
+						SizeF sz2 = graphics.MeasureString(Line2, font);
+						int maxwidth = Convert.ToInt32(sz1.Width > sz2.Width ? sz1.Width : sz2.Width);
+						int maxht = Convert.ToInt32(sz1.Height > sz2.Height ? sz1.Height : sz2.Height);
+						if (TextRotation == 1) {
+							itmp = maxwidth;
+							maxwidth = maxht;
+							maxht = itmp;
+						}
+						int dctop = Top * BufferHt / 50 - BufferHt / 2;
+						int xlimit = (BufferWi + maxwidth) * 8 + 1;
+						int ylimit = (BufferHt + maxht) * 8 + 1;
+						int xcentered = Left * BufferWi / 50 - BufferWi / 2;
 
 
-			TextRotation *= 90;
-			if (TextRotation > 0)
-				graphics.RotateTransform(TextRotation);
-			switch (dir) {
-				case 0:
-					// left
-					point = new Point(Convert.ToInt32(BufferWi - State%xlimit/8), dctop);
-					graphics.DrawString(msg, font, brush, point);
-					break;
-				case 1:
-					// right
-					point = new Point(Convert.ToInt32(State%xlimit/8 - BufferWi), dctop);
-					graphics.DrawString(msg, font, brush, point);
-					break;
-				case 2:
-					// up
-					point = new Point(xcentered, Convert.ToInt32(BufferHt - State%ylimit/8));
-					graphics.DrawString(msg, font, brush, point);
-					break;
-				case 3:
-					// down
-					point = new Point(xcentered, Convert.ToInt32(State%ylimit/8 - BufferHt));
-					graphics.DrawString(msg, font, brush, point);
-					break;
-				default:
-					// no movement - centered
-					point = new Point(xcentered, dctop);
-					graphics.DrawString(msg, font, brush, point);
-					break;
-			}
+						TextRotation *= 90;
+						if (TextRotation > 0)
+							graphics.RotateTransform(TextRotation);
+						switch (dir) {
+							case 0:
+								// left
+								point = new Point(Convert.ToInt32(BufferWi - State % xlimit / 8), dctop);
+								graphics.DrawString(msg, font, brush, point);
+								break;
+							case 1:
+								// right
+								point = new Point(Convert.ToInt32(State % xlimit / 8 - BufferWi), dctop);
+								graphics.DrawString(msg, font, brush, point);
+								break;
+							case 2:
+								// up
+								point = new Point(xcentered, Convert.ToInt32(BufferHt - State % ylimit / 8));
+								graphics.DrawString(msg, font, brush, point);
+								break;
+							case 3:
+								// down
+								point = new Point(xcentered, Convert.ToInt32(State % ylimit / 8 - BufferHt));
+								graphics.DrawString(msg, font, brush, point);
+								break;
+							default:
+								// no movement - centered
+								point = new Point(xcentered, dctop);
+								graphics.DrawString(msg, font, brush, point);
+								break;
+						}
 
-			// copy dc to buffer
-			for (int x = 0; x < BufferWi; x++) {
-				for (int y = 0; y < BufferHt; y++) {
-					c = bitmap.GetPixel(x, BufferHt - y - 1);
-					SetPixel(x, y, c);
+						// copy dc to buffer
+						for (int x = 0; x < BufferWi; x++) {
+							for (int y = 0; y < BufferHt; y++) {
+								c = bitmap.GetPixel(x, BufferHt - y - 1);
+								SetPixel(x, y, c);
+							}
+						}
+					}
 				}
 			}
 		}
@@ -1580,7 +1583,7 @@ namespace VixenModules.Effect.Nutcracker
 
 		#region Pictures
 
-		private string PictureName = "";
+		private string PictureName = string.Empty;
 		private FastPixel.FastPixel fp;
 		//
 		// TODO: Load animated GIF images
@@ -1942,7 +1945,7 @@ namespace VixenModules.Effect.Nutcracker
 		private double movementY = 0.0;
 		private int lastState = 0;
 		private double lastScale = -1;
-		private string PictureTilePictureName = "";
+		private string PictureTilePictureName = string.Empty;
 
 		public void RenderPictureTile(int dir, double scale, bool useColor, bool useAlpha, int ColorReplacementSensitivity,
 		                              string NewPictureName)

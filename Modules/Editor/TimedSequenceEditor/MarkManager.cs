@@ -13,10 +13,8 @@ using VixenModules.Media.Audio;
 using System.Collections.Concurrent;
 using System.IO;
 
-namespace VixenModules.Editor.TimedSequenceEditor
-{
-	public partial class MarkManager : Form
-	{
+namespace VixenModules.Editor.TimedSequenceEditor {
+	public partial class MarkManager : Form {
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		private MarkCollection _displayedCollection = null;
@@ -33,8 +31,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private Audio _audio = null;
 
 		public MarkManager(List<MarkCollection> markCollections, IExecutionControl executionControl, ITiming timingSource,
-		                   TimedSequenceEditorForm timedSequenceEditorForm)
-		{
+						   TimedSequenceEditorForm timedSequenceEditorForm) {
 			InitializeComponent();
 			MarkCollections = markCollections;
 			_executionControl = executionControl;
@@ -44,22 +41,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		public List<MarkCollection> MarkCollections { get; set; }
 
-		private void MarkManager_Load(object sender, EventArgs e)
-		{
+		private void MarkManager_Load(object sender, EventArgs e) {
 			PopulateMarkCollectionsList();
 			PopulateFormWithMarkCollection(null, true);
 			updateTimingSpeedTextbox();
-			trackBarPlayBack.SetRange(0, (int) _timedSequenceEditorForm.Sequence.Length.TotalMilliseconds);
+			trackBarPlayBack.SetRange(0, (int)_timedSequenceEditorForm.Sequence.Length.TotalMilliseconds);
 		}
 
 
-		private double GetGrayValueForColor(Color c)
-		{
-			return c.R*0.299 + c.G*0.587 + c.B*0.114;
+		private double GetGrayValueForColor(Color c) {
+			return c.R * 0.299 + c.G * 0.587 + c.B * 0.114;
 		}
 
-		private void PopulateMarkCollectionsList()
-		{
+		private void PopulateMarkCollectionsList() {
 			_updatingListContents = true;
 			listViewMarkCollections.BeginUpdate();
 			listViewMarkCollections.Items.Clear();
@@ -71,8 +65,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				item.SubItems.Add(mc.MarkCount.ToString());
 				item.BackColor = (mc.Enabled) ? mc.MarkColor : SystemColors.Window;
 				item.ForeColor = (mc.Enabled)
-				                 	? ((GetGrayValueForColor(mc.MarkColor) > 128) ? Color.Black : Color.White)
-				                 	: SystemColors.InactiveCaptionText;
+									? ((GetGrayValueForColor(mc.MarkColor) > 128) ? Color.Black : Color.White)
+									: SystemColors.InactiveCaptionText;
 				item.Tag = mc;
 
 				if (mc == _displayedCollection)
@@ -84,8 +78,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_updatingListContents = false;
 		}
 
-		private void UpdateMarkCollectionInList(MarkCollection collection)
-		{
+		private void UpdateMarkCollectionInList(MarkCollection collection) {
 			foreach (ListViewItem item in listViewMarkCollections.Items) {
 				if (item.Tag as MarkCollection == collection) {
 					item.SubItems[0].Text = collection.Name;
@@ -93,21 +86,20 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					item.SubItems[2].Text = collection.Marks.Count.ToString();
 					item.BackColor = (collection.Enabled) ? collection.MarkColor : SystemColors.Window;
 					item.ForeColor = (collection.Enabled)
-					                 	? ((GetGrayValueForColor(collection.MarkColor) > 128) ? Color.Black : Color.White)
-					                 	: SystemColors.InactiveCaptionText;
+										? ((GetGrayValueForColor(collection.MarkColor) > 128) ? Color.Black : Color.White)
+										: SystemColors.InactiveCaptionText;
 				}
 			}
 		}
 
-		private void PopulateFormWithMarkCollection(MarkCollection collection, bool forceUpdate = false)
-		{
+		private void PopulateFormWithMarkCollection(MarkCollection collection, bool forceUpdate = false) {
 			if (_displayedCollection == collection && !forceUpdate)
 				return;
 
 			_displayedCollection = collection;
 
 			if (collection == null) {
-				textBoxCollectionName.Text = "";
+				textBoxCollectionName.Text = string.Empty;
 				numericUpDownWeight.Value = 1;
 				panelColor.BackColor = SystemColors.Control;
 				checkBoxEnabled.Checked = false;
@@ -124,8 +116,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			groupBoxSelectedMarkCollection.Enabled = (collection != null);
 		}
 
-		private void PopulateMarkListFromMarkCollection(MarkCollection collection)
-		{
+		private void PopulateMarkListFromMarkCollection(MarkCollection collection) {
 			listViewMarks.BeginUpdate();
 			listViewMarks.Items.Clear();
 
@@ -140,14 +131,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 			}
 
-			textBoxTime.Text = "";
+			textBoxTime.Text = string.Empty;
 			buttonAddOrUpdateMark.Text = "Add";
 
 			listViewMarks.EndUpdate();
 		}
 
-		private void listViewMarkCollections_SelectedIndexChanged(object sender, EventArgs e)
-		{
+		private void listViewMarkCollections_SelectedIndexChanged(object sender, EventArgs e) {
 			if (_updatingListContents)
 				return;
 
@@ -163,20 +153,18 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			radioButtonPlayback.Checked = true;
 		}
 
-		private void listViewMarks_SelectedIndexChanged(object sender, EventArgs e)
-		{
+		private void listViewMarks_SelectedIndexChanged(object sender, EventArgs e) {
 			if (listViewMarks.SelectedItems.Count == 1) {
 				textBoxTime.Text = listViewMarks.SelectedItems[0].Text;
 				buttonAddOrUpdateMark.Text = "Update";
 			}
 			else {
-				textBoxTime.Text = "";
+				textBoxTime.Text = string.Empty;
 				buttonAddOrUpdateMark.Text = "Add";
 			}
 		}
 
-		private void buttonAddCollection_Click(object sender, EventArgs e)
-		{
+		private void buttonAddCollection_Click(object sender, EventArgs e) {
 			AddNewCollection(Color.Green);
 			//MarkCollection newCollection = new MarkCollection();
 			//newCollection.Name = "New Collection";
@@ -192,8 +180,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			//radioButtonPlayback.Checked = true;
 		}
 
-		private void buttonRemoveCollection_Click(object sender, EventArgs e)
-		{
+		private void buttonRemoveCollection_Click(object sender, EventArgs e) {
 			if (listViewMarkCollections.SelectedItems.Count > 0) {
 				foreach (ListViewItem item in listViewMarkCollections.SelectedItems) {
 					MarkCollection mc = item.Tag as MarkCollection;
@@ -208,18 +195,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			PopulateMarkCollectionsList();
 		}
 
-		private void buttonAddOrUpdateMark_Click(object sender, EventArgs e)
-		{
+		private void buttonAddOrUpdateMark_Click(object sender, EventArgs e) {
 			TimeSpan time;
 			bool success = TimeSpan.TryParseExact(textBoxTime.Text, TimeFormats.PositiveFormats, null, out time);
 			if (success) {
 				if (buttonAddOrUpdateMark.Text == "Update") {
 					// updating an existing item, find it, remove it, and add the new one
 					if (listViewMarks.SelectedItems.Count != 1)
-						Logging.Error("MarkManager: updating a mark, but there are " +
-						                                    listViewMarks.SelectedItems.Count + " items selected!");
+						Logging.Error(string.Format("MarkManager: updating a mark, but there are {0} items selected!", listViewMarks.SelectedItems.Count));
+
 					if (listViewMarks.SelectedItems.Count > 0)
-						_displayedCollection.Marks.Remove((TimeSpan) listViewMarks.SelectedItems[0].Tag);
+						_displayedCollection.Marks.Remove((TimeSpan)listViewMarks.SelectedItems[0].Tag);
 				}
 
 				if (_displayedCollection.Marks.Contains(time)) {
@@ -234,19 +220,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			else {
 				MessageBox.Show("Error parsing time: please use the format '<minutes>:<seconds>.<milliseconds>'",
-				                "Error parsing time");
+								"Error parsing time");
 			}
 		}
 
-		private void buttonSelectAllMarks_Click(object sender, EventArgs e)
-		{
+		private void buttonSelectAllMarks_Click(object sender, EventArgs e) {
 			foreach (ListViewItem item in listViewMarks.Items) {
 				item.Selected = true;
 			}
 		}
 
-		private void buttonTapNewMarks_Click(object sender, EventArgs e)
-		{
+		private void buttonTapNewMarks_Click(object sender, EventArgs e) {
 			using (MarkTapper tapper = new MarkTapper(_executionControl, _timingSource)) {
 				if (tapper.ShowDialog() == DialogResult.OK) {
 					foreach (TimeSpan time in tapper.Results) {
@@ -259,8 +243,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		private void buttonOffsetMarks_Click(object sender, EventArgs e)
-		{
+		private void buttonOffsetMarks_Click(object sender, EventArgs e) {
 			Common.Controls.TextDialog prompt = new Common.Controls.TextDialog("Time to offset (in seconds):");
 			if (prompt.ShowDialog() == DialogResult.OK) {
 				TimeSpan time;
@@ -273,10 +256,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					List<TimeSpan> newMarks = new List<TimeSpan>();
 					foreach (ListViewItem item in listViewMarks.Items) {
 						if (item.Selected) {
-							newMarks.Add(((TimeSpan) item.Tag) + time);
+							newMarks.Add(((TimeSpan)item.Tag) + time);
 						}
 						else {
-							newMarks.Add((TimeSpan) item.Tag);
+							newMarks.Add((TimeSpan)item.Tag);
 						}
 						newMarks.Sort();
 						_displayedCollection.Marks = newMarks;
@@ -285,13 +268,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 				else {
 					MessageBox.Show("Error parsing time: please use the format '<minutes>:<seconds>.<milliseconds>'",
-					                "Error parsing time");
+									"Error parsing time");
 				}
 			}
 		}
 
-		private void buttonEvenlySpaceMarks_Click(object sender, EventArgs e)
-		{
+		private void buttonEvenlySpaceMarks_Click(object sender, EventArgs e) {
 			if (listViewMarks.SelectedItems.Count < 3) {
 				MessageBox.Show("Select at least three marks to space evenly.", "Need more marks");
 				return;
@@ -302,17 +284,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			foreach (ListViewItem item in listViewMarks.Items) {
 				if (item.Selected)
-					spacingTimes.Add((TimeSpan) item.Tag);
+					spacingTimes.Add((TimeSpan)item.Tag);
 				else
-					newTimes.Add((TimeSpan) item.Tag);
+					newTimes.Add((TimeSpan)item.Tag);
 			}
 
 			spacingTimes.Sort();
 
 			TimeSpan totalInterval = spacingTimes.Last() - spacingTimes.First();
-			TimeSpan integralInterval = TimeSpan.FromTicks(totalInterval.Ticks/(spacingTimes.Count - 1));
+			TimeSpan integralInterval = TimeSpan.FromTicks(totalInterval.Ticks / (spacingTimes.Count - 1));
 			for (int i = 0; i < spacingTimes.Count; i++) {
-				TimeSpan newTime = TimeSpan.FromTicks(spacingTimes.First().Ticks + (i*integralInterval.Ticks));
+				TimeSpan newTime = TimeSpan.FromTicks(spacingTimes.First().Ticks + (i * integralInterval.Ticks));
 				if (!newTimes.Contains(newTime))
 					newTimes.Add(newTime);
 			}
@@ -322,8 +304,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			PopulateMarkListFromMarkCollection(_displayedCollection);
 		}
 
-		private void buttonGenerateSubmarks_Click(object sender, EventArgs e)
-		{
+		private void buttonGenerateSubmarks_Click(object sender, EventArgs e) {
 			if (listViewMarks.SelectedItems.Count < 2) {
 				MessageBox.Show("Select at least two marks to generate times between.", "Need more marks");
 				return;
@@ -343,15 +324,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 					List<TimeSpan> sourceTimes = new List<TimeSpan>();
 					foreach (ListViewItem item in listViewMarks.SelectedItems) {
-						sourceTimes.Add((TimeSpan) item.Tag);
+						sourceTimes.Add((TimeSpan)item.Tag);
 					}
 					sourceTimes.Sort();
 
 					List<TimeSpan> newTimes = new List<TimeSpan>();
 					for (int i = 1; i < sourceTimes.Count; i++) {
-						TimeSpan interval = TimeSpan.FromTicks((sourceTimes[i] - sourceTimes[i - 1]).Ticks/divisions);
+						TimeSpan interval = TimeSpan.FromTicks((sourceTimes[i] - sourceTimes[i - 1]).Ticks / divisions);
 						for (int j = 0; j < divisions; j++) {
-							newTimes.Add(sourceTimes[i - 1] + TimeSpan.FromTicks(interval.Ticks*j));
+							newTimes.Add(sourceTimes[i - 1] + TimeSpan.FromTicks(interval.Ticks * j));
 						}
 					}
 					newTimes.Add(sourceTimes.Last());
@@ -364,7 +345,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							options.Add(new KeyValuePair<string, object>(mc.Name, mc));
 						}
 						Common.Controls.ListSelectDialog selector = new Common.Controls.ListSelectDialog("Destination Mark Collection?",
-						                                                                                 options);
+																										 options);
 						if (selector.ShowDialog() == DialogResult.OK) {
 							destination = selector.SelectedItem as MarkCollection;
 						}
@@ -384,29 +365,26 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 				else {
 					MessageBox.Show("Error parsing number: please enter a whole number for the number of divisions.",
-					                "Error parsing number");
+									"Error parsing number");
 				}
 			}
 		}
 
-		private void textBoxCollectionName_TextChanged(object sender, EventArgs e)
-		{
+		private void textBoxCollectionName_TextChanged(object sender, EventArgs e) {
 			if (_displayedCollection != null && _displayedCollection.Name != textBoxCollectionName.Text) {
 				_displayedCollection.Name = textBoxCollectionName.Text;
 				UpdateMarkCollectionInList(_displayedCollection);
 			}
 		}
 
-		private void numericUpDownWeight_ValueChanged(object sender, EventArgs e)
-		{
+		private void numericUpDownWeight_ValueChanged(object sender, EventArgs e) {
 			if (_displayedCollection != null && _displayedCollection.Level != numericUpDownWeight.Value) {
-				_displayedCollection.Level = (int) numericUpDownWeight.Value;
+				_displayedCollection.Level = (int)numericUpDownWeight.Value;
 				UpdateMarkCollectionInList(_displayedCollection);
 			}
 		}
 
-		private void panelColor_Click(object sender, EventArgs e)
-		{
+		private void panelColor_Click(object sender, EventArgs e) {
 			Common.Controls.ColorManagement.ColorPicker.ColorPicker picker =
 				new Common.Controls.ColorManagement.ColorPicker.ColorPicker();
 
@@ -418,20 +396,18 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		private void checkBoxEnabled_CheckedChanged(object sender, EventArgs e)
-		{
+		private void checkBoxEnabled_CheckedChanged(object sender, EventArgs e) {
 			if (_displayedCollection != null && _displayedCollection.Enabled != checkBoxEnabled.Checked) {
 				_displayedCollection.Enabled = checkBoxEnabled.Checked;
 				UpdateMarkCollectionInList(_displayedCollection);
 			}
 		}
 
-		private void listViewMarks_KeyDown(object sender, KeyEventArgs e)
-		{
+		private void listViewMarks_KeyDown(object sender, KeyEventArgs e) {
 			switch (e.KeyCode) {
 				case Keys.Delete:
 					foreach (ListViewItem item in listViewMarks.SelectedItems) {
-						_displayedCollection.Marks.Remove((TimeSpan) item.Tag);
+						_displayedCollection.Marks.Remove((TimeSpan)item.Tag);
 					}
 					PopulateMarkListFromMarkCollection(_displayedCollection);
 					UpdateMarkCollectionInList(_displayedCollection);
@@ -451,8 +427,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		private void buttonPasteEffectsToMarks_Click(object sender, EventArgs e)
-		{
+		private void buttonPasteEffectsToMarks_Click(object sender, EventArgs e) {
 			if (listViewMarks.SelectedItems.Count < 1) {
 				MessageBox.Show("Select at least one mark to paste effects to.", "Need more marks");
 				return;
@@ -460,7 +435,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			int count = 0;
 			foreach (ListViewItem item in listViewMarks.SelectedItems) {
-				int totalPasted = _timedSequenceEditorForm.ClipboardPaste((TimeSpan) item.Tag);
+				int totalPasted = _timedSequenceEditorForm.ClipboardPaste((TimeSpan)item.Tag);
 				if (totalPasted <= 0) {
 					MessageBox.Show("Copy an effect to paste to the clipboard in the sequence editor.", "Need an effect");
 					return;
@@ -468,11 +443,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				count += totalPasted;
 			}
 
-			MessageBox.Show(count + " effects pasted.");
+			MessageBox.Show(string.Format("{0} effects pasted.", count));
 		}
 
-		private void buttonCopyAndOffsetMarks_Click(object sender, EventArgs e)
-		{
+		private void buttonCopyAndOffsetMarks_Click(object sender, EventArgs e) {
 			if (listViewMarks.SelectedItems.Count < 1) {
 				MessageBox.Show("Select at least one mark duplicate and offset.", "Need more marks");
 				return;
@@ -485,12 +459,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (TimeSpan.TryParseExact(prompt.Response, TimeFormats.PositiveFormats, null, out offsetTime)) {
 					TimeSpan earliestTime = TimeSpan.MaxValue;
 					foreach (ListViewItem item in listViewMarks.SelectedItems) {
-						if ((TimeSpan) item.Tag < earliestTime)
-							earliestTime = (TimeSpan) item.Tag;
+						if ((TimeSpan)item.Tag < earliestTime)
+							earliestTime = (TimeSpan)item.Tag;
 					}
 
 					foreach (ListViewItem item in listViewMarks.SelectedItems) {
-						_displayedCollection.Marks.Add((TimeSpan) item.Tag + offsetTime - earliestTime);
+						_displayedCollection.Marks.Add((TimeSpan)item.Tag + offsetTime - earliestTime);
 					}
 
 					_displayedCollection.Marks.Sort();
@@ -499,13 +473,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 				else {
 					MessageBox.Show("Error parsing time: please use the format '<minutes>:<seconds>.<milliseconds>'",
-					                "Error parsing time");
+									"Error parsing time");
 				}
 			}
 		}
 
-		private void buttonGenerateBeatMarks_Click(object sender, EventArgs e)
-		{
+		private void buttonGenerateBeatMarks_Click(object sender, EventArgs e) {
 			if (
 				MessageBox.Show(
 					"This operation will determine the average beat from the selected marks, and apply them for the rest of the song. Do you want to continue?",
@@ -535,28 +508,26 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					TimeSpan latestMark = TimeSpan.MinValue;
 
 					foreach (ListViewItem item in listViewMarks.SelectedItems) {
-						if ((TimeSpan) item.Tag < earlistMark) {
-							earlistMark = (TimeSpan) item.Tag;
+						if ((TimeSpan)item.Tag < earlistMark) {
+							earlistMark = (TimeSpan)item.Tag;
 						}
-						if ((TimeSpan) item.Tag > latestMark) {
-							latestMark = (TimeSpan) item.Tag;
+						if ((TimeSpan)item.Tag > latestMark) {
+							latestMark = (TimeSpan)item.Tag;
 						}
 					}
 
 					int sourcesCount = listViewMarks.SelectedItems.Count;
-					TimeSpan interval = TimeSpan.FromTicks((latestMark - earlistMark).Ticks/(sourcesCount - 1));
-					double bpm = 60/interval.TotalSeconds;
+					TimeSpan interval = TimeSpan.FromTicks((latestMark - earlistMark).Ticks / (sourcesCount - 1));
+					double bpm = 60 / interval.TotalSeconds;
 
 					TimeSpan maxPossibleDuration = _timedSequenceEditorForm.Sequence.Length - latestMark;
 					if (duration > maxPossibleDuration)
 						duration = maxPossibleDuration;
 
-					int generatedMarks = (int) (duration.Ticks/interval.Ticks) - 1;
+					int generatedMarks = (int)(duration.Ticks / interval.Ticks) - 1;
 
-					if (MessageBox.Show("From the selected marks, a beat interval of " + interval.ToString(@"s\.ff") +
-					                    " seconds was detected (" + bpm.ToString(@"#####.##") + " bpm). This will generate " +
-					                    generatedMarks + " marks. Do you " +
-					                    "want to continue?", "Confirmation", MessageBoxButtons.YesNo) != DialogResult.Yes) {
+					if (MessageBox.Show(string.Format("From the selected marks, a beat interval of {0:s.ff} seconds was detected ({1:0.00} bpm). This will generate {2} marks. Do you want to continue?", interval,
+										 bpm, generatedMarks), "Confirmation", MessageBoxButtons.YesNo) != DialogResult.Yes) {
 						return;
 					}
 
@@ -573,13 +544,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 				else {
 					MessageBox.Show("Error parsing time: please use the format '<minutes>:<seconds>.<milliseconds>', or leave empty",
-					                "Error parsing time");
+									"Error parsing time");
 				}
 			}
 		}
 
-		private void buttonGenerateGrid_Click(object sender, EventArgs e)
-		{
+		private void buttonGenerateGrid_Click(object sender, EventArgs e) {
 			Common.Controls.TextDialog prompt =
 				new Common.Controls.TextDialog("How often (in seconds) should the marks be generated?", "Mark Period", "0:00.050");
 			if (prompt.ShowDialog() == DialogResult.OK) {
@@ -603,15 +573,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 				else {
 					MessageBox.Show("Error parsing time: please use the format '<minutes>:<seconds>.<milliseconds>'",
-					                "Error parsing time");
+									"Error parsing time");
 				}
 			}
 		}
 
 		#region Playback/Tapper
 
-		private void sequencePlay(TimeSpan StartTime)
-		{
+		private void sequencePlay(TimeSpan StartTime) {
 			if (radioButtonTapper.Checked) {
 				_newTappedMarks.Clear();
 			}
@@ -621,13 +590,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			timerPlayback.Start();
 		}
 
-		private void sequenceStop()
-		{
+		private void sequenceStop() {
 			timerPlayback.Stop();
 			_executionControl.Stop();
 			_playbackStarted = false;
 			if (radioButtonTapper.Checked && _newTappedMarks.Count > 0) {
-				if (MessageBox.Show("Accept the new marks?", "", MessageBoxButtons.OKCancel) == DialogResult.OK) {
+				if (MessageBox.Show("Accept the new marks?", string.Empty, MessageBoxButtons.OKCancel) == DialogResult.OK) {
 					foreach (TimeSpan time in _newTappedMarks) {
 						if (!_displayedCollection.Marks.Contains(time))
 							_displayedCollection.Marks.Add(time);
@@ -642,13 +610,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		private void updateControlsforPlaying()
-		{
+		private void updateControlsforPlaying() {
 			groupBoxSelectedMarkCollection.Enabled = false;
 			buttonPlay.Enabled = false;
 			buttonStop.Enabled = true;
 			groupBoxMode.Enabled = false;
-			textBoxCurrentMark.Text = "";
+			textBoxCurrentMark.Text = string.Empty;
 			groupBoxMarkCollections.Enabled = false;
 			try {
 				if (_audio != null)
@@ -664,8 +631,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		private void updateControlsForStopped()
-		{
+		private void updateControlsForStopped() {
 			groupBoxSelectedMarkCollection.Enabled = true;
 			buttonPlay.Enabled = true;
 			buttonStop.Enabled = false;
@@ -673,30 +639,26 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			groupBoxMarkCollections.Enabled = true;
 		}
 
-		private void buttonPlay_Click(object sender, EventArgs e)
-		{
+		private void buttonPlay_Click(object sender, EventArgs e) {
 			detectedActions.Clear();
 			sequencePlay(TimeSpan.FromMilliseconds(trackBarPlayBack.Value));
 			_sequencePlaySelected = true;
 			updateControlsforPlaying();
 		}
 
-		private void buttonStop_Click(object sender, EventArgs e)
-		{
+		private void buttonStop_Click(object sender, EventArgs e) {
 			sequenceStop();
 			_playbackStarted = false;
 			_sequencePlaySelected = false;
 			updateControlsForStopped();
 		}
 
-		private void timerMarkHit_Tick(object sender, EventArgs e)
-		{
+		private void timerMarkHit_Tick(object sender, EventArgs e) {
 			panelMarkView.BackColor = SystemColors.Control;
 			timerMarkHit.Stop();
 		}
 
-		private void timerPlayback_Tick(object sender, EventArgs e)
-		{
+		private void timerPlayback_Tick(object sender, EventArgs e) {
 			//Handle delay until playback actually starts
 			if (!_playbackStarted) {
 				_playbackStarted = _timedSequenceEditorForm.positionHasValue;
@@ -720,8 +682,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		private void handlePlaybackModeTick()
-		{
+		private void handlePlaybackModeTick() {
 			if (_timingSource.Position.CompareTo(_currentPlayPosition) > 0) {
 				int newMarkIndex = _displayedCollection.Marks.FindIndex(x => x <= _timingSource.Position && x > _currentPlayPosition);
 				_currentPlayPosition = _timingSource.Position;
@@ -735,58 +696,49 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		private void MarkManager_FormClosing(object sender, FormClosingEventArgs e)
-		{
+		private void MarkManager_FormClosing(object sender, FormClosingEventArgs e) {
 			_executionControl.Stop();
 			timerMarkHit.Dispose();
 			timerPlayback.Dispose();
 		}
 
-		private void buttonIncreasePlaySpeed_Click(object sender, EventArgs e)
-		{
+		private void buttonIncreasePlaySpeed_Click(object sender, EventArgs e) {
 			_timingSource.Speed += _timingChangeDelta;
 			updateTimingSpeedTextbox();
 		}
 
-		private void buttonDecreasePlaySpeed_Click(object sender, EventArgs e)
-		{
+		private void buttonDecreasePlaySpeed_Click(object sender, EventArgs e) {
 			_timingSource.Speed -= _timingChangeDelta;
 			updateTimingSpeedTextbox();
 		}
 
-		private void updateTimingSpeedTextbox()
-		{
-			textBoxTimingSpeed.Text = Math.Round((_timingSource.Speed*100), 0).ToString() + "%";
+		private void updateTimingSpeedTextbox() {
+			textBoxTimingSpeed.Text = string.Format("{0}%", Math.Round((_timingSource.Speed * 100), 0));
 			buttonDecreasePlaySpeed.Enabled = _timingSource.Speed > _timingChangeDelta;
 		}
 
-		private void trackBarPlayBack_Scroll(object sender, EventArgs e)
-		{
+		private void trackBarPlayBack_Scroll(object sender, EventArgs e) {
 			//_executionControl.Stop();
 			textBoxPosition.Text = TimeSpan.FromMilliseconds(trackBarPlayBack.Value).ToString(@"m\:ss\.fff");
 		}
 
-		private void trackBarPlayBack_MouseDown(object sender, MouseEventArgs e)
-		{
+		private void trackBarPlayBack_MouseDown(object sender, MouseEventArgs e) {
 			sequenceStop();
 		}
 
-		private void trackBarPlayBack_MouseUp(object sender, MouseEventArgs e)
-		{
+		private void trackBarPlayBack_MouseUp(object sender, MouseEventArgs e) {
 			//if sequence was previously playing resume
 			if (_sequencePlaySelected) {
 				sequencePlay(TimeSpan.FromMilliseconds(trackBarPlayBack.Value));
 			}
 		}
 
-		private void updatePositionControls(TimeSpan Position)
-		{
-			trackBarPlayBack.Value = (int) Position.TotalMilliseconds;
+		private void updatePositionControls(TimeSpan Position) {
+			trackBarPlayBack.Value = (int)Position.TotalMilliseconds;
 			textBoxPosition.Text = Position.ToString(@"m\:ss\.fff");
 		}
 
-		private void _triggerResult()
-		{
+		private void _triggerResult() {
 			if (_playbackStarted) {
 				// round the tapped time to the nearest millisecond
 				_newTappedMarks.Add(TimeSpan.FromMilliseconds(Math.Round(_timingSource.Position.TotalMilliseconds)));
@@ -795,14 +747,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		private void panelMarkView_MouseDown(object sender, MouseEventArgs e)
-		{
+		private void panelMarkView_MouseDown(object sender, MouseEventArgs e) {
 			if (radioButtonTapper.Checked)
 				_triggerResult();
 		}
 
-		private void MarkManager_KeyDown(object sender, KeyEventArgs e)
-		{
+		private void MarkManager_KeyDown(object sender, KeyEventArgs e) {
 			if (radioButtonTapper.Checked) {
 				if (e.KeyCode == Keys.Space) {
 					_triggerResult();
@@ -811,8 +761,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		private void radioButtonTapper_CheckedChanged(object sender, EventArgs e)
-		{
+		private void radioButtonTapper_CheckedChanged(object sender, EventArgs e) {
 			if (radioButtonTapper.Checked)
 				labelTapperInstructions.Visible = true;
 			else
@@ -823,18 +772,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		#region Increase/Decrease selected Marks
 
-		private void buttonIncreaseSelectedMarks_Click(object sender, EventArgs e)
-		{
+		private void buttonIncreaseSelectedMarks_Click(object sender, EventArgs e) {
 			increaseSelectedMarks();
 		}
 
-		private void buttonDecreaseSelectedMarks_Click(object sender, EventArgs e)
-		{
+		private void buttonDecreaseSelectedMarks_Click(object sender, EventArgs e) {
 			decreaseSelectedMarks();
 		}
 
-		private void increaseSelectedMarks()
-		{
+		private void increaseSelectedMarks() {
 			int incrementValue = Convert.ToInt32(textBoxTimeIncrement.Text);
 			TimeSpan incrementSpan = TimeSpan.FromMilliseconds(incrementValue);
 			List<TimeSpan> selectedMarks = new List<TimeSpan>();
@@ -849,8 +795,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			selectMarks(selectedMarks);
 		}
 
-		private void decreaseSelectedMarks()
-		{
+		private void decreaseSelectedMarks() {
 			int incrementValue = Convert.ToInt32(textBoxTimeIncrement.Text);
 			TimeSpan incrementSpan = TimeSpan.FromMilliseconds(incrementValue);
 			List<TimeSpan> selectedMarks = new List<TimeSpan>();
@@ -866,8 +811,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			selectMarks(selectedMarks);
 		}
 
-		private void selectMarks(List<TimeSpan> marks)
-		{
+		private void selectMarks(List<TimeSpan> marks) {
 			foreach (TimeSpan tSpan in marks) {
 				int newIndex = _displayedCollection.IndexOf(tSpan);
 				if (newIndex != -1) {
@@ -877,8 +821,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			listViewMarks.Focus();
 		}
 
-		private void updateMark(int index, TimeSpan ts)
-		{
+		private void updateMark(int index, TimeSpan ts) {
 			//test if the new mark already exists, if not remove it and add the new one
 			if (_displayedCollection.Marks.Contains(ts)) {
 				System.Media.SystemSounds.Asterisk.Play();
@@ -894,50 +837,45 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		#endregion
 
-		private void chkHighPass_CheckedChanged(object sender, EventArgs e)
-		{
+		private void chkHighPass_CheckedChanged(object sender, EventArgs e) {
 			var media = _timedSequenceEditorForm.Sequence.GetAllMedia().First();
 			// IMediaModuleInstance media = _sequence.GetAllMedia().First();
 			_audio = media as Audio;
 			_audio.FrequencyDetected += _audio_FrequencyDetected;
 
 			_audio.HighPassFilterEnabled = this.chkHighPass.Checked;
-			_audio.HighPassFilterValue = (float) this.numHighPass.Value;
+			_audio.HighPassFilterValue = (float)this.numHighPass.Value;
 		}
 
-		private void chkLowPass_CheckedChanged(object sender, EventArgs e)
-		{
+		private void chkLowPass_CheckedChanged(object sender, EventArgs e) {
 			var media = _timedSequenceEditorForm.Sequence.GetAllMedia().First();
 			// IMediaModuleInstance media = _sequence.GetAllMedia().First();
 			_audio = media as Audio;
 			_audio.FrequencyDetected += _audio_FrequencyDetected;
 
 			_audio.LowPassFilterEnabled = this.chkLowPass.Checked;
-			_audio.LowPassFilterValue = (float) this.numLowPass.Value;
+			_audio.LowPassFilterValue = (float)this.numLowPass.Value;
 		}
 
-		private void numLowPass_ValueChanged(object sender, EventArgs e)
-		{
+		private void numLowPass_ValueChanged(object sender, EventArgs e) {
 			var media = _timedSequenceEditorForm.Sequence.GetAllMedia().First();
 			// IMediaModuleInstance media = _sequence.GetAllMedia().First();
 			_audio = media as Audio;
 			_audio.FrequencyDetected += _audio_FrequencyDetected;
 
-			_audio.LowPassFilterValue = (float) this.numLowPass.Value;
+			_audio.LowPassFilterValue = (float)this.numLowPass.Value;
 		}
 
-		private void numHighPass_ValueChanged(object sender, EventArgs e)
-		{
+		private void numHighPass_ValueChanged(object sender, EventArgs e) {
 			var media = _timedSequenceEditorForm.Sequence.GetAllMedia().First();
 			// IMediaModuleInstance media = _sequence.GetAllMedia().First();
 			_audio = media as Audio;
 			_audio.FrequencyDetected += _audio_FrequencyDetected;
 
-			_audio.HighPassFilterValue = (float) this.numHighPass.Value;
+			_audio.HighPassFilterValue = (float)this.numHighPass.Value;
 		}
 
-		private void ChkAutoTapper_CheckedChanged(object sender, EventArgs e)
-		{
+		private void ChkAutoTapper_CheckedChanged(object sender, EventArgs e) {
 			var media = _timedSequenceEditorForm.Sequence.GetAllMedia().First();
 			// IMediaModuleInstance media = _sequence.GetAllMedia().First();
 			_audio = media as Audio;
@@ -946,18 +884,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_audio.DetectFrequeniesEnabled = ChkAutoTapper.Checked;
 		}
 
-		private void _audio_FrequencyDetectedSetText(object args)
-		{
+		private void _audio_FrequencyDetectedSetText(object args) {
 			var e = args as FrequencyEventArgs;
 			if (args != null) {
 				this.label8.Text = string.Format("Note {0} at {1}", e.Note, e.Time);
 			}
 		}
 
-		private void _audio_FrequencyDetected(object sender, FrequencyEventArgs e)
-		{
+		private void _audio_FrequencyDetected(object sender, FrequencyEventArgs e) {
 			if (!detectedActions.ContainsKey(e.Index))
-				detectedActions.TryAdd(e.Index, new ConcurrentBag<TimeSpan>() {e.Time});
+				detectedActions.TryAdd(e.Index, new ConcurrentBag<TimeSpan>() { e.Time });
 			else {
 				ConcurrentBag<TimeSpan> spans = new ConcurrentBag<TimeSpan>();
 
@@ -981,8 +917,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private AutomaticMusicDetection audioDetectionSettings = null;
 		private Properties.Settings settings = new Properties.Settings();
 
-		private void btnAutoDetectionSettings_Click(object sender, EventArgs e)
-		{
+		private void btnAutoDetectionSettings_Click(object sender, EventArgs e) {
 			if (_audio == null) {
 				var media = _timedSequenceEditorForm.Sequence.GetAllMedia().First();
 				// IMediaModuleInstance media = _sequence.GetAllMedia().First();
@@ -999,8 +934,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		private void btnCreateCollections_Click(object sender, EventArgs e)
-		{
+		private void btnCreateCollections_Click(object sender, EventArgs e) {
 			List<int> indexes = new List<int>();
 			if (radioAll.Checked) {
 				for (int i = 0; i < 120; i++) {
@@ -1015,8 +949,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			PopulateMarkCollectionsList();
 		}
 
-		private void GenerateCollection(int index)
-		{
+		private void GenerateCollection(int index) {
 			ConcurrentBag<TimeSpan> values = new ConcurrentBag<TimeSpan>();
 			if (detectedActions.TryGetValue(index, out values)) {
 				MarkCollection collection = new MarkCollection();
@@ -1025,14 +958,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				TimeSpan lastValue = TimeSpan.FromMilliseconds(0);
 
-				values.OrderBy(a => a).ToList().ForEach(v =>
-				                                        	{
-				                                        		var xtime = v - TimeSpan.FromMilliseconds(settings.MusicAccuracy);
-				                                        		if (xtime > lastValue) {
-				                                        			collection.Marks.Add(v);
-				                                        			lastValue = v;
-				                                        		}
-				                                        	});
+				values.OrderBy(a => a).ToList().ForEach(v => {
+					var xtime = v - TimeSpan.FromMilliseconds(settings.MusicAccuracy);
+					if (xtime > lastValue) {
+						collection.Marks.Add(v);
+						lastValue = v;
+					}
+				});
 
 				lock (MarkCollections) {
 					MarkCollections.RemoveAll(r => r.Name == collection.Name);
@@ -1041,39 +973,32 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		static string lastFolder = "";
-		private void buttonImportAudacity_Click(object sender, EventArgs e)
-		{
+		static string lastFolder = string.Empty;
+		private void buttonImportAudacity_Click(object sender, EventArgs e) {
 			openFileDialog.DefaultExt = ".txt";
 			openFileDialog.Filter = "Audacity Labels|*.txt|All Files|*.*";
 			openFileDialog.FilterIndex = 0;
 			openFileDialog.InitialDirectory = lastFolder;
-			if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-			{
+			if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
 				lastFolder = System.IO.Path.GetDirectoryName(openFileDialog.FileName);
-				try
-				{
+				try {
 					String everything;
-					using (StreamReader sr = new StreamReader(openFileDialog.FileName))
-					{
+					using (StreamReader sr = new StreamReader(openFileDialog.FileName)) {
 						everything = sr.ReadToEnd();
 					}
 					string[] lines = everything.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-					if (lines.Count() > 0)
-					{
+					if (lines.Count() > 0) {
 						MarkCollection marks = AddNewCollection(Color.Yellow, "Audacity Marks");
-						foreach (string line in lines)
-						{
+						foreach (string line in lines) {
 							string mark = line.Split('\t')[0];
 							TimeSpan time = TimeSpan.FromSeconds(Convert.ToDouble(mark));
-							mark = time.Minutes.ToString() + ":" + time.Seconds.ToString().PadLeft(2, '0') + "." + time.Milliseconds.ToString();
+							mark = time.ToString("mm\\:ss\\.ff") ;
 							AddMark(mark);
 						}
 						UpdateMarkListBox();
 					}
 				}
-				catch (Exception ex)
-				{
+				catch (Exception ex) {
 					string msg = "There was an error importing the Audacity beat marks: " + ex.Message;
 					Logging.Error(msg);
 					MessageBox.Show(msg, "Audacity Import Error", MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
@@ -1081,8 +1006,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		private MarkCollection AddNewCollection(Color color, string name = "New Collection")
-		{
+		private MarkCollection AddNewCollection(Color color, string name = "New Collection") {
 			MarkCollection newCollection = new MarkCollection();
 			newCollection.Name = name;
 			newCollection.MarkColor = color;
@@ -1100,23 +1024,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			return newCollection;
 		}
 
-		private void AddMark(string markText)
-		{
+		private void AddMark(string markText) {
 			TimeSpan time;
 			bool success = TimeSpan.TryParseExact(markText, TimeFormats.PositiveFormats, null, out time);
-			if (success)
-			{
+			if (success) {
 				_displayedCollection.Marks.Add(time);
 			}
-			else
-			{
+			else {
 				MessageBox.Show("Error parsing time: please use the format '<minutes>:<seconds>.<milliseconds>'",
 								"Error parsing time");
 			}
 		}
 
-		private void UpdateMarkListBox()
-		{
+		private void UpdateMarkListBox() {
 			_displayedCollection.Marks.Sort();
 			PopulateMarkListFromMarkCollection(_displayedCollection);
 			UpdateMarkCollectionInList(_displayedCollection);

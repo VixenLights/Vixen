@@ -263,9 +263,7 @@ namespace VixenModules.Controller.E131 {
 				}
 
 				this._messageTexts.AppendLine("Events: " + this._eventCnt);
-				this._messageTexts.AppendLine(
-					"Total Time: " + this._totalTicks + " Ticks;  " + TimeSpan.FromTicks(this._totalTicks).Milliseconds
-					+ " ms");
+				this._messageTexts.AppendLine(string.Format("Total Time: {0} Ticks; {1} ms", this._totalTicks, TimeSpan.FromTicks(this._totalTicks).Milliseconds));
 
 				foreach (var uE in this._universeTable) {
 					if (uE.Active) {
@@ -345,8 +343,7 @@ namespace VixenModules.Controller.E131 {
 							// oops - bad ip, fuss and deactivate
 							uE.Active = false;
 							uE.Socket = null;
-							this._messageTexts.AppendLine(
-								"Invalid Unicast IP: " + uE.Unicast + " - " + uE.RowUnivToText);
+							this._messageTexts.AppendLine(string.Format("Invalid Unicast IP: {0} - {1}", uE.Unicast, uE.RowUnivToText));
 						}
 						else {
 							// if good, make our destination endpoint
@@ -367,8 +364,7 @@ namespace VixenModules.Controller.E131 {
 						if (!this._nicTable.ContainsKey(uE.Multicast)) {
 							// no - deactivate and scream & yell!!
 							uE.Active = false;
-							this._messageTexts.AppendLine(
-								"Invalid Multicast NIC ID: " + uE.Multicast + " - " + uE.RowUnivToText);
+							this._messageTexts.AppendLine(string.Format("Invalid Multicast NIC ID: {0} - {1}", uE.Multicast, uE.RowUnivToText));
 						}
 						else {
 							// yes - let's get a working networkinterface object

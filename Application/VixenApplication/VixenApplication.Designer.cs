@@ -1,4 +1,5 @@
-﻿namespace VixenApplication
+﻿using System.Windows.Forms;
+namespace VixenApplication
 {
 	partial class VixenApplication
 	{
@@ -13,11 +14,12 @@
 		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
 		protected override void Dispose(bool disposing)
 		{
-			if (disposing && (components != null))
+			 if (disposing && (components != null))
 			{
 				components.Dispose();
 			}
 			base.Dispose(disposing);
+	
 		}
 
 		#region Windows Form Designer generated code
@@ -391,7 +393,7 @@
 			this.Text = "Vixen Administration";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.VixenApp_FormClosing);
 			this.Load += new System.EventHandler(this.VixenApplication_Load);
-			this.menuStripMain.ResumeLayout(false);
+		 	this.menuStripMain.ResumeLayout(false);
 			this.menuStripMain.PerformLayout();
 			this.groupBoxSequences.ResumeLayout(false);
 			this.groupBoxSequences.PerformLayout();

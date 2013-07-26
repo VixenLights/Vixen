@@ -49,12 +49,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			get
 			{
-				string s = (m_changedElements.Count == 1 ? "" : "s");
+				string s = (m_changedElements.Count == 1 ? string.Empty : "s");
 				switch (m_moveType) {
 					case ElementMoveType.Move:
-						return String.Format("Move {0} effect{1} horizontally", m_changedElements.Count, s);
+						return string.Format("Move {0} effect{1} horizontally", m_changedElements.Count, s);
 					case ElementMoveType.Resize:
-						return String.Format("Resize {0} effect{1}", m_changedElements.Count, s);
+						return string.Format("Resize {0} effect{1}", m_changedElements.Count, s);
 					default:
 						throw new Exception("Unknown ElementMoveType!");
 				}
@@ -115,7 +115,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		public override string Description
 		{
-			get { return String.Format("Added {0} effect{1}", Count, (Count == 1 ? "" : "s")); }
+			get { return string.Format("Added {0} effect{1}", Count, (Count == 1 ? string.Empty : "s")); }
 		}
 	}
 
@@ -140,7 +140,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		public override string Description
 		{
-			get { return String.Format("Removed {0} effect{1}", Count, (Count == 1 ? "" : "s")); }
+			get { return string.Format("Removed {0} effect{1}", Count, (Count == 1 ? string.Empty : "s")); }
 		}
 	}
 }
