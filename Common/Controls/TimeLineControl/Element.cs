@@ -307,14 +307,14 @@ namespace Common.Controls.Timeline
 		public virtual bool IsCanvasContentCurrent(Size imageSize)
 		{
 			// DB: removed below. We don't care if the height is current. We stretch the bitmap anyway.
-			//return (CachedCanvasIsCurrent || CachedElementCanvas.Width != imageSize.Width ||
-			//        CachedElementCanvas.Height != imageSize.Height);
-			return (CachedCanvasIsCurrent || CachedElementCanvas.Width != imageSize.Width);
+			return (CachedCanvasIsCurrent || CachedElementCanvas.Width != imageSize.Width ||
+					CachedElementCanvas.Height != imageSize.Height);
+			//return (CachedCanvasIsCurrent || CachedElementCanvas.Width != imageSize.Width);
 		}
 
 		public Bitmap SetupCachedImage(Size imageSize)
 		{
-			if (CachedElementCanvas == null || !IsCanvasContentCurrent(imageSize) || Changed) {
+			//if (CachedElementCanvas == null || !IsCanvasContentCurrent(imageSize) || Changed) {
 				lock (drawLock) {
 					CachedElementCanvas = SetupCanvas(imageSize);
 					using (Graphics g = Graphics.FromImage(CachedElementCanvas)) {
@@ -324,7 +324,7 @@ namespace Common.Controls.Timeline
 				}
 				CachedCanvasIsCurrent = true;
 				Changed = false;
-			}
+			//}
 			return CachedElementCanvas;
 		}
 
