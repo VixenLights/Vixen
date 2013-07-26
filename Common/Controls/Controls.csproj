@@ -88,6 +88,19 @@
     <Compile Include="Direct2D\Interop\NativeMethods.cs" />
     <Compile Include="Direct2D\Interop\NativeStructs.cs" />
     <Compile Include="Direct2D\Scene.cs" />
+    <Compile Include="ComboBoxItem.cs" />
+    <Compile Include="ConfigureElements\AddMegatree.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ConfigureElements\AddMegatree.Designer.cs">
+      <DependentUpon>AddMegatree.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ConfigureElements\AddPixelGrid.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ConfigureElements\AddPixelGrid.designer.cs">
+      <DependentUpon>AddPixelGrid.cs</DependentUpon>
+    </Compile>
     <Compile Include="DiscreteColorPicker.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -116,6 +129,7 @@
     <Compile Include="TimelineControl\Grid.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="TimelineControl\ElementDrawQueue.cs" />
     <Compile Include="Wizard\Wizard.cs" />
     <Compile Include="Wizard\WizardForm.cs">
       <SubType>Form</SubType>
@@ -314,6 +328,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Direct2D\Direct2DControlWinForm.resx">
       <DependentUpon>Direct2DControlWinForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConfigureElements\AddMegatree.resx">
+      <DependentUpon>AddMegatree.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConfigureElements\AddPixelGrid.resx">
+      <DependentUpon>AddPixelGrid.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DiscreteColorPicker.resx">
       <DependentUpon>DiscreteColorPicker.cs</DependentUpon>

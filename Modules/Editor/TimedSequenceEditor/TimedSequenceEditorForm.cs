@@ -452,11 +452,13 @@ namespace VixenModules.Editor.TimedSequenceEditor {
 
 		protected void ElementContentChangedHandler(object sender, EventArgs e) {
 			TimedSequenceElement element = sender as TimedSequenceElement;
+			//timelineControl.grid.ElementQueue.Add(element);
 			sequenceModified();
 		}
 
 		protected void ElementTimeChangedHandler(object sender, EventArgs e) {
 			TimedSequenceElement element = sender as TimedSequenceElement;
+			//timelineControl.grid.ElementQueue.Add(element);
 			sequenceModified();
 		}
 
@@ -527,7 +529,10 @@ namespace VixenModules.Editor.TimedSequenceEditor {
 				DialogResult result = editor.ShowDialog();
 				if (result == DialogResult.OK) {
 					foreach (Element element in elements)
+					{
 						element.Changed = true;
+						timelineControl.grid.ElementQueue.Add(element);
+					}
 					sequenceModified();
 				}
 			}

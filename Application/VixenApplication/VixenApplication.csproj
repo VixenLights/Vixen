@@ -87,18 +87,6 @@
     <Compile Include="ConfigControllersOutputs.Designer.cs">
       <DependentUpon>ConfigControllersOutputs.cs</DependentUpon>
     </Compile>
-    <Compile Include="ConfigureElements\AddMegatree.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ConfigureElements\AddMegatree.Designer.cs">
-      <DependentUpon>AddMegatree.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ConfigureElements\AddPixelGrid.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ConfigureElements\AddPixelGrid.designer.cs">
-      <DependentUpon>AddPixelGrid.cs</DependentUpon>
-    </Compile>
     <Compile Include="DataProfileForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -197,12 +185,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ConfigPreviews.resx">
       <DependentUpon>ConfigPreviews.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ConfigureElements\AddMegatree.resx">
-      <DependentUpon>AddMegatree.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ConfigureElements\AddPixelGrid.resx">
-      <DependentUpon>AddPixelGrid.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DataProfileForm.resx">
       <DependentUpon>DataProfileForm.cs</DependentUpon>

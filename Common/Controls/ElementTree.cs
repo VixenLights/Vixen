@@ -736,5 +736,38 @@ namespace Common.Controls
 		}
 
 
+		private void megatreeToolStripMenuItem_Click_1(object sender, EventArgs e)
+		{
+			ConfigureElements.AddMegatree f = new ConfigureElements.AddMegatree();
+			if (f.ShowDialog() == DialogResult.OK) {
+				ElementNode treeParent = AddNewNode(f.TreeName, false, SelectedNode, false);
+
+				for (int stringNum = 0; stringNum < f.StringCount; stringNum++) {
+					ElementNode treeString = AddNewNode(f.TreeName + " String " + (stringNum + 1).ToString(), false, treeParent, false);
+					for (int pixelNum = 0; pixelNum < f.PixelsPerString; pixelNum++) {
+						AddNewNode(treeString.Name + "-" + (pixelNum + 1).ToString(), false, treeString, false);
+					}
+				}
+
+				PopulateNodeTree();
+			}
+		}
+
+		private void pixelGridToolStripMenuItem_Click_1(object sender, EventArgs e)
+		{
+			ConfigureElements.AddPixelGrid f = new ConfigureElements.AddPixelGrid();
+			if (f.ShowDialog() == DialogResult.OK) {
+				ElementNode treeParent = AddNewNode(f.GridName, false, SelectedNode, false);
+
+				for (int stringNum = 0; stringNum < f.StringCount; stringNum++) {
+					ElementNode treeString = AddNewNode(f.GridName + " Column " + (stringNum + 1).ToString(), false, treeParent, false);
+					for (int pixelNum = 0; pixelNum < f.PixelsPerString; pixelNum++) {
+						AddNewNode(treeString.Name + " - Row " + (pixelNum + 1).ToString(), false, treeString, false);
+					}
+				}
+
+				PopulateNodeTree();
+			}
+		}
 	}
 }
