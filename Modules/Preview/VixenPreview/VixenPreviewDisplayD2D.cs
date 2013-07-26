@@ -14,7 +14,7 @@ using VixenModules.Preview.VixenPreview.Shapes;
 
 namespace VixenModules.Preview.VixenPreview {
 	public partial class VixenPreviewDisplayD2D : Form {
-
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		public VixenPreviewDisplayD2D() {
 			InitializeComponent();
@@ -122,7 +122,7 @@ namespace VixenModules.Preview.VixenPreview {
 
 		private void VixenPreviewDisplay_Move(object sender, EventArgs e) {
 			if (Data == null) {
-				VixenSystem.Logging.Warning("VixenPreviewDisplay_Move: Data is null. abandoning move. (Thread ID: " +
+				 Logging.Warn("VixenPreviewDisplay_Move: Data is null. abandoning move. (Thread ID: " +
 											System.Threading.Thread.CurrentThread.ManagedThreadId + ")");
 				return;
 			}
@@ -133,7 +133,7 @@ namespace VixenModules.Preview.VixenPreview {
 
 		private void VixenPreviewDisplay_Resize(object sender, EventArgs e) {
 			if (Data == null) {
-				VixenSystem.Logging.Warning("VixenPreviewDisplay_Resize: Data is null. abandoning resize. (Thread ID: " +
+				Logging.Warn("VixenPreviewDisplay_Resize: Data is null. abandoning resize. (Thread ID: " +
 											System.Threading.Thread.CurrentThread.ManagedThreadId + ")");
 				return;
 			}

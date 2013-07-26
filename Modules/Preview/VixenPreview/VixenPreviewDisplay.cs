@@ -15,10 +15,7 @@ namespace VixenModules.Preview.VixenPreview {
 
 		public VixenPreviewData Data {
 			set {
-				if (value == null) {
-					VixenSystem.Logging.Warning("VixenPreviewDisplay: Data set as null! (Thread ID: " +
-												System.Threading.Thread.CurrentThread.ManagedThreadId + ")");
-				}
+				 
 				if (value == null) {
 					Logging.Warn("VixenPreviewDisplay: Data set as null! (Thread ID: " +
 					                            System.Threading.Thread.CurrentThread.ManagedThreadId + ")");
@@ -85,12 +82,7 @@ namespace VixenModules.Preview.VixenPreview {
 		}
 
 		private void VixenPreviewDisplay_Move(object sender, EventArgs e) {
-			if (Data == null) {
-				VixenSystem.Logging.Warning("VixenPreviewDisplay_Move: Data is null. abandoning move. (Thread ID: " +
-											System.Threading.Thread.CurrentThread.ManagedThreadId + ")");
-				return;
-			}
-
+		
 			if (Data == null) {
 				Logging.Warn("VixenPreviewDisplay_Move: Data is null. abandoning move. (Thread ID: " +
 											System.Threading.Thread.CurrentThread.ManagedThreadId + ")");
@@ -102,12 +94,7 @@ namespace VixenModules.Preview.VixenPreview {
 		}
 
 		private void VixenPreviewDisplay_Resize(object sender, EventArgs e) {
-			if (Data == null) {
-				VixenSystem.Logging.Warning("VixenPreviewDisplay_Resize: Data is null. abandoning resize. (Thread ID: " +
-											System.Threading.Thread.CurrentThread.ManagedThreadId + ")");
-				return;
-			}
-
+		
 			if (Data == null) {
 				Logging.Warn("VixenPreviewDisplay_Resize: Data is null. abandoning resize. (Thread ID: " +
 											System.Threading.Thread.CurrentThread.ManagedThreadId + ")");

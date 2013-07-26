@@ -21,6 +21,7 @@ namespace Common.Controls
 		private HashSet<string> _selectedNodes; // TreeNode paths that are selected
 		private List<string> _topDisplayedNodes; // TreeNode paths that are at the top of the view. Should only
 		// need one, but will have multiple in case the top node is deleted.
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		public ElementTree()
 		{
@@ -105,7 +106,7 @@ namespace Common.Controls
 					try {
 						treeview.TopNode = resultNode;
 					} catch (Exception) {
-						VixenSystem.Logging.Warning("ConfigElements: exception caught trying to set TopNode.");
+						 Logging.Warn("ConfigElements: exception caught trying to set TopNode.");
 					}
 					break;
 				}
@@ -343,7 +344,7 @@ namespace Common.Controls
 						VixenSystem.Nodes.AddChildToParent(sourceNode, newParentNode);
 					}
 				} else {
-					VixenSystem.Logging.Warning("ConfigElements: Trying to deal with a drag that is an unknown type!");
+					Logging.Warn("ConfigElements: Trying to deal with a drag that is an unknown type!");
 				}
 			}
 
@@ -506,7 +507,7 @@ namespace Common.Controls
 				if (renamer.ShowDialog() == DialogResult.OK) {
 					for (int i = 0; i < treeview.SelectedNodes.Count; i++) {
 						if (i >= renamer.Names.Count) {
-							VixenSystem.Logging.Warning("ConfigElements: bulk renaming elements, and ran out of new names!");
+							Logging.Warn("ConfigElements: bulk renaming elements, and ran out of new names!");
 							break;
 						}
 						(treeview.SelectedNodes[i].Tag as ElementNode).Name = renamer.Names[i];
@@ -644,7 +645,7 @@ namespace Common.Controls
 					}
 
 					if (destinationProperty == null) {
-						VixenSystem.Logging.Error("ConfigElements: pasting a property to a element, but can't make or find the instance!");
+						Logging.Error("ConfigElements: pasting a property to a element, but can't make or find the instance!");
 						continue;
 					}
 
