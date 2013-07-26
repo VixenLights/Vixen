@@ -13,8 +13,13 @@ namespace Common.ScriptSequence.Script
 	{
 		private List<string> _errors = new List<string>();
 
-		private string[] _standardReferences = {
-		                                       	"System.dll",
+		private string[] _standardReferences
+		{
+			get
+			{
+				List<string> retval = new List<string>();
+				retval.AddRange(new string[]{                                   	
+												"System.dll",
 		                                       	"System.Drawing.dll",
 		                                       	"System.Core.dll",
 		                                       	"Vixen.dll",
@@ -28,7 +33,21 @@ namespace Common.ScriptSequence.Script
 		                                       	"Modules\\Effect\\Twinkle.dll",
 		                                       	//"Modules\\Effect\\SetPosition.dll",
 		                                       	"Microsoft.CSharp.dll" // Required for dynamic.
-		                                       };
+							  });
+				//Paths to look for Effects and other items to reference in the Script generator
+				var paths = new string[] { 
+					System.IO.Path.Combine(Environment.CurrentDirectory, "Modules", "Property"),
+					System.IO.Path.Combine(Environment.CurrentDirectory, "Modules", "Effect") 
+				};
+				paths.ToList().ForEach(path => {
+					var dir = new System.IO.DirectoryInfo(path);
+					retval.AddRange(dir.GetFiles("*.dll").Select(f => f.FullName));
+			
+				});
+
+				return retval.ToArray();
+			}
+		}
 
 		public static readonly string UserScriptNamespace = "Vixen.User";
 
@@ -56,8 +75,7 @@ namespace Common.ScriptSequence.Script
 
 				// Compile the sources.
 				assembly = _Compile(files.ToArray(), _GetReferencedAssemblies(sequence), sequence.Language);
-			}
-			finally {
+			} finally {
 				// Delete the temp files.
 				foreach (string tempFile in files) {
 					File.Delete(tempFile);
@@ -69,7 +87,7 @@ namespace Common.ScriptSequence.Script
 				Type type = assembly.GetType(string.Format("{0}.{1}", nameSpace, sequence.ClassName));
 				if (type != null) {
 					// Create and return an instance.
-					return (IUserScriptHost) Activator.CreateInstance(type);
+					return (IUserScriptHost)Activator.CreateInstance(type);
 				}
 			}
 
@@ -114,11 +132,10 @@ namespace Common.ScriptSequence.Script
 			uniqueAssemblyReferences.RemoveWhere(
 				x => x.StartsWith(Environment.GetFolderPath(Environment.SpecialFolder.Windows), StringComparison.OrdinalIgnoreCase));
 
-			ICompilerParameters compilerParameters = new ScriptCompilerParameters
-			                                         	{
-			                                         		GenerateInMemory = true,
-			                                         		//IncludeDebugInformation = true
-			                                         	};
+			ICompilerParameters compilerParameters = new ScriptCompilerParameters {
+				GenerateInMemory = true,
+				//IncludeDebugInformation = true
+			};
 			compilerParameters.ReferencedAssemblies.AddRange(uniqueAssemblyReferences.ToArray());
 
 			ICompilerResults results = language.CodeProvider.CompileAssemblyFromFile(compilerParameters, files);
@@ -144,8 +161,7 @@ namespace Common.ScriptSequence.Script
 			foreach (char ch in str) {
 				if (_IsValidSymbolChar(ch)) {
 					chars.Add(ch);
-				}
-				else {
+				} else {
 					chars.Add('_');
 				}
 			}

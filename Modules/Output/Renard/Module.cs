@@ -18,6 +18,7 @@ namespace VixenModules.Output.Renard
 		private IRenardProtocolFormatter _protocolFormatter;
 		private System.Timers.Timer _retryTimer;
 		private int _retryCounter;
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		private const int DEFAULT_WRITE_TIMEOUT = 500;
 
@@ -156,7 +157,7 @@ namespace VixenModules.Output.Renard
 					_retryCounter = 0;
 					_retryTimer.Stop();
 
-					Vixen.Sys.VixenSystem.Logging.Info(
+					Logging.Info(
 						string.Format("Serial Port conflict has been corrected, starting controller {0} on port {1}.",
 						              _moduleData.ModuleTypeId, _port.PortName));
 				}
@@ -165,17 +166,17 @@ namespace VixenModules.Output.Renard
 				if (ex is UnauthorizedAccessException ||
 				    ex is InvalidOperationException ||
 				    ex is IOException) {
-					Vixen.Sys.VixenSystem.Logging.Error(string.Format("{0} is in use.  Starting controller retry timer for {1}",
+					Logging.Error(String.Format("{0} is in use.  Starting controller retry timer for {1}",
 					                                                  _port.PortName, _moduleData.ModuleTypeId));
 					Stop();
 					//lets set our retry timer
 					if (_retryCounter < 3) {
 						_retryCounter++;
 						_retryTimer.Start();
-						Vixen.Sys.VixenSystem.Logging.Info("Starting retry counter for com port access. Retry count is " + _retryCounter);
+						Logging.Info("Starting retry counter for com port access. Retry count is " + _retryCounter);
 					}
 					else {
-						Vixen.Sys.VixenSystem.Logging.Info(
+						Logging.Info(
 							"Retry counter for com port access has exceeded max tries.  Controller has been stopped.");
 						_retryTimer.Stop();
 						_retryCounter = 0;
@@ -201,7 +202,7 @@ namespace VixenModules.Output.Renard
 
 		public void _retryTimer_Elapsed(object source, ElapsedEventArgs e)
 		{
-			Vixen.Sys.VixenSystem.Logging.Info("Attempting to start controller.");
+			Logging.Info("Attempting to start controller.");
 			Start();
 		}
 	}

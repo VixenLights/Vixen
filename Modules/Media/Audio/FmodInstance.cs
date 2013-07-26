@@ -10,6 +10,8 @@ namespace VixenModules.Media.Audio
 {
 	internal partial class FmodInstance : IDisposable
 	{
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+
 		private fmod _audioSystem;
 		private FMOD.DSP dsplowpass = null;
 		private FMOD.DSP dsphighpass = null;
@@ -216,7 +218,7 @@ namespace VixenModules.Media.Audio
 			}
 			_channel = _audioSystem.LoadSound(fileName, _channel);
 			if (_channel == null) {
-				Vixen.Sys.VixenSystem.Logging.Warning("Audio: can't load file '" + fileName + "' for playback. Does it exist?");
+				Logging.Warn("Audio: can't load file '" + fileName + "' for playback. Does it exist?");
 			}
 			_startTime = TimeSpan.Zero;
 		}

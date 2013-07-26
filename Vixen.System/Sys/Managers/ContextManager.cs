@@ -10,6 +10,7 @@ using Vixen.Sys.Instrumentation;
 
 namespace Vixen.Sys.Managers {
 	public class ContextManager : IEnumerable<IContext> {
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private Dictionary<Guid, IContext> _instances;
 		private ContextUpdateTimeValue _contextUpdateTimeValue;
 		private Stopwatch _stopwatch;
@@ -107,7 +108,7 @@ namespace Vixen.Sys.Managers {
 			if (contextFeatures == null) throw new ArgumentNullException("contextFeatures");
 			Type contextType = _FindContextWithFeatures(contextTargetType, contextFeatures);
 			if (contextType == null) {
-				VixenSystem.Logging.Error(string.Format("Could not find a context for target type {0} with features {1}", contextTargetType, contextFeatures));
+				Logging.Error(string.Format("Could not find a context for target type {0} with features {1}", contextTargetType, contextFeatures));
 				return null;
 			}
 			return (ContextBase)Activator.CreateInstance(contextType);

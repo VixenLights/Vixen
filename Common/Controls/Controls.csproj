@@ -392,6 +392,7 @@
     <Content Include="ControlsEx\std_zoomin.png" />
     <Content Include="ControlsEx\std_zoomout.png" />
     <None Include="Microsoft.WindowsAPICodePack.DirectX.dll" />
+    <None Include="packages.config" />
     <None Include="Resources\UpArrowShort_Blue_48x48.png" />
     <None Include="Resources\UpArrowShort_Blue_32x32.png" />
     <None Include="Resources\UpArrowShort_Blue_24x24.png" />

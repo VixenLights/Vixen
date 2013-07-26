@@ -8,9 +8,14 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Linq;
 
-namespace VixenModules.Editor.TimedSequenceEditor {
-	internal class EffectRasterizer {
-		public void Rasterize(IEffectModuleInstance effect, Graphics g) {
+namespace VixenModules.Editor.TimedSequenceEditor
+{
+	internal class EffectRasterizer
+	{
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+
+		public void Rasterize(IEffectModuleInstance effect, Graphics g)
+		{
 			double width = g.VisibleClipBounds.Width;
 			double height = g.VisibleClipBounds.Height;
 
@@ -45,7 +50,7 @@ namespace VixenModules.Editor.TimedSequenceEditor {
 						if (elementIntents != null) {
 							foreach (IntentNode elementIntentNode in elementIntents) {
 								if (elementIntentNode == null) {
-									VixenSystem.Logging.Error(string.Format("Error: elementIntentNode was null when Rasterizing an effect (ID: {0})", effect.InstanceId));
+								Logging.Error("Error: elementIntentNode was null when Rasterizing an effect (ID: " + effect.InstanceId + ")");
 									continue;
 								}
 								double startPixelX = width * _GetPercentage(elementIntentNode.StartTime, effect.TimeSpan);

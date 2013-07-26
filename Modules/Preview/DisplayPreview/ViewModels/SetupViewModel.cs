@@ -51,7 +51,7 @@ namespace VixenModules.Preview.DisplayPreview.ViewModels
 					}
 					catch (Exception ex) {
 						if (ex is DirectoryNotFoundException || ex is FileNotFoundException) {
-							VixenSystem.Logging.Error("DisplayPreview: error loading background image. File not found: " +
+							Logging.Error("DisplayPreview: error loading background image. File not found: " +
 							                          _dataModel.BackgroundImage);
 						}
 						else {

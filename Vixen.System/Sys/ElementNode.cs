@@ -18,7 +18,8 @@ namespace Vixen.Sys {
 		// Making this static so there doesn't have to be potentially thousands of
 		// subscriptions from the node manager.
 		public static event EventHandler Changed;
-
+		//Logger Class
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		#region Constructors
 
 		internal ElementNode(Guid id, string name, Element element, IEnumerable<ElementNode> content)
@@ -71,7 +72,7 @@ namespace Vixen.Sys {
 					// this Element should be unique to this ElementNode. If it already exists in the element -> ElementNode
 					// mapping in the Element Manager, something Very Bad (tm) has happened.
 					if (VixenSystem.Elements.GetElementNodeForElement(value) != null) {
-						VixenSystem.Logging.Error(string.Format("ElementNode: assigning element (id: {0}) to this ElementNode (id: {1}), but it already exists in another ElementNode! (id: {2})", value.Id, Id, VixenSystem.Elements.GetElementNodeForElement(value).Id));
+						Logging.Error(string.Format("ElementNode: assigning element (id: {0}) to this ElementNode (id: {1}), but it already exists in another ElementNode! (id: {2})", value.Id, Id, VixenSystem.Elements.GetElementNodeForElement(value).Id));
 
 					}
 

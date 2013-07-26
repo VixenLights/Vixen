@@ -12,6 +12,7 @@ namespace Vixen.IO.Xml.Serializer {
 		private const string ATTR_DATA_MODEL_TYPE = "dataModelType";
 		private const string ATTR_MODULE_TYPE = "moduleType";
 		private const string ATTR_MODULE_INSTANCE = "moduleInstance";
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		public XElement WriteObject(IModuleDataModel value) {
 			return _SerializeDataModel(value);
@@ -31,7 +32,7 @@ namespace Vixen.IO.Xml.Serializer {
 										XElement.Parse(objectData));
 				}
 				catch (Exception ex) {
-					VixenSystem.Logging.Error(string.Format("Error when serializing data model of type {0}", value.GetType().Name), ex);
+					Logging.ErrorException(string.Format("Error when serializing data model of type {0}", value.GetType().Name), ex);
 					return null;
 				}
 			}
@@ -59,7 +60,7 @@ namespace Vixen.IO.Xml.Serializer {
 			// Get the descriptor for the type.
 			IModuleDescriptor descriptor = Modules.GetDescriptorById(moduleTypeId.Value);
 			if (descriptor == null) {
-				VixenSystem.Logging.Error("Could not get module data for module type " + moduleTypeId.Value +
+				Logging.Error("Could not get module data for module type " + moduleTypeId.Value +
 										  " because the module type does not exist.");
 				return null;
 			}
@@ -70,7 +71,7 @@ namespace Vixen.IO.Xml.Serializer {
 				dataModel = _DeserializeDataModel(dataModelType, element);
 			}
 			catch (Exception ex) {
-				VixenSystem.Logging.Error(string.Format("The data for module \"{0}\" was not loaded due to errors.", descriptor.TypeName), ex);
+				Logging.ErrorException("The data for module \"" + descriptor.TypeName + "\" was not loaded due to errors.", ex);
 				return null;
 			}
 

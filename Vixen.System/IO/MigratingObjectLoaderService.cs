@@ -6,6 +6,7 @@ namespace Vixen.IO
 	internal class MigratingObjectLoaderService : IMigratingObjectLoaderService
 	{
 		private static MigratingObjectLoaderService _instance;
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		private MigratingObjectLoaderService()
 		{
@@ -38,7 +39,7 @@ namespace Vixen.IO
 				contentWriter.WriteContentToObject(content, objectToPopulate);
 			}
 			catch (Exception ex) {
-				VixenSystem.Logging.Error(string.Format("Error when migrating file {0} to the current version.", filePath), ex);
+				Logging.ErrorException(string.Format("Error when migrating file {0} to the current version.", filePath), ex);
 			}
 
 			return objectToPopulate;

@@ -1,9 +1,14 @@
 ﻿using System.IO;
 using System.Xml.Linq;
 
-namespace Vixen.IO.Xml {
-	internal class XElementFileReader : IFileReader<XElement> {
-		public XElement ReadFile(string filePath) {
+namespace Vixen.IO.Xml
+{
+	internal class XElementFileReader : IFileReader<XElement>
+	{
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+
+		public XElement ReadFile(string filePath)
+		{
 			if (!File.Exists(filePath)) return null;
 
 			using (FileStream fileStream = new FileStream(filePath, FileMode.Open)) {
@@ -12,7 +17,7 @@ namespace Vixen.IO.Xml {
 						return XElement.Load(reader);
 					}
 					catch (System.Exception ex) {
-						Vixen.Sys.VixenSystem.Logging.Error(string.Format("Error loading '{0}'", filePath), ex);
+						Logging.ErrorException("Error loading '" + filePath + "'.", ex);
 					}
 				}
 			}

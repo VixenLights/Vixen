@@ -8,6 +8,7 @@ namespace Vixen.Execution.Context
 {
 	public abstract class ContextBase : IContext, IStateSourceCollection<Guid, IIntentStates>
 	{
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private ElementStateSourceCollection _elementStates;
 		private IContextCurrentEffects _currentEffects;
 		private IntentStateBuilder _elementStateBuilder;
@@ -40,7 +41,7 @@ namespace Vixen.Execution.Context
 				IsRunning = true;
 			}
 			catch (Exception ex) {
-				VixenSystem.Logging.Error(ex);
+				Logging.ErrorException(ex.Message,ex);
 			}
 		}
 

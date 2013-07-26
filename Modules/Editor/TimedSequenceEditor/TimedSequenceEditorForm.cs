@@ -26,6 +26,8 @@ using System.Threading;
 
 namespace VixenModules.Editor.TimedSequenceEditor {
 	public partial class TimedSequenceEditorForm : Form, IEditorUserInterface, IExecutionControl, ITiming {
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+
 		#region Member Variables
 
 		// the sequence.
@@ -307,10 +309,10 @@ namespace VixenModules.Editor.TimedSequenceEditor {
 					sequenceNotModified();
 				}
 
-				VixenSystem.Logging.Debug(string.Format("Sequence {0} took {1} to load. ", sequence.Name, loadingWatch.Elapsed));
+				Logging.Debug(string.Format("Sequence {0} took {1} to load. ", sequence.Name, loadingWatch.Elapsed));
 			}
 			catch (Exception ee) {
-				VixenSystem.Logging.Error("Error loading sequence.", ee);
+				Logging.ErrorException("Error loading sequence.", ee);
 			}
 		}
 
@@ -322,7 +324,7 @@ namespace VixenModules.Editor.TimedSequenceEditor {
 		/// <param name="forcePrompt">If true, the user will always be prompted for a filename to save the sequence to.</param>
 		private void saveSequence(string filePath = null, bool forcePrompt = false) {
 			if (_sequence == null) {
-				VixenSystem.Logging.Error("Trying to save a sequence that is null!");
+				Logging.Error("Trying to save a sequence that is null!");
 			}
 
 			if (filePath == null | forcePrompt) {
@@ -343,7 +345,7 @@ namespace VixenModules.Editor.TimedSequenceEditor {
 						// if the given extension isn't valid for this type, then keep the name intact and add an extension
 						if (extension != _sequence.FileExtension) {
 							name = name + _sequence.FileExtension;
-							VixenSystem.Logging.Info("Incorrect extension provided for timed sequence, appending one.");
+							Logging.Info("Incorrect extension provided for timed sequence, appending one.");
 						}
 						_sequence.Save(name);
 					}
@@ -479,7 +481,7 @@ namespace VixenModules.Editor.TimedSequenceEditor {
 				nodeList.Remove(oldElement);
 			}
 			else {
-				VixenSystem.Logging.Debug("TimedSequenceEditor: moving an element from " + e.OldRow.Name +
+				Logging.Debug("TimedSequenceEditor: moving an element from " + e.OldRow.Name +
 										  " to " + e.NewRow.Name + "and the effect element wasn't in the old row element!");
 			}
 			nodeList.Add(newElement);
@@ -505,7 +507,7 @@ namespace VixenModules.Editor.TimedSequenceEditor {
 			TimedSequenceElement element = e.Element as TimedSequenceElement;
 
 			if (element.EffectNode == null) {
-				VixenSystem.Logging.Error("TimedSequenceEditor: Element double-clicked, and it doesn't have an associated effect!");
+				Logging.Error("TimedSequenceEditor: Element double-clicked, and it doesn't have an associated effect!");
 				return;
 			}
 
@@ -564,7 +566,7 @@ namespace VixenModules.Editor.TimedSequenceEditor {
 
 		private void timelineControl_RulerClicked(object sender, RulerClickedEventArgs e) {
 			if (_context == null) {
-				VixenSystem.Logging.Error("TimedSequenceEditor: StartPointClicked to Play with null context!");
+				Logging.Error("TimedSequenceEditor: StartPointClicked to Play with null context!");
 				return;
 			}
 
@@ -599,7 +601,7 @@ namespace VixenModules.Editor.TimedSequenceEditor {
 
 		private void timelineControl_TimeRangeDragged(object sender, ModifierKeysEventArgs e) {
 			if (_context == null) {
-				VixenSystem.Logging.Error("TimedSequenceEditor: TimeRangeDragged with null context!");
+				Logging.Error("TimedSequenceEditor: TimeRangeDragged with null context!");
 				return;
 			}
 
@@ -669,7 +671,7 @@ namespace VixenModules.Editor.TimedSequenceEditor {
 
 		public void PlaySequence() {
 			if (_context == null) {
-				VixenSystem.Logging.Error("TimedSequenceEditor: attempt to Play with null context!");
+				Logging.Error("TimedSequenceEditor: attempt to Play with null context!");
 				return;
 			}
 
@@ -690,7 +692,7 @@ namespace VixenModules.Editor.TimedSequenceEditor {
 
 		public void PlaySequenceFrom(TimeSpan StartTime) {
 			if (_context == null) {
-				VixenSystem.Logging.Error("TimedSequenceEditor: attempt to Play with null context!");
+				Logging.Error("TimedSequenceEditor: attempt to Play with null context!");
 				return;
 			}
 
@@ -714,7 +716,7 @@ namespace VixenModules.Editor.TimedSequenceEditor {
 
 		public void PauseSequence() {
 			if (_context == null) {
-				VixenSystem.Logging.Error("TimedSequenceEditor: attempt to Pause with null context!");
+				Logging.Error("TimedSequenceEditor: attempt to Pause with null context!");
 				return;
 			}
 
@@ -724,7 +726,7 @@ namespace VixenModules.Editor.TimedSequenceEditor {
 
 		public void StopSequence() {
 			if (_context == null) {
-				VixenSystem.Logging.Error("TimedSequenceEditor: attempt to Stop with null context!");
+				Logging.Error("TimedSequenceEditor: attempt to Stop with null context!");
 				return;
 			}
 
@@ -904,7 +906,7 @@ namespace VixenModules.Editor.TimedSequenceEditor {
 			catch (Exception ex) {
 				string msg = "TimedSequenceEditor: error adding effect of type " + effectInstance.Descriptor.TypeId + " to row " +
 							 ((row == null) ? "<null>" : row.Name);
-				VixenSystem.Logging.Error(msg, ex);
+				Logging.Error(msg, ex);
 			}
 		}
 
@@ -929,7 +931,7 @@ namespace VixenModules.Editor.TimedSequenceEditor {
 						if (!_effectNodeToElement.ContainsKey(node))
 							_effectNodeToElement[node] = element;
 						//else
-						//    VixenSystem.Logging.Debug("TimedSequenceEditor: Making a new element, but the map already has one!");
+						//    Logging.Debug("TimedSequenceEditor: Making a new element, but the map already has one!");
 						//Render this effect now to get it into the cache.
 						//element.EffectNode.Effect.Render();
 						row.AddElement(element);
@@ -942,7 +944,7 @@ namespace VixenModules.Editor.TimedSequenceEditor {
 					string message =
 						"No Timeline.Row is associated with a target ElementNode for this EffectNode. It now exists in the sequence, but not in the GUI.";
 					MessageBox.Show(message);
-					VixenSystem.Logging.Error(message);
+					Logging.Error(message);
 				}
 			}
 
@@ -966,7 +968,7 @@ namespace VixenModules.Editor.TimedSequenceEditor {
 							if (!_effectNodeToElement.ContainsKey(node))
 								_effectNodeToElement[node] = element;
 							//else
-							//    VixenSystem.Logging.Debug("TimedSequenceEditor: Making a new element, but the map already has one!");
+			                                                                                            				//    Logging.Debug("TimedSequenceEditor: Making a new element, but the map already has one!");
 							//Render this effect now to get it into the cache.
 							//element.EffectNode.Effect.Render();
 							row.AddElement(element);
@@ -978,7 +980,7 @@ namespace VixenModules.Editor.TimedSequenceEditor {
 						// dunno what we want to do: prompt to add new elements for them? map them to others? etc.
 						string message = "No Timeline.Row is associated with a target ElementNode for this EffectNode. It now exists in the sequence, but not in the GUI.";
 						MessageBox.Show(message);
-						VixenSystem.Logging.Error(message);
+						Logging.Error(message);
 					}
 				});
 

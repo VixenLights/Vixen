@@ -6,6 +6,7 @@ using Vixen.Sys.Output;
 
 namespace Vixen.Sys.Managers {
 	internal class HardwareUpdateThread : IDisposable {
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private Thread _thread;
 		private ExecutionState _threadState = ExecutionState.Stopped;
 		private EventWaitHandle _finished;
@@ -95,7 +96,7 @@ namespace Vixen.Sys.Managers {
 				_threadState = ExecutionState.Stopped;
 				_finished.Set();
 
-				VixenSystem.Logging.Error(string.Format("Controller {0} error", OutputDevice.Name), ex);
+				Logging.Error(string.Format("Controller {0} error", OutputDevice.Name), ex);
 				OnError();
 			}
 		}

@@ -10,6 +10,8 @@ using Vixen.Sys.Attribute;
 
 namespace Vixen.Sys {
 	internal class Modules {
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+
 		// Module type id : IModuleInstance implementor
 		private static Dictionary<Guid, Type> _activators = new Dictionary<Guid, Type>();
 		// Module type id : module descriptor
@@ -118,7 +120,7 @@ namespace Vixen.Sys {
 						sb.AppendFormat("  - {0} Loaded From {1} \n", descriptor.TypeName, descriptor.Assembly.GetFilePath());
 					}
 				}
-				VixenSystem.Logging.Error(sb.ToString());
+				Logging.Error(sb.ToString());
 			}
 
 			return loadingDescriptors.Except(duplicateTypes.SelectMany(x => x));
@@ -141,7 +143,7 @@ namespace Vixen.Sys {
 						descriptor.Dependencies.Intersect(allDescriptors.Select(x => x.TypeId)).Count() !=
 						descriptor.Dependencies.Length) {
 						allDescriptors.Remove(descriptor);
-						VixenSystem.Logging.Error("Could not load module \"" + descriptor.TypeName +
+						Logging.Error("Could not load module \"" + descriptor.TypeName +
 												  "\" because it has dependencies that are missing.");
 					}
 				}
@@ -171,7 +173,7 @@ namespace Vixen.Sys {
 					// to that implementation's descriptor list.
 					ModuleImplementation moduleImplementation = _FindImplementation(filePath);
 					if (moduleImplementation == null) {
-						VixenSystem.Logging.Error(string.Format("File {0} was not loaded because its module type could not be determined.", filePath));
+						Logging.Error(string.Format("File {0} was not loaded because its module type could not be determined.", filePath));
 						continue;
 					}
 					// Try to get descriptors.
@@ -183,11 +185,11 @@ namespace Vixen.Sys {
 				}
 				catch (ReflectionTypeLoadException ex) {
 					foreach (Exception loaderException in ex.LoaderExceptions) {
-						VixenSystem.Logging.Error("Loader exception:" + Environment.NewLine + loaderException.Message, loaderException);
+						Logging.Error("Loader exception:" + Environment.NewLine + loaderException.Message, loaderException);
 					}
 				}
 				catch (Exception ex) {
-					VixenSystem.Logging.Error("Error loading modules from " + filePath, ex);
+					Logging.ErrorException("Error loading modules from " + filePath, ex);
 				}
 			}
 
@@ -209,16 +211,16 @@ namespace Vixen.Sys {
 				try {
 					assembly = Assembly.LoadFrom(filePath);
 				}
-				catch (NotSupportedException) {
-					VixenSystem.Logging.Error("Could not load module assembly " + filePath +
-											  ".  See http://vanderbiest.org/blog/2010/08/11/system-notsupportedexception-when-referencing-to-an-assembly/");
+				catch (NotSupportedException se) {
+					Logging.ErrorException("Could not load module assembly " + filePath +
+					                          ".  See http://vanderbiest.org/blog/2010/08/11/system-notsupportedexception-when-referencing-to-an-assembly/", se);
 					return new IModuleDescriptor[0];
 				}
 				catch (BadImageFormatException) {
 					return new IModuleDescriptor[0];
 				}
 				catch (Exception ex) {
-					VixenSystem.Logging.Error(string.Format("Could not load module assembly {0}.", filePath), ex);
+					Logging.Error(string.Format("Could not load module assembly {0}.", filePath), ex);
 					return new IModuleDescriptor[0];
 				}
 
@@ -242,19 +244,19 @@ namespace Vixen.Sys {
 									descriptors.Add(moduleDescriptor);
 								}
 								else {
-									VixenSystem.Logging.Error(string.Format("Tried to load module {0}  from {1}, but the ModuleClass does not implement IModuleInstance.", moduleDescriptor.TypeName, Path.GetFileName(filePath)));
+									Logging.Error(string.Format("Tried to load module {0}  from {1}, but the ModuleClass does not implement IModuleInstance.", moduleDescriptor.TypeName, Path.GetFileName(filePath)));
 								}
 							}
 							else {
-								VixenSystem.Logging.Error(string.Format("Tried to load module {0} from {1}, but the ModuleClass is null.", moduleDescriptor.TypeName, Path.GetFileName(filePath)));
-							}
+								Logging.Error(string.Format("Tried to load module {0} from {1}, but the ModuleClass is null.", moduleDescriptor.TypeName, Path.GetFileName(filePath)));
+ 							}
 						}
 						else {
-							VixenSystem.Logging.Error(string.Format("Tried to load module of type {0} from {1}, but the descriptor does not implement IModuleDescriptor.", moduleDescriptorType.Name, Path.GetFileName(filePath)));
+							 Logging.Error(string.Format("Tried to load module of type {0} from {1}, but the descriptor does not implement IModuleDescriptor.", moduleDescriptorType.Name, Path.GetFileName(filePath)));
 						}
 					}
 					catch (Exception ex) {
-						VixenSystem.Logging.Error(string.Format("Error loading module descriptor {0} from {1}.", moduleDescriptorType.Name, Path.GetFileName(filePath)), ex);
+						Logging.Error(string.Format("Error loading module descriptor {0} from {1}.", moduleDescriptorType.Name, Path.GetFileName(filePath)), ex);
 					}
 				}
 			}
@@ -276,21 +278,21 @@ namespace Vixen.Sys {
 					instance.StaticModuleData = _GetModuleStaticData(instance);
 				}
 				catch (Exception ex) {
-					VixenSystem.Logging.Error("Error when assigning module static data.", ex);
+					Logging.ErrorException("Error when assigning module static data.", ex);
 				}
 
 				try {
 					instance.ModuleData = _GetModuleData(instance);
 				}
 				catch (Exception ex) {
-					VixenSystem.Logging.Error("Error when assigning module data.", ex);
+					Logging.ErrorException("Error when assigning module data.", ex);
 				}
 
 				// See if there are any templates to apply to the instance.
 				ModuleTemplateService.Instance.ProjectTemplateInto(instance);
 			}
 			else {
-				VixenSystem.Logging.Warning("Attempt to instantiate non-existent module " + moduleTypeId);
+				Logging.Warn("Attempt to instantiate non-existent module " + moduleTypeId);
 			}
 			return instance;
 		}
@@ -375,7 +377,7 @@ namespace Vixen.Sys {
 						moduleImplementation.Repository.Add(moduleDescriptor.TypeId);
 					}
 					catch (Exception ex) {
-						VixenSystem.Logging.Error("Error occurred while adding module " + moduleDescriptor.FileName, ex);
+						Logging.ErrorException("Error occurred while adding module " + moduleDescriptor.FileName, ex);
 					}
 				}
 			}
@@ -388,7 +390,7 @@ namespace Vixen.Sys {
 						moduleImplementation.Repository.Remove(moduleDescriptor.TypeId);
 					}
 					catch (Exception ex) {
-						VixenSystem.Logging.Error("Error occurred while removing module " + moduleDescriptor.FileName, ex);
+						Logging.ErrorException("Error occurred while removing module " + moduleDescriptor.FileName, ex);
 					}
 				}
 			}
@@ -453,7 +455,7 @@ namespace Vixen.Sys {
 			if (instance.Descriptor.ModuleDataClass != null) {
 				dataModel = ModuleLocalDataSet.CreateModuleDataInstance(instance);
 				if (dataModel == null) {
-					VixenSystem.Logging.Error(string.Format("Module \"{0}\" in {1} has a reference to type {2} for its module data class, but it's not an implementation of {3}.", instance.Descriptor.TypeName, instance.Descriptor.FileName, instance.Descriptor.ModuleDataClass.Name, typeof(IModuleDataModel).Name));
+					Logging.Error(string.Format("Module \"{0}\" in {1} has a reference to type {2} for its module data class, but it's not an implementation of {3}.", instance.Descriptor.TypeName, instance.Descriptor.FileName, instance.Descriptor.ModuleDataClass.Name, typeof(IModuleDataModel).Name));
 				}
 			}
 

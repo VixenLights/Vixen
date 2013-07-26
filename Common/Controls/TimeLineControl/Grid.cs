@@ -1462,7 +1462,7 @@ namespace Common.Controls.Timeline
 					_drawCursors(e.Graphics);
 
 					s.Stop();
-					//Vixen.Sys.VixenSystem.Logging.Info("OnPaint: " + s.ElapsedMilliseconds);
+					//Logging.Info("OnPaint: " + s.ElapsedMilliseconds);
 				}
 				catch (Exception ex) {
 					MessageBox.Show("Exception in TimelineGrid.OnPaint():\n\n\t" + ex.Message + "\n\nBacktrace:\n\n\t" + ex.StackTrace);

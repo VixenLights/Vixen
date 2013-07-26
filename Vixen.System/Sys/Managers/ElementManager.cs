@@ -10,6 +10,7 @@ namespace Vixen.Sys.Managers {
 		private ElementUpdateTimeValue _elementUpdateTimeValue;
 		private Stopwatch _stopwatch;
 		private ElementDataFlowAdapterFactory _dataFlowAdapters;
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		// a mapping of element  GUIDs to element instances. Used for quick reverse mapping at runtime.
 		private Dictionary<Guid, Element> _instances;
@@ -41,7 +42,7 @@ namespace Vixen.Sys.Managers {
 		public void AddElement(Element element) {
 			if (element != null) {
 				if (_instances.ContainsKey(element.Id))
-					VixenSystem.Logging.Error("ElementManager: Adding a element, but it's already in the instance map!");
+					Logging.Error("ElementManager: Adding a element, but it's already in the instance map!");
 
 				lock (_instances) {
 					_instances[element.Id] = element;

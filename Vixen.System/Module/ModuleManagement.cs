@@ -10,6 +10,8 @@ namespace Vixen.Module
 {
 	internal class ModuleManagement : DynamicObject
 	{
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+
 		private Dictionary<string, ModuleImplementationMethod> _methods = new Dictionary<string, ModuleImplementationMethod>();
 
 		public ModuleManagement(IEnumerable<ModuleImplementation> moduleImplementations)
@@ -37,7 +39,7 @@ namespace Vixen.Module
 					return true;
 				}
 				catch (Exception ex) {
-					VixenSystem.Logging.Error(ex);
+					Logging.Error(ex);
 					return false;
 				}
 			}
