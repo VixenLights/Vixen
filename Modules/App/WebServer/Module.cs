@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Kayak;
 using Kayak.Http;
+using Vixen.Execution.Context;
 using Vixen.Module;
 using Vixen.Module.App;
 using Vixen.Sys;
@@ -22,7 +23,7 @@ namespace VixenModules.App.WebServer
 		{
 			scheduler = KayakScheduler.Factory.Create(new SchedulerDelegate());
 		}
-
+		internal static LiveContext LiveSystemContext {get;set;}
 
 		private IScheduler scheduler;
 		private IServer server;
@@ -44,9 +45,11 @@ namespace VixenModules.App.WebServer
 		{
 			server = KayakServer.Factory.CreateHttp(new RequestDelegate(), scheduler);
 			server.Listen(new IPEndPoint(IPAddress.Any, _data.HttpPort));
+			LiveSystemContext = VixenSystem.Contexts.GetSystemLiveContext(); 
 
 			Thread T = new Thread(new ThreadStart(scheduler.Start));
 			T.Start();
+			
 		}
 
 		public override void Unloading()
@@ -54,6 +57,7 @@ namespace VixenModules.App.WebServer
 			scheduler.Stop();
 			server.Dispose();
 			server = null;
+			LiveSystemContext = null;
 		}
 
 

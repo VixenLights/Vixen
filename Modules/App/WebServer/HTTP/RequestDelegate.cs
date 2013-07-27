@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using Kayak;
@@ -9,21 +10,19 @@ using Vixen.Execution;
 using Vixen.Execution.Context;
 using Vixen.Services;
 using Vixen.Sys;
+using VixenModules.Effect.SetLevel;
 
-namespace VixenModules.App.WebServer.HTTP {
-	class RequestDelegate : IHttpRequestDelegate {
-		public void OnRequest(HttpRequestHead request, IDataProducer requestBody,
-			IHttpResponseDelegate response) {
-			if (request.Method.ToUpperInvariant() == "POST" && request.Uri.StartsWith("/sequence", StringComparison.CurrentCultureIgnoreCase)) {
-				request = SequencePost(request, requestBody, response);
-			}
-			else if (request.Method.ToUpperInvariant() == "POST" && request.Uri.StartsWith("/element")) {
-				request = EchoPost(request, requestBody, response);
-			}
-			else if (request.Uri.StartsWith("/")) {
+namespace VixenModules.App.WebServer.HTTP
+{
+	class RequestDelegate : IHttpRequestDelegate
+	{
+		public void OnRequest(HttpRequestHead request, IDataProducer requestBody, IHttpResponseDelegate response)
+		{
+			if (request.Method.ToUpperInvariant() == "POST" && request.Uri.ToLower().StartsWith("/element")) {
+				request = ElementPost(request, requestBody, response);
+			} else if (request.Uri.StartsWith("/")) {
 				request = GenericResponse(request, response);
-			}
-			else {
+			} else {
 				var responseBody = "The resource you requested ('" + request.Uri + "') could not be found.";
 				var headers = new HttpResponseHead() {
 					Status = "404 Not Found",
@@ -39,30 +38,72 @@ namespace VixenModules.App.WebServer.HTTP {
 			}
 		}
 
-		static ISequenceContext _context = null;
-		private static HttpRequestHead SequencePost(HttpRequestHead request, IDataProducer requestBody, IHttpResponseDelegate response) {
+		private static HttpRequestHead ElementPost(HttpRequestHead request, IDataProducer requestBody, IHttpResponseDelegate response)
+		{
+			var objs = request.Uri.Split('/');
+			Guid elementID = Guid.Empty;
+			bool allElements = false;
+			int seconds = 30;
+			Color elementColor = Color.White;
 
 
-			// when you subecribe to the request body before calling OnResponse,
-			// the server will automatically send 100-continue if the client is 
-			// expecting it.
-			var sequenceFile = request.Uri.ToLower().Remove(0, 10);
-			var sequenceFileNames = SequenceService.Instance.GetAllSequenceFileNames();
-			var sequenceFilePath = sequenceFileNames.Where(x => System.IO.Path.GetFileName(x).Equals(sequenceFile, StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();
-			if (System.IO.File.Exists(sequenceFilePath)) {
-				var sequence = SequenceService.Instance.Load(sequenceFilePath);
-				if (_context != null && _context.IsRunning)
-					_context.Stop();
-				if (_context.Name != sequence.Name) {
-
-					_context = VixenSystem.Contexts.CreateSequenceContext(new ContextFeatures(ContextCaching.NoCaching), sequence);
-					 
+			//Look for the Element ID or if we are using ALL Elements
+			foreach (var item in objs) {
+				if (Guid.TryParse(item, out elementID))
+					break;
+				else if (item.Equals("all", StringComparison.CurrentCultureIgnoreCase)) {
+					allElements = true;
+					break;
 				}
-
-
-				_context.Play(TimeSpan.Zero, sequence.Length);
-
 			}
+			foreach (var item in objs) {
+				if (int.TryParse(item, out seconds))
+					break;
+			}
+			foreach (var item in objs) {
+				try {
+					var color = Color.FromName(item);
+					if (color.Name.Equals(item, StringComparison.CurrentCultureIgnoreCase)) {
+						elementColor = color;
+						break;
+					}
+				} catch (Exception) { }
+			}
+
+			SetLevel effect = new SetLevel();
+			effect.TimeSpan = TimeSpan.FromSeconds(seconds);
+			effect.Color = elementColor;
+			effect.IntensityLevel = 1;
+
+			if (allElements) {
+				effect.TargetNodes = VixenSystem.Nodes.GetRootNodes().ToArray();
+			} else
+				effect.TargetNodes = new[] { VixenSystem.Nodes.GetElementNode(elementID) };
+
+			Module.LiveSystemContext.Execute(new EffectNode(effect, TimeSpan.Zero));
+
+			var headers = new HttpResponseHead() {
+				Status = "200 OK",
+				Headers = new Dictionary<string, string>() 
+						{
+							{ "Content-Type", "text/plain" },
+							{ "Connection", "close" }
+						}
+			};
+
+			if (request.Headers.ContainsKey("Content-Length"))
+				headers.Headers["Content-Length"] = request.Headers["Content-Length"];
+
+			// if you call OnResponse before subscribing to the request body,
+			// 100-continue will not be sent before the response is sent.
+			// per rfc2616 this response must have a 'final' status code,
+			// but the server does not enforce it.
+			response.OnResponse(headers, requestBody);
+
+			return request;
+		}
+		private static HttpRequestHead EchoPost(HttpRequestHead request, IDataProducer requestBody, IHttpResponseDelegate response)
+		{
 			var headers = new HttpResponseHead() {
 				Status = "200 OK",
 				Headers = new Dictionary<string, string>() 
@@ -83,27 +124,8 @@ namespace VixenModules.App.WebServer.HTTP {
 			return request;
 		}
 
-		private static HttpRequestHead EchoPost(HttpRequestHead request, IDataProducer requestBody, IHttpResponseDelegate response) {
-			var headers = new HttpResponseHead() {
-				Status = "200 OK",
-				Headers = new Dictionary<string, string>() 
-						{
-							{ "Content-Type", "text/plain" },
-							{ "Connection", "close" }
-						}
-			};
-			if (request.Headers.ContainsKey("Content-Length"))
-				headers.Headers["Content-Length"] = request.Headers["Content-Length"];
-
-			// if you call OnResponse before subscribing to the request body,
-			// 100-continue will not be sent before the response is sent.
-			// per rfc2616 this response must have a 'final' status code,
-			// but the server does not enforce it.
-			response.OnResponse(headers, requestBody);
-
-			return request;
-		}
-		private static HttpRequestHead GenericResponse(HttpRequestHead request, IHttpResponseDelegate response) {
+		private static HttpRequestHead GenericResponse(HttpRequestHead request, IHttpResponseDelegate response)
+		{
 
 			//List<Nodes> nodes = new List<Nodes>();
 
@@ -122,7 +144,7 @@ namespace VixenModules.App.WebServer.HTTP {
 
 			sb.AppendLine("</head>");
 			sb.AppendLine("<body>");
-			GenerateSequencesHtml(sb);
+			//GenerateSequencesHtml(sb);
 			GenerateElementsHtml(sb);
 			sb.AppendLine("</body>");
 
@@ -143,50 +165,77 @@ namespace VixenModules.App.WebServer.HTTP {
 			return request;
 		}
 
-		private static void GenerateNavBar(StringBuilder sb) {
+		private static void GenerateNavBar(StringBuilder sb)
+		{
 			sb.AppendLine("<div data-role=\"navbar\">");
 			sb.AppendLine("<ul>");
 			sb.AppendLine("<li><a href=\"#\">Home</a></li>");
 			sb.AppendLine("<li><a href=\"#Elements\">Elements</a></li>");
-			sb.AppendLine("<li><a href=\"#Sequences\">Sequences</a></li>");
+			//sb.AppendLine("<li><a href=\"#Sequences\">Sequences</a></li>");
 			sb.AppendLine("</ul>");
 			sb.AppendLine("</div>");
 		}
 		#region Elements
 
-		private static void GenerateElementsHtml(StringBuilder sb) {
+		private static void GenerateElementsHtml(StringBuilder sb)
+		{
 			sb.AppendLine("<div data-role=\"page\" id=\"Elements\">");
 
 			sb.AppendLine("<script  type=\"text/javascript\">");
-			sb.AppendLine("function turnElementOnOff(id, state) {");
-			sb.AppendLine("alert('Element =' + id + ' State = ' + state);");
+			sb.AppendLine("var txtValue='30';");
+			sb.AppendLine("function setValue(x){  txtValue=x;}");
+
+			sb.AppendLine("function turnElementOn(id,color) {");
+			
+			sb.AppendLine("$.post('/element/' + id + '/' + txtValue + '/' + color);");
+			/*
+			 $.post('/Elements/' + id);
+			 
+			 */
 			sb.AppendLine("}");
 
 			sb.AppendLine("</script>");
-			sb.AppendLine("<div data-role=\"header\"><h1>Vixen 3 Elements</h1></div>");
+			sb.AppendLine("<div data-role=\"header\" data-position=\"fixed\"><h1>Vixen 3 Elements</h1></div>");
 			GenerateNavBar(sb);
 			sb.AppendLine("<div data-role=\"content\">");
 
-			sb.AppendLine("<p>Test Elements</p>");
+
 
 			foreach (ElementNode element in VixenSystem.Nodes.GetRootNodes()) {
 				AddNodeToTree(sb, element);
 			}
+			if (VixenSystem.Nodes.GetRootNodes().Count() > 0) {
+				sb.AppendFormat("<a href=\"#\" data-role=\"button\" onclick=\"turnElementOn('{0}')\">Turn All Elements On</a>", "All");
+			}
+			sb.AppendLine("<p>Element Test Time in Seconds <input id=\"txtDefaultTime\" type=\"number\" value=\"30\" /></p>");
 
 			sb.AppendLine("</div>");
+
+			sb.AppendLine("<div data-role=\"footer\" data-position=\"fixed\">");
+
+			sb.AppendLine("<p>Element Test Time in Seconds <input id=\"txtDefaultTime\" type=\"number\" value=\"30\" onchange=\"setValue($(this).val())\" /></p>");
+
+			sb.AppendLine("</div>");
+
+
 			sb.AppendLine("</div>");
 		}
 
 
-		private static void AddNodeToTree(StringBuilder sb, ElementNode elementNode) {
+		private static void AddNodeToTree(StringBuilder sb, ElementNode elementNode)
+		{
 
 			sb.AppendLine("<div data-role=\"collapsible\">");
-
+			string[] colors = { "White", "Blue" };
 			sb.AppendFormat("<h4>{0}</h4>", elementNode.Name);
-			sb.AppendFormat("<p>ElementID = {0}</p>", elementNode.Id);
-			//sb.AppendFormat("<a href=\"#\" data-role=\"button\" onclick=\"turnElementOnOff('{0}','{1}')\">Turn {1}</a>", elementNode.Id, "On");
-			//sb.AppendFormat("<a href=\"#\" data-role=\"button\" onclick=\"turnElementOnOff('{0}','{1}')\">Turn {1}</a>", elementNode.Id, "Off");
-
+			//sb.AppendFormat("<p>ElementID = {0}</p>", elementNode.Id);
+			//sb.Append("<p>Turn Element on:</p>");
+			//sb.AppendLine("<div data-type=\"horizontal\" data-role=\"controlgroup\">");
+			//foreach (var item in colors) {
+				
+				sb.AppendFormat("<a href=\"#\" data-role=\"button\" onclick=\"turnElementOn('{0}', 'White')\">Turn On: {1}</a>", elementNode.Id, elementNode.Name);
+			//}
+			//sb.AppendLine("</div>");
 			foreach (ElementNode childNode in elementNode.Children) {
 				AddNodeToTree(sb, childNode);
 			}
@@ -197,7 +246,8 @@ namespace VixenModules.App.WebServer.HTTP {
 		#endregion
 		#region Sequences
 
-		private static void GenerateSequencesHtml(StringBuilder sb) {
+		private static void GenerateSequencesHtml(StringBuilder sb)
+		{
 			sb.AppendLine("<div data-role=\"page\" id=\"Sequences\">");
 			sb.AppendLine("<script  type=\"text/javascript\">");
 			sb.AppendLine("function playSequence(id ) {");
