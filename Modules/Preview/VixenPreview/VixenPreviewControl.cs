@@ -20,6 +20,8 @@ namespace VixenModules.Preview.VixenPreview
 {
 	public partial class VixenPreviewControl : UserControl
 	{
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+
 		#region "Variables"
 
 		public VixenPreviewSetupElementsDocument elementsForm;
@@ -768,7 +770,7 @@ namespace VixenModules.Preview.VixenPreview
 
 		private void VixenPreviewControl_Resize(object sender, EventArgs e)
 		{
-			if (!DesignMode) VixenSystem.Logging.Debug("Preview:Resize");
+			if (!DesignMode) Logging.Debug("Preview:Resize");
 		}
 
 		private void VixenPreviewControl_KeyUp(object sender, KeyEventArgs e)

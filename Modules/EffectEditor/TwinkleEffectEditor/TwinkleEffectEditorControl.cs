@@ -14,6 +14,8 @@ namespace VixenModules.EffectEditor.TwinkleEffectEditor
 {
 	public partial class TwinkleEffectEditorControl : UserControl, IEffectEditorControl
 	{
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+
 		public TwinkleEffectEditorControl()
 		{
 			InitializeComponent();
@@ -56,7 +58,7 @@ namespace VixenModules.EffectEditor.TwinkleEffectEditor
 			set
 			{
 				if (value.Length != 11) {
-					VixenSystem.Logging.Warning("TwinkleEffectEditorControl: param vales set without 11 params.");
+					Logging.Warn("TwinkleEffectEditorControl: param vales set without 11 params.");
 					return;
 				}
 

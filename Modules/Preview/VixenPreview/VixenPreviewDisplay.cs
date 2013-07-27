@@ -6,22 +6,36 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Vixen.Sys;
 
 namespace VixenModules.Preview.VixenPreview
 {
 	public partial class VixenPreviewDisplay : Form
 	{
 		private VixenPreviewData _data;
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		public VixenPreviewData Data
 		{
 			set
 			{
+				if (value == null) {
+					Logging.Warn("VixenPreviewDisplay: Data set as null! (Thread ID: " +
+					                            System.Threading.Thread.CurrentThread.ManagedThreadId + ")");
+				}
 				_data = value;
 				if (!DesignMode)
 					preview.Data = _data;
 			}
-			get { return _data; }
+			get
+			{
+				if (_data == null) {
+					Logging.Warn("VixenPreviewDisplay: Data get, _data is null! (Thread ID: " +
+					                            System.Threading.Thread.CurrentThread.ManagedThreadId + ")");
+				}
+				return _data;
+			}
+
 		}
 
 		public VixenPreviewDisplay()
@@ -76,12 +90,24 @@ namespace VixenModules.Preview.VixenPreview
 
 		private void VixenPreviewDisplay_Move(object sender, EventArgs e)
 		{
+			if (Data == null) {
+				Logging.Warn("VixenPreviewDisplay_Move: Data is null. abandoning move. (Thread ID: " +
+											System.Threading.Thread.CurrentThread.ManagedThreadId + ")");
+				return;
+			}
+
 			Data.Top = Top;
 			Data.Left = Left;
 		}
 
 		private void VixenPreviewDisplay_Resize(object sender, EventArgs e)
 		{
+			if (Data == null) {
+				Logging.Warn("VixenPreviewDisplay_Resize: Data is null. abandoning resize. (Thread ID: " +
+											System.Threading.Thread.CurrentThread.ManagedThreadId + ")");
+				return;
+			}
+
 			Data.Width = Width;
 			Data.Height = Height;
 		}

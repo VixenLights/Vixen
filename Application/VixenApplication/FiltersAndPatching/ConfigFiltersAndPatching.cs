@@ -35,7 +35,8 @@ namespace VixenApplication
 		private readonly Dictionary<IOutputDevice, ControllerShape> _controllerToControllerShape;
 		private readonly Dictionary<IOutputFilterModuleInstance, FilterShape> _filterToFilterShape;
 		private readonly Dictionary<IDataFlowComponent, List<FilterSetupShapeBase>> _dataFlowComponentToShapes;
-
+		//Logger Class
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		// list of all (root) shapes, in the order they should appear. (Child shapes for elements and
 		// controllers are not in the list; they are of type NestingShape and handle their own bits.)
 		private List<ElementNodeShape> _elementShapes;
@@ -146,17 +147,17 @@ namespace VixenApplication
 
 			diagramDisplay.DoSuspendUpdate();
 //			DateTime start = DateTime.Now;
-//			VixenSystem.Logging.Debug("ConfigFiltersAndPatching: LOADING: start time:                      " + start);
+//			Logging.Debug("ConfigFiltersAndPatching: LOADING: start time:                      " + start);
 			_InitializeShapesFromElements();
-//			VixenSystem.Logging.Debug("ConfigFiltersAndPatching: post _InitializeShapesFromElements:       " + (DateTime.Now - start));
+//			Logging.Debug("ConfigFiltersAndPatching: post _InitializeShapesFromElements:       " + (DateTime.Now - start));
 			_InitializeShapesFromFilters();
-//			VixenSystem.Logging.Debug("ConfigFiltersAndPatching: post _InitializeShapesFromFilters:        " + (DateTime.Now - start));
+//			Logging.Debug("ConfigFiltersAndPatching: post _InitializeShapesFromFilters:        " + (DateTime.Now - start));
 			_InitializeShapesFromControllers();
-//			VixenSystem.Logging.Debug("ConfigFiltersAndPatching: post _InitializeShapesFromControllers:    " + (DateTime.Now - start));
+//			Logging.Debug("ConfigFiltersAndPatching: post _InitializeShapesFromControllers:    " + (DateTime.Now - start));
 			_RelayoutAllShapes();
-//			VixenSystem.Logging.Debug("ConfigFiltersAndPatching: post _RelayoutAllShapes:                  " + (DateTime.Now - start));
+//			Logging.Debug("ConfigFiltersAndPatching: post _RelayoutAllShapes:                  " + (DateTime.Now - start));
 			_CreateConnectionsFromExistingLinks();
-//			VixenSystem.Logging.Debug("ConfigFiltersAndPatching: post _CreateConnectionsFromExistingLinks: " + (DateTime.Now - start));
+//			Logging.Debug("ConfigFiltersAndPatching: post _CreateConnectionsFromExistingLinks: " + (DateTime.Now - start));
 			diagramDisplay.DoResumeUpdate();
 
 			diagramDisplay.CurrentTool = new ConnectionTool();
@@ -605,7 +606,7 @@ namespace VixenApplication
 			if (shape.DataFlowComponent != null && shape.DataFlowComponent.Source != null) {
 				IDataFlowComponentReference source = shape.DataFlowComponent.Source;
 				if (!_dataFlowComponentToShapes.ContainsKey(source.Component)) {
-					VixenSystem.Logging.Error("CreateConnectionsFromExistingLinks: can't find shape for source " + source.Component +
+					Logging.Error("CreateConnectionsFromExistingLinks: can't find shape for source " + source.Component +
 					                          source.OutputIndex);
 					return;
 				}

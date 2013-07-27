@@ -13,6 +13,7 @@ namespace VixenApplication
 		private readonly OutputController _controller;
 		private int _selectedOutputIndex;
 		private bool _changesMade;
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		public ConfigControllersOutputs(OutputController controller)
 		{
@@ -117,7 +118,7 @@ namespace VixenApplication
 
 					for (int i = 0; i < listViewOutputs.SelectedItems.Count; i++) {
 						if (i >= nameGenerator.Names.Count) {
-							VixenSystem.Logging.Warning("ConfigControllersOutputs: renaming outputs, and ran out of new names!");
+							Logging.Warn("ConfigControllersOutputs: renaming outputs, and ran out of new names!");
 							break;
 						}
 						int outputIndex = int.Parse(listViewOutputs.SelectedItems[i].Text) - 1;

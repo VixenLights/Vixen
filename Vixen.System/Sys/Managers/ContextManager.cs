@@ -12,6 +12,7 @@ namespace Vixen.Sys.Managers
 {
 	public class ContextManager : IEnumerable<IContext>
 	{
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private Dictionary<Guid, IContext> _instances;
 		private ContextUpdateTimeValue _contextUpdateTimeValue;
 		private Stopwatch _stopwatch;
@@ -121,7 +122,7 @@ namespace Vixen.Sys.Managers
 			if (contextFeatures == null) throw new ArgumentNullException("contextFeatures");
 			Type contextType = _FindContextWithFeatures(contextTargetType, contextFeatures);
 			if (contextType == null) {
-				VixenSystem.Logging.Error("Could not find a context for target type " + contextTargetType + " with features " +
+				Logging.Error("Could not find a context for target type " + contextTargetType + " with features " +
 				                          contextFeatures);
 				return null;
 			}

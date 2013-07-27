@@ -13,6 +13,7 @@ namespace VixenModules.Media.Audio
 {
 	public class Audio : MediaModuleInstanceBase, ITiming
 	{
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private FmodInstance _audioSystem;
 		private AudioData _data;
 
@@ -250,7 +251,7 @@ namespace VixenModules.Media.Audio
 				_audioSystem.SetStartTime(startTime);
 			}
 			else {
-				Vixen.Sys.VixenSystem.Logging.Error("Media file doe not exist: " + MediaFilePath);
+				Logging.Error("Media file does not exist: " + MediaFilePath);
 			}
 		}
 

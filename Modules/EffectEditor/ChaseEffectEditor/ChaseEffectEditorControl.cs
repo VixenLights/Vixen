@@ -23,8 +23,8 @@ namespace VixenModules.EffectEditor.ChaseEffectEditor
 		{
 			InitializeComponent();
 		}
-
-
+		
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private IEffect _targetEffect;
 
 		public IEffect TargetEffect
@@ -58,7 +58,7 @@ namespace VixenModules.EffectEditor.ChaseEffectEditor
 			set
 			{
 				if (value.Length != 8) {
-					VixenSystem.Logging.Warning("Chase effect parameters set with " + value.Length + " parameters");
+					Logging.Warn("Chase effect parameters set with " + value.Length + " parameters");
 					return;
 				}
 

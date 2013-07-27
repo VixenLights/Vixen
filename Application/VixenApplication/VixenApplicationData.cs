@@ -11,6 +11,8 @@ namespace VixenApplication
 	// also handle migration of data if data formats change, etc., but for now it's probably not an issue.
 	public class VixenApplicationData
 	{
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+
 		private const string _DataFilename = "VixenApplicationData.xml";
 
 		private const int DATA_FORMAT_VERSION_NUMBER = 3;
@@ -73,7 +75,7 @@ namespace VixenApplication
 
 				XElement versionElement = root.Element("DataFormatVersion");
 				if (versionElement == null) {
-					VixenSystem.Logging.Error("VixenApplication: loading application data: couldn't find data format version");
+					Logging.Error("VixenApplication: loading application data: couldn't find data format version");
 					return;
 				}
 				int dataFormatVersion = int.Parse(versionElement.Value);
@@ -81,10 +83,10 @@ namespace VixenApplication
 				ReadData(dataFormatVersion, root);
 			}
 			catch (FileNotFoundException ex) {
-				VixenSystem.Logging.Warning("VixenApplication: loading application data, but couldn't find file", ex);
+				Logging.WarnException("VixenApplication: loading application data, but couldn't find file", ex);
 			}
 			catch (Exception ex) {
-				VixenSystem.Logging.Error("VixenApplication: error loading application data", ex);
+				Logging.ErrorException("VixenApplication: error loading application data", ex);
 			}
 			finally {
 				if (stream != null)
@@ -125,7 +127,7 @@ namespace VixenApplication
 				root.Save(stream);
 			}
 			catch (Exception ex) {
-				VixenSystem.Logging.Error("VixenApplication: error saving application data", ex);
+				Logging.ErrorException("VixenApplication: error saving application data", ex);
 			}
 			finally {
 				if (stream != null)
@@ -136,7 +138,7 @@ namespace VixenApplication
 		public void ReadData(int dataVersion, XElement rootElement)
 		{
 			if (dataVersion > DATA_FORMAT_VERSION_NUMBER) {
-				VixenSystem.Logging.Error("VixenApplication: error reading application data; given data version was too high: " +
+				Logging.Error("VixenApplication: error reading application data; given data version was too high: " +
 				                          dataVersion);
 				return;
 			}

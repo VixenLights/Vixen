@@ -13,7 +13,7 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 	public partial class ColorBreakdownSetup : Form
 	{
 		private readonly ColorBreakdownData _data;
-
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		public ColorBreakdownSetup(ColorBreakdownData breakdownData)
 		{
 			InitializeComponent();
@@ -121,7 +121,7 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 					break;
 
 				default:
-					Vixen.Sys.VixenSystem.Logging.Error("Color Breakdown Setup: got an unknown template to apply: " + template);
+					Logging.Error("Color Breakdown Setup: got an unknown template to apply: " + template);
 					MessageBox.Show("Error applying template: Unknown template.");
 					break;
 			}

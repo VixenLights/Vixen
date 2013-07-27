@@ -12,11 +12,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 {
 	internal class EffectRasterizer
 	{
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+
 		public void Rasterize(IEffectModuleInstance effect, Graphics g)
 		{
 			double width = g.VisibleClipBounds.Width;
 			double height = g.VisibleClipBounds.Height;
-
+			
 			// As recommended by R#
 			if (Math.Abs(width - 0) < double.Epsilon || Math.Abs(height - 0) < double.Epsilon) return;
 
@@ -48,7 +50,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					if (elementIntents != null) {
 						foreach (IntentNode elementIntentNode in elementIntents) {
 							if (elementIntentNode == null) {
-								VixenSystem.Logging.Error("Error: elementIntentNode was null when Rasterizing an effect (ID: " + effect.InstanceId + ")");
+								Logging.Error("Error: elementIntentNode was null when Rasterizing an effect (ID: " + effect.InstanceId + ")");
 								continue;
 							}
 							double startPixelX = width*_GetPercentage(elementIntentNode.StartTime, effect.TimeSpan);

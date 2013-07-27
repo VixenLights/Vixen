@@ -54,6 +54,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="NLog">
+      <HintPath>..\packages\NLog.2.0.1.2\lib\net40\NLog.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core">
@@ -645,9 +649,7 @@
     </Compile>
     <Compile Include="Sys\EffectNode.cs" />
     <Compile Include="Sys\DataStreams.cs" />
-    <Compile Include="Sys\DebugLog.cs" />
     <Compile Include="Sys\DelegateFactory.cs" />
-    <Compile Include="Sys\ErrorLog.cs" />
     <Compile Include="Module\IModuleManagement.cs" />
     <Compile Include="Module\IModuleRepository.cs" />
     <Compile Include="Module\ModuleImplementation.cs" />
@@ -678,12 +680,7 @@
     <Compile Include="Module\Trigger\TriggerModuleImplementation.cs" />
     <Compile Include="Module\Trigger\TriggerModuleManagement.cs" />
     <Compile Include="Module\Trigger\TriggerModuleRepository.cs" />
-    <Compile Include="Sys\InfoLog.cs" />
     <Compile Include="Sys\InsertDataStack.cs" />
-    <Compile Include="Sys\Log.cs" />
-    <Compile Include="Sys\LogEventArgs.cs" />
-    <Compile Include="Sys\Logging.cs" />
-    <Compile Include="Sys\LogItemEventArgs.cs" />
     <Compile Include="Sys\MediaCollection.cs" />
     <Compile Include="Sys\Element.cs" />
     <Compile Include="Module\GenericModuleManagement.cs" />
@@ -799,7 +796,6 @@
     <Compile Include="Sys\TimeNode.cs" />
     <Compile Include="Sys\UIThread.cs" />
     <Compile Include="Sys\VixenSystem.cs" />
-    <Compile Include="Sys\WarningLog.cs" />
     <Compile Include="Sys\WindowsMultimedia.cs" />
     <Compile Include="Sys\XmlHelper.cs" />
   </ItemGroup>
@@ -831,6 +827,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
     <None Include="Resources\Effect48.png" />
   </ItemGroup>
   <ItemGroup>

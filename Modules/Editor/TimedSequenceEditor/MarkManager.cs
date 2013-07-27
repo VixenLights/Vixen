@@ -17,6 +17,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 {
 	public partial class MarkManager : Form
 	{
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+
 		private MarkCollection _displayedCollection = null;
 		private bool _updatingListContents = false;
 		private IExecutionControl _executionControl;
@@ -214,7 +216,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (buttonAddOrUpdateMark.Text == "Update") {
 					// updating an existing item, find it, remove it, and add the new one
 					if (listViewMarks.SelectedItems.Count != 1)
-						Vixen.Sys.VixenSystem.Logging.Error("MarkManager: updating a mark, but there are " +
+						Logging.Error("MarkManager: updating a mark, but there are " +
 						                                    listViewMarks.SelectedItems.Count + " items selected!");
 					if (listViewMarks.SelectedItems.Count > 0)
 						_displayedCollection.Marks.Remove((TimeSpan) listViewMarks.SelectedItems[0].Tag);
@@ -1073,7 +1075,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				catch (Exception ex)
 				{
 					string msg = "There was an error importing the Audacity beat marks: " + ex.Message;
-					Vixen.Sys.VixenSystem.Logging.Error(msg);
+					Logging.Error(msg);
 					MessageBox.Show(msg, "Audacity Import Error", MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
 				}
 			}

@@ -5,6 +5,8 @@ namespace Vixen.IO.Xml
 {
 	internal class XElementFileReader : IFileReader<XElement>
 	{
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+
 		public XElement ReadFile(string filePath)
 		{
 			if (!File.Exists(filePath)) return null;
@@ -15,7 +17,7 @@ namespace Vixen.IO.Xml
 						return XElement.Load(reader);
 					}
 					catch (System.Exception ex) {
-						Vixen.Sys.VixenSystem.Logging.Error("Error loading '" + filePath + "'.", ex);
+						Logging.ErrorException("Error loading '" + filePath + "'.", ex);
 					}
 				}
 			}

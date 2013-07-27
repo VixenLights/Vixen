@@ -44,6 +44,8 @@ namespace Common.Controls.Timeline
 		public ISequenceContext Context = null;
 		public bool SequenceLoading { get; set; }
 
+		public ElementDrawQueue _elementQueue = new ElementDrawQueue();
+
 		#region Initialization
 
 		public Grid(TimeInfo timeinfo)
@@ -137,6 +139,14 @@ namespace Common.Controls.Timeline
 		}
 
 		#region Properties
+
+		public ElementDrawQueue ElementQueue
+		{
+			get
+			{
+				return _elementQueue;
+			}
+		}
 
 		public bool SuppressInvalidate { get; set; }
 
@@ -1178,6 +1188,37 @@ namespace Common.Controls.Timeline
 		{
 			Bitmap elementImage;
 
+			// first, queue up everything
+			foreach (Row row in Rows)
+			{
+				if (row.Visible)
+				{
+					for (int i = 0; i < row.ElementCount; i++)
+					{
+						_elementQueue.Add(row.GetElementAtIndex(i));
+					}
+				}
+			}
+
+			while (!renderWorker.CancellationPending)
+			{
+				Element element;
+				int currentElementNum = 0;
+				while (_elementQueue.TryNext(out element))
+				{
+					Size size = new Size((int)Math.Ceiling(timeToPixels(element.Duration)), element.Row.Height - 1);
+					elementImage = element.SetupCachedImage(size);
+					if (element.StartTime <= VisibleTimeEnd && element.EndTime >= VisibleTimeStart)
+						Invalidate();
+
+					int percent = (int)((double)(currentElementNum) / (double)_elementQueue.Count() * 100.0);
+					renderWorker.ReportProgress(percent);
+					currentElementNum++;
+				}
+			}
+
+			return;
+
 			// Continue looping through the elements to see if they need to be rendered.
 			// They will the first time and when a row is expanded.
 			while (!renderWorker.CancellationPending) {
@@ -1269,7 +1310,7 @@ namespace Common.Controls.Timeline
 			}
 		}
 
-        private void ResetAllElements()
+        public void ResetAllElements()
         {
             foreach (Row row in Rows)
             {
@@ -1277,6 +1318,7 @@ namespace Common.Controls.Timeline
                 {
                     Element currentElement = row.GetElementAtIndex(i);
                     currentElement.Changed = true;
+					ElementQueue.Add(currentElement);
                 }
             }
         }
@@ -1334,18 +1376,22 @@ namespace Common.Controls.Timeline
 			currentElement.DisplayTop = top + (currentElement.DisplayHeight * elements.IndexOf(currentElement));
 
 			Size size = new Size((int)Math.Ceiling(timeToPixels(currentElement.Duration)), row.Height - 1);
-			//Bitmap elementImage = currentElement.Draw(size);
 			Bitmap elementImage = currentElement.Draw(size, false);
+			//Bitmap elementImage = currentElement.Draw(size);
 			Point finalDrawLocation = new Point((int)Math.Floor(timeToPixels(currentElement.StartTime)), currentElement.DisplayTop);
 
 			Rectangle srcRect = new Rectangle(0, 0, elementImage.Width, elementImage.Height);
-			//Rectangle destRect = new Rectangle(finalDrawLocation.X, finalDrawLocation.Y, elementImage.Width, currentElement.DisplayHeight);
 			Rectangle destRect = new Rectangle(finalDrawLocation.X, finalDrawLocation.Y, size.Width, currentElement.DisplayHeight);
 			currentElement.DisplayRect = destRect;
-			g.DrawImage(elementImage, 
+			g.DrawImage(elementImage,
 						destRect,
-						srcRect, 
+						srcRect,
 						GraphicsUnit.Pixel);
+
+			//if (srcRect.Width != destRect.Width || srcRect.Height != destRect.Height)
+			//    currentElement.Changed = true;
+
+			//g.DrawImage(elementImage, finalDrawLocation);
 
 			lastStartTime = currentElement.StartTime;
 			lastEndTime = currentElement.EndTime;
@@ -1464,7 +1510,7 @@ namespace Common.Controls.Timeline
 					_drawCursors(e.Graphics);
 
 					s.Stop();
-					//Vixen.Sys.VixenSystem.Logging.Info("OnPaint: " + s.ElapsedMilliseconds);
+					//Logging.Info("OnPaint: " + s.ElapsedMilliseconds);
 				}
 				catch (Exception ex) {
 					MessageBox.Show("Exception in TimelineGrid.OnPaint():\n\n\t" + ex.Message + "\n\nBacktrace:\n\n\t" + ex.StackTrace);

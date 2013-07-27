@@ -11,6 +11,7 @@ namespace VixenModules.Preview.VixenPreview
 	{
 		private VixenPreviewSetup3 setupForm;
 		private VixenPreviewDisplay displayForm;
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		public VixenPreviewModuleInstance()
 		{
@@ -45,6 +46,23 @@ namespace VixenModules.Preview.VixenPreview
 			get { return base.HasSetup; }
 		}
 
+		public override Vixen.Module.IModuleDataModel ModuleData
+		{
+			get
+			{
+				if (base.ModuleData == null) {
+					base.ModuleData = new VixenPreviewData();
+					Logging.Warn("VixenPreview: access of null ModuleData. Creating new one. (Thread ID: " +
+					                            System.Threading.Thread.CurrentThread.ManagedThreadId + ")");
+				}
+				return base.ModuleData;
+			}
+			set
+			{
+				base.ModuleData = value;
+			}
+		}
+
 		protected override Form Initialize()
 		{
 			Execution.NodesChanged += ExecutionNodesChanged;
@@ -65,7 +83,6 @@ namespace VixenModules.Preview.VixenPreview
 		public override void Start()
 		{
 			//System.Runtime.GCSettings.LatencyMode = System.Runtime.GCLatencyMode.LowLatency;
-			var dataModel = GetDataModel();
 			base.Start();
 		}
 

@@ -40,6 +40,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="NLog">
+      <HintPath>..\..\packages\NLog.2.0.1.2\lib\net40\NLog.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Design" />
@@ -53,6 +57,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ComboBoxItem.cs" />
+    <Compile Include="ConfigureElements\AddMegatree.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ConfigureElements\AddMegatree.Designer.cs">
+      <DependentUpon>AddMegatree.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ConfigureElements\AddPixelGrid.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ConfigureElements\AddPixelGrid.designer.cs">
+      <DependentUpon>AddPixelGrid.cs</DependentUpon>
+    </Compile>
     <Compile Include="DiscreteColorPicker.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -65,6 +82,12 @@
     <Compile Include="DiscreteColorPickerItem.Designer.cs">
       <DependentUpon>DiscreteColorPickerItem.cs</DependentUpon>
     </Compile>
+    <Compile Include="ElementTree.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ElementTree.Designer.cs">
+      <DependentUpon>ElementTree.cs</DependentUpon>
+    </Compile>
     <Compile Include="PictureComboBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -72,6 +95,7 @@
       <DependentUpon>PictureComboBox.cs</DependentUpon>
     </Compile>
     <Compile Include="PictureComboBoxItem.cs" />
+    <Compile Include="TimelineControl\ElementDrawQueue.cs" />
     <Compile Include="Wizard\Wizard.cs" />
     <Compile Include="Wizard\WizardForm.cs">
       <SubType>Form</SubType>
@@ -268,11 +292,20 @@
     <EmbeddedResource Include="ColorPicker\ColorSelectionPlane.resx">
       <DependentUpon>ColorSelectionPlane.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ConfigureElements\AddMegatree.resx">
+      <DependentUpon>AddMegatree.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConfigureElements\AddPixelGrid.resx">
+      <DependentUpon>AddPixelGrid.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="DiscreteColorPicker.resx">
       <DependentUpon>DiscreteColorPicker.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DiscreteColorPickerItem.resx">
       <DependentUpon>DiscreteColorPickerItem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ElementTree.resx">
+      <DependentUpon>ElementTree.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Wizard\WizardForm.resx">
       <DependentUpon>WizardForm.cs</DependentUpon>
@@ -344,6 +377,7 @@
     <Content Include="ColorPicker\ColorPicker.cur" />
     <Content Include="ControlsEx\std_zoomin.png" />
     <Content Include="ControlsEx\std_zoomout.png" />
+    <None Include="packages.config" />
     <None Include="Resources\UpArrowShort_Blue_48x48.png" />
     <None Include="Resources\UpArrowShort_Blue_32x32.png" />
     <None Include="Resources\UpArrowShort_Blue_24x24.png" />
