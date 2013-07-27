@@ -324,12 +324,22 @@
     <None Include="Resources\delete-24.png" />
   </ItemGroup>
   <ItemGroup>
+<<<<<<< HEAD
     <Content Include="..\..\Common\Libraries\SciLexer.dll">
       <Link>SciLexer.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\..\Common\Libraries\SciLexer64.dll">
       <Link>SciLexer64.dll</Link>
+=======
+    <Content Include="SciLexer.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SciLexer64.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ScintillaNET.dll">
+>>>>>>> webserver
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="V3.ico" />
