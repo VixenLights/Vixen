@@ -11,6 +11,8 @@ using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Effect.Pulse;
 using VixenModules.Property.Location;
+using System.Drawing;
+using VixenModules.Property.Color;
 
 namespace VixenModules.Effect.Wipe {
 	public class WipeModule : EffectModuleInstanceBase {
@@ -21,6 +23,8 @@ namespace VixenModules.Effect.Wipe {
 		private EffectIntents _elementData = null;
 		
 		protected override void _PreRender() {
+
+			CheckForEmptyData();
 
 			_elementData = new EffectIntents();
 
@@ -217,9 +221,23 @@ namespace VixenModules.Effect.Wipe {
 			set { _data = value as WipeData; }
 		}
 
+		private void CheckForEmptyData()
+		{
+			if (_data.ColorGradient == null) //We have a new effect
+			{
+				//Try to set a default color gradient from our available colors if we have discrete colors
+				HashSet<Color> validColors = new HashSet<Color>();
+				validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
+				_data.ColorGradient = new ColorGradient(validColors.DefaultIfEmpty(Color.White).First());
+			}
+		}
+
 		[Value]
 		public ColorGradient ColorGradient {
-			get { return _data.ColorGradient; }
+			get {
+				CheckForEmptyData();
+				return _data.ColorGradient; 
+			}
 			set {
 				_data.ColorGradient = value;
 				IsDirty = true;

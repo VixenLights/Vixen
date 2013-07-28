@@ -19,7 +19,7 @@ namespace VixenModules.Effect.Wipe {
 			Curve.Points.Add(50, 100);
 			Curve.Points.Add(100, 1);
 			Direction = WipeDirection.Right;
-			ColorGradient = new ColorGradient();
+			ColorGradient = null;
 			PulseTime = 1000;
 			WipeByCount = false;
 			PassCount = 0;
