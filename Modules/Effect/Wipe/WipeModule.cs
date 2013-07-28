@@ -146,42 +146,63 @@ namespace VixenModules.Effect.Wipe {
 					break;
 			}
 
-
-
 			if (renderNodes != null) {
-
-				double intervals = (double)PulseTime / (double)renderNodes.Count();
-
-				var intervalTime = TimeSpan.FromMilliseconds(intervals);
 				TimeSpan effectTime = TimeSpan.Zero;
+				if (WipeByCount) {
+					int count = 0;
+					double pulseSegment = TimeSpan.TotalMilliseconds * (PulsePercent / 100) ;
+					TimeSpan intervalTime = TimeSpan.FromMilliseconds((TimeSpan.TotalMilliseconds - pulseSegment) / (renderNodes.Count() * PassCount));
+					TimeSpan segmentPulse = TimeSpan.FromMilliseconds(pulseSegment);
 
-				//TimeSpan totalEffectTime = TimeSpan.Zero;
-				while (effectTime < TimeSpan) {
+					while (count < PassCount) {
+						foreach (var item in renderNodes) {
+							EffectIntents result;
 
-
-					foreach (var item in renderNodes) {
-						EffectIntents result;
-
-						foreach (ElementNode element in item) {
-							if (element != null) {
-								var pulse = new Pulse.Pulse();
-								pulse.TargetNodes = new ElementNode[] { element };
-								pulse.TimeSpan = TimeSpan.FromMilliseconds(PulseTime);
-								pulse.ColorGradient = _data.ColorGradient;
-								pulse.LevelCurve = _data.Curve;
-
-								result = pulse.Render();
-								result.OffsetAllCommandsByTime(effectTime);
-								_elementData.Add(result);
+							foreach (ElementNode element in item) {
+								if (element != null) {
+									var pulse = new Pulse.Pulse();
+									pulse.TargetNodes = new ElementNode[] { element };
+									pulse.TimeSpan = segmentPulse;
+									pulse.ColorGradient = _data.ColorGradient;
+									pulse.LevelCurve = _data.Curve;
+									result = pulse.Render();
+									result.OffsetAllCommandsByTime(effectTime);
+									_elementData.Add(result);
+								}
 							}
+							effectTime += intervalTime;
+							
 						}
-						effectTime += intervalTime;
-						if (effectTime >= TimeSpan)
-							return;
+						count++;
+						
 					}
+				} else {
+					double intervals = (double)PulseTime / (double)renderNodes.Count();
+					var intervalTime = TimeSpan.FromMilliseconds(intervals);
+					TimeSpan segmentPulse = TimeSpan.FromMilliseconds(PulseTime);
+					while (effectTime < TimeSpan) {
+						foreach (var item in renderNodes) {
+							EffectIntents result;
 
-
+							foreach (ElementNode element in item) {
+								if (element != null) {
+									var pulse = new Pulse.Pulse();
+									pulse.TargetNodes = new ElementNode[] { element };
+									pulse.TimeSpan = segmentPulse;
+									pulse.ColorGradient = _data.ColorGradient;
+									pulse.LevelCurve = _data.Curve;
+									result = pulse.Render();
+									result.OffsetAllCommandsByTime(effectTime);
+									_elementData.Add(result);
+								}
+							}
+							effectTime += intervalTime;
+							if (effectTime >= TimeSpan)
+								return;
+						}
+					}
 				}
+				
 			}
 		}
 
@@ -228,6 +249,37 @@ namespace VixenModules.Effect.Wipe {
 			get { return _data.PulseTime; }
 			set {
 				_data.PulseTime = value;
+				IsDirty = true;
+			}
+		}
+
+		[Value]
+		public bool WipeByCount
+		{
+			get { return _data.WipeByCount; }
+			set
+			{
+				_data.WipeByCount = value;
+				IsDirty = true;
+			}
+		}
+
+		[Value]
+		public int PassCount {
+			get { return _data.PassCount; }
+			set {
+				_data.PassCount = value;
+				IsDirty = true;
+			}
+		}
+
+		[Value]
+		public double PulsePercent
+		{
+			get { return _data.PulsePercent; }
+			set
+			{
+				_data.PulsePercent = value;
 				IsDirty = true;
 			}
 		}

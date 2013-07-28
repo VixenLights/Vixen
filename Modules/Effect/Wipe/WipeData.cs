@@ -21,6 +21,9 @@ namespace VixenModules.Effect.Wipe {
 			Direction = WipeDirection.Right;
 			ColorGradient = new ColorGradient();
 			PulseTime = 1000;
+			WipeByCount = false;
+			PassCount = 0;
+			PulsePercent = 33;
 		}
 
 		[DataMember]
@@ -35,6 +38,14 @@ namespace VixenModules.Effect.Wipe {
 		[DataMember]
 		public int PulseTime { get; set; }
 
+		[DataMember]
+		public bool WipeByCount { get; set; }
+
+		[DataMember]
+		public int PassCount { get; set; }
+
+		[DataMember]
+		public double PulsePercent { get; set; }
  
 		public override IModuleDataModel Clone() {
 			return (WipeData)MemberwiseClone();
