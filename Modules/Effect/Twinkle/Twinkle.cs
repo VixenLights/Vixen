@@ -32,16 +32,7 @@ namespace VixenModules.Effect.Twinkle
 
 			IEnumerable<ElementNode> targetNodes = GetNodesToRenderOn();
 
-			if (StaticColor.IsEmpty) //We have a new effect
-			{
-				//Try to set a default color gradient from our available colors if we have discrete colors
-				HashSet<Color> validColors = new HashSet<Color>();
-				validColors.AddRange(targetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
-				ColorGradient = new ColorGradient(validColors.DefaultIfEmpty(Color.White).First());
-
-				//Set a default color 
-				StaticColor = validColors.DefaultIfEmpty(Color.White).First();
-			}
+			CheckForNullData();
 
 			List<IndividualTwinkleDetails> twinkles = null;
 			if (!IndividualElements)
@@ -53,6 +44,20 @@ namespace VixenModules.Effect.Twinkle
 			foreach (ElementNode node in targetNodes) {
 				if (node != null)
 					_elementData.Add(RenderElement(node, i++/(double) totalNodes, twinkles));
+			}
+		}
+
+		private void CheckForNullData()
+		{
+			if (_data.StaticColor.IsEmpty || _data.ColorGradient == null) //We have a new effect
+			{
+				//Try to set a default color gradient from our available colors if we have discrete colors
+				HashSet<Color> validColors = new HashSet<Color>();
+				validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
+				ColorGradient = new ColorGradient(validColors.DefaultIfEmpty(Color.White).First());
+
+				//Set a default color 
+				StaticColor = validColors.DefaultIfEmpty(Color.White).First();
 			}
 		}
 
@@ -170,7 +175,11 @@ namespace VixenModules.Effect.Twinkle
 		[Value]
 		public Color StaticColor
 		{
-			get { return _data.StaticColor; }
+			get
+			{
+				CheckForNullData();
+				return _data.StaticColor;
+			}
 			set
 			{
 				_data.StaticColor = value;
@@ -181,7 +190,11 @@ namespace VixenModules.Effect.Twinkle
 		[Value]
 		public ColorGradient ColorGradient
 		{
-			get { return _data.ColorGradient; }
+			get
+			{
+				CheckForNullData();
+				return _data.ColorGradient;
+			}
 			set
 			{
 				_data.ColorGradient = value;

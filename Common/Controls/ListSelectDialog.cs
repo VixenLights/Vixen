@@ -32,6 +32,30 @@ namespace Common.Controls
 			}
 		}
 
+		public ListBox.SelectedObjectCollection SelectedItems
+		{
+			get
+			{
+				if (listBoxItems.SelectedIndex < 0)
+					return null;
+				else
+					return listBoxItems.SelectedItems;
+			}
+		}
+
+		public SelectionMode SelectionMode
+		{
+			get
+			{
+				return listBoxItems.SelectionMode;
+			}
+
+			set
+			{
+				listBoxItems.SelectionMode = value;
+			}
+		}
+
 		private void ListSelectDialog_Load(object sender, EventArgs e)
 		{
 			listBoxItems.DisplayMember = "Key";

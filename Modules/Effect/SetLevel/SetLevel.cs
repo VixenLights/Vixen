@@ -27,14 +27,6 @@ namespace VixenModules.Effect.SetLevel
 		{
 			_elementData = new EffectIntents();
 
-			if (Color.ToArgb() == Color.Black.ToArgb()) //We have a new effect as empty is black in RGB.
-			{
-				//Set a default color if we have discrete colors
-				HashSet<Color> validColors = new HashSet<Color>();
-				validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
-				Color = validColors.DefaultIfEmpty(Color.White).First();
-			}
-
 			foreach (ElementNode node in TargetNodes) {
 				if (node != null)
 					RenderNode(node);
@@ -66,7 +58,18 @@ namespace VixenModules.Effect.SetLevel
 		[Value]
 		public Color Color
 		{
-			get { return _data.color; }
+			get
+			{
+				if (_data.color.ToArgb().ToArgb() == Color.Black.ToArgb()) //We have a new effect as empty is black in RGB.
+				{
+					//Set a default color if we have discrete colors
+					HashSet<Color> validColors = new HashSet<Color>();
+					validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
+					Color = validColors.DefaultIfEmpty(Color.White).First();
+				}
+
+				return _data.color;
+			}
 			set
 			{
 				_data.color = value;

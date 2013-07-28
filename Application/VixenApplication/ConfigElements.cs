@@ -175,10 +175,14 @@ namespace VixenApplication
 				properties.Add(new KeyValuePair<string, object>(kvp.Value, kvp.Key));
 			}
 			using (ListSelectDialog addForm = new ListSelectDialog("Add Property", (properties))) {
+				addForm.SelectionMode = SelectionMode.MultiExtended;
 				if (addForm.ShowDialog() == DialogResult.OK) {
-					_displayedNode.Properties.Add((Guid) addForm.SelectedItem);
-					PopulatePropertiesArea(_displayedNode);
+					foreach(KeyValuePair<string,object> item in addForm.SelectedItems){
 
+						_displayedNode.Properties.Add((Guid) item.Value);	
+					}
+
+					PopulatePropertiesArea(_displayedNode);
 					_changesMade = true;
 				}
 			}

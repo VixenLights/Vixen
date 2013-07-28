@@ -31,26 +31,33 @@ namespace VixenModules.Effect.Alternating
 		{
 			_elementData = new EffectIntents();
 
-			// check for sane default colors when first rendering it
-			//As we have RGB underlying we have to check for Black/Empty at the RGB level. Simple empty check does not work.
-			if (Color1.ToArgb() == Color.Black.ToArgb() && Color2.ToArgb() == Color.Black.ToArgb()) {
-				HashSet<Color> validColors = new HashSet<Color>();
-				validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
-								Color1 = validColors.DefaultIfEmpty(Color.White).First();
-				ColorGradient1 = new ColorGradient(validColors.DefaultIfEmpty(Color.White).First());
-			
-				if (validColors.Count > 1) {
-					Color2 = validColors.ElementAt(1);
-					ColorGradient2 = new ColorGradient(validColors.ElementAt(1));
-				} else {
-					Color2 = validColors.DefaultIfEmpty(Color.Red).First();
-					ColorGradient2 = new ColorGradient(validColors.DefaultIfEmpty(Color.Red).First());
-				}
-			}
+			CheckForNullData();
 
 			foreach (ElementNode node in TargetNodes) {
 				if (node != null)
 					RenderNode(node);
+			}
+		}
+
+		private void CheckForNullData()
+		{
+			// check for sane default colors when first rendering it
+			//As we have RGB underlying we have to check for Black/Empty at the RGB level. Simple empty check does not work.
+			if (_data.Color1.ToArgb().ToArgb() == Color.Black.ToArgb() || _data.Color2.ToArgb().ToArgb() == Color.Black.ToArgb() ||
+				_data.ColorGradient1 == null || _data.ColorGradient2 == null) {
+				HashSet<Color> validColors = new HashSet<Color>();
+				validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
+				Color1 = validColors.DefaultIfEmpty(Color.White).First();
+				ColorGradient1 = new ColorGradient(validColors.DefaultIfEmpty(Color.White).First());
+
+				if (validColors.Count > 1) {
+					Color2 = validColors.ElementAt(1);
+					ColorGradient2 = new ColorGradient(validColors.ElementAt(1));
+				}
+				else {
+					Color2 = validColors.DefaultIfEmpty(Color.Red).First();
+					ColorGradient2 = new ColorGradient(validColors.DefaultIfEmpty(Color.Red).First());
+				}
 			}
 		}
 
@@ -79,7 +86,11 @@ namespace VixenModules.Effect.Alternating
 		[Value]
 		public Color Color1
 		{
-			get { return _data.Color1; }
+			get
+			{
+				CheckForNullData();
+				return _data.Color1;
+			}
 			set
 			{
 				_data.Color1 = value;
@@ -101,7 +112,11 @@ namespace VixenModules.Effect.Alternating
 		[Value]
 		public Color Color2
 		{
-			get { return _data.Color2; }
+			get
+			{
+				CheckForNullData();
+				return _data.Color2;
+			}
 			set
 			{
 				_data.Color2 = value;
@@ -178,7 +193,11 @@ namespace VixenModules.Effect.Alternating
 		[Value]
 		public ColorGradient ColorGradient1
 		{
-			get { return _data.ColorGradient1; }
+			get
+			{
+				CheckForNullData();
+				return _data.ColorGradient1;
+			}
 			set
 			{
 				_data.ColorGradient1 = value;
@@ -189,7 +208,11 @@ namespace VixenModules.Effect.Alternating
 		[Value]
 		public ColorGradient ColorGradient2
 		{
-			get { return _data.ColorGradient2; }
+			get
+			{
+				CheckForNullData();
+				return _data.ColorGradient2;
+			}
 			set
 			{
 				_data.ColorGradient2 = value;
