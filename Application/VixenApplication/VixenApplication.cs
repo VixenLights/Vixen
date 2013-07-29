@@ -143,21 +143,24 @@ namespace VixenApplication {
 		/// Sets the log file paths to the appropriate profile log directory
 		/// </summary>
 		private void SetLogFilePaths() {
-			string logDirectory = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Vixen 3");
-			NLog.Config.LoggingConfiguration config = NLog.LogManager.Configuration;
-			config.AllTargets.ToList().ForEach(t => {
-				var target = t as NLog.Targets.FileTarget;
-				if (target != null) {
+			//string logDirectory = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Vixen 3");
+			string logDirectory = _rootDataDirectory;
+			if (System.IO.Directory.Exists(logDirectory)) {
+				NLog.Config.LoggingConfiguration config = NLog.LogManager.Configuration;
+				config.AllTargets.ToList().ForEach(t => {
+					var target = t as NLog.Targets.FileTarget;
+					if (target != null) {
 
-					var strFileName = target.FileName.ToString().Replace("[VIXENPROFILEDIR]", logDirectory).Replace('/', '\\').Replace("'", "");
-					var strArchiveFileName = target.FileName.ToString().Replace("[VIXENPROFILEDIR]", logDirectory).Replace('/', '\\').Replace("'", "");
+						var strFileName = target.FileName.ToString().Replace("[VIXENPROFILEDIR]", logDirectory).Replace('/', '\\').Replace("'", "");
+						var strArchiveFileName = target.FileName.ToString().Replace("[VIXENPROFILEDIR]", logDirectory).Replace('/', '\\').Replace("'", "");
 
-					target.FileName = strFileName;
-					target.ArchiveFileName = strArchiveFileName;
+						target.FileName = strFileName;
+						target.ArchiveFileName = strArchiveFileName;
 
-				}
+					}
 
-			});
+				});
+			}
 			//config.AllTargets.ToList().ForEach(t => {
 			//	var target = t as NLog.Targets.FileTarget;
 			//	if (target != null) {
