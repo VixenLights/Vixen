@@ -171,14 +171,14 @@ namespace VixenModules.Effect.Nutcracker
 					{
 						stringNum = (elementNum / pixelsPerString);
 					}
-					int pixelNum = (stringNum * pixelsPerString) -
-									(pixelsPerString - (elementNum % pixelsPerString));
-				    Color color = effect.GetPixel(pixelNum);
-					
-				    LightingValue lightingValue = new LightingValue(color,(float)((float) color.A / (float) byte.MaxValue));
-				    IIntent intent = new LightingIntent(lightingValue, lightingValue, ms50);
-					
-				    _elementData.AddIntentForElement(elements[elementNum].Id, intent, startTime);
+					int pixelNum = (stringNum * pixelsPerString) - (pixelsPerString - (elementNum % pixelsPerString));
+					Color color = effect.GetPixel(pixelNum);
+
+					if (color.A > 0 && (color.R > 0 || color.G > 0 || color.B > 0)) {
+						LightingValue lightingValue = new LightingValue(color, (float) ((float) color.A/(float) byte.MaxValue));
+						IIntent intent = new LightingIntent(lightingValue, lightingValue, ms50);
+						_elementData.AddIntentForElement(elements[elementNum].Id, intent, startTime);
+					}
 				});
 
 				startTime = startTime.Add(ms50);
