@@ -42,7 +42,8 @@ namespace VixenModules.Preview.VixenPreview
 
 		private void OnDeSelectDisplayItem(object sender, Shapes.DisplayItem displayItem)
 		{
-			treeElements.SelectedNodes = null;
+			// NO
+			//treeElements.SelectedNodes = null;
 		}
 
         private void OnElementsChanged(object sender, EventArgs e)
@@ -56,6 +57,8 @@ namespace VixenModules.Preview.VixenPreview
 		//
 		private void OnSelectDisplayItem(object sender, Shapes.DisplayItem displayItem)
 		{
+			return;
+
 			treeElements.SelectedNodes = null;
 
 			//CreateElementNodeToTreeNode();
