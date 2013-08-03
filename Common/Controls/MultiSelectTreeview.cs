@@ -270,23 +270,6 @@ namespace Common.Controls
 
 		#region Overridden Events
 
-		protected override void OnGotFocus(EventArgs e)
-		{
-			// Make sure at least one node has a selection
-			// this way we can tab to the ctrl and use the 
-			// keyboard to select nodes
-			try {
-				if (m_SelectedNode == null && TopNode != null) {
-					ToggleNode(TopNode, true);
-				}
-
-				base.OnGotFocus(e);
-			}
-			catch (Exception ex) {
-				HandleException(ex);
-			}
-		}
-
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
 			_clickedNodeWasInBounds = false;
