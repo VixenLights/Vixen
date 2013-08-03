@@ -1065,7 +1065,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							string mark = line.Split('\t')[0];
 							TimeSpan time = TimeSpan.FromSeconds(Convert.ToDouble(mark));
 							mark = time.Minutes.ToString() + ":" + time.Seconds.ToString().PadLeft(2, '0') + "." + time.Milliseconds.ToString();
-							AddMark(mark);
+							_displayedCollection.Marks.Add(time);
 						}
 						UpdateMarkListBox();
 					}
@@ -1097,22 +1097,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			return newCollection;
 		}
-
-		private void AddMark(string markText)
-		{
-			TimeSpan time;
-			bool success = TimeSpan.TryParseExact(markText, TimeFormats.PositiveFormats, null, out time);
-			if (success)
-			{
-				_displayedCollection.Marks.Add(time);
-			}
-			else
-			{
-				MessageBox.Show("Error parsing time: please use the format '<minutes>:<seconds>.<milliseconds>'",
-								"Error parsing time");
-			}
-		}
-
+		
 		private void UpdateMarkListBox()
 		{
 			_displayedCollection.Marks.Sort();

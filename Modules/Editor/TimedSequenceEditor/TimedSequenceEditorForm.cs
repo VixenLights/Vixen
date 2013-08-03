@@ -494,6 +494,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		protected void ElementAddedToRowHandler(object sender, ElementEventArgs e)
 		{
 			// not currently used
+			timelineControl.grid.ElementQueue.Add(e.Element);
 		}
 
 		protected void ElementChangedRowsHandler(object sender, ElementRowChangeEventArgs e)
