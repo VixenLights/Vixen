@@ -189,14 +189,14 @@
 			this.megatreeToolStripMenuItem.Name = "megatreeToolStripMenuItem";
 			this.megatreeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.megatreeToolStripMenuItem.Text = "MegaTree...";
-			this.megatreeToolStripMenuItem.Click += new System.EventHandler(this.megatreeToolStripMenuItem_Click_1);
+			this.megatreeToolStripMenuItem.Click += new System.EventHandler(this.megatreeToolStripMenuItem_Click);
 			// 
 			// pixelGridToolStripMenuItem
 			// 
 			this.pixelGridToolStripMenuItem.Name = "pixelGridToolStripMenuItem";
 			this.pixelGridToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.pixelGridToolStripMenuItem.Text = "Pixel Grid...";
-			this.pixelGridToolStripMenuItem.Click += new System.EventHandler(this.pixelGridToolStripMenuItem_Click_1);
+			this.pixelGridToolStripMenuItem.Click += new System.EventHandler(this.pixelGridToolStripMenuItem_Click);
 			// 
 			// contextMenuStripDragging
 			// 
