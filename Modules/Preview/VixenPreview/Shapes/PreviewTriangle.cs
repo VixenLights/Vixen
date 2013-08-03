@@ -106,7 +106,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		}
 
 		[CategoryAttribute("Position"),
-		 DisplayName("Bottom Right"),
+		 DisplayName("Point 2"),
 		 DescriptionAttribute("An triangle is defined by a 3 points of a rectangle. This is point 2.")]
 		public Point Point2
 		{
@@ -124,7 +124,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		}
 
 		[CategoryAttribute("Position"),
-		 DisplayName("Bottom Right"),
+		 DisplayName("Point 3"),
 		 DescriptionAttribute("An triangle is defined by a 3 points of a rectangle. This is point 3.")]
 		public Point Point3
 		{

@@ -1,17 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
-namespace VixenApplication.ConfigureElements
+namespace Common.Controls.ConfigureElements
 {
-	public partial class AddPixelGrid : Form
+	public partial class AddMegatree : Form
 	{
-		public AddPixelGrid()
+		public AddMegatree()
 		{
 			InitializeComponent();
 		}
@@ -28,9 +22,9 @@ namespace VixenApplication.ConfigureElements
 			Close();
 		}
 
-		public string GridName
+		public string TreeName
 		{
-			get { return textGridName.Text; }
+			get { return textTreeName.Text; }
 		}
 
 		public int PixelsPerString

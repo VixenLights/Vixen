@@ -175,10 +175,14 @@ namespace VixenApplication
 				properties.Add(new KeyValuePair<string, object>(kvp.Value, kvp.Key));
 			}
 			using (ListSelectDialog addForm = new ListSelectDialog("Add Property", (properties))) {
+				addForm.SelectionMode = SelectionMode.MultiExtended;
 				if (addForm.ShowDialog() == DialogResult.OK) {
-					_displayedNode.Properties.Add((Guid) addForm.SelectedItem);
-					PopulatePropertiesArea(_displayedNode);
+					foreach(KeyValuePair<string,object> item in addForm.SelectedItems){
 
+						_displayedNode.Properties.Add((Guid) item.Value);	
+					}
+
+					PopulatePropertiesArea(_displayedNode);
 					_changesMade = true;
 				}
 			}
@@ -317,50 +321,6 @@ namespace VixenApplication
 				}
 			}
 		}
-
-		//private void megaTreeToolStripMenuItem_Click(object sender, EventArgs e)
-		//{
-		//    TreeNode selectedTreeNode = multiSelectTreeviewElementsGroups.SelectedNode;
-		//    ElementNode selectedNode = null;
-		//    if (selectedTreeNode != null && selectedTreeNode.Tag as ElementNode != null)
-		//        selectedNode = selectedTreeNode.Tag as ElementNode;
-
-		//    ConfigureElements.AddMegatree f = new ConfigureElements.AddMegatree();
-		//    if (f.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-		//        ElementNode treeParent = AddNewNode(f.TreeName, false, selectedNode, false);
-
-		//        for (int stringNum = 0; stringNum < f.StringCount; stringNum++) {
-		//            ElementNode treeString = AddNewNode(f.TreeName + " String " + (stringNum + 1).ToString(), false, treeParent, false);
-		//            for (int pixelNum = 0; pixelNum < f.PixelsPerString; pixelNum++) {
-		//                AddNewNode(treeString.Name + "-" + (pixelNum + 1).ToString(), false, treeString, false);
-		//            }
-		//        }
-
-		//        PopulateNodeTree();
-		//    }
-		//}
-
-		//private void pixelGridToolStripMenuItem_Click(object sender, EventArgs e)
-		//{
-		//    TreeNode selectedTreeNode = multiSelectTreeviewElementsGroups.SelectedNode;
-		//    ElementNode selectedNode = null;
-		//    if (selectedTreeNode != null && selectedTreeNode.Tag as ElementNode != null)
-		//        selectedNode = selectedTreeNode.Tag as ElementNode;
-
-		//    ConfigureElements.AddPixelGrid f = new ConfigureElements.AddPixelGrid();
-		//    if (f.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-		//        ElementNode treeParent = AddNewNode(f.GridName, false, selectedNode, false);
-
-		//        for (int stringNum = 0; stringNum < f.StringCount; stringNum++) {
-		//            ElementNode treeString = AddNewNode(f.GridName + " Column " + (stringNum + 1).ToString(), false, treeParent, false);
-		//            for (int pixelNum = 0; pixelNum < f.PixelsPerString; pixelNum++) {
-		//                AddNewNode(treeString.Name + " - Row " + (pixelNum + 1).ToString(), false, treeString, false);
-		//            }
-		//        }
-
-		//        PopulateNodeTree();
-		//    }
-		//}
 	}
 
 	public class ComboBoxControllerItem

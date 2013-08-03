@@ -26,7 +26,13 @@ namespace VixenModules.Effect.Spin
 		protected override void _PreRender()
 		{
 			_elementData = new EffectIntents();
-			if (StaticColor.IsEmpty) //We have a new effect
+			CheckForNullData();
+			DoRendering();
+		}
+
+		private void CheckForNullData()
+		{
+			if (_data.StaticColor.IsEmpty || _data.ColorGradient == null) //We have a new effect
 			{
 				//Try to set a default color gradient from our available colors if we have discrete colors
 				HashSet<Color> validColors = new HashSet<Color>();
@@ -36,7 +42,6 @@ namespace VixenModules.Effect.Spin
 				//Set a default color 
 				StaticColor = validColors.DefaultIfEmpty(Color.White).First();
 			}
-			DoRendering();
 		}
 
 		protected override EffectIntents _Render()
@@ -167,7 +172,12 @@ namespace VixenModules.Effect.Spin
 		[Value]
 		public Color StaticColor
 		{
-			get { return _data.StaticColor; }
+			get
+			{
+				CheckForNullData();
+				return _data.StaticColor;
+			}
+
 			set
 			{
 				_data.StaticColor = value;
@@ -178,7 +188,11 @@ namespace VixenModules.Effect.Spin
 		[Value]
 		public ColorGradient ColorGradient
 		{
-			get { return _data.ColorGradient; }
+			get
+			{
+				CheckForNullData();
+				return _data.ColorGradient;
+			}
 			set
 			{
 				_data.ColorGradient = value;
