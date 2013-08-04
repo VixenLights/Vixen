@@ -157,12 +157,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			_bottomRight.Y = Y;
 		}
 
-		public int VisibleStringCount()
-		{
-			int count = Convert.ToInt32((double) _stringCount*((double) Degrees/360.0));
-			return count;
-		}
-
 		#region "Properties'
 
 		public int TopHeight
