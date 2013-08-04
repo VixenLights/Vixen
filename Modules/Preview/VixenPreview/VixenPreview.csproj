@@ -54,14 +54,14 @@
       <Name>Color</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\Property\PositionXYZ\Location.csproj">
-      <Project>{7d5d4be4-576a-4092-a3e2-1a6f27cdc213}</Project>
-      <Name>Location</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\Common\FastPixel\FastPixel.csproj">
       <Project>{4EA5025B-5FFC-4FF8-9001-D0F64655BFB6}</Project>
       <Name>FastPixel</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Property\Location\Location.csproj">
+      <Project>{7D5D4BE4-576A-4092-A3E2-1A6F27CDC213}</Project>
+      <Name>Location</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>

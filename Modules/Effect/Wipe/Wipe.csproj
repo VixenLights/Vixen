@@ -63,8 +63,8 @@
       <Name>Curves</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\Property\PositionXYZ\Location.csproj">
-      <Project>{7d5d4be4-576a-4092-a3e2-1a6f27cdc213}</Project>
+    <ProjectReference Include="..\..\Property\Location\Location.csproj">
+      <Project>{7D5D4BE4-576A-4092-A3E2-1A6F27CDC213}</Project>
       <Name>Location</Name>
       <Private>False</Private>
     </ProjectReference>

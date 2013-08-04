@@ -34,6 +34,7 @@ namespace VixenApplication
 		{
 			PopulateFormWithNode(null, true);
 			elementTree.treeviewAfterSelect += elementTree_AfterSelect;
+			elementTree.treeviewDeselected += elementTree_treeviewDeselected;
 			elementTree.ElementsChanged += elementTree_ElementsChanged;
 		}
 
@@ -224,6 +225,11 @@ namespace VixenApplication
 		#region Events
 
 		private void elementTree_AfterSelect(object sender, TreeViewEventArgs e)
+		{
+			PopulateFormWithNode(elementTree.SelectedNode, false);
+		}
+
+		void elementTree_treeviewDeselected(object sender, EventArgs e)
 		{
 			PopulateFormWithNode(elementTree.SelectedNode, false);
 		}
