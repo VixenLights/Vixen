@@ -736,7 +736,7 @@ namespace Common.Controls
 		}
 
 
-		private void megatreeToolStripMenuItem_Click_1(object sender, EventArgs e)
+		private void megatreeToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			ConfigureElements.AddMegatree f = new ConfigureElements.AddMegatree();
 			if (f.ShowDialog() == DialogResult.OK) {
@@ -753,7 +753,7 @@ namespace Common.Controls
 			}
 		}
 
-		private void pixelGridToolStripMenuItem_Click_1(object sender, EventArgs e)
+		private void pixelGridToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			ConfigureElements.AddPixelGrid f = new ConfigureElements.AddPixelGrid();
 			if (f.ShowDialog() == DialogResult.OK) {

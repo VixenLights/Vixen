@@ -102,6 +102,11 @@
       <Name>VixenPreview</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\Property\Location\Location.csproj">
+      <Project>{7D5D4BE4-576A-4092-A3E2-1A6F27CDC213}</Project>
+      <Name>Location</Name>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
