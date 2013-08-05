@@ -24,12 +24,18 @@
 		/// </summary>
 		private void InitializeComponent() {
 			this.components = new System.ComponentModel.Container();
-			VixenModules.App.Curves.Curve curve13 = new VixenModules.App.Curves.Curve();
-			VixenModules.App.ColorGradients.ColorGradient colorGradient13 = new VixenModules.App.ColorGradients.ColorGradient();
+			VixenModules.App.Curves.Curve curve2 = new VixenModules.App.Curves.Curve();
+			VixenModules.App.ColorGradients.ColorGradient colorGradient2 = new VixenModules.App.ColorGradients.ColorGradient();
 			this.groupBoxPulse = new System.Windows.Forms.GroupBox();
+			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.radioNumPasses = new System.Windows.Forms.RadioButton();
+			this.radioPulseLength = new System.Windows.Forms.RadioButton();
+			this.label2 = new System.Windows.Forms.Label();
+			this.numericUpDownPulseWidth = new System.Windows.Forms.NumericUpDown();
+			this.numericUpDownNumPasses = new System.Windows.Forms.NumericUpDown();
+			this.numericUpDownPulseLength = new System.Windows.Forms.NumericUpDown();
 			this.label1 = new System.Windows.Forms.Label();
 			this.curveTypeEditorControlEachPulse = new VixenModules.EffectEditor.CurveTypeEditor.CurveTypeEditorControl();
-			this.numericUpDownPulseLength = new System.Windows.Forms.NumericUpDown();
 			this.groupBoxColor = new System.Windows.Forms.GroupBox();
 			this.colorGradientTypeEditorControlGradient = new VixenModules.EffectEditor.ColorGradientTypeEditor.ColorGradientTypeEditorControl();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -37,20 +43,14 @@
 			this.radioWipeRight = new System.Windows.Forms.RadioButton();
 			this.radioWipeDown = new System.Windows.Forms.RadioButton();
 			this.radioWipeUp = new System.Windows.Forms.RadioButton();
-			this.groupBox2 = new System.Windows.Forms.GroupBox();
-			this.numericUpDownNumPasses = new System.Windows.Forms.NumericUpDown();
-			this.numericUpDownPulseWidth = new System.Windows.Forms.NumericUpDown();
-			this.label2 = new System.Windows.Forms.Label();
 			this.toolTipWipe = new System.Windows.Forms.ToolTip(this.components);
-			this.radioPulseLength = new System.Windows.Forms.RadioButton();
-			this.radioNumPasses = new System.Windows.Forms.RadioButton();
 			this.groupBoxPulse.SuspendLayout();
+			this.groupBox2.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numericUpDownPulseWidth)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numericUpDownNumPasses)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownPulseLength)).BeginInit();
 			this.groupBoxColor.SuspendLayout();
 			this.groupBox1.SuspendLayout();
-			this.groupBox2.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.numericUpDownNumPasses)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.numericUpDownPulseWidth)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// groupBoxPulse
@@ -65,27 +65,71 @@
 			this.groupBoxPulse.TabStop = false;
 			this.groupBoxPulse.Text = "Pulse";
 			// 
-			// label1
+			// groupBox2
 			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(17, 45);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(89, 13);
-			this.label1.TabIndex = 15;
-			this.label1.Text = "Individual Pulses:";
+			this.groupBox2.Controls.Add(this.radioNumPasses);
+			this.groupBox2.Controls.Add(this.radioPulseLength);
+			this.groupBox2.Controls.Add(this.label2);
+			this.groupBox2.Controls.Add(this.numericUpDownPulseWidth);
+			this.groupBox2.Controls.Add(this.numericUpDownNumPasses);
+			this.groupBox2.Controls.Add(this.numericUpDownPulseLength);
+			this.groupBox2.Location = new System.Drawing.Point(13, 95);
+			this.groupBox2.Name = "groupBox2";
+			this.groupBox2.Size = new System.Drawing.Size(242, 122);
+			this.groupBox2.TabIndex = 17;
+			this.groupBox2.TabStop = false;
+			this.groupBox2.Text = "Pulse Length";
 			// 
-			// curveTypeEditorControlEachPulse
+			// radioNumPasses
 			// 
-			curve13.IsCurrentLibraryCurve = false;
-			curve13.LibraryReferenceName = "";
-			this.curveTypeEditorControlEachPulse.CurveValue = curve13;
-			this.curveTypeEditorControlEachPulse.EffectParameterValues = new object[] {
-        ((object)(curve13))};
-			this.curveTypeEditorControlEachPulse.Location = new System.Drawing.Point(112, 9);
-			this.curveTypeEditorControlEachPulse.Name = "curveTypeEditorControlEachPulse";
-			this.curveTypeEditorControlEachPulse.Size = new System.Drawing.Size(150, 80);
-			this.curveTypeEditorControlEachPulse.TabIndex = 14;
-			this.curveTypeEditorControlEachPulse.TargetEffect = null;
+			this.radioNumPasses.AutoSize = true;
+			this.radioNumPasses.Location = new System.Drawing.Point(8, 56);
+			this.radioNumPasses.Name = "radioNumPasses";
+			this.radioNumPasses.Size = new System.Drawing.Size(107, 17);
+			this.radioNumPasses.TabIndex = 23;
+			this.radioNumPasses.Text = "Number of Wipes";
+			this.toolTipWipe.SetToolTip(this.radioNumPasses, "Number of wipes across the effect time.");
+			this.radioNumPasses.UseVisualStyleBackColor = true;
+			this.radioNumPasses.CheckedChanged += new System.EventHandler(this.radioNumPasses_CheckedChanged);
+			// 
+			// radioPulseLength
+			// 
+			this.radioPulseLength.AutoSize = true;
+			this.radioPulseLength.Checked = true;
+			this.radioPulseLength.Location = new System.Drawing.Point(8, 19);
+			this.radioPulseLength.Name = "radioPulseLength";
+			this.radioPulseLength.Size = new System.Drawing.Size(109, 17);
+			this.radioPulseLength.TabIndex = 22;
+			this.radioPulseLength.TabStop = true;
+			this.radioPulseLength.Text = "Pulse Length (ms)";
+			this.toolTipWipe.SetToolTip(this.radioPulseLength, "Specific pulse width. May result in partial wipe at end of the effect.");
+			this.radioPulseLength.UseVisualStyleBackColor = true;
+			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(13, 82);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(104, 13);
+			this.label2.TabIndex = 21;
+			this.label2.Text = "Pulse Width Percent";
+			this.toolTipWipe.SetToolTip(this.label2, "Pulse Width as a percent of the effect time.");
+			// 
+			// numericUpDownPulseWidth
+			// 
+			this.numericUpDownPulseWidth.Enabled = false;
+			this.numericUpDownPulseWidth.Location = new System.Drawing.Point(123, 80);
+			this.numericUpDownPulseWidth.Name = "numericUpDownPulseWidth";
+			this.numericUpDownPulseWidth.Size = new System.Drawing.Size(48, 20);
+			this.numericUpDownPulseWidth.TabIndex = 20;
+			// 
+			// numericUpDownNumPasses
+			// 
+			this.numericUpDownNumPasses.Enabled = false;
+			this.numericUpDownNumPasses.Location = new System.Drawing.Point(123, 53);
+			this.numericUpDownNumPasses.Name = "numericUpDownNumPasses";
+			this.numericUpDownNumPasses.Size = new System.Drawing.Size(48, 20);
+			this.numericUpDownNumPasses.TabIndex = 19;
 			// 
 			// numericUpDownPulseLength
 			// 
@@ -114,6 +158,28 @@
             0,
             0});
 			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(17, 45);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(89, 13);
+			this.label1.TabIndex = 15;
+			this.label1.Text = "Individual Pulses:";
+			// 
+			// curveTypeEditorControlEachPulse
+			// 
+			curve2.IsCurrentLibraryCurve = false;
+			curve2.LibraryReferenceName = "";
+			this.curveTypeEditorControlEachPulse.CurveValue = curve2;
+			this.curveTypeEditorControlEachPulse.EffectParameterValues = new object[] {
+        ((object)(curve2))};
+			this.curveTypeEditorControlEachPulse.Location = new System.Drawing.Point(112, 9);
+			this.curveTypeEditorControlEachPulse.Name = "curveTypeEditorControlEachPulse";
+			this.curveTypeEditorControlEachPulse.Size = new System.Drawing.Size(150, 80);
+			this.curveTypeEditorControlEachPulse.TabIndex = 14;
+			this.curveTypeEditorControlEachPulse.TargetEffect = null;
+			// 
 			// groupBoxColor
 			// 
 			this.groupBoxColor.Controls.Add(this.colorGradientTypeEditorControlGradient);
@@ -126,13 +192,13 @@
 			// 
 			// colorGradientTypeEditorControlGradient
 			// 
-			colorGradient13.Gammacorrected = false;
-			colorGradient13.IsCurrentLibraryGradient = false;
-			colorGradient13.LibraryReferenceName = "";
-			colorGradient13.Title = null;
-			this.colorGradientTypeEditorControlGradient.ColorGradientValue = colorGradient13;
+			colorGradient2.Gammacorrected = false;
+			colorGradient2.IsCurrentLibraryGradient = false;
+			colorGradient2.LibraryReferenceName = "";
+			colorGradient2.Title = null;
+			this.colorGradientTypeEditorControlGradient.ColorGradientValue = colorGradient2;
 			this.colorGradientTypeEditorControlGradient.EffectParameterValues = new object[] {
-        ((object)(colorGradient13))};
+        ((object)(colorGradient2))};
 			this.colorGradientTypeEditorControlGradient.Location = new System.Drawing.Point(6, 19);
 			this.colorGradientTypeEditorControlGradient.Name = "colorGradientTypeEditorControlGradient";
 			this.colorGradientTypeEditorControlGradient.Size = new System.Drawing.Size(249, 61);
@@ -197,80 +263,9 @@
 			this.radioWipeUp.Text = "Up";
 			this.radioWipeUp.UseVisualStyleBackColor = true;
 			// 
-			// groupBox2
-			// 
-			this.groupBox2.Controls.Add(this.radioNumPasses);
-			this.groupBox2.Controls.Add(this.radioPulseLength);
-			this.groupBox2.Controls.Add(this.label2);
-			this.groupBox2.Controls.Add(this.numericUpDownPulseWidth);
-			this.groupBox2.Controls.Add(this.numericUpDownNumPasses);
-			this.groupBox2.Controls.Add(this.numericUpDownPulseLength);
-			this.groupBox2.Location = new System.Drawing.Point(13, 95);
-			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(242, 122);
-			this.groupBox2.TabIndex = 17;
-			this.groupBox2.TabStop = false;
-			this.groupBox2.Text = "Pulse Length";
-			// 
-			// numericUpDownNumPasses
-			// 
-			this.numericUpDownNumPasses.Enabled = false;
-			this.numericUpDownNumPasses.Location = new System.Drawing.Point(123, 53);
-			this.numericUpDownNumPasses.Name = "numericUpDownNumPasses";
-			this.numericUpDownNumPasses.Size = new System.Drawing.Size(48, 20);
-			this.numericUpDownNumPasses.TabIndex = 19;
-			// 
-			// numericUpDownPulseWidth
-			// 
-			this.numericUpDownPulseWidth.Enabled = false;
-			this.numericUpDownPulseWidth.Location = new System.Drawing.Point(123, 80);
-			this.numericUpDownPulseWidth.Maximum = new decimal(new int[] {
-            50,
-            0,
-            0,
-            0});
-			this.numericUpDownPulseWidth.Name = "numericUpDownPulseWidth";
-			this.numericUpDownPulseWidth.Size = new System.Drawing.Size(48, 20);
-			this.numericUpDownPulseWidth.TabIndex = 20;
-			// 
-			// label2
-			// 
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(13, 82);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(104, 13);
-			this.label2.TabIndex = 21;
-			this.label2.Text = "Pulse Width Percent";
-			this.toolTipWipe.SetToolTip(this.label2, "Pulse Width as a percent of the effect time.");
-			// 
 			// toolTipWipe
 			// 
 			this.toolTipWipe.ToolTipTitle = "Wipe Configuration";
-			// 
-			// radioPulseLength
-			// 
-			this.radioPulseLength.AutoSize = true;
-			this.radioPulseLength.Checked = true;
-			this.radioPulseLength.Location = new System.Drawing.Point(8, 19);
-			this.radioPulseLength.Name = "radioPulseLength";
-			this.radioPulseLength.Size = new System.Drawing.Size(109, 17);
-			this.radioPulseLength.TabIndex = 22;
-			this.radioPulseLength.TabStop = true;
-			this.radioPulseLength.Text = "Pulse Length (ms)";
-			this.toolTipWipe.SetToolTip(this.radioPulseLength, "Specific pulse width. May result in partial wipe at end of the effect.");
-			this.radioPulseLength.UseVisualStyleBackColor = true;
-			// 
-			// radioNumPasses
-			// 
-			this.radioNumPasses.AutoSize = true;
-			this.radioNumPasses.Location = new System.Drawing.Point(8, 56);
-			this.radioNumPasses.Name = "radioNumPasses";
-			this.radioNumPasses.Size = new System.Drawing.Size(107, 17);
-			this.radioNumPasses.TabIndex = 23;
-			this.radioNumPasses.Text = "Number of Wipes";
-			this.toolTipWipe.SetToolTip(this.radioNumPasses, "Number of wipes across the effect time.");
-			this.radioNumPasses.UseVisualStyleBackColor = true;
-			this.radioNumPasses.CheckedChanged += new System.EventHandler(this.radioNumPasses_CheckedChanged);
 			// 
 			// WipeEditorControl
 			// 
@@ -283,14 +278,14 @@
 			this.Size = new System.Drawing.Size(277, 394);
 			this.groupBoxPulse.ResumeLayout(false);
 			this.groupBoxPulse.PerformLayout();
+			this.groupBox2.ResumeLayout(false);
+			this.groupBox2.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numericUpDownPulseWidth)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numericUpDownNumPasses)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownPulseLength)).EndInit();
 			this.groupBoxColor.ResumeLayout(false);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
-			this.groupBox2.ResumeLayout(false);
-			this.groupBox2.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.numericUpDownNumPasses)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.numericUpDownPulseWidth)).EndInit();
 			this.ResumeLayout(false);
 
 		}
