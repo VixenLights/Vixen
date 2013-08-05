@@ -154,7 +154,7 @@ namespace VixenModules.Effect.Wipe {
 				TimeSpan effectTime = TimeSpan.Zero;
 				if (WipeByCount) {
 					int count = 0;
-					double pulseSegment = TimeSpan.TotalMilliseconds * (PulsePercent / 100) ;
+					double pulseSegment = (TimeSpan.TotalMilliseconds / PassCount) * (PulsePercent / 100) ;
 					TimeSpan intervalTime = TimeSpan.FromMilliseconds((TimeSpan.TotalMilliseconds - pulseSegment) / (renderNodes.Count() * PassCount));
 					TimeSpan segmentPulse = TimeSpan.FromMilliseconds(pulseSegment);
 
