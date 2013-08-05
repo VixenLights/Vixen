@@ -16,6 +16,7 @@ namespace VixenModules.Effect.Twinkle
 	public class Twinkle : EffectModuleInstanceBase
 	{
 		private static Random _random = new Random();
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		private TwinkleData _data;
 		private EffectIntents _elementData = null;
@@ -317,7 +318,7 @@ namespace VixenModules.Effect.Twinkle
 							if (discreteColors) {
 								double range = endPos - startPos;
 								if (range <= 0.0) {
-									VixenSystem.Logging.Error("Twinkle: bad range: " + range + " (SP=" + startPos + ", EP=" + endPos + ")");
+									Logging.Error("Twinkle: bad range: " + range + " (SP=" + startPos + ", EP=" + endPos + ")");
 									break;
 								}
 

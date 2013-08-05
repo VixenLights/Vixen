@@ -25,8 +25,7 @@ using System.Reflection;
 using System.Windows.Forms;
 using System.Data;
 
-namespace ZedGraph
-{
+namespace ZedGraph {
 	/// <summary> 
 	///  
 	/// </summary> 
@@ -36,8 +35,7 @@ namespace ZedGraph
 	/// <author>John Champion</author> 
 	/// <version> $Revision: 3.7 $ $Date: 2007-11-05 04:33:26 $ </version> 
 	[Serializable]
-	public class DataSourcePointList : IPointList
-	{
+	public class DataSourcePointList : IPointList {
 		private BindingSource _bindingSource;
 
 		//private object _dataSource = null; 
@@ -55,10 +53,8 @@ namespace ZedGraph
 		/// <param name="index">The ordinal position (zero-based) of the 
 		/// <see cref="PointPair"/> object to be accessed.</param> 
 		/// <value>A <see cref="PointPair"/> object reference.</value> 
-		public PointPair this[int index]
-		{
-			get
-			{
+		public PointPair this[int index] {
+			get {
 				if (index < 0 || index >= _bindingSource.Count)
 					throw new System.ArgumentOutOfRangeException("Error: Index out of range");
 
@@ -78,10 +74,8 @@ namespace ZedGraph
 		/// <summary> 
 		/// gets the number of points available in the list 
 		/// </summary> 
-		public int Count
-		{
-			get
-			{
+		public int Count {
+			get {
 				if (_bindingSource != null)
 					return _bindingSource.Count;
 				else
@@ -99,8 +93,7 @@ namespace ZedGraph
 		/// to the name of the datatable within the 
 		/// <see cref="System.Windows.Forms.BindingSource.DataSource" />, 
 		/// if applicable.</remarks> 
-		public BindingSource BindingSource
-		{
+		public BindingSource BindingSource {
 			get { return _bindingSource; }
 		}
 
@@ -111,8 +104,7 @@ namespace ZedGraph
 		/// This property is just an alias for 
 		/// <see cref="System.Windows.Forms.BindingSource.DataSource" />. 
 		/// </remarks> 
-		public object DataSource
-		{
+		public object DataSource {
 			get { return _bindingSource.DataSource; }
 			set { _bindingSource.DataSource = value; }
 		}
@@ -123,8 +115,7 @@ namespace ZedGraph
 		/// </summary> 
 		/// <remarks>Set this to null leave the X data values set to <see cref="PointPairBase.Missing" /> 
 		/// </remarks> 
-		public string XDataMember
-		{
+		public string XDataMember {
 			get { return _xDataMember; }
 			set { _xDataMember = value; }
 		}
@@ -135,8 +126,7 @@ namespace ZedGraph
 		/// </summary> 
 		/// <remarks>Set this to null leave the Y data values set to <see cref="PointPairBase.Missing" /> 
 		/// </remarks> 
-		public string YDataMember
-		{
+		public string YDataMember {
 			get { return _yDataMember; }
 			set { _yDataMember = value; }
 		}
@@ -147,8 +137,7 @@ namespace ZedGraph
 		/// </summary> 
 		/// <remarks>Set this to null leave the Z data values set to <see cref="PointPairBase.Missing" /> 
 		/// </remarks> 
-		public string ZDataMember
-		{
+		public string ZDataMember {
 			get { return _zDataMember; }
 			set { _zDataMember = value; }
 		}
@@ -161,8 +150,7 @@ namespace ZedGraph
 		/// data, then the tags may be used as tooltips using the 
 		/// <see cref="ZedGraphControl.IsShowPointValues" /> option. 
 		/// </remarks> 
-		public string TagDataMember
-		{
+		public string TagDataMember {
 			get { return _tagDataMember; }
 			set { _tagDataMember = value; }
 		}
@@ -174,8 +162,7 @@ namespace ZedGraph
 		/// <summary> 
 		/// Default Constructor 
 		/// </summary> 
-		public DataSourcePointList()
-		{
+		public DataSourcePointList() {
 			_bindingSource = new BindingSource();
 			_xDataMember = string.Empty;
 			_yDataMember = string.Empty;
@@ -188,17 +175,16 @@ namespace ZedGraph
 		/// existing <see cref="DataSourcePointList" /> 
 		/// </summary> 
 		public DataSourcePointList(DataSourcePointList rhs)
-			: this()
-		{
+			: this() {
 			_bindingSource.DataSource = rhs._bindingSource.DataSource;
 			if (rhs._xDataMember != null)
-				_xDataMember = (string) rhs._xDataMember.Clone();
+				_xDataMember = (string)rhs._xDataMember.Clone();
 			if (rhs._yDataMember != null)
-				_yDataMember = (string) rhs._yDataMember.Clone();
+				_yDataMember = (string)rhs._yDataMember.Clone();
 			if (rhs._zDataMember != null)
-				_zDataMember = (string) rhs._zDataMember.Clone();
+				_zDataMember = (string)rhs._zDataMember.Clone();
 			if (rhs._tagDataMember != null)
-				_tagDataMember = (string) rhs._tagDataMember.Clone();
+				_tagDataMember = (string)rhs._tagDataMember.Clone();
 		}
 
 		/// <summary> 
@@ -206,8 +192,7 @@ namespace ZedGraph
 		/// calling the typed version of <see cref="Clone" /> 
 		/// </summary> 
 		/// <returns>A deep copy of this object</returns> 
-		object ICloneable.Clone()
-		{
+		object ICloneable.Clone() {
 			return this.Clone();
 		}
 
@@ -215,8 +200,7 @@ namespace ZedGraph
 		/// Typesafe, deep-copy clone method. 
 		/// </summary> 
 		/// <returns>A new, independent copy of this class</returns> 
-		public DataSourcePointList Clone()
-		{
+		public DataSourcePointList Clone() {
 			return new DataSourcePointList(this);
 		}
 
@@ -233,8 +217,7 @@ namespace ZedGraph
 		/// to be extracted</param> 
 		/// <param name="index">The zero-based index of the point to be extracted. 
 		/// </param> 
-		private double GetDouble(object row, string dataMember, int index)
-		{
+		private double GetDouble(object row, string dataMember, int index) {
 			if (dataMember == null || dataMember == string.Empty)
 				return index + 1;
 
@@ -251,17 +234,15 @@ namespace ZedGraph
 			else if (drv != null)
 				val = drv[dataMember];
 			else if (pInfo == null)
-				throw new System.Exception("Can't find DataMember '" + dataMember + "' in DataSource");
+				throw new System.Exception(string.Format("Can't find DataMember '{0}' in DataSource", dataMember));
 
-			// if ( val == null ) 
-			// throw new System.Exception( "Can't find DataMember '" + dataMember + "' in DataSource" ); 
 
 			double x;
 			if (val == null || val == DBNull.Value)
 				x = PointPair.Missing;
-			else if (val.GetType() == typeof (DateTime))
-				x = ((DateTime) val).ToOADate();
-			else if (val.GetType() == typeof (string))
+			else if (val.GetType() == typeof(DateTime))
+				x = ((DateTime)val).ToOADate();
+			else if (val.GetType() == typeof(string))
 				x = index + 1;
 			else
 				x = Convert.ToDouble(val);
@@ -276,8 +257,7 @@ namespace ZedGraph
 		/// <param name="row">The data object from which to extract the object</param> 
 		/// <param name="dataMember">The property name or column name of the object 
 		/// to be extracted</param> 
-		private object GetObject(object row, string dataMember)
-		{
+		private object GetObject(object row, string dataMember) {
 			if (dataMember == null || dataMember == string.Empty)
 				return null;
 
@@ -292,7 +272,7 @@ namespace ZedGraph
 				val = drv[dataMember];
 
 			if (val == null)
-				throw new System.Exception("Can't find DataMember '" + dataMember + "' in DataSource");
+				throw new System.Exception(string.Format("Can't find DataMember '{0}' in DataSource", dataMember));
 
 			return val;
 		}

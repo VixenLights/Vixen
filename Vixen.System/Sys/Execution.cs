@@ -5,99 +5,80 @@ using Vixen.Execution.Context;
 using Vixen.Sys.Managers;
 using Vixen.Sys.State.Execution;
 
-namespace Vixen.Sys
-{
-	public class Execution
-	{
+namespace Vixen.Sys {
+	public class Execution {
 		internal static SystemClock SystemTime = new SystemClock();
 		private static ExecutionStateEngine _state;
 		private static ControllerUpdateAdjudicator _updateAdjudicator;
-
+		
 		// These are system-level events.
-		public static event EventHandler NodesChanged
-		{
+		public static event EventHandler NodesChanged {
 			add { NodeManager.NodesChanged += value; }
 			remove { NodeManager.NodesChanged -= value; }
 		}
 
-		public static event EventHandler ExecutionStateChanged
-		{
+		public static event EventHandler ExecutionStateChanged {
 			add { _State.StateChanged += value; }
 			remove { _State.StateChanged -= value; }
 		}
 
-		public static void OpenExecution()
-		{
+		public static void OpenExecution() {
 			_State.ToOpen();
 		}
 
-		public static void CloseExecution()
-		{
+		public static void CloseExecution() {
 			_State.ToClosed();
 		}
 
-		public static void OpenTest()
-		{
+		public static void OpenTest() {
 			_State.ToTest();
 		}
 
-		public static void CloseTest()
-		{
+		public static void CloseTest() {
 			_State.ToClosed();
 		}
 
-		internal static void Startup()
-		{
+		internal static void Startup() {
 			// Create the system context for live execution.
 			ContextBase systemContext = VixenSystem.Contexts.GetSystemLiveContext();
 			systemContext.Start();
 		}
 
-		internal static void Shutdown()
-		{
+		internal static void Shutdown() {
 		}
 
-		private static ControllerUpdateAdjudicator _UpdateAdjudicator
-		{
-			get
-			{
+		private static ControllerUpdateAdjudicator _UpdateAdjudicator {
+			get {
 				//*** user-configurable threshold value
 				return _updateAdjudicator ?? (_updateAdjudicator = new ControllerUpdateAdjudicator(10));
 			}
 		}
 
-		private static ExecutionStateEngine _State
-		{
+		private static ExecutionStateEngine _State {
 			get { return _state ?? (_state = new ExecutionStateEngine()); }
 		}
 
-		public static string State
-		{
+		public static string State {
 			get { return _State.CurrentState.Name; }
 		}
 
-		public static bool IsOpen
-		{
+		public static bool IsOpen {
 			get { return State == OpenState.StateName || State == OpeningState.StateName; }
 		}
 
-		public static bool IsClosed
-		{
+		public static bool IsClosed {
 			get { return State == ClosedState.StateName || State == ClosingState.StateName; }
 		}
 
-		public static bool IsInTest
-		{
+		public static bool IsInTest {
 			get { return State == TestOpeningState.StateName || State == TestOpenState.StateName; }
 		}
 
-		public static TimeSpan CurrentExecutionTime
-		{
+		public static TimeSpan CurrentExecutionTime {
 			get { return (SystemTime.IsRunning) ? SystemTime.Position : TimeSpan.Zero; }
 		}
 
-		public static string CurrentExecutionTimeString
-		{
+		public static string CurrentExecutionTimeString {
 			get { return CurrentExecutionTime.ToString("m\\:ss\\.fff"); }
 		}
 
@@ -107,8 +88,7 @@ namespace Vixen.Sys
 		/// <param name="sequence"></param>
 		/// <param name="contextName"></param>
 		/// <returns>The resulting length of the queue.  0 if it cannot be added.</returns>
-		public static int QueueSequence(ISequence sequence, string contextName = null)
-		{
+		public static int QueueSequence(ISequence sequence, string contextName = null) {
 			// Look for an execution context with that name.
 			IContext context =
 				VixenSystem.Contexts.FirstOrDefault(x => x.Name.Equals(contextName, StringComparison.OrdinalIgnoreCase));
@@ -117,7 +97,7 @@ namespace Vixen.Sys
 				// Context does not exist.
 				// The context must be created and managed since the user is not doing it.
 				context = VixenSystem.Contexts.CreateSequenceContext(new ContextFeatures(ContextCaching.SequenceLevelCaching),
-				                                                     sequence);
+																	 sequence);
 				// When the program ends, release the context.
 				context.ContextEnded += (sender, e) => VixenSystem.Contexts.ReleaseContext(context);
 				context.Start();
@@ -138,8 +118,7 @@ namespace Vixen.Sys
 			return 0;
 		}
 
-		public static bool UpdateState()
-		{
+		public static bool UpdateState() {
 			bool allowUpdate = _UpdateAdjudicator.PetitionForUpdate();
 			if (allowUpdate) {
 				VixenSystem.Contexts.Update();

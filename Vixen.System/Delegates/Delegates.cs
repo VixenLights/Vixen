@@ -10,5 +10,7 @@ namespace Vixen
 		public delegate void GenericDelegate();
 
 		public delegate void GenericValue(object dyn);
+
+		public delegate void GenericBool(bool val);
 	}
 }

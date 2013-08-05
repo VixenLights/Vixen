@@ -265,7 +265,7 @@ namespace ZedGraph
 		/// <summary>
 		/// Default constructor for the class.  Sets the <see cref="PaneBase.Rect"/> to (0, 0, 500, 375).
 		/// </summary>
-		public MasterPane() : this("", new RectangleF(0, 0, 500, 375))
+		public MasterPane() : this(string.Empty, new RectangleF(0, 0, 500, 375))
 		{
 		}
 

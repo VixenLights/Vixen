@@ -9,23 +9,21 @@ using Vixen.Sys;
 using Vixen.Module.Property;
 using System.Drawing;
 
-namespace Vixen.Sys
-{
+namespace Vixen.Sys {
 	/// <summary>
 	/// A logical node that encapsulates a single Element or a branch/group of other ElementNodes.
 	/// </summary>
 	[Serializable]
-	public class ElementNode : GroupNode<Element>, IEqualityComparer<ElementNode>
-	{
+	public class ElementNode : GroupNode<Element>, IEqualityComparer<ElementNode> {
 		// Making this static so there doesn't have to be potentially thousands of
 		// subscriptions from the node manager.
 		public static event EventHandler Changed;
-
+		//Logger Class
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		#region Constructors
 
 		internal ElementNode(Guid id, string name, Element element, IEnumerable<ElementNode> content)
-			: base(name, content)
-		{
+			: base(name, content) {
 			if (VixenSystem.Nodes.ElementNodeExists(id)) {
 				throw new InvalidOperationException("Trying to create a ElementNode that already exists.");
 			}
@@ -38,39 +36,32 @@ namespace Vixen.Sys
 		}
 
 		internal ElementNode(string name, Element element, IEnumerable<ElementNode> content)
-			: this(Guid.NewGuid(), name, element, content)
-		{
+			: this(Guid.NewGuid(), name, element, content) {
 		}
 
 		internal ElementNode(string name, IEnumerable<ElementNode> content)
-			: this(name, null, content)
-		{
+			: this(name, null, content) {
 		}
 
 		private ElementNode(Guid id, string name, Element element, params ElementNode[] content)
-			: this(id, name, element, content as IEnumerable<ElementNode>)
-		{
+			: this(id, name, element, content as IEnumerable<ElementNode>) {
 		}
 
 		internal ElementNode(string name, Element element, params ElementNode[] content)
-			: this(name, element, content as IEnumerable<ElementNode>)
-		{
+			: this(name, element, content as IEnumerable<ElementNode>) {
 		}
 
 		internal ElementNode(string name, params ElementNode[] content)
-			: this(name, null, content)
-		{
+			: this(name, null, content) {
 		}
 
 		#endregion
 
 		private Element _element;
 
-		public Element Element
-		{
+		public Element Element {
 			get { return _element; }
-			set
-			{
+			set {
 				if (_element != null) {
 					VixenSystem.Elements.RemoveElement(_element);
 				}
@@ -81,9 +72,8 @@ namespace Vixen.Sys
 					// this Element should be unique to this ElementNode. If it already exists in the element -> ElementNode
 					// mapping in the Element Manager, something Very Bad (tm) has happened.
 					if (VixenSystem.Elements.GetElementNodeForElement(value) != null) {
-						VixenSystem.Logging.Error("ElementNode: assigning element (id: " + value.Id + ") to this ElementNode (id: " + Id +
-						                          "), but it already exists in another ElementNode! (id: " +
-						                          VixenSystem.Elements.GetElementNodeForElement(value).Id + ")");
+						Logging.Error(string.Format("ElementNode: assigning element (id: {0}) to this ElementNode (id: {1}), but it already exists in another ElementNode! (id: {2})", value.Id, Id, VixenSystem.Elements.GetElementNodeForElement(value).Id));
+
 					}
 
 					VixenSystem.Elements.SetElementNodeForElement(_element, this);
@@ -93,11 +83,9 @@ namespace Vixen.Sys
 
 		public Guid Id { get; private set; }
 
-		public override string Name
-		{
+		public override string Name {
 			get { return base.Name; }
-			set
-			{
+			set {
 				base.Name = value;
 				if (_element != null) {
 					_element.Name = value;
@@ -105,34 +93,28 @@ namespace Vixen.Sys
 			}
 		}
 
-		public new ElementNode Find(string childName)
-		{
+		public new ElementNode Find(string childName) {
 			return base.Find(childName) as ElementNode;
 		}
 
-		public new IEnumerable<ElementNode> Children
-		{
+		public new IEnumerable<ElementNode> Children {
 			get { return base.Children.Cast<ElementNode>(); }
 		}
 
-		public new IEnumerable<ElementNode> Parents
-		{
+		public new IEnumerable<ElementNode> Parents {
 			get { return base.Parents.Cast<ElementNode>(); }
 		}
 
-		public bool Masked
-		{
+		public bool Masked {
 			get { return this.All(x => x.Masked); }
-			set
-			{
+			set {
 				foreach (Element element in this) {
 					element.Masked = value;
 				}
 			}
 		}
 
-		public bool IsLeaf
-		{
+		public bool IsLeaf {
 			get { return !base.Children.Any(); }
 		}
 
@@ -141,8 +123,7 @@ namespace Vixen.Sys
 		/// node itself, and any parent nodes it has. It also includes any immediate child nodes.
 		/// </summary>
 		/// <returns>An enumeration of invalid child nodes for this node.</returns>
-		public IEnumerable<ElementNode> InvalidChildren()
-		{
+		public IEnumerable<ElementNode> InvalidChildren() {
 			HashSet<ElementNode> result = new HashSet<ElementNode>();
 
 			// the node itself is an invalid child for itself!
@@ -162,20 +143,17 @@ namespace Vixen.Sys
 
 		#region Overrides
 
-		public override void AddChild(GroupNode<Element> node)
-		{
+		public override void AddChild(GroupNode<Element> node) {
 			base.AddChild(node);
 			OnChanged(this);
 		}
 
-		public override void InsertChild(int index, GroupNode<Element> node)
-		{
+		public override void InsertChild(int index, GroupNode<Element> node) {
 			base.InsertChild(index, node);
 			OnChanged(this);
 		}
 
-		public override bool RemoveFromParent(GroupNode<Element> parent, bool cleanupIfFloating)
-		{
+		public override bool RemoveFromParent(GroupNode<Element> parent, bool cleanupIfFloating) {
 			bool result = base.RemoveFromParent(parent, cleanupIfFloating);
 
 			// if we're cleaning up if we're a floating node (eg. being deleted), and we're actually
@@ -189,21 +167,18 @@ namespace Vixen.Sys
 			return result;
 		}
 
-		public override bool RemoveChild(GroupNode<Element> node)
-		{
+		public override bool RemoveChild(GroupNode<Element> node) {
 			bool result = base.RemoveChild(node);
 			OnChanged(this);
 			return result;
 		}
 
-		public override GroupNode<Element> Get(int index)
-		{
+		public override GroupNode<Element> Get(int index) {
 			if (IsLeaf) throw new InvalidOperationException("Cannot get child nodes from a leaf.");
 			return base.Get(index);
 		}
 
-		public override IEnumerator<Element> GetEnumerator()
-		{
+		public override IEnumerator<Element> GetEnumerator() {
 			return GetElementEnumerator().GetEnumerator();
 		}
 
@@ -211,47 +186,42 @@ namespace Vixen.Sys
 
 		#region Enumerators
 
-		public IEnumerable<Element> GetElementEnumerator()
-		{
+		public IEnumerable<Element> GetElementEnumerator() {
 			if (IsLeaf) {
 				// Element is already an enumerable, so AsEnumerable<> won't work.
-				return (new[] {Element});
+				return (new[] { Element });
 			}
 			else {
 				return this.Children.SelectMany(x => x.GetElementEnumerator());
 			}
 		}
 
-		public IEnumerable<ElementNode> GetNodeEnumerator()
-		{
+		public IEnumerable<ElementNode> GetNodeEnumerator() {
 			// "this" is already an enumerable, so AsEnumerable<> won't work.
-			return (new[] {this}).Concat(Children.SelectMany(x => x.GetNodeEnumerator()));
+			return (new[] { this }).Concat(Children.SelectMany(x => x.GetNodeEnumerator()));
 		}
 
-		public IEnumerable<ElementNode> GetLeafEnumerator()
-		{
+		public IEnumerable<ElementNode> GetLeafEnumerator() {
 			if (IsLeaf) {
 				// Element is already an enumerable, so AsEnumerable<> won't work.
-				return (new[] {this});
+				return (new[] { this });
 			}
 			else {
 				return Children.SelectMany(x => x.GetLeafEnumerator());
 			}
 		}
 
-		public IEnumerable<ElementNode> GetNonLeafEnumerator()
-		{
+		public IEnumerable<ElementNode> GetNonLeafEnumerator() {
 			if (IsLeaf) {
 				return Enumerable.Empty<ElementNode>();
 			}
 			else {
 				// "this" is already an enumerable, so AsEnumerable<> won't work.
-				return (new[] {this}).Concat(Children.SelectMany(x => x.GetNonLeafEnumerator()));
+				return (new[] { this }).Concat(Children.SelectMany(x => x.GetNonLeafEnumerator()));
 			}
 		}
 
-		public IEnumerable<ElementNode> GetAllParentNodes()
-		{
+		public IEnumerable<ElementNode> GetAllParentNodes() {
 			return Parents.Concat(Parents.SelectMany(x => x.GetAllParentNodes()));
 		}
 
@@ -259,8 +229,7 @@ namespace Vixen.Sys
 
 		#region Static members
 
-		protected static void OnChanged(ElementNode value)
-		{
+		protected static void OnChanged(ElementNode value) {
 			if (Changed != null) {
 				Changed(value, EventArgs.Empty);
 			}
@@ -268,13 +237,11 @@ namespace Vixen.Sys
 
 		#endregion
 
-		public bool Equals(ElementNode x, ElementNode y)
-		{
+		public bool Equals(ElementNode x, ElementNode y) {
 			return x.Id == y.Id;
 		}
 
-		public int GetHashCode(ElementNode obj)
-		{
+		public int GetHashCode(ElementNode obj) {
 			return Id.GetHashCode();
 		}
 	}

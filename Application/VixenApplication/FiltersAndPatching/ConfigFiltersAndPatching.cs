@@ -35,7 +35,8 @@ namespace VixenApplication
 		private readonly Dictionary<IOutputDevice, ControllerShape> _controllerToControllerShape;
 		private readonly Dictionary<IOutputFilterModuleInstance, FilterShape> _filterToFilterShape;
 		private readonly Dictionary<IDataFlowComponent, List<FilterSetupShapeBase>> _dataFlowComponentToShapes;
-
+		//Logger Class
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		// list of all (root) shapes, in the order they should appear. (Child shapes for elements and
 		// controllers are not in the list; they are of type NestingShape and handle their own bits.)
 		private List<ElementNodeShape> _elementShapes;
@@ -118,24 +119,24 @@ namespace VixenApplication
 			((RoleBasedSecurityManager) diagramDisplay.Project.SecurityManager).CurrentRole = StandardRole.Operator;
 
 			FillStyle styleElementGroup = new FillStyle("ElementGroup",
-			                                            new ColorStyle("", Color.FromArgb(120, 160, 240)),
-			                                            new ColorStyle("", Color.FromArgb(90, 120, 180)));
+			                                            new ColorStyle(string.Empty, Color.FromArgb(120, 160, 240)),
+			                                            new ColorStyle(string.Empty, Color.FromArgb(90, 120, 180)));
 			styleElementGroup.FillMode = FillMode.Gradient;
 			FillStyle styleElementLeaf = new FillStyle("ElementLeaf",
-			                                           new ColorStyle("", Color.FromArgb(200, 220, 255)),
-			                                           new ColorStyle("", Color.FromArgb(140, 160, 200)));
+			                                           new ColorStyle(string.Empty, Color.FromArgb(200, 220, 255)),
+			                                           new ColorStyle(string.Empty, Color.FromArgb(140, 160, 200)));
 			styleElementLeaf.FillMode = FillMode.Gradient;
 			FillStyle styleFilter = new FillStyle("Filter",
-			                                      new ColorStyle("", Color.FromArgb(255, 220, 150)),
-			                                      new ColorStyle("", Color.FromArgb(230, 200, 100)));
+			                                      new ColorStyle(string.Empty, Color.FromArgb(255, 220, 150)),
+			                                      new ColorStyle(string.Empty, Color.FromArgb(230, 200, 100)));
 			styleFilter.FillMode = FillMode.Gradient;
 			FillStyle styleController = new FillStyle("Controller",
-			                                          new ColorStyle("", Color.FromArgb(100, 200, 100)),
-			                                          new ColorStyle("", Color.FromArgb(50, 200, 50)));
+			                                          new ColorStyle(string.Empty, Color.FromArgb(100, 200, 100)),
+			                                          new ColorStyle(string.Empty, Color.FromArgb(50, 200, 50)));
 			styleController.FillMode = FillMode.Gradient;
 			FillStyle styleOutput = new FillStyle("Output",
-			                                      new ColorStyle("", Color.FromArgb(180, 230, 180)),
-			                                      new ColorStyle("", Color.FromArgb(120, 210, 120)));
+			                                      new ColorStyle(string.Empty, Color.FromArgb(180, 230, 180)),
+			                                      new ColorStyle(string.Empty, Color.FromArgb(120, 210, 120)));
 			styleOutput.FillMode = FillMode.Gradient;
 
 			project.Design.FillStyles.Add(styleElementGroup, styleElementGroup);
@@ -146,17 +147,17 @@ namespace VixenApplication
 
 			diagramDisplay.DoSuspendUpdate();
 //			DateTime start = DateTime.Now;
-//			VixenSystem.Logging.Debug("ConfigFiltersAndPatching: LOADING: start time:                      " + start);
+//			Logging.Debug("ConfigFiltersAndPatching: LOADING: start time:                      " + start);
 			_InitializeShapesFromElements();
-//			VixenSystem.Logging.Debug("ConfigFiltersAndPatching: post _InitializeShapesFromElements:       " + (DateTime.Now - start));
+//			Logging.Debug("ConfigFiltersAndPatching: post _InitializeShapesFromElements:       " + (DateTime.Now - start));
 			_InitializeShapesFromFilters();
-//			VixenSystem.Logging.Debug("ConfigFiltersAndPatching: post _InitializeShapesFromFilters:        " + (DateTime.Now - start));
+//			Logging.Debug("ConfigFiltersAndPatching: post _InitializeShapesFromFilters:        " + (DateTime.Now - start));
 			_InitializeShapesFromControllers();
-//			VixenSystem.Logging.Debug("ConfigFiltersAndPatching: post _InitializeShapesFromControllers:    " + (DateTime.Now - start));
+//			Logging.Debug("ConfigFiltersAndPatching: post _InitializeShapesFromControllers:    " + (DateTime.Now - start));
 			_RelayoutAllShapes();
-//			VixenSystem.Logging.Debug("ConfigFiltersAndPatching: post _RelayoutAllShapes:                  " + (DateTime.Now - start));
+//			Logging.Debug("ConfigFiltersAndPatching: post _RelayoutAllShapes:                  " + (DateTime.Now - start));
 			_CreateConnectionsFromExistingLinks();
-//			VixenSystem.Logging.Debug("ConfigFiltersAndPatching: post _CreateConnectionsFromExistingLinks: " + (DateTime.Now - start));
+//			Logging.Debug("ConfigFiltersAndPatching: post _CreateConnectionsFromExistingLinks: " + (DateTime.Now - start));
 			diagramDisplay.DoResumeUpdate();
 
 			diagramDisplay.CurrentTool = new ConnectionTool();
@@ -605,7 +606,7 @@ namespace VixenApplication
 			if (shape.DataFlowComponent != null && shape.DataFlowComponent.Source != null) {
 				IDataFlowComponentReference source = shape.DataFlowComponent.Source;
 				if (!_dataFlowComponentToShapes.ContainsKey(source.Component)) {
-					VixenSystem.Logging.Error("CreateConnectionsFromExistingLinks: can't find shape for source " + source.Component +
+					Logging.Error("CreateConnectionsFromExistingLinks: can't find shape for source " + source.Component +
 					                          source.OutputIndex);
 					return;
 				}
@@ -844,7 +845,7 @@ namespace VixenApplication
 				outputShape.FillStyle = project.Design.FillStyles["Output"];
 
 				if (output.Name.Length <= 0)
-					outputShape.Title = String.Format("{0} [{1}]", outputController.Name, (i + 1));
+					outputShape.Title = string.Format("{0} [{1}]", outputController.Name, (i + 1));
 				else
 					outputShape.Title = output.Name;
 

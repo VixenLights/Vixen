@@ -422,7 +422,7 @@ namespace ZedGraph
 		/// <summary>
 		/// Default constructor for the <see cref="PaneBase"/> class.  Leaves the <see cref="Rect"/> empty.
 		/// </summary>
-		public PaneBase() : this("", new RectangleF(0, 0, 0, 0))
+		public PaneBase() : this(string.Empty, new RectangleF(0, 0, 0, 0))
 		{
 		}
 
@@ -1100,7 +1100,7 @@ namespace ZedGraph
 
 					//FileInfo TheFile = new FileInfo(filename);
 					p = Path.GetDirectoryName( filename );
-					if ( p != "" )
+					if ( p != string.Empty )
 					{
 						DirectoryInfo TheDir = new DirectoryInfo( p );
 						if ( TheDir.Exists )

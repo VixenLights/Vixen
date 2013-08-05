@@ -21,6 +21,7 @@ namespace VixenModules.EffectEditor.SpinEffectEditor
 		{
 			InitializeComponent();
 		}
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		private IEffect _targetEffect;
 
@@ -61,7 +62,7 @@ namespace VixenModules.EffectEditor.SpinEffectEditor
 			set
 			{
 				if (value.Length != 14) {
-					VixenSystem.Logging.Warning("Spin effect parameters set with " + value.Length + " parameters");
+					Logging.Warn("Spin effect parameters set with " + value.Length + " parameters");
 					return;
 				}
 

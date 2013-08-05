@@ -630,7 +630,7 @@ namespace ZedGraph
 					for (int i = 0; i < count; i++) {
 						CurveItem curve = tmpPane.CurveList[_isReverse ? count - i - 1 : i];
 
-						if (curve._label._text != "" && curve._label._isVisible) {
+						if (curve._label._text != string.Empty && curve._label._isVisible) {
 							// Calculate the x,y (TopLeft) location of the current
 							// curve legend label
 							// assuming:

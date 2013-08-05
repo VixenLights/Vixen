@@ -9,6 +9,7 @@ namespace Vixen.Sys.State.Execution
 	public class TestOpenState : State
 	{
 		public const string StateName = "Open for testing";
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		public TestOpenState(ExecutionStateEngine engine)
 			: base(engine)
@@ -25,7 +26,7 @@ namespace Vixen.Sys.State.Execution
 			// Could have transitioned to Open, but the user needs to know that it's in
 			// the testing state and not the standard execution state.
 			StandardOpenBehavior.Run();
-			VixenSystem.Logging.Info("Vixen execution engine entered the testing state.");
+			Logging.Info("Vixen execution engine entered the testing state.");
 		}
 
 		public override void OnClose()

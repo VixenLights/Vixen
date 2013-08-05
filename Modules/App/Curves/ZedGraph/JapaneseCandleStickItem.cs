@@ -330,11 +330,11 @@ namespace ZedGraph
 
 				// Draw the bar
 				if (baseAxis is XAxis || baseAxis is X2Axis)
-					coords = String.Format("{0:f0},{1:f0},{2:f0},{3:f0}",
+					coords = string.Format("{0:f0},{1:f0},{2:f0},{3:f0}",
 					                       pixSide, pixLow,
 					                       pixSide + halfSize*2, pixHigh);
 				else
-					coords = String.Format("{0:f0},{1:f0},{2:f0},{3:f0}",
+					coords = string.Format("{0:f0},{1:f0},{2:f0},{3:f0}",
 					                       pixLow, pixSide,
 					                       pixHigh, pixSide + halfSize*2);
 

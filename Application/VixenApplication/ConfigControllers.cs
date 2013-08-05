@@ -60,7 +60,7 @@ namespace VixenApplication
 			_displayedController = oc;
 
 			if (oc == null) {
-				textBoxName.Text = "";
+				textBoxName.Text = string.Empty;
 				numericUpDownOutputCount.Value = 0;
 				buttonDeleteController.Enabled = false;
 				groupBoxSelectedController.Enabled = false;
@@ -146,7 +146,7 @@ namespace VixenApplication
 			int newCount = (int) numericUpDownOutputCount.Value;
 			_displayedController.OutputCount = newCount;
 			for (int i = oldCount; i < newCount; i++) {
-				_displayedController.Outputs[i].Name = String.Format("{0}-{1}", _displayedController.Name, (i + 1));
+				_displayedController.Outputs[i].Name = string.Format("{0}-{1}", _displayedController.Name, (i + 1));
 			}
 
 			_PopulateControllerList();

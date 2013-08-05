@@ -160,7 +160,7 @@ namespace ZedGraph
 		/// <returns>
 		/// A string value representing the label, or null if the ZedGraph should go ahead
 		/// and generate the label according to the current settings.  To make the title
-		/// blank, return "".</returns>
+		/// blank, return string.Empty.</returns>
 		/// <seealso cref="ScaleFormatEvent" />
 		public delegate string ScaleTitleEventHandler(Axis axis);
 
@@ -321,7 +321,7 @@ namespace ZedGraph
 
 			_isAxisSegmentVisible = Default.IsAxisSegmentVisible;
 
-			_title = new AxisLabel("", Default.TitleFontFamily, Default.TitleFontSize,
+			_title = new AxisLabel(string.Empty, Default.TitleFontFamily, Default.TitleFontSize,
 			                       Default.TitleFontColor, Default.TitleFontBold,
 			                       Default.TitleFontUnderline, Default.TitleFontItalic);
 			_title.FontSpec.Fill = new Fill(Default.TitleFillColor, Default.TitleFillBrush,
@@ -1367,7 +1367,7 @@ namespace ZedGraph
 		private string MakeTitle()
 		{
 			if (_title._text == null)
-				_title._text = "";
+				_title._text = string.Empty;
 
 			// Revision: JCarpenter 10/06
 			// Allow customization of the modified title when the scale is very large
@@ -1382,7 +1382,7 @@ namespace ZedGraph
 			// If the Mag is non-zero and IsOmitMag == false, and IsLog == false,
 			// then add the mag indicator to the title.
 			if (_scale._mag != 0 && !_title._isOmitMag && !_scale.IsLog)
-				return _title._text + String.Format(" (10^{0})", _scale._mag);
+				return _title._text + string.Format(" (10^{0})", _scale._mag);
 			else
 				return _title._text;
 		}

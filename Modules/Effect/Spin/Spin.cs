@@ -17,6 +17,7 @@ namespace VixenModules.Effect.Spin
 	{
 		private SpinData _data;
 		private EffectIntents _elementData = null;
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		public Spin()
 		{
@@ -372,7 +373,7 @@ namespace VixenModules.Effect.Spin
 					currentNodeIndex--;
 
 				if (currentNodeIndex >= targetNodeCount) {
-					VixenSystem.Logging.Warning(
+					Logging.Warn(
 						"Spin effect: rendering, but the current node index is higher or equal to the total target nodes.");
 					continue;
 				}
@@ -407,7 +408,7 @@ namespace VixenModules.Effect.Spin
 						if (discreteColors) {
 							double range = endPos - startPos;
 							if (range <= 0.0) {
-								VixenSystem.Logging.Error("Spin: bad range: " + range + " (SP=" + startPos + ", EP=" + endPos + ")");
+								Logging.Error("Spin: bad range: " + range + " (SP=" + startPos + ", EP=" + endPos + ")");
 								break;
 							}
 

@@ -11,18 +11,15 @@ using Vixen.Sys;
 using Vixen.Module.Effect;
 using Vixen.Module.EffectEditor;
 
-namespace VixenModules.Editor.TimedSequenceEditor
-{
-	public partial class TimedSequenceEditorEffectEditor : Form
-	{
+namespace VixenModules.Editor.TimedSequenceEditor {
+	public partial class TimedSequenceEditorEffectEditor : Form {
 		private EffectNode _effectNode;
 		private IEnumerable<EffectNode> _effectNodes;
 		private List<IEffectEditorControl> _controls;
 		private bool _usedSingleControl;
 
 		public TimedSequenceEditorEffectEditor(IEnumerable<EffectNode> effectNodes)
-			: this(effectNodes.First())
-		{
+			: this(effectNodes.First()) {
 			if (effectNodes != null && effectNodes.Count() > 1) {
 				_effectNodes = effectNodes;
 				Text = "Edit Multiple Effects";
@@ -33,8 +30,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					foreach (EffectNode node in effectNodes) {
 						if (node.Effect.TypeId != displayedEffect.Effect.TypeId) {
 							MessageBox.Show("The selected effects contain multiple types. Once you finish editing, these values will " +
-							                "only be applied to the effects of type '" + displayedEffect.Effect.Descriptor.TypeName + "'.",
-							                "Warning", MessageBoxButtons.OK);
+											"only be applied to the effects of type '" + displayedEffect.Effect.Descriptor.TypeName + "'.",
+											"Warning", MessageBoxButtons.OK);
 							break;
 						}
 					}
@@ -42,8 +39,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		public TimedSequenceEditorEffectEditor(EffectNode effectNode)
-		{
+		public TimedSequenceEditorEffectEditor(EffectNode effectNode) {
 			InitializeComponent();
 
 			_effectNode = effectNode;
@@ -68,7 +64,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// if it was only a single control returned, it must have matched the entire effect (by GUID or signature), so just dump the
 			// control it, and let it deal with everything it needs to.
 			if (controls.Count() > 1 ||
-			    (controls.Count() == 1 && (_effectNode.Effect.Descriptor as IEffectModuleDescriptor).Parameters.Count == 1)) {
+				(controls.Count() == 1 && (_effectNode.Effect.Descriptor as IEffectModuleDescriptor).Parameters.Count == 1)) {
 				_usedSingleControl = false;
 				int i = 0;
 				foreach (IEffectEditorControl ec in controls) {
@@ -83,7 +79,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						Label l = new Label();
 						l.Width = 1;
 						l.Height = 1;
-						l.Text = _effectNode.Effect.Parameters[i].Name + ":";
+						l.Text = string.Format("{0}:", _effectNode.Effect.Parameters[i].Name);
 						l.AutoSize = true;
 						l.Anchor = AnchorStyles.None;
 						tableLayoutPanelEffectEditors.Controls.Add(l);
@@ -109,10 +105,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		private void TimedSequenceEditorEffectEditor_FormClosed(object sender, FormClosedEventArgs e)
-		{
+		private void TimedSequenceEditorEffectEditor_FormClosed(object sender, FormClosedEventArgs e) {
 			if (DialogResult == System.Windows.Forms.DialogResult.OK && _controls != null) {
-				IEnumerable<EffectNode> nodes = _effectNodes ?? new EffectNode[] {_effectNode};
+				IEnumerable<EffectNode> nodes = _effectNodes ?? new EffectNode[] { _effectNode };
 
 				int changedEFfects = 0;
 				foreach (EffectNode node in nodes) {
@@ -133,7 +128,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 
 				if (nodes.Count() > 1) {
-					MessageBox.Show(changedEFfects + " effects modified.", "", MessageBoxButtons.OK);
+					MessageBox.Show(changedEFfects + " effects modified.", string.Empty, MessageBoxButtons.OK);
 				}
 			}
 		}

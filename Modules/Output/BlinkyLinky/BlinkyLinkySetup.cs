@@ -33,7 +33,7 @@ namespace VixenModules.Output.BlinkyLinky
 			set
 			{
 				if (value == null)
-					textBoxIPAddress.Text = "";
+					textBoxIPAddress.Text = string.Empty;
 				else
 					textBoxIPAddress.Text = value.ToString();
 			}

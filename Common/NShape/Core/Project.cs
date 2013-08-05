@@ -896,7 +896,7 @@ namespace Dataweb.NShape
 			repository.AddEntityType(new EntityType(Template.EntityTypeName, EntityCategory.Template,
 			                                        version, () => new Template(), Template.GetPropertyDefinitions(version)));
 			repository.AddEntityType(new EntityType(Diagram.EntityTypeName, EntityCategory.Diagram,
-			                                        version, () => new Diagram(""), Diagram.GetPropertyDefinitions(version)));
+			                                        version, () => new Diagram(string.Empty), Diagram.GetPropertyDefinitions(version)));
 			// Register ModelMapping types
 			// Create mandatory Model type
 			repository.AddEntityType(new EntityType(Model.EntityTypeName, EntityCategory.Model,

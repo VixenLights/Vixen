@@ -22,6 +22,8 @@ namespace VixenModules.Property.Color
 		{
 			ColorStaticData.ColorSetChanged -= ColorSetChangedHandler;
 		}
+		
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		// if the color sets in the static data ("library") change, clear our reference to it,
 		// and re-get it the next time we need it.
@@ -42,7 +44,7 @@ namespace VixenModules.Property.Color
 		{
 			ColorModule source = sourceProperty as ColorModule;
 			if (source == null) {
-				Vixen.Sys.VixenSystem.Logging.Error(
+				Logging.Error(
 					"ColorModule: trying to CloneValues from another property, but it's not a ColorModule!");
 				return;
 			}
@@ -105,7 +107,7 @@ namespace VixenModules.Property.Color
 					ColorData instanceData = (ModuleData as ColorData);
 
 					if (staticData == null || instanceData == null) {
-						Vixen.Sys.VixenSystem.Logging.Error("ColorProperty: null static data or instance data! That shouldn't happen!");
+						Logging.Error("ColorProperty: null static data or instance data! That shouldn't happen!");
 						return null;
 					}
 
@@ -113,7 +115,7 @@ namespace VixenModules.Property.Color
 						_cachedColorSetReference = staticData.GetColorSet(instanceData.ColorSetName);
 					}
 					else {
-						Vixen.Sys.VixenSystem.Logging.Error("ColorProperty: can't find '" + instanceData.ColorSetName +
+						Logging.Error("ColorProperty: can't find '" + instanceData.ColorSetName +
 						                                    "' in the static data color sets. That's.... unexpected. Maybe the color set was deleted?");
 						_cachedColorSetReference = new ColorSet();
 					}
@@ -248,7 +250,7 @@ namespace VixenModules.Property.Color
 		{
 			ElementColorType = ElementColorType.FullColor;
 			SingleColor = System.Drawing.Color.Black;
-			ColorSetName = "";
+			ColorSetName = string.Empty;
 		}
 
 		public override IModuleDataModel Clone()

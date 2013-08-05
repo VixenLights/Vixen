@@ -326,7 +326,7 @@ namespace ZedGraph
 			matrix.TransformPoints(pts);
 
 			shape = "poly";
-			coords = String.Format("{0:f0},{1:f0},{2:f0},{3:f0},{4:f0},{5:f0},{6:f0},{7:f0},",
+			coords = string.Format("{0:f0},{1:f0},{2:f0},{3:f0},{4:f0},{5:f0},{6:f0},{7:f0},",
 			                       pts[0].X, pts[0].Y, pts[1].X, pts[1].Y,
 			                       pts[2].X, pts[2].Y, pts[3].X, pts[3].Y);
 		}

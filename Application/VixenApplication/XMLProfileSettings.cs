@@ -78,7 +78,7 @@ namespace VixenApplication
 		private XmlNode createMissingNode(string xPath)
 		{
 			string[] xPathSections = xPath.Split('/');
-			string currentXPath = "";
+			string currentXPath = string.Empty;
 			XmlNode testNode = null;
 			XmlNode currentNode = xmlDocument.SelectSingleNode("settings");
 			foreach (string xPathSection in xPathSections) {

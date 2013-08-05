@@ -42,7 +42,7 @@ namespace VixenModules.Output.DebugController
 
 			_lastUpdateMs = _timer.ElapsedMilliseconds;
 
-			string text = "";
+			string text = string.Empty;
 
 			string time = "[" + Vixen.Sys.Execution.CurrentExecutionTimeString + "]";
 

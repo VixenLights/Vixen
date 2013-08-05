@@ -19,6 +19,7 @@ namespace VixenModules.EffectEditor.WipeEditor {
 		public WipeEditorControl() {
 			InitializeComponent();
 		}
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		public object[] EffectParameterValues {
 			get {
@@ -35,7 +36,7 @@ namespace VixenModules.EffectEditor.WipeEditor {
 			set {
 
 				if (value.Length != 7) {
-					VixenSystem.Logging.Warning("Wipe effect parameters set with " + value.Length + " parameters");
+					Logging.Warn("Wipe effect parameters set with " + value.Length + " parameters");
 					return;
 				}
 
@@ -120,7 +121,7 @@ namespace VixenModules.EffectEditor.WipeEditor {
 			numericUpDownNumPasses.Enabled = radioNumPasses.Checked;
 			numericUpDownPulseWidth.Enabled = radioNumPasses.Checked;
 			numericUpDownPulseLength.Enabled = !radioNumPasses.Checked;
-		}
-
 	}
+
+}
 }

@@ -5,6 +5,7 @@ namespace Vixen.Sys.State.Execution
 	public class OpenState : State
 	{
 		public const string StateName = "Open";
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		public OpenState(ExecutionStateEngine engine)
 			: base(engine)
@@ -19,7 +20,7 @@ namespace Vixen.Sys.State.Execution
 		public override void Enter()
 		{
 			StandardOpenBehavior.Run();
-			VixenSystem.Logging.Info("Vixen execution engine entered the open state.");
+			Logging.Info("Vixen execution engine entered the open state.");
 		}
 
 		public override void OnClose()

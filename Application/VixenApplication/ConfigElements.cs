@@ -61,21 +61,21 @@ namespace VixenApplication
 		private void PopulateGeneralNodeInfo(ElementNode node)
 		{
 			if (node == null) {
-				labelParents.Text = "";
+				labelParents.Text = string.Empty;
 				_tooltip.SetToolTip(labelParents, null);
-				textBoxName.Text = "";
+				textBoxName.Text = string.Empty;
 			}
 			else {
 				// update the label with parent info about the node. Any good suggestions or improvements for this?
 				int parentCount = GetNodeParentGroupCount(node);
 				List<string> parents = GetNodeParentGroupNames(node);
-				string labelString = "", tooltipString = "";
-				labelString = String.Format("This element is in {0} group{1}{2}", parentCount, ((parentCount != 1) ? "s" : ""),
+				string labelString = string.Empty, tooltipString = string.Empty;
+				labelString = string.Format("This element is in {0} group{1}{2}", parentCount, ((parentCount != 1) ? "s" : string.Empty),
 				                            ((parentCount == 0) ? "." : ": "));
 				tooltipString = labelString + "\r\n\r\n";
 				foreach (string p in parents) {
-					labelString = String.Format("{0}{1}, ", labelString, p);
-					tooltipString = String.Format("{0}{1}\r\n", tooltipString, p);
+					labelString = string.Format("{0}{1}, ", labelString, p);
+					tooltipString = string.Format("{0}{1}\r\n", tooltipString, p);
 				}
 				labelParents.Text = labelString.TrimEnd(new char[] {' ', ','});
 				tooltipString = tooltipString.TrimEnd(new char[] {'\r', '\n'});
@@ -294,7 +294,7 @@ namespace VixenApplication
 		{
 			if (e.KeyCode == Keys.Enter) {
 				string newName = textBoxName.Text.Trim();
-				if (newName != "" && newName != _displayedNode.Name) {
+				if (newName != string.Empty && newName != _displayedNode.Name) {
 					VixenSystem.Nodes.RenameNode(_displayedNode, newName);
 					elementTree.PopulateNodeTree();
 				}

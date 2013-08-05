@@ -12,7 +12,7 @@ namespace Vixen.Sys
 {
 	public class VixenSystem
 	{
-		private static Logging _logging;
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		public enum RunState
 		{
@@ -36,7 +36,7 @@ namespace Vixen.Sys
 					// data branch to use.
 					Paths.DataRootPath = dataRootDirectory ?? _GetUserDataPath();
 
-					_InitializeLogging();
+					 
 					Logging.Info("Vixen System starting up...");
 
 					Instrumentation = new Instrumentation.Instrumentation();
@@ -217,15 +217,7 @@ namespace Vixen.Sys
 			get { return Assembly.GetExecutingAssembly().GetFilePath(); }
 		}
 
-		public static dynamic Logging
-		{
-			get { return _logging; }
-		}
-
-		public static Logging Logs
-		{
-			get { return _logging; }
-		}
+	
 
 		public static bool AllowFilterEvaluation
 		{
@@ -266,15 +258,7 @@ namespace Vixen.Sys
 			return FileService.Instance.LoadSystemConfigFile(systemConfigFilePath);
 		}
 
-		private static void _InitializeLogging()
-		{
-			_logging = new Logging();
-			_logging.AddLog(new ErrorLog());
-			_logging.AddLog(new WarningLog());
-			_logging.AddLog(new InfoLog());
-			_logging.AddLog(new DebugLog());
-		}
-
+	
 		private static string _GetSystemDataPath()
 		{
 			// Look for a user data file in the binary directory.

@@ -17,6 +17,7 @@ namespace VixenModules.EffectEditor.AlternatingEditor
 {
 	public partial class AlternatingEffectEditorControl : UserControl, IEffectEditorControl
 	{
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		public AlternatingEffectEditorControl()
 		{
 			InitializeComponent();
@@ -49,7 +50,7 @@ namespace VixenModules.EffectEditor.AlternatingEditor
 			set
 			{
 				if (value.Length != 14) {
-					VixenSystem.Logging.Warning("Alternating effect parameters set with " + value.Length + " parameters");
+					Logging.Warn("Alternating effect parameters set with " + value.Length + " parameters");
 					return;
 				}
 				var val = value;
@@ -116,7 +117,7 @@ namespace VixenModules.EffectEditor.AlternatingEditor
 			set { levelTypeEditorControl2.LevelValue = value; }
 		}
 
-		public bool Enabled
+		public new bool Enabled
 		{
 			get { return !this.chkEnabled.Checked; }
 			set { this.chkEnabled.Checked = !value; }

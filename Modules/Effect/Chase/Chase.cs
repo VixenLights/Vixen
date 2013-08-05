@@ -15,6 +15,7 @@ namespace VixenModules.Effect.Chase
 {
 	public class Chase : EffectModuleInstanceBase
 	{
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private ChaseData _data;
 		private EffectIntents _elementData = null;
 
@@ -278,7 +279,7 @@ namespace VixenModules.Effect.Chase
 					currentNodeIndex--;
 
 				if (currentNodeIndex >= targetNodeCount) {
-					VixenSystem.Logging.Warning(
+					Logging.Warn(
 						"Chase effect: rendering, but the current node index is higher or equal to the total target nodes.");
 					continue;
 				}
@@ -360,7 +361,7 @@ namespace VixenModules.Effect.Chase
 					if (discreteColors) {
 						double range = endPos - startPos;
 						if (range <= 0.0) {
-							VixenSystem.Logging.Error("Chase: bad range: " + range + " (SP=" + startPos + ", EP=" + endPos + ")");
+							Logging.Error("Chase: bad range: " + range + " (SP=" + startPos + ", EP=" + endPos + ")");
 							break;
 						}
 

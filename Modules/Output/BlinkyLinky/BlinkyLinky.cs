@@ -15,6 +15,7 @@ namespace VixenModules.Output.BlinkyLinky
 {
 	internal class BlinkyLinky : ControllerModuleInstanceBase
 	{
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private Dictionary<int, byte> _lastValues;
 		private Dictionary<int, int> _nullCommands;
 		private BlinkyLinkyData _data;
@@ -96,7 +97,7 @@ namespace VixenModules.Output.BlinkyLinky
 			CloseConnection();
 
 			if (_data.Address == null) {
-				VixenSystem.Logging.Warning("BlinkyLinky: Trying to connect with a null IP address.");
+				Logging.Warn("BlinkyLinky: Trying to connect with a null IP address.");
 				return false;
 			}
 
@@ -105,7 +106,7 @@ namespace VixenModules.Output.BlinkyLinky
 				_tcpClient.Connect(_data.Address, _data.Port);
 			}
 			catch (Exception ex) {
-				VixenSystem.Logging.Warning(
+				Logging.Warn(
 					"BlinkyLinky: Failed to connect to remote host " + _data.Address.ToString() + ", " + _data.Port, ex);
 				return false;
 			}
@@ -114,7 +115,7 @@ namespace VixenModules.Output.BlinkyLinky
 				_networkStream = _tcpClient.GetStream();
 			}
 			catch (Exception ex) {
-				VixenSystem.Logging.Warning(
+				Logging.WarnException(
 					"BlinkyLinky: Failed to get stream to communicate with remote host " + _data.Address.ToString() + ", " + _data.Port,
 					ex);
 				_tcpClient.Close();
@@ -159,7 +160,7 @@ namespace VixenModules.Output.BlinkyLinky
 			if (_networkStream == null) {
 				bool success = OpenConnection();
 				if (!success) {
-					VixenSystem.Logging.Warning("BlinkyLinky: failed to connect to device, not updating the current state.");
+					Logging.Warn("BlinkyLinky: failed to connect to device, not updating the current state.");
 					return;
 				}
 			}
@@ -229,7 +230,7 @@ namespace VixenModules.Output.BlinkyLinky
 					_networkStream.Flush();
 				}
 				catch (Exception ex) {
-					VixenSystem.Logging.Warning(
+					Logging.Warn(
 						"BlinkyLinky: failed to write data to device, this update state may be lost. Closing connection.", ex);
 					CloseConnection();
 				}

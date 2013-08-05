@@ -10,6 +10,8 @@ namespace VixenModules.Media.Audio
 {
 	internal partial class FmodInstance : IDisposable
 	{
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+
 		private fmod _audioSystem;
 		private FMOD.DSP dsplowpass = null;
 		private FMOD.DSP dsphighpass = null;
@@ -216,7 +218,7 @@ namespace VixenModules.Media.Audio
 			}
 			_channel = _audioSystem.LoadSound(fileName, _channel);
 			if (_channel == null) {
-				Vixen.Sys.VixenSystem.Logging.Warning("Audio: can't load file '" + fileName + "' for playback. Does it exist?");
+				Logging.Warn("Audio: can't load file '" + fileName + "' for playback. Does it exist?");
 			}
 			_startTime = TimeSpan.Zero;
 		}
@@ -286,15 +288,17 @@ namespace VixenModules.Media.Audio
 
 		public void Dispose()
 		{
-			//*** channel need to be disposed?  If so, then should reloading the channel
-			//    cause an intermediate disposal?
-			_audioSystem.Stop(_channel);
-			if (_channel != null) {
-				_audioSystem.ReleaseSound(_channel);
-			}
-			_audioSystem.Shutdown();
-			_audioSystem = null;
+			if (_audioSystem != null) {
+				//*** channel need to be disposed?  If so, then should reloading the channel
+				//    cause an intermediate disposal?
+				_audioSystem.Stop(_channel);
 
+				if (_channel != null) {
+					_audioSystem.ReleaseSound(_channel);
+				}
+				_audioSystem.Shutdown();
+				_audioSystem = null;
+			}
 			GC.SuppressFinalize(this);
 		}
 

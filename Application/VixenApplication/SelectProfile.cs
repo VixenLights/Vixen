@@ -11,7 +11,7 @@ namespace VixenApplication
 {
 	public partial class SelectProfile : Form
 	{
-		private string _dataFolder = "";
+		private string _dataFolder = string.Empty;
 
 		public SelectProfile()
 		{
@@ -32,7 +32,7 @@ namespace VixenApplication
 			for (int i = 0; i < profileCount; i++) {
 				ProfileItem item = new ProfileItem();
 				item.Name = profile.GetSetting("Profiles/" + "Profile" + i.ToString() + "/Name", "New Profile");
-				item.DataFolder = profile.GetSetting("Profiles/" + "Profile" + i.ToString() + "/DataFolder", "");
+				item.DataFolder = profile.GetSetting("Profiles/" + "Profile" + i.ToString() + "/DataFolder", string.Empty);
 				listBoxProfiles.Items.Add(item);
 			}
 		}

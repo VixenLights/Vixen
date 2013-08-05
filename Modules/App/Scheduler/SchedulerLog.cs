@@ -5,11 +5,11 @@ using System.Text;
 
 namespace VixenModules.App.Scheduler
 {
-	internal class SchedulerLog : Vixen.Sys.Log
-	{
-		public SchedulerLog()
-			: base("Schedule")
-		{
-		}
-	}
+	//internal class SchedulerLog : Vixen.Sys.Log
+	//{
+	//	public SchedulerLog()
+	//		: base("Schedule")
+	//	{
+	//	}
+	//}
 }

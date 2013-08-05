@@ -333,7 +333,7 @@ namespace Common.Controls.Timeline
 		{
 			foreach (var elem in SelectedElements) {
 				//elem.Changed = true;
-				ElementQueue.Add(elem);
+				ElementQueue.Enqueue(elem);
 				elem.EndUpdate();
 			}
 

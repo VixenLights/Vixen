@@ -19,7 +19,7 @@ namespace VixenModules.EffectEditor.CustomValueEditor
 		{
 			InitializeComponent();
 		}
-
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		public object[] EffectParameterValues
 		{
 			get
@@ -38,7 +38,7 @@ namespace VixenModules.EffectEditor.CustomValueEditor
 			set
 			{
 				if (value.Length != 7) {
-					VixenSystem.Logging.Warning("Custom Value effect parameters set with " + value.Length + " parameters");
+					Logging.Warn("Custom Value effect parameters set with " + value.Length + " parameters");
 					return;
 				}
 

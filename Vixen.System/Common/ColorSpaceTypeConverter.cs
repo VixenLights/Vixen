@@ -60,7 +60,7 @@ namespace Common.Controls.ColorManagement.ColorModels
 					//to string
 					TypeConverter conv =
 						TypeDescriptor.GetConverter(typeof (double));
-					return string.Join(culture.TextInfo.ListSeparator + " ",
+					return string.Join(string.Format("{0} ",culture.TextInfo.ListSeparator),
 					                   new string[]
 					                   	{
 					                   		conv.ConvertToString(context, culture, xyz.X),
