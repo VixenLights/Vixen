@@ -113,7 +113,7 @@
 			this.label2.Size = new System.Drawing.Size(104, 13);
 			this.label2.TabIndex = 21;
 			this.label2.Text = "Pulse Width Percent";
-			this.toolTipWipe.SetToolTip(this.label2, "Pulse Width as a percent of the effect time.");
+			this.toolTipWipe.SetToolTip(this.label2, "Pulse length as a percent of the wipe segment.");
 			// 
 			// numericUpDownPulseWidth
 			// 
