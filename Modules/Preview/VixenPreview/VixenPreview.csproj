@@ -132,6 +132,7 @@
       <DependentUpon>PreviewWPF.xaml</DependentUpon>
     </Compile>
     <Compile Include="DebugTimer.cs" />
+    <Compile Include="IDisplayForm.cs" />
     <Compile Include="GDIPreview\GDIPreviewForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -425,6 +426,7 @@
     <EmbeddedResource Include="VixenPreviewSetupPropertiesDocument.resx">
       <DependentUpon>VixenPreviewSetupPropertiesDocument.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

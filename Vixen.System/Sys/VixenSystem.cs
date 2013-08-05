@@ -237,7 +237,18 @@ namespace Vixen.Sys
 		public static DataFlowManager DataFlow { get; private set; }
 		public static ControllerFacade ControllerManagement { get; private set; }
 		public static OutputDeviceFacade OutputDeviceManagement { get; private set; }
+		public static bool VersionBeyondWindowsXP {
+			get {
+				System.OperatingSystem osInfo = System.Environment.OSVersion;
+				if (osInfo.Platform == PlatformID.Win32NT) {
+					//If OsVersion is > XP then allow D2D
+					if (osInfo.Version.Minor > 1) return true;
+				}
 
+				//Otherwise force GDI Preview rendering
+				return false;
+			}
+		}
 		public static Guid Identity
 		{
 			get { return SystemConfig.Identity; }
