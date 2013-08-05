@@ -1,12 +1,15 @@
 using System;
 
-namespace Vixen.Sys {
-	public class ParameterSpecification {
+namespace Vixen.Sys
+{
+	public class ParameterSpecification
+	{
 		private const char TYPE_NAME_DELIMITER = ' ';
 
 		private string _name;
 
-		public ParameterSpecification(string name, Type type, bool showLabel = true) {
+		public ParameterSpecification(string name, Type type, bool showLabel = true)
+		{
 			Name = name;
 			Type = type;
 			ShowLabel = showLabel;
@@ -14,7 +17,8 @@ namespace Vixen.Sys {
 
 		public bool ShowLabel { get; set; }
 
-		internal ParameterSpecification(string parameterString) {
+		internal ParameterSpecification(string parameterString)
+		{
 			string[] parts = parameterString.Split(TYPE_NAME_DELIMITER);
 			if (parts.Length != 2) {
 				throw new Exception(string.Format("Invalid parameter specification: \"{0}\"", parameterString));
@@ -23,9 +27,11 @@ namespace Vixen.Sys {
 			Name = parts[1].Trim();
 		}
 
-		public string Name {
+		public string Name
+		{
 			get { return _name; }
-			internal set {
+			internal set
+			{
 				if (string.IsNullOrWhiteSpace(value)) throw new Exception("Parameters cannot have empty names.");
 				_name = value;
 			}
@@ -33,8 +39,9 @@ namespace Vixen.Sys {
 
 		public Type Type { get; internal set; }
 
-		public override string ToString() {
-			return string.Format("{0} {1}", Type, Name);
+		public override string ToString()
+		{
+			return Type + " " + Name;
 		}
 	}
 }

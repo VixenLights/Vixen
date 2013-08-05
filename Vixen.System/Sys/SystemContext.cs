@@ -2,23 +2,28 @@
 using System.IO;
 using Vixen.Services;
 
-namespace Vixen.Sys {
-	public class SystemContext : FilePackage {
+namespace Vixen.Sys
+{
+	public class SystemContext : FilePackage
+	{
 		private const string TEMP_DIRECTORY_NAME = "VixenContext";
 
 		public SystemContext()
-			: base(VixenSystem.SystemConfig.Identity) {
+			: base(VixenSystem.SystemConfig.Identity)
+		{
 		}
 
 		public SystemContext(Guid sourceIdentity)
-			: base(sourceIdentity) {
+			: base(sourceIdentity)
+		{
 		}
 
 		public string ContextName { get; set; }
 
 		public string ContextDescription { get; set; }
 
-		public void AddFile(string filePath) {
+		public void AddFile(string filePath)
+		{
 			string destinationPath;
 
 			if (filePath.StartsWith(Paths.BinaryRootPath)) {
@@ -35,7 +40,8 @@ namespace Vixen.Sys {
 			AddFile(contextFile);
 		}
 
-		public void Save(string targetFilePath) {
+		public void Save(string targetFilePath)
+		{
 			FileService.Instance.SaveSystemContextFile(this, targetFilePath);
 		}
 
@@ -44,7 +50,8 @@ namespace Vixen.Sys {
 		/// </summary>
 		/// <param name="contextFilePath"></param>
 		/// <returns>Root of the exploded context.</returns>
-		public string Explode(string contextFilePath) {
+		public string Explode(string contextFilePath)
+		{
 			// Get/Create a directory for the context.
 			string contextRoot = Path.Combine(Path.GetTempPath(), TEMP_DIRECTORY_NAME);
 			Directory.CreateDirectory(contextRoot);
@@ -74,7 +81,8 @@ namespace Vixen.Sys {
 			return contextRoot;
 		}
 
-		public static SystemContext PackageSystemContext(string targetFilePath) {
+		public static SystemContext PackageSystemContext(string targetFilePath)
+		{
 			SystemContext context = new SystemContext();
 
 			// Add the system data files.
@@ -91,7 +99,8 @@ namespace Vixen.Sys {
 			return context;
 		}
 
-		private static string _PrepSystemConfig() {
+		private static string _PrepSystemConfig()
+		{
 			// The user data needs a flag set to state that it's a context copy and
 			// therefore should be the one used, not the one in the user's data branch.
 
@@ -111,20 +120,23 @@ namespace Vixen.Sys {
 			return tempFilePath;
 		}
 
-		private static string _PrepModuleStore() {
+		private static string _PrepModuleStore()
+		{
 			VixenSystem.ModuleStore.Save();
 			return VixenSystem.ModuleStore.LoadedFilePath;
 		}
 
 		#region NewContextFile
 
-		private class NewContextFile : IPackageFileContent {
+		private class NewContextFile : IPackageFileContent
+		{
 			private string _sourceFilePath;
 
-			public NewContextFile(string filePath, string destinationPath) {
+			public NewContextFile(string filePath, string destinationPath)
+			{
 				if (string.IsNullOrWhiteSpace(filePath)) throw new ArgumentNullException("filePath");
 				if (destinationPath == null) throw new ArgumentNullException("destinationPath");
-				if (!File.Exists(filePath)) throw new InvalidOperationException(string.Format("{0} does not exist.", filePath));
+				if (!File.Exists(filePath)) throw new InvalidOperationException(filePath + "does not exist.");
 
 				_sourceFilePath = filePath;
 				FilePath = destinationPath;
@@ -132,7 +144,8 @@ namespace Vixen.Sys {
 
 			public string FilePath { get; private set; }
 
-			public byte[] FileContent {
+			public byte[] FileContent
+			{
 				get { return File.ReadAllBytes(_sourceFilePath); }
 			}
 		}
