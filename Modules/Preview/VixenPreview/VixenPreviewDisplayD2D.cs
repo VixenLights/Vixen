@@ -13,7 +13,7 @@ using Vixen.Sys;
 using VixenModules.Preview.VixenPreview.Shapes;
 
 namespace VixenModules.Preview.VixenPreview {
-	public partial class VixenPreviewDisplayD2D : Form {
+	public partial class VixenPreviewDisplayD2D : Form, IDisplayForm {
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		public VixenPreviewDisplayD2D() {
