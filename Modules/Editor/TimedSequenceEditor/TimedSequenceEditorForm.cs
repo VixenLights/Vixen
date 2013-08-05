@@ -468,7 +468,7 @@ namespace VixenModules.Editor.TimedSequenceEditor {
 
 		protected void ElementAddedToRowHandler(object sender, ElementEventArgs e) {
 			// not currently used
-			timelineControl.grid.ElementQueue.Add(e.Element);
+			timelineControl.grid.ElementQueue.Enqueue(e.Element);
 		}
 
 		protected void ElementChangedRowsHandler(object sender, ElementRowChangeEventArgs e) {
@@ -532,7 +532,7 @@ namespace VixenModules.Editor.TimedSequenceEditor {
 					foreach (Element element in elements)
 					{
 						element.Changed = true;
-						timelineControl.grid.ElementQueue.Add(element);
+						timelineControl.grid.ElementQueue.Enqueue(element);
 					}
 					sequenceModified();
 				}

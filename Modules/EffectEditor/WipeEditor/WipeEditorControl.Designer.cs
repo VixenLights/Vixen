@@ -76,9 +76,8 @@
 			// 
 			// curveTypeEditorControlEachPulse
 			// 
-			curve1.IsCurrentLibraryCurve = false;
-			curve1.LibraryReferenceName = string.Empty;
-			this.curveTypeEditorControlEachPulse.CurveValue = curve1;
+		 
+			 
 			this.curveTypeEditorControlEachPulse.EffectParameterValues = new object[] {
         ((object)(curve13))};
 			this.curveTypeEditorControlEachPulse.Location = new System.Drawing.Point(112, 9);
@@ -123,14 +122,7 @@
 			this.groupBoxColor.TabIndex = 16;
 			this.groupBoxColor.TabStop = false;
 			this.groupBoxColor.Text = "Color Handling";
-			// 
-			// colorGradientTypeEditorControlGradient
-			// 
-			colorGradient1.Gammacorrected = false;
-			colorGradient1.IsCurrentLibraryGradient = false;
-			colorGradient1.LibraryReferenceName = string.Empty;
-			colorGradient1.Title = null;
-			this.colorGradientTypeEditorControlGradient.ColorGradientValue = colorGradient1;
+		 
 			this.colorGradientTypeEditorControlGradient.EffectParameterValues = new object[] {
         ((object)(colorGradient13))};
 			this.colorGradientTypeEditorControlGradient.Location = new System.Drawing.Point(6, 19);

@@ -44,7 +44,7 @@ namespace Common.Controls.Timeline
 		public ISequenceContext Context = null;
 		public bool SequenceLoading { get; set; }
 
-		public ElementDrawQueue _elementQueue = new ElementDrawQueue();
+		public ConcurrentQueue<Element> _elementQueue = new ConcurrentQueue<Element>();
 
 		#region Initialization
 
@@ -140,7 +140,7 @@ namespace Common.Controls.Timeline
 
 		#region Properties
 
-		public ElementDrawQueue ElementQueue
+		public ConcurrentQueue<Element> ElementQueue
 		{
 			get
 			{
@@ -1195,7 +1195,7 @@ namespace Common.Controls.Timeline
 				{
 					for (int i = 0; i < row.ElementCount; i++)
 					{
-						_elementQueue.Add(row.GetElementAtIndex(i));
+						_elementQueue.Enqueue	(row.GetElementAtIndex(i));
 					}
 				}
 			}
@@ -1205,16 +1205,17 @@ namespace Common.Controls.Timeline
 				Element element;
 				int currentElementNum = 0;
 				int percent = 100;
-				while (_elementQueue.TryNext(out element))
-				{
-					Size size = new Size((int)Math.Ceiling(timeToPixels(element.Duration)), element.Row.Height - 1);
-					elementImage = element.SetupCachedImage(size);
-					if (element.StartTime <= VisibleTimeEnd && element.EndTime >= VisibleTimeStart)
-						Invalidate();
+				while (_elementQueue.Count > 0) {
+					if (_elementQueue.TryDequeue(out element)) {
+						Size size = new Size((int)Math.Ceiling(timeToPixels(element.Duration)), element.Row.Height - 1);
+						elementImage = element.SetupCachedImage(size);
+						if (element.StartTime <= VisibleTimeEnd && element.EndTime >= VisibleTimeStart)
+							Invalidate();
 
-					percent = (int)((double)(currentElementNum) / (double)_elementQueue.Count() * 100.0);
-					renderWorker.ReportProgress(percent);
-					currentElementNum++;
+						percent = (int)((double)(currentElementNum) / (double)_elementQueue.Count() * 100.0);
+						renderWorker.ReportProgress(percent);
+						currentElementNum++;
+					}
 				}
 				if (percent < 100)
 					renderWorker.ReportProgress(100);
@@ -1321,7 +1322,7 @@ namespace Common.Controls.Timeline
                 {
                     Element currentElement = row.GetElementAtIndex(i);
                     currentElement.Changed = true;
-					ElementQueue.Add(currentElement);
+					ElementQueue.Enqueue(currentElement);
                 }
             }
         }

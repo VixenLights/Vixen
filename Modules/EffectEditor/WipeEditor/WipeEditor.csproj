@@ -100,11 +100,6 @@
       <Name>Wipe</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\Property\Location\Location.csproj">
-      <Project>{7D5D4BE4-576A-4092-A3E2-1A6F27CDC213}</Project>
-      <Name>Location</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\ColorGradientTypeEditor\ColorGradientTypeEditor.csproj">
       <Project>{48cf28ec-8dc9-44f8-a258-bd264df187d9}</Project>
       <Name>ColorGradientTypeEditor</Name>
