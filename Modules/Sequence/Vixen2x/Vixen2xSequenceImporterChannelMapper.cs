@@ -143,8 +143,8 @@ namespace VixenModules.SequenceType.Vixen2x
 					item.SubItems[5].BackColor = mapping.DestinationColor;
 				}
 				else {
-					item.SubItems.Add("");
-					item.SubItems.Add("");
+					item.SubItems.Add(string.Empty);
+					item.SubItems.Add(string.Empty);
 				}
 
 				//set the v2 columns to readonly

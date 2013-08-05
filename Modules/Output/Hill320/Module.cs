@@ -103,7 +103,7 @@ namespace VixenModules.Output.Hill320
 				LoadInpOutDLL.outputData(_moduleData.ControlPort, 3);
 				LoadInpOutDLL.outputData(_moduleData.ControlPort, 1);
 
-				Debug.WriteLine(String.Format("{0} {1} {2}", _moduleData.PortAddress, value, ((ushort) (bank | bankBox))));
+				Debug.WriteLine(string.Format("{0} {1} {2}", _moduleData.PortAddress, value, ((ushort) (bank | bankBox))));
 			}
 		}
 	}

@@ -5169,10 +5169,10 @@ namespace Dataweb.NShape.WinFormsUI
 				string layerNames = string.Empty;
 				foreach (Layer layer in Diagram.Layers.GetLayers(layers)) {
 					++layerCnt;
-					if (layerCnt <= 3) layerNames += string.Format("{0}{1}{2}{1}", (layerCnt > 1) ? ", " : "", "'", layer.Name);
+					if (layerCnt <= 3) layerNames += string.Format("{0}{1}{2}{1}", (layerCnt > 1) ? ", " : string.Empty, "'", layer.Name);
 				}
 				if (layerCnt > 3) layerNames = string.Format("{0} layers", layerCnt);
-				else layerNames = string.Format("layer{0} {1}", (layerCnt > 1) ? "s" : "", layerNames);
+				else layerNames = string.Format("layer{0} {1}", (layerCnt > 1) ? "s" : string.Empty, layerNames);
 
 				// Build menu item description text
 				if (shapes.Count == 1)
@@ -5182,7 +5182,7 @@ namespace Dataweb.NShape.WinFormsUI
 						"{0} {1} shape{2} to {3}.",
 						actionTxt,
 						shapes.Count,
-						(shapes.Count > 0) ? "s" : "",
+						(shapes.Count > 0) ? "s" : string.Empty,
 						layerNames);
 			}
 			else {
@@ -5217,7 +5217,7 @@ namespace Dataweb.NShape.WinFormsUI
 			}
 			else {
 				if (shapes.Count <= 0) description = noShapesSelectedText;
-				else description = string.Format("Shape{0} not assigned to any layer.", (shapes.Count > 1) ? "s" : "");
+				else description = string.Format("Shape{0} not assigned to any layer.", (shapes.Count > 1) ? "s" : string.Empty);
 			}
 
 			return new DelegateMenuItemDef("Remove Shapes from all Layers", Properties.Resources.RemoveFromAllLayers, description,
@@ -5310,7 +5310,7 @@ namespace Dataweb.NShape.WinFormsUI
 				description = noShapesSelectedText;
 			else {
 				isFeasible = true;
-				description = string.Format("Cut {0} shape{1}", shapes.Count, shapes.Count > 1 ? "s" : "");
+				description = string.Format("Cut {0} shape{1}", shapes.Count, shapes.Count > 1 ? "s" : string.Empty);
 			}
 
 			if (!modelObjectsAssigned)
@@ -5340,7 +5340,7 @@ namespace Dataweb.NShape.WinFormsUI
 			bool isFeasible = true;
 			string description = string.Format("Copy {0}{1} as PNG and EMF image to clipboard.",
 			                                   (selectedShapes.Count > 0) ? "selected Shape" : "Diagram",
-			                                   selectedShapes.Count > 1 ? "s" : "");
+			                                   selectedShapes.Count > 1 ? "s" : string.Empty);
 
 			return new DelegateMenuItemDef(title, icon, description, isFeasible, permission,
 			                               (a, p) =>
@@ -5374,7 +5374,7 @@ namespace Dataweb.NShape.WinFormsUI
 			Permission permission = Permission.None;
 			bool isFeasible = diagramSetController.CanCopy(shapes);
 			string description = isFeasible
-			                     	? string.Format("Copy {0} shape{1}", shapes.Count, shapes.Count > 1 ? "s" : "")
+			                     	? string.Format("Copy {0} shape{1}", shapes.Count, shapes.Count > 1 ? "s" : string.Empty)
 			                     	: noShapesSelectedText;
 
 			if (!modelObjectsAssigned)
@@ -5402,11 +5402,11 @@ namespace Dataweb.NShape.WinFormsUI
 			//string description;
 			//bool isFeasible = diagramSetController.CanPaste(diagram, out description);
 			//if (isFeasible)
-			//    description = string.Format("Paste {0} shape{1}", shapes.Count, shapes.Count > 1 ? "s" : "");
+			//    description = string.Format("Paste {0} shape{1}", shapes.Count, shapes.Count > 1 ? "s" : string.Empty);
 
 			bool isFeasible = diagramSetController.CanPaste(diagram);
 			string description = isFeasible
-			                     	? string.Format("Paste {0} shape{1}", shapes.Count, shapes.Count > 1 ? "s" : "")
+			                     	? string.Format("Paste {0} shape{1}", shapes.Count, shapes.Count > 1 ? "s" : string.Empty)
 			                     	: "No shapes cut/copied yet";
 
 			return new DelegateMenuItemDef("Paste", Properties.Resources.PasteBtn, description,
@@ -5427,7 +5427,7 @@ namespace Dataweb.NShape.WinFormsUI
 				description = noShapesSelectedText;
 			else {
 				isFeasible = true;
-				description = string.Format("Delete {0} shape{1}", shapes.Count, shapes.Count > 1 ? "s" : "");
+				description = string.Format("Delete {0} shape{1}", shapes.Count, shapes.Count > 1 ? "s" : string.Empty);
 			}
 
 			if (!modelObjectsAssigned)

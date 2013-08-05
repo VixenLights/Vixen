@@ -302,7 +302,7 @@ namespace ZedGraph
 			/// <summary>
 			/// The default setting for the <see cref="Axis"/> scale format string
 			/// (<see cref="Format"/> property).  For numeric values, this value is
-			/// setting according to the <see cref="String.Format(string,object)"/> format strings.  For date
+			/// setting according to the <see cref="string.Format(string,object)"/> format strings.  For date
 			/// type values, this value is set as per the <see cref="XDate.ToString()"/> function.
 			/// </summary>
 			//public static string ScaleFormat = "&dd-&mmm-&yy &hh:&nn";

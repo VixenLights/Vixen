@@ -23,8 +23,7 @@ using System.Runtime.Serialization;
 using System.Security.Permissions;
 using IComparer = System.Collections.IComparer;
 
-namespace ZedGraph
-{
+namespace ZedGraph {
 	/// <summary>
 	/// The basic <see cref="PointPair" /> class holds three data values (X, Y, Z).  This
 	/// class extends the basic PointPair to contain five data values (X, Y, Z, Open, Close).
@@ -37,8 +36,7 @@ namespace ZedGraph
 	/// <author> John Champion </author>
 	/// <version> $Revision: 3.4 $ $Date: 2007-02-07 07:46:46 $ </version>
 	[Serializable]
-	public class StockPt : PointPair, ISerializable
-	{
+	public class StockPt : PointPair, ISerializable {
 		#region Member variables
 
 		// member variable mapping:
@@ -77,8 +75,8 @@ namespace ZedGraph
 		/// <summary>
 		/// Default Constructor
 		/// </summary>
-		public StockPt() : this(0, 0, 0, 0, 0, 0, null)
-		{
+		public StockPt()
+			: this(0, 0, 0, 0, 0, 0, null) {
 		}
 
 		/// <summary>
@@ -91,8 +89,7 @@ namespace ZedGraph
 		/// <param name="low">The daily low stock price</param>
 		/// <param name="vol">The daily trading volume</param>
 		public StockPt(double date, double high, double low, double open, double close, double vol)
-			: this(date, high, low, open, close, vol, null)
-		{
+			: this(date, high, low, open, close, vol, null) {
 		}
 
 		/// <summary>
@@ -106,9 +103,8 @@ namespace ZedGraph
 		/// <param name="vol">The daily trading volume</param>
 		/// <param name="tag">The user-defined <see cref="PointPair.Tag" /> property.</param>
 		public StockPt(double date, double high, double low, double open, double close, double vol,
-		               string tag)
-			: base(date, high)
-		{
+					   string tag)
+			: base(date, high) {
 			this.Low = low;
 			this.Open = open;
 			this.Close = close;
@@ -122,8 +118,7 @@ namespace ZedGraph
 		/// </summary>
 		/// <param name="rhs">The basis for the copy.</param>
 		public StockPt(StockPt rhs)
-			: base(rhs)
-		{
+			: base(rhs) {
 			this.Low = rhs.Low;
 			this.Open = rhs.Open;
 			this.Close = rhs.Close;
@@ -131,7 +126,7 @@ namespace ZedGraph
 			this.ColorValue = rhs.ColorValue;
 
 			if (rhs.Tag is ICloneable)
-				this.Tag = ((ICloneable) rhs.Tag).Clone();
+				this.Tag = ((ICloneable)rhs.Tag).Clone();
 			else
 				this.Tag = rhs.Tag;
 		}
@@ -141,8 +136,7 @@ namespace ZedGraph
 		/// </summary>
 		/// <param name="rhs">The basis for the copy.</param>
 		public StockPt(PointPair rhs)
-			: base(rhs)
-		{
+			: base(rhs) {
 			if (rhs is StockPt) {
 				StockPt pt = rhs as StockPt;
 				this.Open = pt.Open;
@@ -175,8 +169,7 @@ namespace ZedGraph
 		/// <param name="context">A <see cref="StreamingContext"/> instance that contains the serialized data
 		/// </param>
 		protected StockPt(SerializationInfo info, StreamingContext context)
-			: base(info, context)
-		{
+			: base(info, context) {
 			// The schema value is just a file version parameter.  You can use it to make future versions
 			// backwards compatible as new member variables are added to classes
 			int sch = info.GetInt32("schema3");
@@ -193,8 +186,7 @@ namespace ZedGraph
 		/// <param name="info">A <see cref="SerializationInfo"/> instance that defines the serialized data</param>
 		/// <param name="context">A <see cref="StreamingContext"/> instance that contains the serialized data</param>
 		[SecurityPermissionAttribute(SecurityAction.Demand, SerializationFormatter = true)]
-		public override void GetObjectData(SerializationInfo info, StreamingContext context)
-		{
+		public override void GetObjectData(SerializationInfo info, StreamingContext context) {
 			base.GetObjectData(info, context);
 			info.AddValue("schema3", schema2);
 			info.AddValue("Open", Open);
@@ -210,8 +202,7 @@ namespace ZedGraph
 		/// <summary>
 		/// Map the Date property to the X value
 		/// </summary>
-		public double Date
-		{
+		public double Date {
 			get { return X; }
 			set { X = value; }
 		}
@@ -219,8 +210,7 @@ namespace ZedGraph
 		/// <summary>
 		/// Map the high property to the Y value
 		/// </summary>
-		public double High
-		{
+		public double High {
 			get { return Y; }
 			set { Y = value; }
 		}
@@ -228,8 +218,7 @@ namespace ZedGraph
 		/// <summary>
 		/// Map the low property to the Z value
 		/// </summary>
-		public double Low
-		{
+		public double Low {
 			get { return Z; }
 			set { Z = value; }
 		}
@@ -238,8 +227,7 @@ namespace ZedGraph
 		/// The ColorValue property.  This is used with the
 		/// <see cref="FillType.GradientByColorValue" /> option.
 		/// </summary>
-		public override double ColorValue
-		{
+		public override double ColorValue {
 			get { return _colorValue; }
 			set { _colorValue = value; }
 		}
@@ -251,25 +239,23 @@ namespace ZedGraph
 		/// Infinity, or NaN.
 		/// </summary>
 		/// <returns>true if any value is invalid</returns>
-		public bool IsInvalid5D
-		{
-			get
-			{
+		public bool IsInvalid5D {
+			get {
 				return this.Date == PointPair.Missing ||
-				       this.Close == PointPair.Missing ||
-				       this.Open == PointPair.Missing ||
-				       this.High == PointPair.Missing ||
-				       this.Low == PointPair.Missing ||
-				       Double.IsInfinity(this.Date) ||
-				       Double.IsInfinity(this.Close) ||
-				       Double.IsInfinity(this.Open) ||
-				       Double.IsInfinity(this.High) ||
-				       Double.IsInfinity(this.Low) ||
-				       Double.IsNaN(this.Date) ||
-				       Double.IsNaN(this.Close) ||
-				       Double.IsNaN(this.Open) ||
-				       Double.IsNaN(this.High) ||
-				       Double.IsNaN(this.Low);
+					   this.Close == PointPair.Missing ||
+					   this.Open == PointPair.Missing ||
+					   this.High == PointPair.Missing ||
+					   this.Low == PointPair.Missing ||
+					   Double.IsInfinity(this.Date) ||
+					   Double.IsInfinity(this.Close) ||
+					   Double.IsInfinity(this.Open) ||
+					   Double.IsInfinity(this.High) ||
+					   Double.IsInfinity(this.Low) ||
+					   Double.IsNaN(this.Date) ||
+					   Double.IsNaN(this.Close) ||
+					   Double.IsNaN(this.Open) ||
+					   Double.IsNaN(this.High) ||
+					   Double.IsNaN(this.Low);
 			}
 		}
 
@@ -283,8 +269,7 @@ namespace ZedGraph
 		/// </summary>
 		/// <param name="isShowAll">true to show all the value coordinates</param>
 		/// <returns>A string representation of the <see cref="StockPt" />.</returns>
-		public override string ToString(bool isShowAll)
-		{
+		public override string ToString(bool isShowAll) {
 			return this.ToString(PointPair.DefaultFormat, isShowAll);
 		}
 
@@ -298,16 +283,10 @@ namespace ZedGraph
 		/// the two double type values (see <see cref="System.Double.ToString()"/>).</param>
 		/// <returns>A string representation of the PointPair</returns>
 		/// <param name="isShowAll">true to show all the value coordinates</param>
-		public override string ToString(string format, bool isShowAll)
-		{
-			return "( " + XDate.ToString(this.Date, "g") +
-			       ", " + this.Close.ToString(format) +
-			       (isShowAll
-			        	? (
-			        	  	", " + this.Low.ToString(format) +
-			        	  	", " + this.Open.ToString(format) +
-			        	  	", " + this.Close.ToString(format))
-			        	: "") + " )";
+		public override string ToString(string format, bool isShowAll) {
+			return string.Format("({0}, {1}{2})", XDate.ToString(this.Date, "g"), this.Close.ToString(format),
+				isShowAll ? string.Format(", {0}, {1}, {2}", this.Low.ToString(format), this.Open.ToString(format), this.Close.ToString(format)) : string.Empty);
+
 		}
 
 		#endregion

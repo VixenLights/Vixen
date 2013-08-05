@@ -343,7 +343,7 @@ namespace ZedGraph
 			RectangleF pixRect = _location.TransformRect(pane);
 
 			shape = "rect";
-			coords = String.Format("{0:f0},{1:f0},{2:f0},{3:f0}",
+			coords = string.Format("{0:f0},{1:f0},{2:f0},{3:f0}",
 			                       pixRect.Left, pixRect.Top, pixRect.Right, pixRect.Bottom);
 		}
 

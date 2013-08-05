@@ -250,7 +250,7 @@ namespace VixenModules.Property.Color
 		{
 			ElementColorType = ElementColorType.FullColor;
 			SingleColor = System.Drawing.Color.Black;
-			ColorSetName = "";
+			ColorSetName = string.Empty;
 		}
 
 		public override IModuleDataModel Clone()

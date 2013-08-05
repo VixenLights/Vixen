@@ -535,7 +535,7 @@ namespace ZedGraph
 			                                       Assembly.GetExecutingAssembly());
 
 			Rectangle rect = new Rectangle(0, 0, this.Size.Width, this.Size.Height);
-			_masterPane = new MasterPane("", rect);
+			_masterPane = new MasterPane(string.Empty, rect);
 			_masterPane.Margin.All = 0;
 			_masterPane.Title.IsVisible = false;
 

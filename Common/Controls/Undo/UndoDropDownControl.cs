@@ -51,12 +51,12 @@ namespace Common.Controls
 			listbox.EndUpdate();
 
 			idx++;
-			bottomtext.Text = String.Format("{0} {1} Action{2}",
+			bottomtext.Text = string.Format("{0} {1} Action{2}",
 			                                ((ButtonType == UndoButtonType.UndoButton)
 			                                 	? "Undo"
 			                                 	: (ButtonType == UndoButtonType.RedoButton) ? "Redo" : "???"),
 			                                idx,
-			                                ((idx == 1) ? "" : "s")
+			                                ((idx == 1) ? string.Empty : "s")
 				);
 		}
 

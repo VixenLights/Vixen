@@ -1,18 +1,14 @@
 ﻿using Vixen.Instrumentation;
 using Vixen.Sys.Output;
 
-namespace Vixen.Sys.Instrumentation
-{
-	internal class OutputDeviceUpdateTimeValue : DoubleValue
-	{
+namespace Vixen.Sys.Instrumentation {
+	internal class OutputDeviceUpdateTimeValue : DoubleValue {
 		public OutputDeviceUpdateTimeValue(IOutputDevice outputDevice)
-			: base("Output device update time [" + outputDevice.Name + "]")
-		{
+			: base(string.Format("Output device update time [{0}]", outputDevice.Name)) {
 		}
 
-		protected override string _GetFormattedValue()
-		{
-			return ((int) _GetValue()) + " ms";
+		protected override string _GetFormattedValue() {
+			return string.Format("{0} ms", (int)_GetValue());
 		}
 	}
 }

@@ -38,6 +38,28 @@
     <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\..\..\Output\Modules\Preview\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>..\..\..\Release\Modules\Preview\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="$(SolutionDir)\Vixen.System\Vixen.csproj">
       <Project>{50B78623-FCF4-48AF-93FF-FA87C937028F}</Project>
@@ -45,9 +67,8 @@
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Common\Help\VixenHelp.csproj">
-      <Project>{BD12BFFC-7039-4C79-ABA0-51F99773A916}</Project>
+      <Project>{bd12bffc-7039-4c79-aba0-51f99773a916}</Project>
       <Name>VixenHelp</Name>
-      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Property\Color\Color.csproj">
       <Project>{73068A83-B3B7-4A2C-923D-71C7886CD5E3}</Project>
@@ -66,6 +87,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.WindowsAPICodePack.DirectX">
+      <HintPath>..\..\..\Common\Controls\Microsoft.WindowsAPICodePack.DirectX.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="NLog">
       <HintPath>..\..\..\packages\NLog.2.0.1.2\lib\net40\NLog.dll</HintPath>
       <Private>False</Private>
@@ -89,8 +114,22 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Direct2D\Direct2DControl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Direct2D\DisplayScene.cs" />
+    <Compile Include="Direct2D\PreviewWinform.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Direct2D\PreviewWinform.Designer.cs">
+      <DependentUpon>PreviewWinform.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Direct2D\PreviewWPF.xaml.cs">
+      <DependentUpon>PreviewWPF.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DebugTimer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResizePreviewForm.cs">
@@ -236,6 +275,12 @@
     <Compile Include="VixenPreviewDisplay.Designer.cs">
       <DependentUpon>VixenPreviewDisplay.cs</DependentUpon>
     </Compile>
+    <Compile Include="VixenPreviewDisplayD2D.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="VixenPreviewDisplayD2D.Designer.cs">
+      <DependentUpon>VixenPreviewDisplayD2D.cs</DependentUpon>
+    </Compile>
     <Compile Include="VixenPreviewSetup.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -270,6 +315,9 @@
     <Compile Include="VixenPreviewSetupPropertiesDocument.Designer.cs">
       <DependentUpon>VixenPreviewSetupPropertiesDocument.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Direct2D\PreviewWinform.resx">
+      <DependentUpon>PreviewWinform.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -337,6 +385,9 @@
     <EmbeddedResource Include="VixenPreviewDisplay.resx">
       <DependentUpon>VixenPreviewDisplay.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="VixenPreviewDisplayD2D.resx">
+      <DependentUpon>VixenPreviewDisplayD2D.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="VixenPreviewModuleInstance.resx">
       <DependentUpon>VixenPreviewModuleInstance.cs</DependentUpon>
     </EmbeddedResource>
@@ -355,7 +406,6 @@
     <EmbeddedResource Include="VixenPreviewSetupPropertiesDocument.resx">
       <DependentUpon>VixenPreviewSetupPropertiesDocument.cs</DependentUpon>
     </EmbeddedResource>
-    <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -381,6 +431,12 @@
     <None Include="Resources\Flood.png" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Direct2D\PreviewWPF.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+ <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

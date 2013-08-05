@@ -62,7 +62,7 @@ namespace Dataweb.NShape.WinFormsUI {
 			this.textBox.Name = "textBox";
 			this.textBox.Size = new System.Drawing.Size(359, 137);
 			this.textBox.TabIndex = 0;
-			this.textBox.Text = "";
+			this.textBox.Text = string.Empty;
 			this.textBox.TextAlignment = System.Windows.Forms.HorizontalAlignment.Left;
 			// 
 			// TextEditorDialog
