@@ -34,6 +34,7 @@ namespace VixenApplication
 		{
 			PopulateFormWithNode(null, true);
 			elementTree.treeviewAfterSelect += elementTree_AfterSelect;
+			elementTree.treeviewDeselected += elementTree_treeviewDeselected;
 			elementTree.ElementsChanged += elementTree_ElementsChanged;
 		}
 
@@ -175,10 +176,14 @@ namespace VixenApplication
 				properties.Add(new KeyValuePair<string, object>(kvp.Value, kvp.Key));
 			}
 			using (ListSelectDialog addForm = new ListSelectDialog("Add Property", (properties))) {
+				addForm.SelectionMode = SelectionMode.MultiExtended;
 				if (addForm.ShowDialog() == DialogResult.OK) {
-					_displayedNode.Properties.Add((Guid) addForm.SelectedItem);
-					PopulatePropertiesArea(_displayedNode);
+					foreach(KeyValuePair<string,object> item in addForm.SelectedItems){
 
+						_displayedNode.Properties.Add((Guid) item.Value);	
+					}
+
+					PopulatePropertiesArea(_displayedNode);
 					_changesMade = true;
 				}
 			}
@@ -220,6 +225,11 @@ namespace VixenApplication
 		#region Events
 
 		private void elementTree_AfterSelect(object sender, TreeViewEventArgs e)
+		{
+			PopulateFormWithNode(elementTree.SelectedNode, false);
+		}
+
+		void elementTree_treeviewDeselected(object sender, EventArgs e)
 		{
 			PopulateFormWithNode(elementTree.SelectedNode, false);
 		}

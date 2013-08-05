@@ -294,8 +294,6 @@ namespace VixenModules.Preview.VixenPreview
 
 		public void AddDisplayItem(DisplayItem displayItem)
 		{
-            if (OnElementsChanged != null)
-                OnElementsChanged(this, new EventArgs());
 			DisplayItems.Add(displayItem);
 		}
 
@@ -703,13 +701,13 @@ namespace VixenModules.Preview.VixenPreview
 
 		private void VixenPreviewControl_MouseUp(object sender, MouseEventArgs e)
 		{
-			HighlightedElements.Clear();
 			if (_mouseCaptured) {
 				if (_currentTool != Tools.Select) {
 					// If control is pressed, deselect the shape and immediately allow drawing another shape
 					if ((Control.ModifierKeys & Keys.Shift) != 0) {
 						_selectedDisplayItem.Shape.MouseUp(sender, e);
 						DeSelectSelectedDisplayItem();
+						//HighlightedElements.Clear();
 					}
 					else {
 						_currentTool = Tools.Select;
@@ -720,7 +718,7 @@ namespace VixenModules.Preview.VixenPreview
 					_selectedDisplayItem.Shape.MouseUp(sender, e);
 					OnSelectDisplayItem(this, _selectedDisplayItem);
 				}
-					// Ok, if this is true, we've got a rubber band and something is selected, now what?
+				// Ok, if this is true, we've got a rubber band and something is selected, now what?
 				else if (SelectedDisplayItems.Count > 0) {
 					// If we only have one item, just select it and go on.
 					if (SelectedDisplayItems.Count == 1) {

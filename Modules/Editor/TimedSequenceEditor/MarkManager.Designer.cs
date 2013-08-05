@@ -41,6 +41,7 @@
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MarkManager));
 			this.groupBoxMarkCollections = new System.Windows.Forms.GroupBox();
+			this.buttonImportAudacity = new System.Windows.Forms.Button();
 			this.buttonRemoveCollection = new System.Windows.Forms.Button();
 			this.buttonAddCollection = new System.Windows.Forms.Button();
 			this.listViewMarkCollections = new System.Windows.Forms.ListView();
@@ -110,7 +111,6 @@
 			this.radioButtonTapper = new System.Windows.Forms.RadioButton();
 			this.timerPlayback = new System.Windows.Forms.Timer(this.components);
 			this.timerMarkHit = new System.Windows.Forms.Timer(this.components);
-			this.buttonImportAudacity = new System.Windows.Forms.Button();
 			this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
 			this.groupBoxMarkCollections.SuspendLayout();
 			this.groupBoxSelectedMarkCollection.SuspendLayout();
@@ -140,6 +140,16 @@
 			this.groupBoxMarkCollections.TabIndex = 1;
 			this.groupBoxMarkCollections.TabStop = false;
 			this.groupBoxMarkCollections.Text = "Mark Collections";
+			// 
+			// buttonImportAudacity
+			// 
+			this.buttonImportAudacity.Location = new System.Drawing.Point(6, 263);
+			this.buttonImportAudacity.Name = "buttonImportAudacity";
+			this.buttonImportAudacity.Size = new System.Drawing.Size(226, 23);
+			this.buttonImportAudacity.TabIndex = 10;
+			this.buttonImportAudacity.Text = "Import Audacity Beat Marks";
+			this.buttonImportAudacity.UseVisualStyleBackColor = true;
+			this.buttonImportAudacity.Click += new System.EventHandler(this.buttonImportAudacity_Click);
 			// 
 			// buttonRemoveCollection
 			// 
@@ -570,7 +580,7 @@
 			// 
 			// btnCreateCollections
 			// 
-			this.btnCreateCollections.Location = new System.Drawing.Point(90, 95);
+			this.btnCreateCollections.Location = new System.Drawing.Point(90, 89);
 			this.btnCreateCollections.Name = "btnCreateCollections";
 			this.btnCreateCollections.Size = new System.Drawing.Size(75, 23);
 			this.btnCreateCollections.TabIndex = 23;
@@ -581,7 +591,7 @@
 			// label9
 			// 
 			this.label9.AutoSize = true;
-			this.label9.Location = new System.Drawing.Point(9, 62);
+			this.label9.Location = new System.Drawing.Point(7, 52);
 			this.label9.Name = "label9";
 			this.label9.Size = new System.Drawing.Size(119, 13);
 			this.label9.TabIndex = 22;
@@ -599,7 +609,7 @@
 			// radioSelected
 			// 
 			this.radioSelected.AutoSize = true;
-			this.radioSelected.Location = new System.Drawing.Point(62, 78);
+			this.radioSelected.Location = new System.Drawing.Point(52, 72);
 			this.radioSelected.Name = "radioSelected";
 			this.radioSelected.Size = new System.Drawing.Size(67, 17);
 			this.radioSelected.TabIndex = 21;
@@ -610,7 +620,7 @@
 			// 
 			this.radioAll.AutoSize = true;
 			this.radioAll.Checked = true;
-			this.radioAll.Location = new System.Drawing.Point(20, 78);
+			this.radioAll.Location = new System.Drawing.Point(10, 71);
 			this.radioAll.Name = "radioAll";
 			this.radioAll.Size = new System.Drawing.Size(36, 17);
 			this.radioAll.TabIndex = 20;
@@ -620,7 +630,7 @@
 			// 
 			// btnAutoDetectionSettings
 			// 
-			this.btnAutoDetectionSettings.Location = new System.Drawing.Point(90, 15);
+			this.btnAutoDetectionSettings.Location = new System.Drawing.Point(90, 20);
 			this.btnAutoDetectionSettings.Name = "btnAutoDetectionSettings";
 			this.btnAutoDetectionSettings.Size = new System.Drawing.Size(75, 23);
 			this.btnAutoDetectionSettings.TabIndex = 18;
@@ -631,7 +641,7 @@
 			// ChkAutoTapper
 			// 
 			this.ChkAutoTapper.AutoSize = true;
-			this.ChkAutoTapper.Location = new System.Drawing.Point(10, 19);
+			this.ChkAutoTapper.Location = new System.Drawing.Point(10, 26);
 			this.ChkAutoTapper.Name = "ChkAutoTapper";
 			this.ChkAutoTapper.Size = new System.Drawing.Size(65, 17);
 			this.ChkAutoTapper.TabIndex = 17;
@@ -728,7 +738,7 @@
 			// 
 			this.trackBarPlayBack.Location = new System.Drawing.Point(6, 65);
 			this.trackBarPlayBack.Name = "trackBarPlayBack";
-			this.trackBarPlayBack.Size = new System.Drawing.Size(703, 45);
+			this.trackBarPlayBack.Size = new System.Drawing.Size(703, 42);
 			this.trackBarPlayBack.TabIndex = 5;
 			this.trackBarPlayBack.Scroll += new System.EventHandler(this.trackBarPlayBack_Scroll);
 			this.trackBarPlayBack.MouseDown += new System.Windows.Forms.MouseEventHandler(this.trackBarPlayBack_MouseDown);
@@ -877,16 +887,6 @@
 			// 
 			this.timerMarkHit.Interval = 40;
 			this.timerMarkHit.Tick += new System.EventHandler(this.timerMarkHit_Tick);
-			// 
-			// buttonImportAudacity
-			// 
-			this.buttonImportAudacity.Location = new System.Drawing.Point(6, 263);
-			this.buttonImportAudacity.Name = "buttonImportAudacity";
-			this.buttonImportAudacity.Size = new System.Drawing.Size(226, 23);
-			this.buttonImportAudacity.TabIndex = 10;
-			this.buttonImportAudacity.Text = "Import Audacity Beat Marks";
-			this.buttonImportAudacity.UseVisualStyleBackColor = true;
-			this.buttonImportAudacity.Click += new System.EventHandler(this.buttonImportAudacity_Click);
 			// 
 			// openFileDialog
 			// 

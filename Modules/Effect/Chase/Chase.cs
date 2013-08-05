@@ -27,16 +27,7 @@ namespace VixenModules.Effect.Chase
 		protected override void _PreRender()
 		{
 			_elementData = new EffectIntents();
-			if (StaticColor.IsEmpty) //We have a new effect
-			{
-				//Try to set a default color gradient from our available colors if we have discrete colors
-				HashSet<Color> validColors = new HashSet<Color>();
-				validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
-				ColorGradient = new ColorGradient(validColors.DefaultIfEmpty(Color.White).First());
-
-				//Set a default color 
-				StaticColor = validColors.DefaultIfEmpty(Color.White).First();
-			}
+			CheckForEmptyData();
 
 			DoRendering();
 		}
@@ -107,7 +98,11 @@ namespace VixenModules.Effect.Chase
 		[Value]
 		public Color StaticColor
 		{
-			get { return _data.StaticColor; }
+			get
+			{
+				CheckForEmptyData();
+				return _data.StaticColor;
+			}
 			set
 			{
 				_data.StaticColor = value;
@@ -125,7 +120,11 @@ namespace VixenModules.Effect.Chase
 		[Value]
 		public ColorGradient ColorGradient
 		{
-			get { return _data.ColorGradient; }
+			get
+			{
+				CheckForEmptyData();
+				return _data.ColorGradient;
+			}
 			set
 			{
 				_data.ColorGradient = value;
@@ -163,6 +162,20 @@ namespace VixenModules.Effect.Chase
 			{
 				_data.DepthOfEffect = value;
 				IsDirty = true;
+			}
+		}
+
+		private void CheckForEmptyData()
+		{
+			if (_data.StaticColor.IsEmpty || _data.ColorGradient == null) //We have a new effect
+			{
+				//Try to set a default color gradient from our available colors if we have discrete colors
+				HashSet<Color> validColors = new HashSet<Color>();
+				validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
+				_data.ColorGradient = new ColorGradient(validColors.DefaultIfEmpty(Color.White).First());
+
+				//Set a default color 
+				_data.StaticColor = validColors.DefaultIfEmpty(Color.White).First();
 			}
 		}
 

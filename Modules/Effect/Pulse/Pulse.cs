@@ -30,14 +30,6 @@ namespace VixenModules.Effect.Pulse
 		{
 			_elementData = new EffectIntents();
 
-			if (ColorGradient == null) //We have a new effect
-			{
-				//Try to set a default color gradient from our available colors if we have discrete colors
-				HashSet<Color> validColors = new HashSet<Color>();
-				validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
-				ColorGradient = new ColorGradient(validColors.DefaultIfEmpty(Color.White).First());
-			}
-
 			foreach (ElementNode node in TargetNodes) {
 				if (node != null)
 					RenderNode(node);
@@ -69,7 +61,18 @@ namespace VixenModules.Effect.Pulse
 		[Value]
 		public ColorGradient ColorGradient
 		{
-			get { return _data.ColorGradient; }
+			get
+			{
+				if (_data.ColorGradient == null)
+				{
+					//Try to set a default color gradient from our available colors if we have discrete colors
+					HashSet<Color> validColors = new HashSet<Color>();
+					validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
+					ColorGradient = new ColorGradient(validColors.DefaultIfEmpty(Color.White).First());
+				}
+
+				return _data.ColorGradient;
+			}
 			set
 			{
 				_data.ColorGradient = value;

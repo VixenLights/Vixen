@@ -4,8 +4,10 @@ this includes:
 - common components used by the application and modules, in /Common
 - modules developed and maintained by the core team, and other contributors, in /Modules
 - the main Vixen application, in /Application
+- the vixen framework, in /Vixen.System
+- files to build the installer, in /Installer
 
-You should be able to open the VixenModules.sln solution and have it 'magically work'.
+You should be able to open the Vixen.sln solution and have it 'magically work'.
 If you have any problems, please let us know; there's quite a few small workarounds
 and gotchas used to get the modules building in two different solutions.
 
@@ -27,11 +29,8 @@ Conventions for module development:
   Vixen Applications (Debug):         $(SolutionDir)\Output\
   Vixen Applications (Release):       $(SolutionDir)\Release\
 
-  (this allows the VixenModules solution to be used within another solution -- ie.
-  the main Vixen solution -- and still output build data appropriately.)
-  
   Note: the $(SolutionDir) text will need to be edited in the .csproj file directly
-        (ie. outside of Visual Studio), as VS escapes the '$', '(', and ')' characters.
+        (ie. outside of Visual Studio), as VS escapes the '$()' macros.
 
   If you're unsure, look at another existing project, and copy the OutputPath for both
   Debug and Release, eg.:
@@ -39,20 +38,19 @@ Conventions for module development:
   <OutputPath>$(SolutionDir)\Release\Modules\Controller\</OutputPath>
   
  
-- To reference the vixen project, don't add a reference to the DLL; instead, edit the
-  .csproj file, and add this line somewhere:
-  
-  <Import Project="$(SolutionDir)\commonProject.props" />
-  
-  This includes a custom file which references the Vixen assembly as appropriate for
-  the solution it's been opened in: either a DLL reference, or a project reference.
+- To reference the vixen project (or any other projects that are needed), make sure you
+  add a 'project reference', and not a "normal" reference (to the binary DLL). This will
+  help compatibility for other developers when used in different locations.
   
 
 - When adding any other references, make sure you turn off the "Copy Local" option;
-  with it on, we end up with copies of DLLs all over the place on output. :-)
+  with it on, we end up with copies of DLLs all over the place on output. :-)  If you're
+  unsure, after building the solution, do a 'clean solution', and everything should be
+  removed from the build output directory.
 
 
-- Tabs vs. Spaces: Tabs are preferred; although it's not a religious thing. Try to
-  keep it consistent within a file, though: it's annoying if there are commits that
-  change one or two lines of content, with 100 lines changed because of whitespace.
+- Tabs vs. Spaces, and other formatting: Tabs are preferred, any other preferred formatting
+  can be added here. However, please try to review all your own changes before committing,
+  to ensure you are not making large changes to unrelated sections of code (eg. changing
+  formatting in a file, or whitespace, etc.). Commits like this may be rejected.
 

@@ -993,7 +993,7 @@ namespace VixenModules.Editor.TimedSequenceEditor {
 							string mark = line.Split('\t')[0];
 							TimeSpan time = TimeSpan.FromSeconds(Convert.ToDouble(mark));
 							mark = time.ToString("mm\\:ss\\.ff") ;
-							AddMark(mark);
+							_displayedCollection.Marks.Add(time);
 						}
 						UpdateMarkListBox();
 					}

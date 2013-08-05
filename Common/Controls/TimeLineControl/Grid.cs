@@ -1204,6 +1204,7 @@ namespace Common.Controls.Timeline
 			{
 				Element element;
 				int currentElementNum = 0;
+				int percent = 100;
 				while (_elementQueue.TryNext(out element))
 				{
 					Size size = new Size((int)Math.Ceiling(timeToPixels(element.Duration)), element.Row.Height - 1);
@@ -1211,10 +1212,12 @@ namespace Common.Controls.Timeline
 					if (element.StartTime <= VisibleTimeEnd && element.EndTime >= VisibleTimeStart)
 						Invalidate();
 
-					int percent = (int)((double)(currentElementNum) / (double)_elementQueue.Count() * 100.0);
+					percent = (int)((double)(currentElementNum) / (double)_elementQueue.Count() * 100.0);
 					renderWorker.ReportProgress(percent);
 					currentElementNum++;
 				}
+				if (percent < 100)
+					renderWorker.ReportProgress(100);
 			}
 
 			return;

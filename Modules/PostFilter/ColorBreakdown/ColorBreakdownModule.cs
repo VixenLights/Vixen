@@ -56,6 +56,8 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 	}
 
 
+
+
 	public class ColorBreakdownModule : OutputFilterModuleInstanceBase
 	{
 		private ColorBreakdownData _data;
@@ -117,6 +119,8 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 	}
 
 
+
+
 	public class ColorBreakdownData : ModuleDataModelBase
 	{
 		public ColorBreakdownData()
@@ -128,6 +132,7 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 		{
 			ColorBreakdownData newInstance = new ColorBreakdownData();
 			newInstance.BreakdownItems = new List<ColorBreakdownItem>(BreakdownItems);
+			newInstance.MixColors = MixColors;
 			return newInstance;
 		}
 
@@ -137,6 +142,8 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 		[DataMember]
 		public bool MixColors { get; set; }
 	}
+
+
 
 
 	[DataContract]
@@ -154,6 +161,8 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 		[DataMember]
 		public string Name { get; set; }
 	}
+
+
 
 
 	internal class ColorBreakdownFilter : IntentStateDispatch
@@ -231,6 +240,8 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 			}
 		}
 	}
+
+
 
 
 	internal class ColorBreakdownOutput : IDataFlowOutput<IntentsDataFlowData>
