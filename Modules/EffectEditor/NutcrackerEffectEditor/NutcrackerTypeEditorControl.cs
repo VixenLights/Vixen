@@ -67,7 +67,6 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 					for (int stringNum = 0; stringNum < stringCount; stringNum++) {
 						int currentString = stringCount - stringNum - 1;
 						PreviewBaseShape treeString = tree._strings[currentString];
-						//PreviewBaseShape treeString = tree._strings[stringNum];
 						for (int pixelNum = 0; pixelNum < treeString.Pixels.Count; pixelNum++)
 						{
 							treeString.Pixels[pixelNum].PixelColor = effect.Pixels[stringNum][pixelNum];
@@ -77,8 +76,6 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 				if (displayItem.Shape is PreviewPixelGrid) {
 					PreviewPixelGrid grid = displayItem.Shape as PreviewPixelGrid;
 					for (int stringNum = 0; stringNum < stringCount; stringNum++) {
-						//int currentString = stringCount - stringNum - 1;
-						//PreviewBaseShape gridString = grid._strings[currentString];
 						PreviewBaseShape gridString = grid._strings[stringNum];
 						for (int pixelNum = 0; pixelNum < gridString.Pixels.Count; pixelNum++)
 						{
@@ -114,14 +111,6 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 		private void NutcrackerTypeEditorControl_Load(object sender, EventArgs e)
 		{
 			PopulateEffectComboBox();
-			
-			//foreach (ElementNode node in Data.TargetNodes) {
-			//    if (node != null) {
-			//        Console.WriteLine(node.Name);
-			//        //RenderNode(node);
-			//    }
-			//}
-
 
 			effect.Data = Data;
 
@@ -203,7 +192,6 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 
 		private void comboBoxEffect_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			//if (loading) return;
 			effect.SetNextState(true);
 
 			SetCurrentEffect(comboBoxEffect.SelectedItem.ToString());
@@ -278,16 +266,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			tree.StringType = PreviewBaseShape.StringTypes.Pixel;
 			tree.Degrees = degrees;
 
-			if (degrees == 90)
-				tree.StringCount = stringCount*4;
-			if (degrees == 180)
-				tree.StringCount = stringCount*2;
-			if (degrees == 270)
-				tree.StringCount = (int) (stringCount*1.25);
-			if (degrees == 360)
-				tree.StringCount = stringCount;
-
-			//Console.WriteLine("degrees:" + degrees + " StringCount:" + stringCount + " tree.StringCount:" + tree.StringCount);
+			tree.StringCount = stringCount;
 
 			tree.PixelCount = PixelsPerString();
 			tree.PixelSize = Data.PixelSize;
@@ -358,7 +337,6 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			grid.StringType = PreviewBaseShape.StringTypes.Pixel;
 			grid.StringCount = StringCount;
 			grid.LightsPerString = PixelsPerString();
-			//tree.PixelCount = PixelsPerString();
 			grid.PixelSize = Data.PixelSize;
 			grid.PixelColor = Color.White;
 			grid.Top = 10;

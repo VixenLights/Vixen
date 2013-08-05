@@ -31,7 +31,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\..\..\Output\Modules\Effect\</OutputPath>
+    <OutputPath>$(SolutionDir)\Output\Modules\Effect\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
@@ -39,7 +39,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>..\..\..\Release\Modules\Effect\</OutputPath>
+    <OutputPath>$(SolutionDir)\Release\Modules\Effect\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
@@ -93,6 +93,7 @@
     <ProjectReference Include="..\..\Property\Location\Location.csproj">
       <Project>{7d5d4be4-576a-4092-a3e2-1a6f27cdc213}</Project>
       <Name>Location</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Chase\Chase.csproj">
       <Project>{27ec771c-d03c-4c94-915b-e18e33cb6c43}</Project>

@@ -29,7 +29,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		[DataMember] private PreviewPoint _topRight, _bottomLeft;
 
-		private double _stringsInDegrees = 0;
+		//private double _stringsInDegrees = 0;
 
 		private PreviewPoint p1Start, p2Start;
 
@@ -157,12 +157,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			_bottomRight.Y = Y;
 		}
 
-		public int VisibleStringCount()
-		{
-			int count = Convert.ToInt32((double) _stringCount*((double) Degrees/360.0));
-			return count;
-		}
-
 		#region "Properties'
 
 		public int TopHeight
@@ -282,22 +276,32 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			get
 			{
-				if (_strings != null && _strings.Count > 0) {
-					_stringsInDegrees = (double) _stringCount*((double) _degrees/360);
+				//if (_strings != null && _strings.Count > 0)
+				//{
+				//    _stringsInDegrees = (double)_stringCount * ((double)_degrees / 360);
+				//    List<PreviewPixel> outPixels = new List<PreviewPixel>();
+				//    for (int i = 0; i < _stringsInDegrees; i++)
+				//    {
+				//        foreach (PreviewPixel pixel in _strings[i].Pixels)
+				//        {
+				//            outPixels.Add(pixel);
+				//        }
+				//    }
+
+				//    return outPixels;
+
+				// DB: Added 8/4/2013
+				if (_strings != null && _strings.Count > 0)
+				{
 					List<PreviewPixel> outPixels = new List<PreviewPixel>();
-					for (int i = 0; i < _stringsInDegrees; i++) {
-						foreach (PreviewPixel pixel in _strings[i].Pixels) {
+					for (int i = 0; i < StringCount; i++)
+					{
+						foreach (PreviewPixel pixel in _strings[i].Pixels)
+						{
 							outPixels.Add(pixel);
 						}
 					}
 
-					//foreach (PreviewBaseShape line in _strings)
-					//{
-					//    foreach (PreviewPixel pixel in line.Pixels)
-					//    {
-					//        outPixels.Add(pixel);
-					//    }
-					//}
 					return outPixels;
 				}
 				else {
@@ -307,51 +311,79 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			set
 			{
 				_pixels = value;
-				//ResetNodeToPixelDictionary();
 			}
 		}
 
 		public override void Layout()
 		{
+			//int width = _bottomRight.X - _topLeft.X;
+			//int height = _bottomRight.Y - _topLeft.Y;
+
+			//List<Point> _topEllipsePoints;
+			//List<Point> _baseEllipsePoints;
+
+			//double _topLeftOffset = _topLeft.X + (width/2) - (_topWidth/2);
+			//double bottomTopOffset = _bottomRight.Y - _baseHeight;
+
+			//_topEllipsePoints = PreviewTools.GetEllipsePoints(_topLeftOffset, _topLeft.Y, _topWidth, _topHeight, _stringCount,
+			//                                                  _degrees, 0);
+			//_baseEllipsePoints = PreviewTools.GetEllipsePoints(_topLeft.X, bottomTopOffset, width, _baseHeight, _stringCount,
+			//                                                   _degrees, 0);
+
+			//_stringsInDegrees = (double) _stringCount*((double) _degrees/360);
+
+			//for (int stringNum = 0; stringNum < (int) _stringCount; stringNum++) {
+			//    if (stringNum < (int) _stringsInDegrees) {
+			//        if (stringNum < _topEllipsePoints.Count()) {
+			//            Point topPixel = _topEllipsePoints[stringNum];
+			//            Point basePixel = _baseEllipsePoints[stringNum];
+
+			//            PreviewLine line = _strings[stringNum] as PreviewLine;
+			//            line.SetPoint0(basePixel.X, basePixel.Y);
+			//            line.SetPoint1(topPixel.X, topPixel.Y);
+			//            line.Layout();
+			//        }
+			//    }
+			//}
+
+			// DB: Added 8/4/2013
 			int width = _bottomRight.X - _topLeft.X;
 			int height = _bottomRight.Y - _topLeft.Y;
 
 			List<Point> _topEllipsePoints;
 			List<Point> _baseEllipsePoints;
 
-			// First we'll get the top and bottom ellipses
-			//double _topLeftOffset = _topLeft.X + (width / 2) - (_topWidth / 2);
-			//_topEllipsePoints = PreviewTools.GetEllipsePoints(_topLeftOffset, _topLeft.Y, _topWidth, _topHeight, _stringCount, _degrees);
-			//double bottomTopOffset = _bottomRight.Y - _baseHeight;
-			//_baseEllipsePoints = PreviewTools.GetEllipsePoints(_topLeft.X, bottomTopOffset, width, _baseHeight, _stringCount, _degrees);
-			double _topLeftOffset = _topLeft.X + (width/2) - (_topWidth/2);
+			double _topLeftOffset = _topLeft.X + (width / 2) - (_topWidth / 2);
 			double bottomTopOffset = _bottomRight.Y - _baseHeight;
-			//if (_degrees < 360)
-			//{
-			//    _topEllipsePoints = PreviewTools.GetEllipsePoints(_topLeftOffset, _topLeft.Y, _topWidth, _topHeight, _stringCount+1, 360, 0);
-			//    _baseEllipsePoints = PreviewTools.GetEllipsePoints(_topLeft.X, bottomTopOffset, width, _baseHeight, _stringCount+1, 360, 0);
-			//}
-			//else
-			//{
-			_topEllipsePoints = PreviewTools.GetEllipsePoints(_topLeftOffset, _topLeft.Y, _topWidth, _topHeight, _stringCount,
-			                                                  _degrees, 0);
-			_baseEllipsePoints = PreviewTools.GetEllipsePoints(_topLeft.X, bottomTopOffset, width, _baseHeight, _stringCount,
-			                                                   _degrees, 0);
-			//}
 
-			_stringsInDegrees = (double) _stringCount*((double) _degrees/360);
+			double totalStringsInEllipse = Math.Ceiling((360d / Convert.ToDouble(_degrees)) * Convert.ToDouble(StringCount));
 
-			for (int stringNum = 0; stringNum < (int) _stringCount; stringNum++) {
-				if (stringNum < (int) _stringsInDegrees) {
-					if (stringNum < _topEllipsePoints.Count()) {
-						Point topPixel = _topEllipsePoints[stringNum];
-						Point basePixel = _baseEllipsePoints[stringNum];
+			_topEllipsePoints = PreviewTools.GetEllipsePoints(_topLeftOffset, 
+															  _topLeft.Y, 
+															  _topWidth, 
+															  _topHeight, 
+															  totalStringsInEllipse,
+															  _degrees, 
+															  0);
+			_baseEllipsePoints = PreviewTools.GetEllipsePoints(_topLeft.X, 
+															   bottomTopOffset, 
+															   width, 
+															   _baseHeight, 
+															   totalStringsInEllipse,
+															   _degrees, 
+															   0);
 
-						PreviewLine line = _strings[stringNum] as PreviewLine;
-						line.SetPoint0(basePixel.X, basePixel.Y);
-						line.SetPoint1(topPixel.X, topPixel.Y);
-						line.Layout();
-					}
+			for (int stringNum = 0; stringNum < (int)_stringCount; stringNum++)
+			{
+				if (stringNum < StringCount && stringNum < _topEllipsePoints.Count())
+				{
+					Point topPixel = _topEllipsePoints[stringNum];
+					Point basePixel = _baseEllipsePoints[stringNum];
+
+					PreviewLine line = _strings[stringNum] as PreviewLine;
+					line.SetPoint0(basePixel.X, basePixel.Y);
+					line.SetPoint1(topPixel.X, topPixel.Y);
+					line.Layout();
 				}
 			}
 		}
@@ -387,11 +419,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			// Layout the standard shape
 			Layout();
 		}
-
-		//private void OnResize(EventArgs e)
-		//{
-		//    Layout();
-		//}
 
 		public override void SelectDragPoints()
 		{
@@ -436,64 +463,35 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			_selectedPoint = _bottomRight;
 		}
 
-		//public override void Draw(Graphics graphics, Color color)
-		//{
-		//    if (_strings != null)
-		//    {
-		//        for (int stringNum = 0; stringNum < _stringCount; stringNum++)
-		//        {
-		//            PreviewLine line = (PreviewLine)_strings[stringNum];
-		//            if (stringNum < (int)_stringsInDegrees)
-		//            {
-		//                line.Draw(graphics, color);
-		//            }
-		//            else
-		//            {
-		//                line.Draw(graphics, Color.Transparent);
-		//            }
-		//        }
-		//    }
-		//    base.Draw(graphics, color);
-		//}
-
-		//public override void Draw(FastPixel fp, Color color)
-		//{
-		//    if (_strings != null) {
-		//        _stringsInDegrees = (double)_stringCount * ((double)_degrees / 360);
-		//        for (int i = 0; i < (int)_stringsInDegrees; i++)
-		//        {
-		//            _strings[i].Draw(fp, color);
-		//        }
-		//    }
-		//    base.Draw(fp, color);
-		//}
-
-		//public override void Draw(FastPixel fp)
-		//{
-		//    if (_strings != null) {
-		//        _stringsInDegrees = (double)_stringCount * ((double)_degrees / 360);
-		//        for (int i = 0; i < _stringsInDegrees; i++)
-		//        {
-		//            _strings[i].Draw(fp);
-		//        }
-		//    }
-		//    base.Draw(fp);
-		//}
-
 		public override void Draw(FastPixel.FastPixel fp, bool editMode, List<ElementNode> highlightedElements, bool selected,
 		                          bool forceDraw)
 		{
-			if (_strings != null) {
-				_stringsInDegrees = (double) _stringCount*((double) _degrees/360);
-				for (int i = 0; i < _stringsInDegrees; i++) {
-					foreach (PreviewPixel pixel in _strings[i]._pixels) {
-						//Console.WriteLine(pixel.X + ":" + pixel.Y);
-						DrawPixel(pixel, fp, editMode, highlightedElements, selected, forceDraw);
+			//if (_strings != null) {
+			//    _stringsInDegrees = (double) _stringCount*((double) _degrees/360);
+			//    for (int i = 0; i < _stringsInDegrees; i++) {
+			//        foreach (PreviewPixel pixel in _strings[i]._pixels) {
+			//            //Console.WriteLine(pixel.X + ":" + pixel.Y);
+			//            DrawPixel(pixel, fp, editMode, highlightedElements, selected, forceDraw);
 
-						//if (highlightedElements.Contains(pixel.Node))
-						//    pixel.Draw(fp, PreviewTools.HighlightedElementColor);
-						//else
-						//    pixel.Draw(fp, Color.White);
+			//            //if (highlightedElements.Contains(pixel.Node))
+			//            //    pixel.Draw(fp, PreviewTools.HighlightedElementColor);
+			//            //else
+			//            //    pixel.Draw(fp, Color.White);
+			//        }
+			//    }
+			//}
+
+			//base.Draw(fp, editMode, highlightedElements, selected, forceDraw);
+
+			// DB: Added 8/4/2013
+			if (_strings != null)
+			{
+				//_stringsInDegrees = (double)_stringCount * ((double)_degrees / 360);
+				for (int i = 0; i < StringCount; i++)
+				{
+					foreach (PreviewPixel pixel in _strings[i]._pixels)
+					{
+						DrawPixel(pixel, fp, editMode, highlightedElements, selected, forceDraw);
 					}
 				}
 			}
@@ -512,8 +510,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 			newTree._topLeft = new PreviewPoint(_topLeft);
 			newTree._bottomRight = new PreviewPoint(_bottomRight);
-			//newTree.LightsPerString = LightsPerString;
-			//newTree.Degrees = Degrees;
 
 			return newTree;
 		}
@@ -525,18 +521,40 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			get
 			{
+				//Layout();
+				//List<PreviewBaseShape> stringsResult;
+				//if (_strings.Count != _stringsInDegrees) {
+				//    stringsResult = new List<PreviewBaseShape>();
+				//    for (int i = 0; i < _stringsInDegrees; i++) {
+				//        stringsResult.Add(_strings[i]);
+				//        Console.WriteLine("Added String: " + i.ToString());
+				//    }
+				//}
+				//else {
+				//    stringsResult = _strings;
+				//    if (stringsResult == null) {
+				//        stringsResult = new List<PreviewBaseShape>();
+				//        stringsResult.Add(this);
+				//    }
+				//}
+				//return stringsResult;
+
+				// DB: Added 8/4/2013
 				Layout();
 				List<PreviewBaseShape> stringsResult;
-				if (_strings.Count != _stringsInDegrees) {
+				if (_strings.Count != StringCount)
+				{
 					stringsResult = new List<PreviewBaseShape>();
-					for (int i = 0; i < _stringsInDegrees; i++) {
+					for (int i = 0; i < StringCount; i++)
+					{
 						stringsResult.Add(_strings[i]);
-						Console.WriteLine("Added String: " + i.ToString());
 					}
 				}
-				else {
+				else
+				{
 					stringsResult = _strings;
-					if (stringsResult == null) {
+					if (stringsResult == null)
+					{
 						stringsResult = new List<PreviewBaseShape>();
 						stringsResult.Add(this);
 					}

@@ -59,7 +59,7 @@ namespace VixenModules.Editor.ScriptEditor
 
 		private bool _IsValidFileName(string fileName)
 		{
-			Regex regex = new Regex(@"^[^ \\/:*?string.Empty<>|]+([ ]+[^ \\/:*?string.Empty<>|]+)*$");
+			Regex regex = new Regex(@"^[^ \\/:*?""<>|]+([ ]+[^ \\/:*?""<>|]+)*$");
 			return regex.IsMatch(fileName);
 		}
 

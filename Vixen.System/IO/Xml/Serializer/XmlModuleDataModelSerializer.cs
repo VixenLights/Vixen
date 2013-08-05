@@ -6,19 +6,23 @@ using System.Xml.Linq;
 using Vixen.Module;
 using Vixen.Sys;
 
-namespace Vixen.IO.Xml.Serializer {
-	internal class XmlModuleDataModelSerializer : IXmlSerializer<IModuleDataModel> {
+namespace Vixen.IO.Xml.Serializer
+{
+	internal class XmlModuleDataModelSerializer : IXmlSerializer<IModuleDataModel>
+	{
 		private const string ELEMENT_MODULE = "Module";
 		private const string ATTR_DATA_MODEL_TYPE = "dataModelType";
 		private const string ATTR_MODULE_TYPE = "moduleType";
 		private const string ATTR_MODULE_INSTANCE = "moduleInstance";
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
-		public XElement WriteObject(IModuleDataModel value) {
+		public XElement WriteObject(IModuleDataModel value)
+		{
 			return _SerializeDataModel(value);
 		}
 
-		private XElement _SerializeDataModel(IModuleDataModel value) {
+		private XElement _SerializeDataModel(IModuleDataModel value)
+		{
 			using (MemoryStream stream = new MemoryStream()) {
 				// Serializing each data object as the data object's type.
 				DataContractSerializer serializer = new DataContractSerializer(value.GetType());
@@ -26,10 +30,10 @@ namespace Vixen.IO.Xml.Serializer {
 					serializer.WriteObject(stream, value);
 					string objectData = Encoding.ASCII.GetString(stream.ToArray()).Trim();
 					return new XElement(ELEMENT_MODULE,
-										new XAttribute(ATTR_DATA_MODEL_TYPE, _GetDataModelTypeString(value)),
-										new XAttribute(ATTR_MODULE_TYPE, value.ModuleTypeId),
-										new XAttribute(ATTR_MODULE_INSTANCE, value.ModuleInstanceId),
-										XElement.Parse(objectData));
+					                    new XAttribute(ATTR_DATA_MODEL_TYPE, _GetDataModelTypeString(value)),
+					                    new XAttribute(ATTR_MODULE_TYPE, value.ModuleTypeId),
+					                    new XAttribute(ATTR_MODULE_INSTANCE, value.ModuleInstanceId),
+					                    XElement.Parse(objectData));
 				}
 				catch (Exception ex) {
 					Logging.ErrorException(string.Format("Error when serializing data model of type {0}", value.GetType().Name), ex);
@@ -38,13 +42,15 @@ namespace Vixen.IO.Xml.Serializer {
 			}
 		}
 
-		private string _GetDataModelTypeString(IModuleDataModel dataModel) {
+		private string _GetDataModelTypeString(IModuleDataModel dataModel)
+		{
 			//return dataModel.GetType().AssemblyQualifiedName;
 			Type dataModelType = dataModel.GetType();
-			return string.Format("{0}, {1}", dataModelType.FullName, dataModelType.Assembly.GetName().Name);
+			return dataModelType.FullName + ", " + dataModelType.Assembly.GetName().Name;
 		}
 
-		public IModuleDataModel ReadObject(XElement element) {
+		public IModuleDataModel ReadObject(XElement element)
+		{
 			string dataModelTypeString = XmlHelper.GetAttribute(element, ATTR_DATA_MODEL_TYPE);
 			if (dataModelTypeString == null) return null;
 
@@ -83,7 +89,8 @@ namespace Vixen.IO.Xml.Serializer {
 			return dataModel;
 		}
 
-		private IModuleDataModel _DeserializeDataModel(Type dataModelType, XElement element) {
+		private IModuleDataModel _DeserializeDataModel(Type dataModelType, XElement element)
+		{
 			DataContractSerializer serializer = new DataContractSerializer(dataModelType);
 			using (MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(element.FirstNode.ToString()))) {
 				return serializer.ReadObject(stream) as IModuleDataModel;
