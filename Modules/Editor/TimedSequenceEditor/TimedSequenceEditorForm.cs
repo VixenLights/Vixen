@@ -402,6 +402,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				IMediaModuleInstance media = _sequence.GetAllMedia().First();
 				Audio audio = media as Audio;
 				timelineControl.Audio = audio;
+				toolStripMenuItem_removeAudio.Enabled = true;
 			}
 		}
 
@@ -1453,6 +1454,36 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		#region Tools Menu
 
+		private void toolStripMenuItem_removeAudio_Click(object sender, EventArgs e)
+		{
+			HashSet<IMediaModuleInstance> modulesToRemove = new HashSet<IMediaModuleInstance>();
+			foreach (IMediaModuleInstance module in _sequence.GetAllMedia()) {
+				if (module is VixenModules.Media.Audio.Audio) {
+					modulesToRemove.Add(module);
+				}
+			}
+
+			if (modulesToRemove.Count > 0) {
+				DialogResult result =
+					MessageBox.Show("Are you sure you want to remove the audio association?", "Remove existing audio?", MessageBoxButtons.YesNoCancel);
+				if (result != System.Windows.Forms.DialogResult.Yes)
+					return;
+			}
+
+			// we're going ahead and adding the new audio, so remove any of the old ones we found earlier
+			foreach (IMediaModuleInstance module in modulesToRemove) {
+				_sequence.RemoveMedia(module);
+			}
+			//Remove any associated audio from the timeline.
+			timelineControl.Audio = null;
+
+			//Disable the menu item
+			toolStripMenuItem_removeAudio.Enabled = false;
+
+			sequenceModified();
+
+		}
+
 		private void toolStripMenuItem_associateAudio_Click(object sender, EventArgs e)
 		{
 			// for now, only allow a single Audio type media to be assocated. If they want to add another, confirm and remove it.
@@ -1507,6 +1538,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						}
 					}
 				}
+
+				toolStripMenuItem_removeAudio.Enabled = true;
 
 				sequenceModified();
 			}
@@ -1915,6 +1948,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			//loadingTask = Task.Factory.StartNew(() => loadSequence(_sequence), token);
 			loadSequence(_sequence);
 		}
+
 	}
 
 	[Serializable]
