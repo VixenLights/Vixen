@@ -1023,42 +1023,30 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			element.TimeChanged += ElementTimeChangedHandler;
 
 			// for the effect, make a single element and add it to every row that represents its target elements
-			node.Effect.TargetNodes.AsParallel().WithCancellation(cancellationTokenSource.Token).ForAll(target =>
-			                                                                                            	{
-			                                                                                            		if (
-			                                                                                            			_elementNodeToRows.
-			                                                                                            				ContainsKey(target)) {
-			                                                                                            			// Add the element to each row that represents the element this command is in.
-			                                                                                            			foreach (
-			                                                                                            				Row row in
-			                                                                                            					_elementNodeToRows[
-			                                                                                            						target]) {
-			                                                                                            				if (
-			                                                                                            					!_effectNodeToElement
-			                                                                                            					 	.ContainsKey(node))
-			                                                                                            					_effectNodeToElement
-			                                                                                            						[node] = element;
-			                                                                                            				//else
-			                                                                                            				//    VixenSystem.Logging.Debug("TimedSequenceEditor: Making a new element, but the map already has one!");
-			                                                                                            				//Render this effect now to get it into the cache.
-			                                                                                            				//element.EffectNode.Effect.Render();
-			                                                                                            				row.AddElement(
-			                                                                                            					element);
-			                                                                                            			}
-			                                                                                            		}
-			                                                                                            		else {
-			                                                                                            			// we don't have a row for the element this effect is referencing; most likely, the row has
-			                                                                                            			// been deleted, or we're opening someone else's sequence, etc. Big fat TODO: here for that, then.
-			                                                                                            			// dunno what we want to do: prompt to add new elements for them? map them to others? etc.
-			                                                                                            			string message =
-			                                                                                            				"No Timeline.Row is associated with a target ElementNode for this EffectNode. It now exists in the sequence, but not in the GUI.";
-			                                                                                            			MessageBox.Show(
-			                                                                                            				message);
-			                                                                                            			VixenSystem.Logging.
-			                                                                                            				Error(message);
-			                                                                                            		}
-			                                                                                            	});
-
+			node.Effect.TargetNodes.AsParallel().WithCancellation(cancellationTokenSource.Token)
+				.ForAll(target =>
+				        	{
+				        		if (_elementNodeToRows.ContainsKey(target)) {
+				        			// Add the element to each row that represents the element this command is in.
+				        			foreach (Row row in _elementNodeToRows[target]) {
+				        				if (!_effectNodeToElement.ContainsKey(node))
+				        					_effectNodeToElement [node] = element;
+				        				//else
+				        				//    VixenSystem.Logging.Debug("TimedSequenceEditor: Making a new element, but the map already has one!");
+				        				//Render this effect now to get it into the cache.
+				        				//element.EffectNode.Effect.Render();
+				        				row.AddElement(element);
+				        			}
+				        		}
+				        		else {
+				        			// we don't have a row for the element this effect is referencing; most likely, the row has
+				        			// been deleted, or we're opening someone else's sequence, etc. Big fat TODO: here for that, then.
+				        			// dunno what we want to do: prompt to add new elements for them? map them to others? etc.
+				        			string message = "No Timeline.Row is associated with a target ElementNode for this EffectNode. It now exists in the sequence, but not in the GUI.";
+				        			MessageBox.Show(message);
+				        			Logging.Error(message);
+				        		}
+				        	});
 
 			return element;
 		}

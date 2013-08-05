@@ -165,10 +165,10 @@ namespace VixenApplication
 
 						target.FileName = strFileName;
 						target.ArchiveFileName = strArchiveFileName;
-
 					}
-
 				});
+
+				NLog.LogManager.Configuration = config;
 			}
 			//config.AllTargets.ToList().ForEach(t => {
 			//	var target = t as NLog.Targets.FileTarget;
@@ -183,7 +183,6 @@ namespace VixenApplication
 			//	}
 
 			//});
-			NLog.LogManager.Configuration = config;
 #if DEBUG
 
 			Logging.Debug("Test");

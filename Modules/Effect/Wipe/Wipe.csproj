@@ -93,6 +93,7 @@
     <ProjectReference Include="..\..\Property\Location\Location.csproj">
       <Project>{7d5d4be4-576a-4092-a3e2-1a6f27cdc213}</Project>
       <Name>Location</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Chase\Chase.csproj">
       <Project>{27ec771c-d03c-4c94-915b-e18e33cb6c43}</Project>

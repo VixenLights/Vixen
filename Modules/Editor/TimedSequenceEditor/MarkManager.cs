@@ -1073,7 +1073,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				catch (Exception ex)
 				{
 					string msg = "There was an error importing the Audacity beat marks: " + ex.Message;
-					Vixen.Sys.VixenSystem.Logging.Error(msg);
+					Logging.Error(msg);
 					MessageBox.Show(msg, "Audacity Import Error", MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
 				}
 			}

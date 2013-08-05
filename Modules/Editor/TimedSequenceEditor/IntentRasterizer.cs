@@ -13,7 +13,7 @@ using Vixen.Sys.Dispatch;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
-	internal class IntentRasterizer : IntentDispatch
+	internal class IntentRasterizer : IntentDispatch, IDisposable
 	{
 		private RectangleF _rect;
 		private Graphics _graphics;
