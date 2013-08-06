@@ -224,6 +224,7 @@ namespace VixenModules.App.WebServer.HTTP
 
 			sb.AppendLine("<script src=\"resx/jquery-1.10.2.min.js\"></script>");
 			sb.AppendLine("<script src=\"resx/jquery.mobile-1.3.2.min.js\"></script>");
+			sb.AppendLine("<script src=\"resx/jquery.fittext.js\"></script>");
 			sb.AppendLine("<link rel=\"stylesheet\" href=\"resx/jquery.mobile-1.3.2.min.css\" />");
 
 			sb.AppendLine("<script src=\"resx/vixen.js\"></script>");
@@ -258,6 +259,8 @@ namespace VixenModules.App.WebServer.HTTP
 			sb.AppendFormat("<div class=\"navBarClass\">");
 			sb.AppendLine("<div class=\"headerLogo\">");
 			sb.AppendLine("<img class=\"logo\" src=\"resx/images/v3logo.png\" />");
+			sb.AppendFormat("<div id=\"headerLogoTitle\">{0}</div>", "abcdefghijklmnop123456");
+			
 			sb.AppendLine("</div>");
 			sb.AppendLine("<div data-role=\"navbar\">");
 			sb.AppendLine("<ul>");
@@ -270,7 +273,7 @@ namespace VixenModules.App.WebServer.HTTP
 
 		}
 
-	 
+
 		private static void GenerateHomeHtml(StringBuilder sb)
 		{
 			sb.AppendLine("<div data-role=\"page\" id=\"Home\" >");
@@ -322,7 +325,7 @@ namespace VixenModules.App.WebServer.HTTP
 
 			sb.AppendLine("</div>");
 		}
-  
+
 
 		//private static void GenerateSequencesHtml(StringBuilder sb)
 		//{
@@ -354,6 +357,6 @@ namespace VixenModules.App.WebServer.HTTP
 		//	sb.AppendLine("</div>");
 		//	sb.AppendLine("</div>");
 		//}
-		 
+
 	}
 }

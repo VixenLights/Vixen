@@ -7,3 +7,6 @@ function setValue(x) {
 function turnElementOn(id, color) {
 	$.post('/element/' + id + '/' + elementOnTimeValue + '/' + color);
 }
+
+$(document).ready(function () {
+});
