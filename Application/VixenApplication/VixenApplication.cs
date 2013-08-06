@@ -84,13 +84,23 @@ namespace VixenApplication
 			string result = version.Major + "." + version.Minor + "." + version.Build;
 
 			labelDebugVersion.Visible = version.Revision > 0;
+#if BETA
 			if (version.Revision > 0) {
-				labelDebugVersion.Text = " [debug build " + version.Revision + "]";
+				labelDebugVersion.Text = " [Alpha " + version.Revision + "]";
 			}
-
+			this.pictureBeta.Visible = true;
+#else
+			this.pictureBeta.Visible = false;
+#endif
 			labelVersion.Text = result;
-		}
 
+
+		
+
+		}
+#if BETA
+		private void BetaMessage() { MessageBox.Show("This application is beta software!  Things may break and not work so back up your folders before using this!", "Beta Software Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation); }
+#endif
 		private void _ProcessArg(string arg)
 		{
 			string[] argParts = arg.Split('=');
@@ -581,6 +591,12 @@ namespace VixenApplication
 				// Do something...
 				MessageBox.Show("You must re-start Vixen for the changes to take effect.", "Profiles Changed", MessageBoxButtons.OK);
 			}
+		}
+
+		private void pictureBeta_Click(object sender, EventArgs e) {
+#if BETA
+			BetaMessage();
+#endif
 		}
 	}
 }
