@@ -49,22 +49,22 @@ namespace FMOD
         private static Platform GetPlatform()
         {
 
-			//SYSTEM_INFO sysInfo = new SYSTEM_INFO();
-			//try {
-			//	GetNativeSystemInfo(ref sysInfo);
-			//} catch {
+			SYSTEM_INFO sysInfo = new SYSTEM_INFO();
+			try {
+				GetNativeSystemInfo(ref sysInfo);
+			}
+			catch {
 				return Platform.X86;
-			//}
+			}
 
-			//switch (sysInfo.wProcessorArchitecture)
-			//{
-			//	case PROCESSOR_ARCHITECTURE_AMD64:
-			//		return Platform.X64;
-			//	case PROCESSOR_ARCHITECTURE_INTEL:
-			//		return Platform.X86;
-			//	default:
-			//		return Platform.Unknown;
-			//}
+			switch (sysInfo.wProcessorArchitecture) {
+				case PROCESSOR_ARCHITECTURE_AMD64:
+					return Platform.X64;
+				case PROCESSOR_ARCHITECTURE_INTEL:
+					return Platform.X86;
+				default:
+					return Platform.Unknown;
+			}
         }
     }
 
