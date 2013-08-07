@@ -259,7 +259,7 @@ namespace VixenModules.App.WebServer.HTTP
 			sb.AppendFormat("<div class=\"navBarClass\">");
 			sb.AppendLine("<div class=\"headerLogo\">");
 			sb.AppendLine("<img class=\"logo\" src=\"resx/images/v3logo.png\" />");
-			sb.AppendFormat("<div id=\"headerLogoTitle\">{0}</div>", "abcdefghijklmnop123456");
+			sb.AppendFormat("<div id=\"headerLogoTitle\">{0}</div>", title);
 			
 			sb.AppendLine("</div>");
 			sb.AppendLine("<div data-role=\"navbar\">");
@@ -277,8 +277,9 @@ namespace VixenModules.App.WebServer.HTTP
 		private static void GenerateHomeHtml(StringBuilder sb)
 		{
 			sb.AppendLine("<div data-role=\"page\" id=\"Home\" >");
-			sb.AppendLine("<div data-role=\"content\">");
 			GenerateNavBar(sb, "");
+			sb.AppendLine("<div data-role=\"content\">");
+		
 			sb.AppendLine("<h1>Home!</h1>");
 			sb.AppendLine("</div>");
 			sb.AppendLine("</div>");

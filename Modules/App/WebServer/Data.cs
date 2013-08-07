@@ -15,6 +15,7 @@ namespace VixenModules.App.WebServer
 		{
 			//Default the Webserver port to 8080
 			HttpPort = 8080;
+			IsEnabled = true;
 		}
 		public override IModuleDataModel Clone()
 		{
@@ -23,6 +24,9 @@ namespace VixenModules.App.WebServer
 
 		[DataMember]
 		public int HttpPort { get; set; }
+
+		[DataMember]
+		public bool IsEnabled { get; set; }
 	}
 
 }
