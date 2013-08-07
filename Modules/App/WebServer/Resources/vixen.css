@@ -1,0 +1,23 @@
+﻿body
+{
+}
+
+.header
+{
+	padding: 0px;
+	width: 100%;
+	max-width: 385px;
+	position:relative;
+}
+.headerLogoTitle
+{
+	position:absolute;
+	bottom:0;
+	right:0;
+}
+.logo
+{
+	width: 100%;
+	height: auto;
+	max-width: 385px;
+}

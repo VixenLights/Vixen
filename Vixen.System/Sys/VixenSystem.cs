@@ -242,7 +242,7 @@ namespace Vixen.Sys
 				System.OperatingSystem osInfo = System.Environment.OSVersion;
 				if (osInfo.Platform == PlatformID.Win32NT) {
 					//If OsVersion is > XP then allow D2D
-					if (osInfo.Version.Minor > 1) return true;
+					if (osInfo.Version.Major > 5) return true;
 				}
 
 				//Otherwise force GDI Preview rendering
