@@ -38,6 +38,7 @@ namespace Common.Controls.Timeline
 		private TimeSpan m_cursorPosition; // the current grid 'cursor' position (line drawn vertically)
 
 		#endregion
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		private ElementMoveInfo m_elemMoveInfo;
 		private BackgroundWorker renderWorker = null;
@@ -1207,20 +1208,26 @@ namespace Common.Controls.Timeline
 				int percent = 100;
 				while (_elementQueue.Count > 0) {
 					if (_elementQueue.TryDequeue(out element)) {
-						Size size = new Size((int)Math.Ceiling(timeToPixels(element.Duration)), element.Row.Height - 1);
-						elementImage = element.SetupCachedImage(size);
-						if (element.StartTime <= VisibleTimeEnd && element.EndTime >= VisibleTimeStart)
-							Invalidate();
+						try {
+							Size size = new Size((int)Math.Ceiling(timeToPixels(element.Duration)), element.Row.Height - 1);
+							elementImage = element.SetupCachedImage(size);
+							if (element.StartTime <= VisibleTimeEnd && element.EndTime >= VisibleTimeStart)
+								Invalidate();
 
-						percent = (int)((double)(currentElementNum) / (double)_elementQueue.Count() * 100.0);
-						renderWorker.ReportProgress(percent);
-						currentElementNum++;
+							percent = (int)((double)(currentElementNum) / (double)_elementQueue.Count() * 100.0);
+							renderWorker.ReportProgress(percent);
+							currentElementNum++;
+						} catch (Exception qex) {
+							Logging.ErrorException(qex.Message, qex);
+						}
 					}
 				}
 				if (percent < 100)
 					renderWorker.ReportProgress(100);
-			}
 
+				Thread.Sleep(1000);
+			}
+			Thread.Sleep(1000);
 			return;
 
 			// Continue looping through the elements to see if they need to be rendered.

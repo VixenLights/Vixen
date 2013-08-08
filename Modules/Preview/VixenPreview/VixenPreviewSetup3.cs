@@ -28,11 +28,10 @@ namespace VixenModules.Preview.VixenPreview {
 				if (!DesignMode && previewForm != null)
 					previewForm.Preview.Data = _data;
 			}
-			get
-			{
+			get {
 				if (_data == null) {
 					Logging.Warn("VixenPreviewSetup3: access of null Data. (Thread ID: " +
-					                            System.Threading.Thread.CurrentThread.ManagedThreadId + ")");
+												System.Threading.Thread.CurrentThread.ManagedThreadId + ")");
 				}
 				return _data;
 			}
@@ -65,6 +64,11 @@ namespace VixenModules.Preview.VixenPreview {
 			PopulateTemplateList();
 
 			Setup();
+
+			performanceToolStripMenuItem.Visible = Vixen.Sys.VixenSystem.VersionBeyondWindowsXP;
+			Properties.Settings settings = new Properties.Settings();
+
+			useDirect2DPreviewRenderingToolStripMenuItem.Checked = !settings.UseGDIRendering;
 		}
 
 		private void buttonSetBackground_Click(object sender, EventArgs e) {
@@ -138,6 +142,7 @@ namespace VixenModules.Preview.VixenPreview {
 		public void Setup() {
 			SetDesktopLocation(Data.SetupLeft, Data.SetupTop);
 			Size = new Size(Data.SetupWidth, Data.SetupHeight);
+
 		}
 
 		private void buttonSave_Click(object sender, EventArgs e) {
@@ -149,7 +154,7 @@ namespace VixenModules.Preview.VixenPreview {
 		private void VixenPreviewSetup3_Move(object sender, EventArgs e) {
 			if (Data == null) {
 				Logging.Warn("VixenPreviewSetup3_Move: Data is null. abandoning move. (Thread ID: " +
-				                            System.Threading.Thread.CurrentThread.ManagedThreadId + ")");
+											System.Threading.Thread.CurrentThread.ManagedThreadId + ")");
 				return;
 			}
 
@@ -160,7 +165,7 @@ namespace VixenModules.Preview.VixenPreview {
 		private void VixenPreviewSetup3_Resize(object sender, EventArgs e) {
 			if (Data == null) {
 				Logging.Warn("VixenPreviewSetup3_Resize: Data is null. abandoning resize. (Thread ID: " +
-				                            System.Threading.Thread.CurrentThread.ManagedThreadId + ")");
+											System.Threading.Thread.CurrentThread.ManagedThreadId + ")");
 				return;
 			}
 
@@ -286,10 +291,20 @@ namespace VixenModules.Preview.VixenPreview {
 			Cursor = Cursors.Default;
 		}
 
-		private void propInformationToolStripMenuItem_Click(object sender, EventArgs e)
-		{
+		private void propInformationToolStripMenuItem_Click(object sender, EventArgs e) {
 			previewForm.Preview.ShowInfo = !previewForm.Preview.ShowInfo;
 			propInformationToolStripMenuItem.Checked = previewForm.Preview.ShowInfo;
+		}
+
+		private void useDirect2DPreviewRenderingToolStripMenuItem_Click(object sender, EventArgs e) {
+			var msg = MessageBox.Show("Preview will be restarted. This is a system-wide change that will apply to all previews. Are you sure you want to do this?", "Change Preview", MessageBoxButtons.YesNo);
+			if (msg == System.Windows.Forms.DialogResult.Yes) {
+				Properties.Settings settings = new Properties.Settings();
+				settings.UseGDIRendering = !useDirect2DPreviewRenderingToolStripMenuItem.Checked;
+				settings.Save();
+				
+
+			}
 		}
 	}
 }

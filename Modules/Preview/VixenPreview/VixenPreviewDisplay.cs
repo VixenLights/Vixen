@@ -10,7 +10,7 @@ using Vixen.Sys;
 
 namespace VixenModules.Preview.VixenPreview
 {
-	public partial class VixenPreviewDisplay : Form
+	public partial class VixenPreviewDisplay : Form, IDisplayForm
 	{
 		private VixenPreviewData _data;
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();

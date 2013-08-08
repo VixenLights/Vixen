@@ -1,0 +1,26 @@
+﻿body
+{
+}
+
+ 
+.headerLogo
+{	
+	padding: 0px;
+	width: 100%;
+	max-width: 385px;
+	position:relative;
+}
+#headerLogoTitle
+{
+	position:absolute;
+	bottom:10px;
+	right:0;
+	font-family:'Arial Black', Gadget, sans-serif;
+	font-size:1.5em;
+}
+.logo
+{
+	width: 100%;
+	height: auto;
+	max-width: 385px;
+}
