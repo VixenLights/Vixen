@@ -67,7 +67,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		}
 		protected void Dispose(bool disposing) {
 			if (disposing) { }
-			_graphics.Dispose();
+			if (_graphics != null) 
+				_graphics.Dispose();
 		}
 		public void Dispose() {
 			Dispose(true);
