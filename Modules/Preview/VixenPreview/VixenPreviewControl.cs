@@ -63,7 +63,7 @@ namespace VixenModules.Preview.VixenPreview
 
 		private Bitmap _background;
 		private Bitmap _alphaBackground;
-		private Bitmap _blankAlphaBackground;
+		//private Bitmap _blankAlphaBackground;
 
 		private VixenPreviewData _data;
 
@@ -76,7 +76,7 @@ namespace VixenModules.Preview.VixenPreview
 		private Random random = new Random();
 		private Stopwatch renderTimer = new Stopwatch();
 
-		private TextureBrush _backgroundBrush;
+		//private TextureBrush _backgroundBrush;
 
 		#endregion
 
@@ -257,10 +257,10 @@ namespace VixenModules.Preview.VixenPreview
 					gfx.FillRectangle(brush, 0, 0, _alphaBackground.Width, _alphaBackground.Height);
 				}
 
-				_blankAlphaBackground = new Bitmap(_background.Width, _background.Height, PixelFormat.Format32bppPArgb);
-				Graphics g = Graphics.FromImage(_blankAlphaBackground);
-				g.Clear(Color.FromArgb(255 - BackgroundAlpha, 0, 0, 0));
-				_backgroundBrush = new TextureBrush(_blankAlphaBackground);
+				//_blankAlphaBackground = new Bitmap(_background.Width, _background.Height, PixelFormat.Format32bppPArgb);
+				//Graphics g = Graphics.FromImage(_blankAlphaBackground);
+				//g.Clear(Color.FromArgb(255 - BackgroundAlpha, 0, 0, 0));
+				//_backgroundBrush = new TextureBrush(_blankAlphaBackground);
 			}
 		}
 
