@@ -269,15 +269,13 @@ namespace Common.Controls.Timeline
 
 		protected virtual Bitmap SetupCanvas(Size imageSize)
 		{
-			using (Bitmap result = new Bitmap(imageSize.Width, imageSize.Height)) {
-				using (Graphics g = Graphics.FromImage(result)) {
-					using (Brush b = new SolidBrush(BackColor)) {
-						g.FillRectangle(b, 0, 0, imageSize.Width, imageSize.Height);
-					}
-
-					return new Bitmap(result);
+			Bitmap result = new Bitmap(imageSize.Width, imageSize.Height);
+			using (Graphics g = Graphics.FromImage(result)) {
+				using (Brush b = new SolidBrush(BackColor)) {
+					g.FillRectangle(b, 0, 0, imageSize.Width, imageSize.Height);
 				}
 			}
+			return result;	
 		}
 
 		protected virtual void AddSelectionOverlayToCanvas(Graphics g)
@@ -314,17 +312,17 @@ namespace Common.Controls.Timeline
 
 		public Bitmap SetupCachedImage(Size imageSize)
 		{
-			//if (CachedElementCanvas == null || !IsCanvasContentCurrent(imageSize) || Changed) {
-				lock (drawLock) {
-					CachedElementCanvas = SetupCanvas(imageSize);
-					using (Graphics g = Graphics.FromImage(CachedElementCanvas)) {
-						DrawCanvasContent(g);
-						AddSelectionOverlayToCanvas(g);
-					}
+			lock (drawLock) {
+				Bitmap bitmap = new Bitmap(imageSize.Width, imageSize.Height);
+				using(Graphics g = Graphics.FromImage(bitmap)){
+					DrawCanvasContent(g);
+					AddSelectionOverlayToCanvas(g);
+					CachedElementCanvas = bitmap;
 				}
-				CachedCanvasIsCurrent = true;
-				Changed = false;
-			//}
+			}
+			CachedCanvasIsCurrent = true;
+			Changed = false;
+			
 			return CachedElementCanvas;
 		}
 

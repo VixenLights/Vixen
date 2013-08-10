@@ -10,11 +10,12 @@ using System.Linq;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
-	internal class EffectRasterizer
+	internal static class EffectRasterizer
 	{
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private static IntentRasterizer intentRasterizer = new IntentRasterizer();
 
-		public void Rasterize(IEffectModuleInstance effect, Graphics g)
+		public static void Rasterize(IEffectModuleInstance effect, Graphics g)
 		{
 			double width = g.VisibleClipBounds.Width;
 			double height = g.VisibleClipBounds.Height;
@@ -41,7 +42,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			//{
 			//timer.Reset();
 			//timer.Start();
-			using (IntentRasterizer intentRasterizer = new IntentRasterizer()) {
+			//using (IntentRasterizer intentRasterizer = new IntentRasterizer()) {
 				double y = 0;
 				foreach (Element element in elements) {
 					//Getting exception on null elements here... A simple check to look for these null values and ignore them
@@ -70,14 +71,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						}
 					}
 					y += heightPerElement;
-				}
+				//}
 				//timer.Stop();
 				//Console.WriteLine("Effect Draw:" + timer.ElapsedMilliseconds);
 				//}
 			}
 		}
 
-		private double _GetPercentage(TimeSpan offset, TimeSpan totalTimeSpan) {
+		private static double _GetPercentage(TimeSpan offset, TimeSpan totalTimeSpan) {
 			return (double)offset.Ticks / totalTimeSpan.Ticks;
 		}
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.Windows.Forms;
@@ -280,6 +281,17 @@ namespace Common.Controls.Timeline
 		#endregion
 
 		#region Methods
+
+		public IEnumerable<Row> Descendants()
+		{
+			var nodes = new Stack<Row>(new[] { this });
+			while (nodes.Any())
+			{
+				Row node = nodes.Pop();
+				yield return node;
+				foreach (var n in node.ChildRows) nodes.Push(n);
+			}
+		}
 
 		public void AddElement(Element element)
 		{
