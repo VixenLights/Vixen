@@ -28,10 +28,11 @@ namespace VixenModules.Preview.VixenPreview {
 				if (!DesignMode && previewForm != null)
 					previewForm.Preview.Data = _data;
 			}
-			get {
+			get
+			{
 				if (_data == null) {
 					Logging.Warn("VixenPreviewSetup3: access of null Data. (Thread ID: " +
-												System.Threading.Thread.CurrentThread.ManagedThreadId + ")");
+					                            System.Threading.Thread.CurrentThread.ManagedThreadId + ")");
 				}
 				return _data;
 			}
@@ -142,7 +143,6 @@ namespace VixenModules.Preview.VixenPreview {
 		public void Setup() {
 			SetDesktopLocation(Data.SetupLeft, Data.SetupTop);
 			Size = new Size(Data.SetupWidth, Data.SetupHeight);
-
 		}
 
 		private void buttonSave_Click(object sender, EventArgs e) {
@@ -291,7 +291,8 @@ namespace VixenModules.Preview.VixenPreview {
 			Cursor = Cursors.Default;
 		}
 
-		private void propInformationToolStripMenuItem_Click(object sender, EventArgs e) {
+		private void propInformationToolStripMenuItem_Click(object sender, EventArgs e)
+		{
 			previewForm.Preview.ShowInfo = !previewForm.Preview.ShowInfo;
 			propInformationToolStripMenuItem.Checked = previewForm.Preview.ShowInfo;
 		}
