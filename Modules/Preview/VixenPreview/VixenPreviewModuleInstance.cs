@@ -127,7 +127,7 @@ namespace VixenModules.Preview.VixenPreview
 
 		public override void Dispose()
 		{
-			if (displayForm != null && !displayForm.Disposing)
+			if (displayForm != null)
 				displayForm.Close();
 			VixenSystem.Contexts.ContextCreated -= ProgramContextCreated;
 			VixenSystem.Contexts.ContextReleased -= ProgramContextReleased;
