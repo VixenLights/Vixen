@@ -283,10 +283,10 @@ namespace Common.Controls.Timeline
 			return result;	
 		}
 
-		protected virtual void AddSelectionOverlayToCanvas(Graphics g)
+		protected virtual void AddSelectionOverlayToCanvas(Graphics g, bool drawSelected)
 		{
 			// Width - bold if selected
-			int b_wd = Selected ? 3 : 1;
+			int b_wd = drawSelected ? 3 : 1;
 
 			// Adjust the rect such that the border is completely inside it.
 			Rectangle b_rect = new Rectangle(
@@ -321,7 +321,7 @@ namespace Common.Controls.Timeline
 				Bitmap bitmap = new Bitmap(imageSize.Width, imageSize.Height);
 				using(Graphics g = Graphics.FromImage(bitmap)){
 					DrawCanvasContent(g);
-					AddSelectionOverlayToCanvas(g);
+					AddSelectionOverlayToCanvas(g, false);
 					CachedElementCanvas = bitmap;
 				}
 			}
@@ -398,7 +398,7 @@ namespace Common.Controls.Timeline
 				Bitmap b = SetupCanvas(imageSize);
 				using (Graphics g = Graphics.FromImage(b)) {
 					DrawPlaceholder(g);
-					AddSelectionOverlayToCanvas(g);
+					AddSelectionOverlayToCanvas(g, false);
 					if (!m_selected) {
 						Changed = true;
 					}
@@ -408,7 +408,7 @@ namespace Common.Controls.Timeline
 			else if (m_selected) {
 				Bitmap b = new Bitmap(CachedElementCanvas);
 				using (Graphics g = Graphics.FromImage(b)) {
-					AddSelectionOverlayToCanvas(g);
+					AddSelectionOverlayToCanvas(g, true);
 				}
 				return b;
 			}
