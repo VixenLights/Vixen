@@ -74,6 +74,8 @@ namespace VixenModules.Preview.VixenPreview
 			}
 		}
 
+		public long FrameRate { get; set; }
+
 		public FastPixel.FastPixel FastPixel
 		{
 			get
@@ -86,6 +88,11 @@ namespace VixenModules.Preview.VixenPreview
 			}
 		}
 
+		public bool IsUpdating
+		{
+			get { return FastPixel.locked; }
+		}
+
 		public void CreateAlphaBackground()
 		{
 			if (_background != null)
@@ -94,7 +101,7 @@ namespace VixenModules.Preview.VixenPreview
 				Graphics gfx = Graphics.FromImage(_backgroundAlphaImage);
 				using (SolidBrush brush = new SolidBrush(Color.FromArgb(255 - BackgroundAlpha, 0, 0, 0)))
 				{
-					gfx.DrawImage(_background, 0, 0, _background.Width, _background.Height);
+					gfx.DrawImageUnscaled(_background, 0, 0);
 					gfx.FillRectangle(brush, 0, 0, _backgroundAlphaImage.Width, _backgroundAlphaImage.Height);
 				}
 				gfx.Dispose();
@@ -117,7 +124,7 @@ namespace VixenModules.Preview.VixenPreview
 		{
 			if (_backgroundAlphaImage != null)
 			{
-				backBuffer.Graphics.DrawImage(fastPixel.Bitmap, 0, 0, fastPixel.Bitmap.Width, fastPixel.Bitmap.Height);
+				backBuffer.Graphics.DrawImageUnscaled(fastPixel.Bitmap, 0, 0);
 			}
 			else
 			{
@@ -150,8 +157,20 @@ namespace VixenModules.Preview.VixenPreview
 			fastPixel.Lock();
 		}
 
+		private DateTime frameRateTime;
+		private long frameCount = 0;
 		public void EndUpdate()
 		{
+			// Calculate our actual frame rate
+			this.frameCount++;
+
+			if (DateTime.UtcNow.Subtract(this.frameRateTime).TotalSeconds >= 1)
+			{
+				this.FrameRate = frameCount;
+				this.frameCount = 0;
+				this.frameRateTime = DateTime.UtcNow;
+			}
+
 			fastPixel.Unlock(true);
 		}
 

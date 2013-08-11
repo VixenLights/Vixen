@@ -11,6 +11,7 @@ namespace VixenModules.Preview.VixenPreview {
 		private VixenPreviewSetup3 setupForm;
 		private IDisplayForm displayForm;
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private bool UseOldPreview = false;
 
 		public VixenPreviewModuleInstance() {
 		}
@@ -78,13 +79,22 @@ namespace VixenModules.Preview.VixenPreview {
 		private void SetupPreviewForm()
 		{
 			lock (formLock) {
-			
-				if (UseGDIPreviewRendering)
-					displayForm = new VixenPreviewDisplay();
-				else
-					displayForm = new VixenPreviewDisplayD2D();
 
-				displayForm.Data = GetDataModel();
+				if (UseGDIPreviewRendering)
+				{
+					if (UseOldPreview) {
+						displayForm = new VixenPreviewDisplay();
+						displayForm.Data = GetDataModel();
+					} else {
+						displayForm = new GDIPreviewForm(GetDataModel());
+					}
+				}
+				else
+				{
+					displayForm = new VixenPreviewDisplayD2D();
+					displayForm.Data = GetDataModel();
+				}
+
 				displayForm.Setup();
 			}
 		}
@@ -181,7 +191,10 @@ namespace VixenModules.Preview.VixenPreview {
 					((VixenPreviewDisplayD2D)displayForm).Scene.Update(ElementStates);
 				}
 				else {
-					((VixenPreviewDisplay)displayForm).PreviewControl.ProcessUpdateParallel(ElementStates);
+					if (UseOldPreview)
+						((VixenPreviewDisplay)displayForm).PreviewControl.ProcessUpdateParallel(ElementStates);
+					else
+					((GDIPreviewForm)displayForm).Update(ElementStates);
 				}
 			}
 			catch (Exception e) {
