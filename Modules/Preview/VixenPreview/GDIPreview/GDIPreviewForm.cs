@@ -18,8 +18,10 @@ using VixenModules.Property.Location;
 
 namespace VixenModules.Preview.VixenPreview
 {
-	public partial class GDIPreviewForm : Form
+	public partial class GDIPreviewForm : Form, IDisplayForm
 	{
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+
 		public GDIPreviewForm(VixenPreviewData data)
 		{
 			InitializeComponent();
@@ -28,66 +30,40 @@ namespace VixenModules.Preview.VixenPreview
 
 		public VixenPreviewData Data { get; set; }
 
-		private Stopwatch lastUpdate = new Stopwatch();
 		public void Update(ElementIntentStates elementStates)
 		{
-			gdiControl.BeginUpdate();
-
-			lastUpdate.Stop();
-			if (lastUpdate.ElapsedMilliseconds > 500)
+			if (!gdiControl.IsUpdating)
 			{
-				toolStripStatusLabel2.Text = lastUpdate.ElapsedMilliseconds.ToString();
-			}
-			lastUpdate.Restart();
+				gdiControl.BeginUpdate();
 
-			CancellationTokenSource tokenSource = new CancellationTokenSource();
+				CancellationTokenSource tokenSource = new CancellationTokenSource();
 
-			elementStates.AsParallel().WithCancellation(tokenSource.Token).ForAll(channelIntentState =>
-			{
-				var elementId = channelIntentState.Key;
-				Element element = VixenSystem.Elements.GetElement(elementId);
-				if (element != null)
+				elementStates.AsParallel().WithCancellation(tokenSource.Token).ForAll(channelIntentState =>
 				{
-					ElementNode node = VixenSystem.Elements.GetElementNodeForElement(element);
-					if (node != null)
+					var elementId = channelIntentState.Key;
+					Element element = VixenSystem.Elements.GetElement(elementId);
+					if (element != null)
 					{
-						//Color pixColor = Vixen.Intent.ColorIntent.GetAlphaColorForIntents(channelIntentState.Value);
-
-						List<PreviewPixel> pixels;
-						if (NodeToPixel.TryGetValue(node, out pixels))
+						ElementNode node = VixenSystem.Elements.GetElementNodeForElement(element);
+						if (node != null)
 						{
-							foreach (PreviewPixel pixel in pixels)
+							List<PreviewPixel> pixels;
+							if (NodeToPixel.TryGetValue(node, out pixels))
 							{
-								pixel.Draw(gdiControl.FastPixel, channelIntentState.Value);
-								//pixel.Draw(gdiControl.FastPixel, pixColor);
-								//gdiControl.SetPixel(pixel.X, pixel.Y, pixColor);
+								foreach (PreviewPixel pixel in pixels)
+								{
+									pixel.Draw(gdiControl.FastPixel, channelIntentState.Value);
+								}
 							}
 						}
-
-						//List<PreviewPixel> pixels;
-						//if (NodeToPixel.TryGetValue(node, out pixels))
-						//{
-						//    foreach (PreviewPixel pixel in pixels)
-						//    {
-						//        pixel.Draw(gdiControl.FastPixel, channelIntentState.Value);
-						//    }
-						//}
 					}
-				}
-			});
+				});
+				gdiControl.EndUpdate();
 
-			gdiControl.EndUpdate();
-
-			gdiControl.RenderImage();
-			toolStripStatusLabel1.Text = gdiControl.RenderTime.ToString() + "ms";
+				gdiControl.RenderImage();
+				toolStripStatusFPS.Text = gdiControl.FrameRate.ToString() + "fps";
+			}
 		}
-
-		private void GDIPreviewForm_Load(object sender, EventArgs e)
-		{
-			//gdiControl.Background = Bitmap.FromFile("C:\\SkyDrive\\Christmas Lights\\Hillary 2012 1500x489.jpg");
-			Reload();
-		}
-
 
 		public ConcurrentDictionary<ElementNode, List<PreviewPixel>> NodeToPixel = new ConcurrentDictionary<ElementNode, List<PreviewPixel>>();
 		public List<DisplayItem> DisplayItems
@@ -116,6 +92,8 @@ namespace VixenModules.Preview.VixenPreview
 				throw new System.ArgumentException("DisplayItems == null");
 
 			if (DisplayItems != null)
+			{
+				int pixelCount = 0;
 				foreach (DisplayItem item in DisplayItems)
 				{
 					if (item.Shape.Pixels == null)
@@ -125,6 +103,7 @@ namespace VixenModules.Preview.VixenPreview
 					{
 						if (pixel.Node != null)
 						{
+							pixelCount++;
 							List<PreviewPixel> pixels;
 							if (NodeToPixel.TryGetValue(pixel.Node, out pixels))
 							{
@@ -142,12 +121,59 @@ namespace VixenModules.Preview.VixenPreview
 						}
 					}
 				}
+				toolStripStatusPixels.Text = pixelCount.ToString();
+			}
 
+			gdiControl.BackgroundAlpha = Data.BackgroundAlpha;
 			if (System.IO.File.Exists(Data.BackgroundFileName))
 				gdiControl.Background = Image.FromFile(Data.BackgroundFileName);
 			else
 				gdiControl.Background = null;
 		}
 
+		public void Setup()
+		{
+			Reload();
+
+			var minX = Screen.AllScreens.Min(m => m.Bounds.X);
+			var maxX = Screen.AllScreens.Sum(m => m.Bounds.Width) + minX;
+
+			var minY = Screen.AllScreens.Min(m => m.Bounds.Y);
+			var maxY = Screen.AllScreens.Sum(m => m.Bounds.Height) + minY;
+
+			if (Data.Left < minX || Data.Left > maxX)
+				Data.Left = 0;
+			if (Data.Top < minY || Data.Top > maxY)
+				Data.Top = 0;
+
+			SetDesktopLocation(Data.Left, Data.Top);
+			Size = new Size(Data.Width, Data.Height);
+		}
+
+		private void GDIPreviewForm_Move(object sender, EventArgs e)
+		{
+			if (Data == null)
+			{
+				Logging.Warn("VixenPreviewDisplay_Move: Data is null. abandoning move. (Thread ID: " +
+											System.Threading.Thread.CurrentThread.ManagedThreadId + ")");
+				return;
+			}
+
+			Data.Top = Top;
+			Data.Left = Left;
+		}
+
+		private void GDIPreviewForm_Resize(object sender, EventArgs e)
+		{
+			if (Data == null)
+			{
+				Logging.Warn("VixenPreviewDisplay_Resize: Data is null. abandoning resize. (Thread ID: " +
+											System.Threading.Thread.CurrentThread.ManagedThreadId + ")");
+				return;
+			}
+
+			Data.Width = Width;
+			Data.Height = Height;
+		}
 	}
 }
