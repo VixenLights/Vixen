@@ -60,7 +60,12 @@ namespace Common.Controls.Timeline
 
 		#region Properties
 
+		/// <summary>
+		/// Display top for the last version of this element. Not reliable when the element is part of multiple rows.
+		/// I.E. grouping. Use Row.DisplayTop for the containing row and RowTopOffset.
+		/// </summary>
 		public int DisplayTop { get; set; }
+		public int RowTopOffset { get; set; }
 		public int DisplayHeight { get; set; }
 		public Rectangle DisplayRect { get; set; }
 		public bool MouseCaptured { get; set; }

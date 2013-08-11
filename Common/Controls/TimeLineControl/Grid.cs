@@ -546,8 +546,8 @@ namespace Common.Controls.Timeline
 				Single elemW = timeToPixels(elem.Duration);
 				if (p.X >= elemX &&
 					p.X <= elemX + elemW &&
-					p.Y >= elem.DisplayTop &&
-					p.Y < elem.DisplayTop + elem.DisplayHeight)
+					p.Y >= containingRow.DisplayTop + elem.RowTopOffset &&
+					p.Y < containingRow.DisplayTop + elem.RowTopOffset + elem.DisplayHeight)
 				{
 					//Single elemX = timeToPixels(elem.StartTime);
 					//Single elemW = timeToPixels(elem.Duration);
@@ -580,8 +580,8 @@ namespace Common.Controls.Timeline
 				Single elemW = timeToPixels(elem.Duration);
 				if (p.X >= elemX &&
 					p.X <= elemX + elemW &&
-					p.Y >= elem.DisplayTop &&
-					p.Y < elem.DisplayTop + elem.DisplayHeight)
+					p.Y >= containingRow.DisplayTop + elem.RowTopOffset &&
+					p.Y < containingRow.DisplayTop + elem.RowTopOffset + elem.DisplayHeight)
 				{
 					result.Add(elem);
 				}
@@ -1350,7 +1350,7 @@ namespace Common.Controls.Timeline
 				elements.Add(elementMaster);
 			if (elements.Count == inCount)
 				return elements;
-
+			
 			return elements;
 		}
 
@@ -1361,7 +1361,7 @@ namespace Common.Controls.Timeline
 
 			currentElement.DisplayHeight = (row.Height - 1) / elements.Count();
 			currentElement.DisplayTop = top + (currentElement.DisplayHeight * elements.IndexOf(currentElement));
-
+			currentElement.RowTopOffset = currentElement.DisplayHeight * elements.IndexOf(currentElement);
 			Size size = new Size((int)Math.Ceiling(timeToPixels(currentElement.Duration)), row.Height - 1);
 			Bitmap elementImage = currentElement.Draw(size, false);
 			//Bitmap elementImage = currentElement.Draw(size);
@@ -1421,7 +1421,7 @@ namespace Common.Controls.Timeline
 					top += row.Height; // next row starts just below this row
 					continue;
 				}
-
+				row.DisplayTop = top;
 				TimeSpan currentlyDrawnTo = TimeSpan.Zero;
 				TimeSpan desiredDrawTo = TimeSpan.Zero;
 				bool lastItemDrawn = false;

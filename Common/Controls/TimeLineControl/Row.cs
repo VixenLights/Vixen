@@ -48,6 +48,8 @@ namespace Common.Controls.Timeline
 			}
 		}
 
+		public int DisplayTop { get; set; }
+
 		private object m_tag;
 
 		public object Tag
