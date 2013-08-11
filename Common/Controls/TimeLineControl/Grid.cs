@@ -1184,7 +1184,9 @@ namespace Common.Controls.Timeline
 					Single x = timeToPixels(kvp.Key);
 					p.DashPattern = new float[] {details.SnapLevel, details.SnapLevel};
 					g.DrawLine(p, x, 0, x, AutoScrollMinSize.Height);
+					p.Dispose();
 				}
+				
 			}
 		}
 
@@ -1422,8 +1424,6 @@ namespace Common.Controls.Timeline
 					continue;
 				}
 				row.DisplayTop = top;
-				TimeSpan currentlyDrawnTo = TimeSpan.Zero;
-				TimeSpan desiredDrawTo = TimeSpan.Zero;
 				bool lastItemDrawn = false;
 
 				TimeSpan lastStartTime = TimeSpan.Zero;
@@ -1483,8 +1483,8 @@ namespace Common.Controls.Timeline
 				try {
 					e.Graphics.TranslateTransform(this.AutoScrollPosition.X, this.AutoScrollPosition.Y);
 
-					Stopwatch s = new Stopwatch();
-					s.Start();
+					//Stopwatch s = new Stopwatch();
+					//s.Start();
 
 					_drawGridlines(e.Graphics);
 					_drawRows(e.Graphics);
@@ -1494,10 +1494,11 @@ namespace Common.Controls.Timeline
 					_drawSelection(e.Graphics);
 					_drawCursors(e.Graphics);
 
-					s.Stop();
+					//s.Stop();
 					//Logging.Info("OnPaint: " + s.ElapsedMilliseconds);
 				}
 				catch (Exception ex) {
+					Logging.Error("Exception in TimelineGrid.OnPaint():\n\n\t" + ex.Message + "\n\nBacktrace:\n\n\t" + ex.StackTrace);
 					MessageBox.Show("Exception in TimelineGrid.OnPaint():\n\n\t" + ex.Message + "\n\nBacktrace:\n\n\t" + ex.StackTrace);
 				}
 		}

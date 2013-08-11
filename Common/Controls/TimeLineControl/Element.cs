@@ -17,6 +17,8 @@ namespace Common.Controls.Timeline
 		private Color m_borderColor = Color.Black;
 		private object m_tag = null;
 		private bool m_selected = false;
+		private static Font m_textFont = new Font("Arial", 7);
+		private static Color m_textColor = Color.FromArgb(60, 60, 60);
 		private static System.Object drawLock = new System.Object();
 		//private bool m_redraw = false;
 		//private bool m_rendered = false;
@@ -269,8 +271,31 @@ namespace Common.Controls.Timeline
 		#region Drawing
 
 		private Bitmap CachedElementCanvas { get; set; }
+		private Bitmap CachedSelectedElementCanvas { get; set; }
 
-		public bool CachedCanvasIsCurrent { get; set; }
+		private bool _cachedCanvasIsCurrent=false;
+		public bool CachedCanvasIsCurrent {
+			get
+			{
+				return _cachedCanvasIsCurrent;
+			}
+			set
+			{
+				_cachedCanvasIsCurrent=value;
+				if(!value){
+					if (CachedElementCanvas != null)
+					{
+						CachedElementCanvas.Dispose();
+						CachedElementCanvas = null;
+					}
+					if (CachedSelectedElementCanvas != null)
+					{
+						CachedSelectedElementCanvas.Dispose();
+						CachedSelectedElementCanvas = null;
+					}
+				}
+			}
+		}
 
 		protected virtual Bitmap SetupCanvas(Size imageSize)
 		{
@@ -343,11 +368,8 @@ namespace Common.Controls.Timeline
 			const int margin = 2;
 			if (MouseCaptured)
 			{
-				Color TextColor = Color.FromArgb(60, 60, 60);
-
 				// add text describing the effect
-				using (Font f = new Font("Arial", 7))
-				using (Brush b = new SolidBrush(TextColor))
+				using (Brush b = new SolidBrush(m_textColor))
 				{
 					g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
 
@@ -357,7 +379,7 @@ namespace Common.Controls.Timeline
 						string.Format("Start: {0}", EffectNode.StartTime.ToString(@"m\:ss\.fff")) + "\r\n" +
 						string.Format("Length: {0}", EffectNode.TimeSpan.ToString(@"m\:ss\.fff"));
 
-					SizeF textSize = g.MeasureString(s, f);
+					SizeF textSize = g.MeasureString(s, m_textFont);
 					Rectangle destRect = new Rectangle(rect.X, rect.Y, rect.Width, rect.Height);
 					if (rect.Y < destRect.Height)
 					{
@@ -374,7 +396,7 @@ namespace Common.Controls.Timeline
 					destRect.Height = (int)textSize.Height + margin;
 					
 					g.FillRectangle(Brushes.White, new Rectangle(destRect.Left, destRect.Top, (int)Math.Min(textSize.Width + margin, destRect.Width), (int)Math.Min(textSize.Height + margin, destRect.Height)));
-					g.DrawString(s, f, b, new Rectangle(destRect.Left + margin/2, destRect.Top + margin/2, destRect.Width - margin, destRect.Height - margin));
+					g.DrawString(s, m_textFont, b, new Rectangle(destRect.Left + margin/2, destRect.Top + margin/2, destRect.Width - margin, destRect.Height - margin));
 				}
 			}
 		}
@@ -398,7 +420,7 @@ namespace Common.Controls.Timeline
 				Bitmap b = SetupCanvas(imageSize);
 				using (Graphics g = Graphics.FromImage(b)) {
 					DrawPlaceholder(g);
-					AddSelectionOverlayToCanvas(g, false);
+					AddSelectionOverlayToCanvas(g, m_selected);
 					if (!m_selected) {
 						Changed = true;
 					}
@@ -406,11 +428,16 @@ namespace Common.Controls.Timeline
 				return b;
 			}
 			else if (m_selected) {
-				Bitmap b = new Bitmap(CachedElementCanvas);
-				using (Graphics g = Graphics.FromImage(b)) {
-					AddSelectionOverlayToCanvas(g, true);
+				if (CachedSelectedElementCanvas == null)
+				{
+					Bitmap b = new Bitmap(CachedElementCanvas);
+					using (Graphics g = Graphics.FromImage(b))
+					{
+						AddSelectionOverlayToCanvas(g, true);
+						CachedSelectedElementCanvas = b;
+					}
 				}
-				return b;
+				return CachedSelectedElementCanvas;
 			}
 			return CachedElementCanvas;
 		}
@@ -428,6 +455,8 @@ namespace Common.Controls.Timeline
 			}
 			if (CachedElementCanvas != null)
 				CachedElementCanvas.Dispose();
+			if (CachedSelectedElementCanvas != null)
+				CachedSelectedElementCanvas.Dispose();
 		}
 
 		public void Dispose()
