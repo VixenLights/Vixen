@@ -52,7 +52,8 @@ namespace VixenModules.Preview.VixenPreview {
 			}
 		}
 
-		public bool UseGDIPreviewRendering {
+		public bool UseGDIPreviewRendering
+		{
 			get {
 				 
 				if (new Properties.Settings().UseGDIRendering)
@@ -62,7 +63,8 @@ namespace VixenModules.Preview.VixenPreview {
 			}
 		}
 
-		protected override Form Initialize() {
+		protected override Form Initialize()
+		{
 			Execution.NodesChanged += ExecutionNodesChanged;
 			VixenSystem.Contexts.ContextCreated += ProgramContextCreated;
 			VixenSystem.Contexts.ContextReleased += ProgramContextReleased;
@@ -71,8 +73,10 @@ namespace VixenModules.Preview.VixenPreview {
 
 			return (Form)displayForm;
 		}
+
 		private object formLock = new object();
-		private void SetupPreviewForm() {
+		private void SetupPreviewForm()
+		{
 			lock (formLock) {
 			
 				if (UseGDIPreviewRendering)
@@ -98,7 +102,6 @@ namespace VixenModules.Preview.VixenPreview {
 			setupForm = new VixenPreviewSetup3();
 			setupForm.Data = GetDataModel();
 
-			 
 			setupForm.ShowDialog();
 
 			if (displayForm != null)
@@ -162,7 +165,8 @@ namespace VixenModules.Preview.VixenPreview {
 		}
 
 		bool isGdiVersion = false;
-		protected override void Update() {
+		protected override void Update()
+		{
 			try {
 				// displayForm.Scene.ElementStates = ElementStates;
 				//if the Preview form style changes re-setup the form
