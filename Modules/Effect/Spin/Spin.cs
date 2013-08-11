@@ -248,6 +248,10 @@ namespace VixenModules.Effect.Spin
 
 			List<ElementNode> renderNodes = GetNodesToRenderOn();
 			int targetNodeCount = renderNodes.Count;
+			
+			//If there are no nodes to render on Exit!
+			if (targetNodeCount == 0) return;
+
 			ElementNode lastTargetedNode = null;
 
 			Pulse.Pulse pulse;
