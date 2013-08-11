@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>Kayak</id>
+    <version>0.7.2</version>
+    <title>Kayak</title>
+    <authors>Benjamin van der Veen</authors>
+    <owners>Benjamin van der Veen</owners>
+    <licenseUrl>https://github.com/kayak/kayak/raw/HEAD/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/kayak/kayak</projectUrl>
+    <iconUrl>https://nugetgallery.blob.core.windows.net/icons/Kayak.0.7.2.png</iconUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>Kayak is an event-base IO libary for .NET. Kayak allows you to easily create TCP clients and servers, and contains an HTTP/1.1 server implementation.</description>
+    <summary>Kayak is an event-base IO libary for .NET. Kayak allows you to easily create TCP clients and servers, and contains an HTTP/1.1 server implementation.</summary>
+    <tags>http io socket network async</tags>
+  </metadata>
+</package>
