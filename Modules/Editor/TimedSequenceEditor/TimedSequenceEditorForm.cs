@@ -288,7 +288,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				// load the new data: get all the commands in the sequence, and make a new element for each of them.
 				_effectNodeToElement = new Dictionary<EffectNode, Element>();
 
-
+				timelineControl.grid.SuppressInvalidate = true; //Hold off invalidating the grid while we bulk load.
+				timelineControl.grid.SupressRendering = true; //Hold off rendering while we load elements. 
 				// This takes quite a bit of time so queue it up
 				taskQueue.Enqueue(Task.Factory.StartNew(() =>
 				                                        	{
@@ -304,7 +305,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				                                                  		timelineControl.SequenceLoading = false;
 				                                                  		loadTimer.Enabled = false;
 				                                                  		updateToolStrip4(string.Empty);
-				                                                  		timelineControl.grid.StartBackgroundRendering();
+																		timelineControl.grid.SupressRendering = false;
+				                                                  		timelineControl.grid.RenderAllVisibleRows();
+																		timelineControl.grid.SuppressInvalidate = false;
+																		timelineControl.grid.Invalidate();
 				                                                  		Console.WriteLine("Done Loading Effects");
 				                                                  	});
 
@@ -447,14 +451,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			try {
 				if (!Disposing) {
-					if (e.Percent >= 0 && e.Percent <= 100) {
+					if (e.Percent >= 0 && e.Percent <= 100)
+					{
 						toolStripProgressBar_RenderingElements.Value = e.Percent;
 					}
-					if (e.Percent == 100) {
+					if (e.Percent == 100)
+					{
 						toolStripProgressBar_RenderingElements.Visible = false;
 						toolStripStatusLabel_RenderingElements.Visible = false;
-					}
-					else if (!toolStripProgressBar_RenderingElements.Visible) {
+					} else if (!toolStripProgressBar_RenderingElements.Visible)
+					{
 						toolStripProgressBar_RenderingElements.Visible = true;
 						toolStripStatusLabel_RenderingElements.Visible = true;
 					}
@@ -478,14 +484,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		protected void ElementContentChangedHandler(object sender, EventArgs e)
 		{
 			TimedSequenceElement element = sender as TimedSequenceElement;
-			//timelineControl.grid.ElementQueue.Add(element);
+			timelineControl.grid.RenderElement(element);
 			sequenceModified();
 		}
 
 		protected void ElementTimeChangedHandler(object sender, EventArgs e)
 		{
 			TimedSequenceElement element = sender as TimedSequenceElement;
-			//timelineControl.grid.ElementQueue.Add(element);
+			timelineControl.grid.RenderElement(element);
 			sequenceModified();
 		}
 
@@ -497,7 +503,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		protected void ElementAddedToRowHandler(object sender, ElementEventArgs e)
 		{
 			// not currently used
-			timelineControl.grid.ElementQueue.Enqueue(e.Element);
+			timelineControl.grid.RenderElement(e.Element);
 		}
 
 		protected void ElementChangedRowsHandler(object sender, ElementRowChangeEventArgs e)
@@ -565,7 +571,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					foreach (Element element in elements)
 					{
 						element.Changed = true;
-						timelineControl.grid.ElementQueue.Enqueue(element);
+						timelineControl.grid.RenderElement(element);
 					}
 					sequenceModified();
 				}

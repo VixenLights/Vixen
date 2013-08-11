@@ -77,30 +77,37 @@ namespace VixenApplication
 			PopulateRecentSequencesList();
 		}
 
+		private void VixenApplication_Shown(object sender, EventArgs e)
+		{
+			CheckForTestBuild();
+		}
+
 		private void PopulateVersionStrings()
 		{
 			System.Reflection.Assembly assembly = System.Reflection.Assembly.LoadFile(VixenSystem.AssemblyFileName);
 			Version version = assembly.GetName().Version;
 			string result = version.Major + "." + version.Minor + "." + version.Build;
 
-			labelDebugVersion.Visible = version.Revision > 0;
-#if BETA
-			if (version.Revision > 0) {
-				labelDebugVersion.Text = " [Alpha " + version.Revision + "]";
-			}
-			this.pictureBeta.Visible = true;
+#if AUTOBUILD
+			labelVersion.Text = "Test Build " + version.Revision;
+			labelDebugVersion.Text = "(for upcoming release " + result + ")";
+			labelDebugVersion.Visible = true;
 #else
-			this.pictureBeta.Visible = false;
-#endif
 			labelVersion.Text = result;
-
-
-		
-
-		}
-#if BETA
-		private void BetaMessage() { MessageBox.Show("This application is beta software!  Things may break and not work so back up your folders before using this!", "Beta Software Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation); }
+			labelDebugVersion.Visible = false;
 #endif
+		}
+
+		private void CheckForTestBuild()
+		{
+#if AUTOBUILD
+			MessageBox.Show(
+				"Please be aware that this is a development/test version. Some parts of the software may not work, " +
+				"and data loss is possible! Please backup your data before using this version of the software.",
+				"Development/Test Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+#endif
+		}
+
 		private void _ProcessArg(string arg)
 		{
 			string[] argParts = arg.Split('=');
@@ -591,12 +598,6 @@ namespace VixenApplication
 				// Do something...
 				MessageBox.Show("You must re-start Vixen for the changes to take effect.", "Profiles Changed", MessageBoxButtons.OK);
 			}
-		}
-
-		private void pictureBeta_Click(object sender, EventArgs e) {
-#if BETA
-			BetaMessage();
-#endif
 		}
 	}
 }

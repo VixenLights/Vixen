@@ -49,6 +49,16 @@ namespace FastPixel
 			this._height = bitmap.Height;
 		}
 
+		public void CloneBitmap(Bitmap bitmapToClone) 
+		{
+			if (bitmapToClone.Width != _bitmap.Width || bitmapToClone.Height != _bitmap.Height)
+			{
+				_bitmap = new Bitmap(bitmapToClone.Width, bitmapToClone.Height);
+			}
+			Graphics g = Graphics.FromImage(_bitmap);
+			g.DrawImageUnscaled(bitmapToClone, 0, 0);
+		}
+
 		public FastPixel(int width, int height)
 		{
 			SetupBitmap(width, height);

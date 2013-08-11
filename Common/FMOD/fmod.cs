@@ -48,23 +48,25 @@ namespace FMOD
 
         private static Platform GetPlatform()
         {
+			// let's force 32-bit for now, since we're now targeting 32-bit only (due to direct2d stuff).
+			return Platform.X86;
 
-			SYSTEM_INFO sysInfo = new SYSTEM_INFO();
-			try {
-				GetNativeSystemInfo(ref sysInfo);
-			}
-			catch {
-				return Platform.X86;
-			}
+			//SYSTEM_INFO sysInfo = new SYSTEM_INFO();
+			//try {
+			//    GetNativeSystemInfo(ref sysInfo);
+			//}
+			//catch {
+			//    return Platform.X86;
+			//}
 
-			switch (sysInfo.wProcessorArchitecture) {
-				case PROCESSOR_ARCHITECTURE_AMD64:
-					return Platform.X64;
-				case PROCESSOR_ARCHITECTURE_INTEL:
-					return Platform.X86;
-				default:
-					return Platform.Unknown;
-			}
+			//switch (sysInfo.wProcessorArchitecture) {
+			//    case PROCESSOR_ARCHITECTURE_AMD64:
+			//        return Platform.X64;
+			//    case PROCESSOR_ARCHITECTURE_INTEL:
+			//        return Platform.X86;
+			//    default:
+			//        return Platform.Unknown;
+			//}
         }
     }
 

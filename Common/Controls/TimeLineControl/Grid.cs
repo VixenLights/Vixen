@@ -24,7 +24,7 @@ namespace Common.Controls.Timeline
 	public partial class Grid : TimelineControlBase, IEnumerable<Row>, IDisposable
 	{
 		#region Members
-
+        private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private List<Row> m_rows; // the rows in the grid
 		private DragState m_dragState = DragState.Normal; // the current dragging state
 
@@ -35,17 +35,17 @@ namespace Common.Controls.Timeline
 		private Row m_mouseDownElementRow = null;
 		            // the row that the clicked m_mouseDownElement belongs to (a single element may be in multiple rows)
 
-		private TimeSpan m_cursorPosition; // the current grid 'cursor' position (line drawn vertically)
-
+		private TimeSpan m_cursorPosition; // the current grid 'cursor' position (line drawn vertically);
+		private BlockingCollection<Element> _blockingElementQueue = new BlockingCollection<Element>();
+		private CancellationTokenSource cts = new CancellationTokenSource();
+		
 		#endregion
-		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
-
 		private ElementMoveInfo m_elemMoveInfo;
 		private BackgroundWorker renderWorker = null;
 		public ISequenceContext Context = null;
 		public bool SequenceLoading { get; set; }
 
-		public ConcurrentQueue<Element> _elementQueue = new ConcurrentQueue<Element>();
+		
 
 		#region Initialization
 
@@ -86,16 +86,18 @@ namespace Common.Controls.Timeline
 			AllowDrop = true;
 			DragEnter += TimelineGrid_DragEnter;
 			DragDrop += TimelineGrid_DragDrop;
+			StartBackgroundRendering();
 		}
 
 		protected override void Dispose(bool disposing)
 		{
 			// Cancel the background worker
-			if (renderWorker != null) {
+			cts.Cancel();
+			if (renderWorker != null)
+			{
 				renderWorker.CancelAsync();
 				while (renderWorker.IsBusy) Application.DoEvents();
 			}
-
 			base.Dispose(disposing);
 		}
 
@@ -141,15 +143,9 @@ namespace Common.Controls.Timeline
 
 		#region Properties
 
-		public ConcurrentQueue<Element> ElementQueue
-		{
-			get
-			{
-				return _elementQueue;
-			}
-		}
-
 		public bool SuppressInvalidate { get; set; }
+
+		public bool SupressRendering { get; set; }
 
 		public int VerticalOffset
 		{
@@ -396,8 +392,17 @@ namespace Common.Controls.Timeline
 		private void RowToggledHandler(object sender, EventArgs e)
 		{
 			ResizeGridHeight();
+			Row row = (Row)sender;
+			if (row.TreeOpen)
+			{
+				List<Row> rows = row.Descendants().Where(x => x.Visible == true).ToList();
+				RenderVisibleRows(rows); 
+			}
+ 
 			if (!SuppressInvalidate) Invalidate();
 		}
+
+		
 
 		private void RowHeightChangedHandler(object sender, EventArgs e)
 		{
@@ -541,8 +546,8 @@ namespace Common.Controls.Timeline
 				Single elemW = timeToPixels(elem.Duration);
 				if (p.X >= elemX &&
 					p.X <= elemX + elemW &&
-					p.Y >= elem.DisplayTop &&
-					p.Y < elem.DisplayTop + elem.DisplayHeight)
+					p.Y >= containingRow.DisplayTop + elem.RowTopOffset &&
+					p.Y < containingRow.DisplayTop + elem.RowTopOffset + elem.DisplayHeight)
 				{
 					//Single elemX = timeToPixels(elem.StartTime);
 					//Single elemW = timeToPixels(elem.Duration);
@@ -575,8 +580,8 @@ namespace Common.Controls.Timeline
 				Single elemW = timeToPixels(elem.Duration);
 				if (p.X >= elemX &&
 					p.X <= elemX + elemW &&
-					p.Y >= elem.DisplayTop &&
-					p.Y < elem.DisplayTop + elem.DisplayHeight)
+					p.Y >= containingRow.DisplayTop + elem.RowTopOffset &&
+					p.Y < containingRow.DisplayTop + elem.RowTopOffset + elem.DisplayHeight)
 				{
 					result.Add(elem);
 				}
@@ -1179,137 +1184,28 @@ namespace Common.Controls.Timeline
 					Single x = timeToPixels(kvp.Key);
 					p.DashPattern = new float[] {details.SnapLevel, details.SnapLevel};
 					g.DrawLine(p, x, 0, x, AutoScrollMinSize.Height);
+					p.Dispose();
 				}
+				
 			}
 		}
 
 		#region Element rendering background worker
 
-		private void renderWorker_DoWork(object sender, DoWorkEventArgs e)
-		{
-			Bitmap elementImage;
-
-			// first, queue up everything
-			foreach (Row row in Rows)
-			{
-				if (row.Visible)
-				{
-					for (int i = 0; i < row.ElementCount; i++)
-					{
-						_elementQueue.Enqueue	(row.GetElementAtIndex(i));
-					}
-				}
-			}
-
-			while (!renderWorker.CancellationPending)
-			{
-				Element element;
-				int currentElementNum = 0;
-				int percent = 100;
-				while (_elementQueue.Count > 0) {
-					if (_elementQueue.TryDequeue(out element)) {
-						try {
-							Size size = new Size((int)Math.Ceiling(timeToPixels(element.Duration)), element.Row.Height - 1);
-							elementImage = element.SetupCachedImage(size);
-							if (element.StartTime <= VisibleTimeEnd && element.EndTime >= VisibleTimeStart)
-								Invalidate();
-
-							percent = (int)((double)(currentElementNum) / (double)_elementQueue.Count() * 100.0);
-							renderWorker.ReportProgress(percent);
-							currentElementNum++;
-						} catch (Exception qex) {
-							Logging.ErrorException(qex.Message, qex);
-						}
-					}
-				}
-				if (percent < 100)
-					renderWorker.ReportProgress(100);
-
-				Thread.Sleep(1000);
-			}
-			Thread.Sleep(1000);
-			return;
-
-			// Continue looping through the elements to see if they need to be rendered.
-			// They will the first time and when a row is expanded.
-			while (!renderWorker.CancellationPending) {
-				// Count the rows for progress reporting
-				int totalElements = 0;
-				foreach (Row row in Rows) {
-					if (row.Visible) {
-						for (int i = 0; i < row.ElementCount; i++) {
-							if (row.GetElementAtIndex(i).Changed)
-								totalElements += 1;
-						}
-					}
-				}
-
-				if (totalElements == 1)
-					renderWorker.ReportProgress(50);
-
-				int currentElementNum = 0;
-				foreach (Row row in Rows) {
-					if (row.Visible) {
-						for (int i = 0; i < row.ElementCount; i++) {
-							if (renderWorker.CancellationPending)
-								return;
-
-                            if (MouseButtons != System.Windows.Forms.MouseButtons.Left)
-                            {
-
-                                // If we have a sequence playing, stop rendering the effects in the background
-                                while (Context != null && Context.IsRunning)
-                                    Thread.Sleep(250);
-
-                                Element currentElement = row.GetElementAtIndex(i);
-                                Size size = new Size((int)Math.Ceiling(timeToPixels(currentElement.Duration)), row.Height - 1);
-								//Size size = new Size((int)Math.Ceiling(timeToPixels(currentElement.Duration)), 75);
-
-								// not used
-								//int top = 0;
-								//Size size = GetImageSize(row, currentElement, top, out top);
-
-                                if (currentElement.Changed || !currentElement.CachedCanvasIsCurrent)
-								//if (currentElement.Changed || !currentElement.IsCanvasContentCurrent(size))
-                                {
-									elementImage = currentElement.SetupCachedImage(size);
-									if (currentElement.StartTime <= VisibleTimeEnd && currentElement.EndTime >= VisibleTimeStart)
-										Invalidate();
-									renderWorker.ReportProgress((int)((double)(currentElementNum) / (double)totalElements * 100.0));
-                                }
-                            }
-							currentElementNum++;
-						}
-
-						Thread.Sleep(5);
-						Application.DoEvents();
-					}
-				}
-
-				// Turn off the progress reporting if it is on
-				renderWorker.ReportProgress(100);
-
-				// Sleep between each iteration
-				Thread.Sleep(250);
-			}
-		}
-
-		private void renderWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
-		{
-			_RenderProgressChanged(e.ProgressPercentage);
-		}
-
 		public void StartBackgroundRendering()
 		{
 			if (this.InvokeRequired)
 				this.Invoke(new Vixen.Delegates.GenericDelegate(StartBackgroundRendering));
-			else {
-				if (renderWorker != null) {
+			else 
+			{
+				if (renderWorker != null)
+				{
 					//while (renderWorker.IsBusy) { Thread.Sleep(10); }; 
 					if (!renderWorker.IsBusy)
 						renderWorker.RunWorkerAsync();
 				}
-				else {
+				else
+				{
 					renderWorker = new BackgroundWorker();
 					renderWorker.WorkerReportsProgress = true;
 					renderWorker.WorkerSupportsCancellation = true;
@@ -1321,17 +1217,99 @@ namespace Common.Controls.Timeline
 			}
 		}
 
-        public void ResetAllElements()
+		private void renderWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+		{
+			_RenderProgressChanged(e.ProgressPercentage);
+		}
+
+		private void renderWorker_DoWork(object sender, DoWorkEventArgs e)
+		{
+			double total = 0;
+			foreach (Element element in _blockingElementQueue.GetConsumingEnumerable(cts.Token))
+			{
+				if(renderWorker.CancellationPending){
+					break;
+				}
+				try
+				{
+					Size size = new Size((int)Math.Ceiling(timeToPixels(element.Duration)), element.Row.Height - 1);
+					element.SetupCachedImage(size);
+					if (!_blockingElementQueue.Any())
+					{
+						total = 0;
+						if (!SuppressInvalidate)
+						{
+							Invalidate(); //Invalidate when the queue is empty
+						}
+						renderWorker.ReportProgress(100);
+					} else
+					{
+						double currentTotal = _blockingElementQueue.Count;
+						total = Math.Max(currentTotal, total);
+						renderWorker.ReportProgress((int)(((total - currentTotal) / total) * 100));
+					}
+
+				} catch (Exception ex)
+				{
+					Logging.ErrorException("Error in rendering.", ex);
+				}
+	
+			}
+		}
+
+        public void RenderElement(Element element)
         {
+			if (SupressRendering) return;
+			if (!element.CachedCanvasIsCurrent) {
+				_blockingElementQueue.Add(element);
+			}
+        }
+
+        public void RenderVisibleRows(List<Row> rows)
+        {
+			if (SupressRendering) return;
+			Element element;
             foreach (Row row in Rows)
             {
-                for (int i = 0; i < row.ElementCount; i++)
+                if (row.Visible)
                 {
-                    Element currentElement = row.GetElementAtIndex(i);
-                    currentElement.Changed = true;
-					ElementQueue.Enqueue(currentElement);
+					for (int i=0; i < row.ElementCount; i++ ) {
+						element = row.GetElementAtIndex(i);
+						if (!element.CachedCanvasIsCurrent) {
+							_blockingElementQueue.Add(element);
+						}
+					}
                 }
             }
+        }
+
+        public void RenderAllVisibleRows()
+        {
+			RenderVisibleRows(Rows);    
+        }
+
+        private void ClearElementRenderQueue()
+        {
+			while (_blockingElementQueue.Count > 0)
+			{
+				Element element;
+				_blockingElementQueue.TryTake(out element);
+			}
+			
+        }
+			
+        public void ResetAllElements()
+        {
+			if (SupressRendering) return;
+            ClearElementRenderQueue();
+			foreach (Row row in Rows) {
+				for (int i=0; i < row.ElementCount; i++) {
+					Element currentElement = row.GetElementAtIndex(i);
+					currentElement.CachedCanvasIsCurrent=false;
+					currentElement.Changed = true;
+				}
+			}
+            RenderAllVisibleRows();
         }
 
 		#endregion
@@ -1374,7 +1352,7 @@ namespace Common.Controls.Timeline
 				elements.Add(elementMaster);
 			if (elements.Count == inCount)
 				return elements;
-
+			
 			return elements;
 		}
 
@@ -1385,7 +1363,7 @@ namespace Common.Controls.Timeline
 
 			currentElement.DisplayHeight = (row.Height - 1) / elements.Count();
 			currentElement.DisplayTop = top + (currentElement.DisplayHeight * elements.IndexOf(currentElement));
-
+			currentElement.RowTopOffset = currentElement.DisplayHeight * elements.IndexOf(currentElement);
 			Size size = new Size((int)Math.Ceiling(timeToPixels(currentElement.Duration)), row.Height - 1);
 			Bitmap elementImage = currentElement.Draw(size, false);
 			//Bitmap elementImage = currentElement.Draw(size);
@@ -1445,9 +1423,7 @@ namespace Common.Controls.Timeline
 					top += row.Height; // next row starts just below this row
 					continue;
 				}
-
-				TimeSpan currentlyDrawnTo = TimeSpan.Zero;
-				TimeSpan desiredDrawTo = TimeSpan.Zero;
+				row.DisplayTop = top;
 				bool lastItemDrawn = false;
 
 				TimeSpan lastStartTime = TimeSpan.Zero;
@@ -1507,8 +1483,8 @@ namespace Common.Controls.Timeline
 				try {
 					e.Graphics.TranslateTransform(this.AutoScrollPosition.X, this.AutoScrollPosition.Y);
 
-					Stopwatch s = new Stopwatch();
-					s.Start();
+					//Stopwatch s = new Stopwatch();
+					//s.Start();
 
 					_drawGridlines(e.Graphics);
 					_drawRows(e.Graphics);
@@ -1518,10 +1494,11 @@ namespace Common.Controls.Timeline
 					_drawSelection(e.Graphics);
 					_drawCursors(e.Graphics);
 
-					s.Stop();
+					//s.Stop();
 					//Logging.Info("OnPaint: " + s.ElapsedMilliseconds);
 				}
 				catch (Exception ex) {
+					Logging.Error("Exception in TimelineGrid.OnPaint():\n\n\t" + ex.Message + "\n\nBacktrace:\n\n\t" + ex.StackTrace);
 					MessageBox.Show("Exception in TimelineGrid.OnPaint():\n\n\t" + ex.Message + "\n\nBacktrace:\n\n\t" + ex.StackTrace);
 				}
 		}

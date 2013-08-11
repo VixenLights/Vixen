@@ -133,6 +133,18 @@
     </Compile>
     <Compile Include="DebugTimer.cs" />
     <Compile Include="IDisplayForm.cs" />
+    <Compile Include="GDIPreview\GDIPreviewForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GDIPreview\GDIPreviewForm.Designer.cs">
+      <DependentUpon>GDIPreviewForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GDIPreview\GDIControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GDIPreview\GDIControl.Designer.cs">
+      <DependentUpon>GDIControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResizePreviewForm.cs">
       <SubType>Form</SubType>
@@ -319,6 +331,12 @@
     </Compile>
     <EmbeddedResource Include="Direct2D\PreviewWinform.resx">
       <DependentUpon>PreviewWinform.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GDIPreview\GDIControl.resx">
+      <DependentUpon>GDIControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GDIPreview\GDIPreviewForm.resx">
+      <DependentUpon>GDIPreviewForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
