@@ -360,9 +360,9 @@
 			// 
 			this.labelDebugVersion.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.labelDebugVersion.ForeColor = System.Drawing.Color.Black;
-			this.labelDebugVersion.Location = new System.Drawing.Point(262, 150);
+			this.labelDebugVersion.Location = new System.Drawing.Point(186, 150);
 			this.labelDebugVersion.Name = "labelDebugVersion";
-			this.labelDebugVersion.Size = new System.Drawing.Size(126, 22);
+			this.labelDebugVersion.Size = new System.Drawing.Size(202, 22);
 			this.labelDebugVersion.TabIndex = 16;
 			this.labelDebugVersion.Text = "[0.0.0]";
 			this.labelDebugVersion.TextAlign = System.Drawing.ContentAlignment.TopRight;
@@ -391,6 +391,7 @@
 			this.Text = "Vixen Administration";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.VixenApp_FormClosing);
 			this.Load += new System.EventHandler(this.VixenApplication_Load);
+			this.Shown += new System.EventHandler(this.VixenApplication_Shown);
 			this.menuStripMain.ResumeLayout(false);
 			this.menuStripMain.PerformLayout();
 			this.groupBoxSequences.ResumeLayout(false);

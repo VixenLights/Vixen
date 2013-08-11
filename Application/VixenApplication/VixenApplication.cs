@@ -77,18 +77,35 @@ namespace VixenApplication
 			PopulateRecentSequencesList();
 		}
 
+		private void VixenApplication_Shown(object sender, EventArgs e)
+		{
+			CheckForTestBuild();
+		}
+
 		private void PopulateVersionStrings()
 		{
 			System.Reflection.Assembly assembly = System.Reflection.Assembly.LoadFile(VixenSystem.AssemblyFileName);
 			Version version = assembly.GetName().Version;
 			string result = version.Major + "." + version.Minor + "." + version.Build;
 
-			labelDebugVersion.Visible = version.Revision > 0;
-			if (version.Revision > 0) {
-				labelDebugVersion.Text = " [debug build " + version.Revision + "]";
-			}
-
+#if AUTOBUILD
+			labelVersion.Text = "Test Build " + version.Revision;
+			labelDebugVersion.Text = "(for upcoming release " + result + ")";
+			labelDebugVersion.Visible = true;
+#else
 			labelVersion.Text = result;
+			labelDebugVersion.Visible = false;
+#endif
+		}
+
+		private void CheckForTestBuild()
+		{
+#if AUTOBUILD
+			MessageBox.Show(
+				"Please be aware that this is a development/test version. Some parts of the software may not work, " +
+				"and data loss is possible! Please backup your data before using this version of the software.",
+				"Development/Test Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+#endif
 		}
 
 		private void _ProcessArg(string arg)
