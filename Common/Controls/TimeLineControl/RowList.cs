@@ -25,6 +25,7 @@ namespace Common.Controls.Timeline
 			SetStyle(ControlStyles.ResizeRedraw, true);
 			Row.RowToggled += RowLabelChangedHandler;
 			Row.RowHeightChanged += RowLabelChangedHandler;
+			Row.RowHeightResized += RowLabelResizedHandler;
 		}
 
 		#region Properties
@@ -68,6 +69,11 @@ namespace Common.Controls.Timeline
 		protected void RowLabelChangedHandler(object sender, EventArgs e)
 		{
 			DoLayout();
+		}
+
+		protected void RowLabelResizedHandler(object sender, EventArgs e)
+		{
+			
 		}
 
 		protected override void OnLayout(LayoutEventArgs e)

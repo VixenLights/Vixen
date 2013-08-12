@@ -58,6 +58,7 @@ namespace Common.Controls.Timeline
 			// Event handlers for Row class static events
 			Row.RowToggled += RowToggledHandler;
 			Row.RowHeightChanged += RowHeightChangedHandler;
+			Row.RowHeightResized += RowHeightResizedHandler;
 		}
 
 		#region Initialization
@@ -548,6 +549,12 @@ namespace Common.Controls.Timeline
 
 		private void RowHeightChangedHandler(object sender, EventArgs e)
 		{
+				
+		}
+
+		private void RowHeightResizedHandler(object sender, EventArgs e)
+		{
+			grid.ResetRowElements(new List<Row> { (Row)sender });
 		}
 
 		protected override void OnMouseWheel(MouseEventArgs e)

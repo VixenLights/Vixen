@@ -282,18 +282,6 @@ namespace Common.Controls.Timeline
 			set
 			{
 				_cachedCanvasIsCurrent=value;
-				if(!value){
-					if (CachedElementCanvas != null)
-					{
-						CachedElementCanvas.Dispose();
-						CachedElementCanvas = null;
-					}
-					if (CachedSelectedElementCanvas != null)
-					{
-						CachedSelectedElementCanvas.Dispose();
-						CachedSelectedElementCanvas = null;
-					}
-				}
 			}
 		}
 
@@ -334,10 +322,8 @@ namespace Common.Controls.Timeline
 
 		public virtual bool IsCanvasContentCurrent(Size imageSize)
 		{
-			// DB: removed below. We don't care if the height is current. We stretch the bitmap anyway.
 			return (CachedCanvasIsCurrent || CachedElementCanvas.Width != imageSize.Width ||
 					CachedElementCanvas.Height != imageSize.Height);
-			//return (CachedCanvasIsCurrent || CachedElementCanvas.Width != imageSize.Width);
 		}
 
 		public Bitmap SetupCachedImage(Size imageSize)
@@ -347,11 +333,20 @@ namespace Common.Controls.Timeline
 				using(Graphics g = Graphics.FromImage(bitmap)){
 					DrawCanvasContent(g);
 					AddSelectionOverlayToCanvas(g, false);
+					if (CachedElementCanvas != null)
+					{
+						CachedElementCanvas.Dispose();
+					}
 					CachedElementCanvas = bitmap;
+					CachedCanvasIsCurrent = true;
+					if(CachedSelectedElementCanvas!=null){
+						CachedSelectedElementCanvas.Dispose();
+						CachedSelectedElementCanvas = null;
+					}
+					
+					Changed = false;
 				}
 			}
-			CachedCanvasIsCurrent = true;
-			Changed = false;
 			
 			return CachedElementCanvas;
 		}
@@ -416,14 +411,13 @@ namespace Common.Controls.Timeline
 
 		public Bitmap Draw(Size imageSize)
 		{
-			if (CachedElementCanvas == null || !IsCanvasContentCurrent(imageSize)) {
+			if (CachedElementCanvas == null) {
 				Bitmap b = SetupCanvas(imageSize);
 				using (Graphics g = Graphics.FromImage(b)) {
 					DrawPlaceholder(g);
 					AddSelectionOverlayToCanvas(g, m_selected);
-					if (!m_selected) {
-						Changed = true;
-					}
+					CachedElementCanvas = b;
+					CachedCanvasIsCurrent = false; //temporary image so the real cache is not current
 				}
 				return b;
 			}

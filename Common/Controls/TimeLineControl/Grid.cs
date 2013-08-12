@@ -92,7 +92,7 @@ namespace Common.Controls.Timeline
 		protected override void Dispose(bool disposing)
 		{
 			// Cancel the background worker
-			cts.Cancel();
+			cts.Cancel(false);
 			if (renderWorker != null)
 			{
 				renderWorker.CancelAsync();
@@ -1297,15 +1297,31 @@ namespace Common.Controls.Timeline
 			}
 			
         }
+
+		public void ResetRowElements(List<Row> rows)
+		{
+			if (SupressRendering) return;
+			foreach (Row row in Rows)
+			{
+				for (int i = 0; i < row.ElementCount; i++)
+				{
+					Element currentElement = row.GetElementAtIndex(i);
+					currentElement.Changed = true;
+				}
+			}
+
+			RenderVisibleRows(rows);
+		}
 			
         public void ResetAllElements()
         {
 			if (SupressRendering) return;
             ClearElementRenderQueue();
-			foreach (Row row in Rows) {
-				for (int i=0; i < row.ElementCount; i++) {
+			foreach (Row row in Rows)
+			{
+				for (int i = 0; i < row.ElementCount; i++)
+				{
 					Element currentElement = row.GetElementAtIndex(i);
-					currentElement.CachedCanvasIsCurrent=false;
 					currentElement.Changed = true;
 				}
 			}
@@ -1314,52 +1330,9 @@ namespace Common.Controls.Timeline
 
 		#endregion
 
-		private List<Element> GetOverlappingElements(Row row, Element elementMaster, List<Element> elements = null)
+		private void DrawElement(Graphics g, Row row, Element currentElement, int top)
 		{
-			//List<Element> elements = new List<Element>();
-			if (elements == null)
-			{
-				elements = new List<Element>();
-			}
-			int inCount = elements.Count;
-			for (int elementNum = 0; elementNum < row.ElementCount; elementNum++)
-			{
-				Element element = row.GetElementAtIndex(elementNum);
-				if (
-					(
-					 (element.StartTime >= elementMaster.StartTime &&
-					   element.StartTime < elementMaster.EndTime) ||
-					 (element.EndTime <= elementMaster.EndTime &&
-					   element.EndTime > elementMaster.StartTime)
-				    ) ||
-				    (
-					 (elementMaster.StartTime >= element.StartTime &&
-					   elementMaster.StartTime < element.EndTime) ||
-					 (elementMaster.EndTime <= element.EndTime &&
-					   elementMaster.EndTime > element.StartTime)
-				    )
-				   )
-				{
-					//if (element != elementMaster)
-					if (!elements.Contains(element)) 
-					{
-						elements.Add(element);
-						elements = GetOverlappingElements(row, element, elements);
-					}
-				}
-			}
-			if (elements.Count == 0)
-				elements.Add(elementMaster);
-			if (elements.Count == inCount)
-				return elements;
-			
-			return elements;
-		}
-
-		private void DrawElement(Graphics g, Row row, Element currentElement, int top,
-								 ref TimeSpan lastStartTime, ref TimeSpan lastEndTime)
-		{
-			List<Element> elements = GetOverlappingElements(row, currentElement);
+			List<Element> elements = row.GetOverlappingElements(currentElement);
 
 			currentElement.DisplayHeight = (row.Height - 1) / elements.Count();
 			currentElement.DisplayTop = top + (currentElement.DisplayHeight * elements.IndexOf(currentElement));
@@ -1382,8 +1355,8 @@ namespace Common.Controls.Timeline
 
 			//g.DrawImage(elementImage, finalDrawLocation);
 
-			lastStartTime = currentElement.StartTime;
-			lastEndTime = currentElement.EndTime;
+			//lastStartTime = currentElement.StartTime;
+			//lastEndTime = currentElement.EndTime;
 		}
 
 		private void _drawInfo(Graphics g)
@@ -1419,29 +1392,22 @@ namespace Common.Controls.Timeline
 				if (!row.Visible)
 					continue;
 
-				if (top < VerticalOffset || top > VerticalOffset + ClientSize.Height) {
+				if (top + row.Height < VerticalOffset || top > VerticalOffset + ClientSize.Height) {
 					top += row.Height; // next row starts just below this row
 					continue;
 				}
 				row.DisplayTop = top;
-				bool lastItemDrawn = false;
 
-				TimeSpan lastStartTime = TimeSpan.Zero;
-				TimeSpan lastEndTime = TimeSpan.Zero;
 				for (int i = 0; i < row.ElementCount; i++) {
 					Element currentElement = row.GetElementAtIndex(i);
 					if (currentElement.EndTime < VisibleTimeStart)
 						continue;
 
 					if (currentElement.StartTime > VisibleTimeEnd) {
-						if (lastItemDrawn) {
-							continue;
-						}
-						else
-							lastItemDrawn = true;
+						break;
 					}
 
-					DrawElement(g, row, currentElement, top, ref lastStartTime, ref lastEndTime);
+					DrawElement(g, row, currentElement, top);
 				}
 
 				top += row.Height; // next row starts just below this row
