@@ -1297,6 +1297,21 @@ namespace Common.Controls.Timeline
 			}
 			
         }
+
+		public void ResetRowElements(List<Row> rows)
+		{
+			if (SupressRendering) return;
+			foreach (Row row in Rows)
+			{
+				for (int i = 0; i < row.ElementCount; i++)
+				{
+					Element currentElement = row.GetElementAtIndex(i);
+					currentElement.Changed = true;
+				}
+			}
+
+			RenderVisibleRows(rows);
+		}
 			
         public void ResetAllElements()
         {
