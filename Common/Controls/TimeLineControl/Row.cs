@@ -295,6 +295,45 @@ namespace Common.Controls.Timeline
 			}
 		}
 
+		public List<Element> GetOverlappingElements(Element elementMaster)
+		{
+			List<Element> elements = new List<Element>();
+			elements.Add(elementMaster); //add our reference
+			int startingIndex = IndexOfElement(elementMaster);
+			TimeSpan startTime = elementMaster.StartTime;
+			TimeSpan endTime = elementMaster.EndTime;
+
+			//we start here and look backward and forward until no more overlap
+			//Look forward.
+			for (int i = startingIndex + 1; i < ElementCount; i++)
+			{
+				Element element = GetElementAtIndex(i);
+				if (element.StartTime < endTime)
+				{
+					elements.Add(element);
+					endTime = element.EndTime > endTime ? element.EndTime : endTime;
+				} else
+				{
+					break;
+				}
+
+			}
+
+			//Look backward.
+			for (int i = startingIndex - 1; i >= 0; i--)
+			{
+				Element element = GetElementAtIndex(i);
+				if (element.EndTime > startTime)
+				{
+					elements.Insert(0, element);
+					startTime = element.StartTime < startTime ? element.StartTime : startTime;
+				}
+
+			}
+
+			return elements;
+		}
+
 		public void AddElement(Element element)
 		{
 			m_elements.Add(element);
