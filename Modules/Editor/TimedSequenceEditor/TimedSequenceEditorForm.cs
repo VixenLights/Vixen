@@ -1234,6 +1234,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		protected override void OnFormClosed(FormClosedEventArgs e)
 		{
+			timelineControl.grid.Dispose();
 			VixenSystem.Contexts.ReleaseContext(_context);
 		}
 

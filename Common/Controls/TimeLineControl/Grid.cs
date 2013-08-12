@@ -92,7 +92,7 @@ namespace Common.Controls.Timeline
 		protected override void Dispose(bool disposing)
 		{
 			// Cancel the background worker
-			cts.Cancel();
+			cts.Cancel(false);
 			if (renderWorker != null)
 			{
 				renderWorker.CancelAsync();
@@ -1302,10 +1302,11 @@ namespace Common.Controls.Timeline
         {
 			if (SupressRendering) return;
             ClearElementRenderQueue();
-			foreach (Row row in Rows) {
-				for (int i=0; i < row.ElementCount; i++) {
+			foreach (Row row in Rows)
+			{
+				for (int i = 0; i < row.ElementCount; i++)
+				{
 					Element currentElement = row.GetElementAtIndex(i);
-					currentElement.CachedCanvasIsCurrent=false;
 					currentElement.Changed = true;
 				}
 			}
