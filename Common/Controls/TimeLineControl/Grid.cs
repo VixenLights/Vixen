@@ -1376,7 +1376,7 @@ namespace Common.Controls.Timeline
 				if (!row.Visible)
 					continue;
 
-				if (top < VerticalOffset || top > VerticalOffset + ClientSize.Height) {
+				if (top + row.Height < VerticalOffset || top > VerticalOffset + ClientSize.Height) {
 					top += row.Height; // next row starts just below this row
 					continue;
 				}
