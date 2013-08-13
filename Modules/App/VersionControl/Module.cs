@@ -9,175 +9,211 @@ using Vixen.Module;
 using Vixen.Module.App;
 using Vixen.Sys;
 
-namespace VersionControl {
-	public class Module : AppModuleInstanceBase {
-		public Module() {
-			GitDetails = new List<ChangeDetails>();
+namespace VersionControl
+{
+    public partial class Module : AppModuleInstanceBase
+    {
+        public Module()
+        {
+            _data = new Data();
+            GitDetails = new Dictionary<string, List<ChangeDetails>>();
+        }
 
-		}
+        #region Variables
+        IApplication _application;
+        Data _data;
+        #endregion
 
-		Vixen.Sys.IApplication _application;
-		GitSharp.Repository repo;
-		Data _data;
+        #region overrides
 
-		private const string MENU_ID_ROOT = "VersionControlRoot";
+        public override IModuleDataModel StaticModuleData
+        {
+            get
+            {
 
-		public string GitRepositoryFolder { get { return System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Vixen 3"); } }
+                return _data;
+            }
+            set
+            {
+                _data = (Data)value;
+            }
+        }
 
-		public override void Loading() {
-			_AddApplicationMenu();
+        public override void Loading()
+        {
 
-			var repoCreated = CreateRepositoryIfNotExists();
-
-			repo = new GitSharp.Repository(GitRepositoryFolder);
-			GetGitDetails();
-			if (_data.IsEnabled) {
-				AddItemsToGit(repoCreated);
-
-				CreateWatcher(GitRepositoryFolder, true);
-			}
-
-		}
-		bool watcherEnabled = false;
-		private void CreateWatcher(string folder, bool recursive) {
-			var watcher = new FileSystemWatcher(folder);
-			watcher.Changed += watcher_Changed;
-			watcher.Created += watcher_Changed;
-			watcher.Deleted += watcher_Changed;
-			watcher.Renamed += watcher_Changed;
-			watcher.IncludeSubdirectories = false;
-			watcher.EnableRaisingEvents = true;
-			watchers.Add(watcher);
-			Directory.GetDirectories(folder).ToList().ForEach(dir => CreateWatcher(dir, recursive));
-			watcherEnabled = true;
-		}
-		private void DisableWatchers() {
-			watchers.ForEach(w => w.EnableRaisingEvents = false);
-			watchers.Clear();
-			watcherEnabled = false;
-		}
-
-		void watcher_Changed(object sender, FileSystemEventArgs e) {
-			if (!e.FullPath.Contains(".git") && !e.FullPath.Contains("\\Logs"))
-				AddItemsToGit(false);
-		}
-
-		List<FileSystemWatcher> watchers = new List<FileSystemWatcher>();
-
-		public override IModuleDataModel StaticModuleData {
-			get {
-				return _data;
-			}
-			set {
-				_data = (Data)value;
-			}
-		}
-		public override IModuleDataModel ModuleData {
-			get {
-				return _data;
-			}
-			set {
-				_data = (Data)value;
-			}
-		}
-
-		private void AddItemsToGit(bool initialCheckin) {
-			var files = Directory.GetDirectories(GitRepositoryFolder).ToList();
-			files.RemoveAll(r => r.Contains(".git") || r.Contains("\\Logs"));
-			files.AddRange(Directory.GetFiles(GitRepositoryFolder));
-
-			repo.Index.Add(files.ToArray());
-			string commitMessage = initialCheckin ? "Initial Load of Existing V3 Data Files" : "Updated/Added File to V3 Folders";
-
-			var commit = repo.Commit(commitMessage, new Author() { Name = Environment.UserName, EmailAddress = string.Empty });
-
-		}
-		private void GetGitDetails() {
-
-			var tree = repo.Head;
-			foreach (Commit commit in repo.Head.CurrentCommit.Ancestors) {
-				foreach (Change change in commit.Changes) {
-					ChangeDetails details = new ChangeDetails();
-					details.FileName = change.Path;
-					details.Hash = commit.Hash;
-					details.ChangeDate = commit.AuthorDate;
-					GitDetails.Add(details);
-				}
-			}
-
-		}
-		public List<ChangeDetails> GitDetails { get; set; }
+            _AddApplicationMenu();
 
 
-		private bool CreateRepositoryIfNotExists() {
-			bool createRepository = !System.IO.Directory.Exists(System.IO.Path.Combine(GitRepositoryFolder, ".git"));
+            EnableDisableSourceControl(_data.IsEnabled);
 
-			if (createRepository) {
-				GitSharp.Git.Init(GitRepositoryFolder);
-				using (var sw = new StreamWriter(Path.Combine(GitRepositoryFolder, ".gitignore"))) {
-					sw.WriteLine("/Logs");
-					sw.WriteLine("/.git");
 
-					sw.Flush();
-				}
-			}
-			return createRepository;
-		}
-		public override void Unloading() {
-			DisableWatchers();
-		}
+        }
 
-		public override Vixen.Sys.IApplication Application {
-			set { _application = value; }
-		}
-		private AppCommand _showCommand;
+        public override void Unloading()
+        {
+            DisableWatchers();
+        }
 
-		private void _AddApplicationMenu() {
-			if (_AppSupportsCommands()) {
-				AppCommand toolsMenu = _GetToolsMenu();
-				AppCommand rootCommand = new AppCommand(MENU_ID_ROOT, "Version Control");
+        public override Vixen.Sys.IApplication Application
+        {
+            set { _application = value; }
+        }
 
-				rootCommand.Add(_showCommand ?? (_showCommand = _CreateShowCommand()));
 
-				toolsMenu.Add(rootCommand);
-			}
-		}
+        #endregion
 
-		private AppCommand _CreateShowCommand() {
-			AppCommand showCommand = new AppCommand("VersionControl", "Versioning");
-			showCommand.Click += (sender, e) => {
-				using (Versioning cs = new Versioning(_data, repo, GitDetails)) {
+        #region Application Menu
+        private const string MENU_ID_ROOT = "VersionControlRoot";
 
-					if (cs.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+        private AppCommand _showCommand;
+        private LatchedAppCommand _enabledCommand;
 
-						_data.IsEnabled = cs.VersionControlData.IsEnabled;
-						DisableWatchers();
-						if (_data.IsEnabled) {
-							CreateWatcher(GitRepositoryFolder, true);
-						}
+        private void _AddApplicationMenu()
+        {
+            if (_AppSupportsCommands())
+            {
+                AppCommand toolsMenu = _GetToolsMenu();
+                AppCommand rootCommand = new AppCommand(MENU_ID_ROOT, "Version Control");
+                rootCommand.Add(_enabledCommand ?? (_enabledCommand = _CreateEnabledCommand()));
+                rootCommand.Add(new AppCommand("s1", "-"));
+                rootCommand.Add(_showCommand ?? (_showCommand = _CreateShowCommand()));
 
-					}
-				}
-			};
+                toolsMenu.Add(rootCommand);
+            }
+        }
 
-			return showCommand;
-		}
-		private void _RemoveApplicationMenu() {
-			if (_AppSupportsCommands()) {
-				AppCommand toolsMenu = _GetToolsMenu();
-				toolsMenu.Remove(MENU_ID_ROOT);
-			}
-		}
-		private bool _AppSupportsCommands() {
-			return _application != null && _application.AppCommands != null;
-		}
-		private AppCommand _GetToolsMenu() {
-			AppCommand toolsMenu = _application.AppCommands.Find("Tools");
-			if (toolsMenu == null) {
-				toolsMenu = new AppCommand("Tools", "Tools");
-				_application.AppCommands.Add(toolsMenu);
-			}
-			return toolsMenu;
-		}
-	}
+        private AppCommand _CreateShowCommand()
+        {
+            AppCommand showCommand = new AppCommand("VersionControl", "Browse");
+            showCommand.Click += (sender, e) =>
+            {
+                using (Versioning cs = new Versioning((Data)StaticModuleData, repo, GitDetails))
+                {
+
+                    if (cs.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                    {
+
+
+                    }
+                }
+            };
+
+            return showCommand;
+        }
+        private LatchedAppCommand _CreateEnabledCommand()
+        {
+            LatchedAppCommand enabledCommand = new LatchedAppCommand("VersionControlEnabled", "Enabled");
+            enabledCommand.IsChecked = _data.IsEnabled;
+            enabledCommand.Checked += (sender, e) =>
+            {
+                // Not setting the data member in _SetSchedulerEnableState because we want to be
+                // able to call _SetSchedulerEnableState without affecting the data (to stop
+                // the scheduler upon shutdown).
+                _data.IsEnabled = e.CheckedState;
+                EnableDisableSourceControl(_data.IsEnabled);
+            };
+
+            return enabledCommand;
+        }
+
+
+        private void _RemoveApplicationMenu()
+        {
+            if (_AppSupportsCommands())
+            {
+                AppCommand toolsMenu = _GetToolsMenu();
+                toolsMenu.Remove(MENU_ID_ROOT);
+            }
+        }
+        private bool _AppSupportsCommands()
+        {
+            return _application != null && _application.AppCommands != null;
+        }
+        private AppCommand _GetToolsMenu()
+        {
+            AppCommand toolsMenu = _application.AppCommands.Find("Tools");
+            if (toolsMenu == null)
+            {
+                toolsMenu = new AppCommand("Tools", "Tools");
+                _application.AppCommands.Add(toolsMenu);
+            }
+            return toolsMenu;
+        }
+
+
+        #endregion
+
+        #region File System Watchers
+        private void CreateWatcher(string folder, bool recursive)
+        {
+            var watcher = new FileSystemWatcher(folder);
+            watcher.Changed += watcher_Changed;
+
+            watcher.Created += watcher_Created;
+            watcher.Deleted += watcher_Deleted;
+            watcher.Renamed += watcher_Renamed;
+            watcher.IncludeSubdirectories = false;
+            watcher.EnableRaisingEvents = true;
+            watchers.Add(watcher);
+            Directory.GetDirectories(folder).ToList().ForEach(dir => CreateWatcher(dir, recursive));
+
+        }
+
+        void watcher_Renamed(object sender, RenamedEventArgs e)
+        {
+            if (!e.FullPath.Contains("\\.git") && !e.FullPath.Contains("\\Logs"))
+            {
+                repo.Index.Delete(e.OldFullPath);
+                repo.Index.Add(e.FullPath);
+                if ((repo.Status.Modified.Count + repo.Status.Added.Count + repo.Status.Removed.Count) > 0)
+                repo.Commit(string.Format("Renamed file {0} to {1}", e.OldName, e.Name));
+            }
+        }
+
+        void watcher_Created(object sender, FileSystemEventArgs e)
+        {
+            if (!e.FullPath.Contains(".git") && !e.FullPath.Contains("\\Logs"))
+            {
+                repo.Index.Add(e.FullPath);
+                if ((repo.Status.Modified.Count + repo.Status.Added.Count + repo.Status.Removed.Count) > 0)
+                repo.Commit(string.Format("Added {0}", e.Name));
+            }
+        }
+
+        void watcher_Deleted(object sender, FileSystemEventArgs e)
+        {
+            if (!e.FullPath.Contains("\\.git") && !e.FullPath.Contains("\\Logs"))
+            {
+                repo.Index.Delete(e.FullPath);
+                if ((repo.Status.Modified.Count + repo.Status.Added.Count + repo.Status.Removed.Count) > 0)
+                repo.Commit(string.Format("Deleted {0}", e.Name));
+            }
+        }
+        private void DisableWatchers()
+        {
+            watchers.ForEach(w => w.EnableRaisingEvents = false);
+            watchers.Clear();
+        }
+
+        void watcher_Changed(object sender, FileSystemEventArgs e)
+        {
+
+            if (!e.FullPath.Contains(".git") && !e.FullPath.Contains("\\Logs"))
+            {
+                System.Threading.Thread.Sleep(5000);
+                repo.Index.Add(e.FullPath);
+                if ((repo.Status.Modified.Count + repo.Status.Added.Count + repo.Status.Removed.Count) > 0)
+                    repo.Commit(string.Format("Changed {0}", e.Name));
+            }
+        }
+
+
+        List<FileSystemWatcher> watchers = new List<FileSystemWatcher>();
+
+        #endregion
+
+
+
+    }
 }

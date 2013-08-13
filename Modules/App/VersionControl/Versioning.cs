@@ -11,101 +11,185 @@ using System.Linq;
 using System.IO;
 using GitSharp;
 
-namespace VersionControl {
-	public partial class Versioning : Form {
-		Data _data;
-		public Data VersionControlData {
-			get { return _data; }
-			set { _data = value; }
-		}
+namespace VersionControl
+{
+    public partial class Versioning : Form
+    {
+        Data _data;
 
-		List<ChangeDetails> _changeDetails;
-		GitSharp.Repository _repo;
+        public Data VersionControlData
+        {
+            get { return _data; }
+            set
+            {
+                _data = value;
+            }
+        }
 
-		public Versioning(Data data, GitSharp.Repository repo, List<ChangeDetails> changeDetails) {
+        Dictionary<string, List<ChangeDetails>> _changeDetails;
 
-			InitializeComponent();
-			VersionControlData = data;
-			_changeDetails = changeDetails;
-			_repo = repo;
-			LoadFileStructure();
-		}
+        GitSharp.Repository _repo;
 
-		private void LoadFileStructure() {
-			//foreach (var item in _changeDetails.OrderBy(a => a.FileName).GroupBy(g => g.FileName).OrderBy(h => h.Key).ToList()) {
-			//	foreach (var item2 in item.ToList()) {
-			//		AddTreeNode(item2);
-			//	}
-			//}
+        public Versioning(Data data, GitSharp.Repository repo, Dictionary<string, List<ChangeDetails>> changeDetails)
+        {
+            InitializeComponent();
+            VersionControlData = data;
+            _changeDetails = changeDetails;
+            _repo = repo;
 
-			//_rootPaths.ToList().ForEach(dir => {
-			//	var rootNode = CreateTreeNodeForDirectory(dir);
-			//	rootNode.Expand();
-			//	treeViewFiles.Nodes.Add(rootNode);
-			//});
+            LoadFileStructure();
+        }
 
-		}
+        private void LoadFileStructure()
+        {
 
-		private void AddTreeNode(ChangeDetails detail) {
-			var nodes = treeViewFiles.Nodes;
-			var details = detail.FileName.Split('/');
-			TreeNode node;
-			foreach (var item in details) {
+            treeViewFiles.Nodes.Clear();
+            treeViewFiles.Nodes.Add("Vixen 3");
+            PopulateTreeView(_repo.Directory.Replace("\\.git", string.Empty), treeViewFiles.Nodes[0]);
+            treeViewFiles.Nodes[0].Expand();
 
-				if (nodes.ContainsKey(item)) {
-					node = nodes.Find(item, false).First();
-				}
-				else {
-					node = new TreeNode(item);
-					node.Tag = detail;
-					nodes.Add(node);
+            //_rootPaths.ToList().ForEach(dir => {
+            //	var rootNode = CreateTreeNodeForDirectory(dir);
+            //	rootNode.Expand();
+            //	treeViewFiles.Nodes.Add(rootNode);
+            //});
 
-				}
+        }
 
-				nodes = node.Nodes;
-			}
-			node = new TreeNode(detail.ChangeDate.ToString());
-			node.Tag = detail;
-			node.Nodes.Add(node);
-		 
-		}
+        private void AddTreeNode(ChangeDetails detail)
+        {
+            try
+            {
 
-		private static TreeNode CreateTreeNodeForDirectory(string dir) {
+                var details = detail.FileName.Split('/');
+                TreeNode node;
+                foreach (var item in details)
+                {
 
-			TreeNode rootNode = null;
-			if (Directory.Exists(dir)) {
-				var di = new DirectoryInfo(dir);
-				rootNode = new TreeNode(di.Name);
+                    if (treeViewFiles.Nodes.ContainsKey(item))
+                    {
+                        node = treeViewFiles.Nodes.Find(item, false).First();
+                    }
+                    else
+                    {
+                        node = new TreeNode(item);
+                        node.Tag = detail;
+                        treeViewFiles.Nodes.Add(node);
+                    }
+                }
 
-				if (di.Name == ".git" || di.Name == "Logs") return null;
-
-				rootNode.Tag = dir;
-				di.GetDirectories().ToList().ForEach(d => {
-					var xNode = CreateTreeNodeForDirectory(d.FullName);
-					if (xNode != null)
-						rootNode.Nodes.Add(xNode);
-				});
-
-				foreach (var f in Directory.GetFiles(dir)) {
-					var fi = new FileInfo(f);
-					var fileNode = new TreeNode(fi.Name);
-					fileNode.Tag = dir;
-					rootNode.Nodes.Add(fileNode);
-				}
-
-			}
+                node = new TreeNode(detail.ChangeDate.ToString());
+                node.Tag = detail;
+                node.Nodes.Add(node);
 
 
-			return rootNode;
-		}
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+        }
 
-		private void treeViewFiles_AfterSelect(object sender, TreeViewEventArgs e) {
-			Console.WriteLine(e.Node.Tag.ToString());
-			GetVersionControlInfo(e.Node.Tag.ToString());
-		}
+        string substringDirectory;
 
-		private void GetVersionControlInfo(string fileName) {
+        private void PopulateTreeView(string directoryValue, TreeNode parentNode)
+        {
+            string[] directoryArray = Directory.GetDirectories(directoryValue);
 
-		}
-	}
+            try
+            {
+                if (directoryArray.Length != 0)
+                {
+                    foreach (string directory in directoryArray)
+                    {
+                        substringDirectory = directory.Substring(
+                        directory.LastIndexOf('\\') + 1,
+                        directory.Length - directory.LastIndexOf('\\') - 1);
+
+                        if (!substringDirectory.Equals(".git", StringComparison.CurrentCultureIgnoreCase) && !substringDirectory.Equals("Logs", StringComparison.CurrentCultureIgnoreCase))
+                        {
+                            TreeNode myNode = new TreeNode(substringDirectory);
+
+                            parentNode.Nodes.Add(myNode);
+
+                            PopulateTreeView(directory, myNode);
+                        }
+                    }
+
+                }
+                var fileArray = Directory.GetFiles(directoryValue);
+                foreach (var file in fileArray)
+                {
+                    TreeNode fileNode = new TreeNode(new FileInfo(file).Name);
+                    fileNode.Tag = file.Replace(_repo.Directory.Replace("\\.git", string.Empty) + "\\", string.Empty).Replace("\\", "/");
+                    parentNode.Nodes.Add(fileNode);
+                }
+
+                parentNode.ClearEmptyChildren();
+            }
+            catch (UnauthorizedAccessException)
+            {
+                parentNode.Nodes.Add("Access denied");
+            } // end catch  
+        }
+
+
+
+
+
+        private void treeViewFiles_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            listBoxChangeHistory.Items.Clear();
+            GetVersionControlInfo(e.Node.Tag as string);
+
+        }
+
+        private void GetVersionControlInfo(string fileName)
+        {
+            if (!string.IsNullOrWhiteSpace(fileName))
+            {
+                if (_changeDetails.ContainsKey(fileName))
+                {
+                    var details = _changeDetails[fileName];
+
+                    details.ForEach(d =>
+                    {
+                        listBoxChangeHistory.Items.Add(d.ChangeDate);
+                    });
+                }
+            }
+
+            if (listBoxChangeHistory.Items.Count > 0)
+                listBoxChangeHistory.SelectedIndex = 0;
+        }
+
+        private void listBoxChangeHistory_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            this.txtChangeMessage.Text = 
+                this.txtChangeFileName.Text = 
+                this.txtChangeDate.Text = 
+                this.txtChangeHash.Text = 
+                this.txtChangeUser.Text = string.Empty;
+
+            if (listBoxChangeHistory.SelectedItem != null)
+            {
+                var change = _changeDetails[treeViewFiles.SelectedNode.Tag as string].Where(w => w.ChangeDate == (DateTimeOffset)listBoxChangeHistory.SelectedItem).FirstOrDefault();
+                if (change != null)
+                {
+                    this.txtChangeDate.Text = change.ChangeDate.ToString();
+                    this.txtChangeHash.Text = change.Hash;
+                    this.txtChangeUser.Text = change.UserName;
+                    this.txtChangeMessage.Text = change.Message;
+                    this.txtChangeFileName.Text = change.FileName;
+                }
+            }
+        }
+
+        private void btnRestore_Click(object sender, EventArgs e)
+        {
+           Leaf
+        }
+
+
+    }
 }
