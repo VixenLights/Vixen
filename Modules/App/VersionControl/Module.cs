@@ -164,10 +164,14 @@ namespace VersionControl
         {
             if (!e.FullPath.Contains("\\.git") && !e.FullPath.Contains("\\Logs"))
             {
-                repo.Index.Delete(e.OldFullPath);
-                repo.Index.Add(e.FullPath);
-                if ((repo.Status.Modified.Count + repo.Status.Added.Count + repo.Status.Removed.Count) > 0)
-                repo.Commit(string.Format("Renamed file {0} to {1}", e.OldName, e.Name));
+                lock (fileLockObject)
+                {
+                    repo.Index.Delete(e.OldFullPath);
+                    repo.Index.Add(e.FullPath);
+                    if ((repo.Status.Modified.Count + repo.Status.Added.Count + repo.Status.Removed.Count) > 0)
+                        repo.Commit(string.Format("Renamed file {0} to {1}{2}", e.OldName, e.Name, restoringFile ? " [Restored]" : ""));
+                    restoringFile = false;
+                }
             }
         }
 
@@ -175,9 +179,13 @@ namespace VersionControl
         {
             if (!e.FullPath.Contains(".git") && !e.FullPath.Contains("\\Logs"))
             {
-                repo.Index.Add(e.FullPath);
-                if ((repo.Status.Modified.Count + repo.Status.Added.Count + repo.Status.Removed.Count) > 0)
-                repo.Commit(string.Format("Added {0}", e.Name));
+                lock (fileLockObject)
+                {
+                    repo.Index.Add(e.FullPath);
+                    if ((repo.Status.Modified.Count + repo.Status.Added.Count + repo.Status.Removed.Count) > 0)
+                        repo.Commit(string.Format("Added {0}{1}", e.Name, restoringFile ? " [Restored]" : ""));
+                    restoringFile = false;
+                }
             }
         }
 
@@ -185,9 +193,13 @@ namespace VersionControl
         {
             if (!e.FullPath.Contains("\\.git") && !e.FullPath.Contains("\\Logs"))
             {
-                repo.Index.Delete(e.FullPath);
-                if ((repo.Status.Modified.Count + repo.Status.Added.Count + repo.Status.Removed.Count) > 0)
-                repo.Commit(string.Format("Deleted {0}", e.Name));
+                lock (fileLockObject)
+                {
+                    repo.Index.Delete(e.FullPath);
+                    if ((repo.Status.Modified.Count + repo.Status.Added.Count + repo.Status.Removed.Count) > 0)
+                        repo.Commit(string.Format("Deleted {0}{1}", e.Name, restoringFile ? " [Restored]" : ""));
+                    restoringFile = false;
+                }
             }
         }
         private void DisableWatchers()
@@ -201,14 +213,24 @@ namespace VersionControl
 
             if (!e.FullPath.Contains(".git") && !e.FullPath.Contains("\\Logs"))
             {
-                System.Threading.Thread.Sleep(5000);
-                repo.Index.Add(e.FullPath);
-                if ((repo.Status.Modified.Count + repo.Status.Added.Count + repo.Status.Removed.Count) > 0)
-                    repo.Commit(string.Format("Changed {0}", e.Name));
+                lock (fileLockObject)
+                {
+                    try
+                    {
+                        //Allow the save operation to complete before we save it to source control... Also
+                        //Prevents dozens of SC saves if a user gets click happy.. 
+                        System.Threading.Thread.Sleep(10000);
+                        repo.Index.Add(e.FullPath);
+                        repo.Commit(string.Format("Changed {0}{1}", e.Name, restoringFile ? " [Restored]" : ""));
+
+                    }
+                    catch (InvalidOperationException) { }
+                }
             }
         }
 
-
+        internal static bool restoringFile = false;
+        internal static object fileLockObject = new object();
         List<FileSystemWatcher> watchers = new List<FileSystemWatcher>();
 
         #endregion

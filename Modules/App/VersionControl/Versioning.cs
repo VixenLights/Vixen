@@ -165,10 +165,13 @@ namespace VersionControl
 
         private void listBoxChangeHistory_SelectedIndexChanged(object sender, EventArgs e)
         {
-            this.txtChangeMessage.Text = 
-                this.txtChangeFileName.Text = 
-                this.txtChangeDate.Text = 
-                this.txtChangeHash.Text = 
+            btnRestore.Enabled = listBoxChangeHistory.SelectedIndex > 0;
+
+            this.txtChangeMessage.Text =
+                this.txtChangeFileName.Text =
+                this.txtChangeDate.Text =
+                this.txtChangeHash.Text =
+
                 this.txtChangeUser.Text = string.Empty;
 
             if (listBoxChangeHistory.SelectedItem != null)
@@ -181,13 +184,40 @@ namespace VersionControl
                     this.txtChangeUser.Text = change.UserName;
                     this.txtChangeMessage.Text = change.Message;
                     this.txtChangeFileName.Text = change.FileName;
+
                 }
             }
         }
 
         private void btnRestore_Click(object sender, EventArgs e)
         {
-           Leaf
+            var res = MessageBox.Show("Are you sure you want to restore this version?  \n\rIf you have not saved the current file, all changes will be lost!", "Restore File", MessageBoxButtons.YesNo, MessageBoxIcon.Hand);
+
+            if (res == DialogResult.Yes)
+            {
+
+                var commit = _repo.Get<Commit>(this.txtChangeHash.Text);
+                var tree = commit.Tree;
+                foreach (Tree subtree in tree.Trees)
+                {
+                    var leaf = subtree.Leaves.Where(l => l.Path.Equals(treeViewFiles.SelectedNode.Tag as string)).FirstOrDefault();
+                    if (leaf != null)
+                    {
+
+                        var rawData = leaf.RawData;
+                        var fileName = System.IO.Path.Combine(_repo.WorkingDirectory, treeViewFiles.SelectedNode.Tag as string);
+                        var b = fileName;
+                        var c = b;
+
+                        lock (Module.fileLockObject)
+                        {
+                            Module.restoringFile = true;
+                            File.WriteAllBytes(fileName, rawData);
+                        }
+                    }
+                }
+            }
+
         }
 
 
