@@ -1293,11 +1293,13 @@ namespace Common.Controls.Timeline
 
         private void ClearElementRenderQueue()
         {
+			SupressRendering = true;
 			while (_blockingElementQueue.Count > 0)
 			{
 				Element element;
 				_blockingElementQueue.TryTake(out element);
 			}
+			SupressRendering=false;
 			
         }
 
