@@ -270,6 +270,7 @@ namespace Common.Controls.Timeline
 
 			grid.BeginDraw();
 			foreach (Row r in Rows) {
+				if (r.Height * scale > grid.Height) continue; //Don't scale a row beyond the grid height. How big do you need it?
 				r.Height = (int) (r.Height*scale);
 			}
 			grid.EndDraw();
