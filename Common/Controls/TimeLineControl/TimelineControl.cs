@@ -267,15 +267,20 @@ namespace Common.Controls.Timeline
 		{
 			if (scale <= 0.0)
 				return;
-
+			bool heightChanged = false;
 			grid.BeginDraw();
 			foreach (Row r in Rows) {
 				if (r.Height * scale > grid.Height) continue; //Don't scale a row beyond the grid height. How big do you need it?
 				r.Height = (int) (r.Height*scale);
+				heightChanged = true;
 			}
 			grid.EndDraw();
 
-			grid.ResetAllElements();
+			if (heightChanged) //Only reset if we actually changed a row height.
+			{
+				grid.ResetAllElements();
+			}
+			
 		}
 
 		public void ResizeGrid()
