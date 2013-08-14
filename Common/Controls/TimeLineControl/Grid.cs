@@ -1257,12 +1257,15 @@ namespace Common.Controls.Timeline
 			}
 		}
 
+		/// <summary>
+		/// Add a specific element to the render queue
+		/// </summary>
+		/// <param name="element"></param>
         public void RenderElement(Element element)
         {
 			if (SupressRendering) return;
-			if (!element.CachedCanvasIsCurrent) {
-				_blockingElementQueue.Add(element);
-			}
+			element.Changed=true;
+			_blockingElementQueue.Add(element);
         }
 
         public void RenderVisibleRows(List<Row> rows)
