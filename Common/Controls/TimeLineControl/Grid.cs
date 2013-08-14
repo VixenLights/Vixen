@@ -1234,12 +1234,19 @@ namespace Common.Controls.Timeline
 				{
 					Size size = new Size((int)Math.Ceiling(timeToPixels(element.Duration)), element.Row.Height - 1);
 					element.SetupCachedImage(size);
+					if (!SuppressInvalidate)
+					{
+						if (element.EndTime > VisibleTimeStart && element.StartTime < VisibleTimeEnd)
+						{
+							Invalidate();
+						}
+					}
 					if (!_blockingElementQueue.Any())
 					{
 						total = 0;
 						if (!SuppressInvalidate)
 						{
-							Invalidate(); //Invalidate when the queue is empty
+							Invalidate(); //Invalidate when the queue is empty just to make sure everything is up to date.
 						}
 						renderWorker.ReportProgress(100);
 					} else
