@@ -205,14 +205,25 @@ namespace VersionControl
                     {
 
                         var rawData = leaf.RawData;
-                        var fileName = System.IO.Path.Combine(_repo.WorkingDirectory, treeViewFiles.SelectedNode.Tag as string);
+                        var fileName = System.IO.Path.Combine(_repo.WorkingDirectory, treeViewFiles.SelectedNode.Tag as string).Replace('/', '\\');
                         var b = fileName;
                         var c = b;
+                        var fi = new FileInfo(fileName);
+                        SaveFileDialog dlg = new SaveFileDialog();
+                        dlg.FileName = fi.Name;
+                        dlg.AddExtension = true;
+                        dlg.DefaultExt = fi.Extension;
+                        dlg.InitialDirectory = fi.DirectoryName;
+                        dlg.Filter = "All files (*.*)|*.*";
 
-                        lock (Module.fileLockObject)
+                        var ddd = dlg.ShowDialog();
+                        if (ddd == System.Windows.Forms.DialogResult.OK)
                         {
-                            Module.restoringFile = true;
-                            File.WriteAllBytes(fileName, rawData);
+                            lock (Module.fileLockObject)
+                            {
+                                Module.restoringFile = true;
+                                File.WriteAllBytes(fileName, rawData);
+                            }
                         }
                     }
                 }
