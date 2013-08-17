@@ -15,13 +15,10 @@ namespace Common.Controls.Timeline
 		private TimeSpan m_duration;
 		private Color m_backColor = Color.White;
 		private Color m_borderColor = Color.Black;
-		private object m_tag = null;
 		private bool m_selected = false;
 		private static Font m_textFont = new Font("Arial", 7);
 		private static Color m_textColor = Color.FromArgb(60, 60, 60);
 		private static System.Object drawLock = new System.Object();
-		//private bool m_redraw = false;
-		//private bool m_rendered = false;
 
 		public Element()
 		{
@@ -36,7 +33,6 @@ namespace Common.Controls.Timeline
 			m_startTime = other.m_startTime;
 			m_duration = other.m_duration;
 			m_backColor = other.m_backColor;
-			m_tag = other.m_tag;
 			m_selected = other.m_selected;
 		}
 
@@ -149,16 +145,6 @@ namespace Common.Controls.Timeline
 				m_borderColor = value;
 				CachedCanvasIsCurrent = false;
 				Changed = true;
-				OnContentChanged();
-			}
-		}
-
-		public object Tag
-		{
-			get { return m_tag; }
-			set
-			{
-				m_tag = value;
 				OnContentChanged();
 			}
 		}
