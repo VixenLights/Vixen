@@ -347,6 +347,27 @@ namespace Common.Controls.Timeline
 			return elements;
 		}
 
+		/// <summary>
+		/// For adding elements in bulk. Sorting is delayed until all elements are added.
+		/// </summary>
+		/// <param name="elements"></param>
+		public void AddBulkElements(List<Element> elements)
+		{
+			foreach (Element element in elements)
+			{
+				m_elements.Add(element);
+				if (element.Selected)
+					m_selectedElements.Add(element);
+				element.Row = this;
+				element.ContentChanged += ElementContentChangedHandler;
+				element.TimeChanged += ElementMovedHandler;
+				element.SelectedChanged += ElementSelectedHandler;
+				_ElementAdded(element);
+			}
+			m_elements.Sort();
+			_RowChanged();
+		}
+
 		public void AddElement(Element element)
 		{
 			m_elements.Add(element);
