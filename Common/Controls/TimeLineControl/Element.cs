@@ -382,19 +382,6 @@ namespace Common.Controls.Timeline
 			}
 		}
 
-		public Bitmap Draw(Size imageSize, bool useImageSize)
-		{
-			if (CachedElementCanvas == null)
-			{
-				return Draw(imageSize);
-			}
-			else
-			{
-				Size size = new Size(CachedElementCanvas.Width, CachedElementCanvas.Height);
-				return Draw(size);
-			}
-		}
-
 		public Bitmap Draw(Size imageSize)
 		{
 			if (CachedElementCanvas == null) {

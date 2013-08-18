@@ -1399,7 +1399,7 @@ namespace Common.Controls.Timeline
 			currentElement.DisplayTop = top + (currentElement.DisplayHeight * elementRowLocation);
 			currentElement.RowTopOffset = currentElement.DisplayHeight * elementRowLocation;
 			Size size = new Size((int)Math.Ceiling(timeToPixels(currentElement.Duration)), row.Height - 1);
-			Bitmap elementImage = currentElement.Draw(size, false);
+			Bitmap elementImage = currentElement.Draw(size);
 			//Bitmap elementImage = currentElement.Draw(size);
 			Point finalDrawLocation = new Point((int)Math.Floor(timeToPixels(currentElement.StartTime)), currentElement.DisplayTop);
 
