@@ -384,27 +384,32 @@ namespace Common.Controls.Timeline
 
 		public Bitmap Draw(Size imageSize)
 		{
-			if (CachedElementCanvas == null) {
-				Bitmap b = SetupCanvas(imageSize);
-				using (Graphics g = Graphics.FromImage(b)) {
-					DrawPlaceholder(g);
-					AddSelectionOverlayToCanvas(g, m_selected);
-					CachedElementCanvas = b;
-					CachedCanvasIsCurrent = false; //temporary image so the real cache is not current
-				}
-				return b;
-			}
-			else if (m_selected) {
-				if (CachedSelectedElementCanvas == null)
+			lock (drawLock)
+			{
+				if (CachedElementCanvas == null)
 				{
-					Bitmap b = new Bitmap(CachedElementCanvas);
+					Bitmap b = SetupCanvas(imageSize);
 					using (Graphics g = Graphics.FromImage(b))
 					{
-						AddSelectionOverlayToCanvas(g, true);
-						CachedSelectedElementCanvas = b;
+						DrawPlaceholder(g);
+						AddSelectionOverlayToCanvas(g, m_selected);
+						CachedElementCanvas = b;
+						CachedCanvasIsCurrent = false; //temporary image so the real cache is not current
 					}
+					return b;
+				} else if (m_selected)
+				{
+					if (CachedSelectedElementCanvas == null)
+					{
+						Bitmap b = new Bitmap(CachedElementCanvas);
+						using (Graphics g = Graphics.FromImage(b))
+						{
+							AddSelectionOverlayToCanvas(g, true);
+							CachedSelectedElementCanvas = b;
+						}
+					}
+					return CachedSelectedElementCanvas;
 				}
-				return CachedSelectedElementCanvas;
 			}
 			return CachedElementCanvas;
 		}
