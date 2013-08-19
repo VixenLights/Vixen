@@ -1350,15 +1350,56 @@ namespace Common.Controls.Timeline
 
 		#endregion
 
+		private List<List<Element>> DetermineElementStack(List<Element> elements)
+		{
+			
+			List<List<Element>> stack = new List<List<Element>>();
+			stack.Add( new List<Element>{elements[0]} );
+			bool add = true;
+			for (int i = 1; i < elements.Count; i++)
+			{
+				add = true;
+				for (int x = 0; x < stack.Count; x++)
+				{
+					if (elements[i].StartTime >= stack[x].Last().EndTime)
+					{
+						stack[x] .Add(elements[i]);
+						add = false;
+						break;
+					}
+				}
+				if (add) stack.Add(new List<Element> {elements[i]});
+			}
+
+			return stack;
+
+		}
+
 		private void DrawElement(Graphics g, Row row, Element currentElement, int top)
 		{
+			int elementRowLocation = 0;
+			int elementRowCount = 1;
 			List<Element> elements = row.GetOverlappingElements(currentElement);
 
-			currentElement.DisplayHeight = (row.Height - 1) / elements.Count();
-			currentElement.DisplayTop = top + (currentElement.DisplayHeight * elements.IndexOf(currentElement));
-			currentElement.RowTopOffset = currentElement.DisplayHeight * elements.IndexOf(currentElement);
+			if (elements.Count > 1)
+			{
+				var stack = DetermineElementStack(elements);
+				elementRowCount = stack.Count;
+				for (int i = 0; i < stack.Count; i++)
+				{
+					if (stack[i].Contains(currentElement))
+					{
+						elementRowLocation = i;
+						break;
+					}
+				}
+			}
+
+			currentElement.DisplayHeight = (row.Height - 1) / elementRowCount;
+			currentElement.DisplayTop = top + (currentElement.DisplayHeight * elementRowLocation);
+			currentElement.RowTopOffset = currentElement.DisplayHeight * elementRowLocation;
 			Size size = new Size((int)Math.Ceiling(timeToPixels(currentElement.Duration)), row.Height - 1);
-			Bitmap elementImage = currentElement.Draw(size, false);
+			Bitmap elementImage = currentElement.Draw(size);
 			//Bitmap elementImage = currentElement.Draw(size);
 			Point finalDrawLocation = new Point((int)Math.Floor(timeToPixels(currentElement.StartTime)), currentElement.DisplayTop);
 
