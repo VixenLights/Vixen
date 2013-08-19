@@ -20,6 +20,11 @@
 		{
 			get { return typeof (E131OutputPlugin); }
 		}
+        
+        public override Type ModuleDataClass
+        {
+            get { return typeof(E131ModuleDataModel); }
+        }
 
 		public override Type ModuleStaticDataClass
 		{
