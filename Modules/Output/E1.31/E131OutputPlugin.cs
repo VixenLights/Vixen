@@ -129,6 +129,11 @@ namespace VixenModules.Controller.E131
                     this._nicTable.Add(nic.Id, nic);
                 }
             }
+            _data.Universes.ForEach(u =>
+            {
+                if (!E131OutputPlugin.EmployedUniverses.Contains(u.Universe))
+                    E131OutputPlugin.EmployedUniverses.Add(u.Universe);
+            });
         }
 
         // -------------------------------------------------------------
