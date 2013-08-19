@@ -256,7 +256,7 @@ namespace VixenModules.Output.E131
             this.Menu = this.mainMenu;
             this.Name = "SetupForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "J1Sys E1.31 Setup Form";
+            this.Text = "sACN (E1.31) Setup Form";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SetupForm_FormClosing);
             this.Load += new System.EventHandler(this.SetupForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.univDGVN)).EndInit();
