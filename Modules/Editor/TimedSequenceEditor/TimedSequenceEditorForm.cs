@@ -491,7 +491,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		protected void ElementTimeChangedHandler(object sender, EventArgs e)
 		{
 			TimedSequenceElement element = sender as TimedSequenceElement;
-			timelineControl.grid.RenderElement(element);
 			sequenceModified();
 		}
 
@@ -570,7 +569,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (result == DialogResult.OK) {
 					foreach (Element element in elements)
 					{
-						element.Changed = true;
 						timelineControl.grid.RenderElement(element);
 					}
 					sequenceModified();
@@ -1234,6 +1232,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		protected override void OnFormClosed(FormClosedEventArgs e)
 		{
+			timelineControl.grid.Dispose();
 			VixenSystem.Contexts.ReleaseContext(_context);
 		}
 

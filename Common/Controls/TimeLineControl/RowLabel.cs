@@ -60,6 +60,7 @@ namespace Common.Controls.Timeline
 		internal event EventHandler TreeToggled;
 		internal event EventHandler<ModifierKeysEventArgs> LabelClicked;
 		internal event EventHandler<RowHeightChangedEventArgs> HeightChanged;
+		internal event EventHandler HeightResized;
 
 		private void _TreeToggled()
 		{
@@ -74,6 +75,11 @@ namespace Common.Controls.Timeline
 		private void _HeightChanged(int dh)
 		{
 			if (HeightChanged != null) HeightChanged(this, new RowHeightChangedEventArgs(dh));
+		}
+
+		private void _HeightResized()
+		{
+			if (HeightResized != null) HeightResized(this, EventArgs.Empty);
 		}
 
 		#endregion
@@ -123,6 +129,10 @@ namespace Common.Controls.Timeline
 			base.OnMouseUp(e);
 
 			if (e.Button == MouseButtons.Left) {
+				if (Resizing == true)
+				{
+					_HeightResized();
+				}
 				Resizing = false;
 			}
 		}
