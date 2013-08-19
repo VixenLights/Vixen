@@ -218,7 +218,7 @@ namespace VixenModules.Output.E131
 			// all numeric columns are stored as strings
 			universe = ((string) row.Cells[UNIVERSE_COLUMN].Value).TryParseInt32(1);
 			start = ((string) row.Cells[START_COLUMN].Value).TryParseInt32(1);
-			size = ((string) row.Cells[SIZE_COLUMN].Value).TryParseInt32(1);
+            size = ((string)row.Cells[SIZE_COLUMN].Value).TryParseInt32(1);
 			ttl = ((string) row.Cells[TTL_COLUMN].Value).TryParseInt32(1);
 
 			// first set both unicast and multicast results to null
