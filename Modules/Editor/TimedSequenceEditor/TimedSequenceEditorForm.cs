@@ -405,7 +405,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (_sequence.GetAllMedia().Any()) {
 				IMediaModuleInstance media = _sequence.GetAllMedia().First();
 				Audio audio = media as Audio;
-				timelineControl.Audio = audio;
+				if (audio.MediaExists)
+				{
+					timelineControl.Audio = audio;
+				} else
+				{
+					string message = String.Format("Audio file not found on the path:\n\n {0}\n\nPlease Check your settings/path.", audio.MediaFilePath);
+					MessageBox.Show(message, "Missing audio file");
+				}
+
 				toolStripMenuItem_removeAudio.Enabled = true;
 			}
 		}
