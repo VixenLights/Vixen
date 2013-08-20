@@ -1,5 +1,5 @@
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vixen", "Vixen.System\Vixen.csproj", "{50B78623-FCF4-48AF-93FF-FA87C937028F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VixenModules", "VixenModules", "{F1B3198B-977F-40CD-85B3-CAA3F5B5C948}"
@@ -479,7 +479,6 @@ Global
 		{3D42FC86-9EA6-4D6B-8E4A-1F4EE1A1D8B5}.Debug|x86.ActiveCfg = Debug|x86
 		{3D42FC86-9EA6-4D6B-8E4A-1F4EE1A1D8B5}.Debug|x86.Build.0 = Debug|x86
 		{3D42FC86-9EA6-4D6B-8E4A-1F4EE1A1D8B5}.Release|x86.ActiveCfg = Release|x86
-		{3D42FC86-9EA6-4D6B-8E4A-1F4EE1A1D8B5}.Release|x86.Build.0 = Release|x86
 		{BD18AB57-1ABF-4C5B-A3F6-8B4AC6013C36}.Debug|x86.ActiveCfg = Debug|x86
 		{BD18AB57-1ABF-4C5B-A3F6-8B4AC6013C36}.Debug|x86.Build.0 = Debug|x86
 		{BD18AB57-1ABF-4C5B-A3F6-8B4AC6013C36}.Release|x86.ActiveCfg = Release|x86

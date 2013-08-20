@@ -84,6 +84,8 @@ namespace VixenModules.Controller.E131
                 _data = (E131ModuleDataModel)value;
             }
         }
+
+
         private int _eventCnt;
 
 
@@ -127,6 +129,11 @@ namespace VixenModules.Controller.E131
                     this._nicTable.Add(nic.Id, nic);
                 }
             }
+            _data.Universes.ForEach(u =>
+            {
+                if (!E131OutputPlugin.EmployedUniverses.Contains(u.Universe))
+                    E131OutputPlugin.EmployedUniverses.Add(u.Universe);
+            });
         }
 
         // -------------------------------------------------------------
@@ -144,6 +151,7 @@ namespace VixenModules.Controller.E131
             isSetupOpen = true;
 
 
+
             // define/create objects
 
             using (var setupForm = new SetupForm())
@@ -151,12 +159,20 @@ namespace VixenModules.Controller.E131
                 // Tell the setupForm our output count
                 setupForm.PluginChannelCount = this.OutputCount;
 
+                List<int> initialUniverseList = new List<int>();
                 // for each universe add it to setup form
                 foreach (var uE in _data.Universes)
                 {
                     setupForm.UniverseAdd(
                         uE.Active, uE.Universe, uE.Start + 1, uE.Size, uE.Unicast, uE.Multicast, uE.Ttl);
+
+                    if (!E131OutputPlugin.EmployedUniverses.Contains(uE.Universe))
+                        E131OutputPlugin.EmployedUniverses.Add(uE.Universe);
+
+                    initialUniverseList.Add(uE.Universe);
                 }
+
+
 
                 setupForm.WarningsOption = _data.Warnings;
                 setupForm.StatisticsOption = _data.Statistics;
@@ -170,8 +186,9 @@ namespace VixenModules.Controller.E131
                     _data.Warnings = setupForm.WarningsOption;
                     _data.Statistics = setupForm.StatisticsOption;
                     _data.EventRepeatCount = setupForm.EventRepeatCount;
-
                     _data.Universes.Clear();
+
+                    initialUniverseList.ForEach(u => E131OutputPlugin.EmployedUniverses.RemoveAll(t => u == t));
 
                     // add each of the universes as a child
                     for (int i = 0; i < setupForm.UniverseCount; i++)
@@ -188,11 +205,11 @@ namespace VixenModules.Controller.E131
                             i, ref active, ref universe, ref start, ref size, ref unicast, ref multicast, ref ttl))
                         {
                             _data.Universes.Add(new UniverseEntry(i, active, universe, start - 1, size, unicast, multicast, ttl));
-
+                            //Only add the universe if it doesnt already exist
+                            if (!E131OutputPlugin.EmployedUniverses.Contains(universe))
+                                E131OutputPlugin.EmployedUniverses.Add(universe);
                         }
                     }
-
-                    //  doc.Save("Modules\\Controller\\E131settings.xml");
 
                     hasStarted = false; //prevent updates
 
@@ -206,6 +223,8 @@ namespace VixenModules.Controller.E131
 
             return true;
         }
+
+        internal static List<int> EmployedUniverses = new List<int>();
 
         public override bool HasSetup
         {
