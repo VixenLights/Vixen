@@ -479,23 +479,28 @@ namespace VixenApplication
 		{
 			string logDirectory = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Vixen 3", "Logs");
 
-			string tempFilePath = Path.Combine(Path.GetTempPath(), "Logs", logName);
-			if (File.Exists(System.IO.Path.Combine(logDirectory, logName)))
-				using (var sr = new StreamReader(System.IO.Path.Combine(logDirectory, logName))) {
-					using (var sw = new StreamWriter(tempFilePath)) {
-						while (!sr.EndOfStream) {
-							sw.WriteLine(sr.ReadLine());
-						}
-					}
-				}
+            //string tempFilePath = Path.Combine(Path.GetTempPath(), "Logs", logName);
+            //if (!Directory.Exists(new FileInfo(tempFilePath).DirectoryName))
+            //    Directory.CreateDirectory(new FileInfo(tempFilePath).DirectoryName);
+
+            //if (File.Exists(System.IO.Path.Combine(logDirectory, logName)))
+            //    using (var sr = new StreamReader(System.IO.Path.Combine(logDirectory, logName))) {
+            //        using (var sw = new StreamWriter(tempFilePath)) {
+            //            while (!sr.EndOfStream) {
+            //                sw.WriteLine(sr.ReadLine());
+            //            }
+            //        }
+            //    }
 
 			using (Process process = new Process()) {
-				process.StartInfo = new ProcessStartInfo("notepad.exe", tempFilePath);
+				process.StartInfo = new ProcessStartInfo("notepad.exe", Path.Combine(logDirectory,logName));
 				process.Start();
 
 			}
-			if (File.Exists(tempFilePath))
-				File.Delete(tempFilePath);
+            //if (File.Exists(tempFilePath))
+            //    File.Delete(tempFilePath);
+ 
+			
 		}
 
 		#region Recent Sequences list
