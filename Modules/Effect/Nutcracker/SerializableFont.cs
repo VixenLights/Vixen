@@ -8,6 +8,7 @@ using System.ComponentModel;
 
 namespace VixenModules.Effect.Nutcracker
 {
+    [Serializable]
 	public class SerializableFont
 	{
 		public SerializableFont()

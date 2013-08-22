@@ -20,6 +20,7 @@ namespace VixenModules.Effect.Nutcracker
 	[KnownType(typeof (SerializableFont)),
 	 KnownType(typeof (System.Drawing.FontStyle)),
 	 KnownType(typeof (System.Drawing.GraphicsUnit))]
+    [Serializable]
 	public class NutcrackerData
 	{
 		public NutcrackerData()
