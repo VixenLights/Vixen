@@ -20,7 +20,7 @@ namespace VixenModules.Effect.Nutcracker
 	[KnownType(typeof (SerializableFont)),
 	 KnownType(typeof (System.Drawing.FontStyle)),
 	 KnownType(typeof (System.Drawing.GraphicsUnit))]
-    [Serializable]
+   
 	public class NutcrackerData
 	{
 		public NutcrackerData()
@@ -103,8 +103,10 @@ namespace VixenModules.Effect.Nutcracker
 		[DataMember] public string Text_Line2 = string.Empty;
 		[DataMember] public int Text_Direction = 0;
 
-		[DataMember]
-		public SerializableFont Text_Font { get; set; }
+        [DataMember(IsRequired = false)]
+        public SerializableFont Text_Font { get; set; }
+         
+
 
 		[DataMember] public int Text_TextRotation = 0;
 

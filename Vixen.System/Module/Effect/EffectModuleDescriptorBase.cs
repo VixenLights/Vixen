@@ -5,7 +5,7 @@ using System.Drawing;
 using Vixen.Sys;
 
 namespace Vixen.Module.Effect {
-	[Serializable]
+	
 	public abstract class EffectModuleDescriptorBase : ModuleDescriptorBase, IEffectModuleDescriptor,
 													   IEqualityComparer<IEffectModuleDescriptor>,
 													   IEquatable<IEffectModuleDescriptor>,
