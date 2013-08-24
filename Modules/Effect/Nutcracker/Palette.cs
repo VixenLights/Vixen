@@ -7,8 +7,7 @@ using System.Runtime.Serialization;
 
 namespace VixenModules.Effect.Nutcracker
 {
-    [DataContract]
-   
+	[DataContract]
 	public class Palette
 	{
 		[DataMember] private Color[] _colors;

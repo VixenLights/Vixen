@@ -4,7 +4,6 @@ using System.Runtime.Serialization;
 namespace Vixen.Module
 {
 	[DataContract(Namespace = "")]
-    
 	public abstract class ModuleDataModelBase : IModuleDataModel
 	{
 		/// <summary>

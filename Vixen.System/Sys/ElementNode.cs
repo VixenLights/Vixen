@@ -14,7 +14,7 @@ namespace Vixen.Sys
 	/// <summary>
 	/// A logical node that encapsulates a single Element or a branch/group of other ElementNodes.
 	/// </summary>
-	
+	[Serializable]
 	public class ElementNode : GroupNode<Element>, IEqualityComparer<ElementNode>
 	{
 		// Making this static so there doesn't have to be potentially thousands of

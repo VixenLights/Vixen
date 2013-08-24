@@ -10,7 +10,7 @@ namespace Vixen.Sys
 	/// <summary>
 	/// A logical channel of low-level CommandData that is intended to be executed by a controller.
 	/// </summary>
-	
+	[Serializable]
 	public class Element : IOutputStateSource, IEqualityComparer<Element>, IEquatable<Element>
 	{
 		private ElementContextSource _dataSource;

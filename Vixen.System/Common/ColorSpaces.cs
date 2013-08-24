@@ -152,7 +152,7 @@ namespace Common.Controls.ColorManagement.ColorModels
 		#endregion
 	}
 
-	
+	[Serializable]
 	public struct RGB
 	{
 		#region variables
@@ -259,7 +259,7 @@ namespace Common.Controls.ColorManagement.ColorModels
 		#endregion
 	}
 
-	
+	[Serializable]
 	public struct LAB
 	{
 		#region variables
@@ -387,7 +387,7 @@ namespace Common.Controls.ColorManagement.ColorModels
 		#endregion
 	}
 
-	
+	[Serializable]
 	public struct HSV
 	{
 		#region variables
@@ -556,7 +556,7 @@ namespace Common.Controls.ColorManagement.ColorModels
 		#endregion
 	}
 
-	
+	[Serializable]
 	public struct CMYK
 	{
 		#region variables

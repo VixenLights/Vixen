@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace VixenModules.Property.Position
 {
-	// Already marked as  since it's a dictionary, so [DataContract] is not needed.
+	// Already marked as [Serializable] since it's a dictionary, so [DataContract] is not needed.
 	public class PositionMap : Dictionary<Guid, PositionValue>
 	{
 		public void AddRange(PositionMap values)

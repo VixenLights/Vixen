@@ -9,7 +9,7 @@ using Vixen.Sys;
 
 namespace Vixen.Module.Effect
 {
-	
+	[Serializable]
 	public abstract class EffectModuleInstanceBase : ModuleInstanceBase, IEffectModuleInstance,
 	                                                 IEqualityComparer<IEffectModuleInstance>,
 	                                                 IEquatable<IEffectModuleInstance>,

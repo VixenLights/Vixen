@@ -7,7 +7,7 @@ using Vixen.Sys.Attribute;
 
 namespace Vixen.Sys
 {
-	
+	[Serializable]
 	internal class DefaultValueArrayMember
 	{
 		private object _owner;
