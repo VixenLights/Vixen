@@ -1,13 +1,14 @@
 using System;
 using System.Drawing;
 using System.ComponentModel;
+using System.Runtime.Serialization;
 
 namespace Common.Controls.ColorManagement.ColorModels
 {
 	/// <summary>
 	/// CIE XYZ color space
 	/// </summary>
-	[Serializable, TypeConverter(typeof (XYZTypeConverter))]
+	[DataContract, TypeConverter(typeof (XYZTypeConverter))]
 	public struct XYZ
 	{
 		public static readonly XYZ Empty = new XYZ();
@@ -130,19 +131,19 @@ namespace Common.Controls.ColorManagement.ColorModels
 		#endregion
 
 		#region properties
-
+        [DataMember]
 		public double X
 		{
 			get { return _x; }
 			set { _x = ClipValue(value, 0.0, 95.047); }
 		}
-
+        [DataMember]
 		public double Y
 		{
 			get { return _y; }
 			set { _y = ClipValue(value, 0.0, 100.000); }
 		}
-
+        [DataMember]
 		public double Z
 		{
 			get { return _z; }
@@ -152,9 +153,9 @@ namespace Common.Controls.ColorManagement.ColorModels
 		#endregion
 	}
 
-	[Serializable]
-	public struct RGB
-	{
+    [DataContract]
+    public struct RGB
+    {
 		#region variables
 
 		private double _r, _g, _b;
@@ -236,30 +237,30 @@ namespace Common.Controls.ColorManagement.ColorModels
 
 		#endregion
 
-		#region properties
+        #region properties
+        [DataMember]
+        public double R
+        {
+            get { return _r; }
+            set { _r = XYZ.ClipValue(value, 0.0, 1.0); }
+        }
+        [DataMember]
+        public double G
+        {
+            get { return _g; }
+            set { _g = XYZ.ClipValue(value, 0.0, 1.0); }
+        }
+        [DataMember]
+        public double B
+        {
+            get { return _b; }
+            set { _b = XYZ.ClipValue(value, 0.0, 1.0); }
+        }
 
-		public double R
-		{
-			get { return _r; }
-			set { _r = XYZ.ClipValue(value, 0.0, 1.0); }
-		}
+        #endregion
+    }
 
-		public double G
-		{
-			get { return _g; }
-			set { _g = XYZ.ClipValue(value, 0.0, 1.0); }
-		}
-
-		public double B
-		{
-			get { return _b; }
-			set { _b = XYZ.ClipValue(value, 0.0, 1.0); }
-		}
-
-		#endregion
-	}
-
-	[Serializable]
+	[DataContract]
 	public struct LAB
 	{
 		#region variables
@@ -365,19 +366,19 @@ namespace Common.Controls.ColorManagement.ColorModels
 		#endregion
 
 		#region properties
-
+        [DataMember]
 		public double L
 		{
 			get { return _l; }
 			set { _l = XYZ.ClipValue(value, 0.0, 100.0); }
 		}
-
+        [DataMember]
 		public double a
 		{
 			get { return _a; }
 			set { _a = XYZ.ClipValue(value, -128.0, 127.0); }
 		}
-
+        [DataMember]
 		public double b
 		{
 			get { return _b; }
@@ -387,7 +388,7 @@ namespace Common.Controls.ColorManagement.ColorModels
 		#endregion
 	}
 
-	[Serializable]
+	[DataContract]
 	public struct HSV
 	{
 		#region variables
@@ -534,19 +535,19 @@ namespace Common.Controls.ColorManagement.ColorModels
 		#endregion
 
 		#region properties
-
+        [DataMember]
 		public double H
 		{
 			get { return _h; }
 			set { _h = XYZ.ClipValue(value, 0.0, 1.0); }
 		}
-
+        [DataMember]
 		public double S
 		{
 			get { return _s; }
 			set { _s = XYZ.ClipValue(value, 0.0, 1.0); }
 		}
-
+        [DataMember]
 		public double V
 		{
 			get { return _v; }
@@ -556,7 +557,7 @@ namespace Common.Controls.ColorManagement.ColorModels
 		#endregion
 	}
 
-	[Serializable]
+[DataContract]
 	public struct CMYK
 	{
 		#region variables
@@ -655,31 +656,31 @@ namespace Common.Controls.ColorManagement.ColorModels
 
 		#endregion
 
-		#region properties
-
-		public double C
-		{
-			get { return _c; }
-			set { _c = XYZ.ClipValue(value, 0.0, 1.0); }
-		}
-
-		public double M
-		{
-			get { return _m; }
-			set { _m = XYZ.ClipValue(value, 0.0, 1.0); }
-		}
-
-		public double Y
-		{
-			get { return _y; }
-			set { _y = XYZ.ClipValue(value, 0.0, 1.0); }
-		}
-
-		public double K
-		{
-			get { return _k; }
-			set { _k = XYZ.ClipValue(value, 0.0, 1.0); }
-		}
+        #region properties
+        [DataMember]
+        public double C
+        {
+            get { return _c; }
+            set { _c = XYZ.ClipValue(value, 0.0, 1.0); }
+        }
+        [DataMember]
+        public double M
+        {
+            get { return _m; }
+            set { _m = XYZ.ClipValue(value, 0.0, 1.0); }
+        }
+        [DataMember]
+        public double Y
+        {
+            get { return _y; }
+            set { _y = XYZ.ClipValue(value, 0.0, 1.0); }
+        }
+        [DataMember]
+        public double K
+        {
+            get { return _k; }
+            set { _k = XYZ.ClipValue(value, 0.0, 1.0); }
+        }
 
 		#endregion
 	}
