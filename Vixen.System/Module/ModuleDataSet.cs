@@ -214,8 +214,7 @@ namespace Vixen.Module
 			// Clone exactly, assuming unchanged type and instance ids for the
 			// modules the data belongs to.
 			foreach (IModuleDataModel dataModel in source._dataModels.Values) {
-				IModuleDataModel newModel = dataModel.Clone();
-				destination._Add(newModel, dataModel.ModuleTypeId, dataModel.ModuleInstanceId);
+				destination._Add(dataModel, dataModel.ModuleTypeId, dataModel.ModuleInstanceId);
 			}
 		}
 
@@ -286,14 +285,13 @@ namespace Vixen.Module
 
 		internal IEnumerable<IModuleDataModel> DataModels
 		{
-			get { return _dataModels.Values; }
+			get { return _dataModels.Values.ToList(); }
 			set { 
 				//_dataModels = value.ToList();
 				_dataModels.Clear();
 				foreach(IModuleDataModel dataModel in value)
 				{
-					IModuleDataModel newModel = dataModel.Clone();
-					_Add(newModel, dataModel.ModuleTypeId, dataModel.ModuleInstanceId);
+					_Add(dataModel, dataModel.ModuleTypeId, dataModel.ModuleInstanceId);
 				}
 			}
 		}
