@@ -14,7 +14,7 @@ namespace Vixen.Sys
 	public interface IIntentState<out T> : IIntentState
 		where T : IIntentDataType
 	{
-		IIntent<T> Intent { get; }
-		T GetValue();
+		new IIntent<T> Intent { get; }
+		new T GetValue();
 	}
 }

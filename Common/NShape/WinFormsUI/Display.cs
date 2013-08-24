@@ -2234,12 +2234,18 @@ namespace Dataweb.NShape.WinFormsUI
 				}
 			}
 		}
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
 		public Point GetDiagramOffset()
 		{
 			return new Point(scrollBarH.Value - scrollBarH.Minimum, scrollBarV.Value - scrollBarV.Minimum);
 		}
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
 		public Point GetDiagramPosition()
 		{
 			return new Point(diagramPosX, diagramPosY);
