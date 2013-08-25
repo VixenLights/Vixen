@@ -107,39 +107,45 @@ namespace VixenModules.Effect.Pulse
 
 		private void addIntentsToElement(Element element, Color? color = null)
 		{
-			double[] allPointsTimeOrdered = _GetAllSignificantDataPoints().ToArray();
-			Debug.Assert(allPointsTimeOrdered.Length > 1);
+			if (element != null)
+			{
+				double[] allPointsTimeOrdered = _GetAllSignificantDataPoints().ToArray();
+				Debug.Assert(allPointsTimeOrdered.Length > 1);
 
-			double lastPosition = allPointsTimeOrdered[0];
-			for (int i = 1; i < allPointsTimeOrdered.Length; i++) {
-				double position = allPointsTimeOrdered[i];
+				double lastPosition = allPointsTimeOrdered[0];
+				for (int i = 1; i < allPointsTimeOrdered.Length; i++)
+				{
+					double position = allPointsTimeOrdered[i];
 
-				LightingValue startValue;
-				LightingValue endValue;
-				if (color == null) {
-					startValue = new LightingValue(ColorGradient.GetColorAt(lastPosition),
-					                               (float) LevelCurve.GetValue(lastPosition*100)/100);
-					endValue = new LightingValue(ColorGradient.GetColorAt(position), (float) LevelCurve.GetValue(position*100)/100);
+					LightingValue startValue;
+					LightingValue endValue;
+					if (color == null)
+					{
+						startValue = new LightingValue(ColorGradient.GetColorAt(lastPosition),
+													   (float)LevelCurve.GetValue(lastPosition * 100) / 100);
+						endValue = new LightingValue(ColorGradient.GetColorAt(position), (float)LevelCurve.GetValue(position * 100) / 100);
+					}
+					else
+					{
+						startValue = new LightingValue((Color)color,
+													   (float)
+													   (ColorGradient.GetProportionOfColorAt(lastPosition, (Color)color) *
+														LevelCurve.GetValue(lastPosition * 100) / 100));
+						endValue = new LightingValue((Color)color,
+													 (float)
+													 (ColorGradient.GetProportionOfColorAt(position, (Color)color) *
+													  LevelCurve.GetValue(position * 100) / 100));
+					}
+
+					TimeSpan startTime = TimeSpan.FromMilliseconds(TimeSpan.TotalMilliseconds * lastPosition);
+					TimeSpan timeSpan = TimeSpan.FromMilliseconds(TimeSpan.TotalMilliseconds * (position - lastPosition));
+
+					IIntent intent = new LightingIntent(startValue, endValue, timeSpan);
+
+					_elementData.AddIntentForElement(element.Id, intent, startTime);
+
+					lastPosition = position;
 				}
-				else {
-					startValue = new LightingValue((Color) color,
-					                               (float)
-					                               (ColorGradient.GetProportionOfColorAt(lastPosition, (Color) color)*
-					                                LevelCurve.GetValue(lastPosition*100)/100));
-					endValue = new LightingValue((Color) color,
-					                             (float)
-					                             (ColorGradient.GetProportionOfColorAt(position, (Color) color)*
-					                              LevelCurve.GetValue(position*100)/100));
-				}
-
-				TimeSpan startTime = TimeSpan.FromMilliseconds(TimeSpan.TotalMilliseconds*lastPosition);
-				TimeSpan timeSpan = TimeSpan.FromMilliseconds(TimeSpan.TotalMilliseconds*(position - lastPosition));
-
-				IIntent intent = new LightingIntent(startValue, endValue, timeSpan);
-
-				_elementData.AddIntentForElement(element.Id, intent, startTime);
-
-				lastPosition = position;
 			}
 		}
 

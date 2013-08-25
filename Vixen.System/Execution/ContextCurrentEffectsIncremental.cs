@@ -20,7 +20,7 @@ namespace Vixen.Execution
 		}
 
 		/// <summary>
-		/// Updates the collection of current affects, returning the ids of the affected elements.
+		/// Updates the collection of current effects, returning the ids of the affected elements.
 		/// </summary>
 		/// <returns>Ids of the affected elements.</returns>
 		public Guid[] UpdateCurrentEffects(IDataSource dataSource, TimeSpan currentTime)
@@ -46,6 +46,8 @@ namespace Vixen.Execution
 
 		private Guid[] _GetElementsAffected(IEnumerable<IEffectNode> effects)
 		{
+			if (effects.Count() == 0)
+				return new Guid[0];
 			return
 				effects.SelectMany(x => x.Effect.TargetNodes).SelectMany(y => y.GetElementEnumerator()).Select(z => z.Id).Distinct()
 					.ToArray();
