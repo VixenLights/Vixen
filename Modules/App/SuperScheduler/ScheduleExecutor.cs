@@ -111,7 +111,10 @@ namespace VixenModules.App.SuperScheduler
 					break;
 				}
 			}
-			statusForm.Status = stateStr;
+			if (statusForm != null)
+			{
+				statusForm.Status = stateStr;
+			}
 		}
 
 		private void ShowStatusForm(bool show)

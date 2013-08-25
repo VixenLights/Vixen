@@ -29,25 +29,29 @@ namespace VixenModules.App.SuperScheduler
 
 		private void PopulateShowList()
 		{
-			foreach (Shows.Show show in Shows.ShowsData.ShowList) 
-			//foreach (ScheduleItem scheduleItem in SchedulerData.Items)
+			List<Shows.Show> shows = Shows.ShowsData.ShowList;
+			if (shows != null)
 			{
-				bool foundIt = false;
-				foreach (Common.Controls.ComboBoxItem oldItem in comboBoxShows.Items)
+				foreach (Shows.Show show in shows)
+				//foreach (ScheduleItem scheduleItem in SchedulerData.Items)
 				{
-					Shows.Show comboBoxScheduleItem = oldItem.Value as Shows.Show;
-					if (comboBoxScheduleItem.ID == show.ID)
+					bool foundIt = false;
+					foreach (Common.Controls.ComboBoxItem oldItem in comboBoxShows.Items)
 					{
-						oldItem.Text = show.Name;
-						foundIt = true;
-						break;
+						Shows.Show comboBoxScheduleItem = oldItem.Value as Shows.Show;
+						if (comboBoxScheduleItem.ID == show.ID)
+						{
+							oldItem.Text = show.Name;
+							foundIt = true;
+							break;
+						}
 					}
-				}
 
-				if (!foundIt)
-				{
-					Common.Controls.ComboBoxItem newItem = new Common.Controls.ComboBoxItem(show.Name, show);
-					comboBoxShows.Items.Add(newItem);
+					if (!foundIt)
+					{
+						Common.Controls.ComboBoxItem newItem = new Common.Controls.ComboBoxItem(show.Name, show);
+						comboBoxShows.Items.Add(newItem);
+					}
 				}
 			}
 		}
