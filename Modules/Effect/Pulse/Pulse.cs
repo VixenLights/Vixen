@@ -88,7 +88,7 @@ namespace VixenModules.Effect.Pulse
 				// this is probably always going to be a single element for the given node, as
 				// we have iterated down to leaf nodes in RenderNode() above. May as well do
 				// it this way, though, in case something changes in future.
-				if (elementNode == null)
+				if (elementNode == null || elementNode.Element == null)
 					continue;
 
 				ElementColorType colorType = ColorModule.getColorTypeForElementNode(elementNode);

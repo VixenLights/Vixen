@@ -223,7 +223,7 @@ namespace VixenModules.Effect.Twinkle
 		private EffectIntents RenderElement(ElementNode node, double positionWithinGroup,
 		                                    List<IndividualTwinkleDetails> twinkles = null)
 		{
-			if (node == null)
+			if (node == null || node.Element == null)
 				return null;
 
 			if (twinkles == null)

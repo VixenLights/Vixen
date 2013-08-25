@@ -263,6 +263,9 @@ namespace VixenModules.Effect.Spin
 				foreach (ElementNode target in renderNodes) {
 					bool discreteColors = ColorModule.isElementNodeDiscreteColored(target);
 
+					if (target == null || target.Element == null)
+						continue;
+
 					if (target != null) {
 						pulse = new Pulse.Pulse();
 						pulse.TargetNodes = new ElementNode[] {target};
