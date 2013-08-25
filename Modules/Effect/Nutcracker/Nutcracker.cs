@@ -136,8 +136,6 @@ namespace VixenModules.Effect.Nutcracker
 		// not a element, will recursively descend until we render its elements.
 		private void RenderNode(ElementNode node)
 		{
-			//Console.WriteLine("Nutcracker Node:" + node.Name);
-			//bool CW = true;
 			int stringCount = StringCount;
 			int framesToRender = (int) TimeSpan.TotalMilliseconds/50;
 			NutcrackerEffects effect = new NutcrackerEffects(_data.NutcrackerData);
@@ -146,8 +144,6 @@ namespace VixenModules.Effect.Nutcracker
 			int totalPixels = effect.PixelCount();
 			TimeSpan startTime = TimeSpan.Zero;
 			TimeSpan ms50 = new TimeSpan(0, 0, 0, 0, 50);
-			Stopwatch timer = new Stopwatch();
-			timer.Start();
 
 			for (int frameNum = 0; frameNum < framesToRender; frameNum++) {
 				// Parallel will not work here. Nutcracker effects must be run in order
@@ -183,9 +179,6 @@ namespace VixenModules.Effect.Nutcracker
 
 				startTime = startTime.Add(ms50);
 			};
-
-			timer.Stop();
-			//Console.WriteLine("Nutcracker Render:" + timer.ElapsedMilliseconds + "ms Frames:" + framesToRender);
 		}
 	}
 }
