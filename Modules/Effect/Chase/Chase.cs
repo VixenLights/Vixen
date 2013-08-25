@@ -196,7 +196,7 @@ namespace VixenModules.Effect.Chase
 			if (DefaultLevel > 0) {
 				int i = 0;
 				foreach (ElementNode target in renderNodes) {
-					if (target != null) {
+					if (target != null && target.Element != null) {
 						bool discreteColors = ColorModule.isElementNodeDiscreteColored(target);
 
 						pulse = new Pulse.Pulse();
@@ -283,6 +283,9 @@ namespace VixenModules.Effect.Chase
 						"Chase effect: rendering, but the current node index is higher or equal to the total target nodes.");
 					continue;
 				}
+
+				if (currentNodeIndex < 0)
+					continue;
 
 				ElementNode currentNode = renderNodes[currentNodeIndex];
 				if (currentNode == lastTargetedNode)
