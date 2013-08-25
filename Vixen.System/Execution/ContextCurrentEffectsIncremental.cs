@@ -46,11 +46,17 @@ namespace Vixen.Execution
 
 		private Guid[] _GetElementsAffected(IEnumerable<IEffectNode> effects)
 		{
+			// If there's nothin here, pass back emptiness
 			if (effects.Count() == 0)
 				return new Guid[0];
+			
+			
+			
 			return
-				effects.SelectMany(x => x.Effect.TargetNodes).SelectMany(y => y.GetElementEnumerator()).Select(z => z.Id).Distinct()
+				effects.SelectMany(x => x.Effect.TargetNodes).SelectMany(y => y.GetElementEnumerator()).Where((y) => y != null).Select(z => z.Id).Distinct()
 					.ToArray();
+
+
 			//return effects.SelectMany(x => x.Effect.TargetNodes.Select(y => y.Element.Id)).Distinct().ToArray();
 		}
 
