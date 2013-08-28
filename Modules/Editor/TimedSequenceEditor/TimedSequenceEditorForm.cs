@@ -293,9 +293,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				// This takes quite a bit of time so queue it up
 				taskQueue.Enqueue(Task.Factory.StartNew(() =>
 				                                        	{
-				                                        		foreach (EffectNode node in _sequence.SequenceData.EffectData) {
-				                                        			addElementForEffectNodeTPL(node);
-				                                        		}
+																addElementsForEffectNodes(_sequence.SequenceData.EffectData);
 				                                        	}));
 				// Now that it is queued up, let 'er rip and start background rendering when complete.
 				Task.Factory.ContinueWhenAll(taskQueue.ToArray(), completedTasks =>
@@ -309,7 +307,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				                                                  		timelineControl.grid.RenderAllVisibleRows();
 																		timelineControl.grid.SuppressInvalidate = false;
 																		timelineControl.grid.Invalidate();
-				                                                  		Console.WriteLine("Done Loading Effects");
+				                                                  		//Console.WriteLine("Done Loading Effects");
 				                                                  	});
 
 				populateGridWithMarks();
@@ -407,7 +405,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (_sequence.GetAllMedia().Any()) {
 				IMediaModuleInstance media = _sequence.GetAllMedia().First();
 				Audio audio = media as Audio;
-				timelineControl.Audio = audio;
+				if (audio.MediaExists)
+				{
+					timelineControl.Audio = audio;
+				} else
+				{
+					string message = String.Format("Audio file not found on the path:\n\n {0}\n\nPlease Check your settings/path.", audio.MediaFilePath);
+					MessageBox.Show(message, "Missing audio file");
+				}
+
 				toolStripMenuItem_removeAudio.Enabled = true;
 			}
 		}
@@ -491,7 +497,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		protected void ElementTimeChangedHandler(object sender, EventArgs e)
 		{
 			TimedSequenceElement element = sender as TimedSequenceElement;
-			timelineControl.grid.RenderElement(element);
 			sequenceModified();
 		}
 
@@ -570,7 +575,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (result == DialogResult.OK) {
 					foreach (Element element in elements)
 					{
-						element.Changed = true;
 						timelineControl.grid.RenderElement(element);
 					}
 					sequenceModified();
@@ -981,52 +985,64 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		}
 
 
+
+
+		/// <summary>
+		/// Populates the TimelineControl grid with a new TimedSequenceElement for each of the given EffectNodes in the list.
+		/// Uses bulk loading feature of Row
+		/// Will add a single TimedSequenceElement to in each row that each targeted element of
+		/// the EffectNode references. It will also add callbacks to event handlers for the element.
+		/// </summary>
+		/// <param name="node">The EffectNode to make element(s) in the grid for.</param>
+		private void addElementsForEffectNodes(IEnumerable<IDataNode> nodes)
+		{
+			Dictionary<Row, List<Element>> rowMap =
+			_elementNodeToRows.SelectMany(x => x.Value).ToList().ToDictionary(x => x, x => new List<Element>());
+			
+			foreach (EffectNode node in nodes)
+			{
+				TimedSequenceElement element = setupNewElementFromNode(node);
+				foreach(ElementNode target in node.Effect.TargetNodes){
+					if (_elementNodeToRows.ContainsKey(target))
+					{
+						// Add the element to each row that represents the element this command is in.
+						foreach (Row row in _elementNodeToRows[target])
+						{
+							if (!_effectNodeToElement.ContainsKey(node))
+							{
+								_effectNodeToElement[node] = element;
+							}
+							rowMap[row].Add(element);
+			
+						}
+					} else
+					{
+						// we don't have a row for the element this effect is referencing; most likely, the row has
+						// been deleted, or we're opening someone else's sequence, etc. Big fat TODO: here for that, then.
+						// dunno what we want to do: prompt to add new elements for them? map them to others? etc.
+						string message = "No Timeline.Row is associated with a target ElementNode for this EffectNode. It now exists in the sequence, but not in the GUI.";
+						MessageBox.Show(message);
+						Logging.Error(message);
+					}
+				}
+			}
+
+			foreach (KeyValuePair<Row,List<Element>> row in rowMap)
+			{
+				row.Key.AddBulkElements(row.Value);
+			}
+	
+		}
+
 		/// <summary>
 		/// Populates the TimelineControl grid with a new TimedSequenceElement for the given EffectNode.
 		/// Will add a single TimedSequenceElement to in each row that each targeted element of
 		/// the EffectNode references. It will also add callbacks to event handlers for the element.
 		/// </summary>
 		/// <param name="node">The EffectNode to make element(s) in the grid for.</param>
-		private TimedSequenceElement addElementForEffectNode(EffectNode node)
-		{
-			TimedSequenceElement element = new TimedSequenceElement(node);
-			element.ContentChanged += ElementContentChangedHandler;
-			element.TimeChanged += ElementTimeChangedHandler;
-
-			// for the effect, make a single element and add it to every row that represents its target elements
-
-			foreach (ElementNode target in node.Effect.TargetNodes) {
-				if (_elementNodeToRows.ContainsKey(target)) {
-					// Add the element to each row that represents the element this command is in.
-					foreach (Row row in _elementNodeToRows[target]) {
-						if (!_effectNodeToElement.ContainsKey(node))
-							_effectNodeToElement[node] = element;
-						//else
-						//    Logging.Debug("TimedSequenceEditor: Making a new element, but the map already has one!");
-						//Render this effect now to get it into the cache.
-						//element.EffectNode.Effect.Render();
-						row.AddElement(element);
-					}
-				}
-				else {
-					// we don't have a row for the element this effect is referencing; most likely, the row has
-					// been deleted, or we're opening someone else's sequence, etc. Big fat TODO: here for that, then.
-					// dunno what we want to do: prompt to add new elements for them? map them to others? etc.
-					string message =
-						"No Timeline.Row is associated with a target ElementNode for this EffectNode. It now exists in the sequence, but not in the GUI.";
-					MessageBox.Show(message);
-					Logging.Error(message);
-				}
-			}
-
-			return element;
-		}
-
 		private TimedSequenceElement addElementForEffectNodeTPL(EffectNode node)
 		{
-			TimedSequenceElement element = new TimedSequenceElement(node);
-			element.ContentChanged += ElementContentChangedHandler;
-			element.TimeChanged += ElementTimeChangedHandler;
+			TimedSequenceElement element = setupNewElementFromNode(node);
 
 			// for the effect, make a single element and add it to every row that represents its target elements
 			node.Effect.TargetNodes.AsParallel().WithCancellation(cancellationTokenSource.Token)
@@ -1035,12 +1051,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				        		if (_elementNodeToRows.ContainsKey(target)) {
 				        			// Add the element to each row that represents the element this command is in.
 				        			foreach (Row row in _elementNodeToRows[target]) {
-				        				if (!_effectNodeToElement.ContainsKey(node))
-				        					_effectNodeToElement [node] = element;
-				        				//else
-				        				//    VixenSystem.Logging.Debug("TimedSequenceEditor: Making a new element, but the map already has one!");
-				        				//Render this effect now to get it into the cache.
-				        				//element.EffectNode.Effect.Render();
+										if (!_effectNodeToElement.ContainsKey(node))
+										{
+											_effectNodeToElement[node] = element;
+										}
 				        				row.AddElement(element);
 				        			}
 				        		}
@@ -1057,6 +1071,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			return element;
 		}
 
+		private TimedSequenceElement setupNewElementFromNode(EffectNode node)
+		{
+			TimedSequenceElement element = new TimedSequenceElement(node);
+			element.ContentChanged += ElementContentChangedHandler;
+			element.TimeChanged += ElementTimeChangedHandler;
+			return element;
+		}
 
 		private void removeSelectedElements()
 		{
@@ -1234,6 +1255,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		protected override void OnFormClosed(FormClosedEventArgs e)
 		{
+			timelineControl.grid.Dispose();
 			VixenSystem.Contexts.ReleaseContext(_context);
 		}
 

@@ -15,13 +15,10 @@ namespace Common.Controls.Timeline
 		private TimeSpan m_duration;
 		private Color m_backColor = Color.White;
 		private Color m_borderColor = Color.Black;
-		private object m_tag = null;
 		private bool m_selected = false;
 		private static Font m_textFont = new Font("Arial", 7);
 		private static Color m_textColor = Color.FromArgb(60, 60, 60);
 		private static System.Object drawLock = new System.Object();
-		//private bool m_redraw = false;
-		//private bool m_rendered = false;
 
 		public Element()
 		{
@@ -36,7 +33,6 @@ namespace Common.Controls.Timeline
 			m_startTime = other.m_startTime;
 			m_duration = other.m_duration;
 			m_backColor = other.m_backColor;
-			m_tag = other.m_tag;
 			m_selected = other.m_selected;
 		}
 
@@ -149,16 +145,6 @@ namespace Common.Controls.Timeline
 				m_borderColor = value;
 				CachedCanvasIsCurrent = false;
 				Changed = true;
-				OnContentChanged();
-			}
-		}
-
-		public object Tag
-		{
-			get { return m_tag; }
-			set
-			{
-				m_tag = value;
 				OnContentChanged();
 			}
 		}
@@ -282,18 +268,6 @@ namespace Common.Controls.Timeline
 			set
 			{
 				_cachedCanvasIsCurrent=value;
-				if(!value){
-					if (CachedElementCanvas != null)
-					{
-						CachedElementCanvas.Dispose();
-						CachedElementCanvas = null;
-					}
-					if (CachedSelectedElementCanvas != null)
-					{
-						CachedSelectedElementCanvas.Dispose();
-						CachedSelectedElementCanvas = null;
-					}
-				}
 			}
 		}
 
@@ -334,10 +308,8 @@ namespace Common.Controls.Timeline
 
 		public virtual bool IsCanvasContentCurrent(Size imageSize)
 		{
-			// DB: removed below. We don't care if the height is current. We stretch the bitmap anyway.
 			return (CachedCanvasIsCurrent || CachedElementCanvas.Width != imageSize.Width ||
 					CachedElementCanvas.Height != imageSize.Height);
-			//return (CachedCanvasIsCurrent || CachedElementCanvas.Width != imageSize.Width);
 		}
 
 		public Bitmap SetupCachedImage(Size imageSize)
@@ -347,11 +319,20 @@ namespace Common.Controls.Timeline
 				using(Graphics g = Graphics.FromImage(bitmap)){
 					DrawCanvasContent(g);
 					AddSelectionOverlayToCanvas(g, false);
+					if (CachedElementCanvas != null)
+					{
+						CachedElementCanvas.Dispose();
+					}
 					CachedElementCanvas = bitmap;
+					CachedCanvasIsCurrent = true;
+					if(CachedSelectedElementCanvas!=null){
+						CachedSelectedElementCanvas.Dispose();
+						CachedSelectedElementCanvas = null;
+					}
+					
+					Changed = false;
 				}
 			}
-			CachedCanvasIsCurrent = true;
-			Changed = false;
 			
 			return CachedElementCanvas;
 		}
@@ -401,43 +382,34 @@ namespace Common.Controls.Timeline
 			}
 		}
 
-		public Bitmap Draw(Size imageSize, bool useImageSize)
-		{
-			if (CachedElementCanvas == null)
-			{
-				return Draw(imageSize);
-			}
-			else
-			{
-				Size size = new Size(CachedElementCanvas.Width, CachedElementCanvas.Height);
-				return Draw(size);
-			}
-		}
-
 		public Bitmap Draw(Size imageSize)
 		{
-			if (CachedElementCanvas == null || !IsCanvasContentCurrent(imageSize)) {
-				Bitmap b = SetupCanvas(imageSize);
-				using (Graphics g = Graphics.FromImage(b)) {
-					DrawPlaceholder(g);
-					AddSelectionOverlayToCanvas(g, m_selected);
-					if (!m_selected) {
-						Changed = true;
-					}
-				}
-				return b;
-			}
-			else if (m_selected) {
-				if (CachedSelectedElementCanvas == null)
+			lock (drawLock)
+			{
+				if (CachedElementCanvas == null)
 				{
-					Bitmap b = new Bitmap(CachedElementCanvas);
+					Bitmap b = SetupCanvas(imageSize);
 					using (Graphics g = Graphics.FromImage(b))
 					{
-						AddSelectionOverlayToCanvas(g, true);
-						CachedSelectedElementCanvas = b;
+						DrawPlaceholder(g);
+						AddSelectionOverlayToCanvas(g, m_selected);
+						CachedElementCanvas = b;
+						CachedCanvasIsCurrent = false; //temporary image so the real cache is not current
 					}
+					return b;
+				} else if (m_selected)
+				{
+					if (CachedSelectedElementCanvas == null)
+					{
+						Bitmap b = new Bitmap(CachedElementCanvas);
+						using (Graphics g = Graphics.FromImage(b))
+						{
+							AddSelectionOverlayToCanvas(g, true);
+							CachedSelectedElementCanvas = b;
+						}
+					}
+					return CachedSelectedElementCanvas;
 				}
-				return CachedSelectedElementCanvas;
 			}
 			return CachedElementCanvas;
 		}

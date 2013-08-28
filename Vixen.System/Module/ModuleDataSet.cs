@@ -11,7 +11,7 @@ namespace Vixen.Module
 	{
 		// Type data     = (type id, type id)     : data model
 		// Instance data = (type id, instance id) : data model
-		private List<IModuleDataModel> _dataModels;
+		private Dictionary<Tuple<Guid,Guid>, IModuleDataModel> _dataModels;
 
 		protected ModuleDataSet()
 		{
@@ -114,24 +114,32 @@ namespace Vixen.Module
 
 		private bool _ContainsTypeData(Guid moduleTypeId)
 		{
-			return _dataModels.Any(x => x.ModuleTypeId.Equals(moduleTypeId));
+			//return _dataModels.Any(x => x.ModuleTypeId.Equals(moduleTypeId));
+			return _dataModels.ContainsKey(Tuple.Create(moduleTypeId, moduleTypeId));
 		}
 
 		private bool _ContainsInstanceData(Guid moduleTypeId, Guid instanceId)
 		{
-			return _dataModels.Any(x => x.ModuleTypeId.Equals(moduleTypeId) && x.ModuleInstanceId.Equals(instanceId));
+			//return _dataModels.Any(x => x.ModuleTypeId.Equals(moduleTypeId) && x.ModuleInstanceId.Equals(instanceId));
+			return _dataModels.ContainsKey(Tuple.Create(moduleTypeId, instanceId));
 		}
 
 		private IModuleDataModel _GetAsTypeData(IModuleInstance module)
 		{
-			return _dataModels.FirstOrDefault(x => x.ModuleTypeId.Equals(module.Descriptor.TypeId));
+			//return _dataModels.FirstOrDefault(x => x.ModuleTypeId.Equals(module.Descriptor.TypeId));
+			IModuleDataModel model = null;
+			_dataModels.TryGetValue(Tuple.Create(module.Descriptor.TypeId, module.Descriptor.TypeId), out model);
+			return model;
 		}
 
 		private IModuleDataModel _GetAsInstanceData(IModuleInstance module)
 		{
-			return
-				_dataModels.FirstOrDefault(
-					x => x.ModuleTypeId.Equals(module.Descriptor.TypeId) && x.ModuleInstanceId.Equals(module.InstanceId));
+			//return
+			//	_dataModels.FirstOrDefault(
+			//		x => x.ModuleTypeId.Equals(module.Descriptor.TypeId) && x.ModuleInstanceId.Equals(module.InstanceId));
+			IModuleDataModel model = null;
+			_dataModels.TryGetValue(Tuple.Create(module.TypeId, module.InstanceId), out model);
+			return model;
 		}
 
 		private void _AddAsTypeData(IModuleDataModel dataModel, IModuleInstance module)
@@ -148,7 +156,7 @@ namespace Vixen.Module
 		{
 			if (dataModel == null) return; // throw new ArgumentNullException("dataModel");
 
-			_dataModels.Add(dataModel);
+			_dataModels.Add(Tuple.Create(moduleTypeId,moduleInstanceId),dataModel);
 			dataModel.ModuleTypeId = moduleTypeId;
 			dataModel.ModuleInstanceId = moduleInstanceId;
 			dataModel.ModuleDataSet = this;
@@ -158,7 +166,7 @@ namespace Vixen.Module
 		{
 			IModuleDataModel dataModel = _GetAsTypeData(module);
 			if (dataModel != null) {
-				_dataModels.Remove(dataModel);
+				_dataModels.Remove(Tuple.Create(module.Descriptor.TypeId, module.Descriptor.TypeId));
 			}
 		}
 
@@ -166,7 +174,7 @@ namespace Vixen.Module
 		{
 			IModuleDataModel dataModel = _GetAsInstanceData(module);
 			if (dataModel != null) {
-				_dataModels.Remove(dataModel);
+				_dataModels.Remove(Tuple.Create(module.TypeId, module.InstanceId));
 			}
 		}
 
@@ -205,9 +213,8 @@ namespace Vixen.Module
 
 			// Clone exactly, assuming unchanged type and instance ids for the
 			// modules the data belongs to.
-			foreach (IModuleDataModel dataModel in source._dataModels) {
-				IModuleDataModel newModel = dataModel.Clone();
-				destination._Add(newModel, dataModel.ModuleTypeId, dataModel.ModuleInstanceId);
+			foreach (IModuleDataModel dataModel in source._dataModels.Values) {
+				destination._Add(dataModel, dataModel.ModuleTypeId, dataModel.ModuleInstanceId);
 			}
 		}
 
@@ -253,7 +260,7 @@ namespace Vixen.Module
 
 		public void Serialize(IModuleDataModelCollectionSerializer dataModelCollectionSerializer)
 		{
-			dataModelCollectionSerializer.Write(_dataModels);
+			dataModelCollectionSerializer.Write(_dataModels.Values.ToList());
 		}
 
 		public void Deserialize(IModuleDataModelCollectionSerializer dataModelCollectionSerializer)
@@ -267,7 +274,7 @@ namespace Vixen.Module
 
 		private void _Init()
 		{
-			_dataModels = new List<IModuleDataModel>();
+			_dataModels = new Dictionary<Tuple<Guid,Guid>, IModuleDataModel>();
 		}
 
 		[OnDeserializing]
@@ -278,8 +285,15 @@ namespace Vixen.Module
 
 		internal IEnumerable<IModuleDataModel> DataModels
 		{
-			get { return _dataModels; }
-			set { _dataModels = value.ToList(); }
+			get { return _dataModels.Values.ToList(); }
+			set { 
+				//_dataModels = value.ToList();
+				_dataModels.Clear();
+				foreach(IModuleDataModel dataModel in value)
+				{
+					_Add(dataModel, dataModel.ModuleTypeId, dataModel.ModuleInstanceId);
+				}
+			}
 		}
 
 		~ModuleDataSet()
