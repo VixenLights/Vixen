@@ -190,11 +190,6 @@ namespace Common.Controls.Timeline
 		public IEnumerable<Row> VisibleRows
 		{
 			get { return Rows.Where(x => x.Visible); }
-			set
-			{
-				foreach (Row row in Rows)
-					row.Selected = value.Contains(row);
-			}
 		}
 
 		public Row TopVisibleRow
