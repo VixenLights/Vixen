@@ -1447,14 +1447,7 @@ namespace Common.Controls.Timeline
 		{
 			// Draw each row
 			int top = 0; // y-coord of top of current row
-			foreach (Row row in Rows) {
-				if (!row.Visible)
-					continue;
-
-				if (top + row.Height < VerticalOffset || top > VerticalOffset + ClientSize.Height) {
-					top += row.Height; // next row starts just below this row
-					continue;
-				}
+			foreach (Row row in VisibleRows) {
 				row.DisplayTop = top;
 
 				for (int i = 0; i < row.ElementCount; i++) {
