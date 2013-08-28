@@ -1422,26 +1422,24 @@ namespace Common.Controls.Timeline
 
 		private void _drawInfo(Graphics g)
 		{
-			foreach (Row row in Rows)
+			bool found = false;
+			
+			foreach (Row row in VisibleRows)
 			{
-				if (!row.Visible)
-					continue;
-
-				int top = 0;
+				
 				for (int i = 0; i < row.ElementCount; i++)
 				{
 					Element element = row.GetElementAtIndex(i);
+					if (element.StartTime > VisibleTimeEnd)
+					{
+						break;
+					}
 					if (!element.MouseCaptured)
 						continue;
-
-					if (top < VerticalOffset || top > VerticalOffset + ClientSize.Height)
-					{
-						top += row.Height; // next row starts just below this row
-						continue;
-					}
-
+					found = true;
 					element.DrawInfo(g, element.DisplayRect);
 				}
+				if (found) break;
 			}
 		}
 
