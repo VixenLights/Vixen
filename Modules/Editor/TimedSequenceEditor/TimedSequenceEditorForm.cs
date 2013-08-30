@@ -1630,14 +1630,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void toolStripButton_Start_Click(object sender, EventArgs e)
 		{
 			//TODO: JEMA - Check to see if this is functioning properly.
-			timelineControl.PlaybackStartTime = TimeSpan.Zero;
+			timelineControl.PlaybackStartTime = m_prevPlaybackStart = TimeSpan.Zero;
 			timelineControl.VisibleTimeStart = TimeSpan.Zero;
 		}
 
 		private void toolStripButton_End_Click(object sender, EventArgs e)
 		{
 			//TODO: JEMA - Check to see if this is functioning properly.
-			timelineControl.PlaybackStartTime = _sequence.Length;
+			timelineControl.PlaybackStartTime = m_prevPlaybackEnd = _sequence.Length;
+			
 			timelineControl.VisibleTimeStart = timelineControl.TotalTime - timelineControl.VisibleTimeSpan;
 		}
 
