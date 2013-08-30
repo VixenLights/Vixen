@@ -855,6 +855,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					toolStripButton_Play.Enabled = playToolStripMenuItem.Enabled = false;
 					toolStripButton_Pause.Enabled = pauseToolStripMenuItem.Enabled = false;
 					toolStripButton_Stop.Enabled = stopToolStripMenuItem.Enabled = false;
+					toolStripEffects.Enabled = false;
 					return;
 				}
 
@@ -868,12 +869,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						toolStripButton_Pause.Enabled = pauseToolStripMenuItem.Enabled = true;
 					}
 					toolStripButton_Stop.Enabled = stopToolStripMenuItem.Enabled = true;
+					toolStripEffects.Enabled = false;
 				}
 				else // Stopped
 				{
 					toolStripButton_Play.Enabled = playToolStripMenuItem.Enabled = true;
 					toolStripButton_Pause.Enabled = pauseToolStripMenuItem.Enabled = false;
 					toolStripButton_Stop.Enabled = stopToolStripMenuItem.Enabled = false;
+					toolStripEffects.Enabled = true;
 				}
 			}
 		}
