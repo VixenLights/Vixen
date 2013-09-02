@@ -12,7 +12,9 @@ namespace VixenModules.Effect.RDS {
 	public class RDSData : ModuleDataModelBase {
 	
 		[DataMember]
-		public string Text { get; set; }
+		public string Title { get; set; }
+		[DataMember]
+		public string Artist { get; set; }
 
 		public override IModuleDataModel Clone() {
 			return (IModuleDataModel)this.MemberwiseClone();

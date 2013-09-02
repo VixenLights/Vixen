@@ -4,41 +4,49 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Vixen.Commands;
+using Vixen.Data.Value;
 using Vixen.Intent;
 using Vixen.Module;
 using Vixen.Module.Effect;
 using Vixen.Sys;
 
-namespace VixenModules.Effect.RDS {
-	public class RDSModule : EffectModuleInstanceBase {
+namespace VixenModules.Effect.RDS
+{
+	public class RDSModule : EffectModuleInstanceBase
+	{
 		private EffectIntents _elementData = null;
 		private RDSData _data;
 
-		public RDSModule() {
+		public RDSModule()
+		{
 			_data = new RDSData();
 #if DEBUG
-			_data.Text = DateTime.Now.ToString();
+			_data.Title = DateTime.Now.ToString();
 #endif
 		}
 
-		protected override void _PreRender() {
+		protected override void _PreRender()
+		{
 			_elementData = new EffectIntents();
 #if DEBUG
-			if (string.IsNullOrWhiteSpace(_data.Text))
-				_data.Text="Debug Command " + DateTime.Now.ToString();
+			if (string.IsNullOrWhiteSpace(_data.Title))
+				_data.Title="Debug Command " + DateTime.Now.ToString();
 #endif
-			//var intent = new CommandIntent(new Vixen.Data.Value.CommandValue(new UnknownValueCommand(_data.Text)), this.TimeSpan);
-			var intent = new CustomIntent(new Vixen.Data.Value.CustomValue() { Value= _data.Text }, TimeSpan);
-			foreach (ElementNode node in TargetNodes.Where(n => n != null)) {
-				_elementData.AddIntentForElement(node.Id, intent, TimeSpan.Zero);
-			
+
+			CommandValue value = new CommandValue(new StringCommand(_data.Title));
+
+			foreach (ElementNode node in TargetNodes) {
+				IIntent i = new CommandIntent(value, TimeSpan);
+				_elementData.AddIntentForElement(node.Element.Id, i, TimeSpan.Zero);
 			}
 		}
 
-		protected override Vixen.Sys.EffectIntents _Render() {
+		protected override Vixen.Sys.EffectIntents _Render()
+		{
 			return _elementData;
 		}
-		public override IModuleDataModel ModuleData {
+		public override IModuleDataModel ModuleData
+		{
 			get { return _data; }
 			set { _data = value as RDSData; }
 		}

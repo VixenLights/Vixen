@@ -52,7 +52,8 @@ namespace VixenModules.Effect.RDS {
 			get
 			{
 				return new ParameterSignature(
-						new ParameterSpecification("Text", typeof(string)) 
+						new ParameterSpecification("Title", typeof(string)) ,
+						new ParameterSpecification("Artist", typeof(string)) 
 						);
 			}
 		}

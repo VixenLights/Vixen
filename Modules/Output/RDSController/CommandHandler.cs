@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Vixen.Commands;
+using Vixen.Data.Value;
 using Vixen.Sys.Dispatch;
 
 namespace VixenModules.Output.RDSController
@@ -11,14 +12,14 @@ namespace VixenModules.Output.RDSController
 
 	internal class CommandHandler : CommandDispatch
 	{
-		public CustomCommand Value { get; private set; }
+		public StringCommand Value { get; private set; }
 
 		public void Reset()
 		{
-			Value = null;
+			Value.CommandValue= null;
 		}
 
-		public override void Handle(CustomCommand obj)
+		public override void Handle(StringCommand obj)
 		{
 			Value = obj;
 		}

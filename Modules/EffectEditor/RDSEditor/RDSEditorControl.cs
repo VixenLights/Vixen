@@ -18,10 +18,11 @@ namespace VixenModules.EffectEditor.RDSEditor {
 
 		public object[] EffectParameterValues {
 			get {
-				return new object[] { Text };
+				return new object[] {Title,Artist };
 			}
 			set {
 				Text = value[0] as string;
+				Artist= value[1] as string;
 			}
 		}
 
@@ -34,6 +35,7 @@ namespace VixenModules.EffectEditor.RDSEditor {
 				//Ensure target effect is passed through as these editors need it.
 			}
 		}
-		public string Text { get { return this.textRDS.Text; } set { this.textRDS.Text = value; } }
+		public string Title { get { return this.textRDSTitle.Text; } set { this.textRDSTitle.Text = value; } }
+		public string Artist { get { return this.textRDSArtist.Text; } set { this.textRDSArtist.Text=value; } }
 	}
 }

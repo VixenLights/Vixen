@@ -231,13 +231,17 @@ namespace Vixen.Sys.Output {
 			return controller.Outputs.Select(x => x.Command);
 		}
 
-		private ICommand _GenerateOutputCommand(CommandOutput output) {
-			var lst = output.State.Value as List<IIntentState>;
-			if (lst != null && lst.Count > 0) {
-				Console.WriteLine("");
+		private ICommand _GenerateOutputCommand(CommandOutput output)
+		{
+			if (output.State != null) {
+				var lst = output.State.Value as List<IIntentState>;
+				if (lst != null && lst.Count > 0) {
+					Console.WriteLine("");
+				}
+				IDataPolicy effectiveDataPolicy = _dataPolicyProvider.GetDataPolicyForOutput(output);
+				return effectiveDataPolicy.GenerateCommand(output.State);
 			}
-			IDataPolicy effectiveDataPolicy = _dataPolicyProvider.GetDataPolicyForOutput(output);
-			return effectiveDataPolicy.GenerateCommand(output.State);
+			return null;
 		}
 
 		private IControllerModuleInstance _ControllerModule {

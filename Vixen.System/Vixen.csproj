@@ -83,7 +83,6 @@
     <Compile Include="Commands\64BitCommand.cs" />
     <Compile Include="Commands\8BitCommand.cs" />
     <Compile Include="Commands\ColorCommand.cs" />
-    <Compile Include="Commands\CustomCommand.cs" />
     <Compile Include="Commands\UnknownValueCommand.cs" />
     <Compile Include="Common\ColorSpaces.cs" />
     <Compile Include="Common\ColorSpaceTypeConverter.cs" />
@@ -102,6 +101,7 @@
     <Compile Include="Data\Evaluator\8BitEvaluator.cs" />
     <Compile Include="Data\Evaluator\ColorEvaluator.cs" />
     <Compile Include="Data\Evaluator\Evaluator.cs" />
+    <Compile Include="Data\Evaluator\StringEvaluator.cs" />
     <Compile Include="Data\Flow\ElementDataFlowAdapter.cs" />
     <Compile Include="Data\Flow\ElementDataFlowOutputAdapter.cs" />
     <Compile Include="Data\Flow\DataFlowComponentEventArgs.cs" />
