@@ -296,7 +296,7 @@ namespace Common.BasicInputManagement
 			if (failures.Count > 0) {
 				string message = "Could not proceed because:" + Environment.NewLine;
 				message += string.Join("\r", failures);
-				MessageBox.Show(message, "", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+				MessageBox.Show(message, string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Stop);
 				return false;
 			}
 
@@ -317,7 +317,7 @@ namespace Common.BasicInputManagement
 				_SetupInputDevice(inputModule);
 			}
 			catch (Exception ex) {
-				MessageBox.Show(ex.Message, "", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+				MessageBox.Show(ex.Message, string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Stop);
 			}
 		}
 
@@ -347,7 +347,7 @@ namespace Common.BasicInputManagement
 		private void buttonRemoveInputModule_Click(object sender, EventArgs e)
 		{
 			if (
-				MessageBox.Show("Remove " + _SelectedInputModule.DeviceName + "?", "", MessageBoxButtons.YesNo,
+				MessageBox.Show("Remove " + _SelectedInputModule.DeviceName + "?", string.Empty, MessageBoxButtons.YesNo,
 				                MessageBoxIcon.Question) == DialogResult.Yes) {
 				InputEffectMap[] inputEffectMaps = _GetInputEffectMaps(_SelectedInputModule).ToArray();
 				_RemoveInputEffectMaps(inputEffectMaps);
@@ -432,7 +432,7 @@ namespace Common.BasicInputManagement
 				_RefreshInputEffectList();
 			}
 			catch (Exception ex) {
-				MessageBox.Show(ex.Message, "", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+				MessageBox.Show(ex.Message, string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Stop);
 			}
 		}
 
@@ -448,7 +448,7 @@ namespace Common.BasicInputManagement
 				}
 			}
 			catch (Exception ex) {
-				MessageBox.Show(ex.Message, "", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+				MessageBox.Show(ex.Message, string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Stop);
 			}
 		}
 
@@ -463,7 +463,7 @@ namespace Common.BasicInputManagement
 				message = "Remove " + listViewInputEffectMap.SelectedItems.Count + " mappings?";
 			}
 
-			if (MessageBox.Show(message, "", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes) {
+			if (MessageBox.Show(message, string.Empty, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes) {
 				InputEffectMap[] inputEffectMaps =
 					listViewInputEffectMap.SelectedIndices.Cast<int>().Select(
 						x => listViewInputEffectMap.Items[x].Tag as InputEffectMap).ToArray();

@@ -11,8 +11,8 @@ namespace Vixen.Sys
 
 	public interface IIntentSegment<T> : IIntentSegment
 	{
-		T StartValue { get; set; }
-		T EndValue { get; set; }
+		new T StartValue { get; set; }
+		new T EndValue { get; set; }
 		T GetStateAt(TimeSpan segmentRelativeTime);
 	}
 }

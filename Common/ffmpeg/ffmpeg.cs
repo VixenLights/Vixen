@@ -9,7 +9,7 @@ namespace ffmpeg
 {
 	public class ffmpeg
 	{
-		private string _movieFile = "";
+		private string _movieFile = string.Empty;
 
 		public ffmpeg(string movieFile)
 		{

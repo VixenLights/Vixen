@@ -8,8 +8,7 @@ namespace Vixen.Sys.Managers
 {
 	internal class HardwareUpdateThread : IDisposable
 	{
-		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
-		private Thread _thread;
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();		private Thread _thread;
 		private ExecutionState _threadState = ExecutionState.Stopped;
 		private EventWaitHandle _finished;
 		private AutoResetEvent _updateSignalerSync;
@@ -105,7 +104,7 @@ namespace Vixen.Sys.Managers
 				_threadState = ExecutionState.Stopped;
 				_finished.Set();
 
-				Logging.ErrorException("Controller " + OutputDevice.Name + " error", ex);
+				Logging.Error(string.Format("Controller {0} error", OutputDevice.Name), ex);
 				OnError();
 			}
 		}

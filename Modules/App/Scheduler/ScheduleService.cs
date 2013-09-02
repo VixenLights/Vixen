@@ -64,7 +64,7 @@ namespace VixenModules.App.Scheduler
 			StringBuilder sb = new StringBuilder();
 			RecurrenceType recurrenceType = (RecurrenceType) scheduleItem.RecurrenceType;
 
-			string unit = "";
+			string unit = string.Empty;
 			switch (recurrenceType) {
 				case RecurrenceType.Daily:
 					unit = "day";

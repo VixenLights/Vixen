@@ -166,7 +166,7 @@ namespace VixenModules.Output.GenericSerial
 					_retryTimer.Stop();
 
 					Logging.Info(
-						String.Format("Serial Port conflict has been corrected, starting controller {0} on port {1}.", _Data.ModuleTypeId,
+						string.Format("Serial Port conflict has been corrected, starting controller {0} on port {1}.", _Data.ModuleTypeId,
 						              _SerialPort.PortName));
 				}
 			}

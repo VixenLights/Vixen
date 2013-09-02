@@ -23,7 +23,7 @@ namespace Vixen.Module.Script
 				// start of the execution.
 				Startup();
 
-				_thread = new Thread(_PlayThread) {Name = Sequence.Name + " script host"};
+				_thread = new Thread(_PlayThread) { Name = string.Format("{0} script host", Sequence.Name) };
 
 				// Do NOT.
 				//_thread.IsBackground = true;

@@ -34,6 +34,7 @@ namespace VixenApplication
 		{
 			PopulateFormWithNode(null, true);
 			elementTree.treeviewAfterSelect += elementTree_AfterSelect;
+			elementTree.treeviewDeselected += elementTree_treeviewDeselected;
 			elementTree.ElementsChanged += elementTree_ElementsChanged;
 		}
 
@@ -60,21 +61,21 @@ namespace VixenApplication
 		private void PopulateGeneralNodeInfo(ElementNode node)
 		{
 			if (node == null) {
-				labelParents.Text = "";
+				labelParents.Text = string.Empty;
 				_tooltip.SetToolTip(labelParents, null);
-				textBoxName.Text = "";
+				textBoxName.Text = string.Empty;
 			}
 			else {
 				// update the label with parent info about the node. Any good suggestions or improvements for this?
 				int parentCount = GetNodeParentGroupCount(node);
 				List<string> parents = GetNodeParentGroupNames(node);
-				string labelString = "", tooltipString = "";
-				labelString = String.Format("This element is in {0} group{1}{2}", parentCount, ((parentCount != 1) ? "s" : ""),
+				string labelString = string.Empty, tooltipString = string.Empty;
+				labelString = string.Format("This element is in {0} group{1}{2}", parentCount, ((parentCount != 1) ? "s" : string.Empty),
 				                            ((parentCount == 0) ? "." : ": "));
 				tooltipString = labelString + "\r\n\r\n";
 				foreach (string p in parents) {
-					labelString = String.Format("{0}{1}, ", labelString, p);
-					tooltipString = String.Format("{0}{1}\r\n", tooltipString, p);
+					labelString = string.Format("{0}{1}, ", labelString, p);
+					tooltipString = string.Format("{0}{1}\r\n", tooltipString, p);
 				}
 				labelParents.Text = labelString.TrimEnd(new char[] {' ', ','});
 				tooltipString = tooltipString.TrimEnd(new char[] {'\r', '\n'});
@@ -175,10 +176,14 @@ namespace VixenApplication
 				properties.Add(new KeyValuePair<string, object>(kvp.Value, kvp.Key));
 			}
 			using (ListSelectDialog addForm = new ListSelectDialog("Add Property", (properties))) {
+				addForm.SelectionMode = SelectionMode.MultiExtended;
 				if (addForm.ShowDialog() == DialogResult.OK) {
-					_displayedNode.Properties.Add((Guid) addForm.SelectedItem);
-					PopulatePropertiesArea(_displayedNode);
+					foreach(KeyValuePair<string,object> item in addForm.SelectedItems){
 
+						_displayedNode.Properties.Add((Guid) item.Value);	
+					}
+
+					PopulatePropertiesArea(_displayedNode);
 					_changesMade = true;
 				}
 			}
@@ -220,6 +225,11 @@ namespace VixenApplication
 		#region Events
 
 		private void elementTree_AfterSelect(object sender, TreeViewEventArgs e)
+		{
+			PopulateFormWithNode(elementTree.SelectedNode, false);
+		}
+
+		void elementTree_treeviewDeselected(object sender, EventArgs e)
 		{
 			PopulateFormWithNode(elementTree.SelectedNode, false);
 		}
@@ -284,7 +294,7 @@ namespace VixenApplication
 		{
 			if (e.KeyCode == Keys.Enter) {
 				string newName = textBoxName.Text.Trim();
-				if (newName != "" && newName != _displayedNode.Name) {
+				if (newName != string.Empty && newName != _displayedNode.Name) {
 					VixenSystem.Nodes.RenameNode(_displayedNode, newName);
 					elementTree.PopulateNodeTree();
 				}

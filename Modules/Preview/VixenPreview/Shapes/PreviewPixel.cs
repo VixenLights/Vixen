@@ -27,6 +27,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		private ElementNode _node = null;
 		private Guid _nodeId;
 		private int _maxAlpha = 255;
+		private bool _isDiscreteColored = false;
 
 		[XmlIgnore] public static Dictionary<ElementNode, Color> IntentNodeToColor = new Dictionary<ElementNode, Color>();
 
@@ -85,6 +86,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			{
 				if (_node == null) {
 					_node = VixenSystem.Nodes.GetElementNode(NodeId);
+					_isDiscreteColored = _node != null ? VixenModules.Property.Color.ColorModule.isElementNodeDiscreteColored(_node) : false;
 				}
 				return _node;
 			}
@@ -95,7 +97,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				else
 					NodeId = value.Id;
 				_node = value;
+				_isDiscreteColored = _node!=null?VixenModules.Property.Color.ColorModule.isElementNodeDiscreteColored(_node):false;
 			}
+
 		}
 
 		public void Resize()
@@ -176,7 +180,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         {
 			Rectangle drawRect = new Rectangle(drawArea.X, drawArea.Y, drawArea.Width, drawArea.Height);
 
-			if (VixenModules.Property.Color.ColorModule.isElementNodeDiscreteColored(_node))
+			if(_isDiscreteColored)
 			{
 				int col = 1;
 				foreach (IIntentState<LightingValue> intentState in states)

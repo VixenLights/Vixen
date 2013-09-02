@@ -216,8 +216,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (buttonAddOrUpdateMark.Text == "Update") {
 					// updating an existing item, find it, remove it, and add the new one
 					if (listViewMarks.SelectedItems.Count != 1)
-						Logging.Error("MarkManager: updating a mark, but there are " +
-						                                    listViewMarks.SelectedItems.Count + " items selected!");
+						Logging.Error(string.Format("MarkManager: updating a mark, but there are {0} items selected!", listViewMarks.SelectedItems.Count));
+
 					if (listViewMarks.SelectedItems.Count > 0)
 						_displayedCollection.Marks.Remove((TimeSpan) listViewMarks.SelectedItems[0].Tag);
 				}
@@ -468,7 +468,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				count += totalPasted;
 			}
 
-			MessageBox.Show(count + " effects pasted.");
+			MessageBox.Show(string.Format("{0} effects pasted.", count));
 		}
 
 		private void buttonCopyAndOffsetMarks_Click(object sender, EventArgs e)
@@ -553,10 +553,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 					int generatedMarks = (int) (duration.Ticks/interval.Ticks) - 1;
 
-					if (MessageBox.Show("From the selected marks, a beat interval of " + interval.ToString(@"s\.ff") +
-					                    " seconds was detected (" + bpm.ToString(@"#####.##") + " bpm). This will generate " +
-					                    generatedMarks + " marks. Do you " +
-					                    "want to continue?", "Confirmation", MessageBoxButtons.YesNo) != DialogResult.Yes) {
+					if (MessageBox.Show(string.Format("From the selected marks, a beat interval of {0:s.ff} seconds was detected ({1:0.00} bpm). This will generate {2} marks. Do you want to continue?", interval,
+										 bpm, generatedMarks), "Confirmation", MessageBoxButtons.YesNo) != DialogResult.Yes) {
 						return;
 					}
 
@@ -1067,7 +1065,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							string mark = line.Split('\t')[0];
 							TimeSpan time = TimeSpan.FromSeconds(Convert.ToDouble(mark));
 							mark = time.Minutes.ToString() + ":" + time.Seconds.ToString().PadLeft(2, '0') + "." + time.Milliseconds.ToString();
-							AddMark(mark);
+							_displayedCollection.Marks.Add(time);
 						}
 						UpdateMarkListBox();
 					}
@@ -1104,12 +1102,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			TimeSpan time;
 			bool success = TimeSpan.TryParseExact(markText, TimeFormats.PositiveFormats, null, out time);
-			if (success)
-			{
+			if (success) {
 				_displayedCollection.Marks.Add(time);
 			}
-			else
-			{
+			else {
 				MessageBox.Show("Error parsing time: please use the format '<minutes>:<seconds>.<milliseconds>'",
 								"Error parsing time");
 			}

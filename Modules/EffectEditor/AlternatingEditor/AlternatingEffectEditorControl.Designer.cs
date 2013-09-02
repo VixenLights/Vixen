@@ -99,7 +99,7 @@
 			// curveTypeEditorControl1
 			// 
 			curve1.IsCurrentLibraryCurve = false;
-			curve1.LibraryReferenceName = "";
+			curve1.LibraryReferenceName = string.Empty;
 			this.curveTypeEditorControl1.CurveValue = curve1;
 			this.curveTypeEditorControl1.EffectParameterValues = new object[] {
 		((object)(curve1))};
@@ -124,7 +124,7 @@
 			// 
 			colorGradient1.Gammacorrected = false;
 			colorGradient1.IsCurrentLibraryGradient = false;
-			colorGradient1.LibraryReferenceName = "";
+			colorGradient1.LibraryReferenceName = string.Empty;
 			colorGradient1.Title = null;
 			this.gradient1.ColorGradientValue = colorGradient1;
 			this.gradient1.EffectParameterValues = new object[] {
@@ -166,7 +166,7 @@
 			// curveTypeEditorControl2
 			// 
 			curve2.IsCurrentLibraryCurve = false;
-			curve2.LibraryReferenceName = "";
+			curve2.LibraryReferenceName = string.Empty;
 			this.curveTypeEditorControl2.CurveValue = curve2;
 			this.curveTypeEditorControl2.EffectParameterValues = new object[] {
 		((object)(curve2))};
@@ -204,7 +204,7 @@
 			// 
 			colorGradient2.Gammacorrected = false;
 			colorGradient2.IsCurrentLibraryGradient = false;
-			colorGradient2.LibraryReferenceName = "";
+			colorGradient2.LibraryReferenceName = string.Empty;
 			colorGradient2.Title = null;
 			this.gradient2.ColorGradientValue = colorGradient2;
 			this.gradient2.EffectParameterValues = new object[] {

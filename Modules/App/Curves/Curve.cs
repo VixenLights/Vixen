@@ -22,7 +22,7 @@ namespace VixenModules.App.Curves
 		public Curve(IPointList points)
 		{
 			Points = new PointPairList(points);
-			LibraryReferenceName = "";
+			LibraryReferenceName = string.Empty;
 		}
 
 		/// <summary>
@@ -78,7 +78,7 @@ namespace VixenModules.App.Curves
 			get
 			{
 				if (_libraryReferenceName == null)
-					return "";
+					return string.Empty;
 				else
 					return _libraryReferenceName;
 			}
@@ -135,7 +135,7 @@ namespace VixenModules.App.Curves
 						return true;
 					}
 					else {
-						LibraryReferenceName = "";
+						LibraryReferenceName = string.Empty;
 					}
 				}
 			}
@@ -173,16 +173,16 @@ namespace VixenModules.App.Curves
 
 		public void UnlinkFromLibraryCurve()
 		{
-			LibraryReferenceName = "";
+			LibraryReferenceName = string.Empty;
 			LibraryReferencedCurve = null;
 		}
 
 		public Bitmap GenerateCurveImage(Size size)
 		{
-			GraphPane pane = new GraphPane(new RectangleF(0, 0, size.Width, size.Height), "", "", "");
+			GraphPane pane = new GraphPane(new RectangleF(0, 0, size.Width, size.Height), string.Empty, string.Empty, string.Empty);
 			Bitmap result = new Bitmap(size.Width, size.Height);
 
-			pane.AddCurve("", Points, ActiveCurveGridColor);
+			pane.AddCurve(string.Empty, Points, ActiveCurveGridColor);
 
 			pane.XAxis.Scale.Min = 0;
 			pane.XAxis.Scale.Max = 100;

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.Windows.Forms;
@@ -46,6 +47,8 @@ namespace Common.Controls.Timeline
 				_RowHeightChanged();
 			}
 		}
+
+		public int DisplayTop { get; set; }
 
 		private object m_tag;
 
@@ -96,6 +99,7 @@ namespace Common.Controls.Timeline
 					m_rowLabel.TreeToggled -= TreeToggledHandler;
 					m_rowLabel.HeightChanged -= HeightChangedHandler;
 					m_rowLabel.LabelClicked -= LabelClickedHandler;
+					m_rowLabel.HeightResized -= HeightResizedHandler;
 				}
 
 				m_rowLabel = value;
@@ -103,6 +107,7 @@ namespace Common.Controls.Timeline
 				m_rowLabel.TreeToggled += TreeToggledHandler;
 				m_rowLabel.HeightChanged += HeightChangedHandler;
 				m_rowLabel.LabelClicked += LabelClickedHandler;
+				m_rowLabel.HeightResized += HeightResizedHandler;
 
 				_RowChanged();
 			}
@@ -197,6 +202,7 @@ namespace Common.Controls.Timeline
 		public static event EventHandler RowToggled;
 		public static event EventHandler RowChanged;
 		public static event EventHandler RowHeightChanged;
+		public static event EventHandler RowHeightResized;
 		public static event EventHandler<ModifierKeysEventArgs> RowSelectedChanged;
 
 		private void _ElementAdded(Element te)
@@ -222,6 +228,11 @@ namespace Common.Controls.Timeline
 		private void _RowHeightChanged()
 		{
 			if (RowHeightChanged != null) RowHeightChanged(this, EventArgs.Empty);
+		}
+
+		private void _RowHeightResized()
+		{
+			if (RowHeightResized != null) RowHeightResized(this, EventArgs.Empty);
 		}
 
 		private void _RowSelectedChanged(Keys k)
@@ -265,6 +276,11 @@ namespace Common.Controls.Timeline
 			Height += e.HeightChange;
 		}
 
+		protected void HeightResizedHandler(object sender, EventArgs e)
+		{
+			_RowHeightResized();	
+		}
+
 		protected void LabelClickedHandler(object sender, ModifierKeysEventArgs e)
 		{
 			if (e.ModifierKeys.HasFlag(Keys.Control)) {
@@ -280,6 +296,77 @@ namespace Common.Controls.Timeline
 		#endregion
 
 		#region Methods
+
+		public IEnumerable<Row> Descendants()
+		{
+			var nodes = new Stack<Row>(new[] { this });
+			while (nodes.Any())
+			{
+				Row node = nodes.Pop();
+				yield return node;
+				foreach (var n in node.ChildRows) nodes.Push(n);
+			}
+		}
+
+		public List<Element> GetOverlappingElements(Element elementMaster)
+		{
+			List<Element> elements = new List<Element>();
+			elements.Add(elementMaster); //add our reference
+			int startingIndex = IndexOfElement(elementMaster);
+			TimeSpan startTime = elementMaster.StartTime;
+			TimeSpan endTime = elementMaster.EndTime;
+
+			//we start here and look backward and forward until no more overlap
+			//Look forward.
+			for (int i = startingIndex + 1; i < ElementCount; i++)
+			{
+				Element element = GetElementAtIndex(i);
+				if (element.StartTime < endTime)
+				{
+					elements.Add(element);
+					endTime = element.EndTime > endTime ? element.EndTime : endTime;
+				} else
+				{
+					break;
+				}
+
+			}
+
+			//Look backward.
+			for (int i = startingIndex - 1; i >= 0; i--)
+			{
+				Element element = GetElementAtIndex(i);
+				if (element.EndTime > startTime)
+				{
+					elements.Insert(0, element);
+					startTime = element.StartTime < startTime ? element.StartTime : startTime;
+				}
+
+			}
+
+			return elements;
+		}
+
+		/// <summary>
+		/// For adding elements in bulk. Sorting is delayed until all elements are added.
+		/// </summary>
+		/// <param name="elements"></param>
+		public void AddBulkElements(List<Element> elements)
+		{
+			foreach (Element element in elements)
+			{
+				m_elements.Add(element);
+				if (element.Selected)
+					m_selectedElements.Add(element);
+				element.Row = this;
+				element.ContentChanged += ElementContentChangedHandler;
+				element.TimeChanged += ElementMovedHandler;
+				element.SelectedChanged += ElementSelectedHandler;
+				_ElementAdded(element);
+			}
+			m_elements.Sort();
+			_RowChanged();
+		}
 
 		public void AddElement(Element element)
 		{

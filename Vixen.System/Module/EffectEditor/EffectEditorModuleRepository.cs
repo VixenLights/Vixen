@@ -95,7 +95,7 @@ namespace Vixen.Module.EffectEditor
 		{
 			if (signature == null) return 0;
 			// Key will be a hash of the concatenation of the parameter type names.
-			return signature.Aggregate("", (str, type) => str + type.Name, str => str.GetHashCode());
+			return signature.Aggregate(string.Empty, (str, type) => str + type.Name, str => str.GetHashCode());
 		}
 	}
 }

@@ -1,4 +1,74 @@
 
+
+
+== 3.0.7 ============================
+
+New features:
+
+- Discrete color support. There is now a 'color' property that can be added to an element, to define how color
+  should function for that element.  Each element can be configured in three ways:
+    * Single color
+    * Multiple independent (discrete) colors
+    * full color (eg. a mixing RGB light)
+  (If not configured with the color property, an element is assumed to be full color.)
+  
+  If single or discrete colors are selected and configured, when configuring an effect against that element, only
+  the available colors will be visible to be used.
+
+
+- Color breakdown filter:  added 'mixing' option, to complement the discrete color property (above). If enabled,
+  the input color will be 'mixed' by using proportions of the configured colors. This would be for items like RGB
+  pixels or floods, which can 'mix' colors.  If the option is disabled, a color will only be output from the filter
+  if it matches the input color EXACTLY.  This is intended for operation with discrete (or single) color items.
+  
+  For example, if you had a mixing RGB color breakdown filter, and the input color was purple, then the filter would
+  output proportions of blue and red to get the desired color.  However, if it was a non-mixing RGB color filter, it
+  only output colors that are Red, Green, or Blue exactly.  (Presumably, you have a tree with R/G/B strings on it,
+  so only want those exact colors.)
+
+
+- Better support for importing Vixen 2.x sequences!  Will now support making 'maps' for 2.x channels to 3.x elements.
+  These can be saved and reused for future importing of sequences.  Also supports color: you can now specify the color
+  of the incoming data/effects, so the V3 data will be generated with effects of the appropriate color.
+
+
+- New 'wipe' effect, and associated 'position' property for elements (to define a location in the display).
+
+- More Nutcracker improvements and effects: 'Movie' effect, speed improvements
+
+- Sequencer responsiveness and speed improvements -- backgroun rendering, speed fixes, memory fixes, etc.
+
+- New 'alternating' effect (thanks Gizmohd!)
+
+- easy setup for element 'templates' (pixel grid, and megatree) -- right click on the tree in the Element Setup
+
+- starting to add icons for effects in the sequencer
+
+- audacity support in the mark manager
+
+- added framework needed for launcher output and RDS output plugins (not yet complete)
+
+- added a 'debug' controller to see specific values/commands that are going to the controller
+
+
+
+fixups/bugs:
+
+- UI 'flow' fixups in sequence editor
+- display preview shouldn't hang when created on some (unlucky) machines (thanks to dlovely for help debugging!)
+- fixed bug where effects might 'stack up' when pausing and restarting while an effect is displayed 
+- information about effects in the sequencer are now displayed when hovering over an effect, not permanently
+- efficiency improvements for rendering of spin, chase and nutcracker effects: (not generating useless data, etc.)
+- E1.31 module fixups, to turn off channels properly
+- Element Tree in setup: now more efficient when rendering, and won't hang when grouping hundreds of elements
+- Fixed DLL references for output modules that use the parallel port (Hill320, 595)
+
+
+.... and possibly more that we've forgotten!
+
+
+
+
 == 3.0.6 ============================
 
 

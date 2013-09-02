@@ -253,7 +253,7 @@
 			// curveTypeEditorControlChaseMovement
 			// 
 			curve2.IsCurrentLibraryCurve = false;
-			curve2.LibraryReferenceName = "";
+			curve2.LibraryReferenceName = string.Empty;
 			this.curveTypeEditorControlChaseMovement.CurveValue = curve2;
 			this.curveTypeEditorControlChaseMovement.EffectParameterValues = new object[] {
         ((object)(curve2))};
@@ -277,7 +277,7 @@
 			// curveTypeEditorControlEachPulse
 			// 
 			curve1.IsCurrentLibraryCurve = false;
-			curve1.LibraryReferenceName = "";
+			curve1.LibraryReferenceName = string.Empty;
 			this.curveTypeEditorControlEachPulse.CurveValue = curve1;
 			this.curveTypeEditorControlEachPulse.EffectParameterValues = new object[] {
         ((object)(curve1))};
@@ -302,7 +302,7 @@
 			// 
 			colorGradient1.Gammacorrected = false;
 			colorGradient1.IsCurrentLibraryGradient = false;
-			colorGradient1.LibraryReferenceName = "";
+			colorGradient1.LibraryReferenceName = string.Empty;
 			colorGradient1.Title = null;
 			this.colorGradientTypeEditorControlGradient.ColorGradientValue = colorGradient1;
 			this.colorGradientTypeEditorControlGradient.EffectParameterValues = new object[] {

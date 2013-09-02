@@ -58,6 +58,7 @@ namespace Common.Controls.Timeline
 			// Event handlers for Row class static events
 			Row.RowToggled += RowToggledHandler;
 			Row.RowHeightChanged += RowHeightChangedHandler;
+			Row.RowHeightResized += RowHeightResizedHandler;
 		}
 
 		#region Initialization
@@ -225,7 +226,6 @@ namespace Common.Controls.Timeline
 		public IEnumerable<Row> VisibleRows
 		{
 			get { return grid.VisibleRows; }
-			set { grid.VisibleRows = value; }
 		}
 
 		[Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -266,14 +266,20 @@ namespace Common.Controls.Timeline
 		{
 			if (scale <= 0.0)
 				return;
-
+			bool heightChanged = false;
 			grid.BeginDraw();
 			foreach (Row r in Rows) {
+				if (r.Height * scale > grid.Height) continue; //Don't scale a row beyond the grid height. How big do you need it?
 				r.Height = (int) (r.Height*scale);
+				heightChanged = true;
 			}
 			grid.EndDraw();
 
-			grid.ResetAllElements();
+			if (heightChanged) //Only reset if we actually changed a row height.
+			{
+				grid.ResetAllElements();
+			}
+			
 		}
 
 		public void ResizeGrid()
@@ -548,6 +554,12 @@ namespace Common.Controls.Timeline
 
 		private void RowHeightChangedHandler(object sender, EventArgs e)
 		{
+				
+		}
+
+		private void RowHeightResizedHandler(object sender, EventArgs e)
+		{
+			grid.ResetRowElements(new List<Row> { (Row)sender });
 		}
 
 		protected override void OnMouseWheel(MouseEventArgs e)

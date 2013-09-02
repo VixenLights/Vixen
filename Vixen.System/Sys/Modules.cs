@@ -13,7 +13,6 @@ namespace Vixen.Sys
 	internal class Modules
 	{
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
-
 		// Module type id : IModuleInstance implementor
 		private static Dictionary<Guid, Type> _activators = new Dictionary<Guid, Type>();
 		// Module type id : module descriptor
@@ -154,7 +153,7 @@ namespace Vixen.Sys
 					    descriptor.Dependencies.Length) {
 						allDescriptors.Remove(descriptor);
 						Logging.Error("Could not load module \"" + descriptor.TypeName +
-						                          "\" because it has dependencies that are missing.");
+												  "\" because it has dependencies that are missing.");
 					}
 				}
 				// If nothing was removed, we are done.
@@ -185,7 +184,7 @@ namespace Vixen.Sys
 					// to that implementation's descriptor list.
 					ModuleImplementation moduleImplementation = _FindImplementation(filePath);
 					if (moduleImplementation == null) {
-						Logging.Error("File " + filePath + " was not loaded because its module type could not be determined.");
+						Logging.Error(string.Format("File {0} was not loaded because its module type could not be determined.", filePath));
 						continue;
 					}
 					// Try to get descriptors.
@@ -234,7 +233,7 @@ namespace Vixen.Sys
 					return new IModuleDescriptor[0];
 				}
 				catch (Exception ex) {
-					Logging.ErrorException("Could not load module assembly " + filePath + ".", ex);
+					Logging.Error(string.Format("Could not load module assembly {0}.", filePath), ex);
 					return new IModuleDescriptor[0];
 				}
 
@@ -258,25 +257,19 @@ namespace Vixen.Sys
 									descriptors.Add(moduleDescriptor);
 								}
 								else {
-									Logging.Error("Tried to load module " + moduleDescriptor.TypeName + " from " +
-									                          Path.GetFileName(filePath) +
-									                          ", but the ModuleClass does not implement IModuleInstance.");
+									Logging.Error(string.Format("Tried to load module {0}  from {1}, but the ModuleClass does not implement IModuleInstance.", moduleDescriptor.TypeName, Path.GetFileName(filePath)));
 								}
 							}
 							else {
-								Logging.Error("Tried to load module " + moduleDescriptor.TypeName + " from " +
-								                          Path.GetFileName(filePath) + ", but the ModuleClass is null.");
-							}
+								Logging.Error(string.Format("Tried to load module {0} from {1}, but the ModuleClass is null.", moduleDescriptor.TypeName, Path.GetFileName(filePath)));
+ 							}
 						}
 						else {
-							Logging.Error("Tried to load module of type " + moduleDescriptorType.Name + " from " +
-							                          Path.GetFileName(filePath) +
-							                          ", but the descriptor does not implement IModuleDescriptor.");
+							 Logging.Error(string.Format("Tried to load module of type {0} from {1}, but the descriptor does not implement IModuleDescriptor.", moduleDescriptorType.Name, Path.GetFileName(filePath)));
 						}
 					}
 					catch (Exception ex) {
-						Logging.ErrorException(
-							"Error loading module descriptor " + moduleDescriptorType.Name + " from " + Path.GetFileName(filePath) + ".", ex);
+						Logging.Error(string.Format("Error loading module descriptor {0} from {1}.", moduleDescriptorType.Name, Path.GetFileName(filePath)), ex);
 					}
 				}
 			}
@@ -492,10 +485,7 @@ namespace Vixen.Sys
 			if (instance.Descriptor.ModuleDataClass != null) {
 				dataModel = ModuleLocalDataSet.CreateModuleDataInstance(instance);
 				if (dataModel == null) {
-					Logging.Error("Module \"" + instance.Descriptor.TypeName + "\" in " + instance.Descriptor.FileName +
-					                          " has a reference to type " + instance.Descriptor.ModuleDataClass.Name +
-					                          " for its module data class, but it's not an implementation of " +
-					                          typeof (IModuleDataModel).Name + ".");
+					Logging.Error(string.Format("Module \"{0}\" in {1} has a reference to type {2} for its module data class, but it's not an implementation of {3}.", instance.Descriptor.TypeName, instance.Descriptor.FileName, instance.Descriptor.ModuleDataClass.Name, typeof(IModuleDataModel).Name));
 				}
 			}
 

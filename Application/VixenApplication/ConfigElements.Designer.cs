@@ -97,7 +97,7 @@
 			this.buttonConfigureProperty.Location = new System.Drawing.Point(76, 200);
 			this.buttonConfigureProperty.Name = "buttonConfigureProperty";
 			this.buttonConfigureProperty.Size = new System.Drawing.Size(60, 25);
-			this.buttonConfigureProperty.TabIndex = 28;
+			this.buttonConfigureProperty.TabIndex = 3;
 			this.buttonConfigureProperty.Text = "Configure";
 			this.buttonConfigureProperty.UseVisualStyleBackColor = true;
 			this.buttonConfigureProperty.Click += new System.EventHandler(this.buttonConfigureProperty_Click);
@@ -107,7 +107,7 @@
 			this.buttonDeleteProperty.Location = new System.Drawing.Point(140, 200);
 			this.buttonDeleteProperty.Name = "buttonDeleteProperty";
 			this.buttonDeleteProperty.Size = new System.Drawing.Size(60, 25);
-			this.buttonDeleteProperty.TabIndex = 27;
+			this.buttonDeleteProperty.TabIndex = 4;
 			this.buttonDeleteProperty.Text = "Delete";
 			this.buttonDeleteProperty.UseVisualStyleBackColor = true;
 			this.buttonDeleteProperty.Click += new System.EventHandler(this.buttonDeleteProperty_Click);
@@ -117,7 +117,7 @@
 			this.buttonAddProperty.Location = new System.Drawing.Point(12, 200);
 			this.buttonAddProperty.Name = "buttonAddProperty";
 			this.buttonAddProperty.Size = new System.Drawing.Size(60, 25);
-			this.buttonAddProperty.TabIndex = 26;
+			this.buttonAddProperty.TabIndex = 2;
 			this.buttonAddProperty.Text = "Add";
 			this.buttonAddProperty.UseVisualStyleBackColor = true;
 			this.buttonAddProperty.Click += new System.EventHandler(this.buttonAddProperty_Click);
@@ -131,7 +131,7 @@
 			this.listViewProperties.Location = new System.Drawing.Point(15, 110);
 			this.listViewProperties.Name = "listViewProperties";
 			this.listViewProperties.Size = new System.Drawing.Size(180, 75);
-			this.listViewProperties.TabIndex = 25;
+			this.listViewProperties.TabIndex = 1;
 			this.listViewProperties.UseCompatibleStateImageBehavior = false;
 			this.listViewProperties.View = System.Windows.Forms.View.Details;
 			this.listViewProperties.SelectedIndexChanged += new System.EventHandler(this.listViewProperties_SelectedIndexChanged);
@@ -165,7 +165,7 @@
 			this.textBoxName.Location = new System.Drawing.Point(53, 25);
 			this.textBoxName.Name = "textBoxName";
 			this.textBoxName.Size = new System.Drawing.Size(142, 20);
-			this.textBoxName.TabIndex = 11;
+			this.textBoxName.TabIndex = 0;
 			this.textBoxName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxName_KeyDown);
 			// 
 			// groupBoxOperations
@@ -188,7 +188,7 @@
 			this.buttonAddMultipleElements.Location = new System.Drawing.Point(35, 59);
 			this.buttonAddMultipleElements.Name = "buttonAddMultipleElements";
 			this.buttonAddMultipleElements.Size = new System.Drawing.Size(140, 25);
-			this.buttonAddMultipleElements.TabIndex = 27;
+			this.buttonAddMultipleElements.TabIndex = 1;
 			this.buttonAddMultipleElements.Text = "Add Multiple";
 			this.buttonAddMultipleElements.UseVisualStyleBackColor = true;
 			this.buttonAddMultipleElements.Click += new System.EventHandler(this.buttonAddMultipleElements_Click);
@@ -198,7 +198,7 @@
 			this.buttonDeleteElement.Location = new System.Drawing.Point(35, 93);
 			this.buttonDeleteElement.Name = "buttonDeleteElement";
 			this.buttonDeleteElement.Size = new System.Drawing.Size(140, 25);
-			this.buttonDeleteElement.TabIndex = 24;
+			this.buttonDeleteElement.TabIndex = 2;
 			this.buttonDeleteElement.Text = "Delete";
 			this.buttonDeleteElement.UseVisualStyleBackColor = true;
 			this.buttonDeleteElement.Click += new System.EventHandler(this.buttonDeleteElement_Click);
@@ -208,7 +208,7 @@
 			this.buttonRename.Location = new System.Drawing.Point(35, 161);
 			this.buttonRename.Name = "buttonRename";
 			this.buttonRename.Size = new System.Drawing.Size(140, 25);
-			this.buttonRename.TabIndex = 26;
+			this.buttonRename.TabIndex = 4;
 			this.buttonRename.Text = "Rename";
 			this.buttonRename.UseVisualStyleBackColor = true;
 			this.buttonRename.Click += new System.EventHandler(this.buttonRename_Click);
@@ -218,7 +218,7 @@
 			this.buttonCreateGroup.Location = new System.Drawing.Point(35, 127);
 			this.buttonCreateGroup.Name = "buttonCreateGroup";
 			this.buttonCreateGroup.Size = new System.Drawing.Size(140, 25);
-			this.buttonCreateGroup.TabIndex = 25;
+			this.buttonCreateGroup.TabIndex = 3;
 			this.buttonCreateGroup.Text = "Create Group";
 			this.buttonCreateGroup.UseVisualStyleBackColor = true;
 			this.buttonCreateGroup.Click += new System.EventHandler(this.buttonCreateGroup_Click);
@@ -228,7 +228,7 @@
 			this.buttonAddElement.Location = new System.Drawing.Point(35, 25);
 			this.buttonAddElement.Name = "buttonAddElement";
 			this.buttonAddElement.Size = new System.Drawing.Size(140, 25);
-			this.buttonAddElement.TabIndex = 23;
+			this.buttonAddElement.TabIndex = 0;
 			this.buttonAddElement.Text = "Add";
 			this.buttonAddElement.UseVisualStyleBackColor = true;
 			this.buttonAddElement.Click += new System.EventHandler(this.buttonAddElement_Click);
@@ -260,7 +260,7 @@
 			this.buttonCancel.Location = new System.Drawing.Point(432, 478);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(90, 25);
-			this.buttonCancel.TabIndex = 26;
+			this.buttonCancel.TabIndex = 2;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
 			// 
@@ -273,7 +273,7 @@
 			this.elementTree.Location = new System.Drawing.Point(15, 12);
 			this.elementTree.Name = "elementTree";
 			this.elementTree.Size = new System.Drawing.Size(280, 456);
-			this.elementTree.TabIndex = 27;
+			this.elementTree.TabIndex = 0;
 			// 
 			// ConfigElements
 			// 

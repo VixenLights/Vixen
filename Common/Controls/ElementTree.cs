@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -106,7 +106,7 @@ namespace Common.Controls
 					try {
 						treeview.TopNode = resultNode;
 					} catch (Exception) {
-						Logging.Warn("ConfigElements: exception caught trying to set TopNode.");
+						 Logging.Warn("ConfigElements: exception caught trying to set TopNode.");
 					}
 					break;
 				}
@@ -444,7 +444,7 @@ namespace Common.Controls
 			using (TextDialog textDialog = new TextDialog("Element Name?")) {
 				if (textDialog.ShowDialog() == DialogResult.OK) {
 					string newName;
-					if (textDialog.Response == "")
+					if (textDialog.Response == string.Empty)
 						newName = "New Element";
 					else
 						newName = textDialog.Response;
@@ -696,7 +696,7 @@ namespace Common.Controls
 			if (SelectedTreeNodes.Count == 1) {
 				using (TextDialog dialog = new TextDialog("Item name?", "Rename item", (SelectedNode).Name, true)) {
 					if (dialog.ShowDialog() == DialogResult.OK) {
-						if (dialog.Response != "" && dialog.Response != SelectedNode.Name)
+						if (dialog.Response != string.Empty && dialog.Response != SelectedNode.Name)
 							VixenSystem.Nodes.RenameNode(SelectedNode, dialog.Response);
 					}
 				}
@@ -736,7 +736,7 @@ namespace Common.Controls
 		}
 
 
-		private void megatreeToolStripMenuItem_Click_1(object sender, EventArgs e)
+		private void megatreeToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			ConfigureElements.AddMegatree f = new ConfigureElements.AddMegatree();
 			if (f.ShowDialog() == DialogResult.OK) {
@@ -753,7 +753,7 @@ namespace Common.Controls
 			}
 		}
 
-		private void pixelGridToolStripMenuItem_Click_1(object sender, EventArgs e)
+		private void pixelGridToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			ConfigureElements.AddPixelGrid f = new ConfigureElements.AddPixelGrid();
 			if (f.ShowDialog() == DialogResult.OK) {

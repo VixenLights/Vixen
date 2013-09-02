@@ -46,7 +46,7 @@ namespace Vixen.Rule.Name
 
 		public string GenerateName(int cyclePosition)
 		{
-			string result = "";
+			string result = string.Empty;
 			// offset it by the position in the index
 			cyclePosition += _alphabetIndex;
 

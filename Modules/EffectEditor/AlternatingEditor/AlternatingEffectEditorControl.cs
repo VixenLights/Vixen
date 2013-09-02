@@ -117,7 +117,7 @@ namespace VixenModules.EffectEditor.AlternatingEditor
 			set { levelTypeEditorControl2.LevelValue = value; }
 		}
 
-		public bool Enabled
+		public new bool Enabled
 		{
 			get { return !this.chkEnabled.Checked; }
 			set { this.chkEnabled.Checked = !value; }

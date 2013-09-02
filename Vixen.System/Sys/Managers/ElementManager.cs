@@ -147,7 +147,7 @@ namespace Vixen.Sys.Managers
 				bool unique;
 				int counter = 2;
 				do {
-					name = originalName + "-" + counter++;
+					name = string.Format("{0}-{1}", originalName, counter++);
 					unique = !_instances.Values.Any(x => x.Name == name);
 				} while (!unique);
 			}

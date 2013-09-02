@@ -55,7 +55,7 @@ namespace Vixen.Intent
 				if (states.Count > 0)
 				{
 					IIntentState<LightingValue> intentState = states[0] as IIntentState<LightingValue>;
-					c = ((IIntentState<LightingValue>)intentState).GetValue().GetAlphaChannelIntensityAffectedColor();
+					c = ((IIntentState<LightingValue>)intentState).GetValue().GetOpaqueIntensityAffectedColor();
 				}
 			}
 

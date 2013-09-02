@@ -4,14 +4,16 @@ using System.Diagnostics;
 using Vixen.Execution.Context;
 using Vixen.Module.Preview;
 using Vixen.Sys;
+using VixenModules.Preview.VixenPreview.Direct2D;
 
 namespace VixenModules.Preview.VixenPreview
 {
 	public partial class VixenPreviewModuleInstance : FormPreviewModuleInstanceBase
 	{
 		private VixenPreviewSetup3 setupForm;
-		private VixenPreviewDisplay displayForm;
+		private IDisplayForm displayForm;
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private bool UseOldPreview = false;
 
 		public VixenPreviewModuleInstance()
 		{
@@ -63,16 +65,50 @@ namespace VixenModules.Preview.VixenPreview
 			}
 		}
 
+		public bool UseGDIPreviewRendering
+		{
+			get {
+				 
+				if (new Properties.Settings().UseGDIRendering)
+					return true;
+
+				return !Vixen.Sys.VixenSystem.VersionBeyondWindowsXP;
+			}
+		}
+
 		protected override Form Initialize()
 		{
 			Execution.NodesChanged += ExecutionNodesChanged;
 			VixenSystem.Contexts.ContextCreated += ProgramContextCreated;
 			VixenSystem.Contexts.ContextReleased += ProgramContextReleased;
+ 
+			SetupPreviewForm();
 
-			displayForm = new VixenPreviewDisplay();
-			displayForm.Data = GetDataModel();
-			displayForm.Setup();
-			return displayForm;
+			return (Form)displayForm;
+		}
+
+		private object formLock = new object();
+		private void SetupPreviewForm()
+		{
+			lock (formLock) {
+
+				if (UseGDIPreviewRendering)
+				{
+					if (UseOldPreview) {
+						displayForm = new VixenPreviewDisplay();
+						displayForm.Data = GetDataModel();
+					} else {
+						displayForm = new GDIPreviewForm(GetDataModel());
+					}
+				}
+				else
+				{
+					displayForm = new VixenPreviewDisplayD2D();
+					displayForm.Data = GetDataModel();
+				}
+
+				displayForm.Setup();
+			}
 		}
 
 		private VixenPreviewData GetDataModel()
@@ -91,39 +127,31 @@ namespace VixenModules.Preview.VixenPreview
 			setupForm = new VixenPreviewSetup3();
 			setupForm.Data = GetDataModel();
 
-			if (displayForm != null)
-				displayForm.PreviewControl.Paused = true;
-
 			setupForm.ShowDialog();
 
 			if (displayForm != null)
-				displayForm.PreviewControl.Paused = false;
-
-			if (setupForm.DialogResult == DialogResult.OK) {
-				if (displayForm != null)
-					displayForm.PreviewControl.Reload();
-			}
+				displayForm.Data = GetDataModel();
 
 			return base.Setup();
 		}
 
 		public override void Dispose()
 		{
-			if (displayForm != null && !displayForm.Disposing)
+			if (displayForm != null)
 				displayForm.Close();
 			VixenSystem.Contexts.ContextCreated -= ProgramContextCreated;
 			VixenSystem.Contexts.ContextReleased -= ProgramContextReleased;
 			base.Dispose();
 		}
 
-        private void ExecutionNodesChanged(object sender, EventArgs e)
-        {
-            //Console.WriteLine("hanged");
-            //if (setupForm != null)
-            //{
-            //    setupForm.elementsForm.PopulateElementTree();
-            //}
-        }
+		private void ExecutionNodesChanged(object sender, EventArgs e)
+		{
+			//Console.WriteLine("hanged");
+			//if (setupForm != null)
+			//{
+			//    setupForm.elementsForm.PopulateElementTree();
+			//}
+		}
 
 		private void ProgramContextCreated(object sender, ContextEventArgs contextEventArgs)
 		{
@@ -169,9 +197,34 @@ namespace VixenModules.Preview.VixenPreview
 			}
 		}
 
+		bool isGdiVersion = false;
 		protected override void Update()
 		{
-			displayForm.PreviewControl.ProcessUpdateParallel(ElementStates);
+			try {
+				// displayForm.Scene.ElementStates = ElementStates;
+				//if the Preview form style changes re-setup the form
+				if ((UseGDIPreviewRendering && !isGdiVersion) || (!UseGDIPreviewRendering && isGdiVersion) || displayForm == null) {
+					SetupPreviewForm();
+					isGdiVersion = UseGDIPreviewRendering;
+					Stop();
+					Start();
+				}
+
+				if (!UseGDIPreviewRendering) {
+					((VixenPreviewDisplayD2D)displayForm).Scene.Update(ElementStates);
+				}
+				else {
+					if (UseOldPreview)
+						((VixenPreviewDisplay)displayForm).PreviewControl.ProcessUpdateParallel(ElementStates);
+					else
+					((GDIPreviewForm)displayForm).Update(ElementStates);
+				}
+			}
+			catch (Exception e) {
+
+				Console.WriteLine(e.ToString());
+			}
+
 		}
 	}
 }

@@ -27,13 +27,15 @@ namespace VixenModules.EffectEditor.WipeEditor {
 					ColorGradient,
 					WipeDirection,
 					Curve,
-					PulseTime
-
+					PulseTime,
+					WipeByCount,
+					PassCount,
+					PulsePercent
 				};
 			}
 			set {
 
-				if (value.Length != 4) {
+				if (value.Length != 7) {
 					Logging.Warn("Wipe effect parameters set with " + value.Length + " parameters");
 					return;
 				}
@@ -42,7 +44,9 @@ namespace VixenModules.EffectEditor.WipeEditor {
 				WipeDirection = (WipeDirection)value[1];
 				Curve = (Curve)value[2];
 				PulseTime = (int)value[3];
-
+				WipeByCount = (bool)value[4];
+				PassCount = (int)value[5];
+				PulsePercent = (double)value[6];
 			}
 		}
 
@@ -65,6 +69,22 @@ namespace VixenModules.EffectEditor.WipeEditor {
 			get { return (int)numericUpDownPulseLength.Value; }
 			set { numericUpDownPulseLength.Value = value; }
 		}
+
+		public double PulsePercent { 
+			get { return (double)numericUpDownPulseWidth.Value; }
+			set { numericUpDownPulseWidth.Value = (decimal)value; } 
+		}
+
+		public int PassCount {
+			get { return (int)numericUpDownNumPasses.Value; }
+			set { numericUpDownNumPasses.Value = value; } 
+		}
+
+		public bool WipeByCount {
+			get { return radioNumPasses.Checked; }
+			set { radioNumPasses.Checked = value; } 
+		}
+
 		public WipeDirection WipeDirection {
 			get {
 				if (radioWipeDown.Checked) return WipeDirection.Down;
@@ -96,5 +116,12 @@ namespace VixenModules.EffectEditor.WipeEditor {
 			set { curveTypeEditorControlEachPulse.CurveValue = value; }
 		}
 
+		private void radioNumPasses_CheckedChanged(object sender, EventArgs e)
+		{
+			numericUpDownNumPasses.Enabled = radioNumPasses.Checked;
+			numericUpDownPulseWidth.Enabled = radioNumPasses.Checked;
+			numericUpDownPulseLength.Enabled = !radioNumPasses.Checked;
 	}
+
+}
 }

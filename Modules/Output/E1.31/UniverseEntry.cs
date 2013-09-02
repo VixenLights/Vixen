@@ -6,12 +6,15 @@
 
 namespace VixenModules.Controller.E131
 {
-	using System.Net;
-	using System.Net.Sockets;
-	using System.Text;
+    using System.Net;
+    using System.Net.Sockets;
+    using System.Runtime.Serialization;
+    using System.Text;
 
+    [DataContract]
 	public class UniverseEntry
 	{
+        public UniverseEntry() { }
 		public UniverseEntry(
 			int rowNum, bool active, int universe, int start, int size, string unicast, string multicast, int ttl)
 		{
@@ -38,7 +41,8 @@ namespace VixenModules.Controller.E131
 		/// <summary>
 		///   Gets or sets a value indicating whether the universe is active.
 		/// </summary>
-		public bool Active { get; set; }
+        [DataMember]
+        public bool Active { get; set; }
 
 		/// <summary>
 		///   Gets or sets the destination end point
@@ -48,7 +52,8 @@ namespace VixenModules.Controller.E131
 		/// <summary>
 		///   Gets or sets how many identical pkts to skip (0 = none)
 		/// </summary>
-		public int EventRepeatCount { get; set; }
+        [DataMember]
+        public int EventRepeatCount { get; set; }
 
 		public string InfoToText
 		{
@@ -81,12 +86,14 @@ namespace VixenModules.Controller.E131
 		/// <summary>
 		///   Gets or sets the seqNum
 		/// </summary>
-		public byte seqNum { get; set; }
+        [DataMember]
+        public byte seqNum { get; set; }
 
 		/// <summary>
 		///   Gets the Multicast NIC ID (if not null)
 		/// </summary>
-		public string Multicast { get; private set; }
+        [DataMember]
+        public string Multicast { get; private set; }
 
 		/// <summary>
 		///   Gets or sets the Physical buffer
@@ -115,19 +122,22 @@ namespace VixenModules.Controller.E131
 		/// <summary>
 		///   Gets or set the number of slots
 		/// </summary>
-		public int Size { get; private set; }
+        [DataMember]
+        public int Size { get; private set; }
 
 		/// <summary>
 		///   Gets or sets the slot count per universe
 		/// </summary>
-		public long SlotCount { get; set; }
+     
+        public long SlotCount { get; set; }
 
 		public Socket Socket { get; set; }
 
 		/// <summary>
 		///   Gets the zero based starting slot.
 		/// </summary>
-		public int Start { get; private set; }
+        [DataMember]
+        public int Start { get; private set; }
 
 		public string StatsToText
 		{
@@ -150,16 +160,19 @@ namespace VixenModules.Controller.E131
 		/// <summary>
 		///   Gets the time to live
 		/// </summary>
-		public int Ttl { get; private set; }
+        [DataMember]
+        public int Ttl { get; private set; }
 
 		/// <summary>
 		///   Gets the Unicast IP Address
 		/// </summary>
-		public string Unicast { get; private set; }
+        [DataMember]
+        public string Unicast { get; private set; }
 
 		/// <summary>
 		///   Gets the Universe Number
 		/// </summary>
+        [DataMember]
 		public int Universe { get; private set; }
 
 		/// <summary>

@@ -101,7 +101,7 @@ namespace Common.Controls
 					string value;
 					string port = comboBoxPortName.SelectedItem as string;
 					if (port.Contains("(IN USE)")) {
-						value = port.Replace("(IN USE)", "").Trim();
+						value = port.Replace("(IN USE)", string.Empty).Trim();
 						return value;
 					}
 					else {
@@ -169,7 +169,7 @@ namespace Common.Controls
 				}
 
 				if (sb.Length > 0) {
-					MessageBox.Show(String.Format("The following items need to be resolved:{0}{0}{1}", Environment.NewLine, sb),
+					MessageBox.Show(string.Format("The following items need to be resolved:{0}{0}{1}", Environment.NewLine, sb),
 					                "Serial Port", MessageBoxButtons.OK, MessageBoxIcon.Stop);
 					return false;
 				}

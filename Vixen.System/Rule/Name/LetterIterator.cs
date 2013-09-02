@@ -55,7 +55,7 @@ namespace Vixen.Rule.Name
 		public string Letters
 		{
 			get { return _letters; }
-			set { _letters = Regex.Replace(value, "[^A-Za-z0-9]", ""); }
+			set { _letters = Regex.Replace(value, "[^A-Za-z0-9]", string.Empty); }
 		}
 	}
 }

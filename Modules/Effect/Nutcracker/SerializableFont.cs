@@ -5,9 +5,11 @@ using System.Text;
 using System.Drawing;
 using System.Xml.Serialization;
 using System.ComponentModel;
+using System.Runtime.Serialization;
 
 namespace VixenModules.Effect.Nutcracker
 {
+	[DataContract]
 	public class SerializableFont
 	{
 		public SerializableFont()
@@ -20,15 +22,9 @@ namespace VixenModules.Effect.Nutcracker
 			FontValue = font;
 		}
 
-		[XmlIgnore]
-		public Font FontValue { get; set; }
-
-		[XmlElement("FontValue")]
-		public string SerializeFontAttribute
-		{
-			get { return FontXmlConverter.ConvertToString(FontValue); }
-			set { FontValue = FontXmlConverter.ConvertToFont(value); }
-		}
+		[DataMember]
+		public Font FontValue { get { return fontValue; } set { fontValue = value; } }
+		private Font fontValue;
 
 		public static implicit operator Font(SerializableFont serializeableFont)
 		{

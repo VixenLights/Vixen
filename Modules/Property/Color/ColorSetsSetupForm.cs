@@ -40,7 +40,7 @@ namespace VixenModules.Property.Color
 		{
 			if (cs == null) {
 				groupBoxColorSet.Enabled = false;
-				textBoxName.Text = "";
+				textBoxName.Text = string.Empty;
 				tableLayoutPanelColors.Controls.Clear();
 				return;
 			}

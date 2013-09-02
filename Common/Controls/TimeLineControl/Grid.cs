@@ -24,7 +24,7 @@ namespace Common.Controls.Timeline
 	public partial class Grid : TimelineControlBase, IEnumerable<Row>, IDisposable
 	{
 		#region Members
-
+        private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private List<Row> m_rows; // the rows in the grid
 		private DragState m_dragState = DragState.Normal; // the current dragging state
 
@@ -35,16 +35,17 @@ namespace Common.Controls.Timeline
 		private Row m_mouseDownElementRow = null;
 		            // the row that the clicked m_mouseDownElement belongs to (a single element may be in multiple rows)
 
-		private TimeSpan m_cursorPosition; // the current grid 'cursor' position (line drawn vertically)
-
+		private TimeSpan m_cursorPosition; // the current grid 'cursor' position (line drawn vertically);
+		private BlockingCollection<Element> _blockingElementQueue = new BlockingCollection<Element>();
+		private CancellationTokenSource cts = new CancellationTokenSource();
+		
 		#endregion
-
 		private ElementMoveInfo m_elemMoveInfo;
 		private BackgroundWorker renderWorker = null;
 		public ISequenceContext Context = null;
 		public bool SequenceLoading { get; set; }
 
-		public ElementDrawQueue _elementQueue = new ElementDrawQueue();
+		
 
 		#region Initialization
 
@@ -85,16 +86,18 @@ namespace Common.Controls.Timeline
 			AllowDrop = true;
 			DragEnter += TimelineGrid_DragEnter;
 			DragDrop += TimelineGrid_DragDrop;
+			StartBackgroundRendering();
 		}
 
 		protected override void Dispose(bool disposing)
 		{
 			// Cancel the background worker
-			if (renderWorker != null) {
+			cts.Cancel(false);
+			if (renderWorker != null)
+			{
 				renderWorker.CancelAsync();
 				while (renderWorker.IsBusy) Application.DoEvents();
 			}
-
 			base.Dispose(disposing);
 		}
 
@@ -140,15 +143,9 @@ namespace Common.Controls.Timeline
 
 		#region Properties
 
-		public ElementDrawQueue ElementQueue
-		{
-			get
-			{
-				return _elementQueue;
-			}
-		}
-
 		public bool SuppressInvalidate { get; set; }
+
+		public bool SupressRendering { get; set; }
 
 		public int VerticalOffset
 		{
@@ -193,11 +190,6 @@ namespace Common.Controls.Timeline
 		public IEnumerable<Row> VisibleRows
 		{
 			get { return Rows.Where(x => x.Visible); }
-			set
-			{
-				foreach (Row row in Rows)
-					row.Selected = value.Contains(row);
-			}
 		}
 
 		public Row TopVisibleRow
@@ -395,8 +387,17 @@ namespace Common.Controls.Timeline
 		private void RowToggledHandler(object sender, EventArgs e)
 		{
 			ResizeGridHeight();
+			Row row = (Row)sender;
+			if (row.TreeOpen)
+			{
+				List<Row> rows = row.Descendants().Where(x => x.Visible == true).ToList();
+				RenderVisibleRows(rows); 
+			}
+ 
 			if (!SuppressInvalidate) Invalidate();
 		}
+
+		
 
 		private void RowHeightChangedHandler(object sender, EventArgs e)
 		{
@@ -540,8 +541,8 @@ namespace Common.Controls.Timeline
 				Single elemW = timeToPixels(elem.Duration);
 				if (p.X >= elemX &&
 					p.X <= elemX + elemW &&
-					p.Y >= elem.DisplayTop &&
-					p.Y < elem.DisplayTop + elem.DisplayHeight)
+					p.Y >= containingRow.DisplayTop + elem.RowTopOffset &&
+					p.Y < containingRow.DisplayTop + elem.RowTopOffset + elem.DisplayHeight)
 				{
 					//Single elemX = timeToPixels(elem.StartTime);
 					//Single elemW = timeToPixels(elem.Duration);
@@ -574,8 +575,8 @@ namespace Common.Controls.Timeline
 				Single elemW = timeToPixels(elem.Duration);
 				if (p.X >= elemX &&
 					p.X <= elemX + elemW &&
-					p.Y >= elem.DisplayTop &&
-					p.Y < elem.DisplayTop + elem.DisplayHeight)
+					p.Y >= containingRow.DisplayTop + elem.RowTopOffset &&
+					p.Y < containingRow.DisplayTop + elem.RowTopOffset + elem.DisplayHeight)
 				{
 					result.Add(elem);
 				}
@@ -1178,127 +1179,28 @@ namespace Common.Controls.Timeline
 					Single x = timeToPixels(kvp.Key);
 					p.DashPattern = new float[] {details.SnapLevel, details.SnapLevel};
 					g.DrawLine(p, x, 0, x, AutoScrollMinSize.Height);
+					p.Dispose();
 				}
+				
 			}
 		}
 
 		#region Element rendering background worker
 
-		private void renderWorker_DoWork(object sender, DoWorkEventArgs e)
-		{
-			Bitmap elementImage;
-
-			// first, queue up everything
-			foreach (Row row in Rows)
-			{
-				if (row.Visible)
-				{
-					for (int i = 0; i < row.ElementCount; i++)
-					{
-						_elementQueue.Add(row.GetElementAtIndex(i));
-					}
-				}
-			}
-
-			while (!renderWorker.CancellationPending)
-			{
-				Element element;
-				int currentElementNum = 0;
-				while (_elementQueue.TryNext(out element))
-				{
-					Size size = new Size((int)Math.Ceiling(timeToPixels(element.Duration)), element.Row.Height - 1);
-					elementImage = element.SetupCachedImage(size);
-					if (element.StartTime <= VisibleTimeEnd && element.EndTime >= VisibleTimeStart)
-						Invalidate();
-
-					int percent = (int)((double)(currentElementNum) / (double)_elementQueue.Count() * 100.0);
-					renderWorker.ReportProgress(percent);
-					currentElementNum++;
-				}
-			}
-
-			return;
-
-			// Continue looping through the elements to see if they need to be rendered.
-			// They will the first time and when a row is expanded.
-			while (!renderWorker.CancellationPending) {
-				// Count the rows for progress reporting
-				int totalElements = 0;
-				foreach (Row row in Rows) {
-					if (row.Visible) {
-						for (int i = 0; i < row.ElementCount; i++) {
-							if (row.GetElementAtIndex(i).Changed)
-								totalElements += 1;
-						}
-					}
-				}
-
-				if (totalElements == 1)
-					renderWorker.ReportProgress(50);
-
-				int currentElementNum = 0;
-				foreach (Row row in Rows) {
-					if (row.Visible) {
-						for (int i = 0; i < row.ElementCount; i++) {
-							if (renderWorker.CancellationPending)
-								return;
-
-                            if (MouseButtons != System.Windows.Forms.MouseButtons.Left)
-                            {
-
-                                // If we have a sequence playing, stop rendering the effects in the background
-                                while (Context != null && Context.IsRunning)
-                                    Thread.Sleep(250);
-
-                                Element currentElement = row.GetElementAtIndex(i);
-                                Size size = new Size((int)Math.Ceiling(timeToPixels(currentElement.Duration)), row.Height - 1);
-								//Size size = new Size((int)Math.Ceiling(timeToPixels(currentElement.Duration)), 75);
-
-								// not used
-								//int top = 0;
-								//Size size = GetImageSize(row, currentElement, top, out top);
-
-                                if (currentElement.Changed || !currentElement.CachedCanvasIsCurrent)
-								//if (currentElement.Changed || !currentElement.IsCanvasContentCurrent(size))
-                                {
-									elementImage = currentElement.SetupCachedImage(size);
-									if (currentElement.StartTime <= VisibleTimeEnd && currentElement.EndTime >= VisibleTimeStart)
-										Invalidate();
-									renderWorker.ReportProgress((int)((double)(currentElementNum) / (double)totalElements * 100.0));
-                                }
-                            }
-							currentElementNum++;
-						}
-
-						Thread.Sleep(5);
-						Application.DoEvents();
-					}
-				}
-
-				// Turn off the progress reporting if it is on
-				renderWorker.ReportProgress(100);
-
-				// Sleep between each iteration
-				Thread.Sleep(250);
-			}
-		}
-
-		private void renderWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
-		{
-			_RenderProgressChanged(e.ProgressPercentage);
-		}
-
 		public void StartBackgroundRendering()
 		{
 			if (this.InvokeRequired)
 				this.Invoke(new Vixen.Delegates.GenericDelegate(StartBackgroundRendering));
-			else {
-				if (renderWorker != null) {
+			else 
+			{
+				if (renderWorker != null)
+				{
 					//while (renderWorker.IsBusy) { Thread.Sleep(10); }; 
 					if (!renderWorker.IsBusy)
 						renderWorker.RunWorkerAsync();
 				}
-				else {
+				else
+				{
 					renderWorker = new BackgroundWorker();
 					renderWorker.WorkerReportsProgress = true;
 					renderWorker.WorkerSupportsCancellation = true;
@@ -1310,73 +1212,189 @@ namespace Common.Controls.Timeline
 			}
 		}
 
-        public void ResetAllElements()
+		private void renderWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+		{
+			_RenderProgressChanged(e.ProgressPercentage);
+		}
+
+		private void renderWorker_DoWork(object sender, DoWorkEventArgs e)
+		{
+			double total = 0;
+			try
+			{
+
+				foreach (Element element in _blockingElementQueue.GetConsumingEnumerable(cts.Token))
+				{
+					if (renderWorker.CancellationPending)
+					{
+						break;
+					}
+					try
+					{
+						Size size = new Size((int)Math.Ceiling(timeToPixels(element.Duration)), element.Row.Height - 1);
+						element.SetupCachedImage(size);
+						if (!SuppressInvalidate)
+						{
+							if (element.EndTime > VisibleTimeStart && element.StartTime < VisibleTimeEnd)
+							{
+								Invalidate();
+							}
+						}
+						if (!_blockingElementQueue.Any())
+						{
+							total = 0;
+							if (!SuppressInvalidate)
+							{
+								Invalidate(); //Invalidate when the queue is empty just to make sure everything is up to date.
+							}
+							renderWorker.ReportProgress(100);
+						} else
+						{
+							double currentTotal = _blockingElementQueue.Count;
+							total = Math.Max(currentTotal, total);
+							renderWorker.ReportProgress((int)(((total - currentTotal) / total) * 100));
+						}
+
+					} catch (Exception ex)
+					{
+						Logging.ErrorException("Error in rendering.", ex);
+					}
+
+				}
+			} catch (OperationCanceledException)
+			{
+				//eat the uneeded exception
+			}
+		}
+
+		/// <summary>
+		/// Add a specific element to the render queue
+		/// </summary>
+		/// <param name="element"></param>
+        public void RenderElement(Element element)
         {
+			if (SupressRendering) return;
+			element.Changed=true;
+			_blockingElementQueue.Add(element);
+        }
+
+        public void RenderVisibleRows(List<Row> rows)
+        {
+			if (SupressRendering) return;
+			Element element;
             foreach (Row row in Rows)
             {
-                for (int i = 0; i < row.ElementCount; i++)
+                if (row.Visible)
                 {
-                    Element currentElement = row.GetElementAtIndex(i);
-                    currentElement.Changed = true;
-					ElementQueue.Add(currentElement);
+					for (int i=0; i < row.ElementCount; i++ ) {
+						element = row.GetElementAtIndex(i);
+						if (!element.CachedCanvasIsCurrent) {
+							_blockingElementQueue.Add(element);
+						}
+					}
                 }
             }
         }
 
+        public void RenderAllVisibleRows()
+        {
+			RenderVisibleRows(Rows);    
+        }
+
+        private void ClearElementRenderQueue()
+        {
+			SupressRendering = true;
+			while (_blockingElementQueue.Count > 0)
+			{
+				Element element;
+				_blockingElementQueue.TryTake(out element);
+			}
+			SupressRendering=false;
+			
+        }
+
+		public void ResetRowElements(List<Row> rows)
+		{
+			if (SupressRendering) return;
+			foreach (Row row in Rows)
+			{
+				for (int i = 0; i < row.ElementCount; i++)
+				{
+					Element currentElement = row.GetElementAtIndex(i);
+					currentElement.Changed = true;
+				}
+			}
+
+			RenderVisibleRows(rows);
+		}
+			
+        public void ResetAllElements()
+        {
+			if (SupressRendering) return;
+            ClearElementRenderQueue();
+			foreach (Row row in Rows)
+			{
+				for (int i = 0; i < row.ElementCount; i++)
+				{
+					Element currentElement = row.GetElementAtIndex(i);
+					currentElement.Changed = true;
+				}
+			}
+            RenderAllVisibleRows();
+        }
+
 		#endregion
 
-		private List<Element> GetOverlappingElements(Row row, Element elementMaster, List<Element> elements = null)
+		private List<List<Element>> DetermineElementStack(List<Element> elements)
 		{
-			//List<Element> elements = new List<Element>();
-			if (elements == null)
+			
+			List<List<Element>> stack = new List<List<Element>>();
+			stack.Add( new List<Element>{elements[0]} );
+			bool add = true;
+			for (int i = 1; i < elements.Count; i++)
 			{
-				elements = new List<Element>();
-			}
-			int inCount = elements.Count;
-			for (int elementNum = 0; elementNum < row.ElementCount; elementNum++)
-			{
-				Element element = row.GetElementAtIndex(elementNum);
-				if (
-					(
-					 (element.StartTime >= elementMaster.StartTime &&
-					   element.StartTime < elementMaster.EndTime) ||
-					 (element.EndTime <= elementMaster.EndTime &&
-					   element.EndTime > elementMaster.StartTime)
-				    ) ||
-				    (
-					 (elementMaster.StartTime >= element.StartTime &&
-					   elementMaster.StartTime < element.EndTime) ||
-					 (elementMaster.EndTime <= element.EndTime &&
-					   elementMaster.EndTime > element.StartTime)
-				    )
-				   )
+				add = true;
+				for (int x = 0; x < stack.Count; x++)
 				{
-					//if (element != elementMaster)
-					if (!elements.Contains(element)) 
+					if (elements[i].StartTime >= stack[x].Last().EndTime)
 					{
-						elements.Add(element);
-						elements = GetOverlappingElements(row, element, elements);
+						stack[x] .Add(elements[i]);
+						add = false;
+						break;
+					}
+				}
+				if (add) stack.Add(new List<Element> {elements[i]});
+			}
+
+			return stack;
+
+		}
+
+		private void DrawElement(Graphics g, Row row, Element currentElement, int top)
+		{
+			int elementRowLocation = 0;
+			int elementRowCount = 1;
+			List<Element> elements = row.GetOverlappingElements(currentElement);
+
+			if (elements.Count > 1)
+			{
+				var stack = DetermineElementStack(elements);
+				elementRowCount = stack.Count;
+				for (int i = 0; i < stack.Count; i++)
+				{
+					if (stack[i].Contains(currentElement))
+					{
+						elementRowLocation = i;
+						break;
 					}
 				}
 			}
-			if (elements.Count == 0)
-				elements.Add(elementMaster);
-			if (elements.Count == inCount)
-				return elements;
 
-			return elements;
-		}
-
-		private void DrawElement(Graphics g, Row row, Element currentElement, int top,
-								 ref TimeSpan lastStartTime, ref TimeSpan lastEndTime)
-		{
-			List<Element> elements = GetOverlappingElements(row, currentElement);
-
-			currentElement.DisplayHeight = (row.Height - 1) / elements.Count();
-			currentElement.DisplayTop = top + (currentElement.DisplayHeight * elements.IndexOf(currentElement));
-
+			currentElement.DisplayHeight = (row.Height - 1) / elementRowCount;
+			currentElement.DisplayTop = top + (currentElement.DisplayHeight * elementRowLocation);
+			currentElement.RowTopOffset = currentElement.DisplayHeight * elementRowLocation;
 			Size size = new Size((int)Math.Ceiling(timeToPixels(currentElement.Duration)), row.Height - 1);
-			Bitmap elementImage = currentElement.Draw(size, false);
+			Bitmap elementImage = currentElement.Draw(size);
 			//Bitmap elementImage = currentElement.Draw(size);
 			Point finalDrawLocation = new Point((int)Math.Floor(timeToPixels(currentElement.StartTime)), currentElement.DisplayTop);
 
@@ -1393,32 +1411,30 @@ namespace Common.Controls.Timeline
 
 			//g.DrawImage(elementImage, finalDrawLocation);
 
-			lastStartTime = currentElement.StartTime;
-			lastEndTime = currentElement.EndTime;
+			//lastStartTime = currentElement.StartTime;
+			//lastEndTime = currentElement.EndTime;
 		}
 
 		private void _drawInfo(Graphics g)
 		{
-			foreach (Row row in Rows)
+			bool found = false;
+			
+			foreach (Row row in VisibleRows)
 			{
-				if (!row.Visible)
-					continue;
-
-				int top = 0;
+				
 				for (int i = 0; i < row.ElementCount; i++)
 				{
 					Element element = row.GetElementAtIndex(i);
+					if (element.StartTime > VisibleTimeEnd)
+					{
+						break;
+					}
 					if (!element.MouseCaptured)
 						continue;
-
-					if (top < VerticalOffset || top > VerticalOffset + ClientSize.Height)
-					{
-						top += row.Height; // next row starts just below this row
-						continue;
-					}
-
+					found = true;
 					element.DrawInfo(g, element.DisplayRect);
 				}
+				if (found) break;
 			}
 		}
 
@@ -1426,37 +1442,19 @@ namespace Common.Controls.Timeline
 		{
 			// Draw each row
 			int top = 0; // y-coord of top of current row
-			foreach (Row row in Rows) {
-				if (!row.Visible)
-					continue;
+			foreach (Row row in VisibleRows) {
+				row.DisplayTop = top;
 
-				if (top < VerticalOffset || top > VerticalOffset + ClientSize.Height) {
-					top += row.Height; // next row starts just below this row
-					continue;
-				}
-
-				// a list of generated bitmaps, with starttime and endtime for where they are supposed to be drawn.
-				List<BitmapDrawDetails> bitmapsToDraw = new List<BitmapDrawDetails>();
-				TimeSpan currentlyDrawnTo = TimeSpan.Zero;
-				TimeSpan desiredDrawTo = TimeSpan.Zero;
-				bool lastItemDrawn = false;
-
-				TimeSpan lastStartTime = TimeSpan.Zero;
-				TimeSpan lastEndTime = TimeSpan.Zero;
 				for (int i = 0; i < row.ElementCount; i++) {
 					Element currentElement = row.GetElementAtIndex(i);
 					if (currentElement.EndTime < VisibleTimeStart)
 						continue;
 
 					if (currentElement.StartTime > VisibleTimeEnd) {
-						if (lastItemDrawn) {
-							continue;
-						}
-						else
-							lastItemDrawn = true;
+						break;
 					}
 
-					DrawElement(g, row, currentElement, top, ref lastStartTime, ref lastEndTime);
+					DrawElement(g, row, currentElement, top);
 				}
 
 				top += row.Height; // next row starts just below this row
@@ -1498,8 +1496,8 @@ namespace Common.Controls.Timeline
 				try {
 					e.Graphics.TranslateTransform(this.AutoScrollPosition.X, this.AutoScrollPosition.Y);
 
-					Stopwatch s = new Stopwatch();
-					s.Start();
+					//Stopwatch s = new Stopwatch();
+					//s.Start();
 
 					_drawGridlines(e.Graphics);
 					_drawRows(e.Graphics);
@@ -1509,10 +1507,11 @@ namespace Common.Controls.Timeline
 					_drawSelection(e.Graphics);
 					_drawCursors(e.Graphics);
 
-					s.Stop();
+					//s.Stop();
 					//Logging.Info("OnPaint: " + s.ElapsedMilliseconds);
 				}
 				catch (Exception ex) {
+					Logging.Error("Exception in TimelineGrid.OnPaint():\n\n\t" + ex.Message + "\n\nBacktrace:\n\n\t" + ex.StackTrace);
 					MessageBox.Show("Exception in TimelineGrid.OnPaint():\n\n\t" + ex.Message + "\n\nBacktrace:\n\n\t" + ex.StackTrace);
 				}
 		}
@@ -1554,12 +1553,6 @@ namespace Common.Controls.Timeline
 		public Color SnapColor; // the color to draw the snap point
 	}
 
-	internal class BitmapDrawDetails
-	{
-		public Bitmap bmp; // the bitmap to be drawn from the start time onwards
-		public TimeSpan startTime; // the start time that this bitmap should be drawn from
-		public TimeSpan duration; // how long (time) this bitmap should be drawn for
-	}
 
 	// Enumerations
 	internal enum DragState
