@@ -345,10 +345,10 @@ namespace ZedGraph
 		/// Emf (vector), or a variety of Bitmap formats.
 		/// </summary>
 		/// <param name="DefaultFileName">
-		/// Accepts a default file name for the file dialog (if "" or null, default is not used)
+		/// Accepts a default file name for the file dialog (if string.Empty or null, default is not used)
 		/// </param>
 		/// <returns>
-		/// The file name saved, or "" if cancelled.
+		/// The file name saved, or string.Empty if cancelled.
 		/// </returns>
 		/// <remarks>
 		/// Note that <see cref="SaveAsBitmap" /> and <see cref="SaveAsEmf" /> methods are provided
@@ -430,7 +430,7 @@ namespace ZedGraph
 					}
 				}
 			}
-			return "";
+			return string.Empty;
 		}
 
 		/// <summary>

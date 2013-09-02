@@ -48,7 +48,7 @@ namespace VixenModules.SequenceType.Vixen2x
 
 			conversionProgressBar.SetupProgressBar(0, sizeof (patternType)*parsedV2Sequence.ElementCount);
 
-			conversionProgressBar.StatusLineLabel = "";
+			conversionProgressBar.StatusLineLabel = string.Empty;
 
 			createTimedSequence();
 			importSequenceData();
@@ -76,7 +76,7 @@ namespace VixenModules.SequenceType.Vixen2x
 					Sequence.AddMedia(MediaService.Instance.GetMedia(songFileName));
 				}
 				else {
-					var message = String.Format("Could not locate the audio file '{0}'; please add it manually " +
+					var message = string.Format("Could not locate the audio file '{0}'; please add it manually " +
 					                            "after import (Under Tools -> Associate Audio).", Path.GetFileName(songFileName));
 					MessageBox.Show(message, "Couldn't find audio");
 				}
@@ -118,7 +118,7 @@ namespace VixenModules.SequenceType.Vixen2x
 
 				currentEventValue = zeroEventValue;
 				for (var currentElementNum = 0; currentElementNum < parsedV2Sequence.ElementCount; currentElementNum++) {
-					conversionProgressBar.StatusLineLabel = String.Format("Finding {0} on Element {1}", patternText,
+					conversionProgressBar.StatusLineLabel = string.Format("Finding {0} on Element {1}", patternText,
 					                                                      currentElementNum + 1);
 					conversionProgressBar.UpdateProgressBar(++pbImportValue);
 

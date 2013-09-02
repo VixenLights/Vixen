@@ -63,7 +63,7 @@ namespace VixenModules.Preview.VixenPreview
 
 		private Bitmap _background;
 		private Bitmap _alphaBackground;
-		private Bitmap _blankAlphaBackground;
+		//private Bitmap _blankAlphaBackground;
 
 		private VixenPreviewData _data;
 
@@ -76,7 +76,7 @@ namespace VixenModules.Preview.VixenPreview
 		private Random random = new Random();
 		private Stopwatch renderTimer = new Stopwatch();
 
-		private TextureBrush _backgroundBrush;
+		//private TextureBrush _backgroundBrush;
 
 		#endregion
 
@@ -257,10 +257,10 @@ namespace VixenModules.Preview.VixenPreview
 					gfx.FillRectangle(brush, 0, 0, _alphaBackground.Width, _alphaBackground.Height);
 				}
 
-				_blankAlphaBackground = new Bitmap(_background.Width, _background.Height, PixelFormat.Format32bppPArgb);
-				Graphics g = Graphics.FromImage(_blankAlphaBackground);
-				g.Clear(Color.FromArgb(255 - BackgroundAlpha, 0, 0, 0));
-				_backgroundBrush = new TextureBrush(_blankAlphaBackground);
+				//_blankAlphaBackground = new Bitmap(_background.Width, _background.Height, PixelFormat.Format32bppPArgb);
+				//Graphics g = Graphics.FromImage(_blankAlphaBackground);
+				//g.Clear(Color.FromArgb(255 - BackgroundAlpha, 0, 0, 0));
+				//_backgroundBrush = new TextureBrush(_blankAlphaBackground);
 			}
 		}
 
@@ -294,8 +294,6 @@ namespace VixenModules.Preview.VixenPreview
 
 		public void AddDisplayItem(DisplayItem displayItem)
 		{
-            if (OnElementsChanged != null)
-                OnElementsChanged(this, new EventArgs());
 			DisplayItems.Add(displayItem);
 		}
 
@@ -703,13 +701,13 @@ namespace VixenModules.Preview.VixenPreview
 
 		private void VixenPreviewControl_MouseUp(object sender, MouseEventArgs e)
 		{
-			HighlightedElements.Clear();
 			if (_mouseCaptured) {
 				if (_currentTool != Tools.Select) {
 					// If control is pressed, deselect the shape and immediately allow drawing another shape
 					if ((Control.ModifierKeys & Keys.Shift) != 0) {
 						_selectedDisplayItem.Shape.MouseUp(sender, e);
 						DeSelectSelectedDisplayItem();
+						//HighlightedElements.Clear();
 					}
 					else {
 						_currentTool = Tools.Select;
@@ -720,7 +718,7 @@ namespace VixenModules.Preview.VixenPreview
 					_selectedDisplayItem.Shape.MouseUp(sender, e);
 					OnSelectDisplayItem(this, _selectedDisplayItem);
 				}
-					// Ok, if this is true, we've got a rubber band and something is selected, now what?
+				// Ok, if this is true, we've got a rubber band and something is selected, now what?
 				else if (SelectedDisplayItems.Count > 0) {
 					// If we only have one item, just select it and go on.
 					if (SelectedDisplayItems.Count == 1) {
@@ -868,12 +866,17 @@ namespace VixenModules.Preview.VixenPreview
 		{
 			//lock (PreviewTools.renderLock)
 			//{
-			if (NodeToPixel == null) PreviewTools.Throw("PreviewBase.NodeToPixel == null");
+			if (NodeToPixel == null) NodeToPixel = new ConcurrentDictionary<ElementNode, List<PreviewPixel>>();
 			NodeToPixel.Clear();
 
-			if (DisplayItems == null) PreviewTools.Throw("DisplayItems == null");
+			if (DisplayItems == null)
+				throw new System.ArgumentException("DisplayItems == null");
+				
 			foreach (DisplayItem item in DisplayItems) {
-				if (item.Shape.Pixels == null) PreviewTools.Throw("item.Shape.Pixels == null");
+				if (item.Shape.Pixels == null)
+					throw new System.ArgumentException("item.Shape.Pixels == null");
+				
+				 
 				foreach (PreviewPixel pixel in item.Shape.Pixels) {
 					if (pixel.Node != null) {
 						List<PreviewPixel> pixels;

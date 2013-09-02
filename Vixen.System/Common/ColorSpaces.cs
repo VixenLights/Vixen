@@ -1,13 +1,14 @@
 using System;
 using System.Drawing;
 using System.ComponentModel;
+using System.Runtime.Serialization;
 
 namespace Common.Controls.ColorManagement.ColorModels
 {
 	/// <summary>
 	/// CIE XYZ color space
 	/// </summary>
-	[Serializable, TypeConverter(typeof (XYZTypeConverter))]
+	[DataContract, TypeConverter(typeof (XYZTypeConverter))]
 	public struct XYZ
 	{
 		public static readonly XYZ Empty = new XYZ();
@@ -15,7 +16,7 @@ namespace Common.Controls.ColorManagement.ColorModels
 
 		#region variables
 
-		private double _x, _y, _z;
+    [DataMember] private double _x, _y, _z;
 
 		#endregion
 
@@ -152,12 +153,12 @@ namespace Common.Controls.ColorManagement.ColorModels
 		#endregion
 	}
 
-	[Serializable]
+	[DataContract]
 	public struct RGB
 	{
 		#region variables
 
-		private double _r, _g, _b;
+		[DataMember] private double _r, _g, _b;
 
 		#endregion
 

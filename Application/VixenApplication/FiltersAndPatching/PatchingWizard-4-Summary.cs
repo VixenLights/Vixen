@@ -34,8 +34,8 @@ namespace VixenApplication.FiltersAndPatching
 
 		private void PatchingWizard_4_Summary_Load(object sender, EventArgs e)
 		{
-			string warning1 = "";
-			string warning2 = "";
+			string warning1 = string.Empty;
+			string warning2 = string.Empty;
 
 			_sourceCount = _data.Sources.Count;
 			_filterCount = _data.Filters.Count;

@@ -45,16 +45,16 @@ namespace Vixen.Module.SequenceType
 		public override IModuleDataModel Clone()
 		{
 			throw new NotImplementedException();
-			SequenceTypeDataModelBase newInstance = new SequenceTypeDataModelBase();
-			newInstance.Version = Version;
-			newInstance.Length = Length;
-			newInstance.SelectedTimingProvider = new SelectedTimingProvider(SelectedTimingProvider.ProviderType,
-			                                                                SelectedTimingProvider.SourceName);
-			newInstance.Media = new MediaCollection(Media);
-			//newInstance.EffectData = 
-			//newInstance.SequenceFilterData = 
+            //SequenceTypeDataModelBase newInstance = new SequenceTypeDataModelBase();
+            //newInstance.Version = Version;
+            //newInstance.Length = Length;
+            //newInstance.SelectedTimingProvider = new SelectedTimingProvider(SelectedTimingProvider.ProviderType,
+            //                                                                SelectedTimingProvider.SourceName);
+            //newInstance.Media = new MediaCollection(Media);
+            ////newInstance.EffectData = 
+            ////newInstance.SequenceFilterData = 
 
-			return newInstance;
+            //return newInstance;
 		}
 
 		private void _InitDataStreams()

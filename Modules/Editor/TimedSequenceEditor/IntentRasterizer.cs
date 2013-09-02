@@ -13,7 +13,7 @@ using Vixen.Sys.Dispatch;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
-	internal class IntentRasterizer : IntentDispatch
+	internal class IntentRasterizer : IntentDispatch, IDisposable
 	{
 		private RectangleF _rect;
 		private Graphics _graphics;
@@ -60,6 +60,18 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				                                                    LinearGradientMode.Horizontal)) {
 				_graphics.FillRectangle(brush, _rect);
 			}
+		}
+
+		~IntentRasterizer() {
+			Dispose(false);
+		}
+		protected void Dispose(bool disposing) {
+			if (disposing) { }
+			if (_graphics != null) 
+				_graphics.Dispose();
+		}
+		public void Dispose() {
+			Dispose(true);
 		}
 	}
 }

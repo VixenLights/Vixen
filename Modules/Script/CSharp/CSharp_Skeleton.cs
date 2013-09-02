@@ -71,7 +71,7 @@ namespace VixenModules.Script.CSharp
 		private global::System.Text.StringBuilder generationEnvironmentField;
 		private global::System.CodeDom.Compiler.CompilerErrorCollection errorsField;
 		private global::System.Collections.Generic.List<int> indentLengthsField;
-		private string currentIndentField = "";
+		private string currentIndentField = string.Empty;
 		private bool endsWithNewline;
 		private global::System.Collections.Generic.IDictionary<string, object> sessionField;
 
@@ -162,7 +162,7 @@ namespace VixenModules.Script.CSharp
 			if (textToAppend.EndsWith(global::System.Environment.NewLine, global::System.StringComparison.CurrentCulture)) {
 				this.endsWithNewline = true;
 			}
-			// This is an optimization. If the current indent is "", then we don't have to do any
+			// This is an optimization. If the current indent is string.Empty, then we don't have to do any
 			// of the more complex stuff further down.
 			if ((this.currentIndentField.Length == 0)) {
 				this.GenerationEnvironment.Append(textToAppend);
@@ -245,7 +245,7 @@ namespace VixenModules.Script.CSharp
 		/// </summary>
 		public string PopIndent()
 		{
-			string returnValue = "";
+			string returnValue = string.Empty;
 			if ((this.indentLengths.Count > 0)) {
 				int indentLength = this.indentLengths[(this.indentLengths.Count - 1)];
 				this.indentLengths.RemoveAt((this.indentLengths.Count - 1));
@@ -263,7 +263,7 @@ namespace VixenModules.Script.CSharp
 		public void ClearIndent()
 		{
 			this.indentLengths.Clear();
-			this.currentIndentField = "";
+			this.currentIndentField = string.Empty;
 		}
 
 		#endregion

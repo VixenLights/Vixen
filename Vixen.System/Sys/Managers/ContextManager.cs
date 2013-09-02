@@ -122,8 +122,7 @@ namespace Vixen.Sys.Managers
 			if (contextFeatures == null) throw new ArgumentNullException("contextFeatures");
 			Type contextType = _FindContextWithFeatures(contextTargetType, contextFeatures);
 			if (contextType == null) {
-				Logging.Error("Could not find a context for target type " + contextTargetType + " with features " +
-				                          contextFeatures);
+				Logging.Error(string.Format("Could not find a context for target type {0} with features {1}", contextTargetType, contextFeatures));
 				return null;
 			}
 			return (ContextBase) Activator.CreateInstance(contextType);
@@ -135,7 +134,7 @@ namespace Vixen.Sys.Managers
 			return
 				contextTypes.FirstOrDefault(
 					x =>
-					x.GetCustomAttributes(typeof (ContextAttribute), false).Cast<ContextAttribute>().Any(
+					x.GetCustomAttributes(typeof(ContextAttribute), false).Cast<ContextAttribute>().Any(
 						y => y.TargetType == contextTargetType && y.Caching == contextFeatures.Caching));
 		}
 

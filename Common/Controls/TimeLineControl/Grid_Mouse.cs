@@ -332,8 +332,7 @@ namespace Common.Controls.Timeline
 		private void elementsFinishedMoving(ElementMoveType type)
 		{
 			foreach (var elem in SelectedElements) {
-				//elem.Changed = true;
-				ElementQueue.Add(elem);
+				RenderElement(elem);
 				elem.EndUpdate();
 			}
 

@@ -98,17 +98,17 @@ namespace VixenModules.Effect.Nutcracker
 		// Text
 		[DataMember] public int Text_Top = 5;
 		[DataMember] public int Text_Left = 5;
-		[DataMember] public string Text_Line1 = "";
-		[DataMember] public string Text_Line2 = "";
+		[DataMember] public string Text_Line1 = string.Empty;
+		[DataMember] public string Text_Line2 = string.Empty;
 		[DataMember] public int Text_Direction = 0;
 
-		[DataMember]
+		[DataMember(IsRequired = false)]
 		public SerializableFont Text_Font { get; set; }
 
 		[DataMember] public int Text_TextRotation = 0;
 
 		// Picture
-		[DataMember] public string Picture_FileName = "";
+		[DataMember] public string Picture_FileName = string.Empty;
 		[DataMember] public int Picture_Direction = 0;
 		[DataMember] public int Picture_GifSpeed = 1;
 
@@ -122,12 +122,12 @@ namespace VixenModules.Effect.Nutcracker
 		[DataMember] public int Tree_Branches = 5;
 
 		// Movie
-		[DataMember] public string Movie_DataPath = "";
+		[DataMember] public string Movie_DataPath = string.Empty;
 		[DataMember] public int Movie_PlaybackSpeed = 0; // -100=Slow, 0=Normal, 100=Fast
 		[DataMember] public int Movie_MovementDirection = 0;
 
 		// PictureTile
-		[DataMember] public string PictureTile_FileName = "";
+		[DataMember] public string PictureTile_FileName = string.Empty;
 		[DataMember] public int PictureTile_Direction = 0;
 		[DataMember] public double PictureTile_Scaling = 100.0;
 		[DataMember] public bool PictureTile_ReplaceColor = false;
@@ -139,7 +139,7 @@ namespace VixenModules.Effect.Nutcracker
 		{
 			if (PreviewType == null)
 				PreviewType = NutcrackerEffects.PreviewType.Tree180;
-			else if (PreviewType.ToString() == "")
+			else if (PreviewType.ToString() == string.Empty)
 				PreviewType = NutcrackerEffects.PreviewType.Tree180;
 
 			if (Palette == null)
@@ -160,16 +160,16 @@ namespace VixenModules.Effect.Nutcracker
 				Twinkles_Count = 10;
 
 			if (Text_Line1 == null)
-				Text_Line1 = "";
+				Text_Line1 = string.Empty;
 			if (Text_Line2 == null)
-				Text_Line2 = "";
+				Text_Line2 = string.Empty;
 
 			if (Text_Font == null) {
 				Text_Font = new SerializableFont(new Font("Arial", 8));
 			}
 
 			if (Picture_FileName == null)
-				Picture_FileName = "";
+				Picture_FileName = string.Empty;
 			if (Picture_GifSpeed < 1)
 				Picture_GifSpeed = 1;
 
@@ -187,7 +187,7 @@ namespace VixenModules.Effect.Nutcracker
 				PixelSize = 3;
 
 			if (Movie_DataPath == null)
-				Movie_DataPath = "";
+				Movie_DataPath = string.Empty;
 
 			if (PictureTile_Scaling == 0.0) {
 				PictureTile_Scaling = 100.0;

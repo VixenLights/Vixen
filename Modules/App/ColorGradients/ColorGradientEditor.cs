@@ -133,7 +133,7 @@ namespace VixenModules.App.ColorGradients
 			Common.Controls.TextDialog dialog = new Common.Controls.TextDialog("Gradient name?");
 
 			while (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-				if (dialog.Response == "") {
+				if (dialog.Response == string.Empty) {
 					MessageBox.Show("Please enter a name.");
 					continue;
 				}

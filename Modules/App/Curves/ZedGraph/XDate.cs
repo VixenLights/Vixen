@@ -1583,7 +1583,7 @@ namespace ZedGraph
 			                     out second, out millisecond);
 			if (year <= 0) {
 				year = 1 - year;
-				fmtStr = fmtStr + " (BC)";
+				fmtStr = string.Format("{0} (BC)", fmtStr);
 			}
 
 			if (fmtStr.IndexOf("[d]") >= 0) {

@@ -17,7 +17,8 @@ using System.Collections.Concurrent;
 
 			return converted;
 		}
-		
+     
+
 		public static byte[] ToChannelValuesAsBytes(this ICommand[] outputStates)
 		{
 			if (outputStates == null) {

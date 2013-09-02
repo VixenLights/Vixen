@@ -65,6 +65,11 @@ namespace VixenModules.Preview.VixenPreview {
 			PopulateTemplateList();
 
 			Setup();
+
+			performanceToolStripMenuItem.Visible = Vixen.Sys.VixenSystem.VersionBeyondWindowsXP;
+			Properties.Settings settings = new Properties.Settings();
+
+			useDirect2DPreviewRenderingToolStripMenuItem.Checked = !settings.UseGDIRendering;
 		}
 
 		private void buttonSetBackground_Click(object sender, EventArgs e) {
@@ -141,6 +146,7 @@ namespace VixenModules.Preview.VixenPreview {
 		}
 
 		private void buttonSave_Click(object sender, EventArgs e) {
+            SaveLocationDataForElements();
 			DialogResult = System.Windows.Forms.DialogResult.OK;
 			previewForm.Close();
 			Close();
@@ -149,7 +155,7 @@ namespace VixenModules.Preview.VixenPreview {
 		private void VixenPreviewSetup3_Move(object sender, EventArgs e) {
 			if (Data == null) {
 				Logging.Warn("VixenPreviewSetup3_Move: Data is null. abandoning move. (Thread ID: " +
-				                            System.Threading.Thread.CurrentThread.ManagedThreadId + ")");
+											System.Threading.Thread.CurrentThread.ManagedThreadId + ")");
 				return;
 			}
 
@@ -160,7 +166,7 @@ namespace VixenModules.Preview.VixenPreview {
 		private void VixenPreviewSetup3_Resize(object sender, EventArgs e) {
 			if (Data == null) {
 				Logging.Warn("VixenPreviewSetup3_Resize: Data is null. abandoning resize. (Thread ID: " +
-				                            System.Threading.Thread.CurrentThread.ManagedThreadId + ")");
+											System.Threading.Thread.CurrentThread.ManagedThreadId + ")");
 				return;
 			}
 
@@ -263,7 +269,7 @@ namespace VixenModules.Preview.VixenPreview {
 			previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Select;
 		}
 
-		private void saveLocationDataToElementsToolStripMenuItem_Click(object sender, EventArgs e) {
+		private void SaveLocationDataForElements() {
 			Cursor = Cursors.WaitCursor;
 			foreach (var d in _data.DisplayItems) {
 				//_data.DisplayItems.ForEach(d => {
@@ -290,6 +296,17 @@ namespace VixenModules.Preview.VixenPreview {
 		{
 			previewForm.Preview.ShowInfo = !previewForm.Preview.ShowInfo;
 			propInformationToolStripMenuItem.Checked = previewForm.Preview.ShowInfo;
+		}
+
+		private void useDirect2DPreviewRenderingToolStripMenuItem_Click(object sender, EventArgs e) {
+			var msg = MessageBox.Show("Preview will be restarted. This is a system-wide change that will apply to all previews. Are you sure you want to do this?", "Change Preview", MessageBoxButtons.YesNo);
+			if (msg == System.Windows.Forms.DialogResult.Yes) {
+				Properties.Settings settings = new Properties.Settings();
+				settings.UseGDIRendering = !useDirect2DPreviewRenderingToolStripMenuItem.Checked;
+				settings.Save();
+				
+
+			}
 		}
 	}
 }

@@ -167,7 +167,7 @@ namespace VixenModules.App.Curves
 			// if we're editing a curve from the library, treat it special
 			if (curve.IsCurrentLibraryCurve) {
 				zedGraphControl.GraphPane.CurveList.Clear();
-				zedGraphControl.GraphPane.AddCurve("", curve.Points, Curve.ActiveCurveGridColor);
+				zedGraphControl.GraphPane.AddCurve(string.Empty, curve.Points, Curve.ActiveCurveGridColor);
 				if (LibraryCurveName == null) {
 					labelCurve.Text = "This curve is a library curve.";
 					Text = "Curve Editor: Library Curve";
@@ -192,12 +192,12 @@ namespace VixenModules.App.Curves
 			else {
 				if (curve.IsLibraryReference) {
 					zedGraphControl.GraphPane.CurveList.Clear();
-					zedGraphControl.GraphPane.AddCurve("", curve.Points, Curve.InactiveCurveGridColor);
+					zedGraphControl.GraphPane.AddCurve(string.Empty, curve.Points, Curve.InactiveCurveGridColor);
 					labelCurve.Text = "This curve is linked to the library curve: " + curve.LibraryReferenceName;
 				}
 				else {
 					zedGraphControl.GraphPane.CurveList.Clear();
-					zedGraphControl.GraphPane.AddCurve("", curve.Points, Curve.ActiveCurveGridColor);
+					zedGraphControl.GraphPane.AddCurve(string.Empty, curve.Points, Curve.ActiveCurveGridColor);
 					labelCurve.Text = "This curve is not linked to any in the library.";
 				}
 
@@ -236,7 +236,7 @@ namespace VixenModules.App.Curves
 			Common.Controls.TextDialog dialog = new Common.Controls.TextDialog("Curve name?");
 
 			while (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-				if (dialog.Response == "") {
+				if (dialog.Response == string.Empty) {
 					MessageBox.Show("Please enter a name.");
 					continue;
 				}

@@ -10,6 +10,6 @@
 	public interface IDataFlowComponentReference<T> : IDataFlowComponentReference
 		where T : IDataFlowData
 	{
-		IDataFlowComponent<T> Component { get; }
+	new	IDataFlowComponent<T> Component { get; }
 	}
 }

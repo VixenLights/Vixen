@@ -80,6 +80,7 @@
 			this.toolStripMenuItem_zoomRowsOut = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem_associateAudio = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItem_removeAudio = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem_MarkManager = new System.Windows.Forms.ToolStripMenuItem();
 			this.modifySequenceLengthToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.timerPlaying = new System.Windows.Forms.Timer(this.components);
@@ -543,6 +544,7 @@
 			// 
 			this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItem_associateAudio,
+            this.toolStripMenuItem_removeAudio,
             this.toolStripMenuItem_MarkManager,
             this.modifySequenceLengthToolStripMenuItem});
 			this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
@@ -556,6 +558,15 @@
 			this.toolStripMenuItem_associateAudio.Size = new System.Drawing.Size(174, 22);
 			this.toolStripMenuItem_associateAudio.Text = "Associate Audio...";
 			this.toolStripMenuItem_associateAudio.Click += new System.EventHandler(this.toolStripMenuItem_associateAudio_Click);
+			// 
+			// toolStripMenuItem_removeAudio
+			// 
+			this.toolStripMenuItem_removeAudio.Enabled = false;
+			this.toolStripMenuItem_removeAudio.Image = global::VixenModules.Editor.TimedSequenceEditor.TimedSequenceEditorResources.base_speaker_32;
+			this.toolStripMenuItem_removeAudio.Name = "toolStripMenuItem_removeAudio";
+			this.toolStripMenuItem_removeAudio.Size = new System.Drawing.Size(174, 22);
+			this.toolStripMenuItem_removeAudio.Text = "Remove Audio";
+			this.toolStripMenuItem_removeAudio.Click += new System.EventHandler(this.toolStripMenuItem_removeAudio_Click);
 			// 
 			// toolStripMenuItem_MarkManager
 			// 
@@ -632,7 +643,7 @@
 			// toolStripStatusLabel4
 			// 
 			this.toolStripStatusLabel4.Name = "toolStripStatusLabel4";
-			this.toolStripStatusLabel4.Size = new System.Drawing.Size(254, 19);
+			this.toolStripStatusLabel4.Size = new System.Drawing.Size(223, 19);
 			this.toolStripStatusLabel4.Spring = true;
 			// 
 			// toolStripStatusLabel_RenderingElements
@@ -696,7 +707,7 @@
 			this.toolStripEffects.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
 			this.toolStripEffects.Location = new System.Drawing.Point(3, 0);
 			this.toolStripEffects.Name = "toolStripEffects";
-			this.toolStripEffects.Size = new System.Drawing.Size(159, 25);
+			this.toolStripEffects.Size = new System.Drawing.Size(128, 25);
 			this.toolStripEffects.TabIndex = 5;
 			this.toolStripEffects.Text = "Effects";
 			// 
@@ -925,5 +936,6 @@
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel4;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel_RenderingElements;
         private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar_RenderingElements;
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_removeAudio;
 	}
 }

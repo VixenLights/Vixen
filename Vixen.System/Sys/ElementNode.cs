@@ -82,9 +82,8 @@ namespace Vixen.Sys
 					// this Element should be unique to this ElementNode. If it already exists in the element -> ElementNode
 					// mapping in the Element Manager, something Very Bad (tm) has happened.
 					if (VixenSystem.Elements.GetElementNodeForElement(value) != null) {
-						Logging.Error("ElementNode: assigning element (id: " + value.Id + ") to this ElementNode (id: " + Id +
-						                          "), but it already exists in another ElementNode! (id: " +
-						                          VixenSystem.Elements.GetElementNodeForElement(value).Id + ")");
+						Logging.Error(string.Format("ElementNode: assigning element (id: {0}) to this ElementNode (id: {1}), but it already exists in another ElementNode! (id: {2})", value.Id, Id, VixenSystem.Elements.GetElementNodeForElement(value).Id));
+
 					}
 
 					VixenSystem.Elements.SetElementNodeForElement(_element, this);

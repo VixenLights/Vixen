@@ -67,7 +67,7 @@ namespace Vixen.IO.Xml.Serializer
 			IModuleDescriptor descriptor = Modules.GetDescriptorById(moduleTypeId.Value);
 			if (descriptor == null) {
 				Logging.Error("Could not get module data for module type " + moduleTypeId.Value +
-				                          " because the module type does not exist.");
+										  " because the module type does not exist.");
 				return null;
 			}
 

@@ -126,7 +126,7 @@ namespace Dataweb.NShape.WinFormsUI
 		private void addLibraryButton_Click(object sender, EventArgs e)
 		{
 			openFileDialog.Filter = "Assembly Files|*.dll|All Files|*.*";
-			openFileDialog.FileName = "";
+			openFileDialog.FileName = string.Empty;
 			openFileDialog.Multiselect = true;
 			if (string.IsNullOrEmpty(openFileDialog.InitialDirectory))
 				openFileDialog.InitialDirectory = Application.StartupPath;
@@ -175,7 +175,7 @@ namespace Dataweb.NShape.WinFormsUI
 						string msg =
 							"When removing a library, the undo history will be cleared. You will not be able to undo changes made until now.";
 						msg += Environment.NewLine + "Do you really want to remove loaded libraries?";
-						DialogResult res = MessageBox.Show(this, msg, "", MessageBoxButtons.YesNo, MessageBoxIcon.Question,
+						DialogResult res = MessageBox.Show(this, msg, string.Empty, MessageBoxButtons.YesNo, MessageBoxIcon.Question,
 						                                   MessageBoxDefaultButton.Button2);
 						removeLibrary = (res == DialogResult.Yes);
 						removeConfirmed = true;

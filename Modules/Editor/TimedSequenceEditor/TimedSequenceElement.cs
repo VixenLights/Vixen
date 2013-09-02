@@ -17,6 +17,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 {
 	public class TimedSequenceElement : Element
 	{
+		private Object lockObject = new Object();
 		public TimedSequenceElement(EffectNode effectNode)
 			: base()
 		{
@@ -24,9 +25,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			Duration = effectNode.TimeSpan;
 			EffectNode = effectNode;
 			BorderColor = Color.Black;
-			//BackColor = Color.FromArgb(50, 255, 255, 255);
 			BackColor = Color.FromArgb(0, 0, 0, 0);
-			TextColor = Color.FromArgb(60, 60, 60);
 		}
 
 		// copy ctor
@@ -37,47 +36,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			EffectNode = other.EffectNode;
 		}
 
-		public Color TextColor { get; set; }
-
-		private Bitmap CachedCanvasContent { get; set; }
-
 		private bool ElementTimeHasChangedSinceDraw { get; set; }
 
 		protected override void DrawCanvasContent(Graphics graphics)
 		{
-			// if our cached copy is old or nonexistant, redraw it and save it
-			// TODO: this may not be perfectly accurate, since it's possible for someone else to come along and render
-			// the effect, which would make it non-dirty, but we don't know about it yet. Not ideal. Add a serial or GUID to effect rendering, to be able to track it.
-			if (EffectNode.Effect.IsDirty || CachedCanvasContent == null ||
-			    CachedCanvasContent.Width != (int) graphics.VisibleClipBounds.Width ||
-			    CachedCanvasContent.Height != (int) graphics.VisibleClipBounds.Height) {
-				CachedCanvasContent = new Bitmap((int) graphics.VisibleClipBounds.Width, (int) graphics.VisibleClipBounds.Height);
-				EffectRasterizer effectRasterizer = new EffectRasterizer();
-				using (Graphics g = Graphics.FromImage(CachedCanvasContent)) {
-					effectRasterizer.Rasterize(EffectNode.Effect, g);
-				}
-			}
-
-			graphics.DrawImage(CachedCanvasContent, 0, 0);
-
-			// add text describing the effect
-			//using (Font f = new Font("Arial", 7))
-			//using (Brush b = new SolidBrush(TextColor)) {
-			//    graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
-			//    graphics.DrawString(EffectNode.Effect.EffectName, f, b, new RectangleF(5, 3, 50, 12));
-			//    graphics.DrawString(string.Format("Start: {0}", EffectNode.StartTime.ToString(@"m\:ss\.fff")), f, b,
-			//                        new PointF(60, 3));
-			//    graphics.DrawString(string.Format("Length: {0}", EffectNode.TimeSpan.ToString(@"m\:ss\.fff")), f, b,
-			//                        new PointF(60, 16));
-			//}
-
-			ElementTimeHasChangedSinceDraw = false;
-		}
-
-		public override bool IsCanvasContentCurrent(Size imageSize)
-		{
-			return base.IsCanvasContentCurrent(imageSize) && !EffectNode.Effect.IsDirty && !ElementTimeHasChangedSinceDraw &&
-			       CachedCanvasContent != null;
+			EffectRasterizer.Rasterize(EffectNode.Effect, graphics);
+			ElementTimeHasChangedSinceDraw = false;			
 		}
 
 		protected override void OnTimeChanged()

@@ -23,18 +23,18 @@
 					_background.Dispose();
 				if (_alphaBackground != null)
 					_alphaBackground.Dispose();
-				if (_blankAlphaBackground != null)
-					_blankAlphaBackground.Dispose();
-				if (_backgroundBrush != null)
-					_backgroundBrush.Dispose();
+				//if (_blankAlphaBackground != null)
+				//    _blankAlphaBackground.Dispose();
+				//if (_backgroundBrush != null)
+				//    _backgroundBrush.Dispose();
 				_highlightedElements.Clear();
 			}
 			_background = null;
 			_alphaBackground = null;
-			_blankAlphaBackground = null;
+			//_blankAlphaBackground = null;
 			_highlightedElements = null;
 			_selectedDisplayItems = null;
-			_backgroundBrush = null;
+			//_backgroundBrush = null;
 
 			base.Dispose(disposing);
 		}

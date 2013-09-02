@@ -18,7 +18,7 @@ namespace VixenModules.App.VirtualEffect
 
 		private void textBoxName_TextChanged(object sender, EventArgs e)
 		{
-			if (textBoxName.Text == "") {
+			if (textBoxName.Text == string.Empty) {
 				buttonSave.Enabled = false;
 			}
 			else {

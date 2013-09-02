@@ -387,7 +387,7 @@ namespace ZedGraph
 
 			float halfSize = _symbol.Size*pane.CalcScaleFactor();
 
-			coords = String.Format("{0:f0},{1:f0},{2:f0},{3:f0}",
+			coords = string.Format("{0:f0},{1:f0},{2:f0},{3:f0}",
 			                       pixPt.X - halfSize, pixPt.Y - halfSize,
 			                       pixPt.X + halfSize, pixPt.Y + halfSize);
 

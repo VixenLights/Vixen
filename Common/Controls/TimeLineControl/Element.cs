@@ -15,11 +15,10 @@ namespace Common.Controls.Timeline
 		private TimeSpan m_duration;
 		private Color m_backColor = Color.White;
 		private Color m_borderColor = Color.Black;
-		private object m_tag = null;
 		private bool m_selected = false;
+		private static Font m_textFont = new Font("Arial", 7);
+		private static Color m_textColor = Color.FromArgb(60, 60, 60);
 		private static System.Object drawLock = new System.Object();
-		//private bool m_redraw = false;
-		//private bool m_rendered = false;
 
 		public Element()
 		{
@@ -34,7 +33,6 @@ namespace Common.Controls.Timeline
 			m_startTime = other.m_startTime;
 			m_duration = other.m_duration;
 			m_backColor = other.m_backColor;
-			m_tag = other.m_tag;
 			m_selected = other.m_selected;
 		}
 
@@ -60,7 +58,12 @@ namespace Common.Controls.Timeline
 
 		#region Properties
 
+		/// <summary>
+		/// Display top for the last version of this element. Not reliable when the element is part of multiple rows.
+		/// I.E. grouping. Use Row.DisplayTop for the containing row and RowTopOffset.
+		/// </summary>
 		public int DisplayTop { get; set; }
+		public int RowTopOffset { get; set; }
 		public int DisplayHeight { get; set; }
 		public Rectangle DisplayRect { get; set; }
 		public bool MouseCaptured { get; set; }
@@ -142,16 +145,6 @@ namespace Common.Controls.Timeline
 				m_borderColor = value;
 				CachedCanvasIsCurrent = false;
 				Changed = true;
-				OnContentChanged();
-			}
-		}
-
-		public object Tag
-		{
-			get { return m_tag; }
-			set
-			{
-				m_tag = value;
 				OnContentChanged();
 			}
 		}
@@ -264,26 +257,35 @@ namespace Common.Controls.Timeline
 		#region Drawing
 
 		private Bitmap CachedElementCanvas { get; set; }
+		private Bitmap CachedSelectedElementCanvas { get; set; }
 
-		public bool CachedCanvasIsCurrent { get; set; }
-
-		protected virtual Bitmap SetupCanvas(Size imageSize)
-		{
-			using (Bitmap result = new Bitmap(imageSize.Width, imageSize.Height)) {
-				using (Graphics g = Graphics.FromImage(result)) {
-					using (Brush b = new SolidBrush(BackColor)) {
-						g.FillRectangle(b, 0, 0, imageSize.Width, imageSize.Height);
-					}
-
-					return new Bitmap(result);
-				}
+		private bool _cachedCanvasIsCurrent=false;
+		public bool CachedCanvasIsCurrent {
+			get
+			{
+				return _cachedCanvasIsCurrent;
+			}
+			set
+			{
+				_cachedCanvasIsCurrent=value;
 			}
 		}
 
-		protected virtual void AddSelectionOverlayToCanvas(Graphics g)
+		protected virtual Bitmap SetupCanvas(Size imageSize)
+		{
+			Bitmap result = new Bitmap(imageSize.Width, imageSize.Height);
+			using (Graphics g = Graphics.FromImage(result)) {
+				using (Brush b = new SolidBrush(BackColor)) {
+					g.FillRectangle(b, 0, 0, imageSize.Width, imageSize.Height);
+				}
+			}
+			return result;	
+		}
+
+		protected virtual void AddSelectionOverlayToCanvas(Graphics g, bool drawSelected)
 		{
 			// Width - bold if selected
-			int b_wd = Selected ? 3 : 1;
+			int b_wd = drawSelected ? 3 : 1;
 
 			// Adjust the rect such that the border is completely inside it.
 			Rectangle b_rect = new Rectangle(
@@ -306,25 +308,32 @@ namespace Common.Controls.Timeline
 
 		public virtual bool IsCanvasContentCurrent(Size imageSize)
 		{
-			// DB: removed below. We don't care if the height is current. We stretch the bitmap anyway.
 			return (CachedCanvasIsCurrent || CachedElementCanvas.Width != imageSize.Width ||
 					CachedElementCanvas.Height != imageSize.Height);
-			//return (CachedCanvasIsCurrent || CachedElementCanvas.Width != imageSize.Width);
 		}
 
 		public Bitmap SetupCachedImage(Size imageSize)
 		{
-			//if (CachedElementCanvas == null || !IsCanvasContentCurrent(imageSize) || Changed) {
-				lock (drawLock) {
-					CachedElementCanvas = SetupCanvas(imageSize);
-					using (Graphics g = Graphics.FromImage(CachedElementCanvas)) {
-						DrawCanvasContent(g);
-						AddSelectionOverlayToCanvas(g);
+			lock (drawLock) {
+				Bitmap bitmap = new Bitmap(imageSize.Width, imageSize.Height);
+				using(Graphics g = Graphics.FromImage(bitmap)){
+					DrawCanvasContent(g);
+					AddSelectionOverlayToCanvas(g, false);
+					if (CachedElementCanvas != null)
+					{
+						CachedElementCanvas.Dispose();
 					}
+					CachedElementCanvas = bitmap;
+					CachedCanvasIsCurrent = true;
+					if(CachedSelectedElementCanvas!=null){
+						CachedSelectedElementCanvas.Dispose();
+						CachedSelectedElementCanvas = null;
+					}
+					
+					Changed = false;
 				}
-				CachedCanvasIsCurrent = true;
-				Changed = false;
-			//}
+			}
+			
 			return CachedElementCanvas;
 		}
 
@@ -340,11 +349,8 @@ namespace Common.Controls.Timeline
 			const int margin = 2;
 			if (MouseCaptured)
 			{
-				Color TextColor = Color.FromArgb(60, 60, 60);
-
 				// add text describing the effect
-				using (Font f = new Font("Arial", 7))
-				using (Brush b = new SolidBrush(TextColor))
+				using (Brush b = new SolidBrush(m_textColor))
 				{
 					g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
 
@@ -354,7 +360,7 @@ namespace Common.Controls.Timeline
 						string.Format("Start: {0}", EffectNode.StartTime.ToString(@"m\:ss\.fff")) + "\r\n" +
 						string.Format("Length: {0}", EffectNode.TimeSpan.ToString(@"m\:ss\.fff"));
 
-					SizeF textSize = g.MeasureString(s, f);
+					SizeF textSize = g.MeasureString(s, m_textFont);
 					Rectangle destRect = new Rectangle(rect.X, rect.Y, rect.Width, rect.Height);
 					if (rect.Y < destRect.Height)
 					{
@@ -371,43 +377,39 @@ namespace Common.Controls.Timeline
 					destRect.Height = (int)textSize.Height + margin;
 					
 					g.FillRectangle(Brushes.White, new Rectangle(destRect.Left, destRect.Top, (int)Math.Min(textSize.Width + margin, destRect.Width), (int)Math.Min(textSize.Height + margin, destRect.Height)));
-					g.DrawString(s, f, b, new Rectangle(destRect.Left + margin/2, destRect.Top + margin/2, destRect.Width - margin, destRect.Height - margin));
+					g.DrawString(s, m_textFont, b, new Rectangle(destRect.Left + margin/2, destRect.Top + margin/2, destRect.Width - margin, destRect.Height - margin));
 				}
-			}
-		}
-
-		public Bitmap Draw(Size imageSize, bool useImageSize)
-		{
-			if (CachedElementCanvas == null)
-			{
-				return Draw(imageSize);
-			}
-			else
-			{
-				Size size = new Size(CachedElementCanvas.Width, CachedElementCanvas.Height);
-				return Draw(size);
 			}
 		}
 
 		public Bitmap Draw(Size imageSize)
 		{
-			if (CachedElementCanvas == null || !IsCanvasContentCurrent(imageSize)) {
-				Bitmap b = SetupCanvas(imageSize);
-				using (Graphics g = Graphics.FromImage(b)) {
-					DrawPlaceholder(g);
-					AddSelectionOverlayToCanvas(g);
-					if (!m_selected) {
-						Changed = true;
+			lock (drawLock)
+			{
+				if (CachedElementCanvas == null)
+				{
+					Bitmap b = SetupCanvas(imageSize);
+					using (Graphics g = Graphics.FromImage(b))
+					{
+						DrawPlaceholder(g);
+						AddSelectionOverlayToCanvas(g, m_selected);
+						CachedElementCanvas = b;
+						CachedCanvasIsCurrent = false; //temporary image so the real cache is not current
 					}
+					return b;
+				} else if (m_selected)
+				{
+					if (CachedSelectedElementCanvas == null)
+					{
+						Bitmap b = new Bitmap(CachedElementCanvas);
+						using (Graphics g = Graphics.FromImage(b))
+						{
+							AddSelectionOverlayToCanvas(g, true);
+							CachedSelectedElementCanvas = b;
+						}
+					}
+					return CachedSelectedElementCanvas;
 				}
-				return b;
-			}
-			else if (m_selected) {
-				Bitmap b = new Bitmap(CachedElementCanvas);
-				using (Graphics g = Graphics.FromImage(b)) {
-					AddSelectionOverlayToCanvas(g);
-				}
-				return b;
 			}
 			return CachedElementCanvas;
 		}
@@ -425,6 +427,8 @@ namespace Common.Controls.Timeline
 			}
 			if (CachedElementCanvas != null)
 				CachedElementCanvas.Dispose();
+			if (CachedSelectedElementCanvas != null)
+				CachedSelectedElementCanvas.Dispose();
 		}
 
 		public void Dispose()
