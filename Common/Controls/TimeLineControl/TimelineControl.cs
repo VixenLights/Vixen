@@ -226,7 +226,6 @@ namespace Common.Controls.Timeline
 		public IEnumerable<Row> VisibleRows
 		{
 			get { return grid.VisibleRows; }
-			set { grid.VisibleRows = value; }
 		}
 
 		[Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]

@@ -190,11 +190,6 @@ namespace Common.Controls.Timeline
 		public IEnumerable<Row> VisibleRows
 		{
 			get { return Rows.Where(x => x.Visible); }
-			set
-			{
-				foreach (Row row in Rows)
-					row.Selected = value.Contains(row);
-			}
 		}
 
 		public Row TopVisibleRow
@@ -1422,26 +1417,24 @@ namespace Common.Controls.Timeline
 
 		private void _drawInfo(Graphics g)
 		{
-			foreach (Row row in Rows)
+			bool found = false;
+			
+			foreach (Row row in VisibleRows)
 			{
-				if (!row.Visible)
-					continue;
-
-				int top = 0;
+				
 				for (int i = 0; i < row.ElementCount; i++)
 				{
 					Element element = row.GetElementAtIndex(i);
+					if (element.StartTime > VisibleTimeEnd)
+					{
+						break;
+					}
 					if (!element.MouseCaptured)
 						continue;
-
-					if (top < VerticalOffset || top > VerticalOffset + ClientSize.Height)
-					{
-						top += row.Height; // next row starts just below this row
-						continue;
-					}
-
+					found = true;
 					element.DrawInfo(g, element.DisplayRect);
 				}
+				if (found) break;
 			}
 		}
 
@@ -1449,14 +1442,7 @@ namespace Common.Controls.Timeline
 		{
 			// Draw each row
 			int top = 0; // y-coord of top of current row
-			foreach (Row row in Rows) {
-				if (!row.Visible)
-					continue;
-
-				if (top + row.Height < VerticalOffset || top > VerticalOffset + ClientSize.Height) {
-					top += row.Height; // next row starts just below this row
-					continue;
-				}
+			foreach (Row row in VisibleRows) {
 				row.DisplayTop = top;
 
 				for (int i = 0; i < row.ElementCount; i++) {

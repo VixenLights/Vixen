@@ -855,6 +855,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					toolStripButton_Play.Enabled = playToolStripMenuItem.Enabled = false;
 					toolStripButton_Pause.Enabled = pauseToolStripMenuItem.Enabled = false;
 					toolStripButton_Stop.Enabled = stopToolStripMenuItem.Enabled = false;
+					toolStripEffects.Enabled = false;
 					return;
 				}
 
@@ -868,12 +869,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						toolStripButton_Pause.Enabled = pauseToolStripMenuItem.Enabled = true;
 					}
 					toolStripButton_Stop.Enabled = stopToolStripMenuItem.Enabled = true;
+					toolStripEffects.Enabled = false;
 				}
 				else // Stopped
 				{
 					toolStripButton_Play.Enabled = playToolStripMenuItem.Enabled = true;
 					toolStripButton_Pause.Enabled = pauseToolStripMenuItem.Enabled = false;
 					toolStripButton_Stop.Enabled = stopToolStripMenuItem.Enabled = false;
+					toolStripEffects.Enabled = true;
 				}
 			}
 		}
@@ -1627,14 +1630,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void toolStripButton_Start_Click(object sender, EventArgs e)
 		{
 			//TODO: JEMA - Check to see if this is functioning properly.
-			timelineControl.PlaybackStartTime = TimeSpan.Zero;
+			timelineControl.PlaybackStartTime = m_prevPlaybackStart = TimeSpan.Zero;
 			timelineControl.VisibleTimeStart = TimeSpan.Zero;
 		}
 
 		private void toolStripButton_End_Click(object sender, EventArgs e)
 		{
 			//TODO: JEMA - Check to see if this is functioning properly.
-			timelineControl.PlaybackStartTime = _sequence.Length;
+			timelineControl.PlaybackStartTime = m_prevPlaybackEnd = _sequence.Length;
+			
 			timelineControl.VisibleTimeStart = timelineControl.TotalTime - timelineControl.VisibleTimeSpan;
 		}
 

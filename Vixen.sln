@@ -291,11 +291,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NShapeWinFormsUI", "Common\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Candle", "Modules\Effect\Candle\Candle.csproj", "{DAAD1EF0-61DF-412D-A6B5-393E81BC314B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntUpDownEditor", "Modules\effecteditor\IntUpDownEditor\IntUpDownEditor.csproj", "{DA54AEAB-9F36-4075-86E3-3BE8ECE5C60D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntUpDownEditor", "Modules\EffectEditor\IntUpDownEditor\IntUpDownEditor.csproj", "{DA54AEAB-9F36-4075-86E3-3BE8ECE5C60D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ValueTypes", "Common\ValueTypes\ValueTypes.csproj", "{D9A7E8BC-5617-486D-9DA5-89C5861A0F88}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PercentageTypeEditor", "Modules\effecteditor\PercentageTypeEditor\PercentageTypeEditor.csproj", "{87E342D5-C950-4788-A748-3408F8FF33BB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PercentageTypeEditor", "Modules\EffectEditor\PercentageTypeEditor\PercentageTypeEditor.csproj", "{87E342D5-C950-4788-A748-3408F8FF33BB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StateMach", "Common\StateMach\StateMach.csproj", "{8F61BFE3-8D89-41E8-B296-C01537B03707}"
 EndProject
@@ -355,6 +355,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Location", "Modules\Property\Location\Location.csproj", "{7D5D4BE4-576A-4092-A3E2-1A6F27CDC213}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebServer", "Modules\App\WebServer\WebServer.csproj", "{B3CC7739-0179-462E-AAC5-30C31805C95F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElexolEtherIO", "Modules\Output\ElexolEtherIO\ElexolEtherIO.csproj", "{89AD863C-4B4B-4FB8-990A-95499FE98DDF}"
 EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
@@ -517,6 +519,7 @@ Global
 		{7D5D4BE4-576A-4092-A3E2-1A6F27CDC213}.Release|x86.Build.0 = Release|x86
 		{B3CC7739-0179-462E-AAC5-30C31805C95F}.Release|x86.ActiveCfg = Release|x86
 		{B3CC7739-0179-462E-AAC5-30C31805C95F}.Release|x86.Build.0 = Release|x86
+		{89AD863C-4B4B-4FB8-990A-95499FE98DDF}.Release|x86.ActiveCfg = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -577,6 +580,7 @@ Global
 		{EAB3947D-202C-4C92-92EB-017580C581B3} = {01824B6E-B567-4974-849B-44A1ABEB4B39}
 		{13FC249E-F7BE-48CC-964A-1E688F3C0C06} = {01824B6E-B567-4974-849B-44A1ABEB4B39}
 		{235A5B5B-EA92-488E-A30B-F60D032FB7C3} = {01824B6E-B567-4974-849B-44A1ABEB4B39}
+		{89AD863C-4B4B-4FB8-990A-95499FE98DDF} = {01824B6E-B567-4974-849B-44A1ABEB4B39}
 		{14D6531E-D56E-4A11-93FE-01119001E7E6} = {30A09AE0-71AC-4A08-B17A-8D82319068A7}
 		{5DC36B2F-09DF-414C-8B50-2973CFB0652F} = {30A09AE0-71AC-4A08-B17A-8D82319068A7}
 		{73068A83-B3B7-4A2C-923D-71C7886CD5E3} = {30A09AE0-71AC-4A08-B17A-8D82319068A7}
