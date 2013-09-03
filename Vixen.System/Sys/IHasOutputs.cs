@@ -13,6 +13,6 @@
 	{
 		void AddOutput(T output);
 		void RemoveOutput(T output);
-		T[] Outputs { get; }
+		new T[] Outputs { get; }
 	}
 }
