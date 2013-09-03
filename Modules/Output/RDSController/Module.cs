@@ -20,6 +20,48 @@ namespace VixenModules.Output.RDSController
 			_commandHandler = new CommandHandler();
 		}
 
+		internal static bool Send(Data RdsData, string rdsText)
+		{
+			switch (RdsData.HardwareID) {
+				case Hardware.MRDS192:
+				case Hardware.MRDS1322:
+					NativeMethods.ConnectionSetup(RdsData.ConnectionMode, RdsData.PortNumber, RdsData.BiDirectional, RdsData.Slow);
+					if (NativeMethods.Connect()) {
+						try {
+
+
+							byte[] Data = new byte[9];
+							int i, Len;
+							Data[0] = 0x02;             // buffer address
+							Len = 8;
+							for (i = 1; i <= Len; i++)
+								Data[i] = 0x20; // fill 8 blank spaces first
+							//Data[0] = 0x02;
+							//Len = 8;
+							for (i = 0; i < rdsText.Length; i++) {
+								byte vOut = Convert.ToByte(rdsText[i]);
+								Data[i + 1] = vOut;
+							}
+
+							if (NativeMethods.Send(Len, Data))
+								return true;
+							else
+								return false;
+
+						} finally {
+							NativeMethods.Disconnect();
+						}
+					}
+					return false;
+				case Hardware.VFMT212R:
+					throw new NotImplementedException();
+				default:
+					return false;
+			}
+
+
+		}
+
 
 
 		public override void UpdateState(int chainIndex, ICommand[] outputStates)
@@ -27,7 +69,8 @@ namespace VixenModules.Output.RDSController
 			foreach (var item in outputStates.Where(i => i != null)) {
 				var cmd = item as StringCommand;
 				if (cmd != null) {
-					Console.WriteLine(cmd.CommandValue as string);
+					Console.WriteLine("RDS Value Sent: " + cmd.CommandValue);
+					Module.Send(_Data, cmd.CommandValue);
 				}
 			}
 		}
@@ -39,13 +82,14 @@ namespace VixenModules.Output.RDSController
 
 		public override bool Setup()
 		{
+			using (var setupForm = new SetupForm(_Data)) {
+				if (setupForm.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+					_Data= setupForm.RdsData;
 
-			using (var setupForm = new SetupForm()) {
-				setupForm.ShowDialog();
-				return true;
+					return true;
+				}
+				return false;
 			}
-
-			//	return false;
 		}
 
 		public override IModuleDataModel ModuleData

@@ -1,5 +1,7 @@
-﻿using System.IO.Ports;
+﻿using System;
+using System.IO.Ports;
 using System.Runtime.Serialization;
+using System.Xml.Serialization;
 using Vixen.Module;
 
 namespace VixenModules.Output.RDSController
@@ -7,45 +9,37 @@ namespace VixenModules.Output.RDSController
 	[DataContract]
 	public class Data : ModuleDataModelBase
 	{
+
 		[DataMember]
 		public string PortName { get; set; }
 
 		[DataMember]
-		public int BaudRate { get; set; }
+		public int PortNumber { get; set; }
 
 		[DataMember]
-		public Parity Parity { get; set; }
+		public int ConnectionMode { get; set; }
 
 		[DataMember]
-		public int DataBits { get; set; }
+		public bool Slow { get; set; }
 
 		[DataMember]
-		public StopBits StopBits { get; set; }
-
-		//[DataMember]
-		//public int WriteTimeout { get; set; }
-		[DataMember]
-		public string Header { get; set; }
+		public bool BiDirectional { get; set; }
 
 		[DataMember]
-		public string Footer { get; set; }
-
+		public Hardware HardwareID { get; set; }
 
 		public override IModuleDataModel Clone()
 		{
 			return this.MemberwiseClone() as IModuleDataModel;
 		}
 
-		public bool IsValid
-		{
-			get
-			{
-				return
-					PortName != null &&
-					BaudRate != 0 &&
-					DataBits != 0 &&
-					StopBits != 0;
-			}
-		}
+	
+	}
+	[Serializable]
+	public enum Hardware
+	{
+		MRDS192=1,
+		MRDS1322=2,
+		VFMT212R=3
 	}
 }
