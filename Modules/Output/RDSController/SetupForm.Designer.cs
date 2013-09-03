@@ -190,6 +190,7 @@
 			// radioVFMT212R
 			// 
 			this.radioVFMT212R.AutoSize = true;
+			this.radioVFMT212R.Enabled = false;
 			this.radioVFMT212R.Location = new System.Drawing.Point(9, 65);
 			this.radioVFMT212R.Name = "radioVFMT212R";
 			this.radioVFMT212R.Size = new System.Drawing.Size(83, 17);
