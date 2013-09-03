@@ -60,8 +60,7 @@ namespace VixenModules.Sequence.Vixen2x
 					}
 				}
 			}
-			catch (Exception ex) {
-				int x = 0;
+			catch (Exception) {
 				return null;
 			}
 		}

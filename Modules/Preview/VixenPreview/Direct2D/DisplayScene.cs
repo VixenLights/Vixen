@@ -250,7 +250,7 @@ namespace VixenModules.Preview.VixenPreview.Direct2D {
 					});
 
 				}
-				catch (Exception e) {
+				catch (Exception) {
 					tokenSource.Cancel();
 					//Console.WriteLine(e.Message);
 				}

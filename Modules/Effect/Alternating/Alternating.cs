@@ -21,7 +21,6 @@ namespace VixenModules.Effect.Alternating
 	{
 		private AlternatingData _data;
 		private EffectIntents _elementData = null;
-		private Element element;
 		public Alternating()
 		{
 			_data = new AlternatingData();

@@ -105,7 +105,7 @@
 			this.trackSpiralsThickness = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
 			this.trackSpiralsRotations = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
 			this.trackSpiralsRepeat = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
-			this.Text = new System.Windows.Forms.TabPage();
+			this.TextPage = new System.Windows.Forms.TabPage();
 			this.comboBoxTextDirection = new System.Windows.Forms.ComboBox();
 			this.label35 = new System.Windows.Forms.Label();
 			this.textBoxTextFont = new System.Windows.Forms.TextBox();
@@ -201,7 +201,7 @@
 			this.TreePage.SuspendLayout();
 			this.Spirograph.SuspendLayout();
 			this.Spirals.SuspendLayout();
-			this.Text.SuspendLayout();
+			this.TextPage.SuspendLayout();
 			this.Twinkles.SuspendLayout();
 			this.Snowstorm.SuspendLayout();
 			this.Snowflakes.SuspendLayout();
@@ -245,6 +245,7 @@
 			this.preview.Location = new System.Drawing.Point(6, 12);
 			this.preview.Name = "preview";
 			this.preview.Paused = false;
+			this.preview.ShowInfo = false;
 			this.preview.Size = new System.Drawing.Size(273, 412);
 			this.preview.TabIndex = 0;
 			// 
@@ -425,7 +426,7 @@
 			this.tabEffectProperties.Controls.Add(this.TreePage);
 			this.tabEffectProperties.Controls.Add(this.Spirograph);
 			this.tabEffectProperties.Controls.Add(this.Spirals);
-			this.tabEffectProperties.Controls.Add(this.Text);
+			this.tabEffectProperties.Controls.Add(this.TextPage);
 			this.tabEffectProperties.Controls.Add(this.Twinkles);
 			this.tabEffectProperties.Controls.Add(this.Snowstorm);
 			this.tabEffectProperties.Controls.Add(this.Snowflakes);
@@ -1078,24 +1079,24 @@
 			this.trackSpiralsRepeat.Value = 1;
 			this.trackSpiralsRepeat.ValueChanged += new Common.Controls.ControlsEx.ValueControls.ValueChangedEH(this.Spirals_ValueChanged);
 			// 
-			// Text
+			// TextPage
 			// 
-			this.Text.Controls.Add(this.comboBoxTextDirection);
-			this.Text.Controls.Add(this.label35);
-			this.Text.Controls.Add(this.textBoxTextFont);
-			this.Text.Controls.Add(this.buttonTextFont);
-			this.Text.Controls.Add(this.textTextLine2);
-			this.Text.Controls.Add(this.textTextLine1);
-			this.Text.Controls.Add(this.label34);
-			this.Text.Controls.Add(this.label33);
-			this.Text.Controls.Add(this.label32);
-			this.Text.Controls.Add(this.trackTextTop);
-			this.Text.Location = new System.Drawing.Point(4, 5);
-			this.Text.Name = "Text";
-			this.Text.Size = new System.Drawing.Size(266, 243);
-			this.Text.TabIndex = 12;
-			this.Text.Text = "Text";
-			this.Text.UseVisualStyleBackColor = true;
+			this.TextPage.Controls.Add(this.comboBoxTextDirection);
+			this.TextPage.Controls.Add(this.label35);
+			this.TextPage.Controls.Add(this.textBoxTextFont);
+			this.TextPage.Controls.Add(this.buttonTextFont);
+			this.TextPage.Controls.Add(this.textTextLine2);
+			this.TextPage.Controls.Add(this.textTextLine1);
+			this.TextPage.Controls.Add(this.label34);
+			this.TextPage.Controls.Add(this.label33);
+			this.TextPage.Controls.Add(this.label32);
+			this.TextPage.Controls.Add(this.trackTextTop);
+			this.TextPage.Location = new System.Drawing.Point(4, 5);
+			this.TextPage.Name = "TextPage";
+			this.TextPage.Size = new System.Drawing.Size(266, 243);
+			this.TextPage.TabIndex = 12;
+			this.TextPage.Text = "Text";
+			this.TextPage.UseVisualStyleBackColor = true;
 			// 
 			// comboBoxTextDirection
 			// 
@@ -2002,8 +2003,8 @@
 			this.Spirograph.PerformLayout();
 			this.Spirals.ResumeLayout(false);
 			this.Spirals.PerformLayout();
-			this.Text.ResumeLayout(false);
-			this.Text.PerformLayout();
+			this.TextPage.ResumeLayout(false);
+			this.TextPage.PerformLayout();
 			this.Twinkles.ResumeLayout(false);
 			this.Twinkles.PerformLayout();
 			this.Snowstorm.ResumeLayout(false);
@@ -2133,7 +2134,7 @@
         private System.Windows.Forms.TabPage Twinkles;
         private System.Windows.Forms.Label label31;
         private Common.Controls.ControlsEx.ValueControls.HMiniTracker trackTwinkleCount;
-        private System.Windows.Forms.TabPage Text;
+        private System.Windows.Forms.TabPage TextPage;
         private System.Windows.Forms.Button buttonTextFont;
         private System.Windows.Forms.TextBox textTextLine2;
         private System.Windows.Forms.TextBox textTextLine1;

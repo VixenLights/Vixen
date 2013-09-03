@@ -214,8 +214,6 @@ namespace VixenModules.Effect.Wipe {
 			return _elementData;
 		}
 
-		public virtual bool IsDirty { get; protected set; }
-
 		public override IModuleDataModel ModuleData {
 			get { return _data; }
 			set { _data = value as WipeData; }

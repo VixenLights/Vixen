@@ -1645,7 +1645,6 @@ namespace VixenModules.Effect.Nutcracker
 				int movement = Convert.ToInt32((State%(limit*speedfactor))/speedfactor);
 
 				// copy image to buffer
-				Color c;
 				fp.Lock();
 				Color fpColor = new Color();
 				for (int x = 0; x < imgwidth; x++) {
@@ -1688,7 +1687,7 @@ namespace VixenModules.Effect.Nutcracker
 
 		public void RenderSpirograph(int int_R, int int_r, int int_d, bool Animate)
 		{
-			int i, x, y, k, xc, yc, ColorIdx;
+			int i, x, y, xc, yc, ColorIdx;
 			int mod1440, state360, d_mod;
 			srand(1);
 			float R, r, d, d_orig, t;
@@ -1758,7 +1757,7 @@ namespace VixenModules.Effect.Nutcracker
 
 		public void RenderTree(int Branches)
 		{
-			int x, y, i, i7, r, ColorIdx, Count, pixels_per_branch;
+			int x, y, i, r, ColorIdx, pixels_per_branch;
 			int maxFrame, mod, branch, row;
 			int b, f_mod, m, frame;
 			int number_garlands, f_mod_odd, s_odd_row, odd_even;
