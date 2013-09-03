@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -23,7 +24,7 @@ namespace VixenModules.Output.RDSController
 
 			chkBiDirectional.Checked= data.BiDirectional;
 			chkSlow.Checked= data.Slow;
-
+			this.txtUrl.Text = data.HttpUrl ?? "http://127.0.0.1/?author={author}&text={text}&time={time}";
 			switch (data.PortName) {
 				case "LPT1":
 					radioLPT1.Checked=true;
@@ -57,6 +58,9 @@ namespace VixenModules.Output.RDSController
 				case Hardware.VFMT212R:
 					radioVFMT212R.Checked=true;
 					break;
+				case Hardware.HTTP:
+					radioHttp.Checked=true;
+					break;
 			}
 
 
@@ -79,6 +83,12 @@ namespace VixenModules.Output.RDSController
 		{
 			RdsData.HardwareID =   Hardware.MRDS192;
 			RdsData.ConnectionMode=0;
+		}
+		private void radioHttp_CheckedChanged(object sender, EventArgs e)
+		{
+			RdsData.HardwareID= Hardware.HTTP;
+			this.txtUrl.Enabled = radioHttp.Checked;
+			this.txtUrl.ReadOnly= false;
 		}
 
 		private void radioPorts_CheckedChanged(object sender, EventArgs e)
@@ -129,8 +139,8 @@ namespace VixenModules.Output.RDSController
 		{
 			RdsData.Slow=chkSlow.Checked;
 		}
-		
-	 
+
+
 		/// <summary>
 		/// Clean up any resources being used.
 		/// </summary>
@@ -154,6 +164,20 @@ namespace VixenModules.Output.RDSController
 			}
 			base.Dispose(disposing);
 		}
+
+		private void txtUrl_TextChanged(object sender, EventArgs e)
+		{
+			//Regex urlRx = new Regex(@"^((http|https)://)?([\w+?\.\w+])+([a-zA-Z0-9\~\!\@\#\$\%\^\&\*\(\)_\-\=\+\\\/\?\.\:\;\'\,]*)?$", RegexOptions.IgnoreCase);
+
+			//if (urlRx.IsMatch(txtUrl.Text)) {
+		 	RdsData.HttpUrl= txtUrl.Text;
+			//	StatusLbl1.Text="";
+			//} else
+			//	StatusLbl1.Text= "Http Url is NOT well formed and will not be saved";
+		}
+
+
+
 
 	}
 }

@@ -7,11 +7,15 @@ using System.Timers;
 using System;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Web;
 
 namespace VixenModules.Output.RDSController
 {
 	public class Module : ControllerModuleInstanceBase
 	{
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+
 		private Data _Data;
 		private CommandHandler _commandHandler;
 		public Module()
@@ -20,7 +24,7 @@ namespace VixenModules.Output.RDSController
 			_commandHandler = new CommandHandler();
 		}
 
-		internal static bool Send(Data RdsData, string rdsText)
+		internal static bool Send(Data RdsData, string rdsText, string rdsArtist = null)
 		{
 			switch (RdsData.HardwareID) {
 				case Hardware.MRDS192:
@@ -55,6 +59,18 @@ namespace VixenModules.Output.RDSController
 					return false;
 				case Hardware.VFMT212R:
 					throw new NotImplementedException();
+				case Hardware.HTTP:
+					System.Threading.Tasks.Task.Factory.StartNew(() => {
+						try {
+							string url = RdsData.HttpUrl.ToLower().Replace("{text}", rdsText).Replace("{artist}", rdsArtist).Replace("{time}", HttpUtility.UrlEncode( DateTime.Now.ToLocalTime().ToShortTimeString()));
+							WebRequest request = WebRequest.Create(url);
+							var response = request.GetResponse();
+						} catch (Exception e) {
+							Logging.ErrorException(e.Message, e);
+							 
+						}
+					});
+					return true;
 				default:
 					return false;
 			}

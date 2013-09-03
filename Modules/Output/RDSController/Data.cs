@@ -28,18 +28,22 @@ namespace VixenModules.Output.RDSController
 		[DataMember]
 		public Hardware HardwareID { get; set; }
 
+		[DataMember]
+		public string HttpUrl { get; set; }
+
 		public override IModuleDataModel Clone()
 		{
 			return this.MemberwiseClone() as IModuleDataModel;
 		}
 
-	
+
 	}
 	[Serializable]
 	public enum Hardware
 	{
 		MRDS192=1,
 		MRDS1322=2,
-		VFMT212R=3
+		VFMT212R=3,
+		HTTP=0
 	}
 }

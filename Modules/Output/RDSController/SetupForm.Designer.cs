@@ -29,6 +29,10 @@
 			this.chkSlow = new System.Windows.Forms.CheckBox();
 			this.chkBiDirectional = new System.Windows.Forms.CheckBox();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
+			this.label3 = new System.Windows.Forms.Label();
+			this.label2 = new System.Windows.Forms.Label();
+			this.lblUrl = new System.Windows.Forms.Label();
+			this.radioHttp = new System.Windows.Forms.RadioButton();
 			this.radioVFMT212R = new System.Windows.Forms.RadioButton();
 			this.radioMRDS1322 = new System.Windows.Forms.RadioButton();
 			this.radioMRDS192 = new System.Windows.Forms.RadioButton();
@@ -39,6 +43,8 @@
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
 			this.StatusLbl1 = new System.Windows.Forms.ToolStripStatusLabel();
+			this.button1 = new System.Windows.Forms.Button();
+			this.txtUrl = new System.Windows.Forms.TextBox();
 			this.groupPorts.SuspendLayout();
 			this.groupBox3.SuspendLayout();
 			this.groupBox4.SuspendLayout();
@@ -177,21 +183,64 @@
 			// 
 			// groupBox4
 			// 
+			this.groupBox4.Controls.Add(this.txtUrl);
+			this.groupBox4.Controls.Add(this.label3);
+			this.groupBox4.Controls.Add(this.label2);
+			this.groupBox4.Controls.Add(this.lblUrl);
+			this.groupBox4.Controls.Add(this.radioHttp);
 			this.groupBox4.Controls.Add(this.radioVFMT212R);
 			this.groupBox4.Controls.Add(this.radioMRDS1322);
 			this.groupBox4.Controls.Add(this.radioMRDS192);
 			this.groupBox4.Location = new System.Drawing.Point(95, 94);
 			this.groupBox4.Name = "groupBox4";
-			this.groupBox4.Size = new System.Drawing.Size(110, 91);
+			this.groupBox4.Size = new System.Drawing.Size(381, 140);
 			this.groupBox4.TabIndex = 16;
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = "Hardware";
+			// 
+			// label3
+			// 
+			this.label3.AutoSize = true;
+			this.label3.Location = new System.Drawing.Point(131, 124);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(110, 13);
+			this.label3.TabIndex = 8;
+			this.label3.Text = "{Artist}, {Text}, {Time}";
+			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(45, 124);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(70, 13);
+			this.label2.TabIndex = 7;
+			this.label2.Text = "Macro Fields:";
+			// 
+			// lblUrl
+			// 
+			this.lblUrl.AutoSize = true;
+			this.lblUrl.Location = new System.Drawing.Point(6, 70);
+			this.lblUrl.Name = "lblUrl";
+			this.lblUrl.Size = new System.Drawing.Size(29, 13);
+			this.lblUrl.TabIndex = 6;
+			this.lblUrl.Text = "URL";
+			// 
+			// radioHttp
+			// 
+			this.radioHttp.AutoSize = true;
+			this.radioHttp.Location = new System.Drawing.Point(9, 42);
+			this.radioHttp.Name = "radioHttp";
+			this.radioHttp.Size = new System.Drawing.Size(67, 17);
+			this.radioHttp.TabIndex = 3;
+			this.radioHttp.Text = "HTTP(S)";
+			this.radioHttp.UseVisualStyleBackColor = true;
+			this.radioHttp.CheckedChanged += new System.EventHandler(this.radioHttp_CheckedChanged);
 			// 
 			// radioVFMT212R
 			// 
 			this.radioVFMT212R.AutoSize = true;
 			this.radioVFMT212R.Enabled = false;
-			this.radioVFMT212R.Location = new System.Drawing.Point(9, 65);
+			this.radioVFMT212R.Location = new System.Drawing.Point(120, 42);
 			this.radioVFMT212R.Name = "radioVFMT212R";
 			this.radioVFMT212R.Size = new System.Drawing.Size(83, 17);
 			this.radioVFMT212R.TabIndex = 2;
@@ -202,7 +251,7 @@
 			// radioMRDS1322
 			// 
 			this.radioMRDS1322.AutoSize = true;
-			this.radioMRDS1322.Location = new System.Drawing.Point(9, 42);
+			this.radioMRDS1322.Location = new System.Drawing.Point(120, 19);
 			this.radioMRDS1322.Name = "radioMRDS1322";
 			this.radioMRDS1322.Size = new System.Drawing.Size(81, 17);
 			this.radioMRDS1322.TabIndex = 1;
@@ -228,7 +277,7 @@
 			this.groupBox2.Controls.Add(this.btnTX);
 			this.groupBox2.Controls.Add(this.label1);
 			this.groupBox2.Controls.Add(this.txtPSInterface);
-			this.groupBox2.Location = new System.Drawing.Point(12, 191);
+			this.groupBox2.Location = new System.Drawing.Point(12, 240);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(363, 65);
 			this.groupBox2.TabIndex = 14;
@@ -265,9 +314,10 @@
 			// 
 			this.pictureBox1.Enabled = false;
 			this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-			this.pictureBox1.Location = new System.Drawing.Point(280, 75);
+			this.pictureBox1.Location = new System.Drawing.Point(482, 2);
 			this.pictureBox1.Name = "pictureBox1";
-			this.pictureBox1.Size = new System.Drawing.Size(56, 36);
+			this.pictureBox1.Size = new System.Drawing.Size(222, 229);
+			this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
 			this.pictureBox1.TabIndex = 20;
 			this.pictureBox1.TabStop = false;
 			// 
@@ -275,9 +325,9 @@
 			// 
 			this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.StatusLbl1});
-			this.statusStrip1.Location = new System.Drawing.Point(0, 258);
+			this.statusStrip1.Location = new System.Drawing.Point(0, 320);
 			this.statusStrip1.Name = "statusStrip1";
-			this.statusStrip1.Size = new System.Drawing.Size(382, 22);
+			this.statusStrip1.Size = new System.Drawing.Size(704, 22);
 			this.statusStrip1.TabIndex = 24;
 			this.statusStrip1.Text = "statusStrip1";
 			// 
@@ -288,17 +338,39 @@
 			this.StatusLbl1.Size = new System.Drawing.Size(33, 17);
 			this.StatusLbl1.Text = "DIYC";
 			// 
+			// button1
+			// 
+			this.button1.DialogResult = System.Windows.Forms.DialogResult.OK;
+			this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.button1.Location = new System.Drawing.Point(583, 237);
+			this.button1.Name = "button1";
+			this.button1.Size = new System.Drawing.Size(109, 65);
+			this.button1.TabIndex = 25;
+			this.button1.Text = "Save Configuration Settings";
+			this.button1.UseVisualStyleBackColor = true;
+			// 
+			// txtUrl
+			// 
+			this.txtUrl.Location = new System.Drawing.Point(41, 68);
+			this.txtUrl.Multiline = true;
+			this.txtUrl.Name = "txtUrl";
+			this.txtUrl.Size = new System.Drawing.Size(334, 53);
+			this.txtUrl.TabIndex = 9;
+			this.txtUrl.TextChanged += new System.EventHandler(this.txtUrl_TextChanged);
+			// 
 			// SetupForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(382, 280);
+			this.ClientSize = new System.Drawing.Size(704, 342);
+			this.Controls.Add(this.pictureBox1);
+			this.Controls.Add(this.button1);
 			this.Controls.Add(this.statusStrip1);
 			this.Controls.Add(this.groupPorts);
 			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.groupBox4);
 			this.Controls.Add(this.groupBox2);
-			this.Controls.Add(this.pictureBox1);
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.Name = "SetupForm";
 			this.Text = "RDS Configuration";
 			this.groupPorts.ResumeLayout(false);
@@ -341,5 +413,11 @@
 		private System.Windows.Forms.RadioButton radioUSB;
 		private System.Windows.Forms.StatusStrip statusStrip1;
 		private System.Windows.Forms.ToolStripStatusLabel StatusLbl1;
+		private System.Windows.Forms.Label lblUrl;
+		private System.Windows.Forms.RadioButton radioHttp;
+		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.Button button1;
+		private System.Windows.Forms.TextBox txtUrl;
 	}
 }
