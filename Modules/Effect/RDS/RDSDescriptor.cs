@@ -27,7 +27,7 @@ namespace VixenModules.Effect.RDS {
 		}
 
 		public override string Author {
-			get { return "Darren McDaniel"; }
+			get { return "Darren McDaniel / Steve Dupuis"; }
 		}
 
 		public override string TypeName {

@@ -9,7 +9,7 @@ namespace VixenModules.Output.RDSController
 
 		public override string Author
 		{
-			get { return "Darren McDAniel"; }
+			get { return "Darren McDaniel / Steve Dupuis"; }
 		}
 
 		public override string Description
