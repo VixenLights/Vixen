@@ -21,8 +21,8 @@ namespace VixenModules.EffectEditor.RDSEditor {
 				return new object[] {Title,Artist };
 			}
 			set {
-				Text = value[0] as string;
-				Artist= value[1] as string;
+				Title = value[0] as string;
+				Artist= value[1] as string; 
 			}
 		}
 
@@ -37,5 +37,6 @@ namespace VixenModules.EffectEditor.RDSEditor {
 		}
 		public string Title { get { return this.textRDSTitle.Text; } set { this.textRDSTitle.Text = value; } }
 		public string Artist { get { return this.textRDSArtist.Text; } set { this.textRDSArtist.Text=value; } }
+		 
 	}
 }

@@ -9,6 +9,7 @@ using Vixen.Intent;
 using Vixen.Module;
 using Vixen.Module.Effect;
 using Vixen.Sys;
+using Vixen.Sys.Attribute;
 
 namespace VixenModules.Effect.RDS
 {
@@ -20,18 +21,12 @@ namespace VixenModules.Effect.RDS
 		public RDSModule()
 		{
 			_data = new RDSData();
-#if DEBUG
-			_data.Title = DateTime.Now.ToString();
-#endif
+
 		}
 
 		protected override void _PreRender()
 		{
 			_elementData = new EffectIntents();
-#if DEBUG
-			if (string.IsNullOrWhiteSpace(_data.Title))
-				_data.Title="Debug Command " + DateTime.Now.ToString();
-#endif
 
 			CommandValue value = new CommandValue(new StringCommand(_data.Title));
 
@@ -40,6 +35,32 @@ namespace VixenModules.Effect.RDS
 				_elementData.AddIntentForElement(node.Element.Id, i, TimeSpan.Zero);
 			}
 		}
+
+		[Value]
+		public string Title
+		{
+			get { return _data.Title; }
+			set
+			{
+				_data.Title=value;
+				IsDirty=true;
+			}
+		}
+
+		[Value]
+		public string Artist
+		{
+			get
+			{
+				return _data.Artist;
+			}
+			set
+			{
+				_data.Artist=value;
+				IsDirty=true;
+			}
+		}
+		 
 
 		protected override Vixen.Sys.EffectIntents _Render()
 		{
