@@ -28,6 +28,9 @@ namespace VixenModules.Effect.Nutcracker
 
 		protected override void _PreRender()
 		{
+			int scnt = StringCount;
+			if (scnt < 2)
+				_data.NutcrackerData.PreviewType = NutcrackerEffects.PreviewType.VerticalLine;
 			_elementData = new EffectIntents();
 
 			foreach (ElementNode node in TargetNodes) {
@@ -142,6 +145,7 @@ namespace VixenModules.Effect.Nutcracker
 			int framesToRender = (int) TimeSpan.TotalMilliseconds/50;
 			NutcrackerEffects effect = new NutcrackerEffects(_data.NutcrackerData);
 			int pixelsPerString = PixelsPerString();
+			//Console.WriteLine("StringCount " + stringCount + ", PixPerString " + pixelsPerString);
 			effect.InitBuffer(stringCount, pixelsPerString);
 			int totalPixels = effect.PixelCount();
 			TimeSpan startTime = TimeSpan.Zero;
@@ -163,13 +167,15 @@ namespace VixenModules.Effect.Nutcracker
 					if (NutcrackerData.PreviewType == NutcrackerEffects.PreviewType.Tree90 ||
 						NutcrackerData.PreviewType == NutcrackerEffects.PreviewType.Tree180 ||
 						NutcrackerData.PreviewType == NutcrackerEffects.PreviewType.Tree270 ||
-						NutcrackerData.PreviewType == NutcrackerEffects.PreviewType.Tree360)
+						NutcrackerData.PreviewType == NutcrackerEffects.PreviewType.Tree360 ||
+						NutcrackerData.PreviewType == NutcrackerEffects.PreviewType.Grid)
 					{
 						stringNum = stringCount - (elementNum / pixelsPerString);
 					}
 					else
 					{
-						stringNum = (elementNum / pixelsPerString);
+						// not sure what this is computing, but stringNum 0 doesn't render...
+						stringNum = (elementNum / pixelsPerString) + 1;
 					}
 					int pixelNum = (stringNum * pixelsPerString) - (pixelsPerString - (elementNum % pixelsPerString));
 					Color color = effect.GetPixel(pixelNum);
