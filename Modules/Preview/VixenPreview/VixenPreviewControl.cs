@@ -1168,7 +1168,7 @@ namespace VixenModules.Preview.VixenPreview
                         fp.Unlock(true);
                         RenderBufferedGraphics(fp);
                     }
-                    catch (Exception e)
+                    catch (Exception)
                     {
                         tokenSource.Cancel();
                         //Console.WriteLine(e.Message);

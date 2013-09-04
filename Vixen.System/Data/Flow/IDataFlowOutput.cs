@@ -9,6 +9,6 @@
 	public interface IDataFlowOutput<out T> : IDataFlowOutput
 		where T : IDataFlowData
 	{
-	new	T Data { get; }
+		new T Data { get; }
 	}
 }

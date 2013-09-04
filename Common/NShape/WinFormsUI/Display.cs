@@ -2234,18 +2234,20 @@ namespace Dataweb.NShape.WinFormsUI
 				}
 			}
 		}
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
+
+		/// <summary>
+		/// Gets the offset of the visible document window/viewport.
+		/// </summary>
+		/// <returns>a point, relative to the absolute top left, of the top-left of the viewport.</returns>
 		public Point GetDiagramOffset()
 		{
 			return new Point(scrollBarH.Value - scrollBarH.Minimum, scrollBarV.Value - scrollBarV.Minimum);
 		}
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
+
+		/// <summary>
+		/// Gets the diagram control position on the containing control.
+		/// </summary>
+		/// <returns>a point of the top-left of the diagram on the control.</returns>
 		public Point GetDiagramPosition()
 		{
 			return new Point(diagramPosX, diagramPosY);

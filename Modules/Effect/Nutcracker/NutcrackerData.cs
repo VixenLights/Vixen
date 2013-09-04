@@ -137,9 +137,7 @@ namespace VixenModules.Effect.Nutcracker
 		[OnDeserialized]
 		private void OnDeserialized(StreamingContext context)
 		{
-			if (PreviewType == null)
-				PreviewType = NutcrackerEffects.PreviewType.Tree180;
-			else if (PreviewType.ToString() == string.Empty)
+			if (PreviewType.ToString() == string.Empty)
 				PreviewType = NutcrackerEffects.PreviewType.Tree180;
 
 			if (Palette == null)

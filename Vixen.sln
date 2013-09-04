@@ -533,6 +533,7 @@ Global
 		{B3CC7739-0179-462E-AAC5-30C31805C95F}.Release|x86.ActiveCfg = Release|x86
 		{B3CC7739-0179-462E-AAC5-30C31805C95F}.Release|x86.Build.0 = Release|x86
 		{89AD863C-4B4B-4FB8-990A-95499FE98DDF}.Release|x86.ActiveCfg = Release|x86
+		{89AD863C-4B4B-4FB8-990A-95499FE98DDF}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -12,7 +12,6 @@ namespace VixenModules.Output.ElexolEtherIO
 	public class ElexolEtherIOModule : ControllerModuleInstanceBase
 	{
 		private readonly static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
-		private bool _success = false;
 		private int _minIntensity = 1;
 		private int _remotePort = 2424;
 		private UdpClient _socket = new UdpClient();

@@ -26,9 +26,7 @@ namespace VixenModules.Preview.VixenPreview {
 
 	 
 
-		System.Windows.Forms.Timer zombieTimer;
-
-		public Direct2D.DisplayScene Scene { get { return (DisplayScene)previewWinform1.Scene; } set { previewWinform1.Scene = value; } }
+		public DisplayScene Scene { get { return (DisplayScene)previewWinform1.Scene; } set { previewWinform1.Scene = value; } }
 
 		VixenPreviewData _data;
 		private void setSceneData() {
