@@ -8,6 +8,7 @@ namespace VixenModules.Output.RDSController
 {
 	internal static class NativeMethods
 	{
+		#region MRDSIO
 		[DllImport("inpout32.dll", EntryPoint = "Inp32")]
 		public static extern void Input(int adress);
 		[DllImport("inpout32.dll", EntryPoint = "Out32")]
@@ -25,6 +26,7 @@ namespace VixenModules.Output.RDSController
 		[return: MarshalAs(UnmanagedType.Struct)]
 		[DllImport("mrdsio.dll")]
 		static extern TData Receive(int Adr, int Len);
-        
+		#endregion
+	
 	}
 }

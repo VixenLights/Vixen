@@ -82,6 +82,8 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="fmdll.dll" />
+    <Content Include="fmtx.h" />
     <Content Include="mrdsio.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
