@@ -9,6 +9,6 @@ namespace Vixen.Data.Flow
 
 	public interface IDataFlowData<out T> : IDataFlowData
 	{
-	new	T Value { get; }
+		new T Value { get; }
 	}
 }

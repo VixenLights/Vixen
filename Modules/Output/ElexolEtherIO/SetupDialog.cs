@@ -12,7 +12,6 @@ namespace VixenModules.Output.ElexolEtherIO
 	{
 		private int m_MinIntensity = 1;
 		private IPAddress m_IPAddress = null;
-		private int m_dataPort;
 		private ElexolEtherIOData _data;
 
 

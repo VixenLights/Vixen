@@ -9,7 +9,6 @@ namespace VixenModules.App.Scheduler
 	[DataContract]
 	internal class ScheduleItem : IScheduleItem
 	{
-		//private RecurrenceType _recurrenceType;
 
 		public ScheduleItem()
 		{

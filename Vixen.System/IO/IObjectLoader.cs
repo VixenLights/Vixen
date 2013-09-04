@@ -3,7 +3,7 @@
 	internal interface IObjectLoader<out T> : IObjectLoader
 		where T : class, new()
 	{
-	new	T LoadFromFile(string filePath);
+		new T LoadFromFile(string filePath);
 	}
 
 	internal interface IObjectLoader

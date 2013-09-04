@@ -6,7 +6,7 @@ namespace Vixen.IO
 		where T : class
 	{
 		T MigrateContent(T content, int fromVersion, int toVersion);
-	new	IEnumerable<IMigrationSegment<T>> ValidMigrations { get; }
+		new IEnumerable<IMigrationSegment<T>> ValidMigrations { get; }
 	}
 
 	public interface IContentMigrator

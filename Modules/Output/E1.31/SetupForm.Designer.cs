@@ -40,9 +40,6 @@ namespace VixenModules.Output.E131
         private MainMenu mainMenu;
         private MenuItem mIHelp;
 
-        //private MenuItem mIHelpAbout;
-
-        //private MenuItem mIHelpShowSys;
 
         private Label label;
 

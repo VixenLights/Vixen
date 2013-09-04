@@ -146,7 +146,7 @@ namespace VixenModules.Preview.VixenPreview {
 		}
 
 		private void buttonSave_Click(object sender, EventArgs e) {
-            SaveLocationDataForElements();
+			SaveLocationDataForElements();
 			DialogResult = System.Windows.Forms.DialogResult.OK;
 			previewForm.Close();
 			Close();

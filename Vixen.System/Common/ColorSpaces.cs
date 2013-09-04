@@ -16,7 +16,7 @@ namespace Common.Controls.ColorManagement.ColorModels
 
 		#region variables
 
-    [DataMember] private double _x, _y, _z;
+	[DataMember] private double _x, _y, _z;
 
 		#endregion
 
