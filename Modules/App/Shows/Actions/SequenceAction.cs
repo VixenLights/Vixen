@@ -15,7 +15,7 @@ namespace VixenModules.App.Shows
 {
 	public class SequenceAction : Action
 	{
-		private ISequenceContext _sequenceContext = null;
+		private IContext _sequenceContext = null;
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		public SequenceAction(ShowItem showItem)
@@ -29,11 +29,11 @@ namespace VixenModules.App.Shows
 
 			try
 			{
-				if (_sequenceContext == null)
+				if (_sequenceContext == null) 
 					PreProcess();
 
-				_sequenceContext.ContextEnded += sequence_Ended;
-				_sequenceContext.Play(TimeSpan.Zero, _sequenceContext.Sequence.Length);
+				//_sequenceContext.Play(TimeSpan.Zero, _sequenceContext.Sequence.Length);
+				_sequenceContext.Start();
 			}
 			catch (Exception ex)
 			{
@@ -41,13 +41,13 @@ namespace VixenModules.App.Shows
 			}
 		}
 
-		public override TimeSpan Duration()
-		{
-			if (_sequenceContext != null) 
-				return _sequenceContext.Sequence.Length;
-			else
-				return TimeSpan.Zero;
-		}
+		//public override TimeSpan Duration()
+		//{
+		//	if (_sequenceContext != null) 
+		//		return _sequenceContext.Sequence.Length;
+		//	else
+		//		return TimeSpan.Zero;
+		//}
 
 		public override void Stop()
 		{
@@ -62,13 +62,17 @@ namespace VixenModules.App.Shows
 				if (_sequenceContext == null)
 				{
 					ISequence sequence = SequenceService.Instance.Load(ShowItem.Sequence_FileName);
-					ISequenceContext context = VixenSystem.Contexts.CreateSequenceContext(new ContextFeatures(ContextCaching.NoCaching), sequence);
+					//IContext context = VixenSystem.Contexts.CreateSequenceContext(new ContextFeatures(ContextCaching.ContextLevelCaching),
+					//												 sequence);
+					IContext context = VixenSystem.Contexts.CreateSequenceContext(new ContextFeatures(ContextCaching.NoCaching), sequence);
 
-					foreach (IEffectNode effectNode in sequence.SequenceData.EffectData.Cast<IEffectNode>())
-					{
-						effectNode.Effect.PreRender();
-					}
+					//foreach (IEffectNode effectNode in sequence.SequenceData.EffectData.Cast<IEffectNode>())
+					//{
+					//	effectNode.Effect.PreRender();
+					//}
 					_sequenceContext = context;
+
+					_sequenceContext.ContextEnded += sequence_Ended;
 				}
 				PreProcessingCompleted = true;
 			}
@@ -80,11 +84,13 @@ namespace VixenModules.App.Shows
 
 		private void sequence_Ended(object sender, EventArgs e)
 		{
-			ISequenceContext context = sender as ISequenceContext;
-			context.ContextEnded -= sequence_Ended;
+			IContext context = sender as IContext;
+			//context.ContextEnded -= sequence_Ended;
 			//context.Stop();
 			//context.Play(TimeSpan.Zero, TimeSpan.Zero);
 			//context.T
+			//_sequenceContext.UpdateElementStates(TimeSpan.Zero);
+			//context.Stop();
 			base.Complete();
 		}
 
