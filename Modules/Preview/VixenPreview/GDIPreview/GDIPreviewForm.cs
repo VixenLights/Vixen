@@ -175,5 +175,15 @@ namespace VixenModules.Preview.VixenPreview
 			Data.Width = Width;
 			Data.Height = Height;
 		}
+
+		private void GDIPreviewForm_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			if (e.CloseReason == CloseReason.UserClosing)
+			{
+				MessageBox.Show("The preview can only be closed from the Preview Configuration dialog.", "Close",
+								MessageBoxButtons.OKCancel);
+				e.Cancel = true;
+			}
+		}
 	}
 }
