@@ -55,8 +55,10 @@ namespace FastPixel
 			{
 				_bitmap = new Bitmap(bitmapToClone.Width, bitmapToClone.Height);
 			}
-			Graphics g = Graphics.FromImage(_bitmap);
-			g.DrawImageUnscaled(bitmapToClone, 0, 0);
+
+			using (var g = Graphics.FromImage(_bitmap)) {
+				g.DrawImageUnscaled(bitmapToClone, 0, 0);
+			}
 		}
 
 		public FastPixel(int width, int height)
