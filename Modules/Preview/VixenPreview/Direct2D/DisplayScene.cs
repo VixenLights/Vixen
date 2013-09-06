@@ -173,7 +173,7 @@ namespace VixenModules.Preview.VixenPreview.Direct2D {
 				}
 			}
 		}
-		public void Update(ElementIntentStates ElementStates) {
+		public void Update(Vixen.Preview.PreviewElementIntentStates ElementStates) {
 
 			try {
 				Stopwatch w = Stopwatch.StartNew();
@@ -211,13 +211,14 @@ namespace VixenModules.Preview.VixenPreview.Direct2D {
 
 						ElementNode node;
 
-						if (!ElementNodeCache.TryGetValue(channelIntentState.Key, out node)) {
-							Element element = VixenSystem.Elements.GetElement(channelIntentState.Key);
+						if (!ElementNodeCache.TryGetValue(channelIntentState.Key.Id, out node)) {
+							//Element element = VixenSystem.Elements.GetElement(channelIntentState.Key);
+							Element element = channelIntentState.Key;
 							if (element != null) {
 
 								node = VixenSystem.Elements.GetElementNodeForElement(element);
 								if (node != null)
-									ElementNodeCache.TryAdd(channelIntentState.Key, node);
+									ElementNodeCache.TryAdd(channelIntentState.Key.Id, node);
 							}
 						}
 
@@ -287,7 +288,7 @@ namespace VixenModules.Preview.VixenPreview.Direct2D {
 			}
 		}
 
-		private void RenderPixel(KeyValuePair<Guid, IIntentStates> channelIntentState, PreviewPixel p, D2D.SolidColorBrush brush) {
+		private void RenderPixel(KeyValuePair<Element, IIntentStates> channelIntentState, PreviewPixel p, D2D.SolidColorBrush brush) {
 			if (p.PixelSize <= 4)
 				this.RenderTarget.DrawLine(new D2D.Point2F(p.X, p.Y), new D2D.Point2F(p.X + 1, p.Y + 1), brush, p.PixelSize);
 			else

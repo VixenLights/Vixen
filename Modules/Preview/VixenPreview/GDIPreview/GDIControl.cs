@@ -99,7 +99,6 @@ namespace VixenModules.Preview.VixenPreview
 				Graphics gfx = Graphics.FromImage(_backgroundAlphaImage);
 				using (SolidBrush brush = new SolidBrush(Color.FromArgb(255 - BackgroundAlpha, 0, 0, 0)))
 				{
-					//gfx.DrawImageUnscaled(_background, 0, 0, _background.Width, _background.Height);
 					gfx.DrawImage(_background, 0, 0, _background.Width, _background.Height);
 					gfx.FillRectangle(brush, 0, 0, _backgroundAlphaImage.Width, _backgroundAlphaImage.Height);
 				}

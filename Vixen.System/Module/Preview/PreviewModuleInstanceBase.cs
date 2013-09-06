@@ -13,7 +13,7 @@ namespace Vixen.Module.Preview
 	{
 		protected abstract IThreadBehavior ThreadBehavior { get; }
 
-		protected ElementIntentStates ElementStates { get; private set; }
+		protected Vixen.Preview.PreviewElementIntentStates ElementStates { get; private set; }
 
 		public override void Start()
 		{
@@ -30,7 +30,7 @@ namespace Vixen.Module.Preview
 			get { return ThreadBehavior.IsRunning; }
 		}
 
-		public void UpdateState(ElementIntentStates elementIntentStates)
+		public void UpdateState(Vixen.Preview.PreviewElementIntentStates elementIntentStates)
 		{
 			// Get the data referenced locally so we can get off this thread if need be.
 			ElementStates = elementIntentStates;

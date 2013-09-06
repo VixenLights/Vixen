@@ -30,7 +30,7 @@ namespace VixenModules.Preview.VixenPreview
 
 		public VixenPreviewData Data { get; set; }
 
-		public void Update(ElementIntentStates elementStates)
+		public void Update(Vixen.Preview.PreviewElementIntentStates elementStates)
 		{
 			if (!gdiControl.IsUpdating)
 			{
@@ -40,8 +40,9 @@ namespace VixenModules.Preview.VixenPreview
 
 				elementStates.AsParallel().WithCancellation(tokenSource.Token).ForAll(channelIntentState =>
 				{
-					var elementId = channelIntentState.Key;
-					Element element = VixenSystem.Elements.GetElement(elementId);
+					//var elementId = channelIntentState.Key;
+					//Element element = VixenSystem.Elements.GetElement(elementId);
+					Element element = channelIntentState.Key;
 					if (element != null)
 					{
 						ElementNode node = VixenSystem.Elements.GetElementNodeForElement(element);
