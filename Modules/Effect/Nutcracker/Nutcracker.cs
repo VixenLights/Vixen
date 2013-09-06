@@ -86,13 +86,20 @@ namespace VixenModules.Effect.Nutcracker
 			get
 			{
 				int childCount = 0;
-				foreach (ElementNode node in TargetNodes.FirstOrDefault().Children) {
-					if (!node.IsLeaf) {
-						childCount++;
+
+				if (TargetNodes.FirstOrDefault() != null)
+				{
+					foreach (ElementNode node in TargetNodes.FirstOrDefault().Children)
+					{
+						if (!node.IsLeaf)
+						{
+							childCount++;
+						}
 					}
-				}
-				if (childCount == 0 && TargetNodes.FirstOrDefault().Children.Count() > 0) {
-					childCount = 1;
+					if (childCount == 0 && TargetNodes.FirstOrDefault().Children.Count() > 0)
+					{
+						childCount = 1;
+					}
 				}
 
                 if (childCount == 0)
