@@ -174,14 +174,17 @@ namespace VixenModules.Effect.Nutcracker
 					if (NutcrackerData.PreviewType == NutcrackerEffects.PreviewType.Tree90 ||
 						NutcrackerData.PreviewType == NutcrackerEffects.PreviewType.Tree180 ||
 						NutcrackerData.PreviewType == NutcrackerEffects.PreviewType.Tree270 ||
-						NutcrackerData.PreviewType == NutcrackerEffects.PreviewType.Tree360 ||
-						NutcrackerData.PreviewType == NutcrackerEffects.PreviewType.Grid)
+						NutcrackerData.PreviewType == NutcrackerEffects.PreviewType.Tree360)
 					{
 						stringNum = stringCount - (elementNum / pixelsPerString);
 					}
-					else
+					// Grids are backwards (or left to right, in our case)
+					else if (NutcrackerData.PreviewType == NutcrackerEffects.PreviewType.Grid)
 					{
-						// not sure what this is computing, but stringNum 0 doesn't render...
+						stringNum = (elementNum / pixelsPerString) + 1;
+					}
+					else 
+					{
 						stringNum = (elementNum / pixelsPerString) + 1;
 					}
 					int pixelNum = (stringNum * pixelsPerString) - (pixelsPerString - (elementNum % pixelsPerString));
