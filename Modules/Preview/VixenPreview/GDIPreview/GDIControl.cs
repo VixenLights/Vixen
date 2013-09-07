@@ -124,19 +124,20 @@ namespace VixenModules.Preview.VixenPreview
 
 		public void RenderImage()
 		{
-			if (_backgroundAlphaImage != null)
-			{
-				backBuffer.Graphics.DrawImageUnscaled(fastPixel.Bitmap, 0, 0);
-			}
-			else
-			{
-				backBuffer.Graphics.Clear(Color.Black);
-			}
+			if (this.InvokeRequired)
+				this.Invoke(new Vixen.Delegates.GenericDelegate(RenderImage));
+			else {
+				if (_backgroundAlphaImage != null) {
+					backBuffer.Graphics.DrawImageUnscaled(fastPixel.Bitmap, 0, 0);
+				} else {
+					backBuffer.Graphics.Clear(Color.Black);
+				}
 
-			if (!this.Disposing && graphicsContext != null)
-				backBuffer.Render(Graphics.FromHwnd(this.Handle));
+				if (!this.Disposing && graphicsContext != null)
+					backBuffer.Render(Graphics.FromHwnd(this.Handle));
 
-			renderTimer.Stop();
+				renderTimer.Stop();
+			}
 		}
 
 		private void AllocateGraphicsBuffer()
