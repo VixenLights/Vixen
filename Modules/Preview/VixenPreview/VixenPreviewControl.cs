@@ -1111,7 +1111,7 @@ namespace VixenModules.Preview.VixenPreview
 		//}
 		//#endregion
 
-		public void ProcessUpdateParallel(Vixen.Preview.PreviewElementIntentStates elementStates)
+		public void ProcessUpdateParallel(/*Vixen.Preview.PreviewElementIntentStates elementStates*/)
 		{
 			renderTimer.Reset();
 			renderTimer.Start();
@@ -1128,6 +1128,10 @@ namespace VixenModules.Preview.VixenPreview
                     try
                     {
                         fp.Lock();
+
+						Vixen.Preview.PreviewElementIntentStates elementStates =
+							new Vixen.Preview.PreviewElementIntentStates(VixenSystem.Elements.ToDictionary(x => x, x => x.State));
+
                         elementStates.AsParallel().WithCancellation(tokenSource.Token).ForAll(channelIntentState =>
                         {
 							//var elementId = channelIntentState.Key;

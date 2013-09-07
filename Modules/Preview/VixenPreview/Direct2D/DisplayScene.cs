@@ -173,7 +173,14 @@ namespace VixenModules.Preview.VixenPreview.Direct2D {
 				}
 			}
 		}
-		public void Update(Vixen.Preview.PreviewElementIntentStates ElementStates) {
+		public void Update() {
+
+			// Old Way
+			//Vixen.Preview.PreviewElementIntentStates ElementStates =
+			//	new Vixen.Preview.PreviewElementIntentStates(VixenSystem.Elements.ToDictionary(x => x, x => x.State));
+
+			// New Way
+			Vixen.Sys.Managers.ElementManager elements = VixenSystem.Elements;
 
 			try {
 				Stopwatch w = Stopwatch.StartNew();
@@ -203,55 +210,49 @@ namespace VixenModules.Preview.VixenPreview.Direct2D {
 
 
 
-				try {
-
-					ElementStates.AsParallel().WithCancellation(tokenSource.Token).ForAll(channelIntentState => {
-
-						//foreach (var channelIntentState in ElementStates) {
+				try
+				{
+					elements.AsParallel().WithCancellation(tokenSource.Token).ForAll(element =>
+					{
 
 						ElementNode node;
 
-						if (!ElementNodeCache.TryGetValue(channelIntentState.Key.Id, out node)) {
-							//Element element = VixenSystem.Elements.GetElement(channelIntentState.Key);
-							Element element = channelIntentState.Key;
-							if (element != null) {
+						if (!ElementNodeCache.TryGetValue(element.Id, out node))
+						{
+							if (element != null)
+							{
 
 								node = VixenSystem.Elements.GetElementNodeForElement(element);
 								if (node != null)
-									ElementNodeCache.TryAdd(channelIntentState.Key.Id, node);
+									ElementNodeCache.TryAdd(element.Id, node);
 							}
 						}
 
-
-						if (node != null) {
+						if (node != null)
+						{
 							Color pixColor;
 
 
 							//TODO: Discrete Colors
-							pixColor = Vixen.Intent.ColorIntent.GetAlphaColorForIntents(channelIntentState.Value);
+							pixColor = Vixen.Intent.ColorIntent.GetAlphaColorForIntents(element.State);
 
 							if (pixColor.A > 0)
-								using (var brush = this.RenderTarget.CreateSolidColorBrush(pixColor.ToColorF())) {
+								using (var brush = this.RenderTarget.CreateSolidColorBrush(pixColor.ToColorF()))
+								{
 
 									List<PreviewPixel> pixels;
-									if (NodeToPixel.TryGetValue(node, out pixels)) {
-										//if (pixels.Count < 50)
+									if (NodeToPixel.TryGetValue(node, out pixels))
+									{
 										iPixels += pixels.Count;
-										pixels.ForEach(p => RenderPixel(channelIntentState, p, brush));
+										pixels.ForEach(p => RenderPixel(/*channelIntentState, */p, brush));
 
-										//else {
-										//	//Console.WriteLine("Element {1}, Pixels: {0}",pixels.Count, element.Name);
-										//	pixels.AsParallel().WithCancellation(tokenSource.Token).ForAll(p => RenderPixel(channelIntentState, p, brush));
-										//}
 									}
 								}
 						}
-
-						//}
 					});
-
 				}
-				catch (Exception) {
+				catch (Exception)
+				{
 					tokenSource.Cancel();
 					//Console.WriteLine(e.Message);
 				}
@@ -268,7 +269,7 @@ namespace VixenModules.Preview.VixenPreview.Direct2D {
 				if (maxUpdateTime < ms) {
 					maxUpdateTime = ms;
 				}
-				string text = string.Format("FPS {0} \nPoints {1} \nPixels {3} \nRender Time:{2} \nMax Render: {4} \nAvg Render: {5}", this.fps, ElementStates.Count(), w.ElapsedMilliseconds, iPixels, maxUpdateTime, UpdateTimes.Average().ToString("0.00"));
+				string text = string.Format("FPS {0} \nPoints {1} \nPixels {3} \nRender Time:{2} \nMax Render: {4} \nAvg Render: {5}", this.fps, elements.Count(), w.ElapsedMilliseconds, iPixels, maxUpdateTime, UpdateTimes.Average().ToString("0.00"));
 
 				using (var textBrush = this.RenderTarget.CreateSolidColorBrush(Color.White.ToColorF())) {
 					this.RenderTarget.DrawText(text, this.textFormat, new D2D.RectF(10, 10, 100, 20), textBrush);
@@ -288,7 +289,7 @@ namespace VixenModules.Preview.VixenPreview.Direct2D {
 			}
 		}
 
-		private void RenderPixel(KeyValuePair<Element, IIntentStates> channelIntentState, PreviewPixel p, D2D.SolidColorBrush brush) {
+		private void RenderPixel(PreviewPixel p, D2D.SolidColorBrush brush) {
 			if (p.PixelSize <= 4)
 				this.RenderTarget.DrawLine(new D2D.Point2F(p.X, p.Y), new D2D.Point2F(p.X + 1, p.Y + 1), brush, p.PixelSize);
 			else

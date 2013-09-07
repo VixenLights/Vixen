@@ -7,6 +7,6 @@ namespace Vixen.Module.Preview
 	/// </summary>
 	public interface IPreview
 	{
-		void UpdateState(Vixen.Preview.PreviewElementIntentStates elementIntentStates);
+		void UpdateState();
 	}
 }
