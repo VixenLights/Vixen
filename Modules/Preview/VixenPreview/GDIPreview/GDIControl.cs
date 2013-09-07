@@ -20,6 +20,8 @@ namespace VixenModules.Preview.VixenPreview
 {
 	public partial class GDIControl : UserControl
 	{
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+
 		private Image _background = null;
 		private Bitmap _backgroundAlphaImage = null;
 		private int _backgroundAlpha = 0;
@@ -139,15 +141,20 @@ namespace VixenModules.Preview.VixenPreview
 
 		private void AllocateGraphicsBuffer()
 		{
-			if (backBuffer != null)
-				backBuffer.Dispose();
+			try {
 
-			graphicsContext.MaximumBuffer =
+				if (backBuffer != null)
+					backBuffer.Dispose();
+
+				graphicsContext.MaximumBuffer =
 				  new Size(this.Width + 1, this.Height + 1);
 
-			backBuffer =
-				graphicsContext.Allocate(this.CreateGraphics(),
-												ClientRectangle);
+				backBuffer =
+				graphicsContext.Allocate(this.CreateGraphics(), ClientRectangle);
+
+			} catch (Exception e) {
+				Logging.ErrorException("Error Allocating Graphics Buffer", e);
+			}
 		}
 
 		public void BeginUpdate()
