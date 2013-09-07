@@ -175,14 +175,11 @@ namespace VixenModules.Preview.VixenPreview.Direct2D {
 		}
 		public void Update() {
 
-			// Old Way
-			//Vixen.Preview.PreviewElementIntentStates ElementStates =
-			//	new Vixen.Preview.PreviewElementIntentStates(VixenSystem.Elements.ToDictionary(x => x, x => x.State));
-
-			// New Way
 			Vixen.Sys.Managers.ElementManager elements = VixenSystem.Elements;
+			Element[] elementArray = elements.Where(e => e.State.Where(i => (i as IIntentState<LightingValue>).GetValue().Intensity > 0).Count() > 0).ToArray();
 
-			try {
+			try
+			{
 				Stopwatch w = Stopwatch.StartNew();
 
 				// Calculate our actual frame rate
@@ -212,7 +209,7 @@ namespace VixenModules.Preview.VixenPreview.Direct2D {
 
 				try
 				{
-					elements.AsParallel().WithCancellation(tokenSource.Token).ForAll(element =>
+					elementArray.AsParallel().WithCancellation(tokenSource.Token).ForAll(element =>
 					{
 
 						ElementNode node;
