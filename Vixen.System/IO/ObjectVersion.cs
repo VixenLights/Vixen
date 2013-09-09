@@ -2,7 +2,7 @@
 {
 	internal static class ObjectVersion
 	{
-		public static int SystemConfig = 13;
+		public static int SystemConfig = 14;
 		public static int ModuleStore = 1;
 		public static int SystemContext = 1;
 		public static int Program = 1;
