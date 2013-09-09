@@ -86,13 +86,20 @@ namespace VixenModules.Effect.Nutcracker
 			get
 			{
 				int childCount = 0;
-				foreach (ElementNode node in TargetNodes.FirstOrDefault().Children) {
-					if (!node.IsLeaf) {
-						childCount++;
+
+				if (TargetNodes.FirstOrDefault() != null)
+				{
+					foreach (ElementNode node in TargetNodes.FirstOrDefault().Children)
+					{
+						if (!node.IsLeaf)
+						{
+							childCount++;
+						}
 					}
-				}
-				if (childCount == 0 && TargetNodes.FirstOrDefault().Children.Count() > 0) {
-					childCount = 1;
+					if (childCount == 0 && TargetNodes.FirstOrDefault().Children.Count() > 0)
+					{
+						childCount = 1;
+					}
 				}
 
                 if (childCount == 0)
@@ -139,13 +146,10 @@ namespace VixenModules.Effect.Nutcracker
 		// not a element, will recursively descend until we render its elements.
 		private void RenderNode(ElementNode node)
 		{
-			//Console.WriteLine("Nutcracker Node:" + node.Name);
-			//bool CW = true;
 			int stringCount = StringCount;
 			int framesToRender = (int) TimeSpan.TotalMilliseconds/50;
 			NutcrackerEffects effect = new NutcrackerEffects(_data.NutcrackerData);
 			int pixelsPerString = PixelsPerString();
-			//Console.WriteLine("StringCount " + stringCount + ", PixPerString " + pixelsPerString);
 			effect.InitBuffer(stringCount, pixelsPerString);
 			int totalPixels = effect.PixelCount();
 			TimeSpan startTime = TimeSpan.Zero;
@@ -174,9 +178,10 @@ namespace VixenModules.Effect.Nutcracker
 
 				startTime = startTime.Add(ms50);
 			};
-
 			timer.Stop();
-			//Console.WriteLine("Nutcracker Render:" + timer.ElapsedMilliseconds + "ms Frames:" + framesToRender);
+			Console.WriteLine("Nutcracker Render:" + timer.ElapsedMilliseconds + "ms, Frames:" + framesToRender
+							+ "    wid:" + stringCount + ", ht:" + pixelsPerString
+							+ "    pix:" + totalPixels + ", intents:" + _elementData.Count());
 		}
 	}
 }

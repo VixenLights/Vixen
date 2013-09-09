@@ -250,6 +250,7 @@
     <Compile Include="Module\ModuleInstanceDataRetriever.cs" />
     <Compile Include="Module\ModuleConsumer.cs" />
     <Compile Include="Module\ModuleTypeDataRetriever.cs" />
+    <Compile Include="Module\Preview\PreviewElementIntentStates.cs" />
     <Compile Include="Module\Script\ICompilerError.cs" />
     <Compile Include="Module\Script\ICompilerParameters.cs" />
     <Compile Include="Module\Script\ICompilerResults.cs" />

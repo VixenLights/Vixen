@@ -27,9 +27,7 @@ namespace Vixen.Sys.Output
 
 		public void Update()
 		{
-			ElementIntentStates elementIntentStates =
-				new ElementIntentStates(VixenSystem.Elements.ToDictionary(x => x.Id, x => x.State));
-			_UpdateModuleState(elementIntentStates);
+			_PreviewModule.UpdateState();
 		}
 
 		public Guid Id { get; private set; }
@@ -105,11 +103,6 @@ namespace Vixen.Sys.Output
 		private IPreview _PreviewModule
 		{
 			get { return _outputModuleConsumer.Module; }
-		}
-
-		private void _UpdateModuleState(ElementIntentStates elementIntentStates)
-		{
-			_PreviewModule.UpdateState(elementIntentStates);
 		}
 	}
 }
