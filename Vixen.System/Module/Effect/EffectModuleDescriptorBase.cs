@@ -39,7 +39,7 @@ namespace Vixen.Module.Effect {
 
 				//Default to Null image
 				var resources = this.Assembly.GetManifestResourceNames().ToList();
-				resources.ToList().ForEach(a => Console.WriteLine(a));
+				//resources.ToList().ForEach(a => Console.WriteLine(a)); 
 				int maxDimension = Math.Max(desiredWidth, desiredHeight);
 				if (maxDimension <= 16) {
 					var resName = resources.Where(r => r.ContainsString(".Effect16.", StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();

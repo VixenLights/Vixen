@@ -92,7 +92,14 @@ namespace Vixen.Sys.Managers
 			}
 			else {
 				node.RemoveFromParent(parent, cleanupIfFloating);
+				//If the parent no longer has children, add a element back to it.
+				if (parent.IsLeaf && parent.Element == null)
+				{
+					parent.Element = new Element(parent.Name);
+					VixenSystem.Elements.AddElement(parent.Element);
+				}
 			}
+
 		}
 
 		public void RenameNode(ElementNode node, string newName)

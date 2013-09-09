@@ -11,10 +11,10 @@ namespace Vixen.Module.Effect
 {
 	[Serializable]
 	public abstract class EffectModuleInstanceBase : ModuleInstanceBase, IEffectModuleInstance,
-	                                                 IEqualityComparer<IEffectModuleInstance>,
-	                                                 IEquatable<IEffectModuleInstance>,
-	                                                 IEqualityComparer<EffectModuleInstanceBase>,
-	                                                 IEquatable<EffectModuleInstanceBase>
+													 IEqualityComparer<IEffectModuleInstance>,
+													 IEquatable<IEffectModuleInstance>,
+													 IEqualityComparer<EffectModuleInstanceBase>,
+													 IEquatable<EffectModuleInstanceBase>
 	{
 		private ElementNode[] _targetNodes;
 		private TimeSpan _timeSpan;
@@ -86,7 +86,7 @@ namespace Vixen.Module.Effect
 			EffectIntents effectIntents = Render();
 			// NB: the ElementData.Restrict method takes a start and end time, not a start and duration
 			effectIntents = EffectIntents.Restrict(effectIntents, restrictingOffsetTime,
-			                                       restrictingOffsetTime + restrictingTimeSpan);
+												   restrictingOffsetTime + restrictingTimeSpan);
 			return effectIntents;
 		}
 
@@ -96,25 +96,40 @@ namespace Vixen.Module.Effect
 
 		public string EffectName
 		{
-			get { return ((IEffectModuleDescriptor) Descriptor).EffectName; }
+			get { return ((IEffectModuleDescriptor)Descriptor).EffectName; }
 		}
 
 		public ParameterSignature Parameters
 		{
-			get { return ((IEffectModuleDescriptor) Descriptor).Parameters; }
+			get { return ((IEffectModuleDescriptor)Descriptor).Parameters; }
 		}
 
 		public Guid[] PropertyDependencies
 		{
-			get { return ((EffectModuleDescriptorBase) Descriptor).PropertyDependencies; }
+			get { return ((EffectModuleDescriptorBase)Descriptor).PropertyDependencies; }
 		}
 
-		public virtual void GenerateVisualRepresentation(Graphics g, Rectangle clipRectangle)
+		//public virtual void GenerateVisualRepresentation(Graphics g, Rectangle clipRectangle)
+		//{
+		//	g.Clear(Color.White);
+		//	g.DrawRectangle(Pens.Black, clipRectangle.X, clipRectangle.Y, clipRectangle.Width - 1, clipRectangle.Height - 1);
+		//}
+		public virtual void GenerateVisualRepresentation(System.Drawing.Graphics g, System.Drawing.Rectangle clipRectangle)
 		{
-			g.Clear(Color.White);
-			g.DrawRectangle(Pens.Black, clipRectangle.X, clipRectangle.Y, clipRectangle.Width - 1, clipRectangle.Height - 1);
-		}
 
+			string DisplayValue = string.Format("{0}", this.EffectName);
+
+
+			using (Font AdjustedFont =  Vixen.Common.Graphics.GetAdjustedFont(g, DisplayValue, clipRectangle, "Arial")) {
+				using (var StringBrush = new SolidBrush(Color.Black)) {
+					//g.Clear(Color.White);
+					g.DrawRectangle(Pens.Black, clipRectangle.X, clipRectangle.Y, clipRectangle.Width - 1, clipRectangle.Height - 1);
+
+					g.DrawString(DisplayValue, AdjustedFont, StringBrush, 4, 4);
+					//base.GenerateVisualRepresentation(g, clipRectangle);
+				}
+			}
+		}
 		public ElementIntents GetElementIntents(TimeSpan effectRelativeTime)
 		{
 			_elementIntents.Clear();
@@ -136,7 +151,8 @@ namespace Vixen.Module.Effect
 		private void _EnsureTargetNodeProperties()
 		{
 			// If the effect requires any properties, make sure the target nodes have those properties.
-			if (TargetNodes == null || TargetNodes.Length == 0) return;
+			if (TargetNodes == null || TargetNodes.Length == 0)
+				return;
 
 			if (!ApplicationServices.AreAllEffectRequiredPropertiesPresent(this)) {
 				EffectModuleDescriptorBase effectDescriptor =

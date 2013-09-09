@@ -265,8 +265,10 @@ namespace VixenModules.Effect.Nutcracker
 			var newHeight = (int) (image.Height*ratio);
 
 			var newImage = new Bitmap(newWidth, newHeight);
-			Graphics.FromImage(newImage).DrawImage(image, 0, 0, newWidth, newHeight);
-			return newImage;
+			using (var g = Graphics.FromImage(newImage)) {
+				g.DrawImage(image, 0, 0, newWidth, newHeight);
+				return newImage;
+			}
 		}
 
 		#endregion
@@ -1592,7 +1594,7 @@ namespace VixenModules.Effect.Nutcracker
 		{
 			const int speedfactor = 4;
 			Image image = null;
-
+			
 			if (NewPictureName != PictureName) {
 				image = Image.FromFile(NewPictureName);
 				fp = new FastPixel.FastPixel(new Bitmap(image));
@@ -1679,6 +1681,8 @@ namespace VixenModules.Effect.Nutcracker
 				}
 				fp.Unlock(false);
 			}
+			if (image != null)
+				image.Dispose();
 		}
 
 		#endregion //Picture
@@ -1949,9 +1953,12 @@ namespace VixenModules.Effect.Nutcracker
 		public void RenderPictureTile(int dir, double scale, bool useColor, bool useAlpha, int ColorReplacementSensitivity,
 		                              string NewPictureName)
 		{
+			
 			const int speedfactor = 4;
 			Image image = null;
+			try {
 
+			
 			if (NewPictureName == null || NewPictureName.Length == 0)
 				return;
 
@@ -2078,6 +2085,10 @@ namespace VixenModules.Effect.Nutcracker
 					}
 				}
 				fp.Unlock(false);
+			}
+			} finally {
+				if (image != null)
+					image.Dispose();
 			}
 		}
 

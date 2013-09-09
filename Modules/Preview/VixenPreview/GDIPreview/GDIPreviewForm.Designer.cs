@@ -95,6 +95,7 @@
 			this.Name = "GDIPreviewForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "Vixen Preview";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.GDIPreviewForm_FormClosing);
 			this.Move += new System.EventHandler(this.GDIPreviewForm_Move);
 			this.Resize += new System.EventHandler(this.GDIPreviewForm_Resize);
 			this.statusStrip.ResumeLayout(false);

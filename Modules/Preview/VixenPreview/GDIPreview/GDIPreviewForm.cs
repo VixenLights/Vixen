@@ -30,18 +30,21 @@ namespace VixenModules.Preview.VixenPreview
 
 		public VixenPreviewData Data { get; set; }
 
-		public void Update(ElementIntentStates elementStates)
+		public void UpdatePreview(/*Vixen.Preview.PreviewElementIntentStates elementStates*/)
 		{
 			if (!gdiControl.IsUpdating)
 			{
 				gdiControl.BeginUpdate();
 
+				Vixen.Sys.Managers.ElementManager elements = VixenSystem.Elements;
+
+				Element[] elementArray = elements.Where(e => e.State.Where(i => (i as IIntentState<LightingValue>).GetValue().Intensity > 0).Any()).ToArray();
+				//Console.WriteLine(elements.Count() + ":" + elementArray.Count());
 				CancellationTokenSource tokenSource = new CancellationTokenSource();
 
-				elementStates.AsParallel().WithCancellation(tokenSource.Token).ForAll(channelIntentState =>
+				//elements.AsParallel().WithCancellation(tokenSource.Token).ForAll(element =>
+				elementArray.AsParallel().WithCancellation(tokenSource.Token).ForAll(element =>
 				{
-					var elementId = channelIntentState.Key;
-					Element element = VixenSystem.Elements.GetElement(elementId);
 					if (element != null)
 					{
 						ElementNode node = VixenSystem.Elements.GetElementNodeForElement(element);
@@ -52,7 +55,7 @@ namespace VixenModules.Preview.VixenPreview
 							{
 								foreach (PreviewPixel pixel in pixels)
 								{
-									pixel.Draw(gdiControl.FastPixel, channelIntentState.Value);
+									pixel.Draw(gdiControl.FastPixel, element.State);
 								}
 							}
 						}
@@ -174,6 +177,16 @@ namespace VixenModules.Preview.VixenPreview
 
 			Data.Width = Width;
 			Data.Height = Height;
+		}
+
+		private void GDIPreviewForm_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			if (e.CloseReason == CloseReason.UserClosing)
+			{
+				MessageBox.Show("The preview can only be closed from the Preview Configuration dialog.", "Close",
+								MessageBoxButtons.OKCancel);
+				e.Cancel = true;
+			}
 		}
 	}
 }

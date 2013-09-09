@@ -104,7 +104,7 @@ namespace Vixen.Sys.Managers
 				_threadState = ExecutionState.Stopped;
 				_finished.Set();
 
-				Logging.Error(string.Format("Controller {0} error", OutputDevice.Name), ex);
+				Logging.ErrorException(string.Format("Controller {0} error", OutputDevice.Name), ex);
 				OnError();
 			}
 		}
