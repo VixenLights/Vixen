@@ -147,13 +147,11 @@ namespace VixenModules.Preview.VixenPreview
 				if (backBuffer != null)
 					backBuffer.Dispose();
 
-				graphicsContext.MaximumBuffer =
-				  new Size(this.Width + 1, this.Height + 1);
-			if (this.Width > 0 && this.Height > 0)
-			{
-				backBuffer =
-				graphicsContext.Allocate(this.CreateGraphics(), ClientRectangle);
+				graphicsContext.MaximumBuffer = new Size(this.Width + 1, this.Height + 1);
 
+				if (this.Width > 0 && this.Height > 0) {
+					backBuffer = graphicsContext.Allocate(this.CreateGraphics(), ClientRectangle);
+				}
 			} catch (Exception e) {
 				Logging.ErrorException("Error Allocating Graphics Buffer", e);
 			}
