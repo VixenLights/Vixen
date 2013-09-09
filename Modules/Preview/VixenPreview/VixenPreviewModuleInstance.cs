@@ -211,13 +211,13 @@ namespace VixenModules.Preview.VixenPreview
 				}
 
 				if (!UseGDIPreviewRendering) {
-					((VixenPreviewDisplayD2D)displayForm).Scene.Update(ElementStates);
+					((VixenPreviewDisplayD2D)displayForm).Scene.Update(/*ElementStates*/);
 				}
 				else {
 					if (UseOldPreview)
-						((VixenPreviewDisplay)displayForm).PreviewControl.ProcessUpdateParallel(ElementStates);
+						((VixenPreviewDisplay)displayForm).PreviewControl.ProcessUpdateParallel(/*ElementStates*/);
 					else
-					((GDIPreviewForm)displayForm).Update(ElementStates);
+					((GDIPreviewForm)displayForm).UpdatePreview();
 				}
 			}
 			catch (Exception e) {

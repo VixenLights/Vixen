@@ -983,7 +983,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			catch (Exception ex) {
 				string msg = "TimedSequenceEditor: error adding effect of type " + effectInstance.Descriptor.TypeId + " to row " +
 				             ((row == null) ? "<null>" : row.Name);
-				Logging.Error(msg, ex);
+				Logging.ErrorException(msg, ex);
 			}
 		}
 
