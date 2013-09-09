@@ -72,7 +72,7 @@ namespace VixenModules.Effect.RDS
 		{
 			string DisplayValue = string.Format("RDS - {0}", Title);
 
-			Font AdjustedFont =  GetAdjustedFont(g, DisplayValue, clipRectangle);
+			Font AdjustedFont =  Vixen.Common.Graphics.GetAdjustedFont(g, DisplayValue, clipRectangle,"RDS.DigitalDream.ttf");
 			using (var StringBrush = new SolidBrush(Color.White)) {
 				using (var backgroundBrush = new SolidBrush(Color.DarkGray)) {
 					g.FillRectangle(backgroundBrush, clipRectangle);
@@ -82,60 +82,7 @@ namespace VixenModules.Effect.RDS
 			}
 
 		}
-		PrivateFontCollection private_fonts = null;
-		[DllImport("gdi32.dll")]
-		private static extern IntPtr AddFontMemResourceEx(IntPtr pbFont, uint cbFont, IntPtr pdv, [System.Runtime.InteropServices.In] ref uint pcFonts);
-
-		Font GetFontFromResx()
-		{
-			if (private_fonts == null) {
-
-				// specify embedded resource name
-				string resource = "RDS.DigitalDream.ttf";
-				private_fonts = new PrivateFontCollection();
-				// receive resource stream
-				Stream fontStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resource);
-				fontStream.Position = 0;
-				byte[] buffer = new byte[fontStream.Length];
-				for (int totalBytesCopied = 0; totalBytesCopied < fontStream.Length; )
-					totalBytesCopied += fontStream.Read(buffer, totalBytesCopied, Convert.ToInt32(fontStream.Length) - totalBytesCopied);
-
-
-				unsafe {
-					fixed (byte* pFontData = buffer) {
-						uint dummy = 0;
-						private_fonts.AddMemoryFont((IntPtr)pFontData, buffer.Length);
-						AddFontMemResourceEx((IntPtr)pFontData, (uint)buffer.Length, IntPtr.Zero, ref dummy);
-					}
-				}
-
-			}
-			return new Font(private_fonts.Families[0], 22);
-		}
-		Font GetAdjustedFont(Graphics GraphicRef, string GraphicString, System.Drawing.Rectangle clipRectangle, int MaxFontSize=100, int MinFontSize=10, bool SmallestOnFail=true)
-		{
-			Font OriginalFont = GetFontFromResx();
-			// We utilize MeasureString which we get via a control instance           
-			for (int AdjustedSize = MaxFontSize; AdjustedSize >= MinFontSize; AdjustedSize--) {
-				Font TestFont = new Font(private_fonts.Families[0], AdjustedSize);
-
-				// Test the string with the new size
-				SizeF AdjustedSizeNew = GraphicRef.MeasureString(GraphicString, TestFont);
-
-				if (clipRectangle.Width-4 > Convert.ToInt32(AdjustedSizeNew.Width) && clipRectangle.Height-4> Convert.ToInt32(AdjustedSizeNew.Height)) {
-					// Good font, return it
-					return TestFont;
-				}
-			}
-
-			// If you get here there was no fontsize that worked
-			// return MinimumSize or Original?
-			if (SmallestOnFail) {
-				return new Font(OriginalFont.Name, MinFontSize, OriginalFont.Style);
-			} else {
-				return OriginalFont;
-			}
-		}
+	
 
 		protected override Vixen.Sys.EffectIntents _Render()
 		{
