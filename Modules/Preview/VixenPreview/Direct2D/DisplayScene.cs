@@ -176,7 +176,7 @@ namespace VixenModules.Preview.VixenPreview.Direct2D {
 		public void Update() {
 
 			Vixen.Sys.Managers.ElementManager elements = VixenSystem.Elements;
-			Element[] elementArray = elements.Where(e => e.State.Where(i => (i as IIntentState<LightingValue>).GetValue().Intensity > 0).Count() > 0).ToArray();
+			Element[] elementArray = elements.Where(e => e.State.Where(i => (i as IIntentState<LightingValue>).GetValue().Intensity > 0).Any()).ToArray();
 
 			try
 			{
