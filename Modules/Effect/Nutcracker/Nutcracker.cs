@@ -156,8 +156,6 @@ namespace VixenModules.Effect.Nutcracker
 			int totalPixels = effect.PixelCount();
 			TimeSpan startTime = TimeSpan.Zero;
 			TimeSpan ms50 = new TimeSpan(0, 0, 0, 0, 50);
-			Stopwatch timer = new Stopwatch();
-			timer.Start();
 
 			for (int frameNum = 0; frameNum < framesToRender; frameNum++) {
 				// Parallel will not work here. Nutcracker effects must be run in order
@@ -180,10 +178,6 @@ namespace VixenModules.Effect.Nutcracker
 
 				startTime = startTime.Add(ms50);
 			};
-			timer.Stop();
-			Console.WriteLine("Nutcracker Render:" + timer.ElapsedMilliseconds + "ms, Frames:" + framesToRender
-							+ "    wid:" + stringCount + ", ht:" + pixelsPerString
-							+ "    pix:" + totalPixels + ", intents:" + _elementData.Count());
 		}
 
 
