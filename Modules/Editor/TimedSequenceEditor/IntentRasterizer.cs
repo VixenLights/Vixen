@@ -53,12 +53,26 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				);
 			//(float)Math.Floor(_rect.X) - (_rect.X / 300),   _rect.Y,   (float)Math.Ceiling(_rect.Width) + (_rect.Right / 300) + 1.0F,  _rect.Height
 
-			using (
-				LinearGradientBrush brush = new LinearGradientBrush(gradientRectangle,
-				                                                    startValue.GetAlphaChannelIntensityAffectedColor(),
-				                                                    endValue.GetAlphaChannelIntensityAffectedColor(),
-				                                                    LinearGradientMode.Horizontal)) {
-				_graphics.FillRectangle(brush, _rect);
+			Color startColor = startValue.GetAlphaChannelIntensityAffectedColor();
+			Color endColor = endValue.GetAlphaChannelIntensityAffectedColor();
+			if (startColor == endColor)
+			{
+				using (
+					SolidBrush brush = new SolidBrush( startColor))
+				{
+					_graphics.FillRectangle(brush, _rect);
+				}
+			}
+			else
+			{
+				using (
+					LinearGradientBrush brush = new LinearGradientBrush(gradientRectangle,
+																		startColor,
+																		endColor,
+																		LinearGradientMode.Horizontal))
+				{
+					_graphics.FillRectangle(brush, _rect);
+				}
 			}
 		}
 

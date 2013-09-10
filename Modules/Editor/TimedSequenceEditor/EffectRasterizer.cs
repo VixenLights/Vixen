@@ -24,13 +24,26 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (Math.Abs(width - 0) < double.Epsilon || Math.Abs(height - 0) < double.Epsilon) return;
 
 			Element[] elements = effect.TargetNodes.GetElements();
+			int tmpsiz = 15;
+			if (elements.Length > tmpsiz)
+			{
+				double skip = elements.Length / (double)tmpsiz;
+				Element[] tmpele = new Element[tmpsiz];
+				for (int i = 0; i < tmpsiz; i++)
+				{
+					tmpele[i] = elements[(int)(i * skip - double.Epsilon)];
+					//Console.WriteLine( "from idx: " + (int)(i * skip - double.Epsilon));
+				}
+				elements = tmpele;
+			}
 			double heightPerElement = height / elements.Length;
 
-			//Stopwatch timer = new Stopwatch();
-			//timer.Start();
+			Stopwatch timer = new Stopwatch();
+			timer.Start();
 			EffectIntents effectIntents = effect.Render();
-			//timer.Stop();
+			timer.Stop();
 			//Console.WriteLine("Effect Render:" + timer.ElapsedMilliseconds);
+			int renderMs = (int)timer.ElapsedMilliseconds;
 
 			// Is this a Nutcracker effect?
 			//if (effect.TypeId.ToString().ToLower() == "82334cb3-9472-42fe-a221-8482f5c731db")
@@ -40,19 +53,21 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			//}
 			//else
 			//{
-			//timer.Reset();
-			//timer.Start();
+			timer.Reset();
+			timer.Start();
 			//using (IntentRasterizer intentRasterizer = new IntentRasterizer()) {
+				int rastCalls = 0;
 				double y = 0;
 				foreach (Element element in elements) {
 					//Getting exception on null elements here... A simple check to look for these null values and ignore them
 					if (element != null) {
 						IntentNodeCollection elementIntents = effectIntents.GetIntentNodesForElement(element.Id);
 						if (elementIntents != null) {
-							foreach (IntentNode elementIntentNode in elementIntents) {
+							foreach (IntentNode elementIntentNode in elementIntents) 
+							{
 								if (elementIntentNode == null) {
-								Logging.Error("Error: elementIntentNode was null when Rasterizing an effect (ID: " + effect.InstanceId + ")");
-									continue;
+									Logging.Error("Error: elementIntentNode was null when Rasterizing an effect (ID: " + effect.InstanceId + ")");
+										continue;
 								}
 								double startPixelX = width * _GetPercentage(elementIntentNode.StartTime, effect.TimeSpan);
 								double widthPixelX = width * _GetPercentage(elementIntentNode.TimeSpan, effect.TimeSpan);
@@ -63,7 +78,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 								//widthPixelX += 0.4;
 								//startPixelX = Math.Floor(startPixelX);
 								//widthPixelX = Math.Ceiling(widthPixelX);
-
+								rastCalls++;
 								intentRasterizer.Rasterize(elementIntentNode.Intent,
 														   new RectangleF((float)startPixelX, (float)y, (float)widthPixelX,
 																		  (float)heightPerElement), g);
@@ -71,11 +86,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						}
 					}
 					y += heightPerElement;
-				//}
-				//timer.Stop();
-				//Console.WriteLine("Effect Draw:" + timer.ElapsedMilliseconds);
-				//}
-			}
+				}
+				timer.Stop();
+				Console.WriteLine("Effect:  render: " + renderMs + ", draw:" + timer.ElapsedMilliseconds + "ms,   nEle: " + elements.Count() + ", rastCalls: " + rastCalls);
+			//}
+		//}
 		}
 
 		private static double _GetPercentage(TimeSpan offset, TimeSpan totalTimeSpan) {
