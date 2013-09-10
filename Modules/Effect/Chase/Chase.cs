@@ -275,7 +275,7 @@ namespace VixenModules.Effect.Chase
 				int currentNodeIndex = (int) ((currentMovementPosition/100.0)*targetNodeCount);
 
 				// on the off chance we hit the 100% mark *exactly*...
-				if (currentNodeIndex == targetNodeCount)
+				if (currentNodeIndex == targetNodeCount && currentNodeIndex > 0)
 					currentNodeIndex--;
 
 				if (currentNodeIndex >= targetNodeCount) {
