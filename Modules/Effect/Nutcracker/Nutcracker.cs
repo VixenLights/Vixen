@@ -154,6 +154,8 @@ namespace VixenModules.Effect.Nutcracker
 			int totalPixels = effect.PixelCount();
 			TimeSpan startTime = TimeSpan.Zero;
 			TimeSpan ms50 = new TimeSpan(0, 0, 0, 0, 50);
+			Stopwatch timer = new Stopwatch();
+			timer.Start();
 
 			for (int frameNum = 0; frameNum < framesToRender; frameNum++) {
 				// Parallel will not work here. Nutcracker effects must be run in order
@@ -165,25 +167,7 @@ namespace VixenModules.Effect.Nutcracker
 				int elementCount = node.Count();
 				Parallel.For(0, elementCount, elementNum =>
 				{
-					int stringNum = 0;
-					if (NutcrackerData.PreviewType == NutcrackerEffects.PreviewType.Tree90 ||
-						NutcrackerData.PreviewType == NutcrackerEffects.PreviewType.Tree180 ||
-						NutcrackerData.PreviewType == NutcrackerEffects.PreviewType.Tree270 ||
-						NutcrackerData.PreviewType == NutcrackerEffects.PreviewType.Tree360)
-					{
-						stringNum = stringCount - (elementNum / pixelsPerString);
-					}
-					// Grids are backwards (or left to right, in our case)
-					else if (NutcrackerData.PreviewType == NutcrackerEffects.PreviewType.Grid)
-					{
-						stringNum = (elementNum / pixelsPerString) + 1;
-					}
-					else 
-					{
-						stringNum = (elementNum / pixelsPerString) + 1;
-					}
-					int pixelNum = (stringNum * pixelsPerString) - (pixelsPerString - (elementNum % pixelsPerString));
-					Color color = effect.GetPixel(pixelNum);
+					Color color = effect.GetPixel(elementNum);
 
 					if (color.A > 0 && (color.R > 0 || color.G > 0 || color.B > 0)) {
 						LightingValue lightingValue = new LightingValue(color, (float) ((float) color.A/(float) byte.MaxValue));
@@ -194,6 +178,10 @@ namespace VixenModules.Effect.Nutcracker
 
 				startTime = startTime.Add(ms50);
 			};
+			timer.Stop();
+			Console.WriteLine("Nutcracker Render:" + timer.ElapsedMilliseconds + "ms, Frames:" + framesToRender
+							+ "    wid:" + stringCount + ", ht:" + pixelsPerString
+							+ "    pix:" + totalPixels + ", intents:" + _elementData.Count());
 		}
 	}
 }
