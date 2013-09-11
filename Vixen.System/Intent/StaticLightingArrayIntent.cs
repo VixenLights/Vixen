@@ -23,7 +23,7 @@ namespace Vixen.Intent
 
 		public IIntentState CreateIntentState(TimeSpan intentRelativeTime)
 		{
-			return new StaticLightingArrayIntentState(this, intentRelativeTime);
+			return new IntentState<LightingValue>(this, intentRelativeTime);
 		}
 
 		public void FractureAt(TimeSpan intentRelativeTime)
