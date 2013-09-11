@@ -20,6 +20,8 @@ namespace VixenModules.Preview.VixenPreview
 {
 	public partial class GDIControl : UserControl
 	{
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+
 		private Image _background = null;
 		private Bitmap _backgroundAlphaImage = null;
 		private int _backgroundAlpha = 0;
@@ -121,34 +123,37 @@ namespace VixenModules.Preview.VixenPreview
 
 		public void RenderImage()
 		{
-			if (_backgroundAlphaImage != null)
-			{
+			if (this.InvokeRequired)
+				this.Invoke(new Vixen.Delegates.GenericDelegate(RenderImage));
+			else {
+				if (_backgroundAlphaImage != null) {
+					backBuffer.Graphics.DrawImageUnscaled(fastPixel.Bitmap, 0, 0);
+				} else {
+					backBuffer.Graphics.Clear(Color.Black);
+				}
 
-				backBuffer.Graphics.DrawImageUnscaled(fastPixel.Bitmap, 0, 0);
+				if (!this.Disposing && graphicsContext != null)
+					backBuffer.Render(Graphics.FromHwnd(this.Handle));
+
+				renderTimer.Stop();
 			}
-			else
-			{
-				backBuffer.Graphics.Clear(Color.Black);
-			}
-
-			if (!this.Disposing && graphicsContext != null)
-				backBuffer.Render(Graphics.FromHwnd(this.Handle));
-
-			renderTimer.Stop();
 		}
 
 		private void AllocateGraphicsBuffer()
 		{
-			if (backBuffer != null)
-				backBuffer.Dispose();
+			try {
 
-			graphicsContext.MaximumBuffer =
+				if (backBuffer != null)
+					backBuffer.Dispose();
+
+				graphicsContext.MaximumBuffer =
 				  new Size(this.Width + 1, this.Height + 1);
-			if (this.Width > 0 && this.Height > 0)
-			{
+
 				backBuffer =
-					graphicsContext.Allocate(this.CreateGraphics(),
-													ClientRectangle);
+				graphicsContext.Allocate(this.CreateGraphics(), ClientRectangle);
+
+			} catch (Exception e) {
+				Logging.ErrorException("Error Allocating Graphics Buffer", e);
 			}
 		}
 
