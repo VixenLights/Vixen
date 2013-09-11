@@ -65,8 +65,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 				if (displayItem.Shape is PreviewMegaTree) {
 					PreviewMegaTree tree = displayItem.Shape as PreviewMegaTree;
 					for (int stringNum = 0; stringNum < stringCount; stringNum++) {
-						int currentString = stringCount - stringNum - 1;
-						PreviewBaseShape treeString = tree._strings[currentString];
+						PreviewBaseShape treeString = tree._strings[stringNum];
 						for (int pixelNum = 0; pixelNum < treeString.Pixels.Count; pixelNum++)
 						{
 							treeString.Pixels[pixelNum].PixelColor = effect.Pixels[stringNum][pixelNum];
