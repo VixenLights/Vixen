@@ -52,7 +52,8 @@ namespace Vixen.Sys
 			ArrayLocks.TryAdd(elementId, new object());
 			lock (ArrayLocks[elementId]) {
 				if (ContainsKey(elementId)) {
-					this[elementId].AddRange(intentNodes);
+					//this[elementId].AddRange(intentNodes);
+					this[elementId].AddRangeCombiner(intentNodes);
 				}
 				else {
 					this[elementId] = new IntentNodeCollection(intentNodes);
