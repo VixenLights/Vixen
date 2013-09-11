@@ -127,6 +127,7 @@ namespace VixenModules.Preview.VixenPreview
 				this.Invoke(new Vixen.Delegates.GenericDelegate(RenderImage));
 			else {
 				if (_backgroundAlphaImage != null) {
+
 					backBuffer.Graphics.DrawImageUnscaled(fastPixel.Bitmap, 0, 0);
 				} else {
 					backBuffer.Graphics.Clear(Color.Black);
@@ -146,12 +147,11 @@ namespace VixenModules.Preview.VixenPreview
 				if (backBuffer != null)
 					backBuffer.Dispose();
 
-				graphicsContext.MaximumBuffer =
-				  new Size(this.Width + 1, this.Height + 1);
+				graphicsContext.MaximumBuffer = new Size(this.Width + 1, this.Height + 1);
 
-				backBuffer =
-				graphicsContext.Allocate(this.CreateGraphics(), ClientRectangle);
-
+				if (this.Width > 0 && this.Height > 0) {
+					backBuffer = graphicsContext.Allocate(this.CreateGraphics(), ClientRectangle);
+				}
 			} catch (Exception e) {
 				Logging.ErrorException("Error Allocating Graphics Buffer", e);
 			}

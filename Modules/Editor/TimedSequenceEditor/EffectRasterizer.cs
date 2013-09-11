@@ -17,7 +17,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		public static void Rasterize(IEffectModuleInstance effect, Graphics g)
 		{
-			if (effect.EffectName.Equals("RDS")) {
+
+			if (effect.EffectName.Equals("RDS") || Vixen.Common.Graphics.DisableEffectsEditorRendering) {
 				effect.GenerateVisualRepresentation(g, new Rectangle(0, 0, (int)g.VisibleClipBounds.Width, (int)g.VisibleClipBounds.Height));
 			} else {
 				double width = g.VisibleClipBounds.Width;

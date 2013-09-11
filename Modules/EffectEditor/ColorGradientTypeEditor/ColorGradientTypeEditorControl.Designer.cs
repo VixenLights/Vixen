@@ -16,6 +16,9 @@
 			if (disposing && (components != null)) {
 				components.Dispose();
 			}
+			if (panelGradient!=null && panelGradient.BackgroundImage != null)
+				panelGradient.BackgroundImage.Dispose();
+
 			base.Dispose(disposing);
 		}
 
