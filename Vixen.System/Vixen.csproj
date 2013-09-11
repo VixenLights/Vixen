@@ -119,7 +119,6 @@
     <Compile Include="Data\Evaluator\8BitEvaluator.cs" />
     <Compile Include="Data\Evaluator\ColorEvaluator.cs" />
     <Compile Include="Data\Evaluator\Evaluator.cs" />
-    <Compile Include="Data\Evaluator\StringEvaluator.cs" />
     <Compile Include="Data\Flow\ElementDataFlowAdapter.cs" />
     <Compile Include="Data\Flow\ElementDataFlowOutputAdapter.cs" />
     <Compile Include="Data\Flow\DataFlowComponentEventArgs.cs" />
@@ -138,7 +137,6 @@
     <Compile Include="Data\Flow\IDataFlowData.cs" />
     <Compile Include="Data\Policy\DataFlowDataDispatchingDataPolicy.cs" />
     <Compile Include="Data\Policy\SmartControllerDataPolicy.cs" />
-    <Compile Include="Data\Value\CustomValue.cs" />
     <Compile Include="Delegates\Delegates.cs" />
     <Compile Include="Execution\ContextCurrentEffectsFull.cs" />
     <Compile Include="Execution\ContextFeatures.cs" />
@@ -174,14 +172,12 @@
     <Compile Include="Factory\SmartControllerFactory.cs" />
     <Compile Include="Intent\ColorIntent.cs" />
     <Compile Include="Intent\CommandIntent.cs" />
-    <Compile Include="Intent\CustomIntent.cs" />
     <Compile Include="Intent\IntentState.cs" />
     <Compile Include="Intent\LightingIntent.cs" />
     <Compile Include="Intent\PositionIntent.cs" />
     <Compile Include="Intent\StaticIntent.cs" />
     <Compile Include="Intent\StaticIntentState.cs" />
     <Compile Include="Interpolator\ColorInterpolator.cs" />
-    <Compile Include="Interpolator\DynamicValueInterpolator.cs" />
     <Compile Include="Interpolator\PositionValueInterpolator.cs" />
     <Compile Include="Interpolator\StaticValueInterpolator.cs" />
     <Compile Include="IO\Factory\ContentMigratorFactory.cs" />
