@@ -37,7 +37,7 @@ namespace Vixen.Sys
 
 		public void Update()
 		{
-			_state = _AggregateStateFromContexts();
+			_AggregateStateFromContexts();
 		}
 
 		public IIntentStates State
@@ -74,7 +74,7 @@ namespace Vixen.Sys
 			return Id.GetHashCode();
 		}
 
-		private IIntentStates _AggregateStateFromContexts()
+		private void _AggregateStateFromContexts()
 		{
 			//In reality, all this needs to do is call GetElementState on each context
 			//and put them all into a single collection.
@@ -84,7 +84,10 @@ namespace Vixen.Sys
 			// make more sense there) on a dictionary miss.
 			//IEnumerable<IIntentState> intentStates = _dataSource.Where(x => x != null).SelectMany(x => x.State);
 			//return new IntentStateList(intentStates);
-			return new IntentStateList(_dataSource.Where(x => x != null).SelectMany(x => x.State));
+			//_state = new IntentStateList(_dataSource.Where(x => x != null).SelectMany(x => x.State));
+		
+			_state.ClearStates();
+			_state.AddRangeIntentState(_dataSource.Where(x => x != null).SelectMany(x => x.State));
 		}
 	}
 }
