@@ -23,8 +23,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// As recommended by R#
 			if (Math.Abs(width - 0) < double.Epsilon || Math.Abs(height - 0) < double.Epsilon) return;
 
+			// limit the number of 'rows' rasterized
 			Element[] elements = effect.TargetNodes.GetElements();
-			int tmpsiz = 15;
+			int tmpsiz = (int)(height/2) + 1;
 			if (elements.Length > tmpsiz)
 			{
 				double skip = elements.Length / (double)tmpsiz;
@@ -88,7 +89,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					y += heightPerElement;
 				}
 				timer.Stop();
-				Console.WriteLine("Effect:  render: " + renderMs + ", draw:" + timer.ElapsedMilliseconds + "ms,   nEle: " + elements.Count() + ", rastCalls: " + rastCalls);
+				Console.WriteLine("Effect:  render: " + renderMs + ", draw:" + timer.ElapsedMilliseconds + "ms,   nEle: " + elements.Count() + ", rastCalls: " + rastCalls + "    " + effect.GetType());
 			//}
 		//}
 		}
