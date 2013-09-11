@@ -135,7 +135,7 @@ namespace VixenModules.Preview.VixenPreview.Direct2D {
 
 		private void TryCreateBackgroundBitmap() {
 			if (RenderTarget != null && (imageHash != lastImageHash) && ((isDirty && BackgroundImage != null) || (background == null && BackgroundImage != null))) {
-				Console.WriteLine("TryCreateBackgroundBitmap");
+				 
 				using (var ms = new System.IO.MemoryStream()) {
 
 					ConvertImageToStreamAndAdjustBrightness(BackgroundImage, Data.BackgroundAlpha, ms);
@@ -176,7 +176,7 @@ namespace VixenModules.Preview.VixenPreview.Direct2D {
 		public void Update() {
 
 			Vixen.Sys.Managers.ElementManager elements = VixenSystem.Elements;
-			Element[] elementArray = elements.Where(e => e.State.Where(i => (i as IIntentState<LightingValue>).GetValue().Intensity > 0).Any()).ToArray();
+			Element[] elementArray = elements.Where(e => e.State.Where(i => (i as IIntentState<LightingValue>) != null).Where(i => (i as IIntentState<LightingValue>).GetValue().Intensity > 0).Any()).ToArray();
 
 			try
 			{
