@@ -295,11 +295,12 @@ namespace VixenModules.App.ColorGradients
 			                               this.Width - BORDER*2 - 1, this.Height - BORDER*2 - 1);
 			if (_blend != null) {
 				using (HatchBrush brs = new HatchBrush(HatchStyle.LargeCheckerBoard,
-				                                       Color.Silver, Color.White)) {
+													   Color.Silver, Color.White)) {
 					e.Graphics.FillRectangle(brs, area);
 				}
-				Bitmap bmp = _blend.GenerateColorGradientImage(area.Size, DiscreteColors);
-				e.Graphics.DrawImage(bmp, area.X, area.Y);
+				using (Bitmap bmp = _blend.GenerateColorGradientImage(area.Size, DiscreteColors)) {
+					e.Graphics.DrawImage(bmp, area.X, area.Y);
+				}
 			}
 			//border
 			e.Graphics.DrawRectangle(Pens.Silver, area);

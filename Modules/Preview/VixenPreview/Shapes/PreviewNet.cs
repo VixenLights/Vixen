@@ -195,40 +195,42 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			Point[] points = {tL, tR, bR, bL};
 
 			if (rect.Width > 0 && rect.Height > 0) {
-				Bitmap b;
-				FastPixel.FastPixel fp;
 
-				b = new Bitmap(rect.Width, rect.Height);
-				Graphics g = Graphics.FromImage(b);
-				g.Clear(Color.Transparent);
-				g.FillPolygon(Brushes.White, points);
-				fp = new FastPixel.FastPixel(b);
-				fp.Lock();
-				int xCount = 1;
-				int spacingY = _pixelSpacing;
-				for (int y = 0; y < rect.Height; y++) {
-					if (spacingY%_pixelSpacing == 0) {
-						int xDiv;
-						if (xCount%2 == 0)
-							xDiv = _pixelSpacing;
-						else
-							xDiv = _pixelSpacing/2;
 
-						for (int x = 0; x < rect.Width; x++) {
-							if ((x + xDiv)%_pixelSpacing == 0) {
-								Color newColor = fp.GetPixel(x, y);
-								if (newColor.A != 0) {
-									PreviewPixel pixel = new PreviewPixel(x + boundsTopLeft.X, y + boundsTopLeft.Y, 0, PixelSize);
-									pixel.Node = node;
-									_pixels.Add(pixel);
+
+				using (var b = new Bitmap(rect.Width, rect.Height)) {
+					Graphics g = Graphics.FromImage(b);
+					g.Clear(Color.Transparent);
+					g.FillPolygon(Brushes.White, points);
+					using (FastPixel.FastPixel fp = new FastPixel.FastPixel(b)) {
+						fp.Lock();
+						int xCount = 1;
+						int spacingY = _pixelSpacing;
+						for (int y = 0; y < rect.Height; y++) {
+							if (spacingY%_pixelSpacing == 0) {
+								int xDiv;
+								if (xCount%2 == 0)
+									xDiv = _pixelSpacing;
+								else
+									xDiv = _pixelSpacing/2;
+
+								for (int x = 0; x < rect.Width; x++) {
+									if ((x + xDiv)%_pixelSpacing == 0) {
+										Color newColor = fp.GetPixel(x, y);
+										if (newColor.A != 0) {
+											PreviewPixel pixel = new PreviewPixel(x + boundsTopLeft.X, y + boundsTopLeft.Y, 0, PixelSize);
+											pixel.Node = node;
+											_pixels.Add(pixel);
+										}
+									}
 								}
+								xCount += 1;
 							}
+							spacingY += 1;
 						}
-						xCount += 1;
+						fp.Unlock(false);
 					}
-					spacingY += 1;
 				}
-				fp.Unlock(false);
 			}
 		}
 

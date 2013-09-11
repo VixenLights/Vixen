@@ -40,6 +40,7 @@ namespace VixenModules.Effect.Nutcracker
 				if (node != null)
 					RenderNode(node);
 			}
+			GC.Collect();
 		}
 
 		protected override EffectIntents _Render()

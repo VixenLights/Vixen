@@ -109,12 +109,27 @@ namespace Vixen.Module.Effect
 			get { return ((EffectModuleDescriptorBase) Descriptor).PropertyDependencies; }
 		}
 
-		public virtual void GenerateVisualRepresentation(Graphics g, Rectangle clipRectangle)
+		//public virtual void GenerateVisualRepresentation(Graphics g, Rectangle clipRectangle)
+		//{
+		//	g.Clear(Color.White);
+		//	g.DrawRectangle(Pens.Black, clipRectangle.X, clipRectangle.Y, clipRectangle.Width - 1, clipRectangle.Height - 1);
+		//}
+		public virtual void GenerateVisualRepresentation(System.Drawing.Graphics g, System.Drawing.Rectangle clipRectangle)
 		{
-			g.Clear(Color.White);
-			g.DrawRectangle(Pens.Black, clipRectangle.X, clipRectangle.Y, clipRectangle.Width - 1, clipRectangle.Height - 1);
-		}
 
+			string DisplayValue = string.Format("{0}", this.EffectName);
+
+
+			using (Font AdjustedFont =  Vixen.Common.Graphics.GetAdjustedFont(g, DisplayValue, clipRectangle, "Arial")) {
+				using (var StringBrush = new SolidBrush(Color.Black)) {
+					//g.Clear(Color.White);
+					g.DrawRectangle(Pens.Black, clipRectangle.X, clipRectangle.Y, clipRectangle.Width - 1, clipRectangle.Height - 1);
+
+					g.DrawString(DisplayValue, AdjustedFont, StringBrush, 4, 4);
+					//base.GenerateVisualRepresentation(g, clipRectangle);
+				}
+			}
+		}
 		public ElementIntents GetElementIntents(TimeSpan effectRelativeTime)
 		{
 			_elementIntents.Clear();
@@ -136,7 +151,8 @@ namespace Vixen.Module.Effect
 		private void _EnsureTargetNodeProperties()
 		{
 			// If the effect requires any properties, make sure the target nodes have those properties.
-			if (TargetNodes == null || TargetNodes.Length == 0) return;
+			if (TargetNodes == null || TargetNodes.Length == 0)
+				return;
 
 			if (!ApplicationServices.AreAllEffectRequiredPropertiesPresent(this)) {
 				EffectModuleDescriptorBase effectDescriptor =
