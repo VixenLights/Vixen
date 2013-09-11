@@ -25,10 +25,5 @@ namespace Vixen.Sys
 		{
 			AddRange(intentStates);
 		}
-
-		public void ClearStates()
-		{
-			Clear();
-		}
 	}
 }

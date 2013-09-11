@@ -114,7 +114,9 @@ namespace Vixen.Execution.Context
 
 		private void _DiscoverIntentsFromCurrentEffects(TimeSpan currentTime, IntentDiscoveryAction intentDiscoveryAction)
 		{
-			_DiscoverIntentsFromEffects(currentTime, _currentEffects, intentDiscoveryAction);
+			lock (_currentEffects) {
+				_DiscoverIntentsFromEffects(currentTime, _currentEffects, intentDiscoveryAction);
+			}
 		}
 
 		private void _DiscoverIntentsFromEffects(TimeSpan currentTime, IEnumerable<IEffectNode> effects,
@@ -161,9 +163,11 @@ namespace Vixen.Execution.Context
 
 		private void _ResetElementStates()
 		{
-			_currentEffects.Reset();
-			_InitializeElementStateBuilder();
-			_LatchElementStatesFromBuilder(_elementStates.ElementsInCollection);
+			lock (_currentEffects) {
+				_currentEffects.Reset();
+				_InitializeElementStateBuilder();
+				_LatchElementStatesFromBuilder(_elementStates.ElementsInCollection);
+			}
 		}
 
 		protected abstract IDataSource _DataSource { get; }

@@ -11,10 +11,10 @@ namespace Vixen.Module.Effect
 {
 	[Serializable]
 	public abstract class EffectModuleInstanceBase : ModuleInstanceBase, IEffectModuleInstance,
-													 IEqualityComparer<IEffectModuleInstance>,
-													 IEquatable<IEffectModuleInstance>,
-													 IEqualityComparer<EffectModuleInstanceBase>,
-													 IEquatable<EffectModuleInstanceBase>
+	                                                 IEqualityComparer<IEffectModuleInstance>,
+	                                                 IEquatable<IEffectModuleInstance>,
+	                                                 IEqualityComparer<EffectModuleInstanceBase>,
+	                                                 IEquatable<EffectModuleInstanceBase>
 	{
 		private ElementNode[] _targetNodes;
 		private TimeSpan _timeSpan;
@@ -86,7 +86,7 @@ namespace Vixen.Module.Effect
 			EffectIntents effectIntents = Render();
 			// NB: the ElementData.Restrict method takes a start and end time, not a start and duration
 			effectIntents = EffectIntents.Restrict(effectIntents, restrictingOffsetTime,
-												   restrictingOffsetTime + restrictingTimeSpan);
+			                                       restrictingOffsetTime + restrictingTimeSpan);
 			return effectIntents;
 		}
 
@@ -96,17 +96,17 @@ namespace Vixen.Module.Effect
 
 		public string EffectName
 		{
-			get { return ((IEffectModuleDescriptor)Descriptor).EffectName; }
+			get { return ((IEffectModuleDescriptor) Descriptor).EffectName; }
 		}
 
 		public ParameterSignature Parameters
 		{
-			get { return ((IEffectModuleDescriptor)Descriptor).Parameters; }
+			get { return ((IEffectModuleDescriptor) Descriptor).Parameters; }
 		}
 
 		public Guid[] PropertyDependencies
 		{
-			get { return ((EffectModuleDescriptorBase)Descriptor).PropertyDependencies; }
+			get { return ((EffectModuleDescriptorBase) Descriptor).PropertyDependencies; }
 		}
 
 		//public virtual void GenerateVisualRepresentation(Graphics g, Rectangle clipRectangle)

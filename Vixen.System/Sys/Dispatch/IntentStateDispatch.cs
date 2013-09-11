@@ -19,9 +19,5 @@ namespace Vixen.Sys.Dispatch
 		public virtual void Handle(IIntentState<CommandValue> obj)
 		{
 		}
-
-		public virtual void Handle(IIntentState<CustomValue> obj)
-		{
-		}
 	}
 }
