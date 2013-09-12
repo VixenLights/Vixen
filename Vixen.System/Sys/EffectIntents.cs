@@ -73,7 +73,8 @@ namespace Vixen.Sys
 			foreach (IntentNodeCollection intentNodes in Values) {
 				IntentNode[] newIntentNodes = intentNodes.Select(x => new IntentNode(x.Intent, x.StartTime + offset)).ToArray();
 				intentNodes.Clear();
-				intentNodes.AddRange(newIntentNodes);
+				 
+				intentNodes.AddRangeCombiner(newIntentNodes);
 			}
 			//foreach(KeyValuePair<Guid, CommandNode[]> kvp in this.ToArray()) {
 			//    List<CommandNode> newCommands = new List<CommandNode>();

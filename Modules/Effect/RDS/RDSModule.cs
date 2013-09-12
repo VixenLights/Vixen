@@ -69,10 +69,12 @@ namespace VixenModules.Effect.RDS
 
 
 		public override void GenerateVisualRepresentation(System.Drawing.Graphics g, System.Drawing.Rectangle clipRectangle)
-		{
+		{	
+			try {
+
 			string DisplayValue = string.Format("RDS - {0}", Title);
 
-			Font AdjustedFont =  Vixen.Common.Graphics.GetAdjustedFont(g, DisplayValue, clipRectangle,"RDS.DigitalDream.ttf");
+			Font AdjustedFont =  Vixen.Common.Graphics.GetAdjustedFont(g, DisplayValue, clipRectangle,"Vixen.Fonts.DigitalDream.ttf");
 			using (var StringBrush = new SolidBrush(Color.White)) {
 				using (var backgroundBrush = new SolidBrush(Color.DarkGray)) {
 					g.FillRectangle(backgroundBrush, clipRectangle);
@@ -80,7 +82,11 @@ namespace VixenModules.Effect.RDS
 				g.DrawString(DisplayValue, AdjustedFont, StringBrush, 4, 4);
 				//base.GenerateVisualRepresentation(g, clipRectangle);
 			}
+		
+			} catch (Exception e) {
 
+				Console.WriteLine(e.ToString());
+			}
 		}
 	
 

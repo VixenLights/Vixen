@@ -845,6 +845,8 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Fonts\DigitalDream.ttf" />
+    <EmbeddedResource Include="Fonts\RadioLand.ttf" />
     <None Include="packages.config" />
     <None Include="Resources\Effect48.png" />
   </ItemGroup>
