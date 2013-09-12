@@ -106,15 +106,15 @@ namespace VixenModules.Preview.VixenPreview.Direct2D {
 
 			using (Image img = image) {
 
-				float sb = (((float)value - 255) / 255F) * .7f;
+				float sb = (float)value / 255F;
 
 				float[][] colorMatrixElements =
 				  {
-                        new float[] {1,  0,  0,  0, 0},
-                        new float[] {0,  1,  0,  0, 0},
-                        new float[] {0,  0,  1,  0, 0},
+                        new float[] {sb,  0,  0,  0, 0},
+                        new float[] {0,  sb,  0,  0, 0},
+                        new float[] {0,  0,  sb,  0, 0},
                         new float[] {0,  0,  0,  1, 0},
-                        new float[] {sb, sb, sb, 1, 1}
+                        new float[] {0,  0,  0,  0, 1}
 
                   };
 
