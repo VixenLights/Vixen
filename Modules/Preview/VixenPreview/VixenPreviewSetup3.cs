@@ -66,7 +66,8 @@ namespace VixenModules.Preview.VixenPreview {
 
 			Setup();
 
-			performanceToolStripMenuItem.Visible = Vixen.Sys.VixenSystem.VersionBeyondWindowsXP;
+			performanceToolStripMenuItem.Visible = false; //Vixen.Sys.VixenSystem.VersionBeyondWindowsXP;
+			
 			Properties.Settings settings = new Properties.Settings();
 
 			useDirect2DPreviewRenderingToolStripMenuItem.Checked = !settings.UseGDIRendering;
