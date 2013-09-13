@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace VixenModules.Output.RDSController
+namespace VixenModules.Output.CommandController
 {
 	internal static class NativeMethods
 	{

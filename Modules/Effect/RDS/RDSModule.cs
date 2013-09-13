@@ -33,7 +33,7 @@ namespace VixenModules.Effect.RDS
 		{
 			_elementData = new EffectIntents();
 
-			CommandValue value = new CommandValue(new StringCommand(_data.Title));
+			CommandValue value = new CommandValue(new StringCommand(string.Format("{0}|{1}", "RDS", _data.Title)));
 
 			foreach (ElementNode node in TargetNodes) {
 				IIntent i = new CommandIntent(value, TimeSpan);
@@ -88,7 +88,7 @@ namespace VixenModules.Effect.RDS
 				Console.WriteLine(e.ToString());
 			}
 		}
-	
+		public override bool ForceGenerateVisualRepresentation { get { return true; } }
 
 		protected override Vixen.Sys.EffectIntents _Render()
 		{

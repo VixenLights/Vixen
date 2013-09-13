@@ -1,7 +1,7 @@
 ﻿using System;
 using Vixen.Module.Controller;
 
-namespace VixenModules.Output.RDSController
+namespace VixenModules.Output.CommandController
 {
 	public class Descriptor : ControllerModuleDescriptorBase
 	{
@@ -14,7 +14,7 @@ namespace VixenModules.Output.RDSController
 
 		public override string Description
 		{
-			get { return "Generic RDS hardware module"; }
+			get { return "Generic Windows Command and RDS hardware module"; }
 		}
 
 		public override Type ModuleClass
@@ -34,7 +34,7 @@ namespace VixenModules.Output.RDSController
 
 		public override string TypeName
 		{
-			get { return "Generic RDS"; }
+			get { return "Command Controller"; }
 		}
 
 		public override string Version

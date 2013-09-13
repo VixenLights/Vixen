@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VixenModules.Output.RDSController {
+namespace VixenModules.Output.CommandController {
 	public class CustomSerialPort : SerialPort {
 
 		public CustomSerialPort(string portName, int baudRate, Parity parity, int dataBits, StopBits stopBits) :

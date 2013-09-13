@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace VixenModules.Output.RDSController
+namespace VixenModules.Output.CommandController
 {
 	public partial class SetupForm : Form
 	{
@@ -63,6 +63,7 @@ namespace VixenModules.Output.RDSController
 					break;
 			}
 
+			chkHideLaunchedWindows.Checked= data.HideLaunchedWindows;
 
 		}
 
@@ -130,6 +131,11 @@ namespace VixenModules.Output.RDSController
 			}
 		}
 
+		private void chkHideLaunchedWindows_CheckedChanged(object sender, EventArgs e)
+		{
+			RdsData.HideLaunchedWindows= chkHideLaunchedWindows.Checked;
+		}
+
 		private void chkBiDirectional_CheckedChanged(object sender, EventArgs e)
 		{
 			RdsData.BiDirectional=chkBiDirectional.Checked;
@@ -176,6 +182,8 @@ namespace VixenModules.Output.RDSController
 			//	StatusLbl1.Text= "Http Url is NOT well formed and will not be saved";
 		}
 
+	
+	 
 
 
 
