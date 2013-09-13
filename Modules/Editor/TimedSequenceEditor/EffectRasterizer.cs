@@ -78,7 +78,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					y += heightPerElement;
 				}
 				timer.Stop();
-				Console.WriteLine("Effect:  render: " + renderMs + ", draw:" + timer.ElapsedMilliseconds + "ms,   nEle: " + elements.Count() + ", rastCalls: " + rastCalls + "    " + effect.GetType());
+				//Console.WriteLine("Effect:  render: " + renderMs + ", draw:" + timer.ElapsedMilliseconds + "ms,   nEle: " + elements.Count() + ", rastCalls: " + rastCalls + "    " + effect.GetType());
+				Console.WriteLine("Effect:  render: {0} , draw: {1}ms,   nEle: {2}, rastCalls: {3}    {4}", renderMs, timer.ElapsedMilliseconds, elements.Count(), rastCalls, effect.GetType().Name);
+		
 			}
 		}
 
