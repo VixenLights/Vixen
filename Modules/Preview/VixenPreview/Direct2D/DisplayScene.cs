@@ -22,6 +22,10 @@ using System.IO;
 namespace VixenModules.Preview.VixenPreview.Direct2D {
 	public sealed class DisplayScene : AnimatedScene {
 
+		// we were requesting 100 fps before, but only got 20, so ask for 20 from now on...
+		private static int desiredFps = 20;
+		private static int timeQueueSeconds = 5;
+
 		private DWrite.TextFormat textFormat;
 		private DWrite.DWriteFactory writeFactory;
 		private const int PIXEL_SIZE = 2;
@@ -30,14 +34,11 @@ namespace VixenModules.Preview.VixenPreview.Direct2D {
 		private long frameCount;
 		private long fps;
 		private Guid DisplayID = Guid.Empty;
+
 		public DisplayScene(System.Drawing.Image backgroundImage)
-			: base(100) {
+			: base(desiredFps) {
 			this.writeFactory = DWrite.DWriteFactory.CreateFactory();
-
-
 			BackgroundImage = backgroundImage;
-
-
 		}
 		private VixenPreviewData _data;
 		public VixenPreviewData Data {
@@ -160,19 +161,32 @@ namespace VixenModules.Preview.VixenPreview.Direct2D {
 		public static ConcurrentDictionary<Guid, ElementNode> ElementNodeCache = new ConcurrentDictionary<Guid, ElementNode>();
 
 		protected override void OnRender() { }
+
+	
+		// we maintain a queue of the last N update times for stats reporting
+		// we size it so that data ages out after timeQueueSeconds.
 		Queue<long> updatTimes = new Queue<long>();
-		long maxUpdateTime = 0;
-		TimeSpan maxUpdateTimeposition = TimeSpan.Zero;
 
 		public Queue<long> UpdateTimes {
 			get { return updatTimes; }
 			set {
 				updatTimes = value;
-				while (updatTimes.Count() > 1000) {
+				while (updatTimes.Count() > desiredFps*timeQueueSeconds) {
 					var i = updatTimes.Dequeue();
 				}
 			}
 		}
+
+		// helper for maintaning the stats queue
+		private void AddUpdateTime(long newval, out long maxval, out long avgval)
+		{
+			updatTimes.Enqueue(newval);
+			while (updatTimes.Count() > desiredFps*timeQueueSeconds)
+				updatTimes.Dequeue();
+			maxval = updatTimes.Max();
+			avgval = (long)updatTimes.Average();
+		}
+
 		public void Update() {
 
 			Vixen.Sys.Managers.ElementManager elements = VixenSystem.Elements;
@@ -192,92 +206,97 @@ namespace VixenModules.Preview.VixenPreview.Direct2D {
 				}
 				int iPixels = 0;
 
-				this.RenderTarget.BeginDraw();
-
-				this.RenderTarget.Clear(new D2D.ColorF(0, 0, 0, 1f));
-				//this.RenderTarget.Clear();
-
-				if (Background != null) {
-					this.RenderTarget.DrawBitmap(Background);
-				}
-				if (NodeToPixel.Count == 0)
-					Reload();
-
-				CancellationTokenSource tokenSource = new CancellationTokenSource();
-
-
-
-				try
+				// since we need to clear the display and re-draw it, it flickers if we do it live
+				// so, create a temp, local, compatible bitmap render target for drawing
+				// later we'll blt this to the real render target in one feel swoop
+				using (var rt = this.RenderTarget.CreateCompatibleRenderTarget())
 				{
-					elementArray.AsParallel().WithCancellation(tokenSource.Token).ForAll(element =>
+
+					rt.BeginDraw();
+
+					rt.Clear(new D2D.ColorF(0, 0, 0, 1f));
+					//rt.Clear();
+
+					if (Background != null) {
+						rt.DrawBitmap(Background);
+					}
+					if (NodeToPixel.Count == 0)
+						Reload();
+
+					CancellationTokenSource tokenSource = new CancellationTokenSource();
+
+
+
+					try
 					{
-
-						ElementNode node;
-
-						if (!ElementNodeCache.TryGetValue(element.Id, out node))
+						elementArray.AsParallel().WithCancellation(tokenSource.Token).ForAll(element =>
 						{
-							if (element != null)
+
+							ElementNode node;
+
+							if (!ElementNodeCache.TryGetValue(element.Id, out node))
 							{
-
-								node = VixenSystem.Elements.GetElementNodeForElement(element);
-								if (node != null)
-									ElementNodeCache.TryAdd(element.Id, node);
-							}
-						}
-
-						if (node != null)
-						{
-							Color pixColor;
-
-
-							//TODO: Discrete Colors
-							pixColor = Vixen.Intent.ColorIntent.GetAlphaColorForIntents(element.State);
-
-							if (pixColor.A > 0)
-								using (var brush = this.RenderTarget.CreateSolidColorBrush(pixColor.ToColorF()))
+								if (element != null)
 								{
 
-									List<PreviewPixel> pixels;
-									if (NodeToPixel.TryGetValue(node, out pixels))
-									{
-										iPixels += pixels.Count;
-										pixels.ForEach(p => RenderPixel(/*channelIntentState, */p, brush));
-
-									}
+									node = VixenSystem.Elements.GetElementNodeForElement(element);
+									if (node != null)
+										ElementNodeCache.TryAdd(element.Id, node);
 								}
-						}
-					});
+							}
+
+							if (node != null)
+							{
+								Color pixColor;
+
+
+								//TODO: Discrete Colors
+								pixColor = Vixen.Intent.ColorIntent.GetAlphaColorForIntents(element.State);
+
+								if (pixColor.A > 0)
+									using (var brush = rt.CreateSolidColorBrush(pixColor.ToColorF())) {
+
+										List<PreviewPixel> pixels;
+										if (NodeToPixel.TryGetValue(node, out pixels))
+										{
+											iPixels += pixels.Count;
+											pixels.ForEach(p => RenderPixel(rt, /*channelIntentState, */p, brush));
+
+										}
+									}
+							}
+						});
+					}
+					catch (Exception)
+					{
+						tokenSource.Cancel();
+						//Console.WriteLine(e.Message);
+					}
+
+
+					// done w/local bitmap render target
+					rt.EndDraw();
+
+					// now get the bitmap and write it to the real target
+					this.RenderTarget.BeginDraw();
+
+					this.RenderTarget.DrawBitmap(rt.Bitmap);
+
+					// Draw a little FPS in the top left corner
+					w.Stop();
+					var ms = w.ElapsedMilliseconds;
+					long avgtime, maxtime;
+					AddUpdateTime( ms, out maxtime, out avgtime);
+
+					string text = string.Format("FPS {0} \nPoints {1} \nPixels {3} \nRender Time:{2} \nMax Render: {4} \nAvg Render: {5}", this.fps, elements.Count(), w.ElapsedMilliseconds, iPixels, avgtime.ToString("00"), avgtime.ToString("00"));
+
+					using (var textBrush = this.RenderTarget.CreateSolidColorBrush(Color.White.ToColorF()))	{
+						this.RenderTarget.DrawText(text, this.textFormat, new D2D.RectF(10, 10, 100, 20), textBrush);
+					}
+
+					// All done!
+					this.RenderTarget.EndDraw();
 				}
-				catch (Exception)
-				{
-					tokenSource.Cancel();
-					//Console.WriteLine(e.Message);
-				}
-
-
-
-
-
-
-				w.Stop();
-				// Draw a little FPS in the top left corner
-				var ms = w.ElapsedMilliseconds;
-				UpdateTimes.Enqueue(ms);
-				if (maxUpdateTime < ms) {
-					maxUpdateTime = ms;
-				}
-				string text = string.Format("FPS {0} \nPoints {1} \nPixels {3} \nRender Time:{2} \nMax Render: {4} \nAvg Render: {5}", this.fps, elements.Count(), w.ElapsedMilliseconds, iPixels, maxUpdateTime, UpdateTimes.Average().ToString("0.00"));
-
-				using (var textBrush = this.RenderTarget.CreateSolidColorBrush(Color.White.ToColorF())) {
-					this.RenderTarget.DrawText(text, this.textFormat, new D2D.RectF(10, 10, 100, 20), textBrush);
-				}
-
-				// All done!
-
-				this.RenderTarget.EndDraw();
-
-
-
 
 			}
 			catch (Exception e) {
@@ -286,11 +305,11 @@ namespace VixenModules.Preview.VixenPreview.Direct2D {
 			}
 		}
 
-		private void RenderPixel(PreviewPixel p, D2D.SolidColorBrush brush) {
+		private void RenderPixel( D2D.RenderTarget rt, PreviewPixel p, D2D.SolidColorBrush brush) {
 			if (p.PixelSize <= 4)
-				this.RenderTarget.DrawLine(new D2D.Point2F(p.X, p.Y), new D2D.Point2F(p.X + 1, p.Y + 1), brush, p.PixelSize);
+				rt.DrawLine(new D2D.Point2F(p.X, p.Y), new D2D.Point2F(p.X + 1, p.Y + 1), brush, p.PixelSize);
 			else
-				this.RenderTarget.FillEllipse(new D2D.Ellipse() { Point = new D2D.Point2F(p.X, p.Y), RadiusX = p.PixelSize / 2, RadiusY = p.PixelSize / 2 }, brush);
+				rt.FillEllipse(new D2D.Ellipse() { Point = new D2D.Point2F(p.X, p.Y), RadiusX = p.PixelSize / 2, RadiusY = p.PixelSize / 2 }, brush);
 
 		}
 
