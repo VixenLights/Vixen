@@ -29,11 +29,32 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					return;
 
 				Element[] elements = effect.TargetNodes.GetElements();
+
+				// limit the number of 'rows' rasterized
+				int tmpsiz = (int)(height / 2) + 1;
+				if (elements.Length > tmpsiz)
+				{
+					double skip = elements.Length / (double)tmpsiz;
+					Element[] tmpele = new Element[tmpsiz];
+					for (int i = 0; i < tmpsiz; i++)
+					{
+						tmpele[i] = elements[(int)(i * skip - double.Epsilon)];
+						//Console.WriteLine( "from idx: " + (int)(i * skip - double.Epsilon));
+					}
+					elements = tmpele;
+				}
+
 				double heightPerElement = height / elements.Length;
 
-
+				Stopwatch timer = new Stopwatch();
+				timer.Start();
 				EffectIntents effectIntents = effect.Render();
+				timer.Stop();
+				int renderMs = (int)timer.ElapsedMilliseconds;
 
+				timer.Reset();
+				timer.Start();
+				int rastCalls = 0;
 				double y = 0;
 				foreach (Element element in elements) {
 					//Getting exception on null elements here... A simple check to look for these null values and ignore them
@@ -47,8 +68,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 								}
 								double startPixelX = width * _GetPercentage(elementIntentNode.StartTime, effect.TimeSpan);
 								double widthPixelX = width * _GetPercentage(elementIntentNode.TimeSpan, effect.TimeSpan);
-
-
+								rastCalls++;
 								intentRasterizer.Rasterize(elementIntentNode.Intent,
 														   new RectangleF((float)startPixelX, (float)y, (float)widthPixelX,
 																		  (float)heightPerElement), g);
@@ -56,8 +76,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						}
 					}
 					y += heightPerElement;
-
 				}
+				timer.Stop();
+				Console.WriteLine("Effect:  render: " + renderMs + ", draw:" + timer.ElapsedMilliseconds + "ms,   nEle: " + elements.Count() + ", rastCalls: " + rastCalls + "    " + effect.GetType());
 			}
 		}
 

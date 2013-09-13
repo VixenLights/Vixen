@@ -93,7 +93,7 @@ namespace VixenModules.Controller.E131
 		///   Gets the Multicast NIC ID (if not null)
 		/// </summary>
         [DataMember]
-        public string Multicast { get; private set; }
+        public string Multicast { get; /*private*/ set; }
 
 		/// <summary>
 		///   Gets or sets the Physical buffer
