@@ -17,7 +17,8 @@ namespace Common.Controls.Timeline
 		private Color m_borderColor = Color.Black;
 		private bool m_selected = false;
 		private static Font m_textFont = new Font("Arial", 7);
-		private static Color m_textColor = Color.FromArgb(60, 60, 60);
+		private static Color m_textColor = Color.FromArgb(255, 255, 255);
+		private static Brush infoBrush = new SolidBrush(Color.FromArgb(128,0,0,0));
 		private static System.Object drawLock = new System.Object();
 
 		public Element()
@@ -373,7 +374,7 @@ namespace Common.Controls.Timeline
 					destRect.Width = (int)textSize.Width + margin;
 					destRect.Height = (int)textSize.Height + margin;
 					
-					g.FillRectangle(Brushes.White, new Rectangle(destRect.Left, destRect.Top, (int)Math.Min(textSize.Width + margin, destRect.Width), (int)Math.Min(textSize.Height + margin, destRect.Height)));
+					g.FillRectangle(infoBrush, new Rectangle(destRect.Left, destRect.Top, (int)Math.Min(textSize.Width + margin, destRect.Width), (int)Math.Min(textSize.Height + margin, destRect.Height)));
 					g.DrawString(s, m_textFont, b, new Rectangle(destRect.Left + margin/2, destRect.Top + margin/2, destRect.Width - margin, destRect.Height - margin));
 				}
 			}
