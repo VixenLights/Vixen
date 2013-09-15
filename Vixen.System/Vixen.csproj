@@ -166,6 +166,7 @@
     <Compile Include="Execution\Context\ISequenceContext.cs" />
     <Compile Include="Execution\Context\SequenceContext.cs" />
     <Compile Include="Execution\QueuingSequenceEnumerator.cs" />
+    <Compile Include="Extensions\IntentNodeCollection.cs" />
     <Compile Include="Factory\CommandOutputFactory.cs" />
     <Compile Include="Factory\ControllerFactory.cs" />
     <Compile Include="Factory\IntentOutputFactory.cs" />
@@ -816,6 +817,7 @@
     <Compile Include="Sys\VixenSystem.cs" />
     <Compile Include="Sys\WindowsMultimedia.cs" />
     <Compile Include="Sys\XmlHelper.cs" />
+    <Compile Include="Utility\cEventHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

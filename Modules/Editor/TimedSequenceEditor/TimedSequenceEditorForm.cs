@@ -96,7 +96,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			timelineControl.CursorMoved += CursorMovedHandler;
 			timelineControl.ElementsSelected += timelineControl_ElementsSelected;
 			timelineControl.SequenceLoading = false;
-
+		
 			_virtualEffectLibrary =
 				ApplicationServices.Get<IAppModuleInstance>(VixenModules.App.VirtualEffect.VirtualEffectLibraryDescriptor.Guid) as
 				VirtualEffectLibrary;
@@ -723,6 +723,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_context.ContextEnded -= context_ContextEnded;
 
 			VixenSystem.Contexts.ReleaseContext(_context);
+			_context.Dispose();
+			_context= null;
 			updateButtonStates();
 		}
 
@@ -1258,7 +1260,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		protected override void OnFormClosed(FormClosedEventArgs e)
 		{
-			timelineControl.grid.Dispose();
 			VixenSystem.Contexts.ReleaseContext(_context);
 		}
 

@@ -62,7 +62,26 @@ namespace Common.Controls.Timeline
 		}
 
 		#region Initialization
-
+		protected override void Dispose(bool disposing)
+		{
+			
+			Row.RowToggled -= RowToggledHandler;
+			Row.RowHeightChanged -= RowHeightChangedHandler;
+			Row.RowHeightResized -= RowHeightResizedHandler;
+			if (grid != null) {
+				grid.Scroll -= GridScrolledHandler;
+				grid.VerticalOffsetChanged -= GridScrollVerticalHandler;
+				grid.Dispose();
+				Vixen.Utility.cEventHelper.RemoveAllEventHandlers(grid);
+				grid = null;
+			}
+			Vixen.Utility.cEventHelper.RemoveAllEventHandlers(this);
+			if (timelineRowList != null) {
+				timelineRowList.Dispose();
+				timelineRowList= null;
+			}
+			base.Dispose(disposing);
+		}
 		private void InitializeControls()
 		{
 			this.SuspendLayout();
@@ -447,55 +466,55 @@ namespace Common.Controls.Timeline
 		public event EventHandler SelectionChanged
 		{
 			add { grid.SelectionChanged += value; }
-			remove { grid.SelectionChanged -= value; }
+			remove { if (grid != null) grid.SelectionChanged -= value; }
 		}
 
 		public event EventHandler<ElementEventArgs> ElementDoubleClicked
 		{
 			add { grid.ElementDoubleClicked += value; }
-			remove { grid.ElementDoubleClicked -= value; }
+			remove { if (grid != null) grid.ElementDoubleClicked -= value; }
 		}
 
 		public event EventHandler<MultiElementEventArgs> ElementsFinishedMoving
 		{
 			add { grid.ElementsFinishedMoving += value; }
-			remove { grid.ElementsFinishedMoving -= value; }
+			remove { if (grid != null) grid.ElementsFinishedMoving -= value; }
 		}
 
 		public event EventHandler<TimeSpanEventArgs> CursorMoved
 		{
 			add { grid.CursorMoved += value; }
-			remove { grid.CursorMoved -= value; }
+			remove { if (grid != null) grid.CursorMoved -= value; }
 		}
 
 		public event EventHandler VerticalOffsetChanged
 		{
 			add { grid.VerticalOffsetChanged += value; }
-			remove { grid.VerticalOffsetChanged -= value; }
+			remove { if (grid != null) grid.VerticalOffsetChanged -= value; }
 		}
 
 		public event EventHandler<ElementRowChangeEventArgs> ElementChangedRows
 		{
 			add { grid.ElementChangedRows += value; }
-			remove { grid.ElementChangedRows -= value; }
+			remove { if (grid != null) grid.ElementChangedRows -= value; }
 		}
 
 		public event EventHandler<TimelineDropEventArgs> DataDropped
 		{
 			add { grid.DataDropped += value; }
-			remove { grid.DataDropped -= value; }
+			remove { if (grid != null) grid.DataDropped -= value; }
 		}
 
 		public event EventHandler<ElementsChangedTimesEventArgs> ElementsMovedNew
 		{
 			add { grid.ElementsMovedNew += value; }
-			remove { grid.ElementsMovedNew -= value; }
+			remove { if (grid != null) grid.ElementsMovedNew -= value; }
 		}
 
 		public event EventHandler<ElementsSelectedEventArgs> ElementsSelected
 		{
 			add { grid.ElementsSelected += value; }
-			remove { grid.ElementsSelected -= value; }
+			remove { if (grid != null) grid.ElementsSelected -= value; }
 		}
 
 		public event EventHandler<RulerClickedEventArgs> RulerClicked
@@ -517,7 +536,7 @@ namespace Common.Controls.Timeline
 		}
 
 		#endregion
-
+		
 		#region Event Handlers
 
 		private void GridScrollVerticalHandler(object sender, EventArgs e)

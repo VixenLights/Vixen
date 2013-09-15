@@ -72,5 +72,22 @@ namespace Vixen.Intent
 		{
 			return intentRelativeTime < TimeSpan && intentRelativeTime > TimeSpan.Zero;
 		}
+
+		#region IDisposable Members
+		protected void Dispose(bool disposing)
+		{
+			if (disposing) {
+				Value= default(TypeOfValue);
+			}
+		}
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+		~StaticIntent() {
+			Dispose(false);
+		}
+		#endregion
 	}
 }
