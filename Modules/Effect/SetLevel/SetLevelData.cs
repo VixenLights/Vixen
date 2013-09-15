@@ -21,7 +21,7 @@ namespace VixenModules.Effect.SetLevel
 		public SetLevelData()
 		{
 			level = 1;
-			color = Color.Empty; //This ends up being black in RGB.
+			color = Color.White;
 		}
 
 		public override IModuleDataModel Clone()
