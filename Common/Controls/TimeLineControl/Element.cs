@@ -22,6 +22,7 @@ namespace Common.Controls.Timeline
 
 		public Element()
 		{
+			CachedCanvasIsCurrent = false;
 		}
 
 		/// <summary>
@@ -171,10 +172,8 @@ namespace Common.Controls.Timeline
 			set
 			{
 				if (value) {
-					//m_redraw = true;
 					CachedCanvasIsCurrent = false;
 				}
-				//Console.WriteLine("Changed");
 				_changed = value;
 			}
 			get { return _changed; }
@@ -257,7 +256,6 @@ namespace Common.Controls.Timeline
 		#region Drawing
 
 		private Bitmap CachedElementCanvas { get; set; }
-		private Bitmap CachedSelectedElementCanvas { get; set; }
 
 		private bool _cachedCanvasIsCurrent=false;
 		public bool CachedCanvasIsCurrent {
@@ -306,14 +304,16 @@ namespace Common.Controls.Timeline
 		{
 		}
 
-		public virtual bool IsCanvasContentCurrent(Size imageSize)
-		{
-			return (CachedCanvasIsCurrent || CachedElementCanvas.Width != imageSize.Width ||
-					CachedElementCanvas.Height != imageSize.Height);
-		}
+		//public virtual bool IsCanvasContentCurrent(Size imageSize)
+		//{
+		//	return (CachedCanvasIsCurrent || CachedElementCanvas.Width != imageSize.Width ||
+		//			CachedElementCanvas.Height != imageSize.Height);
+		//}
 
 		public Bitmap SetupCachedImage(Size imageSize)
 		{
+			CachedCanvasIsCurrent=false;
+			EffectNode.Effect.Render(); //ensure the effect is rendered outside of the locking.
 			lock (drawLock) {
 				Bitmap bitmap = new Bitmap(imageSize.Width, imageSize.Height);
 				using(Graphics g = Graphics.FromImage(bitmap)){
@@ -323,14 +323,11 @@ namespace Common.Controls.Timeline
 					{
 						CachedElementCanvas.Dispose();
 					}
-					CachedElementCanvas = bitmap;
-					CachedCanvasIsCurrent = true;
-					if(CachedSelectedElementCanvas!=null){
-						CachedSelectedElementCanvas.Dispose();
-						CachedSelectedElementCanvas = null;
-					}
 					
+					CachedElementCanvas = bitmap;
 					Changed = false;
+					CachedCanvasIsCurrent = true;
+					
 				}
 			}
 			
@@ -386,7 +383,7 @@ namespace Common.Controls.Timeline
 		{
 			lock (drawLock)
 			{
-				if (CachedElementCanvas == null)
+				if (CachedElementCanvas==null)
 				{
 					Bitmap b = SetupCanvas(imageSize);
 					using (Graphics g = Graphics.FromImage(b))
@@ -394,21 +391,18 @@ namespace Common.Controls.Timeline
 						DrawPlaceholder(g);
 						AddSelectionOverlayToCanvas(g, m_selected);
 						CachedElementCanvas = b;
-						CachedCanvasIsCurrent = false; //temporary image so the real cache is not current
+						CachedCanvasIsCurrent = false; 
 					}
 					return b;
 				} else if (m_selected)
 				{
-					if (CachedSelectedElementCanvas == null)
+					Bitmap b = new Bitmap(CachedElementCanvas);
+					using (Graphics g = Graphics.FromImage(b))
 					{
-						Bitmap b = new Bitmap(CachedElementCanvas);
-						using (Graphics g = Graphics.FromImage(b))
-						{
-							AddSelectionOverlayToCanvas(g, true);
-							CachedSelectedElementCanvas = b;
-						}
+						AddSelectionOverlayToCanvas(g, true);
 					}
-					return CachedSelectedElementCanvas;
+					
+					return b;
 				}
 			}
 			return CachedElementCanvas;
@@ -424,11 +418,14 @@ namespace Common.Controls.Timeline
 		protected void Dispose(bool disposing)
 		{
 			if (disposing) {
+				if (CachedElementCanvas != null)
+				{
+					CachedElementCanvas.Dispose();
+					CachedElementCanvas = null;
+				}
 			}
-			if (CachedElementCanvas != null)
-				CachedElementCanvas.Dispose();
-			if (CachedSelectedElementCanvas != null)
-				CachedSelectedElementCanvas.Dispose();
+			
+			
 		}
 
 		public void Dispose()

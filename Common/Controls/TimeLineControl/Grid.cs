@@ -403,14 +403,6 @@ namespace Common.Controls.Timeline
 		{
 			ResizeGridHeight();
 			if (!SuppressInvalidate) Invalidate();
-			// Code below tells the background rendering engine to re-process the elements.
-			// DB: I took this out... The original bitmap now gets used instead, but is just resized.
-			//Row row = sender as Row;
-			//for (int i = 0; i < row.ElementCount; i++)
-			//{
-			//    Element element = row.ElementAt(i);
-			//    element.Changed = true;
-			//}
 		}
 
         #endregion
@@ -1268,21 +1260,24 @@ namespace Common.Controls.Timeline
 		}
 
 		/// <summary>
-		/// Add a specific element to the render queue
+		/// Renders the specific element which includes rendering if needed
 		/// </summary>
 		/// <param name="element"></param>
         public void RenderElement(Element element)
         {
 			if (SupressRendering) return;
-			element.Changed=true;
 			_blockingElementQueue.Add(element);
         }
 
+		/// <summary>
+		/// Rasterizes all Visible rows in the provided row list which includes rendering if needed. 
+		/// </summary>
+		/// <param name="rows"></param>
         public void RenderVisibleRows(List<Row> rows)
         {
 			if (SupressRendering) return;
 			Element element;
-            foreach (Row row in Rows)
+            foreach (Row row in rows)
             {
                 if (row.Visible)
                 {
@@ -1296,10 +1291,43 @@ namespace Common.Controls.Timeline
             }
         }
 
+		/// <summary>
+		/// Rasterizes all Visible rows in the grid which includes rendering if needed. 
+		/// </summary>
         public void RenderAllVisibleRows()
         {
 			RenderVisibleRows(Rows);    
         }
+
+		/// <summary>
+		/// Rasterizes selected rows in the grid which includes rendering if needed.
+		/// </summary>
+		/// <param name="rows"></param>
+		public void RenderRows(List<Row> rows)
+		{
+			if (SupressRendering) return;
+			Element element;
+			foreach (Row row in rows)
+			{
+				for (int i = 0; i < row.ElementCount; i++)
+				{
+					element = row.GetElementAtIndex(i);
+					if (!element.CachedCanvasIsCurrent)
+					{
+						_blockingElementQueue.Add(element);
+					}
+				}	
+			}
+		}
+
+		/// <summary>
+		/// Rasterizes all rows in the grid which includes rendering if needed.
+		/// </summary>
+		public void RenderAllRows()
+		{
+			ClearElementRenderQueue();
+			RenderRows(Rows);
+		}
 
         private void ClearElementRenderQueue()
         {
@@ -1313,10 +1341,14 @@ namespace Common.Controls.Timeline
 			
         }
 
+		/// <summary>
+		/// Resets all the elements in the provided rows and forces them to be re-rasterized/rendered
+		/// </summary>
+		/// <param name="rows"></param>
 		public void ResetRowElements(List<Row> rows)
 		{
 			if (SupressRendering) return;
-			foreach (Row row in Rows)
+			foreach (Row row in rows)
 			{
 				for (int i = 0; i < row.ElementCount; i++)
 				{
@@ -1325,9 +1357,12 @@ namespace Common.Controls.Timeline
 				}
 			}
 
-			RenderVisibleRows(rows);
+			RenderRows(rows);
 		}
-			
+		
+		/// <summary>
+		/// Resets all the elements in the grid and forces them to be re-rasterized/rendered
+		/// </summary>
         public void ResetAllElements()
         {
 			if (SupressRendering) return;
