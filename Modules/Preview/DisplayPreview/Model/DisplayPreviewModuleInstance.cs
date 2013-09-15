@@ -85,6 +85,7 @@ namespace VixenModules.Preview.DisplayPreview.Model
 
 		protected override void Update()
 		{
+			ElementIntentStates ElementStates = new ElementIntentStates();
 			ViewManager.UpdateVisualizerExecutionStateValues(ElementStates);
 		}
 
