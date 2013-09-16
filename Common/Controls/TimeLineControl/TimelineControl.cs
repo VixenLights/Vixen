@@ -69,6 +69,8 @@ namespace Common.Controls.Timeline
 			Row.RowToggled -= RowToggledHandler;
 			Row.RowHeightChanged -= RowHeightChangedHandler;
 			Row.RowHeightResized -= RowHeightResizedHandler;
+			Vixen.Utility.cEventHelper.RemoveAllEventHandlers(this);
+
 			if (grid != null) {
 				grid.Scroll -= GridScrolledHandler;
 				grid.VerticalOffsetChanged -= GridScrollVerticalHandler;
@@ -76,7 +78,7 @@ namespace Common.Controls.Timeline
 				Vixen.Utility.cEventHelper.RemoveAllEventHandlers(grid);
 				grid = null;
 			}
-			Vixen.Utility.cEventHelper.RemoveAllEventHandlers(this);
+		
 			if (timelineRowList != null) {
 				timelineRowList.Dispose();
 				timelineRowList= null;
