@@ -1453,24 +1453,11 @@ namespace Common.Controls.Timeline
 
 		private void _drawInfo(Graphics g)
 		{
-			bool found = false;
-			
-			foreach (Row row in VisibleRows)
+
+			if (capturedElements.Any())
 			{
-				
-				for (int i = 0; i < row.ElementCount; i++)
-				{
-					Element element = row.GetElementAtIndex(i);
-					if (element.StartTime > VisibleTimeEnd)
-					{
-						break;
-					}
-					if (!element.MouseCaptured)
-						continue;
-					found = true;
-					element.DrawInfo(g, element.DisplayRect);
-				}
-				if (found) break;
+				Element element = capturedElements.First();
+				element.DrawInfo(g, element.DisplayRect);
 			}
 		}
 
