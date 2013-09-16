@@ -100,7 +100,7 @@ namespace Common.Controls.Timeline
 			}
 			if (m_rows != null) {
 				m_rows.Clear();
-				m_rows=null;
+				//m_rows=null;
 			}
 			base.Dispose(disposing);
 		}
