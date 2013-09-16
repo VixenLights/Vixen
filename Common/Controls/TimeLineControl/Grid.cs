@@ -564,6 +564,7 @@ namespace Common.Controls.Timeline
 			// Now figure out which element we are on
 			foreach (Element elem in containingRow) {
 				Single elemX = timeToPixels(elem.StartTime);
+				if (elemX > p.X) break; //The rest of them are beyond our point.
 				Single elemW = timeToPixels(elem.Duration);
 				if (p.X >= elemX &&
 					p.X <= elemX + elemW &&
