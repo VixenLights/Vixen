@@ -9,6 +9,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Diagnostics;
 using VixenModules.Media.Audio;
+using System.Threading.Tasks;
 
 namespace Common.Controls.Timeline
 {
@@ -268,7 +269,7 @@ namespace Common.Controls.Timeline
 		{
 			if (scale <= 0.0)
 				return;
-
+			grid.BeginDraw();
 			if (VisibleTimeSpan.Scale(scale) > TotalTime) {
 				TimePerPixel = TimeSpan.FromTicks(TotalTime.Ticks/grid.Width);
 				VisibleTimeStart = TimeSpan.Zero;
@@ -278,6 +279,7 @@ namespace Common.Controls.Timeline
 				if (VisibleTimeEnd > TotalTime)
 					VisibleTimeStart = TotalTime - VisibleTimeSpan;
 			}
+			grid.EndDraw();
 			grid.ResetAllElements();
 		}
 
@@ -287,18 +289,19 @@ namespace Common.Controls.Timeline
 				return;
 			bool heightChanged = false;
 			grid.BeginDraw();
-			foreach (Row r in Rows) {
+
+			foreach (Row r in Rows)
+			{
 				if (r.Height * scale > grid.Height) continue; //Don't scale a row beyond the grid height. How big do you need it?
-				r.Height = (int) (r.Height*scale);
+				r.Height = (int)(r.Height * scale);
 				heightChanged = true;
 			}
-			grid.EndDraw();
 
 			if (heightChanged) //Only reset if we actually changed a row height.
 			{
 				grid.ResetAllElements();
 			}
-			
+			grid.EndDraw();
 		}
 
 		public void ResizeGrid()

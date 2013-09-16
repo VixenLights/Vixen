@@ -689,11 +689,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripStatusLabel_RenderingElements.Name = "toolStripStatusLabel_RenderingElements";
 			this.toolStripStatusLabel_RenderingElements.Size = new System.Drawing.Size(115, 19);
 			this.toolStripStatusLabel_RenderingElements.Text = "Rendering Elements:";
+			this.toolStripStatusLabel_RenderingElements.Visible = false;
 			// 
 			// toolStripProgressBar_RenderingElements
 			// 
 			this.toolStripProgressBar_RenderingElements.Name = "toolStripProgressBar_RenderingElements";
 			this.toolStripProgressBar_RenderingElements.Size = new System.Drawing.Size(100, 18);
+			this.toolStripProgressBar_RenderingElements.Visible = false;
 			// 
 			// openFileDialog
 			// 

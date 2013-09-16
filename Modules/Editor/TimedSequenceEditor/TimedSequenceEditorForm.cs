@@ -304,10 +304,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				                                                  		loadTimer.Enabled = false;
 				                                                  		updateToolStrip4(string.Empty);
 																		timelineControl.grid.SupressRendering = false;
-				                                                  		timelineControl.grid.RenderAllVisibleRows();
 																		timelineControl.grid.SuppressInvalidate = false;
-																		timelineControl.grid.Invalidate();
-				                                                  		//Console.WriteLine("Done Loading Effects");
+				                                                  		timelineControl.grid.RenderAllRows();
 				                                                  	});
 
 				populateGridWithMarks();
@@ -490,6 +488,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		protected void ElementContentChangedHandler(object sender, EventArgs e)
 		{
 			TimedSequenceElement element = sender as TimedSequenceElement;
+			element.Changed = true;
 			timelineControl.grid.RenderElement(element);
 			sequenceModified();
 		}
@@ -508,7 +507,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		protected void ElementAddedToRowHandler(object sender, ElementEventArgs e)
 		{
 			// not currently used
-			timelineControl.grid.RenderElement(e.Element);
 		}
 
 		protected void ElementChangedRowsHandler(object sender, ElementRowChangeEventArgs e)
@@ -1072,7 +1070,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				        			Logging.Error(message);
 				        		}
 				        	});
-
+			timelineControl.grid.RenderElement(element);
 			return element;
 		}
 
@@ -1351,7 +1349,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				int targetRowIndex = topTargetRoxIndex + relativeRow;
 				TimeSpan targetTime = effectModelCandidate.StartTime - data.EarliestStartTime + pasteTime;
-
+				if (targetTime > timelineControl.grid.TotalTime)
+				{
+					continue;
+				} else if (targetTime + effectModelCandidate.Duration > timelineControl.grid.TotalTime)
+				{
+					//Shorten to fit.
+					effectModelCandidate.Duration = timelineControl.grid.TotalTime - targetTime;
+				}
 				if (targetRowIndex >= visibleRows.Count)
 					continue;
 
