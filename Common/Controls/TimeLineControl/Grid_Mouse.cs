@@ -63,6 +63,7 @@ namespace Common.Controls.Timeline
 						if (!CtrlPressed) {
 							ClearSelectedElements();
 							ClearSelectedRows();
+							ClearActiveRows();
 						}
 						if (_ElementsSelected(m_mouseDownElements)) {
 							foreach (Element element in m_mouseDownElements) {
@@ -351,6 +352,7 @@ namespace Common.Controls.Timeline
 			m_dragState = DragState.Selecting;
 			ClearSelectedElements();
 			ClearSelectedRows(m_mouseDownElementRow);
+			ClearActiveRows(m_mouseDownElementRow);
 			SelectionArea = new Rectangle(gridLocation.X, gridLocation.Y, 0, 0);
 			m_selectionRectangleStart = gridLocation;
 		}
@@ -389,7 +391,7 @@ namespace Common.Controls.Timeline
 		protected void OnBackgroundClick(TimelineEventArgs e)
 		{
 			if (e.Row != null)
-				e.Row.Selected = true;
+				e.Row.Active = true;
 
 			if (ClickingGridSetsCursor)
 				CursorPosition = e.Time;

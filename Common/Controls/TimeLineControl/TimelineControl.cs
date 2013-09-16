@@ -224,6 +224,12 @@ namespace Common.Controls.Timeline
 		}
 
 		[Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public Row ActiveRow
+		{
+			get { return grid.ActiveRow; }
+		}
+
+		[Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public IEnumerable<Row> VisibleRows
 		{
 			get { return grid.VisibleRows; }

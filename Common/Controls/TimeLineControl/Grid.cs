@@ -187,6 +187,16 @@ namespace Common.Controls.Timeline
 			}
 		}
 
+		public Row FirstSelectedRow { get; set; }
+
+		/// <summary>
+		/// Get the active row the user is working on.
+		/// </summary>
+		public Row ActiveRow
+		{
+			get { return Rows.Where(x => x.Active).FirstOrDefault(); }
+		}
+
 		public IEnumerable<Row> VisibleRows
 		{
 			get { return Rows.Where(x => x.Visible); }
@@ -324,15 +334,59 @@ namespace Common.Controls.Timeline
 		protected void RowSelectedChangedHandler(object sender, ModifierKeysEventArgs e)
 		{
 			Row selectedRow = sender as Row;
+			//Handle full selection logic
+			if (e.ModifierKeys.HasFlag(Keys.Control) || e.ModifierKeys.HasFlag(Keys.Shift))
+			{
+				if (e.ModifierKeys.HasFlag(Keys.Control) || !SelectedRows.Any())
+				{
+					if (selectedRow.Selected)
+					{
+						selectedRow.SelectAllElements();
+						FirstSelectedRow = selectedRow;
+					} else
+					{
+						if (!SelectedRows.Any())
+						{
+							FirstSelectedRow = null;
+						}
+						selectedRow.DeselectAllElements();
+					}
+				} else
+				{
+					//Multi select.
+					int indexFirst = Rows.IndexOf(FirstSelectedRow);
+					int indexSelected = Rows.IndexOf(selectedRow);
+					if (indexSelected > indexFirst) //Selecting down in the grid
+					{
+						for (int i = indexFirst; i <= indexSelected; i++)
+						{
+							if (Rows[i].Visible)
+							{
+								Rows[i].Selected = true;
+								Rows[i].SelectAllElements();
+							}
+						}
+					}else{	
+						for(int i=indexSelected; i <= indexFirst; i++){
+							if (Rows[i].Visible)
+							{
+								Rows[i].Selected = true;
+								Rows[i].SelectAllElements();
+							}
+						}
+					}
+				}
 
-			// if CTRL wasn't down, then we want to clear all the other rows
-			if (!e.ModifierKeys.HasFlag(Keys.Control)) {
+			} else
+			{
 				ClearSelectedElements();
-				ClearSelectedRows();
-				selectedRow.Selected = true;
+				ClearSelectedRows(selectedRow);
+				ClearActiveRows();
 				selectedRow.SelectAllElements();
-				_SelectionChanged();
+				FirstSelectedRow = selectedRow;
 			}
+
+			_SelectionChanged();
 		}
 
 
@@ -435,6 +489,17 @@ namespace Common.Controls.Timeline
 			}
 			Invalidate();
 			_SelectionChanged();
+		}
+
+		public void ClearActiveRows(Row leaveRowActive = null)
+		{
+			foreach (Row row in Rows)
+			{
+				if (row != leaveRowActive)
+					row.Active = false;
+			}
+			Invalidate();
+			//_SelectionChanged();
 		}
 
 		public void AddRow(Row row)
@@ -1132,6 +1197,14 @@ namespace Common.Controls.Timeline
 					Point lineRight = new Point((-AutoScrollPosition.X) + Width, curY);
 
 					if (row.Selected)
+					{
+						g.FillRectangle(b, Util.RectangleFromPoints(selectedTopLeft, selectedBottomRight));
+						using (Pen bp = new Pen(SelectionBorder))
+						{
+							g.DrawRectangle(bp, Util.RectangleFromPoints(selectedTopLeft, selectedBottomRight));
+						}
+					}
+					if (row.Active)
 						g.FillRectangle(b, Util.RectangleFromPoints(selectedTopLeft, selectedBottomRight));
 					g.DrawLine(p, lineLeft.X, lineLeft.Y - 1, lineRight.X, lineRight.Y - 1);
 				}
