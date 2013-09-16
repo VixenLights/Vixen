@@ -370,6 +370,13 @@ namespace Common.Controls.Timeline
 						// Display the text above the effect
 						destRect.Y -= (int)textSize.Height + margin - 4;
 					}
+
+					//Check to make sure we are on the screen. 
+					if (g.VisibleClipBounds.X > destRect.X)
+					{
+						destRect.X = (int)g.VisibleClipBounds.X + 5;
+					}
+
 					// Full size info box. Comment out next two lines to clip
 					destRect.Width = (int)textSize.Width + margin;
 					destRect.Height = (int)textSize.Height + margin;
