@@ -1348,7 +1348,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				int targetRowIndex = topTargetRoxIndex + relativeRow;
 				TimeSpan targetTime = effectModelCandidate.StartTime - data.EarliestStartTime + pasteTime;
-
+				if (targetTime > timelineControl.grid.TotalTime)
+				{
+					continue;
+				} else if (targetTime + effectModelCandidate.Duration > timelineControl.grid.TotalTime)
+				{
+					//Shorten to fit.
+					effectModelCandidate.Duration = timelineControl.grid.TotalTime - targetTime;
+				}
 				if (targetRowIndex >= visibleRows.Count)
 					continue;
 
