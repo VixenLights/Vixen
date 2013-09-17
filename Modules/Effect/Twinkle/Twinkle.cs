@@ -432,7 +432,7 @@ namespace VixenModules.Effect.Twinkle
 				int reduction = _random.Next(maxLevelVariation);
 				double maxLevel = MaximumLevel - reduction;
 				Curve curve =
-					new Curve(new PointPairList(new double[] {100, 50, 0}, new double[] {minLevel*100, maxLevel*100, minLevel*100}));
+					new Curve(new PointPairList(new double[] {0, 50, 100}, new double[] {minLevel*100, maxLevel*100, minLevel*100}));
 
 				IndividualTwinkleDetails occurance = new IndividualTwinkleDetails();
 				occurance.StartTime = current;
