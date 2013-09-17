@@ -1,5 +1,5 @@
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vixen", "Vixen.System\Vixen.csproj", "{50B78623-FCF4-48AF-93FF-FA87C937028F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VixenModules", "VixenModules", "{F1B3198B-977F-40CD-85B3-CAA3F5B5C948}"
@@ -657,8 +657,5 @@ Global
 		{9EFE1059-E2DC-4576-B9E3-4AE3F998CB28} = {B21B530A-394C-4A30-8325-FB859613FAA5}
 		{1272F77E-D926-4310-AE8B-858909B10F0C} = {B21B530A-394C-4A30-8325-FB859613FAA5}
 		{5EAB131C-1C93-4C3F-A1D8-D711053DE33C} = {B21B530A-394C-4A30-8325-FB859613FAA5}
-	EndGlobalSection
-	GlobalSection(Performance) = preSolution
-		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal

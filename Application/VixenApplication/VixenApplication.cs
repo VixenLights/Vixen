@@ -285,17 +285,23 @@ namespace VixenApplication
 		private void _OpenEditor(IEditorUserInterface editorUI)
 		{
 			_openEditors.Add(editorUI);
+			editorUI.Closing +=editorUI_Closing;
+			editorUI.Activated +=editorUI_Activated;
 
-			editorUI.Closing += (sender, e) =>
-			                    	{
-			                    		if (!_CloseEditor(sender as IEditorUserInterface)) {
-			                    			e.Cancel = true;
-			                    		}
-			                    	};
-
-			editorUI.Activated += (sender, e) => { _activeEditor = sender as IEditorUserInterface; };
-
+		 
 			editorUI.Start();
+		}
+
+		void editorUI_Activated(object sender, EventArgs e)
+		{
+			_activeEditor = sender as IEditorUserInterface; 
+		}
+
+		void editorUI_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+		{
+			if (!_CloseEditor(sender as IEditorUserInterface)) {
+				e.Cancel = true;
+			}  
 		}
 
 		private bool _CloseEditor(IEditorUserInterface editor)
@@ -312,12 +318,15 @@ namespace VixenApplication
 
 			if (_openEditors.Contains(editor)) {
 				_openEditors.Remove(editor);
-				Form editorForm = editor as Form;
-				editor.Dispose();
 			}
-
+			
+				_activeEditor= null;
+			
 			AddSequenceToRecentList(editor.Sequence.FilePath);
-
+			editor.Activated-= editorUI_Activated;
+			editor.Closing -= editorUI_Closing;
+			editor.Dispose();
+			editor = null;
 			return true;
 		}
 

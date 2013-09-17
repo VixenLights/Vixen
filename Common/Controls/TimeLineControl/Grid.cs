@@ -98,6 +98,10 @@ namespace Common.Controls.Timeline
 				renderWorker.CancelAsync();
 				while (renderWorker.IsBusy) Application.DoEvents();
 			}
+			if (m_rows != null) {
+				m_rows.Clear();
+				//m_rows=null;
+			}
 			base.Dispose(disposing);
 		}
 
