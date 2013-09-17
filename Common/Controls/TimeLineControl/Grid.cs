@@ -191,6 +191,16 @@ namespace Common.Controls.Timeline
 			}
 		}
 
+		public Row FirstSelectedRow { get; set; }
+
+		/// <summary>
+		/// Get the active row the user is working on.
+		/// </summary>
+		public Row ActiveRow
+		{
+			get { return Rows.Where(x => x.Active).FirstOrDefault(); }
+		}
+
 		public IEnumerable<Row> VisibleRows
 		{
 			get { return Rows.Where(x => x.Visible); }
@@ -328,15 +338,59 @@ namespace Common.Controls.Timeline
 		protected void RowSelectedChangedHandler(object sender, ModifierKeysEventArgs e)
 		{
 			Row selectedRow = sender as Row;
+			//Handle full selection logic
+			if (e.ModifierKeys.HasFlag(Keys.Control) || e.ModifierKeys.HasFlag(Keys.Shift))
+			{
+				if (e.ModifierKeys.HasFlag(Keys.Control) || !SelectedRows.Any())
+				{
+					if (selectedRow.Selected)
+					{
+						selectedRow.SelectAllElements();
+						FirstSelectedRow = selectedRow;
+					} else
+					{
+						if (!SelectedRows.Any())
+						{
+							FirstSelectedRow = null;
+						}
+						selectedRow.DeselectAllElements();
+					}
+				} else
+				{
+					//Multi select.
+					int indexFirst = Rows.IndexOf(FirstSelectedRow);
+					int indexSelected = Rows.IndexOf(selectedRow);
+					if (indexSelected > indexFirst) //Selecting down in the grid
+					{
+						for (int i = indexFirst; i <= indexSelected; i++)
+						{
+							if (Rows[i].Visible)
+							{
+								Rows[i].Selected = true;
+								Rows[i].SelectAllElements();
+							}
+						}
+					}else{	
+						for(int i=indexSelected; i <= indexFirst; i++){
+							if (Rows[i].Visible)
+							{
+								Rows[i].Selected = true;
+								Rows[i].SelectAllElements();
+							}
+						}
+					}
+				}
 
-			// if CTRL wasn't down, then we want to clear all the other rows
-			if (!e.ModifierKeys.HasFlag(Keys.Control)) {
+			} else
+			{
 				ClearSelectedElements();
-				ClearSelectedRows();
-				selectedRow.Selected = true;
+				ClearSelectedRows(selectedRow);
+				ClearActiveRows();
 				selectedRow.SelectAllElements();
-				_SelectionChanged();
+				FirstSelectedRow = selectedRow;
 			}
+
+			_SelectionChanged();
 		}
 
 
@@ -407,14 +461,6 @@ namespace Common.Controls.Timeline
 		{
 			ResizeGridHeight();
 			if (!SuppressInvalidate) Invalidate();
-			// Code below tells the background rendering engine to re-process the elements.
-			// DB: I took this out... The original bitmap now gets used instead, but is just resized.
-			//Row row = sender as Row;
-			//for (int i = 0; i < row.ElementCount; i++)
-			//{
-			//    Element element = row.ElementAt(i);
-			//    element.Changed = true;
-			//}
 		}
 
         #endregion
@@ -447,6 +493,17 @@ namespace Common.Controls.Timeline
 			}
 			Invalidate();
 			_SelectionChanged();
+		}
+
+		public void ClearActiveRows(Row leaveRowActive = null)
+		{
+			foreach (Row row in Rows)
+			{
+				if (row != leaveRowActive)
+					row.Active = false;
+			}
+			Invalidate();
+			//_SelectionChanged();
 		}
 
 		public void AddRow(Row row)
@@ -576,6 +633,7 @@ namespace Common.Controls.Timeline
 			// Now figure out which element we are on
 			foreach (Element elem in containingRow) {
 				Single elemX = timeToPixels(elem.StartTime);
+				if (elemX > p.X) break; //The rest of them are beyond our point.
 				Single elemW = timeToPixels(elem.Duration);
 				if (p.X >= elemX &&
 					p.X <= elemX + elemW &&
@@ -1143,6 +1201,14 @@ namespace Common.Controls.Timeline
 					Point lineRight = new Point((-AutoScrollPosition.X) + Width, curY);
 
 					if (row.Selected)
+					{
+						g.FillRectangle(b, Util.RectangleFromPoints(selectedTopLeft, selectedBottomRight));
+						using (Pen bp = new Pen(SelectionBorder))
+						{
+							g.DrawRectangle(bp, Util.RectangleFromPoints(selectedTopLeft, selectedBottomRight));
+						}
+					}
+					if (row.Active)
 						g.FillRectangle(b, Util.RectangleFromPoints(selectedTopLeft, selectedBottomRight));
 					g.DrawLine(p, lineLeft.X, lineLeft.Y - 1, lineRight.X, lineRight.Y - 1);
 				}
@@ -1272,21 +1338,24 @@ namespace Common.Controls.Timeline
 		}
 
 		/// <summary>
-		/// Add a specific element to the render queue
+		/// Renders the specific element which includes rendering if needed
 		/// </summary>
 		/// <param name="element"></param>
         public void RenderElement(Element element)
         {
 			if (SupressRendering) return;
-			element.Changed=true;
 			_blockingElementQueue.Add(element);
         }
 
+		/// <summary>
+		/// Rasterizes all Visible rows in the provided row list which includes rendering if needed. 
+		/// </summary>
+		/// <param name="rows"></param>
         public void RenderVisibleRows(List<Row> rows)
         {
 			if (SupressRendering) return;
 			Element element;
-            foreach (Row row in Rows)
+            foreach (Row row in rows)
             {
                 if (row.Visible)
                 {
@@ -1300,10 +1369,43 @@ namespace Common.Controls.Timeline
             }
         }
 
+		/// <summary>
+		/// Rasterizes all Visible rows in the grid which includes rendering if needed. 
+		/// </summary>
         public void RenderAllVisibleRows()
         {
 			RenderVisibleRows(Rows);    
         }
+
+		/// <summary>
+		/// Rasterizes selected rows in the grid which includes rendering if needed.
+		/// </summary>
+		/// <param name="rows"></param>
+		public void RenderRows(List<Row> rows)
+		{
+			if (SupressRendering) return;
+			Element element;
+			foreach (Row row in rows)
+			{
+				for (int i = 0; i < row.ElementCount; i++)
+				{
+					element = row.GetElementAtIndex(i);
+					if (!element.CachedCanvasIsCurrent)
+					{
+						_blockingElementQueue.Add(element);
+					}
+				}	
+			}
+		}
+
+		/// <summary>
+		/// Rasterizes all rows in the grid which includes rendering if needed.
+		/// </summary>
+		public void RenderAllRows()
+		{
+			ClearElementRenderQueue();
+			RenderRows(Rows);
+		}
 
         private void ClearElementRenderQueue()
         {
@@ -1317,10 +1419,14 @@ namespace Common.Controls.Timeline
 			
         }
 
+		/// <summary>
+		/// Resets all the elements in the provided rows and forces them to be re-rasterized/rendered
+		/// </summary>
+		/// <param name="rows"></param>
 		public void ResetRowElements(List<Row> rows)
 		{
 			if (SupressRendering) return;
-			foreach (Row row in Rows)
+			foreach (Row row in rows)
 			{
 				for (int i = 0; i < row.ElementCount; i++)
 				{
@@ -1329,9 +1435,12 @@ namespace Common.Controls.Timeline
 				}
 			}
 
-			RenderVisibleRows(rows);
+			RenderRows(rows);
 		}
-			
+		
+		/// <summary>
+		/// Resets all the elements in the grid and forces them to be re-rasterized/rendered
+		/// </summary>
         public void ResetAllElements()
         {
 			if (SupressRendering) return;
@@ -1421,24 +1530,11 @@ namespace Common.Controls.Timeline
 
 		private void _drawInfo(Graphics g)
 		{
-			bool found = false;
-			
-			foreach (Row row in VisibleRows)
+
+			if (capturedElements.Any())
 			{
-				
-				for (int i = 0; i < row.ElementCount; i++)
-				{
-					Element element = row.GetElementAtIndex(i);
-					if (element.StartTime > VisibleTimeEnd)
-					{
-						break;
-					}
-					if (!element.MouseCaptured)
-						continue;
-					found = true;
-					element.DrawInfo(g, element.DisplayRect);
-				}
-				if (found) break;
+				Element element = capturedElements.First();
+				element.DrawInfo(g, element.DisplayRect);
 			}
 		}
 
