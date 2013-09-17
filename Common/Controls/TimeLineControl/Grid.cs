@@ -91,6 +91,7 @@ namespace Common.Controls.Timeline
 
 		protected override void Dispose(bool disposing)
 		{
+		
 			// Cancel the background worker
 			cts.Cancel(false);
 			if (renderWorker != null)
@@ -101,7 +102,13 @@ namespace Common.Controls.Timeline
 			if (m_rows != null) {
 				m_rows.Clear();
 				//m_rows=null;
+				m_rows=null;
+				m_rows=new List<Row>();
 			}
+			_blockingElementQueue.Dispose();
+			_blockingElementQueue= null;
+			_blockingElementQueue=new BlockingCollection<Element>();
+			Context=null;
 			base.Dispose(disposing);
 		}
 
@@ -1292,7 +1299,7 @@ namespace Common.Controls.Timeline
 			double total = 0;
 			try
 			{
-
+				if(_blockingElementQueue !=null)
 				foreach (Element element in _blockingElementQueue.GetConsumingEnumerable(cts.Token))
 				{
 					if (renderWorker.CancellationPending)
