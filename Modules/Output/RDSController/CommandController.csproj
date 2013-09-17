@@ -82,9 +82,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="mrdsio.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="rds logo.png" />
   </ItemGroup>
   <ItemGroup>
