@@ -119,6 +119,8 @@ namespace FastPixel
 
 			// Unlock the bits.;
 			this.Bitmap.UnlockBits(bmpData);
+			this.rgbValues = null;
+			this.bmpData = null;
 			this.locked = false;
 		}
 
