@@ -21,8 +21,6 @@ namespace Vixen.Sys
 	 
 		private bool DoesIntentIntensityMatchPattern(LightingIntent intent, float intensity)
 		{
-
-
 			if (!intentIntensityHistory.ContainsKey(intent.GenericID)) {
 				intentIntensityHistory.Add(intent.GenericID, new List<Tuple<int, float>>() { new Tuple<int, float>(1, intent.EndValue.Intensity) });
 			} else {
