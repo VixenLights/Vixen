@@ -7,7 +7,7 @@
     <ProjectGuid>{9B9214AF-B94B-43DD-8FEB-13DEBF50123F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>VixenModules.Output.RDSController</RootNamespace>
+    <RootNamespace>VixenModules.Output.CommandController</RootNamespace>
     <AssemblyName>RDSController</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -82,9 +82,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="mrdsio.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="rds logo.png" />
   </ItemGroup>
   <ItemGroup>

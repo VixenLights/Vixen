@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 using System.Xml.Serialization;
 using Vixen.Module;
 
-namespace VixenModules.Output.RDSController
+namespace VixenModules.Output.CommandController
 {
 	[DataContract]
 	public class Data : ModuleDataModelBase
@@ -30,6 +30,9 @@ namespace VixenModules.Output.RDSController
 
 		[DataMember]
 		public string HttpUrl { get; set; }
+		
+		[DataMember]
+		public bool HideLaunchedWindows { get; set; }
 
 		public override IModuleDataModel Clone()
 		{

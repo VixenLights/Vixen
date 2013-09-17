@@ -2,5 +2,6 @@
 {
 	public interface IEffectModuleInstance : IEffect, IModuleInstance
 	{
+		 bool ForceGenerateVisualRepresentation { get;   }
 	}
 }

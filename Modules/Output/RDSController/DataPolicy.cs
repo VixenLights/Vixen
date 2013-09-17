@@ -8,7 +8,7 @@ using Vixen.Data.Evaluator;
 using Vixen.Data.Policy;
 using Vixen.Sys;
 
-namespace VixenModules.Output.RDSController {
+namespace VixenModules.Output.CommandController {
 	internal class DataPolicy : ControllerDataPolicy {
 		protected override IEvaluator GetEvaluator()
 		{

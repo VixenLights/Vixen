@@ -26,6 +26,7 @@ namespace VixenModules.Effect.SetLevel
 		protected override void _PreRender()
 		{
 			_elementData = new EffectIntents();
+			CheckForInvalidColorData();
 
 			foreach (ElementNode node in TargetNodes) {
 				if (node != null)
@@ -60,14 +61,7 @@ namespace VixenModules.Effect.SetLevel
 		{
 			get
 			{
-				if (_data.color.ToArgb().ToArgb() == Color.Black.ToArgb()) //We have a new effect as empty is black in RGB.
-				{
-					//Set a default color if we have discrete colors
-					HashSet<Color> validColors = new HashSet<Color>();
-					validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
-					Color = validColors.DefaultIfEmpty(Color.White).First();
-				}
-
+				CheckForInvalidColorData();
 				return _data.color;
 			}
 			set
@@ -75,6 +69,19 @@ namespace VixenModules.Effect.SetLevel
 				_data.color = value;
 				IsDirty = true;
 			}
+		}
+
+		//Validate that the we are using valid colors and set appropriate defaults if not.
+		private void CheckForInvalidColorData()
+		{
+			HashSet<Color> validColors = new HashSet<Color>();
+			validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
+			if(validColors.Any() && !validColors.Contains(_data.color.ToArgb())){
+				//Our color is not valid for any elements we have.
+				//Set a default color 
+				Color = validColors.First();
+			}
+			
 		}
 
 		// renders the given node to the internal ElementData dictionary. If the given node is

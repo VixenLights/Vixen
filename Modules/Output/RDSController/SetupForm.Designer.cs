@@ -1,4 +1,4 @@
-﻿namespace VixenModules.Output.RDSController
+﻿namespace VixenModules.Output.CommandController
 {
 	partial class SetupForm
 	{
@@ -29,6 +29,7 @@
 			this.chkSlow = new System.Windows.Forms.CheckBox();
 			this.chkBiDirectional = new System.Windows.Forms.CheckBox();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
+			this.txtUrl = new System.Windows.Forms.TextBox();
 			this.label3 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.lblUrl = new System.Windows.Forms.Label();
@@ -44,13 +45,15 @@
 			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
 			this.StatusLbl1 = new System.Windows.Forms.ToolStripStatusLabel();
 			this.button1 = new System.Windows.Forms.Button();
-			this.txtUrl = new System.Windows.Forms.TextBox();
+			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.chkHideLaunchedWindows = new System.Windows.Forms.CheckBox();
 			this.groupPorts.SuspendLayout();
 			this.groupBox3.SuspendLayout();
 			this.groupBox4.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.statusStrip1.SuspendLayout();
+			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// groupPorts
@@ -152,9 +155,9 @@
 			// 
 			this.groupBox3.Controls.Add(this.chkSlow);
 			this.groupBox3.Controls.Add(this.chkBiDirectional);
-			this.groupBox3.Location = new System.Drawing.Point(95, 19);
+			this.groupBox3.Location = new System.Drawing.Point(95, 12);
 			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(110, 69);
+			this.groupBox3.Size = new System.Drawing.Size(110, 76);
 			this.groupBox3.TabIndex = 15;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "Options";
@@ -197,6 +200,15 @@
 			this.groupBox4.TabIndex = 16;
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = "Hardware";
+			// 
+			// txtUrl
+			// 
+			this.txtUrl.Location = new System.Drawing.Point(41, 68);
+			this.txtUrl.Multiline = true;
+			this.txtUrl.Name = "txtUrl";
+			this.txtUrl.Size = new System.Drawing.Size(334, 53);
+			this.txtUrl.TabIndex = 9;
+			this.txtUrl.TextChanged += new System.EventHandler(this.txtUrl_TextChanged);
 			// 
 			// label3
 			// 
@@ -349,20 +361,33 @@
 			this.button1.Text = "Save Configuration Settings";
 			this.button1.UseVisualStyleBackColor = true;
 			// 
-			// txtUrl
+			// groupBox1
 			// 
-			this.txtUrl.Location = new System.Drawing.Point(41, 68);
-			this.txtUrl.Multiline = true;
-			this.txtUrl.Name = "txtUrl";
-			this.txtUrl.Size = new System.Drawing.Size(334, 53);
-			this.txtUrl.TabIndex = 9;
-			this.txtUrl.TextChanged += new System.EventHandler(this.txtUrl_TextChanged);
+			this.groupBox1.Controls.Add(this.chkHideLaunchedWindows);
+			this.groupBox1.Location = new System.Drawing.Point(211, 12);
+			this.groupBox1.Name = "groupBox1";
+			this.groupBox1.Size = new System.Drawing.Size(265, 76);
+			this.groupBox1.TabIndex = 26;
+			this.groupBox1.TabStop = false;
+			this.groupBox1.Text = "Launcher Options";
+			// 
+			// chkHideLaunchedWindows
+			// 
+			this.chkHideLaunchedWindows.AutoSize = true;
+			this.chkHideLaunchedWindows.Location = new System.Drawing.Point(9, 19);
+			this.chkHideLaunchedWindows.Name = "chkHideLaunchedWindows";
+			this.chkHideLaunchedWindows.Size = new System.Drawing.Size(146, 17);
+			this.chkHideLaunchedWindows.TabIndex = 0;
+			this.chkHideLaunchedWindows.Text = "Hide Launched Windows";
+			this.chkHideLaunchedWindows.UseVisualStyleBackColor = true;
+			this.chkHideLaunchedWindows.CheckedChanged += new System.EventHandler(this.chkHideLaunchedWindows_CheckedChanged);
 			// 
 			// SetupForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(704, 342);
+			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.pictureBox1);
 			this.Controls.Add(this.button1);
 			this.Controls.Add(this.statusStrip1);
@@ -372,7 +397,7 @@
 			this.Controls.Add(this.groupBox2);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.Name = "SetupForm";
-			this.Text = "RDS Configuration";
+			this.Text = "Launcher Commands and RDS Configuration";
 			this.groupPorts.ResumeLayout(false);
 			this.groupPorts.PerformLayout();
 			this.groupBox3.ResumeLayout(false);
@@ -384,6 +409,8 @@
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			this.statusStrip1.ResumeLayout(false);
 			this.statusStrip1.PerformLayout();
+			this.groupBox1.ResumeLayout(false);
+			this.groupBox1.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -419,5 +446,7 @@
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Button button1;
 		private System.Windows.Forms.TextBox txtUrl;
+		private System.Windows.Forms.GroupBox groupBox1;
+		private System.Windows.Forms.CheckBox chkHideLaunchedWindows;
 	}
 }
