@@ -61,7 +61,23 @@ namespace Common.Controls.Timeline
 			Row.RowHeightChanged += RowHeightChangedHandler;
 			Row.RowHeightResized += RowHeightResizedHandler;
 		}
-
+	 
+		public void EnableDisableHandlers(bool enabled = true)
+		{
+			if (enabled) {
+				Row.RowToggled -= RowToggledHandler;
+				Row.RowHeightChanged -= RowHeightChangedHandler;
+				Row.RowHeightResized -= RowHeightResizedHandler;
+				Row.RowToggled += RowToggledHandler;
+				Row.RowHeightChanged += RowHeightChangedHandler;
+				Row.RowHeightResized += RowHeightResizedHandler;
+			} else {
+				Row.RowToggled -= RowToggledHandler;
+				Row.RowHeightChanged -= RowHeightChangedHandler;
+				Row.RowHeightResized -= RowHeightResizedHandler;
+			}
+			this.timelineRowList.EnableDisableHandlers(enabled);
+		}
 		#region Initialization
 		protected override void Dispose(bool disposing)
 		{

@@ -283,9 +283,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (clearCurrentRows)
 				timelineControl.ClearAllRows();
 
+			timelineControl.EnableDisableHandlers(false);
 			foreach (ElementNode node in VixenSystem.Nodes.GetRootNodes()) {
 				addNodeAsRow(node, null);
 			}
+			timelineControl.EnableDisableHandlers(true);
+			 
 			timelineControl.LayoutRows();
 			timelineControl.ResizeGrid();
 		}
