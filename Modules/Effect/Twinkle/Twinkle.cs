@@ -39,7 +39,7 @@ namespace VixenModules.Effect.Twinkle
 				twinkles = GenerateTwinkleData();
 
 			int totalNodes = targetNodes.Count();
-			int i = 0;
+			double i = 0;
 
 			foreach (ElementNode node in targetNodes) {
 				if (node != null)

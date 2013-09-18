@@ -215,5 +215,14 @@ namespace Vixen.Module.Effect
 		{
 			return Equals(other as IEffectModuleInstance);
 		}
+
+		#region IEffectModuleInstance Members
+
+		public virtual bool ForceGenerateVisualRepresentation
+		{
+			get { return false; }
+		}
+
+		#endregion
 	}
 }

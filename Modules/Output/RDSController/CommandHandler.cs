@@ -7,7 +7,7 @@ using Vixen.Commands;
 using Vixen.Data.Value;
 using Vixen.Sys.Dispatch;
 
-namespace VixenModules.Output.RDSController
+namespace VixenModules.Output.CommandController
 {
 
 	internal class CommandHandler : CommandDispatch

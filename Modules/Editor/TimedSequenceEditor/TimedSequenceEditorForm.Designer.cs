@@ -1,4 +1,5 @@
-﻿namespace VixenModules.Editor.TimedSequenceEditor
+﻿using System;
+namespace VixenModules.Editor.TimedSequenceEditor
 {
 	partial class TimedSequenceEditorForm
 	{
@@ -17,10 +18,47 @@
 			{
 				cancellationTokenSource.Cancel();
 			}
+			
+
+			//timelineControl.grid.RenderProgressChanged -= OnRenderProgressChanged;
+
+			timelineControl.ElementChangedRows -= ElementChangedRowsHandler;
+			timelineControl.ElementsMovedNew -= timelineControl_ElementsMovedNew;
+			timelineControl.ElementDoubleClicked -= ElementDoubleClickedHandler;
+			timelineControl.DataDropped -= timelineControl_DataDropped;
+
+			timelineControl.PlaybackCurrentTimeChanged -= timelineControl_PlaybackCurrentTimeChanged;
+
+			timelineControl.RulerClicked -= timelineControl_RulerClicked;
+			timelineControl.RulerBeginDragTimeRange -= timelineControl_RulerBeginDragTimeRange;
+			timelineControl.RulerTimeRangeDragged -= timelineControl_TimeRangeDragged;
+
+			timelineControl.SelectionChanged -= TimelineControlOnSelectionChanged;
+			TimeLineSequenceClipboardContentsChanged -= TimelineSequenceTimeLineSequenceClipboardContentsChanged;
+			timelineControl.CursorMoved -= CursorMovedHandler;
+			timelineControl.ElementsSelected -= timelineControl_ElementsSelected;
+			 
+			//;
 			if (disposing && (components != null)) {
 				components.Dispose();
+			 
+				timelineControl.Dispose();
+				
+			}
+			if (_effectNodeToElement != null) {
+				_effectNodeToElement.Clear();
+				_effectNodeToElement= null;
+			}
+			if (_elementNodeToRows != null) {
+				_elementNodeToRows.Clear();
+				_elementNodeToRows = null;
+			}
+			if (_sequence != null) {
+				_sequence.Dispose();
+				_sequence= null;
 			}
 			base.Dispose(disposing);
+			GC.Collect();
 		}
 
 		#region Windows Form Designer generated code
@@ -651,11 +689,13 @@
 			this.toolStripStatusLabel_RenderingElements.Name = "toolStripStatusLabel_RenderingElements";
 			this.toolStripStatusLabel_RenderingElements.Size = new System.Drawing.Size(115, 19);
 			this.toolStripStatusLabel_RenderingElements.Text = "Rendering Elements:";
+			this.toolStripStatusLabel_RenderingElements.Visible = false;
 			// 
 			// toolStripProgressBar_RenderingElements
 			// 
 			this.toolStripProgressBar_RenderingElements.Name = "toolStripProgressBar_RenderingElements";
 			this.toolStripProgressBar_RenderingElements.Size = new System.Drawing.Size(100, 18);
+			this.toolStripProgressBar_RenderingElements.Visible = false;
 			// 
 			// openFileDialog
 			// 

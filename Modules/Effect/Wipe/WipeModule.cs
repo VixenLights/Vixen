@@ -30,7 +30,8 @@ namespace VixenModules.Effect.Wipe {
 
 			IEnumerable<IGrouping<int, ElementNode>> renderNodes = null;
 
-
+			var enumerator =  TargetNodes.SelectMany(x => x.GetLeafEnumerator());
+			var b = enumerator;
 			switch (_data.Direction) {
 				case WipeDirection.Up:
 					renderNodes = TargetNodes
@@ -150,7 +151,7 @@ namespace VixenModules.Effect.Wipe {
 					break;
 			}
 
-			if (renderNodes != null) {
+			if (renderNodes != null && renderNodes.Count()>0) {
 				TimeSpan effectTime = TimeSpan.Zero;
 				if (WipeByCount) {
 					int count = 0;
@@ -196,6 +197,7 @@ namespace VixenModules.Effect.Wipe {
 									pulse.ColorGradient = _data.ColorGradient;
 									pulse.LevelCurve = _data.Curve;
 									result = pulse.Render();
+									 
 									result.OffsetAllCommandsByTime(effectTime);
 									_elementData.Add(result);
 								}

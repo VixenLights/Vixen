@@ -188,6 +188,12 @@ namespace Common.Controls.Timeline
 			}
 		}
 
+		/// <summary>
+		/// Identifies a row that has been chosen in the grid
+		/// It is not the same as a selected row(s). There should only be one active row.
+		/// </summary>
+		public bool Active { get; set; }
+
 		public int ElementCount
 		{
 			get { return m_elements.Count; }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace VixenModules.Output.RDSController
+namespace VixenModules.Output.CommandController
 {
 	[StructLayout(LayoutKind.Explicit, Size = 256)]
 	unsafe struct TData

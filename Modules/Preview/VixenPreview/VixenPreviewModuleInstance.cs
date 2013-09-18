@@ -69,10 +69,10 @@ namespace VixenModules.Preview.VixenPreview
 		{
 			get {
 				 
-				if (new Properties.Settings().UseGDIRendering)
+				// if (new Properties.Settings().UseGDIRendering)
 					return true;
 
-				return !Vixen.Sys.VixenSystem.VersionBeyondWindowsXP;
+				// return !Vixen.Sys.VixenSystem.VersionBeyondWindowsXP;
 			}
 		}
 

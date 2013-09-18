@@ -96,7 +96,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			timelineControl.CursorMoved += CursorMovedHandler;
 			timelineControl.ElementsSelected += timelineControl_ElementsSelected;
 			timelineControl.SequenceLoading = false;
-
+		
 			_virtualEffectLibrary =
 				ApplicationServices.Get<IAppModuleInstance>(VixenModules.App.VirtualEffect.VirtualEffectLibraryDescriptor.Guid) as
 				VirtualEffectLibrary;
@@ -137,7 +137,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				menuItem.Tag = guid.Key;
 				menuItem.Click += (sender, e) =>
 				                  	{
-				                  		Row destination = timelineControl.SelectedRow;
+				                  		Row destination = timelineControl.ActiveRow ?? timelineControl.SelectedRow;
 				                  		if (destination != null) {
 				                  			addNewVirtualEffectById((Guid) menuItem.Tag, destination, timelineControl.CursorPosition,
 				                  			                        TimeSpan.FromSeconds(2)); // TODO: get a proper time
@@ -167,7 +167,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				menuItem.Tag = effectDesriptor.TypeId;
 				menuItem.Click += (sender, e) =>
 				                  	{
-				                  		Row destination = timelineControl.SelectedRow;
+				                  		Row destination = timelineControl.ActiveRow ?? timelineControl.SelectedRow;
 				                  		if (destination != null) {
 				                  			addNewEffectById((Guid) menuItem.Tag, destination, timelineControl.CursorPosition,
 				                  			                 TimeSpan.FromSeconds(2)); // TODO: get a proper time
@@ -304,10 +304,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				                                                  		loadTimer.Enabled = false;
 				                                                  		updateToolStrip4(string.Empty);
 																		timelineControl.grid.SupressRendering = false;
-				                                                  		timelineControl.grid.RenderAllVisibleRows();
 																		timelineControl.grid.SuppressInvalidate = false;
-																		timelineControl.grid.Invalidate();
-				                                                  		//Console.WriteLine("Done Loading Effects");
+				                                                  		timelineControl.grid.RenderAllRows();
 				                                                  	});
 
 				populateGridWithMarks();
@@ -490,6 +488,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		protected void ElementContentChangedHandler(object sender, EventArgs e)
 		{
 			TimedSequenceElement element = sender as TimedSequenceElement;
+			element.Changed = true;
 			timelineControl.grid.RenderElement(element);
 			sequenceModified();
 		}
@@ -508,7 +507,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		protected void ElementAddedToRowHandler(object sender, ElementEventArgs e)
 		{
 			// not currently used
-			timelineControl.grid.RenderElement(e.Element);
 		}
 
 		protected void ElementChangedRowsHandler(object sender, ElementRowChangeEventArgs e)
@@ -723,6 +721,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_context.ContextEnded -= context_ContextEnded;
 
 			VixenSystem.Contexts.ReleaseContext(_context);
+			_context.Dispose();
+			_context= null;
 			updateButtonStates();
 		}
 
@@ -1070,7 +1070,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				        			Logging.Error(message);
 				        		}
 				        	});
-
+			timelineControl.grid.RenderElement(element);
 			return element;
 		}
 
@@ -1258,7 +1258,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		protected override void OnFormClosed(FormClosedEventArgs e)
 		{
-			timelineControl.grid.Dispose();
 			VixenSystem.Contexts.ReleaseContext(_context);
 		}
 
@@ -1337,20 +1336,33 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			if (data == null)
 				return result;
-
-			Row targetRow = timelineControl.SelectedRow ?? timelineControl.TopVisibleRow;
-
+			TimeSpan offset = data.EarliestStartTime;
+			Row targetRow = timelineControl.SelectedRow ?? timelineControl.ActiveRow ?? timelineControl.TopVisibleRow;
+			if (targetRow.Selected)
+			{
+				//Full row is selected, so paste as is from the beginning not the cursor position
+				pasteTime = TimeSpan.Zero;
+				//We don't need to offset, just place them where they start
+				offset = TimeSpan.Zero;
+			}
 			List<Row> visibleRows = new List<Row>(timelineControl.VisibleRows);
 			int topTargetRoxIndex = visibleRows.IndexOf(targetRow);
 
 			foreach (KeyValuePair<TimelineElementsClipboardData.EffectModelCandidate, int> kvp in data.EffectModelCandidates) {
-				TimelineElementsClipboardData.EffectModelCandidate effectModelCandidate =
+				TimelineElementsClipboardData.EffectModelCandidate effectModelCandidate = 
 					kvp.Key as TimelineElementsClipboardData.EffectModelCandidate;
 				int relativeRow = kvp.Value;
 
 				int targetRowIndex = topTargetRoxIndex + relativeRow;
-				TimeSpan targetTime = effectModelCandidate.StartTime - data.EarliestStartTime + pasteTime;
-
+				TimeSpan targetTime = effectModelCandidate.StartTime - offset + pasteTime;
+				if (targetTime > timelineControl.grid.TotalTime)
+				{
+					continue;
+				} else if (targetTime + effectModelCandidate.Duration > timelineControl.grid.TotalTime)
+				{
+					//Shorten to fit.
+					effectModelCandidate.Duration = timelineControl.grid.TotalTime - targetTime;
+				}
 				if (targetRowIndex >= visibleRows.Count)
 					continue;
 

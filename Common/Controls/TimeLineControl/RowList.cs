@@ -55,6 +55,14 @@ namespace Common.Controls.Timeline
 
 		#endregion
 
+		protected override void Dispose(bool disposing)
+		{
+			if (RowLabels != null) {
+				RowLabels.Clear();
+				RowLabels= null;
+			}
+			base.Dispose(disposing);
+		}
 		#region Events
 
 		#endregion
