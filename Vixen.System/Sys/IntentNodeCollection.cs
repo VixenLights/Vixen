@@ -12,6 +12,8 @@ namespace Vixen.Sys
 		{
 	
 		}
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+
 		public IntentNodeCollection(IEnumerable<IIntentNode> intentNodes)
 		{
 			//AddRange(intentNodes);
@@ -54,7 +56,7 @@ namespace Vixen.Sys
 				if (returnValue)
 					intensityHistory.Remove(oldIntent.GenericID);
 			} catch (Exception e) {
-				Console.WriteLine(e.ToString());
+				Logging.ErrorException(e.Message, e);
 
 			}
 			return returnValue;
