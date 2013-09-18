@@ -52,6 +52,7 @@ namespace Common.Controls.Timeline
 		public void EndUpdate()
 		{
 			if ((StartTime != m_origStartTime) || (Duration != m_origDuration)) {
+				Changed = true;
 				OnTimeChanged();
 			}
 		}

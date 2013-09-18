@@ -270,6 +270,7 @@ namespace Common.Controls.Timeline
 		public event EventHandler VerticalOffsetChanged;
 		public event EventHandler<ElementRowChangeEventArgs> ElementChangedRows;
 		public event EventHandler<ElementsSelectedEventArgs> ElementsSelected;
+		public event EventHandler<ContextSelectedEventArgs> ContextSelected;
 		public event EventHandler<RenderElementEventArgs> RenderProgressChanged;
 
 		private void _SelectionChanged()
@@ -318,6 +319,22 @@ namespace Common.Controls.Timeline
 			if (ElementsSelected != null) {
 				ElementsSelectedEventArgs args = new ElementsSelectedEventArgs(elements);
 				ElementsSelected(this, args);
+				return args.AutomaticallyHandleSelection;
+			}
+			return true;
+		}
+
+		// returns true if the selection should be automatically handled by the grid, or false if
+		// another event handler will handle the selection process
+		private bool _ContextSelected(IEnumerable<Element> elements, TimeSpan gridTime, Row row)
+		{
+			if (elements == null)
+				return true;
+
+			if (ContextSelected != null)
+			{
+				ContextSelectedEventArgs args = new ContextSelectedEventArgs(elements, gridTime, row);
+				ContextSelected(this, args);
 				return args.AutomaticallyHandleSelection;
 			}
 			return true;
@@ -526,6 +543,37 @@ namespace Common.Controls.Timeline
 			ResizeGridHeight();
 			if (!SuppressInvalidate) Invalidate();
 			return rv;
+		}
+		
+		/// <summary>
+		/// Handles moving/resizing a single element.
+		/// it's a single 'atomic' operation that moves the elements and raises an event to indicate they have moved.
+		/// </summary>
+		/// <param name="element"></param>
+		/// <param name="start"></param>
+		/// <param name="duration"></param>
+		/// <returns>Boolen indicating whether the move occured</returns>
+		public bool MoveResizeElement(Element element, TimeSpan start, TimeSpan duration)
+		{
+			if (element == null || start > TotalTime || start + duration > TotalTime)
+			{
+				return false;
+			}
+
+			m_elemMoveInfo = new ElementMoveInfo(new Point(), new List<Element>{element}, VisibleTimeStart);
+			element.BeginUpdate();
+			element.StartTime = start;
+			element.Duration = duration;
+			RenderElement(element);
+			element.EndUpdate();
+
+			if (ElementsMovedNew != null)
+				ElementsMovedNew(this, new ElementsChangedTimesEventArgs(m_elemMoveInfo, ElementMoveType.Move));
+			
+			m_elemMoveInfo = null;
+
+			return true;
+			 
 		}
 
 		/// <summary>

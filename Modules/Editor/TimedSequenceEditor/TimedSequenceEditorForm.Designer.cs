@@ -8,58 +8,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// </summary>
 		private System.ComponentModel.IContainer components = null;
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-		protected override void Dispose(bool disposing)
-		{
-			if (loadingTask != null  && !loadingTask.IsCompleted && !loadingTask.IsFaulted && !loadingTask.IsCanceled)
-			{
-				cancellationTokenSource.Cancel();
-			}
-			
-
-			//timelineControl.grid.RenderProgressChanged -= OnRenderProgressChanged;
-
-			timelineControl.ElementChangedRows -= ElementChangedRowsHandler;
-			timelineControl.ElementsMovedNew -= timelineControl_ElementsMovedNew;
-			timelineControl.ElementDoubleClicked -= ElementDoubleClickedHandler;
-			timelineControl.DataDropped -= timelineControl_DataDropped;
-
-			timelineControl.PlaybackCurrentTimeChanged -= timelineControl_PlaybackCurrentTimeChanged;
-
-			timelineControl.RulerClicked -= timelineControl_RulerClicked;
-			timelineControl.RulerBeginDragTimeRange -= timelineControl_RulerBeginDragTimeRange;
-			timelineControl.RulerTimeRangeDragged -= timelineControl_TimeRangeDragged;
-
-			timelineControl.SelectionChanged -= TimelineControlOnSelectionChanged;
-			TimeLineSequenceClipboardContentsChanged -= TimelineSequenceTimeLineSequenceClipboardContentsChanged;
-			timelineControl.CursorMoved -= CursorMovedHandler;
-			timelineControl.ElementsSelected -= timelineControl_ElementsSelected;
-			 
-			//;
-			if (disposing && (components != null)) {
-				components.Dispose();
-			 
-				timelineControl.Dispose();
-				
-			}
-			if (_effectNodeToElement != null) {
-				_effectNodeToElement.Clear();
-				_effectNodeToElement= null;
-			}
-			if (_elementNodeToRows != null) {
-				_elementNodeToRows.Clear();
-				_elementNodeToRows = null;
-			}
-			if (_sequence != null) {
-				_sequence.Dispose();
-				_sequence= null;
-			}
-			base.Dispose(disposing);
-			GC.Collect();
-		}
+		
 
 		#region Windows Form Designer generated code
 
