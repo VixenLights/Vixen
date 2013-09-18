@@ -23,9 +23,7 @@ namespace Common.Controls.Timeline
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.ResizeRedraw, true);
-			Row.RowToggled += RowLabelChangedHandler;
-			Row.RowHeightChanged += RowLabelChangedHandler;
-			Row.RowHeightResized += RowLabelResizedHandler;
+			EnableDisableHandlers(true);
 		}
 
 		#region Properties
@@ -100,7 +98,21 @@ namespace Common.Controls.Timeline
 		#endregion
 
 		#region Methods
-
+		public void EnableDisableHandlers(bool enabled = true)
+		{
+			if (enabled) {
+				Row.RowToggled -= RowLabelChangedHandler;
+				Row.RowHeightChanged -= RowLabelChangedHandler;
+				Row.RowHeightResized -= RowLabelResizedHandler;
+				Row.RowToggled += RowLabelChangedHandler;
+				Row.RowHeightChanged += RowLabelChangedHandler;
+				Row.RowHeightResized += RowLabelResizedHandler;
+			} else {
+				Row.RowToggled -= RowLabelChangedHandler;
+				Row.RowHeightChanged -= RowLabelChangedHandler;
+				Row.RowHeightResized -= RowLabelResizedHandler;
+			}
+		}
 		private delegate void AddRowLabelDelegate(RowLabel trl);
 
 		public void AddRowLabel(RowLabel trl)
