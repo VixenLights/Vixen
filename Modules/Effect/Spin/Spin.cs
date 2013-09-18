@@ -27,7 +27,7 @@ namespace VixenModules.Effect.Spin
 		protected override void _PreRender()
 		{
 			_elementData = new EffectIntents();
-			CheckForInvalidColorData();
+			if (IsDirty) CheckForInvalidColorData();
 			DoRendering();
 		}
 
@@ -191,7 +191,7 @@ namespace VixenModules.Effect.Spin
 		{
 			get
 			{
-				CheckForInvalidColorData();
+				//CheckForInvalidColorData();
 				return _data.ColorGradient;
 			}
 			set

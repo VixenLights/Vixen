@@ -67,6 +67,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private VirtualEffectLibrary _virtualEffectLibrary;
 
+		private ContextMenuStrip contextMenuStrip = new ContextMenuStrip();
+
 		#endregion
 
 		#region Constructor / Initialization
@@ -95,6 +97,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimeLineSequenceClipboardContentsChanged += TimelineSequenceTimeLineSequenceClipboardContentsChanged;
 			timelineControl.CursorMoved += CursorMovedHandler;
 			timelineControl.ElementsSelected += timelineControl_ElementsSelected;
+			timelineControl.ContextSelected += timelineControl_ContextSelected;
 			timelineControl.SequenceLoading = false;
 		
 			_virtualEffectLibrary =
@@ -123,6 +126,63 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				Debug.WriteLine("{0} - {1}: {2}", x.StartTime, x.EndTime, ((IEffectNode) x).Effect.InstanceId);
 		}
 #endif
+		/// <summary>
+		/// Clean up any resources being used.
+		/// </summary>
+		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+		protected override void Dispose(bool disposing)
+		{
+			if (loadingTask != null && !loadingTask.IsCompleted && !loadingTask.IsFaulted && !loadingTask.IsCanceled)
+			{
+				cancellationTokenSource.Cancel();
+			}
+
+
+			//timelineControl.grid.RenderProgressChanged -= OnRenderProgressChanged;
+
+			timelineControl.ElementChangedRows -= ElementChangedRowsHandler;
+			timelineControl.ElementsMovedNew -= timelineControl_ElementsMovedNew;
+			timelineControl.ElementDoubleClicked -= ElementDoubleClickedHandler;
+			timelineControl.DataDropped -= timelineControl_DataDropped;
+
+			timelineControl.PlaybackCurrentTimeChanged -= timelineControl_PlaybackCurrentTimeChanged;
+
+			timelineControl.RulerClicked -= timelineControl_RulerClicked;
+			timelineControl.RulerBeginDragTimeRange -= timelineControl_RulerBeginDragTimeRange;
+			timelineControl.RulerTimeRangeDragged -= timelineControl_TimeRangeDragged;
+
+			timelineControl.SelectionChanged -= TimelineControlOnSelectionChanged;
+			TimeLineSequenceClipboardContentsChanged -= TimelineSequenceTimeLineSequenceClipboardContentsChanged;
+			timelineControl.CursorMoved -= CursorMovedHandler;
+			timelineControl.ElementsSelected -= timelineControl_ElementsSelected;
+			timelineControl.ContextSelected -= timelineControl_ContextSelected;
+
+			//;
+			if (disposing && (components != null))
+			{
+				components.Dispose();
+
+				timelineControl.Dispose();
+
+			}
+			if (_effectNodeToElement != null)
+			{
+				_effectNodeToElement.Clear();
+				_effectNodeToElement = null;
+			}
+			if (_elementNodeToRows != null)
+			{
+				_elementNodeToRows.Clear();
+				_elementNodeToRows = null;
+			}
+			if (_sequence != null)
+			{
+				_sequence.Dispose();
+				_sequence = null;
+			}
+			base.Dispose(disposing);
+			GC.Collect();
+		}
 
 		private void LoadVirtualEffects()
 		{
@@ -583,6 +643,66 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
+		private void timelineControl_ContextSelected(object sender, ContextSelectedEventArgs e)
+		{
+
+			contextMenuStrip.Items.Clear();
+
+			ToolStripMenuItem addEffectItem = new ToolStripMenuItem();
+			
+			//addEffectItem.Size = new System.Drawing.Size(215, 22);
+			addEffectItem.Text = "Add Effect";
+
+
+			foreach (
+				IEffectModuleDescriptor effectDesriptor in
+					ApplicationServices.GetModuleDescriptors<IEffectModuleInstance>().Cast<IEffectModuleDescriptor>())
+			{
+				// Add an entry to the menu
+				ToolStripMenuItem menuItem = new ToolStripMenuItem(effectDesriptor.EffectName);
+				menuItem.Tag = effectDesriptor.TypeId;
+				menuItem.Click += (mySender, myE) =>
+				{
+					if (e.Row != null)
+					{
+						addNewEffectById((Guid)menuItem.Tag, e.Row, e.GridTime,
+										 TimeSpan.FromSeconds(2)); 
+					}
+				};
+				
+				addEffectItem.DropDownItems.Add(menuItem);
+			}
+
+			contextMenuStrip.Items.Add(addEffectItem);
+
+			if (e.ElementsUnderCursor != null && e.ElementsUnderCursor.Count() == 1)
+			{
+
+				Element element = e.ElementsUnderCursor.FirstOrDefault();
+				
+				TimedSequenceElement tse = element as TimedSequenceElement;
+				if (tse != null)
+				{
+					ToolStripMenuItem item = new ToolStripMenuItem("Edit Time");
+					item.Click += (mySender, myE) =>
+					{
+						EffectTimeEditor editor = new EffectTimeEditor(tse._effectNode.StartTime, tse._effectNode.TimeSpan);
+						if (editor.ShowDialog(this) == DialogResult.OK)
+						{
+							timelineControl.grid.MoveResizeElement(element, editor.Start, editor.Duration);
+						}
+					};
+					item.Tag = tse;
+					contextMenuStrip.Items.Add(item);
+					
+				}	
+			}
+
+			e.AutomaticallyHandleSelection = false;
+
+			contextMenuStrip.Show(MousePosition);
+		}
+
 		private void timelineControl_ElementsSelected(object sender, ElementsSelectedEventArgs e)
 		{
 			if (e.ElementsUnderCursor != null && e.ElementsUnderCursor.Count() > 1) {
@@ -724,8 +844,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_context.ContextEnded -= context_ContextEnded;
 
 			VixenSystem.Contexts.ReleaseContext(_context);
-			_context.Dispose();
-			_context= null;
 			updateButtonStates();
 		}
 
@@ -1261,6 +1379,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		protected override void OnFormClosed(FormClosedEventArgs e)
 		{
+			timelineControl.grid.Dispose();
 			VixenSystem.Contexts.ReleaseContext(_context);
 		}
 

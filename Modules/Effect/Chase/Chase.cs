@@ -27,7 +27,7 @@ namespace VixenModules.Effect.Chase
 		protected override void _PreRender()
 		{
 			_elementData = new EffectIntents();
-			CheckForInvalidColorData();
+			if (IsDirty) CheckForInvalidColorData();
 
 			DoRendering();
 		}
@@ -122,7 +122,6 @@ namespace VixenModules.Effect.Chase
 		{
 			get
 			{
-				CheckForInvalidColorData();
 				return _data.ColorGradient;
 			}
 			set

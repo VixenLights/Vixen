@@ -67,7 +67,7 @@ namespace VixenModules.Effect.Twinkle
 			AverageCoverage = 50;
 			ColorHandling = TwinkleColorHandling.GradientForEachPulse;
 			StaticColor = Color.Empty;
-			ColorGradient = new ColorGradient();
+			ColorGradient = new ColorGradient(Color.White);
 			DepthOfEffect = 0;
 		}
 

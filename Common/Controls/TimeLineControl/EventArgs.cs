@@ -127,6 +127,22 @@ namespace Common.Controls.Timeline
 		public bool AutomaticallyHandleSelection { get; set; }
 	}
 
+	public class ContextSelectedEventArgs : EventArgs
+	{
+		public ContextSelectedEventArgs(IEnumerable<Element> elements, TimeSpan gridTime, Row row)
+		{
+			ElementsUnderCursor = elements;
+			GridTime = gridTime;
+			Row = row;
+			AutomaticallyHandleSelection = true;
+		}
+
+		public IEnumerable<Element> ElementsUnderCursor { get; private set; }
+		public bool AutomaticallyHandleSelection { get; set; }
+		public TimeSpan GridTime { get; set; }
+		public Row Row { get; set; }
+	}
+
 	public class RenderElementEventArgs : EventArgs
 	{
 		public RenderElementEventArgs(int percent)

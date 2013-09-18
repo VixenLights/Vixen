@@ -544,6 +544,12 @@ namespace Common.Controls.Timeline
 			remove { if (grid != null) grid.ElementsSelected -= value; }
 		}
 
+		public event EventHandler<ContextSelectedEventArgs> ContextSelected
+		{
+			add { grid.ContextSelected += value; }
+			remove { if (grid != null) grid.ContextSelected -= value; }
+		}
+
 		public event EventHandler<RulerClickedEventArgs> RulerClicked
 		{
 			add { ruler.ClickedAtTime += value; }

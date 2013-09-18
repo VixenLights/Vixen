@@ -119,7 +119,11 @@ namespace Common.Controls.Timeline
 						}
 						break;
 				}
+			} else if(e.Button == MouseButtons.Right)
+			{
+				_ContextSelected(m_mouseDownElements, pixelsToTime(gridLocation.X), rowAt(gridLocation));
 			}
+
 		}
 
 
