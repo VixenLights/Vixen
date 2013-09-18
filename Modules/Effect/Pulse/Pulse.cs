@@ -29,7 +29,7 @@ namespace VixenModules.Effect.Pulse
 		protected override void _PreRender()
 		{
 			_elementData = new EffectIntents();
-			CheckForInvalidColorData();
+			if (IsDirty) CheckForInvalidColorData();
 			foreach (ElementNode node in TargetNodes) {
 				if (node != null)
 					RenderNode(node);
@@ -63,7 +63,6 @@ namespace VixenModules.Effect.Pulse
 		{
 			get
 			{
-				CheckForInvalidColorData();
 				return _data.ColorGradient;
 			}
 			set

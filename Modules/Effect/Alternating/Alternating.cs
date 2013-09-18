@@ -30,7 +30,7 @@ namespace VixenModules.Effect.Alternating
 		{
 			_elementData = new EffectIntents();
 
-			CheckForInvalidColorData();
+			if (IsDirty) CheckForInvalidColorData();
 
 			foreach (ElementNode node in TargetNodes) {
 				if (node != null)
@@ -96,7 +96,6 @@ namespace VixenModules.Effect.Alternating
 		{
 			get
 			{
-				CheckForInvalidColorData();
 				return _data.Color1;
 			}
 			set
@@ -122,7 +121,6 @@ namespace VixenModules.Effect.Alternating
 		{
 			get
 			{
-				CheckForInvalidColorData();
 				return _data.Color2;
 			}
 			set

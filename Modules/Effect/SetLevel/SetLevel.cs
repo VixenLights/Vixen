@@ -26,7 +26,8 @@ namespace VixenModules.Effect.SetLevel
 		protected override void _PreRender()
 		{
 			_elementData = new EffectIntents();
-			CheckForInvalidColorData();
+			
+			if(IsDirty) CheckForInvalidColorData();
 
 			foreach (ElementNode node in TargetNodes) {
 				if (node != null)
@@ -61,7 +62,7 @@ namespace VixenModules.Effect.SetLevel
 		{
 			get
 			{
-				CheckForInvalidColorData();
+				//CheckForInvalidColorData();
 				return _data.color;
 			}
 			set

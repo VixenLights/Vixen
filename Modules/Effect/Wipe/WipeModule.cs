@@ -24,7 +24,7 @@ namespace VixenModules.Effect.Wipe {
 		
 		protected override void _PreRender() {
 
-			CheckForEmptyData();
+			if (IsDirty) CheckForInvalidColorData();
 
 			_elementData = new EffectIntents();
 
@@ -221,21 +221,23 @@ namespace VixenModules.Effect.Wipe {
 			set { _data = value as WipeData; }
 		}
 
-		private void CheckForEmptyData()
+		
+
+		private void CheckForInvalidColorData()
 		{
-			if (_data.ColorGradient == null) //We have a new effect
+			HashSet<Color> validColors = new HashSet<Color>();
+			validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
+			if (validColors.Any() && !_data.ColorGradient.GetColorsInGradient().IsSubsetOf(validColors))
 			{
-				//Try to set a default color gradient from our available colors if we have discrete colors
-				HashSet<Color> validColors = new HashSet<Color>();
-				validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
-				_data.ColorGradient = new ColorGradient(validColors.DefaultIfEmpty(Color.White).First());
+				//Our color is not valid for any elements we have.
+				//Try to set a default color gradient from our available colors
+				_data.ColorGradient = new ColorGradient(validColors.First());
 			}
 		}
 
 		[Value]
 		public ColorGradient ColorGradient {
 			get {
-				CheckForEmptyData();
 				return _data.ColorGradient; 
 			}
 			set {
