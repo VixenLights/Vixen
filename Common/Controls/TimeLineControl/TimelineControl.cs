@@ -86,6 +86,8 @@ namespace Common.Controls.Timeline
 			Row.RowHeightChanged -= RowHeightChangedHandler;
 			Row.RowHeightResized -= RowHeightResizedHandler;
 			Vixen.Utility.cEventHelper.RemoveAllEventHandlers(this);
+			Vixen.Utility.cEventHelper.RemoveAllEventHandlers(TimeInfo);
+			TimeInfo = null;
 
 			if (grid != null) {
 				grid.Scroll -= GridScrolledHandler;
@@ -94,11 +96,14 @@ namespace Common.Controls.Timeline
 				Vixen.Utility.cEventHelper.RemoveAllEventHandlers(grid);
 				grid = null;
 			}
-		
+			
 			if (timelineRowList != null) {
 				timelineRowList.Dispose();
 				timelineRowList= null;
 			}
+			if (waveform != null)
+				waveform.Dispose();
+			waveform= null;
 			base.Dispose(disposing);
 		}
 		private void InitializeControls()
