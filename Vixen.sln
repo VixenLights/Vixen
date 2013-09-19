@@ -363,8 +363,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Launcher", "Modules\Effect\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LauncherEditor", "Modules\EffectEditor\LauncherEditor\LauncherEditor.csproj", "{FCD0F05A-BA5C-406A-9D57-69D7F185C887}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicTest", "DynamicTest\DynamicTest.csproj", "{E5566A35-0363-49A1-B1D7-65F8297BA24B}"
-EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Everything.vsmdi
@@ -1363,16 +1361,6 @@ Global
 		{FCD0F05A-BA5C-406A-9D57-69D7F185C887}.Release|Mixed Platforms.Build.0 = Release|x86
 		{FCD0F05A-BA5C-406A-9D57-69D7F185C887}.Release|x86.ActiveCfg = Release|x86
 		{FCD0F05A-BA5C-406A-9D57-69D7F185C887}.Release|x86.Build.0 = Release|x86
-		{E5566A35-0363-49A1-B1D7-65F8297BA24B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E5566A35-0363-49A1-B1D7-65F8297BA24B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E5566A35-0363-49A1-B1D7-65F8297BA24B}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{E5566A35-0363-49A1-B1D7-65F8297BA24B}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{E5566A35-0363-49A1-B1D7-65F8297BA24B}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{E5566A35-0363-49A1-B1D7-65F8297BA24B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E5566A35-0363-49A1-B1D7-65F8297BA24B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E5566A35-0363-49A1-B1D7-65F8297BA24B}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{E5566A35-0363-49A1-B1D7-65F8297BA24B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{E5566A35-0363-49A1-B1D7-65F8297BA24B}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
