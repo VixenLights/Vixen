@@ -1,73 +1,77 @@
-﻿using System;
-using System.Runtime.Serialization;
+﻿/*
+ Moved this code to the Vixen.DLL where it belongs
+ */
 
-namespace Common.ValueTypes
-{
-	[DataContract]
-	public struct Percentage : IEquatable<Percentage>
-	{
-		public Percentage(float value)
-		{
-			if (value < 0 || value > 1) throw new ArgumentException("Percentage value must be between 0 and 1.");
+//using System;
+//using System.Runtime.Serialization;
 
-			Value = value;
-		}
+//namespace Common.ValueTypes
+//{
+//	[DataContract]
+//	public struct Percentage : IEquatable<Percentage>
+//	{
+//		public Percentage(float value)
+//		{
+//			if (value < 0 || value > 1) throw new ArgumentException("Percentage value must be between 0 and 1.");
 
-		[DataMember] public readonly float Value;
+//			Value = value;
+//		}
 
-		#region Implicit Operators
+//		[DataMember] public readonly float Value;
 
-		public static implicit operator float(Percentage percentage)
-		{
-			return percentage.Value;
-		}
+//		#region Implicit Operators
 
-		public static implicit operator Percentage(float value)
-		{
-			return new Percentage(value);
-		}
+//		public static implicit operator float(Percentage percentage)
+//		{
+//			return percentage.Value;
+//		}
 
-		public static implicit operator double(Percentage percentage)
-		{
-			return percentage.Value;
-		}
+//		public static implicit operator Percentage(float value)
+//		{
+//			return new Percentage(value);
+//		}
 
-		public static implicit operator Percentage(double value)
-		{
-			return new Percentage((float) value);
-		}
+//		public static implicit operator double(Percentage percentage)
+//		{
+//			return percentage.Value;
+//		}
 
-		#endregion
+//		public static implicit operator Percentage(double value)
+//		{
+//			return new Percentage((float) value);
+//		}
 
-		#region Equality
+//		#endregion
 
-		public bool Equals(Percentage other)
-		{
-			return other.Value.Equals(Value);
-		}
+//		#region Equality
 
-		public override bool Equals(object obj)
-		{
-			if (ReferenceEquals(null, obj)) return false;
-			if (obj.GetType() != typeof (Percentage)) return false;
-			return Equals((Percentage) obj);
-		}
+//		public bool Equals(Percentage other)
+//		{
+//			return other.Value.Equals(Value);
+//		}
 
-		public override int GetHashCode()
-		{
-			return Value.GetHashCode();
-		}
+//		public override bool Equals(object obj)
+//		{
+//			if (ReferenceEquals(null, obj)) return false;
+//			if (obj.GetType() != typeof (Percentage)) return false;
+//			return Equals((Percentage) obj);
+//		}
 
-		public static bool operator ==(Percentage left, Percentage right)
-		{
-			return left.Equals(right);
-		}
+//		public override int GetHashCode()
+//		{
+//			return Value.GetHashCode();
+//		}
 
-		public static bool operator !=(Percentage left, Percentage right)
-		{
-			return !left.Equals(right);
-		}
+//		public static bool operator ==(Percentage left, Percentage right)
+//		{
+//			return left.Equals(right);
+//		}
 
-		#endregion
-	}
-}
+//		public static bool operator !=(Percentage left, Percentage right)
+//		{
+//			return !left.Equals(right);
+//		}
+
+//		#endregion
+//	}
+//}

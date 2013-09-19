@@ -1,5 +1,5 @@
 ﻿using System.Windows.Forms;
-using Common.ValueTypes;
+using Vixen.Common.ValueTypes;
 using Vixen.Module.Effect;
 using Vixen.Module.EffectEditor;
 

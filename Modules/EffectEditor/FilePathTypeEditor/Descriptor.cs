@@ -1,5 +1,5 @@
 ﻿using System;
-using Common.ValueTypes;
+using Vixen.Common.ValueTypes;
 using Vixen.Module.EffectEditor;
 
 namespace VixenModules.EffectEditor.FilePathTypeEditor

@@ -22,21 +22,13 @@ namespace Common.ScriptSequence.Script
 												"System.dll",
 		                                       	"System.Drawing.dll",
 		                                       	"System.Core.dll",
-		                                       	"Vixen.dll",
-		                                       	"Common\\Controls.dll",
-		                                       	"Modules\\App\\ColorGradients.dll",
-		                                       	"Modules\\App\\Curves.dll",
-		                                       	"Modules\\Effect\\Candle.dll",
-		                                       	"Modules\\Effect\\Chase.dll",
-		                                       	"Modules\\Effect\\Nutcracker.dll",
-		                                       	"Modules\\Effect\\Spin.dll",
-		                                       	"Modules\\Effect\\Twinkle.dll",
-		                                       	//"Modules\\Effect\\SetPosition.dll",
-		                                       	"Microsoft.CSharp.dll" // Required for dynamic.
+		                                        System.IO.Path.Combine(Environment.CurrentDirectory, "Vixen.dll"),
+										       	"Microsoft.CSharp.dll" // Required for dynamic.
 							  });
 				//Paths to look for Effects and other items to reference in the Script generator
 				var paths = new string[] { 
 					System.IO.Path.Combine(Environment.CurrentDirectory, "Modules", "Property"),
+		
 					System.IO.Path.Combine(Environment.CurrentDirectory, "Modules", "Effect") 
 				};
 				paths.ToList().ForEach(path => {

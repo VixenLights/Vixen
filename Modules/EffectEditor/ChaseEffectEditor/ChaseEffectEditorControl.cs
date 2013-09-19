@@ -13,7 +13,7 @@ using VixenModules.Effect.Chase;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using System.Reflection;
-using Common.ValueTypes;
+using Vixen.Common.ValueTypes;
 
 namespace VixenModules.EffectEditor.ChaseEffectEditor
 {

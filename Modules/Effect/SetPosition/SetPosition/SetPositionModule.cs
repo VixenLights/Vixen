@@ -1,5 +1,5 @@
 ﻿using System;
-using Common.ValueTypes;
+using Vixen.Common.ValueTypes;
 using Vixen.Data.Value;
 using Vixen.Intent;
 using Vixen.Module;

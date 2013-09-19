@@ -8,7 +8,7 @@
     <ProjectGuid>{D9A7E8BC-5617-486D-9DA5-89C5861A0F88}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Common.ValueTypes</RootNamespace>
+    <RootNamespace>ValueTypes</RootNamespace>
     <AssemblyName>ValueTypes</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

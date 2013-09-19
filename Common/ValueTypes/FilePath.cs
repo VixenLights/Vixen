@@ -1,61 +1,70 @@
-﻿using System;
-using System.Runtime.Serialization;
+﻿/*
+ Moved this code to the Vixen.DLL where it belongs
+ */
 
-namespace Common.ValueTypes
-{
-	[DataContract]
-	public struct FilePath : IEquatable<FilePath>
-	{
-		public FilePath(string value)
-		{
-			Value = value;
-		}
 
-		[DataMember] public readonly string Value;
+//using System;
+//using System.Runtime.Serialization;
 
-		#region Implicit Operators
+//namespace Common.ValueTypes
+//{
+//	[DataContract]
+//	public struct FilePath : IEquatable<FilePath>
+//	{
+//		public FilePath(string value)
+//		{
+//			Value = value;
+//		}
 
-		public static implicit operator string(FilePath filePath)
-		{
-			return filePath.Value;
-		}
+//		[DataMember] public readonly string Value;
 
-		public static implicit operator FilePath(string value)
-		{
-			return new FilePath(value);
-		}
+//		#region Implicit Operators
 
-		#endregion
+//		public static implicit operator string(FilePath filePath)
+//		{
+//			return filePath.Value;
+//		}
 
-		#region Equality
+//		public static implicit operator FilePath(string value)
+//		{
+//			return new FilePath(value);
+//		}
 
-		public bool Equals(FilePath other)
-		{
-			return Equals(other.Value, Value);
-		}
+//		#endregion
 
-		public override bool Equals(object obj)
-		{
-			if (ReferenceEquals(null, obj)) return false;
-			if (obj.GetType() != typeof (FilePath)) return false;
-			return Equals((FilePath) obj);
-		}
+//		#region Equality
 
-		public override int GetHashCode()
-		{
-			return (Value != null ? Value.GetHashCode() : 0);
-		}
+//		public bool Equals(FilePath other)
+//		{
+//			return Equals(other.Value, Value);
+//		}
 
-		public static bool operator ==(FilePath left, FilePath right)
-		{
-			return left.Equals(right);
-		}
+//		public override bool Equals(object obj)
+//		{
+//			if (ReferenceEquals(null, obj)) return false;
+//			if (obj.GetType() != typeof (FilePath)) return false;
+//			return Equals((FilePath) obj);
+//		}
 
-		public static bool operator !=(FilePath left, FilePath right)
-		{
-			return !left.Equals(right);
-		}
+//		public override int GetHashCode()
+//		{
+//			return (Value != null ? Value.GetHashCode() : 0);
+//		}
 
-		#endregion
-	}
+//		public static bool operator ==(FilePath left, FilePath right)
+//		{
+//			return left.Equals(right);
+//		}
+
+//		public static bool operator !=(FilePath left, FilePath right)
+//		{
+//			return !left.Equals(right);
+//		}
+
+//		#endregion
+//	}
+//}
+
+public sealed class DeprecatedClass{
+ 
 }
