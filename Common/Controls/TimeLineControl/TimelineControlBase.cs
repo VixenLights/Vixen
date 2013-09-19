@@ -34,7 +34,7 @@ namespace Common.Controls.Timeline
 		}
 
 
-		protected TimeInfo TimeInfo { get; private set; }
+		protected TimeInfo TimeInfo { get;  set; }
 
 		public TimeSpan PixelsToTime(int px)
 		{

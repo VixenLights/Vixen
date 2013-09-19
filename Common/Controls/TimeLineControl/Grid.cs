@@ -105,6 +105,10 @@ namespace Common.Controls.Timeline
 				m_rows=null;
 				m_rows=new List<Row>();
 			}
+
+			TimeInfo= null;
+			TimeInfo = new Timeline.TimeInfo();
+
 			_blockingElementQueue.Dispose();
 			_blockingElementQueue= null;
 			_blockingElementQueue=new BlockingCollection<Element>();
@@ -1224,7 +1228,7 @@ namespace Common.Controls.Timeline
 		}
 
 		#endregion
-
+	
 		#region Drawing
 
 		public void BeginDraw()
