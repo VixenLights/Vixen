@@ -7,6 +7,7 @@ using Vixen.Module;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using Common.Controls.ColorManagement.ColorModels;
+using System.Drawing;
 
 namespace VixenModules.Effect.Wipe {
 	[DataContract]
