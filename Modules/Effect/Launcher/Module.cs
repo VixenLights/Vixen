@@ -23,6 +23,11 @@ namespace Launcher
 			_data = new Data();
 		}
 
+		protected override void TargetNodesChanged()
+		{
+			
+		}
+
 		protected override void _PreRender()
 		{
 			_elementData = new EffectIntents();
