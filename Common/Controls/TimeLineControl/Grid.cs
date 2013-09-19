@@ -1399,7 +1399,12 @@ namespace Common.Controls.Timeline
         public void RenderElement(Element element)
         {
 			if (SupressRendering) return;
-			_blockingElementQueue.Add(element);
+			//Render single elements right now instead of tossing in the queue. If we have single elements is probably
+			//because someone is directly working with it.
+			Task.Factory.StartNew(() =>
+				                    {
+										element.SetupCachedImage(new Size((int)Math.Ceiling(timeToPixels(element.Duration)), element.Row.Height - 1));
+				                    });
         }
 
 		/// <summary>
