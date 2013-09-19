@@ -75,6 +75,12 @@ namespace VixenModules.EffectEditor.ColorGradientTypeEditor
 
 		private void UpdateGradientImage()
 		{
+            if (ColorGradientValue == null) 
+            {
+
+                ColorGradientValue = new ColorGradient();
+            
+            }
 			panelGradient.BackgroundImage = ColorGradientValue.GenerateColorGradientImage(panelGradient.Size, _discreteColors);
 		}
 
