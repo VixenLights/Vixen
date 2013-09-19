@@ -11,7 +11,7 @@ using Vixen.Module.Effect;
 using VixenModules.Effect.Spin;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
-using Vixen.Common.ValueTypes;
+using Common.ValueTypes;
 
 namespace VixenModules.EffectEditor.SpinEffectEditor
 {

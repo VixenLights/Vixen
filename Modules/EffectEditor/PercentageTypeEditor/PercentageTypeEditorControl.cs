@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
-using Vixen.Common.ValueTypes;
+using Common.ValueTypes;
 using Vixen.Module.Effect;
 using Vixen.Module.EffectEditor;
 

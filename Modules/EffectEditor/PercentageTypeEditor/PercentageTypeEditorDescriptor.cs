@@ -1,5 +1,5 @@
 ﻿using System;
-using Vixen.Common.ValueTypes;
+using Common.ValueTypes;
 using Vixen.Module.EffectEditor;
 
 namespace VixenModules.EffectEditor.PercentageTypeEditor

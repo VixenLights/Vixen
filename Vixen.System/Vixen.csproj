@@ -105,9 +105,7 @@
     <Compile Include="Commands\UnknownValueCommand.cs" />
     <Compile Include="Common\ColorSpaces.cs" />
     <Compile Include="Common\ColorSpaceTypeConverter.cs" />
-    <Compile Include="Common\ValueTypes\FilePath.cs" />
     <Compile Include="Common\Graphics.cs" />
-    <Compile Include="Common\ValueTypes\Percentage.cs" />
     <Compile Include="Data\Combinator\Color\NaiveColorCombinator.cs" />
     <Compile Include="Data\Combinator\DiscardExcessCombinator.cs" />
     <Compile Include="Data\Combinator\_16Bit\16BitHighestWinsCombinator.cs" />

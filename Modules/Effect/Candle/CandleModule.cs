@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Linq;
-using Vixen.Common.ValueTypes;
+using Common.ValueTypes;
 using Vixen.Data.Value;
 using Vixen.Intent;
 using Vixen.Module;
