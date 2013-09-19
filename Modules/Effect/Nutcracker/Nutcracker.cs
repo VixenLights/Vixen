@@ -29,6 +29,11 @@ namespace VixenModules.Effect.Nutcracker
 			_data = new NutcrackerModuleData();
 		}
 
+		protected override void TargetNodesChanged()
+		{
+			//Nothing to do
+		}
+
 		protected override void _PreRender()
 		{
 			int scnt = StringCount;

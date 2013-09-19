@@ -40,6 +40,7 @@ namespace Vixen.Module.Effect
 				if (value != _targetNodes) {
 					_targetNodes = value;
 					_EnsureTargetNodeProperties();
+					TargetNodesChanged();
 					IsDirty = true;
 				}
 			}
@@ -89,6 +90,12 @@ namespace Vixen.Module.Effect
 			                                       restrictingOffsetTime + restrictingTimeSpan);
 			return effectIntents;
 		}
+
+		/// <summary>
+		/// This is called when the elements change to give the effect a chance to process any properties
+		/// or validate anything like colors, etc
+		/// </summary>
+		protected abstract void TargetNodesChanged();
 
 		protected abstract void _PreRender();
 

@@ -21,10 +21,13 @@ namespace VixenModules.Effect.Wipe {
 		}
 		WipeData _data = new WipeData();
 		private EffectIntents _elementData = null;
-		
-		protected override void _PreRender() {
 
-			if (IsDirty) CheckForInvalidColorData();
+		protected override void TargetNodesChanged()
+		{
+			CheckForInvalidColorData();
+		}
+
+		protected override void _PreRender() {
 
 			_elementData = new EffectIntents();
 

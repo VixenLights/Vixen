@@ -143,6 +143,11 @@ namespace VixenModules.Effect.CustomValue
 			//_data = new CustomValueData();
 		}
 
+		protected override void TargetNodesChanged()
+		{
+			//Nothing to do
+		}
+
 		protected override void _PreRender()
 		{
 			_elementData = new EffectIntents();

@@ -90,6 +90,11 @@ namespace VixenModules.Effect.RDS
 		}
 		public override bool ForceGenerateVisualRepresentation { get { return true; } }
 
+		protected override void TargetNodesChanged()
+		{
+			//Nothing to do
+		}
+
 		protected override Vixen.Sys.EffectIntents _Render()
 		{
 			return _elementData;

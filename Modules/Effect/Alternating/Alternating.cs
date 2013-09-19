@@ -26,11 +26,14 @@ namespace VixenModules.Effect.Alternating
 			_data = new AlternatingData();
 		}
 
+		protected override void TargetNodesChanged()
+		{
+			CheckForInvalidColorData();
+		}
+
 		protected override void _PreRender()
 		{
 			_elementData = new EffectIntents();
-
-			if (IsDirty) CheckForInvalidColorData();
 
 			foreach (ElementNode node in TargetNodes) {
 				if (node != null)

@@ -26,13 +26,16 @@ namespace VixenModules.Effect.Twinkle
 			_data = new TwinkleData();
 		}
 
+		protected override void TargetNodesChanged()
+		{
+			CheckForInvalidColorData();
+		}
+
 		protected override void _PreRender()
 		{
 			_elementData = new EffectIntents();
 
 			IEnumerable<ElementNode> targetNodes = GetNodesToRenderOn();
-
-			if (IsDirty) CheckForInvalidColorData();
 
 			List<IndividualTwinkleDetails> twinkles = null;
 			if (!IndividualElements)
