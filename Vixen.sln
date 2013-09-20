@@ -1,5 +1,5 @@
-Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vixen", "Vixen.System\Vixen.csproj", "{50B78623-FCF4-48AF-93FF-FA87C937028F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VixenModules", "VixenModules", "{F1B3198B-977F-40CD-85B3-CAA3F5B5C948}"
@@ -423,7 +423,6 @@ Global
 		{BBCE89B7-AFD8-48D6-A368-AD87D3BE0A68}.Release|x86.Build.0 = Release|x86
 		{4FF97A6E-2376-4257-B45F-A88D6EB441ED}.Release|x86.ActiveCfg = Release|x86
 		{14D6531E-D56E-4A11-93FE-01119001E7E6}.Release|x86.ActiveCfg = Release|x86
-		{14D6531E-D56E-4A11-93FE-01119001E7E6}.Release|x86.Build.0 = Release|x86
 		{A10F47EE-E097-48EF-A9E5-BE0BD83D9CF3}.Release|x86.ActiveCfg = Release|x86
 		{A10F47EE-E097-48EF-A9E5-BE0BD83D9CF3}.Release|x86.Build.0 = Release|x86
 		{3D42FC86-9EA6-4D6B-8E4A-1F4EE1A1D8B5}.Release|x86.ActiveCfg = Release|x86
@@ -521,7 +520,9 @@ Global
 		{235A5B5B-EA92-488E-A30B-F60D032FB7C3}.Release|x86.ActiveCfg = Release|x86
 		{235A5B5B-EA92-488E-A30B-F60D032FB7C3}.Release|x86.Build.0 = Release|x86
 		{F0B63309-9376-498E-BA89-72610FAC90D0}.Release|x86.ActiveCfg = Release|x86
+		{F0B63309-9376-498E-BA89-72610FAC90D0}.Release|x86.Build.0 = Release|x86
 		{CEB7D4FF-93D5-43DF-BAA6-46048B6F25CC}.Release|x86.ActiveCfg = Release|x86
+		{CEB7D4FF-93D5-43DF-BAA6-46048B6F25CC}.Release|x86.Build.0 = Release|x86
 		{9E516488-F4AF-49DC-8257-A4EBF68A3B66}.Release|x86.ActiveCfg = Release|x86
 		{9E516488-F4AF-49DC-8257-A4EBF68A3B66}.Release|x86.Build.0 = Release|x86
 		{7D5D4BE4-576A-4092-A3E2-1A6F27CDC213}.Release|x86.ActiveCfg = Release|x86

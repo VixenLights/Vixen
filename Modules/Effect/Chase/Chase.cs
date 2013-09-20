@@ -24,11 +24,15 @@ namespace VixenModules.Effect.Chase
 			_data = new ChaseData();
 		}
 
+		protected override void TargetNodesChanged()
+		{
+			CheckForInvalidColorData();
+		}
+
 		protected override void _PreRender()
 		{
 			_elementData = new EffectIntents();
-			if (IsDirty) CheckForInvalidColorData();
-
+			
 			DoRendering();
 		}
 

@@ -144,6 +144,16 @@ namespace VixenModules.Preview.VixenPreview
 			var minY = Screen.AllScreens.Min(m => m.Bounds.Y);
 			var maxY = Screen.AllScreens.Sum(m => m.Bounds.Height) + minY;
 
+			// avoid 0 with/height in case Data comes in 'bad'
+			if (Data.Width == 0)
+				Data.Width = 400;
+			if (Data.SetupWidth == 0)
+				Data.SetupWidth = 400;
+			if (Data.Height == 0)
+				Data.Height = 300;
+			if (Data.SetupHeight == 0)
+				Data.SetupHeight = 300;
+
 			if (Data.Left < minX || Data.Left > maxX)
 				Data.Left = 0;
 			if (Data.Top < minY || Data.Top > maxY)

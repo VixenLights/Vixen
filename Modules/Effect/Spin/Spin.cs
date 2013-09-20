@@ -24,10 +24,15 @@ namespace VixenModules.Effect.Spin
 			_data = new SpinData();
 		}
 
+		protected override void TargetNodesChanged()
+		{
+			CheckForInvalidColorData();
+		}
+
 		protected override void _PreRender()
 		{
 			_elementData = new EffectIntents();
-			if (IsDirty) CheckForInvalidColorData();
+
 			DoRendering();
 		}
 
