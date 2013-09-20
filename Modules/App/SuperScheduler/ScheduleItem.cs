@@ -90,63 +90,78 @@ namespace VixenModules.App.SuperScheduler
 			}
 		}
 
-		private DateTime startDate;
+		private DateTime _startDate;
 		[DataMember]
 		public DateTime StartDate
 		{
 			get
 			{
-				return startDate;
+				return _startDate;
 			}
 			set
 			{
-				startDate = new DateTime(value.Year, value.Month, value.Day);
+				_startDate = new DateTime(value.Year, value.Month, value.Day);
 			}
 		}
 
-		private DateTime endDate;
+		private DateTime _endDate;
 		[DataMember]
 		public DateTime EndDate
 		{
 			get
 			{
-				return endDate;
+				return _endDate;
 			}
 			set
 			{
-				endDate = new DateTime(value.Year, value.Month, value.Day);
+				_endDate = new DateTime(value.Year, value.Month, value.Day);
 			}
 		}
 
-		private DateTime startTime;
+		private DateTime _startTime;
 		[DataMember]
 		public DateTime StartTime
 		{
 			get
 			{
-				return startTime;
+				return _startTime;
 			}
 			set
 			{
-				startTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day,
+				_startTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day,
 										 value.Hour, value.Minute, value.Second);
 			}
 		}
 
-		private DateTime endTime;
+		private DateTime _endTime;
 		[DataMember]
 		public DateTime EndTime
 		{
 			get
 			{
-				return endTime;
+				return _endTime;
 			}
 			set
 			{
-				endTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day,
+				_endTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day,
 										 value.Hour, value.Minute, value.Second);
-				if (endTime < StartTime)
-					endTime.AddDays(1);
+				if (_endTime < StartTime)
+					_endTime.AddDays(1);
+			}
+		}
+
+		private DateTime StartDateTime {
+			get 
+			{
+				return new DateTime(StartDate.Year, StartDate.Month, StartDate.Day, StartTime.Hour, StartTime.Minute, StartTime.Second);
+			}
+		}
+
+		private DateTime EndDateTime
+		{
+			get
+			{
+				return new DateTime(EndDate.Year, EndDate.Month, EndDate.Day, EndTime.Hour, EndTime.Minute, EndTime.Second);
 			}
 		}
 
@@ -208,9 +223,9 @@ namespace VixenModules.App.SuperScheduler
 					case StateType.Waiting:
 						CheckForStartup();
 						break;
-					case StateType.Changed:
-						Restart();
-						break;
+					//case StateType.Changed:
+					//	Restart();
+					//	break;
 					case StateType.Paused:
 						//Pause();
 						break;
@@ -221,9 +236,9 @@ namespace VixenModules.App.SuperScheduler
 						//ProcessShutdown();
 						//Shutdown();
 						break;
-					default:
-						Process();
-						break;
+					//default:
+					//	Process();
+					//	break;
 				}
 			}
 		}
@@ -254,26 +269,24 @@ namespace VixenModules.App.SuperScheduler
 
 			if (
 				Enabled
-				&& StartDate.CompareTo(DateTime.Now) <= 0
-				&& EndDate.CompareTo(DateTime.Now) >= 0
-				&& StartTime.CompareTo(DateTime.Now) <= 0
-				&& EndTime.CompareTo(DateTime.Now) >= 0
+				&& StartDateTime.CompareTo(DateTime.Now) >= 0
+				&& EndDateTime.CompareTo(DateTime.Now) <= 0
 			   )
 			{
 				Start(false);
 			}
 		}
 
-		public void Process()
-		{
-			if (CheckForShutdown())
-			{
-				Shutdown();
-			}
-			else
-			{
-			}
-		}
+		//public void Process()
+		//{
+		//	if (CheckForShutdown())
+		//	{
+		//		Shutdown();
+		//	}
+		//	else
+		//	{
+		//	}
+		//}
 
 		private bool CheckForShutdown()
 		{
@@ -285,10 +298,10 @@ namespace VixenModules.App.SuperScheduler
 		//	State = StateType.Shutdown;
 		//}
 
-		public void Restart()
-		{
-			ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Restarting show");
-		}
+		//public void Restart()
+		//{
+		//	ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Restarting show");
+		//}
 
 		public void Stop(bool graceful)
 		{

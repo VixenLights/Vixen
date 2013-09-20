@@ -81,6 +81,7 @@ namespace VixenModules.App.SuperScheduler
 		private void _scheduleCheckTimer_Elapsed(object sender, ElapsedEventArgs e)
 		{
 			// We're currently in a worker thread and need to delegate back to the UI thread.
+			// At least that's what the "other" scheduler said
 			_synchronizationContext.Post(o => ProcessTimerInUIThread(), null);
 		}
 

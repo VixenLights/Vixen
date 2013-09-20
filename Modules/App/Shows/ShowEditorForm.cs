@@ -27,6 +27,9 @@ namespace VixenModules.App.Shows
 			labelShowName.Text = ShowData.Name;
 			LoadCurrentTab();
 			CheckButtons();
+
+			tabControlShowItems.TabPages.Remove(tabPageBackground);
+			tabControlShowItems.TabPages.Remove(tabPageInput);
 		}
 
 		public Show ShowData { get; set; }
