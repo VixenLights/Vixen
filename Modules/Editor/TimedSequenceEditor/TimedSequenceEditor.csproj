@@ -96,6 +96,12 @@
       <DependentUpon>AutomaticMusicDetection.cs</DependentUpon>
     </Compile>
     <Compile Include="EffectRasterizer.cs" />
+    <Compile Include="EffectTimeEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EffectTimeEditor.Designer.cs">
+      <DependentUpon>EffectTimeEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="IntentRasterizer.cs" />
     <Compile Include="MarkManager.cs">
       <SubType>Form</SubType>
@@ -147,6 +153,9 @@
   <ItemGroup>
     <EmbeddedResource Include="AutomaticMusicDetection.resx">
       <DependentUpon>AutomaticMusicDetection.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EffectTimeEditor.resx">
+      <DependentUpon>EffectTimeEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MarkManager.resx">
       <DependentUpon>MarkManager.cs</DependentUpon>

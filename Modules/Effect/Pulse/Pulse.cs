@@ -26,10 +26,15 @@ namespace VixenModules.Effect.Pulse
 			_data = new PulseData();
 		}
 
+		protected override void TargetNodesChanged()
+		{
+			CheckForInvalidColorData();
+		}
+
 		protected override void _PreRender()
 		{
 			_elementData = new EffectIntents();
-
+			
 			foreach (ElementNode node in TargetNodes) {
 				if (node != null)
 					RenderNode(node);
@@ -63,20 +68,24 @@ namespace VixenModules.Effect.Pulse
 		{
 			get
 			{
-				if (_data.ColorGradient == null)
-				{
-					//Try to set a default color gradient from our available colors if we have discrete colors
-					HashSet<Color> validColors = new HashSet<Color>();
-					validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
-					ColorGradient = new ColorGradient(validColors.DefaultIfEmpty(Color.White).First());
-				}
-
 				return _data.ColorGradient;
 			}
 			set
 			{
 				_data.ColorGradient = value;
 				IsDirty = true;
+			}
+		}
+
+		private void CheckForInvalidColorData()
+		{
+			HashSet<Color> validColors = new HashSet<Color>();
+			validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
+			if (validColors.Any() && !_data.ColorGradient.GetColorsInGradient().IsSubsetOf(validColors))
+			{
+				//Our color is not valid for any elements we have.
+				//Try to set a default color gradient from our available colors
+				_data.ColorGradient = new ColorGradient(validColors.First());
 			}
 		}
 

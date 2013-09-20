@@ -69,6 +69,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
@@ -104,6 +105,7 @@
     <Compile Include="Commands\UnknownValueCommand.cs" />
     <Compile Include="Common\ColorSpaces.cs" />
     <Compile Include="Common\ColorSpaceTypeConverter.cs" />
+    <Compile Include="Common\Graphics.cs" />
     <Compile Include="Data\Combinator\Color\NaiveColorCombinator.cs" />
     <Compile Include="Data\Combinator\DiscardExcessCombinator.cs" />
     <Compile Include="Data\Combinator\_16Bit\16BitHighestWinsCombinator.cs" />
@@ -164,6 +166,7 @@
     <Compile Include="Execution\Context\ISequenceContext.cs" />
     <Compile Include="Execution\Context\SequenceContext.cs" />
     <Compile Include="Execution\QueuingSequenceEnumerator.cs" />
+    <Compile Include="Extensions\IntentNodeCollection.cs" />
     <Compile Include="Factory\CommandOutputFactory.cs" />
     <Compile Include="Factory\ControllerFactory.cs" />
     <Compile Include="Factory\IntentOutputFactory.cs" />
@@ -177,6 +180,7 @@
     <Compile Include="Intent\PositionIntent.cs" />
     <Compile Include="Intent\StaticIntent.cs" />
     <Compile Include="Intent\StaticIntentState.cs" />
+    <Compile Include="Intent\StaticLightingArrayIntent.cs" />
     <Compile Include="Interpolator\ColorInterpolator.cs" />
     <Compile Include="Interpolator\PositionValueInterpolator.cs" />
     <Compile Include="Interpolator\StaticValueInterpolator.cs" />
@@ -250,6 +254,7 @@
     <Compile Include="Module\ModuleInstanceDataRetriever.cs" />
     <Compile Include="Module\ModuleConsumer.cs" />
     <Compile Include="Module\ModuleTypeDataRetriever.cs" />
+    <Compile Include="Module\Preview\PreviewElementIntentStates.cs" />
     <Compile Include="Module\Script\ICompilerError.cs" />
     <Compile Include="Module\Script\ICompilerParameters.cs" />
     <Compile Include="Module\Script\ICompilerResults.cs" />
@@ -812,6 +817,8 @@
     <Compile Include="Sys\VixenSystem.cs" />
     <Compile Include="Sys\WindowsMultimedia.cs" />
     <Compile Include="Sys\XmlHelper.cs" />
+    <Compile Include="Utility\cEventHelper.cs" />
+    <Compile Include="Utility\PathUtility.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -841,6 +848,8 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Fonts\DigitalDream.ttf" />
+    <EmbeddedResource Include="Fonts\RadioLand.ttf" />
     <None Include="packages.config" />
     <None Include="Resources\Effect48.png" />
   </ItemGroup>
@@ -855,7 +864,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(SolutionDir)\Release Notes.txt" $(OutDir)</PostBuildEvent>
+    <PostBuildEvent>copy "$(SolutionDir)\Release Notes.txt" "$(OutDir)"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

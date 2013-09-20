@@ -55,8 +55,10 @@ namespace FastPixel
 			{
 				_bitmap = new Bitmap(bitmapToClone.Width, bitmapToClone.Height);
 			}
-			Graphics g = Graphics.FromImage(_bitmap);
-			g.DrawImageUnscaled(bitmapToClone, 0, 0);
+
+			using (var g = Graphics.FromImage(_bitmap)) {
+				g.DrawImageUnscaled(bitmapToClone, 0, 0);
+			}
 		}
 
 		public FastPixel(int width, int height)
@@ -117,6 +119,8 @@ namespace FastPixel
 
 			// Unlock the bits.;
 			this.Bitmap.UnlockBits(bmpData);
+			this.rgbValues = null;
+			this.bmpData = null;
 			this.locked = false;
 		}
 
@@ -269,10 +273,10 @@ namespace FastPixel
 					SetPixel(rect.Left + 1, rect.Top + 1, color);
 				}
 				else {
-					Bitmap b;
+					
 					FastPixel fp;
 					//if (!FastPixel.circleCache.TryGetValue(rect.Width, out fp)) {
-						b = new Bitmap(rect.Width, rect.Height);
+					using (var b = new Bitmap(rect.Width, rect.Height)) {
 						using (Graphics g = Graphics.FromImage(b)) {
 							g.FillEllipse(Brushes.White, new Rectangle(0, 0, rect.Width - 1, rect.Height - 1));
 							fp = new FastPixel(b);
@@ -282,6 +286,7 @@ namespace FastPixel
 							fp.Lock();
 							//FastPixel.circleCache.TryAdd(rect.Width, fp);
 						}
+					}
 					//}
 					for (int x = 0; x < rect.Width; x++) {
 						for (int y = 0; y < rect.Height; y++) {
@@ -290,6 +295,8 @@ namespace FastPixel
 								SetPixel(rect.Left + x, rect.Top + y, color);
 						}
 					}
+
+					fp.Dispose();
 				}
 			}
 		}

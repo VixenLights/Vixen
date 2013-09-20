@@ -1111,7 +1111,7 @@ namespace VixenModules.Preview.VixenPreview
 		//}
 		//#endregion
 
-		public void ProcessUpdateParallel(ElementIntentStates elementStates)
+		public void ProcessUpdateParallel(/*Vixen.Preview.PreviewElementIntentStates elementStates*/)
 		{
 			renderTimer.Reset();
 			renderTimer.Start();
@@ -1128,10 +1128,15 @@ namespace VixenModules.Preview.VixenPreview
                     try
                     {
                         fp.Lock();
+
+						Vixen.Preview.PreviewElementIntentStates elementStates =
+							new Vixen.Preview.PreviewElementIntentStates(VixenSystem.Elements.ToDictionary(x => x, x => x.State));
+
                         elementStates.AsParallel().WithCancellation(tokenSource.Token).ForAll(channelIntentState =>
                         {
-                            var elementId = channelIntentState.Key;
-                            Element element = VixenSystem.Elements.GetElement(elementId);
+							//var elementId = channelIntentState.Key;
+							//Element element = VixenSystem.Elements.GetElement(elementId);
+							Element element = channelIntentState.Key;
                             if (element != null)
                             {
                                 ElementNode node = VixenSystem.Elements.GetElementNodeForElement(element);
@@ -1168,7 +1173,7 @@ namespace VixenModules.Preview.VixenPreview
                         fp.Unlock(true);
                         RenderBufferedGraphics(fp);
                     }
-                    catch (Exception e)
+                    catch (Exception)
                     {
                         tokenSource.Cancel();
                         //Console.WriteLine(e.Message);

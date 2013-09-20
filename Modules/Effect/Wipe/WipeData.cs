@@ -7,6 +7,7 @@ using Vixen.Module;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using Common.Controls.ColorManagement.ColorModels;
+using System.Drawing;
 
 namespace VixenModules.Effect.Wipe {
 	[DataContract]
@@ -15,14 +16,15 @@ namespace VixenModules.Effect.Wipe {
 		public WipeData() {
 			Curve = new Curve();
 			Curve.Points.Clear();
-			Curve.Points.Add(1, 1);
-			Curve.Points.Add(50, 100);
-			Curve.Points.Add(100, 1);
+			Curve.Points.Add(0, 0);
+		 	Curve.Points.Add(50, 100);
+			Curve.Points.Add(100, 0);
+		 			
 			Direction = WipeDirection.Right;
-			ColorGradient = null;
+			ColorGradient = new ColorGradient(Color.White);
 			PulseTime = 1000;
 			WipeByCount = false;
-			PassCount = 0;
+			PassCount = 1;
 			PulsePercent = 33;
 		}
 

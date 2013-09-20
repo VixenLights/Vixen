@@ -33,7 +33,7 @@ namespace VixenModules.EffectEditor.TwinkleEffectEditor
 
 		public override string TypeName
 		{
-			get { return "Spin Effect Editor"; }
+			get { return "Twinkle Editor"; }
 		}
 
 		public override string Version

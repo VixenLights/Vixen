@@ -44,7 +44,8 @@ namespace Vixen.Execution
 				//    }
 				//}
 
-				if (effectNode != null) yield return effectNode;
+				if (effectNode != null) 
+					yield return effectNode;
 			} while (effectNode != null);
 		}
 

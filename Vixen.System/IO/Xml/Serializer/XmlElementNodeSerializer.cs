@@ -52,9 +52,11 @@ namespace Vixen.IO.Xml.Serializer
 
 			return result;
 		}
-
+		public static int readCount = 0;
 		public ElementNode ReadObject(XElement element)
 		{
+			System.Threading.Interlocked.Increment(ref readCount);
+			 
 			string name = XmlHelper.GetAttribute(element, ATTR_NAME);
 			if (name == null) return null;
 

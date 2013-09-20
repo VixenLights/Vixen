@@ -34,5 +34,6 @@ namespace Vixen.Data.Evaluator
 		}
 
 		protected ICommand EvaluatorValue { get; set; }
+
 	}
 }

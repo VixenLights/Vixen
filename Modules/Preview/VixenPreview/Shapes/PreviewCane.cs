@@ -26,9 +26,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		private bool justPlaced = false;
 		private PreviewPoint bottomRightStart, topLeftStart, archStart;
 
-		// For templates
-		private Point archLeftPointStart;
-
 		public PreviewCane(PreviewPoint point, ElementNode selectedNode)
 		{
 			_topLeftPoint = point;

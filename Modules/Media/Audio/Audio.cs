@@ -238,6 +238,11 @@ namespace VixenModules.Media.Audio
 			set { _data.FilePath = value; }
 		}
 
+		public bool MediaExists
+		{
+			get { return File.Exists(MediaFilePath); } 
+		}
+
 		// If a media file is used as the timing source, it's also being
 		// executed as media for the sequence.
 		// That means we're either media or media and timing, so only

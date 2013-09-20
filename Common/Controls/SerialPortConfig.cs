@@ -26,7 +26,7 @@ namespace Common.Controls
 				}
 					//catch the exception in case we want to use it
 					//or log it.
-				catch (UnauthorizedAccessException uae) {
+				catch (UnauthorizedAccessException) {
 					comboBoxPortName.Items.Add(s + " (IN USE)");
 					continue;
 				}

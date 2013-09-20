@@ -24,11 +24,15 @@ namespace VixenModules.Effect.Chase
 			_data = new ChaseData();
 		}
 
+		protected override void TargetNodesChanged()
+		{
+			CheckForInvalidColorData();
+		}
+
 		protected override void _PreRender()
 		{
 			_elementData = new EffectIntents();
-			CheckForEmptyData();
-
+			
 			DoRendering();
 		}
 
@@ -100,7 +104,7 @@ namespace VixenModules.Effect.Chase
 		{
 			get
 			{
-				CheckForEmptyData();
+				CheckForInvalidColorData();
 				return _data.StaticColor;
 			}
 			set
@@ -122,7 +126,6 @@ namespace VixenModules.Effect.Chase
 		{
 			get
 			{
-				CheckForEmptyData();
 				return _data.ColorGradient;
 			}
 			set
@@ -165,18 +168,21 @@ namespace VixenModules.Effect.Chase
 			}
 		}
 
-		private void CheckForEmptyData()
+		//Validate that the we are using valid colors and set appropriate defaults if not.
+		private void CheckForInvalidColorData()
 		{
-			if (_data.StaticColor.IsEmpty || _data.ColorGradient == null) //We have a new effect
+			HashSet<Color> validColors = new HashSet<Color>();
+			validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
+			
+			if (validColors.Any() && 
+				(!validColors.Contains(_data.StaticColor) || !_data.ColorGradient.GetColorsInGradient().IsSubsetOf(validColors))) //Discrete colors specified
 			{
-				//Try to set a default color gradient from our available colors if we have discrete colors
-				HashSet<Color> validColors = new HashSet<Color>();
-				validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
 				_data.ColorGradient = new ColorGradient(validColors.DefaultIfEmpty(Color.White).First());
 
 				//Set a default color 
-				_data.StaticColor = validColors.DefaultIfEmpty(Color.White).First();
+				_data.StaticColor = validColors.First();	
 			}
+			
 		}
 
 
@@ -275,7 +281,7 @@ namespace VixenModules.Effect.Chase
 				int currentNodeIndex = (int) ((currentMovementPosition/100.0)*targetNodeCount);
 
 				// on the off chance we hit the 100% mark *exactly*...
-				if (currentNodeIndex == targetNodeCount)
+				if (currentNodeIndex == targetNodeCount && currentNodeIndex > 0)
 					currentNodeIndex--;
 
 				if (currentNodeIndex >= targetNodeCount) {

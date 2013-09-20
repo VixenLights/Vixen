@@ -86,7 +86,6 @@
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-			this.saveLocationDataToElementsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.propInformationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -637,8 +636,7 @@
 			// 
 			this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.exitToolStripMenuItem,
-            this.toolStripSeparator1,
-            this.saveLocationDataToElementsToolStripMenuItem});
+            this.toolStripSeparator1});
 			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
 			this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
 			this.fileToolStripMenuItem.Text = "&File";
@@ -646,21 +644,14 @@
 			// exitToolStripMenuItem
 			// 
 			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-			this.exitToolStripMenuItem.Size = new System.Drawing.Size(239, 22);
+			this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.exitToolStripMenuItem.Text = "E&xit";
 			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(236, 6);
-			// 
-			// saveLocationDataToElementsToolStripMenuItem
-			// 
-			this.saveLocationDataToElementsToolStripMenuItem.Name = "saveLocationDataToElementsToolStripMenuItem";
-			this.saveLocationDataToElementsToolStripMenuItem.Size = new System.Drawing.Size(239, 22);
-			this.saveLocationDataToElementsToolStripMenuItem.Text = "Save Location Data to Elements";
-			this.saveLocationDataToElementsToolStripMenuItem.Click += new System.EventHandler(this.saveLocationDataToElementsToolStripMenuItem_Click);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
 			// 
 			// viewToolStripMenuItem
 			// 
@@ -835,7 +826,6 @@
         private System.Windows.Forms.Button buttonTemplateHelp;
         private System.Windows.Forms.Button buttonPixelGrid;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-		private System.Windows.Forms.ToolStripMenuItem saveLocationDataToElementsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem propInformationToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem performanceToolStripMenuItem;
