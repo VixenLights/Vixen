@@ -38,6 +38,11 @@ namespace VixenModules.Preview.VixenPreview
 
 		}
 
+		public void UpdatePreview()
+		{
+			//Not needed
+		}
+
 		public VixenPreviewDisplay()
 		{
 			InitializeComponent();

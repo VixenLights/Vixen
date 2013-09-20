@@ -203,26 +203,26 @@ namespace VixenModules.Preview.VixenPreview
 			try {
 				// displayForm.Scene.ElementStates = ElementStates;
 				//if the Preview form style changes re-setup the form
-				if ((UseGDIPreviewRendering && !isGdiVersion) || (!UseGDIPreviewRendering && isGdiVersion) || displayForm == null) {
-					SetupPreviewForm();
-					isGdiVersion = UseGDIPreviewRendering;
-					Stop();
-					Start();
-				}
+				//if ((UseGDIPreviewRendering && !isGdiVersion) || (!UseGDIPreviewRendering && isGdiVersion) || displayForm == null) {
+				//	SetupPreviewForm();
+				//	isGdiVersion = UseGDIPreviewRendering;
+				//	Stop();
+				//	Start();
+				//}
 
-				if (!UseGDIPreviewRendering) {
-					((VixenPreviewDisplayD2D)displayForm).Scene.Update(/*ElementStates*/);
-				}
-				else {
-					if (UseOldPreview)
-						((VixenPreviewDisplay)displayForm).PreviewControl.ProcessUpdateParallel(/*ElementStates*/);
-					else
-					((GDIPreviewForm)displayForm).UpdatePreview();
-				}
+				//if (!UseGDIPreviewRendering) {
+				//	((VixenPreviewDisplayD2D)displayForm).Scene.Update(/*ElementStates*/);
+				//}
+				//else {
+				//	if (UseOldPreview)
+				//		((VixenPreviewDisplay)displayForm).PreviewControl.ProcessUpdateParallel(/*ElementStates*/);
+				//	else
+					displayForm.UpdatePreview();
+				//}
 			}
 			catch (Exception e) {
-
-				Console.WriteLine(e.ToString());
+				Logging.Error("Exception in preview update", e);
+				//Console.WriteLine(e.ToString());
 			}
 
 		}
