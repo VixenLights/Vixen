@@ -9,5 +9,7 @@ namespace VersionControl {
 		public string Hash { get; set; }
 		public DateTimeOffset ChangeDate { get; set; }
 		public string FileName { get; set; }
+		public string UserName { get; set; }
+		public string Message { get; set; }
 	}
 }
