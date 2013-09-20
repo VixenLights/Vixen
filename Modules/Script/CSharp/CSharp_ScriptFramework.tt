@@ -3,6 +3,8 @@
 <#@ import namespace="Vixen.Sys" #>
 <#@ import namespace="Vixen.Module.Effect" #>
 <#@ import namespace="System.Linq" #>
+<#@ import namespace="Common.ValueTypes" #>
+
 <#@ import namespace="System.Collections.Generic" #>
 <#@ assembly Name="System.Core" #>
 <#@ assembly Name="Microsoft.CSharp" #>
@@ -18,6 +20,7 @@ using Vixen.Module.SequenceType;
 using Vixen.Module.Effect;
 using Vixen.Module.Script;
 using Vixen.Commands;
+using ValueTypes=Common.ValueTypes ;
 
 namespace <#=Namespace#> {
 	public partial class <#=ClassName#> : UserScriptHost {
@@ -79,7 +82,7 @@ namespace <#=Namespace#> {
 		string effectParameters =
 			string.Join(", ",
 			(from parameter in effect.Parameters
-			select parameter.Type.ToString() + " " + _Mangle(parameter.Name)).ToArray());
+			select parameter.Type.ToString().Replace("Common.ValueTypes","ValueTypes") + " " + _Mangle(parameter.Name)).ToArray());
 		string parameterNames =
 			string.Join(", ",
 			(from parameter in effect.Parameters
@@ -96,7 +99,7 @@ namespace <#=Namespace#> {
 		
 <#
 	// This needs to match the node collection that the script created in its constructor.
-	ChannelNode[] nodes = VixenSystem.Nodes.ToArray();
+	var nodes = VixenSystem.Nodes.ToArray();
 	List<string> usedNames = new List<string>();
 	for(int i=0; i < nodes.Length; i++) { #>
 		// Original name: <#=nodes[i].Name#>
