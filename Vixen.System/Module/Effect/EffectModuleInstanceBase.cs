@@ -20,6 +20,8 @@ namespace Vixen.Module.Effect
 		private TimeSpan _timeSpan;
 		private DefaultValueArrayMember _parameterValues;
 		private ElementIntents _elementIntents;
+		private static long prerendCnt = 0;
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		protected EffectModuleInstanceBase()
 		{
@@ -70,8 +72,11 @@ namespace Vixen.Module.Effect
 
 		public void PreRender()
 		{
+			var sw = new System.Diagnostics.Stopwatch(); sw.Start();
 			_PreRender();
 			IsDirty = false;
+			if ( /*++prerendCnt % 1000 == 0 ||*/ sw.ElapsedMilliseconds > 100)
+				Logging.Error(" {0}, {1}ms, eff: {2}, node: {3}", prerendCnt, sw.ElapsedMilliseconds, this.GetType().Name, TargetNodes[0].Name); 
 		}
 
 		public EffectIntents Render()
