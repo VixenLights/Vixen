@@ -28,7 +28,7 @@ namespace VixenModules.App.Shows
 			LoadCurrentTab();
 			CheckButtons();
 
-			tabControlShowItems.TabPages.Remove(tabPageBackground);
+			//tabControlShowItems.TabPages.Remove(tabPageBackground);
 			tabControlShowItems.TabPages.Remove(tabPageInput);
 		}
 
@@ -36,7 +36,7 @@ namespace VixenModules.App.Shows
 
 		private void buttonCancel_Click(object sender, EventArgs e)
 		{
-			// This is serious shit. The user could use a lot of work. Make sure this is their intent.
+			// This is serious shit. The user could lose a lot of work. Make sure this is their intent.
 			if (MessageBox.Show("You will lose all of your changes to this show. Are you sure you want to cancel?", "Cancel Edit", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.Yes)
 			{
 				DialogResult = System.Windows.Forms.DialogResult.Cancel;
@@ -89,7 +89,6 @@ namespace VixenModules.App.Shows
 				// There can be only one!
 				ListViewItem lvItem = listViewShowItems.SelectedItems[0];
 				ShowItem item = lvItem.Tag as ShowItem;
-				//currentItem = item;
 			}
 		}
 
@@ -103,7 +102,7 @@ namespace VixenModules.App.Shows
 			return ActionType.Sequence;
 		}
 
-		UserControl currentEditor = null;
+		TypeEditorBase currentEditor = null;
 		private void SetCurrentEditor(string action)
 		{
 			if (action == "")
@@ -125,6 +124,7 @@ namespace VixenModules.App.Shows
 					currentEditor = SelectedShowItem.Editor;
 					currentEditor.Location = new Point(4, 16);
 					currentEditor.Width = groupBoxItemEdit.Width - (currentEditor.Left * 2);
+					currentEditor.OnTextChanged += OnTextChanged;
 					groupBoxItemEdit.Controls.Add(currentEditor);
 				}
 				else
@@ -132,6 +132,12 @@ namespace VixenModules.App.Shows
 					MessageBox.Show("SetCurrentEditor: SelectedShowItem == null");
 				}
 			}
+		}
+
+		public void OnTextChanged(object sender, EventArgs e)
+		{
+			TypeEditorBase editor = sender as TypeEditorBase;
+			listViewShowItems.SelectedItems[0].SubItems[0].Text = editor.Text;
 		}
 
 		private void PopulateActions()
@@ -152,10 +158,6 @@ namespace VixenModules.App.Shows
 					if (listViewShowItems.SelectedItems.Count > 0)
 					{
 						item = listViewShowItems.SelectedItems[0].Tag as ShowItem;
-						//}
-						//else
-						//{
-						//    MessageBox.Show("SelectedShowItem: currentListView.SelectedItems.Count <= 0");
 					}
 				}
 				else
@@ -258,10 +260,6 @@ namespace VixenModules.App.Shows
 			{
 				comboBoxActions.SelectedItem = SelectedShowItem.Action.ToString();
 				SetCurrentEditor(SelectedShowItem.Action.ToString());
-				//}
-				//else
-				//{
-				//    MessageBox.Show("LoadSelectedItem: SelectedShowItem == null");
 			}
 			CheckButtons();
 		}
@@ -344,7 +342,6 @@ namespace VixenModules.App.Shows
 
 		private void listViewShowItems_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
 		{
-			//Console.WriteLine("e.Item: " + e.Item + " " + e.Item.Selected);
 			if (!e.Item.Selected)
 			{
 				ShowItem item = e.Item.Tag as ShowItem;

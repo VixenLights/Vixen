@@ -25,6 +25,7 @@ namespace VixenModules.App.SuperScheduler
 		{
 			Location = SchedulerData.StatusForm_Position;
 			PopulateShowList();
+			CheckButtons();
 		}
 
 		private void PopulateShowList()
@@ -33,7 +34,6 @@ namespace VixenModules.App.SuperScheduler
 			if (shows != null)
 			{
 				foreach (Shows.Show show in shows)
-				//foreach (ScheduleItem scheduleItem in SchedulerData.Items)
 				{
 					bool foundIt = false;
 					foreach (Common.Controls.ComboBoxItem oldItem in comboBoxShows.Items)
@@ -60,7 +60,8 @@ namespace VixenModules.App.SuperScheduler
 		{
 			set
 			{ 
-				labelStatus.Text = value; 
+				labelStatus.Text = value;
+				CheckButtons();
 			}
 		}
 
@@ -91,20 +92,27 @@ namespace VixenModules.App.SuperScheduler
 		private delegate void AddLogEntryDelegate(string logEntry);
 		public void AddLogEntry(string logEntry)
 		{
-			if (!IsDisposed)
+			try
 			{
-				if (this.InvokeRequired)
-					this.Invoke(new AddLogEntryDelegate(AddLogEntry), logEntry);
-				else
+				if (!IsDisposed)
 				{
-					listBoxLog.Items.Insert(0, logEntry);
+					if (this.InvokeRequired)
+						this.Invoke(new AddLogEntryDelegate(AddLogEntry), logEntry);
+					else
+					{
+						listBoxLog.Items.Insert(0, logEntry);
+					}
 				}
+			}
+			catch
+			{
 			}
 		}
 
 		private void buttonStopNow_Click(object sender, EventArgs e)
 		{
 			Executor.Stop(false);
+			CheckButtons();
 		}
 
 		private void comboBoxShows_DropDown(object sender, EventArgs e)
@@ -115,6 +123,7 @@ namespace VixenModules.App.SuperScheduler
 		private void buttonStopGracefully_Click(object sender, EventArgs e)
 		{
 			Executor.Stop(true);
+			CheckButtons();
 		}
 
 		private void buttonPlayShowNow_Click(object sender, EventArgs e)
@@ -131,5 +140,44 @@ namespace VixenModules.App.SuperScheduler
 			}
 		}
 
+		private void buttonStartScheduler_Click(object sender, EventArgs e)
+		{
+			Executor.Start();
+			CheckButtons();
+		}
+
+		private void CheckButtons()
+		{
+			buttonStopNow.Enabled = !Executor.ManuallyDisabled;
+			buttonStopGracefully.Enabled = !Executor.ManuallyDisabled;
+			buttonStartScheduler.Enabled = Executor.ManuallyDisabled;
+
+			if (buttonStartScheduler.Enabled)
+			{
+				buttonStartScheduler.BackgroundImage = imageButtons.Images["control_play.png"];
+			}
+			else
+			{
+				buttonStartScheduler.BackgroundImage = imageButtons.Images["control_play_disabled.png"];
+			}
+
+			if (buttonStopNow.Enabled)
+			{
+				buttonStopNow.BackgroundImage = imageButtons.Images["control_stop.png"];
+			}
+			else
+			{
+				buttonStopNow.BackgroundImage = imageButtons.Images["control_stop_disabled.png"];
+			}
+
+			if (buttonStopGracefully.Enabled)
+			{
+				buttonStopGracefully.BackgroundImage = imageButtons.Images["clock_stop.png"];
+			}
+			else
+			{
+				buttonStopGracefully.BackgroundImage = imageButtons.Images["clock_stop_disabled.png"];
+			}
+		}
 	}
 }

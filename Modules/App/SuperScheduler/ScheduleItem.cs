@@ -15,7 +15,6 @@ namespace VixenModules.App.SuperScheduler
 		Startup,
 		Running,
 		Shutdown,
-		//Stop,
 		Paused,
 		Changed
 	}
@@ -50,17 +49,12 @@ namespace VixenModules.App.SuperScheduler
 		#region Variables
 
 		Shows.ShowItem _currentItem = null;
-		//Shows.Action _currentAction = null;
-		//private readonly Dictionary<string, IProgramContext> _cachedPrograms;
 		CancellationTokenSource tokenSourcePreProcess = new CancellationTokenSource();
 		CancellationToken tokenPreProcess;
 
 		#endregion // Variables
 
 		#region Properties
-
-		public bool ManuallyStarted { get; set; }
-		public bool ManuallyStopped { get; set; }
 
 		private List<Shows.Action> runningActions = null;
 		public List<Shows.Action> RunningActions
@@ -150,21 +144,6 @@ namespace VixenModules.App.SuperScheduler
 			}
 		}
 
-		private DateTime StartDateTime {
-			get 
-			{
-				return new DateTime(StartDate.Year, StartDate.Month, StartDate.Day, StartTime.Hour, StartTime.Minute, StartTime.Second);
-			}
-		}
-
-		private DateTime EndDateTime
-		{
-			get
-			{
-				return new DateTime(EndDate.Year, EndDate.Month, EndDate.Day, EndTime.Hour, EndTime.Minute, EndTime.Second);
-			}
-		}
-
 		private Queue<Shows.ShowItem> itemQueue;
 		public Queue<Shows.ShowItem> ItemQueue
 		{
@@ -195,22 +174,17 @@ namespace VixenModules.App.SuperScheduler
 			}
 		}
 
-		//private Queue<Shows.ShowItem> backgroundItemQueue;
-		//public Queue<Shows.ShowItem> BackgroundItemQueue
-		//{
-		//    get
-		//    {
-		//        if (backgroundItemQueue == null)
-		//            backgroundItemQueue = new Queue<Shows.ShowItem>();
-		//        return backgroundItemQueue;
-		//    }
-		//    set
-		//    {
-		//        backgroundItemQueue = value;
-		//    }
-		//}
-
 		#endregion //Properties
+
+		#region Utilities
+
+		private int CompareTodaysDate(DateTime date) 
+		{
+			DateTime now = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+			return now.CompareTo(date);
+		}
+
+		#endregion
 
 		#region Show Control
 
@@ -245,93 +219,48 @@ namespace VixenModules.App.SuperScheduler
 
 		public void CheckForStartup()
 		{
-			//ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "CheckForStartup 1: " + StartDate.ToString() + "->" + EndDate.ToString() + " : " + StartDate.CompareTo(DateTime.Now) + ":" + EndDate.CompareTo(DateTime.Now));
-			//Console.WriteLine(Show.Name, "CheckForStartup 2: " + StartTime.ToString() + "->" + EndTime.ToString());
-			//Console.WriteLine(Enabled.ToString() +
-			//	(StartDate.CompareTo(DateTime.Now) <= 0).ToString() +
-			//	(EndDate.CompareTo(DateTime.Now) >= 0).ToString() +
-			//	(StartTime.CompareTo(DateTime.Now) <= 0).ToString() +
-			//	(EndTime.CompareTo(DateTime.Now) >= 0).ToString());
-
-			// If we're manually stopped, is is exactly (within 5 seconds) time to start the show again?
-			if (ManuallyStopped
-				&& StartTime.Hour == DateTime.Now.Hour
-				&& StartTime.Minute == DateTime.Now.Minute
-				&& StartTime.Second - DateTime.Now.Second >= 5)
-			{
-				ManuallyStopped = false;
-			}
-			else if (ManuallyStopped)
-			{
-				// If we're manually stopped, return without doing anything
-				return;
-			}
-
 			if (
 				Enabled
-				&& StartDateTime.CompareTo(DateTime.Now) >= 0
-				&& EndDateTime.CompareTo(DateTime.Now) <= 0
+				&& CompareTodaysDate(StartDate) >= 0
+				&& CompareTodaysDate(EndDate) <= 0
+				&& DateTime.Now.CompareTo(StartTime) >= 0
+				&& DateTime.Now.CompareTo(EndTime) <= 0
 			   )
 			{
 				Start(false);
 			}
 		}
 
-		//public void Process()
-		//{
-		//	if (CheckForShutdown())
-		//	{
-		//		Shutdown();
-		//	}
-		//	else
-		//	{
-		//	}
-		//}
-
 		private bool CheckForShutdown()
 		{
-			return (EndTime.CompareTo(DateTime.Now) <= 0 || State == StateType.Shutdown);
+			if (State == StateType.Shutdown) return true;
+
+			if (EndTime.CompareTo(DateTime.Now) <= 0) return true;
+
+			return false;
 		}
-
-		//private void ProcessShutdown()
-		//{
-		//	State = StateType.Shutdown;
-		//}
-
-		//public void Restart()
-		//{
-		//	ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Restarting show");
-		//}
 
 		public void Stop(bool graceful)
 		{
-			ManuallyStopped = true;
-
 			if (graceful)
 			{
 				State = StateType.Shutdown;
+				ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Show stopping gracefully");
 			} else
 			{
 				State = StateType.Waiting;
 				int runningCount = RunningActions.Count();
+				if (tokenPreProcess.CanBeCanceled)
+					tokenSourcePreProcess.Cancel();
+				ItemQueue.Clear();
 				for (int i = 0; i < runningCount; i++)
 				{
-					if (i < RunningActions.Count())
-					{
-						ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Stopping action: " + RunningActions[i].ShowItem.Name);
-						RunningActions[i].Stop();
-						if (tokenPreProcess.CanBeCanceled)
-							tokenSourcePreProcess.Cancel();
-					}
+					ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Stopping action: " + RunningActions[i].ShowItem.Name);
+					RunningActions[i].Stop();
 				}
+				Show.ReleaseAllActions();
+				ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Show stopped immediately");
 			}
-
-			ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Show stopped " + (graceful ? "gracefully" : "immediately"));
-		}
-
-		public void Pause()
-		{
-			//ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Paused action: " + _currentAction.ShowItem.Name);
 		}
 
 		public void Shutdown()
@@ -342,8 +271,7 @@ namespace VixenModules.App.SuperScheduler
 
 		public void Start(bool manuallyStarted)
 		{
-			ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Show starting");
-			ManuallyStarted = manuallyStarted;
+			ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Show started");
 			BeginStartup();				
 		}
 
@@ -376,6 +304,9 @@ namespace VixenModules.App.SuperScheduler
 			}
 		}
 
+		private void RunNextItemInQueue() {
+		}
+
 		#endregion // Show Control
 
 		#region Startup Items
@@ -384,7 +315,7 @@ namespace VixenModules.App.SuperScheduler
 		{
 			if (Show != null)
 			{
-				State = StateType.Startup;
+				State = StateType.Running;
 				foreach (Shows.ShowItem item in Show.GetItems(Shows.ShowItemType.Startup))
 				{
 					ItemQueue.Enqueue(item);
@@ -396,19 +327,22 @@ namespace VixenModules.App.SuperScheduler
 
 		public void ExecuteNextStartupItem() 
 		{
-			if (ItemQueue.Count() > 0)
+			if (State == StateType.Running)
 			{
-				_currentItem = ItemQueue.Dequeue();
-				Shows.Action action = _currentItem.GetAction();
-				action.ActionComplete += OnStartupActionComplete;
-				ExecuteAction(action);
-				// Otherwise, move on to the sequential items
-			}
-			else
-			{
-				//State = StateType.Running;
-				BeginSequential();
-				BeginBackground();
+				// Do we have startup items to run?
+				if (ItemQueue.Count() > 0)
+				{
+					_currentItem = ItemQueue.Dequeue();
+					Shows.Action action = _currentItem.GetAction();
+					action.ActionComplete += OnStartupActionComplete;
+					ExecuteAction(action);
+				}
+				// Otherwise, move on to the sequential and background items
+				else
+				{
+					BeginSequential();
+					BeginBackground();
+				}
 			}
 		}
 
@@ -418,6 +352,8 @@ namespace VixenModules.App.SuperScheduler
 			action.ActionComplete -= OnStartupActionComplete;
 			RunningActions.Remove(action);
 			ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Startup action complete: " + action.ShowItem.Name);
+			action = null;
+
 			ExecuteNextStartupItem();
 		}
 
@@ -427,7 +363,7 @@ namespace VixenModules.App.SuperScheduler
 
 		public void BeginSequential()
 		{
-			if (Show != null)
+			if (Show != null && State == StateType.Running)
 			{
 				State = StateType.Running;
 				foreach (Shows.ShowItem item in Show.GetItems(Shows.ShowItemType.Sequential))
@@ -490,8 +426,11 @@ namespace VixenModules.App.SuperScheduler
 
 		public void ExecuteBackgroundAction(Shows.Action action)
 		{
-			action.ActionComplete += OnBackgroundActionComplete;
-			ExecuteAction(action);
+			if (State == StateType.Running)
+			{
+				action.ActionComplete += OnBackgroundActionComplete;
+				ExecuteAction(action);
+			}
 		}
 
 		public void OnBackgroundActionComplete(object sender, EventArgs e)
@@ -537,6 +476,8 @@ namespace VixenModules.App.SuperScheduler
 
 				StopBackground();
 
+				ItemQueue.Clear();
+
 				State = StateType.Shutdown;
 				foreach (Shows.ShowItem item in Show.GetItems(Shows.ShowItemType.Shutdown))
 				{
@@ -561,6 +502,7 @@ namespace VixenModules.App.SuperScheduler
 			{
 				State = StateType.Waiting;
 				ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Show complete");
+				Show.ReleaseAllActions();
 			}
 		}
 

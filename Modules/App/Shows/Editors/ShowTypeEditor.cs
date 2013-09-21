@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace VixenModules.App.Shows
 {
-	public partial class ShowTypeEditor : UserControl
+	public partial class ShowTypeEditor : TypeEditorBase
 	{
 		public ShowItem _showItem;
 		public Guid _currentShowID;
@@ -52,6 +52,7 @@ namespace VixenModules.App.Shows
 			Show item = comboBoxItem.Value as Show;
 			_showItem.Show_ShowID = item.ID;
 			_showItem.Name = "Start show: " + item.Name;
+			FireChanged(_showItem.Name);
 		}
  
 	}

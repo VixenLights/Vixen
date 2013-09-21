@@ -59,6 +59,8 @@ namespace VixenModules.App.SuperScheduler
 			}
 		}
 
+		public bool ManuallyDisabled { get; set; }
+
 		private System.Timers.Timer Timer
 		{
 			get
@@ -114,7 +116,14 @@ namespace VixenModules.App.SuperScheduler
 			}
 			if (statusForm != null)
 			{
-				statusForm.Status = stateStr;
+				if (ManuallyDisabled)
+				{
+					statusForm.Status = "All Show Disabled";
+				}
+				else
+				{
+					statusForm.Status = stateStr;
+				}
 			}
 		}
 
@@ -145,11 +154,12 @@ namespace VixenModules.App.SuperScheduler
 			// Were we just disabled?
 			else if (!Data.IsEnabled && Enabled)
 			{
+				Stop(false);
 				Enabled = Data.IsEnabled;
 			}
 
 			// Now, if the schedule executor is enabled, process it!
-			if (Enabled)
+			if (Enabled && !ManuallyDisabled)
 			{
 				foreach (ScheduleItem item in Data.Items)
 				{
@@ -160,10 +170,17 @@ namespace VixenModules.App.SuperScheduler
 
 		public void Stop(bool gracefully)
 		{
+			ManuallyDisabled = true;
+
 			foreach (ScheduleItem item in Data.Items)
 			{
 				item.Stop(gracefully);
 			}
+		}
+
+		public void Start()
+		{
+			ManuallyDisabled = false;
 		}
 	}
 }

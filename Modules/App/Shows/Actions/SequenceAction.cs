@@ -13,7 +13,7 @@ using Vixen.Services;
 
 namespace VixenModules.App.Shows
 {
-	public class SequenceAction : Action
+	public class SequenceAction : Action, IDisposable
 	{
 		private IContext _sequenceContext = null;
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
@@ -25,10 +25,9 @@ namespace VixenModules.App.Shows
 
 		public override void Execute()
 		{
-			base.Execute();
-
 			try
 			{
+				IsRunning = true;
 				if (_sequenceContext == null) 
 					PreProcess();
 
@@ -94,5 +93,16 @@ namespace VixenModules.App.Shows
 			base.Complete();
 		}
 
+		~SequenceAction()
+		{
+			Dispose();
+		}
+
+		public void Dispose()
+		{
+			_sequenceContext.Stop();
+			_sequenceContext = null;
+			GC.SuppressFinalize(this);
+		}
 	}
 }

@@ -64,6 +64,12 @@
     <Compile Include="Editors\PauseTypeEditor.Designer.cs">
       <DependentUpon>PauseTypeEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="Editors\TypeEditorBase.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Editors\TypeEditorBase.Designer.cs">
+      <DependentUpon>TypeEditorBase.cs</DependentUpon>
+    </Compile>
     <Compile Include="Editors\WebPageTypeEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>

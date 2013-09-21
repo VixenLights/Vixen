@@ -13,7 +13,7 @@ using Vixen.Sys;
 
 namespace VixenModules.App.Shows
 {
-	public partial class PauseTypeEditor : UserControl
+	public partial class PauseTypeEditor : TypeEditorBase
 	{
 		public ShowItem _showItem;
 
@@ -32,6 +32,7 @@ namespace VixenModules.App.Shows
 		{
 			_showItem.Pause_Seconds = Convert.ToInt32(numericUpDownPauseSeconds.Value);
 			_showItem.Name = "Pause for " + _showItem.Pause_Seconds.ToString() + " seconds";
+			FireChanged(_showItem.Name);
 		}
 
 	}

@@ -13,7 +13,7 @@ using Vixen.Sys;
 
 namespace VixenModules.App.Shows
 {
-	public partial class SequenceTypeEditor : UserControl
+	public partial class SequenceTypeEditor : TypeEditorBase
 	{
 		public ShowItem _showItem;
 
@@ -37,7 +37,7 @@ namespace VixenModules.App.Shows
 				labelSequence.Text = "(sequence not found)";
 				_showItem.Name = labelSequence.Text;
 			}
-
+			FireChanged(_showItem.Name);
 		}
 
 		private void buttonSelectSequence_Click(object sender, EventArgs e)

@@ -56,12 +56,20 @@ namespace VixenModules.App.Shows
 
 			foreach (ShowItem item in Items)
 			{
-				if (type == item.ItemType)
+				if (type == item.ItemType || type == ShowItemType.All)
 				{
 					items.Add(item);
 				}
 			}
 			return items;
+		}
+
+		public void ReleaseAllActions()
+		{
+			foreach (ShowItem item in Items)
+			{
+				item.currentAction = null;
+			}
 		}
 
 		public ShowItem AddItem(ShowItemType itemType, string itemName)

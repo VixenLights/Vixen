@@ -124,7 +124,6 @@ namespace VixenModules.App.SuperScheduler
 			enabledCommand.Checked += (sender, e) =>
 			{
 				_data.IsEnabled = e.CheckedState;
-				//SetSchedulerEnableState(_data.IsEnabled);
 			};
 
 			if (schedulerMenu.Items.Length > 0)

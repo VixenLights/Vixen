@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace VixenModules.App.Shows
 {
-	public partial class LaunchTypeEditor : UserControl
+	public partial class LaunchTypeEditor : TypeEditorBase
 	{
 		public ShowItem _showItem;
 
@@ -49,6 +49,7 @@ namespace VixenModules.App.Shows
 		{
 			_showItem.Launch_ProgramName = textBoxProgram.Text;
 			_showItem.Name = "Launch: " + _showItem.Launch_ProgramName;
+			FireChanged(_showItem.Name);
 		}
 
 		private void textBoxCommandLine_TextChanged(object sender, EventArgs e)

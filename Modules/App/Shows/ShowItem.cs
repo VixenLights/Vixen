@@ -13,6 +13,7 @@ namespace VixenModules.App.Shows
 {
 	public enum ShowItemType
 	{
+		All,
 		Startup,
 		Background,
 		Sequential,
@@ -22,11 +23,11 @@ namespace VixenModules.App.Shows
 
 	public enum ActionType
 	{
+		//Show,
 		Launch,
 		Sequence,
-		WebPage,
-		Pause,
-		Show
+		//WebPage,
+		Pause
 	}
 
 	[DataContract,
@@ -81,8 +82,8 @@ namespace VixenModules.App.Shows
 		public Guid CurrentShowID { get; set; }
 
 		[NonSerialized]
-		UserControl currentEditor = null;
-		public UserControl Editor
+		TypeEditorBase currentEditor = null;
+		public TypeEditorBase Editor
 		{
 			get
 			{
@@ -94,15 +95,15 @@ namespace VixenModules.App.Shows
 					case ActionType.Launch:
 						currentEditor = new LaunchTypeEditor(this);
 						break;
-					case ActionType.WebPage:
-						currentEditor = new WebPageTypeEditor(this);
-						break;
+					//case ActionType.WebPage:
+					//	currentEditor = new WebPageTypeEditor(this);
+					//	break;
 					case ActionType.Pause:
 						currentEditor = new PauseTypeEditor(this);
 						break;
-					case ActionType.Show:
-						currentEditor = new ShowTypeEditor(this, CurrentShowID);
-						break;
+					//case ActionType.Show:
+					//	currentEditor = new ShowTypeEditor(this, CurrentShowID);
+					//	break;
 				}
 				return currentEditor;
 			}
@@ -116,23 +117,26 @@ namespace VixenModules.App.Shows
 		public Action currentAction = null;
 		public Action GetAction()
 		{
-			switch (Action)
+			if (currentAction == null)
 			{
-				case ActionType.Sequence:
-					currentAction = new SequenceAction(this);
-					break;
-				case ActionType.Launch:
-					currentAction = new LaunchAction(this);
-					break;
-				case ActionType.WebPage:
-					
-					break;
-				case ActionType.Pause:
-					currentAction = new PauseAction(this);					
-					break;
-				case ActionType.Show:
-					
-					break;
+				switch (Action)
+				{
+					case ActionType.Sequence:
+						currentAction = new SequenceAction(this);
+						break;
+					case ActionType.Launch:
+						currentAction = new LaunchAction(this);
+						break;
+					//case ActionType.WebPage:
+
+					//	break;
+					case ActionType.Pause:
+						currentAction = new PauseAction(this);
+						break;
+					//case ActionType.Show:
+
+					//	break;
+				}
 			}
 			return currentAction;
 		}

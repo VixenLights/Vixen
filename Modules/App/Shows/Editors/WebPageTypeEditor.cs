@@ -13,7 +13,7 @@ using Vixen.Sys;
 
 namespace VixenModules.App.Shows
 {
-	public partial class WebPageTypeEditor : UserControl
+	public partial class WebPageTypeEditor : TypeEditorBase
 	{
 		public ShowItem _showItem;
 
@@ -32,6 +32,7 @@ namespace VixenModules.App.Shows
 		{
 			_showItem.Website_URL = textBoxWebsite.Text;
 			_showItem.Name = "Web page: " + _showItem.Website_URL;
+			FireChanged(_showItem.Name);
 		}
 
 		private void buttonTest_Click(object sender, EventArgs e)

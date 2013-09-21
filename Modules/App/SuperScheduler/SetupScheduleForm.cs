@@ -64,7 +64,7 @@ namespace VixenModules.App.SuperScheduler
 
 		private void dateStart_ValueChanged(object sender, EventArgs e)
 		{
-			_scheduleItem.StartDate = dateStart.Value;
+			//_scheduleItem.StartDate = dateStart.Value;
 		}
 
 		private void buttonCancel_Click(object sender, EventArgs e)
