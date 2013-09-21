@@ -102,7 +102,7 @@ namespace VixenModules.Effect.Nutcracker
 		[DataMember] public string Text_Line2 = string.Empty;
 		[DataMember] public int Text_Direction = 0;
 
-		[DataMember]
+		[DataMember(IsRequired = false)]
 		public SerializableFont Text_Font { get; set; }
 
 		[DataMember] public int Text_TextRotation = 0;
@@ -137,9 +137,7 @@ namespace VixenModules.Effect.Nutcracker
 		[OnDeserialized]
 		private void OnDeserialized(StreamingContext context)
 		{
-			if (PreviewType == null)
-				PreviewType = NutcrackerEffects.PreviewType.Tree180;
-			else if (PreviewType.ToString() == string.Empty)
+			if (PreviewType.ToString() == string.Empty)
 				PreviewType = NutcrackerEffects.PreviewType.Tree180;
 
 			if (Palette == null)

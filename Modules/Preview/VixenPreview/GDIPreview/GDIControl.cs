@@ -20,6 +20,8 @@ namespace VixenModules.Preview.VixenPreview
 {
 	public partial class GDIControl : UserControl
 	{
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+
 		private Image _background = null;
 		private Bitmap _backgroundAlphaImage = null;
 		private int _backgroundAlpha = 0;
@@ -31,7 +33,6 @@ namespace VixenModules.Preview.VixenPreview
 		public GDIControl()
 		{
 			InitializeComponent();
-			//SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.DoubleBuffer, true);
 
@@ -49,7 +50,6 @@ namespace VixenModules.Preview.VixenPreview
 			{
 				_background = value;
 				CreateAlphaBackground();
-				fastPixel = new FastPixel.FastPixel(_backgroundAlphaImage.Width, _backgroundAlphaImage.Height);
 			}
 		}
 
@@ -62,7 +62,7 @@ namespace VixenModules.Preview.VixenPreview
 			set
 			{
 				_backgroundAlpha = value;
-				CreateAlphaBackground();
+				if (_background != null) CreateAlphaBackground();
 			}
 		}
 
@@ -101,7 +101,7 @@ namespace VixenModules.Preview.VixenPreview
 				Graphics gfx = Graphics.FromImage(_backgroundAlphaImage);
 				using (SolidBrush brush = new SolidBrush(Color.FromArgb(255 - BackgroundAlpha, 0, 0, 0)))
 				{
-					gfx.DrawImageUnscaled(_background, 0, 0);
+					gfx.DrawImage(_background, 0, 0, _background.Width, _background.Height);
 					gfx.FillRectangle(brush, 0, 0, _backgroundAlphaImage.Width, _backgroundAlphaImage.Height);
 				}
 				gfx.Dispose();
@@ -113,6 +113,7 @@ namespace VixenModules.Preview.VixenPreview
 				gfx.Clear(Color.DeepPink);
 				gfx.Dispose();
 			}
+			fastPixel = new FastPixel.FastPixel(_backgroundAlphaImage.Width, _backgroundAlphaImage.Height);
 		}
 
 		private void GDIControl_Resize(object sender, EventArgs e)
@@ -122,32 +123,38 @@ namespace VixenModules.Preview.VixenPreview
 
 		public void RenderImage()
 		{
-			if (_backgroundAlphaImage != null)
-			{
-				backBuffer.Graphics.DrawImageUnscaled(fastPixel.Bitmap, 0, 0);
-			}
-			else
-			{
-				backBuffer.Graphics.Clear(Color.Black);
-			}
+			if (this.InvokeRequired)
+				this.Invoke(new Vixen.Delegates.GenericDelegate(RenderImage));
+			else {
+				if (_backgroundAlphaImage != null) {
 
-			if (!this.Disposing && graphicsContext != null)
-				backBuffer.Render(Graphics.FromHwnd(this.Handle));
+					backBuffer.Graphics.DrawImageUnscaled(fastPixel.Bitmap, 0, 0);
+				} else {
+					backBuffer.Graphics.Clear(Color.Black);
+				}
 
-			renderTimer.Stop();
+				if (!this.Disposing && graphicsContext != null)
+					backBuffer.Render(Graphics.FromHwnd(this.Handle));
+
+				renderTimer.Stop();
+			}
 		}
 
 		private void AllocateGraphicsBuffer()
 		{
-			if (backBuffer != null)
-				backBuffer.Dispose();
+			try {
 
-			graphicsContext.MaximumBuffer =
-				  new Size(this.Width + 1, this.Height + 1);
+				if (backBuffer != null)
+					backBuffer.Dispose();
 
-			backBuffer =
-				graphicsContext.Allocate(this.CreateGraphics(),
-												ClientRectangle);
+				graphicsContext.MaximumBuffer = new Size(this.Width + 1, this.Height + 1);
+
+				if (this.Width > 0 && this.Height > 0) {
+					backBuffer = graphicsContext.Allocate(this.CreateGraphics(), ClientRectangle);
+				}
+			} catch (Exception e) {
+				Logging.ErrorException("Error Allocating Graphics Buffer", e);
+			}
 		}
 
 		public void BeginUpdate()

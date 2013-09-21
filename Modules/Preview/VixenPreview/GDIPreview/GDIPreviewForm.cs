@@ -30,18 +30,21 @@ namespace VixenModules.Preview.VixenPreview
 
 		public VixenPreviewData Data { get; set; }
 
-		public void Update(ElementIntentStates elementStates)
+		public void UpdatePreview(/*Vixen.Preview.PreviewElementIntentStates elementStates*/)
 		{
 			if (!gdiControl.IsUpdating)
 			{
 				gdiControl.BeginUpdate();
 
+				Vixen.Sys.Managers.ElementManager elements = VixenSystem.Elements;
+
+				Element[] elementArray = elements.Where(e => e.State.Where(i => (i as IIntentState<LightingValue>) !=null).Where(i => (i as IIntentState<LightingValue>).GetValue().Intensity > 0).Any()).ToArray();
+				//Console.WriteLine(elements.Count() + ":" + elementArray.Count());
 				CancellationTokenSource tokenSource = new CancellationTokenSource();
 
-				elementStates.AsParallel().WithCancellation(tokenSource.Token).ForAll(channelIntentState =>
+				//elements.AsParallel().WithCancellation(tokenSource.Token).ForAll(element =>
+				elementArray.AsParallel().WithCancellation(tokenSource.Token).ForAll(element =>
 				{
-					var elementId = channelIntentState.Key;
-					Element element = VixenSystem.Elements.GetElement(elementId);
 					if (element != null)
 					{
 						ElementNode node = VixenSystem.Elements.GetElementNodeForElement(element);
@@ -52,7 +55,7 @@ namespace VixenModules.Preview.VixenPreview
 							{
 								foreach (PreviewPixel pixel in pixels)
 								{
-									pixel.Draw(gdiControl.FastPixel, channelIntentState.Value);
+									pixel.Draw(gdiControl.FastPixel, element.State);
 								}
 							}
 						}
@@ -141,6 +144,16 @@ namespace VixenModules.Preview.VixenPreview
 			var minY = Screen.AllScreens.Min(m => m.Bounds.Y);
 			var maxY = Screen.AllScreens.Sum(m => m.Bounds.Height) + minY;
 
+			// avoid 0 with/height in case Data comes in 'bad'
+			if (Data.Width == 0)
+				Data.Width = 400;
+			if (Data.SetupWidth == 0)
+				Data.SetupWidth = 400;
+			if (Data.Height == 0)
+				Data.Height = 300;
+			if (Data.SetupHeight == 0)
+				Data.SetupHeight = 300;
+
 			if (Data.Left < minX || Data.Left > maxX)
 				Data.Left = 0;
 			if (Data.Top < minY || Data.Top > maxY)
@@ -174,6 +187,16 @@ namespace VixenModules.Preview.VixenPreview
 
 			Data.Width = Width;
 			Data.Height = Height;
+		}
+
+		private void GDIPreviewForm_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			if (e.CloseReason == CloseReason.UserClosing)
+			{
+				MessageBox.Show("The preview can only be closed from the Preview Configuration dialog.", "Close",
+								MessageBoxButtons.OKCancel);
+				e.Cancel = true;
+			}
 		}
 	}
 }

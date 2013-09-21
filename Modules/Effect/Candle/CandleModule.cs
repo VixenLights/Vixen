@@ -23,6 +23,11 @@ namespace VixenModules.Effect.Candle
 			set { _data = (CandleData) value; }
 		}
 
+		protected override void TargetNodesChanged()
+		{
+			//Nothing to do
+		}
+
 		[Value]
 		public int FlickerFrequency
 		{

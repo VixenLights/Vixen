@@ -21,17 +21,19 @@ namespace VixenModules.Effect.Alternating
 	{
 		private AlternatingData _data;
 		private EffectIntents _elementData = null;
-		private Element element;
 		public Alternating()
 		{
 			_data = new AlternatingData();
 		}
 
+		protected override void TargetNodesChanged()
+		{
+			CheckForInvalidColorData();
+		}
+
 		protected override void _PreRender()
 		{
 			_elementData = new EffectIntents();
-
-			CheckForNullData();
 
 			foreach (ElementNode node in TargetNodes) {
 				if (node != null)
@@ -39,24 +41,33 @@ namespace VixenModules.Effect.Alternating
 			}
 		}
 
-		private void CheckForNullData()
+		//Validate that the we are using valid colors and set appropriate defaults if not.
+		private void CheckForInvalidColorData()
 		{
 			// check for sane default colors when first rendering it
-			//As we have RGB underlying we have to check for Black/Empty at the RGB level. Simple empty check does not work.
-			if (_data.Color1.ToArgb().ToArgb() == Color.Black.ToArgb() || _data.Color2.ToArgb().ToArgb() == Color.Black.ToArgb() ||
-				_data.ColorGradient1 == null || _data.ColorGradient2 == null) {
-				HashSet<Color> validColors = new HashSet<Color>();
-				validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
-				Color1 = validColors.DefaultIfEmpty(Color.White).First();
-				ColorGradient1 = new ColorGradient(validColors.DefaultIfEmpty(Color.White).First());
+			HashSet<Color> validColors = new HashSet<Color>();
+			validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
+	
+			//Validate Color 1
+			if (validColors.Any() && 
+				(!validColors.Contains(_data.Color1.ToArgb()) || !_data.ColorGradient1.GetColorsInGradient().IsSubsetOf(validColors)))
+			{
+				Color1 = validColors.First();
+				ColorGradient1 = new ColorGradient(validColors.First());
+			}
 
-				if (validColors.Count > 1) {
+			//Validate color 2
+			if (validColors.Any() &&
+				(!validColors.Contains(_data.Color2.ToArgb()) || !_data.ColorGradient2.GetColorsInGradient().IsSubsetOf(validColors)))
+			{
+				if (validColors.Count > 1)
+				{
 					Color2 = validColors.ElementAt(1);
 					ColorGradient2 = new ColorGradient(validColors.ElementAt(1));
-				}
-				else {
-					Color2 = validColors.DefaultIfEmpty(Color.Red).First();
-					ColorGradient2 = new ColorGradient(validColors.DefaultIfEmpty(Color.Red).First());
+				} else
+				{
+					Color2 = validColors.First();
+					ColorGradient2 = new ColorGradient(validColors.First());
 				}
 			}
 		}
@@ -88,7 +99,6 @@ namespace VixenModules.Effect.Alternating
 		{
 			get
 			{
-				CheckForNullData();
 				return _data.Color1;
 			}
 			set
@@ -114,7 +124,6 @@ namespace VixenModules.Effect.Alternating
 		{
 			get
 			{
-				CheckForNullData();
 				return _data.Color2;
 			}
 			set
@@ -195,7 +204,7 @@ namespace VixenModules.Effect.Alternating
 		{
 			get
 			{
-				CheckForNullData();
+				CheckForInvalidColorData();
 				return _data.ColorGradient1;
 			}
 			set
@@ -210,7 +219,7 @@ namespace VixenModules.Effect.Alternating
 		{
 			get
 			{
-				CheckForNullData();
+				CheckForInvalidColorData();
 				return _data.ColorGradient2;
 			}
 			set

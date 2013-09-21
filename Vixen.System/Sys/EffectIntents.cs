@@ -52,7 +52,8 @@ namespace Vixen.Sys
 			ArrayLocks.TryAdd(elementId, new object());
 			lock (ArrayLocks[elementId]) {
 				if (ContainsKey(elementId)) {
-					this[elementId].AddRange(intentNodes);
+					//this[elementId].AddRange(intentNodes);
+					this[elementId].AddRangeCombiner(intentNodes);
 				}
 				else {
 					this[elementId] = new IntentNodeCollection(intentNodes);
@@ -72,7 +73,8 @@ namespace Vixen.Sys
 			foreach (IntentNodeCollection intentNodes in Values) {
 				IntentNode[] newIntentNodes = intentNodes.Select(x => new IntentNode(x.Intent, x.StartTime + offset)).ToArray();
 				intentNodes.Clear();
-				intentNodes.AddRange(newIntentNodes);
+				 
+				intentNodes.AddRangeCombiner(newIntentNodes);
 			}
 			//foreach(KeyValuePair<Guid, CommandNode[]> kvp in this.ToArray()) {
 			//    List<CommandNode> newCommands = new List<CommandNode>();

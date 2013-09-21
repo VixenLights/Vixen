@@ -7,6 +7,10 @@ namespace Common.Controls.Timeline
 	/// </summary>
 	public class TimeInfo
 	{
+		public TimeInfo() {
+			 TimePerPixel = TimeSpan.FromTicks(100000);
+			 VisibleTimeStart = TimeSpan.Zero;
+		}
 		private TimeSpan m_timePerPixel;
 		private TimeSpan m_visibleTimeStart;
 		private TimeSpan m_totalTime;

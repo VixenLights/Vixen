@@ -19,6 +19,6 @@ namespace Vixen.Sys
 	public interface IIntent<out T> : IIntent
 		where T : IIntentDataType
 	{
-		T GetStateAt(TimeSpan intentRelativeTime);
+		new T GetStateAt(TimeSpan intentRelativeTime);
 	}
 }

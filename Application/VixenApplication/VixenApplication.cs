@@ -285,17 +285,23 @@ namespace VixenApplication
 		private void _OpenEditor(IEditorUserInterface editorUI)
 		{
 			_openEditors.Add(editorUI);
+			editorUI.Closing +=editorUI_Closing;
+			editorUI.Activated +=editorUI_Activated;
 
-			editorUI.Closing += (sender, e) =>
-			                    	{
-			                    		if (!_CloseEditor(sender as IEditorUserInterface)) {
-			                    			e.Cancel = true;
-			                    		}
-			                    	};
-
-			editorUI.Activated += (sender, e) => { _activeEditor = sender as IEditorUserInterface; };
-
+		 
 			editorUI.Start();
+		}
+
+		void editorUI_Activated(object sender, EventArgs e)
+		{
+			_activeEditor = sender as IEditorUserInterface; 
+		}
+
+		void editorUI_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+		{
+			if (!_CloseEditor(sender as IEditorUserInterface)) {
+				e.Cancel = true;
+			}  
 		}
 
 		private bool _CloseEditor(IEditorUserInterface editor)
@@ -312,12 +318,15 @@ namespace VixenApplication
 
 			if (_openEditors.Contains(editor)) {
 				_openEditors.Remove(editor);
-				Form editorForm = editor as Form;
-				editor.Dispose();
 			}
-
+			
+				_activeEditor= null;
+			
 			AddSequenceToRecentList(editor.Sequence.FilePath);
-
+			editor.Activated-= editorUI_Activated;
+			editor.Closing -= editorUI_Closing;
+			editor.Dispose();
+			editor = null;
 			return true;
 		}
 
@@ -369,7 +378,7 @@ namespace VixenApplication
 				}
 			}
 			catch (Exception ex) {
-				Logging.Error("Error trying to open file '" + filename + "': ", ex);
+				Logging.ErrorException("Error trying to open file '" + filename + "': ", ex);
 				MessageBox.Show("Error trying to open file '" + filename + "'.", "Error opening file", MessageBoxButtons.OK);
 			}
 		}
@@ -479,23 +488,11 @@ namespace VixenApplication
 		{
 			string logDirectory = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Vixen 3", "Logs");
 
-			string tempFilePath = Path.Combine(Path.GetTempPath(), "Logs", logName);
-			if (File.Exists(System.IO.Path.Combine(logDirectory, logName)))
-				using (var sr = new StreamReader(System.IO.Path.Combine(logDirectory, logName))) {
-					using (var sw = new StreamWriter(tempFilePath)) {
-						while (!sr.EndOfStream) {
-							sw.WriteLine(sr.ReadLine());
-						}
-					}
-				}
-
 			using (Process process = new Process()) {
-				process.StartInfo = new ProcessStartInfo("notepad.exe", tempFilePath);
+				process.StartInfo = new ProcessStartInfo("notepad.exe", Path.Combine(logDirectory,logName));
 				process.Start();
 
 			}
-			if (File.Exists(tempFilePath))
-				File.Delete(tempFilePath);
 		}
 
 		#region Recent Sequences list

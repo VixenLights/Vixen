@@ -4,6 +4,7 @@ using Vixen.Module.Effect;
 using Vixen.Sys;
 using System.Diagnostics;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Linq;
@@ -17,32 +18,31 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		public static void Rasterize(IEffectModuleInstance effect, Graphics g)
 		{
-			double width = g.VisibleClipBounds.Width;
-			double height = g.VisibleClipBounds.Height;
 
-			// As recommended by R#
-			if (Math.Abs(width - 0) < double.Epsilon || Math.Abs(height - 0) < double.Epsilon) return;
+			if (effect.ForceGenerateVisualRepresentation || Vixen.Common.Graphics.DisableEffectsEditorRendering) {
+				effect.GenerateVisualRepresentation(g, new Rectangle(0, 0, (int)g.VisibleClipBounds.Width, (int)g.VisibleClipBounds.Height));
+			} else {
+				double width = g.VisibleClipBounds.Width;
+				double height = g.VisibleClipBounds.Height;
 
-			Element[] elements = effect.TargetNodes.GetElements();
-			double heightPerElement = height / elements.Length;
+				// As recommended by R#
+				if (Math.Abs(width - 0) < double.Epsilon || Math.Abs(height - 0) < double.Epsilon)
+					return;
 
-			//Stopwatch timer = new Stopwatch();
-			//timer.Start();
-			EffectIntents effectIntents = effect.Render();
-			//timer.Stop();
-			//Console.WriteLine("Effect Render:" + timer.ElapsedMilliseconds);
+				IEnumerable<Element> elements = effect.TargetNodes.GetElements();
 
-			// Is this a Nutcracker effect?
-			//if (effect.TypeId.ToString().ToLower() == "82334cb3-9472-42fe-a221-8482f5c731db")
-			//{
-			//    g.FillRectangle(Brushes.Purple, new Rectangle(0, 0, (int)width, (int)height));
-			//    //intentRasterizer.Rasterize(elementIntentNode.Intent, new RectangleF((float)startPixelX, (float)y, (float)widthPixelX, (float)heightPerElement), g);
-			//}
-			//else
-			//{
-			//timer.Reset();
-			//timer.Start();
-			//using (IntentRasterizer intentRasterizer = new IntentRasterizer()) {
+				// limit the number of 'rows' rasterized
+				int tmpsiz = (int)(height / 2) + 1;
+				if (elements.Count() > tmpsiz)
+				{
+					int skip = elements.Count() / tmpsiz;
+					elements = elements.Where((element, index) => (index + 1) % skip == 0);
+					}
+
+				double heightPerElement = height / elements.Count();
+
+				EffectIntents effectIntents = effect.Render();
+
 				double y = 0;
 				foreach (Element element in elements) {
 					//Getting exception on null elements here... A simple check to look for these null values and ignore them
@@ -51,19 +51,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						if (elementIntents != null) {
 							foreach (IntentNode elementIntentNode in elementIntents) {
 								if (elementIntentNode == null) {
-								Logging.Error("Error: elementIntentNode was null when Rasterizing an effect (ID: " + effect.InstanceId + ")");
+									Logging.Error("Error: elementIntentNode was null when Rasterizing an effect (ID: " + effect.InstanceId + ")");
 									continue;
 								}
 								double startPixelX = width * _GetPercentage(elementIntentNode.StartTime, effect.TimeSpan);
 								double widthPixelX = width * _GetPercentage(elementIntentNode.TimeSpan, effect.TimeSpan);
-
-								// these were options to try and get the rasterization to 'overlap' slightly to remove vertical splits between intents.
-								// However, with the change to doubles and more precision, the issue seems to have disappeared. Nevertheless, leave these here.
-								//startPixelX -= 0.2;
-								//widthPixelX += 0.4;
-								//startPixelX = Math.Floor(startPixelX);
-								//widthPixelX = Math.Ceiling(widthPixelX);
-
 								intentRasterizer.Rasterize(elementIntentNode.Intent,
 														   new RectangleF((float)startPixelX, (float)y, (float)widthPixelX,
 																		  (float)heightPerElement), g);
@@ -71,10 +63,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						}
 					}
 					y += heightPerElement;
-				//}
-				//timer.Stop();
-				//Console.WriteLine("Effect Draw:" + timer.ElapsedMilliseconds);
-				//}
+				}
 			}
 		}
 

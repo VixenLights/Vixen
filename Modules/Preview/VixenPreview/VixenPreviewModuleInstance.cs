@@ -69,10 +69,10 @@ namespace VixenModules.Preview.VixenPreview
 		{
 			get {
 				 
-				if (new Properties.Settings().UseGDIRendering)
+				// if (new Properties.Settings().UseGDIRendering)
 					return true;
 
-				return !Vixen.Sys.VixenSystem.VersionBeyondWindowsXP;
+				// return !Vixen.Sys.VixenSystem.VersionBeyondWindowsXP;
 			}
 		}
 
@@ -211,13 +211,13 @@ namespace VixenModules.Preview.VixenPreview
 				}
 
 				if (!UseGDIPreviewRendering) {
-					((VixenPreviewDisplayD2D)displayForm).Scene.Update(ElementStates);
+					((VixenPreviewDisplayD2D)displayForm).Scene.Update(/*ElementStates*/);
 				}
 				else {
 					if (UseOldPreview)
-						((VixenPreviewDisplay)displayForm).PreviewControl.ProcessUpdateParallel(ElementStates);
+						((VixenPreviewDisplay)displayForm).PreviewControl.ProcessUpdateParallel(/*ElementStates*/);
 					else
-					((GDIPreviewForm)displayForm).Update(ElementStates);
+					((GDIPreviewForm)displayForm).UpdatePreview();
 				}
 			}
 			catch (Exception e) {

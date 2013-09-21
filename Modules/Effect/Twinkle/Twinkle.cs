@@ -26,20 +26,23 @@ namespace VixenModules.Effect.Twinkle
 			_data = new TwinkleData();
 		}
 
+		protected override void TargetNodesChanged()
+		{
+			CheckForInvalidColorData();
+		}
+
 		protected override void _PreRender()
 		{
 			_elementData = new EffectIntents();
 
 			IEnumerable<ElementNode> targetNodes = GetNodesToRenderOn();
 
-			CheckForNullData();
-
 			List<IndividualTwinkleDetails> twinkles = null;
 			if (!IndividualElements)
 				twinkles = GenerateTwinkleData();
 
 			int totalNodes = targetNodes.Count();
-			int i = 0;
+			double i = 0;
 
 			foreach (ElementNode node in targetNodes) {
 				if (node != null)
@@ -47,18 +50,21 @@ namespace VixenModules.Effect.Twinkle
 			}
 		}
 
-		private void CheckForNullData()
+		//Validate that the we are using valid colors and set appropriate defaults if not.
+		private void CheckForInvalidColorData()
 		{
-			if (_data.StaticColor.IsEmpty || _data.ColorGradient == null) //We have a new effect
+			HashSet<Color> validColors = new HashSet<Color>();
+			validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
+
+			if (validColors.Any() &&
+				(!validColors.Contains(_data.StaticColor) || !_data.ColorGradient.GetColorsInGradient().IsSubsetOf(validColors))) //Discrete colors specified
 			{
-				//Try to set a default color gradient from our available colors if we have discrete colors
-				HashSet<Color> validColors = new HashSet<Color>();
-				validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
-				ColorGradient = new ColorGradient(validColors.DefaultIfEmpty(Color.White).First());
+				_data.ColorGradient = new ColorGradient(validColors.DefaultIfEmpty(Color.White).First());
 
 				//Set a default color 
-				StaticColor = validColors.DefaultIfEmpty(Color.White).First();
+				_data.StaticColor = validColors.First();
 			}
+
 		}
 
 		protected override EffectIntents _Render()
@@ -177,7 +183,6 @@ namespace VixenModules.Effect.Twinkle
 		{
 			get
 			{
-				CheckForNullData();
 				return _data.StaticColor;
 			}
 			set
@@ -192,7 +197,6 @@ namespace VixenModules.Effect.Twinkle
 		{
 			get
 			{
-				CheckForNullData();
 				return _data.ColorGradient;
 			}
 			set

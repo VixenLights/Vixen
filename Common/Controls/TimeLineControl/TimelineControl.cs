@@ -9,6 +9,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Diagnostics;
 using VixenModules.Media.Audio;
+using System.Threading.Tasks;
 
 namespace Common.Controls.Timeline
 {
@@ -60,9 +61,51 @@ namespace Common.Controls.Timeline
 			Row.RowHeightChanged += RowHeightChangedHandler;
 			Row.RowHeightResized += RowHeightResizedHandler;
 		}
-
+	 
+		public void EnableDisableHandlers(bool enabled = true)
+		{
+			if (enabled) {
+				Row.RowToggled -= RowToggledHandler;
+				Row.RowHeightChanged -= RowHeightChangedHandler;
+				Row.RowHeightResized -= RowHeightResizedHandler;
+				Row.RowToggled += RowToggledHandler;
+				Row.RowHeightChanged += RowHeightChangedHandler;
+				Row.RowHeightResized += RowHeightResizedHandler;
+			} else {
+				Row.RowToggled -= RowToggledHandler;
+				Row.RowHeightChanged -= RowHeightChangedHandler;
+				Row.RowHeightResized -= RowHeightResizedHandler;
+			}
+			this.timelineRowList.EnableDisableHandlers(enabled);
+		}
 		#region Initialization
+		protected override void Dispose(bool disposing)
+		{
+			
+			Row.RowToggled -= RowToggledHandler;
+			Row.RowHeightChanged -= RowHeightChangedHandler;
+			Row.RowHeightResized -= RowHeightResizedHandler;
+			Vixen.Utility.cEventHelper.RemoveAllEventHandlers(this);
+			Vixen.Utility.cEventHelper.RemoveAllEventHandlers(TimeInfo);
+			TimeInfo = null;
 
+			if (grid != null) {
+				grid.Scroll -= GridScrolledHandler;
+				grid.VerticalOffsetChanged -= GridScrollVerticalHandler;
+				grid.Dispose();
+				Vixen.Utility.cEventHelper.RemoveAllEventHandlers(grid);
+				grid = null;
+			}
+			
+			if (timelineRowList != null) {
+				timelineRowList.Dispose();
+				timelineRowList= null;
+			}
+			if (waveform != null)
+				waveform.Dispose();
+			waveform= null;
+			base.Dispose(disposing);
+		}
 		private void InitializeControls()
 		{
 			this.SuspendLayout();
@@ -223,10 +266,15 @@ namespace Common.Controls.Timeline
 		}
 
 		[Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public Row ActiveRow
+		{
+			get { return grid.ActiveRow; }
+		}
+
+		[Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public IEnumerable<Row> VisibleRows
 		{
 			get { return grid.VisibleRows; }
-			set { grid.VisibleRows = value; }
 		}
 
 		[Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -250,7 +298,7 @@ namespace Common.Controls.Timeline
 		{
 			if (scale <= 0.0)
 				return;
-
+			grid.BeginDraw();
 			if (VisibleTimeSpan.Scale(scale) > TotalTime) {
 				TimePerPixel = TimeSpan.FromTicks(TotalTime.Ticks/grid.Width);
 				VisibleTimeStart = TimeSpan.Zero;
@@ -260,6 +308,7 @@ namespace Common.Controls.Timeline
 				if (VisibleTimeEnd > TotalTime)
 					VisibleTimeStart = TotalTime - VisibleTimeSpan;
 			}
+			grid.EndDraw();
 			grid.ResetAllElements();
 		}
 
@@ -269,18 +318,19 @@ namespace Common.Controls.Timeline
 				return;
 			bool heightChanged = false;
 			grid.BeginDraw();
-			foreach (Row r in Rows) {
+
+			foreach (Row r in Rows)
+			{
 				if (r.Height * scale > grid.Height) continue; //Don't scale a row beyond the grid height. How big do you need it?
-				r.Height = (int) (r.Height*scale);
+				r.Height = (int)(r.Height * scale);
 				heightChanged = true;
 			}
-			grid.EndDraw();
 
 			if (heightChanged) //Only reset if we actually changed a row height.
 			{
 				grid.ResetAllElements();
 			}
-			
+			grid.EndDraw();
 		}
 
 		public void ResizeGrid()
@@ -448,55 +498,61 @@ namespace Common.Controls.Timeline
 		public event EventHandler SelectionChanged
 		{
 			add { grid.SelectionChanged += value; }
-			remove { grid.SelectionChanged -= value; }
+			remove { if (grid != null) grid.SelectionChanged -= value; }
 		}
 
 		public event EventHandler<ElementEventArgs> ElementDoubleClicked
 		{
 			add { grid.ElementDoubleClicked += value; }
-			remove { grid.ElementDoubleClicked -= value; }
+			remove { if (grid != null) grid.ElementDoubleClicked -= value; }
 		}
 
 		public event EventHandler<MultiElementEventArgs> ElementsFinishedMoving
 		{
 			add { grid.ElementsFinishedMoving += value; }
-			remove { grid.ElementsFinishedMoving -= value; }
+			remove { if (grid != null) grid.ElementsFinishedMoving -= value; }
 		}
 
 		public event EventHandler<TimeSpanEventArgs> CursorMoved
 		{
 			add { grid.CursorMoved += value; }
-			remove { grid.CursorMoved -= value; }
+			remove { if (grid != null) grid.CursorMoved -= value; }
 		}
 
 		public event EventHandler VerticalOffsetChanged
 		{
 			add { grid.VerticalOffsetChanged += value; }
-			remove { grid.VerticalOffsetChanged -= value; }
+			remove { if (grid != null) grid.VerticalOffsetChanged -= value; }
 		}
 
 		public event EventHandler<ElementRowChangeEventArgs> ElementChangedRows
 		{
 			add { grid.ElementChangedRows += value; }
-			remove { grid.ElementChangedRows -= value; }
+			remove { if (grid != null) grid.ElementChangedRows -= value; }
 		}
 
 		public event EventHandler<TimelineDropEventArgs> DataDropped
 		{
 			add { grid.DataDropped += value; }
-			remove { grid.DataDropped -= value; }
+			remove { if (grid != null) grid.DataDropped -= value; }
 		}
 
 		public event EventHandler<ElementsChangedTimesEventArgs> ElementsMovedNew
 		{
 			add { grid.ElementsMovedNew += value; }
-			remove { grid.ElementsMovedNew -= value; }
+			remove { if (grid != null) grid.ElementsMovedNew -= value; }
 		}
 
 		public event EventHandler<ElementsSelectedEventArgs> ElementsSelected
 		{
 			add { grid.ElementsSelected += value; }
-			remove { grid.ElementsSelected -= value; }
+			remove { if (grid != null) grid.ElementsSelected -= value; }
+		}
+
+		public event EventHandler<ContextSelectedEventArgs> ContextSelected
+		{
+			add { grid.ContextSelected += value; }
+			remove { if (grid != null) grid.ContextSelected -= value; }
 		}
 
 		public event EventHandler<RulerClickedEventArgs> RulerClicked
@@ -518,7 +574,7 @@ namespace Common.Controls.Timeline
 		}
 
 		#endregion
-
+		
 		#region Event Handlers
 
 		private void GridScrollVerticalHandler(object sender, EventArgs e)

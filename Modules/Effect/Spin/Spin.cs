@@ -24,24 +24,29 @@ namespace VixenModules.Effect.Spin
 			_data = new SpinData();
 		}
 
+		protected override void TargetNodesChanged()
+		{
+			CheckForInvalidColorData();
+		}
+
 		protected override void _PreRender()
 		{
 			_elementData = new EffectIntents();
-			CheckForNullData();
+
 			DoRendering();
 		}
 
-		private void CheckForNullData()
+		//Validate that the we are using valid colors and set appropriate defaults if not.
+		private void CheckForInvalidColorData()
 		{
-			if (_data.StaticColor.IsEmpty || _data.ColorGradient == null) //We have a new effect
-			{
-				//Try to set a default color gradient from our available colors if we have discrete colors
-				HashSet<Color> validColors = new HashSet<Color>();
-				validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
-				ColorGradient = new ColorGradient(validColors.DefaultIfEmpty(Color.White).First());
+			HashSet<Color> validColors = new HashSet<Color>();
+			validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
 
-				//Set a default color 
-				StaticColor = validColors.DefaultIfEmpty(Color.White).First();
+			if (validColors.Any() &&
+				(!validColors.Contains(_data.StaticColor) || !_data.ColorGradient.GetColorsInGradient().IsSubsetOf(validColors))) //Discrete colors specified
+			{
+				_data.ColorGradient = new ColorGradient(validColors.DefaultIfEmpty(Color.White).First());
+				_data.StaticColor = validColors.First();
 			}
 		}
 
@@ -175,7 +180,7 @@ namespace VixenModules.Effect.Spin
 		{
 			get
 			{
-				CheckForNullData();
+				CheckForInvalidColorData();
 				return _data.StaticColor;
 			}
 
@@ -191,7 +196,7 @@ namespace VixenModules.Effect.Spin
 		{
 			get
 			{
-				CheckForNullData();
+				//CheckForInvalidColorData();
 				return _data.ColorGradient;
 			}
 			set

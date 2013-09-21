@@ -66,7 +66,8 @@ namespace VixenModules.Preview.VixenPreview {
 
 			Setup();
 
-			performanceToolStripMenuItem.Visible = Vixen.Sys.VixenSystem.VersionBeyondWindowsXP;
+			performanceToolStripMenuItem.Visible = false; //Vixen.Sys.VixenSystem.VersionBeyondWindowsXP;
+			
 			Properties.Settings settings = new Properties.Settings();
 
 			useDirect2DPreviewRenderingToolStripMenuItem.Checked = !settings.UseGDIRendering;
@@ -146,6 +147,7 @@ namespace VixenModules.Preview.VixenPreview {
 		}
 
 		private void buttonSave_Click(object sender, EventArgs e) {
+			SaveLocationDataForElements();
 			DialogResult = System.Windows.Forms.DialogResult.OK;
 			previewForm.Close();
 			Close();
@@ -268,7 +270,7 @@ namespace VixenModules.Preview.VixenPreview {
 			previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Select;
 		}
 
-		private void saveLocationDataToElementsToolStripMenuItem_Click(object sender, EventArgs e) {
+		private void SaveLocationDataForElements() {
 			Cursor = Cursors.WaitCursor;
 			foreach (var d in _data.DisplayItems) {
 				//_data.DisplayItems.ForEach(d => {

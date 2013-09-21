@@ -21,16 +21,20 @@ namespace VixenModules.Effect.Wipe {
 		}
 		WipeData _data = new WipeData();
 		private EffectIntents _elementData = null;
-		
-		protected override void _PreRender() {
 
-			CheckForEmptyData();
+		protected override void TargetNodesChanged()
+		{
+			CheckForInvalidColorData();
+		}
+
+		protected override void _PreRender() {
 
 			_elementData = new EffectIntents();
 
 			IEnumerable<IGrouping<int, ElementNode>> renderNodes = null;
 
-
+			var enumerator =  TargetNodes.SelectMany(x => x.GetLeafEnumerator());
+			var b = enumerator;
 			switch (_data.Direction) {
 				case WipeDirection.Up:
 					renderNodes = TargetNodes
@@ -150,7 +154,7 @@ namespace VixenModules.Effect.Wipe {
 					break;
 			}
 
-			if (renderNodes != null) {
+			if (renderNodes != null && renderNodes.Count()>0) {
 				TimeSpan effectTime = TimeSpan.Zero;
 				if (WipeByCount) {
 					int count = 0;
@@ -196,6 +200,7 @@ namespace VixenModules.Effect.Wipe {
 									pulse.ColorGradient = _data.ColorGradient;
 									pulse.LevelCurve = _data.Curve;
 									result = pulse.Render();
+									 
 									result.OffsetAllCommandsByTime(effectTime);
 									_elementData.Add(result);
 								}
@@ -214,28 +219,28 @@ namespace VixenModules.Effect.Wipe {
 			return _elementData;
 		}
 
-		public virtual bool IsDirty { get; protected set; }
-
 		public override IModuleDataModel ModuleData {
 			get { return _data; }
 			set { _data = value as WipeData; }
 		}
 
-		private void CheckForEmptyData()
+		
+
+		private void CheckForInvalidColorData()
 		{
-			if (_data.ColorGradient == null) //We have a new effect
+			HashSet<Color> validColors = new HashSet<Color>();
+			validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
+			if (validColors.Any() && !_data.ColorGradient.GetColorsInGradient().IsSubsetOf(validColors))
 			{
-				//Try to set a default color gradient from our available colors if we have discrete colors
-				HashSet<Color> validColors = new HashSet<Color>();
-				validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
-				_data.ColorGradient = new ColorGradient(validColors.DefaultIfEmpty(Color.White).First());
+				//Our color is not valid for any elements we have.
+				//Try to set a default color gradient from our available colors
+				_data.ColorGradient = new ColorGradient(validColors.First());
 			}
 		}
 
 		[Value]
 		public ColorGradient ColorGradient {
 			get {
-				CheckForEmptyData();
 				return _data.ColorGradient; 
 			}
 			set {
