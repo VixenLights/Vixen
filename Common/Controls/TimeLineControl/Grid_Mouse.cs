@@ -121,7 +121,10 @@ namespace Common.Controls.Timeline
 				}
 			} else if(e.Button == MouseButtons.Right)
 			{
-				_ContextSelected(m_mouseDownElements, pixelsToTime(gridLocation.X), rowAt(gridLocation));
+				ClearActiveRows();
+				Row row = rowAt(gridLocation);
+				row.Active = true;
+				_ContextSelected(m_mouseDownElements, pixelsToTime(gridLocation.X), row);
 			}
 
 		}
