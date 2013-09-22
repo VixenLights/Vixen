@@ -31,13 +31,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			intent.Dispatch(this);
 		}
 
-		public override void Handle(IIntent<LightingValue> obj)
+		private void HandleOne(IIntent<LightingValue> obj, TimeSpan tsStart, TimeSpan tsEnd)
 		{
-			LightingValue startValue = obj.GetStateAt(TimeSpan.Zero);
+			LightingValue startValue = obj.GetStateAt(tsStart);
 			// This is gross, but it's because when you get a value from an intent, the time
 			// is used in an exclusive manner for reasons.  So this is trying to backup
 			// the end time without affecting the the resulting value too much.
-			LightingValue endValue = obj.GetStateAt(obj.TimeSpan - _oneTick);
+			LightingValue endValue = obj.GetStateAt(tsEnd - _oneTick);
 
 			// Why we have to do this? I have no idea, but without it, the gradient rendering gives strange artefacts.
 			// (If you want to see what I mean, make a long spin (minutes) across a bunch of elements in a group with
@@ -55,6 +55,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			Color startColor = startValue.GetAlphaChannelIntensityAffectedColor();
 			Color endColor = endValue.GetAlphaChannelIntensityAffectedColor();
+			//Console.WriteLine("   x: {0}, wid: {1}, tss: {2}, tse: {3}, sc: {4}, ec: {5}", _rect.X, _rect.Width, tsStart.TotalMilliseconds, tsEnd.TotalMilliseconds, startColor, endColor);
 			if (startColor == endColor)
 			{
 				using (
@@ -76,7 +77,39 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		~IntentRasterizer() {
+
+		public override void Handle(IIntent<LightingValue> obj)
+		{
+			// Handle other intents the same old way
+			if (obj.GetType().Name != "StaticLightingArrayIntent")
+				HandleOne(obj, TimeSpan.Zero, obj.TimeSpan);
+
+			// StaticLightingArrayIntents are fundementally sampled values (not gradients)
+			// so we try to improve their appearance by creating more samples to rasterize.
+			// The question is how many... each takes precious UI time to render.
+			// For now try almost easiest, fixed num per sec
+			int nChunks = 1 + (int)obj.TimeSpan.TotalMilliseconds/500;
+			var tsStart = TimeSpan.Zero;
+			var rectOrig = _rect;
+			float rectWid = rectOrig.Width/nChunks;
+			for (int i = 1; i <= nChunks; i++)
+			{
+				// we'll use same old code to draw rectangles...
+				// need to manipulate the start/end time and our _rect member
+				var tsEnd = TimeSpan.FromMilliseconds( (double)obj.TimeSpan.TotalMilliseconds / nChunks * i);
+				float rectX = rectOrig.X + (i - 1) * rectWid;
+				_rect.X = rectX;
+				_rect.Width = rectWid;
+				// call the 
+				HandleOne(obj, tsStart, tsEnd);
+				tsStart = tsEnd;
+			}
+			_rect = rectOrig;
+		}
+
+
+		~IntentRasterizer()
+		{
 			Dispose(false);
 		}
 		protected void Dispose(bool disposing) {
