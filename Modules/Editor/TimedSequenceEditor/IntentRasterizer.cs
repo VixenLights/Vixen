@@ -88,7 +88,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// so we try to improve their appearance by creating more samples to rasterize.
 			// The question is how many... each takes precious UI time to render.
 			// For now try almost easiest, fixed num per sec
-			int nChunks = 1 + (int)obj.TimeSpan.TotalMilliseconds/500;
+			// TODO: can we figure out what dimensions we're rendering for, and then rasterize based on that?  That's the ideal solution: one chunk per 2 pixels or so.
+			int nChunks = 1 + (int)obj.TimeSpan.TotalMilliseconds/100;
 			var tsStart = TimeSpan.Zero;
 			var rectOrig = _rect;
 			float rectWid = rectOrig.Width/nChunks;
