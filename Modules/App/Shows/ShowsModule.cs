@@ -14,7 +14,7 @@ namespace VixenModules.App.Shows
 		//private const string MENU_ID_ROOT = "ShowsRoot";
 
 		static public string MENU_ID_ROOT = "SuperSchedulerRoot";
-		static public string MENU_ID_NAME = "New Scheduler";
+		static public string MENU_ID_NAME = "Scheduler";
 
 		public override void Loading()
 		{

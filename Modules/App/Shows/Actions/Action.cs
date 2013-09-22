@@ -21,7 +21,7 @@ namespace VixenModules.App.Shows
 		public ShowItem ShowItem { get; set; }
 		public string ResultString { get; set; }
 		public bool IsRunning { get; set; }
-		public bool PreProcessingCompleted { get; set; }
+		public virtual bool PreProcessingCompleted { get; set; }
 
 		// Must be overridden
 		public virtual void Execute() 

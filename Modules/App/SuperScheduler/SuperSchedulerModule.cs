@@ -19,7 +19,7 @@ namespace VixenModules.App.SuperScheduler
 		//private StatusForm statusForm = null;
 
 		static public string MENU_ID_ROOT = "SuperSchedulerRoot";
-		static public string MENU_ID_NAME = "New Scheduler";
+		static public string MENU_ID_NAME = "Scheduler";
 
 		public override void Loading()
 		{

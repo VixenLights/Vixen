@@ -162,7 +162,6 @@
 			// buttonHelp
 			// 
 			this.buttonHelp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-			this.buttonHelp.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.buttonHelp.Image = ((System.Drawing.Image)(resources.GetObject("buttonHelp.Image")));
 			this.buttonHelp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.buttonHelp.Location = new System.Drawing.Point(12, 377);

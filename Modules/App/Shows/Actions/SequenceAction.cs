@@ -28,8 +28,7 @@ namespace VixenModules.App.Shows
 			try
 			{
 				IsRunning = true;
-				if (_sequenceContext == null) 
-					PreProcess();
+				PreProcess();
 
 				//_sequenceContext.Play(TimeSpan.Zero, _sequenceContext.Sequence.Length);
 				_sequenceContext.Start();
@@ -54,12 +53,30 @@ namespace VixenModules.App.Shows
 			base.Stop();
 		}
 
+		public override bool PreProcessingCompleted
+		{
+			get
+			{
+				return SequenceChanged();
+			}
+			set
+			{
+				base.PreProcessingCompleted = value;
+			}
+		}
+
 		public override void PreProcess()
 		{
 			try
 			{
-				if (_sequenceContext == null)
+				if (_sequenceContext == null || SequenceChanged())
 				{
+					if (_sequenceContext != null)
+					{
+						_sequenceContext.Dispose();
+						_sequenceContext = null;
+					}
+
 					ISequence sequence = SequenceService.Instance.Load(ShowItem.Sequence_FileName);
 					//IContext context = VixenSystem.Contexts.CreateSequenceContext(new ContextFeatures(ContextCaching.ContextLevelCaching),
 					//												 sequence);
@@ -81,15 +98,24 @@ namespace VixenModules.App.Shows
 			}
 		}
 
+		DateTime _lastSequenceDateTime = DateTime.Now;
+		private bool SequenceChanged()
+		{
+			//Console.WriteLine("SequenceFileUpdated");
+			bool _datesEqual = false;
+
+			if (System.IO.File.Exists(ShowItem.Sequence_FileName))
+			{
+				DateTime _lastWriteTime = System.IO.File.GetLastWriteTime(ShowItem.Sequence_FileName);
+				_datesEqual = (_lastSequenceDateTime.CompareTo(_lastWriteTime) != 0);
+				_lastSequenceDateTime = _lastWriteTime;
+			}
+			return !_datesEqual;
+		}
+
 		private void sequence_Ended(object sender, EventArgs e)
 		{
 			IContext context = sender as IContext;
-			//context.ContextEnded -= sequence_Ended;
-			//context.Stop();
-			//context.Play(TimeSpan.Zero, TimeSpan.Zero);
-			//context.T
-			//_sequenceContext.UpdateElementStates(TimeSpan.Zero);
-			//context.Stop();
 			base.Complete();
 		}
 
@@ -100,8 +126,11 @@ namespace VixenModules.App.Shows
 
 		public void Dispose()
 		{
-			_sequenceContext.Stop();
+			if (_sequenceContext != null)
+				_sequenceContext.Dispose();
+
 			_sequenceContext = null;
+
 			GC.SuppressFinalize(this);
 		}
 	}
