@@ -316,6 +316,10 @@ namespace VixenModules.App.SuperScheduler
 			if (Show != null)
 			{
 				State = StateType.Running;
+
+				// Sort the items
+				Show.Items.Sort((item1, item2) => item1.ItemOrder.CompareTo(item2.ItemOrder));
+
 				foreach (Shows.ShowItem item in Show.GetItems(Shows.ShowItemType.Startup))
 				{
 					ItemQueue.Enqueue(item);
@@ -366,9 +370,6 @@ namespace VixenModules.App.SuperScheduler
 			if (Show != null && State == StateType.Running)
 			{
 				State = StateType.Running;
-
-				// Sort the items
-				Show.Items.Sort((item1, item2) => item1.ItemOrder.CompareTo(item2.ItemOrder));
 
 				foreach (Shows.ShowItem item in Show.GetItems(Shows.ShowItemType.Sequential))
 				{
