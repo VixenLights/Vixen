@@ -225,6 +225,15 @@ namespace VixenModules.App.SuperScheduler
 				&& CompareTodaysDate(EndDate) <= 0
 				&& DateTime.Now.CompareTo(StartTime) >= 0
 				&& DateTime.Now.CompareTo(EndTime) <= 0
+				&& (
+					   (DateTime.Now.DayOfWeek == DayOfWeek.Saturday && Saturday)
+					|| (DateTime.Now.DayOfWeek == DayOfWeek.Sunday && Sunday)
+					|| (DateTime.Now.DayOfWeek == DayOfWeek.Monday && Monday)
+					|| (DateTime.Now.DayOfWeek == DayOfWeek.Tuesday && Tuesday)
+					|| (DateTime.Now.DayOfWeek == DayOfWeek.Wednesday && Wednesday)
+					|| (DateTime.Now.DayOfWeek == DayOfWeek.Thursday && Thursday)
+					|| (DateTime.Now.DayOfWeek == DayOfWeek.Friday && Friday)
+				   )
 			   )
 			{
 				Start(false);
