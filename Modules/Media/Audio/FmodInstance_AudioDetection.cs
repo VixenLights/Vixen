@@ -6,7 +6,7 @@ using System.Timers;
 
 namespace VixenModules.Media.Audio
 {
-	internal partial class FmodInstance
+	public partial class FmodInstance
 	{
 		public readonly string[] NOTE =
 			{

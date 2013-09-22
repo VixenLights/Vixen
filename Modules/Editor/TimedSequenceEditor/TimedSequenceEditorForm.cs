@@ -108,7 +108,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			InitUndo();
 			updateButtonStates();
 			LoadVirtualEffects();
-
+		 
 #if DEBUG
 			ToolStripButton b = new ToolStripButton("[Debug Break]");
 			b.Click += b_Click;
@@ -247,6 +247,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
+		 
 		#endregion
 
 		#region Private Properties
@@ -372,7 +373,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				                                                  	});
 
 				populateGridWithMarks();
-
+				
 				var t2 = Task.Factory.StartNew(() => populateWaveformAudio());
 
 				//This path is followed for new and existing sequences so we need to determine which we have and set modified accordingly.
@@ -386,7 +387,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				else {
 					sequenceNotModified();
 				}
-
+				PopulateAudioDropdown();
 				Logging.Debug(string.Format("Sequence {0} took {1} to load. ", sequence.Name, loadingWatch.Elapsed));
 			}
 			catch (Exception ee) {
@@ -460,22 +461,37 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 			}
 		}
-
+		private void PopulateAudioDropdown()
+		{
+			if (this.InvokeRequired) {
+				this.Invoke(new Vixen.Delegates.GenericDelegate(PopulateAudioDropdown));
+			} else {
+				using (var fmod = new FmodInstance()) {
+					cboAudioDevices.Items.Clear();
+					fmod.AudioDevices.OrderBy(a => a.Item1).Select(b => b.Item2).ToList().ForEach(device => {
+						cboAudioDevices.Items.Add(device);
+					});
+					cboAudioDevices.SelectedIndex=0;
+				}
+			}
+		}
 		private void populateWaveformAudio()
 		{
 			if (_sequence.GetAllMedia().Any()) {
 				IMediaModuleInstance media = _sequence.GetAllMedia().First();
 				Audio audio = media as Audio;
+				
 				if (audio.MediaExists)
 				{
 					timelineControl.Audio = audio;
+					PopulateAudioDropdown();
 				} else
 				{
 					string message = String.Format("Audio file not found on the path:\n\n {0}\n\nPlease Check your settings/path.", audio.MediaFilePath);
 					MessageBox.Show(message, "Missing audio file");
 				}
 
-				toolStripMenuItem_removeAudio.Enabled = true;
+				 
 			}
 		}
 
@@ -831,7 +847,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_context.SequenceEnded += context_SequenceEnded;
 			//_context.ProgramEnded += _context_ProgramEnded;
 			_context.ContextEnded += context_ContextEnded;
-
+			
 			updateButtonStates();
 		}
 
@@ -2102,6 +2118,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			//loadingTask = Task.Factory.StartNew(() => loadSequence(_sequence), token);
 			loadSequence(_sequence);
+		}
+
+		private void cboAudioDevices_TextChanged(object sender, EventArgs e)
+		{
+			Vixen.Sys.State.Variables.SelectedAudioDeviceIndex= cboAudioDevices.SelectedIndex;
+		}
+
+		private void cboAudioDevices_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			Vixen.Sys.State.Variables.SelectedAudioDeviceIndex= cboAudioDevices.SelectedIndex;
 		}
 
 	}

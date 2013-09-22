@@ -100,7 +100,7 @@ namespace BaseSequence
 
 		public IEnumerable<IMediaModuleInstance> GetAllMedia()
 		{
-			return SequenceData.Media;
+			return SequenceData== null?null: SequenceData.Media;
 		}
 
 		public void ClearMedia()
