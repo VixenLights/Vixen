@@ -8,7 +8,7 @@ using FMOD;
 
 namespace VixenModules.Media.Audio
 {
-	internal partial class FmodInstance : IDisposable
+	public partial class FmodInstance : IDisposable
 	{
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
@@ -28,26 +28,42 @@ namespace VixenModules.Media.Audio
 		private static bool highPassFilterEnabled = false;
 
 		private Timer fmodUpdateTimer;
-
-
-		public FmodInstance(string fileName)
+		
+		public List<Tuple<int, string>> AudioDevices
 		{
-			_audioSystem = fmod.GetInstance(-1);
-			_audioSystem.SystemObject.createDSPByType(FMOD.DSP_TYPE.LOWPASS, ref dsplowpass);
-			_audioSystem.SystemObject.createDSPByType(FMOD.DSP_TYPE.HIGHPASS, ref dsphighpass);
+			get
+			{
+				List<Tuple<int, string>> ret = new List<Tuple<int, string>>();
+				int i = 0;
+				fmod.GetSoundDeviceList().ToList().ForEach(device => {
+					ret.Add(new Tuple<int, string>(i, device));
+					i++;
+				});
+				return ret;
+			}
+		}
 
+		private static object lockObject = new object();
+		public FmodInstance(string fileName=null)
+		{
+			lock (lockObject) {
+				_audioSystem = fmod.GetInstance(fileName==null?-1:Vixen.Sys.State.Variables.SelectedAudioDeviceIndex);
+				_audioSystem.SystemObject.createDSPByType(FMOD.DSP_TYPE.LOWPASS, ref dsplowpass);
+				_audioSystem.SystemObject.createDSPByType(FMOD.DSP_TYPE.HIGHPASS, ref dsphighpass);
+			}
 			//Load(fileName);
 			//Changed from the above to allow sampling of the data. Could not extract data for waveform from the default
 			//Is there another way to get the data with the default wrapper method.
-			LoadAsSample(fileName);
-			populateStats();
-
+			if (!string.IsNullOrWhiteSpace(fileName)) {
+				LoadAsSample(fileName);
+				populateStats();
+			}
 			fmodUpdateTimer = new Timer();
 			fmodUpdateTimer.Elapsed += fmodUpdateTimer_Elapsed;
 			fmodUpdateTimer.Interval = 100;
 			fmodUpdateTimer.Enabled = true;
 		}
-
+		public int AudioDeviceIndex { get { return _audioSystem.DeviceIndex; } set { _audioSystem.DeviceIndex = value; } }
 		private void fmodUpdateTimer_Elapsed(object sender, ElapsedEventArgs e)
 		{
 			if (_audioSystem != null && _audioSystem.SystemObject != null)
@@ -229,7 +245,9 @@ namespace VixenModules.Media.Audio
 		}
 
 		public void Play()
-		{
+		{	
+			AudioDeviceIndex=	Vixen.Sys.State.Variables.SelectedAudioDeviceIndex;
+			
 			if (_channel != null && !_channel.IsPlaying) {
 				SetStartTime(_startTime);
 				_audioSystem.Play(_channel, true);

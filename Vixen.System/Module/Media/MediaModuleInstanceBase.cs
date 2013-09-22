@@ -18,6 +18,7 @@ namespace Vixen.Module.Media
 		public abstract void LoadMedia(TimeSpan startTime);
 
 		public abstract ITiming TimingSource { get; }
+		public abstract int CurrentPlaybackDeviceIndex { get; set; }
 
 		public virtual bool HasSetup
 		{

@@ -733,6 +733,7 @@
     <Compile Include="Sys\State\Execution\ClosingState.cs" />
     <Compile Include="Sys\State\Execution\TestOpenState.cs" />
     <Compile Include="Sys\State\Execution\TestOpeningState.cs" />
+    <Compile Include="Sys\State\Variables.cs" />
     <Compile Include="Sys\SystemClock.cs" />
     <Compile Include="Sys\Managers\NodeManager.cs" />
     <Compile Include="Sys\SystemContext.cs" />
