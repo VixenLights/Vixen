@@ -49,8 +49,10 @@ namespace VixenModules.App.SuperScheduler
 		#region Variables
 
 		Shows.ShowItem _currentItem = null;
-		CancellationTokenSource tokenSourcePreProcess = new CancellationTokenSource();
-		CancellationToken tokenPreProcess;
+		CancellationTokenSource tokenSourcePreProcess;
+		//CancellationToken tokenPreProcess;
+		CancellationTokenSource tokenSourcePreProcessAll;
+		//CancellationToken tokenPreProcessAll;
 
 		#endregion // Variables
 
@@ -259,8 +261,10 @@ namespace VixenModules.App.SuperScheduler
 			{
 				State = StateType.Waiting;
 				int runningCount = RunningActions.Count();
-				if (tokenPreProcess.CanBeCanceled)
+				if (tokenSourcePreProcess != null && tokenSourcePreProcess.Token.CanBeCanceled)
 					tokenSourcePreProcess.Cancel();
+				if (tokenSourcePreProcessAll != null && tokenSourcePreProcessAll.Token.CanBeCanceled)
+					tokenSourcePreProcessAll.Cancel();
 				ItemQueue.Clear();
 				for (int i = 0; i < runningCount; i++)
 				{
@@ -280,8 +284,38 @@ namespace VixenModules.App.SuperScheduler
 
 		public void Start(bool manuallyStarted)
 		{
+			State = StateType.Running;
+
 			ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Show started");
-			BeginStartup();				
+
+			// Do this in a task so we don't stop Vixen while pre-processing!
+			tokenSourcePreProcessAll = new CancellationTokenSource();
+			Task preProcessTask = new Task(() => PreProcessActionTask(), tokenSourcePreProcessAll.Token);
+			preProcessTask.ContinueWith(task =>
+			{
+				BeginStartup();
+			});
+
+			preProcessTask.Start();
+
+			//BeginStartup();
+		}
+
+		private void PreProcessActionTask()
+		{
+			// Pre-Process all the actions to fill up our memory
+			foreach (Shows.ShowItem item in Show.GetItems(Shows.ShowItemType.All))
+			{
+				ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Pre-processing: " + item.Name);
+				Shows.Action action = item.GetAction();
+
+				if (!action.PreProcessingCompleted)
+				{
+					if (tokenSourcePreProcessAll != null && tokenSourcePreProcessAll.IsCancellationRequested) return;
+					if (tokenSourcePreProcess != null && tokenSourcePreProcess.IsCancellationRequested) return;
+					action.PreProcess();
+				}
+			}
 		}
 
 		private void ExecuteAction(Shows.Action action)
@@ -293,7 +327,8 @@ namespace VixenModules.App.SuperScheduler
 					ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Pre-processing action: " + action.ShowItem.Name);
 
 					// Do this in a task so we don't stop Vixen while pre-processing!
-					Task preProcessTask = new Task(() => action.PreProcess(), tokenPreProcess);
+					tokenSourcePreProcessAll = new CancellationTokenSource();
+					Task preProcessTask = new Task(() => action.PreProcess(), tokenSourcePreProcess.Token);
 					preProcessTask.ContinueWith(task =>
 						{
 							ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Starting action: " + action.ShowItem.Name);
@@ -324,8 +359,6 @@ namespace VixenModules.App.SuperScheduler
 		{
 			if (Show != null)
 			{
-				State = StateType.Running;
-
 				// Sort the items
 				Show.Items.Sort((item1, item2) => item1.ItemOrder.CompareTo(item2.ItemOrder));
 
@@ -533,8 +566,10 @@ namespace VixenModules.App.SuperScheduler
 
 		public void Dispose()
 		{
-			if (tokenPreProcess.CanBeCanceled)
+			if (tokenSourcePreProcess != null && tokenSourcePreProcess.Token.CanBeCanceled)
 				tokenSourcePreProcess.Cancel();
+			if (tokenSourcePreProcessAll != null && tokenSourcePreProcessAll.Token.CanBeCanceled)
+				tokenSourcePreProcessAll.Cancel();
 		}
 	}
 }

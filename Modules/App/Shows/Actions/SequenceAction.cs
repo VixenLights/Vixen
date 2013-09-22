@@ -78,17 +78,18 @@ namespace VixenModules.App.Shows
 					}
 
 					ISequence sequence = SequenceService.Instance.Load(ShowItem.Sequence_FileName);
-					//IContext context = VixenSystem.Contexts.CreateSequenceContext(new ContextFeatures(ContextCaching.ContextLevelCaching),
-					//												 sequence);
+					// Why doesn't this work?
+					//IContext context = VixenSystem.Contexts.CreateSequenceContext(new ContextFeatures(ContextCaching.ContextLevelCaching), sequence);
 					IContext context = VixenSystem.Contexts.CreateSequenceContext(new ContextFeatures(ContextCaching.NoCaching), sequence);
 
-					//foreach (IEffectNode effectNode in sequence.SequenceData.EffectData.Cast<IEffectNode>())
-					//{
-					//	effectNode.Effect.PreRender();
-					//}
-					_sequenceContext = context;
+					foreach (IEffectNode effectNode in sequence.SequenceData.EffectData.Cast<IEffectNode>())
+					{
+						effectNode.Effect.PreRender();
+					}
 
-					_sequenceContext.ContextEnded += sequence_Ended;
+					context.ContextEnded += sequence_Ended;
+
+					_sequenceContext = context;
 				}
 				PreProcessingCompleted = true;
 			}
