@@ -11,6 +11,7 @@ namespace FastPixel
 		private byte[] rgbValues;
 		private BitmapData bmpData;
 		private IntPtr bmpPtr;
+
 		public bool locked = false;
 
 		private bool _isAlpha = false;
@@ -84,6 +85,60 @@ namespace FastPixel
 			this._isAlpha = (this.Bitmap.PixelFormat == (this.Bitmap.PixelFormat | PixelFormat.Alpha));
 			this._width = _bitmap.Width;
 			this._height = _bitmap.Height;
+		}
+
+
+		public void CloneToBuffer(Bitmap bitmapToClone)
+		{
+			if (bitmapToClone.Width != _bitmap.Width || bitmapToClone.Height != _bitmap.Height)
+			{
+				_bitmap = new Bitmap(bitmapToClone.Width, bitmapToClone.Height);
+				_width = bitmapToClone.Width;
+				_height = bitmapToClone.Height;
+				_isAlpha = (bitmapToClone.PixelFormat == (bitmapToClone.PixelFormat | PixelFormat.Alpha));
+			}
+			Rectangle rect = new Rectangle(0, 0, bitmapToClone.Width, bitmapToClone.Height);
+			BitmapData bitmapData = bitmapToClone.LockBits(rect, ImageLockMode.ReadOnly, bitmapToClone.PixelFormat);
+			IntPtr bmpPtr = bitmapData.Scan0;
+
+			if (this.IsAlphaBitmap) {
+				int bytes = (this.Width*this.Height)*4;
+				rgbValues = new byte[bytes];
+				System.Runtime.InteropServices.Marshal.Copy(bmpPtr, rgbValues, 0, rgbValues.Length);
+			}
+			else {
+				int bytes = (this.Width*this.Height)*3;
+				rgbValues = new byte[bytes];
+				System.Runtime.InteropServices.Marshal.Copy(bmpPtr, rgbValues, 0, rgbValues.Length);
+			}
+			bitmapToClone.UnlockBits(bitmapData);
+			bitmapData = null;
+		
+		}
+
+		public void LockFromBuffer()
+		{
+			if (this.locked)
+				throw new Exception("Bitmap already locked.");
+			locked = true;
+		}
+
+		public void UnlockFromBuffer()
+		{
+			if (!this.locked)
+				throw new Exception("Bitmap not locked.");
+
+			Rectangle rect = new Rectangle(0, 0, this.Width, this.Height);
+			BitmapData bmpData = Bitmap.LockBits(rect, ImageLockMode.WriteOnly, this.Bitmap.PixelFormat);
+			IntPtr bmpPtr = bmpData.Scan0;
+
+			System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, bmpPtr, rgbValues.Length);
+
+			// Unlock the bits.;
+			Bitmap.UnlockBits(bmpData);
+			rgbValues = null;
+			bmpData = null;
+			locked = false;
 		}
 
 		public void Lock()

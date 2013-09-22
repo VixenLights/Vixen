@@ -221,7 +221,7 @@ namespace VixenModules.Preview.VixenPreview
 				//}
 			}
 			catch (Exception e) {
-				Logging.Error("Exception in preview update", e);
+				Logging.Error("Exception in preview update {0} - {1}", e.Message, e.StackTrace);
 				//Console.WriteLine(e.ToString());
 			}
 
