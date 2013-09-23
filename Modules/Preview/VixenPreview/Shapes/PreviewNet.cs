@@ -35,8 +35,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			initiallyAssignedNode = selectedNode;
 
 			Layout();
-
-			//DoResize += new ResizeEvent(OnResize);
 		}
 
 		[OnDeserialized]
@@ -44,7 +42,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			if (_pixelSpacing == 0)
 				_pixelSpacing = 8;
-			//Layout();
 		}
 
 		#region "Properties"
@@ -163,12 +160,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public override void Layout()
 		{
-			//Console.WriteLine("Layout");
-			//if (_pixels == null) return;
-			//if (_pixels.Count() > 0 && _pixels[0].Node == null) return;
-
 			ElementNode node = null;
-			//Guid nodeId = Guid.Empty;
+
 			if (PixelCount > 0) {
 				node = _pixels[0].Node;
 				_pixels.Clear();
@@ -195,9 +188,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			Point[] points = {tL, tR, bR, bL};
 
 			if (rect.Width > 0 && rect.Height > 0) {
-
-
-
 				using (var b = new Bitmap(rect.Width, rect.Height)) {
 					Graphics g = Graphics.FromImage(b);
 					g.Clear(Color.Transparent);
