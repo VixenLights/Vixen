@@ -94,12 +94,7 @@ namespace VixenModules.Preview.VixenPreview
 
 				if (UseGDIPreviewRendering)
 				{
-					if (UseOldPreview) {
-						displayForm = new VixenPreviewDisplay();
-						displayForm.Data = GetDataModel();
-					} else {
-						displayForm = new GDIPreviewForm(GetDataModel());
-					}
+					displayForm = new GDIPreviewForm(GetDataModel());
 				}
 				else
 				{

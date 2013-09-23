@@ -40,6 +40,9 @@ namespace Vixen.Sys
 
 		public static InsertDataListenerStack operator -(InsertDataListenerStack stack, DataListener listener)
 		{
+			if (stack == null)
+				return null;
+
 			DataListener value = stack._listeners.FirstOrDefault(x => x.Method.Name == listener.Method.Name);
 			if (value != null) {
 				stack._listeners.Remove(value);

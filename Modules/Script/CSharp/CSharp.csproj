@@ -54,6 +54,11 @@
       <Name>Vixen</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\Common\ValueTypes\ValueTypes.csproj">
+      <Project>{d9a7e8bc-5617-486d-9da5-89c5861a0f88}</Project>
+      <Name>ValueTypes</Name>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="NLog">

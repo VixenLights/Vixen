@@ -19,7 +19,7 @@ namespace FMOD {
 
         List<SoundChannel> m_channels;
                
-        static public fmod GetInstance(int deviceIndex) {
+        static public fmod GetInstance(int deviceIndex=-1) {
             if(m_systems.Count == 0) {
                 FMODSystem system = null;
 

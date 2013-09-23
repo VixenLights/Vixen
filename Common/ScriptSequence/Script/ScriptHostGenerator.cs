@@ -6,7 +6,7 @@ using Vixen.Module.Effect;
 using Vixen.Sys;
 using System.Reflection;
 using Vixen.Module.Script;
-
+ 
 namespace Common.ScriptSequence.Script
 {
 	internal class ScriptHostGenerator
@@ -23,15 +23,10 @@ namespace Common.ScriptSequence.Script
 		                                       	"System.Drawing.dll",
 		                                       	"System.Core.dll",
 		                                       	"Vixen.dll",
-		                                       	"Common\\Controls.dll",
-		                                       	"Modules\\App\\ColorGradients.dll",
-		                                       	"Modules\\App\\Curves.dll",
-		                                       	"Modules\\Effect\\Candle.dll",
-		                                       	"Modules\\Effect\\Chase.dll",
-		                                       	"Modules\\Effect\\Nutcracker.dll",
-		                                       	"Modules\\Effect\\Spin.dll",
-		                                       	"Modules\\Effect\\Twinkle.dll",
-		                                       	//"Modules\\Effect\\SetPosition.dll",
+		                                        System.IO.Path.Combine(Environment.CurrentDirectory,"Common\\Controls.dll"),
+												System.IO.Path.Combine(Environment.CurrentDirectory,"Common\\ValueTypes.dll"),
+		                                       	System.IO.Path.Combine(Environment.CurrentDirectory,"Modules\\App\\ColorGradients.dll"),
+		                                       	System.IO.Path.Combine(Environment.CurrentDirectory,"Modules\\App\\Curves.dll"),
 		                                       	"Microsoft.CSharp.dll" // Required for dynamic.
 							  });
 				//Paths to look for Effects and other items to reference in the Script generator
