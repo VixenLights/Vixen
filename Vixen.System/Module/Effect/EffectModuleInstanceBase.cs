@@ -76,7 +76,7 @@ namespace Vixen.Module.Effect
 			_PreRender();
 			IsDirty = false;
 			if ( /*++prerendCnt % 1000 == 0 ||*/ sw.ElapsedMilliseconds > 100)
-				Logging.Error(" {0}, {1}ms, eff: {2}, node: {3}", prerendCnt, sw.ElapsedMilliseconds, this.GetType().Name, TargetNodes[0].Name); 
+				Logging.Debug(" {0}, {1}ms, eff: {2}, node: {3}", prerendCnt, sw.ElapsedMilliseconds, this.GetType().Name, TargetNodes[0].Name); 
 		}
 
 		public EffectIntents Render()

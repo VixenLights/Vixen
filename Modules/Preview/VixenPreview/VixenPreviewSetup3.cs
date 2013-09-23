@@ -66,7 +66,10 @@ namespace VixenModules.Preview.VixenPreview {
 
 			Setup();
 
-			performanceToolStripMenuItem.Visible = Vixen.Sys.VixenSystem.VersionBeyondWindowsXP;
+			// disable the D2D preview option for now; the GDI performs just as well, and is more reliable (eg. older machines, not HW accelerated machines, etc.)
+			//performanceToolStripMenuItem.Visible = Vixen.Sys.VixenSystem.VersionBeyondWindowsXP;
+			performanceToolStripMenuItem.Visible = false;
+
 			Properties.Settings settings = new Properties.Settings();
 
 			useDirect2DPreviewRenderingToolStripMenuItem.Checked = !settings.UseGDIRendering;
