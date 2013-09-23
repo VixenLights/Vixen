@@ -10,7 +10,7 @@ namespace VixenModules.Preview.VixenPreview
 {
 	public partial class VixenPreviewModuleInstance : FormPreviewModuleInstanceBase
 	{
-		private VixenPreviewSetup setupForm;
+		private VixenPreviewSetup3 setupForm;
 		private IDisplayForm displayForm;
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private bool UseOldPreview = false;
@@ -119,7 +119,7 @@ namespace VixenModules.Preview.VixenPreview
 
 		public override bool Setup()
 		{
-			setupForm = new VixenPreviewSetup();
+			setupForm = new VixenPreviewSetup3();
 			setupForm.Data = GetDataModel();
 
 			setupForm.ShowDialog();
