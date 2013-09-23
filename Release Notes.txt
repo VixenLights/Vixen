@@ -1,6 +1,32 @@
 
 
 
+
+== 3.0.8 ============================
+
+New features:
+
+- A ridiculous amount of speedups to the entire application: UI responsiveness, rendering/drawing speed in the sequencer, preview performance speed, and so on.  For example, effect rendering is now performed in the background in another thread.  The application is now much more responsive and usable.
+- A similiarly ridiculous amount of improvements to memory usage; particularly where nutcracker effects are used.
+- Added a 'webserver' module, to allow basic control via a web interface.
+- Added support for "Elexol" controllers.
+- Added an RDS and Launcher control modules.
+- Added support for a Direct 2D rendering mode for the preview (which has been temporarily disabled to ensure stability for all users, until we can get more testing performed)
+- Changed logging system to use NLog, instead of a custom homebrew system
+- Added support to be able to pick a specific audio output device in the sequencer
+
+
+Fixups:
+
+- better handing of default values for all effects
+- many minor preview fixups
+- Some nutcracker effects would render 'backwards'
+- Some preview items (eg. nets) would not draw/render properly
+- The positioning/order of some preview shapes (eg. squares around windows) has been improved
+- fixed some crashes when opening/closing sequences at unconventional times (during playback, paused, etc.)
+
+
+
 == 3.0.7 ============================
 
 New features:
