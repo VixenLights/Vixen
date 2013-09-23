@@ -16,6 +16,7 @@ namespace VixenModules.App.SuperScheduler
 		private SynchronizationContext _synchronizationContext;
 		static private StatusForm statusForm = null;
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		//private static NLog.Logger Logging = NLog.LogManager.GetLogger("Schedule");
 
 		public ScheduleExecutor(SuperSchedulerData data)
 		{
@@ -31,8 +32,9 @@ namespace VixenModules.App.SuperScheduler
 		{
 			if (log == null)
 				log = new List<string>();
-			string logString = DateTime.Now.ToShortDateString() + " @ " + DateTime.Now.ToShortTimeString() + " (" + showName + ") " + logEntry;
-			log.Add(logString);
+			string logString = /*DateTime.Now.ToShortDateString() + " @ " + */DateTime.Now.ToShortTimeString() + " (" + showName + ") " + logEntry;
+			Logging.Info("(" + showName + ") " + logEntry);
+			//Logging.Log(NLog.LogLevel.FromString("Scheduler"), logEntry);
 			statusForm.AddLogEntry(logString);
 		}
 
