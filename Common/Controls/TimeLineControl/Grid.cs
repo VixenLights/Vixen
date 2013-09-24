@@ -106,6 +106,11 @@ namespace Common.Controls.Timeline
 				m_rows=new List<Row>();
 			}
 
+			Row.RowChanged -= RowChangedHandler;
+			Row.RowSelectedChanged -= RowSelectedChangedHandler;
+			Row.RowToggled -= RowToggledHandler;
+			Row.RowHeightChanged -= RowHeightChangedHandler;
+
 			TimeInfo= null;
 			TimeInfo = new Timeline.TimeInfo();
 
@@ -1198,10 +1203,7 @@ namespace Common.Controls.Timeline
 
 		public void ResizeGridHeight()
 		{
-			///Prevent an exception of this is already disposed
-			if (this.IsDisposed)
-				return;
-
+		
 			if (AllowGridResize) {
 				if (this.InvokeRequired) {
 					this.Invoke(new Vixen.Delegates.GenericDelegate(ResizeGridHeight));
