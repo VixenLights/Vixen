@@ -15,8 +15,9 @@ namespace VixenModules.App.SuperScheduler
 		private System.Timers.Timer _scheduleCheckTimer = null;
 		private SynchronizationContext _synchronizationContext;
 		static private StatusForm statusForm = null;
-		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
-		//private static NLog.Logger Logging = NLog.LogManager.GetLogger("Schedule");
+		//private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private static NLog.Logger Logging = NLog.LogManager.GetLogger("Scheduler");
+		//private static NLog.Logger ScheduleLogging = NLog.LogManager.GetLogger("Scheduler");
 
 		public ScheduleExecutor(SuperSchedulerData data)
 		{
