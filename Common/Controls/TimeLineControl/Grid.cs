@@ -1198,11 +1198,14 @@ namespace Common.Controls.Timeline
 
 		public void ResizeGridHeight()
 		{
+			///Prevent an exception of this is already disposed
+			if (this.IsDisposed)
+				return;
+
 			if (AllowGridResize) {
 				if (this.InvokeRequired) {
 					this.Invoke(new Vixen.Delegates.GenericDelegate(ResizeGridHeight));
-				}
-				else {
+				} else {
 					AutoScrollMinSize = new Size((int)timeToPixels(TotalTime), CalculateAllRowsHeight());
 					//Invalidate();
 				}
