@@ -126,15 +126,21 @@ namespace VixenModules.Preview.VixenPreview
 			if (this.InvokeRequired)
 				this.Invoke(new Vixen.Delegates.GenericDelegate(RenderImage));
 			else {
-				if (_backgroundAlphaImage != null) {
-
-					backBuffer.Graphics.DrawImageUnscaled(fastPixel.Bitmap, 0, 0);
+				if (backBuffer.Graphics == null) {
+					Logging.Error("Graphics object in backBuffer is null!");
 				} else {
-					backBuffer.Graphics.Clear(Color.Black);
+					if (_backgroundAlphaImage != null) {
+						backBuffer.Graphics.DrawImageUnscaled(fastPixel.Bitmap, 0, 0);
+					} else {
+						backBuffer.Graphics.Clear(Color.Black);
+					}
 				}
 
-				if (!this.Disposing && graphicsContext != null)
-					backBuffer.Render(Graphics.FromHwnd(this.Handle));
+				if (!this.Disposing && graphicsContext != null) {
+					Graphics g = Graphics.FromHwnd(this.Handle);
+					if (g.VisibleClipBounds.Width > 0 && g.VisibleClipBounds.Height > 0)
+						backBuffer.Render(g);
+				}
 
 				renderTimer.Stop();
 			}
