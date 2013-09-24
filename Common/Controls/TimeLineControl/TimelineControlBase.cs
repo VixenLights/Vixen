@@ -17,6 +17,10 @@ namespace Common.Controls.Timeline
 	{
 		protected TimelineControlBase(TimeInfo timeinfo)
 		{
+
+			if (timeinfo== null)
+				timeinfo= new Timeline.TimeInfo();
+
 			TimeInfo = timeinfo;
 			TimeInfo.TimePerPixelChanged += OnTimePerPixelChanged;
 			TimeInfo.VisibleTimeStartChanged += OnVisibleTimeStartChanged;

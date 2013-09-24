@@ -150,6 +150,19 @@ namespace VixenModules.Preview.VixenPreview
 				gdiControl.Background = Image.FromFile(Data.BackgroundFileName);
 			else
 				gdiControl.Background = null;
+
+			LayoutProps();
+		}
+
+		public void LayoutProps()
+		{
+			if (DisplayItems != null)
+			{
+				foreach (DisplayItem item in DisplayItems)
+				{
+					item.Shape.Layout();
+				}
+			}
 		}
 
 		public void Setup()
