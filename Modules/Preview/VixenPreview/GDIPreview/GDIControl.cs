@@ -166,8 +166,6 @@ namespace VixenModules.Preview.VixenPreview
 		public void BeginUpdate()
 		{
 			renderTimer.Restart();
-			//fastPixel.CloneBitmap(_backgroundAlphaImage);
-			fastPixel.LockFromBuffer();
 			fastPixel.CloneToBuffer(_backgroundAlphaImage);
 		}
 

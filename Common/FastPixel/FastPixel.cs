@@ -90,6 +90,10 @@ namespace FastPixel
 
 		public void CloneToBuffer(Bitmap bitmapToClone)
 		{
+			if (this.locked)
+				throw new Exception("Bitmap already locked.");
+			locked = true;
+
 			if (bitmapToClone.Width != _bitmap.Width || bitmapToClone.Height != _bitmap.Height)
 			{
 				_bitmap = new Bitmap(bitmapToClone.Width, bitmapToClone.Height);
@@ -114,13 +118,6 @@ namespace FastPixel
 			bitmapToClone.UnlockBits(bitmapData);
 			bitmapData = null;
 		
-		}
-
-		public void LockFromBuffer()
-		{
-			if (this.locked)
-				throw new Exception("Bitmap already locked.");
-			locked = true;
 		}
 
 		public void UnlockFromBuffer()
