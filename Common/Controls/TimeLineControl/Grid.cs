@@ -106,6 +106,11 @@ namespace Common.Controls.Timeline
 				m_rows=new List<Row>();
 			}
 
+			Row.RowChanged -= RowChangedHandler;
+			Row.RowSelectedChanged -= RowSelectedChangedHandler;
+			Row.RowToggled -= RowToggledHandler;
+			Row.RowHeightChanged -= RowHeightChangedHandler;
+
 			TimeInfo= null;
 			TimeInfo = new Timeline.TimeInfo();
 
@@ -1198,11 +1203,11 @@ namespace Common.Controls.Timeline
 
 		public void ResizeGridHeight()
 		{
+		
 			if (AllowGridResize) {
 				if (this.InvokeRequired) {
 					this.Invoke(new Vixen.Delegates.GenericDelegate(ResizeGridHeight));
-				}
-				else {
+				} else {
 					AutoScrollMinSize = new Size((int)timeToPixels(TotalTime), CalculateAllRowsHeight());
 					//Invalidate();
 				}
