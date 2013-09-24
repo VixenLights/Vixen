@@ -35,8 +35,6 @@ namespace VixenModules.Preview.VixenPreview
 		{
 			if (!gdiControl.IsUpdating)
 			{
-				
-
 				Vixen.Sys.Managers.ElementManager elements = VixenSystem.Elements;
 
 				Element[] elementArray = elements.Where(e => e.State.Where(i => (i as IIntentState<LightingValue>) !=null).Where(i => (i as IIntentState<LightingValue>).GetValue().Intensity > 0).Any()).ToArray();
@@ -49,7 +47,7 @@ namespace VixenModules.Preview.VixenPreview
 						needsUpdate = false;
 						gdiControl.BeginUpdate();
 						gdiControl.EndUpdate();
-						gdiControl.Invalidate();
+						gdiControl.RenderImage();
 						
 					}
 					
