@@ -719,6 +719,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			contextMenuStrip.Items.Add(toolStripMenuItem_Copy);
 			contextMenuStrip.Items.Add(toolStripMenuItem_Cut);
 			contextMenuStrip.Items.Add(toolStripMenuItem_Paste);
+			if (timelineControl.SelectedElements.Any())
+			{
+				//Add Edit delete
+				contextMenuStrip.Items.Add("-");
+				contextMenuStrip.Items.Add(toolStripMenuItem_EditEffect);
+				contextMenuStrip.Items.Add(toolStripMenuItem_deleteElements);
+			}
 		
 			e.AutomaticallyHandleSelection = false;
 
