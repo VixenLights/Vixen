@@ -124,6 +124,8 @@ namespace Common.Controls.Timeline
 				ClearActiveRows();
 				Row row = rowAt(gridLocation);
 				row.Active = true;
+				if (ClickingGridSetsCursor)
+					CursorPosition = pixelsToTime(gridLocation.X);
 				_ContextSelected(m_mouseDownElements, pixelsToTime(gridLocation.X), row);
 			}
 
