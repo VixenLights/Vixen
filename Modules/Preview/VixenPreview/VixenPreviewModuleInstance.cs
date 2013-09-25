@@ -94,12 +94,7 @@ namespace VixenModules.Preview.VixenPreview
 
 				if (UseGDIPreviewRendering)
 				{
-					if (UseOldPreview) {
-						displayForm = new VixenPreviewDisplay();
-						displayForm.Data = GetDataModel();
-					} else {
-						displayForm = new GDIPreviewForm(GetDataModel());
-					}
+					displayForm = new GDIPreviewForm(GetDataModel());
 				}
 				else
 				{
@@ -214,9 +209,6 @@ namespace VixenModules.Preview.VixenPreview
 					((VixenPreviewDisplayD2D)displayForm).Scene.Update(/*ElementStates*/);
 				}
 				else {
-					if (UseOldPreview)
-						((VixenPreviewDisplay)displayForm).PreviewControl.ProcessUpdateParallel(/*ElementStates*/);
-					else
 					((GDIPreviewForm)displayForm).UpdatePreview();
 				}
 			}

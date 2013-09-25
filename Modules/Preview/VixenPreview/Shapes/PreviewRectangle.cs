@@ -232,19 +232,37 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public override void Layout()
 		{
-			(Strings[0] as PreviewLine).Point1 = TopLeftPoint;
-			(Strings[0] as PreviewLine).Point2 = TopRightPoint;
+			// Old stupid way
+			//(Strings[0] as PreviewLine).Point1 = TopLeftPoint;
+			//(Strings[0] as PreviewLine).Point2 = TopRightPoint;
+			//(Strings[0] as PreviewLine).Layout();
+
+			//(Strings[1] as PreviewLine).Point1 = TopRightPoint;
+			//(Strings[1] as PreviewLine).Point2 = BottomRightPoint;
+			//(Strings[1] as PreviewLine).Layout();
+
+			//(Strings[2] as PreviewLine).Point1 = BottomLeftPoint;
+			//(Strings[2] as PreviewLine).Point2 = BottomRightPoint;
+			//(Strings[2] as PreviewLine).Layout();
+
+			//(Strings[3] as PreviewLine).Point1 = TopLeftPoint;
+			//(Strings[3] as PreviewLine).Point2 = BottomLeftPoint;
+			//(Strings[3] as PreviewLine).Layout();
+
+			// Start in the lower left corner and move clockwise around the rectangle.
+			(Strings[0] as PreviewLine).Point1 = BottomLeftPoint;
+			(Strings[0] as PreviewLine).Point2 = TopLeftPoint;
 			(Strings[0] as PreviewLine).Layout();
 
-			(Strings[1] as PreviewLine).Point1 = TopRightPoint;
-			(Strings[1] as PreviewLine).Point2 = BottomRightPoint;
+			(Strings[1] as PreviewLine).Point1 = TopLeftPoint;
+			(Strings[1] as PreviewLine).Point2 = TopRightPoint;
 			(Strings[1] as PreviewLine).Layout();
 
-			(Strings[2] as PreviewLine).Point1 = BottomLeftPoint;
+			(Strings[2] as PreviewLine).Point1 = TopRightPoint;
 			(Strings[2] as PreviewLine).Point2 = BottomRightPoint;
 			(Strings[2] as PreviewLine).Layout();
 
-			(Strings[3] as PreviewLine).Point1 = TopLeftPoint;
+			(Strings[3] as PreviewLine).Point1 = BottomRightPoint;
 			(Strings[3] as PreviewLine).Point2 = BottomLeftPoint;
 			(Strings[3] as PreviewLine).Layout();
 		}

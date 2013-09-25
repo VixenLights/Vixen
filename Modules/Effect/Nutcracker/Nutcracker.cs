@@ -246,9 +246,8 @@ namespace VixenModules.Effect.Nutcracker
 			}
 
 			timer.Stop();
-			Console.WriteLine("Nutcracker Render2:" + timer.ElapsedMilliseconds + "ms, Frames:" + nFrames
-							+ "    wid:" + wid + ", ht:" + ht
-							+ "    pix:" + totalPixels + ", intents:" + _elementData.Count());
+			Logging.Debug(" {0}ms, Frames: {1}, wid: {2}, ht: {3},  pix: {4}, intents: {5}",
+							timer.ElapsedMilliseconds, nFrames, wid, ht, totalPixels, _elementData.Count());
 		}
 #endif
 

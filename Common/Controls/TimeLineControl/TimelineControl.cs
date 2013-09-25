@@ -95,6 +95,8 @@ namespace Common.Controls.Timeline
 				grid.Dispose();
 				Vixen.Utility.cEventHelper.RemoveAllEventHandlers(grid);
 				grid = null;
+				TimeInfo= new Timeline.TimeInfo();
+				grid = new Grid(TimeInfo);
 			}
 			
 			if (timelineRowList != null) {

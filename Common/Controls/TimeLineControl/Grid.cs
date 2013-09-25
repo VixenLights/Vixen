@@ -106,6 +106,11 @@ namespace Common.Controls.Timeline
 				m_rows=new List<Row>();
 			}
 
+			Row.RowChanged -= RowChangedHandler;
+			Row.RowSelectedChanged -= RowSelectedChangedHandler;
+			Row.RowToggled -= RowToggledHandler;
+			Row.RowHeightChanged -= RowHeightChangedHandler;
+
 			TimeInfo= null;
 			TimeInfo = new Timeline.TimeInfo();
 
@@ -1198,11 +1203,11 @@ namespace Common.Controls.Timeline
 
 		public void ResizeGridHeight()
 		{
+		
 			if (AllowGridResize) {
 				if (this.InvokeRequired) {
 					this.Invoke(new Vixen.Delegates.GenericDelegate(ResizeGridHeight));
-				}
-				else {
+				} else {
 					AutoScrollMinSize = new Size((int)timeToPixels(TotalTime), CalculateAllRowsHeight());
 					//Invalidate();
 				}
@@ -1403,12 +1408,19 @@ namespace Common.Controls.Timeline
         public void RenderElement(Element element)
         {
 			if (SupressRendering) return;
-			//Render single elements right now instead of tossing in the queue. If we have single elements is probably
-			//because someone is directly working with it.
-			Task.Factory.StartNew(() =>
-				                    {
-										element.SetupCachedImage(new Size((int)Math.Ceiling(timeToPixels(element.Duration)), element.Row.Height - 1));
-				                    });
+			if (_blockingElementQueue.Any())
+			{
+				//Render single elements right now instead of tossing in the queue if the queue is busy. If we have single elements it is probably
+				//because someone is directly working with it.
+				Task.Factory.StartNew(() =>
+										{
+											element.SetupCachedImage(new Size((int)Math.Ceiling(timeToPixels(element.Duration)), element.Row.Height - 1));
+											Invalidate();
+										});
+			} else
+			{
+				_blockingElementQueue.Add(element);
+			}
         }
 
 		/// <summary>

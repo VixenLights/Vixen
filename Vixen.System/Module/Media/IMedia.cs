@@ -17,6 +17,7 @@ namespace Vixen.Module.Media
 		/// </summary>
 		/// <param name="startTime">Time, in milliseconds, at which media is to start executing when Start is called.</param>
 		void LoadMedia(TimeSpan startTime);
+		int CurrentPlaybackDeviceIndex { get; set; }
 
 		ITiming TimingSource { get; }
 	}
