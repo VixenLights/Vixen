@@ -713,7 +713,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					
 				}	
 			}
-
+			
+			//Add Copy/Cut/paste section
+			contextMenuStrip.Items.Add("-");
+			contextMenuStrip.Items.Add(toolStripMenuItem_Copy);
+			contextMenuStrip.Items.Add(toolStripMenuItem_Cut);
+			contextMenuStrip.Items.Add(toolStripMenuItem_Paste);
+		
 			e.AutomaticallyHandleSelection = false;
 
 			contextMenuStrip.Show(MousePosition);
