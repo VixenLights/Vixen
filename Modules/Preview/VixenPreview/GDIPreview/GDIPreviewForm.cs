@@ -157,15 +157,35 @@ namespace VixenModules.Preview.VixenPreview
 			var minY = Screen.AllScreens.Min(m => m.Bounds.Y);
 			var maxY = Screen.AllScreens.Sum(m => m.Bounds.Height) + minY;
 
-			// avoid 0 with/height in case Data comes in 'bad'
-			if (Data.Width == 0)
-				Data.Width = 400;
-			if (Data.SetupWidth == 0)
-				Data.SetupWidth = 400;
-			if (Data.Height == 0)
-				Data.Height = 300;
-			if (Data.SetupHeight == 0)
-				Data.SetupHeight = 300;
+			// avoid 0 with/height in case Data comes in 'bad' -- even small is bad,
+			// as it doesn't give a sizeable enough canvas to render on.
+			if (Data.Width < 300) {
+				if (gdiControl.Background != null && gdiControl.Background.Width > 300)
+					Data.Width = gdiControl.Background.Width;
+				else
+					Data.Width = 400;
+			}
+
+			if (Data.SetupWidth < 300) {
+				if (gdiControl.Background != null && gdiControl.Background.Width > 300)
+					Data.SetupWidth = gdiControl.Background.Width;
+				else
+					Data.SetupWidth = 400;
+			}
+
+			if (Data.Height < 200) {
+				if (gdiControl.Background != null && gdiControl.Background.Height > 200)
+					Data.Height = gdiControl.Background.Height;
+				else
+					Data.Height = 300;
+			}
+
+			if (Data.SetupHeight < 200) {
+				if (gdiControl.Background != null && gdiControl.Background.Height > 200)
+					Data.SetupHeight = gdiControl.Background.Height;
+				else
+					Data.SetupHeight = 300;
+			}
 
 			if (Data.Left < minX || Data.Left > maxX)
 				Data.Left = 0;
