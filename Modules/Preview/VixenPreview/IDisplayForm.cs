@@ -7,6 +7,7 @@ namespace VixenModules.Preview.VixenPreview {
 	public interface IDisplayForm : IDisposable {
 		VixenPreviewData Data { get; set; }
 		void Setup();
-		void Close(); 
+		void Close();
+		void UpdatePreview();
 	}
 }

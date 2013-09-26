@@ -21,6 +21,7 @@ namespace VixenModules.Preview.VixenPreview
 	public partial class GDIPreviewForm : Form, IDisplayForm
 	{
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private bool needsUpdate = true;
 
 		public GDIPreviewForm(VixenPreviewData data)
 		{
@@ -34,14 +35,30 @@ namespace VixenModules.Preview.VixenPreview
 		{
 			if (!gdiControl.IsUpdating)
 			{
-				gdiControl.BeginUpdate();
-
 				Vixen.Sys.Managers.ElementManager elements = VixenSystem.Elements;
 
 				Element[] elementArray = elements.Where(e => e.State.Where(i => (i as IIntentState<LightingValue>) !=null).Where(i => (i as IIntentState<LightingValue>).GetValue().Intensity > 0).Any()).ToArray();
 				//Console.WriteLine(elements.Count() + ":" + elementArray.Count());
-				CancellationTokenSource tokenSource = new CancellationTokenSource();
 
+				if (elementArray.Length == 0)
+				{
+					if (needsUpdate)
+					{
+						needsUpdate = false;
+						gdiControl.BeginUpdate();
+						gdiControl.EndUpdate();
+						gdiControl.RenderImage();
+						
+					}
+					
+					toolStripStatusFPS.Text = gdiControl.FrameRate.ToString() + "fps";	
+					return;
+				}
+
+				needsUpdate = true;
+
+				CancellationTokenSource tokenSource = new CancellationTokenSource();
+				gdiControl.BeginUpdate();
 				//elements.AsParallel().WithCancellation(tokenSource.Token).ForAll(element =>
 				elementArray.AsParallel().WithCancellation(tokenSource.Token).ForAll(element =>
 				{
@@ -61,6 +78,7 @@ namespace VixenModules.Preview.VixenPreview
 						}
 					}
 				});
+				
 				gdiControl.EndUpdate();
 
 				gdiControl.RenderImage();
