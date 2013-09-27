@@ -75,8 +75,8 @@ namespace Vixen.Module.Effect
 			var sw = new System.Diagnostics.Stopwatch(); sw.Start();
 			_PreRender();
 			IsDirty = false;
-			if ( /*++prerendCnt % 1000 == 0 ||*/ sw.ElapsedMilliseconds > 100)
-				Logging.Debug(" {0}, {1}ms, eff: {2}, node: {3}", prerendCnt, sw.ElapsedMilliseconds, this.GetType().Name, TargetNodes[0].Name); 
+			//if ( /*++prerendCnt % 1000 == 0 ||*/ sw.ElapsedMilliseconds > 100)
+			//	Logging.Debug(" {0}, {1}ms, eff: {2}, node: {3}", prerendCnt, sw.ElapsedMilliseconds, this.GetType().Name, TargetNodes[0].Name); 
 		}
 
 		public EffectIntents Render()
