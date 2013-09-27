@@ -48,6 +48,7 @@ namespace VixenModules.Media.Audio
 		{
 			lock (lockObject) {
 				_audioSystem = fmod.GetInstance(fileName==null?-1:Vixen.Sys.State.Variables.SelectedAudioDeviceIndex);
+				if (_audioSystem == null || _audioSystem.SystemObject==null) return;
 				_audioSystem.SystemObject.createDSPByType(FMOD.DSP_TYPE.LOWPASS, ref dsplowpass);
 				_audioSystem.SystemObject.createDSPByType(FMOD.DSP_TYPE.HIGHPASS, ref dsphighpass);
 			}

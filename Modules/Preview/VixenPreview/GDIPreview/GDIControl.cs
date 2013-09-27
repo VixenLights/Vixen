@@ -166,8 +166,7 @@ namespace VixenModules.Preview.VixenPreview
 		public void BeginUpdate()
 		{
 			renderTimer.Restart();
-			fastPixel.CloneBitmap(_backgroundAlphaImage);
-			fastPixel.Lock();
+			fastPixel.CloneToBuffer(_backgroundAlphaImage);
 		}
 
 		private DateTime frameRateTime;
@@ -184,12 +183,17 @@ namespace VixenModules.Preview.VixenPreview
 				this.frameRateTime = DateTime.UtcNow;
 			}
 
-			fastPixel.Unlock(true);
+			fastPixel.UnlockFromBuffer();
 		}
 
 		public void SetPixel(int x, int y, Color color)
 		{
 			fastPixel.SetPixel(new Point(x, y), color);
+		}
+
+		protected override void OnPaint(PaintEventArgs e)
+		{
+			RenderImage();
 		}
 
 	}
