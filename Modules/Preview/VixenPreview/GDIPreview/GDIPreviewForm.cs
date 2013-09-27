@@ -21,6 +21,7 @@ namespace VixenModules.Preview.VixenPreview
 	public partial class GDIPreviewForm : Form, IDisplayForm
 	{
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private bool needsUpdate = true;
 
 		public GDIPreviewForm(VixenPreviewData data)
 		{
@@ -34,14 +35,30 @@ namespace VixenModules.Preview.VixenPreview
 		{
 			if (!gdiControl.IsUpdating)
 			{
-				gdiControl.BeginUpdate();
-
 				Vixen.Sys.Managers.ElementManager elements = VixenSystem.Elements;
 
 				Element[] elementArray = elements.Where(e => e.State.Where(i => (i as IIntentState<LightingValue>) !=null).Where(i => (i as IIntentState<LightingValue>).GetValue().Intensity > 0).Any()).ToArray();
 				//Console.WriteLine(elements.Count() + ":" + elementArray.Count());
-				CancellationTokenSource tokenSource = new CancellationTokenSource();
 
+				if (elementArray.Length == 0)
+				{
+					if (needsUpdate)
+					{
+						needsUpdate = false;
+						gdiControl.BeginUpdate();
+						gdiControl.EndUpdate();
+						gdiControl.RenderImage();
+						
+					}
+					
+					toolStripStatusFPS.Text = gdiControl.FrameRate.ToString() + "fps";	
+					return;
+				}
+
+				needsUpdate = true;
+
+				CancellationTokenSource tokenSource = new CancellationTokenSource();
+				gdiControl.BeginUpdate();
 				//elements.AsParallel().WithCancellation(tokenSource.Token).ForAll(element =>
 				elementArray.AsParallel().WithCancellation(tokenSource.Token).ForAll(element =>
 				{
@@ -61,6 +78,7 @@ namespace VixenModules.Preview.VixenPreview
 						}
 					}
 				});
+				
 				gdiControl.EndUpdate();
 
 				gdiControl.RenderImage();
@@ -157,15 +175,35 @@ namespace VixenModules.Preview.VixenPreview
 			var minY = Screen.AllScreens.Min(m => m.Bounds.Y);
 			var maxY = Screen.AllScreens.Sum(m => m.Bounds.Height) + minY;
 
-			// avoid 0 with/height in case Data comes in 'bad'
-			if (Data.Width == 0)
-				Data.Width = 400;
-			if (Data.SetupWidth == 0)
-				Data.SetupWidth = 400;
-			if (Data.Height == 0)
-				Data.Height = 300;
-			if (Data.SetupHeight == 0)
-				Data.SetupHeight = 300;
+			// avoid 0 with/height in case Data comes in 'bad' -- even small is bad,
+			// as it doesn't give a sizeable enough canvas to render on.
+			if (Data.Width < 300) {
+				if (gdiControl.Background != null && gdiControl.Background.Width > 300)
+					Data.Width = gdiControl.Background.Width;
+				else
+					Data.Width = 400;
+			}
+
+			if (Data.SetupWidth < 300) {
+				if (gdiControl.Background != null && gdiControl.Background.Width > 300)
+					Data.SetupWidth = gdiControl.Background.Width;
+				else
+					Data.SetupWidth = 400;
+			}
+
+			if (Data.Height < 200) {
+				if (gdiControl.Background != null && gdiControl.Background.Height > 200)
+					Data.Height = gdiControl.Background.Height;
+				else
+					Data.Height = 300;
+			}
+
+			if (Data.SetupHeight < 200) {
+				if (gdiControl.Background != null && gdiControl.Background.Height > 200)
+					Data.SetupHeight = gdiControl.Background.Height;
+				else
+					Data.SetupHeight = 300;
+			}
 
 			if (Data.Left < minX || Data.Left > maxX)
 				Data.Left = 0;
