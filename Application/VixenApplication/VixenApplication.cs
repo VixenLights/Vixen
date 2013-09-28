@@ -200,21 +200,7 @@ namespace VixenApplication
 			//	}
 
 			//});
-#if DEBUG
-
-			Logging.Debug("Test");
-			Logging.Info("Test");
-			Logging.Warn("Test");
-			Logging.Error("Test");
-			Logging.Fatal("Test");
-			try {
-				throw new ApplicationException("Test Exception");
-			}
-			catch (Exception e) {
-
-				Logging.ErrorException(e.Message, e);
-			}
-#endif
+ 
 		}
 
 		#region IApplication implemetation

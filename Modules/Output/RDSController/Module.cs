@@ -60,12 +60,14 @@ namespace VixenModules.Output.CommandController
 					}
 					return false;
 				case Hardware.VFMT212R:
-					throw new NotImplementedException();
 				case Hardware.HTTP:
 					System.Threading.Tasks.Task.Factory.StartNew(() => {
 						try {
-							string url = RdsData.HttpUrl.ToLower().Replace("{text}", rdsText).Replace("{artist}", rdsArtist).Replace("{time}", HttpUtility.UrlEncode(DateTime.Now.ToLocalTime().ToShortTimeString()));
+							string url = RdsData.HttpUrl.ToLower().Replace("{text}",HttpUtility.UrlEncode(rdsText)).Replace("{time}", HttpUtility.UrlEncode(DateTime.Now.ToLocalTime().ToShortTimeString()));
 							WebRequest request = WebRequest.Create(url);
+							if (RdsData.RequireHTTPAuthentication) {
+								request.Credentials= new NetworkCredential(RdsData.HttpUsername, RdsData.HttpPassword);
+							}
 							var response = request.GetResponse();
 						} catch (Exception e) {
 							Logging.ErrorException(e.Message, e);
