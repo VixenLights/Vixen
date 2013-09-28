@@ -91,12 +91,18 @@ namespace Vixen.Sys.Managers
 
 				_instances.Values.AsParallel().ForAll(context =>
 				                                      	{
-				                                      		// Get a snapshot time value for this update.
-				                                      		TimeSpan contextTime = context.GetTimeSnapshot();
-				                                      		IEnumerable<Guid> affectedElements = context.UpdateElementStates(contextTime);
-				                                      		//Could possibly return affectedElements so only affected outputs
-				                                      		//are updated.  The controller would have to maintain state so those
-				                                      		//outputs could be updated and the whole state sent out.
+															try {
+
+																// Get a snapshot time value for this update.
+																TimeSpan contextTime = context.GetTimeSnapshot();
+																IEnumerable<Guid> affectedElements = context.UpdateElementStates(contextTime);
+																//Could possibly return affectedElements so only affected outputs
+																//are updated.  The controller would have to maintain state so those
+																//outputs could be updated and the whole state sent out.
+
+															} catch (Exception ee) {
+																Logging.ErrorException(ee.Message, ee);
+															}
 				                                      	});
 
 				_contextUpdateTimeValue.Set(_stopwatch.ElapsedMilliseconds);
