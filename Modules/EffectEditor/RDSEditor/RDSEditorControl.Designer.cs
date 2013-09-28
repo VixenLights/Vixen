@@ -40,7 +40,7 @@
 			// textRDSText
 			// 
 			this.textRDSText.Location = new System.Drawing.Point(87, 4);
-			this.textRDSText.MaxLength = 128;
+			this.textRDSText.MaxLength = 64;
 			this.textRDSText.Multiline = true;
 			this.textRDSText.Name = "textRDSText";
 			this.textRDSText.Size = new System.Drawing.Size(306, 69);
@@ -53,7 +53,7 @@
 			this.Controls.Add(this.textRDSText);
 			this.Controls.Add(this.label1);
 			this.Name = "RDSEditorControl";
-			this.Size = new System.Drawing.Size(396, 77);
+			this.Size = new System.Drawing.Size(396, 79);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

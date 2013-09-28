@@ -77,6 +77,7 @@ namespace VixenModules.Output.CommandController
 			radioUSB.Checked = radioVFMT212R.Checked;
 			RdsData.HardwareID =  Hardware.VFMT212R;
 			SetFormDefaults();
+		
 		}
 
 		private void radioMRDS1322_CheckedChanged(object sender, EventArgs e)
@@ -99,10 +100,18 @@ namespace VixenModules.Output.CommandController
 				case Hardware.MRDS192:
 				case Hardware.MRDS1322:
 					this.txtPSInterface.MaxLength=8;
-					this.lblPassword.Enabled=this.lblUserName.Enabled=	this.chkRequiresAuthentication.Enabled=this.txtHttpPassword.Enabled=this.txtHttpUsername.Enabled=false;
+					this.txtUrl.Enabled=	this.lblPassword.Enabled=this.lblUserName.Enabled=	this.chkRequiresAuthentication.Enabled=this.txtHttpPassword.Enabled=this.txtHttpUsername.Enabled=false;
 					break;
 				case Hardware.VFMT212R:
+					this.lblPassword.Enabled=this.lblUserName.Enabled=	this.chkRequiresAuthentication.Enabled=this.txtHttpPassword.Enabled=this.txtHttpUsername.Enabled=true;
+					this.txtPSInterface.MaxLength=64;
+					chkRequiresAuthentication.Checked=true;
+					chkRequiresAuthentication.Enabled=false;
+					this.txtUrl.Enabled=false;
+					this.txtUrl.Text =   "http://127.0.0.1:8080/?action=update_rt&update_rt={text}";
+					break;
 				case Hardware.HTTP:
+					this.txtUrl.Enabled=true;
 					this.lblPassword.Enabled=this.lblUserName.Enabled=	this.chkRequiresAuthentication.Enabled=this.txtHttpPassword.Enabled=this.txtHttpUsername.Enabled=true;
 					this.txtPSInterface.MaxLength=128;
 					break;

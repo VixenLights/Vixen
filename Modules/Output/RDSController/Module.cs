@@ -25,9 +25,16 @@ namespace VixenModules.Output.CommandController
 			DataPolicyFactory = new DataPolicyFactory();
 			_commandHandler = new CommandHandler();
 		}
-
+		static string lastRdsText= string.Empty;
 		internal static bool Send(Data RdsData, string rdsText, string rdsArtist = null)
 		{
+			//We dont want to keep hammering the RDS device with updates if they havent changed.
+			if (lastRdsText.Equals(rdsText))
+				return true;
+			else
+				lastRdsText=rdsText;
+		 
+			Console.WriteLine("Sending {0}: {1}", rdsText, DateTime.Now);
 			switch (RdsData.HardwareID) {
 				case Hardware.MRDS192:
 				case Hardware.MRDS1322:
@@ -71,7 +78,7 @@ namespace VixenModules.Output.CommandController
 							var response = request.GetResponse();
 						} catch (Exception e) {
 							Logging.ErrorException(e.Message, e);
-
+							lastRdsText=string.Empty;
 						}
 					});
 					return true;
