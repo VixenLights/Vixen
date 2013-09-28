@@ -103,12 +103,12 @@ namespace VixenModules.Output.CommandController
 					this.txtUrl.Enabled=	this.lblPassword.Enabled=this.lblUserName.Enabled=	this.chkRequiresAuthentication.Enabled=this.txtHttpPassword.Enabled=this.txtHttpUsername.Enabled=false;
 					break;
 				case Hardware.VFMT212R:
-					this.lblPassword.Enabled=this.lblUserName.Enabled=	this.chkRequiresAuthentication.Enabled=this.txtHttpPassword.Enabled=this.txtHttpUsername.Enabled=true;
+					this.txtUrl.Enabled=this.lblPassword.Enabled=this.lblUserName.Enabled=	this.chkRequiresAuthentication.Enabled=this.txtHttpPassword.Enabled=this.txtHttpUsername.Enabled=true;
 					this.txtPSInterface.MaxLength=64;
 					chkRequiresAuthentication.Checked=true;
 					chkRequiresAuthentication.Enabled=false;
-					this.txtUrl.Enabled=false;
-					this.txtUrl.Text =   "http://127.0.0.1:8080/?action=update_rt&update_rt={text}";
+					if (!RdsData.HttpUrl.ToLower().EndsWith(@"?action=update_rt&update_rt={text}") || string.IsNullOrWhiteSpace(RdsData.HttpUrl))
+						this.txtUrl.Text =   "http://127.0.0.1:8080/?action=update_rt&update_rt={text}";
 					break;
 				case Hardware.HTTP:
 					this.txtUrl.Enabled=true;
