@@ -471,7 +471,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					fmod.AudioDevices.OrderBy(a => a.Item1).Select(b => b.Item2).ToList().ForEach(device => {
 						cboAudioDevices.Items.Add(device);
 					});
-					cboAudioDevices.SelectedIndex=0;
+					if (cboAudioDevices.Items.Count > 0)
+					{
+						cboAudioDevices.SelectedIndex = 0;
+					}
 				}
 			}
 		}
