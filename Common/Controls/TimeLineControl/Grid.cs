@@ -944,7 +944,7 @@ namespace Common.Controls.Timeline
 			// if we're only snapping to things in the current row.) Also, record the row this element is in
 			// as well, since we'll need it later on, and it saves recalculating multiple times
 			List<Tuple<Element, Row>> elementsToCheckSnapping = new List<Tuple<Element, Row>>();
-			if (OnlySnapToCurrentRow) {
+			if (OnlySnapToCurrentRow && CurrentRowIndexUnderMouse>0) {
 				Row targetRow = Rows[CurrentRowIndexUnderMouse];
 				foreach (Element element in elements) {
 					if (targetRow.ContainsElement(element))
