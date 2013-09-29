@@ -1966,9 +1966,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		public IEditorModuleInstance OwnerModule { get; set; }
 
-		void IEditorUserInterface.Start()
+		void IEditorUserInterface.StartEditor()
 		{
 			Show();
+		}
+
+		void IEditorUserInterface.CloseEditor()
+		{
+			Close();
 		}
 
 		#endregion

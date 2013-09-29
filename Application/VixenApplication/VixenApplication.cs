@@ -52,6 +52,11 @@ namespace VixenApplication
 
 		private void VixenApp_FormClosing(object sender, FormClosingEventArgs e)
 		{
+			// close all open editors
+			foreach (IEditorUserInterface editor in _openEditors.ToArray()) {
+				editor.CloseEditor();
+			}
+
 			stopping = true;
 			VixenSystem.Stop();
 
@@ -273,9 +278,8 @@ namespace VixenApplication
 			_openEditors.Add(editorUI);
 			editorUI.Closing +=editorUI_Closing;
 			editorUI.Activated +=editorUI_Activated;
-
 		 
-			editorUI.Start();
+			editorUI.StartEditor();
 		}
 
 		void editorUI_Activated(object sender, EventArgs e)
@@ -306,13 +310,13 @@ namespace VixenApplication
 				_openEditors.Remove(editor);
 			}
 			
-				_activeEditor= null;
+			_activeEditor= null;
 			
 			AddSequenceToRecentList(editor.Sequence.FilePath);
 			editor.Activated-= editorUI_Activated;
 			editor.Closing -= editorUI_Closing;
-			editor.Dispose();
-			editor = null;
+			//editor.Dispose();
+			//editor = null;
 			return true;
 		}
 
