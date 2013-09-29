@@ -586,6 +586,26 @@ namespace Common.Controls.Timeline
 		}
 
 		/// <summary>
+		/// Handles moving/resizing a single element.
+		/// it's a single 'atomic' operation that moves the elements and raises an event to indicate they have moved.
+		/// </summary>
+		/// <param name="element"></param>
+		/// <param name="start"></param>
+		/// <param name="duration"></param>
+		/// <returns>Boolen indicating whether the move occured</returns>
+		public bool MoveResizeElementByStartEnd(Element element, TimeSpan start, TimeSpan end)
+		{
+			if (element == null || start > TotalTime || end > TotalTime)
+			{
+				return false;
+			}
+
+			TimeSpan duration = end - start;
+			return MoveResizeElement(element, start, duration);
+
+		}
+
+		/// <summary>
 		/// Moves the given elements by the given amount of time. This is similar to the mouse dragging events, except
 		/// it's a single 'atomic' operation that moves the elements and raises an event to indicate they have moved.
 		/// Note that it does not utilize snap points at all.

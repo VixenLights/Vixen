@@ -714,8 +714,40 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					item.Tag = tse;
 					contextMenuStrip.Items.Add(item);
 					
-				}	
+				}
+
+				if (timelineControl.SelectedElements.Count() > 1)
+				{
+
+					ToolStripMenuItem itemAlignStart = new ToolStripMenuItem("Align Start Times");
+					itemAlignStart.Click += (mySender, myE) =>
+					{
+						
+						foreach (Element selectedElement in timelineControl.SelectedElements)
+						{
+							if (selectedElement.StartTime == element.StartTime) continue;
+							timelineControl.grid.MoveResizeElementByStartEnd(selectedElement, element.StartTime, selectedElement.EndTime);
+						}
+					};
+
+					ToolStripMenuItem itemAlignEnd = new ToolStripMenuItem("Align End Times");
+					itemAlignEnd.Click += (mySender, myE) =>
+					{
+					
+						foreach (Element selectedElement in timelineControl.SelectedElements)
+						{
+							if (selectedElement.EndTime == element.EndTime) continue;
+							timelineControl.grid.MoveResizeElementByStartEnd(selectedElement, selectedElement.StartTime, element.EndTime);
+						}
+					};
+
+					contextMenuStrip.Items.Add(itemAlignStart);
+					contextMenuStrip.Items.Add(itemAlignEnd);
+
+				}
 			}
+
+			
 			
 			//Add Copy/Cut/paste section
 			contextMenuStrip.Items.Add("-");
