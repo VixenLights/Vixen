@@ -399,15 +399,17 @@ namespace Common.Controls.Timeline
 
 		public void RemoveElement(Element element)
 		{
-			m_elements.Remove(element);
-			if (element.Selected)
-				m_selectedElements.Remove(element);
-			element.ContentChanged -= ElementContentChangedHandler;
-			element.TimeChanged -= ElementMovedHandler;
-			element.SelectedChanged -= ElementSelectedHandler;
-			m_elements.Sort();
-			_ElementRemoved(element);
-			_RowChanged();
+			if (m_elements.Remove(element))
+			{
+				if (element.Selected)
+					m_selectedElements.Remove(element);
+				element.ContentChanged -= ElementContentChangedHandler;
+				element.TimeChanged -= ElementMovedHandler;
+				element.SelectedChanged -= ElementSelectedHandler;
+				m_elements.Sort();
+				_ElementRemoved(element);
+				_RowChanged();
+			}
 		}
 
 		public bool ContainsElement(Element element)
