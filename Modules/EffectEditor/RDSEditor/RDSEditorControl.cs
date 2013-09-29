@@ -35,8 +35,18 @@ namespace VixenModules.EffectEditor.RDSEditor {
 				//Ensure target effect is passed through as these editors need it.
 			}
 		}
-		public string Title { get { return this.textRDSTitle.Text; } set { this.textRDSTitle.Text = value; } }
-		public string Artist { get { return this.textRDSArtist.Text; } set { this.textRDSArtist.Text=value; } }
+
+		public string Title
+		{
+			get { return this.textRDSText.Text; }
+			set
+			{
+				this.textRDSText.Text = value;
+				//Set artist to null, so we can eventually get rid of the field...
+				this.Artist=null;
+			}
+		}
+		public string Artist { get; set; }
 		 
 	}
 }

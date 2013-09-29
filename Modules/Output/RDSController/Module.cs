@@ -25,9 +25,16 @@ namespace VixenModules.Output.CommandController
 			DataPolicyFactory = new DataPolicyFactory();
 			_commandHandler = new CommandHandler();
 		}
-
+		static string lastRdsText= string.Empty;
 		internal static bool Send(Data RdsData, string rdsText, string rdsArtist = null)
 		{
+			//We dont want to keep hammering the RDS device with updates if they havent changed.
+			if (lastRdsText.Equals(rdsText))
+				return true;
+			else
+				lastRdsText=rdsText;
+		 
+			Console.WriteLine("Sending {0}: {1}", rdsText, DateTime.Now);
 			switch (RdsData.HardwareID) {
 				case Hardware.MRDS192:
 				case Hardware.MRDS1322:
@@ -60,16 +67,18 @@ namespace VixenModules.Output.CommandController
 					}
 					return false;
 				case Hardware.VFMT212R:
-					throw new NotImplementedException();
 				case Hardware.HTTP:
 					System.Threading.Tasks.Task.Factory.StartNew(() => {
 						try {
-							string url = RdsData.HttpUrl.ToLower().Replace("{text}", rdsText).Replace("{artist}", rdsArtist).Replace("{time}", HttpUtility.UrlEncode(DateTime.Now.ToLocalTime().ToShortTimeString()));
+							string url = RdsData.HttpUrl.ToLower().Replace("{text}",HttpUtility.UrlEncode(rdsText)).Replace("{time}", HttpUtility.UrlEncode(DateTime.Now.ToLocalTime().ToShortTimeString()));
 							WebRequest request = WebRequest.Create(url);
+							if (RdsData.RequireHTTPAuthentication) {
+								request.Credentials= new NetworkCredential(RdsData.HttpUsername, RdsData.HttpPassword);
+							}
 							var response = request.GetResponse();
 						} catch (Exception e) {
 							Logging.ErrorException(e.Message, e);
-
+							lastRdsText=string.Empty;
 						}
 					});
 					return true;

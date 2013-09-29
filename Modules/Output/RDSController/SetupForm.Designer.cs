@@ -29,6 +29,11 @@
 			this.chkSlow = new System.Windows.Forms.CheckBox();
 			this.chkBiDirectional = new System.Windows.Forms.CheckBox();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
+			this.chkRequiresAuthentication = new System.Windows.Forms.CheckBox();
+			this.lblPassword = new System.Windows.Forms.Label();
+			this.lblUserName = new System.Windows.Forms.Label();
+			this.txtHttpPassword = new System.Windows.Forms.TextBox();
+			this.txtHttpUsername = new System.Windows.Forms.TextBox();
 			this.txtUrl = new System.Windows.Forms.TextBox();
 			this.label3 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
@@ -39,7 +44,6 @@
 			this.radioMRDS192 = new System.Windows.Forms.RadioButton();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.btnTX = new System.Windows.Forms.Button();
-			this.label1 = new System.Windows.Forms.Label();
 			this.txtPSInterface = new System.Windows.Forms.TextBox();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
@@ -186,6 +190,11 @@
 			// 
 			// groupBox4
 			// 
+			this.groupBox4.Controls.Add(this.chkRequiresAuthentication);
+			this.groupBox4.Controls.Add(this.lblPassword);
+			this.groupBox4.Controls.Add(this.lblUserName);
+			this.groupBox4.Controls.Add(this.txtHttpPassword);
+			this.groupBox4.Controls.Add(this.txtHttpUsername);
 			this.groupBox4.Controls.Add(this.txtUrl);
 			this.groupBox4.Controls.Add(this.label3);
 			this.groupBox4.Controls.Add(this.label2);
@@ -196,14 +205,66 @@
 			this.groupBox4.Controls.Add(this.radioMRDS192);
 			this.groupBox4.Location = new System.Drawing.Point(95, 94);
 			this.groupBox4.Name = "groupBox4";
-			this.groupBox4.Size = new System.Drawing.Size(381, 140);
+			this.groupBox4.Size = new System.Drawing.Size(381, 213);
 			this.groupBox4.TabIndex = 16;
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = "Hardware";
 			// 
+			// chkRequiresAuthentication
+			// 
+			this.chkRequiresAuthentication.AutoSize = true;
+			this.chkRequiresAuthentication.Enabled = false;
+			this.chkRequiresAuthentication.Location = new System.Drawing.Point(41, 150);
+			this.chkRequiresAuthentication.Name = "chkRequiresAuthentication";
+			this.chkRequiresAuthentication.Size = new System.Drawing.Size(182, 17);
+			this.chkRequiresAuthentication.TabIndex = 14;
+			this.chkRequiresAuthentication.Text = "HTTP(s) Requires Authentication";
+			this.chkRequiresAuthentication.UseVisualStyleBackColor = true;
+			this.chkRequiresAuthentication.CheckedChanged += new System.EventHandler(this.chkRequiresAuthentication_CheckedChanged);
+			// 
+			// lblPassword
+			// 
+			this.lblPassword.AutoSize = true;
+			this.lblPassword.Enabled = false;
+			this.lblPassword.Location = new System.Drawing.Point(218, 176);
+			this.lblPassword.Name = "lblPassword";
+			this.lblPassword.Size = new System.Drawing.Size(53, 13);
+			this.lblPassword.TabIndex = 13;
+			this.lblPassword.Text = "Password";
+			// 
+			// lblUserName
+			// 
+			this.lblUserName.AutoSize = true;
+			this.lblUserName.Enabled = false;
+			this.lblUserName.Location = new System.Drawing.Point(62, 176);
+			this.lblUserName.Name = "lblUserName";
+			this.lblUserName.Size = new System.Drawing.Size(57, 13);
+			this.lblUserName.TabIndex = 12;
+			this.lblUserName.Text = "UserName";
+			// 
+			// txtHttpPassword
+			// 
+			this.txtHttpPassword.Enabled = false;
+			this.txtHttpPassword.Location = new System.Drawing.Point(272, 173);
+			this.txtHttpPassword.MaxLength = 8;
+			this.txtHttpPassword.Name = "txtHttpPassword";
+			this.txtHttpPassword.Size = new System.Drawing.Size(103, 20);
+			this.txtHttpPassword.TabIndex = 11;
+			this.txtHttpPassword.TextChanged += new System.EventHandler(this.txtHttpPassword_TextChanged);
+			// 
+			// txtHttpUsername
+			// 
+			this.txtHttpUsername.Enabled = false;
+			this.txtHttpUsername.Location = new System.Drawing.Point(125, 173);
+			this.txtHttpUsername.MaxLength = 8;
+			this.txtHttpUsername.Name = "txtHttpUsername";
+			this.txtHttpUsername.Size = new System.Drawing.Size(88, 20);
+			this.txtHttpUsername.TabIndex = 10;
+			this.txtHttpUsername.TextChanged += new System.EventHandler(this.txtHttpUsername_TextChanged);
+			// 
 			// txtUrl
 			// 
-			this.txtUrl.Location = new System.Drawing.Point(41, 68);
+			this.txtUrl.Location = new System.Drawing.Point(41, 65);
 			this.txtUrl.Multiline = true;
 			this.txtUrl.Name = "txtUrl";
 			this.txtUrl.Size = new System.Drawing.Size(334, 53);
@@ -215,9 +276,9 @@
 			this.label3.AutoSize = true;
 			this.label3.Location = new System.Drawing.Point(131, 124);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(110, 13);
+			this.label3.Size = new System.Drawing.Size(69, 13);
 			this.label3.TabIndex = 8;
-			this.label3.Text = "{Artist}, {Text}, {Time}";
+			this.label3.Text = "{text}, {Time}";
 			// 
 			// label2
 			// 
@@ -251,7 +312,6 @@
 			// radioVFMT212R
 			// 
 			this.radioVFMT212R.AutoSize = true;
-			this.radioVFMT212R.Enabled = false;
 			this.radioVFMT212R.Location = new System.Drawing.Point(120, 42);
 			this.radioVFMT212R.Name = "radioVFMT212R";
 			this.radioVFMT212R.Size = new System.Drawing.Size(83, 17);
@@ -287,36 +347,26 @@
 			// groupBox2
 			// 
 			this.groupBox2.Controls.Add(this.btnTX);
-			this.groupBox2.Controls.Add(this.label1);
 			this.groupBox2.Controls.Add(this.txtPSInterface);
-			this.groupBox2.Location = new System.Drawing.Point(12, 240);
+			this.groupBox2.Location = new System.Drawing.Point(12, 313);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(363, 65);
+			this.groupBox2.Size = new System.Drawing.Size(363, 47);
 			this.groupBox2.TabIndex = 14;
 			this.groupBox2.TabStop = false;
-			this.groupBox2.Text = "Test Interface";
+			this.groupBox2.Text = "Test RDS Interface";
 			// 
 			// btnTX
 			// 
-			this.btnTX.Location = new System.Drawing.Point(268, 33);
+			this.btnTX.Location = new System.Drawing.Point(268, 18);
 			this.btnTX.Name = "btnTX";
 			this.btnTX.Size = new System.Drawing.Size(75, 23);
 			this.btnTX.TabIndex = 1;
 			this.btnTX.Text = "Send";
 			this.btnTX.Click += new System.EventHandler(this.btnTX_Click);
 			// 
-			// label1
-			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(9, 19);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(21, 13);
-			this.label1.TabIndex = 1;
-			this.label1.Text = "PS";
-			// 
 			// txtPSInterface
 			// 
-			this.txtPSInterface.Location = new System.Drawing.Point(12, 35);
+			this.txtPSInterface.Location = new System.Drawing.Point(12, 20);
 			this.txtPSInterface.MaxLength = 8;
 			this.txtPSInterface.Name = "txtPSInterface";
 			this.txtPSInterface.Size = new System.Drawing.Size(250, 20);
@@ -337,7 +387,7 @@
 			// 
 			this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.StatusLbl1});
-			this.statusStrip1.Location = new System.Drawing.Point(0, 320);
+			this.statusStrip1.Location = new System.Drawing.Point(0, 363);
 			this.statusStrip1.Name = "statusStrip1";
 			this.statusStrip1.Size = new System.Drawing.Size(704, 22);
 			this.statusStrip1.TabIndex = 24;
@@ -354,7 +404,7 @@
 			// 
 			this.button1.DialogResult = System.Windows.Forms.DialogResult.OK;
 			this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.button1.Location = new System.Drawing.Point(583, 237);
+			this.button1.Location = new System.Drawing.Point(574, 279);
 			this.button1.Name = "button1";
 			this.button1.Size = new System.Drawing.Size(109, 65);
 			this.button1.TabIndex = 25;
@@ -386,7 +436,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(704, 342);
+			this.ClientSize = new System.Drawing.Size(704, 385);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.pictureBox1);
 			this.Controls.Add(this.button1);
@@ -434,7 +484,6 @@
 		private System.Windows.Forms.RadioButton radioMRDS192;
 		private System.Windows.Forms.GroupBox groupBox2;
 		private System.Windows.Forms.Button btnTX;
-		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.TextBox txtPSInterface;
 		private System.Windows.Forms.PictureBox pictureBox1;
 		private System.Windows.Forms.RadioButton radioUSB;
@@ -448,5 +497,10 @@
 		private System.Windows.Forms.TextBox txtUrl;
 		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.CheckBox chkHideLaunchedWindows;
+		private System.Windows.Forms.TextBox txtHttpPassword;
+		private System.Windows.Forms.TextBox txtHttpUsername;
+		private System.Windows.Forms.Label lblPassword;
+		private System.Windows.Forms.Label lblUserName;
+		private System.Windows.Forms.CheckBox chkRequiresAuthentication;
 	}
 }

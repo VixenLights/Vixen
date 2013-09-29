@@ -34,6 +34,15 @@ namespace VixenModules.Output.CommandController
 		[DataMember]
 		public bool HideLaunchedWindows { get; set; }
 
+		[DataMember]
+		public bool RequireHTTPAuthentication { get; set; }
+
+		[DataMember]
+		public string HttpUsername { get; set; }
+		
+		[DataMember]
+		public string HttpPassword { get; set; }
+		
 		public override IModuleDataModel Clone()
 		{
 			return this.MemberwiseClone() as IModuleDataModel;
