@@ -115,6 +115,8 @@ namespace Common.Controls.Timeline
 							if (_ElementsSelected(m_mouseDownElements)) {
 								m_mouseDownElements.First().Selected = true;
 								_SelectionChanged();
+								Row row = rowAt(gridLocation);
+								row.Active = true;
 							}
 						}
 						break;
