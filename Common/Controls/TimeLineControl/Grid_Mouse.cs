@@ -684,6 +684,7 @@ namespace Common.Controls.Timeline
 		private void MouseUp_HResizing(Point gridLocation)
 		{
 			elementsFinishedMoving(ElementMoveType.Resize);
+			CurrentDragSnapPoints.Clear();
 		}
 
 		#endregion
