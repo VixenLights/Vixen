@@ -52,16 +52,20 @@ namespace VixenApplication
 
 		private void VixenApp_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			// close all open editors
-			foreach (IEditorUserInterface editor in _openEditors.ToArray()) {
-				editor.CloseEditor();
+			try {
+
+				// close all open editors
+				foreach (IEditorUserInterface editor in _openEditors.ToArray()) {
+					editor.CloseEditor();
+				}
+
+				stopping = true;
+				VixenSystem.Stop();
+
+				_applicationData.SaveData();
+			} finally {
+				Process.GetCurrentProcess().Kill();
 			}
-
-			stopping = true;
-			VixenSystem.Stop();
-
-			_applicationData.SaveData();
-			Application.Exit();
 		}
 
 		private void VixenApplication_Load(object sender, EventArgs e)
