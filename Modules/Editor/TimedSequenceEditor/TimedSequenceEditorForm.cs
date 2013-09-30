@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Windows.Forms;
 using System.Xml;
+using System.Drawing;
 using Common.Controls.Timeline;
 using Vixen.Execution;
 using Vixen.Execution.Context;
@@ -81,6 +82,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void TimedSequenceEditorForm_Load(object sender, EventArgs e)
 		{
 			GridForm.Show(dockPanel);
+			MarksForm.Show(dockPanel, WeifenLuo.WinFormsUI.Docking.DockState.DockLeft);
 			EffectsForm.Show(dockPanel, WeifenLuo.WinFormsUI.Docking.DockState.DockLeft);
 			//propertiesForm.Show(elementsForm.Pane, WeifenLuo.WinFormsUI.Docking.DockAlignment.Bottom, 0.5);
 
@@ -100,6 +102,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.RulerClicked += timelineControl_RulerClicked;
 			TimelineControl.RulerBeginDragTimeRange += timelineControl_RulerBeginDragTimeRange;
 			TimelineControl.RulerTimeRangeDragged += timelineControl_TimeRangeDragged;
+
+			TimelineControl.MarkMoved += timelineControl_MarkMoved;
+			TimelineControl.DeleteMark += timelineControl_DeleteMark;
 
 			TimelineControl.SelectionChanged += TimelineControlOnSelectionChanged;
 			TimeLineSequenceClipboardContentsChanged += TimelineSequenceTimeLineSequenceClipboardContentsChanged;
@@ -158,6 +163,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.RulerClicked -= timelineControl_RulerClicked;
 			TimelineControl.RulerBeginDragTimeRange -= timelineControl_RulerBeginDragTimeRange;
 			TimelineControl.RulerTimeRangeDragged -= timelineControl_TimeRangeDragged;
+			TimelineControl.MarkMoved -= timelineControl_MarkMoved;
+			TimelineControl.DeleteMark -= timelineControl_DeleteMark;
 
 			TimelineControl.SelectionChanged -= TimelineControlOnSelectionChanged;
 			TimeLineSequenceClipboardContentsChanged -= TimelineSequenceTimeLineSequenceClipboardContentsChanged;
@@ -197,9 +204,39 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			get
 			{
-				return _effectsForm != null ? _effectsForm : _effectsForm = new Form_Effects(TimelineControl);
+				if (_effectsForm != null) 
+				{
+					return _effectsForm;
+				} else {
+					_effectsForm = new Form_Effects(TimelineControl);
+					return _effectsForm;
+				}
 			}
 		}
+
+		private Form_Marks _marksForm = null;
+		public Form_Marks MarksForm
+		{
+			get
+			{
+				if (_marksForm != null)
+				{
+					return _marksForm;
+				}
+				else
+				{
+					_marksForm = new Form_Marks(TimelineControl);
+					MarksForm.MarkCollectionChecked += MarkCollection_Checked;
+					return _marksForm;
+				}
+			}
+		}
+
+		private void MarkCollection_Checked(object sender, MarkCollectionCheckedArgs e)
+		{
+			populateGridWithMarks();
+		}
+
 
 		private Form_Grid _gridForm = null;
 		public Form_Grid GridForm
@@ -422,6 +459,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					sequenceNotModified();
 				}
 				PopulateAudioDropdown();
+
+				MarksForm.Sequence = Sequence as TimedSequence;
+				MarksForm.PopulateMarkCollectionsList(null);
+
 				Logging.Debug(string.Format("Sequence {0} took {1} to load. ", sequence.Name, loadingWatch.Elapsed));
 			}
 			catch (Exception ee) {
@@ -793,28 +834,114 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				return;
 			}
 
-			bool autoPlay = e.ModifierKeys.HasFlag(Keys.Control);
+			if (e.Button == System.Windows.Forms.MouseButtons.Left)
+			{
+				bool autoPlay = e.ModifierKeys.HasFlag(Keys.Control);
 
-			if (autoPlay) {
-				// Save the times for later restoration
-				m_prevPlaybackStart = TimelineControl.PlaybackStartTime;
-				m_prevPlaybackEnd = TimelineControl.PlaybackEndTime;
+				if (autoPlay)
+				{
+					// Save the times for later restoration
+					m_prevPlaybackStart = TimelineControl.PlaybackStartTime;
+					m_prevPlaybackEnd = TimelineControl.PlaybackEndTime;
+				}
+				else
+				{
+					m_prevPlaybackStart = e.Time;
+					m_prevPlaybackEnd = null;
+				}
+
+				// Set the timeline control
+				TimelineControl.PlaybackStartTime = e.Time;
+				TimelineControl.PlaybackEndTime = null;
+
+				if (autoPlay)
+				{
+					_PlaySequence(e.Time, TimeSpan.MaxValue);
+				}
+				else
+				{
+					TimelineControl.CursorPosition = e.Time;
+				}
 			}
-			else {
-				m_prevPlaybackStart = e.Time;
-				m_prevPlaybackEnd = null;
+			else if (e.Button == System.Windows.Forms.MouseButtons.Right)
+			{
+				MarkCollection mc = null;
+				if (_sequence.MarkCollections.Count == 0)
+				{
+					if (MessageBox.Show("Marks are stored in Mark Collections. There are no mark collections available to store this mark. Would you like to create a new one?", "Creat a Mark Collection", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+					{
+						mc = GetOrAddNewMarkCollection(System.Drawing.Color.White, "Default Marks");
+						MarksForm.PopulateMarkCollectionsList(mc);
+					}
+				}
+				else
+				{
+					mc = MarksForm.SelectedMarkCollection;
+					if (mc == null)
+					{
+						MessageBox.Show("Please select a mark collection in the Mark Manager window before adding a new mark to the timeline.", "New Mark", MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
+					}
+				}
+				if (mc != null)
+				{
+					mc.Marks.Add(e.Time);
+					populateGridWithMarks();
+					sequenceModified();
+				}
+			}
+		}
+
+		private MarkCollection GetOrAddNewMarkCollection(System.Drawing.Color color, string name = "New Collection")
+		{
+			MarkCollection mc = null;
+			foreach (MarkCollection mCollection in _sequence.MarkCollections)
+			{
+				if (mCollection.Name == name)
+				{
+					mc = mCollection;
+					break;
+				}
+			}
+			if (mc == null)
+			{
+				MarkCollection newCollection = new MarkCollection();
+				newCollection.Name = name;
+				newCollection.MarkColor = color;
+				_sequence.MarkCollections.Add(newCollection);
+				mc = newCollection;
+				sequenceModified();
 			}
 
-			// Set the timeline control
-			TimelineControl.PlaybackStartTime = e.Time;
-			TimelineControl.PlaybackEndTime = null;
+			return mc;
+		}
 
-			if (autoPlay) {
-				_PlaySequence(e.Time, TimeSpan.MaxValue);
+		private void timelineControl_MarkMoved(object sender, MarkMovedEventArgs e)
+		{
+			foreach (MarkCollection mc in _sequence.MarkCollections)
+			{
+				if (e.SnapDetails.SnapColor == mc.MarkColor && e.SnapDetails.SnapLevel == mc.Level)
+				{
+					if (mc.Marks.Contains(e.OriginalMark))
+					{
+						mc.Marks.Remove(e.OriginalMark);
+						mc.Marks.Add(e.NewMark);
+					}
+				}
 			}
-			else {
-				TimelineControl.CursorPosition = e.Time;
+			populateGridWithMarks();
+			sequenceModified();
+		}
+
+		private void timelineControl_DeleteMark(object sender, DeleteMarkEventArgs e)
+		{
+			foreach (MarkCollection mc in _sequence.MarkCollections)
+			{
+				if (mc.Marks.Contains(e.Mark)) {
+					mc.Marks.Remove(e.Mark);
+				}
 			}
+			populateGridWithMarks();
+			sequenceModified();
 		}
 
 		private void timelineControl_RulerBeginDragTimeRange(object sender, EventArgs e)
@@ -1945,8 +2072,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			set
 			{
 				if (value is TimedSequence)
-					_sequence = (TimedSequence) value;
-				else {
+				{
+					_sequence = (TimedSequence)value;
+				}
+				else
+				{
 					throw new NotImplementedException("Cannot use sequence type with a Timed Sequence Editor");
 				}
 				//loadSequence(value); 
