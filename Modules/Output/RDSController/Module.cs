@@ -26,14 +26,14 @@ namespace VixenModules.Output.CommandController
 			_commandHandler = new CommandHandler();
 		}
 		static string lastRdsText= string.Empty;
-		internal static bool Send(Data RdsData, string rdsText, string rdsArtist = null)
+		internal static bool Send(Data RdsData, string rdsText, string rdsArtist = null, bool sendps=false)
 		{
 			//We dont want to keep hammering the RDS device with updates if they havent changed.
 			if (lastRdsText.Equals(rdsText))
 				return true;
 			else
 				lastRdsText=rdsText;
-		 
+
 			Console.WriteLine("Sending {0}: {1}", rdsText, DateTime.Now);
 			switch (RdsData.HardwareID) {
 				case Hardware.MRDS192:
@@ -41,26 +41,33 @@ namespace VixenModules.Output.CommandController
 					NativeMethods.ConnectionSetup(RdsData.ConnectionMode, RdsData.PortNumber, RdsData.BiDirectional, RdsData.Slow);
 					if (NativeMethods.Connect()) {
 						try {
-
-
-							byte[] Data = new byte[9];
 							int i, Len;
-							Data[0] = 0x02;             // buffer address
-							Len = 8;
+							byte[] Data;
+						
+							if (sendps) {
+								Data = new byte[9];
+								Data[0] = 0x02;             // buffer address
+								Len = 8;
+							} else {
+								//need to set byte at 0x1F to 1 to enable RT
+								NativeMethods.Send(1, new byte[1] { 0x1F });
+
+								Data = new byte[65];
+								Data[0] = 0x20;             // buffer address for RadioText
+								Len = 64;                   // character length
+							}
+
 							for (i = 1; i <= Len; i++)
-								Data[i] = 0x20; // fill 8 blank spaces first
-							//Data[0] = 0x02;
-							//Len = 8;
+								Data[i] = 0x20; // fill 64 blank spaces first
+
 							for (i = 0; i < rdsText.Length; i++) {
 								byte vOut = Convert.ToByte(rdsText[i]);
 								Data[i + 1] = vOut;
 							}
-
 							if (NativeMethods.Send(Len, Data))
 								return true;
 							else
 								return false;
-
 						} finally {
 							NativeMethods.Disconnect();
 						}
@@ -71,6 +78,9 @@ namespace VixenModules.Output.CommandController
 					System.Threading.Tasks.Task.Factory.StartNew(() => {
 						try {
 							string url = RdsData.HttpUrl.ToLower().Replace("{text}",HttpUtility.UrlEncode(rdsText)).Replace("{time}", HttpUtility.UrlEncode(DateTime.Now.ToLocalTime().ToShortTimeString()));
+							if (sendps) {
+								//TODO: Enable the sendps code here.
+							}
 							WebRequest request = WebRequest.Create(url);
 							if (RdsData.RequireHTTPAuthentication) {
 								request.Credentials= new NetworkCredential(RdsData.HttpUsername, RdsData.HttpPassword);

@@ -367,7 +367,7 @@
 			// txtPSInterface
 			// 
 			this.txtPSInterface.Location = new System.Drawing.Point(12, 20);
-			this.txtPSInterface.MaxLength = 8;
+			this.txtPSInterface.MaxLength = 64;
 			this.txtPSInterface.Name = "txtPSInterface";
 			this.txtPSInterface.Size = new System.Drawing.Size(250, 20);
 			this.txtPSInterface.TabIndex = 4;
