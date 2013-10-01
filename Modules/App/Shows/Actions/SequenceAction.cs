@@ -49,7 +49,8 @@ namespace VixenModules.App.Shows
 
 		public override void Stop()
 		{
-			_sequenceContext.Stop();
+			if (_sequenceContext != null)
+				_sequenceContext.Stop();
 			base.Stop();
 		}
 
