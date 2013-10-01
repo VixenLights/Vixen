@@ -17,6 +17,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 	[DataContract]
 	public class PreviewPixel : IDisposable
 	{
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private Color color = Color.White;
 		private Brush brush;
 		private int _x = 0;
@@ -183,18 +184,20 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			if(_isDiscreteColored)
 			{
 				int col = 1;
-				foreach (IIntentState<LightingValue> intentState in states)
+
+				//Get states for each color
+				IEnumerable<Color> colors = Vixen.Intent.ColorIntent.GetIntensityAffectedColorForDiscreteStates(states);
+				foreach (Color c in colors)
 				{
-					Color c = ((IIntentState<LightingValue>)intentState).GetValue().GetAlphaChannelIntensityAffectedColor();
-					if (c != Color.Transparent && intentState.GetValue().Intensity > 0f) {
+					if (c != Color.Transparent && c.A > byte.MinValue)
+					{
 						fp.DrawCircle(drawRect, c);
 
 						if (col % 2 == 0)
 						{
 							drawRect.Y += PixelSize;
 							drawRect.X = drawArea.X;
-						}
-						else 
+						} else
 						{
 							drawRect.X = drawArea.X + PixelSize;
 						}

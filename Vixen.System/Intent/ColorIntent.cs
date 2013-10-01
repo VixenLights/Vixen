@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 //using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Data.Value;
 using Vixen.Sys;
@@ -62,6 +64,26 @@ namespace Vixen.Intent
 			}
 
 			return c;
+		}
+
+		/// <summary>
+		/// Returns a distinct list of intensity affected colors from the states in a highest value wins combine method 
+		/// </summary>
+		/// <param name="states"></param>
+		/// <returns></returns>
+		public static IEnumerable<Color> GetIntensityAffectedColorForDiscreteStates(IIntentStates states)
+		{
+			List<Color> colors = new List<Color>();
+
+			IEnumerable<IGrouping<Color, IIntentState>> colorStates = states.GroupBy(x => (x as IntentState<LightingValue>).GetValue().Color);
+			foreach (var group in colorStates)
+			{
+				IIntentState<LightingValue> intentState = group.Aggregate((agg, next) =>
+					(next as IntentState<LightingValue>).GetValue().Intensity > (agg as IIntentState<LightingValue>).GetValue().Intensity ? next : agg) as IIntentState<LightingValue>;
+				colors.Add(intentState.GetValue().GetAlphaChannelIntensityAffectedColor());
+			}
+			
+			return colors;
 		}
 
 	}
