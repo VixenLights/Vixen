@@ -50,8 +50,8 @@ namespace VixenModules.Preview.VixenPreview
 						gdiControl.RenderImage();
 						
 					}
-					
-					toolStripStatusFPS.Text = gdiControl.FrameRate.ToString() + "fps";	
+
+					toolStripStatusFPS.Text = 0 + " fps";
 					return;
 				}
 
