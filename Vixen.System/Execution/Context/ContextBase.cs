@@ -65,7 +65,6 @@ namespace Vixen.Execution.Context
 		{
 			if (IsRunning) {
 				_OnStop();
-				_ResetElementStates();
 				IsPaused = false;
 				IsRunning = false;
 			}
@@ -199,6 +198,7 @@ namespace Vixen.Execution.Context
 
 		protected virtual void OnContextEnded(EventArgs e)
 		{
+			_ResetElementStates();
 			if (ContextEnded != null) {
 				ContextEnded(this, e);
 			}
