@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using System.Collections.Generic;
 using Vixen.Sys;
 using Vixen.Data.Value;
@@ -9,10 +10,10 @@ namespace Vixen.Intent
 	public class StaticLightingArrayIntent : Dispatchable<StaticLightingArrayIntent>, IIntent<LightingValue>
 	{
 		TimeSpan _timespan;
-		LightingValue[] _vals;
+		Color[] _vals;
 		TimeSpan _frameTime;
 
-		public StaticLightingArrayIntent( TimeSpan frameTime, LightingValue[] vals, TimeSpan timeSpan)
+		public StaticLightingArrayIntent( TimeSpan frameTime, Color[] vals, TimeSpan timeSpan)
 		{
 			_timespan = timeSpan;
 			_vals = vals;
@@ -63,7 +64,9 @@ namespace Vixen.Intent
 			else if( idx >= _vals.Length)
 				idx = _vals.Length-1;
 			//Console.WriteLine( "gsa: idx: {0}, rel: {1}, ft: {2}", idx, intentRelativeTime.TotalMilliseconds, _frameTime.TotalMilliseconds);
-			return _vals[idx];
+			//return _vals[idx];
+			return new LightingValue(_vals[idx], (float)((float)_vals[idx].A / (float)byte.MaxValue));
+
 		}
 
 	}

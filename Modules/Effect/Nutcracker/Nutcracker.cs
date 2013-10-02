@@ -218,9 +218,9 @@ namespace VixenModules.Effect.Nutcracker
 			// that it will parcel out as intent states are called for...
 			
 			// set up arrays to hold the generated colors
-			var pixels = new LightingValue[numElements][];
+			var pixels = new Color[numElements][];
 			for( int eidx = 0; eidx < numElements; eidx++)
-				pixels[eidx] = new LightingValue[nFrames];
+				pixels[eidx] = new Color[nFrames];
 
 			// generate all the pixels
 			for (int frameNum = 0; frameNum < nFrames; frameNum++)
@@ -230,8 +230,9 @@ namespace VixenModules.Effect.Nutcracker
 				for (int i = 0; i < numElements; i++)
 				{
 					Color color = nccore.GetPixel(i);
-					var lv = new LightingValue(color, (float)((float)color.A / (float)byte.MaxValue));
-					pixels[i][frameNum] = lv;
+					//var lv = new LightingValue(color, (float)((float)color.A / (float)byte.MaxValue));
+					//pixels[i][frameNum] = lv;
+					pixels[i][frameNum] = color;
 				}
 
 			};
