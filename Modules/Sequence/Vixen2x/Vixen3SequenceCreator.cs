@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Vixen.Sys;
 using VixenModules.Sequence.Timed;
@@ -17,6 +18,8 @@ namespace VixenModules.SequenceType.Vixen2x
 {
 	public class Vixen3SequenceCreator
 	{
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+
 		public ISequence Sequence { get; set; }
 
 		private CoversionProgressForm conversionProgressBar = null;
@@ -194,8 +197,14 @@ namespace VixenModules.SequenceType.Vixen2x
 
 		private void addEvent(patternType pattern, int chan, int startPos, int startValue, int endPos, int endValue = 0)
 		{
-			ElementNode targetNode = VixenSystem.Nodes.GetElementNode(mappings[chan].ElementNodeId);
+			ElementNode targetNode = null;
 
+			if (chan >= mappings.Count) {
+				Logging.Error("Vixen 2 import: found data for channel " + (chan + 1) + ", but there is only " + mappings.Count + " channel mappings known! Skipping event.");
+			} else {
+				targetNode = VixenSystem.Nodes.GetElementNode(mappings[chan].ElementNodeId);
+			}
+	
 			if (targetNode != null) {
 				EffectNode node = null;
 				switch (pattern) {
