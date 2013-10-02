@@ -60,23 +60,31 @@ namespace VixenModules.SequenceType.Vixen2x
 
 		private void AddVixen3ElementToVixen2Channel(TreeNode node)
 		{
-			// if the user drags a large number of items to start at a position that
-			// doesn't have enough 'room' off the end for them all, this can go OOR
-			if (listViewMapping.Items.Count <= startingIndex)
-				return;
+			// this is a bit of a dodgy hack to allow elements to be repeated when dragged to the grid.
+			// we just loop until we've repeated each element X times, in order.
+			int repeatCount = decimal.ToInt32(numericUpDownRepeatElements.Value);
+			if (repeatCount <= 0)
+				repeatCount = 1;
 
-			ElementNode enode = (ElementNode) node.Tag;
-			ListViewItem item = listViewMapping.Items[startingIndex];
+			for (int i = 0; i < repeatCount; i++) {
+				// if the user drags a large number of items to start at a position that
+				// doesn't have enough 'room' off the end for them all, this can go OOR
+				if (listViewMapping.Items.Count <= startingIndex)
+					return;
 
-			item.SubItems[4].Text = enode.Element.Name;
+				ElementNode enode = (ElementNode) node.Tag;
+				ListViewItem item = listViewMapping.Items[startingIndex];
 
-			item.SubItems[4].Tag = enode;
+				item.SubItems[4].Text = enode.Element.Name;
 
-			//Not sure where to get a node color from Vixen 3 stuff so if we have one in Vixen 2 just use it
-			item.SubItems[5].Text = item.SubItems[3].Text;
-			item.SubItems[5].BackColor = item.SubItems[3].BackColor;
+				item.SubItems[4].Tag = enode;
 
-			startingIndex++;
+				//Not sure where to get a node color from Vixen 3 stuff so if we have one in Vixen 2 just use it
+				item.SubItems[5].Text = item.SubItems[3].Text;
+				item.SubItems[5].BackColor = item.SubItems[3].BackColor;
+
+				startingIndex++;
+			}
 		}
 
 		private void ParseNodes(List<TreeNode> nodes)
