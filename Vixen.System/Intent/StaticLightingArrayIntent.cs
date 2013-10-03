@@ -10,10 +10,10 @@ namespace Vixen.Intent
 	public class StaticLightingArrayIntent : Dispatchable<StaticLightingArrayIntent>, IIntent<LightingValue>
 	{
 		TimeSpan _timespan;
-		Color[] _vals;
+		int[] _vals;
 		TimeSpan _frameTime;
 
-		public StaticLightingArrayIntent( TimeSpan frameTime, Color[] vals, TimeSpan timeSpan)
+		public StaticLightingArrayIntent( TimeSpan frameTime, int[] vals, TimeSpan timeSpan)
 		{
 			_timespan = timeSpan;
 			_vals = vals;
@@ -56,6 +56,16 @@ namespace Vixen.Intent
 			return GetStateAt(intentRelativeTime);
 		}
 
+		public static int MakeArgb(byte alpha, byte red, byte green, byte blue)
+		{
+			return (int)(((ulong)((((red << 0x10) | (green << 8)) | blue) | (alpha << 0x18))) & 0xffffffffL);
+		}
+
+		public static int MakeArgb( Color c)
+		{
+			return MakeArgb( c.A, c.R, c.G, c.B);
+		}
+
 		public LightingValue GetStateAt(TimeSpan intentRelativeTime)
 		{
 			int idx = Math.Min(_vals.Length - 1, (int) (intentRelativeTime.TotalMilliseconds / _frameTime.TotalMilliseconds) );
@@ -65,7 +75,9 @@ namespace Vixen.Intent
 				idx = _vals.Length-1;
 			//Console.WriteLine( "gsa: idx: {0}, rel: {1}, ft: {2}", idx, intentRelativeTime.TotalMilliseconds, _frameTime.TotalMilliseconds);
 			//return _vals[idx];
-			return new LightingValue(_vals[idx], (float)((float)_vals[idx].A / (float)byte.MaxValue));
+			int argb = _vals[idx];
+			Color c = Color.FromArgb( argb);
+			return new LightingValue( c, (float)((float)c.A / (float)byte.MaxValue));
 
 		}
 
