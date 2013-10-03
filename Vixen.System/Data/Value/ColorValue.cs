@@ -2,14 +2,14 @@
 
 namespace Vixen.Data.Value
 {
-	public struct ColorValue : IIntentDataType
+	public class ColorValue : IIntentDataType
 	{
 		public ColorValue(Color color)
 		{
-			Color = color;
+			ARGB = color.ToArgb();
 		}
-
-		public Color Color;
+		public int ARGB { get; set; }
+		public Color Color { get {return System.Drawing.Color.FromArgb(ARGB); } }
 
 		public static Color ConvertToGrayscale(Color color)
 		{

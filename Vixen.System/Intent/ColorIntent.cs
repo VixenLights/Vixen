@@ -27,9 +27,9 @@ namespace Vixen.Intent
 			// TODO: using the RGB class is bad. It's an external module which means the Vixen DLL is dependent on it;
 			// if there's anything added to the external module which depends on Vixen.System, we'll have dependency fun.
 			// to fix it, we really should strip out color models and management and use them within the Vixen system itself.
-			HSV hsv = HSV.FromRGB(result);
+			//HSV hsv = HSV.FromRGB(result);
 
-			result = Color.FromArgb((byte)(hsv.V * byte.MaxValue), result.R, result.G, result.B);
+			//result = Color.FromArgb((byte)(hsv.V * byte.MaxValue), result.R, result.G, result.B);
 			return result;
 		}
 
@@ -43,7 +43,8 @@ namespace Vixen.Intent
 				{
 					// If this color is "off" or has no intensity, no reason to put it in the mix...
 					LightingValue lv = (LightingValue)intentState.GetValue();
-					if (lv.Intensity > 0)
+
+					if (lv != null && lv.Intensity > 0)
 					{
 						Color intentColor = lv.GetOpaqueIntensityAffectedColor();
 						c = Color.FromArgb(Math.Max(c.R, intentColor.R),
@@ -59,6 +60,7 @@ namespace Vixen.Intent
 				{
 					IIntentState intentState = states[0];
 					LightingValue lv = (LightingValue)intentState.GetValue();
+					if (lv != null)
 					c = lv.GetOpaqueIntensityAffectedColor();
 				}
 			}
