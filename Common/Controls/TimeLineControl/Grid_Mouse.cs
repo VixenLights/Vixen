@@ -115,6 +115,8 @@ namespace Common.Controls.Timeline
 							if (_ElementsSelected(m_mouseDownElements)) {
 								m_mouseDownElements.First().Selected = true;
 								_SelectionChanged();
+								Row row = rowAt(gridLocation);
+								row.Active = true;
 							}
 						}
 						break;
@@ -124,6 +126,8 @@ namespace Common.Controls.Timeline
 				ClearActiveRows();
 				Row row = rowAt(gridLocation);
 				row.Active = true;
+				if (ClickingGridSetsCursor)
+					CursorPosition = pixelsToTime(gridLocation.X);
 				_ContextSelected(m_mouseDownElements, pixelsToTime(gridLocation.X), row);
 			}
 
@@ -682,6 +686,7 @@ namespace Common.Controls.Timeline
 		private void MouseUp_HResizing(Point gridLocation)
 		{
 			elementsFinishedMoving(ElementMoveType.Resize);
+			CurrentDragSnapPoints.Clear();
 		}
 
 		#endregion

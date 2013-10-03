@@ -578,7 +578,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					fmod.AudioDevices.OrderBy(a => a.Item1).Select(b => b.Item2).ToList().ForEach(device => {
 						cboAudioDevices.Items.Add(device);
 					});
-					cboAudioDevices.SelectedIndex=0;
+					if (cboAudioDevices.Items.Count > 0)
+					{
+						cboAudioDevices.SelectedIndex = 0;
+					}
 				}
 			}
 		}
@@ -818,9 +821,54 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					item.Tag = tse;
 					contextMenuStrip.Items.Add(item);
 					
-				}	
+				}
+
+				if (timelineControl.SelectedElements.Count() > 1)
+				{
+
+					ToolStripMenuItem itemAlignStart = new ToolStripMenuItem("Align Start Times");
+					itemAlignStart.Click += (mySender, myE) =>
+					{
+						
+						foreach (Element selectedElement in timelineControl.SelectedElements)
+						{
+							if (selectedElement.StartTime == element.StartTime) continue;
+							timelineControl.grid.MoveResizeElementByStartEnd(selectedElement, element.StartTime, selectedElement.EndTime);
+						}
+					};
+
+					ToolStripMenuItem itemAlignEnd = new ToolStripMenuItem("Align End Times");
+					itemAlignEnd.Click += (mySender, myE) =>
+					{
+					
+						foreach (Element selectedElement in timelineControl.SelectedElements)
+						{
+							if (selectedElement.EndTime == element.EndTime) continue;
+							timelineControl.grid.MoveResizeElementByStartEnd(selectedElement, selectedElement.StartTime, element.EndTime);
+						}
+					};
+
+					contextMenuStrip.Items.Add(itemAlignStart);
+					contextMenuStrip.Items.Add(itemAlignEnd);
+
+				}
 			}
 
+			
+			
+			//Add Copy/Cut/paste section
+			contextMenuStrip.Items.Add("-");
+			contextMenuStrip.Items.Add(toolStripMenuItem_Copy);
+			contextMenuStrip.Items.Add(toolStripMenuItem_Cut);
+			contextMenuStrip.Items.Add(toolStripMenuItem_Paste);
+			if (timelineControl.SelectedElements.Any())
+			{
+				//Add Edit delete
+				contextMenuStrip.Items.Add("-");
+				contextMenuStrip.Items.Add(toolStripMenuItem_EditEffect);
+				contextMenuStrip.Items.Add(toolStripMenuItem_deleteElements);
+			}
+		
 			e.AutomaticallyHandleSelection = false;
 
 			contextMenuStrip.Show(MousePosition);
@@ -2124,9 +2172,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		public IEditorModuleInstance OwnerModule { get; set; }
 
-		void IEditorUserInterface.Start()
+		void IEditorUserInterface.StartEditor()
 		{
 			Show();
+		}
+
+		void IEditorUserInterface.CloseEditor()
+		{
+			Close();
 		}
 
 		#endregion

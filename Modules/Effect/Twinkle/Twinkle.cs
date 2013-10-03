@@ -227,7 +227,7 @@ namespace VixenModules.Effect.Twinkle
 		private EffectIntents RenderElement(ElementNode node, double positionWithinGroup,
 		                                    List<IndividualTwinkleDetails> twinkles = null)
 		{
-			if (node == null)
+			if (node == null || node.Element == null)
 				return null;
 
 			if (twinkles == null)
@@ -245,56 +245,58 @@ namespace VixenModules.Effect.Twinkle
 			EffectIntents pulseData;
 
 			// figure out what color gradient to use for the pulse
-			switch (ColorHandling) {
-				case TwinkleColorHandling.GradientForEachPulse:
-					if (discreteColors) {
-						List<Tuple<Color, float>> colorProportions = ColorGradient.GetDiscreteColorsAndProportionsAt(0);
-						foreach (Tuple<Color, float> colorProportion in colorProportions) {
-							double value = minPulseValue*colorProportion.Item2;
-							pulse.LevelCurve = new Curve(new PointPairList(new double[] {0, 100}, new double[] {value, value}));
-							pulse.ColorGradient = new ColorGradient(colorProportion.Item1);
+			if (MinimumLevel > 0.0) {
+				switch (ColorHandling) {
+					case TwinkleColorHandling.GradientForEachPulse:
+						if (discreteColors) {
+							List<Tuple<Color, float>> colorProportions = ColorGradient.GetDiscreteColorsAndProportionsAt(0);
+							foreach (Tuple<Color, float> colorProportion in colorProportions) {
+								double value = minPulseValue * colorProportion.Item2;
+								pulse.LevelCurve = new Curve(new PointPairList(new double[] {0, 100}, new double[] {value, value}));
+								pulse.ColorGradient = new ColorGradient(colorProportion.Item1);
+								pulseData = pulse.Render();
+								result.Add(pulseData);
+							}
+						} else {
+							pulse.LevelCurve = new Curve(new PointPairList(new double[] {0, 100}, new double[] {minPulseValue, minPulseValue}));
+							pulse.ColorGradient = new ColorGradient(ColorGradient.GetColorAt(0));
 							pulseData = pulse.Render();
 							result.Add(pulseData);
 						}
-					} else {
-						pulse.LevelCurve = new Curve(new PointPairList(new double[] { 0, 100 }, new double[] { minPulseValue, minPulseValue }));
-						pulse.ColorGradient = new ColorGradient(ColorGradient.GetColorAt(0));
+						break;
+
+					case TwinkleColorHandling.GradientThroughWholeEffect:
+						pulse.LevelCurve = new Curve(new PointPairList(new double[] {0, 100}, new double[] {minPulseValue, minPulseValue}));
+						pulse.ColorGradient = ColorGradient;
 						pulseData = pulse.Render();
 						result.Add(pulseData);
-					}
-					break;
+						break;
 
-				case TwinkleColorHandling.GradientThroughWholeEffect:
-					pulse.LevelCurve = new Curve(new PointPairList(new double[] { 0, 100 }, new double[] { minPulseValue, minPulseValue }));
-					pulse.ColorGradient = ColorGradient;
-					pulseData = pulse.Render();
-					result.Add(pulseData);
-					break;
+					case TwinkleColorHandling.StaticColor:
+						pulse.LevelCurve = new Curve(new PointPairList(new double[] {0, 100}, new double[] {minPulseValue, minPulseValue}));
+						pulse.ColorGradient = StaticColorGradient;
+						pulseData = pulse.Render();
+						result.Add(pulseData);
+						break;
 
-				case TwinkleColorHandling.StaticColor:
-					pulse.LevelCurve = new Curve(new PointPairList(new double[] { 0, 100 }, new double[] { minPulseValue, minPulseValue }));
-					pulse.ColorGradient = StaticColorGradient;
-					pulseData = pulse.Render();
-					result.Add(pulseData);
-					break;
-
-				case TwinkleColorHandling.ColorAcrossItems:
-					if (discreteColors) {
-						List<Tuple<Color, float>> colorsAtPosition = ColorGradient.GetDiscreteColorsAndProportionsAt(positionWithinGroup);
-						foreach (Tuple<Color, float> colorProportion in colorsAtPosition) {
-							double value = minPulseValue * colorProportion.Item2;
-							pulse.LevelCurve = new Curve(new PointPairList(new double[] { 0, 100 }, new double[] { value, value }));
-							pulse.ColorGradient = new ColorGradient(colorProportion.Item1);
+					case TwinkleColorHandling.ColorAcrossItems:
+						if (discreteColors) {
+							List<Tuple<Color, float>> colorsAtPosition = ColorGradient.GetDiscreteColorsAndProportionsAt(positionWithinGroup);
+							foreach (Tuple<Color, float> colorProportion in colorsAtPosition) {
+								double value = minPulseValue * colorProportion.Item2;
+								pulse.LevelCurve = new Curve(new PointPairList(new double[] {0, 100}, new double[] {value, value}));
+								pulse.ColorGradient = new ColorGradient(colorProportion.Item1);
+								pulseData = pulse.Render();
+								result.Add(pulseData);
+							}
+						} else {
+							pulse.LevelCurve = new Curve(new PointPairList(new double[] {0, 100}, new double[] {minPulseValue, minPulseValue}));
+							pulse.ColorGradient = new ColorGradient(ColorGradient.GetColorAt(positionWithinGroup));
 							pulseData = pulse.Render();
 							result.Add(pulseData);
 						}
-					} else {
-						pulse.LevelCurve = new Curve(new PointPairList(new double[] { 0, 100 }, new double[] { minPulseValue, minPulseValue }));
-						pulse.ColorGradient = new ColorGradient(ColorGradient.GetColorAt(positionWithinGroup));
-						pulseData = pulse.Render();
-						result.Add(pulseData);
-					}
-					break;
+						break;
+				}
 			}
 
 			// render all the individual twinkles
