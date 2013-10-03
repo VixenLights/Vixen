@@ -73,14 +73,23 @@ namespace Vixen.Intent
 		/// <returns></returns>
 		public static IEnumerable<Color> GetIntensityAffectedColorForDiscreteStates(IIntentStates states)
 		{
-			List<Color> colors = new List<Color>();
 
-			IEnumerable<IGrouping<Color, IIntentState>> colorStates = states.GroupBy(x => (x as IntentState<LightingValue>).GetValue().Color);
+			if (states.Count() == 1) return new List<Color> { (states[0] as IIntentState<LightingValue>).GetValue().GetAlphaChannelIntensityAffectedColor() };
+			IEnumerable<IGrouping<Color, IIntentState>> colorStates = states.GroupBy(x => (x as IIntentState<LightingValue>).GetValue().Color);
+			List<Color> colors = new List<Color>(colorStates.Count());
 			foreach (var group in colorStates)
 			{
-				IIntentState<LightingValue> intentState = group.Aggregate((agg, next) =>
-					(next as IntentState<LightingValue>).GetValue().Intensity > (agg as IIntentState<LightingValue>).GetValue().Intensity ? next : agg) as IIntentState<LightingValue>;
-				colors.Add(intentState.GetValue().GetAlphaChannelIntensityAffectedColor());
+				IIntentState<LightingValue> maxValue = group.FirstOrDefault() as IIntentState<LightingValue>;
+				foreach (IIntentState<LightingValue> state in group.Skip(1))
+				{
+					if (state.GetValue().Intensity > maxValue.GetValue().Intensity)
+					{
+						maxValue = state;
+					}
+				}
+				//IIntentState<LightingValue> intentState = group.Aggregate((agg, next) =>
+					//(next as IntentState<LightingValue>).GetValue().Intensity > (agg as IIntentState<LightingValue>).GetValue().Intensity ? next : agg) as IIntentState<LightingValue>;
+				colors.Add(maxValue.GetValue().GetAlphaChannelIntensityAffectedColor());
 			}
 			
 			return colors;
