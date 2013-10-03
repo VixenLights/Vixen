@@ -14,7 +14,12 @@ namespace Vixen.Module.Editor
 		/// <summary>
 		/// The editor's signal to show or otherwise start as the user interface.
 		/// </summary>
-		void Start();
+		void StartEditor();
+
+		/// <summary>
+		/// The editor's signal to close the user interface. This is allowed to block and prompt for UI, if needed.
+		/// </summary>
+		void CloseEditor();
 
 		ISequence Sequence { get; set; }
 		ISelection Selection { get; }

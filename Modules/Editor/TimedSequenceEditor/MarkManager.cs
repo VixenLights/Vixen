@@ -1056,13 +1056,24 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					{
 						everything = sr.ReadToEnd();
 					}
-					string[] lines = everything.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+					// Remove the \r so we're just left with a \n (allows importing of Sean's Audacity beat marks
+					everything = everything.Replace("\r", "");
+					string[] lines = everything.Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
 					if (lines.Count() > 0)
 					{
 						MarkCollection marks = AddNewCollection(Color.Yellow, "Audacity Marks");
 						foreach (string line in lines)
 						{
-							string mark = line.Split('\t')[0];
+							string mark;
+							if (line.IndexOf("\t") > 0)
+							{
+								mark = line.Split('\t')[0].Trim();
+							}
+							else
+							{
+								mark = line.Trim().Split(' ')[0].Trim();
+							}
+							Console.WriteLine("->" + mark);
 							TimeSpan time = TimeSpan.FromSeconds(Convert.ToDouble(mark));
 							mark = time.Minutes.ToString() + ":" + time.Seconds.ToString().PadLeft(2, '0') + "." + time.Milliseconds.ToString();
 							_displayedCollection.Marks.Add(time);

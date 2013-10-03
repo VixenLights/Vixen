@@ -68,8 +68,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					y += heightPerElement;
 				}
 				long tRast = sw.ElapsedMilliseconds - tRend;
-				if( tRast > 10)
-					Logging.Debug(" oh: {0}, rend: {1}, rast: {2}, eff: {3}, node:{4}", tOh, tRend, tRast, effect.EffectName, effect.TargetNodes[0].Name);
+				//if( tRast > 10)
+				//	Logging.Debug(" oh: {0}, rend: {1}, rast: {2}, eff: {3}, node:{4}", tOh, tRend, tRast, effect.EffectName, effect.TargetNodes[0].Name);
 			}
 		}
 

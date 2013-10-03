@@ -21,10 +21,14 @@ namespace VixenModules.Output.CommandController
 			InitializeComponent();
 
 			RdsData = data;
+			chkRequiresAuthentication.Checked= data.RequireHTTPAuthentication;
+			
+			txtHttpUsername.Text= data.HttpUsername;
+			txtHttpPassword.Text= data.HttpPassword;
 
 			chkBiDirectional.Checked= data.BiDirectional;
 			chkSlow.Checked= data.Slow;
-			this.txtUrl.Text = data.HttpUrl ?? "http://127.0.0.1/?author={author}&text={text}&time={time}";
+			this.txtUrl.Text = data.HttpUrl ?? "http://127.0.0.1:8080/?action=update_rt&update_rt={text}";
 			switch (data.PortName) {
 				case "LPT1":
 					radioLPT1.Checked=true;
@@ -72,24 +76,56 @@ namespace VixenModules.Output.CommandController
 			groupPorts.Enabled= !radioVFMT212R.Checked;
 			radioUSB.Checked = radioVFMT212R.Checked;
 			RdsData.HardwareID =  Hardware.VFMT212R;
+			SetFormDefaults();
+		
 		}
 
 		private void radioMRDS1322_CheckedChanged(object sender, EventArgs e)
 		{
 			RdsData.HardwareID =  Hardware.MRDS1322;
 			RdsData.ConnectionMode= 1;
+			SetFormDefaults();
 		}
 
 		private void radioMRDS192_CheckedChanged(object sender, EventArgs e)
 		{
 			RdsData.HardwareID =   Hardware.MRDS192;
 			RdsData.ConnectionMode=0;
+			SetFormDefaults();
+		}
+
+		private void SetFormDefaults()
+		{
+			switch (RdsData.HardwareID) {
+				case Hardware.MRDS192:
+				case Hardware.MRDS1322:
+					this.txtPSInterface.MaxLength=8;
+					this.txtUrl.Enabled=	this.lblPassword.Enabled=this.lblUserName.Enabled=	this.chkRequiresAuthentication.Enabled=this.txtHttpPassword.Enabled=this.txtHttpUsername.Enabled=false;
+					break;
+				case Hardware.VFMT212R:
+					this.txtUrl.Enabled=this.lblPassword.Enabled=this.lblUserName.Enabled=	this.chkRequiresAuthentication.Enabled=this.txtHttpPassword.Enabled=this.txtHttpUsername.Enabled=true;
+					this.txtPSInterface.MaxLength=64;
+					chkRequiresAuthentication.Checked=true;
+					chkRequiresAuthentication.Enabled=false;
+					if (!RdsData.HttpUrl.ToLower().EndsWith(@"?action=update_rt&update_rt={text}") || string.IsNullOrWhiteSpace(RdsData.HttpUrl))
+						this.txtUrl.Text =   "http://127.0.0.1:8080/?action=update_rt&update_rt={text}";
+					break;
+				case Hardware.HTTP:
+					this.txtUrl.Enabled=true;
+					this.lblPassword.Enabled=this.lblUserName.Enabled=	this.chkRequiresAuthentication.Enabled=this.txtHttpPassword.Enabled=this.txtHttpUsername.Enabled=true;
+					this.txtPSInterface.MaxLength=128;
+					break;
+				default:
+					break;
+			}
 		}
 		private void radioHttp_CheckedChanged(object sender, EventArgs e)
 		{
 			RdsData.HardwareID= Hardware.HTTP;
 			this.txtUrl.Enabled = radioHttp.Checked;
 			this.txtUrl.ReadOnly= false;
+			SetFormDefaults();
+
 		}
 
 		private void radioPorts_CheckedChanged(object sender, EventArgs e)
@@ -181,6 +217,26 @@ namespace VixenModules.Output.CommandController
 			//} else
 			//	StatusLbl1.Text= "Http Url is NOT well formed and will not be saved";
 		}
+
+		private void chkRequiresAuthentication_CheckedChanged(object sender, EventArgs e)
+		{
+			RdsData.RequireHTTPAuthentication= chkRequiresAuthentication.Checked;
+		}
+
+		private void txtHttpUsername_TextChanged(object sender, EventArgs e)
+		{
+			RdsData.HttpUsername=txtHttpUsername.Text;
+		}
+
+		private void txtHttpPassword_TextChanged(object sender, EventArgs e)
+		{
+			RdsData.HttpPassword=txtHttpPassword.Text;
+		}
+
+		 
+
+	 
+		 
 
 	
 	 

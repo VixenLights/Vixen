@@ -13,8 +13,8 @@ namespace VixenModules.App.WebServer
 		public Data()
 			: base()
 		{
-			//Default the Webserver port to 8080
-			HttpPort = 8080;
+			//Default the Webserver port to 8888
+			HttpPort = 8888;
 			IsEnabled = true;
 		}
 

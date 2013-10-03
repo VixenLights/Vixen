@@ -160,7 +160,7 @@ namespace VixenModules.App.Scheduler
 		private void _AddApplicationMenu()
 		{
 			if (_AppSupportsCommands()) {
-				AppCommand rootCommand = new AppCommand(ID_ROOT, "Scheduler");
+				AppCommand rootCommand = new AppCommand(ID_ROOT, "Old Scheduler");
 
 				LatchedAppCommand enabledCommand = new LatchedAppCommand("SchedulerEnabled", "Enabled");
 				enabledCommand.IsChecked = _data.IsEnabled;

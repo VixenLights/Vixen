@@ -1,0 +1,190 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{0C1F1B4A-E161-44EA-8E5F-B7A159029FC8}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VixenModules.App.Shows</RootNamespace>
+    <AssemblyName>Shows</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>$(SolutionDir)\Output\Modules\App\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>$(SolutionDir)\Release\Modules\App\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="NLog, Version=2.0.1.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\NLog.2.0.1.2\lib\net40\NLog.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Actions\Action.cs" />
+    <Compile Include="Actions\PauseAction.cs" />
+    <Compile Include="Actions\SequenceAction.cs" />
+    <Compile Include="Actions\LaunchAction.cs" />
+    <Compile Include="Editors\ShowTypeEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Editors\ShowTypeEditor.Designer.cs">
+      <DependentUpon>ShowTypeEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Editors\PauseTypeEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Editors\PauseTypeEditor.Designer.cs">
+      <DependentUpon>PauseTypeEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Editors\TypeEditorBase.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Editors\TypeEditorBase.Designer.cs">
+      <DependentUpon>TypeEditorBase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Editors\WebPageTypeEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Editors\WebPageTypeEditor.Designer.cs">
+      <DependentUpon>WebPageTypeEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Editors\LaunchTypeEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Editors\LaunchTypeEditor.Designer.cs">
+      <DependentUpon>LaunchTypeEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Editors\LaunchTypeTester.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Editors\LaunchTypeTester.Designer.cs">
+      <DependentUpon>LaunchTypeTester.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Editors\SequenceTypeEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Editors\SequenceTypeEditor.Designer.cs">
+      <DependentUpon>SequenceTypeEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Editors\WebPageTypeTester.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Editors\WebPageTypeTester.Designer.cs">
+      <DependentUpon>WebPageTypeTester.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ObjectCopier.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Show.cs" />
+    <Compile Include="ShowEditorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ShowEditorForm.Designer.cs">
+      <DependentUpon>ShowEditorForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ShowItem.cs" />
+    <Compile Include="ShowListForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ShowListForm.Designer.cs">
+      <DependentUpon>ShowListForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ShowsData.cs" />
+    <Compile Include="ShowsDescriptor.cs" />
+    <Compile Include="ShowsModule.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Common\Controls\Controls.csproj">
+      <Project>{A54FB6A1-A9C3-488C-B961-41B8DBC81B36}</Project>
+      <Name>Controls</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Common\Help\VixenHelp.csproj">
+      <Project>{BD12BFFC-7039-4C79-ABA0-51F99773A916}</Project>
+      <Name>VixenHelp</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Vixen.System\Vixen.csproj">
+      <Project>{50B78623-FCF4-48AF-93FF-FA87C937028F}</Project>
+      <Name>Vixen</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Editors\ShowTypeEditor.resx">
+      <DependentUpon>ShowTypeEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Editors\PauseTypeEditor.resx">
+      <DependentUpon>PauseTypeEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Editors\WebPageTypeEditor.resx">
+      <DependentUpon>WebPageTypeEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Editors\LaunchTypeEditor.resx">
+      <DependentUpon>LaunchTypeEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Editors\LaunchTypeTester.resx">
+      <DependentUpon>LaunchTypeTester.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Editors\SequenceTypeEditor.resx">
+      <DependentUpon>SequenceTypeEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Editors\WebPageTypeTester.resx">
+      <DependentUpon>WebPageTypeTester.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ShowEditorForm.resx">
+      <DependentUpon>ShowEditorForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ShowListForm.resx">
+      <DependentUpon>ShowListForm.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

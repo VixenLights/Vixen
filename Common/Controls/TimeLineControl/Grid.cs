@@ -36,12 +36,12 @@ namespace Common.Controls.Timeline
 		            // the row that the clicked m_mouseDownElement belongs to (a single element may be in multiple rows)
 
 		private TimeSpan m_cursorPosition; // the current grid 'cursor' position (line drawn vertically);
+		private BackgroundWorker renderWorker;
 		private BlockingCollection<Element> _blockingElementQueue = new BlockingCollection<Element>();
-		private CancellationTokenSource cts = new CancellationTokenSource();
+		private ManualResetEventSlim renderWorkerFinished;
 		
 		#endregion
 		private ElementMoveInfo m_elemMoveInfo;
-		private BackgroundWorker renderWorker = null;
 		public ISequenceContext Context = null;
 		public bool SequenceLoading { get; set; }
 
@@ -91,17 +91,27 @@ namespace Common.Controls.Timeline
 
 		protected override void Dispose(bool disposing)
 		{
-		
-			// Cancel the background worker
-			cts.Cancel(false);
+			// Cancel/complete the rendering background worker
+			_blockingElementQueue.CompleteAdding();
+
 			if (renderWorker != null)
 			{
-				renderWorker.CancelAsync();
-				while (renderWorker.IsBusy) Application.DoEvents();
+				// wait up to a few seconds for it to finish rendering
+				renderWorkerFinished.Wait(5000);
+
+				if (!renderWorkerFinished.IsSet) {
+					Logging.Error("Grid: background rendering didn't finish. Forcibly killing.");
+					renderWorker.CancelAsync();
+					// this really shouldn't be using DoEvents. Actually, it shouldn't be a background worker: we're
+					// treating it like a thread, so should probably just _make_ it a thread.
+					while (renderWorker.IsBusy) {
+						Application.DoEvents();
+					}
+				}
 			}
+
 			if (m_rows != null) {
 				m_rows.Clear();
-				//m_rows=null;
 				m_rows=null;
 				m_rows=new List<Row>();
 			}
@@ -112,11 +122,9 @@ namespace Common.Controls.Timeline
 			Row.RowHeightChanged -= RowHeightChangedHandler;
 
 			TimeInfo= null;
-			TimeInfo = new Timeline.TimeInfo();
 
 			_blockingElementQueue.Dispose();
 			_blockingElementQueue= null;
-			_blockingElementQueue=new BlockingCollection<Element>();
 			Context=null;
 			base.Dispose(disposing);
 		}
@@ -351,9 +359,15 @@ namespace Common.Controls.Timeline
 
 		private void _RenderProgressChanged(int percent)
 		{
-			if (RenderProgressChanged != null) {
-				EventArgs args = new EventArgs();
-				RenderProgressChanged(this, new RenderElementEventArgs(percent));
+			if (InvokeRequired) {
+				//this.Invoke(new MethodInvoker(_RenderProgressChanged));
+				BeginInvoke((MethodInvoker) (() => _RenderProgressChanged(percent)));
+
+			} else {
+				if (RenderProgressChanged != null) {
+					EventArgs args = new EventArgs();
+					RenderProgressChanged(this, new RenderElementEventArgs(percent));
+				}
 			}
 		}
 
@@ -583,6 +597,26 @@ namespace Common.Controls.Timeline
 
 			return true;
 			 
+		}
+
+		/// <summary>
+		/// Handles moving/resizing a single element.
+		/// it's a single 'atomic' operation that moves the elements and raises an event to indicate they have moved.
+		/// </summary>
+		/// <param name="element"></param>
+		/// <param name="start"></param>
+		/// <param name="duration"></param>
+		/// <returns>Boolen indicating whether the move occured</returns>
+		public bool MoveResizeElementByStartEnd(Element element, TimeSpan start, TimeSpan end)
+		{
+			if (element == null || start > TotalTime || end > TotalTime)
+			{
+				return false;
+			}
+
+			TimeSpan duration = end - start;
+			return MoveResizeElement(element, start, duration);
+
 		}
 
 		/// <summary>
@@ -944,7 +978,7 @@ namespace Common.Controls.Timeline
 			// if we're only snapping to things in the current row.) Also, record the row this element is in
 			// as well, since we'll need it later on, and it saves recalculating multiple times
 			List<Tuple<Element, Row>> elementsToCheckSnapping = new List<Tuple<Element, Row>>();
-			if (OnlySnapToCurrentRow) {
+			if (OnlySnapToCurrentRow && CurrentRowIndexUnderMouse>0) {
 				Row targetRow = Rows[CurrentRowIndexUnderMouse];
 				foreach (Element element in elements) {
 					if (targetRow.ContainsElement(element))
@@ -1323,24 +1357,20 @@ namespace Common.Controls.Timeline
 
 		public void StartBackgroundRendering()
 		{
-			if (this.InvokeRequired)
+			if (this.InvokeRequired) {
 				this.Invoke(new Vixen.Delegates.GenericDelegate(StartBackgroundRendering));
-			else 
-			{
-				if (renderWorker != null)
-				{
-					//while (renderWorker.IsBusy) { Thread.Sleep(10); }; 
-					if (!renderWorker.IsBusy)
+			} else {
+				if (renderWorker != null) {
+					if (!renderWorker.IsBusy) {
 						renderWorker.RunWorkerAsync();
-				}
-				else
-				{
+					}
+				} else {
 					renderWorker = new BackgroundWorker();
 					renderWorker.WorkerReportsProgress = true;
 					renderWorker.WorkerSupportsCancellation = true;
 					renderWorker.DoWork += new DoWorkEventHandler(renderWorker_DoWork);
-					//renderWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(renderWorker_RunWorkerCompleted);
 					renderWorker.ProgressChanged += new ProgressChangedEventHandler(renderWorker_ProgressChanged);
+					renderWorkerFinished = new ManualResetEventSlim(false);
 					renderWorker.RunWorkerAsync();
 				}
 			}
@@ -1353,52 +1383,56 @@ namespace Common.Controls.Timeline
 
 		private void renderWorker_DoWork(object sender, DoWorkEventArgs e)
 		{
+			BackgroundWorker worker = sender as BackgroundWorker;
+			if (worker == null) {
+				Logging.Error("renderWorker: sender was null");
+				return;
+			}
+
 			double total = 0;
 			try
 			{
-				if(_blockingElementQueue !=null)
-				foreach (Element element in _blockingElementQueue.GetConsumingEnumerable(cts.Token))
-				{
-					if (renderWorker.CancellationPending)
-					{
-						break;
-					}
-					try
-					{
-						Size size = new Size((int)Math.Ceiling(timeToPixels(element.Duration)), element.Row.Height - 1);
-						element.SetupCachedImage(size);
-						if (!SuppressInvalidate)
-						{
-							if (element.EndTime > VisibleTimeStart && element.StartTime < VisibleTimeEnd)
-							{
-								Invalidate();
+				if(_blockingElementQueue !=null) {
+					foreach (Element element in _blockingElementQueue.GetConsumingEnumerable()) {
+						// This will likely never be hit: the blocking element queue above will always block waiting for more
+						// elements, until it completes because CompleteAdding() is called. At which point it will exit the loop,
+						// as it will be empty, and this function will terminate normally.
+						if (worker.CancellationPending) {
+							Logging.Warn("render worker: cancellation detected. Aborting.");
+							break;
+						}
+						try {
+							Size size = new Size((int) Math.Ceiling(timeToPixels(element.Duration)), element.Row.Height - 1);
+							element.SetupCachedImage(size);
+							if (!SuppressInvalidate) {
+								if (element.EndTime > VisibleTimeStart && element.StartTime < VisibleTimeEnd) {
+									Invalidate();
+								}
+							}
+							if (!_blockingElementQueue.Any()) {
+								total = 0;
+								if (!SuppressInvalidate) {
+									Invalidate(); //Invalidate when the queue is empty just to make sure everything is up to date.
+								}
+								worker.ReportProgress(100);
+							}
+							else {
+								double currentTotal = _blockingElementQueue.Count;
+								total = Math.Max(currentTotal, total);
+								int progress = (int) (((total - currentTotal) / total) * 100);
+								worker.ReportProgress(progress);
 							}
 						}
-						if (!_blockingElementQueue.Any())
-						{
-							total = 0;
-							if (!SuppressInvalidate)
-							{
-								Invalidate(); //Invalidate when the queue is empty just to make sure everything is up to date.
-							}
-							renderWorker.ReportProgress(100);
-						} else
-						{
-							double currentTotal = _blockingElementQueue.Count;
-							total = Math.Max(currentTotal, total);
-							renderWorker.ReportProgress((int)(((total - currentTotal) / total) * 100));
+						catch (Exception ex) {
+							Logging.ErrorException("Error in rendering.", ex);
 						}
-
-					} catch (Exception ex)
-					{
-						Logging.ErrorException("Error in rendering.", ex);
 					}
-
 				}
-			} catch (OperationCanceledException)
-			{
-				//eat the uneeded exception
+			} catch (Exception exception) {
+				// there may be some threading exceptions; if so, they're unexpected.  Log them.
+				Logging.ErrorException("background rendering worker exception:", exception);
 			}
+			renderWorkerFinished.Set();
 		}
 
 		/// <summary>

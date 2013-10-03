@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 //using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Data.Value;
 using Vixen.Sys;
@@ -25,9 +27,9 @@ namespace Vixen.Intent
 			// TODO: using the RGB class is bad. It's an external module which means the Vixen DLL is dependent on it;
 			// if there's anything added to the external module which depends on Vixen.System, we'll have dependency fun.
 			// to fix it, we really should strip out color models and management and use them within the Vixen system itself.
-			HSV hsv = HSV.FromRGB(result);
+			//HSV hsv = HSV.FromRGB(result);
 
-			result = Color.FromArgb((byte)(hsv.V * byte.MaxValue), result.R, result.G, result.B);
+			//result = Color.FromArgb((byte)(hsv.V * byte.MaxValue), result.R, result.G, result.B);
 			return result;
 		}
 
@@ -41,7 +43,8 @@ namespace Vixen.Intent
 				{
 					// If this color is "off" or has no intensity, no reason to put it in the mix...
 					LightingValue lv = (LightingValue)intentState.GetValue();
-					if (lv.Intensity > 0)
+
+					if (lv != null && lv.Intensity > 0)
 					{
 						Color intentColor = lv.GetOpaqueIntensityAffectedColor();
 						c = Color.FromArgb(Math.Max(c.R, intentColor.R),
@@ -57,11 +60,32 @@ namespace Vixen.Intent
 				{
 					IIntentState intentState = states[0];
 					LightingValue lv = (LightingValue)intentState.GetValue();
+					if (lv != null)
 					c = lv.GetOpaqueIntensityAffectedColor();
 				}
 			}
 
 			return c;
+		}
+
+		/// <summary>
+		/// Returns a distinct list of intensity affected colors from the states in a highest value wins combine method 
+		/// </summary>
+		/// <param name="states"></param>
+		/// <returns></returns>
+		public static IEnumerable<Color> GetIntensityAffectedColorForDiscreteStates(IIntentStates states)
+		{
+			List<Color> colors = new List<Color>();
+
+			IEnumerable<IGrouping<Color, IIntentState>> colorStates = states.GroupBy(x => (x as IntentState<LightingValue>).GetValue().Color);
+			foreach (var group in colorStates)
+			{
+				IIntentState<LightingValue> intentState = group.Aggregate((agg, next) =>
+					(next as IntentState<LightingValue>).GetValue().Intensity > (agg as IIntentState<LightingValue>).GetValue().Intensity ? next : agg) as IIntentState<LightingValue>;
+				colors.Add(intentState.GetValue().GetAlphaChannelIntensityAffectedColor());
+			}
+			
+			return colors;
 		}
 
 	}

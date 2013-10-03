@@ -39,6 +39,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// the end time without affecting the the resulting value too much.
 			LightingValue endValue = obj.GetStateAt(tsEnd - _oneTick);
 
+			if (startValue == null ||endValue== null)
+				return;
+
 			// Why we have to do this? I have no idea, but without it, the gradient rendering gives strange artefacts.
 			// (If you want to see what I mean, make a long spin (minutes) across a bunch of elements in a group with
 			// a simple pulse down (or up). The ends/starts of the effect flip to the color of the other end briefly,

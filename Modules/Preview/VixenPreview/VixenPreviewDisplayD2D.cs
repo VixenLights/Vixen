@@ -24,7 +24,10 @@ namespace VixenModules.Preview.VixenPreview {
 			 
 		}
 
-	 
+		public void UpdatePreview()
+		{
+			Scene.Update();
+		}
 
 		public DisplayScene Scene { get { return (DisplayScene)previewWinform1.Scene; } set { previewWinform1.Scene = value; } }
 

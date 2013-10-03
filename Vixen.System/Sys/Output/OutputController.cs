@@ -273,9 +273,7 @@ namespace Vixen.Sys.Output
 		{
 			if (output.State != null) {
 				var lst = output.State.Value as List<IIntentState>;
-				if (lst != null && lst.Count > 0) {
-					Console.WriteLine("");
-				}
+				
 				IDataPolicy effectiveDataPolicy = _dataPolicyProvider.GetDataPolicyForOutput(output);
 				return effectiveDataPolicy.GenerateCommand(output.State);
 			}

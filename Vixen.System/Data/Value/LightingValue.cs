@@ -3,15 +3,15 @@ using System.Drawing;
 
 namespace Vixen.Data.Value
 {
-	public struct LightingValue : IIntentDataType
+	public class LightingValue : IIntentDataType
 	{
 		public LightingValue(Color color, float intensity)
 		{
-			Color = color;
+			ARGB = color.ToArgb();
 			Intensity = intensity;
 		}
-
-		public Color Color;
+		public int ARGB { get; set; }
+		public Color Color { get { return Color.FromArgb(ARGB); } }
 
 		/// <summary>
 		/// Percentage value between 0 and 1.
