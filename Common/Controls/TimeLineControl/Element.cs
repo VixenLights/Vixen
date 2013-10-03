@@ -13,8 +13,8 @@ namespace Common.Controls.Timeline
 	{
 		private TimeSpan m_startTime;
 		private TimeSpan m_duration;
-		private Color m_backColor = Color.White;
-		private Color m_borderColor = Color.Black;
+		private static Color m_backColor = Color.FromArgb(0, 0, 0, 0);
+		private static Color m_borderColor = Color.Black;
 		private bool m_selected = false;
 		private static Font m_textFont = new Font("Arial", 7);
 		private static Color m_textColor = Color.FromArgb(255, 255, 255);
@@ -34,7 +34,6 @@ namespace Common.Controls.Timeline
 		{
 			m_startTime = other.m_startTime;
 			m_duration = other.m_duration;
-			m_backColor = other.m_backColor;
 			m_selected = other.m_selected;
 		}
 
@@ -125,31 +124,6 @@ namespace Common.Controls.Timeline
 		{
 			get { return StartTime + Duration; }
 			set { Duration = (value - StartTime); }
-		}
-
-
-		public Color BackColor
-		{
-			get { return m_backColor; }
-			set
-			{
-				m_backColor = value;
-				CachedCanvasIsCurrent = false;
-				Changed = true;
-				OnContentChanged();
-			}
-		}
-
-		public Color BorderColor
-		{
-			get { return m_borderColor; }
-			set
-			{
-				m_borderColor = value;
-				CachedCanvasIsCurrent = false;
-				Changed = true;
-				OnContentChanged();
-			}
 		}
 
 		public bool Selected
@@ -275,7 +249,7 @@ namespace Common.Controls.Timeline
 		{
 			Bitmap result = new Bitmap(imageSize.Width, imageSize.Height);
 			using (Graphics g = Graphics.FromImage(result)) {
-				using (Brush b = new SolidBrush(BackColor)) {
+				using (Brush b = new SolidBrush(m_backColor)) {
 					g.FillRectangle(b, 0, 0, imageSize.Width, imageSize.Height);
 				}
 			}
@@ -296,7 +270,7 @@ namespace Common.Controls.Timeline
 				);
 
 			// Draw it!
-			using (Pen border = new Pen(BorderColor)) {
+			using (Pen border = new Pen(m_borderColor)) {
 				border.Width = b_wd;
 				g.DrawRectangle(border, b_rect);
 			}
@@ -305,12 +279,6 @@ namespace Common.Controls.Timeline
 		protected virtual void DrawCanvasContent(Graphics graphics)
 		{
 		}
-
-		//public virtual bool IsCanvasContentCurrent(Size imageSize)
-		//{
-		//	return (CachedCanvasIsCurrent || CachedElementCanvas.Width != imageSize.Width ||
-		//			CachedElementCanvas.Height != imageSize.Height);
-		//}
 
 		public Bitmap SetupCachedImage(Size imageSize)
 		{
