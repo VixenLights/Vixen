@@ -82,6 +82,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				EditMarkCollection(this, e);
 		}
 
+		public event EventHandler<EventArgs> ChangedMarkCollection;
+		protected virtual void OnChangedMarkCollection(EventArgs e)
+		{
+			if (ChangedMarkCollection != null)
+				ChangedMarkCollection(this, e);
+		}
+
 		private void listViewMarkCollections_ItemCheck(object sender, ItemCheckEventArgs e)
 		{
 			Point mousePoint = PointToClient(new Point(MousePosition.X, MousePosition.Y));
@@ -95,6 +102,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void toolStripButtonEditMarkCollection_Click(object sender, EventArgs e)
 		{
 			OnEditMarkCollection(EventArgs.Empty);
+		}
+
+		private void listViewMarkCollections_AfterLabelEdit(object sender, LabelEditEventArgs e)
+		{
+			MarkCollection mc = (listViewMarkCollections.Items[e.Item].Tag as MarkCollection);
+			mc.Name = e.Label;
+			OnChangedMarkCollection(EventArgs.Empty);
 		}
 
 	}

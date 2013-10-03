@@ -32,11 +32,11 @@
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form_Marks));
 			this.toolStrip1 = new System.Windows.Forms.ToolStrip();
 			this.toolStripButtonEditMarkCollection = new System.Windows.Forms.ToolStripButton();
+			this.toolStripButtonAddMarkCollection = new System.Windows.Forms.ToolStripButton();
+			this.toolStripButtonDeleteMarkCollection = new System.Windows.Forms.ToolStripButton();
 			this.listViewMarkCollections = new System.Windows.Forms.ListView();
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.toolStripButtonDeleteMarkCollection = new System.Windows.Forms.ToolStripButton();
-			this.toolStripButtonAddMarkCollection = new System.Windows.Forms.ToolStripButton();
 			this.toolStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -63,27 +63,14 @@
 			this.toolStripButtonEditMarkCollection.ToolTipText = "Edit Mark Collections";
 			this.toolStripButtonEditMarkCollection.Click += new System.EventHandler(this.toolStripButtonEditMarkCollection_Click);
 			// 
-			// listViewMarkCollections
+			// toolStripButtonAddMarkCollection
 			// 
-			this.listViewMarkCollections.CheckBoxes = true;
-			this.listViewMarkCollections.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1});
-			this.listViewMarkCollections.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.listViewMarkCollections.FullRowSelect = true;
-			this.listViewMarkCollections.HideSelection = false;
-			this.listViewMarkCollections.Location = new System.Drawing.Point(0, 25);
-			this.listViewMarkCollections.Name = "listViewMarkCollections";
-			this.listViewMarkCollections.Scrollable = false;
-			this.listViewMarkCollections.Size = new System.Drawing.Size(256, 377);
-			this.listViewMarkCollections.TabIndex = 5;
-			this.listViewMarkCollections.UseCompatibleStateImageBehavior = false;
-			this.listViewMarkCollections.View = System.Windows.Forms.View.Details;
-			this.listViewMarkCollections.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.listViewMarkCollections_ItemCheck);
-			// 
-			// columnHeader1
-			// 
-			this.columnHeader1.Text = "Mark Collections";
-			this.columnHeader1.Width = 999;
+			this.toolStripButtonAddMarkCollection.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.toolStripButtonAddMarkCollection.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonAddMarkCollection.Image")));
+			this.toolStripButtonAddMarkCollection.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButtonAddMarkCollection.Name = "toolStripButtonAddMarkCollection";
+			this.toolStripButtonAddMarkCollection.Size = new System.Drawing.Size(23, 22);
+			this.toolStripButtonAddMarkCollection.ToolTipText = "New Mark Collection";
 			// 
 			// toolStripButtonDeleteMarkCollection
 			// 
@@ -94,17 +81,30 @@
 			this.toolStripButtonDeleteMarkCollection.Size = new System.Drawing.Size(23, 22);
 			this.toolStripButtonDeleteMarkCollection.Text = "toolStripButtonDeleteMarkCollection";
 			this.toolStripButtonDeleteMarkCollection.ToolTipText = "Delete Mark Collection";
-			this.toolStripButtonDeleteMarkCollection.Visible = false;
 			// 
-			// toolStripButtonAddMarkCollection
+			// listViewMarkCollections
 			// 
-			this.toolStripButtonAddMarkCollection.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.toolStripButtonAddMarkCollection.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonAddMarkCollection.Image")));
-			this.toolStripButtonAddMarkCollection.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.toolStripButtonAddMarkCollection.Name = "toolStripButtonAddMarkCollection";
-			this.toolStripButtonAddMarkCollection.Size = new System.Drawing.Size(23, 22);
-			this.toolStripButtonAddMarkCollection.ToolTipText = "New Mark Collection";
-			this.toolStripButtonAddMarkCollection.Visible = false;
+			this.listViewMarkCollections.CheckBoxes = true;
+			this.listViewMarkCollections.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1});
+			this.listViewMarkCollections.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.listViewMarkCollections.FullRowSelect = true;
+			this.listViewMarkCollections.HideSelection = false;
+			this.listViewMarkCollections.LabelEdit = true;
+			this.listViewMarkCollections.Location = new System.Drawing.Point(0, 25);
+			this.listViewMarkCollections.Name = "listViewMarkCollections";
+			this.listViewMarkCollections.Scrollable = false;
+			this.listViewMarkCollections.Size = new System.Drawing.Size(256, 377);
+			this.listViewMarkCollections.TabIndex = 5;
+			this.listViewMarkCollections.UseCompatibleStateImageBehavior = false;
+			this.listViewMarkCollections.View = System.Windows.Forms.View.Details;
+			this.listViewMarkCollections.AfterLabelEdit += new System.Windows.Forms.LabelEditEventHandler(this.listViewMarkCollections_AfterLabelEdit);
+			this.listViewMarkCollections.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.listViewMarkCollections_ItemCheck);
+			// 
+			// columnHeader1
+			// 
+			this.columnHeader1.Text = "Mark Collections";
+			this.columnHeader1.Width = 999;
 			// 
 			// Form_Marks
 			// 

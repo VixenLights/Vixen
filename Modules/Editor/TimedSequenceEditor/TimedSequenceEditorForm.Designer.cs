@@ -673,7 +673,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// toolStripContainer.ContentPanel
 			// 
 			this.toolStripContainer.ContentPanel.Controls.Add(this.dockPanel);
-			this.toolStripContainer.ContentPanel.Size = new System.Drawing.Size(886, 486);
+			this.toolStripContainer.ContentPanel.Size = new System.Drawing.Size(886, 511);
 			this.toolStripContainer.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.toolStripContainer.LeftToolStripPanelVisible = false;
 			this.toolStripContainer.Location = new System.Drawing.Point(0, 24);
@@ -686,8 +686,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// toolStripContainer.TopToolStripPanel
 			// 
 			this.toolStripContainer.TopToolStripPanel.Controls.Add(this.toolStripOperations);
-			this.toolStripContainer.TopToolStripPanel.Controls.Add(this.toolStripTiming);
 			this.toolStripContainer.TopToolStripPanel.Controls.Add(this.toolStrip1);
+			this.toolStripContainer.TopToolStripPanel.Controls.Add(this.toolStripTiming);
 			// 
 			// dockPanel
 			// 
@@ -696,7 +696,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.dockPanel.DocumentStyle = WeifenLuo.WinFormsUI.Docking.DocumentStyle.DockingWindow;
 			this.dockPanel.Location = new System.Drawing.Point(0, 0);
 			this.dockPanel.Name = "dockPanel";
-			this.dockPanel.Size = new System.Drawing.Size(886, 486);
+			this.dockPanel.Size = new System.Drawing.Size(886, 511);
 			dockPanelGradient1.EndColor = System.Drawing.SystemColors.ControlLight;
 			dockPanelGradient1.StartColor = System.Drawing.SystemColors.ControlLight;
 			autoHideStripSkin1.DockStripGradient = dockPanelGradient1;
@@ -796,9 +796,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripLabel3,
             this.cboAudioDevices});
-			this.toolStrip1.Location = new System.Drawing.Point(3, 50);
+			this.toolStrip1.Location = new System.Drawing.Point(178, 25);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(341, 25);
+			this.toolStrip1.Size = new System.Drawing.Size(372, 25);
 			this.toolStrip1.TabIndex = 7;
 			// 
 			// toolStripLabel3

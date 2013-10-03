@@ -83,17 +83,37 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			InitializeComponent();
 		}
 
+		private IDockContent DockingPanels_GetContentFromPersistString(string persistString)
+		{
+			if (persistString == typeof(Form_Effects).ToString())
+				return EffectsForm;
+			else if (persistString == typeof(Form_Grid).ToString())
+				return GridForm;
+			else if (persistString == typeof(Form_Marks).ToString())
+				return MarksForm;
+			else
+			{
+				throw new NotImplementedException("Unable to find docking window type.");
+			}
+		}
+
 		private void TimedSequenceEditorForm_Load(object sender, EventArgs e)
 		{
-			GridForm.Show(dockPanel);
-			MarksForm.Show(dockPanel, WeifenLuo.WinFormsUI.Docking.DockState.DockLeft);
-			EffectsForm.Show(dockPanel, WeifenLuo.WinFormsUI.Docking.DockState.DockLeft);
+			settingsPath =
+				System.IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData), "Vixen",
+							   "TimedSequenceEditorForm.xml");
+			if (System.IO.File.Exists(settingsPath)) 
+			{
+							dockPanel.LoadFromXml(settingsPath, new DeserializeDockContent(DockingPanels_GetContentFromPersistString));
+			} else {
+				GridForm.Show(dockPanel);
+				MarksForm.Show(dockPanel, WeifenLuo.WinFormsUI.Docking.DockState.DockLeft);
+				EffectsForm.Show(dockPanel, WeifenLuo.WinFormsUI.Docking.DockState.DockLeft);
+			}
 
 			XMLProfileSettings xml = new XMLProfileSettings();
 			dockPanel.DockLeftPortion = xml.GetSetting(this.Name + "/DockLeftPortion", 150);
-			GridForm.DockState = (DockState)Enum.Parse(typeof(DockState), xml.GetSetting(this.Name + "/GridForm/DockState", DockState.Document.ToString()), true);
-			MarksForm.DockState = (DockState)Enum.Parse(typeof(DockState), xml.GetSetting(this.Name + "/MarksForm/DockState", DockState.DockLeft.ToString()), true);
-			EffectsForm.DockState = (DockState)Enum.Parse(typeof(DockState), xml.GetSetting(this.Name + "/EffectsForm/DockState", DockState.DockLeft.ToString()), true);
+			dockPanel.DockRightPortion = xml.GetSetting(this.Name + "/DockLeftPortion", 150);
 			xml = null;
 
 			_effectNodeToElement = new Dictionary<EffectNode, Element>();
@@ -117,6 +137,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			MarksForm.MarkCollectionChecked += MarkCollection_Checked;
 			MarksForm.EditMarkCollection += MarkCollection_Edit;
+			MarksForm.ChangedMarkCollection += MarkCollection_Changed;
 
 			TimelineControl.SelectionChanged += TimelineControlOnSelectionChanged;
 			TimeLineSequenceClipboardContentsChanged += TimelineSequenceTimeLineSequenceClipboardContentsChanged;
@@ -180,6 +201,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			MarksForm.EditMarkCollection -= MarkCollection_Edit;
 			MarksForm.MarkCollectionChecked -= MarkCollection_Checked;
+			MarksForm.ChangedMarkCollection -= MarkCollection_Changed;
 
 			TimelineControl.SelectionChanged -= TimelineControlOnSelectionChanged;
 			TimeLineSequenceClipboardContentsChanged -= TimelineSequenceTimeLineSequenceClipboardContentsChanged;
@@ -213,15 +235,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			base.Dispose(disposing);
 			GC.Collect();
 		}
-
-		private IDockContent GetContentFromPersistString(string persistString)
-		{
-			Console.WriteLine("GetContent: " + persistString);
-			if (persistString == typeof(Form_Effects).ToString())
-				return EffectsForm;
-			return null;
-		}
-
 
 		private Form_Effects _effectsForm = null;
 		public Form_Effects EffectsForm
@@ -263,6 +276,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void MarkCollection_Edit(Object sender, EventArgs e)
 		{
 			ShowMarkManager();
+		}
+
+		private void MarkCollection_Changed(Object sender, EventArgs e)
+		{
+			sequenceModified();
 		}
 
 		private Form_Grid _gridForm = null;
@@ -2179,11 +2197,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		void IEditorUserInterface.EditorClosing()
 		{
+
+			dockPanel.SaveAsXml(settingsPath);
 			XMLProfileSettings xml = new XMLProfileSettings();
 			xml.PutSetting(this.Name + "/DockLeftPortion", (int)dockPanel.DockLeftPortion);
-			xml.PutSetting(this.Name + "/GridForm/DockState", GridForm.DockState.ToString());
-			xml.PutSetting(this.Name + "/MarksForm/DockState", MarksForm.DockState.ToString());
-			xml.PutSetting(this.Name + "/EffectsForm/DockState", EffectsForm.DockState.ToString());
+			xml.PutSetting(this.Name + "/DockRihtPortion", (int)dockPanel.DockLeftPortion);
 			xml = null;
 		}
 
