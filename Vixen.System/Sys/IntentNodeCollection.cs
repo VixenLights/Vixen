@@ -19,7 +19,7 @@ namespace Vixen.Sys
 			//AddRange(intentNodes);
 			AddRangeCombiner(intentNodes);
 		}
-		Dictionary<string, List<Tuple<int, float>>> intensityHistory = new Dictionary<string, List<Tuple<int, float>>>();
+		Dictionary<long, List<Tuple<int, float>>> intensityHistory = new Dictionary<long, List<Tuple<int, float>>>();
 
 		private bool CreateNewIntent(LightingIntent oldIntent, LightingIntent newIntent)
 		{
