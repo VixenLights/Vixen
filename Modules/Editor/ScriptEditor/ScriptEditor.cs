@@ -67,6 +67,10 @@ namespace VixenModules.Editor.ScriptEditor
 			Close();
 		}
 
+		void IEditorUserInterface.EditorClosing()
+		{
+		}
+
 		private bool _LoadFromSequence(ISequence sequence)
 		{
 			if ((_sequence = sequence as ScriptSequenceType) != null) {

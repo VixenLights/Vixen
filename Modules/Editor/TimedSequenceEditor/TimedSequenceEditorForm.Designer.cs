@@ -887,7 +887,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.Name = "TimedSequenceEditorForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Timed Sequence Editor";
-			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.TimedSequenceEditorForm_FormClosing);
 			this.Load += new System.EventHandler(this.TimedSequenceEditorForm_Load);
 			this.Shown += new System.EventHandler(this.TimedSequenceEditorForm_Shown);
 			this.toolStripOperations.ResumeLayout(false);

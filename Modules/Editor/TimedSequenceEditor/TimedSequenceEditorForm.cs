@@ -91,14 +91,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			XMLProfileSettings xml = new XMLProfileSettings();
 			dockPanel.DockLeftPortion = xml.GetSetting(this.Name + "/DockLeftPortion", 150);
-			//GridForm.DockState = (DockState)Enum.Parse(typeof(DockState), xml.GetSetting(this.Name + "/GridForm/DockState", DockState.Document.ToString()), true);
-			//MarksForm.DockState = (DockState)Enum.Parse(typeof(DockState), xml.GetSetting(this.Name + "/MarksForm/DockState", DockState.DockLeft.ToString()), true);
-			//EffectsForm.DockState = (DockState)Enum.Parse(typeof(DockState), xml.GetSetting(this.Name + "/EffectsForm/DockState", DockState.DockLeft.ToString()), true);
-			
-			//Console.WriteLine(DockState.Document.ToString());
-			//Console.WriteLine(xml.GetSetting(this.Name + "/GridForm/DockState", DockState.Document.ToString()));
-			//Console.WriteLine((DockState)Enum.Parse(typeof(DockState), xml.GetSetting(this.Name + "/GridForm/DockState", DockState.Document.ToString())));
-			//Console.WriteLine(GridForm.DockState.ToString());
+			GridForm.DockState = (DockState)Enum.Parse(typeof(DockState), xml.GetSetting(this.Name + "/GridForm/DockState", DockState.Document.ToString()), true);
+			MarksForm.DockState = (DockState)Enum.Parse(typeof(DockState), xml.GetSetting(this.Name + "/MarksForm/DockState", DockState.DockLeft.ToString()), true);
+			EffectsForm.DockState = (DockState)Enum.Parse(typeof(DockState), xml.GetSetting(this.Name + "/EffectsForm/DockState", DockState.DockLeft.ToString()), true);
 			xml = null;
 
 			_effectNodeToElement = new Dictionary<EffectNode, Element>();
@@ -823,17 +818,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					
 				}
 
-				if (timelineControl.SelectedElements.Count() > 1)
+				if (TimelineControl.SelectedElements.Count() > 1)
 				{
 
 					ToolStripMenuItem itemAlignStart = new ToolStripMenuItem("Align Start Times");
 					itemAlignStart.Click += (mySender, myE) =>
 					{
 						
-						foreach (Element selectedElement in timelineControl.SelectedElements)
+						foreach (Element selectedElement in TimelineControl.SelectedElements)
 						{
 							if (selectedElement.StartTime == element.StartTime) continue;
-							timelineControl.grid.MoveResizeElementByStartEnd(selectedElement, element.StartTime, selectedElement.EndTime);
+							TimelineControl.grid.MoveResizeElementByStartEnd(selectedElement, element.StartTime, selectedElement.EndTime);
 						}
 					};
 
@@ -841,10 +836,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					itemAlignEnd.Click += (mySender, myE) =>
 					{
 					
-						foreach (Element selectedElement in timelineControl.SelectedElements)
+						foreach (Element selectedElement in TimelineControl.SelectedElements)
 						{
 							if (selectedElement.EndTime == element.EndTime) continue;
-							timelineControl.grid.MoveResizeElementByStartEnd(selectedElement, selectedElement.StartTime, element.EndTime);
+							TimelineControl.grid.MoveResizeElementByStartEnd(selectedElement, selectedElement.StartTime, element.EndTime);
 						}
 					};
 
@@ -861,7 +856,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			contextMenuStrip.Items.Add(toolStripMenuItem_Copy);
 			contextMenuStrip.Items.Add(toolStripMenuItem_Cut);
 			contextMenuStrip.Items.Add(toolStripMenuItem_Paste);
-			if (timelineControl.SelectedElements.Any())
+			if (TimelineControl.SelectedElements.Any())
 			{
 				//Add Edit delete
 				contextMenuStrip.Items.Add("-");
@@ -2182,6 +2177,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			Close();
 		}
 
+		void IEditorUserInterface.EditorClosing()
+		{
+			XMLProfileSettings xml = new XMLProfileSettings();
+			xml.PutSetting(this.Name + "/DockLeftPortion", (int)dockPanel.DockLeftPortion);
+			xml.PutSetting(this.Name + "/GridForm/DockState", GridForm.DockState.ToString());
+			xml.PutSetting(this.Name + "/MarksForm/DockState", MarksForm.DockState.ToString());
+			xml.PutSetting(this.Name + "/EffectsForm/DockState", EffectsForm.DockState.ToString());
+			xml = null;
+		}
+
 		#endregion
 
 		#region IExecutionControl and ITiming implementation - beat tapping
@@ -2387,26 +2392,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void cboAudioDevices_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			Vixen.Sys.State.Variables.SelectedAudioDeviceIndex= cboAudioDevices.SelectedIndex;
-		}
-
-		private void TimedSequenceEditorForm_FormClosing(object sender, FormClosingEventArgs e)
-		{
-			//e.Cancel = true;
-			//Console.WriteLine(GridForm.DockState.ToString());
-			//Console.WriteLine(MarksForm.DockState.ToString());
-			//Console.WriteLine(EffectsForm.DockState.ToString());
-
-			XMLProfileSettings xml = new XMLProfileSettings();
-			xml.PutSetting(this.Name + "/DockLeftPortion", (int)dockPanel.DockLeftPortion);
-			//xml.PutSetting(this.Name + "/GridForm/DockState", GridForm.DockState.ToString());
-			//xml.PutSetting(this.Name + "/MarksForm/DockState", MarksForm.DockState.ToString());
-			//xml.PutSetting(this.Name + "/EffectsForm/DockState", EffectsForm.DockState.ToString());
-			xml = null;
-		}
-
-		private void dockPanel_DockChanged(object sender, EventArgs e)
-		{
-
 		}
 	}
 

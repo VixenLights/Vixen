@@ -290,9 +290,15 @@ namespace VixenApplication
 
 		void editorUI_Closing(object sender, System.ComponentModel.CancelEventArgs e)
 		{
-			if (!_CloseEditor(sender as IEditorUserInterface)) {
+			IEditorUserInterface editor = (sender as IEditorUserInterface);
+			if (!_CloseEditor(editor))
+			{
 				e.Cancel = true;
-			}  
+			}
+			else
+			{
+				editor.EditorClosing();
+			}
 		}
 
 		private bool _CloseEditor(IEditorUserInterface editor)
