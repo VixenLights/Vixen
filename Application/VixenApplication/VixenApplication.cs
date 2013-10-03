@@ -11,6 +11,7 @@ using Vixen.Module.SequenceType;
 using Vixen.Services;
 using Vixen.Sys;
 using NLog;
+using Common.Controls;
 
 namespace VixenApplication
 {

@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Collections.Generic;
 using Common.Controls.Timeline;
 using Vixen.Module.Effect;
 using Vixen.Services;
@@ -74,6 +75,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				MarkCollectionChecked(this, e);
 		}
 
+		public event EventHandler<EventArgs> EditMarkCollection;
+		protected virtual void OnEditMarkCollection(EventArgs e)
+		{
+			if (EditMarkCollection != null)
+				EditMarkCollection(this, e);
+		}
+
 		private void listViewMarkCollections_ItemCheck(object sender, ItemCheckEventArgs e)
 		{
 			Point mousePoint = PointToClient(new Point(MousePosition.X, MousePosition.Y));
@@ -82,6 +90,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			MarkCollection mc = item.Tag as MarkCollection;
 			mc.Enabled = (e.NewValue == CheckState.Checked);
 			OnMarkCollectionChecked(new MarkCollectionCheckedArgs(mc));			
+		}
+
+		private void toolStripButtonEditMarkCollection_Click(object sender, EventArgs e)
+		{
+			OnEditMarkCollection(EventArgs.Empty);
 		}
 
 	}

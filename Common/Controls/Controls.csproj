@@ -310,6 +310,7 @@
     <Compile Include="Wizard\WizardStage.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="XMLProfileSettings.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ColorPicker\ColorLabel.resx">

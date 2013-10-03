@@ -410,6 +410,8 @@ namespace Common.Controls.Timeline
 
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
+			Console.WriteLine("Clicks: " + e.Clicks);
+
 			m_button = e.Button;
 			m_mouseDownX = e.X;
 			if (e.Button != MouseButtons.Left) return;
@@ -493,50 +495,58 @@ namespace Common.Controls.Timeline
 
 		protected override void OnMouseUp(MouseEventArgs e)
 		{
-			if (m_button == System.Windows.Forms.MouseButtons.Left)
+			if (e.Clicks == 2)
 			{
-				switch (m_mouseState)
-				{
-					case MouseState.Normal:
-						break; // this is okay and will happen
-					//throw new Exception("MouseUp in MouseState.Normal - WTF?");
-
-					case MouseState.DragWait:
-						// Didn't move enough to be considered dragging. Just a click.
-						OnClickedAtTime(new RulerClickedEventArgs(pixelsToTime(e.X) + VisibleTimeStart, Form.ModifierKeys, m_button));
-						break;
-
-					case MouseState.Dragging:
-						// Finished a time range drag.
-						OnTimeRangeDragged(new ModifierKeysEventArgs(Form.ModifierKeys));
-						break;
-					case MouseState.DraggingMark:
-						if (m_mark != TimeSpan.Zero)
-						{
-							OnMarkMoved(new MarkMovedEventArgs(m_mark, pixelsToTime(e.X) + VisibleTimeStart, m_markDetails));
-						}
-						break;
-					default:
-						throw new Exception("Invalid MouseState. WTF?!");
-				}
+				// Add a mark
+				OnClickedAtTime(new RulerClickedEventArgs(pixelsToTime(e.X) + VisibleTimeStart, Form.ModifierKeys, m_button));
 			}
-			else if (m_button == System.Windows.Forms.MouseButtons.Right)
+			else
 			{
-				m_mark = PointTimeToMark(pixelsToTime(e.X) + VisibleTimeStart);
-				if (m_mark != TimeSpan.Zero)
+				if (m_button == System.Windows.Forms.MouseButtons.Left)
 				{
-					// See if we got a right-click on top of a mark.
-					if (e.X == m_mouseDownX)
+					switch (m_mouseState)
 					{
-						ContextMenu c = new ContextMenu();
-						c.MenuItems.Add("&Delete Mark", new EventHandler(DeleteMark_Click));
-						c.Show(this, new Point(e.X, e.Y));
+						case MouseState.Normal:
+							break; // this is okay and will happen
+						//throw new Exception("MouseUp in MouseState.Normal - WTF?");
+
+						case MouseState.DragWait:
+							// Didn't move enough to be considered dragging. Just a click.
+							OnClickedAtTime(new RulerClickedEventArgs(pixelsToTime(e.X) + VisibleTimeStart, Form.ModifierKeys, m_button));
+							break;
+
+						case MouseState.Dragging:
+							// Finished a time range drag.
+							OnTimeRangeDragged(new ModifierKeysEventArgs(Form.ModifierKeys));
+							break;
+						case MouseState.DraggingMark:
+							if (m_mark != TimeSpan.Zero)
+							{
+								OnMarkMoved(new MarkMovedEventArgs(m_mark, pixelsToTime(e.X) + VisibleTimeStart, m_markDetails));
+							}
+							break;
+						default:
+							throw new Exception("Invalid MouseState. WTF?!");
 					}
 				}
-				// Othersise, we've moved  a mark
-				else
+				else if (m_button == System.Windows.Forms.MouseButtons.Right)
 				{
-					OnClickedAtTime(new RulerClickedEventArgs(pixelsToTime(e.X) + VisibleTimeStart, Form.ModifierKeys, m_button));
+					m_mark = PointTimeToMark(pixelsToTime(e.X) + VisibleTimeStart);
+					if (m_mark != TimeSpan.Zero)
+					{
+						// See if we got a right-click on top of a mark.
+						if (e.X == m_mouseDownX)
+						{
+							ContextMenu c = new ContextMenu();
+							c.MenuItems.Add("&Delete Mark", new EventHandler(DeleteMark_Click));
+							c.Show(this, new Point(e.X, e.Y));
+						}
+					}
+					// Otherwise, we've added a mark
+					else
+					{
+						OnClickedAtTime(new RulerClickedEventArgs(pixelsToTime(e.X) + VisibleTimeStart, Form.ModifierKeys, m_button));
+					}
 				}
 			}
 			m_mouseState = MouseState.Normal;

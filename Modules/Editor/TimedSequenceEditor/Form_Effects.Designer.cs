@@ -53,7 +53,7 @@
 			treeNode2.Name = "treeAdvanced";
 			treeNode2.Text = "Advanced Lighting";
 			treeNode3.ImageKey = "bullet_arrow_Right.png";
-			treeNode3.Name = "treeAction";
+			treeNode3.Name = "treeDevice";
 			treeNode3.SelectedImageKey = "(default)";
 			treeNode3.StateImageKey = "(none)";
 			treeNode3.Text = "Device Action";

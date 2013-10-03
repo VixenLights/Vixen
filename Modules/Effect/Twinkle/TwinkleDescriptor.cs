@@ -22,6 +22,11 @@ namespace VixenModules.Effect.Twinkle
 			get { return "Twinkle"; }
 		}
 
+		public override EffectGroups EffectGroup
+		{
+			get { return EffectGroups.Basic; }
+		}
+
 		public override Guid TypeId
 		{
 			get { return _typeId; }

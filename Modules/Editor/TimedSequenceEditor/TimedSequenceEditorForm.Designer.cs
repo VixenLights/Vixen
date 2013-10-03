@@ -148,7 +148,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
             this.toolStripButton_ZoomTimeOut});
 			this.toolStripOperations.Location = new System.Drawing.Point(3, 0);
 			this.toolStripOperations.Name = "toolStripOperations";
-			this.toolStripOperations.Size = new System.Drawing.Size(407, 25);
+			this.toolStripOperations.Size = new System.Drawing.Size(376, 25);
 			this.toolStripOperations.TabIndex = 1;
 			this.toolStripOperations.Text = "Operations";
 			// 
@@ -692,6 +692,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// dockPanel
 			// 
 			this.dockPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.dockPanel.DockLeftPortion = 200D;
 			this.dockPanel.DocumentStyle = WeifenLuo.WinFormsUI.Docking.DocumentStyle.DockingWindow;
 			this.dockPanel.Location = new System.Drawing.Point(0, 0);
 			this.dockPanel.Name = "dockPanel";
@@ -881,12 +882,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.Controls.Add(this.menuStrip);
 			this.DoubleBuffered = true;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-			this.IsMdiContainer = true;
 			this.KeyPreview = true;
 			this.MainMenuStrip = this.menuStrip;
 			this.Name = "TimedSequenceEditorForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Timed Sequence Editor";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.TimedSequenceEditorForm_FormClosing);
 			this.Load += new System.EventHandler(this.TimedSequenceEditorForm_Load);
 			this.Shown += new System.EventHandler(this.TimedSequenceEditorForm_Shown);
 			this.toolStripOperations.ResumeLayout(false);

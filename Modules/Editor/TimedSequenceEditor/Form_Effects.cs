@@ -20,6 +20,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void Form_Effects_Load(object sender, EventArgs e)
 		{
+			// Remove "Advanced Lighting" for now
+			treeEffects.Nodes.RemoveAt(1);
 			LoadAvailableEffects();
 		}
 
@@ -32,7 +34,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					ApplicationServices.GetModuleDescriptors<IEffectModuleInstance>().Cast<IEffectModuleDescriptor>())
 			{
 				// Add the effects to the tree
-				TreeNode parentNode = treeEffects.Nodes["treeBasic"];
+				TreeNode parentNode = null;
+				switch (effectDesriptor.EffectGroup)
+				{
+					case EffectGroups.Basic:
+						parentNode = treeEffects.Nodes["treeBasic"];
+						break;
+					case EffectGroups.Advanced:
+						parentNode = treeEffects.Nodes["treeAdvanced"];
+						break;
+					case EffectGroups.Device:
+						parentNode = treeEffects.Nodes["treeDevice"];
+						break;
+				}
 				TreeNode node = new TreeNode(effectDesriptor.EffectName);
 				node.Tag = effectDesriptor.TypeId;
 				parentNode.Nodes.Add(node);
@@ -53,6 +67,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				{
 					treeEffects.CollapseAll();
 					treeEffects.Nodes[0].Expand();
+					treeEffects.Nodes[1].Expand();
 				}
 			}
 		}

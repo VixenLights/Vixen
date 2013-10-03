@@ -24,6 +24,8 @@ using VixenModules.App.VirtualEffect;
 using Vixen.Module.App;
 using System.Threading.Tasks;
 using System.Threading;
+using Common.Controls;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -70,6 +72,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private ContextMenuStrip contextMenuStrip = new ContextMenuStrip();
 
+		private string settingsPath;
+
 		#endregion
 
 		#region Constructor / Initialization
@@ -84,8 +88,18 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			GridForm.Show(dockPanel);
 			MarksForm.Show(dockPanel, WeifenLuo.WinFormsUI.Docking.DockState.DockLeft);
 			EffectsForm.Show(dockPanel, WeifenLuo.WinFormsUI.Docking.DockState.DockLeft);
-			//propertiesForm.Show(elementsForm.Pane, WeifenLuo.WinFormsUI.Docking.DockAlignment.Bottom, 0.5);
 
+			XMLProfileSettings xml = new XMLProfileSettings();
+			dockPanel.DockLeftPortion = xml.GetSetting(this.Name + "/DockLeftPortion", 150);
+			//GridForm.DockState = (DockState)Enum.Parse(typeof(DockState), xml.GetSetting(this.Name + "/GridForm/DockState", DockState.Document.ToString()), true);
+			//MarksForm.DockState = (DockState)Enum.Parse(typeof(DockState), xml.GetSetting(this.Name + "/MarksForm/DockState", DockState.DockLeft.ToString()), true);
+			//EffectsForm.DockState = (DockState)Enum.Parse(typeof(DockState), xml.GetSetting(this.Name + "/EffectsForm/DockState", DockState.DockLeft.ToString()), true);
+			
+			//Console.WriteLine(DockState.Document.ToString());
+			//Console.WriteLine(xml.GetSetting(this.Name + "/GridForm/DockState", DockState.Document.ToString()));
+			//Console.WriteLine((DockState)Enum.Parse(typeof(DockState), xml.GetSetting(this.Name + "/GridForm/DockState", DockState.Document.ToString())));
+			//Console.WriteLine(GridForm.DockState.ToString());
+			xml = null;
 
 			_effectNodeToElement = new Dictionary<EffectNode, Element>();
 			_elementNodeToRows = new Dictionary<ElementNode, List<Row>>();
@@ -105,6 +119,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			TimelineControl.MarkMoved += timelineControl_MarkMoved;
 			TimelineControl.DeleteMark += timelineControl_DeleteMark;
+
+			MarksForm.MarkCollectionChecked += MarkCollection_Checked;
+			MarksForm.EditMarkCollection += MarkCollection_Edit;
 
 			TimelineControl.SelectionChanged += TimelineControlOnSelectionChanged;
 			TimeLineSequenceClipboardContentsChanged += TimelineSequenceTimeLineSequenceClipboardContentsChanged;
@@ -166,6 +183,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.MarkMoved -= timelineControl_MarkMoved;
 			TimelineControl.DeleteMark -= timelineControl_DeleteMark;
 
+			MarksForm.EditMarkCollection -= MarkCollection_Edit;
+			MarksForm.MarkCollectionChecked -= MarkCollection_Checked;
+
 			TimelineControl.SelectionChanged -= TimelineControlOnSelectionChanged;
 			TimeLineSequenceClipboardContentsChanged -= TimelineSequenceTimeLineSequenceClipboardContentsChanged;
 			TimelineControl.CursorMoved -= CursorMovedHandler;
@@ -199,6 +219,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			GC.Collect();
 		}
 
+		private IDockContent GetContentFromPersistString(string persistString)
+		{
+			Console.WriteLine("GetContent: " + persistString);
+			if (persistString == typeof(Form_Effects).ToString())
+				return EffectsForm;
+			return null;
+		}
+
+
 		private Form_Effects _effectsForm = null;
 		public Form_Effects EffectsForm
 		{
@@ -226,7 +255,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				else
 				{
 					_marksForm = new Form_Marks(TimelineControl);
-					MarksForm.MarkCollectionChecked += MarkCollection_Checked;
 					return _marksForm;
 				}
 			}
@@ -237,6 +265,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			populateGridWithMarks();
 		}
 
+		private void MarkCollection_Edit(Object sender, EventArgs e)
+		{
+			ShowMarkManager();
+		}
 
 		private Form_Grid _gridForm = null;
 		public Form_Grid GridForm
@@ -919,7 +951,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			foreach (MarkCollection mc in _sequence.MarkCollections)
 			{
-				if (e.SnapDetails.SnapColor == mc.MarkColor && e.SnapDetails.SnapLevel == mc.Level)
+				if (/*e.SnapDetails.SnapColor == mc.MarkColor && */e.SnapDetails.SnapLevel == mc.Level)
 				{
 					if (mc.Marks.Contains(e.OriginalMark))
 					{
@@ -1903,11 +1935,18 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void toolStripMenuItem_MarkManager_Click(object sender, EventArgs e)
 		{
+			ShowMarkManager();
+		}
+
+		private void ShowMarkManager()
+		{
 			MarkManager manager = new MarkManager(new List<MarkCollection>(_sequence.MarkCollections), this, this, this);
-			if (manager.ShowDialog() == DialogResult.OK) {
+			if (manager.ShowDialog() == DialogResult.OK)
+			{
 				_sequence.MarkCollections = manager.MarkCollections;
 				populateGridWithMarks();
 				sequenceModified();
+				MarksForm.PopulateMarkCollectionsList(null);
 			}
 		}
 
@@ -2295,6 +2334,26 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void cboAudioDevices_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			Vixen.Sys.State.Variables.SelectedAudioDeviceIndex= cboAudioDevices.SelectedIndex;
+		}
+
+		private void TimedSequenceEditorForm_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			//e.Cancel = true;
+			//Console.WriteLine(GridForm.DockState.ToString());
+			//Console.WriteLine(MarksForm.DockState.ToString());
+			//Console.WriteLine(EffectsForm.DockState.ToString());
+
+			XMLProfileSettings xml = new XMLProfileSettings();
+			xml.PutSetting(this.Name + "/DockLeftPortion", (int)dockPanel.DockLeftPortion);
+			//xml.PutSetting(this.Name + "/GridForm/DockState", GridForm.DockState.ToString());
+			//xml.PutSetting(this.Name + "/MarksForm/DockState", MarksForm.DockState.ToString());
+			//xml.PutSetting(this.Name + "/EffectsForm/DockState", EffectsForm.DockState.ToString());
+			xml = null;
+		}
+
+		private void dockPanel_DockChanged(object sender, EventArgs e)
+		{
+
 		}
 	}
 

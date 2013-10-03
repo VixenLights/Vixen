@@ -30,24 +30,15 @@
 		{
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form_Marks));
-			this.effectTreeImages = new System.Windows.Forms.ImageList(this.components);
 			this.toolStrip1 = new System.Windows.Forms.ToolStrip();
 			this.toolStripButtonEditMarkCollection = new System.Windows.Forms.ToolStripButton();
-			this.toolStripButtonAddMarkCollection = new System.Windows.Forms.ToolStripButton();
-			this.toolStripButtonDeleteMarkCollection = new System.Windows.Forms.ToolStripButton();
 			this.listViewMarkCollections = new System.Windows.Forms.ListView();
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.toolStripButtonDeleteMarkCollection = new System.Windows.Forms.ToolStripButton();
+			this.toolStripButtonAddMarkCollection = new System.Windows.Forms.ToolStripButton();
 			this.toolStrip1.SuspendLayout();
 			this.SuspendLayout();
-			// 
-			// effectTreeImages
-			// 
-			this.effectTreeImages.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("effectTreeImages.ImageStream")));
-			this.effectTreeImages.TransparentColor = System.Drawing.Color.Transparent;
-			this.effectTreeImages.Images.SetKeyName(0, "bullet_arrow_Right.png");
-			this.effectTreeImages.Images.SetKeyName(1, "bullet_arrow_down.png");
-			this.effectTreeImages.Images.SetKeyName(2, "blank.png");
 			// 
 			// toolStrip1
 			// 
@@ -70,25 +61,7 @@
 			this.toolStripButtonEditMarkCollection.Size = new System.Drawing.Size(23, 22);
 			this.toolStripButtonEditMarkCollection.Text = "toolStripButtonEditMarkCollections";
 			this.toolStripButtonEditMarkCollection.ToolTipText = "Edit Mark Collections";
-			// 
-			// toolStripButtonAddMarkCollection
-			// 
-			this.toolStripButtonAddMarkCollection.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.toolStripButtonAddMarkCollection.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonAddMarkCollection.Image")));
-			this.toolStripButtonAddMarkCollection.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.toolStripButtonAddMarkCollection.Name = "toolStripButtonAddMarkCollection";
-			this.toolStripButtonAddMarkCollection.Size = new System.Drawing.Size(23, 22);
-			this.toolStripButtonAddMarkCollection.ToolTipText = "New Mark Collection";
-			// 
-			// toolStripButtonDeleteMarkCollection
-			// 
-			this.toolStripButtonDeleteMarkCollection.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.toolStripButtonDeleteMarkCollection.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonDeleteMarkCollection.Image")));
-			this.toolStripButtonDeleteMarkCollection.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.toolStripButtonDeleteMarkCollection.Name = "toolStripButtonDeleteMarkCollection";
-			this.toolStripButtonDeleteMarkCollection.Size = new System.Drawing.Size(23, 22);
-			this.toolStripButtonDeleteMarkCollection.Text = "toolStripButtonDeleteMarkCollection";
-			this.toolStripButtonDeleteMarkCollection.ToolTipText = "Delete Mark Collection";
+			this.toolStripButtonEditMarkCollection.Click += new System.EventHandler(this.toolStripButtonEditMarkCollection_Click);
 			// 
 			// listViewMarkCollections
 			// 
@@ -112,6 +85,27 @@
 			this.columnHeader1.Text = "Mark Collections";
 			this.columnHeader1.Width = 999;
 			// 
+			// toolStripButtonDeleteMarkCollection
+			// 
+			this.toolStripButtonDeleteMarkCollection.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.toolStripButtonDeleteMarkCollection.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonDeleteMarkCollection.Image")));
+			this.toolStripButtonDeleteMarkCollection.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButtonDeleteMarkCollection.Name = "toolStripButtonDeleteMarkCollection";
+			this.toolStripButtonDeleteMarkCollection.Size = new System.Drawing.Size(23, 22);
+			this.toolStripButtonDeleteMarkCollection.Text = "toolStripButtonDeleteMarkCollection";
+			this.toolStripButtonDeleteMarkCollection.ToolTipText = "Delete Mark Collection";
+			this.toolStripButtonDeleteMarkCollection.Visible = false;
+			// 
+			// toolStripButtonAddMarkCollection
+			// 
+			this.toolStripButtonAddMarkCollection.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.toolStripButtonAddMarkCollection.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonAddMarkCollection.Image")));
+			this.toolStripButtonAddMarkCollection.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButtonAddMarkCollection.Name = "toolStripButtonAddMarkCollection";
+			this.toolStripButtonAddMarkCollection.Size = new System.Drawing.Size(23, 22);
+			this.toolStripButtonAddMarkCollection.ToolTipText = "New Mark Collection";
+			this.toolStripButtonAddMarkCollection.Visible = false;
+			// 
 			// Form_Marks
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -134,13 +128,12 @@
 
 		#endregion
 
-		private System.Windows.Forms.ImageList effectTreeImages;
 		private System.Windows.Forms.ToolStrip toolStrip1;
 		private System.Windows.Forms.ListView listViewMarkCollections;
 		private System.Windows.Forms.ColumnHeader columnHeader1;
 		private System.Windows.Forms.ToolStripButton toolStripButtonEditMarkCollection;
+		private System.Windows.Forms.ToolTip toolTip1;
 		private System.Windows.Forms.ToolStripButton toolStripButtonAddMarkCollection;
 		private System.Windows.Forms.ToolStripButton toolStripButtonDeleteMarkCollection;
-		private System.Windows.Forms.ToolTip toolTip1;
 	}
 }
