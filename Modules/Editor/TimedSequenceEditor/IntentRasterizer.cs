@@ -82,7 +82,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			// Handle other intents the same old way
 			if (obj.GetType().Name != "StaticLightingArrayIntent")
+			{
 				HandleOne(obj, TimeSpan.Zero, obj.TimeSpan);
+				return;
+			}
 
 			// StaticLightingArrayIntents are fundementally sampled values (not gradients)
 			// so we try to improve their appearance by creating more samples to rasterize.
