@@ -268,7 +268,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		private void MarkCollection_Checked(object sender, MarkCollectionCheckedArgs e)
+		private void MarkCollection_Checked(object sender, MarkCollectionArgs e)
 		{
 			populateGridWithMarks();
 		}
@@ -278,7 +278,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			ShowMarkManager();
 		}
 
-		private void MarkCollection_Changed(Object sender, EventArgs e)
+		private void MarkCollection_Changed(Object sender, MarkCollectionArgs e)
 		{
 			sequenceModified();
 		}

@@ -68,8 +68,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		public TimedSequence Sequence { get; set; }
 
-		public event EventHandler<MarkCollectionCheckedArgs> MarkCollectionChecked;
-		protected virtual void OnMarkCollectionChecked(MarkCollectionCheckedArgs e)
+		public event EventHandler<MarkCollectionArgs> MarkCollectionChecked;
+		protected virtual void OnMarkCollectionChecked(MarkCollectionArgs e)
 		{
 			if (MarkCollectionChecked != null)
 				MarkCollectionChecked(this, e);
@@ -82,8 +82,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				EditMarkCollection(this, e);
 		}
 
-		public event EventHandler<EventArgs> ChangedMarkCollection;
-		protected virtual void OnChangedMarkCollection(EventArgs e)
+		public event EventHandler<MarkCollectionArgs> ChangedMarkCollection;
+		protected virtual void OnChangedMarkCollection(MarkCollectionArgs e)
 		{
 			if (ChangedMarkCollection != null)
 				ChangedMarkCollection(this, e);
@@ -96,7 +96,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			ListViewItem item = listViewMarkCollections.Items[e.Index];
 			MarkCollection mc = item.Tag as MarkCollection;
 			mc.Enabled = (e.NewValue == CheckState.Checked);
-			OnMarkCollectionChecked(new MarkCollectionCheckedArgs(mc));			
+			OnMarkCollectionChecked(new MarkCollectionArgs(mc));			
 		}
 
 		private void toolStripButtonEditMarkCollection_Click(object sender, EventArgs e)
@@ -108,14 +108,42 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			MarkCollection mc = (listViewMarkCollections.Items[e.Item].Tag as MarkCollection);
 			mc.Name = e.Label;
-			OnChangedMarkCollection(EventArgs.Empty);
+			OnChangedMarkCollection(new MarkCollectionArgs(mc));
+		}
+
+		private void toolStripButtonAddMarkCollection_Click(object sender, EventArgs e)
+		{
+			MarkCollection mc = new MarkCollection();
+			mc.Name = "New Mark Collection";
+			mc.MarkColor = Color.White;
+			Sequence.MarkCollections.Add(mc);
+			OnChangedMarkCollection(new MarkCollectionArgs(mc));
+			PopulateMarkCollectionsList(mc);
+		}
+
+		private void toolStripButtonDeleteMarkCollection_Click(object sender, EventArgs e)
+		{
+			if (listViewMarkCollections.SelectedItems.Count > 0)
+			{
+				MarkCollection mc = (listViewMarkCollections.SelectedItems[0].Tag as MarkCollection);
+				if (MessageBox.Show("Are you sure you want to delete the selected Mark Collection?", "Delete Mark Collection", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+				{
+					listViewMarkCollections.SelectedItems[0].Remove();
+					Sequence.MarkCollections.Remove(mc);
+					OnChangedMarkCollection(new MarkCollectionArgs(null));
+				}
+			}
+			else
+			{
+				MessageBox.Show("Please select a Mark Collection to delete and press the delete button again.", "Delete Mark Collection", MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
+			}
 		}
 
 	}
 
-	public class MarkCollectionCheckedArgs: EventArgs
+	public class MarkCollectionArgs: EventArgs
 	{
-		public MarkCollectionCheckedArgs(MarkCollection mc)
+		public MarkCollectionArgs(MarkCollection mc)
 		{
 			MarkCollection = mc;
 		}

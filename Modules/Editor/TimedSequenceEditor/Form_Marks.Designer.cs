@@ -71,6 +71,7 @@
 			this.toolStripButtonAddMarkCollection.Name = "toolStripButtonAddMarkCollection";
 			this.toolStripButtonAddMarkCollection.Size = new System.Drawing.Size(23, 22);
 			this.toolStripButtonAddMarkCollection.ToolTipText = "New Mark Collection";
+			this.toolStripButtonAddMarkCollection.Click += new System.EventHandler(this.toolStripButtonAddMarkCollection_Click);
 			// 
 			// toolStripButtonDeleteMarkCollection
 			// 
@@ -81,6 +82,7 @@
 			this.toolStripButtonDeleteMarkCollection.Size = new System.Drawing.Size(23, 22);
 			this.toolStripButtonDeleteMarkCollection.Text = "toolStripButtonDeleteMarkCollection";
 			this.toolStripButtonDeleteMarkCollection.ToolTipText = "Delete Mark Collection";
+			this.toolStripButtonDeleteMarkCollection.Click += new System.EventHandler(this.toolStripButtonDeleteMarkCollection_Click);
 			// 
 			// listViewMarkCollections
 			// 
@@ -92,6 +94,7 @@
 			this.listViewMarkCollections.HideSelection = false;
 			this.listViewMarkCollections.LabelEdit = true;
 			this.listViewMarkCollections.Location = new System.Drawing.Point(0, 25);
+			this.listViewMarkCollections.MultiSelect = false;
 			this.listViewMarkCollections.Name = "listViewMarkCollections";
 			this.listViewMarkCollections.Scrollable = false;
 			this.listViewMarkCollections.Size = new System.Drawing.Size(256, 377);
