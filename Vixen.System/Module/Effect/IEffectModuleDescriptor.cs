@@ -7,6 +7,7 @@ namespace Vixen.Module.Effect
 	{
 		string EffectName { get; }
 		ParameterSignature Parameters { get; }
+		EffectGroups EffectGroup { get; }
 		Image GetRepresentativeImage(int desiredWidth, int desiredHeight);
 	}
 }

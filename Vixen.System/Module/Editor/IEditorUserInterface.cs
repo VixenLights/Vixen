@@ -21,6 +21,11 @@ namespace Vixen.Module.Editor
 		/// </summary>
 		void CloseEditor();
 
+		/// <summary>
+		/// Send to the editor by the main application when it is closing.
+		/// </summary>
+		void EditorClosing();
+
 		ISequence Sequence { get; set; }
 		ISelection Selection { get; }
 		void Save(string filePath = null);

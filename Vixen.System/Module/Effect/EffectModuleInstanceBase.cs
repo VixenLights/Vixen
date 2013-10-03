@@ -111,6 +111,11 @@ namespace Vixen.Module.Effect
 			get { return ((IEffectModuleDescriptor) Descriptor).EffectName; }
 		}
 
+		public EffectGroups EffectGroup
+		{
+			get { return ((IEffectModuleDescriptor)Descriptor).EffectGroup; }
+		}
+
 		public ParameterSignature Parameters
 		{
 			get { return ((IEffectModuleDescriptor) Descriptor).Parameters; }

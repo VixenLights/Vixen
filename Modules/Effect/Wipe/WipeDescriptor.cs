@@ -20,7 +20,13 @@ namespace VixenModules.Effect.Wipe {
 			get { return "Wipe"; }
 		}
 
-		public override Guid TypeId {
+		public override EffectGroups EffectGroup
+		{
+			get { return EffectGroups.Basic; }
+		}
+
+		public override Guid TypeId
+		{
 			get { return _typeId; }
 		}
 

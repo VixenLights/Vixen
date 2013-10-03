@@ -20,6 +20,11 @@ namespace VixenModules.Effect.Pulse
 			get { return "Pulse"; }
 		}
 
+		public override EffectGroups EffectGroup
+		{
+			get { return EffectGroups.Basic; }
+		}
+
 		public override Guid TypeId
 		{
 			get { return _typeId; }

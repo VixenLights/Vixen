@@ -406,16 +406,19 @@ namespace Common.Controls.Timeline
 		public void AddSnapTime(TimeSpan time, int level, Color color)
 		{
 			grid.AddSnapPoint(time, level, color);
+			ruler.AddSnapPoint(time, level, color);
 		}
 
 		public bool RemoveSnapTime(TimeSpan time)
 		{
+			ruler.RemoveSnapPoint(time);
 			return grid.RemoveSnapPoint(time);
 		}
 
 		public void ClearAllSnapTimes()
 		{
 			grid.ClearSnapPoints();
+			ruler.ClearSnapPoints();
 		}
 
 
@@ -559,6 +562,18 @@ namespace Common.Controls.Timeline
 		{
 			add { ruler.ClickedAtTime += value; }
 			remove { ruler.ClickedAtTime -= value; }
+		}
+
+		public event EventHandler<MarkMovedEventArgs> MarkMoved
+		{
+			add { ruler.MarkMoved += value; }
+			remove { ruler.MarkMoved -= value; }
+		}
+
+		public event EventHandler<DeleteMarkEventArgs> DeleteMark
+		{
+			add { ruler.DeleteMark += value; }
+			remove { ruler.DeleteMark -= value; }
 		}
 
 		public event EventHandler RulerBeginDragTimeRange
