@@ -62,20 +62,21 @@ namespace VixenModules.Preview.VixenPreview
 				//elements.AsParallel().WithCancellation(tokenSource.Token).ForAll(element =>
 				elementArray.AsParallel().WithCancellation(tokenSource.Token).ForAll(element =>
 				{
-					if (element != null)
-					{
-						ElementNode node = VixenSystem.Elements.GetElementNodeForElement(element);
-						if (node != null)
-						{
-							List<PreviewPixel> pixels;
-							if (NodeToPixel.TryGetValue(node, out pixels))
-							{
-								foreach (PreviewPixel pixel in pixels)
-								{
-									pixel.Draw(gdiControl.FastPixel, element.State);
+					try {
+						if (element != null) {
+							ElementNode node = VixenSystem.Elements.GetElementNodeForElement(element);
+							if (node != null) {
+								List<PreviewPixel> pixels;
+								if (NodeToPixel.TryGetValue(node, out pixels)) {
+									foreach (PreviewPixel pixel in pixels) {
+										pixel.Draw(gdiControl.FastPixel, element.State);
+									}
 								}
 							}
 						}
+					} catch (Exception ) {
+
+					//	Logging.ErrorException(ee.Message, ee);
 					}
 				});
 				
