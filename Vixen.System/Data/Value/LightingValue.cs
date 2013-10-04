@@ -3,14 +3,16 @@ using System.Drawing;
 
 namespace Vixen.Data.Value
 {
-	public class LightingValue : IIntentDataType
+	public struct LightingValue : IIntentDataType
 	{
 		public LightingValue(Color color, float intensity)
 		{
-			ARGB = color.ToArgb();
 			Intensity = intensity;
+			ARGB = color.ToArgb();
 		}
-		public int ARGB { get; set; }
+
+		public int ARGB;
+
 		public Color Color { get { return Color.FromArgb(ARGB); } }
 
 		/// <summary>

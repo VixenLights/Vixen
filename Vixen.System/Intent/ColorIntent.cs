@@ -44,7 +44,7 @@ namespace Vixen.Intent
 					// If this color is "off" or has no intensity, no reason to put it in the mix...
 					LightingValue lv = (LightingValue)intentState.GetValue();
 
-					if (lv != null && lv.Intensity > 0)
+					if (lv.Intensity > 0)
 					{
 						Color intentColor = lv.GetOpaqueIntensityAffectedColor();
 						c = Color.FromArgb(Math.Max(c.R, intentColor.R),
@@ -60,7 +60,6 @@ namespace Vixen.Intent
 				{
 					IIntentState intentState = states[0];
 					LightingValue lv = (LightingValue)intentState.GetValue();
-					if (lv != null)
 					c = lv.GetOpaqueIntensityAffectedColor();
 				}
 			}

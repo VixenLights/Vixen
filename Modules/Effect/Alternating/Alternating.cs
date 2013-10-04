@@ -272,7 +272,7 @@ namespace VixenModules.Effect.Alternating
 									? TimeSpan
 									: TimeSpan.FromMilliseconds(Interval);
 
-				LightingValue lightingValue = null;
+				LightingValue? lightingValue = null;
 
 				int totalElements = node.Count();
 				int currentNode = 0;
@@ -300,7 +300,7 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		private void RenderElement(bool altColor, ref TimeSpan startTime, ref System.TimeSpan intervalTime,
-								   ref LightingValue lightingValue, ElementNode element)
+								   ref LightingValue? lightingValue, ElementNode element)
 		{
 			EffectIntents result;
 
