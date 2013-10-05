@@ -31,8 +31,6 @@ namespace VixenModules.App.Shows
 			{
 				IsRunning = true;
 				PreProcess();
-
-				//_sequenceContext.Play(TimeSpan.Zero, _sequenceContext.Sequence.Length);
 				_sequenceContext.Start();
 			}
 			catch (Exception ex)
@@ -104,16 +102,15 @@ namespace VixenModules.App.Shows
 		DateTime _lastSequenceDateTime = DateTime.Now;
 		private bool SequenceChanged()
 		{
-			//Console.WriteLine("SequenceFileUpdated");
-			bool _datesEqual = false;
+			bool datesEqual = false;
 
 			if (System.IO.File.Exists(ShowItem.Sequence_FileName))
 			{
-				DateTime _lastWriteTime = System.IO.File.GetLastWriteTime(ShowItem.Sequence_FileName);
-				_datesEqual = (_lastSequenceDateTime.CompareTo(_lastWriteTime) != 0);
-				_lastSequenceDateTime = _lastWriteTime;
+				DateTime lastWriteTime = System.IO.File.GetLastWriteTime(ShowItem.Sequence_FileName);
+				datesEqual = (_lastSequenceDateTime == lastWriteTime);
+				_lastSequenceDateTime = lastWriteTime;
 			}
-			return !_datesEqual;
+			return !datesEqual;
 		}
 
 		private void sequence_Ended(object sender, EventArgs e)
@@ -124,7 +121,6 @@ namespace VixenModules.App.Shows
 
 		private void DisposeCurrentContext()
 		{
-			Console.WriteLine("Disposing Context");
 			_sequenceContext.SequenceEnded -= sequence_Ended;
 			VixenSystem.Contexts.ReleaseContext(_sequenceContext);
 			_sequenceContext.Dispose();
@@ -141,7 +137,6 @@ namespace VixenModules.App.Shows
 
 		public override void Dispose()
 		{
-			//Console.WriteLine("SequenceAction: Dispose");
 			if (_sequenceContext != null)
 			{
 				DisposeCurrentContext();
