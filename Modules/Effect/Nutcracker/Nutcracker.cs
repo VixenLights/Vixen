@@ -151,49 +151,8 @@ namespace VixenModules.Effect.Nutcracker
 			return pps;
 		}
 
-// This is here temporarily to allow developers to compare the two implementations
-// simply by un-commenting the #define line at the top of this file
-
-#if OLDWAY
-
-		private void RenderNode(ElementNode node)
-		{
-			int stringCount = StringCount;
-			int framesToRender = (int) TimeSpan.TotalMilliseconds/50;
-			NutcrackerEffects effect = new NutcrackerEffects(_data.NutcrackerData);
-			int pixelsPerString = PixelsPerString();
-			effect.InitBuffer(stringCount, pixelsPerString);
-			int totalPixels = effect.PixelCount();
-			TimeSpan startTime = TimeSpan.Zero;
-			TimeSpan ms50 = new TimeSpan(0, 0, 0, 0, 50);
-
-			for (int frameNum = 0; frameNum < framesToRender; frameNum++) {
-				// Parallel will not work here. Nutcracker effects must be run in order
-				effect.RenderNextEffect(_data.NutcrackerData.CurrentEffect);
-
-				// Parallel works well here
-				// ElementAt is slow so convert it to a list first!
-				List<Element> elements = node.ToList();
-				int elementCount = node.Count();
-				Parallel.For(0, elementCount, elementNum =>
-				{
-					Color color = effect.GetPixel(elementNum);
-
-					if (color.A > 0 && (color.R > 0 || color.G > 0 || color.B > 0)) {
-						LightingValue lightingValue = new LightingValue(color, (float) ((float) color.A/(float) byte.MaxValue));
-						IIntent intent = new LightingIntent(lightingValue, lightingValue, ms50);
-						_elementData.AddIntentForElement(elements[elementNum].Id, intent, startTime);
-					}
-				});
-
-				startTime = startTime.Add(ms50);
-			};
-		}
-
-#else
 		// renders the given node to the internal ElementData dictionary. If the given node is
 		// not a element, will recursively descend until we render its elements.
-
 		private void RenderNode(ElementNode node)
 		{
 			int wid = StringCount;
@@ -218,9 +177,9 @@ namespace VixenModules.Effect.Nutcracker
 			// that it will parcel out as intent states are called for...
 			
 			// set up arrays to hold the generated colors
-			var pixels = new int[numElements][];
-			for( int eidx = 0; eidx < numElements; eidx++)
-				pixels[eidx] = new int[nFrames];
+			var pixels = new RGBValue[numElements][];
+			for (int eidx = 0; eidx < numElements; eidx++)
+				pixels[eidx] = new RGBValue[nFrames];
 
 			// generate all the pixels
 			for (int frameNum = 0; frameNum < nFrames; frameNum++)
@@ -229,10 +188,7 @@ namespace VixenModules.Effect.Nutcracker
 				// peel off this frames pixels...
 				for (int i = 0; i < numElements; i++)
 				{
-					Color color = nccore.GetPixel(i);
-					//var lv = new LightingValue(color, (float)((float)color.A / (float)byte.MaxValue));
-					//pixels[i][frameNum] = lv;
-					pixels[i][frameNum] = StaticLightingArrayIntent.MakeArgb(color);
+					pixels[i][frameNum] = new RGBValue(nccore.GetPixel(i));
 				}
 
 			};
@@ -242,7 +198,7 @@ namespace VixenModules.Effect.Nutcracker
 			List<Element> elements = node.ToList();
 			for (int eidx = 0; eidx < numElements; eidx++)
 			{
-				IIntent intent = new StaticLightingArrayIntent( frameTs, pixels[eidx], TimeSpan);
+				IIntent intent = new StaticArrayIntent<RGBValue>(frameTs, pixels[eidx], TimeSpan);
 				_elementData.AddIntentForElement(elements[eidx].Id, intent, startTime);
 			}
 
@@ -250,7 +206,6 @@ namespace VixenModules.Effect.Nutcracker
 			Logging.Debug(" {0}ms, Frames: {1}, wid: {2}, ht: {3},  pix: {4}, intents: {5}",
 							timer.ElapsedMilliseconds, nFrames, wid, ht, totalPixels, _elementData.Count());
 		}
-#endif
 
 	}
 

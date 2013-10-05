@@ -12,7 +12,7 @@ namespace Vixen.Sys.Dispatch
 		{
 		}
 
-		public virtual void Handle(IIntentSegment<ColorValue> obj)
+		public virtual void Handle(IIntentSegment<RGBValue> obj)
 		{
 		}
 

@@ -16,7 +16,7 @@ namespace Vixen.Data.Evaluator
 		// Opt-in, not opt-out.  Default handlers will not be called
 		// from the base class.
 
-		public virtual void Handle(IIntentState<ColorValue> obj)
+		public virtual void Handle(IIntentState<RGBValue> obj)
 		{
 		}
 

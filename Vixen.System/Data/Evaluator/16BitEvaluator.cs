@@ -6,10 +6,10 @@ namespace Vixen.Data.Evaluator
 {
 	public class _16BitEvaluator : Evaluator
 	{
-		public override void Handle(IIntentState<ColorValue> obj)
+		public override void Handle(IIntentState<RGBValue> obj)
 		{
-			byte byteLevel = ColorValue.GetGrayscaleLevel(obj.GetValue().Color);
-			EvaluatorValue = new _16BitCommand(byteLevel);
+			System.UInt16 level = (System.UInt16)(System.UInt16.MaxValue * obj.GetValue().Intensity);
+			EvaluatorValue = new _16BitCommand(level);
 		}
 
 		public override void Handle(IIntentState<LightingValue> obj)

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Data.Flow;
 using Vixen.Data.Value;
 using Vixen.Intent;
@@ -158,8 +159,17 @@ namespace VixenModules.OutputFilter.DimmingCurve
 		public override void Handle(IIntentState<LightingValue> obj)
 		{
 			LightingValue lightingValue = obj.GetValue();
-			double newValue = _curve.GetValue(lightingValue.Intensity*100.0)/100.0;
-			_intentValue = new StaticIntentState<LightingValue>(obj, new LightingValue(lightingValue.Color, (float) newValue));
+			double newIntensity = _curve.GetValue(lightingValue.Intensity * 100.0) / 100.0;
+			_intentValue = new StaticIntentState<LightingValue>(obj, new LightingValue(lightingValue.hsv.H, lightingValue.hsv.S, newIntensity));
+		}
+
+		public override void Handle(IIntentState<RGBValue> obj)
+		{
+			RGBValue rgbValue = obj.GetValue();
+			HSV hsv = HSV.FromRGB(rgbValue.Color);
+			double newIntensity = _curve.GetValue(rgbValue.Intensity * 100.0) / 100.0;
+			hsv.V = newIntensity;
+			_intentValue = new StaticIntentState<RGBValue>(obj, new RGBValue(hsv.ToRGB().ToArgb()));
 		}
 	}
 

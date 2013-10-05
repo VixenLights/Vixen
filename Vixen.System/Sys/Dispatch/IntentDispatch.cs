@@ -16,7 +16,7 @@ namespace Vixen.Sys.Dispatch
 		{
 		}
 
-		public virtual void Handle(IIntent<ColorValue> obj)
+		public virtual void Handle(IIntent<RGBValue> obj)
 		{
 		}
 	}
