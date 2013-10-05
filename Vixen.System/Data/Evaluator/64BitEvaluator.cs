@@ -4,13 +4,12 @@ using Vixen.Sys;
 
 namespace Vixen.Data.Evaluator
 {
-	//public class _64BitEvaluator : Evaluator<_64BitEvaluator, ulong> {
 	public class _64BitEvaluator : Evaluator
 	{
-		public override void Handle(IIntentState<ColorValue> obj)
+		public override void Handle(IIntentState<RGBValue> obj)
 		{
-			byte byteLevel = ColorValue.GetGrayscaleLevel(obj.GetValue().Color);
-			EvaluatorValue = new _64BitCommand(byteLevel);
+			System.UInt64 level = (System.UInt64)(System.UInt64.MaxValue * obj.GetValue().Intensity);
+			EvaluatorValue = new _64BitCommand(level);
 		}
 
 		public override void Handle(IIntentState<LightingValue> obj)

@@ -6,24 +6,25 @@ using Vixen.Data.Value;
 namespace Vixen.Intent
 {
 
-	public class StaticLightingArrayIntent : Dispatchable<StaticLightingArrayIntent>, IIntent<LightingValue>
+	public class StaticArrayIntent<T> : Dispatchable<StaticArrayIntent<T>>, IIntent<T>
+		where T : IIntentDataType
 	{
-		TimeSpan _timespan;
-		LightingValue[] _vals;
+		readonly TimeSpan _timespan;
+		readonly T[] _vals;
 		TimeSpan _frameTime;
 
-		public StaticLightingArrayIntent( TimeSpan frameTime, LightingValue[] vals, TimeSpan timeSpan)
+		public StaticArrayIntent(TimeSpan frameTime, T[] vals, TimeSpan timeSpan)
 		{
 			_timespan = timeSpan;
 			_vals = vals;
 			_frameTime = frameTime;
 		}
 
-		public TimeSpan TimeSpan { get { return _timespan; } private set { } }
+		public TimeSpan TimeSpan { get { return _timespan; } }
 
 		public IIntentState CreateIntentState(TimeSpan intentRelativeTime)
 		{
-			return new IntentState<LightingValue>(this, intentRelativeTime);
+			return new IntentState<T>(this, intentRelativeTime);
 		}
 
 		public void FractureAt(TimeSpan intentRelativeTime)
@@ -55,7 +56,7 @@ namespace Vixen.Intent
 			return GetStateAt(intentRelativeTime);
 		}
 
-		public LightingValue GetStateAt(TimeSpan intentRelativeTime)
+		public T GetStateAt(TimeSpan intentRelativeTime)
 		{
 			int idx = Math.Min(_vals.Length - 1, (int) (intentRelativeTime.TotalMilliseconds / _frameTime.TotalMilliseconds) );
 			if( idx < 0)
@@ -67,9 +68,5 @@ namespace Vixen.Intent
 		}
 
 	}
-
-
-
-
 
 }

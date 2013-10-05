@@ -37,8 +37,12 @@ namespace VixenModules.Preview.VixenPreview
 			{
 				Vixen.Sys.Managers.ElementManager elements = VixenSystem.Elements;
 
-				Element[] elementArray = elements.Where(e => e.State.Where(i => (i as IIntentState<LightingValue>) !=null).Where(i => (i as IIntentState<LightingValue>).GetValue().Intensity > 0).Any()).ToArray();
-				//Console.WriteLine(elements.Count() + ":" + elementArray.Count());
+				Element[] elementArray = elements.Where(
+						e => e.State.Where(
+							i => ((i as IIntentState<LightingValue>) != null) ? ((i as IIntentState<LightingValue>).GetValue().Intensity > 0) :
+								((i as IIntentState<RGBValue>) != null) && ((i as IIntentState<RGBValue>).GetValue().Intensity > 0)
+						).Any()
+					).ToArray();
 
 				if (elementArray.Length == 0)
 				{

@@ -6,6 +6,7 @@ using System.Text;
 using System.Drawing;
 using System.Runtime.Serialization;
 using Vixen.Execution.Context;
+using Vixen.Intent;
 using Vixen.Module.Preview;
 using Vixen.Data.Value;
 using Vixen.Sys;
@@ -185,8 +186,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			{
 				int col = 1;
 
-				//Get states for each color
-				IEnumerable<Color> colors = Vixen.Intent.ColorIntent.GetIntensityAffectedColorForDiscreteStates(states);
+				// Get states for each color
+				IEnumerable<Color> colors = IntentHelpers.GetAlphaAffectedDiscreteColorsForIntents(states);
 				foreach (Color c in colors)
 				{
 					if (c != Color.Transparent && c.A > byte.MinValue)
@@ -208,7 +209,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 			else
 			{
-				Color intentColor = Vixen.Intent.ColorIntent.GetAlphaColorForIntents(states);
+				Color intentColor = IntentHelpers.GetAlphaRGBMaxColorForIntents(states);
 				if (intentColor != Color.Transparent && intentColor.A > 0)
 				{
 					fp.DrawCircle(drawRect, intentColor);

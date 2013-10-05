@@ -21,11 +21,11 @@ namespace Vixen.Data.Combinator._8Bit
 		public override void Handle(ColorCommand obj)
 		{
 			if (CombinatorValue == null) {
-				CombinatorValue = new _8BitCommand(ColorValue.GetGrayscaleLevel(obj.CommandValue));
+				CombinatorValue = new _8BitCommand(RGBValue.GetGrayscaleLevel(obj.CommandValue));
 			}
 			else {
 				byte value1 = (CombinatorValue as _8BitCommand).CommandValue;
-				byte value2 = ColorValue.GetGrayscaleLevel(obj.CommandValue);
+				byte value2 = RGBValue.GetGrayscaleLevel(obj.CommandValue);
 				CombinatorValue = new _8BitCommand(Math.Max(value1, value2));
 			}
 		}

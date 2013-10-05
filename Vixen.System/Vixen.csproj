@@ -139,6 +139,7 @@
     <Compile Include="Data\Flow\IDataFlowData.cs" />
     <Compile Include="Data\Policy\DataFlowDataDispatchingDataPolicy.cs" />
     <Compile Include="Data\Policy\SmartControllerDataPolicy.cs" />
+    <Compile Include="Data\Value\RGBValue.cs" />
     <Compile Include="Delegates\Delegates.cs" />
     <Compile Include="Execution\ContextCurrentEffectsFull.cs" />
     <Compile Include="Execution\ContextFeatures.cs" />
@@ -173,15 +174,15 @@
     <Compile Include="Factory\IOutputFactory.cs" />
     <Compile Include="Factory\PreviewFactory.cs" />
     <Compile Include="Factory\SmartControllerFactory.cs" />
-    <Compile Include="Intent\ColorIntent.cs" />
+    <Compile Include="Intent\IntentHelpers.cs" />
+    <Compile Include="Intent\RGBIntent.cs" />
     <Compile Include="Intent\CommandIntent.cs" />
     <Compile Include="Intent\IntentState.cs" />
     <Compile Include="Intent\LightingIntent.cs" />
     <Compile Include="Intent\PositionIntent.cs" />
     <Compile Include="Intent\StaticIntent.cs" />
     <Compile Include="Intent\StaticIntentState.cs" />
-    <Compile Include="Intent\StaticLightingArrayIntent.cs" />
-    <Compile Include="Interpolator\ColorInterpolator.cs" />
+    <Compile Include="Intent\StaticArrayIntent.cs" />
     <Compile Include="Interpolator\PositionValueInterpolator.cs" />
     <Compile Include="Interpolator\StaticValueInterpolator.cs" />
     <Compile Include="IO\Factory\ContentMigratorFactory.cs" />
@@ -306,7 +307,6 @@
     <Compile Include="Services\EditorService.cs" />
     <Compile Include="Services\ModuleTemplateService.cs" />
     <Compile Include="Sys\Attribute\ContextAttribute.cs" />
-    <Compile Include="Data\Value\ColorValue.cs" />
     <Compile Include="Data\Value\CommandValue.cs" />
     <Compile Include="Sys\ElementDataFlowAdapterFactory.cs" />
     <Compile Include="Sys\DataNodeCollection.cs" />
@@ -354,8 +354,7 @@
     <Compile Include="Sys\Instrumentation\CacheHitPercentValue.cs" />
     <Compile Include="Sys\IntentChangeCollection.cs" />
     <Compile Include="Data\Value\LightingValue.cs" />
-    <Compile Include="Interpolator\ColorValueInterpolator.cs" />
-    <Compile Include="Interpolator\FloatInterpolator.cs" />
+    <Compile Include="Interpolator\RGBValueInterpolator.cs" />
     <Compile Include="Interpolator\LightingValueInterpolator.cs" />
     <Compile Include="IO\Policy\ElementNodeTemplateFilePolicy.cs" />
     <Compile Include="IO\Policy\OutputFilterTemplatePolicy.cs" />
