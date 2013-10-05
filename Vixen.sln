@@ -1,5 +1,5 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vixen", "Vixen.System\Vixen.csproj", "{50B78623-FCF4-48AF-93FF-FA87C937028F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VixenModules", "VixenModules", "{F1B3198B-977F-40CD-85B3-CAA3F5B5C948}"
@@ -326,6 +326,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Launcher", "Modules\Effect\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LauncherEditor", "Modules\EffectEditor\LauncherEditor\LauncherEditor.csproj", "{FCD0F05A-BA5C-406A-9D57-69D7F185C887}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shows", "Modules\App\Shows\Shows.csproj", "{0C1F1B4A-E161-44EA-8E5F-B7A159029FC8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperScheduler", "Modules\App\SuperScheduler\SuperScheduler.csproj", "{60E7EDD5-0798-466B-8510-BC572CF0E710}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Everything.vsmdi
@@ -489,6 +493,10 @@ Global
 		{5A72F7C4-09F3-4D17-8996-F0ABD21C97A8}.Release|x86.Build.0 = Release|x86
 		{FCD0F05A-BA5C-406A-9D57-69D7F185C887}.Release|x86.ActiveCfg = Release|x86
 		{FCD0F05A-BA5C-406A-9D57-69D7F185C887}.Release|x86.Build.0 = Release|x86
+		{0C1F1B4A-E161-44EA-8E5F-B7A159029FC8}.Release|x86.ActiveCfg = Release|x86
+		{0C1F1B4A-E161-44EA-8E5F-B7A159029FC8}.Release|x86.Build.0 = Release|x86
+		{60E7EDD5-0798-466B-8510-BC572CF0E710}.Release|x86.ActiveCfg = Release|x86
+		{60E7EDD5-0798-466B-8510-BC572CF0E710}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
