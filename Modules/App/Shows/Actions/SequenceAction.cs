@@ -54,15 +54,16 @@ namespace VixenModules.App.Shows
 			base.Stop();
 		}
 
+		bool _preProcessingCompleted = false;
 		public override bool PreProcessingCompleted
 		{
 			get
 			{
-				return SequenceChanged();
+				return _preProcessingCompleted && SequenceChanged();
 			}
 			set
 			{
-				base.PreProcessingCompleted = value;
+				_preProcessingCompleted = value;
 			}
 		}
 
