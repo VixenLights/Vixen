@@ -68,7 +68,7 @@ namespace VixenModules.App.Shows
 		{
 			foreach (ShowItem item in Items)
 			{
-				item.currentAction = null;
+				item.ClearAction();
 			}
 		}
 
