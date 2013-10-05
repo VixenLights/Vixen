@@ -6,7 +6,7 @@ using System.Timers;
 
 namespace VixenModules.App.Shows
 {
-	public abstract class Action
+	public abstract class Action: IDisposable
 	{
 		Timer completeTimer;
 
@@ -78,5 +78,6 @@ namespace VixenModules.App.Shows
 		public delegate void ActionCompleteHandler(object sender, EventArgs e);
 		public virtual event ActionCompleteHandler ActionComplete;
 
+		public virtual void Dispose() { }
 	}
 }

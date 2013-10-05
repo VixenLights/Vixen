@@ -327,7 +327,7 @@ namespace VixenModules.App.SuperScheduler
 					ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Pre-processing action: " + action.ShowItem.Name);
 
 					// Do this in a task so we don't stop Vixen while pre-processing!
-					tokenSourcePreProcessAll = new CancellationTokenSource();
+					tokenSourcePreProcess = new CancellationTokenSource();
 					Task preProcessTask = new Task(() => action.PreProcess(), tokenSourcePreProcess.Token);
 					preProcessTask.ContinueWith(task =>
 						{

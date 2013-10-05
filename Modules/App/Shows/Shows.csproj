@@ -126,6 +126,11 @@
     <Compile Include="ShowsModule.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Common\BaseSequence\BaseSequence.csproj">
+      <Project>{8d6c81fd-5117-414a-8985-7bd5aa0f5135}</Project>
+      <Name>BaseSequence</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Common\Controls\Controls.csproj">
       <Project>{A54FB6A1-A9C3-488C-B961-41B8DBC81B36}</Project>
       <Name>Controls</Name>
@@ -139,6 +144,11 @@
     <ProjectReference Include="..\..\..\Vixen.System\Vixen.csproj">
       <Project>{50B78623-FCF4-48AF-93FF-FA87C937028F}</Project>
       <Name>Vixen</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Sequence\Timed\Timed.csproj">
+      <Project>{45e1228a-f714-41d5-bb9b-a776f2b23143}</Project>
+      <Name>Timed</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>

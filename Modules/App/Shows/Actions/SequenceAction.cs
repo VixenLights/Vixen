@@ -10,13 +10,15 @@ using Vixen.Sys;
 using Vixen.Module;
 using Vixen.Module.App;
 using Vixen.Services;
+using VixenModules.Sequence.Timed;
 
 namespace VixenModules.App.Shows
 {
 	public class SequenceAction : Action, IDisposable
 	{
-		private IContext _sequenceContext = null;
+		private ISequenceContext _sequenceContext = null;
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		ISequence sequence = null;
 
 		public SequenceAction(ShowItem showItem)
 			: base(showItem)
@@ -29,8 +31,6 @@ namespace VixenModules.App.Shows
 			{
 				IsRunning = true;
 				PreProcess();
-
-				//_sequenceContext.Play(TimeSpan.Zero, _sequenceContext.Sequence.Length);
 				_sequenceContext.Start();
 			}
 			catch (Exception ex)
@@ -74,21 +74,20 @@ namespace VixenModules.App.Shows
 				{
 					if (_sequenceContext != null)
 					{
-						_sequenceContext.Dispose();
-						_sequenceContext = null;
+						DisposeCurrentContext();
 					}
 
-					ISequence sequence = SequenceService.Instance.Load(ShowItem.Sequence_FileName);
+					sequence = SequenceService.Instance.Load(ShowItem.Sequence_FileName);
 					// Why doesn't this work?
 					//IContext context = VixenSystem.Contexts.CreateSequenceContext(new ContextFeatures(ContextCaching.ContextLevelCaching), sequence);
-					IContext context = VixenSystem.Contexts.CreateSequenceContext(new ContextFeatures(ContextCaching.NoCaching), sequence);
+					ISequenceContext context = VixenSystem.Contexts.CreateSequenceContext(new ContextFeatures(ContextCaching.NoCaching), sequence);
 
 					foreach (IEffectNode effectNode in sequence.SequenceData.EffectData.Cast<IEffectNode>())
 					{
 						effectNode.Effect.PreRender();
 					}
 
-					context.ContextEnded += sequence_Ended;
+					context.SequenceEnded += sequence_Ended;
 
 					_sequenceContext = context;
 				}
@@ -103,16 +102,15 @@ namespace VixenModules.App.Shows
 		DateTime _lastSequenceDateTime = DateTime.Now;
 		private bool SequenceChanged()
 		{
-			//Console.WriteLine("SequenceFileUpdated");
-			bool _datesEqual = false;
+			bool datesEqual = false;
 
 			if (System.IO.File.Exists(ShowItem.Sequence_FileName))
 			{
-				DateTime _lastWriteTime = System.IO.File.GetLastWriteTime(ShowItem.Sequence_FileName);
-				_datesEqual = (_lastSequenceDateTime.CompareTo(_lastWriteTime) != 0);
-				_lastSequenceDateTime = _lastWriteTime;
+				DateTime lastWriteTime = System.IO.File.GetLastWriteTime(ShowItem.Sequence_FileName);
+				datesEqual = (_lastSequenceDateTime == lastWriteTime);
+				_lastSequenceDateTime = lastWriteTime;
 			}
-			return !_datesEqual;
+			return !datesEqual;
 		}
 
 		private void sequence_Ended(object sender, EventArgs e)
@@ -121,19 +119,30 @@ namespace VixenModules.App.Shows
 			base.Complete();
 		}
 
+		private void DisposeCurrentContext()
+		{
+			_sequenceContext.SequenceEnded -= sequence_Ended;
+			VixenSystem.Contexts.ReleaseContext(_sequenceContext);
+			_sequenceContext.Dispose();
+			TimedSequence tSequence = (sequence as TimedSequence);
+			tSequence.Dispose();
+			sequence = null;
+			_sequenceContext = null;
+		}
+
 		~SequenceAction()
 		{
 			Dispose();
 		}
 
-		public void Dispose()
+		public override void Dispose()
 		{
 			if (_sequenceContext != null)
-				_sequenceContext.Dispose();
+			{
+				DisposeCurrentContext();
+			}
 
-			_sequenceContext = null;
-
-			GC.SuppressFinalize(this);
+			GC.Collect();
 		}
 	}
 }
