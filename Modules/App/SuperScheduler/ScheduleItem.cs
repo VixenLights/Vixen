@@ -28,19 +28,19 @@ namespace VixenModules.App.SuperScheduler
 		public Guid ShowID { get; set; }
 
 		[DataMember]
-		public bool Monday;
+		public bool Monday = true;
 		[DataMember]
-		public bool Tuesday;
+		public bool Tuesday = true;
 		[DataMember]
-		public bool Wednesday;
+		public bool Wednesday = true;
 		[DataMember]
-		public bool Thursday;
+		public bool Thursday = true;
 		[DataMember]
-		public bool Friday;
+		public bool Friday = true;
 		[DataMember]
-		public bool Saturday;
+		public bool Saturday = true;
 		[DataMember]
-		public bool Sunday;
+		public bool Sunday = true;
 		[DataMember]
 		public bool Enabled = true;
 
