@@ -13,6 +13,7 @@ using Vixen.Execution.Context;
 using Vixen.Services;
 using Vixen.Sys;
 using VixenModules.Effect.SetLevel;
+using VixenModules.Property.Color;
 
 namespace VixenModules.App.WebServer.HTTP
 {
@@ -53,28 +54,20 @@ namespace VixenModules.App.WebServer.HTTP
 			Color elementColor = Color.White;
 
 
-			//Look for the Element ID or if we are using ALL Elements
-			foreach (var item in objs) {
-				if (Guid.TryParse(item, out elementID))
-					break;
-				else if (item.Equals("all", StringComparison.CurrentCultureIgnoreCase)) {
-					allElements = true;
-					break;
+			if (objs.Count() == 3 && objs[2].Equals("all", StringComparison.CurrentCultureIgnoreCase))
+			{
+				allElements = true;
+			} else
+			{
+				if (objs.Count() == 5)
+				{
+					Guid.TryParse(objs[2], out elementID);
+					int.TryParse(objs[3], out seconds);
+					elementColor = Color.FromArgb(Convert.ToInt32(objs[4]));
 				}
+
 			}
-			foreach (var item in objs) {
-				if (int.TryParse(item, out seconds))
-					break;
-			}
-			foreach (var item in objs) {
-				try {
-					var color = Color.FromName(item);
-					if (color.Name.Equals(item, StringComparison.CurrentCultureIgnoreCase)) {
-						elementColor = color;
-						break;
-					}
-				} catch (Exception) { }
-			}
+			
 
 			SetLevel effect = new SetLevel();
 			effect.TimeSpan = TimeSpan.FromSeconds(seconds);
@@ -318,7 +311,28 @@ namespace VixenModules.App.WebServer.HTTP
 			sb.AppendFormat("<h4>{0}</h4>", elementNode.Name);
 
 
-			sb.AppendFormat("<a href=\"#\" data-role=\"button\" onclick=\"turnElementOn('{0}', 'White')\">Turn On: {1}</a>", elementNode.Id, elementNode.Name);
+			if (ColorModule.isElementNodeDiscreteColored(elementNode))
+			{
+				foreach (var color in ColorModule.getValidColorsForElementNode(elementNode, false))
+				{
+					StringBuilder rgbColor = new StringBuilder("rgb(");
+					rgbColor.Append(color.R);
+					rgbColor.Append(",");
+					rgbColor.Append(color.G);
+					rgbColor.Append(",");
+					rgbColor.Append(color.B);
+					rgbColor.Append(")");
+					sb.AppendFormat(
+						"<a href=\"#\" data-role=\"button\" onclick=\"turnElementOn('{0}', '{1}')\" >Turn On: {2} <div style=\"width: 15px; height: 15px; background: {3}; float:left;\">&nbsp;</div></a>",
+						elementNode.Id, color.ToArgb(), elementNode.Name, rgbColor);
+				}
+			} else
+			{
+				sb.AppendFormat(
+						"<a href=\"#\" data-role=\"button\" onclick=\"turnElementOn('{0}', '{1}')\">Turn On: {2}</a>",
+						elementNode.Id, Color.White.ToArgb(), elementNode.Name);
+			}
+			
 
 			foreach (ElementNode childNode in elementNode.Children) {
 				AddNodeToTree(sb, childNode);
