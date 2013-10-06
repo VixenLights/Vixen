@@ -120,7 +120,37 @@
   <data name="label1.Text" xml:space="preserve">
     <value>Shows are sets of sequences, events and actions. You setup a show first and then schedule it to happen at a certain time below. You can setup multipe shows that happen at different times or on different days.</value>
   </data>
+  <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="buttonEditShow.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
+        dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAQwSURBVFhHxZdtbFNVGMcPoCUkolakYJmfNAEiaiai
+        IjCgrayOscR9QjSALIQEtpr5wuLYKF1r23ULi4bZ160rCbAIUch0kklxsBc22FrGdHRzAzbGtkaXwNAP
+        m8jf53BLzUq7Bu26J/ml9557zv095+k597YsTiFqK3TDa6iBV1cNfi40xydEHbqf0He8H70/9qPFcXGo
+        Jfdo3JIQOQ9VosRciqFaP8ZGxuA73gl3UZ2/Ods56UmIyo5U4YKnDb8ND6N3oA89J3rQYGqE23gWzZlW
+        noBY6Br7EF3IexlF5kr4h0dwF0CL1wONSY96fQOq97nRtNPME5AI3WMbosa81wBvMtCehZ7+WzjvbUeZ
+        swIarRafFOTBs9PO5a8TMa+AIPekAJd2AyPdwOmN2GO0QK01IWP7Dqhyc7h8FZHA+/NBsYoQ+RXAvQ2w
+        zAHss/Gxej8++iw/nvIMks8DrM8A5RIc/nDpFMgtUpJL4VCtmiJ5mRQ2VdIkyvPvy3MiyFdPrvzPkzLa
+        alMmlwfkV6dy5vGW319wEcpuj4s87GpfAEfWmnjL5wfkCSjPWhtJLtqwnyG1mP1Ox48KTQ8XUWaegIO7
+        5BPNXJxSzGA4yrDOyAbp/KGSiCp3ZU4o5yFRFDL4ru+B+msGuZZ9Q20zhEsTR9TvPFD2tUk6VqUw0c0N
+        DyLTM6woYOi4XoD6zk1QUyXkuuhJRJHTs/3fBbdIRvKBm2X42Z9GvINf/OlB+Hnb4Ab4Bg7AXMvQ2L0V
+        6m8ZFBMkITq/dxnJlRHlIVtNKjNSif0GmOsYLIQ1BN5mqafjBgZbI8O5a9ugqWJI1rMqGv8IEYzpJdsX
+        77jy3RbgqhW42QWc+mCcPMxDRqKgUrcOZMHcRCLCGkqzgC3w6WqdiR+6l0BJlaPxs4lgzKrMSRy8c80J
+        /H0bY14TUCoGzLTd7snDvtUkb1ECdTfSYfMy2CNgaxWwexiclxg0J2l95LFaGv+UcBvGpum2LJT11ezC
+        XV8xRrtc+KNJjb++3wQ4JFT2iK9UiZJW+emh5XB1MRwMpZOhwsfgaBeo6GDYV8OQlMPO0NiXiGAFRGdK
+        U0+gtwR32nUYbdHg9tl8eM1pKFetiCTnMVehZvVvUzmTaS2Eso7vBC2VvZvkv9LMTwXlrxBPE8Ia2Lhm
+        wfwv1JuRm70ZuFyIy0e24quM50fffUNsostvEuHkPPgMXiBWE/IwKJWUyOEbNHPaBUmfjpMHd8EMl/G9
+        A7L17+Pz7HQc27vyYnKiOJPaVxKLiblEODkPPgOeBO/Df+OHsnB9EYP+HFVDd+9xvJQYJ+fxmEGtwpe7
+        U6qlc2am0vmrxHME7ziLmE7815Ck0bsgpZDdouPlxDzigf3/OLGIeJF4lniC4DOeRvzf4H88EollhJQI
+        +y7gMi7lpRz3YIhB8Hs/GSCMnLF/AEHyy35JeOlIAAAAAElFTkSuQmCC
+</value>
+  </data>
+  <metadata name="contextMenuStripList.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>114, 17</value>
+  </metadata>
   <data name="buttonDeleteSchedule.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
@@ -223,4 +253,7 @@
         XlCtIru8qdPXOTmbC7JTJHavWMLZ5U39vwGg/AWydTXQtRO4cAAAAABJRU5ErkJggg==
 </value>
   </data>
+  <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
 </root>

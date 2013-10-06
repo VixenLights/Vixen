@@ -21,15 +21,7 @@ namespace VixenModules.App.SuperScheduler
 
 		private void buttonAddSchedule_Click(object sender, EventArgs e)
 		{
-			ScheduleItem item = new ScheduleItem();
-			using (SetupScheduleForm f = new SetupScheduleForm(item))
-			{
-				if (f.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-				{
-					Data.Items.Add(item);
-					AddListItem(item);
-				}
-			}
+			AddSchedule();
 		}
 
 		private void buttonHelp_Click(object sender, EventArgs e)
@@ -124,21 +116,25 @@ namespace VixenModules.App.SuperScheduler
 
 		private void buttonDeleteSchedule_Click(object sender, EventArgs e)
 		{
-			if (listViewItems.SelectedItems.Count == 1)
-			{
-				ListViewItem lvItem = listViewItems.SelectedItems[0];
-				ScheduleItem scheduleItem = lvItem.Tag as ScheduleItem;
-				if (MessageBox.Show("Are you sure you want to delete the selected schedule?", "Delete Schedule", MessageBoxButtons.YesNoCancel) == System.Windows.Forms.DialogResult.Yes)
-				{
-					listViewItems.Items.Remove(lvItem);
-					Data.Items.Remove(scheduleItem);
-				}
-			}
+			DeleteCurrentItem();
 		}
 
 		private void listViewItems_DoubleClick(object sender, EventArgs e)
 		{
 			EditCurrentItem();				
+		}
+
+		private void AddSchedule()
+		{
+			ScheduleItem item = new ScheduleItem();
+			using (SetupScheduleForm f = new SetupScheduleForm(item))
+			{
+				if (f.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+				{
+					Data.Items.Add(item);
+					AddListItem(item);
+				}
+			}
 		}
 
 		private void EditCurrentItem()
@@ -157,11 +153,72 @@ namespace VixenModules.App.SuperScheduler
 			}
 		}
 
+		private void DeleteCurrentItem()
+		{
+			if (listViewItems.SelectedItems.Count == 1)
+			{
+				ListViewItem lvItem = listViewItems.SelectedItems[0];
+				ScheduleItem scheduleItem = lvItem.Tag as ScheduleItem;
+				if (MessageBox.Show("Are you sure you want to delete the selected schedule?", "Delete Schedule", MessageBoxButtons.YesNoCancel) == System.Windows.Forms.DialogResult.Yes)
+				{
+					listViewItems.Items.Remove(lvItem);
+					Data.Items.Remove(scheduleItem);
+				}
+			}
+		}
+
 		private void buttonEditSchedule_Click(object sender, EventArgs e)
 		{
 			EditCurrentItem();
 		}
 
+		private void buttonEditShow_Click(object sender, EventArgs e)
+		{
+			EditSelectedShow();
+		}
 
+		private void EditSelectedShow()
+		{
+			if (listViewItems.SelectedItems.Count == 1)
+			{
+				ListViewItem lvItem = listViewItems.SelectedItems[0];
+				ScheduleItem scheduleItem = lvItem.Tag as ScheduleItem;
+				Shows.Show show = scheduleItem.Show;
+				if (show != null)
+				{
+					using (Shows.ShowEditorForm f = new Shows.ShowEditorForm(show))
+					{
+						if (f.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+						{
+							UpdateListItem(scheduleItem);
+						}
+					}
+				}
+				else
+				{
+					MessageBox.Show("The selected schedule does not have a show associated with it.", "Edit a Show", MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
+				}
+			}
+		}
+
+		private void addAScheduledShowToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			AddSchedule();
+		}
+
+		private void editTheSelectedScheduleToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			EditCurrentItem();
+		}
+
+		private void deleteTheSelectedScheduleToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			DeleteCurrentItem();
+		}
+
+		private void editTheAssociatedShowToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			EditSelectedShow();
+		}
 	}
 }
