@@ -145,5 +145,15 @@ namespace VixenModules.App.Shows
 		{
 			return ObjectCopier.Clone(this);
 		}
+
+		public void ClearAction()
+		{
+			if (currentAction != null)
+			{
+				currentAction.Dispose();
+				currentAction = null;
+			}
+			currentAction = null;
+		}
 	}
 }

@@ -18,7 +18,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		public static void Rasterize(IEffectModuleInstance effect, Graphics g)
 		{
-			var sw = new System.Diagnostics.Stopwatch(); sw.Start();
+			//var sw = new System.Diagnostics.Stopwatch(); sw.Start();
 
 			if (effect.ForceGenerateVisualRepresentation || Vixen.Common.Graphics.DisableEffectsEditorRendering) {
 				effect.GenerateVisualRepresentation(g, new Rectangle(0, 0, (int)g.VisibleClipBounds.Width, (int)g.VisibleClipBounds.Height));
@@ -42,10 +42,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				double heightPerElement = height / elements.Count();
 
-				long tOh = sw.ElapsedMilliseconds;
+				//long tOh = sw.ElapsedMilliseconds;
 				EffectIntents effectIntents = effect.Render();
 
-				long tRend = sw.ElapsedMilliseconds - tOh;
+				//long tRend = sw.ElapsedMilliseconds - tOh;
 				double y = 0;
 				foreach (Element element in elements) {
 					//Getting exception on null elements here... A simple check to look for these null values and ignore them
@@ -67,7 +67,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					}
 					y += heightPerElement;
 				}
-				long tRast = sw.ElapsedMilliseconds - tRend;
+				//long tRast = sw.ElapsedMilliseconds - tRend;
 				//if( tRast > 10)
 				//	Logging.Debug(" oh: {0}, rend: {1}, rast: {2}, eff: {3}, node:{4}", tOh, tRend, tRast, effect.EffectName, effect.TargetNodes[0].Name);
 			}

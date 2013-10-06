@@ -777,7 +777,7 @@ namespace VixenModules.Effect.Nutcracker
 			Color color;
 			Count = BufferWi*BufferHt*Count/200 + 1;
 			if (State == 0 || Count != LastLifeCount || Type != LastLifeType) {
-				Console.WriteLine("RenderLife Init");
+				//Console.WriteLine("RenderLife Init");
 				// seed tempbuf
 				LastLifeCount = Count;
 				LastLifeType = Type;

@@ -22,6 +22,11 @@ namespace VixenModules.Effect.Candle
 			get { return "Candle"; }
 		}
 
+		public override EffectGroups EffectGroup
+		{
+			get { return EffectGroups.Basic; }
+		}
+		
 		public override Guid TypeId
 		{
 			get { return _typeId; }

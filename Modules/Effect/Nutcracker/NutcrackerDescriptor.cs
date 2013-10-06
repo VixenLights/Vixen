@@ -23,6 +23,11 @@ namespace VixenModules.Effect.Nutcracker
 			get { return "Nutcracker"; }
 		}
 
+		public override EffectGroups EffectGroup
+		{
+			get { return EffectGroups.Basic; }
+		}
+
 		public override Guid TypeId
 		{
 			get { return _typeId; }
