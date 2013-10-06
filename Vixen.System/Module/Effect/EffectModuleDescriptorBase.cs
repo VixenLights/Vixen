@@ -5,6 +5,13 @@ using System.Drawing;
 using Vixen.Sys;
 
 namespace Vixen.Module.Effect {
+	public enum EffectGroups
+	{
+		Basic,
+		Advanced,
+		Device
+	}
+
 	[Serializable]
 	public abstract class EffectModuleDescriptorBase : ModuleDescriptorBase, IEffectModuleDescriptor,
 													   IEqualityComparer<IEffectModuleDescriptor>,
@@ -15,6 +22,8 @@ namespace Vixen.Module.Effect {
 			PropertyDependencies = new Guid[0];
 		}
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+
+		public abstract EffectGroups EffectGroup { get; }
 
 		public abstract override string TypeName { get; }
 

@@ -1,40 +1,82 @@
 ﻿using System.Diagnostics;
 using System.Drawing;
+using Common.Controls.ColorManagement.ColorModels;
 
 namespace Vixen.Data.Value
 {
 	public struct LightingValue : IIntentDataType
 	{
-		public LightingValue(Color color, float intensity)
+		public LightingValue(Color color)
 		{
-			Color = color;
+			hsv = HSV.FromRGB(color);
+		}
+
+		public LightingValue(Color color, double intensity)
+			: this(color)
+		{
 			Intensity = intensity;
 		}
 
-		public Color Color;
+		public LightingValue(double h, double s, double i)
+		{
+			hsv = new HSV(h, s, i);
+		}
+
+		// TODO: make a new color class and use that, instead of these color models.
+		public HSV hsv;
 
 		/// <summary>
 		/// Percentage value between 0 and 1.
 		/// </summary>
-		public float Intensity;
-
-		/// <summary>
-		/// Gets the lighting value as a color with the intensity value applied. Results in an opaque color,
-		/// between black (0,0,0) for a lighting value with an intensity of 0 and the solid color with an intensity of 100%.
-		/// </summary>
-		public Color GetOpaqueIntensityAffectedColor()
+		public double Intensity
 		{
-			return Color.FromArgb((int) (Color.R*Intensity), (int) (Color.G*Intensity), (int) (Color.B*Intensity));
+			get { return hsv.V; }
+			set { hsv.V = value; }
 		}
 
 		/// <summary>
-		/// Gets the lighting value as a color with the intensity value applied. Results in a color of variable transparancy:
-		/// the intensity value is mapped to the alpha channel of the resulting color.
+		/// The lighting value as a color with the intensity value applied. Results in an opaque color ranging from black
+		/// (0,0,0) when the intensity is 0 and the solid color when the intensity is 1 (ie. 100%).
 		/// </summary>
-		public Color GetAlphaChannelIntensityAffectedColor()
+		public Color FullColor
 		{
-			// as this is a lighting value, the lower the intensity (brightness), the more transparent it should be.
-			return Color.FromArgb((int) (Intensity*byte.MaxValue), Color.R, Color.G, Color.B);
+			get { return hsv.ToRGB().ToArgb(); }
+			set { hsv = HSV.FromRGB(value); }
+		}
+
+		/// <summary>
+		/// Gets the lighting value as a color with the intensity value applied to the alpha channel.
+		/// Results in a color of variable transparancy.
+		/// </summary>
+		public Color FullColorWithAplha
+		{
+			get
+			{
+				Color c = FullColor;
+				return Color.FromArgb((int)(Intensity * byte.MaxValue), c.R, c.G, c.B);
+			}
+		}
+
+		/// <summary>
+		/// The 'color' portion of the lighting value; ie. only the Hue and Saturation.
+		/// This is equivalent to the full color that would have an intensity of 1 (or 100%).
+		/// </summary>
+		public Color HueSaturationOnlyColor
+		{
+			get
+			{
+				double i = Intensity;
+				Intensity = 1;
+				Color rv = hsv.ToRGB().ToArgb();
+				Intensity = i;
+				return rv;
+			}
+			set
+			{
+				HSV newValue = HSV.FromRGB(value);
+				hsv.H = newValue.H;
+				hsv.S = newValue.S;
+			}
 		}
 	}
 }

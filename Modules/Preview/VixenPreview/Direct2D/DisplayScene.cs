@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Vixen.Intent;
 using D2D = Microsoft.WindowsAPICodePack.DirectX.Direct2D1;
 using DWrite = Microsoft.WindowsAPICodePack.DirectX.DirectWrite;
 using WIC = Microsoft.WindowsAPICodePack.DirectX.WindowsImagingComponent;
@@ -251,7 +252,7 @@ namespace VixenModules.Preview.VixenPreview.Direct2D {
 
 
 								//TODO: Discrete Colors
-								pixColor = Vixen.Intent.ColorIntent.GetAlphaColorForIntents(element.State);
+								pixColor = IntentHelpers.GetAlphaRGBMaxColorForIntents(element.State);
 
 								if (pixColor.A > 0)
 									using (var brush = rt.CreateSolidColorBrush(pixColor.ToColorF())) {

@@ -2,7 +2,7 @@
 using System.Windows.Forms;
 using System.Xml;
 
-namespace VixenApplication
+namespace Common.Controls
 {
 	public class XMLProfileSettings
 	{

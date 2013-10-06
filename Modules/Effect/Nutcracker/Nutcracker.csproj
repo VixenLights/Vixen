@@ -13,7 +13,6 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
- 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>$(SolutionDir)\Release\Modules\Effect\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
@@ -83,6 +82,9 @@
     <EmbeddedResource Include="PictureTiles\Tutti Fruitti by Pixels and Ice Cream Pattern 1.png" />
     <EmbeddedResource Include="PictureTiles\Tutti Fruitti by Pixels and Ice Cream Pattern 2.png" />
     <EmbeddedResource Include="PictureTiles\Tutti Fruitti by Pixels and Ice Cream Pattern 3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\Effect48.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

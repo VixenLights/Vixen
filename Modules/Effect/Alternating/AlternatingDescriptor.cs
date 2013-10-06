@@ -21,6 +21,11 @@ namespace VixenModules.Effect.Alternating
 			get { return "Alternating"; }
 		}
 
+		public override EffectGroups EffectGroup
+		{
+			get { return EffectGroups.Basic; }
+		}
+
 		public override Guid TypeId
 		{
 			get { return _typeId; }

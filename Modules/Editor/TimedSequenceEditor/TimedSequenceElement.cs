@@ -24,8 +24,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			StartTime = effectNode.StartTime;
 			Duration = effectNode.TimeSpan;
 			EffectNode = effectNode;
-			BorderColor = Color.Black;
-			BackColor = Color.FromArgb(0, 0, 0, 0);
+			//BorderColor = Color.Black;
+			//BackColor = Color.FromArgb(0, 0, 0, 0);
 		}
 
 		// copy ctor

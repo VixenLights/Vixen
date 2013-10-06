@@ -199,23 +199,21 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 			return result;
 		}
 
-		public override void Handle(IIntentState<ColorValue> obj)
+		public override void Handle(IIntentState<RGBValue> obj)
 		{
-			ColorValue colorValue = obj.GetValue();
+			RGBValue value = obj.GetValue();
 			if (_mixColors) {
-				float maxProportion = _getMaxProportion(colorValue.Color);
-				Color finalColor = Color.FromArgb((int) (_breakdownItem.Color.R*maxProportion),
-				                                  (int) (_breakdownItem.Color.G*maxProportion),
-				                                  (int) (_breakdownItem.Color.B*maxProportion));
-				_intentValue = new StaticIntentState<ColorValue>(obj, new ColorValue(finalColor));
-			}
-			else {
-				if (colorValue.Color.ToArgb() == _breakdownItem.Color.ToArgb()) {
-					_intentValue = new StaticIntentState<ColorValue>(obj, colorValue);
-				}
-				else {
-					// TODO: return 'null', or some osrt of empty intent state here instead. (null isn't handled well, and we don't have an 'empty' state class.)
-					_intentValue = new StaticIntentState<ColorValue>(obj, new ColorValue(Color.Black));
+				float maxProportion = _getMaxProportion(value.Color);
+				Color finalColor = Color.FromArgb((int)(_breakdownItem.Color.R * maxProportion),
+												  (int)(_breakdownItem.Color.G * maxProportion),
+												  (int)(_breakdownItem.Color.B * maxProportion));
+				_intentValue = new StaticIntentState<RGBValue>(obj, new RGBValue(finalColor));
+			} else {
+				if (value.Color.ToArgb() == _breakdownItem.Color.ToArgb()) {
+					_intentValue = new StaticIntentState<RGBValue>(obj, value);
+				} else {
+					// TODO: return 'null', or some sort of empty intent state here instead. (null isn't handled well, and we don't have an 'empty' state class.)
+					_intentValue = new StaticIntentState<RGBValue>(obj, new RGBValue(Color.Black));
 				}
 			}
 		}
@@ -227,14 +225,14 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 				_intentValue = new StaticIntentState<LightingValue>(obj,
 				                                                    new LightingValue(_breakdownItem.Color,
 				                                                                      lightingValue.Intensity*
-				                                                                      _getMaxProportion(lightingValue.Color)));
+				                                                                      _getMaxProportion(lightingValue.HueSaturationOnlyColor)));
 			}
 			else {
-				if (lightingValue.Color.ToArgb() == _breakdownItem.Color.ToArgb()) {
+				if (lightingValue.HueSaturationOnlyColor.ToArgb() == _breakdownItem.Color.ToArgb()) {
 					_intentValue = new StaticIntentState<LightingValue>(obj, lightingValue);
 				}
 				else {
-					// TODO: return 'null', or some osrt of empty intent state here instead. (null isn't handled well, and we don't have an 'empty' state class.)
+					// TODO: return 'null', or some sort of empty intent state here instead. (null isn't handled well, and we don't have an 'empty' state class.)
 					_intentValue = new StaticIntentState<LightingValue>(obj, new LightingValue(_breakdownItem.Color, 0));
 				}
 			}

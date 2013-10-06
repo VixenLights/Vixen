@@ -7,7 +7,7 @@ namespace Vixen.Data.Evaluator
 {
 	public class ColorEvaluator : Evaluator
 	{
-		public override void Handle(IIntentState<ColorValue> obj)
+		public override void Handle(IIntentState<RGBValue> obj)
 		{
 			EvaluatorValue = new ColorCommand(obj.GetValue().Color);
 		}
@@ -15,8 +15,7 @@ namespace Vixen.Data.Evaluator
 		public override void Handle(IIntentState<LightingValue> obj)
 		{
 			LightingValue lightingValue = obj.GetValue();
-			int alphaValue = (int) (lightingValue.Intensity*byte.MaxValue);
-			EvaluatorValue = new ColorCommand(Color.FromArgb(alphaValue, lightingValue.Color));
+			EvaluatorValue = new ColorCommand(lightingValue.FullColor);
 		}
 	}
 }

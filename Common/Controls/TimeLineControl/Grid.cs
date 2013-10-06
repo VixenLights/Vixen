@@ -1753,7 +1753,7 @@ namespace Common.Controls.Timeline
 		#endregion
 	}
 
-	internal class SnapDetails
+	public class SnapDetails
 	{
 		public TimeSpan SnapTime; // the particular time to snap to
 		public TimeSpan SnapStart; // the start time that should snap to this time; ie. before or equal to the snap time

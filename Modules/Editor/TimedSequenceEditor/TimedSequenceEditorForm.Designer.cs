@@ -20,6 +20,21 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TimedSequenceEditorForm));
+			WeifenLuo.WinFormsUI.Docking.DockPanelSkin dockPanelSkin1 = new WeifenLuo.WinFormsUI.Docking.DockPanelSkin();
+			WeifenLuo.WinFormsUI.Docking.AutoHideStripSkin autoHideStripSkin1 = new WeifenLuo.WinFormsUI.Docking.AutoHideStripSkin();
+			WeifenLuo.WinFormsUI.Docking.DockPanelGradient dockPanelGradient1 = new WeifenLuo.WinFormsUI.Docking.DockPanelGradient();
+			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient1 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
+			WeifenLuo.WinFormsUI.Docking.DockPaneStripSkin dockPaneStripSkin1 = new WeifenLuo.WinFormsUI.Docking.DockPaneStripSkin();
+			WeifenLuo.WinFormsUI.Docking.DockPaneStripGradient dockPaneStripGradient1 = new WeifenLuo.WinFormsUI.Docking.DockPaneStripGradient();
+			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient2 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
+			WeifenLuo.WinFormsUI.Docking.DockPanelGradient dockPanelGradient2 = new WeifenLuo.WinFormsUI.Docking.DockPanelGradient();
+			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient3 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
+			WeifenLuo.WinFormsUI.Docking.DockPaneStripToolWindowGradient dockPaneStripToolWindowGradient1 = new WeifenLuo.WinFormsUI.Docking.DockPaneStripToolWindowGradient();
+			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient4 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
+			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient5 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
+			WeifenLuo.WinFormsUI.Docking.DockPanelGradient dockPanelGradient3 = new WeifenLuo.WinFormsUI.Docking.DockPanelGradient();
+			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient6 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
+			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient7 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
 			this.toolStripOperations = new Common.Controls.ToolStripEx();
 			this.toolStripButton_Start = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButton_Play = new System.Windows.Forms.ToolStripButton();
@@ -81,9 +96,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripProgressBar_RenderingElements = new System.Windows.Forms.ToolStripProgressBar();
 			this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
 			this.toolStripContainer = new System.Windows.Forms.ToolStripContainer();
-			this.timelineControl = new Common.Controls.Timeline.TimelineControl();
-			this.toolStripEffects = new Common.Controls.ToolStripEx();
-			this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
+			this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
 			this.toolStripTiming = new System.Windows.Forms.ToolStrip();
 			this.toolStripLabel2 = new System.Windows.Forms.ToolStripLabel();
 			this.toolStripLabel_TimingSpeed = new System.Windows.Forms.ToolStripLabel();
@@ -105,7 +118,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripContainer.ContentPanel.SuspendLayout();
 			this.toolStripContainer.TopToolStripPanel.SuspendLayout();
 			this.toolStripContainer.SuspendLayout();
-			this.toolStripEffects.SuspendLayout();
 			this.toolStripTiming.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
 			this.toolStripExVirtualEffects.SuspendLayout();
@@ -134,7 +146,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
             this.toolStripSeparator7,
             this.toolStripButton_ZoomTimeIn,
             this.toolStripButton_ZoomTimeOut});
-			this.toolStripOperations.Location = new System.Drawing.Point(3, 25);
+			this.toolStripOperations.Location = new System.Drawing.Point(3, 0);
 			this.toolStripOperations.Name = "toolStripOperations";
 			this.toolStripOperations.Size = new System.Drawing.Size(376, 25);
 			this.toolStripOperations.TabIndex = 1;
@@ -660,8 +672,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// 
 			// toolStripContainer.ContentPanel
 			// 
-			this.toolStripContainer.ContentPanel.Controls.Add(this.timelineControl);
-			this.toolStripContainer.ContentPanel.Size = new System.Drawing.Size(886, 461);
+			this.toolStripContainer.ContentPanel.Controls.Add(this.dockPanel);
+			this.toolStripContainer.ContentPanel.Size = new System.Drawing.Size(886, 511);
 			this.toolStripContainer.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.toolStripContainer.LeftToolStripPanelVisible = false;
 			this.toolStripContainer.Location = new System.Drawing.Point(0, 24);
@@ -673,44 +685,65 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// 
 			// toolStripContainer.TopToolStripPanel
 			// 
-			this.toolStripContainer.TopToolStripPanel.Controls.Add(this.toolStripEffects);
 			this.toolStripContainer.TopToolStripPanel.Controls.Add(this.toolStripOperations);
-			this.toolStripContainer.TopToolStripPanel.Controls.Add(this.toolStripTiming);
 			this.toolStripContainer.TopToolStripPanel.Controls.Add(this.toolStrip1);
+			this.toolStripContainer.TopToolStripPanel.Controls.Add(this.toolStripTiming);
 			// 
-			// timelineControl
+			// dockPanel
 			// 
-			this.timelineControl.AllowGridResize = true;
-			this.timelineControl.Audio = null;
-			this.timelineControl.AutoSize = true;
-			this.timelineControl.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.timelineControl.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.timelineControl.Location = new System.Drawing.Point(0, 0);
-			this.timelineControl.Margin = new System.Windows.Forms.Padding(0);
-			this.timelineControl.Name = "timelineControl";
-			this.timelineControl.SequenceLoading = false;
-			this.timelineControl.Size = new System.Drawing.Size(886, 461);
-			this.timelineControl.TabIndex = 2;
-			// 
-			// toolStripEffects
-			// 
-			this.toolStripEffects.ClickThrough = true;
-			this.toolStripEffects.Dock = System.Windows.Forms.DockStyle.None;
-			this.toolStripEffects.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripLabel1});
-			this.toolStripEffects.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
-			this.toolStripEffects.Location = new System.Drawing.Point(3, 0);
-			this.toolStripEffects.Name = "toolStripEffects";
-			this.toolStripEffects.Size = new System.Drawing.Size(128, 25);
-			this.toolStripEffects.TabIndex = 5;
-			this.toolStripEffects.Text = "Effects";
-			// 
-			// toolStripLabel1
-			// 
-			this.toolStripLabel1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold);
-			this.toolStripLabel1.Name = "toolStripLabel1";
-			this.toolStripLabel1.Size = new System.Drawing.Size(116, 22);
-			this.toolStripLabel1.Text = "Available Effects:";
+			this.dockPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.dockPanel.DockLeftPortion = 200D;
+			this.dockPanel.DocumentStyle = WeifenLuo.WinFormsUI.Docking.DocumentStyle.DockingWindow;
+			this.dockPanel.Location = new System.Drawing.Point(0, 0);
+			this.dockPanel.Name = "dockPanel";
+			this.dockPanel.Size = new System.Drawing.Size(886, 511);
+			dockPanelGradient1.EndColor = System.Drawing.SystemColors.ControlLight;
+			dockPanelGradient1.StartColor = System.Drawing.SystemColors.ControlLight;
+			autoHideStripSkin1.DockStripGradient = dockPanelGradient1;
+			tabGradient1.EndColor = System.Drawing.SystemColors.Control;
+			tabGradient1.StartColor = System.Drawing.SystemColors.Control;
+			tabGradient1.TextColor = System.Drawing.SystemColors.ControlDarkDark;
+			autoHideStripSkin1.TabGradient = tabGradient1;
+			autoHideStripSkin1.TextFont = new System.Drawing.Font("Segoe UI", 9F);
+			dockPanelSkin1.AutoHideStripSkin = autoHideStripSkin1;
+			tabGradient2.EndColor = System.Drawing.SystemColors.ControlLightLight;
+			tabGradient2.StartColor = System.Drawing.SystemColors.ControlLightLight;
+			tabGradient2.TextColor = System.Drawing.SystemColors.ControlText;
+			dockPaneStripGradient1.ActiveTabGradient = tabGradient2;
+			dockPanelGradient2.EndColor = System.Drawing.SystemColors.Control;
+			dockPanelGradient2.StartColor = System.Drawing.SystemColors.Control;
+			dockPaneStripGradient1.DockStripGradient = dockPanelGradient2;
+			tabGradient3.EndColor = System.Drawing.SystemColors.ControlLight;
+			tabGradient3.StartColor = System.Drawing.SystemColors.ControlLight;
+			tabGradient3.TextColor = System.Drawing.SystemColors.ControlText;
+			dockPaneStripGradient1.InactiveTabGradient = tabGradient3;
+			dockPaneStripSkin1.DocumentGradient = dockPaneStripGradient1;
+			dockPaneStripSkin1.TextFont = new System.Drawing.Font("Segoe UI", 9F);
+			tabGradient4.EndColor = System.Drawing.SystemColors.ActiveCaption;
+			tabGradient4.LinearGradientMode = System.Drawing.Drawing2D.LinearGradientMode.Vertical;
+			tabGradient4.StartColor = System.Drawing.SystemColors.GradientActiveCaption;
+			tabGradient4.TextColor = System.Drawing.SystemColors.ActiveCaptionText;
+			dockPaneStripToolWindowGradient1.ActiveCaptionGradient = tabGradient4;
+			tabGradient5.EndColor = System.Drawing.SystemColors.Control;
+			tabGradient5.StartColor = System.Drawing.SystemColors.Control;
+			tabGradient5.TextColor = System.Drawing.SystemColors.ControlText;
+			dockPaneStripToolWindowGradient1.ActiveTabGradient = tabGradient5;
+			dockPanelGradient3.EndColor = System.Drawing.SystemColors.ControlLight;
+			dockPanelGradient3.StartColor = System.Drawing.SystemColors.ControlLight;
+			dockPaneStripToolWindowGradient1.DockStripGradient = dockPanelGradient3;
+			tabGradient6.EndColor = System.Drawing.SystemColors.InactiveCaption;
+			tabGradient6.LinearGradientMode = System.Drawing.Drawing2D.LinearGradientMode.Vertical;
+			tabGradient6.StartColor = System.Drawing.SystemColors.GradientInactiveCaption;
+			tabGradient6.TextColor = System.Drawing.SystemColors.InactiveCaptionText;
+			dockPaneStripToolWindowGradient1.InactiveCaptionGradient = tabGradient6;
+			tabGradient7.EndColor = System.Drawing.Color.Transparent;
+			tabGradient7.StartColor = System.Drawing.Color.Transparent;
+			tabGradient7.TextColor = System.Drawing.SystemColors.ControlDarkDark;
+			dockPaneStripToolWindowGradient1.InactiveTabGradient = tabGradient7;
+			dockPaneStripSkin1.ToolWindowGradient = dockPaneStripToolWindowGradient1;
+			dockPanelSkin1.DockPaneStripSkin = dockPaneStripSkin1;
+			this.dockPanel.Skin = dockPanelSkin1;
+			this.dockPanel.TabIndex = 13;
 			// 
 			// toolStripTiming
 			// 
@@ -720,7 +753,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
             this.toolStripLabel_TimingSpeed,
             this.toolStripButton_IncreaseTimingSpeed,
             this.toolStripButton_DecreaseTimingSpeed});
-			this.toolStripTiming.Location = new System.Drawing.Point(3, 50);
+			this.toolStripTiming.Location = new System.Drawing.Point(3, 25);
 			this.toolStripTiming.Name = "toolStripTiming";
 			this.toolStripTiming.Size = new System.Drawing.Size(175, 25);
 			this.toolStripTiming.TabIndex = 6;
@@ -763,9 +796,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripLabel3,
             this.cboAudioDevices});
-			this.toolStrip1.Location = new System.Drawing.Point(3, 75);
+			this.toolStrip1.Location = new System.Drawing.Point(178, 25);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(374, 25);
+			this.toolStrip1.Size = new System.Drawing.Size(372, 25);
 			this.toolStrip1.TabIndex = 7;
 			// 
 			// toolStripLabel3
@@ -854,6 +887,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.Name = "TimedSequenceEditorForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Timed Sequence Editor";
+			this.Load += new System.EventHandler(this.TimedSequenceEditorForm_Load);
 			this.Shown += new System.EventHandler(this.TimedSequenceEditorForm_Shown);
 			this.toolStripOperations.ResumeLayout(false);
 			this.toolStripOperations.PerformLayout();
@@ -862,13 +896,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.statusStrip.ResumeLayout(false);
 			this.statusStrip.PerformLayout();
 			this.toolStripContainer.ContentPanel.ResumeLayout(false);
-			this.toolStripContainer.ContentPanel.PerformLayout();
 			this.toolStripContainer.TopToolStripPanel.ResumeLayout(false);
 			this.toolStripContainer.TopToolStripPanel.PerformLayout();
 			this.toolStripContainer.ResumeLayout(false);
 			this.toolStripContainer.PerformLayout();
-			this.toolStripEffects.ResumeLayout(false);
-			this.toolStripEffects.PerformLayout();
 			this.toolStripTiming.ResumeLayout(false);
 			this.toolStripTiming.PerformLayout();
 			this.toolStrip1.ResumeLayout(false);
@@ -930,8 +961,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
 		private System.Windows.Forms.ToolStripContainer toolStripContainer;
-		private Common.Controls.ToolStripEx toolStripEffects;
-		private Common.Controls.Timeline.TimelineControl timelineControl;
 		private System.Windows.Forms.ToolStripMenuItem addEffectToolStripMenuItem;
 		private System.Windows.Forms.ToolStripButton toolStripButton_Cut;
 		private System.Windows.Forms.ToolStripButton toolStripButton_Copy;
@@ -940,7 +969,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private System.Windows.Forms.ToolStripButton toolStripButton_MarkManager;
 		private System.Windows.Forms.ToolStripButton toolStripButton_ZoomTimeIn;
 		private System.Windows.Forms.ToolStripButton toolStripButton_ZoomTimeOut;
-		private System.Windows.Forms.ToolStripLabel toolStripLabel1;
 		private System.Windows.Forms.ToolStripMenuItem modifySequenceLengthToolStripMenuItem;
 		private System.Windows.Forms.SaveFileDialog saveFileDialog;
 		private System.Windows.Forms.ContextMenuStrip contextMenuStripElementSelection;
@@ -961,5 +989,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private System.Windows.Forms.ToolStrip toolStrip1;
 		private System.Windows.Forms.ToolStripLabel toolStripLabel3;
 		private System.Windows.Forms.ToolStripComboBox cboAudioDevices;
+		private WeifenLuo.WinFormsUI.Docking.DockPanel dockPanel;
 	}
 }

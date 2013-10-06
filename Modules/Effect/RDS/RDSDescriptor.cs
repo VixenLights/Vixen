@@ -14,6 +14,10 @@ namespace VixenModules.Effect.RDS {
 			get { return "RDS"; }
 		}
 
+		public override EffectGroups EffectGroup {
+			get { return EffectGroups.Device; }
+		}
+
 		public override Guid TypeId {
 			get { return _typeId; }
 		}

@@ -87,6 +87,10 @@
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="WeifenLuo.WinFormsUI.Docking">
+      <HintPath>..\..\..\Common\Libraries\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutomaticMusicDetection.cs">
@@ -95,12 +99,30 @@
     <Compile Include="AutomaticMusicDetection.Designer.cs">
       <DependentUpon>AutomaticMusicDetection.cs</DependentUpon>
     </Compile>
+    <Compile Include="Form_Marks.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form_Marks.Designer.cs">
+      <DependentUpon>Form_Marks.cs</DependentUpon>
+    </Compile>
     <Compile Include="EffectRasterizer.cs" />
     <Compile Include="EffectTimeEditor.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="EffectTimeEditor.Designer.cs">
       <DependentUpon>EffectTimeEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form_Effects.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form_Effects.Designer.cs">
+      <DependentUpon>Form_Effects.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form_Grid.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form_Grid.Designer.cs">
+      <DependentUpon>Form_Grid.cs</DependentUpon>
     </Compile>
     <Compile Include="IntentRasterizer.cs" />
     <Compile Include="MarkManager.cs">
@@ -154,8 +176,17 @@
     <EmbeddedResource Include="AutomaticMusicDetection.resx">
       <DependentUpon>AutomaticMusicDetection.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Form_Marks.resx">
+      <DependentUpon>Form_Marks.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="EffectTimeEditor.resx">
       <DependentUpon>EffectTimeEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form_Effects.resx">
+      <DependentUpon>Form_Effects.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form_Grid.resx">
+      <DependentUpon>Form_Grid.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MarkManager.resx">
       <DependentUpon>MarkManager.cs</DependentUpon>

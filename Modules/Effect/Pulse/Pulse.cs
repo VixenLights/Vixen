@@ -146,6 +146,8 @@ namespace VixenModules.Effect.Pulse
 													  LevelCurve.GetValue(position * 100) / 100));
 					}
 
+					if (startValue.Intensity == 0f && endValue.Intensity == 0f) continue;
+
 					TimeSpan startTime = TimeSpan.FromMilliseconds(TimeSpan.TotalMilliseconds * lastPosition);
 					TimeSpan timeSpan = TimeSpan.FromMilliseconds(TimeSpan.TotalMilliseconds * (position - lastPosition));
 

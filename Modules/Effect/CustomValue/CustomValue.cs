@@ -23,6 +23,11 @@ namespace VixenModules.Effect.CustomValue
 			get { return "Custom Value"; }
 		}
 
+		public override EffectGroups EffectGroup
+		{
+			get { return EffectGroups.Basic; }
+		}
+
 		public override Guid TypeId
 		{
 			get { return TypeGuid; }

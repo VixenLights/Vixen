@@ -9,6 +9,7 @@ namespace Vixen.Sys
 		{
 			Segment = segment;
 			StartTime = startTime;
+			
 		}
 
 		public IIntentSegment<T> Segment { get; private set; }

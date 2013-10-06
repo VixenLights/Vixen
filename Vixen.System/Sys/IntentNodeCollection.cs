@@ -19,14 +19,14 @@ namespace Vixen.Sys
 			//AddRange(intentNodes);
 			AddRangeCombiner(intentNodes);
 		}
-		Dictionary<string, List<Tuple<int, float>>> intensityHistory = new Dictionary<string, List<Tuple<int, float>>>();
+		Dictionary<long, List<Tuple<int, double>>> intensityHistory = new Dictionary<long, List<Tuple<int, double>>>();
 
 		private bool CreateNewIntent(LightingIntent oldIntent, LightingIntent newIntent)
 		{
 			if (!intensityHistory.ContainsKey(oldIntent.GenericID)) {
-				intensityHistory.Add(oldIntent.GenericID, new List<Tuple<int, float>>() { 
-							new Tuple<int,float>(0, oldIntent.StartValue.Intensity),
-							new Tuple<int,float>(1, oldIntent.EndValue.Intensity)
+				intensityHistory.Add(oldIntent.GenericID, new List<Tuple<int, double>>() { 
+							new Tuple<int,double>(0, oldIntent.StartValue.Intensity),
+							new Tuple<int,double>(1, oldIntent.EndValue.Intensity)
 						});
 			}
 
@@ -70,6 +70,7 @@ namespace Vixen.Sys
 		{
 			//AddRange(intentNodes);
 			//return;
+			// TODO: it looks like these only support LightingIntents. It should either be made generic, or the class made specific.
 			foreach (var node in intentNodes) {
 
 				var newIntent = node.Intent as LightingIntent;
@@ -78,7 +79,7 @@ namespace Vixen.Sys
 					var oldIntentNode = this.Where(nn => nn.EndTime.Equals(node.StartTime)).FirstOrDefault();
 					if (oldIntentNode != null) {
 						var oldIntent = oldIntentNode.Intent as LightingIntent;
-						if (oldIntent != null && oldIntent.EndValue.Color.ToArgb()== newIntent.StartValue.Color.ToArgb() && !CreateNewIntent(oldIntent, newIntent)) {
+						if (oldIntent != null && oldIntent.EndValue.FullColor.ToArgb()== newIntent.StartValue.FullColor.ToArgb() && !CreateNewIntent(oldIntent, newIntent)) {
 
 							bool changeEndValue = false;
 
