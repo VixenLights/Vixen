@@ -47,10 +47,11 @@
 			this.buttonCancel = new System.Windows.Forms.Button();
 			this.buttonHelp = new System.Windows.Forms.Button();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
-			this.labelShowName = new System.Windows.Forms.Label();
 			this.listViewShowItems = new System.Windows.Forms.ListView();
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.labelHelp = new System.Windows.Forms.Label();
+			this.textBoxShowName = new System.Windows.Forms.TextBox();
+			this.label1 = new System.Windows.Forms.Label();
 			this.tabControlShowItems.SuspendLayout();
 			this.groupBoxAction.SuspendLayout();
 			this.groupBox2.SuspendLayout();
@@ -248,22 +249,13 @@
 			// 
 			// groupBox2
 			// 
-			this.groupBox2.Controls.Add(this.labelShowName);
+			this.groupBox2.Controls.Add(this.label1);
+			this.groupBox2.Controls.Add(this.textBoxShowName);
 			this.groupBox2.Location = new System.Drawing.Point(12, 7);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(775, 43);
 			this.groupBox2.TabIndex = 63;
 			this.groupBox2.TabStop = false;
-			// 
-			// labelShowName
-			// 
-			this.labelShowName.AutoSize = true;
-			this.labelShowName.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.labelShowName.Location = new System.Drawing.Point(6, 13);
-			this.labelShowName.Name = "labelShowName";
-			this.labelShowName.Size = new System.Drawing.Size(123, 24);
-			this.labelShowName.TabIndex = 0;
-			this.labelShowName.Text = "Show Name";
 			// 
 			// listViewShowItems
 			// 
@@ -296,6 +288,22 @@
 			this.labelHelp.Size = new System.Drawing.Size(222, 35);
 			this.labelHelp.TabIndex = 65;
 			this.labelHelp.Text = "Help";
+			// 
+			// textBoxShowName
+			// 
+			this.textBoxShowName.Location = new System.Drawing.Point(80, 16);
+			this.textBoxShowName.Name = "textBoxShowName";
+			this.textBoxShowName.Size = new System.Drawing.Size(197, 20);
+			this.textBoxShowName.TabIndex = 1;
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(6, 19);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(68, 13);
+			this.label1.TabIndex = 2;
+			this.label1.Text = "Show Name:";
 			// 
 			// ShowEditorForm
 			// 
@@ -350,12 +358,13 @@
 		private System.Windows.Forms.Button buttonMoveItemDown;
 		private System.Windows.Forms.Button buttonMoveItemUp;
 		private System.Windows.Forms.GroupBox groupBox2;
-		private System.Windows.Forms.Label labelShowName;
 		private System.Windows.Forms.GroupBox groupBoxAction;
 		private System.Windows.Forms.ComboBox comboBoxActions;
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.ListView listViewShowItems;
 		private System.Windows.Forms.ColumnHeader columnHeader1;
 		private System.Windows.Forms.Label labelHelp;
+		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.TextBox textBoxShowName;
 	}
 }
