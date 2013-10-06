@@ -24,7 +24,7 @@ namespace VixenModules.App.Shows
 			currentShowItemType = ShowItemType.Startup;
 			PopulateActions();
 			PopulateItemList(null);
-			labelShowName.Text = ShowData.Name;
+			textBoxShowName.Text = ShowData.Name;
 			LoadCurrentTab();
 			CheckButtons();
 
@@ -51,6 +51,7 @@ namespace VixenModules.App.Shows
 
 		private void buttonOK_Click(object sender, EventArgs e)
 		{
+			ShowData.Name = textBoxShowName.Text;
 			foreach (ListViewItem lvItem in listViewShowItems.Items)
 			{
 				ShowItem item = lvItem.Tag as ShowItem;

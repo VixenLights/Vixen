@@ -28,11 +28,13 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SetupForm));
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.buttonClose = new System.Windows.Forms.Button();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.buttonEditShow = new System.Windows.Forms.Button();
 			this.listViewItems = new System.Windows.Forms.ListView();
 			this.columnShow = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnSchedule = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -41,8 +43,16 @@
 			this.buttonEditSchedule = new System.Windows.Forms.Button();
 			this.buttonAddSchedule = new System.Windows.Forms.Button();
 			this.buttonHelp = new System.Windows.Forms.Button();
+			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.contextMenuStripList = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.addAScheduledShowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.editTheSelectedScheduleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.deleteTheSelectedScheduleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
+			this.editTheAssociatedShowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
+			this.contextMenuStripList.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// groupBox1
@@ -76,6 +86,7 @@
 			// 
 			// groupBox2
 			// 
+			this.groupBox2.Controls.Add(this.buttonEditShow);
 			this.groupBox2.Controls.Add(this.listViewItems);
 			this.groupBox2.Controls.Add(this.buttonDeleteSchedule);
 			this.groupBox2.Controls.Add(this.buttonEditSchedule);
@@ -87,6 +98,20 @@
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Scheduled Shows";
 			// 
+			// buttonEditShow
+			// 
+			this.buttonEditShow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonEditShow.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonEditShow.BackgroundImage")));
+			this.buttonEditShow.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.buttonEditShow.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.buttonEditShow.Location = new System.Drawing.Point(9, 252);
+			this.buttonEditShow.Name = "buttonEditShow";
+			this.buttonEditShow.Size = new System.Drawing.Size(24, 24);
+			this.buttonEditShow.TabIndex = 10;
+			this.toolTip1.SetToolTip(this.buttonEditShow, "Edit Selected Show");
+			this.buttonEditShow.UseVisualStyleBackColor = true;
+			this.buttonEditShow.Click += new System.EventHandler(this.buttonEditShow_Click);
+			// 
 			// listViewItems
 			// 
 			this.listViewItems.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -96,6 +121,7 @@
             this.columnShow,
             this.columnSchedule,
             this.columnStatus});
+			this.listViewItems.ContextMenuStrip = this.contextMenuStripList;
 			this.listViewItems.FullRowSelect = true;
 			this.listViewItems.Location = new System.Drawing.Point(9, 19);
 			this.listViewItems.MultiSelect = false;
@@ -130,6 +156,7 @@
 			this.buttonDeleteSchedule.Name = "buttonDeleteSchedule";
 			this.buttonDeleteSchedule.Size = new System.Drawing.Size(24, 24);
 			this.buttonDeleteSchedule.TabIndex = 7;
+			this.toolTip1.SetToolTip(this.buttonDeleteSchedule, "Delete the Selected Schedule");
 			this.buttonDeleteSchedule.UseVisualStyleBackColor = true;
 			this.buttonDeleteSchedule.Click += new System.EventHandler(this.buttonDeleteSchedule_Click);
 			// 
@@ -143,6 +170,7 @@
 			this.buttonEditSchedule.Name = "buttonEditSchedule";
 			this.buttonEditSchedule.Size = new System.Drawing.Size(24, 24);
 			this.buttonEditSchedule.TabIndex = 6;
+			this.toolTip1.SetToolTip(this.buttonEditSchedule, "Edit the Selected Schedule");
 			this.buttonEditSchedule.UseVisualStyleBackColor = true;
 			this.buttonEditSchedule.Click += new System.EventHandler(this.buttonEditSchedule_Click);
 			// 
@@ -156,6 +184,7 @@
 			this.buttonAddSchedule.Name = "buttonAddSchedule";
 			this.buttonAddSchedule.Size = new System.Drawing.Size(24, 24);
 			this.buttonAddSchedule.TabIndex = 5;
+			this.toolTip1.SetToolTip(this.buttonAddSchedule, "Add a New Scheduled Show");
 			this.buttonAddSchedule.UseVisualStyleBackColor = true;
 			this.buttonAddSchedule.Click += new System.EventHandler(this.buttonAddSchedule_Click);
 			// 
@@ -175,6 +204,50 @@
 			this.buttonHelp.UseVisualStyleBackColor = true;
 			this.buttonHelp.Click += new System.EventHandler(this.buttonHelp_Click);
 			// 
+			// contextMenuStripList
+			// 
+			this.contextMenuStripList.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.addAScheduledShowToolStripMenuItem,
+            this.editTheSelectedScheduleToolStripMenuItem,
+            this.deleteTheSelectedScheduleToolStripMenuItem,
+            this.toolStripMenuItem1,
+            this.editTheAssociatedShowToolStripMenuItem});
+			this.contextMenuStripList.Name = "contextMenuStrip1";
+			this.contextMenuStripList.Size = new System.Drawing.Size(226, 98);
+			// 
+			// addAScheduledShowToolStripMenuItem
+			// 
+			this.addAScheduledShowToolStripMenuItem.Name = "addAScheduledShowToolStripMenuItem";
+			this.addAScheduledShowToolStripMenuItem.Size = new System.Drawing.Size(225, 22);
+			this.addAScheduledShowToolStripMenuItem.Text = "Add a Scheduled Show...";
+			this.addAScheduledShowToolStripMenuItem.Click += new System.EventHandler(this.addAScheduledShowToolStripMenuItem_Click);
+			// 
+			// editTheSelectedScheduleToolStripMenuItem
+			// 
+			this.editTheSelectedScheduleToolStripMenuItem.Name = "editTheSelectedScheduleToolStripMenuItem";
+			this.editTheSelectedScheduleToolStripMenuItem.Size = new System.Drawing.Size(225, 22);
+			this.editTheSelectedScheduleToolStripMenuItem.Text = "Edit the Selected Schedule...";
+			this.editTheSelectedScheduleToolStripMenuItem.Click += new System.EventHandler(this.editTheSelectedScheduleToolStripMenuItem_Click);
+			// 
+			// deleteTheSelectedScheduleToolStripMenuItem
+			// 
+			this.deleteTheSelectedScheduleToolStripMenuItem.Name = "deleteTheSelectedScheduleToolStripMenuItem";
+			this.deleteTheSelectedScheduleToolStripMenuItem.Size = new System.Drawing.Size(225, 22);
+			this.deleteTheSelectedScheduleToolStripMenuItem.Text = "Delete the Selected Schedule";
+			this.deleteTheSelectedScheduleToolStripMenuItem.Click += new System.EventHandler(this.deleteTheSelectedScheduleToolStripMenuItem_Click);
+			// 
+			// toolStripMenuItem1
+			// 
+			this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+			this.toolStripMenuItem1.Size = new System.Drawing.Size(222, 6);
+			// 
+			// editTheAssociatedShowToolStripMenuItem
+			// 
+			this.editTheAssociatedShowToolStripMenuItem.Name = "editTheAssociatedShowToolStripMenuItem";
+			this.editTheAssociatedShowToolStripMenuItem.Size = new System.Drawing.Size(225, 22);
+			this.editTheAssociatedShowToolStripMenuItem.Text = "Edit the Associated Show...";
+			this.editTheAssociatedShowToolStripMenuItem.Click += new System.EventHandler(this.editTheAssociatedShowToolStripMenuItem_Click);
+			// 
 			// SetupForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -192,6 +265,7 @@
 			this.Load += new System.EventHandler(this.SetupForm_Load);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox2.ResumeLayout(false);
+			this.contextMenuStripList.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -210,5 +284,13 @@
 		private System.Windows.Forms.ColumnHeader columnSchedule;
 		private System.Windows.Forms.Button buttonHelp;
 		private System.Windows.Forms.ColumnHeader columnShow;
+		private System.Windows.Forms.Button buttonEditShow;
+		private System.Windows.Forms.ToolTip toolTip1;
+		private System.Windows.Forms.ContextMenuStrip contextMenuStripList;
+		private System.Windows.Forms.ToolStripMenuItem addAScheduledShowToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem editTheSelectedScheduleToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem deleteTheSelectedScheduleToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
+		private System.Windows.Forms.ToolStripMenuItem editTheAssociatedShowToolStripMenuItem;
 	}
 }
