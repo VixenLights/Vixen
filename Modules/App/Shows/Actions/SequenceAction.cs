@@ -59,10 +59,14 @@ namespace VixenModules.App.Shows
 		{
 			get
 			{
-				return _preProcessingCompleted && SequenceChanged();
+				bool changed = SequenceChanged();
+				bool complete = _preProcessingCompleted && !changed;
+				//Console.WriteLine("Get PreProcessingCompleted" + ShowItem.Name + "=" + complete + ":" + !changed + ":" + _preProcessingCompleted);
+				return complete;
 			}
 			set
 			{
+				//Console.WriteLine("Set PreProcessingCompleted" + ShowItem.Name + "=" + value);
 				_preProcessingCompleted = value;
 			}
 		}
@@ -71,6 +75,7 @@ namespace VixenModules.App.Shows
 		{
 			try
 			{
+				//Console.WriteLine("PreProcess: " + ShowItem.Name + " : " + (_sequenceContext == null));
 				if (_sequenceContext == null || SequenceChanged())
 				{
 					if (_sequenceContext != null)
