@@ -158,6 +158,12 @@ namespace BaseSequence
 			StartTime = _CoerceStartTime(startTime);
 			EndTime = _CoerceEndTime(endTime);
 
+			if (StartTime == EndTime)
+			{
+				//We are done before we get started
+				_syncContext.Post(x => _Stop(), null);
+			}
+
 			TimingSource = Sequence.GetTiming() ?? _GetDefaultTimingSource();
 
 			_LoadMedia();
@@ -171,15 +177,13 @@ namespace BaseSequence
 			// Start the crazy train.
 			IsRunning = true;
 
-			// Fire the first event manually because it takes a while for the timer
-			// to elapse the first time.
-			_CheckForNaturalEnd();
-
-			// If there is no length, we may have been stopped as a cascading result
-			// of that update.
-			if (IsRunning) {
-				_endCheckTimer.Start();
+			while (TimingSource.Position == StartTime)
+			{
+				Thread.Sleep(1); //Give the train a chance to get out of the station.
 			}
+
+			_endCheckTimer.Start();
+
 		}
 
 		protected virtual void _HookDataListener()
