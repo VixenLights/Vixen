@@ -166,6 +166,7 @@ namespace BaseSequence
 
 			TimingSource.Position = StartTime;
 			TimingSource.Start();
+			Thread.Sleep(100);
 
 			// Start the crazy train.
 			IsRunning = true;
@@ -337,7 +338,7 @@ namespace BaseSequence
 
 		private bool _IsEndOfSequence()
 		{
-			return _IsTimedSequence && TimingSource.Position >= EndTime;
+			return _IsTimedSequence && (TimingSource.Position >= EndTime || TimingSource.Position == TimeSpan.Zero);
 		}
 
 		protected bool _IsTimedSequence
