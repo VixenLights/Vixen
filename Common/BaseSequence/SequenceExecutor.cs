@@ -172,7 +172,6 @@ namespace BaseSequence
 
 			TimingSource.Position = StartTime;
 			TimingSource.Start();
-			Thread.Sleep(100);
 
 			// Start the crazy train.
 			IsRunning = true;
