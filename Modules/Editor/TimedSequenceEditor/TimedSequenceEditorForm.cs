@@ -104,7 +104,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							   "TimedSequenceEditorForm.xml");
 			if (System.IO.File.Exists(settingsPath)) 
 			{
-							dockPanel.LoadFromXml(settingsPath, new DeserializeDockContent(DockingPanels_GetContentFromPersistString));
+				dockPanel.LoadFromXml(settingsPath, new DeserializeDockContent(DockingPanels_GetContentFromPersistString));
 			} else {
 				GridForm.Show(dockPanel);
 				MarksForm.Show(dockPanel, WeifenLuo.WinFormsUI.Docking.DockState.DockLeft);
@@ -241,7 +241,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			get
 			{
-				if (_effectsForm != null) 
+				if (_effectsForm != null && !_effectsForm.IsDisposed) 
 				{
 					return _effectsForm;
 				} else {
@@ -256,7 +256,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			get
 			{
-				if (_marksForm != null)
+				if (_marksForm != null && !_marksForm.IsDisposed)
 				{
 					return _marksForm;
 				}
@@ -2410,6 +2410,41 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void cboAudioDevices_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			Vixen.Sys.State.Variables.SelectedAudioDeviceIndex= cboAudioDevices.SelectedIndex;
+		}
+
+		private void menuStrip_MenuActivate(object sender, EventArgs e)
+		{
+			effectWindowToolStripMenuItem.Checked = (EffectsForm.DockState != DockState.Unknown);
+			markWindowToolStripMenuItem.Checked = (MarksForm.DockState != DockState.Unknown);
+		}
+
+		private void effectWindowToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (EffectsForm.DockState == DockState.Unknown)
+			{
+				DockState dockState = EffectsForm.DockState;
+				if (dockState == DockState.Unknown) dockState = DockState.DockLeft;
+				EffectsForm.Show(dockPanel, dockState);
+			}
+			else
+			{
+				EffectsForm.Close();
+			}
+		}
+
+		private void markWindowToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (MarksForm.DockState == DockState.Unknown)
+			{
+				DockState dockState = MarksForm.DockState;
+				dockState = DockState.DockLeft;
+				if (dockState == DockState.Unknown) dockState = DockState.DockLeft;
+				MarksForm.Show(dockPanel, dockState);
+			}
+			else
+			{
+				MarksForm.Close();
+			}
 		}
 	}
 
