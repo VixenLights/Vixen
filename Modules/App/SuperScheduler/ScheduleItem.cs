@@ -320,8 +320,10 @@ namespace VixenModules.App.SuperScheduler
 
 		private void ExecuteAction(Shows.Action action)
 		{
+			ScheduleExecutor.Logging.Info("ExecuteAction: " + action.ShowItem.Name);
 			if (State != StateType.Waiting)
 			{
+				ScheduleExecutor.Logging.Info("ExecuteAction: State != StateType.Waiting");
 				if (!action.PreProcessingCompleted)
 				{
 					ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Pre-processing action: " + action.ShowItem.Name);
@@ -409,12 +411,14 @@ namespace VixenModules.App.SuperScheduler
 
 		public void BeginSequential()
 		{
+			ScheduleExecutor.Logging.Info("BeginSequential");
 			if (Show != null && State == StateType.Running)
 			{
 				State = StateType.Running;
 
 				foreach (Shows.ShowItem item in Show.GetItems(Shows.ShowItemType.Sequential))
 				{
+					ScheduleExecutor.Logging.Info("BeginSequential: Enqueue:" + item.Name);
 					ItemQueue.Enqueue(item);
 				}
 
@@ -425,10 +429,12 @@ namespace VixenModules.App.SuperScheduler
 
 		public void ExecuteNextSequentialItem()
 		{
+			ScheduleExecutor.Logging.Info("ExecuteNextSequentialItem");
 			if (State == StateType.Running)
 			{
 				if (ItemQueue.Count() > 0)
 				{
+					ScheduleExecutor.Logging.Info("ExecuteNextSequentialItem: Dequeue");
 					_currentItem = ItemQueue.Dequeue();
 					Shows.Action action = _currentItem.GetAction();
 					action.ActionComplete += OnSequentialActionComplete;
@@ -436,6 +442,7 @@ namespace VixenModules.App.SuperScheduler
 				}
 				else
 				{
+					ScheduleExecutor.Logging.Info("ExecuteNextSequentialItem: BeginSequential");
 					// Restart the queue 
 					BeginSequential();
 				}
@@ -444,12 +451,14 @@ namespace VixenModules.App.SuperScheduler
 
 		public void OnSequentialActionComplete(object sender, EventArgs e)
 		{
+			ScheduleExecutor.Logging.Info("OnSequentialActionComplete");
 			Shows.Action action = (sender as Shows.Action);
 			action.ActionComplete -= OnSequentialActionComplete;
 			RunningActions.Remove(action);
 			ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Sequential action complete: " + action.ShowItem.Name);
 			if (!StartShutdownIfRequested())
 			{
+				ScheduleExecutor.Logging.Info("OnSequentialActionComplete: Shutdown NOT requested");
 				ExecuteNextSequentialItem();
 			}
 		}
@@ -528,6 +537,7 @@ namespace VixenModules.App.SuperScheduler
 				State = StateType.Shutdown;
 				foreach (Shows.ShowItem item in Show.GetItems(Shows.ShowItemType.Shutdown))
 				{
+					ScheduleExecutor.Logging.Info("BeginShutdown: Enqueue: " + item.Name);
 					ItemQueue.Enqueue(item);
 				}
 

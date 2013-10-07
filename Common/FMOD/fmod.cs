@@ -7,6 +7,7 @@
 using System;
 using System.Text;
 using System.Runtime.InteropServices;
+using NLog;
 
 namespace FMOD
 {
@@ -1788,6 +1789,8 @@ namespace FMOD
     */
     public class FMODSystem
     {
+		private static NLog.Logger Logging = LogManager.GetCurrentClassLogger();
+
         public RESULT release                ()
         {
 			return (VERSION.platform == Platform.X64) ? FMOD_System_Release_64(systemraw) : FMOD_System_Release_32(systemraw);
@@ -1939,7 +1942,15 @@ namespace FMOD
         // General post-init system functions
         public RESULT update                 ()
         {
-			return (VERSION.platform == Platform.X64) ? FMOD_System_Update_64(systemraw) : FMOD_System_Update_32(systemraw);
+			try
+			{
+				return (VERSION.platform == Platform.X64) ? FMOD_System_Update_64(systemraw) : FMOD_System_Update_32(systemraw);
+			}
+			catch (Exception ex)
+			{
+				Logging.Error(ex.Message);
+				return RESULT.OK;
+			}
         }
 
         public RESULT set3DSettings          (float dopplerscale, float distancefactor, float rolloffscale)
