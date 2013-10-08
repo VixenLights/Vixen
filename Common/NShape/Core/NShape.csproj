@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{9EFE1059-E2DC-4576-B9E3-4AE3F998CB28}</ProjectGuid>
@@ -37,23 +37,24 @@
     <AssemblyOriginatorKeyFile>..\Dataweb.nShape.snk</AssemblyOriginatorKeyFile>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
   </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>$(SolutionDir)\Output\Common\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;DEBUG_UI;REPOSITORY_CHECK</DefineConstants>
-    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
+ 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>$(SolutionDir)\Release\Common\</OutputPath>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x86</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+ 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <DebugSymbols>true</DebugSymbols>
+   <OutputPath>$(SolutionDir)\Release64\Common\</OutputPath>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
