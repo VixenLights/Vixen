@@ -8,6 +8,8 @@ using Vixen.Module.Media;
 using Vixen.Module.Timing;
 using FMOD;
 using System.Timers;
+using System.Runtime.CompilerServices;
+
 
 namespace VixenModules.Media.Audio
 {
@@ -19,18 +21,22 @@ namespace VixenModules.Media.Audio
 
 		public string[] DetectionNotes
 		{
+			[MethodImpl(MethodImplOptions.Synchronized)]
 			get
 			{
 				if (_audioSystem == null) return null;
 				return _audioSystem.NOTE;
 			}
 		}
+
 		public override int CurrentPlaybackDeviceIndex
 		{
+			[MethodImpl(MethodImplOptions.Synchronized)]
 			get
 			{
 				return Vixen.Sys.State.Variables.SelectedAudioDeviceIndex;
 			}
+			[MethodImpl(MethodImplOptions.Synchronized)]
 			set
 			{
 				Vixen.Sys.State.Variables.SelectedAudioDeviceIndex= value;
@@ -39,6 +45,7 @@ namespace VixenModules.Media.Audio
 
 		public float[] DetectionNoteFreq
 		{
+			[MethodImpl(MethodImplOptions.Synchronized)]
 			get
 			{
 				if (_audioSystem == null) return null;
@@ -48,16 +55,19 @@ namespace VixenModules.Media.Audio
 
 		public bool MediaLoaded
 		{
+			[MethodImpl(MethodImplOptions.Synchronized)]
 			get { return _audioSystem != null; }
 		}
 
 		public bool DetectFrequeniesEnabled
 		{
+			[MethodImpl(MethodImplOptions.Synchronized)]
 			get
 			{
 				if (_audioSystem == null) return false;
 				else return _audioSystem.DetectFrequeniesEnabled;
 			}
+			[MethodImpl(MethodImplOptions.Synchronized)]
 			set
 			{
 				if (_audioSystem != null)
@@ -67,11 +77,13 @@ namespace VixenModules.Media.Audio
 
 		public bool LowPassFilterEnabled
 		{
+			[MethodImpl(MethodImplOptions.Synchronized)]
 			get
 			{
 				if (_audioSystem == null) return false;
 				else return _audioSystem.LowPassFilterEnabled;
 			}
+			[MethodImpl(MethodImplOptions.Synchronized)]
 			set
 			{
 				if (_audioSystem != null)
@@ -81,31 +93,37 @@ namespace VixenModules.Media.Audio
 
 		public float LowPassFilterValue
 		{
+			[MethodImpl(MethodImplOptions.Synchronized)]
 			get
 			{
 				if (_audioSystem == null) return -1;
 				else return _audioSystem.LowPassFilterValue;
 			}
+			[MethodImpl(MethodImplOptions.Synchronized)]
 			set { _audioSystem.LowPassFilterValue = value; }
 		}
 
 		public float HighPassFilterValue
 		{
+			[MethodImpl(MethodImplOptions.Synchronized)]
 			get
 			{
 				if (_audioSystem == null) return -1;
 				else return _audioSystem.HighPassFilterValue;
 			}
+			[MethodImpl(MethodImplOptions.Synchronized)]
 			set { _audioSystem.HighPassFilterValue = value; }
 		}
 
 		public bool HighPassFilterEnabled
 		{
+			[MethodImpl(MethodImplOptions.Synchronized)]
 			get
 			{
 				if (_audioSystem == null) return false;
 				else return _audioSystem.HighPassFilterEnabled;
 			}
+			[MethodImpl(MethodImplOptions.Synchronized)]
 			set
 			{
 				if (_audioSystem != null)
@@ -118,6 +136,7 @@ namespace VixenModules.Media.Audio
 		/// </summary>
 		public int BytesPerSample
 		{
+			[MethodImpl(MethodImplOptions.Synchronized)]
 			get
 			{
 				if (_audioSystem != null) {
@@ -133,6 +152,7 @@ namespace VixenModules.Media.Audio
 		/// </summary>
 		public float Frequency
 		{
+			[MethodImpl(MethodImplOptions.Synchronized)]
 			get
 			{
 				if (_audioSystem != null) {
@@ -148,6 +168,7 @@ namespace VixenModules.Media.Audio
 		/// </summary>
 		public long NumberSamples
 		{
+			[MethodImpl(MethodImplOptions.Synchronized)]
 			get
 			{
 				if (_audioSystem != null) {
@@ -163,6 +184,7 @@ namespace VixenModules.Media.Audio
 		/// </summary>
 		public int Channels
 		{
+			[MethodImpl(MethodImplOptions.Synchronized)]
 			get
 			{
 				if (_audioSystem != null) {
@@ -179,6 +201,7 @@ namespace VixenModules.Media.Audio
 		/// <param name="startSample">0 based starting sample</param>
 		/// <param name="numSamples">Number of samples to include in the byte array</param>
 		/// <returns></returns>
+		[MethodImpl(MethodImplOptions.Synchronized)]
 		public byte[] GetSamples(int startSample, int numSamples)
 		{
 			if (_audioSystem != null) {
@@ -189,6 +212,7 @@ namespace VixenModules.Media.Audio
 			}
 		}
 
+		[MethodImpl(MethodImplOptions.Synchronized)]
 		public override void Start()
 		{
 			if (_audioSystem != null && !_audioSystem.IsPlaying) {
@@ -197,6 +221,7 @@ namespace VixenModules.Media.Audio
 			}
 		}
 
+		[MethodImpl(MethodImplOptions.Synchronized)]
 		public override void Stop()
 		{
 			if (_audioSystem != null && _audioSystem.IsPlaying) {
@@ -204,6 +229,7 @@ namespace VixenModules.Media.Audio
 			}
 		}
 
+		[MethodImpl(MethodImplOptions.Synchronized)]
 		public override void Pause()
 		{
 			if (_audioSystem != null && !_audioSystem.IsPaused) {
@@ -211,6 +237,7 @@ namespace VixenModules.Media.Audio
 			}
 		}
 
+		[MethodImpl(MethodImplOptions.Synchronized)]
 		public override void Resume()
 		{
 			if (_audioSystem != null && _audioSystem.IsPaused) {
@@ -218,11 +245,13 @@ namespace VixenModules.Media.Audio
 			}
 		}
 
+		[MethodImpl(MethodImplOptions.Synchronized)]
 		public override void Dispose()
 		{
 			_DisposeAudio();
 		}
 
+		[MethodImpl(MethodImplOptions.Synchronized)]
 		private void _DisposeAudio()
 		{
 			if (_audioSystem != null) {
@@ -235,27 +264,35 @@ namespace VixenModules.Media.Audio
 
 		public override ITiming TimingSource
 		{
+			[MethodImpl(MethodImplOptions.Synchronized)]
 			get { return this as ITiming; }
 		}
 
 		public override IModuleDataModel ModuleData
 		{
+			[MethodImpl(MethodImplOptions.Synchronized)]
 			get { return _data; }
+			[MethodImpl(MethodImplOptions.Synchronized)]
 			set { _data = value as AudioData; }
 		}
 
 		public override string MediaFilePath
 		{
+			[MethodImpl(MethodImplOptions.Synchronized)]
 			get { return _data.FilePath; }
+			[MethodImpl(MethodImplOptions.Synchronized)]
 			set { _data.FilePath = value; }
 		}
 
 		public bool MediaExists
 		{
+			[MethodImpl(MethodImplOptions.Synchronized)]
 			get { return File.Exists(MediaFilePath); } 
 		}
+
 		public List<Tuple<int, string>> AudioDevices
 		{
+			[MethodImpl(MethodImplOptions.Synchronized)]
 			get
 			{
 				return _audioSystem.AudioDevices;
@@ -265,6 +302,7 @@ namespace VixenModules.Media.Audio
 		// executed as media for the sequence.
 		// That means we're either media or media and timing, so only
 		// handle media execution entry points.
+		[MethodImpl(MethodImplOptions.Synchronized)]
 		public override void LoadMedia(TimeSpan startTime )
 		{
 			if (MediaLoaded)
@@ -291,6 +329,7 @@ namespace VixenModules.Media.Audio
 
 		public event FrequencyDetectedHandler FrequencyDetected;
 
+		[MethodImpl(MethodImplOptions.Synchronized)]
 		private void _audioSystem_FrequencyDetected(object sender, FrequencyEventArgs e)
 		{
 			if (FrequencyDetected != null) {
@@ -300,6 +339,7 @@ namespace VixenModules.Media.Audio
 
 		public TimeSpan Position
 		{
+			[MethodImpl(MethodImplOptions.Synchronized)]
 			get
 			{
 				if (_audioSystem != null) {
@@ -307,11 +347,13 @@ namespace VixenModules.Media.Audio
 				}
 				return TimeSpan.Zero;
 			}
+			[MethodImpl(MethodImplOptions.Synchronized)]
 			set { }
 		}
 
 		public TimeSpan MediaDuration
 		{
+			[MethodImpl(MethodImplOptions.Synchronized)]
 			get
 			{
 				if (_audioSystem == null)
@@ -323,12 +365,15 @@ namespace VixenModules.Media.Audio
 
 		public bool SupportsVariableSpeeds
 		{
+			[MethodImpl(MethodImplOptions.Synchronized)]
 			get { return true; }
 		}
 
 		public float Speed
 		{
+			[MethodImpl(MethodImplOptions.Synchronized)]
 			get { return _audioSystem.Speed; }
+			[MethodImpl(MethodImplOptions.Synchronized)]
 			set { _audioSystem.Speed = value; }
 		}
 	}
