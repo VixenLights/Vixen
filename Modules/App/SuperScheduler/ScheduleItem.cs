@@ -135,14 +135,15 @@ namespace VixenModules.App.SuperScheduler
 		{
 			get
 			{
-				return _endTime;
+				DateTime newEndTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day,
+										 _endTime.Hour, _endTime.Minute, _endTime.Second);
+				if (newEndTime < StartTime)
+					newEndTime = newEndTime.AddDays(1);
+				return newEndTime;
 			}
 			set
 			{
-				_endTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day,
-										 value.Hour, value.Minute, value.Second);
-				if (_endTime < StartTime)
-					_endTime.AddDays(1);
+				_endTime = value;
 			}
 		}
 
