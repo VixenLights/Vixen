@@ -121,7 +121,7 @@ namespace VixenModules.App.SuperScheduler
 			if (dateEndTime.Value < dateStartTime.Value)
 			{
 				DateTime newEndDate = new DateTime(dateEndTime.Value.Ticks);
-				newEndDate.AddDays(1);
+				newEndDate = newEndDate.AddDays(1);
 				t = newEndDate - dateStartTime.Value;
 			}
 			else
