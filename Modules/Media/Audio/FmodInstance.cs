@@ -33,13 +33,17 @@ namespace VixenModules.Media.Audio
 		{
 			get
 			{
-				List<Tuple<int, string>> ret = new List<Tuple<int, string>>();
-				int i = 0;
-				fmod.GetSoundDeviceList().ToList().ForEach(device => {
-					ret.Add(new Tuple<int, string>(i, device));
-					i++;
-				});
-				return ret;
+				lock (lockObject)
+				{
+					List<Tuple<int, string>> ret = new List<Tuple<int, string>>();
+					int i = 0;
+					fmod.GetSoundDeviceList().ToList().ForEach(device =>
+					{
+						ret.Add(new Tuple<int, string>(i, device));
+						i++;
+					});
+					return ret;
+				}
 			}
 		}
 
@@ -67,8 +71,11 @@ namespace VixenModules.Media.Audio
 		public int AudioDeviceIndex { get { return _audioSystem.DeviceIndex; } set { _audioSystem.DeviceIndex = value; } }
 		private void fmodUpdateTimer_Elapsed(object sender, ElapsedEventArgs e)
 		{
-			if (_audioSystem != null && _audioSystem.SystemObject != null)
-				_audioSystem.SystemObject.update();
+			lock (lockObject)
+			{
+				; if (_audioSystem != null && _audioSystem.SystemObject != null)
+					_audioSystem.SystemObject.update();
+			}
 		}
 
 		public bool LowPassFilterEnabled
@@ -143,26 +150,30 @@ namespace VixenModules.Media.Audio
 
 		public byte[] GetSamples(int startSample, int numSamples)
 		{
-			int bufferSize = BytesPerSample*numSamples;
-			int startByte = BytesPerSample*startSample;
+			lock (lockObject)
+			{
+				int bufferSize = BytesPerSample * numSamples;
+				int startByte = BytesPerSample * startSample;
 
-			IntPtr ptr1 = IntPtr.Zero, ptr2 = IntPtr.Zero;
-			uint len1 = 0, len2 = 0;
+				IntPtr ptr1 = IntPtr.Zero, ptr2 = IntPtr.Zero;
+				uint len1 = 0, len2 = 0;
 
-			checkErrors(_channel.Sound.@lock((uint) startByte, (uint) bufferSize, ref ptr1, ref ptr2, ref len1, ref len2));
-			byte[] sampleBytes1 = new byte[len1];
-			byte[] sampleBytes2 = new byte[len2];
-			System.Runtime.InteropServices.Marshal.Copy(ptr1, sampleBytes1, 0, (int) len1);
-			if (len2 > 0) {
-				System.Runtime.InteropServices.Marshal.Copy(ptr2, sampleBytes2, 0, (int) len2);
+				checkErrors(_channel.Sound.@lock((uint)startByte, (uint)bufferSize, ref ptr1, ref ptr2, ref len1, ref len2));
+				byte[] sampleBytes1 = new byte[len1];
+				byte[] sampleBytes2 = new byte[len2];
+				System.Runtime.InteropServices.Marshal.Copy(ptr1, sampleBytes1, 0, (int)len1);
+				if (len2 > 0)
+				{
+					System.Runtime.InteropServices.Marshal.Copy(ptr2, sampleBytes2, 0, (int)len2);
+				}
+
+				_channel.Sound.unlock(ptr1, ptr2, len1, len2);
+				byte[] sampleBytes = new byte[sampleBytes1.Length + sampleBytes2.Length];
+				System.Buffer.BlockCopy(sampleBytes1, 0, sampleBytes, 0, sampleBytes1.Length);
+				System.Buffer.BlockCopy(sampleBytes2, 0, sampleBytes, sampleBytes1.Length, sampleBytes2.Length);
+
+				return sampleBytes;
 			}
-
-			_channel.Sound.unlock(ptr1, ptr2, len1, len2);
-			byte[] sampleBytes = new byte[sampleBytes1.Length + sampleBytes2.Length];
-			System.Buffer.BlockCopy(sampleBytes1, 0, sampleBytes, 0, sampleBytes1.Length);
-			System.Buffer.BlockCopy(sampleBytes2, 0, sampleBytes, sampleBytes1.Length, sampleBytes2.Length);
-
-			return sampleBytes;
 		}
 
 		private void populateStats()
@@ -199,25 +210,32 @@ namespace VixenModules.Media.Audio
 
 		public void LoadAsSample(string fileName)
 		{
-			//Adapted this code from the fmod wrappers loadsound method. Changed mode to CREATESAMPLE
-			if (_channel != null && _channel.IsPlaying) {
-				Stop();
-			}
-			if (_audioSystem == null) return;
+			lock (lockObject)
+			{
+				//Adapted this code from the fmod wrappers loadsound method. Changed mode to CREATESAMPLE
+				if (_channel != null && _channel.IsPlaying)
+				{
+					Stop();
+				}
+				if (_audioSystem == null) return;
 
-			if (fileName == null || !File.Exists(fileName)) {
-				return;
-			}
+				if (fileName == null || !File.Exists(fileName))
+				{
+					return;
+				}
 
-			Sound sound = null;
-			checkErrors(_audioSystem.SystemObject.createSound(fileName,
-			                                                  (FMOD.MODE._2D | FMOD.MODE.HARDWARE | FMOD.MODE.CREATESAMPLE |
-			                                                   MODE.ACCURATETIME), ref sound));
-			if (_channel == null) {
-				_channel = new SoundChannel(sound);
-			}
-			else {
-				_channel.Sound = sound;
+				Sound sound = null;
+				checkErrors(_audioSystem.SystemObject.createSound(fileName,
+																  (FMOD.MODE._2D | FMOD.MODE.HARDWARE | FMOD.MODE.CREATESAMPLE |
+																   MODE.ACCURATETIME), ref sound));
+				if (_channel == null)
+				{
+					_channel = new SoundChannel(sound);
+				}
+				else
+				{
+					_channel.Sound = sound;
+				}
 			}
 		}
 
@@ -230,14 +248,19 @@ namespace VixenModules.Media.Audio
 
 		public void Load(string fileName)
 		{
-			if (_channel != null && _channel.IsPlaying) {
-				Stop();
+			lock (lockObject)
+			{
+				if (_channel != null && _channel.IsPlaying)
+				{
+					Stop();
+				}
+				_channel = _audioSystem.LoadSound(fileName, _channel);
+				if (_channel == null)
+				{
+					Logging.Warn("Audio: can't load file '" + fileName + "' for playback. Does it exist?");
+				}
+				_startTime = TimeSpan.Zero;
 			}
-			_channel = _audioSystem.LoadSound(fileName, _channel);
-			if (_channel == null) {
-				Logging.Warn("Audio: can't load file '" + fileName + "' for playback. Does it exist?");
-			}
-			_startTime = TimeSpan.Zero;
 		}
 
 		public void SetStartTime(TimeSpan time)
@@ -246,36 +269,52 @@ namespace VixenModules.Media.Audio
 		}
 
 		public void Play()
-		{	
-			AudioDeviceIndex=	Vixen.Sys.State.Variables.SelectedAudioDeviceIndex;
-			
-			if (_channel != null && !_channel.IsPlaying) {
-				SetStartTime(_startTime);
-				_audioSystem.Play(_channel, true);
-				_channel.Position = (uint) _startTime.TotalMilliseconds;
-				_channel.Paused = false;
-				IsFrequencyDetectionEnabled();
+		{
+			lock (lockObject)
+			{
+				AudioDeviceIndex = Vixen.Sys.State.Variables.SelectedAudioDeviceIndex;
+
+				if (_channel != null && !_channel.IsPlaying)
+				{
+					SetStartTime(_startTime);
+					_audioSystem.Play(_channel, true);
+					_channel.Position = (uint)_startTime.TotalMilliseconds;
+					_channel.Paused = false;
+					IsFrequencyDetectionEnabled();
+				}
 			}
 		}
 
 		public void Pause()
 		{
-			if (_channel != null && _channel.IsPlaying) {
-				_channel.Paused = true;
+			lock (lockObject)
+			{
+				if (_channel != null && _channel.IsPlaying)
+				{
+					_channel.Paused = true;
+				}
 			}
 		}
 
 		public void Resume()
 		{
-			if (_channel != null && _channel.Paused) {
-				_channel.Paused = false;
+			lock (lockObject)
+			{
+				if (_channel != null && _channel.Paused)
+				{
+					_channel.Paused = false;
+				}
 			}
 		}
 
 		public void Stop()
 		{
-			if (_channel != null && _channel.IsPlaying) {
-				_audioSystem.Stop(_channel);
+			lock (lockObject)
+			{
+				if (_channel != null && _channel.IsPlaying)
+				{
+					_audioSystem.Stop(_channel);
+				}
 			}
 		}
 
@@ -283,10 +322,14 @@ namespace VixenModules.Media.Audio
 		{
 			get
 			{
-				if (_channel != null) {
-					return _channel.Position;
+				lock (lockObject)
+				{
+					if (_channel != null)
+					{
+						return _channel.Position;
+					}
+					return 0;
 				}
-				return 0;
 			}
 		}
 
@@ -302,23 +345,31 @@ namespace VixenModules.Media.Audio
 
 		~FmodInstance()
 		{
-			Dispose();
+			lock (lockObject)
+			{
+				Dispose();
+			}
 		}
 
 		public void Dispose()
 		{
-			if (_audioSystem != null) {
-				//*** channel need to be disposed?  If so, then should reloading the channel
-				//    cause an intermediate disposal?
-				_audioSystem.Stop(_channel);
+			lock (lockObject)
+			{
+				if (_audioSystem != null)
+				{
+					//*** channel need to be disposed?  If so, then should reloading the channel
+					//    cause an intermediate disposal?
+					_audioSystem.Stop(_channel);
 
-				if (_channel != null) {
-					_audioSystem.ReleaseSound(_channel);
+					if (_channel != null)
+					{
+						_audioSystem.ReleaseSound(_channel);
+					}
+					_audioSystem.Shutdown();
+					_audioSystem = null;
 				}
-				_audioSystem.Shutdown();
-				_audioSystem = null;
+				GC.SuppressFinalize(this);
 			}
-			GC.SuppressFinalize(this);
 		}
 
 		public TimeSpan Duration
