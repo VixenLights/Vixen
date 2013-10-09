@@ -67,8 +67,12 @@ namespace VixenModules.Media.Audio
 		public int AudioDeviceIndex { get { return _audioSystem.DeviceIndex; } set { _audioSystem.DeviceIndex = value; } }
 		private void fmodUpdateTimer_Elapsed(object sender, ElapsedEventArgs e)
 		{
-			if (_audioSystem != null && _audioSystem.SystemObject != null)
-				_audioSystem.SystemObject.update();
+			lock (lockObject)
+			{
+				if (_audioSystem != null && _audioSystem.SystemObject != null)
+					_audioSystem.SystemObject.update();	
+			}	
+			
 		}
 
 		public bool LowPassFilterEnabled
@@ -308,6 +312,8 @@ namespace VixenModules.Media.Audio
 		public void Dispose()
 		{
 			if (_audioSystem != null) {
+				fmodUpdateTimer.Stop();
+				fmodUpdateTimer.Elapsed -= fmodUpdateTimer_Elapsed;
 				//*** channel need to be disposed?  If so, then should reloading the channel
 				//    cause an intermediate disposal?
 				_audioSystem.Stop(_channel);
