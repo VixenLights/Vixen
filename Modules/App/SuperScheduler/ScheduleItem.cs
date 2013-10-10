@@ -304,18 +304,32 @@ namespace VixenModules.App.SuperScheduler
 		private void PreProcessActionTask()
 		{
 			// Pre-Process all the actions to fill up our memory
-			foreach (Shows.ShowItem item in Show.GetItems(Shows.ShowItemType.All))
+			Show.GetItems(Shows.ShowItemType.All).AsParallel().WithCancellation(tokenSourcePreProcessAll.Token).ForAll(item =>
 			{
 				ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Pre-processing: " + item.Name);
 				Shows.Action action = item.GetAction();
 
-				if (!action.PreProcessingCompleted)
-				{
-					if (tokenSourcePreProcessAll != null && tokenSourcePreProcessAll.IsCancellationRequested) return;
-					if (tokenSourcePreProcess != null && tokenSourcePreProcess.IsCancellationRequested) return;
+				if (!action.PreProcessingCompleted) {
+					if (tokenSourcePreProcessAll != null && tokenSourcePreProcessAll.IsCancellationRequested)
+						return;
+					if (tokenSourcePreProcess != null && tokenSourcePreProcess.IsCancellationRequested)
+						return;
 					action.PreProcess();
 				}
-			}
+
+			});
+			//foreach (Shows.ShowItem item in Show.GetItems(Shows.ShowItemType.All))
+			//{
+			//	ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Pre-processing: " + item.Name);
+			//	Shows.Action action = item.GetAction();
+
+			//	if (!action.PreProcessingCompleted)
+			//	{
+			//		if (tokenSourcePreProcessAll != null && tokenSourcePreProcessAll.IsCancellationRequested) return;
+			//		if (tokenSourcePreProcess != null && tokenSourcePreProcess.IsCancellationRequested) return;
+			//		action.PreProcess();
+			//	}
+			//}
 		}
 
 		private void ExecuteAction(Shows.Action action)

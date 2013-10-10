@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Dataweb.NShape.WinFormsUI</RootNamespace>
     <AssemblyName>Dataweb.NShape.WinFormsUI</AssemblyName>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ApplicationIcon>..\Dataweb.NShape.ico</ApplicationIcon>
     <SignAssembly>true</SignAssembly>
@@ -19,8 +19,8 @@
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
     <UpgradeBackupLocation />
+    <TargetFrameworkProfile />
   </PropertyGroup>
-  
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>$(SolutionDir)\Release\Common\</OutputPath>
@@ -31,10 +31,9 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
-  
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <DebugSymbols>true</DebugSymbols>
-   <OutputPath>$(SolutionDir)\Release64\Common\</OutputPath>
+    <OutputPath>$(SolutionDir)\Release64\Common\</OutputPath>
     <DocumentationFile>..\..\bin\Release\Dataweb.NShape.WinFormsUI.xml</DocumentationFile>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
