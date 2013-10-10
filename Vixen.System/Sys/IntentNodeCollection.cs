@@ -19,14 +19,14 @@ namespace Vixen.Sys
 			//AddRange(intentNodes);
 			AddRangeCombiner(intentNodes);
 		}
-		Dictionary<long, List<Tuple<int, double>>> intensityHistory = new Dictionary<long, List<Tuple<int, double>>>();
+		Dictionary<long, List<Tuple<int, int>>> intensityHistory = new Dictionary<long, List<Tuple<int, int>>>();
 
 		private bool CreateNewIntent(LightingIntent oldIntent, LightingIntent newIntent)
 		{
 			if (!intensityHistory.ContainsKey(oldIntent.GenericID)) {
-				intensityHistory.Add(oldIntent.GenericID, new List<Tuple<int, double>>() { 
-							new Tuple<int,double>(0, oldIntent.StartValue.Intensity),
-							new Tuple<int,double>(1, oldIntent.EndValue.Intensity)
+				intensityHistory.Add(oldIntent.GenericID, new List<Tuple<int, int>>() { 
+							new Tuple<int,int>(0, (int)(oldIntent.StartValue.Intensity*10000)),
+							new Tuple<int,int>(1, (int)(oldIntent.EndValue.Intensity*10000))
 						});
 			}
 
@@ -47,9 +47,9 @@ namespace Vixen.Sys
 						return true;
 					} else {
 						if (item1<item2) {
-							returnValue= newIntent.EndValue.Intensity>item2;
+							returnValue= (int)(newIntent.EndValue.Intensity*10000)>item2;
 						} else { //Ascending
-							returnValue= newIntent.EndValue.Intensity<item2;
+							returnValue= (int)(newIntent.EndValue.Intensity*10000)<item2;
 						}
 					}
 				}

@@ -7,6 +7,7 @@
 using System;
 using System.Text;
 using System.Runtime.InteropServices;
+using NLog;
 
 namespace FMOD
 {
@@ -1767,6 +1768,8 @@ namespace FMOD
     */
 	public class FMODSystem
     {
+		private static NLog.Logger Logging = LogManager.GetCurrentClassLogger();
+
         public RESULT release                ()
         {
             return FMOD_System_Release(systemraw);
