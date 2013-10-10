@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using Vixen.Data.Value;
 using Vixen.Intent;
@@ -17,6 +18,7 @@ using ZedGraph;
 
 namespace VixenModules.Effect.Alternating
 {
+	 
 	public class Alternating : EffectModuleInstanceBase
 	{
 		private AlternatingData _data;

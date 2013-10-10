@@ -10,15 +10,23 @@ namespace Vixen.Sys
 	[Serializable]
 	internal class DefaultValueArrayMember
 	{
+		private static Dictionary<Type, PropertyInfo[]> mycache = new Dictionary<Type, PropertyInfo[]>();
+
 		private object _owner;
-		private PropertyInfo[] _valueProperties;
+		private PropertyInfo[] _valueProperties = null;
 
 		public DefaultValueArrayMember(object owner)
 		{
 			_owner = owner;
-			_valueProperties =
-				_owner.GetType().GetProperties().Where(x => x.GetCustomAttributes(typeof (ValueAttribute), true).Length == 1).
-					ToArray();
+			if( mycache.ContainsKey( owner.GetType()))
+			{
+				_valueProperties = mycache[owner.GetType()];
+			}
+			else
+			{
+				_valueProperties =_owner.GetType().GetProperties().Where(x => x.GetCustomAttributes(typeof(ValueAttribute), true).Length == 1).ToArray();
+				mycache[owner.GetType()] = _valueProperties;
+			}
 		}
 
 		/// <summary>

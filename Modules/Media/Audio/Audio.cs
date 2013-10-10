@@ -267,15 +267,24 @@ namespace VixenModules.Media.Audio
 		// handle media execution entry points.
 		public override void LoadMedia(TimeSpan startTime )
 		{
-			_DisposeAudio();
-			if (File.Exists(MediaFilePath)) {
-				_audioSystem = new FmodInstance(MediaFilePath);
-				_audioSystem.FrequencyDetected += _audioSystem_FrequencyDetected;
+			if (MediaLoaded)
+			{
 				_audioSystem.SetStartTime(startTime);
 			}
-			else {
-				Logging.Error("Media file does not exist: " + MediaFilePath);
+			else
+			{
+				_DisposeAudio();
+				if (File.Exists(MediaFilePath))
+				{
+					_audioSystem = new FmodInstance(MediaFilePath);
+					_audioSystem.FrequencyDetected += _audioSystem_FrequencyDetected;
+					_audioSystem.SetStartTime(startTime);
+				} else
+				{
+					Logging.Error("Media file does not exist: " + MediaFilePath);
+				}	
 			}
+			
 		}
 
 		public delegate void FrequencyDetectedHandler(object sender, FrequencyEventArgs e);
