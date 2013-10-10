@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO.Ports;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -19,38 +20,25 @@ namespace VixenModules.Output.CommandController
 		public SetupForm(Data data)
 		{
 			InitializeComponent();
+			cboPortName.Items.Clear();
+
+			var ports =	SerialPort.GetPortNames().OrderBy(o => o).ToList();
+			ports.ForEach(a => cboPortName.Items.Add((a)));
 
 			RdsData = data;
 			chkRequiresAuthentication.Checked= data.RequireHTTPAuthentication;
-			
+
 			txtHttpUsername.Text= data.HttpUsername;
 			txtHttpPassword.Text= data.HttpPassword;
 
 			chkBiDirectional.Checked= data.BiDirectional;
 			chkSlow.Checked= data.Slow;
 			this.txtUrl.Text = data.HttpUrl ?? "http://127.0.0.1:8080/?action=update_rt&update_rt={text}";
-			switch (data.PortName) {
-				case "LPT1":
-					radioLPT1.Checked=true;
-					break;
-				case "COM1":
-					radioCOM1.Checked=true;
-					break;
-				case "COM2":
-					radioCOM2.Checked=true;
-					break;
-				case "COM3":
-					radioCOM3.Checked=true;
-					break;
-				case "COM4":
-					radioCOM4.Checked=true;
-					break;
-				case "COM6":
-					radioCOM6.Checked=true;
-					break;
-				default:
-					break;
+			if (ports.Contains(data.PortName))
+			{
+				cboPortName.SelectedItem = data.PortName;
 			}
+			 
 
 			switch (data.HardwareID) {
 				case Hardware.MRDS1322:
@@ -73,11 +61,10 @@ namespace VixenModules.Output.CommandController
 
 		private void radioVFMT212R_CheckedChanged(object sender, EventArgs e)
 		{
-			groupPorts.Enabled= !radioVFMT212R.Checked;
-			radioUSB.Checked = radioVFMT212R.Checked;
+			cboPortName.Enabled= !radioVFMT212R.Checked;
 			RdsData.HardwareID =  Hardware.VFMT212R;
 			SetFormDefaults();
-		
+
 		}
 
 		private void radioMRDS1322_CheckedChanged(object sender, EventArgs e)
@@ -212,7 +199,7 @@ namespace VixenModules.Output.CommandController
 			//Regex urlRx = new Regex(@"^((http|https)://)?([\w+?\.\w+])+([a-zA-Z0-9\~\!\@\#\$\%\^\&\*\(\)_\-\=\+\\\/\?\.\:\;\'\,]*)?$", RegexOptions.IgnoreCase);
 
 			//if (urlRx.IsMatch(txtUrl.Text)) {
-		 	RdsData.HttpUrl= txtUrl.Text;
+			RdsData.HttpUrl= txtUrl.Text;
 			//	StatusLbl1.Text="";
 			//} else
 			//	StatusLbl1.Text= "Http Url is NOT well formed and will not be saved";
@@ -233,13 +220,18 @@ namespace VixenModules.Output.CommandController
 			RdsData.HttpPassword=txtHttpPassword.Text;
 		}
 
-		 
+		private void cboPortName_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			RdsData.PortNumber = int.Parse(cboPortName.SelectedItem.ToString().Replace("COM", ""));
+		}
 
-	 
-		 
 
-	
-	 
+
+
+
+
+
+
 
 
 

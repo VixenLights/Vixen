@@ -24,7 +24,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-   <OutputPath>$(SolutionDir)\Release64\Modules\Controller\</OutputPath>
+    <OutputPath>$(SolutionDir)\Release64\Modules\Controller\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>true</Optimize>
@@ -52,7 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandHandler.cs" />
-    <Compile Include="CustomSerialPort.cs">
+    <Compile Include="RdsSerialPort.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Data.cs" />
