@@ -28,6 +28,24 @@ namespace Vixen.Data.Value
 		/// <summary>
 		/// Percentage value between 0 and 1.
 		/// </summary>
+		public double Hue
+		{
+			get { return hsv.H; }
+			set { hsv.H = value; }
+		}
+
+		/// <summary>
+		/// Percentage value between 0 and 1.
+		/// </summary>
+		public double Saturation
+		{
+			get { return hsv.S; }
+			set { hsv.S = value; }
+		}
+
+		/// <summary>
+		/// Percentage value between 0 and 1.
+		/// </summary>
 		public double Intensity
 		{
 			get { return hsv.V; }
