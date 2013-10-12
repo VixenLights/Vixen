@@ -88,6 +88,7 @@ namespace VixenModules.App.Shows
 					//IContext context = VixenSystem.Contexts.CreateSequenceContext(new ContextFeatures(ContextCaching.ContextLevelCaching), sequence);
 					ISequenceContext context = VixenSystem.Contexts.CreateSequenceContext(new ContextFeatures(ContextCaching.NoCaching), sequence);
 
+					// Parallel doesn't work here. Causes multiple sequences to be run at the same time
 					foreach (IEffectNode effectNode in sequence.SequenceData.EffectData.Cast<IEffectNode>())
 					{
 						effectNode.Effect.PreRender();
