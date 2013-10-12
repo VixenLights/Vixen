@@ -312,10 +312,11 @@ namespace VixenModules.App.SuperScheduler
 				ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Pre-processing: " + item.Name);
 				Shows.Action action = item.GetAction();
 
-				if (!action.PreProcessingCompleted)
-				{
-					if (tokenSourcePreProcessAll != null && tokenSourcePreProcessAll.IsCancellationRequested) return;
-					if (tokenSourcePreProcess != null && tokenSourcePreProcess.IsCancellationRequested) return;
+				if (!action.PreProcessingCompleted) {
+					if (tokenSourcePreProcessAll != null && tokenSourcePreProcessAll.IsCancellationRequested)
+						return;
+					if (tokenSourcePreProcess != null && tokenSourcePreProcess.IsCancellationRequested)
+						return;
 					action.PreProcess();
 				}
 			});
