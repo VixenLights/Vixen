@@ -255,8 +255,6 @@ namespace VixenModules.Effect.Chase
 								break;
 						}
 
-						pulseData = pulse.Render();
-						_elementData.Add(pulseData);
 						i++;
 					}
 				}
