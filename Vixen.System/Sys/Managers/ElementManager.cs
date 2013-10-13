@@ -124,7 +124,8 @@ namespace Vixen.Sys.Managers
 			lock (_instances) {
 				_stopwatch.Restart();
 
-				_instances.Values.AsParallel().ForAll(x => x.Update());
+				//_instances.Values.AsParallel().ForAll(x => x.Update());
+				foreach( var x in _instances.Values) x.Update();
 
 				_elementUpdateTimeValue.Set(_stopwatch.ElapsedMilliseconds);
 			 }

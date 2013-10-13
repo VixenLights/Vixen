@@ -88,8 +88,8 @@ namespace Vixen.Sys.Managers
 		{
 			lock (_instances) {
 				_stopwatch.Restart();
-
-				_instances.Values.AsParallel().ForAll(context =>
+				//_instances.Values.AsParallel().ForAll(context =>
+				foreach( var context in _instances.Values)
 				                                      	{
 															try {
 
@@ -103,8 +103,8 @@ namespace Vixen.Sys.Managers
 															} catch (Exception ee) {
 																Logging.ErrorException(ee.Message, ee);
 															}
-				                                      	});
-
+				                                      	//});
+				                                      	}
 				_contextUpdateTimeValue.Set(_stopwatch.ElapsedMilliseconds);
 			}
 		}

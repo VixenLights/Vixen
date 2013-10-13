@@ -17,9 +17,9 @@ namespace Vixen.Sys.Output
 
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
-		private static bool _isRecording = true;
+		private static bool _isRecording = false;
 		private static bool _isPlaying = false;
-		private static bool _isMonitoring = false;
+		private static bool _isMonitoring = true;
 
 		static public bool IsRecording()
 		{
@@ -51,21 +51,27 @@ namespace Vixen.Sys.Output
 				return;
 
 			// find a likely context...
-			Vixen.Execution.IContext ctx=null;
+			Vixen.Execution.Context.ContextBase ctx=null;
 			foreach (var c in VixenSystem.Contexts)
 			{
 				if ( ! c.GetType().ToString().Contains("Sequence"))
 					continue;
-				ctx = c;
+				ctx = c as Vixen.Execution.Context.ContextBase;
+				if( ctx == null)
+					continue;
 			}
-			long thisMs = (long)ctx.GetTimeSnapshot().TotalMilliseconds;
+			if (ctx == null)
+				return;
+
+			long thisMs = ctx._lastUpdateMs;
 			long deltaMs = thisMs - lastMs;
+			long rndMs = (thisMs+25) / 50 * 50;
 
 			long thisSwMs = sw.ElapsedMilliseconds;
 			long deltaSwMs = thisSwMs - lastSwMs;
 
-			Logging.Info("Name: {0}, lth:{1}, nvals:{2}, ctxms:{3}, ctxdt:{4,2}, dtsw:{5,2}, swms{6}", 
-							oc.Name, states.Length, nvals, thisMs, deltaMs, deltaSwMs, thisSwMs);
+			Logging.Info("Name: {0}, lth:{1}, nvals:{2}, ctxms:{3}, ctxdt:{4,2}, rndMs:{5,2}", 
+							oc.Name, states.Length, nvals, thisMs, deltaMs, rndMs);
 
 			lastMs = thisMs;
 			lastSwMs = thisSwMs;

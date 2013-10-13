@@ -80,6 +80,8 @@ namespace Vixen.Sys.Managers
 			}
 		}
 
+		static long _lastMs = 0;
+
 		private void _ThreadFunc()
 		{
 			// Thread main loop
@@ -87,11 +89,16 @@ namespace Vixen.Sys.Managers
 				IOutputDeviceUpdateSignaler signaler = _CreateOutputDeviceUpdateSignaler();
 
 				while (_threadState != ExecutionState.Stopping) {
+					long nowMs = _localTime.ElapsedMilliseconds;
+					long dtMs = nowMs - _lastMs;
+					if( Math.Abs( OutputDevice.UpdateInterval - dtMs) > 10)
+						Logging.Info("nowMs:{0}, dtMs:{1}", nowMs, dtMs);
+					_lastMs = nowMs;
 					Execution.UpdateState();
 					_UpdateOutputDevice();
 
 					_WaitOnSignal(signaler);
-					_WaitOnPause();
+				//	_WaitOnPause();
 				}
 
 				_threadState = ExecutionState.Stopped;
@@ -134,7 +141,7 @@ namespace Vixen.Sys.Managers
 			long timeBeforeSignal = _localTime.ElapsedMilliseconds;
 
 			signaler.RaiseSignal();
-			_updateSignalerSync.WaitOne();
+			//_updateSignalerSync.WaitOne();
 
 			long timeAfterSignal = _localTime.ElapsedMilliseconds;
 			_sleepTimeActualValue.Set(timeAfterSignal - timeBeforeSignal);

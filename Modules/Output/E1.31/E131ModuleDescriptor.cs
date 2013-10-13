@@ -40,5 +40,10 @@
         {
             get { return "0.1"; }
         }
-    }
+
+		public override int UpdateInterval
+		{
+			get { return 50; }
+		}
+	}
 }

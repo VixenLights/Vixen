@@ -85,7 +85,8 @@ namespace Vixen.Sys.Managers
 		public void Update()
 		{
 			lock (_updateLock) {
-				_rootFilters.AsParallel().ForAll(_UpdateFilterBranch);
+				//_rootFilters.AsParallel().ForAll(_UpdateFilterBranch);
+				foreach( var x in _rootFilters)	_UpdateFilterBranch(x);
 			}
 		}
 
