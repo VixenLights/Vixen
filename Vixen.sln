@@ -660,6 +660,7 @@ Global
 		{60E7EDD5-0798-466B-8510-BC572CF0E710}.Release|x86.Build.0 = Release|x86
 		{C2FBDB6C-1768-4A23-B581-6A6D9CC6D1CB}.Release|x64.ActiveCfg = Release|x64
 		{C2FBDB6C-1768-4A23-B581-6A6D9CC6D1CB}.Release|x86.ActiveCfg = Release|x86
+		{C2FBDB6C-1768-4A23-B581-6A6D9CC6D1CB}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
