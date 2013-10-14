@@ -120,12 +120,13 @@ namespace VixenModules.App.SuperScheduler
 		{
 			get
 			{
-				return _startTime;
+				DateTime result = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day,
+										 _startTime.Hour, _startTime.Minute, _startTime.Second);
+				return result;
 			}
 			set
 			{
-				_startTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day,
-										 value.Hour, value.Minute, value.Second);
+				_startTime = value;
 			}
 		}
 
@@ -135,11 +136,11 @@ namespace VixenModules.App.SuperScheduler
 		{
 			get
 			{
-				DateTime newEndTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day,
+				DateTime result = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day,
 										 _endTime.Hour, _endTime.Minute, _endTime.Second);
-				if (newEndTime < StartTime)
-					newEndTime = newEndTime.AddDays(1);
-				return newEndTime;
+				if (result < StartTime)
+					result = result.AddDays(1);
+				return result;
 			}
 			set
 			{
