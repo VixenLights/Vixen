@@ -182,6 +182,7 @@ namespace VixenModules.App.SuperScheduler
 
 		public void Start()
 		{
+			
 			ManuallyDisabled = false;
 		}
 	}

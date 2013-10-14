@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Vixen.Sys;
 using Vixen.Module;
 using Vixen.Module.Effect;
@@ -29,11 +30,11 @@ namespace VixenModules.Effect.Spin
 			CheckForInvalidColorData();
 		}
 
-		protected override void _PreRender()
+		protected override void _PreRender(CancellationTokenSource tokenSource = null)
 		{
 			_elementData = new EffectIntents();
 
-			DoRendering();
+			DoRendering(tokenSource);
 		}
 
 		//Validate that the we are using valid colors and set appropriate defaults if not.
@@ -246,7 +247,7 @@ namespace VixenModules.Effect.Spin
 			}
 		}
 
-		private void DoRendering()
+		private void DoRendering(CancellationTokenSource tokenSource = null)
 		{
 			//TODO: get a better increment time. doing it every X ms is..... shitty at best.
 			TimeSpan increment = TimeSpan.FromMilliseconds(10);
@@ -265,7 +266,10 @@ namespace VixenModules.Effect.Spin
 			// apply the 'background' values to all targets if nonzero
 			if (DefaultLevel > 0) {
 				int i = 0;
-				foreach (ElementNode target in renderNodes) {
+				foreach (ElementNode target in renderNodes)
+				{
+					if (tokenSource != null && tokenSource.IsCancellationRequested) return;
+
 					bool discreteColors = ColorModule.isElementNodeDiscreteColored(target);
 
 					if (target == null || target.Element == null)
@@ -375,6 +379,9 @@ namespace VixenModules.Effect.Spin
 			// a bit iffy, but stops 'carry over' spins past the end (when there's overlapping spins). But we need to go past
 			// (total - pulse) as the last pulse can often be a bit inaccurate due to the rounding of the increment
 			for (TimeSpan current = TimeSpan.Zero; current <= TimeSpan - pulseTimeSpan + increment; current += increment) {
+				if (tokenSource != null && tokenSource.IsCancellationRequested)
+					return;
+
 				double currentPercentageIntoSpin = ((double) (current.Ticks%revTimeSpan.Ticks)/(double) revTimeSpan.Ticks)*100.0;
 
 				double targetElementPosition = movement.GetValue(currentPercentageIntoSpin);
@@ -427,6 +434,9 @@ namespace VixenModules.Effect.Spin
 							ColorGradient cg = ColorGradient.GetSubGradientWithDiscreteColors(startPos, endPos);
 
 							foreach (Color color in cg.GetColorsInGradient()) {
+								if (tokenSource != null && tokenSource.IsCancellationRequested)
+									return;
+
 								Curve newCurve = new Curve(pulse.LevelCurve.Points);
 								foreach (PointPair point in newCurve.Points) {
 									double effectRelativePosition = startPos + ((point.X / 100.0) * range);
@@ -458,6 +468,9 @@ namespace VixenModules.Effect.Spin
 						if (discreteColors) {
 							List<Tuple<Color, float>> colorsAtPosition = ColorGradient.GetDiscreteColorsAndProportionsAt(targetElementPosition / 100.0);
 							foreach (Tuple<Color, float> colorProportion in colorsAtPosition) {
+								if (tokenSource != null && tokenSource.IsCancellationRequested)
+									return;
+
 								float proportion = colorProportion.Item2;
 								// scale all levels of the pulse curve by the proportion that is applicable to this color
 								Curve newCurve = new Curve(pulse.LevelCurve.Points);

@@ -256,9 +256,9 @@ namespace VixenModules.App.SuperScheduler
 		public void Stop(bool graceful)
 		{
 			if (tokenSourcePreProcess != null && tokenSourcePreProcess.Token.CanBeCanceled)
-				tokenSourcePreProcess.Cancel();
+				tokenSourcePreProcess.Cancel(false);
 			if (tokenSourcePreProcessAll != null && tokenSourcePreProcessAll.Token.CanBeCanceled)
-				tokenSourcePreProcessAll.Cancel();
+				tokenSourcePreProcessAll.Cancel(false);
 
 			if (graceful) {
 				State = StateType.Shutdown;
@@ -293,7 +293,7 @@ namespace VixenModules.App.SuperScheduler
 			if (tokenSourcePreProcessAll == null || tokenSourcePreProcessAll.IsCancellationRequested)
 				tokenSourcePreProcessAll = new CancellationTokenSource();
 
-			var preProcessTask = new Task(a => PreProcessActionTask(), tokenSourcePreProcessAll.Token);
+			var preProcessTask = new Task(a => PreProcessActionTask(),null, tokenSourcePreProcessAll.Token);
 			preProcessTask.ContinueWith(task => BeginStartup());
 
 			preProcessTask.Start();
@@ -313,7 +313,7 @@ namespace VixenModules.App.SuperScheduler
 					var action = item.GetAction();
 
 					if (!action.PreProcessingCompleted) {
-						action.PreProcess();
+						action.PreProcess(tokenSourcePreProcessAll);
 					}
 					if (tokenSourcePreProcessAll != null && tokenSourcePreProcessAll.IsCancellationRequested)
 						return;

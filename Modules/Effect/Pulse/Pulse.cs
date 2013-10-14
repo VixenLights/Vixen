@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using Vixen.Data.Value;
 using Vixen.Intent;
 using Vixen.Sys;
@@ -31,11 +32,14 @@ namespace VixenModules.Effect.Pulse
 			CheckForInvalidColorData();
 		}
 
-		protected override void _PreRender()
+		protected override void _PreRender(CancellationTokenSource tokenSource = null)
 		{
 			_elementData = new EffectIntents();
 			
 			foreach (ElementNode node in TargetNodes) {
+				if (tokenSource != null && tokenSource.IsCancellationRequested)
+					return;
+
 				if (node != null)
 					RenderNode(node);
 			}

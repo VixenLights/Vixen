@@ -71,8 +71,11 @@ namespace VixenModules.App.Shows
 			}
 		}
 
-		public override void PreProcess()
+		public override void PreProcess(CancellationTokenSource cancellationTokenSource = null)
 		{
+			if (cancellationTokenSource != null)
+				CancellationTknSource = cancellationTokenSource;
+
 			try
 			{
 				//Console.WriteLine("PreProcess: " + ShowItem.Name + " : " + (_sequenceContext == null));

@@ -12,14 +12,14 @@ namespace VixenModules.App.Shows
 	public partial class TypeEditorBase : UserControl
 	{
 		public delegate void OnTextChangedHandler(object sender, EventArgs e);
-		public virtual event OnTextChangedHandler OnTextChanged;
+		public new virtual event OnTextChangedHandler OnTextChanged;
 
 		public TypeEditorBase()
 		{
 			InitializeComponent();
 		}
 
-		public string Text { get; set; }
+		//public string Text { get; set; }
 
 		public void FireChanged(string text)
 		{
