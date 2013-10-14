@@ -94,7 +94,7 @@ namespace Common.Controls
 			int i = 1;
 			foreach (INamingGenerator namingGenerator in Generators) {
 				ListViewItem item = new ListViewItem();
-				item.Text = "{" + i + "}: " + namingGenerator.Name;
+				item.Text = string.Format("{{0}}: {1}", i, namingGenerator.Name);
 				item.Tag = namingGenerator;
 				listViewGenerators.Items.Add(item);
 				i++;

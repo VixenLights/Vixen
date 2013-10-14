@@ -92,7 +92,8 @@ namespace VixenApplication
 		{
 			System.Reflection.Assembly assembly = System.Reflection.Assembly.LoadFile(VixenSystem.AssemblyFileName);
 			Version version = assembly.GetName().Version;
-			string result = version.Major + "." + version.Minor + "." + version.Build;
+			string result = string.Format("{0}.{1}.{2}", version.Major ,version.Minor ,version.Build)			;
+			
 
 #if AUTOBUILD
 			labelVersion.Text = "Test Build " + version.Revision;

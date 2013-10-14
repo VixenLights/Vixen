@@ -6,13 +6,13 @@ namespace Vixen.Sys.Instrumentation
 	internal class OutputDeviceUpdateTimeValue : DoubleValue
 	{
 		public OutputDeviceUpdateTimeValue(IOutputDevice outputDevice)
-			: base("Output device update time [" + outputDevice.Name + "]")
+			: base(string.Format("Output device update time [{0}]" ,outputDevice.Name ))
 		{
 		}
 
 		protected override string _GetFormattedValue()
 		{
-			return ((int) _GetValue()) + " ms";
+	 		return string.Format("{0} ms", (int)_GetValue());
 		}
 	}
 }

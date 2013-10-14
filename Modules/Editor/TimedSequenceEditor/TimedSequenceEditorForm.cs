@@ -112,8 +112,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 
 			XMLProfileSettings xml = new XMLProfileSettings();
-			dockPanel.DockLeftPortion = xml.GetSetting(this.Name + "/DockLeftPortion", 150);
-			dockPanel.DockRightPortion = xml.GetSetting(this.Name + "/DockLeftPortion", 150);
+			dockPanel.DockLeftPortion = xml.GetSetting(string.Format("{0}/DockLeftPortion", this.Name), 150);
+			dockPanel.DockRightPortion = xml.GetSetting(string.Format("{0}/DockLeftPortion", this.Name), 150);
 			xml = null;
 
 			_effectNodeToElement = new Dictionary<EffectNode, Element>();
@@ -725,8 +725,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				nodeList.Remove(oldElement);
 			}
 			else {
-				Logging.Debug("TimedSequenceEditor: moving an element from " + e.OldRow.Name +
-										  " to " + e.NewRow.Name + "and the effect element wasn't in the old row element!");
+				Logging.Debug(string.Format("TimedSequenceEditor: moving an element from {0} to {1} and the effect element wasn't in the old row element!", e.OldRow.Name, e.NewRow.Name));
 			}
 			nodeList.Add(newElement);
 			movedElement.EffectNode.Effect.TargetNodes = nodeList.ToArray();
@@ -2200,8 +2199,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			dockPanel.SaveAsXml(settingsPath);
 			XMLProfileSettings xml = new XMLProfileSettings();
-			xml.PutSetting(this.Name + "/DockLeftPortion", (int)dockPanel.DockLeftPortion);
-			xml.PutSetting(this.Name + "/DockRihtPortion", (int)dockPanel.DockLeftPortion);
+			xml.PutSetting(string.Format("{0}/DockLeftPortion",this.Name),(int)dockPanel.DockLeftPortion);
+			xml.PutSetting(string.Format("{0}/DockRihtPortion", this.Name), (int)dockPanel.DockLeftPortion);
 			xml = null;
 		}
 

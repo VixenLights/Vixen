@@ -755,7 +755,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void updateTimingSpeedTextbox()
 		{
-			textBoxTimingSpeed.Text = Math.Round((_timingSource.Speed*100), 0).ToString() + "%";
+			textBoxTimingSpeed.Text = string.Format("{0}%", Math.Round((_timingSource.Speed*100), 0));
 			buttonDecreasePlaySpeed.Enabled = _timingSource.Speed > _timingChangeDelta;
 		}
 
