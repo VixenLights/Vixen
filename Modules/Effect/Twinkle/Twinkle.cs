@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Vixen.Sys;
 using Vixen.Module;
 using Vixen.Module.Effect;
@@ -31,7 +32,7 @@ namespace VixenModules.Effect.Twinkle
 			CheckForInvalidColorData();
 		}
 
-		protected override void _PreRender()
+		protected override void _PreRender(CancellationTokenSource tokenSource = null)
 		{
 			_elementData = new EffectIntents();
 
@@ -45,6 +46,9 @@ namespace VixenModules.Effect.Twinkle
 			double i = 0;
 
 			foreach (ElementNode node in targetNodes) {
+				if (tokenSource != null && tokenSource.IsCancellationRequested)
+					return;
+
 				if (node != null)
 					_elementData.Add(RenderElement(node, i++/(double) totalNodes, twinkles));
 			}

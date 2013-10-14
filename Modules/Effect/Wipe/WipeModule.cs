@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Module;
 using Vixen.Module.Effect;
@@ -27,7 +28,7 @@ namespace VixenModules.Effect.Wipe {
 			CheckForInvalidColorData();
 		}
 
-		protected override void _PreRender() {
+		protected override void _PreRender(CancellationTokenSource tokenSource = null) {
 
 			_elementData = new EffectIntents();
 
@@ -163,10 +164,15 @@ namespace VixenModules.Effect.Wipe {
 					TimeSpan segmentPulse = TimeSpan.FromMilliseconds(pulseSegment);
 
 					while (count < PassCount) {
-						foreach (var item in renderNodes) {
+						foreach (var item in renderNodes)
+						{
+							if (tokenSource != null && tokenSource.IsCancellationRequested) return;
 							EffectIntents result;
 
 							foreach (ElementNode element in item) {
+
+								if (tokenSource != null && tokenSource.IsCancellationRequested)
+									return;
 								if (element != null) {
 									var pulse = new Pulse.Pulse();
 									pulse.TargetNodes = new ElementNode[] { element };
@@ -192,8 +198,13 @@ namespace VixenModules.Effect.Wipe {
 						foreach (var item in renderNodes) {
 							EffectIntents result;
 
+							if (tokenSource != null && tokenSource.IsCancellationRequested)
+								return;
 							foreach (ElementNode element in item) {
 								if (element != null) {
+
+									if (tokenSource != null && tokenSource.IsCancellationRequested)
+										return;
 									var pulse = new Pulse.Pulse();
 									pulse.TargetNodes = new ElementNode[] { element };
 									pulse.TimeSpan = segmentPulse;

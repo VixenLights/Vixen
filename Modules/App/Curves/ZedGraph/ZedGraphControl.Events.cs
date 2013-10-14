@@ -787,7 +787,7 @@ namespace ZedGraph {
 					string yStr = MakeValueLabel(pane.YAxis, y, -1, true);
 					string y2Str = MakeValueLabel(pane.Y2Axis, y2, -1, true);
 
-					this.pointToolTip.SetToolTip(this, "( " + xStr + ", " + yStr + ", " + y2Str + " )");
+					this.pointToolTip.SetToolTip(this, string.Format("( {0}, {1}, {2})" , xStr , yStr , y2Str ));
 					this.pointToolTip.Active = true;
 				}
 			}

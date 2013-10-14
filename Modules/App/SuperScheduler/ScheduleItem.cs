@@ -255,21 +255,20 @@ namespace VixenModules.App.SuperScheduler
 
 		public void Stop(bool graceful)
 		{
-			if (graceful)
-			{
+			if (tokenSourcePreProcess != null && tokenSourcePreProcess.Token.CanBeCanceled)
+				tokenSourcePreProcess.Cancel(false);
+			if (tokenSourcePreProcessAll != null && tokenSourcePreProcessAll.Token.CanBeCanceled)
+				tokenSourcePreProcessAll.Cancel(false);
+
+			if (graceful) {
 				State = StateType.Shutdown;
 				ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Show stopping gracefully");
-			} else
-			{
+			} else {
 				State = StateType.Waiting;
 				int runningCount = RunningActions.Count();
-				if (tokenSourcePreProcess != null && tokenSourcePreProcess.Token.CanBeCanceled)
-					tokenSourcePreProcess.Cancel();
-				if (tokenSourcePreProcessAll != null && tokenSourcePreProcessAll.Token.CanBeCanceled)
-					tokenSourcePreProcessAll.Cancel();
+
 				ItemQueue.Clear();
-				for (int i = 0; i < runningCount; i++)
-				{
+				for (int i = 0; i < runningCount; i++) {
 					ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Stopping action: " + RunningActions[i].ShowItem.Name);
 					RunningActions[i].Stop();
 				}
@@ -291,12 +290,11 @@ namespace VixenModules.App.SuperScheduler
 			ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Show started");
 
 			// Do this in a task so we don't stop Vixen while pre-processing!
-			tokenSourcePreProcessAll = new CancellationTokenSource();
-			Task preProcessTask = new Task(() => PreProcessActionTask(), tokenSourcePreProcessAll.Token);
-			preProcessTask.ContinueWith(task =>
-			{
-				BeginStartup();
-			});
+			if (tokenSourcePreProcessAll == null || tokenSourcePreProcessAll.IsCancellationRequested)
+				tokenSourcePreProcessAll = new CancellationTokenSource();
+
+			var preProcessTask = new Task(a => PreProcessActionTask(),null, tokenSourcePreProcessAll.Token);
+			preProcessTask.ContinueWith(task => BeginStartup());
 
 			preProcessTask.Start();
 
@@ -306,20 +304,23 @@ namespace VixenModules.App.SuperScheduler
 		private void PreProcessActionTask()
 		{
 			// Pre-Process all the actions to fill up our memory
-			//foreach (Shows.ShowItem item in Show.GetItems(Shows.ShowItemType.All))
-			Show.GetItems(Shows.ShowItemType.All).AsParallel().WithCancellation(tokenSourcePreProcessAll.Token).ForAll(item =>
-			{
-				ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Pre-processing: " + item.Name);
-				Shows.Action action = item.GetAction();
 
-				if (!action.PreProcessingCompleted) {
+			Show.GetItems(Shows.ShowItemType.All).AsParallel().WithCancellation(tokenSourcePreProcessAll.Token).ForAll(
+				item => {
+					//	foreach (Shows.ShowItem item in Show.GetItems(Shows.ShowItemType.All))
+					//{
+					ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Pre-processing: " + item.Name);
+					var action = item.GetAction();
+
+					if (!action.PreProcessingCompleted) {
+						action.PreProcess(tokenSourcePreProcessAll);
+					}
 					if (tokenSourcePreProcessAll != null && tokenSourcePreProcessAll.IsCancellationRequested)
 						return;
-					if (tokenSourcePreProcess != null && tokenSourcePreProcess.IsCancellationRequested)
-						return;
-					action.PreProcess();
-				}
-			});
+					//};	
+
+				});
+
 		}
 
 		private void ExecuteAction(Shows.Action action)
@@ -363,16 +364,13 @@ namespace VixenModules.App.SuperScheduler
 
 		public void BeginStartup()
 		{
-			if (Show != null)
-			{
+			if (Show != null) {
 				// Sort the items
 				Show.Items.Sort((item1, item2) => item1.ItemOrder.CompareTo(item2.ItemOrder));
-
-				foreach (Shows.ShowItem item in Show.GetItems(Shows.ShowItemType.Startup))
-				{
+				foreach (Shows.ShowItem item in Show.GetItems(Shows.ShowItemType.Startup)) {
 					ItemQueue.Enqueue(item);
 				}
-
+				 
 				ExecuteNextStartupItem();
 			}
 		}
@@ -382,7 +380,7 @@ namespace VixenModules.App.SuperScheduler
 			if (State == StateType.Running)
 			{
 				// Do we have startup items to run?
-				if (ItemQueue.Count() > 0)
+				if (ItemQueue.Any())
 				{
 					_currentItem = ItemQueue.Dequeue();
 					Shows.Action action = _currentItem.GetAction();
@@ -400,12 +398,14 @@ namespace VixenModules.App.SuperScheduler
 
 		public void OnStartupActionComplete(object sender, EventArgs e)
 		{
-			Shows.Action action = (sender as Shows.Action);
-			action.ActionComplete -= OnStartupActionComplete;
-			RunningActions.Remove(action);
-			ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Startup action complete: " + action.ShowItem.Name);
-			action = null;
+			var action = (sender as Shows.Action);
+			if (action != null) {
+				action.ActionComplete -= OnStartupActionComplete;
+				RunningActions.Remove(action);
 
+				ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Startup action complete: " + action.ShowItem.Name);
+				action = null;
+			}
 			ExecuteNextStartupItem();
 		}
 

@@ -81,11 +81,13 @@ namespace Vixen.Sys
 						var oldIntent = oldIntentNode.Intent as LightingIntent;
 						if (oldIntent != null && oldIntent.EndValue.FullColor.ToArgb()== newIntent.StartValue.FullColor.ToArgb() && !CreateNewIntent(oldIntent, newIntent)) {
 
-							bool changeEndValue = false;
+				 
 
 							//Create a new IntentNode to replace the old one with the new values.
-							var lIntent = new LightingIntent(oldIntent.StartValue, changeEndValue?newIntent.EndValue: oldIntent.EndValue, oldIntent.TimeSpan.Add(newIntent.TimeSpan));
+							var lIntent = new LightingIntent(oldIntent.StartValue,  newIntent.EndValue , oldIntent.TimeSpan.Add(newIntent.TimeSpan));
+							
 							lIntent.GenericID = ((LightingIntent)oldIntentNode.Intent).GenericID;
+							
 							var IntentNode = new IntentNode(lIntent, oldIntentNode.StartTime);
 
 							this.Remove(oldIntentNode);

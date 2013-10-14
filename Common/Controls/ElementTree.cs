@@ -743,9 +743,9 @@ namespace Common.Controls
 				ElementNode treeParent = AddNewNode(f.TreeName, false, SelectedNode, false);
 
 				for (int stringNum = 0; stringNum < f.StringCount; stringNum++) {
-					ElementNode treeString = AddNewNode(f.TreeName + " String " + (stringNum + 1).ToString(), false, treeParent, false);
+					ElementNode treeString = AddNewNode(string.Format("{0} String {1}", f.TreeName , stringNum + 1 , false, treeParent, false));
 					for (int pixelNum = 0; pixelNum < f.PixelsPerString; pixelNum++) {
-						AddNewNode(treeString.Name + "-" + (pixelNum + 1).ToString(), false, treeString, false);
+						AddNewNode(string.Format("{0}-{1}", treeString.Name ,pixelNum +1), false, treeString, false);
 					}
 				}
 
@@ -760,9 +760,9 @@ namespace Common.Controls
 				ElementNode treeParent = AddNewNode(f.GridName, false, SelectedNode, false);
 
 				for (int stringNum = 0; stringNum < f.StringCount; stringNum++) {
-					ElementNode treeString = AddNewNode(f.GridName + " Column " + (stringNum + 1).ToString(), false, treeParent, false);
+					ElementNode treeString = AddNewNode(string.Format("{0} Column {1}", f.GridName ,(stringNum + 1)), false, treeParent, false);
 					for (int pixelNum = 0; pixelNum < f.PixelsPerString; pixelNum++) {
-						AddNewNode(treeString.Name + " - Row " + (pixelNum + 1).ToString(), false, treeString, false);
+						AddNewNode(string.Format("{0} - Row {1}", treeString.Name ,(pixelNum + 1)), false, treeString, false);
 					}
 				}
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Threading;
 using Vixen.Sys;
 
 namespace Vixen.Module.Effect
@@ -26,7 +27,7 @@ namespace Vixen.Module.Effect
 		/// </summary>
 		object[] ParameterValues { get; set; }
 
-		void PreRender();
+		void PreRender(CancellationTokenSource cancellationToken = null);
 		// Having two methods instead of a single one with default values so that the
 		// effect doesn't have to check to see if there is a time frame restriction
 		// with every call.

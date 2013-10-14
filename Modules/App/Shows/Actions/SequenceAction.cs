@@ -71,8 +71,11 @@ namespace VixenModules.App.Shows
 			}
 		}
 
-		public override void PreProcess()
+		public override void PreProcess(CancellationTokenSource cancellationTokenSource = null)
 		{
+			if (cancellationTokenSource != null)
+				CancellationTknSource = cancellationTokenSource;
+
 			try
 			{
 				//Console.WriteLine("PreProcess: " + ShowItem.Name + " : " + (_sequenceContext == null));
@@ -88,6 +91,7 @@ namespace VixenModules.App.Shows
 					//IContext context = VixenSystem.Contexts.CreateSequenceContext(new ContextFeatures(ContextCaching.ContextLevelCaching), sequence);
 					ISequenceContext context = VixenSystem.Contexts.CreateSequenceContext(new ContextFeatures(ContextCaching.NoCaching), sequence);
 
+					// Parallel doesn't work here. Causes multiple sequences to be run at the same time
 					foreach (IEffectNode effectNode in sequence.SequenceData.EffectData.Cast<IEffectNode>())
 					{
 						effectNode.Effect.PreRender();

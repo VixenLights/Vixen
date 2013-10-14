@@ -55,10 +55,9 @@ namespace VixenModules.App.SuperScheduler
 			{
 				_enabled = value;
 				ShowStatusForm(_enabled);
-				if (_enabled)
-					Logging.Info("Schedule Enabled");
-				else
-					Logging.Info("Schedule Disabled");
+
+				Logging.Info(_enabled  ? "Schedule Enabled" : "Schedule Disabled");
+
 			}
 		}
 
@@ -183,6 +182,7 @@ namespace VixenModules.App.SuperScheduler
 
 		public void Start()
 		{
+			
 			ManuallyDisabled = false;
 		}
 	}

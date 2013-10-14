@@ -11,7 +11,7 @@ namespace Vixen.Sys.Instrumentation
 
 		protected override string _GetFormattedValue()
 		{
-			return ((int) _GetValue()) + " ms";
+			return string.Format("{0} ms", (int)_GetValue());
 		}
 	}
 }

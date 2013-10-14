@@ -101,11 +101,8 @@ namespace Common.Controls.ColorManagement.ColorModels
 
 		public override int GetHashCode()
 		{
-			string representation =
-				_x.ToString() + ":" +
-				_y.ToString() + ":" +
-				_z.ToString();
-			return representation.GetHashCode();
+			return string.Format("{0}:{1}:{2}", _x, _y, _z).GetHashCode();
+
 		}
 
 		#endregion
@@ -206,11 +203,9 @@ namespace Common.Controls.ColorManagement.ColorModels
 
 		public override int GetHashCode()
 		{
-			string representation =
-				_r.ToString() + ":" +
-				_g.ToString() + ":" +
-				_b.ToString();
-			return representation.GetHashCode();
+
+			return string.Format("{0}:{1}:{2}", _r, _g, _b).GetHashCode();
+
 		}
 
 		#endregion
@@ -335,11 +330,9 @@ namespace Common.Controls.ColorManagement.ColorModels
 
 		public override int GetHashCode()
 		{
-			string representation =
-				_l.ToString() + ":" +
-				_a.ToString() + ":" +
-				_b.ToString();
-			return representation.GetHashCode();
+			return string.Format("{0}:{1}:{2}", _l, _a, _b).GetHashCode();
+
+		
 		}
 
 		#endregion
@@ -464,11 +457,8 @@ namespace Common.Controls.ColorManagement.ColorModels
 
 		public override int GetHashCode()
 		{
-			string representation =
-				_h.ToString() + ":" +
-				_s.ToString() + ":" +
-				_v.ToString();
-			return representation.GetHashCode();
+			return string.Format("{0}:{1}:{2}", _h, _s, _v).GetHashCode();
+			
 		}
 
 		#endregion
@@ -626,12 +616,8 @@ namespace Common.Controls.ColorManagement.ColorModels
 
 		public override int GetHashCode()
 		{
-			string representation =
-				_c.ToString() + ":" +
-				_m.ToString() + ":" +
-				_y.ToString() + ":" +
-				_k.ToString();
-			return representation.GetHashCode();
+			return string.Format("{0}:{1}:{2}:{3}", _c,_m,_y,_k).GetHashCode();
+	
 		}
 
 		#endregion

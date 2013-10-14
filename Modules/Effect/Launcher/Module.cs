@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using Vixen.Commands;
 using Vixen.Data.Value;
 using Vixen.Intent;
@@ -28,16 +29,22 @@ namespace Launcher
 			
 		}
 
-		protected override void _PreRender()
+		protected override void _PreRender(CancellationTokenSource cancellationToken = null)
 		{
 			_elementData = new EffectIntents();
 
-			CommandValue value = new CommandValue(new StringCommand(string.Format("{0}|{1},{2}", "Launcher", _data.Executable, _data.Arguments)));
-
-			foreach (ElementNode node in TargetNodes) {
+			var value = new CommandValue(new StringCommand(string.Format("{0}|{1},{2}", "Launcher", _data.Executable, _data.Arguments)));
+			
+			var targetNodes = TargetNodes.AsParallel();
+			
+			if (cancellationToken != null)
+				targetNodes = targetNodes.WithCancellation(cancellationToken.Token);
+			
+			targetNodes.ForAll(node => {
 				IIntent i = new CommandIntent(value, TimeSpan);
 				_elementData.AddIntentForElement(node.Element.Id, i, TimeSpan.Zero);
-			}
+			});
+
 		}
 
 		protected override Vixen.Sys.EffectIntents _Render()

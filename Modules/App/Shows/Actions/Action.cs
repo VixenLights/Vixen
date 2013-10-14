@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Timers;
+using System.Threading;
+using Timer = System.Timers.Timer;
 
 namespace VixenModules.App.Shows
 {
@@ -22,6 +23,7 @@ namespace VixenModules.App.Shows
 		public string ResultString { get; set; }
 		public bool IsRunning { get; set; }
 		public virtual bool PreProcessingCompleted { get; set; }
+		public CancellationTokenSource CancellationTknSource  { get; set; }
 
 		// Must be overridden
 		public virtual void Execute() 
@@ -69,8 +71,9 @@ namespace VixenModules.App.Shows
 
 		// PreProcess gets called for every event upon show startup. This lets you put stuff in the
 		// cache for later processing if you like.
-		public virtual void PreProcess() 
+		public virtual void PreProcess(CancellationTokenSource cancellationTokenSource = null)
 		{
+			CancellationTknSource = cancellationTokenSource;
 			// Do nothing, override if your action requires pre-processing (such as a sequence)
 			PreProcessingCompleted = true;
 		}
