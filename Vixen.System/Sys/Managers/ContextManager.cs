@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace Vixen.Sys.Managers
 	public class ContextManager : IEnumerable<IContext>
 	{
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
-		private Dictionary<Guid, IContext> _instances;
+		private ConcurrentDictionary<Guid, IContext> _instances;
 		private ContextUpdateTimeValue _contextUpdateTimeValue;
 		private Stopwatch _stopwatch;
 		private LiveContext _systemLiveContext;
@@ -23,7 +24,7 @@ namespace Vixen.Sys.Managers
 
 		public ContextManager()
 		{
-			_instances = new Dictionary<Guid, IContext>();
+			_instances = new ConcurrentDictionary<Guid, IContext>();
 			_SetupInstrumentation();
 		}
 
@@ -112,9 +113,10 @@ namespace Vixen.Sys.Managers
 		public IEnumerator<IContext> GetEnumerator()
 		{
 			IContext[] contexts;
-			lock (_instances) {
+			//lock (_instances) {
 				contexts = _instances.Values.ToArray();
-			}
+			//}
+	 
 			return contexts.Cast<IContext>().GetEnumerator();
 		}
 
@@ -162,9 +164,12 @@ namespace Vixen.Sys.Managers
 		private void _ReleaseContext(IContext context)
 		{
 			context.Stop();
-			lock (_instances) {
-				_instances.Remove(context.Id);
-			}
+			//lock (_instances)
+			//{
+				IContext remval = null;
+				_instances.TryRemove(context.Id, out remval);
+			//	_instances.Remove(context.Id);
+			//}
 			context.Dispose();
 			OnContextReleased(new ContextEventArgs(context));
 		}
