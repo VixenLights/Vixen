@@ -143,15 +143,15 @@ namespace VixenModules.App.Curves
 			return false;
 		}
 
-		public virtual double GetValue(double x)
+		public virtual float GetValue(double x)
 		{
 			if (x > 100.0) x = 100.0;
 			if (x < 0.0) x = 0.0;
 
-			double returnValue = Points.InterpolateX(x);
+			float returnValue = (float)Points.InterpolateX(x);
 
-			if (returnValue > 100.0) returnValue = 100.0;
-			if (returnValue < 0.0) returnValue = 0.0;
+			if (returnValue > 100.0) returnValue = 100.0f;
+			if (returnValue < 0.0) returnValue = 0.0f;
 
 			return returnValue;
 		}

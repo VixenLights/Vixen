@@ -43,30 +43,30 @@ namespace VixenModules.App.ColorGradients
 		/// <summary>
 		/// converts a ui point into corresponding fader position
 		/// </summary>
-		private double PointToPos(Point pt)
+		private float PointToPos(Point pt)
 		{
 			if (_orientation == Orientation.Horizontal)
-				return Math.Max(0.0, Math.Min(1.0,
-				                              (double) (pt.X - BORDER)/
-				                              (double) Math.Max(1.0, this.Width - BORDER*2 - 1)));
+				return (float)Math.Max(0.0, Math.Min(1.0,
+											  (float)(pt.X - BORDER) /
+											  (float)Math.Max(1.0f, this.Width - BORDER * 2f - 1f)));
 			//vertical
-			return Math.Max(0.0, Math.Min(1.0,
-			                              (double) (pt.Y - BORDER)/
-			                              (double) Math.Max(1.0, this.Height - BORDER*2 - 1)));
+			return (float)Math.Max(0.0, Math.Min(1.0,
+										  (float)(pt.Y - BORDER) /
+										  (float)Math.Max(1.0f, this.Height - BORDER * 2f - 1f)));
 		}
 
 		/// <summary>
 		/// converts a position to ui rectangle
 		/// </summary>
-		private Rectangle PosToRectangle(double pos)
+		private Rectangle PosToRectangle(float pos)
 		{
 			if (_orientation == Orientation.Horizontal)
 				return new Rectangle(
-					(int) (pos*(double) (this.Width - BORDER*2 - 1)), 0,
+					(int)(pos * (float)(this.Width - BORDER * 2 - 1)), 0,
 					BORDER*2, this.Height - 1);
 			//vertical
 			return new Rectangle(
-				0, (int) (pos*(double) (this.Height - BORDER*2 - 1)),
+				0, (int)(pos * (float)(this.Height - BORDER * 2 - 1)),
 				this.Width - 1, BORDER*2);
 		}
 
@@ -123,7 +123,7 @@ namespace VixenModules.App.ColorGradients
 		/// <summary>
 		/// draws a fader
 		/// </summary>
-		private void DrawFader(Graphics gr, double pos, IEnumerable<Color> colors, bool flip, bool selected)
+		private void DrawFader(Graphics gr, float pos, IEnumerable<Color> colors, bool flip, bool selected)
 		{
 			Rectangle fader = PosToRectangle(pos);
 			Point[] pts = GetFaderPolygon(fader, flip);
@@ -167,7 +167,7 @@ namespace VixenModules.App.ColorGradients
 		/// <summary>
 		/// draws a diamond
 		/// </summary>
-		private void DrawDiamond(Graphics gr, double pos, bool flip, bool selected)
+		private void DrawDiamond(Graphics gr, float pos, bool flip, bool selected)
 		{
 			if (!double.IsNaN(pos)) {
 				Rectangle fader = PosToRectangle(pos);
@@ -180,7 +180,7 @@ namespace VixenModules.App.ColorGradients
 		/// <summary>
 		/// gets if the fader or diamond at the given position would be hit by the given point
 		/// </summary>
-		private bool HitsSlider(Graphics gr, double pos, bool flip, bool diamond, Point pt, ref Point offset)
+		private bool HitsSlider(Graphics gr, float pos, bool flip, bool diamond, Point pt, ref Point offset)
 		{
 			using (GraphicsPath path = new GraphicsPath()) {
 				Rectangle fader = PosToRectangle(pos);
@@ -351,7 +351,7 @@ namespace VixenModules.App.ColorGradients
 				if (_selection == null || _selection.Count == 0) {
 					//create new color or alpha point
 					Rectangle area = Rectangle.Inflate(this.ClientRectangle, -BORDER, -BORDER);
-					double pos = PointToPos(e.Location);
+					float pos = PointToPos(e.Location);
 					_offset = Point.Empty;
 					//
 					if (_orientation == Orientation.Horizontal
@@ -360,7 +360,7 @@ namespace VixenModules.App.ColorGradients
 						List<ColorGradient.Point> newColorPoints;
 						if (DiscreteColors) {
 							List<Color> newColors = new List<Color>();
-							double targetPos = -1;
+							float targetPos = -1f;
 							foreach (ColorPoint colorPoint in _blend.Colors.SortedArray()) {
 								if (targetPos < 0 || (colorPoint.Position < pos && colorPoint.Position != targetPos)) {
 									targetPos = colorPoint.Position;
@@ -524,7 +524,7 @@ namespace VixenModules.App.ColorGradients
 						Invalidate(PosToRectangle(point.Position));
 					}
 					//update focus
-					double foc = _blend.GetFocusPosition(_selection.First());
+					float foc = _blend.GetFocusPosition(_selection.First());
 					if (!double.IsNaN(foc))
 						this.Invalidate(PosToRectangle(foc));
 				}
@@ -533,7 +533,7 @@ namespace VixenModules.App.ColorGradients
 						Invalidate(PosToRectangle(point.Position));
 					}
 					//update focus
-					double foc = _blend.GetFocusPosition(value.First());
+					float foc = _blend.GetFocusPosition(value.First());
 					if (!double.IsNaN(foc))
 						this.Invalidate(PosToRectangle(foc));
 				}
@@ -561,7 +561,7 @@ namespace VixenModules.App.ColorGradients
 						Invalidate(PosToRectangle(point.Position));
 					}
 					//update focus
-					double foc = _blend.GetFocusPosition(_selection.First());
+					float foc = _blend.GetFocusPosition(_selection.First());
 					if (!double.IsNaN(foc))
 						this.Invalidate(PosToRectangle(foc));
 
