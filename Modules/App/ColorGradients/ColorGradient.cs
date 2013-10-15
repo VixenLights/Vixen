@@ -31,15 +31,13 @@ namespace VixenModules.App.ColorGradients
 			/// <summary>
 			/// ctor
 			/// </summary>
-			public Point(float position)
-				: this(position, 0.5f)
-			{
-			}
+			protected Point(float position)
+				: this(position, 0.5f){}
 
 			/// <summary>
 			/// ctor
 			/// </summary>
-			public Point(float position, float focus)
+			protected Point(float position, float focus)
 			{
 				if (!ColorGradient.isValid(position) ||
 				    !ColorGradient.isValid(focus))
