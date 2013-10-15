@@ -52,7 +52,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					//Getting exception on null elements here... A simple check to look for these null values and ignore them
 					if (element != null) {
 						IntentNodeCollection elementIntents = effectIntents.GetIntentNodesForElement(element.Id);
-						if (elementIntents != null)
+						if (elementIntents != null && elementIntents.Count > 0)
 						{
 							//Determine if we have parallel intents used on this element for this effect.
 							var stack = new List<List<IIntentNode>> {new List<IIntentNode> {elementIntents[0]}};

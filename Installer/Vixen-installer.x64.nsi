@@ -7,8 +7,8 @@ SetCompressorDictSize 64
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "Vixen"
-!define PRODUCT_NAME_FULL "Vixen 3 (64bit)"
-!define PRODUCT_VERSION "3.0.8"
+!define PRODUCT_NAME_FULL "Vixen 3 (64-bit)"
+!define PRODUCT_VERSION "3.0.9"
 !define PRODUCT_PUBLISHER "Vixen - Lighting Automation"
 !define PRODUCT_WEB_SITE "http://www.vixenlights.com/"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\VixenApplication.exe"

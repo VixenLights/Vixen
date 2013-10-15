@@ -87,7 +87,7 @@ namespace Common.Controls
 				currentXPath += xPathSection;
 				testNode = xmlDocument.SelectSingleNode(currentXPath);
 				if (testNode == null) {
-					currentNode.InnerXml += string.Format( "<{0}></{0}" , xPathSection );
+					currentNode.InnerXml += string.Format("<{0}></{0}>" , xPathSection);
 				}
 				currentNode = xmlDocument.SelectSingleNode(currentXPath);
 				currentXPath += "/";
