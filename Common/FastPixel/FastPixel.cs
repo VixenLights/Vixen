@@ -280,63 +280,24 @@ namespace FastPixel
 
 		//public static ConcurrentDictionary<int, FastPixel> circleCache = new ConcurrentDictionary<int, FastPixel>();
 
-		public void DrawCircle(Rectangle rect, Color color)
+		public void DrawCircle(Rectangle rectangle, Color color)
 		{
-			if (rect.Width > 0 && rect.Height > 0) {
+			if (rectangle.Width > 0 && rectangle.Height > 0) {
 				// Default drawing tools don't draw circles that are either 1 or 2 pixels,
 				// so we do it manually
-				if (rect.Width == 1) {
-					SetPixel(rect.Left, rect.Top, color);
-				}
-				else if (rect.Width == 2) {
-					// Row 1
-					SetPixel(rect.Left, rect.Top, color);
-					// Row 2
-					SetPixel(rect.Left, rect.Top + 1, color);
-				}
-				else if (rect.Width == 3) {
-					// Row 1
-					SetPixel(rect.Left, rect.Top, color);
-					// Row 1
-					SetPixel(rect.Left + 1, rect.Top, color);
-					// Row 2
-					SetPixel(rect.Left, rect.Top + 1, color);
-				}
-				else if (rect.Width == 4) {
-					// Row 1
-					SetPixel(rect.Left, rect.Top, color);
-					// Row 1
-					SetPixel(rect.Left + 1, rect.Top, color);
-					// Row 2
-					SetPixel(rect.Left, rect.Top + 1, color);
-					// Row 2
-					SetPixel(rect.Left + 1, rect.Top + 1, color);
+				if (rectangle.Width == 1) {
+					SetPixel(rectangle.Left, rectangle.Top, color);
 				}
 				else {
-					
-					FastPixel fp;
-					//if (!FastPixel.circleCache.TryGetValue(rect.Width, out fp)) {
-					using (var b = new Bitmap(rect.Width, rect.Height)) {
-						using (Graphics g = Graphics.FromImage(b)) {
-							g.FillEllipse(Brushes.White, new Rectangle(0, 0, rect.Width - 1, rect.Height - 1));
-							fp = new FastPixel(b);
-							// Lock the bitmap (loads pixels into memory buffer) now
-							// and leave it that way because we'll never need to unlock it
-							// to modify it -- it is just a circle after all
-							fp.Lock();
-							//FastPixel.circleCache.TryAdd(rect.Width, fp);
+					int radius = rectangle.Width/2; // radius
+					for (int y = -radius; y <= radius; y++)
+					{
+						for (int x = -radius; x <= radius; x++)
+						{
+							if (x*x + y*y <= radius*radius)
+								SetPixel(rectangle.X + x, rectangle.Y + y, color);
 						}
 					}
-					//}
-					for (int x = 0; x < rect.Width; x++) {
-						for (int y = 0; y < rect.Height; y++) {
-							Color newColor = fp.GetPixel(x, y);
-							if (newColor.A != 0)
-								SetPixel(rect.Left + x, rect.Top + y, color);
-						}
-					}
-
-					fp.Dispose();
 				}
 			}
 		}
