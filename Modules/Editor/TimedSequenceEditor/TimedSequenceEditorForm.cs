@@ -140,6 +140,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			MarksForm.ChangedMarkCollection += MarkCollection_Changed;
 
 			TimelineControl.SelectionChanged += TimelineControlOnSelectionChanged;
+			TimelineControl.grid.MouseDown += TimelineControl_MouseDown;
 			TimeLineSequenceClipboardContentsChanged += TimelineSequenceTimeLineSequenceClipboardContentsChanged;
 			TimelineControl.CursorMoved += CursorMovedHandler;
 			TimelineControl.ElementsSelected += timelineControl_ElementsSelected;
@@ -204,6 +205,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			MarksForm.ChangedMarkCollection -= MarkCollection_Changed;
 
 			TimelineControl.SelectionChanged -= TimelineControlOnSelectionChanged;
+			TimelineControl.grid.MouseDown -= TimelineControl_MouseDown;
 			TimeLineSequenceClipboardContentsChanged -= TimelineSequenceTimeLineSequenceClipboardContentsChanged;
 			TimelineControl.CursorMoved -= CursorMovedHandler;
 			TimelineControl.ElementsSelected -= timelineControl_ElementsSelected;
@@ -685,6 +687,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			toolStripButton_Copy.Enabled = toolStripButton_Cut.Enabled = TimelineControl.SelectedElements.Any();
 			toolStripMenuItem_Copy.Enabled = toolStripMenuItem_Cut.Enabled = TimelineControl.SelectedElements.Any();
+		}
+
+		private void TimelineControl_MouseDown(object sender, MouseEventArgs e) 
+		{
+			Console.WriteLine("mouseDown");
+			TimelineControl.ruler.ClearSelectedMarks();
+			Invalidate(true);
 		}
 
 		protected void ElementContentChangedHandler(object sender, EventArgs e)
@@ -1576,6 +1585,20 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		#region Overridden form functions (On___)
 
+		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+		{
+			switch (keyData)
+			{
+				case Keys.Left:
+					TimelineControl.ruler.Nudge(Keys.Left);
+					break;
+				case Keys.Right:
+					TimelineControl.ruler.Nudge(Keys.Right);
+					break;
+			}
+			return base.ProcessCmdKey(ref msg, keyData);
+		}
+
 		protected override void OnKeyDown(KeyEventArgs e)
 		{
 			// do anything special we want to here: keyboard shortcuts that are in
@@ -1647,6 +1670,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				default:
 					break;
 			}
+			// Prevents sending keystrokes to child controls. 
+			// This was causing serious slowdowns if random keys were pressed.
+			e.SuppressKeyPress = true;
+			base.OnKeyDown(e);
 		}
 
 		protected override void OnFormClosed(FormClosedEventArgs e)

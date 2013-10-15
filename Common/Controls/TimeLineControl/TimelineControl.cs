@@ -26,7 +26,7 @@ namespace Common.Controls.Timeline
 		private RowList timelineRowList;
 
 		// Right side (Panel 2)
-		private Ruler ruler;
+		public Ruler ruler;
 		public Grid grid;
 		private Waveform waveform;
 
