@@ -407,7 +407,7 @@ namespace Common.Controls.Timeline
 		private MouseButtons m_button;
 		private TimeSpan m_mark;
 		private SnapDetails m_markDetails = null;
-		private SortedDictionary<TimeSpan, SnapDetails> selectedMarks = new SortedDictionary<TimeSpan, SnapDetails>();
+		public SortedDictionary<TimeSpan, SnapDetails> selectedMarks = new SortedDictionary<TimeSpan, SnapDetails>();
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
 			//Console.WriteLine("Clicks: " + e.Clicks);
@@ -601,11 +601,15 @@ namespace Common.Controls.Timeline
 			MenuItem mi = sender as MenuItem;
 			if (mi != null)
 			{
-				foreach (TimeSpan mark in selectedMarks.Keys)
-				{
-					//OnDeleteMark(new DeleteMarkEventArgs(m_mark));
-					OnDeleteMark(new DeleteMarkEventArgs(mark));
-				}
+				DeleteSelectedMarks();
+			}
+		}
+
+		public void DeleteSelectedMarks()
+		{
+			foreach (TimeSpan mark in selectedMarks.Keys)
+			{
+				OnDeleteMark(new DeleteMarkEventArgs(mark));
 			}
 		}
 

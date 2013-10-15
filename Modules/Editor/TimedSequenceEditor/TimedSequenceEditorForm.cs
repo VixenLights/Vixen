@@ -691,7 +691,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void TimelineControl_MouseDown(object sender, MouseEventArgs e) 
 		{
-			Console.WriteLine("mouseDown");
 			TimelineControl.ruler.ClearSelectedMarks();
 			Invalidate(true);
 		}
@@ -1604,6 +1603,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// do anything special we want to here: keyboard shortcuts that are in
 			// the menu will be handled by them instead.
 			switch (e.KeyCode) {
+				//case Keys.Delete:
+				//	TimelineControl.ruler.DeleteSelectedMarks();
+				//	break;
 				case Keys.Home:
 					if (e.Control)
 						TimelineControl.VisibleTimeStart = TimeSpan.Zero;
@@ -1853,7 +1855,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void toolStripMenuItem_deleteElements_Click(object sender, EventArgs e)
 		{
+			if (TimelineControl.ruler.selectedMarks.Count() > 0)
+			{
+				TimelineControl.ruler.DeleteSelectedMarks();
+			}
+			else
 			removeSelectedElements();
+			{
+				removeSelectedElements();
+			}
 		}
 
 		private void selectAllElementsToolStripMenuItem_Click(object sender, EventArgs e)
