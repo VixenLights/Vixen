@@ -15,9 +15,9 @@ namespace Vixen.Sys.Managers
 		private ManualResetEvent _pauseSignal;
 		private Stopwatch _localTime;
 
-		private OutputDeviceSleepTimeActualValue _sleepTimeActualValue;
+		private MillisecondsValue _sleepTimeActualValue;
 		private OutputDeviceRefreshRateValue _refreshRateValue;
-		private OutputDeviceUpdateTimeValue _updateTimeValue;
+		private MillisecondsValue _updateTimeValue;
 
 		private const int STOP_TIMEOUT = 4000; // Four seconds should be plenty of time for a thread to stop.
 
@@ -80,7 +80,7 @@ namespace Vixen.Sys.Managers
 			}
 		}
 
-		static long _lastMs = 0;
+		private long _lastMs = 0;
 
 		private void _ThreadFunc()
 		{
@@ -98,7 +98,7 @@ namespace Vixen.Sys.Managers
 					_UpdateOutputDevice();
 
 					_WaitOnSignal(signaler);
-				//	_WaitOnPause();
+					_WaitOnPause();
 				}
 
 				_threadState = ExecutionState.Stopped;
@@ -154,11 +154,11 @@ namespace Vixen.Sys.Managers
 
 		private void _CreatePerformanceValues()
 		{
-			_sleepTimeActualValue = new OutputDeviceSleepTimeActualValue(OutputDevice);
-			VixenSystem.Instrumentation.AddValue(_sleepTimeActualValue);
 			_refreshRateValue = new OutputDeviceRefreshRateValue(OutputDevice);
 			VixenSystem.Instrumentation.AddValue(_refreshRateValue);
-			_updateTimeValue = new OutputDeviceUpdateTimeValue(OutputDevice);
+			_sleepTimeActualValue = new MillisecondsValue(string.Format("Output device sleep time [{0}]", OutputDevice.Name));
+			VixenSystem.Instrumentation.AddValue(_sleepTimeActualValue);
+			_updateTimeValue = new MillisecondsValue(string.Format("Output device update time [{0}]", OutputDevice.Name ));
 			VixenSystem.Instrumentation.AddValue(_updateTimeValue);
 		}
 

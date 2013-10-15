@@ -15,8 +15,9 @@ namespace Vixen.Sys.Managers
 	{
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private ConcurrentDictionary<Guid, IContext> _instances;
-		private ContextUpdateTimeValue _contextUpdateTimeValue;
-		private Stopwatch _stopwatch;
+		private MillisecondsValue _contextUpdateTimeValue = new MillisecondsValue("Update time for all contexts");
+		private MillisecondsValue _contextUpdateWaitValue = new MillisecondsValue("    Wait time for all contexts");
+		private Stopwatch _stopwatch = Stopwatch.StartNew();
 		private LiveContext _systemLiveContext;
 
 		public event EventHandler<ContextEventArgs> ContextCreated;
@@ -25,7 +26,8 @@ namespace Vixen.Sys.Managers
 		public ContextManager()
 		{
 			_instances = new ConcurrentDictionary<Guid, IContext>();
-			_SetupInstrumentation();
+			VixenSystem.Instrumentation.AddValue(_contextUpdateTimeValue);
+			VixenSystem.Instrumentation.AddValue(_contextUpdateWaitValue);
 		}
 
 		public LiveContext GetSystemLiveContext()
@@ -87,25 +89,27 @@ namespace Vixen.Sys.Managers
 
 		public void Update()
 		{
-			lock (_instances) {
-				_stopwatch.Restart();
+			_stopwatch.Restart();
+			lock (_instances)
+			{
+				_contextUpdateWaitValue.Set(_stopwatch.ElapsedMilliseconds);
+
 				//_instances.Values.AsParallel().ForAll(context =>
 				foreach( var context in _instances.Values)
-				                                      	{
-															try {
+				{
+					try {
+						// Get a snapshot time value for this update.
+						TimeSpan contextTime = context.GetTimeSnapshot();
+						IEnumerable<Guid> affectedElements = context.UpdateElementStates(contextTime);
+						//Could possibly return affectedElements so only affected outputs
+						//are updated.  The controller would have to maintain state so those
+						//outputs could be updated and the whole state sent out.
 
-																// Get a snapshot time value for this update.
-																TimeSpan contextTime = context.GetTimeSnapshot();
-																IEnumerable<Guid> affectedElements = context.UpdateElementStates(contextTime);
-																//Could possibly return affectedElements so only affected outputs
-																//are updated.  The controller would have to maintain state so those
-																//outputs could be updated and the whole state sent out.
-
-															} catch (Exception ee) {
-																Logging.ErrorException(ee.Message, ee);
-															}
-				                                      	//});
-				                                      	}
+					} catch (Exception ee) {
+						Logging.ErrorException(ee.Message, ee);
+					}
+				//});
+				}
 				_contextUpdateTimeValue.Set(_stopwatch.ElapsedMilliseconds);
 			}
 		}
@@ -144,13 +148,6 @@ namespace Vixen.Sys.Managers
 					x =>
 					x.GetCustomAttributes(typeof(ContextAttribute), false).Cast<ContextAttribute>().Any(
 						y => y.TargetType == contextTargetType && y.Caching == contextFeatures.Caching));
-		}
-
-		private void _SetupInstrumentation()
-		{
-			_contextUpdateTimeValue = new ContextUpdateTimeValue();
-			VixenSystem.Instrumentation.AddValue(_contextUpdateTimeValue);
-			_stopwatch = Stopwatch.StartNew();
 		}
 
 		private void _AddContext(IContext context)
