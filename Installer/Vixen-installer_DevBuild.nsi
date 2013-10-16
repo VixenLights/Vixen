@@ -31,14 +31,14 @@ SetCompressorDictSize 64
 !macroend
 
 !insertmacro GetVersionLocal "..\Release\VixenApplication.exe" MyVer_
-VIProductVersion "${MyVer_1}.${MyVer_2}.${MyVer_3}.0"
+VIProductVersion "${MyVer_1}.${MyVer_2}.${MyVer_3}.${MyVer_4}"
 VIAddVersionKey "FileVersion" "${MyVer_1}.${MyVer_2}.${MyVer_3}.${MyVer_4}"
  
  
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "Vixen"
 !define PRODUCT_NAME_FULL "Vixen 3"
-!define PRODUCT_VERSION "${MyVer_1}.${MyVer_2}.${MyVer_3}"
+!define PRODUCT_VERSION "${MyVer_1}.${MyVer_2}.${MyVer_3}.${MyVer_4}"
 !define PRODUCT_PUBLISHER "Vixen - Lighting Automation"
 !define PRODUCT_WEB_SITE "http://www.vixenlights.com/"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\VixenApplication.exe"
