@@ -11,7 +11,7 @@ namespace Vixen.Module.Controller
 	                                                       IEqualityComparer<ControllerModuleDescriptorBase>,
 	                                                       IEquatable<ControllerModuleDescriptorBase>
 	{
-		private const int DEFAULT_UPDATE_INTERVAL = 20;
+		private const int DEFAULT_UPDATE_INTERVAL = 50;
 
 		public abstract override string TypeName { get; }
 
