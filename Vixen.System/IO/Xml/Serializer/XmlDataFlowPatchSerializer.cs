@@ -7,6 +7,8 @@ namespace Vixen.IO.Xml.Serializer
 {
 	internal class XmlDataFlowPatchSerializer : IXmlSerializer<DataFlowPatch>
 	{
+		private static NLog.Logger logging = NLog.LogManager.GetCurrentClassLogger();
+
 		private const string ELEMENT_PATCH = "Patch";
 		private const string ATTR_COMPONENT_ID = "componentId";
 		private const string ATTR_SOURCE_COMPONENT_ID = "sourceId";
@@ -27,11 +29,17 @@ namespace Vixen.IO.Xml.Serializer
 
 		public DataFlowPatch ReadObject(XElement source)
 		{
-			Guid? componentId = XmlHelper.GetGuidAttribute(source, ATTR_COMPONENT_ID);
-			if (componentId == null) return null;
-			Guid? sourceId = XmlHelper.GetGuidAttribute(source, ATTR_SOURCE_COMPONENT_ID);
-			int sourceOutputIndex = XmlHelper.GetIntAttribute(source, ATTR_SOURCE_OUTPUT_INDEX).GetValueOrDefault();
-			return new DataFlowPatch(componentId.Value, sourceId, sourceOutputIndex);
+			try {
+				Guid? componentId = XmlHelper.GetGuidAttribute(source, ATTR_COMPONENT_ID);
+				if (componentId == null)
+					return null;
+				Guid? sourceId = XmlHelper.GetGuidAttribute(source, ATTR_SOURCE_COMPONENT_ID);
+				int sourceOutputIndex = XmlHelper.GetIntAttribute(source, ATTR_SOURCE_OUTPUT_INDEX).GetValueOrDefault();
+				return new DataFlowPatch(componentId.Value, sourceId, sourceOutputIndex);
+			} catch (Exception e) {
+				logging.ErrorException("Error loading Preview from XML", e);
+				return null;
+			}
 		}
 	}
 }

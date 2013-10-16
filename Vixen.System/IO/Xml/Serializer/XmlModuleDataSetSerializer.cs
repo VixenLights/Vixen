@@ -1,4 +1,5 @@
-﻿using System.Xml.Linq;
+﻿using System;
+using System.Xml.Linq;
 using Vixen.Module;
 
 namespace Vixen.IO.Xml.Serializer
@@ -6,6 +7,8 @@ namespace Vixen.IO.Xml.Serializer
 	internal class XmlModuleDataSetSerializer<DataSet> : IXmlSerializer<DataSet>
 		where DataSet : class, IModuleDataSet, new()
 	{
+		private static NLog.Logger logging = NLog.LogManager.GetCurrentClassLogger();
+
 		private const string ELEMENT_MODULE_DATA = "ModuleData";
 
 		public XElement WriteObject(DataSet value)
@@ -19,13 +22,19 @@ namespace Vixen.IO.Xml.Serializer
 
 		public DataSet ReadObject(XElement element)
 		{
-			XElement containerElement = element.Element(ELEMENT_MODULE_DATA);
-			if (containerElement == null) return null;
-			DataSet dataSet = new DataSet();
-			XmlModuleDataModelCollectionSerializer dataModelSerializer =
-				new XmlModuleDataModelCollectionSerializer(containerElement);
-			dataSet.Deserialize(dataModelSerializer);
-			return dataSet;
+			try {
+				XElement containerElement = element.Element(ELEMENT_MODULE_DATA);
+				if (containerElement == null)
+					return null;
+				DataSet dataSet = new DataSet();
+				XmlModuleDataModelCollectionSerializer dataModelSerializer =
+					new XmlModuleDataModelCollectionSerializer(containerElement);
+				dataSet.Deserialize(dataModelSerializer);
+				return dataSet;
+			} catch (Exception e) {
+				logging.ErrorException("Error loading Data Set from XML", e);
+				return null;
+			}
 		}
 	}
 }
