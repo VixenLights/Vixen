@@ -4,6 +4,8 @@ SetCompressor /FINAL /SOLID lzma
 SetCompressorDictSize 64
 ;SetCompressor /FINAL /SOLID bzip2
  
+
+ 
 !macro GetVersionLocal file basedef
 !verbose push
 !verbose 1
@@ -28,22 +30,23 @@ SetCompressorDictSize 64
 !verbose pop
 !macroend
 
-!insertmacro GetVersionLocal "..\Release64\VixenApplication.exe" MyVer_
-VIProductVersion "${MyVer_1}.${MyVer_2}.${MyVer_3}"
+!insertmacro GetVersionLocal "..\Release\VixenApplication.exe" MyVer_
+VIProductVersion "${MyVer_1}.${MyVer_2}.${MyVer_3}.0"
 VIAddVersionKey "FileVersion" "${MyVer_1}.${MyVer_2}.${MyVer_3}.${MyVer_4}"
  
  
-
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "Vixen"
-!define PRODUCT_NAME_FULL "Vixen 3 (64bit)"
-;!define PRODUCT_VERSION "${MyVer_1}.${MyVer_2}.${MyVer_3}"
+!define PRODUCT_NAME_FULL "Vixen 3"
+!define PRODUCT_VERSION "${MyVer_1}.${MyVer_2}.${MyVer_3}"
 !define PRODUCT_PUBLISHER "Vixen - Lighting Automation"
 !define PRODUCT_WEB_SITE "http://www.vixenlights.com/"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\VixenApplication.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
 !define PRODUCT_STARTMENU_REGVAL "NSIS:StartMenuDir"
+
+
 
 ; for logging
 !define LVM_GETITEMCOUNT 0x1004
@@ -75,7 +78,7 @@ VIAddVersionKey "FileVersion" "${MyVer_1}.${MyVer_2}.${MyVer_3}.${MyVer_4}"
 !define MUI_LICENSEPAGE_TEXT_TOP "Press Page Down to see the rest of the release notes file."
 !define MUI_LICENSEPAGE_TEXT_BOTTOM "When you have finished reading, click on Next to proceed."
 !define MUI_LICENSEPAGE_BUTTON $(^NextBtn)
-!insertmacro MUI_PAGE_LICENSE "..\Release64\Release Notes.txt"
+!insertmacro MUI_PAGE_LICENSE "..\Release\Release Notes.txt"
 
 ; Directory page
 DirText "Setup will install ${PRODUCT_NAME_FULL} in the following folder. $\n$\nTo install in a different folder (such as a USB Drive), click Browse and select another folder. $\nWhen ready, click next to continue."
@@ -103,8 +106,8 @@ var ICONS_GROUP
 
 ; MUI end ------
 
-Name "${PRODUCT_NAME} ${PRODUCT_VERSION} (64 bit)"
-OutFile "..\Release64\${PRODUCT_NAME}-${PRODUCT_VERSION}-Setup-x64.exe"
+Name "${PRODUCT_NAME} ${PRODUCT_VERSION} (32bit DevBuild)"
+OutFile "..\Release\${PRODUCT_NAME}-${PRODUCT_VERSION}-Setup.exe"
 InstallDir "$PROGRAMFILES\Vixen 3"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
@@ -154,7 +157,7 @@ Section "Application" SEC01
 
   SetOverwrite ifnewer		; only overwrite these if this installer has a newer version
   SetOutPath "$INSTDIR"
-  File /r /x *.res /x *.obj /x *.pch /x *.pdb "..\Release64\*.*"
+  File /r /x *.res /x *.obj /x *.pch /x *.pdb "..\Release\*.*"
 
 
   ; Shortcuts
