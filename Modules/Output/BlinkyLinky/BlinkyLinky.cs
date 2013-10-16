@@ -91,6 +91,11 @@ namespace VixenModules.Output.BlinkyLinky
 			return false;
 		}
 
+		private bool FakingIt()
+		{
+			return _data.Address.ToString().Equals("1.1.1.1");
+		}
+
 		private bool OpenConnection()
 		{
 			// start off closing the connection
@@ -100,6 +105,9 @@ namespace VixenModules.Output.BlinkyLinky
 				Logging.Warn("BlinkyLinky: Trying to connect with a null IP address.");
 				return false;
 			}
+
+			if( FakingIt())
+				return true;
 
 			try {
 				_tcpClient = new TcpClient();
@@ -157,7 +165,7 @@ namespace VixenModules.Output.BlinkyLinky
 
 		public override void UpdateState(int chainIndex, ICommand[] outputStates)
 		{
-			if (_networkStream == null) {
+			if (_networkStream == null && !FakingIt()) {
 				bool success = OpenConnection();
 				if (!success) {
 					Logging.Warn("BlinkyLinky: failed to connect to device, not updating the current state.");
@@ -226,8 +234,13 @@ namespace VixenModules.Output.BlinkyLinky
 			if (changed || _timeoutStopwatch.ElapsedMilliseconds >= 10000) {
 				try {
 					_timeoutStopwatch.Restart();
-					_networkStream.Write(data, 0, totalPacketLength);
-					_networkStream.Flush();
+					if (FakingIt()) {
+						System.Threading.Thread.Sleep(1);
+					}
+					else {
+						_networkStream.Write(data, 0, totalPacketLength);
+						_networkStream.Flush();
+					}
 				}
 				catch (Exception ex) {
 					Logging.Warn(
