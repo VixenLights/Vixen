@@ -26,7 +26,7 @@ namespace Vixen.Sys
 
 		public IStateSource<IIntentStates> GetState(Guid key)
 		{
-			ElementStateSource state=null;
+			ElementStateSource state;
 			_states.TryGetValue(key, out state);
 			return state;
 		}
