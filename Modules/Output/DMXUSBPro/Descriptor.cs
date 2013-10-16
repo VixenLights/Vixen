@@ -37,10 +37,10 @@
 			get { return "DmxUsbProModule"; }
 		}
 
-		public override int UpdateInterval
-		{
-			get { return 10; }
-		}
+		//public override int UpdateInterval
+		//{
+		//	get { return 10; }
+		//}
 
 		public override string Version
 		{

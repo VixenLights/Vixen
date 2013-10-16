@@ -25,10 +25,10 @@ namespace VixenModules.Controller.OpenDMX
 			get { return Guid.Parse("7911568a-8eda-4d1d-9e72-be41d7a843e4"); }
 		}
 
-		public override int UpdateInterval
-		{
-			get { return 27; }
-		}
+		//public override int UpdateInterval
+		//{
+		//	get { return 27; }
+		//}
 
 		public override string TypeName
 		{
