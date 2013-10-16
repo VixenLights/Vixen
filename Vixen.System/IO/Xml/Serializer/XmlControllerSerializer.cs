@@ -9,6 +9,8 @@ namespace Vixen.IO.Xml.Serializer
 {
 	internal class XmlControllerSerializer : IXmlSerializer<IOutputDevice>
 	{
+		private static NLog.Logger logging = NLog.LogManager.GetCurrentClassLogger();
+
 		private const string ELEMENT_CONTROLLER = "Controller";
 		private const string ELEMENT_OUTPUTS = "Outputs";
 		private const string ELEMENT_OUTPUT = "Output";
@@ -33,25 +35,34 @@ namespace Vixen.IO.Xml.Serializer
 
 		public IOutputDevice ReadObject(XElement element)
 		{
-			string name = XmlHelper.GetAttribute(element, ATTR_NAME);
-			if (name == null) return null;
+			try {
+				string name = XmlHelper.GetAttribute(element, ATTR_NAME);
+				if (name == null)
+					return null;
 
-			Guid? moduleTypeId = XmlHelper.GetGuidAttribute(element, ATTR_HARDWARE_ID);
-			if (moduleTypeId == null) return null;
+				Guid? moduleTypeId = XmlHelper.GetGuidAttribute(element, ATTR_HARDWARE_ID);
+				if (moduleTypeId == null)
+					return null;
 
-			Guid? moduleInstanceId = XmlHelper.GetGuidAttribute(element, ATTR_HARDWARE_INSTANCE_ID);
-			if (moduleInstanceId == null) return null;
+				Guid? moduleInstanceId = XmlHelper.GetGuidAttribute(element, ATTR_HARDWARE_INSTANCE_ID);
+				if (moduleInstanceId == null)
+					return null;
 
-			Guid? deviceId = XmlHelper.GetGuidAttribute(element, ATTR_DEVICE_ID);
-			if (deviceId == null) return null;
+				Guid? deviceId = XmlHelper.GetGuidAttribute(element, ATTR_DEVICE_ID);
+				if (deviceId == null)
+					return null;
 
-			ControllerFactory controllerFactory = new ControllerFactory();
-			OutputController controller =
-				(OutputController) controllerFactory.CreateDevice(deviceId.Value, moduleTypeId.Value, moduleInstanceId.Value, name);
+				ControllerFactory controllerFactory = new ControllerFactory();
+				OutputController controller =
+					(OutputController) controllerFactory.CreateDevice(deviceId.Value, moduleTypeId.Value, moduleInstanceId.Value, name);
 
-			_ReadOutputs(controller, element);
+				_ReadOutputs(controller, element);
 
-			return controller;
+				return controller;
+			} catch (Exception e) {
+				logging.ErrorException("Error loading Controller from XML", e);
+				return null;
+			}
 		}
 
 		private XElement _WriteOutputs(OutputController controller)

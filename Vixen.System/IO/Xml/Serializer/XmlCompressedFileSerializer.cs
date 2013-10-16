@@ -6,6 +6,8 @@ namespace Vixen.IO.Xml.Serializer
 {
 	internal class XmlCompressedFileSerializer : IXmlSerializer<IPackageFileContent>
 	{
+		private static NLog.Logger logging = NLog.LogManager.GetCurrentClassLogger();
+
 		private const string ELEMENT_FILE = "File";
 		private const string ATTR_FILE_PATH = "path";
 
@@ -19,11 +21,17 @@ namespace Vixen.IO.Xml.Serializer
 
 		public IPackageFileContent ReadObject(XElement element)
 		{
-			string filePath = XmlHelper.GetAttribute(element, ATTR_FILE_PATH);
-			if (filePath != null) {
-				return new ExistingContextFile(filePath, Convert.FromBase64String(element.Value));
+			try {
+				string filePath = XmlHelper.GetAttribute(element, ATTR_FILE_PATH);
+				if (filePath != null) {
+					return new ExistingContextFile(filePath, Convert.FromBase64String(element.Value));
+				}
+				return null;
+			} catch (Exception e) {
+				logging.ErrorException("Error loading Compressed File from XML", e);
+				return null;
 			}
-			return null;
+
 		}
 
 		#region ExistingContextFile

@@ -10,6 +10,8 @@ namespace Vixen.IO.Xml.Serializer
 {
 	internal class XmlModuleDataModelSerializer : IXmlSerializer<IModuleDataModel>
 	{
+		private static NLog.Logger logging = NLog.LogManager.GetCurrentClassLogger();
+
 		private const string ELEMENT_MODULE = "Module";
 		private const string ATTR_DATA_MODEL_TYPE = "dataModelType";
 		private const string ATTR_MODULE_TYPE = "moduleType";
@@ -51,42 +53,51 @@ namespace Vixen.IO.Xml.Serializer
 
 		public IModuleDataModel ReadObject(XElement element)
 		{
-			string dataModelTypeString = XmlHelper.GetAttribute(element, ATTR_DATA_MODEL_TYPE);
-			if (dataModelTypeString == null) return null;
-
-			Type dataModelType = Type.GetType(dataModelTypeString);
-			if (dataModelType == null) return null;
-
-			Guid? moduleTypeId = XmlHelper.GetGuidAttribute(element, ATTR_MODULE_TYPE);
-			if (moduleTypeId == null) return null;
-
-			Guid? moduleInstanceId = XmlHelper.GetGuidAttribute(element, ATTR_MODULE_INSTANCE);
-			if (moduleInstanceId == null) return null;
-
-			// Get the descriptor for the type.
-			IModuleDescriptor descriptor = Modules.GetDescriptorById(moduleTypeId.Value);
-			if (descriptor == null) {
-				Logging.Error("Could not get module data for module type " + moduleTypeId.Value +
-										  " because the module type does not exist.");
-				return null;
-			}
-
-			IModuleDataModel dataModel;
-
 			try {
-				dataModel = _DeserializeDataModel(dataModelType, element);
-			}
-			catch (Exception ex) {
-				Logging.ErrorException("The data for module \"" + descriptor.TypeName + "\" was not loaded due to errors.", ex);
+				string dataModelTypeString = XmlHelper.GetAttribute(element, ATTR_DATA_MODEL_TYPE);
+				if (dataModelTypeString == null)
+					return null;
+
+				Type dataModelType = Type.GetType(dataModelTypeString);
+				if (dataModelType == null)
+					return null;
+
+				Guid? moduleTypeId = XmlHelper.GetGuidAttribute(element, ATTR_MODULE_TYPE);
+				if (moduleTypeId == null)
+					return null;
+
+				Guid? moduleInstanceId = XmlHelper.GetGuidAttribute(element, ATTR_MODULE_INSTANCE);
+				if (moduleInstanceId == null)
+					return null;
+
+				// Get the descriptor for the type.
+				IModuleDescriptor descriptor = Modules.GetDescriptorById(moduleTypeId.Value);
+				if (descriptor == null) {
+					Logging.Error("Could not get module data for module type " + moduleTypeId.Value +
+					              " because the module type does not exist.");
+					return null;
+				}
+
+				IModuleDataModel dataModel;
+
+				try {
+					dataModel = _DeserializeDataModel(dataModelType, element);
+				}
+				catch (Exception ex) {
+					Logging.ErrorException("The data for module \"" + descriptor.TypeName + "\" was not loaded due to errors.", ex);
+					return null;
+				}
+
+				if (dataModel != null) {
+					dataModel.ModuleTypeId = moduleTypeId.Value;
+					dataModel.ModuleInstanceId = moduleInstanceId.Value;
+				}
+
+				return dataModel;
+			} catch (Exception e) {
+				logging.ErrorException("Error loading Module Data Model from XML", e);
 				return null;
 			}
-
-			if (dataModel != null) {
-				dataModel.ModuleTypeId = moduleTypeId.Value;
-				dataModel.ModuleInstanceId = moduleInstanceId.Value;
-			}
-
-			return dataModel;
 		}
 
 		private IModuleDataModel _DeserializeDataModel(Type dataModelType, XElement element)

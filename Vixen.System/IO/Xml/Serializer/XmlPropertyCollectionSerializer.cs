@@ -9,6 +9,8 @@ namespace Vixen.IO.Xml.Serializer
 {
 	internal class XmlPropertyCollectionSerializer : IXmlSerializer<IEnumerable<IPropertyModuleInstance>>
 	{
+		private static NLog.Logger logging = NLog.LogManager.GetCurrentClassLogger();
+
 		private const string ELEMENT_PROPERTIES = "Properties";
 		private const string ELEMENT_PROPERTY = "Property";
 		private const string ELEMENT_TYPE_ID = "typeId";
@@ -31,28 +33,35 @@ namespace Vixen.IO.Xml.Serializer
 
 		public IEnumerable<IPropertyModuleInstance> ReadObject(XElement element)
 		{
-			List<IPropertyModuleInstance> properties = new List<IPropertyModuleInstance>();
-			element = element.Element(ELEMENT_PROPERTIES);
+			try {
+				List<IPropertyModuleInstance> properties = new List<IPropertyModuleInstance>();
+				element = element.Element(ELEMENT_PROPERTIES);
 
-			if (element == null)
-				return properties;
+				if (element == null)
+					return properties;
 
-			foreach (XElement prop in element.Elements(ELEMENT_PROPERTY)) {
-				//figure out how to get props.
-				Guid? typeId = XmlHelper.GetGuidAttribute(prop, ELEMENT_TYPE_ID);
-				if (typeId == null) continue;
+				foreach (XElement prop in element.Elements(ELEMENT_PROPERTY)) {
+					//figure out how to get props.
+					Guid? typeId = XmlHelper.GetGuidAttribute(prop, ELEMENT_TYPE_ID);
+					if (typeId == null)
+						continue;
 
-				Guid? instanceId = XmlHelper.GetGuidAttribute(prop, ELEMENT_INSTANCE_ID);
-				if (instanceId == null) continue;
+					Guid? instanceId = XmlHelper.GetGuidAttribute(prop, ELEMENT_INSTANCE_ID);
+					if (instanceId == null)
+						continue;
 
-				IPropertyModuleInstance property = Modules.ModuleManagement.GetProperty(typeId);
-				if (property != null) {
-					property.InstanceId = instanceId.Value;
-					properties.Add(property);
+					IPropertyModuleInstance property = Modules.ModuleManagement.GetProperty(typeId);
+					if (property != null) {
+						property.InstanceId = instanceId.Value;
+						properties.Add(property);
+					}
 				}
-			}
 
-			return properties;
+				return properties;
+			} catch (Exception e) {
+				logging.ErrorException("Error loading Property Collection from XML", e);
+				return null;
+			}
 		}
 	}
 }
