@@ -281,7 +281,7 @@ namespace VixenModules.Controller.E131
                     this._messageTexts.AppendLine();
                 }
 
-                this._messageTexts.AppendLine("Events: " + this._eventCnt);
+                this._messageTexts.AppendLine(string.Format("Events: {0}" + this._eventCnt));
                 this._messageTexts.AppendLine(string.Format("Total Time: {0} Ticks; {1} ms", this._totalTicks, TimeSpan.FromTicks(this._totalTicks).Milliseconds));
 
                 foreach (var uE in _data.Universes)
@@ -415,8 +415,7 @@ namespace VixenModules.Controller.E131
 							{
 								// no - deactivate and scream & yell!!
 								uE.Active = false;
-								this._messageTexts.AppendLine(
-									"Multicast Interface Down: " + networkInterface.Name + " - " + uE.RowUnivToText);
+								this._messageTexts.AppendLine(string.Format("Multicast Interface Down: {0} - {1}", networkInterface.Name , uE.RowUnivToText));
 							}
 							else
 							{
@@ -442,8 +441,7 @@ namespace VixenModules.Controller.E131
 
 								if (ipAddress == null)
 								{
-									this._messageTexts.AppendLine(
-										"No IP On Multicast Interface: " + networkInterface.Name + " - " + uE.InfoToText);
+									this._messageTexts.AppendLine(string.Format("No IP On Multicast Interface: {0} - {1}" , networkInterface.Name , uE.InfoToText));
 								}
 								else
 								{
@@ -636,7 +634,7 @@ namespace VixenModules.Controller.E131
 				// At least then we can start up without null ptr exceptions
 				if (uE.Unicast == null && uE.Multicast == null)
 				{
-					Console.WriteLine("e131 fixing null multicast...");
+					//Console.WriteLine("e131 fixing null multicast...");
 					uE.Multicast = "null";
 				}
 					

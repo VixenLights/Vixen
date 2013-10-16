@@ -16,7 +16,7 @@ namespace VixenModules.App.SuperScheduler
 		private SynchronizationContext _synchronizationContext;
 		static private StatusForm statusForm = null;
 		//private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
-		private static NLog.Logger Logging = NLog.LogManager.GetLogger("Scheduler");
+		public static NLog.Logger Logging = NLog.LogManager.GetLogger("Scheduler");
 		//private static NLog.Logger ScheduleLogging = NLog.LogManager.GetLogger("Scheduler");
 
 		public ScheduleExecutor(SuperSchedulerData data)
@@ -55,10 +55,9 @@ namespace VixenModules.App.SuperScheduler
 			{
 				_enabled = value;
 				ShowStatusForm(_enabled);
-				if (_enabled)
-					Logging.Info("Schedule Enabled");
-				else
-					Logging.Info("Schedule Disabled");
+
+				Logging.Info(_enabled  ? "Schedule Enabled" : "Schedule Disabled");
+
 			}
 		}
 
@@ -183,6 +182,7 @@ namespace VixenModules.App.SuperScheduler
 
 		public void Start()
 		{
+			
 			ManuallyDisabled = false;
 		}
 	}

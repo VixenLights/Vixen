@@ -31,6 +31,7 @@
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StatusForm));
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.buttonStartScheduler = new System.Windows.Forms.Button();
 			this.buttonViewLog = new System.Windows.Forms.Button();
 			this.buttonNextSong = new System.Windows.Forms.Button();
 			this.buttonPauseShow = new System.Windows.Forms.Button();
@@ -44,13 +45,12 @@
 			this.label5 = new System.Windows.Forms.Label();
 			this.comboBoxShows = new System.Windows.Forms.ComboBox();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.groupBoxLog = new System.Windows.Forms.GroupBox();
 			this.listBoxLog = new System.Windows.Forms.ListBox();
 			this.imageButtons = new System.Windows.Forms.ImageList(this.components);
-			this.buttonStartScheduler = new System.Windows.Forms.Button();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
-			this.groupBox3.SuspendLayout();
+			this.groupBoxLog.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// groupBox1
@@ -72,6 +72,21 @@
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Show Status";
+			// 
+			// buttonStartScheduler
+			// 
+			this.buttonStartScheduler.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonStartScheduler.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonStartScheduler.BackgroundImage")));
+			this.buttonStartScheduler.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.buttonStartScheduler.Cursor = System.Windows.Forms.Cursors.Default;
+			this.buttonStartScheduler.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.buttonStartScheduler.Location = new System.Drawing.Point(289, 16);
+			this.buttonStartScheduler.Name = "buttonStartScheduler";
+			this.buttonStartScheduler.Size = new System.Drawing.Size(24, 24);
+			this.buttonStartScheduler.TabIndex = 8;
+			this.toolTip1.SetToolTip(this.buttonStartScheduler, "Start/Enable the Scheduler");
+			this.buttonStartScheduler.UseVisualStyleBackColor = true;
+			this.buttonStartScheduler.Click += new System.EventHandler(this.buttonStartScheduler_Click);
 			// 
 			// buttonViewLog
 			// 
@@ -234,18 +249,18 @@
 			this.comboBoxShows.TabIndex = 0;
 			this.comboBoxShows.DropDown += new System.EventHandler(this.comboBoxShows_DropDown);
 			// 
-			// groupBox3
+			// groupBoxLog
 			// 
-			this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this.groupBoxLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.groupBox3.Controls.Add(this.listBoxLog);
-			this.groupBox3.Location = new System.Drawing.Point(12, 78);
-			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(398, 0);
-			this.groupBox3.TabIndex = 2;
-			this.groupBox3.TabStop = false;
-			this.groupBox3.Text = "Log";
+			this.groupBoxLog.Controls.Add(this.listBoxLog);
+			this.groupBoxLog.Location = new System.Drawing.Point(12, 78);
+			this.groupBoxLog.Name = "groupBoxLog";
+			this.groupBoxLog.Size = new System.Drawing.Size(398, 0);
+			this.groupBoxLog.TabIndex = 2;
+			this.groupBoxLog.TabStop = false;
+			this.groupBoxLog.Text = "Log";
 			// 
 			// listBoxLog
 			// 
@@ -253,9 +268,10 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.listBoxLog.FormattingEnabled = true;
+			this.listBoxLog.IntegralHeight = false;
 			this.listBoxLog.Location = new System.Drawing.Point(6, 23);
 			this.listBoxLog.Name = "listBoxLog";
-			this.listBoxLog.Size = new System.Drawing.Size(386, 4);
+			this.listBoxLog.Size = new System.Drawing.Size(386, 0);
 			this.listBoxLog.TabIndex = 0;
 			// 
 			// imageButtons
@@ -269,27 +285,12 @@
 			this.imageButtons.Images.SetKeyName(4, "clock_stop_disabled.png");
 			this.imageButtons.Images.SetKeyName(5, "control_play_disabled.png");
 			// 
-			// buttonStartScheduler
-			// 
-			this.buttonStartScheduler.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonStartScheduler.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonStartScheduler.BackgroundImage")));
-			this.buttonStartScheduler.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-			this.buttonStartScheduler.Cursor = System.Windows.Forms.Cursors.Default;
-			this.buttonStartScheduler.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonStartScheduler.Location = new System.Drawing.Point(289, 16);
-			this.buttonStartScheduler.Name = "buttonStartScheduler";
-			this.buttonStartScheduler.Size = new System.Drawing.Size(24, 24);
-			this.buttonStartScheduler.TabIndex = 8;
-			this.toolTip1.SetToolTip(this.buttonStartScheduler, "Start/Enable the Scheduler");
-			this.buttonStartScheduler.UseVisualStyleBackColor = true;
-			this.buttonStartScheduler.Click += new System.EventHandler(this.buttonStartScheduler_Click);
-			// 
 			// StatusForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(422, 72);
-			this.Controls.Add(this.groupBox3);
+			this.ClientSize = new System.Drawing.Size(422, 74);
+			this.Controls.Add(this.groupBoxLog);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
 			this.MaximizeBox = false;
@@ -298,12 +299,14 @@
 			this.Text = "Scheduler Status";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.StatusForm_FormClosing);
 			this.Load += new System.EventHandler(this.StatusForm_Load);
+			this.ResizeEnd += new System.EventHandler(this.StatusForm_ResizeEnd);
 			this.LocationChanged += new System.EventHandler(this.StatusForm_LocationChanged);
+			this.Resize += new System.EventHandler(this.StatusForm_Resize);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox2.PerformLayout();
-			this.groupBox3.ResumeLayout(false);
+			this.groupBoxLog.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -324,7 +327,7 @@
 		private System.Windows.Forms.Button buttonNextSong;
 		private System.Windows.Forms.Button buttonPauseShow;
 		private System.Windows.Forms.Button buttonViewLog;
-		private System.Windows.Forms.GroupBox groupBox3;
+		private System.Windows.Forms.GroupBox groupBoxLog;
 		private System.Windows.Forms.ListBox listBoxLog;
 		private System.Windows.Forms.ImageList imageButtons;
 		private System.Windows.Forms.Button buttonStartScheduler;

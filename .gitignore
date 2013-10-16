@@ -8,4 +8,5 @@ _ReSharper*
 *.suo
 /Output
 /Release
+/Release64
 Vixen 3*

@@ -104,7 +104,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							   "TimedSequenceEditorForm.xml");
 			if (System.IO.File.Exists(settingsPath)) 
 			{
-							dockPanel.LoadFromXml(settingsPath, new DeserializeDockContent(DockingPanels_GetContentFromPersistString));
+				dockPanel.LoadFromXml(settingsPath, new DeserializeDockContent(DockingPanels_GetContentFromPersistString));
 			} else {
 				GridForm.Show(dockPanel);
 				MarksForm.Show(dockPanel, WeifenLuo.WinFormsUI.Docking.DockState.DockLeft);
@@ -112,8 +112,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 
 			XMLProfileSettings xml = new XMLProfileSettings();
-			dockPanel.DockLeftPortion = xml.GetSetting(this.Name + "/DockLeftPortion", 150);
-			dockPanel.DockRightPortion = xml.GetSetting(this.Name + "/DockLeftPortion", 150);
+			dockPanel.DockLeftPortion = xml.GetSetting(string.Format("{0}/DockLeftPortion", this.Name), 150);
+			dockPanel.DockRightPortion = xml.GetSetting(string.Format("{0}/DockLeftPortion", this.Name), 150);
 			xml = null;
 
 			_effectNodeToElement = new Dictionary<EffectNode, Element>();
@@ -241,7 +241,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			get
 			{
-				if (_effectsForm != null) 
+				if (_effectsForm != null && !_effectsForm.IsDisposed) 
 				{
 					return _effectsForm;
 				} else {
@@ -256,7 +256,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			get
 			{
-				if (_marksForm != null)
+				if (_marksForm != null && !_marksForm.IsDisposed)
 				{
 					return _marksForm;
 				}
@@ -725,8 +725,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				nodeList.Remove(oldElement);
 			}
 			else {
-				Logging.Debug("TimedSequenceEditor: moving an element from " + e.OldRow.Name +
-										  " to " + e.NewRow.Name + "and the effect element wasn't in the old row element!");
+				Logging.Debug(string.Format("TimedSequenceEditor: moving an element from {0} to {1} and the effect element wasn't in the old row element!", e.OldRow.Name, e.NewRow.Name));
 			}
 			nodeList.Add(newElement);
 			movedElement.EffectNode.Effect.TargetNodes = nodeList.ToArray();
@@ -2200,8 +2199,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			dockPanel.SaveAsXml(settingsPath);
 			XMLProfileSettings xml = new XMLProfileSettings();
-			xml.PutSetting(this.Name + "/DockLeftPortion", (int)dockPanel.DockLeftPortion);
-			xml.PutSetting(this.Name + "/DockRihtPortion", (int)dockPanel.DockLeftPortion);
+			xml.PutSetting(string.Format("{0}/DockLeftPortion",this.Name),(int)dockPanel.DockLeftPortion);
+			xml.PutSetting(string.Format("{0}/DockRihtPortion", this.Name), (int)dockPanel.DockLeftPortion);
 			xml = null;
 		}
 
@@ -2410,6 +2409,41 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void cboAudioDevices_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			Vixen.Sys.State.Variables.SelectedAudioDeviceIndex= cboAudioDevices.SelectedIndex;
+		}
+
+		private void menuStrip_MenuActivate(object sender, EventArgs e)
+		{
+			effectWindowToolStripMenuItem.Checked = (EffectsForm.DockState != DockState.Unknown);
+			markWindowToolStripMenuItem.Checked = (MarksForm.DockState != DockState.Unknown);
+		}
+
+		private void effectWindowToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (EffectsForm.DockState == DockState.Unknown)
+			{
+				DockState dockState = EffectsForm.DockState;
+				if (dockState == DockState.Unknown) dockState = DockState.DockLeft;
+				EffectsForm.Show(dockPanel, dockState);
+			}
+			else
+			{
+				EffectsForm.Close();
+			}
+		}
+
+		private void markWindowToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (MarksForm.DockState == DockState.Unknown)
+			{
+				DockState dockState = MarksForm.DockState;
+				dockState = DockState.DockLeft;
+				if (dockState == DockState.Unknown) dockState = DockState.DockLeft;
+				MarksForm.Show(dockPanel, dockState);
+			}
+			else
+			{
+				MarksForm.Close();
+			}
 		}
 	}
 

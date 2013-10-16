@@ -34,7 +34,7 @@ namespace VixenModules.Effect.Nutcracker
 			//Nothing to do
 		}
 
-		protected override void _PreRender()
+		protected override void _PreRender(CancellationTokenSource tokenSource = null)
 		{
 			int scnt = StringCount;
 			if (scnt < 2)
@@ -42,6 +42,9 @@ namespace VixenModules.Effect.Nutcracker
 			_elementData = new EffectIntents();
 
 			foreach (ElementNode node in TargetNodes) {
+				if (tokenSource != null && tokenSource.IsCancellationRequested)
+					return;
+				
 				if (node != null)
 					RenderNode(node);
 			}

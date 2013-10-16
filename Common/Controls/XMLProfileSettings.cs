@@ -16,6 +16,8 @@ namespace Common.Controls
 				documentPath =
 					System.IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData), "Vixen",
 					                       "Settings.xml");
+				if( !System.IO.Directory.Exists(System.IO.Path.GetDirectoryName(documentPath)))
+					System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(documentPath));
 				xmlDocument.Load(documentPath);
 			}
 			catch {
@@ -85,7 +87,7 @@ namespace Common.Controls
 				currentXPath += xPathSection;
 				testNode = xmlDocument.SelectSingleNode(currentXPath);
 				if (testNode == null) {
-					currentNode.InnerXml += "<" + xPathSection + "></" + xPathSection + ">";
+					currentNode.InnerXml += string.Format("<{0}></{0}>" , xPathSection);
 				}
 				currentNode = xmlDocument.SelectSingleNode(currentXPath);
 				currentXPath += "/";

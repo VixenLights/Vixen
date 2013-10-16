@@ -82,9 +82,9 @@ namespace VixenModules.Preview.VixenPreview
 		{
 			toolStripStatusLabel1.Text = preview.PixelCount.ToString();
 			//toolStripAverageUpdate.Text = "Average: " + Math.Round(VixenPreviewControl.averageUpdateTime).ToString() + "ms";
-			toolStripStatusCurrentUpdate.Text = "Last: " + Math.Round(VixenPreviewControl.lastUpdateTime).ToString() + "ms";
+			toolStripStatusCurrentUpdate.Text = string.Format( "Last: {0}ms", Math.Round(VixenPreviewControl.lastUpdateTime));
 			//toolStripStatusLastRenderTime.Text = "Render: " + Math.Round(lastRenderTime).ToString() + "ms";
-			toolStripStatusLastRenderTime.Text = "Render: " + Math.Round(preview.lastRenderUpdateTime).ToString() + "ms";
+			toolStripStatusLastRenderTime.Text = string.Format("Render: {0}ms", Math.Round(preview.lastRenderUpdateTime));
 		}
 
 		//public void ResetColors()

@@ -80,24 +80,27 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void treeEffects_MouseDown(object sender, MouseEventArgs e)
 		{
 			m_node = treeEffects.GetNodeAt(e.X, e.Y);
-			// Is this a group?
-			if (m_node.Nodes.Count > 0 && e.Clicks == 1)
+			if (m_node != null)
 			{
-				if (m_node.IsExpanded)
+				// Is this a group?
+				if (m_node.Nodes.Count > 0 && e.Clicks == 1)
 				{
-					m_node.Collapse();
+					if (m_node.IsExpanded)
+					{
+						m_node.Collapse();
+					}
+					else
+					{
+						m_node.Expand();
+					}
 				}
 				else
 				{
-					m_node.Expand();
+					if ((e.Button == MouseButtons.Left) && (e.Clicks == 1))
+						_beginDragDrop = true;
+					else
+						_beginDragDrop = false;
 				}
-			}
-			else
-			{
-				if ((e.Button == MouseButtons.Left) && (e.Clicks == 1))
-					_beginDragDrop = true;
-				else
-					_beginDragDrop = false;
 			}
 		}
 

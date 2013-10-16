@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Vixen.Sys;
 using Vixen.Module;
 using Vixen.Module.Effect;
@@ -29,11 +30,11 @@ namespace VixenModules.Effect.Chase
 			CheckForInvalidColorData();
 		}
 
-		protected override void _PreRender()
+		protected override void _PreRender(CancellationTokenSource tokenSource = null)
 		{
 			_elementData = new EffectIntents();
-			
-			DoRendering();
+
+			DoRendering(tokenSource);
 		}
 
 		protected override EffectIntents _Render()
@@ -186,7 +187,7 @@ namespace VixenModules.Effect.Chase
 		}
 
 
-		private void DoRendering()
+		private void DoRendering(CancellationTokenSource tokenSource = null)
 		{
 			//TODO: get a better increment time. doing it every X ms is..... shitty at best.
 			TimeSpan increment = TimeSpan.FromMilliseconds(2);
@@ -202,6 +203,8 @@ namespace VixenModules.Effect.Chase
 			if (DefaultLevel > 0) {
 				int i = 0;
 				foreach (ElementNode target in renderNodes) {
+					if (tokenSource != null && tokenSource.IsCancellationRequested) return;
+					
 					if (target != null && target.Element != null) {
 						bool discreteColors = ColorModule.isElementNodeDiscreteColored(target);
 
@@ -239,6 +242,8 @@ namespace VixenModules.Effect.Chase
 									List<Tuple<Color, float>> colorsAtPosition =
 										ColorGradient.GetDiscreteColorsAndProportionsAt(positionWithinGroup);
 									foreach (Tuple<Color, float> colorProportion in colorsAtPosition) {
+										if (tokenSource != null && tokenSource.IsCancellationRequested)
+											return;
 										double value = level*colorProportion.Item2;
 										pulse.LevelCurve = new Curve(new PointPairList(new double[] {0, 100}, new double[] {value, value}));
 										pulse.ColorGradient = new ColorGradient(colorProportion.Item1);
@@ -255,8 +260,6 @@ namespace VixenModules.Effect.Chase
 								break;
 						}
 
-						pulseData = pulse.Render();
-						_elementData.Add(pulseData);
 						i++;
 					}
 				}
@@ -275,6 +278,8 @@ namespace VixenModules.Effect.Chase
 
 			// iterate up to and including the last pulse generated
 			for (TimeSpan current = TimeSpan.Zero; current <= TimeSpan; current += increment) {
+				if (tokenSource != null && tokenSource.IsCancellationRequested)
+					return;
 				double currentPercentageIntoChase = ((double) current.Ticks/(double) chaseTime.Ticks)*100.0;
 
 				double currentMovementPosition = ChaseMovement.GetValue(currentPercentageIntoChase);

@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
+using System.Threading;
 using Vixen.Data.Value;
 using Vixen.Intent;
 using Vixen.Module;
@@ -17,6 +19,7 @@ using ZedGraph;
 
 namespace VixenModules.Effect.Alternating
 {
+	 
 	public class Alternating : EffectModuleInstanceBase
 	{
 		private AlternatingData _data;
@@ -31,14 +34,21 @@ namespace VixenModules.Effect.Alternating
 			CheckForInvalidColorData();
 		}
 
-		protected override void _PreRender()
+		protected override void _PreRender(CancellationTokenSource cancellationToken = null)
 		{
 			_elementData = new EffectIntents();
-
-			foreach (ElementNode node in TargetNodes) {
+			
+			var targetNodes = TargetNodes.AsParallel();
+			
+			if (cancellationToken != null)
+				targetNodes = targetNodes.WithCancellation(cancellationToken.Token);
+			
+			targetNodes.ForAll(node => {
 				if (node != null)
-					RenderNode(node);
-			}
+				RenderNode(node);
+			});
+	 
+			 
 		}
 
 		//Validate that the we are using valid colors and set appropriate defaults if not.

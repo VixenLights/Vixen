@@ -102,6 +102,12 @@ namespace VixenModules.App.SuperScheduler
 					{
 						listBoxLog.Items.Insert(0, logEntry);
 					}
+
+					// If we've got lots of crap in the log, remove the last one.
+					if (listBoxLog.Items.Count > 250)
+					{
+						listBoxLog.Items.Remove(listBoxLog.Items.Count - 1);
+					}
 				}
 			}
 			catch
@@ -178,6 +184,16 @@ namespace VixenModules.App.SuperScheduler
 			{
 				buttonStopGracefully.BackgroundImage = imageButtons.Images["clock_stop_disabled.png"];
 			}
+		}
+
+		private void StatusForm_ResizeEnd(object sender, EventArgs e)
+		{
+		}
+
+		private void StatusForm_Resize(object sender, EventArgs e)
+		{
+			groupBoxLog.Height = ClientSize.Height - groupBoxLog.Top - 10;
+			listBoxLog.Height = groupBoxLog.Height - listBoxLog.Top - 10;
 		}
 	}
 }

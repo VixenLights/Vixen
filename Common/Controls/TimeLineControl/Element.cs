@@ -323,9 +323,10 @@ namespace Common.Controls.Timeline
 
 					string s;
 
-					s = EffectNode.Effect.EffectName + "\r\n" +
-						string.Format("Start: {0}", EffectNode.StartTime.ToString(@"m\:ss\.fff")) + "\r\n" +
-						string.Format("Length: {0}", EffectNode.TimeSpan.ToString(@"m\:ss\.fff"));
+					s = string.Format("{0} \r\n Start: {1} \r\n Length: {2}", 
+						EffectNode.Effect.EffectName,
+						EffectNode.StartTime.ToString(@"m\:ss\.fff"),
+						EffectNode.TimeSpan.ToString(@"m\:ss\.fff"));
 
 					SizeF textSize = g.MeasureString(s, m_textFont);
 					Rectangle destRect = new Rectangle(rect.X, rect.Y, rect.Width, rect.Height);

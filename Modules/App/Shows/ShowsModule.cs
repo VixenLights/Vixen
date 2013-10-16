@@ -12,7 +12,6 @@ namespace VixenModules.App.Shows
 		private ShowsData _data;
 		private IApplication _application;
 		//private const string MENU_ID_ROOT = "ShowsRoot";
-
 		static public string MENU_ID_ROOT = "SuperSchedulerRoot";
 		static public string MENU_ID_NAME = "Scheduler";
 
@@ -66,7 +65,6 @@ namespace VixenModules.App.Shows
 		{
 			return _application != null && _application.AppCommands != null;
 		}
-
 
 	}
 }

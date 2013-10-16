@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using Vixen.Services;
 using Vixen.Sys;
 
@@ -70,7 +71,7 @@ namespace Vixen.Module.Effect
 			}
 		}
 
-		public void PreRender()
+		public void PreRender(CancellationTokenSource cancellationToken = null)
 		{
 			var sw = new System.Diagnostics.Stopwatch(); sw.Start();
 			_PreRender();
@@ -102,7 +103,7 @@ namespace Vixen.Module.Effect
 		/// </summary>
 		protected abstract void TargetNodesChanged();
 
-		protected abstract void _PreRender();
+		protected abstract void _PreRender(CancellationTokenSource cancellationToken = null);
 
 		protected abstract EffectIntents _Render();
 

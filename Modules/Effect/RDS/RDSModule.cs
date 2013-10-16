@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Vixen.Commands;
 using Vixen.Data.Value;
@@ -29,13 +30,17 @@ namespace VixenModules.Effect.RDS
 
 		}
 
-		protected override void _PreRender()
+		protected override void _PreRender(CancellationTokenSource tokenSource = null)
 		{
 			_elementData = new EffectIntents();
 
 			CommandValue value = new CommandValue(new StringCommand(string.Format("{0}|{1}", "RDS", _data.Title)));
 
 			foreach (ElementNode node in TargetNodes) {
+				if (tokenSource != null && tokenSource.IsCancellationRequested)
+					return;
+				 
+
 				IIntent i = new CommandIntent(value, TimeSpan);
 				_elementData.AddIntentForElement(node.Element.Id, i, TimeSpan.Zero);
 			}

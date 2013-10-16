@@ -100,7 +100,7 @@
 			this.vixenToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.logsToolStripMenuItem,
             this.viewInstalledModulesToolStripMenuItem,
-            //this.profilesToolStripMenuItem,
+            this.profilesToolStripMenuItem,
             this.executionToolStripMenuItem,
             this.toolStripSeparator1,
             this.exitToolStripMenuItem});

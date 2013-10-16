@@ -1,4 +1,31 @@
 
+== 3.0.9 ============================
+
+New features:
+
+- a new and improved Scheduler and Show module!  See the forums and videos for more info.
+- More performance improvements to reduce CPU usage and memory usage.
+- RDS module improvements: supports the new VAST application, and other improvements
+- Added the Elexol USB I/O controller
+- Vixen 2 sequence importing: can now repeat elements when dragging to the mapping window (eg. for multiple color mappings).
+- Sequencer UI improvements: Context menu & options
+- Sequencer UI improvements: Dockable windows (with a vertical effect list)
+- Sequencer UI improvements: marks in the main window, and mark operations in the ruler
+- Split the application to have separate 32-bit and 64-bit versions, to allow for larger memory usage on high-end machines
+
+
+Fixups:
+
+- The preview was not opening at the correct size sometimes, or with a correct background; now fixed.
+- Fixes for importing audacity marks
+- Fixes issues with 'lost' elements in the config
+- Fixes with preview rendering of discrete colored elements
+- Fixes to output a more accurate value (eg. 8-bit value) when converting a color to a value
+- Fixed an issue where autoplay could leave some elements "hung" or not turning off
+- Fixed an issue with V2 sequence imports where it would read in too much data and try to map to non-existant elements.
+
+
+
 == 3.0.8 ============================
 
 New features:

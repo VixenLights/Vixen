@@ -19,14 +19,14 @@ namespace Vixen.Sys
 			//AddRange(intentNodes);
 			AddRangeCombiner(intentNodes);
 		}
-		Dictionary<long, List<Tuple<int, double>>> intensityHistory = new Dictionary<long, List<Tuple<int, double>>>();
+		Dictionary<long, List<Tuple<int, int>>> intensityHistory = new Dictionary<long, List<Tuple<int, int>>>();
 
 		private bool CreateNewIntent(LightingIntent oldIntent, LightingIntent newIntent)
 		{
 			if (!intensityHistory.ContainsKey(oldIntent.GenericID)) {
-				intensityHistory.Add(oldIntent.GenericID, new List<Tuple<int, double>>() { 
-							new Tuple<int,double>(0, oldIntent.StartValue.Intensity),
-							new Tuple<int,double>(1, oldIntent.EndValue.Intensity)
+				intensityHistory.Add(oldIntent.GenericID, new List<Tuple<int, int>>() { 
+							new Tuple<int,int>(0, (int)(oldIntent.StartValue.Intensity*10000)),
+							new Tuple<int,int>(1, (int)(oldIntent.EndValue.Intensity*10000))
 						});
 			}
 
@@ -47,9 +47,9 @@ namespace Vixen.Sys
 						return true;
 					} else {
 						if (item1<item2) {
-							returnValue= newIntent.EndValue.Intensity>item2;
+							returnValue= (int)(newIntent.EndValue.Intensity*10000)>item2;
 						} else { //Ascending
-							returnValue= newIntent.EndValue.Intensity<item2;
+							returnValue= (int)(newIntent.EndValue.Intensity*10000)<item2;
 						}
 					}
 				}
@@ -81,11 +81,13 @@ namespace Vixen.Sys
 						var oldIntent = oldIntentNode.Intent as LightingIntent;
 						if (oldIntent != null && oldIntent.EndValue.FullColor.ToArgb()== newIntent.StartValue.FullColor.ToArgb() && !CreateNewIntent(oldIntent, newIntent)) {
 
-							bool changeEndValue = false;
+				 
 
 							//Create a new IntentNode to replace the old one with the new values.
-							var lIntent = new LightingIntent(oldIntent.StartValue, changeEndValue?newIntent.EndValue: oldIntent.EndValue, oldIntent.TimeSpan.Add(newIntent.TimeSpan));
+							var lIntent = new LightingIntent(oldIntent.StartValue,  newIntent.EndValue , oldIntent.TimeSpan.Add(newIntent.TimeSpan));
+							
 							lIntent.GenericID = ((LightingIntent)oldIntentNode.Intent).GenericID;
+							
 							var IntentNode = new IntentNode(lIntent, oldIntentNode.StartTime);
 
 							this.Remove(oldIntentNode);

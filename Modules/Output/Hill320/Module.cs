@@ -19,12 +19,15 @@ namespace VixenModules.Output.Hill320
 
 		public static short outputData(ushort port, ushort data)
 		{
-			if (Environment.Is64BitOperatingSystem) {
+#if WIN64
+			//if (Environment.Is64BitOperatingSystem) {
 				return Out64(port, data);
-			}
-			else {
+#else
+			//}
+			//else {
 				return Out32(port, data);
-			}
+#endif
+			//}
 		}
 	}
 

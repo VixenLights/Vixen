@@ -60,7 +60,6 @@ namespace FMOD
         PARAMEQ,            /* This unit attenuates or amplifies a selected frequency range. */
         PITCHSHIFT,         /* This unit bends the pitch of a sound without changing the speed of playback. */
         CHORUS,             /* This unit produces a chorus effect on the sound. */
-        REVERB,             /* This unit produces a reverb effect on the sound. */
         VSTPLUGIN,          /* This unit allows the use of Steinberg VST plugins */
         WINAMPPLUGIN,       /* This unit allows the use of Nullsoft Winamp plugins */
         ITECHO,             /* This unit produces an echo on the sound and fades out at the desired rate as is used in Impulse Tracker. */
@@ -593,34 +592,6 @@ namespace FMOD
         FEEDBACK  /* Chorus feedback.  Controls how much of the wet signal gets fed back into the chorus buffer.  0.0 to 1.0.  Default = 0.0. */
     }
 
-
-
-    /*
-    [ENUM]
-    [  
-        [DESCRIPTION]   
-        Parameter types for the FMOD_DSP_TYPE_REVERB filter.
-
-        [REMARKS]
-
-        [PLATFORMS]
-        Win32, Win64, Linux, Macintosh, Xbox, Xbox360, PlayStation 2, GameCube, PlayStation Portable
-
-        [SEE_ALSO]      
-        DSP::setParameter
-        DSP::getParameter
-        FMOD_DSP_TYPE
-    ]
-    */
-    public enum DSP_REVERB
-    {
-        ROOMSIZE, /* Roomsize. 0.0 to 1.0.  Default = 0.5 */
-        DAMP,     /* Damp.     0.0 to 1.0.  Default = 0.5 */
-        WETMIX,   /* Wet mix.  0.0 to 1.0.  Default = 0.33 */
-        DRYMIX,   /* Dry mix.  0.0 to 1.0.  Default = 0.0 */
-        WIDTH,    /* Width.    0.0 to 1.0.  Default = 1.0 */
-        MODE      /* Mode.     0 (normal), 1 (freeze).  Default = 0 */
-    }
 
     /*
     [ENUM]

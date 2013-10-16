@@ -17,14 +17,6 @@
 		private void InitializeComponent()
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SetupForm));
-			this.groupPorts = new System.Windows.Forms.GroupBox();
-			this.radioUSB = new System.Windows.Forms.RadioButton();
-			this.radioCOM6 = new System.Windows.Forms.RadioButton();
-			this.radioCOM4 = new System.Windows.Forms.RadioButton();
-			this.radioCOM3 = new System.Windows.Forms.RadioButton();
-			this.radioCOM2 = new System.Windows.Forms.RadioButton();
-			this.radioCOM1 = new System.Windows.Forms.RadioButton();
-			this.radioLPT1 = new System.Windows.Forms.RadioButton();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
 			this.chkSlow = new System.Windows.Forms.CheckBox();
 			this.chkBiDirectional = new System.Windows.Forms.CheckBox();
@@ -51,7 +43,8 @@
 			this.button1 = new System.Windows.Forms.Button();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.chkHideLaunchedWindows = new System.Windows.Forms.CheckBox();
-			this.groupPorts.SuspendLayout();
+			this.cboPortName = new System.Windows.Forms.ComboBox();
+			this.label1 = new System.Windows.Forms.Label();
 			this.groupBox3.SuspendLayout();
 			this.groupBox4.SuspendLayout();
 			this.groupBox2.SuspendLayout();
@@ -60,106 +53,11 @@
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 
-			// groupPorts
-			// 
-			this.groupPorts.Controls.Add(this.radioUSB);
-			this.groupPorts.Controls.Add(this.radioCOM6);
-			this.groupPorts.Controls.Add(this.radioCOM4);
-			this.groupPorts.Controls.Add(this.radioCOM3);
-			this.groupPorts.Controls.Add(this.radioCOM2);
-			this.groupPorts.Controls.Add(this.radioCOM1);
-			this.groupPorts.Controls.Add(this.radioLPT1);
-			this.groupPorts.Location = new System.Drawing.Point(12, 12);
-			this.groupPorts.Name = "groupPorts";
-			this.groupPorts.Size = new System.Drawing.Size(77, 173);
-			this.groupPorts.TabIndex = 13;
-			this.groupPorts.TabStop = false;
-			this.groupPorts.Text = "Port";
-			// 
-			// radioUSB
-			// 
-			this.radioUSB.AutoSize = true;
-			this.radioUSB.Enabled = false;
-			this.radioUSB.Location = new System.Drawing.Point(12, 150);
-			this.radioUSB.Name = "radioUSB";
-			this.radioUSB.Size = new System.Drawing.Size(47, 17);
-			this.radioUSB.TabIndex = 6;
-			this.radioUSB.Text = "USB";
-			this.radioUSB.UseVisualStyleBackColor = true;
-			// 
-			// radioCOM6
-			// 
-			this.radioCOM6.AutoSize = true;
-			this.radioCOM6.Location = new System.Drawing.Point(12, 128);
-			this.radioCOM6.Name = "radioCOM6";
-			this.radioCOM6.Size = new System.Drawing.Size(55, 17);
-			this.radioCOM6.TabIndex = 5;
-			this.radioCOM6.Text = "COM6";
-			this.radioCOM6.UseVisualStyleBackColor = true;
-			this.radioCOM6.CheckedChanged += new System.EventHandler(this.radioPorts_CheckedChanged);
-			// 
-			// radioCOM4
-			// 
-			this.radioCOM4.AutoSize = true;
-			this.radioCOM4.Location = new System.Drawing.Point(12, 105);
-			this.radioCOM4.Name = "radioCOM4";
-			this.radioCOM4.Size = new System.Drawing.Size(55, 17);
-			this.radioCOM4.TabIndex = 4;
-			this.radioCOM4.Text = "COM4";
-			this.radioCOM4.UseVisualStyleBackColor = true;
-			this.radioCOM4.CheckedChanged += new System.EventHandler(this.radioPorts_CheckedChanged);
-			// 
-			// radioCOM3
-			// 
-			this.radioCOM3.AutoSize = true;
-			this.radioCOM3.Location = new System.Drawing.Point(12, 82);
-			this.radioCOM3.Name = "radioCOM3";
-			this.radioCOM3.Size = new System.Drawing.Size(55, 17);
-			this.radioCOM3.TabIndex = 3;
-			this.radioCOM3.Text = "COM3";
-			this.radioCOM3.UseVisualStyleBackColor = true;
-			this.radioCOM3.CheckedChanged += new System.EventHandler(this.radioPorts_CheckedChanged);
-			// 
-			// radioCOM2
-			// 
-			this.radioCOM2.AutoSize = true;
-			this.radioCOM2.Location = new System.Drawing.Point(12, 59);
-			this.radioCOM2.Name = "radioCOM2";
-			this.radioCOM2.Size = new System.Drawing.Size(55, 17);
-			this.radioCOM2.TabIndex = 2;
-			this.radioCOM2.Text = "COM2";
-			this.radioCOM2.UseVisualStyleBackColor = true;
-			this.radioCOM2.CheckedChanged += new System.EventHandler(this.radioPorts_CheckedChanged);
-			// 
-			// radioCOM1
-			// 
-			this.radioCOM1.AutoSize = true;
-			this.radioCOM1.Checked = true;
-			this.radioCOM1.Location = new System.Drawing.Point(12, 36);
-			this.radioCOM1.Name = "radioCOM1";
-			this.radioCOM1.Size = new System.Drawing.Size(55, 17);
-			this.radioCOM1.TabIndex = 1;
-			this.radioCOM1.TabStop = true;
-			this.radioCOM1.Text = "COM1";
-			this.radioCOM1.UseVisualStyleBackColor = true;
-			this.radioCOM1.CheckedChanged += new System.EventHandler(this.radioPorts_CheckedChanged);
-			// 
-			// radioLPT1
-			// 
-			this.radioLPT1.AutoSize = true;
-			this.radioLPT1.Location = new System.Drawing.Point(12, 13);
-			this.radioLPT1.Name = "radioLPT1";
-			this.radioLPT1.Size = new System.Drawing.Size(51, 17);
-			this.radioLPT1.TabIndex = 0;
-			this.radioLPT1.Text = "LPT1";
-			this.radioLPT1.UseVisualStyleBackColor = true;
-			this.radioLPT1.CheckedChanged += new System.EventHandler(this.radioPorts_CheckedChanged);
-			// 
 			// groupBox3
 			// 
 			this.groupBox3.Controls.Add(this.chkSlow);
 			this.groupBox3.Controls.Add(this.chkBiDirectional);
-			this.groupBox3.Location = new System.Drawing.Point(95, 12);
+			this.groupBox3.Location = new System.Drawing.Point(399, 259);
 			this.groupBox3.Name = "groupBox3";
 			this.groupBox3.Size = new System.Drawing.Size(110, 76);
 			this.groupBox3.TabIndex = 15;
@@ -190,6 +88,8 @@
 			// 
 			// groupBox4
 			// 
+			this.groupBox4.Controls.Add(this.label1);
+			this.groupBox4.Controls.Add(this.cboPortName);
 			this.groupBox4.Controls.Add(this.chkRequiresAuthentication);
 			this.groupBox4.Controls.Add(this.lblPassword);
 			this.groupBox4.Controls.Add(this.lblUserName);
@@ -203,12 +103,12 @@
 			this.groupBox4.Controls.Add(this.radioVFMT212R);
 			this.groupBox4.Controls.Add(this.radioMRDS1322);
 			this.groupBox4.Controls.Add(this.radioMRDS192);
-			this.groupBox4.Location = new System.Drawing.Point(95, 94);
+			this.groupBox4.Location = new System.Drawing.Point(12, 66);
 			this.groupBox4.Name = "groupBox4";
 			this.groupBox4.Size = new System.Drawing.Size(381, 213);
 			this.groupBox4.TabIndex = 16;
 			this.groupBox4.TabStop = false;
-			this.groupBox4.Text = "Hardware";
+			this.groupBox4.Text = "RDS Hardware";
 			// 
 			// chkRequiresAuthentication
 			// 
@@ -348,16 +248,16 @@
 			// 
 			this.groupBox2.Controls.Add(this.btnTX);
 			this.groupBox2.Controls.Add(this.txtPSInterface);
-			this.groupBox2.Location = new System.Drawing.Point(12, 313);
+			this.groupBox2.Location = new System.Drawing.Point(12, 285);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(363, 47);
+			this.groupBox2.Size = new System.Drawing.Size(381, 47);
 			this.groupBox2.TabIndex = 14;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Test RDS Interface";
 			// 
 			// btnTX
 			// 
-			this.btnTX.Location = new System.Drawing.Point(268, 18);
+			this.btnTX.Location = new System.Drawing.Point(300, 17);
 			this.btnTX.Name = "btnTX";
 			this.btnTX.Size = new System.Drawing.Size(75, 23);
 			this.btnTX.TabIndex = 1;
@@ -369,14 +269,14 @@
 			this.txtPSInterface.Location = new System.Drawing.Point(12, 20);
 			this.txtPSInterface.MaxLength = 64;
 			this.txtPSInterface.Name = "txtPSInterface";
-			this.txtPSInterface.Size = new System.Drawing.Size(250, 20);
+			this.txtPSInterface.Size = new System.Drawing.Size(282, 20);
 			this.txtPSInterface.TabIndex = 4;
 			// 
 			// pictureBox1
 			// 
 			this.pictureBox1.Enabled = false;
 			this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-			this.pictureBox1.Location = new System.Drawing.Point(482, 2);
+			this.pictureBox1.Location = new System.Drawing.Point(399, 12);
 			this.pictureBox1.Name = "pictureBox1";
 			this.pictureBox1.Size = new System.Drawing.Size(222, 229);
 			this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -387,9 +287,9 @@
 			// 
 			this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.StatusLbl1});
-			this.statusStrip1.Location = new System.Drawing.Point(0, 363);
+			this.statusStrip1.Location = new System.Drawing.Point(0, 341);
 			this.statusStrip1.Name = "statusStrip1";
-			this.statusStrip1.Size = new System.Drawing.Size(704, 22);
+			this.statusStrip1.Size = new System.Drawing.Size(630, 22);
 			this.statusStrip1.TabIndex = 24;
 			this.statusStrip1.Text = "statusStrip1";
 			// 
@@ -404,7 +304,7 @@
 			// 
 			this.button1.DialogResult = System.Windows.Forms.DialogResult.OK;
 			this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.button1.Location = new System.Drawing.Point(574, 279);
+			this.button1.Location = new System.Drawing.Point(512, 270);
 			this.button1.Name = "button1";
 			this.button1.Size = new System.Drawing.Size(109, 65);
 			this.button1.TabIndex = 25;
@@ -414,9 +314,9 @@
 			// groupBox1
 			// 
 			this.groupBox1.Controls.Add(this.chkHideLaunchedWindows);
-			this.groupBox1.Location = new System.Drawing.Point(211, 12);
+			this.groupBox1.Location = new System.Drawing.Point(12, 12);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(265, 76);
+			this.groupBox1.Size = new System.Drawing.Size(381, 48);
 			this.groupBox1.TabIndex = 26;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Launcher Options";
@@ -432,24 +332,40 @@
 			this.chkHideLaunchedWindows.UseVisualStyleBackColor = true;
 			this.chkHideLaunchedWindows.CheckedChanged += new System.EventHandler(this.chkHideLaunchedWindows_CheckedChanged);
 			// 
+			// cboPortName
+			// 
+			this.cboPortName.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboPortName.FormattingEnabled = true;
+			this.cboPortName.Location = new System.Drawing.Point(246, 38);
+			this.cboPortName.Name = "cboPortName";
+			this.cboPortName.Size = new System.Drawing.Size(77, 21);
+			this.cboPortName.TabIndex = 0;
+			this.cboPortName.SelectedIndexChanged += new System.EventHandler(this.cboPortName_SelectedIndexChanged);
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(243, 23);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(55, 13);
+			this.label1.TabIndex = 15;
+			this.label1.Text = "Serial Port";
+			// 
 			// SetupForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(704, 385);
+			this.ClientSize = new System.Drawing.Size(630, 363);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.pictureBox1);
 			this.Controls.Add(this.button1);
 			this.Controls.Add(this.statusStrip1);
-			this.Controls.Add(this.groupPorts);
 			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.groupBox4);
 			this.Controls.Add(this.groupBox2);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.Name = "SetupForm";
 			this.Text = "Launcher Commands and RDS Configuration";
-			this.groupPorts.ResumeLayout(false);
-			this.groupPorts.PerformLayout();
 			this.groupBox3.ResumeLayout(false);
 			this.groupBox3.PerformLayout();
 			this.groupBox4.ResumeLayout(false);
@@ -468,13 +384,6 @@
 
 		#endregion
 
-		private System.Windows.Forms.GroupBox groupPorts;
-		private System.Windows.Forms.RadioButton radioCOM6;
-		private System.Windows.Forms.RadioButton radioCOM4;
-		private System.Windows.Forms.RadioButton radioCOM3;
-		private System.Windows.Forms.RadioButton radioCOM2;
-		private System.Windows.Forms.RadioButton radioCOM1;
-		private System.Windows.Forms.RadioButton radioLPT1;
 		private System.Windows.Forms.GroupBox groupBox3;
 		private System.Windows.Forms.CheckBox chkSlow;
 		private System.Windows.Forms.CheckBox chkBiDirectional;
@@ -486,7 +395,6 @@
 		private System.Windows.Forms.Button btnTX;
 		private System.Windows.Forms.TextBox txtPSInterface;
 		private System.Windows.Forms.PictureBox pictureBox1;
-		private System.Windows.Forms.RadioButton radioUSB;
 		private System.Windows.Forms.StatusStrip statusStrip1;
 		private System.Windows.Forms.ToolStripStatusLabel StatusLbl1;
 		private System.Windows.Forms.Label lblUrl;
@@ -502,5 +410,7 @@
 		private System.Windows.Forms.Label lblPassword;
 		private System.Windows.Forms.Label lblUserName;
 		private System.Windows.Forms.CheckBox chkRequiresAuthentication;
+		private System.Windows.Forms.ComboBox cboPortName;
+		private System.Windows.Forms.Label label1;
 	}
 }
