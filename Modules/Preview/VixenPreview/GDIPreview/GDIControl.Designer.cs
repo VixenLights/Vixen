@@ -36,7 +36,6 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.Name = "GDIControl";
 			this.Size = new System.Drawing.Size(313, 197);
-			this.Resize += new System.EventHandler(this.GDIControl_Resize);
 			this.ResumeLayout(false);
 
 		}
