@@ -13,7 +13,6 @@ namespace Vixen.Sys.Output
 	/// </summary>
 	public class OutputController : IControllerDevice, IEnumerable<OutputController>
 	{
-		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		//Because of bad design, this needs to be created before the base class is instantiated.
 		private CommandOutputDataFlowAdapterFactory _adapterFactory = new CommandOutputDataFlowAdapterFactory();
 		private IOutputMediator<CommandOutput> _outputMediator;
@@ -139,32 +138,6 @@ namespace Vixen.Sys.Output
 		public void Update()
 		{
 			if (VixenSystem.ControllerLinking.IsRootController(this) && _ControllerChainModule != null) {
-
-				// if we have states to play back take the easy way out...
-				// TODO: work out sync of recordings with this stuff
-				if (Recordings.IsPlaying())
-				{
-					foreach (OutputController controller in this)
-					{
-						// A single port may be used to service multiple physical controllers,
-						// such as daisy-chained Renard controllers.  Tell the module where
-						// it is in that chain.
-						int chainIndex = VixenSystem.ControllerLinking.GetChainIndex(controller.Id);
-						ICommand[] outputStates = Recordings.GetStates(controller);
-						if (outputStates != null)
-						{
-							controller._ControllerChainModule.UpdateState(chainIndex, outputStates);
-						}
-						else
-						{
-							Logging.Warn("null states from recording...");
-							continue;
-						}
-					}
-					return;
-				}
-
-				// not playing so generate outputs
 				_outputMediator.LockOutputs();
 				try {
 					foreach (OutputController controller in this) {
@@ -184,16 +157,7 @@ namespace Vixen.Sys.Output
 						// it is in that chain.
 						int chainIndex = VixenSystem.ControllerLinking.GetChainIndex(controller.Id);
 						ICommand[] outputStates = _ExtractCommandsFromOutputs(controller).ToArray();
-						if (Recordings.IsRecording())
-						{
-							Recordings.RecordStates(controller, outputStates);
-							if( Recordings.IsMonitoring())
-								controller._ControllerChainModule.UpdateState(chainIndex, outputStates);
-						}
-						else
-						{
-							controller._ControllerChainModule.UpdateState(chainIndex, outputStates);
-						}
+						controller._ControllerChainModule.UpdateState(chainIndex, outputStates);
 					}
 				}
 				finally {

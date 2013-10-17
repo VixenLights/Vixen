@@ -482,7 +482,6 @@
     <Compile Include="Sys\Output\OutputModuleConsumer.cs" />
     <Compile Include="Sys\Output\OutputModuleInstanceBase.cs" />
     <Compile Include="Sys\Output\OutputPreview.cs" />
-    <Compile Include="Sys\Output\Recordings.cs" />
     <Compile Include="Sys\Output\SmartOutputController.cs" />
     <Compile Include="Data\Value\PositionValue.cs" />
     <Compile Include="Sys\SequenceFilterLookup.cs" />
