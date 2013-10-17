@@ -12,7 +12,7 @@ namespace Vixen.Sys
 {
 	internal class SystemConfig
 	{
-		public static int DEFAULT_UPDATE_INTERVAL = 50;
+		public static int DEFAULT_UPDATE_INTERVAL = 46;
 
 		private IEnumerable<Element> _elements;
 		private IEnumerable<ElementNode> _nodes;

@@ -56,9 +56,5 @@ namespace VixenModules.Preview.VixenPreview
 			get { return "1.0.0"; }
 		}
 
-		//public override int UpdateInterval
-		//{
-		//	get { return 50; }
-		//}
 	}
 }
