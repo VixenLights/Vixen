@@ -9,6 +9,8 @@ namespace Vixen.IO.Xml.Serializer
 {
 	internal class XmlElementNodeSerializer : IXmlSerializer<ElementNode>
 	{
+		private static NLog.Logger logging = NLog.LogManager.GetCurrentClassLogger();
+
 		private IEnumerable<Element> _underlyingElements;
 
 		private const string ELEMENT_NODE = "Node";
@@ -55,56 +57,63 @@ namespace Vixen.IO.Xml.Serializer
 		public static int readCount = 0;
 		public ElementNode ReadObject(XElement element)
 		{
-			System.Threading.Interlocked.Increment(ref readCount);
-			 
-			string name = XmlHelper.GetAttribute(element, ATTR_NAME);
-			if (name == null) return null;
+			try {
+				System.Threading.Interlocked.Increment(ref readCount);
 
-			Guid? id = XmlHelper.GetGuidAttribute(element, ATTR_ID);
-			if (id == null) return null;
+				string name = XmlHelper.GetAttribute(element, ATTR_NAME);
+				if (name == null)
+					return null;
 
-			// check if we have already loaded the node with this GUID (ie. if it's a node that's referenced twice,
-			// in different groups). If we have, return that node instead, and don't go any deeper into child nodes.
-			// (we'll just assume that the XML data for this one is identical to the earlier XML node that was written
-			// out. To be a bit more proper, we should probably change the WriteXML() to not fully write out repeat
-			// ElementNodes, and instead do some sort of soft reference to the first one (ie. GUID only). )
-			ElementNode existingNode = VixenSystem.Nodes.GetElementNode(id.Value);
-			if (existingNode != null) {
-				return existingNode;
-			}
+				Guid? id = XmlHelper.GetGuidAttribute(element, ATTR_ID);
+				if (id == null)
+					return null;
 
-			// Children or element reference
-			ElementNode node = null;
-			Guid? elementId = XmlHelper.GetGuidAttribute(element, ATTR_ELEMENT_ID);
-			if (elementId == null) {
-				// Branch
-				IEnumerable<ElementNode> childNodes = element.Elements(ELEMENT_NODE).Select(ReadObject).Where(x => x != null);
-				node = new ElementNode(id.Value, name, null, childNodes);
-			}
-			else {
-				// Leaf
-				Element elem = _underlyingElements.FirstOrDefault(x => x.Id == elementId);
-				if (elem != null) {
-					node = new ElementNode(id.Value, name, elem, null);
+				// check if we have already loaded the node with this GUID (ie. if it's a node that's referenced twice,
+				// in different groups). If we have, return that node instead, and don't go any deeper into child nodes.
+				// (we'll just assume that the XML data for this one is identical to the earlier XML node that was written
+				// out. To be a bit more proper, we should probably change the WriteXML() to not fully write out repeat
+				// ElementNodes, and instead do some sort of soft reference to the first one (ie. GUID only). )
+				ElementNode existingNode = VixenSystem.Nodes.GetElementNode(id.Value);
+				if (existingNode != null) {
+					return existingNode;
 				}
-			}
 
-			if (node != null) {
-				//// Property data
-				//// It's not necessary to load the data before the properties, but it will
-				//// save it from creating data for each module and then dumping it.
-				//XmlModuleLocalDataSetSerializer dataSetSerializer = new XmlModuleLocalDataSetSerializer();
-				//node.Properties.PropertyData = dataSetSerializer.ReadObject(element);
-
-				// Properties
-				XmlPropertyCollectionSerializer propertyCollectionSerializer = new XmlPropertyCollectionSerializer();
-				IEnumerable<IPropertyModuleInstance> properties = propertyCollectionSerializer.ReadObject(element);
-				foreach (IPropertyModuleInstance instance in properties) {
-					node.Properties.Add(instance);
+				// Children or element reference
+				ElementNode node = null;
+				Guid? elementId = XmlHelper.GetGuidAttribute(element, ATTR_ELEMENT_ID);
+				if (elementId == null) {
+					// Branch
+					IEnumerable<ElementNode> childNodes = element.Elements(ELEMENT_NODE).Select(ReadObject).Where(x => x != null);
+					node = new ElementNode(id.Value, name, null, childNodes);
 				}
-			}
+				else {
+					// Leaf
+					Element elem = _underlyingElements.FirstOrDefault(x => x.Id == elementId);
+					if (elem != null) {
+						node = new ElementNode(id.Value, name, elem, null);
+					}
+				}
 
-			return node;
+				if (node != null) {
+					//// Property data
+					//// It's not necessary to load the data before the properties, but it will
+					//// save it from creating data for each module and then dumping it.
+					//XmlModuleLocalDataSetSerializer dataSetSerializer = new XmlModuleLocalDataSetSerializer();
+					//node.Properties.PropertyData = dataSetSerializer.ReadObject(element);
+
+					// Properties
+					XmlPropertyCollectionSerializer propertyCollectionSerializer = new XmlPropertyCollectionSerializer();
+					IEnumerable<IPropertyModuleInstance> properties = propertyCollectionSerializer.ReadObject(element);
+					foreach (IPropertyModuleInstance instance in properties) {
+						node.Properties.Add(instance);
+					}
+				}
+
+				return node;
+			} catch (Exception e) {
+				logging.ErrorException("Error loading Element Node from XML", e);
+				return null;
+			}
 		}
 	}
 }

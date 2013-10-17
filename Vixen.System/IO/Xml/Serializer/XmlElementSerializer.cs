@@ -6,6 +6,8 @@ namespace Vixen.IO.Xml.Serializer
 {
 	internal class XmlElementSerializer : IXmlSerializer<Element>
 	{
+		private static NLog.Logger logging = NLog.LogManager.GetCurrentClassLogger();
+
 		private const string ELEMENT_ELEMENT = "Channel";
 		private const string ATTR_ID = "id";
 		private const string ATTR_NAME = "name";
@@ -20,9 +22,14 @@ namespace Vixen.IO.Xml.Serializer
 
 		public Element ReadObject(XElement element)
 		{
-			Guid id = XmlHelper.GetGuidAttribute(element, ATTR_ID).GetValueOrDefault();
-			string name = XmlHelper.GetAttribute(element, ATTR_NAME);
-			return new Element(id, name);
+			try {
+				Guid id = XmlHelper.GetGuidAttribute(element, ATTR_ID).GetValueOrDefault();
+				string name = XmlHelper.GetAttribute(element, ATTR_NAME);
+				return new Element(id, name);
+			} catch (Exception e) {
+				logging.ErrorException("Error loading Element from XML", e);
+				return null;
+			}
 		}
 	}
 }

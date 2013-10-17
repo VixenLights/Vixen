@@ -8,6 +8,8 @@ namespace Vixen.IO.Xml.Serializer
 {
 	internal class XmlPreviewSerializer : IXmlSerializer<IOutputDevice>
 	{
+		private static NLog.Logger logging = NLog.LogManager.GetCurrentClassLogger();
+
 		private const string ELEMENT_PREVIEW = "Preview";
 		private const string ATTR_NAME = "name";
 		private const string ATTR_TYPE_ID = "typeId";
@@ -27,21 +29,29 @@ namespace Vixen.IO.Xml.Serializer
 
 		public IOutputDevice ReadObject(XElement element)
 		{
-			string name = XmlHelper.GetAttribute(element, ATTR_NAME);
-			if (name == null) return null;
+			try {
+				string name = XmlHelper.GetAttribute(element, ATTR_NAME);
+				if (name == null)
+					return null;
 
-			Guid? typeId = XmlHelper.GetGuidAttribute(element, ATTR_TYPE_ID);
-			if (typeId == null) return null;
+				Guid? typeId = XmlHelper.GetGuidAttribute(element, ATTR_TYPE_ID);
+				if (typeId == null)
+					return null;
 
-			Guid? instanceId = XmlHelper.GetGuidAttribute(element, ATTR_INSTANCE_ID);
-			if (instanceId == null) return null;
+				Guid? instanceId = XmlHelper.GetGuidAttribute(element, ATTR_INSTANCE_ID);
+				if (instanceId == null)
+					return null;
 
-			PreviewFactory previewFactory = new PreviewFactory();
-			OutputPreview preview = (OutputPreview) previewFactory.CreateDevice(typeId.Value, instanceId.Value, name);
+				PreviewFactory previewFactory = new PreviewFactory();
+				OutputPreview preview = (OutputPreview) previewFactory.CreateDevice(typeId.Value, instanceId.Value, name);
 
-			_Populate(preview, element);
+				_Populate(preview, element);
 
-			return preview;
+				return preview;
+			} catch (Exception e) {
+				logging.ErrorException("Error loading Preview from XML", e);
+				return null;
+			}
 		}
 
 		private void _Populate(OutputPreview preview, XElement element)
