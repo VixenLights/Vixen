@@ -106,8 +106,8 @@ var ICONS_GROUP
 
 ; MUI end ------
 
-Name "${PRODUCT_NAME} ${PRODUCT_VERSION} (32bit DevBuild)"
-OutFile "..\Release\${PRODUCT_NAME}-${PRODUCT_VERSION}-Setup.exe"
+Name "${PRODUCT_NAME} ${PRODUCT_VERSION} (32-bit DevBuild)"
+OutFile "..\Release\${PRODUCT_NAME}-${PRODUCT_VERSION}-Setup-32bit-DevBuild.exe"
 InstallDir "$PROGRAMFILES\Vixen 3"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
