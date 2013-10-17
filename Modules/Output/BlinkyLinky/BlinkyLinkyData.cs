@@ -22,7 +22,7 @@ namespace VixenModules.Output.BlinkyLinky
 
 		public BlinkyLinkyData()
 		{
-			Address = new IPAddress(new byte[] {10, 0, 0, 1});
+			Address = new IPAddress(new byte[] {1, 1, 1, 1});
 			Port = 747;
 			Stream = 0;
 		}
