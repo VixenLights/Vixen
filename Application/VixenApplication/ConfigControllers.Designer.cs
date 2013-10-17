@@ -48,11 +48,8 @@
 			this.textBoxName = new System.Windows.Forms.TextBox();
 			this.buttonConfigureController = new System.Windows.Forms.Button();
 			this.buttonCancel = new System.Windows.Forms.Button();
-			this.label5 = new System.Windows.Forms.Label();
-			this.updateInterval = new System.Windows.Forms.NumericUpDown();
 			this.groupBoxSelectedController.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownOutputCount)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.updateInterval)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// listViewControllers
@@ -104,7 +101,7 @@
 			this.buttonAddController.Location = new System.Drawing.Point(62, 236);
 			this.buttonAddController.Name = "buttonAddController";
 			this.buttonAddController.Size = new System.Drawing.Size(120, 25);
-			this.buttonAddController.TabIndex = 1;
+			this.buttonAddController.TabIndex = 17;
 			this.buttonAddController.Text = "Add New Controller";
 			this.buttonAddController.UseVisualStyleBackColor = true;
 			this.buttonAddController.Click += new System.EventHandler(this.buttonAddController_Click);
@@ -115,7 +112,7 @@
 			this.buttonDeleteController.Location = new System.Drawing.Point(237, 236);
 			this.buttonDeleteController.Name = "buttonDeleteController";
 			this.buttonDeleteController.Size = new System.Drawing.Size(120, 25);
-			this.buttonDeleteController.TabIndex = 2;
+			this.buttonDeleteController.TabIndex = 19;
 			this.buttonDeleteController.Text = "Delete Selected";
 			this.buttonDeleteController.UseVisualStyleBackColor = true;
 			this.buttonDeleteController.Click += new System.EventHandler(this.buttonDeleteController_Click);
@@ -127,7 +124,7 @@
 			this.buttonOk.Location = new System.Drawing.Point(221, 445);
 			this.buttonOk.Name = "buttonOk";
 			this.buttonOk.Size = new System.Drawing.Size(90, 25);
-			this.buttonOk.TabIndex = 3;
+			this.buttonOk.TabIndex = 21;
 			this.buttonOk.Text = "OK";
 			this.buttonOk.UseVisualStyleBackColor = true;
 			// 
@@ -135,8 +132,6 @@
 			// 
 			this.groupBoxSelectedController.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.groupBoxSelectedController.Controls.Add(this.updateInterval);
-			this.groupBoxSelectedController.Controls.Add(this.label5);
 			this.groupBoxSelectedController.Controls.Add(this.label4);
 			this.groupBoxSelectedController.Controls.Add(this.label1);
 			this.groupBoxSelectedController.Controls.Add(this.buttonConfigureOutputs);
@@ -156,7 +151,7 @@
 			// label4
 			// 
 			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(129, 122);
+			this.label4.Location = new System.Drawing.Point(129, 97);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(171, 13);
 			this.label4.TabIndex = 34;
@@ -165,7 +160,7 @@
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(129, 91);
+			this.label1.Location = new System.Drawing.Point(129, 66);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(203, 13);
 			this.label1.TabIndex = 33;
@@ -173,10 +168,10 @@
 			// 
 			// buttonConfigureOutputs
 			// 
-			this.buttonConfigureOutputs.Location = new System.Drawing.Point(13, 116);
+			this.buttonConfigureOutputs.Location = new System.Drawing.Point(13, 91);
 			this.buttonConfigureOutputs.Name = "buttonConfigureOutputs";
 			this.buttonConfigureOutputs.Size = new System.Drawing.Size(110, 25);
-			this.buttonConfigureOutputs.TabIndex = 5;
+			this.buttonConfigureOutputs.TabIndex = 32;
 			this.buttonConfigureOutputs.Text = "Configure Channels";
 			this.buttonConfigureOutputs.UseVisualStyleBackColor = true;
 			this.buttonConfigureOutputs.Click += new System.EventHandler(this.buttonConfigureOutputs_Click);
@@ -200,14 +195,14 @@
             0});
 			this.numericUpDownOutputCount.Name = "numericUpDownOutputCount";
 			this.numericUpDownOutputCount.Size = new System.Drawing.Size(47, 20);
-			this.numericUpDownOutputCount.TabIndex = 1;
+			this.numericUpDownOutputCount.TabIndex = 30;
 			// 
 			// buttonUpdate
 			// 
-			this.buttonUpdate.Location = new System.Drawing.Point(312, 36);
+			this.buttonUpdate.Location = new System.Drawing.Point(308, 21);
 			this.buttonUpdate.Name = "buttonUpdate";
 			this.buttonUpdate.Size = new System.Drawing.Size(73, 25);
-			this.buttonUpdate.TabIndex = 3;
+			this.buttonUpdate.TabIndex = 27;
 			this.buttonUpdate.Text = "Update";
 			this.buttonUpdate.UseVisualStyleBackColor = true;
 			this.buttonUpdate.Click += new System.EventHandler(this.buttonUpdate_Click);
@@ -225,15 +220,15 @@
 			// 
 			this.textBoxName.Location = new System.Drawing.Point(54, 24);
 			this.textBoxName.Name = "textBoxName";
-			this.textBoxName.Size = new System.Drawing.Size(127, 20);
-			this.textBoxName.TabIndex = 0;
+			this.textBoxName.Size = new System.Drawing.Size(136, 20);
+			this.textBoxName.TabIndex = 25;
 			// 
 			// buttonConfigureController
 			// 
-			this.buttonConfigureController.Location = new System.Drawing.Point(13, 85);
+			this.buttonConfigureController.Location = new System.Drawing.Point(13, 60);
 			this.buttonConfigureController.Name = "buttonConfigureController";
 			this.buttonConfigureController.Size = new System.Drawing.Size(110, 25);
-			this.buttonConfigureController.TabIndex = 4;
+			this.buttonConfigureController.TabIndex = 21;
 			this.buttonConfigureController.Text = "Configure Controller";
 			this.buttonConfigureController.UseVisualStyleBackColor = true;
 			this.buttonConfigureController.Click += new System.EventHandler(this.buttonConfigureController_Click);
@@ -245,40 +240,9 @@
 			this.buttonCancel.Location = new System.Drawing.Point(317, 445);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(90, 25);
-			this.buttonCancel.TabIndex = 4;
+			this.buttonCancel.TabIndex = 27;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
-			// 
-			// label5
-			// 
-			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(170, 56);
-			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(83, 13);
-			this.label5.TabIndex = 35;
-			this.label5.Text = "Update Interval:";
-			// 
-			// updateInterval
-			// 
-			this.updateInterval.Increment = new decimal(new int[] {
-            5,
-            0,
-            0,
-            0});
-			this.updateInterval.Location = new System.Drawing.Point(251, 54);
-			this.updateInterval.Minimum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-			this.updateInterval.Name = "updateInterval";
-			this.updateInterval.Size = new System.Drawing.Size(47, 20);
-			this.updateInterval.TabIndex = 36;
-			this.updateInterval.Value = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
 			// 
 			// ConfigControllers
 			// 
@@ -307,7 +271,6 @@
 			this.groupBoxSelectedController.ResumeLayout(false);
 			this.groupBoxSelectedController.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownOutputCount)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.updateInterval)).EndInit();
 			this.ResumeLayout(false);
 
 		}
@@ -332,7 +295,5 @@
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Button buttonConfigureOutputs;
 		private System.Windows.Forms.Button buttonCancel;
-		private System.Windows.Forms.Label label5;
-		private System.Windows.Forms.NumericUpDown updateInterval;
 	}
 }

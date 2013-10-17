@@ -48,6 +48,18 @@ namespace VixenApplication
 			VixenSystem.Start(this, _openExecution, _disableControllers, _applicationData.DataFileDirectory);
 
 			InitStats();
+
+			// other modules look for and create it this way...
+			AppCommand toolsMenu = AppCommands.Find("Tools");
+			if (toolsMenu == null)
+			{
+				toolsMenu = new AppCommand("Tools", "Tools");
+				AppCommands.Add(toolsMenu);
+			}
+			var myMenu = new AppCommand("Options", "Options...");
+			myMenu.Click += optionsToolStripMenuItem_Click;
+			toolsMenu.Add(myMenu);
+
 		}
 
 
@@ -459,6 +471,15 @@ namespace VixenApplication
 				updateExecutionState();
 		}
 
+		private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			var dlg = new OptionsDialog();
+			var res = dlg.ShowDialog();
+			// so far the dialog box does it all, no real need for this check...
+			if( res != DialogResult.OK)
+				return;
+		}
+
 		// we can't get passed in a state to display, since it may be called out-of-order if we're invoking across threads, etc.
 		// so instead, just take this as a notification to update with the current state of the execution engine.
 		private void updateExecutionState()
@@ -594,5 +615,6 @@ namespace VixenApplication
 				MessageBox.Show("You must re-start Vixen for the changes to take effect.", "Profiles Changed", MessageBoxButtons.OK);
 			}
 		}
+
 	}
 }

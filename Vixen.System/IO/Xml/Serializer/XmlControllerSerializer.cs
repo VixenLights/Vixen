@@ -18,7 +18,6 @@ namespace Vixen.IO.Xml.Serializer
 		private const string ATTR_HARDWARE_ID = "hardwareId";
 		private const string ATTR_HARDWARE_INSTANCE_ID = "hardwareInstanceId";
 		private const string ATTR_DEVICE_ID = "id";
-		private const string ATTR_UPDATE_INTERVAL = "updateInterval";
 
 		public XElement WriteObject(IOutputDevice value)
 		{
@@ -29,7 +28,6 @@ namespace Vixen.IO.Xml.Serializer
 			                                new XAttribute(ATTR_HARDWARE_ID, controller.ModuleId),
 			                                new XAttribute(ATTR_HARDWARE_INSTANCE_ID, controller.ModuleInstanceId),
 			                                new XAttribute(ATTR_DEVICE_ID, controller.Id),
-											new XAttribute(ATTR_UPDATE_INTERVAL, controller.UpdateInterval),
 											_WriteOutputs(controller));
 
 			return element;
@@ -54,15 +52,9 @@ namespace Vixen.IO.Xml.Serializer
 				if (deviceId == null)
 					return null;
 
-				int? updateInterval = XmlHelper.GetIntAttribute(element, ATTR_UPDATE_INTERVAL);
-				if (updateInterval == null)
-					updateInterval = VixenSystem.DefaultUpdateInterval;
-
 				ControllerFactory controllerFactory = new ControllerFactory();
 				OutputController controller =
 					(OutputController) controllerFactory.CreateDevice(deviceId.Value, moduleTypeId.Value, moduleInstanceId.Value, name);
-
-				controller.UpdateInterval = (int)updateInterval;
 
 				_ReadOutputs(controller, element);
 
