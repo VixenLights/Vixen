@@ -367,13 +367,13 @@ namespace VixenModules.Effect.Chase
 					break;
 
 				case ChaseColorHandling.GradientThroughWholeEffect:
-					double startPos = ((double) startTime.Ticks/(double) TimeSpan.Ticks);
-					double endPos = ((double) (startTime + duration).Ticks/(double) TimeSpan.Ticks);
-					if (startPos < 0.0) startPos = 0.0;
-					if (endPos > 1.0) endPos = 1.0;
+					float startPos = ((float)startTime.Ticks / (float)TimeSpan.Ticks);
+					float endPos = ((float)(startTime + duration).Ticks / (float)TimeSpan.Ticks);
+					if (startPos < 0.0) startPos = 0.0f;
+					if (endPos > 1.0) endPos = 1.0f;
 
 					if (discreteColors) {
-						double range = endPos - startPos;
+						float range = endPos - startPos;
 						if (range <= 0.0) {
 							Logging.Error("Chase: bad range: " + range + " (SP=" + startPos + ", EP=" + endPos + ")");
 							break;
@@ -384,8 +384,8 @@ namespace VixenModules.Effect.Chase
 						foreach (Color color in cg.GetColorsInGradient()) {
 							Curve newCurve = new Curve(pulse.LevelCurve.Points);
 							foreach (PointPair point in newCurve.Points) {
-								double effectRelativePosition = startPos + ((point.X / 100.0) * range);
-								double proportion = ColorGradient.GetProportionOfColorAt(effectRelativePosition, color);
+								float effectRelativePosition = startPos + (((float)point.X / 100.0f) * range);
+								float proportion = ColorGradient.GetProportionOfColorAt(effectRelativePosition, color);
 								point.Y *= proportion;
 							}
 							pulse.LevelCurve = newCurve;

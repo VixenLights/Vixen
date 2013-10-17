@@ -21,14 +21,17 @@ namespace VersionControl
 
         private void EnableDisableSourceControl(bool enabled)
         {
+			_showCommand.Enabled = enabled;
+
             DisableWatchers();
+
             if (enabled)
             {
                 var repoCreated = CreateRepositoryIfNotExists();
 
                 repo = new GitSharp.Repository(GitRepositoryFolder);
 
-
+	           
                 AddItemsToGit(repoCreated);
                 GetGitDetails();
                 CreateWatcher(GitRepositoryFolder, true);
