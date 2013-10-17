@@ -143,6 +143,8 @@ namespace VixenModules.Output.BlinkyLinky
 
 		private void CloseConnection()
 		{
+			return;
+
 			if (_networkStream != null) {
 				_networkStream.Close();
 				_networkStream = null;

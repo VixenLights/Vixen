@@ -126,7 +126,7 @@ namespace VixenModules.Effect.Pulse
 				Debug.Assert(allPointsTimeOrdered.Length > 1);
 
 				double lastPosition = allPointsTimeOrdered[0];
-				for (int i = 1; i < allPointsTimeOrdered.Length; i++)
+				for (var i = 1; i < allPointsTimeOrdered.Length; i++)
 				{
 					double position = allPointsTimeOrdered[i];
 
@@ -150,7 +150,7 @@ namespace VixenModules.Effect.Pulse
 													  LevelCurve.GetValue(position * 100) / 100));
 					}
 
-					if (startValue.Intensity == 0f && endValue.Intensity == 0f) continue;
+					if (startValue.Intensity.Equals( 0f) && endValue.Intensity.Equals(0f)) continue;
 
 					TimeSpan startTime = TimeSpan.FromMilliseconds(TimeSpan.TotalMilliseconds * lastPosition);
 					TimeSpan timeSpan = TimeSpan.FromMilliseconds(TimeSpan.TotalMilliseconds * (position - lastPosition));
@@ -173,23 +173,23 @@ namespace VixenModules.Effect.Pulse
 			foreach (PointPair point in LevelCurve.Points) {
 				points.Add(point.X/100);
 			}
-			double lastPointPos = 0.0;
-			double lastDistinctPos = 0.0;
+			float lastPointPos = 0.0f;
+			float lastDistinctPos = 0.0f;
 			bool addNextPointAsFadeOut = false;
 			foreach (ColorPoint point in ColorGradient.Colors.SortedArray()) {
 				if (color != null) {
-					if (lastPointPos != point.Position) {
+					if (!lastPointPos.Equals( point.Position)) {
 						lastDistinctPos = lastPointPos;
 					}
 
-					if (addNextPointAsFadeOut && point.Position != lastPointPos) {
+					if (addNextPointAsFadeOut && !point.Position.Equals( lastPointPos)) {
 						points.Add(point.Position);
 						addNextPointAsFadeOut = false;
 					}
 
 					// if this current point is the same color, it is significant; add it, as well as
 					// the points before & after (to get the color fade in and out)
-					if (point.Color.ToRGB().ToArgb().ToArgb() == ((Color) color).ToArgb()) {
+					if (point.Color.ToRGB().ToArgb().ToArgb() == ((Color)color).ToArgb()) {
 						points.Add(point.Position);
 						points.Add(lastDistinctPos);
 						addNextPointAsFadeOut = true;

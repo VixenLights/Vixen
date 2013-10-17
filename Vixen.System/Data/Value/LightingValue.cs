@@ -11,13 +11,13 @@ namespace Vixen.Data.Value
 			hsv = HSV.FromRGB(color);
 		}
 
-		public LightingValue(Color color, double intensity)
+		public LightingValue(Color color, float intensity)
 			: this(color)
 		{
 			Intensity = intensity;
 		}
 
-		public LightingValue(double h, double s, double i)
+		public LightingValue(float h, float s, float i)
 		{
 			hsv = new HSV(h, s, i);
 		}
@@ -28,7 +28,7 @@ namespace Vixen.Data.Value
 		/// <summary>
 		/// Percentage value between 0 and 1.
 		/// </summary>
-		public double Hue
+		public float Hue
 		{
 			get { return hsv.H; }
 			set { hsv.H = value; }
@@ -37,7 +37,7 @@ namespace Vixen.Data.Value
 		/// <summary>
 		/// Percentage value between 0 and 1.
 		/// </summary>
-		public double Saturation
+		public float Saturation
 		{
 			get { return hsv.S; }
 			set { hsv.S = value; }
@@ -46,7 +46,7 @@ namespace Vixen.Data.Value
 		/// <summary>
 		/// Percentage value between 0 and 1.
 		/// </summary>
-		public double Intensity
+		public float Intensity
 		{
 			get { return hsv.V; }
 			set { hsv.V = value; }
@@ -83,7 +83,7 @@ namespace Vixen.Data.Value
 		{
 			get
 			{
-				double i = Intensity;
+				float i = Intensity;
 				Intensity = 1;
 				Color rv = hsv.ToRGB().ToArgb();
 				Intensity = i;

@@ -3,18 +3,50 @@
 SetCompressor /FINAL /SOLID lzma
 SetCompressorDictSize 64
 ;SetCompressor /FINAL /SOLID bzip2
+ 
 
+ 
+!macro GetVersionLocal file basedef
+!verbose push
+!verbose 1
+!tempfile _GetVersionLocal_nsi
+!tempfile _GetVersionLocal_exe
+!appendfile "${_GetVersionLocal_nsi}" 'Outfile "${_GetVersionLocal_exe}"$\nRequestexecutionlevel user$\n'
+!appendfile "${_GetVersionLocal_nsi}" 'Section$\n!define D "$"$\n!define N "${D}\n"$\n'
+!appendfile "${_GetVersionLocal_nsi}" 'GetDLLVersion "${file}" $2 $4$\n'
+!appendfile "${_GetVersionLocal_nsi}" 'IntOp $1 $2 / 0x00010000$\nIntOp $2 $2 & 0x0000FFFF$\n'
+!appendfile "${_GetVersionLocal_nsi}" 'IntOp $3 $4 / 0x00010000$\nIntOp $4 $4 & 0x0000FFFF$\n'
+!appendfile "${_GetVersionLocal_nsi}" 'FileOpen $0 "${_GetVersionLocal_nsi}" w$\nStrCpy $9 "${N}"$\n'
+!appendfile "${_GetVersionLocal_nsi}" 'FileWrite $0 "!define ${basedef}1 $1$9"$\nFileWrite $0 "!define ${basedef}2 $2$9"$\n'
+!appendfile "${_GetVersionLocal_nsi}" 'FileWrite $0 "!define ${basedef}3 $3$9"$\nFileWrite $0 "!define ${basedef}4 $4$9"$\n'
+!appendfile "${_GetVersionLocal_nsi}" 'FileClose $0$\nSectionend$\n'
+!system '"${NSISDIR}\makensis" -NOCD -NOCONFIG "${_GetVersionLocal_nsi}"' = 0
+!system '"${_GetVersionLocal_exe}" /S' = 0
+!delfile "${_GetVersionLocal_exe}"
+!undef _GetVersionLocal_exe
+!include "${_GetVersionLocal_nsi}"
+!delfile "${_GetVersionLocal_nsi}"
+!undef _GetVersionLocal_nsi
+!verbose pop
+!macroend
 
+!insertmacro GetVersionLocal "..\Release\VixenApplication.exe" MyVer_
+VIProductVersion "${MyVer_1}.${MyVer_2}.${MyVer_3}.${MyVer_4}"
+VIAddVersionKey "FileVersion" "${MyVer_1}.${MyVer_2}.${MyVer_3}.${MyVer_4}"
+ 
+ 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "Vixen"
 !define PRODUCT_NAME_FULL "Vixen 3"
-!define PRODUCT_VERSION "3.0.9"
+!define PRODUCT_VERSION "${MyVer_1}.${MyVer_2}.${MyVer_3}.${MyVer_4}"
 !define PRODUCT_PUBLISHER "Vixen - Lighting Automation"
 !define PRODUCT_WEB_SITE "http://www.vixenlights.com/"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\VixenApplication.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
 !define PRODUCT_STARTMENU_REGVAL "NSIS:StartMenuDir"
+
+
 
 ; for logging
 !define LVM_GETITEMCOUNT 0x1004
@@ -74,8 +106,8 @@ var ICONS_GROUP
 
 ; MUI end ------
 
-Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "..\Release\${PRODUCT_NAME}-${PRODUCT_VERSION}-Setup.exe"
+Name "${PRODUCT_NAME} ${MyVer_1}.${MyVer_2}.${MyVer_3} (32bit)"
+OutFile "..\Release\${PRODUCT_NAME}-${MyVer_1}.${MyVer_2}.${MyVer_3}-Setup.exe"
 InstallDir "$PROGRAMFILES\Vixen 3"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show

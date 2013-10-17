@@ -18,6 +18,7 @@ namespace VixenModules.Preview.DisplayPreview.ViewModels
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		private readonly DisplayPreviewModuleDataModel _dataModel;
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		private BitmapImage _backgroundImage;
 
