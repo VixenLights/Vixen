@@ -62,12 +62,14 @@ namespace VixenApplication
 			if (oc == null) {
 				textBoxName.Text = string.Empty;
 				numericUpDownOutputCount.Value = 0;
+				updateInterval.Value = Vixen.Sys.VixenSystem.DefaultUpdateInterval;
 				buttonDeleteController.Enabled = false;
 				groupBoxSelectedController.Enabled = false;
 			}
 			else {
 				textBoxName.Text = oc.Name;
 				numericUpDownOutputCount.Value = oc.OutputCount;
+				updateInterval.Value = oc.UpdateInterval;
 				buttonDeleteController.Enabled = true;
 				groupBoxSelectedController.Enabled = true;
 			}
@@ -140,6 +142,8 @@ namespace VixenApplication
 				return;
 
 			_displayedController.Name = textBoxName.Text;
+
+			_displayedController.UpdateInterval = (int)updateInterval.Value;
 
 			// iterate through the outputs, and add new outputs with default names if needed
 			int oldCount = _displayedController.OutputCount;

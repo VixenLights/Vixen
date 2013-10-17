@@ -62,7 +62,7 @@ namespace Vixen.Sys
 			get
 			{
 				//*** user-configurable threshold value
-				return _updateAdjudicator ?? (_updateAdjudicator = new ControllerUpdateAdjudicator(50));
+				return _updateAdjudicator ?? (_updateAdjudicator = new ControllerUpdateAdjudicator(10));
 			}
 		}
 

@@ -7,6 +7,7 @@
 			WriteContextFlag();
 			WriteIdentity();
 			WriteFilterEvaluationAllowance();
+			WriteDefaultUpdateInterval();
 			WriteElements();
 			WriteNodes();
 			WriteControllers();
@@ -21,6 +22,7 @@
 		protected abstract void WriteContextFlag();
 		protected abstract void WriteIdentity();
 		protected abstract void WriteFilterEvaluationAllowance();
+		protected abstract void WriteDefaultUpdateInterval();
 		protected abstract void WriteElements();
 		protected abstract void WriteNodes();
 		protected abstract void WriteControllers();
@@ -36,6 +38,7 @@
 			ReadContextFlag();
 			ReadIdentity();
 			ReadFilterEvaluationAllowance();
+			ReadDefaultUpdateInterval();
 			ReadElements();
 			ReadNodes();
 			ReadControllers();
@@ -50,6 +53,7 @@
 		protected abstract void ReadContextFlag();
 		protected abstract void ReadIdentity();
 		protected abstract void ReadFilterEvaluationAllowance();
+		protected abstract void ReadDefaultUpdateInterval();
 		protected abstract void ReadElements();
 		protected abstract void ReadNodes();
 		protected abstract void ReadControllers();

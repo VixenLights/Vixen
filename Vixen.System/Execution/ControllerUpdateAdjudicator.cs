@@ -23,7 +23,13 @@ namespace Vixen.Execution
 		{
 			bool result = false;
 
-			if (_firstTime || _stopwatch.ElapsedMilliseconds > _threshold) {
+			// no sense in allowing faster updates than the fastest controller...
+			int minUpdateInterval = 200;   // slowly in case of no controllers..
+			foreach (var oc in Vixen.Sys.VixenSystem.OutputControllers)
+				if (oc.UpdateInterval < minUpdateInterval)
+					minUpdateInterval = oc.UpdateInterval;
+
+			if (_firstTime || _stopwatch.ElapsedMilliseconds > System.Math.Max(_threshold,minUpdateInterval)) {
 				_firstTime = false;
 				_stopwatch.Restart();
 				result = true;

@@ -12,6 +12,8 @@ namespace Vixen.Sys
 {
 	internal class SystemConfig
 	{
+		public static int DEFAULT_UPDATE_INTERVAL = 50;
+
 		private IEnumerable<Element> _elements;
 		private IEnumerable<ElementNode> _nodes;
 		private IEnumerable<IOutputDevice> _controllers;
@@ -33,6 +35,7 @@ namespace Vixen.Sys
 			//*** is not in the data
 			IsPreviewThreaded = true; // opt-out
 			AllowFilterEvaluation = true; // opt-out
+			DefaultUpdateInterval = DEFAULT_UPDATE_INTERVAL;
 		}
 
 		public string LoadedFilePath { get; set; }
@@ -154,6 +157,8 @@ namespace Vixen.Sys
 		public bool IsPreviewThreaded { get; set; }
 
 		public bool AllowFilterEvaluation { get; set; }
+
+		public int DefaultUpdateInterval { get; set; }
 
 		public void Save()
 		{
