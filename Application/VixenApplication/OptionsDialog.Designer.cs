@@ -113,6 +113,7 @@
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "OptionsDialog";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Options";
 			this.Load += new System.EventHandler(this.OptionsDialog_Load);
 			((System.ComponentModel.ISupportInitialize)(this.ctlUpdateInteral)).EndInit();
