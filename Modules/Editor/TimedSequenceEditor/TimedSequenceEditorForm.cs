@@ -2257,6 +2257,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_SetTimingSpeed(_timingSpeed + _timingChangeDelta);
 		}
 
+        
 		private void toolStripButton_DecreaseTimingSpeed_Click(object sender, EventArgs e)
 		{
 			_SetTimingSpeed(_timingSpeed - _timingChangeDelta);
@@ -2287,9 +2288,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (this.InvokeRequired)
 				this.Invoke(new Vixen.Delegates.GenericDelegate(_SetTimingToolStripEnabledState));
 			else {
-				ITiming timingSource = _sequence.GetTiming();
-				toolStripTiming.Enabled = timingSource != null && timingSource.SupportsVariableSpeeds;
-			}
+                ITiming timingSource = _sequence.GetTiming();
+                this.toolStripButton_IncreaseTimingSpeed.Enabled =
+                    this.toolStripButton_DecreaseTimingSpeed.Enabled =
+                    this.toolStripLabel_TimingSpeed.Enabled= this.toolStripLabel_TimingSpeedLabel.Enabled = 
+                   timingSource != null && timingSource.SupportsVariableSpeeds;
+
+            }
 		}
 
 		private void _PlaySequence(TimeSpan rangeStart, TimeSpan rangeEnd)
@@ -2316,11 +2321,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				if (_timingSource.SupportsVariableSpeeds) {
 					_timingSource.Speed = _timingSpeed;
-					toolStripTiming.Enabled = true;
+				    this.toolStripButton_IncreaseTimingSpeed.Enabled =
+				        this.toolStripButton_DecreaseTimingSpeed.Enabled =
+				            this.toolStripLabel_TimingSpeed.Enabled = this.toolStripLabel_TimingSpeedLabel.Enabled = true;
+					 
 				}
 				else {
 					_UpdateTimingSpeedDisplay();
-					toolStripTiming.Enabled = false;
+					 this.toolStripButton_IncreaseTimingSpeed.Enabled =
+                    this.toolStripButton_DecreaseTimingSpeed.Enabled =
+                    this.toolStripLabel_TimingSpeed.Enabled= this.toolStripLabel_TimingSpeedLabel.Enabled = false;
 				}
 			}
 		}
@@ -2445,6 +2455,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				MarksForm.Close();
 			}
 		}
+ 
 	}
 
 	[Serializable]
