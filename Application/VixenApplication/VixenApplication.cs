@@ -197,7 +197,7 @@ namespace VixenApplication
 					if (target != null) {
 
 						var strFileName = target.FileName.ToString().Replace("[VIXENPROFILEDIR]", logDirectory).Replace('/', '\\').Replace("'", "");
-						var strArchiveFileName = target.FileName.ToString().Replace("[VIXENPROFILEDIR]", logDirectory).Replace('/', '\\').Replace("'", "");
+						var strArchiveFileName = target.ArchiveFileName.ToString().Replace("[VIXENPROFILEDIR]", logDirectory).Replace('/', '\\').Replace("'", "");
 
 						target.FileName = strFileName;
 						target.ArchiveFileName = strArchiveFileName;
@@ -211,7 +211,7 @@ namespace VixenApplication
 			//	if (target != null) {
 
 			//		var strFileName = target.FileName.ToString().Replace("[VIXENPROFILEDIR]", _rootDataDirectory).Replace('/', '\\').Replace("'", "");
-			//		var strArchiveFileName = target.FileName.ToString().Replace("[VIXENPROFILEDIR]", _rootDataDirectory).Replace('/', '\\').Replace("'", "");
+			//		var strArchiveFileName = target.ArchiveFileName.ToString().Replace("[VIXENPROFILEDIR]", _rootDataDirectory).Replace('/', '\\').Replace("'", "");
 
 			//		target.FileName = strFileName;
 			//		target.ArchiveFileName = strArchiveFileName;
