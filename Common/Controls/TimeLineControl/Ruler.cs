@@ -573,17 +573,10 @@ namespace Common.Controls.Timeline
 			selectedMarks.Clear();
 		}
 
-		public void Nudge(Keys key)
+		public void NudgeMark(int offset)
 		{
 			TimeSpan timeOffset;
-			if (key == Keys.Right)
-			{
-				timeOffset = TimeSpan.FromMilliseconds(20);
-			}
-			else 
-			{
-				timeOffset = TimeSpan.FromMilliseconds(-20);
-			}
+			timeOffset = TimeSpan.FromMilliseconds(offset);
 
 			SortedDictionary<TimeSpan, SnapDetails> newSelectedMarks = new SortedDictionary<TimeSpan, SnapDetails>();
 

@@ -1589,10 +1589,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			switch (keyData)
 			{
 				case Keys.Left:
-					TimelineControl.ruler.Nudge(Keys.Left);
+					TimelineControl.ruler.NudgeMark(-10);
+					break;
+				case (Keys.Left | Keys.Shift):
+					TimelineControl.ruler.NudgeMark(-20);
 					break;
 				case Keys.Right:
-					TimelineControl.ruler.Nudge(Keys.Right);
+					TimelineControl.ruler.NudgeMark(10);
+					break;
+				case (Keys.Right | Keys.Shift):
+					TimelineControl.ruler.NudgeMark(20);
 					break;
 			}
 			return base.ProcessCmdKey(ref msg, keyData);
