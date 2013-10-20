@@ -22,8 +22,15 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		[DataMember] private int _stringCount;
 		[DataMember] private int _lightsPerString;
 		[DataMember] private PreviewPoint _topRight, _bottomLeft;
+		[DataMember] private StringOrientations _stringOrientation = StringOrientations.Vertical;
 
 		private PreviewPoint p1Start, p2Start;
+
+		public enum StringOrientations 
+		{
+			Vertical, 
+			Horizontal
+		}
 
 		public PreviewPixelGrid(PreviewPoint point1, ElementNode selectedNode)
 		{
@@ -195,6 +202,19 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			set { _bottomRight = value; }
 		}
 
+		public StringOrientations StringOrientation 
+		{ 
+			get 
+			{
+				return _stringOrientation;
+			} 
+			set 
+			{
+				_stringOrientation = value;
+				Layout();
+			} 
+		}
+
 		#endregion
 
 		//public void SetStrings(List<PreviewBaseShape> strings)
@@ -248,18 +268,37 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public override void Layout()
 		{
-			int width = _bottomRight.X - _topLeft.X;
-			int height = _bottomRight.Y - _topLeft.Y;
-			int stringCount = _strings.Count;
-			double stringXSpacing = (double)width / (double)stringCount;
-			int x = _topLeft.X;
-			int y = _topLeft.Y;
-			for (int stringNum = 0; stringNum < StringCount; stringNum++) {
-				PreviewLine line = _strings[stringNum] as PreviewLine;
-				line.SetPoint0(x, y + height);
-				line.SetPoint1(x, y);
-				line.Layout();
-				x += (int)stringXSpacing;
+			if (StringOrientation == StringOrientations.Vertical)
+			{
+				int width = _bottomRight.X - _topLeft.X;
+				int height = _bottomRight.Y - _topLeft.Y;
+				double stringXSpacing = (double)width / (double)(StringCount-1);
+				int x = _topLeft.X;
+				int y = _topLeft.Y;
+				for (int stringNum = 0; stringNum < StringCount; stringNum++)
+				{
+					PreviewLine line = _strings[stringNum] as PreviewLine;
+					line.SetPoint0(x, y + height);
+					line.SetPoint1(x, y);
+					line.Layout();
+					x += (int)stringXSpacing;
+				}
+			}
+			else
+			{
+				int width = _bottomRight.X - _bottomLeft.X;
+				int height = _bottomLeft.Y - _topLeft.Y;
+				double stringYSpacing = (double)height / (double)(StringCount-1);
+				int x = _bottomLeft.X;
+				int y = _bottomLeft.Y;
+				for (int stringNum = 0; stringNum < StringCount; stringNum++)
+				{
+					PreviewLine line = _strings[stringNum] as PreviewLine;
+					line.SetPoint0(x, y);
+					line.SetPoint1(x + width, y);
+					line.Layout();
+					y -= (int)stringYSpacing;
+				}
 			}
 		}
 
