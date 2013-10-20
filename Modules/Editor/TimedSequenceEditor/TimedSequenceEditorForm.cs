@@ -609,6 +609,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (audio.MediaExists)
 				{
 					TimelineControl.Audio = audio;
+					toolStripMenuItem_removeAudio.Enabled = true;
 					PopulateAudioDropdown();
 				} else
 				{
