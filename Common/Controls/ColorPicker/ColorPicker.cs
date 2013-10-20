@@ -658,8 +658,8 @@ namespace Common.Controls.ColorManagement.ColorPicker
 				e.Handled = true;
 				return;
 			}
-			float value;
-			if (!float.TryParse(((TextBox) sender).Text,
+			double value;
+			if (!double.TryParse(((TextBox) sender).Text,
 			                     System.Globalization.NumberStyles.Integer,
 			                     null, out value)) return;
 
@@ -667,17 +667,17 @@ namespace Common.Controls.ColorManagement.ColorPicker
 
 			if (sender == tbHSV_H) {
 				HSV chsv = HSV.FromRGB(InternalColor.ToRGB());
-				chsv.H = (float)value/360.0f;
+				chsv.H = value/360.0;
 				InternalColor = XYZ.FromRGB(chsv.ToRGB());
 			}
 			else if (sender == tbHSV_S) {
 				HSV chsv = HSV.FromRGB(InternalColor.ToRGB());
-				chsv.S = (float)value/100.0f;
+				chsv.S = value/100.0;
 				InternalColor = XYZ.FromRGB(chsv.ToRGB());
 			}
 			else if (sender == tbHSV_V) {
 				HSV chsv = HSV.FromRGB(InternalColor.ToRGB());
-				chsv.V = (float)value/100.0f;
+				chsv.V = value/100.0;
 				InternalColor = XYZ.FromRGB(chsv.ToRGB());
 			}
 				#endregion
@@ -686,14 +686,14 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			else if (_mode == Mode.HSV_RGB) {
 				RGB crgb = InternalColor.ToRGB();
 				if (sender == tbSecond_1) {
-					crgb.R = value/255.0f;
+					crgb.R = value/255.0;
 				}
 				else if (sender == tbSecond_2) {
-					crgb.G = value/255.0f;
+					crgb.G = value/255.0;
 				}
 				else //sender==tbSecond_3
 				{
-					crgb.B = value/255.0f;
+					crgb.B = value/255.0;
 				}
 				InternalColor = XYZ.FromRGB(crgb);
 			}
@@ -816,7 +816,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			{
 				if (LockValue_V) {
 					HSV temp = HSV.FromRGB(value.ToRGB());
-					temp.V = 1.0f;
+					temp.V = 1.0;
 					value = XYZ.FromRGB(temp.ToRGB());
 				}
 				_color = value;

@@ -159,7 +159,7 @@ namespace VixenModules.OutputFilter.DimmingCurve
 		public override void Handle(IIntentState<LightingValue> obj)
 		{
 			LightingValue lightingValue = obj.GetValue();
-			float newIntensity = _curve.GetValue(lightingValue.Intensity * 100.0f) / 100.0f;
+			double newIntensity = _curve.GetValue(lightingValue.Intensity * 100.0) / 100.0;
 			_intentValue = new StaticIntentState<LightingValue>(obj, new LightingValue(lightingValue.hsv.H, lightingValue.hsv.S, newIntensity));
 		}
 
@@ -167,7 +167,7 @@ namespace VixenModules.OutputFilter.DimmingCurve
 		{
 			RGBValue rgbValue = obj.GetValue();
 			HSV hsv = HSV.FromRGB(rgbValue.Color);
-			float newIntensity = _curve.GetValue(rgbValue.Intensity * 100.0f) / 100.0f;
+			double newIntensity = _curve.GetValue(rgbValue.Intensity * 100.0) / 100.0;
 			hsv.V = newIntensity;
 			_intentValue = new StaticIntentState<RGBValue>(obj, new RGBValue(hsv.ToRGB().ToArgb()));
 		}

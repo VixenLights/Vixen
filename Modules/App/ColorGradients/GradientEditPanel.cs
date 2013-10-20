@@ -123,7 +123,7 @@ namespace VixenModules.App.ColorGradients
 							}
 						}
 						else {
-							var position = edit.Selection.First().Position;
+							double position = edit.Selection.First().Position;
 
 							foreach (ColorGradient.Point point in edit.Selection) {
 								edit.Gradient.Colors.Remove(point as ColorPoint);
@@ -181,9 +181,9 @@ namespace VixenModules.App.ColorGradients
 				if (pt == null)
 					return;
 				if (edit.FocusSelection)
-					pt.Focus = (float)vColorLoc.Value / 100.0f;
+					pt.Focus = (double) vColorLoc.Value/100.0;
 				else
-					pt.Position = (float)vColorLoc.Value / 100.0f;
+					pt.Position = (double) vColorLoc.Value/100.0;
 			}
 		}
 

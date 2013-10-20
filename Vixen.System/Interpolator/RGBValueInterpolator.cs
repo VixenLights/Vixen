@@ -6,7 +6,7 @@ namespace Vixen.Interpolator
 	[Vixen.Sys.Attribute.Interpolator(typeof (RGBValue))]
 	internal class RGBValueInterpolator : Interpolator<RGBValue>
 	{
-		protected override RGBValue InterpolateValue(float percent, RGBValue startValue, RGBValue endValue)
+		protected override RGBValue InterpolateValue(double percent, RGBValue startValue, RGBValue endValue)
 		{
 			RGBValue rv;
 			rv.R = (byte)(startValue.R + (endValue.R - startValue.R)*percent);
