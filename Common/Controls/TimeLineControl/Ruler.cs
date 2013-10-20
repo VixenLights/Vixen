@@ -49,6 +49,40 @@ namespace Common.Controls.Timeline
 			get { return new Size(400, 40); }
 		}
 
+		public int StandardNudgeTime
+		{
+			get
+			{
+				Common.Controls.XMLProfileSettings xml = new Common.Controls.XMLProfileSettings();
+				int nudgeValue = xml.GetSetting("StandardNudge", 10);
+				xml = null;
+				return nudgeValue;
+			}
+			set
+			{
+				Common.Controls.XMLProfileSettings xml = new Common.Controls.XMLProfileSettings();
+				xml.PutSetting("StandardNudge", value);
+				xml = null;
+			}
+		}
+
+		public int SuperNudgeTime
+		{
+			get
+			{
+				Common.Controls.XMLProfileSettings xml = new Common.Controls.XMLProfileSettings();
+				int nudgeValue = xml.GetSetting("SuperNudge", 20);
+				xml = null;
+				return nudgeValue;
+			}
+			set 
+			{
+				Common.Controls.XMLProfileSettings xml = new Common.Controls.XMLProfileSettings();
+				xml.PutSetting("SuperNudge", value);
+				xml = null;
+			}
+		}
+
 		#region Drawing
 
 		protected override void OnPaint(PaintEventArgs e)
