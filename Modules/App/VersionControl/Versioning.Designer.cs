@@ -23,7 +23,11 @@
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Versioning));
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.label7 = new System.Windows.Forms.Label();
+            this.chkEnabled = new System.Windows.Forms.CheckBox();
+            this.label6 = new System.Windows.Forms.Label();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.treeViewFiles = new System.Windows.Forms.TreeView();
@@ -42,9 +46,6 @@
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.listBoxChangeHistory = new System.Windows.Forms.ListBox();
-            this.label6 = new System.Windows.Forms.Label();
-            this.chkEnabled = new System.Windows.Forms.CheckBox();
-            this.label7 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -77,6 +78,37 @@
             this.splitContainer1.Size = new System.Drawing.Size(674, 405);
             this.splitContainer1.SplitterDistance = 36;
             this.splitContainer1.TabIndex = 0;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(289, 5);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(276, 26);
+            this.label7.TabIndex = 2;
+            this.label7.Text = "When enabled, will keep version history of important files \r\nautomatically on eve" +
+    "ry save";
+            // 
+            // chkEnabled
+            // 
+            this.chkEnabled.AutoSize = true;
+            this.chkEnabled.Enabled = false;
+            this.chkEnabled.Location = new System.Drawing.Point(606, 5);
+            this.chkEnabled.Name = "chkEnabled";
+            this.chkEnabled.Size = new System.Drawing.Size(65, 17);
+            this.chkEnabled.TabIndex = 1;
+            this.chkEnabled.Text = "Enabled";
+            this.chkEnabled.UseVisualStyleBackColor = true;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.Location = new System.Drawing.Point(3, 0);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(261, 24);
+            this.label6.TabIndex = 0;
+            this.label6.Text = "Automated Version Control";
             // 
             // splitContainer2
             // 
@@ -265,44 +297,13 @@
             this.listBoxChangeHistory.TabIndex = 0;
             this.listBoxChangeHistory.SelectedIndexChanged += new System.EventHandler(this.listBoxChangeHistory_SelectedIndexChanged);
             // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(3, 0);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(261, 24);
-            this.label6.TabIndex = 0;
-            this.label6.Text = "Automated Version Control";
-            // 
-            // chkEnabled
-            // 
-            this.chkEnabled.AutoSize = true;
-            this.chkEnabled.Enabled = false;
-            this.chkEnabled.Location = new System.Drawing.Point(606, 5);
-            this.chkEnabled.Name = "chkEnabled";
-            this.chkEnabled.Size = new System.Drawing.Size(65, 17);
-            this.chkEnabled.TabIndex = 1;
-            this.chkEnabled.Text = "Enabled";
-            this.chkEnabled.UseVisualStyleBackColor = true;
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(289, 5);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(276, 26);
-            this.label7.TabIndex = 2;
-            this.label7.Text = "When enabled, will keep version history of important files \r\nautomatically on eve" +
-    "ry save";
-            // 
             // Versioning
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(674, 405);
             this.Controls.Add(this.splitContainer1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Versioning";
             this.Text = "Vixen 3 Version Control";
             this.splitContainer1.Panel1.ResumeLayout(false);

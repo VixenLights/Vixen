@@ -59,10 +59,21 @@
     <Compile Include="Data.cs" />
     <Compile Include="Module_VersionControlCode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Status.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Status.Designer.cs">
+      <DependentUpon>Status.cs</DependentUpon>
     </Compile>
     <Compile Include="Versioning.cs">
       <SubType>Form</SubType>
@@ -79,6 +90,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Status.resx">
+      <DependentUpon>Status.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Versioning.resx">
       <DependentUpon>Versioning.cs</DependentUpon>
     </EmbeddedResource>
@@ -89,6 +107,14 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Include="Resources\config" />
+    <None Include="Resources\description" />
+    <None Include="Resources\exclude" />
+    <None Include="Resources\HEAD" />
+    <None Include="Resources\README.sample" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="git.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
