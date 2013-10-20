@@ -87,19 +87,21 @@ namespace Vixen.Sys.Managers
 			}
 		}
 
-		public void Update()
+		public ConcurrentDictionary<string, TimeSpan> Update()
 		{
+			var res = new ConcurrentDictionary<string,TimeSpan>();
 			_stopwatch.Restart();
 			lock (_instances)
 			{
 				_contextUpdateWaitValue.Set(_stopwatch.ElapsedMilliseconds);
 
-				//_instances.Values.AsParallel().ForAll(context =>
-				foreach( var context in _instances.Values)
+				_instances.Values.AsParallel().ForAll(context =>
+				//foreach( var context in _instances.Values)
 				{
 					try {
 						// Get a snapshot time value for this update.
 						TimeSpan contextTime = context.GetTimeSnapshot();
+						res.TryAdd(context.Name, contextTime);
 						IEnumerable<Guid> affectedElements = context.UpdateElementStates(contextTime);
 						//Could possibly return affectedElements so only affected outputs
 						//are updated.  The controller would have to maintain state so those
@@ -108,10 +110,11 @@ namespace Vixen.Sys.Managers
 					} catch (Exception ee) {
 						Logging.ErrorException(ee.Message, ee);
 					}
-				//});
-				}
+				});
+				//}
 				_contextUpdateTimeValue.Set(_stopwatch.ElapsedMilliseconds);
 			}
+			return res;
 		}
 
 		public IEnumerator<IContext> GetEnumerator()

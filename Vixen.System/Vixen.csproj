@@ -801,6 +801,7 @@
     <Compile Include="Sys\WindowsMultimedia.cs" />
     <Compile Include="Sys\XmlHelper.cs" />
     <Compile Include="Utility\cEventHelper.cs" />
+    <Compile Include="Utility\MiniStackTrace.cs" />
     <Compile Include="Utility\PathUtility.cs" />
   </ItemGroup>
   <ItemGroup>

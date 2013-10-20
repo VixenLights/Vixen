@@ -83,6 +83,7 @@ namespace Vixen.Sys.Managers
 		}
 
 		private long _lastMs = 0;
+		private long _lastMs2 = 0;
 
 		private void _ThreadFunc()
 		{
@@ -93,14 +94,60 @@ namespace Vixen.Sys.Managers
 				while (_threadState != ExecutionState.Stopping) {
 					long nowMs = _localTime.ElapsedMilliseconds;
 					long dtMs = nowMs - _lastMs;
-					_intervalDeltaValue.Set(Math.Abs(OutputDevice.UpdateInterval - dtMs));
-					//if( Math.Abs( OutputDevice.UpdateInterval - dtMs) > 10)
-					//	Logging.Info("nowMs:{0}, dtMs:{1}", nowMs, dtMs);
 					_lastMs = nowMs;
-					Execution.UpdateState();
-					_executionTimeValue.Set(_localTime.ElapsedMilliseconds - _lastMs);
-					_UpdateOutputDevice();
 
+					var lastTS = Execution.UpdateState();
+					long execMs = _localTime.ElapsedMilliseconds - nowMs;
+
+					_UpdateOutputDevice();
+					long outputMs = _localTime.ElapsedMilliseconds - nowMs - execMs;
+
+					// instrumentation counters...
+					_intervalDeltaValue.Set(Math.Abs(OutputDevice.UpdateInterval - dtMs));
+					_executionTimeValue.Set(_localTime.ElapsedMilliseconds - _lastMs);
+
+					// log stuff after real work is done...
+
+					// prep a sample info string for later...
+					string sampinfo = "";
+					long sampMs = 0;
+					foreach (var name in lastTS.Keys)
+					{
+						if (!name.Contains("System"))
+						{
+							sampMs = (long)lastTS[name].TotalMilliseconds;
+							sampinfo += String.Format("{0}:{1} ", name, sampMs);
+						}
+					}
+
+					// our cycle jitter was captured above
+					bool jitter = false;
+					if (Math.Abs(OutputDevice.UpdateInterval - dtMs) > 10) {
+						jitter = true;
+						Logging.Debug("hwt jitter:  {0}: nowMs:{1}, dtMs:{2}", OutputDevice.Name, nowMs, dtMs);
+					}
+
+					// only worry about state sample jitter if it is running
+					long dtMs2 = 0;
+					if (sampMs > 0) {
+						dtMs2 = sampMs - _lastMs2;
+						_lastMs2 = sampMs;
+						if (Math.Abs(OutputDevice.UpdateInterval - dtMs2) > 10 && sampMs > 0 && dtMs2 > 0)
+						{
+							jitter = true;
+							Logging.Debug("samp jitter:  {0}: sampMs:{1}, dts:{2}",
+											OutputDevice.Name, sampMs, dtMs2);
+						}
+					}
+					// summary output for all threads of jitter...
+					// change the false in statuslog to true to get a no-preview output each time through.. 
+					bool statuslog = false && (sampMs > 0 && dtMs2 > 0 && !OutputDevice.Name.Contains("Preview"));
+					if ( jitter || statuslog) {
+							Logging.Debug("{0}: nowMs:{1}, dtMs:{2}, execMs:{3}, outMs:{4}, ts:{5}, dts={6}",
+											OutputDevice.Name, nowMs, dtMs, execMs, outputMs, sampinfo, dtMs2);
+					}
+
+					// wait for the next go 'round
 					_WaitOnSignal(signaler);
 					_WaitOnPause();
 				}

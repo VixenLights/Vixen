@@ -270,7 +270,8 @@ namespace FMOD {
         public void Stop(SoundChannel soundChannel) {
             if(soundChannel != null && soundChannel.Channel != null) {
                 soundChannel.Channel.stop();
-                soundChannel.CancelFades();
+				soundChannel.m_ptimer.Stop();
+				soundChannel.CancelFades();
             }
         }
 
@@ -281,6 +282,7 @@ namespace FMOD {
                     soundChannel.ImmediateFade(fadeDuration);
                     soundChannel.WaitOnFade();
                     soundChannel.Channel.stop();
+					soundChannel.m_ptimer.Stop();
                     soundChannel.CancelFades();
                 }
             }
@@ -313,6 +315,99 @@ namespace FMOD {
 
     #region SoundChannel
     public class SoundChannel : IDisposable {
+
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+
+		// A little helper to aid tracing in routings called from multiple locations
+
+		public class MiniStackTrace
+		{
+			static public string ToString(int levels = 4, int skip = 2)
+			{
+				if (levels < 1)
+					return "bad levels value";
+				if (skip < 0)
+					return "bad skip value";
+
+				var st = new System.Diagnostics.StackTrace(true);
+				if (skip >= st.FrameCount)
+					skip = st.FrameCount - 1;
+				if (levels + skip > st.FrameCount)
+					levels = st.FrameCount - skip;
+
+				string ret="";
+				for (int i = 0; i < levels; i++)
+				{
+					var sf = st.GetFrame(skip+i);
+					String sep = ret.Length > 0 ? ", " : "";
+					String tmp = String.Format("{0}{1}:{2}", sep, Path.GetFileName(sf.GetFileName()), sf.GetFileLineNumber());
+					ret += tmp;
+				}
+
+				return ret;
+			}
+
+			static public bool HasCaller(string fname, int line = -1)
+			{
+				if (fname == null)
+					return false;
+
+				var st = new System.Diagnostics.StackTrace(true);
+
+				for (int i = 0; i < st.FrameCount; i++)
+				{
+					var sf = st.GetFrame(i);
+					if( fname.Equals( Path.GetFileName(sf.GetFileName())))
+					{
+						if (line < 1)
+							return true;
+						if (line == sf.GetFileLineNumber())
+							return true;
+					}
+				}
+				return false;
+			}
+		}
+
+		
+		// a timer that shadows the channel play state and provides 1 msec position info
+
+		public class PlayTimer
+		{
+			private uint _base = 0;
+			private System.Diagnostics.Stopwatch _sw = new System.Diagnostics.Stopwatch();
+
+			public void SetPause( bool val)
+			{
+				if (val)
+					_sw.Stop();
+				else
+					_sw.Start();
+			}
+
+			public void Stop()
+			{
+				_sw.Reset();
+			}
+
+			public void SetPosition(uint ms)
+			{
+				if (_sw.IsRunning)
+					_sw.Restart();
+				else
+					_sw.Reset();
+				_base = ms;
+			}
+
+			public uint GetPosition()
+			{
+				return (uint)_sw.ElapsedMilliseconds + _base;
+			}
+
+		}
+
+		public PlayTimer m_ptimer = new PlayTimer();
+
         private const int FADE_TIMER_INTERVAL = 100;
 
         private Sound m_sound = null;
@@ -418,6 +513,7 @@ namespace FMOD {
             set {
                 if(m_channel != null) {
                     m_channel.setPaused(value);
+					m_ptimer.SetPause(value);
                     if(m_fadeTimerState != FadeTimerState.Inactive) {
                         m_fadeTimer.Enabled = !value;
                     }
@@ -492,7 +588,23 @@ namespace FMOD {
                 if(m_channel != null) {
                     m_channel.getPosition(ref value, TIMEUNIT.MS);
                 }
-                return value;
+				if (value == 0)
+					return value;
+				uint value2 = m_ptimer.GetPosition();
+				int dt =  (int) value2 - (int) value;
+				//if( !MiniStackTrace.HasCaller("SequenceExecutor.cs"))
+				//	Logging.Debug("a:{0,5}, t:{1,5}, t-a:{2,3}, {3}", value, value2, dt, MiniStackTrace.ToString());
+				if ( Math.Abs(dt) > 50)
+				{
+					m_ptimer.SetPosition(value);
+					Logging.Debug("reset a:{0,5}, t:{1,5}, t-a:{2,3}", value, value2, dt);
+					//Console.WriteLine("reset a:{0,5}, t:{1,5}, t-a:{2,3}", value, value2, dt);
+					return value;
+				}
+				else
+				{
+					return value2;
+				}
             }
 
             set {
