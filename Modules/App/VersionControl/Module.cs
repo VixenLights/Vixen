@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using GitSharp;
 using Vixen.Module;
@@ -17,7 +18,7 @@ namespace VersionControl
         public Module()
         {
             _data = new Data();
-           
+
         }
 
         #region Variables
@@ -74,8 +75,8 @@ namespace VersionControl
         {
             if (_AppSupportsCommands())
             {
-                AppCommand toolsMenu = _GetToolsMenu();
-                AppCommand rootCommand = new AppCommand(MENU_ID_ROOT, "Version Control");
+                var toolsMenu = _GetToolsMenu();
+                var rootCommand = new AppCommand(MENU_ID_ROOT, "Version Control");
                 rootCommand.Add(_enabledCommand ?? (_enabledCommand = _CreateEnabledCommand()));
                 rootCommand.Add(new AppCommand("s1", "-"));
                 rootCommand.Add(_showCommand ?? (_showCommand = _CreateShowCommand()));
@@ -149,11 +150,11 @@ namespace VersionControl
         private void CreateWatcher(string folder, bool recursive)
         {
             var watcher = new FileSystemWatcher(folder);
-            watcher.Changed += watcher_Changed;
+            watcher.Changed += watcher_FileSystemChanges;
 
-            watcher.Created += watcher_Created;
-            watcher.Deleted += watcher_Deleted;
-            watcher.Renamed += watcher_Renamed;
+            watcher.Created += watcher_FileSystemChanges;
+            watcher.Deleted += watcher_FileSystemChanges;
+            watcher.Renamed += watcher_FileSystemChanges;
             watcher.IncludeSubdirectories = false;
             watcher.EnableRaisingEvents = true;
             watchers.Add(watcher);
@@ -161,82 +162,71 @@ namespace VersionControl
 
         }
 
-        void watcher_Renamed(object sender, RenamedEventArgs e)
+        private void watcher_FileSystemChanges(object sender, FileSystemEventArgs e)
         {
-            if (!e.FullPath.Contains("\\.git") && !e.FullPath.Contains("\\Logs"))
+
+            if (e.FullPath.Contains("\\.git") || e.FullPath.Contains("\\Logs")) return;
+            Task.Factory.StartNew(() =>
             {
                 lock (fileLockObject)
                 {
-                    repo.Index.Delete(e.OldFullPath);
-                    repo.Index.Add(e.FullPath);
-                    if ((repo.Status.Modified.Count + repo.Status.Added.Count + repo.Status.Removed.Count) > 0)
-                        repo.Commit(string.Format("Renamed file {0} to {1}{2}", e.OldName, e.Name, restoringFile ? " [Restored]" : ""));
-                    restoringFile = false;
-                    //Reset the cache when GIT changes
-                    Versioning.GitDetails = null;
+                    //Wait for the file to fully save...
+                    Thread.Sleep(2000);
+
+
+                    switch (e.ChangeType)
+                    {
+
+                        case WatcherChangeTypes.Changed:
+                            repo.Index.Add(e.FullPath);
+                            if ((repo.Status.Modified.Count + repo.Status.Added.Count +
+                                 repo.Status.Removed.Count) > 0)
+                                repo.Commit(string.Format("Changed {0}{1}", e.Name,
+                                    restoringFile ? " [Restored]" : ""));
+                            break;
+                        case WatcherChangeTypes.Created:
+                            repo.Index.Add(e.FullPath);
+                            if ((repo.Status.Modified.Count + repo.Status.Added.Count +
+                                 repo.Status.Removed.Count) > 0)
+                                repo.Commit(string.Format("Added {0}{1}", e.Name,
+                                    restoringFile ? " [Restored]" : ""));
+                            break;
+                        case WatcherChangeTypes.Deleted:
+                            repo.Index.Delete(e.FullPath);
+                            if ((repo.Status.Modified.Count + repo.Status.Added.Count +
+                                 repo.Status.Removed.Count) > 0)
+                                repo.Commit(string.Format("Deleted {0}{1}", e.Name,
+                                    restoringFile ? " [Restored]" : ""));
+                            break;
+                        case WatcherChangeTypes.Renamed:
+                            repo.Index.Delete(((RenamedEventArgs)e).OldFullPath);
+                            repo.Index.Add(e.FullPath);
+                            if ((repo.Status.Modified.Count + repo.Status.Added.Count +
+                                 repo.Status.Removed.Count) > 0)
+                                repo.Commit(string.Format("Renamed file {0} to {1}{2}",
+                                    ((RenamedEventArgs)e).OldName, e.Name,
+                                    restoringFile ? " [Restored]" : ""));
+                            break;
+                    }
                 }
-            }
+
+
+                restoringFile = false;
+                //Reset the cache when GIT changes
+                Versioning.GitDetails = null;
+
+
+            });
         }
 
-        void watcher_Created(object sender, FileSystemEventArgs e)
-        {
-            if (!e.FullPath.Contains(".git") && !e.FullPath.Contains("\\Logs"))
-            {
-                lock (fileLockObject)
-                {
-                    repo.Index.Add(e.FullPath);
-                    if ((repo.Status.Modified.Count + repo.Status.Added.Count + repo.Status.Removed.Count) > 0)
-                        repo.Commit(string.Format("Added {0}{1}", e.Name, restoringFile ? " [Restored]" : ""));
-                    restoringFile = false;
-                    //Reset the cache when GIT changes
-                    Versioning.GitDetails = null;
-                }
-            }
-        }
 
-        void watcher_Deleted(object sender, FileSystemEventArgs e)
-        {
-            if (!e.FullPath.Contains("\\.git") && !e.FullPath.Contains("\\Logs"))
-            {
-                lock (fileLockObject)
-                {
-                    repo.Index.Delete(e.FullPath);
-                    if ((repo.Status.Modified.Count + repo.Status.Added.Count + repo.Status.Removed.Count) > 0)
-                        repo.Commit(string.Format("Deleted {0}{1}", e.Name, restoringFile ? " [Restored]" : ""));
-                    restoringFile = false;
-                    //Reset the cache when GIT changes
-                    Versioning.GitDetails = null;
-                }
-            }
-        }
         private void DisableWatchers()
         {
             watchers.ForEach(w => w.EnableRaisingEvents = false);
             watchers.Clear();
         }
 
-        
-        void watcher_Changed(object sender, FileSystemEventArgs e)
-        {
 
-            if (!e.FullPath.Contains(".git") && !e.FullPath.Contains("\\Logs"))
-            {
-                lock (fileLockObject)
-                {
-                    try
-                    {
-                        repo.Index.Add(e.FullPath);
-                        repo.Commit(string.Format("Changed {0}{1}", e.Name, restoringFile ? " [Restored]" : ""));
-                       //Reset the cache when GIT changes
-                        Versioning.GitDetails = null;
-                    }
-                    catch (InvalidOperationException ie)
-                    {
-                        Console.WriteLine(ie.ToString());
-                    }
-                }
-            }
-        }
 
         internal static bool restoringFile = false;
         internal static object fileLockObject = new object();
