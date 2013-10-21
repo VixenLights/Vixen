@@ -173,8 +173,8 @@ namespace VixenModules.Effect.Pulse
 			foreach (PointPair point in LevelCurve.Points) {
 				points.Add(point.X/100);
 			}
-			double lastPointPos = 0.0;
-			double lastDistinctPos = 0.0;
+			float lastPointPos = 0.0f;
+			float lastDistinctPos = 0.0f;
 			bool addNextPointAsFadeOut = false;
 			foreach (ColorPoint point in ColorGradient.Colors.SortedArray()) {
 				if (color != null) {

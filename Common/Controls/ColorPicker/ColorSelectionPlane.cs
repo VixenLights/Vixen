@@ -16,7 +16,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 		#region variables
 
 		private Bitmap _bmp = new Bitmap(1, 1);
-		private double _x = 0.0, _y = 0.0;
+		private float _x = 0.0f, _y = 0.0f;
 
 		#endregion
 
@@ -101,8 +101,8 @@ namespace Common.Controls.ColorManagement.ColorPicker
 		{
 			base.OnMouseDown(e);
 			if (SetPosition(
-				(double) (e.X - 0)/Math.Max(1.0, (double) (this.Width - 2)),
-				(double) (e.Y - 0)/Math.Max(1.0, (double) (this.Height - 2))))
+				(float) (e.X - 0)/Math.Max(1.0f, (float) (this.Width - 2)),
+				(float) (e.Y - 0)/Math.Max(1.0f, (float) (this.Height - 2))))
 				RaiseScroll();
 		}
 
@@ -111,8 +111,8 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			base.OnMouseMove(e);
 			if (e.Button != MouseButtons.None)
 				if (SetPosition(
-					(double) (e.X - 0)/Math.Max(1.0, (double) (this.Width - 2)),
-					(double) (e.Y - 0)/Math.Max(1.0, (double) (this.Height - 2))))
+					(float) (e.X - 0f)/Math.Max(1.0f, (float) (this.Width - 2)),
+					(float) (e.Y - 0f)/Math.Max(1.0f, (float) (this.Height - 2))))
 					RaiseScroll();
 		}
 
@@ -120,13 +120,13 @@ namespace Common.Controls.ColorManagement.ColorPicker
 
 		#region members
 
-		public bool SetPosition(double posx, double posy)
+		public bool SetPosition(float posx, float posy)
 		{
-			posx = XYZ.ClipValue(posx, 0.0, 1.0);
-			posy = XYZ.ClipValue(posy, 0.0, 1.0);
+			posx = XYZ.ClipValue(posx, 0.0f, 1.0f);
+			posy = XYZ.ClipValue(posy, 0.0f, 1.0f);
 			if ((Control.ModifierKeys & Keys.Shift) != 0) {
-				posx = Math.Round(posx*8.0, 0)/8.0;
-				posy = Math.Round(posy*8.0, 0)/8.0;
+				posx = (float)Math.Round(posx*8.0f, 0f)/8.0f;
+				posy = (float)Math.Round(posy*8.0f, 0f)/8.0f;
 			}
 			if (posx == _x && posy == _y) return false;
 			Invalidate(Rectangle.Inflate(GetCursorBounds(_x, _y), 1, 1));
@@ -155,13 +155,13 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			get { return _bmp; }
 		}
 
-		internal double PositionX
+		internal float PositionX
 		{
 			get { return _x; }
 			set { SetPosition(value, _y); }
 		}
 
-		internal double PositionY
+		internal float PositionY
 		{
 			get { return _y; }
 			set { SetPosition(_x, value); }

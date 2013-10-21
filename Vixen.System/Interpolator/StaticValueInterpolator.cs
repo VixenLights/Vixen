@@ -3,7 +3,7 @@
 {
 	internal class StaticValueInterpolator<T> : Interpolator<T>
 	{
-		protected override T InterpolateValue(double percent, T startValue, T endValue)
+		protected override T InterpolateValue(float percent, T startValue, T endValue)
 		{
 			return startValue;
 		}

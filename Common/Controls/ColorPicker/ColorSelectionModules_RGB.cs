@@ -53,7 +53,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 
 		protected override void OnUpdateFaderPosition(ColorSelectionFader fader)
 		{
-			fader.Position = (double) (_color.R)/255.0;
+			fader.Position = _color.R / 255.0f;
 		}
 
 		protected override void OnFaderScroll(ColorSelectionFader fader)
@@ -92,8 +92,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 
 		protected override void OnUpdatePlanePosition(ColorSelectionPlane plane)
 		{
-			plane.SetPosition((double) (_color.B)/255.0,
-			                  1.0 - (double) (_color.G)/255.0);
+			plane.SetPosition(((float)_color.B) / 255.0f, 1.0f - ((float)_color.G) / 255.0f);
 		}
 
 		protected override void OnPlaneScroll(ColorSelectionPlane plane)
@@ -128,7 +127,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 
 		protected override void OnUpdateFaderPosition(ColorSelectionFader fader)
 		{
-			fader.Position = (double) (_color.G)/255.0;
+			fader.Position = _color.G / 255.0f;
 		}
 
 		protected override void OnFaderScroll(ColorSelectionFader fader)
@@ -167,8 +166,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 
 		protected override void OnUpdatePlanePosition(ColorSelectionPlane plane)
 		{
-			plane.SetPosition((double) (_color.B)/255.0,
-			                  1.0 - (double) (_color.R)/255.0);
+			plane.SetPosition(((float)_color.B) / 255.0f, 1.0f - ((float)_color.R) / 255.0f);
 		}
 
 		protected override void OnPlaneScroll(ColorSelectionPlane plane)
@@ -203,7 +201,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 
 		protected override void OnUpdateFaderPosition(ColorSelectionFader fader)
 		{
-			fader.Position = (double) (_color.B)/255.0;
+			fader.Position = _color.B / 255.0f;
 		}
 
 		protected override void OnFaderScroll(ColorSelectionFader fader)
@@ -242,8 +240,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 
 		protected override void OnUpdatePlanePosition(ColorSelectionPlane plane)
 		{
-			plane.SetPosition((double) (_color.R)/255.0,
-			                  1.0 - (double) (_color.G)/255.0);
+			plane.SetPosition(_color.R / 255.0f, 1.0f - _color.G / 255.0f);
 		}
 
 		protected override void OnPlaneScroll(ColorSelectionPlane plane)

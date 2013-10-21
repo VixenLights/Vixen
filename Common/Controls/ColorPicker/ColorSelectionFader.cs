@@ -16,7 +16,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 		#region variables
 
 		private Bitmap _bmp = new Bitmap(1, 1);
-		private double _position = 1.0;
+		private float _position = 1.0f;
 
 		#endregion
 
@@ -101,7 +101,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 		{
 			base.OnMouseDown(e);
 			if (SetPosition(
-				(double) (e.Y - 5)/(double) Math.Max(1, this.Height - 11)))
+				(float) (e.Y - 5)/(float) Math.Max(1, this.Height - 11)))
 				RaiseScroll();
 		}
 
@@ -110,7 +110,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			base.OnMouseMove(e);
 			if (e.Button == MouseButtons.Left)
 				if (SetPosition(
-					(double) (e.Y - 5)/(double) Math.Max(1, this.Height - 11)))
+					(float) (e.Y - 5)/(float) Math.Max(1, this.Height - 11)))
 					RaiseScroll();
 		}
 
@@ -118,11 +118,11 @@ namespace Common.Controls.ColorManagement.ColorPicker
 
 		#region members
 
-		public bool SetPosition(double value)
+		public bool SetPosition(float value)
 		{
-			value = XYZ.ClipValue(value, 0.0, 1.0);
+			value = XYZ.ClipValue(value, 0.0f, 1.0f);
 			if ((Control.ModifierKeys & Keys.Shift) != 0) {
-				value = Math.Round(value*8.0, 0)/8.0;
+				value = (float)Math.Round(value*8.0f, 0f)/8.0f;
 			}
 			if (value == _position) return false;
 			this.Invalidate(Rectangle.Inflate(GetScrollerRectangle(_position), 1, 1));
@@ -139,7 +139,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			get { return _bmp; }
 		}
 
-		internal double Position
+		internal float Position
 		{
 			get { return _position; }
 			set { SetPosition(value); }

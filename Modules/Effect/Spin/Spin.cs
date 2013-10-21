@@ -420,10 +420,10 @@ namespace VixenModules.Effect.Spin
 						break;
 
 					case SpinColorHandling.GradientThroughWholeEffect:
-						double startPos = ((double) current.Ticks/(double) TimeSpan.Ticks);
-						double endPos = 1.0;
+						float startPos = ((float)current.Ticks / (float)TimeSpan.Ticks);
+						float endPos = 1.0f;
 						if (TimeSpan - current >= pulseTimeSpan)
-							endPos = ((double)(current + pulseTimeSpan).Ticks / (double)TimeSpan.Ticks);
+							endPos = ((float)(current + pulseTimeSpan).Ticks / (float)TimeSpan.Ticks);
 
 						if (discreteColors) {
 							double range = endPos - startPos;

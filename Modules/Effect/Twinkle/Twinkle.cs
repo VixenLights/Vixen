@@ -323,8 +323,8 @@ namespace VixenModules.Effect.Twinkle
 							break;
 
 						case TwinkleColorHandling.GradientThroughWholeEffect:
-							double startPos = ((double) twinkle.StartTime.Ticks/(double) TimeSpan.Ticks);
-							double endPos = ((double) (twinkle.StartTime + twinkle.Duration).Ticks/(double) TimeSpan.Ticks);
+							float startPos = ((float)twinkle.StartTime.Ticks / (float)TimeSpan.Ticks);
+							float endPos = ((float)(twinkle.StartTime + twinkle.Duration).Ticks / (float)TimeSpan.Ticks);
 
 							if (discreteColors) {
 								double range = endPos - startPos;

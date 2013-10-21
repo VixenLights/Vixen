@@ -38,9 +38,9 @@ namespace Common.Controls.ColorManagement.ColorModels
 				//
 				TypeConverter conv =
 					TypeDescriptor.GetConverter(typeof (double));
-				return new XYZ((double) conv.ConvertFromString(context, culture, parts[0]),
-				               (double) conv.ConvertFromString(context, culture, parts[1]),
-				               (double) conv.ConvertFromString(context, culture, parts[2]));
+				return new XYZ((float) conv.ConvertFromString(context, culture, parts[0]),
+				               (float) conv.ConvertFromString(context, culture, parts[1]),
+				               (float) conv.ConvertFromString(context, culture, parts[2]));
 			}
 			return base.ConvertFrom(context, culture, value);
 		}
@@ -113,7 +113,7 @@ namespace Common.Controls.ColorManagement.ColorModels
 			    z == null || !(z is double))
 				throw new ArgumentException("properties invalid");
 			//
-			return new XYZ((double) x, (double) y, (double) z);
+			return new XYZ((float) x, (float) y, (float) z);
 		}
 	}
 }

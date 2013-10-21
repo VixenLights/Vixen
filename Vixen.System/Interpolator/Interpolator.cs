@@ -12,11 +12,11 @@ namespace Vixen.Interpolator
 	{
 		public bool Interpolate(TimeSpan timeOffset, TimeSpan timeSpan, T startValue, T endValue, out T value)
 		{
-			double percent = (double) timeOffset.Ticks/timeSpan.Ticks;
+			float percent = (float) timeOffset.Ticks/timeSpan.Ticks;
 			return Interpolate(percent, startValue, endValue, out value);
 		}
 
-		public bool Interpolate(double percentage, T startValue, T endValue, out T value)
+		public bool Interpolate(float percentage, T startValue, T endValue, out T value)
 		{
 			value = default(T);
 
@@ -31,7 +31,7 @@ namespace Vixen.Interpolator
 			return false;
 		}
 
-		protected abstract T InterpolateValue(double percent, T startValue, T endValue);
+		protected abstract T InterpolateValue(float percent, T startValue, T endValue);
 	}
 
 	public static class Interpolator

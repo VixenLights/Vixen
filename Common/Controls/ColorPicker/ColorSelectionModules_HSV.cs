@@ -14,14 +14,14 @@ namespace Common.Controls.ColorManagement.ColorPicker
 
 		#endregion
 
-		protected static ColorBlend GetHueBlend(double s, double v)
+		protected static ColorBlend GetHueBlend(float s, float v)
 		{
 			ColorBlend ret = new ColorBlend();
 			ret.Colors = new Color[]
 			             	{
-			             		new HSV(0.0, s, v).ToRGB(), new HSV(0.1666, s, v).ToRGB(), new HSV(0.3333, s, v).ToRGB(),
-			             		new HSV(0.5, s, v).ToRGB(), new HSV(0.6666, s, v).ToRGB(), new HSV(0.8333, s, v).ToRGB(),
-			             		new HSV(1.0, s, v).ToRGB()
+			             		new HSV(0.0f, s, v).ToRGB(), new HSV(0.1666f, s, v).ToRGB(), new HSV(0.3333f, s, v).ToRGB(),
+			             		new HSV(0.5f, s, v).ToRGB(), new HSV(0.6666f, s, v).ToRGB(), new HSV(0.8333f, s, v).ToRGB(),
+			             		new HSV(1.0f, s, v).ToRGB()
 			             	};
 			ret.Positions = new float[]
 			                	{
@@ -61,7 +61,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 				using (LinearGradientBrush brs = new LinearGradientBrush(
 					new Point(0, 0), new Point(bmp.Width),
 					Color.Black, Color.White)) {
-					brs.InterpolationColors = GetHueBlend(1.0, 1.0);
+					brs.InterpolationColors = GetHueBlend(1.0f, 1.0f);
 					gr.FillRectangle(brs, new Rectangle(Point.Empty, bmp.Size));
 				}
 			}
@@ -74,7 +74,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 
 		protected override void OnFaderScroll(ColorSelectionFader fader)
 		{
-			double newhue = fader.Position;
+			float newhue = fader.Position;
 			if (newhue == _color.H) return;
 			_color.H = newhue;
 			UpdatePlaneImage();
@@ -104,13 +104,13 @@ namespace Common.Controls.ColorManagement.ColorPicker
 
 		protected override void OnUpdatePlanePosition(ColorSelectionPlane plane)
 		{
-			plane.SetPosition(_color.S, 1.0 - _color.V);
+			plane.SetPosition(_color.S, 1.0f - _color.V);
 		}
 
 		protected override void OnPlaneScroll(ColorSelectionPlane plane)
 		{
-			double newsaturation = XYZ.ClipValue(plane.PositionX, 0.0, 1.0),
-			       newvalue = 1.0 - XYZ.ClipValue(plane.PositionY, 0.0, 1.0);
+			float newsaturation = XYZ.ClipValue(plane.PositionX, 0.0f, 1.0f),
+			       newvalue = 1.0f - XYZ.ClipValue(plane.PositionY, 0.0f, 1.0f);
 			if (newsaturation == _color.S &&
 			    newvalue == _color.V) return;
 			_color.S = newsaturation;
@@ -130,8 +130,8 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			using (Graphics gr = Graphics.FromImage(bmp)) {
 				using (LinearGradientBrush brs = new LinearGradientBrush(
 					new Point(0, 0), new Point(bmp.Width),
-					new HSV(_color.H, 0.0, _color.V).ToRGB(),
-					new HSV(_color.H, 1.0, _color.V).ToRGB())) {
+					new HSV(_color.H, 0.0f, _color.V).ToRGB(),
+					new HSV(_color.H, 1.0f, _color.V).ToRGB())) {
 					gr.FillRectangle(brs, new Rectangle(Point.Empty, bmp.Size));
 				}
 			}
@@ -144,7 +144,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 
 		protected override void OnFaderScroll(ColorSelectionFader fader)
 		{
-			double newsaturation = fader.Position;
+			float newsaturation = fader.Position;
 			if (newsaturation == _color.S) return;
 			_color.S = newsaturation;
 			UpdatePlaneImage();
@@ -163,7 +163,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 					Color.White, Color.White)) {
 					//draw hue
 					brs.Transform = new Matrix((float) bmp.Width, 0f, 0f, 1f, 0f, 0f);
-					brs.InterpolationColors = GetHueBlend(_color.S, 1.0);
+					brs.InterpolationColors = GetHueBlend(_color.S, 1.0f);
 					gr.FillRectangle(brs, new Rectangle(Point.Empty, bmp.Size));
 					//draw value
 					brs.Transform = new Matrix(0f, (float) bmp.Height, 1f, 0f, 0f, 0f);
@@ -178,13 +178,13 @@ namespace Common.Controls.ColorManagement.ColorPicker
 
 		protected override void OnUpdatePlanePosition(ColorSelectionPlane plane)
 		{
-			plane.SetPosition(_color.H, 1.0 - _color.V);
+			plane.SetPosition(_color.H, 1.0f - _color.V);
 		}
 
 		protected override void OnPlaneScroll(ColorSelectionPlane plane)
 		{
-			double newhue = XYZ.ClipValue(plane.PositionX, 0.0, 1.0),
-			       newvalue = 1.0 - XYZ.ClipValue(plane.PositionY, 0.0, 1.0);
+			float newhue = XYZ.ClipValue(plane.PositionX, 0.0f, 1.0f),
+			       newvalue = 1.0f - XYZ.ClipValue(plane.PositionY, 0.0f, 1.0f);
 			if (newhue == _color.H &&
 			    newvalue == _color.V) return;
 			_color.H = newhue;
@@ -205,7 +205,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			using (Graphics gr = Graphics.FromImage(bmp)) {
 				using (LinearGradientBrush brs = new LinearGradientBrush(
 					new Point(0, 0), new Point(bmp.Width),
-					Color.Black, new HSV(_color.H, _color.S, 1.0).ToRGB()
+					Color.Black, new HSV(_color.H, _color.S, 1.0f).ToRGB()
 					)) {
 					gr.FillRectangle(brs, new Rectangle(Point.Empty, bmp.Size));
 				}
@@ -219,7 +219,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 
 		protected override void OnFaderScroll(ColorSelectionFader fader)
 		{
-			double newvalue = fader.Position;
+			float newvalue = fader.Position;
 			if (newvalue == _color.V) return;
 			_color.V = newvalue;
 			UpdatePlaneImage();
@@ -238,12 +238,12 @@ namespace Common.Controls.ColorManagement.ColorPicker
 					Color.White, Color.White)) {
 					//draw hue
 					brs.Transform = new Matrix((float) bmp.Width, 0f, 0f, 1f, 0f, 0f);
-					brs.InterpolationColors = GetHueBlend(1.0, _color.V);
+					brs.InterpolationColors = GetHueBlend(1.0f, _color.V);
 					gr.FillRectangle(brs, new Rectangle(Point.Empty, bmp.Size));
 					//draw value
 					brs.Transform = new Matrix(0f, (float) bmp.Height, 1f, 0f, 0f, 0f);
 					ColorBlend blnd = new ColorBlend();
-					Color zerosat = new HSV(0.0, 0.0, _color.V).ToRGB();
+					Color zerosat = new HSV(0.0f, 0.0f, _color.V).ToRGB();
 					blnd.Colors = new Color[] {Color.FromArgb(0, zerosat), zerosat};
 					blnd.Positions = new float[] {0f, 1f};
 					brs.InterpolationColors = blnd;
@@ -254,13 +254,13 @@ namespace Common.Controls.ColorManagement.ColorPicker
 
 		protected override void OnUpdatePlanePosition(ColorSelectionPlane plane)
 		{
-			plane.SetPosition(_color.H, 1.0 - _color.S);
+			plane.SetPosition(_color.H, 1.0f - _color.S);
 		}
 
 		protected override void OnPlaneScroll(ColorSelectionPlane plane)
 		{
-			double newhue = XYZ.ClipValue(plane.PositionX, 0.0, 1.0),
-			       newsaturation = 1.0 - XYZ.ClipValue(plane.PositionY, 0.0, 1.0);
+			float newhue = XYZ.ClipValue(plane.PositionX, 0.0f, 1.0f),
+			       newsaturation = 1.0f - XYZ.ClipValue(plane.PositionY, 0.0f, 1.0f);
 			if (newhue == _color.H &&
 			    newsaturation == _color.S) return;
 			_color.H = newhue;

@@ -5,7 +5,7 @@ namespace Vixen.Data.Value
 {
 	public struct PositionValue : IIntentDataType
 	{
-		public PositionValue(double percentage)
+		public PositionValue(float percentage)
 		{
 			if (percentage < 0 || percentage > 1) throw new ArgumentOutOfRangeException("percentage");
 
@@ -15,7 +15,7 @@ namespace Vixen.Data.Value
 		/// <summary>
 		/// Percentage value between 0 and 1.
 		/// </summary>
-		public double Position;
+		public float Position;
 	}
 =======
 ﻿using System;
