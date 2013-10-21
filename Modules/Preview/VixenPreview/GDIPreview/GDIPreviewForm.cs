@@ -125,6 +125,7 @@ namespace VixenModules.Preview.VixenPreview
 				int pixelCount = 0;
 				foreach (DisplayItem item in DisplayItems)
 				{
+					item.Shape.Layout();
 					if (item.Shape.Pixels == null)
 						throw new System.ArgumentException("item.Shape.Pixels == null");
 
