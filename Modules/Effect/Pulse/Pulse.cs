@@ -110,9 +110,10 @@ namespace VixenModules.Effect.Pulse
 					addIntentsToElement(elementNode.Element);
 				}
 				else {
-					IEnumerable<Color> colors = ColorModule.getValidColorsForElementNode(elementNode, false);
+					IEnumerable<Color> colors = ColorModule.getValidColorsForElementNode(elementNode, false)
+						 .Intersect(ColorGradient.GetColorsInGradient());
 					foreach (Color color in colors) {
-						addIntentsToElement(elementNode.Element, color);
+						addIntentsToElement(elementNode.Element, color);	
 					}
 				}
 			}
