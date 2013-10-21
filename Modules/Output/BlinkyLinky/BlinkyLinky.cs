@@ -93,6 +93,8 @@ namespace VixenModules.Output.BlinkyLinky
 
 		private bool OpenConnection()
 		{
+			return true;
+
 			// start off closing the connection
 			CloseConnection();
 
@@ -135,6 +137,8 @@ namespace VixenModules.Output.BlinkyLinky
 
 		private void CloseConnection()
 		{
+			return;
+
 			if (_networkStream != null) {
 				_networkStream.Close();
 				_networkStream = null;
@@ -226,8 +230,8 @@ namespace VixenModules.Output.BlinkyLinky
 			if (changed || _timeoutStopwatch.ElapsedMilliseconds >= 10000) {
 				try {
 					_timeoutStopwatch.Restart();
-					_networkStream.Write(data, 0, totalPacketLength);
-					_networkStream.Flush();
+//					_networkStream.Write(data, 0, totalPacketLength);
+//					_networkStream.Flush();
 				}
 				catch (Exception ex) {
 					Logging.Warn(

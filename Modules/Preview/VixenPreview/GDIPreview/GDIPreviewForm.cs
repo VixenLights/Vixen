@@ -38,10 +38,8 @@ namespace VixenModules.Preview.VixenPreview
 				Vixen.Sys.Managers.ElementManager elements = VixenSystem.Elements;
 
 				Element[] elementArray = elements.Where(
-						e => e.State.Where(
-							i => ((i as IIntentState<LightingValue>) != null) ? ((i as IIntentState<LightingValue>).GetValue().Intensity > 0) :
-								((i as IIntentState<RGBValue>) != null) && ((i as IIntentState<RGBValue>).GetValue().Intensity > 0)
-						).Any()
+						e => e.State.Any(i => ((i as IIntentState<LightingValue>) != null) ? ((i as IIntentState<LightingValue>).GetValue().Intensity > 0) :
+							((i as IIntentState<RGBValue>) != null) && ((i as IIntentState<RGBValue>).GetValue().Intensity > 0))
 					).ToArray();
 
 				if (elementArray.Length == 0)
@@ -51,8 +49,7 @@ namespace VixenModules.Preview.VixenPreview
 						needsUpdate = false;
 						gdiControl.BeginUpdate();
 						gdiControl.EndUpdate();
-						gdiControl.RenderImage();
-						
+						gdiControl.Invalidate();
 					}
 
 					toolStripStatusFPS.Text =  "0 fps";
@@ -63,30 +60,36 @@ namespace VixenModules.Preview.VixenPreview
 
 				CancellationTokenSource tokenSource = new CancellationTokenSource();
 				gdiControl.BeginUpdate();
-				//elements.AsParallel().WithCancellation(tokenSource.Token).ForAll(element =>
-				elementArray.AsParallel().WithCancellation(tokenSource.Token).ForAll(element =>
+
+				try
 				{
-					try {
-						if (element != null) {
+					elementArray.AsParallel().WithCancellation(tokenSource.Token).ForAll(element =>
+					{
+						if (element != null)
+						{
 							ElementNode node = VixenSystem.Elements.GetElementNodeForElement(element);
-							if (node != null) {
+							if (node != null)
+							{
 								List<PreviewPixel> pixels;
-								if (NodeToPixel.TryGetValue(node, out pixels)) {
-									foreach (PreviewPixel pixel in pixels) {
+								if (NodeToPixel.TryGetValue(node, out pixels))
+								{
+									foreach (PreviewPixel pixel in pixels)
+									{
 										pixel.Draw(gdiControl.FastPixel, element.State);
 									}
 								}
 							}
 						}
-					} catch (Exception ) {
 
-					//	Logging.ErrorException(ee.Message, ee);
-					}
-				});
+					});
+				} catch (Exception e)
+				{
+					Logging.ErrorException(e.Message, e);
+				}
 				
 				gdiControl.EndUpdate();
+				gdiControl.Invalidate();
 
-				gdiControl.RenderImage();
 				toolStripStatusFPS.Text = string.Format("{0} fps", gdiControl.FrameRate);
 			}
 		}

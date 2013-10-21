@@ -107,7 +107,7 @@ var ICONS_GROUP
 ; MUI end ------
 
 Name "${PRODUCT_NAME} ${MyVer_1}.${MyVer_2}.${MyVer_3} (32-bit)"
-OutFile "D:\Git\ccnet\vixen\Release\${PRODUCT_NAME}-${MyVer_1}.${MyVer_2}.${MyVer_3}-Setup-32bit.exe"
+OutFile "..\Release\${PRODUCT_NAME}-${MyVer_1}.${MyVer_2}.${MyVer_3}-Setup-32bit.exe"
 InstallDir "$PROGRAMFILES\Vixen 3"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show

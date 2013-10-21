@@ -180,12 +180,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
         public void Draw(FastPixel.FastPixel fp, IIntentStates states)
         {
-			Rectangle drawRect = new Rectangle(drawArea.X, drawArea.Y, drawArea.Width, drawArea.Height);
-
+			
 			if(_isDiscreteColored)
 			{
 				int col = 1;
-
+				Rectangle drawRect = new Rectangle(drawArea.X, drawArea.Y, drawArea.Width, drawArea.Height);
 				// Get states for each color
 				IEnumerable<Color> colors = IntentHelpers.GetAlphaAffectedDiscreteColorsForIntents(states);
 				foreach (Color c in colors)
@@ -212,7 +211,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				Color intentColor = IntentHelpers.GetAlphaRGBMaxColorForIntents(states);
 				if (intentColor != Color.Transparent && intentColor.A > 0)
 				{
-					fp.DrawCircle(drawRect, intentColor);
+					fp.DrawCircle(drawArea, intentColor);
 				}
 			}
         }

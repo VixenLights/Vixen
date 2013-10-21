@@ -104,7 +104,7 @@ var ICONS_GROUP
 ; MUI end ------
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION} (64-bit DevBuild)"
-OutFile "D:\Git\ccnet\vixen\Release64\${PRODUCT_NAME}-${PRODUCT_VERSION}-Setup-64bit-DevBuild.exe"
+OutFile "..\Release64\${PRODUCT_NAME}-${PRODUCT_VERSION}-Setup-64bit-DevBuild.exe"
 InstallDir "$PROGRAMFILES\Vixen 3"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
