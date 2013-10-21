@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿using System.Drawing;
 using Vixen.Data.Value;
 
@@ -15,4 +16,23 @@ namespace Vixen.Interpolator
 			return rv;
 		}
 	}
+=======
+﻿using System.Drawing;
+using Vixen.Data.Value;
+
+namespace Vixen.Interpolator
+{
+	[Vixen.Sys.Attribute.Interpolator(typeof (RGBValue))]
+	internal class RGBValueInterpolator : Interpolator<RGBValue>
+	{
+		protected override RGBValue InterpolateValue(float percent, RGBValue startValue, RGBValue endValue)
+		{
+			RGBValue rv;
+			rv.R = (byte)(startValue.R + (endValue.R - startValue.R)*percent);
+			rv.G = (byte)(startValue.G + (endValue.G - startValue.G)*percent);
+			rv.B = (byte)(startValue.B + (endValue.B - startValue.B)*percent);
+			return rv;
+		}
+	}
+>>>>>>> parent of 42f78e6... Git insists these need committing even tho nothing has changed
 }

@@ -1,5 +1,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2010
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vixen", "Vixen.System\Vixen.csproj", "{50B78623-FCF4-48AF-93FF-FA87C937028F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VixenModules", "VixenModules", "{F1B3198B-977F-40CD-85B3-CAA3F5B5C948}"
@@ -664,6 +666,9 @@ Global
 		{C2FBDB6C-1768-4A23-B581-6A6D9CC6D1CB}.Release|x64.Build.0 = Release|x64
 		{C2FBDB6C-1768-4A23-B581-6A6D9CC6D1CB}.Release|x86.ActiveCfg = Release|x86
 		{C2FBDB6C-1768-4A23-B581-6A6D9CC6D1CB}.Release|x86.Build.0 = Release|x86
+		{4412FD30-7707-4C4A-B462-DBC5D820E6F5}.Release|x64.ActiveCfg = Release|Any CPU
+		{4412FD30-7707-4C4A-B462-DBC5D820E6F5}.Release|x86.ActiveCfg = Release|x86
+		{4412FD30-7707-4C4A-B462-DBC5D820E6F5}.Release|x86.Build.0 = Release|x86
 		{3486C5C0-CF77-4EA1-9A3E-1101899CC8AD}.Release|x64.ActiveCfg = Release|x64
 		{3486C5C0-CF77-4EA1-9A3E-1101899CC8AD}.Release|x64.Build.0 = Release|x64
 		{3486C5C0-CF77-4EA1-9A3E-1101899CC8AD}.Release|x86.ActiveCfg = Release|x86
