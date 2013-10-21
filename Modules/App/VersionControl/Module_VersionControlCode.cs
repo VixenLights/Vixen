@@ -17,8 +17,7 @@ namespace VersionControl
         #region Properties
 
         public string GitRepositoryFolder { get { return System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Vixen 3"); } }
-        public Dictionary<string, List<ChangeDetails>> GitDetails { get; set; }
-
+       
         #endregion
 
         private void EnableDisableSourceControl(bool enabled)
@@ -36,7 +35,7 @@ namespace VersionControl
                 // repo.WorkingDirectory = GitRepositoryFolder;
 
                 AddItemsToGit(repoCreated);
-                GetGitDetails();
+                
                 CreateWatcher(GitRepositoryFolder, true);
             }
         }
@@ -109,30 +108,7 @@ namespace VersionControl
             }
 
         }
-        private void GetGitDetails()
-        {
-
-            var tree = repo.Head;
-            if (repo.Head.CurrentCommit != null)
-                foreach (Commit commit in repo.Head.CurrentCommit.Ancestors)
-                {
-                    foreach (Change change in commit.Changes)
-                    {
-                        ChangeDetails details = new ChangeDetails();
-                        details.FileName = change.Path;
-                        details.Hash = commit.Hash;
-                        details.ChangeDate = commit.AuthorDate;
-                        details.UserName = commit.Author.Name;
-                        details.Message = commit.Message;
-
-                        if (!GitDetails.ContainsKey(change.Path)) GitDetails.Add(change.Path, new List<ChangeDetails>());
-                        GitDetails[change.Path].Add(details);
-
-                    }
-                }
-
-        }
-
+       
         private bool CreateRepositoryIfNotExists()
         {
             bool createRepository = !System.IO.Directory.Exists(System.IO.Path.Combine(GitRepositoryFolder, ".git"));

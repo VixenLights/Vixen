@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -16,7 +17,7 @@ namespace VersionControl
         public Module()
         {
             _data = new Data();
-            GitDetails = new Dictionary<string, List<ChangeDetails>>();
+           
         }
 
         #region Variables
@@ -88,7 +89,7 @@ namespace VersionControl
             AppCommand showCommand = new AppCommand("VersionControl", "Browse");
             showCommand.Click += (sender, e) =>
             {
-                using (Versioning cs = new Versioning((Data)StaticModuleData, repo, GitDetails))
+                using (Versioning cs = new Versioning((Data)StaticModuleData, repo))
                 {
 
                     if (cs.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -171,6 +172,8 @@ namespace VersionControl
                     if ((repo.Status.Modified.Count + repo.Status.Added.Count + repo.Status.Removed.Count) > 0)
                         repo.Commit(string.Format("Renamed file {0} to {1}{2}", e.OldName, e.Name, restoringFile ? " [Restored]" : ""));
                     restoringFile = false;
+                    //Reset the cache when GIT changes
+                    Versioning.GitDetails = null;
                 }
             }
         }
@@ -185,6 +188,8 @@ namespace VersionControl
                     if ((repo.Status.Modified.Count + repo.Status.Added.Count + repo.Status.Removed.Count) > 0)
                         repo.Commit(string.Format("Added {0}{1}", e.Name, restoringFile ? " [Restored]" : ""));
                     restoringFile = false;
+                    //Reset the cache when GIT changes
+                    Versioning.GitDetails = null;
                 }
             }
         }
@@ -199,6 +204,8 @@ namespace VersionControl
                     if ((repo.Status.Modified.Count + repo.Status.Added.Count + repo.Status.Removed.Count) > 0)
                         repo.Commit(string.Format("Deleted {0}{1}", e.Name, restoringFile ? " [Restored]" : ""));
                     restoringFile = false;
+                    //Reset the cache when GIT changes
+                    Versioning.GitDetails = null;
                 }
             }
         }
@@ -208,6 +215,7 @@ namespace VersionControl
             watchers.Clear();
         }
 
+        
         void watcher_Changed(object sender, FileSystemEventArgs e)
         {
 
@@ -217,14 +225,15 @@ namespace VersionControl
                 {
                     try
                     {
-                        //Allow the save operation to complete before we save it to source control... Also
-                        //Prevents dozens of SC saves if a user gets click happy.. 
-                        System.Threading.Thread.Sleep(10000);
                         repo.Index.Add(e.FullPath);
                         repo.Commit(string.Format("Changed {0}{1}", e.Name, restoringFile ? " [Restored]" : ""));
-
+                       //Reset the cache when GIT changes
+                        Versioning.GitDetails = null;
                     }
-                    catch (InvalidOperationException) { }
+                    catch (InvalidOperationException ie)
+                    {
+                        Console.WriteLine(ie.ToString());
+                    }
                 }
             }
         }
