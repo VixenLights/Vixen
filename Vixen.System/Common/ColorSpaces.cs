@@ -12,66 +12,66 @@ namespace Common.Controls.ColorManagement.ColorModels
 	public struct XYZ
 	{
 		public static readonly XYZ Empty = new XYZ();
-		public static readonly XYZ White = new XYZ(95.047f, 100.000f, 108.883f);
+		public static readonly XYZ White = new XYZ(95.047, 100.000, 108.883);
 
 		#region variables
 
-	[DataMember] private float _x, _y, _z;
+	[DataMember] private double _x, _y, _z;
 
 		#endregion
 
 		#region ctor
 
-		public XYZ(float x, float y, float z)
+		public XYZ(double x, double y, double z)
 		{
-			_x = ClipValue(x, 0.0f, 95.047f);
-			_y = ClipValue(y, 0.0f, 100.000f);
-			_z = ClipValue(z, 0.0f, 108.883f);
+			_x = ClipValue(x, 0.0, 95.047);
+			_y = ClipValue(y, 0.0, 100.000);
+			_z = ClipValue(z, 0.0, 108.883);
 		}
 
 		public static XYZ FromRGB(RGB value)
 		{
-			float
+			double
 				r = GammaCorrection(value.R),
 				g = GammaCorrection(value.G),
 				b = GammaCorrection(value.B);
 			//Observer. = 2°, Illuminant = D65
 			return new XYZ(
-				r*41.24f + g*35.76f + b*18.05f, //multiplicated by 100
-				r*21.26f + g*71.52f + b*7.22f,
-				r*1.93f + g*11.92f + b*95.05f);
+				r*41.24 + g*35.76 + b*18.05, //multiplicated by 100
+				r*21.26 + g*71.52 + b*7.22,
+				r*1.93 + g*11.92 + b*95.05);
 		}
 
 		#endregion
 
 		#region static functions
 
-		public static float ClipValue(float value, float min, float max)
+		public static double ClipValue(double value, double min, double max)
 		{
-			if (float.IsNaN(value) ||
-			    float.IsNegativeInfinity(value) ||
+			if (double.IsNaN(value) ||
+			    double.IsNegativeInfinity(value) ||
 			    value < min)
 				return min;
-			else if (float.IsPositiveInfinity(value) ||
+			else if (double.IsPositiveInfinity(value) ||
 			         value > max)
 				return max;
 			else return value;
 		}
 
-		private static float GammaCorrection(float value)
+		private static double GammaCorrection(double value)
 		{
-			if (value > 0.04045f)
-				return (float)Math.Pow((value + 0.055f)/1.055f, 2.4f);
+			if (value > 0.04045)
+				return Math.Pow((value + 0.055)/1.055, 2.4);
 			else
-				return value/12.92f;
+				return value/12.92;
 		}
 
-		private static float InvertGammaCorrection(float value)
+		private static double InvertGammaCorrection(double value)
 		{
 			if (value > 0.0031308)
-				return 1.055f*(float)Math.Pow(value, 1.0f/2.4f) - 0.055f;
+				return 1.055*Math.Pow(value, 1.0/2.4) - 0.055;
 			else
-				return 12.92f*value;
+				return 12.92*value;
 		}
 
 		#endregion
@@ -112,10 +112,10 @@ namespace Common.Controls.ColorManagement.ColorModels
 		public RGB ToRGB()
 		{
 			//Observer. = 2°, Illuminant = D65
-			float
-				r = InvertGammaCorrection(_x*+0.032406f + _y*-0.015372f + _z*-0.004986f),
-				g = InvertGammaCorrection(_x*-0.009689f + _y*+0.018758f + _z*+0.000415f),
-				b = InvertGammaCorrection(_x*+0.000557f + _y*-0.002040f + _z*+0.010570f);
+			double
+				r = InvertGammaCorrection(_x*+0.032406 + _y*-0.015372 + _z*-0.004986),
+				g = InvertGammaCorrection(_x*-0.009689 + _y*+0.018758 + _z*+0.000415),
+				b = InvertGammaCorrection(_x*+0.000557 + _y*-0.002040 + _z*+0.010570);
 			return new RGB(r, g, b);
 		}
 
@@ -129,22 +129,22 @@ namespace Common.Controls.ColorManagement.ColorModels
 
 		#region properties
 
-		public float X
+		public double X
 		{
 			get { return _x; }
-			set { _x = ClipValue(value, 0.0f, 95.047f); }
+			set { _x = ClipValue(value, 0.0, 95.047); }
 		}
 
-		public float Y
+		public double Y
 		{
 			get { return _y; }
-			set { _y = ClipValue(value, 0.0f, 100.000f); }
+			set { _y = ClipValue(value, 0.0, 100.000); }
 		}
 
-		public float Z
+		public double Z
 		{
 			get { return _z; }
-			set { _z = ClipValue(value, 0.0f, 108.883f); }
+			set { _z = ClipValue(value, 0.0, 108.883); }
 		}
 
 		#endregion
@@ -155,24 +155,24 @@ namespace Common.Controls.ColorManagement.ColorModels
 	{
 		#region variables
 
-		[DataMember] private float _r, _g, _b;
+		[DataMember] private double _r, _g, _b;
 
 		#endregion
 
 		#region ctor
 
-		public RGB(float r, float g, float b)
+		public RGB(double r, double g, double b)
 		{
-			_r = XYZ.ClipValue(r, 0.0f, 1.0f);
-			_g = XYZ.ClipValue(g, 0.0f, 1.0f);
-			_b = XYZ.ClipValue(b, 0.0f, 1.0f);
+			_r = XYZ.ClipValue(r, 0.0, 1.0);
+			_g = XYZ.ClipValue(g, 0.0, 1.0);
+			_b = XYZ.ClipValue(b, 0.0, 1.0);
 		}
 
 		public RGB(Color value) :
 			this(
-			(float) (value.R)/255.0f,
-			(float) (value.G)/255.0f,
-			(float) (value.B)/255.0f)
+			(double) (value.R)/255.0,
+			(double) (value.G)/255.0,
+			(double) (value.B)/255.0)
 		{
 		}
 
@@ -234,22 +234,22 @@ namespace Common.Controls.ColorManagement.ColorModels
 
 		#region properties
 
-		public float R
+		public double R
 		{
 			get { return _r; }
-			set { _r = XYZ.ClipValue(value, 0.0f, 1.0f); }
+			set { _r = XYZ.ClipValue(value, 0.0, 1.0); }
 		}
 
-		public float G
+		public double G
 		{
 			get { return _g; }
-			set { _g = XYZ.ClipValue(value, 0.0f, 1.0f); }
+			set { _g = XYZ.ClipValue(value, 0.0, 1.0); }
 		}
 
-		public float B
+		public double B
 		{
 			get { return _b; }
-			set { _b = XYZ.ClipValue(value, 0.0f, 1.0f); }
+			set { _b = XYZ.ClipValue(value, 0.0, 1.0); }
 		}
 
 		#endregion
@@ -260,47 +260,47 @@ namespace Common.Controls.ColorManagement.ColorModels
 	{
 		#region variables
 
-		private float _l, _a, _b;
+		private double _l, _a, _b;
 
 		#endregion
 
 		#region ctor
 
-		public LAB(float l, float a, float b)
+		public LAB(double l, double a, double b)
 		{
-			_l = XYZ.ClipValue(l, 0.0f, 100.0f);
-			_a = XYZ.ClipValue(a, -128.0f, 128.0f);
-			_b = XYZ.ClipValue(b, -128.0f, 128.0f);
+			_l = XYZ.ClipValue(l, 0.0, 100.0);
+			_a = XYZ.ClipValue(a, -128.0, 128.0);
+			_b = XYZ.ClipValue(b, -128.0, 128.0);
 		}
 
 		public static LAB FromXYZ(XYZ value)
 		{
 			//normalize values
-			float x = DriveCurve(value.X/XYZ.White.X),
+			double x = DriveCurve(value.X/XYZ.White.X),
 			       y = DriveCurve(value.Y/XYZ.White.Y),
 			       z = DriveCurve(value.Z/XYZ.White.Z);
 			//return value
 			return new LAB(
-				(116.0f*y) - 16.0f,
-				500.0f*(x - y),
-				200.0f*(y - z));
+				(116.0*y) - 16.0,
+				500.0*(x - y),
+				200.0*(y - z));
 		}
 
 		#endregion
 
 		#region static functions
 
-		private static float DriveCurve(float value)
+		private static double DriveCurve(double value)
 		{
-			if (value > 0.008856f) return (float)Math.Pow(value, 1.0f/3.0f);
-			else return (7.787f*value) + (16.0f/116.0f);
+			if (value > 0.008856) return Math.Pow(value, 1.0/3.0);
+			else return (7.787*value) + (16.0/116.0);
 		}
 
-		private static float DriveInverseCurve(float value)
+		private static double DriveInverseCurve(double value)
 		{
-			float cubic = value*value*value;
-			if (cubic > 0.008856f) return cubic;
-			else return (value - 16.0f/116.0f)/7.787f;
+			double cubic = value*value*value;
+			if (cubic > 0.008856) return cubic;
+			else return (value - 16.0/116.0)/7.787;
 		}
 
 		#endregion
@@ -341,9 +341,9 @@ namespace Common.Controls.ColorManagement.ColorModels
 
 		public XYZ ToXYZ()
 		{
-			float y = (_l + 16.0f)/116.0f,
-			       x = _a/500.0f + y,
-			       z = y - _b/200.0f;
+			double y = (_l + 16.0)/116.0,
+			       x = _a/500.0 + y,
+			       z = y - _b/200.0;
 			return new XYZ(
 				DriveInverseCurve(x)*XYZ.White.X,
 				DriveInverseCurve(y)*XYZ.White.Y,
@@ -360,22 +360,22 @@ namespace Common.Controls.ColorManagement.ColorModels
 
 		#region properties
 
-		public float L
+		public double L
 		{
 			get { return _l; }
-			set { _l = XYZ.ClipValue(value, 0.0f, 100.0f); }
+			set { _l = XYZ.ClipValue(value, 0.0, 100.0); }
 		}
 
-		public float a
+		public double a
 		{
 			get { return _a; }
-			set { _a = XYZ.ClipValue(value, -128.0f, 127.0f); }
+			set { _a = XYZ.ClipValue(value, -128.0, 127.0); }
 		}
 
-		public float b
+		public double b
 		{
 			get { return _b; }
-			set { _b = XYZ.ClipValue(value, -128.0f, 127.0f); }
+			set { _b = XYZ.ClipValue(value, -128.0, 127.0); }
 		}
 
 		#endregion
@@ -386,22 +386,22 @@ namespace Common.Controls.ColorManagement.ColorModels
 	{
 		#region variables
 
-		private float _h, _s, _v;
+		private double _h, _s, _v;
 
 		#endregion
 
 		#region ctor
 
-		public HSV(float h, float s, float v)
+		public HSV(double h, double s, double v)
 		{
-			_h = XYZ.ClipValue(h, 0.0f, 1.0f);
-			_s = XYZ.ClipValue(s, 0.0f, 1.0f);
-			_v = XYZ.ClipValue(v, 0.0f, 1.0f);
+			_h = XYZ.ClipValue(h, 0.0, 1.0);
+			_s = XYZ.ClipValue(s, 0.0, 1.0);
+			_v = XYZ.ClipValue(v, 0.0, 1.0);
 		}
 
 		public static HSV FromRGB(RGB col)
 		{
-			float
+			double
 				min = Math.Min(Math.Min(col.R, col.G), col.B),
 				max = Math.Max(Math.Max(col.R, col.G), col.B),
 				delta_max = max - min;
@@ -410,22 +410,22 @@ namespace Common.Controls.ColorManagement.ColorModels
 			ret._v = max;
 
 			if (delta_max == 0.0) {
-				ret._h = 0.0f;
-				ret._s = 0.0f;
+				ret._h = 0.0;
+				ret._s = 0.0;
 			}
 			else {
 				ret._s = delta_max/max;
 
-				float del_R = (((max - col.R)/6.0f) + (delta_max/2.0f))/delta_max;
-				float del_G = (((max - col.G)/6.0f) + (delta_max/2.0f))/delta_max;
-				float del_B = (((max - col.B)/6.0f) + (delta_max/2.0f))/delta_max;
+				double del_R = (((max - col.R)/6.0) + (delta_max/2.0))/delta_max;
+				double del_G = (((max - col.G)/6.0) + (delta_max/2.0))/delta_max;
+				double del_B = (((max - col.B)/6.0) + (delta_max/2.0))/delta_max;
 
 				if (col.R == max) ret._h = del_B - del_G;
-				else if (col.G == max) ret._h = (1.0f/3.0f) + del_R - del_B;
-				else if (col.B == max) ret._h = (2.0f/3.0f) + del_G - del_R;
+				else if (col.G == max) ret._h = (1.0/3.0) + del_R - del_B;
+				else if (col.B == max) ret._h = (2.0/3.0) + del_G - del_R;
 
-				if (ret._h < 0.0) ret._h += 1.0f;
-				if (ret._h > 1.0) ret._h -= 1.0f;
+				if (ret._h < 0.0) ret._h += 1.0;
+				if (ret._h > 1.0) ret._h -= 1.0;
 			}
 			return ret;
 		}
@@ -467,19 +467,19 @@ namespace Common.Controls.ColorManagement.ColorModels
 
 		public RGB ToRGB()
 		{
-			if (_s == 0.0f) {
+			if (_s == 0.0) {
 				return new RGB(_v, _v, _v);
 			}
 			else {
-				float h = _h*6.0f;
-				if (h == 6.0) h = 0.0f;
+				double h = _h*6.0;
+				if (h == 6.0) h = 0.0;
 				int h_i = (int) Math.Floor(h);
-				float
-					var_1 = _v*(1.0f - _s),
-					var_2 = _v*(1.0f - _s*(h - h_i)),
-					var_3 = _v*(1.0f - _s*(1.0f - (h - h_i)));
+				double
+					var_1 = _v*(1.0 - _s),
+					var_2 = _v*(1.0 - _s*(h - h_i)),
+					var_3 = _v*(1.0 - _s*(1.0 - (h - h_i)));
 
-				float r, g, b;
+				double r, g, b;
 				switch (h_i) {
 					case 0:
 						r = _v;
@@ -526,22 +526,22 @@ namespace Common.Controls.ColorManagement.ColorModels
 
 		#region properties
 
-		public float H
+		public double H
 		{
 			get { return _h; }
-			set { _h = XYZ.ClipValue(value, 0.0f, 1.0f); }
+			set { _h = XYZ.ClipValue(value, 0.0, 1.0); }
 		}
 
-		public float S
+		public double S
 		{
 			get { return _s; }
-			set { _s = XYZ.ClipValue(value, 0.0f, 1.0f); }
+			set { _s = XYZ.ClipValue(value, 0.0, 1.0); }
 		}
 
-		public float V
+		public double V
 		{
 			get { return _v; }
-			set { _v = XYZ.ClipValue(value, 0.0f, 1.0f); }
+			set { _v = XYZ.ClipValue(value, 0.0, 1.0); }
 		}
 
 		#endregion
@@ -552,38 +552,38 @@ namespace Common.Controls.ColorManagement.ColorModels
 	{
 		#region variables
 
-		public float _c, _m, _y, _k;
+		public double _c, _m, _y, _k;
 
 		#endregion
 
 		#region ctor
 
-		public CMYK(float c, float m, float y, float k)
+		public CMYK(double c, double m, double y, double k)
 		{
-			_c = XYZ.ClipValue(c, 0.0f, 1.0f);
-			_m = XYZ.ClipValue(m, 0.0f, 1.0f);
-			_y = XYZ.ClipValue(y, 0.0f, 1.0f);
-			_k = XYZ.ClipValue(k, 0.0f, 1.0f);
+			_c = XYZ.ClipValue(c, 0.0, 1.0);
+			_m = XYZ.ClipValue(m, 0.0, 1.0);
+			_y = XYZ.ClipValue(y, 0.0, 1.0);
+			_k = XYZ.ClipValue(k, 0.0, 1.0);
 		}
 
 		public static CMYK FromRGB(RGB value)
 		{
-			float
-				c = 1.0f - value.R,
-				m = 1.0f - value.G,
-				y = 1.0f - value.B,
-				k = 1.0f;
+			double
+				c = 1.0 - value.R,
+				m = 1.0 - value.G,
+				y = 1.0 - value.B,
+				k = 1.0;
 			if (c < k) k = c;
 			if (m < k) k = m;
 			if (y < k) k = y;
 			if (k == 1.0) //black
 			{
-				c = m = y = 0.0f;
+				c = m = y = 0.0;
 			}
 			else {
-				c = (c - k)/(1.0f - k);
-				m = (m - k)/(1.0f - k);
-				y = (y - k)/(1.0f - k);
+				c = (c - k)/(1.0 - k);
+				m = (m - k)/(1.0 - k);
+				y = (y - k)/(1.0 - k);
 			}
 			return new CMYK(c, m, y, k);
 		}
@@ -626,12 +626,12 @@ namespace Common.Controls.ColorManagement.ColorModels
 
 		public RGB ToRGB()
 		{
-			float
-				c = _c*(1.0f - _k) + _k,
-				m = _m*(1.0f - _k) + _k,
-				y = _y*(1.0f - _k) + _k;
+			double
+				c = _c*(1.0 - _k) + _k,
+				m = _m*(1.0 - _k) + _k,
+				y = _y*(1.0 - _k) + _k;
 
-			return new RGB(1.0f - c, 1.0f - m, 1.0f - y);
+			return new RGB(1.0 - c, 1.0 - m, 1.0 - y);
 		}
 
 		public override string ToString()
@@ -644,28 +644,28 @@ namespace Common.Controls.ColorManagement.ColorModels
 
 		#region properties
 
-		public float C
+		public double C
 		{
 			get { return _c; }
-			set { _c = XYZ.ClipValue(value, 0.0f, 1.0f); }
+			set { _c = XYZ.ClipValue(value, 0.0, 1.0); }
 		}
 
-		public float M
+		public double M
 		{
 			get { return _m; }
-			set { _m = XYZ.ClipValue(value, 0.0f, 1.0f); }
+			set { _m = XYZ.ClipValue(value, 0.0, 1.0); }
 		}
 
-		public float Y
+		public double Y
 		{
 			get { return _y; }
-			set { _y = XYZ.ClipValue(value, 0.0f, 1.0f); }
+			set { _y = XYZ.ClipValue(value, 0.0, 1.0); }
 		}
 
-		public float K
+		public double K
 		{
 			get { return _k; }
-			set { _k = XYZ.ClipValue(value, 0.0f, 1.0f); }
+			set { _k = XYZ.ClipValue(value, 0.0, 1.0); }
 		}
 
 		#endregion
