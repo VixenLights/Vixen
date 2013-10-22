@@ -54,7 +54,13 @@ namespace VixenModules.SequenceType.Vixen2x
 			SeqLengthInMills = Int32.Parse(root.Element("Time").Value);
 			EventPeriod = Int32.Parse(root.Element("EventPeriodInMilliseconds").Value);
 			EventData = Convert.FromBase64String(root.Element("EventValues").Value);
-			SongFileName = root.Element("Audio").Attribute("filename").Value;
+			
+			//Someone may have decided to not use audio so we need to check for that as well.
+			var songElement = root.Elements("Audio").SingleOrDefault();
+			if (songElement != null)
+			{
+				SongFileName = root.Element("Audio").Attribute("filename").Value;
+			}
 
 			//if the sequence is flattened then the profile element will not exists so lets check for it.
 			var profileElement = root.Elements("Profile").SingleOrDefault();
