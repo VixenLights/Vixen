@@ -154,6 +154,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			LoadAvailableEffects();
 			InitUndo();
 			updateButtonStates();
+			UpdatePasteMenuStates();
 			LoadVirtualEffects();
 
 #if DEBUG
@@ -1730,7 +1731,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			IDataObject dataObject = new DataObject(_clipboardFormatName);
 			dataObject.SetData(result);
-			Clipboard.SetDataObject(dataObject, false);
+			Clipboard.SetDataObject(dataObject, true);
 			_TimeLineSequenceClipboardContentsChanged(EventArgs.Empty);
 		}
 
