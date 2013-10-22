@@ -127,6 +127,7 @@ namespace VixenModules.Effect.Pulse
 				Debug.Assert(allPointsTimeOrdered.Length > 1);
 
 				double lastPosition = allPointsTimeOrdered[0];
+				TimeSpan lastEnd = TimeSpan.Zero;
 				for (var i = 1; i < allPointsTimeOrdered.Length; i++)
 				{
 					double position = allPointsTimeOrdered[i];
@@ -153,7 +154,7 @@ namespace VixenModules.Effect.Pulse
 
 					if (startValue.Intensity.Equals( 0f) && endValue.Intensity.Equals(0f)) continue;
 
-					TimeSpan startTime = TimeSpan.FromMilliseconds(TimeSpan.TotalMilliseconds * lastPosition);
+					TimeSpan startTime = lastEnd;
 					TimeSpan timeSpan = TimeSpan.FromMilliseconds(TimeSpan.TotalMilliseconds * (position - lastPosition));
 
 					IIntent intent = new LightingIntent(startValue, endValue, timeSpan);
@@ -161,6 +162,7 @@ namespace VixenModules.Effect.Pulse
 					_elementData.AddIntentForElement(element.Id, intent, startTime);
 
 					lastPosition = position;
+					lastEnd = startTime + timeSpan;
 				}
 			}
 		}
