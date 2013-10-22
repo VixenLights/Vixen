@@ -189,6 +189,9 @@
 			this.scrollPixelSize = new Common.Controls.ControlsEx.ValueControls.HValueScrollBar();
 			this.label44 = new System.Windows.Forms.Label();
 			this.buttonHelp = new System.Windows.Forms.Button();
+			this.radioButtonVertical = new System.Windows.Forms.RadioButton();
+			this.radioButtonHorizontal = new System.Windows.Forms.RadioButton();
+			this.label51 = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.tabEffectProperties.SuspendLayout();
@@ -230,7 +233,7 @@
 			this.groupBox1.Controls.Add(this.preview);
 			this.groupBox1.Location = new System.Drawing.Point(10, 3);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(285, 430);
+			this.groupBox1.Size = new System.Drawing.Size(285, 440);
 			this.groupBox1.TabIndex = 5;
 			this.groupBox1.TabStop = false;
 			// 
@@ -246,23 +249,23 @@
 			this.preview.Name = "preview";
 			this.preview.Paused = false;
 			this.preview.ShowInfo = false;
-			this.preview.Size = new System.Drawing.Size(273, 412);
+			this.preview.Size = new System.Drawing.Size(273, 422);
 			this.preview.TabIndex = 0;
 			// 
 			// comboBoxDisplayType
 			// 
 			this.comboBoxDisplayType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.comboBoxDisplayType.FormattingEnabled = true;
-			this.comboBoxDisplayType.Location = new System.Drawing.Point(96, 23);
+			this.comboBoxDisplayType.Location = new System.Drawing.Point(117, 20);
 			this.comboBoxDisplayType.Name = "comboBoxDisplayType";
-			this.comboBoxDisplayType.Size = new System.Drawing.Size(288, 21);
+			this.comboBoxDisplayType.Size = new System.Drawing.Size(267, 21);
 			this.comboBoxDisplayType.TabIndex = 2;
 			this.comboBoxDisplayType.SelectedIndexChanged += new System.EventHandler(this.comboBoxDisplayType_SelectedIndexChanged);
 			// 
 			// label22
 			// 
 			this.label22.AutoSize = true;
-			this.label22.Location = new System.Drawing.Point(19, 26);
+			this.label22.Location = new System.Drawing.Point(19, 23);
 			this.label22.Name = "label22";
 			this.label22.Size = new System.Drawing.Size(71, 13);
 			this.label22.TabIndex = 1;
@@ -287,7 +290,7 @@
 			this.groupBox2.Controls.Add(this.comboBoxEffect);
 			this.groupBox2.Controls.Add(this.label1);
 			this.groupBox2.Controls.Add(this.trackBarSpeed);
-			this.groupBox2.Location = new System.Drawing.Point(301, 98);
+			this.groupBox2.Location = new System.Drawing.Point(301, 108);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(408, 306);
 			this.groupBox2.TabIndex = 6;
@@ -1923,24 +1926,27 @@
 			// 
 			// groupBox3
 			// 
+			this.groupBox3.Controls.Add(this.label51);
+			this.groupBox3.Controls.Add(this.radioButtonHorizontal);
+			this.groupBox3.Controls.Add(this.radioButtonVertical);
 			this.groupBox3.Controls.Add(this.scrollPixelSize);
 			this.groupBox3.Controls.Add(this.label44);
 			this.groupBox3.Controls.Add(this.label22);
 			this.groupBox3.Controls.Add(this.comboBoxDisplayType);
 			this.groupBox3.Location = new System.Drawing.Point(301, 3);
 			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(408, 89);
+			this.groupBox3.Size = new System.Drawing.Size(408, 99);
 			this.groupBox3.TabIndex = 7;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "Preview Display";
 			// 
 			// scrollPixelSize
 			// 
-			this.scrollPixelSize.Location = new System.Drawing.Point(96, 50);
+			this.scrollPixelSize.Location = new System.Drawing.Point(117, 47);
 			this.scrollPixelSize.Maximum = 10;
 			this.scrollPixelSize.Minimum = 1;
 			this.scrollPixelSize.Name = "scrollPixelSize";
-			this.scrollPixelSize.Size = new System.Drawing.Size(288, 23);
+			this.scrollPixelSize.Size = new System.Drawing.Size(91, 23);
 			this.scrollPixelSize.TabIndex = 5;
 			this.scrollPixelSize.Text = "hValueScrollBar1";
 			this.scrollPixelSize.Value = 3;
@@ -1949,7 +1955,7 @@
 			// label44
 			// 
 			this.label44.AutoSize = true;
-			this.label44.Location = new System.Drawing.Point(19, 54);
+			this.label44.Location = new System.Drawing.Point(19, 50);
 			this.label44.Name = "label44";
 			this.label44.Size = new System.Drawing.Size(55, 13);
 			this.label44.TabIndex = 3;
@@ -1961,7 +1967,7 @@
 			this.buttonHelp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonHelp.Image = ((System.Drawing.Image)(resources.GetObject("buttonHelp.Image")));
 			this.buttonHelp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.buttonHelp.Location = new System.Drawing.Point(649, 410);
+			this.buttonHelp.Location = new System.Drawing.Point(649, 423);
 			this.buttonHelp.Name = "buttonHelp";
 			this.buttonHelp.Size = new System.Drawing.Size(60, 23);
 			this.buttonHelp.TabIndex = 59;
@@ -1972,6 +1978,39 @@
 			this.buttonHelp.UseVisualStyleBackColor = true;
 			this.buttonHelp.Click += new System.EventHandler(this.buttonHelp_Click);
 			// 
+			// radioButtonVertical
+			// 
+			this.radioButtonVertical.AutoSize = true;
+			this.radioButtonVertical.Location = new System.Drawing.Point(117, 74);
+			this.radioButtonVertical.Name = "radioButtonVertical";
+			this.radioButtonVertical.Size = new System.Drawing.Size(60, 17);
+			this.radioButtonVertical.TabIndex = 6;
+			this.radioButtonVertical.TabStop = true;
+			this.radioButtonVertical.Text = "Vertical";
+			this.radioButtonVertical.UseVisualStyleBackColor = true;
+			this.radioButtonVertical.CheckedChanged += new System.EventHandler(this.radioButtonVertical_CheckedChanged);
+			// 
+			// radioButtonHorizontal
+			// 
+			this.radioButtonHorizontal.AutoSize = true;
+			this.radioButtonHorizontal.Location = new System.Drawing.Point(183, 74);
+			this.radioButtonHorizontal.Name = "radioButtonHorizontal";
+			this.radioButtonHorizontal.Size = new System.Drawing.Size(72, 17);
+			this.radioButtonHorizontal.TabIndex = 7;
+			this.radioButtonHorizontal.TabStop = true;
+			this.radioButtonHorizontal.Text = "Horizontal";
+			this.radioButtonHorizontal.UseVisualStyleBackColor = true;
+			this.radioButtonHorizontal.CheckedChanged += new System.EventHandler(this.radioButtonHorizontal_CheckedChanged);
+			// 
+			// label51
+			// 
+			this.label51.AutoSize = true;
+			this.label51.Location = new System.Drawing.Point(20, 76);
+			this.label51.Name = "label51";
+			this.label51.Size = new System.Drawing.Size(91, 13);
+			this.label51.TabIndex = 8;
+			this.label51.Text = "String Orientation:";
+			// 
 			// NutcrackerTypeEditorControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1981,7 +2020,7 @@
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
 			this.Name = "NutcrackerTypeEditorControl";
-			this.Size = new System.Drawing.Size(718, 442);
+			this.Size = new System.Drawing.Size(718, 452);
 			this.Load += new System.EventHandler(this.NutcrackerTypeEditorControl_Load);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox2.ResumeLayout(false);
@@ -2196,5 +2235,8 @@
         private System.Windows.Forms.Label label52;
         private System.Windows.Forms.TextBox textPictureTileFileName;
 		private System.Windows.Forms.Button buttonPictureTileSelect;
+		private System.Windows.Forms.Label label51;
+		private System.Windows.Forms.RadioButton radioButtonHorizontal;
+		private System.Windows.Forms.RadioButton radioButtonVertical;
 	}
 }

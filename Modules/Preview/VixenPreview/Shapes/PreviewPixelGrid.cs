@@ -217,16 +217,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		#endregion
 
-		//public void SetStrings(List<PreviewBaseShape> strings)
-		//{
-		//	_strings = new List<PreviewBaseShape>();
-		//	foreach (PreviewBaseShape line in strings) {
-		//		PreviewBaseShape newLine = (PreviewLine) line.Clone();
-		//		_strings.Add(newLine);
-		//	}
-		//	_stringCount = _strings.Count();
-		//}
-
 		[Browsable(false)]
 		public int PixelCount
 		{
@@ -247,7 +237,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			{
 				if (_strings != null && _strings.Count > 0) {
 					List<PreviewPixel> outPixels = new List<PreviewPixel>();
-					for (int i = 0; i < _strings.Count; i++) {
+					for (int i = 0; i < Strings.Count; i++) {
 						foreach (PreviewPixel pixel in _strings[i].Pixels) {
 							outPixels.Add(pixel);
 						}
@@ -262,7 +252,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			set
 			{
 				_pixels = value;
-				//ResetNodeToPixelDictionary();
 			}
 		}
 

@@ -117,6 +117,8 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			SetCurrentEffect(Data.CurrentEffect);
 			comboBoxEffect.SelectedItem = Data.CurrentEffect.ToString();
 			trackBarSpeed.Value = Data.Speed;
+			radioButtonHorizontal.Checked = (Data.StringOrienation == NutcrackerEffects.StringOrientations.Horizontal);
+			radioButtonVertical.Checked = (Data.StringOrienation == NutcrackerEffects.StringOrientations.Vertical);
 
 			LoadBarsData();
 			LoadButterflyData();
@@ -1073,6 +1075,22 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			if (displayItem == null)
 				return;
 			displayItem.Shape.PixelSize = Data.PixelSize;
+		}
+
+		private void radioButtonVertical_CheckedChanged(object sender, EventArgs e)
+		{
+			if (radioButtonVertical.Checked)
+			{
+				Data.StringOrienation = NutcrackerEffects.StringOrientations.Vertical;
+			}
+		}
+
+		private void radioButtonHorizontal_CheckedChanged(object sender, EventArgs e)
+		{
+			if (radioButtonHorizontal.Checked)
+			{
+				Data.StringOrienation = NutcrackerEffects.StringOrientations.Horizontal;
+			}
 		}
 
 	}
