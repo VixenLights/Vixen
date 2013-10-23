@@ -19,8 +19,8 @@ namespace VixenModules.Output.K8055_Controller
 			}
 			if (_refCounts[device] == 1)
 			{
-				K8055D.SetCurrentDevice((long)device);
-				K8055D.CloseDevice();
+				K8055.SetCurrentDevice((long)device);
+				K8055.CloseDevice();
 				_refCounts[device] = 0;
 			}
 			else if (_refCounts[device] > 1)
@@ -37,7 +37,7 @@ namespace VixenModules.Output.K8055_Controller
 			}
 			if (_refCounts[device]++ == 0)
 			{
-				return (K8055D.OpenDevice((long)device)==device);
+				return (K8055.OpenDevice((long)device)==device);
 			}
 			return true;
 		}
@@ -56,8 +56,8 @@ namespace VixenModules.Output.K8055_Controller
 			{
 				throw new Exception("Device is not open");
 			}
-			K8055D.SetCurrentDevice((long)device);
-			return K8055D.ReadAllDigital();
+			K8055.SetCurrentDevice((long)device);
+			return K8055.ReadAllDigital();
 		}
 
 		public static long SearchDevices()
@@ -66,15 +66,15 @@ namespace VixenModules.Output.K8055_Controller
 			_busy = true;
 			for (num = 0; num < _refCounts.Length; num++)
 			{
-				K8055D.SetCurrentDevice((long)num);
-				K8055D.CloseDevice();
+				K8055.SetCurrentDevice((long)num);
+				K8055.CloseDevice();
 			}
-			long numdevices = K8055D.SearchDevices();
+			long numdevices = K8055.SearchDevices();
 			for (num = 0; num < _refCounts.Length; num++)
 			{
 				if (_refCounts[num] > 0)
 				{
-					K8055D.OpenDevice((long)num);
+					K8055.OpenDevice((long)num);
 				}
 			}
 			_busy = false;
@@ -83,7 +83,7 @@ namespace VixenModules.Output.K8055_Controller
 
 		public static void Version()
 		{
-			K8055D.Version();
+			K8055.Version();
 		}
 
 		public static void Write(int device, long data)
@@ -98,48 +98,56 @@ namespace VixenModules.Output.K8055_Controller
 				{
 					throw new Exception("Device is not open");
 				}
-				K8055D.SetCurrentDevice((long)device);
-				K8055D.WriteAllDigital(data);
+				K8055.SetCurrentDevice((long)device);
+				K8055.WriteAllDigital(data);
 			}
 		}
 	}
-
-	internal static class K8055D
+	public class VERSION
 	{
-		[DllImport("Common\\K8055D")]
+#if WIN64
+        public const string dll    = "Common\\K8055Dx64";
+#else
+		public const string dll = "Common\\K8055D";
+#endif
+	}
+
+	internal static class K8055
+	{
+		[DllImport(VERSION.dll)]
 		public static extern void ClearAnalogChannel(long channel);
 
-		[DllImport("Common\\K8055D")]
+		[DllImport(VERSION.dll)]
 		public static extern void ClearDigitalChannel(long channel);
 
-		[DllImport("Common\\K8055D")]
+		[DllImport(VERSION.dll)]
 		public static extern void CloseDevice();
 
-		[DllImport("Common\\K8055D")]
+		[DllImport(VERSION.dll)]
 		public static extern long OpenDevice(long address);
 
-		[DllImport("Common\\K8055D")]
+		[DllImport(VERSION.dll)]
 		public static extern void OutputAnalogChannel(long channel, long data);
 
-		[DllImport("Common\\K8055D")]
+		[DllImport(VERSION.dll)]
 		public static extern long ReadAllDigital();
 
-		[DllImport("Common\\K8055D")]
+		[DllImport(VERSION.dll)]
 		public static extern long SearchDevices();
 
-		[DllImport("Common\\K8055D")]
+		[DllImport(VERSION.dll)]
 		public static extern void SetAnalogChannel(long channel);
 
-		[DllImport("Common\\K8055D")]
+		[DllImport(VERSION.dll)]
 		public static extern long SetCurrentDevice(long address);
 
-		[DllImport("Common\\K8055D")]
+		[DllImport(VERSION.dll)]
 		public static extern void SetDigitalChannel(long channel);
 
-		[DllImport("Common\\K8055D")]
+		[DllImport(VERSION.dll)]
 		public static extern void Version();
 
-		[DllImport("Common\\K8055D")]
+		[DllImport(VERSION.dll)]
 		public static extern void WriteAllDigital(long data);
 	}
 }
