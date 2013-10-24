@@ -588,17 +588,22 @@ namespace FMOD {
                 if(m_channel != null) {
                     m_channel.getPosition(ref value, TIMEUNIT.MS);
                 }
-				if (value == 0)
+				// if we're at 0 or not at normal speed, don't bother with our timer
+				float freq = 0;
+                m_channel.getFrequency(ref freq);
+				if (value == 0 || freq != m_normalFrequency)
 					return value;
 				uint value2 = m_ptimer.GetPosition();
+				// check the difference between the timer and fmod
+				// if the diff is too big, reset the timer to match
 				int dt =  (int) value2 - (int) value;
 				//if( !MiniStackTrace.HasCaller("SequenceExecutor.cs"))
 				//	Logging.Debug("a:{0,5}, t:{1,5}, t-a:{2,3}, {3}", value, value2, dt, MiniStackTrace.ToString());
-				if ( Math.Abs(dt) > 50)
+				if ( Math.Abs(dt) > 50)  // 50 ms slop allowed
 				{
 					m_ptimer.SetPosition(value);
 					Logging.Debug("reset a:{0,5}, t:{1,5}, t-a:{2,3}", value, value2, dt);
-					//Console.WriteLine("reset a:{0,5}, t:{1,5}, t-a:{2,3}", value, value2, dt);
+					Console.WriteLine("reset a:{0,5}, t:{1,5}, t-a:{2,3}", value, value2, dt);
 					return value;
 				}
 				else
