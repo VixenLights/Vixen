@@ -7,8 +7,8 @@ namespace VixenModules.Output.K8055_Controller
 {
 	public static class K8055DLLWrapper
 	{
-		private static bool _busy;
-		private static int[] _refCounts;
+		private static bool _busy = false;
+		private static int[] _refCounts = new int[4];
 
 
 		public static void Close(int device)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Vixen.Commands;
 using Vixen.Module;
 using Vixen.Module.Controller;
@@ -62,7 +63,16 @@ namespace VixenModules.Output.K8055_Controller
 
 		public override bool Setup()
 		{
-			return base.Setup();
+			using (Setup setup = new Setup(OutputCount,_deviceStarts))
+			{
+				if (setup.ShowDialog() == DialogResult.OK)
+				{
+					//_helixData.EventPeriod = setup.EventData;
+					return true;
+				}
+			}
+
+			return false;
 		}
 
 		public override void Start()
