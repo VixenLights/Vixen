@@ -510,40 +510,42 @@ namespace VixenModules.Preview.VixenPreview
 						item = new MenuItem("-");
 						menu.MenuItems.Add(item);
 
-						// Z location menu
-						MenuItem locationItem = new MenuItem("Set Z Location to");
-						menu.MenuItems.Add(locationItem);
-						item = new MenuItem("0 Front", OnItemContextMenuClick);
-						item.Tag = "0";
-						locationItem.MenuItems.Add(item);
-						item = new MenuItem("1", OnItemContextMenuClick);
-						item.Tag = "1";
-						locationItem.MenuItems.Add(item);
-						item = new MenuItem("2", OnItemContextMenuClick);
-						item.Tag = "2";
-						locationItem.MenuItems.Add(item);
-						item = new MenuItem("3", OnItemContextMenuClick);
-						item.Tag = "3";
-						locationItem.MenuItems.Add(item);
-						item = new MenuItem("4 Middle", OnItemContextMenuClick);
-						item.Tag = "4";
-						locationItem.MenuItems.Add(item);
-						item = new MenuItem("5", OnItemContextMenuClick);
-						item.Tag = "5";
-						locationItem.MenuItems.Add(item);
-						item = new MenuItem("6", OnItemContextMenuClick);
-						item.Tag = "6";
-						locationItem.MenuItems.Add(item);
-						item = new MenuItem("7", OnItemContextMenuClick);
-						item.Tag = "7";
-						locationItem.MenuItems.Add(item);
-						item = new MenuItem("8", OnItemContextMenuClick);
-						item.Tag = "8";
-						locationItem.MenuItems.Add(item);
-						item = new MenuItem("9 Back", OnItemContextMenuClick);
-						item.Tag = "9";
-						locationItem.MenuItems.Add(item);
-
+						if (Data.SaveLocations)
+						{
+							// Z location menu
+							MenuItem locationItem = new MenuItem("Set Z Location to");
+							menu.MenuItems.Add(locationItem);
+							item = new MenuItem("0 Front", OnItemContextMenuClick);
+							item.Tag = "0";
+							locationItem.MenuItems.Add(item);
+							item = new MenuItem("1", OnItemContextMenuClick);
+							item.Tag = "1";
+							locationItem.MenuItems.Add(item);
+							item = new MenuItem("2", OnItemContextMenuClick);
+							item.Tag = "2";
+							locationItem.MenuItems.Add(item);
+							item = new MenuItem("3", OnItemContextMenuClick);
+							item.Tag = "3";
+							locationItem.MenuItems.Add(item);
+							item = new MenuItem("4 Middle", OnItemContextMenuClick);
+							item.Tag = "4";
+							locationItem.MenuItems.Add(item);
+							item = new MenuItem("5", OnItemContextMenuClick);
+							item.Tag = "5";
+							locationItem.MenuItems.Add(item);
+							item = new MenuItem("6", OnItemContextMenuClick);
+							item.Tag = "6";
+							locationItem.MenuItems.Add(item);
+							item = new MenuItem("7", OnItemContextMenuClick);
+							item.Tag = "7";
+							locationItem.MenuItems.Add(item);
+							item = new MenuItem("8", OnItemContextMenuClick);
+							item.Tag = "8";
+							locationItem.MenuItems.Add(item);
+							item = new MenuItem("9 Back", OnItemContextMenuClick);
+							item.Tag = "9";
+							locationItem.MenuItems.Add(item);
+						}
 						menu.Show(this, new Point(e.X, e.Y));
 					}
 				}
