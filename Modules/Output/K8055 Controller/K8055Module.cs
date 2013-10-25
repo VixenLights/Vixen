@@ -14,25 +14,29 @@ namespace VixenModules.Output.K8055_Controller
 	{
 		private K8055Data _Data;
 		private K8055CommandHandler _commandHandler;
-		private int _channelCount = 0;
-		private int[] _deviceStarts = new int[4];
+		private K8055ControlModule[] _modules;
 		private int _Offset;
-		private bool[] _validDevices = new bool[4];
 
 		public K8055Module()
 		{
 			_commandHandler = new K8055CommandHandler();
 			DataPolicyFactory = new K8055DataPolicyFactory();
+
+			_modules = new K8055ControlModule[4];
+			for (int i = 0; i < 4; i++)
+			{
+				_modules[i] = new K8055ControlModule(i + 1);
+			}
 		}
 
 		public override void UpdateState(int chainIndex, ICommand[] outputStates)
 		{
 			for (int i = 0; i < 4; i++)
 			{
-				if (_validDevices[i])
+				if (_Data.Modules[i].Enabled)
 				{
 					_commandHandler.Reset();
-					int start = _deviceStarts[i] - _Offset;
+					int start = _Data.Modules[i].StartChannel - _Offset;
 					int end = Math.Min(start + 8, outputStates.Length);
 					byte data = 0;
 					ICommand command = outputStates[start++];
@@ -63,11 +67,15 @@ namespace VixenModules.Output.K8055_Controller
 
 		public override bool Setup()
 		{
-			using (Setup setup = new Setup(OutputCount,_deviceStarts))
+			using (Setup setup = new Setup(OutputCount, _Data))
 			{
 				if (setup.ShowDialog() == DialogResult.OK)
 				{
-					//_helixData.EventPeriod = setup.EventData;
+					for (int i = 0; i < 4; i++)
+					{
+						_modules[i] = setup.Modules[i];
+					}
+					_Data.Modules = _modules;
 					return true;
 				}
 			}
@@ -80,8 +88,8 @@ namespace VixenModules.Output.K8055_Controller
 			long numdevices = K8055DLLWrapper.SearchDevices();
 			for (int i = 0; i < 4; i++)
 			{
-				_validDevices[i] = (numdevices & (((int)1) << i)) != 0L;
-				if (_validDevices[i])
+				_Data.Modules[i].Enabled = (numdevices & (((int)1) << i)) != 0L;
+				if (_Data.Modules[i].Enabled)
 				{
 					K8055DLLWrapper.Open(i);
 				}
@@ -93,12 +101,35 @@ namespace VixenModules.Output.K8055_Controller
 		{
 			for (int i = 0; i < 4; i++)
 			{
-				if (_validDevices[i])
+				if (_Data.Modules[i].Enabled)
 				{
 					K8055DLLWrapper.Close(i);
 				}
 			}
 			base.Stop();
+		}
+
+		private void initModule()
+		{
+			if (_Data.Modules != null)
+			{
+				for (int i = 0; i < 4; i++)
+				{
+					if (_Data.Modules[i] != null)
+					{
+						_modules[i].Enabled = _Data.Modules[i].Enabled;
+						if (_modules[i].Enabled)
+						{
+							_modules[i].StartChannel = _Data.Modules[i].StartChannel;
+						}
+					}
+				}
+			}
+			else
+			{
+				//hasn't been configured yet so lets set some defaults.
+				_Data.Modules = _modules;
+			}
 		}
 
 		public override IModuleDataModel ModuleData
@@ -110,6 +141,7 @@ namespace VixenModules.Output.K8055_Controller
 			set
 			{
 				_Data = (K8055Data)value;
+				initModule();
 			}
 		}
 	}
