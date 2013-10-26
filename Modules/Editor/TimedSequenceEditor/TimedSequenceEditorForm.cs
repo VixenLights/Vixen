@@ -2108,6 +2108,18 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			StopSequence();
 		}
 
+		private void toolStripMenuItem_SnapTo_CheckedChanged(object sender, EventArgs e)
+		{
+			toolStripButton_SnapTo.Checked = toolStripMenuItem_SnapTo.Checked;
+			TimelineControl.grid.EnableSnapTo = toolStripMenuItem_SnapTo.Checked;
+		}
+
+		private void toolStripButton_SnapTo_CheckedChanged(object sender, EventArgs e)
+		{
+			toolStripMenuItem_SnapTo.Checked = toolStripButton_SnapTo.Checked;
+			TimelineControl.grid.EnableSnapTo = toolStripButton_SnapTo.Checked;
+		}
+
 		#endregion
 
 		#region Undo
@@ -2484,6 +2496,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				MarksForm.Close();
 			}
 		}
+
 	}
 
 	[Serializable]

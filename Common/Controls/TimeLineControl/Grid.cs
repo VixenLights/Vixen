@@ -87,6 +87,7 @@ namespace Common.Controls.Timeline
 			DragEnter += TimelineGrid_DragEnter;
 			DragDrop += TimelineGrid_DragDrop;
 			StartBackgroundRendering();
+			CurrentDragSnapPoints = new SortedDictionary<TimeSpan, List<SnapDetails>>();
 		}
 
 		protected override void Dispose(bool disposing)
@@ -170,6 +171,8 @@ namespace Common.Controls.Timeline
 		}
 
 		#region Properties
+
+		public bool EnableSnapTo { get; set; }
 
 		public bool SuppressInvalidate { get; set; }
 
@@ -970,8 +973,8 @@ namespace Common.Controls.Timeline
 		/// <returns>The real offset time that should be used from the element's original time position.</returns>
 		public TimeSpan FindSnapTimeForElements(IEnumerable<Element> elements, TimeSpan offset, ResizeZone resize)
 		{
-			// if the offset was zero, we don't need to do anything.
-			if (offset == TimeSpan.Zero)
+			// if the offset was zero or snapto is not enabled, we don't need to do anything.
+			if (offset == TimeSpan.Zero || !EnableSnapTo)
 				return offset;
 
 			// grab all the elements we need to check for snapping against things (ie. filter them based on row
