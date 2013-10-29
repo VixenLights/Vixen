@@ -152,10 +152,14 @@ namespace VixenModules.Effect.Pulse
 													  LevelCurve.GetValue(position * 100) / 100));
 					}
 
-					if (startValue.Intensity.Equals( 0f) && endValue.Intensity.Equals(0f)) continue;
-
 					TimeSpan startTime = lastEnd;
 					TimeSpan timeSpan = TimeSpan.FromMilliseconds(TimeSpan.TotalMilliseconds * (position - lastPosition));
+					if (startValue.Intensity.Equals(0f) && endValue.Intensity.Equals(0f))
+					{
+						lastPosition = position;
+						lastEnd = startTime + timeSpan;
+						continue;
+					}
 
 					IIntent intent = new LightingIntent(startValue, endValue, timeSpan);
 
