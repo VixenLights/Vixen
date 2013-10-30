@@ -16,7 +16,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			InitializeComponent();
 		}
 
-		public bool IsBeatSelection
+		public bool IsVampBeatSelection
 		{
 			get
 			{
@@ -24,11 +24,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		public bool IsBarSelection
+		public bool IsVampBarSelection
 		{
 			get
 			{
 				return radioBars.Checked;
+			}
+		}
+
+		public bool IsAudacityBeatSelection
+		{
+			get
+			{
+				return radioAudacityBeats.Checked;
 			}
 		}
 	}

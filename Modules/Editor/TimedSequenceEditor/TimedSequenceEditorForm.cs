@@ -154,6 +154,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			LoadAvailableEffects();
 			InitUndo();
 			updateButtonStates();
+			UpdatePasteMenuStates();
 			LoadVirtualEffects();
 
 #if DEBUG
@@ -609,6 +610,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (audio.MediaExists)
 				{
 					TimelineControl.Audio = audio;
+					toolStripMenuItem_removeAudio.Enabled = true;
 					PopulateAudioDropdown();
 				} else
 				{
@@ -1735,7 +1737,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			IDataObject dataObject = new DataObject(_clipboardFormatName);
 			dataObject.SetData(result);
-			Clipboard.SetDataObject(dataObject, false);
+			Clipboard.SetDataObject(dataObject, true);
 			_TimeLineSequenceClipboardContentsChanged(EventArgs.Empty);
 		}
 
@@ -2110,6 +2112,18 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void stopToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			StopSequence();
+		}
+
+		private void toolStripMenuItem_SnapTo_CheckedChanged(object sender, EventArgs e)
+		{
+			toolStripButton_SnapTo.Checked = toolStripMenuItem_SnapTo.Checked;
+			TimelineControl.grid.EnableSnapTo = toolStripMenuItem_SnapTo.Checked;
+		}
+
+		private void toolStripButton_SnapTo_CheckedChanged(object sender, EventArgs e)
+		{
+			toolStripMenuItem_SnapTo.Checked = toolStripButton_SnapTo.Checked;
+			TimelineControl.grid.EnableSnapTo = toolStripButton_SnapTo.Checked;
 		}
 
 		#endregion
@@ -2488,6 +2502,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				MarksForm.Close();
 			}
 		}
+
 	}
 
 	[Serializable]

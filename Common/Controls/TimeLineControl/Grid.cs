@@ -87,6 +87,7 @@ namespace Common.Controls.Timeline
 			DragEnter += TimelineGrid_DragEnter;
 			DragDrop += TimelineGrid_DragDrop;
 			StartBackgroundRendering();
+			CurrentDragSnapPoints = new SortedDictionary<TimeSpan, List<SnapDetails>>();
 		}
 
 		protected override void Dispose(bool disposing)
@@ -170,6 +171,8 @@ namespace Common.Controls.Timeline
 		}
 
 		#region Properties
+
+		public bool EnableSnapTo { get; set; }
 
 		public bool SuppressInvalidate { get; set; }
 
@@ -970,8 +973,8 @@ namespace Common.Controls.Timeline
 		/// <returns>The real offset time that should be used from the element's original time position.</returns>
 		public TimeSpan FindSnapTimeForElements(IEnumerable<Element> elements, TimeSpan offset, ResizeZone resize)
 		{
-			// if the offset was zero, we don't need to do anything.
-			if (offset == TimeSpan.Zero)
+			// if the offset was zero or snapto is not enabled, we don't need to do anything.
+			if (offset == TimeSpan.Zero || !EnableSnapTo)
 				return offset;
 
 			// grab all the elements we need to check for snapping against things (ie. filter them based on row
@@ -1644,7 +1647,11 @@ namespace Common.Controls.Timeline
 			if (capturedElements.Any())
 			{
 				Element element = capturedElements.First();
-				element.DrawInfo(g, element.DisplayRect);
+				//This element may be part of more than one row. So it's internal Display rect can be wrong thus
+				//placing the info tool tip in the wrong place
+				//Until that is fixed which is a bigger effort lets use our current row for part of the rectangle.
+				Row row = rowAt(m_lastGridLocation);
+				element.DrawInfo(g, new Rectangle(element.DisplayRect.X, row.DisplayTop, element.DisplayRect.Width, row.Height));
 			}
 		}
 

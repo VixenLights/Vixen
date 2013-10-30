@@ -1047,7 +1047,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			if (aDialog.ShowDialog() == DialogResult.OK)
 			{
-				if (aDialog.IsBarSelection)
+				if (aDialog.IsVampBarSelection || aDialog.IsAudacityBeatSelection)
 				{
 					LoadBarLabels();
 				}

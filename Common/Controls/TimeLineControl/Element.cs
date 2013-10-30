@@ -79,6 +79,11 @@ namespace Common.Controls.Timeline
 			set { _effectNode = value; }
 		}
 
+		/// <summary>
+		/// This is the last row that this element was associated with. This element can be part of more than one row if it is part of multiple groups
+		/// So do not trust it. Already leads to a issue if the rows I belong to are different heights.
+		/// The element will not be drawn correctly because the cached image height is based on this
+		/// </summary>
 		public Row Row { get; set; }
 
 		/// <summary>

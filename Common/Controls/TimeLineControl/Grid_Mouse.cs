@@ -434,6 +434,7 @@ namespace Common.Controls.Timeline
 
 		private void calculateSnapPoints()
 		{
+			if (!EnableSnapTo) return;
 			// build up a full set of snap points/details, from (a) the static snap points for the grid, and
 			// (b) calculated snap points for this move (ie. other elements in the row[s]).
 			CurrentDragSnapPoints = new SortedDictionary<TimeSpan, List<SnapDetails>>(StaticSnapPoints);

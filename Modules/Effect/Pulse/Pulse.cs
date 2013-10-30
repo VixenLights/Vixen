@@ -110,9 +110,10 @@ namespace VixenModules.Effect.Pulse
 					addIntentsToElement(elementNode.Element);
 				}
 				else {
-					IEnumerable<Color> colors = ColorModule.getValidColorsForElementNode(elementNode, false);
+					IEnumerable<Color> colors = ColorModule.getValidColorsForElementNode(elementNode, false)
+						 .Intersect(ColorGradient.GetColorsInGradient());
 					foreach (Color color in colors) {
-						addIntentsToElement(elementNode.Element, color);
+						addIntentsToElement(elementNode.Element, color);	
 					}
 				}
 			}
@@ -126,6 +127,7 @@ namespace VixenModules.Effect.Pulse
 				Debug.Assert(allPointsTimeOrdered.Length > 1);
 
 				double lastPosition = allPointsTimeOrdered[0];
+				TimeSpan lastEnd = TimeSpan.Zero;
 				for (var i = 1; i < allPointsTimeOrdered.Length; i++)
 				{
 					double position = allPointsTimeOrdered[i];
@@ -150,16 +152,21 @@ namespace VixenModules.Effect.Pulse
 													  LevelCurve.GetValue(position * 100) / 100));
 					}
 
-					if (startValue.Intensity.Equals( 0f) && endValue.Intensity.Equals(0f)) continue;
-
-					TimeSpan startTime = TimeSpan.FromMilliseconds(TimeSpan.TotalMilliseconds * lastPosition);
+					TimeSpan startTime = lastEnd;
 					TimeSpan timeSpan = TimeSpan.FromMilliseconds(TimeSpan.TotalMilliseconds * (position - lastPosition));
+					if (startValue.Intensity.Equals(0f) && endValue.Intensity.Equals(0f))
+					{
+						lastPosition = position;
+						lastEnd = startTime + timeSpan;
+						continue;
+					}
 
 					IIntent intent = new LightingIntent(startValue, endValue, timeSpan);
 
 					_elementData.AddIntentForElement(element.Id, intent, startTime);
 
 					lastPosition = position;
+					lastEnd = startTime + timeSpan;
 				}
 			}
 		}
