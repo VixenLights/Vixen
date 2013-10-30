@@ -142,7 +142,10 @@ namespace Vixen.Module
 
 		private IModuleDataModel _GetAsTypeData(Guid id)
 		{
-			return _dataModels.FirstOrDefault(x => x.ModuleTypeId.Equals(id));
+			//return _dataModels.FirstOrDefault(x => x.ModuleTypeId.Equals(id));
+			IModuleDataModel model = null;
+			_dataModels.TryGetValue(Tuple.Create(id, id), out model);
+			return model;
 		}
 
 		private IModuleDataModel _GetAsInstanceData(IModuleInstance module)
