@@ -21,47 +21,77 @@ namespace VixenModules.Preview.VixenPreview
 	public partial class GDIPreviewForm : Form, IDisplayForm
 	{
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private bool needsUpdate = true;
 
 		public GDIPreviewForm(VixenPreviewData data)
 		{
 			InitializeComponent();
+			this.ControlBox = false;
 			Data = data;
 		}
 
 		public VixenPreviewData Data { get; set; }
 
-		public void Update(ElementIntentStates elementStates)
+		public void UpdatePreview(/*Vixen.Preview.PreviewElementIntentStates elementStates*/)
 		{
 			if (!gdiControl.IsUpdating)
 			{
-				gdiControl.BeginUpdate();
+				Vixen.Sys.Managers.ElementManager elements = VixenSystem.Elements;
+
+				Element[] elementArray = elements.Where(
+						e => e.State.Any(i => ((i as IIntentState<LightingValue>) != null) ? ((i as IIntentState<LightingValue>).GetValue().Intensity > 0) :
+							((i as IIntentState<RGBValue>) != null) && ((i as IIntentState<RGBValue>).GetValue().Intensity > 0))
+					).ToArray();
+
+				if (elementArray.Length == 0)
+				{
+					if (needsUpdate)
+					{
+						needsUpdate = false;
+						gdiControl.BeginUpdate();
+						gdiControl.EndUpdate();
+						gdiControl.Invalidate();
+					}
+
+					toolStripStatusFPS.Text =  "0 fps";
+					return;
+				}
+
+				needsUpdate = true;
 
 				CancellationTokenSource tokenSource = new CancellationTokenSource();
+				gdiControl.BeginUpdate();
 
-				elementStates.AsParallel().WithCancellation(tokenSource.Token).ForAll(channelIntentState =>
+				try
 				{
-					var elementId = channelIntentState.Key;
-					Element element = VixenSystem.Elements.GetElement(elementId);
-					if (element != null)
+					elementArray.AsParallel().WithCancellation(tokenSource.Token).ForAll(element =>
 					{
-						ElementNode node = VixenSystem.Elements.GetElementNodeForElement(element);
-						if (node != null)
+						if (element != null)
 						{
-							List<PreviewPixel> pixels;
-							if (NodeToPixel.TryGetValue(node, out pixels))
+							ElementNode node = VixenSystem.Elements.GetElementNodeForElement(element);
+							if (node != null)
 							{
-								foreach (PreviewPixel pixel in pixels)
+								List<PreviewPixel> pixels;
+								if (NodeToPixel.TryGetValue(node, out pixels))
 								{
-									pixel.Draw(gdiControl.FastPixel, channelIntentState.Value);
+									foreach (PreviewPixel pixel in pixels)
+									{
+										pixel.Draw(gdiControl.FastPixel, element.State);
+									}
 								}
 							}
 						}
-					}
-				});
-				gdiControl.EndUpdate();
 
-				gdiControl.RenderImage();
-				toolStripStatusFPS.Text = gdiControl.FrameRate.ToString() + "fps";
+					});
+				} catch (Exception e)
+				{
+					Logging.ErrorException(e.Message, e);
+				}
+				
+				gdiControl.EndUpdate();
+				gdiControl.Invalidate();
+
+				toolStripStatusFPS.Text = string.Format("{0} fps", gdiControl.FrameRate);
 			}
 		}
 
@@ -96,6 +126,7 @@ namespace VixenModules.Preview.VixenPreview
 				int pixelCount = 0;
 				foreach (DisplayItem item in DisplayItems)
 				{
+					item.Shape.Layout();
 					if (item.Shape.Pixels == null)
 						throw new System.ArgumentException("item.Shape.Pixels == null");
 
@@ -129,6 +160,19 @@ namespace VixenModules.Preview.VixenPreview
 				gdiControl.Background = Image.FromFile(Data.BackgroundFileName);
 			else
 				gdiControl.Background = null;
+
+			LayoutProps();
+		}
+
+		public void LayoutProps()
+		{
+			if (DisplayItems != null)
+			{
+				foreach (DisplayItem item in DisplayItems)
+				{
+					item.Shape.Layout();
+				}
+			}
 		}
 
 		public void Setup()
@@ -140,6 +184,36 @@ namespace VixenModules.Preview.VixenPreview
 
 			var minY = Screen.AllScreens.Min(m => m.Bounds.Y);
 			var maxY = Screen.AllScreens.Sum(m => m.Bounds.Height) + minY;
+
+			// avoid 0 with/height in case Data comes in 'bad' -- even small is bad,
+			// as it doesn't give a sizeable enough canvas to render on.
+			if (Data.Width < 300) {
+				if (gdiControl.Background != null && gdiControl.Background.Width > 300)
+					Data.Width = gdiControl.Background.Width;
+				else
+					Data.Width = 400;
+			}
+
+			if (Data.SetupWidth < 300) {
+				if (gdiControl.Background != null && gdiControl.Background.Width > 300)
+					Data.SetupWidth = gdiControl.Background.Width;
+				else
+					Data.SetupWidth = 400;
+			}
+
+			if (Data.Height < 200) {
+				if (gdiControl.Background != null && gdiControl.Background.Height > 200)
+					Data.Height = gdiControl.Background.Height;
+				else
+					Data.Height = 300;
+			}
+
+			if (Data.SetupHeight < 200) {
+				if (gdiControl.Background != null && gdiControl.Background.Height > 200)
+					Data.SetupHeight = gdiControl.Background.Height;
+				else
+					Data.SetupHeight = 300;
+			}
 
 			if (Data.Left < minX || Data.Left > maxX)
 				Data.Left = 0;
@@ -174,6 +248,16 @@ namespace VixenModules.Preview.VixenPreview
 
 			Data.Width = Width;
 			Data.Height = Height;
+		}
+
+		private void GDIPreviewForm_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			if (e.CloseReason == CloseReason.UserClosing)
+			{
+				MessageBox.Show("The preview can only be closed from the Preview Configuration dialog.", "Close",
+								MessageBoxButtons.OKCancel);
+				e.Cancel = true;
+			}
 		}
 	}
 }

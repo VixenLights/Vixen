@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Module;
 using Vixen.Module.Effect;
@@ -21,16 +22,20 @@ namespace VixenModules.Effect.Wipe {
 		}
 		WipeData _data = new WipeData();
 		private EffectIntents _elementData = null;
-		
-		protected override void _PreRender() {
 
-			CheckForEmptyData();
+		protected override void TargetNodesChanged()
+		{
+			CheckForInvalidColorData();
+		}
+
+		protected override void _PreRender(CancellationTokenSource tokenSource = null) {
 
 			_elementData = new EffectIntents();
 
 			IEnumerable<IGrouping<int, ElementNode>> renderNodes = null;
 
-
+			var enumerator =  TargetNodes.SelectMany(x => x.GetLeafEnumerator());
+			var b = enumerator;
 			switch (_data.Direction) {
 				case WipeDirection.Up:
 					renderNodes = TargetNodes
@@ -150,7 +155,7 @@ namespace VixenModules.Effect.Wipe {
 					break;
 			}
 
-			if (renderNodes != null) {
+			if (renderNodes != null && renderNodes.Count()>0) {
 				TimeSpan effectTime = TimeSpan.Zero;
 				if (WipeByCount) {
 					int count = 0;
@@ -159,10 +164,15 @@ namespace VixenModules.Effect.Wipe {
 					TimeSpan segmentPulse = TimeSpan.FromMilliseconds(pulseSegment);
 
 					while (count < PassCount) {
-						foreach (var item in renderNodes) {
+						foreach (var item in renderNodes)
+						{
+							if (tokenSource != null && tokenSource.IsCancellationRequested) return;
 							EffectIntents result;
 
 							foreach (ElementNode element in item) {
+
+								if (tokenSource != null && tokenSource.IsCancellationRequested)
+									return;
 								if (element != null) {
 									var pulse = new Pulse.Pulse();
 									pulse.TargetNodes = new ElementNode[] { element };
@@ -188,14 +198,20 @@ namespace VixenModules.Effect.Wipe {
 						foreach (var item in renderNodes) {
 							EffectIntents result;
 
+							if (tokenSource != null && tokenSource.IsCancellationRequested)
+								return;
 							foreach (ElementNode element in item) {
 								if (element != null) {
+
+									if (tokenSource != null && tokenSource.IsCancellationRequested)
+										return;
 									var pulse = new Pulse.Pulse();
 									pulse.TargetNodes = new ElementNode[] { element };
 									pulse.TimeSpan = segmentPulse;
 									pulse.ColorGradient = _data.ColorGradient;
 									pulse.LevelCurve = _data.Curve;
 									result = pulse.Render();
+									 
 									result.OffsetAllCommandsByTime(effectTime);
 									_elementData.Add(result);
 								}
@@ -214,28 +230,28 @@ namespace VixenModules.Effect.Wipe {
 			return _elementData;
 		}
 
-		public virtual bool IsDirty { get; protected set; }
-
 		public override IModuleDataModel ModuleData {
 			get { return _data; }
 			set { _data = value as WipeData; }
 		}
 
-		private void CheckForEmptyData()
+		
+
+		private void CheckForInvalidColorData()
 		{
-			if (_data.ColorGradient == null) //We have a new effect
+			HashSet<Color> validColors = new HashSet<Color>();
+			validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
+			if (validColors.Any() && !_data.ColorGradient.GetColorsInGradient().IsSubsetOf(validColors))
 			{
-				//Try to set a default color gradient from our available colors if we have discrete colors
-				HashSet<Color> validColors = new HashSet<Color>();
-				validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
-				_data.ColorGradient = new ColorGradient(validColors.DefaultIfEmpty(Color.White).First());
+				//Our color is not valid for any elements we have.
+				//Try to set a default color gradient from our available colors
+				_data.ColorGradient = new ColorGradient(validColors.First());
 			}
 		}
 
 		[Value]
 		public ColorGradient ColorGradient {
 			get {
-				CheckForEmptyData();
 				return _data.ColorGradient; 
 			}
 			set {

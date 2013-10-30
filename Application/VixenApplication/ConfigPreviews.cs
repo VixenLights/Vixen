@@ -19,7 +19,6 @@ namespace VixenApplication
 	public partial class ConfigPreviews : Form
 	{
 		private OutputPreview _displayedController;
-		private bool _internal;
 		private bool _changesMade;
 
 		public ConfigPreviews()
@@ -127,10 +126,7 @@ namespace VixenApplication
 				item.Checked = oc.IsRunning;
 				item.SubItems.Add(ApplicationServices.GetModuleDescriptor(oc.ModuleId).TypeName);
 				item.Tag = oc;
-				// I'm sorry for this.  Someone know of a better way?
-				_internal = true;
 				listViewControllers.Items.Add(item);
-				_internal = false;
 			}
 
 			listViewControllers.EndUpdate();

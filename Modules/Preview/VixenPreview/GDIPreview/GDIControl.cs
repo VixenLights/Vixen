@@ -6,37 +6,29 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Forms;
-using Vixen.Data.Value;
-using Vixen.Execution.Context;
-using Vixen.Sys;
-using VixenModules.Preview.VixenPreview.Shapes;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Threading;
-using System.Collections.Concurrent;
-using VixenModules.Property.Location;
 
 namespace VixenModules.Preview.VixenPreview
 {
 	public partial class GDIControl : UserControl
 	{
-		private Image _background = null;
-		private Bitmap _backgroundAlphaImage = null;
-		private int _backgroundAlpha = 0;
-		private Stopwatch renderTimer = new Stopwatch();
-		private FastPixel.FastPixel fastPixel;
-		BufferedGraphicsContext graphicsContext;
-		BufferedGraphics backBuffer;
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+
+		private Image _background;
+		private Bitmap _backgroundAlphaImage;
+		private int _backgroundAlpha;
+		private readonly Stopwatch _renderTimer = new Stopwatch();
+		private FastPixel.FastPixel _fastPixel;
+		private DateTime _frameRateTime;
+		private long _frameCount;
 
 		public GDIControl()
 		{
 			InitializeComponent();
-			//SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.DoubleBuffer, true);
-
-			graphicsContext = BufferedGraphicsManager.Current;
-			AllocateGraphicsBuffer();
+			SetStyle(ControlStyles.AllPaintingInWmPaint,true);
+			SetStyle(ControlStyles.OptimizedDoubleBuffer,true);
+			SetStyle(ControlStyles.ResizeRedraw, true);
 		}
 
 		public Image Background
@@ -49,7 +41,6 @@ namespace VixenModules.Preview.VixenPreview
 			{
 				_background = value;
 				CreateAlphaBackground();
-				fastPixel = new FastPixel.FastPixel(_backgroundAlphaImage.Width, _backgroundAlphaImage.Height);
 			}
 		}
 
@@ -62,7 +53,7 @@ namespace VixenModules.Preview.VixenPreview
 			set
 			{
 				_backgroundAlpha = value;
-				CreateAlphaBackground();
+				if (_background != null) CreateAlphaBackground();
 			}
 		}
 
@@ -70,7 +61,7 @@ namespace VixenModules.Preview.VixenPreview
 		{ 
 			get
 			{
-				return renderTimer.ElapsedMilliseconds;
+				return _renderTimer.ElapsedMilliseconds;
 			}
 		}
 
@@ -80,11 +71,11 @@ namespace VixenModules.Preview.VixenPreview
 		{
 			get
 			{
-				return fastPixel;
+				return _fastPixel;
 			}
 			set
 			{
-				fastPixel = value;
+				_fastPixel = value;
 			}
 		}
 
@@ -101,7 +92,7 @@ namespace VixenModules.Preview.VixenPreview
 				Graphics gfx = Graphics.FromImage(_backgroundAlphaImage);
 				using (SolidBrush brush = new SolidBrush(Color.FromArgb(255 - BackgroundAlpha, 0, 0, 0)))
 				{
-					gfx.DrawImageUnscaled(_background, 0, 0);
+					gfx.DrawImage(_background, 0, 0, _background.Width, _background.Height);
 					gfx.FillRectangle(brush, 0, 0, _backgroundAlphaImage.Width, _backgroundAlphaImage.Height);
 				}
 				gfx.Dispose();
@@ -110,74 +101,49 @@ namespace VixenModules.Preview.VixenPreview
 			{
 				_backgroundAlphaImage = new Bitmap(Width, Height, PixelFormat.Format32bppPArgb);
 				Graphics gfx = Graphics.FromImage(_backgroundAlphaImage);
-				gfx.Clear(Color.DeepPink);
+				gfx.Clear(Color.Black);
 				gfx.Dispose();
 			}
-		}
-
-		private void GDIControl_Resize(object sender, EventArgs e)
-		{
-			AllocateGraphicsBuffer();
-		}
-
-		public void RenderImage()
-		{
-			if (_backgroundAlphaImage != null)
-			{
-				backBuffer.Graphics.DrawImageUnscaled(fastPixel.Bitmap, 0, 0);
-			}
-			else
-			{
-				backBuffer.Graphics.Clear(Color.Black);
-			}
-
-			if (!this.Disposing && graphicsContext != null)
-				backBuffer.Render(Graphics.FromHwnd(this.Handle));
-
-			renderTimer.Stop();
-		}
-
-		private void AllocateGraphicsBuffer()
-		{
-			if (backBuffer != null)
-				backBuffer.Dispose();
-
-			graphicsContext.MaximumBuffer =
-				  new Size(this.Width + 1, this.Height + 1);
-
-			backBuffer =
-				graphicsContext.Allocate(this.CreateGraphics(),
-												ClientRectangle);
+			_fastPixel = new FastPixel.FastPixel(_backgroundAlphaImage.Width, _backgroundAlphaImage.Height);
 		}
 
 		public void BeginUpdate()
 		{
-			renderTimer.Restart();
-			fastPixel.CloneBitmap(_backgroundAlphaImage);
-			fastPixel.Lock();
+			_renderTimer.Restart();
+			_fastPixel.CloneToBuffer(_backgroundAlphaImage);
 		}
 
-		private DateTime frameRateTime;
-		private long frameCount = 0;
+		
 		public void EndUpdate()
 		{
 			// Calculate our actual frame rate
-			this.frameCount++;
+			_frameCount++;
 
-			if (DateTime.UtcNow.Subtract(this.frameRateTime).TotalSeconds >= 1)
+			if (DateTime.UtcNow.Subtract(_frameRateTime).TotalSeconds >= 1)
 			{
-				this.FrameRate = frameCount;
-				this.frameCount = 0;
-				this.frameRateTime = DateTime.UtcNow;
+				FrameRate = _frameCount;
+				_frameCount = 0;
+				_frameRateTime = DateTime.UtcNow;
 			}
 
-			fastPixel.Unlock(true);
+			_fastPixel.UnlockFromBuffer();
 		}
 
 		public void SetPixel(int x, int y, Color color)
 		{
-			fastPixel.SetPixel(new Point(x, y), color);
+			_fastPixel.SetPixel(new Point(x, y), color);
 		}
+
+		protected override void OnPaint(PaintEventArgs e)
+		{
+			Graphics g = e.Graphics;
+			if (g.VisibleClipBounds.Width > 0 && g.VisibleClipBounds.Height > 0)
+			{
+				g.DrawImageUnscaled(_fastPixel.Bitmap, 0, 0);
+			}
+			_renderTimer.Stop();
+		}
+
 
 	}
 }

@@ -1,4 +1,54 @@
 
+== 3.0.9 ============================
+
+New features:
+
+- a new and improved Scheduler and Show module!  See the forums and videos for more info.
+- More performance improvements to reduce CPU usage and memory usage.
+- RDS module improvements: supports the new VAST application, and other improvements
+- Added the Elexol USB I/O controller
+- Vixen 2 sequence importing: can now repeat elements when dragging to the mapping window (eg. for multiple color mappings).
+- Sequencer UI improvements: Context menu & options
+- Sequencer UI improvements: Dockable windows (with a vertical effect list)
+- Sequencer UI improvements: marks in the main window, and mark operations in the ruler
+- Split the application to have separate 32-bit and 64-bit versions, to allow for larger memory usage on high-end machines
+
+
+Fixups:
+
+- The preview was not opening at the correct size sometimes, or with a correct background; now fixed.
+- Fixes for importing audacity marks
+- Fixes issues with 'lost' elements in the config
+- Fixes with preview rendering of discrete colored elements
+- Fixes to output a more accurate value (eg. 8-bit value) when converting a color to a value
+- Fixed an issue where autoplay could leave some elements "hung" or not turning off
+- Fixed an issue with V2 sequence imports where it would read in too much data and try to map to non-existant elements.
+
+
+
+== 3.0.8 ============================
+
+New features:
+
+- A ridiculous amount of speedups to the entire application: UI responsiveness, rendering/drawing speed in the sequencer, preview performance speed, and so on.  For example, effect rendering is now performed in the background in another thread.  The application is now much more responsive and usable.
+- A similiarly ridiculous amount of improvements to memory usage; particularly where nutcracker effects are used.
+- Added a 'webserver' module, to allow basic control via a web interface.
+- Added support for "Elexol" controllers.
+- Added an RDS and Launcher control modules.
+- Added support for a Direct 2D rendering mode for the preview (which has been temporarily disabled to ensure stability for all users, until we can get more testing performed)
+- Changed logging system to use NLog, instead of a custom homebrew system
+- Added support to be able to pick a specific audio output device in the sequencer
+
+
+Fixups:
+
+- better handing of default values for all effects
+- many minor preview fixups
+- Some nutcracker effects would render 'backwards'
+- Some preview items (eg. nets) would not draw/render properly
+- The positioning/order of some preview shapes (eg. squares around windows) has been improved
+- fixed some crashes when opening/closing sequences at unconventional times (during playback, paused, etc.)
+
 
 
 == 3.0.7 ============================

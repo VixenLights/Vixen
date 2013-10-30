@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
@@ -33,37 +33,21 @@
   <PropertyGroup>
     <StartupObject />
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>$(SolutionDir)\Output\Modules\Editor\</OutputPath>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <OutputPath>$(SolutionDir)\Release\Modules\Editor\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>$(SolutionDir)\Output\Modules\Editor\</OutputPath>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>$(SolutionDir)\Release\Modules\Editor\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>$(SolutionDir)\Release64\Modules\Editor\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
@@ -87,15 +71,49 @@
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="WeifenLuo.WinFormsUI.Docking">
+      <HintPath>..\..\..\Common\Libraries\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AudacityImportDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AudacityImportDialog.Designer.cs">
+      <DependentUpon>AudacityImportDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="AutomaticMusicDetection.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="AutomaticMusicDetection.Designer.cs">
       <DependentUpon>AutomaticMusicDetection.cs</DependentUpon>
     </Compile>
+    <Compile Include="Form_Marks.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form_Marks.Designer.cs">
+      <DependentUpon>Form_Marks.cs</DependentUpon>
+    </Compile>
     <Compile Include="EffectRasterizer.cs" />
+    <Compile Include="EffectTimeEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EffectTimeEditor.Designer.cs">
+      <DependentUpon>EffectTimeEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form_Effects.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form_Effects.Designer.cs">
+      <DependentUpon>Form_Effects.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form_Grid.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form_Grid.Designer.cs">
+      <DependentUpon>Form_Grid.cs</DependentUpon>
+    </Compile>
     <Compile Include="IntentRasterizer.cs" />
     <Compile Include="MarkManager.cs">
       <SubType>Form</SubType>
@@ -147,8 +165,26 @@
     <Folder Include="Resources\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\magnet.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="AudacityImportDialog.resx">
+      <DependentUpon>AudacityImportDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="AutomaticMusicDetection.resx">
       <DependentUpon>AutomaticMusicDetection.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form_Marks.resx">
+      <DependentUpon>Form_Marks.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EffectTimeEditor.resx">
+      <DependentUpon>EffectTimeEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form_Effects.resx">
+      <DependentUpon>Form_Effects.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form_Grid.resx">
+      <DependentUpon>Form_Grid.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MarkManager.resx">
       <DependentUpon>MarkManager.cs</DependentUpon>
@@ -176,6 +212,7 @@
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </None>
   </ItemGroup>
   <ItemGroup>

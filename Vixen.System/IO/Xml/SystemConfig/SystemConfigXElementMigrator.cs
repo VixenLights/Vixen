@@ -23,7 +23,9 @@ namespace Vixen.IO.Xml.SystemConfig
 			                  		new MigrationSegment<XElement>(9, 10, _Version_9_to_10),
 			                  		new MigrationSegment<XElement>(10, 11, _Version_10_to_11),
 			                  		new MigrationSegment<XElement>(11, 12, _Version_11_to_12),
-			                  		new MigrationSegment<XElement>(12, 13, _Version_12_to_13)
+			                  		new MigrationSegment<XElement>(12, 13, _Version_12_to_13),
+									new MigrationSegment<XElement>(13, 14, _Version_13_to_14),
+									new MigrationSegment<XElement>(14, 15, _Version_14_to_15)
 			                  	};
 		}
 
@@ -249,5 +251,65 @@ namespace Vixen.IO.Xml.SystemConfig
 			content.Add(disabledDevices);
 			return content;
 		}
+
+		private XElement _Version_13_to_14(XElement content)
+		{
+			//Version 14 correct disconnected nodes that where not converted back after being elements.
+			XElement nodes = content.Element("Nodes");
+			if (nodes != null)
+			{
+				XElement channels = content.Element("Channels");
+
+				foreach(XElement node in nodes.Elements())
+				{
+					IEnumerable<XElement> childNodes = node.Descendants("Node").Where(x => !x.Descendants("Node").Any());
+					foreach (XElement childNode in childNodes)
+					{
+						if (!childNode.Attributes("channelId").Any() )
+						{
+							Guid channelId = Guid.NewGuid();
+							childNode.SetAttributeValue("channelId", channelId);
+							XElement channel = new XElement("Channel", 
+								 new XAttribute("id",channelId),
+								 new XAttribute("name", childNode.Attribute("name").Value) 
+								 );
+							channels.Add(channel);
+						}
+					}
+				}
+			}
+			return content;
+		}
+
+		private XElement _Version_14_to_15(XElement content)
+		{
+			//Version 15 correct disconnected nodes that where not converted back after being elements.
+			//Version 14 did not take care of the full depth of nested nodes possible.
+			XElement nodes = content.Element("Nodes");
+			if (nodes != null)
+			{
+				XElement channels = content.Element("Channels");
+
+				foreach (XElement node in nodes.Elements())
+				{
+					IEnumerable<XElement> childNodes = node.Descendants("Node").Where(x => !x.Descendants("Node").Any());
+					foreach (XElement childNode in childNodes)
+					{
+						if (!childNode.Attributes("channelId").Any())
+						{
+							Guid channelId = Guid.NewGuid();
+							childNode.SetAttributeValue("channelId", channelId);
+							XElement channel = new XElement("Channel",
+								 new XAttribute("id", channelId),
+								 new XAttribute("name", childNode.Attribute("name").Value)
+								 );
+							channels.Add(channel);
+						}
+					}
+				}
+			}
+			return content;
+		}
+		
 	}
 }

@@ -26,7 +26,7 @@ namespace Vixen.Sys.Managers
 		public HardwareUpdateThread(IOutputDevice outputDevice)
 		{
 			OutputDevice = outputDevice;
-			_thread = new Thread(_ThreadFunc) {Name = outputDevice.Name + " update", IsBackground = true};
+			_thread = new Thread(_ThreadFunc) {Name = string.Format("{0} update", outputDevice.Name), IsBackground = true};
 			_finished = new EventWaitHandle(false, EventResetMode.ManualReset);
 			_updateSignalerSync = new AutoResetEvent(false);
 			_pauseSignal = new ManualResetEvent(true);
@@ -76,7 +76,7 @@ namespace Vixen.Sys.Managers
 			if (!_finished.WaitOne(STOP_TIMEOUT)) {
 				// Timed out waiting for a stop.
 				//(This will prevent hangs in stopping, due to controller code failing to stop).
-				throw new TimeoutException("Controller " + OutputDevice.Name + " failed to stop in the required amount of time.");
+				throw new TimeoutException( string.Format("Controller {0} failed to stop in the required amount of time.", OutputDevice.Name));
 			}
 		}
 
@@ -104,7 +104,7 @@ namespace Vixen.Sys.Managers
 				_threadState = ExecutionState.Stopped;
 				_finished.Set();
 
-				Logging.Error(string.Format("Controller {0} error", OutputDevice.Name), ex);
+				Logging.ErrorException(string.Format("Controller {0} error", OutputDevice.Name), ex);
 				OnError();
 			}
 		}

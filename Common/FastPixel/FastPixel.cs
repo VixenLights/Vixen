@@ -11,6 +11,8 @@ namespace FastPixel
 		private byte[] rgbValues;
 		private BitmapData bmpData;
 		private IntPtr bmpPtr;
+		Rectangle rect;
+
 		public bool locked = false;
 
 		private bool _isAlpha = false;
@@ -44,19 +46,7 @@ namespace FastPixel
 				throw new Exception("Cannot lock an Indexed image.");
 
 			this._bitmap = bitmap;
-			this._isAlpha = (this.Bitmap.PixelFormat == (this.Bitmap.PixelFormat | PixelFormat.Alpha));
-			this._width = bitmap.Width;
-			this._height = bitmap.Height;
-		}
-
-		public void CloneBitmap(Bitmap bitmapToClone) 
-		{
-			if (bitmapToClone.Width != _bitmap.Width || bitmapToClone.Height != _bitmap.Height)
-			{
-				_bitmap = new Bitmap(bitmapToClone.Width, bitmapToClone.Height);
-			}
-			Graphics g = Graphics.FromImage(_bitmap);
-			g.DrawImageUnscaled(bitmapToClone, 0, 0);
+			SetupBitmap();
 		}
 
 		public FastPixel(int width, int height)
@@ -73,39 +63,92 @@ namespace FastPixel
 			}
 		}
 
-		public void SetupBitmap(int width, int height)
+		private void SetupBitmap(int width, int height)
 		{
 			_bitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
+			SetupBitmap();
+		}
+
+		private void SetupBitmap()
+		{
 			if (_bitmap.PixelFormat == (_bitmap.PixelFormat | PixelFormat.Indexed))
 				throw new Exception("Cannot lock an Indexed image.");
 
-			this._isAlpha = (this.Bitmap.PixelFormat == (this.Bitmap.PixelFormat | PixelFormat.Alpha));
-			this._width = _bitmap.Width;
-			this._height = _bitmap.Height;
+			_isAlpha = (_bitmap.PixelFormat == (_bitmap.PixelFormat | PixelFormat.Alpha));
+			_width = _bitmap.Width;
+			_height = _bitmap.Height;
+			rect = new Rectangle(0, 0, Width, Height);
+			int offset = IsAlphaBitmap ? 4 : 3;
+			int bytes = (_width * _height) * offset;
+			rgbValues = new byte[bytes];
 		}
 
+		/// <summary>
+		/// Copy the values from the passed bitmap into the buffer and locks it for editing.
+		/// If the bitmap is of different size, the reference bitmap will be updated to the new size
+		/// </summary>
+		/// <param name="bitmapToClone"></param>
+		public void CloneToBuffer(Bitmap bitmapToClone)
+		{
+			if (this.locked)
+				throw new Exception("Bitmap already locked.");
+			locked = true;
+
+			if (bitmapToClone.Width != Width || bitmapToClone.Height != Height)
+			{
+				_bitmap = new Bitmap(bitmapToClone.Width, bitmapToClone.Height);
+				SetupBitmap();
+			}
+			
+			BitmapData bitmapData = bitmapToClone.LockBits(rect, ImageLockMode.ReadOnly, bitmapToClone.PixelFormat);
+			IntPtr bmpPtr = bitmapData.Scan0;
+
+			System.Runtime.InteropServices.Marshal.Copy(bmpPtr, rgbValues, 0, rgbValues.Length);
+			
+			bitmapToClone.UnlockBits(bitmapData);
+			bitmapData = null;
+		
+		}
+
+		/// <summary>
+		/// Copies the values from the buffer back into the bitmap and unlocks it from editing mode
+		/// </summary>
+		public void UnlockFromBuffer()
+		{
+			if (!this.locked)
+				throw new Exception("Bitmap not locked.");
+
+			BitmapData bmpData = Bitmap.LockBits(rect, ImageLockMode.WriteOnly, this.Bitmap.PixelFormat);
+			IntPtr bmpPtr = bmpData.Scan0;
+
+			System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, bmpPtr, rgbValues.Length);
+
+			// Unlock the bits.;
+			Bitmap.UnlockBits(bmpData);
+			bmpData = null;
+			locked = false;
+		}
+
+		/// <summary>
+		/// Locks the current bitmap into editing state
+		/// </summary>
 		public void Lock()
 		{
 			if (this.locked)
 				throw new Exception("Bitmap already locked.");
 
-			Rectangle rect = new Rectangle(0, 0, this.Width, this.Height);
 			this.bmpData = this.Bitmap.LockBits(rect, ImageLockMode.ReadWrite, this.Bitmap.PixelFormat);
 			this.bmpPtr = this.bmpData.Scan0;
 
-			if (this.IsAlphaBitmap) {
-				int bytes = (this.Width*this.Height)*4;
-				this.rgbValues = new byte[bytes];
-				System.Runtime.InteropServices.Marshal.Copy(this.bmpPtr, rgbValues, 0, this.rgbValues.Length);
-			}
-			else {
-				int bytes = (this.Width*this.Height)*3;
-				this.rgbValues = new byte[bytes];
-				System.Runtime.InteropServices.Marshal.Copy(this.bmpPtr, rgbValues, 0, this.rgbValues.Length);
-			}
+			System.Runtime.InteropServices.Marshal.Copy(this.bmpPtr, rgbValues, 0, this.rgbValues.Length);
+			
 			this.locked = true;
 		}
 
+		/// <summary>
+		/// Unlocks the bitmap from editing state
+		/// </summary>
+		/// <param name="setPixels">If true copies the edited values back into the bitmap</param>
 		public void Unlock(bool setPixels)
 		{
 			if (!this.locked)
@@ -117,6 +160,7 @@ namespace FastPixel
 
 			// Unlock the bits.;
 			this.Bitmap.UnlockBits(bmpData);
+			this.bmpData = null;
 			this.locked = false;
 		}
 
@@ -147,7 +191,7 @@ namespace FastPixel
 			this.SetPixel(location.X, location.Y, color);
 		}
 
-		public void SetPixelAlpha(int x, int y, Color color)
+		private void SetPixelAlpha(int x, int y, Color color)
 		{
 			if (!this.locked)
 				throw new Exception("Bitmap not locked.");
@@ -236,58 +280,22 @@ namespace FastPixel
 
 		//public static ConcurrentDictionary<int, FastPixel> circleCache = new ConcurrentDictionary<int, FastPixel>();
 
-		public void DrawCircle(Rectangle rect, Color color)
+		public void DrawCircle(Rectangle rectangle, Color color)
 		{
-			if (rect.Width > 0 && rect.Height > 0) {
+			if (rectangle.Width > 0 && rectangle.Height > 0) {
 				// Default drawing tools don't draw circles that are either 1 or 2 pixels,
 				// so we do it manually
-				if (rect.Width == 1) {
-					SetPixel(rect.Left, rect.Top, color);
-				}
-				else if (rect.Width == 2) {
-					// Row 1
-					SetPixel(rect.Left, rect.Top, color);
-					// Row 2
-					SetPixel(rect.Left, rect.Top + 1, color);
-				}
-				else if (rect.Width == 3) {
-					// Row 1
-					SetPixel(rect.Left, rect.Top, color);
-					// Row 1
-					SetPixel(rect.Left + 1, rect.Top, color);
-					// Row 2
-					SetPixel(rect.Left, rect.Top + 1, color);
-				}
-				else if (rect.Width == 4) {
-					// Row 1
-					SetPixel(rect.Left, rect.Top, color);
-					// Row 1
-					SetPixel(rect.Left + 1, rect.Top, color);
-					// Row 2
-					SetPixel(rect.Left, rect.Top + 1, color);
-					// Row 2
-					SetPixel(rect.Left + 1, rect.Top + 1, color);
+				if (rectangle.Width == 1) {
+					SetPixel(rectangle.Left, rectangle.Top, color);
 				}
 				else {
-					Bitmap b;
-					FastPixel fp;
-					//if (!FastPixel.circleCache.TryGetValue(rect.Width, out fp)) {
-						b = new Bitmap(rect.Width, rect.Height);
-						using (Graphics g = Graphics.FromImage(b)) {
-							g.FillEllipse(Brushes.White, new Rectangle(0, 0, rect.Width - 1, rect.Height - 1));
-							fp = new FastPixel(b);
-							// Lock the bitmap (loads pixels into memory buffer) now
-							// and leave it that way because we'll never need to unlock it
-							// to modify it -- it is just a circle after all
-							fp.Lock();
-							//FastPixel.circleCache.TryAdd(rect.Width, fp);
-						}
-					//}
-					for (int x = 0; x < rect.Width; x++) {
-						for (int y = 0; y < rect.Height; y++) {
-							Color newColor = fp.GetPixel(x, y);
-							if (newColor.A != 0)
-								SetPixel(rect.Left + x, rect.Top + y, color);
+					int radius = rectangle.Width/2; // radius
+					for (int y = -radius; y <= radius; y++)
+					{
+						for (int x = -radius; x <= radius; x++)
+						{
+							if (x*x + y*y <= radius*radius)
+								SetPixel(rectangle.X + x, rectangle.Y + y, color);
 						}
 					}
 				}

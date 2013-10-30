@@ -271,8 +271,13 @@ namespace Vixen.Sys.Output
 
 		private ICommand _GenerateOutputCommand(CommandOutput output)
 		{
-			IDataPolicy effectiveDataPolicy = _dataPolicyProvider.GetDataPolicyForOutput(output);
-			return effectiveDataPolicy.GenerateCommand(output.State);
+			if (output.State != null) {
+				var lst = output.State.Value as List<IIntentState>;
+				
+				IDataPolicy effectiveDataPolicy = _dataPolicyProvider.GetDataPolicyForOutput(output);
+				return effectiveDataPolicy.GenerateCommand(output.State);
+			}
+			return null;
 		}
 
 		private IControllerModuleInstance _ControllerModule

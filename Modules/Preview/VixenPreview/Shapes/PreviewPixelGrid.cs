@@ -22,44 +22,54 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		[DataMember] private int _stringCount;
 		[DataMember] private int _lightsPerString;
 		[DataMember] private PreviewPoint _topRight, _bottomLeft;
+		[DataMember] private StringOrientations _stringOrientation = StringOrientations.Vertical;
 
 		private PreviewPoint p1Start, p2Start;
+
+		public enum StringOrientations 
+		{
+			Vertical, 
+			Horizontal
+		}
 
 		public PreviewPixelGrid(PreviewPoint point1, ElementNode selectedNode)
 		{
 			_topLeft = point1;
 			_bottomRight = new PreviewPoint(_topLeft.X, _topLeft.Y);
 
-			_stringCount = 16;
-			_lightsPerString = 50;
+			int defaultStringCount = 16;
+			int defaultLightsPerString = 50;
 
 			_strings = new List<PreviewBaseShape>();
 
 			int childLightCount;
 			if (IsPixelGridSelected(selectedNode, out childLightCount)) {
 				StringType = StringTypes.Pixel;
-				_lightsPerString = childLightCount;
+				//_lightsPerString = childLightCount;
 				foreach (ElementNode child in selectedNode.Children) {
-					PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(10, 10), _lightsPerString, child);
+					PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(10, 10), childLightCount, child);
 					_strings.Add(line);
 				}
-				_stringCount = _strings.Count;
+				//StringCount = _strings.Count;
+				LightsPerString = childLightCount;
 			}
 			else if (IsStandardGridSelected(selectedNode)) {
 				StringType = StringTypes.Standard;
 				foreach (ElementNode child in selectedNode.Children) {
-					PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(10, 10), _lightsPerString, child);
+					PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(10, 10), defaultLightsPerString, child);
 					_strings.Add(line);
 				}
-				_stringCount = _strings.Count;
+				//StringCount = _strings.Count;
 			}
 			else {
 				// Just add the pixels, we don't care where they go... they get positioned in Layout()
-				for (int stringNum = 0; stringNum < _stringCount; stringNum++) {
-					PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(10, 10), _lightsPerString, null);
+				for (int stringNum = 0; stringNum < defaultStringCount; stringNum++) {
+					PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(10, 10), defaultLightsPerString, null);
 					_strings.Add(line);
 				}
 			}
+
+			StringCount = _strings.Count();
 
 			// Lay out the pixels
 			Layout();
@@ -166,7 +176,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					_strings.RemoveAt(_strings.Count - 1);
 				}
 				while (_strings.Count < _stringCount) {
-					PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(10, 10), _lightsPerString, null);
+					PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(10, 10), LightsPerString, null);
 					_strings.Add(line);
 				}
 				Layout();
@@ -192,17 +202,20 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			set { _bottomRight = value; }
 		}
 
-		#endregion
-
-		public void SetStrings(List<PreviewBaseShape> strings)
-		{
-			_strings = new List<PreviewBaseShape>();
-			foreach (PreviewBaseShape line in strings) {
-				PreviewBaseShape newLine = (PreviewLine) line.Clone();
-				_strings.Add(newLine);
-			}
-			_stringCount = _strings.Count();
+		public StringOrientations StringOrientation 
+		{ 
+			get 
+			{
+				return _stringOrientation;
+			} 
+			set 
+			{
+				_stringOrientation = value;
+				Layout();
+			} 
 		}
+
+		#endregion
 
 		[Browsable(false)]
 		public int PixelCount
@@ -224,7 +237,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			{
 				if (_strings != null && _strings.Count > 0) {
 					List<PreviewPixel> outPixels = new List<PreviewPixel>();
-					for (int i = 0; i < _strings.Count; i++) {
+					for (int i = 0; i < Strings.Count; i++) {
 						foreach (PreviewPixel pixel in _strings[i].Pixels) {
 							outPixels.Add(pixel);
 						}
@@ -239,24 +252,42 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			set
 			{
 				_pixels = value;
-				//ResetNodeToPixelDictionary();
 			}
 		}
 
 		public override void Layout()
 		{
-			int width = _bottomRight.X - _topLeft.X;
-			int height = _bottomRight.Y - _topLeft.Y;
-			int stringCount = _strings.Count;
-			double stringXSpacing = (double)width / (double)stringCount;
-			int x = _topLeft.X;
-			int y = _topLeft.Y;
-			for (int stringNum = 0; stringNum < (int) _stringCount; stringNum++) {
-				PreviewLine line = _strings[stringNum] as PreviewLine;
-				line.SetPoint0(x, y + height);
-				line.SetPoint1(x, y);
-				line.Layout();
-				x += (int)stringXSpacing;
+			if (StringOrientation == StringOrientations.Vertical)
+			{
+				int width = _bottomRight.X - _topLeft.X;
+				int height = _bottomRight.Y - _topLeft.Y;
+				double stringXSpacing = (double)width / (double)(StringCount-1);
+				int x = _topLeft.X;
+				int y = _topLeft.Y;
+				for (int stringNum = 0; stringNum < StringCount; stringNum++)
+				{
+					PreviewLine line = _strings[stringNum] as PreviewLine;
+					line.SetPoint0(x, y + height);
+					line.SetPoint1(x, y);
+					line.Layout();
+					x += (int)stringXSpacing;
+				}
+			}
+			else
+			{
+				int width = _bottomRight.X - _bottomLeft.X;
+				int height = _bottomLeft.Y - _topLeft.Y;
+				double stringYSpacing = (double)height / (double)(StringCount-1);
+				int x = _bottomLeft.X;
+				int y = _bottomLeft.Y;
+				for (int stringNum = 0; stringNum < StringCount; stringNum++)
+				{
+					PreviewLine line = _strings[stringNum] as PreviewLine;
+					line.SetPoint0(x, y);
+					line.SetPoint1(x + width, y);
+					line.Layout();
+					y -= (int)stringYSpacing;
+				}
 			}
 		}
 
@@ -363,24 +394,24 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			return newGrid;
 		}
 
-		[Editor(typeof (PreviewSetElementsUIEditor), typeof (UITypeEditor)),
-		 CategoryAttribute("Settings"),
-		 DisplayName("Linked Elements")]
-		public override List<PreviewBaseShape> Strings
-		{
-			get
-			{
-				Layout();
-				List<PreviewBaseShape> stringsResult;
-				stringsResult = _strings;
-				if (stringsResult == null) {
-					stringsResult = new List<PreviewBaseShape>();
-					stringsResult.Add(this);
-				}
-				return stringsResult;
-			}
-			set { }
-		}
+		//[Editor(typeof (PreviewSetElementsUIEditor), typeof (UITypeEditor)),
+		// CategoryAttribute("Settings"),
+		// DisplayName("Linked Elements")]
+		//public override List<PreviewBaseShape> Strings
+		//{
+		//	get
+		//	{
+		//		Layout();
+		//		List<PreviewBaseShape> stringsResult;
+		//		stringsResult = _strings;
+		//		if (stringsResult == null) {
+		//			stringsResult = new List<PreviewBaseShape>();
+		//			stringsResult.Add(this);
+		//		}
+		//		return stringsResult;
+		//	}
+		//	set { }
+		//}
 
 		public override void MoveTo(int x, int y)
 		{

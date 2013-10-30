@@ -17,6 +17,10 @@ namespace Common.Controls.Timeline
 	{
 		protected TimelineControlBase(TimeInfo timeinfo)
 		{
+
+			if (timeinfo== null)
+				timeinfo= new Timeline.TimeInfo();
+
 			TimeInfo = timeinfo;
 			TimeInfo.TimePerPixelChanged += OnTimePerPixelChanged;
 			TimeInfo.VisibleTimeStartChanged += OnVisibleTimeStartChanged;
@@ -34,7 +38,12 @@ namespace Common.Controls.Timeline
 		}
 
 
-		protected TimeInfo TimeInfo { get; private set; }
+		protected TimeInfo TimeInfo { get;  set; }
+
+		public TimeSpan PixelsToTime(int px)
+		{
+			return pixelsToTime(px);
+		}
 
 		#region Public Properties 
 
@@ -75,7 +84,10 @@ namespace Common.Controls.Timeline
 		public virtual TimeSpan TotalTime
 		{
 			get { return TimeInfo.TotalTime; }
-			set { TimeInfo.TotalTime = value; }
+			set {
+				if (TimeInfo != null)
+					TimeInfo.TotalTime = value;
+			}
 		}
 
 
@@ -83,21 +95,25 @@ namespace Common.Controls.Timeline
 		public TimeSpan? PlaybackStartTime
 		{
 			get { return TimeInfo.PlaybackStartTime; }
-			set { TimeInfo.PlaybackStartTime = value; }
+			set {
+				if (TimeInfo != null  )
+				TimeInfo.PlaybackStartTime = value; }
 		}
 
 		[Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public TimeSpan? PlaybackEndTime
 		{
 			get { return TimeInfo.PlaybackEndTime; }
-			set { TimeInfo.PlaybackEndTime = value; }
+			set {
+				if (TimeInfo != null)
+				TimeInfo.PlaybackEndTime = value; }
 		}
 
 		[Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public TimeSpan? PlaybackCurrentTime
 		{
 			get { return TimeInfo.PlaybackCurrentTime; }
-			set { TimeInfo.PlaybackCurrentTime = value; }
+			set { if (TimeInfo != null) TimeInfo.PlaybackCurrentTime = value; }
 		}
 
 		/// <summary>

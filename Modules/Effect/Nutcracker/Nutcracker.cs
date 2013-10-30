@@ -1,4 +1,5 @@
-﻿using System;
+﻿//#define OLDWAY
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,6 +19,8 @@ namespace VixenModules.Effect.Nutcracker
 {
 	public class Nutcracker : EffectModuleInstanceBase
 	{
+		public static int frameMs = 50;
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private NutcrackerModuleData _data;
 		private EffectIntents _elementData = null;
 
@@ -26,14 +29,26 @@ namespace VixenModules.Effect.Nutcracker
 			_data = new NutcrackerModuleData();
 		}
 
-		protected override void _PreRender()
+		protected override void TargetNodesChanged()
 		{
+			//Nothing to do
+		}
+
+		protected override void _PreRender(CancellationTokenSource tokenSource = null)
+		{
+			int scnt = StringCount;
+			if (scnt < 2)
+				_data.NutcrackerData.PreviewType = NutcrackerEffects.PreviewType.VerticalLine;
 			_elementData = new EffectIntents();
 
 			foreach (ElementNode node in TargetNodes) {
+				if (tokenSource != null && tokenSource.IsCancellationRequested)
+					return;
+				
 				if (node != null)
 					RenderNode(node);
 			}
+			GC.Collect();
 		}
 
 		protected override EffectIntents _Render()
@@ -83,13 +98,20 @@ namespace VixenModules.Effect.Nutcracker
 			get
 			{
 				int childCount = 0;
-				foreach (ElementNode node in TargetNodes.FirstOrDefault().Children) {
-					if (!node.IsLeaf) {
-						childCount++;
+
+				if (TargetNodes.FirstOrDefault() != null)
+				{
+					foreach (ElementNode node in TargetNodes.FirstOrDefault().Children)
+					{
+						if (!node.IsLeaf)
+						{
+							childCount++;
+						}
 					}
-				}
-				if (childCount == 0 && TargetNodes.FirstOrDefault().Children.Count() > 0) {
-					childCount = 1;
+					if (childCount == 0 && TargetNodes.FirstOrDefault().Children.Count() > 0)
+					{
+						childCount = 1;
+					}
 				}
 
                 if (childCount == 0)
@@ -136,56 +158,84 @@ namespace VixenModules.Effect.Nutcracker
 		// not a element, will recursively descend until we render its elements.
 		private void RenderNode(ElementNode node)
 		{
-			//Console.WriteLine("Nutcracker Node:" + node.Name);
-			//bool CW = true;
-			int stringCount = StringCount;
-			int framesToRender = (int) TimeSpan.TotalMilliseconds/50;
-			NutcrackerEffects effect = new NutcrackerEffects(_data.NutcrackerData);
-			int pixelsPerString = PixelsPerString();
-			effect.InitBuffer(stringCount, pixelsPerString);
-			int totalPixels = effect.PixelCount();
+			int wid = 0;
+			int ht = 0;
+			if (_data.NutcrackerData.StringOrienation == NutcrackerEffects.StringOrientations.Horizontal)
+			{
+				wid = PixelsPerString();
+				ht = StringCount;
+			}
+			else
+			{
+				wid = StringCount;
+				ht = PixelsPerString();
+			}
+			int nFrames = (int)(TimeSpan.TotalMilliseconds / frameMs);
+			NutcrackerEffects nccore = new NutcrackerEffects(_data.NutcrackerData);
+			nccore.InitBuffer( wid, ht);
+			int totalPixels = nccore.PixelCount();
+			if( totalPixels != wid * ht)
+				throw new Exception("bad pixel count");
+			int numElements = node.Count();
+			if (numElements != totalPixels)
+				Logging.Warn( "numEle " + numElements + " != totalPixels " + totalPixels);
+			
 			TimeSpan startTime = TimeSpan.Zero;
-			TimeSpan ms50 = new TimeSpan(0, 0, 0, 0, 50);
+			//TimeSpan ms50 = new TimeSpan(0, 0, 0, 0, frameMs);
 			Stopwatch timer = new Stopwatch();
 			timer.Start();
 
-			for (int frameNum = 0; frameNum < framesToRender; frameNum++) {
-				// Parallel will not work here. Nutcracker effects must be run in order
-				effect.RenderNextEffect(_data.NutcrackerData.CurrentEffect);
+			// OK, we're gonna create 1 intent per element
+			// that intent will hold framesToRender Color values
+			// that it will parcel out as intent states are called for...
+			
+			// set up arrays to hold the generated colors
+			var pixels = new RGBValue[numElements][];
+			for (int eidx = 0; eidx < numElements; eidx++)
+				pixels[eidx] = new RGBValue[nFrames];
 
-				// Parallel works well here
-				// ElementAt is slow so convert it to a list first!
-				List<Element> elements = node.ToList();
-				int elementCount = node.Count();
-				Parallel.For(0, elementCount, elementNum =>
+			// generate all the pixels
+			int pps = PixelsPerString();
+			int sc = StringCount;
+			for (int frameNum = 0; frameNum < nFrames; frameNum++)
+			{
+				nccore.RenderNextEffect(_data.NutcrackerData.CurrentEffect);
+				// peel off this frames pixels...
+				if (_data.NutcrackerData.StringOrienation == NutcrackerEffects.StringOrientations.Horizontal)
 				{
-					int stringNum = 0;
-					if (NutcrackerData.PreviewType == NutcrackerEffects.PreviewType.Tree90 ||
-						NutcrackerData.PreviewType == NutcrackerEffects.PreviewType.Tree180 ||
-						NutcrackerData.PreviewType == NutcrackerEffects.PreviewType.Tree270 ||
-						NutcrackerData.PreviewType == NutcrackerEffects.PreviewType.Tree360)
+					int i = 0;
+					for (int y = 0; y < sc; y++)
 					{
-						stringNum = stringCount - (elementNum / pixelsPerString);
+						for (int x = 0; x < pps; x++)
+						{
+							pixels[i][frameNum] = new RGBValue(nccore.GetPixel(x, y));
+							i++;
+						}
 					}
-					else
+				}
+				else
+				{
+					for (int i = 0; i < numElements; i++)
 					{
-						stringNum = (elementNum / pixelsPerString);
+						pixels[i][frameNum] = new RGBValue(nccore.GetPixel(i));
 					}
-					int pixelNum = (stringNum * pixelsPerString) - (pixelsPerString - (elementNum % pixelsPerString));
-					Color color = effect.GetPixel(pixelNum);
-
-					if (color.A > 0 && (color.R > 0 || color.G > 0 || color.B > 0)) {
-						LightingValue lightingValue = new LightingValue(color, (float) ((float) color.A/(float) byte.MaxValue));
-						IIntent intent = new LightingIntent(lightingValue, lightingValue, ms50);
-						_elementData.AddIntentForElement(elements[elementNum].Id, intent, startTime);
-					}
-				});
-
-				startTime = startTime.Add(ms50);
+				}
 			};
 
+			// create the intents
+			var frameTs = new TimeSpan(0, 0, 0, 0, frameMs);
+			List<Element> elements = node.ToList();
+			for (int eidx = 0; eidx < numElements; eidx++)
+			{
+				IIntent intent = new StaticArrayIntent<RGBValue>(frameTs, pixels[eidx], TimeSpan);
+				_elementData.AddIntentForElement(elements[eidx].Id, intent, startTime);
+			}
+
 			timer.Stop();
-			//Console.WriteLine("Nutcracker Render:" + timer.ElapsedMilliseconds + "ms Frames:" + framesToRender);
+			Logging.Debug(" {0}ms, Frames: {1}, wid: {2}, ht: {3},  pix: {4}, intents: {5}",
+							timer.ElapsedMilliseconds, nFrames, wid, ht, totalPixels, _elementData.Count());
 		}
+
 	}
+
 }

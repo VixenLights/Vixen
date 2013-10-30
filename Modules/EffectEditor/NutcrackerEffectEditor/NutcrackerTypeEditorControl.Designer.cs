@@ -60,9 +60,6 @@
 			this.label49 = new System.Windows.Forms.Label();
 			this.label48 = new System.Windows.Forms.Label();
 			this.comboBoxPictureTileFileName = new Common.Controls.PictureComboBox();
-			this.shapeContainer1 = new Microsoft.VisualBasic.PowerPacks.ShapeContainer();
-			this.lineShape2 = new Microsoft.VisualBasic.PowerPacks.LineShape();
-			this.lineShape1 = new Microsoft.VisualBasic.PowerPacks.LineShape();
 			this.Picture = new System.Windows.Forms.TabPage();
 			this.textPictureFileName = new System.Windows.Forms.TextBox();
 			this.label38 = new System.Windows.Forms.Label();
@@ -104,7 +101,7 @@
 			this.trackSpiralsThickness = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
 			this.trackSpiralsRotations = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
 			this.trackSpiralsRepeat = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
-			this.Text = new System.Windows.Forms.TabPage();
+			this.TextPage = new System.Windows.Forms.TabPage();
 			this.comboBoxTextDirection = new System.Windows.Forms.ComboBox();
 			this.label35 = new System.Windows.Forms.Label();
 			this.textBoxTextFont = new System.Windows.Forms.TextBox();
@@ -188,6 +185,9 @@
 			this.scrollPixelSize = new Common.Controls.ControlsEx.ValueControls.HValueScrollBar();
 			this.label44 = new System.Windows.Forms.Label();
 			this.buttonHelp = new System.Windows.Forms.Button();
+			this.radioButtonVertical = new System.Windows.Forms.RadioButton();
+			this.radioButtonHorizontal = new System.Windows.Forms.RadioButton();
+			this.label51 = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.tabEffectProperties.SuspendLayout();
@@ -200,7 +200,7 @@
 			this.TreePage.SuspendLayout();
 			this.Spirograph.SuspendLayout();
 			this.Spirals.SuspendLayout();
-			this.Text.SuspendLayout();
+			this.TextPage.SuspendLayout();
 			this.Twinkles.SuspendLayout();
 			this.Snowstorm.SuspendLayout();
 			this.Snowflakes.SuspendLayout();
@@ -229,7 +229,7 @@
 			this.groupBox1.Controls.Add(this.preview);
 			this.groupBox1.Location = new System.Drawing.Point(10, 3);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(285, 430);
+			this.groupBox1.Size = new System.Drawing.Size(285, 440);
 			this.groupBox1.TabIndex = 5;
 			this.groupBox1.TabStop = false;
 			// 
@@ -245,23 +245,23 @@
 			this.preview.Name = "preview";
 			this.preview.Paused = false;
 			this.preview.ShowInfo = false;
-			this.preview.Size = new System.Drawing.Size(273, 412);
+			this.preview.Size = new System.Drawing.Size(273, 422);
 			this.preview.TabIndex = 0;
 			// 
 			// comboBoxDisplayType
 			// 
 			this.comboBoxDisplayType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.comboBoxDisplayType.FormattingEnabled = true;
-			this.comboBoxDisplayType.Location = new System.Drawing.Point(96, 23);
+			this.comboBoxDisplayType.Location = new System.Drawing.Point(117, 20);
 			this.comboBoxDisplayType.Name = "comboBoxDisplayType";
-			this.comboBoxDisplayType.Size = new System.Drawing.Size(288, 21);
+			this.comboBoxDisplayType.Size = new System.Drawing.Size(267, 21);
 			this.comboBoxDisplayType.TabIndex = 2;
 			this.comboBoxDisplayType.SelectedIndexChanged += new System.EventHandler(this.comboBoxDisplayType_SelectedIndexChanged);
 			// 
 			// label22
 			// 
 			this.label22.AutoSize = true;
-			this.label22.Location = new System.Drawing.Point(19, 26);
+			this.label22.Location = new System.Drawing.Point(19, 23);
 			this.label22.Name = "label22";
 			this.label22.Size = new System.Drawing.Size(71, 13);
 			this.label22.TabIndex = 1;
@@ -286,7 +286,7 @@
 			this.groupBox2.Controls.Add(this.comboBoxEffect);
 			this.groupBox2.Controls.Add(this.label1);
 			this.groupBox2.Controls.Add(this.trackBarSpeed);
-			this.groupBox2.Location = new System.Drawing.Point(301, 98);
+			this.groupBox2.Location = new System.Drawing.Point(301, 108);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(408, 306);
 			this.groupBox2.TabIndex = 6;
@@ -425,7 +425,7 @@
 			this.tabEffectProperties.Controls.Add(this.TreePage);
 			this.tabEffectProperties.Controls.Add(this.Spirograph);
 			this.tabEffectProperties.Controls.Add(this.Spirals);
-			this.tabEffectProperties.Controls.Add(this.Text);
+			this.tabEffectProperties.Controls.Add(this.TextPage);
 			this.tabEffectProperties.Controls.Add(this.Twinkles);
 			this.tabEffectProperties.Controls.Add(this.Snowstorm);
 			this.tabEffectProperties.Controls.Add(this.Snowflakes);
@@ -458,7 +458,7 @@
 			this.PictureTile.Controls.Add(this.label49);
 			this.PictureTile.Controls.Add(this.label48);
 			this.PictureTile.Controls.Add(this.comboBoxPictureTileFileName);
-			this.PictureTile.Controls.Add(this.shapeContainer1);
+		 
 			this.PictureTile.Location = new System.Drawing.Point(4, 5);
 			this.PictureTile.Name = "PictureTile";
 			this.PictureTile.Size = new System.Drawing.Size(266, 243);
@@ -589,36 +589,7 @@
 			this.comboBoxPictureTileFileName.Size = new System.Drawing.Size(254, 56);
 			this.comboBoxPictureTileFileName.TabIndex = 0;
 			this.comboBoxPictureTileFileName.SelectedIndexChanged += new System.EventHandler(this.comboBoxPictureTileFileName_SelectedIndexChanged);
-			// 
-			// shapeContainer1
-			// 
-			this.shapeContainer1.Location = new System.Drawing.Point(0, 0);
-			this.shapeContainer1.Margin = new System.Windows.Forms.Padding(0);
-			this.shapeContainer1.Name = "shapeContainer1";
-			this.shapeContainer1.Shapes.AddRange(new Microsoft.VisualBasic.PowerPacks.Shape[] {
-            this.lineShape2,
-            this.lineShape1});
-			this.shapeContainer1.Size = new System.Drawing.Size(266, 243);
-			this.shapeContainer1.TabIndex = 70;
-			this.shapeContainer1.TabStop = false;
-			// 
-			// lineShape2
-			// 
-			this.lineShape2.BorderColor = System.Drawing.Color.Silver;
-			this.lineShape2.Name = "lineShape2";
-			this.lineShape2.X1 = 13;
-			this.lineShape2.X2 = 254;
-			this.lineShape2.Y1 = 145;
-			this.lineShape2.Y2 = 145;
-			// 
-			// lineShape1
-			// 
-			this.lineShape1.BorderColor = System.Drawing.Color.Silver;
-			this.lineShape1.Name = "lineShape1";
-			this.lineShape1.X1 = 11;
-			this.lineShape1.X2 = 252;
-			this.lineShape1.Y1 = 211;
-			this.lineShape1.Y2 = 211;
+			 
 			// 
 			// Picture
 			// 
@@ -1078,24 +1049,24 @@
 			this.trackSpiralsRepeat.Value = 1;
 			this.trackSpiralsRepeat.ValueChanged += new Common.Controls.ControlsEx.ValueControls.ValueChangedEH(this.Spirals_ValueChanged);
 			// 
-			// Text
+			// TextPage
 			// 
-			this.Text.Controls.Add(this.comboBoxTextDirection);
-			this.Text.Controls.Add(this.label35);
-			this.Text.Controls.Add(this.textBoxTextFont);
-			this.Text.Controls.Add(this.buttonTextFont);
-			this.Text.Controls.Add(this.textTextLine2);
-			this.Text.Controls.Add(this.textTextLine1);
-			this.Text.Controls.Add(this.label34);
-			this.Text.Controls.Add(this.label33);
-			this.Text.Controls.Add(this.label32);
-			this.Text.Controls.Add(this.trackTextTop);
-			this.Text.Location = new System.Drawing.Point(4, 5);
-			this.Text.Name = "Text";
-			this.Text.Size = new System.Drawing.Size(266, 243);
-			this.Text.TabIndex = 12;
-			this.Text.Text = "Text";
-			this.Text.UseVisualStyleBackColor = true;
+			this.TextPage.Controls.Add(this.comboBoxTextDirection);
+			this.TextPage.Controls.Add(this.label35);
+			this.TextPage.Controls.Add(this.textBoxTextFont);
+			this.TextPage.Controls.Add(this.buttonTextFont);
+			this.TextPage.Controls.Add(this.textTextLine2);
+			this.TextPage.Controls.Add(this.textTextLine1);
+			this.TextPage.Controls.Add(this.label34);
+			this.TextPage.Controls.Add(this.label33);
+			this.TextPage.Controls.Add(this.label32);
+			this.TextPage.Controls.Add(this.trackTextTop);
+			this.TextPage.Location = new System.Drawing.Point(4, 5);
+			this.TextPage.Name = "TextPage";
+			this.TextPage.Size = new System.Drawing.Size(266, 243);
+			this.TextPage.TabIndex = 12;
+			this.TextPage.Text = "Text";
+			this.TextPage.UseVisualStyleBackColor = true;
 			// 
 			// comboBoxTextDirection
 			// 
@@ -1922,24 +1893,27 @@
 			// 
 			// groupBox3
 			// 
+			this.groupBox3.Controls.Add(this.label51);
+			this.groupBox3.Controls.Add(this.radioButtonHorizontal);
+			this.groupBox3.Controls.Add(this.radioButtonVertical);
 			this.groupBox3.Controls.Add(this.scrollPixelSize);
 			this.groupBox3.Controls.Add(this.label44);
 			this.groupBox3.Controls.Add(this.label22);
 			this.groupBox3.Controls.Add(this.comboBoxDisplayType);
 			this.groupBox3.Location = new System.Drawing.Point(301, 3);
 			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(408, 89);
+			this.groupBox3.Size = new System.Drawing.Size(408, 99);
 			this.groupBox3.TabIndex = 7;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "Preview Display";
 			// 
 			// scrollPixelSize
 			// 
-			this.scrollPixelSize.Location = new System.Drawing.Point(96, 50);
+			this.scrollPixelSize.Location = new System.Drawing.Point(117, 47);
 			this.scrollPixelSize.Maximum = 10;
 			this.scrollPixelSize.Minimum = 1;
 			this.scrollPixelSize.Name = "scrollPixelSize";
-			this.scrollPixelSize.Size = new System.Drawing.Size(288, 23);
+			this.scrollPixelSize.Size = new System.Drawing.Size(91, 23);
 			this.scrollPixelSize.TabIndex = 5;
 			this.scrollPixelSize.Text = "hValueScrollBar1";
 			this.scrollPixelSize.Value = 3;
@@ -1948,7 +1922,7 @@
 			// label44
 			// 
 			this.label44.AutoSize = true;
-			this.label44.Location = new System.Drawing.Point(19, 54);
+			this.label44.Location = new System.Drawing.Point(19, 50);
 			this.label44.Name = "label44";
 			this.label44.Size = new System.Drawing.Size(55, 13);
 			this.label44.TabIndex = 3;
@@ -1959,7 +1933,7 @@
 			this.buttonHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonHelp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonHelp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.buttonHelp.Location = new System.Drawing.Point(649, 410);
+			this.buttonHelp.Location = new System.Drawing.Point(649, 423);
 			this.buttonHelp.Name = "buttonHelp";
 			this.buttonHelp.Size = new System.Drawing.Size(60, 23);
 			this.buttonHelp.TabIndex = 59;
@@ -1970,6 +1944,39 @@
 			this.buttonHelp.UseVisualStyleBackColor = true;
 			this.buttonHelp.Click += new System.EventHandler(this.buttonHelp_Click);
 			// 
+			// radioButtonVertical
+			// 
+			this.radioButtonVertical.AutoSize = true;
+			this.radioButtonVertical.Location = new System.Drawing.Point(117, 74);
+			this.radioButtonVertical.Name = "radioButtonVertical";
+			this.radioButtonVertical.Size = new System.Drawing.Size(60, 17);
+			this.radioButtonVertical.TabIndex = 6;
+			this.radioButtonVertical.TabStop = true;
+			this.radioButtonVertical.Text = "Vertical";
+			this.radioButtonVertical.UseVisualStyleBackColor = true;
+			this.radioButtonVertical.CheckedChanged += new System.EventHandler(this.radioButtonVertical_CheckedChanged);
+			// 
+			// radioButtonHorizontal
+			// 
+			this.radioButtonHorizontal.AutoSize = true;
+			this.radioButtonHorizontal.Location = new System.Drawing.Point(183, 74);
+			this.radioButtonHorizontal.Name = "radioButtonHorizontal";
+			this.radioButtonHorizontal.Size = new System.Drawing.Size(72, 17);
+			this.radioButtonHorizontal.TabIndex = 7;
+			this.radioButtonHorizontal.TabStop = true;
+			this.radioButtonHorizontal.Text = "Horizontal";
+			this.radioButtonHorizontal.UseVisualStyleBackColor = true;
+			this.radioButtonHorizontal.CheckedChanged += new System.EventHandler(this.radioButtonHorizontal_CheckedChanged);
+			// 
+			// label51
+			// 
+			this.label51.AutoSize = true;
+			this.label51.Location = new System.Drawing.Point(20, 76);
+			this.label51.Name = "label51";
+			this.label51.Size = new System.Drawing.Size(91, 13);
+			this.label51.TabIndex = 8;
+			this.label51.Text = "String Orientation:";
+			// 
 			// NutcrackerTypeEditorControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1979,7 +1986,7 @@
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
 			this.Name = "NutcrackerTypeEditorControl";
-			this.Size = new System.Drawing.Size(718, 442);
+			this.Size = new System.Drawing.Size(718, 452);
 			this.Load += new System.EventHandler(this.NutcrackerTypeEditorControl_Load);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox2.ResumeLayout(false);
@@ -2001,8 +2008,8 @@
 			this.Spirograph.PerformLayout();
 			this.Spirals.ResumeLayout(false);
 			this.Spirals.PerformLayout();
-			this.Text.ResumeLayout(false);
-			this.Text.PerformLayout();
+			this.TextPage.ResumeLayout(false);
+			this.TextPage.PerformLayout();
 			this.Twinkles.ResumeLayout(false);
 			this.Twinkles.PerformLayout();
 			this.Snowstorm.ResumeLayout(false);
@@ -2132,7 +2139,7 @@
         private System.Windows.Forms.TabPage Twinkles;
         private System.Windows.Forms.Label label31;
         private Common.Controls.ControlsEx.ValueControls.HMiniTracker trackTwinkleCount;
-        private System.Windows.Forms.TabPage Text;
+        private System.Windows.Forms.TabPage TextPage;
         private System.Windows.Forms.Button buttonTextFont;
         private System.Windows.Forms.TextBox textTextLine2;
         private System.Windows.Forms.TextBox textTextLine1;
@@ -2188,11 +2195,12 @@
         private System.Windows.Forms.NumericUpDown numericPictureTileScale;
         private System.Windows.Forms.CheckBox checkPictureTileReplaceColor;
         private System.Windows.Forms.CheckBox checkPictureTileCopySaturation;
-        private Microsoft.VisualBasic.PowerPacks.ShapeContainer shapeContainer1;
-        private Microsoft.VisualBasic.PowerPacks.LineShape lineShape1;
-        private Microsoft.VisualBasic.PowerPacks.LineShape lineShape2;
+        
         private System.Windows.Forms.Label label52;
         private System.Windows.Forms.TextBox textPictureTileFileName;
 		private System.Windows.Forms.Button buttonPictureTileSelect;
+		private System.Windows.Forms.Label label51;
+		private System.Windows.Forms.RadioButton radioButtonHorizontal;
+		private System.Windows.Forms.RadioButton radioButtonVertical;
 	}
 }

@@ -7,6 +7,8 @@ namespace Vixen.IO.Xml.Serializer
 {
 	internal class XmlOutputFilterSerializer : IXmlSerializer<IOutputFilterModuleInstance>
 	{
+		private static NLog.Logger logging = NLog.LogManager.GetCurrentClassLogger();
+
 		private const string ELEMENT_FILTER = "FilterNode";
 		private const string ATTR_TYPE_ID = "typeId";
 		private const string ATTR_INSTANCE_ID = "instanceId";
@@ -20,18 +22,25 @@ namespace Vixen.IO.Xml.Serializer
 
 		public IOutputFilterModuleInstance ReadObject(XElement element)
 		{
-			Guid? typeId = XmlHelper.GetGuidAttribute(element, ATTR_TYPE_ID);
-			if (typeId == null) return null;
+			try {
+				Guid? typeId = XmlHelper.GetGuidAttribute(element, ATTR_TYPE_ID);
+				if (typeId == null)
+					return null;
 
-			Guid? instanceId = XmlHelper.GetGuidAttribute(element, ATTR_INSTANCE_ID);
-			if (instanceId == null) return null;
+				Guid? instanceId = XmlHelper.GetGuidAttribute(element, ATTR_INSTANCE_ID);
+				if (instanceId == null)
+					return null;
 
-			IOutputFilterModuleInstance outputFilter = Modules.ModuleManagement.GetOutputFilter(typeId);
-			if (outputFilter != null) {
-				outputFilter.InstanceId = instanceId.Value;
+				IOutputFilterModuleInstance outputFilter = Modules.ModuleManagement.GetOutputFilter(typeId);
+				if (outputFilter != null) {
+					outputFilter.InstanceId = instanceId.Value;
+				}
+
+				return outputFilter;
+			} catch (Exception e) {
+				logging.ErrorException("Error loading Output Filter from XML", e);
+				return null;
 			}
-
-			return outputFilter;
 		}
 	}
 }

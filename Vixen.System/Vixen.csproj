@@ -33,40 +33,23 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <TargetFrameworkProfile />
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>$(SolutionDir)\Output\</OutputPath>
-    <DefineConstants>DEBUG</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>$(SolutionDir)\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>$(SolutionDir)\Output\</OutputPath>
-    <DefineConstants>DEBUG</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>$(SolutionDir)\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>$(SolutionDir)\Release64\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
@@ -104,6 +87,7 @@
     <Compile Include="Commands\UnknownValueCommand.cs" />
     <Compile Include="Common\ColorSpaces.cs" />
     <Compile Include="Common\ColorSpaceTypeConverter.cs" />
+    <Compile Include="Common\Graphics.cs" />
     <Compile Include="Data\Combinator\Color\NaiveColorCombinator.cs" />
     <Compile Include="Data\Combinator\DiscardExcessCombinator.cs" />
     <Compile Include="Data\Combinator\_16Bit\16BitHighestWinsCombinator.cs" />
@@ -137,6 +121,7 @@
     <Compile Include="Data\Flow\IDataFlowData.cs" />
     <Compile Include="Data\Policy\DataFlowDataDispatchingDataPolicy.cs" />
     <Compile Include="Data\Policy\SmartControllerDataPolicy.cs" />
+    <Compile Include="Data\Value\RGBValue.cs" />
     <Compile Include="Delegates\Delegates.cs" />
     <Compile Include="Execution\ContextCurrentEffectsFull.cs" />
     <Compile Include="Execution\ContextFeatures.cs" />
@@ -164,20 +149,22 @@
     <Compile Include="Execution\Context\ISequenceContext.cs" />
     <Compile Include="Execution\Context\SequenceContext.cs" />
     <Compile Include="Execution\QueuingSequenceEnumerator.cs" />
+    <Compile Include="Extensions\IntentNodeCollection.cs" />
     <Compile Include="Factory\CommandOutputFactory.cs" />
     <Compile Include="Factory\ControllerFactory.cs" />
     <Compile Include="Factory\IntentOutputFactory.cs" />
     <Compile Include="Factory\IOutputFactory.cs" />
     <Compile Include="Factory\PreviewFactory.cs" />
     <Compile Include="Factory\SmartControllerFactory.cs" />
-    <Compile Include="Intent\ColorIntent.cs" />
+    <Compile Include="Intent\IntentHelpers.cs" />
+    <Compile Include="Intent\RGBIntent.cs" />
     <Compile Include="Intent\CommandIntent.cs" />
     <Compile Include="Intent\IntentState.cs" />
     <Compile Include="Intent\LightingIntent.cs" />
     <Compile Include="Intent\PositionIntent.cs" />
     <Compile Include="Intent\StaticIntent.cs" />
     <Compile Include="Intent\StaticIntentState.cs" />
-    <Compile Include="Interpolator\ColorInterpolator.cs" />
+    <Compile Include="Intent\StaticArrayIntent.cs" />
     <Compile Include="Interpolator\PositionValueInterpolator.cs" />
     <Compile Include="Interpolator\StaticValueInterpolator.cs" />
     <Compile Include="IO\Factory\ContentMigratorFactory.cs" />
@@ -250,6 +237,7 @@
     <Compile Include="Module\ModuleInstanceDataRetriever.cs" />
     <Compile Include="Module\ModuleConsumer.cs" />
     <Compile Include="Module\ModuleTypeDataRetriever.cs" />
+    <Compile Include="Module\Preview\PreviewElementIntentStates.cs" />
     <Compile Include="Module\Script\ICompilerError.cs" />
     <Compile Include="Module\Script\ICompilerParameters.cs" />
     <Compile Include="Module\Script\ICompilerResults.cs" />
@@ -303,7 +291,6 @@
     <Compile Include="Services\EditorService.cs" />
     <Compile Include="Services\ModuleTemplateService.cs" />
     <Compile Include="Sys\Attribute\ContextAttribute.cs" />
-    <Compile Include="Data\Value\ColorValue.cs" />
     <Compile Include="Data\Value\CommandValue.cs" />
     <Compile Include="Sys\ElementDataFlowAdapterFactory.cs" />
     <Compile Include="Sys\DataNodeCollection.cs" />
@@ -351,8 +338,7 @@
     <Compile Include="Sys\Instrumentation\CacheHitPercentValue.cs" />
     <Compile Include="Sys\IntentChangeCollection.cs" />
     <Compile Include="Data\Value\LightingValue.cs" />
-    <Compile Include="Interpolator\ColorValueInterpolator.cs" />
-    <Compile Include="Interpolator\FloatInterpolator.cs" />
+    <Compile Include="Interpolator\RGBValueInterpolator.cs" />
     <Compile Include="Interpolator\LightingValueInterpolator.cs" />
     <Compile Include="IO\Policy\ElementNodeTemplateFilePolicy.cs" />
     <Compile Include="IO\Policy\OutputFilterTemplatePolicy.cs" />
@@ -730,6 +716,7 @@
     <Compile Include="Sys\State\Execution\ClosingState.cs" />
     <Compile Include="Sys\State\Execution\TestOpenState.cs" />
     <Compile Include="Sys\State\Execution\TestOpeningState.cs" />
+    <Compile Include="Sys\State\Variables.cs" />
     <Compile Include="Sys\SystemClock.cs" />
     <Compile Include="Sys\Managers\NodeManager.cs" />
     <Compile Include="Sys\SystemContext.cs" />
@@ -814,6 +801,8 @@
     <Compile Include="Sys\VixenSystem.cs" />
     <Compile Include="Sys\WindowsMultimedia.cs" />
     <Compile Include="Sys\XmlHelper.cs" />
+    <Compile Include="Utility\cEventHelper.cs" />
+    <Compile Include="Utility\PathUtility.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -843,6 +832,8 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Fonts\DigitalDream.ttf" />
+    <EmbeddedResource Include="Fonts\RadioLand.ttf" />
     <None Include="packages.config" />
     <None Include="Resources\Effect48.png" />
   </ItemGroup>
@@ -857,7 +848,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(SolutionDir)\Release Notes.txt" $(OutDir)</PostBuildEvent>
+    <PostBuildEvent>copy "$(SolutionDir)\Release Notes.txt" "$(OutDir)"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

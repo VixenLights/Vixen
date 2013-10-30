@@ -88,8 +88,8 @@ namespace VixenModules.Effect.Alternating {
 			DepthOfEffect = 0;
 			GroupEffect = 1;
 			StaticColor1 = StaticColor2 = true;
-			ColorGradient1 = new ColorGradient();
-			ColorGradient2 = new ColorGradient();
+			ColorGradient1 = new ColorGradient(Color.White);
+			ColorGradient2 = new ColorGradient(Color.Red);
 			Curve1 = new Curve();
 			Curve2 = new Curve();
 		}

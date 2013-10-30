@@ -42,8 +42,7 @@
 			this.buttonDeleteProfile = new System.Windows.Forms.Button();
 			this.buttonAddProfile = new System.Windows.Forms.Button();
 			this.label1 = new System.Windows.Forms.Label();
-			this.shapeContainer1 = new Microsoft.VisualBasic.PowerPacks.ShapeContainer();
-			this.lineShape1 = new Microsoft.VisualBasic.PowerPacks.LineShape();
+            
 			this.buttonOK = new System.Windows.Forms.Button();
 			this.buttonCancel = new System.Windows.Forms.Button();
 			this.folderBrowserDataFolder = new System.Windows.Forms.FolderBrowserDialog();
@@ -120,7 +119,6 @@
 			this.groupBox2.Controls.Add(this.buttonAddProfile);
 			this.groupBox2.Controls.Add(this.label1);
 			this.groupBox2.Controls.Add(this.comboBoxProfiles);
-			this.groupBox2.Controls.Add(this.shapeContainer1);
 			this.groupBox2.Location = new System.Drawing.Point(15, 12);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(400, 121);
@@ -202,25 +200,7 @@
 			this.label1.Size = new System.Drawing.Size(39, 13);
 			this.label1.TabIndex = 1;
 			this.label1.Text = "Profile:";
-			// 
-			// shapeContainer1
-			// 
-			this.shapeContainer1.Location = new System.Drawing.Point(3, 16);
-			this.shapeContainer1.Margin = new System.Windows.Forms.Padding(0);
-			this.shapeContainer1.Name = "shapeContainer1";
-			this.shapeContainer1.Shapes.AddRange(new Microsoft.VisualBasic.PowerPacks.Shape[] {
-            this.lineShape1});
-			this.shapeContainer1.Size = new System.Drawing.Size(394, 102);
-			this.shapeContainer1.TabIndex = 8;
-			this.shapeContainer1.TabStop = false;
-			// 
-			// lineShape1
-			// 
-			this.lineShape1.Name = "lineShape1";
-			this.lineShape1.X1 = 3;
-			this.lineShape1.X2 = 389;
-			this.lineShape1.Y1 = 34;
-			this.lineShape1.Y2 = 34;
+            
 			// 
 			// buttonOK
 			// 
@@ -284,8 +264,7 @@
         private System.Windows.Forms.TextBox textBoxProfileName;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label2;
-        private Microsoft.VisualBasic.PowerPacks.ShapeContainer shapeContainer1;
-        private Microsoft.VisualBasic.PowerPacks.LineShape lineShape1;
+      
         private System.Windows.Forms.Button buttonOK;
         private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDataFolder;

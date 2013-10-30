@@ -4,6 +4,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Linq;
 
 namespace VixenModules.SequenceType.Vixen2x
 {
@@ -35,7 +36,8 @@ namespace VixenModules.SequenceType.Vixen2x
 
 		protected internal Vixen2SequenceData(string fileName)
 		{
-			if (!File.Exists(fileName)) {
+			if (!File.Exists(fileName))
+			{
 				throw new FileNotFoundException("Cannot Locate " + fileName);
 			}
 			FileName = fileName;
@@ -45,65 +47,64 @@ namespace VixenModules.SequenceType.Vixen2x
 
 		private void ParseFile()
 		{
-			XElement root = null;
-			using (FileStream stream = new FileStream(FileName, FileMode.Open)) {
-				root = XElement.Load(stream);
+			XElement root = XElement.Load(FileName);
+			
+			//For all version of Vixen the Time, EventPeriod, EventValues and Audio are at the root level,
+			//so just select them.
+			SeqLengthInMills = Int32.Parse(root.Element("Time").Value);
+			EventPeriod = Int32.Parse(root.Element("EventPeriodInMilliseconds").Value);
+			EventData = Convert.FromBase64String(root.Element("EventValues").Value);
+			
+			//Someone may have decided to not use audio so we need to check for that as well.
+			var songElement = root.Elements("Audio").SingleOrDefault();
+			if (songElement != null)
+			{
+				SongFileName = root.Element("Audio").Attribute("filename").Value;
 			}
-			foreach (XElement element in root.Descendants()) {
-				switch (element.Name.ToString()) {
-					case "Time":
-						SeqLengthInMills = Int32.Parse(element.Value);
-						break;
-					case "EventPeriodInMilliseconds":
-						EventPeriod = Int32.Parse(element.Value);
-						break;
-					case "EventValues":
-						EventData = Convert.FromBase64String(element.Value);
-						break;
-					case "Audio":
-						SongFileName = element.Attribute("filename").Value;
-						break;
-					case "Profile":
-						ProfileName = element.Value;
-						break;
-						// This node will exist if we have a flattend profile so load the channel information
-					case "Channel":
-						XAttribute nameAttrib = element.Attribute("name");
-						XAttribute colorAttrib = element.Attribute("color");
 
-						//This exists in the 2.5.x versions of Vixen
-						//<Channel name="Mini Tree Red 1" color="-65536" output="0" id="5576725746726704001" enabled="True" />
-						if (nameAttrib != null) {
-							CreateMappingList(element, 2);
-						}
-							//This exists in the older versions
-							//<Channel color="-262330" output="0" id="633580705216250000" enabled="True">FenceIcicles-1</Channel>
-						else if (colorAttrib != null) {
-							CreateMappingList(element, 1);
-						}
+			//if the sequence is flattened then the profile element will not exists so lets check for it.
+			var profileElement = root.Elements("Profile").SingleOrDefault();
+			if(profileElement != null)
+			{
+			ProfileName = root.Element("Profile").Value;
+			}
 
-						break;
-					default:
-						//ignore
-						break;
+			foreach (XElement e in root.Elements("Channels").Elements("Channel"))
+			{
+				XAttribute nameAttrib = e.Attribute("name");
+				XAttribute colorAttrib = e.Attribute("color");
+
+				//This exists in the 2.5.x versions of Vixen
+				//<Channel name="Mini Tree Red 1" color="-65536" output="0" id="5576725746726704001" enabled="True" />
+				if (nameAttrib != null)
+				{
+					CreateMappingList(e, 2);
+				}
+				//This exists in the older versions
+				//<Channel color="-262330" output="0" id="633580705216250000" enabled="True">FenceIcicles-1</Channel>
+				else if (colorAttrib != null)
+				{
+					CreateMappingList(e, 1);
 				}
 			}
 
 			if (!String.IsNullOrEmpty(SongFileName))
 				MessageBox.Show(
 					string.Format("Audio File {0} is associated with this sequence, please select the location of the audio file.",
-					              SongFileName), "Select Audio Location", MessageBoxButtons.OK, MessageBoxIcon.Information);
+								  SongFileName), "Select Audio Location", MessageBoxButtons.OK, MessageBoxIcon.Information);
 			var dialog = new OpenFileDialog
-			             	{
-			             		Multiselect = false,
-			             		Title = string.Format("Open Vixen 2.x Audio  [{0}]", SongFileName),
-			             		Filter = "Audio|*.mp3|All Files (*.*)|*.*",
-			             		RestoreDirectory = true,
-			             		InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Vixen\Audio"
-			             	};
+							{
+								Multiselect = false,
+								Title = string.Format("Open Vixen 2.x Audio  [{0}]", SongFileName),
+								Filter = "Audio|*.mp3|All Files (*.*)|*.*",
+								RestoreDirectory = true,
+								InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Vixen\Audio"
+							};
 
-			using (dialog) {
-				if (dialog.ShowDialog() == DialogResult.OK) {
+			using (dialog)
+			{
+				if (dialog.ShowDialog() == DialogResult.OK)
+				{
 					SongFileName = dialog.SafeFileName;
 					SongPath = Path.GetDirectoryName(dialog.FileName);
 				}
@@ -111,87 +112,83 @@ namespace VixenModules.SequenceType.Vixen2x
 
 			//check to see if the ProfileName is not null, if it isn't lets notify the user so they
 			//can let us load the data
-			if (!String.IsNullOrEmpty(ProfileName)) {
+			if (!String.IsNullOrEmpty(ProfileName))
+			{
 				MessageBox.Show(
 					string.Format("Vixen {0}.pro is associated with this sequence, please select the location of the profile.",
-					              ProfileName), "Select Profile Location", MessageBoxButtons.OK, MessageBoxIcon.Information);
+								  ProfileName), "Select Profile Location", MessageBoxButtons.OK, MessageBoxIcon.Information);
 				dialog = new OpenFileDialog
-				         	{
-				         		Multiselect = false,
-				         		Title = string.Format("Open Vixen 2.x Profile [{0}]", ProfileName),
-				         		Filter = "Profile|*.pro",
-				         		RestoreDirectory = true,
-				         		InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Vixen\Profiles"
-				         	};
+							{
+								Multiselect = false,
+								Title = string.Format("Open Vixen 2.x Profile [{0}]", ProfileName),
+								Filter = "Profile|*.pro",
+								RestoreDirectory = true,
+								InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Vixen\Profiles"
+							};
 
-				using (dialog) {
-					if (dialog.ShowDialog() == DialogResult.OK) {
+				using (dialog)
+				{
+					if (dialog.ShowDialog() == DialogResult.OK)
+					{
 						ProfilePath = Path.GetDirectoryName(dialog.FileName);
 						ProfileName = dialog.SafeFileName;
-
 						root = null;
-						using (FileStream stream = new FileStream(dialog.FileName, FileMode.Open)) {
-							root = XElement.Load(stream);
-						}
-						foreach (XElement element in root.Descendants()) {
-							switch (element.Name.ToString()) {
-								case "Channel":
+						root = XElement.Load(dialog.FileName);
 
-									XAttribute nameAttrib = element.Attribute("name");
-									XAttribute colorAttrib = element.Attribute("color");
+						foreach (XElement e in root.Elements("ChannelObjects").Elements("Channel"))
+						{
+							XAttribute nameAttrib = e.Attribute("name");
+							XAttribute colorAttrib = e.Attribute("color");
 
-									//This exists in the 2.5.x versions of Vixen
-									//<Channel name="Mini Tree Red 1" color="-65536" output="0" id="5576725746726704001" enabled="True" />
-									if (nameAttrib != null) {
-										CreateMappingList(element, 2);
-									}
-										//This exists in the older versions
-										//<Channel color="-262330" output="0" id="633580705216250000" enabled="True">FenceIcicles-1</Channel>
-									else if (colorAttrib != null) {
-										CreateMappingList(element, 1);
-									}
-
-									break;
-								default:
-									//ignore
-									break;
+							//This exists in the 2.5.x versions of Vixen
+							//<Channel name="Mini Tree Red 1" color="-65536" output="0" id="5576725746726704001" enabled="True" />
+							if (nameAttrib != null)
+							{
+								CreateMappingList(e, 2);
 							}
+							//This exists in the older versions
+							//<Channel color="-262330" output="0" id="633580705216250000" enabled="True">FenceIcicles-1</Channel>
+							else if (colorAttrib != null)
+							{
+								CreateMappingList(e, 1);
+							}
+
 						}
 					}
 				}
 			}
 			else
-				//if the profile name is null or empty then the sequence must have been flattened so indicate that.
+			//if the profile name is null or empty then the sequence must have been flattened so indicate that.
 			{
 				ProfileName = "Sequence has been flattened no profile is available";
 			}
 
 			// These calculations could have been put in the properties, but then it gets confusing to debug because of all the jumping around.
-			TotalEventsCount = Convert.ToInt32(Math.Ceiling((double) (SeqLengthInMills/EventPeriod)));
+			TotalEventsCount = Convert.ToInt32(Math.Ceiling((double)(SeqLengthInMills / EventPeriod)));
 			;
-			ElementCount = EventData.Length/TotalEventsCount;
-			EventsPerElement = EventData.Length/ElementCount;
+			ElementCount = EventData.Length / TotalEventsCount;
+			EventsPerElement = EventData.Length / ElementCount;
 		}
-
 
 		private void CreateMappingList(XElement element, int version)
 		{
 			//if version == 1 then we have an old profile that we are dealing with so we have
 			//to get the node value for the channel name
 			var channelname = string.Empty;
-			if (version == 1) {
+			if (version == 1)
+			{
 				channelname = element.FirstNode.ToString();
 			}
-				//must be version 2.5 so get the channel name from attribute 'name'
-			else if (version == 2) {
+			//must be version 2.5 so get the channel name from attribute 'name'
+			else if (version == 2)
+			{
 				channelname = element.Attribute("name").Value;
 			}
 
-
 			mappings.Add(new ChannelMapping(channelname,
-			                                Color.FromArgb(int.Parse(element.Attribute("color").Value)),
-			                                (mappings.Count + 1).ToString(),
-			                                element.Attribute("output").Value));
+											Color.FromArgb(int.Parse(element.Attribute("color").Value)),
+											(mappings.Count + 1).ToString(),
+											element.Attribute("output").Value));
 		}
 	}
 }

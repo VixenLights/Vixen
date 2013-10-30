@@ -41,7 +41,7 @@ namespace Vixen.Sys
 
 		public override string ToString()
 		{
-			return Type + " " + Name;
+			return  Type + " " + Name;
 		}
 	}
 }

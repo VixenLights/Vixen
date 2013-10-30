@@ -24,10 +24,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			StartTime = effectNode.StartTime;
 			Duration = effectNode.TimeSpan;
 			EffectNode = effectNode;
-			BorderColor = Color.Black;
-			//BackColor = Color.FromArgb(50, 255, 255, 255);
-			BackColor = Color.FromArgb(0, 0, 0, 0);
-			TextColor = Color.FromArgb(60, 60, 60);
+			//BorderColor = Color.Black;
+			//BackColor = Color.FromArgb(0, 0, 0, 0);
 		}
 
 		// copy ctor
@@ -38,7 +36,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			EffectNode = other.EffectNode;
 		}
 
-		public Color TextColor { get; set; }
 		private bool ElementTimeHasChangedSinceDraw { get; set; }
 
 		protected override void DrawCanvasContent(Graphics graphics)

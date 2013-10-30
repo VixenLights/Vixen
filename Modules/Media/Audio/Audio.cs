@@ -25,6 +25,17 @@ namespace VixenModules.Media.Audio
 				return _audioSystem.NOTE;
 			}
 		}
+		public override int CurrentPlaybackDeviceIndex
+		{
+			get
+			{
+				return Vixen.Sys.State.Variables.SelectedAudioDeviceIndex;
+			}
+			set
+			{
+				Vixen.Sys.State.Variables.SelectedAudioDeviceIndex= value;
+			}
+		}
 
 		public float[] DetectionNoteFreq
 		{
@@ -181,6 +192,7 @@ namespace VixenModules.Media.Audio
 		public override void Start()
 		{
 			if (_audioSystem != null && !_audioSystem.IsPlaying) {
+				_audioSystem.AudioDeviceIndex = CurrentPlaybackDeviceIndex;
 				_audioSystem.Play();
 			}
 		}
@@ -238,21 +250,41 @@ namespace VixenModules.Media.Audio
 			set { _data.FilePath = value; }
 		}
 
+		public bool MediaExists
+		{
+			get { return File.Exists(MediaFilePath); } 
+		}
+		public List<Tuple<int, string>> AudioDevices
+		{
+			get
+			{
+				return _audioSystem.AudioDevices;
+			}
+		}
 		// If a media file is used as the timing source, it's also being
 		// executed as media for the sequence.
 		// That means we're either media or media and timing, so only
 		// handle media execution entry points.
-		public override void LoadMedia(TimeSpan startTime)
+		public override void LoadMedia(TimeSpan startTime )
 		{
-			_DisposeAudio();
-			if (File.Exists(MediaFilePath)) {
-				_audioSystem = new FmodInstance(MediaFilePath);
-				_audioSystem.FrequencyDetected += _audioSystem_FrequencyDetected;
+			if (MediaLoaded)
+			{
 				_audioSystem.SetStartTime(startTime);
 			}
-			else {
-				Logging.Error("Media file does not exist: " + MediaFilePath);
+			else
+			{
+				_DisposeAudio();
+				if (File.Exists(MediaFilePath))
+				{
+					_audioSystem = new FmodInstance(MediaFilePath);
+					_audioSystem.FrequencyDetected += _audioSystem_FrequencyDetected;
+					_audioSystem.SetStartTime(startTime);
+				} else
+				{
+					Logging.Error("Media file does not exist: " + MediaFilePath);
+				}	
 			}
+			
 		}
 
 		public delegate void FrequencyDetectedHandler(object sender, FrequencyEventArgs e);

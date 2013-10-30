@@ -9,6 +9,8 @@ namespace Vixen.IO.Xml.Serializer
 {
 	internal class XmlSmartControllerSerializer : IXmlSerializer<IOutputDevice>
 	{
+		private static NLog.Logger logging = NLog.LogManager.GetCurrentClassLogger();
+
 		private const string ELEMENT_SMART_CONTROLLER = "SmartController";
 		private const string ELEMENT_OUTPUTS = "Outputs";
 		private const string ELEMENT_OUTPUT = "Output";
@@ -32,26 +34,35 @@ namespace Vixen.IO.Xml.Serializer
 
 		public IOutputDevice ReadObject(XElement element)
 		{
-			string name = XmlHelper.GetAttribute(element, ATTR_NAME);
-			if (name == null) return null;
+			try {
+				string name = XmlHelper.GetAttribute(element, ATTR_NAME);
+				if (name == null)
+					return null;
 
-			Guid? moduleId = XmlHelper.GetGuidAttribute(element, ATTR_HARDWARE_ID);
-			if (moduleId == null) return null;
+				Guid? moduleId = XmlHelper.GetGuidAttribute(element, ATTR_HARDWARE_ID);
+				if (moduleId == null)
+					return null;
 
-			Guid? moduleInstanceId = XmlHelper.GetGuidAttribute(element, ATTR_HARDWARE_INSTANCE_ID);
-			if (moduleInstanceId == null) return null;
+				Guid? moduleInstanceId = XmlHelper.GetGuidAttribute(element, ATTR_HARDWARE_INSTANCE_ID);
+				if (moduleInstanceId == null)
+					return null;
 
-			Guid? deviceId = XmlHelper.GetGuidAttribute(element, ATTR_ID);
-			if (deviceId == null) return null;
+				Guid? deviceId = XmlHelper.GetGuidAttribute(element, ATTR_ID);
+				if (deviceId == null)
+					return null;
 
-			SmartControllerFactory smartControllerFactory = new SmartControllerFactory();
-			SmartOutputController controller =
+				SmartControllerFactory smartControllerFactory = new SmartControllerFactory();
+				SmartOutputController controller =
 				(SmartOutputController)
-				smartControllerFactory.CreateDevice(deviceId.Value, moduleId.Value, moduleInstanceId.Value, name);
+					smartControllerFactory.CreateDevice(deviceId.Value, moduleId.Value, moduleInstanceId.Value, name);
 
-			_ReadOutputs(controller, element);
+				_ReadOutputs(controller, element);
 
-			return controller;
+				return controller;
+			} catch (Exception e) {
+				logging.ErrorException("Error loading Smart Controller from XML", e);
+				return null;
+			}
 		}
 
 		private XElement _WriteOutputs(SmartOutputController controller)

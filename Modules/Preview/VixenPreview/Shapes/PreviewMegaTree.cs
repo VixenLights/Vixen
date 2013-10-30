@@ -377,8 +377,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			{
 				if (stringNum < StringCount && stringNum < _topEllipsePoints.Count())
 				{
-					Point topPixel = _topEllipsePoints[stringNum];
-					Point basePixel = _baseEllipsePoints[stringNum];
+					Point topPixel = _topEllipsePoints[_stringCount - 1 - stringNum];
+					Point basePixel = _baseEllipsePoints[_stringCount - 1 - stringNum];
+					//Console.WriteLine("topPixel " + topPixel.ToString() + ", basePixel " + basePixel.ToString());
 
 					PreviewLine line = _strings[stringNum] as PreviewLine;
 					line.SetPoint0(basePixel.X, basePixel.Y);

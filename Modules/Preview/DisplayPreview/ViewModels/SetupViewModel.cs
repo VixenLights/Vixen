@@ -15,7 +15,10 @@ namespace VixenModules.Preview.DisplayPreview.ViewModels
 
 	public class SetupViewModel : ViewModelBase
 	{
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+
 		private readonly DisplayPreviewModuleDataModel _dataModel;
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		private BitmapImage _backgroundImage;
 

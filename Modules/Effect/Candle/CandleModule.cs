@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using Common.ValueTypes;
 using Vixen.Data.Value;
 using Vixen.Intent;
@@ -21,6 +22,11 @@ namespace VixenModules.Effect.Candle
 		{
 			get { return _data; }
 			set { _data = (CandleData) value; }
+		}
+
+		protected override void TargetNodesChanged()
+		{
+			//Nothing to do
 		}
 
 		[Value]
@@ -65,14 +71,20 @@ namespace VixenModules.Effect.Candle
 			set { _data.ChangePercentageDeviationCap = value; }
 		}
 
-		protected override void _PreRender()
+		protected override void _PreRender(CancellationTokenSource cancellationToken = null)
 		{
 			_effectIntents = new EffectIntents();
 			_r = new Random();
 
-			foreach (Element element in TargetNodes.SelectMany(x => x)) {
+			foreach (Element element in TargetNodes.SelectMany(x => x))
+			{
+				
+				if (cancellationToken != null && cancellationToken.IsCancellationRequested)
+					return;
+
 				if (element != null)
 					_RenderCandleOnElement(element);
+
 			}
 		}
 

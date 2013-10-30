@@ -6,6 +6,7 @@ using System.Text;
 using System.Drawing;
 using System.Runtime.Serialization;
 using Vixen.Execution.Context;
+using Vixen.Intent;
 using Vixen.Module.Preview;
 using Vixen.Data.Value;
 using Vixen.Sys;
@@ -17,6 +18,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 	[DataContract]
 	public class PreviewPixel : IDisposable
 	{
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private Color color = Color.White;
 		private Brush brush;
 		private int _x = 0;
@@ -178,23 +180,24 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
         public void Draw(FastPixel.FastPixel fp, IIntentStates states)
         {
-			Rectangle drawRect = new Rectangle(drawArea.X, drawArea.Y, drawArea.Width, drawArea.Height);
-
+			
 			if(_isDiscreteColored)
 			{
 				int col = 1;
-				foreach (IIntentState<LightingValue> intentState in states)
+				Rectangle drawRect = new Rectangle(drawArea.X, drawArea.Y, drawArea.Width, drawArea.Height);
+				// Get states for each color
+				IEnumerable<Color> colors = IntentHelpers.GetAlphaAffectedDiscreteColorsForIntents(states);
+				foreach (Color c in colors)
 				{
-					Color c = ((IIntentState<LightingValue>)intentState).GetValue().GetAlphaChannelIntensityAffectedColor();
-					if (c != Color.Transparent && intentState.GetValue().Intensity > 0f) {
+					if (c != Color.Transparent && c.A > byte.MinValue)
+					{
 						fp.DrawCircle(drawRect, c);
 
 						if (col % 2 == 0)
 						{
 							drawRect.Y += PixelSize;
 							drawRect.X = drawArea.X;
-						}
-						else 
+						} else
 						{
 							drawRect.X = drawArea.X + PixelSize;
 						}
@@ -205,10 +208,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 			else
 			{
-				Color intentColor = Vixen.Intent.ColorIntent.GetAlphaColorForIntents(states);
+				Color intentColor = IntentHelpers.GetAlphaRGBMaxColorForIntents(states);
 				if (intentColor != Color.Transparent && intentColor.A > 0)
 				{
-					fp.DrawCircle(drawRect, intentColor);
+					fp.DrawCircle(drawArea, intentColor);
 				}
 			}
         }

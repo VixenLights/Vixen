@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Vixen.Sys;
 using Vixen.Module;
 using Vixen.Module.Effect;
@@ -26,39 +27,48 @@ namespace VixenModules.Effect.Twinkle
 			_data = new TwinkleData();
 		}
 
-		protected override void _PreRender()
+		protected override void TargetNodesChanged()
+		{
+			CheckForInvalidColorData();
+		}
+
+		protected override void _PreRender(CancellationTokenSource tokenSource = null)
 		{
 			_elementData = new EffectIntents();
 
 			IEnumerable<ElementNode> targetNodes = GetNodesToRenderOn();
-
-			CheckForNullData();
 
 			List<IndividualTwinkleDetails> twinkles = null;
 			if (!IndividualElements)
 				twinkles = GenerateTwinkleData();
 
 			int totalNodes = targetNodes.Count();
-			int i = 0;
+			double i = 0;
 
 			foreach (ElementNode node in targetNodes) {
+				if (tokenSource != null && tokenSource.IsCancellationRequested)
+					return;
+
 				if (node != null)
 					_elementData.Add(RenderElement(node, i++/(double) totalNodes, twinkles));
 			}
 		}
 
-		private void CheckForNullData()
+		//Validate that the we are using valid colors and set appropriate defaults if not.
+		private void CheckForInvalidColorData()
 		{
-			if (_data.StaticColor.IsEmpty || _data.ColorGradient == null) //We have a new effect
+			HashSet<Color> validColors = new HashSet<Color>();
+			validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
+
+			if (validColors.Any() &&
+				(!validColors.Contains(_data.StaticColor) || !_data.ColorGradient.GetColorsInGradient().IsSubsetOf(validColors))) //Discrete colors specified
 			{
-				//Try to set a default color gradient from our available colors if we have discrete colors
-				HashSet<Color> validColors = new HashSet<Color>();
-				validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
-				ColorGradient = new ColorGradient(validColors.DefaultIfEmpty(Color.White).First());
+				_data.ColorGradient = new ColorGradient(validColors.DefaultIfEmpty(Color.White).First());
 
 				//Set a default color 
-				StaticColor = validColors.DefaultIfEmpty(Color.White).First();
+				_data.StaticColor = validColors.First();
 			}
+
 		}
 
 		protected override EffectIntents _Render()
@@ -177,7 +187,6 @@ namespace VixenModules.Effect.Twinkle
 		{
 			get
 			{
-				CheckForNullData();
 				return _data.StaticColor;
 			}
 			set
@@ -192,7 +201,6 @@ namespace VixenModules.Effect.Twinkle
 		{
 			get
 			{
-				CheckForNullData();
 				return _data.ColorGradient;
 			}
 			set
@@ -223,7 +231,7 @@ namespace VixenModules.Effect.Twinkle
 		private EffectIntents RenderElement(ElementNode node, double positionWithinGroup,
 		                                    List<IndividualTwinkleDetails> twinkles = null)
 		{
-			if (node == null)
+			if (node == null || node.Element == null)
 				return null;
 
 			if (twinkles == null)
@@ -241,56 +249,58 @@ namespace VixenModules.Effect.Twinkle
 			EffectIntents pulseData;
 
 			// figure out what color gradient to use for the pulse
-			switch (ColorHandling) {
-				case TwinkleColorHandling.GradientForEachPulse:
-					if (discreteColors) {
-						List<Tuple<Color, float>> colorProportions = ColorGradient.GetDiscreteColorsAndProportionsAt(0);
-						foreach (Tuple<Color, float> colorProportion in colorProportions) {
-							double value = minPulseValue*colorProportion.Item2;
-							pulse.LevelCurve = new Curve(new PointPairList(new double[] {0, 100}, new double[] {value, value}));
-							pulse.ColorGradient = new ColorGradient(colorProportion.Item1);
+			if (MinimumLevel > 0.0) {
+				switch (ColorHandling) {
+					case TwinkleColorHandling.GradientForEachPulse:
+						if (discreteColors) {
+							List<Tuple<Color, float>> colorProportions = ColorGradient.GetDiscreteColorsAndProportionsAt(0);
+							foreach (Tuple<Color, float> colorProportion in colorProportions) {
+								double value = minPulseValue * colorProportion.Item2;
+								pulse.LevelCurve = new Curve(new PointPairList(new double[] {0, 100}, new double[] {value, value}));
+								pulse.ColorGradient = new ColorGradient(colorProportion.Item1);
+								pulseData = pulse.Render();
+								result.Add(pulseData);
+							}
+						} else {
+							pulse.LevelCurve = new Curve(new PointPairList(new double[] {0, 100}, new double[] {minPulseValue, minPulseValue}));
+							pulse.ColorGradient = new ColorGradient(ColorGradient.GetColorAt(0));
 							pulseData = pulse.Render();
 							result.Add(pulseData);
 						}
-					} else {
-						pulse.LevelCurve = new Curve(new PointPairList(new double[] { 0, 100 }, new double[] { minPulseValue, minPulseValue }));
-						pulse.ColorGradient = new ColorGradient(ColorGradient.GetColorAt(0));
+						break;
+
+					case TwinkleColorHandling.GradientThroughWholeEffect:
+						pulse.LevelCurve = new Curve(new PointPairList(new double[] {0, 100}, new double[] {minPulseValue, minPulseValue}));
+						pulse.ColorGradient = ColorGradient;
 						pulseData = pulse.Render();
 						result.Add(pulseData);
-					}
-					break;
+						break;
 
-				case TwinkleColorHandling.GradientThroughWholeEffect:
-					pulse.LevelCurve = new Curve(new PointPairList(new double[] { 0, 100 }, new double[] { minPulseValue, minPulseValue }));
-					pulse.ColorGradient = ColorGradient;
-					pulseData = pulse.Render();
-					result.Add(pulseData);
-					break;
+					case TwinkleColorHandling.StaticColor:
+						pulse.LevelCurve = new Curve(new PointPairList(new double[] {0, 100}, new double[] {minPulseValue, minPulseValue}));
+						pulse.ColorGradient = StaticColorGradient;
+						pulseData = pulse.Render();
+						result.Add(pulseData);
+						break;
 
-				case TwinkleColorHandling.StaticColor:
-					pulse.LevelCurve = new Curve(new PointPairList(new double[] { 0, 100 }, new double[] { minPulseValue, minPulseValue }));
-					pulse.ColorGradient = StaticColorGradient;
-					pulseData = pulse.Render();
-					result.Add(pulseData);
-					break;
-
-				case TwinkleColorHandling.ColorAcrossItems:
-					if (discreteColors) {
-						List<Tuple<Color, float>> colorsAtPosition = ColorGradient.GetDiscreteColorsAndProportionsAt(positionWithinGroup);
-						foreach (Tuple<Color, float> colorProportion in colorsAtPosition) {
-							double value = minPulseValue * colorProportion.Item2;
-							pulse.LevelCurve = new Curve(new PointPairList(new double[] { 0, 100 }, new double[] { value, value }));
-							pulse.ColorGradient = new ColorGradient(colorProportion.Item1);
+					case TwinkleColorHandling.ColorAcrossItems:
+						if (discreteColors) {
+							List<Tuple<Color, float>> colorsAtPosition = ColorGradient.GetDiscreteColorsAndProportionsAt(positionWithinGroup);
+							foreach (Tuple<Color, float> colorProportion in colorsAtPosition) {
+								double value = minPulseValue * colorProportion.Item2;
+								pulse.LevelCurve = new Curve(new PointPairList(new double[] {0, 100}, new double[] {value, value}));
+								pulse.ColorGradient = new ColorGradient(colorProportion.Item1);
+								pulseData = pulse.Render();
+								result.Add(pulseData);
+							}
+						} else {
+							pulse.LevelCurve = new Curve(new PointPairList(new double[] {0, 100}, new double[] {minPulseValue, minPulseValue}));
+							pulse.ColorGradient = new ColorGradient(ColorGradient.GetColorAt(positionWithinGroup));
 							pulseData = pulse.Render();
 							result.Add(pulseData);
 						}
-					} else {
-						pulse.LevelCurve = new Curve(new PointPairList(new double[] { 0, 100 }, new double[] { minPulseValue, minPulseValue }));
-						pulse.ColorGradient = new ColorGradient(ColorGradient.GetColorAt(positionWithinGroup));
-						pulseData = pulse.Render();
-						result.Add(pulseData);
-					}
-					break;
+						break;
+				}
 			}
 
 			// render all the individual twinkles

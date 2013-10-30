@@ -15,7 +15,7 @@ namespace Vixen.Data.Flow
 	public interface IDataFlowComponent<T> : IDataFlowComponent
 		where T : IDataFlowData
 	{
-		IDataFlowOutput<T>[] Outputs { get; }
-		IDataFlowComponentReference<T> Source { get; set; }
+		new IDataFlowOutput<T>[] Outputs { get; }
+		new IDataFlowComponentReference<T> Source { get; set; }
 	}
 }

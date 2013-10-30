@@ -10,7 +10,7 @@ using Vixen.Sys;
 
 namespace BaseSequence
 {
-	public abstract class Sequence : ISequence
+	public abstract class Sequence : ISequence, IDisposable
 	{
 		/// <summary>
 		/// Use this to set the sequence's length when the sequence is untimed.
@@ -100,7 +100,7 @@ namespace BaseSequence
 
 		public IEnumerable<IMediaModuleInstance> GetAllMedia()
 		{
-			return SequenceData.Media;
+			return SequenceData== null?null: SequenceData.Media;
 		}
 
 		public void ClearMedia()
@@ -169,5 +169,23 @@ namespace BaseSequence
 			// Do not cancel the event.
 			return false;
 		}
+
+		#region IDisposable Members
+		~Sequence() {
+			Dispose(false);
+		}
+		protected void Dispose(bool disposing) {
+			if (disposing) {
+				SequenceData= null;
+				InsertDataListener= null;
+			}
+		}
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		#endregion
 	}
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using Vixen.Data.Value;
 using Vixen.Intent;
 using Vixen.Sys;
@@ -26,11 +27,19 @@ namespace VixenModules.Effect.Pulse
 			_data = new PulseData();
 		}
 
-		protected override void _PreRender()
+		protected override void TargetNodesChanged()
+		{
+			CheckForInvalidColorData();
+		}
+
+		protected override void _PreRender(CancellationTokenSource tokenSource = null)
 		{
 			_elementData = new EffectIntents();
-
+			
 			foreach (ElementNode node in TargetNodes) {
+				if (tokenSource != null && tokenSource.IsCancellationRequested)
+					return;
+
 				if (node != null)
 					RenderNode(node);
 			}
@@ -63,20 +72,24 @@ namespace VixenModules.Effect.Pulse
 		{
 			get
 			{
-				if (_data.ColorGradient == null)
-				{
-					//Try to set a default color gradient from our available colors if we have discrete colors
-					HashSet<Color> validColors = new HashSet<Color>();
-					validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
-					ColorGradient = new ColorGradient(validColors.DefaultIfEmpty(Color.White).First());
-				}
-
 				return _data.ColorGradient;
 			}
 			set
 			{
 				_data.ColorGradient = value;
 				IsDirty = true;
+			}
+		}
+
+		private void CheckForInvalidColorData()
+		{
+			HashSet<Color> validColors = new HashSet<Color>();
+			validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
+			if (validColors.Any() && !_data.ColorGradient.GetColorsInGradient().IsSubsetOf(validColors))
+			{
+				//Our color is not valid for any elements we have.
+				//Try to set a default color gradient from our available colors
+				_data.ColorGradient = new ColorGradient(validColors.First());
 			}
 		}
 
@@ -88,7 +101,7 @@ namespace VixenModules.Effect.Pulse
 				// this is probably always going to be a single element for the given node, as
 				// we have iterated down to leaf nodes in RenderNode() above. May as well do
 				// it this way, though, in case something changes in future.
-				if (elementNode == null)
+				if (elementNode == null || elementNode.Element == null)
 					continue;
 
 				ElementColorType colorType = ColorModule.getColorTypeForElementNode(elementNode);
@@ -97,9 +110,10 @@ namespace VixenModules.Effect.Pulse
 					addIntentsToElement(elementNode.Element);
 				}
 				else {
-					IEnumerable<Color> colors = ColorModule.getValidColorsForElementNode(elementNode, false);
+					IEnumerable<Color> colors = ColorModule.getValidColorsForElementNode(elementNode, false)
+						 .Intersect(ColorGradient.GetColorsInGradient());
 					foreach (Color color in colors) {
-						addIntentsToElement(elementNode.Element, color);
+						addIntentsToElement(elementNode.Element, color);	
 					}
 				}
 			}
@@ -107,39 +121,53 @@ namespace VixenModules.Effect.Pulse
 
 		private void addIntentsToElement(Element element, Color? color = null)
 		{
-			double[] allPointsTimeOrdered = _GetAllSignificantDataPoints().ToArray();
-			Debug.Assert(allPointsTimeOrdered.Length > 1);
+			if (element != null)
+			{
+				double[] allPointsTimeOrdered = _GetAllSignificantDataPoints().ToArray();
+				Debug.Assert(allPointsTimeOrdered.Length > 1);
 
-			double lastPosition = allPointsTimeOrdered[0];
-			for (int i = 1; i < allPointsTimeOrdered.Length; i++) {
-				double position = allPointsTimeOrdered[i];
+				double lastPosition = allPointsTimeOrdered[0];
+				TimeSpan lastEnd = TimeSpan.Zero;
+				for (var i = 1; i < allPointsTimeOrdered.Length; i++)
+				{
+					double position = allPointsTimeOrdered[i];
 
-				LightingValue startValue;
-				LightingValue endValue;
-				if (color == null) {
-					startValue = new LightingValue(ColorGradient.GetColorAt(lastPosition),
-					                               (float) LevelCurve.GetValue(lastPosition*100)/100);
-					endValue = new LightingValue(ColorGradient.GetColorAt(position), (float) LevelCurve.GetValue(position*100)/100);
+					LightingValue startValue;
+					LightingValue endValue;
+					if (color == null)
+					{
+						startValue = new LightingValue(ColorGradient.GetColorAt(lastPosition),
+													   (float)LevelCurve.GetValue(lastPosition * 100) / 100);
+						endValue = new LightingValue(ColorGradient.GetColorAt(position), (float)LevelCurve.GetValue(position * 100) / 100);
+					}
+					else
+					{
+						startValue = new LightingValue((Color)color,
+													   (float)
+													   (ColorGradient.GetProportionOfColorAt(lastPosition, (Color)color) *
+														LevelCurve.GetValue(lastPosition * 100) / 100));
+						endValue = new LightingValue((Color)color,
+													 (float)
+													 (ColorGradient.GetProportionOfColorAt(position, (Color)color) *
+													  LevelCurve.GetValue(position * 100) / 100));
+					}
+
+					TimeSpan startTime = lastEnd;
+					TimeSpan timeSpan = TimeSpan.FromMilliseconds(TimeSpan.TotalMilliseconds * (position - lastPosition));
+					if (startValue.Intensity.Equals(0f) && endValue.Intensity.Equals(0f))
+					{
+						lastPosition = position;
+						lastEnd = startTime + timeSpan;
+						continue;
+					}
+
+					IIntent intent = new LightingIntent(startValue, endValue, timeSpan);
+
+					_elementData.AddIntentForElement(element.Id, intent, startTime);
+
+					lastPosition = position;
+					lastEnd = startTime + timeSpan;
 				}
-				else {
-					startValue = new LightingValue((Color) color,
-					                               (float)
-					                               (ColorGradient.GetProportionOfColorAt(lastPosition, (Color) color)*
-					                                LevelCurve.GetValue(lastPosition*100)/100));
-					endValue = new LightingValue((Color) color,
-					                             (float)
-					                             (ColorGradient.GetProportionOfColorAt(position, (Color) color)*
-					                              LevelCurve.GetValue(position*100)/100));
-				}
-
-				TimeSpan startTime = TimeSpan.FromMilliseconds(TimeSpan.TotalMilliseconds*lastPosition);
-				TimeSpan timeSpan = TimeSpan.FromMilliseconds(TimeSpan.TotalMilliseconds*(position - lastPosition));
-
-				IIntent intent = new LightingIntent(startValue, endValue, timeSpan);
-
-				_elementData.AddIntentForElement(element.Id, intent, startTime);
-
-				lastPosition = position;
 			}
 		}
 
@@ -157,18 +185,18 @@ namespace VixenModules.Effect.Pulse
 			bool addNextPointAsFadeOut = false;
 			foreach (ColorPoint point in ColorGradient.Colors.SortedArray()) {
 				if (color != null) {
-					if (lastPointPos != point.Position) {
+					if (!lastPointPos.Equals( point.Position)) {
 						lastDistinctPos = lastPointPos;
 					}
 
-					if (addNextPointAsFadeOut && point.Position != lastPointPos) {
+					if (addNextPointAsFadeOut && !point.Position.Equals( lastPointPos)) {
 						points.Add(point.Position);
 						addNextPointAsFadeOut = false;
 					}
 
 					// if this current point is the same color, it is significant; add it, as well as
 					// the points before & after (to get the color fade in and out)
-					if (point.Color.ToRGB().ToArgb().ToArgb() == ((Color) color).ToArgb()) {
+					if (point.Color.ToRGB().ToArgb().ToArgb() == ((Color)color).ToArgb()) {
 						points.Add(point.Position);
 						points.Add(lastDistinctPos);
 						addNextPointAsFadeOut = true;

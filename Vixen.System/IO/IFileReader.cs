@@ -8,7 +8,7 @@ namespace Vixen.IO
 	internal interface IFileReader<out T> : IFileReader
 		where T : class
 	{
-		T ReadFile(string filePath);
+		new T ReadFile(string filePath);
 	}
 
 	internal interface IFileReader

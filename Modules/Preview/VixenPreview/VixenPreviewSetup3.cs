@@ -66,10 +66,14 @@ namespace VixenModules.Preview.VixenPreview {
 
 			Setup();
 
-			performanceToolStripMenuItem.Visible = Vixen.Sys.VixenSystem.VersionBeyondWindowsXP;
+			// disable the D2D preview option for now; the GDI performs just as well, and is more reliable (eg. older machines, not HW accelerated machines, etc.)
+			//performanceToolStripMenuItem.Visible = Vixen.Sys.VixenSystem.VersionBeyondWindowsXP;
+			performanceToolStripMenuItem.Visible = false;
+
 			Properties.Settings settings = new Properties.Settings();
 
 			useDirect2DPreviewRenderingToolStripMenuItem.Checked = !settings.UseGDIRendering;
+			saveLocationsToolStripMenuItem.Checked = Data.SaveLocations;
 		}
 
 		private void buttonSetBackground_Click(object sender, EventArgs e) {
@@ -146,6 +150,7 @@ namespace VixenModules.Preview.VixenPreview {
 		}
 
 		private void buttonSave_Click(object sender, EventArgs e) {
+			SaveLocationDataForElements();
 			DialogResult = System.Windows.Forms.DialogResult.OK;
 			previewForm.Close();
 			Close();
@@ -268,27 +273,33 @@ namespace VixenModules.Preview.VixenPreview {
 			previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Select;
 		}
 
-		private void saveLocationDataToElementsToolStripMenuItem_Click(object sender, EventArgs e) {
-			Cursor = Cursors.WaitCursor;
-			foreach (var d in _data.DisplayItems) {
-				//_data.DisplayItems.ForEach(d => {
-				foreach (var p in d.Shape.Pixels.Where(pi => pi != null && pi.Node != null)) {
+		private void SaveLocationDataForElements()
+		{
+			if (Data.SaveLocations)
+			{
+				Cursor = Cursors.WaitCursor;
+				foreach (var d in _data.DisplayItems)
+				{
+					//_data.DisplayItems.ForEach(d => {
+					foreach (var p in d.Shape.Pixels.Where(pi => pi != null && pi.Node != null))
+					{
 
-					//LocationModule prop= null;
-					if (!p.Node.Properties.Contains(LocationDescriptor._typeId))
-						p.Node.Properties.Add(LocationDescriptor._typeId);
+						//LocationModule prop= null;
+						if (!p.Node.Properties.Contains(LocationDescriptor._typeId))
+							p.Node.Properties.Add(LocationDescriptor._typeId);
 
-					//d.Shape._pixels.ForEach(p => {
+						//d.Shape._pixels.ForEach(p => {
 
-					var prop = p.Node.Properties.Get(LocationDescriptor._typeId);
-					((LocationData)prop.ModuleData).X = p.X;
-					((LocationData)prop.ModuleData).Y = p.Y;
+						var prop = p.Node.Properties.Get(LocationDescriptor._typeId);
+						((LocationData) prop.ModuleData).X = p.X;
+						((LocationData) prop.ModuleData).Y = p.Y;
 
-					//});
-					//});
+						//});
+						//});
+					}
 				}
+				Cursor = Cursors.Default;
 			}
-			Cursor = Cursors.Default;
 		}
 
 		private void propInformationToolStripMenuItem_Click(object sender, EventArgs e)
@@ -306,6 +317,11 @@ namespace VixenModules.Preview.VixenPreview {
 				
 
 			}
+		}
+
+		private void saveLocationsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Data.SaveLocations = saveLocationsToolStripMenuItem.Checked;
 		}
 	}
 }

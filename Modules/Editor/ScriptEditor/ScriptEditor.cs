@@ -52,7 +52,7 @@ namespace VixenModules.Editor.ScriptEditor
 
 		public IEditorModuleInstance OwnerModule { get; set; }
 
-		public void Start()
+		void IEditorUserInterface.StartEditor()
 		{
 			if (_LoadFromSequence(Sequence)) {
 				Show();
@@ -60,6 +60,15 @@ namespace VixenModules.Editor.ScriptEditor
 			else {
 				Close();
 			}
+		}
+
+		void IEditorUserInterface.CloseEditor()
+		{
+			Close();
+		}
+
+		void IEditorUserInterface.EditorClosing()
+		{
 		}
 
 		private bool _LoadFromSequence(ISequence sequence)

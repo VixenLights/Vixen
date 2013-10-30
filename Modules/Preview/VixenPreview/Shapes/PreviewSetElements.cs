@@ -263,13 +263,31 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 						pixel.Node = node;
 					}
 				}
-				comboStrings.SelectedIndex = 0;
+				UpdateListLinkedElements();
 			}
 		}
 
 		private void buttonHelp_Click(object sender, EventArgs e)
 		{
 			Common.VixenHelp.VixenHelp.ShowHelp(Common.VixenHelp.VixenHelp.HelpStrings.Preview_LinkElements);
+		}
+
+		private void copyToAllElementsInThisStringToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			ListViewItem selectedItem = listLinkedElements.FocusedItem;
+			if (selectedItem != null)
+			{
+				ElementNode node = (selectedItem.Tag as PreviewPixel).Node;
+				for (int i = 0; i < _strings.Count; i++)
+				{
+					foreach (ListViewItem item in listLinkedElements.Items)
+					{
+						(item.Tag as PreviewPixel).Node = (selectedItem.Tag as PreviewPixel).Node;
+					}
+				}
+
+				UpdateListLinkedElements();
+			}
 		}
 	}
 }

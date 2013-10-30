@@ -20,7 +20,7 @@ namespace VixenModules.App.InstrumentationPanel
 
 		private void timer_Tick(object sender, EventArgs e)
 		{
-			string[] lines = VixenSystem.Instrumentation.Values.Select(x => x.Name + ": " + x.FormattedValue).ToArray();
+			string[] lines = VixenSystem.Instrumentation.Values.Select(x => string.Format("{0}: {1}", x.Name , x.FormattedValue)).ToArray();
 			textBox1.Lines = lines;
 		}
 	}

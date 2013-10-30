@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Drawing;
 using System.Runtime.Serialization;
+using System.Threading;
 using Vixen.Commands;
 using Vixen.Data.Value;
 using Vixen.Intent;
@@ -21,6 +22,11 @@ namespace VixenModules.Effect.CustomValue
 		public override string TypeName
 		{
 			get { return "Custom Value"; }
+		}
+
+		public override EffectGroups EffectGroup
+		{
+			get { return EffectGroups.Basic; }
 		}
 
 		public override Guid TypeId
@@ -143,7 +149,12 @@ namespace VixenModules.Effect.CustomValue
 			//_data = new CustomValueData();
 		}
 
-		protected override void _PreRender()
+		protected override void TargetNodesChanged()
+		{
+			//Nothing to do
+		}
+
+		protected override void _PreRender(CancellationTokenSource tokenSource = null)
 		{
 			_elementData = new EffectIntents();
 
@@ -175,7 +186,11 @@ namespace VixenModules.Effect.CustomValue
 
 			CommandValue value = new CommandValue(command);
 
-			foreach (ElementNode node in TargetNodes) {
+			foreach (ElementNode node in TargetNodes)
+			{
+				if (tokenSource != null && tokenSource.IsCancellationRequested)
+					return;
+
 				IIntent intent = new CommandIntent(value, TimeSpan);
 				_elementData.AddIntentForElement(node.Element.Id, intent, TimeSpan.Zero);
 			}

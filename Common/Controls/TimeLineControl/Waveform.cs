@@ -278,5 +278,18 @@ namespace Common.Controls.Timeline
 				return GetEnumerator();
 			}
 		}
+		protected override void Dispose(bool disposing)
+		{
+			if (audio != null) {
+				audio.Dispose();
+				audio= null;
+			}
+			if (samples != null) {
+				samples.Clear();
+				samples	 = null;
+				samples = new SampleAggregator();
+			}
+			base.Dispose(disposing);
+		}
 	}
 }

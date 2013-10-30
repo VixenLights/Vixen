@@ -5,6 +5,13 @@ using System.Drawing;
 using Vixen.Sys;
 
 namespace Vixen.Module.Effect {
+	public enum EffectGroups
+	{
+		Basic,
+		Advanced,
+		Device
+	}
+
 	[Serializable]
 	public abstract class EffectModuleDescriptorBase : ModuleDescriptorBase, IEffectModuleDescriptor,
 													   IEqualityComparer<IEffectModuleDescriptor>,
@@ -15,6 +22,8 @@ namespace Vixen.Module.Effect {
 			PropertyDependencies = new Guid[0];
 		}
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+
+		public abstract EffectGroups EffectGroup { get; }
 
 		public abstract override string TypeName { get; }
 
@@ -39,7 +48,7 @@ namespace Vixen.Module.Effect {
 
 				//Default to Null image
 				var resources = this.Assembly.GetManifestResourceNames().ToList();
-				resources.ToList().ForEach(a => Console.WriteLine(a));
+				//resources.ToList().ForEach(a => Console.WriteLine(a)); 
 				int maxDimension = Math.Max(desiredWidth, desiredHeight);
 				if (maxDimension <= 16) {
 					var resName = resources.Where(r => r.ContainsString(".Effect16.", StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();

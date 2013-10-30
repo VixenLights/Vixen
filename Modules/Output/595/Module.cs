@@ -17,12 +17,17 @@ namespace VixenModules.Output.Olsen595
 
 		public static short outputData(ushort port, short data)
 		{
-			if (Environment.Is64BitOperatingSystem) {
-				return Out64(port, data);
-			}
-			else {
-				return Out32(port, data);
-			}
+#if WIN64
+			return Out64(port, data);
+#else
+			return Out32(port, data);
+#endif
+			//if (Environment.Is64BitOperatingSystem) {
+			//	return Out64(port, data);
+			//}
+			//else {
+			//	return Out32(port, data);
+			//}
 		}
 	}
 

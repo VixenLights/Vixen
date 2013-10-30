@@ -6,6 +6,7 @@ using System.Runtime.Serialization;
 using Vixen.Module;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
+using System.Drawing;
 
 namespace VixenModules.Effect.Pulse
 {
@@ -21,7 +22,7 @@ namespace VixenModules.Effect.Pulse
 		public PulseData()
 		{
 			LevelCurve = new Curve();
-			//ColorGradient = new ColorGradient();
+			ColorGradient = new ColorGradient(Color.White);
 		}
 
 		public override IModuleDataModel Clone()

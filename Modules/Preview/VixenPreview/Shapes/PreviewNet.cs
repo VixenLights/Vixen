@@ -35,8 +35,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			initiallyAssignedNode = selectedNode;
 
 			Layout();
-
-			//DoResize += new ResizeEvent(OnResize);
 		}
 
 		[OnDeserialized]
@@ -44,7 +42,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			if (_pixelSpacing == 0)
 				_pixelSpacing = 8;
-			//Layout();
 		}
 
 		#region "Properties"
@@ -163,12 +160,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public override void Layout()
 		{
-			//Console.WriteLine("Layout");
-			//if (_pixels == null) return;
-			//if (_pixels.Count() > 0 && _pixels[0].Node == null) return;
-
 			ElementNode node = null;
-			//Guid nodeId = Guid.Empty;
+
 			if (PixelCount > 0) {
 				node = _pixels[0].Node;
 				_pixels.Clear();
@@ -195,40 +188,39 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			Point[] points = {tL, tR, bR, bL};
 
 			if (rect.Width > 0 && rect.Height > 0) {
-				Bitmap b;
-				FastPixel.FastPixel fp;
+				using (var b = new Bitmap(rect.Width, rect.Height)) {
+					Graphics g = Graphics.FromImage(b);
+					g.Clear(Color.Transparent);
+					g.FillPolygon(Brushes.White, points);
+					using (FastPixel.FastPixel fp = new FastPixel.FastPixel(b)) {
+						fp.Lock();
+						int xCount = 1;
+						int spacingY = _pixelSpacing;
+						for (int y = 0; y < rect.Height; y++) {
+							if (spacingY%_pixelSpacing == 0) {
+								int xDiv;
+								if (xCount%2 == 0)
+									xDiv = _pixelSpacing;
+								else
+									xDiv = _pixelSpacing/2;
 
-				b = new Bitmap(rect.Width, rect.Height);
-				Graphics g = Graphics.FromImage(b);
-				g.Clear(Color.Transparent);
-				g.FillPolygon(Brushes.White, points);
-				fp = new FastPixel.FastPixel(b);
-				fp.Lock();
-				int xCount = 1;
-				int spacingY = _pixelSpacing;
-				for (int y = 0; y < rect.Height; y++) {
-					if (spacingY%_pixelSpacing == 0) {
-						int xDiv;
-						if (xCount%2 == 0)
-							xDiv = _pixelSpacing;
-						else
-							xDiv = _pixelSpacing/2;
-
-						for (int x = 0; x < rect.Width; x++) {
-							if ((x + xDiv)%_pixelSpacing == 0) {
-								Color newColor = fp.GetPixel(x, y);
-								if (newColor.A != 0) {
-									PreviewPixel pixel = new PreviewPixel(x + boundsTopLeft.X, y + boundsTopLeft.Y, 0, PixelSize);
-									pixel.Node = node;
-									_pixels.Add(pixel);
+								for (int x = 0; x < rect.Width; x++) {
+									if ((x + xDiv)%_pixelSpacing == 0) {
+										Color newColor = fp.GetPixel(x, y);
+										if (newColor.A != 0) {
+											PreviewPixel pixel = new PreviewPixel(x + boundsTopLeft.X, y + boundsTopLeft.Y, 0, PixelSize);
+											pixel.Node = node;
+											_pixels.Add(pixel);
+										}
+									}
 								}
+								xCount += 1;
 							}
+							spacingY += 1;
 						}
-						xCount += 1;
+						fp.Unlock(false);
 					}
-					spacingY += 1;
 				}
-				fp.Unlock(false);
 			}
 		}
 

@@ -67,8 +67,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 				if (displayItem.Shape is PreviewMegaTree) {
 					PreviewMegaTree tree = displayItem.Shape as PreviewMegaTree;
 					for (int stringNum = 0; stringNum < stringCount; stringNum++) {
-						int currentString = stringCount - stringNum - 1;
-						PreviewBaseShape treeString = tree._strings[currentString];
+						PreviewBaseShape treeString = tree._strings[stringNum];
 						for (int pixelNum = 0; pixelNum < treeString.Pixels.Count; pixelNum++)
 						{
 							treeString.Pixels[pixelNum].PixelColor = effect.Pixels[stringNum][pixelNum];
@@ -120,6 +119,8 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			SetCurrentEffect(Data.CurrentEffect);
 			comboBoxEffect.SelectedItem = Data.CurrentEffect.ToString();
 			trackBarSpeed.Value = Data.Speed;
+			radioButtonHorizontal.Checked = (Data.StringOrienation == NutcrackerEffects.StringOrientations.Horizontal);
+			radioButtonVertical.Checked = (Data.StringOrienation == NutcrackerEffects.StringOrientations.Vertical);
 
 			LoadBarsData();
 			LoadButterflyData();
@@ -151,12 +152,13 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 
 		private void LoadColors()
 		{
-			for (int colorNum = 0; colorNum < effect.Palette.Count(); colorNum++) {
+			for (int colorNum = 0; colorNum < effect.Palette.Colors.Count(); colorNum++) {
 				Color color = effect.Palette.Colors[colorNum];
+				//Console.WriteLine("cnum:" + colorNum + " clr:" + color);
 				CheckBox checkBox =
 					this.Controls.Find("checkBoxColor" + (colorNum + 1).ToString(), true).FirstOrDefault() as CheckBox;
 				Panel colorPanel = this.Controls.Find("panelColor" + (colorNum + 1).ToString(), true).FirstOrDefault() as Panel;
-				checkBox.Checked = true;
+				checkBox.Checked = effect.Palette.ColorsActive[colorNum];
 				colorPanel.BackColor = color;
 			}
 		}
@@ -1071,7 +1073,26 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 		                                          Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
 		{
 			Data.PixelSize = scrollPixelSize.Value;
+			// the 2D preview types, when string cnt < 2, can return without setting this
+			if (displayItem == null)
+				return;
 			displayItem.Shape.PixelSize = Data.PixelSize;
+		}
+
+		private void radioButtonVertical_CheckedChanged(object sender, EventArgs e)
+		{
+			if (radioButtonVertical.Checked)
+			{
+				Data.StringOrienation = NutcrackerEffects.StringOrientations.Vertical;
+			}
+		}
+
+		private void radioButtonHorizontal_CheckedChanged(object sender, EventArgs e)
+		{
+			if (radioButtonHorizontal.Checked)
+			{
+				Data.StringOrienation = NutcrackerEffects.StringOrientations.Horizontal;
+			}
 		}
 
 	}

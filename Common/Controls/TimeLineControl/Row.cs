@@ -188,6 +188,12 @@ namespace Common.Controls.Timeline
 			}
 		}
 
+		/// <summary>
+		/// Identifies a row that has been chosen in the grid
+		/// It is not the same as a selected row(s). There should only be one active row.
+		/// </summary>
+		public bool Active { get; set; }
+
 		public int ElementCount
 		{
 			get { return m_elements.Count; }
@@ -347,6 +353,27 @@ namespace Common.Controls.Timeline
 			return elements;
 		}
 
+		/// <summary>
+		/// For adding elements in bulk. Sorting is delayed until all elements are added.
+		/// </summary>
+		/// <param name="elements"></param>
+		public void AddBulkElements(List<Element> elements)
+		{
+			foreach (Element element in elements)
+			{
+				m_elements.Add(element);
+				if (element.Selected)
+					m_selectedElements.Add(element);
+				element.Row = this;
+				element.ContentChanged += ElementContentChangedHandler;
+				element.TimeChanged += ElementMovedHandler;
+				element.SelectedChanged += ElementSelectedHandler;
+				_ElementAdded(element);
+			}
+			m_elements.Sort();
+			_RowChanged();
+		}
+
 		public void AddElement(Element element)
 		{
 			m_elements.Add(element);
@@ -372,15 +399,17 @@ namespace Common.Controls.Timeline
 
 		public void RemoveElement(Element element)
 		{
-			m_elements.Remove(element);
-			if (element.Selected)
-				m_selectedElements.Remove(element);
-			element.ContentChanged -= ElementContentChangedHandler;
-			element.TimeChanged -= ElementMovedHandler;
-			element.SelectedChanged -= ElementSelectedHandler;
-			m_elements.Sort();
-			_ElementRemoved(element);
-			_RowChanged();
+			if (m_elements.Remove(element))
+			{
+				if (element.Selected)
+					m_selectedElements.Remove(element);
+				element.ContentChanged -= ElementContentChangedHandler;
+				element.TimeChanged -= ElementMovedHandler;
+				element.SelectedChanged -= ElementSelectedHandler;
+				m_elements.Sort();
+				_ElementRemoved(element);
+				_RowChanged();
+			}
 		}
 
 		public bool ContainsElement(Element element)

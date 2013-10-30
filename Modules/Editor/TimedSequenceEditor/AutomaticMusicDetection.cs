@@ -77,18 +77,27 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void freqTimer_Tick(object sender, EventArgs e)
 		{
-			for (int item = 0; item < _audio.DetectionNotes.Count(); item++) {
-				TimeSpan value = TimeSpan.MinValue;
+		    if (_audio != null && _audio.DetectionNotes != null)
+		    {
+		        for (int item = 0; item < _audio.DetectionNotes.Count(); item++)
+		        {
+		            TimeSpan value = TimeSpan.MinValue;
 
-				if (freqs.TryGetValue(item, out value)) {
-					var highlight = (_audio.Position - value) <= TimeSpan.FromMilliseconds(Accuracy);
-					if (_audio.Position == TimeSpan.MinValue)
-						highlight = false;
-					highlightCheckbox(item, highlight);
-				}
-				else
-					highlightCheckbox(item, false);
-			}
+		            if (freqs.TryGetValue(item, out value))
+		            {
+		                var highlight = (_audio.Position - value) <= TimeSpan.FromMilliseconds(Accuracy);
+		                if (_audio.Position == TimeSpan.MinValue)
+		                    highlight = false;
+		                highlightCheckbox(item, highlight);
+		            }
+		            else
+		                highlightCheckbox(item, false);
+		        }
+		    }
+		    else
+		    {
+		        this.freqTimer.Enabled = false;
+		    }
 		}
 
 		private ConcurrentDictionary<int, TimeSpan> freqs = new ConcurrentDictionary<int, TimeSpan>();

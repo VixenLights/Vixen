@@ -15,8 +15,6 @@ namespace VixenModules.Controller.E131
     {
         private Button cancelButton;
 
-        private IContainer components;
-
         private IpTextBox ipTextBox;
 
         private Button okButton;
@@ -84,15 +82,5 @@ namespace VixenModules.Controller.E131
 
         }
 
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && (this.components != null))
-            {
-                this.components.Dispose();
-            }
-
-            base.Dispose(disposing);
-        }
     }
 }

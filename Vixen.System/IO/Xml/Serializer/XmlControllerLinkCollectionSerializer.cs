@@ -8,6 +8,8 @@ namespace Vixen.IO.Xml.Serializer
 {
 	internal class XmlControllerLinkCollectionSerializer : IXmlSerializer<IEnumerable<ControllerLink>>
 	{
+		private static NLog.Logger logging = NLog.LogManager.GetCurrentClassLogger();
+
 		private const string ELEMENT_CONTROLLER_LINKS = "ControllerLinks";
 		private const string ELEMENT_CONTROLLER_LINK = "ControllerLink";
 		private const string ATTR_ID = "id";
@@ -22,14 +24,19 @@ namespace Vixen.IO.Xml.Serializer
 
 		public IEnumerable<ControllerLink> ReadObject(XElement element)
 		{
-			List<ControllerLink> controllerLinks = new List<ControllerLink>();
+			try {
+				List<ControllerLink> controllerLinks = new List<ControllerLink>();
 
-			XElement parentNode = element.Element(ELEMENT_CONTROLLER_LINKS);
-			if (parentNode != null) {
-				controllerLinks.AddRange(parentNode.Elements().Select(_ReadControllerLink).Where(x => x != null));
+				XElement parentNode = element.Element(ELEMENT_CONTROLLER_LINKS);
+				if (parentNode != null) {
+					controllerLinks.AddRange(parentNode.Elements().Select(_ReadControllerLink).Where(x => x != null));
+				}
+
+				return controllerLinks;
+			} catch (Exception e) {
+				logging.ErrorException("Error loading Controller Links from XML", e);
+				return null;
 			}
-
-			return controllerLinks;
 		}
 
 		private XElement _WriteControllerLink(ControllerLink controllerLink)

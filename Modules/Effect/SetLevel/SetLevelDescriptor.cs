@@ -17,6 +17,11 @@ namespace VixenModules.Effect.SetLevel
 			get { return "Set Level"; }
 		}
 
+		public override EffectGroups EffectGroup
+		{
+			get { return EffectGroups.Basic; }
+		}
+
 		public override Guid TypeId
 		{
 			get { return _typeId; }

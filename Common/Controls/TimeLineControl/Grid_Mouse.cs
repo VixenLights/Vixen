@@ -11,6 +11,7 @@ namespace Common.Controls.Timeline
 	public partial class Grid
 	{
 		Form toolForm = new Form();
+		List<Element> capturedElements = new List<Element>();
 
 		#region General Mouse Event-Related
 
@@ -62,6 +63,7 @@ namespace Common.Controls.Timeline
 						if (!CtrlPressed) {
 							ClearSelectedElements();
 							ClearSelectedRows();
+							ClearActiveRows();
 						}
 						if (_ElementsSelected(m_mouseDownElements)) {
 							foreach (Element element in m_mouseDownElements) {
@@ -113,11 +115,22 @@ namespace Common.Controls.Timeline
 							if (_ElementsSelected(m_mouseDownElements)) {
 								m_mouseDownElements.First().Selected = true;
 								_SelectionChanged();
+								Row row = rowAt(gridLocation);
+								row.Active = true;
 							}
 						}
 						break;
 				}
+			} else if(e.Button == MouseButtons.Right)
+			{
+				ClearActiveRows();
+				Row row = rowAt(gridLocation);
+				row.Active = true;
+				if (ClickingGridSetsCursor)
+					CursorPosition = pixelsToTime(gridLocation.X);
+				_ContextSelected(m_mouseDownElements, pixelsToTime(gridLocation.X), row);
 			}
+
 		}
 
 
@@ -130,7 +143,7 @@ namespace Common.Controls.Timeline
 
 		protected override void OnMouseHWheel(MouseEventArgs args)
 		{
-			Debug.WriteLine("Grid OnMouseHWheel: delta={0}", args.Delta);
+			//Debug.WriteLine("Grid OnMouseHWheel: delta={0}", args.Delta);
 
 			double scale;
 			if (args.Delta > 0)
@@ -163,37 +176,12 @@ namespace Common.Controls.Timeline
 		{
 			Point gridLocation = translateLocation(location);
 			List<Element> elements = elementsAt(gridLocation);
-			bool changed = false;
-
-			Element currentElement = null;
-			if (elements.Count > 0)
+			//Determine if we have new elements captured.
+			if (capturedElements.Except(elements).Any() || elements.Except(capturedElements).Any())
 			{
-				currentElement = elements.ElementAt(0);
-				if (!currentElement.MouseCaptured)
-				{
-					currentElement.MouseCaptured = true;
-					changed = true;
-				}
-			}
-			// Iterate through everything (yea, I know, stupid, but it seems fast enough)
-			// and turn off the mouse capture on all the elements our mouse is not over
-			foreach (Row row in Rows)
-			{
-				for (int i = 0; i < row.Count(); i++)
-				{
-					Element element = row.GetElementAtIndex(i);
-					if (element != currentElement)
-					{
-						if (element.MouseCaptured)
-						{
-							element.MouseCaptured = false;
-							changed = true;
-						}
-					}
-				}
-			}
-			if (changed)
-			{
+				capturedElements.ForEach(x => x.MouseCaptured = false);
+				capturedElements = elements;
+				capturedElements.ForEach(x => x.MouseCaptured = true);
 				Invalidate();
 			}
 		}
@@ -332,7 +320,7 @@ namespace Common.Controls.Timeline
 		private void elementsFinishedMoving(ElementMoveType type)
 		{
 			foreach (var elem in SelectedElements) {
-				//elem.Changed = true;
+				elem.Changed = true;
 				RenderElement(elem);
 				elem.EndUpdate();
 			}
@@ -375,6 +363,7 @@ namespace Common.Controls.Timeline
 			m_dragState = DragState.Selecting;
 			ClearSelectedElements();
 			ClearSelectedRows(m_mouseDownElementRow);
+			ClearActiveRows(m_mouseDownElementRow);
 			SelectionArea = new Rectangle(gridLocation.X, gridLocation.Y, 0, 0);
 			m_selectionRectangleStart = gridLocation;
 		}
@@ -413,7 +402,7 @@ namespace Common.Controls.Timeline
 		protected void OnBackgroundClick(TimelineEventArgs e)
 		{
 			if (e.Row != null)
-				e.Row.Selected = true;
+				e.Row.Active = true;
 
 			if (ClickingGridSetsCursor)
 				CursorPosition = e.Time;
@@ -445,6 +434,7 @@ namespace Common.Controls.Timeline
 
 		private void calculateSnapPoints()
 		{
+			if (!EnableSnapTo) return;
 			// build up a full set of snap points/details, from (a) the static snap points for the grid, and
 			// (b) calculated snap points for this move (ie. other elements in the row[s]).
 			CurrentDragSnapPoints = new SortedDictionary<TimeSpan, List<SnapDetails>>(StaticSnapPoints);
@@ -697,6 +687,7 @@ namespace Common.Controls.Timeline
 		private void MouseUp_HResizing(Point gridLocation)
 		{
 			elementsFinishedMoving(ElementMoveType.Resize);
+			CurrentDragSnapPoints.Clear();
 		}
 
 		#endregion

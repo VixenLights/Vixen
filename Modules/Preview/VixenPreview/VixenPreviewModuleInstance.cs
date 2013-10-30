@@ -69,10 +69,10 @@ namespace VixenModules.Preview.VixenPreview
 		{
 			get {
 				 
-				if (new Properties.Settings().UseGDIRendering)
+				// if (new Properties.Settings().UseGDIRendering)
 					return true;
 
-				return !Vixen.Sys.VixenSystem.VersionBeyondWindowsXP;
+				// return !Vixen.Sys.VixenSystem.VersionBeyondWindowsXP;
 			}
 		}
 
@@ -94,12 +94,7 @@ namespace VixenModules.Preview.VixenPreview
 
 				if (UseGDIPreviewRendering)
 				{
-					if (UseOldPreview) {
-						displayForm = new VixenPreviewDisplay();
-						displayForm.Data = GetDataModel();
-					} else {
-						displayForm = new GDIPreviewForm(GetDataModel());
-					}
+					displayForm = new GDIPreviewForm(GetDataModel());
 				}
 				else
 				{
@@ -203,26 +198,26 @@ namespace VixenModules.Preview.VixenPreview
 			try {
 				// displayForm.Scene.ElementStates = ElementStates;
 				//if the Preview form style changes re-setup the form
-				if ((UseGDIPreviewRendering && !isGdiVersion) || (!UseGDIPreviewRendering && isGdiVersion) || displayForm == null) {
-					SetupPreviewForm();
-					isGdiVersion = UseGDIPreviewRendering;
-					Stop();
-					Start();
-				}
+				//if ((UseGDIPreviewRendering && !isGdiVersion) || (!UseGDIPreviewRendering && isGdiVersion) || displayForm == null) {
+				//	SetupPreviewForm();
+				//	isGdiVersion = UseGDIPreviewRendering;
+				//	Stop();
+				//	Start();
+				//}
 
-				if (!UseGDIPreviewRendering) {
-					((VixenPreviewDisplayD2D)displayForm).Scene.Update(ElementStates);
-				}
-				else {
-					if (UseOldPreview)
-						((VixenPreviewDisplay)displayForm).PreviewControl.ProcessUpdateParallel(ElementStates);
-					else
-					((GDIPreviewForm)displayForm).Update(ElementStates);
-				}
+				//if (!UseGDIPreviewRendering) {
+				//	((VixenPreviewDisplayD2D)displayForm).Scene.Update(/*ElementStates*/);
+				//}
+				//else {
+				//	if (UseOldPreview)
+				//		((VixenPreviewDisplay)displayForm).PreviewControl.ProcessUpdateParallel(/*ElementStates*/);
+				//	else
+					displayForm.UpdatePreview();
+				//}
 			}
 			catch (Exception e) {
-
-				Console.WriteLine(e.ToString());
+				Logging.Error("Exception in preview update {0} - {1}", e.Message, e.StackTrace);
+				//Console.WriteLine(e.ToString());
 			}
 
 		}

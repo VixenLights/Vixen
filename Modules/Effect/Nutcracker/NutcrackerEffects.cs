@@ -69,6 +69,12 @@ namespace VixenModules.Effect.Nutcracker
 			CounterClockwise
 		}
 
+		public enum StringOrientations
+		{
+			Vertical,
+			Horizontal
+		}
+
 		#endregion // Variables
 
 		public NutcrackerEffects()
@@ -265,8 +271,10 @@ namespace VixenModules.Effect.Nutcracker
 			var newHeight = (int) (image.Height*ratio);
 
 			var newImage = new Bitmap(newWidth, newHeight);
-			Graphics.FromImage(newImage).DrawImage(image, 0, 0, newWidth, newHeight);
-			return newImage;
+			using (var g = Graphics.FromImage(newImage)) {
+				g.DrawImage(image, 0, 0, newWidth, newHeight);
+				return newImage;
+			}
 		}
 
 		#endregion
@@ -775,7 +783,7 @@ namespace VixenModules.Effect.Nutcracker
 			Color color;
 			Count = BufferWi*BufferHt*Count/200 + 1;
 			if (State == 0 || Count != LastLifeCount || Type != LastLifeType) {
-				Console.WriteLine("RenderLife Init");
+				//Console.WriteLine("RenderLife Init");
 				// seed tempbuf
 				LastLifeCount = Count;
 				LastLifeType = Type;
@@ -1592,7 +1600,7 @@ namespace VixenModules.Effect.Nutcracker
 		{
 			const int speedfactor = 4;
 			Image image = null;
-
+			
 			if (NewPictureName != PictureName) {
 				image = Image.FromFile(NewPictureName);
 				fp = new FastPixel.FastPixel(new Bitmap(image));
@@ -1645,7 +1653,6 @@ namespace VixenModules.Effect.Nutcracker
 				int movement = Convert.ToInt32((State%(limit*speedfactor))/speedfactor);
 
 				// copy image to buffer
-				Color c;
 				fp.Lock();
 				Color fpColor = new Color();
 				for (int x = 0; x < imgwidth; x++) {
@@ -1656,7 +1663,7 @@ namespace VixenModules.Effect.Nutcracker
 							switch (dir) {
 								case 0:
 									// left
-									SetPixel(x + BufferWi - movement, yoffset - y, fpColor);
+									SetPixel(x + BufferWi - movement, yoffset - y-1, fpColor);
 									break;
 								case 1:
 									// right
@@ -1680,6 +1687,8 @@ namespace VixenModules.Effect.Nutcracker
 				}
 				fp.Unlock(false);
 			}
+			if (image != null)
+				image.Dispose();
 		}
 
 		#endregion //Picture
@@ -1688,7 +1697,7 @@ namespace VixenModules.Effect.Nutcracker
 
 		public void RenderSpirograph(int int_R, int int_r, int int_d, bool Animate)
 		{
-			int i, x, y, k, xc, yc, ColorIdx;
+			int i, x, y, xc, yc, ColorIdx;
 			int mod1440, state360, d_mod;
 			srand(1);
 			float R, r, d, d_orig, t;
@@ -1758,7 +1767,7 @@ namespace VixenModules.Effect.Nutcracker
 
 		public void RenderTree(int Branches)
 		{
-			int x, y, i, i7, r, ColorIdx, Count, pixels_per_branch;
+			int x, y, i, r, ColorIdx, pixels_per_branch;
 			int maxFrame, mod, branch, row;
 			int b, f_mod, m, frame;
 			int number_garlands, f_mod_odd, s_odd_row, odd_even;
@@ -1950,9 +1959,12 @@ namespace VixenModules.Effect.Nutcracker
 		public void RenderPictureTile(int dir, double scale, bool useColor, bool useAlpha, int ColorReplacementSensitivity,
 		                              string NewPictureName)
 		{
+			
 			const int speedfactor = 4;
 			Image image = null;
+			try {
 
+			
 			if (NewPictureName == null || NewPictureName.Length == 0)
 				return;
 
@@ -2079,6 +2091,10 @@ namespace VixenModules.Effect.Nutcracker
 					}
 				}
 				fp.Unlock(false);
+			}
+			} finally {
+				if (image != null)
+					image.Dispose();
 			}
 		}
 

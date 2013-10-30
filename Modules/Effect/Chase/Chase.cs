@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Vixen.Sys;
 using Vixen.Module;
 using Vixen.Module.Effect;
@@ -24,12 +25,16 @@ namespace VixenModules.Effect.Chase
 			_data = new ChaseData();
 		}
 
-		protected override void _PreRender()
+		protected override void TargetNodesChanged()
+		{
+			CheckForInvalidColorData();
+		}
+
+		protected override void _PreRender(CancellationTokenSource tokenSource = null)
 		{
 			_elementData = new EffectIntents();
-			CheckForEmptyData();
 
-			DoRendering();
+			DoRendering(tokenSource);
 		}
 
 		protected override EffectIntents _Render()
@@ -100,7 +105,7 @@ namespace VixenModules.Effect.Chase
 		{
 			get
 			{
-				CheckForEmptyData();
+				CheckForInvalidColorData();
 				return _data.StaticColor;
 			}
 			set
@@ -122,7 +127,6 @@ namespace VixenModules.Effect.Chase
 		{
 			get
 			{
-				CheckForEmptyData();
 				return _data.ColorGradient;
 			}
 			set
@@ -165,22 +169,25 @@ namespace VixenModules.Effect.Chase
 			}
 		}
 
-		private void CheckForEmptyData()
+		//Validate that the we are using valid colors and set appropriate defaults if not.
+		private void CheckForInvalidColorData()
 		{
-			if (_data.StaticColor.IsEmpty || _data.ColorGradient == null) //We have a new effect
+			HashSet<Color> validColors = new HashSet<Color>();
+			validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
+			
+			if (validColors.Any() && 
+				(!validColors.Contains(_data.StaticColor) || !_data.ColorGradient.GetColorsInGradient().IsSubsetOf(validColors))) //Discrete colors specified
 			{
-				//Try to set a default color gradient from our available colors if we have discrete colors
-				HashSet<Color> validColors = new HashSet<Color>();
-				validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
 				_data.ColorGradient = new ColorGradient(validColors.DefaultIfEmpty(Color.White).First());
 
 				//Set a default color 
-				_data.StaticColor = validColors.DefaultIfEmpty(Color.White).First();
+				_data.StaticColor = validColors.First();	
 			}
+			
 		}
 
 
-		private void DoRendering()
+		private void DoRendering(CancellationTokenSource tokenSource = null)
 		{
 			//TODO: get a better increment time. doing it every X ms is..... shitty at best.
 			TimeSpan increment = TimeSpan.FromMilliseconds(2);
@@ -196,7 +203,9 @@ namespace VixenModules.Effect.Chase
 			if (DefaultLevel > 0) {
 				int i = 0;
 				foreach (ElementNode target in renderNodes) {
-					if (target != null) {
+					if (tokenSource != null && tokenSource.IsCancellationRequested) return;
+					
+					if (target != null && target.Element != null) {
 						bool discreteColors = ColorModule.isElementNodeDiscreteColored(target);
 
 						pulse = new Pulse.Pulse();
@@ -233,6 +242,8 @@ namespace VixenModules.Effect.Chase
 									List<Tuple<Color, float>> colorsAtPosition =
 										ColorGradient.GetDiscreteColorsAndProportionsAt(positionWithinGroup);
 									foreach (Tuple<Color, float> colorProportion in colorsAtPosition) {
+										if (tokenSource != null && tokenSource.IsCancellationRequested)
+											return;
 										double value = level*colorProportion.Item2;
 										pulse.LevelCurve = new Curve(new PointPairList(new double[] {0, 100}, new double[] {value, value}));
 										pulse.ColorGradient = new ColorGradient(colorProportion.Item1);
@@ -249,8 +260,6 @@ namespace VixenModules.Effect.Chase
 								break;
 						}
 
-						pulseData = pulse.Render();
-						_elementData.Add(pulseData);
 						i++;
 					}
 				}
@@ -269,13 +278,15 @@ namespace VixenModules.Effect.Chase
 
 			// iterate up to and including the last pulse generated
 			for (TimeSpan current = TimeSpan.Zero; current <= TimeSpan; current += increment) {
+				if (tokenSource != null && tokenSource.IsCancellationRequested)
+					return;
 				double currentPercentageIntoChase = ((double) current.Ticks/(double) chaseTime.Ticks)*100.0;
 
 				double currentMovementPosition = ChaseMovement.GetValue(currentPercentageIntoChase);
 				int currentNodeIndex = (int) ((currentMovementPosition/100.0)*targetNodeCount);
 
 				// on the off chance we hit the 100% mark *exactly*...
-				if (currentNodeIndex == targetNodeCount)
+				if (currentNodeIndex == targetNodeCount && currentNodeIndex > 0)
 					currentNodeIndex--;
 
 				if (currentNodeIndex >= targetNodeCount) {
@@ -283,6 +294,9 @@ namespace VixenModules.Effect.Chase
 						"Chase effect: rendering, but the current node index is higher or equal to the total target nodes.");
 					continue;
 				}
+
+				if (currentNodeIndex < 0)
+					continue;
 
 				ElementNode currentNode = renderNodes[currentNodeIndex];
 				if (currentNode == lastTargetedNode)

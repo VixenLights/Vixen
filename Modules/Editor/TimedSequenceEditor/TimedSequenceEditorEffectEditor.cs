@@ -83,7 +83,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						Label l = new Label();
 						l.Width = 1;
 						l.Height = 1;
-						l.Text = _effectNode.Effect.Parameters[i].Name + ":";
+						l.Text = string.Format("{0}:", _effectNode.Effect.Parameters[i].Name );
 						l.AutoSize = true;
 						l.Anchor = AnchorStyles.None;
 						tableLayoutPanelEffectEditors.Controls.Add(l);

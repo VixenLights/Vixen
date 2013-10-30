@@ -233,7 +233,7 @@ namespace Vixen.Sys
 					return new IModuleDescriptor[0];
 				}
 				catch (Exception ex) {
-					Logging.Error(string.Format("Could not load module assembly {0}.", filePath), ex);
+					Logging.ErrorException(string.Format("Could not load module assembly {0}.", filePath), ex);
 					return new IModuleDescriptor[0];
 				}
 
@@ -269,7 +269,7 @@ namespace Vixen.Sys
 						}
 					}
 					catch (Exception ex) {
-						Logging.Error(string.Format("Error loading module descriptor {0} from {1}.", moduleDescriptorType.Name, Path.GetFileName(filePath)), ex);
+						Logging.ErrorException(string.Format("Error loading module descriptor {0} from {1}.", moduleDescriptorType.Name, Path.GetFileName(filePath)), ex);
 					}
 				}
 			}
