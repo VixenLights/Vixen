@@ -4,6 +4,7 @@ using Vixen.Execution;
 using Vixen.Execution.Context;
 using Vixen.Sys.Managers;
 using Vixen.Sys.State.Execution;
+using System.Collections.Concurrent;
 
 namespace Vixen.Sys
 {
@@ -138,15 +139,21 @@ namespace Vixen.Sys
 			return 0;
 		}
 
-		public static bool UpdateState()
+
+		private static ConcurrentDictionary<string, TimeSpan> lastSnapshots = new ConcurrentDictionary<string, TimeSpan>();
+		private static Object lockObject = new Object();
+
+		public static ConcurrentDictionary<string, TimeSpan> UpdateState()
 		{
-			bool allowUpdate = _UpdateAdjudicator.PetitionForUpdate();
-			if (allowUpdate) {
-				VixenSystem.Contexts.Update();
-				VixenSystem.Elements.Update();
-				VixenSystem.Filters.Update();
+			lock (lockObject) {
+				bool allowUpdate = _UpdateAdjudicator.PetitionForUpdate();
+				if (allowUpdate) {
+					lastSnapshots = VixenSystem.Contexts.Update();
+					VixenSystem.Elements.Update();
+					VixenSystem.Filters.Update();
+				}
+				return lastSnapshots;
 			}
-			return allowUpdate;
 		}
 	}
 }

@@ -10,8 +10,10 @@ namespace Vixen.Sys.Managers
 {
 	public class ElementManager : IEnumerable<Element>
 	{
-		private ElementUpdateTimeValue _elementUpdateTimeValue;
-		private Stopwatch _stopwatch;
+		private MillisecondsValue _elementUpdateTimeValue = new MillisecondsValue("Update time for all elements");
+		private MillisecondsValue _elementUpdateWaitValue = new MillisecondsValue("    Wait time for all elements");
+		private MillisecondsValue _elementClearTimeValue = new MillisecondsValue("  Clear time for all elements");
+		private Stopwatch _stopwatch = Stopwatch.StartNew();
 		private ElementDataFlowAdapterFactory _dataFlowAdapters;
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
@@ -27,8 +29,11 @@ namespace Vixen.Sys.Managers
 		{
 			_instances = new ConcurrentDictionary<Guid, Element>();
 			_elementToElementNode = new ConcurrentDictionary<Element, ElementNode>();
-			_SetupInstrumentation();
 			_dataFlowAdapters = new ElementDataFlowAdapterFactory();
+
+			VixenSystem.Instrumentation.AddValue(_elementUpdateTimeValue);
+			VixenSystem.Instrumentation.AddValue(_elementUpdateWaitValue);
+			VixenSystem.Instrumentation.AddValue(_elementClearTimeValue);
 		}
 
 		public ElementManager(IEnumerable<Element> elements)
@@ -121,13 +126,28 @@ namespace Vixen.Sys.Managers
 
 		public void Update()
 		{
-			lock (_instances) {
-				_stopwatch.Restart();
+			_stopwatch.Restart();
+			lock (_instances)
+			{
+				_elementUpdateWaitValue.Set(_stopwatch.ElapsedMilliseconds);
 
-				_instances.Values.AsParallel().ForAll(x => x.Update());
+				//_instances.Values.AsParallel().ForAll(x => x.Update());
+				foreach( var x in _instances.Values) x.Update();
 
 				_elementUpdateTimeValue.Set(_stopwatch.ElapsedMilliseconds);
 			 }
+		}
+
+		public void ClearStates()
+		{
+			_stopwatch.Restart();
+			lock (_instances)
+			{
+				//_instances.Values.AsParallel().ForAll(x => x.Update());
+				foreach (var x in _instances.Values) x.ClearStates();
+
+				_elementClearTimeValue.Set(_stopwatch.ElapsedMilliseconds);
+			}
 		}
 
 		private void _AddDataFlowParticipant(Element element)
@@ -157,13 +177,6 @@ namespace Vixen.Sys.Managers
 				} while (!unique);
 			}
 			return name;
-		}
-
-		private void _SetupInstrumentation()
-		{
-			_elementUpdateTimeValue = new ElementUpdateTimeValue();
-			VixenSystem.Instrumentation.AddValue(_elementUpdateTimeValue);
-			_stopwatch = Stopwatch.StartNew();
 		}
 
 		public IEnumerator<Element> GetEnumerator()

@@ -146,6 +146,12 @@
     <Compile Include="InstalledModules.Designer.cs">
       <DependentUpon>InstalledModules.cs</DependentUpon>
     </Compile>
+    <Compile Include="OptionsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="OptionsDialog.Designer.cs">
+      <DependentUpon>OptionsDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="ProfileItem.cs" />
     <Compile Include="RuleEditorContainer.cs">
       <SubType>Form</SubType>
@@ -209,6 +215,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="InstalledModules.resx">
       <DependentUpon>InstalledModules.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OptionsDialog.resx">
+      <DependentUpon>OptionsDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="RuleEditorContainer.resx">
       <DependentUpon>RuleEditorContainer.cs</DependentUpon>

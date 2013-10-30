@@ -9,8 +9,6 @@ namespace Vixen.Module.Preview
 	                                                    IEqualityComparer<PreviewModuleDescriptorBase>,
 	                                                    IEquatable<PreviewModuleDescriptorBase>
 	{
-		private const int DEFAULT_UPDATE_INTERVAL = 20;
-
 		public abstract override string TypeName { get; }
 
 		public abstract override Guid TypeId { get; }
@@ -25,7 +23,7 @@ namespace Vixen.Module.Preview
 
 		public virtual int UpdateInterval
 		{
-			get { return DEFAULT_UPDATE_INTERVAL; }
+			get { return Vixen.Sys.VixenSystem.DefaultUpdateInterval; }
 		}
 
 		public bool Equals(IPreviewModuleDescriptor x, IPreviewModuleDescriptor y)

@@ -40,6 +40,11 @@ namespace Vixen.Sys
 			_state = _AggregateStateFromContexts();
 		}
 
+		public void ClearStates()
+		{
+			_state = new IntentStateList();
+		}
+
 		public IIntentStates State
 		{
 			get { return _state; }
@@ -84,7 +89,19 @@ namespace Vixen.Sys
 			// make more sense there) on a dictionary miss.
 			//IEnumerable<IIntentState> intentStates = _dataSource.Where(x => x != null).SelectMany(x => x.State);
 			//return new IntentStateList(intentStates);
-			return new IntentStateList(_dataSource.Where(x => x != null).SelectMany(x => x.State));
+
+			//return new IntentStateList(_dataSource.Where(x => x != null).SelectMany(x => x.State));
+
+			IntentStateList ret = new IntentStateList();
+			foreach (var ctx in VixenSystem.Contexts)
+			{
+				var iss = ctx.GetState(Id);
+				if (iss == null)
+					continue;
+				ret.AddRange(iss.State);
+			}
+			return ret;
+
 		}
 	}
 }

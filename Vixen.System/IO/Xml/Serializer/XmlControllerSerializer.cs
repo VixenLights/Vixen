@@ -28,7 +28,7 @@ namespace Vixen.IO.Xml.Serializer
 			                                new XAttribute(ATTR_HARDWARE_ID, controller.ModuleId),
 			                                new XAttribute(ATTR_HARDWARE_INSTANCE_ID, controller.ModuleInstanceId),
 			                                new XAttribute(ATTR_DEVICE_ID, controller.Id),
-			                                _WriteOutputs(controller));
+											_WriteOutputs(controller));
 
 			return element;
 		}
