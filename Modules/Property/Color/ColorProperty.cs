@@ -185,7 +185,7 @@ namespace VixenModules.Property.Color
 
 	public class ColorDescriptor : PropertyModuleDescriptorBase
 	{
-		public static Guid _typeId = new Guid("{BFF34727-6B88-4F87-82B7-68424498C725}");
+		private static Guid _typeId = new Guid("{BFF34727-6B88-4F87-82B7-68424498C725}");
 
 		public override string TypeName
 		{

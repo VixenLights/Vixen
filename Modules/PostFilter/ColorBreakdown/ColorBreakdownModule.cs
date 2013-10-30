@@ -17,7 +17,7 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 {
 	public class ColorBreakdownDescriptor : OutputFilterModuleDescriptorBase
 	{
-		private readonly Guid _typeId = new Guid("{ab38a16f-0de1-4f6e-a8c0-ae5b20d347e0}");
+		private static readonly Guid _typeId = new Guid("{ab38a16f-0de1-4f6e-a8c0-ae5b20d347e0}");
 
 		public override string TypeName
 		{
@@ -25,6 +25,11 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 		}
 
 		public override Guid TypeId
+		{
+			get { return _typeId; }
+		}
+
+		public static Guid ModuleId
 		{
 			get { return _typeId; }
 		}
@@ -94,6 +99,28 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 				_CreateOutputs();
 			}
 		}
+
+
+		public List<ColorBreakdownItem> BreakdownItems
+		{
+			get { return _data.BreakdownItems; }
+			set
+			{
+				_data.BreakdownItems = value;
+				_CreateOutputs();
+			}
+		}
+
+		public bool MixColors
+		{
+			get { return _data.MixColors; }
+			set
+			{
+				_data.MixColors = value;
+				_CreateOutputs();
+			}
+		}
+
 
 		public override bool HasSetup
 		{
