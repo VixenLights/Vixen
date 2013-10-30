@@ -113,15 +113,36 @@ namespace Vixen.Services
 		public static INamingGenerator[] GetAllNamingGenerators()
 		{
 			return
-				typeof (INamingGenerator).FindConcreteImplementationsWithin(Assembly.GetExecutingAssembly()).Select(
+				typeof(INamingGenerator).FindConcreteImplementationsWithin(Assembly.GetExecutingAssembly()).Select(
 					Activator.CreateInstance).Cast<INamingGenerator>().ToArray();
 		}
 
 		public static INamingTemplate[] GetAllNamingTemplates()
 		{
 			return
-				typeof (INamingTemplate).FindConcreteImplementationsWithin(Assembly.GetExecutingAssembly()).Select(
+				typeof(INamingTemplate).FindConcreteImplementationsWithin(Assembly.GetExecutingAssembly()).Select(
 					Activator.CreateInstance).Cast<INamingTemplate>().ToArray();
+		}
+
+		public static IElementTemplate[] GetAllElementTemplates()
+		{
+
+			return AppDomain.CurrentDomain.GetAssemblies()
+				.SelectMany(s => s.GetTypes())
+				.Where(p => (typeof (IElementTemplate)).IsAssignableFrom(p) && !p.IsAbstract)
+				.Select(Activator.CreateInstance)
+				.Cast<IElementTemplate>()
+				.ToArray();
+		}
+
+		public static IElementSetupHelper[] GetAllElementSetupHelpers()
+		{
+			return AppDomain.CurrentDomain.GetAssemblies()
+				.SelectMany(s => s.GetTypes())
+				.Where(p => (typeof(IElementSetupHelper)).IsAssignableFrom(p) && !p.IsAbstract)
+				.Select(Activator.CreateInstance)
+				.Cast<IElementSetupHelper>()
+				.ToArray();
 		}
 
 		public static bool AreAllEffectRequiredPropertiesPresent(IEffectModuleInstance effectModule)
@@ -145,5 +166,16 @@ namespace Vixen.Services
 		{
 			return FileService.Instance.LoadProgramFile(filePath);
 		}
+
+		public static IModuleDataModel GetModuleStaticData(IModuleInstance instance)
+		{
+			return Modules.GetModuleStaticData(instance);
+		}
+
+		public static IModuleDataModel GetModuleStaticData(Guid id)
+		{
+			return Modules.GetModuleStaticData(id);
+		}
+
 	}
 }

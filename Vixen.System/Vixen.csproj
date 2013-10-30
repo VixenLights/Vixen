@@ -269,6 +269,8 @@
     <Compile Include="Module\Service\ServiceModuleInstanceBase.cs" />
     <Compile Include="Module\Service\ServiceModuleManagement.cs" />
     <Compile Include="Module\Service\ServiceModuleRepository.cs" />
+    <Compile Include="Rule\IElementSetupHelper.cs" />
+    <Compile Include="Rule\IElementTemplate.cs" />
     <Compile Include="Rule\INamingTemplate.cs" />
     <Compile Include="Rule\IPatchingRule.cs" />
     <Compile Include="Rule\Name\GridNamingTemplate.cs" />
