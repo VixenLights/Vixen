@@ -846,6 +846,8 @@ namespace VixenApplication
 				VixenSystem.DataFlow.SetComponentSource(currentConnectionLine.DestinationDataComponent,
 				                                        currentConnectionLine.SourceDataFlowComponentReference);
 
+				OnDataFlowModificationMade();
+
 				result = true;
 			}
 			else {
@@ -1586,6 +1588,17 @@ namespace VixenApplication
 		// Buffers
 		// used for buffering selectedShapes connected to the preview selectedShapes: key = passiveShape, values = targetShapes's clone
 		private Dictionary<Shape, Shape> targetShapeBuffer = new Dictionary<Shape, Shape>();
+
+		#endregion
+
+		#region Events
+
+		public event EventHandler DataFlowModificationMade;
+		protected void OnDataFlowModificationMade()
+		{
+			if (DataFlowModificationMade != null)
+				DataFlowModificationMade(this, EventArgs.Empty);
+		}
 
 		#endregion
 	}

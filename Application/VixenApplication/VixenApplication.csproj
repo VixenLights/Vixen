@@ -34,7 +34,8 @@
     <StartupObject>VixenApplication.Program</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>V3.ico</ApplicationIcon>
+    <ApplicationIcon>
+    </ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -58,6 +59,11 @@
     <ProjectReference Include="$(SolutionDir)\Vixen.System\Vixen.csproj">
       <Project>{50B78623-FCF4-48AF-93FF-FA87C937028F}</Project>
       <Name>Vixen</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Common\Resources\Resources.csproj">
+      <Project>{F7A80169-6310-4585-9D58-A6F6F5C5B380}</Project>
+      <Name>Resources</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
@@ -91,6 +97,12 @@
     </Compile>
     <Compile Include="DataProfileForm.Designer.cs">
       <DependentUpon>DataProfileForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Setup\DisplaySetup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Setup\DisplaySetup.Designer.cs">
+      <DependentUpon>DisplaySetup.cs</DependentUpon>
     </Compile>
     <Compile Include="FiltersAndPatching\ConfigFiltersAndPatching-Shapes.cs" />
     <Compile Include="FiltersAndPatching\ConfigFiltersAndPatching-Tools.cs" />
@@ -157,6 +169,57 @@
     <Compile Include="SelectProfile.Designer.cs">
       <DependentUpon>SelectProfile.cs</DependentUpon>
     </Compile>
+    <Compile Include="Setup\ElementTemplates\Megatree.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Setup\ElementTemplates\Megatree.Designer.cs">
+      <DependentUpon>Megatree.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Setup\ElementTemplates\NumberedGroup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Setup\ElementTemplates\NumberedGroup.Designer.cs">
+      <DependentUpon>NumberedGroup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Setup\ElementTemplates\PixelGrid.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Setup\ElementTemplates\PixelGrid.Designer.cs">
+      <DependentUpon>PixelGrid.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Setup\ISetupControllersControl.cs" />
+    <Compile Include="Setup\ISetupElementsControl.cs" />
+    <Compile Include="Setup\ISetupPatchingControl.cs" />
+    <Compile Include="Setup\SetupControllersSimple.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Setup\SetupControllersSimple.Designer.cs">
+      <DependentUpon>SetupControllersSimple.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Setup\SetupElementsPreview.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Setup\SetupElementsPreview.Designer.cs">
+      <DependentUpon>SetupElementsPreview.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Setup\SetupElementsTree.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Setup\SetupElementsTree.Designer.cs">
+      <DependentUpon>SetupElementsTree.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Setup\SetupPatchingGraphical.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Setup\SetupPatchingGraphical.Designer.cs">
+      <DependentUpon>SetupPatchingGraphical.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Setup\SetupPatchingSimple.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Setup\SetupPatchingSimple.Designer.cs">
+      <DependentUpon>SetupPatchingSimple.cs</DependentUpon>
+    </Compile>
     <Compile Include="VixenApplication.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -188,6 +251,9 @@
     <EmbeddedResource Include="DataProfileForm.resx">
       <DependentUpon>DataProfileForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Setup\DisplaySetup.resx">
+      <DependentUpon>DisplaySetup.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="EffectParametersForm.resx">
       <DependentUpon>EffectParametersForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -214,6 +280,30 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SelectProfile.resx">
       <DependentUpon>SelectProfile.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Setup\ElementTemplates\Megatree.resx">
+      <DependentUpon>Megatree.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Setup\ElementTemplates\NumberedGroup.resx">
+      <DependentUpon>NumberedGroup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Setup\ElementTemplates\PixelGrid.resx">
+      <DependentUpon>PixelGrid.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Setup\SetupControllersSimple.resx">
+      <DependentUpon>SetupControllersSimple.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Setup\SetupElementsPreview.resx">
+      <DependentUpon>SetupElementsPreview.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Setup\SetupElementsTree.resx">
+      <DependentUpon>SetupElementsTree.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Setup\SetupPatchingGraphical.resx">
+      <DependentUpon>SetupPatchingGraphical.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Setup\SetupPatchingSimple.resx">
+      <DependentUpon>SetupPatchingSimple.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="VixenApplication.resx">
       <DependentUpon>VixenApplication.cs</DependentUpon>
@@ -305,30 +395,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\HandCursor.cur" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\ZoomIn32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\ZoomOut32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\DownArrowShort_Blue_16x16.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\UpArrowShort_Blue_16x16.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Delete.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\add-24.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\delete-24.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="V3.ico" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

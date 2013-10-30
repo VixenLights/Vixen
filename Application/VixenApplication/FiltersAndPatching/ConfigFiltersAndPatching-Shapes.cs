@@ -93,7 +93,7 @@ namespace VixenApplication
 		public virtual string Title { get; set; }
 
 		private Font _customFont = null;
-		private static readonly Font _defaultFont = new Font("Arial", 14, GraphicsUnit.Pixel);
+		private static readonly Font _defaultFont = new Font("Arial", 11, GraphicsUnit.Pixel);
 
 		protected Font _font
 		{
@@ -353,6 +353,7 @@ namespace VixenApplication
 			base._init();
 			ChildFilterShapes = new List<FilterSetupShapeBase>();
 			Expanded = true;
+			HeaderHeight = ConfigFiltersAndPatching.SHAPE_GROUP_HEADER_HEIGHT;
 		}
 
 		protected NestingSetupShape(ShapeType shapeType, Template template)
@@ -378,6 +379,8 @@ namespace VixenApplication
 
 		public bool Expanded { get; set; }
 
+		public int HeaderHeight { get; set; }
+
 		public override void DrawCustom(Graphics graphics)
 		{
 			if (ChildFilterShapes.Count == 0) {
@@ -385,7 +388,7 @@ namespace VixenApplication
 				return;
 			}
 
-			float yoffset = (ConfigFiltersAndPatching.SHAPE_GROUP_HEADER_HEIGHT)/2f;
+			float yoffset = HeaderHeight/2f;
 			_DrawTitle(graphics, 0, yoffset, true, false);
 		}
 	}
@@ -493,6 +496,8 @@ namespace VixenApplication
 		{
 			get { return null; }
 		}
+
+		public IOutputDevice Controller { get; set; }
 	}
 
 
@@ -534,15 +539,21 @@ namespace VixenApplication
 		}
 
 		private CommandOutput _output;
-
 		public CommandOutput Output
 		{
 			get { return _output; }
 		}
 
-		public void SetOutput(CommandOutput output)
+		private int _outputIndex;
+		public int OutputIndex
+		{
+			get { return _outputIndex; }
+		}
+
+		public void SetOutput(CommandOutput output, int outputIndex)
 		{
 			_output = output;
+			_outputIndex = outputIndex;
 			_recalcControlPoints();
 		}
 
@@ -653,6 +664,10 @@ namespace VixenApplication
 			}
 			return result;
 		}
+
+		// The number of layers this filter is from its source element (by tracing parents back).  If it can't
+		// find one, the value will be 0.
+		public int LevelsFromElementSource { get; set; }
 	}
 
 
