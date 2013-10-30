@@ -11,7 +11,8 @@
     <RootNamespace>Libraries</RootNamespace>
     <AssemblyName>Libraries</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup>
@@ -88,9 +89,6 @@
     <Reference Include="Kayak">
       <HintPath>..\..\packages\Kayak.0.7.2\lib\Kayak.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.VisualBasic.PowerPacks.Vs, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\..\packages\Newtonsoft.Json.5.0.6\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -98,6 +96,21 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\NLog.2.0.1.2\lib\net40\NLog.dll</HintPath>
     </Reference>
+    <Reference Include="System.Design" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\NShape\Core\NShape.csproj">
+      <Project>{9efe1059-e2dc-4576-b9e3-4ae3f998cb28}</Project>
+      <Name>NShape</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NShape\GeneralShapes\NShapeGeneralShapes.csproj">
+      <Project>{1272f77e-d926-4310-ae8b-858909b10f0c}</Project>
+      <Name>NShapeGeneralShapes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NShape\WinFormsUI\NShapeWinFormsUI.csproj">
+      <Project>{5eab131c-1c93-4c3f-a1d8-d711053de33c}</Project>
+      <Name>NShapeWinFormsUI</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

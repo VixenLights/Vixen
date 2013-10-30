@@ -61,10 +61,7 @@
 			this.label49 = new System.Windows.Forms.Label();
 			this.label48 = new System.Windows.Forms.Label();
 			this.comboBoxPictureTileFileName = new Common.Controls.PictureComboBox();
-			this.shapeContainer1 = new Microsoft.VisualBasic.PowerPacks.ShapeContainer();
-			this.lineShape2 = new Microsoft.VisualBasic.PowerPacks.LineShape();
-			this.lineShape1 = new Microsoft.VisualBasic.PowerPacks.LineShape();
-			this.Picture = new System.Windows.Forms.TabPage();
+			 this.Picture = new System.Windows.Forms.TabPage();
 			this.textPictureFileName = new System.Windows.Forms.TextBox();
 			this.label38 = new System.Windows.Forms.Label();
 			this.comboBoxPictureDirection = new System.Windows.Forms.ComboBox();
@@ -462,7 +459,7 @@
 			this.PictureTile.Controls.Add(this.label49);
 			this.PictureTile.Controls.Add(this.label48);
 			this.PictureTile.Controls.Add(this.comboBoxPictureTileFileName);
-			this.PictureTile.Controls.Add(this.shapeContainer1);
+		 
 			this.PictureTile.Location = new System.Drawing.Point(4, 5);
 			this.PictureTile.Name = "PictureTile";
 			this.PictureTile.Size = new System.Drawing.Size(266, 243);
@@ -593,36 +590,7 @@
 			this.comboBoxPictureTileFileName.Size = new System.Drawing.Size(254, 56);
 			this.comboBoxPictureTileFileName.TabIndex = 0;
 			this.comboBoxPictureTileFileName.SelectedIndexChanged += new System.EventHandler(this.comboBoxPictureTileFileName_SelectedIndexChanged);
-			// 
-			// shapeContainer1
-			// 
-			this.shapeContainer1.Location = new System.Drawing.Point(0, 0);
-			this.shapeContainer1.Margin = new System.Windows.Forms.Padding(0);
-			this.shapeContainer1.Name = "shapeContainer1";
-			this.shapeContainer1.Shapes.AddRange(new Microsoft.VisualBasic.PowerPacks.Shape[] {
-            this.lineShape2,
-            this.lineShape1});
-			this.shapeContainer1.Size = new System.Drawing.Size(266, 243);
-			this.shapeContainer1.TabIndex = 70;
-			this.shapeContainer1.TabStop = false;
-			// 
-			// lineShape2
-			// 
-			this.lineShape2.BorderColor = System.Drawing.Color.Silver;
-			this.lineShape2.Name = "lineShape2";
-			this.lineShape2.X1 = 13;
-			this.lineShape2.X2 = 254;
-			this.lineShape2.Y1 = 145;
-			this.lineShape2.Y2 = 145;
-			// 
-			// lineShape1
-			// 
-			this.lineShape1.BorderColor = System.Drawing.Color.Silver;
-			this.lineShape1.Name = "lineShape1";
-			this.lineShape1.X1 = 11;
-			this.lineShape1.X2 = 252;
-			this.lineShape1.Y1 = 211;
-			this.lineShape1.Y2 = 211;
+			 
 			// 
 			// Picture
 			// 
@@ -2229,9 +2197,7 @@
         private System.Windows.Forms.NumericUpDown numericPictureTileScale;
         private System.Windows.Forms.CheckBox checkPictureTileReplaceColor;
         private System.Windows.Forms.CheckBox checkPictureTileCopySaturation;
-        private Microsoft.VisualBasic.PowerPacks.ShapeContainer shapeContainer1;
-        private Microsoft.VisualBasic.PowerPacks.LineShape lineShape1;
-        private Microsoft.VisualBasic.PowerPacks.LineShape lineShape2;
+        
         private System.Windows.Forms.Label label52;
         private System.Windows.Forms.TextBox textPictureTileFileName;
 		private System.Windows.Forms.Button buttonPictureTileSelect;

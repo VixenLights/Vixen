@@ -104,14 +104,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
 			this.toolStripContainer = new System.Windows.Forms.ToolStripContainer();
 			this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
-			this.toolStripTiming = new System.Windows.Forms.ToolStrip();
-			this.toolStripLabel2 = new System.Windows.Forms.ToolStripLabel();
-			this.toolStripLabel_TimingSpeed = new System.Windows.Forms.ToolStripLabel();
-			this.toolStripButton_IncreaseTimingSpeed = new System.Windows.Forms.ToolStripButton();
-			this.toolStripButton_DecreaseTimingSpeed = new System.Windows.Forms.ToolStripButton();
-			this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-			this.toolStripLabel3 = new System.Windows.Forms.ToolStripLabel();
-			this.cboAudioDevices = new System.Windows.Forms.ToolStripComboBox();
 			this.toolStripExVirtualEffects = new Common.Controls.ToolStripEx();
 			this.toolStripLabelVirtualEffects = new System.Windows.Forms.ToolStripLabel();
 			this.toolStripButtonVirtualEffectsAdd = new System.Windows.Forms.ToolStripButton();
@@ -125,8 +117,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripContainer.ContentPanel.SuspendLayout();
 			this.toolStripContainer.TopToolStripPanel.SuspendLayout();
 			this.toolStripContainer.SuspendLayout();
-			this.toolStripTiming.SuspendLayout();
-			this.toolStrip1.SuspendLayout();
 			this.toolStripExVirtualEffects.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -346,7 +336,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
             this.toolsToolStripMenuItem});
 			this.menuStrip.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip.Name = "menuStrip";
-			this.menuStrip.Size = new System.Drawing.Size(886, 24);
+            this.menuStrip.Size = new System.Drawing.Size(884, 24);
 			this.menuStrip.TabIndex = 2;
 			this.menuStrip.Text = "Menu";
 			this.menuStrip.MenuActivate += new System.EventHandler(this.menuStrip_MenuActivate);
@@ -673,7 +663,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
             this.toolStripProgressBar_RenderingElements});
 			this.statusStrip.Location = new System.Drawing.Point(0, 585);
 			this.statusStrip.Name = "statusStrip";
-			this.statusStrip.Size = new System.Drawing.Size(886, 24);
+            this.statusStrip.Size = new System.Drawing.Size(884, 24);
 			this.statusStrip.TabIndex = 4;
 			this.statusStrip.Text = "statusStrip1";
 			// 
@@ -716,7 +706,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// toolStripStatusLabel4
 			// 
 			this.toolStripStatusLabel4.Name = "toolStripStatusLabel4";
-			this.toolStripStatusLabel4.Size = new System.Drawing.Size(471, 19);
+            this.toolStripStatusLabel4.Size = new System.Drawing.Size(469, 19);
 			this.toolStripStatusLabel4.Spring = true;
 			// 
 			// toolStripStatusLabel_RenderingElements
@@ -743,21 +733,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// toolStripContainer.ContentPanel
 			// 
 			this.toolStripContainer.ContentPanel.Controls.Add(this.dockPanel);
-			this.toolStripContainer.ContentPanel.Size = new System.Drawing.Size(886, 486);
+            this.toolStripContainer.ContentPanel.Size = new System.Drawing.Size(884, 536);
 			this.toolStripContainer.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.toolStripContainer.LeftToolStripPanelVisible = false;
 			this.toolStripContainer.Location = new System.Drawing.Point(0, 24);
 			this.toolStripContainer.Name = "toolStripContainer";
 			this.toolStripContainer.RightToolStripPanelVisible = false;
-			this.toolStripContainer.Size = new System.Drawing.Size(886, 561);
+            this.toolStripContainer.Size = new System.Drawing.Size(884, 561);
 			this.toolStripContainer.TabIndex = 5;
 			this.toolStripContainer.Text = "toolStripContainer1";
 			// 
 			// toolStripContainer.TopToolStripPanel
 			// 
 			this.toolStripContainer.TopToolStripPanel.Controls.Add(this.toolStripOperations);
-			this.toolStripContainer.TopToolStripPanel.Controls.Add(this.toolStripTiming);
-			this.toolStripContainer.TopToolStripPanel.Controls.Add(this.toolStrip1);
 			// 
 			// dockPanel
 			// 
@@ -766,7 +754,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.dockPanel.DocumentStyle = WeifenLuo.WinFormsUI.Docking.DocumentStyle.DockingWindow;
 			this.dockPanel.Location = new System.Drawing.Point(0, 0);
 			this.dockPanel.Name = "dockPanel";
-			this.dockPanel.Size = new System.Drawing.Size(886, 486);
+            this.dockPanel.Size = new System.Drawing.Size(884, 536);
 			dockPanelGradient7.EndColor = System.Drawing.SystemColors.ControlLight;
 			dockPanelGradient7.StartColor = System.Drawing.SystemColors.ControlLight;
 			autoHideStripSkin3.DockStripGradient = dockPanelGradient7;
@@ -814,76 +802,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			dockPanelSkin3.DockPaneStripSkin = dockPaneStripSkin3;
 			this.dockPanel.Skin = dockPanelSkin3;
 			this.dockPanel.TabIndex = 13;
-			// 
-			// toolStripTiming
-			// 
-			this.toolStripTiming.Dock = System.Windows.Forms.DockStyle.None;
-			this.toolStripTiming.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripLabel2,
-            this.toolStripLabel_TimingSpeed,
-            this.toolStripButton_IncreaseTimingSpeed,
-            this.toolStripButton_DecreaseTimingSpeed});
-			this.toolStripTiming.Location = new System.Drawing.Point(3, 25);
-			this.toolStripTiming.Name = "toolStripTiming";
-			this.toolStripTiming.Size = new System.Drawing.Size(175, 25);
-			this.toolStripTiming.TabIndex = 6;
-			// 
-			// toolStripLabel2
-			// 
-			this.toolStripLabel2.Name = "toolStripLabel2";
-			this.toolStripLabel2.Size = new System.Drawing.Size(82, 22);
-			this.toolStripLabel2.Text = "Timing speed:";
-			// 
-			// toolStripLabel_TimingSpeed
-			// 
-			this.toolStripLabel_TimingSpeed.Name = "toolStripLabel_TimingSpeed";
-			this.toolStripLabel_TimingSpeed.Size = new System.Drawing.Size(35, 22);
-			this.toolStripLabel_TimingSpeed.Text = "100%";
-			// 
-			// toolStripButton_IncreaseTimingSpeed
-			// 
-			this.toolStripButton_IncreaseTimingSpeed.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.toolStripButton_IncreaseTimingSpeed.Image = global::VixenModules.Editor.TimedSequenceEditor.TimedSequenceEditorResources.plus_white_icon;
-			this.toolStripButton_IncreaseTimingSpeed.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.toolStripButton_IncreaseTimingSpeed.Name = "toolStripButton_IncreaseTimingSpeed";
-			this.toolStripButton_IncreaseTimingSpeed.Size = new System.Drawing.Size(23, 22);
-			this.toolStripButton_IncreaseTimingSpeed.Text = "Increase speed";
-			this.toolStripButton_IncreaseTimingSpeed.Click += new System.EventHandler(this.toolStripButton_IncreaseTimingSpeed_Click);
-			// 
-			// toolStripButton_DecreaseTimingSpeed
-			// 
-			this.toolStripButton_DecreaseTimingSpeed.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.toolStripButton_DecreaseTimingSpeed.Image = global::VixenModules.Editor.TimedSequenceEditor.TimedSequenceEditorResources.minus_white_icon;
-			this.toolStripButton_DecreaseTimingSpeed.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.toolStripButton_DecreaseTimingSpeed.Name = "toolStripButton_DecreaseTimingSpeed";
-			this.toolStripButton_DecreaseTimingSpeed.Size = new System.Drawing.Size(23, 22);
-			this.toolStripButton_DecreaseTimingSpeed.Text = "Decrease speed";
-			this.toolStripButton_DecreaseTimingSpeed.Click += new System.EventHandler(this.toolStripButton_DecreaseTimingSpeed_Click);
-			// 
-			// toolStrip1
-			// 
-			this.toolStrip1.Dock = System.Windows.Forms.DockStyle.None;
-			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripLabel3,
-            this.cboAudioDevices});
-			this.toolStrip1.Location = new System.Drawing.Point(3, 50);
-			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(341, 25);
-			this.toolStrip1.TabIndex = 7;
-			// 
-			// toolStripLabel3
-			// 
-			this.toolStripLabel3.Name = "toolStripLabel3";
-			this.toolStripLabel3.Size = new System.Drawing.Size(77, 22);
-			this.toolStripLabel3.Text = "Audio Device";
-			// 
-			// cboAudioDevices
-			// 
-			this.cboAudioDevices.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.cboAudioDevices.Name = "cboAudioDevices";
-			this.cboAudioDevices.Size = new System.Drawing.Size(250, 25);
-			this.cboAudioDevices.SelectedIndexChanged += new System.EventHandler(this.cboAudioDevices_SelectedIndexChanged);
-			this.cboAudioDevices.TextChanged += new System.EventHandler(this.cboAudioDevices_TextChanged);
 			// 
 			// toolStripExVirtualEffects
 			// 
@@ -946,7 +864,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.AllowDrop = true;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(886, 609);
+            this.ClientSize = new System.Drawing.Size(884, 609);
 			this.Controls.Add(this.toolStripContainer);
 			this.Controls.Add(this.statusStrip);
 			this.Controls.Add(this.menuStrip);
@@ -970,10 +888,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripContainer.TopToolStripPanel.PerformLayout();
 			this.toolStripContainer.ResumeLayout(false);
 			this.toolStripContainer.PerformLayout();
-			this.toolStripTiming.ResumeLayout(false);
-			this.toolStripTiming.PerformLayout();
-			this.toolStrip1.ResumeLayout(false);
-			this.toolStrip1.PerformLayout();
 			this.toolStripExVirtualEffects.ResumeLayout(false);
 			this.toolStripExVirtualEffects.PerformLayout();
 			this.ResumeLayout(false);
@@ -1042,11 +956,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private System.Windows.Forms.ToolStripMenuItem modifySequenceLengthToolStripMenuItem;
 		private System.Windows.Forms.SaveFileDialog saveFileDialog;
 		private System.Windows.Forms.ContextMenuStrip contextMenuStripElementSelection;
-		private System.Windows.Forms.ToolStrip toolStripTiming;
-		private System.Windows.Forms.ToolStripLabel toolStripLabel2;
-		private System.Windows.Forms.ToolStripLabel toolStripLabel_TimingSpeed;
-		private System.Windows.Forms.ToolStripButton toolStripButton_IncreaseTimingSpeed;
-		private System.Windows.Forms.ToolStripButton toolStripButton_DecreaseTimingSpeed;
 		private Common.Controls.ToolStripEx toolStripExVirtualEffects;
 		private System.Windows.Forms.ToolStripLabel toolStripLabelVirtualEffects;
 		private System.Windows.Forms.ToolStripButton toolStripButtonVirtualEffectsAdd;
@@ -1056,9 +965,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel_RenderingElements;
         private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar_RenderingElements;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_removeAudio;
-		private System.Windows.Forms.ToolStrip toolStrip1;
-		private System.Windows.Forms.ToolStripLabel toolStripLabel3;
-		private System.Windows.Forms.ToolStripComboBox cboAudioDevices;
 		private WeifenLuo.WinFormsUI.Docking.DockPanel dockPanel;
 		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
 		private System.Windows.Forms.ToolStripMenuItem effectWindowToolStripMenuItem;

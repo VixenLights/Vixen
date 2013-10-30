@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Linq;
 using System.IO;
 using GitSharp;
 
@@ -26,15 +25,14 @@ namespace VersionControl
             }
         }
 
-        Dictionary<string, List<ChangeDetails>> _changeDetails;
 
         GitSharp.Repository _repo;
 
-        public Versioning(Data data, GitSharp.Repository repo, Dictionary<string, List<ChangeDetails>> changeDetails)
+        public Versioning(Data data, GitSharp.Repository repo)
         {
+            GitDetails = null;
             InitializeComponent();
             VersionControlData = data;
-            _changeDetails = changeDetails;
             _repo = repo;
 
             LoadFileStructure();
@@ -143,19 +141,46 @@ namespace VersionControl
             GetVersionControlInfo(e.Node.Tag as string);
 
         }
+        public static Dictionary<string, List<ChangeDetails>> GitDetails { get; set; }
+
+        private void GetGitDetails()
+        {
+            this.Cursor = Cursors.WaitCursor;
+            var tree = _repo.Head;
+            if (_repo.Head.CurrentCommit != null)
+                GitDetails = new Dictionary<string, List<ChangeDetails>>();
+
+                foreach (Commit commit in _repo.Head.CurrentCommit.Ancestors)
+                {
+                    foreach (Change change in commit.Changes)
+                    {
+                        ChangeDetails details = new ChangeDetails();
+                        details.FileName = change.Path;
+                        details.Hash = commit.Hash;
+                        details.ChangeDate = commit.AuthorDate;
+                        details.UserName = commit.Author.Name;
+                        details.Message = commit.Message;
+
+                        if (!GitDetails.ContainsKey(change.Path)) GitDetails.Add(change.Path, new List<ChangeDetails>());
+                        GitDetails[change.Path].Add(details);
+
+                    }
+                }
+            this.Cursor = Cursors.Default;
+        }
 
         private void GetVersionControlInfo(string fileName)
         {
+            if (GitDetails == null)
+                GetGitDetails();
+
             if (!string.IsNullOrWhiteSpace(fileName))
             {
-                if (_changeDetails.ContainsKey(fileName))
+                if (GitDetails.ContainsKey(fileName))
                 {
-                    var details = _changeDetails[fileName];
+                    var details = GitDetails[fileName];
 
-                    details.ForEach(d =>
-                    {
-                        listBoxChangeHistory.Items.Add(d.ChangeDate);
-                    });
+                    details.ForEach(d => listBoxChangeHistory.Items.Add(d.ChangeDate));
                 }
             }
 
@@ -176,7 +201,10 @@ namespace VersionControl
 
             if (listBoxChangeHistory.SelectedItem != null)
             {
-                var change = _changeDetails[treeViewFiles.SelectedNode.Tag as string].Where(w => w.ChangeDate == (DateTimeOffset)listBoxChangeHistory.SelectedItem).FirstOrDefault();
+                if (GitDetails == null)
+                    GetGitDetails();
+
+                var change = GitDetails[treeViewFiles.SelectedNode.Tag as string].Where(w => w.ChangeDate == (DateTimeOffset)listBoxChangeHistory.SelectedItem).FirstOrDefault();
                 if (change != null)
                 {
                     this.txtChangeDate.Text = change.ChangeDate.ToString();
