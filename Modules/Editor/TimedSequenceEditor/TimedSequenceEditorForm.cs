@@ -111,10 +111,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolStripButton_ZoomTimeIn.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStripButton_ZoomTimeOut.Image = Resources.zoom_out;
 			toolStripButton_ZoomTimeOut.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripButton_IncreaseTimingSpeed.Image = Resources.plus;
-			toolStripButton_IncreaseTimingSpeed.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripButton_DecreaseTimingSpeed.Image = Resources.minus;
-			toolStripButton_DecreaseTimingSpeed.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			toolStripButton_SnapTo.Image = Resources.magnet;
+			toolStripButton_SnapTo.DisplayStyle = ToolStripItemDisplayStyle.Image;
+
+			//toolStripButton_IncreaseTimingSpeed.Image = Resources.plus;
+			//toolStripButton_IncreaseTimingSpeed.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			//toolStripButton_DecreaseTimingSpeed.Image = Resources.minus;
+			//toolStripButton_DecreaseTimingSpeed.DisplayStyle = ToolStripItemDisplayStyle.Image;
 		}
 
 		private IDockContent DockingPanels_GetContentFromPersistString(string persistString)
