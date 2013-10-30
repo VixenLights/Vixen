@@ -289,7 +289,7 @@ namespace Vixen.Sys
 				instance.Descriptor = GetDescriptorById(moduleTypeId);
 
 				try {
-					instance.StaticModuleData = _GetModuleStaticData(instance);
+					instance.StaticModuleData = GetModuleStaticData(instance);
 				}
 				catch (Exception ex) {
 					Logging.ErrorException("Error when assigning module static data.", ex);
@@ -492,11 +492,18 @@ namespace Vixen.Sys
 			return dataModel;
 		}
 
-		private static IModuleDataModel _GetModuleStaticData(IModuleInstance instance)
+		public static IModuleDataModel GetModuleStaticData(IModuleInstance instance)
 		{
 			// All instances of a given module type will share a single instance of that type's
 			// static data.  A change in one is reflected in all.
 			return VixenSystem.ModuleStore.TypeData.GetTypeData(instance);
+		}
+
+		public static IModuleDataModel GetModuleStaticData(Guid id)
+		{
+			// All instances of a given module type will share a single instance of that type's
+			// static data.  A change in one is reflected in all.
+			return VixenSystem.ModuleStore.TypeData.GetTypeData(id);
 		}
 	}
 }

@@ -17,7 +17,7 @@ namespace Vixen.Services
 		}
 
 		public ElementNode CreateSingle(ElementNode parentNode, string name = null, bool createElement = true,
-		                                bool uniquifyName = true, int index = -1)
+		                                bool uniquifyName = true)
 		{
 			name = name ?? "Unnamed";
 

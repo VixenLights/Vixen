@@ -67,6 +67,14 @@ namespace Vixen.Module
 		}
 
 		/// <summary>
+		/// Retrieves the module type data without assigning it to a module instance.
+		/// </summary>
+		public IModuleDataModel GetTypeData(Guid id)
+		{
+			return _GetAsTypeData(id);
+		}
+
+		/// <summary>
 		/// Instantiates the data model for the module from the data in this data set.
 		/// Accounts for the module's instance id so there can be multiple instances
 		/// of a module type in the dataset.
@@ -125,6 +133,11 @@ namespace Vixen.Module
 		private IModuleDataModel _GetAsTypeData(IModuleInstance module)
 		{
 			return _dataModels.FirstOrDefault(x => x.ModuleTypeId.Equals(module.Descriptor.TypeId));
+		}
+
+		private IModuleDataModel _GetAsTypeData(Guid id)
+		{
+			return _dataModels.FirstOrDefault(x => x.ModuleTypeId.Equals(id));
 		}
 
 		private IModuleDataModel _GetAsInstanceData(IModuleInstance module)

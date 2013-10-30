@@ -45,6 +45,20 @@ namespace Vixen.Sys
 			return Enumerable.Empty<Type>();
 		}
 
+		public static IEnumerable<Type> FindConcreteImplementationsWithin(this Type type, System.Reflection.Module module)
+		{
+			// Must be an interface.
+			if (type.IsInterface) {
+				return
+					from t in module.GetTypes()
+					where !t.IsAbstract
+					from i in t.GetInterfaces()
+					where i.Name == type.Name
+					select t;
+			}
+			return Enumerable.Empty<Type>();
+		}
+
 		public static bool ImplementsInterface(this Type type, Type interfaceType)
 		{
 			return type.GetInterface(interfaceType.Name) != null;
