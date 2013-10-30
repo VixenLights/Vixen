@@ -17,6 +17,7 @@ namespace VixenModules.App.SuperScheduler
 		public StatusForm(SuperSchedulerData data, ScheduleExecutor executor)
 		{
 			InitializeComponent();
+			this.ControlBox = false;
 			SchedulerData = data;
 			Executor = executor;
 		}
