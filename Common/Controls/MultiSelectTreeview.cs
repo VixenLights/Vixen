@@ -220,13 +220,14 @@ namespace Common.Controls
 
 		public void AddSelectedNode(TreeNode node)
 		{
-			AddNodeToSelectedList(node);
+			AddNodeToSelectedListIfNotInList(node);
 			ToggleNode(node, true);
 		}
 
-		private void AddNodeToSelectedList(TreeNode node)
+		private void AddNodeToSelectedListIfNotInList(TreeNode node)
 		{
-			m_SelectedNodes.Add(node);
+			if (!m_SelectedNodes.Contains(node))
+				m_SelectedNodes.Add(node);
 			SortSelectedNodes();
 		}
 
@@ -315,7 +316,7 @@ namespace Common.Controls
 				base.OnMouseDown(e);
 			}
 			catch (Exception ex) {
-				HandleException(ex);
+			    HandleException(ex);
 			}
 		}
 
@@ -337,8 +338,7 @@ namespace Common.Controls
 				}
 
 				base.OnMouseUp(e);
-			}
-			catch (Exception ex) {
+			} catch (Exception ex) {
 				HandleException(ex);
 			}
 			_selectedNodeWithControlKey = false;
@@ -376,8 +376,7 @@ namespace Common.Controls
 				e.Cancel = true;
 
 				base.OnBeforeSelect(e);
-			}
-			catch (Exception ex) {
+			} catch (Exception ex) {
 				HandleException(ex);
 			}
 		}
@@ -388,8 +387,7 @@ namespace Common.Controls
 			try {
 				base.OnAfterSelect(e);
 				base.SelectedNode = null;
-			}
-			catch (Exception ex) {
+			} catch (Exception ex) {
 				HandleException(ex);
 			}
 		}
@@ -528,8 +526,7 @@ namespace Common.Controls
 						}
 					}
 				}
-			}
-			catch (Exception ex) {
+			} catch (Exception ex) {
 				HandleException(ex);
 			}
 			finally {
@@ -1031,9 +1028,7 @@ namespace Common.Controls
 		{
 			if (bSelectNode) {
 				m_SelectedNode = node;
-				if (!m_SelectedNodes.Contains(node)) {
-					AddNodeToSelectedList(node);
-				}
+				AddNodeToSelectedListIfNotInList(node);
 				node.BackColor = SystemColors.Highlight;
 				node.ForeColor = SystemColors.HighlightText;
 			}
