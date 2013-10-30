@@ -29,7 +29,7 @@
 		{
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConfigFiltersAndPatching));
-			Dataweb.NShape.RoleBasedSecurityManager roleBasedSecurityManager1 = new Dataweb.NShape.RoleBasedSecurityManager();
+			Dataweb.NShape.RoleBasedSecurityManager roleBasedSecurityManager2 = new Dataweb.NShape.RoleBasedSecurityManager();
 			this.buttonCancel = new System.Windows.Forms.Button();
 			this.diagramContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.copyFilterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -105,9 +105,9 @@
 			this.project.LibrarySearchPaths = ((System.Collections.Generic.IList<string>)(resources.GetObject("project.LibrarySearchPaths")));
 			this.project.Name = null;
 			this.project.Repository = this.cachedRepository;
-			roleBasedSecurityManager1.CurrentRole = Dataweb.NShape.StandardRole.Administrator;
-			roleBasedSecurityManager1.CurrentRoleName = "Administrator";
-			this.project.SecurityManager = roleBasedSecurityManager1;
+			roleBasedSecurityManager2.CurrentRole = Dataweb.NShape.StandardRole.Administrator;
+			roleBasedSecurityManager2.CurrentRoleName = "Administrator";
+			this.project.SecurityManager = roleBasedSecurityManager2;
 			// 
 			// cachedRepository
 			// 
@@ -181,22 +181,24 @@
 			// buttonZoomIn
 			// 
 			this.buttonZoomIn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonZoomIn.Image = global::VixenApplication.Properties.Resources.ZoomIn32;
+			this.buttonZoomIn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonZoomIn.Location = new System.Drawing.Point(403, 401);
 			this.buttonZoomIn.Name = "buttonZoomIn";
 			this.buttonZoomIn.Size = new System.Drawing.Size(40, 40);
 			this.buttonZoomIn.TabIndex = 11;
+			this.buttonZoomIn.Text = "ZIN";
 			this.buttonZoomIn.UseVisualStyleBackColor = true;
 			this.buttonZoomIn.Click += new System.EventHandler(this.buttonZoomIn_Click);
 			// 
 			// buttonZoomOut
 			// 
 			this.buttonZoomOut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonZoomOut.Image = global::VixenApplication.Properties.Resources.ZoomOut32;
+			this.buttonZoomOut.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonZoomOut.Location = new System.Drawing.Point(453, 401);
 			this.buttonZoomOut.Name = "buttonZoomOut";
 			this.buttonZoomOut.Size = new System.Drawing.Size(40, 40);
 			this.buttonZoomOut.TabIndex = 10;
+			this.buttonZoomOut.Text = "ZOUT";
 			this.buttonZoomOut.UseVisualStyleBackColor = true;
 			this.buttonZoomOut.Click += new System.EventHandler(this.buttonZoomOut_Click);
 			// 
@@ -224,21 +226,23 @@
 			// 
 			// buttonAddFilter
 			// 
-			this.buttonAddFilter.Image = global::VixenApplication.Properties.Resources.add24;
+			this.buttonAddFilter.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonAddFilter.Location = new System.Drawing.Point(144, 20);
 			this.buttonAddFilter.Name = "buttonAddFilter";
 			this.buttonAddFilter.Size = new System.Drawing.Size(32, 32);
 			this.buttonAddFilter.TabIndex = 7;
+			this.buttonAddFilter.Text = "+";
 			this.buttonAddFilter.UseVisualStyleBackColor = true;
 			this.buttonAddFilter.Click += new System.EventHandler(this.buttonAddFilter_Click);
 			// 
 			// buttonDelete
 			// 
-			this.buttonDelete.Image = global::VixenApplication.Properties.Resources.delete24;
+			this.buttonDelete.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonDelete.Location = new System.Drawing.Point(186, 20);
 			this.buttonDelete.Name = "buttonDelete";
 			this.buttonDelete.Size = new System.Drawing.Size(32, 32);
 			this.buttonDelete.TabIndex = 12;
+			this.buttonDelete.Text = "-";
 			this.buttonDelete.UseVisualStyleBackColor = true;
 			this.buttonDelete.Click += new System.EventHandler(this.buttonDelete_Click);
 			// 

@@ -36,6 +36,12 @@ namespace Common.Controls
 		public NameGenerator()
 		{
 			InitializeComponent();
+			Icon = Resources.Properties.Resources.Icon_Vixen3;
+			buttonMoveRuleUp.BackgroundImage = Resources.Properties.Resources.arrow_up;
+			buttonMoveRuleUp.Text = "";
+			buttonMoveRuleDown.BackgroundImage = Resources.Properties.Resources.arrow_down;
+			buttonMoveRuleDown.Text = "";
+
 			Generators = new List<INamingGenerator>();
 
 			listViewNames.Columns.Clear();

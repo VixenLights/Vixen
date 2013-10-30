@@ -11,6 +11,7 @@ using Vixen.Module.SequenceType;
 using Vixen.Services;
 using Vixen.Sys;
 using NLog;
+using Common.Resources.Properties;
 
 namespace VixenApplication
 {
@@ -29,6 +30,9 @@ namespace VixenApplication
 
 		public VixenApplication()
 		{
+			InitializeComponent();
+			Icon = Resources.Icon_Vixen3;
+
 			string[] args = Environment.GetCommandLineArgs();
 			foreach (string arg in args) {
 				_ProcessArg(arg);
@@ -40,7 +44,6 @@ namespace VixenApplication
 			_applicationData = new VixenApplicationData(_rootDataDirectory);
 
 			stopping = false;
-			InitializeComponent();
 			PopulateVersionStrings();
 			AppCommands = new AppCommand(this);
 			Execution.ExecutionStateChanged += executionStateChangedHandler;
@@ -597,6 +600,24 @@ namespace VixenApplication
 			if (f.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
 				// Do something...
 				MessageBox.Show("You must re-start Vixen for the changes to take effect.", "Profiles Changed", MessageBoxButtons.OK);
+			}
+		}
+
+		private void buttonSingleSetup_Click(object sender, EventArgs e)
+		{
+			DialogResult dr = MessageBox.Show("Please note: this new setup form is still in active development. There will be bugs! Make sure you backup your configuration in case it breaks something.", "", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+
+			if (dr == DialogResult.Cancel)
+				return;
+
+			using (DisplaySetup form = new DisplaySetup()) {
+				dr = form.ShowDialog();
+			}
+
+			if (dr == DialogResult.OK) {
+				VixenSystem.SaveSystemConfig();
+			} else {
+				VixenSystem.ReloadSystemConfig();
 			}
 		}
 	}

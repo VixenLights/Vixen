@@ -20,6 +20,7 @@ namespace Common.BasicInputManagement
 		public SetupForm(IEnumerable<InputEffectMap> maps, IEnumerable<IInputModuleInstance> inputModules)
 		{
 			InitializeComponent();
+			Icon = Resources.Properties.Resources.Icon_Vixen3;
 			_maps = new List<InputEffectMap>(maps);
 			_inputModules = new List<IInputModuleInstance>(inputModules);
 		}

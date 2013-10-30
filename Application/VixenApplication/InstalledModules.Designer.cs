@@ -23,7 +23,6 @@
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(InstalledModules));
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.buttonCopyModuleId = new System.Windows.Forms.Button();
 			this.listViewModules = new System.Windows.Forms.ListView();
@@ -124,7 +123,6 @@
 			this.ClientSize = new System.Drawing.Size(700, 350);
 			this.Controls.Add(this.buttonClose);
 			this.Controls.Add(this.panel1);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "InstalledModules";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Installed Modules";

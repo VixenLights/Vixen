@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Drawing;
+using Common.Resources.Properties;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -16,9 +17,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (ParentRow.ChildRows.Count > 0) {
 				Bitmap icon;
 				if (ParentRow.TreeOpen)
-					icon = TimedSequenceEditorResources.minus_button;
+					icon = Resources.bullet_toggle_minus_16px;
 				else
-					icon = TimedSequenceEditorResources.plus_button;
+					icon = Resources.bullet_toggle_plus_16px;
 
 				int x = (IconArea.Width - icon.Width)/2;
 				int y = (IconArea.Height - icon.Height)/2;

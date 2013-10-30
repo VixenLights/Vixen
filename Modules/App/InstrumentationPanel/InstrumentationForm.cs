@@ -10,6 +10,7 @@ namespace VixenModules.App.InstrumentationPanel
 		public InstrumentationForm()
 		{
 			InitializeComponent();
+			Icon = Common.Resources.Properties.Resources.Icon_Vixen3;
 		}
 
 		private void InstrumentationForm_Load(object sender, EventArgs e)

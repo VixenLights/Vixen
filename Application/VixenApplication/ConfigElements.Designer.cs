@@ -28,7 +28,6 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConfigElements));
 			this.buttonOk = new System.Windows.Forms.Button();
 			this.groupBoxSelectedNode = new System.Windows.Forms.GroupBox();
 			this.labelProperties = new System.Windows.Forms.Label();
@@ -290,7 +289,6 @@
 			this.Controls.Add(this.groupBoxOperations);
 			this.Controls.Add(this.groupBoxSelectedNode);
 			this.DoubleBuffered = true;
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MinimumSize = new System.Drawing.Size(550, 550);
 			this.Name = "ConfigElements";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

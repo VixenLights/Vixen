@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Common.Controls;
+using Common.Resources.Properties;
 
 namespace VixenModules.Property.Color
 {
@@ -18,6 +19,13 @@ namespace VixenModules.Property.Color
 		{
 			_data = colorStaticData;
 			InitializeComponent();
+			Icon = Resources.Icon_Vixen3;
+			buttonAddColor.BackgroundImage = Resources.add;
+			buttonAddColor.Text = "";
+			buttonAddColorSet.BackgroundImage = Resources.add;
+			buttonAddColorSet.Text = "";
+			buttonRemoveColorSet.BackgroundImage = Resources.delete;
+			buttonRemoveColorSet.Text = "";
 		}
 
 		private void ColorSetsSetupForm_Load(object sender, EventArgs e)

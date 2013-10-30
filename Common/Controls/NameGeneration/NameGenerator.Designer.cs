@@ -178,22 +178,24 @@ namespace Common.Controls
 			// buttonMoveRuleDown
 			// 
 			this.buttonMoveRuleDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonMoveRuleDown.Image = global::Common.Controls.Icons.DownArrowShort_Blue_16x16;
+			this.buttonMoveRuleDown.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonMoveRuleDown.Location = new System.Drawing.Point(416, 141);
 			this.buttonMoveRuleDown.Name = "buttonMoveRuleDown";
 			this.buttonMoveRuleDown.Size = new System.Drawing.Size(30, 25);
 			this.buttonMoveRuleDown.TabIndex = 36;
+			this.buttonMoveRuleDown.Text = "D";
 			this.buttonMoveRuleDown.UseVisualStyleBackColor = true;
 			this.buttonMoveRuleDown.Click += new System.EventHandler(this.buttonMoveRuleDown_Click);
 			// 
 			// buttonMoveRuleUp
 			// 
 			this.buttonMoveRuleUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonMoveRuleUp.Image = global::Common.Controls.Icons.UpArrowShort_Blue_16x16;
+			this.buttonMoveRuleUp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonMoveRuleUp.Location = new System.Drawing.Point(380, 141);
 			this.buttonMoveRuleUp.Name = "buttonMoveRuleUp";
 			this.buttonMoveRuleUp.Size = new System.Drawing.Size(30, 25);
 			this.buttonMoveRuleUp.TabIndex = 35;
+			this.buttonMoveRuleUp.Text = "U";
 			this.buttonMoveRuleUp.UseVisualStyleBackColor = true;
 			this.buttonMoveRuleUp.Click += new System.EventHandler(this.buttonMoveRuleUp_Click);
 			// 

@@ -28,7 +28,6 @@ namespace VixenModules.App.Curves
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CurveEditor));
 			this.buttonOK = new System.Windows.Forms.Button();
 			this.buttonCancel = new System.Windows.Forms.Button();
 			this.labelInstructions1 = new System.Windows.Forms.Label();
@@ -238,7 +237,6 @@ namespace VixenModules.App.Curves
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.zedGraphControl);
 			this.DoubleBuffered = true;
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MinimumSize = new System.Drawing.Size(440, 440);
 			this.Name = "CurveEditor";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

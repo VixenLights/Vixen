@@ -14,6 +14,8 @@ namespace Common.Controls
 		public ParallelPortConfig(int portAddress)
 		{
 			InitializeComponent();
+			Icon = Resources.Properties.Resources.Icon_Vixen3;
+
 			_OtherAddressIndex = 3;
 			_DefaultPort = portAddress;
 			switch (portAddress) {

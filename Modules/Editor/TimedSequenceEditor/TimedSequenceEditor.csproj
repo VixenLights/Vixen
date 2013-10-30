@@ -143,7 +143,9 @@
     <Compile Include="TimedSequenceRowLabel.cs" />
     <Compile Include="Undo.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Resources\" />
+  </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="AutomaticMusicDetection.resx">
       <DependentUpon>AutomaticMusicDetection.cs</DependentUpon>
@@ -175,61 +177,6 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="Resources\minus-button.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\plus-button.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Edit_RedoHS.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Edit_UndoHS.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\PlayHS.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\StopHS.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\PauseHS.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\saveHS.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\CutHS.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\CopyHS.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\PasteHS.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\DeleteHS.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\ZoomHS.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Zoom_In.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Zoom_Out.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\base_speaker_32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\pencil_32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\DataContainer_MoveFirstHS.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\DataContainer_MoveLastHS.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Common\BaseSequence\BaseSequence.csproj">
@@ -240,6 +187,11 @@
     <ProjectReference Include="..\..\..\Common\Controls\Controls.csproj">
       <Project>{A54FB6A1-A9C3-488C-B961-41B8DBC81B36}</Project>
       <Name>Controls</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Common\Resources\Resources.csproj">
+      <Project>{F7A80169-6310-4585-9D58-A6F6F5C5B380}</Project>
+      <Name>Resources</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\App\VirtualEffect\VirtualEffect.csproj">
@@ -257,12 +209,6 @@
       <Name>Timed</Name>
       <Private>False</Private>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\plus-white-icon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\minus-white-icon.png" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">

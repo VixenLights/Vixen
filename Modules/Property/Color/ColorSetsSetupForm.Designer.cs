@@ -27,9 +27,9 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("lkjhlkjh");
-			System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("kvgvhgv");
-			System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem("uytruyt");
+			System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem("lkjhlkjh");
+			System.Windows.Forms.ListViewItem listViewItem5 = new System.Windows.Forms.ListViewItem("kvgvhgv");
+			System.Windows.Forms.ListViewItem listViewItem6 = new System.Windows.Forms.ListViewItem("uytruyt");
 			this.listViewColorSets = new System.Windows.Forms.ListView();
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.label1 = new System.Windows.Forms.Label();
@@ -54,9 +54,9 @@
 			this.listViewColorSets.GridLines = true;
 			this.listViewColorSets.HideSelection = false;
 			this.listViewColorSets.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1,
-            listViewItem2,
-            listViewItem3});
+            listViewItem4,
+            listViewItem5,
+            listViewItem6});
 			this.listViewColorSets.Location = new System.Drawing.Point(14, 30);
 			this.listViewColorSets.MultiSelect = false;
 			this.listViewColorSets.Name = "listViewColorSets";
@@ -95,11 +95,12 @@
 			// 
 			// buttonAddColor
 			// 
-			this.buttonAddColor.Image = global::VixenModules.Property.Color.Properties.Resources.add_24;
+			this.buttonAddColor.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonAddColor.Location = new System.Drawing.Point(250, 65);
 			this.buttonAddColor.Name = "buttonAddColor";
 			this.buttonAddColor.Size = new System.Drawing.Size(32, 32);
 			this.buttonAddColor.TabIndex = 12;
+			this.buttonAddColor.Text = "+";
 			this.buttonAddColor.UseVisualStyleBackColor = true;
 			this.buttonAddColor.Click += new System.EventHandler(this.buttonAddColor_Click);
 			// 
@@ -168,21 +169,23 @@
 			// 
 			// buttonRemoveColorSet
 			// 
-			this.buttonRemoveColorSet.Image = global::VixenModules.Property.Color.Properties.Resources.delete_24;
+			this.buttonRemoveColorSet.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonRemoveColorSet.Location = new System.Drawing.Point(70, 134);
 			this.buttonRemoveColorSet.Name = "buttonRemoveColorSet";
 			this.buttonRemoveColorSet.Size = new System.Drawing.Size(32, 32);
 			this.buttonRemoveColorSet.TabIndex = 3;
+			this.buttonRemoveColorSet.Text = "-";
 			this.buttonRemoveColorSet.UseVisualStyleBackColor = true;
 			this.buttonRemoveColorSet.Click += new System.EventHandler(this.buttonRemoveColorSet_Click);
 			// 
 			// buttonAddColorSet
 			// 
-			this.buttonAddColorSet.Image = global::VixenModules.Property.Color.Properties.Resources.add_24;
+			this.buttonAddColorSet.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonAddColorSet.Location = new System.Drawing.Point(24, 134);
 			this.buttonAddColorSet.Name = "buttonAddColorSet";
 			this.buttonAddColorSet.Size = new System.Drawing.Size(32, 32);
 			this.buttonAddColorSet.TabIndex = 2;
+			this.buttonAddColorSet.Text = "+";
 			this.buttonAddColorSet.UseVisualStyleBackColor = true;
 			this.buttonAddColorSet.Click += new System.EventHandler(this.buttonAddColorSet_Click);
 			// 

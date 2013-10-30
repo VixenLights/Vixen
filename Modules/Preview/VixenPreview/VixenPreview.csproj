@@ -89,7 +89,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.WindowsAPICodePack.DirectX">
-      <HintPath>..\..\..\Common\Controls\Microsoft.WindowsAPICodePack.DirectX.dll</HintPath>
+      <HintPath>..\..\..\Common\Libraries\Microsoft.WindowsAPICodePack.DirectX.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="NLog">

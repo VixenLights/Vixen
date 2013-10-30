@@ -17,6 +17,7 @@ namespace VixenModules.App.ColorGradients
 		public ColorGradientLibrarySelector()
 		{
 			InitializeComponent();
+			Icon = Common.Resources.Properties.Resources.Icon_Vixen3;
 		}
 
 		private void ColorGradientLibrarySelector_Load(object sender, EventArgs e)

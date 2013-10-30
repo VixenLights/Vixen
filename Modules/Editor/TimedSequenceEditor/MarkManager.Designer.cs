@@ -354,21 +354,23 @@
 			// 
 			// buttonIncreaseSelectedMarks
 			// 
-			this.buttonIncreaseSelectedMarks.Image = global::VixenModules.Editor.TimedSequenceEditor.TimedSequenceEditorResources.plus_white_icon;
-			this.buttonIncreaseSelectedMarks.Location = new System.Drawing.Point(81, 23);
+			this.buttonIncreaseSelectedMarks.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.buttonIncreaseSelectedMarks.Location = new System.Drawing.Point(81, 13);
 			this.buttonIncreaseSelectedMarks.Name = "buttonIncreaseSelectedMarks";
-			this.buttonIncreaseSelectedMarks.Size = new System.Drawing.Size(23, 23);
+			this.buttonIncreaseSelectedMarks.Size = new System.Drawing.Size(32, 32);
 			this.buttonIncreaseSelectedMarks.TabIndex = 15;
+			this.buttonIncreaseSelectedMarks.Text = "+";
 			this.buttonIncreaseSelectedMarks.UseVisualStyleBackColor = true;
 			this.buttonIncreaseSelectedMarks.Click += new System.EventHandler(this.buttonIncreaseSelectedMarks_Click);
 			// 
 			// buttonDecreaseSelectedMarks
 			// 
-			this.buttonDecreaseSelectedMarks.Image = global::VixenModules.Editor.TimedSequenceEditor.TimedSequenceEditorResources.minus_white_icon;
-			this.buttonDecreaseSelectedMarks.Location = new System.Drawing.Point(103, 23);
+			this.buttonDecreaseSelectedMarks.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.buttonDecreaseSelectedMarks.Location = new System.Drawing.Point(116, 13);
 			this.buttonDecreaseSelectedMarks.Name = "buttonDecreaseSelectedMarks";
-			this.buttonDecreaseSelectedMarks.Size = new System.Drawing.Size(23, 23);
+			this.buttonDecreaseSelectedMarks.Size = new System.Drawing.Size(32, 32);
 			this.buttonDecreaseSelectedMarks.TabIndex = 14;
+			this.buttonDecreaseSelectedMarks.Text = "-";
 			this.buttonDecreaseSelectedMarks.UseVisualStyleBackColor = true;
 			this.buttonDecreaseSelectedMarks.Click += new System.EventHandler(this.buttonDecreaseSelectedMarks_Click);
 			// 
@@ -738,7 +740,7 @@
 			// 
 			this.trackBarPlayBack.Location = new System.Drawing.Point(6, 65);
 			this.trackBarPlayBack.Name = "trackBarPlayBack";
-			this.trackBarPlayBack.Size = new System.Drawing.Size(703, 42);
+			this.trackBarPlayBack.Size = new System.Drawing.Size(703, 45);
 			this.trackBarPlayBack.TabIndex = 5;
 			this.trackBarPlayBack.Scroll += new System.EventHandler(this.trackBarPlayBack_Scroll);
 			this.trackBarPlayBack.MouseDown += new System.Windows.Forms.MouseEventHandler(this.trackBarPlayBack_MouseDown);
@@ -762,11 +764,12 @@
 			// 
 			// buttonIncreasePlaybackSpeed
 			// 
-			this.buttonIncreasePlaybackSpeed.Image = global::VixenModules.Editor.TimedSequenceEditor.TimedSequenceEditorResources.plus_white_icon;
-			this.buttonIncreasePlaybackSpeed.Location = new System.Drawing.Point(375, 26);
+			this.buttonIncreasePlaybackSpeed.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.buttonIncreasePlaybackSpeed.Location = new System.Drawing.Point(375, 21);
 			this.buttonIncreasePlaybackSpeed.Name = "buttonIncreasePlaybackSpeed";
-			this.buttonIncreasePlaybackSpeed.Size = new System.Drawing.Size(23, 23);
+			this.buttonIncreasePlaybackSpeed.Size = new System.Drawing.Size(32, 32);
 			this.buttonIncreasePlaybackSpeed.TabIndex = 11;
+			this.buttonIncreasePlaybackSpeed.Text = "+";
 			this.buttonIncreasePlaybackSpeed.UseVisualStyleBackColor = true;
 			this.buttonIncreasePlaybackSpeed.Click += new System.EventHandler(this.buttonIncreasePlaySpeed_Click);
 			// 
@@ -798,11 +801,12 @@
 			// 
 			// buttonDecreasePlaySpeed
 			// 
-			this.buttonDecreasePlaySpeed.Image = global::VixenModules.Editor.TimedSequenceEditor.TimedSequenceEditorResources.minus_white_icon;
-			this.buttonDecreasePlaySpeed.Location = new System.Drawing.Point(397, 26);
+			this.buttonDecreasePlaySpeed.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.buttonDecreasePlaySpeed.Location = new System.Drawing.Point(410, 21);
 			this.buttonDecreasePlaySpeed.Name = "buttonDecreasePlaySpeed";
-			this.buttonDecreasePlaySpeed.Size = new System.Drawing.Size(23, 23);
+			this.buttonDecreasePlaySpeed.Size = new System.Drawing.Size(32, 32);
 			this.buttonDecreasePlaySpeed.TabIndex = 10;
+			this.buttonDecreasePlaySpeed.Text = "-";
 			this.buttonDecreasePlaySpeed.UseVisualStyleBackColor = true;
 			this.buttonDecreasePlaySpeed.Click += new System.EventHandler(this.buttonDecreasePlaySpeed_Click);
 			// 
@@ -817,11 +821,12 @@
 			// 
 			// buttonPlay
 			// 
-			this.buttonPlay.Image = global::VixenModules.Editor.TimedSequenceEditor.TimedSequenceEditorResources.PlayHS;
-			this.buttonPlay.Location = new System.Drawing.Point(26, 26);
+			this.buttonPlay.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.buttonPlay.Location = new System.Drawing.Point(20, 23);
 			this.buttonPlay.Name = "buttonPlay";
-			this.buttonPlay.Size = new System.Drawing.Size(30, 23);
+			this.buttonPlay.Size = new System.Drawing.Size(32, 32);
 			this.buttonPlay.TabIndex = 1;
+			this.buttonPlay.Text = "Play";
 			this.buttonPlay.UseVisualStyleBackColor = true;
 			this.buttonPlay.Click += new System.EventHandler(this.buttonPlay_Click);
 			// 
@@ -835,11 +840,12 @@
 			// 
 			// buttonStop
 			// 
-			this.buttonStop.Image = global::VixenModules.Editor.TimedSequenceEditor.TimedSequenceEditorResources.StopHS;
-			this.buttonStop.Location = new System.Drawing.Point(62, 26);
+			this.buttonStop.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.buttonStop.Location = new System.Drawing.Point(55, 23);
 			this.buttonStop.Name = "buttonStop";
-			this.buttonStop.Size = new System.Drawing.Size(30, 23);
+			this.buttonStop.Size = new System.Drawing.Size(32, 32);
 			this.buttonStop.TabIndex = 2;
+			this.buttonStop.Text = "Stop";
 			this.buttonStop.UseVisualStyleBackColor = true;
 			this.buttonStop.Click += new System.EventHandler(this.buttonStop_Click);
 			// 

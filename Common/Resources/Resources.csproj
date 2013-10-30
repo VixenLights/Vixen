@@ -1,0 +1,263 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{F7A80169-6310-4585-9D58-A6F6F5C5B380}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Common.Resources</RootNamespace>
+    <AssemblyName>Resources</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>$(SolutionDir)\Output\Common\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>$(SolutionDir)\Release\Common\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="accept.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="arrow_down.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="arrow_left.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="arrow_refresh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="arrow_right.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="arrow_up.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="attributes_display.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bullet_black.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bullet_blue.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bullet_green.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bullet_orange.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bullet_pink.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bullet_purple.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bullet_white.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bullet_yellow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cog.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cog_add.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cog_delete.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cog_edit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cog_error.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cog_go.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="control_end.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="control_end_blue.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="control_fastforward.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="control_fastforward_blue.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="control_pause.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="control_pause_blue.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="control_play.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="control_play_blue.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="control_rewind.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="control_rewind_blue.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="control_start.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="control_start_blue.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="control_stop.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="control_stop_blue.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="delete.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="filter.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="filter_add.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="filter_delete.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="magnifier.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="magnifier_zoom_in.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="magnifier_zoom_out.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="zoom.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="zoom_actual.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="zoom_actual_equal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="zoom_extend.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="zoom_fit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="zoom_in.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="zoom_last.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="zoom_out.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="zoom_refresh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="zoom_selection.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Vixen3.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="add.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="help.png" />
+    <None Include="bullet_toggle_plus_16px.png" />
+    <None Include="bullet_toggle_minus_16px.png" />
+    <None Include="bullet_toggle_plus.png" />
+    <None Include="bullet_toggle_minus.png" />
+    <None Include="timeline_marker.png" />
+    <None Include="music.png" />
+    <None Include="sound_none.png" />
+    <None Include="sound_mute.png" />
+    <None Include="sound_low.png" />
+    <None Include="sound_delete.png" />
+    <None Include="sound_add.png" />
+    <None Include="sound.png" />
+    <None Include="page_copy.png" />
+    <None Include="paste_plain.png" />
+    <None Include="page_white_paste.png" />
+    <None Include="page_white_copy.png" />
+    <None Include="document_move.png" />
+    <None Include="cut.png" />
+    <Content Include="folder.png" />
+    <Content Include="folder_add.png" />
+    <Content Include="folder_delete.png" />
+    <Content Include="folder_edit.png" />
+    <Content Include="folder_error.png" />
+    <Content Include="folder_explore.png" />
+    <Content Include="folder_go.png" />
+    <None Include="plus.png" />
+    <None Include="minus.png" />
+    <None Include="arrow_undo.png" />
+    <None Include="arrow_redo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

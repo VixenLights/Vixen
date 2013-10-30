@@ -29,6 +29,8 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 		public NutcrackerTypeEditorControl()
 		{
 			InitializeComponent();
+			buttonHelp.BackgroundImage = Common.Resources.Properties.Resources.help;
+
 			NutcrackerDataValue = new NutcrackerData();
 		}
 

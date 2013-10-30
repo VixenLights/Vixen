@@ -68,6 +68,7 @@
 			this.label1 = new System.Windows.Forms.Label();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.labelDebugVersion = new System.Windows.Forms.Label();
+			this.buttonSingleSetup = new System.Windows.Forms.Button();
 			this.menuStripMain.SuspendLayout();
 			this.groupBoxSequences.SuspendLayout();
 			this.groupBoxSystemConfig.SuspendLayout();
@@ -100,7 +101,7 @@
 			this.vixenToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.logsToolStripMenuItem,
             this.viewInstalledModulesToolStripMenuItem,
-            //this.profilesToolStripMenuItem,
+            this.profilesToolStripMenuItem,
             this.executionToolStripMenuItem,
             this.toolStripSeparator1,
             this.exitToolStripMenuItem});
@@ -245,12 +246,13 @@
 			// groupBoxSystemConfig
 			// 
 			this.groupBoxSystemConfig.Controls.Add(this.buttonSetupFiltersAndPatching);
+			this.groupBoxSystemConfig.Controls.Add(this.buttonSingleSetup);
 			this.groupBoxSystemConfig.Controls.Add(this.buttonSetupOutputPreviews);
 			this.groupBoxSystemConfig.Controls.Add(this.buttonSetupOutputControllers);
 			this.groupBoxSystemConfig.Controls.Add(this.buttonSetupElements);
 			this.groupBoxSystemConfig.Location = new System.Drawing.Point(245, 200);
 			this.groupBoxSystemConfig.Name = "groupBoxSystemConfig";
-			this.groupBoxSystemConfig.Size = new System.Drawing.Size(204, 186);
+			this.groupBoxSystemConfig.Size = new System.Drawing.Size(204, 227);
 			this.groupBoxSystemConfig.TabIndex = 12;
 			this.groupBoxSystemConfig.TabStop = false;
 			this.groupBoxSystemConfig.Text = "System Configuration";
@@ -367,6 +369,16 @@
 			this.labelDebugVersion.Text = "[0.0.0]";
 			this.labelDebugVersion.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
+			// buttonSingleSetup
+			// 
+			this.buttonSingleSetup.Location = new System.Drawing.Point(12, 186);
+			this.buttonSingleSetup.Name = "buttonSingleSetup";
+			this.buttonSingleSetup.Size = new System.Drawing.Size(180, 30);
+			this.buttonSingleSetup.TabIndex = 17;
+			this.buttonSingleSetup.Text = "Test Drive New Config Setup";
+			this.buttonSingleSetup.UseVisualStyleBackColor = true;
+			this.buttonSingleSetup.Click += new System.EventHandler(this.buttonSingleSetup_Click);
+			// 
 			// VixenApplication
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -382,7 +394,6 @@
 			this.Controls.Add(this.pictureBox1);
 			this.DoubleBuffered = true;
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.menuStripMain;
 			this.MaximizeBox = false;
 			this.MinimumSize = new System.Drawing.Size(467, 434);
@@ -439,6 +450,7 @@
 		private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ToolStripMenuItem profilesToolStripMenuItem;
 		private System.Windows.Forms.Label labelDebugVersion;
+		private System.Windows.Forms.Button buttonSingleSetup;
 	}
 }
 

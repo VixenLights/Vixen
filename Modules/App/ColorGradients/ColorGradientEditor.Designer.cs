@@ -27,7 +27,6 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ColorGradientEditor));
 			this.buttonCancel = new System.Windows.Forms.Button();
 			this.buttonOK = new System.Windows.Forms.Button();
 			this.gradientEditPanel = new VixenModules.App.ColorGradients.GradientEditPanel();
@@ -67,6 +66,7 @@
 			this.gradientEditPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.gradientEditPanel.DiscreteColors = false;
 			this.gradientEditPanel.Location = new System.Drawing.Point(12, 12);
 			this.gradientEditPanel.LockColorEditorHSV_Value = true;
 			this.gradientEditPanel.MinimumSize = new System.Drawing.Size(357, 120);
@@ -74,6 +74,7 @@
 			this.gradientEditPanel.ReadOnly = false;
 			this.gradientEditPanel.Size = new System.Drawing.Size(410, 120);
 			this.gradientEditPanel.TabIndex = 0;
+			this.gradientEditPanel.ValidDiscreteColors = null;
 			// 
 			// groupBoxLibrary
 			// 
@@ -149,7 +150,6 @@
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.gradientEditPanel);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.KeyPreview = true;
 			this.Name = "ColorGradientEditor";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

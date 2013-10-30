@@ -14,6 +14,8 @@ namespace VixenModules.Output.DummyLighting
 		public DummyLightingSetup(RenderStyle renderStyle, string formTitle)
 		{
 			InitializeComponent();
+			Icon = Common.Resources.Properties.Resources.Icon_Vixen3;
+
 			RenderStyle = renderStyle;
 			FormTitle = formTitle;
 		}

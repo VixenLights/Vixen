@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Resources.Properties;
 using Vixen.Services;
 using Vixen.Sys;
 using System.Media;
@@ -26,6 +27,7 @@ namespace VixenApplication
 		public ConfigElements()
 		{
 			InitializeComponent();
+			Icon = Resources.Icon_Vixen3;
 			_displayedNode = null;
 			_tooltip = new ToolTip();
 		}
@@ -327,11 +329,5 @@ namespace VixenApplication
 				}
 			}
 		}
-	}
-
-	public class ComboBoxControllerItem
-	{
-		public string Name { get; set; }
-		public Guid Id { get; set; }
 	}
 }

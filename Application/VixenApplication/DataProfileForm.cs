@@ -1,6 +1,8 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+using Common.Resources.Properties;
 
 namespace VixenApplication
 {
@@ -12,6 +14,13 @@ namespace VixenApplication
 		public DataProfileForm()
 		{
 			InitializeComponent();
+			Icon = Resources.Icon_Vixen3;
+			buttonAddProfile.BackgroundImage = Resources.add;
+			buttonAddProfile.Text = "";
+			buttonDeleteProfile.BackgroundImage = Resources.delete;
+			buttonDeleteProfile.Text = "";
+			buttonSetDataFolder.BackgroundImage = Resources.folder;
+			buttonSetDataFolder.Text = "";
 		}
 
 		private void DataProfileForm_Load(object sender, EventArgs e)

@@ -20,6 +20,8 @@ namespace VixenModules.App.ColorGradients
 		public ColorGradientEditor(ColorGradient gradient, bool discreteColors, IEnumerable<Color> validDiscreteColors)
 		{
 			InitializeComponent();
+			Icon = Common.Resources.Properties.Resources.Icon_Vixen3;
+
 			gradientEditPanel.GradientChanged += GradientChangedHandler;
 			Gradient = gradient;
 			_discreteColors = discreteColors;

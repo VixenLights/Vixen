@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using Common.Resources.Properties;
 using Vixen.Sys;
 using Common.Controls;
 using Vixen.Sys.Output;
@@ -18,6 +19,7 @@ namespace VixenApplication
 		public ConfigControllersOutputs(OutputController controller)
 		{
 			InitializeComponent();
+			Icon = Resources.Icon_Vixen3;
 			_controller = controller;
 		}
 

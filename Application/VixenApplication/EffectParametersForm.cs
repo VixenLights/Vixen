@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Forms;
+using Common.Resources.Properties;
 using Vixen.Module.EffectEditor;
 using Vixen.Services;
 using Vixen.Sys;
@@ -12,6 +13,7 @@ namespace VixenApplication
 		public EffectParametersForm(Guid effectModuleId)
 		{
 			InitializeComponent();
+			Icon = Resources.Icon_Vixen3;
 
 			panelContainer.Controls.Clear();
 			IEffectEditorControl[] controls = ApplicationServices.GetEffectEditorControls(effectModuleId).ToArray();

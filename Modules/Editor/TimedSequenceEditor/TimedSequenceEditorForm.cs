@@ -23,6 +23,7 @@ using VixenModules.App.VirtualEffect;
 using Vixen.Module.App;
 using System.Threading.Tasks;
 using System.Threading;
+using Common.Resources.Properties;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -74,6 +75,39 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public TimedSequenceEditorForm()
 		{
 			InitializeComponent();
+			Icon = Resources.Icon_Vixen3;
+			toolStripButton_Start.Image = Resources.control_start_blue;
+			toolStripButton_Start.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			toolStripButton_Play.Image = Resources.control_play_blue;
+			toolStripButton_Play.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			toolStripButton_Stop.Image = Resources.control_stop_blue;
+			toolStripButton_Stop.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			toolStripButton_Pause.Image = Resources.control_pause_blue;
+			toolStripButton_Pause.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			toolStripButton_End.Image = Resources.control_end_blue;
+			toolStripButton_End.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			undoButton.Image = Resources.arrow_undo;
+			undoButton.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			redoButton.Image = Resources.arrow_redo;
+			redoButton.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			toolStripButton_Cut.Image = Resources.cut;
+			toolStripButton_Cut.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			toolStripButton_Copy.Image = Resources.page_white_copy;
+			toolStripButton_Copy.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			toolStripButton_Paste.Image = Resources.page_white_paste;
+			toolStripButton_Paste.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			toolStripButton_AssociateAudio.Image = Resources.music;
+			toolStripButton_AssociateAudio.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			toolStripButton_MarkManager.Image = Resources.timeline_marker;
+			toolStripButton_MarkManager.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			toolStripButton_ZoomTimeIn.Image = Resources.zoom_in;
+			toolStripButton_ZoomTimeIn.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			toolStripButton_ZoomTimeOut.Image = Resources.zoom_out;
+			toolStripButton_ZoomTimeOut.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			toolStripButton_IncreaseTimingSpeed.Image = Resources.plus;
+			toolStripButton_IncreaseTimingSpeed.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			toolStripButton_DecreaseTimingSpeed.Image = Resources.minus;
+			toolStripButton_DecreaseTimingSpeed.DisplayStyle = ToolStripItemDisplayStyle.Image;
 
 			_effectNodeToElement = new Dictionary<EffectNode, Element>();
 			_elementNodeToRows = new Dictionary<ElementNode, List<Row>>();

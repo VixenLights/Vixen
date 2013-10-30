@@ -14,6 +14,7 @@ namespace Common.Controls
 		public DiscreteColorPicker()
 		{
 			InitializeComponent();
+			Icon = Resources.Properties.Resources.Icon_Vixen3;
 		}
 
 		private void DiscreteColorPicker_Load(object sender, EventArgs e)

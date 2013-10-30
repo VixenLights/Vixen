@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Resources.Properties;
 using Vixen.Data.Flow;
 using Vixen.Factory;
 using Vixen.Module;
@@ -26,6 +27,7 @@ namespace VixenApplication
 		public ConfigControllers()
 		{
 			InitializeComponent();
+			Icon = Resources.Icon_Vixen3;
 			_displayedController = null;
 		}
 

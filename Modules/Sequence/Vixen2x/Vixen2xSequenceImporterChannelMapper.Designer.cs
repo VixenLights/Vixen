@@ -221,8 +221,8 @@
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.listViewMapping);
 			this.DoubleBuffered = true;
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "Vixen2xSequenceImporterChannelMapper";
+			this.ShowIcon = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Vixen 2.x Channel Mapping";
 			this.Load += new System.EventHandler(this.Vixen2xSequenceImporterChannelMapper_Load);

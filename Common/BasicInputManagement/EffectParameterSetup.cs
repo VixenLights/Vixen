@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using Vixen.Module.Effect;
 using Vixen.Module.EffectEditor;
 using Vixen.Services;
+using Common.Resources.Properties;
 
 namespace Common.BasicInputManagement
 {
@@ -14,6 +15,7 @@ namespace Common.BasicInputManagement
 		public EffectParameterSetup(IEffectModuleDescriptor descriptor, IEffectModuleInstance effect)
 		{
 			InitializeComponent();
+			Icon = Resources.Properties.Resources.Icon_Vixen3;
 
 			_descriptor = descriptor;
 

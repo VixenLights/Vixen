@@ -43,29 +43,10 @@ namespace Common.Controls
 
 
 			this.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			this.ButtonType = UndoButtonType.UndoButton; // Default.
+			this.BackgroundImageLayout = ImageLayout.Stretch;
 
 			// There is no OnDropDownOpening to override, so I guess we have to do it this way.
 			this.DropDownOpening += UndoButton_DropDownOpening;
-		}
-
-
-		public UndoButtonType ButtonType
-		{
-			get { return m_dropControl.ButtonType; }
-			set
-			{
-				m_dropControl.ButtonType = value;
-				switch (value) {
-					case UndoButtonType.UndoButton:
-						this.Image = Icons.Edit_UndoHS;
-						break;
-
-					case UndoButtonType.RedoButton:
-						this.Image = Icons.Edit_RedoHS;
-						break;
-				}
-			}
 		}
 
 

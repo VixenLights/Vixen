@@ -15,6 +15,7 @@ namespace Common.Controls.Wizard
 		public WizardForm(Wizard wizard)
 		{
 			InitializeComponent();
+			Icon = Resources.Properties.Resources.Icon_Vixen3;
 			_wizard = wizard;
 		}
 

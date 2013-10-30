@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Resources.Properties;
 using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Module;
@@ -19,6 +20,7 @@ namespace VixenApplication
 		public InstalledModules()
 		{
 			InitializeComponent();
+			Icon = Resources.Icon_Vixen3;
 		}
 
 		private void InstalledModules_Load(object sender, EventArgs e)

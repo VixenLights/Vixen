@@ -20,6 +20,8 @@ namespace VixenModules.Output.DummyLighting
 		public DummyLightingOutputForm()
 		{
 			InitializeComponent();
+			Icon = Common.Resources.Properties.Resources.Icon_Vixen3;
+
 			SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.DoubleBuffer, true);
 			_brush = new SolidBrush(System.Drawing.Color.Black);
 

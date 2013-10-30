@@ -18,6 +18,7 @@ namespace VixenModules.App.Curves
 		public CurveEditor()
 		{
 			InitializeComponent();
+			Icon = Common.Resources.Properties.Resources.Icon_Vixen3;
 
 			zedGraphControl.GraphPane.XAxis.MajorGrid.IsVisible = true;
 			zedGraphControl.GraphPane.XAxis.MajorGrid.Color = Color.Gray;

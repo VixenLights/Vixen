@@ -166,31 +166,34 @@
 			// 
 			// buttonMoveDown
 			// 
-			this.buttonMoveDown.Image = global::VixenApplication.Properties.Resources.DownArrowShort_Blue_16x16;
+			this.buttonMoveDown.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonMoveDown.Location = new System.Drawing.Point(21, 64);
 			this.buttonMoveDown.Name = "buttonMoveDown";
 			this.buttonMoveDown.Size = new System.Drawing.Size(32, 32);
 			this.buttonMoveDown.TabIndex = 19;
+			this.buttonMoveDown.Text = "DOWN";
 			this.buttonMoveDown.UseVisualStyleBackColor = true;
 			this.buttonMoveDown.Click += new System.EventHandler(this.buttonMoveDown_Click);
 			// 
 			// buttonMoveUp
 			// 
-			this.buttonMoveUp.Image = global::VixenApplication.Properties.Resources.UpArrowShort_Blue_16x16;
+			this.buttonMoveUp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonMoveUp.Location = new System.Drawing.Point(21, 26);
 			this.buttonMoveUp.Name = "buttonMoveUp";
 			this.buttonMoveUp.Size = new System.Drawing.Size(32, 32);
 			this.buttonMoveUp.TabIndex = 18;
+			this.buttonMoveUp.Text = "UP";
 			this.buttonMoveUp.UseVisualStyleBackColor = true;
 			this.buttonMoveUp.Click += new System.EventHandler(this.buttonMoveUp_Click);
 			// 
 			// buttonDeleteSelected
 			// 
-			this.buttonDeleteSelected.Image = global::VixenApplication.Properties.Resources.Delete;
+			this.buttonDeleteSelected.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonDeleteSelected.Location = new System.Drawing.Point(72, 64);
 			this.buttonDeleteSelected.Name = "buttonDeleteSelected";
 			this.buttonDeleteSelected.Size = new System.Drawing.Size(32, 32);
 			this.buttonDeleteSelected.TabIndex = 17;
+			this.buttonDeleteSelected.Text = "DELETE";
 			this.buttonDeleteSelected.UseVisualStyleBackColor = true;
 			this.buttonDeleteSelected.Click += new System.EventHandler(this.buttonDeleteSelected_Click);
 			// 

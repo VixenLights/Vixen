@@ -17,6 +17,7 @@ namespace VixenModules.App.Curves
 		public CurveLibrarySelector()
 		{
 			InitializeComponent();
+			Icon = Common.Resources.Properties.Resources.Icon_Vixen3;
 		}
 
 		private void CurveLibrarySelector_Load(object sender, EventArgs e)

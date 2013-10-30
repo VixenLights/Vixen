@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 using Common.Controls;
+using Common.Resources.Properties;
 using Dataweb.NShape;
 using Dataweb.NShape.Advanced;
 using Dataweb.NShape.Controllers;
@@ -62,6 +63,17 @@ namespace VixenApplication
 		public ConfigFiltersAndPatching(VixenApplicationData applicationData)
 		{
 			InitializeComponent();
+
+			Icon = Resources.Icon_Vixen3;
+			buttonAddFilter.BackgroundImage = Resources.add;
+			buttonAddFilter.Text = "";
+			buttonDelete.BackgroundImage = Resources.delete;
+			buttonDelete.Text = "";
+			buttonZoomIn.BackgroundImage = Resources.zoom_in;
+			buttonZoomIn.Text = "";
+			buttonZoomOut.BackgroundImage = Resources.zoom_out;
+			buttonZoomOut.Text = "";
+
 
 			_applicationData = applicationData;
 
@@ -819,6 +831,7 @@ namespace VixenApplication
 
 			ControllerShape controllerShape = (ControllerShape) project.ShapeTypes["ControllerShape"].CreateInstance();
 			controllerShape.Title = controller.Name;
+			controllerShape.Controller = outputController;
 			controllerShape.SecurityDomainName = SECURITY_DOMAIN_FIXED_SHAPE_NO_CONNECTIONS;
 			controllerShape.FillStyle = project.Design.FillStyles["Controller"];
 
@@ -840,7 +853,7 @@ namespace VixenApplication
 				CommandOutput output = outputController.Outputs[i];
 				OutputShape outputShape = (OutputShape) project.ShapeTypes["OutputShape"].CreateInstance();
 				outputShape.SetController(outputController);
-				outputShape.SetOutput(output);
+				outputShape.SetOutput(output, i);
 				outputShape.SecurityDomainName = SECURITY_DOMAIN_FIXED_SHAPE_WITH_CONNECTIONS;
 				outputShape.FillStyle = project.Design.FillStyles["Output"];
 

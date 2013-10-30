@@ -14,6 +14,7 @@ namespace VixenModules.Property.Color
 		public ColorSetupForm()
 		{
 			InitializeComponent();
+			Icon = Common.Resources.Properties.Resources.Icon_Vixen3;
 		}
 
 		public ColorModule ColorModule { get; set; }

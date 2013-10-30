@@ -28,7 +28,6 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NutcrackerTypeEditorControl));
 			this.timerRender = new System.Windows.Forms.Timer(this.components);
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.preview = new VixenModules.Preview.VixenPreview.VixenPreviewControl();
@@ -245,6 +244,7 @@
 			this.preview.Location = new System.Drawing.Point(6, 12);
 			this.preview.Name = "preview";
 			this.preview.Paused = false;
+			this.preview.ShowInfo = false;
 			this.preview.Size = new System.Drawing.Size(273, 412);
 			this.preview.TabIndex = 0;
 			// 
@@ -1958,7 +1958,6 @@
 			// 
 			this.buttonHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonHelp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-			this.buttonHelp.Image = ((System.Drawing.Image)(resources.GetObject("buttonHelp.Image")));
 			this.buttonHelp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.buttonHelp.Location = new System.Drawing.Point(649, 410);
 			this.buttonHelp.Name = "buttonHelp";

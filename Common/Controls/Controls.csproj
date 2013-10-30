@@ -39,6 +39,11 @@
       <Name>Vixen</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\Resources\Resources.csproj">
+      <Project>{F7A80169-6310-4585-9D58-A6F6F5C5B380}</Project>
+      <Name>Resources</Name>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.WindowsAPICodePack.DirectX, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=x86">
@@ -67,6 +72,12 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ControllerTree.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ControllerTree.Designer.cs">
+      <DependentUpon>ControllerTree.cs</DependentUpon>
+    </Compile>
     <Compile Include="Direct2D\AnimatedScene.cs" />
     <Compile Include="Direct2D\D3D10Image.cs" />
     <Compile Include="Direct2D\Direct2DControl.cs" />
@@ -183,11 +194,6 @@
     </Compile>
     <Compile Include="ParallelPortConfig.Designer.cs">
       <DependentUpon>ParallelPortConfig.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Icons.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Icons.resx</DependentUpon>
     </Compile>
     <Compile Include="TimelineControl\Waveform.cs" />
     <Compile Include="ToolStripEx.cs">
@@ -325,6 +331,9 @@
     <EmbeddedResource Include="ColorPicker\ColorSelectionPlane.resx">
       <DependentUpon>ColorSelectionPlane.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ControllerTree.resx">
+      <DependentUpon>ControllerTree.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Direct2D\Direct2DControlWinForm.resx">
       <DependentUpon>Direct2DControlWinForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -392,10 +401,6 @@
     <EmbeddedResource Include="ParallelPortConfig.resx">
       <DependentUpon>ParallelPortConfig.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Icons.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Icons.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <EmbeddedResource Include="SerialPortConfig.resx">
       <DependentUpon>SerialPortConfig.cs</DependentUpon>
     </EmbeddedResource>
@@ -413,18 +418,7 @@
     <Content Include="ColorPicker\ColorPicker.cur" />
     <Content Include="ControlsEx\std_zoomin.png" />
     <Content Include="ControlsEx\std_zoomout.png" />
-    <None Include="Microsoft.WindowsAPICodePack.DirectX.dll" />
     <None Include="packages.config" />
-    <None Include="Resources\UpArrowShort_Blue_48x48.png" />
-    <None Include="Resources\UpArrowShort_Blue_32x32.png" />
-    <None Include="Resources\UpArrowShort_Blue_24x24.png" />
-    <None Include="Resources\UpArrowShort_Blue_16x16.png" />
-    <None Include="Resources\DownArrowShort_Blue_48x48.png" />
-    <None Include="Resources\DownArrowShort_Blue_32x32.png" />
-    <None Include="Resources\DownArrowShort_Blue_24x24.png" />
-    <None Include="Resources\DownArrowShort_Blue_16x16.png" />
-    <None Include="Resources\Edit_RedoHS.png" />
-    <None Include="Resources\Edit_UndoHS.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Modules\Media\Audio\Audio.csproj">
@@ -438,6 +432,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
