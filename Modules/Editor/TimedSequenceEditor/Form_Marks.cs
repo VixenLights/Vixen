@@ -21,6 +21,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void Form_Effects_Load(object sender, EventArgs e)
 		{
+			Common.Controls.XMLProfileSettings xml = new Common.Controls.XMLProfileSettings();
+			numericUpDownStandardNudge.Value = xml.GetSetting("StandardNudge", 10);
+			numericUpDownSuperNudge.Value = xml.GetSetting("SuperNudge", 20);
+			xml = null;
 		}
 
 		public TimelineControl TimelineControl { get; set; }
@@ -137,6 +141,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				MessageBox.Show("Please select a Mark Collection to delete and press the delete button again.", "Delete Mark Collection", MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
 			}
+		}
+
+		private void numericUpDownStandardNudge_ValueChanged(object sender, EventArgs e)
+		{
+			TimelineControl.ruler.StandardNudgeTime = Convert.ToInt32(numericUpDownStandardNudge.Value);
+		}
+
+		private void numericUpDownSuperNudge_ValueChanged(object sender, EventArgs e)
+		{
+			TimelineControl.ruler.SuperNudgeTime = Convert.ToInt32(numericUpDownSuperNudge.Value);
 		}
 
 	}

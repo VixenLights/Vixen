@@ -1589,10 +1589,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			switch (keyData)
 			{
 				case Keys.Left:
-					TimelineControl.ruler.Nudge(Keys.Left);
+					TimelineControl.ruler.NudgeMark(-TimelineControl.ruler.StandardNudgeTime);
+					break;
+				case (Keys.Left | Keys.Shift):
+					TimelineControl.ruler.NudgeMark(-TimelineControl.ruler.SuperNudgeTime);
 					break;
 				case Keys.Right:
-					TimelineControl.ruler.Nudge(Keys.Right);
+					TimelineControl.ruler.NudgeMark(TimelineControl.ruler.StandardNudgeTime);
+					break;
+				case (Keys.Right | Keys.Shift):
+					TimelineControl.ruler.NudgeMark(TimelineControl.ruler.SuperNudgeTime);
 					break;
 			}
 			return base.ProcessCmdKey(ref msg, keyData);
@@ -1674,7 +1680,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			// Prevents sending keystrokes to child controls. 
 			// This was causing serious slowdowns if random keys were pressed.
-			e.SuppressKeyPress = true;
+			//e.SuppressKeyPress = true;
 			base.OnKeyDown(e);
 		}
 

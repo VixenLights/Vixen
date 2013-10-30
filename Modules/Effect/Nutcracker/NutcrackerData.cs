@@ -34,6 +34,7 @@ namespace VixenModules.Effect.Nutcracker
 		[DataMember] public NutcrackerEffects.Effects CurrentEffect = NutcrackerEffects.Effects.Bars;
 		[DataMember] public int Speed = 5;
 		[DataMember] public int PixelSize = 2;
+		[DataMember] public NutcrackerEffects.StringOrientations StringOrienation = NutcrackerEffects.StringOrientations.Vertical;
 
 		[DataMember] public Palette Palette = new Palette();
 

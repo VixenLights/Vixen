@@ -69,6 +69,12 @@ namespace VixenModules.Effect.Nutcracker
 			CounterClockwise
 		}
 
+		public enum StringOrientations
+		{
+			Vertical,
+			Horizontal
+		}
+
 		#endregion // Variables
 
 		public NutcrackerEffects()
@@ -1657,7 +1663,7 @@ namespace VixenModules.Effect.Nutcracker
 							switch (dir) {
 								case 0:
 									// left
-									SetPixel(x + BufferWi - movement, yoffset - y, fpColor);
+									SetPixel(x + BufferWi - movement, yoffset - y-1, fpColor);
 									break;
 								case 1:
 									// right

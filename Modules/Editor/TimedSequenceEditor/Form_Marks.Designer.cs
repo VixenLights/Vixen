@@ -34,10 +34,18 @@
 			this.toolStripButtonEditMarkCollection = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButtonAddMarkCollection = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButtonDeleteMarkCollection = new System.Windows.Forms.ToolStripButton();
+			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.numericUpDownStandardNudge = new System.Windows.Forms.NumericUpDown();
+			this.numericUpDownSuperNudge = new System.Windows.Forms.NumericUpDown();
+			this.panel1 = new System.Windows.Forms.Panel();
+			this.label3 = new System.Windows.Forms.Label();
+			this.label2 = new System.Windows.Forms.Label();
 			this.listViewMarkCollections = new System.Windows.Forms.ListView();
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.toolStrip1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numericUpDownStandardNudge)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numericUpDownSuperNudge)).BeginInit();
+			this.panel1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// toolStrip1
@@ -84,6 +92,66 @@
 			this.toolStripButtonDeleteMarkCollection.ToolTipText = "Delete Mark Collection";
 			this.toolStripButtonDeleteMarkCollection.Click += new System.EventHandler(this.toolStripButtonDeleteMarkCollection_Click);
 			// 
+			// numericUpDownStandardNudge
+			// 
+			this.numericUpDownStandardNudge.Location = new System.Drawing.Point(7, 20);
+			this.numericUpDownStandardNudge.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+			this.numericUpDownStandardNudge.Name = "numericUpDownStandardNudge";
+			this.numericUpDownStandardNudge.Size = new System.Drawing.Size(48, 20);
+			this.numericUpDownStandardNudge.TabIndex = 1;
+			this.toolTip1.SetToolTip(this.numericUpDownStandardNudge, "Standard Nudge in Miniseconds");
+			this.numericUpDownStandardNudge.ValueChanged += new System.EventHandler(this.numericUpDownStandardNudge_ValueChanged);
+			// 
+			// numericUpDownSuperNudge
+			// 
+			this.numericUpDownSuperNudge.Location = new System.Drawing.Point(72, 20);
+			this.numericUpDownSuperNudge.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+			this.numericUpDownSuperNudge.Name = "numericUpDownSuperNudge";
+			this.numericUpDownSuperNudge.Size = new System.Drawing.Size(48, 20);
+			this.numericUpDownSuperNudge.TabIndex = 3;
+			this.toolTip1.SetToolTip(this.numericUpDownSuperNudge, "Super Nudge in Miliseconds");
+			this.numericUpDownSuperNudge.ValueChanged += new System.EventHandler(this.numericUpDownSuperNudge_ValueChanged);
+			// 
+			// panel1
+			// 
+			this.panel1.Controls.Add(this.label3);
+			this.panel1.Controls.Add(this.numericUpDownSuperNudge);
+			this.panel1.Controls.Add(this.label2);
+			this.panel1.Controls.Add(this.numericUpDownStandardNudge);
+			this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
+			this.panel1.Location = new System.Drawing.Point(0, 356);
+			this.panel1.Name = "panel1";
+			this.panel1.Size = new System.Drawing.Size(256, 46);
+			this.panel1.TabIndex = 6;
+			// 
+			// label3
+			// 
+			this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.label3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+			this.label3.Location = new System.Drawing.Point(3, 3);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(253, 14);
+			this.label3.TabIndex = 4;
+			this.label3.Text = "Nudge";
+			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(56, 23);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(12, 13);
+			this.label2.TabIndex = 2;
+			this.label2.Text = "/";
+			// 
 			// listViewMarkCollections
 			// 
 			this.listViewMarkCollections.CheckBoxes = true;
@@ -97,8 +165,8 @@
 			this.listViewMarkCollections.MultiSelect = false;
 			this.listViewMarkCollections.Name = "listViewMarkCollections";
 			this.listViewMarkCollections.Scrollable = false;
-			this.listViewMarkCollections.Size = new System.Drawing.Size(256, 377);
-			this.listViewMarkCollections.TabIndex = 5;
+			this.listViewMarkCollections.Size = new System.Drawing.Size(256, 331);
+			this.listViewMarkCollections.TabIndex = 8;
 			this.listViewMarkCollections.UseCompatibleStateImageBehavior = false;
 			this.listViewMarkCollections.View = System.Windows.Forms.View.Details;
 			this.listViewMarkCollections.AfterLabelEdit += new System.Windows.Forms.LabelEditEventHandler(this.listViewMarkCollections_AfterLabelEdit);
@@ -116,6 +184,7 @@
 			this.ClientSize = new System.Drawing.Size(256, 402);
 			this.ControlBox = false;
 			this.Controls.Add(this.listViewMarkCollections);
+			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.toolStrip1);
 			this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -124,6 +193,10 @@
 			this.Load += new System.EventHandler(this.Form_Effects_Load);
 			this.toolStrip1.ResumeLayout(false);
 			this.toolStrip1.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numericUpDownStandardNudge)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numericUpDownSuperNudge)).EndInit();
+			this.panel1.ResumeLayout(false);
+			this.panel1.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -132,11 +205,16 @@
 		#endregion
 
 		private System.Windows.Forms.ToolStrip toolStrip1;
-		private System.Windows.Forms.ListView listViewMarkCollections;
-		private System.Windows.Forms.ColumnHeader columnHeader1;
 		private System.Windows.Forms.ToolStripButton toolStripButtonEditMarkCollection;
 		private System.Windows.Forms.ToolTip toolTip1;
 		private System.Windows.Forms.ToolStripButton toolStripButtonAddMarkCollection;
 		private System.Windows.Forms.ToolStripButton toolStripButtonDeleteMarkCollection;
+		private System.Windows.Forms.Panel panel1;
+		private System.Windows.Forms.NumericUpDown numericUpDownSuperNudge;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.NumericUpDown numericUpDownStandardNudge;
+		private System.Windows.Forms.ListView listViewMarkCollections;
+		private System.Windows.Forms.ColumnHeader columnHeader1;
+		private System.Windows.Forms.Label label3;
 	}
 }

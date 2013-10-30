@@ -158,8 +158,18 @@ namespace VixenModules.Effect.Nutcracker
 		// not a element, will recursively descend until we render its elements.
 		private void RenderNode(ElementNode node)
 		{
-			int wid = StringCount;
-			int ht = PixelsPerString();
+			int wid = 0;
+			int ht = 0;
+			if (_data.NutcrackerData.StringOrienation == NutcrackerEffects.StringOrientations.Horizontal)
+			{
+				wid = PixelsPerString();
+				ht = StringCount;
+			}
+			else
+			{
+				wid = StringCount;
+				ht = PixelsPerString();
+			}
 			int nFrames = (int)(TimeSpan.TotalMilliseconds / frameMs);
 			NutcrackerEffects nccore = new NutcrackerEffects(_data.NutcrackerData);
 			nccore.InitBuffer( wid, ht);
@@ -185,15 +195,31 @@ namespace VixenModules.Effect.Nutcracker
 				pixels[eidx] = new RGBValue[nFrames];
 
 			// generate all the pixels
+			int pps = PixelsPerString();
+			int sc = StringCount;
 			for (int frameNum = 0; frameNum < nFrames; frameNum++)
 			{
 				nccore.RenderNextEffect(_data.NutcrackerData.CurrentEffect);
 				// peel off this frames pixels...
-				for (int i = 0; i < numElements; i++)
+				if (_data.NutcrackerData.StringOrienation == NutcrackerEffects.StringOrientations.Horizontal)
 				{
-					pixels[i][frameNum] = new RGBValue(nccore.GetPixel(i));
+					int i = 0;
+					for (int y = 0; y < sc; y++)
+					{
+						for (int x = 0; x < pps; x++)
+						{
+							pixels[i][frameNum] = new RGBValue(nccore.GetPixel(x, y));
+							i++;
+						}
+					}
 				}
-
+				else
+				{
+					for (int i = 0; i < numElements; i++)
+					{
+						pixels[i][frameNum] = new RGBValue(nccore.GetPixel(i));
+					}
+				}
 			};
 
 			// create the intents
