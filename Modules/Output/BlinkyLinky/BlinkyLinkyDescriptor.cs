@@ -47,9 +47,5 @@ namespace VixenModules.Output.BlinkyLinky
 			get { return "1.0"; }
 		}
 
-		public override int UpdateInterval
-		{
-			get { return 10; }
-		}
 	}
 }

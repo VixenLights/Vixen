@@ -50,10 +50,15 @@
 		{
 			if (_application != null
 			    && _application.AppCommands != null) {
-				var mainMenu = new AppCommand(ID_MENU, "Instrumentation");
-				mainMenu.Click += OnMainMenuOnClick;
-
-				_application.AppCommands.Add(mainMenu);
+				AppCommand toolsMenu = _application.AppCommands.Find("Tools");
+				if (toolsMenu == null)
+				{
+					toolsMenu = new AppCommand("Tools", "Tools");
+					_application.AppCommands.Add(toolsMenu);
+				}
+				var myMenu = new AppCommand(ID_MENU, "Instrumentation...");
+				myMenu.Click += OnMainMenuOnClick;
+				toolsMenu.Add(myMenu);
 			}
 		}
 

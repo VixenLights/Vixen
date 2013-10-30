@@ -1,13 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Vixen.Data.Flow;
 using Vixen.Module.OutputFilter;
+using Vixen.Sys.Instrumentation;
+
+
 
 namespace Vixen.Sys.Managers
 {
 	public class FilterManager : IEnumerable<IOutputFilterModuleInstance>
 	{
+		private MillisecondsValue _filterUpdateTimeValue = new MillisecondsValue("Update time for all filters");
+		private MillisecondsValue _filterUpdateWaitValue = new MillisecondsValue("    Wait time for all filters");
+		private Stopwatch _stopwatch = Stopwatch.StartNew();
 		private Dictionary<Guid, IOutputFilterModuleInstance> _instances;
 		// The data flow manager has data flow roots, but those are elements and are updated
 		// in a separate layer.  We need to track our own roots separately for updates.
@@ -24,6 +31,9 @@ namespace Vixen.Sys.Managers
 			dataFlowManager.ComponentAdded += DataFlowManagerOnComponentAdded;
 			dataFlowManager.ComponentRemoved += DataFlowManagerOnComponentRemoved;
 			dataFlowManager.ComponentSourceChanged += DataFlowManagerOnComponentSourceChanged;
+
+			VixenSystem.Instrumentation.AddValue(_filterUpdateTimeValue);
+			VixenSystem.Instrumentation.AddValue(_filterUpdateWaitValue);
 		}
 
 		public void AddFilter(IOutputFilterModuleInstance filter)
@@ -84,8 +94,15 @@ namespace Vixen.Sys.Managers
 
 		public void Update()
 		{
-			lock (_updateLock) {
-				_rootFilters.AsParallel().ForAll(_UpdateFilterBranch);
+			_stopwatch.Restart();
+			lock (_updateLock)
+			{
+				_filterUpdateWaitValue.Set(_stopwatch.ElapsedMilliseconds);
+
+				//_rootFilters.AsParallel().ForAll(_UpdateFilterBranch);
+				foreach( var x in _rootFilters)	_UpdateFilterBranch(x);
+
+				_filterUpdateTimeValue.Set(_stopwatch.ElapsedMilliseconds);
 			}
 		}
 
