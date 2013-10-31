@@ -59,6 +59,7 @@ namespace VixenModules.Property.Color
 				// go through all elements, making a color property for each one.
 				// (If any has one already, check with the user as to what they want to do.)
 				IEnumerable<ElementNode> leafElements = selectedNodes.SelectMany(x => x.GetLeafEnumerator()).Distinct();
+				List<ElementNode> leafElementList = leafElements.ToList();
 
 				bool askedUserAboutExistingProperties = false;
 				bool overrideExistingProperties = false;
@@ -67,7 +68,7 @@ namespace VixenModules.Property.Color
 				int colorPropertiesConfigured = 0;
 				int colorPropertiesSkipped = 0;
 
-				foreach (ElementNode leafElement in leafElements) {
+				foreach (ElementNode leafElement in leafElementList) {
 					bool skip = false;
 					ColorModule existingProperty = null;
 
@@ -106,9 +107,9 @@ namespace VixenModules.Property.Color
 				// breakdown' already, warn/check with the user if it's OK to overwrite them.  Make a new breakdown
 				// filter for each 'leaf' of the patching process. If it's fully patched to an output, ignore it.
 
-				List<IDataFlowComponent> leafDataFlowComponents = new List<IDataFlowComponent>();
-				foreach (ElementNode leafElement in leafElements) {
-					leafDataFlowComponents.AddRange(_FindLeafDataFlowComponentsOrBreakdownFilters(VixenSystem.DataFlow.GetComponent(leafElement.Element.Id)));
+				List<IDataFlowComponentReference> leafOutputs = new List<IDataFlowComponentReference>();
+				foreach (ElementNode leafElement in leafElementList.Where(x => x.Element != null)) {
+					leafOutputs.AddRange(_FindLeafOutputsOrBreakdownFilters(VixenSystem.DataFlow.GetComponent(leafElement.Element.Id)));
 				}
 
 				bool askedUserAboutExistingFilters = false;
@@ -119,10 +120,10 @@ namespace VixenModules.Property.Color
 				int colorFiltersConfigured = 0;
 				int colorFiltersSkipped = 0;
 
-				foreach (IDataFlowComponent leaf in leafDataFlowComponents) {
+				foreach (IDataFlowComponentReference leaf in leafOutputs) {
 					bool skip = false;
 
-					if (leaf is ColorBreakdownModule) {
+					if (leaf.Component is ColorBreakdownModule) {
 						if (!askedUserAboutExistingFilters) {
 							DialogResult mbr = MessageBox.Show("Some elements are already patched to color filters. Should these be overwritten?",
 								"Color Setup", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
@@ -132,13 +133,13 @@ namespace VixenModules.Property.Color
 
 						skip = !overrideExistingFilters;
 						breakdown = leaf as ColorBreakdownModule;
-					} else if (leaf.OutputDataType == DataFlowType.None) {
+					} else if (leaf.Component.OutputDataType == DataFlowType.None) {
 						// if it's a dead-end -- ie. most likely a controller output -- skip it
 						skip = true;
 					} else {
 						// doesn't exist? make a new module and assign it
 						breakdown = ApplicationServices.Get<IOutputFilterModuleInstance>(ColorBreakdownDescriptor.ModuleId) as ColorBreakdownModule;
-						VixenSystem.DataFlow.SetComponentSource(breakdown, leaf, 0);  // TODO: hmm, shouldn't be 0, the list should be... of references instead I think
+						VixenSystem.DataFlow.SetComponentSource(breakdown, leaf);
 						VixenSystem.Filters.AddFilter(breakdown);
 						colorFiltersAdded++;
 					}
@@ -217,25 +218,29 @@ namespace VixenModules.Property.Color
 			return false;
 		}
 
-		private IEnumerable<IDataFlowComponent> _FindLeafDataFlowComponentsOrBreakdownFilters(IDataFlowComponent component)
+		private IEnumerable<IDataFlowComponentReference> _FindLeafOutputsOrBreakdownFilters(IDataFlowComponent component)
 		{
 			if (component == null) {
 				yield break;
 			}
 
 			if (component is ColorBreakdownModule) {
-				yield return component;
+				yield return new DataFlowComponentReference(component, -1);
+					// this is a bit iffy -- -1 as a component output index -- but hey.
 			}
 
-			IEnumerable<IDataFlowComponent> children = VixenSystem.DataFlow.GetDestinationsOfComponent(component);
+			for (int i = 0; i < component.Outputs.Length; i++) {
+				IEnumerable<IDataFlowComponent> children = VixenSystem.DataFlow.GetDestinationsOfComponentOutput(component, i);
 
-			if (children.Count() == 0) {
-				yield return component;
-			}
-
-			foreach (IDataFlowComponent child in children) {
-				foreach (IDataFlowComponent result in _FindLeafDataFlowComponentsOrBreakdownFilters(child)) {
-					yield return result;
+				if (!children.Any()) {
+					yield return new DataFlowComponentReference(component, i);
+				}
+				else {
+					foreach (IDataFlowComponent child in children) {
+						foreach (IDataFlowComponentReference result in _FindLeafOutputsOrBreakdownFilters(child)) {
+							yield return result;
+						}
+					}
 				}
 			}
 		}
