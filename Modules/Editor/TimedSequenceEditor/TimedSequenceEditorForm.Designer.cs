@@ -335,6 +335,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripButton_SnapTo.CheckOnClick = true;
 			this.toolStripButton_SnapTo.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.toolStripButton_SnapTo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.toolStripButton_SnapTo.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
 			this.toolStripButton_SnapTo.Name = "toolStripButton_SnapTo";
 			this.toolStripButton_SnapTo.Size = new System.Drawing.Size(54, 24);
 			this.toolStripButton_SnapTo.Text = "Snap To";
@@ -361,7 +362,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// toolStripButton_IncreaseTimingSpeed
 			// 
 			this.toolStripButton_IncreaseTimingSpeed.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-			this.toolStripButton_IncreaseTimingSpeed.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButton_IncreaseTimingSpeed.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
 			this.toolStripButton_IncreaseTimingSpeed.Name = "toolStripButton_IncreaseTimingSpeed";
 			this.toolStripButton_IncreaseTimingSpeed.Size = new System.Drawing.Size(88, 19);
 			this.toolStripButton_IncreaseTimingSpeed.Text = "Increase speed";
@@ -370,7 +371,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// toolStripButton_DecreaseTimingSpeed
 			// 
 			this.toolStripButton_DecreaseTimingSpeed.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-			this.toolStripButton_DecreaseTimingSpeed.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButton_DecreaseTimingSpeed.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
 			this.toolStripButton_DecreaseTimingSpeed.Name = "toolStripButton_DecreaseTimingSpeed";
 			this.toolStripButton_DecreaseTimingSpeed.Size = new System.Drawing.Size(92, 19);
 			this.toolStripButton_DecreaseTimingSpeed.Text = "Decrease speed";
