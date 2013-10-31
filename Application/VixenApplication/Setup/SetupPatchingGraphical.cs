@@ -365,6 +365,8 @@ namespace VixenApplication.Setup
 
 		private IEnumerable<IOutputFilterModuleInstance> _findFiltersThatDescendFromElements(IEnumerable<ElementNode> elements)
 		{
+			// this is assuming that the elements given are actual leaf/output elements (ie. have a Element object, and
+			// will be patched to stuff).  If you only have group element nodes, iterate to the leaf nodes first.
 			return elements
 				.Where(x => x.Element != null)
 				.SelectMany(x => _findComponentsOfTypeInTreeFromComponent(VixenSystem.DataFlow.GetComponent(x.Element.Id), typeof(IOutputFilterModuleInstance)))
@@ -1873,9 +1875,12 @@ namespace VixenApplication.Setup
 
 			List<Shape> selectedShapes = _getCurrentlySelectedShapes().ToList();
 
-			List<ElementNode> nodeList = nodes.ToList();
-			_UpdateElementShapesFromElements(nodeList);
-			IEnumerable<IOutputFilterModuleInstance> filters = _findFiltersThatDescendFromElements(nodeList);
+			List<ElementNode> rootNodes = nodes.ToList();
+			List<ElementNode> leafNodes = rootNodes.SelectMany(x => x.GetLeafEnumerator()).ToList();
+			_UpdateElementShapesFromElements(rootNodes);
+			IEnumerable<IOutputFilterModuleInstance> filters = _findFiltersThatDescendFromElements(leafNodes);
+			
+			// this assumption here is that the leaf node shapes will have been created as part of making the root node shapes...
 			_UpdateFilterShapesFromFilters(filters);
 
 			_ResizeAndPositionElementShapes();
