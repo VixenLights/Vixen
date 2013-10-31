@@ -89,6 +89,9 @@ namespace VixenApplication.Setup
 
 		private void buttonRunSetupHelper_Click(object sender, EventArgs e)
 		{
+			if (comboBoxSetupHelperType.SelectedIndex < 0)
+				return;
+
 			ComboBoxItem item = (comboBoxSetupHelperType.SelectedItem as ComboBoxItem);
 
 			if (item != null) {
