@@ -60,30 +60,6 @@ namespace VixenApplication
 		}
 
 
-		/// <summary>
-		/// A collection of all the Element Templates that are available to be used (eg. megatree, pixel grid, normal group, etc.)
-		/// TODO: are instances the best option?  Should it be an array of types or something similar?
-		/// </summary>
-		public IEnumerable<IElementTemplate> ElementTemplates =
-			new List<IElementTemplate>
-				{
-					new Megatree(),
-					new PixelGrid(),
-					new NumberedGroup(),
-				};
-
-
-		/// <summary>
-		/// A collection of all the Element Setup Helpers that are available to be used.
-		/// TODO: are instances the best option?  Should it be an array of types or something similar?
-		/// </summary>
-		public IEnumerable<IElementSetupHelper> ElementSetupHelpers =
-			new List<IElementSetupHelper>
-				{
-				};
-
-
-
 		private void activateElementControl(ISetupElementsControl control)
 		{
 			if (_currentElementControl != null) {
