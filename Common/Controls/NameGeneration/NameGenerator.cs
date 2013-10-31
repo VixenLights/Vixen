@@ -238,7 +238,7 @@ namespace Common.Controls
 				else {
 					// if the sub-generator didn't make anything, add the name directly and treat this one as the final.
 					IEnumerable<string> subResult = GenerateNames(depth + 1, newFormat, currentNumber + result.Count, maxNumber);
-					if (subResult.Count() > 0)
+                    if (subResult.Any())
 						result.AddRange(subResult);
 					else
 						result.Add(newFormat);

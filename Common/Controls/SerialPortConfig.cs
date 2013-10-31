@@ -48,7 +48,8 @@ namespace Common.Controls
 				configuredPortValueLabel.Text = "None";
 			}
 
-			if (serialPort == null && SerialPort.GetPortNames().Count() > 0) {
+            if (serialPort == null && SerialPort.GetPortNames().Any())
+            {
 				serialPort = new SerialPort(SerialPort.GetPortNames().FirstOrDefault(), 57600, Parity.None, 8, StopBits.One);
 			}
 

@@ -795,7 +795,7 @@ namespace VixenApplication
 				_dataFlowComponentToShapes[shape.DataFlowComponent].Add(shape);
 			}
 
-			if (node.Children.Count() > 0) {
+			if (node.Children.Any() ) {
 				foreach (var child in node.Children) {
 					FilterSetupShapeBase childSetupShapeBase = _MakeElementNodeShape(child, zOrder + 1);
 					shape.ChildFilterShapes.Add(childSetupShapeBase);

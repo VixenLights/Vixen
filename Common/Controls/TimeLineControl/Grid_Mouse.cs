@@ -110,7 +110,7 @@ namespace Common.Controls.Timeline
 						endAllDrag();
 						// If we're not dragging on mouse up, it could be a click on one of multiple
 						// selected elements. (In which case we select only that one)
-						if (m_mouseDownElements != null && m_mouseDownElements.Count() > 0 && !CtrlPressed) {
+						if (m_mouseDownElements != null && m_mouseDownElements.Any()  && !CtrlPressed) {
 							ClearSelectedElements();
 							if (_ElementsSelected(m_mouseDownElements)) {
 								m_mouseDownElements.First().Selected = true;

@@ -45,7 +45,7 @@ namespace VixenModules.Preview.VixenPreview
 				Console.WriteLine(VixenSystem.Nodes.Count());
 			}
 			ElementNode node = VixenSystem.Nodes.GetAllNodes().ElementAt(currentNode);
-			if (node.Children.Count() > 0) {
+			if (node.Children.Any() ) {
 				node = VixenSystem.Nodes.GetAllNodes().ElementAt(2);
 			}
 			return node;

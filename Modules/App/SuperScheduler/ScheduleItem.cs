@@ -426,7 +426,7 @@ namespace VixenModules.App.SuperScheduler
 					ItemQueue.Enqueue(item);
 				}
 
-				if (ItemQueue.Count() > 0) 
+				if (ItemQueue.Any() ) 
 					ExecuteNextSequentialItem();
 			}
 		}
@@ -436,7 +436,7 @@ namespace VixenModules.App.SuperScheduler
 			ScheduleExecutor.Logging.Info("ExecuteNextSequentialItem");
 			if (State == StateType.Running)
 			{
-				if (ItemQueue.Count() > 0)
+				if (ItemQueue.Any() )
 				{
 					ScheduleExecutor.Logging.Info("ExecuteNextSequentialItem: Dequeue");
 					_currentItem = ItemQueue.Dequeue();
@@ -551,7 +551,7 @@ namespace VixenModules.App.SuperScheduler
 
 		public void ExecuteNextShutdownItem()
 		{
-			if (ItemQueue.Count() > 0)
+			if (ItemQueue.Any() )
 			{
 				_currentItem = ItemQueue.Dequeue();
 				Shows.Action action = _currentItem.GetAction();

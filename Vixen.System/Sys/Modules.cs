@@ -148,7 +148,7 @@ namespace Vixen.Sys
 				foreach (IModuleDescriptor descriptor in remainingDescriptors) {
 					// All dependencies must be present in the collection of descriptors
 					// for the module to be eligible for loading.
-					if (descriptor.Dependencies != null && descriptor.Dependencies.Count() > 0 &&
+					if (descriptor.Dependencies != null && descriptor.Dependencies.Any() &&
 					    descriptor.Dependencies.Intersect(allDescriptors.Select(x => x.TypeId)).Count() !=
 					    descriptor.Dependencies.Length) {
 						allDescriptors.Remove(descriptor);
