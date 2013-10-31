@@ -138,7 +138,7 @@ namespace VixenModules.Property.Color
 					} else {
 						// doesn't exist? make a new module and assign it
 						breakdown = ApplicationServices.Get<IOutputFilterModuleInstance>(ColorBreakdownDescriptor.ModuleId) as ColorBreakdownModule;
-						breakdown.Source = new DataFlowComponentReference(leaf, 0);  // TODO: hmm, shouldn't be 0, the list should be... of references instead I think
+						VixenSystem.DataFlow.SetComponentSource(breakdown, leaf, 0);  // TODO: hmm, shouldn't be 0, the list should be... of references instead I think
 						VixenSystem.Filters.AddFilter(breakdown);
 						colorFiltersAdded++;
 					}
