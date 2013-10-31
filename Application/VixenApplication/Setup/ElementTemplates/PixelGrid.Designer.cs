@@ -182,6 +182,8 @@
 			this.Controls.Add(this.textBoxName);
 			this.Controls.Add(this.label6);
 			this.DoubleBuffered = true;
+			this.MaximizeBox = false;
+			this.MinimizeBox = false;
 			this.Name = "PixelGrid";
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;

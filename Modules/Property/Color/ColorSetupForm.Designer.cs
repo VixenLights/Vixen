@@ -73,7 +73,7 @@
 			this.colorPanelSingleColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.colorPanelSingleColor.Color = System.Drawing.Color.Maroon;
 			this.colorPanelSingleColor.Location = new System.Drawing.Point(187, 24);
-			this.colorPanelSingleColor.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.colorPanelSingleColor.Margin = new System.Windows.Forms.Padding(4);
 			this.colorPanelSingleColor.Name = "colorPanelSingleColor";
 			this.colorPanelSingleColor.Size = new System.Drawing.Size(60, 30);
 			this.colorPanelSingleColor.TabIndex = 6;
@@ -142,7 +142,10 @@
 			this.ClientSize = new System.Drawing.Size(407, 200);
 			this.Controls.Add(this.groupBoxOptions);
 			this.Controls.Add(this.buttonOk);
+			this.MaximizeBox = false;
+			this.MinimizeBox = false;
 			this.Name = "ColorSetupForm";
+			this.ShowIcon = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Element Color";
 			this.Load += new System.EventHandler(this.ColorSetupForm_Load);

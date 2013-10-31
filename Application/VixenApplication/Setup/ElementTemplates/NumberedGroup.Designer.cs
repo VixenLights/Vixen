@@ -143,6 +143,8 @@
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.buttonOk);
 			this.DoubleBuffered = true;
+			this.MaximizeBox = false;
+			this.MinimizeBox = false;
 			this.Name = "NumberedGroup";
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;

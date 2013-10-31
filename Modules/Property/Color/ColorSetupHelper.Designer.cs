@@ -176,9 +176,12 @@
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.buttonOk);
+			this.MaximizeBox = false;
 			this.MaximumSize = new System.Drawing.Size(480, 360);
+			this.MinimizeBox = false;
 			this.Name = "ColorSetupHelper";
 			this.ShowIcon = false;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Color Configuration";
 			this.Load += new System.EventHandler(this.ColorSetupHelper_Load);
 			this.ResumeLayout(false);

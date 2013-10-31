@@ -181,6 +181,8 @@
 			this.Controls.Add(this.textBoxTreeName);
 			this.Controls.Add(this.label6);
 			this.DoubleBuffered = true;
+			this.MaximizeBox = false;
+			this.MinimizeBox = false;
 			this.Name = "Megatree";
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
