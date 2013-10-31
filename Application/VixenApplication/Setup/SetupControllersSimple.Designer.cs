@@ -27,6 +27,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			this.groupBoxSelectedController = new System.Windows.Forms.GroupBox();
 			this.labelOutputCount = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
@@ -40,6 +41,7 @@
 			this.buttonConfigureController = new System.Windows.Forms.Button();
 			this.buttonNumberChannelsController = new System.Windows.Forms.Button();
 			this.controllerTree = new Common.Controls.ControllerTree();
+			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.groupBoxSelectedController.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -103,6 +105,7 @@
 			this.buttonDeleteController.Size = new System.Drawing.Size(24, 24);
 			this.buttonDeleteController.TabIndex = 30;
 			this.buttonDeleteController.Text = "-";
+			this.toolTip1.SetToolTip(this.buttonDeleteController, "Delete");
 			this.buttonDeleteController.UseVisualStyleBackColor = true;
 			this.buttonDeleteController.Click += new System.EventHandler(this.buttonDeleteController_Click);
 			// 
@@ -116,6 +119,7 @@
 			this.buttonAddController.Size = new System.Drawing.Size(24, 24);
 			this.buttonAddController.TabIndex = 35;
 			this.buttonAddController.Text = "+";
+			this.toolTip1.SetToolTip(this.buttonAddController, "Add");
 			this.buttonAddController.UseVisualStyleBackColor = true;
 			this.buttonAddController.Click += new System.EventHandler(this.buttonAddController_Click);
 			// 
@@ -148,6 +152,7 @@
 			this.buttonRenameController.Size = new System.Drawing.Size(24, 24);
 			this.buttonRenameController.TabIndex = 37;
 			this.buttonRenameController.Text = "R";
+			this.toolTip1.SetToolTip(this.buttonRenameController, "Rename");
 			this.buttonRenameController.UseVisualStyleBackColor = true;
 			this.buttonRenameController.Click += new System.EventHandler(this.buttonRenameController_Click);
 			// 
@@ -160,6 +165,7 @@
 			this.buttonConfigureController.Size = new System.Drawing.Size(24, 24);
 			this.buttonConfigureController.TabIndex = 38;
 			this.buttonConfigureController.Text = "C";
+			this.toolTip1.SetToolTip(this.buttonConfigureController, "Configure");
 			this.buttonConfigureController.UseVisualStyleBackColor = true;
 			this.buttonConfigureController.Click += new System.EventHandler(this.buttonConfigureController_Click);
 			// 
@@ -172,6 +178,7 @@
 			this.buttonNumberChannelsController.Size = new System.Drawing.Size(24, 24);
 			this.buttonNumberChannelsController.TabIndex = 39;
 			this.buttonNumberChannelsController.Text = "N";
+			this.toolTip1.SetToolTip(this.buttonNumberChannelsController, "Channel Count");
 			this.buttonNumberChannelsController.UseVisualStyleBackColor = true;
 			this.buttonNumberChannelsController.Click += new System.EventHandler(this.buttonNumberChannelsController_Click);
 			// 
@@ -184,6 +191,13 @@
 			this.controllerTree.Name = "controllerTree";
 			this.controllerTree.Size = new System.Drawing.Size(244, 317);
 			this.controllerTree.TabIndex = 36;
+			// 
+			// toolTip1
+			// 
+			this.toolTip1.AutomaticDelay = 200;
+			this.toolTip1.AutoPopDelay = 5000;
+			this.toolTip1.InitialDelay = 200;
+			this.toolTip1.ReshowDelay = 40;
 			// 
 			// SetupControllersSimple
 			// 
@@ -223,5 +237,6 @@
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Label labelControllerType;
 		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.ToolTip toolTip1;
 	}
 }

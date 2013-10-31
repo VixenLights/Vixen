@@ -29,6 +29,7 @@ namespace VixenApplication.Setup
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			this.groupBoxElements = new System.Windows.Forms.GroupBox();
 			this.labelFilterCount = new System.Windows.Forms.Label();
 			this.labelElementCount = new System.Windows.Forms.Label();
@@ -63,6 +64,7 @@ namespace VixenApplication.Setup
 			this.radioButtonAllAvailablePatchPoints = new System.Windows.Forms.RadioButton();
 			this.radioButtonUnconnectedPatchPointsOnly = new System.Windows.Forms.RadioButton();
 			this.buttonDoPatching = new System.Windows.Forms.Button();
+			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.groupBoxElements.SuspendLayout();
 			this.groupBoxControllers.SuspendLayout();
 			this.groupBoxPatching.SuspendLayout();
@@ -139,6 +141,8 @@ namespace VixenApplication.Setup
 			this.label4.Size = new System.Drawing.Size(37, 13);
 			this.label4.TabIndex = 17;
 			this.label4.Text = "Filters:";
+			this.toolTip1.SetToolTip(this.label4, "The number of filters found in the patching connections from the selected element" +
+        "s.");
 			// 
 			// label3
 			// 
@@ -148,6 +152,7 @@ namespace VixenApplication.Setup
 			this.label3.Size = new System.Drawing.Size(53, 13);
 			this.label3.TabIndex = 16;
 			this.label3.Text = "Elements:";
+			this.toolTip1.SetToolTip(this.label3, "The number of elements found in (or descending from) the selected elements.");
 			// 
 			// label2
 			// 
@@ -157,6 +162,7 @@ namespace VixenApplication.Setup
 			this.label2.Size = new System.Drawing.Size(44, 13);
 			this.label2.TabIndex = 15;
 			this.label2.Text = "Groups:";
+			this.toolTip1.SetToolTip(this.label2, "The number of groups found from the selected elements.");
 			// 
 			// label1
 			// 
@@ -166,6 +172,7 @@ namespace VixenApplication.Setup
 			this.label1.Size = new System.Drawing.Size(35, 13);
 			this.label1.TabIndex = 14;
 			this.label1.Text = "Items:";
+			this.toolTip1.SetToolTip(this.label1, "The number of items selected in the element view.");
 			// 
 			// labelUnconnectedPatchPointCount
 			// 
@@ -203,6 +210,8 @@ namespace VixenApplication.Setup
 			this.label7.Size = new System.Drawing.Size(75, 13);
 			this.label7.TabIndex = 6;
 			this.label7.Text = "Unconnected:";
+			this.toolTip1.SetToolTip(this.label7, "The number of Patch Points connected to the selected elements that have nothing e" +
+        "lse connected.");
 			// 
 			// label6
 			// 
@@ -212,6 +221,8 @@ namespace VixenApplication.Setup
 			this.label6.Size = new System.Drawing.Size(62, 13);
 			this.label6.TabIndex = 5;
 			this.label6.Text = "Connected:";
+			this.toolTip1.SetToolTip(this.label6, "The number of Patch Points connected to the selected elements that are being patc" +
+        "hed to controller outputs.");
 			// 
 			// label5
 			// 
@@ -222,6 +233,9 @@ namespace VixenApplication.Setup
 			this.label5.Size = new System.Drawing.Size(116, 13);
 			this.label5.TabIndex = 4;
 			this.label5.Text = "Total Patch Points:";
+			this.toolTip1.SetToolTip(this.label5, "The total number of Patch Points connected to the selected elements.  Patch Point" +
+        "s are the outputs from any element or filter, but before it gets to the controll" +
+        "ers.");
 			// 
 			// groupBoxControllers
 			// 
@@ -287,6 +301,7 @@ namespace VixenApplication.Setup
 			this.label15.Size = new System.Drawing.Size(63, 13);
 			this.label15.TabIndex = 20;
 			this.label15.Text = "Unpatched:";
+			this.toolTip1.SetToolTip(this.label15, "The number of controller outputs selected that are not connected to anything.");
 			// 
 			// label16
 			// 
@@ -296,6 +311,8 @@ namespace VixenApplication.Setup
 			this.label16.Size = new System.Drawing.Size(50, 13);
 			this.label16.TabIndex = 19;
 			this.label16.Text = "Patched:";
+			this.toolTip1.SetToolTip(this.label16, "The number of controller outputs selected that are already connected to something" +
+        ".");
 			// 
 			// label20
 			// 
@@ -306,6 +323,7 @@ namespace VixenApplication.Setup
 			this.label20.Size = new System.Drawing.Size(55, 13);
 			this.label20.TabIndex = 15;
 			this.label20.Text = "Outputs:";
+			this.toolTip1.SetToolTip(this.label20, "The total number of controller outputs selected.");
 			// 
 			// label21
 			// 
@@ -315,6 +333,7 @@ namespace VixenApplication.Setup
 			this.label21.Size = new System.Drawing.Size(59, 13);
 			this.label21.TabIndex = 14;
 			this.label21.Text = "Controllers:";
+			this.toolTip1.SetToolTip(this.label21, "The number of controllers (or part thereof) selected.");
 			// 
 			// groupBoxPatching
 			// 
@@ -428,6 +447,13 @@ namespace VixenApplication.Setup
 			this.buttonDoPatching.UseVisualStyleBackColor = true;
 			this.buttonDoPatching.Click += new System.EventHandler(this.buttonDoPatching_Click);
 			// 
+			// toolTip1
+			// 
+			this.toolTip1.AutomaticDelay = 200;
+			this.toolTip1.AutoPopDelay = 5000;
+			this.toolTip1.InitialDelay = 200;
+			this.toolTip1.ReshowDelay = 40;
+			// 
 			// SetupPatchingSimple
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -489,5 +515,6 @@ namespace VixenApplication.Setup
 		private RadioButton radioButtonUnconnectedPatchPointsOnly;
 		private Label labelPatchWarning;
 		private Label labelPatchSummary;
+		private ToolTip toolTip1;
 	}
 }

@@ -27,6 +27,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("1234");
 			System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("qwer qwer qwer asdf zxcv zxcv asdf qwerd qwer ");
 			System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem("asdf");
@@ -43,6 +44,7 @@
 			this.comboBoxSetupHelperType = new System.Windows.Forms.ComboBox();
 			this.label2 = new System.Windows.Forms.Label();
 			this.elementTree = new Common.Controls.ElementTree();
+			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.groupBoxSelectedItems.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -77,6 +79,7 @@
 			this.buttonAddTemplate.Size = new System.Drawing.Size(24, 24);
 			this.buttonAddTemplate.TabIndex = 31;
 			this.buttonAddTemplate.Text = "+";
+			this.toolTip1.SetToolTip(this.buttonAddTemplate, "Add Elements");
 			this.buttonAddTemplate.UseVisualStyleBackColor = true;
 			this.buttonAddTemplate.Click += new System.EventHandler(this.buttonAddTemplate_Click);
 			// 
@@ -107,6 +110,7 @@
 			this.buttonAddProperty.Size = new System.Drawing.Size(24, 24);
 			this.buttonAddProperty.TabIndex = 39;
 			this.buttonAddProperty.Text = "+";
+			this.toolTip1.SetToolTip(this.buttonAddProperty, "Add Property");
 			this.buttonAddProperty.UseVisualStyleBackColor = true;
 			this.buttonAddProperty.Click += new System.EventHandler(this.buttonAddProperty_Click);
 			// 
@@ -155,6 +159,7 @@
 			this.buttonRunHelperSetup.Size = new System.Drawing.Size(24, 24);
 			this.buttonRunHelperSetup.TabIndex = 36;
 			this.buttonRunHelperSetup.Text = "->";
+			this.toolTip1.SetToolTip(this.buttonRunHelperSetup, "Configure");
 			this.buttonRunHelperSetup.UseVisualStyleBackColor = true;
 			this.buttonRunHelperSetup.Click += new System.EventHandler(this.buttonRunSetupHelper_Click);
 			// 
@@ -193,6 +198,13 @@
 			this.elementTree.treeviewAfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.elementTree_treeviewAfterSelect);
 			this.elementTree.ElementsChanged += new System.EventHandler(this.elementTree_ElementsChanged);
 			// 
+			// toolTip1
+			// 
+			this.toolTip1.AutomaticDelay = 200;
+			this.toolTip1.AutoPopDelay = 5000;
+			this.toolTip1.InitialDelay = 200;
+			this.toolTip1.ReshowDelay = 40;
+			// 
 			// SetupElementsTree
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -228,5 +240,6 @@
 		private System.Windows.Forms.ColumnHeader columnHeader2;
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.Button buttonAddProperty;
+		private System.Windows.Forms.ToolTip toolTip1;
 	}
 }
