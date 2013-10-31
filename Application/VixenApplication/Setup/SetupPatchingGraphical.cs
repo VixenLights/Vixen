@@ -162,12 +162,11 @@ namespace VixenApplication.Setup
 			project.Design.FillStyles.Add(styleController, styleController);
 			project.Design.FillStyles.Add(styleOutput, styleOutput);
 
-			//InitializeAllShapes(VixenSystem.Nodes.GetRootNodes(), VixenSystem.Filters, VixenSystem.OutputControllers);
-
 			ConnectionTool tool = new ConnectionTool();
 			tool.DataFlowModificationMade += tool_DataFlowModificationMade;
 			diagramDisplay.CurrentTool = tool;
 		}
+
 
 		private void tool_DataFlowModificationMade(object sender, EventArgs e)
 		{

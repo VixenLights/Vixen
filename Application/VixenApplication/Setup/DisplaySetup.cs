@@ -96,10 +96,10 @@ namespace VixenApplication
 			control.ElementSelectionChanged +=  control_ElementSelectionChanged;
 			control.ElementsChanged += control_ElementsChanged;
 
-			control.UpdatePatching();
-
 			tableLayoutPanelElementSetup.Controls.Clear();
 			tableLayoutPanelElementSetup.Controls.Add(control.SetupElementsControl);
+
+			control.UpdatePatching();
 		}
 
 		void control_ElementsChanged(object sender, EventArgs e)
@@ -130,6 +130,10 @@ namespace VixenApplication
 			control.FiltersAdded += control_FiltersAdded;
 			control.PatchingUpdated += control_PatchingUpdated;
 
+			tableLayoutPanelPatchingSetup.Controls.Clear();
+			tableLayoutPanelPatchingSetup.Controls.Add(control.SetupPatchingControl);
+
+
 			if (_currentControllersControl == null) {
 				control.UpdateControllerSelection(new ControllersAndOutputsSet());
 			} else {
@@ -140,9 +144,6 @@ namespace VixenApplication
 			} else {
 				control.UpdateElementSelection(_currentElementControl.SelectedElements);				
 			}
-
-			tableLayoutPanelPatchingSetup.Controls.Clear();
-			tableLayoutPanelPatchingSetup.Controls.Add(control.SetupPatchingControl);
 		}
 
 		void control_PatchingUpdated(object sender, EventArgs e)
@@ -174,10 +175,10 @@ namespace VixenApplication
 			control.ControllerSelectionChanged += control_ControllerSelectionChanged;
 			control.ControllersChanged += control_ControllersChanged;
 
-			control.UpdatePatching();
-
 			tableLayoutPanelControllerSetup.Controls.Clear();
 			tableLayoutPanelControllerSetup.Controls.Add(control.SetupControllersControl);
+
+			control.UpdatePatching();
 		}
 
 		void control_ControllersChanged(object sender, EventArgs e)
