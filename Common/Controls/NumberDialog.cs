@@ -14,9 +14,10 @@ namespace Common.Controls
 		public NumberDialog(string title, string prompt, int value, int minimum = 0, int maximum = int.MaxValue)
 		{
 			InitializeComponent();
-			numericUpDownChooser.Value = value;
+			
 			numericUpDownChooser.Minimum = minimum;
 			numericUpDownChooser.Maximum = maximum;
+            numericUpDownChooser.Value = value;
 			Text = title;
 			labelPrompt.Text = prompt;
 		}
