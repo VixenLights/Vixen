@@ -106,7 +106,7 @@ namespace VixenModules.Output.K8055_Controller
 	public class VERSION
 	{
 #if WIN64
-        public const string dll    = "Common\\K8055Dx64";
+        public const string dll = "Common\\K8055Dx64";
 #else
 		public const string dll = "Common\\K8055D";
 #endif
