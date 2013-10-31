@@ -213,7 +213,7 @@ namespace BaseSequence
 		protected virtual void _LoadMedia()
 		{
 			var sequenceMedia = Sequence.GetAllMedia();
-			if (sequenceMedia != null && sequenceMedia.Count() > 0)
+            if (sequenceMedia != null && sequenceMedia.Any())
 				foreach (IMediaModuleInstance media in sequenceMedia) {
 					media.LoadMedia(StartTime);
 				}
@@ -222,7 +222,7 @@ namespace BaseSequence
 		protected virtual void _StartMedia()
 		{
 			var sequenceMedia = Sequence.GetAllMedia();
-			if (sequenceMedia != null && sequenceMedia.Count() > 0)
+			if (sequenceMedia != null && sequenceMedia.Any() )
 				foreach (IMediaModuleInstance media in sequenceMedia) {
 					media.Start();
 				}
@@ -231,7 +231,7 @@ namespace BaseSequence
 		protected virtual void _PauseMedia()
 		{
 			var sequenceMedia = Sequence.GetAllMedia();
-			if (sequenceMedia != null && sequenceMedia.Count() > 0)
+            if (sequenceMedia != null && sequenceMedia.Any())
 				foreach (IMediaModuleInstance media in sequenceMedia) {
 					media.Pause();
 				}
@@ -240,7 +240,7 @@ namespace BaseSequence
 		protected virtual void _ResumeMedia()
 		{
 			var sequenceMedia = Sequence.GetAllMedia();
-			if (sequenceMedia != null && sequenceMedia.Count() > 0)
+            if (sequenceMedia != null && sequenceMedia.Any())
 				foreach (IMediaModuleInstance media in sequenceMedia) {
 					media.Resume();
 				}
@@ -249,7 +249,7 @@ namespace BaseSequence
 		protected virtual void _StopMedia()
 		{
 			var sequenceMedia = Sequence.GetAllMedia();
-			if (sequenceMedia != null && sequenceMedia.Count() > 0)
+            if (sequenceMedia != null && sequenceMedia.Any())
 				foreach (IMediaModuleInstance media in sequenceMedia) {
 					media.Stop();
 				}

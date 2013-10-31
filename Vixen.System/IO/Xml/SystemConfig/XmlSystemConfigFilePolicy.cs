@@ -16,6 +16,7 @@ namespace Vixen.IO.Xml.SystemConfig
 		private const string ELEMENT_IDENTITY = "Identity";
 		private const string ELEMENT_EVAL_FILTERS = "AllowFilterEvaluation";
 		private const string ATTR_IS_CONTEXT = "isContext";
+		private const string ELEMENT_DEFAULT_UPDATE_INTERVAL = "DefaultUpdateInterval";
 
 		public XmlSystemConfigFilePolicy(SystemConfig systemConfig, XElement content)
 		{
@@ -39,6 +40,11 @@ namespace Vixen.IO.Xml.SystemConfig
 		protected override void WriteFilterEvaluationAllowance()
 		{
 			_content.Add(new XElement(ELEMENT_EVAL_FILTERS, _systemConfig.AllowFilterEvaluation));
+		}
+
+		protected override void WriteDefaultUpdateInterval()
+		{
+			_content.Add(new XElement(ELEMENT_DEFAULT_UPDATE_INTERVAL, _systemConfig.DefaultUpdateInterval));
 		}
 
 		protected override void WriteElements()
@@ -125,6 +131,16 @@ namespace Vixen.IO.Xml.SystemConfig
 		{
 			// If it can't be determined, default to true.
 			_systemConfig.AllowFilterEvaluation = XmlHelper.GetElementValue(_content, ELEMENT_EVAL_FILTERS, true);
+		}
+
+		protected override void ReadDefaultUpdateInterval()
+		{
+			XElement identityElement = _content.Element(ELEMENT_DEFAULT_UPDATE_INTERVAL);
+			// ctor has default if we don't find value here..
+			if (identityElement != null)
+			{
+				_systemConfig.DefaultUpdateInterval = Int32.Parse(identityElement.Value);
+			}
 		}
 
 		protected override void ReadElements()

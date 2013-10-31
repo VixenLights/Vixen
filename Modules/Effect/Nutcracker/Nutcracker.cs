@@ -108,7 +108,7 @@ namespace VixenModules.Effect.Nutcracker
 							childCount++;
 						}
 					}
-					if (childCount == 0 && TargetNodes.FirstOrDefault().Children.Count() > 0)
+					if (childCount == 0 && TargetNodes.FirstOrDefault().Children.Any() )
 					{
 						childCount = 1;
 					}

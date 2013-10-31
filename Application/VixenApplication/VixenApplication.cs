@@ -51,6 +51,18 @@ namespace VixenApplication
 			VixenSystem.Start(this, _openExecution, _disableControllers, _applicationData.DataFileDirectory);
 
 			InitStats();
+
+			// other modules look for and create it this way...
+			AppCommand toolsMenu = AppCommands.Find("Tools");
+			if (toolsMenu == null)
+			{
+				toolsMenu = new AppCommand("Tools", "Tools");
+				AppCommands.Add(toolsMenu);
+		}
+			var myMenu = new AppCommand("Options", "Options...");
+			myMenu.Click += optionsToolStripMenuItem_Click;
+			toolsMenu.Add(myMenu);
+
 		}
 
 
@@ -188,7 +200,7 @@ namespace VixenApplication
 					if (target != null) {
 
 						var strFileName = target.FileName.ToString().Replace("[VIXENPROFILEDIR]", logDirectory).Replace('/', '\\').Replace("'", "");
-						var strArchiveFileName = target.FileName.ToString().Replace("[VIXENPROFILEDIR]", logDirectory).Replace('/', '\\').Replace("'", "");
+						var strArchiveFileName = target.ArchiveFileName.ToString().Replace("[VIXENPROFILEDIR]", logDirectory).Replace('/', '\\').Replace("'", "");
 
 						target.FileName = strFileName;
 						target.ArchiveFileName = strArchiveFileName;
@@ -202,7 +214,7 @@ namespace VixenApplication
 			//	if (target != null) {
 
 			//		var strFileName = target.FileName.ToString().Replace("[VIXENPROFILEDIR]", _rootDataDirectory).Replace('/', '\\').Replace("'", "");
-			//		var strArchiveFileName = target.FileName.ToString().Replace("[VIXENPROFILEDIR]", _rootDataDirectory).Replace('/', '\\').Replace("'", "");
+			//		var strArchiveFileName = target.ArchiveFileName.ToString().Replace("[VIXENPROFILEDIR]", _rootDataDirectory).Replace('/', '\\').Replace("'", "");
 
 			//		target.FileName = strFileName;
 			//		target.ArchiveFileName = strArchiveFileName;
@@ -460,6 +472,15 @@ namespace VixenApplication
 				Invoke(new MethodInvoker(updateExecutionState));
 			else
 				updateExecutionState();
+		}
+
+		private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			var dlg = new OptionsDialog();
+			var res = dlg.ShowDialog();
+			// so far the dialog box does it all, no real need for this check...
+			if( res != DialogResult.OK)
+				return;
 		}
 
 		// we can't get passed in a state to display, since it may be called out-of-order if we're invoking across threads, etc.

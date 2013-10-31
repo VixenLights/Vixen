@@ -73,11 +73,14 @@ namespace Vixen.Module.Effect
 
 		public void PreRender(CancellationTokenSource cancellationToken = null)
 		{
-			var sw = new System.Diagnostics.Stopwatch(); sw.Start();
+			var sw = System.Diagnostics.Stopwatch.StartNew();
 			_PreRender();
 			IsDirty = false;
-			//if ( /*++prerendCnt % 1000 == 0 ||*/ sw.ElapsedMilliseconds > 100)
-			//	Logging.Debug(" {0}, {1}ms, eff: {2}, node: {3}", prerendCnt, sw.ElapsedMilliseconds, this.GetType().Name, TargetNodes[0].Name); 
+			//if ( ++prerendCnt % 100 == 0 || sw.ElapsedMilliseconds >= 100
+			//	|| this.GetType().Name.Contains("Alternating"))
+			//	Logging.Debug(" {0}, {1}ms, eff:{2}:{3}, node:{4}",
+			//				prerendCnt, sw.ElapsedMilliseconds, this.GetType().Name, 
+			//				(int)_timeSpan.TotalMilliseconds, TargetNodes[0].Name); 
 		}
 
 		public EffectIntents Render()

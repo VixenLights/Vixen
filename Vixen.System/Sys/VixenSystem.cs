@@ -225,6 +225,17 @@ namespace Vixen.Sys
 			set { SystemConfig.AllowFilterEvaluation = value; }
 		}
 
+		public static int DefaultUpdateInterval
+		{
+			get { 
+				// turns out we might need the default before we have SystemConfig set up...
+				return SystemConfig == null
+					? SystemConfig.DEFAULT_UPDATE_INTERVAL
+					: SystemConfig.DefaultUpdateInterval; 
+			}
+			set { SystemConfig.DefaultUpdateInterval = value; }
+		}
+
 		public static ElementManager Elements { get; private set; }
 		public static NodeManager Nodes { get; private set; }
 		public static OutputControllerManager OutputControllers { get; private set; }

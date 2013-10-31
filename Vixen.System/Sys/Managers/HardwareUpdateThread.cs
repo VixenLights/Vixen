@@ -15,9 +15,11 @@ namespace Vixen.Sys.Managers
 		private ManualResetEvent _pauseSignal;
 		private Stopwatch _localTime;
 
-		private OutputDeviceSleepTimeActualValue _sleepTimeActualValue;
+		private MillisecondsValue _sleepTimeActualValue;
 		private OutputDeviceRefreshRateValue _refreshRateValue;
-		private OutputDeviceUpdateTimeValue _updateTimeValue;
+		private MillisecondsValue _updateTimeValue;
+		private MillisecondsValue _intervalDeltaValue;
+		private MillisecondsValue _executionTimeValue;
 
 		private const int STOP_TIMEOUT = 4000; // Four seconds should be plenty of time for a thread to stop.
 
@@ -80,6 +82,9 @@ namespace Vixen.Sys.Managers
 			}
 		}
 
+		private long _lastMs = 0;
+		private long _lastMs2 = 0;
+
 		private void _ThreadFunc()
 		{
 			// Thread main loop
@@ -87,9 +92,62 @@ namespace Vixen.Sys.Managers
 				IOutputDeviceUpdateSignaler signaler = _CreateOutputDeviceUpdateSignaler();
 
 				while (_threadState != ExecutionState.Stopping) {
-					Execution.UpdateState();
-					_UpdateOutputDevice();
+					long nowMs = _localTime.ElapsedMilliseconds;
+					long dtMs = nowMs - _lastMs;
+					_lastMs = nowMs;
 
+					var lastTS = Execution.UpdateState();
+					long execMs = _localTime.ElapsedMilliseconds - nowMs;
+
+					_UpdateOutputDevice();
+					long outputMs = _localTime.ElapsedMilliseconds - nowMs - execMs;
+
+					// instrumentation counters...
+					_intervalDeltaValue.Set(Math.Abs(OutputDevice.UpdateInterval - dtMs));
+					_executionTimeValue.Set(_localTime.ElapsedMilliseconds - _lastMs);
+
+					// log stuff after real work is done...
+
+					// prep a sample info string for later...
+					string sampinfo = "";
+					long sampMs = 0;
+					foreach (var name in lastTS.Keys)
+					{
+						if (!name.Contains("System"))
+						{
+							sampMs = (long)lastTS[name].TotalMilliseconds;
+							sampinfo += String.Format("{0}:{1} ", name, sampMs);
+						}
+					}
+
+					// our cycle jitter was captured above
+					bool jitter = false;
+					if (Math.Abs(OutputDevice.UpdateInterval - dtMs) > 10) {
+						jitter = true;
+						Logging.Debug("hwt jitter:  {0}: nowMs:{1}, dtMs:{2}", OutputDevice.Name, nowMs, dtMs);
+					}
+
+					// only worry about state sample jitter if it is running
+					long dtMs2 = 0;
+					if (sampMs > 0) {
+						dtMs2 = sampMs - _lastMs2;
+						_lastMs2 = sampMs;
+						if (Math.Abs(OutputDevice.UpdateInterval - dtMs2) > 10 && sampMs > 0 && dtMs2 > 0)
+						{
+							jitter = true;
+							Logging.Debug("samp jitter:  {0}: sampMs:{1}, dts:{2}",
+											OutputDevice.Name, sampMs, dtMs2);
+						}
+					}
+					// summary output for all threads of jitter...
+					// change the false in statuslog to true to get a no-preview output each time through.. 
+					bool statuslog = false && (sampMs > 0 && dtMs2 > 0 && !OutputDevice.Name.Contains("Preview"));
+					if ( jitter || statuslog) {
+							Logging.Debug("{0}: nowMs:{1}, dtMs:{2}, execMs:{3}, outMs:{4}, ts:{5}, dts={6}",
+											OutputDevice.Name, nowMs, dtMs, execMs, outputMs, sampinfo, dtMs2);
+					}
+
+					// wait for the next go 'round
 					_WaitOnSignal(signaler);
 					_WaitOnPause();
 				}
@@ -134,7 +192,7 @@ namespace Vixen.Sys.Managers
 			long timeBeforeSignal = _localTime.ElapsedMilliseconds;
 
 			signaler.RaiseSignal();
-			_updateSignalerSync.WaitOne();
+			//_updateSignalerSync.WaitOne();
 
 			long timeAfterSignal = _localTime.ElapsedMilliseconds;
 			_sleepTimeActualValue.Set(timeAfterSignal - timeBeforeSignal);
@@ -147,11 +205,15 @@ namespace Vixen.Sys.Managers
 
 		private void _CreatePerformanceValues()
 		{
-			_sleepTimeActualValue = new OutputDeviceSleepTimeActualValue(OutputDevice);
-			VixenSystem.Instrumentation.AddValue(_sleepTimeActualValue);
 			_refreshRateValue = new OutputDeviceRefreshRateValue(OutputDevice);
 			VixenSystem.Instrumentation.AddValue(_refreshRateValue);
-			_updateTimeValue = new OutputDeviceUpdateTimeValue(OutputDevice);
+			_sleepTimeActualValue = new MillisecondsValue(string.Format("Output device sleep time [{0}]", OutputDevice.Name));
+			VixenSystem.Instrumentation.AddValue(_sleepTimeActualValue);
+			_intervalDeltaValue = new MillisecondsValue(string.Format("Output device delta time [{0}]", OutputDevice.Name));
+			VixenSystem.Instrumentation.AddValue(_intervalDeltaValue);
+			_executionTimeValue = new MillisecondsValue(string.Format("Output device system time [{0}]", OutputDevice.Name));
+			VixenSystem.Instrumentation.AddValue(_executionTimeValue);
+			_updateTimeValue = new MillisecondsValue(string.Format("Output device update time [{0}]", OutputDevice.Name));
 			VixenSystem.Instrumentation.AddValue(_updateTimeValue);
 		}
 

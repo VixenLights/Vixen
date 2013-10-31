@@ -399,7 +399,8 @@ namespace Common.Controls
 			}
 
 			IEnumerable<ElementNode> invalidSourceNodes = invalidNodesForTarget.Intersect(nodes);
-			if (invalidSourceNodes.Count() > 0) {
+            if (invalidSourceNodes.Any())
+            {
 				if (invalidSourceNodes.Intersect(permittedNodesForTarget).Count() == invalidSourceNodes.Count())
 					e.ValidDragTarget = true;
 				else
@@ -596,7 +597,8 @@ namespace Common.Controls
 				invalidNodesForTarget = destinationNode.InvalidChildren();
 
 			IEnumerable<ElementNode> invalidSourceNodes = invalidNodesForTarget.Intersect(_clipboardNodes);
-			if (invalidSourceNodes.Count() > 0) {
+            if (invalidSourceNodes.Any())
+            {
 				SystemSounds.Asterisk.Play();
 			}
 			else {

@@ -179,7 +179,7 @@ namespace VixenModules.Effect.Nutcracker
 		{
 			get
 			{
-				//if (_pixels.Count() > 0)
+				//if (_pixels.Any() )
 				//    return _pixels[0].Count();
 				//else
 				//    return 0;

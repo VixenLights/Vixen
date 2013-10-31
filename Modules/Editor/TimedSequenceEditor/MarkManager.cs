@@ -1146,7 +1146,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					// Remove the \r so we're just left with a \n (allows importing of Sean's Audacity beat marks
 					everything = everything.Replace("\r", "");
 					string[] lines = everything.Split(new string[] {"\n"}, StringSplitOptions.RemoveEmptyEntries);
-					if (lines.Count() > 0)
+                    if (lines.Any())
 					{
 						AddNewCollection(Color.Yellow, "Audacity Marks");
 						foreach (string line in lines)

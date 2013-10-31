@@ -156,6 +156,7 @@
     <Compile Include="Factory\IOutputFactory.cs" />
     <Compile Include="Factory\PreviewFactory.cs" />
     <Compile Include="Factory\SmartControllerFactory.cs" />
+    <Compile Include="Instrumentation\MillisecondsValue.cs" />
     <Compile Include="Intent\IntentHelpers.cs" />
     <Compile Include="Intent\RGBIntent.cs" />
     <Compile Include="Intent\CommandIntent.cs" />
@@ -802,6 +803,7 @@
     <Compile Include="Sys\WindowsMultimedia.cs" />
     <Compile Include="Sys\XmlHelper.cs" />
     <Compile Include="Utility\cEventHelper.cs" />
+    <Compile Include="Utility\MiniStackTrace.cs" />
     <Compile Include="Utility\PathUtility.cs" />
   </ItemGroup>
   <ItemGroup>

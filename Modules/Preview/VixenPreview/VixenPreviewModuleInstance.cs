@@ -4,6 +4,7 @@ using System.Diagnostics;
 using Vixen.Execution.Context;
 using Vixen.Module.Preview;
 using Vixen.Sys;
+using Vixen.Sys.Instrumentation;
 using VixenModules.Preview.VixenPreview.Direct2D;
 
 namespace VixenModules.Preview.VixenPreview
@@ -14,9 +15,11 @@ namespace VixenModules.Preview.VixenPreview
 		private IDisplayForm displayForm;
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private bool UseOldPreview = false;
+		private MillisecondsValue _updateTimeValue = new MillisecondsValue("Update time for preview");
 
 		public VixenPreviewModuleInstance()
 		{
+			VixenSystem.Instrumentation.AddValue(_updateTimeValue);
 		}
 
 		private void VixenPreviewModuleInstance_Load(object sender, EventArgs e)
@@ -195,6 +198,7 @@ namespace VixenModules.Preview.VixenPreview
 		bool isGdiVersion = false;
 		protected override void Update()
 		{
+			var sw = Stopwatch.StartNew();
 			try {
 				// displayForm.Scene.ElementStates = ElementStates;
 				//if the Preview form style changes re-setup the form
@@ -219,7 +223,7 @@ namespace VixenModules.Preview.VixenPreview
 				Logging.Error("Exception in preview update {0} - {1}", e.Message, e.StackTrace);
 				//Console.WriteLine(e.ToString());
 			}
-
+			_updateTimeValue.Set(sw.ElapsedMilliseconds);
 		}
 	}
 }

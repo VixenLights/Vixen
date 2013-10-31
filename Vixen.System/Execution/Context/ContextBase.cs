@@ -81,11 +81,14 @@ namespace Vixen.Execution.Context
 			return (_SequenceTiming != null) ? _SequenceTiming.Position : TimeSpan.Zero;
 		}
 
+		public long _lastUpdateMs = 0;
+
 		public IEnumerable<Guid> UpdateElementStates(TimeSpan currentTime)
 		{
 			Guid[] affectedElements = null;
 
 			if (IsRunning && !IsPaused) {
+				_lastUpdateMs = (long)currentTime.TotalMilliseconds;
 				affectedElements = _UpdateCurrentEffectList(currentTime);
 				_RepopulateElementBuffer(currentTime, affectedElements);
 			}
