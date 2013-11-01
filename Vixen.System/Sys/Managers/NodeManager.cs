@@ -32,7 +32,7 @@ namespace Vixen.Sys.Managers
 			OnNodesChanged();
 		}
 
-		private ElementNode RootNode
+		public ElementNode RootNode
 		{
 			get
 			{

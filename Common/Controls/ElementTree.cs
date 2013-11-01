@@ -58,7 +58,7 @@ namespace Common.Controls
 
 		#region Tree view population
 
-		public void PopulateNodeTree()
+		public void PopulateNodeTree(ElementNode elementToSelect = null)
 		{
 			// save metadata that is currently in the treeview
 			_expandedNodes = new HashSet<string>();
@@ -88,6 +88,12 @@ namespace Common.Controls
 				}
 			}
 
+			// if a new element has been passed in to select, select it instead.
+			if (elementToSelect != null) {
+				_selectedNodes = new HashSet<string>();
+				_selectedNodes.Add(GenerateEquivalentTreeNodeFullPathFromElement(elementToSelect, treeview.PathSeparator));
+
+			}
 			foreach (string node in _selectedNodes) {
 				TreeNode resultNode = FindNodeInTreeAtPath(treeview, node);
 
@@ -95,6 +101,7 @@ namespace Common.Controls
 					treeview.AddSelectedNode(resultNode);
 				}
 			}
+
 
 			treeview.EndUpdate();
 
@@ -112,6 +119,13 @@ namespace Common.Controls
 					break;
 				}
 			}
+
+			// finally, if we were selecting another element, make sure we raise the selection changed event
+			if (elementToSelect != null) {
+				// TODO: oops, we just pass the selection changed event through to the control; oh well,
+				// an "elements have changed" event will do for now. Fix this sometime.
+				OnElementsChanged();
+			}
 		}
 
 		private string GenerateTreeNodeFullPath(TreeNode node, string separator)
@@ -125,6 +139,19 @@ namespace Common.Controls
 
 			return result;
 		}
+
+		private string GenerateEquivalentTreeNodeFullPathFromElement(ElementNode element, string separator)
+		{
+			string result = element.Id.ToString();
+			ElementNode parent = element.Parents.FirstOrDefault();
+			while (parent != null && parent != VixenSystem.Nodes.RootNode) {
+				result = parent.Name + separator + result;
+				parent = parent.Parents.FirstOrDefault();
+			}
+
+			return result;
+		}
+
 
 		private TreeNode FindNodeInTreeAtPath(TreeView tree, string path)
 		{
@@ -433,7 +460,7 @@ namespace Common.Controls
 					result.AddRange(
 						nameGenerator.Names.Where(name => !string.IsNullOrEmpty(name)).Select(
 							name => AddNewNode(name, false, parent, true)));
-					PopulateNodeTree();
+					PopulateNodeTree(result.FirstOrDefault());
 				}
 			}
 
@@ -469,7 +496,7 @@ namespace Common.Controls
 
 			ElementNode newNode = ElementNodeService.Instance.CreateSingle(parent, nodeName, true);
 			if (repopulateNodeTree)
-				PopulateNodeTree();
+				PopulateNodeTree(newNode);
 			return newNode;
 		}
 
@@ -481,7 +508,7 @@ namespace Common.Controls
 				VixenSystem.Nodes.AddChildToParent(en, newGroup);
 			}
 
-			PopulateNodeTree();
+			PopulateNodeTree(newGroup);
 		}
 
 		public bool CheckAndPromptIfNodeWillLosePatches(ElementNode node)
@@ -735,41 +762,6 @@ namespace Common.Controls
 						OnElementsChanged();
 					}
 				}
-			}
-		}
-
-
-		private void megatreeToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			ConfigureElements.AddMegatree f = new ConfigureElements.AddMegatree();
-			if (f.ShowDialog() == DialogResult.OK) {
-				ElementNode treeParent = AddNewNode(f.TreeName, false, SelectedNode, false);
-
-				for (int stringNum = 0; stringNum < f.StringCount; stringNum++) {
-					ElementNode treeString = AddNewNode(string.Format("{0} String {1}", f.TreeName , stringNum + 1 , false, treeParent, false));
-					for (int pixelNum = 0; pixelNum < f.PixelsPerString; pixelNum++) {
-						AddNewNode(string.Format("{0}-{1}", treeString.Name ,pixelNum +1), false, treeString, false);
-					}
-				}
-
-				PopulateNodeTree();
-			}
-		}
-
-		private void pixelGridToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			ConfigureElements.AddPixelGrid f = new ConfigureElements.AddPixelGrid();
-			if (f.ShowDialog() == DialogResult.OK) {
-				ElementNode treeParent = AddNewNode(f.GridName, false, SelectedNode, false);
-
-				for (int stringNum = 0; stringNum < f.StringCount; stringNum++) {
-					ElementNode treeString = AddNewNode(string.Format("{0} Column {1}", f.GridName ,(stringNum + 1)), false, treeParent, false);
-					for (int pixelNum = 0; pixelNum < f.PixelsPerString; pixelNum++) {
-						AddNewNode(string.Format("{0} - Row {1}", treeString.Name ,(pixelNum + 1)), false, treeString, false);
-					}
-				}
-
-				PopulateNodeTree();
 			}
 		}
 	}

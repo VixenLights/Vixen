@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -132,8 +133,8 @@ namespace VixenApplication.Setup
 				IElementTemplate template = item.Value as IElementTemplate;
 				bool act = template.SetupTemplate(elementTree.SelectedElementNodes);
 				if (act) {
-					template.GenerateElements(elementTree.SelectedElementNodes);
-					elementTree.PopulateNodeTree();
+					IEnumerable<ElementNode> createdElements = template.GenerateElements(elementTree.SelectedElementNodes);
+					elementTree.PopulateNodeTree(createdElements.FirstOrDefault());
 				}
 			}
 

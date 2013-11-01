@@ -44,9 +44,6 @@
 			this.deleteNodesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.createGroupWithNodesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.renameNodesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.addNewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.megatreeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.pixelGridToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStripDragging = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.moveHereToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.copyHereToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -78,12 +75,11 @@
             this.toolStripSeparator2,
             this.addNewNodeToolStripMenuItem,
             this.addMultipleNewNodesToolStripMenuItem,
-            this.addNewToolStripMenuItem,
             this.deleteNodesToolStripMenuItem,
             this.createGroupWithNodesToolStripMenuItem,
             this.renameNodesToolStripMenuItem});
 			this.contextMenuStripTreeView.Name = "contextMenuStripTreeView";
-			this.contextMenuStripTreeView.Size = new System.Drawing.Size(155, 258);
+			this.contextMenuStripTreeView.Size = new System.Drawing.Size(155, 236);
 			this.contextMenuStripTreeView.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStripTreeView_Opening);
 			// 
 			// cutNodesToolStripMenuItem
@@ -175,29 +171,6 @@
 			this.renameNodesToolStripMenuItem.Text = "Rename";
 			this.renameNodesToolStripMenuItem.Click += new System.EventHandler(this.renameNodesToolStripMenuItem_Click);
 			// 
-			// addNewToolStripMenuItem
-			// 
-			this.addNewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.megatreeToolStripMenuItem,
-            this.pixelGridToolStripMenuItem});
-			this.addNewToolStripMenuItem.Name = "addNewToolStripMenuItem";
-			this.addNewToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
-			this.addNewToolStripMenuItem.Text = "Add New";
-			// 
-			// megatreeToolStripMenuItem
-			// 
-			this.megatreeToolStripMenuItem.Name = "megatreeToolStripMenuItem";
-			this.megatreeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.megatreeToolStripMenuItem.Text = "MegaTree...";
-			this.megatreeToolStripMenuItem.Click += new System.EventHandler(this.megatreeToolStripMenuItem_Click);
-			// 
-			// pixelGridToolStripMenuItem
-			// 
-			this.pixelGridToolStripMenuItem.Name = "pixelGridToolStripMenuItem";
-			this.pixelGridToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.pixelGridToolStripMenuItem.Text = "Pixel Grid...";
-			this.pixelGridToolStripMenuItem.Click += new System.EventHandler(this.pixelGridToolStripMenuItem_Click);
-			// 
 			// contextMenuStripDragging
 			// 
 			this.contextMenuStripDragging.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -279,8 +252,5 @@
 		private System.Windows.Forms.ContextMenuStrip contextMenuStripDragging;
 		private System.Windows.Forms.ToolStripMenuItem moveHereToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem copyHereToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem addNewToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem megatreeToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem pixelGridToolStripMenuItem;
 	}
 }
