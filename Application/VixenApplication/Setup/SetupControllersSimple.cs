@@ -53,14 +53,12 @@ namespace VixenApplication.Setup
 
 		void controllerTree_ControllerSelectionChanged(object sender, EventArgs e)
 		{
-			_selectedControllersAndOutputs = null;
 			OnControllerSelectionChanged();
 			UpdateButtons();
 		}
 
 		void controllerTree_ControllersChanged(object sender, EventArgs e)
 		{
-			_selectedControllersAndOutputs = null;
 			OnControllersChanged();
 			UpdateButtons();
 		}
@@ -118,10 +116,9 @@ namespace VixenApplication.Setup
 			return result;
 		}
 
-		private ControllersAndOutputsSet _selectedControllersAndOutputs;
 		public ControllersAndOutputsSet SelectedControllersAndOutputs
 		{
-			get { return _selectedControllersAndOutputs ?? (_selectedControllersAndOutputs = BuildSelectedControllersAndOutputs()); }
+			get { return BuildSelectedControllersAndOutputs(); }
 		}
 
 		public Control SetupControllersControl
@@ -160,22 +157,18 @@ namespace VixenApplication.Setup
 			ComboBoxItem item = (comboBoxNewControllerType.SelectedItem as ComboBoxItem);
 
 			if (item != null) {
-				// clear the selected controller cache, as adding a new controller will likely select the new one.
-				_selectedControllersAndOutputs = null;
 				controllerTree.AddNewControllerOfTypeWithPrompts((Guid) item.Value);
 			}
 		}
 
 		private void buttonDeleteController_Click(object sender, EventArgs e)
 		{
-			_selectedControllersAndOutputs = null;
 			controllerTree.DeleteControllersWithPrompt(controllerTree.SelectedControllers);
 		}
 
 		private void buttonConfigureController_Click(object sender, EventArgs e)
 		{
 			if (controllerTree.SelectedControllers.Count() > 0) {
-				_selectedControllersAndOutputs = null;
 				controllerTree.ConfigureController(controllerTree.SelectedControllers.First());
 			}
 		}
@@ -183,7 +176,6 @@ namespace VixenApplication.Setup
 		private void buttonNumberChannelsController_Click(object sender, EventArgs e)
 		{
 			if (controllerTree.SelectedControllers.Count() > 0) {
-				_selectedControllersAndOutputs = null;
 				controllerTree.SetControllerOutputCount(controllerTree.SelectedControllers.First());
 			}
 		}
@@ -191,7 +183,6 @@ namespace VixenApplication.Setup
 		private void buttonRenameController_Click(object sender, EventArgs e)
 		{
 			if (controllerTree.SelectedControllers.Count() > 0) {
-				_selectedControllersAndOutputs = null;
 				controllerTree.RenameControllerWithPrompt(controllerTree.SelectedControllers.First());
 			}
 		}
