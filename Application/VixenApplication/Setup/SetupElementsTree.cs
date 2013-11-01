@@ -47,7 +47,7 @@ namespace VixenApplication.Setup
 			if (comboBoxSetupHelperType.Items.Count > 0)
 				comboBoxSetupHelperType.SelectedIndex = 0;
 
-			PopulateWithNode(null);
+			UpdateFormWithNode(null);
 		}
 
 
@@ -118,7 +118,7 @@ namespace VixenApplication.Setup
 						node.Properties.Add((Guid)addForm.SelectedItem);
 					}
 
-					PopulateWithNode();
+					UpdateFormWithNode();
 				}
 			}
 
@@ -139,13 +139,13 @@ namespace VixenApplication.Setup
 
 		}
 
-		private void PopulateWithNode()
+		private void UpdateFormWithNode()
 		{
-			PopulateWithNode(elementTree.SelectedNode);
+			UpdateFormWithNode(elementTree.SelectedNode);
 		}
 
 
-		private void PopulateWithNode(ElementNode selectedNode)
+		private void UpdateFormWithNode(ElementNode selectedNode)
 		{
 			// Properties
 			listViewProperties.BeginUpdate();
@@ -161,23 +161,26 @@ namespace VixenApplication.Setup
 				listViewProperties.SelectedItems.Clear();
 			}
 			listViewProperties.EndUpdate();
+
+			buttonRunHelperSetup.Enabled = (selectedNode != null);
+			buttonAddProperty.Enabled = (selectedNode != null);
 		}
 
 		private void elementTree_ElementsChanged(object sender, EventArgs e)
 		{
-			PopulateWithNode();
+			UpdateFormWithNode();
 			OnElementChanged();
 		}
 
 		private void elementTree_treeviewAfterSelect(object sender, TreeViewEventArgs e)
 		{
-			PopulateWithNode();
+			UpdateFormWithNode();
 			OnElementSelectionChanged(new ElementNodesEventArgs(elementTree.SelectedElementNodes));
 		}
 
 		private void elementTree_treeviewDeselected(object sender, EventArgs e)
 		{
-			PopulateWithNode();
+			UpdateFormWithNode();
 			OnElementSelectionChanged(new ElementNodesEventArgs(elementTree.SelectedElementNodes));
 		}
 
