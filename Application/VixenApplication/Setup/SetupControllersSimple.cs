@@ -45,10 +45,16 @@ namespace VixenApplication.Setup
 			if (comboBoxNewControllerType.Items.Count > 0)
 				comboBoxNewControllerType.SelectedIndex = 0;
 
-			controllerTree.treeviewAfterSelect += controllerTree_treeviewAfterSelect;
-			controllerTree.treeviewDeselected += controllerTree_treeviewDeselected;
+			controllerTree.ControllerSelectionChanged += controllerTree_ControllerSelectionChanged;
 			controllerTree.ControllersChanged += controllerTree_ControllersChanged;
 
+			UpdateButtons();
+		}
+
+		void controllerTree_ControllerSelectionChanged(object sender, EventArgs e)
+		{
+			_selectedControllersAndOutputs = null;
+			OnControllerSelectionChanged();
 			UpdateButtons();
 		}
 
@@ -56,20 +62,6 @@ namespace VixenApplication.Setup
 		{
 			_selectedControllersAndOutputs = null;
 			OnControllersChanged();
-			UpdateButtons();
-		}
-
-		void controllerTree_treeviewDeselected(object sender, EventArgs e)
-		{
-			_selectedControllersAndOutputs = null;
-			OnControllerSelectionChanged();
-			UpdateButtons();
-		}
-
-		void controllerTree_treeviewAfterSelect(object sender, TreeViewEventArgs e)
-		{
-			_selectedControllersAndOutputs = null;
-			OnControllerSelectionChanged();
 			UpdateButtons();
 		}
 
@@ -168,41 +160,40 @@ namespace VixenApplication.Setup
 			ComboBoxItem item = (comboBoxNewControllerType.SelectedItem as ComboBoxItem);
 
 			if (item != null) {
-				IModuleDescriptor moduleDescriptor = ApplicationServices.GetModuleDescriptor((Guid)item.Value);
-				string defaultName = moduleDescriptor.TypeName;
-				ControllerFactory controllerFactory = new ControllerFactory();
-				OutputController oc = (OutputController)controllerFactory.CreateDevice((Guid)item.Value, defaultName);
-
-				if (controllerTree.RenameControllerWithPrompt(oc)) {
-					VixenSystem.OutputControllers.Add(oc);
-					controllerTree.PopulateControllerTree();
-				} else {
-					// TODO: do we need to 'delete' the output controller at all? ie. has it been 'registered' with system, or module data, etc.?
-				}
+				// clear the selected controller cache, as adding a new controller will likely select the new one.
+				_selectedControllersAndOutputs = null;
+				controllerTree.AddNewControllerOfTypeWithPrompts((Guid) item.Value);
 			}
 		}
 
 		private void buttonDeleteController_Click(object sender, EventArgs e)
 		{
+			_selectedControllersAndOutputs = null;
 			controllerTree.DeleteControllersWithPrompt(controllerTree.SelectedControllers);
 		}
 
 		private void buttonConfigureController_Click(object sender, EventArgs e)
 		{
-			if (controllerTree.SelectedControllers.Count() > 0)
+			if (controllerTree.SelectedControllers.Count() > 0) {
+				_selectedControllersAndOutputs = null;
 				controllerTree.ConfigureController(controllerTree.SelectedControllers.First());
+			}
 		}
 
 		private void buttonNumberChannelsController_Click(object sender, EventArgs e)
 		{
-			if (controllerTree.SelectedControllers.Count() > 0)
+			if (controllerTree.SelectedControllers.Count() > 0) {
+				_selectedControllersAndOutputs = null;
 				controllerTree.SetControllerOutputCount(controllerTree.SelectedControllers.First());
+			}
 		}
 
 		private void buttonRenameController_Click(object sender, EventArgs e)
 		{
-			if (controllerTree.SelectedControllers.Count() > 0)
+			if (controllerTree.SelectedControllers.Count() > 0) {
+				_selectedControllersAndOutputs = null;
 				controllerTree.RenameControllerWithPrompt(controllerTree.SelectedControllers.First());
+			}
 		}
 	}
 }

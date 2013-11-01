@@ -92,7 +92,6 @@ namespace Common.Controls
 			if (elementToSelect != null) {
 				_selectedNodes = new HashSet<string>();
 				_selectedNodes.Add(GenerateEquivalentTreeNodeFullPathFromElement(elementToSelect, treeview.PathSeparator));
-
 			}
 			foreach (string node in _selectedNodes) {
 				TreeNode resultNode = FindNodeInTreeAtPath(treeview, node);

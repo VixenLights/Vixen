@@ -8,6 +8,8 @@ using System.Media;
 using System.Text;
 using System.Windows.Forms;
 using Vixen.Data.Flow;
+using Vixen.Factory;
+using Vixen.Module;
 using Vixen.Module.Property;
 using Vixen.Services;
 using Vixen.Sys;
@@ -40,7 +42,7 @@ namespace Common.Controls
 
 		#region Tree view population
 
-		public void PopulateControllerTree()
+		public void PopulateControllerTree(IControllerDevice controllerToSelect = null)
 		{
 			// save metadata that is currently in the treeview
 			_expandedNodes = new HashSet<string>();
@@ -70,6 +72,12 @@ namespace Common.Controls
 				}
 			}
 
+			// if a new controller has been passed in to select, select it instead.
+			if (controllerToSelect != null) {
+				_selectedNodes = new HashSet<string>();
+				_selectedNodes.Add(GenerateEquivalentTreeNodeFullPathFromController(controllerToSelect, treeview.PathSeparator));
+			}
+
 			foreach (string node in _selectedNodes) {
 				TreeNode resultNode = FindNodeInTreeAtPath(treeview, node);
 
@@ -94,6 +102,11 @@ namespace Common.Controls
 					break;
 				}
 			}
+
+			// finally, if we were selecting another controller, make sure we raise the selection changed event
+			if (controllerToSelect != null) {
+				OnControllerSelectionChanged();
+			}
 		}
 
 		private string GenerateTreeNodeFullPath(TreeNode node, string separator)
@@ -107,6 +120,12 @@ namespace Common.Controls
 
 			return result;
 		}
+
+		private string GenerateEquivalentTreeNodeFullPathFromController(IControllerDevice controller, string separator)
+		{
+			return controller.Id.ToString();
+		}
+
 
 		private TreeNode FindNodeInTreeAtPath(TreeView tree, string path)
 		{
@@ -215,21 +234,28 @@ namespace Common.Controls
 		}
 
 
-
-		public event EventHandler treeviewDeselected
+		private void treeview_AfterSelect(object sender, TreeViewEventArgs e)
 		{
-			add { treeview.Deselected += value; }
-			remove { treeview.Deselected -= value; }
+			OnControllerSelectionChanged();
 		}
 
-		public event TreeViewEventHandler treeviewAfterSelect
+		private void treeview_Deselected(object sender, EventArgs e)
 		{
-			add { treeview.AfterSelect += value; }
-			remove { treeview.AfterSelect -= value; }
+			OnControllerSelectionChanged();
 		}
+
+
+		public event EventHandler ControllerSelectionChanged;
+		public void OnControllerSelectionChanged(EventArgs e = null)
+		{
+			if (e == null)
+				e = EventArgs.Empty;
+			if (ControllerSelectionChanged != null)
+				ControllerSelectionChanged(this, e);
+		}
+
 
 		public event EventHandler ControllersChanged;
-
 		public void OnControllersChanged(EventArgs e = null)
 		{
 			if (e == null)
@@ -244,6 +270,45 @@ namespace Common.Controls
 
 
 		#region Helper functions
+
+		public bool AddNewControllerOfTypeWithPrompts(Guid controllerTypeId)
+		{
+			IModuleDescriptor moduleDescriptor = ApplicationServices.GetModuleDescriptor(controllerTypeId);
+			if (moduleDescriptor == null) {
+				Logging.Error("couldn't get descriptor for controller of type ID: " + controllerTypeId);
+				return false;
+			}
+
+			string defaultName = moduleDescriptor.TypeName;
+			string name;
+			using (TextDialog textDialog = new TextDialog("New Controller Name?", "Controller Name", defaultName, true)) {
+				if (textDialog.ShowDialog() != DialogResult.OK)
+					return false;
+
+				name = textDialog.Response;
+				if (name.Length <= 0)
+					name = defaultName;
+			}
+
+			int outputCount;
+			using (NumberDialog nd = new NumberDialog("Controller Output Count", "Outputs on this controller?", 0)) {
+				if (nd.ShowDialog() != DialogResult.OK)
+					return false;
+
+				outputCount = nd.Value;
+			}
+
+			ControllerFactory controllerFactory = new ControllerFactory();
+			OutputController oc = (OutputController)controllerFactory.CreateDevice(controllerTypeId, name);
+			oc.OutputCount = outputCount;
+			VixenSystem.OutputControllers.Add(oc);
+
+			PopulateControllerTree(oc);
+			OnControllersChanged();
+
+			return true;
+		}
+
 
 		public bool RenameControllerWithPrompt(IControllerDevice outputController)
 		{
@@ -368,6 +433,5 @@ namespace Common.Controls
 				}
 			}
 		}
-
 	}
 }

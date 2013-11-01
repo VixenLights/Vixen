@@ -92,6 +92,7 @@
 			// 
 			// treeview
 			// 
+			this.treeview.AllowDrop = true;
 			this.treeview.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -113,6 +114,8 @@
 			this.treeview.Size = new System.Drawing.Size(200, 400);
 			this.treeview.TabIndex = 13;
 			this.treeview.UsingCustomDragCursor = false;
+			this.treeview.Deselected += new System.EventHandler(this.treeview_Deselected);
+			this.treeview.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeview_AfterSelect);
 			this.treeview.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treeview_KeyDown);
 			// 
 			// ControllerTree
