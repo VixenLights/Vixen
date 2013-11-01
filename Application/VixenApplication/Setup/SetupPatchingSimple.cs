@@ -29,15 +29,18 @@ namespace VixenApplication.Setup
 		}
 
 
+		private List<ElementNode> _cachedElementNodes;
 		public void UpdateElementSelection(IEnumerable<ElementNode> nodes)
 		{
-			_UpdateElementDetails(nodes);
+			_cachedElementNodes = nodes.ToList();
+			_UpdateElementDetails(_cachedElementNodes);
 			_updatePatchingSummary();
 		}
 
 		public void UpdateElementDetails(IEnumerable<ElementNode> nodes)
 		{
-			_UpdateElementDetails(nodes);
+			_cachedElementNodes = nodes.ToList();
+			_UpdateElementDetails(_cachedElementNodes);
 			_updatePatchingSummary();
 		}
 
@@ -319,11 +322,11 @@ namespace VixenApplication.Setup
 			int max = Math.Min(_selectedPatchSources.Count, _selectedPatchDestinations.Count);
 
 			for (int i = 0; i < max; i++) {
-				//DataFlowComponentReference dfcr = new DataFlowComponentReference(_selectedPatchSources[i].Item.Component, _selectedPatchSources[i].Item.OutputIndex);
 				VixenSystem.DataFlow.SetComponentSource(_selectedPatchDestinations[i].Item, _selectedPatchSources[i].Item);
 			}
 
 			OnPatchingUpdated();
+			_UpdateEverything(_cachedElementNodes, _cachedControllersAndOutputs);
 
 			MessageBox.Show("Patched " + max + " element patch points to controllers.", "Patching Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
 		}
