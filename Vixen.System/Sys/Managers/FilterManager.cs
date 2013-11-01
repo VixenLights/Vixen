@@ -82,14 +82,16 @@ namespace Vixen.Sys.Managers
 			IOutputFilterModuleInstance filter = e.Component as IOutputFilterModuleInstance;
 			if (filter == null) return;
 
-			IOutputFilterModuleInstance filterParent = filter.Source as IOutputFilterModuleInstance;
-			if (filterParent == null) {
-				_AddRootNode(filter);
+			lock (_updateLock) {
+				IOutputFilterModuleInstance filterParent = filter.Source as IOutputFilterModuleInstance;
+				if (filterParent == null) {
+					_AddRootNode(filter);
+				}
+				else {
+					_RemoveFromRoots(filter);
+				}
+				_filterChildren.SetParent(filter, filterParent);
 			}
-			else {
-				_RemoveFromRoots(filter);
-			}
-			_filterChildren.SetParent(filter, filterParent);
 		}
 
 		public void Update()
@@ -121,9 +123,7 @@ namespace Vixen.Sys.Managers
 
 		private void _AddRootNode(IOutputFilterModuleInstance filter)
 		{
-			lock (_rootFilters) {
-				_rootFilters.Add(filter);
-			}
+			_rootFilters.Add(filter);
 		}
 
 		private void _AddDataModel(IOutputFilterModuleInstance filter)
@@ -139,9 +139,7 @@ namespace Vixen.Sys.Managers
 
 		private void _RemoveFromRoots(IOutputFilterModuleInstance filter)
 		{
-			lock (_rootFilters) {
-				_rootFilters.Remove(filter);
-			}
+			_rootFilters.Remove(filter);
 		}
 
 		private void _RemoveInstanceReference(IOutputFilterModuleInstance filter)
