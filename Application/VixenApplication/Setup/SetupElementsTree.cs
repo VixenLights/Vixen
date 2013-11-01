@@ -63,7 +63,7 @@ namespace VixenApplication.Setup
 		}
 
 		public event EventHandler ElementsChanged;
-		public void OnElementChanged()
+		public void OnElementsChanged()
 		{
 			if (ElementsChanged == null)
 				return;
@@ -99,8 +99,8 @@ namespace VixenApplication.Setup
 				IElementSetupHelper helper = item.Value as IElementSetupHelper;
 				helper.Perform(elementTree.SelectedElementNodes);
 				elementTree.PopulateNodeTree();
+				OnElementsChanged();
 			}
-
 		}
 
 		private void buttonAddProperty_Click(object sender, EventArgs e)
@@ -120,9 +120,9 @@ namespace VixenApplication.Setup
 					}
 
 					UpdateFormWithNode();
+					OnElementsChanged();
 				}
 			}
-
 		}
 
 		private void buttonAddTemplate_Click(object sender, EventArgs e)
@@ -135,9 +135,9 @@ namespace VixenApplication.Setup
 				if (act) {
 					IEnumerable<ElementNode> createdElements = template.GenerateElements(elementTree.SelectedElementNodes);
 					elementTree.PopulateNodeTree(createdElements.FirstOrDefault());
+					OnElementsChanged();
 				}
 			}
-
 		}
 
 		private void UpdateFormWithNode()
@@ -170,7 +170,7 @@ namespace VixenApplication.Setup
 		private void elementTree_ElementsChanged(object sender, EventArgs e)
 		{
 			UpdateFormWithNode();
-			OnElementChanged();
+			OnElementsChanged();
 		}
 
 		private void elementTree_treeviewAfterSelect(object sender, TreeViewEventArgs e)
@@ -189,8 +189,12 @@ namespace VixenApplication.Setup
 		{
 			if (listViewProperties.SelectedItems.Count == 1) {
 				var property = listViewProperties.SelectedItems[0].Tag as IPropertyModuleInstance;
-				if (property != null)
-					property.Setup();
+				if (property != null) {
+					bool result = property.Setup();
+					if (result) {
+						OnElementsChanged();
+					}
+				}
 			}
 		}
 
