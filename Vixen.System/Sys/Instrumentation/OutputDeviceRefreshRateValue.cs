@@ -6,7 +6,7 @@ namespace Vixen.Sys.Instrumentation
 	internal class OutputDeviceRefreshRateValue : RateValue
 	{
 		public OutputDeviceRefreshRateValue(IOutputDevice outputDevice)
-			: base(string.Format("Output device refresh rate [{0}]", outputDevice.Name ))
+			: base(string.Format("{0} refresh rate", outputDevice.Name))
 		{
 		}
 

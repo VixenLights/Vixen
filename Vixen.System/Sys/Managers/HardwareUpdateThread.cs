@@ -104,7 +104,7 @@ namespace Vixen.Sys.Managers
 
 					// instrumentation counters...
 					_intervalDeltaValue.Set(Math.Abs(OutputDevice.UpdateInterval - dtMs));
-					_executionTimeValue.Set(_localTime.ElapsedMilliseconds - _lastMs);
+					_executionTimeValue.Set(execMs);
 
 					// log stuff after real work is done...
 
@@ -205,21 +205,30 @@ namespace Vixen.Sys.Managers
 
 		private void _CreatePerformanceValues()
 		{
+			_intervalDeltaValue = new MillisecondsValue(string.Format("{0} delta ms", OutputDevice.Name));
+			VixenSystem.Instrumentation.AddValue(_intervalDeltaValue);
+			_executionTimeValue = new MillisecondsValue(string.Format("{0} system ms", OutputDevice.Name));
+			VixenSystem.Instrumentation.AddValue(_executionTimeValue);
+			_updateTimeValue = new MillisecondsValue(string.Format("{0} update ms", OutputDevice.Name));
+			VixenSystem.Instrumentation.AddValue(_updateTimeValue);
 			_refreshRateValue = new OutputDeviceRefreshRateValue(OutputDevice);
 			VixenSystem.Instrumentation.AddValue(_refreshRateValue);
-			_sleepTimeActualValue = new MillisecondsValue(string.Format("Output device sleep time [{0}]", OutputDevice.Name));
+			_sleepTimeActualValue = new MillisecondsValue(string.Format("{0} sleep time", OutputDevice.Name));
 			VixenSystem.Instrumentation.AddValue(_sleepTimeActualValue);
-			_intervalDeltaValue = new MillisecondsValue(string.Format("Output device delta time [{0}]", OutputDevice.Name));
-			VixenSystem.Instrumentation.AddValue(_intervalDeltaValue);
-			_executionTimeValue = new MillisecondsValue(string.Format("Output device system time [{0}]", OutputDevice.Name));
-			VixenSystem.Instrumentation.AddValue(_executionTimeValue);
-			_updateTimeValue = new MillisecondsValue(string.Format("Output device update time [{0}]", OutputDevice.Name));
-			VixenSystem.Instrumentation.AddValue(_updateTimeValue);
 		}
 
 		private void _RemovePerformanceValues()
 		{
-			if (_refreshRateValue != null) {
+			if (_intervalDeltaValue != null)
+			{
+				VixenSystem.Instrumentation.RemoveValue(_intervalDeltaValue);
+			}
+			if (_executionTimeValue != null)
+			{
+				VixenSystem.Instrumentation.RemoveValue(_executionTimeValue);
+			}
+			if (_refreshRateValue != null)
+			{
 				VixenSystem.Instrumentation.RemoveValue(_refreshRateValue);
 			}
 			if (_updateTimeValue != null) {

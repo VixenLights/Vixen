@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Linq;
+using System.Diagnostics;
 using Vixen.Execution;
 using Vixen.Execution.Context;
 using Vixen.Sys.Managers;
 using Vixen.Sys.State.Execution;
 using System.Collections.Concurrent;
+using Vixen.Sys.Instrumentation;
 
 namespace Vixen.Sys
 {
@@ -13,6 +15,16 @@ namespace Vixen.Sys
 		internal static SystemClock SystemTime = new SystemClock();
 		private static ExecutionStateEngine _state;
 		private static ControllerUpdateAdjudicator _updateAdjudicator;
+		private static MillisecondsValue _systemUpdateTime;
+		private static Stopwatch _stopwatch;
+		private static long lastMs = 0;
+
+		public static void initInstrumentation()
+		{
+			_stopwatch = Stopwatch.StartNew();
+			_systemUpdateTime = new MillisecondsValue("System update ms");
+			VixenSystem.Instrumentation.AddValue(_systemUpdateTime);
+		}
 
 		// These are system-level events.
 		public static event EventHandler NodesChanged
@@ -148,9 +160,15 @@ namespace Vixen.Sys
 			lock (lockObject) {
 				bool allowUpdate = _UpdateAdjudicator.PetitionForUpdate();
 				if (allowUpdate) {
+					if (_stopwatch == null)
+						initInstrumentation();
+					long nowMs = _stopwatch.ElapsedMilliseconds;
+					lastMs = nowMs;
 					lastSnapshots = VixenSystem.Contexts.Update();
 					VixenSystem.Elements.Update();
 					VixenSystem.Filters.Update();
+					long updateMs = _stopwatch.ElapsedMilliseconds - nowMs;
+					_systemUpdateTime.Set(updateMs);
 				}
 				return lastSnapshots;
 			}
