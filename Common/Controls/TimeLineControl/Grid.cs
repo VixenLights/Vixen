@@ -1620,8 +1620,30 @@ namespace Common.Controls.Timeline
 			currentElement.DisplayTop = top + (currentElement.DisplayHeight * elementRowLocation);
 			currentElement.RowTopOffset = currentElement.DisplayHeight * elementRowLocation;
 			Size size = new Size((int)Math.Ceiling(timeToPixels(currentElement.Duration)), row.Height - 1);
-			Bitmap elementImage = currentElement.Draw(size);
-			//Bitmap elementImage = currentElement.Draw(size);
+			Bitmap elementImage;
+			try
+			{
+				elementImage = currentElement.Draw(size);
+			}
+			catch (Exception e)
+			{
+				//At some zoom levels and effect durations, the image that we are trying to draw can become so big that we cannot draw it.
+				//This is due to the attempted caching of the image for the full length of the effect. I 
+				//plan to rework this in 2014 because it is fundamentally flawed.
+			
+				//Attempt to recover until this can be reworked to really only draw what is in the visible part of the 
+				//grid. Trying to resize it is crap, but if we do not draw it then the user can't do anything with it to work around the problem.
+				Logging.Error(string.Format("Exception drawing element for effect {0} of size: {1} Height X {2} Width with duration of {3}.", 
+					currentElement.EffectNode.Effect.EffectName, size.Height, size.Width,currentElement.Duration),e);
+				
+				MessageBox.Show(
+					string.Format("Unable to draw effect {0} at time {1} due to its size. Attempting to recover by reducing it's length. Please report this issue and provide the logs for further investigation.",
+					currentElement.EffectNode.Effect.EffectName, currentElement.StartTime));
+				MoveResizeElement(currentElement, currentElement.StartTime, TimeSpan.FromSeconds(5));
+				size = new Size((int)Math.Ceiling(timeToPixels(currentElement.Duration)), row.Height - 1);
+				elementImage = currentElement.Draw(size);
+			}
+
 			Point finalDrawLocation = new Point((int)Math.Floor(timeToPixels(currentElement.StartTime)), currentElement.DisplayTop);
 
 			Rectangle srcRect = new Rectangle(0, 0, elementImage.Width, elementImage.Height);
