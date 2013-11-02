@@ -137,17 +137,15 @@ namespace VixenModules.Effect.Pulse
 					if (color == null)
 					{
 						startValue = new LightingValue(ColorGradient.GetColorAt(lastPosition),
-													   (float)LevelCurve.GetValue(lastPosition * 100) / 100);
-						endValue = new LightingValue(ColorGradient.GetColorAt(position), (float)LevelCurve.GetValue(position * 100) / 100);
+													   LevelCurve.GetValue(lastPosition * 100) / 100);
+						endValue = new LightingValue(ColorGradient.GetColorAt(position), LevelCurve.GetValue(position * 100) / 100);
 					}
 					else
 					{
 						startValue = new LightingValue((Color)color,
-													   (float)
 													   (ColorGradient.GetProportionOfColorAt(lastPosition, (Color)color) *
 														LevelCurve.GetValue(lastPosition * 100) / 100));
 						endValue = new LightingValue((Color)color,
-													 (float)
 													 (ColorGradient.GetProportionOfColorAt(position, (Color)color) *
 													  LevelCurve.GetValue(position * 100) / 100));
 					}

@@ -23,38 +23,17 @@ namespace Vixen.Sys
 
 		private bool CreateNewIntent(LightingIntent oldIntent, LightingIntent newIntent)
 		{
-			if (!intensityHistory.ContainsKey(oldIntent.GenericID)) {
-				intensityHistory.Add(oldIntent.GenericID, new List<Tuple<int, int>>() { 
-							new Tuple<int,int>(0, (int)(oldIntent.StartValue.Intensity*10000)),
-							new Tuple<int,int>(1, (int)(oldIntent.EndValue.Intensity*10000))
-						});
-			}
-
-			bool returnValue = true;
-
+			//We can only combine intents if they are truly linear. i.e. start and end values of both are the same. 
+			//Anything else we cannot tell because it can vary based on timespan and start and end values what linear is especially in ramps.
+			bool returnValue = false;
 			try {
 
 
-				var order = intensityHistory[oldIntent.GenericID].OrderBy(o => o.Item1);
-
-				var item1= order.First().Item2;
-				var item2 = order.Last().Item2;
-
-				if (item1==item2)
-					return true;
-				else {
-					if (oldIntent.EndValue.Intensity == newIntent.StartValue.Intensity && oldIntent.EndValue.Intensity != newIntent.EndValue.Intensity) {
-						return true;
-					} else {
-						if (item1<item2) {
-							returnValue= (int)(newIntent.EndValue.Intensity*10000)>item2;
-						} else { //Ascending
-							returnValue= (int)(newIntent.EndValue.Intensity*10000)<item2;
-						}
-					}
-				}
-				if (returnValue)
-					intensityHistory.Remove(oldIntent.GenericID);
+				if (oldIntent.StartValue.Intensity.Equals(oldIntent.EndValue.Intensity) && oldIntent.EndValue.Intensity.Equals(newIntent.StartValue.Intensity) 
+					&& oldIntent.EndValue.Intensity.Equals(newIntent.EndValue.Intensity))
+				{
+					returnValue = true;
+				} 
 			} catch (Exception e) {
 				Logging.ErrorException(e.Message, e);
 
@@ -76,22 +55,20 @@ namespace Vixen.Sys
 				var newIntent = node.Intent as LightingIntent;
 
 				if (newIntent != null) {
-					var oldIntentNode = this.Where(nn => nn.EndTime.Equals(node.StartTime)).FirstOrDefault();
+					var oldIntentNode = this.FirstOrDefault(nn => nn.EndTime.Equals(node.StartTime));
 					if (oldIntentNode != null) {
 						var oldIntent = oldIntentNode.Intent as LightingIntent;
-						if (oldIntent != null && oldIntent.EndValue.FullColor.ToArgb()== newIntent.StartValue.FullColor.ToArgb() && !CreateNewIntent(oldIntent, newIntent)) {
-
-				 
+						if (oldIntent != null && oldIntent.EndValue.FullColor.ToArgb()== newIntent.StartValue.FullColor.ToArgb() && CreateNewIntent(oldIntent, newIntent)) {
 
 							//Create a new IntentNode to replace the old one with the new values.
 							var lIntent = new LightingIntent(oldIntent.StartValue,  newIntent.EndValue , oldIntent.TimeSpan.Add(newIntent.TimeSpan));
 							
 							lIntent.GenericID = ((LightingIntent)oldIntentNode.Intent).GenericID;
 							
-							var IntentNode = new IntentNode(lIntent, oldIntentNode.StartTime);
+							var intentNode = new IntentNode(lIntent, oldIntentNode.StartTime);
 
 							this.Remove(oldIntentNode);
-							Add(IntentNode);
+							Add(intentNode);
 							continue;
 						}
 					}  
