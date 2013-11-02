@@ -131,6 +131,7 @@ namespace Vixen.Sys.Managers
 		private void _RemoveComponent(IDataFlowComponent component)
 		{
 			_RemoveAsSource(component);
+			_RemoveComponentSource(component);
 
 			_componentLookup.Remove(component.DataFlowComponentId);
 
@@ -139,10 +140,12 @@ namespace Vixen.Sys.Managers
 
 		private void _RemoveAsSource(IDataFlowComponent component)
 		{
-			IEnumerable<IDataFlowComponent> childComponents =
-				_componentLookup.Values.Where(x => x.Source != null && Equals(x.Source.Component, component));
-			foreach (IDataFlowComponent childComponent in childComponents) {
-				_RemoveComponentSource(childComponent);
+			List<IDataFlowComponent> childComponents;
+			_componentDestinations.TryGetValue(component, out childComponents);
+			if (childComponents != null) {
+				foreach (IDataFlowComponent childComponent in childComponents) {
+					_RemoveComponentSource(childComponent);
+				}
 			}
 		}
 
@@ -150,13 +153,17 @@ namespace Vixen.Sys.Managers
 		{
 			if (component.Source == null) return;
 
+			IDataFlowComponent parent = component.Source.Component;
 			List<IDataFlowComponent> children = null;
-			_componentDestinations.TryGetValue(component.Source.Component, out children);
+			_componentDestinations.TryGetValue(parent, out children);
 
 			if (children == null) {
 				Logging.Error("removing the source from a data flow component, but it's not already a child of the source!");
 			} else {
 				children.Remove(component);
+				if (children.Count == 0) {
+					_componentDestinations.Remove(parent);
+				}
 			}
 
 			_SetComponentSource(component, null);
