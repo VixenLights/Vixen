@@ -1,5 +1,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2010
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vixen", "Vixen.System\Vixen.csproj", "{50B78623-FCF4-48AF-93FF-FA87C937028F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VixenModules", "VixenModules", "{F1B3198B-977F-40CD-85B3-CAA3F5B5C948}"
@@ -341,9 +343,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "K8055 Controller", "Modules\Output\K8055 Controller\K8055 Controller.csproj", "{988C89F2-F9A3-41CD-832E-18CFAADD210F}"
 EndProject
 Global
-	GlobalSection(TestCaseManagementSettings) = postSolution
-		CategoryFile = Everything.vsmdi
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
@@ -511,16 +510,16 @@ Global
 		{EEAF8E98-6BE9-40AB-B3BF-A60AAF20B3C5}.Release|x64.Build.0 = Release|x64
 		{EEAF8E98-6BE9-40AB-B3BF-A60AAF20B3C5}.Release|x86.ActiveCfg = Release|x86
 		{EEAF8E98-6BE9-40AB-B3BF-A60AAF20B3C5}.Release|x86.Build.0 = Release|x86
-		{9EFE1059-E2DC-4576-B9E3-4AE3F998CB28}.Release|x64.ActiveCfg = Release|Any CPU
-		{9EFE1059-E2DC-4576-B9E3-4AE3F998CB28}.Release|x64.Build.0 = Release|Any CPU
+		{9EFE1059-E2DC-4576-B9E3-4AE3F998CB28}.Release|x64.ActiveCfg = Release|x64
+		{9EFE1059-E2DC-4576-B9E3-4AE3F998CB28}.Release|x64.Build.0 = Release|x64
 		{9EFE1059-E2DC-4576-B9E3-4AE3F998CB28}.Release|x86.ActiveCfg = Release|x86
 		{9EFE1059-E2DC-4576-B9E3-4AE3F998CB28}.Release|x86.Build.0 = Release|x86
-		{1272F77E-D926-4310-AE8B-858909B10F0C}.Release|x64.ActiveCfg = Release|Any CPU
-		{1272F77E-D926-4310-AE8B-858909B10F0C}.Release|x64.Build.0 = Release|Any CPU
+		{1272F77E-D926-4310-AE8B-858909B10F0C}.Release|x64.ActiveCfg = Release|x64
+		{1272F77E-D926-4310-AE8B-858909B10F0C}.Release|x64.Build.0 = Release|x64
 		{1272F77E-D926-4310-AE8B-858909B10F0C}.Release|x86.ActiveCfg = Release|x86
 		{1272F77E-D926-4310-AE8B-858909B10F0C}.Release|x86.Build.0 = Release|x86
-		{5EAB131C-1C93-4C3F-A1D8-D711053DE33C}.Release|x64.ActiveCfg = Release|Any CPU
-		{5EAB131C-1C93-4C3F-A1D8-D711053DE33C}.Release|x64.Build.0 = Release|Any CPU
+		{5EAB131C-1C93-4C3F-A1D8-D711053DE33C}.Release|x64.ActiveCfg = Release|x64
+		{5EAB131C-1C93-4C3F-A1D8-D711053DE33C}.Release|x64.Build.0 = Release|x64
 		{5EAB131C-1C93-4C3F-A1D8-D711053DE33C}.Release|x86.ActiveCfg = Release|x86
 		{5EAB131C-1C93-4C3F-A1D8-D711053DE33C}.Release|x86.Build.0 = Release|x86
 		{DAAD1EF0-61DF-412D-A6B5-393E81BC314B}.Release|x64.ActiveCfg = Release|x64
@@ -798,5 +797,8 @@ Global
 		{9EFE1059-E2DC-4576-B9E3-4AE3F998CB28} = {B21B530A-394C-4A30-8325-FB859613FAA5}
 		{1272F77E-D926-4310-AE8B-858909B10F0C} = {B21B530A-394C-4A30-8325-FB859613FAA5}
 		{5EAB131C-1C93-4C3F-A1D8-D711053DE33C} = {B21B530A-394C-4A30-8325-FB859613FAA5}
+	EndGlobalSection
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = Everything.vsmdi
 	EndGlobalSection
 EndGlobal
