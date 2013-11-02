@@ -143,7 +143,7 @@ namespace Vixen.Sys.Managers
 			List<IDataFlowComponent> childComponents;
 			_componentDestinations.TryGetValue(component, out childComponents);
 			if (childComponents != null) {
-				foreach (IDataFlowComponent childComponent in childComponents) {
+				foreach (IDataFlowComponent childComponent in childComponents.ToArray()) {
 					_RemoveComponentSource(childComponent);
 				}
 			}
