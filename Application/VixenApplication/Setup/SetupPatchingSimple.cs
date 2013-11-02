@@ -52,12 +52,10 @@ namespace VixenApplication.Setup
 			_updatePatchingSummary();
 		}
 
-		public void UpdateControllerDetails()
+		public void UpdateControllerDetails(ControllersAndOutputsSet controllersAndOutputs)
 		{
-			if (_cachedControllersAndOutputs == null)
-				return;
-
-			_updateControllerDetails(_cachedControllersAndOutputs);
+			_cachedControllersAndOutputs = controllersAndOutputs;
+			_updateControllerDetails(controllersAndOutputs);
 			_updatePatchingSummary();
 		}
 

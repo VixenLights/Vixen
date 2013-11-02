@@ -1921,20 +1921,14 @@ namespace VixenApplication.Setup
 		}
 
 
-		private ControllersAndOutputsSet _cachedControllersAndOutputs = null;
 		public void UpdateControllerSelection(ControllersAndOutputsSet controllersAndOutputs)
 		{
-			_cachedControllersAndOutputs = controllersAndOutputs;
 			_updateControllerDisplay(controllersAndOutputs);
 		}
 
-		public void UpdateControllerDetails()
+		public void UpdateControllerDetails(ControllersAndOutputsSet controllersAndOutputs)
 		{
-			if (_cachedControllersAndOutputs == null) {
-				Logging.Error("null cached controllers and outputs");
-			} else {
-				_updateControllerDisplay(_cachedControllersAndOutputs);
-			}
+			_updateControllerDisplay(controllersAndOutputs);
 		}
 
 		public Control SetupPatchingControl

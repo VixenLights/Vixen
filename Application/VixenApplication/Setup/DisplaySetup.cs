@@ -160,7 +160,7 @@ namespace VixenApplication
 		void control_ControllersChanged(object sender, EventArgs e)
 		{
 			if (_currentPatchingControl != null) {
-				_currentPatchingControl.UpdateControllerDetails();
+				_currentPatchingControl.UpdateControllerDetails(_currentControllersControl.SelectedControllersAndOutputs);
 			}
 		}
 
