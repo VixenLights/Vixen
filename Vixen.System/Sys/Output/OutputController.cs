@@ -219,7 +219,7 @@ namespace Vixen.Sys.Output
 			{
 				CommandOutputFactory outputFactory = new CommandOutputFactory();
 				while (OutputCount < value) {
-					AddOutput(outputFactory.CreateOutput("Unnamed Output", OutputCount));
+					AddOutput(outputFactory.CreateOutput(string.Format("Output {0}", OutputCount + 1), OutputCount));
 				}
 				while (OutputCount > value) {
 					RemoveOutput(Outputs[OutputCount - 1]);
