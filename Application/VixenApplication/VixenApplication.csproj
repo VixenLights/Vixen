@@ -61,6 +61,10 @@
       <Name>Vixen</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\Common\Help\VixenHelp.csproj">
+      <Project>{bd12bffc-7039-4c79-aba0-51f99773a916}</Project>
+      <Name>VixenHelp</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Common\Resources\Resources.csproj">
       <Project>{F7A80169-6310-4585-9D58-A6F6F5C5B380}</Project>
       <Name>Resources</Name>
@@ -402,7 +406,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\HandCursor.cur" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="..\..\Common\Libraries\SciLexer.dll">
       <Link>SciLexer.dll</Link>
