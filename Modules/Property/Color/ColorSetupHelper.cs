@@ -229,6 +229,10 @@ namespace VixenModules.Property.Color
 					// this is a bit iffy -- -1 as a component output index -- but hey.
 			}
 
+			if (component.Outputs == null || component.OutputDataType == DataFlowType.None) {
+				yield break;
+			}
+
 			for (int i = 0; i < component.Outputs.Length; i++) {
 				IEnumerable<IDataFlowComponent> children = VixenSystem.DataFlow.GetDestinationsOfComponentOutput(component, i);
 
