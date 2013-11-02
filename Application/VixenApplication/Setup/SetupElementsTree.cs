@@ -99,6 +99,8 @@ namespace VixenApplication.Setup
 				IElementSetupHelper helper = item.Value as IElementSetupHelper;
 				helper.Perform(elementTree.SelectedElementNodes);
 				elementTree.PopulateNodeTree();
+
+				UpdateFormWithNode();
 				OnElementsChanged();
 			}
 		}
