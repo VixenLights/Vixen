@@ -26,5 +26,14 @@ namespace Common.Controls
 		{
 			get { return decimal.ToInt32(numericUpDownChooser.Value); }
 		}
+
+		private void numericUpDownChooser_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Enter) {
+				DialogResult = DialogResult.OK;
+			} else if (e.KeyCode == Keys.Escape) {
+				DialogResult = DialogResult.Cancel;
+			}
+		}
 	}
 }
