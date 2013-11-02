@@ -12,8 +12,8 @@ namespace Vixen.Sys.Managers
 {
 	public class FilterManager : IEnumerable<IOutputFilterModuleInstance>
 	{
-		private MillisecondsValue _filterUpdateTimeValue = new MillisecondsValue("Update time for all filters");
-		private MillisecondsValue _filterUpdateWaitValue = new MillisecondsValue("    Wait time for all filters");
+		private MillisecondsValue _filterUpdateTimeValue = new MillisecondsValue("   Filters update");
+		private MillisecondsValue _filterUpdateWaitValue = new MillisecondsValue("   Filters wait");
 		private Stopwatch _stopwatch = Stopwatch.StartNew();
 		private Dictionary<Guid, IOutputFilterModuleInstance> _instances;
 		// The data flow manager has data flow roots, but those are elements and are updated
@@ -33,7 +33,7 @@ namespace Vixen.Sys.Managers
 			dataFlowManager.ComponentSourceChanged += DataFlowManagerOnComponentSourceChanged;
 
 			VixenSystem.Instrumentation.AddValue(_filterUpdateTimeValue);
-			VixenSystem.Instrumentation.AddValue(_filterUpdateWaitValue);
+			//VixenSystem.Instrumentation.AddValue(_filterUpdateWaitValue);
 		}
 
 		public void AddFilter(IOutputFilterModuleInstance filter)

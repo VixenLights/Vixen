@@ -137,6 +137,7 @@ namespace Vixen.Sys
 
 		public static void LoadSystemConfig()
 		{
+			Execution.initInstrumentation();
 			DataFlow = new DataFlowManager();
 			Elements = new ElementManager();
 			Nodes = new NodeManager();
