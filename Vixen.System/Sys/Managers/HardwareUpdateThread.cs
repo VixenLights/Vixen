@@ -96,7 +96,8 @@ namespace Vixen.Sys.Managers
 					long dtMs = nowMs - _lastMs;
 					_lastMs = nowMs;
 
-					var lastTS = Execution.UpdateState();
+					bool allowed = false;
+					var lastTS = Execution.UpdateState( out allowed);
 					long execMs = _localTime.ElapsedMilliseconds - nowMs;
 
 					_UpdateOutputDevice();
@@ -104,7 +105,9 @@ namespace Vixen.Sys.Managers
 
 					// instrumentation counters...
 					_intervalDeltaValue.Set(Math.Abs(OutputDevice.UpdateInterval - dtMs));
-					_executionTimeValue.Set(execMs);
+					if( allowed)
+						_executionTimeValue.Set(execMs);
+					_updateTimeValue.Set(outputMs);
 
 					// log stuff after real work is done...
 
@@ -122,7 +125,7 @@ namespace Vixen.Sys.Managers
 
 					// our cycle jitter was captured above
 					bool jitter = false;
-					if (Math.Abs(OutputDevice.UpdateInterval - dtMs) > 10) {
+					if (Math.Abs(OutputDevice.UpdateInterval - dtMs) > 20) {
 						jitter = true;
 						Logging.Debug("hwt jitter:  {0}: nowMs:{1}, dtMs:{2}", OutputDevice.Name, nowMs, dtMs);
 					}
@@ -132,7 +135,7 @@ namespace Vixen.Sys.Managers
 					if (sampMs > 0) {
 						dtMs2 = sampMs - _lastMs2;
 						_lastMs2 = sampMs;
-						if (Math.Abs(OutputDevice.UpdateInterval - dtMs2) > 10 && sampMs > 0 && dtMs2 > 0)
+						if (Math.Abs(OutputDevice.UpdateInterval - dtMs2) > 20 && sampMs > 0 && dtMs2 > 0)
 						{
 							jitter = true;
 							Logging.Debug("samp jitter:  {0}: sampMs:{1}, dts:{2}",
@@ -180,11 +183,7 @@ namespace Vixen.Sys.Managers
 		{
 			_refreshRateValue.Increment();
 
-			long timeBeforeUpdate = _localTime.ElapsedMilliseconds;
-
 			OutputDevice.Update();
-
-			_updateTimeValue.Set(_localTime.ElapsedMilliseconds - timeBeforeUpdate);
 		}
 
 		private void _WaitOnSignal(IOutputDeviceUpdateSignaler signaler)
@@ -205,11 +204,11 @@ namespace Vixen.Sys.Managers
 
 		private void _CreatePerformanceValues()
 		{
-			_intervalDeltaValue = new MillisecondsValue(string.Format("{0} delta ms", OutputDevice.Name));
+			_intervalDeltaValue = new MillisecondsValue(string.Format("{0} delta", OutputDevice.Name));
 			VixenSystem.Instrumentation.AddValue(_intervalDeltaValue);
-			_executionTimeValue = new MillisecondsValue(string.Format("{0} system ms", OutputDevice.Name));
+			_executionTimeValue = new MillisecondsValue(string.Format("{0} system", OutputDevice.Name));
 			VixenSystem.Instrumentation.AddValue(_executionTimeValue);
-			_updateTimeValue = new MillisecondsValue(string.Format("{0} update ms", OutputDevice.Name));
+			_updateTimeValue = new MillisecondsValue(string.Format("{0} device", OutputDevice.Name));
 			VixenSystem.Instrumentation.AddValue(_updateTimeValue);
 			_refreshRateValue = new OutputDeviceRefreshRateValue(OutputDevice);
 			VixenSystem.Instrumentation.AddValue(_refreshRateValue);

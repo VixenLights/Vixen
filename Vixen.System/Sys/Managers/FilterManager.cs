@@ -12,8 +12,8 @@ namespace Vixen.Sys.Managers
 {
 	public class FilterManager : IEnumerable<IOutputFilterModuleInstance>
 	{
-		private MillisecondsValue _filterUpdateTimeValue = new MillisecondsValue("   Filters update ms");
-		private MillisecondsValue _filterUpdateWaitValue = new MillisecondsValue("   Filters wait ms");
+		private MillisecondsValue _filterUpdateTimeValue = new MillisecondsValue("   Filters update");
+		private MillisecondsValue _filterUpdateWaitValue = new MillisecondsValue("   Filters wait");
 		private Stopwatch _stopwatch = Stopwatch.StartNew();
 		private Dictionary<Guid, IOutputFilterModuleInstance> _instances;
 		// The data flow manager has data flow roots, but those are elements and are updated

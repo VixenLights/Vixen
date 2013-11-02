@@ -15,15 +15,24 @@ namespace Vixen.Sys
 		internal static SystemClock SystemTime = new SystemClock();
 		private static ExecutionStateEngine _state;
 		private static ControllerUpdateAdjudicator _updateAdjudicator;
-		private static MillisecondsValue _systemUpdateTime;
+		private static MillisecondsValue _systemAllowedUpdateTime;
+		private static MillisecondsValue _systemAllowedBlockTime;
+		private static MillisecondsValue _systemDeniedUpdateTime;
+		private static MillisecondsValue _systemDeniedBlockTime;
 		private static Stopwatch _stopwatch;
 		private static long lastMs = 0;
 
 		public static void initInstrumentation()
 		{
 			_stopwatch = Stopwatch.StartNew();
-			_systemUpdateTime = new MillisecondsValue("System update ms");
-			VixenSystem.Instrumentation.AddValue(_systemUpdateTime);
+			_systemAllowedUpdateTime = new MillisecondsValue("System allowed update");
+			VixenSystem.Instrumentation.AddValue(_systemAllowedUpdateTime);
+			_systemAllowedBlockTime = new MillisecondsValue("System allowed block");
+			VixenSystem.Instrumentation.AddValue(_systemAllowedBlockTime);
+			_systemDeniedUpdateTime = new MillisecondsValue("System denied update");
+			VixenSystem.Instrumentation.AddValue(_systemDeniedUpdateTime);
+			_systemDeniedBlockTime = new MillisecondsValue("System denied block");
+			VixenSystem.Instrumentation.AddValue(_systemDeniedBlockTime);
 		}
 
 		// These are system-level events.
@@ -155,21 +164,27 @@ namespace Vixen.Sys
 		private static ConcurrentDictionary<string, TimeSpan> lastSnapshots = new ConcurrentDictionary<string, TimeSpan>();
 		private static Object lockObject = new Object();
 
-		public static ConcurrentDictionary<string, TimeSpan> UpdateState()
+		public static ConcurrentDictionary<string, TimeSpan> UpdateState( out bool allowed)
 		{
+			if (_stopwatch == null)
+				initInstrumentation();
+			long nowMs = _stopwatch.ElapsedMilliseconds;
 			lock (lockObject) {
+				long lockMs = _stopwatch.ElapsedMilliseconds - nowMs;
 				bool allowUpdate = _UpdateAdjudicator.PetitionForUpdate();
 				if (allowUpdate) {
-					if (_stopwatch == null)
-						initInstrumentation();
-					long nowMs = _stopwatch.ElapsedMilliseconds;
-					lastMs = nowMs;
 					lastSnapshots = VixenSystem.Contexts.Update();
 					VixenSystem.Elements.Update();
 					VixenSystem.Filters.Update();
-					long updateMs = _stopwatch.ElapsedMilliseconds - nowMs;
-					_systemUpdateTime.Set(updateMs);
+					_systemAllowedBlockTime.Set( lockMs);
+					_systemAllowedUpdateTime.Set(_stopwatch.ElapsedMilliseconds - nowMs - lockMs);
 				}
+				else {
+					_systemDeniedBlockTime.Set(lockMs);
+					_systemDeniedUpdateTime.Set(_stopwatch.ElapsedMilliseconds - nowMs - lockMs);
+				}
+				lastMs = nowMs;
+				allowed = allowUpdate;
 				return lastSnapshots;
 			}
 		}

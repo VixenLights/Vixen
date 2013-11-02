@@ -10,9 +10,9 @@ namespace Vixen.Sys.Managers
 {
 	public class ElementManager : IEnumerable<Element>
 	{
-		private MillisecondsValue _elementUpdateTimeValue = new MillisecondsValue("   Elements update ms");
-		private MillisecondsValue _elementUpdateWaitValue = new MillisecondsValue("   Elements wait ms");
-		private MillisecondsValue _elementClearTimeValue = new MillisecondsValue("  Elements clear ms");
+		private MillisecondsValue _elementUpdateTimeValue = new MillisecondsValue("   Elements update");
+		private MillisecondsValue _elementUpdateWaitValue = new MillisecondsValue("   Elements wait");
+		private MillisecondsValue _elementClearTimeValue = new MillisecondsValue("  Elements clear");
 		private Stopwatch _stopwatch = Stopwatch.StartNew();
 		private ElementDataFlowAdapterFactory _dataFlowAdapters;
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();

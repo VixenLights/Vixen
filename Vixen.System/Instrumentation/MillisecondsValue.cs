@@ -42,7 +42,8 @@ namespace Vixen.Sys.Instrumentation
 		{
 			double mx = max;
 			double mn = min;
-			return string.Format("min {0,2} ms, avg {1,2} ms, max {2,2} ms", (int)mn, (int)_GetValue(), (int)mx);
+			int ct = cnt;
+			return string.Format("min {0,2} ms,  avg {1,2} ms,  max {2,2} ms,    cnt {3}", (int)mn, (int)_GetValue(), (int)mx, ct);
 		}
 	}
 }

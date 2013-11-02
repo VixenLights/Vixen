@@ -15,8 +15,8 @@ namespace Vixen.Sys.Managers
 	{
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private ConcurrentDictionary<Guid, IContext> _instances;
-		private MillisecondsValue _contextUpdateTimeValue = new MillisecondsValue("   Contexts update ms");
-		private MillisecondsValue _contextUpdateWaitValue = new MillisecondsValue("   Contexts wait ms");
+		private MillisecondsValue _contextUpdateTimeValue = new MillisecondsValue("   Contexts update");
+		private MillisecondsValue _contextUpdateWaitValue = new MillisecondsValue("   Contexts wait");
 		private Stopwatch _stopwatch = Stopwatch.StartNew();
 		private LiveContext _systemLiveContext;
 
