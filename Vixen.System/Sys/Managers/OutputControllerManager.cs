@@ -137,6 +137,8 @@ namespace Vixen.Sys.Managers
 
 		public bool Remove(OutputController outputDevice)
 		{
+			Stop(outputDevice);
+			outputDevice.OutputCount = 0;		// "delete" all the outputs to ensure data flow links are discarded
 			return _mediator.Remove(outputDevice);
 		}
 
