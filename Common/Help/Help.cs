@@ -38,7 +38,9 @@ namespace Common.VixenHelp
 			[Description("http://www.vixenlights.com/vixen-3-documentation/scheduling-a-show/show-editor/")]
 			Show_Editor,
 			[Description("http://www.vixenlights.com/vixen-3-documentation/sequencer/effects/nutcracker-effects/")]
-			Effect_Nutcracker
+			Effect_Nutcracker,
+			[Description("http://www.vixenlights.com/vixen-3-documentation/setup-configuration/")]
+			Setup_Main
 		}
 		
 		public static void ShowHelp(HelpStrings helpString)

@@ -39,13 +39,14 @@
 			this.radioButtonPatchingGraphical = new System.Windows.Forms.RadioButton();
 			this.label3 = new System.Windows.Forms.Label();
 			this.radioButtonPatchingSimple = new System.Windows.Forms.RadioButton();
+			this.label7 = new System.Windows.Forms.Label();
+			this.buttonCancel = new System.Windows.Forms.Button();
+			this.buttonOk = new System.Windows.Forms.Button();
 			this.label6 = new System.Windows.Forms.Label();
 			this.radioButtonControllersStandard = new System.Windows.Forms.RadioButton();
 			this.tableLayoutPanelControllerSetup = new System.Windows.Forms.TableLayoutPanel();
 			this.label5 = new System.Windows.Forms.Label();
-			this.buttonCancel = new System.Windows.Forms.Button();
-			this.buttonOk = new System.Windows.Forms.Button();
-			this.label7 = new System.Windows.Forms.Label();
+			this.buttonHelp = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
@@ -156,6 +157,7 @@
 			// 
 			// splitContainer2.Panel2
 			// 
+			this.splitContainer2.Panel2.Controls.Add(this.buttonHelp);
 			this.splitContainer2.Panel2.Controls.Add(this.label7);
 			this.splitContainer2.Panel2.Controls.Add(this.buttonCancel);
 			this.splitContainer2.Panel2.Controls.Add(this.buttonOk);
@@ -227,6 +229,38 @@
 			this.radioButtonPatchingSimple.UseVisualStyleBackColor = true;
 			this.radioButtonPatchingSimple.CheckedChanged += new System.EventHandler(this.radioButtonPatchingSimple_CheckedChanged);
 			// 
+			// label7
+			// 
+			this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.label7.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.label7.Location = new System.Drawing.Point(4, 611);
+			this.label7.Name = "label7";
+			this.label7.Size = new System.Drawing.Size(244, 2);
+			this.label7.TabIndex = 13;
+			// 
+			// buttonCancel
+			// 
+			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.buttonCancel.Location = new System.Drawing.Point(168, 623);
+			this.buttonCancel.Name = "buttonCancel";
+			this.buttonCancel.Size = new System.Drawing.Size(74, 25);
+			this.buttonCancel.TabIndex = 12;
+			this.buttonCancel.Text = "Cancel";
+			this.buttonCancel.UseVisualStyleBackColor = true;
+			// 
+			// buttonOk
+			// 
+			this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
+			this.buttonOk.Location = new System.Drawing.Point(88, 623);
+			this.buttonOk.Name = "buttonOk";
+			this.buttonOk.Size = new System.Drawing.Size(74, 25);
+			this.buttonOk.TabIndex = 11;
+			this.buttonOk.Text = "OK";
+			this.buttonOk.UseVisualStyleBackColor = true;
+			// 
 			// label6
 			// 
 			this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -275,37 +309,21 @@
 			this.label5.TabIndex = 5;
 			this.label5.Text = "Controller Setup";
 			// 
-			// buttonCancel
+			// buttonHelp
 			// 
-			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(152, 624);
-			this.buttonCancel.Name = "buttonCancel";
-			this.buttonCancel.Size = new System.Drawing.Size(90, 25);
-			this.buttonCancel.TabIndex = 12;
-			this.buttonCancel.Text = "Cancel";
-			this.buttonCancel.UseVisualStyleBackColor = true;
-			// 
-			// buttonOk
-			// 
-			this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOk.Location = new System.Drawing.Point(56, 624);
-			this.buttonOk.Name = "buttonOk";
-			this.buttonOk.Size = new System.Drawing.Size(90, 25);
-			this.buttonOk.TabIndex = 11;
-			this.buttonOk.Text = "OK";
-			this.buttonOk.UseVisualStyleBackColor = true;
-			// 
-			// label7
-			// 
-			this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.label7.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.label7.Location = new System.Drawing.Point(4, 611);
-			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(244, 2);
-			this.label7.TabIndex = 13;
+			this.buttonHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonHelp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.buttonHelp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.buttonHelp.Location = new System.Drawing.Point(8, 623);
+			this.buttonHelp.Name = "buttonHelp";
+			this.buttonHelp.Size = new System.Drawing.Size(74, 25);
+			this.buttonHelp.TabIndex = 60;
+			this.buttonHelp.Tag = "http://www.vixenlights.com/vixen-3-documentation/sequencer/effects/nutcracker-eff" +
+    "ects/";
+			this.buttonHelp.Text = "Help";
+			this.buttonHelp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.buttonHelp.UseVisualStyleBackColor = true;
+			this.buttonHelp.Click += new System.EventHandler(this.buttonHelp_Click);
 			// 
 			// DisplaySetup
 			// 
@@ -355,5 +373,6 @@
 		private System.Windows.Forms.Label label7;
 		private System.Windows.Forms.Button buttonCancel;
 		private System.Windows.Forms.Button buttonOk;
+		private System.Windows.Forms.Button buttonHelp;
 	}
 }

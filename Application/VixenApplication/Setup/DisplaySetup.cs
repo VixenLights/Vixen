@@ -57,6 +57,8 @@ namespace VixenApplication
 			radioButtonElementTree.Checked = true;
 			radioButtonPatchingSimple.Checked = true;
 			radioButtonControllersStandard.Checked = true;
+
+			buttonHelp.Image = new Bitmap(Common.Resources.Properties.Resources.help, new Size(16, 16));
 		}
 
 
@@ -204,6 +206,11 @@ namespace VixenApplication
 		{
 			if ((sender as RadioButton).Checked)
 				activateControllersControl(_setupControllersSimple);
+		}
+
+		private void buttonHelp_Click(object sender, EventArgs e)
+		{
+			Common.VixenHelp.VixenHelp.ShowHelp(Common.VixenHelp.VixenHelp.HelpStrings.Setup_Main);
 		}
 
 
