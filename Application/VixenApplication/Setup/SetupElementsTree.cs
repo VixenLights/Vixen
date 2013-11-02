@@ -29,6 +29,10 @@ namespace VixenApplication.Setup
 			buttonRunHelperSetup.Text = "";
 			buttonAddProperty.BackgroundImage = Resources.add;
 			buttonAddProperty.Text = "";
+			buttonRemoveProperty.BackgroundImage = Resources.delete;
+			buttonRemoveProperty.Text = "";
+			buttonConfigureProperty.BackgroundImage = Resources.cog;
+			buttonConfigureProperty.Text = "";
 
 			comboBoxNewItemType.BeginUpdate();
 			foreach (IElementTemplate template in elementTemplates) {
@@ -127,6 +131,62 @@ namespace VixenApplication.Setup
 			}
 		}
 
+		private void buttonRemoveProperty_Click(object sender, EventArgs e)
+		{
+			if (listViewProperties.SelectedItems.Count > 0) {
+				string message, title;
+				if (listViewProperties.SelectedItems.Count == 1) {
+					message = "Are you sure you want to remove the selected property from the element?";
+					title = "Remove Property?";
+				} else {
+					message = "Are you sure you want to remove the selected properties from the element?";
+					title = "Remove Properties?";
+				}
+				if (MessageBox.Show(message, title, MessageBoxButtons.OKCancel) == DialogResult.OK) {
+					foreach (ListViewItem item in listViewProperties.SelectedItems) {
+						foreach (ElementNode elementNode in SelectedElements) {
+							elementNode.Properties.Remove((item.Tag as IPropertyModuleInstance).Descriptor.TypeId);
+						}
+					}
+
+					UpdateFormWithNode();
+					OnElementsChanged();
+				}
+			}
+
+		}
+
+		private void buttonConfigureProperty_Click(object sender, EventArgs e)
+		{
+			ConfigureSelectedProperties();
+		}
+
+		private bool ConfigureSelectedProperties()
+		{
+			bool result = false;
+
+			if (listViewProperties.SelectedItems.Count == 1) {
+				var property = listViewProperties.SelectedItems[0].Tag as IPropertyModuleInstance;
+				if (property != null) {
+					result = property.Setup();
+					if (result) {
+						// try and 'clone' the property data to any other selected element with this property data
+						foreach (ElementNode elementNode in SelectedElements) {
+							IPropertyModuleInstance p = elementNode.Properties.Get(property.TypeId);
+							if (p != null) {
+								p.ModuleData = property.ModuleData.Clone();
+							}
+						}
+
+						OnElementsChanged();
+					}
+				}
+			}
+
+			return result;
+		}
+
+
 		private void buttonAddTemplate_Click(object sender, EventArgs e)
 		{
 			ComboBoxItem item = (comboBoxNewItemType.SelectedItem as ComboBoxItem);
@@ -151,6 +211,8 @@ namespace VixenApplication.Setup
 		private void UpdateFormWithNode(ElementNode selectedNode)
 		{
 			// Properties
+			// TODO: we should really go through the selected elements, and only show properties they all have
+			// TODO: or even better, show normally if they ALL have them, and show in italics if SOME have the property... then don't let the partial ones be configured
 			listViewProperties.BeginUpdate();
 			listViewProperties.Items.Clear();
 			if (selectedNode != null) {
@@ -165,8 +227,19 @@ namespace VixenApplication.Setup
 			}
 			listViewProperties.EndUpdate();
 
-			buttonRunHelperSetup.Enabled = (selectedNode != null);
-			buttonAddProperty.Enabled = (selectedNode != null);
+			UpdateButtons();
+		}
+
+		private void UpdateButtons()
+		{
+			buttonRunHelperSetup.Enabled = comboBoxSetupHelperType.SelectedIndex >= 0;
+			buttonAddTemplate.Enabled = comboBoxNewItemType.SelectedIndex >= 0;
+
+			List<ElementNode> elementList = SelectedElements.ToList();
+			buttonRunHelperSetup.Enabled = (elementList.Any());
+			buttonAddProperty.Enabled = (elementList.Any());
+			buttonRemoveProperty.Enabled = listViewProperties.Items.Count > 0 && listViewProperties.SelectedItems.Count > 0;
+			buttonConfigureProperty.Enabled = listViewProperties.Items.Count > 0 && listViewProperties.SelectedItems.Count == 1;
 		}
 
 		private void elementTree_ElementsChanged(object sender, EventArgs e)
@@ -189,30 +262,22 @@ namespace VixenApplication.Setup
 
 		private void listViewProperties_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
-			if (listViewProperties.SelectedItems.Count == 1) {
-				var property = listViewProperties.SelectedItems[0].Tag as IPropertyModuleInstance;
-				if (property != null) {
-					bool result = property.Setup();
-					if (result) {
-						OnElementsChanged();
-					}
-				}
-			}
+			ConfigureSelectedProperties();
 		}
 
 		private void comboBoxNewItemType_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			buttonAddTemplate.Enabled = comboBoxNewItemType.SelectedIndex >= 0;
+			UpdateButtons();
 		}
 
 		private void comboBoxSetupHelperType_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			buttonRunHelperSetup.Enabled = comboBoxSetupHelperType.SelectedIndex >= 0;
+			UpdateButtons();
 		}
 
 		private void listViewProperties_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			buttonAddProperty.Enabled = listViewProperties.SelectedItems.Count > 0;
+			UpdateButtons();
 		}
 	}
 }

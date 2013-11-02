@@ -28,10 +28,10 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("1234");
-			System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("qwer qwer qwer asdf zxcv zxcv asdf qwerd qwer ");
-			System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem("asdf");
-			System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem("zxcv");
+			System.Windows.Forms.ListViewItem listViewItem17 = new System.Windows.Forms.ListViewItem("1234");
+			System.Windows.Forms.ListViewItem listViewItem18 = new System.Windows.Forms.ListViewItem("qwer qwer qwer asdf zxcv zxcv asdf qwerd qwer ");
+			System.Windows.Forms.ListViewItem listViewItem19 = new System.Windows.Forms.ListViewItem("asdf");
+			System.Windows.Forms.ListViewItem listViewItem20 = new System.Windows.Forms.ListViewItem("zxcv");
 			this.label1 = new System.Windows.Forms.Label();
 			this.comboBoxNewItemType = new System.Windows.Forms.ComboBox();
 			this.buttonAddTemplate = new System.Windows.Forms.Button();
@@ -45,6 +45,8 @@
 			this.label2 = new System.Windows.Forms.Label();
 			this.elementTree = new Common.Controls.ElementTree();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.buttonRemoveProperty = new System.Windows.Forms.Button();
+			this.buttonConfigureProperty = new System.Windows.Forms.Button();
 			this.groupBoxSelectedItems.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -87,15 +89,17 @@
 			// 
 			this.groupBoxSelectedItems.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBoxSelectedItems.Controls.Add(this.buttonConfigureProperty);
+			this.groupBoxSelectedItems.Controls.Add(this.buttonRemoveProperty);
 			this.groupBoxSelectedItems.Controls.Add(this.buttonAddProperty);
 			this.groupBoxSelectedItems.Controls.Add(this.label3);
 			this.groupBoxSelectedItems.Controls.Add(this.listViewProperties);
 			this.groupBoxSelectedItems.Controls.Add(this.buttonRunHelperSetup);
 			this.groupBoxSelectedItems.Controls.Add(this.comboBoxSetupHelperType);
 			this.groupBoxSelectedItems.Controls.Add(this.label2);
-			this.groupBoxSelectedItems.Location = new System.Drawing.Point(3, 415);
+			this.groupBoxSelectedItems.Location = new System.Drawing.Point(3, 387);
 			this.groupBoxSelectedItems.Name = "groupBoxSelectedItems";
-			this.groupBoxSelectedItems.Size = new System.Drawing.Size(244, 131);
+			this.groupBoxSelectedItems.Size = new System.Drawing.Size(244, 159);
 			this.groupBoxSelectedItems.TabIndex = 33;
 			this.groupBoxSelectedItems.TabStop = false;
 			this.groupBoxSelectedItems.Text = "Selected Item(s):";
@@ -105,7 +109,7 @@
 			this.buttonAddProperty.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonAddProperty.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonAddProperty.Enabled = false;
-			this.buttonAddProperty.Location = new System.Drawing.Point(206, 76);
+			this.buttonAddProperty.Location = new System.Drawing.Point(70, 125);
 			this.buttonAddProperty.Name = "buttonAddProperty";
 			this.buttonAddProperty.Size = new System.Drawing.Size(24, 24);
 			this.buttonAddProperty.TabIndex = 39;
@@ -132,13 +136,13 @@
 			this.listViewProperties.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.listViewProperties.HideSelection = false;
 			this.listViewProperties.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1,
-            listViewItem2,
-            listViewItem3,
-            listViewItem4});
+            listViewItem17,
+            listViewItem18,
+            listViewItem19,
+            listViewItem20});
 			this.listViewProperties.Location = new System.Drawing.Point(70, 61);
 			this.listViewProperties.Name = "listViewProperties";
-			this.listViewProperties.Size = new System.Drawing.Size(120, 58);
+			this.listViewProperties.Size = new System.Drawing.Size(160, 58);
 			this.listViewProperties.TabIndex = 37;
 			this.listViewProperties.UseCompatibleStateImageBehavior = false;
 			this.listViewProperties.View = System.Windows.Forms.View.Details;
@@ -192,7 +196,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.elementTree.Location = new System.Drawing.Point(3, 46);
 			this.elementTree.Name = "elementTree";
-			this.elementTree.Size = new System.Drawing.Size(244, 363);
+			this.elementTree.Size = new System.Drawing.Size(244, 335);
 			this.elementTree.TabIndex = 28;
 			this.elementTree.treeviewDeselected += new System.EventHandler(this.elementTree_treeviewDeselected);
 			this.elementTree.treeviewAfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.elementTree_treeviewAfterSelect);
@@ -204,6 +208,34 @@
 			this.toolTip1.AutoPopDelay = 5000;
 			this.toolTip1.InitialDelay = 200;
 			this.toolTip1.ReshowDelay = 40;
+			// 
+			// buttonRemoveProperty
+			// 
+			this.buttonRemoveProperty.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonRemoveProperty.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.buttonRemoveProperty.Enabled = false;
+			this.buttonRemoveProperty.Location = new System.Drawing.Point(100, 125);
+			this.buttonRemoveProperty.Name = "buttonRemoveProperty";
+			this.buttonRemoveProperty.Size = new System.Drawing.Size(24, 24);
+			this.buttonRemoveProperty.TabIndex = 40;
+			this.buttonRemoveProperty.Text = "-";
+			this.toolTip1.SetToolTip(this.buttonRemoveProperty, "Delete Property");
+			this.buttonRemoveProperty.UseVisualStyleBackColor = true;
+			this.buttonRemoveProperty.Click += new System.EventHandler(this.buttonRemoveProperty_Click);
+			// 
+			// buttonConfigureProperty
+			// 
+			this.buttonConfigureProperty.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonConfigureProperty.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.buttonConfigureProperty.Enabled = false;
+			this.buttonConfigureProperty.Location = new System.Drawing.Point(130, 125);
+			this.buttonConfigureProperty.Name = "buttonConfigureProperty";
+			this.buttonConfigureProperty.Size = new System.Drawing.Size(24, 24);
+			this.buttonConfigureProperty.TabIndex = 41;
+			this.buttonConfigureProperty.Text = "C";
+			this.toolTip1.SetToolTip(this.buttonConfigureProperty, "Configure Property");
+			this.buttonConfigureProperty.UseVisualStyleBackColor = true;
+			this.buttonConfigureProperty.Click += new System.EventHandler(this.buttonConfigureProperty_Click);
 			// 
 			// SetupElementsTree
 			// 
@@ -241,5 +273,7 @@
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.Button buttonAddProperty;
 		private System.Windows.Forms.ToolTip toolTip1;
+		private System.Windows.Forms.Button buttonRemoveProperty;
+		private System.Windows.Forms.Button buttonConfigureProperty;
 	}
 }
