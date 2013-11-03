@@ -10,10 +10,12 @@ using System.Text;
 using System.Windows.Forms;
 using Common.Resources.Properties;
 using Common.Controls;
+using Vixen.Data.Flow;
 using Vixen.Module.Property;
 using Vixen.Rule;
 using Vixen.Services;
 using Vixen.Sys;
+using Vixen.Sys.Output;
 
 namespace VixenApplication.Setup
 {
@@ -33,6 +35,8 @@ namespace VixenApplication.Setup
 			buttonRemoveProperty.Text = "";
 			buttonConfigureProperty.BackgroundImage = Resources.cog;
 			buttonConfigureProperty.Text = "";
+			buttonSelectDestinationOutputs.BackgroundImage = Resources.table_select_row;
+			buttonSelectDestinationOutputs.Text = "";
 
 			comboBoxNewItemType.BeginUpdate();
 			foreach (IElementTemplate template in elementTemplates) {
@@ -79,12 +83,18 @@ namespace VixenApplication.Setup
 		public IEnumerable<ElementNode> SelectedElements
 		{
 			get { return elementTree.SelectedElementNodes; }
+			set
+			{
+				elementTree.PopulateNodeTree(value);
+			}
 		}
 
 		public Control SetupElementsControl
 		{
 			get { return this; }
 		}
+
+		public DisplaySetup MasterForm { get; set; }
 
 		public void UpdatePatching()
 		{
@@ -236,10 +246,11 @@ namespace VixenApplication.Setup
 			buttonAddTemplate.Enabled = comboBoxNewItemType.SelectedIndex >= 0;
 
 			List<ElementNode> elementList = SelectedElements.ToList();
-			buttonRunHelperSetup.Enabled = (elementList.Any());
-			buttonAddProperty.Enabled = (elementList.Any());
+			buttonRunHelperSetup.Enabled = elementList.Any();
+			buttonAddProperty.Enabled = elementList.Any();
 			buttonRemoveProperty.Enabled = listViewProperties.Items.Count > 0 && listViewProperties.SelectedItems.Count > 0;
 			buttonConfigureProperty.Enabled = listViewProperties.Items.Count > 0 && listViewProperties.SelectedItems.Count == 1;
+			buttonSelectDestinationOutputs.Enabled = elementList.Any();
 		}
 
 		private void elementTree_ElementsChanged(object sender, EventArgs e)
@@ -279,5 +290,50 @@ namespace VixenApplication.Setup
 		{
 			UpdateButtons();
 		}
+
+		private void buttonSelectDestinationOutputs_Click(object sender, EventArgs e)
+		{
+			ControllersAndOutputsSet controllersAndOutputs = new ControllersAndOutputsSet();
+
+			foreach (ElementNode selectedElement in SelectedElements) {
+				foreach (ElementNode leafElementNode in selectedElement.GetLeafEnumerator()) {
+					if (leafElementNode == null || leafElementNode.Element == null)
+						continue;
+
+					IDataFlowComponent component = VixenSystem.DataFlow.GetComponent(leafElementNode.Element.Id);
+					if (component == null)
+						continue;
+
+					IEnumerable<IDataFlowComponent> outputComponents = _findComponentsOfTypeInTreeFromComponent(component, typeof (CommandOutputDataFlowAdapter));
+
+					foreach (IDataFlowComponent outputComponent in outputComponents) {
+						IControllerDevice controller;
+						int outputIndex;
+						VixenSystem.OutputControllers.getOutputDetailsForDataFlowComponent(outputComponent, out controller, out outputIndex);
+
+						if (controller == null)
+							continue;
+
+						if (!controllersAndOutputs.ContainsKey(controller))
+							controllersAndOutputs[controller] = new HashSet<int>();
+
+						controllersAndOutputs[controller].Add(outputIndex);
+					}
+				}
+			}
+
+			MasterForm.SelectControllersAndOutputs(controllersAndOutputs);
+		}
+
+		private IEnumerable<IDataFlowComponent> _findComponentsOfTypeInTreeFromComponent(IDataFlowComponent dataFlowComponent, Type dfctype)
+		{
+			return VixenSystem.DataFlow.GetDestinationsOfComponent(dataFlowComponent)
+				.SelectMany(x => _findComponentsOfTypeInTreeFromComponent(x, dfctype))
+				.Concat(new[] { dataFlowComponent })
+				.Where(dfc => dfctype.IsAssignableFrom(dfc.GetType()))
+				;
+		}
+
+
 	}
 }

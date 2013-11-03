@@ -42,6 +42,7 @@
 			this.buttonNumberChannelsController = new System.Windows.Forms.Button();
 			this.controllerTree = new Common.Controls.ControllerTree();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.buttonSelectSourceElements = new System.Windows.Forms.Button();
 			this.groupBoxSelectedController.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -199,10 +200,24 @@
 			this.toolTip1.InitialDelay = 200;
 			this.toolTip1.ReshowDelay = 40;
 			// 
+			// buttonSelectSourceElements
+			// 
+			this.buttonSelectSourceElements.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonSelectSourceElements.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.buttonSelectSourceElements.Location = new System.Drawing.Point(135, 378);
+			this.buttonSelectSourceElements.Name = "buttonSelectSourceElements";
+			this.buttonSelectSourceElements.Size = new System.Drawing.Size(24, 24);
+			this.buttonSelectSourceElements.TabIndex = 40;
+			this.buttonSelectSourceElements.Text = "S";
+			this.toolTip1.SetToolTip(this.buttonSelectSourceElements, "Find elements patched to these outputs");
+			this.buttonSelectSourceElements.UseVisualStyleBackColor = true;
+			this.buttonSelectSourceElements.Click += new System.EventHandler(this.buttonSelectSourceElements_Click);
+			// 
 			// SetupControllersSimple
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.Controls.Add(this.buttonSelectSourceElements);
 			this.Controls.Add(this.buttonNumberChannelsController);
 			this.Controls.Add(this.buttonConfigureController);
 			this.Controls.Add(this.buttonRenameController);
@@ -238,5 +253,6 @@
 		private System.Windows.Forms.Label labelControllerType;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.ToolTip toolTip1;
+		private System.Windows.Forms.Button buttonSelectSourceElements;
 	}
 }
