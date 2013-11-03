@@ -29,12 +29,12 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.Windows.Forms.ListViewItem listViewItem13 = new System.Windows.Forms.ListViewItem("asdfadsa");
-			System.Windows.Forms.ListViewItem listViewItem14 = new System.Windows.Forms.ListViewItem("rewqrewq");
-			System.Windows.Forms.ListViewItem listViewItem15 = new System.Windows.Forms.ListViewItem("vbcbxvxc");
-			System.Windows.Forms.ListViewItem listViewItem16 = new System.Windows.Forms.ListViewItem("gfdsgfsd");
-			System.Windows.Forms.ListViewItem listViewItem17 = new System.Windows.Forms.ListViewItem("ytreyre");
-			System.Windows.Forms.ListViewItem listViewItem18 = new System.Windows.Forms.ListViewItem("xvcbxvcx");
+			System.Windows.Forms.ListViewItem listViewItem7 = new System.Windows.Forms.ListViewItem("asdfadsa");
+			System.Windows.Forms.ListViewItem listViewItem8 = new System.Windows.Forms.ListViewItem("rewqrewq");
+			System.Windows.Forms.ListViewItem listViewItem9 = new System.Windows.Forms.ListViewItem("vbcbxvxc");
+			System.Windows.Forms.ListViewItem listViewItem10 = new System.Windows.Forms.ListViewItem("gfdsgfsd");
+			System.Windows.Forms.ListViewItem listViewItem11 = new System.Windows.Forms.ListViewItem("ytreyre");
+			System.Windows.Forms.ListViewItem listViewItem12 = new System.Windows.Forms.ListViewItem("xvcbxvcx");
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(VixenApplication));
 			this.contextMenuStripNewSequence = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
@@ -43,6 +43,15 @@
 			this.logsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.viewInstalledModulesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.profilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.systemConfigurationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.setupDisplayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.setupPreviewsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+			this.oldConfigurationInterfacesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+			this.setupElementsGroupsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.setupControllersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.setupFiltersPatchingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.executionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.startToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.stopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -56,10 +65,8 @@
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.labelVersion = new System.Windows.Forms.Label();
 			this.groupBoxSystemConfig = new System.Windows.Forms.GroupBox();
-			this.buttonSetupFiltersAndPatching = new System.Windows.Forms.Button();
+			this.buttonSetupDisplay = new System.Windows.Forms.Button();
 			this.buttonSetupOutputPreviews = new System.Windows.Forms.Button();
-			this.buttonSetupOutputControllers = new System.Windows.Forms.Button();
-			this.buttonSetupElements = new System.Windows.Forms.Button();
 			this.statusStrip = new System.Windows.Forms.StatusStrip();
 			this.toolStripStatusLabelExecutionLight = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
@@ -68,7 +75,6 @@
 			this.label1 = new System.Windows.Forms.Label();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.labelDebugVersion = new System.Windows.Forms.Label();
-			this.buttonSingleSetup = new System.Windows.Forms.Button();
 			this.menuStripMain.SuspendLayout();
 			this.groupBoxSequences.SuspendLayout();
 			this.groupBoxSystemConfig.SuspendLayout();
@@ -102,6 +108,7 @@
             this.logsToolStripMenuItem,
             this.viewInstalledModulesToolStripMenuItem,
             this.profilesToolStripMenuItem,
+            this.systemConfigurationToolStripMenuItem,
             this.executionToolStripMenuItem,
             this.toolStripSeparator1,
             this.exitToolStripMenuItem});
@@ -129,6 +136,74 @@
 			this.profilesToolStripMenuItem.Text = "Profiles...";
 			this.profilesToolStripMenuItem.Click += new System.EventHandler(this.profilesToolStripMenuItem_Click);
 			// 
+			// systemConfigurationToolStripMenuItem
+			// 
+			this.systemConfigurationToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.setupDisplayToolStripMenuItem,
+            this.setupPreviewsToolStripMenuItem,
+            this.toolStripSeparator2,
+            this.oldConfigurationInterfacesToolStripMenuItem,
+            this.toolStripSeparator3,
+            this.setupElementsGroupsToolStripMenuItem,
+            this.setupControllersToolStripMenuItem,
+            this.setupFiltersPatchingToolStripMenuItem});
+			this.systemConfigurationToolStripMenuItem.Name = "systemConfigurationToolStripMenuItem";
+			this.systemConfigurationToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+			this.systemConfigurationToolStripMenuItem.Text = "System Configuration";
+			// 
+			// setupDisplayToolStripMenuItem
+			// 
+			this.setupDisplayToolStripMenuItem.Name = "setupDisplayToolStripMenuItem";
+			this.setupDisplayToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
+			this.setupDisplayToolStripMenuItem.Text = "Setup Display";
+			this.setupDisplayToolStripMenuItem.Click += new System.EventHandler(this.setupDisplayToolStripMenuItem_Click);
+			// 
+			// setupPreviewsToolStripMenuItem
+			// 
+			this.setupPreviewsToolStripMenuItem.Name = "setupPreviewsToolStripMenuItem";
+			this.setupPreviewsToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
+			this.setupPreviewsToolStripMenuItem.Text = "Setup Previews";
+			this.setupPreviewsToolStripMenuItem.Click += new System.EventHandler(this.setupPreviewsToolStripMenuItem_Click);
+			// 
+			// toolStripSeparator2
+			// 
+			this.toolStripSeparator2.Name = "toolStripSeparator2";
+			this.toolStripSeparator2.Size = new System.Drawing.Size(218, 6);
+			// 
+			// oldConfigurationInterfacesToolStripMenuItem
+			// 
+			this.oldConfigurationInterfacesToolStripMenuItem.Enabled = false;
+			this.oldConfigurationInterfacesToolStripMenuItem.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.oldConfigurationInterfacesToolStripMenuItem.Name = "oldConfigurationInterfacesToolStripMenuItem";
+			this.oldConfigurationInterfacesToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
+			this.oldConfigurationInterfacesToolStripMenuItem.Text = "Old Configuration Interfaces";
+			// 
+			// toolStripSeparator3
+			// 
+			this.toolStripSeparator3.Name = "toolStripSeparator3";
+			this.toolStripSeparator3.Size = new System.Drawing.Size(218, 6);
+			// 
+			// setupElementsGroupsToolStripMenuItem
+			// 
+			this.setupElementsGroupsToolStripMenuItem.Name = "setupElementsGroupsToolStripMenuItem";
+			this.setupElementsGroupsToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
+			this.setupElementsGroupsToolStripMenuItem.Text = "Setup Elements && Groups";
+			this.setupElementsGroupsToolStripMenuItem.Click += new System.EventHandler(this.setupElementsGroupsToolStripMenuItem_Click);
+			// 
+			// setupControllersToolStripMenuItem
+			// 
+			this.setupControllersToolStripMenuItem.Name = "setupControllersToolStripMenuItem";
+			this.setupControllersToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
+			this.setupControllersToolStripMenuItem.Text = "Setup Controllers";
+			this.setupControllersToolStripMenuItem.Click += new System.EventHandler(this.setupControllersToolStripMenuItem_Click);
+			// 
+			// setupFiltersPatchingToolStripMenuItem
+			// 
+			this.setupFiltersPatchingToolStripMenuItem.Name = "setupFiltersPatchingToolStripMenuItem";
+			this.setupFiltersPatchingToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
+			this.setupFiltersPatchingToolStripMenuItem.Text = "Setup Filters && Patching";
+			this.setupFiltersPatchingToolStripMenuItem.Click += new System.EventHandler(this.setupFiltersPatchingToolStripMenuItem_Click);
+			// 
 			// executionToolStripMenuItem
 			// 
 			this.executionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -141,14 +216,14 @@
 			// startToolStripMenuItem
 			// 
 			this.startToolStripMenuItem.Name = "startToolStripMenuItem";
-			this.startToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.startToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
 			this.startToolStripMenuItem.Text = "Start";
 			this.startToolStripMenuItem.Click += new System.EventHandler(this.startToolStripMenuItem_Click);
 			// 
 			// stopToolStripMenuItem
 			// 
 			this.stopToolStripMenuItem.Name = "stopToolStripMenuItem";
-			this.stopToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.stopToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
 			this.stopToolStripMenuItem.Text = "Stop";
 			this.stopToolStripMenuItem.Click += new System.EventHandler(this.stopToolStripMenuItem_Click);
 			// 
@@ -213,12 +288,12 @@
 			this.listViewRecentSequences.FullRowSelect = true;
 			this.listViewRecentSequences.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.listViewRecentSequences.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem13,
-            listViewItem14,
-            listViewItem15,
-            listViewItem16,
-            listViewItem17,
-            listViewItem18});
+            listViewItem7,
+            listViewItem8,
+            listViewItem9,
+            listViewItem10,
+            listViewItem11,
+            listViewItem12});
 			this.listViewRecentSequences.Location = new System.Drawing.Point(18, 116);
 			this.listViewRecentSequences.MultiSelect = false;
 			this.listViewRecentSequences.Name = "listViewRecentSequences";
@@ -245,57 +320,34 @@
 			// 
 			// groupBoxSystemConfig
 			// 
-			this.groupBoxSystemConfig.Controls.Add(this.buttonSetupFiltersAndPatching);
-			this.groupBoxSystemConfig.Controls.Add(this.buttonSingleSetup);
+			this.groupBoxSystemConfig.Controls.Add(this.buttonSetupDisplay);
 			this.groupBoxSystemConfig.Controls.Add(this.buttonSetupOutputPreviews);
-			this.groupBoxSystemConfig.Controls.Add(this.buttonSetupOutputControllers);
-			this.groupBoxSystemConfig.Controls.Add(this.buttonSetupElements);
 			this.groupBoxSystemConfig.Location = new System.Drawing.Point(245, 200);
 			this.groupBoxSystemConfig.Name = "groupBoxSystemConfig";
-			this.groupBoxSystemConfig.Size = new System.Drawing.Size(204, 227);
+			this.groupBoxSystemConfig.Size = new System.Drawing.Size(204, 103);
 			this.groupBoxSystemConfig.TabIndex = 12;
 			this.groupBoxSystemConfig.TabStop = false;
 			this.groupBoxSystemConfig.Text = "System Configuration";
 			// 
-			// buttonSetupFiltersAndPatching
+			// buttonSetupDisplay
 			// 
-			this.buttonSetupFiltersAndPatching.Location = new System.Drawing.Point(12, 103);
-			this.buttonSetupFiltersAndPatching.Name = "buttonSetupFiltersAndPatching";
-			this.buttonSetupFiltersAndPatching.Size = new System.Drawing.Size(180, 30);
-			this.buttonSetupFiltersAndPatching.TabIndex = 15;
-			this.buttonSetupFiltersAndPatching.Text = "Configure Filters && Patching";
-			this.buttonSetupFiltersAndPatching.UseVisualStyleBackColor = true;
-			this.buttonSetupFiltersAndPatching.Click += new System.EventHandler(this.buttonSetupFiltersAndPatching_Click);
+			this.buttonSetupDisplay.Location = new System.Drawing.Point(12, 23);
+			this.buttonSetupDisplay.Name = "buttonSetupDisplay";
+			this.buttonSetupDisplay.Size = new System.Drawing.Size(180, 30);
+			this.buttonSetupDisplay.TabIndex = 17;
+			this.buttonSetupDisplay.Text = "Setup Display";
+			this.buttonSetupDisplay.UseVisualStyleBackColor = true;
+			this.buttonSetupDisplay.Click += new System.EventHandler(this.buttonSetupDisplay_Click);
 			// 
 			// buttonSetupOutputPreviews
 			// 
-			this.buttonSetupOutputPreviews.Location = new System.Drawing.Point(12, 143);
+			this.buttonSetupOutputPreviews.Location = new System.Drawing.Point(12, 59);
 			this.buttonSetupOutputPreviews.Name = "buttonSetupOutputPreviews";
 			this.buttonSetupOutputPreviews.Size = new System.Drawing.Size(180, 30);
 			this.buttonSetupOutputPreviews.TabIndex = 7;
-			this.buttonSetupOutputPreviews.Text = "Configure Previews";
+			this.buttonSetupOutputPreviews.Text = "Setup Previews";
 			this.buttonSetupOutputPreviews.UseVisualStyleBackColor = true;
 			this.buttonSetupOutputPreviews.Click += new System.EventHandler(this.buttonSetupOutputPreviews_Click);
-			// 
-			// buttonSetupOutputControllers
-			// 
-			this.buttonSetupOutputControllers.Location = new System.Drawing.Point(12, 63);
-			this.buttonSetupOutputControllers.Name = "buttonSetupOutputControllers";
-			this.buttonSetupOutputControllers.Size = new System.Drawing.Size(180, 30);
-			this.buttonSetupOutputControllers.TabIndex = 6;
-			this.buttonSetupOutputControllers.Text = "Configure Controllers";
-			this.buttonSetupOutputControllers.UseVisualStyleBackColor = true;
-			this.buttonSetupOutputControllers.Click += new System.EventHandler(this.buttonSetupOutputControllers_Click);
-			// 
-			// buttonSetupElements
-			// 
-			this.buttonSetupElements.Location = new System.Drawing.Point(12, 23);
-			this.buttonSetupElements.Name = "buttonSetupElements";
-			this.buttonSetupElements.Size = new System.Drawing.Size(180, 30);
-			this.buttonSetupElements.TabIndex = 5;
-			this.buttonSetupElements.Text = "Configure Elements && Groups";
-			this.buttonSetupElements.UseVisualStyleBackColor = true;
-			this.buttonSetupElements.Click += new System.EventHandler(this.buttonSetupElements_Click);
 			// 
 			// statusStrip
 			// 
@@ -369,16 +421,6 @@
 			this.labelDebugVersion.Text = "[0.0.0]";
 			this.labelDebugVersion.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
-			// buttonSingleSetup
-			// 
-			this.buttonSingleSetup.Location = new System.Drawing.Point(12, 186);
-			this.buttonSingleSetup.Name = "buttonSingleSetup";
-			this.buttonSingleSetup.Size = new System.Drawing.Size(180, 30);
-			this.buttonSingleSetup.TabIndex = 17;
-			this.buttonSingleSetup.Text = "Test Drive New Config Setup";
-			this.buttonSingleSetup.UseVisualStyleBackColor = true;
-			this.buttonSingleSetup.Click += new System.EventHandler(this.buttonSingleSetup_Click);
-			// 
 			// VixenApplication
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -432,8 +474,6 @@
 		private System.Windows.Forms.Button buttonNewSequence;
 		private System.Windows.Forms.GroupBox groupBoxSequences;
 		private System.Windows.Forms.GroupBox groupBoxSystemConfig;
-		private System.Windows.Forms.Button buttonSetupOutputControllers;
-		private System.Windows.Forms.Button buttonSetupElements;
 		private System.Windows.Forms.StatusStrip statusStrip;
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelExecutionState;
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelExecutionLight;
@@ -445,12 +485,20 @@
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel_memory;
 		private System.Windows.Forms.Button buttonSetupOutputPreviews;
-		private System.Windows.Forms.Button buttonSetupFiltersAndPatching;
 		private System.Windows.Forms.PictureBox pictureBox1;
 		private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ToolStripMenuItem profilesToolStripMenuItem;
 		private System.Windows.Forms.Label labelDebugVersion;
-		private System.Windows.Forms.Button buttonSingleSetup;
+		private System.Windows.Forms.Button buttonSetupDisplay;
+		private System.Windows.Forms.ToolStripMenuItem systemConfigurationToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem setupDisplayToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem setupPreviewsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+		private System.Windows.Forms.ToolStripMenuItem oldConfigurationInterfacesToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem setupElementsGroupsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem setupControllersToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem setupFiltersPatchingToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
 	}
 }
 
