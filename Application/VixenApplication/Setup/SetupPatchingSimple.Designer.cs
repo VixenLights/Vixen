@@ -65,6 +65,8 @@ namespace VixenApplication.Setup
 			this.radioButtonUnconnectedPatchPointsOnly = new System.Windows.Forms.RadioButton();
 			this.buttonDoPatching = new System.Windows.Forms.Button();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.buttonUnpatchElements = new System.Windows.Forms.Button();
+			this.buttonUnpatchControllers = new System.Windows.Forms.Button();
 			this.groupBoxElements.SuspendLayout();
 			this.groupBoxControllers.SuspendLayout();
 			this.groupBoxPatching.SuspendLayout();
@@ -76,6 +78,7 @@ namespace VixenApplication.Setup
 			// 
 			this.groupBoxElements.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
+			this.groupBoxElements.Controls.Add(this.buttonUnpatchElements);
 			this.groupBoxElements.Controls.Add(this.labelFilterCount);
 			this.groupBoxElements.Controls.Add(this.labelElementCount);
 			this.groupBoxElements.Controls.Add(this.labelGroupCount);
@@ -92,7 +95,7 @@ namespace VixenApplication.Setup
 			this.groupBoxElements.Controls.Add(this.label5);
 			this.groupBoxElements.Location = new System.Drawing.Point(3, 3);
 			this.groupBoxElements.Name = "groupBoxElements";
-			this.groupBoxElements.Size = new System.Drawing.Size(220, 241);
+			this.groupBoxElements.Size = new System.Drawing.Size(220, 303);
 			this.groupBoxElements.TabIndex = 0;
 			this.groupBoxElements.TabStop = false;
 			this.groupBoxElements.Text = "Selected Elements";
@@ -241,6 +244,7 @@ namespace VixenApplication.Setup
 			// 
 			this.groupBoxControllers.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
+			this.groupBoxControllers.Controls.Add(this.buttonUnpatchControllers);
 			this.groupBoxControllers.Controls.Add(this.labelUnpatchedOutputCount);
 			this.groupBoxControllers.Controls.Add(this.labelPatchedOutputCount);
 			this.groupBoxControllers.Controls.Add(this.labelOutputCount);
@@ -251,7 +255,7 @@ namespace VixenApplication.Setup
 			this.groupBoxControllers.Controls.Add(this.label21);
 			this.groupBoxControllers.Location = new System.Drawing.Point(227, 3);
 			this.groupBoxControllers.Name = "groupBoxControllers";
-			this.groupBoxControllers.Size = new System.Drawing.Size(220, 241);
+			this.groupBoxControllers.Size = new System.Drawing.Size(220, 303);
 			this.groupBoxControllers.TabIndex = 1;
 			this.groupBoxControllers.TabStop = false;
 			this.groupBoxControllers.Text = "Selected Controllers";
@@ -343,9 +347,9 @@ namespace VixenApplication.Setup
 			this.groupBoxPatching.Controls.Add(this.groupBoxOutputOptions);
 			this.groupBoxPatching.Controls.Add(this.groupBoxElementOptions);
 			this.groupBoxPatching.Controls.Add(this.buttonDoPatching);
-			this.groupBoxPatching.Location = new System.Drawing.Point(3, 250);
+			this.groupBoxPatching.Location = new System.Drawing.Point(3, 312);
 			this.groupBoxPatching.Name = "groupBoxPatching";
-			this.groupBoxPatching.Size = new System.Drawing.Size(444, 224);
+			this.groupBoxPatching.Size = new System.Drawing.Size(444, 166);
 			this.groupBoxPatching.TabIndex = 2;
 			this.groupBoxPatching.TabStop = false;
 			this.groupBoxPatching.Text = "Patching";
@@ -439,9 +443,9 @@ namespace VixenApplication.Setup
 			// 
 			// buttonDoPatching
 			// 
-			this.buttonDoPatching.Location = new System.Drawing.Point(161, 160);
+			this.buttonDoPatching.Location = new System.Drawing.Point(335, 104);
 			this.buttonDoPatching.Name = "buttonDoPatching";
-			this.buttonDoPatching.Size = new System.Drawing.Size(125, 40);
+			this.buttonDoPatching.Size = new System.Drawing.Size(95, 40);
 			this.buttonDoPatching.TabIndex = 0;
 			this.buttonDoPatching.Text = "Patch Elements to Controllers";
 			this.buttonDoPatching.UseVisualStyleBackColor = true;
@@ -453,6 +457,26 @@ namespace VixenApplication.Setup
 			this.toolTip1.AutoPopDelay = 5000;
 			this.toolTip1.InitialDelay = 200;
 			this.toolTip1.ReshowDelay = 40;
+			// 
+			// buttonUnpatchElements
+			// 
+			this.buttonUnpatchElements.Location = new System.Drawing.Point(50, 222);
+			this.buttonUnpatchElements.Name = "buttonUnpatchElements";
+			this.buttonUnpatchElements.Size = new System.Drawing.Size(120, 25);
+			this.buttonUnpatchElements.TabIndex = 22;
+			this.buttonUnpatchElements.Text = "Unpatch Elements";
+			this.buttonUnpatchElements.UseVisualStyleBackColor = true;
+			this.buttonUnpatchElements.Click += new System.EventHandler(this.buttonUnpatchElements_Click);
+			// 
+			// buttonUnpatchControllers
+			// 
+			this.buttonUnpatchControllers.Location = new System.Drawing.Point(50, 222);
+			this.buttonUnpatchControllers.Name = "buttonUnpatchControllers";
+			this.buttonUnpatchControllers.Size = new System.Drawing.Size(120, 25);
+			this.buttonUnpatchControllers.TabIndex = 28;
+			this.buttonUnpatchControllers.Text = "Unpatch Controllers";
+			this.buttonUnpatchControllers.UseVisualStyleBackColor = true;
+			this.buttonUnpatchControllers.Click += new System.EventHandler(this.buttonUnpatchControllers_Click);
 			// 
 			// SetupPatchingSimple
 			// 
@@ -516,5 +540,7 @@ namespace VixenApplication.Setup
 		private Label labelPatchWarning;
 		private Label labelPatchSummary;
 		private ToolTip toolTip1;
+		private Button buttonUnpatchElements;
+		private Button buttonUnpatchControllers;
 	}
 }
