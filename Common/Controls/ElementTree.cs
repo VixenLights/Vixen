@@ -549,9 +549,21 @@ namespace Common.Controls
 			return false;
 		}
 
-		public void RenameSelectedElements()
+		public bool RenameSelectedElements()
 		{
-			if (treeview.SelectedNodes.Count > 0) {
+			if (SelectedTreeNodes.Count == 0)
+				return false;
+
+			if (SelectedTreeNodes.Count == 1) {
+				using (TextDialog dialog = new TextDialog("Item name?", "Rename item", (SelectedNode).Name, true)) {
+					if (dialog.ShowDialog() == DialogResult.OK) {
+						if (dialog.Response != string.Empty && dialog.Response != SelectedNode.Name) {
+							VixenSystem.Nodes.RenameNode(SelectedNode, dialog.Response);
+							return true;
+						}
+					}
+				}
+			} else if (SelectedTreeNodes.Count > 1) {
 				List<string> oldNames = new List<string>(treeview.SelectedNodes.Select(x => x.Tag as ElementNode).Select(x => x.Name).ToArray());
 				NameGenerator renamer = new NameGenerator(oldNames.ToArray());
 				if (renamer.ShowDialog() == DialogResult.OK) {
@@ -560,12 +572,16 @@ namespace Common.Controls
 							Logging.Warn("ConfigElements: bulk renaming elements, and ran out of new names!");
 							break;
 						}
-						(treeview.SelectedNodes[i].Tag as ElementNode).Name = renamer.Names[i];
+						VixenSystem.Nodes.RenameNode((treeview.SelectedNodes[i].Tag as ElementNode), renamer.Names[i]);
 					}
 
 					PopulateNodeTree();
+
+					return true;
 				}
 			}
+
+			return false;
 		}
 
 
@@ -741,22 +757,10 @@ namespace Common.Controls
 
 		private void renameNodesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (SelectedTreeNodes.Count == 0)
-				return;
-
-			if (SelectedTreeNodes.Count == 1) {
-				using (TextDialog dialog = new TextDialog("Item name?", "Rename item", (SelectedNode).Name, true)) {
-					if (dialog.ShowDialog() == DialogResult.OK) {
-						if (dialog.Response != string.Empty && dialog.Response != SelectedNode.Name)
-							VixenSystem.Nodes.RenameNode(SelectedNode, dialog.Response);
-					}
-				}
-			} else if (SelectedTreeNodes.Count > 1) {
-				RenameSelectedElements();
+			if (RenameSelectedElements()) {
+				PopulateNodeTree();
+				OnElementsChanged();
 			}
-
-			PopulateNodeTree();
-			OnElementsChanged();
 		}
 
 		#endregion

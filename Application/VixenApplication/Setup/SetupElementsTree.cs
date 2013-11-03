@@ -35,6 +35,10 @@ namespace VixenApplication.Setup
 			buttonRemoveProperty.Text = "";
 			buttonConfigureProperty.BackgroundImage = Resources.cog;
 			buttonConfigureProperty.Text = "";
+			buttonDeleteElements.BackgroundImage = Resources.delete;
+			buttonDeleteElements.Text = "";
+			buttonRenameElements.BackgroundImage = Resources.pencil;
+			buttonRenameElements.Text = "";
 			buttonSelectDestinationOutputs.BackgroundImage = Resources.table_select_row;
 			buttonSelectDestinationOutputs.Text = "";
 
@@ -250,6 +254,8 @@ namespace VixenApplication.Setup
 			buttonAddProperty.Enabled = elementList.Any();
 			buttonRemoveProperty.Enabled = listViewProperties.Items.Count > 0 && listViewProperties.SelectedItems.Count > 0;
 			buttonConfigureProperty.Enabled = listViewProperties.Items.Count > 0 && listViewProperties.SelectedItems.Count == 1;
+			buttonDeleteElements.Enabled = elementList.Any();
+			buttonRenameElements.Enabled = elementList.Any();
 			buttonSelectDestinationOutputs.Enabled = elementList.Any();
 		}
 
@@ -334,6 +340,30 @@ namespace VixenApplication.Setup
 				;
 		}
 
+		private void buttonDeleteElements_Click(object sender, EventArgs e)
+		{
+			// TODO: need to consider the filters attached to a element. Hmm.
 
+			DialogResult dr = MessageBox.Show("Are you sure you want to delete these element(s)?", "Delete Elements?",
+			                                  MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+			if (dr != DialogResult.Yes)
+				return;
+
+			// can't delete by ElementNode, as one element can be in multiple places :-(
+			foreach (TreeNode tn in elementTree.SelectedTreeNodes) {
+				elementTree.DeleteNode(tn);
+			}
+
+			elementTree.PopulateNodeTree();
+			OnElementsChanged();
+		}
+
+		private void buttonRenameElements_Click(object sender, EventArgs e)
+		{
+			if (elementTree.RenameSelectedElements()) {
+				OnElementsChanged();
+			}
+		}
 	}
 }

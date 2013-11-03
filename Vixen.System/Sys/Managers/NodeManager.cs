@@ -100,6 +100,10 @@ namespace Vixen.Sys.Managers
 				}
 			}
 
+			if (node.Element != null) {
+				VixenSystem.Elements.RemoveElement(node.Element);
+			}
+
 		}
 
 		public void RenameNode(ElementNode node, string newName)

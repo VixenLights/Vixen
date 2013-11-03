@@ -32,7 +32,7 @@ namespace VixenApplication.Setup
 			buttonConfigureController.Text = "";
 			buttonNumberChannelsController.BackgroundImage = Resources.attributes_display;
 			buttonNumberChannelsController.Text = "";
-			buttonRenameController.BackgroundImage = Resources.cog_edit;
+			buttonRenameController.BackgroundImage = Resources.pencil;
 			buttonRenameController.Text = "";
 			buttonDeleteController.BackgroundImage = Resources.delete;
 			buttonDeleteController.Text = "";
