@@ -6,7 +6,7 @@ namespace Vixen.Data.Flow
 	/// <summary>
 	/// Facilitates allowing elements to participate in the data flow system.
 	/// </summary>
-	internal class ElementDataFlowAdapter : IDataFlowComponent<IntentsDataFlowData>
+	public class ElementDataFlowAdapter : IDataFlowComponent<IntentsDataFlowData>
 	{
 		private Element _element;
 		private IDataFlowOutput<IntentsDataFlowData>[] _outputs;
@@ -69,6 +69,11 @@ namespace Vixen.Data.Flow
 		public string Name
 		{
 			get { return _element.Name; }
+		}
+
+		public Element Element
+		{
+			get { return _element; }
 		}
 	}
 }

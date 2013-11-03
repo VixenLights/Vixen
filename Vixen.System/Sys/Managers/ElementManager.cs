@@ -118,10 +118,6 @@ namespace Vixen.Sys.Managers
 			ElementNode node;
 			_elementToElementNode.TryGetValue(element, out node);
 			return node;
-			//if (_elementToElementNode.ContainsKey(element))
-			//    return _elementToElementNode[element];
-
-			//return null;
 		}
 
 		public void Update()

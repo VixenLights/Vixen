@@ -16,9 +16,10 @@ namespace VixenApplication.Setup
 		//event EventHandler<ElementNodesEventArgs> ElementsChanged;
 		event EventHandler ElementsChanged;
 
-		IEnumerable<ElementNode> SelectedElements { get; }
+		IEnumerable<ElementNode> SelectedElements { get; set; }
 
 		Control SetupElementsControl { get; }
+		DisplaySetup MasterForm { get; set; }
 
 		void UpdatePatching();
 	}

@@ -14,9 +14,10 @@ namespace VixenApplication.Setup
 		// TODO: should parameterize what controllers have changed...
 		event EventHandler ControllersChanged;
 
-		ControllersAndOutputsSet SelectedControllersAndOutputs { get; }
+		ControllersAndOutputsSet SelectedControllersAndOutputs { get; set; }
 
 		Control SetupControllersControl { get; }
+		DisplaySetup MasterForm { get; set; }
 
 		void UpdatePatching();
 	}

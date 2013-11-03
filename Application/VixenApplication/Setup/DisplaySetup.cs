@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Vixen.Rule;
+using Vixen.Sys;
 using VixenApplication.Setup;
 using VixenApplication.Setup.ElementTemplates;
 
@@ -43,16 +44,21 @@ namespace VixenApplication
 		{
 			_setupElementsTree = new SetupElementsTree(_elementTemplates, _elementSetupHelpers);
 			_setupElementsTree.Dock = DockStyle.Fill;
+			_setupElementsTree.MasterForm = this;
 			_setupElementsPreview = new SetupElementsPreview();
 			_setupElementsPreview.Dock = DockStyle.Fill;
+			_setupElementsPreview.MasterForm = this;
 
 			_setupPatchingSimple = new SetupPatchingSimple();
 			_setupPatchingSimple.Dock = DockStyle.Fill;
+			_setupPatchingSimple.MasterForm = this;
 			_setupPatchingGraphical = new SetupPatchingGraphical();
 			_setupPatchingGraphical.Dock = DockStyle.Fill;
+			_setupPatchingGraphical.MasterForm = this;
 
 			_setupControllersSimple = new SetupControllersSimple();
 			_setupControllersSimple.Dock = DockStyle.Fill;
+			_setupControllersSimple.MasterForm = this;
 
 			radioButtonElementTree.Checked = true;
 			radioButtonPatchingSimple.Checked = true;
@@ -214,5 +220,15 @@ namespace VixenApplication
 		}
 
 
+
+		public void SelectElements(IEnumerable<ElementNode> elements)
+		{
+			_currentElementControl.SelectedElements = elements;
+		}
+
+		public void SelectControllersAndOutputs(ControllersAndOutputsSet controllersAndOutputs)
+		{
+			_currentControllersControl.SelectedControllersAndOutputs = controllersAndOutputs;
+		}
 	}
 }

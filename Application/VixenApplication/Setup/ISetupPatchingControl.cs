@@ -20,6 +20,7 @@ namespace VixenApplication.Setup
 		void UpdateControllerDetails(ControllersAndOutputsSet controllersAndOutputs);
 
 		Control SetupPatchingControl { get; }
+		DisplaySetup MasterForm { get; set; }
 	}
 
 	public class FiltersEventArgs : EventArgs

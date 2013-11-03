@@ -9,8 +9,13 @@ namespace Vixen.Sys.Managers
 {
 	public class OutputControllerManager : IControllerManager<OutputController>, IControllerFacadeParticipant
 	{
+		//Logger Class
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+
 		private IControllerLinkManager<OutputController> _linkManager;
 		private OutputDeviceCollectionExecutionMediator<OutputController> _mediator;
+
+		private Dictionary<IDataFlowComponent, Tuple<IControllerDevice, int>> _outputDataFlowComponentToController;
 
 		internal OutputControllerManager(IControllerLinkManager<OutputController> linkManager,
 		                                 IOutputDeviceCollection<OutputController> deviceCollection,
@@ -18,6 +23,7 @@ namespace Vixen.Sys.Managers
 		{
 			_linkManager = linkManager;
 			_mediator = new OutputDeviceCollectionExecutionMediator<OutputController>(deviceCollection, deviceExecution);
+			_outputDataFlowComponentToController = new Dictionary<IDataFlowComponent, Tuple<IControllerDevice, int>>();
 		}
 
 		public IOutputDevice GetDevice(Guid id)
@@ -52,6 +58,43 @@ namespace Vixen.Sys.Managers
 			}
 			return null;
 		}
+
+		public void AddControllerOutputForDataFlowComponent(IDataFlowComponent component, IControllerDevice controller, int outputIndex)
+		{
+			if (_outputDataFlowComponentToController.ContainsKey(component)) {
+				Logging.Error("map already contains link for component: " + component.Name);
+			}
+
+			_outputDataFlowComponentToController[component] = new Tuple<IControllerDevice, int>(controller, outputIndex);
+		}
+
+		public bool RemoveControllerOutputForDataFlowComponent(IDataFlowComponent component)
+		{
+			if (component == null)
+				return false;
+
+			return _outputDataFlowComponentToController.Remove(component);
+		}
+
+		public bool getOutputDetailsForDataFlowComponent(IDataFlowComponent component, out IControllerDevice controller, out int outputIndex)
+		{
+			controller = null;
+			outputIndex = 0;
+
+			if (component == null)
+				return false;
+
+			Tuple<IControllerDevice, int> data;
+			bool result = _outputDataFlowComponentToController.TryGetValue(component, out data);
+
+			if (data != null) {
+				controller = data.Item1;
+				outputIndex = data.Item2;
+			}
+
+			return result;
+		}
+
 
 		public IEnumerable<IOutputDevice> Devices
 		{

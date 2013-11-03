@@ -58,7 +58,30 @@ namespace Common.Controls
 
 		#region Tree view population
 
-		public void PopulateNodeTree(ElementNode elementToSelect = null)
+
+		public void PopulateNodeTree(IEnumerable<ElementNode> elementsToSelect)
+		{
+			List<string> treeNodes = new List<string>();
+			foreach (ElementNode elementNode in elementsToSelect) {
+				treeNodes.Add(GenerateEquivalentTreeNodeFullPathFromElement(elementNode, treeview.PathSeparator));
+			}			
+			_PopulateNodeTree(treeNodes);
+		}
+
+		public void PopulateNodeTree(ElementNode elementToSelect)
+		{
+			List<string> treeNodes = new List<string>();
+			treeNodes.Add(GenerateEquivalentTreeNodeFullPathFromElement(elementToSelect, treeview.PathSeparator));
+			_PopulateNodeTree(treeNodes);
+		}
+
+		public void PopulateNodeTree()
+		{
+			_PopulateNodeTree();
+		}
+
+
+		private void _PopulateNodeTree(IEnumerable<string> elementTreeNodesToSelect = null)
 		{
 			// save metadata that is currently in the treeview
 			_expandedNodes = new HashSet<string>();
@@ -89,9 +112,8 @@ namespace Common.Controls
 			}
 
 			// if a new element has been passed in to select, select it instead.
-			if (elementToSelect != null) {
-				_selectedNodes = new HashSet<string>();
-				_selectedNodes.Add(GenerateEquivalentTreeNodeFullPathFromElement(elementToSelect, treeview.PathSeparator));
+			if (elementTreeNodesToSelect != null) {
+				_selectedNodes = new HashSet<string>(elementTreeNodesToSelect);
 			}
 			foreach (string node in _selectedNodes) {
 				TreeNode resultNode = FindNodeInTreeAtPath(treeview, node);
@@ -120,7 +142,7 @@ namespace Common.Controls
 			}
 
 			// finally, if we were selecting another element, make sure we raise the selection changed event
-			if (elementToSelect != null) {
+			if (elementTreeNodesToSelect != null) {
 				// TODO: oops, we just pass the selection changed event through to the control; oh well,
 				// an "elements have changed" event will do for now. Fix this sometime.
 				OnElementsChanged();
@@ -144,7 +166,7 @@ namespace Common.Controls
 			string result = element.Id.ToString();
 			ElementNode parent = element.Parents.FirstOrDefault();
 			while (parent != null && parent != VixenSystem.Nodes.RootNode) {
-				result = parent.Name + separator + result;
+				result = parent.Id.ToString() + separator + result;
 				parent = parent.Parents.FirstOrDefault();
 			}
 
@@ -527,9 +549,21 @@ namespace Common.Controls
 			return false;
 		}
 
-		public void RenameSelectedElements()
+		public bool RenameSelectedElements()
 		{
-			if (treeview.SelectedNodes.Count > 0) {
+			if (SelectedTreeNodes.Count == 0)
+				return false;
+
+			if (SelectedTreeNodes.Count == 1) {
+				using (TextDialog dialog = new TextDialog("Item name?", "Rename item", (SelectedNode).Name, true)) {
+					if (dialog.ShowDialog() == DialogResult.OK) {
+						if (dialog.Response != string.Empty && dialog.Response != SelectedNode.Name) {
+							VixenSystem.Nodes.RenameNode(SelectedNode, dialog.Response);
+							return true;
+						}
+					}
+				}
+			} else if (SelectedTreeNodes.Count > 1) {
 				List<string> oldNames = new List<string>(treeview.SelectedNodes.Select(x => x.Tag as ElementNode).Select(x => x.Name).ToArray());
 				NameGenerator renamer = new NameGenerator(oldNames.ToArray());
 				if (renamer.ShowDialog() == DialogResult.OK) {
@@ -538,12 +572,16 @@ namespace Common.Controls
 							Logging.Warn("ConfigElements: bulk renaming elements, and ran out of new names!");
 							break;
 						}
-						(treeview.SelectedNodes[i].Tag as ElementNode).Name = renamer.Names[i];
+						VixenSystem.Nodes.RenameNode((treeview.SelectedNodes[i].Tag as ElementNode), renamer.Names[i]);
 					}
 
 					PopulateNodeTree();
+
+					return true;
 				}
 			}
+
+			return false;
 		}
 
 
@@ -719,22 +757,10 @@ namespace Common.Controls
 
 		private void renameNodesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (SelectedTreeNodes.Count == 0)
-				return;
-
-			if (SelectedTreeNodes.Count == 1) {
-				using (TextDialog dialog = new TextDialog("Item name?", "Rename item", (SelectedNode).Name, true)) {
-					if (dialog.ShowDialog() == DialogResult.OK) {
-						if (dialog.Response != string.Empty && dialog.Response != SelectedNode.Name)
-							VixenSystem.Nodes.RenameNode(SelectedNode, dialog.Response);
-					}
-				}
-			} else if (SelectedTreeNodes.Count > 1) {
-				RenameSelectedElements();
+			if (RenameSelectedElements()) {
+				PopulateNodeTree();
+				OnElementsChanged();
 			}
-
-			PopulateNodeTree();
-			OnElementsChanged();
 		}
 
 		#endregion
