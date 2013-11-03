@@ -1936,6 +1936,8 @@ namespace VixenApplication.Setup
 			get { return this; }
 		}
 
+		public DisplaySetup MasterForm { get; set; }
+
 		public void OnFiltersAdded(IEnumerable<IOutputFilterModuleInstance> filters)
 		{
 			if (FiltersAdded != null)

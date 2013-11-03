@@ -64,6 +64,9 @@ namespace VixenApplication.Setup
 			get { return this; }
 		}
 
+		public DisplaySetup MasterForm { get; set; }
+
+
 
 		public event EventHandler<FiltersEventArgs> FiltersAdded;
 		public void OnFiltersAdded(FiltersEventArgs args)
@@ -298,10 +301,10 @@ namespace VixenApplication.Setup
 
 			if (patchSources > 0 && patchDestinations > 0) {
 				if (patchSources > patchDestinations) {
-					warning = "Warning: too many elements, some will not be patched";
+					warning = "Warning: too many elements, some will not be patched from";
 				}
 				if (patchDestinations > patchSources) {
-					warning = "Warning: too many outputs, some will not be patched";
+					warning = "Warning: too many outputs, some will not be patched to";
 				}
 			}
 
