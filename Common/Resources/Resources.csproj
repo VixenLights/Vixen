@@ -233,6 +233,11 @@
     <None Include="add.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="pencil_ruler.png" />
+    <None Include="pencil_go.png" />
+    <None Include="pencil_delete.png" />
+    <None Include="pencil_add.png" />
+    <None Include="pencil.png" />
     <None Include="toolbar_go.png" />
     <None Include="toolbar_error.png" />
     <None Include="toolbar_edit.png" />
