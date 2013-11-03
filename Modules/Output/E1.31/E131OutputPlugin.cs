@@ -515,7 +515,6 @@ namespace VixenModules.Controller.E131
         public override void UpdateState(int chainIndex, ICommand[] outputStates)
         {
             UpdateState(chainIndex, outputStates.ToChannelValuesAsBytes());
-
         }
 
 
