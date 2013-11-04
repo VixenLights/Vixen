@@ -6,7 +6,7 @@ namespace Vixen.Data.Flow
 	/// <summary>
 	/// Facilitates allowing command outputs to participate in the data flow system.
 	/// </summary>
-	internal class CommandOutputDataFlowAdapter : IDataFlowComponent
+	public class CommandOutputDataFlowAdapter : IDataFlowComponent
 	{
 		private CommandOutput _output;
 

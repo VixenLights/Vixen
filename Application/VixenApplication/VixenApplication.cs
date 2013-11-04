@@ -396,51 +396,69 @@ namespace VixenApplication
 			}
 		}
 
-		private void buttonSetupElements_Click(object sender, EventArgs e)
+		private void SetupElements()
 		{
-			ConfigElements form = new ConfigElements();
-			DialogResult result = form.ShowDialog();
-			if (result == DialogResult.OK) {
-				VixenSystem.SaveSystemConfig();
-			}
-			else {
-				VixenSystem.ReloadSystemConfig();
+			using (ConfigElements form = new ConfigElements()) {
+				DialogResult result = form.ShowDialog();
+				if (result == DialogResult.OK) {
+					VixenSystem.SaveSystemConfig();
+				}
+				else {
+					VixenSystem.ReloadSystemConfig();
+				}
 			}
 		}
 
-		private void buttonSetupOutputControllers_Click(object sender, EventArgs e)
+		private void SetupControllers()
 		{
-			ConfigControllers form = new ConfigControllers();
-			DialogResult result = form.ShowDialog();
-			if (result == DialogResult.OK) {
-				VixenSystem.SaveSystemConfig();
-			}
-			else {
-				VixenSystem.ReloadSystemConfig();
+			using (ConfigControllers form = new ConfigControllers()) {
+				DialogResult result = form.ShowDialog();
+				if (result == DialogResult.OK) {
+					VixenSystem.SaveSystemConfig();
+				}
+				else {
+					VixenSystem.ReloadSystemConfig();
+				}
 			}
 		}
 
-		private void buttonSetupFiltersAndPatching_Click(object sender, EventArgs e)
+		private void SetupFiltersAndPatching()
 		{
-			ConfigFiltersAndPatching form = new ConfigFiltersAndPatching(_applicationData);
-			DialogResult result = form.ShowDialog();
-			if (result == DialogResult.OK) {
-				VixenSystem.SaveSystemConfig();
-			}
-			else {
-				VixenSystem.ReloadSystemConfig();
+			using (ConfigFiltersAndPatching form = new ConfigFiltersAndPatching(_applicationData)) {
+				DialogResult result = form.ShowDialog();
+				if (result == DialogResult.OK) {
+					VixenSystem.SaveSystemConfig();
+				}
+				else {
+					VixenSystem.ReloadSystemConfig();
+				}
 			}
 		}
 
-		private void buttonSetupOutputPreviews_Click(object sender, EventArgs e)
+		private void SetupPreviews()
 		{
-			ConfigPreviews form = new ConfigPreviews();
-			DialogResult result = form.ShowDialog();
-			if (result == DialogResult.OK) {
-				VixenSystem.SaveSystemConfig();
+			using (ConfigPreviews form = new ConfigPreviews()) {
+				DialogResult result = form.ShowDialog();
+				if (result == DialogResult.OK) {
+					VixenSystem.SaveSystemConfig();
+				}
+				else {
+					VixenSystem.ReloadSystemConfig();
+				}
 			}
-			else {
-				VixenSystem.ReloadSystemConfig();
+		}
+
+		private void SetupDisplay()
+		{
+			using (DisplaySetup form = new DisplaySetup()) {
+				DialogResult dr = form.ShowDialog();
+
+				if (dr == DialogResult.OK) {
+					VixenSystem.SaveSystemConfig();
+				}
+				else {
+					VixenSystem.ReloadSystemConfig();
+				}
 			}
 		}
 
@@ -452,10 +470,6 @@ namespace VixenApplication
 		private void stopToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Execution.CloseExecution();
-		}
-
-		private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
-		{
 		}
 
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -619,22 +633,39 @@ namespace VixenApplication
 			}
 		}
 
-		private void buttonSingleSetup_Click(object sender, EventArgs e)
+		private void setupElementsGroupsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			DialogResult dr = MessageBox.Show("Please note: this new setup form is still in active development. There will be bugs! Make sure you backup your configuration in case it breaks something.", "", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+			SetupElements();
+		}
 
-			if (dr == DialogResult.Cancel)
-				return;
+		private void setupControllersToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			SetupControllers();
+		}
 
-			using (DisplaySetup form = new DisplaySetup()) {
-				dr = form.ShowDialog();
-			}
+		private void setupFiltersPatchingToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			SetupFiltersAndPatching();
+		}
 
-			if (dr == DialogResult.OK) {
-				VixenSystem.SaveSystemConfig();
-			} else {
-				VixenSystem.ReloadSystemConfig();
-			}
+		private void setupDisplayToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			SetupDisplay();
+		}
+
+		private void setupPreviewsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			SetupPreviews();
+		}
+
+		private void buttonSetupOutputPreviews_Click(object sender, EventArgs e)
+		{
+			SetupPreviews();
+		}
+
+		private void buttonSetupDisplay_Click(object sender, EventArgs e)
+		{
+			SetupDisplay();
 		}
 	}
 }

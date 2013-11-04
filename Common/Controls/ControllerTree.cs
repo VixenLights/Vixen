@@ -42,7 +42,37 @@ namespace Common.Controls
 
 		#region Tree view population
 
+		public void PopulateControllerTree(Dictionary<IControllerDevice, HashSet<int>> controllersAndOutputs)
+		{
+			List<string> selectedNodes = new List<string>();
+
+			foreach (KeyValuePair<IControllerDevice, HashSet<int>> controllerAndOutput in controllersAndOutputs) {
+				IControllerDevice controller = controllerAndOutput.Key;
+				foreach (int i in controllerAndOutput.Value) {
+					selectedNodes.Add(GenerateEquivalentTreeNodeFullPathFromControllerAndOutput(controller, i));
+				}
+			}
+
+			_PopulateControllerTree(selectedNodes);
+		}
+
+
 		public void PopulateControllerTree(IControllerDevice controllerToSelect = null)
+		{
+			if (controllerToSelect == null) {
+				_PopulateControllerTree();
+				return;
+			}
+
+			List<string> treeNodes = new List<string>();
+			treeNodes.Add(GenerateEquivalentTreeNodeFullPathFromController(controllerToSelect));
+			_PopulateControllerTree(treeNodes);
+		}
+
+
+
+
+		private void _PopulateControllerTree(IEnumerable<string> treeNodesToSelect = null)
 		{
 			// save metadata that is currently in the treeview
 			_expandedNodes = new HashSet<string>();
@@ -73,9 +103,8 @@ namespace Common.Controls
 			}
 
 			// if a new controller has been passed in to select, select it instead.
-			if (controllerToSelect != null) {
-				_selectedNodes = new HashSet<string>();
-				_selectedNodes.Add(GenerateEquivalentTreeNodeFullPathFromController(controllerToSelect, treeview.PathSeparator));
+			if (treeNodesToSelect != null) {
+				_selectedNodes = new HashSet<string>(treeNodesToSelect);
 			}
 
 			foreach (string node in _selectedNodes) {
@@ -104,10 +133,12 @@ namespace Common.Controls
 			}
 
 			// finally, if we were selecting another controller, make sure we raise the selection changed event
-			if (controllerToSelect != null) {
+			if (treeNodesToSelect != null) {
 				OnControllerSelectionChanged();
 			}
 		}
+
+
 
 		private string GenerateTreeNodeFullPath(TreeNode node, string separator)
 		{
@@ -121,9 +152,14 @@ namespace Common.Controls
 			return result;
 		}
 
-		private string GenerateEquivalentTreeNodeFullPathFromController(IControllerDevice controller, string separator)
+		private string GenerateEquivalentTreeNodeFullPathFromController(IControllerDevice controller)
 		{
 			return controller.Id.ToString();
+		}
+
+		private string GenerateEquivalentTreeNodeFullPathFromControllerAndOutput(IControllerDevice controller, int output)
+		{
+			return controller.Id.ToString() + treeview.PathSeparator + "#" + (output + 1);
 		}
 
 
@@ -196,7 +232,7 @@ namespace Common.Controls
 
 			for (int i = 0; i < controller.OutputCount; i++) {
 				TreeNode channelNode = new TreeNode();
-				channelNode.Name = controllerNode.Name + "-#" + (i+1);
+				channelNode.Name = "#" + (i+1);
 				channelNode.Text = "#" + (i+1);
 				channelNode.Tag = i;
 

@@ -230,7 +230,9 @@ namespace Vixen.Sys.Output
 		public void AddOutput(CommandOutput output)
 		{
 			_outputMediator.AddOutput(output);
-			VixenSystem.DataFlow.AddComponent(_adapterFactory.GetAdapter(output));
+			IDataFlowComponent component = _adapterFactory.GetAdapter(output);
+			VixenSystem.DataFlow.AddComponent(component);
+			VixenSystem.OutputControllers.AddControllerOutputForDataFlowComponent(component, this, output.Index);
 		}
 
 		public void AddOutput(Output output)
@@ -241,7 +243,9 @@ namespace Vixen.Sys.Output
 		public void RemoveOutput(CommandOutput output)
 		{
 			_outputMediator.RemoveOutput(output);
-			VixenSystem.DataFlow.RemoveComponent(_adapterFactory.GetAdapter(output));
+			IDataFlowComponent component = _adapterFactory.GetAdapter(output);
+			VixenSystem.DataFlow.RemoveComponent(component);
+			VixenSystem.OutputControllers.RemoveControllerOutputForDataFlowComponent(component);
 		}
 
 		public void RemoveOutput(Output output)
