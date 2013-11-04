@@ -2405,7 +2405,7 @@ namespace Dataweb.NShape.WinFormsUI
 						// Calculate zoom direction
 						currZoomStep *= (int) (e.Delta/Math.Abs(e.Delta));
 						// Set zoom level (and ensure the value is within a reasonable range)
-						ZoomLevel = Math.Min(Math.Max(0, (ZoomLevel + currZoomStep) - (ZoomLevel%currZoomStep)), 4000);
+						ZoomLevel = Math.Min(Math.Max(1, (ZoomLevel + currZoomStep) - (ZoomLevel%currZoomStep)), 4000);
 					}
 
 					// Restore mouse cursors's position by scrolling
@@ -3246,7 +3246,7 @@ namespace Dataweb.NShape.WinFormsUI
 		/// <summary>
 		/// The bounds of the scrollable area: The bounds of the diagram including all its shapes (also shapes beside the diagram 'sheet') and the scroll margin.
 		/// </summary>
-		private Rectangle ScrollAreaBounds
+		public Rectangle ScrollAreaBounds
 		{
 			get
 			{
@@ -4677,13 +4677,13 @@ namespace Dataweb.NShape.WinFormsUI
 		}
 
 
-		private void ScrollBy(int deltaX, int deltaY)
+		public void ScrollBy(int deltaX, int deltaY)
 		{
 			if (deltaX != 0 || deltaY != 0) ScrollTo(scrollPosX + deltaX, scrollPosY + deltaY);
 		}
 
 
-		private void ScrollTo(int x, int y)
+		public void ScrollTo(int x, int y)
 		{
 			if (HScrollBarVisible) {
 				if (x < scrollBarH.Minimum)
