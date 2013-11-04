@@ -302,7 +302,8 @@ namespace VixenModules.Controller.E131
             }
 
             // this._universeTable.Clear();
-            this._nicTable.Clear();
+            if (this._nicTable != null) this._nicTable.Clear();
+            this._nicTable = new  SortedList<string, NetworkInterface>();  
         }
 
         // -------------------------------------------------------------
