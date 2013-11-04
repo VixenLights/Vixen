@@ -1769,7 +1769,7 @@ namespace VixenApplication.Setup
 
 		}
 
-		#endregion
+#endregion
 
 
 
@@ -1784,7 +1784,7 @@ namespace VixenApplication.Setup
 
 
 
-		#region Resize timer
+#region Resize timer
 
 		private Timer _relayoutOnResizeTimer;
 
@@ -1847,6 +1847,26 @@ namespace VixenApplication.Setup
 
 
 
+		public void ZoomToFitAll()
+		{
+			double a = diagramDisplay.Width / (float)diagramDisplay.ScrollAreaBounds.Width;
+			double b = diagramDisplay.Height / (float)diagramDisplay.ScrollAreaBounds.Height;
+
+			double zoom = Math.Max(Math.Min(Math.Min(a, b), 1.0), 0.2);
+			int zoomPercent = (int)(zoom * 100);
+			if (zoomPercent < 100)
+				zoomPercent--;		// fix some weird graphical bugs with scrollbars
+
+			diagramDisplay.ZoomLevel = zoomPercent;
+
+			diagramDisplay.ScrollBy(-diagramDisplay.ScrollAreaBounds.Width, -diagramDisplay.ScrollAreaBounds.Height);
+		}
+
+
+
+
+
+
 #region ISetupPatchingControl implementation and form linking
 
 		public event EventHandler<FiltersEventArgs> FiltersAdded;
@@ -1887,10 +1907,11 @@ namespace VixenApplication.Setup
 			_ResizeAndPositionFilterShapes();
 
 			UpdateConnections();
-
 			_selectShapesIfPresent(selectedShapes);
 
 			diagramDisplay.DoResumeUpdate();
+
+			ZoomToFitAll();
 		}
 
 		public void UpdateElementSelection(IEnumerable<ElementNode> nodes)
@@ -1908,16 +1929,14 @@ namespace VixenApplication.Setup
 			diagramDisplay.DoSuspendUpdate();
 
 			List<Shape> selectedShapes = _getCurrentlySelectedShapes().ToList();
-
 			_updateControllerShapesFromControllersAndOutputs(controllersAndOutputs);
-
 			_ResizeAndPositionControllerShapes();
-
 			UpdateConnections();
-
 			_selectShapesIfPresent(selectedShapes);
 
 			diagramDisplay.DoResumeUpdate();
+
+			ZoomToFitAll();
 		}
 
 
