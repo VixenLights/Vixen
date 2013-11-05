@@ -521,15 +521,18 @@ namespace Common.Controls
 			return newNode;
 		}
 
-		public void CreateGroupFromSelectedNodes()
+		public bool CreateGroupFromSelectedNodes()
 		{
 			ElementNode newGroup = AddSingleNodeWithPrompt();
+			if (newGroup == null)
+				return false;
 
 			foreach (ElementNode en in SelectedElementNodes) {
 				VixenSystem.Nodes.AddChildToParent(en, newGroup);
 			}
 
 			PopulateNodeTree(newGroup);
+			return true;
 		}
 
 		public bool CheckAndPromptIfNodeWillLosePatches(ElementNode node)
@@ -726,14 +729,16 @@ namespace Common.Controls
 
 		private void addNewNodeToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			AddSingleNodeWithPrompt(SelectedNode);
-			OnElementsChanged();
+			var added = AddSingleNodeWithPrompt(SelectedNode);
+			if( added != null)
+				OnElementsChanged();
 		}
 
 		private void addMultipleNewNodesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			AddMultipleNodesWithPrompt(SelectedNode);
-			OnElementsChanged();
+			var added = AddMultipleNodesWithPrompt(SelectedNode);
+			if( added != null)
+				OnElementsChanged();
 		}
 
 		private void deleteNodesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -751,8 +756,9 @@ namespace Common.Controls
 
 		private void createGroupWithNodesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			CreateGroupFromSelectedNodes();
-			OnElementsChanged();
+			bool bChanged = CreateGroupFromSelectedNodes();
+			if( bChanged)
+				OnElementsChanged();
 		}
 
 		private void renameNodesToolStripMenuItem_Click(object sender, EventArgs e)
