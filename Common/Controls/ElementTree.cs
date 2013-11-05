@@ -523,11 +523,14 @@ namespace Common.Controls
 
 		public bool CreateGroupFromSelectedNodes()
 		{
+			// save this because AddSingle changes the selection to the new node
+			var originalSelection = SelectedElementNodes.ToList();
+
 			ElementNode newGroup = AddSingleNodeWithPrompt();
 			if (newGroup == null)
 				return false;
 
-			foreach (ElementNode en in SelectedElementNodes) {
+			foreach (ElementNode en in originalSelection) {
 				VixenSystem.Nodes.AddChildToParent(en, newGroup);
 			}
 
