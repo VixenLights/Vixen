@@ -1633,11 +1633,11 @@ namespace Common.Controls.Timeline
 			
 				//Attempt to recover until this can be reworked to really only draw what is in the visible part of the 
 				//grid. Trying to resize it is crap, but if we do not draw it then the user can't do anything with it to work around the problem.
-				Logging.Error(string.Format("Exception drawing element for effect {0} of size: {1} Height X {2} Width with duration of {3}.", 
-					currentElement.EffectNode.Effect.EffectName, size.Height, size.Width,currentElement.Duration),e);
-				
+				Logging.ErrorException(string.Format("Exception drawing element for effect {0} of size: {1} Height X {2} Width with duration of {3}.", 
+					currentElement.EffectNode.Effect.EffectName, size.Height, size.Width,currentElement.Duration), e);
+
 				MessageBox.Show(
-					string.Format("Unable to draw effect {0} at time {1} due to its size. Attempting to recover by reducing it's length. Please report this issue and provide the logs for further investigation.",
+					string.Format("Unable to draw effect {0} at time {1} due to its size. Attempting to recover by changing its length to 5 seconds. Please report this issue and provide the logs for further investigation.",
 					currentElement.EffectNode.Effect.EffectName, currentElement.StartTime));
 				MoveResizeElement(currentElement, currentElement.StartTime, TimeSpan.FromSeconds(5));
 				size = new Size((int)Math.Ceiling(timeToPixels(currentElement.Duration)), row.Height - 1);
