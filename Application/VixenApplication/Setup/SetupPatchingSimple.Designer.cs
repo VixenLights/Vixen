@@ -31,6 +31,7 @@ namespace VixenApplication.Setup
 		{
 			this.components = new System.ComponentModel.Container();
 			this.groupBoxElements = new System.Windows.Forms.GroupBox();
+			this.buttonUnpatchElements = new System.Windows.Forms.Button();
 			this.labelFilterCount = new System.Windows.Forms.Label();
 			this.labelElementCount = new System.Windows.Forms.Label();
 			this.labelGroupCount = new System.Windows.Forms.Label();
@@ -46,6 +47,12 @@ namespace VixenApplication.Setup
 			this.label6 = new System.Windows.Forms.Label();
 			this.label5 = new System.Windows.Forms.Label();
 			this.groupBoxControllers = new System.Windows.Forms.GroupBox();
+			this.labelLastOutput = new System.Windows.Forms.Label();
+			this.labelFirstOutput = new System.Windows.Forms.Label();
+			this.label9 = new System.Windows.Forms.Label();
+			this.label8 = new System.Windows.Forms.Label();
+			this.checkBoxReverseOutputOrder = new System.Windows.Forms.CheckBox();
+			this.buttonUnpatchControllers = new System.Windows.Forms.Button();
 			this.labelUnpatchedOutputCount = new System.Windows.Forms.Label();
 			this.labelPatchedOutputCount = new System.Windows.Forms.Label();
 			this.labelOutputCount = new System.Windows.Forms.Label();
@@ -65,8 +72,6 @@ namespace VixenApplication.Setup
 			this.radioButtonUnconnectedPatchPointsOnly = new System.Windows.Forms.RadioButton();
 			this.buttonDoPatching = new System.Windows.Forms.Button();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.buttonUnpatchElements = new System.Windows.Forms.Button();
-			this.buttonUnpatchControllers = new System.Windows.Forms.Button();
 			this.groupBoxElements.SuspendLayout();
 			this.groupBoxControllers.SuspendLayout();
 			this.groupBoxPatching.SuspendLayout();
@@ -99,6 +104,16 @@ namespace VixenApplication.Setup
 			this.groupBoxElements.TabIndex = 0;
 			this.groupBoxElements.TabStop = false;
 			this.groupBoxElements.Text = "Selected Elements";
+			// 
+			// buttonUnpatchElements
+			// 
+			this.buttonUnpatchElements.Location = new System.Drawing.Point(50, 240);
+			this.buttonUnpatchElements.Name = "buttonUnpatchElements";
+			this.buttonUnpatchElements.Size = new System.Drawing.Size(120, 25);
+			this.buttonUnpatchElements.TabIndex = 22;
+			this.buttonUnpatchElements.Text = "Unpatch Elements";
+			this.buttonUnpatchElements.UseVisualStyleBackColor = true;
+			this.buttonUnpatchElements.Click += new System.EventHandler(this.buttonUnpatchElements_Click);
 			// 
 			// labelFilterCount
 			// 
@@ -244,6 +259,11 @@ namespace VixenApplication.Setup
 			// 
 			this.groupBoxControllers.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
+			this.groupBoxControllers.Controls.Add(this.labelLastOutput);
+			this.groupBoxControllers.Controls.Add(this.labelFirstOutput);
+			this.groupBoxControllers.Controls.Add(this.label9);
+			this.groupBoxControllers.Controls.Add(this.label8);
+			this.groupBoxControllers.Controls.Add(this.checkBoxReverseOutputOrder);
 			this.groupBoxControllers.Controls.Add(this.buttonUnpatchControllers);
 			this.groupBoxControllers.Controls.Add(this.labelUnpatchedOutputCount);
 			this.groupBoxControllers.Controls.Add(this.labelPatchedOutputCount);
@@ -259,6 +279,65 @@ namespace VixenApplication.Setup
 			this.groupBoxControllers.TabIndex = 1;
 			this.groupBoxControllers.TabStop = false;
 			this.groupBoxControllers.Text = "Selected Controllers";
+			// 
+			// labelLastOutput
+			// 
+			this.labelLastOutput.AutoSize = true;
+			this.labelLastOutput.Location = new System.Drawing.Point(85, 195);
+			this.labelLastOutput.Name = "labelLastOutput";
+			this.labelLastOutput.Size = new System.Drawing.Size(67, 13);
+			this.labelLastOutput.TabIndex = 33;
+			this.labelLastOutput.Text = "Controller #0";
+			// 
+			// labelFirstOutput
+			// 
+			this.labelFirstOutput.AutoSize = true;
+			this.labelFirstOutput.Location = new System.Drawing.Point(85, 175);
+			this.labelFirstOutput.Name = "labelFirstOutput";
+			this.labelFirstOutput.Size = new System.Drawing.Size(67, 13);
+			this.labelFirstOutput.TabIndex = 32;
+			this.labelFirstOutput.Text = "Controller #0";
+			// 
+			// label9
+			// 
+			this.label9.AutoSize = true;
+			this.label9.Location = new System.Drawing.Point(20, 195);
+			this.label9.Name = "label9";
+			this.label9.Size = new System.Drawing.Size(63, 13);
+			this.label9.TabIndex = 31;
+			this.label9.Text = "Last output:";
+			this.toolTip1.SetToolTip(this.label9, "The last output in the list of selected outputs (as will be used for patching).");
+			// 
+			// label8
+			// 
+			this.label8.AutoSize = true;
+			this.label8.Location = new System.Drawing.Point(20, 175);
+			this.label8.Name = "label8";
+			this.label8.Size = new System.Drawing.Size(62, 13);
+			this.label8.TabIndex = 30;
+			this.label8.Text = "First output:";
+			this.toolTip1.SetToolTip(this.label8, "The first output in the list of selected outputs (as will be used for patching).");
+			// 
+			// checkBoxReverseOutputOrder
+			// 
+			this.checkBoxReverseOutputOrder.AutoSize = true;
+			this.checkBoxReverseOutputOrder.Location = new System.Drawing.Point(23, 144);
+			this.checkBoxReverseOutputOrder.Name = "checkBoxReverseOutputOrder";
+			this.checkBoxReverseOutputOrder.Size = new System.Drawing.Size(186, 17);
+			this.checkBoxReverseOutputOrder.TabIndex = 29;
+			this.checkBoxReverseOutputOrder.Text = "Reverse order of selected outputs";
+			this.checkBoxReverseOutputOrder.UseVisualStyleBackColor = true;
+			this.checkBoxReverseOutputOrder.CheckedChanged += new System.EventHandler(this.checkBoxReverseOutputOrder_CheckedChanged);
+			// 
+			// buttonUnpatchControllers
+			// 
+			this.buttonUnpatchControllers.Location = new System.Drawing.Point(50, 240);
+			this.buttonUnpatchControllers.Name = "buttonUnpatchControllers";
+			this.buttonUnpatchControllers.Size = new System.Drawing.Size(120, 25);
+			this.buttonUnpatchControllers.TabIndex = 28;
+			this.buttonUnpatchControllers.Text = "Unpatch Controllers";
+			this.buttonUnpatchControllers.UseVisualStyleBackColor = true;
+			this.buttonUnpatchControllers.Click += new System.EventHandler(this.buttonUnpatchControllers_Click);
 			// 
 			// labelUnpatchedOutputCount
 			// 
@@ -458,26 +537,6 @@ namespace VixenApplication.Setup
 			this.toolTip1.InitialDelay = 200;
 			this.toolTip1.ReshowDelay = 40;
 			// 
-			// buttonUnpatchElements
-			// 
-			this.buttonUnpatchElements.Location = new System.Drawing.Point(50, 222);
-			this.buttonUnpatchElements.Name = "buttonUnpatchElements";
-			this.buttonUnpatchElements.Size = new System.Drawing.Size(120, 25);
-			this.buttonUnpatchElements.TabIndex = 22;
-			this.buttonUnpatchElements.Text = "Unpatch Elements";
-			this.buttonUnpatchElements.UseVisualStyleBackColor = true;
-			this.buttonUnpatchElements.Click += new System.EventHandler(this.buttonUnpatchElements_Click);
-			// 
-			// buttonUnpatchControllers
-			// 
-			this.buttonUnpatchControllers.Location = new System.Drawing.Point(50, 222);
-			this.buttonUnpatchControllers.Name = "buttonUnpatchControllers";
-			this.buttonUnpatchControllers.Size = new System.Drawing.Size(120, 25);
-			this.buttonUnpatchControllers.TabIndex = 28;
-			this.buttonUnpatchControllers.Text = "Unpatch Controllers";
-			this.buttonUnpatchControllers.UseVisualStyleBackColor = true;
-			this.buttonUnpatchControllers.Click += new System.EventHandler(this.buttonUnpatchControllers_Click);
-			// 
 			// SetupPatchingSimple
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -542,5 +601,10 @@ namespace VixenApplication.Setup
 		private ToolTip toolTip1;
 		private Button buttonUnpatchElements;
 		private Button buttonUnpatchControllers;
+		private CheckBox checkBoxReverseOutputOrder;
+		private Label labelLastOutput;
+		private Label labelFirstOutput;
+		private Label label9;
+		private Label label8;
 	}
 }

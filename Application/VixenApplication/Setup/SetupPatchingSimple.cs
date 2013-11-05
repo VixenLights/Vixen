@@ -256,6 +256,23 @@ namespace VixenApplication.Setup
 			labelUnpatchedOutputCount.Text = unpatchedCount.ToString();
 
 			buttonUnpatchControllers.Enabled = patchedCount > 0;
+
+			if (checkBoxReverseOutputOrder.Checked) {
+				_controllerInputs.Reverse();
+			}
+
+			labelFirstOutput.Text = "";
+			labelLastOutput.Text = "";
+
+			if (_controllerInputs.Any()) {
+				IControllerDevice controller;
+				int outputIndex;
+				VixenSystem.OutputControllers.getOutputDetailsForDataFlowComponent(_controllerInputs.First().Item, out controller, out outputIndex);
+				labelFirstOutput.Text = string.Format("{0} #{1}", controller.Name, outputIndex + 1);
+
+				VixenSystem.OutputControllers.getOutputDetailsForDataFlowComponent(_controllerInputs.Last().Item, out controller, out outputIndex);
+				labelLastOutput.Text = string.Format("{0} #{1}", controller.Name, outputIndex + 1);
+			}
 		}
 
 
@@ -418,6 +435,11 @@ namespace VixenApplication.Setup
 
 			OnPatchingUpdated();
 			_UpdateEverything(_cachedElementNodes, _cachedControllersAndOutputs);
+		}
+
+		private void checkBoxReverseOutputOrder_CheckedChanged(object sender, EventArgs e)
+		{
+			_updateControllerDetails(_cachedControllersAndOutputs);
 		}
 
 
