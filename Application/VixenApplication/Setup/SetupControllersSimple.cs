@@ -79,6 +79,11 @@ namespace VixenApplication.Setup
 			buttonSelectSourceElements.Enabled = controllerTree.SelectedTreeNodes.Count > 0;
 		}
 
+		public void UpdateInfoLabels()
+		{
+			
+		}
+
 		public ControllersAndOutputsSet BuildSelectedControllersAndOutputs()
 		{
 			ControllersAndOutputsSet result = new ControllersAndOutputsSet();

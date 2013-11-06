@@ -27,9 +27,11 @@ using System.Threading;
 using Common.Resources.Properties;
 using Common.Controls;
 using WeifenLuo.WinFormsUI.Docking;
+using Vixen.Sys.State.Execution;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
+
 	public partial class TimedSequenceEditorForm : Form, IEditorUserInterface, IExecutionControl, ITiming
 	{
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
@@ -117,6 +119,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolStripButton_IncreaseTimingSpeed.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStripButton_DecreaseTimingSpeed.Image = Resources.minus;
 			toolStripButton_DecreaseTimingSpeed.DisplayStyle = ToolStripItemDisplayStyle.Image;
+
+			Execution.ExecutionStateChanged += OnExecutionStateChanged;
 		}
 
 		private IDockContent DockingPanels_GetContentFromPersistString(string persistString)
@@ -247,6 +251,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.CursorMoved -= CursorMovedHandler;
 			TimelineControl.ElementsSelected -= timelineControl_ElementsSelected;
 			TimelineControl.ContextSelected -= timelineControl_ContextSelected;
+
+			Execution.ExecutionStateChanged -= OnExecutionStateChanged;
 
 			//;
 			if (disposing && (components != null))
@@ -1128,6 +1134,21 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		#endregion
 
 		#region Sequence actions (play, pause, etc.)
+
+		private void OnExecutionStateChanged(object sender, EventArgs e)
+		{
+			Console.WriteLine("tse: state changed: " + Execution.State);
+			if (Execution.State.Equals("Closing"))
+			{
+				if (_context != null)
+					CloseSequenceContext();
+				_context = null;
+			}
+			else if (Execution.State.Equals("Open"))
+			{
+				OpenSequenceContext(_sequence);
+			}
+		}
 
 		private void OpenSequenceContext(Vixen.Sys.ISequence sequence)
 		{

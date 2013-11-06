@@ -5,6 +5,7 @@ using Vixen.Factory;
 using Vixen.Data.Flow;
 using Vixen.Module.Controller;
 using Vixen.Commands;
+using Vixen.Sys.Instrumentation;
 
 namespace Vixen.Sys.Output
 {
@@ -135,18 +136,45 @@ namespace Vixen.Sys.Output
 			set { _updateInterval = value; }
 		}
 
+		// for instrumentation support
+		private long _generateMs;
+		private long _extractMs;
+		private long _deviceMs;
+		public void GetLastUpdateMs(out long generateMs, out long extractMs, out long deviceMs)
+		{
+			generateMs = _generateMs;
+			extractMs = _extractMs;
+			deviceMs = _deviceMs;
+		}
+	
 		public void Update()
 		{
+			var sw = System.Diagnostics.Stopwatch.StartNew();
 			if (VixenSystem.ControllerLinking.IsRootController(this) && _ControllerChainModule != null) {
 				_outputMediator.LockOutputs();
 				try {
 					foreach (OutputController controller in this) {
-						controller.Outputs.AsParallel().ForAll(x =>
-						                                       	{
-						                                       		x.Update();
-						                                       		x.Command = _GenerateOutputCommand(x);
-						                                       	});
+						if (true)
+						{
+							controller.Outputs.AsParallel().ForAll(x =>
+							{
+								x.Update();
+								x.Command = _GenerateOutputCommand(x);
+							});
+						}
+						else
+						{
+							foreach( var x in controller.Outputs)
+							{
+								x.Update();
+								x.Command = _GenerateOutputCommand(x);
+							}
+						}
 					}
+
+					_generateMs = sw.ElapsedMilliseconds;
+					_extractMs = 0;
+					_deviceMs = 0;
 
 					// Latch out the new state.
 					// This must be done in order of the chain links so that data
@@ -155,9 +183,14 @@ namespace Vixen.Sys.Output
 						// A single port may be used to service multiple physical controllers,
 						// such as daisy-chained Renard controllers.  Tell the module where
 						// it is in that chain.
+						long t1 = sw.ElapsedMilliseconds;
 						int chainIndex = VixenSystem.ControllerLinking.GetChainIndex(controller.Id);
 						ICommand[] outputStates = _ExtractCommandsFromOutputs(controller).ToArray();
+						long t2 = sw.ElapsedMilliseconds;
 						controller._ControllerChainModule.UpdateState(chainIndex, outputStates);
+						long t3 = sw.ElapsedMilliseconds;
+						_extractMs += t2 - t1;
+						_deviceMs += t3 - t2;
 					}
 				}
 				finally {

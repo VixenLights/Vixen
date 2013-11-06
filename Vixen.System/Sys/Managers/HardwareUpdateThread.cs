@@ -18,6 +18,9 @@ namespace Vixen.Sys.Managers
 		private MillisecondsValue _sleepTimeActualValue;
 		private OutputDeviceRefreshRateValue _refreshRateValue;
 		private MillisecondsValue _updateTimeValue;
+		private MillisecondsValue _generateTimeValue;
+		private MillisecondsValue _extractTimeValue;
+		private MillisecondsValue _deviceTimeValue;
 		private MillisecondsValue _intervalDeltaValue;
 		private MillisecondsValue _executionTimeValue;
 
@@ -108,6 +111,17 @@ namespace Vixen.Sys.Managers
 					if( allowed)
 						_executionTimeValue.Set(execMs);
 					_updateTimeValue.Set(outputMs);
+					var oc = OutputDevice as OutputController;
+					if (oc != null)
+					{
+						long generateMs;
+						long extractMs;
+						long deviceMs;
+						oc.GetLastUpdateMs(out generateMs, out extractMs, out deviceMs);
+						_generateTimeValue.Set(generateMs);
+						_extractTimeValue.Set(extractMs);
+						_deviceTimeValue.Set(deviceMs);
+					}
 
 					// log stuff after real work is done...
 
@@ -208,8 +222,14 @@ namespace Vixen.Sys.Managers
 			VixenSystem.Instrumentation.AddValue(_intervalDeltaValue);
 			_executionTimeValue = new MillisecondsValue(string.Format("{0} system", OutputDevice.Name));
 			VixenSystem.Instrumentation.AddValue(_executionTimeValue);
-			_updateTimeValue = new MillisecondsValue(string.Format("{0} device", OutputDevice.Name));
+			_updateTimeValue = new MillisecondsValue(string.Format("{0} output", OutputDevice.Name));
 			VixenSystem.Instrumentation.AddValue(_updateTimeValue);
+			_generateTimeValue = new MillisecondsValue(string.Format("    generate"));
+			VixenSystem.Instrumentation.AddValue(_generateTimeValue);
+			_extractTimeValue = new MillisecondsValue(string.Format("    extract"));
+			VixenSystem.Instrumentation.AddValue(_extractTimeValue);
+			_deviceTimeValue = new MillisecondsValue(string.Format("    device"));
+			VixenSystem.Instrumentation.AddValue(_deviceTimeValue);
 			_refreshRateValue = new OutputDeviceRefreshRateValue(OutputDevice);
 			VixenSystem.Instrumentation.AddValue(_refreshRateValue);
 			_sleepTimeActualValue = new MillisecondsValue(string.Format("{0} sleep time", OutputDevice.Name));
@@ -219,23 +239,21 @@ namespace Vixen.Sys.Managers
 		private void _RemovePerformanceValues()
 		{
 			if (_intervalDeltaValue != null)
-			{
 				VixenSystem.Instrumentation.RemoveValue(_intervalDeltaValue);
-			}
 			if (_executionTimeValue != null)
-			{
 				VixenSystem.Instrumentation.RemoveValue(_executionTimeValue);
-			}
 			if (_refreshRateValue != null)
-			{
 				VixenSystem.Instrumentation.RemoveValue(_refreshRateValue);
-			}
-			if (_updateTimeValue != null) {
+			if (_updateTimeValue != null)
 				VixenSystem.Instrumentation.RemoveValue(_updateTimeValue);
-			}
-			if (_sleepTimeActualValue != null) {
+			if (_generateTimeValue != null)
+				VixenSystem.Instrumentation.RemoveValue(_generateTimeValue);
+			if (_extractTimeValue != null)
+				VixenSystem.Instrumentation.RemoveValue(_extractTimeValue);
+			if (_deviceTimeValue != null)
+				VixenSystem.Instrumentation.RemoveValue(_deviceTimeValue);
+			if (_sleepTimeActualValue != null)
 				VixenSystem.Instrumentation.RemoveValue(_sleepTimeActualValue);
-			}
 		}
 
 		protected virtual void OnError()
