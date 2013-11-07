@@ -20,7 +20,9 @@ namespace Vixen.Sys.Instrumentation
 		public void AddValue(IInstrumentationValue value)
 		{
 			Debug.Assert(value != null);
-			if (value != null && !_values.Contains(value.Name)) {
+			// last one wins... old one is orphaned
+			// this is nicer for providers that "re-register counters
+			if (value != null) {
 				_values[value.Name] = value;
 			}
 		}
