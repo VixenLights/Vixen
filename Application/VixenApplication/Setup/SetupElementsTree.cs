@@ -210,6 +210,10 @@ namespace VixenApplication.Setup
 				bool act = template.SetupTemplate(elementTree.SelectedElementNodes);
 				if (act) {
 					IEnumerable<ElementNode> createdElements = template.GenerateElements(elementTree.SelectedElementNodes);
+					if (createdElements == null || createdElements.Count() == 0) {
+						MessageBox.Show("Could not create elements.  Ensure you use a valid name and try again.");
+						return;
+					}
 					elementTree.PopulateNodeTree(createdElements.FirstOrDefault());
 					OnElementsChanged();
 				}

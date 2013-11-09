@@ -224,11 +224,11 @@ namespace Vixen.Sys.Managers
 			VixenSystem.Instrumentation.AddValue(_executionTimeValue);
 			_updateTimeValue = new MillisecondsValue(string.Format("{0} output", OutputDevice.Name));
 			VixenSystem.Instrumentation.AddValue(_updateTimeValue);
-			_generateTimeValue = new MillisecondsValue(string.Format("    generate"));
+			_generateTimeValue = new MillisecondsValue(string.Format("{0}   generate", OutputDevice.Name));
 			VixenSystem.Instrumentation.AddValue(_generateTimeValue);
-			_extractTimeValue = new MillisecondsValue(string.Format("    extract"));
+			_extractTimeValue = new MillisecondsValue(string.Format("{0}   extract", OutputDevice.Name));
 			VixenSystem.Instrumentation.AddValue(_extractTimeValue);
-			_deviceTimeValue = new MillisecondsValue(string.Format("    device"));
+			_deviceTimeValue = new MillisecondsValue(string.Format("{0}   device", OutputDevice.Name));
 			VixenSystem.Instrumentation.AddValue(_deviceTimeValue);
 			_refreshRateValue = new OutputDeviceRefreshRateValue(OutputDevice);
 			VixenSystem.Instrumentation.AddValue(_refreshRateValue);
