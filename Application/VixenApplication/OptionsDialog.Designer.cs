@@ -84,7 +84,7 @@
             0});
 			this.ctlUpdateInteral.Location = new System.Drawing.Point(102, 58);
 			this.ctlUpdateInteral.Maximum = new decimal(new int[] {
-            115,
+            500,
             0,
             0,
             0});
