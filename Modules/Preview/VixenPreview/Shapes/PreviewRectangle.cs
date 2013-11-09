@@ -18,6 +18,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		[DataMember] private PreviewPoint _bottomLeft;
 		[DataMember] private PreviewPoint _bottomRight;
 
+		public enum Directions
+		{
+			Clockwise,
+			CounterClockwise
+		}
+
 		private bool lockXY = false;
 		private PreviewPoint topLeftStart, topRightStart, bottomLeftStart, bottomRightStart;
 
@@ -225,6 +231,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
+		[CategoryAttribute("Settings"),
+		 DisplayName("Direction"),
+		 DescriptionAttribute("Wrap direction."),
+		 DataMember]
+		public Directions Direction { get; set; }
+
 		public int PixelCount
 		{
 			get { return Pixels.Count; }
@@ -250,21 +262,42 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			//(Strings[3] as PreviewLine).Layout();
 
 			// Start in the lower left corner and move clockwise around the rectangle.
-			(Strings[0] as PreviewLine).Point1 = BottomLeftPoint;
-			(Strings[0] as PreviewLine).Point2 = TopLeftPoint;
-			(Strings[0] as PreviewLine).Layout();
+			if (Direction == Directions.CounterClockwise)
+			{
+				(Strings[0] as PreviewLine).Point1 = BottomLeftPoint;
+				(Strings[0] as PreviewLine).Point2 = BottomRightPoint;
+				(Strings[0] as PreviewLine).Layout();
 
-			(Strings[1] as PreviewLine).Point1 = TopLeftPoint;
-			(Strings[1] as PreviewLine).Point2 = TopRightPoint;
-			(Strings[1] as PreviewLine).Layout();
+				(Strings[1] as PreviewLine).Point1 = BottomRightPoint;
+				(Strings[1] as PreviewLine).Point2 = TopRightPoint;
+				(Strings[1] as PreviewLine).Layout();
 
-			(Strings[2] as PreviewLine).Point1 = TopRightPoint;
-			(Strings[2] as PreviewLine).Point2 = BottomRightPoint;
-			(Strings[2] as PreviewLine).Layout();
+				(Strings[2] as PreviewLine).Point1 = TopRightPoint;
+				(Strings[2] as PreviewLine).Point2 = TopLeftPoint;
+				(Strings[2] as PreviewLine).Layout();
 
-			(Strings[3] as PreviewLine).Point1 = BottomRightPoint;
-			(Strings[3] as PreviewLine).Point2 = BottomLeftPoint;
-			(Strings[3] as PreviewLine).Layout();
+				(Strings[3] as PreviewLine).Point1 = TopLeftPoint;
+				(Strings[3] as PreviewLine).Point2 = BottomLeftPoint;
+				(Strings[3] as PreviewLine).Layout();
+			}
+			else
+			{
+				(Strings[0] as PreviewLine).Point1 = BottomLeftPoint;
+				(Strings[0] as PreviewLine).Point2 = TopLeftPoint;
+				(Strings[0] as PreviewLine).Layout();
+
+				(Strings[1] as PreviewLine).Point1 = TopLeftPoint;
+				(Strings[1] as PreviewLine).Point2 = TopRightPoint;
+				(Strings[1] as PreviewLine).Layout();
+
+				(Strings[2] as PreviewLine).Point1 = TopRightPoint;
+				(Strings[2] as PreviewLine).Point2 = BottomRightPoint;
+				(Strings[2] as PreviewLine).Layout();
+
+				(Strings[3] as PreviewLine).Point1 = BottomRightPoint;
+				(Strings[3] as PreviewLine).Point2 = BottomLeftPoint;
+				(Strings[3] as PreviewLine).Layout();
+			}
 		}
 
 		public override void MouseMove(int x, int y, int changeX, int changeY)
