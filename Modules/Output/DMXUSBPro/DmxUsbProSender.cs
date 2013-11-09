@@ -6,6 +6,8 @@ namespace VixenModules.Output.DmxUsbPro
 
 	internal class DmxUsbProSender : IDisposable
 	{
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger(); 
+		
 		private readonly Message _dmxPacketMessage;
 
 		private readonly byte[] _statePacket;
@@ -46,7 +48,8 @@ namespace VixenModules.Output.DmxUsbPro
 			}
 
 			if (!this._serialPort.IsOpen) {
-				this._serialPort.Open();
+				//this._serialPort.Open();
+				return;
 			}
 
 			this._statePacket[0] = 0; // Start code
@@ -59,8 +62,13 @@ namespace VixenModules.Output.DmxUsbPro
 
 		public void Start()
 		{
-			if (_serialPort != null && !this._serialPort.IsOpen) {
-				this._serialPort.Open();
+			try {
+				if (_serialPort != null && !this._serialPort.IsOpen) {
+					this._serialPort.Open();
+				}
+			}
+			catch (Exception ex) {
+				Logging.ErrorException(string.Format("Serial Port Open failed"), ex);
 			}
 		}
 
@@ -75,6 +83,8 @@ namespace VixenModules.Output.DmxUsbPro
 		{
 			if (this._serialPort != null && this._serialPort.IsOpen) {
 				this._serialPort.Close();
+			}
+			if (this._serialPort != null) {
 				this._serialPort.Dispose();
 				this._serialPort = null;
 			}
