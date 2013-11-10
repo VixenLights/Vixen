@@ -478,13 +478,13 @@ namespace Common.Controls
 			// since we're adding multiple nodes, prompt with the name generation form (which also includes a counter on there).
 			using (NameGenerator nameGenerator = new NameGenerator()) {
 				if (nameGenerator.ShowDialog() == DialogResult.OK) {
-					if (result == null || result.Count() == 0) {
-						MessageBox.Show("Could not create elements.  Ensure you use a valid name and try again.");
-						return result;
-					}
 					result.AddRange(
 						nameGenerator.Names.Where(name => !string.IsNullOrEmpty(name)).Select(
 							name => AddNewNode(name, false, parent, true)));
+					if (result == null || result.Count() == 0) { 
+						MessageBox.Show("Could not create elements.  Ensure you use a valid name and try again.");
+						return result;
+					}
 					PopulateNodeTree(result.FirstOrDefault());
 				}
 			}
