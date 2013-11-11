@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Collections.Generic;
 using Common.Resources.Properties;
 using Common.Controls;
 
@@ -65,13 +66,29 @@ namespace VixenApplication
 		private void buttonOK_Click(object sender, EventArgs e)
 		{
 			XMLProfileSettings profile = new XMLProfileSettings();
-			SaveCurrentItem();
-			profile.PutSetting("Profiles/ProfileCount", comboBoxProfiles.Items.Count);
+            List<string> checkName = new List<string>();
+            List<string> checkDataFolder = new List<string>();
+            bool duplicateName = false;
+            bool duplicateDataFolder = false;
+            SaveCurrentItem();
+            profile.PutSetting("Profiles/ProfileCount", comboBoxProfiles.Items.Count);
 			for (int i = 0; i < comboBoxProfiles.Items.Count; i++) {
 				ProfileItem item = comboBoxProfiles.Items[i] as ProfileItem;
 				profile.PutSetting("Profiles/" + "Profile" + i.ToString() + "/Name", item.Name);
 				profile.PutSetting("Profiles/" + "Profile" + i.ToString() + "/DataFolder", item.DataFolder);
-			}
+                //We're getting out of here and expect a restart by user, if the specified DataFolder doesn't exist, we should create it.
+                if (item.DataFolder != string.Empty)
+                {
+                    if (!System.IO.Directory.Exists(item.DataFolder))
+                        System.IO.Directory.CreateDirectory(item.DataFolder);
+                }
+                if (checkName.Contains(item.Name))
+                    duplicateName = true;
+                checkName.Add(item.Name);
+                if (checkDataFolder.Contains(item.DataFolder))
+                    duplicateDataFolder = true;
+                checkDataFolder.Add(item.DataFolder);
+            }
 
 			if (radioButtonAskMe.Checked)
 				profile.PutSetting("Profiles/LoadAction", "Ask");
@@ -81,7 +98,11 @@ namespace VixenApplication
 			if (comboBoxLoadThisProfile.SelectedIndex >= 0)
 				profile.PutSetting("Profiles/ProfileToLoad", comboBoxLoadThisProfile.SelectedIndex);
 
-			DialogResult = System.Windows.Forms.DialogResult.OK;
+            if (duplicateName)
+                MessageBox.Show ("Profile information saved, however duplicate profile names were found. Please enter a unique name for each profile.", "Warning", MessageBoxButtons.OK);
+            if (duplicateDataFolder)
+                MessageBox.Show ("Profile information saved, however duplicate data folder entries were found. Please choose a unique folder for each profile.", "Warning", MessageBoxButtons.OK);
+            DialogResult = System.Windows.Forms.DialogResult.OK;
 
 			Close();
 		}
