@@ -77,6 +77,7 @@ namespace VixenApplication
 				profile.PutSetting("Profiles/" + "Profile" + i.ToString() + "/Name", item.Name);
 				profile.PutSetting("Profiles/" + "Profile" + i.ToString() + "/DataFolder", item.DataFolder);
                 //We're getting out of here and expect a restart by user, if the specified DataFolder doesn't exist, we should create it.
+                
                 if (item.DataFolder != string.Empty)
                 {
                     if (!System.IO.Directory.Exists(item.DataFolder))
@@ -98,13 +99,28 @@ namespace VixenApplication
 			if (comboBoxLoadThisProfile.SelectedIndex >= 0)
 				profile.PutSetting("Profiles/ProfileToLoad", comboBoxLoadThisProfile.SelectedIndex);
 
-            if (duplicateName)
-                MessageBox.Show ("Profile information saved, however duplicate profile names were found. Please enter a unique name for each profile.", "Warning", MessageBoxButtons.OK);
-            if (duplicateDataFolder)
-                MessageBox.Show ("Profile information saved, however duplicate data folder entries were found. Please choose a unique folder for each profile.", "Warning", MessageBoxButtons.OK);
-            DialogResult = System.Windows.Forms.DialogResult.OK;
+            //If a duplicate entry is found, we will prompt the user to contine on, or cancel and edit. This could be done with one bool, but in the event that we want to
+            //be more specific about things in the future, Ill leave it the way it is for now.
+            if (duplicateName || duplicateDataFolder)
+            {
+                if (MessageBox.Show("Duplicate profile entries were found. A duplicate profile name, or data path exists. Click OK to accept and contine, or Cancel to go back and edit.", "Warning", MessageBoxButtons.OKCancel) == DialogResult.OK)
+                {
+                    DialogResult = System.Windows.Forms.DialogResult.OK;
+                    Close();
+                }
+                else
+                {
+                    //Too late to cancel without changes, lets not give false hope.
+                    buttonCancel.Enabled = false;
+                    DialogResult = System.Windows.Forms.DialogResult.None;
+                }
+            }
+            else
+            {
+                DialogResult = System.Windows.Forms.DialogResult.OK;
+                Close();
+            }
 
-			Close();
 		}
 
 		private void buttonSetDataFolder_Click(object sender, EventArgs e)
