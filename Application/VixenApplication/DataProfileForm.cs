@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Collections.Generic;
 using Common.Resources.Properties;
 using Common.Controls;
 
@@ -65,13 +66,30 @@ namespace VixenApplication
 		private void buttonOK_Click(object sender, EventArgs e)
 		{
 			XMLProfileSettings profile = new XMLProfileSettings();
-			SaveCurrentItem();
-			profile.PutSetting("Profiles/ProfileCount", comboBoxProfiles.Items.Count);
+            List<string> checkName = new List<string>();
+            List<string> checkDataFolder = new List<string>();
+            bool duplicateName = false;
+            bool duplicateDataFolder = false;
+            SaveCurrentItem();
+            profile.PutSetting("Profiles/ProfileCount", comboBoxProfiles.Items.Count);
 			for (int i = 0; i < comboBoxProfiles.Items.Count; i++) {
 				ProfileItem item = comboBoxProfiles.Items[i] as ProfileItem;
 				profile.PutSetting("Profiles/" + "Profile" + i.ToString() + "/Name", item.Name);
 				profile.PutSetting("Profiles/" + "Profile" + i.ToString() + "/DataFolder", item.DataFolder);
-			}
+                //We're getting out of here and expect a restart by user, if the specified DataFolder doesn't exist, we should create it.
+                
+                if (item.DataFolder != string.Empty)
+                {
+                    if (!System.IO.Directory.Exists(item.DataFolder))
+                        System.IO.Directory.CreateDirectory(item.DataFolder);
+                }
+                if (checkName.Contains(item.Name))
+                    duplicateName = true;
+                checkName.Add(item.Name);
+                if (checkDataFolder.Contains(item.DataFolder))
+                    duplicateDataFolder = true;
+                checkDataFolder.Add(item.DataFolder);
+            }
 
 			if (radioButtonAskMe.Checked)
 				profile.PutSetting("Profiles/LoadAction", "Ask");
@@ -81,9 +99,28 @@ namespace VixenApplication
 			if (comboBoxLoadThisProfile.SelectedIndex >= 0)
 				profile.PutSetting("Profiles/ProfileToLoad", comboBoxLoadThisProfile.SelectedIndex);
 
-			DialogResult = System.Windows.Forms.DialogResult.OK;
+            //If a duplicate entry is found, we will prompt the user to contine on, or cancel and edit. This could be done with one bool, but in the event that we want to
+            //be more specific about things in the future, Ill leave it the way it is for now.
+            if (duplicateName || duplicateDataFolder)
+            {
+                if (MessageBox.Show("Duplicate profile entries were found. A duplicate profile name, or data path exists. Click OK to accept and contine, or Cancel to go back and edit.", "Warning", MessageBoxButtons.OKCancel) == DialogResult.OK)
+                {
+                    DialogResult = System.Windows.Forms.DialogResult.OK;
+                    Close();
+                }
+                else
+                {
+                    //Too late to cancel without changes, lets not give false hope.
+                    buttonCancel.Enabled = false;
+                    DialogResult = System.Windows.Forms.DialogResult.None;
+                }
+            }
+            else
+            {
+                DialogResult = System.Windows.Forms.DialogResult.OK;
+                Close();
+            }
 
-			Close();
 		}
 
 		private void buttonSetDataFolder_Click(object sender, EventArgs e)
