@@ -56,28 +56,29 @@ namespace VixenApplication.Setup
 			controllerTree.ControllerSelectionChanged += controllerTree_ControllerSelectionChanged;
 			controllerTree.ControllersChanged += controllerTree_ControllersChanged;
 
-			UpdateButtons();
+			UpdateForm();
 		}
 
 		void controllerTree_ControllerSelectionChanged(object sender, EventArgs e)
 		{
 			OnControllerSelectionChanged();
-			UpdateButtons();
+			UpdateForm();
 		}
 
 		void controllerTree_ControllersChanged(object sender, EventArgs e)
 		{
 			OnControllersChanged();
-			UpdateButtons();
+			UpdateForm();
 		}
 
-		void UpdateButtons()
+		void UpdateForm()
 		{
-			buttonConfigureController.Enabled = controllerTree.SelectedControllers.Count() == 1;
-			buttonNumberChannelsController.Enabled = controllerTree.SelectedControllers.Count() == 1;
-			buttonRenameController.Enabled = controllerTree.SelectedControllers.Count() == 1;
+			int selectedControllerCount = controllerTree.SelectedControllers.Count();
+			buttonConfigureController.Enabled = selectedControllerCount == 1;
+			buttonNumberChannelsController.Enabled = selectedControllerCount == 1;
+			buttonRenameController.Enabled = selectedControllerCount == 1;
 
-			buttonDeleteController.Enabled = controllerTree.SelectedControllers.Count() >= 1;
+			buttonDeleteController.Enabled = selectedControllerCount >= 1;
 
 			int runningCount = 0;
 			int notRunningCount = 0;
@@ -101,11 +102,21 @@ namespace VixenApplication.Setup
 			buttonAddController.Enabled = comboBoxNewControllerType.SelectedIndex >= 0;
 
 			buttonSelectSourceElements.Enabled = controllerTree.SelectedTreeNodes.Count > 0;
-		}
 
-		public void UpdateInfoLabels()
-		{
-			
+			if (selectedControllerCount <= 0) {
+				labelControllerType.Text = "";
+				labelOutputCount.Text = "";
+			} else if (selectedControllerCount == 1) {
+				labelControllerType.Text = ApplicationServices.GetModuleDescriptor(controllerTree.SelectedControllers.First().ModuleId).TypeName;
+				labelOutputCount.Text = controllerTree.SelectedControllers.First().OutputCount.ToString();
+			} else {
+				labelControllerType.Text = selectedControllerCount + " controllers selected";
+				int count = 0;
+				foreach (IControllerDevice controller in controllerTree.SelectedControllers) {
+					count += controller.OutputCount;
+				}
+				labelOutputCount.Text = count.ToString();
+			}
 		}
 
 		public ControllersAndOutputsSet BuildSelectedControllersAndOutputs()
@@ -278,7 +289,7 @@ namespace VixenApplication.Setup
 			if (changes) {
 				controllerTree.PopulateControllerTree();
 				OnControllersChanged();
-				UpdateButtons();
+				UpdateForm();
 			}
 		}
 
@@ -296,7 +307,7 @@ namespace VixenApplication.Setup
 			if (changes) {
 				controllerTree.PopulateControllerTree();
 				OnControllersChanged();
-				UpdateButtons();
+				UpdateForm();
 			}
 		}
 	}
