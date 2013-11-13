@@ -67,8 +67,8 @@
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -234,14 +234,19 @@
     <None Include="add.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\lightning_go.png" />
-    <None Include="Resources\lightning_delete.png" />
-    <None Include="Resources\lightning_add.png" />
-    <None Include="Resources\lightning.png" />
-    <None Include="Resources\lightbulb_off.png" />
-    <None Include="Resources\lightbulb_delete.png" />
-    <None Include="Resources\lightbulb_add.png" />
-    <None Include="Resources\lightbulb.png" />
+    <None Include="hourglass_link.png" />
+    <None Include="hourglass_go.png" />
+    <None Include="hourglass_delete.png" />
+    <None Include="hourglass_add.png" />
+    <None Include="hourglass.png" />
+    <None Include="lightning_go.png" />
+    <None Include="lightning_delete.png" />
+    <None Include="lightning_add.png" />
+    <None Include="lightning.png" />
+    <None Include="lightbulb_off.png" />
+    <None Include="lightbulb_delete.png" />
+    <None Include="lightbulb_add.png" />
+    <None Include="lightbulb.png" />
     <None Include="pencil_ruler.png" />
     <None Include="pencil_go.png" />
     <None Include="pencil_delete.png" />
@@ -372,7 +377,9 @@
     <None Include="arrow_undo.png" />
     <None Include="arrow_redo.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Resources\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
