@@ -536,10 +536,10 @@ namespace VixenModules.Controller.E131
 
                 if (outputStateDictionary.TryGetValue(chainIndex, out lastUpdate))
                 {
+					if( DateTime.Now - lastUpdate < TimeSpan.FromSeconds(1))
                     return;
                 }
-                else
-                    outputStateDictionary[chainIndex] = DateTime.Now;
+                outputStateDictionary[chainIndex] = DateTime.Now;
             }
             else
             {
