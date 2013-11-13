@@ -62,6 +62,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Tools.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -233,6 +234,14 @@
     <None Include="add.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\lightning_go.png" />
+    <None Include="Resources\lightning_delete.png" />
+    <None Include="Resources\lightning_add.png" />
+    <None Include="Resources\lightning.png" />
+    <None Include="Resources\lightbulb_off.png" />
+    <None Include="Resources\lightbulb_delete.png" />
+    <None Include="Resources\lightbulb_add.png" />
+    <None Include="Resources\lightbulb.png" />
     <None Include="pencil_ruler.png" />
     <None Include="pencil_go.png" />
     <None Include="pencil_delete.png" />
@@ -363,9 +372,7 @@
     <None Include="arrow_undo.png" />
     <None Include="arrow_redo.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Resources\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
