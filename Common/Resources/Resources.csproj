@@ -62,12 +62,13 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Tools.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -233,6 +234,19 @@
     <None Include="add.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="hourglass_link.png" />
+    <None Include="hourglass_go.png" />
+    <None Include="hourglass_delete.png" />
+    <None Include="hourglass_add.png" />
+    <None Include="hourglass.png" />
+    <None Include="lightning_go.png" />
+    <None Include="lightning_delete.png" />
+    <None Include="lightning_add.png" />
+    <None Include="lightning.png" />
+    <None Include="lightbulb_off.png" />
+    <None Include="lightbulb_delete.png" />
+    <None Include="lightbulb_add.png" />
+    <None Include="lightbulb.png" />
     <None Include="pencil_ruler.png" />
     <None Include="pencil_go.png" />
     <None Include="pencil_delete.png" />

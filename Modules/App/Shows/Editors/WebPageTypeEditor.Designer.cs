@@ -65,7 +65,6 @@
 			// 
 			this.buttonTest.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonTest.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonTest.BackgroundImage")));
-			this.buttonTest.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonTest.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonTest.Location = new System.Drawing.Point(260, 3);
 			this.buttonTest.Name = "buttonTest";

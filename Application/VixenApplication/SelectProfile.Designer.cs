@@ -31,6 +31,7 @@
             this.listBoxProfiles = new System.Windows.Forms.ListBox();
             this.label1 = new System.Windows.Forms.Label();
             this.buttonLoad = new System.Windows.Forms.Button();
+            this.buttonEditor = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // listBoxProfiles
@@ -61,11 +62,22 @@
             this.buttonLoad.UseVisualStyleBackColor = true;
             this.buttonLoad.Click += new System.EventHandler(this.buttonLoad_Click);
             // 
+            // buttonEditor
+            // 
+            this.buttonEditor.Location = new System.Drawing.Point(12, 136);
+            this.buttonEditor.Name = "buttonEditor";
+            this.buttonEditor.Size = new System.Drawing.Size(75, 23);
+            this.buttonEditor.TabIndex = 3;
+            this.buttonEditor.Text = "Profile Editor";
+            this.buttonEditor.UseVisualStyleBackColor = true;
+            this.buttonEditor.Click += new System.EventHandler(this.buttonEditor_Click);
+            // 
             // SelectProfile
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(219, 169);
+            this.Controls.Add(this.buttonEditor);
             this.Controls.Add(this.buttonLoad);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.listBoxProfiles);
@@ -86,5 +98,6 @@
         private System.Windows.Forms.ListBox listBoxProfiles;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button buttonLoad;
+        private System.Windows.Forms.Button buttonEditor;
     }
 }

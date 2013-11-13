@@ -77,7 +77,6 @@
 			// 
 			this.buttonStartScheduler.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonStartScheduler.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonStartScheduler.BackgroundImage")));
-			this.buttonStartScheduler.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonStartScheduler.Cursor = System.Windows.Forms.Cursors.Default;
 			this.buttonStartScheduler.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonStartScheduler.Location = new System.Drawing.Point(289, 16);
@@ -92,7 +91,6 @@
 			// 
 			this.buttonViewLog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonViewLog.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonViewLog.BackgroundImage")));
-			this.buttonViewLog.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonViewLog.Cursor = System.Windows.Forms.Cursors.Default;
 			this.buttonViewLog.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonViewLog.Location = new System.Drawing.Point(364, 16);
@@ -107,7 +105,6 @@
 			// 
 			this.buttonNextSong.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonNextSong.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonNextSong.BackgroundImage")));
-			this.buttonNextSong.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonNextSong.Cursor = System.Windows.Forms.Cursors.Default;
 			this.buttonNextSong.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonNextSong.Location = new System.Drawing.Point(212, 36);
@@ -122,7 +119,6 @@
 			// 
 			this.buttonPauseShow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonPauseShow.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonPauseShow.BackgroundImage")));
-			this.buttonPauseShow.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonPauseShow.Cursor = System.Windows.Forms.Cursors.Default;
 			this.buttonPauseShow.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonPauseShow.Location = new System.Drawing.Point(187, 36);
@@ -137,7 +133,6 @@
 			// 
 			this.buttonStopGracefully.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonStopGracefully.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonStopGracefully.BackgroundImage")));
-			this.buttonStopGracefully.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonStopGracefully.Cursor = System.Windows.Forms.Cursors.Default;
 			this.buttonStopGracefully.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonStopGracefully.Location = new System.Drawing.Point(339, 16);
@@ -152,7 +147,6 @@
 			// 
 			this.buttonStopNow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonStopNow.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonStopNow.BackgroundImage")));
-			this.buttonStopNow.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonStopNow.Cursor = System.Windows.Forms.Cursors.Default;
 			this.buttonStopNow.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonStopNow.Location = new System.Drawing.Point(314, 16);
@@ -202,7 +196,6 @@
 			// 
 			this.buttonPlayShowGracefully.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonPlayShowGracefully.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonPlayShowGracefully.BackgroundImage")));
-			this.buttonPlayShowGracefully.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonPlayShowGracefully.Cursor = System.Windows.Forms.Cursors.Default;
 			this.buttonPlayShowGracefully.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonPlayShowGracefully.Location = new System.Drawing.Point(364, 18);
@@ -216,7 +209,6 @@
 			// 
 			this.buttonPlayShowNow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonPlayShowNow.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonPlayShowNow.BackgroundImage")));
-			this.buttonPlayShowNow.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonPlayShowNow.Cursor = System.Windows.Forms.Cursors.Default;
 			this.buttonPlayShowNow.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonPlayShowNow.Location = new System.Drawing.Point(339, 18);

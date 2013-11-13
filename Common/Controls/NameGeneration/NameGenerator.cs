@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using Common.Controls.NameGeneration;
+using Common.Resources;
 using Vixen.Rule;
 using Vixen.Rule.Name;
 
@@ -37,9 +38,9 @@ namespace Common.Controls
 		{
 			InitializeComponent();
 			Icon = Resources.Properties.Resources.Icon_Vixen3;
-			buttonMoveRuleUp.BackgroundImage = Resources.Properties.Resources.arrow_up;
+			buttonMoveRuleUp.Image = Tools.GetIcon(Resources.Properties.Resources.arrow_up, 16);
 			buttonMoveRuleUp.Text = "";
-			buttonMoveRuleDown.BackgroundImage = Resources.Properties.Resources.arrow_down;
+			buttonMoveRuleDown.Image = Tools.GetIcon(Resources.Properties.Resources.arrow_down, 16);
 			buttonMoveRuleDown.Text = "";
 
 			Generators = new List<INamingGenerator>();

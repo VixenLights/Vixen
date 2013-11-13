@@ -166,7 +166,6 @@
 			// 
 			// buttonMoveDown
 			// 
-			this.buttonMoveDown.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonMoveDown.Location = new System.Drawing.Point(21, 64);
 			this.buttonMoveDown.Name = "buttonMoveDown";
 			this.buttonMoveDown.Size = new System.Drawing.Size(32, 32);
@@ -177,7 +176,6 @@
 			// 
 			// buttonMoveUp
 			// 
-			this.buttonMoveUp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonMoveUp.Location = new System.Drawing.Point(21, 26);
 			this.buttonMoveUp.Name = "buttonMoveUp";
 			this.buttonMoveUp.Size = new System.Drawing.Size(32, 32);
@@ -188,7 +186,6 @@
 			// 
 			// buttonDeleteSelected
 			// 
-			this.buttonDeleteSelected.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonDeleteSelected.Location = new System.Drawing.Point(72, 64);
 			this.buttonDeleteSelected.Name = "buttonDeleteSelected";
 			this.buttonDeleteSelected.Size = new System.Drawing.Size(32, 32);

@@ -102,7 +102,6 @@
 			// 
 			this.buttonEditShow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonEditShow.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonEditShow.BackgroundImage")));
-			this.buttonEditShow.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonEditShow.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonEditShow.Location = new System.Drawing.Point(9, 252);
 			this.buttonEditShow.Name = "buttonEditShow";
@@ -150,7 +149,6 @@
 			// 
 			this.buttonDeleteSchedule.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonDeleteSchedule.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonDeleteSchedule.BackgroundImage")));
-			this.buttonDeleteSchedule.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonDeleteSchedule.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonDeleteSchedule.Location = new System.Drawing.Point(630, 252);
 			this.buttonDeleteSchedule.Name = "buttonDeleteSchedule";
@@ -164,7 +162,6 @@
 			// 
 			this.buttonEditSchedule.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonEditSchedule.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonEditSchedule.BackgroundImage")));
-			this.buttonEditSchedule.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonEditSchedule.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonEditSchedule.Location = new System.Drawing.Point(605, 252);
 			this.buttonEditSchedule.Name = "buttonEditSchedule";
@@ -178,7 +175,6 @@
 			// 
 			this.buttonAddSchedule.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonAddSchedule.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonAddSchedule.BackgroundImage")));
-			this.buttonAddSchedule.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonAddSchedule.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonAddSchedule.Location = new System.Drawing.Point(580, 252);
 			this.buttonAddSchedule.Name = "buttonAddSchedule";
@@ -190,7 +186,6 @@
 			// 
 			// buttonHelp
 			// 
-			this.buttonHelp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonHelp.Image = ((System.Drawing.Image)(resources.GetObject("buttonHelp.Image")));
 			this.buttonHelp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.buttonHelp.Location = new System.Drawing.Point(12, 377);

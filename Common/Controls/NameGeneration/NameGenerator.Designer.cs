@@ -178,7 +178,6 @@ namespace Common.Controls
 			// buttonMoveRuleDown
 			// 
 			this.buttonMoveRuleDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonMoveRuleDown.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonMoveRuleDown.Location = new System.Drawing.Point(416, 141);
 			this.buttonMoveRuleDown.Name = "buttonMoveRuleDown";
 			this.buttonMoveRuleDown.Size = new System.Drawing.Size(30, 25);
@@ -190,7 +189,6 @@ namespace Common.Controls
 			// buttonMoveRuleUp
 			// 
 			this.buttonMoveRuleUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonMoveRuleUp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonMoveRuleUp.Location = new System.Drawing.Point(380, 141);
 			this.buttonMoveRuleUp.Name = "buttonMoveRuleUp";
 			this.buttonMoveRuleUp.Size = new System.Drawing.Size(30, 25);
