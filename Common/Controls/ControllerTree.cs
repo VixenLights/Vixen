@@ -226,7 +226,10 @@ namespace Common.Controls
 			controllerNode.Text = controller.Name;
 			controllerNode.Tag = controller;
 
-			controllerNode.ImageKey = controllerNode.SelectedImageKey = "Group";
+			if (controller.IsRunning)
+				controllerNode.ImageKey = controllerNode.SelectedImageKey = "Group";
+			else
+				controllerNode.ImageKey = controllerNode.SelectedImageKey = "RedBall";
 
 			collection.Add(controllerNode);
 

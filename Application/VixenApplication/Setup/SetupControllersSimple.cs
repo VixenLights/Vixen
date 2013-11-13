@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using Common.Controls;
 using Common.Resources.Properties;
+using Common.Resources;
 using Vixen.Data.Flow;
 using Vixen.Factory;
 using Vixen.Module;
@@ -38,6 +39,12 @@ namespace VixenApplication.Setup
 			buttonDeleteController.Text = "";
 			buttonSelectSourceElements.BackgroundImage = Resources.table_select_row;
 			buttonSelectSourceElements.Text = "";
+			buttonStopController.BackgroundImage = Resources.control_stop_blue;
+			//buttonStopController.BackgroundImage = Tools.GetIcon(Resources.control_stop_blue, 16);
+			buttonStopController.Text = "";
+			buttonStartController.BackgroundImage = Resources.control_play_blue;
+			//buttonStartController.BackgroundImage = Tools.GetIcon(Resources.control_play_blue, 16);
+			buttonStartController.Text = "";
 
 			comboBoxNewControllerType.BeginUpdate();
 			foreach (KeyValuePair<Guid, string> kvp in ApplicationServices.GetAvailableModules<IControllerModuleInstance>()) {
@@ -73,6 +80,25 @@ namespace VixenApplication.Setup
 			buttonRenameController.Enabled = controllerTree.SelectedControllers.Count() == 1;
 
 			buttonDeleteController.Enabled = controllerTree.SelectedControllers.Count() >= 1;
+
+			int runningCount = 0;
+			int notRunningCount = 0;
+			int pausedCount = 0;
+			int notPausedCount = 0;
+			foreach (IControllerDevice controller in controllerTree.SelectedControllers) {
+				if (controller.IsRunning) {
+					runningCount++;
+				} else {
+					notRunningCount++;
+				}
+				if (controller.IsPaused) {
+					pausedCount++;
+				} else {
+					notPausedCount++;
+				}
+			}
+			buttonStartController.Enabled = notRunningCount > 0;
+			buttonStopController.Enabled = runningCount > 0;
 
 			buttonAddController.Enabled = comboBoxNewControllerType.SelectedIndex >= 0;
 
@@ -238,6 +264,42 @@ namespace VixenApplication.Setup
 				return component;
 
 			return FindRootSourceOfDataComponent(component.Source.Component);
+		}
+
+		private void buttonStartController_Click(object sender, EventArgs e)
+		{
+			bool changes = false;
+
+			foreach (IControllerDevice controller in controllerTree.SelectedControllers) {
+				if (!controller.IsRunning) {
+					controller.Start();
+					changes = true;
+				}
+			}
+
+			if (changes) {
+				controllerTree.PopulateControllerTree();
+				OnControllersChanged();
+				UpdateButtons();
+			}
+		}
+
+		private void buttonStopController_Click(object sender, EventArgs e)
+		{
+			bool changes = false;
+
+			foreach (IControllerDevice controller in controllerTree.SelectedControllers) {
+				if (controller.IsRunning) {
+					controller.Stop();
+					changes = true;
+				}
+			}
+
+			if (changes) {
+				controllerTree.PopulateControllerTree();
+				OnControllersChanged();
+				UpdateButtons();
+			}
 		}
 	}
 }

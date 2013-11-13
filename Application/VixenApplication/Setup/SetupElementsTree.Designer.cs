@@ -28,10 +28,10 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.Windows.Forms.ListViewItem listViewItem13 = new System.Windows.Forms.ListViewItem("1234");
-			System.Windows.Forms.ListViewItem listViewItem14 = new System.Windows.Forms.ListViewItem("qwer qwer qwer asdf zxcv zxcv asdf qwerd qwer ");
-			System.Windows.Forms.ListViewItem listViewItem15 = new System.Windows.Forms.ListViewItem("asdf");
-			System.Windows.Forms.ListViewItem listViewItem16 = new System.Windows.Forms.ListViewItem("zxcv");
+			System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("1234");
+			System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("qwer qwer qwer asdf zxcv zxcv asdf qwerd qwer ");
+			System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem("asdf");
+			System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem("zxcv");
 			this.label1 = new System.Windows.Forms.Label();
 			this.comboBoxNewItemType = new System.Windows.Forms.ComboBox();
 			this.buttonAddTemplate = new System.Windows.Forms.Button();
@@ -47,9 +47,9 @@
 			this.label2 = new System.Windows.Forms.Label();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.buttonSelectDestinationOutputs = new System.Windows.Forms.Button();
-			this.elementTree = new Common.Controls.ElementTree();
 			this.buttonDeleteElements = new System.Windows.Forms.Button();
 			this.buttonRenameElements = new System.Windows.Forms.Button();
+			this.elementTree = new Common.Controls.ElementTree();
 			this.groupBoxSelectedItems.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -167,10 +167,10 @@
 			this.listViewProperties.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.listViewProperties.HideSelection = false;
 			this.listViewProperties.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem13,
-            listViewItem14,
-            listViewItem15,
-            listViewItem16});
+            listViewItem1,
+            listViewItem2,
+            listViewItem3,
+            listViewItem4});
 			this.listViewProperties.Location = new System.Drawing.Point(70, 61);
 			this.listViewProperties.Name = "listViewProperties";
 			this.listViewProperties.Size = new System.Drawing.Size(160, 58);
@@ -239,20 +239,6 @@
 			this.buttonSelectDestinationOutputs.UseVisualStyleBackColor = true;
 			this.buttonSelectDestinationOutputs.Click += new System.EventHandler(this.buttonSelectDestinationOutputs_Click);
 			// 
-			// elementTree
-			// 
-			this.elementTree.AllowDragging = true;
-			this.elementTree.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.elementTree.Location = new System.Drawing.Point(3, 46);
-			this.elementTree.Name = "elementTree";
-			this.elementTree.Size = new System.Drawing.Size(244, 303);
-			this.elementTree.TabIndex = 28;
-			this.elementTree.treeviewDeselected += new System.EventHandler(this.elementTree_treeviewDeselected);
-			this.elementTree.treeviewAfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.elementTree_treeviewAfterSelect);
-			this.elementTree.ElementsChanged += new System.EventHandler(this.elementTree_ElementsChanged);
-			// 
 			// buttonDeleteElements
 			// 
 			this.buttonDeleteElements.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -278,6 +264,20 @@
 			this.toolTip1.SetToolTip(this.buttonRenameElements, "Rename Elements");
 			this.buttonRenameElements.UseVisualStyleBackColor = true;
 			this.buttonRenameElements.Click += new System.EventHandler(this.buttonRenameElements_Click);
+			// 
+			// elementTree
+			// 
+			this.elementTree.AllowDragging = true;
+			this.elementTree.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.elementTree.Location = new System.Drawing.Point(3, 46);
+			this.elementTree.Name = "elementTree";
+			this.elementTree.Size = new System.Drawing.Size(244, 303);
+			this.elementTree.TabIndex = 28;
+			this.elementTree.treeviewDeselected += new System.EventHandler(this.elementTree_treeviewDeselected);
+			this.elementTree.treeviewAfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.elementTree_treeviewAfterSelect);
+			this.elementTree.ElementsChanged += new System.EventHandler(this.elementTree_ElementsChanged);
 			// 
 			// SetupElementsTree
 			// 
