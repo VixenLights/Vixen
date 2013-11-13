@@ -376,7 +376,7 @@ namespace Common.Controls
 			}
 
 			if (controllers.Count() > 0) {
-				if (MessageBox.Show(message, title, MessageBoxButtons.OKCancel) == DialogResult.OK) {
+				if (MessageBox.Show(message, title, MessageBoxButtons.YesNo) == DialogResult.Yes) {
 					foreach (OutputController oc in controllers) {
 						VixenSystem.OutputControllers.Remove(oc);
 					}
