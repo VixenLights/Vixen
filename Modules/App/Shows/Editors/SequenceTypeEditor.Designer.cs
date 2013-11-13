@@ -59,7 +59,6 @@
 			// 
 			this.buttonSelectSequence.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonSelectSequence.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonSelectSequence.BackgroundImage")));
-			this.buttonSelectSequence.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonSelectSequence.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonSelectSequence.Location = new System.Drawing.Point(260, 3);
 			this.buttonSelectSequence.Name = "buttonSelectSequence";

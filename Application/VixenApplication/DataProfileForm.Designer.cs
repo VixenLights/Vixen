@@ -128,7 +128,6 @@
 			// 
 			// buttonSetDataFolder
 			// 
-			this.buttonSetDataFolder.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonSetDataFolder.Location = new System.Drawing.Point(364, 87);
 			this.buttonSetDataFolder.Name = "buttonSetDataFolder";
 			this.buttonSetDataFolder.Size = new System.Drawing.Size(23, 23);
@@ -172,7 +171,6 @@
 			// 
 			// buttonDeleteProfile
 			// 
-			this.buttonDeleteProfile.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonDeleteProfile.Location = new System.Drawing.Point(363, 17);
 			this.buttonDeleteProfile.Name = "buttonDeleteProfile";
 			this.buttonDeleteProfile.Size = new System.Drawing.Size(23, 23);
@@ -183,7 +181,6 @@
 			// 
 			// buttonAddProfile
 			// 
-			this.buttonAddProfile.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonAddProfile.Location = new System.Drawing.Point(337, 17);
 			this.buttonAddProfile.Name = "buttonAddProfile";
 			this.buttonAddProfile.Size = new System.Drawing.Size(23, 23);

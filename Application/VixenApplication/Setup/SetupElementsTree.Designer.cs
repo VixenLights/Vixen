@@ -77,7 +77,6 @@
 			// buttonAddTemplate
 			// 
 			this.buttonAddTemplate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonAddTemplate.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonAddTemplate.Enabled = false;
 			this.buttonAddTemplate.Location = new System.Drawing.Point(209, 10);
 			this.buttonAddTemplate.Name = "buttonAddTemplate";
@@ -110,7 +109,6 @@
 			// buttonConfigureProperty
 			// 
 			this.buttonConfigureProperty.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonConfigureProperty.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonConfigureProperty.Enabled = false;
 			this.buttonConfigureProperty.Location = new System.Drawing.Point(130, 125);
 			this.buttonConfigureProperty.Name = "buttonConfigureProperty";
@@ -124,7 +122,6 @@
 			// buttonRemoveProperty
 			// 
 			this.buttonRemoveProperty.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonRemoveProperty.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonRemoveProperty.Enabled = false;
 			this.buttonRemoveProperty.Location = new System.Drawing.Point(100, 125);
 			this.buttonRemoveProperty.Name = "buttonRemoveProperty";
@@ -138,7 +135,6 @@
 			// buttonAddProperty
 			// 
 			this.buttonAddProperty.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonAddProperty.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonAddProperty.Enabled = false;
 			this.buttonAddProperty.Location = new System.Drawing.Point(70, 125);
 			this.buttonAddProperty.Name = "buttonAddProperty";
@@ -187,7 +183,6 @@
 			// buttonRunHelperSetup
 			// 
 			this.buttonRunHelperSetup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonRunHelperSetup.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonRunHelperSetup.Enabled = false;
 			this.buttonRunHelperSetup.Location = new System.Drawing.Point(206, 24);
 			this.buttonRunHelperSetup.Name = "buttonRunHelperSetup";
@@ -229,7 +224,6 @@
 			// buttonSelectDestinationOutputs
 			// 
 			this.buttonSelectDestinationOutputs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonSelectDestinationOutputs.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonSelectDestinationOutputs.Location = new System.Drawing.Point(70, 355);
 			this.buttonSelectDestinationOutputs.Name = "buttonSelectDestinationOutputs";
 			this.buttonSelectDestinationOutputs.Size = new System.Drawing.Size(24, 24);
@@ -242,7 +236,6 @@
 			// buttonDeleteElements
 			// 
 			this.buttonDeleteElements.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonDeleteElements.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonDeleteElements.Location = new System.Drawing.Point(10, 355);
 			this.buttonDeleteElements.Name = "buttonDeleteElements";
 			this.buttonDeleteElements.Size = new System.Drawing.Size(24, 24);
@@ -255,7 +248,6 @@
 			// buttonRenameElements
 			// 
 			this.buttonRenameElements.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonRenameElements.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonRenameElements.Location = new System.Drawing.Point(40, 355);
 			this.buttonRenameElements.Name = "buttonRenameElements";
 			this.buttonRenameElements.Size = new System.Drawing.Size(24, 24);

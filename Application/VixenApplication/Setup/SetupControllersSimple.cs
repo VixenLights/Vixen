@@ -27,23 +27,21 @@ namespace VixenApplication.Setup
 		{
 			InitializeComponent();
 
-			buttonAddController.BackgroundImage = Resources.add;
+			buttonAddController.Image = Tools.GetIcon(Resources.add, 16);
 			buttonAddController.Text = "";
-			buttonConfigureController.BackgroundImage = Resources.cog;
+			buttonConfigureController.Image = Tools.GetIcon(Resources.cog, 16);
 			buttonConfigureController.Text = "";
-			buttonNumberChannelsController.BackgroundImage = Resources.attributes_display;
+			buttonNumberChannelsController.Image = Tools.GetIcon(Resources.attributes_display, 16);
 			buttonNumberChannelsController.Text = "";
-			buttonRenameController.BackgroundImage = Resources.pencil;
+			buttonRenameController.Image = Tools.GetIcon(Resources.pencil, 16);
 			buttonRenameController.Text = "";
-			buttonDeleteController.BackgroundImage = Resources.delete;
+			buttonDeleteController.Image = Tools.GetIcon(Resources.delete, 16);
 			buttonDeleteController.Text = "";
-			buttonSelectSourceElements.BackgroundImage = Resources.table_select_row;
+			buttonSelectSourceElements.Image = Tools.GetIcon(Resources.table_select_row, 16);
 			buttonSelectSourceElements.Text = "";
-			buttonStopController.BackgroundImage = Resources.control_stop_blue;
-			//buttonStopController.BackgroundImage = Tools.GetIcon(Resources.control_stop_blue, 16);
+			buttonStopController.Image = Tools.GetIcon(Resources.control_stop_blue, 16);
 			buttonStopController.Text = "";
-			buttonStartController.BackgroundImage = Resources.control_play_blue;
-			//buttonStartController.BackgroundImage = Tools.GetIcon(Resources.control_play_blue, 16);
+			buttonStartController.Image = Tools.GetIcon(Resources.control_play_blue, 16);
 			buttonStartController.Text = "";
 
 			comboBoxNewControllerType.BeginUpdate();

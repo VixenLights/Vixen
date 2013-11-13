@@ -312,7 +312,6 @@
 			// buttonHelp
 			// 
 			this.buttonHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonHelp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonHelp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.buttonHelp.Location = new System.Drawing.Point(8, 623);
 			this.buttonHelp.Name = "buttonHelp";

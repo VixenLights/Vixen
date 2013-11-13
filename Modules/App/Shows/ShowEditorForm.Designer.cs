@@ -126,7 +126,6 @@
 			// buttonMoveItemDown
 			// 
 			this.buttonMoveItemDown.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonMoveItemDown.BackgroundImage")));
-			this.buttonMoveItemDown.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonMoveItemDown.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonMoveItemDown.Location = new System.Drawing.Point(265, 310);
 			this.buttonMoveItemDown.Name = "buttonMoveItemDown";
@@ -138,7 +137,6 @@
 			// buttonMoveItemUp
 			// 
 			this.buttonMoveItemUp.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonMoveItemUp.BackgroundImage")));
-			this.buttonMoveItemUp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonMoveItemUp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonMoveItemUp.Location = new System.Drawing.Point(240, 310);
 			this.buttonMoveItemUp.Name = "buttonMoveItemUp";
@@ -150,7 +148,6 @@
 			// buttonDeleteItem
 			// 
 			this.buttonDeleteItem.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonDeleteItem.BackgroundImage")));
-			this.buttonDeleteItem.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonDeleteItem.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonDeleteItem.Location = new System.Drawing.Point(315, 310);
 			this.buttonDeleteItem.Name = "buttonDeleteItem";
@@ -162,7 +159,6 @@
 			// buttonAddItem
 			// 
 			this.buttonAddItem.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonAddItem.BackgroundImage")));
-			this.buttonAddItem.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonAddItem.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonAddItem.Location = new System.Drawing.Point(290, 310);
 			this.buttonAddItem.Name = "buttonAddItem";
@@ -233,7 +229,6 @@
 			// 
 			// buttonHelp
 			// 
-			this.buttonHelp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonHelp.Image = ((System.Drawing.Image)(resources.GetObject("buttonHelp.Image")));
 			this.buttonHelp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.buttonHelp.Location = new System.Drawing.Point(12, 345);

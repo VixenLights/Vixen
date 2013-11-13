@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using Common.Resources;
 using Common.Resources.Properties;
 using Common.Controls;
 
@@ -17,11 +18,11 @@ namespace VixenApplication
 		{
 			InitializeComponent();
 			Icon = Resources.Icon_Vixen3;
-			buttonAddProfile.BackgroundImage = Resources.add;
+			buttonAddProfile.Image = Tools.GetIcon(Resources.add, 16);
 			buttonAddProfile.Text = "";
-			buttonDeleteProfile.BackgroundImage = Resources.delete;
+			buttonDeleteProfile.Image = Tools.GetIcon(Resources.delete, 16);
 			buttonDeleteProfile.Text = "";
-			buttonSetDataFolder.BackgroundImage = Resources.folder;
+			buttonSetDataFolder.Image = Tools.GetIcon(Resources.folder, 16);
 			buttonSetDataFolder.Text = "";
 		}
 

@@ -108,7 +108,6 @@
 			// buttonAddController
 			// 
 			this.buttonAddController.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonAddController.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonAddController.Enabled = false;
 			this.buttonAddController.Location = new System.Drawing.Point(214, 10);
 			this.buttonAddController.Name = "buttonAddController";
@@ -149,7 +148,6 @@
 			// buttonSelectSourceElements
 			// 
 			this.buttonSelectSourceElements.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonSelectSourceElements.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonSelectSourceElements.Location = new System.Drawing.Point(9, 368);
 			this.buttonSelectSourceElements.Name = "buttonSelectSourceElements";
 			this.buttonSelectSourceElements.Size = new System.Drawing.Size(24, 24);
@@ -162,7 +160,6 @@
 			// buttonNumberChannelsController
 			// 
 			this.buttonNumberChannelsController.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonNumberChannelsController.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonNumberChannelsController.Location = new System.Drawing.Point(42, 64);
 			this.buttonNumberChannelsController.Name = "buttonNumberChannelsController";
 			this.buttonNumberChannelsController.Size = new System.Drawing.Size(24, 24);
@@ -175,7 +172,6 @@
 			// buttonConfigureController
 			// 
 			this.buttonConfigureController.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonConfigureController.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonConfigureController.Location = new System.Drawing.Point(12, 64);
 			this.buttonConfigureController.Name = "buttonConfigureController";
 			this.buttonConfigureController.Size = new System.Drawing.Size(24, 24);
@@ -188,7 +184,6 @@
 			// buttonRenameController
 			// 
 			this.buttonRenameController.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonRenameController.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonRenameController.Location = new System.Drawing.Point(72, 64);
 			this.buttonRenameController.Name = "buttonRenameController";
 			this.buttonRenameController.Size = new System.Drawing.Size(24, 24);
@@ -201,7 +196,6 @@
 			// buttonDeleteController
 			// 
 			this.buttonDeleteController.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonDeleteController.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonDeleteController.Location = new System.Drawing.Point(102, 64);
 			this.buttonDeleteController.Name = "buttonDeleteController";
 			this.buttonDeleteController.Size = new System.Drawing.Size(24, 24);
@@ -214,7 +208,6 @@
 			// buttonStartController
 			// 
 			this.buttonStartController.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonStartController.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonStartController.Location = new System.Drawing.Point(132, 64);
 			this.buttonStartController.Name = "buttonStartController";
 			this.buttonStartController.Size = new System.Drawing.Size(24, 24);
@@ -227,7 +220,6 @@
 			// buttonStopController
 			// 
 			this.buttonStopController.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonStopController.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonStopController.Location = new System.Drawing.Point(162, 64);
 			this.buttonStopController.Name = "buttonStopController";
 			this.buttonStopController.Size = new System.Drawing.Size(24, 24);

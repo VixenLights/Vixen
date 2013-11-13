@@ -95,7 +95,6 @@
 			// 
 			// buttonAddColor
 			// 
-			this.buttonAddColor.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonAddColor.Location = new System.Drawing.Point(250, 65);
 			this.buttonAddColor.Name = "buttonAddColor";
 			this.buttonAddColor.Size = new System.Drawing.Size(32, 32);
@@ -169,7 +168,6 @@
 			// 
 			// buttonRemoveColorSet
 			// 
-			this.buttonRemoveColorSet.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonRemoveColorSet.Location = new System.Drawing.Point(70, 134);
 			this.buttonRemoveColorSet.Name = "buttonRemoveColorSet";
 			this.buttonRemoveColorSet.Size = new System.Drawing.Size(32, 32);
@@ -180,7 +178,6 @@
 			// 
 			// buttonAddColorSet
 			// 
-			this.buttonAddColorSet.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonAddColorSet.Location = new System.Drawing.Point(24, 134);
 			this.buttonAddColorSet.Name = "buttonAddColorSet";
 			this.buttonAddColorSet.Size = new System.Drawing.Size(32, 32);
