@@ -80,7 +80,6 @@
 			// buttonDelete
 			// 
 			this.buttonDelete.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonDelete.BackgroundImage")));
-			this.buttonDelete.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonDelete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonDelete.Location = new System.Drawing.Point(246, 178);
 			this.buttonDelete.Name = "buttonDelete";
@@ -92,7 +91,6 @@
 			// buttonEdit
 			// 
 			this.buttonEdit.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonEdit.BackgroundImage")));
-			this.buttonEdit.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonEdit.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonEdit.Location = new System.Drawing.Point(221, 178);
 			this.buttonEdit.Name = "buttonEdit";
@@ -104,7 +102,6 @@
 			// buttonAdd
 			// 
 			this.buttonAdd.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonAdd.BackgroundImage")));
-			this.buttonAdd.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonAdd.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonAdd.Location = new System.Drawing.Point(196, 178);
 			this.buttonAdd.Name = "buttonAdd";
@@ -115,7 +112,6 @@
 			// 
 			// buttonHelp
 			// 
-			this.buttonHelp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonHelp.Image = ((System.Drawing.Image)(resources.GetObject("buttonHelp.Image")));
 			this.buttonHelp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.buttonHelp.Location = new System.Drawing.Point(12, 235);

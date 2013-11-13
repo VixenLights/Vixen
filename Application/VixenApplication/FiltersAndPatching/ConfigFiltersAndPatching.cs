@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 using Common.Controls;
+using Common.Resources;
 using Common.Resources.Properties;
 using Dataweb.NShape;
 using Dataweb.NShape.Advanced;
@@ -65,13 +66,13 @@ namespace VixenApplication
 			InitializeComponent();
 
 			Icon = Resources.Icon_Vixen3;
-			buttonAddFilter.BackgroundImage = Resources.add;
+			buttonAddFilter.Image = Tools.GetIcon(Resources.add, 16);
 			buttonAddFilter.Text = "";
-			buttonDelete.BackgroundImage = Resources.delete;
+			buttonDelete.Image = Tools.GetIcon(Resources.delete, 16);
 			buttonDelete.Text = "";
-			buttonZoomIn.BackgroundImage = Resources.zoom_in;
+			buttonZoomIn.Image = Tools.GetIcon(Resources.zoom_in, 16);
 			buttonZoomIn.Text = "";
-			buttonZoomOut.BackgroundImage = Resources.zoom_out;
+			buttonZoomOut.Image = Tools.GetIcon(Resources.zoom_out, 16);
 			buttonZoomOut.Text = "";
 
 

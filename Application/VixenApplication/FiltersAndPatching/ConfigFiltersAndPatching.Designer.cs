@@ -181,7 +181,6 @@
 			// buttonZoomIn
 			// 
 			this.buttonZoomIn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonZoomIn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonZoomIn.Location = new System.Drawing.Point(403, 401);
 			this.buttonZoomIn.Name = "buttonZoomIn";
 			this.buttonZoomIn.Size = new System.Drawing.Size(40, 40);
@@ -193,7 +192,6 @@
 			// buttonZoomOut
 			// 
 			this.buttonZoomOut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonZoomOut.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonZoomOut.Location = new System.Drawing.Point(453, 401);
 			this.buttonZoomOut.Name = "buttonZoomOut";
 			this.buttonZoomOut.Size = new System.Drawing.Size(40, 40);
@@ -226,7 +224,6 @@
 			// 
 			// buttonAddFilter
 			// 
-			this.buttonAddFilter.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonAddFilter.Location = new System.Drawing.Point(144, 20);
 			this.buttonAddFilter.Name = "buttonAddFilter";
 			this.buttonAddFilter.Size = new System.Drawing.Size(32, 32);
@@ -237,7 +234,6 @@
 			// 
 			// buttonDelete
 			// 
-			this.buttonDelete.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonDelete.Location = new System.Drawing.Point(186, 20);
 			this.buttonDelete.Name = "buttonDelete";
 			this.buttonDelete.Size = new System.Drawing.Size(32, 32);

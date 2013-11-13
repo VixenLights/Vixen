@@ -151,7 +151,6 @@
 			// 
 			// buttonHelp
 			// 
-			this.buttonHelp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonHelp.FlatAppearance.BorderSize = 0;
 			this.buttonHelp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonHelp.Image = ((System.Drawing.Image)(resources.GetObject("buttonHelp.Image")));
@@ -185,7 +184,6 @@
 			// 
 			// buttonSelect
 			// 
-			this.buttonSelect.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonSelect.FlatAppearance.BorderSize = 0;
 			this.buttonSelect.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonSelect.Image = ((System.Drawing.Image)(resources.GetObject("buttonSelect.Image")));
@@ -220,7 +218,6 @@
 			// 
 			// buttonSave
 			// 
-			this.buttonSave.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonSave.FlatAppearance.BorderSize = 0;
 			this.buttonSave.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonSave.Image = ((System.Drawing.Image)(resources.GetObject("buttonSave.Image")));
@@ -248,7 +245,6 @@
 			// buttonTemplateHelp
 			// 
 			this.buttonTemplateHelp.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonTemplateHelp.BackgroundImage")));
-			this.buttonTemplateHelp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonTemplateHelp.FlatAppearance.BorderSize = 0;
 			this.buttonTemplateHelp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonTemplateHelp.Location = new System.Drawing.Point(193, 5);
@@ -262,7 +258,6 @@
 			// buttonDeleteTemplate
 			// 
 			this.buttonDeleteTemplate.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonDeleteTemplate.BackgroundImage")));
-			this.buttonDeleteTemplate.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonDeleteTemplate.FlatAppearance.BorderSize = 0;
 			this.buttonDeleteTemplate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonDeleteTemplate.Location = new System.Drawing.Point(167, 5);
@@ -275,7 +270,6 @@
 			// 
 			// buttonAddToPreview
 			// 
-			this.buttonAddToPreview.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonAddToPreview.Image = ((System.Drawing.Image)(resources.GetObject("buttonAddToPreview.Image")));
 			this.buttonAddToPreview.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.buttonAddToPreview.Location = new System.Drawing.Point(32, 28);
@@ -290,7 +284,6 @@
 			// buttonAddTemplate
 			// 
 			this.buttonAddTemplate.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonAddTemplate.BackgroundImage")));
-			this.buttonAddTemplate.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonAddTemplate.FlatAppearance.BorderSize = 0;
 			this.buttonAddTemplate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonAddTemplate.Location = new System.Drawing.Point(141, 5);
@@ -339,7 +332,6 @@
 			// buttonPixelGrid
 			// 
 			this.buttonPixelGrid.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonPixelGrid.BackgroundImage")));
-			this.buttonPixelGrid.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonPixelGrid.FlatAppearance.BorderSize = 0;
 			this.buttonPixelGrid.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonPixelGrid.Location = new System.Drawing.Point(56, 28);
@@ -352,7 +344,6 @@
 			// buttonStar
 			// 
 			this.buttonStar.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonStar.BackgroundImage")));
-			this.buttonStar.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonStar.FlatAppearance.BorderSize = 0;
 			this.buttonStar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonStar.Location = new System.Drawing.Point(31, 28);
@@ -365,7 +356,6 @@
 			// buttonNet
 			// 
 			this.buttonNet.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonNet.BackgroundImage")));
-			this.buttonNet.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonNet.FlatAppearance.BorderSize = 0;
 			this.buttonNet.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonNet.Location = new System.Drawing.Point(31, 5);
@@ -378,7 +368,6 @@
 			// buttonCane
 			// 
 			this.buttonCane.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonCane.BackgroundImage")));
-			this.buttonCane.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonCane.FlatAppearance.BorderSize = 0;
 			this.buttonCane.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonCane.Location = new System.Drawing.Point(6, 28);
@@ -415,7 +404,6 @@
 			// buttonMegaTree
 			// 
 			this.buttonMegaTree.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonMegaTree.BackgroundImage")));
-			this.buttonMegaTree.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonMegaTree.FlatAppearance.BorderSize = 0;
 			this.buttonMegaTree.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonMegaTree.Location = new System.Drawing.Point(56, 5);
@@ -551,7 +539,6 @@
 			// 
 			// buttonSetBackground
 			// 
-			this.buttonSetBackground.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonSetBackground.FlatAppearance.BorderSize = 0;
 			this.buttonSetBackground.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonSetBackground.Image = ((System.Drawing.Image)(resources.GetObject("buttonSetBackground.Image")));

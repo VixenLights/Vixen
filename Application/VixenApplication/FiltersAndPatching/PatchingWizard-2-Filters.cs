@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Common.Controls.Wizard;
+using Common.Resources;
 using Common.Resources.Properties;
 using Dataweb.NShape;
 using Vixen.Data.Flow;
@@ -24,11 +25,11 @@ namespace VixenApplication.FiltersAndPatching
 			_data = data;
 			InitializeComponent();
 
-			buttonMoveUp.BackgroundImage = Resources.arrow_up;
+			buttonMoveUp.Image = Tools.GetIcon(Resources.arrow_up, 16);
 			buttonMoveUp.Text = "";
-			buttonMoveDown.BackgroundImage = Resources.arrow_down;
+			buttonMoveDown.Image = Tools.GetIcon(Resources.arrow_down, 16);
 			buttonMoveDown.Text = "";
-			buttonDeleteSelected.BackgroundImage = Resources.delete;
+			buttonDeleteSelected.Image = Tools.GetIcon(Resources.delete, 16);
 			buttonDeleteSelected.Text = "";
 		}
 

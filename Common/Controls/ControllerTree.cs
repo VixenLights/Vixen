@@ -226,7 +226,10 @@ namespace Common.Controls
 			controllerNode.Text = controller.Name;
 			controllerNode.Tag = controller;
 
-			controllerNode.ImageKey = controllerNode.SelectedImageKey = "Group";
+			if (controller.IsRunning)
+				controllerNode.ImageKey = controllerNode.SelectedImageKey = "Group";
+			else
+				controllerNode.ImageKey = controllerNode.SelectedImageKey = "RedBall";
 
 			collection.Add(controllerNode);
 
@@ -373,7 +376,7 @@ namespace Common.Controls
 			}
 
 			if (controllers.Count() > 0) {
-				if (MessageBox.Show(message, title, MessageBoxButtons.OKCancel) == DialogResult.OK) {
+				if (MessageBox.Show(message, title, MessageBoxButtons.YesNo) == DialogResult.Yes) {
 					foreach (OutputController oc in controllers) {
 						VixenSystem.OutputControllers.Remove(oc);
 					}

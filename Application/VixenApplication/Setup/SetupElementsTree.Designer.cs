@@ -28,10 +28,10 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.Windows.Forms.ListViewItem listViewItem13 = new System.Windows.Forms.ListViewItem("1234");
-			System.Windows.Forms.ListViewItem listViewItem14 = new System.Windows.Forms.ListViewItem("qwer qwer qwer asdf zxcv zxcv asdf qwerd qwer ");
-			System.Windows.Forms.ListViewItem listViewItem15 = new System.Windows.Forms.ListViewItem("asdf");
-			System.Windows.Forms.ListViewItem listViewItem16 = new System.Windows.Forms.ListViewItem("zxcv");
+			System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("1234");
+			System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("qwer qwer qwer asdf zxcv zxcv asdf qwerd qwer ");
+			System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem("asdf");
+			System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem("zxcv");
 			this.label1 = new System.Windows.Forms.Label();
 			this.comboBoxNewItemType = new System.Windows.Forms.ComboBox();
 			this.buttonAddTemplate = new System.Windows.Forms.Button();
@@ -47,9 +47,9 @@
 			this.label2 = new System.Windows.Forms.Label();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.buttonSelectDestinationOutputs = new System.Windows.Forms.Button();
-			this.elementTree = new Common.Controls.ElementTree();
 			this.buttonDeleteElements = new System.Windows.Forms.Button();
 			this.buttonRenameElements = new System.Windows.Forms.Button();
+			this.elementTree = new Common.Controls.ElementTree();
 			this.groupBoxSelectedItems.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -77,7 +77,6 @@
 			// buttonAddTemplate
 			// 
 			this.buttonAddTemplate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonAddTemplate.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonAddTemplate.Enabled = false;
 			this.buttonAddTemplate.Location = new System.Drawing.Point(209, 10);
 			this.buttonAddTemplate.Name = "buttonAddTemplate";
@@ -110,7 +109,6 @@
 			// buttonConfigureProperty
 			// 
 			this.buttonConfigureProperty.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonConfigureProperty.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonConfigureProperty.Enabled = false;
 			this.buttonConfigureProperty.Location = new System.Drawing.Point(130, 125);
 			this.buttonConfigureProperty.Name = "buttonConfigureProperty";
@@ -124,7 +122,6 @@
 			// buttonRemoveProperty
 			// 
 			this.buttonRemoveProperty.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonRemoveProperty.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonRemoveProperty.Enabled = false;
 			this.buttonRemoveProperty.Location = new System.Drawing.Point(100, 125);
 			this.buttonRemoveProperty.Name = "buttonRemoveProperty";
@@ -138,7 +135,6 @@
 			// buttonAddProperty
 			// 
 			this.buttonAddProperty.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonAddProperty.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonAddProperty.Enabled = false;
 			this.buttonAddProperty.Location = new System.Drawing.Point(70, 125);
 			this.buttonAddProperty.Name = "buttonAddProperty";
@@ -167,10 +163,10 @@
 			this.listViewProperties.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.listViewProperties.HideSelection = false;
 			this.listViewProperties.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem13,
-            listViewItem14,
-            listViewItem15,
-            listViewItem16});
+            listViewItem1,
+            listViewItem2,
+            listViewItem3,
+            listViewItem4});
 			this.listViewProperties.Location = new System.Drawing.Point(70, 61);
 			this.listViewProperties.Name = "listViewProperties";
 			this.listViewProperties.Size = new System.Drawing.Size(160, 58);
@@ -187,7 +183,6 @@
 			// buttonRunHelperSetup
 			// 
 			this.buttonRunHelperSetup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonRunHelperSetup.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonRunHelperSetup.Enabled = false;
 			this.buttonRunHelperSetup.Location = new System.Drawing.Point(206, 24);
 			this.buttonRunHelperSetup.Name = "buttonRunHelperSetup";
@@ -229,7 +224,6 @@
 			// buttonSelectDestinationOutputs
 			// 
 			this.buttonSelectDestinationOutputs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonSelectDestinationOutputs.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonSelectDestinationOutputs.Location = new System.Drawing.Point(70, 355);
 			this.buttonSelectDestinationOutputs.Name = "buttonSelectDestinationOutputs";
 			this.buttonSelectDestinationOutputs.Size = new System.Drawing.Size(24, 24);
@@ -238,6 +232,30 @@
 			this.toolTip1.SetToolTip(this.buttonSelectDestinationOutputs, "Find outputs these elements are patched to");
 			this.buttonSelectDestinationOutputs.UseVisualStyleBackColor = true;
 			this.buttonSelectDestinationOutputs.Click += new System.EventHandler(this.buttonSelectDestinationOutputs_Click);
+			// 
+			// buttonDeleteElements
+			// 
+			this.buttonDeleteElements.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonDeleteElements.Location = new System.Drawing.Point(10, 355);
+			this.buttonDeleteElements.Name = "buttonDeleteElements";
+			this.buttonDeleteElements.Size = new System.Drawing.Size(24, 24);
+			this.buttonDeleteElements.TabIndex = 42;
+			this.buttonDeleteElements.Text = "-";
+			this.toolTip1.SetToolTip(this.buttonDeleteElements, "Delete Elements");
+			this.buttonDeleteElements.UseVisualStyleBackColor = true;
+			this.buttonDeleteElements.Click += new System.EventHandler(this.buttonDeleteElements_Click);
+			// 
+			// buttonRenameElements
+			// 
+			this.buttonRenameElements.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonRenameElements.Location = new System.Drawing.Point(40, 355);
+			this.buttonRenameElements.Name = "buttonRenameElements";
+			this.buttonRenameElements.Size = new System.Drawing.Size(24, 24);
+			this.buttonRenameElements.TabIndex = 43;
+			this.buttonRenameElements.Text = "R";
+			this.toolTip1.SetToolTip(this.buttonRenameElements, "Rename Elements");
+			this.buttonRenameElements.UseVisualStyleBackColor = true;
+			this.buttonRenameElements.Click += new System.EventHandler(this.buttonRenameElements_Click);
 			// 
 			// elementTree
 			// 
@@ -252,32 +270,6 @@
 			this.elementTree.treeviewDeselected += new System.EventHandler(this.elementTree_treeviewDeselected);
 			this.elementTree.treeviewAfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.elementTree_treeviewAfterSelect);
 			this.elementTree.ElementsChanged += new System.EventHandler(this.elementTree_ElementsChanged);
-			// 
-			// buttonDeleteElements
-			// 
-			this.buttonDeleteElements.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonDeleteElements.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-			this.buttonDeleteElements.Location = new System.Drawing.Point(10, 355);
-			this.buttonDeleteElements.Name = "buttonDeleteElements";
-			this.buttonDeleteElements.Size = new System.Drawing.Size(24, 24);
-			this.buttonDeleteElements.TabIndex = 42;
-			this.buttonDeleteElements.Text = "-";
-			this.toolTip1.SetToolTip(this.buttonDeleteElements, "Delete Elements");
-			this.buttonDeleteElements.UseVisualStyleBackColor = true;
-			this.buttonDeleteElements.Click += new System.EventHandler(this.buttonDeleteElements_Click);
-			// 
-			// buttonRenameElements
-			// 
-			this.buttonRenameElements.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonRenameElements.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-			this.buttonRenameElements.Location = new System.Drawing.Point(40, 355);
-			this.buttonRenameElements.Name = "buttonRenameElements";
-			this.buttonRenameElements.Size = new System.Drawing.Size(24, 24);
-			this.buttonRenameElements.TabIndex = 43;
-			this.buttonRenameElements.Text = "R";
-			this.toolTip1.SetToolTip(this.buttonRenameElements, "Rename Elements");
-			this.buttonRenameElements.UseVisualStyleBackColor = true;
-			this.buttonRenameElements.Click += new System.EventHandler(this.buttonRenameElements_Click);
 			// 
 			// SetupElementsTree
 			// 

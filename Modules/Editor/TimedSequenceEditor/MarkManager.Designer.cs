@@ -354,7 +354,6 @@
 			// 
 			// buttonIncreaseSelectedMarks
 			// 
-			this.buttonIncreaseSelectedMarks.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonIncreaseSelectedMarks.Location = new System.Drawing.Point(81, 13);
 			this.buttonIncreaseSelectedMarks.Name = "buttonIncreaseSelectedMarks";
 			this.buttonIncreaseSelectedMarks.Size = new System.Drawing.Size(32, 32);
@@ -365,7 +364,6 @@
 			// 
 			// buttonDecreaseSelectedMarks
 			// 
-			this.buttonDecreaseSelectedMarks.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonDecreaseSelectedMarks.Location = new System.Drawing.Point(116, 13);
 			this.buttonDecreaseSelectedMarks.Name = "buttonDecreaseSelectedMarks";
 			this.buttonDecreaseSelectedMarks.Size = new System.Drawing.Size(32, 32);
@@ -764,7 +762,6 @@
 			// 
 			// buttonIncreasePlaybackSpeed
 			// 
-			this.buttonIncreasePlaybackSpeed.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonIncreasePlaybackSpeed.Location = new System.Drawing.Point(375, 21);
 			this.buttonIncreasePlaybackSpeed.Name = "buttonIncreasePlaybackSpeed";
 			this.buttonIncreasePlaybackSpeed.Size = new System.Drawing.Size(32, 32);
@@ -801,7 +798,6 @@
 			// 
 			// buttonDecreasePlaySpeed
 			// 
-			this.buttonDecreasePlaySpeed.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonDecreasePlaySpeed.Location = new System.Drawing.Point(410, 21);
 			this.buttonDecreasePlaySpeed.Name = "buttonDecreasePlaySpeed";
 			this.buttonDecreasePlaySpeed.Size = new System.Drawing.Size(32, 32);
@@ -821,7 +817,6 @@
 			// 
 			// buttonPlay
 			// 
-			this.buttonPlay.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonPlay.Location = new System.Drawing.Point(20, 23);
 			this.buttonPlay.Name = "buttonPlay";
 			this.buttonPlay.Size = new System.Drawing.Size(32, 32);
@@ -840,7 +835,6 @@
 			// 
 			// buttonStop
 			// 
-			this.buttonStop.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonStop.Location = new System.Drawing.Point(55, 23);
 			this.buttonStop.Name = "buttonStop";
 			this.buttonStop.Size = new System.Drawing.Size(32, 32);

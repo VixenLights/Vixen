@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using Common.Controls;
 using Common.Resources.Properties;
+using Common.Resources;
 using Vixen.Data.Flow;
 using Vixen.Factory;
 using Vixen.Module;
@@ -26,18 +27,22 @@ namespace VixenApplication.Setup
 		{
 			InitializeComponent();
 
-			buttonAddController.BackgroundImage = Resources.add;
+			buttonAddController.Image = Tools.GetIcon(Resources.add, 16);
 			buttonAddController.Text = "";
-			buttonConfigureController.BackgroundImage = Resources.cog;
+			buttonConfigureController.Image = Tools.GetIcon(Resources.cog, 16);
 			buttonConfigureController.Text = "";
-			buttonNumberChannelsController.BackgroundImage = Resources.attributes_display;
+			buttonNumberChannelsController.Image = Tools.GetIcon(Resources.attributes_display, 16);
 			buttonNumberChannelsController.Text = "";
-			buttonRenameController.BackgroundImage = Resources.pencil;
+			buttonRenameController.Image = Tools.GetIcon(Resources.pencil, 16);
 			buttonRenameController.Text = "";
-			buttonDeleteController.BackgroundImage = Resources.delete;
+			buttonDeleteController.Image = Tools.GetIcon(Resources.delete, 16);
 			buttonDeleteController.Text = "";
-			buttonSelectSourceElements.BackgroundImage = Resources.table_select_row;
+			buttonSelectSourceElements.Image = Tools.GetIcon(Resources.table_select_row, 16);
 			buttonSelectSourceElements.Text = "";
+			buttonStopController.Image = Tools.GetIcon(Resources.control_stop_blue, 16);
+			buttonStopController.Text = "";
+			buttonStartController.Image = Tools.GetIcon(Resources.control_play_blue, 16);
+			buttonStartController.Text = "";
 
 			comboBoxNewControllerType.BeginUpdate();
 			foreach (KeyValuePair<Guid, string> kvp in ApplicationServices.GetAvailableModules<IControllerModuleInstance>()) {
@@ -51,37 +56,67 @@ namespace VixenApplication.Setup
 			controllerTree.ControllerSelectionChanged += controllerTree_ControllerSelectionChanged;
 			controllerTree.ControllersChanged += controllerTree_ControllersChanged;
 
-			UpdateButtons();
+			UpdateForm();
 		}
 
 		void controllerTree_ControllerSelectionChanged(object sender, EventArgs e)
 		{
 			OnControllerSelectionChanged();
-			UpdateButtons();
+			UpdateForm();
 		}
 
 		void controllerTree_ControllersChanged(object sender, EventArgs e)
 		{
 			OnControllersChanged();
-			UpdateButtons();
+			UpdateForm();
 		}
 
-		void UpdateButtons()
+		void UpdateForm()
 		{
-			buttonConfigureController.Enabled = controllerTree.SelectedControllers.Count() == 1;
-			buttonNumberChannelsController.Enabled = controllerTree.SelectedControllers.Count() == 1;
-			buttonRenameController.Enabled = controllerTree.SelectedControllers.Count() == 1;
+			int selectedControllerCount = controllerTree.SelectedControllers.Count();
+			buttonConfigureController.Enabled = selectedControllerCount == 1;
+			buttonNumberChannelsController.Enabled = selectedControllerCount == 1;
+			buttonRenameController.Enabled = selectedControllerCount == 1;
 
-			buttonDeleteController.Enabled = controllerTree.SelectedControllers.Count() >= 1;
+			buttonDeleteController.Enabled = selectedControllerCount >= 1;
+
+			int runningCount = 0;
+			int notRunningCount = 0;
+			int pausedCount = 0;
+			int notPausedCount = 0;
+			foreach (IControllerDevice controller in controllerTree.SelectedControllers) {
+				if (controller.IsRunning) {
+					runningCount++;
+				} else {
+					notRunningCount++;
+				}
+				if (controller.IsPaused) {
+					pausedCount++;
+				} else {
+					notPausedCount++;
+				}
+			}
+			buttonStartController.Enabled = notRunningCount > 0;
+			buttonStopController.Enabled = runningCount > 0;
 
 			buttonAddController.Enabled = comboBoxNewControllerType.SelectedIndex >= 0;
 
 			buttonSelectSourceElements.Enabled = controllerTree.SelectedTreeNodes.Count > 0;
-		}
 
-		public void UpdateInfoLabels()
-		{
-			
+			if (selectedControllerCount <= 0) {
+				labelControllerType.Text = "";
+				labelOutputCount.Text = "";
+			} else if (selectedControllerCount == 1) {
+				labelControllerType.Text = ApplicationServices.GetModuleDescriptor(controllerTree.SelectedControllers.First().ModuleId).TypeName;
+				labelOutputCount.Text = controllerTree.SelectedControllers.First().OutputCount.ToString();
+			} else {
+				labelControllerType.Text = selectedControllerCount + " controllers selected";
+				int count = 0;
+				foreach (IControllerDevice controller in controllerTree.SelectedControllers) {
+					count += controller.OutputCount;
+				}
+				labelOutputCount.Text = count.ToString();
+			}
 		}
 
 		public ControllersAndOutputsSet BuildSelectedControllersAndOutputs()
@@ -238,6 +273,42 @@ namespace VixenApplication.Setup
 				return component;
 
 			return FindRootSourceOfDataComponent(component.Source.Component);
+		}
+
+		private void buttonStartController_Click(object sender, EventArgs e)
+		{
+			bool changes = false;
+
+			foreach (IControllerDevice controller in controllerTree.SelectedControllers) {
+				if (!controller.IsRunning) {
+					controller.Start();
+					changes = true;
+				}
+			}
+
+			if (changes) {
+				controllerTree.PopulateControllerTree();
+				OnControllersChanged();
+				UpdateForm();
+			}
+		}
+
+		private void buttonStopController_Click(object sender, EventArgs e)
+		{
+			bool changes = false;
+
+			foreach (IControllerDevice controller in controllerTree.SelectedControllers) {
+				if (controller.IsRunning) {
+					controller.Stop();
+					changes = true;
+				}
+			}
+
+			if (changes) {
+				controllerTree.PopulateControllerTree();
+				OnControllersChanged();
+				UpdateForm();
+			}
 		}
 	}
 }
