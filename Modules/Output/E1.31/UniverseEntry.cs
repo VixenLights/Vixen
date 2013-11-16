@@ -31,6 +31,7 @@ namespace VixenModules.Controller.E131
 			this.DestIpEndPoint = null;
 			this.PhyBuffer = null;
 			this.EventRepeatCount = 0;
+			this.EventSuppressCount = 0;
 
 			this.seqNum = 0;
 
@@ -50,10 +51,16 @@ namespace VixenModules.Controller.E131
 		public IPEndPoint DestIpEndPoint { get; set; }
 
 		/// <summary>
-		///   Gets or sets how many identical pkts to skip (0 = none)
+		///   Gets or sets how many identical pkts are being sent (0 = all)
 		/// </summary>
         [DataMember]
         public int EventRepeatCount { get; set; }
+
+		/// <summary>
+		///   Gets or sets how many identical pkts are being suppressed (0 = none)
+		/// </summary>
+		[DataMember]
+		public int EventSuppressCount { get; set; }
 
 		public string InfoToText
 		{

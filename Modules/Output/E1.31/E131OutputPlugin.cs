@@ -176,7 +176,8 @@ namespace VixenModules.Controller.E131
 
                 setupForm.WarningsOption = _data.Warnings;
                 setupForm.StatisticsOption = _data.Statistics;
-                setupForm.EventRepeatCount = _data.EventRepeatCount;
+				setupForm.EventRepeatCount = _data.EventRepeatCount;
+				setupForm.EventSuppressCount = _data.EventSuppressCount;
 
 
                 if (setupForm.ShowDialog() == DialogResult.OK)
@@ -185,7 +186,8 @@ namespace VixenModules.Controller.E131
 
                     _data.Warnings = setupForm.WarningsOption;
                     _data.Statistics = setupForm.StatisticsOption;
-                    _data.EventRepeatCount = setupForm.EventRepeatCount;
+					_data.EventRepeatCount = setupForm.EventRepeatCount;
+					_data.EventSuppressCount = setupForm.EventSuppressCount;
                     _data.Universes.Clear();
 
                     initialUniverseList.ForEach(u => E131OutputPlugin.EmployedUniverses.RemoveAll(t => u == t));
@@ -474,6 +476,8 @@ namespace VixenModules.Controller.E131
                     if (uE.Active)
                     {
                         var zeroBfr = new byte[uE.Size];
+						for (int i = 0; i < uE.Size; i++)  // init to unlikely value for later compares
+							zeroBfr[i] = (byte)i;
                         var e131Packet = new E131Packet(_data.ModuleInstanceId, string.Empty, 0, (ushort)uE.Universe, zeroBfr, 0, uE.Size);
                         uE.PhyBuffer = e131Packet.PhyBuffer;
                     }
@@ -531,9 +535,10 @@ namespace VixenModules.Controller.E131
             }
             DateTime lastUpdate;
 
+			// no longer used, but I'm leaving it just in case we need it later...
+			/*
             if (channelValues.Where(w => w == 0).Count() == channelValues.Length)
             {
-
                 if (outputStateDictionary.TryGetValue(chainIndex, out lastUpdate))
                 {
 					if( DateTime.Now - lastUpdate < TimeSpan.FromSeconds(1))
@@ -545,6 +550,8 @@ namespace VixenModules.Controller.E131
             {
                 outputStateDictionary.TryRemove(chainIndex, out lastUpdate);
             }
+			*/
+
             int universeSize = 0;
 
             this._eventCnt++;
@@ -556,47 +563,62 @@ namespace VixenModules.Controller.E131
 
             foreach (var uE in _data.Universes)
             {
+                //Not sure why phybuf can be null, but the plugin will crash after being reconfigured otherwise.
+                if( uE.PhyBuffer == null)
+					continue;
+
                 //Check if the universe is active and inside a valid channel range
-                if (uE.Active && (uE.Start + 1) <= OutputCount)
+                if ( !uE.Active || (uE.Start + 1) > OutputCount)
+					continue;
+
+                //Check the universe size boundary.
+                if ((uE.Start + 1 + uE.Size) > OutputCount)
                 {
-                    //Check the universe size boundary.
-                    if ((uE.Start + 1 + uE.Size) > OutputCount)
-                    {
-                        universeSize = OutputCount - uE.Start - 1;
-                    }
-                    else
-                    {
-                        universeSize = uE.Size;
-                    }
+                    universeSize = OutputCount - uE.Start - 1;
+                }
+                else
+                {
+                    universeSize = uE.Size;
+                }
 
+                // Reduce duplicate packets... 
+				// -the data. counts are the targets
+				// -the uE. counts are how many have happened
 
-                    //Reduce duplicate packets
-                    //SeqNumbers are per universe so that they can run independently
-                    if (_data.EventRepeatCount > 0)
-                    {
-                        if (uE.EventRepeatCount-- > 0)
-                        {
-                            if (E131Packet.CompareSlots(uE.PhyBuffer, channelValues, uE.Start, universeSize))
-                            {
-                                continue;
-                            }
-                        }
-                    }
+				// do we want to suppress this one?  compare to last frame sent
+				bool sendit = true;
+				bool issame = E131Packet.CompareSlots(uE.PhyBuffer, channelValues, uE.Start, universeSize);
+				if (issame)
+				{
+					// we allow the first event repeat count dups
+					if (_data.EventRepeatCount > 0 && ++uE.EventRepeatCount >= _data.EventRepeatCount)
+					{
+						sendit = false;
+						// we want to suppress, but should we force it anyway?
+						if (_data.EventSuppressCount > 0 && ++uE.EventSuppressCount >= _data.EventSuppressCount)
+						{
+							sendit = true;
+							uE.EventSuppressCount = 0;
+						}
+					}
+				}
+				else
+				{
+					// it's different so will go... clear counters
+					// hopefully this happens within the 7.7 months it will take them to overflow :-)
+					uE.EventRepeatCount = 0;
+					uE.EventSuppressCount = 0;
+				}
 
-
-                    //Not sure why this is needed, but the plugin will crash after being reconfigured otherwise.
-                    if (uE.PhyBuffer != null)
-                    {
-                        E131Packet.CopySeqNumSlots(uE.PhyBuffer, channelValues, uE.Start, universeSize, uE.seqNum++);
-                        uE.Socket.SendTo(uE.PhyBuffer, uE.DestIpEndPoint);
-                        uE.EventRepeatCount = _data.EventRepeatCount;
-
-                        uE.PktCount++;
-                        uE.SlotCount += uE.Size;
-                    }
+                if( sendit)
+                {
+					//SeqNumbers are per universe so that they can run independently
+					E131Packet.CopySeqNumSlots(uE.PhyBuffer, channelValues, uE.Start, universeSize, uE.seqNum++);
+                    uE.Socket.SendTo(uE.PhyBuffer, uE.DestIpEndPoint);
+                    uE.PktCount++;
+                    uE.SlotCount += uE.Size;
                 }
             }
-
             stopWatch.Stop();
 
             this._totalTicks += stopWatch.ElapsedTicks;
@@ -610,7 +632,8 @@ namespace VixenModules.Controller.E131
                 _data.Universes = new List<UniverseEntry>();
                 _data.Warnings = true;
                 _data.Statistics = false;
-                _data.EventRepeatCount = 0;
+				_data.EventRepeatCount = 0;
+				_data.EventSuppressCount = 0;
             }
 
             if (_data.Universes == null)
@@ -690,7 +713,13 @@ namespace VixenModules.Controller.E131
                     {
                         _data.EventRepeatCount = attribute.Value.TryParseInt32(0);
                     }
-                }
+
+					_data.EventSuppressCount = 0;
+					if ((attribute = attributes.GetNamedItem("eventSuppressCount")) != null)
+					{
+						_data.EventSuppressCount = attribute.Value.TryParseInt32(0);
+					}
+				}
 
                 if (child.Name == "Universe")
                 {

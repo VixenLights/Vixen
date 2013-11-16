@@ -27,6 +27,9 @@ namespace VixenModules.Output.E131
 		public int EventRepeatCount { get; set; }
 
 		[DataMember]
+		public int EventSuppressCount { get; set; }
+
+		[DataMember]
 		public List<UniverseEntry> Universes { get; set; }
 
 		public override IModuleDataModel Clone()
@@ -35,8 +38,9 @@ namespace VixenModules.Output.E131
 			{
 				OutputCount = OutputCount,
 				Universes = Universes,
-				
+
 				EventRepeatCount = EventRepeatCount,
+				EventSuppressCount = EventSuppressCount,
 				Statistics = Statistics,
 				Warnings = Warnings
 			};
