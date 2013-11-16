@@ -609,7 +609,8 @@ namespace Common.Controls
 
 		private void contextMenuStripTreeView_Opening(object sender, CancelEventArgs e)
 		{
-			cutNodesToolStripMenuItem.Enabled = (SelectedTreeNodes.Count > 0);
+			// temporarily disable Cut function till we can keep the underlying Elements around
+			cutNodesToolStripMenuItem.Enabled = false; // (SelectedTreeNodes.Count > 0);
 			copyNodesToolStripMenuItem.Enabled = (SelectedTreeNodes.Count > 0);
 			pasteNodesToolStripMenuItem.Enabled = (_clipboardNodes != null);
 			copyPropertiesToolStripMenuItem.Enabled = (SelectedTreeNodes.Count == 1);
