@@ -283,7 +283,7 @@ namespace VixenModules.Controller.E131
                     this._messageTexts.AppendLine();
                 }
 
-                this._messageTexts.AppendLine(string.Format("Events: {0}" + this._eventCnt));
+                this._messageTexts.AppendLine(string.Format("Events: {0}", this._eventCnt));
                 this._messageTexts.AppendLine(string.Format("Total Time: {0} Ticks; {1} ms", this._totalTicks, TimeSpan.FromTicks(this._totalTicks).Milliseconds));
 
                 foreach (var uE in _data.Universes)
