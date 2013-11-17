@@ -125,6 +125,8 @@ namespace Common.Controls.Timeline
 			{
 				ClearActiveRows();
 				Row row = rowAt(gridLocation);
+				if (row == null)
+					return;
 				row.Active = true;
 				if (ClickingGridSetsCursor)
 					CursorPosition = pixelsToTime(gridLocation.X);
