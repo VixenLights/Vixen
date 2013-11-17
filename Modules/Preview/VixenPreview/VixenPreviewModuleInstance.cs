@@ -128,7 +128,10 @@ namespace VixenModules.Preview.VixenPreview
 			setupForm.ShowDialog();
 
 			if (displayForm != null)
+			{
 				displayForm.Data = GetDataModel();
+				displayForm.Setup();
+			}
 
 			return base.Setup();
 		}

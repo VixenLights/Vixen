@@ -174,13 +174,14 @@ namespace Vixen.Sys
 			OnChanged(this);
 		}
 
-		public override bool RemoveFromParent(GroupNode<Element> parent, bool cleanupIfFloating)
+		public override bool RemoveFromParent(GroupNode<Element> parent, bool cleanup)
 		{
-			bool result = base.RemoveFromParent(parent, cleanupIfFloating);
+			bool result = base.RemoveFromParent(parent, cleanup);
 
-			// if we're cleaning up if we're a floating node (eg. being deleted), and we're actually
-			// floating, then remove the associated element (if any)
-			if (cleanupIfFloating && Parents.Count() == 0) {
+			// if we're cleaning up after removal (eg. being deleted), and we're actually floating
+			// (ie. this node doesn't exist anywhere else), remove the associated element (if any)
+			if (cleanup && Parents.Count() == 0) {
+				VixenSystem.Elements.RemoveElement(Element);
 				Element = null;
 				VixenSystem.Nodes.ClearElementNode(Id);
 			}
