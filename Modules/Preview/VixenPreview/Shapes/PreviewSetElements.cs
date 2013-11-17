@@ -28,6 +28,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			connectStandardStrings = shapes[0].connectStandardStrings;
 			int i = 1;
 			foreach (PreviewBaseShape shape in _shapes) {
+				if (shape.Pixels.Count == 0)
+					continue;
 				PreviewSetElementString newString = new PreviewSetElementString();
 				// If this is a Standard string, only set the first pixel of the string
 				if (shape.StringType == PreviewBaseShape.StringTypes.Standard) {
@@ -93,6 +95,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			Point targetPoint = listLinkedElements.PointToClient(new Point(e.X, e.Y));
 			// Select the node at the mouse position.
 			ListViewItem item = listLinkedElements.GetItemAt(targetPoint.X, targetPoint.Y);
+			if (item == null) {
+				MessageBox.Show("Elements must be dropped on a target.  Please try again.");
+				return;
+			}
 
 			foreach (TreeNode treeNode in nodes) {
 				if (treeNode != null) {
@@ -218,9 +224,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				}
 			}
 			else {
+				// shapes with count==0 don't show up in combo box so keep separate index
+				int comboidx = -1;
 				for (int i = 0; i < _shapes.Count; i++) {
 					//Console.WriteLine("i=" + i.ToString());
-					Common.Controls.ComboBoxItem item = comboStrings.Items[i] as Common.Controls.ComboBoxItem;
+					if (_shapes[i].Pixels.Count == 0)
+						continue;
+					comboidx++;
+					Common.Controls.ComboBoxItem item = comboStrings.Items[comboidx] as Common.Controls.ComboBoxItem;
 					PreviewSetElementString lightString = item.Value as PreviewSetElementString;
 					PreviewBaseShape shape = _shapes[i];
 					for (int pixelNum = 0; pixelNum < lightString.Pixels.Count; pixelNum++) {

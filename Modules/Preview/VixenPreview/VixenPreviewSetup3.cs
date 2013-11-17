@@ -74,6 +74,9 @@ namespace VixenModules.Preview.VixenPreview {
 
 			useDirect2DPreviewRenderingToolStripMenuItem.Checked = !settings.UseGDIRendering;
 			saveLocationsToolStripMenuItem.Checked = Data.SaveLocations;
+
+			// Choose the select tool to start
+			toolbarButton_Click(buttonSelect, new EventArgs());
 		}
 
 		private void buttonSetBackground_Click(object sender, EventArgs e) {
@@ -96,6 +99,7 @@ namespace VixenModules.Preview.VixenPreview {
 
 		private void OnDeSelectDisplayItem(object sender, Shapes.DisplayItem displayItem) {
 			propertiesForm.ShowSetupControl(null);
+			reenableToolButtons();
 		}
 
 		private void OnSelectDisplayItem(object sender, Shapes.DisplayItem displayItem) {
@@ -104,14 +108,45 @@ namespace VixenModules.Preview.VixenPreview {
 			if (setupControl != null) {
 				propertiesForm.ShowSetupControl(setupControl);
 			}
+			reenableToolButtons();
+		}
+
+		private void reenableToolButtons()
+		{
+			buttonSelect.BackColor = Color.White;
+			buttonSelect.FlatAppearance.BorderColor = buttonSelect.BackColor;
+			buttonCane.BackColor = buttonSelect.BackColor;
+			buttonCane.FlatAppearance.BorderColor = buttonSelect.BackColor;
+			buttonDrawPixel.BackColor = buttonSelect.BackColor;
+			buttonDrawPixel.FlatAppearance.BorderColor = buttonSelect.BackColor;
+			buttonLine.BackColor = buttonSelect.BackColor;
+			buttonLine.FlatAppearance.BorderColor = buttonSelect.BackColor;
+			buttonSemiCircle.BackColor = buttonSelect.BackColor;
+			buttonSemiCircle.FlatAppearance.BorderColor = buttonSelect.BackColor;
+			buttonRectangle.BackColor = buttonSelect.BackColor;
+			buttonRectangle.FlatAppearance.BorderColor = buttonSelect.BackColor;
+			buttonEllipse.BackColor = buttonSelect.BackColor;
+			buttonEllipse.FlatAppearance.BorderColor = buttonSelect.BackColor;
+			buttonTriangle.BackColor = buttonSelect.BackColor;
+			buttonTriangle.FlatAppearance.BorderColor = buttonSelect.BackColor;
+			buttonNet.BackColor = buttonSelect.BackColor;
+			buttonNet.FlatAppearance.BorderColor = buttonSelect.BackColor;
+			//buttonFlood.BackColor = buttonSelect.BackColor;
+			//buttonFlood.FlatAppearance.BorderColor = buttonSelect.BackColor;
+			buttonStar.BackColor = buttonSelect.BackColor;
+			buttonStar.FlatAppearance.BorderColor = buttonSelect.BackColor;
+			buttonMegaTree.BackColor = buttonSelect.BackColor;
+			buttonMegaTree.FlatAppearance.BorderColor = buttonSelect.BackColor;
+			buttonPixelGrid.BackColor = buttonSelect.BackColor;
+			buttonPixelGrid.FlatAppearance.BorderColor = buttonSelect.BackColor;
 		}
 
 		private void toolbarButton_Click(object sender, EventArgs e) {
 			Button button = sender as Button;
+			reenableToolButtons();
 			// Select Button
 			if (button == buttonSelect)
 				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Select;
-			// Standard Buttons
 			else if (button == buttonDrawPixel)
 				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Single;
 			else if (button == buttonLine)
@@ -138,6 +173,10 @@ namespace VixenModules.Preview.VixenPreview {
 				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.MegaTree;
 			else if (button == buttonPixelGrid)
 				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.PixelGrid;
+			//button.Enabled = false;
+			button.BackColor = Color.Gainsboro;
+			button.FlatAppearance.BorderColor = Color.Gainsboro;
+			//buttonSelect.Focus();
 		}
 
 		private void trackBarBackgroundAlpha_ValueChanged(object sender, EventArgs e) {
@@ -268,10 +307,6 @@ namespace VixenModules.Preview.VixenPreview {
 		}
 
 		#endregion // Templates
-
-		private void buttonSelect_Click(object sender, EventArgs e) {
-			previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Select;
-		}
 
 		private void SaveLocationDataForElements()
 		{
