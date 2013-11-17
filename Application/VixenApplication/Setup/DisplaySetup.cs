@@ -90,6 +90,11 @@ namespace VixenApplication
 			if (_currentPatchingControl != null) {
 				_currentPatchingControl.UpdateElementDetails(_currentElementControl.SelectedElements);
 			}
+
+			// TODO: this is iffy, should really redo the events for this system
+			if (_currentControllersControl != null) {
+				_currentControllersControl.UpdatePatching();
+			}
 		}
 
 		void control_ElementSelectionChanged(object sender, ElementNodesEventArgs e)
@@ -168,6 +173,11 @@ namespace VixenApplication
 		{
 			if (_currentPatchingControl != null) {
 				_currentPatchingControl.UpdateControllerDetails(_currentControllersControl.SelectedControllersAndOutputs);
+			}
+
+			// TODO: this is iffy, should really redo the events for this system
+			if (_currentElementControl != null) {
+				_currentElementControl.UpdatePatching();
 			}
 		}
 
