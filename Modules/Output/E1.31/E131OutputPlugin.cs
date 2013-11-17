@@ -568,13 +568,13 @@ namespace VixenModules.Controller.E131
 					continue;
 
                 //Check if the universe is active and inside a valid channel range
-                if ( !uE.Active || (uE.Start + 1) > OutputCount)
+                if ( !uE.Active || uE.Start >= OutputCount)
 					continue;
 
                 //Check the universe size boundary.
-                if ((uE.Start + 1 + uE.Size) > OutputCount)
+                if ((uE.Start + uE.Size) > OutputCount)
                 {
-                    universeSize = OutputCount - uE.Start - 1;
+                    universeSize = OutputCount - uE.Start;
                 }
                 else
                 {
