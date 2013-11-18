@@ -181,8 +181,10 @@ namespace Vixen.Sys
 			// if we're cleaning up after removal (eg. being deleted), and we're actually floating
 			// (ie. this node doesn't exist anywhere else), remove the associated element (if any)
 			if (cleanup && Parents.Count() == 0) {
-				VixenSystem.Elements.RemoveElement(Element);
-				Element = null;
+				if( Element != null) {
+					VixenSystem.Elements.RemoveElement(Element);
+					Element = null;
+				}
 				VixenSystem.Nodes.ClearElementNode(Id);
 			}
 
