@@ -19,7 +19,7 @@ namespace VixenModules.OutputFilter.DimmingCurve
 {
 	public class DimmingCurveDescriptor : OutputFilterModuleDescriptorBase
 	{
-		private readonly Guid _typeId = new Guid("{2e40d6b1-43d2-4668-b63a-c600fadd7dd5}");
+		private static readonly Guid _typeId = new Guid("{2e40d6b1-43d2-4668-b63a-c600fadd7dd5}");
 
 		public override string TypeName
 		{
@@ -27,6 +27,11 @@ namespace VixenModules.OutputFilter.DimmingCurve
 		}
 
 		public override Guid TypeId
+		{
+			get { return _typeId; }
+		}
+
+		public static Guid ModuleId
 		{
 			get { return _typeId; }
 		}
@@ -97,6 +102,12 @@ namespace VixenModules.OutputFilter.DimmingCurve
 			}
 		}
 
+		public Curve DimmingCurve
+		{
+			get { return _data.Curve; }
+			set { _data.Curve = value; }
+		}
+
 		public override bool HasSetup
 		{
 			get { return true; }
@@ -106,7 +117,7 @@ namespace VixenModules.OutputFilter.DimmingCurve
 		{
 			using (CurveEditor editor = new CurveEditor(_data.Curve)) {
 				if (editor.ShowDialog() == DialogResult.OK) {
-					_data.Curve = editor.Curve;
+					DimmingCurve = editor.Curve;
 					_CreateOutputs();
 					return true;
 				}
