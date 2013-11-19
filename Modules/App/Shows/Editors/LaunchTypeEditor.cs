@@ -6,6 +6,8 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Resources;
+using Common.Resources.Properties;
 
 namespace VixenModules.App.Shows
 {
@@ -16,6 +18,12 @@ namespace VixenModules.App.Shows
 		public LaunchTypeEditor(ShowItem item)
 		{
 			InitializeComponent();
+
+			buttonSelectProgram.Image = Tools.GetIcon(Resources.folder_explore, 16);
+			buttonSelectProgram.Text = "";
+			buttonTest.Image = Tools.GetIcon(Resources.cog_go, 16);
+			buttonTest.Text = "";
+
 			_showItem = item;
 		}
 

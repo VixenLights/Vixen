@@ -28,7 +28,6 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SequenceTypeEditor));
 			this.label1 = new System.Windows.Forms.Label();
 			this.textBoxSequence = new System.Windows.Forms.TextBox();
 			this.buttonSelectSequence = new System.Windows.Forms.Button();
@@ -58,12 +57,11 @@
 			// buttonSelectSequence
 			// 
 			this.buttonSelectSequence.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonSelectSequence.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonSelectSequence.BackgroundImage")));
-			this.buttonSelectSequence.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonSelectSequence.Location = new System.Drawing.Point(260, 3);
 			this.buttonSelectSequence.Name = "buttonSelectSequence";
 			this.buttonSelectSequence.Size = new System.Drawing.Size(20, 20);
 			this.buttonSelectSequence.TabIndex = 6;
+			this.buttonSelectSequence.Text = "S";
 			this.buttonSelectSequence.UseVisualStyleBackColor = true;
 			this.buttonSelectSequence.Click += new System.EventHandler(this.buttonSelectSequence_Click);
 			// 

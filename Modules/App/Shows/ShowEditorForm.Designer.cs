@@ -28,7 +28,6 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ShowEditorForm));
 			this.tabControlShowItems = new System.Windows.Forms.TabControl();
 			this.tabPageStartup = new System.Windows.Forms.TabPage();
 			this.tabPageBackground = new System.Windows.Forms.TabPage();
@@ -47,11 +46,11 @@
 			this.buttonCancel = new System.Windows.Forms.Button();
 			this.buttonHelp = new System.Windows.Forms.Button();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.label1 = new System.Windows.Forms.Label();
+			this.textBoxShowName = new System.Windows.Forms.TextBox();
 			this.listViewShowItems = new System.Windows.Forms.ListView();
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.labelHelp = new System.Windows.Forms.Label();
-			this.textBoxShowName = new System.Windows.Forms.TextBox();
-			this.label1 = new System.Windows.Forms.Label();
 			this.tabControlShowItems.SuspendLayout();
 			this.groupBoxAction.SuspendLayout();
 			this.groupBox2.SuspendLayout();
@@ -125,45 +124,41 @@
 			// 
 			// buttonMoveItemDown
 			// 
-			this.buttonMoveItemDown.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonMoveItemDown.BackgroundImage")));
-			this.buttonMoveItemDown.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonMoveItemDown.Location = new System.Drawing.Point(265, 310);
 			this.buttonMoveItemDown.Name = "buttonMoveItemDown";
 			this.buttonMoveItemDown.Size = new System.Drawing.Size(24, 24);
 			this.buttonMoveItemDown.TabIndex = 10;
+			this.buttonMoveItemDown.Text = "v";
 			this.buttonMoveItemDown.UseVisualStyleBackColor = true;
 			this.buttonMoveItemDown.Click += new System.EventHandler(this.buttonMoveItemDown_Click);
 			// 
 			// buttonMoveItemUp
 			// 
-			this.buttonMoveItemUp.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonMoveItemUp.BackgroundImage")));
-			this.buttonMoveItemUp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonMoveItemUp.Location = new System.Drawing.Point(240, 310);
 			this.buttonMoveItemUp.Name = "buttonMoveItemUp";
 			this.buttonMoveItemUp.Size = new System.Drawing.Size(24, 24);
 			this.buttonMoveItemUp.TabIndex = 9;
+			this.buttonMoveItemUp.Text = "^";
 			this.buttonMoveItemUp.UseVisualStyleBackColor = true;
 			this.buttonMoveItemUp.Click += new System.EventHandler(this.buttonMoveItemUp_Click);
 			// 
 			// buttonDeleteItem
 			// 
-			this.buttonDeleteItem.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonDeleteItem.BackgroundImage")));
-			this.buttonDeleteItem.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonDeleteItem.Location = new System.Drawing.Point(315, 310);
 			this.buttonDeleteItem.Name = "buttonDeleteItem";
 			this.buttonDeleteItem.Size = new System.Drawing.Size(24, 24);
 			this.buttonDeleteItem.TabIndex = 7;
+			this.buttonDeleteItem.Text = "-";
 			this.buttonDeleteItem.UseVisualStyleBackColor = true;
 			this.buttonDeleteItem.Click += new System.EventHandler(this.buttonDeleteItem_Click);
 			// 
 			// buttonAddItem
 			// 
-			this.buttonAddItem.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonAddItem.BackgroundImage")));
-			this.buttonAddItem.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonAddItem.Location = new System.Drawing.Point(290, 310);
 			this.buttonAddItem.Name = "buttonAddItem";
 			this.buttonAddItem.Size = new System.Drawing.Size(24, 24);
 			this.buttonAddItem.TabIndex = 5;
+			this.buttonAddItem.Text = "+";
 			this.buttonAddItem.UseVisualStyleBackColor = true;
 			this.buttonAddItem.Click += new System.EventHandler(this.buttonAddItem_Click);
 			// 
@@ -229,7 +224,6 @@
 			// 
 			// buttonHelp
 			// 
-			this.buttonHelp.Image = ((System.Drawing.Image)(resources.GetObject("buttonHelp.Image")));
 			this.buttonHelp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.buttonHelp.Location = new System.Drawing.Point(12, 345);
 			this.buttonHelp.Name = "buttonHelp";
@@ -251,6 +245,22 @@
 			this.groupBox2.Size = new System.Drawing.Size(775, 43);
 			this.groupBox2.TabIndex = 63;
 			this.groupBox2.TabStop = false;
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(6, 19);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(68, 13);
+			this.label1.TabIndex = 2;
+			this.label1.Text = "Show Name:";
+			// 
+			// textBoxShowName
+			// 
+			this.textBoxShowName.Location = new System.Drawing.Point(80, 16);
+			this.textBoxShowName.Name = "textBoxShowName";
+			this.textBoxShowName.Size = new System.Drawing.Size(197, 20);
+			this.textBoxShowName.TabIndex = 1;
 			// 
 			// listViewShowItems
 			// 
@@ -283,22 +293,6 @@
 			this.labelHelp.Size = new System.Drawing.Size(222, 35);
 			this.labelHelp.TabIndex = 65;
 			this.labelHelp.Text = "Help";
-			// 
-			// textBoxShowName
-			// 
-			this.textBoxShowName.Location = new System.Drawing.Point(80, 16);
-			this.textBoxShowName.Name = "textBoxShowName";
-			this.textBoxShowName.Size = new System.Drawing.Size(197, 20);
-			this.textBoxShowName.TabIndex = 1;
-			// 
-			// label1
-			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(6, 19);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(68, 13);
-			this.label1.TabIndex = 2;
-			this.label1.Text = "Show Name:";
 			// 
 			// ShowEditorForm
 			// 

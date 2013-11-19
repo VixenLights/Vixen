@@ -91,6 +91,11 @@
       <Name>VixenHelp</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\Common\Resources\Resources.csproj">
+      <Project>{F7A80169-6310-4585-9D58-A6F6F5C5B380}</Project>
+      <Name>Resources</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Common\StateMach\StateMach.csproj">
       <Project>{8F61BFE3-8D89-41E8-B296-C01537B03707}</Project>
       <Name>StateMach</Name>

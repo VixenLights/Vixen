@@ -6,6 +6,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Resources;
+using Common.Resources.Properties;
 
 namespace VixenModules.App.SuperScheduler
 {
@@ -17,7 +19,27 @@ namespace VixenModules.App.SuperScheduler
 		public StatusForm(SuperSchedulerData data, ScheduleExecutor executor)
 		{
 			InitializeComponent();
-			this.ControlBox = false;
+
+			buttonPauseShow.Image = Tools.GetIcon(Resources.control_pause, 16);
+			buttonPauseShow.Text = "";
+			buttonNextSong.Image = Tools.GetIcon(Resources.control_end, 16);
+			buttonNextSong.Text = "";
+			buttonStartScheduler.Image = Tools.GetIcon(Resources.control_play, 16);
+			buttonStartScheduler.Text = "";
+			buttonStopNow.Image = Tools.GetIcon(Resources.control_stop, 16);
+			buttonStopNow.Text = "";
+			buttonStopGracefully.Image = Tools.GetIcon(Resources.clock_stop, 16);
+			buttonStopGracefully.Text = "";
+			buttonViewLog.Image = Tools.GetIcon(Resources.document_notes, 16);
+			buttonViewLog.Text = "";
+
+			buttonPlayShowNow.Image = Tools.GetIcon(Resources.control_play, 16);
+			buttonPlayShowNow.Text = "";
+			buttonPlayShowGracefully.Image = Tools.GetIcon(Resources.clock_play, 16);
+			buttonPlayShowGracefully.Text = "";
+
+
+			ControlBox = false;
 			SchedulerData = data;
 			Executor = executor;
 		}

@@ -6,6 +6,8 @@ using System.Windows.Forms;
 using System.Diagnostics;
 using System.IO;
 using System.Xml.Serialization;
+using Common.Resources;
+using Common.Resources.Properties;
 using Vixen.Module.Editor;
 using Vixen.Module.SequenceType;
 using Vixen.Services;
@@ -20,6 +22,10 @@ namespace VixenModules.App.Shows
 		public SequenceTypeEditor(ShowItem showItem)
 		{
 			InitializeComponent();
+			
+			buttonSelectSequence.Image = Tools.GetIcon(Resources.folder_explore, 16);
+			buttonSelectSequence.Text = "";
+
 			_showItem = showItem;
 		}
 

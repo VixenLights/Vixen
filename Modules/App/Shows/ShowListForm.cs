@@ -6,6 +6,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Resources;
+using Common.Resources.Properties;
 
 namespace VixenModules.App.Shows
 {
@@ -14,6 +16,15 @@ namespace VixenModules.App.Shows
 		public ShowListForm(ShowsData data)
 		{
 			InitializeComponent();
+
+			buttonAdd.Image = Tools.GetIcon(Resources.add, 16);
+			buttonAdd.Text = "";
+			buttonDelete.Image = Tools.GetIcon(Resources.delete, 16);
+			buttonDelete.Text = "";
+			buttonEdit.Image = Tools.GetIcon(Resources.pencil, 16);
+			buttonEdit.Text = "";
+			buttonHelp.Image = Tools.GetIcon(Resources.help, 16);
+
 			Data = data;
 		}
 

@@ -39,17 +39,17 @@
 			this.columnShow = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnSchedule = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnStatus = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.buttonDeleteSchedule = new System.Windows.Forms.Button();
-			this.buttonEditSchedule = new System.Windows.Forms.Button();
-			this.buttonAddSchedule = new System.Windows.Forms.Button();
-			this.buttonHelp = new System.Windows.Forms.Button();
-			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.contextMenuStripList = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.addAScheduledShowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.editTheSelectedScheduleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.deleteTheSelectedScheduleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
 			this.editTheAssociatedShowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.buttonDeleteSchedule = new System.Windows.Forms.Button();
+			this.buttonEditSchedule = new System.Windows.Forms.Button();
+			this.buttonAddSchedule = new System.Windows.Forms.Button();
+			this.buttonHelp = new System.Windows.Forms.Button();
+			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.contextMenuStripList.SuspendLayout();
@@ -101,8 +101,6 @@
 			// buttonEditShow
 			// 
 			this.buttonEditShow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonEditShow.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonEditShow.BackgroundImage")));
-			this.buttonEditShow.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonEditShow.Location = new System.Drawing.Point(9, 252);
 			this.buttonEditShow.Name = "buttonEditShow";
 			this.buttonEditShow.Size = new System.Drawing.Size(24, 24);
@@ -144,60 +142,6 @@
 			// columnStatus
 			// 
 			this.columnStatus.Text = "Status";
-			// 
-			// buttonDeleteSchedule
-			// 
-			this.buttonDeleteSchedule.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonDeleteSchedule.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonDeleteSchedule.BackgroundImage")));
-			this.buttonDeleteSchedule.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonDeleteSchedule.Location = new System.Drawing.Point(630, 252);
-			this.buttonDeleteSchedule.Name = "buttonDeleteSchedule";
-			this.buttonDeleteSchedule.Size = new System.Drawing.Size(24, 24);
-			this.buttonDeleteSchedule.TabIndex = 7;
-			this.toolTip1.SetToolTip(this.buttonDeleteSchedule, "Delete the Selected Schedule");
-			this.buttonDeleteSchedule.UseVisualStyleBackColor = true;
-			this.buttonDeleteSchedule.Click += new System.EventHandler(this.buttonDeleteSchedule_Click);
-			// 
-			// buttonEditSchedule
-			// 
-			this.buttonEditSchedule.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonEditSchedule.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonEditSchedule.BackgroundImage")));
-			this.buttonEditSchedule.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonEditSchedule.Location = new System.Drawing.Point(605, 252);
-			this.buttonEditSchedule.Name = "buttonEditSchedule";
-			this.buttonEditSchedule.Size = new System.Drawing.Size(24, 24);
-			this.buttonEditSchedule.TabIndex = 6;
-			this.toolTip1.SetToolTip(this.buttonEditSchedule, "Edit the Selected Schedule");
-			this.buttonEditSchedule.UseVisualStyleBackColor = true;
-			this.buttonEditSchedule.Click += new System.EventHandler(this.buttonEditSchedule_Click);
-			// 
-			// buttonAddSchedule
-			// 
-			this.buttonAddSchedule.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonAddSchedule.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonAddSchedule.BackgroundImage")));
-			this.buttonAddSchedule.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonAddSchedule.Location = new System.Drawing.Point(580, 252);
-			this.buttonAddSchedule.Name = "buttonAddSchedule";
-			this.buttonAddSchedule.Size = new System.Drawing.Size(24, 24);
-			this.buttonAddSchedule.TabIndex = 5;
-			this.toolTip1.SetToolTip(this.buttonAddSchedule, "Add a New Scheduled Show");
-			this.buttonAddSchedule.UseVisualStyleBackColor = true;
-			this.buttonAddSchedule.Click += new System.EventHandler(this.buttonAddSchedule_Click);
-			// 
-			// buttonHelp
-			// 
-			this.buttonHelp.Image = ((System.Drawing.Image)(resources.GetObject("buttonHelp.Image")));
-			this.buttonHelp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.buttonHelp.Location = new System.Drawing.Point(12, 377);
-			this.buttonHelp.Name = "buttonHelp";
-			this.buttonHelp.Size = new System.Drawing.Size(60, 23);
-			this.buttonHelp.TabIndex = 61;
-			this.buttonHelp.Tag = "http://www.vixenlights.com/vixen-3-documentation/sequencer/effects/nutcracker-eff" +
-    "ects/";
-			this.buttonHelp.Text = "Help";
-			this.buttonHelp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.buttonHelp.UseVisualStyleBackColor = true;
-			this.buttonHelp.Click += new System.EventHandler(this.buttonHelp_Click);
 			// 
 			// contextMenuStripList
 			// 
@@ -242,6 +186,53 @@
 			this.editTheAssociatedShowToolStripMenuItem.Size = new System.Drawing.Size(225, 22);
 			this.editTheAssociatedShowToolStripMenuItem.Text = "Edit the Associated Show...";
 			this.editTheAssociatedShowToolStripMenuItem.Click += new System.EventHandler(this.editTheAssociatedShowToolStripMenuItem_Click);
+			// 
+			// buttonDeleteSchedule
+			// 
+			this.buttonDeleteSchedule.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonDeleteSchedule.Location = new System.Drawing.Point(630, 252);
+			this.buttonDeleteSchedule.Name = "buttonDeleteSchedule";
+			this.buttonDeleteSchedule.Size = new System.Drawing.Size(24, 24);
+			this.buttonDeleteSchedule.TabIndex = 7;
+			this.toolTip1.SetToolTip(this.buttonDeleteSchedule, "Delete the Selected Schedule");
+			this.buttonDeleteSchedule.UseVisualStyleBackColor = true;
+			this.buttonDeleteSchedule.Click += new System.EventHandler(this.buttonDeleteSchedule_Click);
+			// 
+			// buttonEditSchedule
+			// 
+			this.buttonEditSchedule.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonEditSchedule.Location = new System.Drawing.Point(605, 252);
+			this.buttonEditSchedule.Name = "buttonEditSchedule";
+			this.buttonEditSchedule.Size = new System.Drawing.Size(24, 24);
+			this.buttonEditSchedule.TabIndex = 6;
+			this.toolTip1.SetToolTip(this.buttonEditSchedule, "Edit the Selected Schedule");
+			this.buttonEditSchedule.UseVisualStyleBackColor = true;
+			this.buttonEditSchedule.Click += new System.EventHandler(this.buttonEditSchedule_Click);
+			// 
+			// buttonAddSchedule
+			// 
+			this.buttonAddSchedule.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonAddSchedule.Location = new System.Drawing.Point(580, 252);
+			this.buttonAddSchedule.Name = "buttonAddSchedule";
+			this.buttonAddSchedule.Size = new System.Drawing.Size(24, 24);
+			this.buttonAddSchedule.TabIndex = 5;
+			this.toolTip1.SetToolTip(this.buttonAddSchedule, "Add a New Scheduled Show");
+			this.buttonAddSchedule.UseVisualStyleBackColor = true;
+			this.buttonAddSchedule.Click += new System.EventHandler(this.buttonAddSchedule_Click);
+			// 
+			// buttonHelp
+			// 
+			this.buttonHelp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.buttonHelp.Location = new System.Drawing.Point(12, 377);
+			this.buttonHelp.Name = "buttonHelp";
+			this.buttonHelp.Size = new System.Drawing.Size(60, 23);
+			this.buttonHelp.TabIndex = 61;
+			this.buttonHelp.Tag = "http://www.vixenlights.com/vixen-3-documentation/sequencer/effects/nutcracker-eff" +
+    "ects/";
+			this.buttonHelp.Text = "Help";
+			this.buttonHelp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.buttonHelp.UseVisualStyleBackColor = true;
+			this.buttonHelp.Click += new System.EventHandler(this.buttonHelp_Click);
 			// 
 			// SetupForm
 			// 

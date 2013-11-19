@@ -6,6 +6,8 @@ using System.Windows.Forms;
 using System.Diagnostics;
 using System.IO;
 using System.Xml.Serialization;
+using Common.Resources;
+using Common.Resources.Properties;
 using Vixen.Module.Editor;
 using Vixen.Module.SequenceType;
 using Vixen.Services;
@@ -20,6 +22,10 @@ namespace VixenModules.App.Shows
 		public WebPageTypeEditor(ShowItem showItem)
 		{
 			InitializeComponent();
+
+			buttonTest.Image = Tools.GetIcon(Resources.cog_go, 16);
+			buttonTest.Text = "";
+
 			_showItem = showItem;
 		}
 

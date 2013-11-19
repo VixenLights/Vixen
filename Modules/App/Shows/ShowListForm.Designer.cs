@@ -28,7 +28,6 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ShowListForm));
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.listViewShows = new System.Windows.Forms.ListView();
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -79,40 +78,36 @@
 			// 
 			// buttonDelete
 			// 
-			this.buttonDelete.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonDelete.BackgroundImage")));
-			this.buttonDelete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonDelete.Location = new System.Drawing.Point(246, 178);
 			this.buttonDelete.Name = "buttonDelete";
 			this.buttonDelete.Size = new System.Drawing.Size(24, 24);
 			this.buttonDelete.TabIndex = 14;
+			this.buttonDelete.Text = "-";
 			this.buttonDelete.UseVisualStyleBackColor = true;
 			this.buttonDelete.Click += new System.EventHandler(this.buttonDelete_Click);
 			// 
 			// buttonEdit
 			// 
-			this.buttonEdit.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonEdit.BackgroundImage")));
-			this.buttonEdit.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonEdit.Location = new System.Drawing.Point(221, 178);
 			this.buttonEdit.Name = "buttonEdit";
 			this.buttonEdit.Size = new System.Drawing.Size(24, 24);
 			this.buttonEdit.TabIndex = 13;
+			this.buttonEdit.Text = "E";
 			this.buttonEdit.UseVisualStyleBackColor = true;
 			this.buttonEdit.Click += new System.EventHandler(this.buttonEdit_Click);
 			// 
 			// buttonAdd
 			// 
-			this.buttonAdd.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonAdd.BackgroundImage")));
-			this.buttonAdd.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonAdd.Location = new System.Drawing.Point(196, 178);
 			this.buttonAdd.Name = "buttonAdd";
 			this.buttonAdd.Size = new System.Drawing.Size(24, 24);
 			this.buttonAdd.TabIndex = 12;
+			this.buttonAdd.Text = "+";
 			this.buttonAdd.UseVisualStyleBackColor = true;
 			this.buttonAdd.Click += new System.EventHandler(this.buttonAdd_Click);
 			// 
 			// buttonHelp
 			// 
-			this.buttonHelp.Image = ((System.Drawing.Image)(resources.GetObject("buttonHelp.Image")));
 			this.buttonHelp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.buttonHelp.Location = new System.Drawing.Point(12, 235);
 			this.buttonHelp.Name = "buttonHelp";

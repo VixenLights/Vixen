@@ -29,7 +29,6 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WebPageTypeEditor));
 			this.label1 = new System.Windows.Forms.Label();
 			this.textBoxWebsite = new System.Windows.Forms.TextBox();
 			this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
@@ -64,12 +63,11 @@
 			// buttonTest
 			// 
 			this.buttonTest.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonTest.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonTest.BackgroundImage")));
-			this.buttonTest.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonTest.Location = new System.Drawing.Point(260, 3);
 			this.buttonTest.Name = "buttonTest";
 			this.buttonTest.Size = new System.Drawing.Size(20, 20);
 			this.buttonTest.TabIndex = 16;
+			this.buttonTest.Text = "T";
 			this.toolTip1.SetToolTip(this.buttonTest, "Test - Load Website");
 			this.buttonTest.UseVisualStyleBackColor = true;
 			this.buttonTest.Click += new System.EventHandler(this.buttonTest_Click);

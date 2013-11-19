@@ -76,13 +76,12 @@
 			// buttonStartScheduler
 			// 
 			this.buttonStartScheduler.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonStartScheduler.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonStartScheduler.BackgroundImage")));
 			this.buttonStartScheduler.Cursor = System.Windows.Forms.Cursors.Default;
-			this.buttonStartScheduler.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonStartScheduler.Location = new System.Drawing.Point(289, 16);
 			this.buttonStartScheduler.Name = "buttonStartScheduler";
 			this.buttonStartScheduler.Size = new System.Drawing.Size(24, 24);
 			this.buttonStartScheduler.TabIndex = 8;
+			this.buttonStartScheduler.Text = "Start";
 			this.toolTip1.SetToolTip(this.buttonStartScheduler, "Start/Enable the Scheduler");
 			this.buttonStartScheduler.UseVisualStyleBackColor = true;
 			this.buttonStartScheduler.Click += new System.EventHandler(this.buttonStartScheduler_Click);
@@ -90,13 +89,12 @@
 			// buttonViewLog
 			// 
 			this.buttonViewLog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonViewLog.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonViewLog.BackgroundImage")));
 			this.buttonViewLog.Cursor = System.Windows.Forms.Cursors.Default;
-			this.buttonViewLog.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonViewLog.Location = new System.Drawing.Point(364, 16);
 			this.buttonViewLog.Name = "buttonViewLog";
 			this.buttonViewLog.Size = new System.Drawing.Size(24, 24);
 			this.buttonViewLog.TabIndex = 7;
+			this.buttonViewLog.Text = "Log";
 			this.toolTip1.SetToolTip(this.buttonViewLog, "View Log");
 			this.buttonViewLog.UseVisualStyleBackColor = true;
 			this.buttonViewLog.Click += new System.EventHandler(this.buttonViewLog_Click);
@@ -104,13 +102,12 @@
 			// buttonNextSong
 			// 
 			this.buttonNextSong.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonNextSong.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonNextSong.BackgroundImage")));
 			this.buttonNextSong.Cursor = System.Windows.Forms.Cursors.Default;
-			this.buttonNextSong.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonNextSong.Location = new System.Drawing.Point(212, 36);
+			this.buttonNextSong.Location = new System.Drawing.Point(223, 15);
 			this.buttonNextSong.Name = "buttonNextSong";
 			this.buttonNextSong.Size = new System.Drawing.Size(24, 24);
 			this.buttonNextSong.TabIndex = 6;
+			this.buttonNextSong.Text = "Next";
 			this.toolTip1.SetToolTip(this.buttonNextSong, "Skip to the Next Item");
 			this.buttonNextSong.UseVisualStyleBackColor = true;
 			this.buttonNextSong.Visible = false;
@@ -118,13 +115,12 @@
 			// buttonPauseShow
 			// 
 			this.buttonPauseShow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonPauseShow.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonPauseShow.BackgroundImage")));
 			this.buttonPauseShow.Cursor = System.Windows.Forms.Cursors.Default;
-			this.buttonPauseShow.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonPauseShow.Location = new System.Drawing.Point(187, 36);
+			this.buttonPauseShow.Location = new System.Drawing.Point(193, 15);
 			this.buttonPauseShow.Name = "buttonPauseShow";
 			this.buttonPauseShow.Size = new System.Drawing.Size(24, 24);
 			this.buttonPauseShow.TabIndex = 5;
+			this.buttonPauseShow.Text = "Pause";
 			this.toolTip1.SetToolTip(this.buttonPauseShow, "Pause the Current Show");
 			this.buttonPauseShow.UseVisualStyleBackColor = true;
 			this.buttonPauseShow.Visible = false;
@@ -132,13 +128,12 @@
 			// buttonStopGracefully
 			// 
 			this.buttonStopGracefully.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonStopGracefully.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonStopGracefully.BackgroundImage")));
 			this.buttonStopGracefully.Cursor = System.Windows.Forms.Cursors.Default;
-			this.buttonStopGracefully.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonStopGracefully.Location = new System.Drawing.Point(339, 16);
 			this.buttonStopGracefully.Name = "buttonStopGracefully";
 			this.buttonStopGracefully.Size = new System.Drawing.Size(24, 24);
 			this.buttonStopGracefully.TabIndex = 4;
+			this.buttonStopGracefully.Text = "Stop Gracefully";
 			this.toolTip1.SetToolTip(this.buttonStopGracefully, "Stop Show Gracefully");
 			this.buttonStopGracefully.UseVisualStyleBackColor = true;
 			this.buttonStopGracefully.Click += new System.EventHandler(this.buttonStopGracefully_Click);
@@ -146,13 +141,12 @@
 			// buttonStopNow
 			// 
 			this.buttonStopNow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonStopNow.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonStopNow.BackgroundImage")));
 			this.buttonStopNow.Cursor = System.Windows.Forms.Cursors.Default;
-			this.buttonStopNow.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonStopNow.Location = new System.Drawing.Point(314, 16);
 			this.buttonStopNow.Name = "buttonStopNow";
 			this.buttonStopNow.Size = new System.Drawing.Size(24, 24);
 			this.buttonStopNow.TabIndex = 2;
+			this.buttonStopNow.Text = "Stop";
 			this.toolTip1.SetToolTip(this.buttonStopNow, "Stop Show Immediately");
 			this.buttonStopNow.UseVisualStyleBackColor = true;
 			this.buttonStopNow.Click += new System.EventHandler(this.buttonStopNow_Click);
@@ -184,7 +178,7 @@
 			this.groupBox2.Controls.Add(this.buttonPlayShowNow);
 			this.groupBox2.Controls.Add(this.label5);
 			this.groupBox2.Controls.Add(this.comboBoxShows);
-			this.groupBox2.Location = new System.Drawing.Point(415, 19);
+			this.groupBox2.Location = new System.Drawing.Point(416, 27);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(398, 53);
 			this.groupBox2.TabIndex = 1;
@@ -195,9 +189,7 @@
 			// buttonPlayShowGracefully
 			// 
 			this.buttonPlayShowGracefully.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonPlayShowGracefully.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonPlayShowGracefully.BackgroundImage")));
 			this.buttonPlayShowGracefully.Cursor = System.Windows.Forms.Cursors.Default;
-			this.buttonPlayShowGracefully.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonPlayShowGracefully.Location = new System.Drawing.Point(364, 18);
 			this.buttonPlayShowGracefully.Name = "buttonPlayShowGracefully";
 			this.buttonPlayShowGracefully.Size = new System.Drawing.Size(24, 24);
@@ -208,9 +200,7 @@
 			// buttonPlayShowNow
 			// 
 			this.buttonPlayShowNow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonPlayShowNow.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonPlayShowNow.BackgroundImage")));
 			this.buttonPlayShowNow.Cursor = System.Windows.Forms.Cursors.Default;
-			this.buttonPlayShowNow.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonPlayShowNow.Location = new System.Drawing.Point(339, 18);
 			this.buttonPlayShowNow.Name = "buttonPlayShowNow";
 			this.buttonPlayShowNow.Size = new System.Drawing.Size(24, 24);

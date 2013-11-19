@@ -6,6 +6,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Resources;
+using Common.Resources.Properties;
 
 namespace VixenModules.App.SuperScheduler
 {
@@ -16,6 +18,9 @@ namespace VixenModules.App.SuperScheduler
 		public SetupScheduleForm(ScheduleItem scheduleItem)
 		{
 			InitializeComponent();
+
+			buttonHelp.Image = Tools.GetIcon(Resources.help, 16);
+			
 			_scheduleItem = scheduleItem;
 		}
 

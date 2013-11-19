@@ -29,7 +29,6 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LaunchTypeEditor));
 			this.buttonSelectProgram = new System.Windows.Forms.Button();
 			this.textBoxProgram = new System.Windows.Forms.TextBox();
 			this.label1 = new System.Windows.Forms.Label();
@@ -45,12 +44,11 @@
 			// buttonSelectProgram
 			// 
 			this.buttonSelectProgram.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonSelectProgram.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonSelectProgram.BackgroundImage")));
-			this.buttonSelectProgram.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonSelectProgram.Location = new System.Drawing.Point(267, 2);
 			this.buttonSelectProgram.Name = "buttonSelectProgram";
 			this.buttonSelectProgram.Size = new System.Drawing.Size(20, 20);
 			this.buttonSelectProgram.TabIndex = 12;
+			this.buttonSelectProgram.Text = "S";
 			this.toolTip1.SetToolTip(this.buttonSelectProgram, "Select a File");
 			this.buttonSelectProgram.UseVisualStyleBackColor = true;
 			this.buttonSelectProgram.Click += new System.EventHandler(this.buttonSelectProgram_Click);
@@ -96,12 +94,11 @@
 			// buttonTest
 			// 
 			this.buttonTest.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonTest.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonTest.BackgroundImage")));
-			this.buttonTest.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonTest.Location = new System.Drawing.Point(267, 28);
 			this.buttonTest.Name = "buttonTest";
 			this.buttonTest.Size = new System.Drawing.Size(20, 20);
 			this.buttonTest.TabIndex = 15;
+			this.buttonTest.Text = "T";
 			this.toolTip1.SetToolTip(this.buttonTest, "Test");
 			this.buttonTest.UseVisualStyleBackColor = true;
 			this.buttonTest.Click += new System.EventHandler(this.buttonTest_Click);

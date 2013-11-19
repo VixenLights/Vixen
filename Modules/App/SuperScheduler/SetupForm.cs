@@ -6,6 +6,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Resources;
+using Common.Resources.Properties;
 
 namespace VixenModules.App.SuperScheduler
 {
@@ -14,6 +16,18 @@ namespace VixenModules.App.SuperScheduler
 		public SetupForm(SuperSchedulerData data)
 		{
 			InitializeComponent();
+
+			buttonAddSchedule.Image = Tools.GetIcon(Resources.add, 16);
+			buttonAddSchedule.Text = "";
+			buttonDeleteSchedule.Image = Tools.GetIcon(Resources.delete, 16);
+			buttonDeleteSchedule.Text = "";
+			buttonEditSchedule.Image = Tools.GetIcon(Resources.pencil, 16);
+			buttonEditSchedule.Text = "";
+			buttonEditShow.Image = Tools.GetIcon(Resources.table_edit, 16);
+			buttonEditShow.Text = "";
+			buttonHelp.Image = Tools.GetIcon(Resources.help, 16);
+
+			
 			Data = data;
 		}
 

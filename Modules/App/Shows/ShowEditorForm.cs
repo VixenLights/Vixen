@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Drawing;
+using Common.Resources;
+using Common.Resources.Properties;
 
 namespace VixenModules.App.Shows
 {
@@ -16,6 +18,17 @@ namespace VixenModules.App.Shows
 		public ShowEditorForm(Show show)
 		{
 			InitializeComponent();
+
+			buttonAddItem.Image = Tools.GetIcon(Resources.add, 16);
+			buttonAddItem.Text = "";
+			buttonDeleteItem.Image = Tools.GetIcon(Resources.delete, 16);
+			buttonDeleteItem.Text = "";
+			buttonMoveItemUp.Image = Tools.GetIcon(Resources.arrow_up, 16);
+			buttonMoveItemUp.Text = "";
+			buttonMoveItemDown.Image = Tools.GetIcon(Resources.arrow_down, 16);
+			buttonMoveItemDown.Text = "";
+			buttonHelp.Image = Tools.GetIcon(Resources.help, 16);
+
 			ShowData = show;
 		}
 
