@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Common.Controls;
+using Common.Resources;
 using Common.Resources.Properties;
 using Dataweb.NShape;
 using Dataweb.NShape.Advanced;
@@ -72,6 +73,17 @@ namespace VixenApplication.Setup
 		public SetupPatchingGraphical()
 		{
 			InitializeComponent();
+
+			buttonAddFilter.Image = Tools.GetIcon(Resources.add, 16);
+			buttonAddFilter.Text = "";
+			buttonDeleteFilter.Image = Tools.GetIcon(Resources.delete, 16);
+			buttonDeleteFilter.Text = "";
+			buttonZoomIn.Image = Tools.GetIcon(Resources.zoom_in, 16);
+			buttonZoomIn.Text = "";
+			buttonZoomOut.Image = Tools.GetIcon(Resources.zoom_out, 16);
+			buttonZoomOut.Text = "";
+			buttonZoomFit.Image = Tools.GetIcon(Resources.zoom_fit, 16);
+			buttonZoomFit.Text = "";
 
 			project.LibrarySearchPaths.Add(@"Common\");
 			project.AutoLoadLibraries = true;
@@ -1313,6 +1325,13 @@ namespace VixenApplication.Setup
 			PasteClipboardFiltersMultipleTimes();
 		}
 
+		private void diagramDisplay_ShapesSelected(object sender, EventArgs e)
+		{
+			buttonDeleteFilter.Enabled = diagramDisplay.SelectedShapes.Any(x => x is FilterShape);
+		}
+
+
+
 #endregion
 
 
@@ -1819,21 +1838,6 @@ namespace VixenApplication.Setup
 
 
 
-
-#region Events
-
-		public event EventHandler DiagramShapesSelected
-		{
-			add { diagramDisplay.ShapesSelected += value; }
-			remove { diagramDisplay.ShapesSelected -= value; }
-		}
-
-#endregion
-
-
-
-
-
 #region Properties
 
 		public IShapeCollection SelectedShapes
@@ -1863,6 +1867,58 @@ namespace VixenApplication.Setup
 		}
 
 
+
+		private void buttonAddFilter_Click(object sender, EventArgs e)
+		{
+
+			List<KeyValuePair<string, object>> filters = new List<KeyValuePair<string, object>>();
+			foreach (KeyValuePair<Guid, string> kvp in ApplicationServices.GetAvailableModules<IOutputFilterModuleInstance>()) {
+				filters.Add(new KeyValuePair<string, object>(kvp.Value, kvp.Key));
+			}
+			using (ListSelectDialog addForm = new ListSelectDialog("Add Filter", (filters))) {
+				addForm.SelectionMode = SelectionMode.One;
+				if (addForm.ShowDialog() == DialogResult.OK) {
+					List<IOutputFilterModuleInstance> newModuleInstances = new List<IOutputFilterModuleInstance>();
+					foreach (KeyValuePair<string, object> item in addForm.SelectedItems) {
+						IOutputFilterModuleInstance moduleInstance = ApplicationServices.Get<IOutputFilterModuleInstance>((Guid)item.Value);
+						FilterShape shape = _CreateShapeFromFilter(moduleInstance);
+						VixenSystem.Filters.AddFilter(moduleInstance);
+
+						shape.Width = SHAPE_MAX_WIDTH;
+						shape.Height = SHAPE_DEFAULT_HEIGHT;
+
+						shape.X = (diagramDisplay.Width/2) - diagramDisplay.GetDiagramPosition().X;
+						shape.Y = diagramDisplay.GetDiagramOffset().Y + (diagramDisplay.Height/2);
+
+						newModuleInstances.Add(moduleInstance);
+					}
+
+					OnFiltersAdded(new FiltersEventArgs(newModuleInstances));
+				}
+			}
+		}
+
+		private void buttonDeleteFilter_Click(object sender, EventArgs e)
+		{
+			foreach (Shape selectedShape in diagramDisplay.SelectedShapes) {
+				_DeleteShapeAndAssociatedComponents(selectedShape);	
+			}
+		}
+
+		private void buttonZoomIn_Click(object sender, EventArgs e)
+		{
+			diagramDisplay.ZoomLevel = (int)((float)diagramDisplay.ZoomLevel*1.1);
+		}
+
+		private void buttonZoomOut_Click(object sender, EventArgs e)
+		{
+			diagramDisplay.ZoomLevel = (int)((float)diagramDisplay.ZoomLevel*0.9);
+		}
+
+		private void buttonZoomFit_Click(object sender, EventArgs e)
+		{
+			ZoomToFitAll();
+		}
 
 
 
