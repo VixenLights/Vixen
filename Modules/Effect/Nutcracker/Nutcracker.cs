@@ -38,7 +38,20 @@ namespace VixenModules.Effect.Nutcracker
 		{
 			int scnt = StringCount;
 			if (scnt < 2)
-				_data.NutcrackerData.PreviewType = NutcrackerEffects.PreviewType.VerticalLine;
+			{
+				//_data.NutcrackerData.PreviewType = NutcrackerEffects.PreviewType.VerticalLine;
+				switch (_data.NutcrackerData.PreviewType)
+				{
+					case NutcrackerEffects.PreviewType.Arch:
+					case NutcrackerEffects.PreviewType.VerticalLine:
+					case NutcrackerEffects.PreviewType.HorizontalLine:
+						break;
+					default:
+						_data.NutcrackerData.PreviewType = NutcrackerEffects.PreviewType.VerticalLine;
+						break;
+				}
+			}
+				
 			_elementData = new EffectIntents();
 
 			foreach (ElementNode node in TargetNodes) {
