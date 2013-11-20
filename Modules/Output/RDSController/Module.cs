@@ -12,6 +12,7 @@ using System.Net;
 using System.Web;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.Collections.Generic;
 
 namespace VixenModules.Output.CommandController
 {
@@ -29,6 +30,7 @@ namespace VixenModules.Output.CommandController
 		static string lastRdsText= string.Empty;
 		internal static bool Send(Data RdsData, string rdsText, string rdsArtist = null, bool sendps=false)
 		{
+			// Darren... is this still needed?
 			//We dont want to keep hammering the RDS device with updates if they havent changed.
 			if (lastRdsText.Equals(rdsText))
 				return true;
@@ -135,28 +137,41 @@ namespace VixenModules.Output.CommandController
 				Logging.Error(string.Format("File Not found to Launch: [{0}]", Executable));
 			return false;
 		}
+
+		private Dictionary<int, string> lastCommandValues = new Dictionary<int, string>();
+
 		public override void UpdateState(int chainIndex, ICommand[] outputStates)
 		{
-			 foreach (var item in outputStates.Where(i => i != null)) {
+			for( int idx=0; idx<outputStates.Length; idx++) {
+				var item = outputStates[idx];
 				var cmd = item as StringCommand;
-				if (cmd != null) {
-					var cmdType = cmd.CommandValue.Split('|')[0];
-					switch (cmdType.ToUpper()) {
-						case "RDS":
-							Module.Send(_Data, cmd.CommandValue.Split('|')[1]);
-							 
-							break;
-						case "LAUNCHER":
-							var args = cmd.CommandValue.Split('|')[1].Split(',');
+				if( cmd == null) {
+					lastCommandValues[idx] = null;
+					continue;
+				}
+				String lastVal;
+				lastCommandValues.TryGetValue(idx, out lastVal);
+				if (lastVal != null && cmd.CommandValue.Equals(lastVal)) {
+					// no repeats for us
+					continue;
+				}
+				lastCommandValues[idx] = cmd.CommandValue;
 
-							Module.Launch(_Data, args[0], args[1]);
+				var cmdType = cmd.CommandValue.Split('|')[0];
+				switch (cmdType.ToUpper()) {
+					case "RDS":
+						Module.Send(_Data, cmd.CommandValue.Split('|')[1]);
 							 
-							break;
+						break;
+					case "LAUNCHER":
+						var args = cmd.CommandValue.Split('|')[1].Split(',');
 
-					}
-					Logging.Info("RDS Value Sent: " + cmd.CommandValue);
+						Module.Launch(_Data, args[0], args[1]);
+							 
+						break;
 
 				}
+				Logging.Info("RDS Value Sent: " + cmd.CommandValue);
 			}
 		}
 
