@@ -101,7 +101,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolStripButton_Pause.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStripButton_End.Image = Resources.control_end_blue;
 			toolStripButton_End.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripButton_Loop.Image = Resources.arrow_loop;
+			toolStripButton_Loop.Image = Resources.arrow_repeat;
 			toolStripButton_Loop.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			undoButton.Image = Resources.arrow_undo;
 			undoButton.DisplayStyle = ToolStripItemDisplayStyle.Image;
@@ -1257,7 +1257,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				//MessageBox.Show("Starting delay");
 				DelayCountDown = (timerPostponePlay.Interval / 1000);
 				timerPostponePlay.Enabled = timerDelayCountdown.Enabled = true;
-				toolStripButton_Play.Image = Resources.hourglass_go;
+				toolStripButton_Play.Image = Resources.hourglass;
 				//The Looping stuff kinda broke this, but we need to do this for consistency
 				toolStripButton_Play.Enabled = true;
 				playToolStripMenuItem.Enabled = EffectsForm.Enabled = false;
