@@ -221,6 +221,8 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 				if (childCount == 0 && TargetEffect.TargetNodes.FirstOrDefault().Children.Any() ) {
 					childCount = 1;
 				}
+				if (childCount == 0)
+					childCount = 1;
 				return childCount;
 			}
 		}
@@ -233,23 +235,34 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 
 		private int PixelsPerString(ElementNode parentNode)
 		{
+			//TODO: what would we do if parentNode is null?
 			int pps = 0;
 			int leafCount = 0;
 			int groupCount = 0;
+			// if no groups are children, then return nChildren
+			// otherwise return the size of the first group
+			ElementNode firstGroup = null;
 			foreach (ElementNode node in parentNode.Children) {
 				if (node.IsLeaf) {
 					leafCount++;
 				}
 				else {
 					groupCount++;
+					if (firstGroup == null)
+						firstGroup = node;
 				}
 			}
 			if (groupCount == 0) {
 				pps = leafCount;
 			}
 			else {
-				pps = PixelsPerString(parentNode.Children.FirstOrDefault());
+				// this needs to be called on a group, first might be an element
+				//pps = PixelsPerStringx(parentNode.Children.FirstOrDefault());
+				// this is marginally better but its not clear what to do about further nesting
+				pps = PixelsPerString(firstGroup);
 			}
+			if (pps == 0)
+				pps = 1;
 			return pps;
 		}
 
