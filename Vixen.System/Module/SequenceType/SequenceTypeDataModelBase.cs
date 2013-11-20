@@ -92,6 +92,9 @@ namespace Vixen.Module.SequenceType
 
 			// Rehydrate the modules.
 			IEffectNode[] effectNodes = _effectNodeSurrogates.Select(x => x.CreateEffectNode()).ToArray();
+			// weed out effects without nodes..
+			effectNodes = effectNodes.Where(x => x.Effect.TargetNodes.Count() != 0).ToArray();
+
 			ISequenceFilterNode[] sequenceFilterNodes = _filterNodeSurrogates.Select(x => x.CreateFilterNode()).ToArray();
 
 			// Connect them to their respective data from the data store.
