@@ -365,6 +365,7 @@
     <None Include="data_grid.png" />
     <None Include="data_sort.png" />
     <None Include="data_table.png" />
+    <None Include="control_play_red.png" />
     <None Include="clipboard_empty.png" />
     <None Include="clipboard_invoice.png" />
     <None Include="clipboard_sign.png" />
@@ -385,6 +386,7 @@
     <None Include="clock_red.png" />
     <None Include="clock_select_remain.png" />
     <None Include="clock_stop.png" />
+    <None Include="arrow_loop.png" />
     <Content Include="folder.png" />
     <Content Include="folder_add.png" />
     <Content Include="folder_delete.png" />
