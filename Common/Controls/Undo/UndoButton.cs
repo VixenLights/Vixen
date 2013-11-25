@@ -26,6 +26,7 @@ namespace Common.Controls
 			                		MinimumSize = new Size(SetWidth, SetHeight) // <- important
 			                	};
 			m_dropControl.ItemChosen += m_dropControl_ItemChosen;
+			m_dropControl.ButtonType = ButtonType;
 
 			// ...hosted by a ToolStripControlHost
 			m_toolHost = new ToolStripControlHost(m_dropControl)
@@ -73,6 +74,18 @@ namespace Common.Controls
 			add { m_dropControl.ItemChosen += value; }
 			remove { m_dropControl.ItemChosen -= value; }
 		}
+
+		private UndoButtonType buttonType;
+		public UndoButtonType ButtonType {
+			get {
+				return buttonType;
+			}
+			set {
+				buttonType = value;
+				m_dropControl.ButtonType = buttonType;
+			}
+		}
+
 	}
 
 	public enum UndoButtonType
