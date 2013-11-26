@@ -73,13 +73,18 @@ namespace Common.Controls
 		private void listbox_MouseDown(object sender, MouseEventArgs e)
 		{
 			int idx = listbox.IndexFromPoint(e.Location);
+			if (idx < 0)
+				return;
 			listbox.SetSelected(idx, true); // keep it selected
 		}
 
 		private void listbox_MouseUp(object sender, MouseEventArgs e)
 		{
 			int idx = listbox.IndexFromPoint(e.Location);
-			if (ItemChosen != null) {
+			if (idx < 0)
+				return;
+			if (ItemChosen != null)
+			{
 				ItemChosen(this, new UndoMultipleItemsEventArgs(idx + 1));
 			}
 		}

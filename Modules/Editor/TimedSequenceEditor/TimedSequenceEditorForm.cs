@@ -107,6 +107,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			undoButton.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			redoButton.Image = Resources.arrow_redo;
 			redoButton.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			redoButton.ButtonType = UndoButtonType.RedoButton;
 			toolStripButton_Cut.Image = Resources.cut;
 			toolStripButton_Cut.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStripButton_Copy.Image = Resources.page_white_copy;
