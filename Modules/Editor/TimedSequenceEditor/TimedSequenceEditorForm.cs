@@ -969,8 +969,32 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						}
 					};
 
+					ToolStripMenuItem itemAlignBoth = new ToolStripMenuItem("Align Both Times");
+					itemAlignBoth.Click += (mySender, myE) =>
+					{
+
+						foreach (Element selectedElement in TimelineControl.SelectedElements)
+						{
+							if (selectedElement.StartTime == element.StartTime && selectedElement.EndTime == element.EndTime) continue;
+							TimelineControl.grid.MoveResizeElementByStartEnd(selectedElement, element.StartTime, element.EndTime);
+						}
+					};
+
+					ToolStripMenuItem itemMatchDuration = new ToolStripMenuItem("Match Duration");
+					itemMatchDuration.Click += (mySender, myE) =>
+					{
+					
+						foreach (Element selectedElement in TimelineControl.SelectedElements)
+						{
+							if (selectedElement.Duration == element.Duration) continue;
+							TimelineControl.grid.MoveResizeElementByStartEnd(selectedElement, selectedElement.StartTime, selectedElement.StartTime + element.Duration);
+						}
+					};
+
 					contextMenuStrip.Items.Add(itemAlignStart);
 					contextMenuStrip.Items.Add(itemAlignEnd);
+					contextMenuStrip.Items.Add(itemAlignBoth);
+					contextMenuStrip.Items.Add(itemMatchDuration);
 
 				}
 			}
