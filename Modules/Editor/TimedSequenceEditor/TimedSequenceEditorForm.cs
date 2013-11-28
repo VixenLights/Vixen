@@ -1894,6 +1894,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						if (_context.IsPaused)
 							PlaySequence();
 						else
+							stoppedByUser = true;
 							StopSequence();
 					}
 					break;
