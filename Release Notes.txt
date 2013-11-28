@@ -1,4 +1,30 @@
 
+== 3.0.10 ============================
+
+New features:
+
+- new single setup form for display configuration! No more setting up displays in 3 parts -- elements, controllers, patching -- it's all done in one page!
+- added virtual Helix controller for exporting data
+- added K8055 controller
+- extra mark manipulation in the UI: can select marks in the ruler, delete them with keyboard shortcuts
+- extra sequencer UI improvements: shortcuts, right-click context menu, disable snapping
+- added version control module to track files
+- improved instrumentation and performance monitoring
+- improvements to the E131 controller, to allow customization of how data is re-transmitted and/or buffered
+- added looping in the sequence editor
+- added delayed playback in the sequence editor
+
+
+
+Fixups:
+
+- Improvements to serialization if there is 'bad' data in the config files
+- many small improvements/fixups to the preview
+- many small improvements/fixups to the nutcracker effect
+- performance improvements
+
+
+
 == 3.0.9 ============================
 
 New features:
