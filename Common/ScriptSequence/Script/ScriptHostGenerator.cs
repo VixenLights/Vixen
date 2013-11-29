@@ -20,15 +20,17 @@ namespace Common.ScriptSequence.Script
 				List<string> retval = new List<string>();
 				retval.AddRange(new string[]{                                   	
 												"System.dll",
-		                                       	"System.Drawing.dll",
-		                                       	"System.Core.dll",
-		                                       	"Vixen.dll",
-		                                        System.IO.Path.Combine(Environment.CurrentDirectory,"Common\\Controls.dll"),
-												System.IO.Path.Combine(Environment.CurrentDirectory,"Common\\ValueTypes.dll"),
-		                                       	System.IO.Path.Combine(Environment.CurrentDirectory,"Modules\\App\\ColorGradients.dll"),
-		                                       	System.IO.Path.Combine(Environment.CurrentDirectory,"Modules\\App\\Curves.dll"),
-		                                       	"Microsoft.CSharp.dll" // Required for dynamic.
-							  });
+												"System.Core.dll",
+												"System.Xml.dll",
+												"System.Data.dll",
+												"System.Drawing.dll",
+												"Microsoft.CSharp.dll", // Required for dynamic.
+												System.IO.Path.Combine(Environment.CurrentDirectory, "Vixen.dll"),
+												System.IO.Path.Combine(Environment.CurrentDirectory, "Common", "Controls.dll"),
+												System.IO.Path.Combine(Environment.CurrentDirectory, "Common", "ValueTypes.dll"),
+												System.IO.Path.Combine(Environment.CurrentDirectory, "Modules", "App", "ColorGradients.dll"),
+												System.IO.Path.Combine(Environment.CurrentDirectory, "Modules", "App", "Curves.dll")
+											});
 				//Paths to look for Effects and other items to reference in the Script generator
 				var paths = new string[] { 
 					System.IO.Path.Combine(Environment.CurrentDirectory, "Modules", "Property"),
@@ -68,8 +70,18 @@ namespace Common.ScriptSequence.Script
 					files.Add(fileName);
 				}
 
+				var assemblyReferences = _GetReferencedAssemblies(sequence);
+				HashSet<string> uniqueAssemblyReferences = new HashSet<string>(assemblyReferences);
+				// Remove .NET framework and GAC assemblies.
+				uniqueAssemblyReferences.RemoveWhere(
+					x => x.StartsWith(Environment.GetFolderPath(Environment.SpecialFolder.Windows), StringComparison.OrdinalIgnoreCase));
+
+				//if (createProject)
+
+				CreateWorkingProject(files.ToArray(), uniqueAssemblyReferences, sequence);
+
 				// Compile the sources.
-				assembly = _Compile(files.ToArray(), _GetReferencedAssemblies(sequence), sequence.Language);
+				assembly = _Compile(files.ToArray(), uniqueAssemblyReferences, sequence);
 			} finally {
 				// Delete the temp files.
 				foreach (string tempFile in files) {
@@ -114,18 +126,20 @@ namespace Common.ScriptSequence.Script
 			get { return _errors; }
 		}
 
-		/// <returns>The file name of the compiled assembly.</returns>
-		private Assembly _Compile(string[] files, IEnumerable<string> assemblyReferences, IScriptModuleInstance language)
+		private void CreateWorkingProject(string[] files, HashSet<string> assemblyReferences, ScriptSequence sequence)
 		{
+			new ScriptProjectGenerator(files, assemblyReferences, sequence).Generate();
+
+		}
+
+		/// <returns>The file name of the compiled assembly.</returns>
+		private Assembly _Compile(string[] files, HashSet<string> uniqueAssemblyReferences, ScriptSequence sequence)
+		{
+			IScriptModuleInstance language = sequence.Language;
 			// Assembly references come in two flavors:
 			// 1. Framework assemblies -- need only the file name.
 			// 2. Other assemblies -- need the qualified file name.
 			_errors.Clear();
-
-			HashSet<string> uniqueAssemblyReferences = new HashSet<string>(assemblyReferences);
-			// Remove .NET framework and GAC assemblies.
-			uniqueAssemblyReferences.RemoveWhere(
-				x => x.StartsWith(Environment.GetFolderPath(Environment.SpecialFolder.Windows), StringComparison.OrdinalIgnoreCase));
 
 			ICompilerParameters compilerParameters = new ScriptCompilerParameters {
 				GenerateInMemory = true,

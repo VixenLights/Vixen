@@ -9,7 +9,7 @@ namespace Common.ScriptSequence
 		public void Compile(ScriptSequence sequence)
 		{
 			ScriptHostGenerator hostGenerator = new ScriptHostGenerator();
-			ScriptHost = hostGenerator.GenerateScript(sequence);
+            ScriptHost = hostGenerator.GenerateScript(sequence);
 			Errors = hostGenerator.Errors.ToArray();
 		}
 

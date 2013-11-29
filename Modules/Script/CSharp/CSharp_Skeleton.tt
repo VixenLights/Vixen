@@ -9,6 +9,7 @@ namespace <#=Namespace#> {
 		
 		protected override void Play() {
 			// Code starts here.
+			Notify("Starting Sequence");
 		}
 		
 		protected override void Shutdown() {

@@ -17,11 +17,32 @@ namespace VixenModules.Editor.ScriptEditor
 		private ScriptSequenceType _sequence;
 		private ISequenceContext _context;
 		private List<SourceFileTabPage> _sources = new List<SourceFileTabPage>();
-
+        private Timer messageTimer;
 		public ScriptEditor()
 		{
 			InitializeComponent();
+            messageTimer = new Timer();
+            messageTimer.Interval = 500;
+            messageTimer.Tick += messageTimer_Tick;
+            messageTimer.Enabled=true;
 		}
+
+        void messageTimer_Tick(object sender, EventArgs e)
+        {
+            messageTimer.Enabled = false;
+            try
+            {
+                while ( Vixen.Common.MessageStack.ScriptingRuntimeMessages.Any())
+                {
+                    _context_Message2(Vixen.Common.MessageStack.ScriptingRuntimeMessages.Dequeue());
+                }
+            }
+            finally {
+                messageTimer.Enabled = true;
+            }
+            
+            
+        }
 
 		public ISequence Sequence { get; set; }
 
@@ -125,6 +146,7 @@ namespace VixenModules.Editor.ScriptEditor
 				source.Commit();
 			}
 		}
+        
 
 		private void _Execute(TimeSpan startTime, TimeSpan endTime)
 		{
@@ -174,6 +196,7 @@ namespace VixenModules.Editor.ScriptEditor
 
 		private void _context_Message(object sender, ExecutorMessageEventArgs e)
 		{
+            
 			if (InvokeRequired) {
 				BeginInvoke((MethodInvoker) (() => _context_Message(sender, e)));
 			}
@@ -187,6 +210,27 @@ namespace VixenModules.Editor.ScriptEditor
 				}
 			}
 		}
+        private void _context_Message2(string msg)
+        {
+
+            if (InvokeRequired)
+            {
+                BeginInvoke((MethodInvoker)(() => _context_Message2(msg)));
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(msg))
+                {
+                    listBoxCompileErrors.DataSource = new[] { DateTime.Now.ToShortTimeString() + "  No messages." };
+                }
+                else
+                {
+                    listBoxCompileErrors.DataSource = null;
+                    listBoxRuntimeErrors.Items.Add(msg);
+                    
+                }
+            }
+        }
 
 		private void _context_SequenceEnded(object sender, SequenceEventArgs e)
 		{
