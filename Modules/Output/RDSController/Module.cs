@@ -151,10 +151,7 @@ namespace VixenModules.Output.CommandController
 				}
 				String lastVal;
 				lastCommandValues.TryGetValue(idx, out lastVal);
-				if (lastVal != null && cmd.CommandValue.Equals(lastVal)) {
-					// no repeats for us
-					continue;
-				}
+				
 				lastCommandValues[idx] = cmd.CommandValue;
 
 				var cmdType = cmd.CommandValue.Split('|')[0];
@@ -164,6 +161,11 @@ namespace VixenModules.Output.CommandController
 							 
 						break;
 					case "LAUNCHER":
+						if (lastVal != null && cmd.CommandValue.Equals(lastVal))
+						{
+							// no repeats for us
+							continue;
+						}
 						var args = cmd.CommandValue.Split('|')[1].Split(',');
 
 						Module.Launch(_Data, args[0], args[1]);
