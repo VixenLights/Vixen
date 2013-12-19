@@ -38,7 +38,6 @@
 			this.checkBoxSequence = new System.Windows.Forms.CheckBox();
 			this.radioButtonUsersChoice = new System.Windows.Forms.RadioButton();
 			this.radioButtonZipEverything = new System.Windows.Forms.RadioButton();
-			this.buttonCreateZip = new System.Windows.Forms.Button();
 			this.textBoxFileName = new System.Windows.Forms.TextBox();
 			this.label3 = new System.Windows.Forms.Label();
 			this.buttonSetSaveFolder = new System.Windows.Forms.Button();
@@ -46,10 +45,15 @@
 			this.label2 = new System.Windows.Forms.Label();
 			this.comboBoxProfiles = new System.Windows.Forms.ComboBox();
 			this.label1 = new System.Windows.Forms.Label();
+			this.buttonCreateZip = new System.Windows.Forms.Button();
 			this.buttonClose = new System.Windows.Forms.Button();
 			this.folderBrowserSaveFolder = new System.Windows.Forms.FolderBrowserDialog();
+			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+			this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+			this.toolStripProgressBar = new System.Windows.Forms.ToolStripProgressBar();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
+			this.statusStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// groupBox1
@@ -57,7 +61,6 @@
 			this.groupBox1.Controls.Add(this.groupBox2);
 			this.groupBox1.Controls.Add(this.radioButtonUsersChoice);
 			this.groupBox1.Controls.Add(this.radioButtonZipEverything);
-			this.groupBox1.Controls.Add(this.buttonCreateZip);
 			this.groupBox1.Controls.Add(this.textBoxFileName);
 			this.groupBox1.Controls.Add(this.label3);
 			this.groupBox1.Controls.Add(this.buttonSetSaveFolder);
@@ -67,7 +70,7 @@
 			this.groupBox1.Controls.Add(this.label1);
 			this.groupBox1.Location = new System.Drawing.Point(12, 12);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(280, 275);
+			this.groupBox1.Size = new System.Drawing.Size(280, 245);
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
 			// 
@@ -170,16 +173,6 @@
 			this.radioButtonZipEverything.UseVisualStyleBackColor = true;
 			this.radioButtonZipEverything.Click += new System.EventHandler(this.radioButtonZipEverything_Click);
 			// 
-			// buttonCreateZip
-			// 
-			this.buttonCreateZip.Location = new System.Drawing.Point(187, 242);
-			this.buttonCreateZip.Name = "buttonCreateZip";
-			this.buttonCreateZip.Size = new System.Drawing.Size(80, 23);
-			this.buttonCreateZip.TabIndex = 10;
-			this.buttonCreateZip.Text = "Create zip file";
-			this.buttonCreateZip.UseVisualStyleBackColor = true;
-			this.buttonCreateZip.Click += new System.EventHandler(this.buttonCreateZip_Click);
-			// 
 			// textBoxFileName
 			// 
 			this.textBoxFileName.Location = new System.Drawing.Point(6, 216);
@@ -239,24 +232,61 @@
 			this.label1.TabIndex = 2;
 			this.label1.Text = "Profile to zip";
 			// 
+			// buttonCreateZip
+			// 
+			this.buttonCreateZip.Location = new System.Drawing.Point(131, 263);
+			this.buttonCreateZip.Name = "buttonCreateZip";
+			this.buttonCreateZip.Size = new System.Drawing.Size(80, 23);
+			this.buttonCreateZip.TabIndex = 10;
+			this.buttonCreateZip.Text = "OK";
+			this.buttonCreateZip.UseVisualStyleBackColor = true;
+			this.buttonCreateZip.Click += new System.EventHandler(this.buttonCreateZip_Click);
+			// 
 			// buttonClose
 			// 
 			this.buttonClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonClose.Location = new System.Drawing.Point(217, 293);
+			this.buttonClose.Location = new System.Drawing.Point(217, 263);
 			this.buttonClose.Name = "buttonClose";
 			this.buttonClose.Size = new System.Drawing.Size(75, 23);
 			this.buttonClose.TabIndex = 1;
-			this.buttonClose.Text = "Close";
+			this.buttonClose.Text = "Cancel";
 			this.buttonClose.UseVisualStyleBackColor = true;
+			// 
+			// statusStrip1
+			// 
+			this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusLabel,
+            this.toolStripProgressBar});
+			this.statusStrip1.Location = new System.Drawing.Point(0, 300);
+			this.statusStrip1.Name = "statusStrip1";
+			this.statusStrip1.Size = new System.Drawing.Size(303, 22);
+			this.statusStrip1.TabIndex = 11;
+			this.statusStrip1.Text = "statusStrip1";
+			// 
+			// toolStripStatusLabel
+			// 
+			this.toolStripStatusLabel.Name = "toolStripStatusLabel";
+			this.toolStripStatusLabel.Size = new System.Drawing.Size(122, 17);
+			this.toolStripStatusLabel.Text = "Waiting for user input";
+			// 
+			// toolStripProgressBar
+			// 
+			this.toolStripProgressBar.Name = "toolStripProgressBar";
+			this.toolStripProgressBar.Size = new System.Drawing.Size(100, 16);
+			this.toolStripProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
+			this.toolStripProgressBar.Visible = false;
 			// 
 			// DataZipForm
 			// 
+			this.AcceptButton = this.buttonCreateZip;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.buttonClose;
-			this.ClientSize = new System.Drawing.Size(303, 324);
+			this.ClientSize = new System.Drawing.Size(303, 322);
+			this.Controls.Add(this.statusStrip1);
 			this.Controls.Add(this.buttonClose);
 			this.Controls.Add(this.groupBox1);
+			this.Controls.Add(this.buttonCreateZip);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
@@ -268,7 +298,10 @@
 			this.groupBox1.PerformLayout();
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox2.PerformLayout();
+			this.statusStrip1.ResumeLayout(false);
+			this.statusStrip1.PerformLayout();
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 
@@ -294,5 +327,8 @@
 		private System.Windows.Forms.CheckBox checkBoxSequence;
 		private System.Windows.Forms.RadioButton radioButtonUsersChoice;
 		private System.Windows.Forms.RadioButton radioButtonZipEverything;
+		private System.Windows.Forms.StatusStrip statusStrip1;
+		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel;
+		private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar;
 	}
 }

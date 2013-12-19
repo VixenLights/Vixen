@@ -56,11 +56,12 @@ namespace VixenApplication
 		{
 			if (folderBrowserSaveFolder.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
 				textBoxSaveFolder.Text = folderBrowserSaveFolder.SelectedPath;
-		}
+			}
 		}
 
 		private void buttonCreateZip_Click(object sender, EventArgs e)
 		{
+
 			if (textBoxSaveFolder.Text == "")
 			{
 				MessageBox.Show("Please choose a folder to create the zip file in.", "Missing save folder");
@@ -88,6 +89,13 @@ namespace VixenApplication
 					return;
 			}
 
+
+			toolStripStatusLabel.Text = "Zipping Data please wait...";
+			Cursor.Current = Cursors.WaitCursor;
+			toolStripProgressBar.Visible = true;
+			buttonCreateZip.Enabled = false;
+			Application.DoEvents();
+
 			FileStream fsOut = File.Create(outPath);
 			ZipOutputStream zipStream = new ZipOutputStream(fsOut);
 			zipStream.SetLevel(3);
@@ -95,12 +103,16 @@ namespace VixenApplication
 			int folderOffset = folderName.Length + (folderName.EndsWith("\\") ? 0 : 1);
 			String AppDataFolder = System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData) + "\\Vixen";
 			int AppFolderOffSet = AppDataFolder.Length + (AppDataFolder.EndsWith("\\") ? 0 : 1);
+			String LogDataFolder = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments) + "\\Vixen 3\\logs";
+			int LogFolderOffSet = LogDataFolder.Length + (LogDataFolder.EndsWith("\\") ? 0 : 1);
 
 			if (radioButtonZipEverything.Checked)
 			{
 				CompressFolder(folderName, zipStream, folderOffset);
 				//Now Get the files from the AppData Folder
 				CompressFolder(AppDataFolder, zipStream, AppFolderOffSet - 7, false);
+				//Now Get the files from the Log folder
+				CompressFolder(LogDataFolder, zipStream, LogFolderOffSet - 6, false);
 			}
 			else
 			{
@@ -110,6 +122,8 @@ namespace VixenApplication
 					CompressFolder(folderName, zipStream, folderOffset, false);
 					//Now Get the files from the AppData Folder
 					CompressFolder(AppDataFolder, zipStream, AppFolderOffSet - 7, false);
+					//Now Get the files from the Log folder
+					CompressFolder(LogDataFolder, zipStream, LogFolderOffSet - 6, false);
 				}
 				if (checkBoxModule.Checked)
 				{
@@ -140,6 +154,10 @@ namespace VixenApplication
 			
 			zipStream.IsStreamOwner = true;
 			zipStream.Close();
+			toolStripStatusLabel.Text = "Zip File Created";
+			Cursor.Current = Cursors.Default;
+			toolStripProgressBar.Visible = false;
+			buttonCreateZip.Enabled = true;
 		}
 
 		private void CompressFolder(string path, ZipOutputStream zipStream, int folderOffset, bool includeSubFolders = true)
@@ -148,7 +166,6 @@ namespace VixenApplication
 			foreach (string filename in files)
 			{
 				FileInfo fi = new FileInfo(filename);
-
 				string entryName = filename.Substring(folderOffset);
 				entryName = ZipEntry.CleanName(entryName);
 				ZipEntry newEntry = new ZipEntry(entryName);
