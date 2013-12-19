@@ -895,11 +895,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			contextMenuStrip.Items.Clear();
 
-			ToolStripMenuItem addEffectItem = new ToolStripMenuItem();
-
-			//addEffectItem.Size = new System.Drawing.Size(215, 22);
-			addEffectItem.Text = "Add Effect";
-
+			ToolStripMenuItem addEffectItem = new ToolStripMenuItem("Add Effect");
 
 			foreach (
 				IEffectModuleDescriptor effectDesriptor in
@@ -928,6 +924,118 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				Element element = e.ElementsUnderCursor.FirstOrDefault();
 
 				TimedSequenceElement tse = element as TimedSequenceElement;
+
+				if (TimelineControl.SelectedElements.Count() > 1)
+				{
+
+					ToolStripMenuItem itemAlignment = new ToolStripMenuItem("Alignment");
+					ToolStripMenuItem itemAlignStart = new ToolStripMenuItem("Align Start Times");
+					itemAlignStart.Click += (mySender, myE) =>
+					{
+
+						foreach (Element selectedElement in TimelineControl.SelectedElements)
+						{
+							if (selectedElement.StartTime == element.StartTime) continue;
+							//If elements end time is before or the same as the reference start time, just move the element, otherwise element becomes invalid
+							if (selectedElement.EndTime < element.StartTime || selectedElement.EndTime == element.StartTime)
+							{
+								TimelineControl.grid.MoveResizeElementByStartEnd(selectedElement, element.StartTime, element.StartTime + selectedElement.Duration);
+								continue;
+							}
+							TimelineControl.grid.MoveResizeElementByStartEnd(selectedElement, element.StartTime, selectedElement.EndTime);
+						}
+					};
+
+					ToolStripMenuItem itemAlignEnd = new ToolStripMenuItem("Align End Times");
+					itemAlignEnd.Click += (mySender, myE) =>
+					{
+
+						foreach (Element selectedElement in TimelineControl.SelectedElements)
+						{
+							if (selectedElement.EndTime == element.EndTime) continue;
+							//If elements start time is after or the same as the reference end time, just move the element, otherwise element becomes invalid
+							if (selectedElement.StartTime > element.EndTime || selectedElement.StartTime == element.EndTime)
+							{
+								TimelineControl.grid.MoveResizeElementByStartEnd(selectedElement, element.EndTime - selectedElement.Duration, element.EndTime);
+								continue;
+							}
+							TimelineControl.grid.MoveResizeElementByStartEnd(selectedElement, selectedElement.StartTime, element.EndTime);
+						}
+					};
+
+					ToolStripMenuItem itemAlignBoth = new ToolStripMenuItem("Align Both Times");
+					itemAlignBoth.Click += (mySender, myE) =>
+					{
+
+						foreach (Element selectedElement in TimelineControl.SelectedElements)
+						{
+							if (selectedElement.StartTime == element.StartTime && selectedElement.EndTime == element.EndTime) continue;
+							TimelineControl.grid.MoveResizeElementByStartEnd(selectedElement, element.StartTime, element.EndTime);
+						}
+					};
+
+					ToolStripMenuItem itemMatchDuration = new ToolStripMenuItem("Match Duration (shift)");
+					itemMatchDuration.ToolTipText = "Holding shift will hold the effects end time and adjust the start time, by default the end time is adjusted.";
+					itemMatchDuration.Click += (mySender, myE) =>
+					{
+
+						foreach (Element selectedElement in TimelineControl.SelectedElements)
+						{
+							if (selectedElement.Duration == element.Duration) continue;
+							if (Control.ModifierKeys == Keys.Shift)
+								TimelineControl.grid.MoveResizeElementByStartEnd(selectedElement, selectedElement.EndTime - element.Duration, selectedElement.EndTime);
+							else
+								TimelineControl.grid.MoveResizeElementByStartEnd(selectedElement, selectedElement.StartTime, selectedElement.StartTime + element.Duration);
+						}
+					};
+					ToolStripMenuItem itemAlignStartToEnd = new ToolStripMenuItem("Align Start to End");
+					itemAlignStartToEnd.Click += (mySender, myE) =>
+					{
+
+						foreach (Element selectedElement in TimelineControl.SelectedElements)
+						{
+							if (selectedElement.EndTime == element.EndTime) continue;
+							//Need to make sure element is not moved beyond time, if going to do so we need to adjust duration while moving otherwise element becomes invalid and not clickable
+							if ((element.EndTime + selectedElement.Duration) > TimelineControl.TotalTime)
+							{
+								TimelineControl.grid.MoveResizeElementByStartEnd(selectedElement, element.EndTime, TimelineControl.TotalTime);
+								continue;
+							}
+							//if the end time is going to be before the start time, we should just move the selectedelement
+							if (element.EndTime > (selectedElement.StartTime + selectedElement.Duration))
+								TimelineControl.grid.MoveResizeElementByStartEnd(selectedElement, element.EndTime, element.EndTime + selectedElement.Duration);
+							else
+								TimelineControl.grid.MoveResizeElementByStartEnd(selectedElement, element.EndTime, selectedElement.EndTime);
+						}
+					};
+					ToolStripMenuItem itemAlignEndToStart = new ToolStripMenuItem("Align End to Start");
+					itemAlignEndToStart.Click += (mySender, myE) =>
+					{
+
+						foreach (Element selectedElement in TimelineControl.SelectedElements)
+						{
+							if (selectedElement.StartTime == element.StartTime) continue;
+							//if the start time is going to be after the end time, we should just move the selectedelement
+							//We don't need to wory about making sure the element will not go before 0, it works properly as it is.
+							if (element.StartTime < (selectedElement.StartTime + selectedElement.Duration))
+								TimelineControl.grid.MoveResizeElementByStartEnd(selectedElement, element.StartTime - selectedElement.Duration, element.StartTime);
+							else
+								TimelineControl.grid.MoveResizeElementByStartEnd(selectedElement, selectedElement.StartTime, element.StartTime);
+							//In the event that the start time would have been moved to before 0, lets double check and make sure we are aligned
+							if (selectedElement.EndTime > element.StartTime)
+								TimelineControl.grid.MoveResizeElementByStartEnd(selectedElement, selectedElement.StartTime, element.StartTime);
+						}
+					};
+
+					contextMenuStrip.Items.Add(itemAlignment);
+					itemAlignment.DropDown.Items.Add(itemAlignStart);
+					itemAlignment.DropDown.Items.Add(itemAlignEnd);
+					itemAlignment.DropDown.Items.Add(itemAlignBoth);
+					itemAlignment.DropDown.Items.Add(itemMatchDuration);
+					itemAlignment.DropDown.Items.Add(itemAlignStartToEnd);
+					itemAlignment.DropDown.Items.Add(itemAlignEndToStart);
+				}
+
 				if (tse != null)
 				{
 					ToolStripMenuItem item = new ToolStripMenuItem("Edit Time");
@@ -944,59 +1052,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				}
 
-				if (TimelineControl.SelectedElements.Count() > 1)
-				{
-
-					ToolStripMenuItem itemAlignStart = new ToolStripMenuItem("Align Start Times");
-					itemAlignStart.Click += (mySender, myE) =>
-					{
-
-						foreach (Element selectedElement in TimelineControl.SelectedElements)
-						{
-							if (selectedElement.StartTime == element.StartTime) continue;
-							TimelineControl.grid.MoveResizeElementByStartEnd(selectedElement, element.StartTime, selectedElement.EndTime);
-						}
-					};
-
-					ToolStripMenuItem itemAlignEnd = new ToolStripMenuItem("Align End Times");
-					itemAlignEnd.Click += (mySender, myE) =>
-					{
-
-						foreach (Element selectedElement in TimelineControl.SelectedElements)
-						{
-							if (selectedElement.EndTime == element.EndTime) continue;
-							TimelineControl.grid.MoveResizeElementByStartEnd(selectedElement, selectedElement.StartTime, element.EndTime);
-						}
-					};
-
-					ToolStripMenuItem itemAlignBoth = new ToolStripMenuItem("Align Both Times");
-					itemAlignBoth.Click += (mySender, myE) =>
-					{
-
-						foreach (Element selectedElement in TimelineControl.SelectedElements)
-						{
-							if (selectedElement.StartTime == element.StartTime && selectedElement.EndTime == element.EndTime) continue;
-							TimelineControl.grid.MoveResizeElementByStartEnd(selectedElement, element.StartTime, element.EndTime);
-						}
-					};
-
-					ToolStripMenuItem itemMatchDuration = new ToolStripMenuItem("Match Duration");
-					itemMatchDuration.Click += (mySender, myE) =>
-					{
-					
-						foreach (Element selectedElement in TimelineControl.SelectedElements)
-						{
-							if (selectedElement.Duration == element.Duration) continue;
-							TimelineControl.grid.MoveResizeElementByStartEnd(selectedElement, selectedElement.StartTime, selectedElement.StartTime + element.Duration);
-						}
-					};
-
-					contextMenuStrip.Items.Add(itemAlignStart);
-					contextMenuStrip.Items.Add(itemAlignEnd);
-					contextMenuStrip.Items.Add(itemAlignBoth);
-					contextMenuStrip.Items.Add(itemMatchDuration);
-
-				}
 			}
 
 
