@@ -71,6 +71,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\..\Common\Libraries\ICSharpCode.SharpZipLib.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="NLog">
       <HintPath>..\..\packages\NLog.2.0.1.2\lib\net40\NLog.dll</HintPath>
       <Private>True</Private>
@@ -99,6 +103,12 @@
     </Compile>
     <Compile Include="DataProfileForm.Designer.cs">
       <DependentUpon>DataProfileForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataZipForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DataZipForm.Designer.cs">
+      <DependentUpon>DataZipForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Setup\DisplaySetup.cs">
       <SubType>Form</SubType>
@@ -258,6 +268,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DataProfileForm.resx">
       <DependentUpon>DataProfileForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DataZipForm.resx">
+      <DependentUpon>DataZipForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Setup\DisplaySetup.resx">
       <DependentUpon>DisplaySetup.cs</DependentUpon>
