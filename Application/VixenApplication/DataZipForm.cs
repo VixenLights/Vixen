@@ -75,7 +75,7 @@ namespace VixenApplication
 			ProfileItem item = comboBoxProfiles.SelectedItem as ProfileItem;
 			if (item == null) {
 				//Oops.. Get outta here
-				MessageBox.Show("Unable to find datafolder for that profile.");
+				MessageBox.Show("Unable to find datafolder for that profile.", "Error");
 				return;
 			}
 
@@ -89,6 +89,15 @@ namespace VixenApplication
 					return;
 			}
 
+			if (!Directory.Exists(textBoxSaveFolder.Text))
+			{
+				if (MessageBox.Show("The destination folder does not exists, would you like to create it ?", "Folder not found", MessageBoxButtons.YesNo) == DialogResult.No)
+				{
+					return;
+				}
+				else
+					Directory.CreateDirectory(textBoxSaveFolder.Text);
+			}
 
 			toolStripStatusLabel.Text = "Zipping Data please wait...";
 			Cursor.Current = Cursors.WaitCursor;
@@ -162,6 +171,9 @@ namespace VixenApplication
 
 		private void CompressFolder(string path, ZipOutputStream zipStream, int folderOffset, bool includeSubFolders = true)
 		{
+			if (!Directory.Exists(path))
+				return;
+
 			string[] files = Directory.GetFiles(path);
 			foreach (string filename in files)
 			{
