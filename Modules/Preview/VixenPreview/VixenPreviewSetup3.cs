@@ -135,7 +135,9 @@ namespace VixenModules.Preview.VixenPreview {
 			//buttonFlood.FlatAppearance.BorderColor = buttonSelect.BackColor;
 			buttonStar.BackColor = buttonSelect.BackColor;
 			buttonStar.FlatAppearance.BorderColor = buttonSelect.BackColor;
-			buttonMegaTree.BackColor = buttonSelect.BackColor;
+            buttonStarBurst.BackColor = buttonSelect.BackColor;
+            buttonStarBurst.FlatAppearance.BorderColor = buttonSelect.BackColor;
+            buttonMegaTree.BackColor = buttonSelect.BackColor;
 			buttonMegaTree.FlatAppearance.BorderColor = buttonSelect.BackColor;
 			buttonPixelGrid.BackColor = buttonSelect.BackColor;
 			buttonPixelGrid.FlatAppearance.BorderColor = buttonSelect.BackColor;
@@ -167,7 +169,9 @@ namespace VixenModules.Preview.VixenPreview {
 				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Cane;
 			else if (button == buttonStar)
 				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Star;
-			else if (button == buttonHelp)
+            else if (button == buttonStarBurst)
+                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.StarBurst;
+            else if (button == buttonHelp)
 				Common.VixenHelp.VixenHelp.ShowHelp(Common.VixenHelp.VixenHelp.HelpStrings.Preview_Main);
 			else if (button == buttonMegaTree)
 				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.MegaTree;

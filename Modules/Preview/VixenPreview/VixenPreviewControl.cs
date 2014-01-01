@@ -51,7 +51,8 @@ namespace VixenModules.Preview.VixenPreview
 			Flood,
 			Star,
 			Cane,
-			PixelGrid
+			PixelGrid,
+            StarBurst
 		}
 
 		private Point dragStart;
@@ -426,7 +427,13 @@ namespace VixenModules.Preview.VixenPreview
 							newDisplayItem = new DisplayItem();
 							newDisplayItem.Shape = new PreviewStar(new PreviewPoint(e.X, e.Y), elementsForm.SelectedNode);
 						}
-						else if (_currentTool == Tools.Flood) {
+                        else if (_currentTool == Tools.StarBurst)
+                        {
+                            newDisplayItem = new DisplayItem();
+                            newDisplayItem.Shape = new PreviewStarBurst(new PreviewPoint(e.X, e.Y), elementsForm.SelectedNode);
+                        }
+                        else if (_currentTool == Tools.Flood)
+                        {
 							newDisplayItem = new DisplayItem();
 							newDisplayItem.Shape = new PreviewFlood(new PreviewPoint(e.X, e.Y), elementsForm.SelectedNode);
 						}

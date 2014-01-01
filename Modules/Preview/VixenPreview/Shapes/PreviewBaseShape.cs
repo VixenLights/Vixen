@@ -510,7 +510,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewStar") {
 				setupControl = new Shapes.PreviewStarSetupControl(this);
 			}
-			else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewNet") {
+            else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewStarBurst")
+            {
+                setupControl = new Shapes.PreviewStarBurstSetupControl(this);
+            }
+            else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewNet")
+            {
 				setupControl = new Shapes.PreviewNetSetupControl(this);
 			}
 			else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewCustom") {

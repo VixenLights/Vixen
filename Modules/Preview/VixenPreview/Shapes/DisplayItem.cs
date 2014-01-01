@@ -27,7 +27,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 	[KnownType(typeof (PreviewFlood))]
 	[KnownType(typeof (PreviewCane))]
 	[KnownType(typeof (PreviewStar))]
-	[KnownType(typeof (PreviewMegaTree))]
+    [KnownType(typeof (PreviewStarBurst))]
+    [KnownType(typeof (PreviewMegaTree))]
 	[KnownType(typeof (PreviewCustom))]
 	[KnownType(typeof (PreviewPixelGrid))]
 	public class DisplayItem : IHandler<IIntentState<LightingValue>>, IHandler<IIntentState<CommandValue>>, IDisposable
