@@ -95,9 +95,25 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
+        public override int Right
+        {
+            get
+            {
+                return _topRight.X;
+            }
+        }
+
+        public override int Bottom
+        {
+            get
+            {
+                return _bottomLeft.Y;
+            }
+        }
+
 		[CategoryAttribute("Position"),
 		 DisplayName("Top Left"),
-		 DescriptionAttribute("Star Bursts are defined by 4 points. This is point 1.")]
+		 DescriptionAttribute("Star Bursts are defined by 2 points. This is point 1.")]
 		public Point TopLeftPoint
 		{
 			get
@@ -111,31 +127,15 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			{
 				_topLeft.X = value.X;
 				_topLeft.Y = value.Y;
-				Layout();
-			}
-		}
-
-		[CategoryAttribute("Position"),
-		 DisplayName("Top Right"),
-		 DescriptionAttribute("Star Bursts are defined by 4 points. This is point 2.")]
-		public Point TopRightPoint
-		{
-			get
-			{
-				Point p = new Point(_topRight.X, _topRight.Y);
-				return p;
-			}
-			set
-			{
-				_topRight.X = value.X;
-				_topRight.Y = value.Y;
+                _bottomLeft.X = value.X;
+                _topRight.Y = value.Y;
 				Layout();
 			}
 		}
 
 		[CategoryAttribute("Position"),
 		 DisplayName("Bottom Right"),
-		 DescriptionAttribute("Star Bursts are defined by 4 points. This is point 3.")]
+		 DescriptionAttribute("Star Bursts are defined by 2 points. This is point 3.")]
 		public Point BottomRightPoint
 		{
 			get
@@ -147,24 +147,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			{
 				_bottomRight.X = value.X;
 				_bottomRight.Y = value.Y;
-				Layout();
-			}
-		}
-
-		[CategoryAttribute("Position"),
-		 DisplayName("Botom Left"),
-		 DescriptionAttribute("Star Bursts are defined by 4 points. This is point 4.")]
-		public Point BottomLeftPoint
-		{
-			get
-			{
-				Point p = new Point(_bottomLeft.X, _bottomLeft.Y);
-				return p;
-			}
-			set
-			{
-				_bottomLeft.X = value.X;
-				_bottomLeft.Y = value.Y;
+                _topRight.X = value.X;
+                _bottomLeft.Y = value.Y;
 				Layout();
 			}
 		}
@@ -217,12 +201,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public override void Layout()
 		{
-            int width = Math.Abs(TopRightPoint.X - TopLeftPoint.X);
-            int height = Math.Abs(BottomLeftPoint.Y - TopLeftPoint.Y);
+            int width = Math.Abs(_topRight.X - _topLeft.X);
+            int height = Math.Abs(_bottomLeft.Y - _topLeft.Y);
             int centerX = Right - (width / 2);
             int centerY = Bottom - (height / 2);
-            List<Point> outerEllipse = PreviewTools.GetEllipsePoints(TopLeftPoint.X,
-				                                                     TopLeftPoint.Y,
+            List<Point> outerEllipse = PreviewTools.GetEllipsePoints(_topLeft.X,
+                                                                     _topLeft.Y,
 				                                                     width,
 				                                                     height,
 				                                                     Strings.Count,
@@ -252,8 +236,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 if (_selectedPoint == _bottomRight &&
                     System.Windows.Forms.Control.ModifierKeys == System.Windows.Forms.Keys.Control)
                 {
-                    int height = y - TopRightPoint.Y;
+                    int height = y - _topRight.Y;
                     _topRight.X = _topLeft.X + height;
+                    _topRight.Y = _topLeft.Y;
+                    _bottomLeft.X = _topLeft.X;
                     _bottomLeft.Y = _topRight.Y + height;
                     
                     _selectedPoint.X = _topRight.X;
@@ -263,8 +249,28 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 {
                     _selectedPoint.X = x;
                     _selectedPoint.Y = y;
-                    _topRight.X = x;
-                    _bottomLeft.Y = y;
+                    //_topRight.X = x;
+                    //_bottomLeft.Y = y;
+                }
+
+                if (_selectedPoint == _topRight) {
+                    _topLeft.Y = _topRight.Y;
+                    _bottomRight.X = _topRight.X;
+                }
+                else if (_selectedPoint == _bottomLeft)
+                {
+                    _topLeft.X = _bottomLeft.X;
+                    _bottomRight.Y = _bottomLeft.Y;
+                }
+                else if (_selectedPoint == _topLeft)
+                {
+                    _bottomLeft.X = _topLeft.X;
+                    _topRight.Y = _topLeft.Y;
+                }
+                else if (_selectedPoint == _bottomRight)
+                {
+                    _topRight.X = _bottomRight.X;
+                    _bottomLeft.Y = _bottomRight.Y;
                 }
                 
                 Layout();
