@@ -506,7 +506,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void loadSequence(Vixen.Sys.ISequence sequence)
 		{
 			var taskQueue = new Queue<Task>();
-
+			
 			if (loadTimer == null)
 			{
 				loadTimer = new System.Timers.Timer();

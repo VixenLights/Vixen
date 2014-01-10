@@ -1,14 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using Vixen.Module.App;
 using Vixen.Services;
-using Vixen.Sys;
 using ZedGraph;
 
 namespace VixenModules.App.Curves
@@ -33,7 +27,7 @@ namespace VixenModules.App.Curves
 			zedGraphControl.EditModifierKeys = Keys.None;
 			zedGraphControl.IsShowContextMenu = false;
 			zedGraphControl.IsEnableSelection = false;
-			zedGraphControl.EditButtons = System.Windows.Forms.MouseButtons.Left;
+			zedGraphControl.EditButtons = MouseButtons.Left;
 			zedGraphControl.GraphPane.XAxis.Scale.Min = 0;
 			zedGraphControl.GraphPane.XAxis.Scale.Max = 100;
 			zedGraphControl.GraphPane.YAxis.Scale.Min = 0;
@@ -117,8 +111,12 @@ namespace VixenModules.App.Curves
 			if (sender.DragEditingPair.Y > 100)
 				sender.DragEditingPair.Y = 100;
 
-			lblXValue.Text = sender.DragEditingPair.X.ToString();
-			lblYValue.Text = sender.DragEditingPair.Y.ToString();
+			if (!Curve.IsLibraryReference && e.Button == MouseButtons.Left)
+			{
+				txtXValue.Text = sender.DragEditingPair.X.ToString();
+				txtYValue.Text = sender.DragEditingPair.Y.ToString();
+				txtXValue.Enabled = txtYValue.Enabled = btnUpdateCoordinates.Enabled = true;
+			}
 			// actually does nothing, just haven't changed the event handler definition
 			return true;
 		}
@@ -155,6 +153,13 @@ namespace VixenModules.App.Curves
 				}
 			}
 
+			if (!Curve.IsLibraryReference && e.Button == MouseButtons.Left && sender.DragEditingPair != null)
+			{
+				txtXValue.Text = sender.DragEditingPair.X.ToString();
+				txtYValue.Text = sender.DragEditingPair.Y.ToString();
+				txtXValue.Enabled = txtYValue.Enabled = btnUpdateCoordinates.Enabled = true;
+			}
+
 			return false;
 		}
 
@@ -168,6 +173,7 @@ namespace VixenModules.App.Curves
 			// if we're editing a curve from the library, treat it special
 			if (curve.IsCurrentLibraryCurve) {
 				zedGraphControl.GraphPane.CurveList.Clear();
+				zedGraphControl.DragEditingPair = null;
 				zedGraphControl.GraphPane.AddCurve(string.Empty, curve.Points, Curve.ActiveCurveGridColor);
 				if (LibraryCurveName == null) {
 					labelCurve.Text = "This curve is a library curve.";
@@ -187,7 +193,11 @@ namespace VixenModules.App.Curves
 				buttonEditLibraryCurve.Enabled = false;
 				labelInstructions1.Visible = true;
 				labelInstructions2.Visible = true;
-
+				txtXValue.Enabled = false;
+				txtYValue.Enabled = false;
+				txtXValue.Text = string.Empty;
+				txtYValue.Text = string.Empty;
+				btnUpdateCoordinates.Enabled = false;
 				zedGraphControl.GraphPane.Chart.Fill = new Fill(Color.AliceBlue);
 			}
 			else {
@@ -201,7 +211,7 @@ namespace VixenModules.App.Curves
 					zedGraphControl.GraphPane.AddCurve(string.Empty, curve.Points, Curve.ActiveCurveGridColor);
 					labelCurve.Text = "This curve is not linked to any in the library.";
 				}
-
+				zedGraphControl.DragEditingPair = null;
 				zedGraphControl.IsEnableHEdit = !curve.IsLibraryReference;
 				zedGraphControl.IsEnableVEdit = !curve.IsLibraryReference;
 				ReadonlyCurve = curve.IsLibraryReference;
@@ -211,7 +221,11 @@ namespace VixenModules.App.Curves
 				buttonEditLibraryCurve.Enabled = curve.IsLibraryReference;
 				labelInstructions1.Visible = !curve.IsLibraryReference;
 				labelInstructions2.Visible = !curve.IsLibraryReference;
-
+				txtYValue.Enabled = !curve.IsLibraryReference;
+				txtXValue.Enabled = !curve.IsLibraryReference;
+				txtXValue.Text = string.Empty;
+				txtYValue.Text = string.Empty;
+				btnUpdateCoordinates.Enabled = false;
 				zedGraphControl.GraphPane.Chart.Fill = new Fill(SystemColors.Control);
 
 				Text = "Curve Editor";
@@ -223,7 +237,7 @@ namespace VixenModules.App.Curves
 		private void buttonLoadCurveFromLibrary_Click(object sender, EventArgs e)
 		{
 			CurveLibrarySelector selector = new CurveLibrarySelector();
-			if (selector.ShowDialog() == System.Windows.Forms.DialogResult.OK && selector.SelectedItem != null) {
+			if (selector.ShowDialog() == DialogResult.OK && selector.SelectedItem != null) {
 				// make a new curve that references the selected library curve, and set it to the current Curve
 				Curve newCurve = new Curve(selector.SelectedItem.Item2);
 				newCurve.LibraryReferenceName = selector.SelectedItem.Item1;
@@ -236,7 +250,7 @@ namespace VixenModules.App.Curves
 		{
 			Common.Controls.TextDialog dialog = new Common.Controls.TextDialog("Curve name?");
 
-			while (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+			while (dialog.ShowDialog() == DialogResult.OK) {
 				if (dialog.Response == string.Empty) {
 					MessageBox.Show("Please enter a name.");
 					continue;
@@ -245,11 +259,11 @@ namespace VixenModules.App.Curves
 				if (Library.Contains(dialog.Response)) {
 					DialogResult result = MessageBox.Show("There is already a curve with that name. Do you want to overwrite it?",
 					                                      "Overwrite curve?", MessageBoxButtons.YesNoCancel);
-					if (result == System.Windows.Forms.DialogResult.Yes) {
+					if (result == DialogResult.Yes) {
 						Library.AddCurve(dialog.Response, new Curve(Curve));
 						break;
 					}
-					else if (result == System.Windows.Forms.DialogResult.Cancel) {
+					else if (result == DialogResult.Cancel) {
 						break;
 					}
 				}
@@ -273,6 +287,41 @@ namespace VixenModules.App.Curves
 			Library.EditLibraryCurve(libraryName);
 
 			PopulateFormWithCurve(Curve);
+		}
+
+		private void btnReverse_Click(object sender, EventArgs e)
+		{
+
+			foreach (var curveItem in zedGraphControl.GraphPane.CurveList)
+			{
+				for (int i = 0; i < curveItem.Points.Count; i++)
+				{
+					curveItem.Points[i].X = 100 - curveItem.Points[i].X;
+				}
+
+			}
+
+			zedGraphControl.Invalidate();
+		}
+
+		private void btnInvert_Click(object sender, EventArgs e)
+		{
+			foreach (var curveItem in zedGraphControl.GraphPane.CurveList)
+			{
+				for (int i = 0; i < curveItem.Points.Count; i++)
+				{
+					curveItem.Points[i].Y = 100 - curveItem.Points[i].Y;
+				}
+				
+			}
+			zedGraphControl.Invalidate();
+		}
+
+		private void btnUpdateCoordinates_Click(object sender, EventArgs e)
+		{
+			zedGraphControl.DragEditingPair.X = Convert.ToDouble(txtXValue.Text);
+			zedGraphControl.DragEditingPair.Y = Convert.ToDouble(txtYValue.Text);
+			zedGraphControl.Invalidate();
 		}
 	}
 }
