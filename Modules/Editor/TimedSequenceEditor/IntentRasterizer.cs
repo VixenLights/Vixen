@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Windows.Forms.VisualStyles;
 using Vixen.Data.Value;
 using Vixen.Intent;
 using Vixen.Sys;
@@ -18,15 +19,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 	{
 		private RectangleF _rect;
 		private Graphics _graphics;
+		private TimeSpan _startOffset;
+		private TimeSpan _endTime;
 		private readonly TimeSpan _oneTick = TimeSpan.FromTicks(1);
 
-		public void Rasterize(IIntent intent, RectangleF rect, Graphics g)
+		public void Rasterize(IIntent intent, RectangleF rect, Graphics g, TimeSpan startOffset, TimeSpan endTime)
 		{
 			// As recommended by R#
 			if (Math.Abs(rect.Width - 0) < float.Epsilon || Math.Abs(rect.Height - 0) < float.Epsilon) return;
 
 			_rect = rect;
 			_graphics = g;
+			_startOffset = startOffset;
+			_endTime = endTime;
 
 			intent.Dispatch(this);
 		}
@@ -52,8 +57,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 			} else {
 				using (LinearGradientBrush brush = new LinearGradientBrush(
-					gradientRectangle, startColor, endColor, LinearGradientMode.Horizontal))
+					rectangle, startColor, endColor, LinearGradientMode.Horizontal))
 				{
+					brush.GammaCorrection = true;
 					_graphics.FillRectangle(brush, rectangle);
 				}
 			}
@@ -67,12 +73,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// The question is how many... each takes precious UI time to render.
 			// For now try almost easiest, fixed num per sec
 			// TODO: can we figure out what dimensions we're rendering for, and then rasterize based on that?  That's the ideal solution: one chunk per 2 pixels or so.
-			int nChunks = 1 + (int)timespan.TotalMilliseconds/100;
-			TimeSpan tsStart = TimeSpan.Zero;
+			int nChunks = 1 + (int)(timespan -_startOffset).TotalMilliseconds/100;
+			TimeSpan tsStart = _startOffset;//TimeSpan.Zero;
 			RectangleF drawRectangle = new RectangleF(rectangle.Location, rectangle.Size);
 			float rectWidth = rectangle.Width/nChunks;
 			for (int i = 1; i <= nChunks; i++) {
-				var tsEnd = TimeSpan.FromMilliseconds((double)timespan.TotalMilliseconds / nChunks * i);
+				var tsEnd = TimeSpan.FromMilliseconds((timespan-_startOffset).TotalMilliseconds / nChunks * i) + _startOffset;
 
 				Color startColor = startColorGetter(tsStart);
 				Color endColor = startColorGetter(tsEnd);
@@ -90,12 +96,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public override void Handle(IIntent<LightingValue> obj)
 		{
 			if (obj is StaticArrayIntent<LightingValue>) {
-				Func<TimeSpan, Color> scg = x => obj.GetStateAt(x).FullColorWithAplha;
-				Func<TimeSpan, Color> ecg = x => obj.GetStateAt(x - _oneTick).FullColorWithAplha;
-				DrawStaticArrayIntent(obj.TimeSpan, _rect, scg, ecg);
+				Func<TimeSpan, Color> scg = x => obj.GetStateAt(x).TrueFullColorWithAlpha;
+				Func<TimeSpan, Color> ecg = x => obj.GetStateAt(x - _oneTick).TrueFullColorWithAlpha;
+				DrawStaticArrayIntent(_endTime, _rect, scg, ecg);
 			} else {
-				Color startColor = obj.GetStateAt(TimeSpan.Zero).FullColorWithAplha;
-				Color endColor = obj.GetStateAt(obj.TimeSpan - _oneTick).FullColorWithAplha;
+				Color startColor = obj.GetStateAt(_startOffset).TrueFullColorWithAlpha;
+				Color endColor = obj.GetStateAt(_endTime - (_endTime<obj.TimeSpan?TimeSpan.Zero:_oneTick)).TrueFullColorWithAlpha;
 				DrawGradient(startColor, endColor, _rect);
 			}
 		}
@@ -105,10 +111,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (obj is StaticArrayIntent<RGBValue>) {
 				Func<TimeSpan, Color> scg = x => obj.GetStateAt(x).ColorWithAplha;
 				Func<TimeSpan, Color> ecg = x => obj.GetStateAt(x - _oneTick).ColorWithAplha;
-				DrawStaticArrayIntent(obj.TimeSpan, _rect, scg, ecg);
+				DrawStaticArrayIntent(_endTime, _rect, scg, ecg);
 			} else {
-				Color startColor = obj.GetStateAt(TimeSpan.Zero).ColorWithAplha;
-				Color endColor = obj.GetStateAt(obj.TimeSpan - _oneTick).ColorWithAplha;
+				Color startColor = obj.GetStateAt(_startOffset).ColorWithAplha;
+				Color endColor = obj.GetStateAt(_endTime - (_endTime < obj.TimeSpan ? TimeSpan.Zero : _oneTick)).ColorWithAplha;
 				DrawGradient(startColor, endColor, _rect);
 			}
 		}

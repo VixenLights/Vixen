@@ -309,27 +309,20 @@ namespace Common.Controls.Timeline
 					VisibleTimeStart = TotalTime - VisibleTimeSpan;
 			}
 			grid.EndDraw();
-			grid.ResetAllElements();
-		}
+			}
 
 		public void ZoomRows(double scale)
 		{
 			if (scale <= 0.0)
 				return;
-			bool heightChanged = false;
 			grid.BeginDraw();
 
 			foreach (Row r in Rows)
 			{
 				if (r.Height * scale > grid.Height) continue; //Don't scale a row beyond the grid height. How big do you need it?
 				r.Height = (int)(r.Height * scale);
-				heightChanged = true;
 			}
 
-			if (heightChanged) //Only reset if we actually changed a row height.
-			{
-				grid.ResetAllElements();
-			}
 			grid.EndDraw();
 		}
 
@@ -631,7 +624,7 @@ namespace Common.Controls.Timeline
 
 		private void RowHeightResizedHandler(object sender, EventArgs e)
 		{
-			grid.ResetRowElements(new List<Row> { (Row)sender });
+			Invalidate();
 		}
 
 		protected override void OnMouseWheel(MouseEventArgs e)

@@ -16,10 +16,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private static IntentRasterizer intentRasterizer = new IntentRasterizer();
 
-		public static void Rasterize(IEffectModuleInstance effect, Graphics g)
+		public static void Rasterize(TimedSequenceElement tsElement, Graphics g, TimeSpan startTime, TimeSpan endTime, int overallWidth)
 		{
 			//var sw = new System.Diagnostics.Stopwatch(); sw.Start();
-
+			IEffectModuleInstance effect = tsElement.EffectNode.Effect;
 			if (effect.ForceGenerateVisualRepresentation || Vixen.Common.Graphics.DisableEffectsEditorRendering) {
 				effect.GenerateVisualRepresentation(g, new Rectangle(0, 0, (int)g.VisibleClipBounds.Width, (int)g.VisibleClipBounds.Height));
 			} else {
@@ -46,6 +46,29 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				EffectIntents effectIntents = effect.Render();
 
 				//long tRend = sw.ElapsedMilliseconds - tOh;
+
+				TimeSpan visibleStartOffset;
+				TimeSpan visibleEndOffset;
+				if (startTime > tsElement.StartTime)
+				{
+					//We are starting somewhere in the middle of the effect
+					visibleStartOffset = startTime - tsElement.StartTime;
+				}
+				else
+				{
+					//The effect starts in our visible region
+					visibleStartOffset = TimeSpan.Zero;
+				}
+				if (endTime < tsElement.EndTime)
+				{
+					//The effect ends past our visible region
+					visibleEndOffset = endTime-tsElement.StartTime;
+				} else
+				{
+					
+					visibleEndOffset = tsElement.EndTime;
+				}
+
 				double y = 0;
 				foreach (Element element in elements)
 				{
@@ -76,11 +99,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							{
 								//this is most likely a underlying base intent like chase, spin and twinkle use to provide a minimum value
 								//so render it full size as it is usually a lower intensity and the pulses can be drawn over the top and look nice.
-								double startPixelX = width * _GetPercentage(stack[0][0].StartTime, effect.TimeSpan);
-								double widthPixelX = width * _GetPercentage(stack[0][0].TimeSpan, effect.TimeSpan);
+								
+								//double startPixelX = width * _GetPercentage(stack[0][0].StartTime, effect.TimeSpan);
+								//double widthPixelX = width * _GetPercentage(stack[0][0].TimeSpan, effect.TimeSpan);
 								intentRasterizer.Rasterize(stack[0][0].Intent,
-														   new RectangleF((float)startPixelX, (float)y, (float)widthPixelX,
-																		  (float)heightPerElement), g);
+														   new RectangleF(0, (float)y, (float)width,
+																		  (float)heightPerElement), g, visibleStartOffset,stack[0][0].TimeSpan);
 								skip=1;
 							}
 
@@ -96,11 +120,37 @@ namespace VixenModules.Editor.TimedSequenceEditor
 										Logging.Error("Error: elementIntentNode was null when Rasterizing an effect (ID: " + effect.InstanceId + ")");
 										continue;
 									}
-									double startPixelX = width * _GetPercentage(elementIntentNode.StartTime, effect.TimeSpan);
-									double widthPixelX = width * _GetPercentage(elementIntentNode.TimeSpan, effect.TimeSpan);
+									
+									if(elementIntentNode.EndTime+tsElement.StartTime<startTime || elementIntentNode.StartTime+tsElement.StartTime>endTime) continue;
+
+									TimeSpan visibleIntentStart = elementIntentNode.StartTime < visibleStartOffset
+										? visibleStartOffset - elementIntentNode.StartTime
+										: TimeSpan.Zero;
+
+									TimeSpan visibleIntentEnd = elementIntentNode.EndTime > visibleEndOffset
+										? visibleEndOffset - elementIntentNode.StartTime
+										: elementIntentNode.TimeSpan;
+									//TimeSpan visibleIntentStart = visibleStartOffset < elementIntentNode.StartTime
+									//	? visibleStartOffset
+									//	: elementIntentNode.StartTime;
+
+									double startPixelX = overallWidth * _GetPercentage(elementIntentNode.StartTime, effect.TimeSpan);
+									double widthPixelX = overallWidth * _GetPercentage(elementIntentNode.TimeSpan, effect.TimeSpan);
+
+									widthPixelX = widthPixelX * ((visibleIntentEnd.TotalMilliseconds - visibleIntentStart.TotalMilliseconds) / elementIntentNode.TimeSpan.TotalMilliseconds);
+									if (visibleIntentStart == TimeSpan.Zero)
+									{
+										startPixelX -= overallWidth*_GetPercentage(visibleStartOffset, effect.TimeSpan);
+									}
+									else
+									{
+										startPixelX = 0;
+									}
+									
+
 									intentRasterizer.Rasterize(elementIntentNode.Intent,
 															   new RectangleF((float)startPixelX, (float)y+h*stackCount , (float)widthPixelX,
-																			  h), g);
+																			  h), g, visibleIntentStart , visibleIntentEnd);
 								}
 
 								stackCount++;

@@ -794,14 +794,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		protected void ElementContentChangedHandler(object sender, EventArgs e)
 		{
 			TimedSequenceElement element = sender as TimedSequenceElement;
-			element.Changed = true;
 			TimelineControl.grid.RenderElement(element);
 			sequenceModified();
 		}
 
 		protected void ElementTimeChangedHandler(object sender, EventArgs e)
 		{
-			TimedSequenceElement element = sender as TimedSequenceElement;
+			//TimedSequenceElement element = sender as TimedSequenceElement;
 			sequenceModified();
 		}
 
@@ -820,21 +819,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			ElementNode oldElement = e.OldRow.Tag as ElementNode;
 			ElementNode newElement = e.NewRow.Tag as ElementNode;
 			TimedSequenceElement movedElement = e.Element as TimedSequenceElement;
-			//List<TimelineElement> targetElements = _effectNodeToElement[movedElement.EffectNode];
-
-			// retarget the selected element from the old element it was in to the new element it was dragged to
-			// TODO: there's *got* to be a better way of adding/removing a single item from an array...
-			List<ElementNode> nodeList = new List<ElementNode>(movedElement.EffectNode.Effect.TargetNodes);
-			if (nodeList.Contains(oldElement))
-			{
-				nodeList.Remove(oldElement);
-			}
-			else
-			{
-				Logging.Debug(string.Format("TimedSequenceEditor: moving an element from {0} to {1} and the effect element wasn't in the old row element!", e.OldRow.Name, e.NewRow.Name));
-			}
-			nodeList.Add(newElement);
-			movedElement.EffectNode.Effect.TargetNodes = nodeList.ToArray();
+	
+			movedElement.TargetNodes = new[]{newElement};
 
 			// now that the effect that this element has been updated to accurately reflect the change,
 			// move the actual element around. It's a single element in the grid, belonging to multiple rows:

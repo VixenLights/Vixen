@@ -76,6 +76,18 @@ namespace Vixen.Data.Value
 		}
 
 		/// <summary>
+		/// This is the full color portion of the lighting value with the Inesity applied only to the Alpha portion of 
+		/// the color. See VIX-430
+		/// </summary>
+		public Color TrueFullColorWithAlpha
+		{
+			get
+			{
+				return Color.FromArgb((int)(Intensity * byte.MaxValue), HueSaturationOnlyColor);
+			}
+		}
+
+		/// <summary>
 		/// The 'color' portion of the lighting value; ie. only the Hue and Saturation.
 		/// This is equivalent to the full color that would have an intensity of 1 (or 100%).
 		/// </summary>

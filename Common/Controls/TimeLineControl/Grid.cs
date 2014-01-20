@@ -495,12 +495,6 @@ namespace Common.Controls.Timeline
 		private void RowToggledHandler(object sender, EventArgs e)
 		{
 			ResizeGridHeight();
-			Row row = (Row)sender;
-			if (row.TreeOpen)
-			{
-				List<Row> rows = row.Descendants().Where(x => x.Visible == true).ToList();
-				RenderVisibleRows(rows); 
-			}
  
 			if (!SuppressInvalidate) Invalidate();
 		}
@@ -1222,6 +1216,16 @@ namespace Common.Controls.Timeline
 			if (!SuppressInvalidate) Invalidate();
 		}
 
+		private void CalculateVisibleRowDisplayTops()
+		{
+			int top = 0;
+			foreach (var visibleRow in VisibleRows)
+			{
+				visibleRow.DisplayTop = top;
+				top += visibleRow.Height;
+			}
+		}
+
 		private int CalculateAllRowsHeight(bool visibleRowsOnly = true)
 		{
 			int total = 0;
@@ -1246,6 +1250,7 @@ namespace Common.Controls.Timeline
 					this.Invoke(new Vixen.Delegates.GenericDelegate(ResizeGridHeight));
 				} else {
 					AutoScrollMinSize = new Size((int)timeToPixels(TotalTime), CalculateAllRowsHeight());
+					CalculateVisibleRowDisplayTops();
 					//Invalidate();
 				}
 			}
@@ -1405,8 +1410,8 @@ namespace Common.Controls.Timeline
 							break;
 						}
 						try {
-							Size size = new Size((int) Math.Ceiling(timeToPixels(element.Duration)), element.Row.Height - 1);
-							element.SetupCachedImage(size);
+							//Size size = new Size((int) Math.Ceiling(timeToPixels(element.Duration)), element.Row.Height - 1);
+							element.RenderElement();
 							if (!SuppressInvalidate) {
 								if (element.EndTime > VisibleTimeStart && element.StartTime < VisibleTimeEnd) {
 									Invalidate();
@@ -1451,7 +1456,7 @@ namespace Common.Controls.Timeline
 				//because someone is directly working with it.
 				Task.Factory.StartNew(() =>
 										{
-											element.SetupCachedImage(new Size((int)Math.Ceiling(timeToPixels(element.Duration)), element.Row.Height - 1));
+											element.RenderElement();
 											Invalidate();
 										});
 			} else
@@ -1461,53 +1466,22 @@ namespace Common.Controls.Timeline
         }
 
 		/// <summary>
-		/// Rasterizes all Visible rows in the provided row list which includes rendering if needed. 
-		/// </summary>
-		/// <param name="rows"></param>
-        public void RenderVisibleRows(List<Row> rows)
-        {
-			if (SupressRendering) return;
-			Element element;
-            foreach (Row row in rows)
-            {
-                if (row.Visible)
-                {
-					for (int i=0; i < row.ElementCount; i++ ) {
-						element = row.GetElementAtIndex(i);
-						if (!element.CachedCanvasIsCurrent) {
-							_blockingElementQueue.Add(element);
-						}
-					}
-                }
-            }
-        }
-
-		/// <summary>
-		/// Rasterizes all Visible rows in the grid which includes rendering if needed. 
-		/// </summary>
-        public void RenderAllVisibleRows()
-        {
-			RenderVisibleRows(Rows);    
-        }
-
-		/// <summary>
 		/// Rasterizes selected rows in the grid which includes rendering if needed.
 		/// </summary>
 		/// <param name="rows"></param>
 		public void RenderRows(List<Row> rows)
 		{
 			if (SupressRendering) return;
-			Element element;
 			foreach (Row row in rows)
 			{
 				for (int i = 0; i < row.ElementCount; i++)
 				{
-					element = row.GetElementAtIndex(i);
-					if (!element.CachedCanvasIsCurrent)
+					Element element = row.GetElementAtIndex(i);
+					if (!element.IsRendered)
 					{
 						_blockingElementQueue.Add(element);
 					}
-				}	
+				}
 			}
 		}
 
@@ -1530,43 +1504,6 @@ namespace Common.Controls.Timeline
 			}
 			SupressRendering=false;
 			
-        }
-
-		/// <summary>
-		/// Resets all the elements in the provided rows and forces them to be re-rasterized/rendered
-		/// </summary>
-		/// <param name="rows"></param>
-		public void ResetRowElements(List<Row> rows)
-		{
-			if (SupressRendering) return;
-			foreach (Row row in rows)
-			{
-				for (int i = 0; i < row.ElementCount; i++)
-				{
-					Element currentElement = row.GetElementAtIndex(i);
-					currentElement.Changed = true;
-				}
-			}
-
-			RenderRows(rows);
-		}
-		
-		/// <summary>
-		/// Resets all the elements in the grid and forces them to be re-rasterized/rendered
-		/// </summary>
-        public void ResetAllElements()
-        {
-			if (SupressRendering) return;
-            ClearElementRenderQueue();
-			foreach (Row row in Rows)
-			{
-				for (int i = 0; i < row.ElementCount; i++)
-				{
-					Element currentElement = row.GetElementAtIndex(i);
-					currentElement.Changed = true;
-				}
-			}
-            RenderAllVisibleRows();
         }
 
 		#endregion
@@ -1619,48 +1556,68 @@ namespace Common.Controls.Timeline
 			currentElement.DisplayHeight = (row.Height - 1) / elementRowCount;
 			currentElement.DisplayTop = top + (currentElement.DisplayHeight * elementRowLocation);
 			currentElement.RowTopOffset = currentElement.DisplayHeight * elementRowLocation;
-			Size size = new Size((int)Math.Ceiling(timeToPixels(currentElement.Duration)), row.Height - 1);
+			int width = 0;
+			if (currentElement.StartTime > VisibleTimeStart)
+			{
+				if (currentElement.EndTime < VisibleTimeEnd)
+				{
+					width = (int) timeToPixels(currentElement.Duration);
+				}
+				else
+				{
+					width = (int) (timeToPixels(VisibleTimeEnd) - timeToPixels(currentElement.StartTime));
+				}
+			}
+			else
+			{
+				if (currentElement.EndTime < VisibleTimeEnd)
+				{
+					width = (int) (timeToPixels(currentElement.EndTime) - timeToPixels(VisibleTimeStart));
+				} else
+				{
+					width = (int)(timeToPixels(VisibleTimeEnd) - timeToPixels(VisibleTimeStart));
+				}	
+			}
+			if (width <= 0) return;
+			Size size = new Size(width, currentElement.DisplayHeight);
 			Bitmap elementImage;
-			try
-			{
-				elementImage = currentElement.Draw(size);
-			}
-			catch (Exception e)
-			{
-				//At some zoom levels and effect durations, the image that we are trying to draw can become so big that we cannot draw it.
-				//This is due to the attempted caching of the image for the full length of the effect. I 
-				//plan to rework this in 2014 because it is fundamentally flawed.
+			//try
+			//{
+				elementImage = currentElement.Draw(size, g, VisibleTimeStart, VisibleTimeEnd, (int)timeToPixels(currentElement.Duration)); 
+			//}
+			//catch (Exception e)
+			//{
+			//	//At some zoom levels and effect durations, the image that we are trying to draw can become so big that we cannot draw it.
+			//	//This is due to the attempted caching of the image for the full length of the effect. I 
+			//	//plan to rework this in 2014 because it is fundamentally flawed.
 			
-				//Attempt to recover until this can be reworked to really only draw what is in the visible part of the 
-				//grid. Trying to resize it is crap, but if we do not draw it then the user can't do anything with it to work around the problem.
-				Logging.ErrorException(string.Format("Exception drawing element for effect {0} of size: {1} Height X {2} Width with duration of {3}.", 
-					currentElement.EffectNode.Effect.EffectName, size.Height, size.Width,currentElement.Duration), e);
+			//	//Attempt to recover until this can be reworked to really only draw what is in the visible part of the 
+			//	//grid. Trying to resize it is crap, but if we do not draw it then the user can't do anything with it to work around the problem.
+			//	Logging.ErrorException(string.Format("Exception drawing element for effect {0} of size: {1} Height X {2} Width with duration of {3}.", 
+			//		currentElement.EffectNode.Effect.EffectName, size.Height, size.Width,currentElement.Duration), e);
 
-				MessageBox.Show(
-					string.Format("Unable to draw effect {0} at time {1} due to its size. Attempting to recover by changing its length to 5 seconds. Please report this issue and provide the logs for further investigation.",
-					currentElement.EffectNode.Effect.EffectName, currentElement.StartTime));
-				MoveResizeElement(currentElement, currentElement.StartTime, TimeSpan.FromSeconds(5));
-				size = new Size((int)Math.Ceiling(timeToPixels(currentElement.Duration)), row.Height - 1);
-				elementImage = currentElement.Draw(size);
-			}
+			//	MessageBox.Show(
+			//		string.Format("Unable to draw effect {0} at time {1} due to its size. Attempting to recover by changing its length to 5 seconds. Please report this issue and provide the logs for further investigation.",
+			//		currentElement.EffectNode.Effect.EffectName, currentElement.StartTime));
+			//	MoveResizeElement(currentElement, currentElement.StartTime, TimeSpan.FromSeconds(5));
+			//	size = new Size((int)Math.Ceiling(timeToPixels(currentElement.Duration)), row.Height - 1);
+			//	elementImage = currentElement.Draw(size,g ,VisibleTimeStart, VisibleTimeEnd);
+			
+			//}
 
-			Point finalDrawLocation = new Point((int)Math.Floor(timeToPixels(currentElement.StartTime)), currentElement.DisplayTop);
+			Point finalDrawLocation = new Point((int)Math.Floor(timeToPixels(currentElement.StartTime>VisibleTimeStart?currentElement.StartTime:VisibleTimeStart)), currentElement.DisplayTop);
+			
+			
 
 			Rectangle srcRect = new Rectangle(0, 0, elementImage.Width, elementImage.Height);
+			
 			Rectangle destRect = new Rectangle(finalDrawLocation.X, finalDrawLocation.Y, size.Width, currentElement.DisplayHeight);
 			currentElement.DisplayRect = destRect;
 			g.DrawImage(elementImage,
 						destRect,
 						srcRect,
 						GraphicsUnit.Pixel);
-
-			//if (srcRect.Width != destRect.Width || srcRect.Height != destRect.Height)
-			//    currentElement.Changed = true;
-
-			//g.DrawImage(elementImage, finalDrawLocation);
-
-			//lastStartTime = currentElement.StartTime;
-			//lastEndTime = currentElement.EndTime;
+			
 		}
 
 		private void _drawInfo(Graphics g)
@@ -1680,10 +1637,8 @@ namespace Common.Controls.Timeline
 		private void _drawElements(Graphics g)
 		{
 			// Draw each row
-			int top = 0; // y-coord of top of current row
 			foreach (Row row in VisibleRows) {
-				row.DisplayTop = top;
-
+				
 				for (int i = 0; i < row.ElementCount; i++) {
 					Element currentElement = row.GetElementAtIndex(i);
 					if (currentElement.EndTime < VisibleTimeStart)
@@ -1693,16 +1648,15 @@ namespace Common.Controls.Timeline
 						break;
 					}
 
-					DrawElement(g, row, currentElement, top);
+					DrawElement(g, row, currentElement, row.DisplayTop);
 				}
 
-				top += row.Height; // next row starts just below this row
 			}
 		}
 
 		private void _drawSelection(Graphics g)
 		{
-			if (SelectionArea == null)
+			if (SelectionArea.IsEmpty)
 				return;
 
 			using (SolidBrush b = new SolidBrush(SelectionColor)) {

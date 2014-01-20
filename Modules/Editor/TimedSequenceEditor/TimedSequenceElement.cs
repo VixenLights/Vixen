@@ -17,15 +17,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 {
 	public class TimedSequenceElement : Element
 	{
-		private Object lockObject = new Object();
 		public TimedSequenceElement(EffectNode effectNode)
 			: base()
 		{
 			StartTime = effectNode.StartTime;
 			Duration = effectNode.TimeSpan;
 			EffectNode = effectNode;
-			//BorderColor = Color.Black;
-			//BackColor = Color.FromArgb(0, 0, 0, 0);
 		}
 
 		// copy ctor
@@ -38,22 +35,40 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private bool ElementTimeHasChangedSinceDraw { get; set; }
 
-		protected override void DrawCanvasContent(Graphics graphics)
+		protected override void DrawCanvasContent(Graphics g, TimeSpan startTime, TimeSpan endTime, int overallWidth)
 		{
-			EffectRasterizer.Rasterize(EffectNode.Effect, graphics);
+			EffectRasterizer.Rasterize(this, g, startTime, endTime, overallWidth);
 			ElementTimeHasChangedSinceDraw = false;			
 		}
 
 		protected override void OnTimeChanged()
 		{
-			if (this.EffectNode != null) {
-				this.EffectNode.StartTime = this.StartTime;
-				this.EffectNode.Effect.TimeSpan = this.Duration;
+			if (!suspendEvents)
+			{
+				if (this.EffectNode != null)
+				{
+					this.EffectNode.StartTime = this.StartTime;
+					this.EffectNode.Effect.TimeSpan = this.Duration;
+				}
+
+				ElementTimeHasChangedSinceDraw = true;
+
+				base.OnTimeChanged();	
 			}
+			
+		}
 
-			ElementTimeHasChangedSinceDraw = true;
-
-			base.OnTimeChanged();
+		protected override void OnTargetNodesChanged()
+		{
+			if (!suspendEvents)
+			{
+				if (EffectNode != null)
+				{
+					EffectNode.Effect.TargetNodes = TargetNodes;
+				}
+				base.OnTargetNodesChanged();	
+			}
+			
 		}
 	}
 }
