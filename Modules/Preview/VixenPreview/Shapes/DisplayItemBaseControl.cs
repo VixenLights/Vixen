@@ -31,12 +31,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			set { _title = value; }
 		}
 
-		//public DisplayItem DisplayItem
-		//{
-		//    get { return _displayItem; }
-		//    set { _displayItem = value; }
-		//}    }
-
 		public PreviewBaseShape Shape
 		{
 			get { return _shape; }

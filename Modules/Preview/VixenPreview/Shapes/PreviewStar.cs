@@ -38,7 +38,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			_insideSize = 40;
 
 			if (selectedNode != null) {
-				//List<ElementNode> children = selectedNode.Children.ToList();
 				List<ElementNode> children = PreviewTools.GetLeafNodes(selectedNode);
 				// is this a single node?
 				if (children.Count >= 10) {
@@ -47,7 +46,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					foreach (ElementNode child in children) {
 						PreviewPixel pixel = AddPixel(10, 10);
 						pixel.Node = child;
-						//pixel.NodeId = child.Id;
 						pixel.PixelColor = Color.White;
 					}
 					_pixelCount = children.Count;
@@ -61,15 +59,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					pixel.PixelColor = Color.White;
 					if (selectedNode != null && selectedNode.IsLeaf) {
 						pixel.Node = selectedNode;
-						//pixel.NodeId = selectedNode.Id;
 					}
 				}
 			}
 
 			// Lay out the pixels
 			Layout();
-
-			//DoResize += new ResizeEvent(OnResize);
 		}
 
 		[OnDeserialized]
@@ -298,11 +293,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 				if (_selectedPoint == _bottomRightPoint &&
 				    System.Windows.Forms.Control.ModifierKeys == System.Windows.Forms.Keys.Control) {
-					//int diffX = _bottomRightPoint.X - _topLeftPoint.X;
-					//int diffY = _bottomRightPoint.Y - _topLeftPoint.Y;
-					//_topLeftPoint.X = ;
-					//_bottomRightPoint.X += 
-					//_bottomRightPoint.Y = y;
 					_bottomRightPoint.Y = _topLeftPoint.Y + (_bottomRightPoint.X - _topLeftPoint.X);
 				}
 
@@ -318,11 +308,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				Layout();
 			}
 		}
-
-		//private void OnResize(EventArgs e)
-		//{
-		//    Layout();
-		//}
 
 		public override void SelectDragPoints()
 		{

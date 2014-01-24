@@ -31,15 +31,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 			int lightCount = 25;
 
-			//// Just add the pixels, they will get layed out next
-			//for (int lightNum = 0; lightNum < 25; lightNum++)
-			//{
-			//    PreviewPixel pixel = AddPixel(10, 10);
-			//    pixel.PixelColor = Color.White;
-			//}
-
 			if (selectedNode != null) {
-				//List<ElementNode> children = selectedNode.Children.ToList();
 				List<ElementNode> children = PreviewTools.GetLeafNodes(selectedNode);
 				// is this a single node?
 				if (children.Count >= 4) {
@@ -50,7 +42,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 						{
 							PreviewPixel pixel = AddPixel(10, 10);
 							pixel.Node = child;
-							//pixel.NodeId = child.Id;
 							pixel.PixelColor = Color.White;
 						}
 					}
@@ -64,16 +55,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					pixel.PixelColor = Color.White;
 					if (selectedNode != null && selectedNode.IsLeaf) {
 						pixel.Node = selectedNode;
-						//pixel.NodeId = selectedNode.Id;
 					}
 				}
 			}
 
-
 			// Lay out the pixels
 			Layout();
-
-			//DoResize += new ResizeEvent(OnResize);
 		}
 
 		[OnDeserialized]
@@ -207,15 +194,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			int height = _bottomRight.Y - _topLeft.Y;
 			List<Point> points;
 			points = PreviewTools.GetArcPoints(width, height, PixelCount);
-			//points = PreviewTools.GetEllipsePoints(0, 0, width/2, height/2, PixelCount*2, 180);
 			int pointNum = 0;
 			foreach (PreviewPixel pixel in _pixels) {
-				//if (pointNum < points.Count)
-				//{
 				pixel.X = points[pointNum].X + _topLeft.X;
 				pixel.Y = points[pointNum].Y + _topLeft.Y;
 				pointNum++;
-				//}
 			}
 		}
 
@@ -234,7 +217,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				_selectedPoint.X = x;
 				_selectedPoint.Y = y;
 				Layout();
-				//SelectDragPoints();
 			}
 				// If we get here, we're moving
 			else {
@@ -250,11 +232,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			BottomLeft.X = _topLeft.X;
 			BottomLeft.Y = _bottomRight.Y;
 		}
-
-		//private void OnResize(EventArgs e)
-		//{
-		//    Layout();
-		//}
 
 		public override void SelectDragPoints()
 		{
@@ -297,12 +274,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public override object Clone()
 		{
-			//PreviewArch arch = (PreviewArch)this.MemberwiseClone();
-			//arch.Pixels = new List<PreviewPixel>();
-			//foreach (PreviewPixel pixel in Pixels)
-			//{
-			//}
-			//return arch;
 			return this.MemberwiseClone();
 		}
 

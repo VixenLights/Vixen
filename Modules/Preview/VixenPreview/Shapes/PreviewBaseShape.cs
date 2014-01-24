@@ -52,7 +52,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public void OnDeserialized(StreamingContext context)
 		{
 			ResizePixels();
-			//Layout();
 		}
 
 		[DataMember,
@@ -182,13 +181,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			get
 			{
 				if (_strings != null && _strings.Count > 0) {
-					//ConcurrentBag<PreviewPixel> outPixels = new ConcurrentBag<PreviewPixel>();
-					//_strings.AsParallel().ForAll(line =>
-					//{
-					//    line.Pixels.AsParallel().ForAll(pixel => outPixels.Add(pixel));
-					//});
-					//return outPixels.ToList();
-
 					List<PreviewPixel> outPixels = new List<PreviewPixel>();
 					foreach (PreviewBaseShape line in _strings) {
 						foreach (PreviewPixel pixel in line.Pixels) {
@@ -198,16 +190,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					return outPixels.ToList();
 				}
 				else {
-					//if (_pixels != null)
-					//{
-					//    if (this.GetType().ToString().ToLower() == "PreviewNet") 
-					//        Console.WriteLine(this.GetType().ToString() + ": " + _pixels.Count);
-					//}
-					//else 
-					//{
-					//    Console.WriteLine(this.GetType().ToString() + ": " + "_pixels=null");
-					//}
-
 					return _pixels;
 				}
 			}
@@ -222,8 +204,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			get
 			{
 				if (_strings != null) {
-					// No parallel here. There's not much going on
-
 					//Instead of going through the strings multiple times.. do it once
 					// set all the sub-strings to match the connection state for elements
 					foreach (PreviewBaseShape line in _strings)
@@ -252,8 +232,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			set
 			{
 				_pixelColor = value;
-				// Never enough items to justify parallel
-				//_pixels.AsParallel().ForAll(p => p.PixelColor = _pixelColor);
 				foreach (PreviewPixel pixel in _pixels) {
 					pixel.PixelColor = _pixelColor;
 				}
@@ -316,8 +294,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public void SetSelectPoints(List<PreviewPoint> selectPoints, List<PreviewPoint> skewPoints)
 		{
 			_selectPoints = selectPoints;
-			// Not enough points here to justify parallel
-			//_selectPoints.Where(p => p != null).AsParallel().ForAll(p => p.PointType = PreviewPoint.PointTypes.Size);
 			foreach (PreviewPoint p in _selectPoints)
 				if (p != null)
 					p.PointType = PreviewPoint.PointTypes.Size;
@@ -335,25 +311,18 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public virtual void ResizePixels()
 		{
 			if (Pixels != null) {
-				//Pixels.AsParallel().ForAll(p => p.PixelSize = PixelSize);
 				foreach (PreviewPixel pixel in Pixels) {
 					pixel.PixelSize = PixelSize;
 				}
 			}
 
 			if (_strings != null && _strings.Count > 0) {
-				//_strings.AsParallel().ForAll(s => s.PixelSize = PixelSize);
-
 				foreach (PreviewBaseShape shape in _strings) {
 					shape.PixelSize = PixelSize;
 				}
 			}
 			else {
 				if (Pixels != null) {
-					//Pixels.AsParallel().ForAll(p => {
-					//    p.PixelSize = PixelSize;
-					//    p.Resize();
-					//});
 					foreach (PreviewPixel pixel in Pixels) {
 						pixel.PixelSize = PixelSize;
 						pixel.Resize();
@@ -387,11 +356,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public virtual void Draw(FastPixel.FastPixel fp, bool editMode, List<ElementNode> highlightedElements, bool selected,
 		                         bool forceDraw)
 		{
-			//Pixels.AsParallel().ForAll(pixel => {
 			foreach (PreviewPixel pixel in Pixels) {
 				DrawPixel(pixel, fp, editMode, highlightedElements, selected, forceDraw);
 			}
-			//});
 
 			DrawSelectPoints(fp);
 		}

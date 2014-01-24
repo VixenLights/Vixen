@@ -22,19 +22,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			AddPoint(point2);
 
 			if (selectedNode != null) {
-				//List<ElementNode> children = selectedNode.Children.ToList();
 				List<ElementNode> children = PreviewTools.GetLeafNodes(selectedNode);
 				// is this a single node?
 				if (children.Count == 0) {
 					StringType = StringTypes.Standard;
 					// Just add the pixels, they will get layed out next
 					for (int lightNum = 0; lightNum < lightCount; lightNum++) {
-						//Console.WriteLine("Added: " + lightNum.ToString());
 						PreviewPixel pixel = AddPixel(10, 10);
 						pixel.PixelColor = Color.White;
 						if (selectedNode.IsLeaf)
 							pixel.Node = selectedNode;
-						//pixel.NodeId = selectedNode.Id;
 					}
 				}
 				else {
@@ -61,8 +58,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 			// Lay out the pixels
 			Layout();
-
-			//DoResize += new ResizeEvent(OnResize);
 		}
 
 		[OnDeserialized]
@@ -175,11 +170,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				Layout();
 			}
 		}
-
-		//private void OnResize(EventArgs e)
-		//{
-		//    Layout();
-		//}
 
 		public override void SelectDragPoints()
 		{

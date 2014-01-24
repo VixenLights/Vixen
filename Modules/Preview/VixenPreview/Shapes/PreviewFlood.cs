@@ -40,8 +40,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 			// Lay out the flood
 			Layout();
-
-			//DoResize += new ResizeEvent(OnResize);
 		}
 
 		[OnDeserialized]

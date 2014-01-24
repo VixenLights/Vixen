@@ -133,11 +133,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 			set
 			{
-				//int x = int.MaxValue;
-				//foreach (PreviewBaseShape shape in Strings)
-				//{
-				//    x = Math.Min(x, shape.Left);
-				//}
 				int delta = Left - value;
 				foreach (PreviewBaseShape shape in Strings) {
 					shape.Left -= delta;
@@ -174,7 +169,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					shape.ResizeFromOriginal(aspect);
 				}
 				MoveTo(topLeftStart.X, topLeftStart.Y);
-				//Layout();
 			}
 				// If we get here, we're moving
 			else {

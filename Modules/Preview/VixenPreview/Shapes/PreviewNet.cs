@@ -250,12 +250,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				Layout();
 			}
 		}
-
-		//private void OnResize(EventArgs e)
-		//{
-		//    Layout();
-		//}
-
+        
 		public override void Select(bool selectDragPoints)
 		{
 			base.Select(selectDragPoints);

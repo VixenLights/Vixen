@@ -26,10 +26,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			_topLeft = point1;
 			_bottomRight = new PreviewPoint(_topLeft.X, _topLeft.Y);
-			//_lightCount = lightCount;
 
 			if (selectedNode != null) {
-				//List<ElementNode> children = selectedNode.Children.ToList();
 				List<ElementNode> children = PreviewTools.GetLeafNodes(selectedNode);
 				// is this a single node?
 				if (children.Count >= 4) {
@@ -48,21 +46,17 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 
 			if (_pixels.Count == 0) {
-				// Just add the pixels, they will get layed out next
 				for (int lightNum = 0; lightNum < lightCount; lightNum++) {
 					PreviewPixel pixel = AddPixel(10, 10);
 					pixel.PixelColor = Color.White;
 					if (selectedNode != null && selectedNode.IsLeaf) {
 						pixel.Node = selectedNode;
-						//pixel.NodeId = selectedNode.Id;
 					}
 				}
 			}
 
 			// Lay out the pixels
 			Layout();
-
-			//DoResize += new ResizeEvent(OnResize);
 		}
 
 		[OnDeserialized]
@@ -165,9 +159,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public override void MouseMove(int x, int y, int changeX, int changeY)
 		{
-			//if (_selectedPoint != null)
-			//{
-			// See if we're resizing
 			if (_selectedPoint != null && _selectedPoint.PointType == PreviewPoint.PointTypes.Size) {
 				if (_selectedPoint == topRight) {
 					_topLeft.Y = y;
@@ -179,7 +170,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				}
 				_selectedPoint.X = x;
 				_selectedPoint.Y = y;
-				//SelectDragPoints();
 				// If we get here, we're moving
 			}
 			else {
@@ -198,13 +188,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 			// Layout the standard shape
 			Layout();
-			//}
 		}
-
-		//private void OnResize(EventArgs e)
-		//{
-		//    Layout();
-		//}
 
 		public override void SelectDragPoints()
 		{

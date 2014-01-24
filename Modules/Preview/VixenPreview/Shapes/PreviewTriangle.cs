@@ -15,9 +15,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		[DataMember] private PreviewPoint _point1 = new PreviewPoint(10, 10);
 		[DataMember] private PreviewPoint _point2 = new PreviewPoint(10, 10);
 		[DataMember] private PreviewPoint _point3 = new PreviewPoint(10, 10);
-		private PreviewPoint _bottomRightPoint; //, _bottomPoint, _topPoint;
+		private PreviewPoint _bottomRightPoint; 
 
-		private PreviewPoint p1Start, p2Start, p3Start, pBottomRightStart; //pTopStart, pBottomStart, 
+		private PreviewPoint p1Start, p2Start, p3Start, pBottomRightStart; 
 
 		public PreviewTriangle(PreviewPoint point1, ElementNode selectedNode)
 		{
@@ -29,16 +29,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			_strings = new List<PreviewBaseShape>();
 
 			if (selectedNode != null) {
-				//List<ElementNode> children = selectedNode.Children.ToList();
 				List<ElementNode> children = PreviewTools.GetLeafNodes(selectedNode);
 				if (children.Count >= 6)
-					//int childCount = PreviewTools.CountChildElementsInNode(selectedNode);
-					//if (childCount >= 6)
+                    //
 				{
 					int increment = children.Count/3;
 					int pixelsLeft = children.Count;
-					//int increment = childCount / 3;
-					//int pixelsLeft = childCount;
 
 					StringType = StringTypes.Pixel;
 
@@ -77,8 +73,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 
 			Layout();
-
-			//DoResize += new ResizeEvent(OnResize);
 		}
 
 		[OnDeserialized]
@@ -268,11 +262,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				Layout();
 			}
 		}
-
-		//private void OnResize(EventArgs e)
-		//{
-		//    Layout();
-		//}
 
 		public override void Select(bool selectDragPoints)
 		{

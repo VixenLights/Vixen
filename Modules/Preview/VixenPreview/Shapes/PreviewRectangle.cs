@@ -79,8 +79,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 
 			Layout();
-
-			//DoResize += new ResizeEvent(OnResize);
 		}
 
 		[OnDeserialized]
@@ -244,23 +242,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public override void Layout()
 		{
-			// Old stupid way
-			//(Strings[0] as PreviewLine).Point1 = TopLeftPoint;
-			//(Strings[0] as PreviewLine).Point2 = TopRightPoint;
-			//(Strings[0] as PreviewLine).Layout();
-
-			//(Strings[1] as PreviewLine).Point1 = TopRightPoint;
-			//(Strings[1] as PreviewLine).Point2 = BottomRightPoint;
-			//(Strings[1] as PreviewLine).Layout();
-
-			//(Strings[2] as PreviewLine).Point1 = BottomLeftPoint;
-			//(Strings[2] as PreviewLine).Point2 = BottomRightPoint;
-			//(Strings[2] as PreviewLine).Layout();
-
-			//(Strings[3] as PreviewLine).Point1 = TopLeftPoint;
-			//(Strings[3] as PreviewLine).Point2 = BottomLeftPoint;
-			//(Strings[3] as PreviewLine).Layout();
-
 			// Start in the lower left corner and move clockwise around the rectangle.
 			if (Direction == Directions.CounterClockwise)
 			{
@@ -326,12 +307,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				Layout();
 			}
 		}
-
-		//private void OnResize(EventArgs e)
-		//{
-		//    Layout();
-		//}
-
+        
 		public override void Select(bool selectDragPoints)
 		{
 			base.Select(selectDragPoints);

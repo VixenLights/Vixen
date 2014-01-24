@@ -45,12 +45,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			int childLightCount;
 			if (IsPixelGridSelected(selectedNode, out childLightCount)) {
 				StringType = StringTypes.Pixel;
-				//_lightsPerString = childLightCount;
 				foreach (ElementNode child in selectedNode.Children) {
 					PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(10, 10), childLightCount, child);
 					_strings.Add(line);
 				}
-				//StringCount = _strings.Count;
 				LightsPerString = childLightCount;
 			}
 			else if (IsStandardGridSelected(selectedNode)) {
@@ -59,7 +57,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(10, 10), defaultLightsPerString, child);
 					_strings.Add(line);
 				}
-				//StringCount = _strings.Count;
 			}
 			else {
 				// Just add the pixels, we don't care where they go... they get positioned in Layout()
@@ -393,25 +390,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 			return newGrid;
 		}
-
-		//[Editor(typeof (PreviewSetElementsUIEditor), typeof (UITypeEditor)),
-		// CategoryAttribute("Settings"),
-		// DisplayName("Linked Elements")]
-		//public override List<PreviewBaseShape> Strings
-		//{
-		//	get
-		//	{
-		//		Layout();
-		//		List<PreviewBaseShape> stringsResult;
-		//		stringsResult = _strings;
-		//		if (stringsResult == null) {
-		//			stringsResult = new List<PreviewBaseShape>();
-		//			stringsResult.Add(this);
-		//		}
-		//		return stringsResult;
-		//	}
-		//	set { }
-		//}
 
 		public override void MoveTo(int x, int y)
 		{
