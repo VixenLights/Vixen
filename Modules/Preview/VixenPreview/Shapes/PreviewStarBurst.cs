@@ -249,8 +249,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 {
                     _selectedPoint.X = x;
                     _selectedPoint.Y = y;
-                    //_topRight.X = x;
-                    //_bottomLeft.Y = y;
                 }
 
                 if (_selectedPoint == _topRight) {

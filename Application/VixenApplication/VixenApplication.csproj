@@ -177,6 +177,12 @@
     <Compile Include="SelectProfile.Designer.cs">
       <DependentUpon>SelectProfile.cs</DependentUpon>
     </Compile>
+    <Compile Include="Setup\ElementTemplates\StarBurst.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Setup\ElementTemplates\StarBurst.Designer.cs">
+      <DependentUpon>StarBurst.cs</DependentUpon>
+    </Compile>
     <Compile Include="Setup\ElementTemplates\Megatree.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -291,6 +297,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SelectProfile.resx">
       <DependentUpon>SelectProfile.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Setup\ElementTemplates\StarBurst.resx">
+      <DependentUpon>StarBurst.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Setup\ElementTemplates\Megatree.resx">
       <DependentUpon>Megatree.cs</DependentUpon>

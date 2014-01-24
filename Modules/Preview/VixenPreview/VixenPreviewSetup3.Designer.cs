@@ -63,6 +63,7 @@
             this.comboBoxTemplates = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
             this.panel4 = new System.Windows.Forms.Panel();
+            this.buttonStarBurst = new System.Windows.Forms.Button();
             this.buttonPixelGrid = new System.Windows.Forms.Button();
             this.buttonStar = new System.Windows.Forms.Button();
             this.buttonNet = new System.Windows.Forms.Button();
@@ -100,7 +101,6 @@
             this.useDirect2DPreviewRenderingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveLocationsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.buttonStarBurst = new System.Windows.Forms.Button();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.panelToolbar.SuspendLayout();
             this.panel7.SuspendLayout();
@@ -126,7 +126,7 @@
             this.panelToolbar.Controls.Add(this.panel2);
             this.panelToolbar.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelToolbar.Location = new System.Drawing.Point(0, 28);
-            this.panelToolbar.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.panelToolbar.Margin = new System.Windows.Forms.Padding(4);
             this.panelToolbar.Name = "panelToolbar";
             this.panelToolbar.Size = new System.Drawing.Size(1179, 96);
             this.panelToolbar.TabIndex = 7;
@@ -138,7 +138,7 @@
             this.panel7.Controls.Add(this.label6);
             this.panel7.Controls.Add(this.buttonHelp);
             this.panel7.Location = new System.Drawing.Point(1032, 4);
-            this.panel7.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.panel7.Margin = new System.Windows.Forms.Padding(4);
             this.panel7.Name = "panel7";
             this.panel7.Size = new System.Drawing.Size(71, 91);
             this.panel7.TabIndex = 13;
@@ -161,7 +161,7 @@
             this.buttonHelp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonHelp.Image = ((System.Drawing.Image)(resources.GetObject("buttonHelp.Image")));
             this.buttonHelp.Location = new System.Drawing.Point(8, 6);
-            this.buttonHelp.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonHelp.Margin = new System.Windows.Forms.Padding(4);
             this.buttonHelp.Name = "buttonHelp";
             this.buttonHelp.Size = new System.Drawing.Size(53, 49);
             this.buttonHelp.TabIndex = 0;
@@ -174,7 +174,7 @@
             this.panel6.Controls.Add(this.label8);
             this.panel6.Controls.Add(this.buttonSelect);
             this.panel6.Location = new System.Drawing.Point(189, 4);
-            this.panel6.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.panel6.Margin = new System.Windows.Forms.Padding(4);
             this.panel6.Name = "panel6";
             this.panel6.Size = new System.Drawing.Size(71, 91);
             this.panel6.TabIndex = 12;
@@ -197,7 +197,7 @@
             this.buttonSelect.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonSelect.Image = ((System.Drawing.Image)(resources.GetObject("buttonSelect.Image")));
             this.buttonSelect.Location = new System.Drawing.Point(8, 6);
-            this.buttonSelect.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonSelect.Margin = new System.Windows.Forms.Padding(4);
             this.buttonSelect.Name = "buttonSelect";
             this.buttonSelect.Size = new System.Drawing.Size(53, 49);
             this.buttonSelect.TabIndex = 0;
@@ -211,7 +211,7 @@
             this.panel1.Controls.Add(this.label5);
             this.panel1.Controls.Add(this.buttonSave);
             this.panel1.Location = new System.Drawing.Point(1103, 4);
-            this.panel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.panel1.Margin = new System.Windows.Forms.Padding(4);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(71, 91);
             this.panel1.TabIndex = 11;
@@ -234,7 +234,7 @@
             this.buttonSave.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonSave.Image = ((System.Drawing.Image)(resources.GetObject("buttonSave.Image")));
             this.buttonSave.Location = new System.Drawing.Point(8, 6);
-            this.buttonSave.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonSave.Margin = new System.Windows.Forms.Padding(4);
             this.buttonSave.Name = "buttonSave";
             this.buttonSave.Size = new System.Drawing.Size(53, 49);
             this.buttonSave.TabIndex = 0;
@@ -251,7 +251,7 @@
             this.panel5.Controls.Add(this.comboBoxTemplates);
             this.panel5.Controls.Add(this.label4);
             this.panel5.Location = new System.Drawing.Point(513, 4);
-            this.panel5.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.panel5.Margin = new System.Windows.Forms.Padding(4);
             this.panel5.Name = "panel5";
             this.panel5.Size = new System.Drawing.Size(298, 91);
             this.panel5.TabIndex = 10;
@@ -263,7 +263,7 @@
             this.buttonTemplateHelp.FlatAppearance.BorderSize = 0;
             this.buttonTemplateHelp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonTemplateHelp.Location = new System.Drawing.Point(257, 6);
-            this.buttonTemplateHelp.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonTemplateHelp.Margin = new System.Windows.Forms.Padding(4);
             this.buttonTemplateHelp.Name = "buttonTemplateHelp";
             this.buttonTemplateHelp.Size = new System.Drawing.Size(29, 27);
             this.buttonTemplateHelp.TabIndex = 7;
@@ -278,7 +278,7 @@
             this.buttonDeleteTemplate.FlatAppearance.BorderSize = 0;
             this.buttonDeleteTemplate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonDeleteTemplate.Location = new System.Drawing.Point(223, 6);
-            this.buttonDeleteTemplate.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonDeleteTemplate.Margin = new System.Windows.Forms.Padding(4);
             this.buttonDeleteTemplate.Name = "buttonDeleteTemplate";
             this.buttonDeleteTemplate.Size = new System.Drawing.Size(29, 27);
             this.buttonDeleteTemplate.TabIndex = 6;
@@ -291,7 +291,7 @@
             this.buttonAddToPreview.Image = ((System.Drawing.Image)(resources.GetObject("buttonAddToPreview.Image")));
             this.buttonAddToPreview.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.buttonAddToPreview.Location = new System.Drawing.Point(43, 34);
-            this.buttonAddToPreview.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonAddToPreview.Margin = new System.Windows.Forms.Padding(4);
             this.buttonAddToPreview.Name = "buttonAddToPreview";
             this.buttonAddToPreview.Size = new System.Drawing.Size(143, 28);
             this.buttonAddToPreview.TabIndex = 5;
@@ -307,7 +307,7 @@
             this.buttonAddTemplate.FlatAppearance.BorderSize = 0;
             this.buttonAddTemplate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonAddTemplate.Location = new System.Drawing.Point(188, 6);
-            this.buttonAddTemplate.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonAddTemplate.Margin = new System.Windows.Forms.Padding(4);
             this.buttonAddTemplate.Name = "buttonAddTemplate";
             this.buttonAddTemplate.Size = new System.Drawing.Size(29, 27);
             this.buttonAddTemplate.TabIndex = 4;
@@ -320,7 +320,7 @@
             this.comboBoxTemplates.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxTemplates.FormattingEnabled = true;
             this.comboBoxTemplates.Location = new System.Drawing.Point(8, 6);
-            this.comboBoxTemplates.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.comboBoxTemplates.Margin = new System.Windows.Forms.Padding(4);
             this.comboBoxTemplates.Name = "comboBoxTemplates";
             this.comboBoxTemplates.Size = new System.Drawing.Size(176, 24);
             this.comboBoxTemplates.TabIndex = 1;
@@ -349,10 +349,25 @@
             this.panel4.Controls.Add(this.buttonSemiCircle);
             this.panel4.Controls.Add(this.buttonMegaTree);
             this.panel4.Location = new System.Drawing.Point(369, 4);
-            this.panel4.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.panel4.Margin = new System.Windows.Forms.Padding(4);
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(145, 91);
             this.panel4.TabIndex = 9;
+            // 
+            // buttonStarBurst
+            // 
+            this.buttonStarBurst.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonStarBurst.BackgroundImage")));
+            this.buttonStarBurst.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.buttonStarBurst.FlatAppearance.BorderColor = System.Drawing.Color.White;
+            this.buttonStarBurst.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonStarBurst.Location = new System.Drawing.Point(109, 6);
+            this.buttonStarBurst.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonStarBurst.Name = "buttonStarBurst";
+            this.buttonStarBurst.Size = new System.Drawing.Size(29, 27);
+            this.buttonStarBurst.TabIndex = 12;
+            this.toolTip.SetToolTip(this.buttonStarBurst, "Star Burst");
+            this.buttonStarBurst.UseVisualStyleBackColor = true;
+            this.buttonStarBurst.Click += new System.EventHandler(this.toolbarButton_Click);
             // 
             // buttonPixelGrid
             // 
@@ -361,7 +376,7 @@
             this.buttonPixelGrid.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.buttonPixelGrid.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonPixelGrid.Location = new System.Drawing.Point(75, 34);
-            this.buttonPixelGrid.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonPixelGrid.Margin = new System.Windows.Forms.Padding(4);
             this.buttonPixelGrid.Name = "buttonPixelGrid";
             this.buttonPixelGrid.Size = new System.Drawing.Size(29, 27);
             this.buttonPixelGrid.TabIndex = 11;
@@ -376,7 +391,7 @@
             this.buttonStar.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.buttonStar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonStar.Location = new System.Drawing.Point(41, 34);
-            this.buttonStar.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonStar.Margin = new System.Windows.Forms.Padding(4);
             this.buttonStar.Name = "buttonStar";
             this.buttonStar.Size = new System.Drawing.Size(29, 27);
             this.buttonStar.TabIndex = 3;
@@ -391,7 +406,7 @@
             this.buttonNet.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.buttonNet.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonNet.Location = new System.Drawing.Point(41, 6);
-            this.buttonNet.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonNet.Margin = new System.Windows.Forms.Padding(4);
             this.buttonNet.Name = "buttonNet";
             this.buttonNet.Size = new System.Drawing.Size(29, 27);
             this.buttonNet.TabIndex = 10;
@@ -406,7 +421,7 @@
             this.buttonCane.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.buttonCane.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonCane.Location = new System.Drawing.Point(8, 34);
-            this.buttonCane.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonCane.Margin = new System.Windows.Forms.Padding(4);
             this.buttonCane.Name = "buttonCane";
             this.buttonCane.Size = new System.Drawing.Size(29, 27);
             this.buttonCane.TabIndex = 1;
@@ -433,7 +448,7 @@
             this.buttonSemiCircle.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.buttonSemiCircle.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonSemiCircle.Location = new System.Drawing.Point(8, 6);
-            this.buttonSemiCircle.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonSemiCircle.Margin = new System.Windows.Forms.Padding(4);
             this.buttonSemiCircle.Name = "buttonSemiCircle";
             this.buttonSemiCircle.Size = new System.Drawing.Size(29, 27);
             this.buttonSemiCircle.TabIndex = 4;
@@ -448,7 +463,7 @@
             this.buttonMegaTree.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.buttonMegaTree.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonMegaTree.Location = new System.Drawing.Point(75, 6);
-            this.buttonMegaTree.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonMegaTree.Margin = new System.Windows.Forms.Padding(4);
             this.buttonMegaTree.Name = "buttonMegaTree";
             this.buttonMegaTree.Size = new System.Drawing.Size(29, 27);
             this.buttonMegaTree.TabIndex = 0;
@@ -466,7 +481,7 @@
             this.panel3.Controls.Add(this.buttonLine);
             this.panel3.Controls.Add(this.buttonRectangle);
             this.panel3.Location = new System.Drawing.Point(259, 4);
-            this.panel3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.panel3.Margin = new System.Windows.Forms.Padding(4);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(111, 91);
             this.panel3.TabIndex = 8;
@@ -478,7 +493,7 @@
             this.buttonTriangle.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.buttonTriangle.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonTriangle.Location = new System.Drawing.Point(41, 34);
-            this.buttonTriangle.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonTriangle.Margin = new System.Windows.Forms.Padding(4);
             this.buttonTriangle.Name = "buttonTriangle";
             this.buttonTriangle.Size = new System.Drawing.Size(29, 27);
             this.buttonTriangle.TabIndex = 5;
@@ -505,7 +520,7 @@
             this.buttonDrawPixel.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.buttonDrawPixel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonDrawPixel.Location = new System.Drawing.Point(8, 6);
-            this.buttonDrawPixel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonDrawPixel.Margin = new System.Windows.Forms.Padding(4);
             this.buttonDrawPixel.Name = "buttonDrawPixel";
             this.buttonDrawPixel.Size = new System.Drawing.Size(29, 27);
             this.buttonDrawPixel.TabIndex = 0;
@@ -520,7 +535,7 @@
             this.buttonEllipse.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.buttonEllipse.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonEllipse.Location = new System.Drawing.Point(8, 34);
-            this.buttonEllipse.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonEllipse.Margin = new System.Windows.Forms.Padding(4);
             this.buttonEllipse.Name = "buttonEllipse";
             this.buttonEllipse.Size = new System.Drawing.Size(29, 27);
             this.buttonEllipse.TabIndex = 3;
@@ -535,7 +550,7 @@
             this.buttonLine.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.buttonLine.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonLine.Location = new System.Drawing.Point(41, 6);
-            this.buttonLine.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonLine.Margin = new System.Windows.Forms.Padding(4);
             this.buttonLine.Name = "buttonLine";
             this.buttonLine.Size = new System.Drawing.Size(29, 27);
             this.buttonLine.TabIndex = 1;
@@ -550,7 +565,7 @@
             this.buttonRectangle.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.buttonRectangle.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonRectangle.Location = new System.Drawing.Point(75, 6);
-            this.buttonRectangle.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonRectangle.Margin = new System.Windows.Forms.Padding(4);
             this.buttonRectangle.Name = "buttonRectangle";
             this.buttonRectangle.Size = new System.Drawing.Size(29, 27);
             this.buttonRectangle.TabIndex = 2;
@@ -565,7 +580,7 @@
             this.panel2.Controls.Add(this.trackBarBackgroundAlpha);
             this.panel2.Controls.Add(this.buttonSetBackground);
             this.panel2.Location = new System.Drawing.Point(4, 4);
-            this.panel2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.panel2.Margin = new System.Windows.Forms.Padding(4);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(186, 91);
             this.panel2.TabIndex = 7;
@@ -586,7 +601,7 @@
             // 
             this.trackBarBackgroundAlpha.LargeChange = 10;
             this.trackBarBackgroundAlpha.Location = new System.Drawing.Point(72, 6);
-            this.trackBarBackgroundAlpha.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.trackBarBackgroundAlpha.Margin = new System.Windows.Forms.Padding(4);
             this.trackBarBackgroundAlpha.Maximum = 255;
             this.trackBarBackgroundAlpha.Name = "trackBarBackgroundAlpha";
             this.trackBarBackgroundAlpha.Size = new System.Drawing.Size(108, 56);
@@ -600,7 +615,7 @@
             this.buttonSetBackground.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonSetBackground.Image = ((System.Drawing.Image)(resources.GetObject("buttonSetBackground.Image")));
             this.buttonSetBackground.Location = new System.Drawing.Point(11, 4);
-            this.buttonSetBackground.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonSetBackground.Margin = new System.Windows.Forms.Padding(4);
             this.buttonSetBackground.Name = "buttonSetBackground";
             this.buttonSetBackground.Size = new System.Drawing.Size(53, 49);
             this.buttonSetBackground.TabIndex = 5;
@@ -611,7 +626,7 @@
             // 
             this.dockPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dockPanel.Location = new System.Drawing.Point(0, 124);
-            this.dockPanel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.dockPanel.Margin = new System.Windows.Forms.Padding(4);
             this.dockPanel.Name = "dockPanel";
             this.dockPanel.Size = new System.Drawing.Size(1179, 568);
             dockPanelGradient1.EndColor = System.Drawing.SystemColors.ControlLight;
@@ -810,21 +825,6 @@
             this.saveLocationsToolStripMenuItem.ToolTipText = "Update location properties for each preview item for positioning.";
             this.saveLocationsToolStripMenuItem.Click += new System.EventHandler(this.saveLocationsToolStripMenuItem_Click);
             // 
-            // buttonStarBurst
-            // 
-            this.buttonStarBurst.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonStarBurst.BackgroundImage")));
-            this.buttonStarBurst.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.buttonStarBurst.FlatAppearance.BorderColor = System.Drawing.Color.White;
-            this.buttonStarBurst.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonStarBurst.Location = new System.Drawing.Point(109, 6);
-            this.buttonStarBurst.Margin = new System.Windows.Forms.Padding(4);
-            this.buttonStarBurst.Name = "buttonStarBurst";
-            this.buttonStarBurst.Size = new System.Drawing.Size(29, 27);
-            this.buttonStarBurst.TabIndex = 12;
-            this.toolTip.SetToolTip(this.buttonStarBurst, "Star Burst");
-            this.buttonStarBurst.UseVisualStyleBackColor = true;
-            this.buttonStarBurst.Click += new System.EventHandler(this.toolbarButton_Click);
-            // 
             // VixenPreviewSetup3
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -835,7 +835,7 @@
             this.Controls.Add(this.menuStrip1);
             this.IsMdiContainer = true;
             this.MainMenuStrip = this.menuStrip1;
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.MinimumSize = new System.Drawing.Size(1194, 728);
             this.Name = "VixenPreviewSetup3";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
