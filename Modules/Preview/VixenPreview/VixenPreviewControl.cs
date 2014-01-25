@@ -220,6 +220,7 @@ namespace VixenModules.Preview.VixenPreview
 							_background = loadedBitmap.Clone(new Rectangle(0, 0, loadedBitmap.Width, loadedBitmap.Height),
 							                                 PixelFormat.Format32bppPArgb);
 						}
+                        fs.Close();
 					}
 				}
 				catch (Exception ex) {

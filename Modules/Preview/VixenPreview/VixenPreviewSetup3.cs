@@ -83,7 +83,9 @@ namespace VixenModules.Preview.VixenPreview {
 			if (dialogSelectBackground.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
 				// Copy the file to the Vixen folder
 				var imageFile = new System.IO.FileInfo(dialogSelectBackground.FileName);
-				var destFileName = Path.Combine(VixenPreviewDescriptor.ModulePath, imageFile.Name);
+				//var destFileName = Path.Combine(VixenPreviewDescriptor.ModulePath, imageFile.Name);
+                string imageFileName = Guid.NewGuid().ToString() + Path.GetExtension(dialogSelectBackground.FileName);
+                var destFileName = Path.Combine(VixenPreviewDescriptor.ModulePath, imageFileName);
 				var sourceFileName = imageFile.FullName;
 				if (sourceFileName != destFileName) {
 					File.Copy(sourceFileName, destFileName, true);
