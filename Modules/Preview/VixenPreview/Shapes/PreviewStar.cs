@@ -140,6 +140,24 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
+        [DataMember]
+        int _XYRotation = 0;
+        [CategoryAttribute("Settings"),
+        DescriptionAttribute("The prop can be rotated about the Z axis in the XY plane. This is the rotation angle."),
+        DisplayName("XY Rotation")]
+        public int XYRotation
+        {
+            get
+            {
+                return _XYRotation;
+            }
+            set
+            {
+                _XYRotation = value;
+                Layout();
+            }
+        }
+
 		[CategoryAttribute("Settings"),
 		 DisplayName("Inside Size"),
 		 DescriptionAttribute("The size, in percent of the inside star diameter in relation to the outside diameter.")]
@@ -211,7 +229,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				                                                         outerHeight,
 				                                                         _pointCount,
 				                                                         360,
-				                                                         0);
+				                                                         XYRotation);
 
 				int innerWidth = (int) (outerWidth*_insideSize*.01);
 				if (innerWidth < 4) innerWidth = 4;
@@ -229,7 +247,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				                                                         innerHeight,
 				                                                         _pointCount,
 				                                                         360,
-				                                                         degreeOffset);
+				                                                         degreeOffset + XYRotation);
 
 
 				int pixelNum = 0;

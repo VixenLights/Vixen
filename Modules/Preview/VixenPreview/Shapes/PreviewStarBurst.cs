@@ -153,6 +153,24 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
+        [DataMember]
+        int _XYRotation = 0;
+        [CategoryAttribute("Settings"),
+        DescriptionAttribute("The prop can be rotated about the Z axis in the XY plane. This is the rotation angle."),
+        DisplayName("XY Rotation")]
+        public int XYRotation
+        {
+            get
+            {
+                return _XYRotation;
+            }
+            set
+            {
+                _XYRotation = value;
+                Layout();
+            }
+        }
+
 		[CategoryAttribute("Settings"),
 		 DisplayName("Light Count per Spoke"),
 		 DescriptionAttribute("Number of pixels or lights in each spoke of the star burst.")]
