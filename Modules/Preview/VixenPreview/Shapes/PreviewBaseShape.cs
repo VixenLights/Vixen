@@ -54,6 +54,23 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			ResizePixels();
 		}
 
+        [DataMember]
+        int _XYRotation = 0;
+        [CategoryAttribute("Settings"),
+        DescriptionAttribute("The prop can be rotated about the Z axis in the XY plane. This is the rotation angle."),
+        DisplayName("XY Rotation")]
+        public int XYRotation { 
+            get
+            {
+                return _XYRotation;
+            }
+            set
+            {
+                _XYRotation = value;
+                Layout();
+            } 
+        }
+
 		[DataMember,
 		 CategoryAttribute("Settings"),
 		 DescriptionAttribute("The name of this string. Used in templates to distinguish various strings."),

@@ -211,7 +211,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				                                                     height,
 				                                                     Strings.Count,
 				                                                     360,
-				                                                     0);
+				                                                     XYRotation);
 
             List<Point> innerEllipse = PreviewTools.GetEllipsePoints(centerX - (InnerCircleSize/2),
                                                                      centerY - (InnerCircleSize / 2),
@@ -219,7 +219,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                                                                      InnerCircleSize,
                                                                      Strings.Count,
                                                                      360,
-                                                                     0);
+                                                                     XYRotation);
             int pointNum = 0;
             foreach (PreviewLine line in Strings) {
                 line.Point1 = innerEllipse[pointNum];
