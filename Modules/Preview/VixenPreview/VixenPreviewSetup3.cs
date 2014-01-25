@@ -245,8 +245,16 @@ namespace VixenModules.Preview.VixenPreview {
 			ResizePreviewForm resizeForm = new ResizePreviewForm(previewForm.Preview.Background.Width,
 																 previewForm.Preview.Background.Height);
 			if (resizeForm.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-				previewForm.Preview.ResizeBackground(resizeForm.Width, resizeForm.Height);
-			}
+                if (resizeForm.Height > 10 && resizeForm.Width > 10)
+                {
+                    previewForm.Preview.ResizeBackground(resizeForm.Width, resizeForm.Height);
+                    previewForm.Refresh();
+                }
+                else
+                {
+                    MessageBox.Show("An invalid image size was specified!", "Invalid Size", MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
+                }
+            }
 		}
 
 		#region Templates

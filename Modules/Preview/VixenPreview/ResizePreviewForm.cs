@@ -13,6 +13,7 @@ namespace VixenModules.Preview.VixenPreview
 	{
 		private int _origWidth, _origHeight;
 		private int _newWidth, _newHeight;
+        private bool _lockAspect = true;
 
 		public ResizePreviewForm(int width, int height)
 		{
@@ -44,17 +45,41 @@ namespace VixenModules.Preview.VixenPreview
 			numericHeight.Value = _origHeight;
 			labelWidth.Text = _origWidth.ToString();
 			labelHeight.Text = _origHeight.ToString();
-		}
-
-		private void numericWidth_Leave(object sender, EventArgs e)
-		{
-			double aspect = (double) numericWidth.Value/(double) _origWidth;
-			numericHeight.Value = (int) ((double) _origHeight*aspect);
-		}
+            SetupAspect();
+        }
 
 		private void buttonHelp_Click(object sender, EventArgs e)
 		{
 			Common.VixenHelp.VixenHelp.ShowHelp(Common.VixenHelp.VixenHelp.HelpStrings.Preview_Background);
 		}
+
+        private void pictureBoxLock_Click(object sender, EventArgs e)
+        {
+            _lockAspect = !_lockAspect;
+            SetupAspect();
+        }
+
+        private void SetupAspect()
+        {
+            if (_lockAspect)
+            {
+                pictureBoxLock.Image = imageListLocks.Images["link"];
+                numericHeight.Enabled = false;
+            }
+            else
+            {
+                pictureBoxLock.Image = imageListLocks.Images["unlink"];
+                numericHeight.Enabled = true;
+            }
+        }
+
+        private void numericWidth_ValueChanged(object sender, EventArgs e)
+        {
+            if (numericHeight.Value < 10) numericHeight.Value = 10;
+            if (_lockAspect) { 
+                double aspect = (double)numericWidth.Value / (double)_origWidth;
+                numericHeight.Value = (int)((double)_origHeight * aspect);
+            }
+        }
 	}
 }

@@ -267,12 +267,12 @@ namespace VixenModules.Preview.VixenPreview
 
 		private int lastWidth = 0, lastHeight = 0;
 
-		private void AllocateGraphicsBuffer()
+		private void AllocateGraphicsBuffer(bool forceAllocation)
 		{
 			if (!Disposing) {
 				context = BufferedGraphicsManager.Current;
 				if (context != null) {
-					if (this.Width > 0 && this.Height > 0 && (this.Height != lastHeight || this.Width != lastWidth)) {
+					if (this.Width > 0 && this.Height > 0 && (this.Height != lastHeight || this.Width != lastWidth || forceAllocation)) {
 						lastHeight = this.Height;
 						lastWidth = this.Width;
 
@@ -984,6 +984,7 @@ namespace VixenModules.Preview.VixenPreview
 			foreach (Shapes.DisplayItem item in DisplayItems) {
 				item.Shape.Resize(aspect);
 			}
+            EraseScreen();
 		}
 
 		#region Templates
@@ -1207,7 +1208,7 @@ namespace VixenModules.Preview.VixenPreview
 				// No, this doesn't allocate every time. It first checks to see if the screen is 
 				// resized or the graphics buffer is not allocated. So it is checked for validity every time
 				// and re-allocated only if the something changed.
-				AllocateGraphicsBuffer();
+				AllocateGraphicsBuffer(false);
 
 			// First, draw our background image opaque
 			bufferedGraphics.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
@@ -1313,7 +1314,7 @@ namespace VixenModules.Preview.VixenPreview
 			renderTimer.Reset();
 			renderTimer.Start();
 
-			AllocateGraphicsBuffer();
+			AllocateGraphicsBuffer(false);
 
 			if (_background != null) {
 				FastPixel.FastPixel fp = new FastPixel.FastPixel(new Bitmap(_alphaBackground));
@@ -1353,6 +1354,12 @@ namespace VixenModules.Preview.VixenPreview
 			renderTimer.Stop();
 			lastRenderUpdateTime = renderTimer.ElapsedMilliseconds;
 		}
+
+        public void EraseScreen()
+        {
+            bufferedGraphics.Graphics.Clear(Color.Black);
+            //bufferedGraphics.Render(Graphics.FromHwnd(this.Handle));
+        }
 
 		#endregion
 
