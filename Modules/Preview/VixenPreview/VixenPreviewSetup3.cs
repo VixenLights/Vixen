@@ -185,7 +185,36 @@ namespace VixenModules.Preview.VixenPreview {
 			//buttonSelect.Focus();
 		}
 
-		private void trackBarBackgroundAlpha_ValueChanged(object sender, EventArgs e) {
+        private void toolbarAlignButton_Click(object sender, EventArgs e)
+        {
+            Button button = sender as Button;
+            if (button == buttonAlignBottom)
+            {
+                previewForm.Preview.AlignBottom();
+            }
+            else if (button == buttonAlignHorizMid)
+            {
+                previewForm.Preview.AlignHorizontal();
+            }
+            else if (button == buttonAlignLeft)
+            {
+                previewForm.Preview.AlignLeft();
+            }
+            else if (button == buttonAlignRight)
+            {
+                previewForm.Preview.AlignRight();
+            }
+            else if (button == buttonAlignTop)
+            {
+                previewForm.Preview.AlignTop();
+            }
+            else if (button == buttonAlignVertMid)
+            {
+                previewForm.Preview.AlignVertical();
+            }
+        }
+
+        private void trackBarBackgroundAlpha_ValueChanged(object sender, EventArgs e) {
 			previewForm.Preview.BackgroundAlpha = trackBarBackgroundAlpha.Value;
 		}
 

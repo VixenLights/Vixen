@@ -183,14 +183,31 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public override int Top
 		{
-			get { return _topLeft.Y; }
-			set { }
+			get 
+            { 
+                return _topLeft.Y; 
+            }
+			set 
+            {
+                _bottomLeft.Y = value + (_bottomLeft.Y - _topLeft.Y);
+                _topLeft.Y = value;
+                Layout();
+            }
 		}
 
 		public override int Left
 		{
-			get { return _topLeft.X; }
-			set { }
+			get 
+            { 
+                return _topLeft.X; 
+            }
+			set 
+            {
+                _bottomRight.X = value + (_bottomRight.X - _topLeft.X);
+                _topLeft.X = value;
+                _bottomLeft.X = value;
+                Layout();
+            }
 		}
 
 		public PreviewPoint BottomRight

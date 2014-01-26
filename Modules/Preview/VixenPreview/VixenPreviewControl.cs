@@ -309,19 +309,31 @@ namespace VixenModules.Preview.VixenPreview
 			return false;
 		}
 
-		private void SelectItemUnderPoint(PreviewPoint point)
+		private void SelectItemUnderPoint(PreviewPoint point, bool addToSelection)
 		{
 			if (!_mouseCaptured)
 			{
-				// First, deselect any currently selected item
-				DeSelectSelectedDisplayItem();
+                // First, see if we have an item already selected, but want to add to it
+                if (addToSelection)
+                {
+                    if (_selectedDisplayItem != null)
+                        SelectedDisplayItems.Add(_selectedDisplayItem);
+                    DeSelectSelectedDisplayItem();
+                    DisplayItem item = DisplayItemAtPoint(point);
+                    SelectedDisplayItems.Add(item);
+                }
+                else
+                {
+                    // First, deselect any currently selected item
+                    DeSelectSelectedDisplayItem();
 
-				_selectedDisplayItem = DisplayItemAtPoint(point);
-				if (_selectedDisplayItem != null)
-				{
-					_selectedDisplayItem.Shape.Select(true);
-					OnSelectDisplayItem(this, _selectedDisplayItem);
-				}
+                    _selectedDisplayItem = DisplayItemAtPoint(point);
+                    if (_selectedDisplayItem != null)
+                    {
+                        _selectedDisplayItem.Shape.Select(true);
+                        OnSelectDisplayItem(this, _selectedDisplayItem);
+                    }
+                }
 			}
 		}
 
@@ -331,11 +343,17 @@ namespace VixenModules.Preview.VixenPreview
 		private void VixenPreviewControl_MouseDown(object sender, MouseEventArgs e)
 		{
 			if (_editMode) {
-				PreviewPoint point = new PreviewPoint(e.X, e.Y);
+                bool controlPressed = Control.ModifierKeys == Keys.Control;
+                PreviewPoint point = new PreviewPoint(e.X, e.Y);
 				if (e.Button == System.Windows.Forms.MouseButtons.Left) {
+                    if (controlPressed)
+                    {
+                        SelectItemUnderPoint(point, controlPressed);
+                        return;
+                    }
 					if (_currentTool == Tools.Select) {
 						// Is there a single dislay item selected?
-						if (_selectedDisplayItem != null) {
+						if (_selectedDisplayItem != null && !controlPressed) {
 							// Lets see if we've got a drag point.
 							PreviewPoint selectedPoint = _selectedDisplayItem.Shape.PointInSelectPoint(point);
 							if (selectedPoint != null) {
@@ -356,7 +374,7 @@ namespace VixenModules.Preview.VixenPreview
 						}
 							// Are there multiple items selected?
 							// If so, we're moving, can't resize them...
-						else if (SelectedDisplayItems.Count > 1) {
+						else if (SelectedDisplayItems.Count > 1 && !controlPressed) {
 							if (MouseOverSelectedDisplayItems(e.X, e.Y)) {
 								//_selectedDisplayItem.Shape.SetSelectPoint(null);
 								StartMove(e.X, e.Y);
@@ -373,7 +391,7 @@ namespace VixenModules.Preview.VixenPreview
 						//        OnSelectDisplayItem(this, _selectedDisplayItem);
 						//    }
 						//}
-						SelectItemUnderPoint(point);
+						SelectItemUnderPoint(point, controlPressed);
 
 						// If we get this far, and we've got nothing selected, we're drawing a rubber band!
 						if (_selectedDisplayItem == null && SelectedDisplayItems.Count == 0) {
@@ -465,7 +483,7 @@ namespace VixenModules.Preview.VixenPreview
 					ContextMenu menu = null;
 					MenuItem item;
 
-					SelectItemUnderPoint(point);
+					SelectItemUnderPoint(point, false);
 
 					if (_selectedDisplayItem != null) {
 						PreviewPoint selectedPoint = _selectedDisplayItem.Shape.PointInSelectPoint(point);
@@ -1069,7 +1087,70 @@ namespace VixenModules.Preview.VixenPreview
 
 		#endregion
 
-		//#region "Update in a BeginInvoke"
+        #region Alignment Tools
+
+        public void AlignLeft()
+        {
+            foreach (PreviewBaseShape shape in SelectedShapes())
+            {
+                if (shape != SelectedShapes()[0])
+                    shape.Left = SelectedShapes()[0].Left;
+            }
+        }
+
+        public void AlignRight()
+        {
+            foreach (PreviewBaseShape shape in SelectedShapes())
+            {
+                if (shape != SelectedShapes()[0])
+                    shape.Left = SelectedShapes()[0].Right - (shape.Right - shape.Left);
+            }
+        }
+
+        public void AlignTop()
+        {
+            foreach (PreviewBaseShape shape in SelectedShapes())
+            {
+                if (shape != SelectedShapes()[0])
+                    shape.Top = SelectedShapes()[0].Top;
+            }
+        }
+
+        public void AlignBottom() 
+        {
+            foreach (PreviewBaseShape shape in SelectedShapes())
+            {
+                if (shape != SelectedShapes()[0])
+                    shape.Top = SelectedShapes()[0].Bottom - (shape.Bottom - shape.Top);
+            }
+        }
+
+        public void AlignHorizontal()
+        {
+            foreach (PreviewBaseShape shape in SelectedShapes())
+            {
+                if (shape != SelectedShapes()[0])
+                {
+                    int matchMidPoint = SelectedShapes()[0].Top + ((SelectedShapes()[0].Bottom - SelectedShapes()[0].Top) / 2);
+                    shape.Top = matchMidPoint - ((shape.Bottom - shape.Top) / 2);
+                }
+            }
+        }
+
+        public void AlignVertical()
+        {
+            foreach (PreviewBaseShape shape in SelectedShapes())
+            {
+                if (shape != SelectedShapes()[0])
+                {
+                    int matchMidPoint = SelectedShapes()[0].Left + ((SelectedShapes()[0].Right - SelectedShapes()[0].Left) / 2);
+                    shape.Left = matchMidPoint - ((shape.Right - shape.Left) / 2);
+                }
+            }
+        }
+        #endregion
+
+        //#region "Update in a BeginInvoke"
 		//public void ProcessUpdate(ElementIntentStates elementStates)
 		//{
 		//    renderTimer.Reset();

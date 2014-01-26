@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(VixenPreviewSetup3));
             WeifenLuo.WinFormsUI.Docking.DockPanelSkin dockPanelSkin1 = new WeifenLuo.WinFormsUI.Docking.DockPanelSkin();
             WeifenLuo.WinFormsUI.Docking.AutoHideStripSkin autoHideStripSkin1 = new WeifenLuo.WinFormsUI.Docking.AutoHideStripSkin();
             WeifenLuo.WinFormsUI.Docking.DockPanelGradient dockPanelGradient1 = new WeifenLuo.WinFormsUI.Docking.DockPanelGradient();
@@ -45,6 +44,7 @@
             WeifenLuo.WinFormsUI.Docking.DockPanelGradient dockPanelGradient3 = new WeifenLuo.WinFormsUI.Docking.DockPanelGradient();
             WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient6 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
             WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient7 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(VixenPreviewSetup3));
             this.panelToolbar = new System.Windows.Forms.Panel();
             this.panel7 = new System.Windows.Forms.Panel();
             this.label6 = new System.Windows.Forms.Label();
@@ -102,6 +102,14 @@
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveLocationsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.panel8 = new System.Windows.Forms.Panel();
+            this.label7 = new System.Windows.Forms.Label();
+            this.buttonAlignVertMid = new System.Windows.Forms.Button();
+            this.buttonAlignLeft = new System.Windows.Forms.Button();
+            this.buttonAlignHorizMid = new System.Windows.Forms.Button();
+            this.buttonAlignTop = new System.Windows.Forms.Button();
+            this.buttonAlignRight = new System.Windows.Forms.Button();
+            this.buttonAlignBottom = new System.Windows.Forms.Button();
             this.panelToolbar.SuspendLayout();
             this.panel7.SuspendLayout();
             this.panel6.SuspendLayout();
@@ -112,11 +120,13 @@
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarBackgroundAlpha)).BeginInit();
             this.menuStrip1.SuspendLayout();
+            this.panel8.SuspendLayout();
             this.SuspendLayout();
             // 
             // panelToolbar
             // 
             this.panelToolbar.BackColor = System.Drawing.Color.White;
+            this.panelToolbar.Controls.Add(this.panel8);
             this.panelToolbar.Controls.Add(this.panel7);
             this.panelToolbar.Controls.Add(this.panel6);
             this.panelToolbar.Controls.Add(this.panel1);
@@ -250,7 +260,7 @@
             this.panel5.Controls.Add(this.buttonAddTemplate);
             this.panel5.Controls.Add(this.comboBoxTemplates);
             this.panel5.Controls.Add(this.label4);
-            this.panel5.Location = new System.Drawing.Point(513, 4);
+            this.panel5.Location = new System.Drawing.Point(623, 4);
             this.panel5.Margin = new System.Windows.Forms.Padding(4);
             this.panel5.Name = "panel5";
             this.panel5.Size = new System.Drawing.Size(298, 91);
@@ -709,14 +719,14 @@
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(102, 24);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(175, 24);
             this.exitToolStripMenuItem.Text = "E&xit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(99, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(172, 6);
             // 
             // viewToolStripMenuItem
             // 
@@ -825,6 +835,124 @@
             this.saveLocationsToolStripMenuItem.ToolTipText = "Update location properties for each preview item for positioning.";
             this.saveLocationsToolStripMenuItem.Click += new System.EventHandler(this.saveLocationsToolStripMenuItem_Click);
             // 
+            // panel8
+            // 
+            this.panel8.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel8.Controls.Add(this.buttonAlignBottom);
+            this.panel8.Controls.Add(this.buttonAlignRight);
+            this.panel8.Controls.Add(this.buttonAlignVertMid);
+            this.panel8.Controls.Add(this.buttonAlignLeft);
+            this.panel8.Controls.Add(this.buttonAlignHorizMid);
+            this.panel8.Controls.Add(this.buttonAlignTop);
+            this.panel8.Controls.Add(this.label7);
+            this.panel8.Location = new System.Drawing.Point(513, 4);
+            this.panel8.Margin = new System.Windows.Forms.Padding(4);
+            this.panel8.Name = "panel8";
+            this.panel8.Size = new System.Drawing.Size(111, 91);
+            this.panel8.TabIndex = 14;
+            // 
+            // label7
+            // 
+            this.label7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
+            this.label7.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.label7.Location = new System.Drawing.Point(0, 66);
+            this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(109, 23);
+            this.label7.TabIndex = 0;
+            this.label7.Text = "Align";
+            this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // buttonAlignVertMid
+            // 
+            this.buttonAlignVertMid.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonAlignVertMid.BackgroundImage")));
+            this.buttonAlignVertMid.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.buttonAlignVertMid.FlatAppearance.BorderColor = System.Drawing.Color.White;
+            this.buttonAlignVertMid.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonAlignVertMid.Location = new System.Drawing.Point(41, 34);
+            this.buttonAlignVertMid.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonAlignVertMid.Name = "buttonAlignVertMid";
+            this.buttonAlignVertMid.Size = new System.Drawing.Size(29, 27);
+            this.buttonAlignVertMid.TabIndex = 9;
+            this.toolTip.SetToolTip(this.buttonAlignVertMid, "Align Vertically");
+            this.buttonAlignVertMid.UseVisualStyleBackColor = true;
+            this.buttonAlignVertMid.Click += new System.EventHandler(this.toolbarAlignButton_Click);
+            // 
+            // buttonAlignLeft
+            // 
+            this.buttonAlignLeft.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonAlignLeft.BackgroundImage")));
+            this.buttonAlignLeft.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.buttonAlignLeft.FlatAppearance.BorderColor = System.Drawing.Color.White;
+            this.buttonAlignLeft.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonAlignLeft.Location = new System.Drawing.Point(8, 6);
+            this.buttonAlignLeft.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonAlignLeft.Name = "buttonAlignLeft";
+            this.buttonAlignLeft.Size = new System.Drawing.Size(29, 27);
+            this.buttonAlignLeft.TabIndex = 6;
+            this.toolTip.SetToolTip(this.buttonAlignLeft, "Align Left");
+            this.buttonAlignLeft.UseVisualStyleBackColor = true;
+            this.buttonAlignLeft.Click += new System.EventHandler(this.toolbarAlignButton_Click);
+            // 
+            // buttonAlignHorizMid
+            // 
+            this.buttonAlignHorizMid.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonAlignHorizMid.BackgroundImage")));
+            this.buttonAlignHorizMid.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.buttonAlignHorizMid.FlatAppearance.BorderColor = System.Drawing.Color.White;
+            this.buttonAlignHorizMid.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonAlignHorizMid.Location = new System.Drawing.Point(8, 34);
+            this.buttonAlignHorizMid.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonAlignHorizMid.Name = "buttonAlignHorizMid";
+            this.buttonAlignHorizMid.Size = new System.Drawing.Size(29, 27);
+            this.buttonAlignHorizMid.TabIndex = 8;
+            this.toolTip.SetToolTip(this.buttonAlignHorizMid, "Align Horizontally");
+            this.buttonAlignHorizMid.UseVisualStyleBackColor = true;
+            this.buttonAlignHorizMid.Click += new System.EventHandler(this.toolbarAlignButton_Click);
+            // 
+            // buttonAlignTop
+            // 
+            this.buttonAlignTop.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonAlignTop.BackgroundImage")));
+            this.buttonAlignTop.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.buttonAlignTop.FlatAppearance.BorderColor = System.Drawing.Color.White;
+            this.buttonAlignTop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonAlignTop.Location = new System.Drawing.Point(75, 6);
+            this.buttonAlignTop.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonAlignTop.Name = "buttonAlignTop";
+            this.buttonAlignTop.Size = new System.Drawing.Size(29, 27);
+            this.buttonAlignTop.TabIndex = 7;
+            this.toolTip.SetToolTip(this.buttonAlignTop, "Align Top");
+            this.buttonAlignTop.UseVisualStyleBackColor = true;
+            this.buttonAlignTop.Click += new System.EventHandler(this.toolbarAlignButton_Click);
+            // 
+            // buttonAlignRight
+            // 
+            this.buttonAlignRight.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonAlignRight.BackgroundImage")));
+            this.buttonAlignRight.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.buttonAlignRight.FlatAppearance.BorderColor = System.Drawing.Color.White;
+            this.buttonAlignRight.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonAlignRight.Location = new System.Drawing.Point(41, 6);
+            this.buttonAlignRight.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonAlignRight.Name = "buttonAlignRight";
+            this.buttonAlignRight.Size = new System.Drawing.Size(29, 27);
+            this.buttonAlignRight.TabIndex = 10;
+            this.toolTip.SetToolTip(this.buttonAlignRight, "Align Right");
+            this.buttonAlignRight.UseVisualStyleBackColor = true;
+            this.buttonAlignRight.Click += new System.EventHandler(this.toolbarAlignButton_Click);
+            // 
+            // buttonAlignBottom
+            // 
+            this.buttonAlignBottom.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonAlignBottom.BackgroundImage")));
+            this.buttonAlignBottom.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.buttonAlignBottom.FlatAppearance.BorderColor = System.Drawing.Color.White;
+            this.buttonAlignBottom.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonAlignBottom.Location = new System.Drawing.Point(75, 34);
+            this.buttonAlignBottom.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonAlignBottom.Name = "buttonAlignBottom";
+            this.buttonAlignBottom.Size = new System.Drawing.Size(29, 27);
+            this.buttonAlignBottom.TabIndex = 12;
+            this.toolTip.SetToolTip(this.buttonAlignBottom, "Align Bottom");
+            this.buttonAlignBottom.UseVisualStyleBackColor = true;
+            this.buttonAlignBottom.Click += new System.EventHandler(this.toolbarAlignButton_Click);
+            // 
             // VixenPreviewSetup3
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -855,6 +983,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.trackBarBackgroundAlpha)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.panel8.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -919,6 +1048,14 @@
 		private System.Windows.Forms.ToolStripMenuItem saveLocationsToolStripMenuItem;
         private System.Windows.Forms.Button buttonStarBurst;
         private System.Windows.Forms.ToolTip toolTip;
+        private System.Windows.Forms.Panel panel8;
+        private System.Windows.Forms.Button buttonAlignVertMid;
+        private System.Windows.Forms.Button buttonAlignLeft;
+        private System.Windows.Forms.Button buttonAlignHorizMid;
+        private System.Windows.Forms.Button buttonAlignTop;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Button buttonAlignBottom;
+        private System.Windows.Forms.Button buttonAlignRight;
 
     }
 }
