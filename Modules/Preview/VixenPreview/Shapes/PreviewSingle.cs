@@ -70,6 +70,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			set { _pixels[0].MaxAlpha = value; }
 		}
 
+        public override void Match(PreviewBaseShape matchShape)
+        {
+            PreviewSingle shape = (matchShape as PreviewSingle);
+            PixelSize = shape.PixelSize;
+            Layout();
+        }
+
 		public override void Layout()
 		{
 			PreviewPixel pixel = Pixels[0];

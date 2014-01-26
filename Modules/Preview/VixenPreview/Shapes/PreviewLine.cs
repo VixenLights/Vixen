@@ -138,6 +138,15 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
+        public override void Match(PreviewBaseShape matchShape)
+        {
+            PreviewLine shape = (matchShape as PreviewLine);
+            PixelSize = shape.PixelSize;
+            _points[1].X = _points[0].X + (shape._points[1].X - shape._points[0].X);
+            _points[1].Y = _points[0].Y + (shape._points[1].Y - shape._points[0].Y);
+            Layout();
+        }
+
 		public override void Layout()
 		{
 			double xSpacing = (double) (_points[0].X - _points[1].X)/(double) (PixelCount - 1);

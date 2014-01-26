@@ -212,6 +212,19 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
+        public override void Match(PreviewBaseShape matchShape)
+        {
+            PreviewTriangle shape = (matchShape as PreviewTriangle);
+            PixelSize = shape.PixelSize;
+            _point2.X = _point1.X + (shape._point2.X - shape._point1.X);
+            _point2.Y = _point1.Y + (shape._point2.Y - shape._point1.Y);
+            _point3.X = _point1.X + (shape._point3.X - shape._point1.X);
+            _point3.Y = _point1.Y + (shape._point3.Y - shape._point1.Y);
+            //_point1.X = _topLeft.X + (shape._bottomRight.X - shape._topLeft.X);
+            //_bottomRight.Y = _topLeft.Y + (shape._bottomRight.Y - shape._topLeft.Y);
+            Layout();
+        }
+
 		public override void Layout()
 		{
 			(Strings[0] as PreviewLine).Point1 = Point1;

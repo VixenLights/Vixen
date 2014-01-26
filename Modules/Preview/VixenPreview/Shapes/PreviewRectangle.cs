@@ -240,6 +240,21 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			get { return Pixels.Count; }
 		}
 
+        public override void Match(PreviewBaseShape matchShape)
+        {
+            PreviewRectangle shape = (matchShape as PreviewRectangle);
+            PixelSize = shape.PixelSize;
+            _topRight.X = _topLeft.X + (shape._topRight.X - shape._topLeft.X);
+            _topRight.Y = _topLeft.Y + (shape._topRight.Y - shape._topRight.Y);
+            _bottomRight.X = _topLeft.X + (shape._bottomRight.X - shape._topLeft.X);
+            _bottomRight.Y = _topLeft.Y + (shape._bottomRight.Y - shape._topRight.Y);
+            _bottomLeft.X = _topLeft.X + (shape._bottomLeft.X - shape._topLeft.X);
+            _bottomLeft.Y = _topLeft.Y + (shape._bottomLeft.Y - shape._topRight.Y);
+            _topRight.X = _topLeft.X + (shape._topRight.X - shape._topLeft.X);
+            _topRight.Y = _topLeft.Y + (shape._topRight.Y - shape._topRight.Y);
+            Layout();
+        }
+
 		public override void Layout()
 		{
 			// Start in the lower left corner and move clockwise around the rectangle.

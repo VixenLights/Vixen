@@ -140,6 +140,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
+        public override void Match(PreviewBaseShape matchShape)
+        {
+            PreviewCustom shape = (matchShape as PreviewCustom);
+            PixelSize = shape.PixelSize;
+            // TODO
+            Layout();
+        }
+
 		public override void Layout()
 		{
 			foreach (PreviewBaseShape shape in Strings) {

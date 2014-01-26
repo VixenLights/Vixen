@@ -320,7 +320,8 @@ namespace VixenModules.Preview.VixenPreview
                         SelectedDisplayItems.Add(_selectedDisplayItem);
                     DeSelectSelectedDisplayItem();
                     DisplayItem item = DisplayItemAtPoint(point);
-                    SelectedDisplayItems.Add(item);
+                    if (item != null)
+                        SelectedDisplayItems.Add(item);
                 }
                 else
                 {
@@ -1148,6 +1149,79 @@ namespace VixenModules.Preview.VixenPreview
                 }
             }
         }
+
+        public void DistributeHorizontal()
+        {
+            List<PreviewBaseShape> shapes = SelectedShapes().OrderBy(o => o.Left).ToList();
+            int shapeCount = shapes.Count;
+            if (shapeCount >= 3)
+            {
+                int totalSpace = shapes[shapeCount-1].Left - shapes[0].Right;
+                int spaceToFill = totalSpace;
+                for (int shapeNum = 1; shapeNum < shapeCount - 1; shapeNum++)
+                {
+                    spaceToFill -= shapes[shapeNum].Right - shapes[shapeNum].Left;
+                }
+
+                if (spaceToFill > 0) {
+                    float shapeSpacing = (float)spaceToFill / (float)(shapeCount - 1);
+                    int propSpaceSoFar = 0;
+                    for (int shapeNum = 1; shapeNum < shapeCount - 1; shapeNum++)
+                    {
+                        shapes[shapeNum].Left = shapes[0].Right + propSpaceSoFar + (Convert.ToInt32(shapeSpacing * (float)shapeNum));
+                        propSpaceSoFar += shapes[shapeNum].Right - shapes[shapeNum].Left;
+                    }
+                }
+            }
+        }
+
+        public void DistributeVertical()
+        {
+            List<PreviewBaseShape> shapes = SelectedShapes().OrderBy(o => o.Top).ToList();
+            int shapeCount = shapes.Count;
+            if (shapeCount >= 3)
+            {
+                int totalSpace = shapes[shapeCount - 1].Top - shapes[0].Bottom;
+                int spaceToFill = totalSpace;
+                for (int shapeNum = 1; shapeNum < shapeCount - 1; shapeNum++)
+                {
+                    spaceToFill -= shapes[shapeNum].Bottom - shapes[shapeNum].Top;
+                }
+
+                if (spaceToFill > 0)
+                {
+                    float shapeSpacing = (float)spaceToFill / (float)(shapeCount - 1);
+                    int propSpaceSoFar = 0;
+                    for (int shapeNum = 1; shapeNum < shapeCount - 1; shapeNum++)
+                    {
+                        shapes[shapeNum].Top = shapes[0].Bottom + propSpaceSoFar + (Convert.ToInt32(shapeSpacing * (float)shapeNum));
+                        propSpaceSoFar += shapes[shapeNum].Bottom - shapes[shapeNum].Top;
+                    }
+                }
+            }
+        }
+
+        public void MatchProperties()
+        {
+            if (SelectedShapes().Count >= 2) { 
+                foreach (PreviewBaseShape shape in SelectedShapes())
+                {
+                    if (shape.GetType().ToString() != SelectedShapes()[0].GetType().ToString())
+                    {
+                        MessageBox.Show("You can only match the properties of like shapes.", "Match Properties", MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
+                        return;
+                    }
+                }
+                foreach (PreviewBaseShape shape in SelectedShapes())
+                {
+                    if (shape != SelectedShapes()[0])
+                    {
+                        shape.Match(SelectedShapes()[0]);
+                    }
+                }
+            }
+        }
+
         #endregion
 
         //#region "Update in a BeginInvoke"

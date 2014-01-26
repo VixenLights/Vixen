@@ -217,6 +217,18 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
+        public override void Match(PreviewBaseShape matchShape)
+        {
+            PreviewStar shape = (matchShape as PreviewStar);
+            PixelSize = shape.PixelSize;
+            PointCount = shape.PointCount;
+            InsideSize = shape.InsideSize;
+            XYRotation = shape.XYRotation;
+            _bottomRightPoint.X = _topLeftPoint.X + (shape._bottomRightPoint.X - shape._topLeftPoint.X);
+            _bottomRightPoint.Y = _topLeftPoint.Y + (shape._bottomRightPoint.Y - shape._topLeftPoint.Y);
+            Layout();
+        }
+
 		public override void Layout()
 		{
 			if (Width > 10 && Height > 10) {

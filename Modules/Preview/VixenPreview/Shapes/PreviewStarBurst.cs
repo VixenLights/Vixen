@@ -17,6 +17,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		[DataMember] private PreviewPoint _topRight;
 		[DataMember] private PreviewPoint _bottomLeft;
 		[DataMember] private PreviewPoint _bottomRight;
+        //[DataMember] private int _pointCount;
 
 		public enum Directions
 		{
@@ -32,6 +33,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			_topRight = new PreviewPoint(point1);
 			_bottomLeft = new PreviewPoint(point1);
 			_bottomRight = new PreviewPoint(point1);
+            //_pointCount = 8;
 
 			_strings = new List<PreviewBaseShape>();
 
@@ -135,7 +137,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		[CategoryAttribute("Position"),
 		 DisplayName("Bottom Right"),
-		 DescriptionAttribute("Star Bursts are defined by 2 points. This is point 3.")]
+		 DescriptionAttribute("Star Bursts are defined by 2 points. This is point 2.")]
 		public Point BottomRightPoint
 		{
 			get
@@ -212,10 +214,58 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             } 
         }
 
+        //[CategoryAttribute("Settings"),
+        // DisplayName("Spokes"),
+        // DescriptionAttribute("The number of spokes on the starburst.")]
+        //public int PointCount
+        //{
+        //    get { return _pointCount; }
+        //    set
+        //    {
+        //        _pointCount = value;
+        //        Layout();
+        //    }
+        //}
+
+        public int StringCount
+        {
+            set
+            {
+                int _lightsPerString = _strings[0]._pixels.Count;
+
+                while (_strings.Count > value)
+                {
+                    _strings.RemoveAt(_strings.Count - 1);
+                }
+                while (_strings.Count < value)
+                {
+                    PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(10, 10), _lightsPerString, null);
+                    _strings.Add(line);
+                }
+                Layout();
+            }
+            get { return _strings.Count; }
+        }
+
 		public int PixelCount
 		{
 			get { return Pixels.Count; }
 		}
+
+        public override void Match(PreviewBaseShape matchShape)
+        {
+            PreviewStarBurst shape = (matchShape as PreviewStarBurst);
+            PixelSize = shape.PixelSize;
+            StringCount = shape.StringCount;
+            InnerCircleSize = shape.InnerCircleSize;
+            Direction = shape.Direction;
+            XYRotation = shape.XYRotation;
+            _topRight.X = _topLeft.X + (shape._topRight.X - shape._topLeft.X);
+            _topRight.Y = _topLeft.Y + (shape._topRight.Y - shape._topLeft.Y);
+            _bottomLeft.X = _topLeft.X + (shape._bottomLeft.X - shape._topLeft.X);
+            _bottomLeft.Y = _topLeft.Y + (shape._bottomLeft.Y - shape._topLeft.Y);
+            Layout();
+        }
 
 		public override void Layout()
 		{
@@ -238,6 +288,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                                                                      Strings.Count,
                                                                      360,
                                                                      XYRotation);
+           
             int pointNum = 0;
             foreach (PreviewLine line in Strings) {
                 line.Point1 = innerEllipse[pointNum];

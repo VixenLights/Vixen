@@ -258,6 +258,19 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			set { _bottomRight = value; }
 		}
 
+        public override void Match(PreviewBaseShape matchShape)
+        {
+            PreviewMegaTree shape = (matchShape as PreviewMegaTree);
+            PixelSize = shape.PixelSize;
+            TopHeight = shape.TopHeight;
+            TopWidth = shape.TopWidth;
+            BaseHeight = shape.BaseHeight;
+            Degrees = shape.Degrees;
+            BottomRight.X = _topLeft.X + (shape.BottomRight.X - shape._topLeft.X);
+            BottomRight.Y = _topLeft.Y + (shape.BottomRight.Y - shape._topLeft.Y);
+            Layout();
+        }
+
 		#endregion
 
 		public void SetStrings(List<PreviewBaseShape> strings)

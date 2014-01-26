@@ -269,6 +269,18 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
+        public override void Match(PreviewBaseShape matchShape)
+        {
+            PreviewPixelGrid shape = (matchShape as PreviewPixelGrid);
+            PixelSize = shape.PixelSize;
+            StringOrientation = shape.StringOrientation;
+
+            _bottomRight.X = _topLeft.X + (shape._bottomRight.X - shape._topLeft.X);
+            _bottomRight.Y = _topLeft.Y + (shape._bottomRight.Y - shape._topRight.Y);
+
+            Layout();
+        }
+
 		public override void Layout()
 		{
 			if (StringOrientation == StringOrientations.Vertical)

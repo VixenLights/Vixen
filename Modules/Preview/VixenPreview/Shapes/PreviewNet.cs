@@ -156,6 +156,23 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			get { return Math.Min(_topLeft.Y, Math.Min(Math.Min(_topRight.Y, _bottomRight.Y), _bottomLeft.Y)); }
 		}
 
+        public override void Match(PreviewBaseShape matchShape)
+        {
+            PreviewNet shape = (matchShape as PreviewNet);
+            PixelSize = shape.PixelSize;
+            PixelSpacing = shape.PixelSpacing;
+            
+            _bottomRight.X = _topLeft.X + (shape._bottomRight.X - shape._topLeft.X);
+            _bottomRight.Y = _topLeft.Y + (shape._bottomRight.Y - shape._topLeft.Y);
+            
+            _bottomLeft.X = _topLeft.X + (shape._bottomLeft.X - shape._topLeft.X);
+            _bottomLeft.Y = _topLeft.Y + (shape._bottomLeft.Y - shape._topLeft.Y);
+
+            _topRight.X = _topLeft.X + (shape._topRight.X - shape._topLeft.X);
+            _topRight.Y = _topLeft.Y + (shape._topRight.Y - shape._topLeft.Y);
+            Layout();
+        }
+
 		#endregion
 
 		public override void Layout()

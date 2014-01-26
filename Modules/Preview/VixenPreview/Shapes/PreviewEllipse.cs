@@ -120,16 +120,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		public int Height
-		{
-			set { _bottomRight.Y = _topLeft.Y + value; }
-		}
-
-		public int Width
-		{
-			set { _bottomRight.X = _topLeft.X + value; }
-		}
-
 		public override int Top
 		{
 			set { _topLeft.Y = value; }
@@ -139,6 +129,15 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			set { _topLeft.X = value; }
 		}
+
+        public override void Match(PreviewBaseShape matchShape)
+        {
+            PreviewEllipse shape = (matchShape as PreviewEllipse);
+            PixelSize = shape.PixelSize;
+            _bottomRight.X = TopLeft.X + (shape.BottomRight.X - shape.TopLeft.X);
+            _bottomRight.Y = TopLeft.Y + (shape.BottomRight.Y - shape.TopLeft.Y);
+            Layout();
+        }
 
 		public override void Layout()
 		{

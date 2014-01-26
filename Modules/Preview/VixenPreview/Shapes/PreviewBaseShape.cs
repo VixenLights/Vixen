@@ -155,6 +155,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
+        //[Browsable(false)]
+        //public abstract int Width { get; set; }
+
+        //[Browsable(false)]
+        //public abstract int Height { get; set; }
+
+        public abstract void Match(PreviewBaseShape matchShape);
+
 		public abstract void Layout();
 
 		[DataMember,

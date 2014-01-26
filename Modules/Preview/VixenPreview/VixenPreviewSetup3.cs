@@ -212,6 +212,18 @@ namespace VixenModules.Preview.VixenPreview {
             {
                 previewForm.Preview.AlignVertical();
             }
+            else if (button == buttonDistributeHorizontal)
+            {
+                previewForm.Preview.DistributeHorizontal();
+            }
+            else if (button == buttonDistributeVertical)
+            {
+                previewForm.Preview.DistributeVertical();
+            }
+            else if (button == buttonMatchProperties)
+            {
+                previewForm.Preview.MatchProperties();
+            }
         }
 
         private void trackBarBackgroundAlpha_ValueChanged(object sender, EventArgs e) {

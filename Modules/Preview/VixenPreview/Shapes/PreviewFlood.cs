@@ -89,6 +89,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
+        public override void Match(PreviewBaseShape matchShape)
+        {
+            PreviewFlood shape = (matchShape as PreviewFlood);
+            PixelSize = shape.PixelSize;
+            Layout();
+        }
+
 		public override void Layout()
 		{
 			if (_p1 == null) {

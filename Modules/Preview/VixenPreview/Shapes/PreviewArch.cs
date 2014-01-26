@@ -188,6 +188,15 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
+        public override void Match(PreviewBaseShape matchShape)
+        {
+            PreviewArch shape = (matchShape as PreviewArch);
+            Width = shape.Width;
+            Height = shape.Height;
+            PixelSize = shape.PixelSize;
+            Layout();
+        }
+
 		public override void Layout()
 		{
 			int width = _bottomRight.X - _topLeft.X;

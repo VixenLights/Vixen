@@ -184,6 +184,15 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			set { _pixels[0].MaxAlpha = value; }
 		}
 
+        public override void Match(PreviewBaseShape matchShape)
+        {
+            PreviewCane shape = (matchShape as PreviewCane);
+            PixelSize = shape.PixelSize;
+            _bottomRightPoint.X = TopLeft.X + (shape.BottomRight.X - shape.TopLeft.X);
+            _bottomRightPoint.Y = TopLeft.Y + (shape.BottomRight.Y - shape.TopLeft.Y);
+            Layout();
+        }
+
 		public override void Layout()
 		{
 			double pixelSpacing = (double) (_bottomRightPoint.Y - _archLeftPoint.Y)/(double) _linePixelCount;
