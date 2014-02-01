@@ -142,7 +142,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		[CategoryAttribute("Position"),
 		 DisplayName("Top Left"),
-		 DescriptionAttribute("The top left opint of the bounding box of the candy cane.")]
+		 DescriptionAttribute("The top left point of the bounding box of the candy cane.")]
 		public Point TopLeft
 		{
 			get
@@ -190,6 +190,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             PixelSize = shape.PixelSize;
             _bottomRightPoint.X = TopLeft.X + (shape.BottomRight.X - shape.TopLeft.X);
             _bottomRightPoint.Y = TopLeft.Y + (shape.BottomRight.Y - shape.TopLeft.Y);
+            //_archLeftPoint.X = shape.X;
+            _archLeftPoint.Y = _bottomRightPoint.Y - (shape._bottomRightPoint.Y - shape._archLeftPoint.Y);
             Layout();
         }
 

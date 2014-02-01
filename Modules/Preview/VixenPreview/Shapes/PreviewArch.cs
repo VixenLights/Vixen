@@ -148,7 +148,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 			set
 			{
-				_topRight.X = _bottomRight.X = _topLeft.X + value;
+				_bottomRight.X = _topLeft.X + value;
 				Layout();
 			}
 		}
@@ -164,7 +164,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 			set
 			{
-				_topLeft.Y = _topRight.Y = _bottomLeft.Y - value;
+				_topLeft.Y = _bottomRight.Y - value;
 				Layout();
 			}
 		}
