@@ -29,25 +29,37 @@
 		private void InitializeComponent()
 		{
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.radioAudacityBeats = new System.Windows.Forms.RadioButton();
 			this.radioBeats = new System.Windows.Forms.RadioButton();
 			this.radioBars = new System.Windows.Forms.RadioButton();
 			this.btnCancel = new System.Windows.Forms.Button();
 			this.btnOk = new System.Windows.Forms.Button();
-			this.radioAudacityBeats = new System.Windows.Forms.RadioButton();
+			this.radioVixen3Beats = new System.Windows.Forms.RadioButton();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// groupBox1
 			// 
+			this.groupBox1.Controls.Add(this.radioVixen3Beats);
 			this.groupBox1.Controls.Add(this.radioAudacityBeats);
 			this.groupBox1.Controls.Add(this.radioBeats);
 			this.groupBox1.Controls.Add(this.radioBars);
 			this.groupBox1.Location = new System.Drawing.Point(12, 12);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(182, 94);
+			this.groupBox1.Size = new System.Drawing.Size(182, 117);
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Beat Type";
+			// 
+			// radioAudacityBeats
+			// 
+			this.radioAudacityBeats.AutoSize = true;
+			this.radioAudacityBeats.Location = new System.Drawing.Point(25, 66);
+			this.radioAudacityBeats.Name = "radioAudacityBeats";
+			this.radioAudacityBeats.Size = new System.Drawing.Size(96, 17);
+			this.radioAudacityBeats.TabIndex = 2;
+			this.radioAudacityBeats.Text = "Audacity Beats";
+			this.radioAudacityBeats.UseVisualStyleBackColor = true;
 			// 
 			// radioBeats
 			// 
@@ -74,7 +86,7 @@
 			// btnCancel
 			// 
 			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.btnCancel.Location = new System.Drawing.Point(119, 112);
+			this.btnCancel.Location = new System.Drawing.Point(119, 135);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(75, 23);
 			this.btnCancel.TabIndex = 1;
@@ -84,22 +96,22 @@
 			// btnOk
 			// 
 			this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.btnOk.Location = new System.Drawing.Point(12, 112);
+			this.btnOk.Location = new System.Drawing.Point(12, 135);
 			this.btnOk.Name = "btnOk";
 			this.btnOk.Size = new System.Drawing.Size(75, 23);
 			this.btnOk.TabIndex = 2;
 			this.btnOk.Text = "Ok";
 			this.btnOk.UseVisualStyleBackColor = true;
 			// 
-			// radioAudacityBeats
+			// radioVixen3Beats
 			// 
-			this.radioAudacityBeats.AutoSize = true;
-			this.radioAudacityBeats.Location = new System.Drawing.Point(25, 66);
-			this.radioAudacityBeats.Name = "radioAudacityBeats";
-			this.radioAudacityBeats.Size = new System.Drawing.Size(96, 17);
-			this.radioAudacityBeats.TabIndex = 2;
-			this.radioAudacityBeats.Text = "Audacity Beats";
-			this.radioAudacityBeats.UseVisualStyleBackColor = true;
+			this.radioVixen3Beats.AutoSize = true;
+			this.radioVixen3Beats.Location = new System.Drawing.Point(25, 89);
+			this.radioVixen3Beats.Name = "radioVixen3Beats";
+			this.radioVixen3Beats.Size = new System.Drawing.Size(60, 17);
+			this.radioVixen3Beats.TabIndex = 3;
+			this.radioVixen3Beats.Text = "Vixen 3";
+			this.radioVixen3Beats.UseVisualStyleBackColor = true;
 			// 
 			// AudacityImportDialog
 			// 
@@ -107,7 +119,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.btnCancel;
-			this.ClientSize = new System.Drawing.Size(206, 149);
+			this.ClientSize = new System.Drawing.Size(206, 165);
 			this.ControlBox = false;
 			this.Controls.Add(this.btnOk);
 			this.Controls.Add(this.btnCancel);
@@ -132,5 +144,6 @@
 		private System.Windows.Forms.Button btnCancel;
 		private System.Windows.Forms.Button btnOk;
 		private System.Windows.Forms.RadioButton radioAudacityBeats;
+		private System.Windows.Forms.RadioButton radioVixen3Beats;
 	}
 }

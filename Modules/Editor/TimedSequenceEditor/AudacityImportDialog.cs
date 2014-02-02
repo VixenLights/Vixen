@@ -39,5 +39,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				return radioAudacityBeats.Checked;
 			}
 		}
+
+		public bool IsVixen3BeatSelection
+		{
+			get
+			{
+				return radioVixen3Beats.Checked;
+			}
+		}
 	}
 }
