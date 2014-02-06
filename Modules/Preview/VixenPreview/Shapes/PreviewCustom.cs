@@ -153,6 +153,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			foreach (PreviewBaseShape shape in Strings) {
 				shape.Layout();
 			}
+
+			SetPixelZoom();
 		}
 
 		public override void Draw(FastPixel.FastPixel fp, bool editMode, List<ElementNode> highlightedElements, bool selected,

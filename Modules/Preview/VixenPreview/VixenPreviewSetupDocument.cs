@@ -31,6 +31,10 @@ namespace VixenModules.Preview.VixenPreview
 
 		private void VixenPreviewSetupDocument_Load(object sender, EventArgs e)
 		{
+			//vScroll.Left = ClientSize.Width - vScroll.Width;
+			//hScroll.Top = ClientSize.Height - hScroll.Height;
+			//previewControl.Width = vScroll.Left - 1;
+			//previewControl.Height = hScroll.Top - 1;
 			previewControl.EditMode = true;
 		}
 

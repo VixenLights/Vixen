@@ -21,9 +21,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		private PreviewPoint p1Start;
 
-		public PreviewSingle(PreviewPoint point, ElementNode selectedNode)
+		public PreviewSingle(PreviewPoint point, ElementNode selectedNode, double zoomLevel)
 		{
-			p1 = point; 
+			ZoomLevel = zoomLevel;
+			p1 = PointToZoomPoint(point); 
 
 			PreviewPixel pixel = AddPixel(10, 10);
 			pixel.PixelColor = Color.White;
@@ -79,23 +80,35 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public override void Layout()
 		{
+			if (Pixels != null && Pixels.Count > 0) {
 			PreviewPixel pixel = Pixels[0];
 			pixel.X = p1.X;
 			pixel.Y = p1.Y;
+
+			SetPixelZoom();
+			}
 		}
 
 		public override void MouseMove(int x, int y, int changeX, int changeY)
 		{
-			if (_selectedPoint != null) {
-				_selectedPoint.X = x;
-				_selectedPoint.Y = y;
+			PreviewPoint point = PointToZoomPoint(new PreviewPoint(x, y));
+			if (_selectedPoint != null)
+			{
+				_selectedPoint.X = point.X;
+				_selectedPoint.Y = point.Y;
 				Layout();
 				SelectDragPoints();
 			}
 				// If we get here, we're moving
 			else {
-				p1.X = p1Start.X + changeX;
-				p1.Y = p1Start.Y + changeY;
+				//p1.X = p1Start.X + changeX;
+				//p1.Y = p1Start.Y + changeY;
+
+				p1.X = Convert.ToInt32(p1Start.X * ZoomLevel) + changeX;
+				p1.Y = Convert.ToInt32(p1Start.Y * ZoomLevel) + changeY;
+
+				PointToZoomPointRef(p1);
+
 				Layout();
 			}
 		}

@@ -107,6 +107,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			pixel.X = _p1.X;
 			pixel.Y = _p1.Y;
 			pixel.PixelSize = 3;
+
+			SetPixelZoom();
 		}
 
 		public override void Draw(Bitmap b, bool editMode, List<ElementNode> highlightedElements)

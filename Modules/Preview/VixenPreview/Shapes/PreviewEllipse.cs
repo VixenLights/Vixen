@@ -22,9 +22,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		private PreviewPoint p1Start, p2Start;
 
-		public PreviewEllipse(PreviewPoint point1, int lightCount, ElementNode selectedNode)
+		public PreviewEllipse(PreviewPoint point1, int lightCount, ElementNode selectedNode, double zoomLevel)
 		{
-			_topLeft = point1;
+			ZoomLevel = zoomLevel;
+			_topLeft = PointToZoomPoint(point1);
 			_bottomRight = new PreviewPoint(_topLeft.X, _topLeft.Y);
 
 			if (selectedNode != null) {
@@ -152,30 +153,35 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					pixel.Y = points[pointNum].Y + _topLeft.Y;
 					pointNum++;
 				}
-				//Skew();
+
+				SetPixelZoom();
 			}
 		}
 
 		public override void MouseMove(int x, int y, int changeX, int changeY)
 		{
+			PreviewPoint point = PointToZoomPoint(new PreviewPoint(x, y));
 			if (_selectedPoint != null && _selectedPoint.PointType == PreviewPoint.PointTypes.Size) {
 				if (_selectedPoint == topRight) {
-					_topLeft.Y = y;
-					_bottomRight.X = x;
+					_topLeft.Y = point.Y;
+					_bottomRight.X = point.X;
 				}
 				else if (_selectedPoint == bottomLeft) {
-					_topLeft.X = x;
-					_bottomRight.Y = y;
+					_topLeft.X = point.X;
+					_bottomRight.Y = point.Y;
 				}
-				_selectedPoint.X = x;
-				_selectedPoint.Y = y;
+				_selectedPoint.X = point.X;
+				_selectedPoint.Y = point.Y;
 				// If we get here, we're moving
 			}
 			else {
-				_topLeft.X = p1Start.X + changeX;
-				_topLeft.Y = p1Start.Y + changeY;
-				_bottomRight.X = p2Start.X + changeX;
-				_bottomRight.Y = p2Start.Y + changeY;
+				_topLeft.X = Convert.ToInt32(p1Start.X * ZoomLevel) + changeX;
+				_topLeft.Y = Convert.ToInt32(p1Start.Y * ZoomLevel) + changeY;
+				_bottomRight.X = Convert.ToInt32(p2Start.X * ZoomLevel) + changeX;
+				_bottomRight.Y = Convert.ToInt32(p2Start.Y * ZoomLevel) + changeY;
+
+				PointToZoomPointRef(_topLeft);
+				PointToZoomPointRef(_bottomRight);
 			}
 
 			if (topRight != null) {
@@ -218,13 +224,21 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			SetSelectPoints(selectPoints, skewPoints);
 		}
 
-		public override bool PointInShape(PreviewPoint point)
+		public override bool PointInShape(PreviewPoint inPoint)
 		{
+			PreviewPoint point = PointToZoomPointAdd(inPoint);
 			foreach (PreviewPixel pixel in Pixels) {
-				Rectangle r = new Rectangle(pixel.X - (SelectPointSize/2), pixel.Y - (SelectPointSize/2),
-				                            SelectPointSize + PixelSize, SelectPointSize + PixelSize);
-				if (point.X >= r.X && point.X <= r.X + r.Width && point.Y >= r.Y && point.Y <= r.Y + r.Height) {
+				int pixelX = Convert.ToInt32(pixel.X * ZoomLevel);
+				int pixelY = Convert.ToInt32(pixel.Y * ZoomLevel);
+				Rectangle r = new Rectangle(pixelX - (SelectPointSize / 2), pixelY - (SelectPointSize / 2),
+											SelectPointSize + PixelSize, SelectPointSize + PixelSize);
+				if (point.X >= r.X && point.X <= r.X + r.Width && point.Y >= r.Y && point.Y <= r.Y + r.Height)
+				{
 					return true;
+				//Rectangle r = new Rectangle(pixel.X - (SelectPointSize/2), pixel.Y - (SelectPointSize/2),
+				//							SelectPointSize + PixelSize, SelectPointSize + PixelSize);
+				//if (point.X >= r.X && point.X <= r.X + r.Width && point.Y >= r.Y && point.Y <= r.Y + r.Height) {
+				//	return true;
 				}
 			}
 			return false;

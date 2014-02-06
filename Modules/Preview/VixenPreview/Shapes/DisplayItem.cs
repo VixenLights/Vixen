@@ -37,7 +37,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public DisplayItem()
 		{
-			_shape = new PreviewLine(new PreviewPoint(1, 1), new PreviewPoint(10, 10), 1, null);
+			_shape = new PreviewLine(new PreviewPoint(1, 1), new PreviewPoint(10, 10), 1, null, ZoomLevel);
 		}
 
 		[DataMember]
@@ -100,6 +100,23 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			Dispose(true);
 			GC.SuppressFinalize(this);
+		}
+
+
+		private double _zoomLevel = 1;
+		public double ZoomLevel
+		{
+			get
+			{
+				return _zoomLevel;
+			}
+			set
+			{
+				if (value > 0)
+					_zoomLevel = value;
+				_zoomLevel = value;
+				Shape.ZoomLevel = _zoomLevel;
+			}
 		}
 	}
 }

@@ -26,11 +26,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		private bool justPlaced = false;
 		private PreviewPoint bottomRightStart, topLeftStart, archStart;
 
-		public PreviewCane(PreviewPoint point, ElementNode selectedNode)
+		public PreviewCane(PreviewPoint point, ElementNode selectedNode, double zoomLevel)
 		{
-			_topLeftPoint = point;
-			_bottomRightPoint = new PreviewPoint(point.X, point.Y);
-			_archLeftPoint = new PreviewPoint(point.X, point.Y);
+			ZoomLevel = zoomLevel;
+			PreviewPoint newPoint = PointToZoomPoint(new PreviewPoint(point.X, point.Y));
+			_topLeftPoint = newPoint;
+			_bottomRightPoint = new PreviewPoint(newPoint.X, newPoint.Y);
+			_archLeftPoint = new PreviewPoint(newPoint.X, newPoint.Y);
 
 			_archPixelCount = 8;
 			_linePixelCount = 8;
@@ -197,29 +199,38 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public override void Layout()
 		{
-			double pixelSpacing = (double) (_bottomRightPoint.Y - _archLeftPoint.Y)/(double) _linePixelCount;
-			for (int i = 0; i < _linePixelCount; i++) {
-				PreviewPixel pixel = _pixels[i];
-				pixel.X = _topLeftPoint.X;
-				pixel.Y = _bottomRightPoint.Y - (int) (i*pixelSpacing);
-				;
-			}
+			if (_bottomRightPoint != null && _archLeftPoint != null)
+			{
+				double pixelSpacing = (double)(_bottomRightPoint.Y - _archLeftPoint.Y) / (double)_linePixelCount;
+				for (int i = 0; i < _linePixelCount; i++)
+				{
+					PreviewPixel pixel = _pixels[i];
+					pixel.X = _topLeftPoint.X;
+					pixel.Y = _bottomRightPoint.Y - (int)(i * pixelSpacing);
+					;
+				}
 
-			int arcWidth = _bottomRightPoint.X - _topLeftPoint.X;
-			int arcHeight = _archLeftPoint.Y - _topLeftPoint.Y;
-			List<Point> points = PreviewTools.GetArcPoints(arcWidth, arcHeight, _archPixelCount);
-			for (int i = 0; i < points.Count; i++) {
-				PreviewPixel pixel = _pixels[i + _linePixelCount];
-				pixel.X = points[i].X + _topLeftPoint.X;
-				pixel.Y = points[i].Y + _topLeftPoint.Y;
+				int arcWidth = _bottomRightPoint.X - _topLeftPoint.X;
+				int arcHeight = _archLeftPoint.Y - _topLeftPoint.Y;
+				List<Point> points = PreviewTools.GetArcPoints(arcWidth, arcHeight, _archPixelCount);
+				for (int i = 0; i < points.Count; i++)
+				{
+					PreviewPixel pixel = _pixels[i + _linePixelCount];
+					pixel.X = points[i].X + _topLeftPoint.X;
+					pixel.Y = points[i].Y + _topLeftPoint.Y;
+				}
+
+				SetPixelZoom();
 			}
 		}
 
 		public override void MouseMove(int x, int y, int changeX, int changeY)
 		{
-			if (_selectedPoint != null) {
-				_selectedPoint.X = x;
-				_selectedPoint.Y = y;
+			PreviewPoint point = PointToZoomPoint(new PreviewPoint(x, y));
+			if (_selectedPoint != null)
+			{
+				_selectedPoint.X = point.X;
+				_selectedPoint.Y = point.Y;
 
 				_archLeftPoint.X = _topLeftPoint.X;
 
@@ -232,12 +243,24 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 				// If we get here, we're moving
 			else {
-				_bottomRightPoint.X = bottomRightStart.X + changeX;
-				_bottomRightPoint.Y = bottomRightStart.Y + changeY;
-				_topLeftPoint.X = topLeftStart.X + changeX;
-				_topLeftPoint.Y = topLeftStart.Y + changeY;
-				_archLeftPoint.X = archStart.X + changeX;
-				_archLeftPoint.Y = archStart.Y + changeY;
+				//_bottomRightPoint.X = bottomRightStart.X + changeX;
+				//_bottomRightPoint.Y = bottomRightStart.Y + changeY;
+				//_topLeftPoint.X = topLeftStart.X + changeX;
+				//_topLeftPoint.Y = topLeftStart.Y + changeY;
+				//_archLeftPoint.X = archStart.X + changeX;
+				//_archLeftPoint.Y = archStart.Y + changeY;
+
+				_bottomRightPoint.X = Convert.ToInt32(bottomRightStart.X * ZoomLevel) + changeX;
+				_bottomRightPoint.Y = Convert.ToInt32(bottomRightStart.Y * ZoomLevel) + changeY;
+				_topLeftPoint.X = Convert.ToInt32(topLeftStart.X * ZoomLevel) + changeX;
+				_topLeftPoint.Y = Convert.ToInt32(topLeftStart.Y * ZoomLevel) + changeY;
+				_archLeftPoint.X = Convert.ToInt32(archStart.X * ZoomLevel) + changeX;
+				_archLeftPoint.Y = Convert.ToInt32(archStart.Y * ZoomLevel) + changeY;
+
+				PointToZoomPointRef(_bottomRightPoint);
+				PointToZoomPointRef(_topLeftPoint);
+				PointToZoomPointRef(_archLeftPoint);
+
 				Layout();
 			}
 		}

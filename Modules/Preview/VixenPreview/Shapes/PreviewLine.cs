@@ -16,10 +16,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		private PreviewPoint p1Start, p2Start;
 
-		public PreviewLine(PreviewPoint point1, PreviewPoint point2, int lightCount, ElementNode selectedNode)
+		public PreviewLine(PreviewPoint point1, PreviewPoint point2, int lightCount, ElementNode selectedNode, double zoomLevel)
 		{
-			AddPoint(point1);
-			AddPoint(point2);
+			ZoomLevel = zoomLevel;
+			AddPoint(PointToZoomPoint(point1));
+			AddPoint(PointToZoomPoint(point2));
 
 			if (selectedNode != null) {
 				List<ElementNode> children = PreviewTools.GetLeafNodes(selectedNode);
@@ -149,33 +150,49 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public override void Layout()
 		{
-			double xSpacing = (double) (_points[0].X - _points[1].X)/(double) (PixelCount - 1);
-			double ySpacing = (double) (_points[0].Y - _points[1].Y)/(double) (PixelCount - 1);
-			double x = _points[0].X;
-			double y = _points[0].Y;
-			foreach (PreviewPixel pixel in Pixels) {
-				pixel.X = (int) Math.Round(x);
-				pixel.Y = (int) Math.Round(y);
-				x -= xSpacing;
-				y -= ySpacing;
+			if (_points != null && _points.Count > 0)
+			{
+				double xSpacing = (double)(_points[0].X - _points[1].X) / (double)(PixelCount - 1);
+				double ySpacing = (double)(_points[0].Y - _points[1].Y) / (double)(PixelCount - 1);
+				double x = _points[0].X;
+				double y = _points[0].Y;
+				foreach (PreviewPixel pixel in Pixels)
+				{
+					pixel.X = (int)Math.Round(x);
+					pixel.Y = (int)Math.Round(y);
+					x -= xSpacing;
+					y -= ySpacing;
+				}
+
+				SetPixelZoom();
 			}
 		}
 
 		public override void MouseMove(int x, int y, int changeX, int changeY)
 		{
+			PreviewPoint point = PointToZoomPoint(new PreviewPoint(x, y));
 			// See if we're resizing
 			if (_selectedPoint != null) {
-				_selectedPoint.X = x;
-				_selectedPoint.Y = y;
+				_selectedPoint.X = point.X;
+				_selectedPoint.Y = point.Y;
 				Layout();
 				SelectDragPoints();
 			}
 				// If we get here, we're moving
 			else {
-				_points[0].X = p1Start.X + changeX;
-				_points[0].Y = p1Start.Y + changeY;
-				_points[1].X = p2Start.X + changeX;
-				_points[1].Y = p2Start.Y + changeY;
+				//_points[0].X = p1Start.X + changeX;
+				//_points[0].Y = p1Start.Y + changeY;
+				//_points[1].X = p2Start.X + changeX;
+				//_points[1].Y = p2Start.Y + changeY;
+
+				_points[0].X = Convert.ToInt32(p1Start.X * ZoomLevel) + changeX;
+				_points[0].Y = Convert.ToInt32(p1Start.Y * ZoomLevel) + changeY;
+				_points[1].X = Convert.ToInt32(p2Start.X * ZoomLevel) + changeX;
+				_points[1].Y = Convert.ToInt32(p2Start.Y * ZoomLevel) + changeY;
+
+				PointToZoomPointRef(_points[0]);
+				PointToZoomPointRef(_points[1]);
+
 				Layout();
 			}
 		}
