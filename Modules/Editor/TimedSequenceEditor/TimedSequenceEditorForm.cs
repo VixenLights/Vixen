@@ -730,17 +730,25 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// <summary>Called when the sequence is modified.</summary>
 		private void sequenceModified()
 		{
-			m_modified = true;
-			setTitleBarText();
-			// TODO: Other things, like enable save button, etc.
+			if (!m_modified)
+			{
+				m_modified = true;
+				setTitleBarText();
+				// TODO: Other things, like enable save button, etc.	
+			}
+			
 		}
 
 		/// <summary>Called when the sequence is no longer considered modified.</summary>
 		private void sequenceNotModified()
 		{
-			m_modified = false;
-			setTitleBarText();
-			// TODO: Other things, like disable save button, etc.
+			if (m_modified)
+			{
+				m_modified = false;
+				setTitleBarText();
+				// TODO: Other things, like disable save button, etc.	
+			}
+			
 		}
 
 		#endregion
