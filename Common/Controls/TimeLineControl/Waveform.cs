@@ -153,9 +153,19 @@ namespace Common.Controls.Timeline
 			bw.RunWorkerAsync();
 		}
 
-		protected override void OnVisibleTimeStartChanged(object sender, EventArgs e)
+		protected override void OnPlaybackStartTimeChanged(object sender, EventArgs e)
 		{
-			this.Invalidate();
+			//Do nothing
+		}
+
+		protected override void OnPlaybackEndTimeChanged(object sender, EventArgs e)
+		{
+			//Do nothing
+		}
+
+		protected override void OnPlaybackCurrentTimeChanged(object sender, EventArgs e)
+		{
+			//Do nothing
 		}
 
 		protected override void OnPaint(PaintEventArgs e)
