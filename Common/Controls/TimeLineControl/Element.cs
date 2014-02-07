@@ -25,7 +25,10 @@ namespace Common.Controls.Timeline
 		private static Brush infoBrush = new SolidBrush(Color.FromArgb(128,0,0,0));
 		//private static System.Object drawLock = new System.Object();
 		protected internal bool suspendEvents = false;
-
+		private Bitmap cachedImage;
+		private TimeSpan elementVisibleStartTime;
+		private TimeSpan elementVisibleEndTime;
+		
 		public Element()
 		{
 			
@@ -84,6 +87,7 @@ namespace Common.Controls.Timeline
 		public bool MouseCaptured { get; set; }
 		public int StackIndex { get; set; }
 		public int StackCount { get; set; }
+
 
 		[NonSerializedAttribute]
 		public EffectNode _effectNode;
@@ -167,8 +171,11 @@ namespace Common.Controls.Timeline
 					return;
 
 				m_selected = value;
-				//m_redraw = true;
-				//CachedCanvasIsCurrent = false;
+				if (cachedImage != null)
+				{
+					cachedImage.Dispose();
+					cachedImage = null;
+				}
 				OnSelectedChanged();
 			}
 		}
@@ -301,18 +308,52 @@ namespace Common.Controls.Timeline
 		{
 			if (!IsRendered)
 			{
-				EffectNode.Effect.Render();	
+				EffectNode.Effect.Render();
+				if (cachedImage != null)
+				{
+					cachedImage.Dispose();
+					cachedImage = null;
+				}
+				
 			}
 		}
 
 		protected Bitmap DrawImage(Size imageSize, TimeSpan startTime, TimeSpan endTime, int overallWidth)
 		{
-			Bitmap bitmap = new Bitmap(imageSize.Width, imageSize.Height);
-			using(Graphics g = Graphics.FromImage(bitmap)){
-				DrawCanvasContent(g, startTime, endTime, overallWidth);
-				AddSelectionOverlayToCanvas(g, m_selected, startTime <= StartTime, endTime>=EndTime);	
+			TimeSpan visibleStartOffset;
+			TimeSpan visibleEndOffset;
+			if (startTime > StartTime)
+			{
+				//We are starting somewhere in the middle of the effect
+				visibleStartOffset = startTime - StartTime;
+			} else
+			{
+				//The effect starts in our visible region
+				visibleStartOffset = TimeSpan.Zero;
 			}
-			return bitmap;
+			if (endTime < EndTime)
+			{
+				//The effect ends past our visible region
+				visibleEndOffset = endTime - StartTime;
+			} else
+			{
+
+				visibleEndOffset = EndTime;
+			}
+
+			if (cachedImage == null || visibleStartOffset != elementVisibleStartTime || visibleEndOffset != elementVisibleEndTime || cachedImage.Height != imageSize.Height || cachedImage.Width != imageSize.Width)
+			{
+				cachedImage = new Bitmap(imageSize.Width, imageSize.Height);
+				using (Graphics g = Graphics.FromImage(cachedImage))
+				{
+					DrawCanvasContent(g, visibleStartOffset, visibleEndOffset, overallWidth);
+					AddSelectionOverlayToCanvas(g, m_selected, startTime <= StartTime, endTime >= EndTime);
+				}
+				elementVisibleStartTime = visibleStartOffset;
+				elementVisibleEndTime = visibleEndOffset;
+			}
+			
+			return cachedImage;
 		}
 
 		public Bitmap DrawPlaceholder(Size imageSize)
@@ -329,8 +370,8 @@ namespace Common.Controls.Timeline
 
 				AddSelectionOverlayToCanvas(g, m_selected, true, true);
 			}
-
-			return result;
+			cachedImage = result;
+			return cachedImage;
 		}
 
 		public void DrawInfo(Graphics g, Rectangle rect) 

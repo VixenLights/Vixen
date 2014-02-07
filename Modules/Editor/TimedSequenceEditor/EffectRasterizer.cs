@@ -16,7 +16,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private static IntentRasterizer intentRasterizer = new IntentRasterizer();
 
-		public static void Rasterize(TimedSequenceElement tsElement, Graphics g, TimeSpan startTime, TimeSpan endTime, int overallWidth)
+		public static void Rasterize(TimedSequenceElement tsElement, Graphics g, TimeSpan visibleStartOffset, TimeSpan visibleEndOffset, int overallWidth)
 		{
 			//var sw = new System.Diagnostics.Stopwatch(); sw.Start();
 			IEffectModuleInstance effect = tsElement.EffectNode.Effect;
@@ -47,27 +47,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				//long tRend = sw.ElapsedMilliseconds - tOh;
 
-				TimeSpan visibleStartOffset;
-				TimeSpan visibleEndOffset;
-				if (startTime > tsElement.StartTime)
-				{
-					//We are starting somewhere in the middle of the effect
-					visibleStartOffset = startTime - tsElement.StartTime;
-				}
-				else
-				{
-					//The effect starts in our visible region
-					visibleStartOffset = TimeSpan.Zero;
-				}
-				if (endTime < tsElement.EndTime)
-				{
-					//The effect ends past our visible region
-					visibleEndOffset = endTime-tsElement.StartTime;
-				} else
-				{
-					
-					visibleEndOffset = tsElement.EndTime;
-				}
+				
 
 				double y = 0;
 				foreach (Element element in elements)
@@ -100,8 +80,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 								//this is most likely a underlying base intent like chase, spin and twinkle use to provide a minimum value
 								//so render it full size as it is usually a lower intensity and the pulses can be drawn over the top and look nice.
 								
-								//double startPixelX = width * _GetPercentage(stack[0][0].StartTime, effect.TimeSpan);
-								//double widthPixelX = width * _GetPercentage(stack[0][0].TimeSpan, effect.TimeSpan);
 								intentRasterizer.Rasterize(stack[0][0].Intent,
 														   new RectangleF(0, (float)y, (float)width,
 																		  (float)heightPerElement), g, visibleStartOffset,stack[0][0].TimeSpan);
@@ -121,7 +99,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 										continue;
 									}
 									
-									if(elementIntentNode.EndTime+tsElement.StartTime<startTime || elementIntentNode.StartTime+tsElement.StartTime>endTime) continue;
+									if(elementIntentNode.EndTime<visibleStartOffset || elementIntentNode.StartTime>visibleEndOffset) continue;
 
 									TimeSpan visibleIntentStart = elementIntentNode.StartTime < visibleStartOffset
 										? visibleStartOffset - elementIntentNode.StartTime
@@ -130,9 +108,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 									TimeSpan visibleIntentEnd = elementIntentNode.EndTime > visibleEndOffset
 										? visibleEndOffset - elementIntentNode.StartTime
 										: elementIntentNode.TimeSpan;
-									//TimeSpan visibleIntentStart = visibleStartOffset < elementIntentNode.StartTime
-									//	? visibleStartOffset
-									//	: elementIntentNode.StartTime;
 
 									double startPixelX = overallWidth * _GetPercentage(elementIntentNode.StartTime, effect.TimeSpan);
 									double widthPixelX = overallWidth * _GetPercentage(elementIntentNode.TimeSpan, effect.TimeSpan);
