@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 
 namespace Common.Controls.Timeline
 {
@@ -312,6 +313,72 @@ namespace Common.Controls.Timeline
 				yield return node;
 				foreach (var n in node.ChildRows) nodes.Push(n);
 			}
+		}
+		/// <summary>
+		/// Set the stacking indexes for overlapping elements in the specific time range.
+		/// </summary>
+		/// <param name="startTime"></param>
+		/// <param name="endTime"></param>
+		public void SetStackIndexes(TimeSpan startTime, TimeSpan endTime)
+		{
+			if (!m_elements.Any())
+			{
+				return;
+			}
+
+			for (int i = 0; i < m_elements.Count; i++)
+			{
+				if (m_elements[i].EndTime < startTime) continue;
+				if (m_elements[i].StartTime > endTime) break;
+				List<Element> overlappingElements = GetOverlappingElements(m_elements[i]);
+				if (overlappingElements.Any())
+				{
+					List<List<Element>> stack = DetermineElementStack(overlappingElements);
+					int x = 0;
+					foreach (var elementGroup in stack)
+					{
+						foreach (var element in elementGroup)
+						{
+							element.StackIndex = x;
+							element.StackCount = stack.Count;
+						}
+						x++;
+					}
+				}
+				else
+				{
+					m_elements[i].StackCount = 1;
+					m_elements[i].StackIndex = 0;
+				}
+				i += overlappingElements.Count - overlappingElements.IndexOf(m_elements[i]) - 1;
+
+			}
+
+			
+		}
+
+		private List<List<Element>> DetermineElementStack(List<Element> elements)
+		{
+
+			List<List<Element>> stack = new List<List<Element>>();
+			stack.Add(new List<Element> { elements[0] });
+			for (int i = 1; i < elements.Count; i++)
+			{
+				bool add = true;
+				for (int x = 0; x < stack.Count; x++)
+				{
+					if (elements[i].StartTime >= stack[x].Last().EndTime)
+					{
+						stack[x].Add(elements[i]);
+						add = false;
+						break;
+					}
+				}
+				if (add) stack.Add(new List<Element> { elements[i] });
+			}
+
+			return stack;
+
 		}
 
 		public List<Element> GetOverlappingElements(Element elementMaster)

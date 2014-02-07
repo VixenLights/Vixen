@@ -1508,55 +1508,12 @@ namespace Common.Controls.Timeline
 
 		#endregion
 
-		private List<List<Element>> DetermineElementStack(List<Element> elements)
-		{
-			
-			List<List<Element>> stack = new List<List<Element>>();
-			stack.Add( new List<Element>{elements[0]} );
-			bool add = true;
-			for (int i = 1; i < elements.Count; i++)
-			{
-				add = true;
-				for (int x = 0; x < stack.Count; x++)
-				{
-					if (elements[i].StartTime >= stack[x].Last().EndTime)
-					{
-						stack[x] .Add(elements[i]);
-						add = false;
-						break;
-					}
-				}
-				if (add) stack.Add(new List<Element> {elements[i]});
-			}
-
-			return stack;
-
-		}
-
 		private void DrawElement(Graphics g, Row row, Element currentElement, int top)
 		{
-			int elementRowLocation = 0;
-			int elementRowCount = 1;
-			List<Element> elements = row.GetOverlappingElements(currentElement);
-
-			if (elements.Count > 1)
-			{
-				var stack = DetermineElementStack(elements);
-				elementRowCount = stack.Count;
-				for (int i = 0; i < stack.Count; i++)
-				{
-					if (stack[i].Contains(currentElement))
-					{
-						elementRowLocation = i;
-						break;
-					}
-				}
-			}
-
-			currentElement.DisplayHeight = (row.Height - 1) / elementRowCount;
-			currentElement.DisplayTop = top + (currentElement.DisplayHeight * elementRowLocation);
-			currentElement.RowTopOffset = currentElement.DisplayHeight * elementRowLocation;
-			int width = 0;
+			currentElement.DisplayHeight = (row.Height - 1) / currentElement.StackCount;
+			currentElement.DisplayTop = top + (currentElement.DisplayHeight * currentElement.StackIndex);
+			currentElement.RowTopOffset = currentElement.DisplayHeight * currentElement.StackIndex;
+			int width;
 			if (currentElement.StartTime > VisibleTimeStart)
 			{
 				if (currentElement.EndTime < VisibleTimeEnd)
@@ -1580,43 +1537,14 @@ namespace Common.Controls.Timeline
 			}
 			if (width <= 0) return;
 			Size size = new Size(width, currentElement.DisplayHeight);
-			Bitmap elementImage;
-			//try
-			//{
-				elementImage = currentElement.Draw(size, g, VisibleTimeStart, VisibleTimeEnd, (int)timeToPixels(currentElement.Duration)); 
-			//}
-			//catch (Exception e)
-			//{
-			//	//At some zoom levels and effect durations, the image that we are trying to draw can become so big that we cannot draw it.
-			//	//This is due to the attempted caching of the image for the full length of the effect. I 
-			//	//plan to rework this in 2014 because it is fundamentally flawed.
-			
-			//	//Attempt to recover until this can be reworked to really only draw what is in the visible part of the 
-			//	//grid. Trying to resize it is crap, but if we do not draw it then the user can't do anything with it to work around the problem.
-			//	Logging.ErrorException(string.Format("Exception drawing element for effect {0} of size: {1} Height X {2} Width with duration of {3}.", 
-			//		currentElement.EffectNode.Effect.EffectName, size.Height, size.Width,currentElement.Duration), e);
 
-			//	MessageBox.Show(
-			//		string.Format("Unable to draw effect {0} at time {1} due to its size. Attempting to recover by changing its length to 5 seconds. Please report this issue and provide the logs for further investigation.",
-			//		currentElement.EffectNode.Effect.EffectName, currentElement.StartTime));
-			//	MoveResizeElement(currentElement, currentElement.StartTime, TimeSpan.FromSeconds(5));
-			//	size = new Size((int)Math.Ceiling(timeToPixels(currentElement.Duration)), row.Height - 1);
-			//	elementImage = currentElement.Draw(size,g ,VisibleTimeStart, VisibleTimeEnd);
+			Bitmap elementImage = currentElement.Draw(size, g, VisibleTimeStart, VisibleTimeEnd, (int)timeToPixels(currentElement.Duration)); 
 			
-			//}
-
 			Point finalDrawLocation = new Point((int)Math.Floor(timeToPixels(currentElement.StartTime>VisibleTimeStart?currentElement.StartTime:VisibleTimeStart)), currentElement.DisplayTop);
-			
-			
-
-			Rectangle srcRect = new Rectangle(0, 0, elementImage.Width, elementImage.Height);
 			
 			Rectangle destRect = new Rectangle(finalDrawLocation.X, finalDrawLocation.Y, size.Width, currentElement.DisplayHeight);
 			currentElement.DisplayRect = destRect;
-			g.DrawImage(elementImage,
-						destRect,
-						srcRect,
-						GraphicsUnit.Pixel);
+			g.DrawImage(elementImage,destRect);
 			
 		}
 
@@ -1638,7 +1566,7 @@ namespace Common.Controls.Timeline
 		{
 			// Draw each row
 			foreach (Row row in VisibleRows) {
-				
+				row.SetStackIndexes(VisibleTimeStart, VisibleTimeEnd);
 				for (int i = 0; i < row.ElementCount; i++) {
 					Element currentElement = row.GetElementAtIndex(i);
 					if (currentElement.EndTime < VisibleTimeStart)

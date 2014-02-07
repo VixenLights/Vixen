@@ -82,6 +82,8 @@ namespace Common.Controls.Timeline
 		public int DisplayHeight { get; set; }
 		public Rectangle DisplayRect { get; set; }
 		public bool MouseCaptured { get; set; }
+		public int StackIndex { get; set; }
+		public int StackCount { get; set; }
 
 		[NonSerializedAttribute]
 		public EffectNode _effectNode;
