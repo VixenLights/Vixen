@@ -929,7 +929,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				{
 
 					ToolStripMenuItem itemAlignment = new ToolStripMenuItem("Alignment");
-					ToolStripMenuItem itemAlignStart = new ToolStripMenuItem("Align Start Times");
+					ToolStripMenuItem itemAlignStart = new ToolStripMenuItem("Align Start Times (shift)");
+					itemAlignStart.ToolTipText = "Holding shift will align the start times, while holding duration.";
 					itemAlignStart.Click += (mySender, myE) =>
 					{
 
@@ -942,11 +943,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 								TimelineControl.grid.MoveResizeElementByStartEnd(selectedElement, element.StartTime, element.StartTime + selectedElement.Duration);
 								continue;
 							}
-							TimelineControl.grid.MoveResizeElementByStartEnd(selectedElement, element.StartTime, selectedElement.EndTime);
+							if (Control.ModifierKeys == Keys.Shift)
+								TimelineControl.grid.MoveResizeElementByStartEnd(selectedElement, element.StartTime, element.StartTime + selectedElement.Duration);
+							else
+								TimelineControl.grid.MoveResizeElementByStartEnd(selectedElement, element.StartTime, selectedElement.EndTime);
 						}
 					};
 
-					ToolStripMenuItem itemAlignEnd = new ToolStripMenuItem("Align End Times");
+					ToolStripMenuItem itemAlignEnd = new ToolStripMenuItem("Align End Times (shift)");
+					itemAlignEnd.ToolTipText = "Holding shift will align the end times, while holding duration.";
 					itemAlignEnd.Click += (mySender, myE) =>
 					{
 
@@ -959,7 +964,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 								TimelineControl.grid.MoveResizeElementByStartEnd(selectedElement, element.EndTime - selectedElement.Duration, element.EndTime);
 								continue;
 							}
-							TimelineControl.grid.MoveResizeElementByStartEnd(selectedElement, selectedElement.StartTime, element.EndTime);
+							if (Control.ModifierKeys == Keys.Shift)
+								TimelineControl.grid.MoveResizeElementByStartEnd(selectedElement, element.EndTime - selectedElement.Duration, element.EndTime);
+							else
+								TimelineControl.grid.MoveResizeElementByStartEnd(selectedElement, selectedElement.StartTime, element.EndTime);
 						}
 					};
 
@@ -1026,6 +1034,151 @@ namespace VixenModules.Editor.TimedSequenceEditor
 								TimelineControl.grid.MoveResizeElementByStartEnd(selectedElement, selectedElement.StartTime, element.StartTime);
 						}
 					};
+					ToolStripMenuItem itemDistDialog = new ToolStripMenuItem("Distribute Effects");
+					itemDistDialog.Click += (mySender, myE) =>
+					{
+						System.IO.StreamWriter sr = new System.IO.StreamWriter("c:\\temp\\dist_log.txt");
+						var startTime = TimelineControl.SelectedElements.First().StartTime;
+						var endTime = TimelineControl.SelectedElements.Last().EndTime;
+						var duration = endTime - startTime;
+						var dDialog = new EffectDistributionDialog();
+						var elementCount = TimelineControl.SelectedElements.Count();
+						var offset = duration.TotalSeconds / elementCount;
+
+						dDialog.ElementCount = elementCount.ToString();
+						dDialog.StartTime = startTime.ToString();
+						dDialog.EndTime = endTime.ToString();
+						dDialog.RadioEqualDuration = true;
+						dDialog.Duration = duration.ToString();
+						dDialog.RadioStairStep = true;
+						dDialog.StartWithFirst = true;
+						dDialog.ShowDialog();
+						if (dDialog.DialogResult == DialogResult.OK)
+						{
+							startTime = TimeSpan.Parse(dDialog.StartTime);
+							endTime = TimeSpan.Parse(dDialog.EndTime);
+							duration = TimeSpan.Parse(dDialog.Duration);
+							offset = duration.TotalSeconds / elementCount;
+							var effectDuratin = dDialog.SpecifiedEffectDuration;
+							var effectSpacing = dDialog.SpacedPlacementDuration;
+
+							if (dDialog.StartWithFirst)
+							{
+								//We start with the first effect
+								for (int i = 0; i <= elementCount - 1; i++)
+								{
+									var thisStartTime = startTime.TotalSeconds;
+									var thisEndTime = thisStartTime + offset;
+
+									//Generic placement of starttime eq to prev end time
+									if (i > 0)
+										thisStartTime = TimelineControl.SelectedElements.ElementAt(i - 1).EndTime.TotalSeconds;
+
+									//Determine Start time
+									if (i > 0 && dDialog.RadioEffectPlacementOverlap)
+										thisStartTime = thisStartTime - Convert.ToDouble(dDialog.EffectPlacementOverlap);
+									if (i >0 && dDialog.RadioPlacementSpacedDuration)
+										thisStartTime = thisStartTime + Convert.ToDouble(dDialog.SpacedPlacementDuration);
+
+									//Determine End time
+									if (dDialog.RadioEqualDuration)
+										thisEndTime = thisStartTime + offset;
+									if (dDialog.RadioDoNotChangeDuration)
+										thisEndTime = thisStartTime + TimelineControl.SelectedElements.ElementAt(i).Duration.TotalSeconds;
+									if (dDialog.RadioSpecifiedDuration)
+										thisEndTime = thisStartTime + Convert.ToDouble(dDialog.SpecifiedEffectDuration);
+
+									var log_msg = string.Format("i: {4}\n Start Time: {0}\n End Time: {1}\n Duration: {2}\n Offset: {3}\n ------\n This Start Time: {5}\n This End Time: {6}\n", startTime, endTime, duration, offset, i, thisStartTime, thisEndTime);
+									sr.WriteLine(log_msg);
+									TimelineControl.grid.MoveResizeElementByStartEnd(TimelineControl.SelectedElements.ElementAt(i), TimeSpan.FromSeconds(thisStartTime), TimeSpan.FromSeconds(thisEndTime));
+								}
+							}
+							if (dDialog.StartWithLast)
+							{
+								//We start with the last effect
+							}
+						}
+						sr.Close();
+					};
+					ToolStripMenuItem itemDistEvenly = new ToolStripMenuItem("Distibute Evenly");
+					itemDistEvenly.Click += (mySender, myE) =>
+					{
+						var span = TimelineControl.SelectedElements.Last().EndTime - TimelineControl.SelectedElements.First().StartTime;
+						var offset = span.TotalSeconds / TimelineControl.SelectedElements.Count();
+						MessageBox.Show(string.Format("Span: {0}\n Offset: {1}\n", span, offset), "Information");
+						for (int i = 0; i <= TimelineControl.SelectedElements.Count() -1; i++){
+							var thisStartTime = TimelineControl.SelectedElements.First().StartTime.TotalSeconds + (offset * i);
+							TimelineControl.grid.MoveResizeElementByStartEnd(TimelineControl.SelectedElements.ElementAt(i), TimeSpan.FromSeconds(thisStartTime), TimeSpan.FromSeconds(thisStartTime) + TimelineControl.SelectedElements.ElementAt(i).Duration);
+						}
+					};
+					ToolStripMenuItem itemAlignCenter = new ToolStripMenuItem("Align Centerpoints");
+					itemAlignCenter.Click += (mySender, myE) =>
+					{
+						var centerPoint = element.StartTime.TotalSeconds + (element.Duration.TotalSeconds / 2);
+						foreach (Element selectedElement in TimelineControl.SelectedElements)
+						{
+							if (selectedElement.StartTime == element.StartTime) continue;
+							var thisStartTime = centerPoint - (selectedElement.Duration.TotalSeconds / 2);
+							TimelineControl.grid.MoveResizeElementByStartEnd(selectedElement, TimeSpan.FromSeconds(thisStartTime), TimeSpan.FromSeconds(thisStartTime) + selectedElement.Duration);
+						}
+
+					};
+					ToolStripMenuItem itemStepForward = new ToolStripMenuItem("Step forward");
+					itemStepForward.ToolTipText = "This will stair step the selected elements, starting with the element that has the earlier start point on the time line.";
+					itemStepForward.Click += (mySender, myE) =>
+					{
+						//Before we do anything lets make sure there is time to work with
+						if (TimelineControl.SelectedElements.First().EndTime == TimelineControl.SelectedElements.Last().EndTime)
+						{
+							MessageBox.Show("The first and last effect cannot have the same end time.", "Warning", MessageBoxButtons.OK);
+							return;
+						}
+						bool startAtLastElement = false;
+						var totalElements = TimelineControl.SelectedElements.Count();
+						var startTime = TimelineControl.SelectedElements.First().StartTime;
+						var endTime = TimelineControl.SelectedElements.Last().EndTime;
+						//Make sure that the start time of the 1st (upper most) element is before the end time of the last (lower most) element
+						//Use this to determine which end of the elements to start at
+						//if (TimelineControl.SelectedElements.First().StartTime > TimelineControl.SelectedElements.Last().EndTime)
+						if (TimelineControl.SelectedElements.First().StartTime > TimelineControl.SelectedElements.Last().StartTime)
+						{
+							startAtLastElement = true;
+							startTime = TimelineControl.SelectedElements.Last().StartTime;
+							endTime = TimelineControl.SelectedElements.First().EndTime;
+						}
+						var totalDuration = endTime - startTime;
+						var effectDuration = totalDuration.TotalSeconds / totalElements;
+						TimeSpan effectTS = TimeSpan.FromSeconds(effectDuration);
+						var msgString = string.Format("Total Elements: {0}\n Start Time: {1}\n End Time: {2}\n Total Duration: {3}\n Effect Duration: {4}\n TimeSpan Duration: {5}\n Start at last element: {6}", totalElements,startTime,endTime,totalDuration,effectDuration, effectTS.TotalSeconds, startAtLastElement);
+						MessageBox.Show(msgString);
+						//Sanity Check - Keep effects from becoming less than minimum.
+						if (effectDuration < .10)
+						{
+							MessageBox.Show(string.Format("Unable to complete request. The resulting duration would fall below .10 seconds.\nCalculated duration: {0}", effectDuration), "Warning", MessageBoxButtons.OK);
+							return;
+						}
+						//Determine starting point 1st, or last. Use a bool to determine this. bool startAtLastElement
+						if (!startAtLastElement)
+						{
+							//Lets move the first one
+							TimelineControl.grid.MoveResizeElementByStartEnd(TimelineControl.SelectedElements.ElementAt(0), startTime, startTime + effectTS);
+							for (int i = 1; i <= totalElements - 1; i++)
+							{
+								var thisStartTime = TimelineControl.SelectedElements.ElementAt(i - 1).EndTime;
+								TimelineControl.grid.MoveResizeElementByStartEnd(TimelineControl.SelectedElements.ElementAt(i), thisStartTime, thisStartTime + effectTS);
+							}
+						}
+						else
+						{
+							//Lets move the first(last) one
+							TimelineControl.grid.MoveResizeElementByStartEnd(TimelineControl.SelectedElements.Last(), startTime, startTime + effectTS);
+							for (int i = totalElements - 2; i >= 0; i--)
+							{
+								var thisStartTime = TimelineControl.SelectedElements.ElementAt(i + 1).EndTime;
+								TimelineControl.grid.MoveResizeElementByStartEnd(TimelineControl.SelectedElements.ElementAt(i), thisStartTime, thisStartTime + effectTS);
+							}
+						}
+					};
 
 					contextMenuStrip.Items.Add(itemAlignment);
 					itemAlignment.DropDown.Items.Add(itemAlignStart);
@@ -1034,6 +1187,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					itemAlignment.DropDown.Items.Add(itemMatchDuration);
 					itemAlignment.DropDown.Items.Add(itemAlignStartToEnd);
 					itemAlignment.DropDown.Items.Add(itemAlignEndToStart);
+					itemAlignment.DropDown.Items.Add(itemStepForward);
+					itemAlignment.DropDown.Items.Add(itemDistEvenly);
+					itemAlignment.DropDown.Items.Add(itemDistDialog);
+					itemAlignment.DropDown.Items.Add(itemAlignCenter);
 				}
 
 				if (tse != null)

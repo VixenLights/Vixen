@@ -89,6 +89,12 @@
     <Compile Include="AutomaticMusicDetection.Designer.cs">
       <DependentUpon>AutomaticMusicDetection.cs</DependentUpon>
     </Compile>
+    <Compile Include="EffectDistributionDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EffectDistributionDialog.Designer.cs">
+      <DependentUpon>EffectDistributionDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Form_Marks.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -161,9 +167,7 @@
     <Compile Include="TimedSequenceRowLabel.cs" />
     <Compile Include="Undo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Resources\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="Resources\magnet.png" />
   </ItemGroup>
@@ -173,6 +177,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="AutomaticMusicDetection.resx">
       <DependentUpon>AutomaticMusicDetection.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EffectDistributionDialog.resx">
+      <DependentUpon>EffectDistributionDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form_Marks.resx">
       <DependentUpon>Form_Marks.cs</DependentUpon>
