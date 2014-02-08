@@ -13,10 +13,12 @@ using Vixen.Sys;
 using System.IO;
 using VixenModules.Preview.VixenPreview.Shapes;
 using VixenModules.Property.Location;
+using System.Windows.Forms.Design;
 
 namespace VixenModules.Preview.VixenPreview {
-	public partial class VixenPreviewSetup3 : Form {
-		private VixenPreviewData _data;
+    public partial class VixenPreviewSetup3 : Form
+    {
+        private VixenPreviewData _data;
 		private VixenPreviewSetupDocument previewForm;
 		private VixenPreviewSetupElementsDocument elementsForm;
 		private VixenPreviewSetupPropertiesDocument propertiesForm;
@@ -48,6 +50,8 @@ namespace VixenModules.Preview.VixenPreview {
 				previewForm.Preview.Data = _data;
 			previewForm.Preview.OnSelectDisplayItem += OnSelectDisplayItem;
 			previewForm.Preview.OnDeSelectDisplayItem += OnDeSelectDisplayItem;
+
+            previewForm.Preview.OnChangeZoomLevel += VixenPreviewSetup3_ChangeZoomLevel;
 
 			elementsForm = new VixenPreviewSetupElementsDocument(previewForm.Preview);
 			propertiesForm = new VixenPreviewSetupPropertiesDocument();
@@ -112,6 +116,11 @@ namespace VixenModules.Preview.VixenPreview {
 			}
 			reenableToolButtons();
 		}
+
+        private void VixenPreviewSetup3_ChangeZoomLevel(object sender, double zoomLevel) 
+        {
+            SetZoomTextAndTracker(zoomLevel);
+        }
 
 		private void reenableToolButtons()
 		{
@@ -404,14 +413,26 @@ namespace VixenModules.Preview.VixenPreview {
 				Properties.Settings settings = new Properties.Settings();
 				settings.UseGDIRendering = !useDirect2DPreviewRenderingToolStripMenuItem.Checked;
 				settings.Save();
-				
-
 			}
 		}
 
 		private void saveLocationsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Data.SaveLocations = saveLocationsToolStripMenuItem.Checked;
-		}
+        }
+
+        private void trackerZoom_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender, Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
+        {
+            double zoomLevel = Convert.ToDouble(Convert.ToDouble(trackerZoom.Value) / 100d);
+            previewForm.Preview.ZoomLevel = zoomLevel;
+        }
+
+        private void SetZoomTextAndTracker(double zoomLevel)
+        {
+            int zoomPercent = Convert.ToInt32(zoomLevel * 100);
+            labelZoomLevel.Text = zoomPercent + "%";
+            trackerZoom.Value = Convert.ToInt32(zoomPercent);
+            trackerZoom.Invalidate();
+        }
 	}
 }

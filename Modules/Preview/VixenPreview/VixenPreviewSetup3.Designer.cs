@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(VixenPreviewSetup3));
             WeifenLuo.WinFormsUI.Docking.DockPanelSkin dockPanelSkin1 = new WeifenLuo.WinFormsUI.Docking.DockPanelSkin();
             WeifenLuo.WinFormsUI.Docking.AutoHideStripSkin autoHideStripSkin1 = new WeifenLuo.WinFormsUI.Docking.AutoHideStripSkin();
             WeifenLuo.WinFormsUI.Docking.DockPanelGradient dockPanelGradient1 = new WeifenLuo.WinFormsUI.Docking.DockPanelGradient();
@@ -44,9 +45,9 @@
             WeifenLuo.WinFormsUI.Docking.DockPanelGradient dockPanelGradient3 = new WeifenLuo.WinFormsUI.Docking.DockPanelGradient();
             WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient6 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
             WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient7 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(VixenPreviewSetup3));
             this.panelToolbar = new System.Windows.Forms.Panel();
             this.panel8 = new System.Windows.Forms.Panel();
+            this.buttonMatchProperties = new System.Windows.Forms.Button();
             this.buttonDistributeVertical = new System.Windows.Forms.Button();
             this.buttonDistributeHorizontal = new System.Windows.Forms.Button();
             this.buttonAlignBottom = new System.Windows.Forms.Button();
@@ -92,7 +93,6 @@
             this.label1 = new System.Windows.Forms.Label();
             this.trackBarBackgroundAlpha = new System.Windows.Forms.TrackBar();
             this.buttonSetBackground = new System.Windows.Forms.Button();
-            this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.dialogSelectBackground = new System.Windows.Forms.OpenFileDialog();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -112,7 +112,10 @@
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveLocationsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.buttonMatchProperties = new System.Windows.Forms.Button();
+            this.trackerZoom = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
+            this.labelZoomLevel = new System.Windows.Forms.Label();
+            this.panel9 = new System.Windows.Forms.Panel();
+            this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.panelToolbar.SuspendLayout();
             this.panel8.SuspendLayout();
             this.panel7.SuspendLayout();
@@ -124,6 +127,7 @@
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarBackgroundAlpha)).BeginInit();
             this.menuStrip1.SuspendLayout();
+            this.panel9.SuspendLayout();
             this.SuspendLayout();
             // 
             // panelToolbar
@@ -162,6 +166,22 @@
             this.panel8.Name = "panel8";
             this.panel8.Size = new System.Drawing.Size(183, 91);
             this.panel8.TabIndex = 14;
+            // 
+            // buttonMatchProperties
+            // 
+            this.buttonMatchProperties.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonMatchProperties.BackgroundImage")));
+            this.buttonMatchProperties.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.buttonMatchProperties.FlatAppearance.BorderColor = System.Drawing.Color.White;
+            this.buttonMatchProperties.FlatAppearance.BorderSize = 0;
+            this.buttonMatchProperties.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonMatchProperties.Location = new System.Drawing.Point(143, 6);
+            this.buttonMatchProperties.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonMatchProperties.Name = "buttonMatchProperties";
+            this.buttonMatchProperties.Size = new System.Drawing.Size(29, 27);
+            this.buttonMatchProperties.TabIndex = 15;
+            this.toolTip.SetToolTip(this.buttonMatchProperties, "Match Properties");
+            this.buttonMatchProperties.UseVisualStyleBackColor = true;
+            this.buttonMatchProperties.Click += new System.EventHandler(this.toolbarAlignButton_Click);
             // 
             // buttonDistributeVertical
             // 
@@ -794,61 +814,6 @@
             this.buttonSetBackground.UseVisualStyleBackColor = true;
             this.buttonSetBackground.Click += new System.EventHandler(this.buttonSetBackground_Click);
             // 
-            // dockPanel
-            // 
-            this.dockPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dockPanel.Location = new System.Drawing.Point(0, 124);
-            this.dockPanel.Margin = new System.Windows.Forms.Padding(4);
-            this.dockPanel.Name = "dockPanel";
-            this.dockPanel.Size = new System.Drawing.Size(1179, 568);
-            dockPanelGradient1.EndColor = System.Drawing.SystemColors.ControlLight;
-            dockPanelGradient1.StartColor = System.Drawing.SystemColors.ControlLight;
-            autoHideStripSkin1.DockStripGradient = dockPanelGradient1;
-            tabGradient1.EndColor = System.Drawing.SystemColors.Control;
-            tabGradient1.StartColor = System.Drawing.SystemColors.Control;
-            tabGradient1.TextColor = System.Drawing.SystemColors.ControlDarkDark;
-            autoHideStripSkin1.TabGradient = tabGradient1;
-            autoHideStripSkin1.TextFont = new System.Drawing.Font("Segoe UI", 9F);
-            dockPanelSkin1.AutoHideStripSkin = autoHideStripSkin1;
-            tabGradient2.EndColor = System.Drawing.SystemColors.ControlLightLight;
-            tabGradient2.StartColor = System.Drawing.SystemColors.ControlLightLight;
-            tabGradient2.TextColor = System.Drawing.SystemColors.ControlText;
-            dockPaneStripGradient1.ActiveTabGradient = tabGradient2;
-            dockPanelGradient2.EndColor = System.Drawing.SystemColors.Control;
-            dockPanelGradient2.StartColor = System.Drawing.SystemColors.Control;
-            dockPaneStripGradient1.DockStripGradient = dockPanelGradient2;
-            tabGradient3.EndColor = System.Drawing.SystemColors.ControlLight;
-            tabGradient3.StartColor = System.Drawing.SystemColors.ControlLight;
-            tabGradient3.TextColor = System.Drawing.SystemColors.ControlText;
-            dockPaneStripGradient1.InactiveTabGradient = tabGradient3;
-            dockPaneStripSkin1.DocumentGradient = dockPaneStripGradient1;
-            dockPaneStripSkin1.TextFont = new System.Drawing.Font("Segoe UI", 9F);
-            tabGradient4.EndColor = System.Drawing.SystemColors.ActiveCaption;
-            tabGradient4.LinearGradientMode = System.Drawing.Drawing2D.LinearGradientMode.Vertical;
-            tabGradient4.StartColor = System.Drawing.SystemColors.GradientActiveCaption;
-            tabGradient4.TextColor = System.Drawing.SystemColors.ActiveCaptionText;
-            dockPaneStripToolWindowGradient1.ActiveCaptionGradient = tabGradient4;
-            tabGradient5.EndColor = System.Drawing.SystemColors.Control;
-            tabGradient5.StartColor = System.Drawing.SystemColors.Control;
-            tabGradient5.TextColor = System.Drawing.SystemColors.ControlText;
-            dockPaneStripToolWindowGradient1.ActiveTabGradient = tabGradient5;
-            dockPanelGradient3.EndColor = System.Drawing.SystemColors.ControlLight;
-            dockPanelGradient3.StartColor = System.Drawing.SystemColors.ControlLight;
-            dockPaneStripToolWindowGradient1.DockStripGradient = dockPanelGradient3;
-            tabGradient6.EndColor = System.Drawing.SystemColors.InactiveCaption;
-            tabGradient6.LinearGradientMode = System.Drawing.Drawing2D.LinearGradientMode.Vertical;
-            tabGradient6.StartColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            tabGradient6.TextColor = System.Drawing.SystemColors.InactiveCaptionText;
-            dockPaneStripToolWindowGradient1.InactiveCaptionGradient = tabGradient6;
-            tabGradient7.EndColor = System.Drawing.Color.Transparent;
-            tabGradient7.StartColor = System.Drawing.Color.Transparent;
-            tabGradient7.TextColor = System.Drawing.SystemColors.ControlDarkDark;
-            dockPaneStripToolWindowGradient1.InactiveTabGradient = tabGradient7;
-            dockPaneStripSkin1.ToolWindowGradient = dockPaneStripToolWindowGradient1;
-            dockPanelSkin1.DockPaneStripSkin = dockPaneStripSkin1;
-            this.dockPanel.Skin = dockPanelSkin1;
-            this.dockPanel.TabIndex = 8;
-            // 
             // dialogSelectBackground
             // 
             this.dialogSelectBackground.Filter = "JPG Files|*.jpg|PNG Files|*.png|GIF Files|*.gif|BMP Files|*.bmp|All Files|*.*";
@@ -997,21 +962,94 @@
             this.saveLocationsToolStripMenuItem.ToolTipText = "Update location properties for each preview item for positioning.";
             this.saveLocationsToolStripMenuItem.Click += new System.EventHandler(this.saveLocationsToolStripMenuItem_Click);
             // 
-            // buttonMatchProperties
+            // trackerZoom
             // 
-            this.buttonMatchProperties.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonMatchProperties.BackgroundImage")));
-            this.buttonMatchProperties.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.buttonMatchProperties.FlatAppearance.BorderColor = System.Drawing.Color.White;
-            this.buttonMatchProperties.FlatAppearance.BorderSize = 0;
-            this.buttonMatchProperties.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonMatchProperties.Location = new System.Drawing.Point(143, 6);
-            this.buttonMatchProperties.Margin = new System.Windows.Forms.Padding(4);
-            this.buttonMatchProperties.Name = "buttonMatchProperties";
-            this.buttonMatchProperties.Size = new System.Drawing.Size(29, 27);
-            this.buttonMatchProperties.TabIndex = 15;
-            this.toolTip.SetToolTip(this.buttonMatchProperties, "Match Properties");
-            this.buttonMatchProperties.UseVisualStyleBackColor = true;
-            this.buttonMatchProperties.Click += new System.EventHandler(this.toolbarAlignButton_Click);
+            this.trackerZoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.trackerZoom.Location = new System.Drawing.Point(1005, 5);
+            this.trackerZoom.Maximum = 400;
+            this.trackerZoom.Minimum = 25;
+            this.trackerZoom.Name = "trackerZoom";
+            this.trackerZoom.Size = new System.Drawing.Size(122, 23);
+            this.trackerZoom.TabIndex = 0;
+            this.trackerZoom.Text = "hMiniTracker1";
+            this.trackerZoom.Value = 100;
+            this.trackerZoom.ValueChanged += new Common.Controls.ControlsEx.ValueControls.ValueChangedEH(this.trackerZoom_ValueChanged);
+            // 
+            // labelZoomLevel
+            // 
+            this.labelZoomLevel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.labelZoomLevel.AutoSize = true;
+            this.labelZoomLevel.Location = new System.Drawing.Point(1126, 7);
+            this.labelZoomLevel.Name = "labelZoomLevel";
+            this.labelZoomLevel.Size = new System.Drawing.Size(44, 17);
+            this.labelZoomLevel.TabIndex = 1;
+            this.labelZoomLevel.Text = "100%";
+            // 
+            // panel9
+            // 
+            this.panel9.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel9.Controls.Add(this.labelZoomLevel);
+            this.panel9.Controls.Add(this.trackerZoom);
+            this.panel9.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel9.Location = new System.Drawing.Point(0, 658);
+            this.panel9.Name = "panel9";
+            this.panel9.Size = new System.Drawing.Size(1179, 34);
+            this.panel9.TabIndex = 16;
+            // 
+            // dockPanel
+            // 
+            this.dockPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dockPanel.Location = new System.Drawing.Point(0, 124);
+            this.dockPanel.Margin = new System.Windows.Forms.Padding(4);
+            this.dockPanel.Name = "dockPanel";
+            this.dockPanel.Size = new System.Drawing.Size(1179, 534);
+            dockPanelGradient1.EndColor = System.Drawing.SystemColors.ControlLight;
+            dockPanelGradient1.StartColor = System.Drawing.SystemColors.ControlLight;
+            autoHideStripSkin1.DockStripGradient = dockPanelGradient1;
+            tabGradient1.EndColor = System.Drawing.SystemColors.Control;
+            tabGradient1.StartColor = System.Drawing.SystemColors.Control;
+            tabGradient1.TextColor = System.Drawing.SystemColors.ControlDarkDark;
+            autoHideStripSkin1.TabGradient = tabGradient1;
+            autoHideStripSkin1.TextFont = new System.Drawing.Font("Segoe UI", 9F);
+            dockPanelSkin1.AutoHideStripSkin = autoHideStripSkin1;
+            tabGradient2.EndColor = System.Drawing.SystemColors.ControlLightLight;
+            tabGradient2.StartColor = System.Drawing.SystemColors.ControlLightLight;
+            tabGradient2.TextColor = System.Drawing.SystemColors.ControlText;
+            dockPaneStripGradient1.ActiveTabGradient = tabGradient2;
+            dockPanelGradient2.EndColor = System.Drawing.SystemColors.Control;
+            dockPanelGradient2.StartColor = System.Drawing.SystemColors.Control;
+            dockPaneStripGradient1.DockStripGradient = dockPanelGradient2;
+            tabGradient3.EndColor = System.Drawing.SystemColors.ControlLight;
+            tabGradient3.StartColor = System.Drawing.SystemColors.ControlLight;
+            tabGradient3.TextColor = System.Drawing.SystemColors.ControlText;
+            dockPaneStripGradient1.InactiveTabGradient = tabGradient3;
+            dockPaneStripSkin1.DocumentGradient = dockPaneStripGradient1;
+            dockPaneStripSkin1.TextFont = new System.Drawing.Font("Segoe UI", 9F);
+            tabGradient4.EndColor = System.Drawing.SystemColors.ActiveCaption;
+            tabGradient4.LinearGradientMode = System.Drawing.Drawing2D.LinearGradientMode.Vertical;
+            tabGradient4.StartColor = System.Drawing.SystemColors.GradientActiveCaption;
+            tabGradient4.TextColor = System.Drawing.SystemColors.ActiveCaptionText;
+            dockPaneStripToolWindowGradient1.ActiveCaptionGradient = tabGradient4;
+            tabGradient5.EndColor = System.Drawing.SystemColors.Control;
+            tabGradient5.StartColor = System.Drawing.SystemColors.Control;
+            tabGradient5.TextColor = System.Drawing.SystemColors.ControlText;
+            dockPaneStripToolWindowGradient1.ActiveTabGradient = tabGradient5;
+            dockPanelGradient3.EndColor = System.Drawing.SystemColors.ControlLight;
+            dockPanelGradient3.StartColor = System.Drawing.SystemColors.ControlLight;
+            dockPaneStripToolWindowGradient1.DockStripGradient = dockPanelGradient3;
+            tabGradient6.EndColor = System.Drawing.SystemColors.InactiveCaption;
+            tabGradient6.LinearGradientMode = System.Drawing.Drawing2D.LinearGradientMode.Vertical;
+            tabGradient6.StartColor = System.Drawing.SystemColors.GradientInactiveCaption;
+            tabGradient6.TextColor = System.Drawing.SystemColors.InactiveCaptionText;
+            dockPaneStripToolWindowGradient1.InactiveCaptionGradient = tabGradient6;
+            tabGradient7.EndColor = System.Drawing.Color.Transparent;
+            tabGradient7.StartColor = System.Drawing.Color.Transparent;
+            tabGradient7.TextColor = System.Drawing.SystemColors.ControlDarkDark;
+            dockPaneStripToolWindowGradient1.InactiveTabGradient = tabGradient7;
+            dockPaneStripSkin1.ToolWindowGradient = dockPaneStripToolWindowGradient1;
+            dockPanelSkin1.DockPaneStripSkin = dockPaneStripSkin1;
+            this.dockPanel.Skin = dockPanelSkin1;
+            this.dockPanel.TabIndex = 20;
             // 
             // VixenPreviewSetup3
             // 
@@ -1019,6 +1057,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1179, 692);
             this.Controls.Add(this.dockPanel);
+            this.Controls.Add(this.panel9);
             this.Controls.Add(this.panelToolbar);
             this.Controls.Add(this.menuStrip1);
             this.IsMdiContainer = true;
@@ -1044,6 +1083,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.trackBarBackgroundAlpha)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.panel9.ResumeLayout(false);
+            this.panel9.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1071,7 +1112,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TrackBar trackBarBackgroundAlpha;
         private System.Windows.Forms.Button buttonSetBackground;
-        private WeifenLuo.WinFormsUI.Docking.DockPanel dockPanel;
         private System.Windows.Forms.OpenFileDialog dialogSelectBackground;
         private System.Windows.Forms.Button buttonSemiCircle;
         private System.Windows.Forms.Button buttonTriangle;
@@ -1119,6 +1159,10 @@
         private System.Windows.Forms.Button buttonDistributeVertical;
         private System.Windows.Forms.Button buttonDistributeHorizontal;
         private System.Windows.Forms.Button buttonMatchProperties;
+        private Common.Controls.ControlsEx.ValueControls.HMiniTracker trackerZoom;
+        private System.Windows.Forms.Label labelZoomLevel;
+        private System.Windows.Forms.Panel panel9;
+        private WeifenLuo.WinFormsUI.Docking.DockPanel dockPanel;
 
     }
 }

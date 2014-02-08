@@ -84,16 +84,16 @@ namespace VixenModules.Preview.VixenPreview
 		#region "Events"
 
         public delegate void ElementsChangedEventHandler(object sender, EventArgs e);
-
         public event ElementsChangedEventHandler OnElementsChanged;
         
         public delegate void SelectDisplayItemEventHandler(object sender, DisplayItem displayItem);
-
 		public event SelectDisplayItemEventHandler OnSelectDisplayItem;
 
 		public delegate void DeSelectDisplayItemEventHandler(object sender, DisplayItem displayItem);
-
 		public event DeSelectDisplayItemEventHandler OnDeSelectDisplayItem;
+
+        public delegate void ChangeZoomLevelEventHandler(object sender, double zoomLevel);
+        public event ChangeZoomLevelEventHandler OnChangeZoomLevel;
 
 		public ConcurrentDictionary<ElementNode, List<PreviewPixel>> NodeToPixel =
 			new ConcurrentDictionary<ElementNode, List<PreviewPixel>>();
@@ -113,16 +113,25 @@ namespace VixenModules.Preview.VixenPreview
 			}
 			set
 			{
-				if (value > 0)
-					_zoomLevel = value;
-				if (DisplayItems != null)
+                const double ZoomMax = 4;
+                const double ZoomMin = .25;
+
+                if (value >= ZoomMin && value <= ZoomMax)
+                    _zoomLevel = value;
+                else if (value < ZoomMin)
+                    _zoomLevel = ZoomMin;
+                else if (value > ZoomMax)
+                    _zoomLevel = ZoomMax;
+
+                if (DisplayItems != null)
 				{
 					foreach (DisplayItem item in DisplayItems)
 					{
-						item.ZoomLevel = value;
+						item.ZoomLevel = _zoomLevel;
 					}
 				}
 				SetupBackgroundAlphaImage();
+                if (OnChangeZoomLevel != null) OnChangeZoomLevel(this, _zoomLevel);
 			}
 		}
 
@@ -218,6 +227,7 @@ namespace VixenModules.Preview.VixenPreview
 		HScrollBar hScroll = new HScrollBar();
 		private void VixenPreviewControl_Load(object sender, EventArgs e)
 		{
+            MouseWheel += VixenPreviewControl_MouseWheel;
 			Controls.Add(vScroll);
 			Controls.Add(hScroll);
 			LayoutProps();
@@ -953,11 +963,16 @@ namespace VixenModules.Preview.VixenPreview
 			}
 			else if (e.KeyCode == Keys.Oemplus && Control.ModifierKeys == Keys.Control)
 			{
-				ZoomLevel += .25;
+                if (ZoomLevel < 4) { 
+				    ZoomLevel += .25;
+                }
 			}
 			else if (e.KeyCode == Keys.OemMinus && Control.ModifierKeys == Keys.Control)
 			{
-				ZoomLevel -= .25;
+                if (ZoomLevel > .25)
+                {
+                    ZoomLevel -= .25;
+                }
 			}
 		}
 
@@ -1625,5 +1640,26 @@ namespace VixenModules.Preview.VixenPreview
 				}
 			}
 		}
+
+        public Point PointToZoomPoint(Point p)
+        {
+            int xDif = p.X - Convert.ToInt32(p.X / ZoomLevel);
+            int yDif = p.Y - Convert.ToInt32(p.Y / ZoomLevel);
+            Point newP = new Point(p.X - xDif, p.Y - yDif);
+            return newP;
+        }
+
+        private void VixenPreviewControl_MouseWheel(object sender, MouseEventArgs e)
+        {
+            double delta = Convert.ToDouble(e.Delta) / 1000;
+
+            // Zoom to the pointer location
+            Point zoomTo = PointToZoomPoint(e.Location);
+            //Console.WriteLine(zoomTo.X + ":" + zoomTo.Y);
+            
+            
+
+            ZoomLevel += delta;
+        }
 	}
 }
