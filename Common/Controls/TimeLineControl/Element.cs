@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Drawing;
-using System.Collections.Generic;
 using System.Drawing.Drawing2D;
-using System.Windows.Forms.VisualStyles;
-using Common.Controls.ControlsEx;
-using Vixen.Module.Editor;
-using Vixen.Module.Effect;
 using Vixen.Sys;
 
 namespace Common.Controls.Timeline
@@ -13,21 +8,19 @@ namespace Common.Controls.Timeline
 	[Serializable]
 	public class Element : IComparable<Element>, ITimePeriod, IDisposable
 	{
-		private TimeSpan m_startTime;
-		private TimeSpan m_duration;
-		private ElementNode[] targetNodes;
-		private static Color m_backColor = Color.FromArgb(0, 0, 0, 0);
-		private static Color m_gray = Color.FromArgb(122, 122, 122);
-		private static Color m_borderColor = Color.Black;
-		private bool m_selected = false;
-		private static Font m_textFont = new Font("Arial", 7);
-		private static Color m_textColor = Color.FromArgb(255, 255, 255);
-		private static Brush infoBrush = new SolidBrush(Color.FromArgb(128,0,0,0));
-		//private static System.Object drawLock = new System.Object();
-		protected internal bool suspendEvents = false;
-		private Bitmap cachedImage;
-		private TimeSpan elementVisibleStartTime;
-		private TimeSpan elementVisibleEndTime;
+		private TimeSpan _startTime;
+		private TimeSpan _duration;
+		private ElementNode[] _targetNodes;
+		private static readonly Color Gray = Color.FromArgb(122, 122, 122);
+		private static readonly Color BorderColor = Color.Black;
+		private bool _selected;
+		private static readonly Font TextFont = new Font("Arial", 7);
+		private static readonly Color TextColor = Color.FromArgb(255, 255, 255);
+		private static readonly Brush InfoBrush = new SolidBrush(Color.FromArgb(128,0,0,0));
+		protected internal bool SuspendEvents = false;
+		private Bitmap _cachedImage;
+		private TimeSpan _elementVisibleStartTime;
+		private TimeSpan _elementVisibleEndTime;
 		
 		public Element()
 		{
@@ -40,35 +33,35 @@ namespace Common.Controls.Timeline
 		/// <param name="other">The element to copy.</param>
 		public Element(Element other)
 		{
-			m_startTime = other.m_startTime;
-			m_duration = other.m_duration;
-			m_selected = other.m_selected;
-			targetNodes = other.targetNodes;
+			_startTime = other._startTime;
+			_duration = other._duration;
+			_selected = other._selected;
+			_targetNodes = other._targetNodes;
 		}
 
 		#region Begin/End update
 
-		private TimeSpan m_origStartTime, m_origDuration;
-		private ElementNode[] origTargetNodes;
+		private TimeSpan _origStartTime, _origDuration;
+		private ElementNode[] _origTargetNodes;
 
 		///<summary>Suspends raising events until EndUpdate is called.</summary>
 		public void BeginUpdate()
 		{
-			suspendEvents = true;
-			m_origStartTime = StartTime;
-			m_origDuration = Duration;
-			origTargetNodes = targetNodes;
+			SuspendEvents = true;
+			_origStartTime = StartTime;
+			_origDuration = Duration;
+			_origTargetNodes = _targetNodes;
 		}
 
 		public void EndUpdate()
 		{
-			suspendEvents = false;
-			if ((StartTime != m_origStartTime) || (Duration != m_origDuration)) {
+			SuspendEvents = false;
+			if ((StartTime != _origStartTime) || (Duration != _origDuration)) {
 				OnTimeChanged();
 			}
-			if (origTargetNodes != targetNodes)
+			if (_origTargetNodes != _targetNodes)
 			{
-				EffectNode.Effect.TargetNodes = targetNodes;
+				EffectNode.Effect.TargetNodes = _targetNodes;
 			}
 		}
 
@@ -90,7 +83,7 @@ namespace Common.Controls.Timeline
 
 
 		[NonSerializedAttribute]
-		public EffectNode _effectNode;
+		private EffectNode _effectNode;
 
 		public EffectNode EffectNode
 		{
@@ -100,8 +93,7 @@ namespace Common.Controls.Timeline
 
 		/// <summary>
 		/// This is the last row that this element was associated with. This element can be part of more than one row if it is part of multiple groups
-		/// So do not trust it. Already leads to a issue if the rows I belong to are different heights.
-		/// The element will not be drawn correctly because the cached image height is based on this
+		/// So do not trust it. 
 		/// </summary>
 		public Row Row { get; set; }
 
@@ -109,11 +101,11 @@ namespace Common.Controls.Timeline
 		{
 			protected get
 			{
-				return targetNodes;
+				return _targetNodes;
 			}
 			set
 			{		
-				targetNodes = value;
+				_targetNodes = value;
 			}
 		}
 
@@ -122,16 +114,16 @@ namespace Common.Controls.Timeline
 		/// </summary>
 		public TimeSpan StartTime
 		{
-			get { return m_startTime; }
+			get { return _startTime; }
 			set
 			{
 				if (value < TimeSpan.Zero)
 					value = TimeSpan.Zero;
 
-				if (m_startTime == value)
+				if (_startTime == value)
 					return;
 
-				m_startTime = value;
+				_startTime = value;
 				OnTimeChanged();
 			}
 		}
@@ -141,13 +133,13 @@ namespace Common.Controls.Timeline
 		/// </summary>
 		public TimeSpan Duration
 		{
-			get { return m_duration; }
+			get { return _duration; }
 			set
 			{
-				if (m_duration == value)
+				if (_duration == value)
 					return;
 
-				m_duration = value;
+				_duration = value;
 				OnTimeChanged();
 			}
 		}
@@ -164,17 +156,17 @@ namespace Common.Controls.Timeline
 
 		public bool Selected
 		{
-			get { return m_selected; }
+			get { return _selected; }
 			set
 			{
-				if (m_selected == value)
+				if (_selected == value)
 					return;
 
-				m_selected = value;
-				if (cachedImage != null)
+				_selected = value;
+				if (_cachedImage != null)
 				{
-					cachedImage.Dispose();
-					cachedImage = null;
+					_cachedImage.Dispose();
+					_cachedImage = null;
 				}
 				OnSelectedChanged();
 			}
@@ -220,7 +212,7 @@ namespace Common.Controls.Timeline
 		protected virtual void OnTargetNodesChanged()
 		{
 			EventHandler handler = TargetNodesChanged;
-			if (!suspendEvents && handler != null) 
+			if (!SuspendEvents && handler != null) 
 				handler(this, EventArgs.Empty);
 		}
 
@@ -248,7 +240,7 @@ namespace Common.Controls.Timeline
 		/// </summary>
 		protected virtual void OnTimeChanged()
 		{
-			if (!suspendEvents && TimeChanged != null)
+			if (!SuspendEvents && TimeChanged != null)
 				TimeChanged(this, EventArgs.Empty);
 		}
 
@@ -281,7 +273,7 @@ namespace Common.Controls.Timeline
 				);
 
 			// Draw it!
-			using (Pen border = new Pen(m_borderColor,borderWidth))
+			using (Pen border = new Pen(BorderColor,borderWidth))
 			{
 				border.Alignment = PenAlignment.Inset;
 				
@@ -309,10 +301,10 @@ namespace Common.Controls.Timeline
 			if (!IsRendered)
 			{
 				EffectNode.Effect.Render();
-				if (cachedImage != null)
+				if (_cachedImage != null)
 				{
-					cachedImage.Dispose();
-					cachedImage = null;
+					_cachedImage.Dispose();
+					_cachedImage = null;
 				}
 				
 			}
@@ -341,19 +333,21 @@ namespace Common.Controls.Timeline
 				visibleEndOffset = EndTime;
 			}
 
-			if (cachedImage == null || visibleStartOffset != elementVisibleStartTime || visibleEndOffset != elementVisibleEndTime || cachedImage.Height != imageSize.Height || cachedImage.Width != imageSize.Width)
+			if (_cachedImage == null || visibleStartOffset != _elementVisibleStartTime || 
+				visibleEndOffset != _elementVisibleEndTime || _cachedImage.Height != imageSize.Height || 
+				_cachedImage.Width != imageSize.Width)
 			{
-				cachedImage = new Bitmap(imageSize.Width, imageSize.Height);
-				using (Graphics g = Graphics.FromImage(cachedImage))
+				_cachedImage = new Bitmap(imageSize.Width, imageSize.Height);
+				using (Graphics g = Graphics.FromImage(_cachedImage))
 				{
 					DrawCanvasContent(g, visibleStartOffset, visibleEndOffset, overallWidth);
-					AddSelectionOverlayToCanvas(g, m_selected, startTime <= StartTime, endTime >= EndTime);
+					AddSelectionOverlayToCanvas(g, _selected, startTime <= StartTime, endTime >= EndTime);
 				}
-				elementVisibleStartTime = visibleStartOffset;
-				elementVisibleEndTime = visibleEndOffset;
+				_elementVisibleStartTime = visibleStartOffset;
+				_elementVisibleEndTime = visibleEndOffset;
 			}
 			
-			return cachedImage;
+			return _cachedImage;
 		}
 
 		public Bitmap DrawPlaceholder(Size imageSize)
@@ -361,17 +355,17 @@ namespace Common.Controls.Timeline
 			Bitmap result = new Bitmap(imageSize.Width, imageSize.Height);
 			using (Graphics g = Graphics.FromImage(result))
 			{
-				using (Brush b = new SolidBrush(m_gray))
+				using (Brush b = new SolidBrush(Gray))
 				{
 					g.FillRectangle(b,
 							new Rectangle((int)g.VisibleClipBounds.Left, (int)g.VisibleClipBounds.Top,
 										  (int)g.VisibleClipBounds.Width, (int)g.VisibleClipBounds.Height));	
 				}
 
-				AddSelectionOverlayToCanvas(g, m_selected, true, true);
+				AddSelectionOverlayToCanvas(g, _selected, true, true);
 			}
-			cachedImage = result;
-			return cachedImage;
+			_cachedImage = result;
+			return _cachedImage;
 		}
 
 		public void DrawInfo(Graphics g, Rectangle rect) 
@@ -380,7 +374,7 @@ namespace Common.Controls.Timeline
 			if (MouseCaptured)
 			{
 				// add text describing the effect
-				using (Brush b = new SolidBrush(m_textColor))
+				using (Brush b = new SolidBrush(TextColor))
 				{
 					g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
 
@@ -389,7 +383,7 @@ namespace Common.Controls.Timeline
 						StartTime.ToString(@"m\:ss\.fff"),
 						Duration.ToString(@"m\:ss\.fff"));
 
-					SizeF textSize = g.MeasureString(s, m_textFont);
+					SizeF textSize = g.MeasureString(s, TextFont);
 					Rectangle destRect = new Rectangle(rect.X, rect.Y, rect.Width, rect.Height);
 					if (rect.Y < destRect.Height)
 					{
@@ -412,8 +406,8 @@ namespace Common.Controls.Timeline
 					destRect.Width = (int)textSize.Width + margin;
 					destRect.Height = (int)textSize.Height + margin;
 					
-					g.FillRectangle(infoBrush, new Rectangle(destRect.Left, destRect.Top, (int)Math.Min(textSize.Width + margin, destRect.Width), (int)Math.Min(textSize.Height + margin, destRect.Height)));
-					g.DrawString(s, m_textFont, b, new Rectangle(destRect.Left + margin/2, destRect.Top + margin/2, destRect.Width - margin, destRect.Height - margin));
+					g.FillRectangle(InfoBrush, new Rectangle(destRect.Left, destRect.Top, (int)Math.Min(textSize.Width + margin, destRect.Width), (int)Math.Min(textSize.Height + margin, destRect.Height)));
+					g.DrawString(s, TextFont, b, new Rectangle(destRect.Left + margin/2, destRect.Top + margin/2, destRect.Width - margin, destRect.Height - margin));
 				}
 			}
 		}
@@ -464,9 +458,7 @@ namespace Common.Controls.Timeline
 
 		public static void SwapTimes(ITimePeriod lhs, ITimePeriod rhs)
 		{
-			TimeSpan temp;
-
-			temp = lhs.StartTime;
+			TimeSpan temp = lhs.StartTime;
 			lhs.StartTime = rhs.StartTime;
 			rhs.StartTime = temp;
 

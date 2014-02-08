@@ -928,7 +928,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					ToolStripMenuItem item = new ToolStripMenuItem("Edit Time");
 					item.Click += (mySender, myE) =>
 					{
-						EffectTimeEditor editor = new EffectTimeEditor(tse._effectNode.StartTime, tse._effectNode.TimeSpan);
+						EffectTimeEditor editor = new EffectTimeEditor(tse.EffectNode.StartTime, tse.EffectNode.TimeSpan);
 						if (editor.ShowDialog(this) == DialogResult.OK)
 						{
 							TimelineControl.grid.MoveResizeElement(element, editor.Start, editor.Duration);

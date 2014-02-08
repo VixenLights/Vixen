@@ -43,7 +43,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		protected override void OnTimeChanged()
 		{
-			if (!suspendEvents)
+			if (!SuspendEvents)
 			{
 				if (this.EffectNode != null)
 				{
@@ -60,7 +60,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		protected override void OnTargetNodesChanged()
 		{
-			if (!suspendEvents)
+			if (!SuspendEvents)
 			{
 				if (EffectNode != null)
 				{
