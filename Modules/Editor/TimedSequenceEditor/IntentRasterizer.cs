@@ -57,7 +57,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 			} else {
 				using (LinearGradientBrush brush = new LinearGradientBrush(
-					rectangle, startColor, endColor, LinearGradientMode.Horizontal))
+					gradientRectangle, startColor, endColor, LinearGradientMode.Horizontal))
 				{
 					brush.GammaCorrection = true;
 					_graphics.FillRectangle(brush, rectangle);
