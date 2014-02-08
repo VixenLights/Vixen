@@ -413,9 +413,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				foreach (PreviewPoint point in _selectPoints) {
 					if (point != null) {
 						if (point.PointType == PreviewPoint.PointTypes.Size) {
-							int x = Convert.ToInt32((point.X - (SelectPointSize/2)) * ZoomLevel);
-							int y = Convert.ToInt32((point.Y - (SelectPointSize/2)) * ZoomLevel);
-							fp.DrawRectangle(
+                            int x = Convert.ToInt32((point.X) * ZoomLevel) - (SelectPointSize / 2);
+                            int y = Convert.ToInt32(point.Y * ZoomLevel) - (SelectPointSize / 2);
+                            fp.DrawRectangle(
 								new Rectangle(x, y, SelectPointSize, SelectPointSize),
 								Color.White);
 						}

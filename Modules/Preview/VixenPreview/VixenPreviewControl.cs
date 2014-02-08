@@ -64,7 +64,6 @@ namespace VixenModules.Preview.VixenPreview
 
 		private Bitmap _background;
 		private Bitmap _alphaBackground;
-		//private Bitmap _blankAlphaBackground;
 
 		private VixenPreviewData _data;
 
@@ -76,8 +75,6 @@ namespace VixenModules.Preview.VixenPreview
 		// For debug, status line, etc.
 		private Random random = new Random();
 		private Stopwatch renderTimer = new Stopwatch();
-
-		//private TextureBrush _backgroundBrush;
 
 		#endregion
 
@@ -289,7 +286,6 @@ namespace VixenModules.Preview.VixenPreview
 				int newWidth = Convert.ToInt32(_background.Width * ZoomLevel);
 				int newHeight = Convert.ToInt32(_background.Height * ZoomLevel);
 
-				//_alphaBackground = new Bitmap(_background.Width, _background.Height, PixelFormat.Format32bppPArgb);
 				_alphaBackground = new Bitmap(newWidth, newHeight, PixelFormat.Format32bppPArgb);
 
 				using (Graphics gfx = Graphics.FromImage(_alphaBackground))
@@ -300,10 +296,6 @@ namespace VixenModules.Preview.VixenPreview
 						gfx.FillRectangle(brush, 0, 0, _alphaBackground.Width, _alphaBackground.Height);
 					}
 				}
-				//_blankAlphaBackground = new Bitmap(_background.Width, _background.Height, PixelFormat.Format32bppPArgb);
-				//Graphics g = Graphics.FromImage(_blankAlphaBackground);
-				//g.Clear(Color.FromArgb(255 - BackgroundAlpha, 0, 0, 0));
-				//_backgroundBrush = new TextureBrush(_blankAlphaBackground);
 				
 				SetupScrollBars();
 
@@ -390,30 +382,28 @@ namespace VixenModules.Preview.VixenPreview
 		{
 			if (_editMode) {
                 bool controlPressed = Control.ModifierKeys == Keys.Control;
-				PreviewPoint originalPoint = new PreviewPoint(e.X, e.Y);
-				PreviewPoint point = new PreviewPoint(e.X, e.Y);
-				//PreviewPoint point = new PreviewPoint(Convert.ToInt32(e.X*ZoomLevel), Convert.ToInt32(e.Y*ZoomLevel));
-				if (e.Button == System.Windows.Forms.MouseButtons.Left) {
+                PreviewPoint translatedPoint = new PreviewPoint(e.X + hScroll.Value, e.Y + vScroll.Value);
+                if (e.Button == System.Windows.Forms.MouseButtons.Left) {
                     if (controlPressed)
                     {
-                        SelectItemUnderPoint(point, controlPressed);
+                        SelectItemUnderPoint(translatedPoint, controlPressed);
                         return;
                     }
 					if (_currentTool == Tools.Select) {
 						// Is there a single dislay item selected?
 						if (_selectedDisplayItem != null && !controlPressed) {
 							// Lets see if we've got a drag point.
-							PreviewPoint selectedPoint = _selectedDisplayItem.Shape.PointInSelectPoint(originalPoint);
+                            PreviewPoint selectedPoint = _selectedDisplayItem.Shape.PointInSelectPoint(translatedPoint);
 							if (selectedPoint != null) {
-								dragStart.X = e.X;
-								dragStart.Y = e.Y;
+                                dragStart = translatedPoint.ToPoint();
 								_selectedDisplayItem.Shape.SetSelectPoint(selectedPoint);
 								Capture = true;
 								_mouseCaptured = true;
 							}
 								// If we're not resizing, see if we're moving a single shape
-							else if (_selectedDisplayItem.Shape.PointInShape(point)) {
-								StartMove(e.X, e.Y);
+                            else if (_selectedDisplayItem.Shape.PointInShape(translatedPoint))
+                            {
+                                StartMove(translatedPoint.X, translatedPoint.Y);
 							}
 								// If we get here, we're outside the shape, deselect
 							else {
@@ -423,30 +413,29 @@ namespace VixenModules.Preview.VixenPreview
 							// Are there multiple items selected?
 							// If so, we're moving, can't resize them...
 						else if (SelectedDisplayItems.Count > 1 && !controlPressed) {
-							if (MouseOverSelectedDisplayItems(e.X, e.Y)) {
-								//_selectedDisplayItem.Shape.SetSelectPoint(null);
-								StartMove(e.X, e.Y);
-							}
-							else {
-								SelectedDisplayItems.Clear();
-							}
-						}
+                            //if (MouseOverSelectedDisplayItems(e.X, e.Y)) {
+                            //    StartMove(e.X, e.Y);
+                            //}
+                            //else {
+                            //    SelectedDisplayItems.Clear();
+                            //}
+                            if (MouseOverSelectedDisplayItems(translatedPoint.X, translatedPoint.Y))
+                            {
+                                StartMove(translatedPoint.X, translatedPoint.Y);
+                            }
+                            else
+                            {
+                                SelectedDisplayItems.Clear();
+                            }
+                        }
 
-						//if (!_mouseCaptured) {
-						//    _selectedDisplayItem = DisplayItemAtPoint(point);
-						//    if (_selectedDisplayItem != null) {
-						//        _selectedDisplayItem.Shape.Select(true);
-						//        OnSelectDisplayItem(this, _selectedDisplayItem);
-						//    }
-						//}
-						SelectItemUnderPoint(point, controlPressed);
+                        SelectItemUnderPoint(translatedPoint, controlPressed);
 
 						// If we get this far, and we've got nothing selected, we're drawing a rubber band!
 						if (_selectedDisplayItem == null && SelectedDisplayItems.Count == 0) {
 							// Capture the mouse in case we want to draw a rubber band
-							dragStart.X = e.X;
-							dragStart.Y = e.Y;
-							Capture = true;
+                            dragStart = translatedPoint.ToPoint();
+                            Capture = true;
 							_mouseCaptured = true;
 							SelectedDisplayItems.Clear();
 							_bandRect.Width = 0;
@@ -459,59 +448,58 @@ namespace VixenModules.Preview.VixenPreview
 						DisplayItem newDisplayItem = null;
 						if (_currentTool == Tools.String) {
 							newDisplayItem = new DisplayItem();
-							newDisplayItem.Shape = new PreviewLine(new PreviewPoint(e.X, e.Y), new PreviewPoint(e.X, e.Y), 50,
+                            newDisplayItem.Shape = new PreviewLine(translatedPoint, translatedPoint, 50,
 																   elementsForm.SelectedNode, ZoomLevel);
 						}
 						else if (_currentTool == Tools.Arch) {
 							newDisplayItem = new DisplayItem();
-							newDisplayItem.Shape = new PreviewArch(new PreviewPoint(e.X, e.Y), elementsForm.SelectedNode, ZoomLevel);
+                            newDisplayItem.Shape = new PreviewArch(translatedPoint, elementsForm.SelectedNode, ZoomLevel);
 						}
 						else if (_currentTool == Tools.Rectangle) {
 							newDisplayItem = new DisplayItem();
-							newDisplayItem.Shape = new PreviewRectangle(new PreviewPoint(e.X, e.Y), elementsForm.SelectedNode, ZoomLevel);
+                            newDisplayItem.Shape = new PreviewRectangle(translatedPoint, elementsForm.SelectedNode, ZoomLevel);
 						}
 						else if (_currentTool == Tools.Single) {
 							newDisplayItem = new DisplayItem();
-							newDisplayItem.Shape = new PreviewSingle(new PreviewPoint(e.X, e.Y), elementsForm.SelectedNode, ZoomLevel);
+                            newDisplayItem.Shape = new PreviewSingle(translatedPoint, elementsForm.SelectedNode, ZoomLevel);
 						}
 						else if (_currentTool == Tools.Ellipse) {
 							newDisplayItem = new DisplayItem();
-							//newDisplayItem.Shape = new PreviewEllipse(new PreviewPoint(e.X, e.Y), 50, elementsForm.SelectedNode);
-							newDisplayItem.Shape = new PreviewEllipse(new PreviewPoint(e.X, e.Y), 50, elementsForm.SelectedNode, ZoomLevel);
+                            newDisplayItem.Shape = new PreviewEllipse(translatedPoint, 50, elementsForm.SelectedNode, ZoomLevel);
 						}
 						else if (_currentTool == Tools.Triangle) {
 							newDisplayItem = new DisplayItem();
-							newDisplayItem.Shape = new PreviewTriangle(new PreviewPoint(e.X, e.Y), elementsForm.SelectedNode, ZoomLevel);
+                            newDisplayItem.Shape = new PreviewTriangle(translatedPoint, elementsForm.SelectedNode, ZoomLevel);
 						}
 						else if (_currentTool == Tools.Net) {
 							newDisplayItem = new DisplayItem();
-							newDisplayItem.Shape = new PreviewNet(new PreviewPoint(e.X, e.Y), elementsForm.SelectedNode, ZoomLevel);
+                            newDisplayItem.Shape = new PreviewNet(translatedPoint, elementsForm.SelectedNode, ZoomLevel);
 						}
 						else if (_currentTool == Tools.Cane) {
 							newDisplayItem = new DisplayItem();
-							newDisplayItem.Shape = new PreviewCane(new PreviewPoint(e.X, e.Y), elementsForm.SelectedNode, ZoomLevel);
+                            newDisplayItem.Shape = new PreviewCane(translatedPoint, elementsForm.SelectedNode, ZoomLevel);
 						}
 						else if (_currentTool == Tools.Star) {
 							newDisplayItem = new DisplayItem();
-							newDisplayItem.Shape = new PreviewStar(new PreviewPoint(e.X, e.Y), elementsForm.SelectedNode, ZoomLevel);
+                            newDisplayItem.Shape = new PreviewStar(translatedPoint, elementsForm.SelectedNode, ZoomLevel);
 						}
                         else if (_currentTool == Tools.StarBurst)
                         {
                             newDisplayItem = new DisplayItem();
-                            newDisplayItem.Shape = new PreviewStarBurst(new PreviewPoint(e.X, e.Y), elementsForm.SelectedNode, ZoomLevel);
+                            newDisplayItem.Shape = new PreviewStarBurst(translatedPoint, elementsForm.SelectedNode, ZoomLevel);
                         }
                         else if (_currentTool == Tools.Flood)
                         {
 							newDisplayItem = new DisplayItem();
-							newDisplayItem.Shape = new PreviewFlood(new PreviewPoint(e.X, e.Y), elementsForm.SelectedNode);
+                            newDisplayItem.Shape = new PreviewFlood(translatedPoint, elementsForm.SelectedNode);
 						}
 						else if (_currentTool == Tools.MegaTree) {
 							newDisplayItem = new DisplayItem();
-							newDisplayItem.Shape = new PreviewMegaTree(new PreviewPoint(e.X, e.Y), elementsForm.SelectedNode, ZoomLevel);
+                            newDisplayItem.Shape = new PreviewMegaTree(translatedPoint, elementsForm.SelectedNode, ZoomLevel);
 						}
 						else if (_currentTool == Tools.PixelGrid) {
 							newDisplayItem = new DisplayItem();
-							newDisplayItem.Shape = new PreviewPixelGrid(new PreviewPoint(e.X, e.Y), elementsForm.SelectedNode, ZoomLevel);
+                            newDisplayItem.Shape = new PreviewPixelGrid(translatedPoint, elementsForm.SelectedNode, ZoomLevel);
 						}
 
 						// Now add the newely created display item to the screen.
@@ -522,9 +510,8 @@ namespace VixenModules.Preview.VixenPreview
 							_selectedDisplayItem.Shape.PixelSize = 3;
 							_selectedDisplayItem.Shape.Select(true);
 							_selectedDisplayItem.Shape.SelectDefaultSelectPoint();
-							dragStart.X = e.X;
-							dragStart.Y = e.Y;
-							Capture = true;
+                            dragStart = translatedPoint.ToPoint();
+                            Capture = true;
 							_mouseCaptured = true;
 						}
 					}
@@ -533,11 +520,12 @@ namespace VixenModules.Preview.VixenPreview
 					ContextMenu menu = null;
 					MenuItem item;
 
-					SelectItemUnderPoint(point, false);
+                    SelectItemUnderPoint(translatedPoint, false);
 
 					if (_selectedDisplayItem != null) {
-						PreviewPoint selectedPoint = _selectedDisplayItem.Shape.PointInSelectPoint(point);
-						if (_selectedDisplayItem.Shape.PointInShape(point)) {
+                        PreviewPoint selectedPoint = _selectedDisplayItem.Shape.PointInSelectPoint(translatedPoint);
+                        if (_selectedDisplayItem.Shape.PointInShape(translatedPoint))
+                        {
 							menu = new ContextMenu();
 							if (_selectedDisplayItem.Shape.GetType().ToString().Contains("PreviewCustom")) {
 								item = new MenuItem("Separate Template Items", OnItemContextMenuClick);
@@ -622,10 +610,14 @@ namespace VixenModules.Preview.VixenPreview
 							item.Tag = "9";
 							locationItem.MenuItems.Add(item);
 						}
-						menu.Show(this, new Point(e.X, e.Y));
+                        menu.Show(this, e.Location);
 					}
 				}
-			}
+            }
+            else if (e.Button == System.Windows.Forms.MouseButtons.Middle)
+            {
+                // Pan
+            }
 		}
 
 		public void OnItemContextMenuClick(Object sender, EventArgs e)
@@ -721,23 +713,19 @@ namespace VixenModules.Preview.VixenPreview
 		private void VixenPreviewControl_MouseMove(object sender, MouseEventArgs e)
 		{
 			if (_editMode) {
-				PreviewPoint point = new PreviewPoint(e.X, e.Y);
-				//PreviewPoint point = new PreviewPoint(Convert.ToInt32(e.X * ZoomLevel), Convert.ToInt32(e.Y * ZoomLevel));
-
-				dragCurrent.X = e.X;
-				dragCurrent.Y = e.Y;
-				changeX = e.X - dragStart.X;
-				changeY = e.Y - dragStart.Y;
-				//dragCurrent.X = Convert.ToInt32(e.X * ZoomLevel);
-				//dragCurrent.Y = Convert.ToInt32(e.Y * ZoomLevel);
-				//changeX = Convert.ToInt32((e.X - dragStart.X) * ZoomLevel);
-				//changeY = Convert.ToInt32((e.Y - dragStart.Y) * ZoomLevel);
+                PreviewPoint translatedPoint = new PreviewPoint(e.X + hScroll.Value, e.Y + vScroll.Value);
+                PreviewPoint originalPoint = new PreviewPoint(e.X, e.Y);
+                
+                dragCurrent.X = translatedPoint.X;
+                dragCurrent.Y = translatedPoint.Y;
+                changeX = translatedPoint.X - dragStart.X;
+                changeY = translatedPoint.Y - dragStart.Y;
 
 				// Are we moving a single display item?
 				if (_mouseCaptured && _selectedDisplayItem != null) {
 					_selectedDisplayItem.Shape.MouseMove(dragCurrent.X, dragCurrent.Y, changeX, changeY);
 				}
-					// If we get here, we're drwing a rubber band
+			    // If we get here, we're drwing a rubber band
 				else if (_banding) {
 					_bandRect.Location = dragStart;
 					_bandRect.Width = changeX;
@@ -761,11 +749,12 @@ namespace VixenModules.Preview.VixenPreview
 				}
 				else {
 					if (_selectedDisplayItem != null) {
-						PreviewPoint selectPoint = _selectedDisplayItem.Shape.PointInSelectPoint(point);
+                        PreviewPoint selectPoint = _selectedDisplayItem.Shape.PointInSelectPoint(translatedPoint);
 						if (selectPoint != null) {
 							Cursor.Current = Cursors.Cross;
 						}
-						else if (_selectedDisplayItem.Shape.PointInShape(point)) {
+                        else if (_selectedDisplayItem.Shape.PointInShape(translatedPoint))
+                        {
 							Cursor.Current = Cursors.SizeAll;
 						}
 						else {
@@ -773,10 +762,11 @@ namespace VixenModules.Preview.VixenPreview
 						}
 					}
 					else if (SelectedDisplayItems.Count > 0) {
-						if (MouseOverSelectedDisplayItems(e.X, e.Y)) {
-							Cursor.Current = Cursors.SizeAll;
-						}
-					}
+                        if (MouseOverSelectedDisplayItems(translatedPoint.X, translatedPoint.Y))
+                        {
+                            Cursor.Current = Cursors.SizeAll;
+                        }
+                    }
 				}
 			}
 		}
@@ -791,7 +781,6 @@ namespace VixenModules.Preview.VixenPreview
 					if ((Control.ModifierKeys & Keys.Shift) != 0) {
 						_selectedDisplayItem.Shape.MouseUp(sender, e);
 						DeSelectSelectedDisplayItem();
-						//HighlightedElements.Clear();
 					}
 					else {
 						_currentTool = Tools.Select;
@@ -1655,11 +1644,11 @@ namespace VixenModules.Preview.VixenPreview
 
             // Zoom to the pointer location
             Point zoomTo = PointToZoomPoint(e.Location);
-            //Console.WriteLine(zoomTo.X + ":" + zoomTo.Y);
-            
-            
 
             ZoomLevel += delta;
+
+            // Get the new point under the mouse
+            //Point pointUnderMouse = PointToZoomPoint(e.Location);
         }
 	}
 }
