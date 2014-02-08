@@ -1069,15 +1069,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				if (aDialog.IsVixen3BeatSelection)
 					ImportVixen3Beats();
-
 				if (aDialog.IsVampBarSelection || aDialog.IsAudacityBeatSelection)
-				{
 					LoadBarLabels();
-				}
-				else
-				{
+				if (aDialog.IsVampBeatSelection)
 					LoadBeatLabels();		
-				}	
 			}
 		}
 
@@ -1232,8 +1227,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void buttonExportBeatMarks_Click(object sender, EventArgs e)
 		{
-			//ExportMarkCollections(null);
-
 			if (MarkCollections.Count == 0)
 			{
 				MessageBox.Show("Unable to find marks collection for export");
@@ -1253,51 +1246,54 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
+		//Vixen 3 Beat Mark Collection Import routine 2-7-2014 JMB
 		private void ImportVixen3Beats()
 		{
-			FileStream fs = new FileStream(@"c:\temp\SerializationOverview.xml", FileMode.Open);
-			XmlDictionaryReader reader = XmlDictionaryReader.CreateTextReader(fs, new XmlDictionaryReaderQuotas());
-			DataContractSerializer ser = new DataContractSerializer(typeof(MarkCollection));
-
-			// Deserialize the data and read it from the instance.
-			MarkCollection deserializedMarkCollection = (MarkCollection)ser.ReadObject(reader, true);
-			reader.Close();
-			fs.Close();
-			var marks = new List<MarkCollection>();
-			marks.Add(deserializedMarkCollection);
-			UpdateMarkListBox();
-			//Console.WriteLine(String.Format("{0} {1}, ID: {2}", deserializedPerson.FirstName, deserializedPerson.LastName, deserializedPerson.ID));
+			openFileDialog.DefaultExt = ".v3m";
+			openFileDialog.Filter = "Vixen 3 Mark Collection (*.v3m)|*.v3m|All Files (*.*)|*.*";
+			openFileDialog.FilterIndex = 0;
+			openFileDialog.InitialDirectory = lastFolder;
+			if (openFileDialog.ShowDialog() == DialogResult.OK)
+			{
+				using (FileStream reader = new FileStream(openFileDialog.FileName, FileMode.Open, FileAccess.Read))
+				{
+					DataContractSerializer ser = new DataContractSerializer(typeof(List<MarkCollection>));
+					MarkCollections = (List<MarkCollection>)ser.ReadObject(reader);
+				}
+				PopulateMarkCollectionsList();
+				PopulateFormWithMarkCollection(null, true);
+			}
 		}
-		private string mymarks;
-		private int iMarkCollection;
 
+		//Beat Mark Collection Export routine 2-7-2014 JMB
+		//In the audacity section, if the MarkCollections.Count = 1 then we assume the collection is bars and iMarkCollection++
+		//Other wise its beats, at least from the information I have studied, and we do not iMarkCollection++ to keep the collections together properly.
 		private void ExportMarkCollections(MarkCollection collection, string exportType)
 		{
 			if (exportType == "vixen3")
 			{
-
-				var xmlsettings = new XmlWriterSettings()
+				saveFileDialog.DefaultExt = ".v3m";
+				saveFileDialog.Filter = "Vixen 3 Mark Collection (*.v3m)|*.v3m|All Files (*.*)|*.*";
+				saveFileDialog.InitialDirectory = lastFolder;
+				if (saveFileDialog.ShowDialog() == DialogResult.OK)
 				{
-					Indent = true,
-					IndentChars = "\t",
-					ConformanceLevel = ConformanceLevel.Fragment
-				};
-
-				DataContractSerializer ser = new DataContractSerializer(typeof(MarkCollection));
-
-				//FileStream writer = new FileStream(@"c:\temp\SerializationOverview.xml", FileMode.Create);
-					var writer = XmlWriter.Create(@"c:\temp\SerializationOverview.xml", xmlsettings);
-					foreach (MarkCollection mc in MarkCollections)
+					var xmlsettings = new XmlWriterSettings()
 					{
-						ser.WriteObject(writer, mc);
-					}
+						Indent = true,
+						IndentChars = "\t",
+					};
+
+					DataContractSerializer ser = new DataContractSerializer(typeof(List<MarkCollection>));
+					var writer = XmlWriter.Create(saveFileDialog.FileName, xmlsettings);
+					ser.WriteObject(writer, MarkCollections);
 					writer.Close();
+				}
 			}
 
 			if (exportType == "audacity")
 			{
+				int iMarkCollection = 0;
 				List<string> BeatMarks = new List<string>();
-				iMarkCollection = 0;
 				foreach (MarkCollection mc in MarkCollections)
 				{
 					iMarkCollection++;
@@ -1308,14 +1304,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							iMarkCollection++;
 					}
 				}
-				//BeatMarks.Sort();
-				//BeatMarks.OrderBy(x => x);
 
-				string filter = "Audacity Marks (*.txt)|*.txt|All Files (*.*)|*.*";
 				saveFileDialog.DefaultExt = ".txt";
-				saveFileDialog.Filter = filter;
-				DialogResult result = saveFileDialog.ShowDialog();
-				if (result == DialogResult.OK)
+				saveFileDialog.Filter = "Audacity Marks (*.txt)|*.txt|All Files (*.*)|*.*";
+				if (saveFileDialog.ShowDialog() == DialogResult.OK)
 				{
 					string name = saveFileDialog.FileName;
 

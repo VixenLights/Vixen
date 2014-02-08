@@ -160,7 +160,7 @@
 			this.buttonImportAudacity.Name = "buttonImportAudacity";
 			this.buttonImportAudacity.Size = new System.Drawing.Size(226, 23);
 			this.buttonImportAudacity.TabIndex = 10;
-			this.buttonImportAudacity.Text = "Import Audacity Beat Marks";
+			this.buttonImportAudacity.Text = "Import Beat Marks";
 			this.buttonImportAudacity.UseVisualStyleBackColor = true;
 			this.buttonImportAudacity.Click += new System.EventHandler(this.buttonImportAudacity_Click);
 			// 
