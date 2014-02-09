@@ -269,14 +269,12 @@ namespace Common.Controls.Timeline
 			// Adjust the rect such that the border is completely inside it.
 			Rectangle borderRectangle = new Rectangle(
 				(int) g.VisibleClipBounds.Left, (int)g.VisibleClipBounds.Top,
-				(int) g.VisibleClipBounds.Width, (int) g.VisibleClipBounds.Height
+				(int) g.VisibleClipBounds.Width-1, (int) g.VisibleClipBounds.Height-1
 				);
 
 			// Draw it!
 			using (Pen border = new Pen(BorderColor,borderWidth))
-			{
-				border.Alignment = PenAlignment.Inset;
-				
+			{	
 				g.DrawLine(border, borderRectangle.Left, borderRectangle.Top, borderRectangle.Right, borderRectangle.Top);
 				g.DrawLine(border, borderRectangle.Left, borderRectangle.Bottom, borderRectangle.Right, borderRectangle.Bottom);
 
