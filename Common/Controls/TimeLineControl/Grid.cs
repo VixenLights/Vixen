@@ -1302,20 +1302,21 @@ namespace Common.Controls.Timeline
 
 					Point selectedTopLeft = new Point((-AutoScrollPosition.X), curY);
 					curY += row.Height;
-					Point selectedBottomRight = new Point((-AutoScrollPosition.X) + Width, curY);
 					Point lineLeft = new Point((-AutoScrollPosition.X), curY);
 					Point lineRight = new Point((-AutoScrollPosition.X) + Width, curY);
 
 					if (row.Selected)
 					{
-						g.FillRectangle(b, Util.RectangleFromPoints(selectedTopLeft, selectedBottomRight));
+						g.FillRectangle(b, Util.RectangleFromPoints(selectedTopLeft, lineRight));
 						using (Pen bp = new Pen(SelectionBorder))
 						{
-							g.DrawRectangle(bp, Util.RectangleFromPoints(selectedTopLeft, selectedBottomRight));
+							g.DrawRectangle(bp, Util.RectangleFromPoints(selectedTopLeft, lineRight));
 						}
 					}
 					if (row.Active)
-						g.FillRectangle(b, Util.RectangleFromPoints(selectedTopLeft, selectedBottomRight));
+					{
+						g.FillRectangle(b, Util.RectangleFromPoints(selectedTopLeft, lineRight));
+					}
 					g.DrawLine(p, lineLeft.X, lineLeft.Y - 1, lineRight.X, lineRight.Y - 1);
 				}
 			}
@@ -1344,13 +1345,16 @@ namespace Common.Controls.Timeline
 			Pen p;
 
 			// iterate through all snap points, and if it's visible, draw it
-			foreach (KeyValuePair<TimeSpan, List<SnapDetails>> kvp in StaticSnapPoints) {
-				SnapDetails details = null;
-				foreach (SnapDetails d in kvp.Value) {
-					if (details == null || (d.SnapLevel > details.SnapLevel && d.SnapColor != Color.Empty))
-						details = d;
-				}
-				if (kvp.Key >= VisibleTimeStart && kvp.Key < VisibleTimeEnd) {
+			foreach (KeyValuePair<TimeSpan, List<SnapDetails>> kvp in StaticSnapPoints)
+			{
+				if (kvp.Key >= VisibleTimeEnd) break;
+				if (kvp.Key >= VisibleTimeStart) {
+					SnapDetails details = null;
+					foreach (SnapDetails d in kvp.Value)
+					{
+						if (details == null || (d.SnapLevel > details.SnapLevel && d.SnapColor != Color.Empty))
+							details = d;
+					}
 					p = new Pen(details.SnapColor);
 					Single x = timeToPixels(kvp.Key);
 					p.DashPattern = new float[] {details.SnapLevel, details.SnapLevel};
@@ -1444,7 +1448,7 @@ namespace Common.Controls.Timeline
 		}
 
 		/// <summary>
-		/// Renders the specific element which includes rendering if needed
+		/// Renders the specific element.
 		/// </summary>
 		/// <param name="element"></param>
         public void RenderElement(Element element)
@@ -1466,7 +1470,7 @@ namespace Common.Controls.Timeline
         }
 
 		/// <summary>
-		/// Rasterizes selected rows in the grid which includes rendering if needed.
+		/// Renders elements in the selected rows in the grid.
 		/// </summary>
 		/// <param name="rows"></param>
 		public void RenderRows(List<Row> rows)
@@ -1486,7 +1490,7 @@ namespace Common.Controls.Timeline
 		}
 
 		/// <summary>
-		/// Rasterizes all rows in the grid which includes rendering if needed.
+		/// Renders all elements in all the rows.
 		/// </summary>
 		public void RenderAllRows()
 		{
@@ -1575,7 +1579,7 @@ namespace Common.Controls.Timeline
 					if (currentElement.StartTime > VisibleTimeEnd) {
 						break;
 					}
-
+					
 					DrawElement(g, row, currentElement, row.DisplayTop);
 				}
 
