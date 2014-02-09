@@ -2575,8 +2575,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void timelineControl_ElementsMovedNew(object sender, ElementsChangedTimesEventArgs e)
 		{
-			var action = new ElementsTimeChangedUndoAction(e.PreviousTimes, e.Type);
+			var action = new ElementsTimeChangedUndoAction(this, e.PreviousTimes, e.Type);
 			_undoMgr.AddUndoAction(action);
+		}
+
+		public void SwapTimes(Dictionary<Element, ElementTimeInfo> changedElements)
+		{
+			foreach (KeyValuePair<Element, ElementTimeInfo> e in changedElements)
+			{
+				// Key is reference to actual element. Value is class with its times before move.
+				// Swap the element's times with the saved times from before the move, so we can restore them later in redo.
+				ElementTimeInfo.SwapTimes(e.Key, e.Value);
+				TimelineControl.grid.RenderElement(e.Key);
+			}
 		}
 
 		#endregion

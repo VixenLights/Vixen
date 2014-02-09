@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using Common.Controls;
 using Common.Controls.Timeline;
-using Vixen.Module.Effect;
 using Vixen.Sys;
 using Element = Common.Controls.Timeline.Element;
 
@@ -14,33 +13,27 @@ namespace VixenModules.Editor.TimedSequenceEditor
 	{
 		private Dictionary<Element, ElementTimeInfo> m_changedElements;
 		private ElementMoveType m_moveType;
+		private TimedSequenceEditorForm m_form;
 
-		public ElementsTimeChangedUndoAction(Dictionary<Element, ElementTimeInfo> changedElements, ElementMoveType moveType)
+		public ElementsTimeChangedUndoAction(TimedSequenceEditorForm form, Dictionary<Element, ElementTimeInfo> changedElements, ElementMoveType moveType)
 			: base()
 		{
 			m_changedElements = changedElements;
 			m_moveType = moveType;
+			m_form = form;
 		}
 
 
 		public override void Undo()
 		{
-			foreach (KeyValuePair<Element, ElementTimeInfo> e in m_changedElements) {
-				// Key is reference to actual element. Value is class with its times before move.
-				// Swap the element's times with the saved times from before the move, so we can restore them later in redo.
-				ElementTimeInfo.SwapTimes(e.Key, e.Value);
-			}
+			m_form.SwapTimes(m_changedElements);
 
 			base.Undo();
 		}
 
 		public override void Redo()
 		{
-			foreach (KeyValuePair<Element, ElementTimeInfo> e in m_changedElements) {
-				// Key is reference to actual element. Value is class with the times before undo.
-				// Swap the element's times with the saved times from before the undo, essentially re-doing the original action.
-				ElementTimeInfo.SwapTimes(e.Key, e.Value);
-			}
+			m_form.SwapTimes(m_changedElements);
 
 			base.Redo();
 		}
