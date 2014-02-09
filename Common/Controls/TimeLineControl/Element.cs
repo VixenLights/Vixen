@@ -327,8 +327,14 @@ namespace Common.Controls.Timeline
 				visibleEndOffset = endTime - StartTime;
 			} else
 			{
+				visibleEndOffset = EndTime;	
+			}
 
-				visibleEndOffset = EndTime;
+			if (SuspendEvents)
+			{
+				double factor = _origDuration.TotalMilliseconds / Duration.TotalMilliseconds;
+				visibleStartOffset = TimeSpan.FromMilliseconds(visibleStartOffset.TotalMilliseconds * factor);
+				visibleEndOffset = TimeSpan.FromMilliseconds(visibleEndOffset.TotalMilliseconds * factor);
 			}
 
 			if (_cachedImage == null || visibleStartOffset != _elementVisibleStartTime || 
@@ -362,8 +368,8 @@ namespace Common.Controls.Timeline
 
 				AddSelectionOverlayToCanvas(g, _selected, true, true);
 			}
-			_cachedImage = result;
-			return _cachedImage;
+			
+			return result;
 		}
 
 		public void DrawInfo(Graphics g, Rectangle rect) 

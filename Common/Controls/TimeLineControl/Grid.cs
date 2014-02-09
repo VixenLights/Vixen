@@ -1519,7 +1519,7 @@ namespace Common.Controls.Timeline
 			currentElement.DisplayTop = top + (currentElement.DisplayHeight * currentElement.StackIndex);
 			currentElement.RowTopOffset = currentElement.DisplayHeight * currentElement.StackIndex;
 			int width;
-			if (currentElement.StartTime > VisibleTimeStart)
+			if (currentElement.StartTime >= VisibleTimeStart)
 			{
 				if (currentElement.EndTime < VisibleTimeEnd)
 				{
@@ -1532,7 +1532,7 @@ namespace Common.Controls.Timeline
 			}
 			else
 			{
-				if (currentElement.EndTime < VisibleTimeEnd)
+				if (currentElement.EndTime <= VisibleTimeEnd)
 				{
 					width = (int) (timeToPixels(currentElement.EndTime) - timeToPixels(VisibleTimeStart));
 				} else
