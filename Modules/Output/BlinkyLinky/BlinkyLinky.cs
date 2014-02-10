@@ -34,6 +34,7 @@ namespace VixenModules.Output.BlinkyLinky
 
 		public BlinkyLinky()
 		{
+			Logging.Trace("Constructor()");
 			_lastValues = new Dictionary<int, byte>();
 			_nullCommands = new Dictionary<int, int>();
 			_data = new BlinkyLinkyData();
@@ -43,6 +44,7 @@ namespace VixenModules.Output.BlinkyLinky
 
 		private void _setupDataBuffers()
 		{
+			Logging.Trace(LogTag + "_setupDataBuffers()");
 			for (int i = 0; i < this.OutputCount; i++) {
 				if (!_lastValues.ContainsKey(i))
 					_lastValues[i] = 0;
@@ -78,6 +80,7 @@ namespace VixenModules.Output.BlinkyLinky
 
 		public override bool Setup()
 		{
+			Logging.Trace(LogTag + "Setup()");
 			BlinkyLinkySetup setup = new BlinkyLinkySetup(_data);
 			if (setup.ShowDialog() == DialogResult.OK) {
 				if (setup.Address != null)
@@ -96,13 +99,26 @@ namespace VixenModules.Output.BlinkyLinky
 			return _data.Address.ToString().Equals("1.1.1.1");
 		}
 
+		private string HostInfo()
+		{
+			return _data.Address + ":" + _data.Port + ":" + _data.Stream;
+		}
+
+		private string LogTag
+		{
+			get { return "[" + HostInfo() + "]: "; }
+		}
+
+
 		private bool OpenConnection()
 		{
+			Logging.Trace(LogTag + "OpenConnection()");
+
 			// start off closing the connection
 			CloseConnection();
 
 			if (_data.Address == null) {
-				Logging.Warn("BlinkyLinky: Trying to connect with a null IP address.");
+				Logging.Warn(LogTag + "Trying to connect with a null IP address.");
 				return false;
 			}
 
@@ -114,18 +130,17 @@ namespace VixenModules.Output.BlinkyLinky
 				_tcpClient.Connect(_data.Address, _data.Port);
 			}
 			catch (Exception ex) {
-				Logging.Warn(
-					"BlinkyLinky: Failed to connect to remote host " + _data.Address.ToString() + ", " + _data.Port, ex);
+				Logging.Warn(LogTag + "BlinkyLinky: Failed connect to host", ex);
 				return false;
 			}
 
 			try {
 				_networkStream = _tcpClient.GetStream();
+				Logging.Debug(LogTag + "New connection to  host");
+				Logging.Debug(LogTag + "(WriteTimeout default is " + _networkStream.WriteTimeout + ")");
 			}
 			catch (Exception ex) {
-				Logging.WarnException(
-					"BlinkyLinky: Failed to get stream to communicate with remote host " + _data.Address.ToString() + ", " + _data.Port,
-					ex);
+				Logging.WarnException(LogTag + "Failed stream for host", ex);
 				_tcpClient.Close();
 				return false;
 			}
@@ -143,15 +158,22 @@ namespace VixenModules.Output.BlinkyLinky
 
 		private void CloseConnection()
 		{
-			return;
+			Logging.Trace(LogTag + "CloseConnection()");
+
+			if (FakingIt())
+				return;
 
 			if (_networkStream != null) {
+				Logging.Trace(LogTag + "Closing network stream...");
 				_networkStream.Close();
+				Logging.Trace(LogTag + "Network stream closed.");
 				_networkStream = null;
 			}
 
 			if (_tcpClient != null) {
+				Logging.Trace(LogTag + "Closing TCP client...");
 				_tcpClient.Close();
+				Logging.Trace(LogTag + "TCP client closed.");
 				_tcpClient = null;
 			}
 
@@ -160,17 +182,35 @@ namespace VixenModules.Output.BlinkyLinky
 
 		public override void Start()
 		{
+			Logging.Trace(LogTag + "Start()");
 			_setupDataBuffers();
 			base.Start();
 		}
 
+		public override void Stop()
+		{
+			Logging.Trace(LogTag + "Stop()");
+			base.Stop();
+		}
+
+		public override void Pause()
+		{
+			Logging.Trace(LogTag + "Pause()");
+			base.Pause();
+		}
+
+		public override void Resume()
+		{
+			Logging.Trace(LogTag + "Resume()");
+			base.Resume();
+		}
 
 		public override void UpdateState(int chainIndex, ICommand[] outputStates)
 		{
 			if (_networkStream == null && !FakingIt()) {
 				bool success = OpenConnection();
 				if (!success) {
-					Logging.Warn("BlinkyLinky: failed to connect to device, not updating the current state.");
+					Logging.Warn(LogTag + "failed to connect to device, not updating state");
 					return;
 				}
 			}
@@ -245,8 +285,7 @@ namespace VixenModules.Output.BlinkyLinky
 					}
 				}
 				catch (Exception ex) {
-					Logging.Warn(
-						"BlinkyLinky: failed to write data to device, this update state may be lost. Closing connection.", ex);
+					Logging.Warn(LogTag + "failed to write data to device during update", ex);
 					CloseConnection();
 				}
 			}
