@@ -131,6 +131,9 @@
     <Compile Include="ElementTree.Designer.cs">
       <DependentUpon>ElementTree.cs</DependentUpon>
     </Compile>
+    <Compile Include="NumericTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="PictureComboBox.cs">
       <SubType>Component</SubType>
     </Compile>

@@ -161,9 +161,7 @@
     <Compile Include="TimedSequenceRowLabel.cs" />
     <Compile Include="Undo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Resources\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="Resources\magnet.png" />
   </ItemGroup>
@@ -229,6 +227,11 @@
     <ProjectReference Include="..\..\..\Common\Resources\Resources.csproj">
       <Project>{F7A80169-6310-4585-9D58-A6F6F5C5B380}</Project>
       <Name>Resources</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\App\Curves\Curves.csproj">
+      <Project>{f0ba7127-61b4-453a-802b-abcb5a0d3d54}</Project>
+      <Name>Curves</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\App\VirtualEffect\VirtualEffect.csproj">

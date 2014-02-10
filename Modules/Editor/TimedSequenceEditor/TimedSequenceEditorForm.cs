@@ -11,6 +11,7 @@ using Common.Controls.Timeline;
 using Vixen.Execution;
 using Vixen.Execution.Context;
 using Vixen.Module;
+using VixenModules.App.Curves;
 using VixenModules.Media.Audio;
 using Vixen.Module.Editor;
 using Vixen.Module.Effect;
@@ -506,7 +507,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void loadSequence(Vixen.Sys.ISequence sequence)
 		{
 			var taskQueue = new Queue<Task>();
-
+			
 			if (loadTimer == null)
 			{
 				loadTimer = new System.Timers.Timer();
@@ -2899,6 +2900,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			timerLoop.Enabled = false;
 			PlaySequence();
+		}
+
+		private void curveEditorToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			var selector = new CurveLibrarySelector();
+			selector.ShowDialog();
 		}
 
 	}

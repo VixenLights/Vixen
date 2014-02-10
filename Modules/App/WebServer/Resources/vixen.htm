@@ -1,12 +1,13 @@
 ﻿<!DOCTYPE html>
 
 <html>
-<head>
-    <title>Vixen 3 Web Interface</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/resx/jquery.mobile-1.3.2.min.css" />
-    <link rel="stylesheet" href="/resx/vixen.css" />
-</head>
+    <head>
+        <title>Vixen 3 Web Interface</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatable" content="IE=Edge,chrome=1"/>
+        <link rel="stylesheet" href="/resx/jquery.mobile-1.3.2.min.css" />
+        <link rel="stylesheet" href="/resx/vixen.css" />
+    </head>
 <body>
     <div data-role="page" id="Home" data-title="Home" >     
         <div data-role="header" data-id="fixednav" data-position="fixed">
@@ -52,7 +53,7 @@
                     <button type="submit">Turn on</button> 
                 </form>
             </div>
-            <div data-bind="template: { name: 'element-template', foreach: elements }">
+            <div id="element-list" data-bind="template: { name: 'element-template', foreach: elements, afterRender: afterElementsRendered }">
                   
             </div>
         </div>

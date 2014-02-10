@@ -14,6 +14,9 @@ var viewModel = {
 
 ko.applyBindings(viewModel);
 
+function afterElementsRendered() {
+    $('#element-list').trigger('create');
+}
 
 function stopSequence() {
     $.post(playerUrl + '/stopSequence')
@@ -52,8 +55,6 @@ function getElements() {
     $.get(elementUrl + '/getElements')
         .done(function (data) {
             viewModel.elements(data);
-            //Tell JQM we added a bunch of stuff
-            $('#element-content').trigger('create'); 
         });
 }
 
