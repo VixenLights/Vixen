@@ -208,7 +208,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 			else
 			{
-				Color intentColor = IntentHelpers.GetOpaqueRGBMaxColorForIntents(states);
+				Color intentColor = IntentHelpers.GetAlphaRGBMaxColorForIntents(states);
 				if (intentColor != Color.Transparent && intentColor.A > 0)
 				{
 					fp.DrawCircle(drawArea, intentColor);
