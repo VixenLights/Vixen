@@ -234,5 +234,11 @@ namespace VixenApplication
 		{
 			SaveCurrentItem();
 		}
+
+		private void buttonZipWizard_Click(object sender, EventArgs e)
+		{
+			DataZipForm f = new DataZipForm();
+			f.ShowDialog();
+		}
 	}
 }
