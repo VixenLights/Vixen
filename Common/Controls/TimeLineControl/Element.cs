@@ -280,7 +280,7 @@ namespace Common.Controls.Timeline
 
 				if (includeRight)
 				{
-					g.DrawLine(border, borderRectangle.Right, borderRectangle.Top, borderRectangle.Right, borderRectangle.Bottom);
+					g.DrawLine(border, borderRectangle.Right, borderRectangle.Top, borderRectangle.Right, borderRectangle.Bottom+1);
 				}
 				if (includeLeft)
 				{
