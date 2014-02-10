@@ -95,6 +95,12 @@
     <Compile Include="EffectDistributionDialog.Designer.cs">
       <DependentUpon>EffectDistributionDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="BeatMarkExportDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BeatMarkExportDialog.Designer.cs">
+      <DependentUpon>BeatMarkExportDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Form_Marks.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -180,6 +186,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="EffectDistributionDialog.resx">
       <DependentUpon>EffectDistributionDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BeatMarkExportDialog.resx">
+      <DependentUpon>BeatMarkExportDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form_Marks.resx">
       <DependentUpon>Form_Marks.cs</DependentUpon>

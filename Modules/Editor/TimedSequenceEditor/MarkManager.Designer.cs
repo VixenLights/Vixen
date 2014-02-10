@@ -41,6 +41,7 @@
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MarkManager));
 			this.groupBoxMarkCollections = new System.Windows.Forms.GroupBox();
+			this.buttonExportBeatMarks = new System.Windows.Forms.Button();
 			this.buttonImportAudacity = new System.Windows.Forms.Button();
 			this.buttonRemoveCollection = new System.Windows.Forms.Button();
 			this.buttonAddCollection = new System.Windows.Forms.Button();
@@ -112,6 +113,7 @@
 			this.timerPlayback = new System.Windows.Forms.Timer(this.components);
 			this.timerMarkHit = new System.Windows.Forms.Timer(this.components);
 			this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
+			this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
 			this.groupBoxMarkCollections.SuspendLayout();
 			this.groupBoxSelectedMarkCollection.SuspendLayout();
 			this.groupBoxDetails.SuspendLayout();
@@ -130,16 +132,27 @@
 			// 
 			// groupBoxMarkCollections
 			// 
+			this.groupBoxMarkCollections.Controls.Add(this.buttonExportBeatMarks);
 			this.groupBoxMarkCollections.Controls.Add(this.buttonImportAudacity);
 			this.groupBoxMarkCollections.Controls.Add(this.buttonRemoveCollection);
 			this.groupBoxMarkCollections.Controls.Add(this.buttonAddCollection);
 			this.groupBoxMarkCollections.Controls.Add(this.listViewMarkCollections);
 			this.groupBoxMarkCollections.Location = new System.Drawing.Point(12, 12);
 			this.groupBoxMarkCollections.Name = "groupBoxMarkCollections";
-			this.groupBoxMarkCollections.Size = new System.Drawing.Size(238, 298);
+			this.groupBoxMarkCollections.Size = new System.Drawing.Size(238, 328);
 			this.groupBoxMarkCollections.TabIndex = 1;
 			this.groupBoxMarkCollections.TabStop = false;
 			this.groupBoxMarkCollections.Text = "Mark Collections";
+			// 
+			// buttonExportBeatMarks
+			// 
+			this.buttonExportBeatMarks.Location = new System.Drawing.Point(6, 292);
+			this.buttonExportBeatMarks.Name = "buttonExportBeatMarks";
+			this.buttonExportBeatMarks.Size = new System.Drawing.Size(226, 23);
+			this.buttonExportBeatMarks.TabIndex = 11;
+			this.buttonExportBeatMarks.Text = "Export Beat Marks";
+			this.buttonExportBeatMarks.UseVisualStyleBackColor = true;
+			this.buttonExportBeatMarks.Click += new System.EventHandler(this.buttonExportBeatMarks_Click);
 			// 
 			// buttonImportAudacity
 			// 
@@ -147,7 +160,7 @@
 			this.buttonImportAudacity.Name = "buttonImportAudacity";
 			this.buttonImportAudacity.Size = new System.Drawing.Size(226, 23);
 			this.buttonImportAudacity.TabIndex = 10;
-			this.buttonImportAudacity.Text = "Import Audacity Beat Marks";
+			this.buttonImportAudacity.Text = "Import Beat Marks";
 			this.buttonImportAudacity.UseVisualStyleBackColor = true;
 			this.buttonImportAudacity.Click += new System.EventHandler(this.buttonImportAudacity_Click);
 			// 
@@ -896,7 +909,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(740, 626);
+			this.ClientSize = new System.Drawing.Size(734, 626);
 			this.Controls.Add(this.groupBoxPlayback);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.groupBoxSelectedMarkCollection);
@@ -1016,6 +1029,8 @@
         private System.Windows.Forms.RadioButton radioAll;
 		private System.Windows.Forms.Button buttonImportAudacity;
 		private System.Windows.Forms.OpenFileDialog openFileDialog;
+		private System.Windows.Forms.Button buttonExportBeatMarks;
+		private System.Windows.Forms.SaveFileDialog saveFileDialog;
 
     }
 }

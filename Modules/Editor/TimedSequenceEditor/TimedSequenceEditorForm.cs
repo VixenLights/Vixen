@@ -41,7 +41,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		// the sequence.
 		private TimedSequence _sequence;
-
+		
 		// the program context we will be playing this sequence in: used to interact with the execution engine.
 		private ISequenceContext _context;
 
