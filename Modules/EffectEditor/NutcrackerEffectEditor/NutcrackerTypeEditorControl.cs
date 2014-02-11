@@ -276,7 +276,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			preview.LoadBackground();
 			preview.BackgroundAlpha = 0;
 			displayItem = new DisplayItem();
-			PreviewMegaTree tree = new PreviewMegaTree(new PreviewPoint(10, 10), null);
+			PreviewMegaTree tree = new PreviewMegaTree(new PreviewPoint(10, 10), null, 1);
 			tree.BaseHeight = 25;
 			tree.TopHeight = 1;
 			tree.TopWidth = 1;
@@ -304,7 +304,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			preview.LoadBackground();
 			preview.BackgroundAlpha = 0;
 			displayItem = new DisplayItem();
-			PreviewArch arch = new PreviewArch(new PreviewPoint(10, 10), null);
+			PreviewArch arch = new PreviewArch(new PreviewPoint(10, 10), null, 1);
 
 			arch.PixelCount = PixelsPerString();
 			arch.PixelSize = Data.PixelSize;
@@ -332,7 +332,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 				p1 = new PreviewPoint(preview.Width/2, preview.Height - 10);
 				p2 = new PreviewPoint(preview.Width/2, 10);
 			}
-			PreviewLine line = new PreviewLine(p1, p2, PixelsPerString(), null);
+			PreviewLine line = new PreviewLine(p1, p2, PixelsPerString(), null, 1);
 
 			line.PixelCount = PixelsPerString();
 			line.PixelSize = Data.PixelSize;
@@ -350,7 +350,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			preview.LoadBackground();
 			preview.BackgroundAlpha = 0;
 			displayItem = new DisplayItem();
-			PreviewPixelGrid grid = new PreviewPixelGrid(new PreviewPoint(10, 10), null);
+			PreviewPixelGrid grid = new PreviewPixelGrid(new PreviewPoint(10, 10), null, 1);
 			grid.StringType = PreviewBaseShape.StringTypes.Pixel;
 			grid.StringCount = StringCount;
 			grid.LightsPerString = PixelsPerString();

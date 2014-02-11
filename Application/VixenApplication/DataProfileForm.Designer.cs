@@ -42,10 +42,10 @@
 			this.buttonDeleteProfile = new System.Windows.Forms.Button();
 			this.buttonAddProfile = new System.Windows.Forms.Button();
 			this.label1 = new System.Windows.Forms.Label();
-            
 			this.buttonOK = new System.Windows.Forms.Button();
 			this.buttonCancel = new System.Windows.Forms.Button();
 			this.folderBrowserDataFolder = new System.Windows.Forms.FolderBrowserDialog();
+			this.buttonZipWizard = new System.Windows.Forms.Button();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.SuspendLayout();
@@ -197,7 +197,6 @@
 			this.label1.Size = new System.Drawing.Size(39, 13);
 			this.label1.TabIndex = 1;
 			this.label1.Text = "Profile:";
-            
 			// 
 			// buttonOK
 			// 
@@ -219,6 +218,16 @@
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
 			// 
+			// buttonZipWizard
+			// 
+			this.buttonZipWizard.Location = new System.Drawing.Point(15, 206);
+			this.buttonZipWizard.Name = "buttonZipWizard";
+			this.buttonZipWizard.Size = new System.Drawing.Size(75, 23);
+			this.buttonZipWizard.TabIndex = 8;
+			this.buttonZipWizard.Text = "Zip Wizard";
+			this.buttonZipWizard.UseVisualStyleBackColor = true;
+			this.buttonZipWizard.Click += new System.EventHandler(this.buttonZipWizard_Click);
+			// 
 			// DataProfileForm
 			// 
 			this.AcceptButton = this.buttonOK;
@@ -226,6 +235,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.buttonCancel;
 			this.ClientSize = new System.Drawing.Size(430, 240);
+			this.Controls.Add(this.buttonZipWizard);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.groupBox2);
@@ -265,5 +275,6 @@
         private System.Windows.Forms.Button buttonOK;
         private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDataFolder;
+		private System.Windows.Forms.Button buttonZipWizard;
     }
 }

@@ -25,12 +25,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		private bool lockXY = false;
 		private PreviewPoint topLeftStart, topRightStart, bottomLeftStart, bottomRightStart;
 
-		public PreviewNet(PreviewPoint point1, ElementNode selectedNode)
+		public PreviewNet(PreviewPoint point1, ElementNode selectedNode, double zoomLevel)
 		{
-			_topLeft = point1;
-			_topRight = new PreviewPoint(point1);
-			_bottomLeft = new PreviewPoint(point1);
-			_bottomRight = new PreviewPoint(point1);
+			ZoomLevel = zoomLevel;
+			_topLeft = PointToZoomPoint(point1);
+			_topRight = new PreviewPoint(_topLeft);
+			_bottomLeft = new PreviewPoint(_topLeft);
+			_bottomRight = new PreviewPoint(_topLeft);
 
 			initiallyAssignedNode = selectedNode;
 
@@ -156,106 +157,150 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			get { return Math.Min(_topLeft.Y, Math.Min(Math.Min(_topRight.Y, _bottomRight.Y), _bottomLeft.Y)); }
 		}
 
+        public override void Match(PreviewBaseShape matchShape)
+        {
+            PreviewNet shape = (matchShape as PreviewNet);
+            PixelSize = shape.PixelSize;
+            PixelSpacing = shape.PixelSpacing;
+            
+            _bottomRight.X = _topLeft.X + (shape._bottomRight.X - shape._topLeft.X);
+            _bottomRight.Y = _topLeft.Y + (shape._bottomRight.Y - shape._topLeft.Y);
+            
+            _bottomLeft.X = _topLeft.X + (shape._bottomLeft.X - shape._topLeft.X);
+            _bottomLeft.Y = _topLeft.Y + (shape._bottomLeft.Y - shape._topLeft.Y);
+
+            _topRight.X = _topLeft.X + (shape._topRight.X - shape._topLeft.X);
+            _topRight.Y = _topLeft.Y + (shape._topRight.Y - shape._topLeft.Y);
+            Layout();
+        }
+
 		#endregion
 
 		public override void Layout()
 		{
-			ElementNode node = null;
+			if (_topLeft != null && _bottomRight != null)
+			{
+				ElementNode node = null;
 
-			if (PixelCount > 0) {
-				node = _pixels[0].Node;
-				_pixels.Clear();
-			}
-			else if (initiallyAssignedNode != null) {
-				if (initiallyAssignedNode.IsLeaf) {
-					node = initiallyAssignedNode;
+				if (PixelCount > 0)
+				{
+					node = _pixels[0].Node;
+					_pixels.Clear();
 				}
-			}
+				else if (initiallyAssignedNode != null)
+				{
+					if (initiallyAssignedNode.IsLeaf)
+					{
+						node = initiallyAssignedNode;
+					}
+				}
 
-			Point boundsTopLeft = new Point();
-			boundsTopLeft.X = Math.Min(_topLeft.X, Math.Min(Math.Min(_topRight.X, _bottomRight.X), _bottomLeft.X));
-			boundsTopLeft.Y = Math.Min(_topLeft.Y, Math.Min(Math.Min(_topRight.Y, _bottomRight.Y), _bottomLeft.Y));
-			Point bottomRight = new Point();
-			bottomRight.X = Math.Max(_topLeft.X, Math.Max(Math.Max(_topRight.X, _bottomRight.X), _bottomLeft.X));
-			bottomRight.Y = Math.Max(_topLeft.Y, Math.Max(Math.Max(_topRight.Y, _bottomRight.Y), _bottomLeft.Y));
-			Rectangle rect = new Rectangle(boundsTopLeft,
-			                               new Size(bottomRight.X - boundsTopLeft.X, bottomRight.Y - boundsTopLeft.Y));
+				Point boundsTopLeft = new Point();
+				boundsTopLeft.X = Math.Min(_topLeft.X, Math.Min(Math.Min(_topRight.X, _bottomRight.X), _bottomLeft.X));
+				boundsTopLeft.Y = Math.Min(_topLeft.Y, Math.Min(Math.Min(_topRight.Y, _bottomRight.Y), _bottomLeft.Y));
+				Point bottomRight = new Point();
+				bottomRight.X = Math.Max(_topLeft.X, Math.Max(Math.Max(_topRight.X, _bottomRight.X), _bottomLeft.X));
+				bottomRight.Y = Math.Max(_topLeft.Y, Math.Max(Math.Max(_topRight.Y, _bottomRight.Y), _bottomLeft.Y));
+				Rectangle rect = new Rectangle(boundsTopLeft,
+											   new Size(bottomRight.X - boundsTopLeft.X, bottomRight.Y - boundsTopLeft.Y));
 
-			Point tL = new Point(_topLeft.X - boundsTopLeft.X, _topLeft.Y - boundsTopLeft.Y);
-			Point tR = new Point(_topRight.X - boundsTopLeft.X, _topRight.Y - boundsTopLeft.Y);
-			Point bL = new Point(_bottomLeft.X - boundsTopLeft.X, _bottomLeft.Y - boundsTopLeft.Y);
-			Point bR = new Point(_bottomRight.X - boundsTopLeft.X, _bottomRight.Y - boundsTopLeft.Y);
-			Point[] points = {tL, tR, bR, bL};
+				Point tL = new Point(_topLeft.X - boundsTopLeft.X, _topLeft.Y - boundsTopLeft.Y);
+				Point tR = new Point(_topRight.X - boundsTopLeft.X, _topRight.Y - boundsTopLeft.Y);
+				Point bL = new Point(_bottomLeft.X - boundsTopLeft.X, _bottomLeft.Y - boundsTopLeft.Y);
+				Point bR = new Point(_bottomRight.X - boundsTopLeft.X, _bottomRight.Y - boundsTopLeft.Y);
+				Point[] points = { tL, tR, bR, bL };
 
-			if (rect.Width > 0 && rect.Height > 0) {
-				using (var b = new Bitmap(rect.Width, rect.Height)) {
-					Graphics g = Graphics.FromImage(b);
-					g.Clear(Color.Transparent);
-					g.FillPolygon(Brushes.White, points);
-					using (FastPixel.FastPixel fp = new FastPixel.FastPixel(b)) {
-						fp.Lock();
-						int xCount = 1;
-						int spacingY = _pixelSpacing;
-						for (int y = 0; y < rect.Height; y++) {
-							if (spacingY%_pixelSpacing == 0) {
-								int xDiv;
-								if (xCount%2 == 0)
-									xDiv = _pixelSpacing;
-								else
-									xDiv = _pixelSpacing/2;
+				if (rect.Width > 0 && rect.Height > 0)
+				{
+					using (var b = new Bitmap(rect.Width, rect.Height))
+					{
+						Graphics g = Graphics.FromImage(b);
+						g.Clear(Color.Transparent);
+						g.FillPolygon(Brushes.White, points);
+						using (FastPixel.FastPixel fp = new FastPixel.FastPixel(b))
+						{
+							fp.Lock();
+							int xCount = 1;
+							int spacingY = _pixelSpacing;
+							for (int y = 0; y < rect.Height; y++)
+							{
+								if (spacingY % _pixelSpacing == 0)
+								{
+									int xDiv;
+									if (xCount % 2 == 0)
+										xDiv = _pixelSpacing;
+									else
+										xDiv = _pixelSpacing / 2;
 
-								for (int x = 0; x < rect.Width; x++) {
-									if ((x + xDiv)%_pixelSpacing == 0) {
-										Color newColor = fp.GetPixel(x, y);
-										if (newColor.A != 0) {
-											PreviewPixel pixel = new PreviewPixel(x + boundsTopLeft.X, y + boundsTopLeft.Y, 0, PixelSize);
-											pixel.Node = node;
-											_pixels.Add(pixel);
+									for (int x = 0; x < rect.Width; x++)
+									{
+										if ((x + xDiv) % _pixelSpacing == 0)
+										{
+											Color newColor = fp.GetPixel(x, y);
+											if (newColor.A != 0)
+											{
+												PreviewPixel pixel = new PreviewPixel(x + boundsTopLeft.X, y + boundsTopLeft.Y, 0, PixelSize);
+												pixel.Node = node;
+												_pixels.Add(pixel);
+											}
 										}
 									}
+									xCount += 1;
 								}
-								xCount += 1;
+								spacingY += 1;
 							}
-							spacingY += 1;
+							fp.Unlock(false);
 						}
-						fp.Unlock(false);
 					}
+					SetPixelZoom();
 				}
 			}
 		}
 
 		public override void MouseMove(int x, int y, int changeX, int changeY)
 		{
-			if (_selectedPoint != null) {
-				_selectedPoint.X = x;
-				_selectedPoint.Y = y;
+			PreviewPoint point = PointToZoomPoint(new PreviewPoint(x, y));
+			if (_selectedPoint != null)
+			{
+				_selectedPoint.X = point.X;
+				_selectedPoint.Y = point.Y;
 				if (lockXY ||
 				    (_selectedPoint == _bottomRight &&
 				     System.Windows.Forms.Control.ModifierKeys == System.Windows.Forms.Keys.Control)) {
-					_topRight.X = x;
-					_bottomLeft.Y = y;
+					_topRight.X = point.X;
+					_bottomLeft.Y = point.Y;
 				}
 				Layout();
 			}
 				// If we get here, we're moving
 			else {
-				_topLeft.X = topLeftStart.X + changeX;
-				_topLeft.Y = topLeftStart.Y + changeY;
-				_topRight.X = topRightStart.X + changeX;
-				_topRight.Y = topRightStart.Y + changeY;
-				_bottomLeft.X = bottomLeftStart.X + changeX;
-				_bottomLeft.Y = bottomLeftStart.Y + changeY;
-				_bottomRight.X = bottomRightStart.X + changeX;
-				_bottomRight.Y = bottomRightStart.Y + changeY;
+				//_topLeft.X = topLeftStart.X + changeX;
+				//_topLeft.Y = topLeftStart.Y + changeY;
+				//_topRight.X = topRightStart.X + changeX;
+				//_topRight.Y = topRightStart.Y + changeY;
+				//_bottomLeft.X = bottomLeftStart.X + changeX;
+				//_bottomLeft.Y = bottomLeftStart.Y + changeY;
+				//_bottomRight.X = bottomRightStart.X + changeX;
+				//_bottomRight.Y = bottomRightStart.Y + changeY;
+
+				_topLeft.X = Convert.ToInt32(topLeftStart.X * ZoomLevel) + changeX;
+				_topLeft.Y = Convert.ToInt32(topLeftStart.Y * ZoomLevel) + changeY;
+				_topRight.X = Convert.ToInt32(topRightStart.X * ZoomLevel) + changeX;
+				_topRight.Y = Convert.ToInt32(topRightStart.Y * ZoomLevel) + changeY;
+				_bottomLeft.X = Convert.ToInt32(bottomLeftStart.X * ZoomLevel) + changeX;
+				_bottomLeft.Y = Convert.ToInt32(bottomLeftStart.Y * ZoomLevel) + changeY;
+				_bottomRight.X = Convert.ToInt32(bottomRightStart.X * ZoomLevel) + changeX;
+				_bottomRight.Y = Convert.ToInt32(bottomRightStart.Y * ZoomLevel) + changeY;
+
+				PointToZoomPointRef(_topLeft);
+				PointToZoomPointRef(_topRight);
+				PointToZoomPointRef(_bottomLeft);
+				PointToZoomPointRef(_bottomRight);
+
 				Layout();
 			}
 		}
-
-		//private void OnResize(EventArgs e)
-		//{
-		//    Layout();
-		//}
-
+        
 		public override void Select(bool selectDragPoints)
 		{
 			base.Select(selectDragPoints);

@@ -28,17 +28,17 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		private PreviewPoint bottomRightStart, topLeftStart;
 
-		public PreviewStar(PreviewPoint point, ElementNode selectedNode)
+		public PreviewStar(PreviewPoint point, ElementNode selectedNode, double zoomLevel)
 		{
-			_topLeftPoint = point;
-			_bottomRightPoint = new PreviewPoint(point.X, point.Y);
+			ZoomLevel = zoomLevel;
+			_topLeftPoint = PointToZoomPoint(point);
+			_bottomRightPoint = PointToZoomPoint(point);
 
 			_pixelCount = 40;
 			_pointCount = 5;
 			_insideSize = 40;
 
 			if (selectedNode != null) {
-				//List<ElementNode> children = selectedNode.Children.ToList();
 				List<ElementNode> children = PreviewTools.GetLeafNodes(selectedNode);
 				// is this a single node?
 				if (children.Count >= 10) {
@@ -47,7 +47,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					foreach (ElementNode child in children) {
 						PreviewPixel pixel = AddPixel(10, 10);
 						pixel.Node = child;
-						//pixel.NodeId = child.Id;
 						pixel.PixelColor = Color.White;
 					}
 					_pixelCount = children.Count;
@@ -61,15 +60,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					pixel.PixelColor = Color.White;
 					if (selectedNode != null && selectedNode.IsLeaf) {
 						pixel.Node = selectedNode;
-						//pixel.NodeId = selectedNode.Id;
 					}
 				}
 			}
 
 			// Lay out the pixels
 			Layout();
-
-			//DoResize += new ResizeEvent(OnResize);
 		}
 
 		[OnDeserialized]
@@ -145,6 +141,24 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
+        [DataMember]
+        int _XYRotation = 0;
+        [CategoryAttribute("Settings"),
+        DescriptionAttribute("The prop can be rotated about the Z axis in the XY plane. This is the rotation angle."),
+        DisplayName("XY Rotation")]
+        public int XYRotation
+        {
+            get
+            {
+                return _XYRotation;
+            }
+            set
+            {
+                _XYRotation = value;
+                Layout();
+            }
+        }
+
 		[CategoryAttribute("Settings"),
 		 DisplayName("Inside Size"),
 		 DescriptionAttribute("The size, in percent of the inside star diameter in relation to the outside diameter.")]
@@ -204,105 +218,129 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
+        public override void Match(PreviewBaseShape matchShape)
+        {
+            PreviewStar shape = (matchShape as PreviewStar);
+            PixelSize = shape.PixelSize;
+            PointCount = shape.PointCount;
+            InsideSize = shape.InsideSize;
+            XYRotation = shape.XYRotation;
+            _bottomRightPoint.X = _topLeftPoint.X + (shape._bottomRightPoint.X - shape._topLeftPoint.X);
+            _bottomRightPoint.Y = _topLeftPoint.Y + (shape._bottomRightPoint.Y - shape._topLeftPoint.Y);
+            Layout();
+        }
+
 		public override void Layout()
 		{
-			if (Width > 10 && Height > 10) {
-				RecalcPoints();
-				int outerWidth = _bottomRightPoint.X - _topLeftPoint.X;
-				int outerHeight = _bottomRightPoint.Y - _topLeftPoint.Y;
-				List<Point> outerEllipse = PreviewTools.GetEllipsePoints(_topLeftPoint.X,
-				                                                         _topLeftPoint.Y,
-				                                                         outerWidth,
-				                                                         outerHeight,
-				                                                         _pointCount,
-				                                                         360,
-				                                                         0);
+			if (_topLeftPoint != null && _bottomRightPoint != null)
+			{
+				if (Width > 10 && Height > 10)
+				{
+					RecalcPoints();
+					int outerWidth = _bottomRightPoint.X - _topLeftPoint.X;
+					int outerHeight = _bottomRightPoint.Y - _topLeftPoint.Y;
+					List<Point> outerEllipse = PreviewTools.GetEllipsePoints(_topLeftPoint.X,
+																			 _topLeftPoint.Y,
+																			 outerWidth,
+																			 outerHeight,
+																			 _pointCount,
+																			 360,
+																			 XYRotation);
 
-				int innerWidth = (int) (outerWidth*_insideSize*.01);
-				if (innerWidth < 4) innerWidth = 4;
-				int innerHeight = (int) (outerHeight*_insideSize*.01);
-				if (innerHeight < 4) innerHeight = 4;
+					int innerWidth = (int)(outerWidth * _insideSize * .01);
+					if (innerWidth < 4) innerWidth = 4;
+					int innerHeight = (int)(outerHeight * _insideSize * .01);
+					if (innerHeight < 4) innerHeight = 4;
 
-				int degreeOffset = 360/_pointCount/2;
-				int widthOffset = ((outerWidth - innerWidth)/2);
-				int heightOffset = ((outerHeight - innerHeight)/2);
-				int innerLeft = _topLeftPoint.X + widthOffset;
-				int innerTop = _topLeftPoint.Y + heightOffset;
-				List<Point> innerEllipse = PreviewTools.GetEllipsePoints(innerLeft,
-				                                                         innerTop,
-				                                                         innerWidth,
-				                                                         innerHeight,
-				                                                         _pointCount,
-				                                                         360,
-				                                                         degreeOffset);
+					int degreeOffset = 360 / _pointCount / 2;
+					int widthOffset = ((outerWidth - innerWidth) / 2);
+					int heightOffset = ((outerHeight - innerHeight) / 2);
+					int innerLeft = _topLeftPoint.X + widthOffset;
+					int innerTop = _topLeftPoint.Y + heightOffset;
+					List<Point> innerEllipse = PreviewTools.GetEllipsePoints(innerLeft,
+																			 innerTop,
+																			 innerWidth,
+																			 innerHeight,
+																			 _pointCount,
+																			 360,
+																			 degreeOffset + XYRotation);
 
 
-				int pixelNum = 0;
-				for (int ellipsePointNum = 0; ellipsePointNum < _pointCount; ellipsePointNum++) {
-					Point point1 = outerEllipse[ellipsePointNum];
-					Point point2 = innerEllipse[ellipsePointNum];
-					Point point3;
-					if (ellipsePointNum < _pointCount - 1) {
-						point3 = outerEllipse[ellipsePointNum + 1];
-					}
-					else {
-						point3 = outerEllipse[0];
-					}
-					int line1PixelCount = (int) (pixelsPerPoint/2);
-					int line2PixelCount = line1PixelCount - 1;
-					if (line1PixelCount + line2PixelCount < pixelsPerPoint) {
-						line1PixelCount++;
-					}
-					double xSpacing = (double) (point1.X - point2.X)/(double) (line1PixelCount - 1);
-					double ySpacing = (double) (point1.Y - point2.Y)/(double) (line1PixelCount - 1);
-					double x = point1.X;
-					double y = point1.Y;
-					for (int linePointNum = 0; linePointNum < line1PixelCount; linePointNum++) {
-						if (pixelNum < _pixelCount) {
-							_pixels[pixelNum].X = (int) Math.Round(x);
-							_pixels[pixelNum].Y = (int) Math.Round(y);
-							x -= xSpacing;
-							y -= ySpacing;
+					int pixelNum = 0;
+					for (int ellipsePointNum = 0; ellipsePointNum < _pointCount; ellipsePointNum++)
+					{
+						Point point1 = outerEllipse[ellipsePointNum];
+						Point point2 = innerEllipse[ellipsePointNum];
+						Point point3;
+						if (ellipsePointNum < _pointCount - 1)
+						{
+							point3 = outerEllipse[ellipsePointNum + 1];
 						}
-						else {
-							Console.WriteLine("pixelNum Overrun 1: " + pixelNum);
+						else
+						{
+							point3 = outerEllipse[0];
 						}
-						pixelNum++;
-					}
+						int line1PixelCount = (int)(pixelsPerPoint / 2);
+						int line2PixelCount = line1PixelCount - 1;
+						if (line1PixelCount + line2PixelCount < pixelsPerPoint)
+						{
+							line1PixelCount++;
+						}
+						double xSpacing = (double)(point1.X - point2.X) / (double)(line1PixelCount - 1);
+						double ySpacing = (double)(point1.Y - point2.Y) / (double)(line1PixelCount - 1);
+						double x = point1.X;
+						double y = point1.Y;
+						for (int linePointNum = 0; linePointNum < line1PixelCount; linePointNum++)
+						{
+							if (pixelNum < _pixelCount)
+							{
+								_pixels[pixelNum].X = (int)Math.Round(x);
+								_pixels[pixelNum].Y = (int)Math.Round(y);
+								x -= xSpacing;
+								y -= ySpacing;
+							}
+							else
+							{
+								Console.WriteLine("pixelNum Overrun 1: " + pixelNum);
+							}
+							pixelNum++;
+						}
 
-					xSpacing = (double) (point2.X - point3.X)/(double) (line1PixelCount - 1);
-					ySpacing = (double) (point2.Y - point3.Y)/(double) (line1PixelCount - 1);
-					x = point2.X - xSpacing;
-					y = point2.Y - ySpacing;
-					for (int linePointNum = 0; linePointNum < line2PixelCount; linePointNum++) {
-						if (pixelNum < _pixelCount) {
-							_pixels[pixelNum].X = (int) Math.Round(x);
-							_pixels[pixelNum].Y = (int) Math.Round(y);
-							x -= xSpacing;
-							y -= ySpacing;
+						xSpacing = (double)(point2.X - point3.X) / (double)(line1PixelCount - 1);
+						ySpacing = (double)(point2.Y - point3.Y) / (double)(line1PixelCount - 1);
+						x = point2.X - xSpacing;
+						y = point2.Y - ySpacing;
+						for (int linePointNum = 0; linePointNum < line2PixelCount; linePointNum++)
+						{
+							if (pixelNum < _pixelCount)
+							{
+								_pixels[pixelNum].X = (int)Math.Round(x);
+								_pixels[pixelNum].Y = (int)Math.Round(y);
+								x -= xSpacing;
+								y -= ySpacing;
+							}
+							else
+							{
+								Console.WriteLine("pixelNum Overrun 2: " + pixelNum);
+							}
+							pixelNum++;
 						}
-						else {
-							Console.WriteLine("pixelNum Overrun 2: " + pixelNum);
-						}
-						pixelNum++;
 					}
+					SetPixelZoom();
 				}
 			}
 		}
 
 		public override void MouseMove(int x, int y, int changeX, int changeY)
 		{
-			if (_selectedPoint != null) {
-				_selectedPoint.X = x;
-				_selectedPoint.Y = y;
+			PreviewPoint point = PointToZoomPoint(new PreviewPoint(x, y));
+			if (_selectedPoint != null)
+			{
+				_selectedPoint.X = point.X;
+				_selectedPoint.Y = point.Y;
 
 				if (_selectedPoint == _bottomRightPoint &&
 				    System.Windows.Forms.Control.ModifierKeys == System.Windows.Forms.Keys.Control) {
-					//int diffX = _bottomRightPoint.X - _topLeftPoint.X;
-					//int diffY = _bottomRightPoint.Y - _topLeftPoint.Y;
-					//_topLeftPoint.X = ;
-					//_bottomRightPoint.X += 
-					//_bottomRightPoint.Y = y;
 					_bottomRightPoint.Y = _topLeftPoint.Y + (_bottomRightPoint.X - _topLeftPoint.X);
 				}
 
@@ -311,18 +349,22 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 				// If we get here, we're moving
 			else {
-				_bottomRightPoint.X = bottomRightStart.X + changeX;
-				_bottomRightPoint.Y = bottomRightStart.Y + changeY;
-				_topLeftPoint.X = topLeftStart.X + changeX;
-				_topLeftPoint.Y = topLeftStart.Y + changeY;
+				//_bottomRightPoint.X = bottomRightStart.X + changeX;
+				//_bottomRightPoint.Y = bottomRightStart.Y + changeY;
+				//_topLeftPoint.X = topLeftStart.X + changeX;
+				//_topLeftPoint.Y = topLeftStart.Y + changeY;
+
+				_bottomRightPoint.X = Convert.ToInt32(bottomRightStart.X * ZoomLevel) + changeX;
+				_bottomRightPoint.Y = Convert.ToInt32(bottomRightStart.Y * ZoomLevel) + changeY;
+				_topLeftPoint.X = Convert.ToInt32(topLeftStart.X * ZoomLevel) + changeX;
+				_topLeftPoint.Y = Convert.ToInt32(topLeftStart.Y * ZoomLevel) + changeY;
+
+				PointToZoomPointRef(_topLeftPoint);
+				PointToZoomPointRef(_bottomRightPoint);
+
 				Layout();
 			}
 		}
-
-		//private void OnResize(EventArgs e)
-		//{
-		//    Layout();
-		//}
 
 		public override void SelectDragPoints()
 		{

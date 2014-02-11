@@ -32,9 +32,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			Horizontal
 		}
 
-		public PreviewPixelGrid(PreviewPoint point1, ElementNode selectedNode)
+		public PreviewPixelGrid(PreviewPoint point1, ElementNode selectedNode, double zoomLevel)
 		{
-			_topLeft = point1;
+			ZoomLevel = zoomLevel;
+			_topLeft = PointToZoomPoint(point1);
 			_bottomRight = new PreviewPoint(_topLeft.X, _topLeft.Y);
 
 			int defaultStringCount = 16;
@@ -45,26 +46,23 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			int childLightCount;
 			if (IsPixelGridSelected(selectedNode, out childLightCount)) {
 				StringType = StringTypes.Pixel;
-				//_lightsPerString = childLightCount;
 				foreach (ElementNode child in selectedNode.Children) {
-					PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(10, 10), childLightCount, child);
+					PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(10, 10), childLightCount, child, ZoomLevel);
 					_strings.Add(line);
 				}
-				//StringCount = _strings.Count;
 				LightsPerString = childLightCount;
 			}
 			else if (IsStandardGridSelected(selectedNode)) {
 				StringType = StringTypes.Standard;
 				foreach (ElementNode child in selectedNode.Children) {
-					PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(10, 10), defaultLightsPerString, child);
+					PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(10, 10), defaultLightsPerString, child, ZoomLevel);
 					_strings.Add(line);
 				}
-				//StringCount = _strings.Count;
 			}
 			else {
 				// Just add the pixels, we don't care where they go... they get positioned in Layout()
 				for (int stringNum = 0; stringNum < defaultStringCount; stringNum++) {
-					PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(10, 10), defaultLightsPerString, null);
+					PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(10, 10), defaultLightsPerString, null, ZoomLevel);
 					_strings.Add(line);
 				}
 			}
@@ -176,7 +174,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					_strings.RemoveAt(_strings.Count - 1);
 				}
 				while (_strings.Count < _stringCount) {
-					PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(10, 10), LightsPerString, null);
+					PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(10, 10), LightsPerString, null, ZoomLevel);
 					_strings.Add(line);
 				}
 				Layout();
@@ -186,14 +184,31 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public override int Top
 		{
-			get { return _topLeft.Y; }
-			set { }
+			get 
+            { 
+                return _topLeft.Y; 
+            }
+			set 
+            {
+                _bottomLeft.Y = value + (_bottomLeft.Y - _topLeft.Y);
+                _topLeft.Y = value;
+                Layout();
+            }
 		}
 
 		public override int Left
 		{
-			get { return _topLeft.X; }
-			set { }
+			get 
+            { 
+                return _topLeft.X; 
+            }
+			set 
+            {
+                _bottomRight.X = value + (_bottomRight.X - _topLeft.X);
+                _topLeft.X = value;
+                _bottomLeft.X = value;
+                Layout();
+            }
 		}
 
 		public PreviewPoint BottomRight
@@ -255,63 +270,87 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
+        public override void Match(PreviewBaseShape matchShape)
+        {
+            PreviewPixelGrid shape = (matchShape as PreviewPixelGrid);
+            PixelSize = shape.PixelSize;
+            StringOrientation = shape.StringOrientation;
+
+            _bottomRight.X = _topLeft.X + (shape._bottomRight.X - shape._topLeft.X);
+            _bottomRight.Y = _topLeft.Y + (shape._bottomRight.Y - shape._topRight.Y);
+
+            Layout();
+        }
+
 		public override void Layout()
 		{
-			if (StringOrientation == StringOrientations.Vertical)
+			if (_bottomRight != null && _topLeft != null)
 			{
-				int width = _bottomRight.X - _topLeft.X;
-				int height = _bottomRight.Y - _topLeft.Y;
-				double stringXSpacing = (double)width / (double)(StringCount-1);
-				int x = _topLeft.X;
-				int y = _topLeft.Y;
-				for (int stringNum = 0; stringNum < StringCount; stringNum++)
+				if (StringOrientation == StringOrientations.Vertical)
 				{
-					PreviewLine line = _strings[stringNum] as PreviewLine;
-					line.SetPoint0(x, y + height);
-					line.SetPoint1(x, y);
-					line.Layout();
-					x += (int)stringXSpacing;
+					int width = _bottomRight.X - _topLeft.X;
+					int height = _bottomRight.Y - _topLeft.Y;
+					double stringXSpacing = (double)width / (double)(StringCount - 1);
+					int x = _topLeft.X;
+					int y = _topLeft.Y;
+					for (int stringNum = 0; stringNum < StringCount; stringNum++)
+					{
+						PreviewLine line = _strings[stringNum] as PreviewLine;
+						line.SetPoint0(x, y + height);
+						line.SetPoint1(x, y);
+						line.Layout();
+						x += (int)stringXSpacing;
+					}
 				}
-			}
-			else
-			{
-				int width = _bottomRight.X - _bottomLeft.X;
-				int height = _bottomLeft.Y - _topLeft.Y;
-				double stringYSpacing = (double)height / (double)(StringCount-1);
-				int x = _bottomLeft.X;
-				int y = _bottomLeft.Y;
-				for (int stringNum = 0; stringNum < StringCount; stringNum++)
+				else
 				{
-					PreviewLine line = _strings[stringNum] as PreviewLine;
-					line.SetPoint0(x, y);
-					line.SetPoint1(x + width, y);
-					line.Layout();
-					y -= (int)stringYSpacing;
+					int width = _bottomRight.X - _bottomLeft.X;
+					int height = _bottomLeft.Y - _topLeft.Y;
+					double stringYSpacing = (double)height / (double)(StringCount - 1);
+					int x = _bottomLeft.X;
+					int y = _bottomLeft.Y;
+					for (int stringNum = 0; stringNum < StringCount; stringNum++)
+					{
+						PreviewLine line = _strings[stringNum] as PreviewLine;
+						line.SetPoint0(x, y);
+						line.SetPoint1(x + width, y);
+						line.Layout();
+						y -= (int)stringYSpacing;
+					}
 				}
+				SetPixelZoom();
 			}
 		}
 
 		public override void MouseMove(int x, int y, int changeX, int changeY)
 		{
+			PreviewPoint point = PointToZoomPoint(new PreviewPoint(x, y));
 			// See if we're resizing
 			if (_selectedPoint != null && _selectedPoint.PointType == PreviewPoint.PointTypes.Size) {
 				if (_selectedPoint == _topRight) {
-					_topLeft.Y = y;
-					_bottomRight.X = x;
+					_topLeft.Y = point.Y;
+					_bottomRight.X = point.X;
 				}
 				else if (_selectedPoint == _bottomLeft) {
-					_topLeft.X = x;
-					_bottomRight.Y = y;
+					_topLeft.X = point.X;
+					_bottomRight.Y = point.Y;
 				}
-				_selectedPoint.X = x;
-				_selectedPoint.Y = y;
+				_selectedPoint.X = point.X;
+				_selectedPoint.Y = point.Y;
 			}
 				// If we get here, we're moving
 			else {
-				_topLeft.X = p1Start.X + changeX;
-				_topLeft.Y = p1Start.Y + changeY;
-				_bottomRight.X = p2Start.X + changeX;
-				_bottomRight.Y = p2Start.Y + changeY;
+				//_topLeft.X = p1Start.X + changeX;
+				//_topLeft.Y = p1Start.Y + changeY;
+				//_bottomRight.X = p2Start.X + changeX;
+				//_bottomRight.Y = p2Start.Y + changeY;
+				_topLeft.X = Convert.ToInt32(p1Start.X * ZoomLevel) + changeX;
+				_topLeft.Y = Convert.ToInt32(p1Start.Y * ZoomLevel) + changeY;
+				_bottomRight.X = Convert.ToInt32(p2Start.X * ZoomLevel) + changeX;
+				_bottomRight.Y = Convert.ToInt32(p2Start.Y * ZoomLevel) + changeY;
+
+				PointToZoomPointRef(_topLeft);
+				PointToZoomPointRef(_bottomRight);
 			}
 
 			_topRight.X = _bottomRight.X;
@@ -393,25 +432,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 			return newGrid;
 		}
-
-		//[Editor(typeof (PreviewSetElementsUIEditor), typeof (UITypeEditor)),
-		// CategoryAttribute("Settings"),
-		// DisplayName("Linked Elements")]
-		//public override List<PreviewBaseShape> Strings
-		//{
-		//	get
-		//	{
-		//		Layout();
-		//		List<PreviewBaseShape> stringsResult;
-		//		stringsResult = _strings;
-		//		if (stringsResult == null) {
-		//			stringsResult = new List<PreviewBaseShape>();
-		//			stringsResult.Add(this);
-		//		}
-		//		return stringsResult;
-		//	}
-		//	set { }
-		//}
 
 		public override void MoveTo(int x, int y)
 		{

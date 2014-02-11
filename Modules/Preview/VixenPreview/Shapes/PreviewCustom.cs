@@ -133,11 +133,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 			set
 			{
-				//int x = int.MaxValue;
-				//foreach (PreviewBaseShape shape in Strings)
-				//{
-				//    x = Math.Min(x, shape.Left);
-				//}
 				int delta = Left - value;
 				foreach (PreviewBaseShape shape in Strings) {
 					shape.Left -= delta;
@@ -145,11 +140,21 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
+        public override void Match(PreviewBaseShape matchShape)
+        {
+            PreviewCustom shape = (matchShape as PreviewCustom);
+            PixelSize = shape.PixelSize;
+            // TODO
+            Layout();
+        }
+
 		public override void Layout()
 		{
 			foreach (PreviewBaseShape shape in Strings) {
 				shape.Layout();
 			}
+
+			SetPixelZoom();
 		}
 
 		public override void Draw(FastPixel.FastPixel fp, bool editMode, List<ElementNode> highlightedElements, bool selected,
@@ -174,7 +179,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					shape.ResizeFromOriginal(aspect);
 				}
 				MoveTo(topLeftStart.X, topLeftStart.Y);
-				//Layout();
 			}
 				// If we get here, we're moving
 			else {

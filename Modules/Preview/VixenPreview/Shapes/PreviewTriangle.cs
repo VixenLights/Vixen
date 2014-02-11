@@ -15,30 +15,27 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		[DataMember] private PreviewPoint _point1 = new PreviewPoint(10, 10);
 		[DataMember] private PreviewPoint _point2 = new PreviewPoint(10, 10);
 		[DataMember] private PreviewPoint _point3 = new PreviewPoint(10, 10);
-		private PreviewPoint _bottomRightPoint; //, _bottomPoint, _topPoint;
+		private PreviewPoint _bottomRightPoint; 
 
-		private PreviewPoint p1Start, p2Start, p3Start, pBottomRightStart; //pTopStart, pBottomStart, 
+		private PreviewPoint p1Start, p2Start, p3Start, pBottomRightStart; 
 
-		public PreviewTriangle(PreviewPoint point1, ElementNode selectedNode)
+		public PreviewTriangle(PreviewPoint point1, ElementNode selectedNode, double zoomLevel)
 		{
-			_bottomRightPoint = new PreviewPoint(point1);
-			_point1 = new PreviewPoint(point1);
-			_point2 = new PreviewPoint(point1);
-			_point3 = new PreviewPoint(point1);
+			ZoomLevel = zoomLevel;
+			_bottomRightPoint = PointToZoomPoint(point1);
+			_point1 = new PreviewPoint(_bottomRightPoint);
+			_point2 = new PreviewPoint(_bottomRightPoint);
+			_point3 = new PreviewPoint(_bottomRightPoint);
 
 			_strings = new List<PreviewBaseShape>();
 
 			if (selectedNode != null) {
-				//List<ElementNode> children = selectedNode.Children.ToList();
 				List<ElementNode> children = PreviewTools.GetLeafNodes(selectedNode);
 				if (children.Count >= 6)
-					//int childCount = PreviewTools.CountChildElementsInNode(selectedNode);
-					//if (childCount >= 6)
+                    //
 				{
 					int increment = children.Count/3;
 					int pixelsLeft = children.Count;
-					//int increment = childCount / 3;
-					//int pixelsLeft = childCount;
 
 					StringType = StringTypes.Pixel;
 
@@ -46,10 +43,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					for (int i = 0; i < 3; i++) {
 						PreviewLine line;
 						if (pixelsLeft >= increment) {
-							line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(20, 20), increment, null);
+							line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(20, 20), increment, null, ZoomLevel);
 						}
 						else {
-							line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(20, 20), pixelsLeft, null);
+							line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(20, 20), pixelsLeft, null, ZoomLevel);
 						}
 						line.PixelColor = Color.White;
 						_strings.Add(line);
@@ -70,15 +67,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				// Just add lines, they will be layed out in Layout()
 				for (int i = 0; i < 3; i++) {
 					PreviewLine line;
-					line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(20, 20), 10, selectedNode);
+					line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(20, 20), 10, selectedNode, ZoomLevel);
 					line.PixelColor = Color.White;
 					_strings.Add(line);
 				}
 			}
 
 			Layout();
-
-			//DoResize += new ResizeEvent(OnResize);
 		}
 
 		[OnDeserialized]
@@ -218,61 +213,82 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
+        public override void Match(PreviewBaseShape matchShape)
+        {
+            PreviewTriangle shape = (matchShape as PreviewTriangle);
+            PixelSize = shape.PixelSize;
+            _point2.X = _point1.X + (shape._point2.X - shape._point1.X);
+            _point2.Y = _point1.Y + (shape._point2.Y - shape._point1.Y);
+            _point3.X = _point1.X + (shape._point3.X - shape._point1.X);
+            _point3.Y = _point1.Y + (shape._point3.Y - shape._point1.Y);
+            //_point1.X = _topLeft.X + (shape._bottomRight.X - shape._topLeft.X);
+            //_bottomRight.Y = _topLeft.Y + (shape._bottomRight.Y - shape._topLeft.Y);
+            Layout();
+        }
+
 		public override void Layout()
 		{
-			(Strings[0] as PreviewLine).Point1 = Point1;
-			(Strings[0] as PreviewLine).Point2 = Point2;
-			(Strings[0] as PreviewLine).Layout();
+			if (_bottomRightPoint != null)
+			{
+				(Strings[0] as PreviewLine).Point1 = Point1;
+				(Strings[0] as PreviewLine).Point2 = Point2;
+				(Strings[0] as PreviewLine).Layout();
 
-			(Strings[1] as PreviewLine).Point1 = Point2;
-			(Strings[1] as PreviewLine).Point2 = Point3;
-			(Strings[1] as PreviewLine).Layout();
+				(Strings[1] as PreviewLine).Point1 = Point2;
+				(Strings[1] as PreviewLine).Point2 = Point3;
+				(Strings[1] as PreviewLine).Layout();
 
-			(Strings[2] as PreviewLine).Point1 = Point3;
-			(Strings[2] as PreviewLine).Point2 = Point1;
-			(Strings[2] as PreviewLine).Layout();
+				(Strings[2] as PreviewLine).Point1 = Point3;
+				(Strings[2] as PreviewLine).Point2 = Point1;
+				(Strings[2] as PreviewLine).Layout();
+
+				SetPixelZoom();
+			}
 		}
 
 		public override void MouseMove(int x, int y, int changeX, int changeY)
 		{
+			PreviewPoint point = PointToZoomPoint(new PreviewPoint(x, y));
 			// See if we're resizing
-			if (_selectedPoint != null && _selectedPoint == _bottomRightPoint) {
-				int left = pBottomRightStart.X;
-				int right = left + changeX;
+			if (_selectedPoint != null && _selectedPoint == _bottomRightPoint)
+			{
+				int left = pBottomRightStart.X; // OK
+				int right = Convert.ToInt32(left + (changeX / ZoomLevel)); // OK
 				int width = right - left;
-				int top = pBottomRightStart.Y;
-				int bottom = top + changeY;
+				int top = pBottomRightStart.Y; // OK
+				int bottom = Convert.ToInt32(top + (changeY / ZoomLevel));
 				int height = bottom - top;
 
-				_point1.X = left + (width/2);
+				_point1.X = left + (width / 2);
 				_point1.Y = top;
 				_point2.X = right;
 				_point2.Y = bottom;
 				_point3.X = left;
 				_point3.Y = bottom;
+
 				Layout();
 			}
 			else if (_selectedPoint != null) {
-				_selectedPoint.X = x;
-				_selectedPoint.Y = y;
+				_selectedPoint.X = point.X;
+				_selectedPoint.Y = point.Y;
 				Layout();
 			}
 				// If we get here, we're moving
 			else {
-				_point1.X = p1Start.X + changeX;
-				_point2.X = p2Start.X + changeX;
-				_point3.X = p3Start.X + changeX;
-				_point1.Y = p1Start.Y + changeY;
-				_point2.Y = p2Start.Y + changeY;
-				_point3.Y = p3Start.Y + changeY;
+				_point1.X = Convert.ToInt32(p1Start.X * ZoomLevel) + changeX;
+				_point1.Y = Convert.ToInt32(p1Start.Y * ZoomLevel) + changeY;
+				_point2.X = Convert.ToInt32(p2Start.X * ZoomLevel) + changeX;
+				_point2.Y = Convert.ToInt32(p2Start.Y * ZoomLevel) + changeY;
+				_point3.X = Convert.ToInt32(p3Start.X * ZoomLevel) + changeX;
+				_point3.Y = Convert.ToInt32(p3Start.Y * ZoomLevel) + changeY;
+
+				PointToZoomPointRef(_point1);
+				PointToZoomPointRef(_point2);
+				PointToZoomPointRef(_point3);
+
 				Layout();
 			}
 		}
-
-		//private void OnResize(EventArgs e)
-		//{
-		//    Layout();
-		//}
 
 		public override void Select(bool selectDragPoints)
 		{

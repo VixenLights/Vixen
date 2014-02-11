@@ -45,7 +45,7 @@ namespace VixenModules.Sequence.Timed
 		public int Level { get; set; }
 
 		[DataMember]
-		public Guid Id { get; internal set; }
+		public Guid Id { get; set; }
 
 		public int MarkCount
 		{

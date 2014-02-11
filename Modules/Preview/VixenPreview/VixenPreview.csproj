@@ -18,7 +18,6 @@
   <PropertyGroup>
     <StartupObject />
   </PropertyGroup>
- 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>$(SolutionDir)\Release\Modules\Preview\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
@@ -30,7 +29,6 @@
     <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
-  
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>$(SolutionDir)\Release64\Modules\Preview\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
@@ -160,6 +158,20 @@
     <Compile Include="Shapes\PreviewPixelGridSetupControl.Designer.cs">
       <DependentUpon>PreviewPixelGridSetupControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Shapes\PreviewStarBurstSetupControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Shapes\PreviewStarBurstSetupControl.Designer.cs">
+      <DependentUpon>PreviewStarBurstSetupControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Shapes\PreviewRectangleSetupControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Shapes\PreviewRectangleSetupControl.Designer.cs">
+      <DependentUpon>PreviewRectangleSetupControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Shapes\PreviewStarBurst.cs" />
+    <Compile Include="Shapes\PreviewRectangle.cs" />
     <Compile Include="Shapes\PreviewStarSetupControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -240,14 +252,7 @@
     <Compile Include="Shapes\PreviewSingleSetupControl.Designer.cs">
       <DependentUpon>PreviewSingleSetupControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Shapes\PreviewRectangleSetupControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Shapes\PreviewRectangleSetupControl.Designer.cs">
-      <DependentUpon>PreviewRectangleSetupControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="Shapes\PreviewSingle.cs" />
-    <Compile Include="Shapes\PreviewRectangle.cs" />
     <Compile Include="Shapes\PreviewEllipse.cs" />
     <Compile Include="Shapes\PreviewArch.cs" />
     <Compile Include="Shapes\DisplayItem.cs" />
@@ -270,12 +275,6 @@
     </Compile>
     <Compile Include="VixenPreviewDisplayD2D.Designer.cs">
       <DependentUpon>VixenPreviewDisplayD2D.cs</DependentUpon>
-    </Compile>
-    <Compile Include="VixenPreviewSetup.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="VixenPreviewSetup.Designer.cs">
-      <DependentUpon>VixenPreviewSetup.cs</DependentUpon>
     </Compile>
     <Compile Include="VixenPreviewModuleInstance.cs" />
     <Compile Include="VixenPreviewModuleInstance.Designer.cs">
@@ -339,6 +338,12 @@
     <EmbeddedResource Include="Shapes\PreviewPixelGridSetupControl.resx">
       <DependentUpon>PreviewPixelGridSetupControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Shapes\PreviewStarBurstSetupControl.resx">
+      <DependentUpon>PreviewStarBurstSetupControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Shapes\PreviewRectangleSetupControl.resx">
+      <DependentUpon>PreviewRectangleSetupControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Shapes\PreviewStarSetupControl.resx">
       <DependentUpon>PreviewStarSetupControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -366,9 +371,6 @@
     <EmbeddedResource Include="Shapes\PreviewMegaTreeSetupControl.resx">
       <DependentUpon>PreviewMegaTreeSetupControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Shapes\PreviewRectangleSetupControl.resx">
-      <DependentUpon>PreviewRectangleSetupControl.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Shapes\PreviewSetElements.resx">
       <DependentUpon>PreviewSetElements.cs</DependentUpon>
     </EmbeddedResource>
@@ -383,9 +385,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="VixenPreviewModuleInstance.resx">
       <DependentUpon>VixenPreviewModuleInstance.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="VixenPreviewSetup.resx">
-      <DependentUpon>VixenPreviewSetup.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="VixenPreviewSetup3.resx">
       <DependentUpon>VixenPreviewSetup3.cs</DependentUpon>

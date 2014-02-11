@@ -186,22 +186,25 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			return item;
 		}
 
-		public static Bitmap ResizeBitmap(Bitmap imgToResize, Size size)
-		{
-			try {
-				Bitmap b = new Bitmap(size.Width, size.Height);
-				using (Graphics g = Graphics.FromImage((Image) b)) {
-					g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+        public static Bitmap ResizeBitmap(Bitmap imgToResize, Size size)
+        {
+            try
+            {
+                Bitmap b = new Bitmap(size.Width, size.Height);
+                using (Graphics g = Graphics.FromImage((Image)b))
+                {
+                    g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
 
-					g.DrawImage(imgToResize, 0, 0, size.Width, size.Height);
-				}
+                    g.DrawImage(imgToResize, 0, 0, size.Width, size.Height);
+                }
 
-				return b;
-			}
-			catch {
-				throw;
-			}
-		}
+                return b;
+            }
+            catch
+            {
+                throw;
+            }
+        }
  
 		public static Bitmap Copy32BPPBitmapSafe(Bitmap srcBitmap)
 		{

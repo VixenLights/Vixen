@@ -20,7 +20,8 @@ namespace VersionControl
             _data = new Data();
 
         }
-
+        private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		
         #region Variables
         IApplication _application;
         Data _data;
@@ -168,6 +169,10 @@ namespace VersionControl
             if (e.FullPath.Contains("\\.git") || e.FullPath.Contains("\\Logs")) return;
             Task.Factory.StartNew(() =>
             {
+                try
+                {
+
+             
                 lock (fileLockObject)
                 {
                     //Wait for the file to fully save...
@@ -209,7 +214,12 @@ namespace VersionControl
                             break;
                     }
                 }
+                }
+                catch (Exception eee)
+                {
 
+                    Logging.ErrorException(eee.Message,eee);
+                }
 
                 restoringFile = false;
                 //Reset the cache when GIT changes

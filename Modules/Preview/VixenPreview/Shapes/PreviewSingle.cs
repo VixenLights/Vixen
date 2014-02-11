@@ -18,17 +18,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 	public class PreviewSingle : PreviewBaseShape
 	{
 		[DataMember] private PreviewPoint p1;
-		//[DataMember]
-		//private PreviewPoint p2;
-		//private int _maxAlpha;
 
 		private PreviewPoint p1Start;
-		//, p2Start;
 
-		public PreviewSingle(PreviewPoint point, ElementNode selectedNode)
+		public PreviewSingle(PreviewPoint point, ElementNode selectedNode, double zoomLevel)
 		{
-			p1 = point; // new PreviewPoint(point.X, point.Y);
-			//p2 = new PreviewPoint(point.X, point.Y);
+			ZoomLevel = zoomLevel;
+			p1 = PointToZoomPoint(point); 
 
 			PreviewPixel pixel = AddPixel(10, 10);
 			pixel.PixelColor = Color.White;
@@ -36,14 +32,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			if (selectedNode != null) {
 				if (selectedNode.IsLeaf) {
 					pixel.Node = selectedNode;
-					//pixel.NodeId = selectedNode.Id;
 				}
 			}
 
 			// Lay out the pixels
 			Layout();
-
-			//DoResize += new ResizeEvent(OnResize);
 		}
 
 		[OnDeserialized]
@@ -78,28 +71,44 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			set { _pixels[0].MaxAlpha = value; }
 		}
 
+        public override void Match(PreviewBaseShape matchShape)
+        {
+            PreviewSingle shape = (matchShape as PreviewSingle);
+            PixelSize = shape.PixelSize;
+            Layout();
+        }
+
 		public override void Layout()
 		{
+			if (Pixels != null && Pixels.Count > 0) {
 			PreviewPixel pixel = Pixels[0];
 			pixel.X = p1.X;
 			pixel.Y = p1.Y;
-			//PixelSize = Math.Abs(p2.X - p1.X);
+
+			SetPixelZoom();
+			}
 		}
 
 		public override void MouseMove(int x, int y, int changeX, int changeY)
 		{
-			if (_selectedPoint != null) {
-				_selectedPoint.X = x;
-				_selectedPoint.Y = y;
+			PreviewPoint point = PointToZoomPoint(new PreviewPoint(x, y));
+			if (_selectedPoint != null)
+			{
+				_selectedPoint.X = point.X;
+				_selectedPoint.Y = point.Y;
 				Layout();
 				SelectDragPoints();
 			}
 				// If we get here, we're moving
 			else {
-				p1.X = p1Start.X + changeX;
-				p1.Y = p1Start.Y + changeY;
-				//p2.X = p2Start.X + changeX;
-				//p2.Y = p2Start.Y + changeY;
+				//p1.X = p1Start.X + changeX;
+				//p1.Y = p1Start.Y + changeY;
+
+				p1.X = Convert.ToInt32(p1Start.X * ZoomLevel) + changeX;
+				p1.Y = Convert.ToInt32(p1Start.Y * ZoomLevel) + changeY;
+
+				PointToZoomPointRef(p1);
+
 				Layout();
 			}
 		}
@@ -113,26 +122,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			List<PreviewPoint> points = new List<PreviewPoint>();
 			points.Add(p1);
-			//p2.X = p1.X + PixelSize;
-			//p2.Y = p1.Y + PixelSize;
-			//points.Add(p2);
 			SetSelectPoints(points, null);
 		}
 
 		public override bool PointInShape(PreviewPoint point)
 		{
-			//foreach (PreviewPixel pixel in Pixels) 
-			//{
-			//    Rectangle r = new Rectangle(pixel.X - (SelectPointSize / 2), pixel.Y - (SelectPointSize / 2), SelectPointSize, SelectPointSize);
-			//    if (point.X >= r.X && point.X <= r.X + r.Width && point.Y >= r.Y && point.Y <= r.Y + r.Height)
-			//    {
-			//        return true;
-			//    }
-			//}
-			//if (point == null)
-			//    MessageBox.Show("point");
-			//if (p1 == null)
-			//    MessageBox.Show("p1");
 			if (PixelSize < 5) {
 				Rectangle r = new Rectangle(p1.X - (SelectPointSize/2), p1.Y - (SelectPointSize/2), SelectPointSize, SelectPointSize);
 				if (point.X >= r.X && point.X <= r.X + r.Width && point.Y >= r.Y && point.Y <= r.Y + r.Height) {
@@ -153,7 +147,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			if (point == null) {
 				p1Start = new PreviewPoint(p1.X, p1.Y);
-				//p2Start = new PreviewPoint(p2.X, p2.Y);
 			}
 
 			_selectedPoint = point;

@@ -26,11 +26,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		private bool justPlaced = false;
 		private PreviewPoint bottomRightStart, topLeftStart, archStart;
 
-		public PreviewCane(PreviewPoint point, ElementNode selectedNode)
+		public PreviewCane(PreviewPoint point, ElementNode selectedNode, double zoomLevel)
 		{
-			_topLeftPoint = point;
-			_bottomRightPoint = new PreviewPoint(point.X, point.Y);
-			_archLeftPoint = new PreviewPoint(point.X, point.Y);
+			ZoomLevel = zoomLevel;
+			PreviewPoint newPoint = PointToZoomPoint(new PreviewPoint(point.X, point.Y));
+			_topLeftPoint = newPoint;
+			_bottomRightPoint = new PreviewPoint(newPoint.X, newPoint.Y);
+			_archLeftPoint = new PreviewPoint(newPoint.X, newPoint.Y);
 
 			_archPixelCount = 8;
 			_linePixelCount = 8;
@@ -38,7 +40,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			int lightCount = _archPixelCount + _linePixelCount;
 
 			if (selectedNode != null) {
-				//List<ElementNode> children = selectedNode.Children.ToList();
 				List<ElementNode> children = PreviewTools.GetLeafNodes(selectedNode);
 				// is this a single node?
 				if (children.Count >= 8) {
@@ -56,7 +57,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					foreach (ElementNode child in children) {
 						PreviewPixel pixel = AddPixel(10, 10);
 						pixel.Node = child;
-						//pixel.NodeId = child.Id;
 						pixel.PixelColor = Color.White;
 					}
 				}
@@ -69,15 +69,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					pixel.PixelColor = Color.White;
 					if (selectedNode != null && selectedNode.IsLeaf) {
 						pixel.Node = selectedNode;
-						//pixel.NodeId = selectedNode.Id;
 					}
 				}
 			}
 
 			// Lay out the pixels
 			Layout();
-
-			//DoResize += new ResizeEvent(OnResize);
 		}
 
 		[OnDeserialized]
@@ -147,7 +144,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		[CategoryAttribute("Position"),
 		 DisplayName("Top Left"),
-		 DescriptionAttribute("The top left opint of the bounding box of the candy cane.")]
+		 DescriptionAttribute("The top left point of the bounding box of the candy cane.")]
 		public Point TopLeft
 		{
 			get
@@ -189,31 +186,51 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			set { _pixels[0].MaxAlpha = value; }
 		}
 
+        public override void Match(PreviewBaseShape matchShape)
+        {
+            PreviewCane shape = (matchShape as PreviewCane);
+            PixelSize = shape.PixelSize;
+            _bottomRightPoint.X = TopLeft.X + (shape.BottomRight.X - shape.TopLeft.X);
+            _bottomRightPoint.Y = TopLeft.Y + (shape.BottomRight.Y - shape.TopLeft.Y);
+            //_archLeftPoint.X = shape.X;
+            _archLeftPoint.Y = _bottomRightPoint.Y - (shape._bottomRightPoint.Y - shape._archLeftPoint.Y);
+            Layout();
+        }
+
 		public override void Layout()
 		{
-			double pixelSpacing = (double) (_bottomRightPoint.Y - _archLeftPoint.Y)/(double) _linePixelCount;
-			for (int i = 0; i < _linePixelCount; i++) {
-				PreviewPixel pixel = _pixels[i];
-				pixel.X = _topLeftPoint.X;
-				pixel.Y = _bottomRightPoint.Y - (int) (i*pixelSpacing);
-				;
-			}
+			if (_bottomRightPoint != null && _archLeftPoint != null)
+			{
+				double pixelSpacing = (double)(_bottomRightPoint.Y - _archLeftPoint.Y) / (double)_linePixelCount;
+				for (int i = 0; i < _linePixelCount; i++)
+				{
+					PreviewPixel pixel = _pixels[i];
+					pixel.X = _topLeftPoint.X;
+					pixel.Y = _bottomRightPoint.Y - (int)(i * pixelSpacing);
+					;
+				}
 
-			int arcWidth = _bottomRightPoint.X - _topLeftPoint.X;
-			int arcHeight = _archLeftPoint.Y - _topLeftPoint.Y;
-			List<Point> points = PreviewTools.GetArcPoints(arcWidth, arcHeight, _archPixelCount);
-			for (int i = 0; i < points.Count; i++) {
-				PreviewPixel pixel = _pixels[i + _linePixelCount];
-				pixel.X = points[i].X + _topLeftPoint.X;
-				pixel.Y = points[i].Y + _topLeftPoint.Y;
+				int arcWidth = _bottomRightPoint.X - _topLeftPoint.X;
+				int arcHeight = _archLeftPoint.Y - _topLeftPoint.Y;
+				List<Point> points = PreviewTools.GetArcPoints(arcWidth, arcHeight, _archPixelCount);
+				for (int i = 0; i < points.Count; i++)
+				{
+					PreviewPixel pixel = _pixels[i + _linePixelCount];
+					pixel.X = points[i].X + _topLeftPoint.X;
+					pixel.Y = points[i].Y + _topLeftPoint.Y;
+				}
+
+				SetPixelZoom();
 			}
 		}
 
 		public override void MouseMove(int x, int y, int changeX, int changeY)
 		{
-			if (_selectedPoint != null) {
-				_selectedPoint.X = x;
-				_selectedPoint.Y = y;
+			PreviewPoint point = PointToZoomPoint(new PreviewPoint(x, y));
+			if (_selectedPoint != null)
+			{
+				_selectedPoint.X = point.X;
+				_selectedPoint.Y = point.Y;
 
 				_archLeftPoint.X = _topLeftPoint.X;
 
@@ -226,20 +243,27 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 				// If we get here, we're moving
 			else {
-				_bottomRightPoint.X = bottomRightStart.X + changeX;
-				_bottomRightPoint.Y = bottomRightStart.Y + changeY;
-				_topLeftPoint.X = topLeftStart.X + changeX;
-				_topLeftPoint.Y = topLeftStart.Y + changeY;
-				_archLeftPoint.X = archStart.X + changeX;
-				_archLeftPoint.Y = archStart.Y + changeY;
+				//_bottomRightPoint.X = bottomRightStart.X + changeX;
+				//_bottomRightPoint.Y = bottomRightStart.Y + changeY;
+				//_topLeftPoint.X = topLeftStart.X + changeX;
+				//_topLeftPoint.Y = topLeftStart.Y + changeY;
+				//_archLeftPoint.X = archStart.X + changeX;
+				//_archLeftPoint.Y = archStart.Y + changeY;
+
+				_bottomRightPoint.X = Convert.ToInt32(bottomRightStart.X * ZoomLevel) + changeX;
+				_bottomRightPoint.Y = Convert.ToInt32(bottomRightStart.Y * ZoomLevel) + changeY;
+				_topLeftPoint.X = Convert.ToInt32(topLeftStart.X * ZoomLevel) + changeX;
+				_topLeftPoint.Y = Convert.ToInt32(topLeftStart.Y * ZoomLevel) + changeY;
+				_archLeftPoint.X = Convert.ToInt32(archStart.X * ZoomLevel) + changeX;
+				_archLeftPoint.Y = Convert.ToInt32(archStart.Y * ZoomLevel) + changeY;
+
+				PointToZoomPointRef(_bottomRightPoint);
+				PointToZoomPointRef(_topLeftPoint);
+				PointToZoomPointRef(_archLeftPoint);
+
 				Layout();
 			}
 		}
-
-		//private void OnResize(EventArgs e)
-		//{
-		//    Layout();
-		//}
 
 		public override void SelectDragPoints()
 		{

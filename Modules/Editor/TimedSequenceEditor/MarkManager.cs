@@ -15,6 +15,10 @@ using VixenModules.Media.Audio;
 using System.Collections.Concurrent;
 using System.IO;
 using Common.Resources.Properties;
+using System.Xml.Serialization;
+using System.Runtime.Serialization;
+using System.Xml;
+
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -1063,14 +1067,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			if (aDialog.ShowDialog() == DialogResult.OK)
 			{
+				if (aDialog.IsVixen3BeatSelection)
+					ImportVixen3Beats();
 				if (aDialog.IsVampBarSelection || aDialog.IsAudacityBeatSelection)
-				{
 					LoadBarLabels();
-				}
-				else
-				{
+				if (aDialog.IsVampBeatSelection)
 					LoadBeatLabels();		
-				}	
 			}
 		}
 
@@ -1221,6 +1223,103 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			marks.Marks.Sort();
 			PopulateMarkListFromMarkCollection(marks);
 			UpdateMarkCollectionInList(marks);
+		}
+
+		private void buttonExportBeatMarks_Click(object sender, EventArgs e)
+		{
+			if (MarkCollections.Count == 0)
+			{
+				MessageBox.Show("Unable to find marks collection for export");
+				return;
+			}
+
+			var bDialog = new BeatMarkExportDialog();
+
+			if (bDialog.ShowDialog() == DialogResult.OK)
+			{
+				if (bDialog.IsVixen3Selection)
+					ExportMarkCollections(null, "vixen3");
+				if (bDialog.IsAudacitySelection)
+					ExportMarkCollections(null, "audacity");
+				if (!bDialog.IsVixen3Selection && !bDialog.IsAudacitySelection)
+					MessageBox.Show("No export type selected");
+			}
+		}
+
+		//Vixen 3 Beat Mark Collection Import routine 2-7-2014 JMB
+		private void ImportVixen3Beats()
+		{
+			openFileDialog.DefaultExt = ".v3m";
+			openFileDialog.Filter = "Vixen 3 Mark Collection (*.v3m)|*.v3m|All Files (*.*)|*.*";
+			openFileDialog.FilterIndex = 0;
+			openFileDialog.InitialDirectory = lastFolder;
+			if (openFileDialog.ShowDialog() == DialogResult.OK)
+			{
+				using (FileStream reader = new FileStream(openFileDialog.FileName, FileMode.Open, FileAccess.Read))
+				{
+					DataContractSerializer ser = new DataContractSerializer(typeof(List<MarkCollection>));
+					MarkCollections = (List<MarkCollection>)ser.ReadObject(reader);
+				}
+				PopulateMarkCollectionsList();
+				PopulateFormWithMarkCollection(null, true);
+			}
+		}
+
+		//Beat Mark Collection Export routine 2-7-2014 JMB
+		//In the audacity section, if the MarkCollections.Count = 1 then we assume the collection is bars and iMarkCollection++
+		//Other wise its beats, at least from the information I have studied, and we do not iMarkCollection++ to keep the collections together properly.
+		private void ExportMarkCollections(MarkCollection collection, string exportType)
+		{
+			if (exportType == "vixen3")
+			{
+				saveFileDialog.DefaultExt = ".v3m";
+				saveFileDialog.Filter = "Vixen 3 Mark Collection (*.v3m)|*.v3m|All Files (*.*)|*.*";
+				saveFileDialog.InitialDirectory = lastFolder;
+				if (saveFileDialog.ShowDialog() == DialogResult.OK)
+				{
+					var xmlsettings = new XmlWriterSettings()
+					{
+						Indent = true,
+						IndentChars = "\t",
+					};
+
+					DataContractSerializer ser = new DataContractSerializer(typeof(List<MarkCollection>));
+					var writer = XmlWriter.Create(saveFileDialog.FileName, xmlsettings);
+					ser.WriteObject(writer, MarkCollections);
+					writer.Close();
+				}
+			}
+
+			if (exportType == "audacity")
+			{
+				int iMarkCollection = 0;
+				List<string> BeatMarks = new List<string>();
+				foreach (MarkCollection mc in MarkCollections)
+				{
+					iMarkCollection++;
+					foreach (TimeSpan time in mc.Marks)
+					{
+						BeatMarks.Add(time.TotalSeconds.ToString("0000.000") + "\t" + time.TotalSeconds.ToString("0000.000") + "\t" + iMarkCollection);
+						if (MarkCollections.Count == 1)
+							iMarkCollection++;
+					}
+				}
+
+				saveFileDialog.DefaultExt = ".txt";
+				saveFileDialog.Filter = "Audacity Marks (*.txt)|*.txt|All Files (*.*)|*.*";
+				if (saveFileDialog.ShowDialog() == DialogResult.OK)
+				{
+					string name = saveFileDialog.FileName;
+
+					using (System.IO.StreamWriter file = new System.IO.StreamWriter(name))
+					{
+						foreach (string bm in BeatMarks.OrderBy(x => x))
+						{
+							file.WriteLine(bm);
+						}
+					}
+				}
+			}
 		}
 	}
 }

@@ -52,7 +52,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public void OnDeserialized(StreamingContext context)
 		{
 			ResizePixels();
-			//Layout();
 		}
 
 		[DataMember,
@@ -156,6 +155,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
+        //[Browsable(false)]
+        //public abstract int Width { get; set; }
+
+        //[Browsable(false)]
+        //public abstract int Height { get; set; }
+
+        public abstract void Match(PreviewBaseShape matchShape);
+
 		public abstract void Layout();
 
 		[DataMember,
@@ -182,13 +189,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			get
 			{
 				if (_strings != null && _strings.Count > 0) {
-					//ConcurrentBag<PreviewPixel> outPixels = new ConcurrentBag<PreviewPixel>();
-					//_strings.AsParallel().ForAll(line =>
-					//{
-					//    line.Pixels.AsParallel().ForAll(pixel => outPixels.Add(pixel));
-					//});
-					//return outPixels.ToList();
-
 					List<PreviewPixel> outPixels = new List<PreviewPixel>();
 					foreach (PreviewBaseShape line in _strings) {
 						foreach (PreviewPixel pixel in line.Pixels) {
@@ -198,16 +198,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					return outPixels.ToList();
 				}
 				else {
-					//if (_pixels != null)
-					//{
-					//    if (this.GetType().ToString().ToLower() == "PreviewNet") 
-					//        Console.WriteLine(this.GetType().ToString() + ": " + _pixels.Count);
-					//}
-					//else 
-					//{
-					//    Console.WriteLine(this.GetType().ToString() + ": " + "_pixels=null");
-					//}
-
 					return _pixels;
 				}
 			}
@@ -222,8 +212,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			get
 			{
 				if (_strings != null) {
-					// No parallel here. There's not much going on
-
 					//Instead of going through the strings multiple times.. do it once
 					// set all the sub-strings to match the connection state for elements
 					foreach (PreviewBaseShape line in _strings)
@@ -252,8 +240,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			set
 			{
 				_pixelColor = value;
-				// Never enough items to justify parallel
-				//_pixels.AsParallel().ForAll(p => p.PixelColor = _pixelColor);
 				foreach (PreviewPixel pixel in _pixels) {
 					pixel.PixelColor = _pixelColor;
 				}
@@ -271,6 +257,42 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			{
 				_pixelSize = value;
 				ResizePixels();
+			}
+		}
+
+		private double _zoomLevel = 1;
+		[Browsable(false)]
+		public double ZoomLevel
+		{
+			get
+			{
+				if (_zoomLevel == 0)
+					_zoomLevel = 1;
+				return _zoomLevel;
+			}
+			set
+			{
+				if (value > 0)
+					_zoomLevel = value;
+				_zoomLevel = value;
+				if (_strings != null)
+				{
+					foreach (PreviewBaseShape shape in _strings)
+					{
+						shape.ZoomLevel = value;
+					}
+				}
+				Layout();
+			}
+		}
+
+		public void SetPixelZoom() 
+		{
+			// Zoom
+			foreach (PreviewPixel pixel in _pixels)
+			{
+				pixel.X = Convert.ToInt32((Convert.ToDouble(pixel.X) * ZoomLevel));
+				pixel.Y = Convert.ToInt32((Convert.ToDouble(pixel.Y) * ZoomLevel));
 			}
 		}
 
@@ -316,8 +338,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public void SetSelectPoints(List<PreviewPoint> selectPoints, List<PreviewPoint> skewPoints)
 		{
 			_selectPoints = selectPoints;
-			// Not enough points here to justify parallel
-			//_selectPoints.Where(p => p != null).AsParallel().ForAll(p => p.PointType = PreviewPoint.PointTypes.Size);
 			foreach (PreviewPoint p in _selectPoints)
 				if (p != null)
 					p.PointType = PreviewPoint.PointTypes.Size;
@@ -335,25 +355,18 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public virtual void ResizePixels()
 		{
 			if (Pixels != null) {
-				//Pixels.AsParallel().ForAll(p => p.PixelSize = PixelSize);
 				foreach (PreviewPixel pixel in Pixels) {
 					pixel.PixelSize = PixelSize;
 				}
 			}
 
 			if (_strings != null && _strings.Count > 0) {
-				//_strings.AsParallel().ForAll(s => s.PixelSize = PixelSize);
-
 				foreach (PreviewBaseShape shape in _strings) {
 					shape.PixelSize = PixelSize;
 				}
 			}
 			else {
 				if (Pixels != null) {
-					//Pixels.AsParallel().ForAll(p => {
-					//    p.PixelSize = PixelSize;
-					//    p.Resize();
-					//});
 					foreach (PreviewPixel pixel in Pixels) {
 						pixel.PixelSize = PixelSize;
 						pixel.Resize();
@@ -387,11 +400,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public virtual void Draw(FastPixel.FastPixel fp, bool editMode, List<ElementNode> highlightedElements, bool selected,
 		                         bool forceDraw)
 		{
-			//Pixels.AsParallel().ForAll(pixel => {
 			foreach (PreviewPixel pixel in Pixels) {
 				DrawPixel(pixel, fp, editMode, highlightedElements, selected, forceDraw);
 			}
-			//});
 
 			DrawSelectPoints(fp);
 		}
@@ -402,8 +413,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				foreach (PreviewPoint point in _selectPoints) {
 					if (point != null) {
 						if (point.PointType == PreviewPoint.PointTypes.Size) {
-							fp.DrawRectangle(
-								new Rectangle(point.X - (SelectPointSize/2), point.Y - (SelectPointSize/2), SelectPointSize, SelectPointSize),
+                            int x = Convert.ToInt32((point.X) * ZoomLevel) - (SelectPointSize / 2);
+                            int y = Convert.ToInt32(point.Y * ZoomLevel) - (SelectPointSize / 2);
+                            fp.DrawRectangle(
+								new Rectangle(x, y, SelectPointSize, SelectPointSize),
 								Color.White);
 						}
 					}
@@ -444,16 +457,38 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			if (_selectPoints != null) {
 				foreach (PreviewPoint selectPoint in _selectPoints) {
 					if (selectPoint != null) {
-						if (point.X >= selectPoint.X - (SelectPointSize/2) &&
-						    point.Y >= selectPoint.Y - (SelectPointSize/2) &&
-						    point.X <= selectPoint.X + (SelectPointSize/2) &&
-						    point.Y <= selectPoint.Y + (SelectPointSize/2)) {
+						int selectPointX = Convert.ToInt32(selectPoint.X * ZoomLevel);
+						int selectPointY = Convert.ToInt32(selectPoint.Y * ZoomLevel);
+						if (point.X >= selectPointX - (SelectPointSize / 2) &&
+						    point.Y >= selectPointY - (SelectPointSize/2) &&
+						    point.X <= selectPointX + (SelectPointSize/2) &&
+						    point.Y <= selectPointY + (SelectPointSize/2)) {
 							return selectPoint;
 						}
 					}
 				}
 			}
 			return null;
+		}
+
+		public PreviewPoint PointToZoomPoint(PreviewPoint p)
+		{
+			PreviewPoint newPoint = new PreviewPoint(p.X, p.Y);
+			PointToZoomPointRef(newPoint);
+			return newPoint;
+		}
+
+		public void PointToZoomPointRef(PreviewPoint p)
+		{
+			int xDif = p.X - Convert.ToInt32(p.X / ZoomLevel);
+			int yDif = p.Y - Convert.ToInt32(p.Y / ZoomLevel);
+			p.X = p.X - xDif;
+			p.Y = p.Y - yDif;
+		}
+
+		public PreviewPoint PointToZoomPointAdd(PreviewPoint p)
+		{
+			return new PreviewPoint(Convert.ToInt32(p.X * ZoomLevel), Convert.ToInt32(p.Y * ZoomLevel));
 		}
 
 		public abstract void SetSelectPoint(PreviewPoint point = null);
@@ -510,7 +545,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewStar") {
 				setupControl = new Shapes.PreviewStarSetupControl(this);
 			}
-			else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewNet") {
+            else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewStarBurst")
+            {
+                setupControl = new Shapes.PreviewStarBurstSetupControl(this);
+            }
+            else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewNet")
+            {
 				setupControl = new Shapes.PreviewNetSetupControl(this);
 			}
 			else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewCustom") {
