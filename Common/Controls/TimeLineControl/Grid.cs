@@ -575,7 +575,7 @@ namespace Common.Controls.Timeline
 		/// <returns>Boolen indicating whether the move occured</returns>
 		public bool MoveResizeElement(Element element, TimeSpan start, TimeSpan duration)
 		{
-			if (element == null || start > TotalTime || start + duration > TotalTime || start > element.EndTime
+			if (element == null || start > TotalTime || start + duration > TotalTime 
 				|| duration < TimeSpan.FromMilliseconds(1))
 			{
 				return false;
@@ -603,11 +603,11 @@ namespace Common.Controls.Timeline
 		/// </summary>
 		/// <param name="element"></param>
 		/// <param name="start"></param>
-		/// <param name="duration"></param>
+		/// <param name="end"></param>
 		/// <returns>Boolen indicating whether the move occured</returns>
 		public bool MoveResizeElementByStartEnd(Element element, TimeSpan start, TimeSpan end)
 		{
-			if (element == null || start > TotalTime || end > TotalTime || start > end)
+			if (element == null || start > TotalTime || end > TotalTime || start >= end)
 			{
 				return false;
 			}
