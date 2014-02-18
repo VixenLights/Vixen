@@ -59,6 +59,9 @@ namespace Common.Controls.Timeline
 				RowLabels.Clear();
 				RowLabels= null;
 			}
+			Row.RowHeightChanged -= RowLabelChangedHandler;
+			Row.RowHeightResized -= RowLabelResizedHandler;
+			Row.RowToggled -= RowLabelChangedHandler;
 			base.Dispose(disposing);
 		}
 		#region Events

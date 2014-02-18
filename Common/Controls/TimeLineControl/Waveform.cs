@@ -17,7 +17,7 @@ namespace Common.Controls.Timeline
 	public sealed class Waveform : TimelineControlBase
 	{
 		private double samplesPerPixel;
-		private SampleAggregator samples = new SampleAggregator();
+		private SampleAggregator samples;
 		private Audio audio;
 		private BackgroundWorker bw;
 
@@ -28,6 +28,7 @@ namespace Common.Controls.Timeline
 		public Waveform(TimeInfo timeinfo)
 			: base(timeinfo)
 		{
+			samples = new SampleAggregator();
 			BackColor = Color.Gray;
 			Visible = false;
 		}
@@ -297,7 +298,7 @@ namespace Common.Controls.Timeline
 			if (samples != null) {
 				samples.Clear();
 				samples	 = null;
-				samples = new SampleAggregator();
+				//samples = new SampleAggregator();
 			}
 			base.Dispose(disposing);
 		}

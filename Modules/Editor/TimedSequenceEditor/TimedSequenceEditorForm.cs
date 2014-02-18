@@ -256,6 +256,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			MarksForm.EditMarkCollection -= MarkCollection_Edit;
 			MarksForm.MarkCollectionChecked -= MarkCollection_Checked;
 			MarksForm.ChangedMarkCollection -= MarkCollection_Changed;
+			MarksForm.Dispose();
 
 			TimelineControl.SelectionChanged -= TimelineControlOnSelectionChanged;
 			TimelineControl.grid.MouseDown -= TimelineControl_MouseDown;
@@ -266,12 +267,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			Execution.ExecutionStateChanged -= OnExecutionStateChanged;
 
+			EffectsForm.Dispose();
+			
 			//;
 			if (disposing && (components != null))
 			{
 				components.Dispose();
-
 				TimelineControl.Dispose();
+				GridForm.Dispose();
 
 			}
 			if (_effectNodeToElement != null)
@@ -289,6 +292,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				_sequence.Dispose();
 				_sequence = null;
 			}
+
+			dockPanel.Dispose();
+
 			base.Dispose(disposing);
 			GC.Collect();
 		}
