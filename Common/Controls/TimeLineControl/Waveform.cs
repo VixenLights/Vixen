@@ -171,29 +171,36 @@ namespace Common.Controls.Timeline
 
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			if (samples.Count > 0 && !bw.IsBusy) {
-				e.Graphics.TranslateTransform(-timeToPixels(VisibleTimeStart), 0);
-				float maxSample = Math.Max(Math.Abs(samples.Low), samples.High);
-				int workingHeight = Height - (int) (Height*.1); //Leave a little margin
-				float factor = (float) (workingHeight)/maxSample;
+			if (VisibleTimeStart <= audio.MediaDuration)
+			{
+				if (samples.Count > 0 && !bw.IsBusy)
+				{
+					e.Graphics.TranslateTransform(-timeToPixels(VisibleTimeStart), 0);
+					float maxSample = Math.Max(Math.Abs(samples.Low), samples.High);
+					int workingHeight = Height - (int) (Height*.1); //Leave a little margin
+					float factor = workingHeight/maxSample;
 
-				float maxValue = 2*maxSample*factor;
-				float minValue = -maxSample*factor;
-				int start = (int) timeToPixels(VisibleTimeStart);
-				int end = (int) timeToPixels(VisibleTimeEnd);
+					float maxValue = 2*maxSample*factor;
+					float minValue = -maxSample*factor;
+					int start = (int) timeToPixels(VisibleTimeStart);
+					int end = (int) timeToPixels(VisibleTimeEnd <= audio.MediaDuration ? VisibleTimeEnd : audio.MediaDuration);
 
-				for (int x = start; x < end; x += 1) {
-					float lowPercent = ((((float) samples[x].Low*factor) - minValue)/maxValue);
-					float highPercent = ((((float) samples[x].High*factor) - minValue)/maxValue);
-					e.Graphics.DrawLine(Pens.Black, x, workingHeight*lowPercent, x, workingHeight*highPercent);
+					for (int x = start; x < end; x += 1)
+					{
+						float lowPercent = (((samples[x].Low*factor) - minValue)/maxValue);
+						float highPercent = (((samples[x].High*factor) - minValue)/maxValue);
+						e.Graphics.DrawLine(Pens.Black, x, workingHeight*lowPercent, x, workingHeight*highPercent);
+					}
 				}
-			}
-			else {
-				using (Font f = new Font(this.Font.FontFamily, 10f, FontStyle.Regular)) {
-					e.Graphics.DrawString("Building waveform.....", f, Brushes.Black,
-					                      new Point((int) timeToPixels(VisibleTimeStart) + 15,
-					                                (int) (Height - f.GetHeight(e.Graphics))/2),
-					                      new StringFormat {Alignment = StringAlignment.Near});
+				else
+				{
+					using (Font f = new Font(Font.FontFamily, 10f, FontStyle.Regular))
+					{
+						e.Graphics.DrawString("Building waveform.....", f, Brushes.Black,
+							new Point((int) timeToPixels(VisibleTimeStart) + 15,
+								(int) (Height - f.GetHeight(e.Graphics))/2),
+							new StringFormat {Alignment = StringAlignment.Near});
+					}
 				}
 			}
 
