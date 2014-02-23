@@ -12,7 +12,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 {
 	public partial class EffectTimeEditor : Form
 	{
-		private const string timeFormat = @"m\:ss\.fff";
+		private const string timeFormat = @"mm\:ss\.fff";
 		public EffectTimeEditor(TimeSpan start, TimeSpan duration)
 		{
 			InitializeComponent();
@@ -70,7 +70,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void EffectTimeEditor_Load(object sender, EventArgs e)
 		{
-			txtStartTime.Mask = txtDuration.Mask = "0:00.000";
+			txtStartTime.Mask = txtDuration.Mask = @"00:00.000";
 			txtStartTime.MaskInputRejected += new MaskInputRejectedEventHandler(txtStartTime_MaskInputRejected);
 			txtStartTime.KeyDown += new KeyEventHandler(txtStartTime_KeyDown);
 			txtDuration.MaskInputRejected += new MaskInputRejectedEventHandler(txtDuration_MaskInputRejected);
