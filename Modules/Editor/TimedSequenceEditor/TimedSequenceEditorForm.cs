@@ -1163,7 +1163,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						//var msgString = string.Format("Total Elements: {0}\n Start Time: {1}\n End Time: {2}\n Total Duration: {3}\n Effect Duration: {4}\n TimeSpan Duration: {5}\n Start at last element: {6}", totalElements,startTime,endTime,totalDuration,effectDuration, effectTS.TotalSeconds, startAtLastElement);
 						//MessageBox.Show(msgString);
 						//Sanity Check - Keep effects from becoming less than minimum.
-						if (effectDuration < .01)
+						if (effectDuration < .001)
 						{
 							MessageBox.Show(string.Format("Unable to complete request. The resulting duration would fall below .01 seconds.\nCalculated duration: {0}", effectDuration), "Warning", MessageBoxButtons.OK);
 							return;
