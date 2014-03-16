@@ -1165,7 +1165,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						//Sanity Check - Keep effects from becoming less than minimum.
 						if (effectDuration < .001)
 						{
-							MessageBox.Show(string.Format("Unable to complete request. The resulting duration would fall below .01 seconds.\nCalculated duration: {0}", effectDuration), "Warning", MessageBoxButtons.OK);
+							MessageBox.Show(string.Format("Unable to complete request. The resulting duration would fall below 1 millisecond.\nCalculated duration: {0}", effectDuration), "Warning", MessageBoxButtons.OK);
 							return;
 						}
 						if (!startAtLastElement)
