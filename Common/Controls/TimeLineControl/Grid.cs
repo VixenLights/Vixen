@@ -624,7 +624,7 @@ namespace Common.Controls.Timeline
 		/// </summary>
 		public void MoveElementsByTime(IEnumerable<Element> elements, TimeSpan offset)
 		{
-			if (elements.Count() <= 0)
+			if (!elements.Any())
 				return;
 
 			m_elemMoveInfo = new ElementMoveInfo(new Point(), elements, VisibleTimeStart);
@@ -745,11 +745,7 @@ namespace Common.Controls.Timeline
 
 		protected Row RowContainingElement(Element element)
 		{
-			foreach (Row row in Rows) {
-				if (row.ContainsElement(element))
-					return row;
-			}
-			return null;
+			return Rows.FirstOrDefault(row => row.ContainsElement(element));
 		}
 
 		public List<Element> ElementsAtTime(TimeSpan time)
