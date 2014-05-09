@@ -131,7 +131,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.contextMenuStripElementSelection = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.timerPostponePlay = new System.Windows.Forms.Timer(this.components);
 			this.timerDelayCountdown = new System.Windows.Forms.Timer(this.components);
-			this.timerLoop = new System.Windows.Forms.Timer(this.components);
 			this.curveEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripOperations.SuspendLayout();
 			this.menuStrip.SuspendLayout();
@@ -1052,11 +1051,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// 
 			this.timerDelayCountdown.Interval = 1000;
 			this.timerDelayCountdown.Tick += new System.EventHandler(this.timerDelayCountdown_Tick);
-			// 
-			// timerLoop
-			// 
-			this.timerLoop.Interval = 500;
-			this.timerLoop.Tick += new System.EventHandler(this.timerLoop_Tick);
 			// 
 			// curveEditorToolStripMenuItem
 			// 

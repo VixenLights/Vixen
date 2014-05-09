@@ -18,6 +18,7 @@ namespace BaseSequence
 		private SynchronizationContext _syncContext;
 		private bool _isRunning;
 		private bool _isPaused;
+		private bool _loop;
 
 		public event EventHandler<SequenceStartedEventArgs> SequenceStarted;
 		public event EventHandler<SequenceEventArgs> SequenceEnded;
@@ -69,6 +70,13 @@ namespace BaseSequence
 
 		public void Play(TimeSpan startTime, TimeSpan endTime)
 		{
+			_loop = false;
+			_Play(startTime, endTime);
+		}
+
+		public void PlayLoop(TimeSpan startTime, TimeSpan endTime)
+		{
+			_loop = true;
 			_Play(startTime, endTime);
 		}
 
@@ -184,6 +192,30 @@ namespace BaseSequence
 
 			_endCheckTimer.Start();
 
+		}
+
+		private void _loopPlay()
+		{
+
+			TimingSource.Stop();
+			// Stop whatever is driving this crazy train.
+			lock (_endCheckTimer)
+			{
+				_endCheckTimer.Stop();
+			}
+			//Stop running to trigger events to reset the sequence
+			IsRunning = false;
+			//Reset our position. No need to stop the media, we will just reset its position.
+			TimingSource.Position = StartTime;
+			//Fire it back up again.
+			TimingSource.Start();
+			IsRunning = true;
+			while (TimingSource.Position == StartTime)
+			{
+				Thread.Sleep(1); //Give the train a chance to get out of the station.
+			}
+
+			_endCheckTimer.Start();
 		}
 
 		protected virtual void _HookDataListener()
@@ -336,7 +368,15 @@ namespace BaseSequence
 		private void _CheckForNaturalEnd()
 		{
 			if (_IsEndOfSequence()) {
-				_syncContext.Post(x => _Stop(), null);
+				if (_loop)
+				{
+					_syncContext.Post(x => _loopPlay(), null);
+				}
+				else
+				{
+					_syncContext.Post(x => _Stop(), null);	
+				}
+				
 			}
 		}
 

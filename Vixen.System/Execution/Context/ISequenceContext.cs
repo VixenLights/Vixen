@@ -12,5 +12,6 @@ namespace Vixen.Execution.Context
 
 		ISequence Sequence { get; set; }
 		void Play(TimeSpan startTime, TimeSpan endTime);
+		void PlayLoop(TimeSpan startTime, TimeSpan endTime);
 	}
 }

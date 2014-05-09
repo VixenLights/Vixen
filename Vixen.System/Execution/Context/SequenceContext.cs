@@ -30,6 +30,13 @@ namespace Vixen.Execution.Context
 			_sequenceExecutor.Play(startTime, endTime);
 		}
 
+		public void PlayLoop(TimeSpan startTime, TimeSpan endTime)
+		{
+			if (_sequenceExecutor == null)
+				throw new InvalidOperationException("Attempt to start a sequence without an executor.");
+			_sequenceExecutor.PlayLoop(startTime, endTime);	
+		}
+
 		public override string Name
 		{
 			get { return (_sequenceExecutor != null) ? _sequenceExecutor.Name : null; }

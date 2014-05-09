@@ -1602,16 +1602,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				return;
 			}
 
-			if (timerLoop.Enabled == true)
-			{
-				//There is no context, the user has pressed the stop button between loops, stop the timer and get out
-				//We also need to update the state of the buttons
-				timerLoop.Enabled = false;
-				updateButtonStates();
-				return;
-			}
-
-
 			if (_context == null)
 			{
 				Logging.Error("TimedSequenceEditor: attempt to Stop with null context!");
@@ -1650,9 +1640,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.PlaybackStartTime = m_prevPlaybackStart;
 			TimelineControl.PlaybackEndTime = m_prevPlaybackEnd;
 			TimelineControl.PlaybackCurrentTime = null;
-
-			if (toolStripButton_Loop.Checked && stoppedByUser == false)
-				timerLoop.Enabled = true;
 		}
 
 		protected void timerPlaying_Tick(object sender, EventArgs e)
@@ -1721,12 +1708,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				else // Stopped
 				{
 					//We are looping...this keeps the Play button and EffectsForm from blinking between loops, the other buttons should already be in proper state
-					if (toolStripButton_Loop.Checked && stoppedByUser == false)
-					{
-						//We dont need a pause button between loops, it only gives the user the right to think they should be able to use it if its on
-						toolStripButton_Pause.Enabled = pauseToolStripMenuItem.Enabled = false;
-						return;
-					}
+					//if (toolStripButton_Loop.Checked && stoppedByUser == false)
+					//{
+					//	//We dont need a pause button between loops, it only gives the user the right to think they should be able to use it if its on
+					//	toolStripButton_Pause.Enabled = pauseToolStripMenuItem.Enabled = false;
+					//	return;
+					//}
 					toolStripButton_Play.Enabled = playToolStripMenuItem.Enabled = true;
 					toolStripButton_Pause.Enabled = pauseToolStripMenuItem.Enabled = false;
 					toolStripButton_Stop.Enabled = stopToolStripMenuItem.Enabled = false;
@@ -3009,7 +2996,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			else
 			{
-				_context.Play(rangeStart, rangeEnd);
+				if (toolStripButton_Loop.Checked)
+				{
+					_context.PlayLoop(rangeStart, rangeEnd);
+				}
+				else
+				{
+					_context.Play(rangeStart, rangeEnd);	
+				}
+				
 			}
 
 			//_SetTimingSpeed(_timingSpeed);
@@ -3125,12 +3120,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			DelayCountDown--;
 			toolStripStatusLabel_delayPlay.Text = string.Format("{0} Seconds", DelayCountDown);
-		}
-
-		private void timerLoop_Tick(object sender, EventArgs e)
-		{
-			timerLoop.Enabled = false;
-			PlaySequence();
 		}
 
 		private void curveEditorToolStripMenuItem_Click(object sender, EventArgs e)
