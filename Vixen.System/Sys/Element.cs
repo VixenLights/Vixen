@@ -93,7 +93,7 @@ namespace Vixen.Sys
 			//return new IntentStateList(_dataSource.Where(x => x != null).SelectMany(x => x.State));
 
 			IntentStateList ret = new IntentStateList();
-			foreach (var ctx in VixenSystem.Contexts)
+			foreach (var ctx in VixenSystem.Contexts.Where(x => x.IsRunning))
 			{
 				var iss = ctx.GetState(Id);
 				if (iss == null)

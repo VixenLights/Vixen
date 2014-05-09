@@ -751,14 +751,16 @@ namespace Common.Controls.Timeline
 			// iterate through all snap points, and if it's visible, draw it
 			foreach (KeyValuePair<TimeSpan, List<SnapDetails>> kvp in StaticSnapPoints)
 			{
-				SnapDetails details = null;
-				foreach (SnapDetails d in kvp.Value)
+				if (kvp.Key >= VisibleTimeEnd) break;
+				
+				if (kvp.Key >= VisibleTimeStart)
 				{
-					if (details == null || (d.SnapLevel > details.SnapLevel && d.SnapColor != Color.Empty))
-						details = d;
-				}
-				if (kvp.Key >= VisibleTimeStart && kvp.Key < VisibleTimeEnd)
-				{
+					SnapDetails details = null;
+					foreach (SnapDetails d in kvp.Value)
+					{
+						if (details == null || (d.SnapLevel > details.SnapLevel && d.SnapColor != Color.Empty))
+							details = d;
+					}
 					p = new Pen(details.SnapColor);
 					Single x = timeToPixels(kvp.Key);
 					p.DashPattern = new float[] { details.SnapLevel, details.SnapLevel };
@@ -771,10 +773,9 @@ namespace Common.Controls.Timeline
 				}
 			}
 
-			if (m_button == System.Windows.Forms.MouseButtons.Left && m_mark != TimeSpan.Zero)
+			if (m_button == MouseButtons.Left && m_mark != TimeSpan.Zero)
 			{
-				p = new Pen(Brushes.Yellow);
-				p.DashPattern = new float[] { 2, 2 };
+				p = new Pen(Brushes.Yellow) {DashPattern = new float[] {2, 2}};
 				TimeSpan newMarkPosition = pixelsToTime(PointToClient(new Point(MousePosition.X, MousePosition.Y)).X) + VisibleTimeStart;
 				Single x = timeToPixels(newMarkPosition);
 				g.DrawLine(p, x, 0, x, Height);

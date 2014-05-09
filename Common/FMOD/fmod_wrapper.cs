@@ -603,7 +603,7 @@ namespace FMOD {
 				{
 					m_ptimer.SetPosition(value);
 					Logging.Debug("reset a:{0,5}, t:{1,5}, t-a:{2,3}", value, value2, dt);
-					Console.WriteLine("reset a:{0,5}, t:{1,5}, t-a:{2,3}", value, value2, dt);
+					//Console.WriteLine("reset a:{0,5}, t:{1,5}, t-a:{2,3}", value, value2, dt);
 					return value;
 				}
 				else

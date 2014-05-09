@@ -157,6 +157,7 @@ namespace BaseSequence
 			// Bound the execution range.
 			StartTime = _CoerceStartTime(startTime);
 			EndTime = _CoerceEndTime(endTime);
+			_IsTimedSequence = EndTime >= StartTime; 
 
 			if (StartTime == EndTime)
 			{
@@ -341,13 +342,11 @@ namespace BaseSequence
 
 		private bool _IsEndOfSequence()
 		{
-			return _IsTimedSequence && (TimingSource.Position >= EndTime || TimingSource.Position == TimeSpan.Zero);
+			TimeSpan position = TimingSource.Position;
+			return _IsTimedSequence && (position >= EndTime || position == TimeSpan.Zero);
 		}
 
-		protected bool _IsTimedSequence
-		{
-			get { return EndTime >= StartTime; }
-		}
+		protected bool _IsTimedSequence { get; set; }
 
 		#endregion
 
