@@ -38,7 +38,7 @@ namespace Common.Controls
 
 		public int GetSetting(string xPath, int defaultValue)
 		{
-			return Convert.ToInt16(GetSetting(xPath, Convert.ToString(defaultValue)));
+			return Convert.ToInt32(GetSetting(xPath, Convert.ToString(defaultValue)));
 		}
 
 		public void PutSetting(string xPath, int value)

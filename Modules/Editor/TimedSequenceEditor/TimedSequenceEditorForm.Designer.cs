@@ -68,6 +68,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.sequenceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem_Save = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem_SaveAs = new System.Windows.Forms.ToolStripMenuItem();
+			this.autoSaveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.playbackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.playToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -108,6 +109,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripMenuItem_removeAudio = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem_MarkManager = new System.Windows.Forms.ToolStripMenuItem();
 			this.modifySequenceLengthToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.curveEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.timerPlaying = new System.Windows.Forms.Timer(this.components);
 			this.statusStrip = new System.Windows.Forms.StatusStrip();
 			this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
@@ -131,7 +133,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.contextMenuStripElementSelection = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.timerPostponePlay = new System.Windows.Forms.Timer(this.components);
 			this.timerDelayCountdown = new System.Windows.Forms.Timer(this.components);
-			this.curveEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripOperations.SuspendLayout();
 			this.menuStrip.SuspendLayout();
 			this.statusStrip.SuspendLayout();
@@ -449,6 +450,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.sequenceToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItem_Save,
             this.toolStripMenuItem_SaveAs,
+            this.autoSaveToolStripMenuItem,
             this.toolStripSeparator1,
             this.playbackToolStripMenuItem,
             this.toolStripSeparator6,
@@ -473,6 +475,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripMenuItem_SaveAs.Size = new System.Drawing.Size(186, 22);
 			this.toolStripMenuItem_SaveAs.Text = "Save As...";
 			this.toolStripMenuItem_SaveAs.Click += new System.EventHandler(this.toolStripMenuItem_SaveAs_Click);
+			// 
+			// autoSaveToolStripMenuItem
+			// 
+			this.autoSaveToolStripMenuItem.Checked = true;
+			this.autoSaveToolStripMenuItem.CheckOnClick = true;
+			this.autoSaveToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.autoSaveToolStripMenuItem.Name = "autoSaveToolStripMenuItem";
+			this.autoSaveToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+			this.autoSaveToolStripMenuItem.Text = "Auto Save";
+			this.autoSaveToolStripMenuItem.CheckedChanged += new System.EventHandler(this.toolStripMenuItem_AutoSave_Click);
 			// 
 			// toolStripSeparator1
 			// 
@@ -808,6 +820,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.modifySequenceLengthToolStripMenuItem.Text = "Sequence Length...";
 			this.modifySequenceLengthToolStripMenuItem.Click += new System.EventHandler(this.modifySequenceLengthToolStripMenuItem_Click);
 			// 
+			// curveEditorToolStripMenuItem
+			// 
+			this.curveEditorToolStripMenuItem.Name = "curveEditorToolStripMenuItem";
+			this.curveEditorToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+			this.curveEditorToolStripMenuItem.Text = "Curve Editor";
+			this.curveEditorToolStripMenuItem.Click += new System.EventHandler(this.curveEditorToolStripMenuItem_Click);
+			// 
 			// timerPlaying
 			// 
 			this.timerPlaying.Interval = 40;
@@ -1052,13 +1071,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.timerDelayCountdown.Interval = 1000;
 			this.timerDelayCountdown.Tick += new System.EventHandler(this.timerDelayCountdown_Tick);
 			// 
-			// curveEditorToolStripMenuItem
-			// 
-			this.curveEditorToolStripMenuItem.Name = "curveEditorToolStripMenuItem";
-			this.curveEditorToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
-			this.curveEditorToolStripMenuItem.Text = "Curve Editor";
-			this.curveEditorToolStripMenuItem.Click += new System.EventHandler(this.curveEditorToolStripMenuItem_Click);
-			// 
 			// TimedSequenceEditorForm
 			// 
 			this.AllowDrop = true;
@@ -1195,5 +1207,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_Loop;
 		private System.Windows.Forms.Timer timerLoop;
 		private System.Windows.Forms.ToolStripMenuItem curveEditorToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem autoSaveToolStripMenuItem;
 	}
 }

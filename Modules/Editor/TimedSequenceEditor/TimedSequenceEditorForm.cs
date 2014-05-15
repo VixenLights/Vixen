@@ -51,8 +51,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		// Delayed play countdown
 		private int DelayCountDown;
 
-		// Did the user use the stop button
-		private bool stoppedByUser = false;
+		private System.Windows.Forms.Timer _autoSaveTimer = new System.Windows.Forms.Timer();
 
 		// a mapping of effects in the sequence to the element that represent them in the grid.
 		private Dictionary<EffectNode, Element> _effectNodeToElement;
@@ -131,6 +130,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolStripButton_DecreaseTimingSpeed.DisplayStyle = ToolStripItemDisplayStyle.Image;
 
 			Execution.ExecutionStateChanged += OnExecutionStateChanged;
+			_autoSaveTimer.Tick += AutoSaveEventProcessor;	
 		}
 
 		private IDockContent DockingPanels_GetContentFromPersistString(string persistString)
@@ -164,8 +164,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 
 			XMLProfileSettings xml = new XMLProfileSettings();
-			dockPanel.DockLeftPortion = xml.GetSetting(string.Format("{0}/DockLeftPortion", this.Name), 150);
-			dockPanel.DockRightPortion = xml.GetSetting(string.Format("{0}/DockLeftPortion", this.Name), 150);
+			dockPanel.DockLeftPortion = xml.GetSetting(string.Format("{0}/DockLeftPortion", Name), 150);
+			dockPanel.DockRightPortion = xml.GetSetting(string.Format("{0}/DockRightPortion", Name), 150);
+			autoSaveToolStripMenuItem.Checked = xml.GetSetting(string.Format("{0}/AutoSaveEnabled", Name), true);
+			_autoSaveTimer.Interval = xml.GetSetting(string.Format("{0}/AutoSaveInterval", Name), 300000);
 			xml = null;
 
 			_effectNodeToElement = new Dictionary<EffectNode, Element>();
@@ -266,6 +268,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.ContextSelected -= timelineControl_ContextSelected;
 
 			Execution.ExecutionStateChanged -= OnExecutionStateChanged;
+			_autoSaveTimer.Stop();
+			_autoSaveTimer.Tick -= AutoSaveEventProcessor;
 
 			EffectsForm.Dispose();
 			
@@ -657,6 +661,18 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		#region Other Private Methods
 
+		private void SetAutoSave()
+		{
+			if (autoSaveToolStripMenuItem.Checked && IsModified)
+			{
+				_autoSaveTimer.Start();
+			}
+			else
+			{
+				_autoSaveTimer.Stop();
+			}
+		}
+
 		private void populateGridWithMarks()
 		{
 			TimelineControl.ClearAllSnapTimes();
@@ -740,6 +756,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				m_modified = true;
 				setTitleBarText();
+				SetAutoSave();
 				// TODO: Other things, like enable save button, etc.	
 			}
 			
@@ -752,6 +769,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				m_modified = false;
 				setTitleBarText();
+				SetAutoSave();
 				// TODO: Other things, like disable save button, etc.	
 			}
 			
@@ -760,6 +778,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		#endregion
 
 		#region Event Handlers
+
+		private void AutoSaveEventProcessor(object sender, EventArgs e)
+		{
+			_autoSaveTimer.Stop();
+			if (IsModified)
+			{
+				Save();
+			}
+		}
 
 		private void OnRenderProgressChanged(object sender, RenderElementEventArgs e)
 		{
@@ -1496,7 +1523,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		public void PlaySequence()
 		{
-			stoppedByUser = false;
 			//MessageBox.Show("Call to play sequence");
 			if (delayOffToolStripMenuItem.Checked == false && timerPostponePlay.Enabled == false && toolStripButton_Stop.Enabled == false)
 			{
@@ -2102,7 +2128,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						if (_context.IsPaused)
 							PlaySequence();
 						else
-							stoppedByUser = true;
+							;
 							StopSequence();
 					}
 					break;
@@ -2277,6 +2303,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			saveSequence();
 		}
 
+		private void toolStripMenuItem_AutoSave_Click(object sender, EventArgs e)
+		{
+			SetAutoSave();
+		}
+
 		private void toolStripMenuItem_SaveAs_Click(object sender, EventArgs e)
 		{
 			saveSequence(null, true);
@@ -2299,7 +2330,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void stopToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			stoppedByUser = false;
 			StopSequence();
 		}
 
@@ -2644,7 +2674,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void toolStripButton_Stop_Click(object sender, EventArgs e)
 		{
-			stoppedByUser = true;
 			StopSequence();
 		}
 
@@ -2861,8 +2890,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			dockPanel.SaveAsXml(settingsPath);
 			XMLProfileSettings xml = new XMLProfileSettings();
-			xml.PutSetting(string.Format("{0}/DockLeftPortion", this.Name), (int)dockPanel.DockLeftPortion);
-			xml.PutSetting(string.Format("{0}/DockRihtPortion", this.Name), (int)dockPanel.DockLeftPortion);
+			xml.PutSetting(string.Format("{0}/DockLeftPortion", Name), (int)dockPanel.DockLeftPortion);
+			xml.PutSetting(string.Format("{0}/DockRightPortion", Name), (int)dockPanel.DockLeftPortion);
+			xml.PutSetting(string.Format("{0}/AutoSaveEnabled", Name), autoSaveToolStripMenuItem.Checked);
+			xml.PutSetting(string.Format("{0}/AutoSaveInterval", Name), _autoSaveTimer.Interval);
 			xml = null;
 		}
 
