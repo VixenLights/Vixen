@@ -389,7 +389,11 @@ namespace Common.Controls.Timeline
 
 					SizeF textSize = g.MeasureString(s, TextFont);
 					Rectangle destRect = new Rectangle(rect.X, rect.Y, rect.Width, rect.Height);
-					if (rect.Y < destRect.Height)
+
+					destRect.Width = (int)textSize.Width + margin;
+					destRect.Height = (int)textSize.Height + margin;
+					
+					if (rect.Y - destRect.Height < g.VisibleClipBounds.Y)
 					{
 						// Display the text below the effect
 						destRect.Y += rect.Height + margin - 8;
@@ -406,10 +410,6 @@ namespace Common.Controls.Timeline
 						destRect.X = (int)g.VisibleClipBounds.X + 5;
 					}
 
-					// Full size info box. Comment out next two lines to clip
-					destRect.Width = (int)textSize.Width + margin;
-					destRect.Height = (int)textSize.Height + margin;
-					
 					g.FillRectangle(InfoBrush, new Rectangle(destRect.Left, destRect.Top, (int)Math.Min(textSize.Width + margin, destRect.Width), (int)Math.Min(textSize.Height + margin, destRect.Height)));
 					g.DrawString(s, TextFont, b, new Rectangle(destRect.Left + margin/2, destRect.Top + margin/2, destRect.Width - margin, destRect.Height - margin));
 				}
