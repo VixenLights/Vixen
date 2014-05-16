@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace VixenModules.Sequence.Timed
 {
@@ -15,6 +16,12 @@ namespace VixenModules.Sequence.Timed
 		public override string FileExtension
 		{
 			get { return Extension; }
+		}
+
+		public TimeSpan TimePerPixel
+		{
+			get { return ((TimedSequenceData) SequenceData).TimePerPixel; }
+			set { ((TimedSequenceData)SequenceData).TimePerPixel = value; }
 		}
 	}
 }

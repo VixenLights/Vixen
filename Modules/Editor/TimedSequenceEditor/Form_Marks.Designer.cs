@@ -190,7 +190,8 @@
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "Form_Marks";
 			this.Text = "Marks";
-			this.Load += new System.EventHandler(this.Form_Effects_Load);
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form_Marks_Closing);
+			this.Load += new System.EventHandler(this.Form_Marks_Load);
 			this.toolStrip1.ResumeLayout(false);
 			this.toolStrip1.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownStandardNudge)).EndInit();

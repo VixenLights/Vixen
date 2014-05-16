@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Drawing;
 using System.Collections.Generic;
+using Common.Controls;
 using Common.Controls.Timeline;
 using Vixen.Module.Effect;
 using Vixen.Services;
@@ -19,12 +20,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl = timelineControl;
 		}
 
-		private void Form_Effects_Load(object sender, EventArgs e)
+		private void Form_Marks_Load(object sender, EventArgs e)
 		{
-			Common.Controls.XMLProfileSettings xml = new Common.Controls.XMLProfileSettings();
-			numericUpDownStandardNudge.Value = xml.GetSetting("StandardNudge", 10);
-			numericUpDownSuperNudge.Value = xml.GetSetting("SuperNudge", 20);
-			xml = null;
+			var xml = new XMLProfileSettings();
+			numericUpDownStandardNudge.Value = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/StandardNudge", Name), 10);
+			numericUpDownSuperNudge.Value = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SuperNudge", Name), 20); ;
+			//xml = null;
 		}
 
 		public TimelineControl TimelineControl { get; set; }
@@ -151,6 +152,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void numericUpDownSuperNudge_ValueChanged(object sender, EventArgs e)
 		{
 			TimelineControl.ruler.SuperNudgeTime = Convert.ToInt32(numericUpDownSuperNudge.Value);
+		}
+
+		private void Form_Marks_Closing(object sender, FormClosingEventArgs e)
+		{
+			var xml = new XMLProfileSettings();
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/StandardNudge", Name), Convert.ToInt32(numericUpDownStandardNudge.Value));
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SuperNudge", Name), Convert.ToInt32(numericUpDownSuperNudge.Value));
 		}
 
 	}

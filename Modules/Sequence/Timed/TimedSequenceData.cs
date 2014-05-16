@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using Vixen.Module;
@@ -11,9 +12,13 @@ namespace VixenModules.Sequence.Timed
 		[DataMember]
 		public List<MarkCollection> MarkCollections { get; set; }
 
+		[DataMember]
+		public TimeSpan TimePerPixel { get; set; }
+	
 		public TimedSequenceData()
 		{
 			MarkCollections = new List<MarkCollection>();
+			TimePerPixel = TimeSpan.MinValue;
 		}
 
 		public override IModuleDataModel Clone()

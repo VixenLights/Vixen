@@ -1205,7 +1205,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private System.Windows.Forms.Timer timerDelayCountdown;
 		private System.Windows.Forms.ToolStripButton toolStripButton_Loop;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_Loop;
-		private System.Windows.Forms.Timer timerLoop;
 		private System.Windows.Forms.ToolStripMenuItem curveEditorToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem autoSaveToolStripMenuItem;
 	}

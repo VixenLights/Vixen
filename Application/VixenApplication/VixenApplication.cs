@@ -154,9 +154,9 @@ namespace VixenApplication
 		private void ProcessProfiles()
 		{
 			XMLProfileSettings profile = new XMLProfileSettings();
-			string loadAction = profile.GetSetting("Profiles/LoadAction", "LoadSelected");
-			int profileCount = profile.GetSetting("Profiles/ProfileCount", 0);
-			int profileToLoad = profile.GetSetting("Profiles/ProfileToLoad", -1);
+			string loadAction = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "LoadAction", "LoadSelected");
+			int profileCount = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "ProfileCount", 0);
+			int profileToLoad = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "ProfileToLoad", -1);
 			// why ask if there is 0 or 1 profile?
 			if (loadAction == "Ask" && profileCount > 1) {
 				SelectProfile f = new SelectProfile();
@@ -173,7 +173,7 @@ namespace VixenApplication
 				}
 				else {
 					if (profileToLoad < profileCount) {
-						_rootDataDirectory = profile.GetSetting("Profiles/Profile" + profileToLoad.ToString() + "/DataFolder", string.Empty);
+						_rootDataDirectory = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + profileToLoad.ToString() + "/DataFolder", string.Empty);
 						if (_rootDataDirectory != string.Empty) {
 							if (!System.IO.Directory.Exists(_rootDataDirectory))
 								System.IO.Directory.CreateDirectory(_rootDataDirectory);

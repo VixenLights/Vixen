@@ -38,12 +38,12 @@ namespace VixenApplication
 
             //Make sure we start with an empty listbox since we may repopulate after editing profiles
             listBoxProfiles.Items.Clear();
-            int profileCount = profile.GetSetting("Profiles/ProfileCount", 0);
+			int profileCount = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "ProfileCount", 0);
             for (int i = 0; i < profileCount; i++)
             {
                 ProfileItem item = new ProfileItem();
-                item.Name = profile.GetSetting("Profiles/" + "Profile" + i.ToString() + "/Name", "New Profile");
-                item.DataFolder = profile.GetSetting("Profiles/" + "Profile" + i.ToString() + "/DataFolder", string.Empty);
+				item.Name = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + i.ToString() + "/Name", "New Profile");
+				item.DataFolder = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + i.ToString() + "/DataFolder", string.Empty);
                 listBoxProfiles.Items.Add(item);
             }
         }

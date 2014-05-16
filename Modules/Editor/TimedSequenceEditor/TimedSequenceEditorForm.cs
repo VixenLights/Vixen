@@ -5,12 +5,14 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 using System.Xml;
 using System.Drawing;
 using Common.Controls.Timeline;
 using Vixen.Execution;
 using Vixen.Execution.Context;
 using Vixen.Module;
+using Vixen.Module.EffectEditor;
 using VixenModules.App.Curves;
 using VixenModules.Media.Audio;
 using Vixen.Module.Editor;
@@ -164,11 +166,21 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 
 			XMLProfileSettings xml = new XMLProfileSettings();
-			dockPanel.DockLeftPortion = xml.GetSetting(string.Format("{0}/DockLeftPortion", Name), 150);
-			dockPanel.DockRightPortion = xml.GetSetting(string.Format("{0}/DockRightPortion", Name), 150);
-			autoSaveToolStripMenuItem.Checked = xml.GetSetting(string.Format("{0}/AutoSaveEnabled", Name), true);
-			_autoSaveTimer.Interval = xml.GetSetting(string.Format("{0}/AutoSaveInterval", Name), 300000);
-			xml = null;
+
+			//Get preferences
+			_autoSaveTimer.Interval = xml.GetSetting(XMLProfileSettings.SettingType.Preferences, string.Format("{0}/AutoSaveInterval", Name), 300000);
+
+			//Restore App Settings
+			dockPanel.DockLeftPortion = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/DockLeftPortion", Name), 150);
+			dockPanel.DockRightPortion = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/DockRightPortion", Name), 150);
+			autoSaveToolStripMenuItem.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/AutoSaveEnabled", Name), true);
+			toolStripButton_SnapTo.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SnapToSelected", Name), true);
+			Size = new Size(xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowWidth", Name), Size.Width),
+							xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowHeight", Name), Size.Height));
+			Location = new Point(xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationX", Name), Location.X),
+							xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationY", Name), Location.Y));
+
+
 
 			_effectNodeToElement = new Dictionary<EffectNode, Element>();
 			_elementNodeToRows = new Dictionary<ElementNode, List<Row>>();
@@ -200,6 +212,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.ElementsSelected += timelineControl_ElementsSelected;
 			TimelineControl.ContextSelected += timelineControl_ContextSelected;
 			TimelineControl.SequenceLoading = false;
+			TimelineControl.TimePerPixelChanged += TimelineControl_TimePerPixelChanged;
+			
 
 			_virtualEffectLibrary =
 				ApplicationServices.Get<IAppModuleInstance>(VixenModules.App.VirtualEffect.VirtualEffectLibraryDescriptor.Guid) as
@@ -217,6 +231,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolStripOperations.Items.Add(b);
 #endif
 		}
+
 
 #if DEBUG
 		private void b_Click(object sender, EventArgs e)
@@ -266,6 +281,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.CursorMoved -= CursorMovedHandler;
 			TimelineControl.ElementsSelected -= timelineControl_ElementsSelected;
 			TimelineControl.ContextSelected -= timelineControl_ContextSelected;
+			TimelineControl.TimePerPixelChanged -= TimelineControl_TimePerPixelChanged;
 
 			Execution.ExecutionStateChanged -= OnExecutionStateChanged;
 			_autoSaveTimer.Stop();
@@ -588,9 +604,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 				PopulateAudioDropdown();
 
-				MarksForm.Sequence = Sequence as TimedSequence;
+				MarksForm.Sequence = _sequence;
 				MarksForm.PopulateMarkCollectionsList(null);
 
+				if (_sequence.TimePerPixel != TimeSpan.Zero)
+				{
+					TimelineControl.TimePerPixel = _sequence.TimePerPixel;	
+				}
+				
 				Logging.Debug(string.Format("Sequence {0} took {1} to load. ", sequence.Name, loadingWatch.Elapsed));
 			}
 			catch (Exception ee)
@@ -916,6 +937,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					sequenceModified();
 				}
 			}
+		}
+
+		private void TimelineControl_TimePerPixelChanged(object sender, EventArgs e)
+		{
+			if (_sequence.TimePerPixel != TimelineControl.TimePerPixel)
+			{
+				_sequence.TimePerPixel = TimelineControl.TimePerPixel;
+				sequenceModified();	
+			}
+			
 		}
 
 		private void timelineControl_ContextSelected(object sender, ContextSelectedEventArgs e)
@@ -2887,14 +2918,29 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		void IEditorUserInterface.EditorClosing()
 		{
-
+			
 			dockPanel.SaveAsXml(settingsPath);
-			XMLProfileSettings xml = new XMLProfileSettings();
-			xml.PutSetting(string.Format("{0}/DockLeftPortion", Name), (int)dockPanel.DockLeftPortion);
-			xml.PutSetting(string.Format("{0}/DockRightPortion", Name), (int)dockPanel.DockLeftPortion);
-			xml.PutSetting(string.Format("{0}/AutoSaveEnabled", Name), autoSaveToolStripMenuItem.Checked);
-			xml.PutSetting(string.Format("{0}/AutoSaveInterval", Name), _autoSaveTimer.Interval);
-			xml = null;
+			MarksForm.Close();
+			EffectsForm.Close();
+
+			var xml = new XMLProfileSettings();
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/DockLeftPortion", Name), (int)dockPanel.DockLeftPortion);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/DockRightPortion", Name), (int)dockPanel.DockLeftPortion);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/AutoSaveEnabled", Name), autoSaveToolStripMenuItem.Checked);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SnapToSelected", Name), toolStripButton_SnapTo.Checked);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowHeight", Name), Size.Height);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowWidth", Name), Size.Width);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationX", Name), Location.X);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationY", Name), Location.Y);
+
+			//These are only saved in options
+			//xml.PutPreference(string.Format("{0}/AutoSaveInterval", Name), _autoSaveTimer.Interval);
+
+			//Clean up any old locations from before we organized the settings.
+			xml.RemoveNode("StandardNudge");
+			xml.RemoveNode("SuperNudge");
+			xml.RemoveNode(Name);
+
 		}
 
 		#endregion

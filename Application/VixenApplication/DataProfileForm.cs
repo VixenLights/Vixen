@@ -36,7 +36,7 @@ namespace VixenApplication
 		{
 			XMLProfileSettings profile = new XMLProfileSettings();
 
-			radioButtonAskMe.Checked = (profile.GetSetting("Profiles/LoadAction", "Ask") == "Ask");
+			radioButtonAskMe.Checked = (profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "LoadAction", "Ask") == "Ask");
 			radioButtonLoadThisProfile.Checked = (!radioButtonAskMe.Checked);
 
 			ProfileItem selectedItem = comboBoxLoadThisProfile.SelectedItem as ProfileItem;
@@ -52,7 +52,7 @@ namespace VixenApplication
 
 			if (firstTime) {
 				if (radioButtonLoadThisProfile.Checked) {
-					int loadItemNum = profile.GetSetting("Profiles/ProfileToLoad", 0);
+					int loadItemNum = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "ProfileToLoad", 0);
 					if (loadItemNum < comboBoxLoadThisProfile.Items.Count)
 						comboBoxLoadThisProfile.SelectedIndex = loadItemNum;
 				}
@@ -72,11 +72,11 @@ namespace VixenApplication
             bool duplicateName = false;
             bool duplicateDataFolder = false;
             SaveCurrentItem();
-            profile.PutSetting("Profiles/ProfileCount", comboBoxProfiles.Items.Count);
+			profile.PutSetting(XMLProfileSettings.SettingType.Profiles, "ProfileCount", comboBoxProfiles.Items.Count);
 			for (int i = 0; i < comboBoxProfiles.Items.Count; i++) {
 				ProfileItem item = comboBoxProfiles.Items[i] as ProfileItem;
-				profile.PutSetting("Profiles/" + "Profile" + i.ToString() + "/Name", item.Name);
-				profile.PutSetting("Profiles/" + "Profile" + i.ToString() + "/DataFolder", item.DataFolder);
+				profile.PutSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + i + "/Name", item.Name);
+				profile.PutSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + i + "/DataFolder", item.DataFolder);
                 //We're getting out of here and expect a restart by user, if the specified DataFolder doesn't exist, we should create it.
                 
                 if (item.DataFolder != string.Empty)
@@ -93,12 +93,12 @@ namespace VixenApplication
             }
 
 			if (radioButtonAskMe.Checked)
-				profile.PutSetting("Profiles/LoadAction", "Ask");
+				profile.PutSetting(XMLProfileSettings.SettingType.Profiles, "LoadAction", "Ask");
 			else
-				profile.PutSetting("Profiles/LoadAction", "LoadSelected");
+				profile.PutSetting(XMLProfileSettings.SettingType.Profiles, "LoadAction", "LoadSelected");
 
 			if (comboBoxLoadThisProfile.SelectedIndex >= 0)
-				profile.PutSetting("Profiles/ProfileToLoad", comboBoxLoadThisProfile.SelectedIndex);
+				profile.PutSetting(XMLProfileSettings.SettingType.Profiles, "ProfileToLoad", comboBoxLoadThisProfile.SelectedIndex);
 
             //If a duplicate entry is found, we will prompt the user to contine on, or cancel and edit. This could be done with one bool, but in the event that we want to
             //be more specific about things in the future, Ill leave it the way it is for now.
@@ -136,7 +136,7 @@ namespace VixenApplication
 		{
 			XMLProfileSettings profile = new XMLProfileSettings();
 
-			int profileCount = profile.GetSetting("Profiles/ProfileCount", 0);
+			int profileCount = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "ProfileCount", 0);
 			if (profileCount == 0) {
 				ProfileItem item = new ProfileItem();
 				item.Name = "Default";
@@ -146,8 +146,8 @@ namespace VixenApplication
 			else {
 				for (int i = 0; i < profileCount; i++) {
 					ProfileItem item = new ProfileItem();
-					item.Name = profile.GetSetting("Profiles/" + "Profile" + i.ToString() + "/Name", "New Profile");
-					item.DataFolder = profile.GetSetting("Profiles/" + "Profile" + i.ToString() + "/DataFolder", defaultFolder);
+					item.Name = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + i + "/Name", "New Profile");
+					item.DataFolder = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + i + "/DataFolder", defaultFolder);
 					comboBoxProfiles.Items.Add(item);
 				}
 			}

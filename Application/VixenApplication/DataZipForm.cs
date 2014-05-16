@@ -33,7 +33,7 @@ namespace VixenApplication
 		{
 			XMLProfileSettings profile = new XMLProfileSettings();
 
-			int profileCount = profile.GetSetting("Profiles/ProfileCount", 0);
+			int profileCount = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "ProfileCount", 0);
 			if (profileCount == 0)
 			{
 				MessageBox.Show("Unable to locate any profiles.");
@@ -44,8 +44,8 @@ namespace VixenApplication
 				for (int i = 0; i < profileCount; i++)
 				{
 					ProfileItem item = new ProfileItem();
-					item.Name = profile.GetSetting("Profiles/" + "Profile" + i.ToString() + "/Name", "");
-					item.DataFolder = profile.GetSetting("Profiles/" + "Profile" + i.ToString() + "/DataFolder", "");
+					item.Name = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + i.ToString() + "/Name", "");
+					item.DataFolder = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + i.ToString() + "/DataFolder", "");
 					comboBoxProfiles.Items.Add(item);
 				}
 			}
