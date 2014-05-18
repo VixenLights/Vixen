@@ -175,13 +175,25 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			dockPanel.DockRightPortion = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/DockRightPortion", Name), 150);
 			autoSaveToolStripMenuItem.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/AutoSaveEnabled", Name), true);
 			toolStripButton_SnapTo.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SnapToSelected", Name), true);
-			Size = new Size(xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowWidth", Name), Size.Width),
-							xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowHeight", Name), Size.Height));
-			Location = new Point(xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationX", Name), Location.X),
-							xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationY", Name), Location.Y));
 
+			WindowState = FormWindowState.Normal;
 
-
+			if (xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowState", Name),
+				"Normal").Equals("Maximized"))
+			{
+				WindowState = FormWindowState.Maximized;
+			}
+			else
+			{
+				var desktopBounds = new Rectangle(new Point(xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationX", Name), Location.X),
+								xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationY", Name), Location.Y)),new Size(xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowWidth", Name), Size.Width),
+							xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowHeight", Name), Size.Height)));
+				if (IsVisibleOnAnyScreen(desktopBounds))
+				{
+					DesktopBounds = desktopBounds;
+				}
+			}
+			
 			_effectNodeToElement = new Dictionary<EffectNode, Element>();
 			_elementNodeToRows = new Dictionary<ElementNode, List<Row>>();
 
@@ -243,6 +255,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				Debug.WriteLine("{0} - {1}: {2}", x.StartTime, x.EndTime, ((IEffectNode) x).Effect.InstanceId);
 		}
 #endif
+		private bool IsVisibleOnAnyScreen(Rectangle rect)
+		{
+			return Screen.AllScreens.Any(screen => screen.WorkingArea.IntersectsWith(rect));
+		}
+
+
 		/// <summary>
 		/// Clean up any resources being used.
 		/// </summary>
@@ -2932,6 +2950,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowWidth", Name), Size.Width);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationX", Name), Location.X);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationY", Name), Location.Y);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowState", Name), WindowState.ToString());
 
 			//These are only saved in options
 			//xml.PutPreference(string.Format("{0}/AutoSaveInterval", Name), _autoSaveTimer.Interval);
