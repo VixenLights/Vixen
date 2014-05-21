@@ -231,6 +231,12 @@ namespace Common.Controls.Timeline
 		{
 			Point gridLocation = translateLocation(e.Location);
 
+			if (ModifierKeys == Keys.Shift)
+				gridLocation.X = m_lastGridLocation.X;
+
+			if (ModifierKeys == (Keys.Shift | Keys.Alt))
+				gridLocation.Y = m_lastGridLocation.Y;
+
 			Point delta = new Point(
 				gridLocation.X - m_lastGridLocation.X,
 				gridLocation.Y - m_lastGridLocation.Y
