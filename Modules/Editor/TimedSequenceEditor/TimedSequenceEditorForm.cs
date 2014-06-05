@@ -625,7 +625,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				MarksForm.Sequence = _sequence;
 				MarksForm.PopulateMarkCollectionsList(null);
 
-				if (_sequence.TimePerPixel != TimeSpan.Zero)
+				if (_sequence.TimePerPixel > TimeSpan.Zero )
 				{
 					TimelineControl.TimePerPixel = _sequence.TimePerPixel;	
 				}
