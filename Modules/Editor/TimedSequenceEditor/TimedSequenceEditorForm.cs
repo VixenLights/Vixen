@@ -225,7 +225,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.ContextSelected += timelineControl_ContextSelected;
 			TimelineControl.SequenceLoading = false;
 			TimelineControl.TimePerPixelChanged += TimelineControl_TimePerPixelChanged;
-			
+			TimelineControl.grid.SelectedElementsCloneDelegate = CloneElements;	
 
 			_virtualEffectLibrary =
 				ApplicationServices.Get<IAppModuleInstance>(VixenModules.App.VirtualEffect.VirtualEffectLibraryDescriptor.Guid) as
@@ -1801,6 +1801,45 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		#endregion
 
 		#region Sequence / TimelineControl relationship management
+
+		private List<Element> CloneElements(IEnumerable<Element> elements)
+		{
+			var newElements = new List<Element>();
+			foreach (var element in elements)
+			{
+				var newEffect = ApplicationServices.Get<IEffectModuleInstance>(element.EffectNode.Effect.TypeId);
+				newEffect.ModuleData = element.EffectNode.Effect.ModuleData.Clone();
+				
+				try
+				{
+					// get the target element
+					var targetNode = (ElementNode)element.Row.Tag;
+
+					// populate the given effect instance with the appropriate target node and times, and wrap it in an effectNode
+					newEffect.TargetNodes = new[] { targetNode };
+					newEffect.TimeSpan = element.Duration;
+					var effectNode = new EffectNode(newEffect, element.StartTime);
+
+					// put it in the sequence and in the timeline display
+					newElements.Add(AddEffectNode(effectNode));
+					
+
+				} catch (Exception ex)
+				{
+					string msg = "TimedSequenceEditor CloneElements: error adding effect of type " + newEffect.Descriptor.TypeId + " to row " +
+								 ((element.Row == null) ? "<null>" : element.Row.Name);
+					Logging.ErrorException(msg, ex);
+				}
+			}
+
+			sequenceModified();
+
+			//Add elements as a group to undo
+			var act = new EffectsAddedUndoAction(this, newElements.Select(x => x.EffectNode).ToArray());
+			_undoMgr.AddUndoAction(act);
+
+			return newElements;
+		}
 
 		/// <summary>
 		/// Adds an EffectNode to the sequence and the TimelineControl.

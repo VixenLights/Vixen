@@ -30,6 +30,7 @@ namespace Common.Controls.Timeline
 
 		private Point m_selectionRectangleStart; // the location (on the grid canvas) where the selection box starts.
 		private Rectangle m_ignoreDragArea; // the area in which move movements should be ignored, before we start dragging
+		private Point m_waitingBeginGridLocation;
 		private List<Element> m_mouseDownElements; // the elements under the cursor on a mouse click
 
 		private Row m_mouseDownElementRow = null;
@@ -519,6 +520,21 @@ namespace Common.Controls.Timeline
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();
+		}
+
+		public delegate List<Element> CloneSelectedElementsDelegate(IEnumerable<Element> elements);
+
+		public CloneSelectedElementsDelegate SelectedElementsCloneDelegate { get; set; }
+
+		public void CloneSelectedElementsForMove()
+		{
+			List<Element> elements = SelectedElementsCloneDelegate.Invoke(SelectedElements);
+			ClearSelectedElements();
+			foreach (var element in elements)
+			{
+				element.Selected = true;
+			}
+			_SelectionChanged();
 		}
 
 		public void ClearSelectedElements()

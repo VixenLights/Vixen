@@ -253,7 +253,24 @@ namespace Common.Controls.Timeline
 
 				case DragState.Waiting: // Waiting to start moving an object
 					if (!m_ignoreDragArea.Contains(gridLocation))
+					{
+						if (CtrlPressed)
+						{
+							//Ensure the element under our pointer is selected.
+							List<Element> elements = elementsAt(m_waitingBeginGridLocation);
+							if (elements.Any())
+							{
+								foreach (Element elem in elements.Where(x => x.Selected == false))
+								{
+									elem.Selected = true;
+								}
+								_SelectionChanged();
+							}
+
+							CloneSelectedElementsForMove();
+						}
 						beginDragMove(gridLocation);
+					}
 					break;
 
 				case DragState.Moving: // Moving objects
@@ -424,6 +441,7 @@ namespace Common.Controls.Timeline
 		{
 			// begin the dragging process -- calculate a area outside which a drag (move) starts
 			m_dragState = DragState.Waiting;
+			m_waitingBeginGridLocation = gridLocation;
 			m_ignoreDragArea = new Rectangle(gridLocation.X - DragThreshold, gridLocation.Y - DragThreshold, DragThreshold*2,
 			                                 DragThreshold*2);
 		}
