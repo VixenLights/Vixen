@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Runtime.Serialization;
 using System.Drawing;
+using System.Xml;
 using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Module;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -36,13 +37,23 @@ namespace VixenModules.Effect.Nutcracker
 
 		public override IModuleDataModel Clone()
 		{
-			Console.WriteLine("Clone NutcrackerModuleData");
-			using (MemoryStream stream = new MemoryStream()) {
-				BinaryFormatter formatter = new BinaryFormatter();
-				formatter.Serialize(stream, this);
-				stream.Position = 0;
-				return (NutcrackerModuleData) formatter.Deserialize(stream);
+			using (var stream = new MemoryStream()) {
+				var ds = new DataContractSerializer(GetType());
+				using (XmlDictionaryWriter w = XmlDictionaryWriter.CreateBinaryWriter(stream))
+				{
+					ds.WriteObject(w, this);
+				}
+
+				using (var effectDataIn = new MemoryStream(stream.ToArray()))
+				{
+					using (XmlDictionaryReader r = XmlDictionaryReader.CreateBinaryReader(effectDataIn, XmlDictionaryReaderQuotas.Max))
+					{
+						return (IModuleDataModel) ds.ReadObject(r);
+					}
+				}
 			}
+			
+			
 		}
 	}
 }
