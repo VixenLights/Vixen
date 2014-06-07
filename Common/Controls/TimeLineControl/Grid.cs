@@ -601,8 +601,8 @@ namespace Common.Controls.Timeline
 			element.BeginUpdate();
 			element.StartTime = start;
 			element.Duration = duration;
-			RenderElement(element);
 			element.EndUpdate();
+			RenderElement(element);
 
 			if (ElementsMovedNew != null)
 				ElementsMovedNew(this, new ElementsChangedTimesEventArgs(m_elemMoveInfo, ElementMoveType.Move));
