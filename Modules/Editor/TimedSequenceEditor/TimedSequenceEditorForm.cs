@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -1854,6 +1855,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			return addElementForEffectNodeTPL(node);
 		}
 
+		/// <summary>
+		/// Adds multiple EffectNodes to the sequence and the TimelineControl.
+		/// </summary>
+		/// <param name="nodes"></param>
+		/// <returns>A List of the TimedSequenceElements created and added to the TimelineControl.</returns>
+		public List<TimedSequenceElement> AddEffectNodes(IEnumerable<EffectNode> nodes)
+		{
+			return nodes.Select(AddEffectNode).ToList();
+		}
+
 
 		public void RemoveEffectNodeAndElement(EffectNode node)
 		{
@@ -1913,6 +1924,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		/// <summary>
 		/// Wraps an effect instance in an EffectNode, adds it to the sequence, and an associated element to the timeline control.
+		/// Adds a Undo record for the add as well.
 		/// </summary>
 		/// <param name="effectInstance">Effect instance</param>
 		/// <param name="row">Common.Controls.Timeline.Row to add the effect instance to</param>
@@ -1924,19 +1936,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				//Debug.WriteLine("{0}   addEffectInstance(InstanceId={1})", (int)DateTime.Now.TimeOfDay.TotalMilliseconds, effectInstance.InstanceId);
 
-				// get the target element
-				ElementNode targetNode = (ElementNode)row.Tag;
-
-				// populate the given effect instance with the appropriate target node and times, and wrap it in an effectNode
-				effectInstance.TargetNodes = new ElementNode[] { targetNode };
-				effectInstance.TimeSpan = timeSpan;
-				EffectNode effectNode = new EffectNode(effectInstance, startTime);
+				var effectNode = CreateEffectNode(effectInstance, row, startTime, timeSpan);
 
 				// put it in the sequence and in the timeline display
-				TimedSequenceElement newElement = AddEffectNode(effectNode);
+				AddEffectNode(effectNode);
 				sequenceModified();
 
-				var act = new EffectsAddedUndoAction(this, new EffectNode[] { effectNode });
+				var act = new EffectsAddedUndoAction(this, new[] { effectNode });
 				_undoMgr.AddUndoAction(act);
 			}
 			catch (Exception ex)
@@ -1947,7 +1953,18 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
+		private static EffectNode CreateEffectNode(IEffectModuleInstance effectInstance, Row row, TimeSpan startTime,
+			TimeSpan timeSpan)
+		{
+			// get the target element
+			var targetNode = (ElementNode) row.Tag;
 
+			// populate the given effect instance with the appropriate target node and times, and wrap it in an effectNode
+			effectInstance.TargetNodes = new[] {targetNode};
+			effectInstance.TimeSpan = timeSpan;
+			return new EffectNode(effectInstance, startTime);
+	
+		}
 
 
 		/// <summary>
@@ -1956,7 +1973,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// Will add a single TimedSequenceElement to in each row that each targeted element of
 		/// the EffectNode references. It will also add callbacks to event handlers for the element.
 		/// </summary>
-		/// <param name="node">The EffectNode to make element(s) in the grid for.</param>
+		/// <param name="nodes">The EffectNode to make element(s) in the grid for.</param>
 		private void addElementsForEffectNodes(IEnumerable<IDataNode> nodes)
 		{
 			Dictionary<Row, List<Element>> rowMap =
@@ -2275,9 +2292,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 													};
 
 			int rownum = 0;
+			var affectedElements = new List<Element>();
 			foreach (Row row in TimelineControl.VisibleRows)
 			{
 				// Since removals may happen during enumeration, make a copy with ToArray().
+				
+				affectedElements.AddRange(row.SelectedElements);
 				foreach (Element elem in row.SelectedElements.ToArray())
 				{
 					if (result.FirstVisibleRow == -1)
@@ -2305,6 +2325,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 				rownum++;
 			}
+			if (cutElements)
+			{
+				var act = new EffectsCutUndoAction(this, affectedElements.Select(x => x.EffectNode));
+				_undoMgr.AddUndoAction(act);	
+			}
+			
 
 			IDataObject dataObject = new DataObject(_clipboardFormatName);
 			dataObject.SetData(result);
@@ -2349,11 +2375,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			List<Row> visibleRows = new List<Row>(TimelineControl.VisibleRows);
 			int topTargetRoxIndex = visibleRows.IndexOf(targetRow);
-
+			List<EffectNode> nodesToAdd = new List<EffectNode>();
 			foreach (KeyValuePair<TimelineElementsClipboardData.EffectModelCandidate, int> kvp in data.EffectModelCandidates)
 			{
-				TimelineElementsClipboardData.EffectModelCandidate effectModelCandidate =
-					kvp.Key as TimelineElementsClipboardData.EffectModelCandidate;
+				TimelineElementsClipboardData.EffectModelCandidate effectModelCandidate = kvp.Key;
 				int relativeRow = kvp.Value;
 
 				int targetRowIndex = topTargetRoxIndex + relativeRow;
@@ -2362,7 +2387,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				{
 					continue;
 				}
-				else if (targetTime + effectModelCandidate.Duration > TimelineControl.grid.TotalTime)
+				if (targetTime + effectModelCandidate.Duration > TimelineControl.grid.TotalTime)
 				{
 					//Shorten to fit.
 					effectModelCandidate.Duration = TimelineControl.grid.TotalTime - targetTime;
@@ -2371,11 +2396,20 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					continue;
 
 				//Make a new effect and populate it with the detail data from the clipboard
-				IEffectModuleInstance newEffect = ApplicationServices.Get<IEffectModuleInstance>(effectModelCandidate.TypeId);
+				var newEffect = ApplicationServices.Get<IEffectModuleInstance>(effectModelCandidate.TypeId);
 				newEffect.ModuleData = effectModelCandidate.GetEffectData();
-				addEffectInstance(newEffect, visibleRows[targetRowIndex], targetTime, effectModelCandidate.Duration);
+				
+				nodesToAdd.Add(CreateEffectNode(newEffect, visibleRows[targetRowIndex], targetTime, effectModelCandidate.Duration));
+
 				result++;
 			}
+
+			// put it in the sequence and in the timeline display
+			List<TimedSequenceElement> elements = AddEffectNodes(nodesToAdd);
+			sequenceModified();
+
+			var act = new EffectsPastedUndoAction(this, elements.Select(x => x.EffectNode));
+			_undoMgr.AddUndoAction(act);
 
 			return result;
 		}

@@ -112,6 +112,31 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		}
 	}
 
+	public class EffectsPastedUndoAction : EffectsAddedRemovedUndoAction
+	{
+		public EffectsPastedUndoAction(TimedSequenceEditorForm form, IEnumerable<EffectNode> nodes)
+			: base(form, nodes)
+		{
+		}
+
+		public override void Undo()
+		{
+			removeEffects();
+			base.Undo();
+		}
+
+		public override void Redo()
+		{
+			addEffects();
+			base.Redo();
+		}
+
+		public override string Description
+		{
+			get { return string.Format("Paste {0} effect{1}", Count, (Count == 1 ? string.Empty : "s")); }
+		}
+	}
+
 	public class EffectsRemovedUndoAction : EffectsAddedRemovedUndoAction
 	{
 		public EffectsRemovedUndoAction(TimedSequenceEditorForm form, IEnumerable<EffectNode> nodes)
@@ -134,6 +159,31 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public override string Description
 		{
 			get { return string.Format("Removed {0} effect{1}", Count, (Count == 1 ? string.Empty : "s")); }
+		}
+	}
+
+	public class EffectsCutUndoAction : EffectsAddedRemovedUndoAction
+	{
+		public EffectsCutUndoAction(TimedSequenceEditorForm form, IEnumerable<EffectNode> nodes)
+			: base(form, nodes)
+		{
+		}
+
+		public override void Undo()
+		{
+			addEffects();
+			base.Undo();
+		}
+
+		public override void Redo()
+		{
+			removeEffects();
+			base.Redo();
+		}
+
+		public override string Description
+		{
+			get { return string.Format("Cut {0} effect{1}", Count, (Count == 1 ? string.Empty : "s")); }
 		}
 	}
 }
