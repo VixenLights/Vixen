@@ -247,6 +247,11 @@
       <Name>Resources</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\App\ColorGradients\ColorGradients.csproj">
+      <Project>{1b189b36-02af-4a57-9e1b-6dc833212725}</Project>
+      <Name>ColorGradients</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\App\Curves\Curves.csproj">
       <Project>{f0ba7127-61b4-453a-802b-abcb5a0d3d54}</Project>
       <Name>Curves</Name>

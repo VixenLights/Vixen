@@ -81,6 +81,25 @@ namespace VixenModules.Effect.Pulse
 			}
 		}
 
+		public override bool IsDirty
+		{
+			get
+			{
+				if (!LevelCurve.CheckLibraryReference())
+				{
+					base.IsDirty = true;
+				}
+
+				if (!ColorGradient.CheckLibraryReference())
+				{
+					base.IsDirty = true;
+				}
+
+				return base.IsDirty;
+			}
+			protected set { base.IsDirty = value; }
+		}
+
 		private void CheckForInvalidColorData()
 		{
 			HashSet<Color> validColors = new HashSet<Color>();

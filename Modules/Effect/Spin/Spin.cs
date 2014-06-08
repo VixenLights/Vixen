@@ -67,10 +67,14 @@ namespace VixenModules.Effect.Spin
 			get
 			{
 				if (!PulseCurve.CheckLibraryReference())
-					return true;
+				{
+					base.IsDirty = true;
+				}
 
 				if (!ColorGradient.CheckLibraryReference())
-					return true;
+				{
+					base.IsDirty = true;
+				}
 
 				return base.IsDirty;
 			}

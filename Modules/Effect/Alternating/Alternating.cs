@@ -261,6 +261,35 @@ namespace VixenModules.Effect.Alternating
 			}
 		}
 
+		public override bool IsDirty
+		{
+			get
+			{
+				if (!Curve1.CheckLibraryReference())
+				{
+					base.IsDirty = true;
+				}
+
+				if (!Curve2.CheckLibraryReference())
+				{
+					base.IsDirty = true;
+				}
+
+				if (!ColorGradient1.CheckLibraryReference())
+				{
+					base.IsDirty = true;
+				}
+
+				if (!ColorGradient2.CheckLibraryReference())
+				{
+					base.IsDirty = true;
+				}
+
+				return base.IsDirty;
+			}
+			protected set { base.IsDirty = value; }
+		}
+
 		// renders the given node to the internal ElementData dictionary. If the given node is
 		// not a element, will recursively descend until we render its elements.
 		private void RenderNode(ElementNode node)

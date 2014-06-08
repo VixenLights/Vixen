@@ -1,19 +1,16 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Windows.Forms;
-using System.Windows.Forms.VisualStyles;
 using System.Xml;
 using System.Drawing;
 using Common.Controls.Timeline;
 using Vixen.Execution;
 using Vixen.Execution.Context;
 using Vixen.Module;
-using Vixen.Module.EffectEditor;
 using VixenModules.App.Curves;
 using VixenModules.Media.Audio;
 using Vixen.Module.Editor;
@@ -31,7 +28,7 @@ using System.Threading;
 using Common.Resources.Properties;
 using Common.Controls;
 using WeifenLuo.WinFormsUI.Docking;
-using Vixen.Sys.State.Execution;
+using VixenModules.App.ColorGradients;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -85,6 +82,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private ContextMenuStrip contextMenuStrip = new ContextMenuStrip();
 
 		private string settingsPath;
+
+		private CurveLibrary _curveLibrary;
+		private ColorGradientLibrary _colorGradientLibrary;
 
 		#endregion
 
@@ -232,6 +232,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				ApplicationServices.Get<IAppModuleInstance>(VixenModules.App.VirtualEffect.VirtualEffectLibraryDescriptor.Guid) as
 				VirtualEffectLibrary;
 
+			_curveLibrary = ApplicationServices.Get<IAppModuleInstance>(CurveLibraryDescriptor.ModuleID) as CurveLibrary;
+			if (_curveLibrary != null)
+			{
+				_curveLibrary.CurveChanged += CurveLibrary_CurveChanged;
+			}
+
+			_colorGradientLibrary = ApplicationServices.Get<IAppModuleInstance>(ColorGradientLibraryDescriptor.ModuleID) as ColorGradientLibrary;
+			if (_colorGradientLibrary != null)
+			{
+				_colorGradientLibrary.GradientChanged += ColorGradientLibrary_CurveChanged;	
+			}
+			
+
 			LoadAvailableEffects();
 			InitUndo();
 			updateButtonStates();
@@ -305,6 +318,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			Execution.ExecutionStateChanged -= OnExecutionStateChanged;
 			_autoSaveTimer.Stop();
 			_autoSaveTimer.Tick -= AutoSaveEventProcessor;
+
+			if (_curveLibrary != null)
+			{
+				_curveLibrary.CurveChanged -= CurveLibrary_CurveChanged;
+			}
+
+			if (_colorGradientLibrary != null)
+			{
+				_colorGradientLibrary.GradientChanged -= ColorGradientLibrary_CurveChanged;
+			}
 
 			EffectsForm.Dispose();
 			
@@ -818,6 +841,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		#endregion
 
 		#region Event Handlers
+
+		private void CurveLibrary_CurveChanged(object sender, EventArgs e)
+		{
+			CheckAndRenderDirtyElements();
+		}
+
+		private void ColorGradientLibrary_CurveChanged(object sender, EventArgs e)
+		{
+			CheckAndRenderDirtyElements();
+		}
 
 		private void AutoSaveEventProcessor(object sender, EventArgs e)
 		{
@@ -2062,6 +2095,23 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			element.ContentChanged += ElementContentChangedHandler;
 			element.TimeChanged += ElementTimeChangedHandler;
 			return element;
+		}
+
+		/// <summary>
+		/// Checks all elements and if they are dirty they are placed in the render queue
+		/// </summary>
+		private void CheckAndRenderDirtyElements()
+		{
+			TimelineControl.Rows.AsParallel().WithCancellation(cancellationTokenSource.Token).ForAll(target =>
+			{
+				foreach (Element elem in target)
+				{
+					if (elem.EffectNode.Effect.IsDirty)
+					{
+						TimelineControl.grid.RenderElement(elem);
+					}
+				}
+			});
 		}
 
 		private void removeSelectedElements()

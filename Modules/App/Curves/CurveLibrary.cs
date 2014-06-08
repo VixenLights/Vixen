@@ -10,6 +10,7 @@ namespace VixenModules.App.Curves
 	public class CurveLibrary : AppModuleInstanceBase, IEnumerable<KeyValuePair<string, Curve>>
 	{
 		private CurveLibraryStaticData _data;
+		public event EventHandler CurveChanged;
 
 		public override void Loading()
 		{
@@ -60,18 +61,28 @@ namespace VixenModules.App.Curves
 			curve.IsCurrentLibraryCurve = true;
 			curve.LibraryReferenceName = string.Empty;
 			Library[name] = curve;
+			_CurveChanged(name);
 			return inLibrary;
 		}
 
 		public bool RemoveCurve(string name)
+		{
+			bool removed = _RemoveCurve(name);
+			if (removed)
+			{
+				_CurveChanged(name);
+			}
+			return removed;
+		}
+
+		private bool _RemoveCurve(string name)
 		{
 			if (!Contains(name))
 				return false;
 
 			Library[name].IsCurrentLibraryCurve = false;
 			Library.Remove(name);
-
-			return true;
+			return true;	
 		}
 
 		public bool EditLibraryCurve(string name)
@@ -84,7 +95,7 @@ namespace VixenModules.App.Curves
 			editor.LibraryCurveName = name;
 
 			if (editor.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-				RemoveCurve(name);
+				_RemoveCurve(name);
 				AddCurve(name, editor.Curve);
 				return true;
 			}
@@ -101,5 +112,21 @@ namespace VixenModules.App.Curves
 		{
 			return Library.GetEnumerator();
 		}
+
+		private void _CurveChanged(string name)
+		{
+			if (CurveChanged != null)
+				CurveChanged(this, new CurveLibraryEventArgs(name));
+		}
+	}
+
+	public class CurveLibraryEventArgs : EventArgs
+	{
+		public CurveLibraryEventArgs(string name)
+		{
+			Name = name;
+		}
+
+		public string Name { get; private set; }
 	}
 }

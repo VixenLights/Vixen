@@ -7,7 +7,7 @@ using Vixen.Module.App;
 
 namespace VixenModules.App.ColorGradients
 {
-	internal class ColorGradientLibraryDescriptor : AppModuleDescriptorBase
+	public class ColorGradientLibraryDescriptor : AppModuleDescriptorBase
 	{
 		private static Guid _id = new Guid("{64f4ab26-3ed4-49a3-a004-23656ed0424a}");
 

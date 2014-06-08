@@ -7,9 +7,10 @@ using Vixen.Module.App;
 
 namespace VixenModules.App.ColorGradients
 {
-	internal class ColorGradientLibrary : AppModuleInstanceBase, IEnumerable<KeyValuePair<string, ColorGradient>>
+	public class ColorGradientLibrary : AppModuleInstanceBase, IEnumerable<KeyValuePair<string, ColorGradient>>
 	{
 		private ColorGradientLibraryStaticData _data;
+		public event EventHandler GradientChanged;
 
 		public override void Loading()
 		{
@@ -61,10 +62,22 @@ namespace VixenModules.App.ColorGradients
 			cg.IsCurrentLibraryGradient = true;
 			cg.LibraryReferenceName = string.Empty;
 			Library[name] = cg;
+			_GradientChanged(name);
 			return inLibrary;
 		}
 
 		public bool RemoveColorGradient(string name)
+		{
+			bool removed = _RemoveColorGradient(name);
+			if (removed)
+			{
+				_GradientChanged(name);
+			}
+
+			return removed;
+		}
+
+		public bool _RemoveColorGradient(string name)
 		{
 			if (!Contains(name))
 				return false;
@@ -85,7 +98,7 @@ namespace VixenModules.App.ColorGradients
 			editor.LibraryItemName = name;
 
 			if (editor.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-				RemoveColorGradient(name);
+				_RemoveColorGradient(name);
 				AddColorGradient(name, editor.Gradient);
 				return true;
 			}
@@ -102,5 +115,22 @@ namespace VixenModules.App.ColorGradients
 		{
 			return Library.GetEnumerator();
 		}
+
+		private void _GradientChanged(string name)
+		{
+			if (GradientChanged != null)
+				GradientChanged(this, new ColorGradientLibraryEventArgs(name));
+		}
+
+	}
+
+	public class ColorGradientLibraryEventArgs : EventArgs
+	{
+		public ColorGradientLibraryEventArgs(string name)
+		{
+			Name = name;
+		}
+
+		public string Name { get; private set; }
 	}
 }

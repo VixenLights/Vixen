@@ -7,7 +7,7 @@ using Vixen.Module.App;
 
 namespace VixenModules.App.Curves
 {
-	internal class CurveLibraryDescriptor : AppModuleDescriptorBase
+	public class CurveLibraryDescriptor : AppModuleDescriptorBase
 	{
 		private static Guid _id = new Guid("{4e258de2-7a75-4f0f-aa43-c8182e7f3400}");
 

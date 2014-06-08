@@ -53,13 +53,19 @@ namespace VixenModules.Effect.Chase
 			get
 			{
 				if (!PulseCurve.CheckLibraryReference())
-					return true;
+				{
+					base.IsDirty = true;
+				}
 
 				if (!ChaseMovement.CheckLibraryReference())
-					return true;
+				{
+					base.IsDirty = true;
+				}
 
 				if (!ColorGradient.CheckLibraryReference())
-					return true;
+				{
+					base.IsDirty = true;
+				}
 
 				return base.IsDirty;
 			}
