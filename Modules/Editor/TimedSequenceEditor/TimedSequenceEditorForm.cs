@@ -3347,6 +3347,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			selector.ShowDialog();
 		}
 
+		private void colorGradientToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			var selector = new ColorGradientLibrarySelector();
+			selector.ShowDialog();
+		}
+
 	}
 
 	[Serializable]
