@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 using Common.Resources.Properties;
 using Vixen.Factory;
@@ -171,7 +174,12 @@ namespace VixenApplication
 			else if (e.NewValue == CheckState.Checked) {
 				if (preview != null && !preview.IsRunning) {
 					VixenSystem.Previews.Start(preview);
-				}
+					//A bit of a kludge, but need a bit of delay to give the preview a chance to load
+					//before we force ourselves back on top.
+					Thread.Sleep(10); 
+					TopMost = true;
+					TopMost = false;
+				}	
 			}
 		}
 
