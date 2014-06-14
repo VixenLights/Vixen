@@ -32,7 +32,7 @@ namespace Common.Controls.Timeline
 		private Rectangle m_ignoreDragArea; // the area in which move movements should be ignored, before we start dragging
 		private Point m_waitingBeginGridLocation;
 		private List<Element> m_mouseDownElements; // the elements under the cursor on a mouse click
-
+		private Point m_lastSingleSelectedElementLocation;
 		private Row m_mouseDownElementRow = null;
 		            // the row that the clicked m_mouseDownElement belongs to (a single element may be in multiple rows)
 
@@ -274,6 +274,11 @@ namespace Common.Controls.Timeline
 		private bool CtrlPressed
 		{
 			get { return Form.ModifierKeys.HasFlag(Keys.Control); }
+		}
+
+		private bool ShiftPressed
+		{
+			get { return ModifierKeys.HasFlag(Keys.Shift); }
 		}
 
 		private int CurrentRowIndexUnderMouse { get; set; }
@@ -775,6 +780,44 @@ namespace Common.Controls.Timeline
 			}
 
 			return result;
+		}
+
+		private void SelectElementsBetween(Point startingPoint, Point endingPoint)
+		{
+			ClearSelectedRows();
+			ClearActiveRows();
+			//find all the elements between us and the last selected
+			if (endingPoint.X > startingPoint.X)
+			{
+				//Right
+				if (endingPoint.Y > startingPoint.Y)
+				{
+					//Below
+					selectElementsWithin(new Rectangle(startingPoint,
+						new Size(endingPoint.X - startingPoint.X,
+							endingPoint.Y - startingPoint.Y)));
+				} else
+				{
+					//Above
+					selectElementsWithin(new Rectangle(startingPoint.X, endingPoint.Y, endingPoint.X - startingPoint.X,
+						startingPoint.Y - endingPoint.Y));
+				}
+			} else
+			{
+				//Left
+				if (endingPoint.Y > startingPoint.Y)
+				{
+					//Below
+					selectElementsWithin(new Rectangle(endingPoint.X, startingPoint.Y, startingPoint.X - endingPoint.X,
+						endingPoint.Y - startingPoint.Y));
+				} else
+				{
+					//Above
+					selectElementsWithin(new Rectangle(endingPoint,
+						new Size(startingPoint.X - endingPoint.X,
+							startingPoint.Y - endingPoint.Y)));
+				}
+			}
 		}
 
 		// TODO: as per Jono's comment below, if we find performance lacking with large data sets,
