@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
-using System.Windows.Forms.VisualStyles;
 
 namespace Common.Controls.Timeline
 {
@@ -321,11 +320,6 @@ namespace Common.Controls.Timeline
 		/// <param name="endTime"></param>
 		public void SetStackIndexes(TimeSpan startTime, TimeSpan endTime)
 		{
-			if (!m_elements.Any())
-			{
-				return;
-			}
-
 			for (int i = 0; i < m_elements.Count; i++)
 			{
 				if (m_elements[i].EndTime < startTime) continue;

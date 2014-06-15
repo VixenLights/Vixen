@@ -1,30 +1,28 @@
 ﻿using System;
-using System.Linq;
-using System.Drawing;
-using System.Windows.Forms;
+using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Drawing.Drawing2D;
-using System.Text;
-using System.Diagnostics;
 using System.ComponentModel;
-using System.Drawing.Imaging;
-using System.Runtime.InteropServices;
-using Common.Controls.ColorManagement.ColorModels;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+using NLog;
+using Vixen;
 using Vixen.Execution.Context;
-using System.Collections.Concurrent;
 
 namespace Common.Controls.Timeline
 {
 	/// <summary>
 	/// Makes up the main part of the TimelineControl. A scrollable container which presents rows which contain elements.
 	/// </summary>
-	[System.ComponentModel.DesignerCategory("")] // Prevent this from showing up in designer.
-	public partial class Grid : TimelineControlBase, IEnumerable<Row>, IDisposable
+	[DesignerCategory("")] // Prevent this from showing up in designer.
+	public partial class Grid : TimelineControlBase, IEnumerable<Row>
 	{
 		#region Members
-        private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 		private List<Row> m_rows; // the rows in the grid
 		private DragState m_dragState = DragState.Normal; // the current dragging state
 
@@ -53,7 +51,7 @@ namespace Common.Controls.Timeline
 		public Grid(TimeInfo timeinfo)
 			: base(timeinfo)
 		{
-			this.AutoScroll = true;
+			AutoScroll = true;
 			AllowGridResize = true;
 			AutoScrollMargin = new Size(24, 24);
 			TotalTime = TimeSpan.FromMinutes(1);
@@ -157,8 +155,8 @@ namespace Common.Controls.Timeline
 
 		private void ResizeGridHorizontally()
 		{
-			if (this.InvokeRequired)
-				this.Invoke(new Vixen.Delegates.GenericDelegate(ResizeGridHorizontally));
+			if (InvokeRequired)
+				Invoke(new Delegates.GenericDelegate(ResizeGridHorizontally));
 			else {
 				// resize the scroll canvas to be the new size of the whole display time, and cap it to not go past the end
 				AutoScrollMinSize = new Size((int) timeToPixels(TotalTime), AutoScrollMinSize.Height);
@@ -198,6 +196,9 @@ namespace Common.Controls.Timeline
 			}
 		}
 
+		/// <summary>
+		/// Returns the Rows in the grid
+		/// </summary>
 		public List<Row> Rows
 		{
 			get { return m_rows; }
@@ -226,7 +227,7 @@ namespace Common.Controls.Timeline
 		/// </summary>
 		public Row ActiveRow
 		{
-			get { return Rows.Where(x => x.Active).FirstOrDefault(); }
+			get { return Rows.FirstOrDefault(x => x.Active); }
 		}
 
 		public IEnumerable<Row> VisibleRows
@@ -273,7 +274,7 @@ namespace Common.Controls.Timeline
 		// private properties
 		private bool CtrlPressed
 		{
-			get { return Form.ModifierKeys.HasFlag(Keys.Control); }
+			get { return ModifierKeys.HasFlag(Keys.Control); }
 		}
 
 		private bool ShiftPressed
@@ -374,7 +375,6 @@ namespace Common.Controls.Timeline
 
 			} else {
 				if (RenderProgressChanged != null) {
-					EventArgs args = new EventArgs();
 					RenderProgressChanged(this, new RenderElementEventArgs(percent));
 				}
 			}
@@ -522,7 +522,7 @@ namespace Common.Controls.Timeline
 			return Rows.GetEnumerator();
 		}
 
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();
 		}
@@ -531,7 +531,7 @@ namespace Common.Controls.Timeline
 
 		public CloneSelectedElementsDelegate SelectedElementsCloneDelegate { get; set; }
 
-		public void CloneSelectedElementsForMove()
+		protected void CloneSelectedElementsForMove()
 		{
 			List<Element> elements = SelectedElementsCloneDelegate.Invoke(SelectedElements);
 			ClearSelectedElements();
@@ -542,6 +542,9 @@ namespace Common.Controls.Timeline
 			_SelectionChanged();
 		}
 
+		/// <summary>
+		/// Clears all the selected flags on the currently selected elements.
+		/// </summary>
 		public void ClearSelectedElements()
 		{
 			foreach (Element te in SelectedElements.ToArray())
@@ -550,6 +553,10 @@ namespace Common.Controls.Timeline
 			_SelectionChanged();
 		}
 
+		/// <summary>
+		/// Clears all the selected rows. Optional row to be excluded.
+		/// </summary>
+		/// <param name="leaveRowSelected">Optional row will be left alone.</param>
 		public void ClearSelectedRows(Row leaveRowSelected = null)
 		{
 			foreach (Row row in Rows) {
@@ -560,6 +567,10 @@ namespace Common.Controls.Timeline
 			_SelectionChanged();
 		}
 
+		/// <summary>
+		/// Clears the Active row flag on all rows. Optional row to be excluded.
+		/// </summary>
+		/// <param name="leaveRowActive"></param>
 		public void ClearActiveRows(Row leaveRowActive = null)
 		{
 			foreach (Row row in Rows)
@@ -571,6 +582,10 @@ namespace Common.Controls.Timeline
 			//_SelectionChanged();
 		}
 
+		/// <summary>
+		/// Add a row to the Grid
+		/// </summary>
+		/// <param name="row"></param>
 		public void AddRow(Row row)
 		{
 			Rows.Add(row);
@@ -578,6 +593,11 @@ namespace Common.Controls.Timeline
 			if (!SuppressInvalidate) Invalidate();
 		}
 
+		/// <summary>
+		/// Remove a specific Row from the Grid
+		/// </summary>
+		/// <param name="row"></param>
+		/// <returns></returns>
 		public bool RemoveRow(Row row)
 		{
 			bool rv = Rows.Remove(row);
@@ -769,6 +789,11 @@ namespace Common.Controls.Timeline
 			return Rows.FirstOrDefault(row => row.ContainsElement(element));
 		}
 
+		/// <summary>
+		/// Get a list of elements that contain the specified time.
+		/// </summary>
+		/// <param name="time"></param>
+		/// <returns>List of Element</returns>
 		public List<Element> ElementsAtTime(TimeSpan time)
 		{
 			List<Element> result = new List<Element>();
@@ -782,6 +807,11 @@ namespace Common.Controls.Timeline
 			return result;
 		}
 
+		/// <summary>
+		/// Select all elements that are in the Virtual box created by the two diagonal points
+		/// </summary>
+		/// <param name="startingPoint"></param>
+		/// <param name="endingPoint"></param>
 		private void SelectElementsBetween(Point startingPoint, Point endingPoint)
 		{
 			ClearSelectedRows();
@@ -1302,8 +1332,8 @@ namespace Common.Controls.Timeline
 		{
 		
 			if (AllowGridResize) {
-				if (this.InvokeRequired) {
-					this.Invoke(new Vixen.Delegates.GenericDelegate(ResizeGridHeight));
+				if (InvokeRequired) {
+					Invoke(new Delegates.GenericDelegate(ResizeGridHeight));
 				} else {
 					AutoScrollMinSize = new Size((int)timeToPixels(TotalTime), CalculateAllRowsHeight());
 					CalculateVisibleRowDisplayTops();
@@ -1425,19 +1455,17 @@ namespace Common.Controls.Timeline
 
 		public void StartBackgroundRendering()
 		{
-			if (this.InvokeRequired) {
-				this.Invoke(new Vixen.Delegates.GenericDelegate(StartBackgroundRendering));
+			if (InvokeRequired) {
+				Invoke(new Delegates.GenericDelegate(StartBackgroundRendering));
 			} else {
 				if (renderWorker != null) {
 					if (!renderWorker.IsBusy) {
 						renderWorker.RunWorkerAsync();
 					}
 				} else {
-					renderWorker = new BackgroundWorker();
-					renderWorker.WorkerReportsProgress = true;
-					renderWorker.WorkerSupportsCancellation = true;
-					renderWorker.DoWork += new DoWorkEventHandler(renderWorker_DoWork);
-					renderWorker.ProgressChanged += new ProgressChangedEventHandler(renderWorker_ProgressChanged);
+					renderWorker = new BackgroundWorker {WorkerReportsProgress = true, WorkerSupportsCancellation = true};
+					renderWorker.DoWork += renderWorker_DoWork;
+					renderWorker.ProgressChanged += renderWorker_ProgressChanged;
 					renderWorkerFinished = new ManualResetEventSlim(false);
 					renderWorker.RunWorkerAsync();
 				}
@@ -1675,7 +1703,7 @@ namespace Common.Controls.Timeline
 		{
 			if (!SequenceLoading)
 				try {
-					e.Graphics.TranslateTransform(this.AutoScrollPosition.X, this.AutoScrollPosition.Y);
+					e.Graphics.TranslateTransform(AutoScrollPosition.X, AutoScrollPosition.Y);
 
 					//Stopwatch s = new Stopwatch();
 					//s.Start();
@@ -1692,8 +1720,8 @@ namespace Common.Controls.Timeline
 					//Logging.Info("OnPaint: " + s.ElapsedMilliseconds);
 				}
 				catch (Exception ex) {
-					Logging.Error("Exception in TimelineGrid.OnPaint():\n\n\t" + ex.Message + "\n\nBacktrace:\n\n\t" + ex.StackTrace);
-					MessageBox.Show("Exception in TimelineGrid.OnPaint():\n\n\t" + ex.Message + "\n\nBacktrace:\n\n\t" + ex.StackTrace);
+					Logging.ErrorException("Exception in TimelineGrid.OnPaint()",ex);
+					MessageBox.Show(@"An unexpected error occured while drawing the grid. Please notify the Vixen team and provide the error logs.");
 				}
 		}
 

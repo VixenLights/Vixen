@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
-using System.Diagnostics;
 
 namespace Common.Controls.Timeline
 {
 	public partial class Grid
 	{
-		Form toolForm = new Form();
 		List<Element> capturedElements = new List<Element>();
 
 		#region General Mouse Event-Related
@@ -18,7 +15,7 @@ namespace Common.Controls.Timeline
 		/// <summary>
 		/// Translates a location (Point) so that its coordinates represent the coordinates on the underlying timeline, taking into account scroll position.
 		/// </summary>
-		/// <param name="e"></param>
+		/// <param name="originalLocation"></param>
 		protected Point translateLocation(Point originalLocation)
 		{
 			// Translate this location based on the auto scroll position.
@@ -626,7 +623,7 @@ namespace Common.Controls.Timeline
 		private void MouseMove_DragMoving(Point gridLocation)
 		{
 			// if we don't have anything selected, there's no point dragging anything...
-			if (SelectedElements.Count() == 0)
+			if (!SelectedElements.Any())
 				return;
 
 			TimeSpan dt = pixelsToTime(gridLocation.X - m_elemMoveInfo.InitialGridLocation.X);
@@ -804,7 +801,7 @@ namespace Common.Controls.Timeline
 		private void endAllDrag()
 		{
 			m_dragState = DragState.Normal;
-			this.Cursor = Cursors.Default;
+			Cursor = Cursors.Default;
 
 			if (m_autoScrollTimer.Enabled)
 				m_autoScrollTimer.Stop();
