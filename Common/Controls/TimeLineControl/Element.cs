@@ -65,6 +65,22 @@ namespace Common.Controls.Timeline
 			}
 		}
 
+		/// <summary>
+		/// Triggers the time changed event to occur in the middle of updating if the time has changed.
+		/// For use in controlling When TimeChanged events occur while updating so they can be raised at optimal times.
+		/// </summary>
+		public void UpdateNotifyTimeChanged()
+		{
+			if (SuspendEvents && TimeChanged != null)
+			{
+				if ((StartTime != _origStartTime) || (Duration != _origDuration))
+				{
+					TimeChanged(this, EventArgs.Empty);
+				}
+			}
+				
+		}
+
 		#endregion
 
 		#region Properties
@@ -104,8 +120,13 @@ namespace Common.Controls.Timeline
 				return _targetNodes;
 			}
 			set
-			{		
+			{
+				if (_targetNodes == value)
+				{
+					return;
+				}
 				_targetNodes = value;
+				OnTargetNodesChanged();
 			}
 		}
 

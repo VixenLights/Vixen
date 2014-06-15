@@ -653,6 +653,8 @@ namespace Common.Controls.Timeline
 				// Get this elemenent's original times (before resize started)
 				ElementTimeInfo orig = m_elemMoveInfo.OriginalElements[elem];
 				elem.StartTime = orig.StartTime + dt;
+				//Control when the time changed event happens.
+				elem.UpdateNotifyTimeChanged();
 			}
 
 			// if we've moved vertically, we may need to move elements between rows
@@ -734,10 +736,14 @@ namespace Common.Controls.Timeline
 					case ResizeZone.Front:
 						elem.StartTime = orig.StartTime + dt;
 						elem.EndTime = orig.EndTime;
+						//Control when the time changed event happens.
+						elem.UpdateNotifyTimeChanged(); 
 						break;
 
 					case ResizeZone.Back:
 						elem.EndTime = orig.EndTime + dt;
+						//Control when the time changed event happens.
+						elem.UpdateNotifyTimeChanged();  
 						break;
 				}
 			}
