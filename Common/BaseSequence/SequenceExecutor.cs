@@ -160,7 +160,7 @@ namespace BaseSequence
 
 			// Only hook the input stream during execution.
 			// Hook before starting the behaviors.
-			_HookDataListener();
+			//_HookDataListener();
 
 			// Bound the execution range.
 			StartTime = _CoerceStartTime(startTime);
@@ -329,7 +329,7 @@ namespace BaseSequence
 
 			// Release the hook before the behaviors are shut down so that
 			// they can affect the sequence.
-			_UnhookDataListener();
+			//_UnhookDataListener();
 
 			IsRunning = false;
 			IsPaused = false;
