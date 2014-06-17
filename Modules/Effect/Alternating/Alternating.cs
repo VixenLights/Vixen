@@ -294,7 +294,6 @@ namespace VixenModules.Effect.Alternating
 		// not a element, will recursively descend until we render its elements.
 		private void RenderNode(ElementNode node)
 		{
-			bool altColor = false;
 			bool startingColor = false;
 			double intervals = 1;
 			 
@@ -306,12 +305,10 @@ namespace VixenModules.Effect.Alternating
 			TimeSpan startTime = TimeSpan.Zero;
 		 
 			for (int i = 0; i < intervals; i++) {
-				altColor = startingColor;
+				bool altColor = startingColor;
 				var intervalTime = intervals == 1
 									? TimeSpan
 									: TimeSpan.FromMilliseconds(Interval);
-
-				LightingValue? lightingValue = null;
 
 				int totalElements = node.Count();
 				int currentNode = 0;
@@ -326,7 +323,7 @@ namespace VixenModules.Effect.Alternating
 
 					int cNode = 0;
 					elements.ToList().ForEach(element => {
-						RenderElement(altColor, ref startTime, ref intervalTime, ref lightingValue, element);
+						RenderElement(altColor, ref startTime, ref intervalTime, element);
 						cNode++;
 					});
 					altColor = !altColor;
@@ -338,8 +335,7 @@ namespace VixenModules.Effect.Alternating
 			}
 		}
 
-		private void RenderElement(bool altColor, ref TimeSpan startTime, ref System.TimeSpan intervalTime,
-								   ref LightingValue? lightingValue, ElementNode element)
+		private void RenderElement(bool altColor, ref TimeSpan startTime, ref TimeSpan intervalTime, ElementNode element)
 		{
 			EffectIntents result;
 
@@ -349,7 +345,7 @@ namespace VixenModules.Effect.Alternating
 				level.TargetNodes = new ElementNode[] { element };
 				level.Color = altColor ? Color1 : Color2;
 				level.TimeSpan = intervalTime;
-				
+				level.IntensityLevel = altColor ? IntensityLevel1 : IntensityLevel2;
 				result = level.Render();
 
 			} else {
