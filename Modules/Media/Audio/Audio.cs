@@ -235,7 +235,14 @@ namespace VixenModules.Media.Audio
 
 		public override ITiming TimingSource
 		{
-			get { return this as ITiming; }
+			get
+			{
+				if (_audioSystem != null && _audioSystem.AudioDevices.Any())
+				{
+					return this;
+				}
+				return null;
+			}
 		}
 
 		public override IModuleDataModel ModuleData
