@@ -214,7 +214,6 @@ namespace VixenModules.Effect.Alternating
 		{
 			get
 			{
-				CheckForInvalidColorData();
 				return _data.ColorGradient1;
 			}
 			set
@@ -229,7 +228,6 @@ namespace VixenModules.Effect.Alternating
 		{
 			get
 			{
-				CheckForInvalidColorData();
 				return _data.ColorGradient2;
 			}
 			set
@@ -321,11 +319,11 @@ namespace VixenModules.Effect.Alternating
 
 					currentNode += GroupEffect;
 
-					int cNode = 0;
-					elements.ToList().ForEach(element => {
-						RenderElement(altColor, ref startTime, ref intervalTime, element);
-						cNode++;
-					});
+					foreach (var element in elements)
+					{
+						RenderElement(altColor, ref startTime, ref intervalTime, element);	
+					}
+
 					altColor = !altColor;
 				}
 

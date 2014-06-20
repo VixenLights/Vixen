@@ -26,7 +26,7 @@ namespace Vixen.Module.Effect
 
 		protected EffectModuleInstanceBase()
 		{
-			TargetNodes = new ElementNode[0];
+			_targetNodes = new ElementNode[0]; //set member directly on creation to prevent target node changed events from occuring.
 			TimeSpan = TimeSpan.Zero;
 			IsDirty = true;
 			_parameterValues = new DefaultValueArrayMember(this);
