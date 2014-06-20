@@ -180,7 +180,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			dockPanel.DockLeftPortion = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/DockLeftPortion", Name), 150);
 			dockPanel.DockRightPortion = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/DockRightPortion", Name), 150);
 			autoSaveToolStripMenuItem.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/AutoSaveEnabled", Name), true);
-			toolStripButton_SnapTo.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SnapToSelected", Name), true);
+			TimelineControl.grid.EnableSnapTo = toolStripMenuItem_SnapTo.Checked = toolStripButton_SnapTo.Checked 
+				= xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SnapToSelected", Name), true);
 
 			WindowState = FormWindowState.Normal;
 
