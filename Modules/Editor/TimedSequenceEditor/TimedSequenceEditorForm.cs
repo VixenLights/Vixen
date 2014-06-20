@@ -3387,13 +3387,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void curveEditorToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			var selector = new CurveLibrarySelector();
+			var selector = new CurveLibrarySelector{DoubleClickMode = CurveLibrarySelector.Mode.Edit};
 			selector.ShowDialog();
 		}
 
 		private void colorGradientToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			var selector = new ColorGradientLibrarySelector();
+			var selector = new ColorGradientLibrarySelector{DoubleClickMode = ColorGradientLibrarySelector.Mode.Edit};
 			selector.ShowDialog();
 		}
 

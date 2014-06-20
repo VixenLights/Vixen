@@ -18,7 +18,13 @@ namespace VixenModules.App.Curves
 		{
 			InitializeComponent();
 			Icon = Common.Resources.Properties.Resources.Icon_Vixen3;
+			DoubleClickMode = Mode.Ok;
 		}
+
+		/// <summary>
+		/// Change the effect of double clicking on a curve. Ok invokes the Ok button, Edit invokes the Edit button.
+		/// </summary>
+		public Mode DoubleClickMode { get; set; }
 
 		private void CurveLibrarySelector_Load(object sender, EventArgs e)
 		{
@@ -117,7 +123,15 @@ namespace VixenModules.App.Curves
 		private void listViewCurves_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
 			if (listViewCurves.SelectedItems.Count == 1)
-				DialogResult = System.Windows.Forms.DialogResult.OK;
+			{
+				if (DoubleClickMode.Equals(Mode.Ok))
+				{
+					DialogResult = DialogResult.OK;
+				}
+				
+				buttonEditCurve.PerformClick();
+			}
+				
 		}
 
 		private CurveLibrary _library;
@@ -153,6 +167,12 @@ namespace VixenModules.App.Curves
 			}
 
 			base.Dispose(disposing);
+		}
+
+		public enum Mode
+		{
+			Ok,
+			Edit
 		}
 	}
 }

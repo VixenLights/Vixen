@@ -18,7 +18,13 @@ namespace VixenModules.App.ColorGradients
 		{
 			InitializeComponent();
 			Icon = Common.Resources.Properties.Resources.Icon_Vixen3;
+			DoubleClickMode = Mode.Ok;
 		}
+
+		/// <summary>
+		/// Change the effect of double clicking on a curve. Ok invokes the Ok button, Edit invokes the Edit button.
+		/// </summary>
+		public Mode DoubleClickMode { get; set; }
 
 		private void ColorGradientLibrarySelector_Load(object sender, EventArgs e)
 		{
@@ -119,7 +125,14 @@ namespace VixenModules.App.ColorGradients
 		private void listViewColorGradients_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
 			if (listViewColorGradients.SelectedItems.Count == 1)
-				DialogResult = System.Windows.Forms.DialogResult.OK;
+			{
+				if (DoubleClickMode.Equals(Mode.Ok))
+				{
+					DialogResult = DialogResult.OK;
+				}
+
+				buttonEditColorGradient.PerformClick();
+			}
 		}
 
 		private ColorGradientLibrary _library;
@@ -142,6 +155,12 @@ namespace VixenModules.App.ColorGradients
 				DialogResult = DialogResult.OK;
 			if (e.KeyCode == Keys.Escape)
 				DialogResult = DialogResult.Cancel;
+		}
+
+		public enum Mode
+		{
+			Ok,
+			Edit
 		}
 	}
 }
