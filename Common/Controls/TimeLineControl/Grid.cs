@@ -87,6 +87,8 @@ namespace Common.Controls.Timeline
 			DragDrop += TimelineGrid_DragDrop;
 			StartBackgroundRendering();
 			CurrentDragSnapPoints = new SortedDictionary<TimeSpan, List<SnapDetails>>();
+			EnableSnapTo = true;
+			SnapStrength = 2;
 		}
 
 		protected override void Dispose(bool disposing)
@@ -172,6 +174,8 @@ namespace Common.Controls.Timeline
 		#region Properties
 
 		public bool EnableSnapTo { get; set; }
+
+		public int SnapStrength { get; set; }
 
 		public bool SuppressInvalidate { get; set; }
 
@@ -1274,8 +1278,8 @@ namespace Common.Controls.Timeline
 
 			// the start time and end times for specified points are 2 pixels
 			// per snap level away from the snap time.
-			result.SnapStart = snapTime - TimeSpan.FromTicks(TimePerPixel.Ticks*level*2);
-			result.SnapEnd = snapTime + TimeSpan.FromTicks(TimePerPixel.Ticks*level*2);
+			result.SnapStart = snapTime - TimeSpan.FromTicks(TimePerPixel.Ticks*level*SnapStrength);
+			result.SnapEnd = snapTime + TimeSpan.FromTicks(TimePerPixel.Ticks*level*SnapStrength);
 			return result;
 		}
 

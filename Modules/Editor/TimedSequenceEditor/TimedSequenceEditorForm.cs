@@ -137,6 +137,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolStripButton_DecreaseTimingSpeed.Image = Resources.minus;
 			toolStripButton_DecreaseTimingSpeed.DisplayStyle = ToolStripItemDisplayStyle.Image;
 
+			foreach (ToolStripItem toolStripItem in toolStripDropDownButton_SnapToStrength.DropDownItems)
+			{
+				var toolStripMenuItem = toolStripItem as ToolStripMenuItem;
+				if (toolStripMenuItem != null)
+				{
+					toolStripMenuItem.Click += toolStripButtonSnapToStrength_MenuItem_Click;
+				}
+			}
+
 			Execution.ExecutionStateChanged += OnExecutionStateChanged;
 			_autoSaveTimer.Tick += AutoSaveEventProcessor;	
 		}
@@ -180,8 +189,23 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			dockPanel.DockLeftPortion = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/DockLeftPortion", Name), 150);
 			dockPanel.DockRightPortion = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/DockRightPortion", Name), 150);
 			autoSaveToolStripMenuItem.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/AutoSaveEnabled", Name), true);
-			TimelineControl.grid.EnableSnapTo = toolStripMenuItem_SnapTo.Checked = toolStripButton_SnapTo.Checked 
-				= xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SnapToSelected", Name), true);
+			toolStripMenuItem_SnapTo.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SnapToSelected", Name), true);
+
+			TimelineControl.grid.SnapStrength = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings,
+				string.Format("{0}/SnapStrength", Name), 2);
+
+			foreach (ToolStripItem toolStripItem in toolStripDropDownButton_SnapToStrength.DropDownItems)
+			{
+				var toolStripMenuItem = toolStripItem as ToolStripMenuItem;
+				if (toolStripMenuItem != null)
+				{
+					if(TimelineControl.grid.SnapStrength.Equals(Convert.ToInt32(toolStripMenuItem.Tag)))
+					{
+						toolStripMenuItem.PerformClick();
+						break;
+					}
+				}
+			}
 
 			WindowState = FormWindowState.Normal;
 
@@ -333,6 +357,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (_colorGradientLibrary != null)
 			{
 				_colorGradientLibrary.GradientChanged -= ColorGradientLibrary_CurveChanged;
+			}
+
+			foreach (ToolStripItem toolStripItem in toolStripDropDownButton_SnapToStrength.DropDownItems)
+			{
+				var toolStripMenuItem = toolStripItem as ToolStripMenuItem;
+				if (toolStripMenuItem != null)
+				{
+					toolStripMenuItem.Click -= toolStripButtonSnapToStrength_MenuItem_Click;
+				}
 			}
 
 			EffectsForm.Dispose();
@@ -2916,6 +2949,27 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
+		private void toolStripButtonSnapToStrength_MenuItem_Click(object sender, EventArgs e)
+		{
+
+			ToolStripMenuItem item = sender as ToolStripMenuItem;
+			if (!item.Checked)
+			{
+				foreach (ToolStripMenuItem subItem in item.Owner.Items)
+				{
+					if (!item.Equals(subItem) && subItem != null)
+					{
+						subItem.Checked = false;
+					}
+				}
+				item.Checked = true;
+				TimelineControl.grid.SnapStrength = Convert.ToInt32(item.Tag);
+			} 
+			
+			// clicking the currently checked one--do not uncheck it
+			
+		}
+
 		#endregion
 
 		#region Undo
@@ -3071,7 +3125,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationX", Name), Location.X);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationY", Name), Location.Y);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowState", Name), WindowState.ToString());
-
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SnapStrength", Name), TimelineControl.grid.SnapStrength);
 			//These are only saved in options
 			//xml.PutPreference(string.Format("{0}/AutoSaveInterval", Name), _autoSaveTimer.Interval);
 
