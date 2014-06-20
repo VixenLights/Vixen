@@ -668,7 +668,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				populateGridWithMarks();
 
-				Task.Factory.StartNew(populateWaveformAudio);
+				PopulateAudioDropdown();
 
 				//This path is followed for new and existing sequences so we need to determine which we have and set modified accordingly.
 				//Added logic to determine if the sequence has a filepath to set modified JU 8/1/2012. 
@@ -683,7 +683,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				{
 					sequenceNotModified();
 				}
-				PopulateAudioDropdown();
 
 				MarksForm.Sequence = _sequence;
 				MarksForm.PopulateMarkCollectionsList(null);
@@ -808,35 +807,31 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					if (cboAudioDevices.Items.Count > 0)
 					{
 						cboAudioDevices.SelectedIndex = 0;
+						Task.Factory.StartNew(PopulateWaveformAudio);
 					}
 				}
 			}
 		}
-		private void populateWaveformAudio()
+
+		private void PopulateWaveformAudio()
 		{
 			if (_sequence.GetAllMedia().Any())
 			{
 				IMediaModuleInstance media = _sequence.GetAllMedia().First();
 				Audio audio = media as Audio;
 
-				using (var fmod = new FmodInstance())
+				if (audio.MediaExists)
 				{
-					if (fmod.AudioDevices.Any())
-					{
-						if (audio.MediaExists)
-						{
-							TimelineControl.Audio = audio;
-							toolStripMenuItem_removeAudio.Enabled = true;
-							PopulateAudioDropdown();
-						} else
-						{
-							string message = String.Format("Audio file not found on the path:\n\n {0}\n\nPlease Check your settings/path.",
-								audio.MediaFilePath);
-							Logging.Warn(message);
-							MessageBox.Show(message, @"Missing audio file");
-						}
-					}	
-				}	
+					TimelineControl.Audio = audio;
+					toolStripMenuItem_removeAudio.Enabled = true;
+				} else
+				{
+					string message = String.Format("Audio file not found on the path:\n\n {0}\n\nPlease Check your settings/path.",
+						audio.MediaFilePath);
+					Logging.Warn(message);
+					MessageBox.Show(message, @"Missing audio file");
+				}
+				
 			}
 			
 		}
