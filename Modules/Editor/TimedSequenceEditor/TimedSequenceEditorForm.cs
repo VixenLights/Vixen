@@ -191,8 +191,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			autoSaveToolStripMenuItem.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/AutoSaveEnabled", Name), true);
 			toolStripMenuItem_SnapTo.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SnapToSelected", Name), true);
 
-			TimelineControl.grid.SnapStrength = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings,
-				string.Format("{0}/SnapStrength", Name), 2);
+			PopulateSnapStrength(xml.GetSetting(XMLProfileSettings.SettingType.AppSettings,
+				string.Format("{0}/SnapStrength", Name), 2));
 
 			foreach (ToolStripItem toolStripItem in toolStripDropDownButton_SnapToStrength.DropDownItems)
 			{
@@ -436,7 +436,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void MarkCollection_Checked(object sender, MarkCollectionArgs e)
 		{
-			populateGridWithMarks();
+			PopultateMarkSnapTimes();
 		}
 
 		private void MarkCollection_Edit(Object sender, EventArgs e)
@@ -666,7 +666,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 																		TimelineControl.grid.RenderAllRows();
 																	});
 
-				populateGridWithMarks();
+				PopultateMarkSnapTimes();
 
 				PopulateAudioDropdown();
 
@@ -774,7 +774,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		private void populateGridWithMarks()
+		/// <summary>
+		/// Populates the mark snaptimes in the grid.
+		/// </summary>
+		private void PopultateMarkSnapTimes()
 		{
 			TimelineControl.ClearAllSnapTimes();
 
@@ -789,6 +792,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 			}
 		}
+
+		private void PopulateSnapStrength(int strength)
+		{
+			TimelineControl.grid.SnapStrength = strength;
+			TimelineControl.ruler.SnapStrength = strength;
+		}
+
 		private void PopulateAudioDropdown()
 		{
 			if (InvokeRequired)
@@ -1483,7 +1493,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (mc != null)
 				{
 					mc.Marks.Add(e.Time);
-					populateGridWithMarks();
+					PopultateMarkSnapTimes();
 					sequenceModified();
 				}
 			}
@@ -1526,7 +1536,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					}
 				}
 			}
-			populateGridWithMarks();
+			PopultateMarkSnapTimes();
 			sequenceModified();
 		}
 
@@ -1539,7 +1549,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					mc.Marks.Remove(e.Mark);
 				}
 			}
-			populateGridWithMarks();
+			PopultateMarkSnapTimes();
 			sequenceModified();
 		}
 
@@ -2958,7 +2968,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					}
 				}
 				item.Checked = true;
-				TimelineControl.grid.SnapStrength = Convert.ToInt32(item.Tag);
+				TimelineControl.ruler.SnapStrength = TimelineControl.grid.SnapStrength = Convert.ToInt32(item.Tag);
+				PopultateMarkSnapTimes();
+				
 			} 
 			
 			// clicking the currently checked one--do not uncheck it
@@ -3210,7 +3222,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (manager.ShowDialog() == DialogResult.OK)
 			{
 				_sequence.MarkCollections = manager.MarkCollections;
-				populateGridWithMarks();
+				PopultateMarkSnapTimes();
 				sequenceModified();
 				MarksForm.PopulateMarkCollectionsList(null);
 			}

@@ -24,6 +24,7 @@ namespace Common.Controls.Timeline
 			BackColor = Color.Gray;
 			recalculate();
 			StaticSnapPoints = new SortedDictionary<TimeSpan, List<SnapDetails>>();
+			SnapStrength = 2;
 			//SnapPriorityForElements = 5;
 		}
 
@@ -52,6 +53,8 @@ namespace Common.Controls.Timeline
 		public int StandardNudgeTime { get; set; }
 
 		public int SuperNudgeTime { get; set; }
+
+		public int SnapStrength { get; set; }
 
 		#region Drawing
 
@@ -686,8 +689,8 @@ namespace Common.Controls.Timeline
 
 			// the start time and end times for specified points are 2 pixels
 			// per snap level away from the snap time.
-			result.SnapStart = snapTime - TimeSpan.FromTicks(TimePerPixel.Ticks * level * 2);
-			result.SnapEnd = snapTime + TimeSpan.FromTicks(TimePerPixel.Ticks * level * 2);
+			result.SnapStart = snapTime - TimeSpan.FromTicks(TimePerPixel.Ticks * level * SnapStrength);
+			result.SnapEnd = snapTime + TimeSpan.FromTicks(TimePerPixel.Ticks * level * SnapStrength);
 			return result;
 		}
 
