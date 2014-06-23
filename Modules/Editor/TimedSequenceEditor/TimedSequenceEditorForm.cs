@@ -19,6 +19,10 @@ using Vixen.Execution;
 using Vixen.Execution.Context;
 using Vixen.Module;
 using Vixen.Module.App;
+using VixenModules.App.Curves;
+using VixenModules.App.LipSyncApp;
+using VixenModules.Media.Audio;
+using VixenModules.Effect.LipSync;
 using Vixen.Module.Editor;
 using Vixen.Module.Effect;
 using Vixen.Module.Media;
@@ -90,6 +94,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private CurveLibrary _curveLibrary;
 		private ColorGradientLibrary _colorGradientLibrary;
+		private LipSyncMapLibrary _library;
 
 		#endregion
 
@@ -280,6 +285,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			updateButtonStates();
 			UpdatePasteMenuStates();
 			LoadVirtualEffects();
+
+            _library = ApplicationServices.Get<IAppModuleInstance>(LipSyncMapDescriptor.ModuleID) as LipSyncMapLibrary;
 
 #if DEBUG
 			ToolStripButton b = new ToolStripButton("[Debug Break]");
@@ -3409,7 +3416,254 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			selector.ShowDialog();
 		}
 
+        private void editMapsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LipSyncMapSelector mapSelector = new LipSyncMapSelector();
+            DialogResult dr = mapSelector.ShowDialog();
+            if (mapSelector.Changed == true)
+            {
+                mapSelector.Changed = false;
+                sequenceModified();
+                resetLipSyncNodes();
 	}
+        }
+
+        private void setDefaultMap_Click(object sender,EventArgs e)
+        {
+            ToolStripMenuItem menu = (ToolStripMenuItem)sender;
+            if (!_library.DefaultMappingName.Equals(menu.Text))
+            {
+                _library.DefaultMappingName = menu.Text; 
+                sequenceModified();
+            }
+            
+        }
+
+        private void resetLipSyncNodes()
+        {
+            foreach (Row row in TimelineControl.Rows)
+            {
+                for (int j = 0; j < row.ElementCount; j++)
+                {
+                    Element elem = row.ElementAt(j);
+                    IEffectModuleInstance effect = elem._effectNode.Effect;
+                    if (effect.GetType() == typeof(LipSync))
+                    {
+                        ((LipSync)effect).MakeDirty();
+                    }
+
+                }
+            }
+            TimelineControl.grid.ResetAllElements();
+        }
+
+        private void defaultMapToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
+        {
+            string defaultText = _library.DefaultMappingName;
+            this.defaultMapToolStripMenuItem.DropDownItems.Clear();
+            
+            foreach (LipSyncMapData mapping in _library.Library.Values)
+            {
+                ToolStripMenuItem menuItem = new ToolStripMenuItem(mapping.LibraryReferenceName);
+                menuItem.Click += setDefaultMap_Click;
+                menuItem.Checked = _library.IsDefaultMapping(mapping.LibraryReferenceName);
+                this.defaultMapToolStripMenuItem.DropDownItems.Add(menuItem);
+            }            
+        }
+
+        private void papagayoImportToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string fileName;
+            PapagayoDoc papagayoFile = new PapagayoDoc();
+            FileDialog openDialog = new OpenFileDialog();
+
+            openDialog.Filter = "Papagayo files (*.pgo)|*.pgo|All files (*.*)|*.*";
+            openDialog.FilterIndex = 1;
+            if (openDialog.ShowDialog() != DialogResult.OK)
+            {
+                return;
+            }
+            fileName = openDialog.FileName;
+            papagayoFile.Load(fileName);
+
+            TimelineElementsClipboardData result = new TimelineElementsClipboardData()
+            {
+                FirstVisibleRow = -1,
+                EarliestStartTime = TimeSpan.MaxValue,
+            };
+
+            result.FirstVisibleRow = 0;
+
+            int rownum = 0;
+            foreach (string voice in papagayoFile.VoiceList)
+            {
+                List<PapagayoPhoneme> phonemes = papagayoFile.PhonemeList(voice);
+
+                if (phonemes.Count > 0)
+                {
+
+                    foreach (PapagayoPhoneme phoneme in phonemes)
+                    {
+                        if (phoneme.DurationMS == 0.0)
+                        {
+                            continue;
+                        }
+
+                        IEffectModuleInstance effect =
+                            ApplicationServices.Get<IEffectModuleInstance>(new LipSyncDescriptor().TypeId);
+
+                        ((LipSync)effect).StaticPhoneme = phoneme.TypeName.ToUpper();
+
+                        TimeSpan startTime = TimeSpan.FromMilliseconds(phoneme.StartMS);
+                        TimelineElementsClipboardData.EffectModelCandidate modelCandidate =
+                              new TimelineElementsClipboardData.EffectModelCandidate(effect)
+                              {
+                                  Duration = TimeSpan.FromMilliseconds(phoneme.DurationMS - 1),
+                                  StartTime = startTime,
+                              };
+
+                        result.EffectModelCandidates.Add(modelCandidate, rownum);
+                        if (startTime < result.EarliestStartTime)
+                            result.EarliestStartTime = startTime;
+
+                        effect.Render();
+
+                    }
+                    
+                    IDataObject dataObject = new DataObject(_clipboardFormatName);
+                    dataObject.SetData(result);
+                    Clipboard.SetDataObject(dataObject, true);
+                    _TimeLineSequenceClipboardContentsChanged(EventArgs.Empty);
+                    sequenceModified();
+
+                }
+                rownum++;
+            }
+            
+            string displayStr = rownum + " Voices imported to clipboard as seperate rows\n\n";
+            
+            int j = 1;
+            foreach (string voiceStr in papagayoFile.VoiceList)
+            {
+                displayStr += "Row #" + j +" - " + voiceStr + "\n";
+                j++;
+            }
+            
+            MessageBox.Show(displayStr, "Papagayo Import", MessageBoxButtons.OK);
+        }
+
+        private void textConverterHandler(object sender, NewTranslationEventArgs args)
+        {
+            TimelineElementsClipboardData result = new TimelineElementsClipboardData()
+            {
+                FirstVisibleRow = -1,
+                EarliestStartTime = TimeSpan.MaxValue,
+            };
+
+            if (args.PhonemeData.Count > 0)
+            {
+
+                foreach (LipSyncConvertData data in args.PhonemeData)
+                {
+                    if (data.Duration.Ticks == 0)
+                    {
+                        continue;
+                    }
+
+                    IEffectModuleInstance effect =
+                        ApplicationServices.Get<IEffectModuleInstance>(new LipSyncDescriptor().TypeId);
+
+                    ((LipSync)effect).StaticPhoneme = data.Phoneme.ToString().ToUpper();
+
+                    TimelineElementsClipboardData.EffectModelCandidate modelCandidate =
+                          new TimelineElementsClipboardData.EffectModelCandidate(effect)
+                          {
+                              Duration = data.Duration,
+                              StartTime = data.StartOffset
+                          };
+
+                    result.EffectModelCandidates.Add(modelCandidate, 0);
+                    if (data.StartOffset < result.EarliestStartTime)
+                        result.EarliestStartTime = data.StartOffset;
+
+                    effect.Render();
+
+                }
+
+                IDataObject dataObject = new DataObject(_clipboardFormatName);
+                dataObject.SetData(result);
+                Clipboard.SetDataObject(dataObject, true);
+                _TimeLineSequenceClipboardContentsChanged(EventArgs.Empty);
+
+                int pasted = ClipboardPaste((TimeSpan)args.FirstMark);
+
+                if (pasted == 0)
+                {
+                    MessageBox.Show("Conversion Complete and copied to Clipboard \n Paste at first Mark offset", "Convert Text", MessageBoxButtons.OK);
+                }
+                sequenceModified();
+
+            }
+        }
+
+        private void translateFailureHandler(object sender, TranslateFailureEventArgs args)
+        {
+            LipSyncTextConvertFailForm failForm = new LipSyncTextConvertFailForm();
+            failForm.errorLabel.Text = "Unable to find mapping for "  + args.FailedWord + Environment.NewLine +
+                "Please map using buttons below";
+            DialogResult dr = failForm.ShowDialog();
+            if (dr == DialogResult.OK)
+            {
+                LipSyncTextConvert.AddUserMaping(args.FailedWord + " " + failForm.TranslatedString);
+            }
+        }
+
+        private void textConverterToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LipSyncTextConvertForm textConverter = new LipSyncTextConvertForm();
+            textConverter.NewTranslation += new EventHandler<NewTranslationEventArgs>(textConverterHandler);
+            textConverter.TranslateFailure += new EventHandler<TranslateFailureEventArgs>(translateFailureHandler);
+            textConverter.MarkCollections = _sequence.MarkCollections;
+            textConverter.Show(this);
+        }
+
+        private void lipSyncMappingsToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
+        {
+            this.changeMapToolStripMenuItem.Enabled =
+             (_library.Library.Count > 1) &&
+             (TimelineControl.SelectedElements.Any(effect => effect.EffectNode.Effect.GetType() == typeof(LipSync)));
+        }
+
+
+        private void changeMapToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
+        {
+            string defaultText = _library.DefaultMappingName;
+            this.changeMapToolStripMenuItem.DropDownItems.Clear();
+
+            foreach (LipSyncMapData mapping in _library.Library.Values)
+            {
+                ToolStripMenuItem menuItem = new ToolStripMenuItem(mapping.LibraryReferenceName);
+                menuItem.Click += changeMappings_Click;
+                this.changeMapToolStripMenuItem.DropDownItems.Add(menuItem);
+            }
+        }
+
+        private void changeMappings_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem toolStripSender = (ToolStripMenuItem)sender;
+
+            TimelineControl.SelectedElements.ToList().ForEach(delegate(Element element)
+            {
+                if (element.EffectNode.Effect.GetType() == typeof(LipSync))
+                {
+                    ((LipSync)element.EffectNode.Effect).PhonemeMapping =  toolStripSender.Text;
+                    resetLipSyncNodes();
+                }
+            });
+
+        }
+
+    }
 
 	[Serializable]
 	internal class TimelineElementsClipboardData
@@ -3492,4 +3746,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			get { return _negativeFormats; }
 		}
 	}
+
+
 }

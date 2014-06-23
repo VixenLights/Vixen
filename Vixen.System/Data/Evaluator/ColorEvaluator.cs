@@ -17,5 +17,5 @@ namespace Vixen.Data.Evaluator
 			LightingValue lightingValue = obj.GetValue();
 			EvaluatorValue = new ColorCommand(lightingValue.FullColor);
 		}
-	}
+    }
 }

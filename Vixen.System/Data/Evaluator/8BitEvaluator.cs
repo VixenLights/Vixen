@@ -23,5 +23,6 @@ namespace Vixen.Data.Evaluator
 		{
 			EvaluatorValue = new _8BitCommand((byte) (byte.MaxValue*obj.GetValue().Position));
 		}
+        
 	}
 }

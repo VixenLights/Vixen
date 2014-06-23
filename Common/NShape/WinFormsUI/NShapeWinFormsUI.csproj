@@ -330,7 +330,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Core\NShape.csproj">
       <Project>{9EFE1059-E2DC-4576-B9E3-4AE3F998CB28}</Project>
-      <Name>NShape %28VixenModules\Common\NShape\NShape%29</Name>
+      <Name>NShape</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

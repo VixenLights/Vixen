@@ -119,7 +119,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-
 		~IntentRasterizer()
 		{
 			Dispose(false);

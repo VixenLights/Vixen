@@ -110,7 +110,7 @@ namespace Vixen.Module.Effect
 
 		protected abstract EffectIntents _Render();
 
-		public string EffectName
+		public virtual string EffectName
 		{
 			get { return ((IEffectModuleDescriptor) Descriptor).EffectName; }
 		}

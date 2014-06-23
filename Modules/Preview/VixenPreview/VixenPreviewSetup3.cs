@@ -158,36 +158,36 @@ namespace VixenModules.Preview.VixenPreview {
 			Button button = sender as Button;
 			reenableToolButtons();
 			// Select Button
-			if (button == buttonSelect)
-				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Select;
-			else if (button == buttonDrawPixel)
-				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Single;
-			else if (button == buttonLine)
-				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.String;
-			else if (button == buttonSemiCircle)
-				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Arch;
-			else if (button == buttonRectangle)
-				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Rectangle;
-			else if (button == buttonEllipse)
-				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Ellipse;
-			else if (button == buttonTriangle)
-				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Triangle;
-			else if (button == buttonNet)
-				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Net;
-			//else if (button == buttonFlood)
-			//    previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Flood;
-			else if (button == buttonCane)
-				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Cane;
-			else if (button == buttonStar)
-				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Star;
+            if (button == buttonSelect)
+                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Select;
+            else if (button == buttonDrawPixel)
+                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Single;
+            else if (button == buttonLine)
+                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.String;
+            else if (button == buttonSemiCircle)
+                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Arch;
+            else if (button == buttonRectangle)
+                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Rectangle;
+            else if (button == buttonEllipse)
+                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Ellipse;
+            else if (button == buttonTriangle)
+                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Triangle;
+            else if (button == buttonNet)
+                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Net;
+            //else if (button == buttonFlood)
+            //    previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Flood;
+            else if (button == buttonCane)
+                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Cane;
+            else if (button == buttonStar)
+                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Star;
             else if (button == buttonStarBurst)
                 previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.StarBurst;
             else if (button == buttonHelp)
-				Common.VixenHelp.VixenHelp.ShowHelp(Common.VixenHelp.VixenHelp.HelpStrings.Preview_Main);
-			else if (button == buttonMegaTree)
-				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.MegaTree;
-			else if (button == buttonPixelGrid)
-				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.PixelGrid;
+                Common.VixenHelp.VixenHelp.ShowHelp(Common.VixenHelp.VixenHelp.HelpStrings.Preview_Main);
+            else if (button == buttonMegaTree)
+                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.MegaTree;
+            else if (button == buttonPixelGrid)
+                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.PixelGrid;
 			//button.Enabled = false;
 			button.BackColor = Color.Gainsboro;
 			button.FlatAppearance.BorderColor = Color.Gainsboro;

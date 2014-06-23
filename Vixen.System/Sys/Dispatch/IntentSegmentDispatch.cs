@@ -19,5 +19,6 @@ namespace Vixen.Sys.Dispatch
 		public virtual void Handle(IIntentSegment<CommandValue> obj)
 		{
 		}
+
 	}
 }

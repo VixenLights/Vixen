@@ -13,7 +13,6 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
-  
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>$(SolutionDir)\Release\Modules\EffectEditor\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
@@ -23,9 +22,8 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
-  
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-   <OutputPath>$(SolutionDir)\Release64\Modules\EffectEditor\</OutputPath>
+    <OutputPath>$(SolutionDir)\Release64\Modules\EffectEditor\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
@@ -79,7 +77,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <None Include="..\PapagayoEditor\packages.config">
+      <Link>packages.config</Link>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

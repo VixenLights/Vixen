@@ -30,8 +30,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public enum StringTypes
 		{
 			Standard,
-			Pixel,
-			//            Flood
+			Pixel
 		}
 
 		private bool _selected = false;
@@ -511,54 +510,67 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public abstract void ResizeFromOriginal(double aspect);
 
-		public DisplayItemBaseControl GetSetupControl()
+		virtual public DisplayItemBaseControl GetSetupControl()
 		{
 			Shapes.DisplayItemBaseControl setupControl = null;
 
-			if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewSingle") {
-				setupControl = new Shapes.PreviewSingleSetupControl(this);
-			}
-			else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewLine") {
-				setupControl = new Shapes.PreviewLineSetupControl(this);
-			}
-			else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewRectangle") {
-				setupControl = new Shapes.PreviewRectangleSetupControl(this);
-			}
-			else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewEllipse") {
-				setupControl = new Shapes.PreviewEllipseSetupControl(this);
-			}
-			else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewArch") {
-				setupControl = new Shapes.PreviewArchSetupControl(this);
-			}
-			else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewMegaTree") {
-				setupControl = new Shapes.PreviewMegaTreeSetupControl(this);
-			}
-			else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewTriangle") {
-				setupControl = new Shapes.PreviewTriangleSetupControl(this);
-			}
-			else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewFlood") {
-				setupControl = new Shapes.PreviewFloodSetupControl(this);
-			}
-			else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewCane") {
-				setupControl = new Shapes.PreviewCaneSetupControl(this);
-			}
-			else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewStar") {
-				setupControl = new Shapes.PreviewStarSetupControl(this);
-			}
+            if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewSingle")
+            {
+                setupControl = new Shapes.PreviewSingleSetupControl(this);
+            }
+            else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewLine")
+            {
+                setupControl = new Shapes.PreviewLineSetupControl(this);
+            }
+            else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewRectangle")
+            {
+                setupControl = new Shapes.PreviewRectangleSetupControl(this);
+            }
+            else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewEllipse")
+            {
+                setupControl = new Shapes.PreviewEllipseSetupControl(this);
+            }
+            else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewArch")
+            {
+                setupControl = new Shapes.PreviewArchSetupControl(this);
+            }
+            else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewMegaTree")
+            {
+                setupControl = new Shapes.PreviewMegaTreeSetupControl(this);
+            }
+            else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewTriangle")
+            {
+                setupControl = new Shapes.PreviewTriangleSetupControl(this);
+            }
+            else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewFlood")
+            {
+                setupControl = new Shapes.PreviewFloodSetupControl(this);
+            }
+            else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewCane")
+            {
+                setupControl = new Shapes.PreviewCaneSetupControl(this);
+            }
+            else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewStar")
+            {
+                setupControl = new Shapes.PreviewStarSetupControl(this);
+            }
             else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewStarBurst")
             {
                 setupControl = new Shapes.PreviewStarBurstSetupControl(this);
             }
             else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewNet")
             {
-				setupControl = new Shapes.PreviewNetSetupControl(this);
-			}
-			else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewCustom") {
-				setupControl = new Shapes.PreviewCustomSetupControl(this);
-			}
-			else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewPixelGrid") {
-				setupControl = new Shapes.PreviewPixelGridSetupControl(this);
-			}
+                setupControl = new Shapes.PreviewNetSetupControl(this);
+            }
+            else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewCustom")
+            {
+                setupControl = new Shapes.PreviewCustomSetupControl(this);
+            }
+            else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewPixelGrid")
+            {
+                setupControl = new Shapes.PreviewPixelGridSetupControl(this);
+            }
+              
 
 			return setupControl;
 		}

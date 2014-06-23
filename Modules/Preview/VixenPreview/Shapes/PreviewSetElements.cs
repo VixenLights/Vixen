@@ -40,11 +40,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					newString.Pixels.Add(pixel.Clone());
 				}
 					// If this is a pixel string, let them set every pixel
-				else {
+				else if (shape.StringType == PreviewBaseShape.StringTypes.Pixel) {
 					foreach (PreviewPixel pixel in shape.Pixels) {
 						newString.Pixels.Add(pixel.Clone());
 					}
 				}
+                    //If Image Type
+                else {
+
+                }
+
 				newString.StringName = "String " + i.ToString();
 				_strings.Add(newString);
 				i++;

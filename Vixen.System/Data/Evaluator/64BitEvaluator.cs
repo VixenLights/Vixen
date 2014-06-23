@@ -21,5 +21,6 @@ namespace Vixen.Data.Evaluator
 		{
 			EvaluatorValue = new _64BitCommand((ulong)(ulong.MaxValue * obj.GetValue().Position));
 		}
+        
 	}
 }

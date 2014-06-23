@@ -55,7 +55,7 @@ namespace Vixen.Intent
 					R = Math.Max(R, rv.R);
 					G = Math.Max(G, rv.G);
 					B = Math.Max(B, rv.B);
-				}
+				} 
 			}
 
 			return Color.FromArgb(R, G, B);

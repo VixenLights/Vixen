@@ -53,7 +53,7 @@ namespace VixenModules.Preview.VixenPreview
 			Cane,
 			PixelGrid,
             StarBurst
-		}
+        }
 
 		private Point dragStart;
 		private Point dragCurrent;

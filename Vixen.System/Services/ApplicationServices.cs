@@ -137,7 +137,8 @@ namespace Vixen.Services
 
 		public static IElementSetupHelper[] GetAllElementSetupHelpers()
 		{
-			return AppDomain.CurrentDomain.GetAssemblies()
+
+            return AppDomain.CurrentDomain.GetAssemblies()
 				.SelectMany(s => s.GetTypes())
 				.Where(p => (typeof(IElementSetupHelper)).IsAssignableFrom(p) && !p.IsAbstract)
 				.Select(Activator.CreateInstance)

@@ -109,7 +109,7 @@
     </ProjectReference>
     <ProjectReference Include="..\..\Sequence\Script\Script.csproj">
       <Project>{68B02FFD-EC04-4705-A9FC-B379EC7CB52F}</Project>
-      <Name>Script %28VixenModules\Modules\Sequence\Script%29</Name>
+      <Name>Script</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>

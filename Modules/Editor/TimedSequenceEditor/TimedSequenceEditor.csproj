@@ -127,6 +127,7 @@
       <DependentUpon>Form_Grid.cs</DependentUpon>
     </Compile>
     <Compile Include="IntentRasterizer.cs" />
+    <Compile Include="PapagayoDoc.cs" />
     <Compile Include="MarkManager.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -257,9 +258,19 @@
       <Name>Curves</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\App\LipSync\LipSyncApp.csproj">
+      <Project>{e3689e21-2204-48b9-8370-d45ee4a23451}</Project>
+      <Name>LipSyncApp</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\App\VirtualEffect\VirtualEffect.csproj">
       <Project>{02072E53-7A01-423C-914E-BF785BA4F5CB}</Project>
       <Name>VirtualEffect</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Effect\LipSync\LipSync.csproj">
+      <Project>{6de9a846-ac25-40b6-b8b2-b306ec9f2569}</Project>
+      <Name>LipSync</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Media\Audio\Audio.csproj">

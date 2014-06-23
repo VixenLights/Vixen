@@ -13,7 +13,6 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
- 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>$(SolutionDir)\Release\Modules\Property\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
@@ -23,9 +22,8 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
- 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-     <OutputPath>$(SolutionDir)\Release64\Modules\Property\</OutputPath>
+    <OutputPath>$(SolutionDir)\Release64\Modules\Property\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>

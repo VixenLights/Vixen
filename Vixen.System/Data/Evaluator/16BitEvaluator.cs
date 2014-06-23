@@ -21,5 +21,6 @@ namespace Vixen.Data.Evaluator
 		{
 			EvaluatorValue = new _16BitCommand((ushort)(ushort.MaxValue * obj.GetValue().Position));
 		}
+
 	}
 }
