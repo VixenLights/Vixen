@@ -443,7 +443,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void MarkCollection_Checked(object sender, MarkCollectionArgs e)
 		{
-			PopultateMarkSnapTimes();
+			PopulateMarkSnapTimes();
 		}
 
 		private void MarkCollection_Edit(Object sender, EventArgs e)
@@ -656,10 +656,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				TimelineControl.grid.SuppressInvalidate = true; //Hold off invalidating the grid while we bulk load.
 				TimelineControl.grid.SupressRendering = true; //Hold off rendering while we load elements. 
 				// This takes quite a bit of time so queue it up
-				taskQueue.Enqueue(Task.Factory.StartNew(() =>
-															{
-																addElementsForEffectNodes(_sequence.SequenceData.EffectData);
-															}));
+				taskQueue.Enqueue(Task.Factory.StartNew(() => addElementsForEffectNodes(_sequence.SequenceData.EffectData)));
+				taskQueue.Enqueue(Task.Factory.StartNew(PopulateAudioDropdown));
+				taskQueue.Enqueue(Task.Factory.StartNew(PopulateMarkSnapTimes));
+
 				// Now that it is queued up, let 'er rip and start background rendering when complete.
 				Task.Factory.ContinueWhenAll(taskQueue.ToArray(), completedTasks =>
 																	{
@@ -672,10 +672,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 																		TimelineControl.grid.SuppressInvalidate = false;
 																		TimelineControl.grid.RenderAllRows();
 																	});
-
-				PopultateMarkSnapTimes();
-
-				PopulateAudioDropdown();
 
 				//This path is followed for new and existing sequences so we need to determine which we have and set modified accordingly.
 				//Added logic to determine if the sequence has a filepath to set modified JU 8/1/2012. 
@@ -784,7 +780,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// <summary>
 		/// Populates the mark snaptimes in the grid.
 		/// </summary>
-		private void PopultateMarkSnapTimes()
+		private void PopulateMarkSnapTimes()
 		{
 			TimelineControl.ClearAllSnapTimes();
 
@@ -824,7 +820,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					if (cboAudioDevices.Items.Count > 0)
 					{
 						cboAudioDevices.SelectedIndex = 0;
-						Task.Factory.StartNew(PopulateWaveformAudio);
+						PopulateWaveformAudio();
 					}
 				}
 			}
@@ -1500,7 +1496,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (mc != null)
 				{
 					mc.Marks.Add(e.Time);
-					PopultateMarkSnapTimes();
+					PopulateMarkSnapTimes();
 					sequenceModified();
 				}
 			}
@@ -1543,7 +1539,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					}
 				}
 			}
-			PopultateMarkSnapTimes();
+			PopulateMarkSnapTimes();
 			sequenceModified();
 		}
 
@@ -1556,7 +1552,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					mc.Marks.Remove(e.Mark);
 				}
 			}
-			PopultateMarkSnapTimes();
+			PopulateMarkSnapTimes();
 			sequenceModified();
 		}
 
@@ -2976,7 +2972,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 				item.Checked = true;
 				TimelineControl.ruler.SnapStrength = TimelineControl.grid.SnapStrength = Convert.ToInt32(item.Tag);
-				PopultateMarkSnapTimes();
+				PopulateMarkSnapTimes();
 				
 			} 
 			
@@ -3229,7 +3225,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (manager.ShowDialog() == DialogResult.OK)
 			{
 				_sequence.MarkCollections = manager.MarkCollections;
-				PopultateMarkSnapTimes();
+				PopulateMarkSnapTimes();
 				sequenceModified();
 				MarksForm.PopulateMarkCollectionsList(null);
 			}
