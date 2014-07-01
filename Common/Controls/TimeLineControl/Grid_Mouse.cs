@@ -669,6 +669,7 @@ namespace Common.Controls.Timeline
 
 		private void MouseUp_DragMoving(Point gridLocation)
 		{
+			m_lastSingleSelectedElementLocation = gridLocation;
 			elementsFinishedMoving(ElementMoveType.Move);
 			endAllDrag();
 			CurrentDragSnapPoints.Clear();
