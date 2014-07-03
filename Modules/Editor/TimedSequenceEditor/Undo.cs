@@ -45,9 +45,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				string s = (m_changedElements.Count == 1 ? string.Empty : "s");
 				switch (m_moveType) {
 					case ElementMoveType.Move:
-						return string.Format("Move {0} effect{1} horizontally", m_changedElements.Count, s);
+						return string.Format("Moved {0} effect{1}", m_changedElements.Count, s);
 					case ElementMoveType.Resize:
 						return string.Format("Resize {0} effect{1}", m_changedElements.Count, s);
+					case ElementMoveType.Align:
+						return string.Format("Aligned {0} effect{1}", m_changedElements.Count, s);
+					case ElementMoveType.Distribute:
+						return string.Format("Distributed {0} effect{1}", m_changedElements.Count, s);
 					default:
 						throw new Exception("Unknown ElementMoveType!");
 				}
