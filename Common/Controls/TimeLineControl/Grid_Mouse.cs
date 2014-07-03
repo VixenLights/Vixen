@@ -382,8 +382,6 @@ namespace Common.Controls.Timeline
 				RenderElement(elem);
 			}
 
-			endAllDrag();
-
 			MultiElementEventArgs evargs = new MultiElementEventArgs {Elements = SelectedElements};
 			_ElementsFinishedMoving(evargs);
 
@@ -758,6 +756,7 @@ namespace Common.Controls.Timeline
 		private void MouseUp_HResizing(Point gridLocation)
 		{
 			elementsFinishedMoving(ElementMoveType.Resize);
+			endAllDrag();
 			CurrentDragSnapPoints.Clear();
 		}
 
