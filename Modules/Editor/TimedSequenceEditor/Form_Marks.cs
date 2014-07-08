@@ -112,7 +112,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void listViewMarkCollections_AfterLabelEdit(object sender, LabelEditEventArgs e)
 		{
 			MarkCollection mc = (listViewMarkCollections.Items[e.Item].Tag as MarkCollection);
-			mc.Name = e.Label;
+            mc.Name = e.Label ?? mc.Name;
 			OnChangedMarkCollection(new MarkCollectionArgs(mc));
 		}
 

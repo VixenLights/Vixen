@@ -3446,17 +3446,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
                 for (int j = 0; j < row.ElementCount; j++)
                 {
                     Element elem = row.ElementAt(j);
-					// BUILD ERROR
-                    //IEffectModuleInstance effect = elem._effectNode.Effect;
-					//if (effect.GetType() == typeof(LipSync))
-					//{
-					//	((LipSync)effect).MakeDirty();
-					//}
+					IEffectModuleInstance effect = elem.EffectNode.Effect;
+					if (effect.GetType() == typeof(LipSync))
+					{
+						((LipSync)effect).MakeDirty();
+					}
 
                 }
             }
-			// BUILD ERROR
-            //TimelineControl.grid.ResetAllElements();
+
+            TimelineControl.grid.RenderAllRows();
         }
 
         private void defaultMapToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
