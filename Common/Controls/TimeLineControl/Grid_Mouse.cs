@@ -826,6 +826,8 @@ namespace Common.Controls.Timeline
 	public enum ElementMoveType
 	{
 		Move,
-		Resize
+		Resize,
+		Align,
+		Distribute
 	}
 }
