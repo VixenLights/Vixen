@@ -62,6 +62,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private readonly Timer _autoSaveTimer = new Timer();
 
+		// Variables used by the add multiple effects dialog
+		int am_LastEffectCount;
+		TimeSpan am_LastStartTime;
+		TimeSpan am_LastDuration;
+		TimeSpan am_LastDurationBetween;
+
 		// a mapping of effects in the sequence to the element that represent them in the grid.
 		private Dictionary<EffectNode, Element> _effectNodeToElement;
 
@@ -1069,12 +1075,57 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				// Add an entry to the menu
 				ToolStripMenuItem menuItem = new ToolStripMenuItem(effectDesriptor.EffectName);
 				menuItem.Tag = effectDesriptor.TypeId;
+				menuItem.ToolTipText = "Use Shift key to add multiple effects of the same type.";
 				menuItem.Click += (mySender, myE) =>
 				{
 					if (e.Row != null)
 					{
-						addNewEffectById((Guid)menuItem.Tag, e.Row, e.GridTime,
-										 TimeSpan.FromSeconds(2));
+						if (Control.ModifierKeys == Keys.Shift || Control.ModifierKeys == (Keys.Shift | Keys.Control))
+						{
+							var eDialog = new Form_AddMultipleEffects();
+							if (Control.ModifierKeys == (Keys.Shift | Keys.Control) && am_LastEffectCount > 0)
+							{
+								eDialog.EffectCount = am_LastEffectCount;
+								eDialog.StartTime = am_LastStartTime;
+								eDialog.Duration = am_LastDuration;
+								eDialog.DurationBetween = am_LastDurationBetween;
+							}
+							else
+							{
+								eDialog.EffectCount = 2;
+								eDialog.StartTime = e.GridTime;
+								eDialog.Duration = TimeSpan.FromSeconds(2);
+								eDialog.DurationBetween = TimeSpan.FromSeconds(2);
+							}
+							
+							eDialog.ShowDialog();
+
+							if (eDialog.DialogResult == DialogResult.OK)
+							{
+								am_LastEffectCount = eDialog.EffectCount;
+								am_LastStartTime = eDialog.StartTime;
+								am_LastDuration = eDialog.Duration;
+								am_LastDurationBetween = eDialog.DurationBetween;
+
+								TimeSpan NextStartTime = eDialog.StartTime;
+								for (int i = 0; i < eDialog.EffectCount; i++)
+								{
+									if (NextStartTime + eDialog.Duration > SequenceLength)
+									{
+										MessageBox.Show("Effect addition canceled, the placement of one or more effects would extend beyond the sequence length.", "Error", MessageBoxButtons.OK);
+										return;
+									}
+									else
+									{
+										addNewEffectById((Guid)menuItem.Tag, e.Row, NextStartTime, eDialog.Duration);
+										NextStartTime = NextStartTime + eDialog.Duration + eDialog.DurationBetween;
+									}
+								}
+							}
+
+						}
+						else
+							addNewEffectById((Guid)menuItem.Tag, e.Row, e.GridTime, TimeSpan.FromSeconds(2));
 					}
 				};
 
