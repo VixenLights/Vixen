@@ -382,8 +382,6 @@ namespace Common.Controls.Timeline
 				RenderElement(elem);
 			}
 
-			endAllDrag();
-
 			MultiElementEventArgs evargs = new MultiElementEventArgs {Elements = SelectedElements};
 			_ElementsFinishedMoving(evargs);
 
@@ -495,22 +493,15 @@ namespace Common.Controls.Timeline
 			if (!EnableSnapTo) return;
 			// build up a full set of snap points/details, from (a) the static snap points for the grid, and
 			// (b) calculated snap points for this move (ie. other elements in the row[s]).
-			CurrentDragSnapPoints = new SortedDictionary<TimeSpan, List<SnapDetails>>(StaticSnapPoints);
-
+			
 			// iterate through the rows, calculating snap points for every single element in each row that has any selected elements
-			foreach (Row row in Rows) {
+			foreach (Row row in Rows.Where(x => x.Visible)) {
 				// This would skip generating snap points for elements on any rows that have nothing selected.
 				// However, we still need to do that; as we might be dragging elements vertically into rows that
 				// (currently) have nothing selected. So we'll generate for everything, but that's going to be
 				// quite overkill. So, the big TODO: here is to regenerate element snap points for only rows with
 				// selected elements, but also regenerate them whenever we move vertically.
-				//if (row.SelectedElements.Count == 0)
-				//    continue;
-
-				// skip any elements in rows that aren't visible.
-				if (!row.Visible)
-					continue;
-
+				
 				foreach (Element element in row) {
 					// skip it if it's a selected element; we don't want to snap to them, as they'll be moving as well
 					if (element.Selected)
@@ -533,6 +524,18 @@ namespace Common.Controls.Timeline
 						CurrentDragSnapPoints[details.SnapTime] = new List<SnapDetails>();
 					}
 					CurrentDragSnapPoints[details.SnapTime].Add(details);
+				}
+			}
+
+			//Add in our static snap points as a copy so they are not modified
+			foreach (var staticSnapPoint in StaticSnapPoints)
+			{
+				if (CurrentDragSnapPoints.ContainsKey(staticSnapPoint.Key))
+				{
+					CurrentDragSnapPoints[staticSnapPoint.Key].AddRange(staticSnapPoint.Value);
+				} else
+				{
+					CurrentDragSnapPoints.Add(staticSnapPoint.Key, staticSnapPoint.Value);
 				}
 			}
 		}
@@ -664,8 +667,10 @@ namespace Common.Controls.Timeline
 
 		private void MouseUp_DragMoving(Point gridLocation)
 		{
+			m_lastSingleSelectedElementLocation = gridLocation;
 			elementsFinishedMoving(ElementMoveType.Move);
 			endAllDrag();
+			CurrentDragSnapPoints.Clear();
 		}
 
 		#endregion
@@ -751,6 +756,7 @@ namespace Common.Controls.Timeline
 		private void MouseUp_HResizing(Point gridLocation)
 		{
 			elementsFinishedMoving(ElementMoveType.Resize);
+			endAllDrag();
 			CurrentDragSnapPoints.Clear();
 		}
 
@@ -820,6 +826,8 @@ namespace Common.Controls.Timeline
 	public enum ElementMoveType
 	{
 		Move,
-		Resize
+		Resize,
+		Align,
+		Distribute
 	}
 }

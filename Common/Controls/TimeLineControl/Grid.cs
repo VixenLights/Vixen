@@ -609,7 +609,203 @@ namespace Common.Controls.Timeline
 			if (!SuppressInvalidate) Invalidate();
 			return rv;
 		}
-		
+
+		/// <summary>
+		/// Aligns the elements start times to the reference element as a single atomic operation
+		/// </summary>
+		/// <param name="elements">The elements to align the start times</param>
+		/// <param name="referenceElement">The element to use for the start time reference</param>
+		/// <param name="holdDuration">Lock the durations</param>
+		public void AlignElementStartTimes(IEnumerable<Element> elements, Element referenceElement, bool holdDuration)
+		{
+			var elementsToAlign = new Dictionary<Element, Tuple<TimeSpan, TimeSpan>>();
+			foreach (Element selectedElement in elements)
+			{
+				if (selectedElement.StartTime == referenceElement.StartTime) continue;
+				//If elements end time is before or the same as the reference start time, just move the element, otherwise element becomes invalid
+				if (selectedElement.EndTime < referenceElement.StartTime || selectedElement.EndTime == referenceElement.StartTime)
+				{
+					elementsToAlign.Add(selectedElement, new Tuple<TimeSpan, TimeSpan>(referenceElement.StartTime, referenceElement.StartTime + selectedElement.Duration));
+					continue;
+				}
+				elementsToAlign.Add(selectedElement,
+					holdDuration
+						? new Tuple<TimeSpan, TimeSpan>(referenceElement.StartTime, referenceElement.StartTime + selectedElement.Duration)
+						: new Tuple<TimeSpan, TimeSpan>(referenceElement.StartTime, selectedElement.EndTime));
+			}
+
+			MoveResizeElements(elementsToAlign, ElementMoveType.Align);
+		}
+
+		/// <summary>
+		/// Aligns the elements end times to the reference element as a single atomic operation
+		/// </summary>
+		/// <param name="elements">The elements to align the start times</param>
+		/// <param name="referenceElement">The element to use for the start time reference</param>
+		/// <param name="holdDuration">Lock the durations</param>
+		public void AlignElementEndTimes(IEnumerable<Element> elements, Element referenceElement, bool holdDuration)
+		{
+			var elementsToAlign = new Dictionary<Element, Tuple<TimeSpan, TimeSpan>>();
+			foreach (Element selectedElement in elements)
+			{
+				if (selectedElement.EndTime == referenceElement.EndTime) continue;
+				//If elements end time is before or the same as the reference start time, just move the element, otherwise element becomes invalid
+				if (selectedElement.StartTime > referenceElement.EndTime || selectedElement.StartTime == referenceElement.EndTime)
+				{
+					elementsToAlign.Add(selectedElement, new Tuple<TimeSpan, TimeSpan>(referenceElement.EndTime - selectedElement.Duration, referenceElement.EndTime));
+					continue;
+				}
+				elementsToAlign.Add(selectedElement,
+					holdDuration
+						? new Tuple<TimeSpan, TimeSpan>(referenceElement.EndTime - selectedElement.Duration, referenceElement.EndTime)
+						: new Tuple<TimeSpan, TimeSpan>(selectedElement.StartTime, referenceElement.EndTime));
+			}
+
+			MoveResizeElements(elementsToAlign, ElementMoveType.Align);
+		}
+
+		/// <summary>
+		/// Aligns the elements Durations to the reference element by extending the end time or optionally the start time as a single atomic operation
+		/// </summary>
+		/// <param name="elements">The elements to align the start times</param>
+		/// <param name="referenceElement">The element to use for the start time reference</param>
+		/// <param name="holdEndTime">Lock the end times and extend the start time</param>
+		public void AlignElementDurations(IEnumerable<Element> elements, Element referenceElement, bool holdEndTime)
+		{
+			var elementsToAlign = new Dictionary<Element, Tuple<TimeSpan, TimeSpan>>();
+			foreach (Element selectedElement in elements)
+			{
+				if (selectedElement.Duration == referenceElement.Duration) continue;
+				elementsToAlign.Add(selectedElement,
+					holdEndTime
+						? new Tuple<TimeSpan, TimeSpan>(selectedElement.EndTime - referenceElement.Duration, selectedElement.EndTime)
+						: new Tuple<TimeSpan, TimeSpan>(selectedElement.StartTime, selectedElement.StartTime + referenceElement.Duration));
+			}
+
+			MoveResizeElements(elementsToAlign, ElementMoveType.Align);
+		}
+
+		/// <summary>
+		/// Aligns the elements start and end times to the reference element as a single atomic operation
+		/// </summary>
+		/// <param name="elements">The elements to align the start times</param>
+		/// <param name="referenceElement">The element to use for the start time reference</param>
+		public void AlignElementStartEndTimes(IEnumerable<Element> elements, Element referenceElement)
+		{
+			var elementsToAlign = new Dictionary<Element, Tuple<TimeSpan, TimeSpan>>();
+			foreach (Element selectedElement in elements)
+			{
+				if (selectedElement.StartTime == referenceElement.StartTime && selectedElement.EndTime == referenceElement.EndTime) continue;
+				elementsToAlign.Add(selectedElement, new Tuple<TimeSpan, TimeSpan>(referenceElement.StartTime, referenceElement.EndTime));
+			}
+
+			MoveResizeElements(elementsToAlign, ElementMoveType.Align);
+		}
+
+		/// <summary>
+		/// Align the start times to the end time of the elements to the referenced element as a single atomic operation
+		/// </summary>
+		/// <param name="elements"></param>
+		/// <param name="referenceElement"></param>
+		public void AlignElementStartToEndTimes(IEnumerable<Element> elements, Element referenceElement)
+		{
+			var elementsToAlign = new Dictionary<Element, Tuple<TimeSpan, TimeSpan>>();
+			foreach (Element selectedElement in elements)
+			{
+				if (selectedElement.EndTime == referenceElement.EndTime) continue;
+				//Need to make sure element is not moved beyond time, if going to do so we need to adjust duration while moving otherwise element becomes invalid and not clickable
+				if ((referenceElement.EndTime + selectedElement.Duration) > TotalTime)
+				{
+					elementsToAlign.Add(selectedElement, new Tuple<TimeSpan, TimeSpan>(referenceElement.EndTime, TotalTime));
+					continue;
+				}
+				//if the end time is going to be before the start time, we should just move the selectedelement
+				elementsToAlign.Add(selectedElement, new Tuple<TimeSpan, TimeSpan>(referenceElement.EndTime, referenceElement.EndTime + selectedElement.Duration));
+			}
+
+			MoveResizeElements(elementsToAlign, ElementMoveType.Align);
+		}
+
+		/// <summary>
+		/// Align the start times to the end time of the elements to referenced element as a single atomic operation
+		/// </summary>
+		/// <param name="elements"></param>
+		/// <param name="referenceElement"></param>
+		public void AlignElementEndToStartTime(IEnumerable<Element> elements, Element referenceElement)
+		{
+			var elementsToAlign = new Dictionary<Element, Tuple<TimeSpan, TimeSpan>>();
+			foreach (Element selectedElement in elements)
+			{
+				if (selectedElement.StartTime == referenceElement.StartTime) continue;
+				//if the start time is going to be after the end time, we should just move the selectedelement
+				//We don't need to wory about making sure the element will not go before 0, it works properly as it is.
+				if (referenceElement.StartTime < selectedElement.EndTime)
+				{
+					elementsToAlign.Add(selectedElement, new Tuple<TimeSpan, TimeSpan>(
+						(referenceElement.StartTime - selectedElement.Duration) > TimeSpan.Zero ? 
+						referenceElement.StartTime - selectedElement.Duration : TimeSpan.Zero, referenceElement.StartTime));
+				}
+				else
+				{
+					elementsToAlign.Add(selectedElement, new Tuple<TimeSpan, TimeSpan>(selectedElement.StartTime, referenceElement.StartTime));
+				}
+			}
+
+			MoveResizeElements(elementsToAlign, ElementMoveType.Align);
+		}
+
+		/// <summary>
+		/// Align the center lines of the elements to the referenced element as a single atomic operation
+		/// </summary>
+		/// <param name="elements"></param>
+		/// <param name="referenceElement"></param>
+		public void AlignElementCenters(IEnumerable<Element> elements, Element referenceElement)
+		{
+			var centerPoint = referenceElement.StartTime.TotalSeconds + (referenceElement.Duration.TotalSeconds / 2);
+			var elementsToAlign = new Dictionary<Element, Tuple<TimeSpan, TimeSpan>>();
+			foreach (Element selectedElement in elements)
+			{
+				if (selectedElement.StartTime == referenceElement.StartTime) continue;
+				var thisStartTime = centerPoint - (selectedElement.Duration.TotalSeconds / 2);
+				elementsToAlign.Add(selectedElement, new Tuple<TimeSpan, TimeSpan>(TimeSpan.FromSeconds(thisStartTime), TimeSpan.FromSeconds(thisStartTime) + selectedElement.Duration));
+			}
+
+			MoveResizeElements(elementsToAlign, ElementMoveType.Align);
+		}
+
+		/// <summary>
+		/// Move/Resize a group of elements as an atomic operation
+		/// </summary>
+		/// <param name="elements">List of elements with tuple of new start time, new end time</param>
+		/// <param name="moveType">Optional move type. Defaults to move.</param>
+		public void MoveResizeElements(Dictionary<Element, Tuple<TimeSpan, TimeSpan>> elements, ElementMoveType moveType = ElementMoveType.Move)
+		{
+			m_elemMoveInfo = new ElementMoveInfo(new Point(), elements.Keys , VisibleTimeStart);
+			foreach (KeyValuePair<Element, Tuple<TimeSpan, TimeSpan>> elementInfo in elements)
+			{
+				if (elementInfo.Key == null || elementInfo.Value.Item2 > TotalTime
+				|| elementInfo.Value.Item2 - elementInfo.Value.Item1 < TimeSpan.FromMilliseconds(1))
+				{
+					continue;  // Skip elements that are not valid for move resize.
+				}
+
+				elementInfo.Key.BeginUpdate();
+				elementInfo.Key.StartTime = elementInfo.Value.Item1;
+				elementInfo.Key.EndTime = elementInfo.Value.Item2;
+				elementInfo.Key.EndUpdate();
+				RenderElement(elementInfo.Key);
+					
+			}
+
+			MultiElementEventArgs evargs = new MultiElementEventArgs { Elements = elements.Keys };
+			_ElementsFinishedMoving(evargs);
+
+			if (ElementsMovedNew != null)
+				ElementsMovedNew(this, new ElementsChangedTimesEventArgs(m_elemMoveInfo, moveType));
+
+			m_elemMoveInfo = null;
+		}
+
 		/// <summary>
 		/// Handles moving/resizing a single element.
 		/// it's a single 'atomic' operation that moves the elements and raises an event to indicate they have moved.
@@ -617,8 +813,9 @@ namespace Common.Controls.Timeline
 		/// <param name="element"></param>
 		/// <param name="start"></param>
 		/// <param name="duration"></param>
+		/// <param name="moveType">Optional move type. Defaults to Move</param>
 		/// <returns>Boolen indicating whether the move occured</returns>
-		public bool MoveResizeElement(Element element, TimeSpan start, TimeSpan duration)
+		public bool MoveResizeElement(Element element, TimeSpan start, TimeSpan duration, ElementMoveType moveType = ElementMoveType.Move)
 		{
 			if (element == null || start > TotalTime || start + duration > TotalTime 
 				|| duration < TimeSpan.FromMilliseconds(1))
@@ -634,7 +831,7 @@ namespace Common.Controls.Timeline
 			RenderElement(element);
 
 			if (ElementsMovedNew != null)
-				ElementsMovedNew(this, new ElementsChangedTimesEventArgs(m_elemMoveInfo, ElementMoveType.Move));
+				ElementsMovedNew(this, new ElementsChangedTimesEventArgs(m_elemMoveInfo, moveType));
 			
 			m_elemMoveInfo = null;
 

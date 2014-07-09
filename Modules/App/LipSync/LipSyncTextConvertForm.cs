@@ -178,7 +178,10 @@ namespace VixenModules.App.LipSyncApp
             markCollectionCombo.SelectedIndex = 0;
             foreach (MarkCollection mc in MarkCollections)
             {
-                markCollectionCombo.Items.Add(mc.Name);
+                if (mc.Name != null)
+                {
+                    markCollectionCombo.Items.Add(mc.Name);
+                }
             }
         }
 
