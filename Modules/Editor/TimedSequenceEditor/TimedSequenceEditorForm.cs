@@ -1098,7 +1098,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 								eDialog.Duration = TimeSpan.FromSeconds(2);
 								eDialog.DurationBetween = TimeSpan.FromSeconds(2);
 							}
-
+							eDialog.EffectName = effectDesriptor.EffectName;
+							eDialog.SequenceLength = SequenceLength;
 							eDialog.ShowDialog();
 
 							if (eDialog.DialogResult == DialogResult.OK)
@@ -1109,31 +1110,20 @@ namespace VixenModules.Editor.TimedSequenceEditor
 								am_LastDurationBetween = eDialog.DurationBetween;
 
 								TimeSpan NextStartTime = eDialog.StartTime;
-								var newEffects = new List<Element>();
+								var newEffects = new List<EffectNode>();
 								for (int i = 0; i < eDialog.EffectCount; i++)
 								{
 									if (NextStartTime + eDialog.Duration > SequenceLength)
 									{
-										MessageBox.Show(string.Format("Added {0} effect{1}.\n" +
-											"Further addition canceled, the remaining effects would exceed sequence length.", +
-											i, (i == 1 ? string.Empty : "s")), "Error", MessageBoxButtons.OK);
-										//Get out of the for loop, we're not going to add any further effects, and we need to create the undo action
-										//as well as the call to sequenceModified
-										goto EndOfAddition;
+										//if something went wrong in the forms calculations
+										break;
 									}
 									else
 									{
 										var newEffect = ApplicationServices.Get<IEffectModuleInstance>((Guid)menuItem.Tag);
 										try
 										{
-											var targetNode = (ElementNode)e.Row.Tag;
-											// populate the given effect instance with the appropriate target node and times, and wrap it in an effectNode
-											newEffect.TargetNodes = new[] { targetNode };
-											newEffect.TimeSpan = eDialog.Duration;
-											var effectNode = new EffectNode(newEffect, NextStartTime);
-											// put it in the sequence and in the timeline display
-											newEffects.Add(AddEffectNode(effectNode));
-											//Prepare the starting time for the next effect before we loop
+											newEffects.Add(CreateEffectNode(newEffect, e.Row, NextStartTime, eDialog.Duration));
 											NextStartTime = NextStartTime + eDialog.Duration + eDialog.DurationBetween;
 										}
 										catch (Exception ex)
@@ -1144,10 +1134,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 										}
 									}
 								}
-							EndOfAddition:
+								AddEffectNodes(newEffects);
 								sequenceModified();
-								//Add elements as a group to undo
-								var act = new EffectsAddedUndoAction(this, newEffects.Select(x => x.EffectNode).ToArray());
+								var act = new EffectsAddedUndoAction(this, newEffects);
 								_undoMgr.AddUndoAction(act);
 							}
 						}

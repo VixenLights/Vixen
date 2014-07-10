@@ -21,6 +21,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void Form_AddMultipleEffects_Load(object sender, EventArgs e)
 		{
 			txtStartTime.Mask = txtDuration.Mask = txtDurationBetween.Mask = "0:00.000";
+			CalculatePossibleEffects();
 		}
 		
 		public int EffectCount { 
@@ -34,7 +35,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				txtEffectCount.Text = value.ToString();
 			}
 		}
-		
+
+		public string EffectName
+		{ 
+			set
+			{
+				this.Text = string.Format("Add {0} effects",value);
+			}
+		}
+
+		public TimeSpan SequenceLength { get; set; }
+
 		public TimeSpan StartTime
 		{
 			get
@@ -77,6 +88,30 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
+		private bool TimeExistsForAddition()
+		{
+			//Determine the end time of the last effect to be added, if it is beyond sequence length return false, else true
+			TimeSpan LastEffectEndTime = StartTime + (TimeSpan.FromTicks(Duration.Ticks * EffectCount) + TimeSpan.FromTicks(DurationBetween.Ticks * (EffectCount -1)));
+			return (LastEffectEndTime > SequenceLength ? false : true);
+		}
+
+		private void CalculatePossibleEffects()
+		{
+			//This gives us the available amount of time to fill.
+			int i = 1;
+			TimeSpan WorkingTime = SequenceLength - StartTime;
+			TimeSpan UsesTime = (TimeSpan.FromTicks(Duration.Ticks * i) + TimeSpan.FromTicks(DurationBetween.Ticks * (i - 1))); ;
+			while (UsesTime < WorkingTime)
+			{
+				i++;
+				UsesTime = (TimeSpan.FromTicks(Duration.Ticks * i) + TimeSpan.FromTicks(DurationBetween.Ticks * (i - 1)));
+			}
+			//Get rid of the straw that broke the camels back.
+			i--;
+			txtEffectCount.Maximum = i;
+			lblPossibleEffects.Text = string.Format("{0} effects possible.", i);
+		}
+
 		private void txtStartTime_KeyDown(object sender, KeyEventArgs e)
 		{
 			toolTip.Hide(txtStartTime);
@@ -89,6 +124,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (TimeSpan.TryParseExact(txtStartTime.Text, timeFormat, CultureInfo.InvariantCulture, out StartTime))
 			{
 				btnOK.Enabled = true;
+				CalculatePossibleEffects();
 			}
 			else
 			{
@@ -148,6 +184,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (TimeSpan.TryParseExact(txtDuration.Text, timeFormat, CultureInfo.InvariantCulture, out Duration) && Duration.TotalSeconds > .009)
 			{
 				btnOK.Enabled = true;
+				CalculatePossibleEffects();
 			}
 			else
 			{
@@ -190,9 +227,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			TimeSpan DurationBetween;
 			if (TimeSpan.TryParseExact(txtDurationBetween.Text, timeFormat, CultureInfo.InvariantCulture, out DurationBetween))
+			{
 				btnOK.Enabled = true;
-			else
-				btnOK.Enabled = false;
+				CalculatePossibleEffects();
+			}
+			else btnOK.Enabled = false;
 		}
 
 		private void txtEffectCount_KeyDown(object sender, KeyEventArgs e)
@@ -203,13 +242,21 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void txtEffectCount_KeyUp(object sender, KeyEventArgs e)
 		{
-
 			int EffectCount;
-			if (int.TryParse(txtEffectCount.Text, out EffectCount))
-				btnOK.Enabled = true;
-			else
-				btnOK.Enabled = false;
-
+			btnOK.Enabled = (int.TryParse(txtEffectCount.Text, out EffectCount) ? true : false);
+		}
+		
+		private void btnOK_Click(object sender, EventArgs e)
+		{
+			//Double check for calculations
+			if (!TimeExistsForAddition())
+			{
+				DialogResult proceedDialog = MessageBox.Show("At least one effect would be placed beyond the sequence length, and will not be added.\n\nWould you like to proceed anyway?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+				if (proceedDialog == DialogResult.No)
+				{
+					this.DialogResult = DialogResult.None;
+				}
+			}
 		}
 	}
 }

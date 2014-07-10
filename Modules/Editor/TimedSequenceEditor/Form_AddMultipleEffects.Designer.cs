@@ -40,13 +40,14 @@
 			this.txtDurationBetween = new System.Windows.Forms.MaskedTextBox();
 			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
 			this.txtEffectCount = new System.Windows.Forms.NumericUpDown();
+			this.lblPossibleEffects = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.txtEffectCount)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(12, 9);
+			this.label1.Location = new System.Drawing.Point(12, 39);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(124, 13);
 			this.label1.TabIndex = 0;
@@ -55,7 +56,7 @@
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(12, 35);
+			this.label2.Location = new System.Drawing.Point(12, 65);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(65, 13);
 			this.label2.TabIndex = 2;
@@ -64,7 +65,7 @@
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(12, 61);
+			this.label3.Location = new System.Drawing.Point(12, 91);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(47, 13);
 			this.label3.TabIndex = 4;
@@ -73,7 +74,7 @@
 			// label4
 			// 
 			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(12, 87);
+			this.label4.Location = new System.Drawing.Point(12, 117);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(91, 13);
 			this.label4.TabIndex = 6;
@@ -82,17 +83,18 @@
 			// btnOK
 			// 
 			this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.btnOK.Location = new System.Drawing.Point(12, 110);
+			this.btnOK.Location = new System.Drawing.Point(12, 140);
 			this.btnOK.Name = "btnOK";
 			this.btnOK.Size = new System.Drawing.Size(75, 23);
 			this.btnOK.TabIndex = 8;
 			this.btnOK.Text = "OK";
 			this.btnOK.UseVisualStyleBackColor = true;
+			this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
 			// 
 			// btnCancel
 			// 
 			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.btnCancel.Location = new System.Drawing.Point(166, 110);
+			this.btnCancel.Location = new System.Drawing.Point(166, 140);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(75, 23);
 			this.btnCancel.TabIndex = 9;
@@ -101,7 +103,7 @@
 			// 
 			// txtStartTime
 			// 
-			this.txtStartTime.Location = new System.Drawing.Point(142, 32);
+			this.txtStartTime.Location = new System.Drawing.Point(142, 62);
 			this.txtStartTime.Name = "txtStartTime";
 			this.txtStartTime.Size = new System.Drawing.Size(100, 20);
 			this.txtStartTime.TabIndex = 10;
@@ -111,7 +113,7 @@
 			// 
 			// txtDuration
 			// 
-			this.txtDuration.Location = new System.Drawing.Point(142, 58);
+			this.txtDuration.Location = new System.Drawing.Point(142, 88);
 			this.txtDuration.Name = "txtDuration";
 			this.txtDuration.Size = new System.Drawing.Size(100, 20);
 			this.txtDuration.TabIndex = 11;
@@ -121,7 +123,7 @@
 			// 
 			// txtDurationBetween
 			// 
-			this.txtDurationBetween.Location = new System.Drawing.Point(142, 84);
+			this.txtDurationBetween.Location = new System.Drawing.Point(142, 114);
 			this.txtDurationBetween.Name = "txtDurationBetween";
 			this.txtDurationBetween.Size = new System.Drawing.Size(100, 20);
 			this.txtDurationBetween.TabIndex = 12;
@@ -131,10 +133,19 @@
 			// 
 			// txtEffectCount
 			// 
-			this.txtEffectCount.Location = new System.Drawing.Point(142, 6);
+			this.txtEffectCount.Location = new System.Drawing.Point(142, 36);
 			this.txtEffectCount.Name = "txtEffectCount";
 			this.txtEffectCount.Size = new System.Drawing.Size(100, 20);
 			this.txtEffectCount.TabIndex = 14;
+			// 
+			// lblPossibleEffects
+			// 
+			this.lblPossibleEffects.AutoSize = true;
+			this.lblPossibleEffects.Location = new System.Drawing.Point(73, 9);
+			this.lblPossibleEffects.Name = "lblPossibleEffects";
+			this.lblPossibleEffects.Size = new System.Drawing.Size(92, 13);
+			this.lblPossibleEffects.TabIndex = 15;
+			this.lblPossibleEffects.Text = "n effects possible.";
 			// 
 			// Form_AddMultipleEffects
 			// 
@@ -142,8 +153,9 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.btnCancel;
-			this.ClientSize = new System.Drawing.Size(252, 139);
+			this.ClientSize = new System.Drawing.Size(252, 170);
 			this.ControlBox = false;
+			this.Controls.Add(this.lblPossibleEffects);
 			this.Controls.Add(this.txtEffectCount);
 			this.Controls.Add(this.txtDurationBetween);
 			this.Controls.Add(this.txtDuration);
@@ -178,5 +190,6 @@
 		private System.Windows.Forms.MaskedTextBox txtDurationBetween;
 		private System.Windows.Forms.ToolTip toolTip;
 		private System.Windows.Forms.NumericUpDown txtEffectCount;
+		private System.Windows.Forms.Label lblPossibleEffects;
 	}
 }
