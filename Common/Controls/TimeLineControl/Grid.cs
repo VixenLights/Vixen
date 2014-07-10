@@ -44,8 +44,6 @@ namespace Common.Controls.Timeline
 		public ISequenceContext Context = null;
 		public bool SequenceLoading { get; set; }
 
-		
-
 		#region Initialization
 
 		public Grid(TimeInfo timeinfo)
@@ -260,6 +258,10 @@ namespace Common.Controls.Timeline
 			}
 		}
 
+		//Drag Box Filter stuff
+		public bool DragBoxFilterEnabled { get; set; }
+		public List<Guid> DragBoxFilterTypes = new List<Guid>();
+		
 		public TimeSpan GridlineInterval { get; set; }
 		public bool OnlySnapToCurrentRow { get; set; }
 		public int SnapPriorityForElements { get; set; }
@@ -1093,7 +1095,14 @@ namespace Common.Controls.Timeline
 
 					// This row is in our selection
 					foreach (var elem in row) {
-						elem.Selected = (elem.StartTime < selEnd && elem.EndTime > selStart);
+						if (DragBoxFilterEnabled)
+						{
+							elem.Selected = (elem.StartTime < selEnd && elem.EndTime > selStart && DragBoxFilterTypes.Contains(elem.EffectNode.Effect.TypeId));
+						}
+						else
+						{
+							elem.Selected = (elem.StartTime < selEnd && elem.EndTime > selStart);
+						}
 					}
 
 					if (row == endRow) {

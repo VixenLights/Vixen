@@ -143,6 +143,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolStripButton_ZoomTimeOut.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStripButton_SnapTo.Image = Resources.magnet;
 			toolStripButton_SnapTo.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			toolStripButton_DragBoxFilter.Image = Resources.table_select_big;
+			toolStripButton_DragBoxFilter.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStripButton_IncreaseTimingSpeed.Image = Resources.plus;
 			toolStripButton_IncreaseTimingSpeed.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStripButton_DecreaseTimingSpeed.Image = Resources.minus;
@@ -284,9 +286,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				_colorGradientLibrary.GradientChanged += ColorGradientLibrary_CurveChanged;	
 			}
-			
 
 			LoadAvailableEffects();
+			PopulateDragBoxFilterDropDown();
 			InitUndo();
 			updateButtonStates();
 			UpdatePasteMenuStates();
@@ -500,49 +502,66 @@ namespace VixenModules.Editor.TimedSequenceEditor
 																	TimeSpan.FromSeconds(2)); // TODO: get a proper time
 										}
 									};
-				//addEffectToolStripMenuItem.DropDownItems.Add(menuItem);
+			}
+		}
 
-				// Add a button to the tool strip
-				//ToolStripItem tsItem = new ToolStripButton(guid.Value.Name);
-				//tsItem.Tag = guid.Key;
-				//tsItem.MouseDown += toolStripEffects_Item_MouseDown;
-				//tsItem.MouseMove += toolStripEffects_Item_MouseMove;
-				//tsItem.Click += toolStripEffects_Item_Click;
+		private void PopulateDragBoxFilterDropDown()
+		{
+			ToolStripMenuItem dbfInvertMenuItem = new ToolStripMenuItem("Invert Selection");
+			dbfInvertMenuItem.ShortcutKeys = Keys.Control | Keys.I;
+			dbfInvertMenuItem.ShowShortcutKeys = true;
+			dbfInvertMenuItem.MouseUp += (sender, e) =>
+				{
+					//Shortcut key counts as a .Click, so this goes here...
+					toolStripDropDownButton_DragBoxFilter.ShowDropDown();
+				};
+			dbfInvertMenuItem.Click += (sender, e) =>
+				{
+					foreach (ToolStripMenuItem mnuItem in toolStripDropDownButton_DragBoxFilter.DropDownItems)
+					{
+						mnuItem.Checked = (mnuItem.Checked ? false : true);
+					}
+				};
+			toolStripDropDownButton_DragBoxFilter.DropDownItems.Add(dbfInvertMenuItem);
 
-				//toolStripEffects.Items.Add(tsItem);
-				//toolStripExVirtualEffects.Items.Add(tsItem);
+			foreach (IEffectModuleDescriptor effectDesriptor in
+					ApplicationServices.GetModuleDescriptors<IEffectModuleInstance>().Cast<IEffectModuleDescriptor>())
+			{
+				//Populate Drag Box Filter drop down with effect types
+				ToolStripMenuItem dbfMenuItem = new ToolStripMenuItem(effectDesriptor.EffectName, effectDesriptor.GetRepresentativeImage(48, 48));
+				dbfMenuItem.CheckOnClick = true;
+				dbfMenuItem.CheckStateChanged += (sender, e) =>
+					{
+						//OK, now I don't remember why I put this here, I think to make sure the list is updated when using the invert
+						if (dbfMenuItem.Checked) TimelineControl.grid.DragBoxFilterTypes.Add(effectDesriptor.TypeId);
+						else TimelineControl.grid.DragBoxFilterTypes.Remove(effectDesriptor.TypeId);
+					};
+				dbfMenuItem.Click += (sender, e) =>
+					{
+						toolStripDropDownButton_DragBoxFilter.ShowDropDown();
+					};
+				toolStripDropDownButton_DragBoxFilter.DropDownItems.Add(dbfMenuItem);
 			}
 		}
 
 		private void LoadAvailableEffects()
 		{
-			foreach (
-				IEffectModuleDescriptor effectDesriptor in
-					ApplicationServices.GetModuleDescriptors<IEffectModuleInstance>().Cast<IEffectModuleDescriptor>())
+			foreach (IEffectModuleDescriptor effectDesriptor in
+				ApplicationServices.GetModuleDescriptors<IEffectModuleInstance>().Cast<IEffectModuleDescriptor>())
 			{
 				// Add an entry to the menu
 				ToolStripMenuItem menuItem = new ToolStripMenuItem(effectDesriptor.EffectName);
 				menuItem.Tag = effectDesriptor.TypeId;
 				menuItem.Click += (sender, e) =>
-									{
-										Row destination = TimelineControl.ActiveRow ?? TimelineControl.SelectedRow;
-										if (destination != null)
-										{
-											addNewEffectById((Guid)menuItem.Tag, destination, TimelineControl.CursorPosition,
-															 TimeSpan.FromSeconds(2)); // TODO: get a proper time
-										}
-									};
+					{
+						Row destination = TimelineControl.ActiveRow ?? TimelineControl.SelectedRow;
+						if (destination != null)
+						{
+							addNewEffectById((Guid)menuItem.Tag, destination, TimelineControl.CursorPosition,
+												TimeSpan.FromSeconds(2)); // TODO: get a proper time
+						}
+					};
 				addEffectToolStripMenuItem.DropDownItems.Add(menuItem);
-
-				// Add a button to the tool strip
-				//ToolStripItem tsItem = new ToolStripButton(effectDesriptor.EffectName);
-				//tsItem.Tag = effectDesriptor.TypeId;
-				//tsItem.MouseDown += toolStripEffects_Item_MouseDown;
-				//tsItem.MouseMove += toolStripEffects_Item_MouseMove;
-				//tsItem.Click += toolStripEffects_Item_Click;
-				//tsItem.Image = effectDesriptor.GetRepresentativeImage(48, 48);
-
-				//toolStripEffects.Items.Add(tsItem);
 			}
 		}
 
@@ -1827,7 +1846,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					toolStripButton_Play.Enabled = playToolStripMenuItem.Enabled = false;
 					toolStripButton_Pause.Enabled = pauseToolStripMenuItem.Enabled = false;
 					toolStripButton_Stop.Enabled = stopToolStripMenuItem.Enabled = false;
-					//toolStripEffects.Enabled = false;
 					EffectsForm.Enabled = false;
 					return;
 				}
@@ -1845,22 +1863,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						toolStripButton_Pause.Enabled = pauseToolStripMenuItem.Enabled = true;
 					}
 					toolStripButton_Stop.Enabled = stopToolStripMenuItem.Enabled = true;
-					//toolStripEffects.Enabled = false;
 					EffectsForm.Enabled = false;
 				}
 				else // Stopped
 				{
-					//We are looping...this keeps the Play button and EffectsForm from blinking between loops, the other buttons should already be in proper state
-					//if (toolStripButton_Loop.Checked && stoppedByUser == false)
-					//{
-					//	//We dont need a pause button between loops, it only gives the user the right to think they should be able to use it if its on
-					//	toolStripButton_Pause.Enabled = pauseToolStripMenuItem.Enabled = false;
-					//	return;
-					//}
 					toolStripButton_Play.Enabled = playToolStripMenuItem.Enabled = true;
 					toolStripButton_Pause.Enabled = pauseToolStripMenuItem.Enabled = false;
 					toolStripButton_Stop.Enabled = stopToolStripMenuItem.Enabled = false;
-					//toolStripEffects.Enabled = true;
 					EffectsForm.Enabled = true;
 				}
 			}
@@ -3640,6 +3649,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
             });
 
         }
+
+		private void toolStripButton_DragBoxFilter_CheckedChanged(object sender, EventArgs e)
+		{
+			TimelineControl.grid.DragBoxFilterEnabled = toolStripButton_DragBoxFilter.Checked;
+		}
 
     }
 
