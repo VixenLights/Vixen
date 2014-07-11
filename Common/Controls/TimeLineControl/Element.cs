@@ -6,7 +6,7 @@ using Vixen.Sys;
 namespace Common.Controls.Timeline
 {
 	[Serializable]
-	public class Element : IComparable<Element>, ITimePeriod, IDisposable
+	public class Element : IComparable<Element>, ITimeRowLocation, IDisposable
 	{
 		private TimeSpan _startTime;
 		private TimeSpan _duration;
@@ -465,12 +465,13 @@ namespace Common.Controls.Timeline
 	}
 
 
-	public class ElementTimeInfo : ITimePeriod
+	public class ElementTimeInfo : ITimeRowLocation
 	{
 		public ElementTimeInfo(Element elem)
 		{
 			StartTime = elem.StartTime;
 			Duration = elem.Duration;
+			Row = elem.Row;
 		}
 
 		public TimeSpan StartTime { get; set; }
@@ -481,7 +482,9 @@ namespace Common.Controls.Timeline
 			get { return StartTime + Duration; }
 		}
 
-		public static void SwapTimes(ITimePeriod lhs, ITimePeriod rhs)
+		public Row Row { get; set; }
+
+		public static void SwapPlaces(ITimeRowLocation lhs, ITimeRowLocation rhs)
 		{
 			TimeSpan temp = lhs.StartTime;
 			lhs.StartTime = rhs.StartTime;
@@ -490,12 +493,18 @@ namespace Common.Controls.Timeline
 			temp = lhs.Duration;
 			lhs.Duration = rhs.Duration;
 			rhs.Duration = temp;
+
+			Row tempRow = lhs.Row;
+			lhs.Row = rhs.Row;
+			rhs.Row = tempRow;
 		}
+
 	}
 
-	public interface ITimePeriod
+	public interface ITimeRowLocation
 	{
 		TimeSpan StartTime { get; set; }
 		TimeSpan Duration { get; set; }
+		Row Row { get; set; }
 	}
 }

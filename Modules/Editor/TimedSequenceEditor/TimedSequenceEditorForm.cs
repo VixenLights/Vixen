@@ -3035,15 +3035,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_undoMgr.AddUndoAction(action);
 		}
 
-		public void SwapTimes(Dictionary<Element, ElementTimeInfo> changedElements)
+		public void SwapPlaces(Dictionary<Element, ElementTimeInfo> changedElements)
 		{
-			foreach (KeyValuePair<Element, ElementTimeInfo> e in changedElements)
-			{
-				// Key is reference to actual element. Value is class with its times before move.
-				// Swap the element's times with the saved times from before the move, so we can restore them later in redo.
-				ElementTimeInfo.SwapTimes(e.Key, e.Value);
-				TimelineControl.grid.RenderElement(e.Key);
-			}
+			TimelineControl.grid.SwapElementPlacement(changedElements);
 		}
 
 		#endregion
