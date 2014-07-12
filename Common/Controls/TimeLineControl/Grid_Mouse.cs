@@ -9,8 +9,15 @@ namespace Common.Controls.Timeline
 	public partial class Grid
 	{
 		List<Element> capturedElements = new List<Element>();
+		public bool EnableDrawMode = false;
+		public Guid SelectedEffect { get; set; }
+		public bool _beginEffectDraw;
+		private TimeSpan effectDrawMouseDownTime;
+		private TimeSpan effectDrawMouseUpTime;
 
 		#region General Mouse Event-Related
+
+		public event EventHandler<DrawElementEventArgs> StartDrawMode;
 
 		/// <summary>
 		/// Translates a location (Point) so that its coordinates represent the coordinates on the underlying timeline, taking into account scroll position.
@@ -37,7 +44,24 @@ namespace Common.Controls.Timeline
 			if (m_mouseDownElements == null)
 				m_mouseDownElements = new List<Element>();
 
+			if (e.Button == MouseButtons.Middle && SelectedEffect != Guid.Empty)
+			{
+				_beginEffectDraw = true;
+				this.Cursor = Cursors.Cross;
+				effectDrawMouseDownTime = pixelsToTime(gridLocation.X);
+				beginDrawBox(gridLocation);
+				m_lastSingleSelectedElementLocation = Point.Empty;				
+			}
 			if (e.Button == MouseButtons.Left) {
+				_workingElement = elementAt(gridLocation);
+				if (EnableDrawMode && SelectedEffect != Guid.Empty && m_mouseResizeZone == ResizeZone.None)
+				{
+					_beginEffectDraw = true;
+					effectDrawMouseDownTime = pixelsToTime(gridLocation.X);
+					beginDrawBox(gridLocation);
+					m_lastSingleSelectedElementLocation = Point.Empty;
+					return;
+				}				
 				if (m_mouseDownElements.Count <= 0) {
 					// we clicked on the background - clear anything that is selected, and begin a 'selection' drag.
 					if (!CtrlPressed)
@@ -117,10 +141,35 @@ namespace Common.Controls.Timeline
 
 			Point gridLocation = translateLocation(e.Location);
 
+			if (e.Button == MouseButtons.Middle && _beginEffectDraw)
+			{
+				//Just doing this for looks and unifority for now
+				//until a decision is made on how to switch from draw to selection mode
+				switch (m_dragState) { 
+					case DragState.Drawing:
+						_beginEffectDraw = false;
+						this.Cursor = Cursors.Default;
+						effectDrawMouseUpTime = pixelsToTime(gridLocation.X);
+						StartDrawMode(this, new DrawElementEventArgs(SelectedEffect, GetRowsWithin(DrawingArea), effectDrawMouseDownTime, effectDrawMouseUpTime));
+						MouseUp_DrawSelect(gridLocation);
+						break;
+					default:
+						endAllDrag();
+						break; //<This is really dumb
+				}
+			}
 			if (e.Button == MouseButtons.Left) {
+				_workingElement = null;
 				switch (m_dragState) {
 					case DragState.Moving:
 						MouseUp_DragMoving(gridLocation);
+						break;
+
+					case DragState.Drawing:
+						_beginEffectDraw = false;
+						effectDrawMouseUpTime = pixelsToTime(gridLocation.X);
+						StartDrawMode(this, new DrawElementEventArgs(SelectedEffect, GetRowsWithin(DrawingArea), effectDrawMouseDownTime, effectDrawMouseUpTime));
+						MouseUp_DrawSelect(gridLocation);
 						break;
 
 					case DragState.Selecting:
@@ -229,6 +278,7 @@ namespace Common.Controls.Timeline
 			switch (m_dragState) {
 				case DragState.Moving:
 				case DragState.Selecting:
+				case DragState.Drawing:
 				case DragState.HResizing:
 
 					m_mouseOutside.X = (e.X <= AutoScrollMargin.Width)
@@ -314,6 +364,10 @@ namespace Common.Controls.Timeline
 					MouseMove_DragSelect(gridLocation);
 					break;
 
+				case DragState.Drawing: // Dragging a drawing rectangle
+					MouseMove_DrawSelect(gridLocation);
+					break;
+
 				case DragState.HResizing: // Resizing an element
 					MouseMove_HResizing(gridLocation, delta);
 					break;
@@ -358,7 +412,7 @@ namespace Common.Controls.Timeline
 					m_mouseResizeZone = ResizeZone.None;
 			}
 
-			Cursor = (m_mouseResizeZone == ResizeZone.None) ? Cursors.Default : Cursors.SizeWE;
+			Cursor = (m_mouseResizeZone == ResizeZone.None) ? ((EnableDrawMode && SelectedEffect != Guid.Empty) ? Cursors.Cross : Cursors.Default) : Cursors.SizeWE;
 		}
 
 		#endregion
@@ -409,6 +463,54 @@ namespace Common.Controls.Timeline
 			endAllDrag();
 		}
 
+		#endregion
+
+		#region [Mouse Drag] Drawing Box
+		
+		private void beginDrawBox(Point gridLocation)
+		{
+			m_dragState = DragState.Drawing;
+			ClearSelectedElements();
+			ClearSelectedRows(m_mouseDownElementRow);
+			ClearActiveRows(m_mouseDownElementRow);
+			DrawingArea = new Rectangle(gridLocation.X, gridLocation.Y, 0, 0);
+			m_drawingRectangleStart = gridLocation;
+		}
+
+		private void MouseMove_DrawSelect(Point gridLocation)
+		{
+			Point topLeft = new Point(Math.Min(m_drawingRectangleStart.X, gridLocation.X),
+									  Math.Min(m_drawingRectangleStart.Y, gridLocation.Y));
+			Point bottomRight = new Point(Math.Max(m_drawingRectangleStart.X, gridLocation.X),
+										  Math.Max(m_drawingRectangleStart.Y, gridLocation.Y));
+
+			//Modifies area to include full row in drawing area
+			var TempDrawArea = Util.RectangleFromPoints(topLeft, bottomRight);
+			var RowMembers = GetRowsWithin(TempDrawArea);
+			var FirstRow = (Row)RowMembers.First();
+			var LastRow = (Row)RowMembers.Last();
+			topLeft = new Point(Math.Min(m_drawingRectangleStart.X, gridLocation.X),
+										Math.Min(m_drawingRectangleStart.Y, (int)FirstRow.DisplayTop) + 1);
+			bottomRight = new Point(Math.Max(m_drawingRectangleStart.X, gridLocation.X),
+											Math.Max(m_drawingRectangleStart.Y, ((int)LastRow.DisplayTop + (int)LastRow.Height)) - 2);
+
+			DrawingArea = Util.RectangleFromPoints(topLeft, bottomRight);
+			Invalidate();
+		}
+
+		private void MouseUp_DrawSelect(Point gridLocation)
+		{
+			// we will be Drawing anywhere
+			// if we didn't move (or very far): if so, consider it just a background click.
+			if (DrawingArea.Width < 2 && DrawingArea.Height < 2)
+			{
+				OnBackgroundClick(new TimelineEventArgs(rowAt(gridLocation), pixelsToTime(gridLocation.X)));
+			}
+
+			m_drawingRectangleStart = Point.Empty;
+			DrawingArea = Rectangle.Empty;
+			endAllDrag();
+		}
 		#endregion
 
 		#region [Mouse Drag] Selection Box

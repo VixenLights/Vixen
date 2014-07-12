@@ -27,6 +27,7 @@ namespace Common.Controls.Timeline
 		private DragState m_dragState = DragState.Normal; // the current dragging state
 
 		private Point m_selectionRectangleStart; // the location (on the grid canvas) where the selection box starts.
+		private Point m_drawingRectangleStart; // the location (on the grid canvas) where the drawing box starts.
 		private Rectangle m_ignoreDragArea; // the area in which move movements should be ignored, before we start dragging
 		private Point m_waitingBeginGridLocation;
 		private List<Element> m_mouseDownElements; // the elements under the cursor on a mouse click
@@ -43,8 +44,7 @@ namespace Common.Controls.Timeline
 		private ElementMoveInfo m_elemMoveInfo;
 		public ISequenceContext Context = null;
 		public bool SequenceLoading { get; set; }
-
-		
+		public Element _workingElement; //This is the element that was left clicked, is set to null on mouse up
 
 		#region Initialization
 
@@ -61,6 +61,8 @@ namespace Common.Controls.Timeline
 			BackColor = Color.FromArgb(60, 60, 60);
 			SelectionColor = Color.FromArgb(100, 40, 100, 160);
 			SelectionBorder = Color.Blue;
+			DrawColor = Color.FromArgb(100, 255, 255, 255);
+			DrawBorder = Color.Black;
 			CursorColor = Color.FromArgb(150, 50, 50, 50);
 			CursorWidth = 2.5F;
 			CursorPosition = TimeSpan.Zero;
@@ -177,6 +179,10 @@ namespace Common.Controls.Timeline
 
 		public int SnapStrength { get; set; }
 
+		public bool ResizeIndicator_Enabled { get; set; }
+
+		public string ResizeIndicator_Color { get; set; }
+
 		public bool SuppressInvalidate { get; set; }
 
 		public bool SupressRendering { get; set; }
@@ -265,6 +271,7 @@ namespace Common.Controls.Timeline
 		public int SnapPriorityForElements { get; set; }
 		public int DragThreshold { get; set; }
 		public Rectangle SelectionArea { get; set; }
+		public Rectangle DrawingArea { get; set; }
 		public bool ClickingGridSetsCursor { get; set; }
 
 		// drawing colours, information, etc.
@@ -272,6 +279,8 @@ namespace Common.Controls.Timeline
 		public Color MajorGridlineColor { get; set; }
 		public Color SelectionColor { get; set; }
 		public Color SelectionBorder { get; set; }
+		public Color DrawColor { get; set; }
+		public Color DrawBorder { get; set; }
 		public Color CursorColor { get; set; }
 		public Single CursorWidth { get; set; }
 
@@ -1107,6 +1116,39 @@ namespace Common.Controls.Timeline
 		}
 
 		/// <summary>
+		/// Returns a list of the visible rows wihtin a given Rectangle
+		/// </summary>
+		private List<Row> GetRowsWithin(Rectangle SelectedArea)
+		{
+			Row startRow = rowAt(SelectedArea.Location);
+			Row endRow = rowAt(SelectedArea.BottomRight());
+
+			List<Row> DrawingRows = new List<Row>();
+			
+			bool startFound = false, endFound = false;
+			foreach (var row in Rows)
+			{
+				if (!row.Visible || endFound || (!startFound && (row != startRow)))
+				{
+					continue;
+				}
+
+				if (startFound || row == startRow)
+				{
+					startFound = true;
+					DrawingRows.Add(row);
+
+					if (row == endRow)
+					{
+						endFound = true;
+						continue;
+					}
+				}
+			}
+			return DrawingRows;
+		}
+
+		/// <summary>
 		/// Given a collection of elements, this method will count the number of times each element 'exists' in the rows of the grid.
 		/// (This could be more than once for each element, since a single element can be added to multiple rows at the same time).
 		/// </summary>
@@ -1873,15 +1915,61 @@ namespace Common.Controls.Timeline
 
 		private void _drawSelection(Graphics g)
 		{
-			if (SelectionArea.IsEmpty)
+			if (!SelectionArea.IsEmpty)
+			{
+				using (SolidBrush b = new SolidBrush(SelectionColor))
+				{
+					g.FillRectangle(b, SelectionArea);
+				}
+				using (Pen p = new Pen(SelectionBorder))
+				{
+					g.DrawRectangle(p, SelectionArea);
+				}
+			}
+
+			if (!DrawingArea.IsEmpty)
+			{
+				using (SolidBrush b = new SolidBrush(DrawColor))
+				{
+					g.FillRectangle(b, DrawingArea);
+				}
+				using (Pen p = new Pen(DrawBorder,2))
+				{
+					g.DrawRectangle(p, DrawingArea);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Draws an indicator line at the start or end of an effect when resizing.
+		/// When dragging an entire effect a line is drawn at both ends.
+		/// </summary>
+		/// <param name="g"></param>
+		private void _drawResizeIndicator(Graphics g)
+		{
+			//We must - 1px for the end time for a spot on alignment
+
+			if (!ResizeIndicator_Enabled) //If this option isn't enabled leave
 				return;
 
-			using (SolidBrush b = new SolidBrush(SelectionColor)) {
-				g.FillRectangle(b, SelectionArea);
+			if (m_dragState == DragState.HResizing) //Draw line at start or end of effect, depending which end the user grabbed
+			{
+				using (Pen p = new Pen(Color.FromName(ResizeIndicator_Color), 1))
+				{
+					var X = (m_mouseResizeZone == ResizeZone.Front ? timeToPixels(_workingElement.StartTime) : timeToPixels(_workingElement.EndTime) - 1);
+					g.DrawLine(p, X, 0, X, AutoScrollMinSize.Height);
+				}
 			}
-			using (Pen p = new Pen(SelectionBorder)) {
-				g.DrawRectangle(p, SelectionArea);
+
+			if (m_dragState == DragState.Waiting || m_dragState == DragState.Moving) //Draw line at both ends, the user is dragging the entire effect
+			{
+				using (Pen p = new Pen(Color.FromName(ResizeIndicator_Color), 1))
+				{
+					g.DrawLine(p, timeToPixels(_workingElement.StartTime), 0, timeToPixels(_workingElement.StartTime), AutoScrollMinSize.Height);
+					g.DrawLine(p, timeToPixels(_workingElement.EndTime) - 1, 0, timeToPixels(_workingElement.EndTime) - 1, AutoScrollMinSize.Height);
+				}
 			}
+
 		}
 
 		private void _drawCursors(Graphics g)
@@ -1916,6 +2004,7 @@ namespace Common.Controls.Timeline
 					_drawInfo(e.Graphics);
 					_drawSelection(e.Graphics);
 					_drawCursors(e.Graphics);
+					_drawResizeIndicator(e.Graphics);
 
 					//s.Stop();
 					//Logging.Info("OnPaint: " + s.ElapsedMilliseconds);
@@ -1981,6 +2070,9 @@ namespace Common.Controls.Timeline
 
 		///<summary>Dragging the mouse horizontally to resize an object in time.</summary>
 		HResizing,
+
+		///<summary>Drawing, like "Dragging", but anywhere on timeline.</summary>
+		Drawing,
 	}
 
 

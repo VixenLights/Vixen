@@ -44,6 +44,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 	public partial class TimedSequenceEditorForm : Form, IEditorUserInterface, ITiming
 	{
+
 		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 
 		#region Member Variables
@@ -143,6 +144,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolStripButton_ZoomTimeOut.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStripButton_SnapTo.Image = Resources.magnet;
 			toolStripButton_SnapTo.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			toolStripButton_DrawMode.Image = Resources.pencil;
+			toolStripButton_DrawMode.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			toolStripButton_SelectionMode.Image = Resources.cursor_arrow;
+			toolStripButton_SelectionMode.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStripButton_IncreaseTimingSpeed.Image = Resources.plus;
 			toolStripButton_IncreaseTimingSpeed.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStripButton_DecreaseTimingSpeed.Image = Resources.minus;
@@ -201,9 +206,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			dockPanel.DockRightPortion = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/DockRightPortion", Name), 150);
 			autoSaveToolStripMenuItem.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/AutoSaveEnabled", Name), true);
 			toolStripMenuItem_SnapTo.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SnapToSelected", Name), true);
+			
+			PopulateSnapStrength(xml.GetSetting(XMLProfileSettings.SettingType.AppSettings,	string.Format("{0}/SnapStrength", Name), 2));
+			
+			toolStripMenuItem_ResizeIndicator.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ResizeIndicatorEnabled", Name),false);
+			TimelineControl.grid.ResizeIndicator_Color = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ResizeIndicatorColor", Name), "Red");
 
-			PopulateSnapStrength(xml.GetSetting(XMLProfileSettings.SettingType.AppSettings,
-				string.Format("{0}/SnapStrength", Name), 2));
+			//toolStripButton_DrawMode.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/DrawModeSelected", Name), false);
+			//toolStripButton_SelectionMode.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SelectionModeSelected", Name), false);
 
 			foreach (ToolStripItem toolStripItem in toolStripDropDownButton_SnapToStrength.DropDownItems)
 			{
@@ -267,7 +277,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.ContextSelected += timelineControl_ContextSelected;
 			TimelineControl.SequenceLoading = false;
 			TimelineControl.TimePerPixelChanged += TimelineControl_TimePerPixelChanged;
-			TimelineControl.grid.SelectedElementsCloneDelegate = CloneElements;	
+			TimelineControl.grid.SelectedElementsCloneDelegate = CloneElements;
+			TimelineControl.grid.StartDrawMode += DrawElement;
+			EffectsForm.EscapeDrawMode += EscapeDrawMode;
 
 			_virtualEffectLibrary =
 				ApplicationServices.Get<IAppModuleInstance>(VirtualEffectLibraryDescriptor.Guid) as
@@ -1013,6 +1025,43 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			sequenceModified();
 		}
 
+		//Sorry about this, was the only way I could find to handle the escape press if
+		//the effects tree still had focus. Because... someone will do this......
+		protected void EscapeDrawMode(object sender, EventArgs e)
+		{
+			EffectsForm.DeselectAllNodes();
+			TimelineControl.grid.EnableDrawMode = false;
+			toolStripButton_DrawMode.Checked = false;
+			toolStripButton_SelectionMode.Checked = true;
+		}
+
+		protected void DrawElement(object sender, DrawElementEventArgs e)
+		{
+				//Make sure we have enough of an effect to show up
+				if (e.Duration > TimeSpan.FromSeconds(.10))
+				{
+					var newEffects = new List<EffectNode>();
+					foreach (Row drawingRow in e.Rows)
+					{
+						var newEffect = ApplicationServices.Get<IEffectModuleInstance>(e.Guid);
+						try
+						{
+							newEffects.Add(CreateEffectNode(newEffect, drawingRow, e.StartTime,e.Duration));
+						}
+						catch (Exception ex)
+						{
+							string msg = "TimedSequenceEditor DrawMultipleElements: error adding effect of type " + newEffect.Descriptor.TypeId + " to row " +
+											((drawingRow == null) ? "<null>" : drawingRow.Name);
+							Logging.ErrorException(msg, ex);
+						}
+					}
+					AddEffectNodes(newEffects);
+					sequenceModified();
+					var act = new EffectsAddedUndoAction(this, newEffects);
+					_undoMgr.AddUndoAction(act);
+					SelectEffectNodes(newEffects);
+				}
+		}
 		protected void ElementDoubleClickedHandler(object sender, ElementEventArgs e)
 		{
 			TimedSequenceElement element = e.Element as TimedSequenceElement;
@@ -1932,7 +1981,18 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			return nodes.Select(AddEffectNode).ToList();
 		}
 
-
+		/// <summary>
+		/// Selects the given effects given in an EffectNode list
+		/// </summary>
+		///<param name="nodes"></param>
+		private void SelectEffectNodes(IEnumerable<EffectNode> nodes)
+		{
+			foreach (EffectNode element in nodes)
+			{
+				TimedSequenceElement tse = (TimedSequenceElement)_effectNodeToElement[element];
+				tse.Selected = true;
+			}
+		}
 		public void RemoveEffectNodeAndElement(EffectNode node)
 		{
 			//Debug.WriteLine("{0}   RemoveEffectNodeAndElement(InstanceId={1})", (int)DateTime.Now.TimeOfDay.TotalMilliseconds, node.Effect.InstanceId);
@@ -2002,6 +2062,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			try
 			{
 				//Debug.WriteLine("{0}   addEffectInstance(InstanceId={1})", (int)DateTime.Now.TimeOfDay.TotalMilliseconds, effectInstance.InstanceId);
+
+				if ((startTime + timeSpan) > SequenceLength)
+				{
+					timeSpan = SequenceLength - startTime;
+				}
 
 				var effectNode = CreateEffectNode(effectInstance, row, startTime, timeSpan);
 
@@ -2252,6 +2317,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				case (Keys.Right | Keys.Shift):
 					TimelineControl.ruler.NudgeMark(TimelineControl.ruler.SuperNudgeTime);
 					break;
+				case Keys.Up:
+					EffectsForm.MoveNodeSelection("up");
+					break;
+				case Keys.Down:
+					EffectsForm.MoveNodeSelection("down");
+					break;
+				//case Keys.Escape:
+					//EffectsForm.DeselectAllNodes();
+					//toolStripButton_DrawMode.Checked = false;
+					//toolStripButton_SelectionMode.Checked = true;
+					//break;
 			}
 			return base.ProcessCmdKey(ref msg, keyData);
 		}
@@ -2301,7 +2377,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						if (_context.IsPaused)
 							PlaySequence();
 						else
-							;
 							StopSequence();
 					}
 					break;
@@ -2314,6 +2389,23 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				case Keys.Right:
 					if (e.Control)
 						TimelineControl.MoveSelectedElementsByTime(TimelineControl.TimePerPixel.Scale(2));
+					break;
+
+				case Keys.Up:
+					EffectsForm.MoveNodeSelection("up");
+					break;
+
+				case Keys.Down:
+					EffectsForm.MoveNodeSelection("down");
+					break;
+
+				case Keys.Escape:
+					if (TimelineControl.grid._beginEffectDraw) //If we are drawing, prevent escape
+						return;
+					EffectsForm.DeselectAllNodes();
+					TimelineControl.grid.EnableDrawMode = false;
+					toolStripButton_DrawMode.Checked = false;
+					toolStripButton_SelectionMode.Checked = true;
 					break;
 
 				case Keys.OemMinus:
@@ -3110,6 +3202,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/DockLeftPortion", Name), (int)dockPanel.DockLeftPortion);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/DockRightPortion", Name), (int)dockPanel.DockLeftPortion);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/AutoSaveEnabled", Name), autoSaveToolStripMenuItem.Checked);
+			//xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/DrawModeSelected", Name), toolStripButton_DrawMode.Checked);
+			//xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SelectionModeSelected", Name), toolStripButton_SelectionMode.Checked);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SnapToSelected", Name), toolStripButton_SnapTo.Checked);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowHeight", Name), Size.Height);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowWidth", Name), Size.Width);
@@ -3117,6 +3211,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationY", Name), Location.Y);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowState", Name), WindowState.ToString());
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SnapStrength", Name), TimelineControl.grid.SnapStrength);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ResizeIndicatorEnabled", Name), TimelineControl.grid.ResizeIndicator_Enabled);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ResizeIndicatorColor", Name), TimelineControl.grid.ResizeIndicator_Color);
 			//These are only saved in options
 			//xml.PutPreference(string.Format("{0}/AutoSaveInterval", Name), _autoSaveTimer.Interval);
 
@@ -3640,6 +3736,51 @@ namespace VixenModules.Editor.TimedSequenceEditor
             });
 
         }
+
+		private void toolStripButton_DrawMode_Click(object sender, EventArgs e)
+		{
+				TimelineControl.grid.EnableDrawMode = true;
+				toolStripButton_DrawMode.Checked = true;
+				toolStripButton_SelectionMode.Checked = false;
+		}
+
+		private void toolStripButton_SelectionMode_Click(object sender, EventArgs e)
+		{
+			TimelineControl.grid.EnableDrawMode = false;
+			toolStripButton_SelectionMode.Checked = true;
+			toolStripButton_DrawMode.Checked = false;
+		}
+
+
+		private void toolStripMenuItem_ResizeIndicator_CheckStateChanged(object sender, EventArgs e)
+		{
+			TimelineControl.grid.ResizeIndicator_Enabled = (toolStripMenuItem_ResizeIndicator.Checked ? true : false);
+		}
+
+		private void toolStripMenuItem_RIColor_Blue_Click(object sender, EventArgs e)
+		{
+			TimelineControl.grid.ResizeIndicator_Color = "Blue";
+		}
+
+		private void toolStripMenuItem_RIColor_Yellow_Click(object sender, EventArgs e)
+		{
+			TimelineControl.grid.ResizeIndicator_Color = "Yellow";
+		}
+
+		private void toolStripMenuItem_RIColor_Green_Click(object sender, EventArgs e)
+		{
+			TimelineControl.grid.ResizeIndicator_Color = "Green";
+		}
+
+		private void toolStripMenuItem_RIColor_White_Click(object sender, EventArgs e)
+		{
+			TimelineControl.grid.ResizeIndicator_Color = "White";
+		}
+
+		private void toolStripMenuItem_RIColor_Red_Click(object sender, EventArgs e)
+		{
+			TimelineControl.grid.ResizeIndicator_Color = "Red";
+		}
 
     }
 
