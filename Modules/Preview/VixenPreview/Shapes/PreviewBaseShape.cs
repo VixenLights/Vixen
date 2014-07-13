@@ -392,7 +392,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             else
             {
                 Color pixelColor = Color.White;
-                if (pixel == _pixels[0] || (_strings != null && _strings.Count > 0 && _strings[0].Pixels != null && _strings[0].Pixels.Count > 0 && _strings[0].Pixels[0] == pixel))
+                if (
+                    (_pixels.Count > 0) &&
+                    (pixel == _pixels[0] || (_strings != null && _strings.Count > 0 && _strings[0].Pixels != null && _strings[0].Pixels.Count > 0 && _strings[0].Pixels[0] == pixel))
+                   )
                 {
                     pixelColor = Color.Yellow;
                     pixel.PixelSize = PixelSize + 2;
