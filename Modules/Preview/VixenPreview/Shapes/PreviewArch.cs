@@ -189,6 +189,58 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
+
+        public override int Top
+        {
+            get
+            {
+                return Math.Min(_topLeft.Y, _bottomRight.Y);
+            }
+            set
+            {
+                if (_topLeft.Y < _bottomLeft.Y)
+                {
+                    int delta = _topLeft.Y - value;
+                    _topLeft.Y = value;
+                    _bottomLeft.Y -= delta;
+                    _bottomRight.Y -= delta;
+                }
+                else
+                {
+                    int delta = _bottomLeft.Y - value;
+                    _topLeft.Y -= delta;
+                    _bottomLeft.Y = value;
+                    _bottomRight.Y = value;
+                }
+                Layout();
+            }
+        }
+
+        public override int Left
+        {
+            get
+            {
+                return Math.Min(BottomLeft.X, BottomRight.X);
+            }
+            set
+            {
+                int delta = Left - value;
+                if (_topLeft.X < _bottomRight.X)
+                {
+                    _topLeft.X = value;
+                    _bottomRight.X -= delta;
+                    BottomLeft.X -= delta;
+                }
+                else
+                {
+                    _topLeft.X -= delta;
+                    _bottomRight.X = value;
+                    BottomLeft.X = value;
+                }
+                Layout();
+            }
+        }
+        
         public override void Match(PreviewBaseShape matchShape)
         {
             PreviewArch shape = (matchShape as PreviewArch);

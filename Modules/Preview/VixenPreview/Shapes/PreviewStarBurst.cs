@@ -252,6 +252,58 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			get { return Pixels.Count; }
 		}
 
+        public override int Top
+        {
+            get
+            {
+                return (Math.Min(_topLeft.Y, _bottomRight.Y));
+            }
+            set
+            {
+                int delta = Top - value;
+                //if (_topLeft.Y == Top)
+                //{
+                    _topLeft.Y = value;
+                    _topRight.Y = value;
+                    _bottomLeft.Y -= delta;
+                    _bottomRight.Y -= delta;
+                //}
+                //else
+                //{
+                //    _topLeft.Y -= delta;
+                //    _bottomRight.Y = value;
+                //}
+                Layout();
+            }
+        }
+
+        public override int Left
+        {
+            get
+            {
+                return (Math.Min(_topLeft.X, _bottomRight.X));
+            }
+            set
+            {
+                int delta = Left - value;
+                //if (_topLeft.X == Left)
+                //{
+                    _topLeft.X = value;
+                    _bottomLeft.X = value;
+                    _topRight.X -= delta;
+                    _bottomRight.X -= delta;
+                //}
+                //else
+                //{
+                //    _topLeft.X -= delta;
+                //    _topRight.X -= delta;
+                //    _bottomRight.X = value;
+                //    _bottomRight.X = value;
+                //}
+                Layout();
+            }
+        }
+
         public override void Match(PreviewBaseShape matchShape)
         {
             PreviewStarBurst shape = (matchShape as PreviewStarBurst);

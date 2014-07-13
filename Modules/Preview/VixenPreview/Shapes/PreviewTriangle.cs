@@ -213,6 +213,62 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
+        public override int Top
+        {
+            get
+            {
+                return Math.Min(_point1.Y, Math.Min(Point1.Y, Point3.Y));
+            }
+            set
+            {
+                if (_point1.Y < _point2.Y)
+                {
+                    // Point 1 is the smallest
+                    int delta = _point1.Y - value;
+                    _point1.Y = value;
+                    _point2.Y -= delta;
+                    _point3.Y -= delta;
+                }
+                else
+                {
+                    // Point 2 or 3 is the smallest
+                    int delta = _point2.Y - value;
+                    _point1.Y -= delta;
+                    _point2.Y = value;
+                    _point3.Y = value;
+                }
+                Layout();
+            }
+        }
+
+        public override int Left
+        {
+            get
+            {
+                return Math.Min(_point2.X, Point3.X);
+            }
+            set
+            {
+                if (_point2.X < _point3.X)
+                {
+                    // Point 2 is the smallest
+                    int delta = _point1.X - value;
+                    _point1.X -= delta;
+                    _point2.X -= value;
+                    _point3.X -= delta;
+                }
+                else
+                {
+                    // Point 3 is the smallest
+                    int delta = _point3.X - value;
+                    _point1.X -= delta;
+                    _point2.X -= delta;
+                    _point3.X = value;
+                }
+                Layout();
+            }
+        }
+
         public override void Match(PreviewBaseShape matchShape)
         {
             PreviewTriangle shape = (matchShape as PreviewTriangle);
