@@ -37,6 +37,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			ZoomLevel = zoomLevel;
 			_topLeft = PointToZoomPoint(point1);
 			_bottomRight = new PreviewPoint(_topLeft.X, _topLeft.Y);
+            _bottomLeft = new PreviewPoint(_bottomRight);
 
 			int defaultStringCount = 16;
 			int defaultLightsPerString = 50;
