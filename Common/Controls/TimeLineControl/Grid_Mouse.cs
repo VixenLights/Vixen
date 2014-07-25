@@ -54,7 +54,7 @@ namespace Common.Controls.Timeline
 			}
 			if (e.Button == MouseButtons.Left) {
 				_workingElement = elementAt(gridLocation);
-				if (EnableDrawMode && SelectedEffect != Guid.Empty && m_mouseResizeZone == ResizeZone.None)
+				if ((EnableDrawMode && !AltPressed) && SelectedEffect != Guid.Empty && m_mouseResizeZone == ResizeZone.None)
 				{
 					_beginEffectDraw = true;
 					effectDrawMouseDownTime = pixelsToTime(gridLocation.X);
@@ -126,7 +126,7 @@ namespace Common.Controls.Timeline
 						//waitForDragMove(e.Location);	// begin waiting for a normal drag
 						waitForDragMove(gridLocation);
 					}
-					else {
+					else if (!CtrlPressed) {
 						beginHResize(gridLocation); // begin a resize.
 					}
 				}
@@ -314,10 +314,10 @@ namespace Common.Controls.Timeline
 		{
 			Point gridLocation = translateLocation(e.Location);
 
-			if (ModifierKeys == Keys.Shift)
+			if (ModifierKeys == Keys.Shift && m_mouseDownElements.Any())
 				gridLocation.X = m_lastGridLocation.X;
 
-			if (ModifierKeys == (Keys.Shift | Keys.Alt))
+			if (ModifierKeys == (Keys.Shift | Keys.Alt) && m_mouseDownElements.Any())
 				gridLocation.Y = m_lastGridLocation.Y;
 
 			Point delta = new Point(
@@ -357,6 +357,12 @@ namespace Common.Controls.Timeline
 					break;
 
 				case DragState.Moving: // Moving objects
+					//Gets the element we are working with 
+					if (ResizeIndicator_Enabled && elementsAt(gridLocation).Any())
+						foreach (Element elem in elementsAt(gridLocation))
+						{
+							if (elem.Selected) _workingElement = elem;
+						}
 					MouseMove_DragMoving(gridLocation);
 					break;
 
@@ -412,7 +418,7 @@ namespace Common.Controls.Timeline
 					m_mouseResizeZone = ResizeZone.None;
 			}
 
-			Cursor = (m_mouseResizeZone == ResizeZone.None) ? ((EnableDrawMode && SelectedEffect != Guid.Empty) ? Cursors.Cross : Cursors.Default) : Cursors.SizeWE;
+			Cursor = (m_mouseResizeZone == ResizeZone.None) ? (((EnableDrawMode && !AltPressed) && SelectedEffect != Guid.Empty) ? Cursors.Cross : Cursors.Default) : Cursors.SizeWE;
 		}
 
 		#endregion
@@ -518,7 +524,8 @@ namespace Common.Controls.Timeline
 		private void beginDragSelect(Point gridLocation)
 		{
 			m_dragState = DragState.Selecting;
-			ClearSelectedElements();
+			if (!ShiftPressed) ClearSelectedElements();
+			else tempSelectedElements = SelectedElements.ToList();
 			ClearSelectedRows(m_mouseDownElementRow);
 			ClearActiveRows(m_mouseDownElementRow);
 			SelectionArea = new Rectangle(gridLocation.X, gridLocation.Y, 0, 0);
@@ -550,6 +557,9 @@ namespace Common.Controls.Timeline
 			// done with the selection rectangle.
 			m_selectionRectangleStart = Point.Empty;
 			SelectionArea = Rectangle.Empty;
+
+			// done with temp selection list
+			tempSelectedElements.Clear();
 
 			endAllDrag();
 		}
