@@ -1129,6 +1129,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				{
 					if (e.Row != null)
 					{
+						//Modified 7-9-2014 J. Bolding - Changed so that the multiple element addition is wrapped into one action by the undo/redo engine.
 						if (Control.ModifierKeys == Keys.Shift || Control.ModifierKeys == (Keys.Shift | Keys.Control))
 						{
 							var eDialog = new Form_AddMultipleEffects();
@@ -1146,7 +1147,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 								eDialog.Duration = TimeSpan.FromSeconds(2);
 								eDialog.DurationBetween = TimeSpan.FromSeconds(2);
 							}
-							
+							eDialog.EffectName = effectDesriptor.EffectName;
+							eDialog.SequenceLength = SequenceLength;
 							eDialog.ShowDialog();
 
 							if (eDialog.DialogResult == DialogResult.OK)
@@ -1157,21 +1159,35 @@ namespace VixenModules.Editor.TimedSequenceEditor
 								am_LastDurationBetween = eDialog.DurationBetween;
 
 								TimeSpan NextStartTime = eDialog.StartTime;
+								var newEffects = new List<EffectNode>();
 								for (int i = 0; i < eDialog.EffectCount; i++)
 								{
 									if (NextStartTime + eDialog.Duration > SequenceLength)
 									{
-										MessageBox.Show("Effect addition canceled, the placement of one or more effects would extend beyond the sequence length.", "Error", MessageBoxButtons.OK);
-										return;
+										//if something went wrong in the forms calculations
+										break;
 									}
 									else
 									{
-										addNewEffectById((Guid)menuItem.Tag, e.Row, NextStartTime, eDialog.Duration);
-										NextStartTime = NextStartTime + eDialog.Duration + eDialog.DurationBetween;
+										var newEffect = ApplicationServices.Get<IEffectModuleInstance>((Guid)menuItem.Tag);
+										try
+										{
+											newEffects.Add(CreateEffectNode(newEffect, e.Row, NextStartTime, eDialog.Duration));
+											NextStartTime = NextStartTime + eDialog.Duration + eDialog.DurationBetween;
+										}
+										catch (Exception ex)
+										{
+											string msg = "TimedSequenceEditor AddMultipleElements: error adding effect of type " + newEffect.Descriptor.TypeId + " to row " +
+														 ((e.Row == null) ? "<null>" : e.Row.Name);
+											Logging.ErrorException(msg, ex);
+										}
 									}
 								}
+								AddEffectNodes(newEffects);
+								sequenceModified();
+								var act = new EffectsAddedUndoAction(this, newEffects);
+								_undoMgr.AddUndoAction(act);
 							}
-
 						}
 						else
 							addNewEffectById((Guid)menuItem.Tag, e.Row, e.GridTime, TimeSpan.FromSeconds(2));
