@@ -284,9 +284,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public override void Layout()
 		{
-            //if (_bottomRightPoint != null)
-            //{
-            if (Strings.Count == 3) { 
+			if (_bottomRightPoint != null)
+			{
 				(Strings[0] as PreviewLine).Point1 = Point1;
 				(Strings[0] as PreviewLine).Point2 = Point2;
 				(Strings[0] as PreviewLine).Layout();
@@ -300,7 +299,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				(Strings[2] as PreviewLine).Layout();
 
 				SetPixelZoom();
-            }
+			}
 		}
 
 		public override void MouseMove(int x, int y, int changeX, int changeY)

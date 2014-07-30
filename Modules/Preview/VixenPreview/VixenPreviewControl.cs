@@ -52,7 +52,8 @@ namespace VixenModules.Preview.VixenPreview
 			Star,
 			Cane,
 			PixelGrid,
-            StarBurst
+            StarBurst,
+            Icicle
         }
 
 		private Point dragStart;
@@ -252,7 +253,8 @@ namespace VixenModules.Preview.VixenPreview
 						using (Bitmap loadedBitmap = new Bitmap(fs)) {
 							_background = loadedBitmap.Clone(new Rectangle(0, 0, loadedBitmap.Width, loadedBitmap.Height),
 							                                 PixelFormat.Format32bppPArgb);
-						}
+                            //Console.WriteLine("Background->" + fileName);
+                        }
                         fs.Close();
 					}
 				}
@@ -501,6 +503,11 @@ namespace VixenModules.Preview.VixenPreview
 							newDisplayItem = new DisplayItem();
                             newDisplayItem.Shape = new PreviewPixelGrid(translatedPoint, elementsForm.SelectedNode, ZoomLevel);
 						}
+                        else if (_currentTool == Tools.Icicle)
+                        {
+                            newDisplayItem = new DisplayItem();
+                            newDisplayItem.Shape = new PreviewIcicle(translatedPoint, elementsForm.SelectedNode, ZoomLevel);
+                        }
 
 						// Now add the newely created display item to the screen.
 						if (newDisplayItem != null) {

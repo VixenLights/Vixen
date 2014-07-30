@@ -10,27 +10,23 @@ using Vixen.Sys;
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
 	[DataContract]
-	public class PreviewArch : PreviewBaseShape
+	public class PreviewEllipse : PreviewBaseShape
 	{
 		[DataMember] private PreviewPoint _topLeft;
 		[DataMember] private PreviewPoint _bottomRight;
 
-		private PreviewPoint _topRight = new PreviewPoint(10, 10);
-		private PreviewPoint _bottomLeft = new PreviewPoint(10, 10);
+		private PreviewPoint topRight, bottomLeft;
+
+		private PreviewPoint skewXPoint = new PreviewPoint(10, 10);
+		private PreviewPoint skewYPoint = new PreviewPoint(10, 10);
 
 		private PreviewPoint p1Start, p2Start;
 
-		public PreviewArch()
-		{
-		}
-
-		public PreviewArch(PreviewPoint point1, ElementNode selectedNode, double zoomLevel)
+		public PreviewEllipse(PreviewPoint point1, int lightCount, ElementNode selectedNode, double zoomLevel)
 		{
 			ZoomLevel = zoomLevel;
-			TopLeft = PointToZoomPoint(point1).ToPoint();
-			BottomRight = new PreviewPoint(_topLeft.X, _topLeft.Y).ToPoint();
-
-			int lightCount = 25;
+			_topLeft = PointToZoomPoint(point1);
+			_bottomRight = new PreviewPoint(_topLeft.X, _topLeft.Y);
 
 			if (selectedNode != null) {
 				List<ElementNode> children = PreviewTools.GetLeafNodes(selectedNode);
@@ -43,6 +39,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 						{
 							PreviewPixel pixel = AddPixel(10, 10);
 							pixel.Node = child;
+							pixel.NodeId = child.Id;
 							pixel.PixelColor = Color.White;
 						}
 					}
@@ -50,7 +47,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 
 			if (_pixels.Count == 0) {
-				// Just add the pixels, they will get layed out next
 				for (int lightNum = 0; lightNum < lightCount; lightNum++) {
 					PreviewPixel pixel = AddPixel(10, 10);
 					pixel.PixelColor = Color.White;
@@ -70,46 +66,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			Layout();
 		}
 
-		public PreviewPoint TopRight
-		{
-			get
-			{
-				if (_topRight == null)
-					_topRight = new PreviewPoint(10, 10);
-				return _topRight;
-			}
-			set
-			{
-				if (_topRight == null)
-					_topRight = new PreviewPoint(10, 10);
-				_topRight = value;
-			}
-		}
-
-		public PreviewPoint BottomLeft
-		{
-			get
-			{
-				if (_bottomLeft == null)
-					_bottomLeft = new PreviewPoint(10, 10);
-				return _bottomLeft;
-			}
-			set
-			{
-				if (_bottomLeft == null)
-					_bottomLeft = new PreviewPoint(10, 10);
-				_bottomLeft = value;
-			}
-		}
-
 		[CategoryAttribute("Position"),
 		 DisplayName("Top Left"),
-		 DescriptionAttribute("An arch is defined by a 2 points of a rectangle. This is point 1.")]
+		 DescriptionAttribute("An ellipse is defined by a 2 points of a ellipse. This is point 1.")]
 		public Point TopLeft
 		{
 			get
 			{
-                if (_topLeft == null) _topLeft = new PreviewPoint(0, 0);
 				Point p = new Point(_topLeft.X, _topLeft.Y);
 				return p;
 			}
@@ -123,12 +86,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		[CategoryAttribute("Position"),
 		 DisplayName("Bottom Right"),
-		 DescriptionAttribute("An arch is defined by a 2 points of a rectangle. This is point 2.")]
+		 DescriptionAttribute("An ellipse is defined by a 2 points of a ellipse. This is point 2.")]
 		public Point BottomRight
 		{
 			get
 			{
-                if (_bottomRight == null) _bottomRight = new PreviewPoint(0, 0);
 				Point p = new Point(_bottomRight.X, _bottomRight.Y);
 				return p;
 			}
@@ -140,41 +102,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[CategoryAttribute("Size"),
-		 DisplayName("Width"),
-		 DescriptionAttribute("An arch is defined by a 2 points of a rectangle. This is the width of those points.")]
-		public int Width
-		{
-			get
-			{
-				return _bottomRight.X -_bottomLeft.X;
-			}
-			set
-			{
-				_bottomRight.X = _topLeft.X + value;
-				Layout();
-			}
-		}
-
-		[CategoryAttribute("Size"),
-		 DisplayName("Height"),
-		 DescriptionAttribute("An arch is defined by a 2 points of a rectangle. This is the height of those points.")]
-		public int Height
-		{
-			get
-			{
-				return _bottomLeft.Y - _topLeft.Y;
-			}
-			set
-			{
-				_topLeft.Y = _bottomRight.Y - value;
-				Layout();
-			}
-		}
-
 		[CategoryAttribute("Settings"),
 		 DisplayName("Light Count"),
-		 DescriptionAttribute("Number of pixels or lights in the arch.")]
+		 DescriptionAttribute("Number of pixels or lights in the ellipse.")]
 		public int PixelCount
 		{
 			get { return Pixels.Count; }
@@ -191,80 +121,72 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-
-        public override int Top
-        {
+		public override int Top
+		{
             get
             {
-                return Math.Min(_topLeft.Y, _bottomRight.Y);
+                return (Math.Min(_topLeft.Y, _bottomRight.Y));
             }
             set
             {
-                if (_topLeft.Y < _bottomLeft.Y)
+                int delta = Top - value;
+                if (_topLeft.Y == Top)
                 {
-                    int delta = _topLeft.Y - value;
                     _topLeft.Y = value;
-                    _bottomLeft.Y -= delta;
                     _bottomRight.Y -= delta;
                 }
                 else
                 {
-                    int delta = _bottomLeft.Y - value;
                     _topLeft.Y -= delta;
-                    _bottomLeft.Y = value;
                     _bottomRight.Y = value;
                 }
                 Layout();
             }
         }
 
-        public override int Left
-        {
+		public override int Left
+		{
             get
             {
-                return Math.Min(BottomLeft.X, BottomRight.X);
+                return (Math.Min(_topLeft.X, _bottomRight.X));
             }
-            set
+			set 
             {
                 int delta = Left - value;
-                if (_topLeft.X < _bottomRight.X)
+                if (_topLeft.X == Left)
                 {
                     _topLeft.X = value;
                     _bottomRight.X -= delta;
-                    BottomLeft.X -= delta;
                 }
                 else
                 {
                     _topLeft.X -= delta;
                     _bottomRight.X = value;
-                    BottomLeft.X = value;
                 }
                 Layout();
             }
-        }
-        
+		}
+
         public override void Match(PreviewBaseShape matchShape)
         {
-            PreviewArch shape = (matchShape as PreviewArch);
-            Width = shape.Width;
-            Height = shape.Height;
+            PreviewEllipse shape = (matchShape as PreviewEllipse);
             PixelSize = shape.PixelSize;
+            _bottomRight.X = TopLeft.X + (shape.BottomRight.X - shape.TopLeft.X);
+            _bottomRight.Y = TopLeft.Y + (shape.BottomRight.Y - shape.TopLeft.Y);
             Layout();
         }
 
 		public override void Layout()
 		{
-            if (BottomRight != null && BottomLeft != null)
-			{
-				int width = BottomRight.X - TopLeft.X;
-				int height = BottomRight.Y - TopLeft.Y;
+			if (_bottomRight != null && _topLeft != null) {
+				int width = _bottomRight.X - _topLeft.X;
+				int height = _bottomRight.Y - _topLeft.Y;
 				List<Point> points;
-				points = PreviewTools.GetArcPoints(width, height, PixelCount);
+				points = PreviewTools.GetEllipsePoints(0, 0, width, height, PixelCount, 360, 0);
 				int pointNum = 0;
-				foreach (PreviewPixel pixel in _pixels)
-				{
-					pixel.X = points[pointNum].X + TopLeft.X;
-					pixel.Y = points[pointNum].Y + TopLeft.Y;
+				foreach (PreviewPixel pixel in _pixels) {
+					pixel.X = points[pointNum].X + _topLeft.X;
+					pixel.Y = points[pointNum].Y + _topLeft.Y;
 					pointNum++;
 				}
 
@@ -275,28 +197,20 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public override void MouseMove(int x, int y, int changeX, int changeY)
 		{
 			PreviewPoint point = PointToZoomPoint(new PreviewPoint(x, y));
-
-			// See if we're resizing
-			if (_selectedPoint != null) {
-				if (_selectedPoint == TopRight) {
+			if (_selectedPoint != null && _selectedPoint.PointType == PreviewPoint.PointTypes.Size) {
+				if (_selectedPoint == topRight) {
 					_topLeft.Y = point.Y;
 					_bottomRight.X = point.X;
 				}
-				else if (_selectedPoint == BottomLeft) {
+				else if (_selectedPoint == bottomLeft) {
 					_topLeft.X = point.X;
 					_bottomRight.Y = point.Y;
 				}
 				_selectedPoint.X = point.X;
 				_selectedPoint.Y = point.Y;
-				Layout();
-			}
 				// If we get here, we're moving
+			}
 			else {
-				//_topLeft.X = p1Start.X + changeX;
-				//_topLeft.Y = p1Start.Y + changeY;
-				//_bottomRight.X = p2Start.X + changeX;
-				//_bottomRight.Y = p2Start.Y + changeY;
-
 				_topLeft.X = Convert.ToInt32(p1Start.X * ZoomLevel) + changeX;
 				_topLeft.Y = Convert.ToInt32(p1Start.Y * ZoomLevel) + changeY;
 				_bottomRight.X = Convert.ToInt32(p2Start.X * ZoomLevel) + changeX;
@@ -306,32 +220,61 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				PointToZoomPointRef(_bottomRight);
 			}
 
-			TopRight.X = _bottomRight.X;
-			TopRight.Y = _topLeft.Y;
-			BottomLeft.X = _topLeft.X;
-			BottomLeft.Y = _bottomRight.Y;
+			if (topRight != null) {
+				topRight.X = _bottomRight.X;
+				topRight.Y = _topLeft.Y;
+				bottomLeft.X = _topLeft.X;
+				bottomLeft.Y = _bottomRight.Y;
+			}
+
+			// Layout the standard shape
 			Layout();
 		}
 
 		public override void SelectDragPoints()
 		{
-			List<PreviewPoint> points = new List<PreviewPoint>();
-			points.Add(_topLeft);
-			points.Add(_bottomRight);
-			TopRight = new PreviewPoint(_bottomRight.X, _topLeft.Y);
-			points.Add(TopRight);
-			BottomLeft = new PreviewPoint(_topLeft.X, _bottomRight.Y);
-			points.Add(BottomLeft);
-			SetSelectPoints(points, null);
+			// Create the size points
+			List<PreviewPoint> selectPoints = new List<PreviewPoint>();
+
+			selectPoints.Add(_topLeft);
+			selectPoints.Add(_bottomRight);
+			topRight = new PreviewPoint(_bottomRight.X, _topLeft.Y);
+			selectPoints.Add(topRight);
+			bottomLeft = new PreviewPoint(_topLeft.X, _bottomRight.Y);
+			selectPoints.Add(bottomLeft);
+
+			// Create the skew points
+			List<PreviewPoint> skewPoints = new List<PreviewPoint>();
+
+			int width = topRight.X - _topLeft.X;
+			skewXPoint = new PreviewPoint(_topLeft.X + (width/2), topRight.Y);
+			skewXPoint.PointType = PreviewPoint.PointTypes.SkewWE;
+			skewPoints.Add(skewXPoint);
+
+			int height = bottomLeft.Y - _topLeft.Y;
+			skewYPoint = new PreviewPoint(topRight.X, topRight.Y + (height/2));
+			skewYPoint.PointType = PreviewPoint.PointTypes.SkewNS;
+			skewPoints.Add(skewYPoint);
+
+			// Tell the base shape about the newely created points
+			SetSelectPoints(selectPoints, skewPoints);
 		}
 
-		public override bool PointInShape(PreviewPoint point)
+		public override bool PointInShape(PreviewPoint inPoint)
 		{
+			PreviewPoint point = PointToZoomPointAdd(inPoint);
 			foreach (PreviewPixel pixel in Pixels) {
-				Rectangle r = new Rectangle(pixel.X - (SelectPointSize/2), pixel.Y - (SelectPointSize/2), SelectPointSize,
-				                            SelectPointSize);
-				if (point.X >= r.X && point.X <= r.X + r.Width && point.Y >= r.Y && point.Y <= r.Y + r.Height) {
+				int pixelX = Convert.ToInt32(pixel.X * ZoomLevel);
+				int pixelY = Convert.ToInt32(pixel.Y * ZoomLevel);
+				Rectangle r = new Rectangle(pixelX - (SelectPointSize / 2), pixelY - (SelectPointSize / 2),
+											SelectPointSize + PixelSize, SelectPointSize + PixelSize);
+				if (point.X >= r.X && point.X <= r.X + r.Width && point.Y >= r.Y && point.Y <= r.Y + r.Height)
+				{
 					return true;
+				//Rectangle r = new Rectangle(pixel.X - (SelectPointSize/2), pixel.Y - (SelectPointSize/2),
+				//							SelectPointSize + PixelSize, SelectPointSize + PixelSize);
+				//if (point.X >= r.X && point.X <= r.X + r.Width && point.Y >= r.Y && point.Y <= r.Y + r.Height) {
+				//	return true;
 				}
 			}
 			return false;
@@ -352,28 +295,19 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			_selectedPoint = _bottomRight;
 		}
 
-		public override object Clone()
-		{
-			return this.MemberwiseClone();
-		}
-
 		public override void MoveTo(int x, int y)
 		{
-			Point topLeft = new Point();
-			topLeft.X = Math.Min(TopLeft.X, BottomRight.X);
-			topLeft.Y = Math.Min(TopLeft.Y, BottomRight.Y);
+			int deltaX = x - TopLeft.X;
+			int deltaY = y - TopLeft.Y;
 
-			int deltaX = x - topLeft.X;
-			int deltaY = y - topLeft.Y;
-
-			TopLeft = new Point(TopLeft.X + deltaX, TopLeft.Y + deltaY);
+			TopLeft = new Point(x, y);
 			BottomRight = new Point(BottomRight.X + deltaX, BottomRight.Y + deltaY);
 
-			if (TopRight != null) {
-				TopRight.X = _bottomRight.X;
-				TopRight.Y = _topLeft.Y;
-				BottomLeft.X = _topLeft.X;
-				BottomLeft.Y = _bottomRight.Y;
+			if (topRight != null) {
+				topRight.X = _bottomRight.X;
+				topRight.Y = _topLeft.Y;
+				bottomLeft.X = _topLeft.X;
+				bottomLeft.Y = _bottomRight.Y;
 			}
 
 			Layout();

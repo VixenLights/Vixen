@@ -109,7 +109,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			get
 			{
-                if (_topLeft == null) _topLeft = new PreviewPoint(0, 0);
 				Point p = new Point(_topLeft.X, _topLeft.Y);
 				return p;
 			}
@@ -128,7 +127,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			get
 			{
-                if (_bottomRight == null) _bottomRight = new PreviewPoint(0, 0);
 				Point p = new Point(_bottomRight.X, _bottomRight.Y);
 				return p;
 			}

@@ -158,6 +158,13 @@
     <Compile Include="Shapes\PreviewPixelGridSetupControl.Designer.cs">
       <DependentUpon>PreviewPixelGridSetupControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Shapes\PreviewIcicle.cs" />
+    <Compile Include="Shapes\PreviewIcicleSetupControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Shapes\PreviewIcicleSetupControl.Designer.cs">
+      <DependentUpon>PreviewIcicleSetupControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Shapes\PreviewStarBurstSetupControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -338,6 +345,9 @@
     <EmbeddedResource Include="Shapes\PreviewPixelGridSetupControl.resx">
       <DependentUpon>PreviewPixelGridSetupControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Shapes\PreviewIcicleSetupControl.resx">
+      <DependentUpon>PreviewIcicleSetupControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Shapes\PreviewStarBurstSetupControl.resx">
       <DependentUpon>PreviewStarBurstSetupControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -388,6 +398,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="VixenPreviewSetup3.resx">
       <DependentUpon>VixenPreviewSetup3.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="VixenPreviewSetupDocument.resx">
       <DependentUpon>VixenPreviewSetupDocument.cs</DependentUpon>
