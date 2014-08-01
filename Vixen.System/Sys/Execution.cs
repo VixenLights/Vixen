@@ -175,7 +175,11 @@ namespace Vixen.Sys
 				if (allowUpdate) {
 					lastSnapshots = VixenSystem.Contexts.Update();
 					VixenSystem.Elements.Update();
-					VixenSystem.Filters.Update();
+					if (VixenSystem.OutputControllers.Any(x => x.IsRunning))
+					{
+						//Only update the filter chain if we have a controller running
+						VixenSystem.Filters.Update();
+					}
 					_systemAllowedBlockTime.Set( lockMs);
 					_systemAllowedUpdateTime.Set(_stopwatch.ElapsedMilliseconds - nowMs - lockMs);
 				}
