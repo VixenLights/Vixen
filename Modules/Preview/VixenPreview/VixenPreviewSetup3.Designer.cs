@@ -564,7 +564,6 @@
             this.buttonIcicle.TabIndex = 13;
             this.toolTip.SetToolTip(this.buttonIcicle, "Pixel Grid");
             this.buttonIcicle.UseVisualStyleBackColor = true;
-            this.buttonIcicle.Visible = false;
             this.buttonIcicle.Click += new System.EventHandler(this.toolbarButton_Click);
             // 
             // buttonStarBurst

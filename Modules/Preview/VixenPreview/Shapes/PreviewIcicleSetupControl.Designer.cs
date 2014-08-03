@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PreviewRectangleSetupControl));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PreviewIcicleSetupControl));
             this.propertyGrid = new System.Windows.Forms.PropertyGrid();
             this.buttonHelp = new System.Windows.Forms.Button();
             this.SuspendLayout();
@@ -38,31 +38,32 @@
             this.propertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.propertyGrid.Location = new System.Drawing.Point(0, 0);
             this.propertyGrid.Name = "propertyGrid";
-            this.propertyGrid.Size = new System.Drawing.Size(233, 255);
-            this.propertyGrid.TabIndex = 1;
+            this.propertyGrid.Size = new System.Drawing.Size(195, 277);
+            this.propertyGrid.TabIndex = 0;
             // 
             // buttonHelp
             // 
             this.buttonHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonHelp.Image = ((System.Drawing.Image)(resources.GetObject("buttonHelp.Image")));
             this.buttonHelp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.buttonHelp.Location = new System.Drawing.Point(172, 1);
+            this.buttonHelp.Location = new System.Drawing.Point(134, 1);
             this.buttonHelp.Name = "buttonHelp";
             this.buttonHelp.Size = new System.Drawing.Size(60, 23);
-            this.buttonHelp.TabIndex = 62;
+            this.buttonHelp.TabIndex = 61;
             this.buttonHelp.Text = "Help";
             this.buttonHelp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.buttonHelp.UseVisualStyleBackColor = true;
             this.buttonHelp.Click += new System.EventHandler(this.buttonHelp_Click);
             // 
-            // PreviewRectangleSetupControl
+            // PreviewIcicleSetupControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.buttonHelp);
             this.Controls.Add(this.propertyGrid);
             this.Name = "PreviewIcicleSetupControl";
-            this.Size = new System.Drawing.Size(233, 255);
+            this.Size = new System.Drawing.Size(195, 277);
+            this.Title = "Icicle Properties";
             this.ResumeLayout(false);
 
         }
@@ -71,5 +72,7 @@
 
         private System.Windows.Forms.PropertyGrid propertyGrid;
         private System.Windows.Forms.Button buttonHelp;
+
+
     }
 }

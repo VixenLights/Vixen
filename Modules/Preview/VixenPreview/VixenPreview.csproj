@@ -151,19 +151,19 @@
     <Compile Include="Shapes\PreviewCustomSetupControl.Designer.cs">
       <DependentUpon>PreviewCustomSetupControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Shapes\PreviewPixelGrid.cs" />
-    <Compile Include="Shapes\PreviewPixelGridSetupControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Shapes\PreviewPixelGridSetupControl.Designer.cs">
-      <DependentUpon>PreviewPixelGridSetupControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="Shapes\PreviewIcicle.cs" />
     <Compile Include="Shapes\PreviewIcicleSetupControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Shapes\PreviewIcicleSetupControl.Designer.cs">
       <DependentUpon>PreviewIcicleSetupControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Shapes\PreviewPixelGrid.cs" />
+    <Compile Include="Shapes\PreviewPixelGridSetupControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Shapes\PreviewPixelGridSetupControl.Designer.cs">
+      <DependentUpon>PreviewPixelGridSetupControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Shapes\PreviewStarBurstSetupControl.cs">
       <SubType>UserControl</SubType>
@@ -342,11 +342,11 @@
     <EmbeddedResource Include="Shapes\PreviewCustomSetupControl.resx">
       <DependentUpon>PreviewCustomSetupControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Shapes\PreviewPixelGridSetupControl.resx">
-      <DependentUpon>PreviewPixelGridSetupControl.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Shapes\PreviewIcicleSetupControl.resx">
       <DependentUpon>PreviewIcicleSetupControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Shapes\PreviewPixelGridSetupControl.resx">
+      <DependentUpon>PreviewPixelGridSetupControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Shapes\PreviewStarBurstSetupControl.resx">
       <DependentUpon>PreviewStarBurstSetupControl.cs</DependentUpon>

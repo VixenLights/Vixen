@@ -23,6 +23,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				PreviewSetElements elementsDialog = new PreviewSetElements(shapes);
 				svc.ShowDialog(elementsDialog);
 				// update etc
+                if (shapes[0].Parent != null)
+                {
+                    shapes[0].Parent.Layout();
+                }
 			}
 			return value;
 		}

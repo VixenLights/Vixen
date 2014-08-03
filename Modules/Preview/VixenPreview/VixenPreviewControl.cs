@@ -506,7 +506,8 @@ namespace VixenModules.Preview.VixenPreview
                         else if (_currentTool == Tools.Icicle)
                         {
                             newDisplayItem = new DisplayItem();
-                            newDisplayItem.Shape = new PreviewIcicle(translatedPoint, elementsForm.SelectedNode, ZoomLevel);
+                            newDisplayItem.Shape = new PreviewIcicle(translatedPoint, translatedPoint, 
+																     elementsForm.SelectedNode, ZoomLevel);
                         }
 
 						// Now add the newely created display item to the screen.

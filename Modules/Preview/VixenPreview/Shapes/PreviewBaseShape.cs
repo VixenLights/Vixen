@@ -206,6 +206,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			set { _pixels = value; }
 		}
 
+        public PreviewBaseShape Parent { get; set; }
+
 		[Editor(typeof (PreviewSetElementsUIEditor), typeof (UITypeEditor)),
 		 CategoryAttribute("Settings"),
 		 DisplayName("Linked Elements")]
