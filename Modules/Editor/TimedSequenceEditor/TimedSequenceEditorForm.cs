@@ -649,6 +649,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					_sequence.Length = _defaultSequenceTime;
 
 				SequenceLength = _sequence.Length;
+				setTitleBarText();
 
 				// update our program context with this sequence
 				OpenSequenceContext(sequence);
@@ -867,7 +868,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				//Set sequence name in title bar based on the module name and current sequence name JU 8/1/2012
 				//Made this more generic to support importing 12 FEB 2013 - JEMA
 				Text = String.Format("{0} - [{1}{2}]", ((OwnerModule.Descriptor) as EditorModuleDescriptorBase).TypeName,
-									 _sequence.Name, IsModified ? " *" : "");
+					String.IsNullOrEmpty(_sequence.Name)?"Untitled":_sequence.Name, IsModified ? " *" : "");
 			}
 		}
 
