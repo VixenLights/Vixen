@@ -10,7 +10,9 @@ namespace Common.VixenHelp
 	public class VixenHelp
 	{
 		public enum HelpStrings
-		{
+        {
+            [Description("http://www.vixenlights.com/vixen-3-documentation/preview/adding-items-to-the-preview/smart-objects/icicles/")]
+            Preview_Icicle,
 			[Description("http://www.vixenlights.com/vixen-3-documentation/preview/adding-items-to-the-preview/smart-objects/mega-tree/")]
 			Preview_MegaTree,
 			[Description("http://www.vixenlights.com/vixen-3-documentation/preview/adding-items-to-the-preview/smart-objects/star/")]
