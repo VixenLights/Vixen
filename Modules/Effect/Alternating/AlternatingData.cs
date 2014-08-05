@@ -108,12 +108,9 @@ namespace VixenModules.Effect.Alternating {
 			result.StaticColor1 = StaticColor1;
 			result.Curve2 = Curve2;
 			result.Curve1 = Curve1;
-
-			//if (ColorGradient1 != null)
-			//    result.ColorGradient1 = (ColorGradient)ColorGradient1.Clone();
-			//if (ColorGradient2 != null)
-			//    result.ColorGradient2 = (ColorGradient)ColorGradient2.Clone();
-
+			result.ColorGradient1 = new ColorGradient(ColorGradient1);
+			result.ColorGradient2 = new ColorGradient(ColorGradient2);
+		
 			return result;
 		}
 	}

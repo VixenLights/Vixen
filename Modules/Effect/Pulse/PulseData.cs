@@ -29,7 +29,7 @@ namespace VixenModules.Effect.Pulse
 		{
 			PulseData result = new PulseData();
 			result.LevelCurve = LevelCurve;
-			result.ColorGradient = ColorGradient;
+			result.ColorGradient = new ColorGradient(ColorGradient);
 			return result;
 		}
 	}
