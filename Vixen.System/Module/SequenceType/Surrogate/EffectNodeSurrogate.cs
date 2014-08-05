@@ -19,10 +19,10 @@ namespace Vixen.Module.SequenceType.Surrogate
 			TargetNodes = effectNode.Effect.TargetNodes.Select(x => new ChannelNodeReferenceSurrogate(x)).ToArray();
 		}
 
-		public IEffectNode CreateEffectNode()
+		public IEffectNode CreateEffectNode(Dictionary<Guid,ElementNode> elementNodes)
 		{
 			// Create a element node lookup of elements that are currently valid.
-			var elementNodes = VixenSystem.Nodes.Distinct().ToDictionary(x => x.Id);
+			//var elementNodes = VixenSystem.Nodes.Distinct().ToDictionary(x => x.Id);
 
 			IEnumerable<Guid> targetNodeIds = TargetNodes.Select(x => x.NodeId);
 			IEnumerable<Guid> validElementIds = targetNodeIds.Intersect(elementNodes.Keys);
