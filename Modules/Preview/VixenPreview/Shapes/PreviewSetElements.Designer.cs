@@ -31,6 +31,10 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PreviewSetElements));
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.panelSetLightCount = new System.Windows.Forms.Panel();
+            this.label1 = new System.Windows.Forms.Label();
+            this.numericUpDownLightCount = new System.Windows.Forms.NumericUpDown();
+            this.buttonSetLightCount = new System.Windows.Forms.Button();
             this.label11 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
@@ -48,14 +52,10 @@
             this.buttonOK = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.buttonHelp = new System.Windows.Forms.Button();
-            this.panelSetLightCount = new System.Windows.Forms.Panel();
-            this.numericUpDownLightCount = new System.Windows.Forms.NumericUpDown();
-            this.buttonSetLightCount = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
             this.groupBox2.SuspendLayout();
-            this.contextMenuLinkedElements.SuspendLayout();
             this.panelSetLightCount.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownLightCount)).BeginInit();
+            this.contextMenuLinkedElements.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox2
@@ -71,13 +71,65 @@
             this.groupBox2.Controls.Add(this.label5);
             this.groupBox2.Controls.Add(this.label6);
             this.groupBox2.Location = new System.Drawing.Point(24, 23);
-            this.groupBox2.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.groupBox2.Margin = new System.Windows.Forms.Padding(6);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.groupBox2.Padding = new System.Windows.Forms.Padding(6);
             this.groupBox2.Size = new System.Drawing.Size(858, 804);
             this.groupBox2.TabIndex = 19;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Element Links";
+            // 
+            // panelSetLightCount
+            // 
+            this.panelSetLightCount.Controls.Add(this.label1);
+            this.panelSetLightCount.Controls.Add(this.numericUpDownLightCount);
+            this.panelSetLightCount.Controls.Add(this.buttonSetLightCount);
+            this.panelSetLightCount.Location = new System.Drawing.Point(438, 21);
+            this.panelSetLightCount.Name = "panelSetLightCount";
+            this.panelSetLightCount.Size = new System.Drawing.Size(396, 63);
+            this.panelSetLightCount.TabIndex = 26;
+            this.panelSetLightCount.Visible = false;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(3, 17);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(221, 25);
+            this.label1.TabIndex = 30;
+            this.label1.Text = "Light Count for String:";
+            // 
+            // numericUpDownLightCount
+            // 
+            this.numericUpDownLightCount.Location = new System.Drawing.Point(230, 14);
+            this.numericUpDownLightCount.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.numericUpDownLightCount.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericUpDownLightCount.Name = "numericUpDownLightCount";
+            this.numericUpDownLightCount.Size = new System.Drawing.Size(81, 31);
+            this.numericUpDownLightCount.TabIndex = 29;
+            this.numericUpDownLightCount.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // buttonSetLightCount
+            // 
+            this.buttonSetLightCount.Location = new System.Drawing.Point(317, 9);
+            this.buttonSetLightCount.Name = "buttonSetLightCount";
+            this.buttonSetLightCount.Size = new System.Drawing.Size(75, 40);
+            this.buttonSetLightCount.TabIndex = 28;
+            this.buttonSetLightCount.Text = "Set";
+            this.buttonSetLightCount.UseVisualStyleBackColor = true;
+            this.buttonSetLightCount.Click += new System.EventHandler(this.buttonSetLightCount_Click);
             // 
             // label11
             // 
@@ -121,7 +173,7 @@
             this.treeElements.DragSourceNodeForeColor = System.Drawing.SystemColors.ControlText;
             this.treeElements.HideSelection = false;
             this.treeElements.Location = new System.Drawing.Point(18, 129);
-            this.treeElements.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.treeElements.Margin = new System.Windows.Forms.Padding(6);
             this.treeElements.Name = "treeElements";
             this.treeElements.SelectedNodes = ((System.Collections.Generic.List<System.Windows.Forms.TreeNode>)(resources.GetObject("treeElements.SelectedNodes")));
             this.treeElements.Size = new System.Drawing.Size(396, 573);
@@ -145,7 +197,7 @@
             this.comboStrings.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboStrings.FormattingEnabled = true;
             this.comboStrings.Location = new System.Drawing.Point(172, 35);
-            this.comboStrings.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.comboStrings.Margin = new System.Windows.Forms.Padding(6);
             this.comboStrings.Name = "comboStrings";
             this.comboStrings.Size = new System.Drawing.Size(242, 33);
             this.comboStrings.TabIndex = 7;
@@ -164,7 +216,7 @@
             this.listLinkedElements.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.listLinkedElements.HideSelection = false;
             this.listLinkedElements.Location = new System.Drawing.Point(438, 129);
-            this.listLinkedElements.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.listLinkedElements.Margin = new System.Windows.Forms.Padding(6);
             this.listLinkedElements.Name = "listLinkedElements";
             this.listLinkedElements.Size = new System.Drawing.Size(396, 573);
             this.listLinkedElements.TabIndex = 6;
@@ -228,9 +280,8 @@
             // 
             // buttonOK
             // 
-            this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.buttonOK.Location = new System.Drawing.Point(576, 854);
-            this.buttonOK.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.buttonOK.Margin = new System.Windows.Forms.Padding(6);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(150, 44);
             this.buttonOK.TabIndex = 20;
@@ -240,10 +291,9 @@
             // 
             // buttonCancel
             // 
-            this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.buttonCancel.Location = new System.Drawing.Point(738, 854);
-            this.buttonCancel.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.buttonCancel.Margin = new System.Windows.Forms.Padding(6);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(150, 44);
             this.buttonCancel.TabIndex = 21;
@@ -256,7 +306,7 @@
             this.buttonHelp.Image = ((System.Drawing.Image)(resources.GetObject("buttonHelp.Image")));
             this.buttonHelp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.buttonHelp.Location = new System.Drawing.Point(24, 854);
-            this.buttonHelp.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.buttonHelp.Margin = new System.Windows.Forms.Padding(6);
             this.buttonHelp.Name = "buttonHelp";
             this.buttonHelp.Size = new System.Drawing.Size(108, 44);
             this.buttonHelp.TabIndex = 22;
@@ -265,63 +315,12 @@
             this.buttonHelp.UseVisualStyleBackColor = true;
             this.buttonHelp.Click += new System.EventHandler(this.buttonHelp_Click);
             // 
-            // panelSetLightCount
-            // 
-            this.panelSetLightCount.Controls.Add(this.label1);
-            this.panelSetLightCount.Controls.Add(this.numericUpDownLightCount);
-            this.panelSetLightCount.Controls.Add(this.buttonSetLightCount);
-            this.panelSetLightCount.Location = new System.Drawing.Point(438, 21);
-            this.panelSetLightCount.Name = "panelSetLightCount";
-            this.panelSetLightCount.Size = new System.Drawing.Size(396, 63);
-            this.panelSetLightCount.TabIndex = 26;
-            this.panelSetLightCount.Visible = false;
-            // 
-            // numericUpDownLightCount
-            // 
-            this.numericUpDownLightCount.Location = new System.Drawing.Point(230, 14);
-            this.numericUpDownLightCount.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.numericUpDownLightCount.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.numericUpDownLightCount.Name = "numericUpDownLightCount";
-            this.numericUpDownLightCount.Size = new System.Drawing.Size(81, 31);
-            this.numericUpDownLightCount.TabIndex = 29;
-            this.numericUpDownLightCount.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            // 
-            // buttonSetLightCount
-            // 
-            this.buttonSetLightCount.Location = new System.Drawing.Point(317, 9);
-            this.buttonSetLightCount.Name = "buttonSetLightCount";
-            this.buttonSetLightCount.Size = new System.Drawing.Size(75, 40);
-            this.buttonSetLightCount.TabIndex = 28;
-            this.buttonSetLightCount.Text = "Set";
-            this.buttonSetLightCount.UseVisualStyleBackColor = true;
-            this.buttonSetLightCount.Click += new System.EventHandler(this.buttonSetLightCount_Click);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 17);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(221, 25);
-            this.label1.TabIndex = 30;
-            this.label1.Text = "Light Count for String:";
-            // 
             // PreviewSetElements
             // 
             this.AcceptButton = this.buttonOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSize = true;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(912, 921);
             this.Controls.Add(this.buttonHelp);
@@ -329,17 +328,17 @@
             this.Controls.Add(this.buttonOK);
             this.Controls.Add(this.groupBox2);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.Margin = new System.Windows.Forms.Padding(6);
             this.Name = "PreviewSetElements";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Link Elements";
             this.Load += new System.EventHandler(this.PreviewSetElements_Load);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
-            this.contextMenuLinkedElements.ResumeLayout(false);
             this.panelSetLightCount.ResumeLayout(false);
             this.panelSetLightCount.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownLightCount)).EndInit();
+            this.contextMenuLinkedElements.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
