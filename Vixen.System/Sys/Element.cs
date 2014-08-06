@@ -13,7 +13,6 @@ namespace Vixen.Sys
 	[Serializable]
 	public class Element : IOutputStateSource, IEqualityComparer<Element>, IEquatable<Element>
 	{
-		private ElementContextSource _dataSource;
 		private IIntentStates _state;
 
 		internal Element(string name)
@@ -25,7 +24,6 @@ namespace Vixen.Sys
 		{
 			Id = id;
 			Name = name;
-			_dataSource = new ElementContextSource(Id);
 			_state = new IntentStateList();
 		}
 

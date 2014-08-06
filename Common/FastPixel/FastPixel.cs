@@ -208,7 +208,6 @@ namespace FastPixel
 					float b = rgbValues[index];
 					float g = rgbValues[index + 1];
 					float r = rgbValues[index + 2];
-					float a = rgbValues[index + 3];
 
 					//float New_R = ((255f-color.R) * (color.A / 255f) + color.R);
 					//float New_G = ((255f - color.G) * (color.A / 255f) + color.G);

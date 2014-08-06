@@ -47,7 +47,7 @@ namespace Vixen.Execution
 		private Guid[] _GetElementsAffected(IEnumerable<IEffectNode> effects)
 		{
 			// If there's nothin here, pass back emptiness
-			if (effects.Count() == 0)
+			if (!effects.Any())
 				return new Guid[0];
 			
 			

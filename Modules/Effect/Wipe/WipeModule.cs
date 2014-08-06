@@ -155,7 +155,7 @@ namespace VixenModules.Effect.Wipe {
 					break;
 			}
 
-			if (renderNodes != null && renderNodes.Count()>0) {
+			if (renderNodes != null && renderNodes.Any()) {
 				TimeSpan effectTime = TimeSpan.Zero;
 				if (WipeByCount) {
 					int count = 0;
