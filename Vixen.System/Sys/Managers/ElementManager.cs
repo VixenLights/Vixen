@@ -134,6 +134,31 @@ namespace Vixen.Sys.Managers
 			 }
 		}
 
+		/// <summary>
+		/// This performs updates on the predicted elements and arbitrarily clears the rest.
+		/// Saves the labor of doing Dictionary lookups in every context when we know it was not affected.
+		/// </summary>
+		/// <param name="elements"></param>
+		public void Update(HashSet<Guid> elements)
+		{
+			_stopwatch.Restart();
+			lock (_instances)
+			{
+				foreach (var x in _instances.Values)
+				{
+					if (elements.Contains(x.Id))
+					{
+						x.Update();
+					} else
+					{
+						//No sense in checking each context as we know our element is not affected on this update.
+						x.ClearStates();
+					}
+				}
+				_elementUpdateTimeValue.Set(_stopwatch.ElapsedMilliseconds);
+			}
+		}
+
 		public void ClearStates()
 		{
 			_stopwatch.Restart();

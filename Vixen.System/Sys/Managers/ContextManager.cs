@@ -87,13 +87,13 @@ namespace Vixen.Sys.Managers
 			}
 		}
 
-		public ConcurrentDictionary<string, TimeSpan> Update()
+		public HashSet<Guid> Update()
 		{
-			var res = new ConcurrentDictionary<string,TimeSpan>();
+			var affectedElements = new HashSet<Guid>();
 			_stopwatch.Restart();
 			lock (_instances)
 			{
-				_contextUpdateWaitValue.Set(_stopwatch.ElapsedMilliseconds);
+				//_contextUpdateWaitValue.Set(_stopwatch.ElapsedMilliseconds);
 
 				_instances.Values.AsParallel().ForAll(context =>
 				//foreach( var context in _instances.Values)
@@ -101,11 +101,12 @@ namespace Vixen.Sys.Managers
 					try {
 						// Get a snapshot time value for this update.
 						TimeSpan contextTime = context.GetTimeSnapshot();
-						res.TryAdd(context.Name, contextTime);
-						IEnumerable<Guid> affectedElements = context.UpdateElementStates(contextTime);
-						//Could possibly return affectedElements so only affected outputs
-						//are updated.  The controller would have to maintain state so those
-						//outputs could be updated and the whole state sent out.
+						var contextAffectedElements = context.UpdateElementStates(contextTime);
+						if (contextAffectedElements != null)
+						{
+							//Aggregate the effected elements so we can do more selective work downstream
+							affectedElements.AddRange(contextAffectedElements);	
+						}
 
 					} catch (Exception ee) {
 						Logging.ErrorException(ee.Message, ee);
@@ -114,7 +115,7 @@ namespace Vixen.Sys.Managers
 				//}
 				_contextUpdateTimeValue.Set(_stopwatch.ElapsedMilliseconds);
 			}
-			return res;
+			return affectedElements;
 		}
 
 		public IEnumerator<IContext> GetEnumerator()
