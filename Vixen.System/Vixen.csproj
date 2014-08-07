@@ -128,6 +128,8 @@
     <Compile Include="Execution\ContextFeatures.cs" />
     <Compile Include="Execution\ContextCaching.cs" />
     <Compile Include="Execution\ContextTargetType.cs" />
+    <Compile Include="Execution\Context\CacheCompileContext.cs" />
+    <Compile Include="Execution\DataSource\EffectNodeDataPump.cs" />
     <Compile Include="Execution\DataSource\IMutableDataSource.cs" />
     <Compile Include="Execution\DataSource\SequenceDataPump.cs" />
     <Compile Include="Execution\IElementStateBuilder.cs" />
@@ -487,6 +489,7 @@
     <Compile Include="Sys\Output\OutputPreview.cs" />
     <Compile Include="Sys\Output\SmartOutputController.cs" />
     <Compile Include="Data\Value\PositionValue.cs" />
+    <Compile Include="Sys\PreCompileExecution.cs" />
     <Compile Include="Sys\SequenceFilterLookup.cs" />
     <Compile Include="Sys\OutputIntentStateList.cs" />
     <Compile Include="Sys\ParameterSignature.cs" />

@@ -40,6 +40,11 @@ namespace Vixen.Execution.DataSource
 
 		public int BufferSizeInSeconds { get; set; }
 
+		public bool IsBufferFull()
+		{
+			return !_IsBufferInadequate();
+		}
+
 		public void Start()
 		{
 			if (!IsRunning) {
@@ -196,6 +201,10 @@ namespace Vixen.Execution.DataSource
 
 		private IEnumerable<IEffectNode> _GetEffectNodesAt(TimeSpan time)
 		{
+			if (time > _lastBufferWritePoint)
+			{
+				
+			}
 			IEffectNode[] effectNodes = _effectNodeQueue.Get(time).ToArray();
 			if (effectNodes.Length > 0) {
 				_LastBufferReadPoint = effectNodes[effectNodes.Length - 1].StartTime;

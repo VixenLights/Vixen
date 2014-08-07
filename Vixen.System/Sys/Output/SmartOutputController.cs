@@ -55,6 +55,11 @@ namespace Vixen.Sys.Output
 			set { _updateInterval = value; }
 		}
 
+		public void UpdateCommands()
+		{
+			//Needs implementation
+		}
+
 		public void Update()
 		{
 			_outputMediator.LockOutputs();
