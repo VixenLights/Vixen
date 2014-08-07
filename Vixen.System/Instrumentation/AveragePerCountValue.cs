@@ -16,6 +16,12 @@
 			return _totalValue/_totalCount;
 		}
 
+		public override void Reset()
+		{
+			_totalCount = 0;
+			_totalValue = 0;
+		}
+
 		public void Increment(double value = 1)
 		{
 			_totalValue += value;

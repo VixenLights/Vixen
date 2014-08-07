@@ -19,5 +19,10 @@
 		{
 			_value += value;
 		}
+
+		public override void Reset()
+		{
+			_value = 0;
+		}
 	}
 }

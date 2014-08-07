@@ -38,7 +38,7 @@ namespace Vixen.Instrumentation
 			_totalValues++;
 		}
 
-		public void Clear()
+		public override void Reset()
 		{
 			_qualifyingValues = 0;
 			_totalValues = 0;
