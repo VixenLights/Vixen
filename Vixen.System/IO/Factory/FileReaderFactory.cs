@@ -1,4 +1,5 @@
-﻿using Vixen.IO.Xml;
+﻿using Vixen.IO.ProtoBuf;
+using Vixen.IO.Xml;
 
 namespace Vixen.IO.Factory
 {
@@ -18,6 +19,11 @@ namespace Vixen.IO.Factory
 		public IFileReader CreateFileReader()
 		{
 			return new XElementFileReader();
+		}
+
+		public IFileReader CreateBinaryFileReader()
+		{
+			return new BinaryFileReader();
 		}
 	}
 }

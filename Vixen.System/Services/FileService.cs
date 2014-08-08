@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Vixen.Cache.Sequence;
 using Vixen.IO;
 using Vixen.IO.Factory;
 using Vixen.Sys;
@@ -114,6 +115,22 @@ namespace Vixen.Services
 
 			IObjectPersistor persistor = PersistorFactory.Instance.CreateSequencePersistor();
 			persistor.SaveToFile(sequence, filePath);
+		}
+
+		public void SaveSequenceCacheFile(ISequenceCache sequence, string filePath)
+		{
+			filePath = _GetRootedPath(filePath, SequenceService.SequenceDirectory);
+
+			IObjectPersistor persistor = PersistorFactory.Instance.CreateSequenceCachePersister();
+			persistor.SaveToFile(sequence, filePath);
+		}
+
+		public ISequenceCache LoadSequenceCacheFile(string filePath)
+		{
+			filePath = _GetRootedPath(filePath, SequenceService.SequenceDirectory);
+
+			IObjectLoader loader = LoaderFactory.Instance.CreateSequenceCacheLoader();
+			return (ISequenceCache)loader.LoadFromFile(filePath);
 		}
 
 		public string GetFileType(string filePath)

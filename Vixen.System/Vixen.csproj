@@ -59,6 +59,9 @@
       <HintPath>..\packages\NLog.2.0.1.2\lib\net40\NLog.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="protobuf-net">
+      <HintPath>..\Common\Libraries\protobuf-net.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core">
@@ -79,6 +82,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cache\CommandHandler.cs" />
+    <Compile Include="Cache\Sequence\PreCachingSequenceEngine.cs" />
     <Compile Include="Commands\16BitCommand.cs" />
     <Compile Include="Commands\32BitCommand.cs" />
     <Compile Include="Commands\64BitCommand.cs" />
@@ -198,6 +203,7 @@
     <Compile Include="IO\Loader\ElementNodeTemplateLoader.cs" />
     <Compile Include="IO\Loader\ModuleStoreLoader.cs" />
     <Compile Include="IO\Loader\ProgramLoader.cs" />
+    <Compile Include="IO\Loader\SequenceCacheLoader.cs" />
     <Compile Include="IO\Loader\SequenceLoader.cs" />
     <Compile Include="IO\Loader\SystemContextLoader.cs" />
     <Compile Include="IO\MigratingObjectLoaderService.cs" />
@@ -209,8 +215,13 @@
     <Compile Include="IO\Persistor\ElementNodeTemplatePersistor.cs" />
     <Compile Include="IO\Persistor\ModuleStorePersistor.cs" />
     <Compile Include="IO\Persistor\ProgramPersistor.cs" />
+    <Compile Include="IO\Persistor\SequenceCachePersister.cs" />
     <Compile Include="IO\Persistor\SequencePersistor.cs" />
     <Compile Include="IO\Persistor\SystemContextPersistor.cs" />
+    <Compile Include="IO\ProtoBuf\BinaryFileReader.cs" />
+    <Compile Include="IO\ProtoBuf\BinaryFileWriter.cs" />
+    <Compile Include="IO\ProtoBuf\SequenceCache\SequenceCacheProtoBufReader.cs" />
+    <Compile Include="IO\ProtoBuf\SequenceCache\SequenceCacheProtoBufWriter.cs" />
     <Compile Include="IO\Xml\ChannelNodeTemplate\ElementNodeTemplateXElementMigrator.cs" />
     <Compile Include="IO\Xml\ChannelNodeTemplate\ElementNodeTemplateXElementReader.cs" />
     <Compile Include="IO\Xml\ChannelNodeTemplate\ElementNodeTemplateXElementWriter.cs" />
@@ -277,6 +288,7 @@
     <Compile Include="Services\IFileService.cs" />
     <Compile Include="Sys\ElementIntentStates.cs" />
     <Compile Include="Sys\IDataPolicyFactory.cs" />
+    <Compile Include="Sys\ISequenceCache.cs" />
     <Compile Include="Sys\Managers\ControllerFacade.cs" />
     <Compile Include="Sys\Managers\ControllerLinkingManagement.cs" />
     <Compile Include="Sys\Managers\ExecutionState.cs" />
@@ -489,7 +501,6 @@
     <Compile Include="Sys\Output\OutputPreview.cs" />
     <Compile Include="Sys\Output\SmartOutputController.cs" />
     <Compile Include="Data\Value\PositionValue.cs" />
-    <Compile Include="Sys\PreCompileExecution.cs" />
     <Compile Include="Sys\SequenceFilterLookup.cs" />
     <Compile Include="Sys\OutputIntentStateList.cs" />
     <Compile Include="Sys\ParameterSignature.cs" />
@@ -852,6 +863,7 @@
   <ItemGroup>
     <Compile Include="Commands\StringCommand.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy "$(SolutionDir)\Release Notes.txt" "$(OutDir)"</PostBuildEvent>

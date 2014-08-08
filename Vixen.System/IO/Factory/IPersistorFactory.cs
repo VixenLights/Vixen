@@ -10,5 +10,6 @@ namespace Vixen.IO.Factory
 		IObjectPersistor<Program> CreateProgramPersistor();
 		IObjectPersistor<ElementNodeTemplate> CreateElementNodeTemplatePersistor();
 		IObjectPersistor CreateSequencePersistor();
+		IObjectPersistor CreateSequenceCachePersister();
 	}
 }

@@ -1,4 +1,5 @@
-﻿using Vixen.IO.Xml.ElementNodeTemplate;
+﻿using Vixen.IO.ProtoBuf.SequenceCache;
+using Vixen.IO.Xml.ElementNodeTemplate;
 using Vixen.IO.Xml.ModuleStore;
 using Vixen.IO.Xml.Program;
 using Vixen.IO.Xml.Sequence;
@@ -48,6 +49,11 @@ namespace Vixen.IO.Factory
 		public IObjectContentWriter CreateSequenceContentWriter(string filePath)
 		{
 			return new SequenceXElementWriter(filePath);
+		}
+
+		public IObjectContentWriter CreateSequenceCacheContentWriter(string filePath)
+		{
+			return new SequenceCacheProtoBufWriter();
 		}
 	}
 }

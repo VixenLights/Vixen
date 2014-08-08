@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Vixen.Cache.Sequence;
 using Vixen.Module;
 using Vixen.Module.SequenceType;
 using Vixen.Sys;
@@ -60,6 +61,33 @@ namespace Vixen.Services
 			return FileService.Instance.LoadSequenceFile(filePath);
 		}
 
+		public void SaveCache(ISequenceCache sequenceCache, string filePath)
+		{
+			if (sequenceCache == null) throw new ArgumentNullException("sequenceCache");
+			if (string.IsNullOrWhiteSpace(filePath))
+				throw new InvalidOperationException("File path must be a file name or path.");
+
+			FileService.Instance.SaveSequenceCacheFile(sequenceCache, filePath);
+		}
+
+		public ISequenceCache LoadCache(string filePath)
+		{
+			if (string.IsNullOrWhiteSpace(filePath))
+				throw new InvalidOperationException("filePath must be a file name or path.");
+
+			return FileService.Instance.LoadSequenceCacheFile(filePath);
+		}
+
+		public ISequenceCache CreateNewCache(string fileType)
+		{
+			ISequenceCache sequenceCache = _CreateSequenceCacheInstance(fileType);
+			//if (sequenceCache != null)
+			//{
+			//	sequenceCache.SequenceData = _CreateSequenceDataInstance(fileType);
+			//}
+			return sequenceCache;
+		}
+
 		public ISequence CreateNew(string fileType)
 		{
 			ISequence sequence = _CreateSequenceInstance(fileType);
@@ -74,6 +102,16 @@ namespace Vixen.Services
 			ISequenceTypeModuleInstance sequenceFactory = SequenceTypeService.Instance.CreateSequenceFactory(fileType);
 			if (sequenceFactory != null) {
 				return sequenceFactory.CreateSequence();
+			}
+			return null;
+		}
+
+		private ISequenceCache _CreateSequenceCacheInstance(string fileType)
+		{
+			ISequenceTypeModuleInstance sequenceFactory = SequenceTypeService.Instance.CreateSequenceCacheFactory(fileType);
+			if (sequenceFactory != null)
+			{
+				return sequenceFactory.CreateSequenceCache();
 			}
 			return null;
 		}

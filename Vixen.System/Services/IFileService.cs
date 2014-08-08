@@ -1,4 +1,5 @@
-﻿using Vixen.Sys;
+﻿using Vixen.Cache.Sequence;
+using Vixen.Sys;
 
 namespace Vixen.Services
 {
@@ -17,6 +18,8 @@ namespace Vixen.Services
 		ElementNodeTemplate LoadElementNodeTemplateFile(string filePath);
 		void SaveElementNodeTemplateFile(ElementNodeTemplate elementNodeTemplate, string filePath);
 		ISequence LoadSequenceFile(string filePath);
+		ISequenceCache LoadSequenceCacheFile(string filePath);
 		void SaveSequenceFile(ISequence sequence, string filePath);
+		void SaveSequenceCacheFile(ISequenceCache sequence, string filePath);
 	}
 }
