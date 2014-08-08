@@ -19,7 +19,7 @@ namespace Vixen.Sys.Managers
 		private MillisecondsValue _contextUpdateWaitValue = new MillisecondsValue("   Contexts wait");
 		private Stopwatch _stopwatch = Stopwatch.StartNew();
 		private LiveContext _systemLiveContext;
-		private CacheCompileContext _cacheCompileContext;
+		private PreCachingSequenceContext _preCachingSequenceContext;
 
 		public event EventHandler<ContextEventArgs> ContextCreated;
 		public event EventHandler<ContextEventArgs> ContextReleased;
@@ -36,18 +36,24 @@ namespace Vixen.Sys.Managers
 			if (_systemLiveContext == null) {
 				_systemLiveContext = new LiveContext("System");
 				_AddContext(_systemLiveContext);
+			} else if (!_instances.ContainsKey(_systemLiveContext.Id))
+			{
+				_AddContext(_preCachingSequenceContext);
 			}
 			return _systemLiveContext;
 		}
 
-		public CacheCompileContext GetCacheCompileContext()
+		public PreCachingSequenceContext GetCacheCompileContext()
 		{
-			if (_cacheCompileContext == null)
+			if (_preCachingSequenceContext == null)
 			{
-				_cacheCompileContext = new CacheCompileContext("Compiler");
-				_AddContext(_cacheCompileContext);
+				_preCachingSequenceContext = new PreCachingSequenceContext("Compiler");
+				_AddContext(_preCachingSequenceContext);
+			}else if (!_instances.ContainsKey(_preCachingSequenceContext.Id))
+			{
+				_AddContext(_preCachingSequenceContext);
 			}
-			return _cacheCompileContext;
+			return _preCachingSequenceContext;
 		}
 
 		public IProgramContext CreateProgramContext(ContextFeatures contextFeatures, IProgram program)
@@ -102,14 +108,15 @@ namespace Vixen.Sys.Managers
 		public HashSet<Guid> UpdateCacheCompileContext(TimeSpan time)
 		{
 			HashSet<Guid> elementsAffected = null;
+			_stopwatch.Restart();
 			try
 			{
-				elementsAffected =_cacheCompileContext.UpdateElementStates(time);
+				elementsAffected =_preCachingSequenceContext.UpdateElementStates(time);
 			} catch (Exception ee)
 			{
 				Logging.ErrorException(ee.Message, ee);
 			}
-
+			_contextUpdateTimeValue.Set(_stopwatch.ElapsedMilliseconds);
 			return elementsAffected;
 
 		}
@@ -122,7 +129,7 @@ namespace Vixen.Sys.Managers
 			{
 				//_contextUpdateWaitValue.Set(_stopwatch.ElapsedMilliseconds);
 
-				_instances.Values.Where(x => !(x.GetType() == typeof(CacheCompileContext))).AsParallel().ForAll(context =>
+				_instances.Values.Where(x => !(x.GetType() == typeof(PreCachingSequenceContext))).AsParallel().ForAll(context =>
 				//foreach( var context in _instances.Values)
 				{
 					try {

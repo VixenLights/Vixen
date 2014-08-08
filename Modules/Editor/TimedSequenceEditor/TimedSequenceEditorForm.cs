@@ -3640,7 +3640,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
                 }
             });
 
-        }
+		}
+
+		private void exportToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			//Test code to invoke the compiler. This will need to be invoked somewhere else, but gives me a easy hook for testing.
+			PreCompileExecution exc = new PreCompileExecution();
+			Task.Factory.StartNew(() => exc.CacheSequence(_sequence));
+		}
 
     }
 

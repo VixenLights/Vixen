@@ -9,26 +9,27 @@ namespace Vixen.Execution.DataSource
 {
 	internal class EffectNodeBuffer : IDataSource
 	{
-		private IEnumerable<IEffectNode> _effectNodeSource;
+		private IEnumerable<IDataNode> _effectNodeSource;
 		private EffectNodeQueue _effectNodeQueue;
 		private BufferSizeInSecondsValue _bufferSizeSecondsValue;
 		private AutoResetEvent _bufferReadSignal;
 		private Thread _bufferPopulationThread;
 		private TimeSpan _lastBufferReadPoint;
 		private TimeSpan _lastBufferWritePoint;
+		private bool _bufferStarted;
 
 		public EffectNodeBuffer()
 		{
 			BufferSizeInSeconds = 10;
 		}
 
-		public EffectNodeBuffer(IEnumerable<IEffectNode> effectNodeSource)
+		public EffectNodeBuffer(IEnumerable<IDataNode> effectNodeSource)
 			: this()
 		{
 			_effectNodeSource = effectNodeSource;
 		}
 
-		public void SetDataSource(IEnumerable<IEffectNode> value)
+		public void SetDataSource(IEnumerable<IDataNode> value)
 		{
 			if (_effectNodeSource != value && !IsRunning) {
 				_effectNodeSource = value;
@@ -94,6 +95,13 @@ namespace Vixen.Execution.DataSource
 			_CreateBuffer();
 			_bufferPopulationThread = _CreatePopulationThread();
 			_bufferPopulationThread.Start();
+			if (_effectNodeSource.Any())
+			{
+				while (!_bufferStarted)
+				{
+					Thread.Sleep(1); //wait until data is available
+				}
+			}
 		}
 
 		private void _StopThread()
@@ -131,11 +139,12 @@ namespace Vixen.Execution.DataSource
 		{
 			IsRunning = true;
 
-			IEnumerator<IEffectNode> dataEnumerator = _effectNodeSource.GetEnumerator();
+			IEnumerator<IDataNode> dataEnumerator = _effectNodeSource.GetEnumerator();
 			try {
 				while (IsRunning) {
 					while (_IsBufferInadequate() && IsRunning && dataEnumerator.MoveNext() && _effectNodeQueue != null) {
-						_AddToQueue(dataEnumerator.Current);
+						_AddToQueue((IEffectNode)dataEnumerator.Current);
+						_bufferStarted = true;
 					}
 
 					// Wait until the buffer is read from.
@@ -201,10 +210,6 @@ namespace Vixen.Execution.DataSource
 
 		private IEnumerable<IEffectNode> _GetEffectNodesAt(TimeSpan time)
 		{
-			if (time > _lastBufferWritePoint)
-			{
-				
-			}
 			IEffectNode[] effectNodes = _effectNodeQueue.Get(time).ToArray();
 			if (effectNodes.Length > 0) {
 				_LastBufferReadPoint = effectNodes[effectNodes.Length - 1].StartTime;

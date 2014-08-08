@@ -8,14 +8,17 @@ using Vixen.Sys;
 
 namespace Vixen.Execution.Context
 {
-	public class CacheCompileContext: ContextBase
+	/// <summary>
+	/// This context is designed to be used for pre caching an entire sequence commands 
+	/// </summary>
+	public class PreCachingSequenceContext: ContextBase
 	{
 
-		private string _name;
-		private EffectNodeDataPump _dataSource;
+		private readonly string _name;
+		private EffectNodeBuffer _dataSource; //Maybe use  
 		private ISequence _sequence;
 
-		public CacheCompileContext(string name)
+		public PreCachingSequenceContext(string name)
 		{
 			_name = name;
 		}
@@ -26,7 +29,7 @@ namespace Vixen.Execution.Context
 			set
 			{
 				_sequence = value;
-				_dataSource = new EffectNodeDataPump(_sequence.SequenceData.EffectData);
+				_dataSource = new EffectNodeBuffer(_sequence.SequenceData.EffectData);
 			}
 		}
 
@@ -57,12 +60,12 @@ namespace Vixen.Execution.Context
 
 		protected override ITiming _SequenceTiming
 		{
-			get { return Sys.Execution.SystemTime; }
+			get { return null; }
 		}
 
 		public override IExecutor Executor
 		{
-			set { ; }
+			set { }
 		}
 	}
 }

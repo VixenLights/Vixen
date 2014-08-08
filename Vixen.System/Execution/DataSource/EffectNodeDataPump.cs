@@ -80,12 +80,10 @@ namespace Vixen.Execution.DataSource
 			IEnumerator<IDataNode> dataEnumerator = _effectNodeSource.GetEnumerator();
 			IsRunning = true;
 			try {
-				//while (IsRunning) {
-					while (IsRunning && dataEnumerator.MoveNext()) {
-						_effectNodeQueue.Add((IEffectNode) dataEnumerator.Current);
-						dataLoadStarted = true;
-					}
-				//}
+				while (IsRunning && dataEnumerator.MoveNext()) {
+					_effectNodeQueue.Add((IEffectNode) dataEnumerator.Current);
+					dataLoadStarted = true;
+				}
 			}
 			finally {
 				dataEnumerator.Dispose();
