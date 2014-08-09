@@ -177,6 +177,10 @@
     <Compile Include="Interpolator\LightingValueInterpolator.cs" />
     <Compile Include="Interpolator\PositionValueInterpolator.cs" />
     <Compile Include="Interpolator\StaticValueInterpolator.cs" />
+    <Compile Include="IO\Binary\BinaryFileReader.cs" />
+    <Compile Include="IO\Binary\BinaryFileWriter.cs" />
+    <Compile Include="IO\Binary\SequenceCache\SequenceCacheBinaryReader.cs" />
+    <Compile Include="IO\Binary\SequenceCache\SequenceCacheBinaryWriter.cs" />
     <Compile Include="IO\Factory\ContentMigratorFactory.cs" />
     <Compile Include="IO\Factory\FileReaderFactory.cs" />
     <Compile Include="IO\Factory\FileWriterFactory.cs" />
@@ -218,10 +222,6 @@
     <Compile Include="IO\Persistor\SequenceCachePersister.cs" />
     <Compile Include="IO\Persistor\SequencePersistor.cs" />
     <Compile Include="IO\Persistor\SystemContextPersistor.cs" />
-    <Compile Include="IO\ProtoBuf\BinaryFileReader.cs" />
-    <Compile Include="IO\ProtoBuf\BinaryFileWriter.cs" />
-    <Compile Include="IO\ProtoBuf\SequenceCache\SequenceCacheProtoBufReader.cs" />
-    <Compile Include="IO\ProtoBuf\SequenceCache\SequenceCacheProtoBufWriter.cs" />
     <Compile Include="IO\Xml\ChannelNodeTemplate\ElementNodeTemplateXElementMigrator.cs" />
     <Compile Include="IO\Xml\ChannelNodeTemplate\ElementNodeTemplateXElementReader.cs" />
     <Compile Include="IO\Xml\ChannelNodeTemplate\ElementNodeTemplateXElementWriter.cs" />

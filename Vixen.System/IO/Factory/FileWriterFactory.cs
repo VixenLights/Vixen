@@ -1,4 +1,4 @@
-﻿using Vixen.IO.ProtoBuf;
+﻿using Vixen.IO.Binary;
 using Vixen.IO.Xml;
 
 namespace Vixen.IO.Factory

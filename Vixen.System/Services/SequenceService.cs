@@ -78,13 +78,19 @@ namespace Vixen.Services
 			return FileService.Instance.LoadSequenceCacheFile(filePath);
 		}
 
-		public ISequenceCache CreateNewCache(string fileType)
+		/// <summary>
+		/// Create a cache object for the given sequence path.
+		/// </summary>
+		/// <param name="filePath"></param>
+		/// <returns></returns>
+		public ISequenceCache CreateNewCache(string filePath)
 		{
-			ISequenceCache sequenceCache = _CreateSequenceCacheInstance(fileType);
-			//if (sequenceCache != null)
-			//{
-			//	sequenceCache.SequenceData = _CreateSequenceDataInstance(fileType);
-			//}
+			ISequenceCache sequenceCache = _CreateSequenceCacheInstance(filePath);
+
+			if (sequenceCache != null)
+			{
+				sequenceCache.SequenceFilePath = filePath;
+			}
 			return sequenceCache;
 		}
 

@@ -1,4 +1,4 @@
-﻿using Vixen.IO.ProtoBuf.SequenceCache;
+﻿using Vixen.IO.Binary.SequenceCache;
 using Vixen.IO.Xml.ElementNodeTemplate;
 using Vixen.IO.Xml.ModuleStore;
 using Vixen.IO.Xml.Program;
@@ -53,7 +53,7 @@ namespace Vixen.IO.Factory
 
 		public IObjectContentReader CreateSequenceCacheContentReader(string fileType)
 		{
-			return new SequenceCacheProtoBufReader();
+			return new SequenceCacheBinaryReader();
 		}
 	}
 }

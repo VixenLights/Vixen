@@ -128,7 +128,6 @@ namespace Vixen.Services
 		public ISequenceCache LoadSequenceCacheFile(string filePath)
 		{
 			filePath = _GetRootedPath(filePath, SequenceService.SequenceDirectory);
-
 			IObjectLoader loader = LoaderFactory.Instance.CreateSequenceCacheLoader();
 			return (ISequenceCache)loader.LoadFromFile(filePath);
 		}
