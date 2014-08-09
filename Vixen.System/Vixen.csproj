@@ -80,6 +80,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cache\CommandHandler.cs" />
+    <Compile Include="Cache\Event\CacheEventArgs.cs" />
+    <Compile Include="Cache\Event\CacheStartedEventArgs.cs" />
     <Compile Include="Cache\Sequence\CacheSequenceExecutor.cs" />
     <Compile Include="Cache\Sequence\PreCachingSequenceEngine.cs" />
     <Compile Include="Cache\Sequence\SequenceCacheTiming.cs" />
