@@ -59,9 +59,6 @@
       <HintPath>..\packages\NLog.2.0.1.2\lib\net40\NLog.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="protobuf-net">
-      <HintPath>..\Common\Libraries\protobuf-net.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core">
@@ -83,7 +80,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cache\CommandHandler.cs" />
+    <Compile Include="Cache\Sequence\CacheSequenceExecutor.cs" />
     <Compile Include="Cache\Sequence\PreCachingSequenceEngine.cs" />
+    <Compile Include="Cache\Sequence\SequenceCacheTiming.cs" />
     <Compile Include="Commands\16BitCommand.cs" />
     <Compile Include="Commands\32BitCommand.cs" />
     <Compile Include="Commands\64BitCommand.cs" />
