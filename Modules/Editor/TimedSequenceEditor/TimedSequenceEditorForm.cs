@@ -102,6 +102,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private CurveLibrary _curveLibrary;
 		private ColorGradientLibrary _colorGradientLibrary;
 		private LipSyncMapLibrary _library;
+		private PreCachingSequenceEngine _preCachingSequenceEngine;
 
 		#endregion
 
@@ -3646,8 +3647,24 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void exportToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			//Test code to invoke the compiler. This will need to be invoked somewhere else, but gives me a easy hook for testing.
-			PreCachingSequenceEngine exc = new PreCachingSequenceEngine();
-			Task.Factory.StartNew(() => exc.CacheSequence(_sequence));
+			_preCachingSequenceEngine = new PreCachingSequenceEngine();
+			_preCachingSequenceEngine.Sequence = Sequence;
+			_preCachingSequenceEngine.SequenceCacheEnded += _preCachingSequenceEngine_SequenceCacheEnded;
+			_preCachingSequenceEngine.SequenceCacheStarted += _preCachingSequenceEngine_SequenceCacheStarted;
+			_preCachingSequenceEngine.Start();
+		}
+
+		void _preCachingSequenceEngine_SequenceCacheStarted(object sender, Vixen.Cache.Event.CacheStartedEventArgs e)
+		{
+			//Timing source position will indicate progression......
+			
+		}
+
+		void _preCachingSequenceEngine_SequenceCacheEnded(object sender, Vixen.Cache.Event.CacheEventArgs e)
+		{
+			_preCachingSequenceEngine.SequenceCacheEnded -= _preCachingSequenceEngine_SequenceCacheEnded;
+			_preCachingSequenceEngine.Cache.Save();
+			MessageBox.Show("Finished");
 		}
 
     }

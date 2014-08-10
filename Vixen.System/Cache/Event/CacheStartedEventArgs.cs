@@ -10,17 +10,15 @@ namespace Vixen.Cache.Event
 	public class CacheStartedEventArgs : EventArgs
 	{
 
-		public CacheStartedEventArgs(ISequence sequence, ITiming timingSource, TimeSpan startTime, TimeSpan endTime)
+		public CacheStartedEventArgs(ITiming timingSource, TimeSpan length, TimeSpan start)
 		{
-			Sequence = sequence;
+			Start = start;
+			Length = length;
 			TimingSource = timingSource;
-			StartTime = startTime;
-			EndTime = endTime;
 		}
 
-		public ISequence Sequence { get; private set; }
+		public TimeSpan Start { get; private set; }
+		public TimeSpan Length { get; private set; }
 		public ITiming TimingSource { get; private set; }
-		public TimeSpan StartTime { get; private set; }
-		public TimeSpan EndTime { get; private set; }
 	}
 }

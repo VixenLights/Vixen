@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Vixen.Cache.Sequence;
 using Vixen.Execution.DataSource;
 using Vixen.Module.Timing;
 using Vixen.Sys;
@@ -17,6 +18,7 @@ namespace Vixen.Execution.Context
 		private readonly string _name;
 		private EffectNodeBuffer _dataSource; //Maybe use  
 		private ISequence _sequence;
+		private ISequenceExecutor _sequenceExecutor;
 
 		public PreCachingSequenceContext(string name)
 		{
@@ -60,7 +62,7 @@ namespace Vixen.Execution.Context
 
 		protected override ITiming _SequenceTiming
 		{
-			get { return null; }
+			get { return _sequenceExecutor != null ? _sequenceExecutor.TimingSource : null; }
 		}
 
 		public override IExecutor Executor

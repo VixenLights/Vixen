@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
-using Vixen.Commands;
+using System.Threading;
+using Vixen.Cache.Event;
+using Vixen.Execution;
 using Vixen.Execution.Context;
-using Vixen.IO.Loader;
 using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Sys.Output;
@@ -15,36 +17,137 @@ namespace Vixen.Cache.Sequence
 	/// This class is designed to create a cache of output commands for sequences. It follows the same
 	/// processes as the normal execution engine only in a controlled step by step fashion.
 	/// </summary>
-	public class PreCachingSequenceEngine
+	public class PreCachingSequenceEngine 
 	{
 		private static readonly Object LockObject = new Object();
 		private bool _lastUpdateClearedStates;
-		private CommandHandler _commandHandler = new CommandHandler();
+		private readonly CommandHandler _commandHandler = new CommandHandler();
+		private ISequence _sequence;
+		private bool _isRunning;
+		private Thread _cacheThread;
+
+		public event EventHandler<CacheStartedEventArgs> SequenceCacheStarted;
+		public event EventHandler<CacheEventArgs> SequenceCacheEnded;
+		
+		private ManualTiming TimingSource { get; set; }
 
 		/// <summary>
 		/// Create using the default update interval
 		/// </summary>
 		public PreCachingSequenceEngine()
+		{	
+			TimingSource = new ManualTiming();
+		}
+
+		/// <summary>
+		/// Create using a specified update interval and sequence.
+		/// </summary>
+		/// <param name="sequence"></param>
+		public PreCachingSequenceEngine(ISequence sequence):this()
 		{
-			Interval = VixenSystem.DefaultUpdateInterval;
+			Sequence = sequence;
 		}
 
 		/// <summary>
 		/// Create using a specified update interval.
 		/// </summary>
 		/// <param name="interval"></param>
-		public PreCachingSequenceEngine(int interval)
+		public PreCachingSequenceEngine(int interval):this()
 		{
-			Interval = interval;
+			TimingSource.Speed = interval;
 		}
 
-		public int Interval { get; set; }
+		/// <summary>
+		/// Create using a specified update interval and sequence.
+		/// </summary>
+		/// <param name="interval"></param>
+		/// <param name="sequence"></param>
+		public PreCachingSequenceEngine(int interval, ISequence sequence):this(interval)
+		{
+			Sequence = sequence;
+		}
+
+		public ISequence Sequence
+		{
+			get { return _sequence; } 
+			set
+			{
+				if (value != null)
+				{
+					_sequence = value;
+					Cache = null;
+				}
+			} 
+		}
+
+		public ISequenceCache Cache { get; private set; }
+
+
+		#region Control
+
+		public void Start()
+		{
+			if (!IsRunning && Sequence!=null)
+			{
+				_StartThread();	
+			}
+			
+		}
+
+		public void Stop()
+		{
+			if (IsRunning)
+			{
+				_StopThread();
+			}
+		}
+
+		public bool IsRunning
+		{
+			get { return _isRunning; }
+			private set
+			{
+				_isRunning = value;
+				if (_isRunning)
+				{
+					OnCacheStarted(new CacheStartedEventArgs(TimingSource, Sequence.Length, TimeSpan.Zero));
+				} else
+				{
+					OnCacheEnded(new CacheEventArgs(Sequence));
+				}
+			}
+		}
+		
+
+		#endregion 
+
+		private void _StartThread()
+		{
+			IsRunning = true;
+			_InitializeCache();
+			_cacheThread = _CreateCacheThread();
+			_cacheThread.Start();
+			
+		}
+
+		private void _StopThread()
+		{
+			IsRunning = false;
+			_cacheThread.Join(1000);
+			_cacheThread = null;
+			
+		}
+
+		private Thread _CreateCacheThread()
+		{
+			return new Thread(_BuildSequenceCache) { IsBackground = true, Name = Sequence.Name + " cache" };
+		}
+
 
 		/// <summary>
 		/// Create a cache of the entire sequence command outputs
 		/// </summary>
-		/// <param name="sequence"></param>
-		public void CacheSequence(ISequence sequence)
+		private void _BuildSequenceCache()
 		{
 			//Need some hooks in here for progess....... Need to think about that.
 			//Stop the output devices from driving the execution engine.
@@ -52,44 +155,46 @@ namespace Vixen.Cache.Sequence
 			
 			//Special context to pre cache commands. We don't need all the other fancy executor or timing as we will advance it ourselves
 			PreCachingSequenceContext context = VixenSystem.Contexts.GetCacheCompileContext();
-			context.Sequence = sequence;
+			context.Sequence = Sequence;
+			TimingSource.Start();
 			context.Start();
-			TimeSpan currentTime = TimeSpan.Zero;
-			var cache = GetCache(sequence);
 			
-			while (currentTime <= sequence.Length)
+			while (TimingSource.Position <= Sequence.Length && IsRunning)
 			{
-				List<CommandOutput> commands = UpdateState(currentTime);
-				var commandBytes = ExtractCommands(commands);
-				cache.AppendData(commandBytes.Values.ToList());
-				if (cache.Outputs == null) //Figure out a better way.
+				List<CommandOutput> commands = _UpdateState(context.GetTimeSnapshot());
+				var commandBytes = _ExtractCommands(commands);
+				Cache.AppendData(commandBytes.Values.ToList());
+				if (Cache.Outputs == null) //Figure out a better way.
 				{
-					cache.Outputs = commandBytes.Keys.ToList();
+					Cache.Outputs = commandBytes.Keys.ToList();
 				}
-				//Advance by the default interval. I was using 50ms for ease of visualizing the slices.
-				currentTime = currentTime.Add(TimeSpan.FromMilliseconds(Interval));
+				//Advance the timing
+				TimingSource.Increment();
 			}
 
+			TimingSource.Stop();
 			context.Stop();
+			
 			//restart the devices
 			VixenSystem.OutputDeviceManagement.ResumeAll();
-			
-			cache.Save();
+			IsRunning = false;
+			//Cache is now ready to use or save.
+			//cache.Save();
 			// To load the cache use the following
 			//ISequenceCache cache2 = SequenceService.Instance.LoadCache(cache.SequenceFilePath);
-			
+
 		}
 
-		private ISequenceCache GetCache(ISequence sequence)
+		private void _InitializeCache()
 		{
-			ISequenceCache cache = SequenceService.Instance.CreateNewCache(sequence.FilePath);
-			cache.Length = sequence.Length;
-			cache.Interval = Interval;
-			return cache;
+			ISequenceCache cache = SequenceService.Instance.CreateNewCache(Sequence.FilePath);
+			cache.Length = Sequence.Length;
+			cache.Interval = (int)TimingSource.Speed;
+			Cache = cache;
 		}
 
 
-		private List<CommandOutput> UpdateState(TimeSpan time)
+		private List<CommandOutput> _UpdateState(TimeSpan time)
 		{
 			var outputCommands = new List<CommandOutput>();
 			lock (LockObject)
@@ -123,7 +228,7 @@ namespace Vixen.Cache.Sequence
 			return outputCommands;
 		}
 
-		private Dictionary<Guid,byte> ExtractCommands(List<CommandOutput> commandOutputs)
+		private Dictionary<Guid,byte> _ExtractCommands(List<CommandOutput> commandOutputs)
 		{
 			var commands = new Dictionary<Guid, byte>(commandOutputs.Count);
 			foreach (var commandOutput in commandOutputs)
@@ -138,5 +243,24 @@ namespace Vixen.Cache.Sequence
 			return commands;
 		}
 
+		#region Events
+
+		protected virtual void OnCacheStarted(CacheStartedEventArgs e)
+		{
+			if (SequenceCacheStarted != null)
+			{
+				SequenceCacheStarted(null, e);
+			}
+		}
+
+		protected virtual void OnCacheEnded(CacheEventArgs e)
+		{
+			if (SequenceCacheEnded != null)
+			{
+				SequenceCacheEnded(null, e);
+			}
+		}
+
+		#endregion
 	}
 }
