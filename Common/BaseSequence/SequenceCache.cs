@@ -4,18 +4,19 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Vixen.Cache;
 using Vixen.Cache.Sequence;
 using Vixen.Services;
+using Vixen.Sys;
 
 namespace Common.BaseSequence
 {
+	[Serializable]
 	public abstract class SequenceCache : ISequenceCache
 	{
-		private readonly List<List<byte>> _dataSlices;
-
 		protected SequenceCache()
 		{
-			_dataSlices = new List<List<byte>>();
+			OutputStateListAggregator = new OutputStateListAggregator();
 		}
 
 		public TimeSpan Length { get; set; }
@@ -40,36 +41,11 @@ namespace Common.BaseSequence
 
 		public string SequenceFilePath { get; set; }
 
+		public OutputStateListAggregator OutputStateListAggregator { get; set; }
+
 		public string CacheFilePath
 		{
 			get { return Path.ChangeExtension(SequenceFilePath, CacheFileExtension); }
-		}
-
-		public List<Guid> Outputs { get; set; }	
-
-		public void AppendData(List<byte> dataSlice)
-		{
-			_dataSlices.Add(dataSlice);
-		}
-
-		public void ClearData()
-		{
-			_dataSlices.Clear();
-		}
-
-		public List<byte> GetDataAtInterval(int interval)
-		{
-			List<byte> data = null;
-			if (interval < _dataSlices.Count)
-			{
-				data = _dataSlices[interval];	
-			}
-			return data;
-		}
-
-		public ReadOnlyCollection<List<byte>> RetrieveData()
-		{
-			return _dataSlices.AsReadOnly();
 		}
 
 		public override string ToString()

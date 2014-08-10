@@ -1,4 +1,6 @@
-﻿namespace Vixen.Sys
+﻿using System;
+
+namespace Vixen.Sys
 {
 	//Contravariant - a concrete class may implement IHandler<SpecificClass> but the generic
 	//                parameter at runtime may be IHandler<MoreBaseClass>.  In being
@@ -13,6 +15,7 @@
 		void Dispatch<HandlerType>(HandlerType handler);
 	}
 
+	[Serializable]
 	public class Dispatchable<Dispatched> : IDispatchable
 		where Dispatched : Dispatchable<Dispatched>
 	{

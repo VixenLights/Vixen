@@ -1,7 +1,9 @@
-﻿using Vixen.Sys;
+﻿using System;
+using Vixen.Sys;
 
 namespace Vixen.Commands
 {
+	[Serializable]
 	public class _16BitCommand : Dispatchable<_16BitCommand>, ICommand
 	{
 		public _16BitCommand(ushort value)

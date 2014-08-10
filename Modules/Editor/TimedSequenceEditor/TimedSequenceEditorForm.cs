@@ -3664,6 +3664,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			_preCachingSequenceEngine.SequenceCacheEnded -= _preCachingSequenceEngine_SequenceCacheEnded;
 			_preCachingSequenceEngine.Cache.Save();
+			ISequenceCache cache = SequenceService.Instance.LoadCache(Sequence.FilePath);
+			// cache.OutputStateListAggregator  This is our command data for each output
 			MessageBox.Show("Finished");
 		}
 

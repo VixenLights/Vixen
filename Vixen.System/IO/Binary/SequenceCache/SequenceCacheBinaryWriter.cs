@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 using NLog;
 using Vixen.Cache.Sequence;
 using Vixen.IO.Loader;
@@ -19,26 +20,23 @@ namespace Vixen.IO.Binary.SequenceCache
 			WriteContentToObject((byte[])content, (CacheContainer)obj);
 		}
 
-		public void WriteContentToObject(byte[] content, CacheContainer obj)
+		public void WriteContentToObject(byte[] content, CacheContainer cacheContainer)
 		{
 			
 			using(Stream stream = new MemoryStream(content))
 			{
-				using (BinaryReader reader = new BinaryReader(stream))
+				
+				try
 				{
-					try
-					{
-						_ReadHeader(reader, obj.SequenceCache);
-						int outputCount = _getOutputCount(reader);
-						int dataCount = _getDataCount(reader);
-						obj.SequenceCache.Outputs = _ReadOutputs(reader, outputCount);
-						_ReadData(reader, obj.SequenceCache, dataCount, outputCount);
-					}
-					catch (Exception e)
-					{
-						Logging.ErrorException("Error deserializing cache instance", e);	
-					}
+					BinaryFormatter reader = new BinaryFormatter();
+					Object obj = reader.Deserialize(stream);
+					cacheContainer.SequenceCache = obj as ISequenceCache;
 				}
+				catch (Exception e)
+				{
+					Logging.ErrorException("Error deserializing cache instance", e);	
+				}
+				
 				
 			}
 
@@ -78,7 +76,7 @@ namespace Vixen.IO.Binary.SequenceCache
 			
 			for (int i = 0; i < dataCounts; i++)
 			{
-				sequenceCache.AppendData(reader.ReadBytes(outputCounts).ToList());
+				//sequenceCache.AppendData(reader.ReadBytes(outputCounts).ToList());
 			}	
 		}
 

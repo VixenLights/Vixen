@@ -21,7 +21,6 @@ namespace Vixen.Cache.Sequence
 	{
 		private static readonly Object LockObject = new Object();
 		private bool _lastUpdateClearedStates;
-		private readonly CommandHandler _commandHandler = new CommandHandler();
 		private ISequence _sequence;
 		private bool _isRunning;
 		private Thread _cacheThread;
@@ -158,16 +157,11 @@ namespace Vixen.Cache.Sequence
 			context.Sequence = Sequence;
 			TimingSource.Start();
 			context.Start();
-			
+
 			while (TimingSource.Position <= Sequence.Length && IsRunning)
 			{
-				List<CommandOutput> commands = _UpdateState(context.GetTimeSnapshot());
-				var commandBytes = _ExtractCommands(commands);
-				Cache.AppendData(commandBytes.Values.ToList());
-				if (Cache.Outputs == null) //Figure out a better way.
-				{
-					Cache.Outputs = commandBytes.Keys.ToList();
-				}
+				List<CommandOutput> commands = _UpdateState(TimingSource.Position);
+				Cache.OutputStateListAggregator.AddCommands(commands);
 				//Advance the timing
 				TimingSource.Increment();
 			}
@@ -226,21 +220,6 @@ namespace Vixen.Cache.Sequence
 			}
 
 			return outputCommands;
-		}
-
-		private Dictionary<Guid,byte> _ExtractCommands(List<CommandOutput> commandOutputs)
-		{
-			var commands = new Dictionary<Guid, byte>(commandOutputs.Count);
-			foreach (var commandOutput in commandOutputs)
-			{
-				_commandHandler.Reset();
-				if (commandOutput.Command != null)
-				{
-					commandOutput.Command.Dispatch(_commandHandler);	
-				}
-				commands.Add(commandOutput.Id, _commandHandler.Value);	
-			}
-			return commands;
 		}
 
 		#region Events
