@@ -19,27 +19,28 @@ namespace Vixen.Cache.Sequence
 	/// </summary>
 	public class PreCachingSequenceEngine 
 	{
-		private static readonly Object LockObject = new Object();
 		private bool _lastUpdateClearedStates;
 		private ISequence _sequence;
-		private bool _isRunning;
+		private static bool _isRunning; //static to prevent more than one instance from running at the same time.
 		private Thread _cacheThread;
 
 		public event EventHandler<CacheStartedEventArgs> SequenceCacheStarted;
 		public event EventHandler<CacheEventArgs> SequenceCacheEnded;
 		
-		private ManualTiming TimingSource { get; set; }
+		private FixedIntervalManualTiming TimingSource { get; set; }
+
+		#region Contructors
 
 		/// <summary>
 		/// Create using the default update interval
 		/// </summary>
 		public PreCachingSequenceEngine()
 		{	
-			TimingSource = new ManualTiming();
+			TimingSource = new FixedIntervalManualTiming();
 		}
 
 		/// <summary>
-		/// Create using a specified update interval and sequence.
+		/// Create using a specified sequence and default interval.
 		/// </summary>
 		/// <param name="sequence"></param>
 		public PreCachingSequenceEngine(ISequence sequence):this()
@@ -53,7 +54,7 @@ namespace Vixen.Cache.Sequence
 		/// <param name="interval"></param>
 		public PreCachingSequenceEngine(int interval):this()
 		{
-			TimingSource.Speed = interval;
+			TimingSource.Interval = interval;
 		}
 
 		/// <summary>
@@ -65,6 +66,10 @@ namespace Vixen.Cache.Sequence
 		{
 			Sequence = sequence;
 		}
+
+		#endregion
+
+		#region Properties
 
 		public ISequence Sequence
 		{
@@ -81,24 +86,10 @@ namespace Vixen.Cache.Sequence
 
 		public ISequenceCache Cache { get; private set; }
 
-
-		#region Control
-
-		public void Start()
+		public int Interval
 		{
-			if (!IsRunning && Sequence!=null)
-			{
-				_StartThread();	
-			}
-			
-		}
-
-		public void Stop()
-		{
-			if (IsRunning)
-			{
-				_StopThread();
-			}
+			get { return TimingSource.Interval; } 
+			set { TimingSource.Interval = value; }
 		}
 
 		public bool IsRunning
@@ -118,7 +109,38 @@ namespace Vixen.Cache.Sequence
 		}
 		
 
+		#endregion
+
+		#region Control
+
+		/// <summary>
+		/// Start the caching process
+		/// </summary>
+		public void Start()
+		{
+			if (!IsRunning && Sequence!=null)
+			{
+				_StartThread();	
+			}
+			
+		}
+
+		/// <summary>
+		/// Interrupt the caching process.
+		/// </summary>
+		public void Stop()
+		{
+			if (IsRunning)
+			{
+				_StopThread();
+			}
+		}
+
+		
+
 		#endregion 
+
+		#region Operational
 
 		private void _StartThread()
 		{
@@ -183,7 +205,7 @@ namespace Vixen.Cache.Sequence
 		{
 			ISequenceCache cache = SequenceService.Instance.CreateNewCache(Sequence.FilePath);
 			cache.Length = Sequence.Length;
-			cache.Interval = (int)TimingSource.Speed;
+			cache.Interval = TimingSource.Interval;
 			Cache = cache;
 		}
 
@@ -191,36 +213,35 @@ namespace Vixen.Cache.Sequence
 		private List<CommandOutput> _UpdateState(TimeSpan time)
 		{
 			var outputCommands = new List<CommandOutput>();
-			lock (LockObject)
+			
+			//Advance our context to specified time and do all the normal update stuff
+			HashSet<Guid> elementsAffected = VixenSystem.Contexts.UpdateCacheCompileContext(time);
+			//Check to see if any elements are affected
+			if (elementsAffected != null && elementsAffected.Any())
 			{
-				//Advance our context to specified time and do all the normal update stuff
-				HashSet<Guid> elementsAffected = VixenSystem.Contexts.UpdateCacheCompileContext(time);
-				//Check to see if any elements are affected
-				if (elementsAffected != null && elementsAffected.Any())
-				{
-					VixenSystem.Elements.Update(elementsAffected);
-					_lastUpdateClearedStates = false;
-					VixenSystem.Filters.Update();
-				}
-				else if(!_lastUpdateClearedStates)
-				{
-					//Nothing is happening so clear out the states instead of sampling empty context interval
-					VixenSystem.Elements.ClearStates();
-					_lastUpdateClearedStates = true;
-					VixenSystem.Filters.Update();
-				}
-				
-				//Now walk the outputs and collect our data
-				foreach (OutputController outputController in VixenSystem.OutputControllers.GetAll())
-				{
-					outputController.UpdateCommands();
-					outputCommands.AddRange(outputController.Outputs);
-				}
-				
+				VixenSystem.Elements.Update(elementsAffected);
+				_lastUpdateClearedStates = false;
+				VixenSystem.Filters.Update();
 			}
-
+			else if(!_lastUpdateClearedStates)
+			{
+				//Nothing is happening so clear out the states instead of sampling empty context interval
+				VixenSystem.Elements.ClearStates();
+				_lastUpdateClearedStates = true;
+				VixenSystem.Filters.Update();
+			}
+				
+			//Now walk the outputs and collect our data
+			foreach (OutputController outputController in VixenSystem.OutputControllers.GetAll())
+			{
+				outputController.UpdateCommands();
+				outputCommands.AddRange(outputController.Outputs);
+			}
+				
 			return outputCommands;
 		}
+
+		#endregion
 
 		#region Events
 

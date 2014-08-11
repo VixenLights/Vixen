@@ -7,11 +7,11 @@ using Vixen.Sys;
 
 namespace Vixen.Cache.Sequence
 {
-	internal class ManualTiming: ITiming
+	internal class FixedIntervalManualTiming: ITiming
 	{
-		public ManualTiming()
+		public FixedIntervalManualTiming()
 		{
-			Speed = VixenSystem.DefaultUpdateInterval;
+			Interval = VixenSystem.DefaultUpdateInterval;
 		}
 
 		public void Start()
@@ -36,8 +36,10 @@ namespace Vixen.Cache.Sequence
 
 		public void Increment()
 		{
-			Position += TimeSpan.FromMilliseconds(Speed);
+			Position += TimeSpan.FromMilliseconds(Interval);
 		}
+
+		public int Interval { get; set; }
 
 		public TimeSpan Position { get; set; }
 		public bool SupportsVariableSpeeds { get{return false;} }
