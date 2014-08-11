@@ -663,9 +663,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				TimelineControl.grid.SuppressInvalidate = true; //Hold off invalidating the grid while we bulk load.
 				TimelineControl.grid.SupressRendering = true; //Hold off rendering while we load elements. 
 				// This takes quite a bit of time so queue it up
-				taskQueue.Enqueue(Task.Factory.StartNew(() => addElementsForEffectNodes(_sequence.SequenceData.EffectData)));
 				taskQueue.Enqueue(Task.Factory.StartNew(PopulateAudioDropdown));
 				taskQueue.Enqueue(Task.Factory.StartNew(PopulateMarkSnapTimes));
+				taskQueue.Enqueue(Task.Factory.StartNew(() => addElementsForEffectNodes(_sequence.SequenceData.EffectData)));
+				
 
 				// Now that it is queued up, let 'er rip and start background rendering when complete.
 				Task.Factory.ContinueWhenAll(taskQueue.ToArray(), completedTasks =>
