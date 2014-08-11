@@ -3646,6 +3646,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void exportToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+            ExportDialog ed = new ExportDialog(Sequence);
+            ed.ShowDialog();
 			//Test code to invoke the compiler. This will need to be invoked somewhere else, but gives me a easy hook for testing.
 			_preCachingSequenceEngine = new PreCachingSequenceEngine();
 			_preCachingSequenceEngine.Sequence = Sequence;
