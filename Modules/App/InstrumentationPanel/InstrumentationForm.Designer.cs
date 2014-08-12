@@ -50,6 +50,7 @@
 			// 
 			// btnClose
 			// 
+			this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.btnClose.Location = new System.Drawing.Point(470, 313);
 			this.btnClose.Name = "btnClose";
 			this.btnClose.Size = new System.Drawing.Size(75, 23);
@@ -60,6 +61,7 @@
 			// 
 			// btnReset
 			// 
+			this.btnReset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.btnReset.Location = new System.Drawing.Point(389, 313);
 			this.btnReset.Name = "btnReset";
 			this.btnReset.Size = new System.Drawing.Size(75, 23);
