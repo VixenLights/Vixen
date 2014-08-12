@@ -60,7 +60,17 @@ namespace Vixen.Sys.Managers
 
 			lock (_updateLock) {
 				_AddFilterInstance(filter);
-				_AddRootNode(filter);
+				if (filter.Source != null)
+				{
+					// If we have a source, see if it is a parent output filter
+					//If it is not a output filter, then we are a root node, otherwise we are some type of child
+					IOutputFilterModuleInstance filterParent = filter.Source.Component as IOutputFilterModuleInstance;
+					if (filterParent == null)
+					{
+						_AddRootNode(filter);
+					}
+					//_filterChildren.SetParent(filter, filterParent);	
+				}
 				_AddDataModel(filter);
 			}
 		}
@@ -82,15 +92,27 @@ namespace Vixen.Sys.Managers
 			IOutputFilterModuleInstance filter = e.Component as IOutputFilterModuleInstance;
 			if (filter == null) return;
 
-			lock (_updateLock) {
-				IOutputFilterModuleInstance filterParent = filter.Source as IOutputFilterModuleInstance;
-				if (filterParent == null) {
-					_AddRootNode(filter);
+			lock (_updateLock)
+			{
+
+				if (filter.Source != null)
+				{
+					IOutputFilterModuleInstance filterParent = filter.Source.Component as IOutputFilterModuleInstance;
+					if (filterParent == null)
+					{
+						_AddRootNode(filter);
+					}
+					else
+					{
+						_RemoveFromRoots(filter);	
+					}
+					_filterChildren.SetParent(filter, filterParent);
 				}
-				else {
+				else
+				{
 					_RemoveFromRoots(filter);
+					_filterChildren.SetParent(filter, null);
 				}
-				_filterChildren.SetParent(filter, filterParent);
 			}
 		}
 
