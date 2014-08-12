@@ -193,6 +193,28 @@ namespace Vixen.Sys.Managers
 				filter.Update(data);
 		}
 
+		public List<IOutputFilterModuleInstance> GetOrphanedFilters()
+		{
+			return _instances.Values.Except(_rootFilters).Where(x => x.Source == null).ToList();
+		}
+
+		public void RemoveOrphanedFilters()
+		{
+			foreach (var filter in GetOrphanedFilters())
+			{
+				RemoveFilterChain(filter);
+			}
+		}
+
+		public void RemoveFilterChain(IOutputFilterModuleInstance filter)
+		{
+			foreach (var childFilter in _filterChildren.GetChildren(filter))
+			{
+				RemoveFilterChain(childFilter);	
+			}
+			RemoveFilter(filter);
+		}
+
 		public IEnumerator<IOutputFilterModuleInstance> GetEnumerator()
 		{
 			return _instances.Values.GetEnumerator();
