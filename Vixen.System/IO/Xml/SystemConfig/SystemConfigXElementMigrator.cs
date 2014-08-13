@@ -25,7 +25,8 @@ namespace Vixen.IO.Xml.SystemConfig
 			                  		new MigrationSegment<XElement>(11, 12, _Version_11_to_12),
 			                  		new MigrationSegment<XElement>(12, 13, _Version_12_to_13),
 									new MigrationSegment<XElement>(13, 14, _Version_13_to_14),
-									new MigrationSegment<XElement>(14, 15, _Version_14_to_15)
+									new MigrationSegment<XElement>(14, 15, _Version_14_to_15),
+									new MigrationSegment<XElement>(15, 16, _Version_15_to_16)
 			                  	};
 		}
 
@@ -308,6 +309,25 @@ namespace Vixen.IO.Xml.SystemConfig
 					}
 				}
 			}
+			return content;
+		}
+
+		private XElement _Version_15_to_16(XElement content)
+		{
+			//Version 16 move the default update interval back to a more normal 50ms if it is still 46ms.
+			//If it is other than 46, the user probably made a choice of their own and we will honor that.
+			XElement intervalElement = content.Element("DefaultUpdateInterval");
+			if (intervalElement != null)
+			{
+				if (intervalElement.Value.Equals("46"))
+				{
+					intervalElement.Value = "50";	
+				}
+					
+			}
+			
+			
+			
 			return content;
 		}
 		

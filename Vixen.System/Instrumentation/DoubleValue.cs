@@ -18,5 +18,10 @@
 		{
 			return _value;
 		}
+
+		public override void Reset()
+		{
+			_value = 0;
+		}
 	}
 }

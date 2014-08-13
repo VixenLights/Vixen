@@ -12,7 +12,7 @@ namespace Vixen.IO.Xml.Serializer
 		private static NLog.Logger logging = NLog.LogManager.GetCurrentClassLogger();
 
 		private IEnumerable<Element> _underlyingElements;
-
+		private Dictionary<Guid, Element> _underlyingElementMap; 
 		private const string ELEMENT_NODE = "Node";
 		private const string ATTR_ID = "id";
 		private const string ATTR_NAME = "name";
@@ -23,7 +23,8 @@ namespace Vixen.IO.Xml.Serializer
 			// VixenSystem.Elements has not yet been populated because the file is in the
 			// middle of being read/written.  This serializer has a dependency on the
 			// newly read element collection.
-			_underlyingElements = underlyingElementsForRead;
+			//_underlyingElements = underlyingElementsForRead;
+			_underlyingElementMap = underlyingElementsForRead.ToDictionary(x => x.Id);
 		}
 
 		public XElement WriteObject(ElementNode value)
@@ -88,7 +89,8 @@ namespace Vixen.IO.Xml.Serializer
 				}
 				else {
 					// Leaf
-					Element elem = _underlyingElements.FirstOrDefault(x => x.Id == elementId);
+					Element elem;
+					_underlyingElementMap.TryGetValue(elementId.GetValueOrDefault(), out elem);
 					if (elem != null) {
 						node = new ElementNode(id.Value, name, elem, null);
 					}

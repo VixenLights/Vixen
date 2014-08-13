@@ -91,7 +91,8 @@ namespace Vixen.Module.SequenceType
 			LocalDataSet.DataModels = _dataModels;
 
 			// Rehydrate the modules.
-			IEffectNode[] effectNodes = _effectNodeSurrogates.Select(x => x.CreateEffectNode()).ToArray();
+			var elementNodes = VixenSystem.Nodes.Distinct().ToDictionary(x => x.Id);
+			IEffectNode[] effectNodes = _effectNodeSurrogates.Select(x => x.CreateEffectNode(elementNodes)).ToArray();
 			// weed out effects without nodes..
 			effectNodes = effectNodes.Where(x => x.Effect.TargetNodes.Count() != 0).ToArray();
 

@@ -33,7 +33,7 @@ namespace Vixen.Instrumentation
 			_count += value;
 		}
 
-		public void Clear()
+		public override void Reset()
 		{
 			_count = 0;
 		}

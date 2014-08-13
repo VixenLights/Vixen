@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
 using Vixen.Execution;
@@ -21,6 +22,7 @@ namespace Vixen.Sys
 		private static MillisecondsValue _systemDeniedBlockTime;
 		private static Stopwatch _stopwatch;
 		private static long lastMs = 0;
+		private static bool lastUpdateClearedStates = false;
 
 		public static void initInstrumentation()
 		{
@@ -173,9 +175,29 @@ namespace Vixen.Sys
 				long lockMs = _stopwatch.ElapsedMilliseconds - nowMs;
 				bool allowUpdate = _UpdateAdjudicator.PetitionForUpdate();
 				if (allowUpdate) {
-					lastSnapshots = VixenSystem.Contexts.Update();
-					VixenSystem.Elements.Update();
-					VixenSystem.Filters.Update();
+					HashSet<Guid> elementsAffected = VixenSystem.Contexts.Update();
+					if (elementsAffected.Any())
+					{
+						VixenSystem.Elements.Update(elementsAffected);
+						lastUpdateClearedStates = false;
+						if (VixenSystem.OutputControllers.Any(x => x.IsRunning))
+						{
+							//Only update the filter chain if we have a controller running
+							VixenSystem.Filters.Update();
+						}
+					}
+					else if(!lastUpdateClearedStates)
+					{
+						//No need to sample all the contexts as we were just told there are no elements effected.
+						VixenSystem.Elements.ClearStates();
+						lastUpdateClearedStates = true;
+						if (VixenSystem.OutputControllers.Any(x => x.IsRunning))
+						{
+							//Only update the filter chain if we have a controller running
+							VixenSystem.Filters.Update();
+						}
+					}
+
 					_systemAllowedBlockTime.Set( lockMs);
 					_systemAllowedUpdateTime.Set(_stopwatch.ElapsedMilliseconds - nowMs - lockMs);
 				}

@@ -41,5 +41,6 @@ namespace Vixen.Instrumentation
 
 		public double Minimum { get; private set; }
 		public double Maximum { get; private set; }
+		public abstract void Reset();
 	}
 }

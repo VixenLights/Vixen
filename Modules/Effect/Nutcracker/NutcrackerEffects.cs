@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Drawing;
-using System.Diagnostics;
 using VixenModules.Effect.Nutcracker;
 using System.Threading.Tasks;
 using System.Threading;
@@ -22,11 +21,10 @@ namespace VixenModules.Effect.Nutcracker
 		private int _renderPeriod;
 		private List<List<Color>> _pixels = new List<List<Color>>();
 		private List<List<Color>> _tempbuf = new List<List<Color>>();
-		private double pi2 = Math.PI*2;
+		private const double pi2 = Math.PI*2;
 		private int[] FireBuffer, WaveBuffer0, WaveBuffer1, WaveBuffer2 = new int[1];
 		private Random random = new Random();
 		private List<Color> FirePalette = new List<Color>();
-		private Stopwatch timer = new Stopwatch();
 
 		public enum Effects
 		{
@@ -610,7 +608,7 @@ namespace VixenModules.Effect.Nutcracker
 
 		public void RenderColorWash(bool HorizFade, bool VertFade, int RepeatCount)
 		{
-			int SpeedFactor = 200;
+			const int SpeedFactor = 200;
 			int x, y;
 			Color color;
 			HSV hsv2 = new HSV();

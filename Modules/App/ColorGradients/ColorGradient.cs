@@ -331,7 +331,7 @@ namespace VixenModules.App.ColorGradients
 					if (newPoint.Color.ToRGB().ToArgb() != filterColor) {
 						// it's not the desired color. Make it black and add it, but only if there's
 						// not an entry in the list with this position already
-						if (newColorPoints.Where(x => x.Position == newPoint.Position).Count() == 0) {
+						if (!newColorPoints.Any(x => x.Position == newPoint.Position)) {
 							newPoint.Color = XYZ.FromRGB(Color.Black);
 							newColorPoints.Add(newPoint);
 						}

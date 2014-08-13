@@ -688,6 +688,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					_sequence.Length = _defaultSequenceTime;
 
 				SequenceLength = _sequence.Length;
+				setTitleBarText();
 
 				// update our program context with this sequence
 				OpenSequenceContext(sequence);
@@ -701,9 +702,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				TimelineControl.grid.SuppressInvalidate = true; //Hold off invalidating the grid while we bulk load.
 				TimelineControl.grid.SupressRendering = true; //Hold off rendering while we load elements. 
 				// This takes quite a bit of time so queue it up
-				taskQueue.Enqueue(Task.Factory.StartNew(() => addElementsForEffectNodes(_sequence.SequenceData.EffectData)));
 				taskQueue.Enqueue(Task.Factory.StartNew(PopulateAudioDropdown));
 				taskQueue.Enqueue(Task.Factory.StartNew(PopulateMarkSnapTimes));
+				taskQueue.Enqueue(Task.Factory.StartNew(() => addElementsForEffectNodes(_sequence.SequenceData.EffectData)));
+				
 
 				// Now that it is queued up, let 'er rip and start background rendering when complete.
 				Task.Factory.ContinueWhenAll(taskQueue.ToArray(), completedTasks =>
@@ -932,7 +934,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				//Set sequence name in title bar based on the module name and current sequence name JU 8/1/2012
 				//Made this more generic to support importing 12 FEB 2013 - JEMA
 				Text = String.Format("{0} - [{1}{2}]", ((OwnerModule.Descriptor) as EditorModuleDescriptorBase).TypeName,
-									 _sequence.Name, IsModified ? " *" : "");
+					String.IsNullOrEmpty(_sequence.Name)?"Untitled":_sequence.Name, IsModified ? " *" : "");
 			}
 		}
 

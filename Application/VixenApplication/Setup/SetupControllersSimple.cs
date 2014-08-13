@@ -281,7 +281,7 @@ namespace VixenApplication.Setup
 
 			foreach (IControllerDevice controller in controllerTree.SelectedControllers) {
 				if (!controller.IsRunning) {
-					controller.Start();
+					VixenSystem.OutputControllers.Start(VixenSystem.OutputControllers.GetController(controller.Id));
 					changes = true;
 				}
 			}
@@ -299,7 +299,7 @@ namespace VixenApplication.Setup
 
 			foreach (IControllerDevice controller in controllerTree.SelectedControllers) {
 				if (controller.IsRunning) {
-					controller.Stop();
+					VixenSystem.OutputControllers.Stop(VixenSystem.OutputControllers.GetController(controller.Id));
 					changes = true;
 				}
 			}

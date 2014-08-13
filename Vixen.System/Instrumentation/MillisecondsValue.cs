@@ -40,10 +40,15 @@ namespace Vixen.Sys.Instrumentation
 
 		protected override string _GetFormattedValue()
 		{
-			double mx = max;
-			double mn = min;
-			int ct = cnt;
-			return string.Format("min {0,2} ms,  avg {1,2} ms,  max {2,2} ms,    cnt {3}", (int)mn, (int)_GetValue(), (int)mx, ct);
+			return string.Format("min {0} ms,  avg {1} ms,  max {2} ms,  cnt {3}", (int)min, (int)tot / cnt, (int)max, cnt);
+		}
+
+		public override void Reset()
+		{
+			tot=0;
+			cnt=1;
+			max=0;
+			min=999;
 		}
 	}
 }

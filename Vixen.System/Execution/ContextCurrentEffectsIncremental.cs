@@ -23,7 +23,7 @@ namespace Vixen.Execution
 		/// Updates the collection of current effects, returning the ids of the affected elements.
 		/// </summary>
 		/// <returns>Ids of the affected elements.</returns>
-		public Guid[] UpdateCurrentEffects(IDataSource dataSource, TimeSpan currentTime)
+		public HashSet<Guid> UpdateCurrentEffects(IDataSource dataSource, TimeSpan currentTime)
 		{
 			// Get the effects that are newly qualified.
 			IEnumerable<IEffectNode> newQualifiedEffects = dataSource.GetDataAt(currentTime);
@@ -32,7 +32,7 @@ namespace Vixen.Execution
 			// Get the distinct list of all elements affected by all effects in the list.
 			// List has current effects as well as effects that may be expiring.
 			// Current and expired effects affect state.
-			Guid[] affectedElements = _GetElementsAffected(_currentEffects);
+			HashSet<Guid> affectedElements = _GetElementsAffected(_currentEffects);
 			_RemoveExpiredEffects(currentTime);
 
 			return affectedElements;
@@ -44,19 +44,15 @@ namespace Vixen.Execution
 				_currentEffects.Clear();
 		}
 
-		private Guid[] _GetElementsAffected(IEnumerable<IEffectNode> effects)
+		private HashSet<Guid> _GetElementsAffected(IEnumerable<IEffectNode> effects)
 		{
 			// If there's nothin here, pass back emptiness
-			if (effects.Count() == 0)
-				return new Guid[0];
-			
-			
-			
-			return
-				effects.SelectMany(x => x.Effect.TargetNodes).SelectMany(y => y.GetElementEnumerator()).Where((y) => y != null).Select(z => z.Id).Distinct()
-					.ToArray();
-
-
+			if (!effects.Any())
+				return new HashSet<Guid>();
+		
+			return new HashSet<Guid>(effects.SelectMany(x => x.Effect.TargetNodes).SelectMany(y => y.GetElementEnumerator()).Select(z => z.Id));
+			//effects.SelectMany(x => x.Effect.TargetNodes).SelectMany(y => y.GetElementEnumerator()).Where((y) => y != null).Select(z => z.Id).Distinct()
+			//	.ToArray();
 			//return effects.SelectMany(x => x.Effect.TargetNodes.Select(y => y.Element.Id)).Distinct().ToArray();
 		}
 

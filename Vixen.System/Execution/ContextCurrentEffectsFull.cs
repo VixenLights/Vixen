@@ -25,21 +25,22 @@ namespace Vixen.Execution
 		/// Updates the collection of current affects, returning the ids of the affected elements.
 		/// </summary>
 		/// <returns>Ids of the affected elements.</returns>
-		public Guid[] UpdateCurrentEffects(IDataSource dataSource, TimeSpan currentTime)
+		public HashSet<Guid> UpdateCurrentEffects(IDataSource dataSource, TimeSpan currentTime)
 		{
 			// Get the entirety of the new state.
 			IEffectNode[] newState = dataSource.GetDataAt(currentTime).ToArray();
 			// Get the elements affected by this new state.
-			Guid[] nowAffectedElements = _GetAffectedElements(newState).ToArray();
+			HashSet<Guid> nowAffectedElements = _GetAffectedElements(newState);
 			// New and expiring effects affect the state, so get the union of
 			// the previous state and the current state.
 			//HashSet<Guid> allAffectedElements = new HashSet<Guid>(_currentAffectedElements.Concat(newAffectedElements));
-			IEnumerable<Guid> allAffectedElements = _currentAffectedElements.Concat(nowAffectedElements).Distinct();
+			_currentAffectedElements.UnionWith(nowAffectedElements);
+			HashSet<Guid> allAffectedElements = _currentAffectedElements;
 			// Set the new state.
 			_currentEffects = new List<IEffectNode>(newState);
-			_currentAffectedElements = new HashSet<Guid>(nowAffectedElements);
+			_currentAffectedElements = nowAffectedElements;
 
-			return allAffectedElements.ToArray();
+			return allAffectedElements;
 		}
 
 		public void Reset()
@@ -47,9 +48,9 @@ namespace Vixen.Execution
 			_currentEffects.Clear();
 		}
 
-		private IEnumerable<Guid> _GetAffectedElements(IEnumerable<IEffectNode> effectNodes)
+		private HashSet<Guid> _GetAffectedElements(IEnumerable<IEffectNode> effectNodes)
 		{
-			return effectNodes.SelectMany(x => x.Effect.TargetNodes).SelectMany(y => y.GetElementEnumerator()).Select(z => z.Id);
+			return new HashSet<Guid>(effectNodes.SelectMany(x => x.Effect.TargetNodes).SelectMany(y => y.GetElementEnumerator()).Select(z => z.Id));
 		}
 
 		public IEnumerator<IEffectNode> GetEnumerator()

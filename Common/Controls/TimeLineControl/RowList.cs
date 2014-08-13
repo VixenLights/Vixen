@@ -72,6 +72,11 @@ namespace Common.Controls.Timeline
 
 		protected void LabelVisibleChangedHandler(object sender, EventArgs e)
 		{
+			var lbl = sender as RowLabel;
+			if (lbl !=null && !Controls.Contains(lbl))
+			{
+				Controls.Add(lbl);
+			}
 			Invalidate();
 		}
 
@@ -126,7 +131,10 @@ namespace Common.Controls.Timeline
 			else {
 				RowLabels.Add(trl);
 				// Addint a control is VERY slow!
-				Controls.Add(trl);
+				if (trl.Visible)
+				{
+					Controls.Add(trl);
+				}
 
 				trl.VisibleChanged += LabelVisibleChangedHandler;
 				// Don't call DoLayout. It'll get called after all the rows have been added!

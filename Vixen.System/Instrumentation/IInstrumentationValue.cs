@@ -12,5 +12,6 @@ namespace Vixen.Instrumentation
 		string Name { get; }
 		double Minimum { get; }
 		double Maximum { get; }
+		void Reset();
 	}
 }
