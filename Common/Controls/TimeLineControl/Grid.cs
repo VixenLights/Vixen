@@ -1333,6 +1333,24 @@ namespace Common.Controls.Timeline
 			return snappedOffset;
 		}
 
+		public void SwapElementPlacement(Dictionary<Element, ElementTimeInfo> changedElements)
+		{
+			foreach (KeyValuePair<Element, ElementTimeInfo> e in changedElements)
+			{
+				// Key is reference to actual element. Value is class with its times before move.
+				// Swap the element's times with the saved times from before the move, so we can restore them later in redo.
+				ElementTimeInfo.SwapPlaces(e.Key, e.Value);
+				if (e.Key.Row != e.Value.Row)
+				{
+					e.Value.Row.RemoveElement(e.Key);
+					e.Key.Row.AddElement(e.Key);
+					_ElementChangedRows(e.Key, e.Value.Row, e.Key.Row);
+				}
+				if(!e.Key.IsRendered) RenderElement(e.Key);
+					
+			}
+		}
+
 		public void MoveElementsVerticallyToLocation(IEnumerable<Element> elements, Point gridLocation)
 		{
 			Row destRow = rowAt(gridLocation);
