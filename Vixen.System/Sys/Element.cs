@@ -14,6 +14,7 @@ namespace Vixen.Sys
 	public class Element : IOutputStateSource, IEqualityComparer<Element>, IEquatable<Element>
 	{
 		private IIntentStates _state;
+		private static readonly IIntentStates EmptyState = new IntentStateList();
 
 		internal Element(string name)
 			: this(Guid.NewGuid(), name)
@@ -24,7 +25,7 @@ namespace Vixen.Sys
 		{
 			Id = id;
 			Name = name;
-			_state = new IntentStateList();
+			_state = EmptyState;
 		}
 
 		public string Name { get; set; }
@@ -40,7 +41,7 @@ namespace Vixen.Sys
 
 		public void ClearStates()
 		{
-			_state = new IntentStateList();
+			_state = EmptyState;
 		}
 
 		public IIntentStates State

@@ -285,18 +285,17 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 	{
 		private readonly ColorBreakdownFilter _filter;
 		private readonly ColorBreakdownItem _breakdownItem;
-		private readonly bool _mixColors;
+		private static readonly IntentsDataFlowData EmptyData = new IntentsDataFlowData(Enumerable.Empty<IIntentState>());
 
 		public ColorBreakdownOutput(ColorBreakdownItem breakdownItem, bool mixColors)
 		{
 			_filter = new ColorBreakdownFilter(breakdownItem, mixColors);
 			_breakdownItem = breakdownItem;
-			_mixColors = mixColors;
 		}
 
 		public void ProcessInputData(IntentsDataFlowData data)
 		{
-			Data = new IntentsDataFlowData(data.Value.Select(_filter.Filter));
+			Data = data.Value.Any()?new IntentsDataFlowData(data.Value.Select(_filter.Filter)):EmptyData;
 		}
 
 		public IntentsDataFlowData Data { get; private set; }
