@@ -123,12 +123,48 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public override int Top
 		{
-			set { _topLeft.Y = value; }
-		}
+            get
+            {
+                return (Math.Min(_topLeft.Y, _bottomRight.Y));
+            }
+            set
+            {
+                int delta = Top - value;
+                if (_topLeft.Y == Top)
+                {
+                    _topLeft.Y = value;
+                    _bottomRight.Y -= delta;
+                }
+                else
+                {
+                    _topLeft.Y -= delta;
+                    _bottomRight.Y = value;
+                }
+                Layout();
+            }
+        }
 
 		public override int Left
 		{
-			set { _topLeft.X = value; }
+            get
+            {
+                return (Math.Min(_topLeft.X, _bottomRight.X));
+            }
+			set 
+            {
+                int delta = Left - value;
+                if (_topLeft.X == Left)
+                {
+                    _topLeft.X = value;
+                    _bottomRight.X -= delta;
+                }
+                else
+                {
+                    _topLeft.X -= delta;
+                    _bottomRight.X = value;
+                }
+                Layout();
+            }
 		}
 
         public override void Match(PreviewBaseShape matchShape)

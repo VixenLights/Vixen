@@ -213,6 +213,62 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
+        public override int Top
+        {
+            get
+            {
+                return Math.Min(_point1.Y, Math.Min(Point1.Y, Point3.Y));
+            }
+            set
+            {
+                if (_point1.Y < _point2.Y)
+                {
+                    // Point 1 is the smallest
+                    int delta = _point1.Y - value;
+                    _point1.Y = value;
+                    _point2.Y -= delta;
+                    _point3.Y -= delta;
+                }
+                else
+                {
+                    // Point 2 or 3 is the smallest
+                    int delta = _point2.Y - value;
+                    _point1.Y -= delta;
+                    _point2.Y = value;
+                    _point3.Y = value;
+                }
+                Layout();
+            }
+        }
+
+        public override int Left
+        {
+            get
+            {
+                return Math.Min(_point2.X, Point3.X);
+            }
+            set
+            {
+                if (_point2.X < _point3.X)
+                {
+                    // Point 2 is the smallest
+                    int delta = _point1.X - value;
+                    _point1.X -= delta;
+                    _point2.X -= value;
+                    _point3.X -= delta;
+                }
+                else
+                {
+                    // Point 3 is the smallest
+                    int delta = _point3.X - value;
+                    _point1.X -= delta;
+                    _point2.X -= delta;
+                    _point3.X = value;
+                }
+                Layout();
+            }
+        }
+
         public override void Match(PreviewBaseShape matchShape)
         {
             PreviewTriangle shape = (matchShape as PreviewTriangle);
@@ -228,8 +284,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public override void Layout()
 		{
-			if (_bottomRightPoint != null)
-			{
+            //if (_bottomRightPoint != null)
+            //{
+            if (Strings.Count == 3) { 
 				(Strings[0] as PreviewLine).Point1 = Point1;
 				(Strings[0] as PreviewLine).Point2 = Point2;
 				(Strings[0] as PreviewLine).Layout();
@@ -243,7 +300,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				(Strings[2] as PreviewLine).Layout();
 
 				SetPixelZoom();
-			}
+            }
 		}
 
 		public override void MouseMove(int x, int y, int changeX, int changeY)

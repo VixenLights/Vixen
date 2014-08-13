@@ -30,21 +30,21 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(VixenPreviewSetup3));
-            WeifenLuo.WinFormsUI.Docking.DockPanelSkin dockPanelSkin2 = new WeifenLuo.WinFormsUI.Docking.DockPanelSkin();
-            WeifenLuo.WinFormsUI.Docking.AutoHideStripSkin autoHideStripSkin2 = new WeifenLuo.WinFormsUI.Docking.AutoHideStripSkin();
-            WeifenLuo.WinFormsUI.Docking.DockPanelGradient dockPanelGradient4 = new WeifenLuo.WinFormsUI.Docking.DockPanelGradient();
-            WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient8 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
-            WeifenLuo.WinFormsUI.Docking.DockPaneStripSkin dockPaneStripSkin2 = new WeifenLuo.WinFormsUI.Docking.DockPaneStripSkin();
-            WeifenLuo.WinFormsUI.Docking.DockPaneStripGradient dockPaneStripGradient2 = new WeifenLuo.WinFormsUI.Docking.DockPaneStripGradient();
-            WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient9 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
-            WeifenLuo.WinFormsUI.Docking.DockPanelGradient dockPanelGradient5 = new WeifenLuo.WinFormsUI.Docking.DockPanelGradient();
-            WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient10 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
-            WeifenLuo.WinFormsUI.Docking.DockPaneStripToolWindowGradient dockPaneStripToolWindowGradient2 = new WeifenLuo.WinFormsUI.Docking.DockPaneStripToolWindowGradient();
-            WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient11 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
-            WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient12 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
-            WeifenLuo.WinFormsUI.Docking.DockPanelGradient dockPanelGradient6 = new WeifenLuo.WinFormsUI.Docking.DockPanelGradient();
-            WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient13 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
-            WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient14 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
+            WeifenLuo.WinFormsUI.Docking.DockPanelSkin dockPanelSkin1 = new WeifenLuo.WinFormsUI.Docking.DockPanelSkin();
+            WeifenLuo.WinFormsUI.Docking.AutoHideStripSkin autoHideStripSkin1 = new WeifenLuo.WinFormsUI.Docking.AutoHideStripSkin();
+            WeifenLuo.WinFormsUI.Docking.DockPanelGradient dockPanelGradient1 = new WeifenLuo.WinFormsUI.Docking.DockPanelGradient();
+            WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient1 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
+            WeifenLuo.WinFormsUI.Docking.DockPaneStripSkin dockPaneStripSkin1 = new WeifenLuo.WinFormsUI.Docking.DockPaneStripSkin();
+            WeifenLuo.WinFormsUI.Docking.DockPaneStripGradient dockPaneStripGradient1 = new WeifenLuo.WinFormsUI.Docking.DockPaneStripGradient();
+            WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient2 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
+            WeifenLuo.WinFormsUI.Docking.DockPanelGradient dockPanelGradient2 = new WeifenLuo.WinFormsUI.Docking.DockPanelGradient();
+            WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient3 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
+            WeifenLuo.WinFormsUI.Docking.DockPaneStripToolWindowGradient dockPaneStripToolWindowGradient1 = new WeifenLuo.WinFormsUI.Docking.DockPaneStripToolWindowGradient();
+            WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient4 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
+            WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient5 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
+            WeifenLuo.WinFormsUI.Docking.DockPanelGradient dockPanelGradient3 = new WeifenLuo.WinFormsUI.Docking.DockPanelGradient();
+            WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient6 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
+            WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient7 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
             this.panelToolbar = new System.Windows.Forms.Panel();
             this.panel8 = new System.Windows.Forms.Panel();
             this.buttonMatchProperties = new System.Windows.Forms.Button();
@@ -74,6 +74,7 @@
             this.comboBoxTemplates = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
             this.panel4 = new System.Windows.Forms.Panel();
+            this.buttonIcicle = new System.Windows.Forms.Button();
             this.buttonStarBurst = new System.Windows.Forms.Button();
             this.buttonPixelGrid = new System.Windows.Forms.Button();
             this.buttonStar = new System.Windows.Forms.Button();
@@ -94,7 +95,7 @@
             this.trackBarBackgroundAlpha = new System.Windows.Forms.TrackBar();
             this.buttonSetBackground = new System.Windows.Forms.Button();
             this.dialogSelectBackground = new System.Windows.Forms.OpenFileDialog();
-            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -107,10 +108,10 @@
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.backgroundPropertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.performanceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.useDirect2DPreviewRenderingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveLocationsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.performanceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.useDirect2DPreviewRenderingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.trackerZoom = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
             this.labelZoomLevel = new System.Windows.Forms.Label();
@@ -126,7 +127,7 @@
             this.panel3.SuspendLayout();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarBackgroundAlpha)).BeginInit();
-            this.menuStrip1.SuspendLayout();
+            this.menuStrip.SuspendLayout();
             this.panel9.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -142,9 +143,10 @@
             this.panelToolbar.Controls.Add(this.panel3);
             this.panelToolbar.Controls.Add(this.panel2);
             this.panelToolbar.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelToolbar.Location = new System.Drawing.Point(0, 24);
+            this.panelToolbar.Location = new System.Drawing.Point(0, 62);
+            this.panelToolbar.Margin = new System.Windows.Forms.Padding(6);
             this.panelToolbar.Name = "panelToolbar";
-            this.panelToolbar.Size = new System.Drawing.Size(884, 78);
+            this.panelToolbar.Size = new System.Drawing.Size(1768, 150);
             this.panelToolbar.TabIndex = 7;
             // 
             // panel8
@@ -160,9 +162,10 @@
             this.panel8.Controls.Add(this.buttonAlignHorizMid);
             this.panel8.Controls.Add(this.buttonAlignTop);
             this.panel8.Controls.Add(this.label7);
-            this.panel8.Location = new System.Drawing.Point(385, 3);
+            this.panel8.Location = new System.Drawing.Point(770, 6);
+            this.panel8.Margin = new System.Windows.Forms.Padding(6);
             this.panel8.Name = "panel8";
-            this.panel8.Size = new System.Drawing.Size(138, 74);
+            this.panel8.Size = new System.Drawing.Size(274, 140);
             this.panel8.TabIndex = 14;
             // 
             // buttonMatchProperties
@@ -172,9 +175,10 @@
             this.buttonMatchProperties.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.buttonMatchProperties.FlatAppearance.BorderSize = 0;
             this.buttonMatchProperties.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonMatchProperties.Location = new System.Drawing.Point(107, 5);
+            this.buttonMatchProperties.Location = new System.Drawing.Point(214, 10);
+            this.buttonMatchProperties.Margin = new System.Windows.Forms.Padding(6);
             this.buttonMatchProperties.Name = "buttonMatchProperties";
-            this.buttonMatchProperties.Size = new System.Drawing.Size(22, 22);
+            this.buttonMatchProperties.Size = new System.Drawing.Size(44, 42);
             this.buttonMatchProperties.TabIndex = 15;
             this.toolTip.SetToolTip(this.buttonMatchProperties, "Match Properties");
             this.buttonMatchProperties.UseVisualStyleBackColor = true;
@@ -187,9 +191,10 @@
             this.buttonDistributeVertical.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.buttonDistributeVertical.FlatAppearance.BorderSize = 0;
             this.buttonDistributeVertical.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonDistributeVertical.Location = new System.Drawing.Point(82, 28);
+            this.buttonDistributeVertical.Location = new System.Drawing.Point(164, 54);
+            this.buttonDistributeVertical.Margin = new System.Windows.Forms.Padding(6);
             this.buttonDistributeVertical.Name = "buttonDistributeVertical";
-            this.buttonDistributeVertical.Size = new System.Drawing.Size(22, 22);
+            this.buttonDistributeVertical.Size = new System.Drawing.Size(44, 42);
             this.buttonDistributeVertical.TabIndex = 14;
             this.toolTip.SetToolTip(this.buttonDistributeVertical, "Distribute Vertically");
             this.buttonDistributeVertical.UseVisualStyleBackColor = true;
@@ -202,9 +207,10 @@
             this.buttonDistributeHorizontal.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.buttonDistributeHorizontal.FlatAppearance.BorderSize = 0;
             this.buttonDistributeHorizontal.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonDistributeHorizontal.Location = new System.Drawing.Point(82, 5);
+            this.buttonDistributeHorizontal.Location = new System.Drawing.Point(164, 10);
+            this.buttonDistributeHorizontal.Margin = new System.Windows.Forms.Padding(6);
             this.buttonDistributeHorizontal.Name = "buttonDistributeHorizontal";
-            this.buttonDistributeHorizontal.Size = new System.Drawing.Size(22, 22);
+            this.buttonDistributeHorizontal.Size = new System.Drawing.Size(44, 42);
             this.buttonDistributeHorizontal.TabIndex = 13;
             this.toolTip.SetToolTip(this.buttonDistributeHorizontal, "Distribute Horizontally");
             this.buttonDistributeHorizontal.UseVisualStyleBackColor = true;
@@ -217,9 +223,10 @@
             this.buttonAlignBottom.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.buttonAlignBottom.FlatAppearance.BorderSize = 0;
             this.buttonAlignBottom.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonAlignBottom.Location = new System.Drawing.Point(56, 28);
+            this.buttonAlignBottom.Location = new System.Drawing.Point(112, 54);
+            this.buttonAlignBottom.Margin = new System.Windows.Forms.Padding(6);
             this.buttonAlignBottom.Name = "buttonAlignBottom";
-            this.buttonAlignBottom.Size = new System.Drawing.Size(22, 22);
+            this.buttonAlignBottom.Size = new System.Drawing.Size(44, 42);
             this.buttonAlignBottom.TabIndex = 12;
             this.toolTip.SetToolTip(this.buttonAlignBottom, "Align Bottom");
             this.buttonAlignBottom.UseVisualStyleBackColor = true;
@@ -232,9 +239,10 @@
             this.buttonAlignRight.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.buttonAlignRight.FlatAppearance.BorderSize = 0;
             this.buttonAlignRight.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonAlignRight.Location = new System.Drawing.Point(31, 5);
+            this.buttonAlignRight.Location = new System.Drawing.Point(62, 10);
+            this.buttonAlignRight.Margin = new System.Windows.Forms.Padding(6);
             this.buttonAlignRight.Name = "buttonAlignRight";
-            this.buttonAlignRight.Size = new System.Drawing.Size(22, 22);
+            this.buttonAlignRight.Size = new System.Drawing.Size(44, 42);
             this.buttonAlignRight.TabIndex = 10;
             this.toolTip.SetToolTip(this.buttonAlignRight, "Align Right");
             this.buttonAlignRight.UseVisualStyleBackColor = true;
@@ -247,9 +255,10 @@
             this.buttonAlignVertMid.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.buttonAlignVertMid.FlatAppearance.BorderSize = 0;
             this.buttonAlignVertMid.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonAlignVertMid.Location = new System.Drawing.Point(31, 28);
+            this.buttonAlignVertMid.Location = new System.Drawing.Point(62, 54);
+            this.buttonAlignVertMid.Margin = new System.Windows.Forms.Padding(6);
             this.buttonAlignVertMid.Name = "buttonAlignVertMid";
-            this.buttonAlignVertMid.Size = new System.Drawing.Size(22, 22);
+            this.buttonAlignVertMid.Size = new System.Drawing.Size(44, 42);
             this.buttonAlignVertMid.TabIndex = 9;
             this.toolTip.SetToolTip(this.buttonAlignVertMid, "Align Vertically");
             this.buttonAlignVertMid.UseVisualStyleBackColor = true;
@@ -262,9 +271,10 @@
             this.buttonAlignLeft.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.buttonAlignLeft.FlatAppearance.BorderSize = 0;
             this.buttonAlignLeft.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonAlignLeft.Location = new System.Drawing.Point(6, 5);
+            this.buttonAlignLeft.Location = new System.Drawing.Point(12, 10);
+            this.buttonAlignLeft.Margin = new System.Windows.Forms.Padding(6);
             this.buttonAlignLeft.Name = "buttonAlignLeft";
-            this.buttonAlignLeft.Size = new System.Drawing.Size(22, 22);
+            this.buttonAlignLeft.Size = new System.Drawing.Size(44, 42);
             this.buttonAlignLeft.TabIndex = 6;
             this.toolTip.SetToolTip(this.buttonAlignLeft, "Align Left");
             this.buttonAlignLeft.UseVisualStyleBackColor = true;
@@ -277,9 +287,10 @@
             this.buttonAlignHorizMid.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.buttonAlignHorizMid.FlatAppearance.BorderSize = 0;
             this.buttonAlignHorizMid.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonAlignHorizMid.Location = new System.Drawing.Point(6, 28);
+            this.buttonAlignHorizMid.Location = new System.Drawing.Point(12, 54);
+            this.buttonAlignHorizMid.Margin = new System.Windows.Forms.Padding(6);
             this.buttonAlignHorizMid.Name = "buttonAlignHorizMid";
-            this.buttonAlignHorizMid.Size = new System.Drawing.Size(22, 22);
+            this.buttonAlignHorizMid.Size = new System.Drawing.Size(44, 42);
             this.buttonAlignHorizMid.TabIndex = 8;
             this.toolTip.SetToolTip(this.buttonAlignHorizMid, "Align Horizontally");
             this.buttonAlignHorizMid.UseVisualStyleBackColor = true;
@@ -292,9 +303,10 @@
             this.buttonAlignTop.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.buttonAlignTop.FlatAppearance.BorderSize = 0;
             this.buttonAlignTop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonAlignTop.Location = new System.Drawing.Point(56, 5);
+            this.buttonAlignTop.Location = new System.Drawing.Point(112, 10);
+            this.buttonAlignTop.Margin = new System.Windows.Forms.Padding(6);
             this.buttonAlignTop.Name = "buttonAlignTop";
-            this.buttonAlignTop.Size = new System.Drawing.Size(22, 22);
+            this.buttonAlignTop.Size = new System.Drawing.Size(44, 42);
             this.buttonAlignTop.TabIndex = 7;
             this.toolTip.SetToolTip(this.buttonAlignTop, "Align Top");
             this.buttonAlignTop.UseVisualStyleBackColor = true;
@@ -304,9 +316,10 @@
             // 
             this.label7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
             this.label7.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.label7.Location = new System.Drawing.Point(0, 53);
+            this.label7.Location = new System.Drawing.Point(0, 101);
+            this.label7.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(136, 19);
+            this.label7.Size = new System.Drawing.Size(272, 37);
             this.label7.TabIndex = 0;
             this.label7.Text = "Align";
             this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -317,30 +330,34 @@
             this.panel7.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel7.Controls.Add(this.label6);
             this.panel7.Controls.Add(this.buttonHelp);
-            this.panel7.Location = new System.Drawing.Point(774, 3);
+            this.panel7.Location = new System.Drawing.Point(1548, 6);
+            this.panel7.Margin = new System.Windows.Forms.Padding(6);
             this.panel7.Name = "panel7";
-            this.panel7.Size = new System.Drawing.Size(54, 74);
+            this.panel7.Size = new System.Drawing.Size(106, 140);
             this.panel7.TabIndex = 13;
             // 
             // label6
             // 
             this.label6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
             this.label6.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.label6.Location = new System.Drawing.Point(0, 53);
+            this.label6.Location = new System.Drawing.Point(0, 101);
+            this.label6.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(52, 19);
+            this.label6.Size = new System.Drawing.Size(104, 37);
             this.label6.TabIndex = 0;
             this.label6.Text = "Help";
             this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // buttonHelp
             // 
+            this.buttonHelp.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonHelp.BackgroundImage")));
+            this.buttonHelp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.buttonHelp.FlatAppearance.BorderSize = 0;
             this.buttonHelp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonHelp.Image = ((System.Drawing.Image)(resources.GetObject("buttonHelp.Image")));
-            this.buttonHelp.Location = new System.Drawing.Point(6, 5);
+            this.buttonHelp.Location = new System.Drawing.Point(23, 21);
+            this.buttonHelp.Margin = new System.Windows.Forms.Padding(6);
             this.buttonHelp.Name = "buttonHelp";
-            this.buttonHelp.Size = new System.Drawing.Size(40, 40);
+            this.buttonHelp.Size = new System.Drawing.Size(60, 60);
             this.buttonHelp.TabIndex = 0;
             this.buttonHelp.UseVisualStyleBackColor = true;
             this.buttonHelp.Click += new System.EventHandler(this.toolbarButton_Click);
@@ -350,30 +367,34 @@
             this.panel6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel6.Controls.Add(this.label8);
             this.panel6.Controls.Add(this.buttonSelect);
-            this.panel6.Location = new System.Drawing.Point(142, 3);
+            this.panel6.Location = new System.Drawing.Point(284, 6);
+            this.panel6.Margin = new System.Windows.Forms.Padding(6);
             this.panel6.Name = "panel6";
-            this.panel6.Size = new System.Drawing.Size(54, 74);
+            this.panel6.Size = new System.Drawing.Size(106, 140);
             this.panel6.TabIndex = 12;
             // 
             // label8
             // 
             this.label8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
             this.label8.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.label8.Location = new System.Drawing.Point(0, 53);
+            this.label8.Location = new System.Drawing.Point(0, 101);
+            this.label8.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(52, 19);
+            this.label8.Size = new System.Drawing.Size(104, 37);
             this.label8.TabIndex = 0;
             this.label8.Text = "Select";
             this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // buttonSelect
             // 
+            this.buttonSelect.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonSelect.BackgroundImage")));
+            this.buttonSelect.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.buttonSelect.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.buttonSelect.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonSelect.Image = ((System.Drawing.Image)(resources.GetObject("buttonSelect.Image")));
-            this.buttonSelect.Location = new System.Drawing.Point(6, 5);
+            this.buttonSelect.Location = new System.Drawing.Point(12, 10);
+            this.buttonSelect.Margin = new System.Windows.Forms.Padding(6);
             this.buttonSelect.Name = "buttonSelect";
-            this.buttonSelect.Size = new System.Drawing.Size(40, 40);
+            this.buttonSelect.Size = new System.Drawing.Size(80, 77);
             this.buttonSelect.TabIndex = 0;
             this.buttonSelect.UseVisualStyleBackColor = false;
             this.buttonSelect.Click += new System.EventHandler(this.toolbarButton_Click);
@@ -384,30 +405,34 @@
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel1.Controls.Add(this.label5);
             this.panel1.Controls.Add(this.buttonSave);
-            this.panel1.Location = new System.Drawing.Point(827, 3);
+            this.panel1.Location = new System.Drawing.Point(1654, 6);
+            this.panel1.Margin = new System.Windows.Forms.Padding(6);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(54, 74);
+            this.panel1.Size = new System.Drawing.Size(106, 140);
             this.panel1.TabIndex = 11;
             // 
             // label5
             // 
             this.label5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
             this.label5.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.label5.Location = new System.Drawing.Point(0, 53);
+            this.label5.Location = new System.Drawing.Point(0, 101);
+            this.label5.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(52, 19);
+            this.label5.Size = new System.Drawing.Size(104, 37);
             this.label5.TabIndex = 0;
             this.label5.Text = "Close";
             this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // buttonSave
             // 
+            this.buttonSave.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonSave.BackgroundImage")));
+            this.buttonSave.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.buttonSave.FlatAppearance.BorderSize = 0;
             this.buttonSave.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonSave.Image = ((System.Drawing.Image)(resources.GetObject("buttonSave.Image")));
-            this.buttonSave.Location = new System.Drawing.Point(6, 5);
+            this.buttonSave.Location = new System.Drawing.Point(23, 21);
+            this.buttonSave.Margin = new System.Windows.Forms.Padding(6);
             this.buttonSave.Name = "buttonSave";
-            this.buttonSave.Size = new System.Drawing.Size(40, 40);
+            this.buttonSave.Size = new System.Drawing.Size(60, 60);
             this.buttonSave.TabIndex = 0;
             this.buttonSave.UseVisualStyleBackColor = true;
             this.buttonSave.Click += new System.EventHandler(this.buttonSave_Click);
@@ -421,9 +446,10 @@
             this.panel5.Controls.Add(this.buttonAddTemplate);
             this.panel5.Controls.Add(this.comboBoxTemplates);
             this.panel5.Controls.Add(this.label4);
-            this.panel5.Location = new System.Drawing.Point(521, 3);
+            this.panel5.Location = new System.Drawing.Point(1042, 6);
+            this.panel5.Margin = new System.Windows.Forms.Padding(6);
             this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(224, 74);
+            this.panel5.Size = new System.Drawing.Size(446, 140);
             this.panel5.TabIndex = 10;
             // 
             // buttonTemplateHelp
@@ -432,9 +458,10 @@
             this.buttonTemplateHelp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.buttonTemplateHelp.FlatAppearance.BorderSize = 0;
             this.buttonTemplateHelp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonTemplateHelp.Location = new System.Drawing.Point(193, 5);
+            this.buttonTemplateHelp.Location = new System.Drawing.Point(386, 10);
+            this.buttonTemplateHelp.Margin = new System.Windows.Forms.Padding(6);
             this.buttonTemplateHelp.Name = "buttonTemplateHelp";
-            this.buttonTemplateHelp.Size = new System.Drawing.Size(22, 22);
+            this.buttonTemplateHelp.Size = new System.Drawing.Size(44, 42);
             this.buttonTemplateHelp.TabIndex = 7;
             this.buttonTemplateHelp.Tag = "Delete Template";
             this.buttonTemplateHelp.UseVisualStyleBackColor = true;
@@ -446,9 +473,10 @@
             this.buttonDeleteTemplate.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.buttonDeleteTemplate.FlatAppearance.BorderSize = 0;
             this.buttonDeleteTemplate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonDeleteTemplate.Location = new System.Drawing.Point(167, 5);
+            this.buttonDeleteTemplate.Location = new System.Drawing.Point(334, 10);
+            this.buttonDeleteTemplate.Margin = new System.Windows.Forms.Padding(6);
             this.buttonDeleteTemplate.Name = "buttonDeleteTemplate";
-            this.buttonDeleteTemplate.Size = new System.Drawing.Size(22, 22);
+            this.buttonDeleteTemplate.Size = new System.Drawing.Size(44, 42);
             this.buttonDeleteTemplate.TabIndex = 6;
             this.buttonDeleteTemplate.Tag = "Delete Template";
             this.buttonDeleteTemplate.UseVisualStyleBackColor = true;
@@ -458,9 +486,10 @@
             // 
             this.buttonAddToPreview.Image = ((System.Drawing.Image)(resources.GetObject("buttonAddToPreview.Image")));
             this.buttonAddToPreview.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.buttonAddToPreview.Location = new System.Drawing.Point(32, 28);
+            this.buttonAddToPreview.Location = new System.Drawing.Point(64, 54);
+            this.buttonAddToPreview.Margin = new System.Windows.Forms.Padding(6);
             this.buttonAddToPreview.Name = "buttonAddToPreview";
-            this.buttonAddToPreview.Size = new System.Drawing.Size(107, 23);
+            this.buttonAddToPreview.Size = new System.Drawing.Size(214, 44);
             this.buttonAddToPreview.TabIndex = 5;
             this.buttonAddToPreview.Text = "Add to Preview";
             this.buttonAddToPreview.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -473,9 +502,10 @@
             this.buttonAddTemplate.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.buttonAddTemplate.FlatAppearance.BorderSize = 0;
             this.buttonAddTemplate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonAddTemplate.Location = new System.Drawing.Point(141, 5);
+            this.buttonAddTemplate.Location = new System.Drawing.Point(282, 10);
+            this.buttonAddTemplate.Margin = new System.Windows.Forms.Padding(6);
             this.buttonAddTemplate.Name = "buttonAddTemplate";
-            this.buttonAddTemplate.Size = new System.Drawing.Size(22, 22);
+            this.buttonAddTemplate.Size = new System.Drawing.Size(44, 42);
             this.buttonAddTemplate.TabIndex = 4;
             this.buttonAddTemplate.Tag = "Create Template";
             this.buttonAddTemplate.UseVisualStyleBackColor = true;
@@ -485,18 +515,20 @@
             // 
             this.comboBoxTemplates.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxTemplates.FormattingEnabled = true;
-            this.comboBoxTemplates.Location = new System.Drawing.Point(6, 5);
+            this.comboBoxTemplates.Location = new System.Drawing.Point(12, 10);
+            this.comboBoxTemplates.Margin = new System.Windows.Forms.Padding(6);
             this.comboBoxTemplates.Name = "comboBoxTemplates";
-            this.comboBoxTemplates.Size = new System.Drawing.Size(133, 21);
+            this.comboBoxTemplates.Size = new System.Drawing.Size(262, 33);
             this.comboBoxTemplates.TabIndex = 1;
             // 
             // label4
             // 
             this.label4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
             this.label4.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.label4.Location = new System.Drawing.Point(0, 53);
+            this.label4.Location = new System.Drawing.Point(0, 101);
+            this.label4.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(222, 19);
+            this.label4.Size = new System.Drawing.Size(444, 37);
             this.label4.TabIndex = 0;
             this.label4.Text = "Templates";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -504,6 +536,7 @@
             // panel4
             // 
             this.panel4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel4.Controls.Add(this.buttonIcicle);
             this.panel4.Controls.Add(this.buttonStarBurst);
             this.panel4.Controls.Add(this.buttonPixelGrid);
             this.panel4.Controls.Add(this.buttonStar);
@@ -512,10 +545,26 @@
             this.panel4.Controls.Add(this.label3);
             this.panel4.Controls.Add(this.buttonSemiCircle);
             this.panel4.Controls.Add(this.buttonMegaTree);
-            this.panel4.Location = new System.Drawing.Point(277, 3);
+            this.panel4.Location = new System.Drawing.Point(554, 6);
+            this.panel4.Margin = new System.Windows.Forms.Padding(6);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(109, 74);
+            this.panel4.Size = new System.Drawing.Size(216, 140);
             this.panel4.TabIndex = 9;
+            // 
+            // buttonIcicle
+            // 
+            this.buttonIcicle.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonIcicle.BackgroundImage")));
+            this.buttonIcicle.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.buttonIcicle.FlatAppearance.BorderColor = System.Drawing.Color.White;
+            this.buttonIcicle.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonIcicle.Location = new System.Drawing.Point(164, 54);
+            this.buttonIcicle.Margin = new System.Windows.Forms.Padding(6);
+            this.buttonIcicle.Name = "buttonIcicle";
+            this.buttonIcicle.Size = new System.Drawing.Size(44, 42);
+            this.buttonIcicle.TabIndex = 13;
+            this.toolTip.SetToolTip(this.buttonIcicle, "Icicles");
+            this.buttonIcicle.UseVisualStyleBackColor = true;
+            this.buttonIcicle.Click += new System.EventHandler(this.toolbarButton_Click);
             // 
             // buttonStarBurst
             // 
@@ -523,9 +572,10 @@
             this.buttonStarBurst.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.buttonStarBurst.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.buttonStarBurst.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonStarBurst.Location = new System.Drawing.Point(82, 5);
+            this.buttonStarBurst.Location = new System.Drawing.Point(164, 10);
+            this.buttonStarBurst.Margin = new System.Windows.Forms.Padding(6);
             this.buttonStarBurst.Name = "buttonStarBurst";
-            this.buttonStarBurst.Size = new System.Drawing.Size(22, 22);
+            this.buttonStarBurst.Size = new System.Drawing.Size(44, 42);
             this.buttonStarBurst.TabIndex = 12;
             this.toolTip.SetToolTip(this.buttonStarBurst, "Star Burst");
             this.buttonStarBurst.UseVisualStyleBackColor = true;
@@ -537,9 +587,10 @@
             this.buttonPixelGrid.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.buttonPixelGrid.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.buttonPixelGrid.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonPixelGrid.Location = new System.Drawing.Point(56, 28);
+            this.buttonPixelGrid.Location = new System.Drawing.Point(112, 54);
+            this.buttonPixelGrid.Margin = new System.Windows.Forms.Padding(6);
             this.buttonPixelGrid.Name = "buttonPixelGrid";
-            this.buttonPixelGrid.Size = new System.Drawing.Size(22, 22);
+            this.buttonPixelGrid.Size = new System.Drawing.Size(44, 42);
             this.buttonPixelGrid.TabIndex = 11;
             this.toolTip.SetToolTip(this.buttonPixelGrid, "Pixel Grid");
             this.buttonPixelGrid.UseVisualStyleBackColor = true;
@@ -551,9 +602,10 @@
             this.buttonStar.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.buttonStar.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.buttonStar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonStar.Location = new System.Drawing.Point(31, 28);
+            this.buttonStar.Location = new System.Drawing.Point(62, 54);
+            this.buttonStar.Margin = new System.Windows.Forms.Padding(6);
             this.buttonStar.Name = "buttonStar";
-            this.buttonStar.Size = new System.Drawing.Size(22, 22);
+            this.buttonStar.Size = new System.Drawing.Size(44, 42);
             this.buttonStar.TabIndex = 3;
             this.toolTip.SetToolTip(this.buttonStar, "Star");
             this.buttonStar.UseVisualStyleBackColor = true;
@@ -565,9 +617,10 @@
             this.buttonNet.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.buttonNet.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.buttonNet.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonNet.Location = new System.Drawing.Point(31, 5);
+            this.buttonNet.Location = new System.Drawing.Point(62, 10);
+            this.buttonNet.Margin = new System.Windows.Forms.Padding(6);
             this.buttonNet.Name = "buttonNet";
-            this.buttonNet.Size = new System.Drawing.Size(22, 22);
+            this.buttonNet.Size = new System.Drawing.Size(44, 42);
             this.buttonNet.TabIndex = 10;
             this.toolTip.SetToolTip(this.buttonNet, "Net");
             this.buttonNet.UseVisualStyleBackColor = true;
@@ -579,9 +632,10 @@
             this.buttonCane.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.buttonCane.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.buttonCane.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonCane.Location = new System.Drawing.Point(6, 28);
+            this.buttonCane.Location = new System.Drawing.Point(12, 54);
+            this.buttonCane.Margin = new System.Windows.Forms.Padding(6);
             this.buttonCane.Name = "buttonCane";
-            this.buttonCane.Size = new System.Drawing.Size(22, 22);
+            this.buttonCane.Size = new System.Drawing.Size(44, 42);
             this.buttonCane.TabIndex = 1;
             this.toolTip.SetToolTip(this.buttonCane, "Candy Cane");
             this.buttonCane.UseVisualStyleBackColor = false;
@@ -591,9 +645,10 @@
             // 
             this.label3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
             this.label3.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.label3.Location = new System.Drawing.Point(0, 53);
+            this.label3.Location = new System.Drawing.Point(0, 101);
+            this.label3.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(107, 19);
+            this.label3.Size = new System.Drawing.Size(214, 37);
             this.label3.TabIndex = 0;
             this.label3.Text = "Smart Objects";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -604,9 +659,10 @@
             this.buttonSemiCircle.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.buttonSemiCircle.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.buttonSemiCircle.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonSemiCircle.Location = new System.Drawing.Point(6, 5);
+            this.buttonSemiCircle.Location = new System.Drawing.Point(12, 10);
+            this.buttonSemiCircle.Margin = new System.Windows.Forms.Padding(6);
             this.buttonSemiCircle.Name = "buttonSemiCircle";
-            this.buttonSemiCircle.Size = new System.Drawing.Size(22, 22);
+            this.buttonSemiCircle.Size = new System.Drawing.Size(44, 42);
             this.buttonSemiCircle.TabIndex = 4;
             this.toolTip.SetToolTip(this.buttonSemiCircle, "Arch");
             this.buttonSemiCircle.UseVisualStyleBackColor = true;
@@ -618,9 +674,10 @@
             this.buttonMegaTree.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.buttonMegaTree.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.buttonMegaTree.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonMegaTree.Location = new System.Drawing.Point(56, 5);
+            this.buttonMegaTree.Location = new System.Drawing.Point(112, 10);
+            this.buttonMegaTree.Margin = new System.Windows.Forms.Padding(6);
             this.buttonMegaTree.Name = "buttonMegaTree";
-            this.buttonMegaTree.Size = new System.Drawing.Size(22, 22);
+            this.buttonMegaTree.Size = new System.Drawing.Size(44, 42);
             this.buttonMegaTree.TabIndex = 0;
             this.toolTip.SetToolTip(this.buttonMegaTree, "Mega Tree");
             this.buttonMegaTree.UseVisualStyleBackColor = true;
@@ -635,9 +692,10 @@
             this.panel3.Controls.Add(this.buttonEllipse);
             this.panel3.Controls.Add(this.buttonLine);
             this.panel3.Controls.Add(this.buttonRectangle);
-            this.panel3.Location = new System.Drawing.Point(194, 3);
+            this.panel3.Location = new System.Drawing.Point(388, 6);
+            this.panel3.Margin = new System.Windows.Forms.Padding(6);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(84, 74);
+            this.panel3.Size = new System.Drawing.Size(166, 140);
             this.panel3.TabIndex = 8;
             // 
             // buttonTriangle
@@ -646,9 +704,10 @@
             this.buttonTriangle.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.buttonTriangle.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.buttonTriangle.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonTriangle.Location = new System.Drawing.Point(31, 28);
+            this.buttonTriangle.Location = new System.Drawing.Point(62, 54);
+            this.buttonTriangle.Margin = new System.Windows.Forms.Padding(6);
             this.buttonTriangle.Name = "buttonTriangle";
-            this.buttonTriangle.Size = new System.Drawing.Size(22, 22);
+            this.buttonTriangle.Size = new System.Drawing.Size(44, 42);
             this.buttonTriangle.TabIndex = 5;
             this.toolTip.SetToolTip(this.buttonTriangle, "Triangle");
             this.buttonTriangle.UseVisualStyleBackColor = true;
@@ -658,9 +717,10 @@
             // 
             this.label2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
             this.label2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.label2.Location = new System.Drawing.Point(0, 53);
+            this.label2.Location = new System.Drawing.Point(0, 101);
+            this.label2.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(82, 19);
+            this.label2.Size = new System.Drawing.Size(164, 37);
             this.label2.TabIndex = 0;
             this.label2.Text = "Basic Drawing";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -668,12 +728,13 @@
             // buttonDrawPixel
             // 
             this.buttonDrawPixel.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonDrawPixel.BackgroundImage")));
-            this.buttonDrawPixel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.buttonDrawPixel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.buttonDrawPixel.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.buttonDrawPixel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonDrawPixel.Location = new System.Drawing.Point(6, 5);
+            this.buttonDrawPixel.Location = new System.Drawing.Point(12, 10);
+            this.buttonDrawPixel.Margin = new System.Windows.Forms.Padding(6);
             this.buttonDrawPixel.Name = "buttonDrawPixel";
-            this.buttonDrawPixel.Size = new System.Drawing.Size(22, 22);
+            this.buttonDrawPixel.Size = new System.Drawing.Size(44, 42);
             this.buttonDrawPixel.TabIndex = 0;
             this.toolTip.SetToolTip(this.buttonDrawPixel, "Single Light");
             this.buttonDrawPixel.UseVisualStyleBackColor = true;
@@ -685,9 +746,10 @@
             this.buttonEllipse.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.buttonEllipse.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.buttonEllipse.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonEllipse.Location = new System.Drawing.Point(6, 28);
+            this.buttonEllipse.Location = new System.Drawing.Point(12, 54);
+            this.buttonEllipse.Margin = new System.Windows.Forms.Padding(6);
             this.buttonEllipse.Name = "buttonEllipse";
-            this.buttonEllipse.Size = new System.Drawing.Size(22, 22);
+            this.buttonEllipse.Size = new System.Drawing.Size(44, 42);
             this.buttonEllipse.TabIndex = 3;
             this.toolTip.SetToolTip(this.buttonEllipse, "Oval");
             this.buttonEllipse.UseVisualStyleBackColor = true;
@@ -699,9 +761,10 @@
             this.buttonLine.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.buttonLine.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.buttonLine.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonLine.Location = new System.Drawing.Point(31, 5);
+            this.buttonLine.Location = new System.Drawing.Point(62, 10);
+            this.buttonLine.Margin = new System.Windows.Forms.Padding(6);
             this.buttonLine.Name = "buttonLine";
-            this.buttonLine.Size = new System.Drawing.Size(22, 22);
+            this.buttonLine.Size = new System.Drawing.Size(44, 42);
             this.buttonLine.TabIndex = 1;
             this.toolTip.SetToolTip(this.buttonLine, "Light String");
             this.buttonLine.UseVisualStyleBackColor = true;
@@ -713,9 +776,10 @@
             this.buttonRectangle.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.buttonRectangle.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.buttonRectangle.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonRectangle.Location = new System.Drawing.Point(56, 5);
+            this.buttonRectangle.Location = new System.Drawing.Point(112, 10);
+            this.buttonRectangle.Margin = new System.Windows.Forms.Padding(6);
             this.buttonRectangle.Name = "buttonRectangle";
-            this.buttonRectangle.Size = new System.Drawing.Size(22, 22);
+            this.buttonRectangle.Size = new System.Drawing.Size(44, 42);
             this.buttonRectangle.TabIndex = 2;
             this.toolTip.SetToolTip(this.buttonRectangle, "Rectangle");
             this.buttonRectangle.UseVisualStyleBackColor = true;
@@ -727,18 +791,20 @@
             this.panel2.Controls.Add(this.label1);
             this.panel2.Controls.Add(this.trackBarBackgroundAlpha);
             this.panel2.Controls.Add(this.buttonSetBackground);
-            this.panel2.Location = new System.Drawing.Point(3, 3);
+            this.panel2.Location = new System.Drawing.Point(6, 6);
+            this.panel2.Margin = new System.Windows.Forms.Padding(6);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(140, 74);
+            this.panel2.Size = new System.Drawing.Size(278, 140);
             this.panel2.TabIndex = 7;
             // 
             // label1
             // 
             this.label1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
             this.label1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.label1.Location = new System.Drawing.Point(0, 53);
+            this.label1.Location = new System.Drawing.Point(0, 101);
+            this.label1.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(138, 19);
+            this.label1.Size = new System.Drawing.Size(276, 37);
             this.label1.TabIndex = 0;
             this.label1.Text = "Background";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -746,22 +812,25 @@
             // trackBarBackgroundAlpha
             // 
             this.trackBarBackgroundAlpha.LargeChange = 10;
-            this.trackBarBackgroundAlpha.Location = new System.Drawing.Point(54, 5);
+            this.trackBarBackgroundAlpha.Location = new System.Drawing.Point(108, 10);
+            this.trackBarBackgroundAlpha.Margin = new System.Windows.Forms.Padding(6);
             this.trackBarBackgroundAlpha.Maximum = 255;
             this.trackBarBackgroundAlpha.Name = "trackBarBackgroundAlpha";
-            this.trackBarBackgroundAlpha.Size = new System.Drawing.Size(81, 45);
+            this.trackBarBackgroundAlpha.Size = new System.Drawing.Size(162, 90);
             this.trackBarBackgroundAlpha.TabIndex = 8;
             this.trackBarBackgroundAlpha.TickFrequency = 25;
             this.trackBarBackgroundAlpha.ValueChanged += new System.EventHandler(this.trackBarBackgroundAlpha_ValueChanged);
             // 
             // buttonSetBackground
             // 
+            this.buttonSetBackground.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonSetBackground.BackgroundImage")));
+            this.buttonSetBackground.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.buttonSetBackground.FlatAppearance.BorderSize = 0;
             this.buttonSetBackground.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonSetBackground.Image = ((System.Drawing.Image)(resources.GetObject("buttonSetBackground.Image")));
-            this.buttonSetBackground.Location = new System.Drawing.Point(8, 3);
+            this.buttonSetBackground.Location = new System.Drawing.Point(16, 6);
+            this.buttonSetBackground.Margin = new System.Windows.Forms.Padding(6);
             this.buttonSetBackground.Name = "buttonSetBackground";
-            this.buttonSetBackground.Size = new System.Drawing.Size(40, 40);
+            this.buttonSetBackground.Size = new System.Drawing.Size(80, 77);
             this.buttonSetBackground.TabIndex = 5;
             this.buttonSetBackground.UseVisualStyleBackColor = true;
             this.buttonSetBackground.Click += new System.EventHandler(this.buttonSetBackground_Click);
@@ -771,13 +840,19 @@
             this.dialogSelectBackground.Filter = "JPG Files|*.jpg|PNG Files|*.png|GIF Files|*.gif|BMP Files|*.bmp|All Files|*.*";
             this.dialogSelectBackground.SupportMultiDottedExtensions = true;
             // 
-            // menuStrip1
+            // menuStrip
             // 
-            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(884, 24);
-            this.menuStrip1.TabIndex = 11;
-            this.menuStrip1.Text = "menuStrip1";
+            this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fileToolStripMenuItem,
+            this.viewToolStripMenuItem,
+            this.editToolStripMenuItem,
+            this.settingsToolStripMenuItem});
+            this.menuStrip.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip.Name = "menuStrip";
+            this.menuStrip.Padding = new System.Windows.Forms.Padding(12, 4, 0, 4);
+            this.menuStrip.Size = new System.Drawing.Size(1768, 62);
+            this.menuStrip.TabIndex = 11;
+            this.menuStrip.Text = "menuStrip";
             // 
             // fileToolStripMenuItem
             // 
@@ -785,33 +860,33 @@
             this.exitToolStripMenuItem,
             this.toolStripSeparator1});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(89, 54);
             this.fileToolStripMenuItem.Text = "&File";
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(92, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(162, 54);
             this.exitToolStripMenuItem.Text = "E&xit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(89, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(159, 6);
             // 
             // viewToolStripMenuItem
             // 
             this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.propInformationToolStripMenuItem});
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
-            this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.viewToolStripMenuItem.Size = new System.Drawing.Size(112, 54);
             this.viewToolStripMenuItem.Text = "&View";
             // 
             // propInformationToolStripMenuItem
             // 
             this.propInformationToolStripMenuItem.Name = "propInformationToolStripMenuItem";
-            this.propInformationToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+            this.propInformationToolStripMenuItem.Size = new System.Drawing.Size(386, 54);
             this.propInformationToolStripMenuItem.Text = "Prop &Information";
             this.propInformationToolStripMenuItem.Click += new System.EventHandler(this.propInformationToolStripMenuItem_Click);
             // 
@@ -825,14 +900,14 @@
             this.toolStripMenuItem1,
             this.backgroundPropertiesToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
-            this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
+            this.editToolStripMenuItem.Size = new System.Drawing.Size(97, 54);
             this.editToolStripMenuItem.Text = "&Edit";
             // 
             // copyToolStripMenuItem
             // 
             this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
             this.copyToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+X";
-            this.copyToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
+            this.copyToolStripMenuItem.Size = new System.Drawing.Size(501, 54);
             this.copyToolStripMenuItem.Text = "Cu&t";
             this.copyToolStripMenuItem.Click += new System.EventHandler(this.copyToolStripMenuItem_Click);
             // 
@@ -840,7 +915,7 @@
             // 
             this.copyToolStripMenuItem1.Name = "copyToolStripMenuItem1";
             this.copyToolStripMenuItem1.ShortcutKeyDisplayString = "Ctrl+C";
-            this.copyToolStripMenuItem1.Size = new System.Drawing.Size(203, 22);
+            this.copyToolStripMenuItem1.Size = new System.Drawing.Size(501, 54);
             this.copyToolStripMenuItem1.Text = "&Copy";
             this.copyToolStripMenuItem1.Click += new System.EventHandler(this.copyToolStripMenuItem1_Click);
             // 
@@ -848,7 +923,7 @@
             // 
             this.pasteToolStripMenuItem.Name = "pasteToolStripMenuItem";
             this.pasteToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+V";
-            this.pasteToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
+            this.pasteToolStripMenuItem.Size = new System.Drawing.Size(501, 54);
             this.pasteToolStripMenuItem.Text = "&Paste";
             this.pasteToolStripMenuItem.Click += new System.EventHandler(this.pasteToolStripMenuItem_Click);
             // 
@@ -856,21 +931,40 @@
             // 
             this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
             this.deleteToolStripMenuItem.ShortcutKeyDisplayString = "Del";
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(501, 54);
             this.deleteToolStripMenuItem.Text = "&Delete";
             this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(200, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(498, 6);
             // 
             // backgroundPropertiesToolStripMenuItem
             // 
             this.backgroundPropertiesToolStripMenuItem.Name = "backgroundPropertiesToolStripMenuItem";
-            this.backgroundPropertiesToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
+            this.backgroundPropertiesToolStripMenuItem.Size = new System.Drawing.Size(501, 54);
             this.backgroundPropertiesToolStripMenuItem.Text = "&Background Properties...";
             this.backgroundPropertiesToolStripMenuItem.Click += new System.EventHandler(this.backgroundPropertiesToolStripMenuItem_Click);
+            // 
+            // settingsToolStripMenuItem
+            // 
+            this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.saveLocationsToolStripMenuItem});
+            this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(167, 54);
+            this.settingsToolStripMenuItem.Text = "Settings";
+            // 
+            // saveLocationsToolStripMenuItem
+            // 
+            this.saveLocationsToolStripMenuItem.Checked = true;
+            this.saveLocationsToolStripMenuItem.CheckOnClick = true;
+            this.saveLocationsToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.saveLocationsToolStripMenuItem.Name = "saveLocationsToolStripMenuItem";
+            this.saveLocationsToolStripMenuItem.Size = new System.Drawing.Size(551, 54);
+            this.saveLocationsToolStripMenuItem.Text = "Update Location Properties";
+            this.saveLocationsToolStripMenuItem.ToolTipText = "Update location properties for each preview item for positioning.";
+            this.saveLocationsToolStripMenuItem.Click += new System.EventHandler(this.saveLocationsToolStripMenuItem_Click);
             // 
             // performanceToolStripMenuItem
             // 
@@ -884,38 +978,19 @@
             // 
             this.useDirect2DPreviewRenderingToolStripMenuItem.CheckOnClick = true;
             this.useDirect2DPreviewRenderingToolStripMenuItem.Name = "useDirect2DPreviewRenderingToolStripMenuItem";
-            this.useDirect2DPreviewRenderingToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
+            this.useDirect2DPreviewRenderingToolStripMenuItem.Size = new System.Drawing.Size(631, 54);
             this.useDirect2DPreviewRenderingToolStripMenuItem.Text = "Use Direct2D Preview Rendering";
             this.useDirect2DPreviewRenderingToolStripMenuItem.Click += new System.EventHandler(this.useDirect2DPreviewRenderingToolStripMenuItem_Click);
-            // 
-            // settingsToolStripMenuItem
-            // 
-            this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.saveLocationsToolStripMenuItem});
-            this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
-            this.settingsToolStripMenuItem.Text = "Settings";
-            // 
-            // saveLocationsToolStripMenuItem
-            // 
-            this.saveLocationsToolStripMenuItem.Checked = true;
-            this.saveLocationsToolStripMenuItem.CheckOnClick = true;
-            this.saveLocationsToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.saveLocationsToolStripMenuItem.Name = "saveLocationsToolStripMenuItem";
-            this.saveLocationsToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
-            this.saveLocationsToolStripMenuItem.Text = "Update Location Properties";
-            this.saveLocationsToolStripMenuItem.ToolTipText = "Update location properties for each preview item for positioning.";
-            this.saveLocationsToolStripMenuItem.Click += new System.EventHandler(this.saveLocationsToolStripMenuItem_Click);
             // 
             // trackerZoom
             // 
             this.trackerZoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.trackerZoom.Location = new System.Drawing.Point(753, 4);
-            this.trackerZoom.Margin = new System.Windows.Forms.Padding(2);
+            this.trackerZoom.Location = new System.Drawing.Point(1508, 8);
+            this.trackerZoom.Margin = new System.Windows.Forms.Padding(4);
             this.trackerZoom.Maximum = 400;
             this.trackerZoom.Minimum = 25;
             this.trackerZoom.Name = "trackerZoom";
-            this.trackerZoom.Size = new System.Drawing.Size(92, 19);
+            this.trackerZoom.Size = new System.Drawing.Size(184, 37);
             this.trackerZoom.TabIndex = 0;
             this.trackerZoom.Text = "hMiniTracker1";
             this.trackerZoom.Value = 100;
@@ -925,10 +1000,10 @@
             // 
             this.labelZoomLevel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.labelZoomLevel.AutoSize = true;
-            this.labelZoomLevel.Location = new System.Drawing.Point(843, 6);
-            this.labelZoomLevel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelZoomLevel.Location = new System.Drawing.Point(1688, 12);
+            this.labelZoomLevel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelZoomLevel.Name = "labelZoomLevel";
-            this.labelZoomLevel.Size = new System.Drawing.Size(33, 13);
+            this.labelZoomLevel.Size = new System.Drawing.Size(67, 25);
             this.labelZoomLevel.TabIndex = 1;
             this.labelZoomLevel.Text = "100%";
             // 
@@ -938,78 +1013,81 @@
             this.panel9.Controls.Add(this.labelZoomLevel);
             this.panel9.Controls.Add(this.trackerZoom);
             this.panel9.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel9.Location = new System.Drawing.Point(0, 534);
-            this.panel9.Margin = new System.Windows.Forms.Padding(2);
+            this.panel9.Location = new System.Drawing.Point(0, 1029);
+            this.panel9.Margin = new System.Windows.Forms.Padding(4);
             this.panel9.Name = "panel9";
-            this.panel9.Size = new System.Drawing.Size(884, 28);
+            this.panel9.Size = new System.Drawing.Size(1768, 52);
             this.panel9.TabIndex = 16;
             // 
             // dockPanel
             // 
             this.dockPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dockPanel.Location = new System.Drawing.Point(0, 102);
+            this.dockPanel.DocumentStyle = WeifenLuo.WinFormsUI.Docking.DocumentStyle.DockingWindow;
+            this.dockPanel.Location = new System.Drawing.Point(0, 212);
+            this.dockPanel.Margin = new System.Windows.Forms.Padding(6);
             this.dockPanel.Name = "dockPanel";
-            this.dockPanel.Size = new System.Drawing.Size(884, 432);
-            dockPanelGradient4.EndColor = System.Drawing.SystemColors.ControlLight;
-            dockPanelGradient4.StartColor = System.Drawing.SystemColors.ControlLight;
-            autoHideStripSkin2.DockStripGradient = dockPanelGradient4;
-            tabGradient8.EndColor = System.Drawing.SystemColors.Control;
-            tabGradient8.StartColor = System.Drawing.SystemColors.Control;
-            tabGradient8.TextColor = System.Drawing.SystemColors.ControlDarkDark;
-            autoHideStripSkin2.TabGradient = tabGradient8;
-            autoHideStripSkin2.TextFont = new System.Drawing.Font("Segoe UI", 9F);
-            dockPanelSkin2.AutoHideStripSkin = autoHideStripSkin2;
-            tabGradient9.EndColor = System.Drawing.SystemColors.ControlLightLight;
-            tabGradient9.StartColor = System.Drawing.SystemColors.ControlLightLight;
-            tabGradient9.TextColor = System.Drawing.SystemColors.ControlText;
-            dockPaneStripGradient2.ActiveTabGradient = tabGradient9;
-            dockPanelGradient5.EndColor = System.Drawing.SystemColors.Control;
-            dockPanelGradient5.StartColor = System.Drawing.SystemColors.Control;
-            dockPaneStripGradient2.DockStripGradient = dockPanelGradient5;
-            tabGradient10.EndColor = System.Drawing.SystemColors.ControlLight;
-            tabGradient10.StartColor = System.Drawing.SystemColors.ControlLight;
-            tabGradient10.TextColor = System.Drawing.SystemColors.ControlText;
-            dockPaneStripGradient2.InactiveTabGradient = tabGradient10;
-            dockPaneStripSkin2.DocumentGradient = dockPaneStripGradient2;
-            dockPaneStripSkin2.TextFont = new System.Drawing.Font("Segoe UI", 9F);
-            tabGradient11.EndColor = System.Drawing.SystemColors.ActiveCaption;
-            tabGradient11.LinearGradientMode = System.Drawing.Drawing2D.LinearGradientMode.Vertical;
-            tabGradient11.StartColor = System.Drawing.SystemColors.GradientActiveCaption;
-            tabGradient11.TextColor = System.Drawing.SystemColors.ActiveCaptionText;
-            dockPaneStripToolWindowGradient2.ActiveCaptionGradient = tabGradient11;
-            tabGradient12.EndColor = System.Drawing.SystemColors.Control;
-            tabGradient12.StartColor = System.Drawing.SystemColors.Control;
-            tabGradient12.TextColor = System.Drawing.SystemColors.ControlText;
-            dockPaneStripToolWindowGradient2.ActiveTabGradient = tabGradient12;
-            dockPanelGradient6.EndColor = System.Drawing.SystemColors.ControlLight;
-            dockPanelGradient6.StartColor = System.Drawing.SystemColors.ControlLight;
-            dockPaneStripToolWindowGradient2.DockStripGradient = dockPanelGradient6;
-            tabGradient13.EndColor = System.Drawing.SystemColors.InactiveCaption;
-            tabGradient13.LinearGradientMode = System.Drawing.Drawing2D.LinearGradientMode.Vertical;
-            tabGradient13.StartColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            tabGradient13.TextColor = System.Drawing.SystemColors.InactiveCaptionText;
-            dockPaneStripToolWindowGradient2.InactiveCaptionGradient = tabGradient13;
-            tabGradient14.EndColor = System.Drawing.Color.Transparent;
-            tabGradient14.StartColor = System.Drawing.Color.Transparent;
-            tabGradient14.TextColor = System.Drawing.SystemColors.ControlDarkDark;
-            dockPaneStripToolWindowGradient2.InactiveTabGradient = tabGradient14;
-            dockPaneStripSkin2.ToolWindowGradient = dockPaneStripToolWindowGradient2;
-            dockPanelSkin2.DockPaneStripSkin = dockPaneStripSkin2;
-            this.dockPanel.Skin = dockPanelSkin2;
+            this.dockPanel.Size = new System.Drawing.Size(1768, 817);
+            dockPanelGradient1.EndColor = System.Drawing.SystemColors.ControlLight;
+            dockPanelGradient1.StartColor = System.Drawing.SystemColors.ControlLight;
+            autoHideStripSkin1.DockStripGradient = dockPanelGradient1;
+            tabGradient1.EndColor = System.Drawing.SystemColors.Control;
+            tabGradient1.StartColor = System.Drawing.SystemColors.Control;
+            tabGradient1.TextColor = System.Drawing.SystemColors.ControlDarkDark;
+            autoHideStripSkin1.TabGradient = tabGradient1;
+            autoHideStripSkin1.TextFont = new System.Drawing.Font("Segoe UI", 9F);
+            dockPanelSkin1.AutoHideStripSkin = autoHideStripSkin1;
+            tabGradient2.EndColor = System.Drawing.SystemColors.ControlLightLight;
+            tabGradient2.StartColor = System.Drawing.SystemColors.ControlLightLight;
+            tabGradient2.TextColor = System.Drawing.SystemColors.ControlText;
+            dockPaneStripGradient1.ActiveTabGradient = tabGradient2;
+            dockPanelGradient2.EndColor = System.Drawing.SystemColors.Control;
+            dockPanelGradient2.StartColor = System.Drawing.SystemColors.Control;
+            dockPaneStripGradient1.DockStripGradient = dockPanelGradient2;
+            tabGradient3.EndColor = System.Drawing.SystemColors.ControlLight;
+            tabGradient3.StartColor = System.Drawing.SystemColors.ControlLight;
+            tabGradient3.TextColor = System.Drawing.SystemColors.ControlText;
+            dockPaneStripGradient1.InactiveTabGradient = tabGradient3;
+            dockPaneStripSkin1.DocumentGradient = dockPaneStripGradient1;
+            dockPaneStripSkin1.TextFont = new System.Drawing.Font("Segoe UI", 9F);
+            tabGradient4.EndColor = System.Drawing.SystemColors.ActiveCaption;
+            tabGradient4.LinearGradientMode = System.Drawing.Drawing2D.LinearGradientMode.Vertical;
+            tabGradient4.StartColor = System.Drawing.SystemColors.GradientActiveCaption;
+            tabGradient4.TextColor = System.Drawing.SystemColors.ActiveCaptionText;
+            dockPaneStripToolWindowGradient1.ActiveCaptionGradient = tabGradient4;
+            tabGradient5.EndColor = System.Drawing.SystemColors.Control;
+            tabGradient5.StartColor = System.Drawing.SystemColors.Control;
+            tabGradient5.TextColor = System.Drawing.SystemColors.ControlText;
+            dockPaneStripToolWindowGradient1.ActiveTabGradient = tabGradient5;
+            dockPanelGradient3.EndColor = System.Drawing.SystemColors.ControlLight;
+            dockPanelGradient3.StartColor = System.Drawing.SystemColors.ControlLight;
+            dockPaneStripToolWindowGradient1.DockStripGradient = dockPanelGradient3;
+            tabGradient6.EndColor = System.Drawing.SystemColors.InactiveCaption;
+            tabGradient6.LinearGradientMode = System.Drawing.Drawing2D.LinearGradientMode.Vertical;
+            tabGradient6.StartColor = System.Drawing.SystemColors.GradientInactiveCaption;
+            tabGradient6.TextColor = System.Drawing.SystemColors.InactiveCaptionText;
+            dockPaneStripToolWindowGradient1.InactiveCaptionGradient = tabGradient6;
+            tabGradient7.EndColor = System.Drawing.Color.Transparent;
+            tabGradient7.StartColor = System.Drawing.Color.Transparent;
+            tabGradient7.TextColor = System.Drawing.SystemColors.ControlDarkDark;
+            dockPaneStripToolWindowGradient1.InactiveTabGradient = tabGradient7;
+            dockPaneStripSkin1.ToolWindowGradient = dockPaneStripToolWindowGradient1;
+            dockPanelSkin1.DockPaneStripSkin = dockPaneStripSkin1;
+            this.dockPanel.Skin = dockPanelSkin1;
             this.dockPanel.TabIndex = 20;
             // 
             // VixenPreviewSetup3
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(884, 562);
+            this.ClientSize = new System.Drawing.Size(1768, 1081);
             this.Controls.Add(this.dockPanel);
             this.Controls.Add(this.panel9);
             this.Controls.Add(this.panelToolbar);
-            this.Controls.Add(this.menuStrip1);
+            this.Controls.Add(this.menuStrip);
             this.IsMdiContainer = true;
-            this.MainMenuStrip = this.menuStrip1;
-            this.MinimumSize = new System.Drawing.Size(900, 599);
+            this.MainMenuStrip = this.menuStrip;
+            this.Margin = new System.Windows.Forms.Padding(6);
+            this.MinimumSize = new System.Drawing.Size(1774, 1086);
             this.Name = "VixenPreviewSetup3";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Preview Configuration";
@@ -1027,8 +1105,8 @@
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarBackgroundAlpha)).EndInit();
-            this.menuStrip1.ResumeLayout(false);
-            this.menuStrip1.PerformLayout();
+            this.menuStrip.ResumeLayout(false);
+            this.menuStrip.PerformLayout();
             this.panel9.ResumeLayout(false);
             this.panel9.PerformLayout();
             this.ResumeLayout(false);
@@ -1068,7 +1146,7 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Button buttonSelect;
         private System.Windows.Forms.Button buttonNet;
-        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.MenuStrip menuStrip;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
@@ -1109,6 +1187,7 @@
         private System.Windows.Forms.Label labelZoomLevel;
         private System.Windows.Forms.Panel panel9;
         private WeifenLuo.WinFormsUI.Docking.DockPanel dockPanel;
+        private System.Windows.Forms.Button buttonIcicle;
 
     }
 }
