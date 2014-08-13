@@ -39,6 +39,7 @@
 			this.radioButtonPatchingGraphical = new System.Windows.Forms.RadioButton();
 			this.label3 = new System.Windows.Forms.Label();
 			this.radioButtonPatchingSimple = new System.Windows.Forms.RadioButton();
+			this.buttonHelp = new System.Windows.Forms.Button();
 			this.label7 = new System.Windows.Forms.Label();
 			this.buttonCancel = new System.Windows.Forms.Button();
 			this.buttonOk = new System.Windows.Forms.Button();
@@ -46,7 +47,6 @@
 			this.radioButtonControllersStandard = new System.Windows.Forms.RadioButton();
 			this.tableLayoutPanelControllerSetup = new System.Windows.Forms.TableLayoutPanel();
 			this.label5 = new System.Windows.Forms.Label();
-			this.buttonHelp = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
@@ -229,6 +229,21 @@
 			this.radioButtonPatchingSimple.UseVisualStyleBackColor = true;
 			this.radioButtonPatchingSimple.CheckedChanged += new System.EventHandler(this.radioButtonPatchingSimple_CheckedChanged);
 			// 
+			// buttonHelp
+			// 
+			this.buttonHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonHelp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.buttonHelp.Location = new System.Drawing.Point(8, 623);
+			this.buttonHelp.Name = "buttonHelp";
+			this.buttonHelp.Size = new System.Drawing.Size(74, 25);
+			this.buttonHelp.TabIndex = 60;
+			this.buttonHelp.Tag = "http://www.vixenlights.com/vixen-3-documentation/sequencer/effects/nutcracker-eff" +
+    "ects/";
+			this.buttonHelp.Text = "Help";
+			this.buttonHelp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.buttonHelp.UseVisualStyleBackColor = true;
+			this.buttonHelp.Click += new System.EventHandler(this.buttonHelp_Click);
+			// 
 			// label7
 			// 
 			this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
@@ -308,21 +323,6 @@
 			this.label5.Size = new System.Drawing.Size(124, 20);
 			this.label5.TabIndex = 5;
 			this.label5.Text = "Controller Setup";
-			// 
-			// buttonHelp
-			// 
-			this.buttonHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonHelp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.buttonHelp.Location = new System.Drawing.Point(8, 623);
-			this.buttonHelp.Name = "buttonHelp";
-			this.buttonHelp.Size = new System.Drawing.Size(74, 25);
-			this.buttonHelp.TabIndex = 60;
-			this.buttonHelp.Tag = "http://www.vixenlights.com/vixen-3-documentation/sequencer/effects/nutcracker-eff" +
-    "ects/";
-			this.buttonHelp.Text = "Help";
-			this.buttonHelp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.buttonHelp.UseVisualStyleBackColor = true;
-			this.buttonHelp.Click += new System.EventHandler(this.buttonHelp_Click);
 			// 
 			// DisplaySetup
 			// 

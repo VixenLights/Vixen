@@ -302,6 +302,8 @@ namespace VixenModules.Property.Color
 
 		public void SetColorSet(string name, ColorSet value)
 		{
+			if (!ColorSets.ContainsKey(name))
+				ColorSets.Add(name, value);
 			ColorSets[name] = value;
 			ColorSetChanged(this, new StringEventArgs(name));
 		}
