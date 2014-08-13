@@ -27,8 +27,8 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
-   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-     <OutputPath>$(SolutionDir)\Release64\Modules\SequenceType\</OutputPath>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>$(SolutionDir)\Release64\Modules\SequenceType\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
@@ -40,6 +40,7 @@
     <Compile Include="Executor.cs" />
     <Compile Include="MarkCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ColorCollection.cs" />
     <Compile Include="SequenceMigrator.cs" />
     <Compile Include="TimedSequence.cs" />
     <Compile Include="TimedSequenceData.cs" />

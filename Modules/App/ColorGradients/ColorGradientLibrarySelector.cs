@@ -96,6 +96,44 @@ namespace VixenModules.App.ColorGradients
 			}
 		}
 
+		private void buttonNewColorGradient_Click(object sender, EventArgs e)
+		{
+			Common.Controls.TextDialog dialog = new Common.Controls.TextDialog("Gradient name?");
+
+			while (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+			{
+				if (dialog.Response == string.Empty)
+				{
+					MessageBox.Show("Please enter a name.");
+					continue;
+				}
+
+				if (Library.Contains(dialog.Response))
+				{
+					DialogResult result = MessageBox.Show("There is already a gradient with that name. Do you want to overwrite it?",
+														  "Overwrite gradient?", MessageBoxButtons.YesNoCancel);
+					if (result == System.Windows.Forms.DialogResult.Yes)
+					{
+						Library.AddColorGradient(dialog.Response, new ColorGradient());
+						Library.EditLibraryItem(dialog.Response);
+						PopulateListWithColorGradients();
+						break;
+					}
+					else if (result == System.Windows.Forms.DialogResult.Cancel)
+					{
+						break;
+					}
+				}
+				else
+				{
+					Library.AddColorGradient(dialog.Response, new ColorGradient());
+					Library.EditLibraryItem(dialog.Response);
+					PopulateListWithColorGradients();
+					break;
+				}
+			}
+		}
+
 		private void buttonEditColorGradient_Click(object sender, EventArgs e)
 		{
 			if (listViewColorGradients.SelectedItems.Count != 1)
@@ -162,5 +200,6 @@ namespace VixenModules.App.ColorGradients
 			Ok,
 			Edit
 		}
+
 	}
 }

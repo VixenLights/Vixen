@@ -402,6 +402,7 @@
     <None Include="arrow_switch.png" />
     <None Include="arrow_turn_left.png" />
     <None Include="arrow_turn_right.png" />
+    <Content Include="cursor_arrow.png" />
     <Content Include="folder.png" />
     <Content Include="folder_add.png" />
     <Content Include="folder_delete.png" />

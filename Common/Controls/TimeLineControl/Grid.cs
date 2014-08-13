@@ -27,6 +27,7 @@ namespace Common.Controls.Timeline
 		private DragState m_dragState = DragState.Normal; // the current dragging state
 
 		private Point m_selectionRectangleStart; // the location (on the grid canvas) where the selection box starts.
+		private Point m_drawingRectangleStart; // the location (on the grid canvas) where the drawing box starts.
 		private Rectangle m_ignoreDragArea; // the area in which move movements should be ignored, before we start dragging
 		private Point m_waitingBeginGridLocation;
 		private List<Element> m_mouseDownElements; // the elements under the cursor on a mouse click
@@ -43,8 +44,7 @@ namespace Common.Controls.Timeline
 		private ElementMoveInfo m_elemMoveInfo;
 		public ISequenceContext Context = null;
 		public bool SequenceLoading { get; set; }
-
-		
+		public Element _workingElement; //This is the element that was left clicked, is set to null on mouse up
 
 		#region Initialization
 
@@ -61,6 +61,8 @@ namespace Common.Controls.Timeline
 			BackColor = Color.FromArgb(60, 60, 60);
 			SelectionColor = Color.FromArgb(100, 40, 100, 160);
 			SelectionBorder = Color.Blue;
+			DrawColor = Color.FromArgb(100, 255, 255, 255);
+			DrawBorder = Color.Black;
 			CursorColor = Color.FromArgb(150, 50, 50, 50);
 			CursorWidth = 2.5F;
 			CursorPosition = TimeSpan.Zero;
@@ -177,6 +179,10 @@ namespace Common.Controls.Timeline
 
 		public int SnapStrength { get; set; }
 
+		public bool ResizeIndicator_Enabled { get; set; }
+
+		public string ResizeIndicator_Color { get; set; }
+
 		public bool SuppressInvalidate { get; set; }
 
 		public bool SupressRendering { get; set; }
@@ -260,11 +266,16 @@ namespace Common.Controls.Timeline
 			}
 		}
 
+		//Drag Box Filter stuff
+		public bool DragBoxFilterEnabled { get; set; }
+		public List<Guid> DragBoxFilterTypes = new List<Guid>();
+		
 		public TimeSpan GridlineInterval { get; set; }
 		public bool OnlySnapToCurrentRow { get; set; }
 		public int SnapPriorityForElements { get; set; }
 		public int DragThreshold { get; set; }
 		public Rectangle SelectionArea { get; set; }
+		public Rectangle DrawingArea { get; set; }
 		public bool ClickingGridSetsCursor { get; set; }
 
 		// drawing colours, information, etc.
@@ -272,6 +283,8 @@ namespace Common.Controls.Timeline
 		public Color MajorGridlineColor { get; set; }
 		public Color SelectionColor { get; set; }
 		public Color SelectionBorder { get; set; }
+		public Color DrawColor { get; set; }
+		public Color DrawBorder { get; set; }
 		public Color CursorColor { get; set; }
 		public Single CursorWidth { get; set; }
 
@@ -286,9 +299,15 @@ namespace Common.Controls.Timeline
 			get { return ModifierKeys.HasFlag(Keys.Shift); }
 		}
 
+		private bool AltPressed
+		{
+			get { return ModifierKeys.HasFlag(Keys.Alt); }
+		}
+
 		private int CurrentRowIndexUnderMouse { get; set; }
 		private SortedDictionary<TimeSpan, List<SnapDetails>> StaticSnapPoints { get; set; }
 		private SortedDictionary<TimeSpan, List<SnapDetails>> CurrentDragSnapPoints { get; set; }
+		private List<Element> tempSelectedElements = new List<Element>();
 
 		#endregion
 
@@ -1072,9 +1091,20 @@ namespace Common.Controls.Timeline
 
 			TimeSpan selStart = pixelsToTime(SelectedArea.Left);
 			TimeSpan selEnd = pixelsToTime(SelectedArea.Right);
+			int selTop = SelectedArea.Top;
+			int selBottom = selTop + SelectedArea.Height;
 
 			// deselect all elements in the grid first, then only select the ones in the box.
 			ClearSelectedElements();
+
+			//Reselect the effects that were selected before we began the new selection box
+			if (ShiftPressed)
+			{
+				foreach (Element e in tempSelectedElements)
+				{
+					e.Selected = true;
+				}
+			}
 
 			// Iterate all elements of only the rows within our selection.
 			bool startFound = false, endFound = false;
@@ -1093,7 +1123,16 @@ namespace Common.Controls.Timeline
 
 					// This row is in our selection
 					foreach (var elem in row) {
-						elem.Selected = (elem.StartTime < selEnd && elem.EndTime > selStart);
+						int elemTop = elem.DisplayTop;
+						int elemBottom = elemTop + elem.DisplayHeight;
+						if (DragBoxFilterEnabled)
+						{
+							elem.Selected = (ShiftPressed && tempSelectedElements.Contains(elem) ? true : ((elem.StartTime < selEnd && elem.EndTime > selStart) && (elemTop < selBottom && elemBottom > selTop) && DragBoxFilterTypes.Contains(elem.EffectNode.Effect.TypeId)));
+						}
+						else
+						{
+							elem.Selected = (ShiftPressed && tempSelectedElements.Contains(elem) ? true : ((elem.StartTime < selEnd && elem.EndTime > selStart) && (elemTop < selBottom && elemBottom > selTop)));
+						}
 					}
 
 					if (row == endRow) {
@@ -1104,6 +1143,39 @@ namespace Common.Controls.Timeline
 			} // end foreach
 
 			_SelectionChanged();
+		}
+
+		/// <summary>
+		/// Returns a list of the visible rows wihtin a given Rectangle
+		/// </summary>
+		private List<Row> GetRowsWithin(Rectangle SelectedArea)
+		{
+			Row startRow = rowAt(SelectedArea.Location);
+			Row endRow = rowAt(SelectedArea.BottomRight());
+
+			List<Row> DrawingRows = new List<Row>();
+			
+			bool startFound = false, endFound = false;
+			foreach (var row in Rows)
+			{
+				if (!row.Visible || endFound || (!startFound && (row != startRow)))
+				{
+					continue;
+				}
+
+				if (startFound || row == startRow)
+				{
+					startFound = true;
+					DrawingRows.Add(row);
+
+					if (row == endRow)
+					{
+						endFound = true;
+						continue;
+					}
+				}
+			}
+			return DrawingRows;
 		}
 
 		/// <summary>
@@ -1894,12 +1966,70 @@ namespace Common.Controls.Timeline
 			if (SelectionArea.IsEmpty)
 				return;
 
-			using (SolidBrush b = new SolidBrush(SelectionColor)) {
-				g.FillRectangle(b, SelectionArea);
+				using (SolidBrush b = new SolidBrush(SelectionColor))
+				{
+					g.FillRectangle(b, SelectionArea);
+				}
+				using (Pen p = new Pen(SelectionBorder))
+				{
+					g.DrawRectangle(p, SelectionArea);
+				}
+		}
+
+		private void _drawDrawBox(Graphics g)
+		{
+			if (DrawingArea.IsEmpty)
+				return;
+
+			using (SolidBrush b = new SolidBrush(DrawColor))
+			{
+				g.FillRectangle(b, DrawingArea);
 			}
-			using (Pen p = new Pen(SelectionBorder)) {
-				g.DrawRectangle(p, SelectionArea);
+			using (Pen p = new Pen(DrawBorder,2))
+			{
+				g.DrawRectangle(p, DrawingArea);
 			}
+
+			if (ResizeIndicator_Enabled)
+			{
+				using (Pen p = new Pen(Color.FromName(ResizeIndicator_Color),1))
+				{
+					g.DrawLine(p, DrawingArea.X, 0, DrawingArea.X, AutoScrollMinSize.Height);
+					g.DrawLine(p, DrawingArea.X + DrawingArea.Width - 1, 0, DrawingArea.X + DrawingArea.Width - 1, AutoScrollMinSize.Height);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Draws an indicator line at the start or end of an effect when resizing.
+		/// When dragging an entire effect a line is drawn at both ends.
+		/// </summary>
+		/// <param name="g"></param>
+		private void _drawResizeIndicator(Graphics g)
+		{
+			//We must - 1px for the end time for a spot on alignment
+
+			if (!ResizeIndicator_Enabled) //If this option isn't enabled leave
+				return;
+
+			if (m_dragState == DragState.HResizing) //Draw line at start or end of effect, depending which end the user grabbed
+			{
+				using (Pen p = new Pen(Color.FromName(ResizeIndicator_Color), 1))
+				{
+					var X = (m_mouseResizeZone == ResizeZone.Front ? timeToPixels(_workingElement.StartTime) : timeToPixels(_workingElement.EndTime) - 1);
+					g.DrawLine(p, X, 0, X, AutoScrollMinSize.Height);
+				}
+			}
+
+			if (m_dragState == DragState.Waiting || m_dragState == DragState.Moving) //Draw line at both ends, the user is dragging the entire effect
+			{
+				using (Pen p = new Pen(Color.FromName(ResizeIndicator_Color), 1))
+				{
+					g.DrawLine(p, timeToPixels(_workingElement.StartTime), 0, timeToPixels(_workingElement.StartTime), AutoScrollMinSize.Height);
+					g.DrawLine(p, timeToPixels(_workingElement.EndTime) - 1, 0, timeToPixels(_workingElement.EndTime) - 1, AutoScrollMinSize.Height);
+				}
+			}
+
 		}
 
 		private void _drawCursors(Graphics g)
@@ -1933,7 +2063,9 @@ namespace Common.Controls.Timeline
 					_drawElements(e.Graphics);
 					_drawInfo(e.Graphics);
 					_drawSelection(e.Graphics);
+					_drawDrawBox(e.Graphics);
 					_drawCursors(e.Graphics);
+					_drawResizeIndicator(e.Graphics);
 
 					//s.Stop();
 					//Logging.Info("OnPaint: " + s.ElapsedMilliseconds);
@@ -1999,6 +2131,9 @@ namespace Common.Controls.Timeline
 
 		///<summary>Dragging the mouse horizontally to resize an object in time.</summary>
 		HResizing,
+
+		///<summary>Drawing, like "Dragging", but anywhere on timeline.</summary>
+		Drawing,
 	}
 
 

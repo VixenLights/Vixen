@@ -69,6 +69,7 @@
 			this.treeEffects.TabIndex = 0;
 			this.treeEffects.AfterCollapse += new System.Windows.Forms.TreeViewEventHandler(this.treeEffects_AfterCollapse);
 			this.treeEffects.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.treeEffects_AfterExpand);
+			this.treeEffects.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeEffects_AfterSelect);
 			this.treeEffects.MouseClick += new System.Windows.Forms.MouseEventHandler(this.treeEffects_MouseClick);
 			this.treeEffects.MouseDown += new System.Windows.Forms.MouseEventHandler(this.treeEffects_MouseDown);
 			this.treeEffects.MouseMove += new System.Windows.Forms.MouseEventHandler(this.treeEffects_MouseMove);

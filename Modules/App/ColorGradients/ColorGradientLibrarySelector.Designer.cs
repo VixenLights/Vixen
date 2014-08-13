@@ -32,6 +32,7 @@
 			this.listViewColorGradients = new System.Windows.Forms.ListView();
 			this.buttonEditColorGradient = new System.Windows.Forms.Button();
 			this.buttonDeleteColorGradient = new System.Windows.Forms.Button();
+			this.buttonNewColorGradient = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// buttonCancel
@@ -73,7 +74,7 @@
 			// 
 			this.buttonEditColorGradient.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.buttonEditColorGradient.Enabled = false;
-			this.buttonEditColorGradient.Location = new System.Drawing.Point(12, 273);
+			this.buttonEditColorGradient.Location = new System.Drawing.Point(108, 273);
 			this.buttonEditColorGradient.Name = "buttonEditColorGradient";
 			this.buttonEditColorGradient.Size = new System.Drawing.Size(90, 25);
 			this.buttonEditColorGradient.TabIndex = 7;
@@ -85,7 +86,7 @@
 			// 
 			this.buttonDeleteColorGradient.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.buttonDeleteColorGradient.Enabled = false;
-			this.buttonDeleteColorGradient.Location = new System.Drawing.Point(108, 273);
+			this.buttonDeleteColorGradient.Location = new System.Drawing.Point(204, 273);
 			this.buttonDeleteColorGradient.Name = "buttonDeleteColorGradient";
 			this.buttonDeleteColorGradient.Size = new System.Drawing.Size(90, 25);
 			this.buttonDeleteColorGradient.TabIndex = 8;
@@ -93,11 +94,23 @@
 			this.buttonDeleteColorGradient.UseVisualStyleBackColor = true;
 			this.buttonDeleteColorGradient.Click += new System.EventHandler(this.buttonDeleteColorGradient_Click);
 			// 
+			// buttonNewColorGradient
+			// 
+			this.buttonNewColorGradient.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonNewColorGradient.Location = new System.Drawing.Point(12, 273);
+			this.buttonNewColorGradient.Name = "buttonNewColorGradient";
+			this.buttonNewColorGradient.Size = new System.Drawing.Size(90, 25);
+			this.buttonNewColorGradient.TabIndex = 9;
+			this.buttonNewColorGradient.Text = "New Gradient";
+			this.buttonNewColorGradient.UseVisualStyleBackColor = true;
+			this.buttonNewColorGradient.Click += new System.EventHandler(this.buttonNewColorGradient_Click);
+			// 
 			// ColorGradientLibrarySelector
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(478, 310);
+			this.Controls.Add(this.buttonNewColorGradient);
 			this.Controls.Add(this.buttonDeleteColorGradient);
 			this.Controls.Add(this.buttonEditColorGradient);
 			this.Controls.Add(this.listViewColorGradients);
@@ -123,5 +136,6 @@
 		private System.Windows.Forms.ListView listViewColorGradients;
 		private System.Windows.Forms.Button buttonEditColorGradient;
 		private System.Windows.Forms.Button buttonDeleteColorGradient;
+		private System.Windows.Forms.Button buttonNewColorGradient;
 	}
 }

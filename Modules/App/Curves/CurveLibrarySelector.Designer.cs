@@ -22,6 +22,7 @@
 			this.listViewCurves = new System.Windows.Forms.ListView();
 			this.buttonEditCurve = new System.Windows.Forms.Button();
 			this.buttonDeleteCurve = new System.Windows.Forms.Button();
+			this.buttonNewCurve = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// buttonCancel
@@ -63,7 +64,7 @@
 			// 
 			this.buttonEditCurve.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.buttonEditCurve.Enabled = false;
-			this.buttonEditCurve.Location = new System.Drawing.Point(12, 273);
+			this.buttonEditCurve.Location = new System.Drawing.Point(98, 273);
 			this.buttonEditCurve.Name = "buttonEditCurve";
 			this.buttonEditCurve.Size = new System.Drawing.Size(80, 25);
 			this.buttonEditCurve.TabIndex = 7;
@@ -75,7 +76,7 @@
 			// 
 			this.buttonDeleteCurve.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.buttonDeleteCurve.Enabled = false;
-			this.buttonDeleteCurve.Location = new System.Drawing.Point(98, 273);
+			this.buttonDeleteCurve.Location = new System.Drawing.Point(184, 273);
 			this.buttonDeleteCurve.Name = "buttonDeleteCurve";
 			this.buttonDeleteCurve.Size = new System.Drawing.Size(80, 25);
 			this.buttonDeleteCurve.TabIndex = 8;
@@ -83,11 +84,23 @@
 			this.buttonDeleteCurve.UseVisualStyleBackColor = true;
 			this.buttonDeleteCurve.Click += new System.EventHandler(this.buttonDeleteCurve_Click);
 			// 
+			// buttonNewCurve
+			// 
+			this.buttonNewCurve.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonNewCurve.Location = new System.Drawing.Point(12, 273);
+			this.buttonNewCurve.Name = "buttonNewCurve";
+			this.buttonNewCurve.Size = new System.Drawing.Size(80, 25);
+			this.buttonNewCurve.TabIndex = 9;
+			this.buttonNewCurve.Text = "New Curve";
+			this.buttonNewCurve.UseVisualStyleBackColor = true;
+			this.buttonNewCurve.Click += new System.EventHandler(this.buttonNewCurve_Click);
+			// 
 			// CurveLibrarySelector
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(478, 310);
+			this.Controls.Add(this.buttonNewCurve);
 			this.Controls.Add(this.buttonDeleteCurve);
 			this.Controls.Add(this.buttonEditCurve);
 			this.Controls.Add(this.listViewCurves);
@@ -113,5 +126,6 @@
 		private System.Windows.Forms.ListView listViewCurves;
 		private System.Windows.Forms.Button buttonEditCurve;
 		private System.Windows.Forms.Button buttonDeleteCurve;
+		private System.Windows.Forms.Button buttonNewCurve;
 	}
 }
