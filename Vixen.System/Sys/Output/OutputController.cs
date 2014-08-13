@@ -154,22 +154,22 @@ namespace Vixen.Sys.Output
 				_outputMediator.LockOutputs();
 				try {
 					foreach (OutputController controller in this) {
-						if (true)
-						{
-							controller.Outputs.AsParallel().ForAll(x =>
-							{
-								x.Update();
-								x.Command = _GenerateOutputCommand(x);
-							});
-						}
-						else
-						{
+						//if (true)
+						//{
+						//	controller.Outputs.AsParallel().ForAll(x =>
+						//	{
+						//		x.Update();
+						//		x.Command = _GenerateOutputCommand(x);
+						//	});
+						//}
+						//else
+						//{
 							foreach( var x in controller.Outputs)
 							{
 								x.Update();
 								x.Command = _GenerateOutputCommand(x);
 							}
-						}
+						//}
 					}
 
 					_generateMs = sw.ElapsedMilliseconds;
