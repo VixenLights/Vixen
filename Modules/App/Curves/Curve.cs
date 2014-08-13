@@ -38,7 +38,7 @@ namespace VixenModules.App.Curves
 
 		// default Curve constructor makes a ramp with x = y.
 		public Curve()
-			: this(new PointPairList(new double[] {2.0, 98.0}, new double[] {2.0, 98.0}))
+			: this(new PointPairList(new[] {0.0, 100.0}, new[] {0.0, 100.0}))
 		{
 		}
 
@@ -183,7 +183,6 @@ namespace VixenModules.App.Curves
 			Bitmap result = new Bitmap(size.Width, size.Height);
 
 			pane.AddCurve(string.Empty, Points, ActiveCurveGridColor);
-
 			pane.XAxis.Scale.Min = 0;
 			pane.XAxis.Scale.Max = 100;
 			pane.YAxis.Scale.Min = 0;

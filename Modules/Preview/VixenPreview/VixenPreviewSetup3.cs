@@ -55,7 +55,8 @@ namespace VixenModules.Preview.VixenPreview {
 
 			elementsForm = new VixenPreviewSetupElementsDocument(previewForm.Preview);
 			propertiesForm = new VixenPreviewSetupPropertiesDocument();
-			previewForm.Show(dockPanel);
+
+			previewForm.Show(dockPanel, WeifenLuo.WinFormsUI.Docking.DockState.Document);
 			elementsForm.Show(dockPanel, WeifenLuo.WinFormsUI.Docking.DockState.DockLeft);
 			propertiesForm.Show(elementsForm.Pane, WeifenLuo.WinFormsUI.Docking.DockAlignment.Bottom, 0.5);
 
@@ -152,7 +153,9 @@ namespace VixenModules.Preview.VixenPreview {
 			buttonMegaTree.FlatAppearance.BorderColor = buttonSelect.BackColor;
 			buttonPixelGrid.BackColor = buttonSelect.BackColor;
 			buttonPixelGrid.FlatAppearance.BorderColor = buttonSelect.BackColor;
-		}
+            buttonIcicle.BackColor = buttonSelect.BackColor;
+            buttonIcicle.FlatAppearance.BorderColor = buttonSelect.BackColor;
+        }
 
 		private void toolbarButton_Click(object sender, EventArgs e) {
 			Button button = sender as Button;
@@ -188,7 +191,9 @@ namespace VixenModules.Preview.VixenPreview {
                 previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.MegaTree;
             else if (button == buttonPixelGrid)
                 previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.PixelGrid;
-			//button.Enabled = false;
+            else if (button == buttonIcicle)
+                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Icicle;
+            //button.Enabled = false;
 			button.BackColor = Color.Gainsboro;
 			button.FlatAppearance.BorderColor = Color.Gainsboro;
 			//buttonSelect.Focus();

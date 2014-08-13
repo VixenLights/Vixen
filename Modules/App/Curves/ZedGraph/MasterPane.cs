@@ -760,6 +760,17 @@ namespace ZedGraph
 			return null;
 		}
 
+		public GraphPane FindChartRect(PointF mousePt, int buffer)
+		{
+			foreach (GraphPane pane in _paneList)
+			{
+				if (pane.GetChartBufferedRectangleF(5).Contains(mousePt))
+					return pane;
+			}
+
+			return null;	
+		}
+
 		#endregion
 
 		#region Layout Methods

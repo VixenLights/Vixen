@@ -19,6 +19,36 @@ namespace Common.Controls.Timeline
 		public Element Element { get; private set; }
 	}
 
+	public class DrawElementEventArgs: EventArgs
+	{
+		public DrawElementEventArgs(Guid guid, List<Row> rows, TimeSpan mouseDownTime, TimeSpan mouseUpTime)	
+		{
+			Guid = guid;
+			Rows = rows;
+			MouseDownTime = mouseDownTime;
+			MouseUpTime = mouseUpTime;
+		}
+
+		public Guid Guid { get; private set; }
+		public List<Row> Rows { get; set; }
+		private TimeSpan MouseDownTime { get; set; }
+		private TimeSpan MouseUpTime { get; set; }
+		public TimeSpan StartTime
+		{
+			get
+			{
+				return (MouseUpTime < MouseDownTime ? MouseUpTime : MouseDownTime);
+			}
+		}
+		public TimeSpan Duration
+		{
+			get
+			{
+				return (MouseUpTime > MouseDownTime ? MouseUpTime - MouseDownTime : MouseDownTime - MouseUpTime);
+			}
+		}
+	}
+
 
 	public class MultiElementEventArgs : EventArgs
 	{

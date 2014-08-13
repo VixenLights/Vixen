@@ -27,8 +27,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public PreviewArch(PreviewPoint point1, ElementNode selectedNode, double zoomLevel)
 		{
 			ZoomLevel = zoomLevel;
-			_topLeft = PointToZoomPoint(point1);
-			_bottomRight = new PreviewPoint(_topLeft.X, _topLeft.Y);
+			TopLeft = PointToZoomPoint(point1).ToPoint();
+			BottomRight = new PreviewPoint(_topLeft.X, _topLeft.Y).ToPoint();
 
 			int lightCount = 25;
 
@@ -109,6 +109,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			get
 			{
+                if (_topLeft == null) _topLeft = new PreviewPoint(0, 0);
 				Point p = new Point(_topLeft.X, _topLeft.Y);
 				return p;
 			}
@@ -127,6 +128,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			get
 			{
+                if (_bottomRight == null) _bottomRight = new PreviewPoint(0, 0);
 				Point p = new Point(_bottomRight.X, _bottomRight.Y);
 				return p;
 			}
@@ -189,6 +191,58 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
+
+        public override int Top
+        {
+            get
+            {
+                return Math.Min(_topLeft.Y, _bottomRight.Y);
+            }
+            set
+            {
+                if (_topLeft.Y < _bottomLeft.Y)
+                {
+                    int delta = _topLeft.Y - value;
+                    _topLeft.Y = value;
+                    _bottomLeft.Y -= delta;
+                    _bottomRight.Y -= delta;
+                }
+                else
+                {
+                    int delta = _bottomLeft.Y - value;
+                    _topLeft.Y -= delta;
+                    _bottomLeft.Y = value;
+                    _bottomRight.Y = value;
+                }
+                Layout();
+            }
+        }
+
+        public override int Left
+        {
+            get
+            {
+                return Math.Min(BottomLeft.X, BottomRight.X);
+            }
+            set
+            {
+                int delta = Left - value;
+                if (_topLeft.X < _bottomRight.X)
+                {
+                    _topLeft.X = value;
+                    _bottomRight.X -= delta;
+                    BottomLeft.X -= delta;
+                }
+                else
+                {
+                    _topLeft.X -= delta;
+                    _bottomRight.X = value;
+                    BottomLeft.X = value;
+                }
+                Layout();
+            }
+        }
+        
         public override void Match(PreviewBaseShape matchShape)
         {
             PreviewArch shape = (matchShape as PreviewArch);
@@ -200,17 +254,17 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public override void Layout()
 		{
-			if (_bottomRight != null && _bottomLeft != null)
+            if (BottomRight != null && BottomLeft != null)
 			{
-				int width = _bottomRight.X - _topLeft.X;
-				int height = _bottomRight.Y - _topLeft.Y;
+				int width = BottomRight.X - TopLeft.X;
+				int height = BottomRight.Y - TopLeft.Y;
 				List<Point> points;
 				points = PreviewTools.GetArcPoints(width, height, PixelCount);
 				int pointNum = 0;
 				foreach (PreviewPixel pixel in _pixels)
 				{
-					pixel.X = points[pointNum].X + _topLeft.X;
-					pixel.Y = points[pointNum].Y + _topLeft.Y;
+					pixel.X = points[pointNum].X + TopLeft.X;
+					pixel.Y = points[pointNum].Y + TopLeft.Y;
 					pointNum++;
 				}
 

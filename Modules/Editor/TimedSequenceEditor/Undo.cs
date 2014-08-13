@@ -26,14 +26,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		public override void Undo()
 		{
-			m_form.SwapTimes(m_changedElements);
+			m_form.SwapPlaces(m_changedElements);
 
 			base.Undo();
 		}
 
 		public override void Redo()
 		{
-			m_form.SwapTimes(m_changedElements);
+			m_form.SwapPlaces(m_changedElements);
 
 			base.Redo();
 		}

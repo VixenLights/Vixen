@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.IO;
+using System.Threading.Tasks;
 using Vixen.Module;
 using Vixen.Instrumentation;
 using Vixen.Services;
@@ -93,7 +95,8 @@ namespace Vixen.Sys
 				SaveDisabledDevices();
 				Execution.CloseExecution();
 				Modules.ClearRepositories();
-				SaveSystemConfig();
+				Queue<Task> queue = SaveSystemConfig();
+				Task.WaitAll(queue.ToArray());
 				_state = RunState.Stopped;
 				Logging.Info("Vixen System successfully stopped.");
 			}
@@ -106,8 +109,13 @@ namespace Vixen.Sys
 			}
 		}
 
-		public static void SaveSystemConfig()
+		/// <summary>
+		/// Saves the system config. 
+		/// </summary>
+		/// <returns>Queue of Tasks that are processing the saving. Can be monitored if next steps require saving to be complete.</returns>
+		public static Queue<Task> SaveSystemConfig()
 		{
+			var taskQueue = new Queue<Task>();
 			if (SystemConfig != null) {
 				// 'copy' the current details (nodes/elements/controllers) from the executing state
 				// to the SystemConfig, so they're there for writing when we save
@@ -127,12 +135,14 @@ namespace Vixen.Sys
 				SystemConfig.Filters = Filters;
 				SystemConfig.DataFlow = DataFlow;
 
-				SystemConfig.Save();
+				taskQueue.Enqueue(Task.Factory.StartNew(() => SystemConfig.Save()));
 			}
 
 			if (ModuleStore != null) {
-				ModuleStore.Save();
+				taskQueue.Enqueue(Task.Factory.StartNew(() => ModuleStore.Save()));
 			}
+
+			return taskQueue;
 		}
 
 		public static void LoadSystemConfig()

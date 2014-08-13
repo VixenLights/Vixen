@@ -71,6 +71,30 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			set { _pixels[0].MaxAlpha = value; }
 		}
 
+        public override int Top
+        {
+            get
+            {
+                return p1.Y;
+            }
+            set
+            {
+                p1.Y = value;
+            }
+        }
+
+        public override int Left
+        {
+            get
+            {
+                return p1.X;
+            }
+            set
+            {
+                p1.X = value;
+            }
+        }
+
         public override void Match(PreviewBaseShape matchShape)
         {
             PreviewSingle shape = (matchShape as PreviewSingle);

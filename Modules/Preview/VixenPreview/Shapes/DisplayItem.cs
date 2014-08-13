@@ -31,6 +31,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
     [KnownType(typeof (PreviewMegaTree))]
 	[KnownType(typeof (PreviewCustom))]
 	[KnownType(typeof (PreviewPixelGrid))]
+    [KnownType(typeof (PreviewIcicle))]
+
 	public class DisplayItem : IHandler<IIntentState<LightingValue>>, IHandler<IIntentState<CommandValue>>, IDisposable
 	{
 		private PreviewBaseShape _shape;

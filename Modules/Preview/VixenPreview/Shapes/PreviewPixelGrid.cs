@@ -37,6 +37,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			ZoomLevel = zoomLevel;
 			_topLeft = PointToZoomPoint(point1);
 			_bottomRight = new PreviewPoint(_topLeft.X, _topLeft.Y);
+            _bottomLeft = new PreviewPoint(_bottomRight);
 
 			int defaultStringCount = 16;
 			int defaultLightsPerString = 50;
@@ -190,8 +191,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
 			set 
             {
-                _bottomLeft.Y = value + (_bottomLeft.Y - _topLeft.Y);
+                int delta = Top - value;
+                //_bottomLeft.Y = value + (_bottomLeft.Y - _topLeft.Y);
                 _topLeft.Y = value;
+                _topRight.Y = value;
+                _bottomRight.Y -= delta;
+                _bottomLeft.Y -= delta;
                 Layout();
             }
 		}
@@ -204,9 +209,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
 			set 
             {
-                _bottomRight.X = value + (_bottomRight.X - _topLeft.X);
+                int delta = Left - value;
+                //bottomRight.X = value + (_bottomRight.X - _topLeft.X);
                 _topLeft.X = value;
                 _bottomLeft.X = value;
+                _topRight.X -= delta;
+                _bottomRight.X -= delta;
                 Layout();
             }
 		}
@@ -214,7 +222,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public PreviewPoint BottomRight
 		{
 			get { return _bottomRight; }
-			set { _bottomRight = value; }
+			set 
+            { _bottomRight = value; }
 		}
 
 		public StringOrientations StringOrientation 

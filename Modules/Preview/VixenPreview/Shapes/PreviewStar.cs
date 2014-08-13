@@ -34,27 +34,21 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			_topLeftPoint = PointToZoomPoint(point);
 			_bottomRightPoint = PointToZoomPoint(point);
 
-			_pixelCount = 40;
-			_pointCount = 5;
+            _pointCount = 0;
+            _pixelCount = 0;
 			_insideSize = 40;
 
 			if (selectedNode != null) {
-				List<ElementNode> children = PreviewTools.GetLeafNodes(selectedNode);
-				// is this a single node?
-				if (children.Count >= 10) {
-					StringType = StringTypes.Pixel;
-					// Just add the pixels, they will get layed out next
-					foreach (ElementNode child in children) {
-						PreviewPixel pixel = AddPixel(10, 10);
-						pixel.Node = child;
-						pixel.PixelColor = Color.White;
-					}
-					_pixelCount = children.Count;
-				}
+
+                AddAllChildren(selectedNode);
+                if (IsPixelStar(selectedNode))
+                    StringType = StringTypes.Pixel;
 			}
 
 			if (_pixels.Count == 0) {
-				// Just add the pixels, they will get layed out next
+                _pixelCount = 40;
+                _pointCount = 5;
+                // Just add the pixels, they will get layed out next
 				for (int lightNum = 0; lightNum < _pixelCount; lightNum++) {
 					PreviewPixel pixel = AddPixel(10, 10);
 					pixel.PixelColor = Color.White;
@@ -68,22 +62,89 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			Layout();
 		}
 
+        private bool IsPixelStar(ElementNode selectedNode)
+        {
+            int childCount = 0;
+            // Iterate through each child
+            foreach (ElementNode child in selectedNode.Children) {
+                // If we have children and this is a group
+                if (child.Children.ToList().Count() > 0 && !child.IsLeaf)
+                {
+                    childCount++;
+                }
+            }
+            return (childCount >= 2);
+        }
+
+        private void AddAllChildren(ElementNode selectedNode)
+        {
+            foreach (ElementNode child in selectedNode.Children) {
+                if (!child.IsLeaf && child.Children.Count() > 0)
+                {
+                    AddAllChildren(child);
+                    _pointCount++;
+                }
+                else
+                {
+                    PreviewPixel pixel = AddPixel(10, 10);
+                    pixel.Node = child;
+                    pixel.PixelColor = Color.White;
+                }
+            }
+            _pixelCount = _pixels.Count();
+        }
+
 		[OnDeserialized]
 		private new void OnDeserialized(StreamingContext context)
 		{
 			Layout();
 		}
 
+        public override int Top
+        {
+            get
+            {
+                return (Math.Min(_topLeftPoint.Y, _bottomRightPoint.Y));
+            }
+            set
+            {
+                int delta = Top - value;
+                if (_topLeftPoint.Y == Top)
+                {
+                    _topLeftPoint.Y = value;
+                    _bottomRightPoint.Y -= delta;
+                }
+                else
+                {
+                    _topLeftPoint.Y -= delta;
+                    _bottomRightPoint.Y = value;
+                }
+                Layout();
+            }
+        }
 
-		public override int Top
-		{
-			get { return _topLeftPoint.Y; }
-		}
-
-		public override int Left
-		{
-			get { return _topLeftPoint.X; }
-		}
+        public override int Left
+        {
+            get
+            {
+                return (Math.Min(_topLeftPoint.X, _bottomRightPoint.X));
+            }
+            set
+            {
+                int delta = Left - value;
+                if (_topLeftPoint.X == Left)
+                {
+                    _topLeftPoint.X = value;
+                    _bottomRightPoint.X -= delta;
+                }
+                else
+                {
+                    _topLeftPoint.X -= delta;
+                    _bottomRightPoint.X = value;
+                }
+                Layout();
+            }
+        }
 
 		[CategoryAttribute("Settings"),
 		 DisplayName("Light Count"),
@@ -239,20 +300,20 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					RecalcPoints();
 					int outerWidth = _bottomRightPoint.X - _topLeftPoint.X;
 					int outerHeight = _bottomRightPoint.Y - _topLeftPoint.Y;
-					List<Point> outerEllipse = PreviewTools.GetEllipsePoints(_topLeftPoint.X,
+                    int degreeOffset = 360 / _pointCount / 2;
+                    List<Point> outerEllipse = PreviewTools.GetEllipsePoints(_topLeftPoint.X,
 																			 _topLeftPoint.Y,
 																			 outerWidth,
 																			 outerHeight,
 																			 _pointCount,
 																			 360,
-																			 XYRotation);
+																			 degreeOffset + XYRotation);
 
 					int innerWidth = (int)(outerWidth * _insideSize * .01);
 					if (innerWidth < 4) innerWidth = 4;
 					int innerHeight = (int)(outerHeight * _insideSize * .01);
 					if (innerHeight < 4) innerHeight = 4;
 
-					int degreeOffset = 360 / _pointCount / 2;
 					int widthOffset = ((outerWidth - innerWidth) / 2);
 					int heightOffset = ((outerHeight - innerHeight) / 2);
 					int innerLeft = _topLeftPoint.X + widthOffset;
@@ -263,70 +324,69 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 																			 innerHeight,
 																			 _pointCount,
 																			 360,
-																			 degreeOffset + XYRotation);
+																			 XYRotation);
 
+                    int pixelNum = 0;
+                    for (int ellipsePointNum = 0; ellipsePointNum < _pointCount; ellipsePointNum++)
+                    {
+                        Point point1 = innerEllipse[ellipsePointNum];
+                        Point point2 = outerEllipse[ellipsePointNum];
+                        Point point3;
+                        if (ellipsePointNum < _pointCount - 1)
+                        {
+                            point3 = innerEllipse[ellipsePointNum + 1];
+                        }
+                        else
+                        {
+                            point3 = innerEllipse[0];
+                        }
+                        int line1PixelCount = (int)(pixelsPerPoint / 2);
+                        int line2PixelCount = line1PixelCount;
+                        if (line1PixelCount + line2PixelCount < pixelsPerPoint)
+                        {
+                            line1PixelCount++;
+                        }
+                        double xSpacing = (double)(point1.X - point2.X) / (double)(line1PixelCount);
+                        double ySpacing = (double)(point1.Y - point2.Y) / (double)(line1PixelCount); 
+                        double x = point1.X;
+                        double y = point1.Y;
+                        for (int linePointNum = 0; linePointNum < line1PixelCount; linePointNum++)
+                        {
+                            if (pixelNum < _pixelCount)
+                            {
+                                _pixels[pixelNum].X = (int)Math.Round(x);
+                                _pixels[pixelNum].Y = (int)Math.Round(y);
+                                x -= xSpacing;
+                                y -= ySpacing;
+                            }
+                            else
+                            {
+                                Console.WriteLine("pixelNum Overrun 1: " + pixelNum);
+                            }
+                            pixelNum++;
+                        }
 
-					int pixelNum = 0;
-					for (int ellipsePointNum = 0; ellipsePointNum < _pointCount; ellipsePointNum++)
-					{
-						Point point1 = outerEllipse[ellipsePointNum];
-						Point point2 = innerEllipse[ellipsePointNum];
-						Point point3;
-						if (ellipsePointNum < _pointCount - 1)
-						{
-							point3 = outerEllipse[ellipsePointNum + 1];
-						}
-						else
-						{
-							point3 = outerEllipse[0];
-						}
-						int line1PixelCount = (int)(pixelsPerPoint / 2);
-						int line2PixelCount = line1PixelCount - 1;
-						if (line1PixelCount + line2PixelCount < pixelsPerPoint)
-						{
-							line1PixelCount++;
-						}
-						double xSpacing = (double)(point1.X - point2.X) / (double)(line1PixelCount - 1);
-						double ySpacing = (double)(point1.Y - point2.Y) / (double)(line1PixelCount - 1);
-						double x = point1.X;
-						double y = point1.Y;
-						for (int linePointNum = 0; linePointNum < line1PixelCount; linePointNum++)
-						{
-							if (pixelNum < _pixelCount)
-							{
-								_pixels[pixelNum].X = (int)Math.Round(x);
-								_pixels[pixelNum].Y = (int)Math.Round(y);
-								x -= xSpacing;
-								y -= ySpacing;
-							}
-							else
-							{
-								Console.WriteLine("pixelNum Overrun 1: " + pixelNum);
-							}
-							pixelNum++;
-						}
-
-						xSpacing = (double)(point2.X - point3.X) / (double)(line1PixelCount - 1);
-						ySpacing = (double)(point2.Y - point3.Y) / (double)(line1PixelCount - 1);
-						x = point2.X - xSpacing;
-						y = point2.Y - ySpacing;
-						for (int linePointNum = 0; linePointNum < line2PixelCount; linePointNum++)
-						{
-							if (pixelNum < _pixelCount)
-							{
-								_pixels[pixelNum].X = (int)Math.Round(x);
-								_pixels[pixelNum].Y = (int)Math.Round(y);
-								x -= xSpacing;
-								y -= ySpacing;
-							}
-							else
-							{
-								Console.WriteLine("pixelNum Overrun 2: " + pixelNum);
-							}
-							pixelNum++;
-						}
-					}
-					SetPixelZoom();
+                        xSpacing = (double)(point2.X - point3.X) / (double)(line2PixelCount);
+                        ySpacing = (double)(point2.Y - point3.Y) / (double)(line2PixelCount);
+                        x = point2.X;
+                        y = point2.Y;
+                        for (int linePointNum = 0; linePointNum < line2PixelCount; linePointNum++)
+                        {
+                            if (pixelNum < _pixelCount)
+                            {
+                                _pixels[pixelNum].X = (int)Math.Round(x);
+                                _pixels[pixelNum].Y = (int)Math.Round(y);
+                                x -= xSpacing;
+                                y -= ySpacing;
+                            }
+                            else
+                            {
+                                Console.WriteLine("pixelNum Overrun 2: " + pixelNum);
+                            }
+                            pixelNum++;
+                        }
+                    }
+                    SetPixelZoom();
 				}
 			}
 		}
@@ -349,11 +409,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 				// If we get here, we're moving
 			else {
-				//_bottomRightPoint.X = bottomRightStart.X + changeX;
-				//_bottomRightPoint.Y = bottomRightStart.Y + changeY;
-				//_topLeftPoint.X = topLeftStart.X + changeX;
-				//_topLeftPoint.Y = topLeftStart.Y + changeY;
-
 				_bottomRightPoint.X = Convert.ToInt32(bottomRightStart.X * ZoomLevel) + changeX;
 				_bottomRightPoint.Y = Convert.ToInt32(bottomRightStart.Y * ZoomLevel) + changeY;
 				_topLeftPoint.X = Convert.ToInt32(topLeftStart.X * ZoomLevel) + changeX;
