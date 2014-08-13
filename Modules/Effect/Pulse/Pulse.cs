@@ -116,6 +116,8 @@ namespace VixenModules.Effect.Pulse
 		// not a element, will recursively descend until we render its elements.
 		private void RenderNode(ElementNode node)
 		{
+			//Collect all the points first.
+			double[] allPointsTimeOrdered = _GetAllSignificantDataPoints().ToArray();
 			foreach (ElementNode elementNode in node.GetLeafEnumerator()) {
 				// this is probably always going to be a single element for the given node, as
 				// we have iterated down to leaf nodes in RenderNode() above. May as well do
@@ -126,25 +128,22 @@ namespace VixenModules.Effect.Pulse
 				ElementColorType colorType = ColorModule.getColorTypeForElementNode(elementNode);
 
 				if (colorType == ElementColorType.FullColor) {
-					addIntentsToElement(elementNode.Element);
+					addIntentsToElement(elementNode.Element, allPointsTimeOrdered);
 				}
 				else {
 					IEnumerable<Color> colors = ColorModule.getValidColorsForElementNode(elementNode, false)
 						 .Intersect(ColorGradient.GetColorsInGradient());
 					foreach (Color color in colors) {
-						addIntentsToElement(elementNode.Element, color);	
+						addIntentsToElement(elementNode.Element, allPointsTimeOrdered, color);	
 					}
 				}
 			}
 		}
 
-		private void addIntentsToElement(Element element, Color? color = null)
+		private void addIntentsToElement(Element element, double[] allPointsTimeOrdered, Color? color = null)
 		{
 			if (element != null)
 			{
-				double[] allPointsTimeOrdered = _GetAllSignificantDataPoints().ToArray();
-				Debug.Assert(allPointsTimeOrdered.Length > 1);
-
 				double lastPosition = allPointsTimeOrdered[0];
 				TimeSpan lastEnd = TimeSpan.Zero;
 				for (var i = 1; i < allPointsTimeOrdered.Length; i++)

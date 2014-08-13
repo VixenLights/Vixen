@@ -451,7 +451,7 @@ namespace ZedGraph {
 			}
 
 			// Second, Check to see if it's within a Chart Rect
-			pane = this.MasterPane.FindChartRect(mousePt);
+			pane = this.MasterPane.FindChartRect(mousePt, 5);
 			//Rectangle rect = new Rectangle( mousePt, new Size( 1, 1 ) );
 
 			if (pane != null &&
@@ -523,7 +523,7 @@ namespace ZedGraph {
 					this.Cursor = Cursors.Hand;
 				else if ((_isEnableVZoom || _isEnableHZoom) && (pane != null || _isZooming))
 					this.Cursor = Cursors.Cross;
-				else if (_isEnableSelection && (pane != null || _isSelecting))
+				else if (_isEditing || (_isEnableSelection && (pane != null || _isSelecting)))
 					this.Cursor = Cursors.Cross;
 				else
 					this.Cursor = Cursors.Default;
@@ -661,8 +661,33 @@ namespace ZedGraph {
 					return;
 
 				//Point tempPt = this.PointToClient( Control.MousePosition );
+				if (!_isEditing)
+				{
+					GraphPane pane = MasterPane.FindChartRect(mousePt,5);
+					if (pane != null)
+					{
+						CurveItem tempDragCurve;
+						int tempDragIndex;
+						// find the point that was clicked, and make sure the point list is editable
+						// and that it's a primary Y axis (the first Y or Y2 axis)
+						if (pane.FindNearestPoint(mousePt, out tempDragCurve, out tempDragIndex) &&
+						    tempDragCurve.Points is IPointListEdit && IsEnableVEdit && IsEnableHEdit)
+						{
+							Cursor = Cursors.Cross;
+						}
+						else
+						{
+							SetCursor(mousePt);
+						}
 
-				SetCursor(mousePt);
+					}
+
+				}
+				else
+				{
+					SetCursor(mousePt);	
+				}
+				
 
 				bool needsRefresh = false;
 
