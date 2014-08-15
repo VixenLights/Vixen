@@ -184,6 +184,12 @@
     </Compile>
     <Compile Include="TimedSequenceElement.cs" />
     <Compile Include="TimedSequenceRowLabel.cs" />
+    <Compile Include="Form_ToolPalette.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form_ToolPalette.Designer.cs">
+      <DependentUpon>Form_ToolPalette.cs</DependentUpon>
+    </Compile>
     <Compile Include="Undo.cs" />
   </ItemGroup>
   <ItemGroup />
@@ -239,6 +245,9 @@
     <EmbeddedResource Include="TimedSequenceEditorResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>TimedSequenceEditorResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form_ToolPalette.resx">
+      <DependentUpon>Form_ToolPalette.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

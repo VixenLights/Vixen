@@ -45,6 +45,10 @@ namespace Common.Controls.Timeline
 		public ISequenceContext Context = null;
 		public bool SequenceLoading { get; set; }
 		public Element _workingElement; //This is the element that was left clicked, is set to null on mouse up
+		public bool isColorDrop { get; set; }
+		public bool isCurveDrop { get; set; }
+		public bool isGradientDrop { get; set; }
+		private MouseButtons MouseButtonDown;
 
 		#region Initialization
 
@@ -2090,15 +2094,50 @@ namespace Common.Controls.Timeline
 			IDataObject data = e.Data;
 
 			if (DataDropped != null)
-				DataDropped(this, new TimelineDropEventArgs(row, time, data));
+				if (!isColorDrop && !isCurveDrop && !isGradientDrop)
+					DataDropped(this, new TimelineDropEventArgs(row, time, data));
+				else
+				{
+					if (isColorDrop)
+					{
+						isColorDrop = false;
+						
+						if (elementAt(gridPoint) == null)
+							return;
+
+						ColorDropped(this, new ToolDropEventArgs(row, time, elementAt(gridPoint), data,MouseButtonDown));
+					}
+					if (isCurveDrop)
+					{
+						isCurveDrop = false;
+
+						if (elementAt(gridPoint) == null)
+							return;
+
+						CurveDropped(this, new ToolDropEventArgs(row, time, elementAt(gridPoint), data, MouseButtonDown));
+					}
+					if (isGradientDrop)
+					{
+						isGradientDrop = false;
+
+						if (elementAt(gridPoint) == null)
+							return;
+
+						GradientDropped(this, new ToolDropEventArgs(row, time, elementAt(gridPoint), data, MouseButtonDown));
+					}
+				}
 		}
 
 		private void TimelineGrid_DragEnter(object sender, DragEventArgs e)
 		{
 			e.Effect = DragDropEffects.Copy;
+			MouseButtonDown = Control.MouseButtons; //We need to know which mouse button is down on DragEnter, Buttons are not down in DragDrop so we get it here.
 		}
 
 		internal event EventHandler<TimelineDropEventArgs> DataDropped;
+		internal event EventHandler<ToolDropEventArgs> ColorDropped;
+		internal event EventHandler<ToolDropEventArgs> CurveDropped;
+		internal event EventHandler<ToolDropEventArgs> GradientDropped;
 
 		#endregion
 	}

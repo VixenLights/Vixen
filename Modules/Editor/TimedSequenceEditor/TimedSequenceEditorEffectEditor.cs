@@ -19,6 +19,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private IEnumerable<EffectNode> _effectNodes;
 		private List<IEffectEditorControl> _controls;
 		private bool _usedSingleControl;
+		private object[] _cleanValues;
 
 		public TimedSequenceEditorEffectEditor(IEnumerable<EffectNode> effectNodes)
 			: this(effectNodes.First())
@@ -62,6 +63,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			_controls = new List<IEffectEditorControl>();
 			object[] values = _effectNode.Effect.ParameterValues;
+			_cleanValues = _effectNode.Effect.ParameterValues;
 
 			// if there were multiple controls returned, or there was only a single control needed (ie. the efffect parameters had only
 			// a single item) then add controls inside a ParameterEditor wrapper using editors for that type, and label them appropriately.
@@ -111,28 +113,59 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void TimedSequenceEditorEffectEditor_FormClosed(object sender, FormClosedEventArgs e)
 		{
-			if (DialogResult == System.Windows.Forms.DialogResult.OK && _controls != null) {
-				IEnumerable<EffectNode> nodes = _effectNodes ?? new EffectNode[] {_effectNode};
+			if (DialogResult == System.Windows.Forms.DialogResult.OK && _controls != null)
+			{
+				IEnumerable<EffectNode> nodes = _effectNodes ?? new EffectNode[] { _effectNode };
 
 				int changedEFfects = 0;
-				foreach (EffectNode node in nodes) {
+				foreach (EffectNode node in nodes)
+				{
 					if (node.Effect.TypeId != _effectNode.Effect.TypeId)
 						continue;
 
-					if (_usedSingleControl) {
-						node.Effect.ParameterValues = _controls.First().EffectParameterValues;
+					if (_usedSingleControl)
+					{
+						if (node.Effect.EffectName == "Nutcracker")
+						{
+							node.Effect.ParameterValues = _controls.First().EffectParameterValues;
+							continue;
+						}
+
+						object[] values = new object[_controls.First().EffectParameterValues.Count()];
+						for (int i = 0; i < _controls.First().EffectParameterValues.Count(); i++)
+						{
+							if (Object.Equals(_controls.First().EffectParameterValues[i], _cleanValues[i]))
+							{
+								values[i] = node.Effect.ParameterValues[i];
+							}
+							else
+							{
+								values[i] = _controls.First().EffectParameterValues[i];
+							}
+						}
+						node.Effect.ParameterValues = values; //_controls.First().EffectParameterValues;
 					}
-					else {
+					else
+					{
 						object[] values = new object[_controls.Count];
-						for (int i = 0; i < _controls.Count; i++) {
-							values[i] = _controls[i].EffectParameterValues.First();
+						for (int i = 0; i < _controls.Count; i++)
+						{
+							if (Object.Equals(_controls[i].EffectParameterValues.First(), _cleanValues[i]) && node.Effect.EffectName != "Nutcracker")
+							{
+								values[i] = node.Effect.ParameterValues[i];
+							}
+							else
+							{
+								values[i] = _controls[i].EffectParameterValues.First();
+							}
 						}
 						node.Effect.ParameterValues = values;
 					}
 					changedEFfects++;
 				}
 
-				if (nodes.Count() > 1) {
+				if (nodes.Count() > 1)
+				{
 					MessageBox.Show(changedEFfects + " effects modified.", "", MessageBoxButtons.OK);
 				}
 			}

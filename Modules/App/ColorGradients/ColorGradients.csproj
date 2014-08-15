@@ -13,7 +13,6 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
- 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>$(SolutionDir)\Release\Modules\App\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
@@ -23,7 +22,6 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
- 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>$(SolutionDir)\Release64\Modules\App\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
@@ -92,6 +90,7 @@
   <ItemGroup>
     <EmbeddedResource Include="ColorGradientEditor.resx">
       <DependentUpon>ColorGradientEditor.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="ColorGradientLibrarySelector.resx">
       <DependentUpon>ColorGradientLibrarySelector.cs</DependentUpon>
@@ -99,6 +98,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GradientEditPanel.resx">
       <DependentUpon>GradientEditPanel.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

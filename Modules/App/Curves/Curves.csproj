@@ -13,7 +13,6 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>$(SolutionDir)\Release\Modules\App\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
@@ -24,7 +23,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-     <OutputPath>$(SolutionDir)\Release64\Modules\App\</OutputPath>
+    <OutputPath>$(SolutionDir)\Release64\Modules\App\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
@@ -201,9 +200,11 @@
   <ItemGroup>
     <EmbeddedResource Include="CurveEditor.resx">
       <DependentUpon>CurveEditor.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="CurveLibrarySelector.resx">
       <DependentUpon>CurveLibrarySelector.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="ZedGraph\ZedGraphLocale.resx" />
   </ItemGroup>
