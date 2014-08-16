@@ -203,6 +203,9 @@
     <EmbeddedResource Include="BeatMarkExportDialog.resx">
       <DependentUpon>BeatMarkExportDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ExportDialog.resx">
+      <DependentUpon>ExportDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form_AddMultipleEffects.resx">
       <DependentUpon>Form_AddMultipleEffects.cs</DependentUpon>
     </EmbeddedResource>

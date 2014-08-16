@@ -3647,29 +3647,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void exportToolStripMenuItem_Click(object sender, EventArgs e)
 		{
             ExportDialog ed = new ExportDialog(Sequence);
-            ed.ShowDialog();
-			//Test code to invoke the compiler. This will need to be invoked somewhere else, but gives me a easy hook for testing.
-			_preCachingSequenceEngine = new PreCachingSequenceEngine();
-			_preCachingSequenceEngine.Sequence = Sequence;
-			_preCachingSequenceEngine.SequenceCacheEnded += _preCachingSequenceEngine_SequenceCacheEnded;
-			_preCachingSequenceEngine.SequenceCacheStarted += _preCachingSequenceEngine_SequenceCacheStarted;
-			_preCachingSequenceEngine.Start();
+            if (ed.ShowDialog() == DialogResult.OK)
+            {
+
+            }
+
 		}
 
-		void _preCachingSequenceEngine_SequenceCacheStarted(object sender, Vixen.Cache.Event.CacheStartedEventArgs e)
-		{
-			//Timing source position will indicate progression......
-			
-		}
 
-		void _preCachingSequenceEngine_SequenceCacheEnded(object sender, Vixen.Cache.Event.CacheEventArgs e)
-		{
-			_preCachingSequenceEngine.SequenceCacheEnded -= _preCachingSequenceEngine_SequenceCacheEnded;
-			_preCachingSequenceEngine.Cache.Save();
-			ISequenceCache cache = SequenceService.Instance.LoadCache(Sequence.FilePath);
-			// cache.OutputStateListAggregator  This is our command data for each output
-			MessageBox.Show("Finished");
-		}
 
     }
 

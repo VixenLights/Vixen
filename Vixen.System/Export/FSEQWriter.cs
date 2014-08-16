@@ -16,7 +16,7 @@ namespace Vixen.Export
     public class FSEQWriter : IExportWriter
     {
         private const Byte _vMinor = 0;
-        private const Byte _vMajor = 0;
+        private const Byte _vMajor = 1;
         private const UInt32 _dataOffset = 28;
         private const UInt16 _fixedHeaderLength = 28;
         private Int32 _seqNumChannels = 0;
@@ -117,6 +117,7 @@ namespace Vixen.Export
                 if ((_seqNumChannels % 4) != 0)
                 {
                     _padding = Enumerable.Repeat((Byte)0, 4 - (_seqNumChannels % 4)).ToArray();
+                    _seqNumChannels += _padding.Length;
                 }
                 else
                 {
@@ -193,7 +194,7 @@ namespace Vixen.Export
         {
             get
             {
-                return "Falcon Player (FSEQ)";
+                return "Falcon Pi Player";
             }
         }
     }

@@ -125,7 +125,7 @@ namespace Vixen.Export
         {
             get
             {
-                return "CSV File (CSV)";
+                return "CSV File";
             }
         }
     }

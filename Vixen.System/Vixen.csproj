@@ -159,6 +159,7 @@
     <Compile Include="Execution\QueuingSequenceEnumerator.cs" />
     <Compile Include="Export\CSVWriter.cs" />
     <Compile Include="Export\Export.cs" />
+    <Compile Include="Export\ExportCommandHandler.cs" />
     <Compile Include="Export\FSEQWriter.cs" />
     <Compile Include="Export\IExport.cs" />
     <Compile Include="Extensions\IntentNodeCollection.cs" />

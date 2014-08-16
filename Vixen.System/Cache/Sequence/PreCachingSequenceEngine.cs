@@ -92,6 +92,11 @@ namespace Vixen.Cache.Sequence
 			set { TimingSource.Interval = value; }
 		}
 
+        public TimeSpan Position
+        {
+            get { return TimingSource.Position;  }
+        }
+
 		public bool IsRunning
 		{
 			get { return _isRunning; }
