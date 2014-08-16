@@ -17,11 +17,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 	[DataContract]
 	public class PreviewPixelGrid : PreviewBaseShape, ICloneable
 	{
-		[DataMember] private PreviewPoint _topLeft;
-		[DataMember] private PreviewPoint _bottomRight;
+		[DataMember] private PreviewPoint _topLeft, _topRight;
+		[DataMember] private PreviewPoint _bottomLeft, _bottomRight;
 		[DataMember] private int _stringCount;
 		[DataMember] private int _lightsPerString;
-		[DataMember] private PreviewPoint _topRight, _bottomLeft;
 		[DataMember] private StringOrientations _stringOrientation = StringOrientations.Vertical;
 
 		private PreviewPoint p1Start, p2Start;
@@ -35,6 +34,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public PreviewPixelGrid(PreviewPoint point1, ElementNode selectedNode, double zoomLevel)
 		{
 			ZoomLevel = zoomLevel;
+			_topRight = PointToZoomPoint(point1);
 			_topLeft = PointToZoomPoint(point1);
 			_bottomRight = new PreviewPoint(_topLeft.X, _topLeft.Y);
             _bottomLeft = new PreviewPoint(_bottomRight);
