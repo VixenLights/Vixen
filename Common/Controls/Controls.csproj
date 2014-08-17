@@ -141,6 +141,8 @@
       <DependentUpon>PictureComboBox.cs</DependentUpon>
     </Compile>
     <Compile Include="PictureComboBoxItem.cs" />
+    <Compile Include="TimelineControl\BlockingCollectionExtensions.cs" />
+    <Compile Include="TimelineControl\DelegateBasedObserver.cs" />
     <Compile Include="TimelineControl\Grid.cs">
       <SubType>Code</SubType>
     </Compile>
