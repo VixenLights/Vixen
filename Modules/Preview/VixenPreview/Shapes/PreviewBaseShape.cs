@@ -588,6 +588,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             {
                 setupControl = new Shapes.PreviewIcicleSetupControl(this);
             }
+            else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewPolyLine")
+            {
+                setupControl = new Shapes.PreviewPolyLineSetupControl(this);
+            }
 
 			return setupControl;
 		}

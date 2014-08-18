@@ -53,7 +53,8 @@ namespace VixenModules.Preview.VixenPreview
 			Cane,
 			PixelGrid,
             StarBurst,
-            Icicle
+            Icicle,
+            PolyLine
         }
 
 		private Point dragStart;
@@ -229,6 +230,7 @@ namespace VixenModules.Preview.VixenPreview
 			Controls.Add(vScroll);
 			Controls.Add(hScroll);
 			LayoutProps();
+            ZoomLevel = 1;
 		}
 
 		public void LayoutProps()
@@ -446,6 +448,10 @@ namespace VixenModules.Preview.VixenPreview
 						}
 					}
 						// If we're not Selecting items, we're drawing them
+                    else if (_currentTool == Tools.PolyLine && _mouseCaptured)
+                    {
+                        return;
+                    }
 					else {
 						DisplayItem newDisplayItem = null;
 						if (_currentTool == Tools.String) {
@@ -508,6 +514,12 @@ namespace VixenModules.Preview.VixenPreview
                             newDisplayItem = new DisplayItem();
                             newDisplayItem.Shape = new PreviewIcicle(translatedPoint, translatedPoint, 
 																     elementsForm.SelectedNode, ZoomLevel);
+                        }
+                        else if (_currentTool == Tools.PolyLine)
+                        {
+                            newDisplayItem = new DisplayItem();
+                            newDisplayItem.Shape = new PreviewPolyLine(translatedPoint, translatedPoint,
+                                                                     elementsForm.SelectedNode, ZoomLevel);
                         }
 
 						// Now add the newely created display item to the screen.
@@ -779,6 +791,24 @@ namespace VixenModules.Preview.VixenPreview
 			}
 		}
 
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            base.OnKeyDown(e);
+            if (e.KeyCode == Keys.Escape)
+            {
+                if (_selectedDisplayItem != null && _selectedDisplayItem.Shape != null)
+                {
+                    if (_selectedDisplayItem.Shape is PreviewPolyLine)
+                    {
+                        (_selectedDisplayItem.Shape as PreviewPolyLine).EndCreation();
+                        _currentTool = Tools.Select;
+                        OnSelectDisplayItem(this, _selectedDisplayItem);
+                        ResetMouse();
+                    }
+                }
+            }
+        }
+
 		private void VixenPreviewControl_MouseUp(object sender, MouseEventArgs e)
 		{
 			if (_mouseCaptured) {
@@ -790,9 +820,16 @@ namespace VixenModules.Preview.VixenPreview
 						_selectedDisplayItem.Shape.MouseUp(sender, e);
 						DeSelectSelectedDisplayItem();
 					}
-					else {
-						_currentTool = Tools.Select;
-					}
+                    else if (_selectedDisplayItem != null && _currentTool == Tools.PolyLine && e.Button == System.Windows.Forms.MouseButtons.Left)
+                    {
+                        // If we are drawing a PolyLine, we want all the mouse events to be passed to the shape
+                        _selectedDisplayItem.Shape.MouseUp(sender, e);
+                        return;
+                    }
+                    else
+                    {
+                        _currentTool = Tools.Select;
+                    }
 				}
 
 				if (_selectedDisplayItem != null) {
