@@ -18,7 +18,6 @@ namespace Vixen.Sys.Managers
 		private MillisecondsValue _contextUpdateTimeValue = new MillisecondsValue("   Contexts update");
 		private MillisecondsValue _contextUpdateWaitValue = new MillisecondsValue("   Contexts wait");
 		private Stopwatch _stopwatch = Stopwatch.StartNew();
-		private LiveContext _systemLiveContext;
 		private HashSet<Guid> _affectedElements = new HashSet<Guid>(); 
 
 		public event EventHandler<ContextEventArgs> ContextCreated;
@@ -31,13 +30,12 @@ namespace Vixen.Sys.Managers
 			//VixenSystem.Instrumentation.AddValue(_contextUpdateWaitValue);
 		}
 
-		public LiveContext GetSystemLiveContext()
+		public LiveContext CreateLiveContext(string name)
 		{
-			if (_systemLiveContext == null) {
-				_systemLiveContext = new LiveContext("System");
-				_AddContext(_systemLiveContext);
-			}
-			return _systemLiveContext;
+			if (string.IsNullOrEmpty(name)) throw new ArgumentNullException("name");
+			var context = new LiveContext(name);
+			_AddContext(context);
+			return context;
 		}
 
 		public IProgramContext CreateProgramContext(ContextFeatures contextFeatures, IProgram program)
@@ -91,7 +89,7 @@ namespace Vixen.Sys.Managers
 		public HashSet<Guid> Update()
 		{
 			_stopwatch.Restart();
-			affectedElements.Clear();
+			_affectedElements.Clear();
 			foreach( var context in _instances.Values.Where(x => x.IsRunning))
 			{
 				try
@@ -163,12 +161,8 @@ namespace Vixen.Sys.Managers
 		private void _ReleaseContext(IContext context)
 		{
 			context.Stop();
-			//lock (_instances)
-			//{
-				IContext remval = null;
-				_instances.TryRemove(context.Id, out remval);
-			//	_instances.Remove(context.Id);
-			//}
+			IContext remval = null;
+			_instances.TryRemove(context.Id, out remval);
 			context.Dispose();
 			OnContextReleased(new ContextEventArgs(context));
 		}

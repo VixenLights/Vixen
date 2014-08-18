@@ -130,7 +130,7 @@ namespace VixenModules.App.WebServer.Actions
 					allElements ? VixenSystem.Nodes.GetRootNodes().ToArray() : new[] {VixenSystem.Nodes.GetElementNode(elementId)}
 			};
 
-			Module.LiveSystemContext.Execute(new EffectNode(effect, TimeSpan.Zero));
+			Module.LiveContext.Execute(new EffectNode(effect, TimeSpan.Zero));
 			status.Message = string.Format("{0} element(s) turned on for {1} seconds at 100% intensity.",
 				allElements?"All":VixenSystem.Nodes.GetElementNode(elementId).Name, seconds);
 

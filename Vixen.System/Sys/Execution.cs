@@ -72,9 +72,7 @@ namespace Vixen.Sys
 
 		internal static void Startup()
 		{
-			// Create the system context for live execution.
-			ContextBase systemContext = VixenSystem.Contexts.GetSystemLiveContext();
-			systemContext.Start();
+
 		}
 
 		internal static void Shutdown()

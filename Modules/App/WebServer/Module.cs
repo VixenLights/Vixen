@@ -25,7 +25,7 @@ namespace VixenModules.App.WebServer
 		{
 			scheduler = KayakScheduler.Factory.Create(new SchedulerDelegate());
 		}
-		internal static LiveContext LiveSystemContext { get; set; }
+		internal static LiveContext LiveContext { get; set; }
 
 		private IScheduler scheduler;
 		private IServer server;
@@ -81,8 +81,8 @@ namespace VixenModules.App.WebServer
 
 				server = KayakServer.Factory.CreateHttp(new RequestDelegate(), scheduler);
 				server.Listen(new IPEndPoint(IPAddress.Any, port));
-				LiveSystemContext = VixenSystem.Contexts.GetSystemLiveContext();
-
+				LiveContext = VixenSystem.Contexts.CreateLiveContext("Web Server");
+				LiveContext.Start();
 				Thread T = new Thread(new ThreadStart(scheduler.Start));
 				T.Start();
 			} else {
@@ -91,7 +91,12 @@ namespace VixenModules.App.WebServer
 					server.Dispose();
 					server = null;
 				}
-				LiveSystemContext = null;
+				if (LiveContext != null)
+				{
+					//We are the only current consumer of LiveContext, so shut it off when we are done.
+					VixenSystem.Contexts.ReleaseContext(LiveContext);
+					LiveContext = null;
+				}
 			}
 		}
 
@@ -132,6 +137,11 @@ namespace VixenModules.App.WebServer
 		public override void Unloading()
 		{
 			_SetServerEnableState(false,0);
+			//We are the only current consumer of LiveContext, so shut it off when we are done.
+			if (LiveContext != null)
+			{
+				VixenSystem.Contexts.ReleaseContext(LiveContext);	
+			}
 		}
 
 
