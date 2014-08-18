@@ -74,7 +74,29 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			InitializeComponent();
 			TimelineControl = timelineControl;
-			Icon = Resources.Icon_Vixen3;	
+			Icon = Resources.Icon_Vixen3;
+
+			toolStripButtonEditColor.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			toolStripButtonEditColor.Image = Resources.pencil;
+			toolStripButtonNewColor.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			toolStripButtonNewColor.Image = Resources.add;
+			toolStripButtonDeleteColor.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			toolStripButtonDeleteColor.Image = Resources.delete;
+
+			toolStripButtonEditCurve.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			toolStripButtonEditCurve.Image = Resources.pencil;
+			toolStripButtonNewCurve.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			toolStripButtonNewCurve.Image = Resources.add;
+			toolStripButtonDeleteCurve.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			toolStripButtonDeleteCurve.Image = Resources.delete;
+
+			toolStripButtonEditGradient.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			toolStripButtonEditGradient.Image = Resources.pencil;
+			toolStripButtonNewGradient.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			toolStripButtonNewGradient.Image = Resources.add;
+			toolStripButtonDeleteGradient.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			toolStripButtonDeleteGradient.Image = Resources.delete;
+	
 		}
 
 		private void ColorPalette_Load(object sender, EventArgs e)
@@ -93,63 +115,21 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				Populate_Curves();
 				_curveLibrary.CurveChanged += CurveLibrary_CurveChanged;
 			}
-			else //We have no curves :(
-			{
-				tabCurves.Hide();
-			}
 
 			_colorGradientLibrary = ApplicationServices.Get<IAppModuleInstance>(ColorGradientLibraryDescriptor.ModuleID) as ColorGradientLibrary;
 			if (_colorGradientLibrary != null)
 			{
 				Populate_Gradients();
-				comboBoxGradientHandling.SelectedIndex = 0;
 				_colorGradientLibrary.GradientChanged += GradientLibrary_GradientChanged;
 			}
-			else //No Gradients either ? Double :(
-			{
-				tabGradients.Hide();
-			}
+			
+			comboBoxGradientHandling.SelectedIndex = 0;
 
-			Populate_Effects();
-
-			labelHelp.Text = "The Tool Palette organizes your Favorite Colors, Curves, Color Gradients, and Effects all into one convienient place.\n\n" +
-								"Simply Drag and Drop any of the items to effects in the sequence.\n" +
-								"For Alternating effects, use the Control Key or Right mouse button to apply Color/Curve/Gradient 2.\n\n" +
-								"Dropping an item to a selected effect, will apply the item to all selected effects. If the effect is not selected\n" +
-								"it will be the only one the drop applies to.\n\n" +
-								"For further documentaion on the Tool Palette, please visit the link at the top of this page.";
 		}
 
 		#endregion
 
 		#region Private Methods
-
-		#region Effects
-
-		private void Populate_Effects()
-		{
-			listViewEffects.BeginUpdate();
-			listViewEffects.Items.Clear();
-			listViewEffects.LargeImageList = new ImageList();
-			listViewEffects.LargeImageList.ColorDepth = ColorDepth.Depth32Bit;
-			listViewEffects.LargeImageList.ImageSize = new Size(48, 48);
-
-			foreach (
-				IEffectModuleDescriptor effectDesriptor in ApplicationServices.GetModuleDescriptors<IEffectModuleInstance>().Cast<IEffectModuleDescriptor>())
-			{
-				listViewEffects.LargeImageList.Images.Add(effectDesriptor.EffectName, effectDesriptor.GetRepresentativeImage(48, 48));
-
-				ListViewItem effectItem = new ListViewItem();
-				effectItem.Tag = effectDesriptor.TypeId;
-				effectItem.Text = effectDesriptor.EffectName;
-				effectItem.ImageKey = effectDesriptor.EffectName;
-
-				listViewEffects.Items.Add(effectItem);
-			}
-			listViewEffects.EndUpdate();
-		}
-		
-		#endregion
 
 		#region Colors
 
@@ -207,7 +187,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				listViewColors.Items.Add(item);
 			}
 			listViewColors.EndUpdate();
-			buttonEditColor.Enabled = buttonDeleteColor.Enabled = false;
+			toolStripButtonEditColor.Enabled = toolStripButtonDeleteColor.Enabled = false;
 		}
 
 		private void Update_ColorOrder()
@@ -248,7 +228,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 
 			listViewCurves.EndUpdate();
-			buttonEditCurve.Enabled = buttonDeleteCurve.Enabled = false;
+			toolStripButtonEditCurve.Enabled = toolStripButtonDeleteCurve.Enabled = false;
 		}
 
 		#endregion
@@ -280,7 +260,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 
 			listViewGradients.EndUpdate();
-			buttonEditGradient.Enabled = buttonDeleteGradient.Enabled = false;
+			toolStripButtonEditGradient.Enabled = toolStripButtonDeleteGradient.Enabled = false;
 		}
 
 		#endregion
@@ -291,24 +271,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		#region Colors
 
-		private void buttonNewColor_Click(object sender, EventArgs e)
-		{
-			using (ColorPicker cp = new ColorPicker())
-			{
-				cp.LockValue_V = true;
-				cp.Color = XYZ.FromRGB(Color.White);
-				DialogResult result = cp.ShowDialog();
-				if (result == DialogResult.OK)
-				{
-					Color ColorValue = cp.Color.ToRGB().ToArgb();
-					colors.Add(ColorValue);
-					PopulateColors();
-					Save_ColorPaletteFile();
-				}
-			}
-		}
-
-		private void buttonEditColor_Click(object sender, EventArgs e)
+		private void toolStripButtonEditColor_Click(object sender, EventArgs e)
 		{
 			if (listViewColors.SelectedItems.Count != 1)
 				return;
@@ -335,14 +298,34 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		private void buttonDeleteColor_Click(object sender, EventArgs e)
+		private void toolStripButtonNewColor_Click(object sender, EventArgs e)
+		{
+			using (ColorPicker cp = new ColorPicker())
+			{
+				cp.LockValue_V = true;
+				cp.Color = XYZ.FromRGB(Color.White);
+				DialogResult result = cp.ShowDialog();
+				if (result == DialogResult.OK)
+				{
+					Color ColorValue = cp.Color.ToRGB().ToArgb();
+
+					colors.Add(ColorValue);
+					PopulateColors();
+					Save_ColorPaletteFile();
+				}
+			}
+		}
+
+		private void toolStripButtonDeleteColor_Click(object sender, EventArgs e)
 		{
 			if (listViewColors.SelectedItems == null)
 				return;
 
-			foreach (ListViewItem ListItem in listViewColors.SelectedItems)
+			DialogResult result = MessageBox.Show("Are you sure you want to delete this color?", "Delete color?", MessageBoxButtons.YesNoCancel);
+
+			if (result == System.Windows.Forms.DialogResult.Yes)
 			{
-				colors.Remove((Color)ListItem.Tag);
+				colors.Remove((Color)listViewColors.SelectedItems[0].Tag);
 			}
 
 			PopulateColors();
@@ -351,21 +334,28 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void listViewColors_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			buttonEditColor.Enabled = (listViewColors.SelectedIndices.Count == 1);
-			buttonDeleteColor.Enabled = (listViewColors.SelectedIndices.Count == 1);
+			toolStripButtonEditColor.Enabled = toolStripButtonDeleteColor.Enabled = (listViewColors.SelectedItems.Count == 1);
 		}
 
-		private void listViewColors_DoubleClick(object sender, EventArgs e)
+		private void listViewColors_MouseDoubleClick(object sender, EventArgs e)
 		{
 			if (listViewColors.SelectedItems.Count == 1)
-				buttonEditColor.PerformClick();
+				toolStripButtonEditColor.PerformClick();
 		}
 
 		#endregion
 
 		#region Curves
 
-		private void buttonNewCurve_Click(object sender, EventArgs e)
+		private void toolStripButtonEditCurve_Click(object sender, EventArgs e)
+		{
+			if (listViewCurves.SelectedItems.Count != 1)
+				return;
+
+			_curveLibrary.EditLibraryCurve(listViewCurves.SelectedItems[0].Name);
+		}
+
+		private void toolStripButtonNewCurve_Click(object sender, EventArgs e)
 		{
 			Common.Controls.TextDialog dialog = new Common.Controls.TextDialog("Curve name?");
 
@@ -397,69 +387,55 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				{
 					_curveLibrary.AddCurve(dialog.Response, new Curve());
 					_curveLibrary.EditLibraryCurve(dialog.Response);
-					//Populate_Curves();
 					break;
 				}
 			}
 		}
 
-		private void buttonEditCurve_Click(object sender, EventArgs e)
-		{
-			if (listViewCurves.SelectedItems.Count != 1)
-				return;
-
-			_curveLibrary.EditLibraryCurve(listViewCurves.SelectedItems[0].Name);
-			//Populate_Curves();
-		}
-
-		private void buttonDeleteCurve_Click(object sender, EventArgs e)
+		private void toolStripButtonDeleteCurve_Click(object sender, EventArgs e)
 		{
 			if (listViewCurves.SelectedItems.Count == 0)
 				return;
 
-			DialogResult result =
-				MessageBox.Show("If you delete this library curve, ALL places it is used will be unlinked and will" +
-								" become independent curves. Are you sure you want to continue?", "Delete library curve?",
-								MessageBoxButtons.YesNoCancel);
+			DialogResult result = MessageBox.Show("If you delete this library curve, ALL places it is used will be unlinked and will" +
+								" become independent curves. Are you sure you want to continue?", "Delete library curve?", MessageBoxButtons.YesNoCancel);
 
 			if (result == System.Windows.Forms.DialogResult.Yes)
 			{
 				_curveLibrary.RemoveCurve(listViewCurves.SelectedItems[0].Name);
-				//Populate_Curves();
+
 			}
 		}
 
 		private void listViewCurves_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			buttonEditCurve.Enabled = (listViewCurves.SelectedIndices.Count == 1);
-			buttonDeleteCurve.Enabled = (listViewCurves.SelectedIndices.Count == 1);
+			toolStripButtonEditCurve.Enabled = toolStripButtonDeleteCurve.Enabled = (listViewCurves.SelectedItems.Count == 1);
 		}
 
 		private void listViewCurves_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
 			if (listViewCurves.SelectedItems.Count == 1)
-				buttonEditCurve.PerformClick();
+				toolStripButtonEditCurve.PerformClick();
 		}
 
 		private void CurveLibrary_CurveChanged(object sender, EventArgs e)
 		{
-			if (_curveLibrary.Count() > 0)
-			{
-				tabCurves.Show();
 				Populate_Curves();
-			}
-			else
-			{
-				tabCurves.Hide();
-			}
-
 		}
 
 		#endregion
 
 		#region Gradients
 
-		private void buttonNewGradient_Click(object sender, EventArgs e)
+		private void toolStripButtonEditGradient_Click(object sender, EventArgs e)
+		{
+			if (listViewGradients.SelectedItems.Count != 1)
+				return;
+
+			_colorGradientLibrary.EditLibraryItem(listViewGradients.SelectedItems[0].Name);
+		}
+
+		private void toolStripButtonNewGradient_Click(object sender, EventArgs e)
 		{
 			Common.Controls.TextDialog dialog = new Common.Controls.TextDialog("Gradient name?");
 
@@ -491,22 +467,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				{
 					_colorGradientLibrary.AddColorGradient(dialog.Response, new ColorGradient());
 					_colorGradientLibrary.EditLibraryItem(dialog.Response);
-					//Populate_Gradients();
 					break;
 				}
 			}
 		}
 
-		private void buttonEditGradient_Click(object sender, EventArgs e)
-		{
-			if (listViewGradients.SelectedItems.Count != 1)
-				return;
-
-			_colorGradientLibrary.EditLibraryItem(listViewGradients.SelectedItems[0].Name);
-			//Populate_Gradients();
-		}
-
-		private void buttonDeleteGradient_Click(object sender, EventArgs e)
+		private void toolStripButtonDeleteGradient_Click(object sender, EventArgs e)
 		{
 			if (listViewGradients.SelectedItems.Count == 0)
 				return;
@@ -519,66 +485,30 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (result == System.Windows.Forms.DialogResult.Yes)
 			{
 				_colorGradientLibrary.RemoveColorGradient(listViewGradients.SelectedItems[0].Name);
-				//Populate_Gradients();
 			}
 		}
 
 		private void listViewGradients_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			buttonEditGradient.Enabled = (listViewGradients.SelectedIndices.Count == 1);
-			buttonDeleteGradient.Enabled = (listViewGradients.SelectedIndices.Count == 1);
+			toolStripButtonEditGradient.Enabled = toolStripButtonDeleteGradient.Enabled = (listViewGradients.SelectedItems.Count == 1);
 		}
 
-		private void listViewGradients_DoubleClick(object sender, EventArgs e)
+		private void listViewGradients_MouseDoubleClick(object sender, EventArgs e)
 		{
 			if (listViewGradients.SelectedItems.Count == 1)
-				buttonEditGradient.PerformClick();
+				toolStripButtonEditGradient.PerformClick();
 		}
 
 		public void GradientLibrary_GradientChanged(object sender, EventArgs e)
 		{
-			if (_colorGradientLibrary.Count() > 0)
-			{
-				tabGradients.Show();
 				Populate_Gradients();
-			}
-			else
-			{
-				tabGradients.Hide();
-			}
 		}
 
 		#endregion
-
-		private void linkToolPaletteDocumentation_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-		{
-			System.Diagnostics.Process.Start("http://www.vixenlights.com/vixen-3-documentation/sequencer/");
-		}
-
-		private void ToolPalette_FormClosing(object sender, FormClosingEventArgs e)
-		{
-			//As this came about late in development, Im leaving the original Save call, just commented out for now.
-			//if (e.CloseReason != CloseReason.UserClosing) return;
-			//e.Cancel = true;
-			//Hide();
-			//SaveToolPaletteLocation(this, e);
-		}
 
 		#endregion
 
 		#region Drag/Drop
-
-		#region Effects
-
-		private void listViewEffects_ItemDrag(object sender, ItemDragEventArgs e)
-		{
-			if (listViewEffects.SelectedItems == null)
-				return;
-			DataObject data = new DataObject(DataFormats.Serializable, listViewEffects.SelectedItems[0].Tag);
-			listViewEffects.DoDragDrop(data, DragDropEffects.Copy);
-		}
-
-		#endregion
 
 		#region Colors
 
@@ -654,7 +584,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		#endregion
 
 		#endregion
-
 
 	}
 }
