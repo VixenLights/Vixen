@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -178,7 +179,11 @@ namespace Vixen.Cache.Sequence
 			//Need some hooks in here for progess....... Need to think about that.
 			//Stop the output devices from driving the execution engine.
 			VixenSystem.OutputDeviceManagement.PauseAll();
-			
+			IEnumerable<IContext> runningContexts = VixenSystem.Contexts.Where(x => x.IsRunning);
+			foreach (var runningContext in runningContexts)
+			{
+				runningContext.Pause();
+			}
 			//Special context to pre cache commands. We don't need all the other fancy executor or timing as we will advance it ourselves
 			PreCachingSequenceContext context = VixenSystem.Contexts.GetCacheCompileContext();
 			context.Sequence = Sequence;
@@ -195,7 +200,10 @@ namespace Vixen.Cache.Sequence
 
 			TimingSource.Stop();
 			context.Stop();
-			
+			foreach (var runningContext in runningContexts)
+			{
+				runningContext.Resume();
+			}
 			//restart the devices
 			VixenSystem.OutputDeviceManagement.ResumeAll();
 			IsRunning = false;

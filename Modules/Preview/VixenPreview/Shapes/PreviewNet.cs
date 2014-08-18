@@ -145,17 +145,87 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			get { return Pixels.Count; }
 		}
 
-		[Browsable(false)]
-		public override int Left
-		{
-			get { return Math.Min(_topLeft.X, Math.Min(Math.Min(_topRight.X, _bottomRight.X), _bottomLeft.X)); }
-		}
+        public override int Top
+        {
+            get
+            {
+                return (Math.Min(_topLeft.Y, Math.Min(_topRight.Y, Math.Min(_bottomLeft.Y, _bottomRight.Y))));
+            }
+            set
+            {
+                int delta = Top - value;
+                if (_topLeft.Y == Top)
+                {
+                    _topLeft.Y = value;
+                    _topRight.Y -= delta;
+                    _bottomLeft.Y -= delta;
+                    _bottomRight.Y -= delta;
+                }
+                else if (_topRight.Y == Top)
+                {
+                    _topLeft.Y -= delta;
+                    _topRight.Y = value;
+                    _bottomLeft.Y -= delta;
+                    _bottomRight.Y -= delta;
+                }
+                else if (_bottomLeft.Y == Top)
+                {
+                    _topLeft.Y -= delta;
+                    _topRight.Y -= delta;
+                    _bottomLeft.Y = value;
+                    _bottomRight.Y -= delta;
+                }
+                else
+                {
+                    _topLeft.Y -= delta;
+                    _topRight.Y -= delta;
+                    _bottomLeft.Y -= delta;
+                    _bottomRight.Y = value;
+                }
+                Layout();
+            }
+        }
 
-		[Browsable(false)]
-		public override int Top
-		{
-			get { return Math.Min(_topLeft.Y, Math.Min(Math.Min(_topRight.Y, _bottomRight.Y), _bottomLeft.Y)); }
-		}
+        public override int Left
+        {
+            get
+            {
+                return (Math.Min(_topLeft.X, Math.Min(_topRight.X, Math.Min(_bottomLeft.X, _bottomRight.X))));
+            }
+            set
+            {
+                int delta = Left - value;
+                if (_topLeft.X == Left)
+                {
+                    _topLeft.X = value;
+                    _topRight.X -= delta;
+                    _bottomLeft.X -= delta;
+                    _bottomRight.X -= delta;
+                }
+                else if (_topRight.X == Left)
+                {
+                    _topLeft.X -= delta;
+                    _topRight.X = value;
+                    _bottomLeft.X -= delta;
+                    _bottomRight.X -= delta;
+                }
+                else if (_bottomLeft.X == Left)
+                {
+                    _topLeft.X -= delta;
+                    _topRight.X -= delta;
+                    _bottomLeft.X = value;
+                    _bottomRight.X -= delta;
+                }
+                else
+                {
+                    _topLeft.X -= delta;
+                    _topRight.X -= delta;
+                    _bottomLeft.X -= delta;
+                    _bottomRight.X = value;
+                }
+                Layout();
+            }
+        }
 
         public override void Match(PreviewBaseShape matchShape)
         {

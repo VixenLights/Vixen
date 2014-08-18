@@ -203,12 +203,14 @@ namespace VixenModules.App.Curves
 			else {
 				if (curve.IsLibraryReference) {
 					zedGraphControl.GraphPane.CurveList.Clear();
-					zedGraphControl.GraphPane.AddCurve(string.Empty, curve.Points, Curve.InactiveCurveGridColor);
+					LineItem item = zedGraphControl.GraphPane.AddCurve(string.Empty, curve.Points, Curve.InactiveCurveGridColor);
+					item.Symbol.Fill = new Fill(Curve.InactiveCurveGridColor);
 					labelCurve.Text = "This curve is linked to the library curve: " + curve.LibraryReferenceName;
 				}
 				else {
 					zedGraphControl.GraphPane.CurveList.Clear();
-					zedGraphControl.GraphPane.AddCurve(string.Empty, curve.Points, Curve.ActiveCurveGridColor);
+					LineItem item = zedGraphControl.GraphPane.AddCurve(string.Empty, curve.Points, Curve.ActiveCurveGridColor);
+					item.Symbol.Fill = new Fill(Curve.ActiveCurveGridColor);
 					labelCurve.Text = "This curve is not linked to any in the library.";
 				}
 				zedGraphControl.DragEditingPair = null;

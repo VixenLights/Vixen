@@ -163,6 +163,12 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="ColorCollectionLibrary_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ColorCollectionLibrary_Form.Designer.cs">
+      <DependentUpon>ColorCollectionLibrary_Form.cs</DependentUpon>
+    </Compile>
     <Compile Include="TimedSequenceEditor.cs" />
     <Compile Include="TimedSequenceEditorDescriptor.cs" />
     <Compile Include="TimedSequenceEditorEffectEditor.cs">
@@ -230,6 +236,9 @@
     <EmbeddedResource Include="ParameterEditor.resx">
       <DependentUpon>ParameterEditor.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ColorCollectionLibrary_Form.resx">
+      <DependentUpon>ColorCollectionLibrary_Form.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="TimedSequenceEditorEffectEditor.resx">
       <DependentUpon>TimedSequenceEditorEffectEditor.cs</DependentUpon>
     </EmbeddedResource>
@@ -294,6 +303,11 @@
     <ProjectReference Include="..\..\Media\Audio\Audio.csproj">
       <Project>{4243BA4C-6371-4DD1-8A1D-675BED5322AF}</Project>
       <Name>Audio</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Property\Color\Color.csproj">
+      <Project>{73068a83-b3b7-4a2c-923d-71c7886cd5e3}</Project>
+      <Name>Color</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Sequence\Timed\Timed.csproj">

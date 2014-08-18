@@ -73,7 +73,7 @@ namespace VixenModules.SequenceType.Vixen2x
 
 			Sequence.Length = TimeSpan.FromMilliseconds(parsedV2Sequence.SeqLengthInMills);
 
-			var songFileName = parsedV2Sequence.SongPath + parsedV2Sequence.SongFileName;
+			var songFileName = parsedV2Sequence.SongPath + Path.DirectorySeparatorChar + parsedV2Sequence.SongFileName;
 			if (songFileName != null) {
 				if (File.Exists(songFileName)) {
 					Sequence.AddMedia(MediaService.Instance.GetMedia(songFileName));

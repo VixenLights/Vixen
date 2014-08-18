@@ -30,7 +30,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public enum StringTypes
 		{
 			Standard,
-			Pixel
+			Pixel,
+			//            Flood
 		}
 
 		private bool _selected = false;
@@ -70,29 +71,30 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// <summary>
 		/// Need to override if this is anywhere other than the top left in _pixels
 		/// </summary>
-		[Browsable(false)]
-		public virtual int Top
-		{
-			get
-			{
-				int y = int.MaxValue;
-				foreach (PreviewPixel pixel in Pixels) {
-					y = Math.Min(y, pixel.Y);
-				}
-				return y;
-			}
-			set
-			{
-				int y = int.MaxValue;
-				foreach (PreviewPixel pixel in Pixels) {
-					y = Math.Min(y, pixel.Y);
-				}
-				int delta = value - y;
-				foreach (PreviewPixel pixel in Pixels) {
-					pixel.Y += delta;
-				}
-			}
-		}
+        [Browsable(false)]
+        public abstract int Top { get; set; }
+        //public virtual int Top
+        //{
+        //    get
+        //    {
+        //        int y = int.MaxValue;
+        //        foreach (PreviewPixel pixel in Pixels) {
+        //            y = Math.Min(y, pixel.Y);
+        //        }
+        //        return y;
+        //    }
+        //    set
+        //    {
+        //        int y = int.MaxValue;
+        //        foreach (PreviewPixel pixel in Pixels) {
+        //            y = Math.Min(y, pixel.Y);
+        //        }
+        //        int delta = value - y;
+        //        foreach (PreviewPixel pixel in Pixels) {
+        //            pixel.Y += delta;
+        //        }
+        //    }
+        //}
 
 		/// <summary>
 		/// Need to override if this is anywhere other than the bottom in _pixels
@@ -114,29 +116,30 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// <summary>
 		/// Need to override if this is anywhere other than the top left in _pixels
 		/// </summary>
-		[Browsable(false)]
-		public virtual int Left
-		{
-			get
-			{
-				int x = int.MaxValue;
-				foreach (PreviewPixel pixel in Pixels) {
-					x = Math.Min(x, pixel.X);
-				}
-				return x;
-			}
-			set
-			{
-				int x = int.MaxValue;
-				foreach (PreviewPixel pixel in Pixels) {
-					x = Math.Min(x, pixel.X);
-				}
-				int delta = value - x;
-				foreach (PreviewPixel pixel in Pixels) {
-					pixel.X += delta;
-				}
-			}
-		}
+        [Browsable(false)]
+        public abstract int Left { get; set; }
+        //public virtual int Left
+        //{
+        //    get
+        //    {
+        //        int x = int.MaxValue;
+        //        foreach (PreviewPixel pixel in Pixels) {
+        //            x = Math.Min(x, pixel.X);
+        //        }
+        //        return x;
+        //    }
+        //    set
+        //    {
+        //        int x = int.MaxValue;
+        //        foreach (PreviewPixel pixel in Pixels) {
+        //            x = Math.Min(x, pixel.X);
+        //        }
+        //        int delta = value - x;
+        //        foreach (PreviewPixel pixel in Pixels) {
+        //            pixel.X += delta;
+        //        }
+        //    }
+        //}
 
 		/// <summary>
 		/// Need to override if this is anywhere other than the right in _pixels
@@ -202,6 +205,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 			set { _pixels = value; }
 		}
+
+        public PreviewBaseShape Parent { get; set; }
 
 		[Editor(typeof (PreviewSetElementsUIEditor), typeof (UITypeEditor)),
 		 CategoryAttribute("Settings"),
@@ -382,24 +387,45 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public virtual void DrawPixel(PreviewPixel pixel, FastPixel.FastPixel fp, bool editMode, List<ElementNode> highlightedElements,
 		                              bool selected, bool forceDraw)
 		{
-			if (forceDraw) {
-				pixel.Draw(fp, forceDraw);
-			}
-			else if (selected) {
-				pixel.Draw(fp, PreviewTools.SelectedItemColor);
-			}
-			else if (highlightedElements != null && highlightedElements.Contains(pixel.Node)) {
-				pixel.Draw(fp, Color.HotPink);
-			}
-			else {
-				pixel.Draw(fp, Color.White);
-			}
+            if (forceDraw)
+            {
+                pixel.Draw(fp, forceDraw);
+            }
+            else
+            {
+                Color pixelColor = Color.White;
+                if (
+                    (_pixels.Count > 0) &&
+                    (pixel == _pixels[0] || (_strings != null && _strings.Count > 0 && _strings[0].Pixels != null && _strings[0].Pixels.Count > 0 && _strings[0].Pixels[0] == pixel))
+                   )
+                {
+                    pixelColor = Color.Yellow;
+                    pixel.PixelSize = PixelSize + 2;
+                }
+                else
+                {
+                    if (selected)
+                    {
+                        pixelColor = PreviewTools.SelectedItemColor;
+                    }
+                    else if (highlightedElements != null && highlightedElements.Contains(pixel.Node))
+                    {
+                        pixelColor = Color.HotPink;
+                    }
+                    else
+                    {
+                        pixelColor = Color.White;
+                    }
+                }
+                pixel.Draw(fp, pixelColor);
+            }
 		}
 
 		public virtual void Draw(FastPixel.FastPixel fp, bool editMode, List<ElementNode> highlightedElements, bool selected,
 		                         bool forceDraw)
 		{
 			foreach (PreviewPixel pixel in Pixels) {
+
 				DrawPixel(pixel, fp, editMode, highlightedElements, selected, forceDraw);
 			}
 
@@ -510,67 +536,58 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public abstract void ResizeFromOriginal(double aspect);
 
-		virtual public DisplayItemBaseControl GetSetupControl()
+		public DisplayItemBaseControl GetSetupControl()
 		{
 			Shapes.DisplayItemBaseControl setupControl = null;
 
-            if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewSingle")
-            {
-                setupControl = new Shapes.PreviewSingleSetupControl(this);
-            }
-            else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewLine")
-            {
-                setupControl = new Shapes.PreviewLineSetupControl(this);
-            }
-            else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewRectangle")
-            {
-                setupControl = new Shapes.PreviewRectangleSetupControl(this);
-            }
-            else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewEllipse")
-            {
-                setupControl = new Shapes.PreviewEllipseSetupControl(this);
-            }
-            else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewArch")
-            {
-                setupControl = new Shapes.PreviewArchSetupControl(this);
-            }
-            else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewMegaTree")
-            {
-                setupControl = new Shapes.PreviewMegaTreeSetupControl(this);
-            }
-            else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewTriangle")
-            {
-                setupControl = new Shapes.PreviewTriangleSetupControl(this);
-            }
-            else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewFlood")
-            {
-                setupControl = new Shapes.PreviewFloodSetupControl(this);
-            }
-            else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewCane")
-            {
-                setupControl = new Shapes.PreviewCaneSetupControl(this);
-            }
-            else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewStar")
-            {
-                setupControl = new Shapes.PreviewStarSetupControl(this);
-            }
+			if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewSingle") {
+				setupControl = new Shapes.PreviewSingleSetupControl(this);
+			}
+			else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewLine") {
+				setupControl = new Shapes.PreviewLineSetupControl(this);
+			}
+			else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewRectangle") {
+				setupControl = new Shapes.PreviewRectangleSetupControl(this);
+			}
+			else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewEllipse") {
+				setupControl = new Shapes.PreviewEllipseSetupControl(this);
+			}
+			else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewArch") {
+				setupControl = new Shapes.PreviewArchSetupControl(this);
+			}
+			else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewMegaTree") {
+				setupControl = new Shapes.PreviewMegaTreeSetupControl(this);
+			}
+			else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewTriangle") {
+				setupControl = new Shapes.PreviewTriangleSetupControl(this);
+			}
+			else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewFlood") {
+				setupControl = new Shapes.PreviewFloodSetupControl(this);
+			}
+			else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewCane") {
+				setupControl = new Shapes.PreviewCaneSetupControl(this);
+			}
+			else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewStar") {
+				setupControl = new Shapes.PreviewStarSetupControl(this);
+			}
             else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewStarBurst")
             {
                 setupControl = new Shapes.PreviewStarBurstSetupControl(this);
             }
             else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewNet")
             {
-                setupControl = new Shapes.PreviewNetSetupControl(this);
-            }
-            else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewCustom")
+				setupControl = new Shapes.PreviewNetSetupControl(this);
+			}
+			else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewCustom") {
+				setupControl = new Shapes.PreviewCustomSetupControl(this);
+			}
+			else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewPixelGrid") {
+				setupControl = new Shapes.PreviewPixelGridSetupControl(this);
+			}
+            else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewIcicle")
             {
-                setupControl = new Shapes.PreviewCustomSetupControl(this);
+                setupControl = new Shapes.PreviewIcicleSetupControl(this);
             }
-            else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewPixelGrid")
-            {
-                setupControl = new Shapes.PreviewPixelGridSetupControl(this);
-            }
-              
 
 			return setupControl;
 		}

@@ -1276,6 +1276,23 @@ namespace VixenApplication.Setup
 				PasteClipboardFilters(Cursor.Position);
 				e.Handled = true;
 			}
+
+			// Ctrl X is Cut and needs to Copy to clipboard and remove items.
+			if (e.KeyCode == Keys.X && e.Modifiers == Keys.Control)
+			{
+				CopySelectedFiltersToClipboard();
+				foreach (var shape in diagramDisplay.SelectedShapes)
+				{
+					if (shape is DataFlowConnectionLine)
+					{
+						_DeleteShapeAndAssociatedComponents(shape);
+					} else if (shape is FilterShape)
+					{
+						_DeleteShapeAndAssociatedComponents(shape);
+					}
+				}
+				e.Handled = true;
+			}
 		}
 
 		private void displayDiagram_ShapeDoubleClick(object sender, DiagramPresenterShapeClickEventArgs e)

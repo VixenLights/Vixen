@@ -784,7 +784,7 @@ namespace ZedGraph
 				_graphObjList.Draw(g, this, scaleFactor, ZOrder.E_BehindCurves);
 
 				// Clip the points to the actual plot area
-				g.SetClip(_chart._rect);
+				//g.SetClip(_chart._rect);
 				_curveList.Draw(g, this, scaleFactor);
 				g.SetClip(_rect);
 			}
@@ -925,9 +925,9 @@ namespace ZedGraph
 			//float spaceY2 = 0;
 
 			// actual minimum axis space for the left side of the chart rect
-			float minSpaceL = 0;
+			float minSpaceL = 5;
 			// actual minimum axis space for the right side of the chart rect
-			float minSpaceR = 0;
+			float minSpaceR = 5;
 			// actual minimum axis space for the bottom side of the chart rect
 			float minSpaceB = 0;
 			// actual minimum axis space for the top side of the chart rect
@@ -1497,6 +1497,16 @@ namespace ZedGraph
 		#region General Utility Methods
 
 		/// <summary>
+		/// Gets the rectangle of the chart with an extra buffer around the edge
+		/// </summary>
+		/// <param name="bufferSize"></param>
+		/// <returns></returns>
+		public RectangleF GetChartBufferedRectangleF(int bufferSize)
+		{
+			return new RectangleF(_chart._rect.X - bufferSize, _chart._rect.Y - bufferSize, _chart._rect.Width + 2 * bufferSize, _chart._rect.Height + 2 * bufferSize);
+		}
+
+		/// <summary>
 		/// Transform a data point from the specified coordinate type
 		/// (<see cref="CoordType"/>) to screen coordinates (pixels).
 		/// </summary>
@@ -2001,7 +2011,9 @@ namespace ZedGraph
 			iNearest = -1;
 
 			// If the point is outside the ChartRect, always return false
-			if (!_chart._rect.Contains(mousePt))
+			//JU function for Vixen allow a bit of a buffer around the outside so the points on the edge can be detected easier.
+		
+			if (!GetChartBufferedRectangleF(5).Contains(mousePt))
 				return false;
 
 			double x, x2;
