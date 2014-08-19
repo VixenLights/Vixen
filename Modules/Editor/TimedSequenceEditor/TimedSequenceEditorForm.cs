@@ -15,6 +15,7 @@ using Common.Controls.Timeline;
 using Common.Resources.Properties;
 using NLog;
 using Vixen;
+using Vixen.Cache.Sequence;
 using Vixen.Execution;
 using Vixen.Execution.Context;
 using Vixen.Module;
@@ -107,6 +108,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		
 		//Used for color collections
 		private static Random rnd = new Random();
+		private PreCachingSequenceEngine _preCachingSequenceEngine;
 
 		#endregion
 
@@ -4497,6 +4499,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			System.Diagnostics.Process.Start("http://www.vixenlights.com/vixen-3-documentation/sequencer/");
 		}
+		private void exportToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+            ExportDialog ed = new ExportDialog(Sequence);
+            if (ed.ShowDialog() == DialogResult.OK)
+            {
+
+            }
+    }
+
+		}
+
+
+
     }
 
 	[Serializable]

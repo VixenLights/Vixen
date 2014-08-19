@@ -19,6 +19,7 @@ namespace Vixen.Sys.Managers
 		private MillisecondsValue _contextUpdateWaitValue = new MillisecondsValue("   Contexts wait");
 		private Stopwatch _stopwatch = Stopwatch.StartNew();
 		private HashSet<Guid> _affectedElements = new HashSet<Guid>(); 
+		private PreCachingSequenceContext _preCachingSequenceContext;
 
 		public event EventHandler<ContextEventArgs> ContextCreated;
 		public event EventHandler<ContextEventArgs> ContextReleased;
@@ -36,6 +37,22 @@ namespace Vixen.Sys.Managers
 			var context = new LiveContext(name);
 			_AddContext(context);
 			return context;
+			} else if (!_instances.ContainsKey(_systemLiveContext.Id))
+			{
+				_AddContext(_preCachingSequenceContext);
+		}
+
+		public PreCachingSequenceContext GetCacheCompileContext()
+		{
+			if (_preCachingSequenceContext == null)
+			{
+				_preCachingSequenceContext = new PreCachingSequenceContext("Compiler");
+				_AddContext(_preCachingSequenceContext);
+			}else if (!_instances.ContainsKey(_preCachingSequenceContext.Id))
+			{
+				_AddContext(_preCachingSequenceContext);
+			}
+			return _preCachingSequenceContext;
 		}
 
 		public IProgramContext CreateProgramContext(ContextFeatures contextFeatures, IProgram program)
@@ -66,6 +83,7 @@ namespace Vixen.Sys.Managers
 				context.Sequence = sequence;
 				_AddContext(context);
 			}
+			VixenSystem.Instrumentation.AddValue(_contextUpdateTimeValue);
 			return context;
 		}
 
@@ -86,13 +104,32 @@ namespace Vixen.Sys.Managers
 			}
 		}
 
+		public HashSet<Guid> UpdateCacheCompileContext(TimeSpan time)
+		{
+			HashSet<Guid> elementsAffected = null;
+			_stopwatch.Restart();
+			try
+			{
+				elementsAffected =_preCachingSequenceContext.UpdateElementStates(time);
+			} catch (Exception ee)
+			{
+				Logging.ErrorException(ee.Message, ee);
+			}
+			_contextUpdateTimeValue.Set(_stopwatch.ElapsedMilliseconds);
+			return elementsAffected;
+
+		}
+
 		public HashSet<Guid> Update()
 		{
 			_stopwatch.Restart();
 			_affectedElements.Clear();
 			foreach( var context in _instances.Values.Where(x => x.IsRunning))
 			{
-				try
+				//_contextUpdateWaitValue.Set(_stopwatch.ElapsedMilliseconds);
+
+				_instances.Values.Where(x => !(x.GetType() == typeof(PreCachingSequenceContext))).AsParallel().ForAll(context =>
+				//foreach( var context in _instances.Values)
 				{
 					// Get a snapshot time value for this update.
 					TimeSpan contextTime = context.GetTimeSnapshot();

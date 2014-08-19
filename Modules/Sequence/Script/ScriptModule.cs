@@ -1,4 +1,6 @@
-﻿using Common.ScriptSequence;
+﻿using System;
+using Common.ScriptSequence;
+using Vixen.Cache.Sequence;
 using Vixen.Execution;
 using Vixen.IO;
 using Vixen.Module.SequenceType;
@@ -11,6 +13,11 @@ namespace VixenModules.SequenceType.Script
 		public override ISequence CreateSequence()
 		{
 			return new ScriptSequenceType();
+		}
+
+		public override ISequenceCache CreateSequenceCache()
+		{
+			throw new NotImplementedException();
 		}
 
 		public override IContentMigrator CreateMigrator()

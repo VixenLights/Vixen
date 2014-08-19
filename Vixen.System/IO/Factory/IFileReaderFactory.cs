@@ -3,5 +3,6 @@
 	internal interface IFileReaderFactory
 	{
 		IFileReader CreateFileReader();
+		IFileReader CreateBinaryFileReader();
 	}
 }

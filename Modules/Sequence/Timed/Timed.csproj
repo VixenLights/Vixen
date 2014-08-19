@@ -43,6 +43,7 @@
     <Compile Include="ColorCollection.cs" />
     <Compile Include="SequenceMigrator.cs" />
     <Compile Include="TimedSequence.cs" />
+    <Compile Include="TimedSequenceCache.cs" />
     <Compile Include="TimedSequenceData.cs" />
     <Compile Include="TimedSequenceDescriptor.cs" />
     <Compile Include="TimedSequenceTypeModule.cs" />

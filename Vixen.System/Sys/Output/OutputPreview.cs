@@ -25,6 +25,11 @@ namespace Vixen.Sys.Output
 			_outputModuleConsumer = outputModuleConsumer;
 		}
 
+		public void UpdateCommands()
+		{
+			//Not needed
+		}
+
 		public void Update()
 		{
 			_PreviewModule.UpdateState();

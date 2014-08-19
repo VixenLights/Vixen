@@ -79,6 +79,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cache\Event\CacheEventArgs.cs" />
+    <Compile Include="Cache\Event\CacheStartedEventArgs.cs" />
+    <Compile Include="Cache\Sequence\ISequenceCache.cs" />
+    <Compile Include="Cache\Sequence\PreCachingSequenceEngine.cs" />
+    <Compile Include="Cache\Sequence\FixedIntervalManualTiming.cs" />
     <Compile Include="Commands\16BitCommand.cs" />
     <Compile Include="Commands\32BitCommand.cs" />
     <Compile Include="Commands\64BitCommand.cs" />
@@ -128,6 +133,8 @@
     <Compile Include="Execution\ContextFeatures.cs" />
     <Compile Include="Execution\ContextCaching.cs" />
     <Compile Include="Execution\ContextTargetType.cs" />
+    <Compile Include="Execution\Context\PreCachingSequenceContext.cs" />
+    <Compile Include="Execution\DataSource\EffectNodeDataPump.cs" />
     <Compile Include="Execution\DataSource\IMutableDataSource.cs" />
     <Compile Include="Execution\DataSource\SequenceDataPump.cs" />
     <Compile Include="Execution\IElementStateBuilder.cs" />
@@ -150,6 +157,11 @@
     <Compile Include="Execution\Context\ISequenceContext.cs" />
     <Compile Include="Execution\Context\SequenceContext.cs" />
     <Compile Include="Execution\QueuingSequenceEnumerator.cs" />
+    <Compile Include="Export\CSVWriter.cs" />
+    <Compile Include="Export\Export.cs" />
+    <Compile Include="Export\ExportCommandHandler.cs" />
+    <Compile Include="Export\FSEQWriter.cs" />
+    <Compile Include="Export\IExport.cs" />
     <Compile Include="Extensions\IntentNodeCollection.cs" />
     <Compile Include="Factory\CommandOutputFactory.cs" />
     <Compile Include="Factory\ControllerFactory.cs" />
@@ -170,6 +182,10 @@
     <Compile Include="Interpolator\LightingValueInterpolator.cs" />
     <Compile Include="Interpolator\PositionValueInterpolator.cs" />
     <Compile Include="Interpolator\StaticValueInterpolator.cs" />
+    <Compile Include="IO\Binary\BinaryFileReader.cs" />
+    <Compile Include="IO\Binary\BinaryFileWriter.cs" />
+    <Compile Include="IO\Binary\SequenceCache\SequenceCacheBinaryReader.cs" />
+    <Compile Include="IO\Binary\SequenceCache\SequenceCacheBinaryWriter.cs" />
     <Compile Include="IO\Factory\ContentMigratorFactory.cs" />
     <Compile Include="IO\Factory\FileReaderFactory.cs" />
     <Compile Include="IO\Factory\FileWriterFactory.cs" />
@@ -196,6 +212,7 @@
     <Compile Include="IO\Loader\ElementNodeTemplateLoader.cs" />
     <Compile Include="IO\Loader\ModuleStoreLoader.cs" />
     <Compile Include="IO\Loader\ProgramLoader.cs" />
+    <Compile Include="IO\Loader\SequenceCacheLoader.cs" />
     <Compile Include="IO\Loader\SequenceLoader.cs" />
     <Compile Include="IO\Loader\SystemContextLoader.cs" />
     <Compile Include="IO\MigratingObjectLoaderService.cs" />
@@ -207,6 +224,7 @@
     <Compile Include="IO\Persistor\ElementNodeTemplatePersistor.cs" />
     <Compile Include="IO\Persistor\ModuleStorePersistor.cs" />
     <Compile Include="IO\Persistor\ProgramPersistor.cs" />
+    <Compile Include="IO\Persistor\SequenceCachePersister.cs" />
     <Compile Include="IO\Persistor\SequencePersistor.cs" />
     <Compile Include="IO\Persistor\SystemContextPersistor.cs" />
     <Compile Include="IO\Xml\ChannelNodeTemplate\ElementNodeTemplateXElementMigrator.cs" />
@@ -290,6 +308,7 @@
     <Compile Include="Sys\Managers\OutputDeviceExecution.cs" />
     <Compile Include="Sys\Managers\OutputDeviceFacade.cs" />
     <Compile Include="Sys\Managers\SmartOutputControllerManager.cs" />
+    <Compile Include="Sys\OutputStateListAggregator.cs" />
     <Compile Include="Sys\Output\BasicOutputModuleExecutionControl.cs" />
     <Compile Include="Services\EditorService.cs" />
     <Compile Include="Services\ModuleTemplateService.cs" />
@@ -849,6 +868,7 @@
   <ItemGroup>
     <Compile Include="Commands\StringCommand.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy "$(SolutionDir)\Release Notes.txt" "$(OutDir)"</PostBuildEvent>

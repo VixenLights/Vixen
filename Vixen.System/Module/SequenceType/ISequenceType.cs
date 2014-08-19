@@ -1,4 +1,5 @@
-﻿using Vixen.Execution;
+﻿using Vixen.Cache.Sequence;
+using Vixen.Execution;
 using Vixen.IO;
 using Vixen.Sys;
 
@@ -12,6 +13,7 @@ namespace Vixen.Module.SequenceType
 		string FileExtension { get; }
 
 		ISequence CreateSequence();
+		ISequenceCache CreateSequenceCache();
 		IContentMigrator CreateMigrator();
 		ISequenceExecutor CreateExecutor();
 		int ClassVersion { get; }

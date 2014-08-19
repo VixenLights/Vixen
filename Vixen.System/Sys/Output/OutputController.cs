@@ -146,6 +146,32 @@ namespace Vixen.Sys.Output
 			extractMs = _extractMs;
 			deviceMs = _deviceMs;
 		}
+
+		/// <summary>
+		/// Just update the commands and don't send them out
+		/// </summary>
+		public void UpdateCommands()
+		{
+			if (VixenSystem.ControllerLinking.IsRootController(this) && _ControllerChainModule != null)
+			{
+				_outputMediator.LockOutputs();
+				try
+				{
+					foreach (OutputController controller in this)
+					{
+						foreach (var x in controller.Outputs)
+						{
+							x.Update();
+							x.Command = _GenerateOutputCommand(x);
+						}
+					}
+				} finally
+				{
+					_outputMediator.UnlockOutputs();
+				}
+			}
+
+		}
 	
 		public void Update()
 		{
@@ -166,7 +192,7 @@ namespace Vixen.Sys.Output
 						//{
 							foreach( var x in controller.Outputs)
 							{
-								x.Update();
+								x.Update();								
 								x.Command = _GenerateOutputCommand(x);
 							}
 						//}
@@ -309,8 +335,17 @@ namespace Vixen.Sys.Output
 		private ICommand _GenerateOutputCommand(CommandOutput output)
 		{
 			if (output.State != null) {
+
 				IDataPolicy effectiveDataPolicy = _dataPolicyProvider.GetDataPolicyForOutput(output);
-				return effectiveDataPolicy.GenerateCommand(output.State);
+				ICommand command = effectiveDataPolicy.GenerateCommand(output.State);
+				if (command != null)
+				{
+					List<ICommand> commands = new List<ICommand>();
+					commands.Add(command);
+					CommandsDataFlowData data = new CommandsDataFlowData(commands);
+					command = effectiveDataPolicy.GenerateCommand(data);
+				}
+				return command;
 			}
 			return null;
 		}

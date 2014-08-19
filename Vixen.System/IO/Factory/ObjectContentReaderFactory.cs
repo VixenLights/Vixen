@@ -1,4 +1,5 @@
-﻿using Vixen.IO.Xml.ElementNodeTemplate;
+﻿using Vixen.IO.Binary.SequenceCache;
+using Vixen.IO.Xml.ElementNodeTemplate;
 using Vixen.IO.Xml.ModuleStore;
 using Vixen.IO.Xml.Program;
 using Vixen.IO.Xml.Sequence;
@@ -48,6 +49,11 @@ namespace Vixen.IO.Factory
 		public IObjectContentReader CreateSequenceContentReader(string fileType)
 		{
 			return new SequenceXElementReader(fileType);
+		}
+
+		public IObjectContentReader CreateSequenceCacheContentReader(string fileType)
+		{
+			return new SequenceCacheBinaryReader();
 		}
 	}
 }

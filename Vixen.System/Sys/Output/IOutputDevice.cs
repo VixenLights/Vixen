@@ -11,6 +11,10 @@ namespace Vixen.Sys.Output
 		Guid ModuleId { get; }
 		string Name { get; set; }
 		void Update();
+		/// <summary>
+		/// Only update the commands, do not send them out.
+		/// </summary>
+		void UpdateCommands();
 		int UpdateInterval { get; set; }
 		IOutputDeviceUpdateSignaler UpdateSignaler { get; }
 	}
