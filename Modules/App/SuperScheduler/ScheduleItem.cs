@@ -307,7 +307,7 @@ namespace VixenModules.App.SuperScheduler
 
 			Show.GetItems(Shows.ShowItemType.All).AsParallel().WithCancellation(tokenSourcePreProcessAll.Token).ForAll(
 				item => {
-					//	foreach (Shows.ShowItem item in Show.GetItems(Shows.ShowItemType.All))
+					//foreach (Shows.ShowItem item in Show.GetItems(Shows.ShowItemType.All))
 					//{
 					ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Pre-processing: " + item.Name);
 					var action = item.GetAction();
@@ -315,8 +315,8 @@ namespace VixenModules.App.SuperScheduler
 					if (!action.PreProcessingCompleted) {
 						action.PreProcess(tokenSourcePreProcessAll);
 					}
-					if (tokenSourcePreProcessAll != null && tokenSourcePreProcessAll.IsCancellationRequested)
-						return;
+					//if (tokenSourcePreProcessAll != null && tokenSourcePreProcessAll.IsCancellationRequested)
+					//	return;
 					//};	
 
 				});

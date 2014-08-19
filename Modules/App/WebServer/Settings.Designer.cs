@@ -37,6 +37,8 @@
 			this.btnCancel = new System.Windows.Forms.Button();
 			this.btnOk = new System.Windows.Forms.Button();
 			this.label3 = new System.Windows.Forms.Label();
+			this.lblDisclaimer = new System.Windows.Forms.Label();
+			this.textBox1 = new System.Windows.Forms.TextBox();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.SuspendLayout();
@@ -44,12 +46,25 @@
 			// numericUpDown1
 			// 
 			this.numericUpDown1.Location = new System.Drawing.Point(152, 96);
+			this.numericUpDown1.Maximum = new decimal(new int[] {
+            64000,
+            0,
+            0,
+            0});
+			this.numericUpDown1.Minimum = new decimal(new int[] {
+            8000,
+            0,
+            0,
+            0});
 			this.numericUpDown1.Name = "numericUpDown1";
 			this.numericUpDown1.Size = new System.Drawing.Size(53, 20);
 			this.numericUpDown1.TabIndex = 0;
+			this.numericUpDown1.Value = new decimal(new int[] {
+            8000,
+            0,
+            0,
+            0});
 			this.numericUpDown1.ValueChanged += new System.EventHandler(this.ValueChanged);
-			this.numericUpDown1.Minimum = 8000;
-			this.numericUpDown1.Maximum = 64000;
 			// 
 			// label1
 			// 
@@ -66,7 +81,7 @@
 			this.checkBox1.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.checkBox1.Location = new System.Drawing.Point(97, 122);
 			this.checkBox1.Name = "checkBox1";
-			this.checkBox1.Size = new System.Drawing.Size(65, 17);
+			this.checkBox1.Size = new System.Drawing.Size(73, 17);
 			this.checkBox1.TabIndex = 3;
 			this.checkBox1.Text = "IsEnabled";
 			this.checkBox1.UseVisualStyleBackColor = true;
@@ -85,10 +100,10 @@
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Font = new System.Drawing.Font("Arial Rounded MT Bold", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.label2.Location = new System.Drawing.Point(122, 47);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(127, 24);
+			this.label2.Size = new System.Drawing.Size(125, 25);
 			this.label2.TabIndex = 5;
 			this.label2.Text = "Web Server";
 			// 
@@ -106,7 +121,7 @@
 			// btnCancel
 			// 
 			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.btnCancel.Location = new System.Drawing.Point(197, 195);
+			this.btnCancel.Location = new System.Drawing.Point(197, 238);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(75, 23);
 			this.btnCancel.TabIndex = 8;
@@ -116,7 +131,7 @@
 			// btnOk
 			// 
 			this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.btnOk.Location = new System.Drawing.Point(116, 195);
+			this.btnOk.Location = new System.Drawing.Point(116, 238);
 			this.btnOk.Name = "btnOk";
 			this.btnOk.Size = new System.Drawing.Size(75, 23);
 			this.btnOk.TabIndex = 9;
@@ -132,11 +147,32 @@
 			this.label3.TabIndex = 10;
 			this.label3.Text = "Point your browser here:";
 			// 
+			// lblDisclaimer
+			// 
+			this.lblDisclaimer.AutoSize = true;
+			this.lblDisclaimer.Location = new System.Drawing.Point(12, 180);
+			this.lblDisclaimer.Name = "lblDisclaimer";
+			this.lblDisclaimer.Size = new System.Drawing.Size(0, 13);
+			this.lblDisclaimer.TabIndex = 11;
+			// 
+			// textBox1
+			// 
+			this.textBox1.BackColor = System.Drawing.SystemColors.Control;
+			this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			this.textBox1.Location = new System.Drawing.Point(13, 193);
+			this.textBox1.Multiline = true;
+			this.textBox1.Name = "textBox1";
+			this.textBox1.Size = new System.Drawing.Size(259, 39);
+			this.textBox1.TabIndex = 12;
+			this.textBox1.Text = "Turn off the web server when not in use to conserve resources.";
+			// 
 			// Settings
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(284, 228);
+			this.ClientSize = new System.Drawing.Size(284, 273);
+			this.Controls.Add(this.textBox1);
+			this.Controls.Add(this.lblDisclaimer);
 			this.Controls.Add(this.label3);
 			this.Controls.Add(this.btnOk);
 			this.Controls.Add(this.btnCancel);
@@ -166,5 +202,7 @@
 		private System.Windows.Forms.Button btnCancel;
 		private System.Windows.Forms.Button btnOk;
 		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.Label lblDisclaimer;
+		private System.Windows.Forms.TextBox textBox1;
 	}
 }

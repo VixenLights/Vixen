@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Diagnostics;
 using System.Threading;
+using System.Threading.Tasks;
 using Vixen.Execution;
 using Vixen.Execution.Context;
 using Vixen.Sys;
@@ -92,10 +93,8 @@ namespace VixenModules.App.Shows
 					ISequenceContext context = VixenSystem.Contexts.CreateSequenceContext(new ContextFeatures(ContextCaching.NoCaching), sequence);
 
 					// Parallel doesn't work here. Causes multiple sequences to be run at the same time
-					foreach (IEffectNode effectNode in sequence.SequenceData.EffectData.Cast<IEffectNode>())
-					{
-						effectNode.Effect.PreRender();
-					}
+					//foreach (IEffectNode effectNode in sequence.SequenceData.EffectData.Cast<IEffectNode>())
+					Parallel.ForEach(sequence.SequenceData.EffectData.Cast<IEffectNode>(), effectNode => effectNode.Effect.PreRender());
 
 					context.SequenceEnded += sequence_Ended;
 

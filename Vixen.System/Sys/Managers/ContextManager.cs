@@ -18,7 +18,7 @@ namespace Vixen.Sys.Managers
 		private MillisecondsValue _contextUpdateTimeValue = new MillisecondsValue("   Contexts update");
 		private MillisecondsValue _contextUpdateWaitValue = new MillisecondsValue("   Contexts wait");
 		private Stopwatch _stopwatch = Stopwatch.StartNew();
-		private LiveContext _systemLiveContext;
+		private HashSet<Guid> _affectedElements = new HashSet<Guid>(); 
 
 		public event EventHandler<ContextEventArgs> ContextCreated;
 		public event EventHandler<ContextEventArgs> ContextReleased;
@@ -30,13 +30,12 @@ namespace Vixen.Sys.Managers
 			//VixenSystem.Instrumentation.AddValue(_contextUpdateWaitValue);
 		}
 
-		public LiveContext GetSystemLiveContext()
+		public LiveContext CreateLiveContext(string name)
 		{
-			if (_systemLiveContext == null) {
-				_systemLiveContext = new LiveContext("System");
-				_AddContext(_systemLiveContext);
-			}
-			return _systemLiveContext;
+			if (string.IsNullOrEmpty(name)) throw new ArgumentNullException("name");
+			var context = new LiveContext(name);
+			_AddContext(context);
+			return context;
 		}
 
 		public IProgramContext CreateProgramContext(ContextFeatures contextFeatures, IProgram program)
@@ -89,33 +88,30 @@ namespace Vixen.Sys.Managers
 
 		public HashSet<Guid> Update()
 		{
-			var affectedElements = new HashSet<Guid>();
 			_stopwatch.Restart();
-			lock (_instances)
+			_affectedElements.Clear();
+			foreach( var context in _instances.Values.Where(x => x.IsRunning))
 			{
-				//_contextUpdateWaitValue.Set(_stopwatch.ElapsedMilliseconds);
-
-				_instances.Values.AsParallel().ForAll(context =>
-				//foreach( var context in _instances.Values)
+				try
 				{
-					try {
-						// Get a snapshot time value for this update.
-						TimeSpan contextTime = context.GetTimeSnapshot();
-						var contextAffectedElements = context.UpdateElementStates(contextTime);
-						if (contextAffectedElements != null)
-						{
-							//Aggregate the effected elements so we can do more selective work downstream
-							affectedElements.AddRange(contextAffectedElements);	
-						}
-
-					} catch (Exception ee) {
-						Logging.ErrorException(ee.Message, ee);
+					// Get a snapshot time value for this update.
+					TimeSpan contextTime = context.GetTimeSnapshot();
+					var contextAffectedElements = context.UpdateElementStates(contextTime);
+					if (contextAffectedElements != null)
+					{
+						//Aggregate the effected elements so we can do more selective work downstream
+						_affectedElements.AddRange(contextAffectedElements);
 					}
-				});
-				//}
-				_contextUpdateTimeValue.Set(_stopwatch.ElapsedMilliseconds);
+
+				}
+				catch (Exception ee)
+				{
+					Logging.ErrorException(ee.Message, ee);
+				}
 			}
-			return affectedElements;
+			
+			_contextUpdateTimeValue.Set(_stopwatch.ElapsedMilliseconds);
+			return _affectedElements;
 		}
 
 		public IEnumerator<IContext> GetEnumerator()
@@ -165,12 +161,8 @@ namespace Vixen.Sys.Managers
 		private void _ReleaseContext(IContext context)
 		{
 			context.Stop();
-			//lock (_instances)
-			//{
-				IContext remval = null;
-				_instances.TryRemove(context.Id, out remval);
-			//	_instances.Remove(context.Id);
-			//}
+			IContext remval = null;
+			_instances.TryRemove(context.Id, out remval);
 			context.Dispose();
 			OnContextReleased(new ContextEventArgs(context));
 		}

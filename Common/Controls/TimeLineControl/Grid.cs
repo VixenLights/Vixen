@@ -1772,6 +1772,8 @@ namespace Common.Controls.Timeline
 			_RenderProgressChanged(e.ProgressPercentage);
 		}
 
+        //This whole thing need to be redone as a task once we get to .NET 4.5 where we can easily report progress
+        //from it.
 		private void renderWorker_DoWork(object sender, DoWorkEventArgs e)
 		{
 			BackgroundWorker worker = sender as BackgroundWorker;
@@ -1779,51 +1781,79 @@ namespace Common.Controls.Timeline
 				Logging.Error("renderWorker: sender was null");
 				return;
 			}
+            CancellationTokenSource cts = new CancellationTokenSource();
+            ParallelOptions po = new ParallelOptions();
+            po.CancellationToken = cts.Token;
+            po.MaxDegreeOfParallelism = Environment.ProcessorCount;
 
 			double total = 0;
-			try
-			{
-				if(_blockingElementQueue !=null) {
-					foreach (Element element in _blockingElementQueue.GetConsumingEnumerable()) {
-						// This will likely never be hit: the blocking element queue above will always block waiting for more
-						// elements, until it completes because CompleteAdding() is called. At which point it will exit the loop,
-						// as it will be empty, and this function will terminate normally.
-						if (worker.CancellationPending) {
-							Logging.Warn("render worker: cancellation detected. Aborting.");
-							break;
-						}
-						try {
-							//Size size = new Size((int) Math.Ceiling(timeToPixels(element.Duration)), element.Row.Height - 1);
-							element.RenderElement();
-							if (!SuppressInvalidate) {
-								if (element.EndTime > VisibleTimeStart && element.StartTime < VisibleTimeEnd) {
-									Invalidate();
-								}
-							}
-							if (!_blockingElementQueue.Any()) {
-								total = 0;
-								if (!SuppressInvalidate) {
-									Invalidate(); //Invalidate when the queue is empty just to make sure everything is up to date.
-								}
-								worker.ReportProgress(100);
-							}
-							else {
-								double currentTotal = _blockingElementQueue.Count;
-								total = Math.Max(currentTotal, total);
-								int progress = (int) (((total - currentTotal) / total) * 100);
-								worker.ReportProgress(progress);
-							}
-						}
-						catch (Exception ex) {
-							Logging.ErrorException("Error in rendering.", ex);
-						}
-					}
-				}
-			} catch (Exception exception) {
-				// there may be some threading exceptions; if so, they're unexpected.  Log them.
-				Logging.ErrorException("background rendering worker exception:", exception);
-			}
-			renderWorkerFinished.Set();
+		    try
+		    {
+		        if (_blockingElementQueue != null)
+		        {
+                    //Use or fancy multi cpu boxes more effectively.
+		            //foreach (Element element in _blockingElementQueue.GetConsumingEnumerable()) {
+		            Parallel.ForEach(_blockingElementQueue.GetConsumingPartitioner(), po, element =>
+		            {
+                        
+		                // This will likely never be hit: the blocking element queue above will always block waiting for more
+		                // elements, until it completes because CompleteAdding() is called. At which point it will exit the loop,
+		                // as it will be empty, and this function will terminate normally.
+		                if (worker.CancellationPending)
+		                {
+		                    Logging.Warn("render worker: cancellation detected. Aborting.");
+                            cts.Cancel(false);
+		                    //break;
+		                }
+		                try
+		                {
+		                    //Size size = new Size((int) Math.Ceiling(timeToPixels(element.Duration)), element.Row.Height - 1);
+		                    element.RenderElement();
+		                    if (!SuppressInvalidate)
+		                    {
+		                        if (element.EndTime > VisibleTimeStart && element.StartTime < VisibleTimeEnd)
+		                        {
+		                            Invalidate();
+		                        }
+		                    }
+		                    
+		                    double currentTotal = _blockingElementQueue.Count;
+		                    total = Math.Max(currentTotal, total);
+		                    int progress = (int) (((total - currentTotal)/total)*100);
+                            //this is a bit of a kludge until we get to .NET 4.5 and can do this whole thing
+                            //in a task. Reporting progress from Tasks is not well supported until 4.5
+                            //With the multi-threading the last element can be processed before the count is 
+                            //fully updated
+		                    if (progress >= 99 || _blockingElementQueue.Count==0)
+		                    {
+                                total = 0;
+		                        progress = 100;
+                                if (!SuppressInvalidate)
+                                {
+                                    Invalidate();
+                                    //Invalidate when the queue is empty just to make sure everything is up to date.
+                                }    
+		                    }
+		                    worker.ReportProgress(progress);
+		                    
+		                }
+		                catch (Exception ex)
+		                {
+		                    Logging.ErrorException("Error in rendering.", ex);
+		                }
+		            });
+		        }
+		    }
+		    catch (OperationCanceledException ce)
+		    {
+                Logging.InfoException("Canceled render thread" , ce);
+		    }
+		    catch (Exception exception)
+		    {
+		        // there may be some threading exceptions; if so, they're unexpected.  Log them.
+		        Logging.ErrorException("background rendering worker exception:", exception);
+		    }
+		    renderWorkerFinished.Set();
 		}
 
 		/// <summary>
