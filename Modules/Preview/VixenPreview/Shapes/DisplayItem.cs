@@ -32,6 +32,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 	[KnownType(typeof (PreviewCustom))]
 	[KnownType(typeof (PreviewPixelGrid))]
     [KnownType(typeof (PreviewIcicle))]
+    [KnownType(typeof(PreviewPolyLine))]
 
 	public class DisplayItem : IHandler<IIntentState<LightingValue>>, IHandler<IIntentState<CommandValue>>, IDisposable
 	{

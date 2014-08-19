@@ -155,6 +155,8 @@ namespace VixenModules.Preview.VixenPreview {
 			buttonPixelGrid.FlatAppearance.BorderColor = buttonSelect.BackColor;
             buttonIcicle.BackColor = buttonSelect.BackColor;
             buttonIcicle.FlatAppearance.BorderColor = buttonSelect.BackColor;
+            buttonPolyLine.BackColor = buttonSelect.BackColor;
+            buttonPolyLine.FlatAppearance.BorderColor = buttonSelect.BackColor;
         }
 
 		private void toolbarButton_Click(object sender, EventArgs e) {
@@ -193,6 +195,8 @@ namespace VixenModules.Preview.VixenPreview {
                 previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.PixelGrid;
             else if (button == buttonIcicle)
                 previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Icicle;
+            else if (button == buttonPolyLine)
+                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.PolyLine;
             //button.Enabled = false;
 			button.BackColor = Color.Gainsboro;
 			button.FlatAppearance.BorderColor = Color.Gainsboro;

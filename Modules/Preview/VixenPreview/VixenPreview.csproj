@@ -151,7 +151,14 @@
     <Compile Include="Shapes\PreviewCustomSetupControl.Designer.cs">
       <DependentUpon>PreviewCustomSetupControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Shapes\PreviewPolyLine.cs" />
     <Compile Include="Shapes\PreviewIcicle.cs" />
+    <Compile Include="Shapes\PreviewPolyLineSetupControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Shapes\PreviewPolyLineSetupControl.Designer.cs">
+      <DependentUpon>PreviewPolyLineSetupControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Shapes\PreviewIcicleSetupControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -341,6 +348,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Shapes\PreviewCustomSetupControl.resx">
       <DependentUpon>PreviewCustomSetupControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Shapes\PreviewPolyLineSetupControl.resx">
+      <DependentUpon>PreviewPolyLineSetupControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Shapes\PreviewIcicleSetupControl.resx">
       <DependentUpon>PreviewIcicleSetupControl.cs</DependentUpon>
