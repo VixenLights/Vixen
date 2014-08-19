@@ -129,8 +129,7 @@
             // progressLabel
             // 
             this.progressLabel.Name = "progressLabel";
-            this.progressLabel.Size = new System.Drawing.Size(53, 17);
-            this.progressLabel.Text = "Progress:";
+            this.progressLabel.Size = new System.Drawing.Size(0, 17);
             // 
             // exportProgressBar
             // 

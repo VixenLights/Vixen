@@ -32,6 +32,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
         private ExportNotifyType _currentState;
         private double _percentComplete = 0;
         private TimeSpan _curPos;
+        private bool _cancelled;
 
         #region Contructor
         public ExportDialog(ISequence sequence)
@@ -48,6 +49,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
             exportProgressBar.Visible = false;
             currentTimeLabel.Visible = false;
+
+            _cancelled = false;
 
             backgroundWorker1.DoWork += new DoWorkEventHandler(backgroundWorker1_DoWork);
             backgroundWorker1.ProgressChanged += new ProgressChangedEventHandler(backgroundWorker1_ProgressChanged);
@@ -138,6 +141,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
         private void startButton_Click(object sender, EventArgs e)
         {
             this.UseWaitCursor = true;
+            _cancelled = false;
 
             if (string.IsNullOrWhiteSpace(_sequenceFileName))
             {
@@ -176,6 +180,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
         private void cancelButton_Click(object sender, EventArgs e)
         {
+            _cancelled = true;
             _exportOps.Cancel();
         }
 
@@ -270,6 +275,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
             }
             else
             {
+                newStatus = message;
                 backgroundWorker1.CancelAsync();
             }
 
@@ -367,8 +373,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
             }
             else
             {
-                setWorkingState("", false);
-                MessageBox.Show("Export Complete!", "Status");
+                if (_cancelled == true)
+                {
+                    setWorkingState("Export Canceled", false);
+                }
+                else
+                {
+                    setWorkingState("Export Complete", false);
+                } 
             }
         }
 
