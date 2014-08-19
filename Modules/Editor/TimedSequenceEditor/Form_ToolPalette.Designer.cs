@@ -28,38 +28,102 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.listViewColors = new System.Windows.Forms.ListView();
-			this.buttonDeleteColor = new System.Windows.Forms.Button();
-			this.buttonNewColor = new System.Windows.Forms.Button();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabColors = new System.Windows.Forms.TabPage();
-			this.buttonEditColor = new System.Windows.Forms.Button();
+			this.toolStripColors = new System.Windows.Forms.ToolStrip();
+			this.toolStripButtonEditColor = new System.Windows.Forms.ToolStripButton();
+			this.toolStripButtonNewColor = new System.Windows.Forms.ToolStripButton();
+			this.toolStripButtonDeleteColor = new System.Windows.Forms.ToolStripButton();
+			this.listViewColors = new System.Windows.Forms.ListView();
 			this.tabCurves = new System.Windows.Forms.TabPage();
+			this.toolStripCurves = new System.Windows.Forms.ToolStrip();
+			this.toolStripButtonEditCurve = new System.Windows.Forms.ToolStripButton();
+			this.toolStripButtonNewCurve = new System.Windows.Forms.ToolStripButton();
+			this.toolStripButtonDeleteCurve = new System.Windows.Forms.ToolStripButton();
 			this.checkBoxLinkCurves = new System.Windows.Forms.CheckBox();
-			this.buttonEditCurve = new System.Windows.Forms.Button();
-			this.buttonDeleteCurve = new System.Windows.Forms.Button();
-			this.buttonNewCurve = new System.Windows.Forms.Button();
 			this.listViewCurves = new System.Windows.Forms.ListView();
 			this.tabGradients = new System.Windows.Forms.TabPage();
+			this.toolStripGradients = new System.Windows.Forms.ToolStrip();
+			this.toolStripButtonEditGradient = new System.Windows.Forms.ToolStripButton();
+			this.toolStripButtonNewGradient = new System.Windows.Forms.ToolStripButton();
+			this.toolStripButtonDeleteGradient = new System.Windows.Forms.ToolStripButton();
 			this.checkBoxLinkGradients = new System.Windows.Forms.CheckBox();
 			this.comboBoxGradientHandling = new System.Windows.Forms.ComboBox();
 			this.label1 = new System.Windows.Forms.Label();
-			this.buttonEditGradient = new System.Windows.Forms.Button();
-			this.buttonDeleteGradient = new System.Windows.Forms.Button();
-			this.buttonNewGradient = new System.Windows.Forms.Button();
 			this.listViewGradients = new System.Windows.Forms.ListView();
-			this.tabHelp = new System.Windows.Forms.TabPage();
-			this.linkToolPaletteDocumentation = new System.Windows.Forms.LinkLabel();
-			this.labelHelp = new System.Windows.Forms.Label();
-			this.tabEffects = new System.Windows.Forms.TabPage();
-			this.listViewEffects = new System.Windows.Forms.ListView();
 			this.tabControl1.SuspendLayout();
 			this.tabColors.SuspendLayout();
+			this.toolStripColors.SuspendLayout();
 			this.tabCurves.SuspendLayout();
+			this.toolStripCurves.SuspendLayout();
 			this.tabGradients.SuspendLayout();
-			this.tabHelp.SuspendLayout();
-			this.tabEffects.SuspendLayout();
+			this.toolStripGradients.SuspendLayout();
 			this.SuspendLayout();
+			// 
+			// tabControl1
+			// 
+			this.tabControl1.Controls.Add(this.tabColors);
+			this.tabControl1.Controls.Add(this.tabCurves);
+			this.tabControl1.Controls.Add(this.tabGradients);
+			this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tabControl1.Location = new System.Drawing.Point(0, 0);
+			this.tabControl1.Multiline = true;
+			this.tabControl1.Name = "tabControl1";
+			this.tabControl1.SelectedIndex = 0;
+			this.tabControl1.Size = new System.Drawing.Size(526, 390);
+			this.tabControl1.TabIndex = 6;
+			// 
+			// tabColors
+			// 
+			this.tabColors.Controls.Add(this.toolStripColors);
+			this.tabColors.Controls.Add(this.listViewColors);
+			this.tabColors.Location = new System.Drawing.Point(4, 22);
+			this.tabColors.Name = "tabColors";
+			this.tabColors.Size = new System.Drawing.Size(518, 364);
+			this.tabColors.TabIndex = 0;
+			this.tabColors.Text = "Colors";
+			this.tabColors.UseVisualStyleBackColor = true;
+			// 
+			// toolStripColors
+			// 
+			this.toolStripColors.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripButtonEditColor,
+            this.toolStripButtonNewColor,
+            this.toolStripButtonDeleteColor});
+			this.toolStripColors.Location = new System.Drawing.Point(0, 0);
+			this.toolStripColors.Name = "toolStripColors";
+			this.toolStripColors.Size = new System.Drawing.Size(518, 25);
+			this.toolStripColors.TabIndex = 3;
+			this.toolStripColors.Text = "Colors";
+			// 
+			// toolStripButtonEditColor
+			// 
+			this.toolStripButtonEditColor.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.toolStripButtonEditColor.Enabled = false;
+			this.toolStripButtonEditColor.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButtonEditColor.Name = "toolStripButtonEditColor";
+			this.toolStripButtonEditColor.Size = new System.Drawing.Size(63, 22);
+			this.toolStripButtonEditColor.Text = "Edit Color";
+			this.toolStripButtonEditColor.Click += new System.EventHandler(this.toolStripButtonEditColor_Click);
+			// 
+			// toolStripButtonNewColor
+			// 
+			this.toolStripButtonNewColor.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.toolStripButtonNewColor.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButtonNewColor.Name = "toolStripButtonNewColor";
+			this.toolStripButtonNewColor.Size = new System.Drawing.Size(67, 22);
+			this.toolStripButtonNewColor.Text = "New Color";
+			this.toolStripButtonNewColor.Click += new System.EventHandler(this.toolStripButtonNewColor_Click);
+			// 
+			// toolStripButtonDeleteColor
+			// 
+			this.toolStripButtonDeleteColor.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.toolStripButtonDeleteColor.Enabled = false;
+			this.toolStripButtonDeleteColor.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButtonDeleteColor.Name = "toolStripButtonDeleteColor";
+			this.toolStripButtonDeleteColor.Size = new System.Drawing.Size(76, 22);
+			this.toolStripButtonDeleteColor.Text = "Delete Color";
+			this.toolStripButtonDeleteColor.Click += new System.EventHandler(this.toolStripButtonDeleteColor_Click);
 			// 
 			// listViewColors
 			// 
@@ -67,145 +131,82 @@
 			this.listViewColors.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.listViewColors.Location = new System.Drawing.Point(3, 3);
+			this.listViewColors.Location = new System.Drawing.Point(0, 28);
 			this.listViewColors.MultiSelect = false;
 			this.listViewColors.Name = "listViewColors";
 			this.listViewColors.ShowItemToolTips = true;
-			this.listViewColors.Size = new System.Drawing.Size(870, 224);
+			this.listViewColors.Size = new System.Drawing.Size(518, 336);
 			this.listViewColors.TabIndex = 1;
 			this.listViewColors.UseCompatibleStateImageBehavior = false;
 			this.listViewColors.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.listViewColors_ItemDrag);
 			this.listViewColors.SelectedIndexChanged += new System.EventHandler(this.listViewColors_SelectedIndexChanged);
 			this.listViewColors.DragDrop += new System.Windows.Forms.DragEventHandler(this.listViewColors_DragDrop);
 			this.listViewColors.DragEnter += new System.Windows.Forms.DragEventHandler(this.listViewColors_DragEnter);
-			this.listViewColors.DoubleClick += new System.EventHandler(this.listViewColors_DoubleClick);
-			// 
-			// buttonDeleteColor
-			// 
-			this.buttonDeleteColor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonDeleteColor.Enabled = false;
-			this.buttonDeleteColor.Location = new System.Drawing.Point(782, 233);
-			this.buttonDeleteColor.Name = "buttonDeleteColor";
-			this.buttonDeleteColor.Size = new System.Drawing.Size(91, 23);
-			this.buttonDeleteColor.TabIndex = 1;
-			this.buttonDeleteColor.Text = "Delete Color";
-			this.buttonDeleteColor.UseVisualStyleBackColor = true;
-			this.buttonDeleteColor.Click += new System.EventHandler(this.buttonDeleteColor_Click);
-			// 
-			// buttonNewColor
-			// 
-			this.buttonNewColor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonNewColor.Location = new System.Drawing.Point(3, 233);
-			this.buttonNewColor.Name = "buttonNewColor";
-			this.buttonNewColor.Size = new System.Drawing.Size(75, 23);
-			this.buttonNewColor.TabIndex = 0;
-			this.buttonNewColor.Text = "New Color";
-			this.buttonNewColor.UseVisualStyleBackColor = true;
-			this.buttonNewColor.Click += new System.EventHandler(this.buttonNewColor_Click);
-			// 
-			// tabControl1
-			// 
-			this.tabControl1.Alignment = System.Windows.Forms.TabAlignment.Bottom;
-			this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.tabControl1.Controls.Add(this.tabColors);
-			this.tabControl1.Controls.Add(this.tabCurves);
-			this.tabControl1.Controls.Add(this.tabGradients);
-			this.tabControl1.Controls.Add(this.tabEffects);
-			this.tabControl1.Controls.Add(this.tabHelp);
-			this.tabControl1.Location = new System.Drawing.Point(0, 0);
-			this.tabControl1.Multiline = true;
-			this.tabControl1.Name = "tabControl1";
-			this.tabControl1.SelectedIndex = 0;
-			this.tabControl1.Size = new System.Drawing.Size(884, 288);
-			this.tabControl1.TabIndex = 4;
-			// 
-			// tabColors
-			// 
-			this.tabColors.Controls.Add(this.buttonEditColor);
-			this.tabColors.Controls.Add(this.buttonDeleteColor);
-			this.tabColors.Controls.Add(this.listViewColors);
-			this.tabColors.Controls.Add(this.buttonNewColor);
-			this.tabColors.Location = new System.Drawing.Point(4, 4);
-			this.tabColors.Name = "tabColors";
-			this.tabColors.Padding = new System.Windows.Forms.Padding(3);
-			this.tabColors.Size = new System.Drawing.Size(876, 262);
-			this.tabColors.TabIndex = 0;
-			this.tabColors.Text = "Colors";
-			this.tabColors.UseVisualStyleBackColor = true;
-			// 
-			// buttonEditColor
-			// 
-			this.buttonEditColor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonEditColor.Enabled = false;
-			this.buttonEditColor.Location = new System.Drawing.Point(84, 233);
-			this.buttonEditColor.Name = "buttonEditColor";
-			this.buttonEditColor.Size = new System.Drawing.Size(75, 23);
-			this.buttonEditColor.TabIndex = 2;
-			this.buttonEditColor.Text = "Edit Color";
-			this.buttonEditColor.UseVisualStyleBackColor = true;
-			this.buttonEditColor.Click += new System.EventHandler(this.buttonEditColor_Click);
+			this.listViewColors.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listViewColors_MouseDoubleClick);
 			// 
 			// tabCurves
 			// 
+			this.tabCurves.Controls.Add(this.toolStripCurves);
 			this.tabCurves.Controls.Add(this.checkBoxLinkCurves);
-			this.tabCurves.Controls.Add(this.buttonEditCurve);
-			this.tabCurves.Controls.Add(this.buttonDeleteCurve);
-			this.tabCurves.Controls.Add(this.buttonNewCurve);
 			this.tabCurves.Controls.Add(this.listViewCurves);
-			this.tabCurves.Location = new System.Drawing.Point(4, 4);
+			this.tabCurves.Location = new System.Drawing.Point(4, 22);
 			this.tabCurves.Name = "tabCurves";
-			this.tabCurves.Size = new System.Drawing.Size(876, 262);
+			this.tabCurves.Size = new System.Drawing.Size(518, 364);
 			this.tabCurves.TabIndex = 2;
 			this.tabCurves.Text = "Curves";
 			this.tabCurves.UseVisualStyleBackColor = true;
+			// 
+			// toolStripCurves
+			// 
+			this.toolStripCurves.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripButtonEditCurve,
+            this.toolStripButtonNewCurve,
+            this.toolStripButtonDeleteCurve});
+			this.toolStripCurves.Location = new System.Drawing.Point(0, 0);
+			this.toolStripCurves.Name = "toolStripCurves";
+			this.toolStripCurves.Size = new System.Drawing.Size(518, 25);
+			this.toolStripCurves.TabIndex = 6;
+			this.toolStripCurves.Text = "Curves";
+			// 
+			// toolStripButtonEditCurve
+			// 
+			this.toolStripButtonEditCurve.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.toolStripButtonEditCurve.Enabled = false;
+			this.toolStripButtonEditCurve.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButtonEditCurve.Name = "toolStripButtonEditCurve";
+			this.toolStripButtonEditCurve.Size = new System.Drawing.Size(65, 22);
+			this.toolStripButtonEditCurve.Text = "Edit Curve";
+			this.toolStripButtonEditCurve.Click += new System.EventHandler(this.toolStripButtonEditCurve_Click);
+			// 
+			// toolStripButtonNewCurve
+			// 
+			this.toolStripButtonNewCurve.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.toolStripButtonNewCurve.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButtonNewCurve.Name = "toolStripButtonNewCurve";
+			this.toolStripButtonNewCurve.Size = new System.Drawing.Size(69, 22);
+			this.toolStripButtonNewCurve.Text = "New Curve";
+			this.toolStripButtonNewCurve.Click += new System.EventHandler(this.toolStripButtonNewCurve_Click);
+			// 
+			// toolStripButtonDeleteCurve
+			// 
+			this.toolStripButtonDeleteCurve.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.toolStripButtonDeleteCurve.Enabled = false;
+			this.toolStripButtonDeleteCurve.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButtonDeleteCurve.Name = "toolStripButtonDeleteCurve";
+			this.toolStripButtonDeleteCurve.Size = new System.Drawing.Size(78, 22);
+			this.toolStripButtonDeleteCurve.Text = "Delete Curve";
+			this.toolStripButtonDeleteCurve.Click += new System.EventHandler(this.toolStripButtonDeleteCurve_Click);
 			// 
 			// checkBoxLinkCurves
 			// 
 			this.checkBoxLinkCurves.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.checkBoxLinkCurves.AutoSize = true;
-			this.checkBoxLinkCurves.Location = new System.Drawing.Point(165, 237);
+			this.checkBoxLinkCurves.Location = new System.Drawing.Point(3, 344);
 			this.checkBoxLinkCurves.Name = "checkBoxLinkCurves";
 			this.checkBoxLinkCurves.Size = new System.Drawing.Size(123, 17);
 			this.checkBoxLinkCurves.TabIndex = 4;
 			this.checkBoxLinkCurves.Text = "Maintain Library Link";
 			this.checkBoxLinkCurves.UseVisualStyleBackColor = true;
-			// 
-			// buttonEditCurve
-			// 
-			this.buttonEditCurve.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonEditCurve.Enabled = false;
-			this.buttonEditCurve.Location = new System.Drawing.Point(84, 233);
-			this.buttonEditCurve.Name = "buttonEditCurve";
-			this.buttonEditCurve.Size = new System.Drawing.Size(75, 23);
-			this.buttonEditCurve.TabIndex = 3;
-			this.buttonEditCurve.Text = "Edit Curve";
-			this.buttonEditCurve.UseVisualStyleBackColor = true;
-			this.buttonEditCurve.Click += new System.EventHandler(this.buttonEditCurve_Click);
-			// 
-			// buttonDeleteCurve
-			// 
-			this.buttonDeleteCurve.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonDeleteCurve.Enabled = false;
-			this.buttonDeleteCurve.Location = new System.Drawing.Point(782, 233);
-			this.buttonDeleteCurve.Name = "buttonDeleteCurve";
-			this.buttonDeleteCurve.Size = new System.Drawing.Size(91, 23);
-			this.buttonDeleteCurve.TabIndex = 2;
-			this.buttonDeleteCurve.Text = "Delete Curve";
-			this.buttonDeleteCurve.UseVisualStyleBackColor = true;
-			this.buttonDeleteCurve.Click += new System.EventHandler(this.buttonDeleteCurve_Click);
-			// 
-			// buttonNewCurve
-			// 
-			this.buttonNewCurve.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonNewCurve.Location = new System.Drawing.Point(3, 233);
-			this.buttonNewCurve.Name = "buttonNewCurve";
-			this.buttonNewCurve.Size = new System.Drawing.Size(75, 23);
-			this.buttonNewCurve.TabIndex = 1;
-			this.buttonNewCurve.Text = "New Curve";
-			this.buttonNewCurve.UseVisualStyleBackColor = true;
-			this.buttonNewCurve.Click += new System.EventHandler(this.buttonNewCurve_Click);
 			// 
 			// listViewCurves
 			// 
@@ -213,9 +214,9 @@
 			this.listViewCurves.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.listViewCurves.Location = new System.Drawing.Point(3, 3);
+			this.listViewCurves.Location = new System.Drawing.Point(0, 28);
 			this.listViewCurves.Name = "listViewCurves";
-			this.listViewCurves.Size = new System.Drawing.Size(870, 224);
+			this.listViewCurves.Size = new System.Drawing.Size(518, 310);
 			this.listViewCurves.TabIndex = 0;
 			this.listViewCurves.UseCompatibleStateImageBehavior = false;
 			this.listViewCurves.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.listViewCurves_ItemDrag);
@@ -224,26 +225,64 @@
 			// 
 			// tabGradients
 			// 
+			this.tabGradients.Controls.Add(this.toolStripGradients);
 			this.tabGradients.Controls.Add(this.checkBoxLinkGradients);
 			this.tabGradients.Controls.Add(this.comboBoxGradientHandling);
 			this.tabGradients.Controls.Add(this.label1);
-			this.tabGradients.Controls.Add(this.buttonEditGradient);
-			this.tabGradients.Controls.Add(this.buttonDeleteGradient);
-			this.tabGradients.Controls.Add(this.buttonNewGradient);
 			this.tabGradients.Controls.Add(this.listViewGradients);
-			this.tabGradients.Location = new System.Drawing.Point(4, 4);
+			this.tabGradients.Location = new System.Drawing.Point(4, 22);
 			this.tabGradients.Name = "tabGradients";
-			this.tabGradients.Padding = new System.Windows.Forms.Padding(3);
-			this.tabGradients.Size = new System.Drawing.Size(876, 262);
+			this.tabGradients.Size = new System.Drawing.Size(518, 364);
 			this.tabGradients.TabIndex = 1;
 			this.tabGradients.Text = "Gradients";
 			this.tabGradients.UseVisualStyleBackColor = true;
+			// 
+			// toolStripGradients
+			// 
+			this.toolStripGradients.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripButtonEditGradient,
+            this.toolStripButtonNewGradient,
+            this.toolStripButtonDeleteGradient});
+			this.toolStripGradients.Location = new System.Drawing.Point(0, 0);
+			this.toolStripGradients.Name = "toolStripGradients";
+			this.toolStripGradients.Size = new System.Drawing.Size(518, 25);
+			this.toolStripGradients.TabIndex = 10;
+			this.toolStripGradients.Text = "Color Gradients";
+			// 
+			// toolStripButtonEditGradient
+			// 
+			this.toolStripButtonEditGradient.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.toolStripButtonEditGradient.Enabled = false;
+			this.toolStripButtonEditGradient.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButtonEditGradient.Name = "toolStripButtonEditGradient";
+			this.toolStripButtonEditGradient.Size = new System.Drawing.Size(79, 22);
+			this.toolStripButtonEditGradient.Text = "Edit Gradient";
+			this.toolStripButtonEditGradient.Click += new System.EventHandler(this.toolStripButtonEditGradient_Click);
+			// 
+			// toolStripButtonNewGradient
+			// 
+			this.toolStripButtonNewGradient.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.toolStripButtonNewGradient.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButtonNewGradient.Name = "toolStripButtonNewGradient";
+			this.toolStripButtonNewGradient.Size = new System.Drawing.Size(83, 22);
+			this.toolStripButtonNewGradient.Text = "New Gradient";
+			this.toolStripButtonNewGradient.Click += new System.EventHandler(this.toolStripButtonNewGradient_Click);
+			// 
+			// toolStripButtonDeleteGradient
+			// 
+			this.toolStripButtonDeleteGradient.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.toolStripButtonDeleteGradient.Enabled = false;
+			this.toolStripButtonDeleteGradient.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButtonDeleteGradient.Name = "toolStripButtonDeleteGradient";
+			this.toolStripButtonDeleteGradient.Size = new System.Drawing.Size(92, 22);
+			this.toolStripButtonDeleteGradient.Text = "Delete Gradient";
+			this.toolStripButtonDeleteGradient.Click += new System.EventHandler(this.toolStripButtonDeleteGradient_Click);
 			// 
 			// checkBoxLinkGradients
 			// 
 			this.checkBoxLinkGradients.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.checkBoxLinkGradients.AutoSize = true;
-			this.checkBoxLinkGradients.Location = new System.Drawing.Point(191, 237);
+			this.checkBoxLinkGradients.Location = new System.Drawing.Point(3, 344);
 			this.checkBoxLinkGradients.Name = "checkBoxLinkGradients";
 			this.checkBoxLinkGradients.Size = new System.Drawing.Size(123, 17);
 			this.checkBoxLinkGradients.TabIndex = 9;
@@ -252,62 +291,28 @@
 			// 
 			// comboBoxGradientHandling
 			// 
-			this.comboBoxGradientHandling.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.comboBoxGradientHandling.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.comboBoxGradientHandling.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.comboBoxGradientHandling.FormattingEnabled = true;
 			this.comboBoxGradientHandling.Items.AddRange(new object[] {
             "The gradient is shown over the whole effect.",
             "Each pulse uses the entire gradient.",
             "The gradient is spread over the sub-elements."});
-			this.comboBoxGradientHandling.Location = new System.Drawing.Point(418, 235);
+			this.comboBoxGradientHandling.Location = new System.Drawing.Point(3, 317);
 			this.comboBoxGradientHandling.Name = "comboBoxGradientHandling";
-			this.comboBoxGradientHandling.Size = new System.Drawing.Size(246, 21);
+			this.comboBoxGradientHandling.Size = new System.Drawing.Size(512, 21);
 			this.comboBoxGradientHandling.TabIndex = 8;
 			// 
 			// label1
 			// 
 			this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(320, 238);
+			this.label1.Location = new System.Drawing.Point(0, 301);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(92, 13);
 			this.label1.TabIndex = 7;
 			this.label1.Text = "Gradient Handling";
-			// 
-			// buttonEditGradient
-			// 
-			this.buttonEditGradient.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonEditGradient.Enabled = false;
-			this.buttonEditGradient.Location = new System.Drawing.Point(97, 233);
-			this.buttonEditGradient.Name = "buttonEditGradient";
-			this.buttonEditGradient.Size = new System.Drawing.Size(88, 23);
-			this.buttonEditGradient.TabIndex = 6;
-			this.buttonEditGradient.Text = "Edit Gradient";
-			this.buttonEditGradient.UseVisualStyleBackColor = true;
-			this.buttonEditGradient.Click += new System.EventHandler(this.buttonEditGradient_Click);
-			// 
-			// buttonDeleteGradient
-			// 
-			this.buttonDeleteGradient.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonDeleteGradient.Enabled = false;
-			this.buttonDeleteGradient.Location = new System.Drawing.Point(780, 233);
-			this.buttonDeleteGradient.Name = "buttonDeleteGradient";
-			this.buttonDeleteGradient.Size = new System.Drawing.Size(93, 23);
-			this.buttonDeleteGradient.TabIndex = 5;
-			this.buttonDeleteGradient.Text = "Delete Gradient";
-			this.buttonDeleteGradient.UseVisualStyleBackColor = true;
-			this.buttonDeleteGradient.Click += new System.EventHandler(this.buttonDeleteGradient_Click);
-			// 
-			// buttonNewGradient
-			// 
-			this.buttonNewGradient.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonNewGradient.Location = new System.Drawing.Point(3, 233);
-			this.buttonNewGradient.Name = "buttonNewGradient";
-			this.buttonNewGradient.Size = new System.Drawing.Size(88, 23);
-			this.buttonNewGradient.TabIndex = 4;
-			this.buttonNewGradient.Text = "New Gradient";
-			this.buttonNewGradient.UseVisualStyleBackColor = true;
-			this.buttonNewGradient.Click += new System.EventHandler(this.buttonNewGradient_Click);
 			// 
 			// listViewGradients
 			// 
@@ -315,122 +320,74 @@
 			this.listViewGradients.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.listViewGradients.Location = new System.Drawing.Point(3, 3);
+			this.listViewGradients.Location = new System.Drawing.Point(0, 28);
 			this.listViewGradients.Name = "listViewGradients";
-			this.listViewGradients.Size = new System.Drawing.Size(870, 224);
+			this.listViewGradients.Size = new System.Drawing.Size(518, 270);
 			this.listViewGradients.TabIndex = 0;
 			this.listViewGradients.UseCompatibleStateImageBehavior = false;
 			this.listViewGradients.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.listViewGradient_ItemDrag);
 			this.listViewGradients.SelectedIndexChanged += new System.EventHandler(this.listViewGradients_SelectedIndexChanged);
-			this.listViewGradients.DoubleClick += new System.EventHandler(this.listViewGradients_DoubleClick);
-			// 
-			// tabHelp
-			// 
-			this.tabHelp.Controls.Add(this.linkToolPaletteDocumentation);
-			this.tabHelp.Controls.Add(this.labelHelp);
-			this.tabHelp.Location = new System.Drawing.Point(4, 4);
-			this.tabHelp.Name = "tabHelp";
-			this.tabHelp.Size = new System.Drawing.Size(876, 262);
-			this.tabHelp.TabIndex = 4;
-			this.tabHelp.Text = "Help";
-			this.tabHelp.UseVisualStyleBackColor = true;
-			// 
-			// linkToolPaletteDocumentation
-			// 
-			this.linkToolPaletteDocumentation.AutoSize = true;
-			this.linkToolPaletteDocumentation.Location = new System.Drawing.Point(8, 5);
-			this.linkToolPaletteDocumentation.Name = "linkToolPaletteDocumentation";
-			this.linkToolPaletteDocumentation.Size = new System.Drawing.Size(167, 13);
-			this.linkToolPaletteDocumentation.TabIndex = 1;
-			this.linkToolPaletteDocumentation.TabStop = true;
-			this.linkToolPaletteDocumentation.Text = "Tool Palette Documentation Page";
-			this.linkToolPaletteDocumentation.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkToolPaletteDocumentation_LinkClicked);
-			// 
-			// labelHelp
-			// 
-			this.labelHelp.AutoSize = true;
-			this.labelHelp.Location = new System.Drawing.Point(8, 33);
-			this.labelHelp.Name = "labelHelp";
-			this.labelHelp.Size = new System.Drawing.Size(58, 13);
-			this.labelHelp.TabIndex = 0;
-			this.labelHelp.Text = "Help Label";
-			// 
-			// tabEffects
-			// 
-			this.tabEffects.Controls.Add(this.listViewEffects);
-			this.tabEffects.Location = new System.Drawing.Point(4, 4);
-			this.tabEffects.Name = "tabEffects";
-			this.tabEffects.Size = new System.Drawing.Size(876, 262);
-			this.tabEffects.TabIndex = 5;
-			this.tabEffects.Text = "Effects";
-			this.tabEffects.UseVisualStyleBackColor = true;
-			// 
-			// listViewEffects
-			// 
-			this.listViewEffects.AllowDrop = true;
-			this.listViewEffects.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.listViewEffects.Location = new System.Drawing.Point(0, 0);
-			this.listViewEffects.Name = "listViewEffects";
-			this.listViewEffects.Size = new System.Drawing.Size(876, 262);
-			this.listViewEffects.TabIndex = 0;
-			this.listViewEffects.UseCompatibleStateImageBehavior = false;
-			this.listViewEffects.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.listViewEffects_ItemDrag);
+			this.listViewGradients.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listViewGradients_MouseDoubleClick);
 			// 
 			// Form_ToolPalette
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(884, 288);
+			this.ClientSize = new System.Drawing.Size(526, 390);
 			this.ControlBox = false;
 			this.Controls.Add(this.tabControl1);
-			this.DockAreas = ((WeifenLuo.WinFormsUI.Docking.DockAreas)(((WeifenLuo.WinFormsUI.Docking.DockAreas.Float | WeifenLuo.WinFormsUI.Docking.DockAreas.DockTop) 
+			this.DockAreas = ((WeifenLuo.WinFormsUI.Docking.DockAreas)(((((WeifenLuo.WinFormsUI.Docking.DockAreas.Float | WeifenLuo.WinFormsUI.Docking.DockAreas.DockLeft) 
+            | WeifenLuo.WinFormsUI.Docking.DockAreas.DockRight) 
+            | WeifenLuo.WinFormsUI.Docking.DockAreas.DockTop) 
             | WeifenLuo.WinFormsUI.Docking.DockAreas.DockBottom)));
 			this.DoubleBuffered = true;
 			this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Name = "Form_ToolPalette";
-			this.Text = "Tool Palette";
-			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ToolPalette_FormClosing);
+			this.Text = "Preset Libraries";
 			this.Load += new System.EventHandler(this.ColorPalette_Load);
 			this.tabControl1.ResumeLayout(false);
 			this.tabColors.ResumeLayout(false);
+			this.tabColors.PerformLayout();
+			this.toolStripColors.ResumeLayout(false);
+			this.toolStripColors.PerformLayout();
 			this.tabCurves.ResumeLayout(false);
 			this.tabCurves.PerformLayout();
+			this.toolStripCurves.ResumeLayout(false);
+			this.toolStripCurves.PerformLayout();
 			this.tabGradients.ResumeLayout(false);
 			this.tabGradients.PerformLayout();
-			this.tabHelp.ResumeLayout(false);
-			this.tabHelp.PerformLayout();
-			this.tabEffects.ResumeLayout(false);
+			this.toolStripGradients.ResumeLayout(false);
+			this.toolStripGradients.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
 
 		#endregion
 
-		private System.Windows.Forms.ListView listViewColors;
-		private System.Windows.Forms.Button buttonDeleteColor;
-		private System.Windows.Forms.Button buttonNewColor;
 		private System.Windows.Forms.TabControl tabControl1;
 		private System.Windows.Forms.TabPage tabColors;
-		private System.Windows.Forms.TabPage tabGradients;
+		private System.Windows.Forms.ListView listViewColors;
 		private System.Windows.Forms.TabPage tabCurves;
+		private System.Windows.Forms.CheckBox checkBoxLinkCurves;
 		private System.Windows.Forms.ListView listViewCurves;
-		private System.Windows.Forms.ListView listViewGradients;
-		private System.Windows.Forms.Button buttonEditCurve;
-		private System.Windows.Forms.Button buttonDeleteCurve;
-		private System.Windows.Forms.Button buttonNewCurve;
-		private System.Windows.Forms.Button buttonEditGradient;
-		private System.Windows.Forms.Button buttonDeleteGradient;
-		private System.Windows.Forms.Button buttonNewGradient;
+		private System.Windows.Forms.TabPage tabGradients;
+		private System.Windows.Forms.CheckBox checkBoxLinkGradients;
 		private System.Windows.Forms.ComboBox comboBoxGradientHandling;
 		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.TabPage tabHelp;
-		private System.Windows.Forms.Label labelHelp;
-		private System.Windows.Forms.LinkLabel linkToolPaletteDocumentation;
-		private System.Windows.Forms.CheckBox checkBoxLinkCurves;
-		private System.Windows.Forms.CheckBox checkBoxLinkGradients;
-		private System.Windows.Forms.Button buttonEditColor;
-		private System.Windows.Forms.TabPage tabEffects;
-		private System.Windows.Forms.ListView listViewEffects;
+		private System.Windows.Forms.ListView listViewGradients;
+		private System.Windows.Forms.ToolStrip toolStripColors;
+		private System.Windows.Forms.ToolStripButton toolStripButtonEditColor;
+		private System.Windows.Forms.ToolStripButton toolStripButtonNewColor;
+		private System.Windows.Forms.ToolStripButton toolStripButtonDeleteColor;
+		private System.Windows.Forms.ToolStrip toolStripGradients;
+		private System.Windows.Forms.ToolStripButton toolStripButtonEditGradient;
+		private System.Windows.Forms.ToolStripButton toolStripButtonNewGradient;
+		private System.Windows.Forms.ToolStripButton toolStripButtonDeleteGradient;
+		private System.Windows.Forms.ToolStrip toolStripCurves;
+		private System.Windows.Forms.ToolStripButton toolStripButtonEditCurve;
+		private System.Windows.Forms.ToolStripButton toolStripButtonNewCurve;
+		private System.Windows.Forms.ToolStripButton toolStripButtonDeleteCurve;
+
 
 	}
 }

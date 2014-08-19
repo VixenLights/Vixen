@@ -205,9 +205,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			else
 			{
 				GridForm.Show(dockPanel);
+				ToolsForm.Show(dockPanel, DockState.DockLeft);
 				MarksForm.Show(dockPanel, DockState.DockLeft);
 				EffectsForm.Show(dockPanel, DockState.DockLeft);
-				ToolsForm.Show(dockPanel,DockState.DockBottom);
 			}
 
 			XMLProfileSettings xml = new XMLProfileSettings();
@@ -3678,8 +3678,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (ToolsForm.DockState == DockState.Unknown)
 			{
 				DockState dockState = ToolsForm.DockState;
-				dockState = DockState.DockBottom;
-				if (dockState == DockState.Unknown) dockState = DockState.DockBottom;
+				dockState = DockState.DockLeft;
+				if (dockState == DockState.Unknown) dockState = DockState.DockLeft;
 				ToolsForm.Show(dockPanel, dockState);
 				//We have to re-subscribe to the event handlers
 				ToolsForm.StartColorDrag += ToolPalette_ColorDrag;
@@ -4492,6 +4492,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
             });
 
         }
+
+		private void helpDocumentationToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			System.Diagnostics.Process.Start("http://www.vixenlights.com/vixen-3-documentation/sequencer/");
+		}
     }
 
 	[Serializable]
