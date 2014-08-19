@@ -1772,6 +1772,8 @@ namespace Common.Controls.Timeline
 			_RenderProgressChanged(e.ProgressPercentage);
 		}
 
+		private int _renderQueueSize = 0;
+
         //This whole thing need to be redone as a task once we get to .NET 4.5 where we can easily report progress
         //from it.
 		private void renderWorker_DoWork(object sender, DoWorkEventArgs e)
@@ -1786,7 +1788,7 @@ namespace Common.Controls.Timeline
             po.CancellationToken = cts.Token;
             po.MaxDegreeOfParallelism = Environment.ProcessorCount;
 
-			double total = 0;
+			int processed = 0;
 		    try
 		    {
 		        if (_blockingElementQueue != null)
@@ -1795,7 +1797,7 @@ namespace Common.Controls.Timeline
 		            //foreach (Element element in _blockingElementQueue.GetConsumingEnumerable()) {
 		            Parallel.ForEach(_blockingElementQueue.GetConsumingPartitioner(), po, element =>
 		            {
-                        
+						Interlocked.Increment(ref processed);
 		                // This will likely never be hit: the blocking element queue above will always block waiting for more
 		                // elements, until it completes because CompleteAdding() is called. At which point it will exit the loop,
 		                // as it will be empty, and this function will terminate normally.
@@ -1816,17 +1818,16 @@ namespace Common.Controls.Timeline
 		                            Invalidate();
 		                        }
 		                    }
-		                    
-		                    double currentTotal = _blockingElementQueue.Count;
-		                    total = Math.Max(currentTotal, total);
-		                    int progress = (int) (((total - currentTotal)/total)*100);
+
+							int progress = (int)(((float)(processed) / _renderQueueSize) * 100);
                             //this is a bit of a kludge until we get to .NET 4.5 and can do this whole thing
                             //in a task. Reporting progress from Tasks is not well supported until 4.5
                             //With the multi-threading the last element can be processed before the count is 
                             //fully updated
-		                    if (progress >= 99 || _blockingElementQueue.Count==0)
+							if (processed >= _renderQueueSize)
 		                    {
-                                total = 0;
+								_renderQueueSize = 0;
+								processed = 0;
 		                        progress = 100;
                                 if (!SuppressInvalidate)
                                 {
@@ -1875,6 +1876,7 @@ namespace Common.Controls.Timeline
 			} else
 			{
 				_blockingElementQueue.Add(element);
+				_renderQueueSize++;
 			}
         }
 
@@ -1893,6 +1895,7 @@ namespace Common.Controls.Timeline
 					if (!element.IsRendered)
 					{
 						_blockingElementQueue.Add(element);
+						_renderQueueSize++;
 					}
 				}
 			}
@@ -1915,6 +1918,7 @@ namespace Common.Controls.Timeline
 				Element element;
 				_blockingElementQueue.TryTake(out element);
 			}
+	        _renderQueueSize = 0;
 			SupressRendering=false;
 			
         }
