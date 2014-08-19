@@ -48,12 +48,6 @@ namespace Vixen.Export
             {
                 _outfs = File.Create(fileName, numChannels * 2, FileOptions.None);
                 _dataOut = new BinaryWriter(_outfs);
-
-                for (int j = 0; j < numPeriods; j++)
-                {
-                    WriteNextPeriodData(Enumerable.Repeat<Byte>(0, numChannels).ToList());
-                }
-                _outfs.Seek(0, SeekOrigin.Begin);
             }
             catch (Exception e)
             {

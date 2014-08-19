@@ -214,6 +214,7 @@
             this.Controls.Add(this.startButton);
             this.Name = "ExportDialog";
             this.Text = "Export Sequence";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ExportDialog_FormClosed);
             this.Load += new System.EventHandler(this.ExportForm_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();

@@ -29,6 +29,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
         private bool _doProgressUpdate;
         private const int RENDER_TIME_DELTA = 250;
         private string _sequenceFileName = "";
+        private ExportNotifyType _currentState;
+        private double _percentComplete = 0;
+        private TimeSpan _curPos;
 
         #region Contructor
         public ExportDialog(ISequence sequence)
@@ -56,26 +59,52 @@ namespace VixenModules.Editor.TimedSequenceEditor
         #region Background Thread
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
-            double percentComplete = 0;
-            TimeSpan curPos;
             TimeSpan renderCheck = new TimeSpan(0, 0, 0, 0, 250);
             while (_doProgressUpdate)
             {
-                curPos = _exportOps.Position;
-                Thread.Sleep(25);
-                currentTimeLabel.Text = string.Format("{0:D2}:{1:D2}.{2:D3}",
-                                                        curPos.Minutes,
-                                                        curPos.Seconds,
-                                                        curPos.Milliseconds);
+                Thread.Sleep(25); 
+                switch (_currentState)
+                {
+                    case ExportNotifyType.EXPORTING:
+                    {
+                        backgroundWorker1_Exporting(sender,e);
+                        break;
+                    }
 
-                percentComplete =
-                    (curPos.TotalMilliseconds /
-                    (double)_sequence.Length.TotalMilliseconds) * 100;
+                    case ExportNotifyType.SAVING:
+                    {
+                        backgroundWorker1_Saving(sender, e);
+                        break;
+                    }
 
-                backgroundWorker1.ReportProgress((int)percentComplete);                    
+                    default:
+                    {
+                        break;
+                    }
+                }
             }
             this.UseWaitCursor = false;
             backgroundWorker1.ReportProgress(0);
+        }
+
+        private void backgroundWorker1_Exporting(object sender, DoWorkEventArgs e)
+        {
+            _curPos = _exportOps.ExportPosition;
+            currentTimeLabel.Text = string.Format("{0:D2}:{1:D2}.{2:D3}",
+                                                    _curPos.Minutes,
+                                                    _curPos.Seconds,
+                                                    _curPos.Milliseconds);
+            _percentComplete =
+                (_curPos.TotalMilliseconds /
+                (double)_sequence.Length.TotalMilliseconds) * 100;
+
+            backgroundWorker1.ReportProgress((int)_percentComplete);    
+        }
+
+        private void backgroundWorker1_Saving(object sender, DoWorkEventArgs e)
+        {
+            currentTimeLabel.Text = string.Format("{0}%", _exportOps.SavePosition);
+            backgroundWorker1.ReportProgress((int)_exportOps.SavePosition);    
         }
 
         private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs args)
@@ -100,6 +129,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
             resolutionComboBox.SelectedIndex = 1;
 
             stopButton.Enabled = false;
+            networkListView.Enabled = false;
 
             UpdateNetworkList();
 
@@ -109,7 +139,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
         {
             this.UseWaitCursor = true;
 
-            //Get Sequence Names
             if (string.IsNullOrWhiteSpace(_sequenceFileName))
             {
                 this.UseWaitCursor = false;
@@ -137,8 +166,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
             _outFileName = saveDialog.FileName;
             _exportOps.OutFileName = _outFileName;
             _exportOps.UpdateInterval = Convert.ToInt32(resolutionComboBox.Text);
-
-            setWorkingState("Exporting: ", true);
             _exportOps.DoExport(_sequence, outputFormatComboBox.SelectedItem.ToString());
 
 
@@ -254,15 +281,18 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
         private void SequenceNotify(Vixen.Export.ExportNotifyType notifyType)
         {
+            _currentState = notifyType;
             switch(notifyType)
             {
                 case ExportNotifyType.NETSAVE:
                 {
+                    SequenceNetSave();
                     break;
                 }
 
                 case ExportNotifyType.LOADING:
                 {
+                    SequenceLoading();
                     break;
                 }
 
@@ -274,6 +304,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
                 case ExportNotifyType.EXPORTING:
                 {
+                    SequenceExporting();
                     break;
                 }
 
@@ -288,6 +319,30 @@ namespace VixenModules.Editor.TimedSequenceEditor
                     break;
                 }
             }
+        }
+
+        private void SequenceLoading()
+        {
+            //PlaceHolder Stub
+        }
+
+        private void SequenceNetSave()
+        {
+            //Placeholder Stub
+        }
+
+        private void SequenceExporting()
+        {
+            if (this.InvokeRequired)
+            {
+                this.BeginInvoke(new Action(SequenceExporting));
+                return;
+            }
+            else
+            {
+                setWorkingState("Exporting: ", true);
+            }
+
         }
 
         private void SequenceSaving()
@@ -313,8 +368,20 @@ namespace VixenModules.Editor.TimedSequenceEditor
             else
             {
                 setWorkingState("", false);
+                MessageBox.Show("Export Complete!", "Status");
             }
         }
+
+        private void ExportDialog_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _exportOps.SequenceNotify -= SequenceNotify;
+            backgroundWorker1.DoWork -= backgroundWorker1_DoWork;
+            backgroundWorker1.ProgressChanged -= backgroundWorker1_ProgressChanged;
+
+        }
+
         #endregion
+
+
     }
 }

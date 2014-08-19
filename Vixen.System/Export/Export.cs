@@ -74,6 +74,8 @@ namespace Vixen.Export
 
             _exporting = false;
             _cancelling = false;
+
+            SavePosition = 0;
         }
         #endregion
 
@@ -128,7 +130,7 @@ namespace Vixen.Export
             }
         }
 
-        public TimeSpan Position
+        public TimeSpan ExportPosition
         {
             get
             {
@@ -140,9 +142,10 @@ namespace Vixen.Export
                 {
                     return new TimeSpan(0);
                 }
-
             }
         }
+
+        public decimal SavePosition { get; set; }
 
         public List<ControllerExportInfo> ControllerExportData
         {
@@ -240,6 +243,7 @@ namespace Vixen.Export
                     _preCachingSequenceEngine.SequenceCacheStarted += SequenceCacheStarted;
                     _preCachingSequenceEngine.Start();
 
+                    SequenceNotify(ExportNotifyType.EXPORTING);
                     WriteControllerInfo(sequence);
                 }
             }
@@ -272,6 +276,7 @@ namespace Vixen.Export
         #region Events
         void SequenceCacheStarted(object sender, Vixen.Cache.Event.CacheStartedEventArgs e)
         {
+            SavePosition = 0;
             if (SequenceNotify != null)
             {
                 SequenceNotify(ExportNotifyType.LOADING);
@@ -294,6 +299,7 @@ namespace Vixen.Export
                     _output.OpenSession(OutFileName, periods, outIds.Count());
                     for (int j = 0; j < periods; j++)
                     {
+                        SavePosition = Decimal.Round(((Decimal)j / (Decimal)periods) * 100,2);
                         commandList.Clear();
                         foreach (Guid guid in outIds)
                         {
@@ -312,14 +318,6 @@ namespace Vixen.Export
                 {
                     SequenceNotify(ExportNotifyType.COMPLETE);
                 }
-            }
-        }
-
-        void SequenceCacheSaving ()
-        {
-            if (SequenceNotify != null)
-            {
-                
             }
         }
         
