@@ -764,7 +764,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				TimelineControl.grid.SupressRendering = true; //Hold off rendering while we load elements. 
 				// This takes quite a bit of time so queue it up
 				taskQueue.Enqueue(Task.Factory.StartNew(PopulateAudioDropdown));
-				taskQueue.Enqueue(Task.Factory.StartNew(PopulateMarkSnapTimes));
 				taskQueue.Enqueue(Task.Factory.StartNew(() => addElementsForEffectNodes(_sequence.SequenceData.EffectData)));
 				
 
@@ -797,11 +796,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				MarksForm.Sequence = _sequence;
 				MarksForm.PopulateMarkCollectionsList(null);
+				PopulateMarkSnapTimes();
 
 				if (_sequence.TimePerPixel > TimeSpan.Zero )
 				{
 					TimelineControl.TimePerPixel = _sequence.TimePerPixel;	
 				}
+
+				
 				
 				Logging.Debug(string.Format("Sequence {0} took {1} to load. ", sequence.Name, loadingWatch.Elapsed));
 			}
