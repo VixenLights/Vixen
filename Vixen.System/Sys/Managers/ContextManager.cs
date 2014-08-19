@@ -37,9 +37,6 @@ namespace Vixen.Sys.Managers
 			var context = new LiveContext(name);
 			_AddContext(context);
 			return context;
-			} else if (!_instances.ContainsKey(_systemLiveContext.Id))
-			{
-				_AddContext(_preCachingSequenceContext);
 		}
 
 		public PreCachingSequenceContext GetCacheCompileContext()
@@ -126,11 +123,9 @@ namespace Vixen.Sys.Managers
 			_affectedElements.Clear();
 			foreach( var context in _instances.Values.Where(x => x.IsRunning))
 			{
-				//_contextUpdateWaitValue.Set(_stopwatch.ElapsedMilliseconds);
+				
+				try{
 
-				_instances.Values.Where(x => !(x.GetType() == typeof(PreCachingSequenceContext))).AsParallel().ForAll(context =>
-				//foreach( var context in _instances.Values)
-				{
 					// Get a snapshot time value for this update.
 					TimeSpan contextTime = context.GetTimeSnapshot();
 					var contextAffectedElements = context.UpdateElementStates(contextTime);

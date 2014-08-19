@@ -4506,7 +4506,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
             {
 
             }
-    }
+   
 
 		}
 
