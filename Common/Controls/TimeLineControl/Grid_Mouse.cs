@@ -46,6 +46,9 @@ namespace Common.Controls.Timeline
 
 			if (e.Button == MouseButtons.Middle && SelectedEffect != Guid.Empty)
 			{
+				if (m_mouseDownElementRow == null)
+					return;
+
 				_beginEffectDraw = true;
 				this.Cursor = Cursors.Cross;
 				effectDrawMouseDownTime = pixelsToTime(gridLocation.X);
@@ -56,6 +59,9 @@ namespace Common.Controls.Timeline
 				_workingElement = elementAt(gridLocation);
 				if ((EnableDrawMode && !AltPressed) && SelectedEffect != Guid.Empty && m_mouseResizeZone == ResizeZone.None)
 				{
+					if (m_mouseDownElementRow == null)
+						return;
+
 					_beginEffectDraw = true;
 					effectDrawMouseDownTime = pixelsToTime(gridLocation.X);
 					beginDrawBox(gridLocation);
