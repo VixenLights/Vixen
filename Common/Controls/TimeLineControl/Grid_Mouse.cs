@@ -323,6 +323,9 @@ namespace Common.Controls.Timeline
 			if (ModifierKeys == Keys.Shift && m_mouseDownElements.Any())
 				gridLocation.X = m_lastGridLocation.X;
 
+			if (ModifierKeys == (Keys.Alt | Keys.Control) && m_mouseDownElements.Any())
+				gridLocation.X = m_lastGridLocation.X;
+
 			if (ModifierKeys == (Keys.Shift | Keys.Alt) && m_mouseDownElements.Any())
 				gridLocation.Y = m_lastGridLocation.Y;
 
