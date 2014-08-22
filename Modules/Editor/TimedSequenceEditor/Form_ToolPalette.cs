@@ -21,12 +21,34 @@ using Vixen.Module.App;
 using Vixen.Sys;
 using WeifenLuo.WinFormsUI.Docking;
 using Vixen.Module.Effect;
+using System.Runtime.InteropServices;
 
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
 	public partial class Form_ToolPalette : DockContent
 	{
+
+		#region ListView Padding
+
+		//Allows the padding between images in the listview controls to be set.
+		[DllImport("user32.dll")]
+		public static extern int SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
+
+		public int MakeLong(short lowPart, short highPart)
+		{
+			return (int)(((ushort)lowPart) | (uint)(highPart << 16));
+		}
+
+		public void ListViewItem_SetSpacing(ListView listview, short leftPadding, short topPadding)
+		{
+			const int LVM_FIRST = 0x1000;
+			const int LVM_SETICONSPACING = LVM_FIRST + 53;
+			SendMessage(listview.Handle, LVM_SETICONSPACING, IntPtr.Zero, (IntPtr)MakeLong(leftPadding, topPadding));
+		}
+
+		#endregion
+
 		#region Public EventHandlers
 
 		public EventHandler StartColorDrag;
@@ -96,7 +118,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolStripButtonNewGradient.Image = Resources.add;
 			toolStripButtonDeleteGradient.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStripButtonDeleteGradient.Image = Resources.delete;
-	
+
+			ListViewItem_SetSpacing(this.listViewColors, 48 + 5, 48 + 5);
+			ListViewItem_SetSpacing(this.listViewCurves, 48 + 5, 48 + 20);
+			ListViewItem_SetSpacing(this.listViewGradients, 48 + 5, 48 + 20);
 		}
 
 		private void ColorPalette_Load(object sender, EventArgs e)
