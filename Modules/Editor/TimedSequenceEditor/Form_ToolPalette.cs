@@ -120,8 +120,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolStripButtonDeleteGradient.Image = Resources.delete;
 
 			ListViewItem_SetSpacing(this.listViewColors, 48 + 5, 48 + 5);
-			ListViewItem_SetSpacing(this.listViewCurves, 48 + 5, 48 + 20);
-			ListViewItem_SetSpacing(this.listViewGradients, 48 + 5, 48 + 20);
+			ListViewItem_SetSpacing(this.listViewCurves, 48 + 5, 48 + 30);
+			ListViewItem_SetSpacing(this.listViewGradients, 48 + 5, 48 + 30);
 		}
 
 		private void ColorPalette_Load(object sender, EventArgs e)
