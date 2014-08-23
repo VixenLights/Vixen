@@ -25,8 +25,6 @@
 			<Output TaskParameter="Lines" PropertyName="BuildVersion" />
 		</ReadLinesFromFile>
 
-		<WriteLinesToFile File="$(MSBuildProjectDirectory)\test.txt" Lines="$(MajorVersion).$(MinorVersion).$(BuildVersion)" Overwrite="true" />
-
 		<ItemGroup>
 			<RegexTransform Include="$(SolutionRoot)\Application\VixenApplication\Properties\AssemblyInfo.cs; $(SolutionRoot)\Vixen.System\Properties\AssemblyInfo.cs">
 				<Find>(?&lt;major&gt;\d+)\.(?&lt;minor&gt;\d+)\.(?&lt;build&gt;\d+)\.(?&lt;revision&gt;\d+)</Find>

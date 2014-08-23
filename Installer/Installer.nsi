@@ -52,13 +52,15 @@ SetCompressorDictSize 64
 
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Support different archtecture builds -- 32 or 64 bit ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-!define BUILDARCH_DEFAULT 32
+!define BUILDARCH_DEFAULT 64
 
 !ifndef BUILDARCH
 	!define BUILDARCH ${BUILDARCH_DEFAULT}
 !else
-	!if "${BUILDARCH} != 32 || ${BUILDARCH} != 64"
-		!error "BUILDARCH isn't set to either 32 or 64 bit: ${BUILDARCH}"
+	!if ${BUILDARCH} != 32
+		!if ${BUILDARCH} != 64
+			!error "BUILDARCH isn't set to either 32 or 64 bit: ${BUILDARCH}"
+		!endif
 	!endif
 !endif
 
