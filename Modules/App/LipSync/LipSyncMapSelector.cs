@@ -237,7 +237,7 @@ namespace VixenModules.App.LipSyncApp
             foreach (ListViewItem lvItem in listViewMappings.SelectedItems)
             {
                 LipSyncMapData tempItem = new LipSyncMapData(_library.GetMapping(lvItem.Name));
-                string mapName = _library.AddMapping(true, lvItem.Name, tempItem);
+                string mapName = _library.AddMapping(true, lvItem.Name, tempItem, tempItem.IsMatrix);
                 this.PopulateListWithMappings();
                 Changed = true;
             }
