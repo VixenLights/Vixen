@@ -29,12 +29,12 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.Windows.Forms.ListViewItem listViewItem7 = new System.Windows.Forms.ListViewItem("asdfadsa");
-			System.Windows.Forms.ListViewItem listViewItem8 = new System.Windows.Forms.ListViewItem("rewqrewq");
-			System.Windows.Forms.ListViewItem listViewItem9 = new System.Windows.Forms.ListViewItem("vbcbxvxc");
-			System.Windows.Forms.ListViewItem listViewItem10 = new System.Windows.Forms.ListViewItem("gfdsgfsd");
-			System.Windows.Forms.ListViewItem listViewItem11 = new System.Windows.Forms.ListViewItem("ytreyre");
-			System.Windows.Forms.ListViewItem listViewItem12 = new System.Windows.Forms.ListViewItem("xvcbxvcx");
+			System.Windows.Forms.ListViewItem listViewItem13 = new System.Windows.Forms.ListViewItem("asdfadsa");
+			System.Windows.Forms.ListViewItem listViewItem14 = new System.Windows.Forms.ListViewItem("rewqrewq");
+			System.Windows.Forms.ListViewItem listViewItem15 = new System.Windows.Forms.ListViewItem("vbcbxvxc");
+			System.Windows.Forms.ListViewItem listViewItem16 = new System.Windows.Forms.ListViewItem("gfdsgfsd");
+			System.Windows.Forms.ListViewItem listViewItem17 = new System.Windows.Forms.ListViewItem("ytreyre");
+			System.Windows.Forms.ListViewItem listViewItem18 = new System.Windows.Forms.ListViewItem("xvcbxvcx");
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(VixenApplication));
 			this.contextMenuStripNewSequence = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
@@ -288,12 +288,12 @@
 			this.listViewRecentSequences.FullRowSelect = true;
 			this.listViewRecentSequences.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.listViewRecentSequences.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem7,
-            listViewItem8,
-            listViewItem9,
-            listViewItem10,
-            listViewItem11,
-            listViewItem12});
+            listViewItem13,
+            listViewItem14,
+            listViewItem15,
+            listViewItem16,
+            listViewItem17,
+            listViewItem18});
 			this.listViewRecentSequences.Location = new System.Drawing.Point(18, 116);
 			this.listViewRecentSequences.MultiSelect = false;
 			this.listViewRecentSequences.Name = "listViewRecentSequences";
@@ -311,12 +311,11 @@
 			// 
 			this.labelVersion.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.labelVersion.ForeColor = System.Drawing.Color.Black;
-			this.labelVersion.Location = new System.Drawing.Point(262, 126);
+			this.labelVersion.Location = new System.Drawing.Point(360, 131);
 			this.labelVersion.Name = "labelVersion";
-			this.labelVersion.Size = new System.Drawing.Size(126, 22);
+			this.labelVersion.Size = new System.Drawing.Size(89, 22);
 			this.labelVersion.TabIndex = 1;
 			this.labelVersion.Text = "[0.0.0]";
-			this.labelVersion.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// groupBoxSystemConfig
 			// 
@@ -412,14 +411,13 @@
 			// 
 			// labelDebugVersion
 			// 
-			this.labelDebugVersion.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.labelDebugVersion.Font = new System.Drawing.Font("Arial", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.labelDebugVersion.ForeColor = System.Drawing.Color.Black;
-			this.labelDebugVersion.Location = new System.Drawing.Point(186, 150);
+			this.labelDebugVersion.Location = new System.Drawing.Point(362, 161);
 			this.labelDebugVersion.Name = "labelDebugVersion";
-			this.labelDebugVersion.Size = new System.Drawing.Size(202, 22);
+			this.labelDebugVersion.Size = new System.Drawing.Size(99, 22);
 			this.labelDebugVersion.TabIndex = 16;
 			this.labelDebugVersion.Text = "[0.0.0]";
-			this.labelDebugVersion.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// VixenApplication
 			// 
