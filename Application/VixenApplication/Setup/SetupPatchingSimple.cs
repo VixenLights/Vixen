@@ -365,6 +365,15 @@ namespace VixenApplication.Setup
 			// then all other patches, in case we want to keep them.
 			// TODO: eh, I may have written this while drunk, it doesn't seem like a particlarly good way to do it
 
+			int patchedCount = _componentOutputs.Where(x => x.Patched).Count();
+			if (patchedCount > 20)
+			{
+				string message = string.Format("Are you sure you want to unpatch {0} patch points?", patchedCount);
+				DialogResult result = MessageBox.Show(message, "Unpatch Elements?", MessageBoxButtons.YesNo);
+				if (result == DialogResult.No)
+					return;
+			}
+			
 			List<IDataFlowComponent> directElementChildren = new List<IDataFlowComponent>();
 			List<IDataFlowComponent> nonDirectElementChildren = new List<IDataFlowComponent>();
 
@@ -419,6 +428,15 @@ namespace VixenApplication.Setup
 
 		private void buttonUnpatchControllers_Click(object sender, EventArgs e)
 		{
+			int patchedCount = Convert.ToInt32(labelPatchedOutputCount.Text);
+			if (patchedCount > 20)
+			{
+				string message = string.Format("Are you sure you want to unpatch {0} patch points?", patchedCount);
+				DialogResult result = MessageBox.Show(message, "Unpatch Controllers?", MessageBoxButtons.YesNo);
+				if (result == DialogResult.No)
+					return;
+			}
+
 			foreach (KeyValuePair<IControllerDevice, HashSet<int>> controllerAndOutput in _cachedControllersAndOutputs) {
 				OutputController controller = controllerAndOutput.Key as OutputController;
 				if (controller == null)
