@@ -207,9 +207,11 @@ namespace BaseSequence
 			IsRunning = false;
 			//Reset our position. No need to stop the media, we will just reset its position.
 			TimingSource.Position = StartTime;
+			Thread.Sleep(50); //Give everything a chance to stop before we fire it all back up again.
 			//Fire it back up again.
-			TimingSource.Start();
 			IsRunning = true;
+			TimingSource.Start();
+
 			while (TimingSource.Position == StartTime)
 			{
 				Thread.Sleep(1); //Give the train a chance to get out of the station.

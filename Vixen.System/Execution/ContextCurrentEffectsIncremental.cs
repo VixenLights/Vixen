@@ -43,16 +43,23 @@ namespace Vixen.Execution
 
 		public void Reset()
 		{
-			if (_currentEffects != null)
-				_currentEffects.Clear();
-			_affectedElements.Clear();
+			lock (_currentEffects)
+			{
+				if (_currentEffects != null)
+					_currentEffects.Clear();
+			}
+			
 		}
 
 		private void _GetElementsAffected(IEnumerable<IEffectNode> effects)
 		{
-			_affectedElements.Clear();
-			_affectedElements.AddRange(effects.SelectMany(x => x.Effect.EffectedElementIds));
-			//return new HashSet<Guid>(effects.SelectMany(x => x.Effect.TargetNodes).SelectMany(y => y.GetElementEnumerator()).Select(z => z.Id).Distinct());
+			lock (_currentEffects)
+			{
+				_affectedElements.Clear();
+				_affectedElements.UnionWith(effects.SelectMany(x => x.Effect.EffectedElementIds));
+				//return new HashSet<Guid>(effects.SelectMany(x => x.Effect.TargetNodes).SelectMany(y => y.GetElementEnumerator()).Select(z => z.Id).Distinct());	
+			}
+			
 		}
 
 		private void _RemoveExpiredEffects(TimeSpan currentTime)
