@@ -14,11 +14,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 	public class PreviewPolyLine : PreviewBaseShape
 	{
         [DataMember] private List<PreviewPoint> _points = new List<PreviewPoint>();
-        [DataMember] private int _verticalSpacing;
+        //[DataMember] private int _verticalSpacing;
 
         private PreviewPoint p1Start, p2Start;
-        //const int InitialStringSpacing = 10;
-        //const int InitialLightsPerString = 10;
         const int InitialPixelSpacing = 10;
         PreviewTools previewTools = new PreviewTools();
 
@@ -169,18 +167,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         {
             get
             {
-                //Console.WriteLine(">>>>>LineLength<<<<");
                 double lineLength = 0;
                 for (int pointNum = 0; pointNum < _points.Count - 1; pointNum++)
                 {
-                    //Console.WriteLine("pointNum: " + pointNum);
                     if (pointNum < _points.Count - 1)
                     {
-                        //Console.WriteLine("Here1");
                         // Is this a horizontal line?
                         if (_points[pointNum].X == _points[pointNum + 1].X)
                         {
-                            //Console.WriteLine("Here2");
                             lineLength += Math.Abs(_points[pointNum].Y - _points[pointNum + 1].Y);
                         }
                         // Is this a vertical line?
@@ -194,7 +188,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                             double a = Math.Abs(_points[pointNum].X - _points[pointNum + 1].X);
                             double b = Math.Abs(_points[pointNum].Y - _points[pointNum + 1].Y);
                             lineLength += Math.Sqrt(Math.Pow(a, 2) + Math.Pow(b, 2));
-                            //Console.WriteLine("Else: " + lineLength);
                         }
                     }
                 }
@@ -239,30 +232,23 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			if (_points != null && _points.Count > 0)
 			{
                 double lineLength = LineLength;
-                //Console.WriteLine("-----> LineLength: " + lineLength);
                 if (lineLength > 0)
                 {
                     int currentPixelNum = 0;
                     double tailLength = PixelSpacing;
                     for (int pointNum = 0; pointNum < _points.Count - 1; pointNum++)
                     {
-                        //Console.WriteLine("-------------------------------");
-                        //Console.WriteLine("LineLength: " + lineLength + "   PixelCount: " + PixelCount);
                         // Length of the entire segment
                         double thisFullLineLength = SegmentLength(pointNum);
-                        //Console.WriteLine("thisFullLineLength: " + thisFullLineLength);
                         // Empty portion of the start of the line segment 
                         double thisEmptyStartLength = PixelSpacing - tailLength;
-                        //Console.WriteLine("thisEmptyStartLength: " + thisEmptyStartLength);
                         // Active length of the segment without the start
                         double thisActiveLineLength = thisFullLineLength - thisEmptyStartLength;
-                        //Console.WriteLine("thisActiveLineLength: " + thisActiveLineLength);
                         // Get the pixels in this line. No hangers on the end.
                         double pixelSpacesInThisLine = Math.Truncate(thisActiveLineLength / PixelSpacing);
                         double pixelsInThisLine = pixelSpacesInThisLine + 1;
                         // Re-calcuate the active line length
                         thisActiveLineLength = pixelSpacesInThisLine * PixelSpacing;
-                        //Console.WriteLine("thisActiveLineLength: " + thisActiveLineLength);
                         // Calculate the empty tail
                         tailLength = thisFullLineLength - thisEmptyStartLength - thisActiveLineLength;
                         if (tailLength < 0) tailLength = 0;
@@ -313,7 +299,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public override void MouseMove(int x, int y, int changeX, int changeY)
 		{
-            //Console.WriteLine("MouseMove: " + x.ToString() + ":" + y.ToString());
 			PreviewPoint point = PointToZoomPoint(new PreviewPoint(x, y));
 			// See if we're resizing
 			if (_selectedPoint != null) {

@@ -39,7 +39,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                     _strings = new List<PreviewBaseShape>();
                     foreach (ElementNode child in selectedNode.Children)
                     {
-                        Console.WriteLine("ElementNode => " + child.Name);
                         int pixelCount = child.Children.Count();
                         PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(10, 10), pixelCount, child, ZoomLevel);
                         line.Parent = this;

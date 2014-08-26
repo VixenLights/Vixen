@@ -325,6 +325,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		//    return result;
 		//}
 
+        /// <summary>
+        /// Returns the number of child nodes that do not have children
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
 		public static List<ElementNode> GetLeafNodes(ElementNode node)
 		{
 			List<ElementNode> children = new List<ElementNode>();
@@ -334,6 +339,26 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 			return children;
 		}
+
+        /// <summary>
+        /// Retruns the number of strings and pixels in an ElementNode
+        /// </summary>
+        public static void CountPixelsAndStrings(ElementNode ParentNode, out int Pixels, out int Strings)
+        {
+            Pixels = 0;
+            Strings = 0;
+            foreach (ElementNode child in ParentNode.Children)
+            {
+                if (child.IsLeaf)
+                {
+                    Pixels++;
+                }
+                else
+                {
+                    Strings++;
+                }
+            }
+        }
 
 		public static string TemplateFolder
 		{
