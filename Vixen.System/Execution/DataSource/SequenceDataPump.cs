@@ -65,15 +65,15 @@ namespace Vixen.Execution.DataSource
 
 			IEnumerator<IDataNode> dataEnumerator = Sequence.SequenceData.EffectData.GetEnumerator();
 			try {
-				while (IsRunning) {
+				//while (IsRunning) {
 					while (IsRunning && dataEnumerator.MoveNext()) {
 						_effectNodeQueue.Add((IEffectNode) dataEnumerator.Current);
 					}
 
 					// Wait a bit before checking for more data.
 					//*** Look up a better way than an arbitrary sleep.
-					Thread.Sleep(5);
-				}
+				//	Thread.Sleep(5);
+				//}
 			}
 			finally {
 				dataEnumerator.Dispose();

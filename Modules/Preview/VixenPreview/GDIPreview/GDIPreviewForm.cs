@@ -64,12 +64,16 @@ namespace VixenModules.Preview.VixenPreview
 
 				needsUpdate = true;
 
-				CancellationTokenSource tokenSource = new CancellationTokenSource();
 				gdiControl.BeginUpdate();
 
 				try
 				{
-					elementArray.AsParallel().WithCancellation(tokenSource.Token).ForAll(element =>
+					var po = new ParallelOptions
+					{
+						MaxDegreeOfParallelism = Environment.ProcessorCount
+					};
+
+					Parallel.ForEach(elementArray, po, element => 
 					{
 						ElementNode node = VixenSystem.Elements.GetElementNodeForElement(element);
 						if (node != null)
