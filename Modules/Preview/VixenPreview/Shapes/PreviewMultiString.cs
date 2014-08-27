@@ -17,7 +17,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         [DataMember] private List<PreviewPoint> _points = new List<PreviewPoint>();
 
         private ElementNode inputElements;
-        //private PreviewPoint p1Start, p2Start;
         private List<PreviewPoint> pStart = new List<PreviewPoint>();
         const int InitialLightsPerString = 10;
 
