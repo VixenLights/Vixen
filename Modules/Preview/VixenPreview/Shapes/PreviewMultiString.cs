@@ -17,8 +17,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         [DataMember] private List<PreviewPoint> _points = new List<PreviewPoint>();
 
         private ElementNode inputElements;
-        private PreviewPoint p1Start, p2Start;
+        //private PreviewPoint p1Start, p2Start;
+        private List<PreviewPoint> pStart = new List<PreviewPoint>();
         const int InitialLightsPerString = 10;
+
 
         public PreviewMultiString(PreviewPoint point1, PreviewPoint point2, ElementNode selectedNode, double zoomLevel)
         {
@@ -144,22 +146,35 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         {
             get
             {
-                return (Math.Min(_points[0].X, _points[1].X));
+                int l = 0;
+                foreach (PreviewPoint p in _points)
+                {
+                    l = Math.Min(l, p.X);
+                }
+                return l;
             }
             set
             {
-                if (_points[0].X < _points[1].X)
+                int currentLeft = Left;
+                int delta = currentLeft - value;
+                foreach (PreviewPoint p in _points)
                 {
-                    int delta = _points[0].X - value;
-                    _points[0].X = value;
-                    _points[1].X -= delta;
+                    p.X = p.X - delta;
                 }
-                else
-                {
-                    int delta = _points[1].X - value;
-                    _points[0].X -= delta;
-                    _points[1].X = value;
-                }
+
+
+                //if (_points[0].X < _points[1].X)
+                //{
+                //    int delta = _points[0].X - value;
+                //    _points[0].X = value;
+                //    _points[1].X -= delta;
+                //}
+                //else
+                //{
+                //    int delta = _points[1].X - value;
+                //    _points[0].X -= delta;
+                //    _points[1].X = value;
+                //}
                 Layout();
             }
         }
@@ -210,15 +225,22 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             // If we get here, we're moving
             else
             {
-                //_points[0].X = Convert.ToInt32(p1Start.X * ZoomLevel) + changeX;
-                //_points[0].Y = Convert.ToInt32(p1Start.Y * ZoomLevel) + changeY;
-                //_points[1].X = Convert.ToInt32(p2Start.X * ZoomLevel) + changeX;
-                //_points[1].Y = Convert.ToInt32(p2Start.Y * ZoomLevel) + changeY;
+                if (pStart.Count() == _points.Count())
+                {
+                    for (int pNum = 0; pNum < _points.Count(); pNum++)
+                    {
+                        _points[pNum].X = Convert.ToInt32(pStart[pNum].X * ZoomLevel) + changeX;
+                        _points[pNum].Y = Convert.ToInt32(pStart[pNum].Y * ZoomLevel) + changeY;
+                        PointToZoomPointRef(_points[pNum]);
+                    }
 
-                //PointToZoomPointRef(_points[0]);
-                //PointToZoomPointRef(_points[1]);
+                    //PointToZoomPointRef(_points[0]);
+                    //PointToZoomPointRef(_points[1]);
 
-                Layout();
+                    //Left = x;
+
+                    Layout();
+                }
             }
         }
 
@@ -240,63 +262,70 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
         private void CreateString()
         {
-            // There is no ElementNode selected in the tree
-            if (inputElements == null)
+            if (Creating)
             {
-                StringCount++;
-            }
-            // We've got an ElementNode selected in the tree, now figure out what to do with it.
-            else
-            {
-                int inputStringCount = 0;
-                int inputPixelCount = 0;
-                PreviewTools.CountPixelsAndStrings(inputElements, out inputPixelCount, out inputStringCount);
-                int stringNum = _strings.Count();
-
-                // is this a single node with no children?
-                if (inputPixelCount == 0 && inputStringCount == 0)
+                // There is no ElementNode selected in the tree
+                if (inputElements == null)
                 {
-                    PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(10, 10), 10, inputElements, ZoomLevel);
-                    line.Parent = this;
-                    _strings.Add(line);
+                    StringCount++;
                 }
-                // If we're here, we've got a group selected
+                // We've got an ElementNode selected in the tree, now figure out what to do with it.
                 else
                 {
-                    // Do we have multiple child strings in this group and no individual pixels selected?
-                    if (stringNum <= inputStringCount - 1 && inputPixelCount == 0)
-                    {
-                        StringType = StringTypes.Pixel;
+                    int inputStringCount = 0;
+                    int inputPixelCount = 0;
+                    PreviewTools.CountPixelsAndStrings(inputElements, out inputPixelCount, out inputStringCount);
+                    int stringNum = _strings.Count();
 
-                        ElementNode child = null;
-                        if (inputStringCount > 0)
-                        {
-                            child = inputElements.Children.ToList()[stringNum];
-                        }
-                        else
-                        {
-                            child = inputElements;
-                        }
-                        int pixelCount = child.Count();
-                        PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(10, 10), child.Count(), child, ZoomLevel);
-                        line.Parent = this;
-                        _strings.Add(line);
-                    }
-                    // If we're here, we have multiple pixels in a single string and no strings in our parent node
-                    else if (inputPixelCount > 2 && inputStringCount == 0 && stringNum == 0)
+                    // is this a single node with no children?
+                    if (inputPixelCount == 0 && inputStringCount == 0)
                     {
-                        StringType = StringTypes.Pixel;
-                        PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(10, 10), inputElements.Count(), inputElements, ZoomLevel);
+                        PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(10, 10), 10, inputElements, ZoomLevel);
                         line.Parent = this;
                         _strings.Add(line);
+                        _stringCount = _strings.Count();
                     }
-                    // If we get here, there is nothing valid selected so add a string and move on
+                    // If we're here, we've got a group selected
                     else
                     {
-                        PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(10, 10), 10, null, ZoomLevel);
-                        line.StringType = StringType;
-                        line.Parent = this;
-                        _strings.Add(line);
+                        // Do we have multiple child strings in this group and no individual pixels selected?
+                        if (stringNum <= inputStringCount - 1 && inputPixelCount == 0)
+                        {
+                            StringType = StringTypes.Pixel;
+
+                            ElementNode child = null;
+                            if (inputStringCount > 0)
+                            {
+                                child = inputElements.Children.ToList()[stringNum];
+                            }
+                            else
+                            {
+                                child = inputElements;
+                            }
+                            int pixelCount = child.Count();
+                            PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(10, 10), child.Count(), child, ZoomLevel);
+                            line.Parent = this;
+                            _strings.Add(line);
+                            _stringCount = _strings.Count();
+                        }
+                        // If we're here, we have multiple pixels in a single string and no strings in our parent node
+                        else if (inputPixelCount > 2 && inputStringCount == 0 && stringNum == 0)
+                        {
+                            StringType = StringTypes.Pixel;
+                            PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(10, 10), inputElements.Count(), inputElements, ZoomLevel);
+                            line.Parent = this;
+                            _strings.Add(line);
+                            _stringCount = _strings.Count();
+                        }
+                        // If we get here, there is nothing valid selected so add a string and move on
+                        else
+                        {
+                            PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(10, 10), 10, null, ZoomLevel);
+                            line.StringType = StringType;
+                            line.Parent = this;
+                            _strings.Add(line);
+                            _stringCount = _strings.Count();
+                        }
                     }
                 }
             }
@@ -304,8 +333,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
         public void EndCreation()
         {
-            _points.Remove(_selectedPoint);
             Creating = false;
+            _points.Remove(_selectedPoint);
+            _strings.RemoveAt(_strings.Count() - 1);
             SelectDragPoints();
             Layout();
         }
@@ -338,8 +368,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         {
             if (point == null)
             {
-                p1Start = new PreviewPoint(_points[0].X, _points[0].Y);
-                p2Start = new PreviewPoint(_points[1].X, _points[1].Y);
+                //p1Start = new PreviewPoint(_points[0].X, _points[0].Y);
+                //p2Start = new PreviewPoint(_points[1].X, _points[1].Y);
+                if (pStart == null) pStart = new List<PreviewPoint>();
+                pStart.Clear();
+                foreach (PreviewPoint p in _points)
+                {
+                    pStart.Add(new PreviewPoint(p));
+                }
             }
 
             _selectedPoint = point;
@@ -392,10 +428,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
         public override void ResizeFromOriginal(double aspect)
         {
-            _points[0].X = p1Start.X;
-            _points[0].Y = p1Start.Y;
-            _points[1].X = p2Start.X;
-            _points[1].Y = p2Start.Y;
+            //_points[0].X = p1Start.X;
+            //_points[0].Y = p1Start.Y;
+            //_points[1].X = p2Start.X;
+            //_points[1].Y = p2Start.Y;
             Resize(aspect);
         }
     }
