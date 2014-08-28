@@ -618,6 +618,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void toolStripButtonExportColors_Click(object sender, EventArgs e)
 		{
+			SaveFileDialog saveFileDialog = new SaveFileDialog();
 			saveFileDialog.DefaultExt = ".vfc";
 			saveFileDialog.Filter = "Vixen 3 Favorite Colors (*.vfc)|*.vfc|All Files (*.*)|*.*";
 			if (lastFolder != string.Empty) saveFileDialog.InitialDirectory = lastFolder;
@@ -648,6 +649,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void toolStripButtonImportColors_Click(object sender, EventArgs e)
 		{
+			OpenFileDialog openFileDialog = new OpenFileDialog();
 			openFileDialog.DefaultExt = ".vfc";
 			openFileDialog.Filter = "Vixen 3 Favorite Colors (*.vfc)|*.vfc|All Files (*.*)|*.*";
 			openFileDialog.FilterIndex = 0;
@@ -687,6 +689,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void toolStripButtonExportCurves_Click(object sender, EventArgs e)
 		{
+			SaveFileDialog saveFileDialog = new SaveFileDialog();
 			saveFileDialog.DefaultExt = ".vcl";
 			saveFileDialog.Filter = "Vixen 3 Curve Library (*.vcl)|*.vcl|All Files (*.*)|*.*";
 			if (lastFolder != string.Empty) saveFileDialog.InitialDirectory = lastFolder;
@@ -723,6 +726,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void toolStripButtonImportCurves_Click(object sender, EventArgs e)
 		{
+			OpenFileDialog openFileDialog = new OpenFileDialog();
 			openFileDialog.DefaultExt = ".vcl";
 			openFileDialog.Filter = "Vixen 3 Curve Library (*.vcl)|*.vcl|All Files (*.*)|*.*";
 			openFileDialog.FilterIndex = 0;
@@ -772,6 +776,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void toolStripButtonExportGradients_Click(object sender, EventArgs e)
 		{
+			SaveFileDialog saveFileDialog = new SaveFileDialog();
 			saveFileDialog.DefaultExt = ".vgl";
 			saveFileDialog.Filter = "Vixen 3 Color Gradient Library (*.vgl)|*.vgl|All Files (*.*)|*.*";
 			if (lastFolder != string.Empty) saveFileDialog.InitialDirectory = lastFolder;
@@ -808,6 +813,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void toolStripButtonImportGradients_Click(object sender, EventArgs e)
 		{
+			OpenFileDialog openFileDialog = new OpenFileDialog();
 			openFileDialog.DefaultExt = ".vgl";
 			openFileDialog.Filter = "Vixen 3 Color Gradient Library (*.vgl)|*.vgl|All Files (*.*)|*.*";
 			openFileDialog.FilterIndex = 0;

@@ -57,8 +57,6 @@
 			this.comboBoxGradientHandling = new System.Windows.Forms.ComboBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.listViewGradients = new System.Windows.Forms.ListView();
-			this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
-			this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
 			this.tabControl1.SuspendLayout();
 			this.tabColors.SuspendLayout();
 			this.toolStripColors.SuspendLayout();
@@ -465,8 +463,6 @@
 		private System.Windows.Forms.ToolStripButton toolStripButtonImportCurves;
 		private System.Windows.Forms.ToolStripButton toolStripButtonExportGradients;
 		private System.Windows.Forms.ToolStripButton toolStripButtonImportGradients;
-		private System.Windows.Forms.SaveFileDialog saveFileDialog;
-		private System.Windows.Forms.OpenFileDialog openFileDialog;
 		private System.Windows.Forms.ToolStripButton toolStripButtonExportColors;
 		private System.Windows.Forms.ToolStripButton toolStripButtonImportColors;
 
