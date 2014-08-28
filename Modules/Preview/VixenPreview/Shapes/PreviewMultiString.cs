@@ -7,6 +7,7 @@ using System.Runtime.Serialization;
 using System.ComponentModel;
 using Vixen.Sys;
 using System.Drawing.Design;
+using System.Xml.Serialization;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
@@ -19,7 +20,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         private ElementNode inputElements;
         private List<PreviewPoint> pStart = new List<PreviewPoint>();
         const int InitialLightsPerString = 10;
-
 
         public PreviewMultiString(PreviewPoint point1, PreviewPoint point2, ElementNode selectedNode, double zoomLevel)
         {
@@ -117,25 +117,52 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         [Browsable(false)]
         public bool Creating { get; set; }
 
+        [Browsable(false)]
+        public override int Right
+        {
+            get
+            {
+                int r = 0;
+                foreach (PreviewPoint p in _points)
+                {
+                    r = Math.Min(r, p.X);
+                }
+                return r;
+            }
+        }
+
+        [Browsable(false)]
+        public override int Bottom
+        {
+            get
+            {
+                int b = 0;
+                foreach (PreviewPoint p in _points)
+                {
+                    b = Math.Min(b, p.Y);
+                }
+                return b;
+            }
+        }
+
         public override int Top
         {
             get
             {
-                return (Math.Min(_points[0].Y, _points[1].Y));
+                int t = int.MaxValue;
+                foreach (PreviewPoint p in _points)
+                {
+                    t = Math.Min(t, p.Y);
+                }
+                return t;
             }
             set
             {
-                if (_points[0].Y < _points[1].Y)
+                int currentTop = Top;
+                int delta = currentTop - value;
+                foreach (PreviewPoint p in _points)
                 {
-                    int delta = _points[0].Y - value;
-                    _points[0].Y = value;
-                    _points[1].Y -= delta;
-                }
-                else
-                {
-                    int delta = _points[1].Y - value;
-                    _points[0].Y -= delta;
-                    _points[1].Y = value;
+                    p.Y = p.Y - delta;
                 }
                 Layout();
             }
@@ -145,7 +172,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         {
             get
             {
-                int l = 0;
+                int l = int.MaxValue;
                 foreach (PreviewPoint p in _points)
                 {
                     l = Math.Min(l, p.X);
@@ -160,20 +187,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 {
                     p.X = p.X - delta;
                 }
-
-
-                //if (_points[0].X < _points[1].X)
-                //{
-                //    int delta = _points[0].X - value;
-                //    _points[0].X = value;
-                //    _points[1].X -= delta;
-                //}
-                //else
-                //{
-                //    int delta = _points[1].X - value;
-                //    _points[0].X -= delta;
-                //    _points[1].X = value;
-                //}
                 Layout();
             }
         }
@@ -185,11 +198,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
         public override void Match(PreviewBaseShape matchShape)
         {
-            //PreviewPolyLine shape = (matchShape as PreviewPolyLine);
-            //PixelSize = shape.PixelSize;
-            //_points[1].X = _points[0].X + (shape._points[1].X - shape._points[0].X);
-            //_points[1].Y = _points[0].Y + (shape._points[1].Y - shape._points[0].Y);
-            //Layout();
+            PreviewMultiString shape = (matchShape as PreviewMultiString);
+            PixelSize = shape.PixelSize;
+            Layout();
         }
 
         public override void Layout()
@@ -332,11 +343,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
         public void EndCreation()
         {
-            Creating = false;
-            _points.Remove(_selectedPoint);
-            _strings.RemoveAt(_strings.Count() - 1);
-            SelectDragPoints();
-            Layout();
+            if (Creating)
+            {
+                Creating = false;
+                _points.Remove(_selectedPoint);
+                _strings.RemoveAt(_strings.Count() - 1);
+                SelectDragPoints();
+                Layout();
+            }
         }
 
         public override void SelectDragPoints()
@@ -367,8 +381,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         {
             if (point == null)
             {
-                //p1Start = new PreviewPoint(_points[0].X, _points[0].Y);
-                //p2Start = new PreviewPoint(_points[1].X, _points[1].Y);
                 if (pStart == null) pStart = new List<PreviewPoint>();
                 pStart.Clear();
                 foreach (PreviewPoint p in _points)
@@ -388,30 +400,23 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
         public override object Clone()
         {
-            PreviewPolyLine newLine = (PreviewPolyLine)this.MemberwiseClone();
+            PreviewMultiString newMultiString = (PreviewMultiString)this.MemberwiseClone();
 
-            //newLine._pixels = new List<Preview Pixel>();
-
-            foreach (PreviewPixel pixel in _pixels)
-            {
-                newLine.AddPixel(pixel.X, pixel.Y);
-            }
-            return newLine;
+            //foreach (PreviewPixel pixel in _pixels)
+            //{
+            //    newLine.AddPixel(pixel.X, pixel.Y);
+            //}
+            //Console.WriteLine("Clone");
+            return newMultiString;
         }
 
         public override void MoveTo(int x, int y)
         {
-            Point topLeft = new Point();
-            topLeft.X = Math.Min(_points[0].X, _points[1].X);
-            topLeft.Y = Math.Min(_points[0].Y, _points[1].Y);
+            PreviewPoint p = new PreviewPoint(x, y);
+            PointToZoomPoint(p);
 
-            int deltaX = x - topLeft.X;
-            int deltaY = y - topLeft.Y;
-
-            _points[0].X += deltaX;
-            _points[0].Y += deltaY;
-            _points[1].X += deltaX;
-            _points[1].Y += deltaY;
+            Top = p.Y;
+            Left = p.X;
 
             Layout();
         }

@@ -963,9 +963,9 @@ namespace VixenModules.Preview.VixenPreview
 				if (Paste()) {
 					// move the prop to the mouse position
 					Point moveToPoint = PointToClient(MousePosition);
-					_selectedDisplayItem.Shape.MoveTo(moveToPoint.X, moveToPoint.Y);
+                    _selectedDisplayItem.Shape.MoveTo(moveToPoint.X, moveToPoint.Y);
 
-					StartMove(moveToPoint.X, moveToPoint.Y);
+                    StartMove(moveToPoint.X, moveToPoint.Y);
 				}
 			}
 			else if (e.KeyCode == Keys.Up) {
@@ -1115,7 +1115,8 @@ namespace VixenModules.Preview.VixenPreview
 			if (newDisplayItem != null) {
 				DeSelectSelectedDisplayItem();
 				AddDisplayItem(newDisplayItem);
-				_selectedDisplayItem = newDisplayItem;
+                newDisplayItem.ZoomLevel = ZoomLevel;
+                _selectedDisplayItem = newDisplayItem;
 				_selectedDisplayItem.Shape.Select(true);
 				_selectedDisplayItem.Shape.SetSelectPoint(null);
 				OnSelectDisplayItem(this, _selectedDisplayItem);
