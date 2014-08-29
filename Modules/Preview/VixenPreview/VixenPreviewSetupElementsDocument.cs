@@ -57,51 +57,28 @@ namespace VixenModules.Preview.VixenPreview
 		//
 		private void OnSelectDisplayItem(object sender, Shapes.DisplayItem displayItem)
 		{
-			return;
+            //treeElements.SelectedNodes = null;
 
-			treeElements.SelectedNodes = null;
-
-			//CreateElementNodeToTreeNode();
-
-			TreeNode visibleNode = null;
-			foreach (Shapes.PreviewPixel pixel in displayItem.Shape.Pixels) {
-				if (pixel.Node != null) {
-					//TreeNode treeNode;
-					//if (ElementNodeToTreeNode.TryGetValue(pixel.Node, out treeNode))
-					//{
-					//    treeElements.AddSelectedNode(treeNode);
-					//    visibleNode = treeNode;
-					//}
-					//TreeNode[] nodes = treeElements.Nodes.Find(pixel.Node.Id.ToString(), true);
-					//foreach (TreeNode node in nodes)
-					//{
-					//    visibleNode = node;
-					//    treeElements.AddSelectedNode(node);
-					//}
-
-					//TreeNode node = treeElements.Nodes[pixel.Node.Id.ToString()];
-					//if (node != null)
-					//{
-					//    visibleNode = node;
-					//    treeElements.AddSelectedNode(node);
-					//}
-				}
-			}
-			if (visibleNode != null) {
-				bool selectParent = true;
-				foreach (TreeNode node in visibleNode.Parent.Nodes) {
-					selectParent = (selectParent && treeElements.SelectedNodes.Contains(node));
-				}
-				if (selectParent) {
-					treeElements.SelectedNodes = null;
-					treeElements.AddSelectedNode(visibleNode.Parent);
-					visibleNode.Parent.Collapse();
-					visibleNode.Parent.EnsureVisible();
-				}
-				else {
-					visibleNode.EnsureVisible();
-				}
-			}
+            //TreeNode visibleNode = null;
+            //foreach (Shapes.PreviewPixel pixel in displayItem.Shape.Pixels) {
+            //    if (pixel.Node != null) {
+            //    }
+            //}
+            //if (visibleNode != null) {
+            //    bool selectParent = true;
+            //    foreach (TreeNode node in visibleNode.Parent.Nodes) {
+            //        selectParent = (selectParent && treeElements.SelectedNodes.Contains(node));
+            //    }
+            //    if (selectParent) {
+            //        treeElements.SelectedNodes = null;
+            //        treeElements.AddSelectedNode(visibleNode.Parent);
+            //        visibleNode.Parent.Collapse();
+            //        visibleNode.Parent.EnsureVisible();
+            //    }
+            //    else {
+            //        visibleNode.EnsureVisible();
+            //    }
+            //}
 		}
 
 		private void HighlightNode(TreeNode node)
