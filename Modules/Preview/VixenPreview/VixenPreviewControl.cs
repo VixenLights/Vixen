@@ -34,6 +34,7 @@ namespace VixenModules.Preview.VixenPreview
 		public static double totalUpdateTime = 0;
 		public static double lastUpdateTime = 0;
 		public double lastRenderUpdateTime = 0;
+        private bool DefaultBackground = true;
 
 		private Tools _currentTool = Tools.Select;
 
@@ -245,7 +246,26 @@ namespace VixenModules.Preview.VixenPreview
 
 		public Bitmap Background
 		{
-			get { return _background; }
+			get 
+            {
+                if ((_background == null || _background.Width != Width || _background.Height != Height) && DefaultBackground)
+                {
+                    _background = new Bitmap(Width, Height);
+                    DefaultBackground = true;
+                    SetupBackgroundAlphaImage();
+                }
+                return _background; 
+            }
+            set
+            {
+                _background = value;
+                if (_background == null)
+                {
+                    _background = new Bitmap(Width, Height);
+                    DefaultBackground = true;
+                    SetupBackgroundAlphaImage();
+                }
+            }
 		}
 
 		public void LoadBackground(string fileName)
@@ -254,21 +274,26 @@ namespace VixenModules.Preview.VixenPreview
 				try {
 					using (FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read)) {
 						using (Bitmap loadedBitmap = new Bitmap(fs)) {
-							_background = loadedBitmap.Clone(new Rectangle(0, 0, loadedBitmap.Width, loadedBitmap.Height),
+							Background = loadedBitmap.Clone(new Rectangle(0, 0, loadedBitmap.Width, loadedBitmap.Height),
 							                                 PixelFormat.Format32bppPArgb);
                             //Console.WriteLine("Background->" + fileName);
                         }
                         fs.Close();
+                        DefaultBackground = false;
 					}
 				}
 				catch (Exception ex) {
-					_background = new Bitmap(Width, Height);
+                    //_background = new Bitmap(Width, Height);
+                    //SetupBackgroundAlphaImage();
+                    //DefaultBackground = true;
+                    Background = null;
 					MessageBox.Show("There was an error loading the background image: " + ex.Message, "Error",
 					                MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
 				}
 			}
 			else {
-				_background = new Bitmap(Width, Height);
+                //_background = new Bitmap(Width, Height);
+                Background = null;
 			}
 
 			SetupBackgroundAlphaImage();
@@ -279,10 +304,12 @@ namespace VixenModules.Preview.VixenPreview
 			if (Data.BackgroundFileName != null) {
 				LoadBackground(Data.BackgroundFileName);
 			}
-			else {
-				_background = new Bitmap(Width, Height);
-				SetupBackgroundAlphaImage();
-			}
+            //else
+            //{
+            //    _background = new Bitmap(Width, Height);
+            //    SetupBackgroundAlphaImage();
+            //    DefaultBackground = true;
+            //}
 		}
 
 		private void SetupBackgroundAlphaImage()
@@ -295,7 +322,12 @@ namespace VixenModules.Preview.VixenPreview
 
 				using (Graphics gfx = Graphics.FromImage(_alphaBackground))
 				{
-					using (SolidBrush brush = new SolidBrush(Color.FromArgb(255 - BackgroundAlpha, 0, 0, 0)))
+                    Color c = Color.FromArgb(BackgroundAlpha, 0, 0, 0);
+                    if (!DefaultBackground)
+                    {
+                        c = Color.FromArgb(255 - BackgroundAlpha, 0, 0, 0);
+                    }
+					using (SolidBrush brush = new SolidBrush(c))
 					{
 						gfx.DrawImage(_background, 0, 0, newWidth, newHeight);
 						gfx.FillRectangle(brush, 0, 0, _alphaBackground.Width, _alphaBackground.Height);
@@ -1630,8 +1662,10 @@ namespace VixenModules.Preview.VixenPreview
 			renderTimer.Start();
 
 			AllocateGraphicsBuffer(false);
-			if (_background != null) {
-				FastPixel.FastPixel fp = new FastPixel.FastPixel(new Bitmap(_alphaBackground));
+            //Console.WriteLine("1");
+			if (Background != null) {
+                //Console.WriteLine("2");
+                FastPixel.FastPixel fp = new FastPixel.FastPixel(new Bitmap(_alphaBackground));
 				fp.Lock();
 				foreach (DisplayItem displayItem in DisplayItems) {
 					if (_editMode) {
