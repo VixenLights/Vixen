@@ -79,10 +79,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		#region Private Members
 
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private List<Color> colors = new List<Color>();
 		private string colorFilePath;
 		private CurveLibrary _curveLibrary;
 		private ColorGradientLibrary _colorGradientLibrary;
+		private string lastFolder;
 		private bool ShiftPressed
 		{
 			get { return ModifierKeys.HasFlag(Keys.Shift); }
@@ -604,6 +606,254 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			StartGradientDrag(this, e);
 			listViewGradients.DoDragDrop(listViewGradients.SelectedItems[0].Name, DragDropEffects.Copy);
+		}
+
+		#endregion
+
+		#endregion
+
+		#region Import/Export
+
+		#region Colors
+
+		private void toolStripButtonExportColors_Click(object sender, EventArgs e)
+		{
+			SaveFileDialog saveFileDialog = new SaveFileDialog();
+			saveFileDialog.DefaultExt = ".vfc";
+			saveFileDialog.Filter = "Vixen 3 Favorite Colors (*.vfc)|*.vfc|All Files (*.*)|*.*";
+			if (lastFolder != string.Empty) saveFileDialog.InitialDirectory = lastFolder;
+			if (saveFileDialog.ShowDialog() == DialogResult.OK)
+			{
+				lastFolder = Path.GetDirectoryName(saveFileDialog.FileName);
+
+				var xmlsettings = new XmlWriterSettings()
+				{
+					Indent = true,
+					IndentChars = "\t",
+				};
+
+				try
+				{
+					DataContractSerializer ser = new DataContractSerializer(typeof(List<Color>));
+					var writer = XmlWriter.Create(saveFileDialog.FileName, xmlsettings);
+					ser.WriteObject(writer, colors);
+					writer.Close();
+				}
+				catch (Exception ex)
+				{
+					Logging.Error("While exporting Favorite Colors: " + saveFileDialog.FileName + " " + ex.InnerException);
+					MessageBox.Show("Unable to export data, please check the error log for details", "Unable to export", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				}
+			}
+		}
+
+		private void toolStripButtonImportColors_Click(object sender, EventArgs e)
+		{
+			OpenFileDialog openFileDialog = new OpenFileDialog();
+			openFileDialog.DefaultExt = ".vfc";
+			openFileDialog.Filter = "Vixen 3 Favorite Colors (*.vfc)|*.vfc|All Files (*.*)|*.*";
+			openFileDialog.FilterIndex = 0;
+			if (lastFolder != string.Empty) openFileDialog.InitialDirectory = lastFolder;
+			if (openFileDialog.ShowDialog() == DialogResult.OK)
+			{
+				lastFolder = Path.GetDirectoryName(openFileDialog.FileName);
+				List<Color> _colors = new List<Color>();
+
+				try
+				{
+					using (FileStream reader = new FileStream(openFileDialog.FileName, FileMode.Open, FileAccess.Read))
+					{
+						DataContractSerializer ser = new DataContractSerializer(typeof(List<Color>));
+						_colors = (List<Color>)ser.ReadObject(reader);
+					}
+
+					foreach (Color color in _colors)
+					{
+						colors.Add(color);
+					}
+				}
+				catch (Exception ex)
+				{
+					Logging.Error("Invalid file while importing Favorite Colors: " + openFileDialog.FileName + " " + ex.InnerException);
+					MessageBox.Show("Sorry, we didn't reconize the data in that file as valid Favorite Color data.", "Invalid file", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+				}
+				PopulateColors();
+				Save_ColorPaletteFile();
+			}
+		}
+
+		#endregion
+
+		#region Curves
+
+		private void toolStripButtonExportCurves_Click(object sender, EventArgs e)
+		{
+			SaveFileDialog saveFileDialog = new SaveFileDialog();
+			saveFileDialog.DefaultExt = ".vcl";
+			saveFileDialog.Filter = "Vixen 3 Curve Library (*.vcl)|*.vcl|All Files (*.*)|*.*";
+			if (lastFolder != string.Empty) saveFileDialog.InitialDirectory = lastFolder;
+			if (saveFileDialog.ShowDialog() == DialogResult.OK)
+			{
+				lastFolder = Path.GetDirectoryName(saveFileDialog.FileName);
+
+				var xmlsettings = new XmlWriterSettings()
+				{
+					Indent = true,
+					IndentChars = "\t",
+				};
+
+				try
+				{
+					Dictionary<string, Curve> _curves = new Dictionary<string, Curve>();
+					foreach (KeyValuePair<string, Curve> curve in _curveLibrary)
+					{
+						_curves.Add(curve.Key, curve.Value);
+					}
+
+					DataContractSerializer ser = new DataContractSerializer(typeof(Dictionary<string, Curve>));
+					var writer = XmlWriter.Create(saveFileDialog.FileName, xmlsettings);
+					ser.WriteObject(writer, _curves);
+					writer.Close();
+				}
+				catch (Exception ex)
+				{
+					Logging.Error("While exporting Curve Library: " + saveFileDialog.FileName + " " + ex.InnerException);
+					MessageBox.Show("Unable to export data, please check the error log for details", "Unable to export", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				}
+			}
+		}
+
+		private void toolStripButtonImportCurves_Click(object sender, EventArgs e)
+		{
+			OpenFileDialog openFileDialog = new OpenFileDialog();
+			openFileDialog.DefaultExt = ".vcl";
+			openFileDialog.Filter = "Vixen 3 Curve Library (*.vcl)|*.vcl|All Files (*.*)|*.*";
+			openFileDialog.FilterIndex = 0;
+			if (lastFolder != string.Empty) openFileDialog.InitialDirectory = lastFolder;
+			if (openFileDialog.ShowDialog() == DialogResult.OK)
+			{
+				lastFolder = Path.GetDirectoryName(openFileDialog.FileName);
+				Dictionary<string, Curve> _curves = new Dictionary<string, Curve>();
+
+				try
+				{
+					using (FileStream reader = new FileStream(openFileDialog.FileName, FileMode.Open, FileAccess.Read))
+					{
+						DataContractSerializer ser = new DataContractSerializer(typeof(Dictionary<string, Curve>));
+						_curves = (Dictionary<string, Curve>)ser.ReadObject(reader);
+					}
+
+					foreach (KeyValuePair<string, Curve> curve in _curves)
+					{
+						//This was just easier than prompting for a rename
+						//and rechecking, and repormpting... and on and on and on...
+						string curveName = curve.Key;
+						int i = 2;
+						while (_curveLibrary.Contains(curveName))
+						{
+							curveName = curve.Key + " " + i;
+							i++;
+						}
+
+						_curveLibrary.AddCurve(curveName, curve.Value);
+					}
+				}
+				catch (Exception ex)
+				{
+					Logging.Error("Invalid file while importing Curve Library: " + openFileDialog.FileName + " " + ex.InnerException);
+					MessageBox.Show("Sorry, we didn't reconize the data in that file as valid Curve Library data.", "Invalid file", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+					
+				}
+
+			}
+		}
+
+
+		#endregion
+
+		#region Gradients
+
+		private void toolStripButtonExportGradients_Click(object sender, EventArgs e)
+		{
+			SaveFileDialog saveFileDialog = new SaveFileDialog();
+			saveFileDialog.DefaultExt = ".vgl";
+			saveFileDialog.Filter = "Vixen 3 Color Gradient Library (*.vgl)|*.vgl|All Files (*.*)|*.*";
+			if (lastFolder != string.Empty) saveFileDialog.InitialDirectory = lastFolder;
+			if (saveFileDialog.ShowDialog() == DialogResult.OK)
+			{
+				lastFolder = Path.GetDirectoryName(saveFileDialog.FileName);
+
+				var xmlsettings = new XmlWriterSettings()
+				{
+					Indent = true,
+					IndentChars = "\t",
+				};
+
+				try
+				{
+					Dictionary<string, ColorGradient> _gradients = new Dictionary<string, ColorGradient>();
+					foreach (KeyValuePair<string, ColorGradient> gradient in _colorGradientLibrary)
+					{
+						_gradients.Add(gradient.Key, gradient.Value);
+					}
+
+					DataContractSerializer ser = new DataContractSerializer(typeof(Dictionary<string, ColorGradient>));
+					var writer = XmlWriter.Create(saveFileDialog.FileName, xmlsettings);
+					ser.WriteObject(writer, _gradients);
+					writer.Close();
+				}
+				catch (Exception ex)
+				{
+					Logging.Error("While exporting Color Gradient Library: " + saveFileDialog.FileName + " " + ex.InnerException);
+					MessageBox.Show("Unable to export data, please check the error log for details", "Unable to export", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				}
+			}
+		}
+
+		private void toolStripButtonImportGradients_Click(object sender, EventArgs e)
+		{
+			OpenFileDialog openFileDialog = new OpenFileDialog();
+			openFileDialog.DefaultExt = ".vgl";
+			openFileDialog.Filter = "Vixen 3 Color Gradient Library (*.vgl)|*.vgl|All Files (*.*)|*.*";
+			openFileDialog.FilterIndex = 0;
+			if (lastFolder != string.Empty) openFileDialog.InitialDirectory = lastFolder;
+			if (openFileDialog.ShowDialog() == DialogResult.OK)
+			{
+				lastFolder = Path.GetDirectoryName(openFileDialog.FileName);
+				Dictionary<string, ColorGradient> _gradients = new Dictionary<string, ColorGradient>();
+
+				try
+				{
+					using (FileStream reader = new FileStream(openFileDialog.FileName, FileMode.Open, FileAccess.Read))
+					{
+						DataContractSerializer ser = new DataContractSerializer(typeof(Dictionary<string, ColorGradient>));
+						_gradients = (Dictionary<string, ColorGradient>)ser.ReadObject(reader);
+					}
+
+					foreach (KeyValuePair<string, ColorGradient> gradient in _gradients)
+					{
+						//This was just easier than prompting for a rename
+						//and rechecking, and repormpting... and on and on and on...
+						string gradientName = gradient.Key;
+						int i = 2;
+						while (_colorGradientLibrary.Contains(gradientName))
+						{
+							gradientName = gradient.Key + " " + i;
+							i++;
+						}
+
+						_colorGradientLibrary.AddColorGradient(gradientName, gradient.Value);
+					}
+				}
+				catch (Exception ex)
+				{
+					Logging.Error("Invalid file while importing Color Gradient Library: " + openFileDialog.FileName + " " + ex.InnerException);
+					MessageBox.Show("Sorry, we didn't reconize the data in that file as valid Color Gradient Library data.", "Invalid file", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+				}
+
+			}
 		}
 
 		#endregion

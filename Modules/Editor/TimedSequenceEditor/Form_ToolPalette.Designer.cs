@@ -34,12 +34,16 @@
 			this.toolStripButtonEditColor = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButtonNewColor = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButtonDeleteColor = new System.Windows.Forms.ToolStripButton();
+			this.toolStripButtonExportColors = new System.Windows.Forms.ToolStripButton();
+			this.toolStripButtonImportColors = new System.Windows.Forms.ToolStripButton();
 			this.listViewColors = new System.Windows.Forms.ListView();
 			this.tabCurves = new System.Windows.Forms.TabPage();
 			this.toolStripCurves = new System.Windows.Forms.ToolStrip();
 			this.toolStripButtonEditCurve = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButtonNewCurve = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButtonDeleteCurve = new System.Windows.Forms.ToolStripButton();
+			this.toolStripButtonExportCurves = new System.Windows.Forms.ToolStripButton();
+			this.toolStripButtonImportCurves = new System.Windows.Forms.ToolStripButton();
 			this.checkBoxLinkCurves = new System.Windows.Forms.CheckBox();
 			this.listViewCurves = new System.Windows.Forms.ListView();
 			this.tabGradients = new System.Windows.Forms.TabPage();
@@ -47,6 +51,8 @@
 			this.toolStripButtonEditGradient = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButtonNewGradient = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButtonDeleteGradient = new System.Windows.Forms.ToolStripButton();
+			this.toolStripButtonExportGradients = new System.Windows.Forms.ToolStripButton();
+			this.toolStripButtonImportGradients = new System.Windows.Forms.ToolStripButton();
 			this.checkBoxLinkGradients = new System.Windows.Forms.CheckBox();
 			this.comboBoxGradientHandling = new System.Windows.Forms.ComboBox();
 			this.label1 = new System.Windows.Forms.Label();
@@ -89,7 +95,9 @@
 			this.toolStripColors.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripButtonEditColor,
             this.toolStripButtonNewColor,
-            this.toolStripButtonDeleteColor});
+            this.toolStripButtonDeleteColor,
+            this.toolStripButtonExportColors,
+            this.toolStripButtonImportColors});
 			this.toolStripColors.Location = new System.Drawing.Point(0, 0);
 			this.toolStripColors.Name = "toolStripColors";
 			this.toolStripColors.Size = new System.Drawing.Size(518, 25);
@@ -124,6 +132,26 @@
 			this.toolStripButtonDeleteColor.Size = new System.Drawing.Size(76, 22);
 			this.toolStripButtonDeleteColor.Text = "Delete Color";
 			this.toolStripButtonDeleteColor.Click += new System.EventHandler(this.toolStripButtonDeleteColor_Click);
+			// 
+			// toolStripButtonExportColors
+			// 
+			this.toolStripButtonExportColors.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.toolStripButtonExportColors.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButtonExportColors.Name = "toolStripButtonExportColors";
+			this.toolStripButtonExportColors.Size = new System.Drawing.Size(44, 22);
+			this.toolStripButtonExportColors.Text = "Export";
+			this.toolStripButtonExportColors.ToolTipText = "Export Favorite Colors";
+			this.toolStripButtonExportColors.Click += new System.EventHandler(this.toolStripButtonExportColors_Click);
+			// 
+			// toolStripButtonImportColors
+			// 
+			this.toolStripButtonImportColors.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.toolStripButtonImportColors.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButtonImportColors.Name = "toolStripButtonImportColors";
+			this.toolStripButtonImportColors.Size = new System.Drawing.Size(47, 22);
+			this.toolStripButtonImportColors.Text = "Import";
+			this.toolStripButtonImportColors.ToolTipText = "Import Favorite Colors";
+			this.toolStripButtonImportColors.Click += new System.EventHandler(this.toolStripButtonImportColors_Click);
 			// 
 			// listViewColors
 			// 
@@ -161,7 +189,9 @@
 			this.toolStripCurves.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripButtonEditCurve,
             this.toolStripButtonNewCurve,
-            this.toolStripButtonDeleteCurve});
+            this.toolStripButtonDeleteCurve,
+            this.toolStripButtonExportCurves,
+            this.toolStripButtonImportCurves});
 			this.toolStripCurves.Location = new System.Drawing.Point(0, 0);
 			this.toolStripCurves.Name = "toolStripCurves";
 			this.toolStripCurves.Size = new System.Drawing.Size(518, 25);
@@ -196,6 +226,26 @@
 			this.toolStripButtonDeleteCurve.Size = new System.Drawing.Size(78, 22);
 			this.toolStripButtonDeleteCurve.Text = "Delete Curve";
 			this.toolStripButtonDeleteCurve.Click += new System.EventHandler(this.toolStripButtonDeleteCurve_Click);
+			// 
+			// toolStripButtonExportCurves
+			// 
+			this.toolStripButtonExportCurves.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.toolStripButtonExportCurves.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButtonExportCurves.Name = "toolStripButtonExportCurves";
+			this.toolStripButtonExportCurves.Size = new System.Drawing.Size(44, 22);
+			this.toolStripButtonExportCurves.Text = "Export";
+			this.toolStripButtonExportCurves.ToolTipText = "Export Curve Library";
+			this.toolStripButtonExportCurves.Click += new System.EventHandler(this.toolStripButtonExportCurves_Click);
+			// 
+			// toolStripButtonImportCurves
+			// 
+			this.toolStripButtonImportCurves.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.toolStripButtonImportCurves.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButtonImportCurves.Name = "toolStripButtonImportCurves";
+			this.toolStripButtonImportCurves.Size = new System.Drawing.Size(47, 22);
+			this.toolStripButtonImportCurves.Text = "Import";
+			this.toolStripButtonImportCurves.ToolTipText = "Import Curve Library";
+			this.toolStripButtonImportCurves.Click += new System.EventHandler(this.toolStripButtonImportCurves_Click);
 			// 
 			// checkBoxLinkCurves
 			// 
@@ -242,7 +292,9 @@
 			this.toolStripGradients.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripButtonEditGradient,
             this.toolStripButtonNewGradient,
-            this.toolStripButtonDeleteGradient});
+            this.toolStripButtonDeleteGradient,
+            this.toolStripButtonExportGradients,
+            this.toolStripButtonImportGradients});
 			this.toolStripGradients.Location = new System.Drawing.Point(0, 0);
 			this.toolStripGradients.Name = "toolStripGradients";
 			this.toolStripGradients.Size = new System.Drawing.Size(518, 25);
@@ -277,6 +329,26 @@
 			this.toolStripButtonDeleteGradient.Size = new System.Drawing.Size(92, 22);
 			this.toolStripButtonDeleteGradient.Text = "Delete Gradient";
 			this.toolStripButtonDeleteGradient.Click += new System.EventHandler(this.toolStripButtonDeleteGradient_Click);
+			// 
+			// toolStripButtonExportGradients
+			// 
+			this.toolStripButtonExportGradients.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.toolStripButtonExportGradients.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButtonExportGradients.Name = "toolStripButtonExportGradients";
+			this.toolStripButtonExportGradients.Size = new System.Drawing.Size(44, 22);
+			this.toolStripButtonExportGradients.Text = "Export";
+			this.toolStripButtonExportGradients.ToolTipText = "Export Gradient Library";
+			this.toolStripButtonExportGradients.Click += new System.EventHandler(this.toolStripButtonExportGradients_Click);
+			// 
+			// toolStripButtonImportGradients
+			// 
+			this.toolStripButtonImportGradients.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.toolStripButtonImportGradients.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButtonImportGradients.Name = "toolStripButtonImportGradients";
+			this.toolStripButtonImportGradients.Size = new System.Drawing.Size(47, 22);
+			this.toolStripButtonImportGradients.Text = "Import";
+			this.toolStripButtonImportGradients.ToolTipText = "Import Gradient Library";
+			this.toolStripButtonImportGradients.Click += new System.EventHandler(this.toolStripButtonImportGradients_Click);
 			// 
 			// checkBoxLinkGradients
 			// 
@@ -387,6 +459,12 @@
 		private System.Windows.Forms.ToolStripButton toolStripButtonEditCurve;
 		private System.Windows.Forms.ToolStripButton toolStripButtonNewCurve;
 		private System.Windows.Forms.ToolStripButton toolStripButtonDeleteCurve;
+		private System.Windows.Forms.ToolStripButton toolStripButtonExportCurves;
+		private System.Windows.Forms.ToolStripButton toolStripButtonImportCurves;
+		private System.Windows.Forms.ToolStripButton toolStripButtonExportGradients;
+		private System.Windows.Forms.ToolStripButton toolStripButtonImportGradients;
+		private System.Windows.Forms.ToolStripButton toolStripButtonExportColors;
+		private System.Windows.Forms.ToolStripButton toolStripButtonImportColors;
 
 
 	}
