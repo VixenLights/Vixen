@@ -42,11 +42,14 @@ namespace Vixen.Module.Effect
 				if (value != _targetNodes) {
 					_targetNodes = value;
 					_EnsureTargetNodeProperties();
+					CalculateAffectedElements();
 					TargetNodesChanged();
 					IsDirty = true;
 				}
 			}
 		}
+
+		public IEnumerable<Guid> EffectedElementIds { get; set; }
 
 		public TimeSpan TimeSpan
 		{
@@ -160,6 +163,12 @@ namespace Vixen.Module.Effect
 				IIntentNode[] elementIntents = effectIntents.GetElementIntentsAtTime(elementId, effectRelativeTime);
 				_elementIntents.AddIntentNodeToElement(elementId, elementIntents);
 			}
+		}
+
+		private void CalculateAffectedElements()
+		{
+			EffectedElementIds =
+				TargetNodes.SelectMany(y => y.GetElementEnumerator()).Select(z => z.Id);
 		}
 
 		private void _EnsureTargetNodeProperties()

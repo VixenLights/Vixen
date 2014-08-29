@@ -18,6 +18,11 @@ namespace Vixen.Module.Effect
 		ElementNode[] TargetNodes { get; set; }
 
 		/// <summary>
+		/// Calculated set of element ids that this effect has an impact on.
+		/// </summary>
+		IEnumerable<Guid> EffectedElementIds { get; set; }
+
+		/// <summary>
 		/// The length of the entire effect.
 		/// </summary>
 		TimeSpan TimeSpan { get; set; }
