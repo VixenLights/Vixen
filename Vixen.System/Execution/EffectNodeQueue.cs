@@ -15,6 +15,12 @@ namespace Vixen.Execution
 			//_queue = new ConcurrentQueue<IEffectNode>();
 		}
 
+		public EffectNodeQueue(int size)
+		{
+			_queue = new Queue<IEffectNode>(size);
+			//_queue = new ConcurrentQueue<IEffectNode>();
+		}
+
 		public EffectNodeQueue(IEnumerable<IEffectNode> items)
 		{
 			_queue = new Queue<IEffectNode>(items);
