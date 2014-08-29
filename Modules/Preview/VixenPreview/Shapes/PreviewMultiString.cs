@@ -203,6 +203,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             Layout();
         }
 
+        public override void Select(bool selectDragPoints)
+        {
+            base.Select(selectDragPoints);
+            connectStandardStrings = true;
+        }
+
         public override void Layout()
         {
             if (_points != null && _points.Count >= 2 && _strings.Count() > 0)
