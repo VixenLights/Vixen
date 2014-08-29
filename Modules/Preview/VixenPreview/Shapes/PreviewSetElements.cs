@@ -60,9 +60,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 i++;
             }
 
-            if (_shapes[0].Parent != null && _shapes[0].Parent.GetType().ToString().Contains("Icicle"))
+            string shapeType = "";
+            if (_shapes[0].Parent != null)
             {
-                panelSetLightCount.Visible = true;
+                shapeType = _shapes[0].Parent.GetType().ToString();
+                if (shapeType.Contains("Icicle") || shapeType.Contains("MultiString") )
+                {
+                    panelSetLightCount.Visible = true;
+                }
             }
         }
 

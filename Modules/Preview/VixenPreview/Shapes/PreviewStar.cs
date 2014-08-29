@@ -256,6 +256,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			get { return Math.Abs(_bottomRightPoint.Y - _topLeftPoint.Y); }
 		}
 
+        public override void Select(bool selectDragPoints)
+        {
+            base.Select(selectDragPoints);
+            connectStandardStrings = true;
+        }
+
 		private void RecalcPoints()
 		{
 			lineCount = _pointCount*2;

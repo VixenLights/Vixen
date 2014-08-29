@@ -206,6 +206,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			set { _pixels = value; }
 		}
 
+        [Browsable(false)]
         public PreviewBaseShape Parent { get; set; }
 
 		[Editor(typeof (PreviewSetElementsUIEditor), typeof (UITypeEditor)),
@@ -591,6 +592,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewPolyLine")
             {
                 setupControl = new Shapes.PreviewPolyLineSetupControl(this);
+            }
+            else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewMultiString")
+            {
+                setupControl = new Shapes.PreviewMultiStringSetupControl(this);
             }
 
 			return setupControl;

@@ -14,11 +14,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 	public class PreviewPolyLine : PreviewBaseShape
 	{
         [DataMember] private List<PreviewPoint> _points = new List<PreviewPoint>();
-        [DataMember] private int _verticalSpacing;
+        //[DataMember] private int _verticalSpacing;
 
-        private PreviewPoint p1Start, p2Start;
-        //const int InitialStringSpacing = 10;
-        //const int InitialLightsPerString = 10;
+        //private PreviewPoint p1Start, p2Start;
+        private List<PreviewPoint> pStart = new List<PreviewPoint>();
         const int InitialPixelSpacing = 10;
         PreviewTools previewTools = new PreviewTools();
 
@@ -76,6 +75,19 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			Layout();
 		}
 
+        public override StringTypes StringType
+        {
+            get
+            {
+                return base.StringType;
+            }
+            set
+            {
+                base.StringType = value;
+                AssignStandardPixels();
+            }
+        }
+
         [CategoryAttribute("Settings"),
          DisplayName("Light Count"),
          DescriptionAttribute("Number of pixels or lights in the string.")]
@@ -93,9 +105,44 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                     PreviewPixel pixel = new PreviewPixel(10, 10, 0, PixelSize);
                     Pixels.Add(pixel);
                 }
+
+                AssignStandardPixels();
+
                 Layout();
             }
         }
+
+        //[Editor(typeof(PreviewSetElementsUIEditor), typeof(UITypeEditor)),
+        // CategoryAttribute("Settings"),
+        // DisplayName("Linked Elements")]
+        //public virtual List<PreviewBaseShape> Strings
+        //{
+        //    get
+        //    {
+        //        if (_strings != null)
+        //        {
+        //            //Instead of going through the strings multiple times.. do it once
+        //            // set all the sub-strings to match the connection state for elements
+        //            foreach (PreviewBaseShape line in _strings)
+        //                line.connectStandardStrings = this.connectStandardStrings;
+
+        //            // Set all the StringTypes in the substrings
+        //            foreach (PreviewBaseShape line in _strings)
+        //            {
+        //                line.StringType = _stringType;
+        //            }
+        //        }
+
+        //        List<PreviewBaseShape> stringsResult = _strings;
+        //        if (stringsResult == null)
+        //        {
+        //            stringsResult = new List<PreviewBaseShape>();
+        //            stringsResult.Add(this);
+        //        }
+        //        return stringsResult;
+        //    }
+        //    set { _strings = value; }
+        //}
 
         public bool Creating { get; set; }
         public bool CreateDefaultPixels { get; set; }
@@ -104,21 +151,20 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         {
             get
             {
-                return (Math.Min(_points[0].Y, _points[1].Y));
+                int t = int.MaxValue;
+                foreach (PreviewPoint p in _points)
+                {
+                    t = Math.Min(t, p.Y);
+                }
+                return t;
             }
             set
             {
-                if (_points[0].Y < _points[1].Y)
+                int currentTop = Top;
+                int delta = currentTop - value;
+                foreach (PreviewPoint p in _points)
                 {
-                    int delta = _points[0].Y - value;
-                    _points[0].Y = value;
-                    _points[1].Y -= delta;
-                }
-                else
-                {
-                    int delta = _points[1].Y - value;
-                    _points[0].Y -= delta;
-                    _points[1].Y = value;
+                    p.Y = p.Y - delta;
                 }
                 Layout();
             }
@@ -128,21 +174,20 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         {
             get
             {
-                return (Math.Min(_points[0].X, _points[1].X));
+                int l = int.MaxValue;
+                foreach (PreviewPoint p in _points)
+                {
+                    l = Math.Min(l, p.X);
+                }
+                return l;
             }
             set
             {
-                if (_points[0].X < _points[1].X)
+                int currentLeft = Left;
+                int delta = currentLeft - value;
+                foreach (PreviewPoint p in _points)
                 {
-                    int delta = _points[0].X - value;
-                    _points[0].X = value;
-                    _points[1].X -= delta;
-                }
-                else
-                {
-                    int delta = _points[1].X - value;
-                    _points[0].X -= delta;
-                    _points[1].X = value;
+                    p.X = p.X - delta;
                 }
                 Layout();
             }
@@ -169,18 +214,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         {
             get
             {
-                //Console.WriteLine(">>>>>LineLength<<<<");
                 double lineLength = 0;
                 for (int pointNum = 0; pointNum < _points.Count - 1; pointNum++)
                 {
-                    //Console.WriteLine("pointNum: " + pointNum);
                     if (pointNum < _points.Count - 1)
                     {
-                        //Console.WriteLine("Here1");
                         // Is this a horizontal line?
                         if (_points[pointNum].X == _points[pointNum + 1].X)
                         {
-                            //Console.WriteLine("Here2");
                             lineLength += Math.Abs(_points[pointNum].Y - _points[pointNum + 1].Y);
                         }
                         // Is this a vertical line?
@@ -194,7 +235,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                             double a = Math.Abs(_points[pointNum].X - _points[pointNum + 1].X);
                             double b = Math.Abs(_points[pointNum].Y - _points[pointNum + 1].Y);
                             lineLength += Math.Sqrt(Math.Pow(a, 2) + Math.Pow(b, 2));
-                            //Console.WriteLine("Else: " + lineLength);
                         }
                     }
                 }
@@ -208,6 +248,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             {
                 return LineLength / Convert.ToDouble(PixelCount - 1);
             }
+        }
+
+        public override void Select(bool selectDragPoints)
+        {
+            base.Select(selectDragPoints);
+            connectStandardStrings = true;
         }
 
         private double SegmentLength(int segmentNum)
@@ -239,30 +285,23 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			if (_points != null && _points.Count > 0)
 			{
                 double lineLength = LineLength;
-                //Console.WriteLine("-----> LineLength: " + lineLength);
                 if (lineLength > 0)
                 {
                     int currentPixelNum = 0;
                     double tailLength = PixelSpacing;
                     for (int pointNum = 0; pointNum < _points.Count - 1; pointNum++)
                     {
-                        //Console.WriteLine("-------------------------------");
-                        //Console.WriteLine("LineLength: " + lineLength + "   PixelCount: " + PixelCount);
                         // Length of the entire segment
                         double thisFullLineLength = SegmentLength(pointNum);
-                        //Console.WriteLine("thisFullLineLength: " + thisFullLineLength);
                         // Empty portion of the start of the line segment 
                         double thisEmptyStartLength = PixelSpacing - tailLength;
-                        //Console.WriteLine("thisEmptyStartLength: " + thisEmptyStartLength);
                         // Active length of the segment without the start
                         double thisActiveLineLength = thisFullLineLength - thisEmptyStartLength;
-                        //Console.WriteLine("thisActiveLineLength: " + thisActiveLineLength);
                         // Get the pixels in this line. No hangers on the end.
                         double pixelSpacesInThisLine = Math.Truncate(thisActiveLineLength / PixelSpacing);
                         double pixelsInThisLine = pixelSpacesInThisLine + 1;
                         // Re-calcuate the active line length
                         thisActiveLineLength = pixelSpacesInThisLine * PixelSpacing;
-                        //Console.WriteLine("thisActiveLineLength: " + thisActiveLineLength);
                         // Calculate the empty tail
                         tailLength = thisFullLineLength - thisEmptyStartLength - thisActiveLineLength;
                         if (tailLength < 0) tailLength = 0;
@@ -313,7 +352,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public override void MouseMove(int x, int y, int changeX, int changeY)
 		{
-            //Console.WriteLine("MouseMove: " + x.ToString() + ":" + y.ToString());
 			PreviewPoint point = PointToZoomPoint(new PreviewPoint(x, y));
 			// See if we're resizing
 			if (_selectedPoint != null) {
@@ -328,15 +366,22 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 				// If we get here, we're moving
 			else {
-                //_points[0].X = Convert.ToInt32(p1Start.X * ZoomLevel) + changeX;
-                //_points[0].Y = Convert.ToInt32(p1Start.Y * ZoomLevel) + changeY;
-                //_points[1].X = Convert.ToInt32(p2Start.X * ZoomLevel) + changeX;
-                //_points[1].Y = Convert.ToInt32(p2Start.Y * ZoomLevel) + changeY;
+                if (pStart.Count() == _points.Count())
+                {
+                    for (int pNum = 0; pNum < _points.Count(); pNum++)
+                    {
+                        _points[pNum].X = Convert.ToInt32(pStart[pNum].X * ZoomLevel) + changeX;
+                        _points[pNum].Y = Convert.ToInt32(pStart[pNum].Y * ZoomLevel) + changeY;
+                        PointToZoomPointRef(_points[pNum]);
+                    }
 
-                //PointToZoomPointRef(_points[0]);
-                //PointToZoomPointRef(_points[1]);
+                    //PointToZoomPointRef(_points[0]);
+                    //PointToZoomPointRef(_points[1]);
 
-				Layout();
+                    //Left = x;
+
+                    Layout();
+                }
 			}
 		}
 
@@ -406,10 +451,15 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public override void SetSelectPoint(PreviewPoint point)
 		{
-			if (point == null) {
-				p1Start = new PreviewPoint(_points[0].X, _points[0].Y);
-				p2Start = new PreviewPoint(_points[1].X, _points[1].Y);
-			}
+            if (point == null)
+            {
+                if (pStart == null) pStart = new List<PreviewPoint>();
+                pStart.Clear();
+                foreach (PreviewPoint p in _points)
+                {
+                    pStart.Add(new PreviewPoint(p));
+                }
+            }
 
 			_selectedPoint = point;
 		}
@@ -434,19 +484,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public override void MoveTo(int x, int y)
 		{
-			Point topLeft = new Point();
-			topLeft.X = Math.Min(_points[0].X, _points[1].X);
-			topLeft.Y = Math.Min(_points[0].Y, _points[1].Y);
+            PreviewPoint p = new PreviewPoint(x, y);
+            PointToZoomPoint(p);
 
-			int deltaX = x - topLeft.X;
-			int deltaY = y - topLeft.Y;
+            Top = p.Y;
+            Left = p.X;
 
-			_points[0].X += deltaX;
-			_points[0].Y += deltaY;
-			_points[1].X += deltaX;
-			_points[1].Y += deltaY;
-
-			Layout();
+            Layout();
 		}
 
 		public override void Resize(double aspect)
@@ -460,11 +504,22 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public override void ResizeFromOriginal(double aspect)
 		{
-			_points[0].X = p1Start.X;
-			_points[0].Y = p1Start.Y;
-			_points[1].X = p2Start.X;
-			_points[1].Y = p2Start.Y;
+            //_points[0].X = p1Start.X;
+            //_points[0].Y = p1Start.Y;
+            //_points[1].X = p2Start.X;
+            //_points[1].Y = p2Start.Y;
 			Resize(aspect);
 		}
+
+        private void AssignStandardPixels() 
+        {
+            if (StringType == StringTypes.Standard)
+            {
+                foreach (PreviewPixel p in _pixels)
+                {
+                    p.Node = _pixels[0].Node;
+                }
+            }
+        }
 	}
 }

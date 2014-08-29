@@ -74,6 +74,7 @@
             this.comboBoxTemplates = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
             this.panel4 = new System.Windows.Forms.Panel();
+            this.buttonMultiString = new System.Windows.Forms.Button();
             this.buttonIcicle = new System.Windows.Forms.Button();
             this.buttonStarBurst = new System.Windows.Forms.Button();
             this.buttonPixelGrid = new System.Windows.Forms.Button();
@@ -84,6 +85,7 @@
             this.buttonSemiCircle = new System.Windows.Forms.Button();
             this.buttonMegaTree = new System.Windows.Forms.Button();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.buttonPolyLine = new System.Windows.Forms.Button();
             this.buttonTriangle = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.buttonDrawPixel = new System.Windows.Forms.Button();
@@ -117,7 +119,6 @@
             this.labelZoomLevel = new System.Windows.Forms.Label();
             this.panel9 = new System.Windows.Forms.Panel();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
-            this.buttonPolyLine = new System.Windows.Forms.Button();
             this.panelToolbar.SuspendLayout();
             this.panel8.SuspendLayout();
             this.panel7.SuspendLayout();
@@ -163,7 +164,7 @@
             this.panel8.Controls.Add(this.buttonAlignHorizMid);
             this.panel8.Controls.Add(this.buttonAlignTop);
             this.panel8.Controls.Add(this.label7);
-            this.panel8.Location = new System.Drawing.Point(770, 6);
+            this.panel8.Location = new System.Drawing.Point(821, 6);
             this.panel8.Margin = new System.Windows.Forms.Padding(6);
             this.panel8.Name = "panel8";
             this.panel8.Size = new System.Drawing.Size(274, 140);
@@ -447,7 +448,7 @@
             this.panel5.Controls.Add(this.buttonAddTemplate);
             this.panel5.Controls.Add(this.comboBoxTemplates);
             this.panel5.Controls.Add(this.label4);
-            this.panel5.Location = new System.Drawing.Point(1042, 6);
+            this.panel5.Location = new System.Drawing.Point(1094, 6);
             this.panel5.Margin = new System.Windows.Forms.Padding(6);
             this.panel5.Name = "panel5";
             this.panel5.Size = new System.Drawing.Size(446, 140);
@@ -537,6 +538,7 @@
             // panel4
             // 
             this.panel4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel4.Controls.Add(this.buttonMultiString);
             this.panel4.Controls.Add(this.buttonIcicle);
             this.panel4.Controls.Add(this.buttonStarBurst);
             this.panel4.Controls.Add(this.buttonPixelGrid);
@@ -549,8 +551,23 @@
             this.panel4.Location = new System.Drawing.Point(554, 6);
             this.panel4.Margin = new System.Windows.Forms.Padding(6);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(216, 140);
+            this.panel4.Size = new System.Drawing.Size(268, 140);
             this.panel4.TabIndex = 9;
+            // 
+            // buttonMultiString
+            // 
+            this.buttonMultiString.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonMultiString.BackgroundImage")));
+            this.buttonMultiString.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.buttonMultiString.FlatAppearance.BorderColor = System.Drawing.Color.White;
+            this.buttonMultiString.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonMultiString.Location = new System.Drawing.Point(215, 10);
+            this.buttonMultiString.Margin = new System.Windows.Forms.Padding(6);
+            this.buttonMultiString.Name = "buttonMultiString";
+            this.buttonMultiString.Size = new System.Drawing.Size(44, 42);
+            this.buttonMultiString.TabIndex = 14;
+            this.toolTip.SetToolTip(this.buttonMultiString, "Multi-String");
+            this.buttonMultiString.UseVisualStyleBackColor = true;
+            this.buttonMultiString.Click += new System.EventHandler(this.toolbarButton_Click);
             // 
             // buttonIcicle
             // 
@@ -649,7 +666,7 @@
             this.label3.Location = new System.Drawing.Point(0, 101);
             this.label3.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(214, 37);
+            this.label3.Size = new System.Drawing.Size(266, 37);
             this.label3.TabIndex = 0;
             this.label3.Text = "Smart Objects";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -699,6 +716,21 @@
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(166, 140);
             this.panel3.TabIndex = 8;
+            // 
+            // buttonPolyLine
+            // 
+            this.buttonPolyLine.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonPolyLine.BackgroundImage")));
+            this.buttonPolyLine.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.buttonPolyLine.FlatAppearance.BorderColor = System.Drawing.Color.White;
+            this.buttonPolyLine.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonPolyLine.Location = new System.Drawing.Point(112, 54);
+            this.buttonPolyLine.Margin = new System.Windows.Forms.Padding(6);
+            this.buttonPolyLine.Name = "buttonPolyLine";
+            this.buttonPolyLine.Size = new System.Drawing.Size(44, 42);
+            this.buttonPolyLine.TabIndex = 6;
+            this.toolTip.SetToolTip(this.buttonPolyLine, "Multi-Point String");
+            this.buttonPolyLine.UseVisualStyleBackColor = true;
+            this.buttonPolyLine.Click += new System.EventHandler(this.toolbarButton_Click);
             // 
             // buttonTriangle
             // 
@@ -1077,21 +1109,6 @@
             this.dockPanel.Skin = dockPanelSkin1;
             this.dockPanel.TabIndex = 20;
             // 
-            // buttonPolyLine
-            // 
-            this.buttonPolyLine.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonPolyLine.BackgroundImage")));
-            this.buttonPolyLine.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.buttonPolyLine.FlatAppearance.BorderColor = System.Drawing.Color.White;
-            this.buttonPolyLine.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonPolyLine.Location = new System.Drawing.Point(112, 54);
-            this.buttonPolyLine.Margin = new System.Windows.Forms.Padding(6);
-            this.buttonPolyLine.Name = "buttonPolyLine";
-            this.buttonPolyLine.Size = new System.Drawing.Size(44, 42);
-            this.buttonPolyLine.TabIndex = 6;
-            this.toolTip.SetToolTip(this.buttonPolyLine, "Multi-String");
-            this.buttonPolyLine.UseVisualStyleBackColor = true;
-            this.buttonPolyLine.Click += new System.EventHandler(this.toolbarButton_Click);
-            // 
             // VixenPreviewSetup3
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
@@ -1206,6 +1223,7 @@
         private WeifenLuo.WinFormsUI.Docking.DockPanel dockPanel;
         private System.Windows.Forms.Button buttonIcicle;
         private System.Windows.Forms.Button buttonPolyLine;
+        private System.Windows.Forms.Button buttonMultiString;
 
     }
 }
