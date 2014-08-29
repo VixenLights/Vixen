@@ -883,6 +883,16 @@ namespace Common.Controls.Timeline
 		}
 
 		/// <summary>
+		/// Moves the discovered elements within a range by the given amount of time. This is similar to the mouse dragging events, except
+		/// it's a single 'atomic' operation that moves the elements and raises an event to indicate they have moved.
+		/// </summary>
+		public void MoveElementsInRangeByTime(TimeSpan startTime, TimeSpan endTime, TimeSpan offset)
+		{
+			IEnumerable<Element> elementsToMove = ElementsWithinRange(startTime, endTime);
+			MoveElementsByTime(elementsToMove, offset);
+		}
+
+		/// <summary>
 		/// Moves the given elements by the given amount of time. This is similar to the mouse dragging events, except
 		/// it's a single 'atomic' operation that moves the elements and raises an event to indicate they have moved.
 		/// Note that it does not utilize snap points at all.
@@ -1012,6 +1022,35 @@ namespace Common.Controls.Timeline
 		{
 			return Rows.FirstOrDefault(row => row.ContainsElement(element));
 		}
+
+		/// <summary>
+		/// Get a list of elements the exist within the the start and end time inclusive.
+		/// </summary>
+		/// <param name="startTime"></param>
+		/// <param name="endTime"></param>
+		/// <returns></returns>
+		public IEnumerable<Element> ElementsWithinRange(TimeSpan startTime, TimeSpan endTime)
+		{
+			List<Element> result = new List<Element>();
+			foreach (Row row in Rows)
+			{
+				foreach (Element elem in row)
+				{
+					if ((startTime <= elem.StartTime) && (endTime >= elem.StartTime))
+					{
+						result.Add(elem);
+					}
+					else if (elem.StartTime > endTime)
+					{
+						break;
+					}
+						
+				}
+			}
+			//Elements can be in multiple rows, so only return a distinct list
+			return result.Distinct();
+			
+		} 
 
 		/// <summary>
 		/// Get a list of elements that contain the specified time.

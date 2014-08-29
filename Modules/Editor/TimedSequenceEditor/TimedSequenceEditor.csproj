@@ -89,6 +89,12 @@
     <Compile Include="AutomaticMusicDetection.Designer.cs">
       <DependentUpon>AutomaticMusicDetection.cs</DependentUpon>
     </Compile>
+    <Compile Include="BulkEffectMoveForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BulkEffectMoveForm.Designer.cs">
+      <DependentUpon>BulkEffectMoveForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="EffectDistributionDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -208,6 +214,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="AutomaticMusicDetection.resx">
       <DependentUpon>AutomaticMusicDetection.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BulkEffectMoveForm.resx">
+      <DependentUpon>BulkEffectMoveForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="EffectDistributionDialog.resx">
       <DependentUpon>EffectDistributionDialog.cs</DependentUpon>

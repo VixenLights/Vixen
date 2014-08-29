@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -4510,6 +4511,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
             }
    
 
+		}
+
+		private void bulkEffectMoveToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+
+			var dialog = new BulkEffectMoveForm(TimelineControl.grid.CursorPosition);
+			using (dialog)
+			{
+				if (dialog.ShowDialog() == DialogResult.OK)
+				{
+					TimelineControl.grid.MoveElementsInRangeByTime(dialog.Start, dialog.End, dialog.IsForward?dialog.Offset:-dialog.Offset);
+				}
+			}
 		}
 
 
