@@ -569,6 +569,8 @@ namespace Common.Controls
 					if (dialog.ShowDialog() == DialogResult.OK) {
 						if (dialog.Response != string.Empty && dialog.Response != SelectedNode.Name) {
 							VixenSystem.Nodes.RenameNode(SelectedNode, dialog.Response);
+							PopulateNodeTree();
+
 							return true;
 						}
 					}
