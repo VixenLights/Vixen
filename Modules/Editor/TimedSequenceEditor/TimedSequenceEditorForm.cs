@@ -969,11 +969,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				IMediaModuleInstance media = _sequence.GetAllMedia().First();
 				Audio audio = media as Audio;
-
+				toolStripMenuItem_removeAudio.Enabled = true;
 				if (audio.MediaExists)
 				{
-					TimelineControl.Audio = audio;
-					toolStripMenuItem_removeAudio.Enabled = true;
+					TimelineControl.Audio = audio;	
 				} else
 				{
 					string message = String.Format("Audio file not found on the path:\n\n {0}\n\nPlease Check your settings/path.",
