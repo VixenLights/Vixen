@@ -1314,7 +1314,9 @@ namespace VixenModules.Preview.VixenPreview
             foreach (PreviewBaseShape shape in SelectedShapes())
             {
                 if (shape != SelectedShapes()[0])
+                {
                     shape.Left = SelectedShapes()[0].Left;
+                }
             }
         }
 
