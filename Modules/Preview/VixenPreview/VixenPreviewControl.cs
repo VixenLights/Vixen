@@ -153,7 +153,17 @@ namespace VixenModules.Preview.VixenPreview
 
 		public int BackgroundAlpha
 		{
-			get { return Data.BackgroundAlpha; }
+			get 
+            {
+                if (Data != null)
+                {
+                    return Data.BackgroundAlpha;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
 			set
 			{
 				if (Data != null) {
@@ -248,12 +258,6 @@ namespace VixenModules.Preview.VixenPreview
 		{
 			get 
             {
-                if ((_background == null || _background.Width != Width || _background.Height != Height) && DefaultBackground)
-                {
-                    _background = new Bitmap(Width, Height);
-                    DefaultBackground = true;
-                    SetupBackgroundAlphaImage();
-                }
                 return _background; 
             }
             set
@@ -261,10 +265,19 @@ namespace VixenModules.Preview.VixenPreview
                 _background = value;
                 if (_background == null)
                 {
-                    _background = new Bitmap(Width, Height);
                     DefaultBackground = true;
-                    SetupBackgroundAlphaImage();
+                    _background = new Bitmap(Width, Height, PixelFormat.Format32bppPArgb);
+
+                    Graphics gfx = Graphics.FromImage(_background);
+                    gfx.Clear(Color.Black);
+                    gfx.Dispose();
                 }
+                else
+                {
+                    DefaultBackground = false;
+                    _background = value;
+                }
+                SetupBackgroundAlphaImage();
             }
 		}
 
@@ -862,8 +875,6 @@ namespace VixenModules.Preview.VixenPreview
 		private void VixenPreviewControl_MouseUp(object sender, MouseEventArgs e)
 		{
 			if (_mouseCaptured) {
-				//MouseEventArgs newE = new MouseEventArgs(e.Button, e.Clicks, Convert.ToInt32(e.X * ZoomLevel), Convert.ToInt32(e.Y * ZoomLevel), e.Delta);
-
 				if (_currentTool != Tools.Select) {
 					// If control is pressed, deselect the shape and immediately allow drawing another shape
 					if ((Control.ModifierKeys & Keys.Shift) != 0) {
@@ -943,6 +954,10 @@ namespace VixenModules.Preview.VixenPreview
 		private void VixenPreviewControl_Resize(object sender, EventArgs e)
 		{
 			if (!DesignMode) Logging.Debug("Preview:Resize");
+            if (DefaultBackground)
+            {
+                Background = null;
+            }
 			SetupScrollBars();
 		}
 
@@ -976,6 +991,17 @@ namespace VixenModules.Preview.VixenPreview
 				{
 					hScroll.Maximum = 0;
 				}
+
+                if (Width - _alphaBackground.Width == 0 || Height - _alphaBackground.Height == 0)
+                {
+                    vScroll.Hide();
+                    hScroll.Hide();
+                }
+                else if (!vScroll.Visible || !hScroll.Visible)
+                {
+                    vScroll.Show();
+                    hScroll.Show();
+                }
 			}
 		}
 
@@ -1478,10 +1504,6 @@ namespace VixenModules.Preview.VixenPreview
             if (!_paused)
             {
                 Bitmap clone = (Bitmap)_alphaBackground.Clone();
-                //BitmapData odata = _alphaBackground.LockBits(new Rectangle(0, 0, _alphaBackground.Width, _alphaBackground.Height), ImageLockMode.ReadWrite, _alphaBackground.PixelFormat);
-                //BitmapData cdata = clone.LockBits(new Rectangle(0, 0, clone.Width, clone.Height), ImageLockMode.ReadWrite, clone.PixelFormat);
-                //Assert.AreNotEqual(odata.Scan0, cdata.Scan0);
-                //using (FastPixel fp = new FastPixel(new Bitmap(_alphaBackground)))
 				using (FastPixel.FastPixel fp = new FastPixel.FastPixel(clone))
                 {
                     try
@@ -1493,8 +1515,6 @@ namespace VixenModules.Preview.VixenPreview
 
                         elementStates.AsParallel().WithCancellation(tokenSource.Token).ForAll(channelIntentState =>
                         {
-							//var elementId = channelIntentState.Key;
-							//Element element = VixenSystem.Elements.GetElement(elementId);
 							Element element = channelIntentState.Key;
                             if (element != null)
                             {
@@ -1509,22 +1529,6 @@ namespace VixenModules.Preview.VixenPreview
                                             pixel.Draw(fp, channelIntentState.Value);
                                         }
                                     }
-
-                                    //foreach (IIntentState<LightingValue> intentState in channelIntentState.Value)
-                                    //{
-                                    //    Color c = ((IIntentState<LightingValue>)intentState).GetValue().GetAlphaChannelIntensityAffectedColor();
-                                    //    if (_background != null)
-                                    //    {
-                                    //        List<PreviewPixel> pixels;
-                                    //        if (NodeToPixel.TryGetValue(node, out pixels))
-                                    //        {
-                                    //            foreach (PreviewPixel pixel in pixels)
-                                    //            {
-                                    //                pixel.Draw(fp, c);
-                                    //            }
-                                    //        }
-                                    //    }
-                                    //}
                                 }
                             }
                         });
@@ -1695,14 +1699,22 @@ namespace VixenModules.Preview.VixenPreview
 				bufferedGraphics.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
 
 				// Now, draw our "pixel" image using alpha blending
-				//bufferedGraphics.Graphics.DrawImage(fp.Bitmap, 0, 0, fp.Width, fp.Height);
-				int drawWidth = Width - vScroll.Width + hScroll.Value;
-				int drawHeight = Height - hScroll.Height + vScroll.Value;
-				int drawX = -hScroll.Value;
-				int drawY = -vScroll.Value;
-				Rectangle dest = new Rectangle(0, 0, drawWidth, drawHeight);
-				Rectangle src = new Rectangle(hScroll.Value, vScroll.Value, drawWidth, drawHeight);
-				bufferedGraphics.Graphics.DrawImage(fp.Bitmap, dest, src, GraphicsUnit.Pixel);
+                if (vScroll.Visible && hScroll.Visible)
+                {
+                    int drawWidth = Width - vScroll.Width + hScroll.Value;
+                    int drawHeight = Height - hScroll.Height + vScroll.Value;
+                    int drawX = -hScroll.Value;
+                    int drawY = -vScroll.Value;
+                    Rectangle dest = new Rectangle(0, 0, drawWidth, drawHeight);
+                    Rectangle src = new Rectangle(hScroll.Value, vScroll.Value, drawWidth, drawHeight);
+                    bufferedGraphics.Graphics.DrawImage(fp.Bitmap, dest, src, GraphicsUnit.Pixel);
+                }
+                else
+                {
+                    Rectangle dest = new Rectangle(0, 0, Width, Height);
+                    Rectangle src = new Rectangle(0, 0, Width, Height);
+                    bufferedGraphics.Graphics.DrawImage(fp.Bitmap, dest, src, GraphicsUnit.Pixel);
+                }
 			}
 
 			bufferedGraphics.Render(Graphics.FromHwnd(this.Handle));
@@ -1713,7 +1725,6 @@ namespace VixenModules.Preview.VixenPreview
         public void EraseScreen()
         {
             bufferedGraphics.Graphics.Clear(Color.Black);
-            //bufferedGraphics.Render(Graphics.FromHwnd(this.Handle));
         }
 
 		#endregion
@@ -1750,9 +1761,6 @@ namespace VixenModules.Preview.VixenPreview
             Point zoomTo = PointToZoomPoint(e.Location);
 
             ZoomLevel += delta;
-
-            // Get the new point under the mouse
-            //Point pointUnderMouse = PointToZoomPoint(e.Location);
         }
 	}
 }
