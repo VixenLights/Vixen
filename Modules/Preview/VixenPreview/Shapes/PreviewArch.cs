@@ -95,8 +95,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             {
                 if (_bottomLeft == null)
                     _bottomLeft = new PreviewPoint();
-                _bottomLeft.X = _topLeft.X;
-                _bottomLeft.Y = _bottomRight.Y;
+                _bottomLeft.X = TopLeft.X;
+                _bottomLeft.Y = BottomRight.Y;
                 return _bottomLeft;
             }
             //set
