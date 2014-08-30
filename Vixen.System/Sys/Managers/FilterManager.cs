@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using Vixen.Data.Flow;
 using Vixen.Module.OutputFilter;
 using Vixen.Sys.Instrumentation;
@@ -21,6 +22,7 @@ namespace Vixen.Sys.Managers
 		private HashSet<IOutputFilterModuleInstance> _rootFilters;
 		private FilterChildren _filterChildren;
 		private object _updateLock = new object();
+		private readonly ParallelOptions _po = new ParallelOptions {MaxDegreeOfParallelism = Environment.ProcessorCount};
 
 		public FilterManager(DataFlowManager dataFlowManager)
 		{
@@ -121,11 +123,7 @@ namespace Vixen.Sys.Managers
 			_stopwatch.Restart();
 			lock (_updateLock)
 			{
-				//_filterUpdateWaitValue.Set(_stopwatch.ElapsedMilliseconds);
-
-				//_rootFilters.AsParallel().ForAll(_UpdateFilterBranch);
-				foreach( var x in _rootFilters)	_UpdateFilterBranch(x);
-
+				Parallel.ForEach(_rootFilters, _po, _UpdateFilterBranch);	
 				_filterUpdateTimeValue.Set(_stopwatch.ElapsedMilliseconds);
 			}
 		}
