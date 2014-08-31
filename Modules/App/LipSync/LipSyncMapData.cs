@@ -62,7 +62,12 @@ namespace VixenModules.App.LipSyncApp
         public override IModuleDataModel Clone()
         {
             LipSyncMapData newInstance = new LipSyncMapData();
-            newInstance.MapItems = new List<LipSyncMapItem>(MapItems);
+            newInstance.MapItems = new List<LipSyncMapItem>();
+
+            foreach (LipSyncMapItem item in MapItems)
+            {
+                newInstance.MapItems.Add(item.Clone());
+            }
             newInstance.StringCount = StringCount;
             newInstance.LibraryReferenceName = LibraryReferenceName;
             newInstance.IsDefaultMapping = false;
