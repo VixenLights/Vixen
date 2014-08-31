@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -968,11 +969,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				IMediaModuleInstance media = _sequence.GetAllMedia().First();
 				Audio audio = media as Audio;
-
+				toolStripMenuItem_removeAudio.Enabled = true;
 				if (audio.MediaExists)
 				{
-					TimelineControl.Audio = audio;
-					toolStripMenuItem_removeAudio.Enabled = true;
+					TimelineControl.Audio = audio;	
 				} else
 				{
 					string message = String.Format("Audio file not found on the path:\n\n {0}\n\nPlease Check your settings/path.",
@@ -4510,6 +4510,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
             }
    
 
+		}
+
+		private void bulkEffectMoveToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+
+			var dialog = new BulkEffectMoveForm(TimelineControl.grid.CursorPosition);
+			using (dialog)
+			{
+				if (dialog.ShowDialog() == DialogResult.OK)
+				{
+					TimelineControl.grid.MoveElementsInRangeByTime(dialog.Start, dialog.End, dialog.IsForward?dialog.Offset:-dialog.Offset);
+				}
+			}
 		}
 
 

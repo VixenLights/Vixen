@@ -46,7 +46,7 @@ namespace Vixen.Execution.DataSource
 
 		private void _StartThread()
 		{
-			_effectNodeQueue = new EffectNodeQueue();
+			_effectNodeQueue = new EffectNodeQueue(Sequence.SequenceData.EffectData.Count());
 			_dataPumpThread = new Thread(_DataPumpThread) {IsBackground = true, Name = string.Format("{0} data pump",Sequence.Name)};
 			_dataPumpThread.Start();
 		}

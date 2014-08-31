@@ -319,16 +319,18 @@ namespace Common.Controls.Timeline
 		private void HandleMouseMove(MouseEventArgs e)
 		{
 			Point gridLocation = translateLocation(e.Location);
+			if (m_mouseDownElements != null)
+			{
+				if (ModifierKeys == Keys.Shift && m_mouseDownElements.Any())
+					gridLocation.X = m_lastGridLocation.X;
 
-			if (ModifierKeys == Keys.Shift && m_mouseDownElements.Any())
-				gridLocation.X = m_lastGridLocation.X;
+				if (ModifierKeys == (Keys.Alt | Keys.Control) && m_mouseDownElements.Any())
+					gridLocation.X = m_lastGridLocation.X;
 
-			if (ModifierKeys == (Keys.Alt | Keys.Control) && m_mouseDownElements.Any())
-				gridLocation.X = m_lastGridLocation.X;
-
-			if (ModifierKeys == (Keys.Shift | Keys.Alt) && m_mouseDownElements.Any())
-				gridLocation.Y = m_lastGridLocation.Y;
-
+				if (ModifierKeys == (Keys.Shift | Keys.Alt) && m_mouseDownElements.Any())
+					gridLocation.Y = m_lastGridLocation.Y;	
+			}
+			
 			Point delta = new Point(
 				gridLocation.X - m_lastGridLocation.X,
 				gridLocation.Y - m_lastGridLocation.Y

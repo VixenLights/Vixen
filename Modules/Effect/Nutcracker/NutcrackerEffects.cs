@@ -22,7 +22,8 @@ namespace VixenModules.Effect.Nutcracker
 		private List<List<Color>> _pixels = new List<List<Color>>();
 		private List<List<Color>> _tempbuf = new List<List<Color>>();
 		private const double pi2 = Math.PI*2;
-		private int[] FireBuffer, WaveBuffer0, WaveBuffer1, WaveBuffer2 = new int[1];
+		//private int[] FireBuffer, WaveBuffer0, WaveBuffer1, WaveBuffer2 = new int[1];
+		private int[] FireBuffer = new int[1];
 		private Random random = new Random();
 		private List<Color> FirePalette = new List<Color>();
 
@@ -304,12 +305,16 @@ namespace VixenModules.Effect.Nutcracker
 			_bufferWi = Pixels.Count();
 			_bufferHt = Pixels[0].Count();
 
-			Array.Resize(ref FireBuffer, bufferWidth*bufferHeight);
-			Array.Resize(ref WaveBuffer0, bufferWidth*bufferHeight);
-			Array.Resize(ref WaveBuffer1, bufferWidth*bufferHeight);
-			Array.Resize(ref WaveBuffer2, bufferWidth*bufferHeight);
+			
+			//Array.Resize(ref WaveBuffer0, bufferWidth*bufferHeight);
+			//Array.Resize(ref WaveBuffer1, bufferWidth*bufferHeight);
+			//Array.Resize(ref WaveBuffer2, bufferWidth*bufferHeight);
 
-			InitFirePalette();
+			if (Data == null || Data.CurrentEffect == Effects.Fire)
+			{
+				Array.Resize(ref FireBuffer, bufferWidth * bufferHeight);
+				InitFirePalette();
+			}
 
 			State = 0;
 		}
@@ -658,35 +663,35 @@ namespace VixenModules.Effect.Nutcracker
 			return -1;
 		}
 
-		private void SetWaveBuffer1(int x, int y, int value)
-		{
-			if (x >= 0 && x < BufferWi && y >= 0 && y < BufferHt) {
-				WaveBuffer1[y*BufferWi + x] = value;
-			}
-		}
+		//private void SetWaveBuffer1(int x, int y, int value)
+		//{
+		//	if (x >= 0 && x < BufferWi && y >= 0 && y < BufferHt) {
+		//		WaveBuffer1[y*BufferWi + x] = value;
+		//	}
+		//}
 
-		private void SetWaveBuffer2(int x, int y, int value)
-		{
-			if (x >= 0 && x < BufferWi && y >= 0 && y < BufferHt) {
-				WaveBuffer2[y*BufferWi + x] = value;
-			}
-		}
+		//private void SetWaveBuffer2(int x, int y, int value)
+		//{
+		//	if (x >= 0 && x < BufferWi && y >= 0 && y < BufferHt) {
+		//		WaveBuffer2[y*BufferWi + x] = value;
+		//	}
+		//}
 
-		private int GetWaveBuffer1(int x, int y)
-		{
-			if (x >= 0 && x < BufferWi && y >= 0 && y < BufferHt) {
-				return WaveBuffer1[y*BufferWi + x];
-			}
-			return -1;
-		}
+		//private int GetWaveBuffer1(int x, int y)
+		//{
+		//	if (x >= 0 && x < BufferWi && y >= 0 && y < BufferHt) {
+		//		return WaveBuffer1[y*BufferWi + x];
+		//	}
+		//	return -1;
+		//}
 
-		private int GetWaveBuffer2(int x, int y)
-		{
-			if (x >= 0 && x < BufferWi && y >= 0 && y < BufferHt) {
-				return WaveBuffer2[y*BufferWi + x];
-			}
-			return -1;
-		}
+		//private int GetWaveBuffer2(int x, int y)
+		//{
+		//	if (x >= 0 && x < BufferWi && y >= 0 && y < BufferHt) {
+		//		return WaveBuffer2[y*BufferWi + x];
+		//	}
+		//	return -1;
+		//}
 
 		// 10 <= HeightPct <= 100
 		private void RenderFire(int HeightPct)
@@ -1852,39 +1857,32 @@ namespace VixenModules.Effect.Nutcracker
 
 		#region Movie
 
-		private List<FastPixel.FastPixel> moviePictures;
+		private List<string> _moviePicturesFileList;
 
-		public void LoadPictures(string DataFilePath)
+		private void LoadMoviePictureFileList(string dataFilePath)
 		{
-			moviePictures = new List<FastPixel.FastPixel>();
-			if (Data.Movie_DataPath.Length > 0) {
-				var imageFolder = System.IO.Path.Combine(NutcrackerDescriptor.ModulePath, DataFilePath);
-				List<string> sortedFiles = Directory.GetFiles(imageFolder).OrderBy(f => f).ToList();
-
-				foreach (string file in sortedFiles) {
-					Image image = Image.FromFile(file);
-					FastPixel.FastPixel imageFp = new FastPixel.FastPixel(new Bitmap(image));
-					moviePictures.Add(imageFp);
-				}
+			if (Data.Movie_DataPath.Length > 0)
+			{
+				var imageFolder = Path.Combine(NutcrackerDescriptor.ModulePath, dataFilePath);
+				_moviePicturesFileList = Directory.GetFiles(imageFolder).OrderBy(f => f).ToList();
 			}
-		}
-
+		} 
 
 		private double currentMovieImageNum = 0.0;
 
-		public void RenderMovie(int dir, string DataFilePath, int movieSpeed)
+		public void RenderMovie(int dir, string dataFilePath, int movieSpeed)
 		{
 			const int speedfactor = 4;
 
-			if (moviePictures == null || State == 0) {
-				LoadPictures(DataFilePath);
+			if (_moviePicturesFileList == null || State == 0) {
+				LoadMoviePictureFileList(dataFilePath);
 			}
 
-			int pictureCount = moviePictures.Count;
-
 			// If we don't have any pictures, do nothing!
-			if (pictureCount == 0)
+			if (_moviePicturesFileList == null || !_moviePicturesFileList.Any())
 				return;
+
+			int pictureCount = _moviePicturesFileList.Count;
 
 			if (movieSpeed > 0) {
 				currentMovieImageNum += ((movieSpeed*.01) + 1);
@@ -1896,52 +1894,54 @@ namespace VixenModules.Effect.Nutcracker
 				currentMovieImageNum++;
 			}
 
-			if (Convert.ToInt32(currentMovieImageNum) >= pictureCount || Convert.ToInt32(currentMovieImageNum) < 0)
-				currentMovieImageNum = 0;
+			int currentImage = Convert.ToInt32(currentMovieImageNum);
+			if (currentImage >= pictureCount || currentImage < 0)
+				currentMovieImageNum = currentImage= 0;
 
-			FastPixel.FastPixel currentMovieImage = moviePictures[Convert.ToInt32(currentMovieImageNum)];
-			if (currentMovieImage != null) {
-				int imgwidth = currentMovieImage.Width;
-				int imght = currentMovieImage.Height;
-				int yoffset = (BufferHt + imght)/2;
-				int xoffset = (imgwidth - BufferWi)/2;
-				int limit = (dir < 2) ? imgwidth + BufferWi : imght + BufferHt;
-				int movement = Convert.ToInt32((State%(limit*speedfactor))/speedfactor);
+			var currentMovieImage = new FastPixel.FastPixel(new Bitmap(Image.FromFile(_moviePicturesFileList[currentImage])));
 
-				// copy image to buffer
-				currentMovieImage.Lock();
-				Color fpColor = new Color();
-				for (int x = 0; x < imgwidth; x++) {
-					for (int y = 0; y < imght; y++) {
-						fpColor = currentMovieImage.GetPixel(x, y);
-						if (fpColor != Color.Transparent && fpColor != Color.Black) {
-							switch (dir) {
-								case 1:
-									// left
-									SetPixel(x + BufferWi - movement, yoffset - y, fpColor);
-									break;
-								case 2:
-									// right
-									SetPixel(x + movement - imgwidth, yoffset - y, fpColor);
-									break;
-								case 3:
-									// up
-									SetPixel(x - xoffset, movement - y, fpColor);
-									break;
-								case 4:
-									// down
-									SetPixel(x - xoffset, BufferHt + imght - y - movement, fpColor);
-									break;
-								default:
-									// no movement - centered
-									SetPixel(x - xoffset, yoffset - y, fpColor);
-									break;
-							}
+			int imgwidth = currentMovieImage.Width;
+			int imght = currentMovieImage.Height;
+			int yoffset = (BufferHt + imght)/2;
+			int xoffset = (imgwidth - BufferWi)/2;
+			int limit = (dir < 2) ? imgwidth + BufferWi : imght + BufferHt;
+			int movement = Convert.ToInt32((State%(limit*speedfactor))/speedfactor);
+
+			// copy image to buffer
+			currentMovieImage.Lock();
+			Color fpColor = new Color();
+			for (int x = 0; x < imgwidth; x++) {
+				for (int y = 0; y < imght; y++) {
+					fpColor = currentMovieImage.GetPixel(x, y);
+					if (fpColor != Color.Transparent && fpColor != Color.Black) {
+						switch (dir) {
+							case 1:
+								// left
+								SetPixel(x + BufferWi - movement, yoffset - y, fpColor);
+								break;
+							case 2:
+								// right
+								SetPixel(x + movement - imgwidth, yoffset - y, fpColor);
+								break;
+							case 3:
+								// up
+								SetPixel(x - xoffset, movement - y, fpColor);
+								break;
+							case 4:
+								// down
+								SetPixel(x - xoffset, BufferHt + imght - y - movement, fpColor);
+								break;
+							default:
+								// no movement - centered
+								SetPixel(x - xoffset, yoffset - y, fpColor);
+								break;
 						}
 					}
 				}
-				currentMovieImage.Unlock(false);
 			}
+			currentMovieImage.Unlock(false);
+			currentMovieImage.Dispose();
+			
 		}
 
 		#endregion // Movie
