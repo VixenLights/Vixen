@@ -14,7 +14,6 @@ namespace VixenModules.Preview.VixenPreview
 		private VixenPreviewSetup3 setupForm;
 		private IDisplayForm displayForm;
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
-		private bool UseOldPreview = false;
 		private MillisecondsValue _updateTimeValue = new MillisecondsValue("Update time for preview");
 
 		public VixenPreviewModuleInstance()
@@ -198,7 +197,7 @@ namespace VixenModules.Preview.VixenPreview
 			}
 		}
 
-		bool isGdiVersion = false;
+		//bool isGdiVersion = false;
 		protected override void Update()
 		{
 			var sw = Stopwatch.StartNew();

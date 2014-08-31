@@ -93,6 +93,20 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
             set { }
         }
+        [Browsable(false)]
+        public override StringTypes StringType
+        {
+            get
+            {
+                Console.WriteLine("GetStringType");
+                base.StringType = StringTypes.Pixel;
+                return StringTypes.Pixel;
+            }
+            set
+            {
+                base.StringType = StringTypes.Pixel;
+            }
+        }
 
         [Browsable(false)]
         public int PixelCount
@@ -205,8 +219,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
         public override void Select(bool selectDragPoints)
         {
+            StringType = StringTypes.Pixel;
             base.Select(selectDragPoints);
-            connectStandardStrings = true;
         }
 
         public override void Layout()

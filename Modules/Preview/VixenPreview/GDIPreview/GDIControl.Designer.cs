@@ -28,15 +28,17 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.SuspendLayout();
-			// 
-			// GDIControl
-			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.Name = "GDIControl";
-			this.Size = new System.Drawing.Size(313, 197);
-			this.ResumeLayout(false);
+            this.SuspendLayout();
+            // 
+            // GDIControl
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.Name = "GDIControl";
+            this.Size = new System.Drawing.Size(626, 379);
+            this.Resize += new System.EventHandler(this.GDIControl_Resize);
+            this.ResumeLayout(false);
 
 		}
 

@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Vixen.Module.Script;
-using System.Linq;
 using System.Xml.Linq;
 
 namespace Common.ScriptSequence.Script

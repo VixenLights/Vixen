@@ -60,10 +60,15 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		 DisplayName("String Name")]
 		public string Name
 		{
-			get { return _name; }
+			get 
+            {
+                if (_name == null) _name = "";
+                return _name; 
+            }
 			set
 			{
 				_name = value;
+                if (_name == null) _name = "";
 				FireOnPropertiesChanged(this, this);
 			}
 		}

@@ -33,7 +33,7 @@ namespace VixenModules.Preview.VixenPreview
 
 		public override IModuleDataModel Clone()
 		{
-			Console.WriteLine("Clone");
+			//Console.WriteLine("Clone");
 			VixenPreviewData result = new VixenPreviewData
 			                          	{
 			                          		Width = 1024,
