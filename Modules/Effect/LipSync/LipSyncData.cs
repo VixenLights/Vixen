@@ -25,6 +25,8 @@ namespace VixenModules.Effect.LipSync
         public override IModuleDataModel Clone()
         {
             LipSyncData result = new LipSyncData();
+            result.StaticPhoneme = StaticPhoneme;
+            result.PhonemeMapping = PhonemeMapping;
             return result;
         }
     }
