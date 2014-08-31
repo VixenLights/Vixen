@@ -22,7 +22,8 @@ namespace VixenModules.Effect.Nutcracker
 		private List<List<Color>> _pixels = new List<List<Color>>();
 		private List<List<Color>> _tempbuf = new List<List<Color>>();
 		private const double pi2 = Math.PI*2;
-		private int[] FireBuffer, WaveBuffer0, WaveBuffer1, WaveBuffer2 = new int[1];
+		//private int[] FireBuffer, WaveBuffer0, WaveBuffer1, WaveBuffer2 = new int[1];
+		private int[] FireBuffer = new int[1];
 		private Random random = new Random();
 		private List<Color> FirePalette = new List<Color>();
 
@@ -304,12 +305,16 @@ namespace VixenModules.Effect.Nutcracker
 			_bufferWi = Pixels.Count();
 			_bufferHt = Pixels[0].Count();
 
-			Array.Resize(ref FireBuffer, bufferWidth*bufferHeight);
-			Array.Resize(ref WaveBuffer0, bufferWidth*bufferHeight);
-			Array.Resize(ref WaveBuffer1, bufferWidth*bufferHeight);
-			Array.Resize(ref WaveBuffer2, bufferWidth*bufferHeight);
+			
+			//Array.Resize(ref WaveBuffer0, bufferWidth*bufferHeight);
+			//Array.Resize(ref WaveBuffer1, bufferWidth*bufferHeight);
+			//Array.Resize(ref WaveBuffer2, bufferWidth*bufferHeight);
 
-			InitFirePalette();
+			if (Data == null || Data.CurrentEffect == Effects.Fire)
+			{
+				Array.Resize(ref FireBuffer, bufferWidth * bufferHeight);
+				InitFirePalette();
+			}
 
 			State = 0;
 		}
@@ -658,35 +663,35 @@ namespace VixenModules.Effect.Nutcracker
 			return -1;
 		}
 
-		private void SetWaveBuffer1(int x, int y, int value)
-		{
-			if (x >= 0 && x < BufferWi && y >= 0 && y < BufferHt) {
-				WaveBuffer1[y*BufferWi + x] = value;
-			}
-		}
+		//private void SetWaveBuffer1(int x, int y, int value)
+		//{
+		//	if (x >= 0 && x < BufferWi && y >= 0 && y < BufferHt) {
+		//		WaveBuffer1[y*BufferWi + x] = value;
+		//	}
+		//}
 
-		private void SetWaveBuffer2(int x, int y, int value)
-		{
-			if (x >= 0 && x < BufferWi && y >= 0 && y < BufferHt) {
-				WaveBuffer2[y*BufferWi + x] = value;
-			}
-		}
+		//private void SetWaveBuffer2(int x, int y, int value)
+		//{
+		//	if (x >= 0 && x < BufferWi && y >= 0 && y < BufferHt) {
+		//		WaveBuffer2[y*BufferWi + x] = value;
+		//	}
+		//}
 
-		private int GetWaveBuffer1(int x, int y)
-		{
-			if (x >= 0 && x < BufferWi && y >= 0 && y < BufferHt) {
-				return WaveBuffer1[y*BufferWi + x];
-			}
-			return -1;
-		}
+		//private int GetWaveBuffer1(int x, int y)
+		//{
+		//	if (x >= 0 && x < BufferWi && y >= 0 && y < BufferHt) {
+		//		return WaveBuffer1[y*BufferWi + x];
+		//	}
+		//	return -1;
+		//}
 
-		private int GetWaveBuffer2(int x, int y)
-		{
-			if (x >= 0 && x < BufferWi && y >= 0 && y < BufferHt) {
-				return WaveBuffer2[y*BufferWi + x];
-			}
-			return -1;
-		}
+		//private int GetWaveBuffer2(int x, int y)
+		//{
+		//	if (x >= 0 && x < BufferWi && y >= 0 && y < BufferHt) {
+		//		return WaveBuffer2[y*BufferWi + x];
+		//	}
+		//	return -1;
+		//}
 
 		// 10 <= HeightPct <= 100
 		private void RenderFire(int HeightPct)
