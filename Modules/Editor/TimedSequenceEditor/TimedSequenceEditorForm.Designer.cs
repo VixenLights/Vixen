@@ -1110,7 +1110,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// 
 			this.helpDocumentationToolStripMenuItem.Name = "helpDocumentationToolStripMenuItem";
 			this.helpDocumentationToolStripMenuItem.Size = new System.Drawing.Size(130, 20);
-			this.helpDocumentationToolStripMenuItem.Text = "Help Documentation";
+			this.helpDocumentationToolStripMenuItem.Text = "Help";
 			this.helpDocumentationToolStripMenuItem.Click += new System.EventHandler(this.helpDocumentationToolStripMenuItem_Click);
 			// 
 			// timerPlaying
