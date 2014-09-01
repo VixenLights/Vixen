@@ -87,7 +87,7 @@
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.Size = new System.Drawing.Size(47, 24);
             this.dataGridView1.TabIndex = 18;
-            this.dataGridView1.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellClick);
+            this.dataGridView1.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView1_CellMouseClick);
             this.dataGridView1.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.dataGridView1_CellPainting);
             // 
             // label5
@@ -245,9 +245,9 @@
             // 
             // lipSyncMapColorCtrl1
             // 
-            this.lipSyncMapColorCtrl1.Color = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.lipSyncMapColorCtrl1.Color = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
             this.lipSyncMapColorCtrl1.HSVColor = ((Common.Controls.ColorManagement.ColorModels.HSV)(resources.GetObject("lipSyncMapColorCtrl1.HSVColor")));
-            this.lipSyncMapColorCtrl1.Intensity = 0D;
+            this.lipSyncMapColorCtrl1.Intensity = 1D;
             this.lipSyncMapColorCtrl1.Location = new System.Drawing.Point(4, 14);
             this.lipSyncMapColorCtrl1.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.lipSyncMapColorCtrl1.Name = "lipSyncMapColorCtrl1";

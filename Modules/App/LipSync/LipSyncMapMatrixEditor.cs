@@ -477,22 +477,15 @@ namespace VixenModules.App.LipSyncApp
             }
         }
 
-        private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
+        private void dataGridView1_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            int bias = 0;
-            foreach (DataGridViewCell selCell in dataGridView1.SelectedCells)
-            {
-                bias = (selCell.Value.Equals(lipSyncMapColorCtrl1.Color)) ? bias + 1 : bias - 1;
-            }
-
-            Color newValue = (bias > 0) ? Color.Black : lipSyncMapColorCtrl1.Color;
-
-            foreach (DataGridViewCell selCell in dataGridView1.SelectedCells)
-            {
-                LipSyncMapItem item = 
-                    FindRenderMapItem(selCell.OwningRow.Index, selCell.OwningColumn.Index);
-                selCell.Value = (item == null) ? Color.Gray : newValue;
-            }
+            dataGridView1.CurrentCell = dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex];
+            Color newColor =
+                (e.Button == MouseButtons.Left) ? lipSyncMapColorCtrl1.Color : Color.Black;
+            
+            LipSyncMapItem item =
+                FindRenderMapItem(e.RowIndex, e.ColumnIndex);
+                dataGridView1.CurrentCell.Value = (item == null) ? Color.Gray : newColor;
         }
 
         private void colsUpDown_ValueChanged(object sender, EventArgs e)
@@ -538,9 +531,7 @@ namespace VixenModules.App.LipSyncApp
 
             dataGridView1.ClientSize = new Size(width + 2, height + 2);
 
-            dataGridView1.Location =
-                new Point(Math.Max(25, (this.Width - width - 160) / 2),
-                            Math.Max(275, this.Height - height) / 2);
+            dataGridView1.Location = new Point(25, 150);
         }
 
         private void zoomTrackbar_ValueChanged(object sender, EventArgs e)

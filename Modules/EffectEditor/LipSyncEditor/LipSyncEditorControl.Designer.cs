@@ -35,13 +35,15 @@
             this.mappingComboBox = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
+            this.lyricDataTextBox = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // staticPhoneMeCombo
             // 
             this.staticPhoneMeCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.staticPhoneMeCombo.FormattingEnabled = true;
-            this.staticPhoneMeCombo.Location = new System.Drawing.Point(69, 13);
+            this.staticPhoneMeCombo.Location = new System.Drawing.Point(242, 12);
             this.staticPhoneMeCombo.MaxDropDownItems = 12;
             this.staticPhoneMeCombo.Name = "staticPhoneMeCombo";
             this.staticPhoneMeCombo.Size = new System.Drawing.Size(64, 21);
@@ -68,7 +70,7 @@
             // mappingComboBox
             // 
             this.mappingComboBox.FormattingEnabled = true;
-            this.mappingComboBox.Location = new System.Drawing.Point(270, 12);
+            this.mappingComboBox.Location = new System.Drawing.Point(379, 12);
             this.mappingComboBox.Name = "mappingComboBox";
             this.mappingComboBox.Size = new System.Drawing.Size(121, 21);
             this.mappingComboBox.TabIndex = 10;
@@ -76,7 +78,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(213, 15);
+            this.label2.Location = new System.Drawing.Point(322, 16);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(51, 13);
             this.label2.TabIndex = 11;
@@ -85,16 +87,34 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 16);
+            this.label1.Location = new System.Drawing.Point(184, 16);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(52, 13);
             this.label1.TabIndex = 12;
             this.label1.Text = "Phoneme";
             // 
+            // lyricDataTextBox
+            // 
+            this.lyricDataTextBox.Location = new System.Drawing.Point(65, 12);
+            this.lyricDataTextBox.Name = "lyricDataTextBox";
+            this.lyricDataTextBox.Size = new System.Drawing.Size(100, 20);
+            this.lyricDataTextBox.TabIndex = 13;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(20, 16);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(29, 13);
+            this.label3.TabIndex = 14;
+            this.label3.Text = "Lyric";
+            // 
             // LipSyncEditorControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.lyricDataTextBox);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.mappingComboBox);
@@ -117,5 +137,7 @@
         private System.Windows.Forms.ComboBox mappingComboBox;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox lyricDataTextBox;
+        private System.Windows.Forms.Label label3;
     }
 }

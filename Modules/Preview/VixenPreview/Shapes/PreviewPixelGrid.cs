@@ -194,7 +194,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 int delta = Top - value;
                 //_bottomLeft.Y = value + (_bottomLeft.Y - _topLeft.Y);
                 _topLeft.Y = value;
-                _topRight.Y = value;
+                TopRight.Y = value;
                 _bottomRight.Y -= delta;
                 _bottomLeft.Y -= delta;
                 Layout();
@@ -213,7 +213,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 //bottomRight.X = value + (_bottomRight.X - _topLeft.X);
                 _topLeft.X = value;
                 _bottomLeft.X = value;
-                _topRight.X -= delta;
+                TopRight.X -= delta;
                 _bottomRight.X -= delta;
                 Layout();
             }
@@ -225,6 +225,22 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			set 
             { _bottomRight = value; }
 		}
+
+        private PreviewPoint TopRight
+        {
+            get
+            {
+                if (_topRight == null)
+                {
+                    _topRight = new PreviewPoint();
+                }
+                return _topRight;
+            }
+            set
+            {
+                _topRight = value;
+            }
+        }
 
 		public StringOrientations StringOrientation 
 		{ 
@@ -286,7 +302,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             StringOrientation = shape.StringOrientation;
 
             _bottomRight.X = _topLeft.X + (shape._bottomRight.X - shape._topLeft.X);
-            _bottomRight.Y = _topLeft.Y + (shape._bottomRight.Y - shape._topRight.Y);
+            _bottomRight.Y = _topLeft.Y + (shape._bottomRight.Y - shape.TopRight.Y);
 
             Layout();
         }
@@ -336,7 +352,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			PreviewPoint point = PointToZoomPoint(new PreviewPoint(x, y));
 			// See if we're resizing
 			if (_selectedPoint != null && _selectedPoint.PointType == PreviewPoint.PointTypes.Size) {
-				if (_selectedPoint == _topRight) {
+				if (_selectedPoint == TopRight) {
 					_topLeft.Y = point.Y;
 					_bottomRight.X = point.X;
 				}
@@ -362,8 +378,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				PointToZoomPointRef(_bottomRight);
 			}
 
-			_topRight.X = _bottomRight.X;
-			_topRight.Y = _topLeft.Y;
+			TopRight.X = _bottomRight.X;
+			TopRight.Y = _topLeft.Y;
 			_bottomLeft.X = _topLeft.X;
 			_bottomLeft.Y = _bottomRight.Y;
 
@@ -378,8 +394,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 			selectPoints.Add(_topLeft);
 			selectPoints.Add(_bottomRight);
-			_topRight = new PreviewPoint(_bottomRight.X, _topLeft.Y);
-			selectPoints.Add(_topRight);
+			TopRight = new PreviewPoint(_bottomRight.X, _topLeft.Y);
+			selectPoints.Add(TopRight);
 			_bottomLeft = new PreviewPoint(_topLeft.X, _bottomRight.Y);
 			selectPoints.Add(_bottomLeft);
 
@@ -456,8 +472,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			_bottomRight.X += deltaX;
 			_bottomRight.Y += + deltaY;
 
-			_topRight.X = _bottomRight.X;
-			_topRight.Y = _topLeft.Y;
+			TopRight.X = _bottomRight.X;
+			TopRight.Y = _topLeft.Y;
 			_bottomLeft.X = _topLeft.X;
 			_bottomLeft.Y = _bottomRight.Y;
 

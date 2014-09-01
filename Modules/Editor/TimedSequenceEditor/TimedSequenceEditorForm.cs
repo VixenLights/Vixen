@@ -4376,6 +4376,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
                             ApplicationServices.Get<IEffectModuleInstance>(new LipSyncDescriptor().TypeId);
 
                         ((LipSync)effect).StaticPhoneme = phoneme.TypeName.ToUpper();
+                        ((LipSync)effect).LyricData = phoneme.LyricData;
 
                         TimeSpan startTime = TimeSpan.FromMilliseconds(phoneme.StartMS);
                         TimelineElementsClipboardData.EffectModelCandidate modelCandidate =
@@ -4437,6 +4438,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
                         ApplicationServices.Get<IEffectModuleInstance>(new LipSyncDescriptor().TypeId);
 
                     ((LipSync)effect).StaticPhoneme = data.Phoneme.ToString().ToUpper();
+                    ((LipSync)effect).LyricData = data.LyricData;
 
                     TimelineElementsClipboardData.EffectModelCandidate modelCandidate =
                           new TimelineElementsClipboardData.EffectModelCandidate(effect)
@@ -4458,12 +4460,23 @@ namespace VixenModules.Editor.TimedSequenceEditor
                 Clipboard.SetDataObject(dataObject, true);
                 _TimeLineSequenceClipboardContentsChanged(EventArgs.Empty);
 
-                int pasted = ClipboardPaste((TimeSpan)args.FirstMark);
+                int pasted = 0;
+
+                if (args.Placement == TranslatePlacement.Cursor)
+                {
+                    args.FirstMark += TimelineControl.grid.CursorPosition;
+                }
+
+                if (args.Placement != TranslatePlacement.Clipboard)
+                {
+                    pasted = ClipboardPaste((TimeSpan)args.FirstMark);
+                }
 
                 if (pasted == 0)
                 {
                     MessageBox.Show("Conversion Complete and copied to Clipboard \n Paste at first Mark offset", "Convert Text", MessageBoxButtons.OK);
                 }
+
                 sequenceModified();
 
             }
@@ -4483,11 +4496,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
         private void textConverterToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            LipSyncTextConvertForm textConverter = new LipSyncTextConvertForm();
-            textConverter.NewTranslation += new EventHandler<NewTranslationEventArgs>(textConverterHandler);
-            textConverter.TranslateFailure += new EventHandler<TranslateFailureEventArgs>(translateFailureHandler);
-            textConverter.MarkCollections = _sequence.MarkCollections;
-            textConverter.Show(this);
+            if (LipSyncTextConvertForm.Active == false)
+            {
+                LipSyncTextConvertForm textConverter = new LipSyncTextConvertForm();
+                textConverter.NewTranslation += new EventHandler<NewTranslationEventArgs>(textConverterHandler);
+                textConverter.TranslateFailure += new EventHandler<TranslateFailureEventArgs>(translateFailureHandler);
+                textConverter.MarkCollections = _sequence.MarkCollections;
+                textConverter.Show(this);
+            }
         }
 
         private void lipSyncMappingsToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
@@ -4533,12 +4549,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void exportToolStripMenuItem_Click(object sender, EventArgs e)
 		{
             ExportDialog ed = new ExportDialog(Sequence);
-            if (ed.ShowDialog() == DialogResult.OK)
-            {
-
-            }
-   
-
+            ed.ShowDialog();
 		}
 
 		private void bulkEffectMoveToolStripMenuItem_Click(object sender, EventArgs e)

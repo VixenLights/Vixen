@@ -135,6 +135,17 @@ namespace VixenModules.Effect.LipSync
             }
         }
 
+        [Value]
+        public String LyricData
+        {
+            get { return _data.LyricData; }
+            set
+            {
+                _data.LyricData = value;
+                IsDirty = true;
+            }
+        }
+
         private void LoadResourceBitmaps()
         {
             if (_phonemeBitmaps == null)
@@ -175,7 +186,7 @@ namespace VixenModules.Effect.LipSync
                     StaticPhoneme = "REST";
                 }
 
-                string DisplayValue = StaticPhoneme;
+                string DisplayValue = string.IsNullOrWhiteSpace(LyricData) ? "-" : LyricData;
                 Bitmap displayImage = null;
                 Bitmap scaledImage = null;
                 if (_phonemeBitmaps.TryGetValue(StaticPhoneme, out displayImage) == true)
