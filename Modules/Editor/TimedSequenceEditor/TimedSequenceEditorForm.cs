@@ -39,7 +39,7 @@ using WeifenLuo.WinFormsUI.Docking;
 using Element = Common.Controls.Timeline.Element;
 using Timer = System.Windows.Forms.Timer;
 using VixenModules.Property.Color;
-
+using VixenModules.App.CustomEffectDefaults;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -104,6 +104,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private CurveLibrary _curveLibrary;
 		private ColorGradientLibrary _colorGradientLibrary;
+		private CustomEffectDefaultLibrary _customEffectDefaultLibrary;
 		private LipSyncMapLibrary _library;
 		private List<ColorCollection> _ColorCollections = new List<ColorCollection>();
 		
@@ -319,6 +320,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (_colorGradientLibrary != null)
 			{
 				_colorGradientLibrary.GradientChanged += ColorGradientLibrary_CurveChanged;	
+			}
+
+			_customEffectDefaultLibrary = ApplicationServices.Get<IAppModuleInstance>(CustomEffectDefaultLibraryDescriptor.ModuleID) as CustomEffectDefaultLibrary;
+			if (_customEffectDefaultLibrary != null)
+			{
+				_customEffectDefaultLibrary.CustomEffectDefaultChanged += CustomEffectDefaultLibrary_Changed;
 			}
 
 			LoadAvailableEffects();
@@ -1259,6 +1266,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			CheckAndRenderDirtyElements();
 		}
 
+		private void CustomEffectDefaultLibrary_Changed(object sender, EventArgs e)
+		{
+			//Do nothing
+			return;
+		}
+
 		private void AutoSaveEventProcessor(object sender, EventArgs e)
 		{
 			_autoSaveTimer.Stop();
@@ -1488,6 +1501,21 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				Element element = e.ElementsUnderCursor.FirstOrDefault();
 
 				TimedSequenceElement tse = element as TimedSequenceElement;
+
+				ToolStripMenuItem itemSetDefaults = new ToolStripMenuItem("Set Effect Defaults");
+				itemSetDefaults.Click += (mySender, myE) =>
+				{
+					_customEffectDefaultLibrary.AddCustomEffectDefault(tse.EffectNode.Effect.TypeId.ToString(), tse.EffectNode.Effect.ParameterValues);
+				};
+				contextMenuStrip.Items.Add(itemSetDefaults);
+
+				ToolStripMenuItem itemRestoreDefaults = new ToolStripMenuItem("Restore Defaults");
+				itemRestoreDefaults.Click += (mySender, myE) =>
+				{
+					_customEffectDefaultLibrary.RemoveCustomEffectDefault(tse.EffectNode.Effect.TypeId.ToString());
+				};
+				contextMenuStrip.Items.Add(itemRestoreDefaults);
+
 
 				if (TimelineControl.SelectedElements.Count() > 1)
 				{
@@ -2624,7 +2652,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 
 				var effectNode = CreateEffectNode(effectInstance, row, startTime, timeSpan);
-
+				if (_customEffectDefaultLibrary.GetCustomEffectDefault(effectNode.Effect.TypeId.ToString()) != null)
+					effectNode.Effect.ParameterValues = _customEffectDefaultLibrary.GetCustomEffectDefault(effectNode.Effect.TypeId.ToString());
 				// put it in the sequence and in the timeline display
 				AddEffectNode(effectNode);
 				sequenceModified();
