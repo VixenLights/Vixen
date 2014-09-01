@@ -156,7 +156,7 @@ namespace VixenModules.App.LipSyncApp
                         }
 
                         long startTicks = timing.Item1.Ticks + (timing.Item2.Ticks * phonemeIndex++);
-                        convertData.Add(new LipSyncConvertData(startTicks, timing.Item2.Ticks, phoneme));
+                        convertData.Add(new LipSyncConvertData(startTicks, timing.Item2.Ticks, phoneme, strElem));
                     }
                 }
 
@@ -326,16 +326,18 @@ namespace VixenModules.App.LipSyncApp
             Phoneme = phoneme;
         }
 
-        public LipSyncConvertData(long startTicks, long durTicks, PhonemeType phoneme)
+        public LipSyncConvertData(long startTicks, long durTicks, PhonemeType phoneme, string lyricData)
         {
             StartOffset = new TimeSpan(startTicks);
             Duration = new TimeSpan(durTicks);
             Phoneme = phoneme;
+            LyricData = lyricData;
         }
 
         public TimeSpan StartOffset { get; set; }
         public TimeSpan Duration { get; set; }
         public PhonemeType Phoneme { get; set; }
+        public string LyricData { get; set; }
     }
 
     public enum TranslatePlacement { Clipboard, Cursor, Mark };

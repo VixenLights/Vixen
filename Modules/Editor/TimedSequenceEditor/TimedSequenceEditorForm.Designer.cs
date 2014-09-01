@@ -135,8 +135,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
             this.defaultMapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.phonemeMappingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.changeMapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.papagayoImportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lyricConverterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.papagayoImportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.bulkEffectMoveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpDocumentationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.timerPlaying = new System.Windows.Forms.Timer(this.components);
@@ -1071,19 +1071,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
             this.changeMapToolStripMenuItem.Text = "Change Effect Map";
             this.changeMapToolStripMenuItem.DropDownOpening += new System.EventHandler(this.changeMapToolStripMenuItem_DropDownOpening);
             // 
-            // papagayoImportToolStripMenuItem
-            // 
-            this.papagayoImportToolStripMenuItem.Name = "papagayoImportToolStripMenuItem";
-            this.papagayoImportToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
-            this.papagayoImportToolStripMenuItem.Text = "Papagayo Import";
-            this.papagayoImportToolStripMenuItem.Click += new System.EventHandler(this.papagayoImportToolStripMenuItem_Click);
-            // 
             // lyricConverterToolStripMenuItem
             // 
             this.lyricConverterToolStripMenuItem.Name = "lyricConverterToolStripMenuItem";
             this.lyricConverterToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
             this.lyricConverterToolStripMenuItem.Text = "Lyric Converter";
             this.lyricConverterToolStripMenuItem.Click += new System.EventHandler(this.textConverterToolStripMenuItem_Click);
+            // 
+            // papagayoImportToolStripMenuItem
+            // 
+            this.papagayoImportToolStripMenuItem.Name = "papagayoImportToolStripMenuItem";
+            this.papagayoImportToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+            this.papagayoImportToolStripMenuItem.Text = "Papagayo Import";
+            this.papagayoImportToolStripMenuItem.Click += new System.EventHandler(this.papagayoImportToolStripMenuItem_Click);
             // 
             // bulkEffectMoveToolStripMenuItem
             // 
