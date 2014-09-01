@@ -34,6 +34,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			//            Flood
 		}
 
+        public enum StringDirections
+        {
+            Clockwise,
+            CounterClockwise
+        }
+
 		private bool _selected = false;
 		[XmlIgnore] public List<PreviewPoint> _selectPoints = null;
 		public const int SelectPointSize = 6;
