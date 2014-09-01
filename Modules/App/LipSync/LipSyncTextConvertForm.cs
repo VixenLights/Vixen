@@ -16,11 +16,13 @@ namespace VixenModules.App.LipSyncApp
         public event EventHandler<TranslateFailureEventArgs> TranslateFailure = null;
         public static bool Active = false; 
         private int unMarkedPhonemes;
-        
+        private int _lastMarkIndex;
+
         public LipSyncTextConvertForm()
         {
             InitializeComponent();
             unMarkedPhonemes = 0;
+            _lastMarkIndex = -1;
         }
 
         public List<MarkCollection> MarkCollections { get; set; }
@@ -195,6 +197,9 @@ namespace VixenModules.App.LipSyncApp
 
         void populateStartOffsetCombo()
         {
+            int lastIndex = startOffsetCombo.SelectedIndex;
+            int lastCount = startOffsetCombo.Items.Count;
+
             startOffsetCombo.Items.Clear();
             if (markCollectionCombo.SelectedIndex > -1)
             {
@@ -207,20 +212,33 @@ namespace VixenModules.App.LipSyncApp
                         startOffsetCombo.Items.Add(ts);
                     }
                 }
-                startOffsetCombo.SelectedIndex = 
-                    (startOffsetCombo.Items.Count > 0) ? 0 : -1;
+
+                if (startOffsetCombo.Items.Count > 0)
+                {
+                    if (lastIndex < startOffsetCombo.Items.Count)
+                    {
+                        startOffsetCombo.SelectedIndex =
+                            (lastIndex == -1) ? 0 : lastIndex;
+                    }
+                    else
+                    {
+                        startOffsetCombo.SelectedIndex = startOffsetCombo.Items.Count - 1;
+                    }
+                }
             }
         }
 
 
         private void markCollectionCombo_SelectedIndexChanged(object sender, EventArgs e)
         {
-            populateStartOffsetCombo();
-            if (startOffsetCombo.Items.Count > 0)
+            if (_lastMarkIndex != markCollectionCombo.SelectedIndex)
             {
-                startOffsetCombo.SelectedIndex = 0;
+                startOffsetCombo.SelectedIndex = -1;
             }
-            
+
+            populateStartOffsetCombo();
+
+            _lastMarkIndex = markCollectionCombo.SelectedIndex;
         }
 
         private void startOffsetCombo_DropDown(object sender, EventArgs e)
@@ -245,11 +263,10 @@ namespace VixenModules.App.LipSyncApp
             int lastIndex = markCollectionCombo.SelectedIndex;
             int lastCount = markCollectionCombo.Items.Count;
 
-            MarkCollections.Sort();
             markCollectionCombo.Items.Clear();
             foreach (MarkCollection mc in MarkCollections)
             {
-                if (mc.Name != null)
+                if ((mc.Name != null) && (mc.Marks.Count != 0))
                 {
                     markCollectionCombo.Items.Add(mc.Name);
                 }
@@ -261,8 +278,14 @@ namespace VixenModules.App.LipSyncApp
             {
                 if (markCollectionCombo.Items.Count == lastCount) 
                 {
-                    markCollectionCombo.SelectedIndex = 
-                        (lastIndex == -1) ? 0 : lastIndex;
+                    if (lastIndex == -1)
+                    {
+                        markCollectionCombo.SelectedIndex = 0;
+                    }
+                    else
+                    {
+                        markCollectionCombo.SelectedIndex = lastIndex;
+                    }
                 }
                 else
                 {
