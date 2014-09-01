@@ -1546,7 +1546,7 @@ namespace VixenModules.Effect.Nutcracker
 						int ylimit = (BufferHt + maxht) * 8 + 1;
 						int xcentered = Left * BufferWi / 50 - BufferWi / 2;
 
-
+                        graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
 						TextRotation *= 90;
 						if (TextRotation > 0)
 							graphics.RotateTransform(TextRotation);
