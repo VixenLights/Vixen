@@ -12,9 +12,30 @@ namespace VixenModules.SequenceType.Vixen2x
 {
 	public partial class Vixen2xSequenceImporterChannelMapper : Form
 	{
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+
 		private MultiSelectTreeview treeview;
 		private bool MapExists;
 		private int startingIndex;
+
+		/// <summary>
+		/// Mapping of Column headers to make code maintinance easier
+		/// </summary>
+		private enum mapperColumnId
+		{
+			v2ChannelId = 0,
+			v2channelOutput,
+			v2ChannelName,
+			v2channelColor,
+			v3Destination,
+			importColor,
+			rgbPixel
+		};
+
+		/// <summary>
+		/// Fixed Channel offset to RGB Pixel color translation
+		/// </summary>
+		private Color[] m_defaultPixelColors = new Color[] { Color.Red, Color.Green, Color.Blue };
 
 		public Vixen2xSequenceImporterChannelMapper(List<ChannelMapping> mappings, bool mapExists, string mappingName)
 		{
@@ -23,6 +44,8 @@ namespace VixenModules.SequenceType.Vixen2x
 			Mappings = mappings;
 			MapExists = mapExists;
 			mappingNameTextBox.Text = mappingName;
+
+			checkBoxRGB.Enabled = true;
 		}
 
 		public List<ChannelMapping> Mappings { get; set; }
@@ -64,28 +87,49 @@ namespace VixenModules.SequenceType.Vixen2x
 			// we just loop until we've repeated each element X times, in order.
 			int repeatCount = decimal.ToInt32(numericUpDownRepeatElements.Value);
 			if (repeatCount <= 0)
+			{
 				repeatCount = 1;
+			}
 
-			for (int i = 0; i < repeatCount; i++) {
+			// Logging.Info("AddVixen3ElementToVixen2Channel: repeatCount = " + repeatCount + ". checkBoxRGB.Checked = " + checkBoxRGB.Checked + " listViewMapping.Items.Count = " + listViewMapping.Items.Count);
+
+			for (int i = 0; i < repeatCount; i++) 
+			{
 				// if the user drags a large number of items to start at a position that
 				// doesn't have enough 'room' off the end for them all, this can go OOR
+
 				if (listViewMapping.Items.Count <= startingIndex)
-					return;
+				{
+					Logging.Error("AddVixen3ElementToVixen2Channel: Aborting because startingIndex " + startingIndex + " is greater than listViewMapping.Items.Count " + listViewMapping.Items.Count );
+					break;
+				}
 
 				ElementNode enode = (ElementNode) node.Tag;
 				ListViewItem item = listViewMapping.Items[startingIndex];
 
-				item.SubItems[4].Text = enode.Element.Name;
+				item.SubItems[(int)mapperColumnId.v3Destination].Text = enode.Element.Name;
 
-				item.SubItems[4].Tag = enode;
+				item.SubItems[(int)mapperColumnId.v3Destination].Tag = enode;
 
+				// are we processing an RGB Pixel?
+				if(true == checkBoxRGB.Checked)
+				{
+					// use a fixed translation
+					item.SubItems[(int)mapperColumnId.importColor].Text = m_defaultPixelColors[i].Name;
+					item.SubItems[(int)mapperColumnId.importColor].BackColor = m_defaultPixelColors[i];
+					item.SubItems[(int)mapperColumnId.rgbPixel].Text = "Yes";
+				} // end process pixel
+				else
+				{
 				//Not sure where to get a node color from Vixen 3 stuff so if we have one in Vixen 2 just use it
-				item.SubItems[5].Text = item.SubItems[3].Text;
-				item.SubItems[5].BackColor = item.SubItems[3].BackColor;
+					item.SubItems[(int)mapperColumnId.importColor].Text = item.SubItems[(int)mapperColumnId.v2channelColor].Text;
+					item.SubItems[(int)mapperColumnId.importColor].BackColor = item.SubItems[(int)mapperColumnId.v2channelColor].BackColor;
+					item.SubItems[(int)mapperColumnId.rgbPixel].Text = string.Empty;
+				} // end not a pixel
 
 				startingIndex++;
-			}
-		}
+			} // for each repeat element
+		} // end AddVixen3ElementToVixen2Channel
 
 		private void ParseNodes(List<TreeNode> nodes)
 		{
@@ -133,32 +177,61 @@ namespace VixenModules.SequenceType.Vixen2x
 
 			listViewMapping.Items.Clear();
 
-			foreach (ChannelMapping mapping in Mappings) {
+			foreach (ChannelMapping mapping in Mappings) 
+			{
+				// create an empty row list
 				ListViewItem item = new ListViewItem(mapping.ChannelNumber) {UseItemStyleForSubItems = false};
+
+				// v2channelOutput
 				item.SubItems.Add(mapping.ChannelOutput);
+
+				// v2ChannelName
 				item.SubItems.Add(mapping.ChannelName);
+
+				// v2channelColor
 				item.SubItems.Add(GetColorName(mapping.ChannelColor));
-				//item.SubItems[3].BackColor = (Color)TypeDescriptor.GetConverter(typeof(Color)).ConvertFromString(GetColorName(mapping.ChannelColor));
-				item.SubItems[3].BackColor = mapping.ChannelColor;
+				// item.SubItems.Add(mapping.ChannelColor.Name);
+				item.SubItems[(int)mapperColumnId.v2channelColor].BackColor = (Color)TypeDescriptor.GetConverter(typeof(Color)).ConvertFromString(GetColorName(mapping.ChannelColor));
+				// item.SubItems[(int)mapperColumnId.v2channelColor].BackColor = mapping.ChannelColor;
 
-				if (MapExists && mapping.ElementNodeId != Guid.Empty) {
+				// do we have an existing mapping?
+				if (MapExists && mapping.ElementNodeId != Guid.Empty) 
+				{
+					// get access to the existing target node information
 					ElementNode targetNode = VixenSystem.Nodes.GetElementNode(mapping.ElementNodeId);
-					item.SubItems.Add(targetNode.Element.Name);
-					item.SubItems[4].Tag = targetNode;
 
+					// v3Destination
+					item.SubItems.Add(targetNode.Element.Name);
+					item.SubItems[(int)mapperColumnId.v3Destination].Tag = targetNode;
+
+					// importColor
 					item.SubItems.Add(GetColorName(mapping.DestinationColor));
-					//item.SubItems[5].BackColor = (Color)TypeDescriptor.GetConverter(typeof(Color)).ConvertFromString(GetColorName(mapping.DestinationColor));
-					item.SubItems[5].BackColor = mapping.DestinationColor;
+					// item.SubItems.Add(mapping.DestinationColor.Name);
+					item.SubItems[(int)mapperColumnId.importColor].BackColor = (Color)TypeDescriptor.GetConverter(typeof(Color)).ConvertFromString(GetColorName(mapping.DestinationColor));
+					// item.SubItems[(int)mapperColumnId.importColor].BackColor = mapping.DestinationColor;
 				}
-				else {
+				else 
+				{
+					// v3Destination
 					item.SubItems.Add(string.Empty);
+
+					// importColor
+					item.SubItems.Add(string.Empty);
+				}
+				// rgbPixel
+				if( true == mapping.RgbPixel )
+				{
+					item.SubItems.Add("Yes");
+				}
+				else
+				{
 					item.SubItems.Add(string.Empty);
 				}
 
 				//set the v2 columns to readonly
-				item.SubItems[0].BackColor = Color.LightGray;
-				item.SubItems[1].BackColor = Color.LightGray;
-				item.SubItems[2].BackColor = Color.LightGray;
+				item.SubItems[(int)mapperColumnId.v2ChannelId].BackColor = Color.LightGray;
+				item.SubItems[(int)mapperColumnId.v2channelOutput].BackColor = Color.LightGray;
+				item.SubItems[(int)mapperColumnId.v2ChannelName].BackColor = Color.LightGray;
 
 				listViewMapping.Items.Add(item);
 			}
@@ -171,37 +244,61 @@ namespace VixenModules.SequenceType.Vixen2x
 		{
 			//default these to white
 			Color vixen2Color = Color.Empty;
-			Color Vixen3Color = Color.Empty;
 
 			Mappings = new List<ChannelMapping>();
-			foreach (ListViewItem itemrow in listViewMapping.Items) {
-				vixen2Color = itemrow.SubItems[3].BackColor;
+			foreach (ListViewItem itemrow in listViewMapping.Items) 
+			{
+				vixen2Color = itemrow.SubItems[(int)mapperColumnId.v2channelColor].BackColor;
 
-				if (!String.IsNullOrEmpty(itemrow.SubItems[4].Text)) {
-					ElementNode node = (ElementNode) itemrow.SubItems[4].Tag;
-					Vixen3Color = itemrow.SubItems[5].BackColor;
+				if (!String.IsNullOrEmpty(itemrow.SubItems[(int)mapperColumnId.v3Destination].Text)) 
+				{
+					ElementNode node = (ElementNode) itemrow.SubItems[(int)mapperColumnId.v3Destination].Tag;
 
-					Mappings.Add(new ChannelMapping(itemrow.SubItems[2].Text,
+					Mappings.Add(new ChannelMapping(itemrow.SubItems[(int)mapperColumnId.v2ChannelName].Text,
 					                                vixen2Color,
-					                                itemrow.SubItems[0].Text,
-					                                itemrow.SubItems[1].Text,
+					                                itemrow.SubItems[(int)mapperColumnId.v2ChannelId].Text,
+					                                itemrow.SubItems[(int)mapperColumnId.v2channelOutput].Text,
 					                                node.Id,
-					                                Vixen3Color));
+													itemrow.SubItems[(int)mapperColumnId.importColor].BackColor,
+					                                (itemrow.SubItems[(int)mapperColumnId.rgbPixel].Text) == "Yes"));
 				}
-				else {
+				else 
+				{
 					//we are using this because we do not have a V3 map.
-					Mappings.Add(new ChannelMapping(itemrow.SubItems[2].Text,
+					Mappings.Add(new ChannelMapping(itemrow.SubItems[(int)mapperColumnId.v2ChannelName].Text,
 					                                vixen2Color,
-					                                itemrow.SubItems[0].Text,
-					                                itemrow.SubItems[1].Text,
+					                                itemrow.SubItems[(int)mapperColumnId.v2ChannelId].Text,
+					                                itemrow.SubItems[(int)mapperColumnId.v2channelOutput].Text,
 					                                Guid.Empty,
-					                                Vixen3Color));
+													Color.Empty,
+													false));
 				}
 			}
 
 			Mappings = Mappings;
 			MappingName = mappingNameTextBox.Text;
 		}
+
+		/// <summary>
+		/// value of the RGB checkbox has changed
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void checkBoxRGB_CheckedChanged(object sender, EventArgs e)
+		{
+			if(true == checkBoxRGB.Checked)
+			{
+				// disable the repeat counter and enter pixel mode
+				numericUpDownRepeatElements.Enabled = false;
+				numericUpDownRepeatElements.Value = 3;
+			}
+			else
+			{
+				// enable the repeat counter and exit pixel mode
+				numericUpDownRepeatElements.Enabled = true;
+				numericUpDownRepeatElements.Value = 1;
+			}
+		} // checkBoxRGB_CheckedChanged
 
 		#region Drag drop events
 
@@ -216,7 +313,7 @@ namespace VixenModules.SequenceType.Vixen2x
 				ListViewItem dragToItem = listViewMapping.GetItemAt(cp.X, cp.Y);
 
 				//let the user know if we have items already here and we are about to overwrite them
-				if (!String.IsNullOrEmpty(dragToItem.SubItems[4].Text)) {
+				if (!String.IsNullOrEmpty(dragToItem.SubItems[(int)mapperColumnId.v3Destination].Text)) {
 					DialogResult result = MessageBox.Show("You are about to over write existing items.  Do you wish to continue?",
 					                                      "Continue", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
 					if (result == System.Windows.Forms.DialogResult.OK) {
@@ -281,12 +378,13 @@ namespace VixenModules.SequenceType.Vixen2x
 			if (colorDlg.ShowDialog() == DialogResult.OK) {
 				foreach (ListViewItem itemrow in listViewMapping.SelectedItems) {
 					itemrow.UseItemStyleForSubItems = false;
-					itemrow.SubItems[5].Text = GetColorName(colorDlg.Color);
-					itemrow.SubItems[5].BackColor = colorDlg.Color;
+					itemrow.SubItems[(int)mapperColumnId.importColor].Text = GetColorName(colorDlg.Color);
+					itemrow.SubItems[(int)mapperColumnId.importColor].BackColor = colorDlg.Color;
 				}
 			}
 		}
 
 		#endregion
+
 	}
 }
