@@ -84,13 +84,14 @@ namespace VixenModules.EffectEditor.LipSyncEditor
                 return new object[] 
                 {
                     StaticPhoneme,
-                    PhonemeMapping
+                    PhonemeMapping,
+                    LyricData
                 }; 
             }
 
             set
             {
-                if (value.Length != 2)
+                if (value.Length != 3)
                 {
                     Logging.Warn("LipSync effect parameters set with " + value.Length + " parameters");
                     return;
@@ -113,6 +114,7 @@ namespace VixenModules.EffectEditor.LipSyncEditor
 
                 StaticPhoneme = (string)value[0];
                 PhonemeMapping = (string)value[1];
+                LyricData = (string)value[2];
             }
         }
 
@@ -152,6 +154,18 @@ namespace VixenModules.EffectEditor.LipSyncEditor
             }
         }
 
+        public string LyricData
+        {
+            get
+            {
+                return lyricDataTextBox.Text;
+            }
+
+            set
+            {
+                lyricDataTextBox.Text = value;
+            }
+        }
         private void selectImageListItem(string text)
         {
             foreach (ListViewItem viewItem in imageListView.Items)

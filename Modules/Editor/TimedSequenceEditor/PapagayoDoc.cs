@@ -467,7 +467,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
                     if ((line = file.ReadLine()) != null)
                     {
                         line = line.TrimStart(null);
-                        m_phoneme[j] = new PapagayoPhoneme(line, lastObj);
+                        m_phoneme[j] = new PapagayoPhoneme(line, lastObj, m_wordText);
                         lastObj = m_phoneme[j];
                         phonemes.Add(m_phoneme[j]);
                     }
@@ -501,6 +501,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
     public class PapagayoPhoneme : PapagayoImportObject
     {
         string m_Text = null;
+        string m_lyricWord = null;
         PhonemeType m_type = PhonemeType.Rest;
 
         public PapagayoPhoneme(PapagayoPhoneme copyObj)
@@ -510,12 +511,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
             this.StartFrame = copyObj.StartFrame;
             this.EndFrame = copyObj.EndFrame;
             this.m_type = copyObj.m_type;
+            this.m_lyricWord = copyObj.m_lyricWord;
         }
 
-        public PapagayoPhoneme(string pair, PapagayoPhoneme lastObj)
+        public PapagayoPhoneme(string pair, PapagayoPhoneme lastObj, string lyricWord = null)
         {
             m_type = PhonemeType.Rest;
             m_Text = "Rest";
+            m_lyricWord = lyricWord ?? "";
             if (pair != null)
             {
                 string[] split = pair.Split(' ');
@@ -555,6 +558,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
             get
             {
                 return m_type.ToString();
+            }
+        }
+
+        public string LyricData
+        {
+            get
+            {
+                return m_lyricWord;
             }
         }
 

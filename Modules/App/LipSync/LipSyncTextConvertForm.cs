@@ -14,8 +14,9 @@ namespace VixenModules.App.LipSyncApp
     {
         public event EventHandler<NewTranslationEventArgs> NewTranslation = null;
         public event EventHandler<TranslateFailureEventArgs> TranslateFailure = null;
+        public static bool Active = false; 
         private int unMarkedPhonemes;
-
+        
         public LipSyncTextConvertForm()
         {
             InitializeComponent();
@@ -29,13 +30,13 @@ namespace VixenModules.App.LipSyncApp
             List<string> retVal = new List<string>();
             foreach (string line in textBox.Lines)
             {
-                if (alignCombo.SelectedItem.Equals("Phrase"))
+                if ((alignCombo.SelectedIndex == -1) || !(alignCombo.SelectedItem.Equals("Phrase")))
                 {
-                    retVal.Add(line);
+                    retVal.AddRange(line.Split());
                 }
                 else
                 {
-                    retVal.AddRange(line.Split());
+                    retVal.Add(line);
                 }
             }
             return retVal;
@@ -106,7 +107,8 @@ namespace VixenModules.App.LipSyncApp
             {
                 List<string> subStrings = CreateSubstringList();
                 MarkCollection selMC = MarkCollections.Find(x => x.Name.Equals(markCollectionCombo.SelectedItem));
-                bool doPhonemeAlign = alignCombo.SelectedItem.Equals("Phoneme");
+                bool doPhonemeAlign = 
+                    (alignCombo.SelectedIndex != -1) && (alignCombo.SelectedItem.Equals("Phoneme"));
 
                 if (mcIndex == -1)
                 {
@@ -154,13 +156,26 @@ namespace VixenModules.App.LipSyncApp
                         }
 
                         long startTicks = timing.Item1.Ticks + (timing.Item2.Ticks * phonemeIndex++);
-                        convertData.Add(new LipSyncConvertData(startTicks, timing.Item2.Ticks, phoneme));
+                        convertData.Add(new LipSyncConvertData(startTicks, timing.Item2.Ticks, phoneme, strElem));
                     }
                 }
 
                 EventHandler<NewTranslationEventArgs> handler = NewTranslation;
                 NewTranslationEventArgs args = new NewTranslationEventArgs();
                 args.PhonemeData = convertData;
+                if (markCollectionRadio.Checked)
+                {
+                    args.Placement = TranslatePlacement.Mark;
+                }
+                else if (cursorRadio.Checked)
+                {
+                    args.Placement = TranslatePlacement.Cursor;
+                }
+                else
+                {
+                    args.Placement = TranslatePlacement.Clipboard;
+                }
+
                 if (startOffsetCombo.SelectedItem != null)
                 {
                     args.FirstMark = (TimeSpan)startOffsetCombo.SelectedItem;
@@ -171,30 +186,17 @@ namespace VixenModules.App.LipSyncApp
 
         }
 
-        private void populateMarkCombo()
-        {
-            markCollectionCombo.Items.Clear();
-            markCollectionCombo.Items.Add("");
-            markCollectionCombo.SelectedIndex = 0;
-            foreach (MarkCollection mc in MarkCollections)
-            {
-                if (mc.Name != null)
-                {
-                    markCollectionCombo.Items.Add(mc.Name);
-                }
-            }
-        }
-
         private void LipSyncTextConvert_Load(object sender, EventArgs e)
         {
-            alignCombo.SelectedIndex = 1;
-            populateMarkCombo();
+            convertButton.Enabled = false;
+            cursorRadio.Checked = true;
+            setMarkControls(false);
         }
 
         void populateStartOffsetCombo()
         {
             startOffsetCombo.Items.Clear();
-            if (!markCollectionCombo.SelectedItem.Equals(""))
+            if (markCollectionCombo.SelectedIndex > -1)
             {
                 MarkCollection mc =
                     MarkCollections.Find(x => x.Name.Equals(markCollectionCombo.SelectedItem));
@@ -205,7 +207,8 @@ namespace VixenModules.App.LipSyncApp
                         startOffsetCombo.Items.Add(ts);
                     }
                 }
-
+                startOffsetCombo.SelectedIndex = 
+                    (startOffsetCombo.Items.Count > 0) ? 0 : -1;
             }
         }
 
@@ -225,9 +228,87 @@ namespace VixenModules.App.LipSyncApp
             populateStartOffsetCombo();
         }
 
-        private void markCollectionCombo_DropDown(object sender, EventArgs e)
+        private void markCollectionRadio_CheckedChanged(object sender, EventArgs e)
         {
-            populateMarkCombo();
+            setMarkControls(markCollectionRadio.Checked);
+        }
+
+        private void setMarkControls(bool enable)
+        {
+            Control markCtrl = marksGroupBox.GetNextControl(null, true);
+            while (markCtrl != null)
+            {
+                markCtrl.Enabled = enable;
+                markCtrl = marksGroupBox.GetNextControl(markCtrl, true);
+            }
+
+            int lastIndex = markCollectionCombo.SelectedIndex;
+            int lastCount = markCollectionCombo.Items.Count;
+
+            MarkCollections.Sort();
+            markCollectionCombo.Items.Clear();
+            foreach (MarkCollection mc in MarkCollections)
+            {
+                if (mc.Name != null)
+                {
+                    markCollectionCombo.Items.Add(mc.Name);
+                }
+            }
+
+            markCollectionRadio.Enabled = false;
+
+            if (markCollectionCombo.Items.Count > 0)
+            {
+                if (markCollectionCombo.Items.Count == lastCount) 
+                {
+                    markCollectionCombo.SelectedIndex = 
+                        (lastIndex == -1) ? 0 : lastIndex;
+                }
+                else
+                {
+                    markCollectionCombo.SelectedIndex = 0;
+                }
+                populateStartOffsetCombo();
+
+                markCollectionRadio.Enabled = 
+                    (markCollectionCombo.Items.Count > 0) && (startOffsetCombo.Items.Count > 0);
+            }
+
+            marksGroupBox.Enabled = enable;
+
+            if (enable)
+            {
+                alignCombo.Items.Clear();
+                alignCombo.Items.Add("Phoneme");
+                alignCombo.Items.Add("Word");
+                alignCombo.Items.Add("Phrase");
+                alignCombo.SelectedIndex = 1;
+            }
+            else
+            {
+                markCollectionCombo.SelectedIndex = -1;
+                startOffsetCombo.SelectedIndex = -1;
+            }
+        }
+
+        private void LipSyncTextConvertForm_Activated(object sender, EventArgs e)
+        {
+            setMarkControls(markCollectionRadio.Checked);
+        }
+
+        private void LipSyncTextConvertForm_Shown(object sender, EventArgs e)
+        {
+            Active = true;
+        }
+
+        private void LipSyncTextConvertForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Active = false;
+        }
+
+        private void textBox_TextChanged(object sender, EventArgs e)
+        {
+            convertButton.Enabled = !String.IsNullOrWhiteSpace(textBox.Text);
         }
     }
 
@@ -245,20 +326,25 @@ namespace VixenModules.App.LipSyncApp
             Phoneme = phoneme;
         }
 
-        public LipSyncConvertData(long startTicks, long durTicks, PhonemeType phoneme)
+        public LipSyncConvertData(long startTicks, long durTicks, PhonemeType phoneme, string lyricData)
         {
             StartOffset = new TimeSpan(startTicks);
             Duration = new TimeSpan(durTicks);
             Phoneme = phoneme;
+            LyricData = lyricData;
         }
 
         public TimeSpan StartOffset { get; set; }
         public TimeSpan Duration { get; set; }
         public PhonemeType Phoneme { get; set; }
+        public string LyricData { get; set; }
     }
+
+    public enum TranslatePlacement { Clipboard, Cursor, Mark };
 
     public class NewTranslationEventArgs : EventArgs
     {
+        public TranslatePlacement Placement { get; set; }
         public TimeSpan FirstMark { get; set; }
         public List<LipSyncConvertData> PhonemeData { get; set; }
     }
