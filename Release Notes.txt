@@ -1,6 +1,288 @@
+Vixen Release Notes – 3.1.0
+New Features
+Main Application
+* Profile Zip Wizard.  This tool allows the user to select a profile, and all of the selected data and zip it in a file to the user’s choice destination folder.
+Sequence Editor
+* Lip Sync Feature.  This tool allows lighted animation elements to be described and sequenced by the user.
+o Supports single String, Pixel String, and Pixel Matrix Animations
+o Import existing Papagayo sequences
+o Lyric to Phoneme conversion tool - understands over 125,000 words.
+o User dictionary to allow user to define words not understood by Lyric converter.
+o Mark Manager / Tapper support for automatic phoneme sizing. 
+o Export/Import facial bitmaps for use on pixel matrices.
+o Facial animations can be quickly remapped from string, to pixels, to Matrices and vice-versa.
+* Auto save
+* Added Preset Library. This provides quick access to your favorite colors, curves and gradients. Also adds drag and drop ability of these presets directly to effects on the timeline
+* New Edit/Draw Mode.  
+o Draw Mode allows you to simply click on an effect in the effect library and draw the effects into the timeline by clicking where you want it to start and dragging it to the point where you want it to stop. 
+o Edit mode is the new name for the old mode where mouse clicks on the timeline effects will select them for editing.
+* Edit Mode Improvements
+o Control-Drag to duplicate effects 
+o Shift click to select multiple effects.
+o Improvements to Drag Selection box:
+* You can now use shift+drag to select additional "grouped" effects.
+* You can now use the selection box to select individual stacked elements on the same row.
+o New Drag Box Filter. You can now specify which types of effects will be selected by the drag box.
+o Improvements to Effect Snap 
+o Effect distribution alignment helper
+o Multi Effect Editor - Changing only the intended values when editing multiple effects
+o Improvements to Add multiple effects dialog
+o New Indicator line when moving and resizing effects, makes it easier to line up the selected effect with other effects above and below it by adding a vertical line at the end that is being resized or both ends when moving an effect.
+* Curve and Gradient Improvements
+o New Color Collections for assigning random/sequential colors to effects 
+o Curve editor and Gradient editor are now accessible from the tool menu instead of only in the effects. 
+o When items in the curve or gradient library are edited, the new settings update linked effects in the timeline right away without having to reopen the sequence.
+o Curve editor enhancements. Ability to invert or flip a curve and edit the point values directly. Handles for the curve points are more prominent and mouse pointer changes when over them.
+* Mark Collections can now be exported
+* Improvements to Undo / Redo
+* Screen size and placement settings are now saved and restored when the editor is closed and reopened.
+* Sequence export to FPP and CSV  
+Execution Engine
+* Significant performance improvements, especially when playing and sequencing in the editor.
+* Unnecessary engine processes are skipped when the controllers are turned off to provide a better experience while sequencing.
+* Live Context is only started when the Web Server is active and stopped when deactivated to save polling it if it is not in use.
+* General memory consumption reductions.
+Display Setup
+* When selecting Ok, the updated configuration is saved in the background rather than making the user wait at a hung UI.
+* Stopping the controllers now actually stops them without a restart.
+Preview
+* New Smart Objects
+o Icicles
+o Multi String
+o StarBurst
+* New Distribute tools and property matching to the preview.
+* New Alignment tools 
+* Zoom.  You can now zoom your preview.
+* Setup Previews Configuration pane saving happens in the background now instead of locking UI.
+Performance
+* Editor should open significantly faster now especially for those with larger sequences.
+* Editor Effect rendering speed has been improved for those with multi-core processors.
+* Reduction of memory and CPU usage by the editor.
+* Reduction of scheduled show startup time with faster pre-rendering on multi-core machines.
 
+
+
+
+Change Log
+Much of the information in this change log is very technical or vague and will likely be meaningless to most users.  However, there is a lot of detail here, including bug ticket numbers.  So if you are looking to see if there was any work done on a specific issue, you may find it here.
+August, 2014
+* Remove a GC.Collect that was causing the Nutcracker effect to block and prevent multi-threaded rendering.
+* Updated Sequencer
+* Make sure the fmodupdatetimer is not null is Dispose() to prevent an exception if it is null.
+* The No-repeat code was preventing the RDS commands from reaching the RDS software.. I've limited it to be "Launcher" specific.
+* Add global exception handler...
+* Updated Version control with error handling that was causing V3 to crash in some instances
+* Added additional error handling during parallel and thread based operations that could cause the application to crash if not handled properly.
+* More Exception handling
+* Change Curve to Default to ALL on to conform with current expections of Data
+* Change default pulse level data to start solid and fade out.. so that chases start full intensity instead of other way around
+* Fixed reference that was saving dll locally and causing other effects not to load
+* Added Wipe from Inside Center out and Outside in
+* No audio card and RDP issues fixed.
+* Add the missing Cut operation to the graphical editor to support the function built into the shape window.
+* This change is to help alleviate some object creation and ease the pressure on the GC. 
+* When a element has nothing going on it has no state. Instead of creating a new empty state object every time, let's use a static one across all the elements that doesn't have to be created every time and can be shared. This eliminates the new object overhead and then the subsequent GC collect an interval or two later when it is thrown away.
+* The controllers themselves are individually threaded, and the process of updating the outputs individually is pretty fast, so the overhead of parallel updates on each output is not justified.
+* Fix the button anchors on the instrumentation form so they stay at the bottom when it is re-sized.
+* Add the missing Cut operation to the graphical editor to support the function built into the shape window.
+* Add a way to clean up orphaned filters. Modified the Filter Manager 
+* to provide this functionality and then hooked it on the closing of the setup form. That way any orphaned Filters will be removed. This is a bit of a stop gap until the problem with the Graphical editor not being able to show them can be solved.
+* Make a change to properly create the root node and children hierarchy 
+* to avoid putting orphan filters in the root chain until they are connected to something. This prevents filters that are not part of the full data flow from participating in updates. There is a further bug with creating and not being able to manage these unattached filters that needs to be addressed in another fix.
+* Reorder some tasks to try and prevent a timing error with setting marks in the ruler.
+* Move the default update interval back to a more normal 50ms 
+* instead of 46ms. This will give just a bit more time to process updates every cycle. Migrated to version 16 of the System config to update the users to 50ms if they are still at 46ms. If they have changed it to something else other than 46ms then leave it alone.
+* Do some of the saving of the system config and module config in a background thread. 
+* Most of time this is just synchronizing the in memory state to disk, but the user has to sit and wait for that to occur. This frees the UI and user to do more productive stuff. Does not ease the pain of reloading the config on most cancel operations. That is a bigger nut to crack on another day.
+* Another fix to the XML serializer to help the load time of larger configurations. 
+* Use a Dictionary for element looks as opposed to just iterating over a list thousands of times.
+* Some changes to add some polish to the instrumentation. 
+o Add a Close button to close the window. 
+o Add a reset button to reset the values back to defaults and start over.
+* Super tune the Context updates and Element updates. 
+* Changes include using the known updated elements from the context to drive how the elements update. We can avoid doing context look ups for state on elements that are not being touched by an effect this update and just set them directly to empty like would have happened after all the look ups. This overall looks to reduce the time spent in context and element updates by about 30-40% in some simple timing based benchmarking.
+* Combines my DragBoxFilter, UndoAddMultiple & DrawModeWork & ColorCollections branches to make merging smoother by resolving conflicts
+o Adds a drag selection box filter
+o Adds Drawing mode which allows effects to be drawn onto the Grid
+o Adds a Color Collection Library, which allows random or sequential assignment of colors to effects.
+o Adds ability to selected individual stacked effects on the same row and time period.
+o Adds ability to select additional effects with the selection box, by holding shift.
+o Updates to Add Multiple dialog:
+o Fixed to work with undo engine
+o Added options to alight effects to beat marks.
+o Removed stray ; that would not allow playback to be resumed with space bar
+o Fixed bug when resizing effects if control was pressed (element could become null) Another nice speed up in loading the editor for large element counts. 
+* Defer adding controls to the parent control for row labels until the row is actually visible. Adding controls is very slow and when you are adding 1000's of them it can take a long while.
+* Some simple code cleanups. Remove unused variables, make a few constants, Linq simplifications.
+* Changed tooltip for the icicles button. 
+* Significant speed up in loading sequences into the editor with large node/effect counts. 
+* Only create the node dictionary once and reuse it rather than do it for every one we need to add.
+* Fix clone methods so they work, as they are used in some editor operations. Issue reported with VIX-347 that is caused by this bug.
+* Add help links for the new icicle preview object. 
+* Some cleanup to make the preview more efficient.  It was wasting time looking at all the intensity values, but in reality all we need to do is see if there are any states in the collection.
+* Fix missing title bar text when sequence loads. 
+* Added icicles to the preview. 
+* Make a change so that when you disable the controller in the setup page that it actually stops the hardware update thread that is associated with it. Also bypass the filter chain if we do not have any controllers running to save CPU cycles.
+* VIX-392 Direct comparison of floating point numbers with a bit of rounding error leads to them never matching for Blue and Green. Change the comparison to allow for a bit of tolerance.
+July, 2014
+* Removed duplicate preview files. 
+* Fixed a couple preview shapes (Triangle, Arch), fixed some issues with the preview main window.  Arches were not showing up in the preview in v11.  This work is for VIX-471 & VIX-472
+o Adds Drawing mode to sequence editor, which allows users to draw effects into the grid vs drag and drop.  Users can select this mode as an option.
+o Adds indicator lines to effects that extend top to bottom of the grid when resizing or dragging an effect. This is an option on the Edit menu, user can select color.
+o Also removes a stray ; in the if statement for resuming play in the editor using the space bar, that would cause pass thru of else and stop the sequence
+o Only calculate the curve points once rather than for each node. 
+o Fixed a problem highlighting pixel #1 in a string that has no first pixel. Was causing an exception if there were no "pixels"
+o Something happened to the preview menu. It is back. Re-did the previously lost fixes to the preview.
+* VIX-460 Initialize Bottom Left Point during Grid setup to prevent Null Pointer and InvalidOperation Exceptions
+* Clean-up of previous commit.
+o Makes better use of available methods
+o The Dialog now determines how many effects are possible for addition and displays this in a label at the top of the form. The form caption also shows which effect is being worked with.
+o If something goes wrong with calculations the user is prompted with a Yes/No continue anyway option.  This takes place once the user clicks OK on the dialog.
+* Additional work for VIX-433. Fix a bug that would not properly track and undo a move of an effect between rows.
+* VIX-355 Added path separator character to separate Vixen 2.x pathname and parsed filename in conversion routine
+* Corrected output path for Helix controller 
+* Adds ability to select which effect types will be selected by dragging a selection box also affects Shift-Click selections
+o This commit also removes old code that was commented out, that dealt with effects on the toolStripMenu
+* Fix the default curve to start at 0 and go to 100 so the pulse does not have to band aid it up to the same with extra intents.
+* VIX-364. Make the node handles filled and stay on top in the corners so they are easier to see. Make them easier to select when they are along the edge. Change the cursor to a cross hair when over the node handle to better indicate it can be dragged.
+* This work modifies the code that adds multiple effects from the context menu, so that it is wrapped into one action by the undo/redo engine
+July, 2014
+* Helix: don't copy NLog to output directory 
+* LipSyncApp: reference Controls project properly. 
+* Don't copy NLog to App module output dir. 
+* Squashed merge of James B's EffectsAddMultiple branch. Untested, conflicts manually resolved.
+* Merge Jeff's UndoRedo branch. 
+* Merge Jeff's SnapFix branch. 
+* Squashed commit of Ed's Foghorn / master branch: 
+o VIX-463 - Aborting rename to Mark Collection causes name to be erased.  Added null check to after label edit function.
+o Added check in Text Converter Dialog code to protect against the possibility of null Mark Collection Names.
+o This protects against issue reported in VIX-463
+o VIX-197 - Corrected compile errors due to code merge
+o VIX-444 - Unable to set change interval to less than 100ms in Alternating Effect
+o Modified AlternatingEffectEditorControl.cs - trackBarInterval.Minimum property to have a value of 1 instead of 100
+* Additional work for VIX-433. Refactor the context menu alignment tools code. Moved and reworked the methods into the grid to provide support to group the effects together as a complete operation when adjusting their times. This way it can be added as a single entry into the Undo/Redo queue instead of many single moves for each element manipulated. Added 2 new move types of Align and Distribute to put better descriptions on the undo operations listed.
+* Code clean-up for consistency. 
+* Fix a bug that would leave the last clicked grid location in a bad state when elements are moved in a certain way and then the next step is to immediately shift drag lock. Thanks to James for finding this.
+June, 2014
+* Fix up some threading issues that could cause an exception to occur because a menu item was being manipulated on the wrong thread. Also fixed a misspelled method name in the same space.
+* Fix a bug where the calculated element snap points were being added to the the static snap points when an effect was lined up on a mark. This caused the element snap points to be left as static if the effect was moved off the mark. Only marks are considered static. This bug was additive on every move or re-size, so over time could have slowed things down and used extra memory in the editor.
+* Comment out non-building code, for Ed to have a look at. 
+* Remove the Debug targets from the Vixen solution. 
+* Fix up the LipSync project files to put artefacts in the correct output directories, and also remove the Debug targets.
+* Merge ebrady1's Lipsync work. Untested, not compiled
+o squashed merge point only.
+* Bug fix for related to commit a7cc6df and VIX-343 to make sure the snap times for Marks are recalculated when the snap strength changes. Also make sure it is applied to the marks in the ruler.
+* A couple of minor performance tweaks.  For each over enumerator rather than convert to list to do a linq expression. Convert initializer to use member variable to prevent unneeded events firing.
+* Usability enhancement.  Now that the Curve and Gradient Libraries can be accessed from the Editor toolbar, the user instinct is to double click the Curve or Gradient to edit them. When used from the Effect editor double click is a select. Enhance both library classes to specify how the double click behavior acts, so they can be used in two different contexts.
+* Clean up some messy code that populating the Audio drop down and the waveform. It was creating a FMod Instance twice. Refactor to only do it once.
+* VIX-343 Implement feature request for adjustable snap strength.  Added 4 levels of strength in a drop down menu alongside the Enable/Disable SnapTo button on the tool bar.
+* Fix a bug that would not properly restore the Snap to enable/disable setting.
+* VIX-357 and VIX 368. Detect if any audio devices are available and if not disable the audio so it does not crash.
+* VIX-349 - Fixed set level issue. 
+* VIX 62 and VIX 434. Change the SequenceExecutor to allow data to be inserted while playing.  I have tested this quite a bit I have seen no ill effects. It is easy enough to reverse if something comes up with broader testing.
+* Code clean up in some core editor classes. 
+o Remove unused using statements. 
+o Remove unneeded qualifications including this. 
+o Remove some dead code. 
+o Tweak a few error messages. Ensure errors are being logged correctly. Some of this has been bugging me for a while, so I just decided to clean it up a bit. 
+* Fix a bug that occurred when moving or resizing elements where the rowelement collection was not reordered when a element has moved or re-sized that caused the overlapping element logic to miss elements that become overlapping.
+* VIX-450 Feature request to allow Shift click selection of elements. 
+* Force the setup form back on top of a newly started preview. The preview launching in front of the form was annoying. This fix is probably not the prettiest, but it is simple and it works.
+* Add Color Gradient Library editor access to the Tools menu to go along with the Curve Library Editor.  With the work on VIX-68 this will give central access to the editors without having to edit an effect that has the library curve or gradient in it.
+* VIX-68. The editor is now aware of curves and gradients that change and will re-render any effects tied them in the background when they change. Required some changes to the effects to properly update the IsDirty flag.
+* Fix a rendering bug when resizing elements. 
+* Part of VIX-433. Fixes cut or paste operations to be a single undo event instead of making individual entries for each effect added or removed. This way a cut or a paste operation can be undone as a whole.
+* Fix the Clone method so it works. 
+* VIX-347 Implement feature request to Ctrl Click and drag to duplicate effects.  It works with a single effect or if multiple are selected it will duplicate and drag all of them.
+* Fix a bug introduced in commit 86c3908 with the settings work that would allow Time per pixel to be negative when creating a new sequence.
+* Change contributed by James Bolding to lock the X or Y axis when dragging effects or during the drag select using the Shift or Alt + Shift keys.
+May, 2014
+* Additional work for VIX-340. Add support to restore the window to maximized if it was closed when maximized.  Add some sanity checks to make sure it is on the screen.
+* VIX-315 Fix a bug where the effect info message would be cut off if the effect was near the top of the grid. Now the info message will be shown below the effect if there is not enough room above it.
+* Partial work on VIX-340 and VIX-455. Consolidate and organize the existing settings into the settings.xml. Clean up and enhance the XMLProfileSettings class to better handle and organize settings into Profile, AppSettings, and Preferences. This will also allow the editor to save it's window positions and some other toggle settings. IT will allow for more settings to be persisted. It will also be the ground work for a new Preferences dialog that any module can contribute a preference pane to and set preferences to be retrieved.
+* Changes for VIX-348. Created an auto save menu item under Sequence that allows auto save to be turned on or off.  Interval is set to 5 minutes for now. Need to create a general configuration dialog where items such as the save interval can be configured. Will create another enhancement bug for that work as it is bigger than this item. Auto save on/off setting will be saved and restored over editor sessions. Interval is also saved in preparation for configuration dialog. Attributes are saved in the Settings.xml in the user profile that is already purposed.
+* Changes for VIX-341. Rework the looping function in the Editor to remove the loop timers and associated logic. Enhance the SequenceExecutor to handle looping so the delay can be eliminated. Make the editor use the new operations. Re-enable the ability to pause while looping.
+* Minor performance tweaks. 
+* Minor change to use a linq structure. 
+March, 2014
+* Update text message to make it nicer. 
+* Fix duration check to allow for durations down to 1 millisecond. This allows for the work on VIX-444.
+February, 2014
+* Fix VIX-359. Fix the waveform drawing routines to allow for sequences longer than the audio duration.
+* Fix VIX-401. 
+* A few more memory clean ups. 
+* Put back some global logging messages that where lost in the big merge to mainline.
+* Fix overreaching constraint on element move.
+* Also restrict another check to not allow start time equal to the end time.
+* Merge the support-report packaging wizard from bolwire. 
+* Preview zoom repairs... someone should really things before they commit them!
+* Preview zoom with the mouse wheel.
+* Preview zoom on the status bar with a tracker.
+* Added zoom to the preview (Ctrl+ or Ctrl- only for now, mouse coming soon)
+* Fixed an error with the arch matching (caused a fault) Finished the candy cane matching.
+* Added distribute tools and property matching to the preview. 
+* Added alignment tools to preview. (left, right, top, bottom, horizontal, vertical)
+* VIX-317: Corrected the bug that keeps a the background file open when assigning to different preview windows.
+o Added a lock to the preview image resize dialog box to maintain the aspect ratio when resizing the image. There is also an option now to resize without maintaining the aspect ratio.
+o Updated rotate Star and Starburst. 
+o Added XY rotation to the Starburst. 
+o Cleaned up a bunch of comments in the preview shapes. 
+o Added a starburst to the preview and the consolidated setup screen. 
+o Some fixes to the new Star Burst preview prop. 
+o Added a "Star Burst" to the preview and removed VixenPreviewSetup which was very old and unused.
+* Updated Version control with error handling that was causing V3 to crash in some instances
+* Add global exception handler. 
+* The No-repeat code was preventing the RDS commands from reaching the RDS software. I've limited it to be "Launcher" specific.
+* Make sure the fmodupdatetimer is not null is Dispose() to prevent an exception if it is null.
+* Change the preview to use alpha-blended colors to give a slightly nicer look.
+* Added more logging for the BlinkyLinky module. 
+* Fix small artifact in the border that allowed a underlying pixel to stick out.
+* Fix a bug that occurred when undoing an effect re-size.  It was not really related to the effect drawing routine changes, but existed because the effect was not re-rendered after undoing the re-size.
+* Fix a drawing bug when resizing effects. 
+* Updated distribution dialog to use masked textbox for time inputs, and validation of format and minimum effect time.
+* Fix effect element border drawing. 
+* Merge branch 'master' into EditorRevamp 
+* Add some additional checks to prevent effect elements from getting into bad time state. Part of VIX-318.
+o Only iterate up to the last visible snap point. 
+o They are in time order, so no need to iterate further than necessary.
+* Cosmetic changes to clean up the various different naming conventions into one standard.
+* Restore clipping rectangle. 
+* Completed work on exporting beat mark collections. 
+o Collections can be exported in audacity format, or in Vixen 3 format.
+o Vixen 3 format retains all information about the collection, including colors & weights.
+o The default Vixen 3 mark extension is .v3m
+* Add caching of the smaller visible portions of the elements. 
+* The cache will be invalidated if more of less of the effect is visible, but this makes a noticeable improvement during playback when the grid is repainted on every cursor tick.
+* Stop unnecessary re-painting of the waveform. 
+* Only set modified/unmodified state if it is not already set. 
+* Tweak element stacking routine to be a bit more efficient. 
+* Addition of effect distribution alignment helper 
+* Addition of align center points helper
+* First cut at on the fly effect image rasterizing.   Images are no longer cached. They are built on the fly. This reduces memory consumption a considerable amount. Includes some other cleanups and code reduction associated with unneeded functions. Speed improvements in the painting routines.
+* Branch for working on beat mark exporting
+January 2014
+* Global error trapping and logging. 
+* Add the curve editor to the main tool bar editor. 
+* Add reverse and invert features as well as the ability to directly set the numerical coordinates of a point to the Curve editor. Completes VIX-329.
+December 2013
+* Added check to make sure destination direction exists, and if not the option to create it before proceeding.
+* Added check to CompressFolder() to make sure source folder exists, and if not return. This would most likely happen if a user has renamed one of the default folders in their DataFolder, this prevents CompressFolder() from throwing an exception if it can't find the specified folder.
+* Changed Create Zip File button to Ok, and aligned beside Cancel button to look more like a standard dialog window. 
+* Modified code to always pull log files from MyDocuments\Vixen 3\Logs 
+* Pressing Return(Enter) on the form invokes the OK button.
+* Added status bar to indicate work is being done.
+* Add a Profile Zip wizard This tool allows the user to select a profile, and all, or the selected data and zip it in a file to the users choice destination folder. When everything, or application data is selected, the AppData folder will also be included, and in the .zip file under the Vixen folder. The Zip wizard is accessible from the profile editor window.
+* Added two items to context alignment menu, Start to End, and End to Start.  Also moved Alignment tools to Alignment flyout from context.
+* Fixed small issues with Align Start/End times where the element could become invalid
+* Added check for Shift modifier key when usings Match Duration, when shift is pressed the duration match is done, while holding the effects end time, by default the match is made while holding the effects start time. This is also noted in the .ToolTip for the Match Duration menu item for the user.
+* Updated Sequencer 
+- Fixed spacebar not stopping sequence when using loop, it would just restart the loop.
+- Interpolate HSV colors properly -- wrap around the 360 degree point on the color wheel, rather than doing all transitions within the 0 -> 360 bound
+
+
+
+Previous Version Release Notes
 == 3.0.10 ============================
-
 New features:
 
 - new single setup form for display configuration! No more setting up displays in 3 parts -- elements, controllers, patching -- it's all done in one page!
@@ -14,8 +296,6 @@ New features:
 - added looping in the sequence editor
 - added delayed playback in the sequence editor
 
-
-
 Fixups:
 
 - Improvements to serialization if there is 'bad' data in the config files
@@ -23,12 +303,9 @@ Fixups:
 - many small improvements/fixups to the nutcracker effect
 - performance improvements
 
-
-
 == 3.0.9 ============================
 
 New features:
-
 - a new and improved Scheduler and Show module!  See the forums and videos for more info.
 - More performance improvements to reduce CPU usage and memory usage.
 - RDS module improvements: supports the new VAST application, and other improvements
@@ -38,7 +315,6 @@ New features:
 - Sequencer UI improvements: Dockable windows (with a vertical effect list)
 - Sequencer UI improvements: marks in the main window, and mark operations in the ruler
 - Split the application to have separate 32-bit and 64-bit versions, to allow for larger memory usage on high-end machines
-
 
 Fixups:
 

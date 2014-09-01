@@ -883,6 +883,16 @@ namespace Common.Controls.Timeline
 		}
 
 		/// <summary>
+		/// Moves the discovered elements within a range by the given amount of time. This is similar to the mouse dragging events, except
+		/// it's a single 'atomic' operation that moves the elements and raises an event to indicate they have moved.
+		/// </summary>
+		public void MoveElementsInRangeByTime(TimeSpan startTime, TimeSpan endTime, TimeSpan offset)
+		{
+			IEnumerable<Element> elementsToMove = ElementsWithinRange(startTime, endTime);
+			MoveElementsByTime(elementsToMove, offset);
+		}
+
+		/// <summary>
 		/// Moves the given elements by the given amount of time. This is similar to the mouse dragging events, except
 		/// it's a single 'atomic' operation that moves the elements and raises an event to indicate they have moved.
 		/// Note that it does not utilize snap points at all.
@@ -1012,6 +1022,35 @@ namespace Common.Controls.Timeline
 		{
 			return Rows.FirstOrDefault(row => row.ContainsElement(element));
 		}
+
+		/// <summary>
+		/// Get a list of elements the exist within the the start and end time inclusive.
+		/// </summary>
+		/// <param name="startTime"></param>
+		/// <param name="endTime"></param>
+		/// <returns></returns>
+		public IEnumerable<Element> ElementsWithinRange(TimeSpan startTime, TimeSpan endTime)
+		{
+			List<Element> result = new List<Element>();
+			foreach (Row row in Rows)
+			{
+				foreach (Element elem in row)
+				{
+					if ((startTime <= elem.StartTime) && (endTime >= elem.StartTime))
+					{
+						result.Add(elem);
+					}
+					else if (elem.StartTime > endTime)
+					{
+						break;
+					}
+						
+				}
+			}
+			//Elements can be in multiple rows, so only return a distinct list
+			return result.Distinct();
+			
+		} 
 
 		/// <summary>
 		/// Get a list of elements that contain the specified time.
@@ -1772,6 +1811,10 @@ namespace Common.Controls.Timeline
 			_RenderProgressChanged(e.ProgressPercentage);
 		}
 
+		private int _renderQueueSize = 0;
+
+        //This whole thing need to be redone as a task once we get to .NET 4.5 where we can easily report progress
+        //from it.
 		private void renderWorker_DoWork(object sender, DoWorkEventArgs e)
 		{
 			BackgroundWorker worker = sender as BackgroundWorker;
@@ -1779,51 +1822,78 @@ namespace Common.Controls.Timeline
 				Logging.Error("renderWorker: sender was null");
 				return;
 			}
+            CancellationTokenSource cts = new CancellationTokenSource();
+            ParallelOptions po = new ParallelOptions();
+            po.CancellationToken = cts.Token;
+            po.MaxDegreeOfParallelism = Environment.ProcessorCount;
 
-			double total = 0;
-			try
-			{
-				if(_blockingElementQueue !=null) {
-					foreach (Element element in _blockingElementQueue.GetConsumingEnumerable()) {
-						// This will likely never be hit: the blocking element queue above will always block waiting for more
-						// elements, until it completes because CompleteAdding() is called. At which point it will exit the loop,
-						// as it will be empty, and this function will terminate normally.
-						if (worker.CancellationPending) {
-							Logging.Warn("render worker: cancellation detected. Aborting.");
-							break;
-						}
-						try {
-							//Size size = new Size((int) Math.Ceiling(timeToPixels(element.Duration)), element.Row.Height - 1);
-							element.RenderElement();
-							if (!SuppressInvalidate) {
-								if (element.EndTime > VisibleTimeStart && element.StartTime < VisibleTimeEnd) {
-									Invalidate();
-								}
-							}
-							if (!_blockingElementQueue.Any()) {
-								total = 0;
-								if (!SuppressInvalidate) {
-									Invalidate(); //Invalidate when the queue is empty just to make sure everything is up to date.
-								}
-								worker.ReportProgress(100);
-							}
-							else {
-								double currentTotal = _blockingElementQueue.Count;
-								total = Math.Max(currentTotal, total);
-								int progress = (int) (((total - currentTotal) / total) * 100);
-								worker.ReportProgress(progress);
-							}
-						}
-						catch (Exception ex) {
-							Logging.ErrorException("Error in rendering.", ex);
-						}
-					}
-				}
-			} catch (Exception exception) {
-				// there may be some threading exceptions; if so, they're unexpected.  Log them.
-				Logging.ErrorException("background rendering worker exception:", exception);
-			}
-			renderWorkerFinished.Set();
+			int processed = 0;
+		    try
+		    {
+		        if (_blockingElementQueue != null)
+		        {
+                    //Use or fancy multi cpu boxes more effectively.
+		            //foreach (Element element in _blockingElementQueue.GetConsumingEnumerable()) {
+		            Parallel.ForEach(_blockingElementQueue.GetConsumingPartitioner(), po, element =>
+		            {
+						Interlocked.Increment(ref processed);
+		                // This will likely never be hit: the blocking element queue above will always block waiting for more
+		                // elements, until it completes because CompleteAdding() is called. At which point it will exit the loop,
+		                // as it will be empty, and this function will terminate normally.
+		                if (worker.CancellationPending)
+		                {
+		                    Logging.Warn("render worker: cancellation detected. Aborting.");
+                            cts.Cancel(false);
+		                    //break;
+		                }
+		                try
+		                {
+		                    //Size size = new Size((int) Math.Ceiling(timeToPixels(element.Duration)), element.Row.Height - 1);
+		                    element.RenderElement();
+		                    if (!SuppressInvalidate)
+		                    {
+		                        if (element.EndTime > VisibleTimeStart && element.StartTime < VisibleTimeEnd)
+		                        {
+		                            Invalidate();
+		                        }
+		                    }
+
+							int progress = (int)(((float)(processed) / _renderQueueSize) * 100);
+                            //this is a bit of a kludge until we get to .NET 4.5 and can do this whole thing
+                            //in a task. Reporting progress from Tasks is not well supported until 4.5
+                            //With the multi-threading the last element can be processed before the count is 
+                            //fully updated
+							if (processed >= _renderQueueSize)
+		                    {
+								_renderQueueSize = 0;
+								processed = 0;
+		                        progress = 100;
+                                if (!SuppressInvalidate)
+                                {
+                                    Invalidate();
+                                    //Invalidate when the queue is empty just to make sure everything is up to date.
+                                }    
+		                    }
+		                    worker.ReportProgress(progress);
+		                    
+		                }
+		                catch (Exception ex)
+		                {
+		                    Logging.ErrorException("Error in rendering.", ex);
+		                }
+		            });
+		        }
+		    }
+		    catch (OperationCanceledException ce)
+		    {
+                Logging.InfoException("Canceled render thread" , ce);
+		    }
+		    catch (Exception exception)
+		    {
+		        // there may be some threading exceptions; if so, they're unexpected.  Log them.
+		        Logging.ErrorException("background rendering worker exception:", exception);
+		    }
+		    renderWorkerFinished.Set();
 		}
 
 		/// <summary>
@@ -1845,6 +1915,7 @@ namespace Common.Controls.Timeline
 			} else
 			{
 				_blockingElementQueue.Add(element);
+				_renderQueueSize++;
 			}
         }
 
@@ -1863,6 +1934,7 @@ namespace Common.Controls.Timeline
 					if (!element.IsRendered)
 					{
 						_blockingElementQueue.Add(element);
+						_renderQueueSize++;
 					}
 				}
 			}
@@ -1885,6 +1957,7 @@ namespace Common.Controls.Timeline
 				Element element;
 				_blockingElementQueue.TryTake(out element);
 			}
+	        _renderQueueSize = 0;
 			SupressRendering=false;
 			
         }

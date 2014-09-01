@@ -1,8 +1,10 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using Vixen.Sys;
 
 namespace Vixen.Commands
 {
+	[Serializable]
 	public class ColorCommand : Dispatchable<ColorCommand>, ICommand
 	{
 		public ColorCommand(Color value)

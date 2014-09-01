@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -15,6 +16,7 @@ using Common.Controls.Timeline;
 using Common.Resources.Properties;
 using NLog;
 using Vixen;
+using Vixen.Cache.Sequence;
 using Vixen.Execution;
 using Vixen.Execution.Context;
 using Vixen.Module;
@@ -107,6 +109,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		
 		//Used for color collections
 		private static Random rnd = new Random();
+		private PreCachingSequenceEngine _preCachingSequenceEngine;
 
 		#endregion
 
@@ -205,9 +208,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			else
 			{
 				GridForm.Show(dockPanel);
+				ToolsForm.Show(dockPanel, DockState.DockLeft);
 				MarksForm.Show(dockPanel, DockState.DockLeft);
 				EffectsForm.Show(dockPanel, DockState.DockLeft);
-				ToolsForm.Show(dockPanel,DockState.DockBottom);
 			}
 
 			XMLProfileSettings xml = new XMLProfileSettings();
@@ -219,7 +222,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			dockPanel.DockLeftPortion = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/DockLeftPortion", Name), 150);
 			dockPanel.DockRightPortion = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/DockRightPortion", Name), 150);
 			autoSaveToolStripMenuItem.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/AutoSaveEnabled", Name), true);
-			toolStripMenuItem_SnapTo.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SnapToSelected", Name), true);
+			toolStripButton_SnapTo.Checked = toolStripMenuItem_SnapTo.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SnapToSelected", Name), true);
 			PopulateSnapStrength(xml.GetSetting(XMLProfileSettings.SettingType.AppSettings,	string.Format("{0}/SnapStrength", Name), 2));
 			toolStripMenuItem_ResizeIndicator.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ResizeIndicatorEnabled", Name),false);
 			TimelineControl.grid.ResizeIndicator_Color = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ResizeIndicatorColor", Name), "Red");
@@ -762,7 +765,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				TimelineControl.grid.SupressRendering = true; //Hold off rendering while we load elements. 
 				// This takes quite a bit of time so queue it up
 				taskQueue.Enqueue(Task.Factory.StartNew(PopulateAudioDropdown));
-				taskQueue.Enqueue(Task.Factory.StartNew(PopulateMarkSnapTimes));
 				taskQueue.Enqueue(Task.Factory.StartNew(() => addElementsForEffectNodes(_sequence.SequenceData.EffectData)));
 				
 
@@ -795,11 +797,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				MarksForm.Sequence = _sequence;
 				MarksForm.PopulateMarkCollectionsList(null);
+				PopulateMarkSnapTimes();
 
 				if (_sequence.TimePerPixel > TimeSpan.Zero )
 				{
 					TimelineControl.TimePerPixel = _sequence.TimePerPixel;	
 				}
+
+				
 				
 				Logging.Debug(string.Format("Sequence {0} took {1} to load. ", sequence.Name, loadingWatch.Elapsed));
 			}
@@ -964,11 +969,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				IMediaModuleInstance media = _sequence.GetAllMedia().First();
 				Audio audio = media as Audio;
-
+				toolStripMenuItem_removeAudio.Enabled = true;
 				if (audio.MediaExists)
 				{
-					TimelineControl.Audio = audio;
-					toolStripMenuItem_removeAudio.Enabled = true;
+					TimelineControl.Audio = audio;	
 				} else
 				{
 					string message = String.Format("Audio file not found on the path:\n\n {0}\n\nPlease Check your settings/path.",
@@ -3678,8 +3682,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (ToolsForm.DockState == DockState.Unknown)
 			{
 				DockState dockState = ToolsForm.DockState;
-				dockState = DockState.DockBottom;
-				if (dockState == DockState.Unknown) dockState = DockState.DockBottom;
+				dockState = DockState.DockLeft;
+				if (dockState == DockState.Unknown) dockState = DockState.DockLeft;
 				ToolsForm.Show(dockPanel, dockState);
 				//We have to re-subscribe to the event handlers
 				ToolsForm.StartColorDrag += ToolPalette_ColorDrag;
@@ -4492,6 +4496,37 @@ namespace VixenModules.Editor.TimedSequenceEditor
             });
 
         }
+
+		private void helpDocumentationToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			System.Diagnostics.Process.Start("http://www.vixenlights.com/vixen-3-documentation/sequencer/");
+		}
+		private void exportToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+            ExportDialog ed = new ExportDialog(Sequence);
+            if (ed.ShowDialog() == DialogResult.OK)
+            {
+
+            }
+   
+
+		}
+
+		private void bulkEffectMoveToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+
+			var dialog = new BulkEffectMoveForm(TimelineControl.grid.CursorPosition);
+			using (dialog)
+			{
+				if (dialog.ShowDialog() == DialogResult.OK)
+				{
+					TimelineControl.grid.MoveElementsInRangeByTime(dialog.Start, dialog.End, dialog.IsForward?dialog.Offset:-dialog.Offset);
+				}
+			}
+		}
+
+
+
     }
 
 	[Serializable]

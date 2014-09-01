@@ -45,5 +45,10 @@ namespace Vixen.IO.Factory
 		{
 			return new SequencePersistor();
 		}
+
+		public IObjectPersistor CreateSequenceCachePersister()
+		{
+			return new SequenceCachePersister();
+		}
 	}
 }

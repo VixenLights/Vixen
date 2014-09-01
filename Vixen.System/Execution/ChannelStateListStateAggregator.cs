@@ -4,7 +4,7 @@ using Vixen.Commands;
 using Vixen.Sys;
 
 namespace Vixen.Execution {
-	class ChannelStateListStateAggregator : CommandStateAggregator, IStateSourceCollection<Guid, Command> {
+	public class ChannelStateListStateAggregator : CommandStateAggregator, IStateSourceCollection<Guid, Command> {
 		private Dictionary<Guid, List<CommandStateSource>> _channelStateLists;
 		private Dictionary<Guid, CommandStateAggregator> _channelStates;
 

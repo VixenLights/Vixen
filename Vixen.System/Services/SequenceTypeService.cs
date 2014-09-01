@@ -28,6 +28,13 @@ namespace Vixen.Services
 			return manager.Get(fileType);
 		}
 
+		public ISequenceTypeModuleInstance CreateSequenceCacheFactory(string fileType)
+		{
+			SequenceTypeModuleManagement manager =
+				Modules.GetManager<ISequenceTypeModuleInstance, SequenceTypeModuleManagement>();
+			return manager.Get(fileType);
+		}
+
 		public ISequenceExecutor CreateSequenceExecutor(ISequence sequence)
 		{
 			SequenceTypeModuleManagement manager =

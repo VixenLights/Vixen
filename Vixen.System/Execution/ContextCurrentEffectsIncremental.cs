@@ -12,10 +12,13 @@ namespace Vixen.Execution
 	/// </summary>
 	internal class ContextCurrentEffectsIncremental : IContextCurrentEffects
 	{
-		private List<IEffectNode> _currentEffects;
+		private readonly List<IEffectNode> _currentEffects;
+		private readonly HashSet<Guid> _affectedElements; 
 
 		public ContextCurrentEffectsIncremental()
 		{
+			_affectedElements = new HashSet<Guid>(VixenSystem.Elements.Select(x => x.Id));
+			_affectedElements.Clear();
 			_currentEffects = new List<IEffectNode>();
 		}
 
@@ -32,34 +35,39 @@ namespace Vixen.Execution
 			// Get the distinct list of all elements affected by all effects in the list.
 			// List has current effects as well as effects that may be expiring.
 			// Current and expired effects affect state.
-			HashSet<Guid> affectedElements = _GetElementsAffected(_currentEffects);
+			_GetElementsAffected(_currentEffects);
 			_RemoveExpiredEffects(currentTime);
 
-			return affectedElements;
+			return _affectedElements;
 		}
 
 		public void Reset()
 		{
-			if (_currentEffects != null)
-				_currentEffects.Clear();
+			lock (_currentEffects)
+			{
+				if (_currentEffects != null)
+					_currentEffects.Clear();
+			}
+			
 		}
 
-		private HashSet<Guid> _GetElementsAffected(IEnumerable<IEffectNode> effects)
+		private void _GetElementsAffected(IEnumerable<IEffectNode> effects)
 		{
-			// If there's nothin here, pass back emptiness
-			if (!effects.Any())
-				return new HashSet<Guid>();
-		
-			return new HashSet<Guid>(effects.SelectMany(x => x.Effect.TargetNodes).SelectMany(y => y.GetElementEnumerator()).Select(z => z.Id));
-			//effects.SelectMany(x => x.Effect.TargetNodes).SelectMany(y => y.GetElementEnumerator()).Where((y) => y != null).Select(z => z.Id).Distinct()
-			//	.ToArray();
-			//return effects.SelectMany(x => x.Effect.TargetNodes.Select(y => y.Element.Id)).Distinct().ToArray();
+			lock (_currentEffects)
+			{
+				_affectedElements.Clear();
+				_affectedElements.UnionWith(effects.SelectMany(x => x.Effect.EffectedElementIds));
+				//return new HashSet<Guid>(effects.SelectMany(x => x.Effect.TargetNodes).SelectMany(y => y.GetElementEnumerator()).Select(z => z.Id).Distinct());	
+			}
+			
 		}
 
 		private void _RemoveExpiredEffects(TimeSpan currentTime)
 		{
 			// Remove expired effects.
-			foreach (EffectNode effectNode in _currentEffects.ToArray()) {
+			foreach (var effectNode1 in _currentEffects.ToArray())
+			{
+				var effectNode = (EffectNode) effectNode1;
 				if (_IsExpired(currentTime, effectNode)) {
 					_currentEffects.Remove(effectNode);
 				}

@@ -10,5 +10,6 @@ namespace Vixen.IO.Factory
 		IObjectLoader<Program> CreateProgramLoader();
 		IObjectLoader<ElementNodeTemplate> CreateElementNodeTemplateLoader();
 		IObjectLoader CreateSequenceLoader();
+		IObjectLoader CreateSequenceCacheLoader();
 	}
 }

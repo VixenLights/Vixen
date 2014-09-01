@@ -1,7 +1,9 @@
-﻿using Vixen.Sys;
+﻿using System;
+using Vixen.Sys;
 
 namespace Vixen.Commands
 {
+	[Serializable]
 	public class _8BitCommand : Dispatchable<_8BitCommand>, ICommand
 	{
 		public _8BitCommand(byte value)

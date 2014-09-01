@@ -8,5 +8,6 @@
 		IObjectContentWriter CreateProgramContentWriter();
 		IObjectContentWriter CreateElementNodeTemplateContentWriter();
 		IObjectContentWriter CreateSequenceContentWriter(string filePath);
+		IObjectContentWriter CreateSequenceCacheContentWriter(string filePath);
 	}
 }

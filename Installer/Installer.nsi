@@ -2,8 +2,29 @@
 
 SetCompressor /FINAL /SOLID lzma
 SetCompressorDictSize 64
-;SetCompressor /FINAL /SOLID bzip2
- 
+
+
+
+; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Macro: define a variable if a file exists ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+; See http://nsis.sourceforge.net/Check_if_a_file_exists_at_compile_time for documentation
+!macro defineifexist _VAR_NAME _FILE_NAME
+	!tempfile _TEMPFILE
+	!ifdef NSIS_WIN32_MAKENSIS
+		; Windows - cmd.exe
+		!system 'if exist "${_FILE_NAME}" echo !define ${_VAR_NAME} > "${_TEMPFILE}"'
+	!else
+		; Posix - sh
+		!system 'if [ -e "${_FILE_NAME}" ]; then echo "!define ${_VAR_NAME}" > "${_TEMPFILE}"; fi'
+	!endif
+	!include '${_TEMPFILE}'
+	!delfile '${_TEMPFILE}'
+	!undef _TEMPFILE
+!macroend
+
+
+; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Macro: Get a binary file version into variables ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 !macro GetVersionLocal file basedef
 !verbose push
 !verbose 1
@@ -28,22 +49,99 @@ SetCompressorDictSize 64
 !verbose pop
 !macroend
 
-!insertmacro GetVersionLocal "..\Release64\VixenApplication.exe" MyVer_
-VIProductVersion "${MyVer_1}.${MyVer_2}.${MyVer_3}.${MyVer_4}"
-VIAddVersionKey "FileVersion" "${MyVer_1}.${MyVer_2}.${MyVer_3}.${MyVer_4}"
- 
- 
+
+; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Support different archtecture builds -- 32 or 64 bit ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+!define BUILDARCH_DEFAULT 64
+
+!ifndef BUILDARCH
+	!define BUILDARCH ${BUILDARCH_DEFAULT}
+!else
+	!if ${BUILDARCH} != 32
+		!if ${BUILDARCH} != 64
+			!error "BUILDARCH isn't set to either 32 or 64 bit: ${BUILDARCH}"
+		!endif
+	!endif
+!endif
+
+!echo "Building installer for ${BUILDARCH}-bit architecture."
+
+
+
+; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Ensure we're always in the root of the source tree ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+; This can be pretty seriously improved -- it's only really designed to get out of the Installer/ directory.
+
+!insertmacro defineifexist IN_SOLUTION_ROOT ".\Vixen.sln"
+
+!ifndef IN_SOLUTION_ROOT
+	!cd ..
+!endif
+
+!define INSTALLERDIR ".\Installer"
+
+
+; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Define the common variables for use in the rest of the script ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+!if ${BUILDARCH} == 32
+	!define BUILD_DIR ".\Release"
+	!define BITS 32
+	!define BITS_READABLE "32-bit"
+!else
+	!define BUILD_DIR ".\Release64"
+	!define BITS 64
+	!define BITS_READABLE "64-bit"
+!endif
+
+
+
+; Get the application binary version
+!insertmacro GetVersionLocal "${BUILD_DIR}\VixenApplication.exe" AssemblyVersion_
+VIProductVersion "${AssemblyVersion_1}.${AssemblyVersion_2}.${AssemblyVersion_3}.${AssemblyVersion_4}"
+VIAddVersionKey "FileVersion" "${AssemblyVersion_1}.${AssemblyVersion_2}.${AssemblyVersion_3}.${AssemblyVersion_4}"
+
+!if ${AssemblyVersion_1} == 0
+	!define DEVBUILD
+!endif
+
+!define MAJORVERSION ${AssemblyVersion_1}
+!define MINORVERSION ${AssemblyVersion_2}
+!define BUILDNUMBER ${AssemblyVersion_3}
+
+!define PRODUCT_NAME "Vixen"
+
+!ifdef DEVBUILD
+	!define PRODUCT_NAME_FULL "Vixen Development Build"
+	Name "${PRODUCT_NAME} Development Build ${BUILDNUMBER} (${BITS_READABLE})"
+	OutFile ".\${PRODUCT_NAME}-DevBuild-${BUILDNUMBER}-Setup_${BITS}bit.exe"
+!else
+	!define PRODUCT_NAME_FULL "Vixen"
+	Name "${PRODUCT_NAME} ${MAJORVERSION}.${MINORVERSION} (${BITS_READABLE})"
+	OutFile ".\${PRODUCT_NAME}-${MAJORVERSION}.${MINORVERSION}-Setup_${BITS}bit.exe"
+!endif
+
+
+
+; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Rest of the installer: as it previously was (needs documenting) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 
 ; HM NIS Edit Wizard helper defines
-!define PRODUCT_NAME "Vixen"
-!define PRODUCT_NAME_FULL "Vixen 3 (64bit)"
-!define PRODUCT_VERSION "${MyVer_1}.${MyVer_2}.${MyVer_3}.${MyVer_4}"
+!define PRODUCT_VERSION "${AssemblyVersion_1}.${AssemblyVersion_2}.${AssemblyVersion_3}"
 !define PRODUCT_PUBLISHER "Vixen - Lighting Automation"
 !define PRODUCT_WEB_SITE "http://www.vixenlights.com/"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\VixenApplication.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
 !define PRODUCT_STARTMENU_REGVAL "NSIS:StartMenuDir"
+
+
+
+
+
+
+
+
+
 
 ; for logging
 !define LVM_GETITEMCOUNT 0x1004
@@ -59,23 +157,23 @@ VIAddVersionKey "FileVersion" "${MyVer_1}.${MyVer_2}.${MyVer_3}.${MyVer_4}"
 ; MUI Settings
 !define MUI_ABORTWARNING
 ;!define MUI_ICON "${NSISDIR}\Contrib\Graphics\Icons\orange-install.ico"
-!define MUI_ICON "vixen.ico"
+!define MUI_ICON "${INSTALLERDIR}\vixen.ico"
 !define MUI_UNICON "${NSISDIR}\Contrib\Graphics\Icons\orange-uninstall.ico"
-!define MUI_WELCOMEFINISHPAGE_BITMAP "vixen.bmp"
+!define MUI_WELCOMEFINISHPAGE_BITMAP "${INSTALLERDIR}\vixen.bmp"
 
 
 
 ; Welcome page
 !insertmacro MUI_PAGE_WELCOME
 ; License page
-!insertmacro MUI_PAGE_LICENSE "license.txt"
+!insertmacro MUI_PAGE_LICENSE "${INSTALLERDIR}\license.txt"
 ; Release notes page
 !define MUI_PAGE_HEADER_TEXT "Release notes"
-!define MUI_PAGE_HEADER_SUBTEXT "Short summary of changes for each version ${PRODUCT_NAME_FULL}."
+!define MUI_PAGE_HEADER_SUBTEXT "Short summary of changes for each version of ${PRODUCT_NAME}."
 !define MUI_LICENSEPAGE_TEXT_TOP "Press Page Down to see the rest of the release notes file."
 !define MUI_LICENSEPAGE_TEXT_BOTTOM "When you have finished reading, click on Next to proceed."
 !define MUI_LICENSEPAGE_BUTTON $(^NextBtn)
-!insertmacro MUI_PAGE_LICENSE "..\Release64\Release Notes.txt"
+!insertmacro MUI_PAGE_LICENSE "${BUILD_DIR}\Release Notes.txt"
 
 ; Directory page
 DirText "Setup will install ${PRODUCT_NAME_FULL} in the following folder. $\n$\nTo install in a different folder (such as a USB Drive), click Browse and select another folder. $\nWhen ready, click next to continue."
@@ -83,7 +181,7 @@ DirText "Setup will install ${PRODUCT_NAME_FULL} in the following folder. $\n$\n
 ; Start menu page
 var ICONS_GROUP
 !define MUI_STARTMENUPAGE_NODISABLE
-!define MUI_STARTMENUPAGE_DEFAULTFOLDER "Vixen 3"
+!define MUI_STARTMENUPAGE_DEFAULTFOLDER "Vixen ${MAJORVERSION}"
 !define MUI_STARTMENUPAGE_REGISTRY_ROOT "${PRODUCT_UNINST_ROOT_KEY}"
 !define MUI_STARTMENUPAGE_REGISTRY_KEY "${PRODUCT_UNINST_KEY}"
 !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "${PRODUCT_STARTMENU_REGVAL}"
@@ -103,9 +201,7 @@ var ICONS_GROUP
 
 ; MUI end ------
 
-Name "${PRODUCT_NAME} ${MyVer_1}.${MyVer_2}.${MyVer_3} (64-bit)"
-OutFile "..\Release64\${PRODUCT_NAME}-${MyVer_1}.${MyVer_2}.${MyVer_3}-Setup-64bit.exe"
-InstallDir "$PROGRAMFILES\Vixen 3"
+InstallDir "$PROGRAMFILES\Vixen ${MAJORVERSION}"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
 ShowUnInstDetails show
@@ -152,18 +248,19 @@ Section "Application" SEC01
 		Delete "$TEMP\dotNetFx40_Full_x86_x64.exe"
 	${EndIf}
 
-  SetOverwrite ifnewer		; only overwrite these if this installer has a newer version
+  ; only overwrite these if this installer has a newer version
+  SetOverwrite ifnewer
   SetOutPath "$INSTDIR"
-  File /r /x *.res /x *.obj /x *.pch /x *.pdb "..\Release64\*.*"
+  File /r /x *.res /x *.obj /x *.pch /x *.pdb "${BUILD_DIR}\*.*"
 
 
   ; Shortcuts
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
   ;CreateDirectory "$SMPROGRAMS\$ICONS_GROUP"
-  ;CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\Vixen 3.lnk" "$INSTDIR\VixenApplication.exe"
-  ;CreateShortCut "$DESKTOP\Vixen 3.lnk" "$INSTDIR\VixenApplication.exe"
+  ;CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\Vixen ${MAJORVERSION}.lnk" "$INSTDIR\VixenApplication.exe"
+  ;CreateShortCut "$DESKTOP\Vixen ${MAJORVERSION}.lnk" "$INSTDIR\VixenApplication.exe"
   ;CreateDirectory "$INSTDIR"
-  ;CreateShortCut "$QUICKLAUNCH\Vixen 3.lnk" "$INSTDIR\VixenApplication.exe"
+  ;CreateShortCut "$QUICKLAUNCH\Vixen ${MAJORVERSION}.lnk" "$INSTDIR\VixenApplication.exe"
 
   CreateDirectory "$SMPROGRAMS\$ICONS_GROUP"
   CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\${PRODUCT_NAME_FULL}.lnk" "$INSTDIR\VixenApplication.exe"
@@ -205,7 +302,7 @@ Section -Post
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
   ; Write out the install log
-  StrCpy $0 "$INSTDIR\vixen3-install.log"
+  StrCpy $0 "$INSTDIR\install.log"
   Push $0
   Call DumpLog
 SectionEnd

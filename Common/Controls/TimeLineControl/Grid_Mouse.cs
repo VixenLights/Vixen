@@ -46,6 +46,9 @@ namespace Common.Controls.Timeline
 
 			if (e.Button == MouseButtons.Middle && SelectedEffect != Guid.Empty)
 			{
+				if (m_mouseDownElementRow == null)
+					return;
+
 				_beginEffectDraw = true;
 				this.Cursor = Cursors.Cross;
 				effectDrawMouseDownTime = pixelsToTime(gridLocation.X);
@@ -56,6 +59,9 @@ namespace Common.Controls.Timeline
 				_workingElement = elementAt(gridLocation);
 				if ((EnableDrawMode && !AltPressed) && SelectedEffect != Guid.Empty && m_mouseResizeZone == ResizeZone.None)
 				{
+					if (m_mouseDownElementRow == null)
+						return;
+
 					_beginEffectDraw = true;
 					effectDrawMouseDownTime = pixelsToTime(gridLocation.X);
 					beginDrawBox(gridLocation);
@@ -313,13 +319,18 @@ namespace Common.Controls.Timeline
 		private void HandleMouseMove(MouseEventArgs e)
 		{
 			Point gridLocation = translateLocation(e.Location);
+			if (m_mouseDownElements != null)
+			{
+				if (ModifierKeys == Keys.Shift && m_mouseDownElements.Any())
+					gridLocation.X = m_lastGridLocation.X;
 
-			if (ModifierKeys == Keys.Shift && m_mouseDownElements.Any())
-				gridLocation.X = m_lastGridLocation.X;
+				if (ModifierKeys == (Keys.Alt | Keys.Control) && m_mouseDownElements.Any())
+					gridLocation.X = m_lastGridLocation.X;
 
-			if (ModifierKeys == (Keys.Shift | Keys.Alt) && m_mouseDownElements.Any())
-				gridLocation.Y = m_lastGridLocation.Y;
-
+				if (ModifierKeys == (Keys.Shift | Keys.Alt) && m_mouseDownElements.Any())
+					gridLocation.Y = m_lastGridLocation.Y;	
+			}
+			
 			Point delta = new Point(
 				gridLocation.X - m_lastGridLocation.X,
 				gridLocation.Y - m_lastGridLocation.Y

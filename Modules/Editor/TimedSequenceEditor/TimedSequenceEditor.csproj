@@ -89,6 +89,12 @@
     <Compile Include="AutomaticMusicDetection.Designer.cs">
       <DependentUpon>AutomaticMusicDetection.cs</DependentUpon>
     </Compile>
+    <Compile Include="BulkEffectMoveForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BulkEffectMoveForm.Designer.cs">
+      <DependentUpon>BulkEffectMoveForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="EffectDistributionDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -100,6 +106,12 @@
     </Compile>
     <Compile Include="BeatMarkExportDialog.Designer.cs">
       <DependentUpon>BeatMarkExportDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ExportDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ExportDialog.Designer.cs">
+      <DependentUpon>ExportDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Form_AddMultipleEffects.cs">
       <SubType>Form</SubType>
@@ -203,11 +215,17 @@
     <EmbeddedResource Include="AutomaticMusicDetection.resx">
       <DependentUpon>AutomaticMusicDetection.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="BulkEffectMoveForm.resx">
+      <DependentUpon>BulkEffectMoveForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="EffectDistributionDialog.resx">
       <DependentUpon>EffectDistributionDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="BeatMarkExportDialog.resx">
       <DependentUpon>BeatMarkExportDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ExportDialog.resx">
+      <DependentUpon>ExportDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form_AddMultipleEffects.resx">
       <DependentUpon>Form_AddMultipleEffects.cs</DependentUpon>

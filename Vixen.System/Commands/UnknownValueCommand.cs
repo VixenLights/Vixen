@@ -1,7 +1,9 @@
-﻿using Vixen.Sys;
+﻿using System;
+using Vixen.Sys;
 
 namespace Vixen.Commands
 {
+	[Serializable]
 	public class UnknownValueCommand : Dispatchable<UnknownValueCommand>, ICommand
 	{
 		public UnknownValueCommand(object value)

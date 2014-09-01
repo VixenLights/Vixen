@@ -61,7 +61,6 @@ namespace VixenModules.Effect.Nutcracker
 				if (node != null)
 					RenderNode(node);
 			}
-			GC.Collect();
 		}
 
 		protected override EffectIntents _Render()
@@ -110,25 +109,21 @@ namespace VixenModules.Effect.Nutcracker
 		{
 			get
 			{
-				int childCount = 0;
+				List<ElementNode> nodes = new List<ElementNode>();
 
 				if (TargetNodes.FirstOrDefault() != null)
 				{
-					foreach (ElementNode node in TargetNodes.FirstOrDefault().Children)
+					foreach (var elementNode in TargetNodes)
 					{
-						if (!node.IsLeaf)
+						foreach (var leafNode in elementNode.GetLeafEnumerator())
 						{
-							childCount++;
+							nodes.AddRange(leafNode.Parents.ToList());
 						}
 					}
-					if (childCount == 0 && TargetNodes.FirstOrDefault().Children.Any() )
-					{
-						childCount = 1;
-					}
 				}
-
-                if (childCount == 0)
-                    childCount = 1;
+				int childCount = nodes.Distinct().Count();
+				if (childCount == 0)
+					childCount = 1;
 
 				return childCount;
 			}

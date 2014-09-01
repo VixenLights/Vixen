@@ -722,7 +722,7 @@ namespace Common.Controls.Timeline
 			Pen p;
 
 			// iterate through all snap points, and if it's visible, draw it
-			foreach (KeyValuePair<TimeSpan, List<SnapDetails>> kvp in StaticSnapPoints)
+			foreach (KeyValuePair<TimeSpan, List<SnapDetails>> kvp in StaticSnapPoints.ToArray())
 			{
 				if (kvp.Key >= VisibleTimeEnd) break;
 				

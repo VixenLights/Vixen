@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Vixen.Cache.Sequence;
 using Vixen.Execution;
 using Vixen.IO;
 using Vixen.Sys;
@@ -23,6 +24,8 @@ namespace Vixen.Module.SequenceType
 		}
 
 		public abstract ISequence CreateSequence();
+
+		public abstract ISequenceCache CreateSequenceCache();
 
 		public abstract IContentMigrator CreateMigrator();
 

@@ -45,5 +45,10 @@ namespace Vixen.IO.Factory
 		{
 			return new SequenceLoader();
 		}
+
+		public IObjectLoader CreateSequenceCacheLoader()
+		{
+			return new SequenceCacheLoader();
+		}
 	}
 }

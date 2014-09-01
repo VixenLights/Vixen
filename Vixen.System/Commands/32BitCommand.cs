@@ -1,7 +1,9 @@
-﻿using Vixen.Sys;
+﻿using System;
+using Vixen.Sys;
 
 namespace Vixen.Commands
 {
+	[Serializable]
 	public class _32BitCommand : Dispatchable<_32BitCommand>, ICommand
 	{
 		public _32BitCommand(uint value)

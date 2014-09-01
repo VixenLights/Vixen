@@ -1,7 +1,9 @@
-﻿using Vixen.Sys;
+﻿using System;
+using Vixen.Sys;
 
 namespace Vixen.Commands
 {
+	[Serializable]
 	public class StringCommand : Dispatchable<StringCommand>, ICommand
 	{
 		public StringCommand(string value)
