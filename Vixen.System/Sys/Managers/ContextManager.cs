@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
@@ -14,10 +15,14 @@ namespace Vixen.Sys.Managers
 	public class ContextManager : IEnumerable<IContext>
 	{
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
-		private ConcurrentDictionary<Guid, IContext> _instances;
+		//This was a ConcurrentDictionary for a while, but grabbing an instance enumerator can be costly as it makes a read only copy
+		//General locking on a Dictionary is sufficient here and more performant for iterating
+		private readonly Dictionary<Guid, IContext> _instances;
+		//Used to help reduce the amount of object allocations. So the enumerator does not have to constantly make a copy.
+		private ReadOnlyCollection<IContext> _contextInstances; 
 		private MillisecondsValue _contextUpdateTimeValue = new MillisecondsValue("   Contexts update");
 		private Stopwatch _stopwatch = Stopwatch.StartNew();
-		private HashSet<Guid> _affectedElements = new HashSet<Guid>(); 
+		private readonly HashSet<Guid> _affectedElements = new HashSet<Guid>(); 
 		private PreCachingSequenceContext _preCachingSequenceContext;
 
 		public event EventHandler<ContextEventArgs> ContextCreated;
@@ -25,7 +30,8 @@ namespace Vixen.Sys.Managers
 
 		public ContextManager()
 		{
-			_instances = new ConcurrentDictionary<Guid, IContext>();
+			_instances = new Dictionary<Guid, IContext>();
+			_contextInstances = _instances.Values.ToList().AsReadOnly();
 			VixenSystem.Instrumentation.AddValue(_contextUpdateTimeValue);
 		}
 
@@ -97,6 +103,7 @@ namespace Vixen.Sys.Managers
 			lock (_instances) {
 				_instances.Clear();
 			}
+			_contextInstances = _instances.Values.ToList().AsReadOnly();
 		}
 
 		public HashSet<Guid> UpdateCacheCompileContext(TimeSpan time)
@@ -119,11 +126,11 @@ namespace Vixen.Sys.Managers
 		{
 			_stopwatch.Restart();
 			_affectedElements.Clear();
-			foreach( var context in _instances.Values.Where(x => x.IsRunning))
+			
+			foreach (var context in _contextInstances.Where(x => x.IsRunning))
 			{
-				
-				try{
-
+				try
+				{
 					// Get a snapshot time value for this update.
 					TimeSpan contextTime = context.GetTimeSnapshot();
 					var contextAffectedElements = context.UpdateElementStates(contextTime);
@@ -146,12 +153,7 @@ namespace Vixen.Sys.Managers
 
 		public IEnumerator<IContext> GetEnumerator()
 		{
-			IContext[] contexts;
-			//lock (_instances) {
-				contexts = _instances.Values.ToArray();
-			//}
-	 
-			return contexts.Cast<IContext>().GetEnumerator();
+			return _contextInstances.GetEnumerator();
 		}
 
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
@@ -185,14 +187,18 @@ namespace Vixen.Sys.Managers
 			lock (_instances) {
 				_instances[context.Id] = context;
 			}
+			_contextInstances = _instances.Values.ToList().AsReadOnly();
 			OnContextCreated(new ContextEventArgs(context));
 		}
 
 		private void _ReleaseContext(IContext context)
 		{
 			context.Stop();
-			IContext remval = null;
-			_instances.TryRemove(context.Id, out remval);
+			lock (_instances)
+			{
+				_instances.Remove(context.Id);	
+			}
+			_contextInstances = _instances.Values.ToList().AsReadOnly();
 			context.Dispose();
 			OnContextReleased(new ContextEventArgs(context));
 		}
