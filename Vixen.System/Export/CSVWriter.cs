@@ -68,7 +68,7 @@ namespace Vixen.Export
                 try
                 {
                     _dataOut.Write(periodData[0].ToString("000").ToCharArray()); 
-                    for (int j = 0; j < _seqNumChannels; j++)
+                    for (int j = 1; j < _seqNumChannels; j++)
                     {
                         _dataOut.Write(',');
                         _dataOut.Write(periodData[j].ToString("000").ToCharArray());
