@@ -96,6 +96,7 @@ namespace FastPixel
 
 			if (bitmapToClone.Width != Width || bitmapToClone.Height != Height)
 			{
+				if(_bitmap!=null) _bitmap.Dispose();
 				_bitmap = new Bitmap(bitmapToClone.Width, bitmapToClone.Height);
 				SetupBitmap();
 			}

@@ -63,6 +63,24 @@ namespace VixenModules.Effect.Nutcracker
 			}
 		}
 
+		//Nutcracker is special right now as we only ever generate one intent per element, we can skip a lot of logic
+		//in the base class as if we are active, our intents are always in the relative time.
+		public override ElementIntents GetElementIntents(TimeSpan effectRelativeTime)
+		{
+			_elementIntents.Clear();
+			_AddLocalIntents();
+			return _elementIntents;
+		}
+
+		private void _AddLocalIntents()
+		{
+			EffectIntents effectIntents = Render();
+			foreach (KeyValuePair<Guid, IntentNodeCollection> keyValuePair in effectIntents)
+			{
+				_elementIntents.AddIntentNodeToElement(keyValuePair.Key, keyValuePair.Value.ToArray());
+			}
+		}
+
 		protected override EffectIntents _Render()
 		{
 			return _elementData;

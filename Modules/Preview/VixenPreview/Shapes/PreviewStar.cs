@@ -22,6 +22,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		[DataMember] private int _pointCount;
 		[DataMember] private int _pixelCount;
 		[DataMember] private int _insideSize;
+        [DataMember] private StringDirections _stringDirection;
 
 		private int pixelsPerPoint;
 		private int lineCount;
@@ -143,6 +144,20 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                     _bottomRightPoint.X = value;
                 }
                 Layout();
+            }
+        }
+
+        [CategoryAttribute("Settings"),
+         DisplayName("String Direction"),
+         DescriptionAttribute("Do the lights rotate around the star clockwise or counter-clockwise?")]
+        public StringDirections StringDirection { 
+            get
+            {
+                return _stringDirection;
+            }
+            set
+            {
+                _stringDirection = value;
             }
         }
 
@@ -333,19 +348,42 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 																			 XYRotation);
 
                     int pixelNum = 0;
-                    for (int ellipsePointNum = 0; ellipsePointNum < _pointCount; ellipsePointNum++)
+                    int ellipsePointNum = 0;
+                    for (int i = 0; i < _pointCount; i++)
                     {
-                        Point point1 = innerEllipse[ellipsePointNum];
-                        Point point2 = outerEllipse[ellipsePointNum];
+                        Point point1;
+                        Point point2;
                         Point point3;
-                        if (ellipsePointNum < _pointCount - 1)
+                        if (StringDirection == StringDirections.Clockwise)
                         {
-                            point3 = innerEllipse[ellipsePointNum + 1];
+                            ellipsePointNum = i;
+                            point1 = innerEllipse[ellipsePointNum];
+                            point2 = outerEllipse[ellipsePointNum];
+                            if (ellipsePointNum < _pointCount - 1)
+                            {
+                                point3 = innerEllipse[ellipsePointNum + 1];
+                            }
+                            else
+                            {
+                                point3 = innerEllipse[0];
+                            }
                         }
                         else
                         {
-                            point3 = innerEllipse[0];
+                            ellipsePointNum = (_pointCount - 1) - i;
+                            point1 = innerEllipse[ellipsePointNum];
+                            if (ellipsePointNum > 0)
+                            {
+                                point2 = outerEllipse[ellipsePointNum - 1];
+                                point3 = innerEllipse[ellipsePointNum - 1];
+                            }
+                            else
+                            {
+                                point2 = outerEllipse[_pointCount - 1];
+                                point3 = innerEllipse[_pointCount - 1]; 
+                            }
                         }
+
                         int line1PixelCount = (int)(pixelsPerPoint / 2);
                         int line2PixelCount = line1PixelCount;
                         if (line1PixelCount + line2PixelCount < pixelsPerPoint)

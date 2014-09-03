@@ -195,7 +195,7 @@ namespace VixenModules.Effect.Wipe {
 					var intervalTime = TimeSpan.FromMilliseconds(intervals);
 					// the calculation above blows up render time/memory as count goes up, try this.. 
 					// also fails if intervals is less than half a ms and intervalTime then gets 0
-					intervalTime = TimeSpan.FromMilliseconds( Math.Max( intervalTime.TotalMilliseconds, 50));
+					intervalTime = TimeSpan.FromMilliseconds( Math.Max( intervalTime.TotalMilliseconds, 5));
 					TimeSpan segmentPulse = TimeSpan.FromMilliseconds(PulseTime);
 					while (effectTime < TimeSpan) {
 						foreach (var item in renderNodes) {

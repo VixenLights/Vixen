@@ -6,6 +6,14 @@ namespace Vixen.Sys
 {
 	public class ElementIntents : Dictionary<Guid, IIntentNode[]>
 	{
+		public ElementIntents()
+		{
+		}
+
+		public ElementIntents(int size): base(size)
+		{	
+		}
+
 		// For better storytelling.
 		public IEnumerable<Guid> ElementIds
 		{
