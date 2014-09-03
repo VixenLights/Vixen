@@ -124,8 +124,8 @@ namespace Vixen.Sys.Managers
 			lock (_updateLock)
 			{
 				Parallel.ForEach(_rootFilters, _po, _UpdateFilterBranch);	
-				_filterUpdateTimeValue.Set(_stopwatch.ElapsedMilliseconds);
 			}
+			_filterUpdateTimeValue.Set(_stopwatch.ElapsedMilliseconds);
 		}
 
 		private void _AddFilterInstance(IOutputFilterModuleInstance filter)

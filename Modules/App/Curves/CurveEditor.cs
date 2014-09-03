@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using Vixen.Module.App;
 using Vixen.Services;
 using ZedGraph;
+using System.Linq;
 
 namespace VixenModules.App.Curves
 {
@@ -191,6 +193,8 @@ namespace VixenModules.App.Curves
 				buttonLoadCurveFromLibrary.Enabled = false;
 				buttonUnlinkCurve.Enabled = false;
 				buttonEditLibraryCurve.Enabled = false;
+				btnInvert.Enabled = true;
+				btnReverse.Enabled = true;
 				labelInstructions1.Visible = true;
 				labelInstructions2.Visible = true;
 				txtXValue.Enabled = false;
@@ -221,6 +225,8 @@ namespace VixenModules.App.Curves
 				buttonLoadCurveFromLibrary.Enabled = true;
 				buttonUnlinkCurve.Enabled = curve.IsLibraryReference;
 				buttonEditLibraryCurve.Enabled = curve.IsLibraryReference;
+				btnInvert.Enabled = !curve.IsLibraryReference;
+				btnReverse.Enabled = !curve.IsLibraryReference;
 				labelInstructions1.Visible = !curve.IsLibraryReference;
 				labelInstructions2.Visible = !curve.IsLibraryReference;
 				txtYValue.Enabled = !curve.IsLibraryReference;
@@ -299,6 +305,11 @@ namespace VixenModules.App.Curves
 				for (int i = 0; i < curveItem.Points.Count; i++)
 				{
 					curveItem.Points[i].X = 100 - curveItem.Points[i].X;
+				}
+				var points = curveItem.Points as PointPairList;
+				if (points != null)
+				{
+					points.Sort();
 				}
 
 			}
