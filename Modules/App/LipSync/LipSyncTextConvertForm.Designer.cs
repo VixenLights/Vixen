@@ -71,6 +71,7 @@
             this.markCollectionCombo.Location = new System.Drawing.Point(83, 20);
             this.markCollectionCombo.Name = "markCollectionCombo";
             this.markCollectionCombo.Size = new System.Drawing.Size(135, 21);
+            this.markCollectionCombo.Sorted = true;
             this.markCollectionCombo.TabIndex = 4;
             this.markCollectionCombo.SelectedIndexChanged += new System.EventHandler(this.markCollectionCombo_SelectedIndexChanged);
             // 
@@ -126,6 +127,7 @@
             this.startOffsetCombo.Location = new System.Drawing.Point(83, 49);
             this.startOffsetCombo.Name = "startOffsetCombo";
             this.startOffsetCombo.Size = new System.Drawing.Size(135, 21);
+            this.startOffsetCombo.Sorted = true;
             this.startOffsetCombo.TabIndex = 10;
             this.startOffsetCombo.DropDown += new System.EventHandler(this.startOffsetCombo_DropDown);
             // 
