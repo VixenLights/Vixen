@@ -15,9 +15,12 @@ using VixenModules.Property.Location;
 using System.Drawing;
 using VixenModules.Property.Color;
 
-namespace VixenModules.Effect.Wipe {
-	public class WipeModule : EffectModuleInstanceBase {
-		public WipeModule() {
+namespace VixenModules.Effect.Wipe
+{
+	public class WipeModule : EffectModuleInstanceBase
+	{
+		public WipeModule()
+		{
 
 		}
 		WipeData _data = new WipeData();
@@ -28,37 +31,46 @@ namespace VixenModules.Effect.Wipe {
 			CheckForInvalidColorData();
 		}
 
-		protected override void _PreRender(CancellationTokenSource tokenSource = null) {
+		protected override void _PreRender(CancellationTokenSource tokenSource = null)
+		{
 
 			_elementData = new EffectIntents();
 
 			IEnumerable<IGrouping<int, ElementNode>> renderNodes = null;
 
-			var enumerator =  TargetNodes.SelectMany(x => x.GetLeafEnumerator());
+
+			var enumerator = TargetNodes.SelectMany(x => x.GetLeafEnumerator());
 			var b = enumerator;
-			switch (_data.Direction) {
+			switch (_data.Direction)
+			{
 				case WipeDirection.Up:
 					renderNodes = TargetNodes
 												.SelectMany(x => x.GetLeafEnumerator())
-												.OrderByDescending(x => {
+												.OrderByDescending(x =>
+												{
 													var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
-													if (prop != null) {
+													if (prop != null)
+													{
 														return ((LocationData)prop.ModuleData).Y;
 													}
 													else
 														return 1;
 												})
-												.ThenBy(x => {
+												.ThenBy(x =>
+												{
 													var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
-													if (prop != null) {
+													if (prop != null)
+													{
 														return ((LocationData)prop.ModuleData).X;
 													}
 													else
 														return 1;
 												})
-												.GroupBy(x => {
+												.GroupBy(x =>
+												{
 													var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
-													if (prop != null) {
+													if (prop != null)
+													{
 														return ((LocationData)prop.ModuleData).Y;
 													}
 													else
@@ -69,25 +81,31 @@ namespace VixenModules.Effect.Wipe {
 				case WipeDirection.Down:
 
 					renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator())
-												.OrderBy(x => {
+												.OrderBy(x =>
+												{
 													var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
-													if (prop != null) {
+													if (prop != null)
+													{
 														return ((LocationData)prop.ModuleData).Y;
 													}
 													else
 														return 1;
 												})
-												.ThenBy(x => {
+												.ThenBy(x =>
+												{
 													var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
-													if (prop != null) {
+													if (prop != null)
+													{
 														return ((LocationData)prop.ModuleData).X;
 													}
 													else
 														return 1;
 												})
-												.GroupBy(x => {
+												.GroupBy(x =>
+												{
 													var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
-													if (prop != null) {
+													if (prop != null)
+													{
 														return ((LocationData)prop.ModuleData).Y;
 													}
 													else
@@ -98,25 +116,31 @@ namespace VixenModules.Effect.Wipe {
 				case WipeDirection.Right:
 
 					renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator())
-												.OrderBy(x => {
+												.OrderBy(x =>
+												{
 													var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
-													if (prop != null) {
+													if (prop != null)
+													{
 														return ((LocationData)prop.ModuleData).X;
 													}
 													else
 														return 1;
 												})
-												.ThenBy(x => {
+												.ThenBy(x =>
+												{
 													var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
-													if (prop != null) {
+													if (prop != null)
+													{
 														return ((LocationData)prop.ModuleData).Y;
 													}
 													else
 														return 1;
 												})
-												.GroupBy(x => {
+												.GroupBy(x =>
+												{
 													var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
-													if (prop != null) {
+													if (prop != null)
+													{
 														return ((LocationData)prop.ModuleData).X;
 													}
 													else
@@ -127,23 +151,29 @@ namespace VixenModules.Effect.Wipe {
 				case WipeDirection.Left:
 
 					renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator())
-												.OrderByDescending(x => {
+												.OrderByDescending(x =>
+												{
 													var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
-													if (prop != null) {
+													if (prop != null)
+													{
 														return ((LocationData)prop.ModuleData).X;
 													}
 													return 1;
 												})
-												.ThenBy(x => {
+												.ThenBy(x =>
+												{
 													var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
-													if (prop != null) {
+													if (prop != null)
+													{
 														return ((LocationData)prop.ModuleData).Y;
 													}
 													return 1;
 												})
-												.GroupBy(x => {
+												.GroupBy(x =>
+												{
 													var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
-													if (prop != null) {
+													if (prop != null)
+													{
 														return ((LocationData)prop.ModuleData).X;
 													}
 													return 1;
@@ -151,29 +181,47 @@ namespace VixenModules.Effect.Wipe {
 
 												.Distinct();
 					break;
+				case WipeDirection.Out:
+				case WipeDirection.In:
+					RenderBurst(tokenSource, _data.Direction);
+
+					return;
+
+					break;
 				default:
 					break;
 			}
 
-			if (renderNodes != null && renderNodes.Any()) {
+			RenderNonBurst(tokenSource, renderNodes);
+		}
+
+		private void RenderNonBurst(CancellationTokenSource tokenSource, IEnumerable<IGrouping<int, ElementNode>> renderNodes)
+		{
+
+			if (renderNodes != null && renderNodes.Count() > 0)
+			{
 				TimeSpan effectTime = TimeSpan.Zero;
-				if (WipeByCount) {
+				if (WipeByCount)
+				{
 					int count = 0;
-					double pulseSegment = (TimeSpan.TotalMilliseconds / PassCount) * (PulsePercent / 100) ;
+					double pulseSegment = (TimeSpan.TotalMilliseconds / PassCount) * (PulsePercent / 100);
 					TimeSpan intervalTime = TimeSpan.FromMilliseconds((TimeSpan.TotalMilliseconds - pulseSegment) / (renderNodes.Count() * PassCount));
 					TimeSpan segmentPulse = TimeSpan.FromMilliseconds(pulseSegment);
 
-					while (count < PassCount) {
+					while (count < PassCount)
+					{
 						foreach (var item in renderNodes)
 						{
 							if (tokenSource != null && tokenSource.IsCancellationRequested) return;
 							EffectIntents result;
 
-							foreach (ElementNode element in item) {
+							foreach (ElementNode element in item)
+							{
 
 								if (tokenSource != null && tokenSource.IsCancellationRequested)
 									return;
-								if (element != null) {
+								if (element != null)
+								{
 									var pulse = new Pulse.Pulse();
 									pulse.TargetNodes = new ElementNode[] { element };
 									pulse.TimeSpan = segmentPulse;
@@ -185,26 +233,32 @@ namespace VixenModules.Effect.Wipe {
 								}
 							}
 							effectTime += intervalTime;
-							
+
 						}
 						count++;
-						
+
 					}
-				} else {
+				}
+				else
+				{
 					double intervals = (double)PulseTime / (double)renderNodes.Count();
 					var intervalTime = TimeSpan.FromMilliseconds(intervals);
 					// the calculation above blows up render time/memory as count goes up, try this.. 
 					// also fails if intervals is less than half a ms and intervalTime then gets 0
-					intervalTime = TimeSpan.FromMilliseconds( Math.Max( intervalTime.TotalMilliseconds, 5));
+					intervalTime = TimeSpan.FromMilliseconds(Math.Max(intervalTime.TotalMilliseconds, 50));
 					TimeSpan segmentPulse = TimeSpan.FromMilliseconds(PulseTime);
-					while (effectTime < TimeSpan) {
-						foreach (var item in renderNodes) {
+					while (effectTime < TimeSpan)
+					{
+						foreach (var item in renderNodes)
+						{
 							EffectIntents result;
 
 							if (tokenSource != null && tokenSource.IsCancellationRequested)
 								return;
-							foreach (ElementNode element in item) {
-								if (element != null) {
+							foreach (ElementNode element in item)
+							{
+								if (element != null)
+								{
 
 									if (tokenSource != null && tokenSource.IsCancellationRequested)
 										return;
@@ -214,7 +268,7 @@ namespace VixenModules.Effect.Wipe {
 									pulse.ColorGradient = _data.ColorGradient;
 									pulse.LevelCurve = _data.Curve;
 									result = pulse.Render();
-									 
+
 									result.OffsetAllCommandsByTime(effectTime);
 									_elementData.Add(result);
 								}
@@ -225,20 +279,201 @@ namespace VixenModules.Effect.Wipe {
 						}
 					}
 				}
-				
+
 			}
 		}
 
-		protected override EffectIntents _Render() {
+		private void RenderBurst(CancellationTokenSource tokenSource, WipeDirection direction)
+		{
+			switch (direction)
+			{
+
+				case WipeDirection.In:
+				case WipeDirection.Out:
+					break;
+				default:
+					throw new InvalidOperationException("the RenderBurst method should only be called for Wipe Directions In and Out");
+					break;
+			}
+			var burstNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator())
+													   .Select(s =>
+													   {
+														   var prop = s.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
+														   if (prop != null)
+														   {
+															   return new Tuple<ElementNode, int, int, int>(s, ((LocationData)prop.ModuleData).X, ((LocationData)prop.ModuleData).Y, ((LocationData)prop.ModuleData).Z);
+
+														   }
+														   return new Tuple<ElementNode, int, int, int>(null, -1, -1, -1);
+														   //return null
+													   })
+													   .Where(s => s.Item2 > 0) // Ignore the pseudo null values
+													   .ToList();
+
+			var maxX = burstNodes.Max(m => m.Item2);
+			var maxY = burstNodes.Max(m => m.Item3);
+
+			var minX = burstNodes.Min(m => m.Item2);
+			var minY = burstNodes.Min(m => m.Item3);
+
+			var Steps = (int)(Math.Max(maxX - minX, maxY - minY) / 2);
+
+			bool startX = maxX - minX > maxY - minY; //Are we starting the stepping on X or Y axis (based on shape)
+
+
+			List<Tuple<int, ElementNode[]>> groups = new List<Tuple<int, ElementNode[]>>();
+
+			for (int i = 0; i < Steps; i++)
+			{
+				List<ElementNode> elements = new List<ElementNode>();
+
+				var xNodes = burstNodes.Where(x =>
+						  (x.Item2 == minX + i || x.Item2 == maxX - i)
+						  )
+						  .Select(s => s.Item1).ToList();
+
+				var yNodes = burstNodes.Where(x =>
+						 (
+						 x.Item3 == minY + i ||
+						 x.Item3 == maxY - i)
+						 )
+						 .Select(s => s.Item1).ToList();
+				yNodes.RemoveAll(s =>
+				{
+					var prop = s.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
+					if (prop != null)
+					{
+						return ((LocationData)prop.ModuleData).X < minX + i || ((LocationData)prop.ModuleData).X > maxX - i;
+					}
+					return false;
+				});
+				xNodes.RemoveAll(s =>
+				{
+					var prop = s.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
+					if (prop != null)
+					{
+						return ((LocationData)prop.ModuleData).Y < minY + i || ((LocationData)prop.ModuleData).Y > maxY - i;
+					}
+					return false;
+				});
+				elements.AddRange(yNodes);
+				elements.AddRange(xNodes);
+
+				groups.Add(new Tuple<int, ElementNode[]>(i, elements.ToArray()));
+			}
+			List<ElementNode[]> renderNodes = new List<ElementNode[]>();
+			switch (direction)
+			{
+
+				case WipeDirection.In:
+					renderNodes = groups.OrderBy(o => o.Item1).Select(s => s.Item2).ToList();
+					break;
+				case WipeDirection.Out:
+					renderNodes = groups.OrderByDescending(o => o.Item1).Select(s => s.Item2).ToList();
+					break;
+			}
+
+
+			if (renderNodes != null && renderNodes.Count() > 0)
+			{
+				TimeSpan effectTime = TimeSpan.Zero;
+				if (WipeByCount)
+				{
+					int count = 0;
+					double pulseSegment = (TimeSpan.TotalMilliseconds / PassCount) * (PulsePercent / 100);
+					TimeSpan intervalTime = TimeSpan.FromMilliseconds((TimeSpan.TotalMilliseconds - pulseSegment) / (renderNodes.Count() * PassCount));
+					TimeSpan segmentPulse = TimeSpan.FromMilliseconds(pulseSegment);
+
+					while (count < PassCount)
+					{
+						foreach (var item in renderNodes)
+						{
+							if (tokenSource != null && tokenSource.IsCancellationRequested) return;
+							EffectIntents result;
+
+							foreach (ElementNode element in item)
+							{
+
+								if (tokenSource != null && tokenSource.IsCancellationRequested)
+									return;
+								if (element != null)
+								{
+									var pulse = new Pulse.Pulse();
+									pulse.TargetNodes = new ElementNode[] { element };
+									pulse.TimeSpan = segmentPulse;
+									pulse.ColorGradient = _data.ColorGradient;
+									pulse.LevelCurve = _data.Curve;
+									result = pulse.Render();
+									result.OffsetAllCommandsByTime(effectTime);
+									_elementData.Add(result);
+								}
+							}
+							effectTime += intervalTime;
+
+						}
+						count++;
+
+					}
+				}
+				else
+				{
+					double intervals = (double)PulseTime / (double)renderNodes.Count();
+					var intervalTime = TimeSpan.FromMilliseconds(intervals);
+					// the calculation above blows up render time/memory as count goes up, try this.. 
+					// also fails if intervals is less than half a ms and intervalTime then gets 0
+					intervalTime = TimeSpan.FromMilliseconds(Math.Max(intervalTime.TotalMilliseconds, 5));
+					TimeSpan segmentPulse = TimeSpan.FromMilliseconds(PulseTime);
+					while (effectTime < TimeSpan)
+					{
+						foreach (var item in renderNodes)
+						{
+							EffectIntents result;
+
+							if (tokenSource != null && tokenSource.IsCancellationRequested)
+								return;
+							foreach (ElementNode element in item)
+							{
+								if (element != null)
+								{
+
+									if (tokenSource != null && tokenSource.IsCancellationRequested)
+										return;
+									var pulse = new Pulse.Pulse();
+									pulse.TargetNodes = new ElementNode[] { element };
+									pulse.TimeSpan = segmentPulse;
+									pulse.ColorGradient = _data.ColorGradient;
+									pulse.LevelCurve = _data.Curve;
+									result = pulse.Render();
+
+									result.OffsetAllCommandsByTime(effectTime);
+									_elementData.Add(result);
+								}
+							}
+							effectTime += intervalTime;
+							if (effectTime >= TimeSpan)
+								return;
+						}
+					}
+				}
+
+			}
+
+
+
+		}
+
+		protected override EffectIntents _Render()
+		{
 			return _elementData;
 		}
 
-		public override IModuleDataModel ModuleData {
+		public override IModuleDataModel ModuleData
+		{
 			get { return _data; }
 			set { _data = value as WipeData; }
 		}
 
-		
+
 
 		private void CheckForInvalidColorData()
 		{
@@ -253,38 +488,47 @@ namespace VixenModules.Effect.Wipe {
 		}
 
 		[Value]
-		public ColorGradient ColorGradient {
-			get {
-				return _data.ColorGradient; 
+		public ColorGradient ColorGradient
+		{
+			get
+			{
+				return _data.ColorGradient;
 			}
-			set {
+			set
+			{
 				_data.ColorGradient = value;
 				IsDirty = true;
 			}
 		}
 
 		[Value]
-		public WipeDirection Direction {
+		public WipeDirection Direction
+		{
 			get { return _data.Direction; }
-			set {
+			set
+			{
 				_data.Direction = value;
 				IsDirty = true;
 			}
 		}
 
 		[Value]
-		public Curve Curve {
+		public Curve Curve
+		{
 			get { return _data.Curve; }
-			set {
+			set
+			{
 				_data.Curve = value;
 				IsDirty = true;
 			}
 		}
 
 		[Value]
-		public int PulseTime {
+		public int PulseTime
+		{
 			get { return _data.PulseTime; }
-			set {
+			set
+			{
 				_data.PulseTime = value;
 				IsDirty = true;
 			}
@@ -302,9 +546,11 @@ namespace VixenModules.Effect.Wipe {
 		}
 
 		[Value]
-		public int PassCount {
+		public int PassCount
+		{
 			get { return _data.PassCount; }
-			set {
+			set
+			{
 				_data.PassCount = value;
 				IsDirty = true;
 			}
