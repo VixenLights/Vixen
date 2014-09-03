@@ -310,12 +310,6 @@ namespace VixenModules.Effect.Nutcracker
 			//Array.Resize(ref WaveBuffer1, bufferWidth*bufferHeight);
 			//Array.Resize(ref WaveBuffer2, bufferWidth*bufferHeight);
 
-			if (Data == null || Data.CurrentEffect == Effects.Fire)
-			{
-				Array.Resize(ref FireBuffer, bufferWidth * bufferHeight);
-				InitFirePalette();
-			}
-
 			State = 0;
 		}
 
@@ -696,6 +690,12 @@ namespace VixenModules.Effect.Nutcracker
 		// 10 <= HeightPct <= 100
 		private void RenderFire(int HeightPct)
 		{
+			if (FireBuffer.Count() != BufferWi*BufferHt)
+			{
+				Array.Resize(ref FireBuffer, BufferWi * BufferHt);
+				InitFirePalette();
+			}
+
 			int x, y, i, r, v1, v2, v3, v4, n, new_index;
 			if (State == 0) {
 				for (i = 0; i < FireBuffer.Count(); i++) {
