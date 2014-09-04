@@ -87,10 +87,12 @@ SetCompressorDictSize 64
 	!define BUILD_DIR ".\Release"
 	!define BITS 32
 	!define BITS_READABLE "32-bit"
+	!define PROG_FILES $PROGRAMFILES
 !else
 	!define BUILD_DIR ".\Release64"
 	!define BITS 64
 	!define BITS_READABLE "64-bit"
+	!define PROG_FILES $PROGRAMFILES64
 !endif
 
 
@@ -114,11 +116,18 @@ VIAddVersionKey "FileVersion" "${AssemblyVersion_1}.${AssemblyVersion_2}.${Assem
 	!define PRODUCT_NAME_FULL "Vixen Development Build"
 	Name "${PRODUCT_NAME} Development Build ${BUILDNUMBER} (${BITS_READABLE})"
 	OutFile ".\${PRODUCT_NAME}-DevBuild-${BUILDNUMBER}-Setup_${BITS}bit.exe"
+	InstallDir "${PROG_FILES}\Vixen Development Build"
 !else
 	!define PRODUCT_NAME_FULL "Vixen"
 	Name "${PRODUCT_NAME} ${MAJORVERSION}.${MINORVERSION} (${BITS_READABLE})"
 	OutFile ".\${PRODUCT_NAME}-${MAJORVERSION}.${MINORVERSION}-Setup_${BITS}bit.exe"
+	InstallDir "${PROG_FILES}\Vixen Lighting"
 !endif
+
+
+; This will optionally get the install dir from the registry at the specified location; we don't want to use that for now,
+; so will comment this out for the time being.
+;InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 
 
 
@@ -201,8 +210,6 @@ var ICONS_GROUP
 
 ; MUI end ------
 
-InstallDir "$PROGRAMFILES\Vixen ${MAJORVERSION}"
-InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
 ShowUnInstDetails show
 
