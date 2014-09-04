@@ -986,14 +986,13 @@ namespace VixenModules.Effect.Nutcracker
 			int idxFlakes = 0;
 			int i = 0;
 			int mod100;
-			int x25, x75, y25, y75, stateChunk, denom;
+			int x25, x75, y25, y75;
 			const int maxFlakes = 1000;
 			int startX;
 			int startY; //, ColorIdx;
 			float v;
 			HSV hsv = new HSV();
-			Color rgbcolor;
-			int colorcnt = GetColorCount();
+			int colorCount = GetColorCount();
 
 			// This does not work with 1 string, so use a try/catch block to prevent errors
 			try {
@@ -1004,12 +1003,8 @@ namespace VixenModules.Effect.Nutcracker
 						fireworkBursts[i]._bActive = false;
 					}
 				}
-				denom = (101 - Number_Explosions)*100;
-				if (denom < 1) denom = 1;
-				stateChunk = (int) State/denom;
-				if (stateChunk < 1) stateChunk = 1;
-
-				mod100 = (int) (State%(101 - Number_Explosions)*10);
+				
+				mod100 = (int) (State%(101 - Number_Explosions)*20);
 				if (mod100 == 0) {
 					x25 = (int) (BufferWi*0.25);
 					x75 = (int) (BufferWi*0.75);
@@ -1017,14 +1012,14 @@ namespace VixenModules.Effect.Nutcracker
 					y75 = (int) (BufferHt*0.75);
 					startX = x25 + (rand()%(x75 - x25));
 					startY = y25 + (rand()%(y75 - y25));
-					// turn off all bursts
 
 					// Create new bursts
+					hsv = Palette.ActiveColors.Count>0?HSV.ColorToHSV(Palette.ActiveColors[rand() % colorCount]):HSV.ColorToHSV(Color.White);
 					for (i = 0; i < Count; i++) {
 						do {
 							idxFlakes = (idxFlakes + 1)%maxFlakes;
 						} while (fireworkBursts[idxFlakes]._bActive);
-						fireworkBursts[idxFlakes].Reset(startX, startY, true, Velocity);
+						fireworkBursts[idxFlakes].Reset(startX, startY, true, Velocity, hsv);
 					}
 				}
 				else {
@@ -1057,26 +1052,16 @@ namespace VixenModules.Effect.Nutcracker
 							else {
 								// otherwise it just got outside the valid X-pos, so switch it off
 								fireworkBursts[i]._bActive = false;
-								continue;
 							}
 						}
 					}
 				}
 
-				if (mod100 == 0) rgbcolor = Color.FromArgb(0, 255, 255);
-				else if (mod100 == 1) rgbcolor = Color.FromArgb(255, 0, 0);
-				else if (mod100 == 2) rgbcolor = Color.FromArgb(0, 255, 0);
-				else if (mod100 == 3) rgbcolor = Color.FromArgb(0, 0, 255);
-				else if (mod100 == 4) rgbcolor = Color.FromArgb(255, 255, 0);
-				else if (mod100 == 5) rgbcolor = Color.FromArgb(0, 255, 0);
-				else rgbcolor = Color.White;
-				hsv = HSV.ColorToHSV(rgbcolor);
-
 				for (i = 0; i < 1000; i++) {
-					if (fireworkBursts[i]._bActive == true) {
+					if (fireworkBursts[i]._bActive) {
 						v = (float) (((Fade*10.0) - fireworkBursts[i]._cycles)/(Fade*10.0));
 						if (v < 0) v = 0.0f;
-
+						hsv = fireworkBursts[i]._hsv;
 						hsv.Value = v;
 						SetPixel((int) fireworkBursts[i]._x, (int) fireworkBursts[i]._y, hsv);
 					}
@@ -1098,9 +1083,10 @@ namespace VixenModules.Effect.Nutcracker
 			public float angle;
 			public bool _bActive;
 			public int _cycles;
+			public HSV _hsv;
 			private static Random random = new Random();
 
-			public void Reset(int x, int y, bool active, float velocity)
+			public void Reset(int x, int y, bool active, float velocity, HSV hsv)
 			{
 				_x = x;
 				_y = y;
@@ -1110,6 +1096,7 @@ namespace VixenModules.Effect.Nutcracker
 				_dy = (float) (vel*Math.Sin(angle));
 				_bActive = active;
 				_cycles = 0;
+				_hsv = hsv;
 			}
 		}
 

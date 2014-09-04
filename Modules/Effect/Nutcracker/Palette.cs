@@ -35,6 +35,21 @@ namespace VixenModules.Effect.Nutcracker
 			set { _colorsActive = value; }
 		}
 
+		public List<Color> ActiveColors
+		{
+			get {
+				List<Color> colors = new List<Color>();
+				for (int i = 0; i < _colors.Length; i++)
+				{
+					if (_colorsActive[i])
+					{
+						colors.Add(_colors[i]);
+					}	
+				}
+				return colors;
+			}
+		}
+
 		public Color[] Colors
 		{
 			get { return _colors; }
