@@ -20,7 +20,7 @@ namespace Vixen.Module.Effect
 		private ElementNode[] _targetNodes;
 		private TimeSpan _timeSpan;
 		private DefaultValueArrayMember _parameterValues;
-		private ElementIntents _elementIntents;
+		protected ElementIntents _elementIntents;
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		protected EffectModuleInstanceBase()
@@ -147,7 +147,7 @@ namespace Vixen.Module.Effect
 				}
 			}
 		}
-		public ElementIntents GetElementIntents(TimeSpan effectRelativeTime)
+		public virtual ElementIntents GetElementIntents(TimeSpan effectRelativeTime)
 		{
 			_elementIntents.Clear();
 

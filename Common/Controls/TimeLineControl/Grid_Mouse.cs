@@ -197,7 +197,7 @@ namespace Common.Controls.Timeline
 								m_lastSingleSelectedElementLocation = gridLocation;
 								_SelectionChanged();
 								Row row = rowAt(gridLocation);
-								row.Active = true;
+								if(row!=null)row.Active = true;
 							}
 						}
 						if (m_mouseDownElements != null && m_mouseDownElements.Any() && ShiftPressed ||
@@ -205,7 +205,7 @@ namespace Common.Controls.Timeline
 						{
 							ClearActiveRows();
 							Row row = rowAt(gridLocation);
-							row.Active = true;
+							if (row != null) row.Active = true;
 						}
 						break;
 				}
