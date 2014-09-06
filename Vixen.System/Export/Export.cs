@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using System.Xml;
 using Vixen.Cache.Sequence;
 using Vixen.Commands;
+using Vixen.Data.Flow;
 using Vixen.Module;
 using Vixen.Module.Controller;
 using Vixen.Module.Timing;
@@ -178,7 +179,7 @@ namespace Vixen.Export
             return true;
         }
 
-        private OutputController FindExportControler()
+        private OutputController FindExportController()
         {
             return
                 VixenSystem.OutputControllers.ToList().Find(x => x.ModuleId.Equals(_controllerTypeId));
@@ -269,7 +270,9 @@ namespace Vixen.Export
                 }
                 _eventData.Add(_exporterCommandHandler.Value);
             }
+            
             _output.WriteNextPeriodData(_eventData);
+           
         }
         #endregion
 
@@ -283,32 +286,91 @@ namespace Vixen.Export
             }
         }
 
+        string ReverseBuildChannelName(IDataFlowComponent component, int outIndex)
+        {
+            string nameVal = component.Outputs[outIndex].Name ?? "";
+
+            if (component.Source != null)
+            {
+                if (component.Name.Equals("Color Breakdown"))
+                {
+                    nameVal =
+                        ReverseBuildChannelName(component.Source.Component, component.Source.OutputIndex) + 
+                        " " + 
+                        component.Outputs[outIndex].Name;
+                }
+                else
+                {
+                    nameVal =
+                        ReverseBuildChannelName(component.Source.Component, component.Source.OutputIndex);
+                }
+            }
+            return nameVal;
+        }
+        List<string> BuildChannelNames(IEnumerable<Guid> outIds)
+        {
+            List<string> retVal = new List<string>();
+            string chanName = null;
+            IEnumerable<OutputController> outControllers = VixenSystem.OutputControllers.GetAll();
+            foreach (OutputController oc in outControllers)
+            {
+                for (int j = 0; j < oc.OutputCount; j++)
+                {
+                    if (oc.Outputs[j].Source != null)
+                    {
+                        chanName = ReverseBuildChannelName(oc.Outputs[j].Source.Component, oc.Outputs[j].Source.OutputIndex);
+                    }
+                    else
+                    {
+                        chanName = oc.Name + "_" + (j + 1);
+                    }
+                    retVal.Add(chanName);
+                }
+            }
+
+            return retVal;
+        }
 
         void SequenceCacheEnded(object sender, Vixen.Cache.Event.CacheEventArgs e)
         {
+            SequenceSessionData sessionData = new SequenceSessionData();
+
             if (_exporting == true)
             {                
                 List<ICommand> commandList = new List<ICommand>();
                 OutputStateListAggregator outAggregator = _preCachingSequenceEngine.Cache.OutputStateListAggregator;
                 IEnumerable<Guid> outIds = outAggregator.GetOutputIds();
-                int periods = outAggregator.GetCommandsForOutput(outIds.First()).Count();
+                int periods = outAggregator.GetCommandsForOutput(outIds.First()).Count() - 1;
 
                 if (_cancelling == false)
                 {
                     SequenceNotify(ExportNotifyType.SAVING);
-                    _output.OpenSession(OutFileName, periods, outIds.Count());
-                    for (int j = 0; j < periods; j++)
+                    sessionData.OutFileName = OutFileName;
+                    sessionData.NumPeriods = periods;
+                    sessionData.PeriodMS = UpdateInterval;
+                    sessionData.ChannelNames = BuildChannelNames(outIds);
+                    sessionData.TimeMS = _preCachingSequenceEngine.Sequence.Length.TotalMilliseconds;
+                    try
                     {
-                        SavePosition = Decimal.Round(((Decimal)j / (Decimal)periods) * 100,2);
-                        commandList.Clear();
-                        foreach (Guid guid in outIds)
+                        _output.OpenSession(sessionData);
+                        for (int j = 0; j < periods; j++)
                         {
-                            commandList.Add(outAggregator.GetCommandsForOutput(guid).ElementAt(j));
+                            SavePosition = Decimal.Round(((Decimal)j / (Decimal)periods) * 100, 2);
+                            commandList.Clear();
+                            foreach (Guid guid in outIds)
+                            {
+                                commandList.Add(outAggregator.GetCommandsForOutput(guid).ElementAt(j));
+                            }
+                            UpdateState(commandList.ToArray());
                         }
-                        UpdateState(commandList.ToArray());
-                    }
 
-                    _output.CloseSession();
+                        _output.CloseSession();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, "Save Error!");
+                        throw ex;
+                    }
 
                     _preCachingSequenceEngine.SequenceCacheEnded -= SequenceCacheEnded;
                     _preCachingSequenceEngine.SequenceCacheStarted -= SequenceCacheStarted;
@@ -337,5 +399,23 @@ namespace Vixen.Export
         public int Index { get; set; }
         public int Channels { get; set; }
         public string Name { get; set; }
+    }
+
+    public class SequenceSessionData
+    {
+        public SequenceSessionData()
+        {
+            PeriodMS = 50;
+            TimeMS = 0;
+            AudioFileName = "";
+            ChannelNames = new List<string>();
+        }
+
+        public int PeriodMS { get; set; }
+        public double TimeMS { get; set; }
+        public string AudioFileName { get; set; }
+        public List<string> ChannelNames { get; set; }
+        public string OutFileName { get; set; }
+        public int NumPeriods { get; set; }
     }
 }
