@@ -133,6 +133,13 @@ namespace VixenModules.Controller.E131
             {
                 if (!E131OutputPlugin.EmployedUniverses.Contains(u.Universe))
                     E131OutputPlugin.EmployedUniverses.Add(u.Universe);
+                if (u.Unicast != null)
+                {
+                    if (!unicasts.ContainsKey(u.Unicast))
+                    {
+                        unicasts.Add(u.Unicast, 0);
+                    }
+                }
             });
         }
 
@@ -171,8 +178,6 @@ namespace VixenModules.Controller.E131
 
                     initialUniverseList.Add(uE.Universe);
                 }
-
-
 
                 setupForm.WarningsOption = _data.Warnings;
                 setupForm.StatisticsOption = _data.Statistics;
@@ -227,6 +232,7 @@ namespace VixenModules.Controller.E131
         }
 
         internal static List<int> EmployedUniverses = new List<int>();
+        internal static SortedList<string, int> unicasts = new SortedList<string, int>();
 
         public override bool HasSetup
         {
