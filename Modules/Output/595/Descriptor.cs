@@ -18,7 +18,7 @@ namespace VixenModules.Output.Olsen595
 
 		public override string Description
 		{
-			get { return "595 hardware module"; }
+			get { return "Olsen 595 hardware module"; }
 		}
 
 		public override Type ModuleClass
@@ -38,7 +38,7 @@ namespace VixenModules.Output.Olsen595
 
 		public override string TypeName
 		{
-			get { return "595"; }
+			get { return "Olsen 595"; }
 		}
 
 		public override string Version

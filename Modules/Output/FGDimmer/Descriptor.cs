@@ -36,7 +36,7 @@ namespace VixenModules.Output.FGDimmer
 
 		public override string TypeName
 		{
-			get { return "FGDimmer"; }
+			get { return "Firegod"; }
 		}
 
 		public override string Version

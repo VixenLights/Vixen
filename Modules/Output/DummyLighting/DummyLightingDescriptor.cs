@@ -24,7 +24,7 @@ namespace VixenModules.Output.DummyLighting
 
 		public override string TypeName
 		{
-			get { return "Dummy Lighting"; }
+			get { return "Dummy Lighting (for testing)"; }
 		}
 
 		public override string Description

@@ -58,7 +58,7 @@ namespace VixenModules.Output.HelixController
 		/// </summary>
 		public override string TypeName
 		{
-			get { return "Helix Virtual Controller"; }
+			get { return "Helix File Export"; }
 		}
 
 		/// <summary>

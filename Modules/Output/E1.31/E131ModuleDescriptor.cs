@@ -8,7 +8,7 @@
     {
         public override string TypeName
         {
-            get { return "E1.31 Output Controller"; }
+            get { return "Streaming ACN (E1.31)"; }
         }
 
         public override Guid TypeId

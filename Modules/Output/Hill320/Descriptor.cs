@@ -13,7 +13,7 @@ namespace VixenModules.Output.Hill320
 
 		public override string TypeName
 		{
-			get { return "Hill320"; }
+			get { return "Hill 320"; }
 		}
 
 		public override Type ModuleClass
