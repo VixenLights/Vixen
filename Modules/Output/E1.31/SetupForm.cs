@@ -64,7 +64,6 @@ namespace VixenModules.Output.E131
 
         private readonly SortedDictionary<string, string> nicNames = new SortedDictionary<string, string>();
 
-        private readonly SortedList<string, int> unicasts = new SortedList<string, int>();
 
         /// <summary>
         ///   Initializes a new instance of the <see cref = "SetupForm" /> class. 
@@ -176,9 +175,9 @@ namespace VixenModules.Output.E131
             // and we 'reformat' to text for display
             if (unicast != null)
             {
-                if (!this.unicasts.ContainsKey(unicast))
+                if (!E131OutputPlugin.unicasts.ContainsKey(unicast))
                 {
-                    this.unicasts.Add(unicast, 0);
+                    E131OutputPlugin.unicasts.Add(unicast, 0);
                     this.destinationColumn.Items.Add("Unicast " + unicast);
                 }
 
@@ -328,7 +327,7 @@ namespace VixenModules.Output.E131
                 {
                     var ipAddressText = ipAddress.ToString();
 
-                    if (this.unicasts.ContainsKey(ipAddressText))
+                    if (E131OutputPlugin.unicasts.ContainsKey(ipAddressText))
                     {
                         MessageBox.Show(
                             "Error - Duplicate IP Address",
@@ -338,7 +337,7 @@ namespace VixenModules.Output.E131
                     }
                     else
                     {
-                        this.unicasts.Add(ipAddressText, 0);
+                        E131OutputPlugin.unicasts.Add(ipAddressText, 0);
                         this.SetDestinations();
                     }
                 }
@@ -619,7 +618,7 @@ namespace VixenModules.Output.E131
                 this.destinationColumn.Items.Add("Multicast " + destination);
             }
 
-            foreach (var ipAddr in this.unicasts.Keys)
+            foreach (var ipAddr in E131OutputPlugin.unicasts.Keys)
             {
                 this.destinationColumn.Items.Add("Unicast " + ipAddr);
             }

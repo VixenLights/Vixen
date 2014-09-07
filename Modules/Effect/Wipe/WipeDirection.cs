@@ -8,6 +8,8 @@ namespace VixenModules.Effect.Wipe {
 		Up = 0,
 		Down = 1,
 		Right = 2,
-		Left = 3
+		Left = 3,
+		In = 4,
+		Out = 5
 	}
 }

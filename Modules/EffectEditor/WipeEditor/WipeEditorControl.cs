@@ -98,6 +98,8 @@ namespace VixenModules.EffectEditor.WipeEditor {
 				if (radioWipeDown.Checked) return WipeDirection.Down;
 				if (radioWipeUp.Checked) return WipeDirection.Up;
 				if (radioWipeLeft.Checked) return WipeDirection.Left;
+				if (radioWipeIn.Checked) return WipeDirection.In;
+				if (radioWipeOut.Checked) return WipeDirection.Out;
 				else return WipeDirection.Right;
 
 			}
@@ -114,6 +116,12 @@ namespace VixenModules.EffectEditor.WipeEditor {
 						break;
 					case WipeDirection.Left:
 						radioWipeLeft.Checked = true;
+						break;
+					case WipeDirection.In:
+						radioWipeIn.Checked = true;
+						break;
+					case WipeDirection.Out:
+						radioWipeOut.Checked = true;
 						break;
 
 				}

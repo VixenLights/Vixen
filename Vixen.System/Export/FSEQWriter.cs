@@ -40,7 +40,7 @@ namespace Vixen.Export
         }
 
 
-        public UInt16 SeqPeriodTime { get; set; }
+        public int SeqPeriodTime { get; set; }
 
         public void WriteFileHeader()
         {
@@ -105,7 +105,12 @@ namespace Vixen.Export
 
         }
 
-        public void OpenSession(string fileName, Int32 numPeriods, Int32 numChannels)
+        public void OpenSession(SequenceSessionData data)
+        {
+            OpenSession(data.OutFileName, data.NumPeriods, data.ChannelNames.Count());
+        }
+
+        private void OpenSession(string fileName, Int32 numPeriods, Int32 numChannels)
         {
             try
             {
@@ -186,7 +191,7 @@ namespace Vixen.Export
         {
             get
             {
-                return "FSEQ";
+                return "fseq";
             }
         }
 
