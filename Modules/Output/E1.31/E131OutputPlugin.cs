@@ -60,6 +60,7 @@ namespace VixenModules.Controller.E131
     using VixenModules.Controller.E131.J1Sys;
     using VixenModules.Output.E131;
     using System.Linq;
+    using Vixen.Sys;
     // -----------------------------------------------------------------
     // 
     // OutputPlugin - the output plugin class for vixen
@@ -183,7 +184,7 @@ namespace VixenModules.Controller.E131
                 setupForm.StatisticsOption = _data.Statistics;
 				setupForm.EventRepeatCount = _data.EventRepeatCount;
 				setupForm.EventSuppressCount = _data.EventSuppressCount;
-
+                setupForm.Text = (new E131ModuleDescriptor()).TypeName + " Controller Setup - " + VixenSystem.OutputControllers.Single(controller => controller.ModuleInstanceId == _data.ModuleInstanceId).Name;
 
                 if (setupForm.ShowDialog() == DialogResult.OK)
                 {

@@ -58,7 +58,7 @@ namespace VixenModules.Output.ElexolUSBIO
 		/// </summary>
 		public override string TypeName
 		{
-			get { return "ElexolUSB_IO24"; }
+            get { return "Elexol USB I/O 24"; }
 		}
 
 		/// <summary>

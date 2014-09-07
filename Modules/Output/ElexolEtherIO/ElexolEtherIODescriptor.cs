@@ -52,7 +52,7 @@ namespace VixenModules.Output.ElexolEtherIO
 		/// </summary>
 		public override string TypeName
 		{
-			get { return "ElexolEther_IO24"; }
+			get { return "Elexol Ethernet I/O 24"; }
 		}
 
 		/// <summary>
