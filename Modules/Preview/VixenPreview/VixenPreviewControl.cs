@@ -35,6 +35,7 @@ namespace VixenModules.Preview.VixenPreview
 		public static double lastUpdateTime = 0;
 		public double lastRenderUpdateTime = 0;
         private bool DefaultBackground = true;
+        Point zoomTo;
 
 		private Tools _currentTool = Tools.Select;
 
@@ -133,6 +134,20 @@ namespace VixenModules.Preview.VixenPreview
 				}
 				SetupBackgroundAlphaImage();
                 if (OnChangeZoomLevel != null) OnChangeZoomLevel(this, _zoomLevel);
+
+                // Set the new background position based on the mouse position
+                Point backgroundPoint = ZoomPointToBackgroundPoint(zoomTo);
+                Point mp = PointToClient(MousePosition);
+                int newHValue = backgroundPoint.X - mp.X; ;
+                if (newHValue > 0 && newHValue <= hScroll.Maximum)
+                {
+                    hScroll.Value = newHValue;
+                }
+                int newYValue = backgroundPoint.Y - mp.Y; ;
+                if (newYValue > 0 && newYValue <= vScroll.Maximum)
+                {
+                    vScroll.Value = newYValue;
+                }
 			}
 		}
 
@@ -1755,12 +1770,31 @@ namespace VixenModules.Preview.VixenPreview
             return newP;
         }
 
+        public Point MousePointToZoomPoint(Point p) 
+        {
+            int x = p.X + hScroll.Value;
+            int y = p.Y + vScroll.Value;
+            int xDif = p.X - Convert.ToInt32(x / ZoomLevel);
+            int yDif = p.Y - Convert.ToInt32(y / ZoomLevel);
+            Point newP = new Point(p.X - xDif, p.Y - yDif);
+            return newP;
+        }
+
+        public Point ZoomPointToBackgroundPoint(Point p)
+        {
+            int x = Convert.ToInt32(p.X * ZoomLevel);
+            int y = Convert.ToInt32(p.Y * ZoomLevel);
+            Point newP = new Point(x, y);
+            return newP;
+        }
+
         private void VixenPreviewControl_MouseWheel(object sender, MouseEventArgs e)
         {
             double delta = Convert.ToDouble(e.Delta) / 1000;
 
             // Zoom to the pointer location
-            Point zoomTo = PointToZoomPoint(e.Location);
+            zoomTo = MousePointToZoomPoint(e.Location);
+            //Console.WriteLine("e:" + e.X + ":" + e.Y);
 
             ZoomLevel += delta;
         }
