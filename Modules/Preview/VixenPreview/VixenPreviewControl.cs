@@ -36,6 +36,7 @@ namespace VixenModules.Preview.VixenPreview
 		public double lastRenderUpdateTime = 0;
         private bool DefaultBackground = true;
         Point zoomTo;
+        private bool _displayItemsLoaded = false;
 
 		private Tools _currentTool = Tools.Select;
 
@@ -219,6 +220,11 @@ namespace VixenModules.Preview.VixenPreview
 		{
 			get
 			{
+                if (!_displayItemsLoaded && Data != null && Data.DisplayItems != null) 
+                {
+                    _displayItemsLoaded = true;
+                    ZoomLevel = 1;
+                }
 				if (Data != null) {
 					return Data.DisplayItems;
 				}
@@ -256,9 +262,9 @@ namespace VixenModules.Preview.VixenPreview
             MouseWheel += VixenPreviewControl_MouseWheel;
 			Controls.Add(vScroll);
 			Controls.Add(hScroll);
-			LayoutProps();
             ZoomLevel = 1;
-		}
+            LayoutProps();
+        }
 
 		public void LayoutProps()
 		{
