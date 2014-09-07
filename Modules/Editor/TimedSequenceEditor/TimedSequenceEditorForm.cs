@@ -2804,7 +2804,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// made the new row from the given node and add it to the control.
 			TimedSequenceRowLabel label = new TimedSequenceRowLabel();
 			label.Name = node.Name;
-			Row newRow = TimelineControl.AddRow(label, parentRow, 26);
+			Row newRow = TimelineControl.AddRow(label, parentRow, 32);
 			newRow.ElementRemoved += ElementRemovedFromRowHandler;
 			newRow.ElementAdded += ElementAddedToRowHandler;
 
