@@ -165,19 +165,20 @@ namespace VixenModules.Preview.VixenPreview
 
         private void GDIControl_Resize(object sender, EventArgs e)
         {
-            if (DefaultBackground)
+            if (Width > 0 && Height > 0)
             {
-                Background = null;
+                if (DefaultBackground)
+                {
+                    Background = null;
+                }
+                else
+                {
+                    CreateAlphaBackground();
+                }
+                //_fastPixel.CloneToBuffer(_backgroundAlphaImage);
+                BeginUpdate();
+                EndUpdate();
             }
-            else
-            {
-                CreateAlphaBackground();
-            }
-            //_fastPixel.CloneToBuffer(_backgroundAlphaImage);
-            BeginUpdate();
-            EndUpdate();
         }
-
-
 	}
 }
