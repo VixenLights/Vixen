@@ -27,7 +27,7 @@ namespace Vixen.Export
         }
 
 
-        public UInt16 SeqPeriodTime { get; set; }
+        public int SeqPeriodTime { get; set; }
 
         public void WriteFileHeader()
         {
@@ -39,7 +39,12 @@ namespace Vixen.Export
 
         }
 
-        public void OpenSession(string fileName, Int32 numPeriods, Int32 numChannels)
+        public void OpenSession(SequenceSessionData data)
+        {
+            OpenSession(data.OutFileName, data.NumPeriods, data.ChannelNames.Count());
+        }
+
+        private void OpenSession(string fileName, Int32 numPeriods, Int32 numChannels)
         {
             _seqNumChannels = numChannels;
             _seqNumPeriods = numPeriods;
@@ -68,7 +73,7 @@ namespace Vixen.Export
                 try
                 {
                     _dataOut.Write(periodData[0].ToString("000").ToCharArray()); 
-                    for (int j = 0; j < _seqNumChannels; j++)
+                    for (int j = 1; j < _seqNumChannels; j++)
                     {
                         _dataOut.Write(',');
                         _dataOut.Write(periodData[j].ToString("000").ToCharArray());
@@ -111,7 +116,7 @@ namespace Vixen.Export
         {
             get
             {
-                return "CSV";
+                return "csv";
             }
         }
 

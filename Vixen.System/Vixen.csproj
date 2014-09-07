@@ -162,6 +162,8 @@
     <Compile Include="Export\ExportCommandHandler.cs" />
     <Compile Include="Export\FSEQWriter.cs" />
     <Compile Include="Export\IExport.cs" />
+    <Compile Include="Export\Vir2Writer.cs" />
+    <Compile Include="Export\Vix2Writer.cs" />
     <Compile Include="Extensions\IntentNodeCollection.cs" />
     <Compile Include="Factory\CommandOutputFactory.cs" />
     <Compile Include="Factory\ControllerFactory.cs" />

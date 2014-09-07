@@ -16,6 +16,9 @@ namespace VixenModules.Effect.LipSync
         [DataMember]
         public String PhonemeMapping { get; set; }
 
+        [DataMember]
+        public String LyricData { get; set; }
+
         public LipSyncData()
         {
             StaticPhoneme = "REST";
@@ -25,6 +28,8 @@ namespace VixenModules.Effect.LipSync
         public override IModuleDataModel Clone()
         {
             LipSyncData result = new LipSyncData();
+            result.StaticPhoneme = StaticPhoneme;
+            result.PhonemeMapping = PhonemeMapping;
             return result;
         }
     }
