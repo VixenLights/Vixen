@@ -10,22 +10,6 @@ namespace VixenModules.Output.HelixController
 	[DataContract]
 	public class HelixData : ModuleDataModelBase
 	{
-		[DataMember]
-		private int SequenceEventPeriod { get; set; }
-
-		public int EventPeriod
-		{
-			get
-			{
-				if (SequenceEventPeriod == 0)
-				{
-					SequenceEventPeriod = 50;
-				}
-				return SequenceEventPeriod;
-			}
-			set { SequenceEventPeriod = value; }
-		}
-
 		override public IModuleDataModel Clone()
 		{
 			return MemberwiseClone() as IModuleDataModel;

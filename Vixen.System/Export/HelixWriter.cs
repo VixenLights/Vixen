@@ -14,7 +14,7 @@ using Vixen.Commands;
 
 namespace Vixen.Export
 {
-    public class Vix2Writer : IExportWriter
+    public class HelixWriter : IExportWriter
     {
         private Vix2XMLData _xmlData;
         private Byte[] _periodData;
@@ -139,51 +139,9 @@ namespace Vixen.Export
         {
             get
             {
-                return "Vixen 2.1 Sequence";
+                return "Helix File";
             }
         }
     }
 
-    [Serializable()]
-    [XmlRoot("Program")]
-    public class Vix2XMLData
-    {
-        public Vix2XMLData()
-        {
-            EngineType = "Standard";
-        }
-
-        public string Time { get; set; }
-        public string EventPeriodInMilliseconds { get; set; }
-        public string MinimumLevel { get; set; }
-        public string MaximumLevel { get; set; }
-        public string AudioDevice { get; set; }
-        public string  AudioVolume { get; set; }
-        
-        [XmlArrayItem("Channel")]
-        public List<Vix2Channel> Channels { get; set; }
-
-        public string EngineType { get; set; }
-        public string EventValues { get; set; }
-        
-    }
-
-    public class Vix2Channel
-    {
-        
-        [XmlText]
-        public string name;
-
-        [XmlAttribute]
-        public int id;
-
-        [XmlAttribute]
-        public int output;
-
-        [XmlAttribute]
-        public bool enabled;
-
-        [XmlAttribute]
-        public int color;
-    }
 }
