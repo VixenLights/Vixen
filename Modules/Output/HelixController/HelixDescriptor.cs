@@ -17,7 +17,7 @@ namespace VixenModules.Output.HelixController
 		/// </summary>
 		public override string Author
 		{
-			get { return "Tony Eberle"; }
+			get { return "Ed Brady"; }
 		}
 
 		/// <summary>
@@ -25,7 +25,7 @@ namespace VixenModules.Output.HelixController
 		/// </summary>
 		public override string Description
 		{
-			get { return "Helix Virtual Controller"; }
+			get { return "Helix File Export"; }
 		}
 
 		/// <summary>
@@ -58,7 +58,7 @@ namespace VixenModules.Output.HelixController
 		/// </summary>
 		public override string TypeName
 		{
-			get { return "Helix Virtual Controller"; }
+			get { return "Helix File Export"; }
 		}
 
 		/// <summary>
@@ -66,7 +66,7 @@ namespace VixenModules.Output.HelixController
 		/// </summary>
 		public override string Version
 		{
-			get { return "1.0"; }
+			get { return "1.1"; }
 		}
 	}
 }
