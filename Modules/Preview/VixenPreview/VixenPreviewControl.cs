@@ -35,6 +35,8 @@ namespace VixenModules.Preview.VixenPreview
 		public static double lastUpdateTime = 0;
 		public double lastRenderUpdateTime = 0;
         private bool DefaultBackground = true;
+        Point zoomTo;
+        private bool _displayItemsLoaded = false;
 
 		private Tools _currentTool = Tools.Select;
 
@@ -133,6 +135,20 @@ namespace VixenModules.Preview.VixenPreview
 				}
 				SetupBackgroundAlphaImage();
                 if (OnChangeZoomLevel != null) OnChangeZoomLevel(this, _zoomLevel);
+
+                // Set the new background position based on the mouse position
+                Point backgroundPoint = ZoomPointToBackgroundPoint(zoomTo);
+                Point mp = PointToClient(MousePosition);
+                int newHValue = backgroundPoint.X - mp.X; ;
+                if (newHValue > 0 && newHValue <= hScroll.Maximum)
+                {
+                    hScroll.Value = newHValue;
+                }
+                int newYValue = backgroundPoint.Y - mp.Y; ;
+                if (newYValue > 0 && newYValue <= vScroll.Maximum)
+                {
+                    vScroll.Value = newYValue;
+                }
 			}
 		}
 
@@ -204,6 +220,11 @@ namespace VixenModules.Preview.VixenPreview
 		{
 			get
 			{
+                if (!_displayItemsLoaded && Data != null && Data.DisplayItems != null) 
+                {
+                    _displayItemsLoaded = true;
+                    ZoomLevel = 1;
+                }
 				if (Data != null) {
 					return Data.DisplayItems;
 				}
@@ -241,9 +262,9 @@ namespace VixenModules.Preview.VixenPreview
             MouseWheel += VixenPreviewControl_MouseWheel;
 			Controls.Add(vScroll);
 			Controls.Add(hScroll);
-			LayoutProps();
             ZoomLevel = 1;
-		}
+            LayoutProps();
+        }
 
 		public void LayoutProps()
 		{
@@ -850,8 +871,91 @@ namespace VixenModules.Preview.VixenPreview
 
         protected override void OnKeyDown(KeyEventArgs e)
         {
-            base.OnKeyDown(e);
-            if (e.KeyCode == Keys.Escape)
+            if (e.KeyCode == Keys.Delete)
+            {
+                Delete();
+                e.Handled = true;
+            }
+            // Copy
+            else if (e.KeyCode == Keys.C && e.Modifiers == Keys.Control)
+            {
+                Copy();
+                e.Handled = true;
+            }
+            else if (e.KeyCode == Keys.X && e.Modifiers == Keys.Control)
+            {
+                Cut();
+                e.Handled = true;
+            }
+            else if (e.KeyCode == Keys.V && e.Modifiers == Keys.Control)
+            {
+                if (Paste())
+                {
+                    // move the prop to the mouse position
+                    Point moveToPoint = PointToClient(MousePosition);
+                    _selectedDisplayItem.Shape.MoveTo(moveToPoint.X, moveToPoint.Y);
+
+                    StartMove(moveToPoint.X, moveToPoint.Y);
+                }
+                e.Handled = true;
+            }
+            else if (e.KeyCode == Keys.Up)
+            {
+                if (_selectedDisplayItem != null)
+                    _selectedDisplayItem.Shape.Nudge(0, -1);
+                else if (SelectedDisplayItems.Count > 0)
+                {
+                    foreach (DisplayItem item in DisplayItems)
+                    {
+                        if (SelectedDisplayItems.Contains(item))
+                            item.Shape.Nudge(0, -1);
+                    }
+                }
+                e.Handled = true;
+            }
+            else if (e.KeyCode == Keys.Down)
+            {
+                if (_selectedDisplayItem != null)
+                    _selectedDisplayItem.Shape.Nudge(0, 1);
+                else if (SelectedDisplayItems.Count > 0)
+                {
+                    foreach (DisplayItem item in DisplayItems)
+                    {
+                        if (SelectedDisplayItems.Contains(item))
+                            item.Shape.Nudge(0, 1);
+                    }
+                }
+                e.Handled = true;
+            }
+            else if (e.KeyCode == Keys.Right)
+            {
+                if (_selectedDisplayItem != null)
+                    _selectedDisplayItem.Shape.Nudge(1, 0);
+                else if (SelectedDisplayItems.Count > 0)
+                {
+                    foreach (DisplayItem item in DisplayItems)
+                    {
+                        if (SelectedDisplayItems.Contains(item))
+                            item.Shape.Nudge(1, 0);
+                    }
+                }
+                e.Handled = true;
+            }
+            else if (e.KeyCode == Keys.Left)
+            {
+                if (_selectedDisplayItem != null)
+                    _selectedDisplayItem.Shape.Nudge(-1, 0);
+                else if (SelectedDisplayItems.Count > 0)
+                {
+                    foreach (DisplayItem item in DisplayItems)
+                    {
+                        if (SelectedDisplayItems.Contains(item))
+                            item.Shape.Nudge(-1, 0);
+                    }
+                }
+                e.Handled = true;
+            }
+            else if (e.KeyCode == Keys.Escape)
             {
                 if (_selectedDisplayItem != null && _selectedDisplayItem.Shape != null)
                 {
@@ -861,7 +965,8 @@ namespace VixenModules.Preview.VixenPreview
                         _currentTool = Tools.Select;
                         OnSelectDisplayItem(this, _selectedDisplayItem);
                         ResetMouse();
-                    } else if (_selectedDisplayItem.Shape is PreviewMultiString)
+                    }
+                    else if (_selectedDisplayItem.Shape is PreviewMultiString)
                     {
                         (_selectedDisplayItem.Shape as PreviewMultiString).EndCreation();
                         _currentTool = Tools.Select;
@@ -869,7 +974,26 @@ namespace VixenModules.Preview.VixenPreview
                         ResetMouse();
                     }
                 }
+                e.Handled = true;
             }
+            else if (e.KeyCode == Keys.Oemplus && Control.ModifierKeys == Keys.Control)
+            {
+                if (ZoomLevel < 4)
+                {
+                    ZoomLevel += .25;
+                }
+                e.Handled = true;
+            }
+            else if (e.KeyCode == Keys.OemMinus && Control.ModifierKeys == Keys.Control)
+            {
+                if (ZoomLevel > .25)
+                {
+                    ZoomLevel -= .25;
+                }
+                e.Handled = true;
+            } 
+            
+            base.OnKeyDown(e);
         }
 
 		private void VixenPreviewControl_MouseUp(object sender, MouseEventArgs e)
@@ -1005,93 +1129,6 @@ namespace VixenModules.Preview.VixenPreview
 			}
 		}
 
-		private void VixenPreviewControl_KeyUp(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Delete) {
-				Delete();
-			}
-				// Copy
-			else if (e.KeyCode == Keys.C && e.Modifiers == Keys.Control) {
-				Copy();
-			}
-			else if (e.KeyCode == Keys.X && e.Modifiers == Keys.Control) {
-				Cut();
-			}
-			else if (e.KeyCode == Keys.V && e.Modifiers == Keys.Control) {
-				if (Paste()) {
-					// move the prop to the mouse position
-					Point moveToPoint = PointToClient(MousePosition);
-                    _selectedDisplayItem.Shape.MoveTo(moveToPoint.X, moveToPoint.Y);
-
-                    StartMove(moveToPoint.X, moveToPoint.Y);
-				}
-			}
-			else if (e.KeyCode == Keys.Up) {
-				if (_selectedDisplayItem != null)
-					_selectedDisplayItem.Shape.Nudge(0, -1);
-				else if (SelectedDisplayItems.Count > 0) {
-					foreach (DisplayItem item in DisplayItems) {
-						if (SelectedDisplayItems.Contains(item))
-							item.Shape.Nudge(0, -1);
-					}
-				}
-			}
-			else if (e.KeyCode == Keys.Down) {
-				if (_selectedDisplayItem != null)
-					_selectedDisplayItem.Shape.Nudge(0, 1);
-				else if (SelectedDisplayItems.Count > 0) {
-					foreach (DisplayItem item in DisplayItems) {
-						if (SelectedDisplayItems.Contains(item))
-							item.Shape.Nudge(0, 1);
-					}
-				}
-			}
-			else if (e.KeyCode == Keys.Right) {
-				if (_selectedDisplayItem != null)
-					_selectedDisplayItem.Shape.Nudge(1, 0);
-				else if (SelectedDisplayItems.Count > 0) {
-					foreach (DisplayItem item in DisplayItems) {
-						if (SelectedDisplayItems.Contains(item))
-							item.Shape.Nudge(1, 0);
-					}
-				}
-			}
-			else if (e.KeyCode == Keys.Left) {
-				if (_selectedDisplayItem != null)
-					_selectedDisplayItem.Shape.Nudge(-1, 0);
-				else if (SelectedDisplayItems.Count > 0) {
-					foreach (DisplayItem item in DisplayItems) {
-						if (SelectedDisplayItems.Contains(item))
-							item.Shape.Nudge(-1, 0);
-					}
-				}
-			}
-			else if (e.KeyCode == Keys.Escape) {
-				// not sure how to handle this yet...
-				// would work fine if we were always live moving.
-				// if we are standard mving, we don't want to delete the item when escape is pressed!
-
-				//if (_mouseCaptured) {
-				//Capture = false;
-				//_mouseCaptured = false;
-				//DisplayItems.Remove(_selectedDisplayItem);
-				//DeSelectSelectedDisplayItem();
-			}
-			else if (e.KeyCode == Keys.Oemplus && Control.ModifierKeys == Keys.Control)
-			{
-                if (ZoomLevel < 4) { 
-				    ZoomLevel += .25;
-                }
-			}
-			else if (e.KeyCode == Keys.OemMinus && Control.ModifierKeys == Keys.Control)
-			{
-                if (ZoomLevel > .25)
-                {
-                    ZoomLevel -= .25;
-                }
-			}
-		}
-
 		public void DeSelectSelectedDisplayItem()
 		{
 			if (_selectedDisplayItem != null) {
@@ -1111,8 +1148,6 @@ namespace VixenModules.Preview.VixenPreview
 
 		public void Reload()
 		{
-			//lock (PreviewTools.renderLock)
-			//{
 			if (NodeToPixel == null) NodeToPixel = new ConcurrentDictionary<ElementNode, List<PreviewPixel>>();
 			NodeToPixel.Clear();
 
@@ -1141,7 +1176,6 @@ namespace VixenModules.Preview.VixenPreview
 				}
 			}
 			LoadBackground();
-			//}
 		}
 
 		public bool Paused
@@ -1570,92 +1604,6 @@ namespace VixenModules.Preview.VixenPreview
 				bufferedGraphics.Render(Graphics.FromHwnd(this.Handle));
 		}
 
-		//public void ResetNodeToPixelDictionary()
-		//{
-		//    Console.WriteLine("ResetNodeToPixelDictionary");
-		//    if (NodeToPixel == null)
-		//        NodeToPixel = new Dictionary<ElementNode, List<PreviewPixel>>();
-		//    else
-		//        NodeToPixel.Clear();
-		//#region "Update in a Task"
-		//public void ProcessUpdateInTask(ElementIntentStates elementStates)
-		//{
-		//    Task taskWithInActualMethodAndState =
-		//        new Task(() => { ProcessUpdatesTask(elementStates); });
-		//    taskWithInActualMethodAndState.Start();
-		//}
-
-		//delegate void RenderDelegate(Bitmap bitmap);
-		//private void Render(Bitmap bitmap)
-		//{
-		//    if (bufferedGraphics != null)
-		//    {
-		//        // First, draw our background image opaque
-		//        bufferedGraphics.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
-		//        bufferedGraphics.Graphics.DrawImage(bitmap, 0, 0, bitmap.Width, bitmap.Height);
-
-		//        if (!this.Disposing && bufferedGraphics != null)
-		//            bufferedGraphics.Render(Graphics.FromHwnd(this.Handle));
-		//    }
-		//}
-
-		//private void ProcessUpdatesTask(ElementIntentStates elementStates)
-		//{
-		//    lock (PreviewTools.renderLock)
-		//    {
-		//        renderTimer.Reset();
-		//        renderTimer.Start();
-		//        if (!_paused)
-		//        {
-		//            FastPixel fp = null;
-		//            fp = new FastPixel(new Bitmap(_alphaBackground));
-		//            fp.Lock();
-
-		//            Color c;
-		//            foreach (var channelIntentState in elementStates)
-		//            {
-		//                var elementId = channelIntentState.Key;
-		//                Element element = VixenSystem.Elements.GetElement(elementId);
-		//                if (element == null) continue;
-		//                ElementNode node = VixenSystem.Elements.GetElementNodeForElement(element);
-		//                if (node == null) continue;
-
-		//                foreach (IIntentState<LightingValue> intentState in channelIntentState.Value)
-		//                {
-		//                    c = intentState.GetValue().GetAlphaChannelIntensityAffectedColor();
-		//                    if (_background != null)
-		//                    {
-		//                        List<PreviewPixel> pixels;
-		//                        if (NodeToPixel.TryGetValue(node, out pixels))
-		//                        {
-		//                            foreach (PreviewPixel pixel in pixels)
-		//                            {
-		//                                pixel.Draw(fp, c);
-		//                            }
-		//                        }
-		//                    }
-		//                }
-		//            }
-
-		//            fp.Unlock(true);
-
-		//            // Need to trap an error here -- it happens when exiting Vixen.
-		//            // Nothing I've tried prevents this error.
-		//            try
-		//            {
-		//                BeginInvoke(new RenderDelegate(Render), new object[] { fp.Bitmap });
-		//            }
-		//            catch
-		//            {
-		//            }
-		//        }
-
-		//        renderTimer.Stop();
-		//        lastRenderUpdateTime = renderTimer.ElapsedMilliseconds;
-		//    }
-		//}
-		//#endregion
-
 		#region "Foreground updates"
 
 		/// <summary>
@@ -1755,14 +1703,43 @@ namespace VixenModules.Preview.VixenPreview
             return newP;
         }
 
+        public Point MousePointToZoomPoint(Point p) 
+        {
+            int x = p.X + hScroll.Value;
+            int y = p.Y + vScroll.Value;
+            int xDif = p.X - Convert.ToInt32(x / ZoomLevel);
+            int yDif = p.Y - Convert.ToInt32(y / ZoomLevel);
+            Point newP = new Point(p.X - xDif, p.Y - yDif);
+            return newP;
+        }
+
+        public Point ZoomPointToBackgroundPoint(Point p)
+        {
+            int x = Convert.ToInt32(p.X * ZoomLevel);
+            int y = Convert.ToInt32(p.Y * ZoomLevel);
+            Point newP = new Point(x, y);
+            return newP;
+        }
+
         private void VixenPreviewControl_MouseWheel(object sender, MouseEventArgs e)
         {
             double delta = Convert.ToDouble(e.Delta) / 1000;
 
             // Zoom to the pointer location
-            Point zoomTo = PointToZoomPoint(e.Location);
+            zoomTo = MousePointToZoomPoint(e.Location);;
 
             ZoomLevel += delta;
+        }
+
+        private void VixenPreviewControl_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        {
+            if (e.KeyCode == Keys.Left ||
+                e.KeyCode == Keys.Right ||
+                e.KeyCode == Keys.Up ||
+                e.KeyCode == Keys.Down)
+            {
+                e.IsInputKey = true;
+            }
         }
 	}
 }

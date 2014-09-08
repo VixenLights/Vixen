@@ -51,16 +51,16 @@
             // 
             // VixenPreviewControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.Name = "VixenPreviewControl";
-            this.Size = new System.Drawing.Size(387, 295);
+            this.Size = new System.Drawing.Size(580, 461);
             this.Load += new System.EventHandler(this.VixenPreviewControl_Load);
-            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.VixenPreviewControl_KeyUp);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.VixenPreviewControl_MouseDown);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.VixenPreviewControl_MouseMove);
             this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.VixenPreviewControl_MouseUp);
+            this.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.VixenPreviewControl_PreviewKeyDown);
             this.Resize += new System.EventHandler(this.VixenPreviewControl_Resize);
             this.ResumeLayout(false);
 
