@@ -158,6 +158,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             set
             {
                 _stringDirection = value;
+                Layout();
             }
         }
 
@@ -339,13 +340,17 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					int heightOffset = ((outerHeight - innerHeight) / 2);
 					int innerLeft = _topLeftPoint.X + widthOffset;
 					int innerTop = _topLeftPoint.Y + heightOffset;
+
+                    int rot = XYRotation;
+                    //if (StringDirection == StringDirections.CounterClockwise)
+                    //    rot = -rot;
 					List<Point> innerEllipse = PreviewTools.GetEllipsePoints(innerLeft,
 																			 innerTop,
 																			 innerWidth,
 																			 innerHeight,
 																			 _pointCount,
 																			 360,
-																			 XYRotation);
+																			 rot);
 
                     int pixelNum = 0;
                     int ellipsePointNum = 0;
@@ -370,7 +375,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                         }
                         else
                         {
-                            ellipsePointNum = (_pointCount - 1) - i;
+                            ellipsePointNum = (_pointCount) - i;
                             point1 = innerEllipse[ellipsePointNum];
                             if (ellipsePointNum > 0)
                             {
