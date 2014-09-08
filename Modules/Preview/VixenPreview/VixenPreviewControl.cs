@@ -457,7 +457,15 @@ namespace VixenModules.Preview.VixenPreview
                 if (e.Button == System.Windows.Forms.MouseButtons.Left) {
                     if (controlPressed)
                     {
-                        SelectItemUnderPoint(translatedPoint, controlPressed);
+                        DisplayItem item = DisplayItemAtPoint(translatedPoint);
+                        if (item != null && SelectedDisplayItems.Contains(item))
+                        {
+                            SelectedDisplayItems.Remove(item);
+                        }
+                        else
+                        {
+                            SelectItemUnderPoint(translatedPoint, controlPressed);
+                        }
                         return;
                     }
 					if (_currentTool == Tools.Select) {
