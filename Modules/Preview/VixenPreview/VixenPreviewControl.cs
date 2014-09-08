@@ -840,12 +840,19 @@ namespace VixenModules.Preview.VixenPreview
                     // If we get here, we're drwing a rubber band
                     else if (_banding)
                     {
-                        _bandRect.Location = dragStart;
-                        _bandRect.Width = changeX;
-                        _bandRect.Height = changeY;
+                        int X1 = Math.Min(dragStart.X, dragStart.X + changeX);
+                        int Y1 = Math.Min(dragStart.Y, dragStart.Y + changeY);
+                        
+                        _bandRect.Location = new Point(X1, Y1);
+                        _bandRect.Width = Math.Abs(changeX);
+                        _bandRect.Height = Math.Abs(changeY);
+                        
                         foreach (DisplayItem item in DisplayItems)
                         {
-                            if (item.Shape.ShapeInRect(_bandRect))
+                            if ( 
+                                (changeX < 0 && item.Shape.ShapeInRect(_bandRect)) ||
+                                (changeX > 0 && item.Shape.ShapeAllInRect(_bandRect))
+                               )
                             {
                                 if (!SelectedDisplayItems.Contains(item))
                                 {
