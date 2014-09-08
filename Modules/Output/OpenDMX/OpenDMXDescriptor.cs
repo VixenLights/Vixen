@@ -27,7 +27,7 @@ namespace VixenModules.Controller.OpenDMX
 
 		public override string TypeName
 		{
-			get { return "Open DMX Output"; }
+			get { return "DMX Open"; }
 		}
 
 		public override string Version

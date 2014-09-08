@@ -34,7 +34,7 @@ namespace VixenModules.Output.GenericSerial
 
 		public override string TypeName
 		{
-			get { return "GenericSerial"; }
+			get { return "Generic Serial"; }
 		}
 
 		public override string Version

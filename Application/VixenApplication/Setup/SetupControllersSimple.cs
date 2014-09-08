@@ -50,7 +50,8 @@ namespace VixenApplication.Setup
 				comboBoxNewControllerType.Items.Add(item);
 			}			
 			comboBoxNewControllerType.EndUpdate();
-			if (comboBoxNewControllerType.Items.Count > 0)
+            comboBoxNewControllerType.Sorted = true;
+            if (comboBoxNewControllerType.Items.Count > 0)
 				comboBoxNewControllerType.SelectedIndex = 0;
 
 			controllerTree.ControllerSelectionChanged += controllerTree_ControllerSelectionChanged;
