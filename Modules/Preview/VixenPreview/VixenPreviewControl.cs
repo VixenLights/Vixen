@@ -457,7 +457,15 @@ namespace VixenModules.Preview.VixenPreview
                 if (e.Button == System.Windows.Forms.MouseButtons.Left) {
                     if (controlPressed)
                     {
-                        SelectItemUnderPoint(translatedPoint, controlPressed);
+                        DisplayItem item = DisplayItemAtPoint(translatedPoint);
+                        if (item != null && SelectedDisplayItems.Contains(item))
+                        {
+                            SelectedDisplayItems.Remove(item);
+                        }
+                        else
+                        {
+                            SelectItemUnderPoint(translatedPoint, controlPressed);
+                        }
                         return;
                     }
 					if (_currentTool == Tools.Select) {
@@ -710,11 +718,12 @@ namespace VixenModules.Preview.VixenPreview
 						}
                         menu.Show(this, e.Location);
 					}
-				}
+                }
             }
             else if (e.Button == System.Windows.Forms.MouseButtons.Middle)
             {
                 // Pan
+                zoomTo = MousePointToZoomPoint(e.Location);
             }
 		}
 
@@ -808,66 +817,104 @@ namespace VixenModules.Preview.VixenPreview
 			_mouseCaptured = true;
 		}
 
-		private void VixenPreviewControl_MouseMove(object sender, MouseEventArgs e)
-		{
-			if (_editMode) {
+        private void VixenPreviewControl_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (_editMode)
+            {
                 PreviewPoint translatedPoint = new PreviewPoint(e.X + hScroll.Value, e.Y + vScroll.Value);
                 PreviewPoint originalPoint = new PreviewPoint(e.X, e.Y);
-                
-                dragCurrent.X = translatedPoint.X;
-                dragCurrent.Y = translatedPoint.Y;
-                changeX = translatedPoint.X - dragStart.X;
-                changeY = translatedPoint.Y - dragStart.Y;
+                if (e.Button == System.Windows.Forms.MouseButtons.Middle)
+                {
+                    // Woo hoo... we're panning with the middle mouse button
+                    // Set the new background position based on the mouse position
+                    Point backgroundPoint = ZoomPointToBackgroundPoint(zoomTo);
+                    Point mp = PointToClient(MousePosition);
+                    int newHValue = backgroundPoint.X - mp.X; ;
+                    if (newHValue > 0 && newHValue <= hScroll.Maximum)
+                    {
+                        hScroll.Value = newHValue;
+                    }
+                    int newYValue = backgroundPoint.Y - mp.Y; ;
+                    if (newYValue > 0 && newYValue <= vScroll.Maximum)
+                    {
+                        vScroll.Value = newYValue;
+                    }
+                } 
+                else 
+                {
+                    dragCurrent.X = translatedPoint.X;
+                    dragCurrent.Y = translatedPoint.Y;
+                    changeX = translatedPoint.X - dragStart.X;
+                    changeY = translatedPoint.Y - dragStart.Y;
 
-				// Are we moving a single display item?
-				if (_mouseCaptured && _selectedDisplayItem != null) {
-					_selectedDisplayItem.Shape.MouseMove(dragCurrent.X, dragCurrent.Y, changeX, changeY);
-				}
-			    // If we get here, we're drwing a rubber band
-				else if (_banding) {
-					_bandRect.Location = dragStart;
-					_bandRect.Width = changeX;
-					_bandRect.Height = changeY;
-					foreach (DisplayItem item in DisplayItems) {
-						if (item.Shape.ShapeInRect(_bandRect)) {
-							if (!SelectedDisplayItems.Contains(item)) {
-								SelectedDisplayItems.Add(item);
-							}
-						}
-						else if (SelectedDisplayItems.Contains(item)) {
-							SelectedDisplayItems.Remove(item);
-						}
-					}
-				}
-					// Are we moving a group of display items?
-				else if (_mouseCaptured && _selectedDisplayItem == null && SelectedDisplayItems.Count > 1) {
-					foreach (DisplayItem item in SelectedDisplayItems) {
-						item.Shape.MouseMove(dragCurrent.X, dragCurrent.Y, changeX, changeY);
-					}
-				}
-				else {
-					if (_selectedDisplayItem != null) {
+                    // Are we moving a single display item?
+                    if (_mouseCaptured && _selectedDisplayItem != null)
+                    {
+                        _selectedDisplayItem.Shape.MouseMove(dragCurrent.X, dragCurrent.Y, changeX, changeY);
+                    }
+                    // If we get here, we're drwing a rubber band
+                    else if (_banding)
+                    {
+                        int X1 = Math.Min(dragStart.X, dragStart.X + changeX);
+                        int Y1 = Math.Min(dragStart.Y, dragStart.Y + changeY);
+
+                        _bandRect.Location = new Point(X1, Y1);
+                        _bandRect.Width = Math.Abs(changeX);
+                        _bandRect.Height = Math.Abs(changeY);
+
+                        foreach (DisplayItem item in DisplayItems)
+                        {
+                            if (
+                                (changeX < 0 && item.Shape.ShapeInRect(_bandRect)) ||
+                                (changeX > 0 && item.Shape.ShapeAllInRect(_bandRect))
+                               )
+                            {
+                                if (!SelectedDisplayItems.Contains(item))
+                                {
+                                    SelectedDisplayItems.Add(item);
+                                }
+                            }
+                            else if (SelectedDisplayItems.Contains(item))
+                            {
+                                SelectedDisplayItems.Remove(item);
+                            }
+                        }
+                    }
+                    // Are we moving a group of display items?
+                    else if (_mouseCaptured && _selectedDisplayItem == null && SelectedDisplayItems.Count > 1)
+                    {
+                        foreach (DisplayItem item in SelectedDisplayItems)
+                        {
+                            item.Shape.MouseMove(dragCurrent.X, dragCurrent.Y, changeX, changeY);
+                        }
+                    }
+                    
+                    if (_selectedDisplayItem != null)
+                    {
                         PreviewPoint selectPoint = _selectedDisplayItem.Shape.PointInSelectPoint(translatedPoint);
-						if (selectPoint != null) {
-							Cursor.Current = Cursors.Cross;
-						}
+                        if (selectPoint != null)
+                        {
+                            Cursor.Current = Cursors.Cross;
+                        }
                         else if (_selectedDisplayItem.Shape.PointInShape(translatedPoint))
                         {
-							Cursor.Current = Cursors.SizeAll;
-						}
-						else {
-							Cursor.Current = Cursors.Default;
-						}
-					}
-					else if (SelectedDisplayItems.Count > 0) {
+                            Cursor.Current = Cursors.SizeAll;
+                        }
+                        else
+                        {
+                            Cursor.Current = Cursors.Default;
+                        }
+                    }
+                    else if (SelectedDisplayItems.Count > 0)
+                    {
                         if (MouseOverSelectedDisplayItems(translatedPoint.X, translatedPoint.Y))
                         {
                             Cursor.Current = Cursors.SizeAll;
                         }
                     }
-				}
-			}
-		}
+                }
+            }
+        }
 
         protected override void OnKeyDown(KeyEventArgs e)
         {

@@ -478,16 +478,31 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public virtual bool ShapeInRect(Rectangle rect)
 		{
-			foreach (PreviewPixel pixel in Pixels) {
-				if (pixel.X >= rect.X &&
-				    pixel.X <= rect.X + rect.Width &&
-				    pixel.Y >= rect.Y &&
-				    pixel.Y <= rect.Y + rect.Height) {
-					return true;
-				}
-			}
+            foreach (PreviewPixel pixel in Pixels)
+            {
+                int X1 = Math.Min(rect.X, rect.X + rect.Width);
+                int X2 = Math.Max(rect.X, rect.X + rect.Width);
+                int Y1 = Math.Min(rect.Y, rect.Y + rect.Height);
+                int Y2 = Math.Max(rect.Y, rect.Y + rect.Height);
+                if (pixel.X >= X1 &&
+                    pixel.X <= X2 &&
+                    pixel.Y >= Y1 &&
+                    pixel.Y <= Y2)
+                {
+                    return true;
+                }
+            }
 			return false;
 		}
+
+        public virtual bool ShapeAllInRect(Rectangle rect)
+        {
+            int X1 = Math.Min(rect.X, rect.X + rect.Width);
+            int X2 = Math.Max(rect.X, rect.X + rect.Width);
+            int Y1 = Math.Min(rect.Y, rect.Y + rect.Height);
+            int Y2 = Math.Max(rect.Y, rect.Y + rect.Height);
+            return (Top >= Y1 && Bottom <= Y2 && Left >= X1 && Right <= X2);
+        }
 
 		public PreviewPoint PointInSelectPoint(PreviewPoint point)
 		{

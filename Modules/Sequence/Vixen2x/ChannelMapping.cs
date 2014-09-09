@@ -10,13 +10,26 @@ namespace VixenModules.SequenceType.Vixen2x
 	[Serializable]
 	public class ChannelMapping
 	{
-		public string ChannelName;
-		public Color ChannelColor;
-		public string ChannelOutput;
-		public string ChannelNumber;
-		public Color DestinationColor;
+		public string ChannelName = string.Empty;
+		public Color ChannelColor = new Color();
+		public string ChannelOutput = string.Empty;
+		public string ChannelNumber = string.Empty;
+		public Color DestinationColor = new Color();
 		public Guid ElementNodeId;
+		public bool RgbPixel = false;
 
+
+		public ChannelMapping(string channelName, Color channelColor, string channelNumber, string channelOutput, Guid nodeId,
+							  Color destinationColor, bool rgbPixel)
+		{
+			ChannelName = channelName;
+			ChannelColor = channelColor;
+			ChannelOutput = channelOutput;
+			ChannelNumber = channelNumber;
+			ElementNodeId = nodeId;
+			DestinationColor = destinationColor;
+			RgbPixel = rgbPixel;
+		}
 
 		public ChannelMapping(string channelName, Color channelColor, string channelNumber, string channelOutput, Guid nodeId,
 		                      Color destinationColor)
