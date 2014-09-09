@@ -817,16 +817,31 @@ namespace VixenModules.Preview.VixenPreview
 			_mouseCaptured = true;
 		}
 
-		private void VixenPreviewControl_MouseMove(object sender, MouseEventArgs e)
-		{
+        private void VixenPreviewControl_MouseMove(object sender, MouseEventArgs e)
+        {
             if (_editMode)
             {
-                if (e.Button == System.Windows.Forms.MouseButtons.Left)
+                PreviewPoint translatedPoint = new PreviewPoint(e.X + hScroll.Value, e.Y + vScroll.Value);
+                PreviewPoint originalPoint = new PreviewPoint(e.X, e.Y);
+                if (e.Button == System.Windows.Forms.MouseButtons.Middle)
                 {
-
-                    PreviewPoint translatedPoint = new PreviewPoint(e.X + hScroll.Value, e.Y + vScroll.Value);
-                    PreviewPoint originalPoint = new PreviewPoint(e.X, e.Y);
-
+                    // Woo hoo... we're panning with the middle mouse button
+                    // Set the new background position based on the mouse position
+                    Point backgroundPoint = ZoomPointToBackgroundPoint(zoomTo);
+                    Point mp = PointToClient(MousePosition);
+                    int newHValue = backgroundPoint.X - mp.X; ;
+                    if (newHValue > 0 && newHValue <= hScroll.Maximum)
+                    {
+                        hScroll.Value = newHValue;
+                    }
+                    int newYValue = backgroundPoint.Y - mp.Y; ;
+                    if (newYValue > 0 && newYValue <= vScroll.Maximum)
+                    {
+                        vScroll.Value = newYValue;
+                    }
+                } 
+                else 
+                {
                     dragCurrent.X = translatedPoint.X;
                     dragCurrent.Y = translatedPoint.Y;
                     changeX = translatedPoint.X - dragStart.X;
@@ -842,14 +857,14 @@ namespace VixenModules.Preview.VixenPreview
                     {
                         int X1 = Math.Min(dragStart.X, dragStart.X + changeX);
                         int Y1 = Math.Min(dragStart.Y, dragStart.Y + changeY);
-                        
+
                         _bandRect.Location = new Point(X1, Y1);
                         _bandRect.Width = Math.Abs(changeX);
                         _bandRect.Height = Math.Abs(changeY);
-                        
+
                         foreach (DisplayItem item in DisplayItems)
                         {
-                            if ( 
+                            if (
                                 (changeX < 0 && item.Shape.ShapeInRect(_bandRect)) ||
                                 (changeX > 0 && item.Shape.ShapeAllInRect(_bandRect))
                                )
@@ -873,52 +888,33 @@ namespace VixenModules.Preview.VixenPreview
                             item.Shape.MouseMove(dragCurrent.X, dragCurrent.Y, changeX, changeY);
                         }
                     }
-                    else
+                    
+                    if (_selectedDisplayItem != null)
                     {
-                        if (_selectedDisplayItem != null)
+                        PreviewPoint selectPoint = _selectedDisplayItem.Shape.PointInSelectPoint(translatedPoint);
+                        if (selectPoint != null)
                         {
-                            PreviewPoint selectPoint = _selectedDisplayItem.Shape.PointInSelectPoint(translatedPoint);
-                            if (selectPoint != null)
-                            {
-                                Cursor.Current = Cursors.Cross;
-                            }
-                            else if (_selectedDisplayItem.Shape.PointInShape(translatedPoint))
-                            {
-                                Cursor.Current = Cursors.SizeAll;
-                            }
-                            else
-                            {
-                                Cursor.Current = Cursors.Default;
-                            }
+                            Cursor.Current = Cursors.Cross;
                         }
-                        else if (SelectedDisplayItems.Count > 0)
+                        else if (_selectedDisplayItem.Shape.PointInShape(translatedPoint))
                         {
-                            if (MouseOverSelectedDisplayItems(translatedPoint.X, translatedPoint.Y))
-                            {
-                                Cursor.Current = Cursors.SizeAll;
-                            }
+                            Cursor.Current = Cursors.SizeAll;
+                        }
+                        else
+                        {
+                            Cursor.Current = Cursors.Default;
                         }
                     }
-                }
-                else if (e.Button == System.Windows.Forms.MouseButtons.Middle) 
-                {
-                    // Woo hoo... we're panning with the middle mouse button
-                    // Set the new background position based on the mouse position
-                    Point backgroundPoint = ZoomPointToBackgroundPoint(zoomTo);
-                    Point mp = PointToClient(MousePosition);
-                    int newHValue = backgroundPoint.X - mp.X; ;
-                    if (newHValue > 0 && newHValue <= hScroll.Maximum)
+                    else if (SelectedDisplayItems.Count > 0)
                     {
-                        hScroll.Value = newHValue;
-                    }
-                    int newYValue = backgroundPoint.Y - mp.Y; ;
-                    if (newYValue > 0 && newYValue <= vScroll.Maximum)
-                    {
-                        vScroll.Value = newYValue;
+                        if (MouseOverSelectedDisplayItems(translatedPoint.X, translatedPoint.Y))
+                        {
+                            Cursor.Current = Cursors.SizeAll;
+                        }
                     }
                 }
             }
-		}
+        }
 
         protected override void OnKeyDown(KeyEventArgs e)
         {
