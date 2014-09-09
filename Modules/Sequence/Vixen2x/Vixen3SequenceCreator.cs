@@ -25,31 +25,18 @@ namespace VixenModules.SequenceType.Vixen2x
 		private CoversionProgressForm conversionProgressBar = null;
 		public Vixen2SequenceData parsedV2Sequence = null;
 		private List<ChannelMapping> mappings = null;
-
-		private enum patternType
-		{
-			[DescriptionAttribute("Groups of Similar Values")] SetLevelTrend,
-			[DescriptionAttribute("Fades")] PulseFadeTrend,
-			[DescriptionAttribute("Ramps")] PulseRampTrend,
-			[DescriptionAttribute("Single Cells")] SingleSetLevel
-		};
-
-		private const double curveDivisor = byte.MaxValue/100.0;
-		private const double startX = 0.0;
-		private const double endX = 100.0;
-		private const int resetEventPosition = 0;
-		private const int zeroEventValue = 0;
-
+		public Dictionary<Guid, List<ChannelMapping>> m_GuidToV2ChanList = new Dictionary<Guid, List<ChannelMapping>>();
 
 		public Vixen3SequenceCreator(Vixen2SequenceData v2Sequence, List<ChannelMapping> list)
 		{
 			parsedV2Sequence = v2Sequence;
 			mappings = list;
+			m_GuidToV2ChanList = convertMapping(mappings);
 
 			conversionProgressBar = new CoversionProgressForm();
 			conversionProgressBar.Show();
 
-			conversionProgressBar.SetupProgressBar(0, sizeof (patternType)*parsedV2Sequence.ElementCount);
+			conversionProgressBar.SetupProgressBar(0, parsedV2Sequence.ElementCount);
 
 			conversionProgressBar.StatusLineLabel = string.Empty;
 
@@ -59,13 +46,38 @@ namespace VixenModules.SequenceType.Vixen2x
 			conversionProgressBar.Close();
 		}
 
+		/// <summary>
+		/// Pass through the list of V2 channels and build a list of V3 channels that map back to the V2 channels
+		/// This will be used to try and consolidate color mapping of RGB outputs from tri channel inputs.
+		/// </summary>
+		/// <param name="mappings"></param>
+		/// <returns></returns>
+		private Dictionary<Guid, List<ChannelMapping>> convertMapping(List<ChannelMapping> mappings)
+		{
+			Dictionary<Guid, List<ChannelMapping>> outputMap = new Dictionary<Guid, List<ChannelMapping>>();
+			foreach (var v2channel in mappings)
+			{
+				// does the requested V3 Channel GUID exist in our list?
+				if (false == outputMap.ContainsKey(v2channel.ElementNodeId))
+				{
+					// create a new V3 GUID entry for this V2 channel
+					List<ChannelMapping> tempChanMap = new List<ChannelMapping>();
+					outputMap.Add(v2channel.ElementNodeId, tempChanMap);
+				} // end need to create a new GUID entry
+
+				// add this V2 channel to the list of V2 channels for this V3 channel
+				Logging.Info("convertMapping: Adding V2 Channel '" + v2channel.ChannelName + "' to the output map for '" + v2channel.ElementNodeId + ".");
+				outputMap[v2channel.ElementNodeId].Add(v2channel);
+			} // end process each V2 channel
+
+			// tell the caller how it went
+			return outputMap;
+		} // end convertMapping
+
 
 		private void createTimedSequence()
 		{
-			Sequence = new TimedSequence()
-			           	{
-			           		SequenceData = new TimedSequenceData()
-			           	};
+			Sequence = new TimedSequence() { SequenceData = new TimedSequenceData() };
 
 			// TODO: use this mark collection (maybe generate a grid?)
 			//I am not sure what to do with this, but it looks like John had a plan.
@@ -74,205 +86,140 @@ namespace VixenModules.SequenceType.Vixen2x
 			Sequence.Length = TimeSpan.FromMilliseconds(parsedV2Sequence.SeqLengthInMills);
 
 			var songFileName = parsedV2Sequence.SongPath + Path.DirectorySeparatorChar + parsedV2Sequence.SongFileName;
-			if (songFileName != null) {
-				if (File.Exists(songFileName)) {
+			if (songFileName != null)
+			{
+				if (File.Exists(songFileName))
+				{
 					Sequence.AddMedia(MediaService.Instance.GetMedia(songFileName));
 				}
-				else {
+				else
+				{
 					var message = string.Format("Could not locate the audio file '{0}'; please add it manually " +
-					                            "after import (Under Tools -> Associate Audio).", Path.GetFileName(songFileName));
+												"after import (Under Tools -> Associate Audio).", Path.GetFileName(songFileName));
 					MessageBox.Show(message, "Couldn't find audio");
 				}
 			}
 		}
 
+		/// <summary>
+		/// Convert parsedV2Sequence into a V3 sequence
+		/// </summary>
 		private void importSequenceData()
 		{
-			int startEventPosition = resetEventPosition;
-			var endEventPosition = resetEventPosition;
-			var priorEventNum = resetEventPosition;
+			// instantiate the state machine to process incoming data
+			Vixen2xSequenceImportSM import = new Vixen2xSequenceImportSM(Sequence, parsedV2Sequence.EventPeriod);
 
-			var startEventValue = zeroEventValue;
-			var endEventValue = zeroEventValue;
-			var priorEventValue = zeroEventValue;
-			var currentEventValue = zeroEventValue;
+			// the current color is based on the intensity of a three channel group
+			int red = 0;
+			int green = 0;
+			int blue = 0;
 
-			var pbImportValue = 0;
+			// for each channel in the V2 sequence
+			for (var currentElementNum = 0; currentElementNum < parsedV2Sequence.ElementCount; currentElementNum++)
+			{
+				// set the channel number and the time for each v2 event.
+				import.OpenChannel(mappings[currentElementNum].ElementNodeId, Convert.ToDouble(parsedV2Sequence.EventPeriod));
 
-			// These flags are here just to make the code below easier to read, at least for me.
-			var patternFound = false;
-			var processingSingleEvents = false;
-			var processingGroupEvents = false;
-			var processingRamps = false;
-			var processingFades = false;
-			var currentEventIsZero = true;
-			var currentEventIsNotZero = false;
-			var priorEventisNotZero = false;
+				// Logging.Debug("importSequenceData:currentElementNum: " + currentElementNum);
 
-			foreach (patternType pattern in Enum.GetValues(typeof (patternType))) {
-				processingSingleEvents = pattern == patternType.SingleSetLevel;
-				processingGroupEvents = pattern == patternType.SetLevelTrend;
-				processingRamps = pattern == patternType.PulseRampTrend;
-				processingFades = pattern == patternType.PulseFadeTrend;
+				string elementName = mappings[currentElementNum].ChannelName;
+				Color currentColor = Color.FromArgb(255, 255, 255);
+				byte currentIntensity = 0;
 
-				var patternText = ((DescriptionAttribute) ((pattern.GetType().GetMember(pattern.ToString()))[0]
-				                                          	.GetCustomAttributes(typeof (DescriptionAttribute), false)[0])).
-					Description;
+				conversionProgressBar.UpdateProgressBar(currentElementNum);
+				Application.DoEvents();
 
-				currentEventValue = zeroEventValue;
-				for (var currentElementNum = 0; currentElementNum < parsedV2Sequence.ElementCount; currentElementNum++) {
-					conversionProgressBar.StatusLineLabel = string.Format("Finding {0} on Element {1}", patternText,
-					                                                      currentElementNum + 1);
-					conversionProgressBar.UpdateProgressBar(++pbImportValue);
+				// process each event for this channel
+				for (uint currentEventNum = 0; currentEventNum < parsedV2Sequence.EventsPerElement; currentEventNum++)
+				{
+					ChannelMapping v2ChannelMapping = mappings[currentElementNum];
+					// get the intensity for this V2 channel
+					currentIntensity = parsedV2Sequence.EventData[currentElementNum * parsedV2Sequence.EventsPerElement + currentEventNum];
 
-					patternFound = false;
-					priorEventValue = zeroEventValue;
-					priorEventNum = resetEventPosition;
+					// is there an output channel?
+					if( Guid.Empty == v2ChannelMapping.ElementNodeId )
+					{
+						// no output channel. Move on to the next input channel
+						continue;
+					} // end no output channel defined
 
-					for (var currentEventNum = 0; currentEventNum < parsedV2Sequence.EventsPerElement; currentEventNum++) {
-						// To keep the progress bar looking snappy
-						if ((currentEventNum%10) == 0) {
-							Application.DoEvents();
+					// is this an RGB Pixel?
+					if (true == v2ChannelMapping.RgbPixel)
+					{
+						// Only process the RED channel of a three channel pixel
+						if (Color.Red != v2ChannelMapping.DestinationColor)
+						{
+							// this is not the red channel of a pixel
+							continue;
+						} // end not red pixel channel
+
+						red = 0;
+						green = 0;
+						blue = 0;
+
+						// process the input colors bound to this output channel
+						foreach (ChannelMapping v2Channel in m_GuidToV2ChanList[v2ChannelMapping.ElementNodeId])
+						{
+							// Logging.Info("convertMapping: Processing V2 Channel '" + v2Channel.ChannelName + "' color intensity.");
+
+							switch (v2Channel.DestinationColor.Name)
+							{
+								case "Red":
+									{
+										red = Math.Max( red, parsedV2Sequence.EventData[(Convert.ToInt64(v2Channel.ChannelNumber)-1) * parsedV2Sequence.EventsPerElement + currentEventNum]);
+										break;
+									} // end Red
+
+								case "Green":
+									{
+										green = Math.Max(green, parsedV2Sequence.EventData[(Convert.ToInt64(v2Channel.ChannelNumber) - 1) * parsedV2Sequence.EventsPerElement + currentEventNum]);
+										break;
+									} // end Green
+
+								case "Blue":
+									{
+										blue = Math.Max(blue, parsedV2Sequence.EventData[(Convert.ToInt64(v2Channel.ChannelNumber) - 1) * parsedV2Sequence.EventsPerElement + currentEventNum]);
+										break;
+									} // end Red
+
+								default:
+									{
+										Logging.Error("importSequenceData pixel conversion processing error. Skipping processing unexpected color '" + v2Channel.DestinationColor.Name + "' for V2 Channel '" + v2Channel.ChannelName + "(" + v2Channel.ChannelNumber + ")'");
+										break;
+									} // end default
+							} // end switch on color
+						} // end process each V2 channel assigned to the v3 channel
+
+						// get the max intensity for this v2 channel set
+						currentIntensity = Convert.ToByte(Math.Max(red, Math.Max(green, blue)));
+
+						// Scale the color to full intensity and let the intensity value attenuate it.
+						if (0 != currentIntensity)
+						{
+							double multplier = Convert.ToDouble(byte.MaxValue) / Convert.ToDouble(currentIntensity);
+
+							red = Math.Min(((int)255), Convert.ToInt32(Convert.ToDouble(red) * multplier));
+							green = Math.Min(((int)255), Convert.ToInt32(Convert.ToDouble(green) * multplier));
+							blue = Math.Min(((int)255), Convert.ToInt32(Convert.ToDouble(blue) * multplier));
 						}
-						currentEventValue =
-							parsedV2Sequence.EventData[currentElementNum*parsedV2Sequence.EventsPerElement + currentEventNum];
 
-						currentEventIsZero = currentEventValue == zeroEventValue;
-						currentEventIsNotZero = !currentEventIsZero;
-						priorEventisNotZero = priorEventValue != zeroEventValue;
+						// set the final color
+						currentColor = Color.FromArgb(red, green, blue);
+					} // end pixel processing
+					else
+					{
+						// set the non pixel color value
+						currentColor = mappings[currentElementNum].DestinationColor;
+					} // end non pixel processing
 
-						// Add a non zero single set level event.
-						if (processingSingleEvents && currentEventIsNotZero) {
-							addEvent(pattern, currentElementNum, currentEventNum, currentEventValue, currentEventNum);
+					// process the event through the state machine.
+					import.processEvent(currentEventNum, currentColor, currentIntensity);
+				} // end for each event in the element / channel
 
-							startEventPosition = resetEventPosition;
-							endEventPosition = resetEventPosition;
-						}
-							// Add a ramp, fade or multi set level event since it just ended (a zero event was found)
-						else if (patternFound && !processingSingleEvents && currentEventIsZero && endEventPosition != resetEventPosition) {
-							addEvent(pattern, currentElementNum, startEventPosition, startEventValue, endEventPosition, endEventValue);
+				// close this channel
+				import.closeChannel();
+			} // end for each input channel
 
-							patternFound = false;
-							startEventPosition = resetEventPosition;
-							endEventPosition = resetEventPosition;
-						}
-							// Beggining of a pattern found, set flag and start event postion and value
-						else if (!patternFound && currentEventNum > resetEventPosition
-						         && ((processingGroupEvents && currentEventIsNotZero && currentEventValue == priorEventValue)
-						             || (processingFades && currentEventIsNotZero && currentEventValue < priorEventValue)
-						             || (processingRamps && priorEventisNotZero && currentEventValue > priorEventValue))) {
-							patternFound = true;
-							startEventPosition = currentEventNum - 1;
-							startEventValue = priorEventValue;
-							endEventPosition = currentEventNum;
-							endEventValue = currentEventValue;
-						}
-							// Pattern continuing, update the end event postion and value.
-						else if (patternFound
-						         && ((processingGroupEvents && currentEventValue == priorEventValue)
-						             || (processingFades && currentEventValue < priorEventValue)
-						             || (processingRamps && priorEventisNotZero && currentEventValue > priorEventValue))) {
-							endEventPosition = currentEventNum;
-							endEventValue = currentEventValue;
-						}
-							// End of a pattern because none of the other conditions were met.
-						else if (patternFound) {
-							addEvent(pattern, currentElementNum, startEventPosition, startEventValue, priorEventNum, priorEventValue);
-
-							patternFound = false;
-							startEventPosition = resetEventPosition;
-							endEventPosition = resetEventPosition;
-						}
-						priorEventValue = currentEventValue;
-						priorEventNum = currentEventNum;
-					} // for currentEvent
-
-					// End of the Element, so process any existing patterns.
-					if (patternFound) {
-						addEvent(pattern, currentElementNum, startEventPosition, priorEventValue, priorEventNum);
-					}
-				} // for currentElementNum
-			} // foreach patternType
-		}
-
-		private void addEvent(patternType pattern, int chan, int startPos, int startValue, int endPos, int endValue = 0)
-		{
-			ElementNode targetNode = null;
-
-			if (chan >= mappings.Count) {
-				Logging.Error("Vixen 2 import: found data for channel " + (chan + 1) + ", but there is only " + mappings.Count + " channel mappings known! Skipping event.");
-			} else {
-				targetNode = VixenSystem.Nodes.GetElementNode(mappings[chan].ElementNodeId);
-			}
-	
-			if (targetNode != null) {
-				EffectNode node = null;
-				switch (pattern) {
-					case patternType.SetLevelTrend:
-					case patternType.SingleSetLevel:
-						node = GenerateSetLevelEffect(startValue, startPos, endPos, targetNode, mappings[chan].DestinationColor);
-						break;
-					case patternType.PulseFadeTrend:
-					case patternType.PulseRampTrend:
-						node = GeneratePulseEffect(startValue, endValue, startPos, endPos, targetNode, mappings[chan].DestinationColor);
-						break;
-				}
-				if (node != null) {
-					Sequence.InsertData(node);
-				}
-			}
-			markEventsProcessed(chan*parsedV2Sequence.EventsPerElement + startPos,
-			                    chan*parsedV2Sequence.EventsPerElement + endPos);
-		}
-
-		private EffectNode GenerateSetLevelEffect(int eventValue, int startEvent, int endEvent, ElementNode targetNode,
-		                                          Color v3color)
-		{
-			IEffectModuleInstance setLevelInstance =
-				ApplicationServices.Get<IEffectModuleInstance>(Guid.Parse("32cff8e0-5b10-4466-a093-0d232c55aac0"));
-				// Clone() Doesn't work! :(
-			setLevelInstance.TargetNodes = new ElementNode[] {targetNode};
-			setLevelInstance.TimeSpan = TimeSpan.FromMilliseconds(parsedV2Sequence.EventPeriod*(endEvent - startEvent + 1));
-
-			EffectNode effectNode = new EffectNode(setLevelInstance,
-			                                       TimeSpan.FromMilliseconds(parsedV2Sequence.EventPeriod*startEvent));
-			effectNode.Effect.ParameterValues = new object[] {((double) eventValue/byte.MaxValue), v3color};
-
-			return effectNode;
-		}
-
-		private EffectNode GeneratePulseEffect(int eventStartValue, int eventEndValue, int startEvent, int endEvent,
-		                                       ElementNode targetNode, Color v3color)
-		{
-			IEffectModuleInstance pulseInstance =
-				ApplicationServices.Get<IEffectModuleInstance>(Guid.Parse("cbd76d3b-c924-40ff-bad6-d1437b3dbdc0"));
-				// Clone() Doesn't work! :(
-			pulseInstance.TargetNodes = new ElementNode[] {targetNode};
-			pulseInstance.TimeSpan = TimeSpan.FromMilliseconds(parsedV2Sequence.EventPeriod*(endEvent - startEvent + 1));
-
-			EffectNode effectNode = new EffectNode(pulseInstance,
-			                                       TimeSpan.FromMilliseconds(parsedV2Sequence.EventPeriod*startEvent));
-			effectNode.Effect.ParameterValues = new Object[]
-			                                    	{
-			                                    		new Curve(new PointPairList(new double[] {startX, endX},
-			                                    		                            new double[]
-			                                    		                            	{getY(eventStartValue), getY(eventEndValue)})),
-			                                    		new ColorGradient(v3color)
-			                                    	};
-
-			return effectNode;
-		}
-
-		private double getY(int value)
-		{
-			return value/curveDivisor;
-		}
-
-		private void markEventsProcessed(int StartEvent, int EndEvent)
-		{
-			for (var i = StartEvent; i <= EndEvent; i++) {
-				parsedV2Sequence.EventData[i] = zeroEventValue;
-			}
-		}
+		} // end importSequenceData
 	}
 }

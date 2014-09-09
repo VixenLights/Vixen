@@ -87,6 +87,7 @@
     <Compile Include="CoversionProgressForm.Designer.cs">
       <DependentUpon>CoversionProgressForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Vixen2xSequenceImportSM.cs" />
     <Compile Include="Vixen2SequenceData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Vixen2xSequenceDescriptor.cs" />
