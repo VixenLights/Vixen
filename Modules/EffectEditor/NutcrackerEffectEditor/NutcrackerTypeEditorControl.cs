@@ -96,8 +96,10 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 						line.Pixels[pixelNum].PixelColor = effect.Pixels[0][pixelNum];
 					}
 				}
+
+				preview.RenderInForeground();
 			}
-			preview.RenderInForeground();
+			
 		}
 
 		private void PopulateEffectComboBox()
