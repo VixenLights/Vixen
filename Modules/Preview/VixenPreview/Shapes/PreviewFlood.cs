@@ -113,6 +113,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
         }
 
+        public override int Right
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public override int Bottom
+        {
+            get { throw new NotImplementedException(); }
+        }
+
         public override void Match(PreviewBaseShape matchShape)
         {
             PreviewFlood shape = (matchShape as PreviewFlood);

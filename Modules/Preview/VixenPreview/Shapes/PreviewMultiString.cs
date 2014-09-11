@@ -136,12 +136,18 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         {
             get
             {
-                int r = 0;
-                foreach (PreviewPoint p in _points)
-                {
-                    r = Math.Min(r, p.X);
+                int rMax = 0;
+                foreach (PreviewLine line in Strings) {
+                    rMax = Math.Max(rMax, line.Right);
                 }
-                return r;
+                return rMax;
+
+                //int r = 0;
+                //foreach (PreviewPoint p in _points)
+                //{
+                //    r = Math.Min(r, p.X);
+                //}
+                //return r;
             }
         }
 
@@ -150,12 +156,18 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         {
             get
             {
-                int b = 0;
-                foreach (PreviewPoint p in _points)
+                int bMax = 0;
+                foreach (PreviewLine line in Strings)
                 {
-                    b = Math.Min(b, p.Y);
+                    bMax = Math.Max(bMax, line.Bottom);
                 }
-                return b;
+                return bMax;
+                //int b = 0;
+                //foreach (PreviewPoint p in _points)
+                //{
+                //    b = Math.Min(b, p.Y);
+                //}
+                //return b;
             }
         }
 
@@ -163,12 +175,18 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         {
             get
             {
-                int t = int.MaxValue;
-                foreach (PreviewPoint p in _points)
+                int m = int.MaxValue;
+                foreach (PreviewLine line in Strings)
                 {
-                    t = Math.Min(t, p.Y);
+                    m = Math.Min(m, line.Top);
                 }
-                return t;
+                return m;
+                //int t = int.MaxValue;
+                //foreach (PreviewPoint p in _points)
+                //{
+                //    t = Math.Min(t, p.Y);
+                //}
+                //return t;
             }
             set
             {
@@ -186,12 +204,18 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         {
             get
             {
-                int l = int.MaxValue;
-                foreach (PreviewPoint p in _points)
+                //int l = int.MaxValue;
+                //foreach (PreviewPoint p in _points)
+                //{
+                //    l = Math.Min(l, p.X);
+                //}
+                //return l;
+                int m = int.MaxValue;
+                foreach (PreviewLine line in Strings)
                 {
-                    l = Math.Min(l, p.X);
+                    m = Math.Min(m, line.Left);
                 }
-                return l;
+                return m;
             }
             set
             {
