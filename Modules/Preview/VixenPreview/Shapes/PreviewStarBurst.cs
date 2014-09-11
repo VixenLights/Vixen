@@ -109,7 +109,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         {
             get
             {
-                return _bottomLeft.Y;
+                return _bottomRight.Y;
             }
         }
 
@@ -314,8 +314,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             XYRotation = shape.XYRotation;
             _topRight.X = _topLeft.X + (shape._topRight.X - shape._topLeft.X);
             _topRight.Y = _topLeft.Y + (shape._topRight.Y - shape._topLeft.Y);
-            _bottomLeft.X = _topLeft.X + (shape._bottomLeft.X - shape._topLeft.X);
-            _bottomLeft.Y = _topLeft.Y + (shape._bottomLeft.Y - shape._topLeft.Y);
+            //_bottomLeft.X = _topLeft.X + (shape._bottomLeft.X - shape._topLeft.X);
+            //_bottomLeft.Y = _topLeft.Y + (shape._bottomLeft.Y - shape._topLeft.Y);
+            _bottomRight.X = _topLeft.X + (shape._bottomRight.X - shape._topLeft.X);
+            _bottomRight.Y = _topLeft.Y + (shape._bottomRight.Y - shape._topLeft.Y);
             Layout();
         }
 
@@ -323,8 +325,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			if (_topLeft != null && _bottomRight != null)
 			{
-				int width = Math.Abs(_topRight.X - _topLeft.X);
-				int height = Math.Abs(_bottomLeft.Y - _topLeft.Y);
+				int width = Math.Abs(_bottomRight.X - _topLeft.X);
+				int height = Math.Abs(_bottomRight.Y - _topLeft.Y);
 				int centerX = Right - (width / 2);
 				int centerY = Bottom - (height / 2);
 				List<Point> outerEllipse = PreviewTools.GetEllipsePoints(_topLeft.X,
@@ -364,7 +366,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 if (_selectedPoint == _bottomRight &&
                     System.Windows.Forms.Control.ModifierKeys == System.Windows.Forms.Keys.Control)
                 {
-                    int height = y - _topRight.Y;
+                    int height = point.Y - _topRight.Y;
                     _topRight.X = _topLeft.X + height;
                     _topRight.Y = _topLeft.Y;
                     _bottomLeft.X = _topLeft.X;
