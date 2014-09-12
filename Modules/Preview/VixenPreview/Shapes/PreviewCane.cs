@@ -211,6 +211,22 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
         }
 
+        public override int Bottom
+        {
+            get
+            {
+                return Math.Max(_topLeftPoint.Y, _bottomRightPoint.Y);
+            }
+        }
+
+        public override int Right
+        {
+            get
+            {
+                return Math.Max(_topLeftPoint.X, _bottomRightPoint.X);
+            }
+        }
+
         public override int Left
         {
             get

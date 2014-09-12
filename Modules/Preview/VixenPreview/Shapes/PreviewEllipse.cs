@@ -167,6 +167,22 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
 		}
 
+        public override int Right
+        {
+            get
+            {
+                return (Math.Max(_topLeft.X, _bottomRight.X));
+            }
+        }
+
+        public override int Bottom
+        {
+            get
+            {
+                return (Math.Max(_topLeft.Y, _bottomRight.Y));
+            }
+        }
+
         public override void Match(PreviewBaseShape matchShape)
         {
             PreviewEllipse shape = (matchShape as PreviewEllipse);

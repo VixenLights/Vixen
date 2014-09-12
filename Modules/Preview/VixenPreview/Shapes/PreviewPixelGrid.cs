@@ -219,6 +219,22 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
 		}
 
+        public override int Right
+        {
+            get
+            {
+                return _bottomRight.X; ;
+            }
+        }
+
+        public override int Bottom
+        {
+            get
+            {
+                return _bottomRight.Y;
+            }
+        }
+
 		public PreviewPoint BottomRight
 		{
 			get { return _bottomRight; }

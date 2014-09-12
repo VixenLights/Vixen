@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PreviewLineSetupControl));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PreviewPixelGridSetupControl));
             this.propertyGrid = new System.Windows.Forms.PropertyGrid();
             this.buttonHelp = new System.Windows.Forms.Button();
             this.SuspendLayout();
@@ -37,8 +37,9 @@
             // 
             this.propertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.propertyGrid.Location = new System.Drawing.Point(0, 0);
+            this.propertyGrid.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.propertyGrid.Name = "propertyGrid";
-            this.propertyGrid.Size = new System.Drawing.Size(195, 277);
+            this.propertyGrid.Size = new System.Drawing.Size(390, 533);
             this.propertyGrid.TabIndex = 0;
             // 
             // buttonHelp
@@ -46,24 +47,26 @@
             this.buttonHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonHelp.Image = ((System.Drawing.Image)(resources.GetObject("buttonHelp.Image")));
             this.buttonHelp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.buttonHelp.Location = new System.Drawing.Point(134, 1);
+            this.buttonHelp.Location = new System.Drawing.Point(268, 2);
+            this.buttonHelp.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.buttonHelp.Name = "buttonHelp";
-            this.buttonHelp.Size = new System.Drawing.Size(60, 23);
+            this.buttonHelp.Size = new System.Drawing.Size(120, 44);
             this.buttonHelp.TabIndex = 61;
             this.buttonHelp.Text = "Help";
             this.buttonHelp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.buttonHelp.UseVisualStyleBackColor = true;
             this.buttonHelp.Click += new System.EventHandler(this.buttonHelp_Click);
             // 
-            // PreviewLineSetupControl
+            // PreviewPixelGridSetupControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.buttonHelp);
             this.Controls.Add(this.propertyGrid);
-            this.Name = "PreviewLineSetupControl";
-            this.Size = new System.Drawing.Size(195, 277);
-            this.Title = "Line Properties";
+            this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.Name = "PreviewPixelGridSetupControl";
+            this.Size = new System.Drawing.Size(390, 533);
+            this.Title = "Pixel Grid Properties";
             this.ResumeLayout(false);
 
         }

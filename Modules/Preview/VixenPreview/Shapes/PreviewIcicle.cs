@@ -240,6 +240,22 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
         }
 
+        public override int Right
+        {
+            get
+            {
+                return (Math.Max(_points[0].X, _points[1].X));
+            }
+        }
+
+        public override int Bottom
+        {
+            get
+            {
+                return (Math.Max(_points[0].Y, _points[1].Y));
+            }
+        }
+
         public void AddPoint(PreviewPoint point)
         {
             _points.Add(point);

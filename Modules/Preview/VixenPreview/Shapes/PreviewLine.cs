@@ -139,6 +139,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
+        public override int Bottom
+        {
+            get
+            {
+                return Math.Max(_points[0].Y, _points[1].Y);
+            }
+        }
+
         public override int Top
         {
             get
@@ -160,6 +168,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                     _points[1].Y = value;
                 }
                 Layout();
+            }
+        }
+
+        public override int Right
+        {
+            get
+            {
+                return Math.Max(_points[0].X, _points[1].X);
             }
         }
 

@@ -225,6 +225,22 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			get { return _stringCount; }
 		}
 
+        public override int Bottom
+        {
+            get
+            {
+                return _bottomLeft.Y;
+            }
+        }
+
+        public override int Right
+        {
+            get
+            {
+                return _bottomRight.X;
+            }
+        }
+
 		public override int Top
 		{
 			get 
