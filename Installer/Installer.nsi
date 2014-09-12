@@ -121,7 +121,7 @@ VIAddVersionKey "FileVersion" "${AssemblyVersion_1}.${AssemblyVersion_2}.${Assem
 	!define PRODUCT_NAME_FULL "Vixen"
 	Name "${PRODUCT_NAME} ${MAJORVERSION}.${MINORVERSION} (${BITS_READABLE})"
 	OutFile ".\${PRODUCT_NAME}-${MAJORVERSION}.${MINORVERSION}-Setup_${BITS}bit.exe"
-	InstallDir "${PROG_FILES}\Vixen Lighting"
+	InstallDir "${PROG_FILES}\Vixen"
 !endif
 
 
