@@ -98,7 +98,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         {
             get
             {
-                Console.WriteLine("GetStringType");
                 base.StringType = StringTypes.Pixel;
                 return StringTypes.Pixel;
             }

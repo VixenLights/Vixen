@@ -340,6 +340,17 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			return children;
 		}
 
+        public static List<ElementNode> GetParentNodes(ElementNode node)
+        {
+            List<ElementNode> children = new List<ElementNode>();
+            foreach (ElementNode child in node.Children)
+            {
+                if (!child.IsLeaf)
+                    children.Add(child);
+            }
+            return children;
+        }
+
         /// <summary>
         /// Retruns the number of strings and pixels in an ElementNode
         /// </summary>
