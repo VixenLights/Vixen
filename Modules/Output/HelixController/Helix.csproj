@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{4412FD30-7707-4C4A-B462-DBC5D820E6F5}</ProjectGuid>
+    <ProjectGuid>{12890B19-CBDF-473B-AF59-4DCA654E6ACA}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>VixenModules.Output.HelixController</RootNamespace>
