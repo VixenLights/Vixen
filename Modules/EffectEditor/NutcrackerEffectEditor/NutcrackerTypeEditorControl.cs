@@ -352,7 +352,12 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			preview.LoadBackground();
 			preview.BackgroundAlpha = 0;
 			displayItem = new DisplayItem();
+
 			PreviewPixelGrid grid = new PreviewPixelGrid(new PreviewPoint(10, 10), null, 1);
+			//if (Data.StringOrienation == NutcrackerEffects.StringOrientations.Horizontal)
+			//{
+			//	grid.StringOrientation = PreviewPixelGrid.StringOrientations.Horizontal;
+			//}
 			grid.StringType = PreviewBaseShape.StringTypes.Pixel;
 			grid.StringCount = StringCount;
 			grid.LightsPerString = PixelsPerString();
@@ -787,6 +792,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			textTextLine2.Text = Data.Text_Line2;
 			comboBoxTextDirection.SelectedIndex = Data.Text_Direction;
 			trackTextTop.Value = Data.Text_Top;
+			chkCenterStop.Checked = Data.Text_CenterStop;
 		}
 
 		private void Text_TextChanged(object sender, EventArgs e)
@@ -812,6 +818,12 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			if (fontDialog.ShowDialog() == DialogResult.OK) {
 				Data.Text_Font = fontDialog.Font;
 			}
+		}
+
+		private void chkCenterStop_CheckedChanged(object sender, EventArgs e)
+		{
+			if (loading) return;
+			Data.Text_CenterStop = chkCenterStop.Checked;
 		}
 
 		#endregion // Text

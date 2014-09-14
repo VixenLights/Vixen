@@ -102,6 +102,7 @@ namespace VixenModules.Effect.Nutcracker
 		[DataMember] public string Text_Line1 = string.Empty;
 		[DataMember] public string Text_Line2 = string.Empty;
 		[DataMember] public int Text_Direction = 0;
+		[DataMember] public bool Text_CenterStop = false;
 
 		[DataMember(IsRequired = false)]
 		public SerializableFont Text_Font { get; set; }

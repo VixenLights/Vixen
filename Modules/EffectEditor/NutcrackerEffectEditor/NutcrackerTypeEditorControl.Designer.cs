@@ -91,6 +91,8 @@
 			this.trackSpiralsRotations = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
 			this.trackSpiralsRepeat = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
 			this.TextPage = new System.Windows.Forms.TabPage();
+			this.chkCenterStop = new System.Windows.Forms.CheckBox();
+			this.label53 = new System.Windows.Forms.Label();
 			this.comboBoxTextDirection = new System.Windows.Forms.ComboBox();
 			this.label35 = new System.Windows.Forms.Label();
 			this.textBoxTextFont = new System.Windows.Forms.TextBox();
@@ -1038,6 +1040,8 @@
 			// 
 			// TextPage
 			// 
+			this.TextPage.Controls.Add(this.chkCenterStop);
+			this.TextPage.Controls.Add(this.label53);
 			this.TextPage.Controls.Add(this.comboBoxTextDirection);
 			this.TextPage.Controls.Add(this.label35);
 			this.TextPage.Controls.Add(this.textBoxTextFont);
@@ -1054,6 +1058,25 @@
 			this.TextPage.TabIndex = 12;
 			this.TextPage.Text = "Text";
 			this.TextPage.UseVisualStyleBackColor = true;
+			// 
+			// chkCenterStop
+			// 
+			this.chkCenterStop.AutoSize = true;
+			this.chkCenterStop.Location = new System.Drawing.Point(13, 82);
+			this.chkCenterStop.Name = "chkCenterStop";
+			this.chkCenterStop.Size = new System.Drawing.Size(82, 17);
+			this.chkCenterStop.TabIndex = 42;
+			this.chkCenterStop.Text = "Center Stop";
+			this.chkCenterStop.UseVisualStyleBackColor = true;
+			this.chkCenterStop.CheckedChanged += new System.EventHandler(this.chkCenterStop_CheckedChanged);
+			// 
+			// label53
+			// 
+			this.label53.AutoSize = true;
+			this.label53.Location = new System.Drawing.Point(10, 86);
+			this.label53.Name = "label53";
+			this.label53.Size = new System.Drawing.Size(0, 13);
+			this.label53.TabIndex = 41;
 			// 
 			// comboBoxTextDirection
 			// 
@@ -1082,7 +1105,7 @@
 			// 
 			// textBoxTextFont
 			// 
-			this.textBoxTextFont.Location = new System.Drawing.Point(96, 107);
+			this.textBoxTextFont.Location = new System.Drawing.Point(96, 133);
 			this.textBoxTextFont.Name = "textBoxTextFont";
 			this.textBoxTextFont.ReadOnly = true;
 			this.textBoxTextFont.Size = new System.Drawing.Size(167, 20);
@@ -1090,7 +1113,7 @@
 			// 
 			// buttonTextFont
 			// 
-			this.buttonTextFont.Location = new System.Drawing.Point(12, 105);
+			this.buttonTextFont.Location = new System.Drawing.Point(12, 131);
 			this.buttonTextFont.Name = "buttonTextFont";
 			this.buttonTextFont.Size = new System.Drawing.Size(75, 23);
 			this.buttonTextFont.TabIndex = 37;
@@ -1135,7 +1158,7 @@
 			// label32
 			// 
 			this.label32.AutoSize = true;
-			this.label32.Location = new System.Drawing.Point(9, 82);
+			this.label32.Location = new System.Drawing.Point(9, 108);
 			this.label32.Name = "label32";
 			this.label32.Size = new System.Drawing.Size(29, 13);
 			this.label32.TabIndex = 31;
@@ -1143,7 +1166,7 @@
 			// 
 			// trackTextTop
 			// 
-			this.trackTextTop.Location = new System.Drawing.Point(96, 79);
+			this.trackTextTop.Location = new System.Drawing.Point(96, 105);
 			this.trackTextTop.Name = "trackTextTop";
 			this.trackTextTop.Size = new System.Drawing.Size(167, 23);
 			this.trackTextTop.TabIndex = 32;
@@ -2188,5 +2211,7 @@
 		private System.Windows.Forms.Label label51;
 		private System.Windows.Forms.RadioButton radioButtonHorizontal;
 		private System.Windows.Forms.RadioButton radioButtonVertical;
+		private System.Windows.Forms.CheckBox chkCenterStop;
+		private System.Windows.Forms.Label label53;
 	}
 }
