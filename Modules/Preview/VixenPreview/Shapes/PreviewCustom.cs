@@ -140,6 +140,32 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
+        public override int Right
+        {
+            get
+            {
+                int x = 0;
+                foreach (PreviewBaseShape shape in Strings)
+                {
+                    x = Math.Min(x, shape.Right);
+                }
+                return x;
+            }
+        }
+
+        public override int Bottom
+        {
+            get
+            {
+                int x = int.MaxValue;
+                foreach (PreviewBaseShape shape in Strings)
+                {
+                    x = Math.Max(x, shape.Bottom);
+                }
+                return x;
+            }
+        }
+        
         public override void Match(PreviewBaseShape matchShape)
         {
             PreviewCustom shape = (matchShape as PreviewCustom);

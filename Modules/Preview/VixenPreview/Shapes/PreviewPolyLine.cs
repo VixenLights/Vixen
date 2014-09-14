@@ -193,6 +193,32 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
         }
 
+        public override int Right
+        {
+            get
+            {
+                int xMax = 0;
+                foreach (PreviewPoint p in _points)
+                {
+                    xMax = Math.Max(xMax, p.X);
+                }
+                return xMax;
+            }
+        }
+
+        public override int Bottom
+        {
+            get
+            {
+                int yMax = 0;
+                foreach (PreviewPoint p in _points)
+                {
+                    yMax = Math.Max(yMax, p.Y);
+                }
+                return yMax;
+            }
+        }
+
         public void AddPoint(PreviewPoint point)
         {
             _points.Add(point);

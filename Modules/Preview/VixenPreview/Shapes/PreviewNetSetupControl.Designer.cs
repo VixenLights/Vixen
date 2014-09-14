@@ -37,8 +37,9 @@
             // 
             this.propertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.propertyGrid.Location = new System.Drawing.Point(0, 0);
+            this.propertyGrid.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.propertyGrid.Name = "propertyGrid";
-            this.propertyGrid.Size = new System.Drawing.Size(233, 255);
+            this.propertyGrid.Size = new System.Drawing.Size(466, 490);
             this.propertyGrid.TabIndex = 1;
             // 
             // buttonHelp
@@ -46,9 +47,10 @@
             this.buttonHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonHelp.Image = ((System.Drawing.Image)(resources.GetObject("buttonHelp.Image")));
             this.buttonHelp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.buttonHelp.Location = new System.Drawing.Point(172, 1);
+            this.buttonHelp.Location = new System.Drawing.Point(344, 2);
+            this.buttonHelp.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.buttonHelp.Name = "buttonHelp";
-            this.buttonHelp.Size = new System.Drawing.Size(60, 23);
+            this.buttonHelp.Size = new System.Drawing.Size(120, 44);
             this.buttonHelp.TabIndex = 65;
             this.buttonHelp.Text = "Help";
             this.buttonHelp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -57,12 +59,14 @@
             // 
             // PreviewNetSetupControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.buttonHelp);
             this.Controls.Add(this.propertyGrid);
+            this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.Name = "PreviewNetSetupControl";
-            this.Size = new System.Drawing.Size(233, 255);
+            this.Size = new System.Drawing.Size(466, 490);
+            this.Title = "Net Properties";
             this.ResumeLayout(false);
 
         }

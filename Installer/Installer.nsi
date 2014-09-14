@@ -115,13 +115,13 @@ VIAddVersionKey "FileVersion" "${AssemblyVersion_1}.${AssemblyVersion_2}.${Assem
 !ifdef DEVBUILD
 	!define PRODUCT_NAME_FULL "Vixen Development Build"
 	Name "${PRODUCT_NAME} Development Build ${BUILDNUMBER} (${BITS_READABLE})"
-	OutFile ".\${PRODUCT_NAME}-DevBuild-${BUILDNUMBER}-Setup_${BITS}bit.exe"
+	OutFile ".\${PRODUCT_NAME}-DevBuild-${BUILDNUMBER}-Setup-${BITS}bit.exe"
 	InstallDir "${PROG_FILES}\Vixen Development Build"
 !else
 	!define PRODUCT_NAME_FULL "Vixen"
 	Name "${PRODUCT_NAME} ${MAJORVERSION}.${MINORVERSION} (${BITS_READABLE})"
-	OutFile ".\${PRODUCT_NAME}-${MAJORVERSION}.${MINORVERSION}-Setup_${BITS}bit.exe"
-	InstallDir "${PROG_FILES}\Vixen Lighting"
+	OutFile ".\${PRODUCT_NAME}-${MAJORVERSION}.${MINORVERSION}-Setup-${BITS}bit.exe"
+	InstallDir "${PROG_FILES}\Vixen"
 !endif
 
 

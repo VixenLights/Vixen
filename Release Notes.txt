@@ -36,7 +36,7 @@ o Curve editor enhancements. Ability to invert or flip a curve and edit the poin
 * Mark Collections can now be exported
 * Improvements to Undo / Redo
 * Screen size and placement settings are now saved and restored when the editor is closed and reopened.
-* Sequence export to FPP and CSV  
+* Sequence export to Falcon Pi Player, Vixen2.1, Vixen VIR, Helix, and CSV    
 Execution Engine
 * Significant performance improvements, especially when playing and sequencing in the editor.
 * Unnecessary engine processes are skipped when the controllers are turned off to provide a better experience while sequencing.

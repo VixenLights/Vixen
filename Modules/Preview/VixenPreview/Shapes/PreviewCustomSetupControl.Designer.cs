@@ -49,17 +49,19 @@
             this.panel1.Controls.Add(this.panel5);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 0);
+            this.panel1.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(467, 468);
+            this.panel1.Size = new System.Drawing.Size(934, 900);
             this.panel1.TabIndex = 55;
             // 
             // panelProperties
             // 
             this.panelProperties.AutoScroll = true;
             this.panelProperties.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelProperties.Location = new System.Drawing.Point(0, 72);
+            this.panelProperties.Location = new System.Drawing.Point(0, 137);
+            this.panelProperties.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.panelProperties.Name = "panelProperties";
-            this.panelProperties.Size = new System.Drawing.Size(467, 396);
+            this.panelProperties.Size = new System.Drawing.Size(934, 763);
             this.panelProperties.TabIndex = 61;
             // 
             // panel5
@@ -70,17 +72,19 @@
             this.panel5.Controls.Add(this.panel3);
             this.panel5.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel5.Location = new System.Drawing.Point(0, 0);
+            this.panel5.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(467, 72);
+            this.panel5.Size = new System.Drawing.Size(934, 137);
             this.panel5.TabIndex = 60;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(8, 9);
+            this.label1.Location = new System.Drawing.Point(16, 17);
+            this.label1.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(78, 13);
+            this.label1.Size = new System.Drawing.Size(151, 26);
             this.label1.TabIndex = 59;
             this.label1.Text = "Custom Prop";
             // 
@@ -89,9 +93,10 @@
             this.buttonHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonHelp.Image = ((System.Drawing.Image)(resources.GetObject("buttonHelp.Image")));
             this.buttonHelp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.buttonHelp.Location = new System.Drawing.Point(400, 4);
+            this.buttonHelp.Location = new System.Drawing.Point(802, 8);
+            this.buttonHelp.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.buttonHelp.Name = "buttonHelp";
-            this.buttonHelp.Size = new System.Drawing.Size(60, 23);
+            this.buttonHelp.Size = new System.Drawing.Size(120, 44);
             this.buttonHelp.TabIndex = 57;
             this.buttonHelp.Text = "Help";
             this.buttonHelp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -104,17 +109,19 @@
             this.panel3.Controls.Add(this.label6);
             this.panel3.Controls.Add(this.comboBoxStringToEdit);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel3.Location = new System.Drawing.Point(0, 34);
+            this.panel3.Location = new System.Drawing.Point(0, 66);
+            this.panel3.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(465, 36);
+            this.panel3.Size = new System.Drawing.Size(932, 69);
             this.panel3.TabIndex = 58;
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(8, 9);
+            this.label6.Location = new System.Drawing.Point(16, 17);
+            this.label6.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(37, 13);
+            this.label6.Size = new System.Drawing.Size(74, 25);
             this.label6.TabIndex = 54;
             this.label6.Text = "String:";
             // 
@@ -127,19 +134,22 @@
             this.comboBoxStringToEdit.Items.AddRange(new object[] {
             "Standard",
             "Pixel"});
-            this.comboBoxStringToEdit.Location = new System.Drawing.Point(51, 6);
+            this.comboBoxStringToEdit.Location = new System.Drawing.Point(102, 12);
+            this.comboBoxStringToEdit.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.comboBoxStringToEdit.Name = "comboBoxStringToEdit";
-            this.comboBoxStringToEdit.Size = new System.Drawing.Size(409, 21);
+            this.comboBoxStringToEdit.Size = new System.Drawing.Size(816, 33);
             this.comboBoxStringToEdit.TabIndex = 55;
             this.comboBoxStringToEdit.SelectedIndexChanged += new System.EventHandler(this.comboBoxStringToEdit_SelectedIndexChanged);
             // 
             // PreviewCustomSetupControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.panel1);
+            this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.Name = "PreviewCustomSetupControl";
-            this.Size = new System.Drawing.Size(467, 468);
+            this.Size = new System.Drawing.Size(934, 900);
+            this.Title = "Custom Properties";
             this.Load += new System.EventHandler(this.PreviewCustomSetupControl_Load);
             this.panel1.ResumeLayout(false);
             this.panel5.ResumeLayout(false);

@@ -771,7 +771,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				TimelineControl.grid.SuppressInvalidate = true; //Hold off invalidating the grid while we bulk load.
 				TimelineControl.grid.SupressRendering = true; //Hold off rendering while we load elements. 
 				// This takes quite a bit of time so queue it up
-				taskQueue.Enqueue(Task.Factory.StartNew(PopulateAudioDropdown));
 				taskQueue.Enqueue(Task.Factory.StartNew(() => addElementsForEffectNodes(_sequence.SequenceData.EffectData)));
 				
 
@@ -790,7 +789,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				//This path is followed for new and existing sequences so we need to determine which we have and set modified accordingly.
 				//Added logic to determine if the sequence has a filepath to set modified JU 8/1/2012. 
-
+				PopulateAudioDropdown();
 				_SetTimingToolStripEnabledState();
 
 				if (String.IsNullOrEmpty(_sequence.FilePath))
@@ -4168,8 +4167,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				{
 					_timingSource.Speed = _timingSpeed;
 					toolStripButton_IncreaseTimingSpeed.Enabled =
-						toolStripButton_DecreaseTimingSpeed.Enabled =
 							toolStripLabel_TimingSpeed.Enabled = toolStripLabel_TimingSpeedLabel.Enabled = true;
+					toolStripButton_DecreaseTimingSpeed.Enabled = toolStripButton_DecreaseTimingSpeed.Enabled = _timingSpeed > _timingChangeDelta; ;
 
 				}
 				else

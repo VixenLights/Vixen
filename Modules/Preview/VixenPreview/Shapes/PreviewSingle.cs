@@ -95,6 +95,22 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
         }
 
+        public override int Right
+        {
+            get 
+            {
+                return p1.X;
+            }
+        }
+
+        public override int Bottom
+        {
+            get 
+            { 
+                return p1.Y;
+            }
+        }
+
         public override void Match(PreviewBaseShape matchShape)
         {
             PreviewSingle shape = (matchShape as PreviewSingle);

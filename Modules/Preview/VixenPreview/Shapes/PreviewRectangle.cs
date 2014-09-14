@@ -282,6 +282,22 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
         }
 
+        public override int Bottom
+        {
+            get
+            {
+                return (Math.Max(_topLeft.Y, Math.Max(_topRight.Y, Math.Max(_bottomLeft.Y, _bottomRight.Y))));
+            }
+        }
+
+        public override int Right
+        {
+            get
+            {
+                return (Math.Max(_topLeft.X, Math.Max(_topRight.X, Math.Max(_bottomLeft.X, _bottomRight.X))));
+            }
+        }
+
         public override int Left
         {
             get

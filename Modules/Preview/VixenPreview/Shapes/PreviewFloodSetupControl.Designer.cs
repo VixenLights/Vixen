@@ -35,17 +35,20 @@
             // 
             this.propertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.propertyGrid.Location = new System.Drawing.Point(0, 0);
+            this.propertyGrid.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.propertyGrid.Name = "propertyGrid";
-            this.propertyGrid.Size = new System.Drawing.Size(213, 239);
+            this.propertyGrid.Size = new System.Drawing.Size(426, 460);
             this.propertyGrid.TabIndex = 13;
             // 
-            // PreviewSingleSetupControl
+            // PreviewFloodSetupControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.propertyGrid);
-            this.Name = "PreviewSingleSetupControl";
-            this.Size = new System.Drawing.Size(213, 239);
+            this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.Name = "PreviewFloodSetupControl";
+            this.Size = new System.Drawing.Size(426, 460);
+            this.Title = "Flood Light Properties";
             this.ResumeLayout(false);
 
         }
