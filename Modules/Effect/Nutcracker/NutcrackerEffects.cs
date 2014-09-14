@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Drawing;
@@ -11,7 +12,7 @@ using System.IO;
 
 namespace VixenModules.Effect.Nutcracker
 {
-	public class NutcrackerEffects
+	public class NutcrackerEffects: IDisposable
 	{
 		#region Variables
 
@@ -1581,58 +1582,45 @@ namespace VixenModules.Effect.Nutcracker
 
 		#region Pictures
 
-		private string PictureName = string.Empty;
+		private string _pictureName = string.Empty;
 		private FastPixel.FastPixel fp;
-		//
-		// TODO: Load animated GIF images
-		//
-		public void RenderPictures(int dir, string NewPictureName, int GifSpeed)
+		private double _currentGifImageNum;
+		private Image _pictureImage;
+		public void RenderPictures(int dir, string newPictureName, int gifSpeed)
 		{
 			const int speedfactor = 4;
-			Image image = null;
-			
-			if (NewPictureName != PictureName) {
-				image = Image.FromFile(NewPictureName);
-				fp = new FastPixel.FastPixel(new Bitmap(image));
 
-				//Console.WriteLine("Loaded picture: " + NewPictureName);
-				//    imageCount = wxImage::GetImageCount(NewPictureName);
-				//    imageIndex = 0;
-				//    if (!image.LoadFile(NewPictureName,wxBITMAP_TYPE_ANY,0))
-				//    {
-				//        //wxMessageBox("Error loading image file: "+NewPictureName);
-				//        image.Clear();
-				//    }
-				PictureName = NewPictureName;
-				//    if (!image.IsOk())
-				//        return;
-
-				//}
-				//if(imageCount>1)
-				//{
-				//    // The 10 could be animation speed. I did notice that state is jumping numbers
-				//    // so state%someNumber == 0 may not hit every time. There could be a better way.
-				//    if(state%(21-GifSpeed)==0)  // change 1-20 in Gimspeed to be 20 to 1. This makes right hand slider fastest
-				//    {
-				//        if(imageIndex == imageCount-1)
-				//        {
-				//            imageIndex = 0;
-				//        }
-				//        else
-				//        {
-				//            imageIndex++;
-				//        }
-
-
-				//        if (!image.LoadFile(PictureName,wxBITMAP_TYPE_ANY,imageIndex))
-				//        {
-				//            //wxMessageBox("Error loading image file: "+NewPictureName);
-				//            image.Clear();
-				//        }
-				//        if (!image.IsOk())
-				//            return;
-				//    }
+			if (newPictureName != _pictureName)
+			{
+				_pictureImage = Image.FromFile(newPictureName);
+				_pictureName = newPictureName;
 			}
+
+			var dimension = new FrameDimension(_pictureImage.FrameDimensionsList[0]);
+			// Number of frames
+			int frameCount = _pictureImage.GetFrameCount(dimension);
+				
+			if (frameCount > 1)
+			{
+				if (gifSpeed > 0)
+				{
+					_currentGifImageNum += ((gifSpeed * .01));
+				}
+				else
+				{
+					_currentGifImageNum++;
+				}
+				if (Convert.ToInt32(_currentGifImageNum) >= frameCount)
+				{
+					_currentGifImageNum = 0;
+				}
+				_pictureImage.SelectActiveFrame(dimension, Convert.ToInt32(_currentGifImageNum));
+
+			}
+
+			Image image = ScaleImage(_pictureImage, BufferWi, BufferHt);
+
+			fp = new FastPixel.FastPixel(new Bitmap(image));
 
 			if (fp != null) {
 				int imgwidth = fp.Width;
@@ -1679,6 +1667,20 @@ namespace VixenModules.Effect.Nutcracker
 			}
 			if (image != null)
 				image.Dispose();
+		}
+
+		public static Image ScaleImage(Image image, int maxWidth, int maxHeight)
+		{
+			var ratioX = (double)maxWidth / image.Width;
+			var ratioY = (double)maxHeight / image.Height;
+			var ratio = Math.Min(ratioX, ratioY);
+
+			var newWidth = (int)(image.Width * ratio);
+			var newHeight = (int)(image.Height * ratio);
+
+			var newImage = new Bitmap(newWidth, newHeight);
+			Graphics.FromImage(newImage).DrawImage(image, 0, 0, newWidth, newHeight);
+			return newImage;
 		}
 
 		#endregion //Picture
@@ -2156,6 +2158,22 @@ namespace VixenModules.Effect.Nutcracker
 					                  Data.PictureTile_FileName);
 					break;
 			}
+		}
+
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this); 
+		}
+
+		protected virtual void Dispose(bool disposing)
+		{
+			
+			if (_pictureImage != null)
+			{
+				_pictureImage.Dispose();
+			}	
+				
 		}
 	}
 }

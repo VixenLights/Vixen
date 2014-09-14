@@ -266,6 +266,7 @@ namespace VixenModules.Effect.Nutcracker
 				_elementData.AddIntentForElement(elements[eidx].Id, intent, startTime);
 			}
 
+			nccore.Dispose();
 			timer.Stop();
 			Logging.Debug(" {0}ms, Frames: {1}, wid: {2}, ht: {3},  pix: {4}, intents: {5}",
 							timer.ElapsedMilliseconds, nFrames, wid, ht, totalPixels, _elementData.Count());

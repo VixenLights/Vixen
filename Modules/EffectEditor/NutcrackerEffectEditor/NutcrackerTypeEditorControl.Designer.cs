@@ -7,18 +7,6 @@
 		/// </summary>
 		private System.ComponentModel.IContainer components = null;
 
-		/// <summary> 
-		/// Clean up any resources being used.
-		/// </summary>
-		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-		protected override void Dispose(bool disposing)
-		{
-			if (disposing && (components != null)) {
-				components.Dispose();
-			}
-			base.Dispose(disposing);
-		}
-
 		#region Component Designer generated code
 
 		/// <summary> 
@@ -28,6 +16,7 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NutcrackerTypeEditorControl));
 			this.timerRender = new System.Windows.Forms.Timer(this.components);
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.preview = new VixenModules.Preview.VixenPreview.VixenPreviewControl();
@@ -182,12 +171,12 @@
 			this.fontDialog = new System.Windows.Forms.FontDialog();
 			this.fileDialog = new System.Windows.Forms.OpenFileDialog();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.label51 = new System.Windows.Forms.Label();
+			this.radioButtonHorizontal = new System.Windows.Forms.RadioButton();
+			this.radioButtonVertical = new System.Windows.Forms.RadioButton();
 			this.scrollPixelSize = new Common.Controls.ControlsEx.ValueControls.HValueScrollBar();
 			this.label44 = new System.Windows.Forms.Label();
 			this.buttonHelp = new System.Windows.Forms.Button();
-			this.radioButtonVertical = new System.Windows.Forms.RadioButton();
-			this.radioButtonHorizontal = new System.Windows.Forms.RadioButton();
-			this.label51 = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.tabEffectProperties.SuspendLayout();
@@ -238,6 +227,7 @@
 			this.preview.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.preview.Background = ((System.Drawing.Bitmap)(resources.GetObject("preview.Background")));
 			this.preview.BackgroundAlpha = 255;
 			this.preview.CurrentTool = VixenModules.Preview.VixenPreview.VixenPreviewControl.Tools.Select;
 			this.preview.EditMode = false;
@@ -247,6 +237,7 @@
 			this.preview.ShowInfo = false;
 			this.preview.Size = new System.Drawing.Size(273, 422);
 			this.preview.TabIndex = 0;
+			this.preview.ZoomLevel = 1D;
 			// 
 			// comboBoxDisplayType
 			// 
@@ -458,7 +449,6 @@
 			this.PictureTile.Controls.Add(this.label49);
 			this.PictureTile.Controls.Add(this.label48);
 			this.PictureTile.Controls.Add(this.comboBoxPictureTileFileName);
-		 
 			this.PictureTile.Location = new System.Drawing.Point(4, 5);
 			this.PictureTile.Name = "PictureTile";
 			this.PictureTile.Size = new System.Drawing.Size(266, 243);
@@ -589,7 +579,6 @@
 			this.comboBoxPictureTileFileName.Size = new System.Drawing.Size(254, 56);
 			this.comboBoxPictureTileFileName.TabIndex = 0;
 			this.comboBoxPictureTileFileName.SelectedIndexChanged += new System.EventHandler(this.comboBoxPictureTileFileName_SelectedIndexChanged);
-			 
 			// 
 			// Picture
 			// 
@@ -662,7 +651,6 @@
 			// label37
 			// 
 			this.label37.AutoSize = true;
-			this.label37.Enabled = false;
 			this.label37.Location = new System.Drawing.Point(6, 85);
 			this.label37.Name = "label37";
 			this.label37.Size = new System.Drawing.Size(61, 13);
@@ -671,7 +659,6 @@
 			// 
 			// trackPictureGifSpeed
 			// 
-			this.trackPictureGifSpeed.Enabled = false;
 			this.trackPictureGifSpeed.Location = new System.Drawing.Point(65, 81);
 			this.trackPictureGifSpeed.Maximum = 20;
 			this.trackPictureGifSpeed.Minimum = 1;
@@ -1907,6 +1894,39 @@
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "Preview Display";
 			// 
+			// label51
+			// 
+			this.label51.AutoSize = true;
+			this.label51.Location = new System.Drawing.Point(20, 76);
+			this.label51.Name = "label51";
+			this.label51.Size = new System.Drawing.Size(91, 13);
+			this.label51.TabIndex = 8;
+			this.label51.Text = "String Orientation:";
+			// 
+			// radioButtonHorizontal
+			// 
+			this.radioButtonHorizontal.AutoSize = true;
+			this.radioButtonHorizontal.Location = new System.Drawing.Point(183, 74);
+			this.radioButtonHorizontal.Name = "radioButtonHorizontal";
+			this.radioButtonHorizontal.Size = new System.Drawing.Size(72, 17);
+			this.radioButtonHorizontal.TabIndex = 7;
+			this.radioButtonHorizontal.TabStop = true;
+			this.radioButtonHorizontal.Text = "Horizontal";
+			this.radioButtonHorizontal.UseVisualStyleBackColor = true;
+			this.radioButtonHorizontal.CheckedChanged += new System.EventHandler(this.radioButtonHorizontal_CheckedChanged);
+			// 
+			// radioButtonVertical
+			// 
+			this.radioButtonVertical.AutoSize = true;
+			this.radioButtonVertical.Location = new System.Drawing.Point(117, 74);
+			this.radioButtonVertical.Name = "radioButtonVertical";
+			this.radioButtonVertical.Size = new System.Drawing.Size(60, 17);
+			this.radioButtonVertical.TabIndex = 6;
+			this.radioButtonVertical.TabStop = true;
+			this.radioButtonVertical.Text = "Vertical";
+			this.radioButtonVertical.UseVisualStyleBackColor = true;
+			this.radioButtonVertical.CheckedChanged += new System.EventHandler(this.radioButtonVertical_CheckedChanged);
+			// 
 			// scrollPixelSize
 			// 
 			this.scrollPixelSize.Location = new System.Drawing.Point(117, 47);
@@ -1942,39 +1962,6 @@
 			this.buttonHelp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.buttonHelp.UseVisualStyleBackColor = true;
 			this.buttonHelp.Click += new System.EventHandler(this.buttonHelp_Click);
-			// 
-			// radioButtonVertical
-			// 
-			this.radioButtonVertical.AutoSize = true;
-			this.radioButtonVertical.Location = new System.Drawing.Point(117, 74);
-			this.radioButtonVertical.Name = "radioButtonVertical";
-			this.radioButtonVertical.Size = new System.Drawing.Size(60, 17);
-			this.radioButtonVertical.TabIndex = 6;
-			this.radioButtonVertical.TabStop = true;
-			this.radioButtonVertical.Text = "Vertical";
-			this.radioButtonVertical.UseVisualStyleBackColor = true;
-			this.radioButtonVertical.CheckedChanged += new System.EventHandler(this.radioButtonVertical_CheckedChanged);
-			// 
-			// radioButtonHorizontal
-			// 
-			this.radioButtonHorizontal.AutoSize = true;
-			this.radioButtonHorizontal.Location = new System.Drawing.Point(183, 74);
-			this.radioButtonHorizontal.Name = "radioButtonHorizontal";
-			this.radioButtonHorizontal.Size = new System.Drawing.Size(72, 17);
-			this.radioButtonHorizontal.TabIndex = 7;
-			this.radioButtonHorizontal.TabStop = true;
-			this.radioButtonHorizontal.Text = "Horizontal";
-			this.radioButtonHorizontal.UseVisualStyleBackColor = true;
-			this.radioButtonHorizontal.CheckedChanged += new System.EventHandler(this.radioButtonHorizontal_CheckedChanged);
-			// 
-			// label51
-			// 
-			this.label51.AutoSize = true;
-			this.label51.Location = new System.Drawing.Point(20, 76);
-			this.label51.Name = "label51";
-			this.label51.Size = new System.Drawing.Size(91, 13);
-			this.label51.TabIndex = 8;
-			this.label51.Text = "String Orientation:";
 			// 
 			// NutcrackerTypeEditorControl
 			// 

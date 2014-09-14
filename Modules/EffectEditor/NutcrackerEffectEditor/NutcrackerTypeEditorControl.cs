@@ -823,6 +823,8 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			textPictureFileName.Text = Data.Picture_FileName;
 			comboBoxPictureDirection.SelectedIndex = Data.Picture_Direction;
 			trackPictureGifSpeed.Value = Data.Picture_GifSpeed;
+			trackPictureGifSpeed.Enabled = true;
+			
 		}
 
 		private void buttonPictureSelect_Click(object sender, EventArgs e)
@@ -1108,6 +1110,24 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			{
 				Data.StringOrienation = NutcrackerEffects.StringOrientations.Horizontal;
 			}
+		}
+
+		/// <summary> 
+		/// Clean up any resources being used.
+		/// </summary>
+		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+		protected override void Dispose(bool disposing)
+		{
+			if (disposing && (components != null))
+			{
+				components.Dispose();
+			}
+
+			if (effect != null)
+			{
+				effect.Dispose();
+			}
+			base.Dispose(disposing);
 		}
 
 	}
