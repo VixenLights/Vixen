@@ -1160,9 +1160,9 @@
 			this.label32.AutoSize = true;
 			this.label32.Location = new System.Drawing.Point(9, 108);
 			this.label32.Name = "label32";
-			this.label32.Size = new System.Drawing.Size(29, 13);
+			this.label32.Size = new System.Drawing.Size(47, 13);
 			this.label32.TabIndex = 31;
-			this.label32.Text = "Top:";
+			this.label32.Text = "Position:";
 			// 
 			// trackTextTop
 			// 

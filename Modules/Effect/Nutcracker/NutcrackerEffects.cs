@@ -1498,93 +1498,7 @@ namespace VixenModules.Effect.Nutcracker
 
 		#region Pictures
 
-		private string _pictureName = string.Empty;
-		private FastPixel.FastPixel fp;
-		private double _currentGifImageNum;
-		private Image _pictureImage;
-		private bool _reverse = false;
-		public void RenderPictures(int dir, string newPictureName, int gifSpeed)
-		{
-			const int speedfactor = 4;
-
-			if (newPictureName != _pictureName)
-			{
-				_pictureImage = Image.FromFile(newPictureName);
-				_pictureName = newPictureName;
-			}
-
-			var dimension = new FrameDimension(_pictureImage.FrameDimensionsList[0]);
-			// Number of frames
-			int frameCount = _pictureImage.GetFrameCount(dimension);
-				
-			if (frameCount > 1)
-			{
-				if (gifSpeed > 0)
-				{
-					_currentGifImageNum += ((gifSpeed * .01));
-				}
-				else
-				{
-					_currentGifImageNum++;
-				}
-				if (Convert.ToInt32(_currentGifImageNum) >= frameCount)
-				{
-					_currentGifImageNum = 0;
-				}
-				_pictureImage.SelectActiveFrame(dimension, Convert.ToInt32(_currentGifImageNum));
-
-			}
-
-			Image image = ScaleImage(_pictureImage, BufferWi, BufferHt);
-
-			fp = new FastPixel.FastPixel(new Bitmap(image));
-
-			if (fp != null) {
-				int imgwidth = fp.Width;
-				int imght = fp.Height;
-				int yoffset = (BufferHt + imght)/2;
-				int xoffset = (imgwidth - BufferWi)/2;
-				int limit = (dir < 2) ? imgwidth + BufferWi : imght + BufferHt;
-				int movement = Convert.ToInt32((State%(limit*speedfactor))/speedfactor);
-				
-				// copy image to buffer
-				fp.Lock();
-				for (int x = 0; x < imgwidth; x++) {
-					for (int y = 0; y < imght; y++)
-					{
-						//if (!image.IsTransparent(x,y))
-						Color fpColor = fp.GetPixel(x, y);
-						if (fpColor != Color.Transparent) {
-							switch (dir) {
-								case 0:
-									// left
-									SetPixel(x + BufferWi - movement, yoffset - y-1, fpColor);
-									break;
-								case 1:
-									// right
-									SetPixel(x + movement - imgwidth, yoffset - y, fpColor);
-									break;
-								case 2:
-									// up
-									SetPixel(x - xoffset, movement - y, fpColor);
-									break;
-								case 3:
-									// down
-									SetPixel(x - xoffset, BufferHt + imght - y - movement, fpColor);
-									break;
-								default:
-									// no movement - centered
-									SetPixel(x - xoffset, yoffset - y, fpColor);
-									break;
-							}
-						}
-					}
-				}
-				fp.Unlock(false);
-			}
-			if (image != null)
-				image.Dispose();
-		}
+		
 
 		public static Image ScaleImage(Image image, int maxWidth, int maxHeight)
 		{
@@ -1898,15 +1812,15 @@ namespace VixenModules.Effect.Nutcracker
 				if (useColor) {
 					image = ConvertToGrayScale(image);
 				}
-				fp = new FastPixel.FastPixel(new Bitmap(image));
+				_fp = new FastPixel.FastPixel(new Bitmap(image));
 
 				PictureTilePictureName = NewPictureName;
 				lastScale = scale;
 			}
 
-			if (fp != null) {
-				int imageWidth = fp.Width;
-				int imageHeight = fp.Height;
+			if (_fp != null) {
+				int imageWidth = _fp.Width;
+				int imageHeight = _fp.Height;
 				double deltaX = 0;
 				double deltaY = 0;
 
@@ -1940,7 +1854,7 @@ namespace VixenModules.Effect.Nutcracker
 				movementY += (double) ((double) (State - lastState)/(double) speedfactor)*deltaY;
 				lastState = (int) State;
 
-				fp.Lock();
+				_fp.Lock();
 				Color fpColor = new Color();
 				int colorX = 0;
 				int colorY = 0;
@@ -1963,8 +1877,8 @@ namespace VixenModules.Effect.Nutcracker
 						else if (colorY < 0) {
 							colorY = Convert.ToInt32(colorY%imageHeight) + imageHeight - 1;
 						}
-						if (colorX <= fp.Width && colorY <= fp.Height) {
-							fpColor = fp.GetPixel(colorX, colorY);
+						if (colorX <= _fp.Width && colorY <= _fp.Height) {
+							fpColor = _fp.GetPixel(colorX, colorY);
 
 							if (fpColor != Color.Transparent) {
 								// Are we re-assigning the colors for this
@@ -1994,7 +1908,7 @@ namespace VixenModules.Effect.Nutcracker
 						}
 					}
 				}
-				fp.Unlock(false);
+				_fp.Unlock(false);
 			}
 			} finally {
 				if (image != null)
