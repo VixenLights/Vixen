@@ -624,7 +624,16 @@
             "Right",
             "Up",
             "Down",
-            "None"});
+            "None",
+            "Up Left",
+            "Down Left",
+            "Up Right",
+            "Down Right",
+            "Peekaboo",
+            "Peekaboo 90",
+            "Peekaboo 180",
+            "Peekaboo 270",
+            "Wiggle"});
 			this.comboBoxPictureDirection.Location = new System.Drawing.Point(65, 55);
 			this.comboBoxPictureDirection.Name = "comboBoxPictureDirection";
 			this.comboBoxPictureDirection.Size = new System.Drawing.Size(103, 21);

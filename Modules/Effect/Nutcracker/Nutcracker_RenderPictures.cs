@@ -16,8 +16,10 @@ namespace VixenModules.Effect.Nutcracker
 
 		public void RenderPictures(int dir, string newPictureName, int gifSpeed)
 		{
+			if (String.IsNullOrEmpty(newPictureName)) return;
 			const int speedfactor = 4;
-
+			var effectType = (EffectType)dir;
+			
 			if (newPictureName != _pictureName)
 			{
 				_pictureImage = Image.FromFile(newPictureName);
@@ -32,7 +34,7 @@ namespace VixenModules.Effect.Nutcracker
 			{
 				if (gifSpeed > 0)
 				{
-					_currentGifImageNum += ((gifSpeed * .01));
+					_currentGifImageNum += ((gifSpeed * .05));
 				}
 				else
 				{
@@ -56,8 +58,45 @@ namespace VixenModules.Effect.Nutcracker
 				int imght = _fp.Height;
 				int yoffset = (BufferHt + imght) / 2;
 				int xoffset = (imgwidth - BufferWi) / 2;
-				int limit = (dir < 2) ? imgwidth + BufferWi : imght + BufferHt;
-				int movement = Convert.ToInt32((State % (limit * speedfactor)) / speedfactor);
+				//int limit = (dir < 2) ? imgwidth + BufferWi : imght + BufferHt;
+				//int movement = Convert.ToInt32((State % (limit * speedfactor)) / speedfactor);
+
+
+				switch (effectType)
+				{
+					case EffectType.RenderPicturePeekaboo0:
+					case EffectType.RenderPicturePeekaboo180:
+						//Peek a boo
+						yoffset = Convert.ToInt32(State/speedfactor - BufferHt); // * speedfactor; //draw_at = (state < BufferHt)? state
+						if (yoffset > 10)
+						{
+							yoffset = -yoffset + 10; //reverse direction
+						}else if (yoffset > 0) {
+							yoffset = 0; //pause in middle
+						}
+						break;
+					case EffectType.RenderPictureWiggle: //wiggle left-right -DJ
+						xoffset = Convert.ToInt32(State % (BufferWi / 4 * speedfactor));
+						if (xoffset > BufferWi / 8 * speedfactor) {
+							xoffset = BufferWi / 4 * speedfactor - xoffset; //reverse direction
+						}
+						xoffset -= BufferWi / 4; //* speedfactor; //center it on mid value
+						xoffset += (imgwidth - BufferWi) / 2; //add in original xoffset from above
+						break;
+					case EffectType.RenderPicturePeekaboo90: //peekaboo 90
+					case EffectType.RenderPicturePeekaboo270: //peekaboo 270
+						yoffset = (imght - BufferWi) / 2; //adjust offsets for other axis
+						xoffset = Convert.ToInt32(State / speedfactor - BufferHt); // * speedfactor; //draw_at = (state < BufferHt)? state
+						if (xoffset > 10) {
+							xoffset = -xoffset + 10; //reverse direction
+						}
+						else if (xoffset > 0){
+							xoffset = 0; //pause in middle
+						}
+						break;
+					default:
+						break;
+				}
 
 				// copy image to buffer
 				_fp.Lock();
@@ -69,23 +108,51 @@ namespace VixenModules.Effect.Nutcracker
 						Color fpColor = _fp.GetPixel(x, y);
 						if (fpColor != Color.Transparent)
 						{
-							switch (dir)
+							switch (effectType)
 							{
-								case 0:
+								case EffectType.RenderPictureLeft:
 									// left
-									SetPixel(x + BufferWi - movement, yoffset - y - 1, fpColor);
+									SetPixel( Convert.ToInt32(x + BufferWi - (State % ((imgwidth + BufferWi) * speedfactor)) / speedfactor), yoffset - y, fpColor);
 									break;
-								case 1:
+								case EffectType.RenderPictureRight:
 									// right
-									SetPixel(x + movement - imgwidth, yoffset - y, fpColor);
+									SetPixel(Convert.ToInt32(x + (State % ((imgwidth + BufferWi) * speedfactor)) / speedfactor - imgwidth), yoffset - y, fpColor);
 									break;
-								case 2:
+								case EffectType.RenderPictureUp:
 									// up
-									SetPixel(x - xoffset, movement - y, fpColor);
+									SetPixel(x - xoffset,  Convert.ToInt32((State % ((imght + BufferHt) * speedfactor)) / speedfactor - y), fpColor);
 									break;
-								case 3:
+								case EffectType.RenderPictureDown:
 									// down
-									SetPixel(x - xoffset, BufferHt + imght - y - movement, fpColor);
+									SetPixel(x - xoffset, Convert.ToInt32(BufferHt + imght - y - (State % ((imght + BufferHt) * speedfactor)) / speedfactor), fpColor);
+									break;
+								case EffectType.RenderPictureUpleft:
+									SetPixel(Convert.ToInt32(x + BufferWi - (State % ((imgwidth + BufferWi) * speedfactor)) / speedfactor), Convert.ToInt32((State % ((imght + BufferHt) * speedfactor)) / speedfactor - y), fpColor);
+									break; // up-left
+								case EffectType.RenderPictureDownleft: 
+									SetPixel( Convert.ToInt32(x + BufferWi - (State % ((imgwidth + BufferWi) * speedfactor)) / speedfactor), Convert.ToInt32(BufferHt + imght - y - (State % ((imght + BufferHt) * speedfactor)) / speedfactor), fpColor);
+									break; // down-left
+								case EffectType.RenderPictureUpright:
+									SetPixel(Convert.ToInt32(x + (State % ((imgwidth + BufferWi) * speedfactor)) / speedfactor - imgwidth), Convert.ToInt32((State % ((imght + BufferHt) * speedfactor)) / speedfactor - y), fpColor);
+									break; // up-right
+								case EffectType.RenderPictureDownright: 
+									SetPixel(Convert.ToInt32(x + (State % ((imgwidth + BufferWi) * speedfactor)) / speedfactor - imgwidth), Convert.ToInt32(BufferHt + imght - y - (State % ((imght + BufferHt) * speedfactor)) / speedfactor), fpColor);
+									break; // down-right
+								case EffectType.RenderPicturePeekaboo0: 
+									//Peek a boo
+									SetPixel(x - xoffset, BufferHt + yoffset - y, fpColor); 
+									break;
+								case EffectType.RenderPictureWiggle: 
+									SetPixel(x + xoffset, yoffset - y, fpColor);
+									break;
+								case EffectType.RenderPicturePeekaboo90:  
+									SetPixel(BufferWi + xoffset - y, x - yoffset, fpColor);
+									break;
+								case EffectType.RenderPicturePeekaboo180:  
+									SetPixel(x - xoffset, y - yoffset, fpColor);
+									break;
+								case EffectType.RenderPicturePeekaboo270: 
+									SetPixel(y - xoffset, BufferHt + yoffset - x, fpColor);
 									break;
 								default:
 									// no movement - centered
@@ -99,6 +166,24 @@ namespace VixenModules.Effect.Nutcracker
 			}
 			if (image != null)
 				image.Dispose();
+		}
+
+		internal enum EffectType
+		{
+			RenderPictureLeft,  
+			RenderPictureRight,
+			RenderPictureUp,
+			RenderPictureDown,
+			RenderPictureNone,
+			RenderPictureUpleft,
+			RenderPictureDownleft,
+			RenderPictureUpright,
+			RenderPictureDownright,
+			RenderPicturePeekaboo0,
+			RenderPicturePeekaboo90,
+			RenderPicturePeekaboo180,
+			RenderPicturePeekaboo270,
+			RenderPictureWiggle
 		}
 
 	}
