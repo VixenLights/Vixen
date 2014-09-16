@@ -860,6 +860,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 		{
 			if (loading) return;
 			Data.Picture_Direction = comboBoxPictureDirection.SelectedIndex;
+			effect.SetNextState(true);
 		}
 
 		private void trackPictureGifSpeed_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender,
