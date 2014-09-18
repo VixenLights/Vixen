@@ -1488,7 +1488,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				TimedSequenceElement tse = element as TimedSequenceElement;
 
-				if (TimelineControl.SelectedElements.Count() > 1)
+				if (TimelineControl.SelectedElements.Count() > 1 && TimelineControl.grid.OkToUseAlignmentHelper(TimelineControl.SelectedElements))
 				{
 					ToolStripMenuItem itemAlignment = new ToolStripMenuItem("Alignment");
 					ToolStripMenuItem itemAlignStart = new ToolStripMenuItem("Align Start Times (shift)");
@@ -1839,6 +1839,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void DistributeSelectedEffectsEqually()
 		{
+			if (!TimelineControl.grid.OkToUseAlignmentHelper(TimelineControl.SelectedElements))
+			{
+				MessageBox.Show(TimelineControl.grid.alignmentHelperWarning);
+				return;
+			}
+
 			//Before we do anything lets make sure there is time to work with
 			//I don't remember why I put this here, for now its commented out until its verified that its not needed, then it will be removed
 			//if (TimelineControl.SelectedElements.First().EndTime == TimelineControl.SelectedElements.Last().EndTime)
@@ -1902,6 +1908,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void DistributeSelectedEffects()
 		{
+			if (!TimelineControl.grid.OkToUseAlignmentHelper(TimelineControl.SelectedElements))
+			{
+				MessageBox.Show(TimelineControl.grid.alignmentHelperWarning);
+				return;
+			}
+
 			var startTime = TimelineControl.SelectedElements.First().StartTime;
 			var endTime = TimelineControl.SelectedElements.Last().EndTime;
 			if (startTime > endTime)
