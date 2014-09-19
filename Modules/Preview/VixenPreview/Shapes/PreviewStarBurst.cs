@@ -325,6 +325,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			if (_topLeft != null && _bottomRight != null)
 			{
+                _topRight.X = _bottomRight.X;
+                _topRight.Y = _topLeft.Y;
+                _bottomLeft.X = _topLeft.X;
+                _bottomLeft.Y = _bottomRight.Y;
 				int width = Math.Abs(_bottomRight.X - _topLeft.X);
 				int height = Math.Abs(_bottomRight.Y - _topLeft.Y);
 				int centerX = Right - (width / 2);
