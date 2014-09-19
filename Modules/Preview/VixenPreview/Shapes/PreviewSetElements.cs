@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Common.Controls;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -390,6 +391,25 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                         elementString.Pixels.Add(pixel);
                     }
                 }
+                UpdateListLinkedElements();
+            }
+        }
+
+        private void reverseElementLinkingInThisStringToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ComboBoxItem comboBoxItem = comboStrings.SelectedItem as Common.Controls.ComboBoxItem;
+            if (comboBoxItem != null)
+            {
+                PreviewSetElementString elementString = comboBoxItem.Value as PreviewSetElementString;
+                if (elementString != null)
+                {
+                    elementString.Pixels.Reverse();
+                }
+                else
+                {
+                    Console.WriteLine("elementString==null");
+                }
+                numericUpDownLightCount.Value = elementString.Pixels.Count();
                 UpdateListLinkedElements();
             }
         }
