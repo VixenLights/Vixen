@@ -1488,9 +1488,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				TimedSequenceElement tse = element as TimedSequenceElement;
 
-				if (TimelineControl.SelectedElements.Count() > 1 && TimelineControl.grid.OkToUseAlignmentHelper(TimelineControl.SelectedElements))
+				if (TimelineControl.SelectedElements.Count() > 1)
 				{
 					ToolStripMenuItem itemAlignment = new ToolStripMenuItem("Alignment");
+					//Disables the Alignment menu if too many effects are selected in a row.
+					itemAlignment.Enabled = TimelineControl.grid.OkToUseAlignmentHelper(TimelineControl.SelectedElements);
+					if (!itemAlignment.Enabled)
+					{
+						itemAlignment.ToolTipText = "Disabled, maximum selected effects per row is 4.";
+					}
+
 					ToolStripMenuItem itemAlignStart = new ToolStripMenuItem("Align Start Times (shift)");
 					itemAlignStart.ToolTipText = "Holding shift will align the start times, while holding duration.";
 					itemAlignStart.Click += (mySender, myE) => TimelineControl.grid.AlignElementStartTimes(TimelineControl.SelectedElements, element, ModifierKeys == Keys.Shift);
