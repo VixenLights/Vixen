@@ -191,9 +191,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			listViewColors.BeginUpdate();
 			listViewColors.Items.Clear();
 
-			listViewColors.LargeImageList = new ImageList();
-			listViewColors.LargeImageList.ColorDepth = ColorDepth.Depth32Bit;
-			listViewColors.LargeImageList.ImageSize = new Size(48, 48);
+			listViewColors.LargeImageList = new ImageList { ColorDepth = ColorDepth.Depth32Bit, ImageSize = new Size(48, 48) };
 
 			foreach (Color colorItem in colors)
 			{
@@ -236,14 +234,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			listViewCurves.BeginUpdate();
 			listViewCurves.Items.Clear();
 
-			listViewCurves.LargeImageList = new ImageList();
+			listViewCurves.LargeImageList = new ImageList { ColorDepth = ColorDepth.Depth32Bit, ImageSize = new Size(48, 48) };
 
 			foreach (KeyValuePair<string, Curve> kvp in _curveLibrary)
 			{
 				Curve c = kvp.Value;
 				string name = kvp.Key;
 
-				listViewCurves.LargeImageList.ImageSize = new Size(48, 48);
 				listViewCurves.LargeImageList.Images.Add(name, c.GenerateCurveImage(new Size(48, 48)));
 
 				ListViewItem item = new ListViewItem();
@@ -267,16 +264,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			listViewGradients.BeginUpdate();
 			listViewGradients.Items.Clear();
 
-			listViewGradients.LargeImageList = new ImageList();
-			listViewGradients.LargeImageList.ColorDepth = ColorDepth.Depth32Bit;
+			listViewGradients.LargeImageList = new ImageList { ColorDepth = ColorDepth.Depth32Bit, ImageSize = new Size(48, 48) };
 
 			foreach (KeyValuePair<string, ColorGradient> kvp in _colorGradientLibrary)
 			{
 				ColorGradient gradient = kvp.Value;
 				string name = kvp.Key;
 
-				listViewGradients.LargeImageList.ImageSize = new Size(48, 48);
-				listViewGradients.LargeImageList.Images.Add(name, gradient.GenerateColorGradientImage(new Size(48, 48), false));
+				var result = new Bitmap(gradient.GenerateColorGradientImage(new Size(48, 48), false), 48, 48);
+				Graphics gfx = Graphics.FromImage(result);
+				gfx.DrawRectangle(new Pen(Color.Black, 2), 0, 0, 48, 48);
+				listViewGradients.LargeImageList.Images.Add(name, result);
 
 				ListViewItem item = new ListViewItem();
 				item.Text = name;
