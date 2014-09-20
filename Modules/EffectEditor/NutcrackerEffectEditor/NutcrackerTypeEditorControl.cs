@@ -80,7 +80,8 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 						PreviewBaseShape gridString = grid._strings[stringNum];
 						for (int pixelNum = 0; pixelNum < gridString.Pixels.Count; pixelNum++)
 						{
-							gridString.Pixels[pixelNum].PixelColor = effect.Pixels[stringNum][pixelNum];
+							gridString.Pixels[pixelNum].PixelColor = grid.StringOrientation == PreviewPixelGrid.StringOrientations.Horizontal ? effect.Pixels[pixelNum][stringNum] : effect.Pixels[stringNum][pixelNum];
+							
 						}
 					}
 				}
@@ -307,7 +308,6 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			preview.BackgroundAlpha = 0;
 			displayItem = new DisplayItem();
 			PreviewArch arch = new PreviewArch(new PreviewPoint(10, 10), null, 1);
-
 			arch.PixelCount = PixelsPerString();
 			arch.PixelSize = Data.PixelSize;
 			arch.PixelColor = Color.White;
@@ -354,10 +354,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			displayItem = new DisplayItem();
 
 			PreviewPixelGrid grid = new PreviewPixelGrid(new PreviewPoint(10, 10), null, 1);
-			//if (Data.StringOrienation == NutcrackerEffects.StringOrientations.Horizontal)
-			//{
-			//	grid.StringOrientation = PreviewPixelGrid.StringOrientations.Horizontal;
-			//}
+			
 			grid.StringType = PreviewBaseShape.StringTypes.Pixel;
 			grid.StringCount = StringCount;
 			grid.LightsPerString = PixelsPerString();
@@ -366,7 +363,17 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			grid.Top = 10;
 			grid.Left = 10;
 			grid.BottomRight.X = preview.Width - 10;
-			grid.BottomRight.Y = preview.Height - 10;
+			if (Data.StringOrienation == NutcrackerEffects.StringOrientations.Horizontal)
+			{
+				grid.StringOrientation = PreviewPixelGrid.StringOrientations.Horizontal;
+				grid.BottomRight.Y = Math.Min(StringCount * Data.PixelSize * 2, preview.Width - 10);
+				grid.BottomLeft.Y = Math.Min(StringCount * Data.PixelSize * 2, preview.Width - 10);
+			}
+			else
+			{
+				grid.BottomRight.Y = preview.Height - 10;	
+			}
+			
 			grid.Layout();
 			displayItem.Shape = grid;
 
@@ -376,8 +383,21 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 		public void SetupPreview()
 		{
 			DeletePreviewDisplayItem();
+			int wid;
+			int ht;
 
-			effect.InitBuffer(StringCount, PixelsPerString());
+			if (Data.StringOrienation == NutcrackerEffects.StringOrientations.Horizontal &&
+				Data.PreviewType == NutcrackerEffects.PreviewType.Grid)
+			{
+				wid = PixelsPerString();
+				ht = StringCount;
+			}
+			else
+			{
+				wid = StringCount;
+				ht = PixelsPerString();
+			}
+			effect.InitBuffer(wid, ht);
 
 			switch (Data.PreviewType) {
 				case NutcrackerEffects.PreviewType.Tree90:
@@ -826,6 +846,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			Data.Text_CenterStop = chkCenterStop.Checked;
 		}
 
+
 		#endregion // Text
 
 		#region Picture
@@ -836,7 +857,10 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			comboBoxPictureDirection.SelectedIndex = Data.Picture_Direction;
 			trackPictureGifSpeed.Value = Data.Picture_GifSpeed;
 			trackPictureGifSpeed.Enabled = true;
-			
+			trackPictureScaleToGrid.Checked = Data.Picture_ScaleToGrid;
+			trackPictureScalePercent.Enabled = !Data.Picture_ScaleToGrid;
+			trackPictureScalePercent.Value = Data.Picture_ScalePercent;
+
 		}
 
 		private void buttonPictureSelect_Click(object sender, EventArgs e)
@@ -869,6 +893,20 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			if (loading) return;
 			Data.Picture_GifSpeed = trackPictureGifSpeed.Value;
 		}
+
+		private void trackPictureScaleToGrid_CheckedChanged(object sender, EventArgs e)
+		{
+			if (loading) return;
+			Data.Picture_ScaleToGrid = trackPictureScaleToGrid.Checked;
+			trackPictureScalePercent.Enabled = !Data.Picture_ScaleToGrid;
+		}
+
+		private void trackPictureScalePercent_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender, Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
+		{
+			Data.Picture_ScalePercent = trackPictureScalePercent.Value;
+		}
+
+		
 
 		#endregion // Picture
 
@@ -1114,6 +1152,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			if (radioButtonVertical.Checked)
 			{
 				Data.StringOrienation = NutcrackerEffects.StringOrientations.Vertical;
+				SetupPreview();
 			}
 		}
 
@@ -1122,6 +1161,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			if (radioButtonHorizontal.Checked)
 			{
 				Data.StringOrienation = NutcrackerEffects.StringOrientations.Horizontal;
+				SetupPreview();
 			}
 		}
 
@@ -1143,5 +1183,6 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			base.Dispose(disposing);
 		}
 
+		
 	}
 }

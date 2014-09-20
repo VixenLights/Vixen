@@ -113,6 +113,8 @@ namespace VixenModules.Effect.Nutcracker
 		[DataMember] public string Picture_FileName = string.Empty;
 		[DataMember] public int Picture_Direction = 0;
 		[DataMember] public int Picture_GifSpeed = 1;
+		[DataMember] public bool Picture_ScaleToGrid = false;
+		[DataMember] public int Picture_ScalePercent = 10;
 
 		// Spirograph
 		[DataMember] public int Spirograph_ROuter = 20;
@@ -172,6 +174,10 @@ namespace VixenModules.Effect.Nutcracker
 				Picture_FileName = string.Empty;
 			if (Picture_GifSpeed < 1)
 				Picture_GifSpeed = 1;
+			if (Picture_ScalePercent < 1)
+			{
+				Picture_ScalePercent = 10;
+			}
 
 			if (Spirograph_ROuter < 1)
 				Spirograph_ROuter = 20;

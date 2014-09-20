@@ -50,6 +50,9 @@
 			this.label48 = new System.Windows.Forms.Label();
 			this.comboBoxPictureTileFileName = new Common.Controls.PictureComboBox();
 			this.Picture = new System.Windows.Forms.TabPage();
+			this.label54 = new System.Windows.Forms.Label();
+			this.trackPictureScalePercent = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
+			this.trackPictureScaleToGrid = new System.Windows.Forms.CheckBox();
 			this.textPictureFileName = new System.Windows.Forms.TextBox();
 			this.label38 = new System.Windows.Forms.Label();
 			this.comboBoxPictureDirection = new System.Windows.Forms.ComboBox();
@@ -584,6 +587,9 @@
 			// 
 			// Picture
 			// 
+			this.Picture.Controls.Add(this.label54);
+			this.Picture.Controls.Add(this.trackPictureScalePercent);
+			this.Picture.Controls.Add(this.trackPictureScaleToGrid);
 			this.Picture.Controls.Add(this.textPictureFileName);
 			this.Picture.Controls.Add(this.label38);
 			this.Picture.Controls.Add(this.comboBoxPictureDirection);
@@ -597,6 +603,38 @@
 			this.Picture.TabIndex = 13;
 			this.Picture.Text = "Picture";
 			this.Picture.UseVisualStyleBackColor = true;
+			// 
+			// label54
+			// 
+			this.label54.AutoSize = true;
+			this.label54.Location = new System.Drawing.Point(6, 130);
+			this.label54.Name = "label54";
+			this.label54.Size = new System.Drawing.Size(45, 13);
+			this.label54.TabIndex = 50;
+			this.label54.Text = "Scale %";
+			// 
+			// trackPictureScalePercent
+			// 
+			this.trackPictureScalePercent.Location = new System.Drawing.Point(64, 130);
+			this.trackPictureScalePercent.Maximum = 10;
+			this.trackPictureScalePercent.Minimum = 1;
+			this.trackPictureScalePercent.Name = "trackPictureScalePercent";
+			this.trackPictureScalePercent.Size = new System.Drawing.Size(195, 23);
+			this.trackPictureScalePercent.TabIndex = 51;
+			this.trackPictureScalePercent.Text = "Scale Picture Percentage";
+			this.trackPictureScalePercent.Value = 10;
+			this.trackPictureScalePercent.ValueChanged += new Common.Controls.ControlsEx.ValueControls.ValueChangedEH(this.trackPictureScalePercent_ValueChanged);
+			// 
+			// trackPictureScaleToGrid
+			// 
+			this.trackPictureScaleToGrid.AutoSize = true;
+			this.trackPictureScaleToGrid.Location = new System.Drawing.Point(12, 110);
+			this.trackPictureScaleToGrid.Name = "trackPictureScaleToGrid";
+			this.trackPictureScaleToGrid.Size = new System.Drawing.Size(87, 17);
+			this.trackPictureScaleToGrid.TabIndex = 49;
+			this.trackPictureScaleToGrid.Text = "Scale to Grid";
+			this.trackPictureScaleToGrid.UseVisualStyleBackColor = true;
+			this.trackPictureScaleToGrid.CheckedChanged += new System.EventHandler(this.trackPictureScaleToGrid_CheckedChanged);
 			// 
 			// textPictureFileName
 			// 
@@ -662,7 +700,7 @@
 			// label37
 			// 
 			this.label37.AutoSize = true;
-			this.label37.Location = new System.Drawing.Point(6, 85);
+			this.label37.Location = new System.Drawing.Point(5, 86);
 			this.label37.Name = "label37";
 			this.label37.Size = new System.Drawing.Size(61, 13);
 			this.label37.TabIndex = 41;
@@ -670,7 +708,7 @@
 			// 
 			// trackPictureGifSpeed
 			// 
-			this.trackPictureGifSpeed.Location = new System.Drawing.Point(65, 81);
+			this.trackPictureGifSpeed.Location = new System.Drawing.Point(64, 82);
 			this.trackPictureGifSpeed.Maximum = 20;
 			this.trackPictureGifSpeed.Minimum = 1;
 			this.trackPictureGifSpeed.Name = "trackPictureGifSpeed";
@@ -2222,5 +2260,8 @@
 		private System.Windows.Forms.RadioButton radioButtonVertical;
 		private System.Windows.Forms.CheckBox chkCenterStop;
 		private System.Windows.Forms.Label label53;
+		private System.Windows.Forms.CheckBox trackPictureScaleToGrid;
+		private System.Windows.Forms.Label label54;
+		private Common.Controls.ControlsEx.ValueControls.HMiniTracker trackPictureScalePercent;
 	}
 }

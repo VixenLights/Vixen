@@ -4,6 +4,7 @@ using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Drawing;
+using NLog;
 using VixenModules.Effect.Nutcracker;
 using System.Threading.Tasks;
 using System.Threading;
@@ -15,7 +16,7 @@ namespace VixenModules.Effect.Nutcracker
 	public partial class NutcrackerEffects: IDisposable
 	{
 		#region Variables
-
+		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 		private NutcrackerData _data = null;
 		private long _state;
 		private int _lastPeriod;
@@ -1960,7 +1961,7 @@ namespace VixenModules.Effect.Nutcracker
 					           Data.Text_TextRotation, Data.Text_CenterStop);
 					break;
 				case Effects.Picture:
-					RenderPictures(Data.Picture_Direction, Data.Picture_FileName, Data.Picture_GifSpeed);
+					RenderPictures(Data.Picture_Direction, Data.Picture_FileName, Data.Picture_GifSpeed, Data.Picture_ScaleToGrid, Data.Picture_ScalePercent);
 					break;
 				case Effects.Spirograph:
 					RenderSpirograph(Data.Spirograph_ROuter, Data.Spirograph_RInner, Data.Spirograph_Distance, Data.Spirograph_Animate);

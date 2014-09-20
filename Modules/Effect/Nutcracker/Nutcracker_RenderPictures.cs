@@ -14,7 +14,7 @@ namespace VixenModules.Effect.Nutcracker
 		private double _currentGifImageNum;
 		private Image _pictureImage;
 
-		public void RenderPictures(int dir, string newPictureName, int gifSpeed)
+		public void RenderPictures(int dir, string newPictureName, int gifSpeed, bool scaleToGrid, int scalePct)
 		{
 			if (String.IsNullOrEmpty(newPictureName)) return;
 			const int speedfactor = 4;
@@ -22,8 +22,16 @@ namespace VixenModules.Effect.Nutcracker
 			
 			if (newPictureName != _pictureName)
 			{
-				_pictureImage = Image.FromFile(newPictureName);
-				_pictureName = newPictureName;
+				try
+				{
+					_pictureImage = Image.FromFile(newPictureName);
+					_pictureName = newPictureName;
+				}
+				catch (Exception e)
+				{
+					Logging.ErrorException("Error loading pictue file for nutcracker pictures", e);
+				}
+				
 			}
 
 			var dimension = new FrameDimension(_pictureImage.FrameDimensionsList[0]);
@@ -48,7 +56,8 @@ namespace VixenModules.Effect.Nutcracker
 
 			}
 
-			Image image = ScaleImage(_pictureImage, BufferWi, BufferHt);
+			Image image = scaleToGrid ? ScaleImage(_pictureImage, BufferWi, BufferHt) : ScaleImage(_pictureImage, _pictureImage.Width * scalePct / 10, _pictureImage.Height * scalePct / 10);
+			
 
 			_fp = new FastPixel.FastPixel(new Bitmap(image));
 
