@@ -400,6 +400,14 @@ namespace VixenModules.App.ColorGradients
 
 		protected override void OnMouseDoubleClick(MouseEventArgs e)
 		{
+			//We need to make sure we double clicked on a fader and not just the control.
+			Point pt = Point.Empty;
+			bool foc;
+			if (!GetFadersUnderMouse(e.Location, ref pt, out foc).Any())
+			{
+				return;
+			}
+
 			if (Selection != null && !ReadOnly)
 				RaiseSelectionDoubleClicked();
 			base.OnMouseDoubleClick(e);
