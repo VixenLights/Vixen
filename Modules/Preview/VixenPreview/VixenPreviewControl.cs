@@ -170,6 +170,10 @@ namespace VixenModules.Preview.VixenPreview
 					_selectedDisplayItems = new List<DisplayItem>();
 				return _selectedDisplayItems;
 			}
+            set
+            {
+                _selectedDisplayItems = value;
+            }
 		}
 
 		public int BackgroundAlpha
@@ -836,13 +840,12 @@ namespace VixenModules.Preview.VixenPreview
 		{
 			dragStart.X = x;
 			dragStart.Y = y;
-			if (_selectedDisplayItem != null) {
-				_selectedDisplayItem.Shape.SetSelectPoint(null);
-			}
-			else if (SelectedDisplayItems.Count > 0) {
+			if (SelectedDisplayItems.Count() > 0) {
 				foreach (DisplayItem item in SelectedDisplayItems) {
 					item.Shape.SetSelectPoint(null);
 				}
+			} else if (_selectedDisplayItem != null) {
+				_selectedDisplayItem.Shape.SetSelectPoint(null);
 			}
 			Capture = true;
 			_mouseCaptured = true;
@@ -854,6 +857,7 @@ namespace VixenModules.Preview.VixenPreview
             {
                 PreviewPoint translatedPoint = new PreviewPoint(e.X + hScroll.Value, e.Y + vScroll.Value);
                 PreviewPoint originalPoint = new PreviewPoint(e.X, e.Y);
+                Point zoomPoint = PointToZoomPoint(translatedPoint.ToPoint());
                 if (e.Button == System.Windows.Forms.MouseButtons.Middle)
                 {
                     // Woo hoo... we're panning with the middle mouse button
@@ -901,11 +905,11 @@ namespace VixenModules.Preview.VixenPreview
                         }
                     }
                     // Are we moving a group of display items?
-                    else if (_mouseCaptured && _selectedDisplayItem == null && SelectedDisplayItems.Count > 1)
+                    else if (_mouseCaptured && _selectedDisplayItem == null && SelectedDisplayItems.Count() > 0)
                     {
                         foreach (DisplayItem item in SelectedDisplayItems)
                         {
-                            item.Shape.MouseMove(dragCurrent.X, dragCurrent.Y, changeX, changeY);
+                            item.Shape.MouseMove(zoomPoint.X, zoomPoint.Y, changeX, changeY);
                         }
                     }
                     
@@ -956,14 +960,7 @@ namespace VixenModules.Preview.VixenPreview
             }
             else if (e.KeyCode == Keys.V && e.Modifiers == Keys.Control)
             {
-                if (Paste())
-                {
-                    // move the prop to the mouse position
-                    Point moveToPoint = PointToClient(MousePosition);
-                    _selectedDisplayItem.Shape.MoveTo(moveToPoint.X, moveToPoint.Y);
-
-                    StartMove(moveToPoint.X, moveToPoint.Y);
-                }
+                Paste();
                 e.Handled = true;
             }
             else if (e.KeyCode == Keys.Up)
@@ -1267,22 +1264,41 @@ namespace VixenModules.Preview.VixenPreview
 		}
 
 
-		public bool Paste()
+		public void Paste()
 		{
 			string xml = Clipboard.GetText();
-			DisplayItem newDisplayItem = (DisplayItem) PreviewTools.DeSerializeToObject(xml, typeof (DisplayItem));
-			if (newDisplayItem != null) {
-				DeSelectSelectedDisplayItem();
-				AddDisplayItem(newDisplayItem);
-                newDisplayItem.ZoomLevel = ZoomLevel;
-                _selectedDisplayItem = newDisplayItem;
-				_selectedDisplayItem.Shape.Select(true);
-				_selectedDisplayItem.Shape.SetSelectPoint(null);
-				OnSelectDisplayItem(this, _selectedDisplayItem);
-				return true;
-			}
-			else
-				return false;
+            SelectedDisplayItems = (List<DisplayItem>)PreviewTools.DeSerializeToDisplayItemList(xml);
+            if (SelectedDisplayItems.Count() > 0)
+            {
+                DeSelectSelectedDisplayItem();
+                foreach (DisplayItem newDisplayItem in SelectedDisplayItems)
+                {
+                    AddDisplayItem(newDisplayItem);
+                    newDisplayItem.ZoomLevel = ZoomLevel;
+                }
+
+                // move the prop to the mouse position
+                Point mousePoint = PointToClient(MousePosition);
+                mousePoint.X += hScroll.Value;
+                mousePoint.Y += vScroll.Value;
+                Point moveToPoint = PointToZoomPoint(mousePoint);
+                
+                int top = int.MaxValue;
+                int left = int.MaxValue;
+                foreach (DisplayItem item in SelectedDisplayItems)
+                {
+                    top = Math.Min(top, item.Shape.Top);
+                    left = Math.Min(left, item.Shape.Left);
+                }
+                int deltaY = top - moveToPoint.Y;
+                int deltaX = left - moveToPoint.X;
+                foreach (DisplayItem item in SelectedDisplayItems)
+                {
+                    item.Shape.Left -= deltaX;
+                    item.Shape.Top -= deltaY;
+                }
+                StartMove(moveToPoint.X, moveToPoint.Y);
+            }
 		}
 
 		public void Delete()
@@ -1302,10 +1318,17 @@ namespace VixenModules.Preview.VixenPreview
 
 		public void Copy()
 		{
-			if (_selectedDisplayItem != null) {
-				string xml = PreviewTools.SerializeToString(_selectedDisplayItem);
-				Clipboard.SetData(DataFormats.Text, xml);
-			}
+            if (SelectedDisplayItems.Count() > 0)
+            {
+                string xml = PreviewTools.SerializeToString(SelectedDisplayItems);
+                Clipboard.SetData(DataFormats.Text, xml);
+            }
+            else if (_selectedDisplayItem != null)
+            {
+                SelectedDisplayItems.Add(_selectedDisplayItem);
+                string xml = PreviewTools.SerializeToString(SelectedDisplayItems);
+                Clipboard.SetData(DataFormats.Text, xml);
+            }
 		}
 
 		#endregion
@@ -1381,7 +1404,7 @@ namespace VixenModules.Preview.VixenPreview
 			if (System.IO.File.Exists(fileName)) {
 				// Read the entire template file (stoopid waste of resources, but how else?)
 				string xml = System.IO.File.ReadAllText(fileName);
-				DisplayItem newDisplayItem = PreviewTools.DeSerializeToObject(xml, typeof (DisplayItem));
+				DisplayItem newDisplayItem = PreviewTools.DeSerializeToDisplayItem(xml, typeof (DisplayItem));
 				if (newDisplayItem != null) {
 					DeSelectSelectedDisplayItem();
 					AddDisplayItem(newDisplayItem);
@@ -1666,9 +1689,9 @@ namespace VixenModules.Preview.VixenPreview
 
 			// First, draw our background image opaque
 			bufferedGraphics.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
-			bufferedGraphics.Graphics.DrawImage(fp.Bitmap, 0, 0, fp.Width, fp.Height);
-			if (!this.Disposing && bufferedGraphics != null)
-				bufferedGraphics.Render(Graphics.FromHwnd(this.Handle));
+            bufferedGraphics.Graphics.DrawImage(fp.Bitmap, 0, 0, fp.Width, fp.Height);
+            if (!this.Disposing && bufferedGraphics != null)
+                bufferedGraphics.Render(Graphics.FromHwnd(this.Handle));
 		}
 
 		#region "Foreground updates"

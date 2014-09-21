@@ -229,7 +229,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		public static DisplayItem DeSerializeToObject(string st, Type type)
+		public static DisplayItem DeSerializeToDisplayItem(string st, Type type)
 		{
 			var serializer = new DataContractSerializer(type);
 			DisplayItem item = null;
@@ -244,6 +244,27 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 			return item;
 		}
+
+        public static List<DisplayItem> DeSerializeToDisplayItemList(string st)
+        {
+            List<DisplayItem> result = new List<DisplayItem>();
+            var serializer = new DataContractSerializer(result.GetType());
+            using (var backing = new System.IO.StringReader(st))
+            {
+                try
+                {
+                    using (var reader = new System.Xml.XmlTextReader(backing))
+                    {
+                        result = serializer.ReadObject(reader) as List<DisplayItem>;
+                    }
+                }
+                catch
+                {  
+                    // We're not going to do anything. If we get here, the result list should be empty, which is fine.
+                }
+            }
+            return result;
+        }
 
         public static Bitmap ResizeBitmap(Bitmap imgToResize, Size size)
         {

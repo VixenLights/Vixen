@@ -334,7 +334,7 @@ namespace VixenModules.Preview.VixenPreview {
 				try {
 					// Read the entire template file (stoopid waste of resources, but how else?)
 					string xml = System.IO.File.ReadAllText(fileName);
-					DisplayItem newDisplayItem = (DisplayItem)PreviewTools.DeSerializeToObject(xml, typeof(DisplayItem));
+					DisplayItem newDisplayItem = (DisplayItem)PreviewTools.DeSerializeToDisplayItem(xml, typeof(DisplayItem));
 					TemplateComboBoxItem newTemplateItem = new TemplateComboBoxItem(newDisplayItem.Shape.Name, fileName);
 					comboBoxTemplates.Items.Add(newTemplateItem);
 				}
