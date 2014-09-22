@@ -51,6 +51,7 @@
     <Compile Include="NutcrackerData.cs" />
     <Compile Include="NutcrackerEffects.cs" />
     <Compile Include="NutcrackerEffects_RenderText.cs" />
+    <Compile Include="Nutcracker_RenderCurtain.cs" />
     <Compile Include="Nutcracker_RenderPictures.cs" />
     <Compile Include="Palette.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

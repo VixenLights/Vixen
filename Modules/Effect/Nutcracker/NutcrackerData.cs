@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Configuration;
 using System.Text;
 using System.Runtime.Serialization;
 using System.Drawing;
@@ -37,6 +38,7 @@ namespace VixenModules.Effect.Nutcracker
 		[DataMember] public NutcrackerEffects.StringOrientations StringOrienation = NutcrackerEffects.StringOrientations.Vertical;
 
 		[DataMember] public Palette Palette = new Palette();
+		[DataMember] public bool FitToTime = false;
 
 		// Bars
 		[DataMember] public int Bars_PaletteRepeat = 1;
@@ -137,6 +139,12 @@ namespace VixenModules.Effect.Nutcracker
 		[DataMember] public bool PictureTile_ReplaceColor = false;
 		[DataMember] public bool PictureTile_UseSaturation = false;
 		[DataMember] public int PictureTile_ColorReplacementSensitivity = 0;
+
+		//Curtain
+		[DataMember] public int Curtain_Edge = 0;
+		[DataMember] public int Curtain_Effect = 0;
+		[DataMember] public int Curtain_SwagWidth = 0;
+		[DataMember] public bool Curtain_Repeat = false;
 
 		[OnDeserialized]
 		private void OnDeserialized(StreamingContext context)

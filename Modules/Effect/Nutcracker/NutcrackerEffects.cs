@@ -19,7 +19,7 @@ namespace VixenModules.Effect.Nutcracker
 		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 		private NutcrackerData _data = null;
 		private long _state;
-		private int _lastPeriod;
+		private int _lastPeriod, _curPeriod;
 		private int _renderPeriod;
 		private List<List<Color>> _pixels = new List<List<Color>>();
 		private List<List<Color>> _tempbuf = new List<List<Color>>();
@@ -48,7 +48,8 @@ namespace VixenModules.Effect.Nutcracker
 			Spirograph,
 			Text,
 			Tree,
-			Twinkles
+			Twinkles,
+			Curtain
 		}
 
 		public enum PreviewType
@@ -83,11 +84,26 @@ namespace VixenModules.Effect.Nutcracker
 			_state = 0;
 			_lastPeriod = 0;
 			_renderPeriod = 0;
+			TimeInterval = 50;
 		}
 
-		public NutcrackerEffects(NutcrackerData data)
+		/// <summary>
+		/// Effect engine. Defaults to 50ms intervals
+		/// </summary>
+		/// <param name="data"></param>
+		public NutcrackerEffects(NutcrackerData data):this(data, 50)
+		{	
+		}
+
+		/// <summary>
+		/// Effect engine. Defaults to 50ms intervals
+		/// </summary>
+		/// <param name="data"></param>
+		/// <param name="timeInterval"></param>
+		public NutcrackerEffects(NutcrackerData data, int timeInterval)
 		{
 			Data = data;
+			TimeInterval = timeInterval;
 		}
 
 		public NutcrackerData Data
@@ -127,6 +143,16 @@ namespace VixenModules.Effect.Nutcracker
 			set { Data.Palette = value; }
 		}
 
+		public int TimeInterval { get; set; }
+
+		public bool FitToTime
+		{
+			private get { return Data.FitToTime; } 
+			set { Data.FitToTime = value; }
+		}
+
+		public TimeSpan Duration { private get; set; }
+
 		#endregion
 
 		#region Nutcracker Utilities
@@ -162,7 +188,7 @@ namespace VixenModules.Effect.Nutcracker
 			}
 			Data.Speed = NewSpeed;
 
-			_lastPeriod = period;
+			_lastPeriod = _curPeriod = period;
 		}
 
 		public void SetNextState(bool ResetState)
@@ -278,6 +304,20 @@ namespace VixenModules.Effect.Nutcracker
 			}
 		}
 
+		private double GetEffectTimeIntervalPosition()
+		{
+			double retval;
+			if (Duration == TimeSpan.Zero)
+			{
+				retval = 1;
+			}
+			else
+			{
+				retval = _curPeriod/(Duration.TotalMilliseconds/TimeInterval);
+			}
+			return retval;
+		}
+
 		#endregion
 
 		#region Pixels
@@ -315,40 +355,7 @@ namespace VixenModules.Effect.Nutcracker
 			State = 0;
 		}
 
-		// initialize FirePalette[]
-		private void InitFirePalette()
-		{
-			HSV hsv = new HSV();
-			Color color;
-
-			FirePalette.Clear();
-			//wxImage::HSVValue hsv;
-			//wxImage::RGBValue rgb;
-			//wxColour color;
-			int i;
-			// calc 100 reds, black to bright red
-			hsv.Hue = 0.0f;
-			hsv.Saturation = 1.0f;
-			for (i = 0; i < 100; i++) {
-				hsv.Value = (float) i/100.0f;
-				//rgb = wxImage::HSVtoRGB(hsv);
-				//color.Set(rgb.red,rgb.green,rgb.blue);
-				color = HSV.HSVtoColor(hsv);
-				FirePalette.Add(color);
-				//FirePalette.push_back(color);
-			}
-
-			// gives 100 hues red to yellow
-			hsv.Value = 1.0f;
-			for (i = 0; i < 100; i++) {
-				//rgb = wxImage::HSVtoRGB(hsv);
-				//color.Set(rgb.red,rgb.green,rgb.blue);
-				color = HSV.HSVtoColor(hsv);
-				//FirePalette.push_back(color);
-				FirePalette.Add(color);
-				hsv.Hue += 0.00166666f;
-			}
-		}
+		
 
 		// 0,0 is lower left
 		public void SetPixel(int x, int y, Color color)
@@ -445,6 +452,8 @@ namespace VixenModules.Effect.Nutcracker
 
 		#region Nutcracker Effects
 
+		#region Bars
+
 		public void RenderBars(int PaletteRepeat, int Direction, bool Highlight, bool Show3D)
 		{
 			int x, y, n, pixel_ratio, ColorIdx;
@@ -490,6 +499,10 @@ namespace VixenModules.Effect.Nutcracker
 				}
 			}
 		}
+
+		#endregion
+
+		#region Garlands
 
 		public void RenderGarlands(int GarlandType, int Spacing)
 		{
@@ -559,6 +572,10 @@ namespace VixenModules.Effect.Nutcracker
 			}
 		}
 
+		#endregion
+
+		#region Butterfly
+
 		public void RenderButterfly(int ColorScheme, int Style, int Chunks, int Skip)
 		{
 			int x, y, d;
@@ -607,6 +624,10 @@ namespace VixenModules.Effect.Nutcracker
 			}
 		}
 
+		#endregion
+
+		#region ColorWash
+
 		public void RenderColorWash(bool HorizFade, bool VertFade, int RepeatCount)
 		{
 			const int SpeedFactor = 200;
@@ -638,7 +659,46 @@ namespace VixenModules.Effect.Nutcracker
 			}
 		}
 
+		#endregion
+
 		#region Fire
+
+		// initialize FirePalette[]
+		private void InitFirePalette()
+		{
+			HSV hsv = new HSV();
+			Color color;
+
+			FirePalette.Clear();
+			//wxImage::HSVValue hsv;
+			//wxImage::RGBValue rgb;
+			//wxColour color;
+			int i;
+			// calc 100 reds, black to bright red
+			hsv.Hue = 0.0f;
+			hsv.Saturation = 1.0f;
+			for (i = 0; i < 100; i++)
+			{
+				hsv.Value = (float)i / 100.0f;
+				//rgb = wxImage::HSVtoRGB(hsv);
+				//color.Set(rgb.red,rgb.green,rgb.blue);
+				color = HSV.HSVtoColor(hsv);
+				FirePalette.Add(color);
+				//FirePalette.push_back(color);
+			}
+
+			// gives 100 hues red to yellow
+			hsv.Value = 1.0f;
+			for (i = 0; i < 100; i++)
+			{
+				//rgb = wxImage::HSVtoRGB(hsv);
+				//color.Set(rgb.red,rgb.green,rgb.blue);
+				color = HSV.HSVtoColor(hsv);
+				//FirePalette.push_back(color);
+				FirePalette.Add(color);
+				hsv.Hue += 0.00166666f;
+			}
+		}
 
 		// 0 <= x < BufferWi
 		// 0 <= y < BufferHt
@@ -1977,6 +2037,10 @@ namespace VixenModules.Effect.Nutcracker
 					                  Data.PictureTile_UseSaturation, Data.PictureTile_ColorReplacementSensitivity,
 					                  Data.PictureTile_FileName);
 					break;
+				case Effects.Curtain:
+					RenderCurtain(Data.Curtain_Edge,(CurtainType)Data.Curtain_Effect, Data.Curtain_SwagWidth, Data.Curtain_Repeat);
+					break;
+			
 			}
 		}
 

@@ -207,6 +207,7 @@ namespace VixenModules.Effect.Nutcracker
 			}
 			int nFrames = (int)(TimeSpan.TotalMilliseconds / frameMs);
 			NutcrackerEffects nccore = new NutcrackerEffects(_data.NutcrackerData);
+			nccore.Duration = TimeSpan;
 			nccore.InitBuffer( wid, ht);
 			int totalPixels = nccore.PixelCount();
 			if( totalPixels != wid * ht)

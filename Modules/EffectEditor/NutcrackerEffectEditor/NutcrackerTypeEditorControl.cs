@@ -117,11 +117,13 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			PopulateEffectComboBox();
 
 			effect.Data = Data;
-
+			effect.Duration = TargetEffect.TimeSpan;
+			effect.TimeInterval = 50;
 			// Load item from Data
 			SetCurrentEffect(Data.CurrentEffect);
 			comboBoxEffect.SelectedItem = Data.CurrentEffect.ToString();
 			trackBarSpeed.Value = Data.Speed;
+			chkFitToTime.Checked = Data.FitToTime;
 			radioButtonHorizontal.Checked = (Data.StringOrienation == NutcrackerEffects.StringOrientations.Horizontal);
 			radioButtonVertical.Checked = (Data.StringOrienation == NutcrackerEffects.StringOrientations.Vertical);
 
@@ -143,6 +145,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			LoadTree();
 			LoadMovie();
 			LoadPictureTile();
+			LoadCurtain();
 			LoadColors();
 			LoadPreview();
 
@@ -196,6 +199,12 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 		{
 			Data.Speed = trackBarSpeed.Value;
 		}
+
+		private void chkFitToTime_CheckedChanged(object sender, EventArgs e)
+		{
+			Data.FitToTime = chkFitToTime.Checked;
+		}
+
 
 		private void comboBoxEffect_SelectedIndexChanged(object sender, EventArgs e)
 		{
@@ -849,6 +858,40 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 
 		#endregion // Text
 
+		#region Curtain
+
+		private void LoadCurtain()
+		{
+			comboCurtainEffect.SelectedIndex = Data.Curtain_Effect;
+			comboCurtainEdge.SelectedIndex = Data.Curtain_Edge;
+			chkCurtainRepeat.Checked = Data.Curtain_Repeat;
+			trackCurtainSwagWidth.Value = Data.Curtain_SwagWidth;
+		}
+
+		private void comboCurtainEffect_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			Data.Curtain_Effect = comboCurtainEffect.SelectedIndex;
+		}
+
+		private void comboCurtainEdge_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			Data.Curtain_Edge = comboCurtainEdge.SelectedIndex;
+		}
+
+		private void chkCurtainRepeat_CheckedChanged(object sender, EventArgs e)
+		{
+			Data.Curtain_Repeat = chkCurtainRepeat.Checked;
+		}
+
+		private void trackCurtainSwagWidth_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender, Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
+		{
+			Data.Curtain_SwagWidth = trackCurtainSwagWidth.Value;
+		}
+		
+
+
+		#endregion
+
 		#region Picture
 
 		private void LoadPicture()
@@ -1183,6 +1226,5 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			base.Dispose(disposing);
 		}
 
-		
 	}
 }
