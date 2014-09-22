@@ -797,6 +797,25 @@ namespace Common.Controls.Timeline
 		}
 
 		/// <summary>
+		/// Splits the given elements at the given time as clones.
+		/// </summary>
+		/// <param name="elements"></param>
+		/// <param name="splitTime"></param>
+		public void SplitElementsAtTime(List<Element> elements, TimeSpan splitTime)
+		{
+			//Clone the elements
+			List<Element> newElements = SelectedElementsCloneDelegate.Invoke(elements);
+
+			//Adjust the end time of the elements
+			elements.ForEach(elem => MoveResizeElement(elem, elem.StartTime, splitTime - elem.StartTime));
+
+			//Adjust the start time of the new elements
+			newElements.ForEach(elem => MoveResizeElement(elem, splitTime, elem.EndTime - splitTime));
+
+		}
+
+
+		/// <summary>
 		/// Move/Resize a group of elements as an atomic operation
 		/// </summary>
 		/// <param name="elements">List of elements with tuple of new start time, new end time</param>

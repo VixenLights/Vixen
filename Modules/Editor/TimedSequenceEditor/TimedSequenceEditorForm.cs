@@ -1536,6 +1536,21 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				if (tse != null)
 				{
+					//Effect Manipulation Menu
+					ToolStripMenuItem itemManipulation = new ToolStripMenuItem("Manipulation");
+					ToolStripMenuItem itemManipulateDivide = new ToolStripMenuItem("Divide at cursor");
+					itemManipulateDivide.Click += (mySender, myE) =>
+						TimelineControl.grid.SplitElementsAtTime(
+						TimelineControl.SelectedElements.Where(elem => elem.StartTime < e.GridTime && elem.EndTime > e.GridTime).ToList(),
+						e.GridTime);
+					ToolStripMenuItem itemManipulationClone = new ToolStripMenuItem("Clone in place");
+					itemManipulationClone.Click += (mySender, myE) => CloneElements(TimelineControl.SelectedElements);
+
+					contextMenuStrip.Items.Add(itemManipulation);
+					itemManipulation.DropDown.Items.Add(itemManipulateDivide);
+					itemManipulation.DropDown.Items.Add(itemManipulationClone);
+					itemManipulation.Enabled = TimelineControl.SelectedElements.Any();
+
 					ToolStripMenuItem item = new ToolStripMenuItem("Edit Time");
 					item.Click += (mySender, myE) =>
 					{
