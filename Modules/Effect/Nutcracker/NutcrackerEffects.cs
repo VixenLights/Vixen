@@ -655,7 +655,7 @@ namespace VixenModules.Effect.Nutcracker
 
 		#region Butterfly
 
-		public void RenderButterfly(int ColorScheme, int Style, int Chunks, int Skip)
+		public void RenderButterfly(int colorScheme, int style, int chunks, int skip, int direction)
 		{
 			int x, y, d;
 			double n, x1, y1, f;
@@ -663,11 +663,12 @@ namespace VixenModules.Effect.Nutcracker
 			Color color;
 			HSV hsv = new HSV();
 			int maxframe = BufferHt*2;
-			int frame = (int) (((double) BufferHt*(double) State/200.0)%(double) maxframe);
-			double offset = (double) State/100.0;
+			int frame = (int) ((BufferHt*(double) State/200.0)%maxframe);
+			double offset = State/100.0;
+			if (direction == 1) offset = -offset;
 			for (x = 0; x < BufferWi; x++) {
 				for (y = 0; y < BufferHt; y++) {
-					switch (Style) {
+					switch (style) {
 						case 1:
 							n = Math.Abs((x*x - y*y)*Math.Sin(offset + ((x + y)*pi2/(BufferHt + BufferWi))));
 							d = x*x + y*y + 1;
@@ -675,13 +676,13 @@ namespace VixenModules.Effect.Nutcracker
 							break;
 						case 2:
 							f = (frame < maxframe/2) ? frame + 1 : maxframe - frame;
-							x1 = ((double) x - BufferWi/2.0)/f;
-							y1 = ((double) y - BufferHt/2.0)/f;
+							x1 = (x - BufferWi/2.0)/f;
+							y1 = (y - BufferHt/2.0)/f;
 							h = Math.Sqrt(x1*x1 + y1*y1);
 							break;
 						case 3:
 							f = (frame < maxframe/2) ? frame + 1 : maxframe - frame;
-							f = f*0.1 + (double) BufferHt/60.0;
+							f = f*0.1 + BufferHt/60.0;
 							x1 = (x - BufferWi/2.0)/f;
 							y1 = (y - BufferHt/2.0)/f;
 							h = Math.Sin(x1)*Math.Cos(y1);
@@ -689,8 +690,8 @@ namespace VixenModules.Effect.Nutcracker
 					}
 					hsv.Saturation = 1.0f;
 					hsv.Value = 1.0f;
-					if (Chunks <= 1 || ((int) (h*Chunks))%Skip != 0) {
-						if (ColorScheme == 0) {
+					if (chunks <= 1 || ((int) (h*chunks))%skip != 0) {
+						if (colorScheme == 0) {
 							hsv.Hue = (float) h;
 							SetPixel(x, y, hsv);
 						}
@@ -2065,7 +2066,7 @@ namespace VixenModules.Effect.Nutcracker
 					RenderGarlands(Data.Garland_Type, Data.Garland_Spacing);
 					break;
 				case Effects.Butterfly:
-					RenderButterfly(Data.Butterfly_Colors, Data.Butterfly_Style, Data.Butterfly_BkgrdChunks, Data.Butterfly_BkgrdSkip);
+					RenderButterfly(Data.Butterfly_Colors, Data.Butterfly_Style, Data.Butterfly_BkgrdChunks, Data.Butterfly_BkgrdSkip, Data.Butterfly_Direction);
 					break;
 				case Effects.ColorWash:
 					RenderColorWash(Data.ColorWash_FadeHorizontal, Data.ColorWash_FadeVertical, Data.ColorWash_Count);

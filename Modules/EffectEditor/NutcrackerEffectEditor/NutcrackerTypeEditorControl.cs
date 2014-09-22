@@ -531,14 +531,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			trackButterflyStyle.Value = Data.Butterfly_Style;
 			trackButterflyBkgrdChunks.Value = Data.Butterfly_BkgrdChunks;
 			trackButterflyBkgrdSkip.Value = Data.Butterfly_Style;
-			switch (Data.Butterfly_Colors) {
-				case 0:
-					comboBoxButterflyColors.SelectedItem = "Rainbow";
-					break;
-				case 1:
-					comboBoxButterflyColors.SelectedItem = "Palette";
-					break;
-			}
+			comboBoxButterflyColors.SelectedIndex = Data.Butterfly_Colors;
 		}
 
 		private void Butterfly_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender,
@@ -553,15 +546,15 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 		private void comboBoxButterflyColors_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (loading) return;
-			switch (comboBoxButterflyColors.SelectedItem.ToString()) {
-				case "Rainbow":
-					Data.Butterfly_Colors = 0;
-					break;
-				case "Palette":
-					Data.Butterfly_Colors = 1;
-					break;
-			}
+			Data.Butterfly_Colors = comboBoxButterflyColors.SelectedIndex;
 		}
+
+		private void comboButterflyDirection_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			Data.Butterfly_Direction = comboButterflyDirection.SelectedIndex;
+		}
+
+
 
 		#endregion
 
@@ -1200,6 +1193,5 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			}
 			base.Dispose(disposing);
 		}
-
 	}
 }

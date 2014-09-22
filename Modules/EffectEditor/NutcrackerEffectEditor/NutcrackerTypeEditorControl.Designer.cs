@@ -191,6 +191,8 @@
 			this.trackCurtainSwagWidth = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
 			this.lblCurtainSwagWidth = new System.Windows.Forms.Label();
 			this.chkFitToTime = new System.Windows.Forms.CheckBox();
+			this.comboButterflyDirection = new System.Windows.Forms.ComboBox();
+			this.label55 = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.tabEffectProperties.SuspendLayout();
@@ -1548,6 +1550,8 @@
 			// 
 			// Butterfly
 			// 
+			this.Butterfly.Controls.Add(this.label55);
+			this.Butterfly.Controls.Add(this.comboButterflyDirection);
 			this.Butterfly.Controls.Add(this.label10);
 			this.Butterfly.Controls.Add(this.comboBoxButterflyColors);
 			this.Butterfly.Controls.Add(this.label9);
@@ -1589,7 +1593,7 @@
 			// label9
 			// 
 			this.label9.AutoSize = true;
-			this.label9.Location = new System.Drawing.Point(6, 85);
+			this.label9.Location = new System.Drawing.Point(6, 82);
 			this.label9.Name = "label9";
 			this.label9.Size = new System.Drawing.Size(62, 13);
 			this.label9.TabIndex = 13;
@@ -1607,7 +1611,7 @@
 			// label8
 			// 
 			this.label8.AutoSize = true;
-			this.label8.Location = new System.Drawing.Point(6, 35);
+			this.label8.Location = new System.Drawing.Point(6, 32);
 			this.label8.Name = "label8";
 			this.label8.Size = new System.Drawing.Size(74, 13);
 			this.label8.TabIndex = 9;
@@ -2161,6 +2165,28 @@
 			this.chkFitToTime.UseVisualStyleBackColor = true;
 			this.chkFitToTime.CheckedChanged += new System.EventHandler(this.chkFitToTime_CheckedChanged);
 			// 
+			// comboButterflyDirection
+			// 
+			this.comboButterflyDirection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboButterflyDirection.FormattingEnabled = true;
+			this.comboButterflyDirection.Items.AddRange(new object[] {
+            "Normal",
+            "Reverse"});
+			this.comboButterflyDirection.Location = new System.Drawing.Point(93, 111);
+			this.comboButterflyDirection.Name = "comboButterflyDirection";
+			this.comboButterflyDirection.Size = new System.Drawing.Size(126, 21);
+			this.comboButterflyDirection.TabIndex = 17;
+			this.comboButterflyDirection.SelectedIndexChanged += new System.EventHandler(this.comboButterflyDirection_SelectedIndexChanged);
+			// 
+			// label55
+			// 
+			this.label55.AutoSize = true;
+			this.label55.Location = new System.Drawing.Point(6, 114);
+			this.label55.Name = "label55";
+			this.label55.Size = new System.Drawing.Size(52, 13);
+			this.label55.TabIndex = 18;
+			this.label55.Text = "Direction:";
+			// 
 			// NutcrackerTypeEditorControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2402,5 +2428,7 @@
 		private System.Windows.Forms.ComboBox comboCurtainEffect;
 		private System.Windows.Forms.ComboBox comboCurtainEdge;
 		private System.Windows.Forms.CheckBox chkFitToTime;
+		private System.Windows.Forms.Label label55;
+		private System.Windows.Forms.ComboBox comboButterflyDirection;
 	}
 }

@@ -51,6 +51,7 @@ namespace VixenModules.Effect.Nutcracker
 		[DataMember] public int Butterfly_Style = 1;
 		[DataMember] public int Butterfly_BkgrdChunks = 1;
 		[DataMember] public int Butterfly_BkgrdSkip = 2;
+		[DataMember] public int Butterfly_Direction = 0;
 
 		// ColorWash
 		[DataMember] public int ColorWash_Count = 1;
