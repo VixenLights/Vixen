@@ -10,6 +10,8 @@ namespace VixenModules.SequenceType.Vixen2x
 {
 	public class Vixen2SequenceData
 	{
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+
 		protected internal string FileName { get; private set; }
 
 		protected internal string ProfileName { get; private set; }
@@ -168,7 +170,14 @@ namespace VixenModules.SequenceType.Vixen2x
 			;
 			ElementCount = EventData.Length / TotalEventsCount;
 			EventsPerElement = EventData.Length / ElementCount;
-		}
+
+			// are we seeing an error in the mappings counts?
+			if (mappings.Count != TotalEventsCount)
+			{
+				Logging.Error("ParseFile: Actual mappings (" + mappings.Count + ") and calculated mappings (" + ElementCount + ") do not match. Using the Actual mappings value.");
+				ElementCount = mappings.Count;
+			} // end fix error in the V2 element reporting calculations
+		} // ParseFile
 
 		private void CreateMappingList(XElement element, int version)
 		{
