@@ -1695,7 +1695,15 @@
             "Up",
             "Down",
             "Expand",
-            "Compress"});
+            "Compress",
+            "Left",
+            "Right",
+            "H-Expand",
+            "H-Compress",
+            "Alternate Up",
+            "Alternate Down",
+            "Alternate Left",
+            "Alternate Right"});
 			this.comboBoxBarsDirection.Location = new System.Drawing.Point(93, 34);
 			this.comboBoxBarsDirection.Name = "comboBoxBarsDirection";
 			this.comboBoxBarsDirection.Size = new System.Drawing.Size(167, 21);

@@ -454,48 +454,127 @@ namespace VixenModules.Effect.Nutcracker
 
 		#region Bars
 
-		public void RenderBars(int PaletteRepeat, int Direction, bool Highlight, bool Show3D)
+		public void RenderBars(int paletteRepeat, int direction, bool highlight, bool show3D)
 		{
-			int x, y, n, pixel_ratio, ColorIdx;
-			bool IsMovingDown, IsHighlightRow;
+			int x,y,n,colorIdx;
 			HSV hsv;
-			int colorcnt = Palette.Count();
-			int BarCount = PaletteRepeat*colorcnt;
-			int BarHt = BufferHt/BarCount + 1;
-			int HalfHt = BufferHt/2;
-			int BlockHt = colorcnt*BarHt;
-			int f_offset = (int) (_state/4%BlockHt);
-			for (y = 0; y < BufferHt; y++) {
-				switch (Direction) {
+			int colorcnt=GetColorCount();
+			int barCount = paletteRepeat * colorcnt;
+			double position = GetEffectTimeIntervalPosition();
+			if(barCount<1) barCount=1;
+
+
+			if (direction < 4 || direction == 8 || direction == 9)
+			{
+				int barHt = BufferHt/barCount+1;
+				if(barHt<1) barHt=1;
+				int halfHt = BufferHt/2;
+				int blockHt=colorcnt * barHt;
+				if(blockHt<1) blockHt=1;
+				int fOffset = Convert.ToInt32(FitToTime?position*blockHt: State/4 % blockHt);
+				fOffset = Convert.ToInt32(direction == 8 || direction == 9 ? (State/20)*barHt: fOffset);
+				direction = direction > 4?direction-8:direction;
+
+				for (y=0; y<BufferHt; y++)
+				{
+					n=y+fOffset;
+					colorIdx=(n % blockHt) / barHt;
+					hsv= Palette.GetHSV(colorIdx);
+					if (highlight && n % barHt == 0) hsv.Saturation=0.0f;
+					if (show3D) hsv.Value *= (float)(barHt - n%barHt - 1) / barHt;
+					switch (direction)
+					{
 					case 1:
-						IsMovingDown = true;
+						// down
+						for (x=0; x<BufferWi; x++)
+						{
+							SetPixel(x,y,hsv);
+						}
 						break;
 					case 2:
-						IsMovingDown = (y <= HalfHt);
+						// expand
+						if (y <= halfHt) {
+							for (x=0; x<BufferWi; x++)
+							{
+								SetPixel(x,y,hsv);
+								SetPixel(x,BufferHt-y-1,hsv);
+							}
+						}
 						break;
 					case 3:
-						IsMovingDown = (y > HalfHt);
+						// compress
+						if (y >= halfHt) {
+							for (x=0; x<BufferWi; x++)
+							{
+								SetPixel(x,y,hsv);
+								SetPixel(x,BufferHt-y-1,hsv);
+							}
+						}
 						break;
 					default:
-						IsMovingDown = false;
+						// up
+						for (x=0; x<BufferWi; x++)
+						{
+							SetPixel(x,BufferHt-y-1,hsv);
+						}
 						break;
+					}
 				}
-				if (IsMovingDown) {
-					n = y + f_offset;
-					pixel_ratio = BarHt - n%BarHt - 1;
-					IsHighlightRow = n%BarHt == 0;
-				}
-				else {
-					n = y - f_offset + BlockHt;
-					pixel_ratio = n%BarHt;
-					IsHighlightRow = (n%BarHt == BarHt - 1); // || (y == BufferHt-1);
-				}
-				ColorIdx = (n%BlockHt)/BarHt;
-				hsv = Palette.GetHSV(ColorIdx);
-				if (Highlight && IsHighlightRow) hsv.Saturation = 0f;
-				if (Show3D) hsv.Value *= (float) pixel_ratio/(float) BarHt;
-				for (x = 0; x < BufferWi; x++) {
-					SetPixel(x, y, hsv);
+			}
+			else
+			{
+				int barWi = BufferWi/barCount+1;
+				if(barWi<1) barWi=1;
+				int halfWi = BufferWi/2;
+				int blockWi=colorcnt * barWi;
+				if(blockWi<1) blockWi=1;
+				int fOffset = Convert.ToInt32(FitToTime?position*blockWi:State/4 % blockWi);
+				fOffset = Convert.ToInt32(direction > 9 ? (State/20)*barWi: fOffset);
+				direction = direction > 9?direction-6:direction;
+				for (x=0; x<BufferWi; x++)
+				{
+					n=x+fOffset;
+					colorIdx=(n % blockWi) / barWi;
+					hsv = Palette.GetHSV(colorIdx);
+					if (highlight && n % barWi == 0) hsv.Saturation=0.0f;
+					if (show3D) hsv.Value *= (float)(barWi - n%barWi - 1) / barWi;
+					switch (direction)
+					{
+					case 5:
+						// right
+						for (y=0; y<BufferHt; y++)
+						{
+							SetPixel(BufferWi-x-1,y,hsv);
+						}
+						break;
+					case 6:
+						// H-expand
+						if (x <= halfWi) {
+							for (y=0; y<BufferHt; y++)
+							{
+								SetPixel(x,y,hsv);
+								SetPixel(BufferWi-x-1,y,hsv);
+							}
+						}
+						break;
+					case 7:
+						// H-compress
+						if (x >= halfWi) {
+							for (y=0; y<BufferHt; y++)
+							{
+								SetPixel(x,y,hsv);
+								SetPixel(BufferWi-x-1,y,hsv);
+							}
+						}
+						break;
+					default:
+						// left
+						for (y=0; y<BufferHt; y++)
+						{
+							SetPixel(x,y,hsv);
+						}
+						break;
+					}
 				}
 			}
 		}

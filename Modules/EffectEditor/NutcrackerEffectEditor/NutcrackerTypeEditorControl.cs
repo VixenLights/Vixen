@@ -501,20 +501,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			trackBarPaletteRepeat.Value = Data.Bars_PaletteRepeat;
 			checkBoxBars3D.Checked = Data.Bars_3D;
 			checkBoxBarsHighlight.Checked = Data.Bars_Highlight;
-			switch (Data.Bars_Direction) {
-				case 0:
-					comboBoxBarsDirection.SelectedItem = "Up";
-					break;
-				case 1:
-					comboBoxBarsDirection.SelectedItem = "Down";
-					break;
-				case 2:
-					comboBoxBarsDirection.SelectedItem = "Expand";
-					break;
-				case 3:
-					comboBoxBarsDirection.SelectedItem = "Compress";
-					break;
-			}
+			comboBoxBarsDirection.SelectedIndex = Data.Bars_Direction;
 		}
 
 		private void Bars_ParametersChanged(object sender, EventArgs e)
@@ -523,21 +510,9 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			Data.Bars_PaletteRepeat = trackBarPaletteRepeat.Value;
 			Data.Bars_Highlight = checkBoxBarsHighlight.Checked;
 			Data.Bars_3D = checkBoxBars3D.Checked;
-			if (comboBoxBarsDirection.SelectedItem != null) {
-				switch (comboBoxBarsDirection.SelectedItem.ToString()) {
-					case "Up":
-						Data.Bars_Direction = 0;
-						break;
-					case "Down":
-						Data.Bars_Direction = 1;
-						break;
-					case "Expand":
-						Data.Bars_Direction = 2;
-						break;
-					case "Compress":
-						Data.Bars_Direction = 3;
-						break;
-				}
+			if (comboBoxBarsDirection.SelectedItem != null)
+			{
+				Data.Bars_Direction = comboBoxBarsDirection.SelectedIndex;
 			}
 		}
 
