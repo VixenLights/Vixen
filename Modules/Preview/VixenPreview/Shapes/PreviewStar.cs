@@ -46,7 +46,24 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                     StringType = StringTypes.Pixel;
 			}
 
-			if (_pixels.Count == 0) {
+            if (_pixels.Count >= 5 && _pointCount == 0)
+            {
+                if (_pixels.Count % 5 == 0)
+                {
+                    _pointCount = 5;
+                }
+                else if (_pixels.Count % 3 == 0)
+                {
+                    _pointCount = 3;
+                }
+                else if (_pixels.Count % 2 == 0)
+                {
+                    _pointCount = 4;
+                }
+            }
+
+            if (_pixels.Count < 5)
+            {
                 _pixelCount = 40;
                 _pointCount = 5;
                 // Just add the pixels, they will get layed out next
@@ -57,7 +74,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 						pixel.Node = selectedNode;
 					}
 				}
-			}
+            }
+
+            //Console.WriteLine("Star Pixel Count: " + _pixelCount + ":" + _pixels.Count());
 
 			// Lay out the pixels
 			Layout();
