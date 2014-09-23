@@ -138,11 +138,29 @@ namespace VixenModules.Editor.TimedSequenceEditor
             resolutionComboBox.SelectedIndex = 1;
 
             stopButton.Enabled = false;
-            networkListView.Enabled = false;
+			networkListView.DragDrop += networkListView_DragDrop;
+            //networkListView.Enabled = false;
 
             UpdateNetworkList();
 
         }
+
+		void networkListView_DragDrop(object sender, DragEventArgs e)
+		{
+			
+			int startChan = 1;
+			int index = 0;
+			foreach (ListViewItem item in networkListView.Items)
+			{
+				var info = item.Tag as ControllerExportInfo;
+				if(info != null) info.Index = index;
+				int channels = Convert.ToInt32(item.SubItems[1].Text);  //.Add(info.Channels.ToString());
+				item.SubItems[2].Text = string.Format("Channels {0} to {1}", startChan, startChan + channels - 1);
+				startChan += channels;
+				index++;
+			}
+
+		}
 
         private void startButton_Click(object sender, EventArgs e)
         {
@@ -223,7 +241,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
         private void UpdateNetworkList()
         {
-            List<ControllerExportInfo> exportInfo = _exportOps.ControllerExportData;
+            List<ControllerExportInfo> exportInfo = _exportOps.ControllerExportInfo;
 
             networkListView.Items.Clear();
             int startChan = 1;
@@ -231,6 +249,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
             foreach (ControllerExportInfo info in exportInfo)
             {
                 ListViewItem item = new ListViewItem(info.Name);
+	            item.Tag = info;
                 item.SubItems.Add(info.Channels.ToString());
                 item.SubItems.Add(string.Format("Channels {0} to {1}", startChan, startChan + info.Channels - 1));
 

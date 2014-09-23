@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -46,6 +47,7 @@ namespace Vixen.Export
         PreCachingSequenceEngine _preCachingSequenceEngine = null;
         private ExportCommandHandler _exporterCommandHandler = null;
         private List<byte> _eventData = null;
+	    private List<ControllerExportInfo> _controllerExportInfos; 
 
         public delegate void SequenceEventHandler(ExportNotifyType notify);
         public event SequenceEventHandler SequenceNotify;
@@ -77,8 +79,11 @@ namespace Vixen.Export
             _cancelling = false;
 
             SavePosition = 0;
+
+			InitializeControllerInfo();
         }
-        #endregion
+
+	    #endregion
 
         #region Properties
         public string ExportDir
@@ -119,17 +124,15 @@ namespace Vixen.Export
             }
         }
 
-        private List<OutputController> NonExportControllers
+        private List<OutputController> SystemControllers
         {
             get
             {
-                if (_nonExportControllers == null)
-                {
-                    _nonExportControllers = VixenSystem.OutputControllers.ToList().FindAll(x => x.ModuleId != _controllerTypeId);
-                }
-                return _nonExportControllers;
+                return VixenSystem.OutputControllers.ToList();//.FindAll(x => x.ModuleId != _controllerTypeId); 
             }
         }
+
+		public List<Guid> ExportControllerList { get; set; } 
 
         public TimeSpan ExportPosition
         {
@@ -148,20 +151,22 @@ namespace Vixen.Export
 
         public decimal SavePosition { get; set; }
 
-        public List<ControllerExportInfo> ControllerExportData
+        public List<ControllerExportInfo> ControllerExportInfo
         {
-            get
-            {
-                int index = 0;
-                List<ControllerExportInfo> retVal = new List<ControllerExportInfo>();
-                NonExportControllers.ForEach(x => retVal.Add(new ControllerExportInfo(x, index++)));
-                return retVal;
-            }
+            get { return _controllerExportInfos; }
         }
 
         #endregion
 
         #region Operational
+
+		private void InitializeControllerInfo()
+		{
+			int index = 0;
+			_controllerExportInfos = new List<ControllerExportInfo>();
+			SystemControllers.ForEach(x => _controllerExportInfos.Add(new ControllerExportInfo(x, index++)));
+		}
+
         private bool checkExportdir()
         {
             if (!Directory.Exists(_exportDir))
@@ -177,12 +182,6 @@ namespace Vixen.Export
                 }
             }
             return true;
-        }
-
-        private OutputController FindExportController()
-        {
-            return
-                VixenSystem.OutputControllers.ToList().Find(x => x.ModuleId.Equals(_controllerTypeId));
         }
 
         public void WriteControllerInfo(ISequence sequence)
@@ -208,7 +207,7 @@ namespace Vixen.Export
                 writer.WriteElementString("Duration", sequence.Length.ToString());
 
                 writer.WriteStartElement("Network");
-                foreach (ControllerExportInfo exportInfo in ControllerExportData)
+                foreach (ControllerExportInfo exportInfo in ControllerExportInfo.OrderBy(x => x.Index))
                 {
                     writer.WriteStartElement("Controller");
                     writer.WriteElementString("Index", exportInfo.Index.ToString());
@@ -335,12 +334,22 @@ namespace Vixen.Export
         {
             SequenceSessionData sessionData = new SequenceSessionData();
 
-            if (_exporting == true)
+            if (_exporting)
             {                
                 List<ICommand> commandList = new List<ICommand>();
                 OutputStateListAggregator outAggregator = _preCachingSequenceEngine.Cache.OutputStateListAggregator;
-                IEnumerable<Guid> outIds = outAggregator.GetOutputIds();
+	            IEnumerable<Guid> outIds = outAggregator.GetOutputIds();
                 int periods = outAggregator.GetCommandsForOutput(outIds.First()).Count() - 1;
+
+				//Get a list of controller ids by index order
+				IEnumerable<Guid> controllers = ControllerExportInfo.OrderBy(x => x.Index).Select(i => i.Id);
+
+				//Now assemble a all their outputs by controller order.
+				List<List<Guid>> controllerOutputs = new List<List<Guid>>();
+	            foreach (var controller in controllers)
+	            {
+		            controllerOutputs.Add(VixenSystem.OutputControllers.GetController(controller).Outputs.Select(x => x.Id).ToList());
+	            }
 
                 if (_cancelling == false)
                 {
@@ -357,10 +366,17 @@ namespace Vixen.Export
                         {
                             SavePosition = Decimal.Round(((Decimal)j / (Decimal)periods) * 100, 2);
                             commandList.Clear();
-                            foreach (Guid guid in outIds)
-                            {
-                                commandList.Add(outAggregator.GetCommandsForOutput(guid).ElementAt(j));
-                            }
+							//Iterate the controller output groups.
+	                        foreach (var controller in controllerOutputs)
+	                        {
+								//Grab commands for each output
+								foreach (Guid guid in controller)
+								{
+									commandList.Add(outAggregator.GetCommandsForOutput(guid).ElementAt(j));
+								}
+								  
+	                        }
+
                             UpdateState(commandList.ToArray());
                         }
 
@@ -394,11 +410,13 @@ namespace Vixen.Export
             Name = controller.Name;
             Index = index;
             Channels = controller.OutputCount;
+	        Id = controller.Id;
         }
 
         public int Index { get; set; }
         public int Channels { get; set; }
         public string Name { get; set; }
+		public Guid Id { get; private set; }
     }
 
     public class SequenceSessionData
