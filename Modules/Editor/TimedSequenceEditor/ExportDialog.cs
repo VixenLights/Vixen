@@ -286,7 +286,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
             string newStatus = "";
             startButton.Enabled = !isWorking;
             stopButton.Enabled = allowStop;
-			networkListView.Enabled = false;
             outputFormatComboBox.Enabled = !isWorking;
             resolutionComboBox.Enabled = !isWorking;
             _doProgressUpdate = isWorking;
