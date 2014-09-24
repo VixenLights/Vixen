@@ -126,7 +126,7 @@ namespace VixenModules.SequenceType.Vixen2x
 				if (currentElementNum >= mappings.Count)
 				{
 					Logging.Error("importSequenceData: Trying to process more elements (" + parsedV2Sequence.ElementCount + ") than we have mappings. (" + mappings.Count + ")");
-					continue;
+					break;
 				}
 				ChannelMapping v2ChannelMapping = mappings[currentElementNum];
 
@@ -159,8 +159,8 @@ namespace VixenModules.SequenceType.Vixen2x
 				// is this a valid pixel configuration
 				if ((true == v2ChannelMapping.RgbPixel) && (3 != m_GuidToV2ChanList[v2ChannelMapping.ElementNodeId].Count))
 				{
-					Logging.Error("importSequenceData: Configuration error. Found '" + m_GuidToV2ChanList[v2ChannelMapping.ElementNodeId].Count + "' V2 channels attached to element '" + elementName + "'. Expected 3. Skipping Element");
-					continue;
+					Logging.Error("importSequenceData: Configuration error. Found '" + m_GuidToV2ChanList[v2ChannelMapping.ElementNodeId].Count + "' V2 channels attached to element '" + elementName + "'. Expected 3(RGB). Converting element to non color mixing mode.");
+					v2ChannelMapping.RgbPixel = false;
 				}
 
 				// process each event for this V2 channel
