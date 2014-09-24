@@ -172,7 +172,7 @@ namespace VixenModules.SequenceType.Vixen2x
 			EventsPerElement = EventData.Length / ElementCount;
 
 			// are we seeing an error in the mappings counts?
-			if (mappings.Count != TotalEventsCount)
+			if (mappings.Count != ElementCount)
 			{
 				Logging.Error("ParseFile: Actual mappings (" + mappings.Count + ") and calculated mappings (" + ElementCount + ") do not match. Using the Actual mappings value.");
 				ElementCount = mappings.Count;
