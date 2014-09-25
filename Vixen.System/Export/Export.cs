@@ -111,6 +111,8 @@ namespace Vixen.Export
 
         public int UpdateInterval { get; set; }
 
+        public string AudioFilename { get; set; }
+
         public Dictionary<string, string> ExportFileTypes
         {
             get
@@ -350,6 +352,7 @@ namespace Vixen.Export
                     sessionData.PeriodMS = UpdateInterval;
                     sessionData.ChannelNames = BuildChannelNames(outIds);
                     sessionData.TimeMS = _preCachingSequenceEngine.Sequence.Length.TotalMilliseconds;
+                    sessionData.AudioFileName = AudioFilename;
                     try
                     {
                         _output.OpenSession(sessionData);
@@ -363,7 +366,7 @@ namespace Vixen.Export
                             }
                             UpdateState(commandList.ToArray());
                         }
-
+                        
                         _output.CloseSession();
                     }
                     catch (Exception ex)
