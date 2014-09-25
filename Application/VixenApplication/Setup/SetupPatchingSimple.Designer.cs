@@ -72,6 +72,7 @@ namespace VixenApplication.Setup
 			this.radioButtonUnconnectedPatchPointsOnly = new System.Windows.Forms.RadioButton();
 			this.buttonDoPatching = new System.Windows.Forms.Button();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.checkBoxReverseElementOrder = new System.Windows.Forms.CheckBox();
 			this.groupBoxElements.SuspendLayout();
 			this.groupBoxControllers.SuspendLayout();
 			this.groupBoxPatching.SuspendLayout();
@@ -83,6 +84,7 @@ namespace VixenApplication.Setup
 			// 
 			this.groupBoxElements.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
+			this.groupBoxElements.Controls.Add(this.checkBoxReverseElementOrder);
 			this.groupBoxElements.Controls.Add(this.buttonUnpatchElements);
 			this.groupBoxElements.Controls.Add(this.labelFilterCount);
 			this.groupBoxElements.Controls.Add(this.labelElementCount);
@@ -441,7 +443,7 @@ namespace VixenApplication.Setup
 			this.labelPatchWarning.Name = "labelPatchWarning";
 			this.labelPatchWarning.Size = new System.Drawing.Size(307, 13);
 			this.labelPatchWarning.TabIndex = 4;
-			this.labelPatchWarning.Text = "Warning: too many selected elements, some will not be patched";
+			this.labelPatchWarning.Text = "WARNING: too many selected elements, some will not be patched";
 			// 
 			// labelPatchSummary
 			// 
@@ -537,10 +539,24 @@ namespace VixenApplication.Setup
 			this.toolTip1.InitialDelay = 200;
 			this.toolTip1.ReshowDelay = 40;
 			// 
+			// checkBoxReverseElementOrder
+			// 
+			this.checkBoxReverseElementOrder.AutoSize = true;
+			this.checkBoxReverseElementOrder.Location = new System.Drawing.Point(18, 200);
+			this.checkBoxReverseElementOrder.Name = "checkBoxReverseElementOrder";
+			this.checkBoxReverseElementOrder.Size = new System.Drawing.Size(179, 21);
+			this.checkBoxReverseElementOrder.TabIndex = 23;
+			this.checkBoxReverseElementOrder.Text = "Reverse Element Order";
+			this.checkBoxReverseElementOrder.UseVisualStyleBackColor = true;
+			this.checkBoxReverseElementOrder.CheckedChanged += new System.EventHandler(this.checkBoxReverseElementOrder_CheckedChanged);
+			// 
 			// SetupPatchingSimple
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoScroll = false;
+			this.AutoSize = false;
+			this.Controls.Add(this.labelPatchWarning);
 			this.Controls.Add(this.groupBoxPatching);
 			this.Controls.Add(this.groupBoxControllers);
 			this.Controls.Add(this.groupBoxElements);
@@ -606,5 +622,6 @@ namespace VixenApplication.Setup
 		private Label labelFirstOutput;
 		private Label label9;
 		private Label label8;
+		private CheckBox checkBoxReverseElementOrder;
 	}
 }
