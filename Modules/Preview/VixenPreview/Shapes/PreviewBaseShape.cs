@@ -236,9 +236,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			// Zoom
 			foreach (PreviewPixel pixel in _pixels)
 			{
-				pixel.X = Convert.ToInt32((Convert.ToDouble(pixel.X) * ZoomLevel));
-				pixel.Y = Convert.ToInt32((Convert.ToDouble(pixel.Y) * ZoomLevel));
-			}
+                try
+                {
+                    pixel.X = Convert.ToInt32((Convert.ToDouble(pixel.X) * ZoomLevel));
+                    pixel.Y = Convert.ToInt32((Convert.ToDouble(pixel.Y) * ZoomLevel));
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("SetPixelZoom: " + ex.Message);
+                }
+            }
 		}
 
 		public void SetPixelNode(int pixelNum, ElementNode node)
