@@ -502,6 +502,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public abstract void ResizeFromOriginal(double aspect);
 
+        /// <summary>
+        /// This will be true if the shape is being created. Only used in multi-point placement objects
+        /// </summary>
+        public virtual bool Creating { get; set; }
+
 		public DisplayItemBaseControl GetSetupControl()
 		{
 			Shapes.DisplayItemBaseControl setupControl = null;

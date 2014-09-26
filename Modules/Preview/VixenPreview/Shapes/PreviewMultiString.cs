@@ -126,10 +126,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
         }
 
-
-        [Browsable(false)]
-        public bool Creating { get; set; }
-
         [Browsable(false)]
         public override int Right
         {

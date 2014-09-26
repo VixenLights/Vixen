@@ -466,21 +466,22 @@ namespace VixenModules.Preview.VixenPreview
                 PreviewPoint translatedPoint = new PreviewPoint(e.X + hScroll.Value, e.Y + vScroll.Value);
                 if (e.Button == System.Windows.Forms.MouseButtons.Left)
                 {
-                    if (controlPressed)
-                    {
-                        DisplayItem item = DisplayItemAtPoint(translatedPoint);
-                        if (item != null && SelectedDisplayItems.Contains(item))
-                        {
-                            SelectedDisplayItems.Remove(item);
-                        }
-                        else
-                        {
-                            SelectItemUnderPoint(translatedPoint, controlPressed);
-                        }
-                        return;
-                    }
                     if (_currentTool == Tools.Select)
                     {
+                        if (controlPressed)
+                        {
+                            DisplayItem item = DisplayItemAtPoint(translatedPoint);
+                            if (item != null && SelectedDisplayItems.Contains(item))
+                            {
+                                SelectedDisplayItems.Remove(item);
+                            }
+                            else
+                            {
+                                SelectItemUnderPoint(translatedPoint, controlPressed);
+                            }
+                            return;
+                        }
+
                         // Is there a single dislay item selected?
                         if (_selectedDisplayItem != null && !controlPressed)
                         {
@@ -539,6 +540,12 @@ namespace VixenModules.Preview.VixenPreview
                             _banding = true;
                         }
                     }
+
+                    else if (_selectedDisplayItem != null && _selectedDisplayItem.Shape.PointInShape(translatedPoint) && !_selectedDisplayItem.Shape.Creating)
+                    {
+                        StartMove(translatedPoint.X, translatedPoint.Y);
+                    }
+
                     // If we're not Selecting items, we're drawing them
                     else if (_currentTool == Tools.PolyLine && _mouseCaptured)
                     {
@@ -550,6 +557,8 @@ namespace VixenModules.Preview.VixenPreview
                     }
                     else
                     {
+                        DeSelectSelectedDisplayItem();
+
                         DisplayItem newDisplayItem = null;
                         if (_currentTool == Tools.String)
                         {
@@ -1023,20 +1032,24 @@ namespace VixenModules.Preview.VixenPreview
             {
                 if (_selectedDisplayItem != null && _selectedDisplayItem.Shape != null)
                 {
-                    if (_selectedDisplayItem.Shape is PreviewPolyLine)
+                    if (_selectedDisplayItem.Shape is PreviewPolyLine && _selectedDisplayItem.Shape.Creating)
                     {
                         (_selectedDisplayItem.Shape as PreviewPolyLine).EndCreation();
-                        _currentTool = Tools.Select;
                         OnSelectDisplayItem(this, _selectedDisplayItem);
                         ResetMouse();
                     }
-                    else if (_selectedDisplayItem.Shape is PreviewMultiString)
+                    else if (_selectedDisplayItem.Shape is PreviewMultiString && _selectedDisplayItem.Shape.Creating)
                     {
                         (_selectedDisplayItem.Shape as PreviewMultiString).EndCreation();
-                        _currentTool = Tools.Select;
                         OnSelectDisplayItem(this, _selectedDisplayItem);
                         ResetMouse();
+                    } else {
+                        CurrentTool = Tools.Select;
                     }
+                }
+                else
+                {
+                    CurrentTool = Tools.Select;
                 }
                 e.Handled = true;
             }
@@ -1065,17 +1078,24 @@ namespace VixenModules.Preview.VixenPreview
 			if (_mouseCaptured) {
 				if (_currentTool != Tools.Select) {
 					// If control is pressed, deselect the shape and immediately allow drawing another shape
-					if ((Control.ModifierKeys & Keys.Shift) != 0) {
-						_selectedDisplayItem.Shape.MouseUp(sender, e);
-						DeSelectSelectedDisplayItem();
-					}
-                    else if (_selectedDisplayItem != null && _currentTool == Tools.PolyLine && e.Button == System.Windows.Forms.MouseButtons.Left)
+                    //if ((Control.ModifierKeys & Keys.Shift) != 0) {
+                    //    _selectedDisplayItem.Shape.MouseUp(sender, e);
+                    //    DeSelectSelectedDisplayItem();
+                    //}
+                    //else 
+                    if (_selectedDisplayItem != null && 
+                        _currentTool == Tools.PolyLine && 
+                        e.Button == System.Windows.Forms.MouseButtons.Left  &&
+                        _selectedDisplayItem.Shape.Creating)
                     {
                         // If we are drawing a PolyLine, we want all the mouse events to be passed to the shape
                         _selectedDisplayItem.Shape.MouseUp(sender, e);
                         return;
                     }
-                    else if (_selectedDisplayItem != null && _currentTool == Tools.MultiString && e.Button == System.Windows.Forms.MouseButtons.Left)
+                    else if (_selectedDisplayItem != null && 
+                             _currentTool == Tools.MultiString && 
+                             e.Button == System.Windows.Forms.MouseButtons.Left &&
+                             _selectedDisplayItem.Shape.Creating)
                     {
                         // If we are drawing a MultiString, we want all the mouse events to be passed to the shape
                         _selectedDisplayItem.Shape.MouseUp(sender, e);
@@ -1083,7 +1103,7 @@ namespace VixenModules.Preview.VixenPreview
                     }
                     else
                     {
-                        _currentTool = Tools.Select;
+                        //_currentTool = Tools.Select;
                     }
 				}
 
@@ -1706,9 +1726,7 @@ namespace VixenModules.Preview.VixenPreview
 			renderTimer.Start();
 
 			AllocateGraphicsBuffer(false);
-            //Console.WriteLine("1");
 			if (Background != null) {
-                //Console.WriteLine("2");
                 FastPixel.FastPixel fp = new FastPixel.FastPixel(new Bitmap(_alphaBackground));
 				fp.Lock();
 				foreach (DisplayItem displayItem in DisplayItems) {

@@ -144,7 +144,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         //    set { _strings = value; }
         //}
 
-        public bool Creating { get; set; }
         public bool CreateDefaultPixels { get; set; }
 
         public override int Top
