@@ -95,22 +95,22 @@ namespace VixenModules.App.LipSyncApp
 
             LipSyncMapItem retVal = null;
 
-            int calcGridCols = CalcNumDataGridCols;
-            int calcGridRows = CalcNumDataGridRows;
+            int numGridCols = CalcNumDataGridCols;
+            int numGridRows = CalcNumDataGridRows;
             int calcIndex;
 
             if (_newMapping.BottomRight == true)
             {
                 calcIndex = (stringsAreRows) ?
-                    ((calcGridCols * row) + (calcGridCols - column)) + startMapIndex :
-                    ((calcGridRows * column) + (calcGridRows - row)) + startMapIndex;
+                    ((numGridCols * (numGridRows - row)) + (numGridCols - column)) + startMapIndex :
+                    ((numGridRows * column) + (numGridRows - row)) + startMapIndex;
                 calcIndex = (calcIndex == 0) ? calcIndex : calcIndex - 1;
             }
             else
             {
                 calcIndex = (stringsAreRows) ?
-                    ((calcGridCols * row) + column) + startMapIndex :
-                    ((calcGridRows * column) + row) + startMapIndex;
+                    ((numGridCols * row) + column) + startMapIndex :
+                    ((numGridRows * column) + row) + startMapIndex;
             }
 
             if ((calcIndex >= 0) && (calcIndex < _newMapping.MapItems.Count))
@@ -392,7 +392,7 @@ namespace VixenModules.App.LipSyncApp
                 dgvCol.SortMode = DataGridViewColumnSortMode.NotSortable;
 
                 colIndexVal = (MapData.BottomRight) ? dataGridView1.Columns.Count - j - 1 : j;
-                dgvCol.HeaderCell.Value = (!stringsAreRows) ? (j * y).ToString() : colIndexVal.ToString();
+                dgvCol.HeaderCell.Value = colIndexVal.ToString();
             }
 
             DataGridViewRow dgvRow;
@@ -405,7 +405,7 @@ namespace VixenModules.App.LipSyncApp
 
                 rowIndexVal = (MapData.BottomRight) ? dataGridView1.Rows.Count - j - 1: j;
 
-                dgvRow.HeaderCell.Value = (stringsAreRows) ? (j * x).ToString() : rowIndexVal.ToString();
+                dgvRow.HeaderCell.Value = rowIndexVal.ToString();
             }
             doDataGridResize();
         }
