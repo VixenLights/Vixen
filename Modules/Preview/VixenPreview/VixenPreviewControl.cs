@@ -116,7 +116,11 @@ namespace VixenModules.Preview.VixenPreview
 			}
 			set
 			{
-                const double ZoomMax = 4;
+                double ZoomMax = 4;
+                if (IntPtr.Size != 8)
+                {
+                    ZoomMax = 2;
+                }
                 const double ZoomMin = .25;
 
                 if (value >= ZoomMin && value <= ZoomMax)
