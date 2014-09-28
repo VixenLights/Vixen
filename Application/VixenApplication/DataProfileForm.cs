@@ -258,7 +258,7 @@ namespace VixenApplication
 			if (dialog.DialogResult == DialogResult.Cancel)
 				return;
 
-			ProfileItem item = new ProfileItem { Name = dialog.Response, DataFolder = _defaultFolder + "\\" + dialog.Response };
+			ProfileItem item = new ProfileItem { Name = dialog.Response, DataFolder = _defaultFolder + " " + dialog.Response };
 			comboBoxProfiles.Items.Add(item);
 			comboBoxProfiles.SelectedIndex = comboBoxProfiles.Items.Count - 1;
 			PopulateLoadProfileSection(false);
