@@ -38,7 +38,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 {
                     //Console.WriteLine("Standard String");
                     PreviewPixel pixel = shape.Pixels[0];
-                    ;
                     //Console.WriteLine(shape.Pixels[0].Node.Name.ToString());
                     newString.Pixels.Add(pixel.Clone());
                 }
@@ -50,11 +49,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                         newString.Pixels.Add(pixel.Clone());
                     }
                 }
-                //If Image Type
-                else
-                {
-
-                }
 
                 newString.StringName = "String " + i.ToString();
                 _strings.Add(newString);
@@ -65,7 +59,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             if (_shapes[0].Parent != null)
             {
                 shapeType = _shapes[0].Parent.GetType().ToString();
-                if (shapeType.Contains("Icicle") || shapeType.Contains("MultiString") )
+                if ((shapeType.Contains("Icicle") && _shapes[0].StringType != PreviewBaseShape.StringTypes.Standard) || shapeType.Contains("MultiString") )
                 {
                     panelSetLightCount.Visible = true;
                 }
