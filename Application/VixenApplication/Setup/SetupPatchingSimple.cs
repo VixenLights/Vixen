@@ -28,7 +28,6 @@ namespace VixenApplication.Setup
 		{
 		}
 
-
 		private List<ElementNode> _cachedElementNodes;
 		public void UpdateElementSelection(IEnumerable<ElementNode> nodes)
 		{
@@ -66,8 +65,6 @@ namespace VixenApplication.Setup
 
 		public DisplaySetup MasterForm { get; set; }
 
-
-
 		public event EventHandler<FiltersEventArgs> FiltersAdded;
 		public void OnFiltersAdded(FiltersEventArgs args)
 		{
@@ -85,9 +82,6 @@ namespace VixenApplication.Setup
 
 			PatchingUpdated(this, EventArgs.Empty);
 		}
-
-
-
 
 		private void _UpdateEverything(IEnumerable<ElementNode> selectedNodes, ControllersAndOutputsSet controllersAndOutputs, bool reverseElements)
 		{
@@ -161,44 +155,23 @@ namespace VixenApplication.Setup
 
 					// process any child elements
 					_countTypesDescendingFromElements(element.Children, reverseElements, out lec, out gc, out fc, out childOutputs);
+
 					outputList.AddRange(childOutputs);
 
-					// is this a leaf?
-					if (element.Children.Any())
-					{
-						// not a leaf. Mist be a group
-						gc++;
-					}
-					else
-					{
-						// yup its a leaf
-						lec++;
-					}
+				if (element.Children.Any()) {
+					gc++;
+				} else {
+					lec++;
+				}
 
-					// grab the filters for this element
-					IEnumerable<IOutputFilterModuleInstance> filters = _findFiltersThatDescendFromElement(element);
-					fc += filters.Count();
+				if (element.Element != null) {
+					IDataFlowComponent dfc = VixenSystem.DataFlow.GetComponent(element.Element.Id);
+					childOutputs = _findPatchedAndUnpatchedOutputsFromComponent(dfc);
+					outputList.AddRange(childOutputs);
+				}
 
-					// is there a DataFlow list?
-					if (element.Element != null)
-					{
-						// populate the output list
-						IDataFlowComponent dfc = VixenSystem.DataFlow.GetComponent(element.Element.Id);
-						childOutputs = _findPatchedAndUnpatchedOutputsFromComponent(dfc);
-#if REVERSEMIXEDCOLORS
-						// search for a color breakdown filer
-						foreach( IOutputFilterModuleInstance filter in (from x in filters where x.Name == "Color Breakdown" select x ) )
-						{
-							Logging.Info("Found a '" + filter.Name + "' filter");
-
-							ColorBreakdownFilter colorFilter = filter as ColorBreakdownFilter;
-
-							// filter.StaticModuleData.ModuleDataSet.
-						}
-#endif // def REVERSEMIXEDCOLORS
-
-						outputList.AddRange(childOutputs);
-					}
+				IEnumerable<IOutputFilterModuleInstance> filters = _findFiltersThatDescendFromElement(element);
+				fc += filters.Count();
 
 					// do some accounting
 					leafElementCount += lec;
@@ -326,8 +299,8 @@ namespace VixenApplication.Setup
 
 
 
-		private List<PatchStatusItem<IDataFlowComponentReference>> _selectedPatchSources = null;
-		private List<PatchStatusItem<IDataFlowComponent>> _selectedPatchDestinations = null;
+		private List<PatchStatusItem<IDataFlowComponentReference>> _selectedPatchSources;
+		private List<PatchStatusItem<IDataFlowComponent>> _selectedPatchDestinations;
 		private bool _reverseElementOrder = false;
 
 		private void _updatePatchingSummary()
@@ -379,10 +352,6 @@ namespace VixenApplication.Setup
 
 			buttonDoPatching.Enabled = patchSources > 0 && patchDestinations > 0;
 		}
-
-
-
-
 
 		private void buttonDoPatching_Click(object sender, EventArgs e)
 		{

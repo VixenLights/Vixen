@@ -31,6 +31,7 @@ namespace VixenApplication.Setup
 		{
 			this.components = new System.ComponentModel.Container();
 			this.groupBoxElements = new System.Windows.Forms.GroupBox();
+			this.checkBoxReverseElementOrder = new System.Windows.Forms.CheckBox();
 			this.buttonUnpatchElements = new System.Windows.Forms.Button();
 			this.labelFilterCount = new System.Windows.Forms.Label();
 			this.labelElementCount = new System.Windows.Forms.Label();
@@ -72,7 +73,6 @@ namespace VixenApplication.Setup
 			this.radioButtonUnconnectedPatchPointsOnly = new System.Windows.Forms.RadioButton();
 			this.buttonDoPatching = new System.Windows.Forms.Button();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.checkBoxReverseElementOrder = new System.Windows.Forms.CheckBox();
 			this.groupBoxElements.SuspendLayout();
 			this.groupBoxControllers.SuspendLayout();
 			this.groupBoxPatching.SuspendLayout();
@@ -547,6 +547,8 @@ namespace VixenApplication.Setup
 			this.checkBoxReverseElementOrder.Size = new System.Drawing.Size(179, 21);
 			this.checkBoxReverseElementOrder.TabIndex = 23;
 			this.checkBoxReverseElementOrder.Text = "Reverse Element Order";
+			this.toolTip1.SetToolTip(this.checkBoxReverseElementOrder, "The order in which Elements will be patched to controller outputs. This does not " +
+        "effect the order in which color channels are patched to controller outputs.");
 			this.checkBoxReverseElementOrder.UseVisualStyleBackColor = true;
 			this.checkBoxReverseElementOrder.CheckedChanged += new System.EventHandler(this.checkBoxReverseElementOrder_CheckedChanged);
 			// 
@@ -554,9 +556,6 @@ namespace VixenApplication.Setup
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.AutoScroll = false;
-			this.AutoSize = false;
-			this.Controls.Add(this.labelPatchWarning);
 			this.Controls.Add(this.groupBoxPatching);
 			this.Controls.Add(this.groupBoxControllers);
 			this.Controls.Add(this.groupBoxElements);
