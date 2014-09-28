@@ -730,8 +730,8 @@ namespace VixenModules.Effect.Nutcracker
 			for (x = 0; x < BufferWi; x++) {
 				for (y = 0; y < BufferHt; y++) {
 					hsv2.SetToHSV(hsv);
-					if (HorizFade) hsv2.Value *= (float) (1.0 - Math.Abs(HalfWi - x)/HalfWi);
-					if (VertFade) hsv2.Value *= (float) (1.0 - Math.Abs(HalfHt - y)/HalfHt);
+					if (HorizFade && HalfWi > 0) hsv2.Value *= (float) (1.0 - Math.Abs(HalfWi - x)/HalfWi);
+					if (VertFade && HalfHt > 0) hsv2.Value *= (float) (1.0 - Math.Abs(HalfHt - y)/HalfHt);
 					//SetPixel(x, y, hsv);
 					SetPixel(x, y, hsv2);
 					//SetPixel(x, y, color);
@@ -1251,6 +1251,7 @@ namespace VixenModules.Effect.Nutcracker
 
 		public void RenderSnowflakes(int Count, int SnowflakeType)
 		{
+			if (BufferHt <= 1) return; //Invalid configuration
 			int i, n, y0, check, delta_y;
 			int x = 0;
 			int y = 0;

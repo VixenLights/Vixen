@@ -23,6 +23,7 @@
 			this.comboBoxDisplayType = new System.Windows.Forms.ComboBox();
 			this.label22 = new System.Windows.Forms.Label();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.chkFitToTime = new System.Windows.Forms.CheckBox();
 			this.label6 = new System.Windows.Forms.Label();
 			this.checkBoxColor6 = new System.Windows.Forms.CheckBox();
 			this.checkBoxColor4 = new System.Windows.Forms.CheckBox();
@@ -136,6 +137,8 @@
 			this.trackMeteorTrailLength = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
 			this.trackMeteorCount = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
 			this.Butterfly = new System.Windows.Forms.TabPage();
+			this.label55 = new System.Windows.Forms.Label();
+			this.comboButterflyDirection = new System.Windows.Forms.ComboBox();
 			this.label10 = new System.Windows.Forms.Label();
 			this.comboBoxButterflyColors = new System.Windows.Forms.ComboBox();
 			this.label9 = new System.Windows.Forms.Label();
@@ -169,6 +172,14 @@
 			this.label3 = new System.Windows.Forms.Label();
 			this.trackBarGarlandSpacing = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
 			this.trackBarGarlandType = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
+			this.Curtain = new System.Windows.Forms.TabPage();
+			this.lblCurtainSwagWidth = new System.Windows.Forms.Label();
+			this.trackCurtainSwagWidth = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
+			this.chkCurtainRepeat = new System.Windows.Forms.CheckBox();
+			this.lblCurtainEffect = new System.Windows.Forms.Label();
+			this.lblCurtainEdge = new System.Windows.Forms.Label();
+			this.comboCurtainEffect = new System.Windows.Forms.ComboBox();
+			this.comboCurtainEdge = new System.Windows.Forms.ComboBox();
 			this.comboBoxEffect = new System.Windows.Forms.ComboBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.trackBarSpeed = new System.Windows.Forms.TrackBar();
@@ -182,17 +193,6 @@
 			this.scrollPixelSize = new Common.Controls.ControlsEx.ValueControls.HValueScrollBar();
 			this.label44 = new System.Windows.Forms.Label();
 			this.buttonHelp = new System.Windows.Forms.Button();
-			this.Curtain = new System.Windows.Forms.TabPage();
-			this.comboCurtainEdge = new System.Windows.Forms.ComboBox();
-			this.comboCurtainEffect = new System.Windows.Forms.ComboBox();
-			this.lblCurtainEdge = new System.Windows.Forms.Label();
-			this.lblCurtainEffect = new System.Windows.Forms.Label();
-			this.chkCurtainRepeat = new System.Windows.Forms.CheckBox();
-			this.trackCurtainSwagWidth = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
-			this.lblCurtainSwagWidth = new System.Windows.Forms.Label();
-			this.chkFitToTime = new System.Windows.Forms.CheckBox();
-			this.comboButterflyDirection = new System.Windows.Forms.ComboBox();
-			this.label55 = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.tabEffectProperties.SuspendLayout();
@@ -217,9 +217,9 @@
 			this.ColorWash.SuspendLayout();
 			this.Fire.SuspendLayout();
 			this.Garlands.SuspendLayout();
+			this.Curtain.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarSpeed)).BeginInit();
 			this.groupBox3.SuspendLayout();
-			this.Curtain.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// timerRender
@@ -301,6 +301,17 @@
 			this.groupBox2.TabIndex = 6;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Effect";
+			// 
+			// chkFitToTime
+			// 
+			this.chkFitToTime.AutoSize = true;
+			this.chkFitToTime.Location = new System.Drawing.Point(295, 223);
+			this.chkFitToTime.Name = "chkFitToTime";
+			this.chkFitToTime.Size = new System.Drawing.Size(75, 17);
+			this.chkFitToTime.TabIndex = 15;
+			this.chkFitToTime.Text = "Fit to Time";
+			this.chkFitToTime.UseVisualStyleBackColor = true;
+			this.chkFitToTime.CheckedChanged += new System.EventHandler(this.chkFitToTime_CheckedChanged);
 			// 
 			// label6
 			// 
@@ -1568,6 +1579,28 @@
 			this.Butterfly.Text = "Butterfly";
 			this.Butterfly.UseVisualStyleBackColor = true;
 			// 
+			// label55
+			// 
+			this.label55.AutoSize = true;
+			this.label55.Location = new System.Drawing.Point(6, 114);
+			this.label55.Name = "label55";
+			this.label55.Size = new System.Drawing.Size(52, 13);
+			this.label55.TabIndex = 18;
+			this.label55.Text = "Direction:";
+			// 
+			// comboButterflyDirection
+			// 
+			this.comboButterflyDirection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboButterflyDirection.FormattingEnabled = true;
+			this.comboButterflyDirection.Items.AddRange(new object[] {
+            "Normal",
+            "Reverse"});
+			this.comboButterflyDirection.Location = new System.Drawing.Point(93, 111);
+			this.comboButterflyDirection.Name = "comboButterflyDirection";
+			this.comboButterflyDirection.Size = new System.Drawing.Size(126, 21);
+			this.comboButterflyDirection.TabIndex = 17;
+			this.comboButterflyDirection.SelectedIndexChanged += new System.EventHandler(this.comboButterflyDirection_SelectedIndexChanged);
+			// 
 			// label10
 			// 
 			this.label10.AutoSize = true;
@@ -1936,6 +1969,103 @@
 			this.trackBarGarlandType.Text = "trackerGarlandType";
 			this.trackBarGarlandType.ValueChanged += new Common.Controls.ControlsEx.ValueControls.ValueChangedEH(this.Garlands_ValueChanged);
 			// 
+			// Curtain
+			// 
+			this.Curtain.Controls.Add(this.lblCurtainSwagWidth);
+			this.Curtain.Controls.Add(this.trackCurtainSwagWidth);
+			this.Curtain.Controls.Add(this.chkCurtainRepeat);
+			this.Curtain.Controls.Add(this.lblCurtainEffect);
+			this.Curtain.Controls.Add(this.lblCurtainEdge);
+			this.Curtain.Controls.Add(this.comboCurtainEffect);
+			this.Curtain.Controls.Add(this.comboCurtainEdge);
+			this.Curtain.Location = new System.Drawing.Point(4, 5);
+			this.Curtain.Name = "Curtain";
+			this.Curtain.Padding = new System.Windows.Forms.Padding(3);
+			this.Curtain.Size = new System.Drawing.Size(266, 243);
+			this.Curtain.TabIndex = 18;
+			this.Curtain.Text = "Curtain";
+			this.Curtain.UseVisualStyleBackColor = true;
+			// 
+			// lblCurtainSwagWidth
+			// 
+			this.lblCurtainSwagWidth.AutoSize = true;
+			this.lblCurtainSwagWidth.Location = new System.Drawing.Point(10, 77);
+			this.lblCurtainSwagWidth.Name = "lblCurtainSwagWidth";
+			this.lblCurtainSwagWidth.Size = new System.Drawing.Size(65, 13);
+			this.lblCurtainSwagWidth.TabIndex = 6;
+			this.lblCurtainSwagWidth.Text = "Swag Width";
+			// 
+			// trackCurtainSwagWidth
+			// 
+			this.trackCurtainSwagWidth.Location = new System.Drawing.Point(90, 76);
+			this.trackCurtainSwagWidth.Maximum = 10;
+			this.trackCurtainSwagWidth.Minimum = 1;
+			this.trackCurtainSwagWidth.Name = "trackCurtainSwagWidth";
+			this.trackCurtainSwagWidth.Size = new System.Drawing.Size(170, 23);
+			this.trackCurtainSwagWidth.TabIndex = 5;
+			this.trackCurtainSwagWidth.Text = "Curtain Swag Width";
+			this.trackCurtainSwagWidth.Value = 3;
+			this.trackCurtainSwagWidth.ValueChanged += new Common.Controls.ControlsEx.ValueControls.ValueChangedEH(this.trackCurtainSwagWidth_ValueChanged);
+			// 
+			// chkCurtainRepeat
+			// 
+			this.chkCurtainRepeat.AutoSize = true;
+			this.chkCurtainRepeat.Location = new System.Drawing.Point(13, 112);
+			this.chkCurtainRepeat.Name = "chkCurtainRepeat";
+			this.chkCurtainRepeat.Size = new System.Drawing.Size(61, 17);
+			this.chkCurtainRepeat.TabIndex = 4;
+			this.chkCurtainRepeat.Text = "Repeat";
+			this.chkCurtainRepeat.UseVisualStyleBackColor = true;
+			this.chkCurtainRepeat.CheckedChanged += new System.EventHandler(this.chkCurtainRepeat_CheckedChanged);
+			// 
+			// lblCurtainEffect
+			// 
+			this.lblCurtainEffect.AutoSize = true;
+			this.lblCurtainEffect.Location = new System.Drawing.Point(40, 53);
+			this.lblCurtainEffect.Name = "lblCurtainEffect";
+			this.lblCurtainEffect.Size = new System.Drawing.Size(35, 13);
+			this.lblCurtainEffect.TabIndex = 3;
+			this.lblCurtainEffect.Text = "Effect";
+			// 
+			// lblCurtainEdge
+			// 
+			this.lblCurtainEdge.AutoSize = true;
+			this.lblCurtainEdge.Location = new System.Drawing.Point(7, 21);
+			this.lblCurtainEdge.Name = "lblCurtainEdge";
+			this.lblCurtainEdge.Size = new System.Drawing.Size(68, 13);
+			this.lblCurtainEdge.TabIndex = 2;
+			this.lblCurtainEdge.Text = "Curtain Edge";
+			// 
+			// comboCurtainEffect
+			// 
+			this.comboCurtainEffect.FormattingEnabled = true;
+			this.comboCurtainEffect.Items.AddRange(new object[] {
+            "Open",
+            "Close",
+            "Open then close",
+            "Close then open"});
+			this.comboCurtainEffect.Location = new System.Drawing.Point(92, 45);
+			this.comboCurtainEffect.Name = "comboCurtainEffect";
+			this.comboCurtainEffect.Size = new System.Drawing.Size(121, 21);
+			this.comboCurtainEffect.TabIndex = 1;
+			this.comboCurtainEffect.SelectedIndexChanged += new System.EventHandler(this.comboCurtainEffect_SelectedIndexChanged);
+			// 
+			// comboCurtainEdge
+			// 
+			this.comboCurtainEdge.FormattingEnabled = true;
+			this.comboCurtainEdge.Items.AddRange(new object[] {
+            "Left",
+            "Center",
+            "Right",
+            "Bottom",
+            "Middle",
+            "Top"});
+			this.comboCurtainEdge.Location = new System.Drawing.Point(92, 18);
+			this.comboCurtainEdge.Name = "comboCurtainEdge";
+			this.comboCurtainEdge.Size = new System.Drawing.Size(121, 21);
+			this.comboCurtainEdge.TabIndex = 0;
+			this.comboCurtainEdge.SelectedIndexChanged += new System.EventHandler(this.comboCurtainEdge_SelectedIndexChanged);
+			// 
 			// comboBoxEffect
 			// 
 			this.comboBoxEffect.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -1993,9 +2123,9 @@
 			this.label51.AutoSize = true;
 			this.label51.Location = new System.Drawing.Point(20, 76);
 			this.label51.Name = "label51";
-			this.label51.Size = new System.Drawing.Size(91, 13);
+			this.label51.Size = new System.Drawing.Size(92, 13);
 			this.label51.TabIndex = 8;
-			this.label51.Text = "String Orientation:";
+			this.label51.Text = "Effect Orientation:";
 			// 
 			// radioButtonHorizontal
 			// 
@@ -2057,136 +2187,6 @@
 			this.buttonHelp.UseVisualStyleBackColor = true;
 			this.buttonHelp.Click += new System.EventHandler(this.buttonHelp_Click);
 			// 
-			// Curtain
-			// 
-			this.Curtain.Controls.Add(this.lblCurtainSwagWidth);
-			this.Curtain.Controls.Add(this.trackCurtainSwagWidth);
-			this.Curtain.Controls.Add(this.chkCurtainRepeat);
-			this.Curtain.Controls.Add(this.lblCurtainEffect);
-			this.Curtain.Controls.Add(this.lblCurtainEdge);
-			this.Curtain.Controls.Add(this.comboCurtainEffect);
-			this.Curtain.Controls.Add(this.comboCurtainEdge);
-			this.Curtain.Location = new System.Drawing.Point(4, 5);
-			this.Curtain.Name = "Curtain";
-			this.Curtain.Padding = new System.Windows.Forms.Padding(3);
-			this.Curtain.Size = new System.Drawing.Size(266, 243);
-			this.Curtain.TabIndex = 18;
-			this.Curtain.Text = "Curtain";
-			this.Curtain.UseVisualStyleBackColor = true;
-			// 
-			// comboCurtainEdge
-			// 
-			this.comboCurtainEdge.FormattingEnabled = true;
-			this.comboCurtainEdge.Items.AddRange(new object[] {
-            "Left",
-            "Center",
-            "Right",
-            "Bottom",
-            "Middle",
-            "Top"});
-			this.comboCurtainEdge.Location = new System.Drawing.Point(92, 18);
-			this.comboCurtainEdge.Name = "comboCurtainEdge";
-			this.comboCurtainEdge.Size = new System.Drawing.Size(121, 21);
-			this.comboCurtainEdge.TabIndex = 0;
-			this.comboCurtainEdge.SelectedIndexChanged += new System.EventHandler(this.comboCurtainEdge_SelectedIndexChanged);
-			// 
-			// comboCurtainEffect
-			// 
-			this.comboCurtainEffect.FormattingEnabled = true;
-			this.comboCurtainEffect.Items.AddRange(new object[] {
-            "Open",
-            "Close",
-            "Open then close",
-            "Close then open"});
-			this.comboCurtainEffect.Location = new System.Drawing.Point(92, 45);
-			this.comboCurtainEffect.Name = "comboCurtainEffect";
-			this.comboCurtainEffect.Size = new System.Drawing.Size(121, 21);
-			this.comboCurtainEffect.TabIndex = 1;
-			this.comboCurtainEffect.SelectedIndexChanged += new System.EventHandler(this.comboCurtainEffect_SelectedIndexChanged);
-			// 
-			// lblCurtainEdge
-			// 
-			this.lblCurtainEdge.AutoSize = true;
-			this.lblCurtainEdge.Location = new System.Drawing.Point(7, 21);
-			this.lblCurtainEdge.Name = "lblCurtainEdge";
-			this.lblCurtainEdge.Size = new System.Drawing.Size(68, 13);
-			this.lblCurtainEdge.TabIndex = 2;
-			this.lblCurtainEdge.Text = "Curtain Edge";
-			// 
-			// lblCurtainEffect
-			// 
-			this.lblCurtainEffect.AutoSize = true;
-			this.lblCurtainEffect.Location = new System.Drawing.Point(40, 53);
-			this.lblCurtainEffect.Name = "lblCurtainEffect";
-			this.lblCurtainEffect.Size = new System.Drawing.Size(35, 13);
-			this.lblCurtainEffect.TabIndex = 3;
-			this.lblCurtainEffect.Text = "Effect";
-			// 
-			// chkCurtainRepeat
-			// 
-			this.chkCurtainRepeat.AutoSize = true;
-			this.chkCurtainRepeat.Location = new System.Drawing.Point(13, 112);
-			this.chkCurtainRepeat.Name = "chkCurtainRepeat";
-			this.chkCurtainRepeat.Size = new System.Drawing.Size(61, 17);
-			this.chkCurtainRepeat.TabIndex = 4;
-			this.chkCurtainRepeat.Text = "Repeat";
-			this.chkCurtainRepeat.UseVisualStyleBackColor = true;
-			this.chkCurtainRepeat.CheckedChanged += new System.EventHandler(this.chkCurtainRepeat_CheckedChanged);
-			// 
-			// trackCurtainSwagWidth
-			// 
-			this.trackCurtainSwagWidth.Location = new System.Drawing.Point(90, 76);
-			this.trackCurtainSwagWidth.Maximum = 10;
-			this.trackCurtainSwagWidth.Minimum = 1;
-			this.trackCurtainSwagWidth.Name = "trackCurtainSwagWidth";
-			this.trackCurtainSwagWidth.Size = new System.Drawing.Size(170, 23);
-			this.trackCurtainSwagWidth.TabIndex = 5;
-			this.trackCurtainSwagWidth.Text = "Curtain Swag Width";
-			this.trackCurtainSwagWidth.Value = 3;
-			this.trackCurtainSwagWidth.ValueChanged += new Common.Controls.ControlsEx.ValueControls.ValueChangedEH(this.trackCurtainSwagWidth_ValueChanged);
-			// 
-			// lblCurtainSwagWidth
-			// 
-			this.lblCurtainSwagWidth.AutoSize = true;
-			this.lblCurtainSwagWidth.Location = new System.Drawing.Point(10, 77);
-			this.lblCurtainSwagWidth.Name = "lblCurtainSwagWidth";
-			this.lblCurtainSwagWidth.Size = new System.Drawing.Size(65, 13);
-			this.lblCurtainSwagWidth.TabIndex = 6;
-			this.lblCurtainSwagWidth.Text = "Swag Width";
-			// 
-			// chkFitToTime
-			// 
-			this.chkFitToTime.AutoSize = true;
-			this.chkFitToTime.Location = new System.Drawing.Point(295, 223);
-			this.chkFitToTime.Name = "chkFitToTime";
-			this.chkFitToTime.Size = new System.Drawing.Size(75, 17);
-			this.chkFitToTime.TabIndex = 15;
-			this.chkFitToTime.Text = "Fit to Time";
-			this.chkFitToTime.UseVisualStyleBackColor = true;
-			this.chkFitToTime.CheckedChanged += new System.EventHandler(this.chkFitToTime_CheckedChanged);
-			// 
-			// comboButterflyDirection
-			// 
-			this.comboButterflyDirection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboButterflyDirection.FormattingEnabled = true;
-			this.comboButterflyDirection.Items.AddRange(new object[] {
-            "Normal",
-            "Reverse"});
-			this.comboButterflyDirection.Location = new System.Drawing.Point(93, 111);
-			this.comboButterflyDirection.Name = "comboButterflyDirection";
-			this.comboButterflyDirection.Size = new System.Drawing.Size(126, 21);
-			this.comboButterflyDirection.TabIndex = 17;
-			this.comboButterflyDirection.SelectedIndexChanged += new System.EventHandler(this.comboButterflyDirection_SelectedIndexChanged);
-			// 
-			// label55
-			// 
-			this.label55.AutoSize = true;
-			this.label55.Location = new System.Drawing.Point(6, 114);
-			this.label55.Name = "label55";
-			this.label55.Size = new System.Drawing.Size(52, 13);
-			this.label55.TabIndex = 18;
-			this.label55.Text = "Direction:";
-			// 
 			// NutcrackerTypeEditorControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2242,11 +2242,11 @@
 			this.Fire.PerformLayout();
 			this.Garlands.ResumeLayout(false);
 			this.Garlands.PerformLayout();
+			this.Curtain.ResumeLayout(false);
+			this.Curtain.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarSpeed)).EndInit();
 			this.groupBox3.ResumeLayout(false);
 			this.groupBox3.PerformLayout();
-			this.Curtain.ResumeLayout(false);
-			this.Curtain.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
