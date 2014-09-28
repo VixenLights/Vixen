@@ -21,7 +21,7 @@ namespace Vixen.Export
         private int _curPeriod;
         SequenceSessionData _sessionData;
         private FileStream _outfs = null;
-
+        private int _adder;
 
         public int SeqPeriodTime { get; set; }
         
@@ -56,7 +56,13 @@ namespace Vixen.Export
 
             _xmlData.EventPeriodInMilliseconds = _sessionData.PeriodMS.ToString();
 
-            _periodData = new Byte[sessionData.ChannelNames.Count * (_sessionData.NumPeriods + 1)];
+            _adder = 0;
+            if (_sessionData.TimeMS % _sessionData.PeriodMS != 0)
+            {
+                _adder = 1;
+            }
+
+            _periodData = new Byte[sessionData.ChannelNames.Count * (_sessionData.NumPeriods + _adder)];
 
             _xmlData.MinimumLevel = "0";
             _xmlData.MaximumLevel = "255";
@@ -68,7 +74,7 @@ namespace Vixen.Export
 
         public void WriteNextPeriodData(List<Byte> periodData)
         {
-            int numPeriods =  _sessionData.NumPeriods + 1;
+            int numPeriods =  _sessionData.NumPeriods + _adder;
 
             for (int j = 0; j < periodData.Count; j++)
             {
