@@ -255,7 +255,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
         private void buttonOK_Click(object sender, EventArgs e)
         {
-            if (connectStandardStrings && _shapes[0].StringType == PreviewBaseShape.StringTypes.Standard)
+            if ((connectStandardStrings || _shapes.Count() == 1) && _shapes[0].StringType == PreviewBaseShape.StringTypes.Standard)
             {
                 PreviewBaseShape shape = _shapes[0];
                 for (int i = 0; i < _shapes.Count; i++)
