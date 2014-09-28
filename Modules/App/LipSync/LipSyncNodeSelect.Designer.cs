@@ -53,7 +53,6 @@
             this.okButton.TabIndex = 0;
             this.okButton.Text = "OK";
             this.okButton.UseVisualStyleBackColor = true;
-            this.okButton.Click += new System.EventHandler(this.okButton_Click);
             // 
             // cancelButton
             // 
@@ -194,6 +193,7 @@
             this.Controls.Add(this.okButton);
             this.Name = "LipSyncNodeSelect";
             this.Text = "LipSyncNodeSelect";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.LipSyncNodeSelect_FormClosing);
             this.Load += new System.EventHandler(this.LipSyncNodeSelect_Load);
             this.stringsGroupBox.ResumeLayout(false);
             this.stringsGroupBox.PerformLayout();

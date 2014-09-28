@@ -13,6 +13,7 @@ namespace VixenModules.App.LipSyncApp
     public partial class LipSyncNodeSelect : Form
     {
         private bool _userAdd;
+        private bool _stringAreRows;
 
         public LipSyncNodeSelect()
         {
@@ -20,6 +21,7 @@ namespace VixenModules.App.LipSyncApp
             Changed = false;
             _userAdd = false;
             _matrixOptsOnly = false;
+            
         }
         
         private bool _matrixOptsOnly;
@@ -35,6 +37,7 @@ namespace VixenModules.App.LipSyncApp
 
             set
             {
+                _stringAreRows = value;
                 rowsRadioButton.Checked = value;
                 colsRadioButton.Checked = !value;
             }
@@ -105,11 +108,6 @@ namespace VixenModules.App.LipSyncApp
                     names.ForEach(x => findAndAddElements(x, false));
                 }
             }
-        }
-
-        private void okButton_Click(object sender, EventArgs e)
-        {
-
         }
 
         private void resetButton_Click(object sender, EventArgs e)
@@ -195,5 +193,22 @@ namespace VixenModules.App.LipSyncApp
 
         }
 
+        private void LipSyncNodeSelect_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (_stringAreRows != StringsAreRows)
+            {
+                DialogResult dr = 
+                    MessageBox.Show("Changing Matrix Orientation will modify existing matrix data!" +
+                    Environment.NewLine + "Press Cancel to keep existing matrix orientation" + 
+                    Environment.NewLine + "Press OK to continue", 
+                    "Warning!",  MessageBoxButtons.OKCancel);
+
+                if (dr == DialogResult.Cancel)
+                {
+                    e.Cancel = true;
+                    StringsAreRows = _stringAreRows;
+                }
+            }
+        }
     }
 }

@@ -382,7 +382,7 @@ namespace VixenModules.App.LipSyncApp
                 dgvCol.Width = CELL_BASE_WIDTH + (int)(ZOOM_STEP_DELTA * zoomSteps);
                 dgvCol.SortMode = DataGridViewColumnSortMode.NotSortable;
 
-                colIndexVal = dataGridView1.Columns.Count - j - 1;
+                colIndexVal = j;
                 dgvCol.HeaderCell.Value = colIndexVal.ToString();
             }
 
