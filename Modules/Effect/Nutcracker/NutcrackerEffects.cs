@@ -1589,40 +1589,62 @@ namespace VixenModules.Effect.Nutcracker
 
 		#region Twinkles
 
-		public void RenderTwinkle(int Count)
+		public void RenderTwinkle(int count, int steps, bool strobe)
 		{
-			int x, y, i, i7, ColorIdx;
-			int lights = Convert.ToInt32((BufferHt*BufferWi)*(Count/100.0)); // Count is in range of 1-100 from slider bar
-			int step = (BufferHt*BufferWi)/lights;
+			
+			int y;
+			int lights = Convert.ToInt32((BufferHt * BufferWi) * (count / 100.0)); ; // Count is in range of 1-100 from slider bar
+			int step;
+			if (lights > 0) step = BufferHt * BufferWi / lights;
+			else step = 1;
+			int maxModulo = steps;
+			if (maxModulo < 2) maxModulo = 2;  // could we be getting 0 passed in?
+			int maxModulo2 = maxModulo / 2;
+			if (maxModulo2 < 1) maxModulo2 = 1;
+
 			if (step < 1) step = 1;
-			srand(1); // always have the same random numbers for each frame (state)
-			HSV hsv; //   we will define an hsv color model. The RGB colot model would have been "wxColour color;"
+			srand(strobe ? DateTime.Now.Millisecond : 1);
 
 			int colorcnt = GetColorCount();
 
-			i = 0;
+			int i = 0;
 
 			for (y = 0; y < BufferHt; y++) // For my 20x120 megatree, BufferHt=120
 			{
+				int x;
 				for (x = 0; x < BufferWi; x++) // BufferWi=20 in the above example
 				{
 					i++;
-					if (i%step == 0) // Should we draw a light?
+
+					if (i % step == 1 || step == 1) // Should we draw a light?
 					{
 						// Yes, so now decide on what color it should be
 
-						ColorIdx = rand()%colorcnt;
-						// Select random numbers from 0 up to number of colors the user has checked. 0-5 if 6 boxes checked
-						hsv = Palette.GetHSV(ColorIdx); // Now go and get the hsv value for this ColorIdx
-						i7 = Convert.ToInt32((State/4 + rand())%9);
-						// Our twinkle is 9 steps. 4 ramping up, 5th at full brightness and then 4 more ramping down
+						int colorIdx = rand() % colorcnt;
+						HSV hsv = Palette.GetHSV(colorIdx); //   we will define an hsv color model. 
+						
 						//  Note that we are adding state to this calculation, this causes a different blink rate for each light
+						long i7 = (State + rand()) % maxModulo;
 
-						if (i7 == 0 || i7 == 8) hsv.Value = 0.1f;
-						if (i7 == 1 || i7 == 7) hsv.Value = 0.3f;
-						if (i7 == 2 || i7 == 6) hsv.Value = 0.5f;
-						if (i7 == 3 || i7 == 5) hsv.Value = 0.7f;
-						if (i7 == 4) hsv.Value = 1.0f;
+						if (i7 <= maxModulo2)
+						{
+							if (maxModulo2 > 0) hsv.Value = (float)((1.0 * i7) / maxModulo2);
+							else hsv.Value = 0;
+						}
+						else
+						{
+							if (maxModulo2 > 0) hsv.Value = (float)((maxModulo - i7) * 1.0 / (maxModulo2));
+							else hsv.Value = 0;
+						}
+						if (hsv.Value < 0.0) hsv.Value = 0.0f;
+
+						if (strobe)
+						{
+							if (i7 == maxModulo2) hsv.Value = 1.0f;
+							else hsv.Value = 0.0f;
+						}
+
+
 						//  we left the Hue and Saturation alone, we are just modifiying the Brightness Value
 						SetPixel(x, y, hsv); // Turn pixel on
 					}
@@ -2095,7 +2117,7 @@ namespace VixenModules.Effect.Nutcracker
 					              Data.Spirals_Blend, Data.Spirals_3D);
 					break;
 				case Effects.Twinkles:
-					RenderTwinkle(Data.Twinkles_Count);
+					RenderTwinkle(Data.Twinkles_Count, Data.Twinkles_Steps, Data.Twinkles_Strobe);
 					break;
 				case Effects.Text:
 					RenderText(Data.Text_Top, Data.Text_Line1, Data.Text_Line2, Data.Text_Font, Data.Text_Direction,

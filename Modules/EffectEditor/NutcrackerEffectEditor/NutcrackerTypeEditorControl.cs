@@ -415,7 +415,6 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			int ht;
 
 			if (Data.StringOrienation == NutcrackerEffects.StringOrientations.Horizontal) 
-				//&& Data.PreviewType == NutcrackerEffects.PreviewType.Grid)
 			{
 				wid = PixelsPerString();
 				ht = StringCount;
@@ -789,6 +788,8 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 		private void LoadTwinkles()
 		{
 			trackTwinkleCount.Value = Data.Twinkles_Count;
+			trackTwinkleSteps.Value = Data.Twinkles_Steps;
+			chkTwinkleStrobe.Checked = Data.Twinkles_Strobe;
 		}
 
 		private void trackTwinkleCount_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender,
@@ -797,6 +798,20 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			if (loading) return;
 			Data.Twinkles_Count = trackTwinkleCount.Value;
 		}
+
+		private void trackTwinkleSteps_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender, Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
+		{
+			if (loading) return;
+			Data.Twinkles_Steps = trackTwinkleSteps.Value;
+		}
+
+
+		private void chkTwinkleStrobe_CheckedChanged(object sender, EventArgs e)
+		{
+			if (loading) return;
+			Data.Twinkles_Strobe = chkTwinkleStrobe.Checked;
+		}
+
 
 		#endregion // Twinkles
 
@@ -1229,5 +1244,6 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			}
 			base.Dispose(disposing);
 		}
+		
 	}
 }

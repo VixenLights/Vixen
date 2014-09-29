@@ -98,6 +98,8 @@ namespace VixenModules.Effect.Nutcracker
 
 		// Twinkles
 		[DataMember] public int Twinkles_Count = 50;
+		[DataMember] public int Twinkles_Steps = 30;
+		[DataMember] public bool Twinkles_Strobe = false;
 
 		// Text
 		[DataMember] public int Text_Top = 5;
