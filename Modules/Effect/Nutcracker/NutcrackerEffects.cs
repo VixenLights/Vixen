@@ -2120,7 +2120,7 @@ namespace VixenModules.Effect.Nutcracker
 					RenderTwinkle(Data.Twinkles_Count, Data.Twinkles_Steps, Data.Twinkles_Strobe);
 					break;
 				case Effects.Text:
-					RenderText(Data.Text_Top, Data.Text_Line1, Data.Text_Line2, Data.Text_Font, Data.Text_Direction,
+					RenderText(Data.Text_Top, Data.Text_Line1, Data.Text_Line2, Data.Text_Line3, Data.Text_Line4, Data.Text_Font, Data.Text_Direction,
 					           Data.Text_TextRotation, Data.Text_CenterStop);
 					break;
 				case Effects.Picture:

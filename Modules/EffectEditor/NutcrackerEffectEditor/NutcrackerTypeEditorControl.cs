@@ -821,9 +821,12 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 		{
 			textTextLine1.Text = Data.Text_Line1;
 			textTextLine2.Text = Data.Text_Line2;
+			textTextLine3.Text = Data.Text_Line3;
+			textTextLine4.Text = Data.Text_Line4;
 			comboBoxTextDirection.SelectedIndex = Data.Text_Direction;
 			trackTextTop.Value = Data.Text_Top;
 			chkCenterStop.Checked = Data.Text_CenterStop;
+			textBoxTextFont.Text = String.Format("{0} {1} pt", fontDialog.Font.Name, fontDialog.Font.SizeInPoints);
 		}
 
 		private void Text_TextChanged(object sender, EventArgs e)
@@ -831,9 +834,8 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			if (loading) return;
 			Data.Text_Line1 = textTextLine1.Text;
 			Data.Text_Line2 = textTextLine2.Text;
-			Data.Text_Direction = comboBoxTextDirection.SelectedIndex;
-			//Data.Text_TextRotation = 
-			//Data.Text_Left = 
+			Data.Text_Line3 = textTextLine3.Text;
+			Data.Text_Line4 = textTextLine4.Text;
 		}
 
 		private void trackTextTop_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender,
@@ -848,6 +850,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			fontDialog.Font = Data.Text_Font;
 			if (fontDialog.ShowDialog() == DialogResult.OK) {
 				Data.Text_Font = fontDialog.Font;
+				textBoxTextFont.Text = String.Format("{0} {1} pt", fontDialog.Font.Name, fontDialog.Font.SizeInPoints);
 			}
 		}
 
@@ -858,6 +861,11 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 		}
 
 
+		private void comboBoxTextDirection_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			Data.Text_Direction = comboBoxTextDirection.SelectedIndex;
+		}
+		
 		#endregion // Text
 
 		#region Curtain
@@ -1244,6 +1252,6 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			}
 			base.Dispose(disposing);
 		}
-		
+
 	}
 }

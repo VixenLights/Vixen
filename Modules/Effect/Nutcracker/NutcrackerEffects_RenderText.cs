@@ -8,7 +8,7 @@ namespace VixenModules.Effect.Nutcracker
 {
 	partial class NutcrackerEffects
 	{
-		public void RenderText(int position, string line1, string line2, Font font, int dir, int textRotation, bool centerStop)
+		public void RenderText(int position, string line1, string line2, string line3, string line4, Font font, int dir, int textRotation, bool centerStop)
 		{
 			using (var bitmap = new Bitmap(BufferWi, BufferHt))
 			{
@@ -23,6 +23,14 @@ namespace VixenModules.Effect.Nutcracker
 						if (line2.Length > 0)
 						{
 							msg += "\n" + line2;
+						}
+						if (line3.Length > 0)
+						{
+							msg += "\n" + line3;
+						}
+						if (line4.Length > 0)
+						{
+							msg += "\n" + line4;
 						}
 
 						SizeF textsize = graphics.MeasureString(msg, font);

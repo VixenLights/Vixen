@@ -106,6 +106,8 @@ namespace VixenModules.Effect.Nutcracker
 		[DataMember] public int Text_Left = 5;
 		[DataMember] public string Text_Line1 = string.Empty;
 		[DataMember] public string Text_Line2 = string.Empty;
+		[DataMember] public string Text_Line3 = string.Empty;
+		[DataMember] public string Text_Line4 = string.Empty;
 		[DataMember] public int Text_Direction = 0;
 		[DataMember] public bool Text_CenterStop = false;
 
