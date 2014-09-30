@@ -225,11 +225,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolStripButton_SnapTo.Checked = toolStripMenuItem_SnapTo.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SnapToSelected", Name), true);
 			PopulateSnapStrength(xml.GetSetting(XMLProfileSettings.SettingType.AppSettings,	string.Format("{0}/SnapStrength", Name), 2));
 			toolStripMenuItem_ResizeIndicator.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ResizeIndicatorEnabled", Name),false);
-			TimelineControl.grid.ResizeIndicator_Color = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ResizeIndicatorColor", Name), "Red");
 			toolStripButton_DrawMode.Checked = TimelineControl.grid.EnableDrawMode = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/DrawModeSelected", Name), false);
 			toolStripButton_SelectionMode.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SelectionModeSelected", Name), true);
 			ToolsForm.LinkCurves = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolPaletteLinkCurves", Name), false);
 			ToolsForm.LinkGradients = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolPaletteLinkGradients", Name), false);
+
+			CheckRiColorMenuItem(xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ResizeIndicatorColor", Name), "Red"));
 
 			foreach (ToolStripItem toolStripItem in toolStripDropDownButton_SnapToStrength.DropDownItems)
 			{
@@ -1648,32 +1649,47 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void toolStripMenuItem_ResizeIndicator_CheckStateChanged(object sender, EventArgs e)
 		{
-			TimelineControl.grid.ResizeIndicator_Enabled = (toolStripMenuItem_ResizeIndicator.Checked ? true : false);
+			TimelineControl.grid.ResizeIndicator_Enabled = toolStripMenuItem_ResizeIndicator.Checked;
 		}
 
+
+		private void CheckRiColorMenuItem(string color)
+		{
+			TimelineControl.grid.ResizeIndicator_Color = color;
+			toolStripMenuItem_RIColor_Blue.Checked = color == "Blue";
+			toolStripMenuItem_RIColor_Yellow.Checked = color == "Yellow";
+			toolStripMenuItem_RIColor_Green.Checked = color == "Green";
+			toolStripMenuItem_RIColor_White.Checked = color == "White";
+			toolStripMenuItem_RIColor_Red.Checked = color == "Red";
+		}
 		private void toolStripMenuItem_RIColor_Blue_Click(object sender, EventArgs e)
 		{
-			TimelineControl.grid.ResizeIndicator_Color = "Blue";
+			CheckRiColorMenuItem("Blue");
+			toolStripMenuItem_ResizeIndicator.Checked = true;
 		}
 
 		private void toolStripMenuItem_RIColor_Yellow_Click(object sender, EventArgs e)
 		{
-			TimelineControl.grid.ResizeIndicator_Color = "Yellow";
+			CheckRiColorMenuItem("Yellow");
+			toolStripMenuItem_ResizeIndicator.Checked = true;
 		}
 
 		private void toolStripMenuItem_RIColor_Green_Click(object sender, EventArgs e)
 		{
-			TimelineControl.grid.ResizeIndicator_Color = "Green";
+			CheckRiColorMenuItem("Green");
+			toolStripMenuItem_ResizeIndicator.Checked = true;
 		}
 
 		private void toolStripMenuItem_RIColor_White_Click(object sender, EventArgs e)
 		{
-			TimelineControl.grid.ResizeIndicator_Color = "White";
+			CheckRiColorMenuItem("White");
+			toolStripMenuItem_ResizeIndicator.Checked = true;
 		}
 
 		private void toolStripMenuItem_RIColor_Red_Click(object sender, EventArgs e)
 		{
-			TimelineControl.grid.ResizeIndicator_Color = "Red";
+			CheckRiColorMenuItem("Red");
+			toolStripMenuItem_ResizeIndicator.Checked = true;
 		}
 
 		private void toolStripButton_DragBoxFilter_CheckedChanged(object sender, EventArgs e)
