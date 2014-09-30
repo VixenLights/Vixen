@@ -1,6 +1,7 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Drawing;
+using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using Common.Resources;
@@ -11,9 +12,9 @@ namespace VixenApplication
 {
 	public partial class DataProfileForm : Form
 	{
-		private string defaultFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Vixen 3";
-		private ProfileItem currentItem = null;
-
+		private readonly string _defaultFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Vixen 3";
+		private ProfileItem _currentItem;
+		
 		public DataProfileForm()
 		{
 			InitializeComponent();
@@ -69,9 +70,78 @@ namespace VixenApplication
 			XMLProfileSettings profile = new XMLProfileSettings();
             List<string> checkName = new List<string>();
             List<string> checkDataFolder = new List<string>();
+			List<string> duplicateItems = new List<string>();
+			List<string> checkDataPath = new List<string>();
             bool duplicateName = false;
             bool duplicateDataFolder = false;
-            SaveCurrentItem();
+			bool invalidDataPath = false;
+            
+			//Check for null values, duplicate profile name or datapath and non rooted datapath
+			foreach (ProfileItem item in comboBoxProfiles.Items)
+			{
+				if (item.Name == null || item.DataFolder == null)
+				{
+					MessageBox.Show(
+						@"One or more of your profile entries has a blank name or data folder. You must correct this before continuing.",
+						@"Warning - Blank Entries", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				}
+
+				if (checkName.Contains(item.Name))
+				{
+					duplicateName = true;
+					duplicateItems.Add(item.Name + ":\t " + item.DataFolder);
+				}
+				checkName.Add(item.Name);
+
+				if (checkDataFolder.Contains(item.DataFolder))
+				{
+					duplicateDataFolder = true;
+					duplicateItems.Add(item.Name + ":\t " + item.DataFolder);
+				}
+
+				checkDataFolder.Add(item.DataFolder);
+
+				if (!Path.IsPathRooted(item.DataFolder) || !item.DataFolder.Contains(@"\"))
+				{
+					invalidDataPath = true;
+					checkDataPath.Add(item.Name + ":\t " + item.DataFolder);
+				}
+			}
+
+			if (duplicateName || duplicateDataFolder)
+			{
+				//Not pretty here, but works well on the dialog
+				var result =
+					MessageBox.Show(
+						@"A duplicate profile name, or data path exists." + Environment.NewLine + Environment.NewLine +
+						@"The duplicate items found were:" + Environment.NewLine + Environment.NewLine + string.Join(Environment.NewLine,duplicateItems) + Environment.NewLine + Environment.NewLine +
+						@"Click OK to accept and contine, or Cancel to go back and edit.",
+						@"Warning - Duplicate Entries", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+				
+				if (result != DialogResult.OK)
+				{
+					DialogResult = DialogResult.None;
+					return;
+				}
+			}
+
+			if (invalidDataPath)
+			{
+				var result =
+				MessageBox.Show(
+					@"An invalid profile data folder exists." + Environment.NewLine + Environment.NewLine +
+					@"The items with invalid paths were:" + Environment.NewLine + Environment.NewLine + string.Join(Environment.NewLine, checkDataPath) + Environment.NewLine + Environment.NewLine +
+					@"Click OK to accept and contine, or Cancel to go back and edit.",
+					@"Warning - Invalid Data Path", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+
+				if (result != DialogResult.OK)
+				{
+					DialogResult = DialogResult.None;
+					return;
+				}
+			}
+
+			SaveCurrentItem();
 			profile.PutSetting(XMLProfileSettings.SettingType.Profiles, "ProfileCount", comboBoxProfiles.Items.Count);
 			for (int i = 0; i < comboBoxProfiles.Items.Count; i++) {
 				ProfileItem item = comboBoxProfiles.Items[i] as ProfileItem;
@@ -81,53 +151,26 @@ namespace VixenApplication
                 
                 if (item.DataFolder != string.Empty)
                 {
-                    if (!System.IO.Directory.Exists(item.DataFolder))
-                        System.IO.Directory.CreateDirectory(item.DataFolder);
+                    if (!Directory.Exists(item.DataFolder))
+                        Directory.CreateDirectory(item.DataFolder);
                 }
-                if (checkName.Contains(item.Name))
-                    duplicateName = true;
-                checkName.Add(item.Name);
-                if (checkDataFolder.Contains(item.DataFolder))
-                    duplicateDataFolder = true;
-                checkDataFolder.Add(item.DataFolder);
             }
 
-			if (radioButtonAskMe.Checked)
-				profile.PutSetting(XMLProfileSettings.SettingType.Profiles, "LoadAction", "Ask");
-			else
-				profile.PutSetting(XMLProfileSettings.SettingType.Profiles, "LoadAction", "LoadSelected");
+			profile.PutSetting(XMLProfileSettings.SettingType.Profiles, "LoadAction",
+				radioButtonAskMe.Checked ? "Ask" : "LoadSelected");
 
 			if (comboBoxLoadThisProfile.SelectedIndex >= 0)
 				profile.PutSetting(XMLProfileSettings.SettingType.Profiles, "ProfileToLoad", comboBoxLoadThisProfile.SelectedIndex);
-
-            //If a duplicate entry is found, we will prompt the user to contine on, or cancel and edit. This could be done with one bool, but in the event that we want to
-            //be more specific about things in the future, Ill leave it the way it is for now.
-            if (duplicateName || duplicateDataFolder)
-            {
-                if (MessageBox.Show("Duplicate profile entries were found. A duplicate profile name, or data path exists. Click OK to accept and contine, or Cancel to go back and edit.", "Warning", MessageBoxButtons.OKCancel) == DialogResult.OK)
-                {
-                    DialogResult = System.Windows.Forms.DialogResult.OK;
-                    Close();
-                }
-                else
-                {
-                    //Too late to cancel without changes, lets not give false hope.
-                    buttonCancel.Enabled = false;
-                    DialogResult = System.Windows.Forms.DialogResult.None;
-                }
-            }
-            else
-            {
-                DialogResult = System.Windows.Forms.DialogResult.OK;
-                Close();
-            }
-
+			
+			DialogResult = DialogResult.OK;
+			Close();
 		}
 
 		private void buttonSetDataFolder_Click(object sender, EventArgs e)
 		{
 			folderBrowserDataFolder.SelectedPath = textBoxDataFolder.Text;
-			if (folderBrowserDataFolder.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+			if (folderBrowserDataFolder.ShowDialog() == DialogResult.OK)
+			{
 				textBoxDataFolder.Text = folderBrowserDataFolder.SelectedPath;
 			}
 		}
@@ -137,17 +180,20 @@ namespace VixenApplication
 			XMLProfileSettings profile = new XMLProfileSettings();
 
 			int profileCount = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "ProfileCount", 0);
-			if (profileCount == 0) {
-				ProfileItem item = new ProfileItem();
-				item.Name = "Default";
-				item.DataFolder = defaultFolder;
+			if (profileCount == 0)
+			{
+				ProfileItem item = new ProfileItem {Name = "Default", DataFolder = _defaultFolder};
 				comboBoxProfiles.Items.Add(item);
 			}
-			else {
-				for (int i = 0; i < profileCount; i++) {
-					ProfileItem item = new ProfileItem();
-					item.Name = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + i + "/Name", "New Profile");
-					item.DataFolder = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + i + "/DataFolder", defaultFolder);
+			else
+			{
+				for (int i = 0; i < profileCount; i++)
+				{
+					ProfileItem item = new ProfileItem
+					{
+						Name = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + i + "/Name", "New Profile"),
+						DataFolder = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + i + "/DataFolder", _defaultFolder)
+					};
 					comboBoxProfiles.Items.Add(item);
 				}
 			}
@@ -156,9 +202,9 @@ namespace VixenApplication
 
 		private void SaveCurrentItem()
 		{
-			if (currentItem != null) {
-				currentItem.Name = textBoxProfileName.Text;
-				currentItem.DataFolder = textBoxDataFolder.Text;
+			if (_currentItem != null) {
+				_currentItem.Name = textBoxProfileName.Text;
+				_currentItem.DataFolder = textBoxDataFolder.Text;
 			}
 		}
 
@@ -166,11 +212,12 @@ namespace VixenApplication
 		{
 			SaveCurrentItem();
 			ProfileItem item = comboBoxProfiles.SelectedItem as ProfileItem;
-			if (item != null) {
+			if (item != null)
+			{
 				textBoxProfileName.Text = item.Name;
 				textBoxDataFolder.Text = item.DataFolder;
 			}
-			currentItem = item;
+			_currentItem = item;
 		}
 
 		private void comboBoxProfiles_SelectedIndexChanged(object sender, EventArgs e)
@@ -186,9 +233,32 @@ namespace VixenApplication
 		private void buttonAddProfile_Click(object sender, EventArgs e)
 		{
 			SaveCurrentItem();
-			ProfileItem item = new ProfileItem();
-			item.Name = "New Profile";
-			item.DataFolder = defaultFolder;
+
+			TextDialog dialog = new TextDialog("Enter a name for the new profile","Profile Name","New Profile");
+
+			while (dialog.ShowDialog() == DialogResult.OK)
+			{
+				if (dialog.Response == string.Empty)
+				{
+					MessageBox.Show(@"Profile name can not be blank.");
+				}
+				
+				if (comboBoxProfiles.Items.Cast<ProfileItem>().Any(items => items.Name == dialog.Response))
+				{
+					MessageBox.Show(@"A profile with the name " + dialog.Response + @" already exists.");
+				}
+
+				if (dialog.Response != string.Empty && comboBoxProfiles.Items.Cast<ProfileItem>().All(items => items.Name != dialog.Response))
+				{
+					break;
+				}
+
+			}
+
+			if (dialog.DialogResult == DialogResult.Cancel)
+				return;
+
+			ProfileItem item = new ProfileItem { Name = dialog.Response, DataFolder = _defaultFolder + " " + dialog.Response };
 			comboBoxProfiles.Items.Add(item);
 			comboBoxProfiles.SelectedIndex = comboBoxProfiles.Items.Count - 1;
 			PopulateLoadProfileSection(false);
@@ -197,18 +267,22 @@ namespace VixenApplication
 		private void buttonDeleteProfile_Click(object sender, EventArgs e)
 		{
 			ProfileItem item = comboBoxProfiles.SelectedItem as ProfileItem;
-			if (item != null) {
-				if (
-					MessageBox.Show(
-						"Are you sure you want to delete this profile? The data folder and all its contents will remain and must be removed manually.",
-						"Delete a Profile", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning) ==
-					System.Windows.Forms.DialogResult.Yes) {
-					comboBoxProfiles.Items.Remove(item);
-					if (comboBoxProfiles.Items.Count > 0) {
-						comboBoxProfiles.SelectedIndex = 0;
-					}
-					PopulateLoadProfileSection(false);
+			if (item == null)
+				return;
+			
+			DialogResult result = MessageBox.Show(
+				@"Are you sure you want to delete this profile? The data folder and all its contents will remain and must be removed manually.",
+				@"Delete a Profile", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+
+			if (result == DialogResult.Yes)
+			{
+				comboBoxProfiles.Items.Remove(item);
+				if (comboBoxProfiles.Items.Count > 0)
+				{
+					comboBoxProfiles.SelectedIndex = 0;
 				}
+
+				PopulateLoadProfileSection(false);
 			}
 		}
 
@@ -217,15 +291,14 @@ namespace VixenApplication
 		private void comboBox_DrawItem(object sender, DrawItemEventArgs e)
 		{
 			ComboBox c = sender as ComboBox;
-			if (e.Index > -1) {
+			if (e.Index > -1)
+			{
 				ProfileItem item = c.Items[e.Index] as ProfileItem;
-				if (e.State == DrawItemState.Focus)
-					e.Graphics.FillRectangle(Brushes.Blue, e.Bounds);
-				else
-					e.Graphics.FillRectangle(new SolidBrush(e.BackColor), e.Bounds);
-				e.Graphics.DrawString(item.Name, System.Drawing.SystemFonts.DefaultFont, Brushes.Black, e.Bounds);
+				e.Graphics.FillRectangle(e.State == DrawItemState.Focus ? Brushes.Blue : new SolidBrush(e.BackColor), e.Bounds);
+				e.Graphics.DrawString(item.Name, SystemFonts.DefaultFont, Brushes.Black, e.Bounds);
 			}
-			else {
+			else
+			{
 				e.Graphics.FillRectangle(new SolidBrush(c.BackColor), e.Bounds);
 			}
 		}
