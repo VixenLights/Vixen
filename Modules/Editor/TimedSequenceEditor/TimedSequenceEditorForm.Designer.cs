@@ -824,7 +824,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
             this.toolStripMenuItem_deleteElements.Name = "toolStripMenuItem_deleteElements";
             this.toolStripMenuItem_deleteElements.ShortcutKeys = System.Windows.Forms.Keys.Delete;
             this.toolStripMenuItem_deleteElements.Size = new System.Drawing.Size(202, 22);
-            this.toolStripMenuItem_deleteElements.Text = "Delete Element(s)";
+            this.toolStripMenuItem_deleteElements.Text = "Delete Effect(s)";
             this.toolStripMenuItem_deleteElements.Click += new System.EventHandler(this.toolStripMenuItem_deleteElements_Click);
             // 
             // toolStripSeparator10

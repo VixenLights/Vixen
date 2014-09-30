@@ -1492,6 +1492,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (TimelineControl.SelectedElements.Count() > 1)
 				{
 					ToolStripMenuItem itemAlignment = new ToolStripMenuItem("Alignment");
+					//Disables the Alignment menu if too many effects are selected in a row.
+					itemAlignment.Enabled = TimelineControl.grid.OkToUseAlignmentHelper(TimelineControl.SelectedElements);
+					if (!itemAlignment.Enabled)
+					{
+						itemAlignment.ToolTipText = "Disabled, maximum selected effects per row is 4.";
+					}
+
 					ToolStripMenuItem itemAlignStart = new ToolStripMenuItem("Align Start Times (shift)");
 					itemAlignStart.ToolTipText = "Holding shift will align the start times, while holding duration.";
 					itemAlignStart.Click += (mySender, myE) => TimelineControl.grid.AlignElementStartTimes(TimelineControl.SelectedElements, element, ModifierKeys == Keys.Shift);
@@ -1855,6 +1862,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void DistributeSelectedEffectsEqually()
 		{
+			if (!TimelineControl.grid.OkToUseAlignmentHelper(TimelineControl.SelectedElements))
+			{
+				MessageBox.Show(TimelineControl.grid.alignmentHelperWarning);
+				return;
+			}
+
 			//Before we do anything lets make sure there is time to work with
 			//I don't remember why I put this here, for now its commented out until its verified that its not needed, then it will be removed
 			//if (TimelineControl.SelectedElements.First().EndTime == TimelineControl.SelectedElements.Last().EndTime)
@@ -1918,6 +1931,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void DistributeSelectedEffects()
 		{
+			if (!TimelineControl.grid.OkToUseAlignmentHelper(TimelineControl.SelectedElements))
+			{
+				MessageBox.Show(TimelineControl.grid.alignmentHelperWarning);
+				return;
+			}
+
 			var startTime = TimelineControl.SelectedElements.First().StartTime;
 			var endTime = TimelineControl.SelectedElements.Last().EndTime;
 			if (startTime > endTime)
@@ -3261,6 +3280,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			ClipboardAddData(false);
 		}
 
+		/// <summary>
+		/// Pastes the clipboard data starting at the given time. If pasting to a SelectedRow, the time passed should be TimeSpan.Zero
+		/// </summary>
+		/// <param name="pasteTime"></param>
+		/// <returns></returns>
 		public int ClipboardPaste(TimeSpan pasteTime)
 		{
 			int result = 0;
@@ -3277,15 +3301,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			if (data == null)
 				return result;
-			TimeSpan offset = data.EarliestStartTime;
+			TimeSpan offset = pasteTime == TimeSpan.Zero ? TimeSpan.Zero : data.EarliestStartTime;
 			Row targetRow = TimelineControl.SelectedRow ?? TimelineControl.ActiveRow ?? TimelineControl.TopVisibleRow;
-			if (targetRow.Selected)
-			{
-				//Full row is selected, so paste as is from the beginning not the cursor position
-				pasteTime = TimeSpan.Zero;
-				//We don't need to offset, just place them where they start
-				offset = TimeSpan.Zero;
-			}
 			List<Row> visibleRows = new List<Row>(TimelineControl.VisibleRows);
 			int topTargetRoxIndex = visibleRows.IndexOf(targetRow);
 			List<EffectNode> nodesToAdd = new List<EffectNode>();
@@ -3313,7 +3330,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				newEffect.ModuleData = effectModelCandidate.GetEffectData();
 				
 				nodesToAdd.Add(CreateEffectNode(newEffect, visibleRows[targetRowIndex], targetTime, effectModelCandidate.Duration));
-
 				result++;
 			}
 
@@ -3448,7 +3464,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void toolStripMenuItem_Paste_Click(object sender, EventArgs e)
 		{
-			ClipboardPaste(TimelineControl.CursorPosition);
+			Row targetRow = TimelineControl.SelectedRow ?? TimelineControl.ActiveRow ?? TimelineControl.TopVisibleRow;
+			ClipboardPaste(targetRow.Selected ? TimeSpan.Zero : TimelineControl.CursorPosition);
 		}
 
 		private void toolStripMenuItem_deleteElements_Click(object sender, EventArgs e)
