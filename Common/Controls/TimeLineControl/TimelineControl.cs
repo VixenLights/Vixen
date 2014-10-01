@@ -305,7 +305,7 @@ namespace Common.Controls.Timeline
 			}
 			else {
 				TimePerPixel = TimePerPixel.Scale(scale);
-				if (VisibleTimeEnd > TotalTime)
+				if (VisibleTimeEnd >= TotalTime)
 					VisibleTimeStart = TotalTime - VisibleTimeSpan;
 			}
 			grid.EndDraw();

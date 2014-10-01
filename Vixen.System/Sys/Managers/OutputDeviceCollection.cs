@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using Vixen.Sys.Output;
 
@@ -10,11 +11,11 @@ namespace Vixen.Sys.Managers
 	internal class OutputDeviceCollection<T> : IOutputDeviceCollection<T>
 		where T : class, IOutputDevice
 	{
-		private ConcurrentDictionary<Guid, T> _instances;
+		private readonly OrderedDeviceDictionary<Guid, T> _instances;
 
 		public OutputDeviceCollection()
 		{
-			_instances = new ConcurrentDictionary<Guid, T>();
+			_instances = new OrderedDeviceDictionary<Guid, T>();
 		}
 
 		public void Add(T outputDevice)
@@ -30,19 +31,28 @@ namespace Vixen.Sys.Managers
 		public T Get(Guid id)
 		{
 			T outputDevice;
-			_instances.TryGetValue(id, out outputDevice);
+			lock (_instances)
+			{
+				_instances.TryGetValue(id, out outputDevice);	
+			}
 			return outputDevice;
 		}
 
 		public IEnumerable<T> GetAll()
 		{
-			return _instances.Values.ToArray();
+			lock (_instances)
+			{
+				return _instances.Values.ToArray();
+			}
 		}
 
 		public IEnumerator<T> GetEnumerator()
 		{
 			// Enumerate against a copy of the collection.
-			return _instances.Values.ToList().GetEnumerator();
+			lock (_instances)
+			{
+				return _instances.Values.ToList().GetEnumerator();
+			}
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
@@ -52,13 +62,20 @@ namespace Vixen.Sys.Managers
 
 		private void _Add(T outputDevice)
 		{
-			_instances[outputDevice.Id] = outputDevice;
+			lock (_instances)
+			{
+				_instances[outputDevice.Id] = outputDevice;
+			}
 		}
 
 		private bool _Remove(T outputDevice)
 		{
-			T removedDevice;
-			return _instances.TryRemove(outputDevice.Id, out removedDevice);
+			//T removedDevice;
+			//return _instances.TryRemove(outputDevice.Id, out removedDevice);
+			lock (_instances)
+			{
+				return _instances.Remove(outputDevice.Id);
+			}
 		}
 	}
 }

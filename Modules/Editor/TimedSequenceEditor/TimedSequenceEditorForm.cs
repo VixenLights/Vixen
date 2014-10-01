@@ -3193,7 +3193,24 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					else if (e.Control)
 						TimelineControl.Zoom(.8);
 					break;
-
+				case Keys.Z:
+					if (e.Control)
+					{
+						if (_undoMgr.NumUndoable > 0)
+						{
+							_undoMgr.Undo();	
+						}
+					}
+					break;
+				case Keys.Y:
+					if (e.Control)
+					{
+						if (_undoMgr.NumRedoable > 0)
+						{
+							_undoMgr.Redo();
+						}
+					}
+					break;
 				default:
 					break;
 			}

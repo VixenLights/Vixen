@@ -13,6 +13,7 @@ namespace VixenModules.App.LipSyncApp
     public partial class LipSyncNodeSelect : Form
     {
         private bool _userAdd;
+        private bool _stringAreRows;
 
         public LipSyncNodeSelect()
         {
@@ -20,52 +21,12 @@ namespace VixenModules.App.LipSyncApp
             Changed = false;
             _userAdd = false;
             _matrixOptsOnly = false;
+            
         }
         
         private bool _matrixOptsOnly;
 
         public int MaxNodes { get; set; }
-
-        public bool BottomUp
-        {
-            get
-            {
-                return (bottomRightCheckBox.Checked && colsRadioButton.Checked);
-            }
-
-            set
-            {
-                bottomRightCheckBox.Checked = value;
-                colsRadioButton.Checked = value;
-            }
-        }
-
-        public bool RightLeft
-        {
-            get
-            {
-                return (bottomRightCheckBox.Checked && rowsRadioButton.Checked);
-            }
-
-            set
-            {
-                bottomRightCheckBox.Checked = value;
-                rowsRadioButton.Checked = value;
-            }
-        }
-
-        public bool BottomRight
-        {
-            get
-            {
-                return bottomRightCheckBox.Checked;
-            }
-
-            set
-            {
-                bottomRightCheckBox.Checked = value;
-            }
-        }
 
         public bool StringsAreRows
         {
@@ -76,6 +37,7 @@ namespace VixenModules.App.LipSyncApp
 
             set
             {
+                _stringAreRows = value;
                 rowsRadioButton.Checked = value;
                 colsRadioButton.Checked = !value;
             }
@@ -94,7 +56,6 @@ namespace VixenModules.App.LipSyncApp
                 stringsGroupBox.Visible = _matrixOptsOnly;
                 rowsRadioButton.Visible = _matrixOptsOnly;
                 colsRadioButton.Visible = _matrixOptsOnly;
-                bottomRightCheckBox.Visible = _matrixOptsOnly;
                 allowGroupsCheckbox.Checked = false;
                 allowGroupsCheckbox.Visible = !_matrixOptsOnly;
             }
@@ -147,11 +108,6 @@ namespace VixenModules.App.LipSyncApp
                     names.ForEach(x => findAndAddElements(x, false));
                 }
             }
-        }
-
-        private void okButton_Click(object sender, EventArgs e)
-        {
-
         }
 
         private void resetButton_Click(object sender, EventArgs e)
@@ -237,14 +193,22 @@ namespace VixenModules.App.LipSyncApp
 
         }
 
-        private void colsRadioButton_CheckedChanged(object sender, EventArgs e)
+        private void LipSyncNodeSelect_FormClosing(object sender, FormClosingEventArgs e)
         {
-            bottomRightCheckBox.Text = "Bottom to Top";
-        }
+            if (_stringAreRows != StringsAreRows)
+            {
+                DialogResult dr = 
+                    MessageBox.Show("Changing Matrix Orientation will modify existing matrix data!" +
+                    Environment.NewLine + "Press Cancel to keep existing matrix orientation" + 
+                    Environment.NewLine + "Press OK to continue", 
+                    "Warning!",  MessageBoxButtons.OKCancel);
 
-        private void rowsRadioButton_CheckedChanged(object sender, EventArgs e)
-        {
-            bottomRightCheckBox.Text = "Right to Left";
+                if (dr == DialogResult.Cancel)
+                {
+                    e.Cancel = true;
+                    StringsAreRows = _stringAreRows;
+                }
+            }
         }
     }
 }
