@@ -362,7 +362,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                     }
                     else
                     {
-                        pixelColor = Color.White;
+                        if (pixel.Node != null)
+                        {
+                            pixelColor = Color.Turquoise;
+                        }
+                        else
+                        {
+                            pixelColor = Color.White;
+                        }
                     }
                 }
                 pixel.Draw(fp, pixelColor);

@@ -129,7 +129,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			addedNode.Name = channelNode.Id.ToString();
 			addedNode.Text = channelNode.Name;
 			addedNode.Tag = channelNode;
-
 			collection.Add(addedNode);
 
 			foreach (ElementNode childNode in channelNode.Children) {
