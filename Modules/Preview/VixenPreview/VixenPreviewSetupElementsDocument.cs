@@ -57,25 +57,31 @@ namespace VixenModules.Preview.VixenPreview
 		//
 		private void OnSelectDisplayItem(object sender, Shapes.DisplayItem displayItem)
 		{
-            //treeElements.SelectedNodes = null;
-
+            treeElements.SelectedNodes = null;
+            //treeElements.Nodes.Find();
             //TreeNode visibleNode = null;
-            //foreach (Shapes.PreviewPixel pixel in displayItem.Shape.Pixels) {
-            //    if (pixel.Node != null) {
+            //foreach (Shapes.PreviewPixel pixel in displayItem.Shape.Pixels)
+            //{
+            //    if (pixel.Node != null)
+            //    {
             //    }
             //}
-            //if (visibleNode != null) {
+            //if (visibleNode != null)
+            //{
             //    bool selectParent = true;
-            //    foreach (TreeNode node in visibleNode.Parent.Nodes) {
+            //    foreach (TreeNode node in visibleNode.Parent.Nodes)
+            //    {
             //        selectParent = (selectParent && treeElements.SelectedNodes.Contains(node));
             //    }
-            //    if (selectParent) {
+            //    if (selectParent)
+            //    {
             //        treeElements.SelectedNodes = null;
             //        treeElements.AddSelectedNode(visibleNode.Parent);
             //        visibleNode.Parent.Collapse();
             //        visibleNode.Parent.EnsureVisible();
             //    }
-            //    else {
+            //    else
+            //    {
             //        visibleNode.EnsureVisible();
             //    }
             //}

@@ -52,6 +52,7 @@
             this.buttonOK = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.buttonHelp = new System.Windows.Forms.Button();
+            this.reverseElementLinkingInThisStringToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox2.SuspendLayout();
             this.panelSetLightCount.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownLightCount)).BeginInit();
@@ -240,21 +241,22 @@
             // 
             this.contextMenuLinkedElements.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.copyToAllElementsInThisStringToolStripMenuItem,
-            this.copyToAllElementsAllStringsToolStripMenuItem});
+            this.copyToAllElementsAllStringsToolStripMenuItem,
+            this.reverseElementLinkingInThisStringToolStripMenuItem});
             this.contextMenuLinkedElements.Name = "contextMenuLinkedElements";
-            this.contextMenuLinkedElements.Size = new System.Drawing.Size(460, 76);
+            this.contextMenuLinkedElements.Size = new System.Drawing.Size(438, 150);
             // 
             // copyToAllElementsInThisStringToolStripMenuItem
             // 
             this.copyToAllElementsInThisStringToolStripMenuItem.Name = "copyToAllElementsInThisStringToolStripMenuItem";
-            this.copyToAllElementsInThisStringToolStripMenuItem.Size = new System.Drawing.Size(459, 36);
+            this.copyToAllElementsInThisStringToolStripMenuItem.Size = new System.Drawing.Size(437, 34);
             this.copyToAllElementsInThisStringToolStripMenuItem.Text = "Copy to All Elements in This String";
             this.copyToAllElementsInThisStringToolStripMenuItem.Click += new System.EventHandler(this.copyToAllElementsInThisStringToolStripMenuItem_Click);
             // 
             // copyToAllElementsAllStringsToolStripMenuItem
             // 
             this.copyToAllElementsAllStringsToolStripMenuItem.Name = "copyToAllElementsAllStringsToolStripMenuItem";
-            this.copyToAllElementsAllStringsToolStripMenuItem.Size = new System.Drawing.Size(459, 36);
+            this.copyToAllElementsAllStringsToolStripMenuItem.Size = new System.Drawing.Size(437, 34);
             this.copyToAllElementsAllStringsToolStripMenuItem.Text = "Copy to All Elements/All Strings";
             this.copyToAllElementsAllStringsToolStripMenuItem.Click += new System.EventHandler(this.copyToAllElementsAllStringsToolStripMenuItem_Click);
             // 
@@ -315,6 +317,13 @@
             this.buttonHelp.UseVisualStyleBackColor = true;
             this.buttonHelp.Click += new System.EventHandler(this.buttonHelp_Click);
             // 
+            // reverseElementLinkingInThisStringToolStripMenuItem
+            // 
+            this.reverseElementLinkingInThisStringToolStripMenuItem.Name = "reverseElementLinkingInThisStringToolStripMenuItem";
+            this.reverseElementLinkingInThisStringToolStripMenuItem.Size = new System.Drawing.Size(437, 34);
+            this.reverseElementLinkingInThisStringToolStripMenuItem.Text = "Reverse Element Linking in This String";
+            this.reverseElementLinkingInThisStringToolStripMenuItem.Click += new System.EventHandler(this.reverseElementLinkingInThisStringToolStripMenuItem_Click);
+            // 
             // PreviewSetElements
             // 
             this.AcceptButton = this.buttonOK;
@@ -367,5 +376,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.NumericUpDown numericUpDownLightCount;
         private System.Windows.Forms.Button buttonSetLightCount;
+        private System.Windows.Forms.ToolStripMenuItem reverseElementLinkingInThisStringToolStripMenuItem;
     }
 }

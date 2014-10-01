@@ -129,7 +129,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			addedNode.Name = channelNode.Id.ToString();
 			addedNode.Text = channelNode.Name;
 			addedNode.Tag = channelNode;
-
 			collection.Add(addedNode);
 
 			foreach (ElementNode childNode in channelNode.Children) {
@@ -229,7 +228,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		public static DisplayItem DeSerializeToObject(string st, Type type)
+		public static DisplayItem DeSerializeToDisplayItem(string st, Type type)
 		{
 			var serializer = new DataContractSerializer(type);
 			DisplayItem item = null;
@@ -244,6 +243,27 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 			return item;
 		}
+
+        public static List<DisplayItem> DeSerializeToDisplayItemList(string st)
+        {
+            List<DisplayItem> result = new List<DisplayItem>();
+            var serializer = new DataContractSerializer(result.GetType());
+            using (var backing = new System.IO.StringReader(st))
+            {
+                try
+                {
+                    using (var reader = new System.Xml.XmlTextReader(backing))
+                    {
+                        result = serializer.ReadObject(reader) as List<DisplayItem>;
+                    }
+                }
+                catch
+                {  
+                    // We're not going to do anything. If we get here, the result list should be empty, which is fine.
+                }
+            }
+            return result;
+        }
 
         public static Bitmap ResizeBitmap(Bitmap imgToResize, Size size)
         {
@@ -339,6 +359,17 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 			return children;
 		}
+
+        public static List<ElementNode> GetParentNodes(ElementNode node)
+        {
+            List<ElementNode> children = new List<ElementNode>();
+            foreach (ElementNode child in node.Children)
+            {
+                if (!child.IsLeaf)
+                    children.Add(child);
+            }
+            return children;
+        }
 
         /// <summary>
         /// Retruns the number of strings and pixels in an ElementNode

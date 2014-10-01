@@ -83,7 +83,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public void Handle(IIntentState<CommandValue> state)
 		{
-			Console.WriteLine("Handle 2");
 		}
 
 		~DisplayItem()
