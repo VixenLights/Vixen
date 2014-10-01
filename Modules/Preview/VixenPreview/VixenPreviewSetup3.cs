@@ -82,6 +82,11 @@ namespace VixenModules.Preview.VixenPreview {
 
 			// Choose the select tool to start
 			toolbarButton_Click(buttonSelect, new EventArgs());
+
+            if (IntPtr.Size != 8)
+            {
+                trackerZoom.Maximum = 200;
+            }
 		}
 
 		private void buttonSetBackground_Click(object sender, EventArgs e) {
@@ -123,47 +128,77 @@ namespace VixenModules.Preview.VixenPreview {
             SetZoomTextAndTracker(zoomLevel);
         }
 
+        private void EnableButton(Control.ControlCollection parent, VixenPreviewControl.Tools tool)
+        {
+            if (parent != null)
+            {
+                foreach (Control c in parent)
+                {
+                    if (c is Button && c.Tag != null && c.Tag.ToString() != "")
+                    {
+                        Button button = c as Button;
+                        if (c.Tag.ToString() == previewForm.Preview.CurrentTool.ToString())
+                        {
+                            button.BackColor = Color.Gainsboro;
+                            button.FlatAppearance.BorderColor = button.BackColor;
+                        }
+                        else
+                        {
+                            button.BackColor = Color.White;
+                            button.FlatAppearance.BorderColor = button.BackColor;
+                        }
+                    }
+                    EnableButton(c.Controls, tool);
+                }
+            }
+        }
+
 		private void reenableToolButtons()
 		{
-			buttonSelect.BackColor = Color.White;
-			buttonSelect.FlatAppearance.BorderColor = buttonSelect.BackColor;
-			buttonCane.BackColor = buttonSelect.BackColor;
-			buttonCane.FlatAppearance.BorderColor = buttonSelect.BackColor;
-			buttonDrawPixel.BackColor = buttonSelect.BackColor;
-			buttonDrawPixel.FlatAppearance.BorderColor = buttonSelect.BackColor;
-			buttonLine.BackColor = buttonSelect.BackColor;
-			buttonLine.FlatAppearance.BorderColor = buttonSelect.BackColor;
-			buttonSemiCircle.BackColor = buttonSelect.BackColor;
-			buttonSemiCircle.FlatAppearance.BorderColor = buttonSelect.BackColor;
-			buttonRectangle.BackColor = buttonSelect.BackColor;
-			buttonRectangle.FlatAppearance.BorderColor = buttonSelect.BackColor;
-			buttonEllipse.BackColor = buttonSelect.BackColor;
-			buttonEllipse.FlatAppearance.BorderColor = buttonSelect.BackColor;
-			buttonTriangle.BackColor = buttonSelect.BackColor;
-			buttonTriangle.FlatAppearance.BorderColor = buttonSelect.BackColor;
-			buttonNet.BackColor = buttonSelect.BackColor;
-			buttonNet.FlatAppearance.BorderColor = buttonSelect.BackColor;
-			//buttonFlood.BackColor = buttonSelect.BackColor;
-			//buttonFlood.FlatAppearance.BorderColor = buttonSelect.BackColor;
-			buttonStar.BackColor = buttonSelect.BackColor;
-			buttonStar.FlatAppearance.BorderColor = buttonSelect.BackColor;
-            buttonStarBurst.BackColor = buttonSelect.BackColor;
-            buttonStarBurst.FlatAppearance.BorderColor = buttonSelect.BackColor;
-            buttonMegaTree.BackColor = buttonSelect.BackColor;
-			buttonMegaTree.FlatAppearance.BorderColor = buttonSelect.BackColor;
-			buttonPixelGrid.BackColor = buttonSelect.BackColor;
-			buttonPixelGrid.FlatAppearance.BorderColor = buttonSelect.BackColor;
-            buttonIcicle.BackColor = buttonSelect.BackColor;
-            buttonIcicle.FlatAppearance.BorderColor = buttonSelect.BackColor;
-            buttonPolyLine.BackColor = buttonSelect.BackColor;
-            buttonPolyLine.FlatAppearance.BorderColor = buttonSelect.BackColor;
-            buttonMultiString.BackColor = buttonSelect.BackColor;
-            buttonMultiString.FlatAppearance.BorderColor = buttonSelect.BackColor;
+            EnableButton(this.Controls, previewForm.Preview.CurrentTool);
+
+            //buttonSelect.BackColor = Color.White;
+            //buttonSelect.FlatAppearance.BorderColor = buttonSelect.BackColor;
+            //buttonCane.BackColor = buttonSelect.BackColor;
+            //buttonCane.FlatAppearance.BorderColor = buttonSelect.BackColor;
+            //buttonDrawPixel.BackColor = buttonSelect.BackColor;
+            //buttonDrawPixel.FlatAppearance.BorderColor = buttonSelect.BackColor;
+            //buttonLine.BackColor = buttonSelect.BackColor;
+            //buttonLine.FlatAppearance.BorderColor = buttonSelect.BackColor;
+            //buttonSemiCircle.BackColor = buttonSelect.BackColor;
+            //buttonSemiCircle.FlatAppearance.BorderColor = buttonSelect.BackColor;
+            //buttonRectangle.BackColor = buttonSelect.BackColor;
+            //buttonRectangle.FlatAppearance.BorderColor = buttonSelect.BackColor;
+            //buttonEllipse.BackColor = buttonSelect.BackColor;
+            //buttonEllipse.FlatAppearance.BorderColor = buttonSelect.BackColor;
+            //buttonTriangle.BackColor = buttonSelect.BackColor;
+            //buttonTriangle.FlatAppearance.BorderColor = buttonSelect.BackColor;
+            //buttonNet.BackColor = buttonSelect.BackColor;
+            //buttonNet.FlatAppearance.BorderColor = buttonSelect.BackColor;
+            ////buttonFlood.BackColor = buttonSelect.BackColor;
+            ////buttonFlood.FlatAppearance.BorderColor = buttonSelect.BackColor;
+            //buttonStar.BackColor = buttonSelect.BackColor;
+            //buttonStar.FlatAppearance.BorderColor = buttonSelect.BackColor;
+            //buttonStarBurst.BackColor = buttonSelect.BackColor;
+            //buttonStarBurst.FlatAppearance.BorderColor = buttonSelect.BackColor;
+            //buttonMegaTree.BackColor = buttonSelect.BackColor;
+            //buttonMegaTree.FlatAppearance.BorderColor = buttonSelect.BackColor;
+            //buttonPixelGrid.BackColor = buttonSelect.BackColor;
+            //buttonPixelGrid.FlatAppearance.BorderColor = buttonSelect.BackColor;
+            //buttonIcicle.BackColor = buttonSelect.BackColor;
+            //buttonIcicle.FlatAppearance.BorderColor = buttonSelect.BackColor;
+            //buttonPolyLine.BackColor = buttonSelect.BackColor;
+            //buttonPolyLine.FlatAppearance.BorderColor = buttonSelect.BackColor;
+            //buttonMultiString.BackColor = buttonSelect.BackColor;
+            //buttonMultiString.FlatAppearance.BorderColor = buttonSelect.BackColor;
         }
 
 		private void toolbarButton_Click(object sender, EventArgs e) {
 			Button button = sender as Button;
-			reenableToolButtons();
+            //reenableToolButtons();
+
+            // There must be a way to iterate through an enum so we don't have to do all this crap...
+
 			// Select Button
             if (button == buttonSelect)
                 previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Select;
@@ -202,10 +237,11 @@ namespace VixenModules.Preview.VixenPreview {
             else if (button == buttonMultiString)
                 previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.MultiString;
             //button.Enabled = false;
-			button.BackColor = Color.Gainsboro;
-			button.FlatAppearance.BorderColor = Color.Gainsboro;
+			//button.BackColor = Color.Gainsboro;
+			//button.FlatAppearance.BorderColor = Color.Gainsboro;
 			//buttonSelect.Focus();
-		}
+            reenableToolButtons();
+        }
 
         private void toolbarAlignButton_Click(object sender, EventArgs e)
         {
@@ -334,7 +370,7 @@ namespace VixenModules.Preview.VixenPreview {
 				try {
 					// Read the entire template file (stoopid waste of resources, but how else?)
 					string xml = System.IO.File.ReadAllText(fileName);
-					DisplayItem newDisplayItem = (DisplayItem)PreviewTools.DeSerializeToObject(xml, typeof(DisplayItem));
+					DisplayItem newDisplayItem = (DisplayItem)PreviewTools.DeSerializeToDisplayItem(xml, typeof(DisplayItem));
 					TemplateComboBoxItem newTemplateItem = new TemplateComboBoxItem(newDisplayItem.Shape.Name, fileName);
 					comboBoxTemplates.Items.Add(newTemplateItem);
 				}

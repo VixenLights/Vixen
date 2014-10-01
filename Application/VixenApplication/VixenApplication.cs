@@ -108,7 +108,6 @@ namespace VixenApplication
 		{
 			System.Reflection.Assembly assembly = System.Reflection.Assembly.LoadFile(VixenSystem.AssemblyFileName);
 			Version version = assembly.GetName().Version;
-			string result = string.Format("{0}.{1}.{2}", version.Major, version.Minor, version.Build);
 
 			_devBuild = version.Major == 0;
 
@@ -116,6 +115,9 @@ namespace VixenApplication
 				labelVersion.Text = "DevBuild";
 			} else {
 				labelVersion.Text = string.Format("{0}.{1}", version.Major, version.Minor);
+				if (version.Revision > 0) {
+					labelVersion.Text += string.Format("u{0}", version.Revision);
+				}
 			}
 
 			labelDebugVersion.Text = string.Format("Build #{0}", version.Build);

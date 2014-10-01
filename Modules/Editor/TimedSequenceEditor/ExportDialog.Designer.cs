@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-			System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem("Test");
+			System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("Test");
 			this.startButton = new System.Windows.Forms.Button();
 			this.label3 = new System.Windows.Forms.Label();
 			this.outputFormatComboBox = new System.Windows.Forms.ComboBox();
@@ -41,12 +41,12 @@
 			this.currentTimeLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.stopButton = new System.Windows.Forms.Button();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
-			this.networkListView = new System.Windows.Forms.ListView();
+			this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+			this.textBox1 = new System.Windows.Forms.TextBox();
+			this.networkListView = new Common.Controls.ListViewEx();
 			this.controllerColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.channelsColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.mappingColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
-			this.textBox1 = new System.Windows.Forms.TextBox();
 			this.groupBox1.SuspendLayout();
 			this.statusStrip1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
@@ -165,20 +165,39 @@
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Network";
 			// 
+			// backgroundWorker1
+			// 
+			this.backgroundWorker1.WorkerReportsProgress = true;
+			this.backgroundWorker1.WorkerSupportsCancellation = true;
+			// 
+			// textBox1
+			// 
+			this.textBox1.BackColor = System.Drawing.SystemColors.Control;
+			this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			this.textBox1.Location = new System.Drawing.Point(14, 13);
+			this.textBox1.Multiline = true;
+			this.textBox1.Name = "textBox1";
+			this.textBox1.Size = new System.Drawing.Size(398, 37);
+			this.textBox1.TabIndex = 17;
+			this.textBox1.Text = "You must have all of your required display elements to controller outputs fully p" +
+    "atched in the Display Setup for the export to produce correct results..";
+			// 
 			// networkListView
 			// 
+			this.networkListView.AllowDrop = true;
+			this.networkListView.AllowRowReorder = true;
 			this.networkListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.controllerColumn,
             this.channelsColumn,
             this.mappingColumn});
 			this.networkListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-			listViewItem3.StateImageIndex = 0;
 			this.networkListView.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem3});
+            listViewItem1});
 			this.networkListView.Location = new System.Drawing.Point(6, 19);
+			this.networkListView.MultiSelect = false;
 			this.networkListView.Name = "networkListView";
-			this.networkListView.Size = new System.Drawing.Size(383, 181);
-			this.networkListView.TabIndex = 0;
+			this.networkListView.Size = new System.Drawing.Size(392, 185);
+			this.networkListView.TabIndex = 1;
 			this.networkListView.UseCompatibleStateImageBehavior = false;
 			this.networkListView.View = System.Windows.Forms.View.Details;
 			// 
@@ -196,23 +215,6 @@
 			// 
 			this.mappingColumn.Text = "Mapping";
 			this.mappingColumn.Width = 128;
-			// 
-			// backgroundWorker1
-			// 
-			this.backgroundWorker1.WorkerReportsProgress = true;
-			this.backgroundWorker1.WorkerSupportsCancellation = true;
-			// 
-			// textBox1
-			// 
-			this.textBox1.BackColor = System.Drawing.SystemColors.Control;
-			this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
-			this.textBox1.Location = new System.Drawing.Point(14, 13);
-			this.textBox1.Multiline = true;
-			this.textBox1.Name = "textBox1";
-			this.textBox1.Size = new System.Drawing.Size(398, 37);
-			this.textBox1.TabIndex = 17;
-			this.textBox1.Text = "You must have all of your required display elements to controller outputs fully p" +
-    "atched in the Display Setup for the export to produce correct results..";
 			// 
 			// ExportDialog
 			// 
@@ -252,12 +254,12 @@
         private System.Windows.Forms.ToolStripProgressBar exportProgressBar;
         private System.Windows.Forms.ToolStripStatusLabel currentTimeLabel;
 		private System.Windows.Forms.Button stopButton;
-        private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.ListView networkListView;
-        private System.Windows.Forms.ColumnHeader controllerColumn;
-        private System.Windows.Forms.ColumnHeader channelsColumn;
-        private System.Windows.Forms.ColumnHeader mappingColumn;
+		private System.Windows.Forms.GroupBox groupBox2;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.Windows.Forms.TextBox textBox1;
+		private Common.Controls.ListViewEx networkListView;
+		private System.Windows.Forms.ColumnHeader controllerColumn;
+		private System.Windows.Forms.ColumnHeader channelsColumn;
+		private System.Windows.Forms.ColumnHeader mappingColumn;
     }
 }

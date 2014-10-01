@@ -111,7 +111,7 @@ namespace VixenModules.App.ColorGradients
 				buttonUnlink.Enabled = item.IsLibraryReference;
 				buttonEditLibraryItem.Enabled = item.IsLibraryReference;
 
-				Text = "Curve Editor";
+				Text = @"Color Gradient Editor";
 			}
 
 			gradientEditPanel.Invalidate();

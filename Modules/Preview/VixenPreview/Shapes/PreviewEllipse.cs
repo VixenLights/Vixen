@@ -311,6 +311,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			_selectedPoint = _bottomRight;
 		}
 
+        public override void Select(bool selectDragPoints)
+        {
+            base.Select(selectDragPoints);
+            //connectStandardStrings = true;
+        }
+
 		public override void MoveTo(int x, int y)
 		{
 			int deltaX = x - TopLeft.X;

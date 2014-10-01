@@ -108,11 +108,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 			set
 			{
-				//int y = int.MaxValue;
-				//foreach (PreviewBaseShape shape in Strings)
-				//{
-				//    y = Math.Min(y, shape.Top);
-				//}
 				int delta = Top - value;
 				foreach (PreviewBaseShape shape in Strings) {
 					shape.Top -= delta;
@@ -194,16 +189,18 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public override void MouseMove(int x, int y, int changeX, int changeY)
 		{
+            PreviewPoint point = PointToZoomPoint(new PreviewPoint(x, y));
 			// See if we're resizing
 			if (_selectedPoint != null) {
-				_selectedPoint.X = x;
-				_selectedPoint.Y = y;
+				_selectedPoint.X = point.X;
+                _selectedPoint.Y = point.Y;
 
 				double aspect = ((double) startWidth + (double) changeX)/(double) startWidth;
-				Resize(aspect);
-				foreach (PreviewBaseShape shape in Strings) {
-					shape.ResizeFromOriginal(aspect);
-				}
+				//Resize(aspect);
+                foreach (PreviewBaseShape shape in Strings)
+                {
+                    shape.ResizeFromOriginal(aspect);
+                }
 				MoveTo(topLeftStart.X, topLeftStart.Y);
 			}
 				// If we get here, we're moving

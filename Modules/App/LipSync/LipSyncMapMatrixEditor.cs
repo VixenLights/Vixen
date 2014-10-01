@@ -95,23 +95,14 @@ namespace VixenModules.App.LipSyncApp
 
             LipSyncMapItem retVal = null;
 
-            int calcGridCols = CalcNumDataGridCols;
-            int calcGridRows = CalcNumDataGridRows;
+            int numGridCols = CalcNumDataGridCols;
+            int numGridRows = CalcNumDataGridRows;
             int calcIndex;
 
-            if (_newMapping.BottomRight == true)
-            {
-                calcIndex = (stringsAreRows) ?
-                    ((calcGridCols * row) + (calcGridCols - column)) + startMapIndex :
-                    ((calcGridRows * column) + (calcGridRows - row)) + startMapIndex;
-                calcIndex = (calcIndex == 0) ? calcIndex : calcIndex - 1;
-            }
-            else
-            {
-                calcIndex = (stringsAreRows) ?
-                    ((calcGridCols * row) + column) + startMapIndex :
-                    ((calcGridRows * column) + row) + startMapIndex;
-            }
+            calcIndex = (stringsAreRows) ?
+                ((numGridCols * (numGridRows - row)) + (numGridCols - column)) + startMapIndex :
+                ((numGridRows * column) + (numGridRows - row)) + startMapIndex;
+            calcIndex = (calcIndex == 0) ? calcIndex : calcIndex - 1;
 
             if ((calcIndex >= 0) && (calcIndex < _newMapping.MapItems.Count))
             {
@@ -391,8 +382,8 @@ namespace VixenModules.App.LipSyncApp
                 dgvCol.Width = CELL_BASE_WIDTH + (int)(ZOOM_STEP_DELTA * zoomSteps);
                 dgvCol.SortMode = DataGridViewColumnSortMode.NotSortable;
 
-                colIndexVal = (MapData.BottomRight) ? dataGridView1.Columns.Count - j - 1 : j;
-                dgvCol.HeaderCell.Value = (!stringsAreRows) ? (j * y).ToString() : colIndexVal.ToString();
+                colIndexVal = j;
+                dgvCol.HeaderCell.Value = colIndexVal.ToString();
             }
 
             DataGridViewRow dgvRow;
@@ -403,9 +394,9 @@ namespace VixenModules.App.LipSyncApp
                 dgvRow = dataGridView1.Rows[j];
                 dgvRow.Height = CELL_BASE_WIDTH + (int)(ZOOM_STEP_DELTA * zoomSteps);
 
-                rowIndexVal = (MapData.BottomRight) ? dataGridView1.Rows.Count - j - 1: j;
+                rowIndexVal = dataGridView1.Rows.Count - j - 1;
 
-                dgvRow.HeaderCell.Value = (stringsAreRows) ? (j * x).ToString() : rowIndexVal.ToString();
+                dgvRow.HeaderCell.Value = rowIndexVal.ToString();
             }
             doDataGridResize();
         }
@@ -561,7 +552,6 @@ namespace VixenModules.App.LipSyncApp
             nodeSelectDlg.MatrixOptionsOnly = true;
             nodeSelectDlg.StringsAreRows = _newMapping.StringsAreRows;
             nodeSelectDlg.NodeNames = _rowNames;
-            nodeSelectDlg.BottomRight = _newMapping.BottomRight;
 
             DialogResult dr = nodeSelectDlg.ShowDialog();
             if ((dr == DialogResult.OK) && (nodeSelectDlg.Changed == true))
@@ -605,7 +595,6 @@ namespace VixenModules.App.LipSyncApp
                 _newMapping.StartNode =
                     (_newMapping.MapItems.Count != 0) ? _newMapping.MapItems[0].Name : "";
 
-                _newMapping.BottomRight = nodeSelectDlg.BottomRight;
                 reconfigureDataTable();
             }
         }
