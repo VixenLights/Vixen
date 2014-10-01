@@ -144,7 +144,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         //    set { _strings = value; }
         //}
 
-        public bool Creating { get; set; }
         public bool CreateDefaultPixels { get; set; }
 
         public override int Top
@@ -311,49 +310,52 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			if (_points != null && _points.Count > 0)
 			{
                 double lineLength = LineLength;
+                int currentPixelNum = 0;
                 if (lineLength > 0)
                 {
-                    int currentPixelNum = 0;
-                    double tailLength = PixelSpacing;
+                    // Tracks the spacing between each of the pixels without worrying about the points.
+                    double currentEmptySpace = 0;
+                    // Length of the entire segment
                     for (int pointNum = 0; pointNum < _points.Count - 1; pointNum++)
                     {
-                        // Length of the entire segment
                         double thisFullLineLength = SegmentLength(pointNum);
-                        // Empty portion of the start of the line segment 
-                        double thisEmptyStartLength = PixelSpacing - tailLength;
-                        // Active length of the segment without the start
-                        double thisActiveLineLength = thisFullLineLength - thisEmptyStartLength;
-                        // Get the pixels in this line. No hangers on the end.
-                        double pixelSpacesInThisLine = Math.Truncate(thisActiveLineLength / PixelSpacing);
-                        double pixelsInThisLine = pixelSpacesInThisLine + 1;
-                        // Re-calcuate the active line length
-                        thisActiveLineLength = pixelSpacesInThisLine * PixelSpacing;
-                        // Calculate the empty tail
-                        tailLength = thisFullLineLength - thisEmptyStartLength - thisActiveLineLength;
-                        if (tailLength < 0) tailLength = 0;
-
-                        Point lineStartPoint = PreviewTools.CalculatePointOnLine(
-                                                new PreviewTools.Vector2(_points[pointNum].ToPoint()),
-                                                new PreviewTools.Vector2(_points[pointNum + 1].ToPoint()),
-                                                Convert.ToInt32(thisEmptyStartLength));
-
-                        Point lineEndPoint = PreviewTools.CalculatePointOnLine(
-                                                new PreviewTools.Vector2(_points[pointNum].ToPoint()),
-                                                new PreviewTools.Vector2(_points[pointNum + 1].ToPoint()),
-                                                Convert.ToInt32(thisEmptyStartLength + thisActiveLineLength));
-
-                        if (pixelSpacesInThisLine > 0)
+                        // First pixel is a special case
+                        if (currentEmptySpace + thisFullLineLength > PixelSpacing || pointNum == 0)
                         {
+                            double thisEmptyStartLength = PixelSpacing - currentEmptySpace;;
+                            if (pointNum == 0)
+                            {
+                                thisEmptyStartLength = 0;
+                            }
+                            // Active length of the segment without the start
+                            double thisActiveLineLength = thisFullLineLength - thisEmptyStartLength;
+                            // Get the pixels in this line. No hangers on the end.
+                            double pixelSpacesInThisLine = Math.Truncate(thisActiveLineLength / PixelSpacing);
+                            //if (pixelSpacesInThisLine < 0) pixelSpacesInThisLine = 0;
+                            double pixelsInThisLine = pixelSpacesInThisLine + 1;
+                            // Re-calcuate the active line length
+                            thisActiveLineLength = pixelSpacesInThisLine * PixelSpacing;
+                            
+                            currentEmptySpace = thisFullLineLength - thisEmptyStartLength - thisActiveLineLength;
+
+                            Point lineStartPoint = PreviewTools.CalculatePointOnLine(
+                                                    new PreviewTools.Vector2(_points[pointNum].ToPoint()),
+                                                    new PreviewTools.Vector2(_points[pointNum + 1].ToPoint()),
+                                                    Convert.ToInt32(thisEmptyStartLength));
+
+                            Point lineEndPoint = PreviewTools.CalculatePointOnLine(
+                                                    new PreviewTools.Vector2(_points[pointNum].ToPoint()),
+                                                    new PreviewTools.Vector2(_points[pointNum + 1].ToPoint()),
+                                                    Convert.ToInt32(thisEmptyStartLength + thisActiveLineLength));
+
                             double xSpacing = (double)(lineStartPoint.X - lineEndPoint.X) / (double)(pixelSpacesInThisLine);
                             double ySpacing = (double)(lineStartPoint.Y - lineEndPoint.Y) / (double)(pixelSpacesInThisLine);
                             double x = lineStartPoint.X;
                             double y = lineStartPoint.Y;
 
-                            //double slope = ySpacing / xSpacing;
-
                             for (int pixelNum = 0; pixelNum < pixelsInThisLine; pixelNum++)
                             {
-                                if (currentPixelNum < Pixels.Count-1)
+                                if (currentPixelNum < Pixels.Count - 1)
                                 {
                                     Pixels[currentPixelNum].X = Convert.ToInt32(x);
                                     Pixels[currentPixelNum].Y = Convert.ToInt32(y);
@@ -366,13 +368,18 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                             double a1 = _points[pointNum + 1].X - x;
                             double b1 = _points[pointNum + 1].Y - y;
                         }
+                        else
+                        {
+                            currentEmptySpace += thisFullLineLength;
+                        }
+
+                        // Finally, put the last dot on the line
+                        Pixels[PixelCount - 1].X = _points[_points.Count - 1].X;
+                        Pixels[PixelCount - 1].Y = _points[_points.Count - 1].Y;
                     }
-                    // We're on the last pixel... need to adjust for rounding
-                    Pixels[PixelCount-1].X = _points[_points.Count - 1].X;
-                    Pixels[PixelCount-1].Y = _points[_points.Count - 1].Y;
                 }
 
-				SetPixelZoom();
+                SetPixelZoom();
 			}
 		}
 
@@ -521,20 +528,22 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public override void Resize(double aspect)
 		{
-			_points[0].X = (int) (_points[0].X*aspect);
-			_points[0].Y = (int) (_points[0].Y*aspect);
-			_points[1].X = (int) (_points[1].X*aspect);
-			_points[1].Y = (int) (_points[1].Y*aspect);
-			Layout();
+            foreach (PreviewPoint point in _points)
+            {
+                point.X = Convert.ToInt32(Convert.ToDouble(point.X) * aspect);
+                point.Y = Convert.ToInt32(Convert.ToDouble(point.Y) * aspect);
+            } 
+            Layout();
 		}
 
 		public override void ResizeFromOriginal(double aspect)
 		{
-            //_points[0].X = p1Start.X;
-            //_points[0].Y = p1Start.Y;
-            //_points[1].X = p2Start.X;
-            //_points[1].Y = p2Start.Y;
-			Resize(aspect);
+            for (int pNum = 0; pNum < pStart.Count(); pNum++)
+            {
+                _points[pNum].X = pStart[pNum].X;
+                _points[pNum].Y = pStart[pNum].Y;
+            }
+            Resize(aspect);
 		}
 
         private void AssignStandardPixels() 

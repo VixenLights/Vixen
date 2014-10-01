@@ -29,6 +29,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
         private bool _doProgressUpdate;
         private const int RENDER_TIME_DELTA = 250;
         private string _sequenceFileName = "";
+        private string _audioFileName = "";
         private ExportNotifyType _currentState;
         private double _percentComplete = 0;
         private TimeSpan _curPos;
@@ -46,6 +47,18 @@ namespace VixenModules.Editor.TimedSequenceEditor
             _exportOps.SequenceNotify += SequenceNotify;
             
             _sequenceFileName = _sequence.FilePath;
+
+            IEnumerable<string> mediaFileNames =
+                (from media in _sequence.SequenceData.Media
+                 where media.GetType().ToString().Contains("Audio")
+                 where media.MediaFilePath.Length != 0
+                 select media.MediaFilePath);
+
+            _audioFileName = "";
+            if (mediaFileNames.Count() > 0)
+            {
+                _audioFileName = mediaFileNames.First();
+            }
 
             exportProgressBar.Visible = false;
             currentTimeLabel.Visible = false;
@@ -138,11 +151,29 @@ namespace VixenModules.Editor.TimedSequenceEditor
             resolutionComboBox.SelectedIndex = 1;
 
             stopButton.Enabled = false;
-            networkListView.Enabled = false;
+			networkListView.DragDrop += networkListView_DragDrop;
+            //networkListView.Enabled = false;
 
             UpdateNetworkList();
 
         }
+
+		void networkListView_DragDrop(object sender, DragEventArgs e)
+		{
+			
+			int startChan = 1;
+			int index = 0;
+			foreach (ListViewItem item in networkListView.Items)
+			{
+				var info = item.Tag as ControllerExportInfo;
+				if(info != null) info.Index = index;
+				int channels = Convert.ToInt32(item.SubItems[1].Text);  //.Add(info.Channels.ToString());
+				item.SubItems[2].Text = string.Format("Channels {0} to {1}", startChan, startChan + channels - 1);
+				startChan += channels;
+				index++;
+			}
+
+		}
 
         private void startButton_Click(object sender, EventArgs e)
         {
@@ -177,6 +208,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
             _exportOps.OutFileName = _outFileName;
             _exportOps.UpdateInterval = Convert.ToInt32(resolutionComboBox.Text);
             _exportOps.DoExport(_sequence, outputFormatComboBox.SelectedItem.ToString());
+            _exportOps.AudioFilename = _audioFileName;
 
 
             _doProgressUpdate = true;
@@ -223,7 +255,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
         private void UpdateNetworkList()
         {
-            List<ControllerExportInfo> exportInfo = _exportOps.ControllerExportData;
+            List<ControllerExportInfo> exportInfo = _exportOps.ControllerExportInfo;
 
             networkListView.Items.Clear();
             int startChan = 1;
@@ -231,6 +263,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
             foreach (ControllerExportInfo info in exportInfo)
             {
                 ListViewItem item = new ListViewItem(info.Name);
+	            item.Tag = info;
                 item.SubItems.Add(info.Channels.ToString());
                 item.SubItems.Add(string.Format("Channels {0} to {1}", startChan, startChan + info.Channels - 1));
 
@@ -267,7 +300,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
             string newStatus = "";
             startButton.Enabled = !isWorking;
             stopButton.Enabled = allowStop;
-			networkListView.Enabled = false;
             outputFormatComboBox.Enabled = !isWorking;
             resolutionComboBox.Enabled = !isWorking;
             _doProgressUpdate = isWorking;

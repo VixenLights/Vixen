@@ -64,6 +64,7 @@
 			this.numericUpDownRepeatElements = new System.Windows.Forms.NumericUpDown();
 			this.label1 = new System.Windows.Forms.Label();
 			this.checkBoxRGB = new System.Windows.Forms.CheckBox();
+			this.comboBoxColorOrder = new System.Windows.Forms.ComboBox();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownRepeatElements)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -140,7 +141,7 @@
 			// 
 			// RGBPixelColumn
 			// 
-			this.RGBPixelColumn.Text = "RGB Pixel";
+			this.RGBPixelColumn.Text = "Color Mixing";
 			// 
 			// buttonCancel
 			// 
@@ -251,13 +252,31 @@
 			// 
 			// checkBoxRGB
 			// 
+			this.checkBoxRGB.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.checkBoxRGB.AutoSize = true;
-			this.checkBoxRGB.Location = new System.Drawing.Point(567, 521);
+			this.checkBoxRGB.Location = new System.Drawing.Point(567, 516);
 			this.checkBoxRGB.Name = "checkBoxRGB";
 			this.checkBoxRGB.Size = new System.Drawing.Size(105, 21);
 			this.checkBoxRGB.TabIndex = 11;
-			this.checkBoxRGB.Text = "RGB Pixel";
+			this.checkBoxRGB.Text = "Color Mixing";
 			this.checkBoxRGB.CheckedChanged += new System.EventHandler(this.checkBoxRGB_CheckedChanged);
+			// 
+			// comboBoxColorOrder
+			// 
+			this.comboBoxColorOrder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.comboBoxColorOrder.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboBoxColorOrder.FormattingEnabled = true;
+			this.comboBoxColorOrder.Items.AddRange(new object[] {
+            "RGB",
+            "RBG",
+            "BRG",
+            "BGR",
+            "GRB",
+            "GBR"});
+			this.comboBoxColorOrder.Location = new System.Drawing.Point(650, 516);
+			this.comboBoxColorOrder.Name = "comboBoxColorOrder";
+			this.comboBoxColorOrder.Size = new System.Drawing.Size(75, 24);
+			this.comboBoxColorOrder.TabIndex = 12;
 			// 
 			// Vixen2xSequenceImporterChannelMapper
 			// 
@@ -267,6 +286,7 @@
 			this.CancelButton = this.buttonCancel;
 			this.ClientSize = new System.Drawing.Size(951, 552);
 			this.Controls.Add(this.checkBoxRGB);
+			this.Controls.Add(this.comboBoxColorOrder);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.numericUpDownRepeatElements);
 			this.Controls.Add(this.mappingNameTextBox);
@@ -307,5 +327,6 @@
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.ColumnHeader RGBPixelColumn;
 		private System.Windows.Forms.CheckBox checkBoxRGB;
+		private System.Windows.Forms.ComboBox comboBoxColorOrder;
 	}
 }

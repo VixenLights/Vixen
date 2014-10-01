@@ -236,9 +236,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			// Zoom
 			foreach (PreviewPixel pixel in _pixels)
 			{
-				pixel.X = Convert.ToInt32((Convert.ToDouble(pixel.X) * ZoomLevel));
-				pixel.Y = Convert.ToInt32((Convert.ToDouble(pixel.Y) * ZoomLevel));
-			}
+                try
+                {
+                    pixel.X = Convert.ToInt32((Convert.ToDouble(pixel.X) * ZoomLevel));
+                    pixel.Y = Convert.ToInt32((Convert.ToDouble(pixel.Y) * ZoomLevel));
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("SetPixelZoom: " + ex.Message);
+                }
+            }
 		}
 
 		public void SetPixelNode(int pixelNum, ElementNode node)
@@ -355,7 +362,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                     }
                     else
                     {
-                        pixelColor = Color.White;
+                        if (pixel.Node != null)
+                        {
+                            pixelColor = Color.Turquoise;
+                        }
+                        else
+                        {
+                            pixelColor = Color.White;
+                        }
                     }
                 }
                 pixel.Draw(fp, pixelColor);
@@ -494,6 +508,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public abstract void Resize(double aspect);
 
 		public abstract void ResizeFromOriginal(double aspect);
+
+        /// <summary>
+        /// This will be true if the shape is being created. Only used in multi-point placement objects
+        /// </summary>
+        public virtual bool Creating { get; set; }
 
 		public DisplayItemBaseControl GetSetupControl()
 		{

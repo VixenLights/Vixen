@@ -306,6 +306,7 @@
     <Compile Include="Sys\Managers\IOutputDeviceCollection.cs" />
     <Compile Include="Sys\Managers\IOutputDeviceExecution.cs" />
     <Compile Include="Sys\Managers\IOutputDeviceFacadeParticipant.cs" />
+    <Compile Include="Sys\Managers\OrderedDeviceDictionary.cs" />
     <Compile Include="Sys\Managers\OutputDeviceCollection.cs" />
     <Compile Include="Sys\Managers\OutputDeviceCollectionExecutionMediator.cs" />
     <Compile Include="Sys\Managers\OutputDeviceExecution.cs" />

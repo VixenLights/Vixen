@@ -23,7 +23,6 @@ namespace VixenModules.App.LipSyncApp
             StartNode = "";
             ZoomLevel = 1;
             StringsAreRows = false;
-            BottomRight = true;
         }
 
         public LipSyncMapData(List<string> stringNames)
@@ -40,7 +39,6 @@ namespace VixenModules.App.LipSyncApp
             StartNode = "";
             ZoomLevel = 1;
             StringsAreRows = false;
-            BottomRight = true;
         }
 
         public LipSyncMapData(LipSyncMapData data)
@@ -56,7 +54,6 @@ namespace VixenModules.App.LipSyncApp
             StartNode = data.StartNode;
             ZoomLevel = data.ZoomLevel;
             StringsAreRows = data.StringsAreRows;
-            BottomRight = data.BottomRight;
         }
 
         public override IModuleDataModel Clone()
@@ -77,7 +74,6 @@ namespace VixenModules.App.LipSyncApp
             newInstance.StartNode = StartNode;
             newInstance.ZoomLevel = ZoomLevel;
             newInstance.StringsAreRows = StringsAreRows;
-            newInstance.BottomRight = BottomRight;
 
             return newInstance;
         }
@@ -96,9 +92,6 @@ namespace VixenModules.App.LipSyncApp
 
         [DataMember]
         public string StartNode { get; set; }
-
-        [DataMember]
-        public bool BottomRight { get; set; }
 
         [DataMember]
         public int ZoomLevel { get; set; }

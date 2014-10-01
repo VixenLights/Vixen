@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Common.Controls;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -37,7 +38,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 {
                     //Console.WriteLine("Standard String");
                     PreviewPixel pixel = shape.Pixels[0];
-                    ;
                     //Console.WriteLine(shape.Pixels[0].Node.Name.ToString());
                     newString.Pixels.Add(pixel.Clone());
                 }
@@ -49,11 +49,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                         newString.Pixels.Add(pixel.Clone());
                     }
                 }
-                //If Image Type
-                else
-                {
-
-                }
 
                 newString.StringName = "String " + i.ToString();
                 _strings.Add(newString);
@@ -64,7 +59,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             if (_shapes[0].Parent != null)
             {
                 shapeType = _shapes[0].Parent.GetType().ToString();
-                if (shapeType.Contains("Icicle") || shapeType.Contains("MultiString") )
+                if ((shapeType.Contains("Icicle") && _shapes[0].StringType != PreviewBaseShape.StringTypes.Standard) || shapeType.Contains("MultiString") )
                 {
                     panelSetLightCount.Visible = true;
                 }
@@ -260,7 +255,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
         private void buttonOK_Click(object sender, EventArgs e)
         {
-            if (connectStandardStrings && _shapes[0].StringType == PreviewBaseShape.StringTypes.Standard)
+            if ((connectStandardStrings || _shapes.Count() == 1) && _shapes[0].StringType == PreviewBaseShape.StringTypes.Standard)
             {
                 PreviewBaseShape shape = _shapes[0];
                 for (int i = 0; i < _shapes.Count; i++)
@@ -390,6 +385,25 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                         elementString.Pixels.Add(pixel);
                     }
                 }
+                UpdateListLinkedElements();
+            }
+        }
+
+        private void reverseElementLinkingInThisStringToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ComboBoxItem comboBoxItem = comboStrings.SelectedItem as Common.Controls.ComboBoxItem;
+            if (comboBoxItem != null)
+            {
+                PreviewSetElementString elementString = comboBoxItem.Value as PreviewSetElementString;
+                if (elementString != null)
+                {
+                    elementString.Pixels.Reverse();
+                }
+                else
+                {
+                    Console.WriteLine("elementString==null");
+                }
+                numericUpDownLightCount.Value = elementString.Pixels.Count();
                 UpdateListLinkedElements();
             }
         }

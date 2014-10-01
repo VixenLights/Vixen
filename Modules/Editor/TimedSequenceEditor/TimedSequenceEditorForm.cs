@@ -225,11 +225,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolStripButton_SnapTo.Checked = toolStripMenuItem_SnapTo.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SnapToSelected", Name), true);
 			PopulateSnapStrength(xml.GetSetting(XMLProfileSettings.SettingType.AppSettings,	string.Format("{0}/SnapStrength", Name), 2));
 			toolStripMenuItem_ResizeIndicator.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ResizeIndicatorEnabled", Name),false);
-			TimelineControl.grid.ResizeIndicator_Color = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ResizeIndicatorColor", Name), "Red");
 			toolStripButton_DrawMode.Checked = TimelineControl.grid.EnableDrawMode = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/DrawModeSelected", Name), false);
 			toolStripButton_SelectionMode.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SelectionModeSelected", Name), true);
 			ToolsForm.LinkCurves = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolPaletteLinkCurves", Name), false);
 			ToolsForm.LinkGradients = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolPaletteLinkGradients", Name), false);
+
+			CheckRiColorMenuItem(xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ResizeIndicatorColor", Name), "Red"));
 
 			foreach (ToolStripItem toolStripItem in toolStripDropDownButton_SnapToStrength.DropDownItems)
 			{
@@ -1491,6 +1492,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (TimelineControl.SelectedElements.Count() > 1)
 				{
 					ToolStripMenuItem itemAlignment = new ToolStripMenuItem("Alignment");
+					//Disables the Alignment menu if too many effects are selected in a row.
+					itemAlignment.Enabled = TimelineControl.grid.OkToUseAlignmentHelper(TimelineControl.SelectedElements);
+					if (!itemAlignment.Enabled)
+					{
+						itemAlignment.ToolTipText = "Disabled, maximum selected effects per row is 4.";
+					}
+
 					ToolStripMenuItem itemAlignStart = new ToolStripMenuItem("Align Start Times (shift)");
 					itemAlignStart.ToolTipText = "Holding shift will align the start times, while holding duration.";
 					itemAlignStart.Click += (mySender, myE) => TimelineControl.grid.AlignElementStartTimes(TimelineControl.SelectedElements, element, ModifierKeys == Keys.Shift);
@@ -1663,32 +1671,47 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void toolStripMenuItem_ResizeIndicator_CheckStateChanged(object sender, EventArgs e)
 		{
-			TimelineControl.grid.ResizeIndicator_Enabled = (toolStripMenuItem_ResizeIndicator.Checked ? true : false);
+			TimelineControl.grid.ResizeIndicator_Enabled = toolStripMenuItem_ResizeIndicator.Checked;
 		}
 
+
+		private void CheckRiColorMenuItem(string color)
+		{
+			TimelineControl.grid.ResizeIndicator_Color = color;
+			toolStripMenuItem_RIColor_Blue.Checked = color == "Blue";
+			toolStripMenuItem_RIColor_Yellow.Checked = color == "Yellow";
+			toolStripMenuItem_RIColor_Green.Checked = color == "Green";
+			toolStripMenuItem_RIColor_White.Checked = color == "White";
+			toolStripMenuItem_RIColor_Red.Checked = color == "Red";
+		}
 		private void toolStripMenuItem_RIColor_Blue_Click(object sender, EventArgs e)
 		{
-			TimelineControl.grid.ResizeIndicator_Color = "Blue";
+			CheckRiColorMenuItem("Blue");
+			toolStripMenuItem_ResizeIndicator.Checked = true;
 		}
 
 		private void toolStripMenuItem_RIColor_Yellow_Click(object sender, EventArgs e)
 		{
-			TimelineControl.grid.ResizeIndicator_Color = "Yellow";
+			CheckRiColorMenuItem("Yellow");
+			toolStripMenuItem_ResizeIndicator.Checked = true;
 		}
 
 		private void toolStripMenuItem_RIColor_Green_Click(object sender, EventArgs e)
 		{
-			TimelineControl.grid.ResizeIndicator_Color = "Green";
+			CheckRiColorMenuItem("Green");
+			toolStripMenuItem_ResizeIndicator.Checked = true;
 		}
 
 		private void toolStripMenuItem_RIColor_White_Click(object sender, EventArgs e)
 		{
-			TimelineControl.grid.ResizeIndicator_Color = "White";
+			CheckRiColorMenuItem("White");
+			toolStripMenuItem_ResizeIndicator.Checked = true;
 		}
 
 		private void toolStripMenuItem_RIColor_Red_Click(object sender, EventArgs e)
 		{
-			TimelineControl.grid.ResizeIndicator_Color = "Red";
+			CheckRiColorMenuItem("Red");
+			toolStripMenuItem_ResizeIndicator.Checked = true;
 		}
 
 		private void toolStripButton_DragBoxFilter_CheckedChanged(object sender, EventArgs e)
@@ -1854,6 +1877,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void DistributeSelectedEffectsEqually()
 		{
+			if (!TimelineControl.grid.OkToUseAlignmentHelper(TimelineControl.SelectedElements))
+			{
+				MessageBox.Show(TimelineControl.grid.alignmentHelperWarning);
+				return;
+			}
+
 			//Before we do anything lets make sure there is time to work with
 			//I don't remember why I put this here, for now its commented out until its verified that its not needed, then it will be removed
 			//if (TimelineControl.SelectedElements.First().EndTime == TimelineControl.SelectedElements.Last().EndTime)
@@ -1917,6 +1946,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void DistributeSelectedEffects()
 		{
+			if (!TimelineControl.grid.OkToUseAlignmentHelper(TimelineControl.SelectedElements))
+			{
+				MessageBox.Show(TimelineControl.grid.alignmentHelperWarning);
+				return;
+			}
+
 			var startTime = TimelineControl.SelectedElements.First().StartTime;
 			var endTime = TimelineControl.SelectedElements.Last().EndTime;
 			if (startTime > endTime)
@@ -3173,7 +3208,24 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					else if (e.Control)
 						TimelineControl.Zoom(.8);
 					break;
-
+				case Keys.Z:
+					if (e.Control)
+					{
+						if (_undoMgr.NumUndoable > 0)
+						{
+							_undoMgr.Undo();	
+						}
+					}
+					break;
+				case Keys.Y:
+					if (e.Control)
+					{
+						if (_undoMgr.NumRedoable > 0)
+						{
+							_undoMgr.Redo();
+						}
+					}
+					break;
 				default:
 					break;
 			}
@@ -3260,6 +3312,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			ClipboardAddData(false);
 		}
 
+		/// <summary>
+		/// Pastes the clipboard data starting at the given time. If pasting to a SelectedRow, the time passed should be TimeSpan.Zero
+		/// </summary>
+		/// <param name="pasteTime"></param>
+		/// <returns></returns>
 		public int ClipboardPaste(TimeSpan pasteTime)
 		{
 			int result = 0;
@@ -3276,15 +3333,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			if (data == null)
 				return result;
-			TimeSpan offset = data.EarliestStartTime;
+			TimeSpan offset = pasteTime == TimeSpan.Zero ? TimeSpan.Zero : data.EarliestStartTime;
 			Row targetRow = TimelineControl.SelectedRow ?? TimelineControl.ActiveRow ?? TimelineControl.TopVisibleRow;
-			if (targetRow.Selected)
-			{
-				//Full row is selected, so paste as is from the beginning not the cursor position
-				pasteTime = TimeSpan.Zero;
-				//We don't need to offset, just place them where they start
-				offset = TimeSpan.Zero;
-			}
 			List<Row> visibleRows = new List<Row>(TimelineControl.VisibleRows);
 			int topTargetRoxIndex = visibleRows.IndexOf(targetRow);
 			List<EffectNode> nodesToAdd = new List<EffectNode>();
@@ -3312,7 +3362,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				newEffect.ModuleData = effectModelCandidate.GetEffectData();
 				
 				nodesToAdd.Add(CreateEffectNode(newEffect, visibleRows[targetRowIndex], targetTime, effectModelCandidate.Duration));
-
 				result++;
 			}
 
@@ -3447,7 +3496,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void toolStripMenuItem_Paste_Click(object sender, EventArgs e)
 		{
-			ClipboardPaste(TimelineControl.CursorPosition);
+			Row targetRow = TimelineControl.SelectedRow ?? TimelineControl.ActiveRow ?? TimelineControl.TopVisibleRow;
+			ClipboardPaste(targetRow.Selected ? TimeSpan.Zero : TimelineControl.CursorPosition);
 		}
 
 		private void toolStripMenuItem_deleteElements_Click(object sender, EventArgs e)

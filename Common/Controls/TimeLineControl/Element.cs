@@ -282,7 +282,7 @@ namespace Common.Controls.Timeline
 
 		#region Drawing
 
-		protected virtual void AddSelectionOverlayToCanvas(Graphics g, bool drawSelected, bool includeLeft, bool includeRight)
+		protected virtual void AddSelectionOverlayToCanvas(Graphics g, bool drawSelected, bool includeLeft, bool includeRight, bool redBorder)
 		{
 			// Width - bold if selected
 			int borderWidth = drawSelected ? 3 : 1;
@@ -294,7 +294,7 @@ namespace Common.Controls.Timeline
 				);
 
 			// Draw it!
-			using (Pen border = new Pen(BorderColor,borderWidth))
+			using (Pen border = new Pen(redBorder ? Color.Red : BorderColor,borderWidth))
 			{	
 				g.DrawLine(border, borderRectangle.Left, borderRectangle.Top, borderRectangle.Right, borderRectangle.Top);
 				g.DrawLine(border, borderRectangle.Left, borderRectangle.Bottom, borderRectangle.Right, borderRectangle.Bottom);
@@ -311,7 +311,7 @@ namespace Common.Controls.Timeline
 			}
 		}
 
-		protected virtual void DrawCanvasContent(Graphics graphics, TimeSpan startTime, TimeSpan endTime, int overallWidth)
+		protected virtual void DrawCanvasContent(Graphics graphics, TimeSpan startTime, TimeSpan endTime, int overallWidth, bool redBorder)
 		{
 		}
 
@@ -329,7 +329,7 @@ namespace Common.Controls.Timeline
 			}
 		}
 
-		protected Bitmap DrawImage(Size imageSize, TimeSpan startTime, TimeSpan endTime, int overallWidth)
+		protected Bitmap DrawImage(Size imageSize, TimeSpan startTime, TimeSpan endTime, int overallWidth, bool redBorder)
 		{
 			TimeSpan visibleStartOffset;
 			TimeSpan visibleEndOffset;
@@ -365,8 +365,8 @@ namespace Common.Controls.Timeline
 				_cachedImage = new Bitmap(imageSize.Width, imageSize.Height);
 				using (Graphics g = Graphics.FromImage(_cachedImage))
 				{
-					DrawCanvasContent(g, visibleStartOffset, visibleEndOffset, overallWidth);
-					AddSelectionOverlayToCanvas(g, _selected, startTime <= StartTime, endTime >= EndTime);
+					DrawCanvasContent(g, visibleStartOffset, visibleEndOffset, overallWidth, redBorder);
+					AddSelectionOverlayToCanvas(g, _selected, startTime <= StartTime, endTime >= EndTime, redBorder);
 				}
 				_elementVisibleStartTime = visibleStartOffset;
 				_elementVisibleEndTime = visibleEndOffset;
@@ -375,7 +375,7 @@ namespace Common.Controls.Timeline
 			return _cachedImage;
 		}
 
-		public Bitmap DrawPlaceholder(Size imageSize)
+		public Bitmap DrawPlaceholder(Size imageSize, bool redBorder)
 		{
 			Bitmap result = new Bitmap(imageSize.Width, imageSize.Height);
 			using (Graphics g = Graphics.FromImage(result))
@@ -387,7 +387,7 @@ namespace Common.Controls.Timeline
 										  (int)g.VisibleClipBounds.Width, (int)g.VisibleClipBounds.Height));	
 				}
 
-				AddSelectionOverlayToCanvas(g, _selected, true, true);
+				AddSelectionOverlayToCanvas(g, _selected, true, true, redBorder);
 			}
 			
 			return result;
@@ -437,10 +437,10 @@ namespace Common.Controls.Timeline
 			}
 		}
 
-		public Bitmap Draw(Size imageSize, Graphics g, TimeSpan visibleStartTime, TimeSpan visibleEndTime, int overallWidth)
+		public Bitmap Draw(Size imageSize, Graphics g, TimeSpan visibleStartTime, TimeSpan visibleEndTime, int overallWidth, bool redBorder)
 		{
 
-			return IsRendered ? DrawImage(imageSize, visibleStartTime, visibleEndTime, overallWidth) : DrawPlaceholder(imageSize);
+			return IsRendered ? DrawImage(imageSize, visibleStartTime, visibleEndTime, overallWidth, redBorder) : DrawPlaceholder(imageSize, redBorder);
 		
 		}
 
