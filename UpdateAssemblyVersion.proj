@@ -6,9 +6,11 @@
         <MajorVersion>0</MajorVersion>
         <MinorVersion>0</MinorVersion>
         <BuildVersion>0</BuildVersion>
+        <PatchVersion>0</PatchVersion>
         <MajorFile>$(MSBuildProjectDirectory)\major.txt</MajorFile>
         <MinorFile>$(MSBuildProjectDirectory)\minor.txt</MinorFile>
         <BuildFile>$(MSBuildProjectDirectory)\build.txt</BuildFile>
+        <PatchFile>$(MSBuildProjectDirectory)\patch.txt</PatchFile>
     </PropertyGroup>
 
     <Target Name="UpdateAssemblyVersion">
@@ -25,10 +27,14 @@
 			<Output TaskParameter="Lines" PropertyName="BuildVersion" />
 		</ReadLinesFromFile>
 
+		<ReadLinesFromFile File="$(PatchFile)" Condition="Exists('$(PatchFile)')">
+			<Output TaskParameter="Lines" PropertyName="PatchVersion" />
+		</ReadLinesFromFile>
+
 		<ItemGroup>
 			<RegexTransform Include="$(SolutionRoot)\Application\VixenApplication\Properties\AssemblyInfo.cs; $(SolutionRoot)\Vixen.System\Properties\AssemblyInfo.cs">
-				<Find>(?&lt;major&gt;\d+)\.(?&lt;minor&gt;\d+)\.(?&lt;build&gt;\d+)\.(?&lt;revision&gt;\d+)</Find>
-				<ReplaceWith>$(MajorVersion).$(MinorVersion).$(BuildVersion).0</ReplaceWith>
+				<Find>(?&lt;major&gt;([a-z]|\d)+)\.(?&lt;minor&gt;([a-z]|\d)+)\.(?&lt;build&gt;([a-z]|\d)+)\.(?&lt;revision&gt;([a-z]|\d)+)</Find>
+				<ReplaceWith>$(MajorVersion).$(MinorVersion).$(BuildVersion).$(PatchVersion)</ReplaceWith>
 			</RegexTransform>
 		</ItemGroup>
 

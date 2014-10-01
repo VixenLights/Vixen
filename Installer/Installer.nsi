@@ -109,6 +109,7 @@ VIAddVersionKey "FileVersion" "${AssemblyVersion_1}.${AssemblyVersion_2}.${Assem
 !define MAJORVERSION ${AssemblyVersion_1}
 !define MINORVERSION ${AssemblyVersion_2}
 !define BUILDNUMBER ${AssemblyVersion_3}
+!define PATCHNUMBER ${AssemblyVersion_4}
 
 !define PRODUCT_NAME "Vixen"
 
@@ -119,9 +120,14 @@ VIAddVersionKey "FileVersion" "${AssemblyVersion_1}.${AssemblyVersion_2}.${Assem
 	InstallDir "${PROG_FILES}\Vixen Development Build"
 !else
 	!define PRODUCT_NAME_FULL "Vixen"
-	Name "${PRODUCT_NAME} ${MAJORVERSION}.${MINORVERSION} (${BITS_READABLE})"
-	OutFile ".\${PRODUCT_NAME}-${MAJORVERSION}.${MINORVERSION}-Setup-${BITS}bit.exe"
 	InstallDir "${PROG_FILES}\Vixen"
+	!if ${AssemblyVersion_1} == 0
+		Name "${PRODUCT_NAME} ${MAJORVERSION}.${MINORVERSION} (${BITS_READABLE})"
+		OutFile ".\${PRODUCT_NAME}-${MAJORVERSION}.${MINORVERSION}-Setup-${BITS}bit.exe"
+	!else
+		Name "${PRODUCT_NAME} ${MAJORVERSION}.${MINORVERSION} (update ${PATCHNUMBER}) (${BITS_READABLE})"
+		OutFile ".\${PRODUCT_NAME}-${MAJORVERSION}.${MINORVERSION}.${PATCHNUMBER}-Setup-${BITS}bit.exe"
+	!endif
 !endif
 
 
@@ -135,7 +141,7 @@ VIAddVersionKey "FileVersion" "${AssemblyVersion_1}.${AssemblyVersion_2}.${Assem
 
 
 ; HM NIS Edit Wizard helper defines
-!define PRODUCT_VERSION "${AssemblyVersion_1}.${AssemblyVersion_2}.${AssemblyVersion_3}"
+!define PRODUCT_VERSION "${AssemblyVersion_1}.${AssemblyVersion_2}.${AssemblyVersion_3}.${AssemblyVersion_4}"
 !define PRODUCT_PUBLISHER "Vixen - Lighting Automation"
 !define PRODUCT_WEB_SITE "http://www.vixenlights.com/"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\VixenApplication.exe"
