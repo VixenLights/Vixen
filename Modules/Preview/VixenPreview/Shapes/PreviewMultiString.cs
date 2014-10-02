@@ -98,7 +98,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         {
             get
             {
-                Console.WriteLine("GetStringType");
                 base.StringType = StringTypes.Pixel;
                 return StringTypes.Pixel;
             }
@@ -126,10 +125,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 Layout();
             }
         }
-
-
-        [Browsable(false)]
-        public bool Creating { get; set; }
 
         [Browsable(false)]
         public override int Right
@@ -467,10 +462,15 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
         public override void Resize(double aspect)
         {
-            _points[0].X = (int)(_points[0].X * aspect);
-            _points[0].Y = (int)(_points[0].Y * aspect);
-            _points[1].X = (int)(_points[1].X * aspect);
-            _points[1].Y = (int)(_points[1].Y * aspect);
+            //_points[0].X = (int)(_points[0].X * aspect);
+            //_points[0].Y = (int)(_points[0].Y * aspect);
+            //_points[1].X = (int)(_points[1].X * aspect);
+            //_points[1].Y = (int)(_points[1].Y * aspect);
+            foreach (PreviewPoint point in _points)
+            {
+                point.X = Convert.ToInt32(Convert.ToDouble(point.X) * aspect);
+                point.Y = Convert.ToInt32(Convert.ToDouble(point.Y) * aspect);
+            }
             Layout();
         }
 
@@ -480,6 +480,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             //_points[0].Y = p1Start.Y;
             //_points[1].X = p2Start.X;
             //_points[1].Y = p2Start.Y;
+            for (int pNum = 0; pNum < pStart.Count(); pNum++) 
+            {
+                _points[pNum].X = pStart[pNum].X;
+                _points[pNum].Y = pStart[pNum].Y;
+            }
             Resize(aspect);
         }
     }

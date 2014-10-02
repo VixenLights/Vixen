@@ -35,7 +35,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private bool ElementTimeHasChangedSinceDraw { get; set; }
 
-		protected override void DrawCanvasContent(Graphics g, TimeSpan startTime, TimeSpan endTime, int overallWidth)
+		protected override void DrawCanvasContent(Graphics g, TimeSpan startTime, TimeSpan endTime, int overallWidth, bool redBorder)
 		{
 			EffectRasterizer.Rasterize(this, g, startTime, endTime, overallWidth);
 			ElementTimeHasChangedSinceDraw = false;			

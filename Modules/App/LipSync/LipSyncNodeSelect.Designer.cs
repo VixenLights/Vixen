@@ -40,7 +40,6 @@
             this.allowGroupsCheckbox = new System.Windows.Forms.CheckBox();
             this.rowsRadioButton = new System.Windows.Forms.RadioButton();
             this.stringsGroupBox = new System.Windows.Forms.GroupBox();
-            this.bottomRightCheckBox = new System.Windows.Forms.CheckBox();
             this.colsRadioButton = new System.Windows.Forms.RadioButton();
             this.stringsGroupBox.SuspendLayout();
             this.SuspendLayout();
@@ -54,7 +53,6 @@
             this.okButton.TabIndex = 0;
             this.okButton.Text = "OK";
             this.okButton.UseVisualStyleBackColor = true;
-            this.okButton.Click += new System.EventHandler(this.okButton_Click);
             // 
             // cancelButton
             // 
@@ -150,46 +148,31 @@
             this.rowsRadioButton.AutoSize = true;
             this.rowsRadioButton.Location = new System.Drawing.Point(13, 19);
             this.rowsRadioButton.Name = "rowsRadioButton";
-            this.rowsRadioButton.Size = new System.Drawing.Size(52, 17);
+            this.rowsRadioButton.Size = new System.Drawing.Size(72, 17);
             this.rowsRadioButton.TabIndex = 9;
-            this.rowsRadioButton.Text = "Rows";
+            this.rowsRadioButton.Text = "Horizontal";
             this.rowsRadioButton.UseVisualStyleBackColor = true;
-            this.rowsRadioButton.CheckedChanged += new System.EventHandler(this.rowsRadioButton_CheckedChanged);
             // 
             // stringsGroupBox
             // 
-            this.stringsGroupBox.Controls.Add(this.bottomRightCheckBox);
             this.stringsGroupBox.Controls.Add(this.colsRadioButton);
             this.stringsGroupBox.Controls.Add(this.rowsRadioButton);
             this.stringsGroupBox.Location = new System.Drawing.Point(205, 121);
             this.stringsGroupBox.Name = "stringsGroupBox";
-            this.stringsGroupBox.Size = new System.Drawing.Size(116, 86);
+            this.stringsGroupBox.Size = new System.Drawing.Size(116, 75);
             this.stringsGroupBox.TabIndex = 10;
             this.stringsGroupBox.TabStop = false;
             this.stringsGroupBox.Text = "Strings are";
-            // 
-            // bottomRightCheckBox
-            // 
-            this.bottomRightCheckBox.AutoSize = true;
-            this.bottomRightCheckBox.Checked = true;
-            this.bottomRightCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.bottomRightCheckBox.Location = new System.Drawing.Point(13, 65);
-            this.bottomRightCheckBox.Name = "bottomRightCheckBox";
-            this.bottomRightCheckBox.Size = new System.Drawing.Size(93, 17);
-            this.bottomRightCheckBox.TabIndex = 12;
-            this.bottomRightCheckBox.Text = "Bottom to Top";
-            this.bottomRightCheckBox.UseVisualStyleBackColor = true;
             // 
             // colsRadioButton
             // 
             this.colsRadioButton.AutoSize = true;
             this.colsRadioButton.Location = new System.Drawing.Point(13, 42);
             this.colsRadioButton.Name = "colsRadioButton";
-            this.colsRadioButton.Size = new System.Drawing.Size(45, 17);
+            this.colsRadioButton.Size = new System.Drawing.Size(60, 17);
             this.colsRadioButton.TabIndex = 11;
-            this.colsRadioButton.Text = "Cols";
+            this.colsRadioButton.Text = "Vertical";
             this.colsRadioButton.UseVisualStyleBackColor = true;
-            this.colsRadioButton.CheckedChanged += new System.EventHandler(this.colsRadioButton_CheckedChanged);
             // 
             // LipSyncNodeSelect
             // 
@@ -210,6 +193,7 @@
             this.Controls.Add(this.okButton);
             this.Name = "LipSyncNodeSelect";
             this.Text = "LipSyncNodeSelect";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.LipSyncNodeSelect_FormClosing);
             this.Load += new System.EventHandler(this.LipSyncNodeSelect_Load);
             this.stringsGroupBox.ResumeLayout(false);
             this.stringsGroupBox.PerformLayout();
@@ -232,6 +216,5 @@
         private System.Windows.Forms.RadioButton rowsRadioButton;
         private System.Windows.Forms.GroupBox stringsGroupBox;
         private System.Windows.Forms.RadioButton colsRadioButton;
-        private System.Windows.Forms.CheckBox bottomRightCheckBox;
     }
 }

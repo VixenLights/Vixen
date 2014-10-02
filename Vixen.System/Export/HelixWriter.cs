@@ -21,7 +21,7 @@ namespace Vixen.Export
         private int _curPeriod;
         SequenceSessionData _sessionData;
         private FileStream _outfs = null;
-
+        private int _adder;
 
         public int SeqPeriodTime { get; set; }
         
@@ -56,18 +56,25 @@ namespace Vixen.Export
 
             _xmlData.EventPeriodInMilliseconds = _sessionData.PeriodMS.ToString();
 
-            _periodData = new Byte[sessionData.ChannelNames.Count * _sessionData.NumPeriods];
+            _adder = 0;
+            if (_sessionData.TimeMS % _sessionData.PeriodMS != 0)
+            {
+                _adder = 1;
+            }
+
+            _periodData = new Byte[sessionData.ChannelNames.Count * (_sessionData.NumPeriods + _adder)];
 
             _xmlData.MinimumLevel = "0";
             _xmlData.MaximumLevel = "255";
             _xmlData.AudioDevice = "-1";
             _xmlData.AudioVolume = "0";
+            
 
         }
 
         public void WriteNextPeriodData(List<Byte> periodData)
         {
-            int numPeriods =  _sessionData.NumPeriods;
+            int numPeriods =  _sessionData.NumPeriods + _adder;
 
             for (int j = 0; j < periodData.Count; j++)
             {
@@ -97,7 +104,6 @@ namespace Vixen.Export
  
             foreach (string channelName in _sessionData.ChannelNames)
             {
-                count++;
                 tempChannel = new Vix2Channel() 
                 { 
                     name = channelName, 
@@ -106,10 +112,18 @@ namespace Vixen.Export
                     enabled = true, 
                     color = -1
                 };
+                count++;
                 _xmlData.Channels.Add(tempChannel);
             }
 
-            
+            if (_sessionData.AudioFileName.Length > 0)
+            {
+                _xmlData.Audio = new Vix2Audio();
+                _xmlData.Audio.filename = Path.GetFileName(_sessionData.AudioFileName);
+                _xmlData.Audio.duration = _sessionData.PeriodMS.ToString();
+                _xmlData.Audio.Value = _xmlData.Audio.filename;
+            }
+
             XmlSerializer serializer = new XmlSerializer(typeof(Vix2XMLData));
             serializer.Serialize(writer, _xmlData, n);
             

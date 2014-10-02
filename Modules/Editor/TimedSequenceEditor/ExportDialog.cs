@@ -29,6 +29,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
         private bool _doProgressUpdate;
         private const int RENDER_TIME_DELTA = 250;
         private string _sequenceFileName = "";
+        private string _audioFileName = "";
         private ExportNotifyType _currentState;
         private double _percentComplete = 0;
         private TimeSpan _curPos;
@@ -46,6 +47,18 @@ namespace VixenModules.Editor.TimedSequenceEditor
             _exportOps.SequenceNotify += SequenceNotify;
             
             _sequenceFileName = _sequence.FilePath;
+
+            IEnumerable<string> mediaFileNames =
+                (from media in _sequence.SequenceData.Media
+                 where media.GetType().ToString().Contains("Audio")
+                 where media.MediaFilePath.Length != 0
+                 select media.MediaFilePath);
+
+            _audioFileName = "";
+            if (mediaFileNames.Count() > 0)
+            {
+                _audioFileName = mediaFileNames.First();
+            }
 
             exportProgressBar.Visible = false;
             currentTimeLabel.Visible = false;
@@ -195,6 +208,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
             _exportOps.OutFileName = _outFileName;
             _exportOps.UpdateInterval = Convert.ToInt32(resolutionComboBox.Text);
             _exportOps.DoExport(_sequence, outputFormatComboBox.SelectedItem.ToString());
+            _exportOps.AudioFilename = _audioFileName;
 
 
             _doProgressUpdate = true;

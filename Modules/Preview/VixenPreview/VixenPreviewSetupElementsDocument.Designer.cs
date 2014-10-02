@@ -28,8 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(VixenPreviewSetupElementsDocument));
             this.treeElements = new Common.Controls.MultiSelectTreeview();
+            this.imageListStatus = new System.Windows.Forms.ImageList(this.components);
             this.SuspendLayout();
             // 
             // treeElements
@@ -56,9 +58,17 @@
             this.treeElements.DragOver += new System.Windows.Forms.DragEventHandler(this.treeElements_DragOver);
             this.treeElements.MouseClick += new System.Windows.Forms.MouseEventHandler(this.treeElements_MouseClick);
             // 
+            // imageListStatus
+            // 
+            this.imageListStatus.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListStatus.ImageStream")));
+            this.imageListStatus.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageListStatus.Images.SetKeyName(0, "bullet_green.png");
+            this.imageListStatus.Images.SetKeyName(1, "bullet_white.png");
+            this.imageListStatus.Images.SetKeyName(2, "bullet_yellow.png");
+            // 
             // VixenPreviewSetupElementsDocument
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(13F, 26F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(227, 382);
             this.CloseButton = false;
@@ -76,5 +86,6 @@
         #endregion
 
         private Common.Controls.MultiSelectTreeview treeElements;
+        private System.Windows.Forms.ImageList imageListStatus;
     }
 }

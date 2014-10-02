@@ -49,6 +49,7 @@ namespace Common.Controls.Timeline
 		public bool isCurveDrop { get; set; }
 		public bool isGradientDrop { get; set; }
 		private MouseButtons MouseButtonDown;
+		public string alignmentHelperWarning = @"Too many effects selected on the same row for this action.\nMax selected effects per row for this action is 4";
 
 		#region Initialization
 
@@ -633,6 +634,18 @@ namespace Common.Controls.Timeline
 			return rv;
 		}
 
+		//Determines if the count of selected elements per row is an acecptable level for use by the alignment helpers
+		public bool OkToUseAlignmentHelper(IEnumerable<Element> elements)
+		{
+
+			foreach (Element elem in elements)
+			{
+				if (elem.Row.SelectedElements.Count() > 4)
+					return false;
+			}
+			return true;
+		}
+
 		/// <summary>
 		/// Aligns the elements start times to the reference element as a single atomic operation
 		/// </summary>
@@ -641,6 +654,12 @@ namespace Common.Controls.Timeline
 		/// <param name="holdDuration">Lock the durations</param>
 		public void AlignElementStartTimes(IEnumerable<Element> elements, Element referenceElement, bool holdDuration)
 		{
+			if (!OkToUseAlignmentHelper(elements))
+			{
+				MessageBox.Show(alignmentHelperWarning);
+				return;
+			}
+
 			var elementsToAlign = new Dictionary<Element, Tuple<TimeSpan, TimeSpan>>();
 			foreach (Element selectedElement in elements)
 			{
@@ -668,6 +687,12 @@ namespace Common.Controls.Timeline
 		/// <param name="holdDuration">Lock the durations</param>
 		public void AlignElementEndTimes(IEnumerable<Element> elements, Element referenceElement, bool holdDuration)
 		{
+			if (!OkToUseAlignmentHelper(elements))
+			{
+				MessageBox.Show(alignmentHelperWarning);
+				return;
+			}
+
 			var elementsToAlign = new Dictionary<Element, Tuple<TimeSpan, TimeSpan>>();
 			foreach (Element selectedElement in elements)
 			{
@@ -695,6 +720,12 @@ namespace Common.Controls.Timeline
 		/// <param name="holdEndTime">Lock the end times and extend the start time</param>
 		public void AlignElementDurations(IEnumerable<Element> elements, Element referenceElement, bool holdEndTime)
 		{
+			if (!OkToUseAlignmentHelper(elements))
+			{
+				MessageBox.Show(alignmentHelperWarning);
+				return;
+			}
+
 			var elementsToAlign = new Dictionary<Element, Tuple<TimeSpan, TimeSpan>>();
 			foreach (Element selectedElement in elements)
 			{
@@ -715,6 +746,12 @@ namespace Common.Controls.Timeline
 		/// <param name="referenceElement">The element to use for the start time reference</param>
 		public void AlignElementStartEndTimes(IEnumerable<Element> elements, Element referenceElement)
 		{
+			if (!OkToUseAlignmentHelper(elements))
+			{
+				MessageBox.Show(alignmentHelperWarning);
+				return;
+			}
+
 			var elementsToAlign = new Dictionary<Element, Tuple<TimeSpan, TimeSpan>>();
 			foreach (Element selectedElement in elements)
 			{
@@ -732,6 +769,12 @@ namespace Common.Controls.Timeline
 		/// <param name="referenceElement"></param>
 		public void AlignElementStartToEndTimes(IEnumerable<Element> elements, Element referenceElement)
 		{
+			if (!OkToUseAlignmentHelper(elements))
+			{
+				MessageBox.Show(alignmentHelperWarning);
+				return;
+			}
+
 			var elementsToAlign = new Dictionary<Element, Tuple<TimeSpan, TimeSpan>>();
 			foreach (Element selectedElement in elements)
 			{
@@ -756,6 +799,12 @@ namespace Common.Controls.Timeline
 		/// <param name="referenceElement"></param>
 		public void AlignElementEndToStartTime(IEnumerable<Element> elements, Element referenceElement)
 		{
+			if (!OkToUseAlignmentHelper(elements))
+			{
+				MessageBox.Show(alignmentHelperWarning);
+				return;
+			}
+
 			var elementsToAlign = new Dictionary<Element, Tuple<TimeSpan, TimeSpan>>();
 			foreach (Element selectedElement in elements)
 			{
@@ -784,6 +833,12 @@ namespace Common.Controls.Timeline
 		/// <param name="referenceElement"></param>
 		public void AlignElementCenters(IEnumerable<Element> elements, Element referenceElement)
 		{
+			if (!OkToUseAlignmentHelper(elements))
+			{
+				MessageBox.Show(alignmentHelperWarning);
+				return;
+			}
+
 			var centerPoint = referenceElement.StartTime.TotalSeconds + (referenceElement.Duration.TotalSeconds / 2);
 			var elementsToAlign = new Dictionary<Element, Tuple<TimeSpan, TimeSpan>>();
 			foreach (Element selectedElement in elements)
@@ -1970,6 +2025,17 @@ namespace Common.Controls.Timeline
 			currentElement.DisplayTop = top + (currentElement.DisplayHeight * currentElement.StackIndex);
 			currentElement.RowTopOffset = currentElement.DisplayHeight * currentElement.StackIndex;
 			int width;
+			bool redBorder = false;
+
+			//Sanity check - it is possible for .DisplayHeight to become zero if there are too many effects stacked.
+			//We set the DisplayHeight to the row height for the currentElement, and change the border to red.
+
+			if (currentElement.DisplayHeight == 0)
+			{
+				redBorder = true;
+				currentElement.DisplayHeight = currentElement.Row.Height;
+			}
+
 			if (currentElement.StartTime >= VisibleTimeStart)
 			{
 				if (currentElement.EndTime < VisibleTimeEnd)
@@ -1994,7 +2060,7 @@ namespace Common.Controls.Timeline
 			if (width <= 0) return;
 			Size size = new Size(width, currentElement.DisplayHeight);
 
-			Bitmap elementImage = currentElement.Draw(size, g, VisibleTimeStart, VisibleTimeEnd, (int)timeToPixels(currentElement.Duration)); 
+			Bitmap elementImage = currentElement.Draw(size, g, VisibleTimeStart, VisibleTimeEnd, (int)timeToPixels(currentElement.Duration),redBorder); 
 			
 			Point finalDrawLocation = new Point((int)Math.Floor(timeToPixels(currentElement.StartTime>VisibleTimeStart?currentElement.StartTime:VisibleTimeStart)), currentElement.DisplayTop);
 			

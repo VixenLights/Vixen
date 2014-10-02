@@ -21,12 +21,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         private Boolean creating = false;
         const int InitialStringSpacing = 10;
         const int InitialLightsPerString = 10;
+        private ElementNode initialNode;
         //const int InitialStringLength = 20;
 
 		public PreviewIcicle(PreviewPoint point1, PreviewPoint point2, ElementNode selectedNode, double zoomLevel)
 		{
             // If we are creating this fresh, we need to know so we can add strings, etc. as drawn.
             creating = true;
+            initialNode = selectedNode;
 
 			ZoomLevel = zoomLevel;
 			AddPoint(PointToZoomPoint(point1));
@@ -49,24 +51,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				} else
                 {
 					StringType = StringTypes.Standard;
-                    //// Just add the pixels, they will get layed out next
-                    //for (int lightNum = 0; lightNum < lightCount; lightNum++) {
-                    //    PreviewPixel pixel = AddPixel(10, 10);
-                    //    pixel.PixelColor = Color.White;
-                    //    if (selectedNode.IsLeaf)
-                    //        pixel.Node = selectedNode;
-                    //}
 				}
 			}
-            //else {
-            //    // Just add the pixels, they will get layed out next
-            //    for (int lightNum = 0; lightNum < lightCount; lightNum++) {
-            //        //Console.WriteLine("Added: " + lightNum.ToString());
-            //        PreviewPixel pixel = AddPixel(10, 10);
-            //        pixel.PixelColor = Color.White;
-            //    }
-            //}
-			// Lay out the pixels
 			Layout();
 		}
 
@@ -146,6 +132,22 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                     PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(10, 10), InitialLightsPerString, null, ZoomLevel);
                     line.Parent = this;
                     _strings.Add(line);
+                    if (StringType == StringTypes.Standard)
+                    {
+                        foreach (PreviewLine standardString in _strings)
+                        {
+                            if (creating)
+                            {
+                                _strings[0].Pixels[0].Node = initialNode;
+                            }
+                            standardString.connectStandardStrings = true;
+                            standardString.StringType = StringTypes.Standard;
+                            foreach (PreviewPixel pixel in standardString.Pixels)
+                            {
+                                pixel.Node = _strings[0].Pixels[0].Node;
+                            }
+                        }
+                    }
                 }
                 Layout();
             }
@@ -369,6 +371,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 			_selectedPoint = point;
 		}
+
+        public override void Select(bool selectDragPoints)
+        {
+            base.Select(selectDragPoints);
+            connectStandardStrings = true;
+            foreach (PreviewLine line in _strings)
+            {
+                line.connectStandardStrings = true;
+            }
+        }
 
 		public override void SelectDefaultSelectPoint()
 		{

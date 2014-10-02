@@ -64,6 +64,11 @@ namespace VixenModules.SequenceType.Vixen2x
 					List<ChannelMapping> tempChanMap = new List<ChannelMapping>();
 					outputMap.Add(v2channel.ElementNodeId, tempChanMap);
 				} // end need to create a new GUID entry
+				else
+				{
+					// [debug]
+					// Logging.Info("convertMapping: Ignoring Duplicate V2 Channel '" + v2channel.ChannelName + "' with GUID = '" + v2channel.ElementNodeId + ".");
+				}
 
 				// add this V2 channel to the list of V2 channels for this V3 channel
 				Logging.Info("convertMapping: Adding V2 Channel '" + v2channel.ChannelName + "' to the output map for '" + v2channel.ElementNodeId + ".");
@@ -117,31 +122,52 @@ namespace VixenModules.SequenceType.Vixen2x
 			// for each channel in the V2 sequence
 			for (var currentElementNum = 0; currentElementNum < parsedV2Sequence.ElementCount; currentElementNum++)
 			{
+				// Check to see if we are processing more elements than we have mappings. This showed up as an error for a user
+				if (currentElementNum >= mappings.Count)
+				{
+					Logging.Error("importSequenceData: Trying to process more elements (" + parsedV2Sequence.ElementCount + ") than we have mappings. (" + mappings.Count + ")");
+					break;
+				}
+				ChannelMapping v2ChannelMapping = mappings[currentElementNum];
+
 				// set the channel number and the time for each v2 event.
-				import.OpenChannel(mappings[currentElementNum].ElementNodeId, Convert.ToDouble(parsedV2Sequence.EventPeriod));
+				import.OpenChannel(v2ChannelMapping.ElementNodeId, Convert.ToDouble(parsedV2Sequence.EventPeriod));
 
 				// Logging.Debug("importSequenceData:currentElementNum: " + currentElementNum);
 
-				string elementName = mappings[currentElementNum].ChannelName;
+				string elementName = v2ChannelMapping.ChannelName;
 				Color currentColor = Color.FromArgb(255, 255, 255);
 				byte currentIntensity = 0;
 
 				conversionProgressBar.UpdateProgressBar(currentElementNum);
 				Application.DoEvents();
 
-				// process each event for this channel
+				// is this an unmapped output channel?
+				if (Guid.Empty == v2ChannelMapping.ElementNodeId)
+				{
+					// no output channel. Move on to the next input channel
+					continue;
+				} // end no output channel defined
+
+				// do we have a valid guid conversion?
+				if ( false == m_GuidToV2ChanList.ContainsKey( v2ChannelMapping.ElementNodeId ))
+				{
+					Logging.Error("importSequenceData: Configuration error. GUID: '" + v2ChannelMapping.ElementNodeId + "' not found in m_GuidToV2ChanList.");
+					continue;
+				}
+
+				// is this a valid pixel configuration
+				if ((true == v2ChannelMapping.RgbPixel) && (3 != m_GuidToV2ChanList[v2ChannelMapping.ElementNodeId].Count))
+				{
+					Logging.Error("importSequenceData: Configuration error. Found '" + m_GuidToV2ChanList[v2ChannelMapping.ElementNodeId].Count + "' V2 channels attached to element '" + elementName + "'. Expected 3(RGB). Converting element to non color mixing mode.");
+					v2ChannelMapping.RgbPixel = false;
+				}
+
+				// process each event for this V2 channel
 				for (uint currentEventNum = 0; currentEventNum < parsedV2Sequence.EventsPerElement; currentEventNum++)
 				{
-					ChannelMapping v2ChannelMapping = mappings[currentElementNum];
 					// get the intensity for this V2 channel
 					currentIntensity = parsedV2Sequence.EventData[currentElementNum * parsedV2Sequence.EventsPerElement + currentEventNum];
-
-					// is there an output channel?
-					if( Guid.Empty == v2ChannelMapping.ElementNodeId )
-					{
-						// no output channel. Move on to the next input channel
-						continue;
-					} // end no output channel defined
 
 					// is this an RGB Pixel?
 					if (true == v2ChannelMapping.RgbPixel)
@@ -184,14 +210,14 @@ namespace VixenModules.SequenceType.Vixen2x
 
 								default:
 									{
-										Logging.Error("importSequenceData pixel conversion processing error. Skipping processing unexpected color '" + v2Channel.DestinationColor.Name + "' for V2 Channel '" + v2Channel.ChannelName + "(" + v2Channel.ChannelNumber + ")'");
+										Logging.Error("importSequenceData pixel conversion processing error. Skipping processing unexpected color '" + v2Channel.DestinationColor.Name + "' for V2 Channel '" + v2Channel.ChannelName + "(" + v2Channel.ChannelNumber + ")'. Color must be one of 'RED', 'GREEN' or 'BLUE'");
 										break;
 									} // end default
 							} // end switch on color
 						} // end process each V2 channel assigned to the v3 channel
 
 						// get the max intensity for this v2 channel set
-						currentIntensity = Convert.ToByte(Math.Max(red, Math.Max(green, blue)));
+						currentIntensity = Convert.ToByte(Math.Min( (int)255, Math.Max(red, Math.Max(green, blue))));
 
 						// Scale the color to full intensity and let the intensity value attenuate it.
 						if (0 != currentIntensity)

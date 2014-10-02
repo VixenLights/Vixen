@@ -1,4 +1,4 @@
-Vixen Release Notes – 3.1.0
+Vixen Release Notes – 3.1
 New Features
 Main Application
 * Profile Zip Wizard.  This tool allows the user to select a profile, and all of the selected data and zip it in a file to the user’s choice destination folder.

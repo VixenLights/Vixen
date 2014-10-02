@@ -35,7 +35,8 @@ namespace VixenModules.SequenceType.Vixen2x
 		/// <summary>
 		/// Fixed Channel offset to RGB Pixel color translation
 		/// </summary>
-		private Color[] m_defaultPixelColors = new Color[] { Color.Red, Color.Green, Color.Blue };
+		private Dictionary<string, List<Color>> m_defaultPixelColors = new Dictionary<string, List<Color>>(); //Color[] { Color.Red, Color.Green, Color.Blue };
+
 
 		public Vixen2xSequenceImporterChannelMapper(List<ChannelMapping> mappings, bool mapExists, string mappingName)
 		{
@@ -46,6 +47,44 @@ namespace VixenModules.SequenceType.Vixen2x
 			mappingNameTextBox.Text = mappingName;
 
 			checkBoxRGB.Enabled = true;
+			comboBoxColorOrder.SelectedIndex = 0;
+			comboBoxColorOrder.Enabled = false;
+
+			List<Color> colorList = new List<Color>();
+			colorList.Add(Color.Red);
+			colorList.Add(Color.Green);
+			colorList.Add(Color.Blue);
+			m_defaultPixelColors.Add("RGB", new List<Color>(colorList));
+
+			colorList.Clear();
+			colorList.Add(Color.Red);
+			colorList.Add(Color.Blue);
+			colorList.Add(Color.Green);
+			m_defaultPixelColors.Add("RBG", new List<Color>(colorList));
+
+			colorList.Clear();
+			colorList.Add(Color.Blue);
+			colorList.Add(Color.Red);
+			colorList.Add(Color.Green);
+			m_defaultPixelColors.Add("BRG", new List<Color>(colorList));
+
+			colorList.Clear();
+			colorList.Add(Color.Blue);
+			colorList.Add(Color.Green);
+			colorList.Add(Color.Red);
+			m_defaultPixelColors.Add("BGR", new List<Color>(colorList));
+
+			colorList.Clear();
+			colorList.Add(Color.Green);
+			colorList.Add(Color.Red);
+			colorList.Add(Color.Blue);
+			m_defaultPixelColors.Add("GRB", new List<Color>(colorList));
+
+			colorList.Clear();
+			colorList.Add(Color.Green);
+			colorList.Add(Color.Blue);
+			colorList.Add(Color.Red);
+			m_defaultPixelColors.Add("GBR", new List<Color>(colorList));
 		}
 
 		public List<ChannelMapping> Mappings { get; set; }
@@ -97,10 +136,9 @@ namespace VixenModules.SequenceType.Vixen2x
 			{
 				// if the user drags a large number of items to start at a position that
 				// doesn't have enough 'room' off the end for them all, this can go OOR
-
 				if (listViewMapping.Items.Count <= startingIndex)
 				{
-					Logging.Error("AddVixen3ElementToVixen2Channel: Aborting because startingIndex " + startingIndex + " is greater than listViewMapping.Items.Count " + listViewMapping.Items.Count );
+					Logging.Error("AddVixen3ElementToVixen2Channel: Aborting because startingIndex " + startingIndex + " is greater than (or equal to) listViewMapping.Items.Count " + listViewMapping.Items.Count );
 					break;
 				}
 
@@ -115,13 +153,14 @@ namespace VixenModules.SequenceType.Vixen2x
 				if(true == checkBoxRGB.Checked)
 				{
 					// use a fixed translation
-					item.SubItems[(int)mapperColumnId.importColor].Text = m_defaultPixelColors[i].Name;
-					item.SubItems[(int)mapperColumnId.importColor].BackColor = m_defaultPixelColors[i];
+					// MessageBox.Show("m_defaultPixelColors.Count: '" + m_defaultPixelColors.Count + "' comboBoxColorOrder.SelectedText: '" + comboBoxColorOrder.SelectedItem.ToString() + "' i: " + i + "'", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);					
+					item.SubItems[(int)mapperColumnId.importColor].Text = m_defaultPixelColors[comboBoxColorOrder.SelectedItem.ToString()][i].Name;
+					item.SubItems[(int)mapperColumnId.importColor].BackColor = m_defaultPixelColors[comboBoxColorOrder.SelectedItem.ToString()][i];
 					item.SubItems[(int)mapperColumnId.rgbPixel].Text = "Yes";
 				} // end process pixel
 				else
 				{
-				//Not sure where to get a node color from Vixen 3 stuff so if we have one in Vixen 2 just use it
+					//Not sure where to get a node color from Vixen 3 stuff so if we have one in Vixen 2 just use it
 					item.SubItems[(int)mapperColumnId.importColor].Text = item.SubItems[(int)mapperColumnId.v2channelColor].Text;
 					item.SubItems[(int)mapperColumnId.importColor].BackColor = item.SubItems[(int)mapperColumnId.v2channelColor].BackColor;
 					item.SubItems[(int)mapperColumnId.rgbPixel].Text = string.Empty;
@@ -291,12 +330,14 @@ namespace VixenModules.SequenceType.Vixen2x
 				// disable the repeat counter and enter pixel mode
 				numericUpDownRepeatElements.Enabled = false;
 				numericUpDownRepeatElements.Value = 3;
+				comboBoxColorOrder.Enabled = true;
 			}
 			else
 			{
 				// enable the repeat counter and exit pixel mode
 				numericUpDownRepeatElements.Enabled = true;
 				numericUpDownRepeatElements.Value = 1;
+				comboBoxColorOrder.Enabled = false;
 			}
 		} // checkBoxRGB_CheckedChanged
 
@@ -313,15 +354,18 @@ namespace VixenModules.SequenceType.Vixen2x
 				ListViewItem dragToItem = listViewMapping.GetItemAt(cp.X, cp.Y);
 
 				//let the user know if we have items already here and we are about to overwrite them
-				if (!String.IsNullOrEmpty(dragToItem.SubItems[(int)mapperColumnId.v3Destination].Text)) {
+				if (!String.IsNullOrEmpty(dragToItem.SubItems[(int)mapperColumnId.v3Destination].Text)) 
+				{
 					DialogResult result = MessageBox.Show("You are about to over write existing items.  Do you wish to continue?",
 					                                      "Continue", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
-					if (result == System.Windows.Forms.DialogResult.OK) {
+					if (result == System.Windows.Forms.DialogResult.OK) 
+					{
 						startingIndex = dragToItem.Index;
 						ParseNodes(treeview.SelectedNodes);
 					}
 				}
-				else {
+				else 
+				{
 					startingIndex = dragToItem.Index;
 					ParseNodes(treeview.SelectedNodes);
 				}
