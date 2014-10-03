@@ -178,6 +178,10 @@ namespace VixenModules.Effect.Nutcracker
 				Text_Line1 = string.Empty;
 			if (Text_Line2 == null)
 				Text_Line2 = string.Empty;
+			if (Text_Line3 == null)
+				Text_Line3 = string.Empty;
+			if (Text_Line4 == null)
+				Text_Line4 = string.Empty;
 
 			if (Text_Font == null) {
 				Text_Font = new SerializableFont(new Font("Arial", 8));
