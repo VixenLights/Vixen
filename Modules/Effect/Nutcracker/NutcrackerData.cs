@@ -173,6 +173,8 @@ namespace VixenModules.Effect.Nutcracker
 
 			if (Twinkles_Count < 2)
 				Twinkles_Count = 10;
+			if (Twinkles_Steps < 2)
+				Twinkles_Count = 30;
 
 			if (Text_Line1 == null)
 				Text_Line1 = string.Empty;
@@ -214,6 +216,11 @@ namespace VixenModules.Effect.Nutcracker
 
 			if (PictureTile_Scaling == 0.0) {
 				PictureTile_Scaling = 100.0;
+			}
+
+			if (Curtain_SwagWidth < 1)
+			{
+				Curtain_SwagWidth = 3;
 			}
 		}
 	}
