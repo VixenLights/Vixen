@@ -396,6 +396,8 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 				grid.StringOrientation = PreviewPixelGrid.StringOrientations.Horizontal;
 				grid.BottomRight.Y = Math.Min(StringCount * Data.PixelSize * 2, preview.Width - 10);
 				grid.BottomLeft.Y = Math.Min(StringCount * Data.PixelSize * 2, preview.Width - 10);
+				grid.BottomRight.X = Math.Min(grid.LightsPerString*Data.PixelSize * 2, preview.Width - 10);
+				grid.Left = Math.Max( (preview.Width - 10 - (grid.LightsPerString * Data.PixelSize * 2))/2 , 10);
 			}
 			else
 			{
@@ -1200,7 +1202,8 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			// the 2D preview types, when string cnt < 2, can return without setting this
 			if (displayItem == null)
 				return;
-			displayItem.Shape.PixelSize = Data.PixelSize;
+			//displayItem.Shape.PixelSize = Data.PixelSize;
+			SetupPreview();
 		}
 
 		private void radioButtonVertical_CheckedChanged(object sender, EventArgs e)
