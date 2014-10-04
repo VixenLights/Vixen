@@ -55,22 +55,22 @@ namespace VixenModules.Effect.Nutcracker
 						{
 							case 0:
 								// left
-								point = new Point(Convert.ToInt32(centerStop ? Math.Max(xlimit / 16 - State / 8, extraLeft / 2) : xlimit / 16 - State % xlimit / 8), offsetTop);
+								point = new Point(Convert.ToInt32(centerStop ? Math.Max(BufferWi - State / 8, extraLeft / 2) : BufferWi - State % xlimit / 8), offsetTop);
 								graphics.DrawString(msg, font, brush, point);
 								break;
 							case 1:
 								// right
-								point = new Point(Convert.ToInt32(centerStop ? Math.Min(State / 8 - xlimit / 16, extraRight / 2) : State % xlimit / 8 - xlimit / 16), offsetTop);
+								point = new Point(Convert.ToInt32(centerStop ? Math.Min(State / 8 - BufferWi, extraRight / 2) : State % xlimit / 8 - BufferWi), offsetTop);
 								graphics.DrawString(msg, font, brush, point);
 								break;
 							case 2:
 								// up
-								point = new Point(offsetLeft, Convert.ToInt32(centerStop ? Math.Max((int)(ylimit / 16 - State / 8), extraUp / 2) : ylimit / 16 - State % ylimit / 8));
+								point = new Point(offsetLeft, Convert.ToInt32(centerStop ? Math.Max((int)(BufferHt - State / 8), extraUp / 2) : BufferHt - State % ylimit / 8));
 								graphics.DrawString(msg, font, brush, point);
 								break;
 							case 3:
 								// down
-								point = new Point(offsetLeft, Convert.ToInt32(centerStop ? Math.Min((int)(State / 8 - ylimit / 16), extraDown / 2) : State % ylimit / 8 - ylimit / 16));
+								point = new Point(offsetLeft, Convert.ToInt32(centerStop ? Math.Min((int)(State / 8 - BufferHt), extraDown / 2) : State % ylimit / 8 -BufferHt));
 								graphics.DrawString(msg, font, brush, point);
 								break;
 							default:
