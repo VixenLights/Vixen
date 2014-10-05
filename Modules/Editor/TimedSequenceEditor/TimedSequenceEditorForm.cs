@@ -1491,6 +1491,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				if (TimelineControl.SelectedElements.Count() > 1)
 				{
+					//Effect Alignment Menu
 					ToolStripMenuItem itemAlignment = new ToolStripMenuItem("Alignment");
 					//Disables the Alignment menu if too many effects are selected in a row.
 					itemAlignment.Enabled = TimelineControl.grid.OkToUseAlignmentHelper(TimelineControl.SelectedElements);
@@ -1501,33 +1502,45 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 					ToolStripMenuItem itemAlignStart = new ToolStripMenuItem("Align Start Times (shift)");
 					itemAlignStart.ToolTipText = "Holding shift will align the start times, while holding duration.";
-					itemAlignStart.Click += (mySender, myE) => TimelineControl.grid.AlignElementStartTimes(TimelineControl.SelectedElements, element, ModifierKeys == Keys.Shift);
+					itemAlignStart.Click +=
+						(mySender, myE) =>
+							TimelineControl.grid.AlignElementStartTimes(TimelineControl.SelectedElements, element, ModifierKeys == Keys.Shift);
 
 					ToolStripMenuItem itemAlignEnd = new ToolStripMenuItem("Align End Times (shift)");
 					itemAlignEnd.ToolTipText = "Holding shift will align the end times, while holding duration.";
-					itemAlignEnd.Click += (mySender, myE) => TimelineControl.grid.AlignElementEndTimes(TimelineControl.SelectedElements, element, ModifierKeys == Keys.Shift);
+					itemAlignEnd.Click +=
+						(mySender, myE) =>
+							TimelineControl.grid.AlignElementEndTimes(TimelineControl.SelectedElements, element, ModifierKeys == Keys.Shift);
 
 					ToolStripMenuItem itemAlignBoth = new ToolStripMenuItem("Align Both Times");
-					itemAlignBoth.Click += (mySender, myE) => TimelineControl.grid.AlignElementStartEndTimes(TimelineControl.SelectedElements, element);
+					itemAlignBoth.Click +=
+						(mySender, myE) => TimelineControl.grid.AlignElementStartEndTimes(TimelineControl.SelectedElements, element);
 
 					ToolStripMenuItem itemMatchDuration = new ToolStripMenuItem("Match Duration (shift)");
-					itemMatchDuration.ToolTipText = "Holding shift will hold the effects end time and adjust the start time, by default the end time is adjusted.";
-					itemMatchDuration.Click += (mySender, myE) => TimelineControl.grid.AlignElementDurations(TimelineControl.SelectedElements, element, ModifierKeys == Keys.Shift);
-					
+					itemMatchDuration.ToolTipText =
+						"Holding shift will hold the effects end time and adjust the start time, by default the end time is adjusted.";
+					itemMatchDuration.Click +=
+						(mySender, myE) =>
+							TimelineControl.grid.AlignElementDurations(TimelineControl.SelectedElements, element, ModifierKeys == Keys.Shift);
+
 					ToolStripMenuItem itemAlignStartToEnd = new ToolStripMenuItem("Align Start to End");
-					itemAlignStartToEnd.Click += (mySender, myE) => TimelineControl.grid.AlignElementStartToEndTimes(TimelineControl.SelectedElements, element);
-					
+					itemAlignStartToEnd.Click +=
+						(mySender, myE) => TimelineControl.grid.AlignElementStartToEndTimes(TimelineControl.SelectedElements, element);
+
 					ToolStripMenuItem itemAlignEndToStart = new ToolStripMenuItem("Align End to Start");
-					itemAlignEndToStart.Click += (mySender, myE) => TimelineControl.grid.AlignElementEndToStartTime(TimelineControl.SelectedElements, element);
-					
+					itemAlignEndToStart.Click +=
+						(mySender, myE) => TimelineControl.grid.AlignElementEndToStartTime(TimelineControl.SelectedElements, element);
+
 					ToolStripMenuItem itemDistDialog = new ToolStripMenuItem("Distribute Effects");
 					itemDistDialog.Click += (mySender, myE) => DistributeSelectedEffects();
 
 					ToolStripMenuItem itemAlignCenter = new ToolStripMenuItem("Align Centerpoints");
-					itemAlignCenter.Click += (mySender, myE) => TimelineControl.grid.AlignElementCenters(TimelineControl.SelectedElements, element);
+					itemAlignCenter.Click +=
+						(mySender, myE) => TimelineControl.grid.AlignElementCenters(TimelineControl.SelectedElements, element);
 
 					ToolStripMenuItem itemDistributeEqually = new ToolStripMenuItem("Distribute Equally");
-					itemDistributeEqually.ToolTipText = "This will stair step the selected elements, starting with the element that has the earlier start point on the time line.";
+					itemDistributeEqually.ToolTipText =
+						"This will stair step the selected elements, starting with the element that has the earlier start point on the time line.";
 					itemDistributeEqually.Click += (mySender, myE) => DistributeSelectedEffectsEqually();
 
 					contextMenuStrip.Items.Add(itemAlignment);
@@ -1540,6 +1553,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					itemAlignment.DropDown.Items.Add(itemAlignEndToStart);
 					itemAlignment.DropDown.Items.Add(itemDistributeEqually);
 					itemAlignment.DropDown.Items.Add(itemDistDialog);
+
 				}
 
 				if (tse != null)
@@ -1548,27 +1562,79 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					ToolStripMenuItem itemManipulation = new ToolStripMenuItem("Manipulation");
 					ToolStripMenuItem itemManipulateDivide = new ToolStripMenuItem("Divide at cursor");
 					itemManipulateDivide.Click += (mySender, myE) =>
-						TimelineControl.grid.SplitElementsAtTime(
-						TimelineControl.SelectedElements.Where(elem => elem.StartTime < e.GridTime && elem.EndTime > e.GridTime).ToList(),
-						e.GridTime);
-					ToolStripMenuItem itemManipulationClone = new ToolStripMenuItem("Clone in place");
-					itemManipulationClone.Click += (mySender, myE) => CloneElements(TimelineControl.SelectedElements);
+					{
+						if (TimelineControl.SelectedElements.Any())
+						{
+							TimelineControl.grid.SplitElementsAtTime(
+								TimelineControl.SelectedElements.Where(elem => elem.StartTime < e.GridTime && elem.EndTime > e.GridTime)
+									.ToList(), e.GridTime);
+						}
+						else
+						{
+							TimelineControl.grid.SplitElementsAtTime(new List<Element> { element }, e.GridTime);
+						}
+
+					};
+					
+					ToolStripMenuItem itemManipulationClone = new ToolStripMenuItem("Clone");
+					itemManipulationClone.Click += (mySender, myE) =>
+					{
+						if (TimelineControl.SelectedElements.Any())
+						{
+							CloneElements(TimelineControl.SelectedElements ?? new List<Element> { element });
+						}
+						else
+						{
+							CloneElements(new List<Element> { element });
+						}
+					};
+
+					ToolStripMenuItem itemManipulationCloneToOther = new ToolStripMenuItem("Clone to selected effects");
+					itemManipulationCloneToOther.Click += (mySender, myE) =>
+					{
+						if (TimelineControl.SelectedElements.Any(elem => elem.EffectNode.Effect.TypeId != element.EffectNode.Effect.TypeId))
+						{
+							var dr = MessageBox.Show(
+								string.Format(
+									"Some of the selected effects are not of the same type, only effects of {0} type will be modified.",
+									element.EffectNode.Effect.EffectName), @"Multiple type effect selected", MessageBoxButtons.OKCancel,
+								MessageBoxIcon.Warning);
+							if (dr == DialogResult.Cancel) return;
+						}
+
+						foreach (Element elem in TimelineControl.SelectedElements.Where(elem => elem != element).Where(elem => elem.EffectNode.Effect.TypeId == element.EffectNode.Effect.TypeId))
+						{
+							elem.EffectNode.Effect.ParameterValues = element.EffectNode.Effect.ParameterValues;
+							elem.RenderElement();
+						}
+					};
+					itemManipulationCloneToOther.Enabled = (TimelineControl.SelectedElements.Count() > 2);
 
 					contextMenuStrip.Items.Add(itemManipulation);
 					itemManipulation.DropDown.Items.Add(itemManipulateDivide);
 					itemManipulation.DropDown.Items.Add(itemManipulationClone);
-					itemManipulation.Enabled = TimelineControl.SelectedElements.Any();
+					itemManipulation.DropDown.Items.Add(itemManipulationCloneToOther);
 
 					ToolStripMenuItem item = new ToolStripMenuItem("Edit Time");
 					item.Click += (mySender, myE) =>
 					{
 						EffectTimeEditor editor = new EffectTimeEditor(tse.EffectNode.StartTime, tse.EffectNode.TimeSpan);
-						if (editor.ShowDialog(this) == DialogResult.OK)
+						if (editor.ShowDialog(this) != DialogResult.OK) return;
+						
+						if (TimelineControl.SelectedElements.Any())
 						{
-							TimelineControl.grid.MoveResizeElement(element, editor.Start, editor.Duration);
+							var elementsToMove = TimelineControl.SelectedElements.ToDictionary(elem => elem,
+								elem => new Tuple<TimeSpan, TimeSpan>(editor.Start, editor.Start + editor.Duration));
+							TimelineControl.grid.MoveResizeElements(elementsToMove);
+						}
+						else
+						{
+							TimelineControl.grid.MoveResizeElement(element, editor.Start, editor.Duration);							
 						}
 					};
 					item.Tag = tse;
+					item.Enabled = TimelineControl.grid.OkToUseAlignmentHelper(TimelineControl.SelectedElements);
+					if (!item.Enabled) item.ToolTipText = @"Disabled, maximum selected effects per row is 4.";
 					contextMenuStrip.Items.Add(item);
 
 				}
@@ -1906,11 +1972,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			//var msgString = string.Format("Total Elements: {0}\n Start Time: {1}\n End Time: {2}\n Total Duration: {3}\n Effect Duration: {4}\n TimeSpan Duration: {5}\n Start at last element: {6}", totalElements,startTime,endTime,totalDuration,effectDuration, effectTS.TotalSeconds, startAtLastElement);
 			//MessageBox.Show(msgString);
 			//Sanity Check - Keep effects from becoming less than minimum.
-			if (effectDuration < .001)
+			if (effectDuration < .050)
 			{
 				MessageBox.Show(
 					string.Format(
-						"Unable to complete request. The resulting duration would fall below 1 millisecond.\nCalculated duration: {0}",
+						"Unable to complete request. The resulting duration would fall below 50 milliseconds.\nCalculated duration: {0}",
 						effectDuration), "Warning", MessageBoxButtons.OK);
 				return;
 			}
