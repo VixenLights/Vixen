@@ -6,16 +6,16 @@ using Vixen.Module;
 using Vixen.Module.App;
 
 
-namespace VixenModules.App.CustomEffectDefaults
+namespace VixenModules.App.PresetEffects
 {
 
-	public class CustomEffectDefaultLibraryDescriptor : AppModuleDescriptorBase
+	public class PresetEffectsLibraryDescriptor : AppModuleDescriptorBase
 	{
 		private static Guid _id = new Guid("{8B60F719-B4D5-4537-9A2B-8D75E3B47452}");
 
 		public override string TypeName
 		{
-			get { return "Custom Effect Default"; }
+			get { return "Preset Effects"; }
 		}
 
 		public override Guid TypeId
@@ -25,12 +25,12 @@ namespace VixenModules.App.CustomEffectDefaults
 
 		public override Type ModuleClass
 		{
-			get { return typeof(CustomEffectDefaultLibrary); }
+			get { return typeof(PresetEffectsLibrary); }
 		}
 
 		public override Type ModuleStaticDataClass
 		{
-			get { return typeof(CustomEffectDefaultLibraryStaticData); }
+			get { return typeof(PresetEffectsLibraryStaticData); }
 		}
 
 		public override string Author
@@ -43,7 +43,7 @@ namespace VixenModules.App.CustomEffectDefaults
 			get
 			{
 				return
-					"Provides a data type which represents a custom effect default parameter list.";
+					"Provides a data type which represents a preset effect.";
 			}
 		}
 

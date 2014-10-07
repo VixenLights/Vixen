@@ -7,8 +7,8 @@
     <ProjectGuid>{C1325ED2-A344-415F-84F8-19CD63AE60AF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>VixenModules.App.CustomEffectDefaults</RootNamespace>
-    <AssemblyName>CustomEffectDefaults</AssemblyName>
+    <RootNamespace>VixenModules.App.PresetEffects</RootNamespace>
+    <AssemblyName>PresetEffects</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -48,18 +48,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CustomEffectDefaultLibrary.cs" />
-    <Compile Include="CustomEffectDefaultLibraryDescriptor.cs" />
-    <Compile Include="CustomEffectDefaultLibraryStaticData.cs" />
+    <Compile Include="PresetEffectsClass.cs" />
+    <Compile Include="PresetEffectsLibrary.cs" />
+    <Compile Include="PresetEffectsLibraryDescriptor.cs" />
+    <Compile Include="PresetEffectsLibraryStaticData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Common\ValueTypes\ValueTypes.csproj">
+      <Project>{d9a7e8bc-5617-486d-9da5-89c5861a0f88}</Project>
+      <Name>ValueTypes</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Vixen.System\Vixen.csproj">
       <Project>{50b78623-fcf4-48af-93ff-fa87c937028f}</Project>
       <Name>Vixen</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Effect\Chase\Chase.csproj">
+      <Project>{27ec771c-d03c-4c94-915b-e18e33cb6c43}</Project>
+      <Name>Chase</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Effect\CustomValue\CustomValue.csproj">
@@ -70,6 +81,21 @@
     <ProjectReference Include="..\..\Effect\Nutcracker\Nutcracker.csproj">
       <Project>{49ec1f56-362b-4880-805c-474b6b5bc91b}</Project>
       <Name>Nutcracker</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Effect\Spin\Spin.csproj">
+      <Project>{56296134-41f2-4b20-95fc-6eb3049cffeb}</Project>
+      <Name>Spin</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Effect\Twinkle\Twinkle.csproj">
+      <Project>{4d474a34-9319-4439-a35e-98b5c2afe3dc}</Project>
+      <Name>Twinkle</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Effect\Wipe\Wipe.csproj">
+      <Project>{0ae9e4aa-3fb7-4eaa-a699-c3071a58ee77}</Project>
+      <Name>Wipe</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\ColorGradients\ColorGradients.csproj">

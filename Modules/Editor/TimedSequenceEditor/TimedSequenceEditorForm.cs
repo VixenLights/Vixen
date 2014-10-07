@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 using System.Xml;
 using Common.Controls;
 using Common.Controls.Timeline;
@@ -33,13 +34,12 @@ using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Sys.State;
 using VixenModules.App.ColorGradients;
-using VixenModules.App.VirtualEffect;
 using VixenModules.Sequence.Timed;
 using WeifenLuo.WinFormsUI.Docking;
 using Element = Common.Controls.Timeline.Element;
 using Timer = System.Windows.Forms.Timer;
 using VixenModules.Property.Color;
-using VixenModules.App.CustomEffectDefaults;
+using VixenModules.App.PresetEffects;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -95,7 +95,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private static readonly DataFormats.Format _clipboardFormatName =
 			DataFormats.GetFormat(typeof(TimelineElementsClipboardData).FullName);
 
-		private VirtualEffectLibrary _virtualEffectLibrary;
 
 		private readonly ContextMenuStrip contextMenuStrip = new ContextMenuStrip();
 
@@ -104,7 +103,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private CurveLibrary _curveLibrary;
 		private ColorGradientLibrary _colorGradientLibrary;
-		private CustomEffectDefaultLibrary _customEffectDefaultLibrary;
+		private PresetEffectsLibrary _presetEffectsLibrary;
 		private LipSyncMapLibrary _library;
 		private List<ColorCollection> _ColorCollections = new List<ColorCollection>();
 		
@@ -307,10 +306,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.grid.SelectedElementsCloneDelegate = CloneElements;
 			TimelineControl.grid.StartDrawMode += DrawElement;
 
-			_virtualEffectLibrary =
-				ApplicationServices.Get<IAppModuleInstance>(VirtualEffectLibraryDescriptor.Guid) as
-				VirtualEffectLibrary;
-
 			_curveLibrary = ApplicationServices.Get<IAppModuleInstance>(CurveLibraryDescriptor.ModuleID) as CurveLibrary;
 			if (_curveLibrary != null)
 			{
@@ -323,10 +318,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				_colorGradientLibrary.GradientChanged += ColorGradientLibrary_CurveChanged;	
 			}
 
-			_customEffectDefaultLibrary = ApplicationServices.Get<IAppModuleInstance>(CustomEffectDefaultLibraryDescriptor.ModuleID) as CustomEffectDefaultLibrary;
-			if (_customEffectDefaultLibrary != null)
+			_presetEffectsLibrary = ApplicationServices.Get<IAppModuleInstance>(PresetEffectsLibraryDescriptor.ModuleID) as PresetEffectsLibrary;
+			if (_presetEffectsLibrary != null)
 			{
-				_customEffectDefaultLibrary.CustomEffectDefaultChanged += CustomEffectDefaultLibrary_Changed;
+				_presetEffectsLibrary.PresetEffectsChanged += PresetEffectsLibrary_Changed;
 			}
 
 			LoadAvailableEffects();
@@ -334,7 +329,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			InitUndo();
 			updateButtonStates();
 			UpdatePasteMenuStates();
-			LoadVirtualEffects();
 			LoadColorCollections();
 
             _library = ApplicationServices.Get<IAppModuleInstance>(LipSyncMapDescriptor.ModuleID) as LipSyncMapLibrary;
@@ -566,30 +560,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			get
 			{
 				return _gridForm.TimelineControl;
-			}
-		}
-
-		private void LoadVirtualEffects()
-		{
-			//ToolStripMenuItem menuItem = new ToolStripMenuItem(ve.Name);
-			//menuItem.Tag = 0;
-
-			if (_virtualEffectLibrary == null)
-				return;
-
-			foreach (KeyValuePair<Guid, VirtualEffect> guid in _virtualEffectLibrary)
-			{
-				ToolStripMenuItem menuItem = new ToolStripMenuItem(guid.Value.Name);
-				menuItem.Tag = guid.Key;
-				menuItem.Click += (sender, e) =>
-									{
-										Row destination = TimelineControl.ActiveRow ?? TimelineControl.SelectedRow;
-										if (destination != null)
-										{
-											addNewVirtualEffectById((Guid)menuItem.Tag, destination, TimelineControl.CursorPosition,
-																	TimeSpan.FromSeconds(2)); // TODO: get a proper time
-										}
-									};
 			}
 		}
 
@@ -1266,7 +1236,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			CheckAndRenderDirtyElements();
 		}
 
-		private void CustomEffectDefaultLibrary_Changed(object sender, EventArgs e)
+		private void PresetEffectsLibrary_Changed(object sender, EventArgs e)
 		{
 			//Do nothing
 			return;
@@ -1393,9 +1363,20 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					foreach (Row drawingRow in e.Rows)
 					{
 						var newEffect = ApplicationServices.Get<IEffectModuleInstance>(e.Guid);
+
+						
 						try
 						{
-							newEffects.Add(CreateEffectNode(newEffect, drawingRow, e.StartTime,e.Duration));
+							if (_presetEffectsLibrary != null && _presetEffectsLibrary.Contains(e.Guid))
+							{
+								PresetEffect customEffect = _presetEffectsLibrary.GetPresetEffect(e.Guid);
+								newEffect = ApplicationServices.Get<IEffectModuleInstance>(customEffect.EffectTypeGuid);
+								newEffects.Add(CreateEffectNode(newEffect, drawingRow, e.StartTime, e.Duration,customEffect.ParameterValues));
+							}
+							else
+							{
+								newEffects.Add(CreateEffectNode(newEffect, drawingRow, e.StartTime, e.Duration));								
+							}
 						}
 						catch (Exception ex)
 						{
@@ -1502,20 +1483,25 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				TimedSequenceElement tse = element as TimedSequenceElement;
 
-				ToolStripMenuItem itemSetDefaults = new ToolStripMenuItem("Set Effect Defaults");
+				ToolStripMenuItem itemSetDefaults = new ToolStripMenuItem("Save as preset effect");
 				itemSetDefaults.Click += (mySender, myE) =>
 				{
-					_customEffectDefaultLibrary.AddCustomEffectDefault(tse.EffectNode.Effect.TypeId.ToString(), tse.EffectNode.Effect.ParameterValues);
+					TextDialog textDialog = new TextDialog("Enter a name for this preset");
+					if (textDialog.ShowDialog() != DialogResult.OK || textDialog.Response == null) return;
+
+					var item = new PresetEffect
+					{
+						Name = textDialog.Response,
+						EffectTypeName = tse.EffectNode.Effect.EffectName,
+						EffectTypeGuid = tse.EffectNode.Effect.TypeId,
+						ParameterValues = tse.EffectNode.Effect.ParameterValues
+					};
+
+					_presetEffectsLibrary.AddPresetEffect(Guid.NewGuid(),item);
+
 				};
+				itemSetDefaults.Enabled = (TimelineControl.SelectedElements.Count() < 2) && _presetEffectsLibrary.CanSaveType(tse.EffectNode.Effect.EffectName);
 				contextMenuStrip.Items.Add(itemSetDefaults);
-
-				ToolStripMenuItem itemRestoreDefaults = new ToolStripMenuItem("Restore Defaults");
-				itemRestoreDefaults.Click += (mySender, myE) =>
-				{
-					_customEffectDefaultLibrary.RemoveCustomEffectDefault(tse.EffectNode.Effect.TypeId.ToString());
-				};
-				contextMenuStrip.Items.Add(itemRestoreDefaults);
-
 
 				if (TimelineControl.SelectedElements.Count() > 1)
 				{
@@ -2641,29 +2627,20 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			//Debug.WriteLine("{0}   addNewEffectById({1})", (int)DateTime.Now.TimeOfDay.TotalMilliseconds, effectId);
 			// get a new instance of this effect, populate it, and make a node for it
 
-			//test if guid is in VirtualLibrary, otherwise proceed as normal
-			if (_virtualEffectLibrary != null && _virtualEffectLibrary.ContainsEffect(effectId))
+			IEffectModuleInstance effect = ApplicationServices.Get<IEffectModuleInstance>(effectId);
+
+			if (_presetEffectsLibrary != null && _presetEffectsLibrary.Contains(effectId))
 			{
-				addNewVirtualEffectById(effectId, row, startTime, timeSpan);
+				PresetEffect customEffect = _presetEffectsLibrary.GetPresetEffect(effectId);
+				effect = ApplicationServices.Get<IEffectModuleInstance>(customEffect.EffectTypeGuid);
+				addEffectInstance(effect, row, startTime, timeSpan,customEffect.ParameterValues);
 			}
 			else
 			{
-				IEffectModuleInstance effect = ApplicationServices.Get<IEffectModuleInstance>(effectId);
 				addEffectInstance(effect, row, startTime, timeSpan);
+					
 			}
-		}
 
-		private void addNewVirtualEffectById(Guid effectId, Row row, TimeSpan startTime, TimeSpan timeSpan)
-		{
-			if (_virtualEffectLibrary == null)
-				return;
-
-			//Debug.WriteLine("{0}   addNewEffectById({1})", (int)DateTime.Now.TimeOfDay.TotalMilliseconds, effectId);
-			// get a new instance of this effect, populate it, and make a node for it
-			VirtualEffect virtualEffect = _virtualEffectLibrary.GetVirtualEffect(effectId);
-			IEffectModuleInstance effect = ApplicationServices.Get<IEffectModuleInstance>(virtualEffect.EffectGuid);
-			effect.ParameterValues = virtualEffect.VirtualParams;
-			addEffectInstance(effect, row, startTime, timeSpan);
 		}
 
 		/// <summary>
@@ -2674,7 +2651,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// <param name="row">Common.Controls.Timeline.Row to add the effect instance to</param>
 		/// <param name="startTime">The start time of the effect</param>
 		/// <param name="timeSpan">The duration of the effect</param>
-		private void addEffectInstance(IEffectModuleInstance effectInstance, Row row, TimeSpan startTime, TimeSpan timeSpan)
+		/// <param name="parameterValues">Optional ParameterValues</param>
+		private void addEffectInstance(IEffectModuleInstance effectInstance, Row row, TimeSpan startTime, TimeSpan timeSpan, object[] parameterValues = null)
 		{
 			try
 			{
@@ -2686,8 +2664,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 
 				var effectNode = CreateEffectNode(effectInstance, row, startTime, timeSpan);
-				if (_customEffectDefaultLibrary.GetCustomEffectDefault(effectNode.Effect.TypeId.ToString()) != null)
-					effectNode.Effect.ParameterValues = _customEffectDefaultLibrary.GetCustomEffectDefault(effectNode.Effect.TypeId.ToString());
+				// set the option parametervalues if not null
+				if (parameterValues != null) effectNode.Effect.ParameterValues = parameterValues;
 				// put it in the sequence and in the timeline display
 				AddEffectNode(effectNode);
 				sequenceModified();
@@ -2704,7 +2682,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		}
 
 		private static EffectNode CreateEffectNode(IEffectModuleInstance effectInstance, Row row, TimeSpan startTime,
-			TimeSpan timeSpan)
+			TimeSpan timeSpan, object[] parameterValues = null)
 		{
 			// get the target element
 			var targetNode = (ElementNode) row.Tag;
@@ -2712,6 +2690,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// populate the given effect instance with the appropriate target node and times, and wrap it in an effectNode
 			effectInstance.TargetNodes = new[] {targetNode};
 			effectInstance.TimeSpan = timeSpan;
+			if (parameterValues != null) effectInstance.ParameterValues = parameterValues;
 			return new EffectNode(effectInstance, startTime);
 	
 		}
@@ -3118,12 +3097,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				case (Keys.Right | Keys.Shift):
 					TimelineControl.ruler.NudgeMark(TimelineControl.ruler.SuperNudgeTime);
 					break;
-				case Keys.Up:
-					EffectsForm.MoveNodeSelection("up");
-					break;
-				case Keys.Down:
-					EffectsForm.MoveNodeSelection("down");
-					break;
 				//case Keys.Escape:
 					//EffectsForm.DeselectAllNodes();
 					//toolStripButton_DrawMode.Checked = false;
@@ -3190,14 +3163,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				case Keys.Right:
 					if (e.Control)
 						TimelineControl.MoveSelectedElementsByTime(TimelineControl.TimePerPixel.Scale(2));
-					break;
-
-				case Keys.Up:
-					EffectsForm.MoveNodeSelection("up");
-					break;
-
-				case Keys.Down:
-					EffectsForm.MoveNodeSelection("down");
 					break;
 
 				case Keys.Escape:
@@ -3832,42 +3797,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_SetTimingSpeed(_timingSpeed - _timingChangeDelta);
 		}
 
-		private void toolStripButtonVirtualEffectsAdd_Click(object sender, EventArgs e)
-		{
-			IEnumerable<Element> selectedElements = TimelineControl.SelectedElements;
-			switch (selectedElements.Count())
-			{
-				case 0:
-					MessageBox.Show(@"Please select an element to save.");
-					break;
-				case 1:
-					TimedSequenceElement tse = (TimedSequenceElement)selectedElements.ElementAt(0);
-					saveVirtualEffect(tse.EffectNode.Effect);
-					break;
-				default:
-					MessageBox.Show(@"Please select only 1 element to save.");
-					break;
-			}
-		}
-
-		private void toolStripButtonVirtualEffectsRemove_Click(object sender, EventArgs e)
-		{
-			if (_virtualEffectLibrary == null)
-				return;
-
-			VirtualEffectRemoveDialog dialog = new VirtualEffectRemoveDialog(_virtualEffectLibrary);
-
-			if (dialog.ShowDialog() == DialogResult.OK)
-			{
-				toolStripExVirtualEffects_Clear();
-				foreach (Guid g in dialog.virtualEffectsToRemove)
-				{
-					_virtualEffectLibrary.removeEffect(g);
-				}
-				LoadVirtualEffects();
-			}
-		}
-
 		private void toolStripButtonSnapToStrength_MenuItem_Click(object sender, EventArgs e)
 		{
 
@@ -4228,40 +4157,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				   toolStripButton_DecreaseTimingSpeed.Enabled =
 				   toolStripLabel_TimingSpeed.Enabled = toolStripLabel_TimingSpeedLabel.Enabled = false;
 				}
-			}
-		}
-
-		private void toolStripExVirtualEffects_Clear()
-		{
-			if (_virtualEffectLibrary == null)
-				return;
-
-			List<ToolStripItem> removeList = new List<ToolStripItem>();
-			foreach (ToolStripItem tsItem in toolStripExVirtualEffects.Items)
-			{
-				if (tsItem.Tag != null && (_virtualEffectLibrary.ContainsEffect((Guid)tsItem.Tag)))
-				{
-					removeList.Add(tsItem);
-				}
-			}
-			foreach (ToolStripItem tsItem in removeList)
-			{
-				toolStripExVirtualEffects.Items.Remove(tsItem);
-			}
-		}
-
-		private void saveVirtualEffect(IEffectModuleInstance moduleInstance)
-		{
-			if (_virtualEffectLibrary == null)
-				return;
-
-			VirtualEffectNameDialog dialog = new VirtualEffectNameDialog();
-			if (dialog.ShowDialog() == DialogResult.OK)
-			{
-				_virtualEffectLibrary.addEffect(Guid.NewGuid(), dialog.effectName, moduleInstance.TypeId,
-												moduleInstance.ParameterValues);
-				toolStripExVirtualEffects_Clear();
-				LoadVirtualEffects();
 			}
 		}
 

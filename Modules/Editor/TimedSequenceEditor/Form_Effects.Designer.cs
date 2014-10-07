@@ -32,6 +32,7 @@
 			System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Basic Lighting");
 			System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Advanced Lighting");
 			System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Device Action");
+			System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("User Preset Effects");
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form_Effects));
 			this.treeEffects = new System.Windows.Forms.TreeView();
 			this.effectTreeImages = new System.Windows.Forms.ImageList(this.components);
@@ -57,15 +58,19 @@
 			treeNode3.SelectedImageKey = "(default)";
 			treeNode3.StateImageKey = "(none)";
 			treeNode3.Text = "Device Action";
+			treeNode4.ImageKey = "bullet_arrow_Right.png";
+			treeNode4.Name = "treePreset";
+			treeNode4.Text = "User Preset Effects";
 			this.treeEffects.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode1,
             treeNode2,
-            treeNode3});
+            treeNode3,
+            treeNode4});
 			this.treeEffects.SelectedImageIndex = 0;
 			this.treeEffects.ShowLines = false;
 			this.treeEffects.ShowPlusMinus = false;
 			this.treeEffects.ShowRootLines = false;
-			this.treeEffects.Size = new System.Drawing.Size(256, 402);
+			this.treeEffects.Size = new System.Drawing.Size(209, 442);
 			this.treeEffects.TabIndex = 0;
 			this.treeEffects.AfterCollapse += new System.Windows.Forms.TreeViewEventHandler(this.treeEffects_AfterCollapse);
 			this.treeEffects.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.treeEffects_AfterExpand);
@@ -86,7 +91,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(256, 402);
+			this.ClientSize = new System.Drawing.Size(209, 442);
 			this.ControlBox = false;
 			this.Controls.Add(this.treeEffects);
 			this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));

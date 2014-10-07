@@ -303,19 +303,14 @@
       <Name>Curves</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\App\CustomEffectDefaults\CustomEffectDefaults.csproj">
-      <Project>{c1325ed2-a344-415f-84f8-19cd63ae60af}</Project>
-      <Name>CustomEffectDefaults</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\App\LipSync\LipSyncApp.csproj">
       <Project>{e3689e21-2204-48b9-8370-d45ee4a23451}</Project>
       <Name>LipSyncApp</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\App\VirtualEffect\VirtualEffect.csproj">
-      <Project>{02072E53-7A01-423C-914E-BF785BA4F5CB}</Project>
-      <Name>VirtualEffect</Name>
+    <ProjectReference Include="..\..\App\PresetEffects\PresetEffects.csproj">
+      <Project>{c1325ed2-a344-415f-84f8-19cd63ae60af}</Project>
+      <Name>PresetEffects</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Effect\LipSync\LipSync.csproj">
