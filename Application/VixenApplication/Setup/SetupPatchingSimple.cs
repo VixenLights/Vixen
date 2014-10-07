@@ -164,14 +164,15 @@ namespace VixenApplication.Setup
 					lec++;
 				}
 
+				IEnumerable<IOutputFilterModuleInstance> filters = _findFiltersThatDescendFromElement(element);
+				fc += filters.Count();
+
 				if (element.Element != null) {
 					IDataFlowComponent dfc = VixenSystem.DataFlow.GetComponent(element.Element.Id);
 					childOutputs = _findPatchedAndUnpatchedOutputsFromComponent(dfc);
 					outputList.AddRange(childOutputs);
 				}
 
-				IEnumerable<IOutputFilterModuleInstance> filters = _findFiltersThatDescendFromElement(element);
-				fc += filters.Count();
 
 					// do some accounting
 					leafElementCount += lec;
