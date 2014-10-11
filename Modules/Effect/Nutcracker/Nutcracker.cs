@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization.Formatters;
 using System.Text;
 using Vixen.Data.Value;
 using Vixen.Intent;
@@ -128,18 +129,22 @@ namespace VixenModules.Effect.Nutcracker
 			get
 			{
 				List<ElementNode> nodes = new List<ElementNode>();
-
+				int childCount = 0;
 				if (TargetNodes.FirstOrDefault() != null)
 				{
+					List<ElementNode> nonLeafElements = TargetNodes.SelectMany(x => x.GetNonLeafEnumerator()).ToList();
 					foreach (var elementNode in TargetNodes)
 					{
 						foreach (var leafNode in elementNode.GetLeafEnumerator())
 						{
-							nodes.AddRange(leafNode.Parents.ToList());
+							nodes.AddRange(leafNode.Parents);
 						}
 					}
+					//Some nodes can have multiple node parents with odd groupings so this fancy linq query makes sure that the parent
+					//node is part of the Target nodes lineage.
+					childCount = nodes.Distinct().Intersect(nonLeafElements).Count();
 				}
-				int childCount = nodes.Distinct().Count();
+
 				if (childCount == 0)
 					childCount = 1;
 
