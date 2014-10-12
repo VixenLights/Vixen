@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -24,7 +25,10 @@ namespace VixenModules.Effect.Nutcracker
 			{
 				try
 				{
-					_pictureImage = Image.FromFile(newPictureName);
+					using (var fs = new FileStream(newPictureName, FileMode.Open, FileAccess.Read))
+					{
+						_pictureImage = Image.FromStream(fs);
+					}
 					_pictureName = newPictureName;
 				}
 				catch (Exception e)
@@ -58,7 +62,6 @@ namespace VixenModules.Effect.Nutcracker
 
 			Image image = scaleToGrid ? ScaleImage(_pictureImage, BufferWi, BufferHt) : ScaleImage(_pictureImage, _pictureImage.Width * scalePct / 10, _pictureImage.Height * scalePct / 10);
 			
-
 			_fp = new FastPixel.FastPixel(new Bitmap(image));
 
 			if (_fp != null)

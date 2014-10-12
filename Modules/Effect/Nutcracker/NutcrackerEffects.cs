@@ -1948,11 +1948,15 @@ namespace VixenModules.Effect.Nutcracker
 			if (NewPictureName != PictureTilePictureName || scale != lastScale) {
 				if (IsNutcrackerResource(NewPictureName))
 				{
-					image = Image.FromStream(typeof(Nutcracker).Assembly.GetManifestResourceStream(NewPictureName));     
+					using (var fs = typeof(Nutcracker).Assembly.GetManifestResourceStream(NewPictureName))
+					image = Image.FromStream(fs);     
 				}
-				else if (System.IO.File.Exists(NewPictureName))
+				else if (File.Exists(NewPictureName))
 				{
-					image = Image.FromFile(NewPictureName);
+					using (var fs = new FileStream(NewPictureName, FileMode.Open, FileAccess.Read))
+					{
+						image = Image.FromStream(fs);
+					}
 				}
 				else
 				{
