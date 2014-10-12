@@ -2059,7 +2059,7 @@ namespace VixenModules.Effect.Nutcracker
 									//fpColor = Color.FromArgb(255, fpColor);
 								}
 								// Tree is up-side down, so draw the bitmp up-side down so it is right-side up.
-								SetPixel(BufferWi - x - 1, BufferHt - y - 1, fpColor);
+								SetPixel(x, BufferHt - y - 1, fpColor);
 							}
 						}
 					}
