@@ -27,7 +27,7 @@ namespace VixenModules.Effect.Nutcracker
 				{
 					using (var fs = new FileStream(newPictureName, FileMode.Open, FileAccess.Read))
 					{
-						_pictureImage = Image.FromStream(fs);
+						_pictureImage = new Bitmap(Image.FromStream(fs));
 					}
 					_pictureName = newPictureName;
 				}
