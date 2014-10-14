@@ -107,6 +107,7 @@ namespace Vixen.Export
 
         public void OpenSession(SequenceSessionData data)
         {
+            this.SeqPeriodTime = data.PeriodMS;
             OpenSession(data.OutFileName, data.NumPeriods, data.ChannelNames.Count());
         }
 
