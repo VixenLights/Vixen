@@ -229,7 +229,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         {
             get
             {
-                return _bottomLeft.Y;
+                return _bottomRight.Y;
             }
         }
 
@@ -278,6 +278,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         public override void Match(PreviewBaseShape matchShape)
         {
             PreviewMegaTree shape = (matchShape as PreviewMegaTree);
+            LightsPerString = shape.LightsPerString;
+            StringCount = shape.StringCount;
             PixelSize = shape.PixelSize;
             TopHeight = shape.TopHeight;
             TopWidth = shape.TopWidth;
