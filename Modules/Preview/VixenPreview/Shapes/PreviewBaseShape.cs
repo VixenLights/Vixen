@@ -512,6 +512,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         /// <summary>
         /// This will be true if the shape is being created. Only used in multi-point placement objects
         /// </summary>
+        [Browsable(false)]
         public virtual bool Creating { get; set; }
 
 		public DisplayItemBaseControl GetSetupControl()
