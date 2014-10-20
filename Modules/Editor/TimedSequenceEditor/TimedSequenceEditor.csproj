@@ -113,6 +113,12 @@
     <Compile Include="ExportDialog.Designer.cs">
       <DependentUpon>ExportDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormParameterPicker.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormParameterPicker.Designer.cs">
+      <DependentUpon>FormParameterPicker.cs</DependentUpon>
+    </Compile>
     <Compile Include="Form_AddMultipleEffects.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -226,6 +232,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ExportDialog.resx">
       <DependentUpon>ExportDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormParameterPicker.resx">
+      <DependentUpon>FormParameterPicker.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form_AddMultipleEffects.resx">
       <DependentUpon>Form_AddMultipleEffects.cs</DependentUpon>
