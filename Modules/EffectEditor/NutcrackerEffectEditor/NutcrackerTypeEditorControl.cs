@@ -828,7 +828,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			comboBoxTextDirection.SelectedIndex = Data.Text_Direction;
 			trackTextTop.Value = Data.Text_Top;
 			chkCenterStop.Checked = Data.Text_CenterStop;
-			textBoxTextFont.Text = String.Format("{0} {1} pt", fontDialog.Font.Name, fontDialog.Font.SizeInPoints);
+			textBoxTextFont.Text = String.Format("{0} {1} pt", Data.Text_Font.FontValue.Name, Data.Text_Font.FontValue.SizeInPoints);
 		}
 
 		private void Text_TextChanged(object sender, EventArgs e)
