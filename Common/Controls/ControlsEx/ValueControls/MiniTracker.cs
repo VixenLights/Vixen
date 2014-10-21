@@ -14,6 +14,7 @@ namespace Common.Controls.ControlsEx.ValueControls
 
 		protected int _offsetx, _offsety;
 		protected ElementInfo _tracker;
+		private readonly ToolTip toolTip;
 
 		#endregion
 
@@ -29,6 +30,10 @@ namespace Common.Controls.ControlsEx.ValueControls
 			_tracker = new ElementInfo();
 			_tracker.State = ElementState.hot;
 			_tracker.Bounds = new Rectangle(0, this.Height/2 - 7, 11, 20);
+			toolTip = new ToolTip();
+			MouseHover += MiniTracker_MouseHover;
+			MouseLeave += MiniTracker_MouseLeave;
+			ValueChanged += MiniTracker_ValueChanged;
 			UpdateTrackerPosition();
 		}
 
@@ -129,6 +134,32 @@ namespace Common.Controls.ControlsEx.ValueControls
 			base.SetMaximumCore(maximum);
 			base.SetValueCore(value);
 		}
+
+		private void MiniTracker_MouseHover(object sender, EventArgs e)
+		{
+			if (string.IsNullOrEmpty(toolTip.GetToolTip(this)))
+			{
+				Point point = new Point(PointToClient(MousePosition).X, PointToClient(MousePosition).Y - 20);
+				toolTip.Show(Value.ToString(), this, point);	
+			}
+			
+		}
+
+		private void MiniTracker_MouseLeave(object sender, EventArgs e)
+		{
+			toolTip.Hide(this);
+		}
+
+		void MiniTracker_ValueChanged(ValueControl sender, ValueChangedEventArgs e)
+		{
+			if (!string.IsNullOrEmpty(toolTip.GetToolTip(this)))
+			{
+				toolTip.Hide(this);
+				Point point = new Point(PointToClient(MousePosition).X, PointToClient(MousePosition).Y - 20);
+				toolTip.Show(Value.ToString(), this, point);
+			}
+		}
+
 	}
 
 	/// <summary>
