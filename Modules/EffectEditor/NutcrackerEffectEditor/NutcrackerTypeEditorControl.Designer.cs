@@ -95,6 +95,10 @@
 			this.trackSpiralsRotations = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
 			this.trackSpiralsRepeat = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
 			this.TextPage = new System.Windows.Forms.TabPage();
+			this.textTextLine4 = new System.Windows.Forms.TextBox();
+			this.textTextLine3 = new System.Windows.Forms.TextBox();
+			this.lblTextLine4 = new System.Windows.Forms.Label();
+			this.lblTextLine3 = new System.Windows.Forms.Label();
 			this.chkCenterStop = new System.Windows.Forms.CheckBox();
 			this.label53 = new System.Windows.Forms.Label();
 			this.comboBoxTextDirection = new System.Windows.Forms.ComboBox();
@@ -183,6 +187,7 @@
 			this.comboCurtainEffect = new System.Windows.Forms.ComboBox();
 			this.comboCurtainEdge = new System.Windows.Forms.ComboBox();
 			this.trackCurtainSwagWidth = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
+			this.tabPage1 = new System.Windows.Forms.TabPage();
 			this.comboBoxEffect = new System.Windows.Forms.ComboBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.trackBarSpeed = new System.Windows.Forms.TrackBar();
@@ -196,10 +201,10 @@
 			this.scrollPixelSize = new Common.Controls.ControlsEx.ValueControls.HValueScrollBar();
 			this.label44 = new System.Windows.Forms.Label();
 			this.buttonHelp = new System.Windows.Forms.Button();
-			this.textTextLine4 = new System.Windows.Forms.TextBox();
-			this.textTextLine3 = new System.Windows.Forms.TextBox();
-			this.lblTextLine4 = new System.Windows.Forms.Label();
-			this.lblTextLine3 = new System.Windows.Forms.Label();
+			this.tabGlediator = new System.Windows.Forms.TabPage();
+			this.textGlediatorFileName = new System.Windows.Forms.TextBox();
+			this.buttonGlediatorFile = new System.Windows.Forms.Button();
+			this.lblGlediator = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.tabEffectProperties.SuspendLayout();
@@ -227,6 +232,7 @@
 			this.Curtain.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarSpeed)).BeginInit();
 			this.groupBox3.SuspendLayout();
+			this.tabGlediator.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// timerRender
@@ -312,7 +318,7 @@
 			// chkFitToTime
 			// 
 			this.chkFitToTime.AutoSize = true;
-			this.chkFitToTime.Location = new System.Drawing.Point(295, 223);
+			this.chkFitToTime.Location = new System.Drawing.Point(295, 222);
 			this.chkFitToTime.Name = "chkFitToTime";
 			this.chkFitToTime.Size = new System.Drawing.Size(75, 17);
 			this.chkFitToTime.TabIndex = 15;
@@ -465,6 +471,8 @@
 			this.tabEffectProperties.Controls.Add(this.Fire);
 			this.tabEffectProperties.Controls.Add(this.Garlands);
 			this.tabEffectProperties.Controls.Add(this.Curtain);
+			this.tabEffectProperties.Controls.Add(this.tabPage1);
+			this.tabEffectProperties.Controls.Add(this.tabGlediator);
 			this.tabEffectProperties.ItemSize = new System.Drawing.Size(0, 1);
 			this.tabEffectProperties.Location = new System.Drawing.Point(6, 48);
 			this.tabEffectProperties.Name = "tabEffectProperties";
@@ -1141,6 +1149,40 @@
 			this.TextPage.TabIndex = 12;
 			this.TextPage.Text = "Text";
 			this.TextPage.UseVisualStyleBackColor = true;
+			// 
+			// textTextLine4
+			// 
+			this.textTextLine4.Location = new System.Drawing.Point(97, 73);
+			this.textTextLine4.Name = "textTextLine4";
+			this.textTextLine4.Size = new System.Drawing.Size(167, 20);
+			this.textTextLine4.TabIndex = 38;
+			this.textTextLine4.TextChanged += new System.EventHandler(this.Text_TextChanged);
+			// 
+			// textTextLine3
+			// 
+			this.textTextLine3.Location = new System.Drawing.Point(97, 50);
+			this.textTextLine3.Name = "textTextLine3";
+			this.textTextLine3.Size = new System.Drawing.Size(167, 20);
+			this.textTextLine3.TabIndex = 37;
+			this.textTextLine3.TextChanged += new System.EventHandler(this.Text_TextChanged);
+			// 
+			// lblTextLine4
+			// 
+			this.lblTextLine4.AutoSize = true;
+			this.lblTextLine4.Location = new System.Drawing.Point(9, 80);
+			this.lblTextLine4.Name = "lblTextLine4";
+			this.lblTextLine4.Size = new System.Drawing.Size(39, 13);
+			this.lblTextLine4.TabIndex = 44;
+			this.lblTextLine4.Text = "Line 4:";
+			// 
+			// lblTextLine3
+			// 
+			this.lblTextLine3.AutoSize = true;
+			this.lblTextLine3.Location = new System.Drawing.Point(9, 57);
+			this.lblTextLine3.Name = "lblTextLine3";
+			this.lblTextLine3.Size = new System.Drawing.Size(39, 13);
+			this.lblTextLine3.TabIndex = 43;
+			this.lblTextLine3.Text = "Line 3:";
 			// 
 			// chkCenterStop
 			// 
@@ -2113,6 +2155,16 @@
 			this.trackCurtainSwagWidth.Value = 3;
 			this.trackCurtainSwagWidth.ValueChanged += new Common.Controls.ControlsEx.ValueControls.ValueChangedEH(this.trackCurtainSwagWidth_ValueChanged);
 			// 
+			// tabPage1
+			// 
+			this.tabPage1.Location = new System.Drawing.Point(4, 5);
+			this.tabPage1.Name = "tabPage1";
+			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage1.Size = new System.Drawing.Size(266, 243);
+			this.tabPage1.TabIndex = 19;
+			this.tabPage1.Text = "tabPage1";
+			this.tabPage1.UseVisualStyleBackColor = true;
+			// 
 			// comboBoxEffect
 			// 
 			this.comboBoxEffect.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -2234,39 +2286,45 @@
 			this.buttonHelp.UseVisualStyleBackColor = true;
 			this.buttonHelp.Click += new System.EventHandler(this.buttonHelp_Click);
 			// 
-			// textTextLine4
+			// tabGlediator
 			// 
-			this.textTextLine4.Location = new System.Drawing.Point(97, 73);
-			this.textTextLine4.Name = "textTextLine4";
-			this.textTextLine4.Size = new System.Drawing.Size(167, 20);
-			this.textTextLine4.TabIndex = 38;
-			this.textTextLine4.TextChanged += new System.EventHandler(this.Text_TextChanged);
+			this.tabGlediator.Controls.Add(this.lblGlediator);
+			this.tabGlediator.Controls.Add(this.buttonGlediatorFile);
+			this.tabGlediator.Controls.Add(this.textGlediatorFileName);
+			this.tabGlediator.Location = new System.Drawing.Point(4, 5);
+			this.tabGlediator.Name = "tabGlediator";
+			this.tabGlediator.Padding = new System.Windows.Forms.Padding(3);
+			this.tabGlediator.Size = new System.Drawing.Size(266, 243);
+			this.tabGlediator.TabIndex = 20;
+			this.tabGlediator.Text = "Glediator";
+			this.tabGlediator.UseVisualStyleBackColor = true;
 			// 
-			// textTextLine3
+			// textGlediatorFileName
 			// 
-			this.textTextLine3.Location = new System.Drawing.Point(97, 50);
-			this.textTextLine3.Name = "textTextLine3";
-			this.textTextLine3.Size = new System.Drawing.Size(167, 20);
-			this.textTextLine3.TabIndex = 37;
-			this.textTextLine3.TextChanged += new System.EventHandler(this.Text_TextChanged);
+			this.textGlediatorFileName.Location = new System.Drawing.Point(6, 61);
+			this.textGlediatorFileName.Name = "textGlediatorFileName";
+			this.textGlediatorFileName.ReadOnly = true;
+			this.textGlediatorFileName.Size = new System.Drawing.Size(254, 20);
+			this.textGlediatorFileName.TabIndex = 0;
 			// 
-			// lblTextLine4
+			// buttonGlediatorFile
 			// 
-			this.lblTextLine4.AutoSize = true;
-			this.lblTextLine4.Location = new System.Drawing.Point(9, 80);
-			this.lblTextLine4.Name = "lblTextLine4";
-			this.lblTextLine4.Size = new System.Drawing.Size(39, 13);
-			this.lblTextLine4.TabIndex = 44;
-			this.lblTextLine4.Text = "Line 4:";
+			this.buttonGlediatorFile.Location = new System.Drawing.Point(107, 28);
+			this.buttonGlediatorFile.Name = "buttonGlediatorFile";
+			this.buttonGlediatorFile.Size = new System.Drawing.Size(75, 23);
+			this.buttonGlediatorFile.TabIndex = 1;
+			this.buttonGlediatorFile.Text = "File chooser";
+			this.buttonGlediatorFile.UseVisualStyleBackColor = true;
+			this.buttonGlediatorFile.Click += new System.EventHandler(this.buttonGlediatorFile_Click);
 			// 
-			// lblTextLine3
+			// lblGlediator
 			// 
-			this.lblTextLine3.AutoSize = true;
-			this.lblTextLine3.Location = new System.Drawing.Point(9, 57);
-			this.lblTextLine3.Name = "lblTextLine3";
-			this.lblTextLine3.Size = new System.Drawing.Size(39, 13);
-			this.lblTextLine3.TabIndex = 43;
-			this.lblTextLine3.Text = "Line 3:";
+			this.lblGlediator.AutoSize = true;
+			this.lblGlediator.Location = new System.Drawing.Point(13, 37);
+			this.lblGlediator.Name = "lblGlediator";
+			this.lblGlediator.Size = new System.Drawing.Size(68, 13);
+			this.lblGlediator.TabIndex = 2;
+			this.lblGlediator.Text = "Glediator File";
 			// 
 			// NutcrackerTypeEditorControl
 			// 
@@ -2328,6 +2386,8 @@
 			((System.ComponentModel.ISupportInitialize)(this.trackBarSpeed)).EndInit();
 			this.groupBox3.ResumeLayout(false);
 			this.groupBox3.PerformLayout();
+			this.tabGlediator.ResumeLayout(false);
+			this.tabGlediator.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -2518,5 +2578,10 @@
 		private System.Windows.Forms.TextBox textTextLine3;
 		private System.Windows.Forms.Label lblTextLine4;
 		private System.Windows.Forms.Label lblTextLine3;
+		private System.Windows.Forms.TabPage tabPage1;
+		private System.Windows.Forms.TabPage tabGlediator;
+		private System.Windows.Forms.TextBox textGlediatorFileName;
+		private System.Windows.Forms.Button buttonGlediatorFile;
+		private System.Windows.Forms.Label lblGlediator;
 	}
 }

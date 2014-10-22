@@ -151,6 +151,11 @@ namespace VixenModules.Effect.Nutcracker
 		[DataMember] public int Curtain_SwagWidth = 0;
 		[DataMember] public bool Curtain_Repeat = false;
 
+		// Glediator
+		[DataMember]
+		public string Glediator_FileName;
+
+
 		[OnDeserialized]
 		private void OnDeserialized(StreamingContext context)
 		{

@@ -146,6 +146,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			LoadMovie();
 			LoadPictureTile();
 			LoadCurtain();
+			LoadGlediatorData();
 			LoadColors();
 			LoadPreview();
 
@@ -1189,6 +1190,34 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 		}
 
 		#endregion // PictureTile
+
+		#region Glediator
+
+		private void LoadGlediatorData()
+		{
+			textGlediatorFileName.Text = Data.Glediator_FileName;
+		}
+
+		private void buttonGlediatorFile_Click(object sender, EventArgs e)
+		{
+			fileDialog.Filter = @"Glediator Files|*.gled";
+			if (fileDialog.ShowDialog() == DialogResult.OK)
+			{
+				// Copy the file to the Vixen folder
+				var gledFile = new FileInfo(fileDialog.FileName);
+				var destFileName = Path.Combine(NutcrackerDescriptor.ModulePath, gledFile.Name);
+				var sourceFileName = gledFile.FullName;
+				if (sourceFileName != destFileName)
+				{
+					File.Copy(sourceFileName, destFileName, true);
+				}
+
+				textGlediatorFileName.Text = destFileName;
+				Data.Glediator_FileName = destFileName;
+			}
+		}
+
+		#endregion
 
 		private void buttonHelp_Click(object sender, EventArgs e)
 		{

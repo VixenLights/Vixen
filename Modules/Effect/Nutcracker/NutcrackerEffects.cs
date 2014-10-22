@@ -49,7 +49,8 @@ namespace VixenModules.Effect.Nutcracker
 			Text,
 			Tree,
 			Twinkles,
-			Curtain
+			Curtain,
+			Glediator
 		}
 
 		public enum PreviewType
@@ -2147,7 +2148,9 @@ namespace VixenModules.Effect.Nutcracker
 				case Effects.Curtain:
 					RenderCurtain(Data.Curtain_Edge,(CurtainType)Data.Curtain_Effect, Data.Curtain_SwagWidth, Data.Curtain_Repeat);
 					break;
-			
+				case Effects.Glediator:
+					RenderGlediator(Data.Glediator_FileName);
+					break;
 			}
 		}
 
