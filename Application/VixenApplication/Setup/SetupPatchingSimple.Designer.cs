@@ -31,6 +31,7 @@ namespace VixenApplication.Setup
 		{
 			this.components = new System.ComponentModel.Container();
 			this.groupBoxElements = new System.Windows.Forms.GroupBox();
+			this.checkBoxReverseElementOrder = new System.Windows.Forms.CheckBox();
 			this.buttonUnpatchElements = new System.Windows.Forms.Button();
 			this.labelFilterCount = new System.Windows.Forms.Label();
 			this.labelElementCount = new System.Windows.Forms.Label();
@@ -89,6 +90,7 @@ namespace VixenApplication.Setup
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.groupBoxElements.AutoSize = true;
+			this.groupBoxElements.Controls.Add(this.checkBoxReverseElementOrder);
 			this.groupBoxElements.Controls.Add(this.buttonUnpatchElements);
 			this.groupBoxElements.Controls.Add(this.labelFilterCount);
 			this.groupBoxElements.Controls.Add(this.labelElementCount);
@@ -451,7 +453,7 @@ namespace VixenApplication.Setup
 			this.labelPatchWarning.Name = "labelPatchWarning";
 			this.labelPatchWarning.Size = new System.Drawing.Size(307, 13);
 			this.labelPatchWarning.TabIndex = 4;
-			this.labelPatchWarning.Text = "Warning: too many selected elements, some will not be patched";
+			this.labelPatchWarning.Text = "WARNING: too many selected elements, some will not be patched";
 			// 
 			// labelPatchSummary
 			// 
@@ -588,6 +590,19 @@ namespace VixenApplication.Setup
 			this.tableLayoutPanel2.Size = new System.Drawing.Size(438, 84);
 			this.tableLayoutPanel2.TabIndex = 5;
 			// 
+			// checkBoxReverseElementOrder
+			// 
+			this.checkBoxReverseElementOrder.AutoSize = true;
+			this.checkBoxReverseElementOrder.Location = new System.Drawing.Point(18, 200);
+			this.checkBoxReverseElementOrder.Name = "checkBoxReverseElementOrder";
+			this.checkBoxReverseElementOrder.Size = new System.Drawing.Size(179, 21);
+			this.checkBoxReverseElementOrder.TabIndex = 23;
+			this.checkBoxReverseElementOrder.Text = "Reverse Element Order";
+			this.toolTip1.SetToolTip(this.checkBoxReverseElementOrder, "The order in which Elements will be patched to controller outputs. This does not " +
+        "effect the order in which color channels are patched to controller outputs.");
+			this.checkBoxReverseElementOrder.UseVisualStyleBackColor = true;
+			this.checkBoxReverseElementOrder.CheckedChanged += new System.EventHandler(this.checkBoxReverseElementOrder_CheckedChanged);
+			// 
 			// SetupPatchingSimple
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -662,5 +677,6 @@ namespace VixenApplication.Setup
 		private Label label8;
 		private TableLayoutPanel tableLayoutPanel1;
 		private TableLayoutPanel tableLayoutPanel2;
+		private CheckBox checkBoxReverseElementOrder;
 	}
 }
