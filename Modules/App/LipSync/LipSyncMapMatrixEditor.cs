@@ -81,8 +81,6 @@ namespace VixenModules.App.LipSyncApp
 
         private LipSyncMapItem FindRenderMapItem (int row, int column)
         {
-            int displayRow = (stringsAreRows) ? row : column;
-            int displayCol = (!stringsAreRows) ? row : column;
             
             if (startMapIndex == -1)
             {
@@ -100,9 +98,8 @@ namespace VixenModules.App.LipSyncApp
             int calcIndex;
 
             calcIndex = (stringsAreRows) ?
-                ((numGridCols * (numGridRows - row)) + (numGridCols - column)) + startMapIndex :
-                ((numGridRows * column) + (numGridRows - row)) + startMapIndex;
-            calcIndex = (calcIndex == 0) ? calcIndex : calcIndex - 1;
+                ((numGridCols * (numGridRows - row - 1)) + column) + startMapIndex :
+                ((numGridRows * column) + (numGridRows - row - 1)) + startMapIndex;
 
             if ((calcIndex >= 0) && (calcIndex < _newMapping.MapItems.Count))
             {

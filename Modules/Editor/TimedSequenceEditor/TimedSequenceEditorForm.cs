@@ -4502,7 +4502,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
                 mapSelector.Changed = false;
                 sequenceModified();
                 resetLipSyncNodes();
-	}
+                VixenSystem.SaveSystemConfig();
+	        }
         }
 
         private void setDefaultMap_Click(object sender,EventArgs e)

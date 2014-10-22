@@ -1,3 +1,72 @@
+Vixen Release Notes – 3.1 (update 1)
+Features
+Sequence Editor
+* Changed the function of the Draw/Resize indicator menu items so that if it is off and a color is picked it will turn the indicator on.
+* Show a check mark next to the selected color.
+* Added border to gradient bitmaps in preset library panel.
+* Add Undo Redo Shortcuts.
+
+Preview
+* Added "Reverse Elements in This String" to the preview linking dialog box.
+* Added ability to copy/paste multiple items in the preview.
+* Added ability to set up the star with single strings.
+* Changed the way the preview toolbar works:
+o Click on a prop on the toolbar. It will remain sticky until unselected.
+o Draw multiple shapes. You must press select to get out of "draw" mode.
+o The escape key can also be pressed to select the select tool.
+o Multi-point shapes are created the same way by pressing escape to create the shape. The second escape will cancel the tool.
+
+Export/Import
+* Added the ability to re-order the controller list by drag and drop the Export controller list
+
+Main Application
+* Added a feature to reverse the elements in a list of elements prior to patching.
+
+Bug Fixes
+Sequence Editor
+* Fix for too many effects stacked in one place.
+* Changed Alignment helpers to no more than 4 selected effects per row. (Disables  it from Context menu if so.)
+* Fixed issue that when using the mark manager to paste effects to beat marks, if the active row was selected rather than highlighted, all of the created effects would be stacked up on top of each other.
+* Fix zooming bug if the zoom out was used and the grid was scrolled all the way to the end.
+* Gradient editor: corrected editor caption.
+* Gradient editor: make sure that double click action is on a fader, not just the control Would cause crash due to no active fader if you double clicked anywhere in the control except a fader.
+* Fixed a bug in the waveform control that could cause the samples list to be partially populated and crash the editor (with some higher sample audio files). (VIX-583)
+
+Main Application
+* Minor fixes to the profile manager to better check for duplicate names and folders, suggesting data folder based on the name when adding new profile, and checks to make sure data folder is a valid path.
+* Make some changes to allow controllers to maintain an ordered list (VIX-504).
+* Tweak the simple patching window panes in the middle so it re-sizes better when the overall form is stretched. Longer controller names may not fit when trying to identify patch points.
+
+Preview
+* Fixed the starting PAN location in the preview.
+* Modified the rectangle preview object to recognize elements laid out in the proper groupings to create the window with drag-n-drop. 
+* Fixed the counter-clockwise rotation of the rectangle to update when selected.
+* Fixed the layout of the grips on the starburst in the preview. Sometimes the bottom left and/or top right grips would be in the wrong location.
+* Fixed resize in the MultiString and the PolyLine in preview.
+* Fixed resize of custom props in preview when zoomed.
+* Fixed multiple copy/paste and zoom issues.
+* Changed the algorithm for drawing the PolyLine. This should prevent a reported bug AND allow clicking all kinds of close points to get the line shape you want.
+* Changed max zoom to 200% if the process is 32 bit.
+* Fixed icicle linking problems (VIX-577)
+* Fixed standard Starburst linking problems (VIX-565)
+* Fixed Pixels having different colors depending on their linking and selection status.
+
+Export/Import
+* Fixed a problem with calculating the number of V2 Elements when the V2 sequence is not an integral of the sequence interval time.
+* V2 Import: Properly handle and report issues with additional channels assigned to an RGB element.
+* V2 Import: Fixed missing ability to set the order of the RGB colors in the channel assignments.
+* Corrected Audio Filename Bug in Helix and Vix2 Export, and array alignment issue
+* Corrected one other alignment issue with Vix2 export
+* Corrected FPP bug where headers other than 50ms are written incorrectly (VIX-591)
+
+LipSync Module
+* Corrected issue where LipSync matrix in Horizontal orientation would miss one row in the display
+* Removed Up/Down Left/Right checkbox on Lipsync Matrix Editor
+* Changed column numbering, added warning to user if Matrix Orientation is changed
+* Lip sync map now saves when the editor is closed vs when the Admin dialog box is closed
+
+
+
 Vixen Release Notes – 3.1
 New Features
 Main Application
@@ -36,7 +105,7 @@ o Curve editor enhancements. Ability to invert or flip a curve and edit the poin
 * Mark Collections can now be exported
 * Improvements to Undo / Redo
 * Screen size and placement settings are now saved and restored when the editor is closed and reopened.
-* Sequence export to Falcon Pi Player, Vixen2.1, Vixen VIR, Helix, and CSV    
+* Sequence export to Falcon Pi Player, Vixen2.1, Vixen VIR, Helix, and CSV  
 Execution Engine
 * Significant performance improvements, especially when playing and sequencing in the editor.
 * Unnecessary engine processes are skipped when the controllers are turned off to provide a better experience while sequencing.
