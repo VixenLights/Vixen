@@ -117,7 +117,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			{
 				_stringType = value;
 				if (_strings != null) {
-					foreach (PreviewBaseShape line in _strings) {
+					foreach (var line in _strings) {
 						line.StringType = _stringType;
 					}
 				}
