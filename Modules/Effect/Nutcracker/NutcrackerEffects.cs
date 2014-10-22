@@ -63,7 +63,8 @@ namespace VixenModules.Effect.Nutcracker
 			Arch,
 			HorizontalLine,
 			VerticalLine,
-			Grid
+			Grid,
+			Cane
 		}
 
 		public enum StringDirection

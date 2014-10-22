@@ -97,6 +97,14 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 						line.Pixels[pixelNum].PixelColor = Data.StringOrienation == NutcrackerEffects.StringOrientations.Vertical ? effect.Pixels[0][pixelNum] : effect.Pixels[pixelNum][0];
 					}
 				}
+				else if (displayItem.Shape is PreviewCane)
+				{
+					PreviewCane cane = displayItem.Shape as PreviewCane;
+					for (int pixelNum = 0; pixelNum < cane.LinePixelCount + cane.ArchPixelCount; pixelNum++)
+					{
+						cane.Pixels[pixelNum].PixelColor = Data.StringOrienation == NutcrackerEffects.StringOrientations.Vertical ? effect.Pixels[0][pixelNum] : effect.Pixels[pixelNum][0];
+					}
+				}
 
 				preview.RenderInForeground();
 			}
@@ -411,6 +419,31 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			preview.AddDisplayItem(displayItem);
 		}
 
+		private void SetupCane()
+		{
+			preview.Data = new VixenPreviewData();
+			preview.LoadBackground();
+			preview.BackgroundAlpha = 0;
+			displayItem = new DisplayItem();
+
+			PreviewCane cane = new PreviewCane(new PreviewPoint(10, 10), null, 1);
+			cane.StringType = PreviewBaseShape.StringTypes.Pixel;
+
+			cane.LinePixelCount = PixelsPerString() / 2;
+			cane.ArchPixelCount = PixelsPerString() / 2;
+			cane.PixelSize = Data.PixelSize;
+			cane.PixelColor = Color.White;
+
+			cane.ArchLeft = new Point(0, preview.Height / 4);
+			cane.TopLeft = new Point(preview.Width / 4, preview.Height / 8);
+			cane.BottomRight = new Point((preview.Width / 4) + (preview.Width / 2), (preview.Height / 4) + (preview.Height / 2));
+
+			cane.Layout();
+			displayItem.Shape = cane;
+
+			preview.AddDisplayItem(displayItem);
+		}
+
 		public void SetupPreview()
 		{
 			DeletePreviewDisplayItem();
@@ -453,6 +486,9 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 					break;
 				case NutcrackerEffects.PreviewType.VerticalLine:
 					SetupLine(false);
+					break;
+				case NutcrackerEffects.PreviewType.Cane:
+					SetupCane();
 					break;
 				default:
 					SetupMegaTree(180);
