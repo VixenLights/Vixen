@@ -46,6 +46,12 @@ namespace VixenModules.Effect.Chase
 		[DataMember]
 		public int DepthOfEffect { get; set; }
 
+		[DataMember]
+		public bool ExtendPulseToStart { get; set; }
+
+		[DataMember]
+		public bool ExtendPulseToEnd { get; set; }
+
 		public ChaseData()
 		{
 			ColorHandling = ChaseColorHandling.StaticColor;
@@ -56,6 +62,8 @@ namespace VixenModules.Effect.Chase
 			PulseCurve = new Curve();
 			ChaseMovement = new Curve();
 			DepthOfEffect = 0;
+			ExtendPulseToStart = false;
+			ExtendPulseToEnd = false;
 		}
 
 		public override IModuleDataModel Clone()
@@ -69,6 +77,8 @@ namespace VixenModules.Effect.Chase
 			result.PulseCurve = new Curve(PulseCurve);
 			result.ChaseMovement = new Curve(ChaseMovement);
 			result.DepthOfEffect = DepthOfEffect;
+			result.ExtendPulseToStart = ExtendPulseToStart;
+			result.ExtendPulseToEnd = ExtendPulseToEnd;
 			return result;
 		}
 	}

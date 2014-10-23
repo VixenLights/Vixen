@@ -52,12 +52,14 @@ namespace VixenModules.EffectEditor.ChaseEffectEditor
 				       		ColorGradient,
 				       		PulseCurve,
 				       		ChaseMovement,
-				       		DepthOfEffect
+				       		DepthOfEffect,
+							ExtendPulseToStart,
+							ExtendPulseToEnd
 				       	};
 			}
 			set
 			{
-				if (value.Length != 8) {
+				if (value.Length != 10) {
 					Logging.Warn("Chase effect parameters set with " + value.Length + " parameters");
 					return;
 				}
@@ -70,6 +72,9 @@ namespace VixenModules.EffectEditor.ChaseEffectEditor
 				PulseCurve = (Curve) value[5];
 				ChaseMovement = (Curve) value[6];
 				DepthOfEffect = (int) value[7];
+				ExtendPulseToStart = (bool)value[8];
+				ExtendPulseToEnd = (bool) value[9];
+				
 			}
 		}
 
@@ -171,6 +176,32 @@ namespace VixenModules.EffectEditor.ChaseEffectEditor
 					radioButtonApplyToLevel.Checked = true;
 					numericUpDownDepthOfEffect.Value = value;
 				}
+			}
+		}
+
+		public bool ExtendPulseToEnd
+		{
+			get
+			{
+				return chkExtendPulseToEnd.Checked;
+			}
+
+			set
+			{
+				chkExtendPulseToEnd.Checked = value;
+			}
+		}
+
+		public bool ExtendPulseToStart
+		{
+			get
+			{
+				return chkExtendPulseToStart.Checked;
+			}
+
+			set
+			{
+				chkExtendPulseToStart.Checked = value;
 			}
 		}
 
