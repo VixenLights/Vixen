@@ -42,6 +42,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			LoadCustomEffects();
 		}
 
+		private void Form_Effects_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			_presetEffectsLibrary.PresetEffectsChanged -= PresetEffectsLibrary_Changed;
+		}
+
 		#region Effect Loading
 
 		private void LoadAvailableEffects()
@@ -139,7 +144,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			if (e.Button == MouseButtons.Right && _mNode.Nodes.Count == 0)
 			{
-				if (_mNode.Parent.Name != "treePreset") return;
+				if (_mNode.Parent == null || _mNode.Parent.Name != "treePreset") return;
 
 				contextMenuStrip.Items.Clear();
 

@@ -98,6 +98,7 @@
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "Form_Effects";
 			this.Text = "Effects";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form_Effects_FormClosing);
 			this.Load += new System.EventHandler(this.Form_Effects_Load);
 			this.ResumeLayout(false);
 
