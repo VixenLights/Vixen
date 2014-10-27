@@ -2893,6 +2893,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			var multipleTypes = false;
 			var hasColor = false;
 			var isColorGradient = false;
+			var isColorList = false;
+			var isColorGradientList = false;
 
 			if (e.Element.Selected)
 			{
@@ -2923,6 +2925,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 
 			int i = 0;
+			//Seach for typeof Color
 			foreach (ParameterSpecification pSig in elementList.First().EffectNode.Effect.Parameters)
 			{
 				if (pSig.Type == typeof (Color))
@@ -2950,10 +2953,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 
 
+			//Seach for typeof ColorGradient
 			if (parameterPickerControls.Count == 0)
 			{
-				//Whoah nelly - Did we really drop a color on an effect that supports no colors at all?!! Lets make sure
-
 				i = 0;
 				foreach (ParameterSpecification pSig in elementList.First().EffectNode.Effect.Parameters)
 				{
@@ -2978,7 +2980,46 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 			}
 
-			if (parameterPickerControls.Count > 1)
+			//Seach for typeof List<Color>
+			if (parameterPickerControls.Count == 0)
+			{
+				i = 0;
+				foreach (ParameterSpecification pSig in elementList.First().EffectNode.Effect.Parameters)
+				{
+					if (pSig.Type == typeof(List<Color>))
+					{
+						hasColor = isColorList = true;
+
+						List<Color> colorList = (List<Color>)elementList.First().EffectNode.Effect.ParameterValues[i];
+
+						int colorIndex = 1;
+						foreach (Color colorItem in colorList)
+						{
+							Bitmap colorImage = new Bitmap(48, 48);
+							Graphics gfx = Graphics.FromImage(colorImage);
+							using (SolidBrush brush = new SolidBrush(colorItem))
+							{
+								gfx.FillRectangle(brush, 0, 0, 48, 48);
+								gfx.DrawRectangle(new Pen(Color.Black, 2), 0, 0, 48, 48);
+							}
+
+							EffectParameterPickerControl effectParameterPickerControl = new EffectParameterPickerControl
+							{
+								ParameterIndex = i,
+								ParameterListIndex = (colorIndex - 1),
+								ParameterName = "Color " + colorIndex,
+								ParameterImage = colorImage
+							};
+
+							parameterPickerControls.Add(effectParameterPickerControl);
+							colorIndex++;
+						}
+					}
+					i++;
+				}
+			}
+
+			if (parameterPickerControls.Count > 1 || isColorList)
 			{
 				FormParameterPicker parameterPicker = new FormParameterPicker(parameterPickerControls)
 				{
@@ -2993,24 +3034,39 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				var dr = parameterPicker.ShowDialog();
 				if (dr == DialogResult.OK)
 				{
-					foreach (Element elem in elementList)
+					if (isColorList)
 					{
-						object[] parms = elem.EffectNode.Effect.ParameterValues;
-						parms[parameterPicker.ParameterIndex] = color;
-
-						switch (elem.EffectNode.Effect.EffectName)
+						foreach (Element elem in elementList)
 						{
-							case "Alternating":
-								if (parameterPicker.ParameterIndex == 1)
-									parms[8] = true;
-								else
-									parms[9] = true;
-								break;
+							object[] parms = elem.EffectNode.Effect.ParameterValues;
+							List<Color> colorList = (List<Color>)parms[parameterPicker.ParameterIndex];
+							colorList[parameterPicker.ParameterListIndex] = color;
+							TimelineControl.grid.RenderElement(elem);
+							sequenceModified();
 						}
+					}
 
-						elem.EffectNode.Effect.ParameterValues = parms;
-						TimelineControl.grid.RenderElement(elem);
-						sequenceModified();
+					else
+					{
+						foreach (Element elem in elementList)
+						{
+							object[] parms = elem.EffectNode.Effect.ParameterValues;
+							parms[parameterPicker.ParameterIndex] = color;
+
+							switch (elem.EffectNode.Effect.EffectName)
+							{
+								case "Alternating":
+									if (parameterPicker.ParameterIndex == 1)
+										parms[8] = true;
+									else
+										parms[9] = true;
+									break;
+							}
+
+							elem.EffectNode.Effect.ParameterValues = parms;
+							TimelineControl.grid.RenderElement(elem);
+							sequenceModified();
+						}
 					}
 				}
 				else

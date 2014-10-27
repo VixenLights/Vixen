@@ -23,11 +23,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			EffectParameterPickerControl control = (EffectParameterPickerControl)sender;
 			ParameterIndex = control.ParameterIndex;
+			ParameterListIndex = control.ParameterListIndex;
 			DialogResult = DialogResult.OK;
 			Close();
 		}
 
 		public int ParameterIndex { get; set; }
+
+		public int ParameterListIndex { get; set; }
 
 		private void flowLayoutPanel1_Paint(object sender, PaintEventArgs e)
 		{

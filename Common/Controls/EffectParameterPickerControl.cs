@@ -25,6 +25,12 @@ namespace Common.Controls
 
 		public int ParameterIndex { get; set; }
 
+		
+		/// <summary>
+		/// The index of the value when the target parameter is a List
+		/// </summary>
+		public int ParameterListIndex { get; set; }
+
 		public Bitmap ParameterImage
 		{
 			set { pictureParameterImage.Image = value; }
