@@ -2890,7 +2890,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			List<EffectParameterPickerControl> parameterPickerControls = new List<EffectParameterPickerControl>();
 			Color color = (Color)e.Data.GetData(typeof(Color));
 			var mousePosition = MousePosition; //Position of mouse when drop happened
-			var multipleTypes = false;
+			var multipleEffectTypes = false;
 			var hasColor = false;
 			var isColorGradient = false;
 			var isColorList = false;
@@ -2906,7 +2906,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					}
 					else
 					{
-						multipleTypes = true;
+						multipleEffectTypes = true;
 					}
 				}
 			}
@@ -2915,7 +2915,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				elementList.Add(e.Element);
 			}
 
-			if (multipleTypes)
+			if (multipleEffectTypes)
 			{
 				var dr =
 					MessageBox.Show(@"Multiple type effects selected, this will only apply to effects of the type: " +
@@ -2986,11 +2986,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				i = 0;
 				foreach (ParameterSpecification pSig in elementList.First().EffectNode.Effect.Parameters)
 				{
-					if (pSig.Type == typeof(List<Color>))
+					if (pSig.Type == typeof (List<Color>))
 					{
 						hasColor = isColorList = true;
 
-						List<Color> colorList = (List<Color>)elementList.First().EffectNode.Effect.ParameterValues[i];
+						List<Color> colorList = (List<Color>) elementList.First().EffectNode.Effect.ParameterValues[i];
 
 						int colorIndex = 1;
 						foreach (Color colorItem in colorList)
@@ -3017,9 +3017,45 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					}
 					i++;
 				}
+
 			}
 
-			if (parameterPickerControls.Count > 1 || isColorList)
+			//Seach for typeof List<ColorGradient>
+			if (parameterPickerControls.Count == 0)
+			{
+				i = 0;
+				foreach (ParameterSpecification pSig in elementList.First().EffectNode.Effect.Parameters)
+				{
+					if (pSig.Type == typeof(List<ColorGradient>))
+					{
+						hasColor = isColorGradientList = true;
+
+						List<ColorGradient> gradientList = (List<ColorGradient>)elementList.First().EffectNode.Effect.ParameterValues[i];
+
+						int gradientIndex = 1;
+						foreach (ColorGradient gradientItem in gradientList)
+						{
+							var gradientImage = new Bitmap((gradientItem.GenerateColorGradientImage(new Size(48, 48), false)));
+							Graphics gfx = Graphics.FromImage(gradientImage);
+							gfx.DrawRectangle(new Pen(Color.Black, 2), 0, 0, 48, 48);
+
+							EffectParameterPickerControl effectParameterPickerControl = new EffectParameterPickerControl
+							{
+								ParameterIndex = i,
+								ParameterListIndex = (gradientIndex - 1),
+								ParameterName = "ColorGradient " + gradientIndex,
+								ParameterImage = gradientImage
+							};
+
+							parameterPickerControls.Add(effectParameterPickerControl);
+							gradientIndex++;
+						}
+					}
+					i++;
+				}
+			}
+
+			if (parameterPickerControls.Count > 1 || isColorList || isColorGradientList)
 			{
 				FormParameterPicker parameterPicker = new FormParameterPicker(parameterPickerControls)
 				{
@@ -3041,12 +3077,28 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							object[] parms = elem.EffectNode.Effect.ParameterValues;
 							List<Color> colorList = (List<Color>)parms[parameterPicker.ParameterIndex];
 							colorList[parameterPicker.ParameterListIndex] = color;
+							parms[parameterPicker.ParameterIndex] = colorList;
+							elem.EffectNode.Effect.ParameterValues = parms;
 							TimelineControl.grid.RenderElement(elem);
 							sequenceModified();
 						}
 					}
 
-					else
+					if (isColorGradientList)
+					{
+						foreach (Element elem in elementList)
+						{
+							object[] parms = elem.EffectNode.Effect.ParameterValues;
+							List<ColorGradient> colorGradientList = (List<ColorGradient>)parms[parameterPicker.ParameterIndex];
+							colorGradientList[parameterPicker.ParameterListIndex] = new ColorGradient(color);
+							parms[parameterPicker.ParameterIndex] = colorGradientList;
+							elem.EffectNode.Effect.ParameterValues = parms;
+							TimelineControl.grid.RenderElement(elem);
+							sequenceModified();
+						}
+					}
+
+					if (!isColorList && !isColorGradientList)
 					{
 						foreach (Element elem in elementList)
 						{
@@ -3132,8 +3184,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			List<EffectParameterPickerControl> parameterPickerControls = new List<EffectParameterPickerControl>();
 			Curve curve = new Curve(_curveLibrary.GetCurve(e.Data.GetData(DataFormats.StringFormat).ToString()));
 			var mousePosition = MousePosition; //Position of mouse when drop happened
-			var multipleTypes = false;
+			var multipleEffectTypes = false;
 			var hasCurve = false;
+			var isCurveList = false;
 
 			if (e.Element.Selected)
 			{
@@ -3145,7 +3198,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					}
 					else
 					{
-						multipleTypes = true;
+						multipleEffectTypes = true;
 					}
 				}
 			}
@@ -3154,7 +3207,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				elementList.Add(e.Element);	
 			}
 
-			if (multipleTypes)
+			if (multipleEffectTypes)
 			{
 				var dr =
 					MessageBox.Show(@"Multiple type effects selected, this will only apply to effects of the type: " +
@@ -3195,6 +3248,41 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				i++;
 			}
 
+			//Seach for typeof List<Curve>
+			if (parameterPickerControls.Count == 0)
+			{
+				i = 0;
+				foreach (ParameterSpecification pSig in elementList.First().EffectNode.Effect.Parameters)
+				{
+					if (pSig.Type == typeof(List<Curve>))
+					{
+						hasCurve = isCurveList = true;
+
+						List<Curve> curveList = (List<Curve>)elementList.First().EffectNode.Effect.ParameterValues[i];
+
+						int curveIndex = 1;
+						foreach (Curve curveItem in curveList)
+						{
+							var curveImage = new Bitmap((curveItem.GenerateCurveImage(new Size(48, 48))));
+							Graphics gfx = Graphics.FromImage(curveImage);
+							gfx.DrawRectangle(new Pen(Color.Black, 2), 0, 0, 48, 48);
+
+							EffectParameterPickerControl effectParameterPickerControl = new EffectParameterPickerControl
+							{
+								ParameterIndex = i,
+								ParameterListIndex = (curveIndex - 1),
+								ParameterName = "Curve " + curveIndex,
+								ParameterImage = curveImage
+							};
+
+							parameterPickerControls.Add(effectParameterPickerControl);
+							curveIndex++;
+						}
+					}
+					i++;
+				}
+			}
+
 			if (parameterPickerControls.Count > 1)
 			{
 				FormParameterPicker parameterPicker = new FormParameterPicker(parameterPickerControls)
@@ -3210,13 +3298,30 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				var dr = parameterPicker.ShowDialog();
 				if (dr == DialogResult.OK)
 				{
-					foreach (Element elem in elementList)
+					if (isCurveList)
 					{
-						object[] parms = elem.EffectNode.Effect.ParameterValues;
-						parms[parameterPicker.ParameterIndex] = curve;
-						elem.EffectNode.Effect.ParameterValues = parms;
-						TimelineControl.grid.RenderElement(elem);
-						sequenceModified();
+						foreach (Element elem in elementList)
+						{
+							object[] parms = elem.EffectNode.Effect.ParameterValues;
+							List<Curve> curveList = (List<Curve>)parms[parameterPicker.ParameterIndex];
+							curveList[parameterPicker.ParameterListIndex] = new Curve(curve);
+							parms[parameterPicker.ParameterIndex] = curveList;
+							elem.EffectNode.Effect.ParameterValues = parms;
+							TimelineControl.grid.RenderElement(elem);
+							sequenceModified();
+						}
+					}
+					
+					else //!isCurveList
+					{
+						foreach (Element elem in elementList)
+						{
+							object[] parms = elem.EffectNode.Effect.ParameterValues;
+							parms[parameterPicker.ParameterIndex] = curve;
+							elem.EffectNode.Effect.ParameterValues = parms;
+							TimelineControl.grid.RenderElement(elem);
+							sequenceModified();
+						}
 					}
 				}
 				else
@@ -3257,10 +3362,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			List<Element> elementList = new List<Element>();
 			List<EffectParameterPickerControl> parameterPickerControls = new List<EffectParameterPickerControl>();
-			ColorGradient gradient = new ColorGradient(_colorGradientLibrary.GetColorGradient(e.Data.GetData(DataFormats.StringFormat).ToString()));
+			ColorGradient colorGradient = new ColorGradient(_colorGradientLibrary.GetColorGradient(e.Data.GetData(DataFormats.StringFormat).ToString()));
 			var mousePosition = MousePosition; //Position of mouse when drop happened
-			var multipleTypes = false;
-			var hasGradient = false;
+			var multipleEffectTypes = false;
+			var hasColorGradient = false;
+			var isColorGradientList = false;
 
 			if (e.Element.Selected)
 			{
@@ -3272,7 +3378,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					}
 					else
 					{
-						multipleTypes = true;
+						multipleEffectTypes = true;
 					}
 				}
 			}
@@ -3281,7 +3387,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				elementList.Add(e.Element);
 			}
 
-			if (multipleTypes)
+			if (multipleEffectTypes)
 			{
 				var dr =
 					MessageBox.Show(@"Multiple type effects selected, this will only apply to effects of the type: " +
@@ -3292,22 +3398,22 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			if (ToolsForm.LinkGradients)
 			{
-				gradient.LibraryReferenceName = e.Data.GetData(DataFormats.StringFormat).ToString();
+				colorGradient.LibraryReferenceName = e.Data.GetData(DataFormats.StringFormat).ToString();
 			}
 			else
 			{
-				gradient.LibraryReferenceName = string.Empty;
-				gradient.UnlinkFromLibrary();
+				colorGradient.LibraryReferenceName = string.Empty;
+				colorGradient.UnlinkFromLibrary();
 			}
 
-			gradient.IsCurrentLibraryGradient = false;
+			colorGradient.IsCurrentLibraryGradient = false;
 
 			int i = 0;
 			foreach (ParameterSpecification pSig in elementList.First().EffectNode.Effect.Parameters)
 			{
 				if (pSig.Type == typeof(ColorGradient))
 				{
-					hasGradient = true;
+					hasColorGradient = true;
 					
 					var gradientImage = new Bitmap(((ColorGradient)elementList.First().EffectNode.Effect.ParameterValues[i]).GenerateColorGradientImage(new Size(48, 48), false));
 					Graphics gfx = Graphics.FromImage(gradientImage);
@@ -3325,6 +3431,41 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				i++;
 			}
 
+			//Seach for typeof List<ColorGradient>
+			if (parameterPickerControls.Count == 0)
+			{
+				i = 0;
+				foreach (ParameterSpecification pSig in elementList.First().EffectNode.Effect.Parameters)
+				{
+					if (pSig.Type == typeof(List<ColorGradient>))
+					{
+						hasColorGradient = isColorGradientList = true;
+
+						List<ColorGradient> gradientList = (List<ColorGradient>)elementList.First().EffectNode.Effect.ParameterValues[i];
+
+						int gradientIndex = 1;
+						foreach (ColorGradient gradientItem in gradientList)
+						{
+							var gradientImage = new Bitmap((gradientItem.GenerateColorGradientImage(new Size(48, 48), false)));
+							Graphics gfx = Graphics.FromImage(gradientImage);
+							gfx.DrawRectangle(new Pen(Color.Black, 2), 0, 0, 48, 48);
+
+							EffectParameterPickerControl effectParameterPickerControl = new EffectParameterPickerControl
+							{
+								ParameterIndex = i,
+								ParameterListIndex = (gradientIndex - 1),
+								ParameterName = "ColorGradient " + gradientIndex,
+								ParameterImage = gradientImage
+							};
+
+							parameterPickerControls.Add(effectParameterPickerControl);
+							gradientIndex++;
+						}
+					}
+					i++;
+				}
+			}
+
 			if (parameterPickerControls.Count > 1)
 			{
 				FormParameterPicker parameterPicker = new FormParameterPicker(parameterPickerControls)
@@ -3340,24 +3481,41 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				var dr = parameterPicker.ShowDialog();
 				if (dr == DialogResult.OK)
 				{
-					foreach (Element elem in elementList)
+					if (isColorGradientList)
 					{
-						object[] parms = elem.EffectNode.Effect.ParameterValues;
-						parms[parameterPicker.ParameterIndex] = gradient;
-						
-						switch (elem.EffectNode.Effect.EffectName)
+						foreach (Element elem in elementList)
 						{
-							case "Alternating":
-								if (parameterPicker.ParameterIndex == 10)
-									parms[8] = false;
-								else
-									parms[9] = false;
-								break;
+							object[] parms = elem.EffectNode.Effect.ParameterValues;
+							List<ColorGradient> colorGradientList = (List<ColorGradient>)parms[parameterPicker.ParameterIndex];
+							colorGradientList[parameterPicker.ParameterListIndex] = new ColorGradient(colorGradient);
+							parms[parameterPicker.ParameterIndex] = colorGradientList;
+							elem.EffectNode.Effect.ParameterValues = parms;
+							TimelineControl.grid.RenderElement(elem);
+							sequenceModified();
 						}
+					}
+					
+					else
+					{
+						foreach (Element elem in elementList)
+						{
+							object[] parms = elem.EffectNode.Effect.ParameterValues;
+							parms[parameterPicker.ParameterIndex] = colorGradient;
 
-						elem.EffectNode.Effect.ParameterValues = parms;
-						TimelineControl.grid.RenderElement(elem);
-						sequenceModified();
+							switch (elem.EffectNode.Effect.EffectName)
+							{
+								case "Alternating":
+									if (parameterPicker.ParameterIndex == 10)
+										parms[8] = false;
+									else
+										parms[9] = false;
+									break;
+							}
+
+							elem.EffectNode.Effect.ParameterValues = parms;
+							TimelineControl.grid.RenderElement(elem);
+							sequenceModified();
+						}
 					}
 				}
 				else
@@ -3367,7 +3525,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			else
 			{
-				if (!hasGradient)
+				if (!hasColorGradient)
 				{
 					updateToolStrip4("No action taken, the target effect(s) do not support Color Gradients.");
 					return;
@@ -3379,7 +3537,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				foreach (Element elem in elementList)
 				{
 					object[] parms = elem.EffectNode.Effect.ParameterValues;
-					parms[j] = gradient;
+					parms[j] = colorGradient;
 					switch (elem.EffectNode.Effect.EffectName)
 					{
 						case "Chase":
