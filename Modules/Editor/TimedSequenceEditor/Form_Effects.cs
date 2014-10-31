@@ -8,18 +8,15 @@ using Vixen.Module.App;
 using Vixen.Module.Effect;
 using Vixen.Services;
 using WeifenLuo.WinFormsUI.Docking;
-using VixenModules.App.PresetEffects;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
 	public partial class Form_Effects : DockContent
 	{
 		private TreeNode _mNode;
-		private PresetEffectsLibrary _presetEffectsLibrary;
 		private bool _beginDragDrop;
 		public event EventHandler EscapeDrawMode;
 		public TimelineControl TimelineControl { get; set; }
-		private ContextMenuStrip contextMenuStrip = new ContextMenuStrip();
 
 		public Form_Effects(TimelineControl timelineControl)
 		{
@@ -29,23 +26,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void Form_Effects_Load(object sender, EventArgs e)
 		{
-			_presetEffectsLibrary = ApplicationServices.Get<IAppModuleInstance>(PresetEffectsLibraryDescriptor.ModuleID) as PresetEffectsLibrary;
-			if (_presetEffectsLibrary != null)
-			{
-				_presetEffectsLibrary.PresetEffectsChanged += PresetEffectsLibrary_Changed;
-			}
-
 			// Remove "Advanced Lighting" for now
 			treeEffects.Nodes.RemoveAt(1);
 			treeEffects.Sorted = true;
 			LoadAvailableEffects();
-			LoadCustomEffects();
 		}
 
-		private void Form_Effects_FormClosing(object sender, FormClosingEventArgs e)
-		{
-			_presetEffectsLibrary.PresetEffectsChanged -= PresetEffectsLibrary_Changed;
-		}
 
 		#region Effect Loading
 
@@ -96,24 +82,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		private void LoadCustomEffects()
-		{
-			treeEffects.Nodes[2].Nodes.Clear();
-
-			foreach (KeyValuePair<Guid, PresetEffect> presetEffect in _presetEffectsLibrary)
-			{
-				TreeNode node = new TreeNode(presetEffect.Value.EffectTypeName + ": " + presetEffect.Value.Name) {Tag = presetEffect.Key};
-				treeEffects.Nodes["treePreset"].Nodes.Add(node);
-				SetNodeImage(node, presetEffect.Value.EffectTypeName.Contains("LipSync") ? "LipSync" : presetEffect.Value.EffectTypeName);
-			}
-
-			if (treeEffects.Nodes["treePreset"].Nodes.Count > 0)
-			{
-				treeEffects.Nodes[2].Expand();
-			}
-
-		}
-
 		#endregion Effect Loading
 
 		#region TreeView Event Handlers
@@ -141,28 +109,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			if (_mNode == null)
 				return;
-
-			if (e.Button == MouseButtons.Right && _mNode.Nodes.Count == 0)
-			{
-				if (_mNode.Parent == null || _mNode.Parent.Name != "treePreset") return;
-
-				contextMenuStrip.Items.Clear();
-
-				ToolStripMenuItem toolStripMenuItemDelete = new ToolStripMenuItem("Delete " + _mNode.Text);
-				toolStripMenuItemDelete.Click += (mySender, myE) =>
-				{
-					var dr = MessageBox.Show(@"Are you sure you want to delete this preset effect?", @"Delete preset effect",
-						MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-					if (dr != DialogResult.Yes) return;
-					DeselectAllNodes();
-					_presetEffectsLibrary.RemovePresetEffect((Guid)_mNode.Tag);
-				};
-				contextMenuStrip.Items.Add(toolStripMenuItemDelete);
-				contextMenuStrip.Show(treeEffects,e.X,e.Y);
-			}
-
-			//From here is all about the left mouse button, if thats not what we have just return
-			if (e.Button != MouseButtons.Left) return;
 
 			//If this is a group, expand or collapse it
 			if (_mNode.Nodes.Count > 0)
@@ -268,11 +214,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				EscapeDrawMode(this,EventArgs.Empty);
 			base.ProcessCmdKey(ref msg, keyData);
 			return true;
-		}
-		
-		private void PresetEffectsLibrary_Changed(object sender, EventArgs e)
-		{
-			LoadCustomEffects();
 		}
 	}
 }

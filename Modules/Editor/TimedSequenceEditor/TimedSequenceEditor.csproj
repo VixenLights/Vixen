@@ -150,6 +150,12 @@
     <Compile Include="Form_Grid.Designer.cs">
       <DependentUpon>Form_Grid.cs</DependentUpon>
     </Compile>
+    <Compile Include="Form_PresetEffects.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form_PresetEffects.Designer.cs">
+      <DependentUpon>Form_PresetEffects.cs</DependentUpon>
+    </Compile>
     <Compile Include="IntentRasterizer.cs" />
     <Compile Include="PapagayoDoc.cs" />
     <Compile Include="MarkManager.cs">
@@ -250,6 +256,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Form_Grid.resx">
       <DependentUpon>Form_Grid.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form_PresetEffects.resx">
+      <DependentUpon>Form_PresetEffects.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MarkManager.resx">
       <DependentUpon>MarkManager.cs</DependentUpon>

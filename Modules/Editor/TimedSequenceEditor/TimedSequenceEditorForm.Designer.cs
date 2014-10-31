@@ -121,6 +121,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripMenuItem_zoomRowsOut = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
 			this.effectWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.presetEffectWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.markWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -895,6 +896,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
             this.toolStripMenuItem_zoomRowsOut,
             this.toolStripMenuItem1,
             this.effectWindowToolStripMenuItem,
+			this.presetEffectWindowToolStripMenuItem,
             this.markWindowToolStripMenuItem,
             this.toolWindowToolStripMenuItem});
 			this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
@@ -950,6 +952,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.effectWindowToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
 			this.effectWindowToolStripMenuItem.Text = "Effect Window";
 			this.effectWindowToolStripMenuItem.Click += new System.EventHandler(this.effectWindowToolStripMenuItem_Click);
+			// 
+			// presetEffectWindowToolStripMenuItem
+			// 
+			this.presetEffectWindowToolStripMenuItem.Name = "presetEffectWindowToolStripMenuItem";
+			this.presetEffectWindowToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+			this.presetEffectWindowToolStripMenuItem.Text = "Preset Effect Window";
+			this.presetEffectWindowToolStripMenuItem.Click += new System.EventHandler(this.presetEffectWindowToolStripMenuItem_Click);
 			// 
 			// markWindowToolStripMenuItem
 			// 
@@ -1392,6 +1401,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private WeifenLuo.WinFormsUI.Docking.DockPanel dockPanel;
 		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
 		private System.Windows.Forms.ToolStripMenuItem effectWindowToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem presetEffectWindowToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem markWindowToolStripMenuItem;
 		private System.Windows.Forms.ToolStripButton toolStripButton_SnapTo;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator9;

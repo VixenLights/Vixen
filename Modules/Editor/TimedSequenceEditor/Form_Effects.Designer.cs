@@ -32,7 +32,6 @@
 			System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Basic Lighting");
 			System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Advanced Lighting");
 			System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Device Action");
-			System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("User Preset Effects");
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form_Effects));
 			this.treeEffects = new System.Windows.Forms.TreeView();
 			this.effectTreeImages = new System.Windows.Forms.ImageList(this.components);
@@ -58,14 +57,10 @@
 			treeNode3.SelectedImageKey = "(default)";
 			treeNode3.StateImageKey = "(none)";
 			treeNode3.Text = "Device Action";
-			treeNode4.ImageKey = "bullet_arrow_Right.png";
-			treeNode4.Name = "treePreset";
-			treeNode4.Text = "User Preset Effects";
 			this.treeEffects.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode1,
             treeNode2,
-            treeNode3,
-            treeNode4});
+            treeNode3});
 			this.treeEffects.SelectedImageIndex = 0;
 			this.treeEffects.ShowLines = false;
 			this.treeEffects.ShowPlusMinus = false;
@@ -98,7 +93,6 @@
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "Form_Effects";
 			this.Text = "Effects";
-			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form_Effects_FormClosing);
 			this.Load += new System.EventHandler(this.Form_Effects_Load);
 			this.ResumeLayout(false);
 
