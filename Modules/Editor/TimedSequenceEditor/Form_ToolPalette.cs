@@ -254,7 +254,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				ListViewItem item = new ListViewItem {Text = name, Name = name, ImageKey = name};
 
-				listViewCurves.Items.Add(item);
+				if (item != null) listViewCurves.Items.Add(item);
 			}
 
 			listViewCurves.EndUpdate();
