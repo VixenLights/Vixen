@@ -383,27 +383,17 @@ namespace VixenModules.Effect.Chase
 			if (intentNode == null || intentNode.EndTime >= TimeSpan) return;
 			var lightingIntent = intentNode.Intent as LightingIntent;
 			if(lightingIntent != null && lightingIntent.EndValue.Intensity > 0){
-
-				if (gradient!=null)
+				var newCurve = new Curve(new PointPairList(new PointPairList(new[] { 0.0, 100 }, new[] { lightingIntent.EndValue.Intensity * 100, lightingIntent.EndValue.Intensity * 100 })));
+				var pulse = new Pulse.Pulse
 				{
-					var newCurve = new Curve(new PointPairList(new PointPairList(new[] { 0.0, 100 }, new[] { lightingIntent.EndValue.Intensity * 100, lightingIntent.EndValue.Intensity * 100 })));
-					var pulse = new Pulse.Pulse
-					{
-						TargetNodes = new[] {target},
-						LevelCurve = newCurve,
-						ColorGradient = gradient,
-						TimeSpan = TimeSpan - intentNode.EndTime
-					};
-					EffectIntents result = pulse.Render();
-					result.OffsetAllCommandsByTime(intentNode.EndTime);
-					_elementData.Add(result);
-				}
-				else
-				{
-					var lightingValue = new LightingValue(lightingIntent.EndValue.FullColor, lightingIntent.EndValue.Intensity);
-					IIntent intent = new LightingIntent(lightingValue, lightingValue, TimeSpan - intentNode.EndTime);
-					_elementData.AddIntentForElement(target.Element.Id, intent, intentNode.EndTime);
-				}
+					TargetNodes = new[] {target},
+					LevelCurve = newCurve,
+					ColorGradient = gradient ?? new ColorGradient(lightingIntent.EndValue.FullColor),
+					TimeSpan = TimeSpan - intentNode.EndTime
+				};
+				EffectIntents result = pulse.Render();
+				result.OffsetAllCommandsByTime(intentNode.EndTime);
+				_elementData.Add(result);
 			}
 		}
 
@@ -413,29 +403,19 @@ namespace VixenModules.Effect.Chase
 			var lightingIntent = intentNode.Intent as LightingIntent;
 			if (lightingIntent!= null && lightingIntent.StartValue.Intensity > 0)
 			{
-				if (gradient != null)
+				var newCurve =
+					new Curve(
+						new PointPairList(new PointPairList(new[] {0.0, 100},
+							new[] {lightingIntent.StartValue.Intensity*100, lightingIntent.StartValue.Intensity*100})));
+				var pulse = new Pulse.Pulse
 				{
-					var newCurve =
-						new Curve(
-							new PointPairList(new PointPairList(new[] {0.0, 100},
-								new[] {lightingIntent.EndValue.Intensity*100, lightingIntent.EndValue.Intensity*100})));
-					var pulse = new Pulse.Pulse
-					{
-						TargetNodes = new[] {target},
-						LevelCurve = newCurve,
-						ColorGradient = gradient,
-						TimeSpan = intentNode.StartTime
-					};
-					EffectIntents result = pulse.Render();
-					_elementData.Add(result);
-				}
-				else
-				{
-					var lightingValue = new LightingValue(lightingIntent.StartValue.FullColor,
-						lightingIntent.StartValue.Intensity);
-					IIntent intent = new LightingIntent(lightingValue, lightingValue, intentNode.StartTime);
-					_elementData.AddIntentForElement(target.Element.Id, intent, TimeSpan.Zero);
-				}
+					TargetNodes = new[] {target},
+					LevelCurve = newCurve,
+					ColorGradient = gradient ?? new ColorGradient(lightingIntent.StartValue.FullColor),
+					TimeSpan = intentNode.StartTime
+				};
+				EffectIntents result = pulse.Render();
+				_elementData.Add(result);
 			}
 		}
 
