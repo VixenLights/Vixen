@@ -455,7 +455,7 @@ namespace VixenModules.Effect.Chase
 					pulse.ColorGradient = ColorGradient;
 					result = pulse.Render();
 					result.OffsetAllCommandsByTime(startTime);
-					if (ExtendPulseToStart)
+					if (ExtendPulseToStart && result.Count > 0)
 					{
 						foreach (var iintentNode in result.FirstOrDefault().Value)
 						{
@@ -463,7 +463,7 @@ namespace VixenModules.Effect.Chase
 						}
 					}
 					_elementData.Add(result);
-					if (ExtendPulseToEnd)
+					if (ExtendPulseToEnd && result.Count > 0)
 					{
 						foreach (var iintentNode in result.FirstOrDefault().Value)
 						{
@@ -489,7 +489,7 @@ namespace VixenModules.Effect.Chase
 						ColorGradient cg = ColorGradient.GetSubGradientWithDiscreteColors(startPos, endPos);
 
 						foreach (Color color in cg.GetColorsInGradient()) {
-							Curve newCurve = new Curve(pulse.LevelCurve.Points);
+							Curve newCurve = new Curve(PulseCurve.Points);
 							foreach (PointPair point in newCurve.Points) {
 								double effectRelativePosition = startPos + ((point.X / 100.0) * range);
 								double proportion = ColorGradient.GetProportionOfColorAt(effectRelativePosition, color);
@@ -499,13 +499,13 @@ namespace VixenModules.Effect.Chase
 							pulse.ColorGradient = new ColorGradient(color);
 							result = pulse.Render();
 							result.OffsetAllCommandsByTime(startTime);
-							if (ExtendPulseToStart)
+							if (ExtendPulseToStart && result.Count > 0)
 							{
 								intent = result.FirstOrDefault().Value.FirstOrDefault();
 								GenerateStartingStaticPulse(target, intent);
 							}
 							_elementData.Add(result);
-							if (ExtendPulseToEnd)
+							if (ExtendPulseToEnd && result.Count>0)
 							{
 								intent = result.FirstOrDefault().Value.LastOrDefault();
 								GenerateExtendedStaticPulse(target, intent);
@@ -515,13 +515,13 @@ namespace VixenModules.Effect.Chase
 						pulse.ColorGradient = ColorGradient.GetSubGradient(startPos, endPos);
 						result = pulse.Render();
 						result.OffsetAllCommandsByTime(startTime);
-						if (ExtendPulseToStart)
+						if (ExtendPulseToStart && result.Count > 0)
 						{
 							intent = result.FirstOrDefault().Value.FirstOrDefault();
 							GenerateStartingStaticPulse(target, intent, ColorGradient.GetSubGradient(0, startPos));
 						}
 						_elementData.Add(result);
-						if (ExtendPulseToEnd)
+						if (ExtendPulseToEnd && result.Count > 0)
 						{
 							intent = result.FirstOrDefault().Value.LastOrDefault();
 							GenerateExtendedStaticPulse(target, intent, ColorGradient.GetSubGradient(endPos,1));
@@ -534,13 +534,13 @@ namespace VixenModules.Effect.Chase
 					pulse.ColorGradient = StaticColorGradient;
 					result = pulse.Render();
 					result.OffsetAllCommandsByTime(startTime);
-					if (ExtendPulseToStart)
+					if (ExtendPulseToStart && result.Count > 0)
 					{
 						intent = result.FirstOrDefault().Value.FirstOrDefault();
 						GenerateStartingStaticPulse(target, intent);
 					}
 					_elementData.Add(result);
-					if (ExtendPulseToEnd)
+					if (ExtendPulseToEnd && result.Count > 0)
 					{
 						intent = result.FirstOrDefault().Value.LastOrDefault();
 						GenerateExtendedStaticPulse(target, intent);
@@ -553,7 +553,7 @@ namespace VixenModules.Effect.Chase
 						foreach (Tuple<Color, float> colorProportion in colorsAtPosition) {
 							float proportion = colorProportion.Item2;
 							// scale all levels of the pulse curve by the proportion that is applicable to this color
-							Curve newCurve = new Curve(pulse.LevelCurve.Points);
+							Curve newCurve = new Curve(PulseCurve.Points);
 							foreach (PointPair pointPair in newCurve.Points) {
 								pointPair.Y *= proportion;
 							}
@@ -561,13 +561,13 @@ namespace VixenModules.Effect.Chase
 							pulse.ColorGradient = new ColorGradient(colorProportion.Item1);
 							result = pulse.Render();
 							result.OffsetAllCommandsByTime(startTime);
-							if (ExtendPulseToStart)
+							if (ExtendPulseToStart && result.Count > 0)
 							{
 								intent = result.FirstOrDefault().Value.FirstOrDefault();
 								GenerateStartingStaticPulse(target, intent);
 							}
 							_elementData.Add(result);
-							if (ExtendPulseToEnd)
+							if (ExtendPulseToEnd && result.Count > 0)
 							{
 								intent = result.FirstOrDefault().Value.LastOrDefault();
 								GenerateExtendedStaticPulse(target, intent);
@@ -577,13 +577,13 @@ namespace VixenModules.Effect.Chase
 						pulse.ColorGradient = new ColorGradient(ColorGradient.GetColorAt(currentMovementPosition/100.0));
 						result = pulse.Render();
 						result.OffsetAllCommandsByTime(startTime);
-						if (ExtendPulseToStart)
+						if (ExtendPulseToStart && result.Count > 0)
 						{
 							intent = result.FirstOrDefault().Value.FirstOrDefault();
 							GenerateStartingStaticPulse(target, intent);
 						}
 						_elementData.Add(result);
-						if (ExtendPulseToEnd)
+						if (ExtendPulseToEnd && result.Count > 0)
 						{
 							intent = result.FirstOrDefault().Value.LastOrDefault();
 							GenerateExtendedStaticPulse(target, intent);
