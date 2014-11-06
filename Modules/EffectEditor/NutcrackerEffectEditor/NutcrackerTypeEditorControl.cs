@@ -589,6 +589,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			trackButterflyBkgrdChunks.Value = Data.Butterfly_BkgrdChunks;
 			trackButterflyBkgrdSkip.Value = Data.Butterfly_Style;
 			comboBoxButterflyColors.SelectedIndex = Data.Butterfly_Colors;
+			comboButterflyDirection.SelectedIndex = Data.Butterfly_Direction;
 		}
 
 		private void Butterfly_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender,
