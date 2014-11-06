@@ -188,6 +188,10 @@
 			this.comboCurtainEdge = new System.Windows.Forms.ComboBox();
 			this.trackCurtainSwagWidth = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
+			this.tabGlediator = new System.Windows.Forms.TabPage();
+			this.lblGlediator = new System.Windows.Forms.Label();
+			this.buttonGlediatorFile = new System.Windows.Forms.Button();
+			this.textGlediatorFileName = new System.Windows.Forms.TextBox();
 			this.comboBoxEffect = new System.Windows.Forms.ComboBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.trackBarSpeed = new System.Windows.Forms.TrackBar();
@@ -201,10 +205,7 @@
 			this.scrollPixelSize = new Common.Controls.ControlsEx.ValueControls.HValueScrollBar();
 			this.label44 = new System.Windows.Forms.Label();
 			this.buttonHelp = new System.Windows.Forms.Button();
-			this.tabGlediator = new System.Windows.Forms.TabPage();
-			this.textGlediatorFileName = new System.Windows.Forms.TextBox();
-			this.buttonGlediatorFile = new System.Windows.Forms.Button();
-			this.lblGlediator = new System.Windows.Forms.Label();
+			this.lblGlediatorExperimental = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.tabEffectProperties.SuspendLayout();
@@ -230,9 +231,9 @@
 			this.Fire.SuspendLayout();
 			this.Garlands.SuspendLayout();
 			this.Curtain.SuspendLayout();
+			this.tabGlediator.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarSpeed)).BeginInit();
 			this.groupBox3.SuspendLayout();
-			this.tabGlediator.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// timerRender
@@ -1662,7 +1663,7 @@
 			this.Butterfly.Controls.Add(this.trackButterflyStyle);
 			this.Butterfly.Location = new System.Drawing.Point(4, 5);
 			this.Butterfly.Name = "Butterfly";
-			this.Butterfly.Padding = new System.Windows.Forms.Padding(3);
+			this.Butterfly.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
 			this.Butterfly.Size = new System.Drawing.Size(266, 243);
 			this.Butterfly.TabIndex = 1;
 			this.Butterfly.Text = "Butterfly";
@@ -1785,7 +1786,7 @@
 			this.Bars.Controls.Add(this.trackBarPaletteRepeat);
 			this.Bars.Location = new System.Drawing.Point(4, 5);
 			this.Bars.Name = "Bars";
-			this.Bars.Padding = new System.Windows.Forms.Padding(3);
+			this.Bars.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
 			this.Bars.Size = new System.Drawing.Size(266, 243);
 			this.Bars.TabIndex = 0;
 			this.Bars.Text = "Bars";
@@ -1927,7 +1928,7 @@
 			this.ColorWash.Controls.Add(this.trackColorWashCount);
 			this.ColorWash.Location = new System.Drawing.Point(4, 5);
 			this.ColorWash.Name = "ColorWash";
-			this.ColorWash.Padding = new System.Windows.Forms.Padding(3);
+			this.ColorWash.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
 			this.ColorWash.Size = new System.Drawing.Size(266, 243);
 			this.ColorWash.TabIndex = 2;
 			this.ColorWash.Text = "ColorWash";
@@ -1982,7 +1983,7 @@
 			this.Fire.Controls.Add(this.trackFireHeight);
 			this.Fire.Location = new System.Drawing.Point(4, 5);
 			this.Fire.Name = "Fire";
-			this.Fire.Padding = new System.Windows.Forms.Padding(3);
+			this.Fire.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
 			this.Fire.Size = new System.Drawing.Size(266, 243);
 			this.Fire.TabIndex = 3;
 			this.Fire.Text = "Fire";
@@ -2069,7 +2070,7 @@
 			this.Curtain.Controls.Add(this.trackCurtainSwagWidth);
 			this.Curtain.Location = new System.Drawing.Point(4, 5);
 			this.Curtain.Name = "Curtain";
-			this.Curtain.Padding = new System.Windows.Forms.Padding(3);
+			this.Curtain.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
 			this.Curtain.Size = new System.Drawing.Size(266, 243);
 			this.Curtain.TabIndex = 18;
 			this.Curtain.Text = "Curtain";
@@ -2159,11 +2160,52 @@
 			// 
 			this.tabPage1.Location = new System.Drawing.Point(4, 5);
 			this.tabPage1.Name = "tabPage1";
-			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage1.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
 			this.tabPage1.Size = new System.Drawing.Size(266, 243);
 			this.tabPage1.TabIndex = 19;
 			this.tabPage1.Text = "tabPage1";
 			this.tabPage1.UseVisualStyleBackColor = true;
+			// 
+			// tabGlediator
+			// 
+			this.tabGlediator.Controls.Add(this.lblGlediatorExperimental);
+			this.tabGlediator.Controls.Add(this.lblGlediator);
+			this.tabGlediator.Controls.Add(this.buttonGlediatorFile);
+			this.tabGlediator.Controls.Add(this.textGlediatorFileName);
+			this.tabGlediator.Location = new System.Drawing.Point(4, 5);
+			this.tabGlediator.Name = "tabGlediator";
+			this.tabGlediator.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+			this.tabGlediator.Size = new System.Drawing.Size(266, 243);
+			this.tabGlediator.TabIndex = 20;
+			this.tabGlediator.Text = "Glediator";
+			this.tabGlediator.UseVisualStyleBackColor = true;
+			// 
+			// lblGlediator
+			// 
+			this.lblGlediator.AutoSize = true;
+			this.lblGlediator.Location = new System.Drawing.Point(13, 46);
+			this.lblGlediator.Name = "lblGlediator";
+			this.lblGlediator.Size = new System.Drawing.Size(68, 13);
+			this.lblGlediator.TabIndex = 2;
+			this.lblGlediator.Text = "Glediator File";
+			// 
+			// buttonGlediatorFile
+			// 
+			this.buttonGlediatorFile.Location = new System.Drawing.Point(107, 37);
+			this.buttonGlediatorFile.Name = "buttonGlediatorFile";
+			this.buttonGlediatorFile.Size = new System.Drawing.Size(75, 23);
+			this.buttonGlediatorFile.TabIndex = 1;
+			this.buttonGlediatorFile.Text = "File chooser";
+			this.buttonGlediatorFile.UseVisualStyleBackColor = true;
+			this.buttonGlediatorFile.Click += new System.EventHandler(this.buttonGlediatorFile_Click);
+			// 
+			// textGlediatorFileName
+			// 
+			this.textGlediatorFileName.Location = new System.Drawing.Point(6, 70);
+			this.textGlediatorFileName.Name = "textGlediatorFileName";
+			this.textGlediatorFileName.ReadOnly = true;
+			this.textGlediatorFileName.Size = new System.Drawing.Size(254, 20);
+			this.textGlediatorFileName.TabIndex = 0;
 			// 
 			// comboBoxEffect
 			// 
@@ -2286,45 +2328,16 @@
 			this.buttonHelp.UseVisualStyleBackColor = true;
 			this.buttonHelp.Click += new System.EventHandler(this.buttonHelp_Click);
 			// 
-			// tabGlediator
+			// lblGlediatorExperimental
 			// 
-			this.tabGlediator.Controls.Add(this.lblGlediator);
-			this.tabGlediator.Controls.Add(this.buttonGlediatorFile);
-			this.tabGlediator.Controls.Add(this.textGlediatorFileName);
-			this.tabGlediator.Location = new System.Drawing.Point(4, 5);
-			this.tabGlediator.Name = "tabGlediator";
-			this.tabGlediator.Padding = new System.Windows.Forms.Padding(3);
-			this.tabGlediator.Size = new System.Drawing.Size(266, 243);
-			this.tabGlediator.TabIndex = 20;
-			this.tabGlediator.Text = "Glediator";
-			this.tabGlediator.UseVisualStyleBackColor = true;
-			// 
-			// textGlediatorFileName
-			// 
-			this.textGlediatorFileName.Location = new System.Drawing.Point(6, 61);
-			this.textGlediatorFileName.Name = "textGlediatorFileName";
-			this.textGlediatorFileName.ReadOnly = true;
-			this.textGlediatorFileName.Size = new System.Drawing.Size(254, 20);
-			this.textGlediatorFileName.TabIndex = 0;
-			// 
-			// buttonGlediatorFile
-			// 
-			this.buttonGlediatorFile.Location = new System.Drawing.Point(107, 28);
-			this.buttonGlediatorFile.Name = "buttonGlediatorFile";
-			this.buttonGlediatorFile.Size = new System.Drawing.Size(75, 23);
-			this.buttonGlediatorFile.TabIndex = 1;
-			this.buttonGlediatorFile.Text = "File chooser";
-			this.buttonGlediatorFile.UseVisualStyleBackColor = true;
-			this.buttonGlediatorFile.Click += new System.EventHandler(this.buttonGlediatorFile_Click);
-			// 
-			// lblGlediator
-			// 
-			this.lblGlediator.AutoSize = true;
-			this.lblGlediator.Location = new System.Drawing.Point(13, 37);
-			this.lblGlediator.Name = "lblGlediator";
-			this.lblGlediator.Size = new System.Drawing.Size(68, 13);
-			this.lblGlediator.TabIndex = 2;
-			this.lblGlediator.Text = "Glediator File";
+			this.lblGlediatorExperimental.AutoSize = true;
+			this.lblGlediatorExperimental.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblGlediatorExperimental.ForeColor = System.Drawing.Color.Red;
+			this.lblGlediatorExperimental.Location = new System.Drawing.Point(13, 16);
+			this.lblGlediatorExperimental.Name = "lblGlediatorExperimental";
+			this.lblGlediatorExperimental.Size = new System.Drawing.Size(122, 16);
+			this.lblGlediatorExperimental.TabIndex = 3;
+			this.lblGlediatorExperimental.Text = "*** Experimental ***";
 			// 
 			// NutcrackerTypeEditorControl
 			// 
@@ -2334,6 +2347,7 @@
 			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
+			this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Name = "NutcrackerTypeEditorControl";
 			this.Size = new System.Drawing.Size(718, 452);
 			this.Load += new System.EventHandler(this.NutcrackerTypeEditorControl_Load);
@@ -2383,11 +2397,11 @@
 			this.Garlands.PerformLayout();
 			this.Curtain.ResumeLayout(false);
 			this.Curtain.PerformLayout();
+			this.tabGlediator.ResumeLayout(false);
+			this.tabGlediator.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarSpeed)).EndInit();
 			this.groupBox3.ResumeLayout(false);
 			this.groupBox3.PerformLayout();
-			this.tabGlediator.ResumeLayout(false);
-			this.tabGlediator.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -2583,5 +2597,6 @@
 		private System.Windows.Forms.TextBox textGlediatorFileName;
 		private System.Windows.Forms.Button buttonGlediatorFile;
 		private System.Windows.Forms.Label lblGlediator;
+		private System.Windows.Forms.Label lblGlediatorExperimental;
 	}
 }
