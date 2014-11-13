@@ -166,7 +166,7 @@ namespace VixenModules.Preview.VixenPreview
 			get { return _highlightedElements; }
 		}
 
-		public List<DisplayItem> SelectedDisplayItems
+		private List<DisplayItem> SelectedDisplayItems
 		{
 			get
 			{

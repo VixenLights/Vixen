@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Drawing;
+using NLog;
 using VixenModules.Effect.Nutcracker;
 using System.Threading.Tasks;
 using System.Threading;
@@ -11,13 +13,13 @@ using System.IO;
 
 namespace VixenModules.Effect.Nutcracker
 {
-	public class NutcrackerEffects
+	public partial class NutcrackerEffects: IDisposable
 	{
 		#region Variables
-
+		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 		private NutcrackerData _data = null;
 		private long _state;
-		private int _lastPeriod;
+		private int _lastPeriod, _curPeriod;
 		private int _renderPeriod;
 		private List<List<Color>> _pixels = new List<List<Color>>();
 		private List<List<Color>> _tempbuf = new List<List<Color>>();
@@ -46,7 +48,9 @@ namespace VixenModules.Effect.Nutcracker
 			Spirograph,
 			Text,
 			Tree,
-			Twinkles
+			Twinkles,
+			Curtain,
+			Glediator
 		}
 
 		public enum PreviewType
@@ -59,7 +63,8 @@ namespace VixenModules.Effect.Nutcracker
 			Arch,
 			HorizontalLine,
 			VerticalLine,
-			Grid
+			Grid,
+			Cane
 		}
 
 		public enum StringDirection
@@ -81,11 +86,26 @@ namespace VixenModules.Effect.Nutcracker
 			_state = 0;
 			_lastPeriod = 0;
 			_renderPeriod = 0;
+			TimeInterval = 50;
 		}
 
-		public NutcrackerEffects(NutcrackerData data)
+		/// <summary>
+		/// Effect engine. Defaults to 50ms intervals
+		/// </summary>
+		/// <param name="data"></param>
+		public NutcrackerEffects(NutcrackerData data):this(data, 50)
+		{	
+		}
+
+		/// <summary>
+		/// Effect engine. Defaults to 50ms intervals
+		/// </summary>
+		/// <param name="data"></param>
+		/// <param name="timeInterval"></param>
+		public NutcrackerEffects(NutcrackerData data, int timeInterval)
 		{
 			Data = data;
+			TimeInterval = timeInterval;
 		}
 
 		public NutcrackerData Data
@@ -125,6 +145,16 @@ namespace VixenModules.Effect.Nutcracker
 			set { Data.Palette = value; }
 		}
 
+		public int TimeInterval { get; set; }
+
+		public bool FitToTime
+		{
+			private get { return Data.FitToTime; } 
+			set { Data.FitToTime = value; }
+		}
+
+		public TimeSpan Duration { private get; set; }
+
 		#endregion
 
 		#region Nutcracker Utilities
@@ -160,7 +190,7 @@ namespace VixenModules.Effect.Nutcracker
 			}
 			Data.Speed = NewSpeed;
 
-			_lastPeriod = period;
+			_lastPeriod = _curPeriod = period;
 		}
 
 		public void SetNextState(bool ResetState)
@@ -276,6 +306,20 @@ namespace VixenModules.Effect.Nutcracker
 			}
 		}
 
+		private double GetEffectTimeIntervalPosition()
+		{
+			double retval;
+			if (Duration == TimeSpan.Zero)
+			{
+				retval = 1;
+			}
+			else
+			{
+				retval = _curPeriod/(Duration.TotalMilliseconds/TimeInterval);
+			}
+			return retval;
+		}
+
 		#endregion
 
 		#region Pixels
@@ -313,40 +357,7 @@ namespace VixenModules.Effect.Nutcracker
 			State = 0;
 		}
 
-		// initialize FirePalette[]
-		private void InitFirePalette()
-		{
-			HSV hsv = new HSV();
-			Color color;
-
-			FirePalette.Clear();
-			//wxImage::HSVValue hsv;
-			//wxImage::RGBValue rgb;
-			//wxColour color;
-			int i;
-			// calc 100 reds, black to bright red
-			hsv.Hue = 0.0f;
-			hsv.Saturation = 1.0f;
-			for (i = 0; i < 100; i++) {
-				hsv.Value = (float) i/100.0f;
-				//rgb = wxImage::HSVtoRGB(hsv);
-				//color.Set(rgb.red,rgb.green,rgb.blue);
-				color = HSV.HSVtoColor(hsv);
-				FirePalette.Add(color);
-				//FirePalette.push_back(color);
-			}
-
-			// gives 100 hues red to yellow
-			hsv.Value = 1.0f;
-			for (i = 0; i < 100; i++) {
-				//rgb = wxImage::HSVtoRGB(hsv);
-				//color.Set(rgb.red,rgb.green,rgb.blue);
-				color = HSV.HSVtoColor(hsv);
-				//FirePalette.push_back(color);
-				FirePalette.Add(color);
-				hsv.Hue += 0.00166666f;
-			}
-		}
+		
 
 		// 0,0 is lower left
 		public void SetPixel(int x, int y, Color color)
@@ -443,51 +454,136 @@ namespace VixenModules.Effect.Nutcracker
 
 		#region Nutcracker Effects
 
-		public void RenderBars(int PaletteRepeat, int Direction, bool Highlight, bool Show3D)
+		#region Bars
+
+		public void RenderBars(int paletteRepeat, int direction, bool highlight, bool show3D)
 		{
-			int x, y, n, pixel_ratio, ColorIdx;
-			bool IsMovingDown, IsHighlightRow;
+			int x,y,n,colorIdx;
 			HSV hsv;
-			int colorcnt = Palette.Count();
-			int BarCount = PaletteRepeat*colorcnt;
-			int BarHt = BufferHt/BarCount + 1;
-			int HalfHt = BufferHt/2;
-			int BlockHt = colorcnt*BarHt;
-			int f_offset = (int) (_state/4%BlockHt);
-			for (y = 0; y < BufferHt; y++) {
-				switch (Direction) {
+			int colorcnt=GetColorCount();
+			int barCount = paletteRepeat * colorcnt;
+			double position = GetEffectTimeIntervalPosition();
+			if(barCount<1) barCount=1;
+
+
+			if (direction < 4 || direction == 8 || direction == 9)
+			{
+				int barHt = BufferHt/barCount+1;
+				if(barHt<1) barHt=1;
+				int halfHt = BufferHt/2;
+				int blockHt=colorcnt * barHt;
+				if(blockHt<1) blockHt=1;
+				int fOffset = Convert.ToInt32(FitToTime?position*blockHt: State/4 % blockHt);
+				fOffset = Convert.ToInt32(direction == 8 || direction == 9 ? (State/20)*barHt: fOffset);
+				direction = direction > 4?direction-8:direction;
+
+				for (y=0; y<BufferHt; y++)
+				{
+					n=y+fOffset;
+					colorIdx=(n % blockHt) / barHt;
+					hsv= Palette.GetHSV(colorIdx);
+					if (highlight && n % barHt == 0) hsv.Saturation=0.0f;
+					if (show3D) hsv.Value *= (float)(barHt - n%barHt - 1) / barHt;
+					switch (direction)
+					{
 					case 1:
-						IsMovingDown = true;
+						// down
+						for (x=0; x<BufferWi; x++)
+						{
+							SetPixel(x,y,hsv);
+						}
 						break;
 					case 2:
-						IsMovingDown = (y <= HalfHt);
+						// expand
+						if (y <= halfHt) {
+							for (x=0; x<BufferWi; x++)
+							{
+								SetPixel(x,y,hsv);
+								SetPixel(x,BufferHt-y-1,hsv);
+							}
+						}
 						break;
 					case 3:
-						IsMovingDown = (y > HalfHt);
+						// compress
+						if (y >= halfHt) {
+							for (x=0; x<BufferWi; x++)
+							{
+								SetPixel(x,y,hsv);
+								SetPixel(x,BufferHt-y-1,hsv);
+							}
+						}
 						break;
 					default:
-						IsMovingDown = false;
+						// up
+						for (x=0; x<BufferWi; x++)
+						{
+							SetPixel(x,BufferHt-y-1,hsv);
+						}
 						break;
+					}
 				}
-				if (IsMovingDown) {
-					n = y + f_offset;
-					pixel_ratio = BarHt - n%BarHt - 1;
-					IsHighlightRow = n%BarHt == 0;
-				}
-				else {
-					n = y - f_offset + BlockHt;
-					pixel_ratio = n%BarHt;
-					IsHighlightRow = (n%BarHt == BarHt - 1); // || (y == BufferHt-1);
-				}
-				ColorIdx = (n%BlockHt)/BarHt;
-				hsv = Palette.GetHSV(ColorIdx);
-				if (Highlight && IsHighlightRow) hsv.Saturation = 0f;
-				if (Show3D) hsv.Value *= (float) pixel_ratio/(float) BarHt;
-				for (x = 0; x < BufferWi; x++) {
-					SetPixel(x, y, hsv);
+			}
+			else
+			{
+				int barWi = BufferWi/barCount+1;
+				if(barWi<1) barWi=1;
+				int halfWi = BufferWi/2;
+				int blockWi=colorcnt * barWi;
+				if(blockWi<1) blockWi=1;
+				int fOffset = Convert.ToInt32(FitToTime?position*blockWi:State/4 % blockWi);
+				fOffset = Convert.ToInt32(direction > 9 ? (State/20)*barWi: fOffset);
+				direction = direction > 9?direction-6:direction;
+				for (x=0; x<BufferWi; x++)
+				{
+					n=x+fOffset;
+					colorIdx=(n % blockWi) / barWi;
+					hsv = Palette.GetHSV(colorIdx);
+					if (highlight && n % barWi == 0) hsv.Saturation=0.0f;
+					if (show3D) hsv.Value *= (float)(barWi - n%barWi - 1) / barWi;
+					switch (direction)
+					{
+					case 5:
+						// right
+						for (y=0; y<BufferHt; y++)
+						{
+							SetPixel(BufferWi-x-1,y,hsv);
+						}
+						break;
+					case 6:
+						// H-expand
+						if (x <= halfWi) {
+							for (y=0; y<BufferHt; y++)
+							{
+								SetPixel(x,y,hsv);
+								SetPixel(BufferWi-x-1,y,hsv);
+							}
+						}
+						break;
+					case 7:
+						// H-compress
+						if (x >= halfWi) {
+							for (y=0; y<BufferHt; y++)
+							{
+								SetPixel(x,y,hsv);
+								SetPixel(BufferWi-x-1,y,hsv);
+							}
+						}
+						break;
+					default:
+						// left
+						for (y=0; y<BufferHt; y++)
+						{
+							SetPixel(x,y,hsv);
+						}
+						break;
+					}
 				}
 			}
 		}
+
+		#endregion
+
+		#region Garlands
 
 		public void RenderGarlands(int GarlandType, int Spacing)
 		{
@@ -557,7 +653,11 @@ namespace VixenModules.Effect.Nutcracker
 			}
 		}
 
-		public void RenderButterfly(int ColorScheme, int Style, int Chunks, int Skip)
+		#endregion
+
+		#region Butterfly
+
+		public void RenderButterfly(int colorScheme, int style, int chunks, int skip, int direction)
 		{
 			int x, y, d;
 			double n, x1, y1, f;
@@ -565,11 +665,12 @@ namespace VixenModules.Effect.Nutcracker
 			Color color;
 			HSV hsv = new HSV();
 			int maxframe = BufferHt*2;
-			int frame = (int) (((double) BufferHt*(double) State/200.0)%(double) maxframe);
-			double offset = (double) State/100.0;
+			int frame = (int) ((BufferHt*(double) State/200.0)%maxframe);
+			double offset = State/100.0;
+			if (direction == 1) offset = -offset;
 			for (x = 0; x < BufferWi; x++) {
 				for (y = 0; y < BufferHt; y++) {
-					switch (Style) {
+					switch (style) {
 						case 1:
 							n = Math.Abs((x*x - y*y)*Math.Sin(offset + ((x + y)*pi2/(BufferHt + BufferWi))));
 							d = x*x + y*y + 1;
@@ -577,13 +678,13 @@ namespace VixenModules.Effect.Nutcracker
 							break;
 						case 2:
 							f = (frame < maxframe/2) ? frame + 1 : maxframe - frame;
-							x1 = ((double) x - BufferWi/2.0)/f;
-							y1 = ((double) y - BufferHt/2.0)/f;
+							x1 = (x - BufferWi/2.0)/f;
+							y1 = (y - BufferHt/2.0)/f;
 							h = Math.Sqrt(x1*x1 + y1*y1);
 							break;
 						case 3:
 							f = (frame < maxframe/2) ? frame + 1 : maxframe - frame;
-							f = f*0.1 + (double) BufferHt/60.0;
+							f = f*0.1 + BufferHt/60.0;
 							x1 = (x - BufferWi/2.0)/f;
 							y1 = (y - BufferHt/2.0)/f;
 							h = Math.Sin(x1)*Math.Cos(y1);
@@ -591,8 +692,8 @@ namespace VixenModules.Effect.Nutcracker
 					}
 					hsv.Saturation = 1.0f;
 					hsv.Value = 1.0f;
-					if (Chunks <= 1 || ((int) (h*Chunks))%Skip != 0) {
-						if (ColorScheme == 0) {
+					if (chunks <= 1 || ((int) (h*chunks))%skip != 0) {
+						if (colorScheme == 0) {
 							hsv.Hue = (float) h;
 							SetPixel(x, y, hsv);
 						}
@@ -604,6 +705,10 @@ namespace VixenModules.Effect.Nutcracker
 				}
 			}
 		}
+
+		#endregion
+
+		#region ColorWash
 
 		public void RenderColorWash(bool HorizFade, bool VertFade, int RepeatCount)
 		{
@@ -627,8 +732,8 @@ namespace VixenModules.Effect.Nutcracker
 			for (x = 0; x < BufferWi; x++) {
 				for (y = 0; y < BufferHt; y++) {
 					hsv2.SetToHSV(hsv);
-					if (HorizFade) hsv2.Value *= (float) (1.0 - Math.Abs(HalfWi - x)/HalfWi);
-					if (VertFade) hsv2.Value *= (float) (1.0 - Math.Abs(HalfHt - y)/HalfHt);
+					if (HorizFade && HalfWi > 0) hsv2.Value *= (float) (1.0 - Math.Abs(HalfWi - x)/HalfWi);
+					if (VertFade && HalfHt > 0) hsv2.Value *= (float) (1.0 - Math.Abs(HalfHt - y)/HalfHt);
 					//SetPixel(x, y, hsv);
 					SetPixel(x, y, hsv2);
 					//SetPixel(x, y, color);
@@ -636,7 +741,46 @@ namespace VixenModules.Effect.Nutcracker
 			}
 		}
 
+		#endregion
+
 		#region Fire
+
+		// initialize FirePalette[]
+		private void InitFirePalette()
+		{
+			HSV hsv = new HSV();
+			Color color;
+
+			FirePalette.Clear();
+			//wxImage::HSVValue hsv;
+			//wxImage::RGBValue rgb;
+			//wxColour color;
+			int i;
+			// calc 100 reds, black to bright red
+			hsv.Hue = 0.0f;
+			hsv.Saturation = 1.0f;
+			for (i = 0; i < 100; i++)
+			{
+				hsv.Value = (float)i / 100.0f;
+				//rgb = wxImage::HSVtoRGB(hsv);
+				//color.Set(rgb.red,rgb.green,rgb.blue);
+				color = HSV.HSVtoColor(hsv);
+				FirePalette.Add(color);
+				//FirePalette.push_back(color);
+			}
+
+			// gives 100 hues red to yellow
+			hsv.Value = 1.0f;
+			for (i = 0; i < 100; i++)
+			{
+				//rgb = wxImage::HSVtoRGB(hsv);
+				//color.Set(rgb.red,rgb.green,rgb.blue);
+				color = HSV.HSVtoColor(hsv);
+				//FirePalette.push_back(color);
+				FirePalette.Add(color);
+				hsv.Hue += 0.00166666f;
+			}
+		}
 
 		// 0 <= x < BufferWi
 		// 0 <= y < BufferHt
@@ -1109,6 +1253,7 @@ namespace VixenModules.Effect.Nutcracker
 
 		public void RenderSnowflakes(int Count, int SnowflakeType)
 		{
+			if (BufferHt <= 1) return; //Invalid configuration
 			int i, n, y0, check, delta_y;
 			int x = 0;
 			int y = 0;
@@ -1446,40 +1591,62 @@ namespace VixenModules.Effect.Nutcracker
 
 		#region Twinkles
 
-		public void RenderTwinkle(int Count)
+		public void RenderTwinkle(int count, int steps, bool strobe)
 		{
-			int x, y, i, i7, ColorIdx;
-			int lights = Convert.ToInt32((BufferHt*BufferWi)*(Count/100.0)); // Count is in range of 1-100 from slider bar
-			int step = (BufferHt*BufferWi)/lights;
+			
+			int y;
+			int lights = Convert.ToInt32((BufferHt * BufferWi) * (count / 100.0)); ; // Count is in range of 1-100 from slider bar
+			int step;
+			if (lights > 0) step = BufferHt * BufferWi / lights;
+			else step = 1;
+			int maxModulo = steps;
+			if (maxModulo < 2) maxModulo = 2;  // could we be getting 0 passed in?
+			int maxModulo2 = maxModulo / 2;
+			if (maxModulo2 < 1) maxModulo2 = 1;
+
 			if (step < 1) step = 1;
-			srand(1); // always have the same random numbers for each frame (state)
-			HSV hsv; //   we will define an hsv color model. The RGB colot model would have been "wxColour color;"
+			srand(strobe ? DateTime.Now.Millisecond : 1);
 
 			int colorcnt = GetColorCount();
 
-			i = 0;
+			int i = 0;
 
 			for (y = 0; y < BufferHt; y++) // For my 20x120 megatree, BufferHt=120
 			{
+				int x;
 				for (x = 0; x < BufferWi; x++) // BufferWi=20 in the above example
 				{
 					i++;
-					if (i%step == 0) // Should we draw a light?
+
+					if (i % step == 1 || step == 1) // Should we draw a light?
 					{
 						// Yes, so now decide on what color it should be
 
-						ColorIdx = rand()%colorcnt;
-						// Select random numbers from 0 up to number of colors the user has checked. 0-5 if 6 boxes checked
-						hsv = Palette.GetHSV(ColorIdx); // Now go and get the hsv value for this ColorIdx
-						i7 = Convert.ToInt32((State/4 + rand())%9);
-						// Our twinkle is 9 steps. 4 ramping up, 5th at full brightness and then 4 more ramping down
+						int colorIdx = rand() % colorcnt;
+						HSV hsv = Palette.GetHSV(colorIdx); //   we will define an hsv color model. 
+						
 						//  Note that we are adding state to this calculation, this causes a different blink rate for each light
+						long i7 = (State + rand()) % maxModulo;
 
-						if (i7 == 0 || i7 == 8) hsv.Value = 0.1f;
-						if (i7 == 1 || i7 == 7) hsv.Value = 0.3f;
-						if (i7 == 2 || i7 == 6) hsv.Value = 0.5f;
-						if (i7 == 3 || i7 == 5) hsv.Value = 0.7f;
-						if (i7 == 4) hsv.Value = 1.0f;
+						if (i7 <= maxModulo2)
+						{
+							if (maxModulo2 > 0) hsv.Value = (float)((1.0 * i7) / maxModulo2);
+							else hsv.Value = 0;
+						}
+						else
+						{
+							if (maxModulo2 > 0) hsv.Value = (float)((maxModulo - i7) * 1.0 / (maxModulo2));
+							else hsv.Value = 0;
+						}
+						if (hsv.Value < 0.0) hsv.Value = 0.0f;
+
+						if (strobe)
+						{
+							if (i7 == maxModulo2) hsv.Value = 1.0f;
+							else hsv.Value = 0.0f;
+						}
+
+
 						//  we left the Hue and Saturation alone, we are just modifiying the Brightness Value
 						SetPixel(x, y, hsv); // Turn pixel on
 					}
@@ -1491,195 +1658,15 @@ namespace VixenModules.Effect.Nutcracker
 
 		#region Text
 
-		public void RenderText(int Top, int Left, string Line1, string Line2, Font font, int dir, int TextRotation)
-		{
-			Color c;
-			using (Bitmap bitmap = new Bitmap(BufferWi, BufferHt)) {
-				using (Graphics graphics = Graphics.FromImage(bitmap)) {
-					int ColorIdx, itmp;
-					int colorcnt = GetColorCount();
-					srand(1); // always have the same random numbers for each frame (state)
-					HSV hsv; //   we will define an hsv color model. The RGB colot model would have been "wxColour color;"
-					Point point;
-
-					ColorIdx = rand() % colorcnt;
-					// Select random numbers from 0 up to number of colors the user has checked. 0-5 if 6 boxes checked
-					hsv = Palette.GetHSV(ColorIdx); // Now go and get the hsv value for this ColorIdx
-
-					c = Palette.GetColor(0);
-					using (Brush brush = new SolidBrush(c)) {
-
-						string msg = Line1;
-
-						if (Line2.Length > 0) {
-							if (colorcnt > 1) {
-								//  palette.GetColor(1,c);
-							}
-							msg += "\n" + Line2;
-							//      dc.SetTextForeground(c);
-						}
-
-						SizeF sz1 = graphics.MeasureString(Line1, font);
-						SizeF sz2 = graphics.MeasureString(Line2, font);
-						int maxwidth = Convert.ToInt32(sz1.Width > sz2.Width ? sz1.Width : sz2.Width);
-						int maxht = Convert.ToInt32(sz1.Height > sz2.Height ? sz1.Height : sz2.Height);
-						if (TextRotation == 1) {
-							itmp = maxwidth;
-							maxwidth = maxht;
-							maxht = itmp;
-						}
-						int dctop = Top * BufferHt / 50 - BufferHt / 2;
-						int xlimit = (BufferWi + maxwidth) * 8 + 1;
-						int ylimit = (BufferHt + maxht) * 8 + 1;
-						int xcentered = Left * BufferWi / 50 - BufferWi / 2;
-
-                        graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
-						TextRotation *= 90;
-						if (TextRotation > 0)
-							graphics.RotateTransform(TextRotation);
-						switch (dir) {
-							case 0:
-								// left
-								point = new Point(Convert.ToInt32(BufferWi - State % xlimit / 8), dctop);
-								graphics.DrawString(msg, font, brush, point);
-								break;
-							case 1:
-								// right
-								point = new Point(Convert.ToInt32(State % xlimit / 8 - BufferWi), dctop);
-								graphics.DrawString(msg, font, brush, point);
-								break;
-							case 2:
-								// up
-								point = new Point(xcentered, Convert.ToInt32(BufferHt - State % ylimit / 8));
-								graphics.DrawString(msg, font, brush, point);
-								break;
-							case 3:
-								// down
-								point = new Point(xcentered, Convert.ToInt32(State % ylimit / 8 - BufferHt));
-								graphics.DrawString(msg, font, brush, point);
-								break;
-							default:
-								// no movement - centered
-								point = new Point(xcentered, dctop);
-								graphics.DrawString(msg, font, brush, point);
-								break;
-						}
-
-						// copy dc to buffer
-						for (int x = 0; x < BufferWi; x++) {
-							for (int y = 0; y < BufferHt; y++) {
-								c = bitmap.GetPixel(x, BufferHt - y - 1);
-								SetPixel(x, y, c);
-							}
-						}
-					}
-				}
-			}
-		}
+		// See partial class NutcrackerEffects_RenderText
 
 		#endregion // Text
 
 		#region Pictures
 
-		private string PictureName = string.Empty;
-		private FastPixel.FastPixel fp;
-		//
-		// TODO: Load animated GIF images
-		//
-		public void RenderPictures(int dir, string NewPictureName, int GifSpeed)
-		{
-			const int speedfactor = 4;
-			Image image = null;
-			
-			if (NewPictureName != PictureName) {
-				image = Image.FromFile(NewPictureName);
-				fp = new FastPixel.FastPixel(new Bitmap(image));
-
-				//Console.WriteLine("Loaded picture: " + NewPictureName);
-				//    imageCount = wxImage::GetImageCount(NewPictureName);
-				//    imageIndex = 0;
-				//    if (!image.LoadFile(NewPictureName,wxBITMAP_TYPE_ANY,0))
-				//    {
-				//        //wxMessageBox("Error loading image file: "+NewPictureName);
-				//        image.Clear();
-				//    }
-				PictureName = NewPictureName;
-				//    if (!image.IsOk())
-				//        return;
-
-				//}
-				//if(imageCount>1)
-				//{
-				//    // The 10 could be animation speed. I did notice that state is jumping numbers
-				//    // so state%someNumber == 0 may not hit every time. There could be a better way.
-				//    if(state%(21-GifSpeed)==0)  // change 1-20 in Gimspeed to be 20 to 1. This makes right hand slider fastest
-				//    {
-				//        if(imageIndex == imageCount-1)
-				//        {
-				//            imageIndex = 0;
-				//        }
-				//        else
-				//        {
-				//            imageIndex++;
-				//        }
-
-
-				//        if (!image.LoadFile(PictureName,wxBITMAP_TYPE_ANY,imageIndex))
-				//        {
-				//            //wxMessageBox("Error loading image file: "+NewPictureName);
-				//            image.Clear();
-				//        }
-				//        if (!image.IsOk())
-				//            return;
-				//    }
-			}
-
-			if (fp != null) {
-				int imgwidth = fp.Width;
-				int imght = fp.Height;
-				int yoffset = (BufferHt + imght)/2;
-				int xoffset = (imgwidth - BufferWi)/2;
-				int limit = (dir < 2) ? imgwidth + BufferWi : imght + BufferHt;
-				int movement = Convert.ToInt32((State%(limit*speedfactor))/speedfactor);
-
-				// copy image to buffer
-				fp.Lock();
-				Color fpColor = new Color();
-				for (int x = 0; x < imgwidth; x++) {
-					for (int y = 0; y < imght; y++) {
-						//if (!image.IsTransparent(x,y))
-						fpColor = fp.GetPixel(x, y);
-						if (fpColor != Color.Transparent) {
-							switch (dir) {
-								case 0:
-									// left
-									SetPixel(x + BufferWi - movement, yoffset - y-1, fpColor);
-									break;
-								case 1:
-									// right
-									SetPixel(x + movement - imgwidth, yoffset - y, fpColor);
-									break;
-								case 2:
-									// up
-									SetPixel(x - xoffset, movement - y, fpColor);
-									break;
-								case 3:
-									// down
-									SetPixel(x - xoffset, BufferHt + imght - y - movement, fpColor);
-									break;
-								default:
-									// no movement - centered
-									SetPixel(x - xoffset, yoffset - y, fpColor);
-									break;
-							}
-						}
-					}
-				}
-				fp.Unlock(false);
-			}
-			if (image != null)
-				image.Dispose();
-		}
+		
+		//Refactored out to partial class Nutcracker_RenderPictures
+		
 
 		#endregion //Picture
 
@@ -1963,11 +1950,15 @@ namespace VixenModules.Effect.Nutcracker
 			if (NewPictureName != PictureTilePictureName || scale != lastScale) {
 				if (IsNutcrackerResource(NewPictureName))
 				{
-					image = Image.FromStream(typeof(Nutcracker).Assembly.GetManifestResourceStream(NewPictureName));     
+					using (var fs = typeof(Nutcracker).Assembly.GetManifestResourceStream(NewPictureName))
+					image = Image.FromStream(fs);     
 				}
-				else if (System.IO.File.Exists(NewPictureName))
+				else if (File.Exists(NewPictureName))
 				{
-					image = Image.FromFile(NewPictureName);
+					using (var fs = new FileStream(NewPictureName, FileMode.Open, FileAccess.Read))
+					{
+						image = Image.FromStream(fs);
+					}
 				}
 				else
 				{
@@ -1979,15 +1970,15 @@ namespace VixenModules.Effect.Nutcracker
 				if (useColor) {
 					image = ConvertToGrayScale(image);
 				}
-				fp = new FastPixel.FastPixel(new Bitmap(image));
+				_fp = new FastPixel.FastPixel(new Bitmap(image));
 
 				PictureTilePictureName = NewPictureName;
 				lastScale = scale;
 			}
 
-			if (fp != null) {
-				int imageWidth = fp.Width;
-				int imageHeight = fp.Height;
+			if (_fp != null) {
+				int imageWidth = _fp.Width;
+				int imageHeight = _fp.Height;
 				double deltaX = 0;
 				double deltaY = 0;
 
@@ -2021,7 +2012,7 @@ namespace VixenModules.Effect.Nutcracker
 				movementY += (double) ((double) (State - lastState)/(double) speedfactor)*deltaY;
 				lastState = (int) State;
 
-				fp.Lock();
+				_fp.Lock();
 				Color fpColor = new Color();
 				int colorX = 0;
 				int colorY = 0;
@@ -2044,8 +2035,8 @@ namespace VixenModules.Effect.Nutcracker
 						else if (colorY < 0) {
 							colorY = Convert.ToInt32(colorY%imageHeight) + imageHeight - 1;
 						}
-						if (colorX <= fp.Width && colorY <= fp.Height) {
-							fpColor = fp.GetPixel(colorX, colorY);
+						if (colorX <= _fp.Width && colorY <= _fp.Height) {
+							fpColor = _fp.GetPixel(colorX, colorY);
 
 							if (fpColor != Color.Transparent) {
 								// Are we re-assigning the colors for this
@@ -2070,12 +2061,12 @@ namespace VixenModules.Effect.Nutcracker
 									//fpColor = Color.FromArgb(255, fpColor);
 								}
 								// Tree is up-side down, so draw the bitmp up-side down so it is right-side up.
-								SetPixel(BufferWi - x - 1, BufferHt - y - 1, fpColor);
+								SetPixel(x, BufferHt - y - 1, fpColor);
 							}
 						}
 					}
 				}
-				fp.Unlock(false);
+				_fp.Unlock(false);
 			}
 			} finally {
 				if (image != null)
@@ -2104,7 +2095,7 @@ namespace VixenModules.Effect.Nutcracker
 					RenderGarlands(Data.Garland_Type, Data.Garland_Spacing);
 					break;
 				case Effects.Butterfly:
-					RenderButterfly(Data.Butterfly_Colors, Data.Butterfly_Style, Data.Butterfly_BkgrdChunks, Data.Butterfly_BkgrdSkip);
+					RenderButterfly(Data.Butterfly_Colors, Data.Butterfly_Style, Data.Butterfly_BkgrdChunks, Data.Butterfly_BkgrdSkip, Data.Butterfly_Direction);
 					break;
 				case Effects.ColorWash:
 					RenderColorWash(Data.ColorWash_FadeHorizontal, Data.ColorWash_FadeVertical, Data.ColorWash_Count);
@@ -2132,14 +2123,14 @@ namespace VixenModules.Effect.Nutcracker
 					              Data.Spirals_Blend, Data.Spirals_3D);
 					break;
 				case Effects.Twinkles:
-					RenderTwinkle(Data.Twinkles_Count);
+					RenderTwinkle(Data.Twinkles_Count, Data.Twinkles_Steps, Data.Twinkles_Strobe);
 					break;
 				case Effects.Text:
-					RenderText(Data.Text_Top, Data.Text_Left, Data.Text_Line1, Data.Text_Line2, Data.Text_Font, Data.Text_Direction,
-					           Data.Text_TextRotation);
+					RenderText(Data.Text_Top, Data.Text_Line1, Data.Text_Line2, Data.Text_Line3, Data.Text_Line4, Data.Text_Font, Data.Text_Direction,
+					           Data.Text_TextRotation, Data.Text_CenterStop);
 					break;
 				case Effects.Picture:
-					RenderPictures(Data.Picture_Direction, Data.Picture_FileName, Data.Picture_GifSpeed);
+					RenderPictures(Data.Picture_Direction, Data.Picture_FileName, Data.Picture_GifSpeed, Data.Picture_ScaleToGrid, Data.Picture_ScalePercent);
 					break;
 				case Effects.Spirograph:
 					RenderSpirograph(Data.Spirograph_ROuter, Data.Spirograph_RInner, Data.Spirograph_Distance, Data.Spirograph_Animate);
@@ -2155,7 +2146,29 @@ namespace VixenModules.Effect.Nutcracker
 					                  Data.PictureTile_UseSaturation, Data.PictureTile_ColorReplacementSensitivity,
 					                  Data.PictureTile_FileName);
 					break;
+				case Effects.Curtain:
+					RenderCurtain(Data.Curtain_Edge,(CurtainType)Data.Curtain_Effect, Data.Curtain_SwagWidth, Data.Curtain_Repeat);
+					break;
+				case Effects.Glediator:
+					RenderGlediator(Data.Glediator_FileName);
+					break;
 			}
+		}
+
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this); 
+		}
+
+		protected virtual void Dispose(bool disposing)
+		{
+			
+			if (_pictureImage != null)
+			{
+				_pictureImage.Dispose();
+			}	
+				
 		}
 	}
 }
