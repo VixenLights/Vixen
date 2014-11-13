@@ -305,7 +305,8 @@ namespace VixenModules.Property.Color
 			if (!ColorSets.ContainsKey(name))
 				ColorSets.Add(name, value);
 			ColorSets[name] = value;
-			ColorSetChanged(this, new StringEventArgs(name));
+            if (ColorSetChanged != null)
+			    ColorSetChanged(this, new StringEventArgs(name));
 		}
 
 		public bool RemoveColorSet(string name)

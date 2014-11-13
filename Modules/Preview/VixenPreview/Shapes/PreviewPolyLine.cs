@@ -75,18 +75,22 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			Layout();
 		}
 
-        public override StringTypes StringType
-        {
-            get
-            {
-                return base.StringType;
-            }
-            set
-            {
-                base.StringType = value;
-                AssignStandardPixels();
-            }
-        }
+        //[DataMember,
+        // CategoryAttribute("Settings"),
+        // DisplayName("String Type")]
+        //public override StringTypes StringType
+        //{
+        //    get
+        //    {
+        //        return _stringType;
+        //    }
+        //    set
+        //    {
+        //        _stringType = value;
+        //        //Console.WriteLine(StringType);
+        //        AssignStandardPixels();
+        //    }
+        //}
 
         [CategoryAttribute("Settings"),
          DisplayName("Light Count"),
@@ -144,6 +148,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         //    set { _strings = value; }
         //}
 
+        [Browsable(false)]
         public bool CreateDefaultPixels { get; set; }
 
         public override int Top
@@ -546,7 +551,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             Resize(aspect);
 		}
 
-        private void AssignStandardPixels() 
+        private void AssignStandardPixels()
         {
             if (StringType == StringTypes.Standard)
             {

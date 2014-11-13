@@ -229,7 +229,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         {
             get
             {
-                return _bottomLeft.Y;
+                return _bottomRight.Y;
             }
         }
 
@@ -278,6 +278,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         public override void Match(PreviewBaseShape matchShape)
         {
             PreviewMegaTree shape = (matchShape as PreviewMegaTree);
+            LightsPerString = shape.LightsPerString;
+            StringCount = shape.StringCount;
             PixelSize = shape.PixelSize;
             TopHeight = shape.TopHeight;
             TopWidth = shape.TopWidth;
@@ -320,7 +322,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			{
 				if (_strings != null && _strings.Count > 0)
 				{
-					List<PreviewPixel> outPixels = new List<PreviewPixel>();
+					var outPixels = new List<PreviewPixel>();
 					for (int i = 0; i < StringCount; i++)
 					{
 						foreach (PreviewPixel pixel in _strings[i].Pixels)
@@ -351,12 +353,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				List<Point> _topEllipsePoints;
 				List<Point> _baseEllipsePoints;
 
-				double _topLeftOffset = _topLeft.X + (width / 2) - (_topWidth / 2);
+				double topLeftOffset = _topLeft.X + (width / 2) - (_topWidth / 2);
 				double bottomTopOffset = _bottomRight.Y - _baseHeight;
 
 				double totalStringsInEllipse = Math.Ceiling((360d / Convert.ToDouble(_degrees)) * Convert.ToDouble(StringCount));
 
-				_topEllipsePoints = PreviewTools.GetEllipsePoints(_topLeftOffset,
+				_topEllipsePoints = PreviewTools.GetEllipsePoints(topLeftOffset,
 																  _topLeft.Y,
 																  _topWidth,
 																  _topHeight,
@@ -375,13 +377,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				{
 					if (stringNum < StringCount && stringNum < _topEllipsePoints.Count())
 					{
-						Point topPixel = _topEllipsePoints[_stringCount - 1 - stringNum];
-						Point basePixel = _baseEllipsePoints[_stringCount - 1 - stringNum];
+						var topPixel = _topEllipsePoints[_stringCount - 1 - stringNum];
+						var basePixel = _baseEllipsePoints[_stringCount - 1 - stringNum];
 
-						PreviewLine line = _strings[stringNum] as PreviewLine;
-						line.SetPoint0(basePixel.X, basePixel.Y);
-						line.SetPoint1(topPixel.X, topPixel.Y);
-						line.Layout();
+						var line = _strings[stringNum] as PreviewLine;
+					    if (line != null)
+					    {
+					        line.SetPoint0(basePixel.X, basePixel.Y);
+					        line.SetPoint1(topPixel.X, topPixel.Y);
+					        line.Layout();
+					    }
 					}
 				}
 
