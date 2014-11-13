@@ -242,6 +242,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             { _bottomRight = value; }
 		}
 
+		public PreviewPoint BottomLeft
+		{
+			get { return _bottomLeft; }
+			set
+			{ _bottomLeft = value; }
+		}
+
         private PreviewPoint TopRight
         {
             get

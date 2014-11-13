@@ -23,7 +23,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-   <OutputPath>$(SolutionDir)\Release64\Modules\Effect\</OutputPath>
+    <OutputPath>$(SolutionDir)\Release64\Modules\Effect\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
@@ -50,6 +50,10 @@
     <Compile Include="ColorUtilities.cs" />
     <Compile Include="NutcrackerData.cs" />
     <Compile Include="NutcrackerEffects.cs" />
+    <Compile Include="NutcrackerEffects_RenderGlediator.cs" />
+    <Compile Include="NutcrackerEffects_RenderText.cs" />
+    <Compile Include="Nutcracker_RenderCurtain.cs" />
+    <Compile Include="Nutcracker_RenderPictures.cs" />
     <Compile Include="Palette.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Nutcracker.cs" />

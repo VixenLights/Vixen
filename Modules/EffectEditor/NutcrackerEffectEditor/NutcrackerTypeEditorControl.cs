@@ -70,7 +70,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 						PreviewBaseShape treeString = tree._strings[stringNum];
 						for (int pixelNum = 0; pixelNum < treeString.Pixels.Count; pixelNum++)
 						{
-							treeString.Pixels[pixelNum].PixelColor = effect.Pixels[stringNum][pixelNum];
+							treeString.Pixels[pixelNum].PixelColor = Data.StringOrienation == NutcrackerEffects.StringOrientations.Horizontal ? effect.Pixels[pixelNum][stringNum] : effect.Pixels[stringNum][pixelNum];
 						}
 					}
 				}
@@ -80,20 +80,29 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 						PreviewBaseShape gridString = grid._strings[stringNum];
 						for (int pixelNum = 0; pixelNum < gridString.Pixels.Count; pixelNum++)
 						{
-							gridString.Pixels[pixelNum].PixelColor = effect.Pixels[stringNum][pixelNum];
+							gridString.Pixels[pixelNum].PixelColor = grid.StringOrientation == PreviewPixelGrid.StringOrientations.Horizontal ? effect.Pixels[pixelNum][stringNum] : effect.Pixels[stringNum][pixelNum];
+							
 						}
 					}
 				}
 				else if (displayItem.Shape is PreviewArch) {
 					PreviewArch arch = displayItem.Shape as PreviewArch;
 					for (int pixelNum = 0; pixelNum < arch.PixelCount; pixelNum++) {
-						arch.Pixels[pixelNum].PixelColor = effect.Pixels[0][pixelNum];
+						arch.Pixels[pixelNum].PixelColor = Data.StringOrienation==NutcrackerEffects.StringOrientations.Vertical?effect.Pixels[0][pixelNum]:effect.Pixels[pixelNum][0];
 					}
 				}
 				else if (displayItem.Shape is PreviewLine) {
 					PreviewLine line = displayItem.Shape as PreviewLine;
 					for (int pixelNum = 0; pixelNum < line.PixelCount; pixelNum++) {
-						line.Pixels[pixelNum].PixelColor = effect.Pixels[0][pixelNum];
+						line.Pixels[pixelNum].PixelColor = Data.StringOrienation == NutcrackerEffects.StringOrientations.Vertical ? effect.Pixels[0][pixelNum] : effect.Pixels[pixelNum][0];
+					}
+				}
+				else if (displayItem.Shape is PreviewCane)
+				{
+					PreviewCane cane = displayItem.Shape as PreviewCane;
+					for (int pixelNum = 0; pixelNum < cane.LinePixelCount + cane.ArchPixelCount; pixelNum++)
+					{
+						cane.Pixels[pixelNum].PixelColor = Data.StringOrienation == NutcrackerEffects.StringOrientations.Vertical ? effect.Pixels[0][pixelNum] : effect.Pixels[pixelNum][0];
 					}
 				}
 
@@ -116,11 +125,13 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			PopulateEffectComboBox();
 
 			effect.Data = Data;
-
+			effect.Duration = TargetEffect.TimeSpan;
+			effect.TimeInterval = 50;
 			// Load item from Data
 			SetCurrentEffect(Data.CurrentEffect);
 			comboBoxEffect.SelectedItem = Data.CurrentEffect.ToString();
 			trackBarSpeed.Value = Data.Speed;
+			chkFitToTime.Checked = Data.FitToTime;
 			radioButtonHorizontal.Checked = (Data.StringOrienation == NutcrackerEffects.StringOrientations.Horizontal);
 			radioButtonVertical.Checked = (Data.StringOrienation == NutcrackerEffects.StringOrientations.Vertical);
 
@@ -142,6 +153,8 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			LoadTree();
 			LoadMovie();
 			LoadPictureTile();
+			LoadCurtain();
+			LoadGlediatorData();
 			LoadColors();
 			LoadPreview();
 
@@ -168,8 +181,28 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 		private void SetCurrentEffect(NutcrackerEffects.Effects selectedEffect)
 		{
 			Data.CurrentEffect = selectedEffect;
+			ConfigureMainEditorOptions(selectedEffect);
 			effect.SetNextState(true);
 			SetCurrentTab(selectedEffect.ToString());
+		}
+
+		private void ConfigureMainEditorOptions(NutcrackerEffects.Effects selectedEffect)
+		{
+			//This logic placement is crappy, but it prevents an error for now.
+			//Will fix better when each one gets factored out into it's own effect.
+			if (selectedEffect == NutcrackerEffects.Effects.Snowflakes)
+			{
+				if (StringCount == 1)
+				{
+					radioButtonHorizontal.Enabled = false;
+				}
+			}
+			else
+			{
+				radioButtonHorizontal.Enabled = true;
+			}
+
+			chkFitToTime.Enabled = selectedEffect == NutcrackerEffects.Effects.Curtain;
 		}
 
 		private void SetCurrentEffect(string effectName)
@@ -196,10 +229,15 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			Data.Speed = trackBarSpeed.Value;
 		}
 
+		private void chkFitToTime_CheckedChanged(object sender, EventArgs e)
+		{
+			Data.FitToTime = chkFitToTime.Checked;
+		}
+
+
 		private void comboBoxEffect_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			effect.SetNextState(true);
-
 			SetCurrentEffect(comboBoxEffect.SelectedItem.ToString());
 		}
 
@@ -307,7 +345,6 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			preview.BackgroundAlpha = 0;
 			displayItem = new DisplayItem();
 			PreviewArch arch = new PreviewArch(new PreviewPoint(10, 10), null, 1);
-
 			arch.PixelCount = PixelsPerString();
 			arch.PixelSize = Data.PixelSize;
 			arch.PixelColor = Color.White;
@@ -352,7 +389,9 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			preview.LoadBackground();
 			preview.BackgroundAlpha = 0;
 			displayItem = new DisplayItem();
+
 			PreviewPixelGrid grid = new PreviewPixelGrid(new PreviewPoint(10, 10), null, 1);
+			
 			grid.StringType = PreviewBaseShape.StringTypes.Pixel;
 			grid.StringCount = StringCount;
 			grid.LightsPerString = PixelsPerString();
@@ -361,9 +400,46 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			grid.Top = 10;
 			grid.Left = 10;
 			grid.BottomRight.X = preview.Width - 10;
-			grid.BottomRight.Y = preview.Height - 10;
+			if (Data.StringOrienation == NutcrackerEffects.StringOrientations.Horizontal)
+			{
+				grid.StringOrientation = PreviewPixelGrid.StringOrientations.Horizontal;
+				grid.BottomRight.Y = Math.Min(StringCount * Data.PixelSize * 2, preview.Width - 10);
+				grid.BottomLeft.Y = Math.Min(StringCount * Data.PixelSize * 2, preview.Width - 10);
+				grid.BottomRight.X = Math.Min(grid.LightsPerString*Data.PixelSize * 2, preview.Width - 10);
+				grid.Left = Math.Max( (preview.Width - 10 - (grid.LightsPerString * Data.PixelSize * 2))/2 , 10);
+			}
+			else
+			{
+				grid.BottomRight.Y = preview.Height - 10;	
+			}
+			
 			grid.Layout();
 			displayItem.Shape = grid;
+
+			preview.AddDisplayItem(displayItem);
+		}
+
+		private void SetupCane()
+		{
+			preview.Data = new VixenPreviewData();
+			preview.LoadBackground();
+			preview.BackgroundAlpha = 0;
+			displayItem = new DisplayItem();
+
+			PreviewCane cane = new PreviewCane(new PreviewPoint(10, 10), null, 1);
+			cane.StringType = PreviewBaseShape.StringTypes.Pixel;
+
+			cane.LinePixelCount = PixelsPerString() / 2;
+			cane.ArchPixelCount = PixelsPerString() / 2;
+			cane.PixelSize = Data.PixelSize;
+			cane.PixelColor = Color.White;
+
+			cane.ArchLeft = new Point(0, preview.Height / 4);
+			cane.TopLeft = new Point(preview.Width / 4, preview.Height / 8);
+			cane.BottomRight = new Point((preview.Width / 4) + (preview.Width / 2), (preview.Height / 4) + (preview.Height / 2));
+
+			cane.Layout();
+			displayItem.Shape = cane;
 
 			preview.AddDisplayItem(displayItem);
 		}
@@ -371,8 +447,20 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 		public void SetupPreview()
 		{
 			DeletePreviewDisplayItem();
+			int wid;
+			int ht;
 
-			effect.InitBuffer(StringCount, PixelsPerString());
+			if (Data.StringOrienation == NutcrackerEffects.StringOrientations.Horizontal) 
+			{
+				wid = PixelsPerString();
+				ht = StringCount;
+			}
+			else
+			{
+				wid = StringCount;
+				ht = PixelsPerString();
+			}
+			effect.InitBuffer(wid, ht);
 
 			switch (Data.PreviewType) {
 				case NutcrackerEffects.PreviewType.Tree90:
@@ -398,6 +486,9 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 					break;
 				case NutcrackerEffects.PreviewType.VerticalLine:
 					SetupLine(false);
+					break;
+				case NutcrackerEffects.PreviewType.Cane:
+					SetupCane();
 					break;
 				default:
 					SetupMegaTree(180);
@@ -467,20 +558,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			trackBarPaletteRepeat.Value = Data.Bars_PaletteRepeat;
 			checkBoxBars3D.Checked = Data.Bars_3D;
 			checkBoxBarsHighlight.Checked = Data.Bars_Highlight;
-			switch (Data.Bars_Direction) {
-				case 0:
-					comboBoxBarsDirection.SelectedItem = "Up";
-					break;
-				case 1:
-					comboBoxBarsDirection.SelectedItem = "Down";
-					break;
-				case 2:
-					comboBoxBarsDirection.SelectedItem = "Expand";
-					break;
-				case 3:
-					comboBoxBarsDirection.SelectedItem = "Compress";
-					break;
-			}
+			comboBoxBarsDirection.SelectedIndex = Data.Bars_Direction;
 		}
 
 		private void Bars_ParametersChanged(object sender, EventArgs e)
@@ -489,21 +567,9 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			Data.Bars_PaletteRepeat = trackBarPaletteRepeat.Value;
 			Data.Bars_Highlight = checkBoxBarsHighlight.Checked;
 			Data.Bars_3D = checkBoxBars3D.Checked;
-			if (comboBoxBarsDirection.SelectedItem != null) {
-				switch (comboBoxBarsDirection.SelectedItem.ToString()) {
-					case "Up":
-						Data.Bars_Direction = 0;
-						break;
-					case "Down":
-						Data.Bars_Direction = 1;
-						break;
-					case "Expand":
-						Data.Bars_Direction = 2;
-						break;
-					case "Compress":
-						Data.Bars_Direction = 3;
-						break;
-				}
+			if (comboBoxBarsDirection.SelectedItem != null)
+			{
+				Data.Bars_Direction = comboBoxBarsDirection.SelectedIndex;
 			}
 		}
 
@@ -522,14 +588,8 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			trackButterflyStyle.Value = Data.Butterfly_Style;
 			trackButterflyBkgrdChunks.Value = Data.Butterfly_BkgrdChunks;
 			trackButterflyBkgrdSkip.Value = Data.Butterfly_Style;
-			switch (Data.Butterfly_Colors) {
-				case 0:
-					comboBoxButterflyColors.SelectedItem = "Rainbow";
-					break;
-				case 1:
-					comboBoxButterflyColors.SelectedItem = "Palette";
-					break;
-			}
+			comboBoxButterflyColors.SelectedIndex = Data.Butterfly_Colors;
+			comboButterflyDirection.SelectedIndex = Data.Butterfly_Direction;
 		}
 
 		private void Butterfly_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender,
@@ -544,15 +604,15 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 		private void comboBoxButterflyColors_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (loading) return;
-			switch (comboBoxButterflyColors.SelectedItem.ToString()) {
-				case "Rainbow":
-					Data.Butterfly_Colors = 0;
-					break;
-				case "Palette":
-					Data.Butterfly_Colors = 1;
-					break;
-			}
+			Data.Butterfly_Colors = comboBoxButterflyColors.SelectedIndex;
 		}
+
+		private void comboButterflyDirection_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			Data.Butterfly_Direction = comboButterflyDirection.SelectedIndex;
+		}
+
+
 
 		#endregion
 
@@ -768,6 +828,8 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 		private void LoadTwinkles()
 		{
 			trackTwinkleCount.Value = Data.Twinkles_Count;
+			trackTwinkleSteps.Value = Data.Twinkles_Steps;
+			chkTwinkleStrobe.Checked = Data.Twinkles_Strobe;
 		}
 
 		private void trackTwinkleCount_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender,
@@ -777,6 +839,20 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			Data.Twinkles_Count = trackTwinkleCount.Value;
 		}
 
+		private void trackTwinkleSteps_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender, Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
+		{
+			if (loading) return;
+			Data.Twinkles_Steps = trackTwinkleSteps.Value;
+		}
+
+
+		private void chkTwinkleStrobe_CheckedChanged(object sender, EventArgs e)
+		{
+			if (loading) return;
+			Data.Twinkles_Strobe = chkTwinkleStrobe.Checked;
+		}
+
+
 		#endregion // Twinkles
 
 		#region Text
@@ -785,8 +861,12 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 		{
 			textTextLine1.Text = Data.Text_Line1;
 			textTextLine2.Text = Data.Text_Line2;
+			textTextLine3.Text = Data.Text_Line3;
+			textTextLine4.Text = Data.Text_Line4;
 			comboBoxTextDirection.SelectedIndex = Data.Text_Direction;
 			trackTextTop.Value = Data.Text_Top;
+			chkCenterStop.Checked = Data.Text_CenterStop;
+			textBoxTextFont.Text = String.Format("{0} {1} pt", Data.Text_Font.FontValue.Name, Data.Text_Font.FontValue.SizeInPoints);
 		}
 
 		private void Text_TextChanged(object sender, EventArgs e)
@@ -794,9 +874,8 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			if (loading) return;
 			Data.Text_Line1 = textTextLine1.Text;
 			Data.Text_Line2 = textTextLine2.Text;
-			Data.Text_Direction = comboBoxTextDirection.SelectedIndex;
-			//Data.Text_TextRotation = 
-			//Data.Text_Left = 
+			Data.Text_Line3 = textTextLine3.Text;
+			Data.Text_Line4 = textTextLine4.Text;
 		}
 
 		private void trackTextTop_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender,
@@ -811,10 +890,60 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			fontDialog.Font = Data.Text_Font;
 			if (fontDialog.ShowDialog() == DialogResult.OK) {
 				Data.Text_Font = fontDialog.Font;
+				textBoxTextFont.Text = String.Format("{0} {1} pt", fontDialog.Font.Name, fontDialog.Font.SizeInPoints);
 			}
 		}
 
+		private void chkCenterStop_CheckedChanged(object sender, EventArgs e)
+		{
+			if (loading) return;
+			Data.Text_CenterStop = chkCenterStop.Checked;
+		}
+
+
+		private void comboBoxTextDirection_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			Data.Text_Direction = comboBoxTextDirection.SelectedIndex;
+		}
+		
 		#endregion // Text
+
+		#region Curtain
+
+		private void LoadCurtain()
+		{
+			comboCurtainEffect.SelectedIndex = Data.Curtain_Effect;
+			comboCurtainEdge.SelectedIndex = Data.Curtain_Edge;
+			chkCurtainRepeat.Checked = Data.Curtain_Repeat;
+			trackCurtainSwagWidth.Value = Data.Curtain_SwagWidth;
+		}
+
+		private void comboCurtainEffect_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			Data.Curtain_Effect = comboCurtainEffect.SelectedIndex;
+			effect.SetNextState(true);
+		}
+
+		private void comboCurtainEdge_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			Data.Curtain_Edge = comboCurtainEdge.SelectedIndex;
+			effect.SetNextState(true);
+		}
+
+		private void chkCurtainRepeat_CheckedChanged(object sender, EventArgs e)
+		{
+			Data.Curtain_Repeat = chkCurtainRepeat.Checked;
+		}
+
+		private void trackCurtainSwagWidth_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender, Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
+		{
+			Data.Curtain_SwagWidth = trackCurtainSwagWidth.Value;
+			effect.SetNextState(true);
+		}
+		
+
+
+		#endregion
 
 		#region Picture
 
@@ -823,6 +952,11 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			textPictureFileName.Text = Data.Picture_FileName;
 			comboBoxPictureDirection.SelectedIndex = Data.Picture_Direction;
 			trackPictureGifSpeed.Value = Data.Picture_GifSpeed;
+			trackPictureGifSpeed.Enabled = true;
+			trackPictureScaleToGrid.Checked = Data.Picture_ScaleToGrid;
+			trackPictureScalePercent.Enabled = !Data.Picture_ScaleToGrid;
+			trackPictureScalePercent.Value = Data.Picture_ScalePercent;
+
 		}
 
 		private void buttonPictureSelect_Click(object sender, EventArgs e)
@@ -846,6 +980,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 		{
 			if (loading) return;
 			Data.Picture_Direction = comboBoxPictureDirection.SelectedIndex;
+			effect.SetNextState(true);
 		}
 
 		private void trackPictureGifSpeed_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender,
@@ -854,6 +989,20 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			if (loading) return;
 			Data.Picture_GifSpeed = trackPictureGifSpeed.Value;
 		}
+
+		private void trackPictureScaleToGrid_CheckedChanged(object sender, EventArgs e)
+		{
+			if (loading) return;
+			Data.Picture_ScaleToGrid = trackPictureScaleToGrid.Checked;
+			trackPictureScalePercent.Enabled = !Data.Picture_ScaleToGrid;
+		}
+
+		private void trackPictureScalePercent_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender, Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
+		{
+			Data.Picture_ScalePercent = trackPictureScalePercent.Value;
+		}
+
+		
 
 		#endregion // Picture
 
@@ -1079,6 +1228,34 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 
 		#endregion // PictureTile
 
+		#region Glediator
+
+		private void LoadGlediatorData()
+		{
+			textGlediatorFileName.Text = Data.Glediator_FileName;
+		}
+
+		private void buttonGlediatorFile_Click(object sender, EventArgs e)
+		{
+			fileDialog.Filter = @"Glediator Files|*.gled";
+			if (fileDialog.ShowDialog() == DialogResult.OK)
+			{
+				// Copy the file to the Vixen folder
+				var gledFile = new FileInfo(fileDialog.FileName);
+				var destFileName = Path.Combine(NutcrackerDescriptor.ModulePath, gledFile.Name);
+				var sourceFileName = gledFile.FullName;
+				if (sourceFileName != destFileName)
+				{
+					File.Copy(sourceFileName, destFileName, true);
+				}
+
+				textGlediatorFileName.Text = destFileName;
+				Data.Glediator_FileName = destFileName;
+			}
+		}
+
+		#endregion
+
 		private void buttonHelp_Click(object sender, EventArgs e)
 		{
 			Common.VixenHelp.VixenHelp.ShowHelp(Common.VixenHelp.VixenHelp.HelpStrings.Effect_Nutcracker);	
@@ -1091,7 +1268,8 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			// the 2D preview types, when string cnt < 2, can return without setting this
 			if (displayItem == null)
 				return;
-			displayItem.Shape.PixelSize = Data.PixelSize;
+			//displayItem.Shape.PixelSize = Data.PixelSize;
+			SetupPreview();
 		}
 
 		private void radioButtonVertical_CheckedChanged(object sender, EventArgs e)
@@ -1099,6 +1277,14 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			if (radioButtonVertical.Checked)
 			{
 				Data.StringOrienation = NutcrackerEffects.StringOrientations.Vertical;
+				if (checkBoxColorWashHorizontalFade.Checked || StringCount == 1)
+				{
+					checkBoxColorWashHorizontalFade.Checked = false;
+					checkBoxColorWashHorizontalFade.Enabled = false;
+				}
+				
+				checkBoxColorWashVerticalFade.Enabled = true;
+				SetupPreview();
 			}
 		}
 
@@ -1107,7 +1293,33 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			if (radioButtonHorizontal.Checked)
 			{
 				Data.StringOrienation = NutcrackerEffects.StringOrientations.Horizontal;
+				if (checkBoxColorWashVerticalFade.Checked || StringCount == 1)
+				{
+					checkBoxColorWashVerticalFade.Checked = false;
+					checkBoxColorWashVerticalFade.Enabled = false;
+				}
+				
+				checkBoxColorWashHorizontalFade.Enabled = true;
+				SetupPreview();
 			}
+		}
+
+		/// <summary> 
+		/// Clean up any resources being used.
+		/// </summary>
+		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+		protected override void Dispose(bool disposing)
+		{
+			if (disposing && (components != null))
+			{
+				components.Dispose();
+			}
+
+			if (effect != null)
+			{
+				effect.Dispose();
+			}
+			base.Dispose(disposing);
 		}
 
 	}

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Configuration;
 using System.Text;
 using System.Runtime.Serialization;
 using System.Drawing;
@@ -37,6 +38,7 @@ namespace VixenModules.Effect.Nutcracker
 		[DataMember] public NutcrackerEffects.StringOrientations StringOrienation = NutcrackerEffects.StringOrientations.Vertical;
 
 		[DataMember] public Palette Palette = new Palette();
+		[DataMember] public bool FitToTime = false;
 
 		// Bars
 		[DataMember] public int Bars_PaletteRepeat = 1;
@@ -49,6 +51,7 @@ namespace VixenModules.Effect.Nutcracker
 		[DataMember] public int Butterfly_Style = 1;
 		[DataMember] public int Butterfly_BkgrdChunks = 1;
 		[DataMember] public int Butterfly_BkgrdSkip = 2;
+		[DataMember] public int Butterfly_Direction = 0;
 
 		// ColorWash
 		[DataMember] public int ColorWash_Count = 1;
@@ -95,13 +98,18 @@ namespace VixenModules.Effect.Nutcracker
 
 		// Twinkles
 		[DataMember] public int Twinkles_Count = 50;
+		[DataMember] public int Twinkles_Steps = 30;
+		[DataMember] public bool Twinkles_Strobe = false;
 
 		// Text
 		[DataMember] public int Text_Top = 5;
 		[DataMember] public int Text_Left = 5;
 		[DataMember] public string Text_Line1 = string.Empty;
 		[DataMember] public string Text_Line2 = string.Empty;
+		[DataMember] public string Text_Line3 = string.Empty;
+		[DataMember] public string Text_Line4 = string.Empty;
 		[DataMember] public int Text_Direction = 0;
+		[DataMember] public bool Text_CenterStop = false;
 
 		[DataMember(IsRequired = false)]
 		public SerializableFont Text_Font { get; set; }
@@ -112,6 +120,8 @@ namespace VixenModules.Effect.Nutcracker
 		[DataMember] public string Picture_FileName = string.Empty;
 		[DataMember] public int Picture_Direction = 0;
 		[DataMember] public int Picture_GifSpeed = 1;
+		[DataMember] public bool Picture_ScaleToGrid = false;
+		[DataMember] public int Picture_ScalePercent = 10;
 
 		// Spirograph
 		[DataMember] public int Spirograph_ROuter = 20;
@@ -135,6 +145,17 @@ namespace VixenModules.Effect.Nutcracker
 		[DataMember] public bool PictureTile_UseSaturation = false;
 		[DataMember] public int PictureTile_ColorReplacementSensitivity = 0;
 
+		//Curtain
+		[DataMember] public int Curtain_Edge = 0;
+		[DataMember] public int Curtain_Effect = 0;
+		[DataMember] public int Curtain_SwagWidth = 0;
+		[DataMember] public bool Curtain_Repeat = false;
+
+		// Glediator
+		[DataMember]
+		public string Glediator_FileName;
+
+
 		[OnDeserialized]
 		private void OnDeserialized(StreamingContext context)
 		{
@@ -157,11 +178,17 @@ namespace VixenModules.Effect.Nutcracker
 
 			if (Twinkles_Count < 2)
 				Twinkles_Count = 10;
+			if (Twinkles_Steps < 2)
+				Twinkles_Count = 30;
 
 			if (Text_Line1 == null)
 				Text_Line1 = string.Empty;
 			if (Text_Line2 == null)
 				Text_Line2 = string.Empty;
+			if (Text_Line3 == null)
+				Text_Line3 = string.Empty;
+			if (Text_Line4 == null)
+				Text_Line4 = string.Empty;
 
 			if (Text_Font == null) {
 				Text_Font = new SerializableFont(new Font("Arial", 8));
@@ -171,6 +198,10 @@ namespace VixenModules.Effect.Nutcracker
 				Picture_FileName = string.Empty;
 			if (Picture_GifSpeed < 1)
 				Picture_GifSpeed = 1;
+			if (Picture_ScalePercent < 1)
+			{
+				Picture_ScalePercent = 10;
+			}
 
 			if (Spirograph_ROuter < 1)
 				Spirograph_ROuter = 20;
@@ -190,6 +221,11 @@ namespace VixenModules.Effect.Nutcracker
 
 			if (PictureTile_Scaling == 0.0) {
 				PictureTile_Scaling = 100.0;
+			}
+
+			if (Curtain_SwagWidth < 1)
+			{
+				Curtain_SwagWidth = 3;
 			}
 		}
 	}

@@ -1883,6 +1883,7 @@ namespace Common.Controls.Timeline
             po.MaxDegreeOfParallelism = Environment.ProcessorCount;
 
 			int processed = 0;
+			int progress = 0;
 		    try
 		    {
 		        if (_blockingElementQueue != null)
@@ -1892,6 +1893,7 @@ namespace Common.Controls.Timeline
 		            Parallel.ForEach(_blockingElementQueue.GetConsumingPartitioner(), po, element =>
 		            {
 						Interlocked.Increment(ref processed);
+						progress = (int)(((float)(processed) / _renderQueueSize) * 100);
 		                // This will likely never be hit: the blocking element queue above will always block waiting for more
 		                // elements, until it completes because CompleteAdding() is called. At which point it will exit the loop,
 		                // as it will be empty, and this function will terminate normally.
@@ -1913,7 +1915,6 @@ namespace Common.Controls.Timeline
 		                        }
 		                    }
 
-							int progress = (int)(((float)(processed) / _renderQueueSize) * 100);
                             //this is a bit of a kludge until we get to .NET 4.5 and can do this whole thing
                             //in a task. Reporting progress from Tasks is not well supported until 4.5
                             //With the multi-threading the last element can be processed before the count is 

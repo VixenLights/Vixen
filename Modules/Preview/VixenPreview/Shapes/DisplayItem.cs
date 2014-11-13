@@ -15,6 +15,7 @@ using Vixen.Sys.Output;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
+	[Serializable] 
 	[DataContract]
 	[KnownType(typeof (PreviewLine))]
 	[KnownType(typeof (PreviewEllipse))]
@@ -34,7 +35,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
     [KnownType(typeof (PreviewIcicle))]
     [KnownType(typeof(PreviewPolyLine))]
     [KnownType(typeof(PreviewMultiString))]
-
 	public class DisplayItem : IHandler<IIntentState<LightingValue>>, IHandler<IIntentState<CommandValue>>, IDisposable
 	{
 		private PreviewBaseShape _shape;

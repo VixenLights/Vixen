@@ -722,17 +722,21 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			else {
 				//detect if sequence reached the end
-				if (!_timedSequenceEditorForm.positionHasValue) {
+				if ((!_timedSequenceEditorForm.positionHasValue) || 
+					(_timingSource.Position.TotalMilliseconds > _timedSequenceEditorForm.Sequence.Length.TotalMilliseconds)) 
+				{
 					sequenceStop();
 					updatePositionControls(TimeSpan.Zero); //reset to beginning
 					updateControlsForStopped();
 				}
-				else {
+				else 
+				{
 					textBoxPosition.Text = _timingSource.Position.ToString();
 					updatePositionControls(_timingSource.Position);
 
 					//handle playback mode
-					if (_displayedCollection != null && radioButtonPlayback.Checked) {
+					if (_displayedCollection != null && radioButtonPlayback.Checked) 
+					{
 						handlePlaybackModeTick();
 					}
 				}

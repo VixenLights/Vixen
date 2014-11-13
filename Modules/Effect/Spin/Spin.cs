@@ -276,7 +276,7 @@ namespace VixenModules.Effect.Spin
 
 					bool discreteColors = ColorModule.isElementNodeDiscreteColored(target);
 
-					if (target == null || target.Element == null)
+					if (target == null)
 						continue;
 
 					if (target != null) {
