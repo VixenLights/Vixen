@@ -307,10 +307,10 @@ namespace VixenModules.Effect.Twinkle
 			foreach (IndividualTwinkleDetails twinkle in twinkles) {
 				{
 					// make a pulse for it
-					pulse = new Pulse.Pulse();
-					pulse.TargetNodes = new ElementNode[] {node};
+					
+					pulse.TargetNodes = new [] {node};
 					pulse.TimeSpan = twinkle.Duration;
-					pulse.LevelCurve = twinkle.TwinkleCurve;
+					pulse.LevelCurve = new Curve(new PointPairList(new double[] { 0, 50, 100 }, new double[] { twinkle.curvePoints[0], twinkle.curvePoints[1], twinkle.curvePoints[2] }));
 
 					// figure out what color gradient to use for the pulse
 					switch (ColorHandling) {
@@ -410,7 +410,10 @@ namespace VixenModules.Effect.Twinkle
 
 			for (TimeSpan current = TimeSpan.Zero; current < TimeSpan;) {
 				// calculate how long until the next flicker, and clamp it (since there's a small chance it's huge)
-				double nextTime = Math.Log(1.0 - _random.NextDouble())*-meanMillisecondsBetweenTwinkles;
+				//Replaced the number generator to a version that provides a better distribution around the mean 
+				//to prevent excessive twinkles from being gnerated. JU 
+				//double nextTime = Math.Log(1.0 - _random.NextDouble())*-meanMillisecondsBetweenTwinkles;
+				double nextTime = RandomGenerator.GetExponential(meanMillisecondsBetweenTwinkles);
 				if (nextTime > maxMillisecondsBetweenTwinkles)
 					nextTime = maxMillisecondsBetweenTwinkles;
 
@@ -437,21 +440,18 @@ namespace VixenModules.Effect.Twinkle
 				}
 
 				// generate the levels/curve for it
-				double minLevel = MinimumLevel;
+				int minLevel = (int)MinimumLevel;
 				int maxLevelVariation = (int) ((LevelVariation/100.0)*(MaximumLevel - MinimumLevel));
 				int reduction = _random.Next(maxLevelVariation);
-				double maxLevel = MaximumLevel - reduction;
-				Curve curve =
-					new Curve(new PointPairList(new double[] {0, 50, 100}, new double[] {minLevel*100, maxLevel*100, minLevel*100}));
+				int maxLevel = (int)MaximumLevel - reduction;
 
 				IndividualTwinkleDetails occurance = new IndividualTwinkleDetails();
 				occurance.StartTime = current;
 				occurance.Duration = twinkleDuration;
-				occurance.TwinkleCurve = curve;
-
+				occurance.curvePoints = new [] {minLevel*100, maxLevel*100, minLevel*100};
 				result.Add(occurance);
+				
 			}
-
 			return result;
 		}
 
@@ -481,7 +481,7 @@ namespace VixenModules.Effect.Twinkle
 		{
 			public TimeSpan StartTime;
 			public TimeSpan Duration;
-			public Curve TwinkleCurve;
+			public int[] curvePoints;
 		}
 	}
 }

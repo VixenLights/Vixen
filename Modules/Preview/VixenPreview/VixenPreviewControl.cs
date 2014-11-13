@@ -166,7 +166,7 @@ namespace VixenModules.Preview.VixenPreview
 			get { return _highlightedElements; }
 		}
 
-		public List<DisplayItem> SelectedDisplayItems
+		private List<DisplayItem> SelectedDisplayItems
 		{
 			get
 			{
@@ -466,7 +466,7 @@ namespace VixenModules.Preview.VixenPreview
 		{
             if (_editMode)
             {
-                bool controlPressed = Control.ModifierKeys == Keys.Control;
+                bool controlPressed = (Control.ModifierKeys == Keys.Control);
                 PreviewPoint translatedPoint = new PreviewPoint(e.X + hScroll.Value, e.Y + vScroll.Value);
                 if (e.Button == System.Windows.Forms.MouseButtons.Left)
                 {
@@ -582,8 +582,10 @@ namespace VixenModules.Preview.VixenPreview
                         }
                         else if (_currentTool == Tools.Single)
                         {
-                            newDisplayItem = new DisplayItem();
-                            newDisplayItem.Shape = new PreviewSingle(translatedPoint, elementsForm.SelectedNode, ZoomLevel);
+                            newDisplayItem = new DisplayItem
+                            {
+                                Shape = new PreviewSingle(translatedPoint, elementsForm.SelectedNode, ZoomLevel)
+                            };
                         }
                         else if (_currentTool == Tools.Ellipse)
                         {
