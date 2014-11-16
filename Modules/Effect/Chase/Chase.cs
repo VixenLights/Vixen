@@ -350,7 +350,7 @@ namespace VixenModules.Effect.Chase
 
 			// generate the last pulse
 			if (lastTargetedNode != null) {
-				GeneratePulse(lastTargetedNode, lastNodeStartTime, TimeSpan - lastNodeStartTime, 1.0);
+				GeneratePulse(lastTargetedNode, lastNodeStartTime, TimeSpan - lastNodeStartTime, ChaseMovement.GetValue(100));
 			}
 
 			_elementData = EffectIntents.Restrict(_elementData, TimeSpan.Zero, TimeSpan);
