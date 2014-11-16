@@ -14,6 +14,7 @@ namespace Common.Controls.Timeline
 		public bool _beginEffectDraw;
 		private TimeSpan effectDrawMouseDownTime;
 		private TimeSpan effectDrawMouseUpTime;
+		private Point mouseDownGridLocation, mouseUpGridLocation;
 
 		#region General Mouse Event-Related
 
@@ -35,7 +36,7 @@ namespace Common.Controls.Timeline
 		{
 			base.OnMouseDown(e);
 
-			Point gridLocation = translateLocation(e.Location);
+			Point gridLocation = mouseDownGridLocation = translateLocation(e.Location);
 
 			m_lastGridLocation = gridLocation; //new
 			m_mouseDownElementRow = rowAt(gridLocation);
@@ -145,7 +146,7 @@ namespace Common.Controls.Timeline
 		{
 			base.OnMouseUp(e);
 
-			Point gridLocation = translateLocation(e.Location);
+			Point gridLocation = mouseUpGridLocation = translateLocation(e.Location);
 
 			if (e.Button == MouseButtons.Middle && _beginEffectDraw)
 			{

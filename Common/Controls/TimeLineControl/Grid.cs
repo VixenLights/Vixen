@@ -50,6 +50,7 @@ namespace Common.Controls.Timeline
 		public bool isGradientDrop { get; set; }
 		private MouseButtons MouseButtonDown;
 		public string alignmentHelperWarning = @"Too many effects selected on the same row for this action.\nMax selected effects per row for this action is 4";
+		public bool aCadStyleSelectionBox { get; set; }
 
 		#region Initialization
 
@@ -1191,7 +1192,10 @@ namespace Common.Controls.Timeline
 			TimeSpan selEnd = pixelsToTime(SelectedArea.Right);
 			int selTop = SelectedArea.Top;
 			int selBottom = selTop + SelectedArea.Height;
+			string moveDirection = (SelectedArea.Left < mouseDownGridLocation.X || !aCadStyleSelectionBox) ? "Left" : "Right";
 
+			SelectionBorder = (moveDirection == "Right") ? Color.Green : Color.Blue;
+			
 			// deselect all elements in the grid first, then only select the ones in the box.
 			ClearSelectedElements();
 
@@ -1225,11 +1229,35 @@ namespace Common.Controls.Timeline
 						int elemBottom = elemTop + elem.DisplayHeight;
 						if (DragBoxFilterEnabled)
 						{
-							elem.Selected = (ShiftPressed && tempSelectedElements.Contains(elem) ? true : ((elem.StartTime < selEnd && elem.EndTime > selStart) && (elemTop < selBottom && elemBottom > selTop) && DragBoxFilterTypes.Contains(elem.EffectNode.Effect.TypeId)));
+							if (moveDirection == "Left")
+							{
+								elem.Selected = (ShiftPressed && tempSelectedElements.Contains(elem)
+									? true
+									: ((elem.StartTime < selEnd && elem.EndTime > selStart) && (elemTop < selBottom && elemBottom > selTop) &&
+									   DragBoxFilterTypes.Contains(elem.EffectNode.Effect.TypeId)));
+							}
+							else
+							{
+								elem.Selected = (ShiftPressed && tempSelectedElements.Contains(elem)
+									? true
+									: ((elem.StartTime > selStart && elem.EndTime < selEnd) && (elemTop > selTop && elemBottom < selBottom) &&
+									   DragBoxFilterTypes.Contains(elem.EffectNode.Effect.TypeId)));
+							}
 						}
 						else
 						{
-							elem.Selected = (ShiftPressed && tempSelectedElements.Contains(elem) ? true : ((elem.StartTime < selEnd && elem.EndTime > selStart) && (elemTop < selBottom && elemBottom > selTop)));
+							if (moveDirection == "Left")
+							{
+								elem.Selected = (ShiftPressed && tempSelectedElements.Contains(elem)
+									? true
+									: ((elem.StartTime < selEnd && elem.EndTime > selStart) && (elemTop < selBottom && elemBottom > selTop)));
+							}
+							else
+							{
+								elem.Selected = (ShiftPressed && tempSelectedElements.Contains(elem)
+									? true
+									: ((elem.StartTime > selStart && elem.EndTime < selEnd) && (elemTop > selTop && elemBottom < selBottom)));
+							}
 						}
 					}
 
