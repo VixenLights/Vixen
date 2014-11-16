@@ -484,7 +484,7 @@ namespace VixenModules.Effect.Chase
 								intent = result.FirstOrDefault().Value.FirstOrDefault();
 								GenerateStartingStaticPulse(target, intent, new ColorGradient(color));
 							}
-							_elementData.Add(result);
+							if(result.Count>0) _elementData.Add(result);
 							if (ExtendPulseToEnd && result.Count>0)
 							{
 								intent = result.FirstOrDefault().Value.LastOrDefault();
@@ -546,7 +546,7 @@ namespace VixenModules.Effect.Chase
 								intent = result.FirstOrDefault().Value.FirstOrDefault();
 								GenerateStartingStaticPulse(target, intent, new ColorGradient(colorProportion.Item1));
 							}
-							_elementData.Add(result);
+							if(result.Count>0)_elementData.Add(result);
 							if (ExtendPulseToEnd && result.Count > 0)
 							{
 								intent = result.FirstOrDefault().Value.LastOrDefault();
