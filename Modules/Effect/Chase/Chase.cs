@@ -482,13 +482,13 @@ namespace VixenModules.Effect.Chase
 							if (ExtendPulseToStart && result.Count > 0)
 							{
 								intent = result.FirstOrDefault().Value.FirstOrDefault();
-								GenerateStartingStaticPulse(target, intent);
+								GenerateStartingStaticPulse(target, intent, new ColorGradient(color));
 							}
 							_elementData.Add(result);
 							if (ExtendPulseToEnd && result.Count>0)
 							{
 								intent = result.FirstOrDefault().Value.LastOrDefault();
-								GenerateExtendedStaticPulse(target, intent);
+								GenerateExtendedStaticPulse(target, intent, new ColorGradient(color));
 							}
 						}
 					} else {
@@ -544,13 +544,13 @@ namespace VixenModules.Effect.Chase
 							if (ExtendPulseToStart && result.Count > 0)
 							{
 								intent = result.FirstOrDefault().Value.FirstOrDefault();
-								GenerateStartingStaticPulse(target, intent);
+								GenerateStartingStaticPulse(target, intent, new ColorGradient(colorProportion.Item1));
 							}
 							_elementData.Add(result);
 							if (ExtendPulseToEnd && result.Count > 0)
 							{
 								intent = result.FirstOrDefault().Value.LastOrDefault();
-								GenerateExtendedStaticPulse(target, intent);
+								GenerateExtendedStaticPulse(target, intent, new ColorGradient(colorProportion.Item1));
 							}
 						}
 					} else {
