@@ -2022,14 +2022,16 @@ namespace Common.Controls.Timeline
 
 		private void DrawElement(Graphics g, Row row, Element currentElement, int top)
 		{
-			currentElement.DisplayHeight = (row.Height - 1) / currentElement.StackCount;
-			currentElement.DisplayTop = top + (currentElement.DisplayHeight * currentElement.StackIndex);
-			currentElement.RowTopOffset = currentElement.DisplayHeight * currentElement.StackIndex;
 			int width;
 			bool redBorder = false;
 
 			//Sanity check - it is possible for .DisplayHeight to become zero if there are too many effects stacked.
-			//We set the DisplayHeight to the row height for the currentElement, and change the border to red.
+			//We set the DisplayHeight to the row height for the currentElement, and change the border to red.		
+			currentElement.DisplayHeight = 
+				(currentElement.StackCount != 0) ? ((row.Height - 1) / currentElement.StackCount) : 0;
+
+			currentElement.DisplayTop = top + (currentElement.DisplayHeight * currentElement.StackIndex);
+			currentElement.RowTopOffset = currentElement.DisplayHeight * currentElement.StackIndex;
 
 			if (currentElement.DisplayHeight == 0)
 			{
@@ -2037,6 +2039,7 @@ namespace Common.Controls.Timeline
 				currentElement.DisplayHeight = currentElement.Row.Height;
 			}
 
+			
 			if (currentElement.StartTime >= VisibleTimeStart)
 			{
 				if (currentElement.EndTime < VisibleTimeEnd)
