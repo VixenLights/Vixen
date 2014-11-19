@@ -2028,7 +2028,7 @@ namespace Common.Controls.Timeline
 			//Sanity check - it is possible for .DisplayHeight to become zero if there are too many effects stacked.
 			//We set the DisplayHeight to the row height for the currentElement, and change the border to red.		
 			currentElement.DisplayHeight = 
-				(currentElement.StackCount != 0) ? ((row.Height - 1) / currentElement.StackCount) : 0;
+				(currentElement.StackCount != 0) ? ((row.Height - 1) / currentElement.StackCount) : row.Height - 1;
 
 			currentElement.DisplayTop = top + (currentElement.DisplayHeight * currentElement.StackIndex);
 			currentElement.RowTopOffset = currentElement.DisplayHeight * currentElement.StackIndex;
