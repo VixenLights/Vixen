@@ -18,17 +18,26 @@ namespace Common.Controls
 			//lets try and open the serial port if it can't be opened then it
 			//must be in use so label it as in use
 			foreach (string s in SerialPort.GetPortNames()) {
-				try {
-					using (SerialPort checkPort = new SerialPort(s)) {
+				try
+				{
+					using (SerialPort checkPort = new SerialPort(s))
+					{
 						checkPort.Open();
 						checkPort.Close();
 					}
 					comboBoxPortName.Items.Add(s);
 				}
-					//catch the exception in case we want to use it
-					//or log it.
-				catch (UnauthorizedAccessException) {
+				//catch the exception in case we want to use it
+				//or log it.
+				catch (UnauthorizedAccessException)
+				{
 					comboBoxPortName.Items.Add(s + " (IN USE)");
+					continue;
+				}
+
+				//Some Virtual serial ports will cause an ArgumentException, skip over these. 
+				catch (ArgumentException)
+				{
 					continue;
 				}
 			}
