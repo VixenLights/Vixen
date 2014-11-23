@@ -40,7 +40,7 @@ namespace Vixen.Execution
 				if (_queue.Count <= 0) continue;
 
 				effectNode = _queue.Peek();
-				effectNode = (time >= effectNode.StartTime) ? _queue.Dequeue() : null;
+				effectNode = ((effectNode != null) && (time >= effectNode.StartTime)) ? _queue.Dequeue() : null;
 
 				//if(_queue.TryPeek(out effectNode)) {
 				//    if(time >= effectNode.StartTime) {
