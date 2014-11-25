@@ -12,34 +12,37 @@ namespace Common.Controls
 		public SerialPortConfig(SerialPort serialPort, bool allowPortEdit = true, bool allowBaudEdit = true,
 		                        bool allowParityEdit = true, bool allowDataEdit = true, bool allowStopEdit = true)
 		{
+            var logging = NLog.LogManager.GetCurrentClassLogger();
 			InitializeComponent();
 			Icon = Resources.Properties.Resources.Icon_Vixen3;
 
 			//lets try and open the serial port if it can't be opened then it
 			//must be in use so label it as in use
 			foreach (string s in SerialPort.GetPortNames()) {
-				try
-				{
-					using (SerialPort checkPort = new SerialPort(s))
-					{
-						checkPort.Open();
-						checkPort.Close();
-					}
-					comboBoxPortName.Items.Add(s);
-				}
-				//catch the exception in case we want to use it
-				//or log it.
-				catch (UnauthorizedAccessException)
-				{
-					comboBoxPortName.Items.Add(s + " (IN USE)");
-					continue;
-				}
+			    try
+			    {
+			        using (SerialPort checkPort = new SerialPort(s))
+			        {
+			            checkPort.Open();
+			            checkPort.Close();
+			        }
+			        comboBoxPortName.Items.Add(s);
+			    }
 
-				//Some Virtual serial ports will cause an ArgumentException, skip over these. 
-				catch (ArgumentException)
-				{
-					continue;
-				}
+			    catch (Exception e)
+			    {
+                    if ((e is UnauthorizedAccessException) || 
+                        (e is InvalidOperationException))
+                    {
+                        comboBoxPortName.Items.Add(s + " (IN USE)");
+                        continue;
+                    }
+                    else
+                    {
+                        logging.WarnException("Serial port exception encountered while scanning", e);
+                        continue;
+                    }
+                }
 			}
 			comboBoxPortName.Enabled = allowPortEdit;
 			comboBoxBaudRate.Enabled = allowBaudEdit;
