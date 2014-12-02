@@ -33,6 +33,7 @@ namespace Vixen.Module.Effect
 		}
 
 		public virtual bool IsDirty { get; protected set; }
+		private bool IsRendering;
 
 		public ElementNode[] TargetNodes
 		{
@@ -81,9 +82,22 @@ namespace Vixen.Module.Effect
 
 		public EffectIntents Render()
 		{
-			if (IsDirty) {
+			if (IsDirty && !IsRendering)
+			{
+				IsRendering = true;
 				PreRender();
+				IsRendering = false;
 			}
+			else
+			{
+				//To prevent the effect from being rendered multiple times if multiple threads 
+				//try to access it all at the same time. I.E the editor pre rendering process.
+				while (IsRendering)
+				{
+					Thread.Sleep(1);
+				}	
+			}
+			
 			return _Render();
 		}
 
