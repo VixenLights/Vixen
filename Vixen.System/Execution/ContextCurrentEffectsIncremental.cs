@@ -43,23 +43,15 @@ namespace Vixen.Execution
 
 		public void Reset()
 		{
-			lock (_currentEffects)
-			{
-				if (_currentEffects != null)
-					_currentEffects.Clear();
-			}
-			
+			if (_currentEffects != null)
+				_currentEffects.Clear();		
 		}
 
 		private void _GetElementsAffected(IEnumerable<IEffectNode> effects)
 		{
-			lock (_currentEffects)
-			{
-				_affectedElements.Clear();
-				_affectedElements.UnionWith(effects.SelectMany(x => x.Effect.EffectedElementIds));
-				//return new HashSet<Guid>(effects.SelectMany(x => x.Effect.TargetNodes).SelectMany(y => y.GetElementEnumerator()).Select(z => z.Id).Distinct());	
-			}
-			
+			_affectedElements.Clear();
+			_affectedElements.UnionWith(effects.SelectMany(x => x.Effect.EffectedElementIds));
+			//return new HashSet<Guid>(effects.SelectMany(x => x.Effect.TargetNodes).SelectMany(y => y.GetElementEnumerator()).Select(z => z.Id).Distinct());	
 		}
 
 		private void _RemoveExpiredEffects(TimeSpan currentTime)
@@ -76,7 +68,7 @@ namespace Vixen.Execution
 
 		private bool _IsExpired(TimeSpan currentTime, EffectNode effectNode)
 		{
-			return currentTime > effectNode.EndTime;
+			return currentTime > effectNode.EndTime || currentTime < effectNode.StartTime;
 		}
 
 		public IEnumerator<IEffectNode> GetEnumerator()

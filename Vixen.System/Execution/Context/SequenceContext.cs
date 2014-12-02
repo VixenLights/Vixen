@@ -167,6 +167,7 @@ namespace Vixen.Execution.Context
 
 		protected virtual void OnSequenceReStarted(SequenceStartedEventArgs e)
 		{
+			//_ResetElementStates();
 			if (SequenceReStarted != null)
 			{
 				SequenceReStarted(this, e);
