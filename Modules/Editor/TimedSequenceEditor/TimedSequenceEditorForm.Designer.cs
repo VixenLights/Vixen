@@ -154,10 +154,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
 			this.toolStripContainer = new System.Windows.Forms.ToolStripContainer();
 			this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
+			this.toolStripExVirtualEffects = new Common.Controls.ToolStripEx();
+			this.toolStripLabelVirtualEffects = new System.Windows.Forms.ToolStripLabel();
+			this.toolStripButtonVirtualEffectsAdd = new System.Windows.Forms.ToolStripButton();
+			this.toolStripButtonVirtualEffectsRemove = new System.Windows.Forms.ToolStripButton();
+			this.toolStripSeparatorBeginEffects = new System.Windows.Forms.ToolStripSeparator();
 			this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
 			this.contextMenuStripElementSelection = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.timerPostponePlay = new System.Windows.Forms.Timer(this.components);
 			this.timerDelayCountdown = new System.Windows.Forms.Timer(this.components);
+			this.cADStyleSelectionBoxToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripOperations.SuspendLayout();
 			this.menuStrip.SuspendLayout();
 			this.statusStrip.SuspendLayout();
@@ -750,7 +756,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
             this.toolStripMenuItem_deleteElements,
             this.toolStripSeparator10,
             this.toolStripMenuItem_SnapTo,
-            this.toolStripMenuItem_ResizeIndicator});
+            this.toolStripMenuItem_ResizeIndicator,
+            this.cADStyleSelectionBoxToolStripMenuItem});
 			this.editToolStripMenuItem.Name = "editToolStripMenuItem";
 			this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
 			this.editToolStripMenuItem.Text = "Edit";
@@ -1283,6 +1290,47 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.dockPanel.Skin = dockPanelSkin2;
 			this.dockPanel.TabIndex = 13;
 			// 
+			// toolStripExVirtualEffects
+			// 
+			this.toolStripExVirtualEffects.ClickThrough = true;
+			this.toolStripExVirtualEffects.Dock = System.Windows.Forms.DockStyle.None;
+			this.toolStripExVirtualEffects.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.toolStripExVirtualEffects.Location = new System.Drawing.Point(3, 75);
+			this.toolStripExVirtualEffects.Name = "toolStripExVirtualEffects";
+			this.toolStripExVirtualEffects.Size = new System.Drawing.Size(156, 25);
+			this.toolStripExVirtualEffects.TabIndex = 7;
+			// 
+			// toolStripLabelVirtualEffects
+			// 
+			this.toolStripLabelVirtualEffects.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.toolStripLabelVirtualEffects.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.toolStripLabelVirtualEffects.Name = "toolStripLabelVirtualEffects";
+			this.toolStripLabelVirtualEffects.Size = new System.Drawing.Size(92, 22);
+			this.toolStripLabelVirtualEffects.Text = "Virtual Effects: ";
+			// 
+			// toolStripButtonVirtualEffectsAdd
+			// 
+			this.toolStripButtonVirtualEffectsAdd.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.toolStripButtonVirtualEffectsAdd.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButtonVirtualEffectsAdd.Name = "toolStripButtonVirtualEffectsAdd";
+			this.toolStripButtonVirtualEffectsAdd.Size = new System.Drawing.Size(23, 22);
+			this.toolStripButtonVirtualEffectsAdd.Text = "+";
+			this.toolStripButtonVirtualEffectsAdd.Click += new System.EventHandler(this.toolStripButtonVirtualEffectsAdd_Click);
+			// 
+			// toolStripButtonVirtualEffectsRemove
+			// 
+			this.toolStripButtonVirtualEffectsRemove.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.toolStripButtonVirtualEffectsRemove.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButtonVirtualEffectsRemove.Name = "toolStripButtonVirtualEffectsRemove";
+			this.toolStripButtonVirtualEffectsRemove.Size = new System.Drawing.Size(23, 22);
+			this.toolStripButtonVirtualEffectsRemove.Text = "-";
+			this.toolStripButtonVirtualEffectsRemove.Click += new System.EventHandler(this.toolStripButtonVirtualEffectsRemove_Click);
+			// 
+			// toolStripSeparatorBeginEffects
+			// 
+			this.toolStripSeparatorBeginEffects.Name = "toolStripSeparatorBeginEffects";
+			this.toolStripSeparatorBeginEffects.Size = new System.Drawing.Size(6, 25);
+			// 
 			// saveFileDialog
 			// 
 			this.saveFileDialog.Title = "Save timed sequence";
@@ -1300,6 +1348,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// 
 			this.timerDelayCountdown.Interval = 1000;
 			this.timerDelayCountdown.Tick += new System.EventHandler(this.timerDelayCountdown_Tick);
+			// 
+			// cADStyleSelectionBoxToolStripMenuItem
+			// 
+			this.cADStyleSelectionBoxToolStripMenuItem.CheckOnClick = true;
+			this.cADStyleSelectionBoxToolStripMenuItem.Name = "cADStyleSelectionBoxToolStripMenuItem";
+			this.cADStyleSelectionBoxToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
+			this.cADStyleSelectionBoxToolStripMenuItem.Text = "CAD Style Selection Box";
+			this.cADStyleSelectionBoxToolStripMenuItem.Click += new System.EventHandler(this.cADStyleSelectionBoxToolStripMenuItem_Click);
 			// 
 			// TimedSequenceEditorForm
 			// 
@@ -1329,6 +1385,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripContainer.TopToolStripPanel.PerformLayout();
 			this.toolStripContainer.ResumeLayout(false);
 			this.toolStripContainer.PerformLayout();
+			this.toolStripExVirtualEffects.ResumeLayout(false);
+			this.toolStripExVirtualEffects.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -1459,5 +1517,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private System.Windows.Forms.ToolStripMenuItem toolWindowToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem helpDocumentationToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem bulkEffectMoveToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem cADStyleSelectionBoxToolStripMenuItem;
 	}
 }

@@ -1,3 +1,58 @@
+Vixen Release Notes – 3.1 (update 2)
+Features
+Preview
+* Added an option to use the selection box as CAD Style (VIX-617)
+o When ON, dragging right to left selections any effects within the box.
+o Dragging left to right only selects effects that are contained in the box in whole.
+
+Effects
+* Extended Chase: This allows a chase to hold the last color / intensity of the pulse to the end or extend it back to the start.
+* Nutcracker: Huge amount of improvements to bring it more in line with Xlights. New effects/features:
+o Curtain - Simulates a stage curtain opening or closing.
+o Bars - Added more of the missing direction options. Some of these mirror what could have happened by using Horizontal or Vertical orientation.
+o Butterfly - Added the reverse direction.
+o Picture - Added animated gif support and scaling options. Added other direction options like Peekaboo, Wiggle, Diagonals. 
+o Text - Added 2 more lines of text and center stop.
+o Twinkle - Updated to have the adjustable step and strobe features.
+o Added Candy cane as an option to the preview.
+o Preview reflects when the string orientation is changed from Horizontal to Vertical instead of always showing the vertical version.
+o Add tooltip hovers on some of the sliders to indicate their values.
+
+Bug Fixes
+Preview
+* Changes to the element link dialog in the preview to prevent standard strings from losing their elements.
+* Unassigned Event Handler was trying to be called and causing an error when adding a new Color Handling in the Display Setup. (VIX-600)
+* Fixed saving PolyLine links with standard strings
+* Fixed alignment tools for megatrees in the preview.
+
+
+Sequencer
+* Fixed issue with playback in Mark Manager. (VIX-602)
+* Fixed a bug in the rendering progress bar logic that could cause it to hang in an incomplete state.
+* Fixed an issue where effects would render multiple times (unnecessarily).
+* Fix some display issues with stacking effects and row heights in the sequence editor.
+* 
+
+Effects
+* Fixed for memory overflows in the Twinkle during certain settings that would allow it to create to many twinkles.
+* Spin: Fixed a bug that would cause the fill color to be missing if the spin is applied at higher level groups.
+* Nutcracker:
+o Fixed many of the issues with selecting horizontal vs vertical on some effects that would cause crashing.
+o General performance tune ups to make the better use of memory.
+o Fix locked file issue in the picture and picture tile effects that can happen when switching back and forth.
+o Fix a bug that would not properly show the selected font in the Text effect.
+o Fix an issue that would cause the picture tiles to be drawn backwards.
+o Fix bugs around determining the string count in multi level grouping.
+* Chase: fixed a bug that would cause the last pulse in a chase that is using a gradient over the range of elements to render with the wrong portion of the gradient.
+* Prevent empty results from being added when the pulse results in 0 values on discrete gradients.
+
+Controllers
+* Improved the way virtual serial ports are handed/found (VIX-624 ).
+* Improved exception hanlding of serial port scanning routine. 
+* Fix E1.31 display setup screen font corruption
+
+
+
 Vixen Release Notes – 3.1 (update 1)
 Features
 Sequence Editor
