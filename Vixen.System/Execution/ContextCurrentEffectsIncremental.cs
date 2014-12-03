@@ -13,7 +13,8 @@ namespace Vixen.Execution
 	internal class ContextCurrentEffectsIncremental : IContextCurrentEffects
 	{
 		private readonly List<IEffectNode> _currentEffects;
-		private readonly HashSet<Guid> _affectedElements; 
+		private readonly HashSet<Guid> _affectedElements;
+		private TimeSpan _lastUpdateTime = TimeSpan.Zero;
 
 		public ContextCurrentEffectsIncremental()
 		{
@@ -28,6 +29,12 @@ namespace Vixen.Execution
 		/// <returns>Ids of the affected elements.</returns>
 		public HashSet<Guid> UpdateCurrentEffects(IDataSource dataSource, TimeSpan currentTime)
 		{
+			if (_lastUpdateTime > currentTime)
+			{
+				//Make sure the current effects are cleared if we go back to a earlier time.
+				Reset();
+			}
+			_lastUpdateTime = currentTime;
 			// Get the effects that are newly qualified.
 			IEnumerable<IEffectNode> newQualifiedEffects = dataSource.GetDataAt(currentTime);
 			// Add them to the current effect list.
@@ -68,7 +75,7 @@ namespace Vixen.Execution
 
 		private bool _IsExpired(TimeSpan currentTime, EffectNode effectNode)
 		{
-			return currentTime > effectNode.EndTime || currentTime < effectNode.StartTime;
+			return currentTime > effectNode.EndTime;
 		}
 
 		public IEnumerator<IEffectNode> GetEnumerator()
