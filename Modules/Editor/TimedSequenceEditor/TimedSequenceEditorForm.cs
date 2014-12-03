@@ -2961,10 +2961,36 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void timelineControl_DataDropped(object sender, TimelineDropEventArgs e)
 		{
+			//Modified 12-3-2014 to allow Control-Drop of effects to replace selected effects
 			Guid effectGuid = (Guid)e.Data.GetData(DataFormats.Serializable);
 			TimeSpan duration = TimeSpan.FromSeconds(2.0); // TODO: need a default value here. I suggest a per-effect default.
 			TimeSpan startTime = Util.Min(e.Time, (_sequence.Length - duration)); // Ensure the element is inside the grid.
-			addNewEffectById(effectGuid, e.Row, startTime, duration);
+
+			if (ModifierKeys.HasFlag(Keys.Control) && TimelineControl.SelectedElements.Any())
+			{
+
+				var message = string.Format("This action will replace {0} effects, are you sure ?",
+					TimelineControl.SelectedElements.Count());
+				var result = MessageBox.Show(message, @"Replace existing effects?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+				if (result == DialogResult.No)
+				{
+					return;
+				}
+
+				var newEffects = (from elem in TimelineControl.SelectedElements let newEffectInstance = ApplicationServices.Get<IEffectModuleInstance>(effectGuid) select CreateEffectNode(newEffectInstance, elem.Row, elem.StartTime, elem.Duration)).ToList();
+
+				removeSelectedElements();
+				AddEffectNodes(newEffects);
+				SelectEffectNodes(newEffects);
+
+				//Add the undo action for the newly created effects
+				var act = new EffectsAddedUndoAction(this, newEffects);
+				_undoMgr.AddUndoAction(act);
+			}
+			else
+			{
+				addNewEffectById(effectGuid, e.Row, startTime, duration);
+			}
 		}
 
 
