@@ -119,6 +119,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			InitializeComponent();
 			Icon = Resources.Icon_Vixen3;
+			toolStripOperations.ImageScalingSize = toolStrip1.ImageScalingSize = new Size(30,30);
 			toolStripButton_Start.Image = Resources.control_start_blue;
 			toolStripButton_Start.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStripButton_Play.Image = Resources.control_play_blue;
@@ -162,6 +163,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolStripButton_IncreaseTimingSpeed.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStripButton_DecreaseTimingSpeed.Image = Resources.minus;
 			toolStripButton_DecreaseTimingSpeed.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			toolStripSplitButton_CloseGaps.Image = Resources.table_link;
+			toolStripSplitButton_CloseGaps.DisplayStyle = ToolStripItemDisplayStyle.Image;
 
 			foreach (ToolStripItem toolStripItem in toolStripDropDownButton_SnapToStrength.DropDownItems)
 			{
@@ -169,6 +172,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (toolStripMenuItem != null)
 				{
 					toolStripMenuItem.Click += toolStripButtonSnapToStrength_MenuItem_Click;
+				}
+			}
+
+			foreach (ToolStripItem toolStripItem in toolStripSplitButton_CloseGaps.DropDownItems)
+			{
+				var toolStripMenuItem = toolStripItem as ToolStripMenuItem;
+				if (toolStripMenuItem != null)
+				{
+					toolStripMenuItem.Click += toolStripButtonCloseGapStrength_MenuItem_Click;
 				}
 			}
 
@@ -224,6 +236,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			autoSaveToolStripMenuItem.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/AutoSaveEnabled", Name), true);
 			toolStripButton_SnapTo.Checked = toolStripMenuItem_SnapTo.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SnapToSelected", Name), true);
 			PopulateSnapStrength(xml.GetSetting(XMLProfileSettings.SettingType.AppSettings,	string.Format("{0}/SnapStrength", Name), 2));
+			TimelineControl.grid.CloseGap_Threshold = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CloseGapThreshold", Name), ".100");
 			toolStripMenuItem_ResizeIndicator.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ResizeIndicatorEnabled", Name),false);
 			toolStripButton_DrawMode.Checked = TimelineControl.grid.EnableDrawMode = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/DrawModeSelected", Name), false);
 			toolStripButton_SelectionMode.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SelectionModeSelected", Name), true);
@@ -238,6 +251,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (toolStripMenuItem != null)
 				{
 					if(TimelineControl.grid.SnapStrength.Equals(Convert.ToInt32(toolStripMenuItem.Tag)))
+					{
+						toolStripMenuItem.PerformClick();
+						break;
+					}
+				}
+			}
+
+			foreach (ToolStripItem toolStripItem in toolStripSplitButton_CloseGaps.DropDownItems)
+			{
+				var toolStripMenuItem = toolStripItem as ToolStripMenuItem;
+				if (toolStripMenuItem != null)
+				{
+					if (TimelineControl.grid.CloseGap_Threshold.Equals(toolStripMenuItem.Tag))
 					{
 						toolStripMenuItem.PerformClick();
 						break;
@@ -3969,6 +3995,23 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			
 		}
 
+		private void toolStripButtonCloseGapStrength_MenuItem_Click(object sender, EventArgs e)
+		{
+			ToolStripMenuItem item = sender as ToolStripMenuItem;
+			if (!item.Checked)
+			{
+				foreach (ToolStripMenuItem subItem in item.Owner.Items)
+				{
+					if (!item.Equals(subItem) && subItem != null)
+					{
+						subItem.Checked = false;
+					}
+				}
+				item.Checked = true;
+				TimelineControl.grid.CloseGap_Threshold = item.Tag.ToString();
+			}
+		}
+
 		#endregion
 
 		#region Undo
@@ -4121,6 +4164,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationY", Name), Location.Y);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowState", Name), WindowState.ToString());
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SnapStrength", Name), TimelineControl.grid.SnapStrength);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CloseGapThreshold", Name), TimelineControl.grid.CloseGap_Threshold);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ResizeIndicatorEnabled", Name), TimelineControl.grid.ResizeIndicator_Enabled);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CadStyleSelectionBox", Name), cADStyleSelectionBoxToolStripMenuItem.Checked);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ResizeIndicatorColor", Name), TimelineControl.grid.ResizeIndicator_Color);
@@ -4699,9 +4743,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.grid.aCadStyleSelectionBox = cADStyleSelectionBoxToolStripMenuItem.Checked;
 		}
 
-
-
-    }
+		private void toolStripSplitButton_CloseGaps_ButtonClick(object sender, EventArgs e)
+		{
+			TimelineControl.grid.CloseGapsBetweenElements();
+		}
+	}
 
 	[Serializable]
 	internal class TimelineElementsClipboardData

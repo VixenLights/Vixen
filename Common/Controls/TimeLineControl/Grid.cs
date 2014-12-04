@@ -185,6 +185,8 @@ namespace Common.Controls.Timeline
 
 		public int SnapStrength { get; set; }
 
+		public string CloseGap_Threshold { get; set; }
+		
 		public bool ResizeIndicator_Enabled { get; set; }
 
 		public string ResizeIndicator_Color { get; set; }
@@ -870,6 +872,46 @@ namespace Common.Controls.Timeline
 
 		}
 
+		/// <summary>
+		/// Closes the gap between elements in which the gap is less than the set threshold - time in seconds.
+		/// If any effects are selected, this applies to only selected effects, otherwise it applies to all elements
+		/// of the sequence.
+		/// </summary>
+		public void CloseGapsBetweenElements()
+		{
+			if (!SelectedElements.Any())
+			{
+				var result = MessageBox.Show(@"This action will apply to your entire sequence, are you sure ?",
+					@"Close element gaps", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+				if (result == DialogResult.No) return;
+			}
+
+			Dictionary<Element, Tuple<TimeSpan, TimeSpan>> moveElements = new Dictionary<Element, Tuple<TimeSpan, TimeSpan>>();
+	
+			foreach (Row row in Rows)
+			{
+				List<Element> elements = new List<Element>();
+				elements = SelectedElements.Any() ? row.SelectedElements.ToList() : row.Elements.ToList();
+
+				if (!elements.Any()) continue;
+
+				Element activeElement = elements.First();
+				foreach (Element element in elements.Skip(1))
+				{
+					//NOTE: we check for duplicate entries because the same row can be a member of more than one group
+					//in which case the element can also exist more than once, but we only need to modify one instance of it to get them all.
+					if (element.StartTime.TotalSeconds - activeElement.EndTime.TotalSeconds < Convert.ToDouble(CloseGap_Threshold) && element.StartTime != activeElement.EndTime && !moveElements.ContainsKey(element))
+					{
+						moveElements.Add(element,
+							new Tuple<TimeSpan, TimeSpan>(activeElement.EndTime, element.EndTime));
+					}
+
+					activeElement = element;
+				}
+			}
+
+			MoveResizeElements(moveElements);
+		}
 
 		/// <summary>
 		/// Move/Resize a group of elements as an atomic operation
