@@ -4,7 +4,7 @@ using Vixen.Sys;
 
 namespace Vixen.Execution
 {
-	internal class EffectNodeQueue : IDisposable
+	internal class EffectNodeQueue 
 	{
 		private Queue<IEffectNode> _queue;
 		//private ConcurrentQueue<IEffectNode> _queue;
@@ -55,11 +55,5 @@ namespace Vixen.Execution
 			} while (effectNode != null);
 		}
 
-		public void Dispose()
-		{
-			_queue.Clear();
-			_queue = null;
-			GC.SuppressFinalize(this);
-		}
 	}
 }

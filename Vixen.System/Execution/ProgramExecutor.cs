@@ -24,6 +24,7 @@ namespace Vixen.Execution
 		public event EventHandler<ProgramEventArgs> ProgramStarted;
 		public event EventHandler<ProgramEventArgs> ProgramEnded;
 		public event EventHandler<SequenceStartedEventArgs> SequenceStarted;
+		public event EventHandler<SequenceStartedEventArgs> SequenceReStarted;
 		public event EventHandler<SequenceEventArgs> SequenceEnded;
 		public event EventHandler<ExecutorMessageEventArgs> Message;
 		public event EventHandler<ExecutorMessageEventArgs> Error;
