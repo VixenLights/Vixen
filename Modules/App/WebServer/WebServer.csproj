@@ -100,6 +100,11 @@
       <Name>Vixen</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\Effect\Nutcracker\Nutcracker.csproj">
+      <Project>{49ec1f56-362b-4880-805c-474b6b5bc91b}</Project>
+      <Name>Nutcracker</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\Effect\SetLevel\SetLevel.csproj">
       <Project>{8910163e-a2a3-4f8b-b5d8-0e311166b8ba}</Project>
       <Name>SetLevel</Name>
