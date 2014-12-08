@@ -770,7 +770,8 @@ namespace Common.Controls.Timeline
 		/// </summary>
 		/// <param name="elements"></param>
 		/// <param name="referenceElement"></param>
-		public void AlignElementStartToEndTimes(IEnumerable<Element> elements, Element referenceElement)
+		/// <param name="holdEndTime"></param>
+		public void AlignElementStartToEndTimes(IEnumerable<Element> elements, Element referenceElement, bool holdEndTime)
 		{
 			if (!OkToUseAlignmentHelper(elements))
 			{
@@ -782,14 +783,13 @@ namespace Common.Controls.Timeline
 			foreach (Element selectedElement in elements)
 			{
 				if (selectedElement.EndTime == referenceElement.EndTime) continue;
-				//Need to make sure element is not moved beyond time, if going to do so we need to adjust duration while moving otherwise element becomes invalid and not clickable
-				if ((referenceElement.EndTime + selectedElement.Duration) > TotalTime)
-				{
-					elementsToAlign.Add(selectedElement, new Tuple<TimeSpan, TimeSpan>(referenceElement.EndTime, TotalTime));
-					continue;
-				}
-				//if the end time is going to be before the start time, we should just move the selectedelement
-				elementsToAlign.Add(selectedElement, new Tuple<TimeSpan, TimeSpan>(referenceElement.EndTime, referenceElement.EndTime + selectedElement.Duration));
+
+				var startTime = referenceElement.EndTime;
+				var endTime = holdEndTime ? selectedElement.EndTime : startTime + selectedElement.Duration;
+				if (endTime - startTime < TimeSpan.FromSeconds(.05)) endTime = startTime + selectedElement.Duration;
+				if (endTime > TotalTime) endTime = TotalTime;
+
+				elementsToAlign.Add(selectedElement, new Tuple<TimeSpan, TimeSpan>(startTime, endTime));
 			}
 
 			MoveResizeElements(elementsToAlign, ElementMoveType.Align);
@@ -800,7 +800,8 @@ namespace Common.Controls.Timeline
 		/// </summary>
 		/// <param name="elements"></param>
 		/// <param name="referenceElement"></param>
-		public void AlignElementEndToStartTime(IEnumerable<Element> elements, Element referenceElement)
+		/// <param name="holdStartTime"></param>
+		public void AlignElementEndToStartTime(IEnumerable<Element> elements, Element referenceElement, bool holdStartTime)
 		{
 			if (!OkToUseAlignmentHelper(elements))
 			{
@@ -812,18 +813,13 @@ namespace Common.Controls.Timeline
 			foreach (Element selectedElement in elements)
 			{
 				if (selectedElement.StartTime == referenceElement.StartTime) continue;
-				//if the start time is going to be after the end time, we should just move the selectedelement
-				//We don't need to wory about making sure the element will not go before 0, it works properly as it is.
-				if (referenceElement.StartTime < selectedElement.EndTime)
-				{
-					elementsToAlign.Add(selectedElement, new Tuple<TimeSpan, TimeSpan>(
-						(referenceElement.StartTime - selectedElement.Duration) > TimeSpan.Zero ? 
-						referenceElement.StartTime - selectedElement.Duration : TimeSpan.Zero, referenceElement.StartTime));
-				}
-				else
-				{
-					elementsToAlign.Add(selectedElement, new Tuple<TimeSpan, TimeSpan>(selectedElement.StartTime, referenceElement.StartTime));
-				}
+
+				var endTime = referenceElement.StartTime;
+				var startTime = holdStartTime ? selectedElement.StartTime : endTime - selectedElement.Duration;
+				if (endTime - startTime < TimeSpan.FromSeconds(.05)) startTime = endTime - selectedElement.Duration;
+				if (startTime < TimeSpan.Zero) startTime = TimeSpan.Zero;
+				
+				elementsToAlign.Add(selectedElement, new Tuple<TimeSpan, TimeSpan>(startTime, endTime));
 			}
 
 			MoveResizeElements(elementsToAlign, ElementMoveType.Align);

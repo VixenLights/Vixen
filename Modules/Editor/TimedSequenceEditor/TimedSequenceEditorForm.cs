@@ -119,7 +119,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			InitializeComponent();
 			Icon = Resources.Icon_Vixen3;
-			toolStripOperations.ImageScalingSize = toolStrip1.ImageScalingSize = new Size(30,30);
 			toolStripButton_Start.Image = Resources.control_start_blue;
 			toolStripButton_Start.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStripButton_Play.Image = Resources.control_play_blue;
@@ -163,7 +162,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolStripButton_IncreaseTimingSpeed.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStripButton_DecreaseTimingSpeed.Image = Resources.minus;
 			toolStripButton_DecreaseTimingSpeed.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripSplitButton_CloseGaps.Image = Resources.table_link;
+			toolStripSplitButton_CloseGaps.Image = Resources.fill_gaps;
 			toolStripSplitButton_CloseGaps.DisplayStyle = ToolStripItemDisplayStyle.Image;
 
 			foreach (ToolStripItem toolStripItem in toolStripDropDownButton_SnapToStrength.DropDownItems)
@@ -186,6 +185,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			Execution.ExecutionStateChanged += OnExecutionStateChanged;
 			_autoSaveTimer.Tick += AutoSaveEventProcessor;
+		
 		}
 
 		private IDockContent DockingPanels_GetContentFromPersistString(string persistString)
@@ -1515,61 +1515,69 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				TimedSequenceElement tse = element as TimedSequenceElement;
 
-				if (TimelineControl.SelectedElements.Count() > 1)
+				//Effect Alignment Menu
+				ToolStripMenuItem itemAlignment = new ToolStripMenuItem("Alignment");
+
+				ToolStripMenuItem itemAlignToMarks = new ToolStripMenuItem("Align to Marks");
+				ToolStripMenuItem itemAlignStartToMarks = new ToolStripMenuItem("Align Start to Marks");
+				itemAlignStartToMarks.Click += (mySender, myE) => AlignEffectsToNearestMarks(true);
+				ToolStripMenuItem itemAlignEndToMarks = new ToolStripMenuItem("Align End to Marks");
+				itemAlignEndToMarks.Click += (mySender, myE) => AlignEffectsToNearestMarks(false);
+				itemAlignToMarks.DropDown.Items.Add(itemAlignStartToMarks);
+				itemAlignToMarks.DropDown.Items.Add(itemAlignEndToMarks);
+
+				ToolStripMenuItem itemAlignStart = new ToolStripMenuItem("Align Start Times (shift)");
+				itemAlignStart.ToolTipText = "Holding shift will align the start times, while holding duration.";
+				itemAlignStart.Click +=
+					(mySender, myE) =>
+						TimelineControl.grid.AlignElementStartTimes(TimelineControl.SelectedElements, element, ModifierKeys == Keys.Shift);
+
+				ToolStripMenuItem itemAlignEnd = new ToolStripMenuItem("Align End Times (shift)");
+				itemAlignEnd.ToolTipText = "Holding shift will align the end times, while holding duration.";
+				itemAlignEnd.Click +=
+					(mySender, myE) =>
+						TimelineControl.grid.AlignElementEndTimes(TimelineControl.SelectedElements, element, ModifierKeys == Keys.Shift);
+
+				ToolStripMenuItem itemAlignBoth = new ToolStripMenuItem("Align Both Times");
+				itemAlignBoth.Click +=
+					(mySender, myE) => TimelineControl.grid.AlignElementStartEndTimes(TimelineControl.SelectedElements, element);
+
+				ToolStripMenuItem itemMatchDuration = new ToolStripMenuItem("Match Duration (shift)");
+				itemMatchDuration.ToolTipText =
+					"Holding shift will hold the effects end time and adjust the start time, by default the end time is adjusted.";
+				itemMatchDuration.Click +=
+					(mySender, myE) =>
+						TimelineControl.grid.AlignElementDurations(TimelineControl.SelectedElements, element, ModifierKeys == Keys.Shift);
+
+				ToolStripMenuItem itemAlignStartToEnd = new ToolStripMenuItem("Align Start to End (shift)");
+				itemAlignStartToEnd.ToolTipText =
+					"Holding shift will hold the effects end time and only adjust the start time, by default the entire effect is moved.";
+				itemAlignStartToEnd.Click +=
+					(mySender, myE) => TimelineControl.grid.AlignElementStartToEndTimes(TimelineControl.SelectedElements, element, ModifierKeys == Keys.Shift);
+
+				ToolStripMenuItem itemAlignEndToStart = new ToolStripMenuItem("Align End to Start (shift)");
+				itemAlignEndToStart.ToolTipText =
+					"Holding shift will hold the effects start time and only adjust the end time, by default the entire effect is moved.";
+				itemAlignEndToStart.Click +=
+					(mySender, myE) => TimelineControl.grid.AlignElementEndToStartTime(TimelineControl.SelectedElements, element, ModifierKeys == Keys.Shift);
+
+				ToolStripMenuItem itemDistDialog = new ToolStripMenuItem("Distribute Effects");
+				itemDistDialog.Click += (mySender, myE) => DistributeSelectedEffects();
+
+				ToolStripMenuItem itemAlignCenter = new ToolStripMenuItem("Align Centerpoints");
+				itemAlignCenter.Click +=
+					(mySender, myE) => TimelineControl.grid.AlignElementCenters(TimelineControl.SelectedElements, element);
+
+				ToolStripMenuItem itemDistributeEqually = new ToolStripMenuItem("Distribute Equally");
+				itemDistributeEqually.ToolTipText =
+					"This will stair step the selected elements, starting with the element that has the earlier start point on the time line.";
+				itemDistributeEqually.Click += (mySender, myE) => DistributeSelectedEffectsEqually();
+
+				contextMenuStrip.Items.Add(itemAlignment);
+				itemAlignment.DropDown.Items.Add(itemAlignToMarks);
+
+				if (TimelineControl.SelectedElements.Count() > 1 && TimelineControl.grid.OkToUseAlignmentHelper(TimelineControl.SelectedElements))
 				{
-					//Effect Alignment Menu
-					ToolStripMenuItem itemAlignment = new ToolStripMenuItem("Alignment");
-					//Disables the Alignment menu if too many effects are selected in a row.
-					itemAlignment.Enabled = TimelineControl.grid.OkToUseAlignmentHelper(TimelineControl.SelectedElements);
-					if (!itemAlignment.Enabled)
-					{
-						itemAlignment.ToolTipText = "Disabled, maximum selected effects per row is 4.";
-					}
-
-					ToolStripMenuItem itemAlignStart = new ToolStripMenuItem("Align Start Times (shift)");
-					itemAlignStart.ToolTipText = "Holding shift will align the start times, while holding duration.";
-					itemAlignStart.Click +=
-						(mySender, myE) =>
-							TimelineControl.grid.AlignElementStartTimes(TimelineControl.SelectedElements, element, ModifierKeys == Keys.Shift);
-
-					ToolStripMenuItem itemAlignEnd = new ToolStripMenuItem("Align End Times (shift)");
-					itemAlignEnd.ToolTipText = "Holding shift will align the end times, while holding duration.";
-					itemAlignEnd.Click +=
-						(mySender, myE) =>
-							TimelineControl.grid.AlignElementEndTimes(TimelineControl.SelectedElements, element, ModifierKeys == Keys.Shift);
-
-					ToolStripMenuItem itemAlignBoth = new ToolStripMenuItem("Align Both Times");
-					itemAlignBoth.Click +=
-						(mySender, myE) => TimelineControl.grid.AlignElementStartEndTimes(TimelineControl.SelectedElements, element);
-
-					ToolStripMenuItem itemMatchDuration = new ToolStripMenuItem("Match Duration (shift)");
-					itemMatchDuration.ToolTipText =
-						"Holding shift will hold the effects end time and adjust the start time, by default the end time is adjusted.";
-					itemMatchDuration.Click +=
-						(mySender, myE) =>
-							TimelineControl.grid.AlignElementDurations(TimelineControl.SelectedElements, element, ModifierKeys == Keys.Shift);
-
-					ToolStripMenuItem itemAlignStartToEnd = new ToolStripMenuItem("Align Start to End");
-					itemAlignStartToEnd.Click +=
-						(mySender, myE) => TimelineControl.grid.AlignElementStartToEndTimes(TimelineControl.SelectedElements, element);
-
-					ToolStripMenuItem itemAlignEndToStart = new ToolStripMenuItem("Align End to Start");
-					itemAlignEndToStart.Click +=
-						(mySender, myE) => TimelineControl.grid.AlignElementEndToStartTime(TimelineControl.SelectedElements, element);
-
-					ToolStripMenuItem itemDistDialog = new ToolStripMenuItem("Distribute Effects");
-					itemDistDialog.Click += (mySender, myE) => DistributeSelectedEffects();
-
-					ToolStripMenuItem itemAlignCenter = new ToolStripMenuItem("Align Centerpoints");
-					itemAlignCenter.Click +=
-						(mySender, myE) => TimelineControl.grid.AlignElementCenters(TimelineControl.SelectedElements, element);
-
-					ToolStripMenuItem itemDistributeEqually = new ToolStripMenuItem("Distribute Equally");
-					itemDistributeEqually.ToolTipText =
-						"This will stair step the selected elements, starting with the element that has the earlier start point on the time line.";
-					itemDistributeEqually.Click += (mySender, myE) => DistributeSelectedEffectsEqually();
-
-					contextMenuStrip.Items.Add(itemAlignment);
 					itemAlignment.DropDown.Items.Add(itemAlignStart);
 					itemAlignment.DropDown.Items.Add(itemAlignEnd);
 					itemAlignment.DropDown.Items.Add(itemAlignBoth);
@@ -1579,7 +1587,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					itemAlignment.DropDown.Items.Add(itemAlignEndToStart);
 					itemAlignment.DropDown.Items.Add(itemDistributeEqually);
 					itemAlignment.DropDown.Items.Add(itemDistDialog);
-
 				}
 
 				if (tse != null)
@@ -4747,6 +4754,92 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			TimelineControl.grid.CloseGapsBetweenElements();
 		}
+
+		private void toolStripSplitButton_AlignStartToMarks_ButtonClick(object sender, EventArgs e)
+		{
+			AlignEffectsToNearestMarks(true);
+		}
+
+		private void toolStripSplitButton_AlignEndToMarks_ButtonClick(object sender, EventArgs e)
+		{
+			AlignEffectsToNearestMarks(false);
+		}
+
+		/// <summary>
+		/// Aligns selected elements, or if none, all elements to the closest mark.
+		/// alignStart = true to align the start of the elements, false to align the end of the elements.
+		/// </summary>
+		/// <param name="alignStart"></param>
+		private void AlignEffectsToNearestMarks(bool alignStart)
+		{
+			if (!TimelineControl.grid.SelectedElements.Any())
+			{
+				var result = MessageBox.Show(@"This action will apply to your entire sequence, are you sure ?",
+					@"Align effects to marks", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+				if (result == DialogResult.No) return;
+			}
+
+			Dictionary<Element, Tuple<TimeSpan, TimeSpan>> moveElements = new Dictionary<Element, Tuple<TimeSpan, TimeSpan>>();
+
+			foreach (Row row in TimelineControl.Rows)
+			{
+				List<Element> elements = new List<Element>();
+
+				elements = TimelineControl.SelectedElements.Any() ? row.SelectedElements.ToList() : row.Elements.ToList();
+				
+				if (!elements.Any()) continue;
+
+				foreach (Element element in elements)
+				{
+					var nearestMark = FindNearestMark(alignStart ? element.StartTime : element.EndTime);
+					if (nearestMark != TimeSpan.Zero && !moveElements.ContainsKey(element))
+					{
+						moveElements.Add(element, new Tuple<TimeSpan, TimeSpan>(alignStart ? nearestMark : element.StartTime, alignStart ? element.EndTime : nearestMark));
+					}
+				}
+			}
+
+			TimelineControl.grid.MoveResizeElements(moveElements);
+		}
+
+		private TimeSpan FindNearestMark(TimeSpan referenceTimeSpan)
+		{
+			List<TimeSpan> marksInRange = new List<TimeSpan>();
+			var threshold = TimeSpan.FromSeconds(Convert.ToDouble(TimelineControl.grid.CloseGap_Threshold));
+			TimeSpan result = TimeSpan.Zero;
+			TimeSpan compareResult = TimeSpan.Zero;
+
+			foreach (TimeSpan markTime in _sequence.MarkCollections.SelectMany(markCollection => markCollection.Marks))
+			{
+				if (markTime == referenceTimeSpan)
+				{
+					return markTime; //That was easy
+				}
+
+				if (markTime > referenceTimeSpan - threshold && markTime < referenceTimeSpan + threshold)
+				{
+					marksInRange.Add(markTime);
+				}
+			}
+
+			foreach (TimeSpan markTime in marksInRange)
+			{
+				if (markTime > referenceTimeSpan && markTime - referenceTimeSpan < compareResult || result == TimeSpan.Zero)
+				{
+					compareResult = markTime - referenceTimeSpan;
+					result = markTime;
+				}
+
+				if (markTime < referenceTimeSpan && referenceTimeSpan - markTime < compareResult || result == TimeSpan.Zero)
+				{
+					compareResult = referenceTimeSpan - markTime;
+					result = markTime;
+				}
+			}
+
+			return result;
+		}
+
 	}
 
 	[Serializable]
