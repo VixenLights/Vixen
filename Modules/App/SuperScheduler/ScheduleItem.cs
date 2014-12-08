@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using Vixen.Data.Value;
 using Vixen.Module;
 using System.Drawing;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using VixenModules.App.Shows;
 
 namespace VixenModules.App.SuperScheduler
 {
@@ -305,10 +307,10 @@ namespace VixenModules.App.SuperScheduler
 		{
 			// Pre-Process all the actions to fill up our memory
 
-			Show.GetItems(Shows.ShowItemType.All).AsParallel().WithCancellation(tokenSourcePreProcessAll.Token).ForAll(
-				item => {
-					//foreach (Shows.ShowItem item in Show.GetItems(Shows.ShowItemType.All))
-					//{
+			//Show.GetItems(Shows.ShowItemType.All).AsParallel().WithCancellation(tokenSourcePreProcessAll.Token).ForAll(
+			//	item => {
+				foreach (ShowItem item in Show.GetItems(ShowItemType.All))
+				{
 					ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Pre-processing: " + item.Name);
 					var action = item.GetAction();
 
@@ -319,7 +321,7 @@ namespace VixenModules.App.SuperScheduler
 					//	return;
 					//};	
 
-				});
+				}
 
 		}
 
