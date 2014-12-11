@@ -4799,7 +4799,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 			}
 
-			TimelineControl.grid.MoveResizeElements(moveElements);
+			//Make sure we have elements in the list to move.
+			if (moveElements.Any()) TimelineControl.grid.MoveResizeElements(moveElements);
 		}
 
 		private TimeSpan FindNearestMark(TimeSpan referenceTimeSpan)
