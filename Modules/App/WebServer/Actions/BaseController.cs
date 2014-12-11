@@ -85,7 +85,15 @@ namespace VixenModules.App.WebServer.Actions
 
 		internal static NameValueCollection GetParameters(HttpRequestHead request)
 		{
-			return HttpUtility.ParseQueryString(request.QueryString);
+
+			if (!string.IsNullOrEmpty(request.QueryString))
+			{
+				return HttpUtility.ParseQueryString(request.QueryString);
+			}
+			
+			return new NameValueCollection();
+			
+			
 		}
 
 		public abstract void ProcessPost(HttpRequestHead request, IDataProducer requestBody, IHttpResponseDelegate response);

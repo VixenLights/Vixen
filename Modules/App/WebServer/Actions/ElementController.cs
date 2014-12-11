@@ -50,6 +50,17 @@ namespace VixenModules.App.WebServer.Actions
 					TextOnElement(request, response);
 					return;
 				}
+
+				if (request.Uri.StartsWith("/api/element/getParentElements"))
+				{
+					GetParentElements(request, response);
+					return;
+				}
+				if (request.Uri.StartsWith("/api/element/getChildElements"))
+				{
+					GetChildElements(request, response);
+					return;
+				}
 			}
 
 			UnsupportedOperation(request, response);
@@ -65,6 +76,94 @@ namespace VixenModules.App.WebServer.Actions
 			}
 			
 			SerializeResponse(elements,response);
+		}
+
+		private void GetChildElements(HttpRequestHead request, IHttpResponseDelegate response)
+		{
+			NameValueCollection parms = GetParameters(request);
+			Status status = new Status();
+			var elements = new List<Element>();
+			if (parms.HasKeys() && parms["id"] == null)
+			{
+				HttpResponseHead headers = GetHeaders(0, HttpStatusCode.BadRequest.ToString());
+				response.OnResponse(headers, new BufferedProducer(""));
+				return;
+			}
+			if (parms.HasKeys())
+			{
+				Guid id;
+				if (!Guid.TryParse(parms.Get("id"), out id))
+				{
+					status.Message = "Invalid Element id.";
+					SerializeResponse(status, response);
+					return;
+				}
+
+				if (!VixenSystem.Nodes.ElementNodeExists(id))
+				{
+					status.Message = "Invalid Element id.";
+					SerializeResponse(status, response);
+					return;
+				}
+
+				ElementNode parentElement = VixenSystem.Nodes.GetElementNode(id);
+				foreach (var elementNode in parentElement.Children)
+				{
+					AddNodes(elements, elementNode, false);
+				}
+
+			}
+
+			SerializeResponse(elements, response);
+		}
+
+		private void GetParentElements(HttpRequestHead request, IHttpResponseDelegate response)
+		{
+			
+			NameValueCollection parms = GetParameters(request);
+			Status status = new Status();
+			var elements = new List<Element>();
+			if (parms.HasKeys() && parms["id"] == null)
+			{
+				HttpResponseHead headers = GetHeaders(0, HttpStatusCode.BadRequest.ToString());
+				response.OnResponse(headers, new BufferedProducer(""));
+				return;
+			}
+			if (parms.HasKeys())
+			{
+				Guid id;
+				if (!Guid.TryParse(parms.Get("id"), out id))
+				{
+					status.Message = "Invalid Element id.";
+					SerializeResponse(status, response);
+					return;
+				}
+
+				if (!VixenSystem.Nodes.ElementNodeExists(id))
+				{
+					status.Message = "Invalid Element id.";
+					SerializeResponse(status, response);
+					return;
+				}
+
+				ElementNode childElement = VixenSystem.Nodes.GetElementNode(id);
+				foreach (var elementNode in childElement.Parents)
+				{
+					AddNodes(elements, elementNode, false);
+				}
+
+			}
+			else
+			{
+				IEnumerable<ElementNode> elementNodes = VixenSystem.Nodes.GetRootNodes();
+				foreach (var elementNode in elementNodes)
+				{
+					AddNodes(elements, elementNode, false);
+				}
+				
+			}
+
+			SerializeResponse(elements, response);
 		}
 
 		private void GetElementIdByName(HttpRequestHead request, IHttpResponseDelegate response)
@@ -113,7 +212,7 @@ namespace VixenModules.App.WebServer.Actions
 			
 		}
 
-		private void AddNodes(List<Element> elements, ElementNode elementNode)
+		private void AddNodes(List<Element> elements, ElementNode elementNode, bool addChildren=true)
 		{
 			var element = new Element
 			{
@@ -124,15 +223,19 @@ namespace VixenModules.App.WebServer.Actions
 			element.Colors = ColorModule.getValidColorsForElementNode(elementNode, true).Select(ColorTranslator.ToHtml).ToList();
 			
 			elements.Add(element);
-			if (!elementNode.IsLeaf)
+			if (addChildren)
 			{
-				var children = new List<Element>();
-				element.Children = children;
-				foreach (var childNode in elementNode.Children)
+				if (!elementNode.IsLeaf)
 				{
-					AddNodes(children, childNode);
-				}
-			}	
+					var children = new List<Element>();
+					element.Children = children;
+					foreach (var childNode in elementNode.Children)
+					{
+						AddNodes(children, childNode);
+					}
+				}	
+			}
+			
 		}
 
 		private static void TurnOnElement(HttpRequestHead request, IHttpResponseDelegate response)
