@@ -64,6 +64,7 @@
     <Compile Include="Actions\ElementController.cs" />
     <Compile Include="Actions\IController.cs" />
     <Compile Include="Actions\PlayController.cs" />
+    <Compile Include="Actions\SchedulerController.cs" />
     <Compile Include="HTTP\ControllerFactory.cs" />
     <Compile Include="Model\Element.cs" />
     <Compile Include="Model\Sequence.cs" />
