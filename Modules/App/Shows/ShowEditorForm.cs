@@ -23,10 +23,6 @@ namespace VixenModules.App.Shows
 			buttonAddItem.Text = "";
 			buttonDeleteItem.Image = Tools.GetIcon(Resources.delete, 16);
 			buttonDeleteItem.Text = "";
-			buttonMoveItemUp.Image = Tools.GetIcon(Resources.arrow_up, 16);
-			buttonMoveItemUp.Text = "";
-			buttonMoveItemDown.Image = Tools.GetIcon(Resources.arrow_down, 16);
-			buttonMoveItemDown.Text = "";
 			buttonHelp.Image = Tools.GetIcon(Resources.help, 16);
 
 			ShowData = show;
@@ -49,11 +45,9 @@ namespace VixenModules.App.Shows
 
 		private void buttonCancel_Click(object sender, EventArgs e)
 		{
-			// This is serious shit. The user could lose a lot of work. Make sure this is their intent.
-			if (MessageBox.Show("You will lose all of your changes to this show. Are you sure you want to cancel?", "Cancel Edit", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.Yes)
+			if (MessageBox.Show("Are you sure you want to cancel? Any changes made to the show setup will be lost.", "Cancel Show setup changes", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.Yes)
 			{
-				DialogResult = System.Windows.Forms.DialogResult.Cancel;
-				Close();
+				DialogResult = System.Windows.Forms.DialogResult.No;
 			}
 		}
 
@@ -65,11 +59,7 @@ namespace VixenModules.App.Shows
 		private void buttonOK_Click(object sender, EventArgs e)
 		{
 			ShowData.Name = textBoxShowName.Text;
-			foreach (ListViewItem lvItem in listViewShowItems.Items)
-			{
-				ShowItem item = lvItem.Tag as ShowItem;
-				item.ItemOrder = lvItem.Index;
-			}
+            UpdateListViewItems();
 			DialogResult = System.Windows.Forms.DialogResult.OK;
 			Close();
 		}
@@ -194,7 +184,7 @@ namespace VixenModules.App.Shows
 
 		private void LoadCurrentTab()
 		{
-			if (tabControlShowItems.SelectedTab == tabPageStartup)
+            if (tabControlShowItems.SelectedTab == tabPageStartup)
 			{
 				currentShowItemType = ShowItemType.Startup;
 			}
@@ -215,7 +205,8 @@ namespace VixenModules.App.Shows
 				currentShowItemType = ShowItemType.Shutdown;
 			}
 
-			SetHelpLabel();
+            UpdateListViewItems();
+            SetHelpLabel();
 			LoadSelectedItem();
 			SetCurrentEditor("");
 			PopulateItemList(null);
@@ -224,12 +215,6 @@ namespace VixenModules.App.Shows
 
 		private void CheckButtons()
 		{
-			buttonMoveItemUp.Enabled = (listViewShowItems.SelectedItems.Count > 0);
-			buttonMoveItemUp.Visible = (tabControlShowItems.SelectedTab != tabPageBackground);
-
-			buttonMoveItemDown.Enabled = (listViewShowItems.SelectedItems.Count > 0);
-			buttonMoveItemDown.Visible = (tabControlShowItems.SelectedTab != tabPageBackground);
-
 			buttonDeleteItem.Enabled = (listViewShowItems.SelectedItems.Count > 0);
 			groupBoxItemEdit.Enabled = (listViewShowItems.SelectedItems.Count > 0);
 			groupBoxAction.Enabled = (listViewShowItems.SelectedItems.Count > 0);
@@ -240,6 +225,15 @@ namespace VixenModules.App.Shows
 			if (tabControlShowItems.SelectedTab != null)
 				labelHelp.Text = tabControlShowItems.SelectedTab.Tag as String;
 		}
+
+        private void UpdateListViewItems()
+        {
+            foreach (ListViewItem lvItem in listViewShowItems.Items)
+            {
+                ShowItem item = lvItem.Tag as ShowItem;
+                item.ItemOrder = lvItem.Index;
+            }
+        }
 
 		private void buttonAddItem_Click(object sender, EventArgs e)
 		{
@@ -288,71 +282,39 @@ namespace VixenModules.App.Shows
 			CheckButtons();
 		}
 
-		private void buttonMoveItemUp_Click(object sender, EventArgs e)
-		{
-			if (listViewShowItems.SelectedItems.Count > 0)
-			{
-				MoveSelectedItem(listViewShowItems, listViewShowItems.SelectedIndices[0], true);
-			}
-		}
+        #region Drag/Drop
 
-		private void buttonMoveItemDown_Click(object sender, EventArgs e)
-		{
-			if (listViewShowItems.SelectedItems.Count > 0)
-			{
-				MoveSelectedItem(listViewShowItems, listViewShowItems.SelectedIndices[0], false);
-			}
-		}
+        private void listViewShowItems_ItemDrag(object sender, ItemDragEventArgs e)
+        {
+            listViewShowItems.DoDragDrop(listViewShowItems.SelectedItems, DragDropEffects.Move);
+        }
 
-		// Based upon http://www.knowdotnet.com/articles/listviewmoveitem.html
-		public static void MoveSelectedItem(System.Windows.Forms.ListView lv, int idx, bool moveUp)
-		{
-			// Gotta have >1 item in order to move
-			if (lv.Items.Count > 1)
-			{
-				int offset = 0;
-				if (idx >= 0)
-				{
-					if (moveUp)
-					{
-						// ignore moveup of row(0)
-						offset = -1;
-					}
-					else
-					{
-						// ignore movedown of last item
-						if (idx < (lv.Items.Count - 1))
-							offset = 1;
-					}
-				}
+        private void listViewShowItems_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(typeof(ListView.SelectedListViewItemCollection)))
+            {
+                e.Effect = DragDropEffects.Move;
+            }
+        }
 
-				if (offset != 0)
-				{
-					lv.BeginUpdate();
+        private void listViewShowItems_DragDrop(object sender, DragEventArgs e)
+        {
+            listViewShowItems.Alignment = ListViewAlignment.Default;
+            if (listViewShowItems.SelectedItems.Count == 0)
+                return;
+            Point p = listViewShowItems.PointToClient(new Point(e.X, e.Y));
+            ListViewItem MovetoNewPosition = listViewShowItems.GetItemAt(p.X, p.Y);
+            if (MovetoNewPosition == null) return;
+            ListViewItem DropToNewPosition = (e.Data.GetData(typeof(ListView.SelectedListViewItemCollection)) as ListView.SelectedListViewItemCollection)[0];
+            ListViewItem CloneToNew = (ListViewItem)DropToNewPosition.Clone();
+            int index = MovetoNewPosition.Index;
+            listViewShowItems.Items.Remove(DropToNewPosition);
+            listViewShowItems.Items.Insert(index, CloneToNew);
+            listViewShowItems.Alignment = ListViewAlignment.SnapToGrid;
+            this.listViewShowItems.Items[index].Selected = true;
+        }
 
-					int selitem = idx + offset;
-					if (selitem >= 0)
-					{
-						for (int i = 0; i < lv.Items[idx].SubItems.Count; i++)
-						{
-							string cache = lv.Items[selitem].SubItems[i].Text;
-							lv.Items[selitem].SubItems[i].Text = lv.Items[idx].SubItems[i].Text;
-							lv.Items[idx].SubItems[i].Text = cache;
-						}
-
-						var tagIdx = lv.Items[selitem].Tag;
-						var tagSel = lv.Items[idx].Tag;
-						lv.Items[selitem].Tag = tagSel;
-						lv.Items[idx].Tag = tagIdx;
-
-						lv.Focus();
-						lv.Items[selitem].Selected = true;
-						lv.EnsureVisible(selitem);
-					}
-					lv.EndUpdate();
-				}
-			}
-		}
+        #endregion
 
 		private void listViewShowItems_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
 		{
