@@ -85,9 +85,7 @@ namespace Vixen.Intent
 			Dispose(true);
 			GC.SuppressFinalize(this);
 		}
-		~StaticIntent() {
-			Dispose(false);
-		}
+		
 		#endregion
 	}
 }

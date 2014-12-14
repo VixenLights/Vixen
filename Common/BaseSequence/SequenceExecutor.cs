@@ -413,19 +413,22 @@ namespace BaseSequence
 		public void Dispose()
 		{
 			Dispose(true);
+			GC.SuppressFinalize(this);
 		}
 
-		public virtual void Dispose(bool disposing)
+		protected virtual void Dispose(bool disposing)
 		{
-			if (_endCheckTimer != null) {
-				lock (_endCheckTimer) {
-					Stop();
+			if (disposing)
+			{
+				if (_endCheckTimer != null)
+				{
 					_endCheckTimer.Elapsed -= _EndCheckTimerElapsed;
 					_endCheckTimer.Dispose();
-					_endCheckTimer = null;
-				}
+					
+				}	
 			}
-			GC.SuppressFinalize(this);
+			_endCheckTimer = null;
+			_syncContext = null;
 		}
 
 		#endregion

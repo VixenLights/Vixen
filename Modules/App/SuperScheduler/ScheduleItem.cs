@@ -404,7 +404,7 @@ namespace VixenModules.App.SuperScheduler
 				RunningActions.Remove(action);
 
 				ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Startup action complete: " + action.ShowItem.Name);
-				action = null;
+				action.Dispose();
 			}
 			ExecuteNextStartupItem();
 		}
@@ -460,6 +460,7 @@ namespace VixenModules.App.SuperScheduler
 			action.ActionComplete -= OnSequentialActionComplete;
 			RunningActions.Remove(action);
 			ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Sequential action complete: " + action.ShowItem.Name);
+			action.Dispose();
 			if (!StartShutdownIfRequested())
 			{
 				ScheduleExecutor.Logging.Info("OnSequentialActionComplete: Shutdown NOT requested");
@@ -512,6 +513,7 @@ namespace VixenModules.App.SuperScheduler
 			foreach (Shows.Action action in BackgroundActions)
 			{
 				action.Stop();
+				action.Dispose();
 			}
 		}
 
