@@ -10,12 +10,12 @@ namespace Vixen.Rule.Name
 		public LetterCounter()
 		{
 			StartLetter = 'A';
-			Count = 10;
+			Count = 5;
 		}
 
 		public string Name
 		{
-			get { return "Letters"; }
+			get { return "Sequential Letters"; }
 		}
 
 		public int IterationsInCycle
@@ -48,7 +48,7 @@ namespace Vixen.Rule.Name
 		{
 			string result = string.Empty;
 			// offset it by the position in the index
-			cyclePosition += _alphabetIndex;
+			cyclePosition += _alphabetIndex + 1;
 
 			while (cyclePosition > 0) {
 				int index = cyclePosition%Alphabet.Length;
@@ -59,7 +59,7 @@ namespace Vixen.Rule.Name
 			return (Uppercase ? result.ToUpper() : result);
 		}
 
-		private static readonly char[] Alphabet = "abcdefghijklmnopqrstuvwxyz".ToCharArray();
+		private static readonly char[] Alphabet = "aabcdefghijklmnopqrstuvwxyz".ToCharArray();
 		private int _alphabetIndex;
 
 		public char StartLetter
@@ -70,7 +70,7 @@ namespace Vixen.Rule.Name
 					throw new Exception("_alphabetIndex out of range");
 				}
 
-				char result = Alphabet[_alphabetIndex];
+				char result = Alphabet[_alphabetIndex + 1];
 				return (Uppercase ? Char.ToUpper(result) : result);
 			}
 			set

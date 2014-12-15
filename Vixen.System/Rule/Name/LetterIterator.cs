@@ -15,7 +15,7 @@ namespace Vixen.Rule.Name
 
 		public string Name
 		{
-			get { return "Letter Set"; }
+			get { return "List of Letters"; }
 		}
 
 		public int IterationsInCycle
