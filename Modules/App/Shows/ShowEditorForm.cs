@@ -205,7 +205,6 @@ namespace VixenModules.App.Shows
 				currentShowItemType = ShowItemType.Shutdown;
 			}
 
-            UpdateListViewItems();
             SetHelpLabel();
 			LoadSelectedItem();
 			SetCurrentEditor("");
@@ -242,11 +241,31 @@ namespace VixenModules.App.Shows
 			item.Action = ActionType.Sequence;
 			ListViewItem lvItem = AddItemToList(item);
 			lvItem.Selected = true;
+            UpdateListViewItems();
 		}
 
 		private void buttonDeleteItem_Click(object sender, EventArgs e)
 		{
-			DeleteSelectedItem();
+            if (SelectedShowItem != null)
+            {
+                int index = SelectedShowItem.ItemOrder;
+                ShowData.DeleteItem(SelectedShowItem);
+                listViewShowItems.Items.RemoveAt(listViewShowItems.SelectedIndices[0]);
+
+                CheckButtons();
+                UpdateListViewItems();
+                if (index > 0)
+                {
+                    this.listViewShowItems.Items[index - 1].Selected = true;
+                }
+                else
+                {
+                    if (listViewShowItems.Items.Count != index)
+                    {
+                        this.listViewShowItems.Items[index].Selected = true;
+                    }
+                }
+            }
 		}
 
 		private void listViewShowItems_AfterLabelEdit(object sender, LabelEditEventArgs e)
@@ -272,15 +291,27 @@ namespace VixenModules.App.Shows
 			CheckButtons();
 		}
 
-		private void DeleteSelectedItem()
-		{
-			if (SelectedShowItem != null)
-			{
-				ShowData.DeleteItem(SelectedShowItem);
-				listViewShowItems.Items.RemoveAt(listViewShowItems.SelectedIndices[0]);
-			}
-			CheckButtons();
-		}
+        private void listViewShowItems_Highlight(object sender, DrawListViewItemEventArgs e)
+        {
+            // If this item is the selected item
+            if (e.Item != null)
+            {
+                if (e.Item.Selected)
+                {
+                    // If the selected item has focus Set the colors to the normal colors for a selected item
+                    e.Item.ForeColor = SystemColors.HighlightText;
+                    e.Item.BackColor = SystemColors.Highlight;
+                }
+                else
+                {
+                    // Set the normal colors for items that are not selected
+                    e.Item.ForeColor = listViewShowItems.ForeColor;
+                    e.Item.BackColor = listViewShowItems.BackColor;
+                }
+                e.DrawBackground();
+                e.DrawText();
+            }
+        }
 
         #region Drag/Drop
 
@@ -312,6 +343,7 @@ namespace VixenModules.App.Shows
             listViewShowItems.Items.Insert(index, CloneToNew);
             listViewShowItems.Alignment = ListViewAlignment.SnapToGrid;
             this.listViewShowItems.Items[index].Selected = true;
+            UpdateListViewItems();
         }
 
         #endregion

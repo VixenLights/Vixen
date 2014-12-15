@@ -274,6 +274,7 @@
             this.listViewShowItems.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.listViewShowItems.MultiSelect = false;
             this.listViewShowItems.Name = "listViewShowItems";
+            this.listViewShowItems.OwnerDraw = true;
             this.listViewShowItems.Size = new System.Drawing.Size(488, 346);
             this.listViewShowItems.TabIndex = 64;
             this.listViewShowItems.Tag = "";
@@ -281,6 +282,7 @@
             this.listViewShowItems.UseCompatibleStateImageBehavior = false;
             this.listViewShowItems.View = System.Windows.Forms.View.Details;
             this.listViewShowItems.AfterLabelEdit += new System.Windows.Forms.LabelEditEventHandler(this.listViewShowItems_AfterLabelEdit);
+            this.listViewShowItems.DrawItem += new System.Windows.Forms.DrawListViewItemEventHandler(this.listViewShowItems_Highlight);
             this.listViewShowItems.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.listViewShowItems_ItemDrag);
             this.listViewShowItems.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.listViewShowItems_ItemSelectionChanged);
             this.listViewShowItems.SelectedIndexChanged += new System.EventHandler(this.listViewShowItems_SelectedIndexChanged);
