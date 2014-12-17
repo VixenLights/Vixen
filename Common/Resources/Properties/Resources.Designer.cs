@@ -1223,6 +1223,16 @@ namespace Common.Resources.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap fill_gaps {
+            get {
+                object obj = ResourceManager.GetObject("fill_gaps", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap filter {
             get {
                 object obj = ResourceManager.GetObject("filter", resourceCulture);
@@ -1856,6 +1866,16 @@ namespace Common.Resources.Properties {
         public static System.Drawing.Bitmap table_chart {
             get {
                 object obj = ResourceManager.GetObject("table_chart", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap table_chart_left {
+            get {
+                object obj = ResourceManager.GetObject("table_chart_left", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

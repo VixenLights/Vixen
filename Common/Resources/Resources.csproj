@@ -234,6 +234,8 @@
     <None Include="add.png" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="fill_gaps.png" />
+    <Content Include="table_chart_left.png" />
     <Content Include="folder_open.png" />
     <None Include="hourglass_link.png" />
     <None Include="hourglass_go.png" />
