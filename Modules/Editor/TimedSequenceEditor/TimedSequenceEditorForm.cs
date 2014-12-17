@@ -1410,18 +1410,22 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			EditElements(new[] { element });
 		}
 
-		private void EditElements(IEnumerable<TimedSequenceElement> elements)
+		private void EditElements(IEnumerable<TimedSequenceElement> elements, string elementType = null)
 		{
 			if (elements == null)
 				return;
 
+			IEnumerable<TimedSequenceElement> editElements;
+
+			editElements = elementType == null ? elements : elements.Where(element => element.EffectNode.Effect.EffectName == elementType);
+
 			using (
-				TimedSequenceEditorEffectEditor editor = new TimedSequenceEditorEffectEditor(elements.Select(x => x.EffectNode)))
+				TimedSequenceEditorEffectEditor editor = new TimedSequenceEditorEffectEditor(editElements.Select(x => x.EffectNode)))
 			{
 				DialogResult result = editor.ShowDialog();
 				if (result == DialogResult.OK)
 				{
-					foreach (Element element in elements)
+					foreach (Element element in editElements)
 					{
 						TimelineControl.grid.RenderElement(element);
 					}
@@ -1445,35 +1449,63 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			contextMenuStrip.Items.Clear();
 
-			ToolStripMenuItem addEffectItem = new ToolStripMenuItem("Add Effect");
+			if (TimelineControl.SelectedElements.Any())
+			{
+				//Build Edit Menu
+				ToolStripMenuItem contextMenuItemEditEffects = new ToolStripMenuItem("Edit Effect(s)");
+				contextMenuItemEditEffects.ShortcutKeyDisplayString = @"Ctrl+E";
+
+				if (TimelineControl.SelectedElementTypes.Count() > 1)
+				{
+					foreach (string effectType in TimelineControl.SelectedElementTypes)
+					{
+						ToolStripMenuItem toolStripMenuEditEffectType = new ToolStripMenuItem(effectType);
+						toolStripMenuEditEffectType.Click +=
+							(mySender, myE) => EditElements(TimelineControl.SelectedElements.Cast<TimedSequenceElement>(), effectType);
+						contextMenuItemEditEffects.DropDownItems.Add(toolStripMenuEditEffectType);
+					}
+
+				}
+				else
+				{
+					contextMenuItemEditEffects.Click +=
+						(mySender, myE) => EditElements(TimelineControl.SelectedElements.Cast<TimedSequenceElement>());
+				}
+
+				contextMenuStrip.Items.Add(contextMenuItemEditEffects);
+			}
+
+			ToolStripMenuItem contextMenuItemAddEffect = new ToolStripMenuItem("Add Effect(s)");
 
 			foreach (
 				IEffectModuleDescriptor effectDesriptor in
 					ApplicationServices.GetModuleDescriptors<IEffectModuleInstance>().Cast<IEffectModuleDescriptor>())
 			{
 				// Add an entry to the menu
-				ToolStripMenuItem menuItem = new ToolStripMenuItem(effectDesriptor.EffectName);
-				menuItem.Tag = effectDesriptor.TypeId;
-				menuItem.ToolTipText = "Use Shift key to add multiple effects of the same type.";
-				menuItem.Click += (mySender, myE) =>
+				ToolStripMenuItem contextMenuItemEffect = new ToolStripMenuItem(effectDesriptor.EffectName);
+				contextMenuItemEffect.Tag = effectDesriptor.TypeId;
+				contextMenuItemEffect.ToolTipText = @"Use Shift key to add multiple effects of the same type.";
+				contextMenuItemEffect.Click += (mySender, myE) =>
 				{
 					if (e.Row != null)
 					{
 						//Modified 7-9-2014 J. Bolding - Changed so that the multiple element addition is wrapped into one action by the undo/redo engine.
-						if (Control.ModifierKeys == Keys.Shift || Control.ModifierKeys == (Keys.Shift | Keys.Control))
+						if (ModifierKeys == Keys.Shift || ModifierKeys == (Keys.Shift | Keys.Control))
 						{
 							//add multiple here
-							AddMultipleEffects(e.GridTime,effectDesriptor.EffectName,(Guid)menuItem.Tag,e.Row);
+							AddMultipleEffects(e.GridTime,effectDesriptor.EffectName,(Guid)contextMenuItemEffect.Tag,e.Row);
 						}
 						else
-							addNewEffectById((Guid)menuItem.Tag, e.Row, e.GridTime, TimeSpan.FromSeconds(2));
+							addNewEffectById((Guid)contextMenuItemEffect.Tag, e.Row, e.GridTime, TimeSpan.FromSeconds(2));
 					}
 				};
 
-				addEffectItem.DropDownItems.Add(menuItem);
+				contextMenuItemAddEffect.DropDownItems.Add(contextMenuItemEffect);
 			}
 
-			contextMenuStrip.Items.Add(addEffectItem);
+			contextMenuStrip.Items.Add(contextMenuItemAddEffect);
+
+
 
 			if (e.ElementsUnderCursor != null && e.ElementsUnderCursor.Count() == 1)
 			{
@@ -1484,61 +1516,61 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				if (TimelineControl.SelectedElements.Count() > 1)
 				{
-					ToolStripMenuItem itemAlignment = new ToolStripMenuItem("Alignment");
+					ToolStripMenuItem contextMenuItemAlignment = new ToolStripMenuItem("Alignment");
 					//Disables the Alignment menu if too many effects are selected in a row.
-					itemAlignment.Enabled = TimelineControl.grid.OkToUseAlignmentHelper(TimelineControl.SelectedElements);
-					if (!itemAlignment.Enabled)
+					contextMenuItemAlignment.Enabled = TimelineControl.grid.OkToUseAlignmentHelper(TimelineControl.SelectedElements);
+					if (!contextMenuItemAlignment.Enabled)
 					{
-						itemAlignment.ToolTipText = "Disabled, maximum selected effects per row is 4.";
+						contextMenuItemAlignment.ToolTipText = @"Disabled, maximum selected effects per row is 4.";
 					}
 
-					ToolStripMenuItem itemAlignStart = new ToolStripMenuItem("Align Start Times (shift)");
-					itemAlignStart.ToolTipText = "Holding shift will align the start times, while holding duration.";
-					itemAlignStart.Click += (mySender, myE) => TimelineControl.grid.AlignElementStartTimes(TimelineControl.SelectedElements, element, ModifierKeys == Keys.Shift);
+					ToolStripMenuItem contextMenuItemAlignStart = new ToolStripMenuItem("Align Start Times (shift)");
+					contextMenuItemAlignStart.ToolTipText = @"Holding shift will align the start times, while holding duration.";
+					contextMenuItemAlignStart.Click += (mySender, myE) => TimelineControl.grid.AlignElementStartTimes(TimelineControl.SelectedElements, element, ModifierKeys == Keys.Shift);
 
-					ToolStripMenuItem itemAlignEnd = new ToolStripMenuItem("Align End Times (shift)");
-					itemAlignEnd.ToolTipText = "Holding shift will align the end times, while holding duration.";
-					itemAlignEnd.Click += (mySender, myE) => TimelineControl.grid.AlignElementEndTimes(TimelineControl.SelectedElements, element, ModifierKeys == Keys.Shift);
+					ToolStripMenuItem contextMenuItemAlignEnd = new ToolStripMenuItem("Align End Times (shift)");
+					contextMenuItemAlignEnd.ToolTipText = @"Holding shift will align the end times, while holding duration.";
+					contextMenuItemAlignEnd.Click += (mySender, myE) => TimelineControl.grid.AlignElementEndTimes(TimelineControl.SelectedElements, element, ModifierKeys == Keys.Shift);
 
-					ToolStripMenuItem itemAlignBoth = new ToolStripMenuItem("Align Both Times");
-					itemAlignBoth.Click += (mySender, myE) => TimelineControl.grid.AlignElementStartEndTimes(TimelineControl.SelectedElements, element);
+					ToolStripMenuItem contextMenuItemAlignBoth = new ToolStripMenuItem("Align Both Times");
+					contextMenuItemAlignBoth.Click += (mySender, myE) => TimelineControl.grid.AlignElementStartEndTimes(TimelineControl.SelectedElements, element);
 
-					ToolStripMenuItem itemMatchDuration = new ToolStripMenuItem("Match Duration (shift)");
-					itemMatchDuration.ToolTipText = "Holding shift will hold the effects end time and adjust the start time, by default the end time is adjusted.";
-					itemMatchDuration.Click += (mySender, myE) => TimelineControl.grid.AlignElementDurations(TimelineControl.SelectedElements, element, ModifierKeys == Keys.Shift);
-					
-					ToolStripMenuItem itemAlignStartToEnd = new ToolStripMenuItem("Align Start to End");
-					itemAlignStartToEnd.Click += (mySender, myE) => TimelineControl.grid.AlignElementStartToEndTimes(TimelineControl.SelectedElements, element);
-					
-					ToolStripMenuItem itemAlignEndToStart = new ToolStripMenuItem("Align End to Start");
-					itemAlignEndToStart.Click += (mySender, myE) => TimelineControl.grid.AlignElementEndToStartTime(TimelineControl.SelectedElements, element);
-					
-					ToolStripMenuItem itemDistDialog = new ToolStripMenuItem("Distribute Effects");
-					itemDistDialog.Click += (mySender, myE) => DistributeSelectedEffects();
+					ToolStripMenuItem contextMenuItemMatchDuration = new ToolStripMenuItem("Match Duration (shift)");
+					contextMenuItemMatchDuration.ToolTipText = @"Holding shift will hold the effects end time and adjust the start time, by default the end time is adjusted.";
+					contextMenuItemMatchDuration.Click += (mySender, myE) => TimelineControl.grid.AlignElementDurations(TimelineControl.SelectedElements, element, ModifierKeys == Keys.Shift);
 
-					ToolStripMenuItem itemAlignCenter = new ToolStripMenuItem("Align Centerpoints");
-					itemAlignCenter.Click += (mySender, myE) => TimelineControl.grid.AlignElementCenters(TimelineControl.SelectedElements, element);
+					ToolStripMenuItem contextMenuItemAlignStartToEnd = new ToolStripMenuItem("Align Start to End");
+					contextMenuItemAlignStartToEnd.Click += (mySender, myE) => TimelineControl.grid.AlignElementStartToEndTimes(TimelineControl.SelectedElements, element);
 
-					ToolStripMenuItem itemDistributeEqually = new ToolStripMenuItem("Distribute Equally");
-					itemDistributeEqually.ToolTipText = "This will stair step the selected elements, starting with the element that has the earlier start point on the time line.";
-					itemDistributeEqually.Click += (mySender, myE) => DistributeSelectedEffectsEqually();
+					ToolStripMenuItem contextMenuItemAlignEndToStart = new ToolStripMenuItem("Align End to Start");
+					contextMenuItemAlignEndToStart.Click += (mySender, myE) => TimelineControl.grid.AlignElementEndToStartTime(TimelineControl.SelectedElements, element);
 
-					contextMenuStrip.Items.Add(itemAlignment);
-					itemAlignment.DropDown.Items.Add(itemAlignStart);
-					itemAlignment.DropDown.Items.Add(itemAlignEnd);
-					itemAlignment.DropDown.Items.Add(itemAlignBoth);
-					itemAlignment.DropDown.Items.Add(itemAlignCenter);
-					itemAlignment.DropDown.Items.Add(itemMatchDuration);
-					itemAlignment.DropDown.Items.Add(itemAlignStartToEnd);
-					itemAlignment.DropDown.Items.Add(itemAlignEndToStart);
-					itemAlignment.DropDown.Items.Add(itemDistributeEqually);
-					itemAlignment.DropDown.Items.Add(itemDistDialog);
+					ToolStripMenuItem contextMenuItemDistDialog = new ToolStripMenuItem("Distribute Effects");
+					contextMenuItemDistDialog.Click += (mySender, myE) => DistributeSelectedEffects();
+
+					ToolStripMenuItem contextMenuItemAlignCenter = new ToolStripMenuItem("Align Centerpoints");
+					contextMenuItemAlignCenter.Click += (mySender, myE) => TimelineControl.grid.AlignElementCenters(TimelineControl.SelectedElements, element);
+
+					ToolStripMenuItem contextMenuItemDistributeEqually = new ToolStripMenuItem("Distribute Equally");
+					contextMenuItemDistributeEqually.ToolTipText = @"This will stair step the selected elements, starting with the element that has the earlier start point on the time line.";
+					contextMenuItemDistributeEqually.Click += (mySender, myE) => DistributeSelectedEffectsEqually();
+
+					contextMenuStrip.Items.Add(contextMenuItemAlignment);
+					contextMenuItemAlignment.DropDown.Items.Add(contextMenuItemAlignStart);
+					contextMenuItemAlignment.DropDown.Items.Add(contextMenuItemAlignEnd);
+					contextMenuItemAlignment.DropDown.Items.Add(contextMenuItemAlignBoth);
+					contextMenuItemAlignment.DropDown.Items.Add(contextMenuItemAlignCenter);
+					contextMenuItemAlignment.DropDown.Items.Add(contextMenuItemMatchDuration);
+					contextMenuItemAlignment.DropDown.Items.Add(contextMenuItemAlignStartToEnd);
+					contextMenuItemAlignment.DropDown.Items.Add(contextMenuItemAlignEndToStart);
+					contextMenuItemAlignment.DropDown.Items.Add(contextMenuItemDistributeEqually);
+					contextMenuItemAlignment.DropDown.Items.Add(contextMenuItemDistDialog);
 				}
 
 				if (tse != null)
 				{
-					ToolStripMenuItem item = new ToolStripMenuItem("Edit Time");
-					item.Click += (mySender, myE) =>
+					ToolStripMenuItem contextMenuItemEditTime = new ToolStripMenuItem("Edit Time");
+					contextMenuItemEditTime.Click += (mySender, myE) =>
 					{
 						EffectTimeEditor editor = new EffectTimeEditor(tse.EffectNode.StartTime, tse.EffectNode.TimeSpan);
 						if (editor.ShowDialog(this) == DialogResult.OK)
@@ -1546,25 +1578,38 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							TimelineControl.grid.MoveResizeElement(element, editor.Start, editor.Duration);
 						}
 					};
-					item.Tag = tse;
-					contextMenuStrip.Items.Add(item);
+					//Why do we set .Tag ?
+					contextMenuItemEditTime.Tag = tse;
+					contextMenuStrip.Items.Add(contextMenuItemEditTime);
 
 				}
 
 			}
 
 			//Add Copy/Cut/paste section
+			//Previously this section used the toolstripmenuitems from the main menu bar, however this caused those items
+			//to be deleted from the edit menu. This is the work-around for that issue - JMB 12-14-2014
 			contextMenuStrip.Items.Add("-");
-			contextMenuStrip.Items.Add(toolStripMenuItem_Copy);
-			contextMenuStrip.Items.Add(toolStripMenuItem_Cut);
-			contextMenuStrip.Items.Add(toolStripMenuItem_Paste);
+
+			ToolStripMenuItem contextMenuItemCopy = new ToolStripMenuItem("Copy", null, toolStripMenuItem_Copy_Click);
+			contextMenuItemCopy.ShortcutKeyDisplayString = @"Ctrl+C";
+			ToolStripMenuItem contextMenuItemCut = new ToolStripMenuItem("Cut", null, toolStripMenuItem_Cut_Click);
+			contextMenuItemCut.ShortcutKeyDisplayString = @"Ctrl+X";
+			contextMenuItemCopy.Enabled = contextMenuItemCut.Enabled = TimelineControl.SelectedElements.Any();
+			ToolStripMenuItem contextMenuItemPaste = new ToolStripMenuItem("Paste", null, toolStripMenuItem_Paste_Click);
+			contextMenuItemPaste.ShortcutKeyDisplayString = @"Ctrl+V";
+			contextMenuItemPaste.Enabled = ClipboardHasData();
+
+			contextMenuStrip.Items.AddRange(new ToolStripItem[] { contextMenuItemCopy, contextMenuItemCut, contextMenuItemPaste });
+
 			if (TimelineControl.SelectedElements.Any())
 			{
-				//Add Edit/Delete/Collections
+				//Add Delete/Collections
 				contextMenuStrip.Items.Add("-");
-				contextMenuStrip.Items.Add(toolStripMenuItem_EditEffect);
-				contextMenuStrip.Items.Add(toolStripMenuItem_deleteElements);
-				contextMenuStrip.Items.Add("-");
+
+				ToolStripMenuItem contextMenuItemDelete = new ToolStripMenuItem("Delete Effect(s)", null, toolStripMenuItem_deleteElements_Click);
+				contextMenuItemDelete.ShortcutKeyDisplayString = @"Del";
+				contextMenuStrip.Items.Add(contextMenuItemDelete);
 
 				AddContextCollectionsMenu();
 
@@ -1577,57 +1622,62 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void AddContextCollectionsMenu()
 		{
-			ToolStripMenuItem itemCollections = new ToolStripMenuItem("Collections");
-			contextMenuStrip.Items.Add(itemCollections);
+			ToolStripMenuItem contextMenuItemCollections = new ToolStripMenuItem("Collections");
 
 			if (TimelineControl.SelectedElements.Count() > 1 && _ColorCollections.Any())
 			{
-				ToolStripMenuItem itemColorCollections = new ToolStripMenuItem("Colors");
-				ToolStripMenuItem itemRandomColors = new ToolStripMenuItem("Random");
-				ToolStripMenuItem itemSequentialColors = new ToolStripMenuItem("Sequential");
+				ToolStripMenuItem contextMenuItemColorCollections = new ToolStripMenuItem("Colors");
+				ToolStripMenuItem contextMenuItemRandomColors = new ToolStripMenuItem("Random");
+				ToolStripMenuItem contextMenuItemSequentialColors = new ToolStripMenuItem("Sequential");
 
-				itemCollections.DropDown.Items.Add(itemColorCollections);
-				itemColorCollections.DropDown.Items.Add(itemRandomColors);
-				itemColorCollections.DropDown.Items.Add(itemSequentialColors);
+				contextMenuItemCollections.DropDown.Items.Add(contextMenuItemColorCollections);
+				contextMenuItemColorCollections.DropDown.Items.Add(contextMenuItemRandomColors);
+				contextMenuItemColorCollections.DropDown.Items.Add(contextMenuItemSequentialColors);
 
-				foreach (ColorCollection Collection in _ColorCollections)
+				foreach (ColorCollection collection in _ColorCollections)
 				{
-					if (Collection.Color.Any())
+					if (collection.Color.Any())
 					{
-						ToolStripMenuItem menuRandomColorItem = new ToolStripMenuItem(Collection.Name);
-						menuRandomColorItem.ToolTipText = Collection.Description;
-						menuRandomColorItem.Click += (mySender, myE) => ApplyColorCollection(Collection, true);
-						itemRandomColors.DropDown.Items.Add(menuRandomColorItem);
-						
-						ToolStripMenuItem menuSequentialColorItem = new ToolStripMenuItem(Collection.Name);
-						menuSequentialColorItem.ToolTipText = Collection.Description;
-						menuSequentialColorItem.Click += (mySender, myE) => ApplyColorCollection(Collection, false);
-						itemSequentialColors.DropDown.Items.Add(menuSequentialColorItem);	
+						ToolStripMenuItem contextMenuItemRandomColorItem = new ToolStripMenuItem(collection.Name);
+						contextMenuItemRandomColorItem.ToolTipText = collection.Description;
+						contextMenuItemRandomColorItem.Click += (mySender, myE) => ApplyColorCollection(collection, true);
+						contextMenuItemRandomColors.DropDown.Items.Add(contextMenuItemRandomColorItem);
+
+						ToolStripMenuItem contextMenuItemSequentialColorItem = new ToolStripMenuItem(collection.Name);
+						contextMenuItemSequentialColorItem.ToolTipText = collection.Description;
+						contextMenuItemSequentialColorItem.Click += (mySender, myE) => ApplyColorCollection(collection, false);
+						contextMenuItemSequentialColors.DropDown.Items.Add(contextMenuItemSequentialColorItem);	
 					}
+				}
+
+				if (contextMenuItemCollections.DropDownItems.Count > 0)
+				{
+					contextMenuStrip.Items.Add("-");
+					contextMenuStrip.Items.Add(contextMenuItemCollections);
 				}
 			}
 
 			if (_curveLibrary.Any())
 			{
-				ToolStripMenuItem itemCurveLibrary = new ToolStripMenuItem("Curves");
-				itemCollections.DropDown.Items.Add(itemCurveLibrary);
+				ToolStripMenuItem contextMenuItemCurveLibrary = new ToolStripMenuItem("Curves");
+				contextMenuItemCollections.DropDown.Items.Add(contextMenuItemCurveLibrary);
 				foreach (KeyValuePair<string, Curve> curve in _curveLibrary)
 				{
-					ToolStripMenuItem itemCurve = new ToolStripMenuItem(curve.Key);
-					itemCurve.Click += (mySender, myE) => ApplyCurveToEffects(curve.Key, curve.Value);
-					itemCurveLibrary.DropDown.Items.Add(itemCurve);
+					ToolStripMenuItem contextMenuItemCurve = new ToolStripMenuItem(curve.Key);
+					contextMenuItemCurve.Click += (mySender, myE) => ApplyCurveToEffects(curve.Key, curve.Value);
+					contextMenuItemCurveLibrary.DropDown.Items.Add(contextMenuItemCurve);
 				}
 			}
 
 			if (_colorGradientLibrary.Any())
 			{
-				ToolStripMenuItem itemColorGradientLibrary = new ToolStripMenuItem("Color Gradient");
-				itemCollections.DropDown.Items.Add(itemColorGradientLibrary);
+				ToolStripMenuItem contextMenuItemColorGradientLibrary = new ToolStripMenuItem("Color Gradient");
+				contextMenuItemCollections.DropDown.Items.Add(contextMenuItemColorGradientLibrary);
 				foreach (KeyValuePair<string, ColorGradient> colorGradient in _colorGradientLibrary)
 				{
-					ToolStripMenuItem itemColorGradient = new ToolStripMenuItem(colorGradient.Key);
-					itemColorGradient.Click += (mySender, myE) => ApplyColorGradientToEffects(colorGradient.Key, colorGradient.Value);
-					itemColorGradientLibrary.DropDown.Items.Add(itemColorGradient);
+					ToolStripMenuItem contextMenuItemColorGradient = new ToolStripMenuItem(colorGradient.Key);
+					contextMenuItemColorGradient.Click += (mySender, myE) => ApplyColorGradientToEffects(colorGradient.Key, colorGradient.Value);
+					contextMenuItemColorGradientLibrary.DropDown.Items.Add(contextMenuItemColorGradient);
 				}
 			}
 		}
@@ -2447,12 +2497,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void UpdatePasteMenuStates()
 		{
+			toolStripButton_Paste.Enabled = toolStripMenuItem_Paste.Enabled = ClipboardHasData();
+		}
+
+		private bool ClipboardHasData()
+		{
 			IDataObject dataObject = Clipboard.GetDataObject();
-			if (dataObject != null)
-			{
-				toolStripButton_Paste.Enabled =
-					toolStripMenuItem_Paste.Enabled = dataObject.GetDataPresent(_clipboardFormatName.Name);
-			}
+			return dataObject != null && dataObject.GetDataPresent(_clipboardFormatName.Name);
 		}
 
 		private void updateButtonStates()
