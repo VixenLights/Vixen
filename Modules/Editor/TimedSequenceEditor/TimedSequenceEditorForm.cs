@@ -1676,7 +1676,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						}
 						else
 						{
-							TimelineControl.grid.SplitElementsAtTime(new List<Element> { element }, e.GridTime);
+							TimelineControl.grid.SplitElementsAtTime(new List<Element> {element}, e.GridTime);
 						}
 
 					};
@@ -1686,11 +1686,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					{
 						if (TimelineControl.SelectedElements.Any())
 						{
-							CloneElements(TimelineControl.SelectedElements ?? new List<Element> { element });
+							CloneElements(TimelineControl.SelectedElements ?? new List<Element> {element});
 						}
 						else
 						{
-							CloneElements(new List<Element> { element });
+							CloneElements(new List<Element> {element});
 						}
 					};
 
@@ -1707,7 +1707,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							if (dr == DialogResult.Cancel) return;
 						}
 
-						foreach (Element elem in TimelineControl.SelectedElements.Where(elem => elem != element).Where(elem => elem.EffectNode.Effect.TypeId == element.EffectNode.Effect.TypeId))
+						foreach (
+							Element elem in
+								TimelineControl.SelectedElements.Where(elem => elem != element)
+									.Where(elem => elem.EffectNode.Effect.TypeId == element.EffectNode.Effect.TypeId))
 						{
 							elem.EffectNode.Effect.ParameterValues = element.EffectNode.Effect.ParameterValues;
 							elem.RenderElement();
@@ -1740,40 +1743,41 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					//Why do we set .Tag ?
 					contextMenuItemEditTime.Tag = tse;
 					contextMenuItemEditTime.Enabled = TimelineControl.grid.OkToUseAlignmentHelper(TimelineControl.SelectedElements);
-					if (!contextMenuItemEditTime.Enabled) contextMenuItemEditTime.ToolTipText = @"Disabled, maximum selected effects per row is 4.";
+					if (!contextMenuItemEditTime.Enabled)
+						contextMenuItemEditTime.ToolTipText = @"Disabled, maximum selected effects per row is 4.";
 					contextMenuStrip.Items.Add(contextMenuItemEditTime);
 
 				}
+			}
 
-				//Add Copy/Cut/paste section
-				//Previously this section used the toolstripmenuitems from the main menu bar, however this caused those items
-				//to be deleted from the edit menu. This is the work-around for that issue - JMB 12-14-2014
+			//Add Copy/Cut/paste section
+			//Previously this section used the toolstripmenuitems from the main menu bar, however this caused those items
+			//to be deleted from the edit menu. This is the work-around for that issue - JMB 12-14-2014
+			contextMenuStrip.Items.Add("-");
+
+			ToolStripMenuItem contextMenuItemCopy = new ToolStripMenuItem("Copy", null, toolStripMenuItem_Copy_Click);
+			contextMenuItemCopy.ShortcutKeyDisplayString = @"Ctrl+C";
+			ToolStripMenuItem contextMenuItemCut = new ToolStripMenuItem("Cut", null, toolStripMenuItem_Cut_Click);
+			contextMenuItemCut.ShortcutKeyDisplayString = @"Ctrl+X";
+			contextMenuItemCopy.Enabled = contextMenuItemCut.Enabled = TimelineControl.SelectedElements.Any();
+			ToolStripMenuItem contextMenuItemPaste = new ToolStripMenuItem("Paste", null, toolStripMenuItem_Paste_Click);
+			contextMenuItemPaste.ShortcutKeyDisplayString = @"Ctrl+V";
+			contextMenuItemPaste.Enabled = ClipboardHasData();
+
+			contextMenuStrip.Items.AddRange(new ToolStripItem[] {contextMenuItemCopy, contextMenuItemCut, contextMenuItemPaste});
+
+			if (TimelineControl.SelectedElements.Any())
+			{
+				//Add Delete/Collections
 				contextMenuStrip.Items.Add("-");
 
-				ToolStripMenuItem contextMenuItemCopy = new ToolStripMenuItem("Copy", null, toolStripMenuItem_Copy_Click);
-				contextMenuItemCopy.ShortcutKeyDisplayString = @"Ctrl+C";
-				ToolStripMenuItem contextMenuItemCut = new ToolStripMenuItem("Cut", null, toolStripMenuItem_Cut_Click);
-				contextMenuItemCut.ShortcutKeyDisplayString = @"Ctrl+X";
-				contextMenuItemCopy.Enabled = contextMenuItemCut.Enabled = TimelineControl.SelectedElements.Any();
-				ToolStripMenuItem contextMenuItemPaste = new ToolStripMenuItem("Paste", null, toolStripMenuItem_Paste_Click);
-				contextMenuItemPaste.ShortcutKeyDisplayString = @"Ctrl+V";
-				contextMenuItemPaste.Enabled = ClipboardHasData();
+				ToolStripMenuItem contextMenuItemDelete = new ToolStripMenuItem("Delete Effect(s)", null,
+					toolStripMenuItem_deleteElements_Click);
+				contextMenuItemDelete.ShortcutKeyDisplayString = @"Del";
+				contextMenuStrip.Items.Add(contextMenuItemDelete);
 
-				contextMenuStrip.Items.AddRange(new ToolStripItem[] {contextMenuItemCopy, contextMenuItemCut, contextMenuItemPaste});
+				AddContextCollectionsMenu();
 
-				if (TimelineControl.SelectedElements.Any())
-				{
-					//Add Delete/Collections
-					contextMenuStrip.Items.Add("-");
-
-					ToolStripMenuItem contextMenuItemDelete = new ToolStripMenuItem("Delete Effect(s)", null,
-						toolStripMenuItem_deleteElements_Click);
-					contextMenuItemDelete.ShortcutKeyDisplayString = @"Del";
-					contextMenuStrip.Items.Add(contextMenuItemDelete);
-
-					AddContextCollectionsMenu();
-
-				}
 			}
 
 			e.AutomaticallyHandleSelection = false;
