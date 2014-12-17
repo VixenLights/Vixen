@@ -150,12 +150,6 @@
     <Compile Include="Form_Grid.Designer.cs">
       <DependentUpon>Form_Grid.cs</DependentUpon>
     </Compile>
-    <Compile Include="Form_PresetEffects.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form_PresetEffects.Designer.cs">
-      <DependentUpon>Form_PresetEffects.cs</DependentUpon>
-    </Compile>
     <Compile Include="IntentRasterizer.cs" />
     <Compile Include="PapagayoDoc.cs" />
     <Compile Include="MarkManager.cs">
@@ -257,9 +251,6 @@
     <EmbeddedResource Include="Form_Grid.resx">
       <DependentUpon>Form_Grid.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Form_PresetEffects.resx">
-      <DependentUpon>Form_PresetEffects.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="MarkManager.resx">
       <DependentUpon>MarkManager.cs</DependentUpon>
     </EmbeddedResource>
@@ -324,11 +315,6 @@
     <ProjectReference Include="..\..\App\LipSync\LipSyncApp.csproj">
       <Project>{e3689e21-2204-48b9-8370-d45ee4a23451}</Project>
       <Name>LipSyncApp</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\App\PresetEffects\PresetEffects.csproj">
-      <Project>{c1325ed2-a344-415f-84f8-19cd63ae60af}</Project>
-      <Name>PresetEffects</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Effect\LipSync\LipSync.csproj">

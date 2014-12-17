@@ -39,7 +39,6 @@ using WeifenLuo.WinFormsUI.Docking;
 using Element = Common.Controls.Timeline.Element;
 using Timer = System.Windows.Forms.Timer;
 using VixenModules.Property.Color;
-using VixenModules.App.PresetEffects;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -103,7 +102,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private CurveLibrary _curveLibrary;
 		private ColorGradientLibrary _colorGradientLibrary;
-		private PresetEffectsLibrary _presetEffectsLibrary;
 		private LipSyncMapLibrary _library;
 		private List<ColorCollection> _ColorCollections = new List<ColorCollection>();
 		
@@ -186,8 +184,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				return MarksForm;
 			else if (persistString == typeof(Form_ToolPalette).ToString())
 				return ToolsForm;
-			else if (persistString == typeof (Form_PresetEffects).ToString())
-				return PresetEffectsForm;
 			else
 			{
 				throw new NotImplementedException("Unable to find docking window type: " + persistString);
@@ -213,7 +209,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				ToolsForm.Show(dockPanel, DockState.DockLeft);
 				MarksForm.Show(dockPanel, DockState.DockLeft);
 				EffectsForm.Show(dockPanel, DockState.DockLeft);
-				PresetEffectsForm.Show(dockPanel,DockState.DockLeft);
 			}
 
 			XMLProfileSettings xml = new XMLProfileSettings();
@@ -289,7 +284,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.DeleteMark += timelineControl_DeleteMark;
 
 			EffectsForm.EscapeDrawMode += EscapeDrawMode;
-			PresetEffectsForm.EscapeDrawMode += EscapeDrawMode;
 
 			MarksForm.MarkCollectionChecked += MarkCollection_Checked;
 			MarksForm.EditMarkCollection += MarkCollection_Edit;
@@ -320,12 +314,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (_colorGradientLibrary != null)
 			{
 				_colorGradientLibrary.GradientChanged += ColorGradientLibrary_CurveChanged;	
-			}
-
-			_presetEffectsLibrary = ApplicationServices.Get<IAppModuleInstance>(PresetEffectsLibraryDescriptor.ModuleID) as PresetEffectsLibrary;
-			if (_presetEffectsLibrary != null)
-			{
-				_presetEffectsLibrary.PresetEffectsChanged += PresetEffectsLibrary_Changed;
 			}
 
 			LoadAvailableEffects();
@@ -393,9 +381,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			EffectsForm.EscapeDrawMode -= EscapeDrawMode;
 			EffectsForm.Dispose();
-
-			PresetEffectsForm.EscapeDrawMode -= EscapeDrawMode;
-			PresetEffectsForm.Dispose();
 
 			MarksForm.EditMarkCollection -= MarkCollection_Edit;
 			MarksForm.MarkCollectionChecked -= MarkCollection_Checked;
@@ -500,23 +485,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				{
 					_effectsForm = new Form_Effects(TimelineControl);
 					return _effectsForm;
-				}
-			}
-		}
-
-		private Form_PresetEffects _presetEffectsForm = null;
-		public Form_PresetEffects PresetEffectsForm
-		{
-			get
-			{
-				if (_presetEffectsForm != null && !_presetEffectsForm.IsDisposed)
-				{
-					return _presetEffectsForm;
-				}
-				else
-				{
-					_presetEffectsForm = new Form_PresetEffects(TimelineControl);
-					return _presetEffectsForm;
 				}
 			}
 		}
@@ -1282,12 +1250,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			CheckAndRenderDirtyElements();
 		}
 
-		private void PresetEffectsLibrary_Changed(object sender, EventArgs e)
-		{
-			//Do nothing
-			return;
-		}
-
 		private void AutoSaveEventProcessor(object sender, EventArgs e)
 		{
 			_autoSaveTimer.Stop();
@@ -1395,7 +1357,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		protected void EscapeDrawMode(object sender, EventArgs e)
 		{
 			EffectsForm.DeselectAllNodes();
-			PresetEffectsForm.DeselectAllNodes();
 			TimelineControl.grid.EnableDrawMode = false;
 			toolStripButton_DrawMode.Checked = false;
 			toolStripButton_SelectionMode.Checked = true;
@@ -1414,16 +1375,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						
 						try
 						{
-							if (_presetEffectsLibrary != null && _presetEffectsLibrary.Contains(e.Guid))
-							{
-								PresetEffect customEffect = _presetEffectsLibrary.GetPresetEffect(e.Guid);
-								newEffect = ApplicationServices.Get<IEffectModuleInstance>(customEffect.EffectTypeGuid);
-								newEffects.Add(CreateEffectNode(newEffect, drawingRow, e.StartTime, e.Duration,customEffect.ParameterValues));
-							}
-							else
-							{
 								newEffects.Add(CreateEffectNode(newEffect, drawingRow, e.StartTime, e.Duration));								
-							}
 						}
 						catch (Exception ex)
 						{
@@ -1529,26 +1481,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				Element element = e.ElementsUnderCursor.FirstOrDefault();
 
 				TimedSequenceElement tse = element as TimedSequenceElement;
-
-				ToolStripMenuItem itemSetDefaults = new ToolStripMenuItem("Save as preset effect");
-				itemSetDefaults.Click += (mySender, myE) =>
-				{
-					TextDialog textDialog = new TextDialog("Enter a name for this preset");
-					if (textDialog.ShowDialog() != DialogResult.OK || textDialog.Response == null) return;
-
-					var item = new PresetEffect
-					{
-						Name = textDialog.Response,
-						EffectTypeName = tse.EffectNode.Effect.EffectName,
-						EffectTypeGuid = tse.EffectNode.Effect.TypeId,
-						ParameterValues = tse.EffectNode.Effect.ParameterValues
-					};
-
-					_presetEffectsLibrary.AddPresetEffect(Guid.NewGuid(),item);
-
-				};
-				itemSetDefaults.Enabled = (TimelineControl.SelectedElements.Count() < 2) && _presetEffectsLibrary.CanSaveType(tse.EffectNode.Effect.EffectName);
-				contextMenuStrip.Items.Add(itemSetDefaults);
 
 				if (TimelineControl.SelectedElements.Count() > 1)
 				{
@@ -2356,7 +2288,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				toolStripButton_Play.Image = Resources.hourglass;
 				//The Looping stuff kinda broke this, but we need to do this for consistency
 				toolStripButton_Play.Enabled = true;
-				playToolStripMenuItem.Enabled = EffectsForm.Enabled = PresetEffectsForm.Enabled = false;
+				playToolStripMenuItem.Enabled = EffectsForm.Enabled = false;
 				toolStripButton_Stop.Enabled = stopToolStripMenuItem.Enabled = true;
 			}
 
@@ -2446,7 +2378,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				timerPostponePlay.Enabled = timerDelayCountdown.Enabled = false;
 				toolStripButton_Play.Image = Resources.control_play_blue;
-				toolStripButton_Play.Enabled = playToolStripMenuItem.Enabled = EffectsForm.Enabled = PresetEffectsForm.Enabled = true;
+				toolStripButton_Play.Enabled = playToolStripMenuItem.Enabled = EffectsForm.Enabled = true;
 				toolStripButton_Stop.Enabled = stopToolStripMenuItem.Enabled = false;
 				//We are stopping the delay, there is no context, so get out of here to avoid false entry into error log
 				return;
@@ -2551,14 +2483,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						toolStripButton_Pause.Enabled = pauseToolStripMenuItem.Enabled = true;
 					}
 					toolStripButton_Stop.Enabled = stopToolStripMenuItem.Enabled = true;
-					EffectsForm.Enabled = PresetEffectsForm.Enabled = false;
+					EffectsForm.Enabled = false;
 				}
 				else // Stopped
 				{
 					toolStripButton_Play.Enabled = playToolStripMenuItem.Enabled = true;
 					toolStripButton_Pause.Enabled = pauseToolStripMenuItem.Enabled = false;
 					toolStripButton_Stop.Enabled = stopToolStripMenuItem.Enabled = false;
-					EffectsForm.Enabled = PresetEffectsForm.Enabled = true;
+					EffectsForm.Enabled = true;
 				}
 			}
 		}
@@ -2675,19 +2607,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// get a new instance of this effect, populate it, and make a node for it
 
 			IEffectModuleInstance effect = ApplicationServices.Get<IEffectModuleInstance>(effectId);
-
-			if (_presetEffectsLibrary != null && _presetEffectsLibrary.Contains(effectId))
-			{
-				PresetEffect customEffect = _presetEffectsLibrary.GetPresetEffect(effectId);
-				effect = ApplicationServices.Get<IEffectModuleInstance>(customEffect.EffectTypeGuid);
-				addEffectInstance(effect, row, startTime, timeSpan,customEffect.ParameterValues);
-			}
-			else
-			{
-				addEffectInstance(effect, row, startTime, timeSpan);
-					
-			}
-
+			addEffectInstance(effect, row, startTime, timeSpan);
 		}
 
 		/// <summary>
@@ -3692,7 +3612,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					if (TimelineControl.grid._beginEffectDraw) //If we are drawing, prevent escape
 						return;
 					EffectsForm.DeselectAllNodes();
-					PresetEffectsForm.DeselectAllNodes();
 					TimelineControl.grid.EnableDrawMode = false;
 					toolStripButton_DrawMode.Checked = false;
 					toolStripButton_SelectionMode.Checked = true;
@@ -4228,22 +4147,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		private void presetEffectWindowToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			if (PresetEffectsForm.DockState == DockState.Unknown)
-			{
-				DockState dockState = PresetEffectsForm.DockState;
-				if (dockState == DockState.Unknown) dockState = DockState.DockLeft;
-				PresetEffectsForm.Show(dockPanel, dockState);
-				//We have to re-subscribe to the event handlers
-				PresetEffectsForm.EscapeDrawMode += EscapeDrawMode;
-			}
-			else
-			{
-				PresetEffectsForm.Close();
-			}
-		}
-
 		private void markWindowToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			if (MarksForm.DockState == DockState.Unknown)
@@ -4497,7 +4400,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			dockPanel.SaveAsXml(settingsPath);
 			MarksForm.Close();
 			EffectsForm.Close();
-			PresetEffectsForm.Close();
 
 			var xml = new XMLProfileSettings();
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/DockLeftPortion", Name), (int)dockPanel.DockLeftPortion);
@@ -4726,7 +4628,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void menuStrip_MenuActivate(object sender, EventArgs e)
 		{
 			effectWindowToolStripMenuItem.Checked = (EffectsForm.DockState != DockState.Unknown);
-			presetEffectWindowToolStripMenuItem.Checked = (PresetEffectsForm.DockState != DockState.Unknown);
 			markWindowToolStripMenuItem.Checked = (MarksForm.DockState != DockState.Unknown);
 			toolWindowToolStripMenuItem.Checked = (ToolsForm.DockState != DockState.Unknown);
 		}

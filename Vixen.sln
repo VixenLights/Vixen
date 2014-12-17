@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30723.0
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vixen", "Vixen.System\Vixen.csproj", "{50B78623-FCF4-48AF-93FF-FA87C937028F}"
 EndProject
@@ -345,8 +345,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LipSyncApp", "Modules\App\LipSync\LipSyncApp.csproj", "{E3689E21-2204-48B9-8370-D45EE4A23451}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helix", "Modules\Output\HelixController\Helix.csproj", "{12890B19-CBDF-473B-AF59-4DCA654E6ACA}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PresetEffects", "Modules\App\PresetEffects\PresetEffects.csproj", "{C1325ED2-A344-415F-84F8-19CD63AE60AF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -701,10 +699,6 @@ Global
 		{12890B19-CBDF-473B-AF59-4DCA654E6ACA}.Release|x64.Build.0 = Release|x64
 		{12890B19-CBDF-473B-AF59-4DCA654E6ACA}.Release|x86.ActiveCfg = Release|x86
 		{12890B19-CBDF-473B-AF59-4DCA654E6ACA}.Release|x86.Build.0 = Release|x86
-		{C1325ED2-A344-415F-84F8-19CD63AE60AF}.Release|x64.ActiveCfg = Release|x64
-		{C1325ED2-A344-415F-84F8-19CD63AE60AF}.Release|x64.Build.0 = Release|x64
-		{C1325ED2-A344-415F-84F8-19CD63AE60AF}.Release|x86.ActiveCfg = Release|x86
-		{C1325ED2-A344-415F-84F8-19CD63AE60AF}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -817,7 +811,6 @@ Global
 		{6DE9A846-AC25-40B6-B8B2-B306EC9F2569} = {0E86725B-55F2-43AB-96A9-2B9B89BE4473}
 		{E3689E21-2204-48B9-8370-D45EE4A23451} = {E301917B-FF08-4275-A4E0-830E2BEC0635}
 		{12890B19-CBDF-473B-AF59-4DCA654E6ACA} = {01824B6E-B567-4974-849B-44A1ABEB4B39}
-		{C1325ED2-A344-415F-84F8-19CD63AE60AF} = {E301917B-FF08-4275-A4E0-830E2BEC0635}
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Everything.vsmdi
