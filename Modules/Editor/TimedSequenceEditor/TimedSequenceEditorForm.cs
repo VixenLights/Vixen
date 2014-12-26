@@ -80,10 +80,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		// Undo manager
 		private UndoManager _undoMgr;
 
-		private TimeSpan? _mPrevPlaybackStart = null;
-		private TimeSpan? _mPrevPlaybackEnd = null;
+		private TimeSpan? _mPrevPlaybackStart;
+		private TimeSpan? _mPrevPlaybackEnd;
 
-		private bool _mModified = false;
+		private bool _mModified;
 
 		private float _timingSpeed = 1;
 
@@ -520,7 +520,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.grid.isGradientDrop = true;
 		}
 
-		private Form_Effects _effectsForm = null;
+		private Form_Effects _effectsForm;
 
 		private Form_Effects EffectsForm
 		{
@@ -538,7 +538,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		private Form_Marks _marksForm = null;
+		private Form_Marks _marksForm;
 
 		private Form_Marks MarksForm
 		{
@@ -556,7 +556,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		private Form_ToolPalette _toolPaletteForm = null;
+		private Form_ToolPalette _toolPaletteForm;
 
 		private Form_ToolPalette ToolsForm
 		{
@@ -589,7 +589,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			SequenceModified();
 		}
 
-		private Form_Grid _gridForm = null;
+		private Form_Grid _gridForm;
 
 		private Form_Grid GridForm
 		{
@@ -761,8 +761,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			UpdateToolStrip4(string.Empty);
 		}
 
-		private System.Timers.Timer _loadTimer = null;
-		private Stopwatch _loadingWatch = null;
+		private System.Timers.Timer _loadTimer;
+		private Stopwatch _loadingWatch;
 
 		private void LoadSequence(ISequence sequence)
 		{
@@ -3162,7 +3162,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		}
 
 
-		private int _doEventsCounter = 0;
+		private int _doEventsCounter;
 
 		/// <summary>
 		/// Adds a single given element node as a row in the timeline control. Recursively adds all
