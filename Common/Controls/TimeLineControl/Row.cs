@@ -72,7 +72,7 @@ namespace Common.Controls.Timeline
 			}
 		}
 
-		public IEnumerable<Element> Elements
+		protected IEnumerable<Element> Elements
 		{
 			get { return m_elements; }
 		}

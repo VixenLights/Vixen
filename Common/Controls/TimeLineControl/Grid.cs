@@ -432,7 +432,17 @@ namespace Common.Controls.Timeline
 				{
 					if (selectedRow.Selected)
 					{
-						selectedRow.SelectAllElements();
+						if (DragBoxFilterEnabled)
+						{
+							foreach (Element element in selectedRow)
+							{
+								element.Selected = DragBoxFilterTypes.Contains(element.EffectNode.Effect.TypeId);
+							}
+						}
+						else
+						{
+							selectedRow.SelectAllElements();
+						}
 						FirstSelectedRow = selectedRow;
 					} else
 					{
@@ -454,7 +464,17 @@ namespace Common.Controls.Timeline
 							if (Rows[i].Visible)
 							{
 								Rows[i].Selected = true;
-								Rows[i].SelectAllElements();
+								if (DragBoxFilterEnabled)
+								{
+									foreach (Element element in Rows[i])
+									{
+										element.Selected = DragBoxFilterTypes.Contains(element.EffectNode.Effect.TypeId);
+									}
+								}
+								else
+								{
+									Rows[i].SelectAllElements();									
+								}
 							}
 						}
 					}else{	
@@ -462,7 +482,17 @@ namespace Common.Controls.Timeline
 							if (Rows[i].Visible)
 							{
 								Rows[i].Selected = true;
-								Rows[i].SelectAllElements();
+								if (DragBoxFilterEnabled)
+								{
+									foreach (Element element in Rows[i])
+									{
+										element.Selected = DragBoxFilterTypes.Contains(element.EffectNode.Effect.TypeId);
+									}
+								}
+								else
+								{
+									Rows[i].SelectAllElements();
+								}
 							}
 						}
 					}
@@ -473,7 +503,17 @@ namespace Common.Controls.Timeline
 				ClearSelectedElements();
 				ClearSelectedRows(selectedRow);
 				ClearActiveRows();
-				selectedRow.SelectAllElements();
+				if (DragBoxFilterEnabled)
+				{
+					foreach (Element element in selectedRow)
+					{
+						element.Selected = DragBoxFilterTypes.Contains(element.EffectNode.Effect.TypeId);
+					}
+				}
+				else
+				{
+					selectedRow.SelectAllElements();					
+				}
 				FirstSelectedRow = selectedRow;
 			}
 
@@ -887,7 +927,7 @@ namespace Common.Controls.Timeline
 			foreach (Row row in Rows)
 			{
 				List<Element> elements = new List<Element>();
-				elements = SelectedElements.Any() ? row.SelectedElements.ToList() : row.Elements.ToList();
+				elements = SelectedElements.Any() ? row.SelectedElements.ToList() : row.ToList();
 
 				if (!elements.Any()) continue;
 

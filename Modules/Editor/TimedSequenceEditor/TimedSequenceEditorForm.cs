@@ -1003,6 +1003,27 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
+		private delegate void ShowInvalidAudioDialogDelegate(string audioPath);
+
+		private void ShowInvalidAudioDialog(string audioPath)
+		{
+			InvalidAudioPathDialog result = new InvalidAudioPathDialog(audioPath);
+			result.ShowDialog(this);
+
+			switch (result.InvalidAudioDialogResult)
+			{
+				case InvalidAudioDialogResult.KeepAudio:
+					//Do nothing...
+					break;
+				case InvalidAudioDialogResult.RemoveAudio:
+					RemoveAudioAssociation(false);
+					break;
+				case InvalidAudioDialogResult.LocateAudio:
+					AddAudioAssociation(false);
+					break;
+			}			
+		}
+
 		private void PopulateWaveformAudio()
 		{
 			if (_sequence.GetAllMedia().Any())
@@ -1013,13 +1034,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (audio.MediaExists)
 				{
 					TimelineControl.Audio = audio;
+					toolStripButton_AssociateAudio.ToolTipText = string.Format("Associated Audio: {0}",
+						Path.GetFileName(audio.MediaFilePath));
 				}
 				else
 				{
-					string message = String.Format("Audio file not found on the path:\n\n {0}\n\nPlease Check your settings/path.",
-						audio.MediaFilePath);
-					Logging.Warn(message);
-					MessageBox.Show(message, @"Missing audio file");
+					//We couldn't find the audio, ask the user what to do
+					//Since we are on a worker thread ...
+					ShowInvalidAudioDialogDelegate dialog = ShowInvalidAudioDialog;
+					BeginInvoke(dialog,audio.MediaFilePath);
 				}
 
 			}
@@ -1064,6 +1087,125 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				setTitleBarText();
 				SetAutoSave();
 				// TODO: Other things, like disable save button, etc.	
+			}
+
+		}
+
+		/// <summary>
+		/// Removes the audio association from the sequence.
+		/// </summary>
+		/// <param name="showWarning">pass as false to prevent MessageBox warning</param>
+		private void RemoveAudioAssociation(bool showWarning = true)
+		{
+			HashSet<IMediaModuleInstance> modulesToRemove = new HashSet<IMediaModuleInstance>();
+			foreach (IMediaModuleInstance module in _sequence.GetAllMedia())
+			{
+				if (module is Audio)
+				{
+					modulesToRemove.Add(module);
+				}
+			}
+
+			if (modulesToRemove.Count > 0 && showWarning)
+			{
+				DialogResult result =
+					MessageBox.Show(@"Are you sure you want to remove the audio association?", @"Remove existing audio?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+				if (result != DialogResult.Yes)
+					return;
+			}
+
+			// we're going ahead and adding the new audio, so remove any of the old ones we found earlier
+			foreach (IMediaModuleInstance module in modulesToRemove)
+			{
+				_sequence.RemoveMedia(module);
+			}
+			//Remove any associated audio from the timeline.
+			TimelineControl.Audio = null;
+
+			//Disable the menu item
+			toolStripMenuItem_removeAudio.Enabled = false;
+			toolStripButton_AssociateAudio.ToolTipText = @"Associate Audio";
+
+			sequenceModified();
+		}
+
+		/// <summary>
+		/// Adds an audio association to the sequence
+		/// </summary>
+		/// <param name="showWarning">pass as false to prevent MessageBox warning when audio association already exists</param>
+		private void AddAudioAssociation(bool showWarning = true)
+		{
+			// for now, only allow a single Audio type media to be assocated. If they want to add another, confirm and remove it.
+			HashSet<IMediaModuleInstance> modulesToRemove = new HashSet<IMediaModuleInstance>();
+			foreach (IMediaModuleInstance module in _sequence.GetAllMedia())
+			{
+				if (module is Audio)
+				{
+					modulesToRemove.Add(module);
+				}
+			}
+
+			if (modulesToRemove.Count > 0 && showWarning)
+			{
+				DialogResult result =
+					MessageBox.Show(@"Only one audio file can be associated with a sequence at a time. If you choose another, " +
+									@"the first will be removed. Continue?", @"Remove existing audio?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+				if (result != DialogResult.Yes)
+					return;
+			}
+
+			// TODO: we need to be able to get the support file types, to filter the openFileDialog properly, but it's not
+			// immediately obvious how to get that; for now, just let it open any file type and complain if it's wrong
+
+			if (openFileDialog.ShowDialog() == DialogResult.OK)
+			{
+				IMediaModuleInstance newInstance = _sequence.AddMedia(openFileDialog.FileName);
+				if (newInstance == null)
+				{
+					Logging.Warn(string.Format("Unsupported audio file {0}", openFileDialog.FileName));
+					MessageBox.Show(@"The selected file is not a supported type.");
+					return;
+				}
+
+				// we're going ahead and adding the new audio, so remove any of the old ones we found earlier
+				foreach (IMediaModuleInstance module in modulesToRemove)
+				{
+					_sequence.RemoveMedia(module);
+				}
+				//Remove any associated audio from the timeline.
+				TimelineControl.Audio = null;
+
+				TimeSpan length = TimeSpan.Zero;
+				if (newInstance is Audio)
+				{
+					length = (newInstance as Audio).MediaDuration;
+					TimelineControl.Audio = newInstance as Audio;
+				}
+
+				_UpdateTimingSourceToSelectedMedia();
+
+				if (length != TimeSpan.Zero)
+				{
+					//The only true check that needs to be done is the length of the sequence to the length of the audio
+					//Perhaps this was put here to avoid the popup annoyance when creating a new sequence... Ill leave it here
+					if (_sequence.Length == _defaultSequenceTime)
+					{
+						SequenceLength = length;
+					}
+					else if (_sequence.Length != length)
+					{
+						if (MessageBox.Show(@"Do you want to resize the sequence to the size of the audio?",
+											@"Resize sequence?", MessageBoxButtons.YesNo) == DialogResult.Yes)
+						{
+							SequenceLength = length;
+						}
+					}
+				}
+
+				toolStripMenuItem_removeAudio.Enabled = true;
+				toolStripButton_AssociateAudio.ToolTipText = string.Format("Associated Audio: {0}", Path.GetFileName(openFileDialog.FileName));
+
+				sequenceModified();
 			}
 
 		}
@@ -1769,13 +1911,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (TimelineControl.SelectedElements.Any())
 			{
 				//Add Delete/Collections
-				contextMenuStrip.Items.Add("-");
-
 				ToolStripMenuItem contextMenuItemDelete = new ToolStripMenuItem("Delete Effect(s)", null,
 					toolStripMenuItem_deleteElements_Click);
 				contextMenuItemDelete.ShortcutKeyDisplayString = @"Del";
 				contextMenuStrip.Items.Add(contextMenuItemDelete);
-
+				contextMenuStrip.Items.Add("-");
 				AddContextCollectionsMenu();
 
 			}
@@ -2314,7 +2454,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				MarkCollection mc = null;
 				if (_sequence.MarkCollections.Count == 0)
 				{
-					if (MessageBox.Show("Marks are stored in Mark Collections. There are no mark collections available to store this mark. Would you like to create a new one?", "Creat a Mark Collection", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == DialogResult.Yes)
+					if (MessageBox.Show("Marks are stored in Mark Collections. There are no mark collections available to store this mark. Would you like to create a new one?", "Creat a Mark Collection", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
 					{
 						mc = GetOrAddNewMarkCollection(Color.White, "Default Marks");
 						MarksForm.PopulateMarkCollectionsList(mc);
@@ -4237,109 +4377,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void toolStripMenuItem_removeAudio_Click(object sender, EventArgs e)
 		{
-			HashSet<IMediaModuleInstance> modulesToRemove = new HashSet<IMediaModuleInstance>();
-			foreach (IMediaModuleInstance module in _sequence.GetAllMedia())
-			{
-				if (module is Audio)
-				{
-					modulesToRemove.Add(module);
-				}
-			}
-
-			if (modulesToRemove.Count > 0)
-			{
-				DialogResult result =
-					MessageBox.Show(@"Are you sure you want to remove the audio association?", @"Remove existing audio?", MessageBoxButtons.YesNoCancel);
-				if (result != DialogResult.Yes)
-					return;
-			}
-
-			// we're going ahead and adding the new audio, so remove any of the old ones we found earlier
-			foreach (IMediaModuleInstance module in modulesToRemove)
-			{
-				_sequence.RemoveMedia(module);
-			}
-			//Remove any associated audio from the timeline.
-			TimelineControl.Audio = null;
-
-			//Disable the menu item
-			toolStripMenuItem_removeAudio.Enabled = false;
-
-			sequenceModified();
-
+			RemoveAudioAssociation();
 		}
 
 		private void toolStripMenuItem_associateAudio_Click(object sender, EventArgs e)
 		{
-			// for now, only allow a single Audio type media to be assocated. If they want to add another, confirm and remove it.
-			HashSet<IMediaModuleInstance> modulesToRemove = new HashSet<IMediaModuleInstance>();
-			foreach (IMediaModuleInstance module in _sequence.GetAllMedia())
-			{
-				if (module is Audio)
-				{
-					modulesToRemove.Add(module);
-				}
-			}
-
-			if (modulesToRemove.Count > 0)
-			{
-				DialogResult result =
-					MessageBox.Show(@"Only one audio file can be associated with a sequence at a time. If you choose another, " +
-									@"the first will be removed. Continue?", @"Remove existing audio?", MessageBoxButtons.YesNoCancel);
-				if (result != DialogResult.Yes)
-					return;
-			}
-
-			// TODO: we need to be able to get the support file types, to filter the openFileDialog properly, but it's not
-			// immediately obvious how to get that; for now, just let it open any file type and complain if it's wrong
-
-			if (openFileDialog.ShowDialog() == DialogResult.OK)
-			{
-				IMediaModuleInstance newInstance = _sequence.AddMedia(openFileDialog.FileName);
-				if (newInstance == null)
-				{
-					Logging.Warn(string.Format("Unsupported audio file {0}", openFileDialog.FileName));
-					MessageBox.Show(@"The selected file is not a supported type.");
-					return;
-				}
-
-				// we're going ahead and adding the new audio, so remove any of the old ones we found earlier
-				foreach (IMediaModuleInstance module in modulesToRemove)
-				{
-					_sequence.RemoveMedia(module);
-				}
-				//Remove any associated audio from the timeline.
-				TimelineControl.Audio = null;
-
-				TimeSpan length = TimeSpan.Zero;
-				if (newInstance is Audio)
-				{
-					length = (newInstance as Audio).MediaDuration;
-					TimelineControl.Audio = newInstance as Audio;
-				}
-
-				_UpdateTimingSourceToSelectedMedia();
-
-				if (length != TimeSpan.Zero)
-				{
-					if (_sequence.Length == _defaultSequenceTime)
-					{
-						SequenceLength = length;
-					}
-					else
-					{
-						if (MessageBox.Show(@"Do you want to resize the sequence to the size of the audio?",
-											@"Resize sequence?", MessageBoxButtons.YesNo) == DialogResult.Yes)
-						{
-							SequenceLength = length;
-						}
-					}
-				}
-
-				toolStripMenuItem_removeAudio.Enabled = true;
-
-				sequenceModified();
-			}
+			AddAudioAssociation();
 		}
 
 		private void toolStripMenuItem_MarkManager_Click(object sender, EventArgs e)
@@ -5224,15 +5267,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.grid.CloseGapsBetweenElements();
 		}
 
-		private void toolStripSplitButton_AlignStartToMarks_ButtonClick(object sender, EventArgs e)
-		{
-			AlignEffectsToNearestMarks(true);
-		}
-
-		private void toolStripSplitButton_AlignEndToMarks_ButtonClick(object sender, EventArgs e)
-		{
-			AlignEffectsToNearestMarks(false);
-    }
 
 		/// <summary>
 		/// Aligns selected elements, or if none, all elements to the closest mark.
@@ -5254,8 +5288,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				List<Element> elements = new List<Element>();
 
-				elements = TimelineControl.SelectedElements.Any() ? row.SelectedElements.ToList() : row.Elements.ToList();
-				
+				elements = TimelineControl.SelectedElements.Any() ? row.SelectedElements.ToList() : row.ToList();
+
 				if (!elements.Any()) continue;
 
 				foreach (Element element in elements)
