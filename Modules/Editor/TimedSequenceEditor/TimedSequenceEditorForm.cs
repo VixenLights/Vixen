@@ -2680,6 +2680,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_PlaySequence(start, end);
 		}
 
+		/// <summary>
+		/// Plays the sequence from the specified starting point in TimeSpan format
+		/// </summary>
+		/// <param name="StartTime"></param>
 		public void PlaySequenceFrom(TimeSpan StartTime)
 		{
 			if (_context == null)
@@ -2931,6 +2935,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				tse.Selected = true;
 			}
 		}
+		
+		/// <summary>
+		/// Removes the Effect Node and Element
+		/// </summary>
+		/// <param name="node"></param>
 		public void RemoveEffectNodeAndElement(EffectNode node)
 		{
 			//Debug.WriteLine("{0}   RemoveEffectNodeAndElement(InstanceId={1})", (int)DateTime.Now.TimeOfDay.TotalMilliseconds, node.Effect.InstanceId);
@@ -4638,10 +4647,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_undoMgr.AddUndoAction(action);
 		}
 
+		/// <summary>
+		/// Used by the Undo/Redo engine
+		/// </summary>
+		/// <param name="changedElements"></param>
 		public void SwapPlaces(Dictionary<Element, ElementTimeInfo> changedElements)
 		{
 			TimelineControl.grid.SwapElementPlacement(changedElements);
-			}
+		}
 
 		#endregion
 
@@ -4657,6 +4670,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			Sequence = Sequence;
 		}
 
+		/// <summary>
+		/// Saves the sequence to the optional given path
+		/// </summary>
+		/// <param name="filePath"></param>
 		public void Save(string filePath = null)
 		{
 			saveSequence(filePath);
