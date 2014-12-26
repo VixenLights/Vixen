@@ -641,8 +641,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				ApplicationServices.GetModuleDescriptors<IEffectModuleInstance>().Cast<IEffectModuleDescriptor>())
 			{
 				// Add an entry to the menu
-				ToolStripMenuItem menuItem = new ToolStripMenuItem(effectDesriptor.EffectName);
-				menuItem.Tag = effectDesriptor.TypeId;
+				ToolStripMenuItem menuItem = new ToolStripMenuItem(effectDesriptor.EffectName) {Tag = effectDesriptor.TypeId};
 				menuItem.Click += (sender, e) =>
 				{
 					Row destination = TimelineControl.ActiveRow ?? TimelineControl.SelectedRow;
@@ -1342,7 +1341,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				return;
 
 			bool strayElement = false;
-			Color thisColor, thisColor2 = Color.White;
+			Color thisColor2 = Color.White;
 			int iPos = 0;
 
 			foreach (Element elem in TimelineControl.SelectedElements)
@@ -1355,6 +1354,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				validColors.AddRange(
 					elem.EffectNode.Effect.TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
 
+				Color thisColor;
 				if (randomOrder)
 				{
 					int r1 = rnd.Next(collection.Color.Count());
@@ -2184,22 +2184,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		}
 		private List<EffectNode> AddEffectsToBeatMarks(ListView.CheckedListViewItemCollection checkedMarks, int effectCount, Guid effectGuid, TimeSpan startTime, TimeSpan duration, Row row, Boolean fillDuration, Boolean skipEoBeat)
 		{
-			List<TimeSpan> times = new List<TimeSpan>();
 			bool skipThisBeat = false;
 
-			foreach (ListViewItem listItem in checkedMarks)
-			{
-				foreach (MarkCollection mcItem in _sequence.MarkCollections)
-				{
-					if (mcItem.Name == listItem.Text)
-					{
-						foreach (TimeSpan mark in mcItem.Marks)
-						{
-							if (mark >= startTime) times.Add(mark);
-						}
-					}
-				}
-			}
+			List<TimeSpan> times = (from ListViewItem listItem in checkedMarks from mcItem in _sequence.MarkCollections where mcItem.Name == listItem.Text from mark in mcItem.Marks where mark >= startTime select mark).ToList();
 
 			times.Sort();
 
@@ -2232,7 +2219,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 								Logging.ErrorException(msg, ex);
 							}
 						}
-						skipThisBeat = (skipThisBeat ? false : true);
+						skipThisBeat = (!skipThisBeat);
 					}
 					else
 						break; //We're done creating, we've matched counts
@@ -2422,8 +2409,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				contextMenuStripElementSelection.Items.Clear();
 
-				ToolStripMenuItem item;
-
 				foreach (Element element in e.ElementsUnderCursor)
 				{
 					TimedSequenceElement tse = element as TimedSequenceElement;
@@ -2432,7 +2417,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 					string name = tse.EffectNode.Effect.Descriptor.TypeName;
 					name += string.Format(" ({0:m\\:ss\\.fff})", tse.EffectNode.StartTime);
-					item = new ToolStripMenuItem(name);
+					ToolStripMenuItem item = new ToolStripMenuItem(name);
 					item.Click += contextMenuStripElementSelectionItem_Click;
 					item.Tag = tse;
 					contextMenuStripElementSelection.Items.Add(item);
@@ -2526,15 +2511,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private MarkCollection GetOrAddNewMarkCollection(Color color, string name = "New Collection")
 		{
-			MarkCollection mc = null;
-			foreach (MarkCollection mCollection in _sequence.MarkCollections)
-			{
-				if (mCollection.Name == name)
-				{
-					mc = mCollection;
-					break;
-				}
-			}
+			MarkCollection mc = _sequence.MarkCollections.FirstOrDefault(mCollection => mCollection.Name == name);
 			if (mc == null)
 			{
 				MarkCollection newCollection = new MarkCollection {Name = name, MarkColor = color};
@@ -2843,10 +2820,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void timelineControl_PlaybackCurrentTimeChanged(object sender, EventArgs e)
 		{
-			if (TimelineControl.PlaybackCurrentTime.HasValue)
-				toolStripStatusLabel_currentTime.Text = TimelineControl.PlaybackCurrentTime.Value.ToString("m\\:ss\\.fff");
-			else
-				toolStripStatusLabel_currentTime.Text = String.Empty;
+			toolStripStatusLabel_currentTime.Text = TimelineControl.PlaybackCurrentTime.HasValue ? TimelineControl.PlaybackCurrentTime.Value.ToString("m\\:ss\\.fff") : String.Empty;
 		}
 
 		private void CursorMovedHandler(object sender, EventArgs e)
@@ -3549,9 +3523,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					return;
 				}
 
-				int j;
-				
-				j = !isColorGradient ? e.Element.EffectNode.Effect.Parameters.TakeWhile(pSig => pSig.Type != typeof(Color)).Count() : e.Element.EffectNode.Effect.Parameters.TakeWhile(pSig => pSig.Type != typeof(ColorGradient)).Count();
+				int j = !isColorGradient ? e.Element.EffectNode.Effect.Parameters.TakeWhile(pSig => pSig.Type != typeof(Color)).Count() : e.Element.EffectNode.Effect.Parameters.TakeWhile(pSig => pSig.Type != typeof(ColorGradient)).Count();
 
 				int k = 0;
 				foreach (Element elem in elementList)
@@ -5103,8 +5075,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
         private void papagayoImportToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string fileName;
-            PapagayoDoc papagayoFile = new PapagayoDoc();
+	        PapagayoDoc papagayoFile = new PapagayoDoc();
             FileDialog openDialog = new OpenFileDialog();
 
             openDialog.Filter = @"Papagayo files (*.pgo)|*.pgo|All files (*.*)|*.*";
@@ -5113,7 +5084,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
             {
                 return;
             }
-            fileName = openDialog.FileName;
+            string fileName = openDialog.FileName;
             papagayoFile.Load(fileName);
 
             TimelineElementsClipboardData result = new TimelineElementsClipboardData
