@@ -596,9 +596,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void PopulateDragBoxFilterDropDown()
 		{
-			ToolStripMenuItem dbfInvertMenuItem = new ToolStripMenuItem("Invert Selection");
-			dbfInvertMenuItem.ShortcutKeys = Keys.Control | Keys.I;
-			dbfInvertMenuItem.ShowShortcutKeys = true;
+			ToolStripMenuItem dbfInvertMenuItem = new ToolStripMenuItem("Invert Selection")
+			{
+				ShortcutKeys = Keys.Control | Keys.I,
+				ShowShortcutKeys = true
+			};
 			dbfInvertMenuItem.MouseUp += (sender, e) => toolStripDropDownButton_DragBoxFilter.ShowDropDown();
 			dbfInvertMenuItem.Click += (sender, e) =>
 			{
@@ -1206,9 +1208,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			foreach (Element elem in TimelineControl.SelectedElements)
 			{
-				ColorGradient newColorGradient = new ColorGradient(colorGradient);
-				newColorGradient.LibraryReferenceName = libraryReferenceName;
-				newColorGradient.IsCurrentLibraryGradient = false;
+				ColorGradient newColorGradient = new ColorGradient(colorGradient)
+				{
+					LibraryReferenceName = libraryReferenceName,
+					IsCurrentLibraryGradient = false
+				};
 
 				string effectName = elem.EffectNode.Effect.EffectName;
 				object[] parms = new object[elem.EffectNode.Effect.ParameterValues.Count()];
@@ -1261,9 +1265,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			foreach (Element elem in TimelineControl.SelectedElements)
 			{
-				Curve newCurve = new Curve(curve);
-				newCurve.LibraryReferenceName = libraryReferenceName;
-				newCurve.IsCurrentLibraryCurve = false;
+				Curve newCurve = new Curve(curve) {LibraryReferenceName = libraryReferenceName, IsCurrentLibraryCurve = false};
 
 				string effectName = elem.EffectNode.Effect.EffectName;
 				object[] parms = new object[elem.EffectNode.Effect.ParameterValues.Count()];
@@ -1708,22 +1710,28 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				TimedSequenceElement tse = element as TimedSequenceElement;
 
 				//Effect Alignment Menu
-				ToolStripMenuItem contextMenuItemAlignment = new ToolStripMenuItem("Alignment");
+				ToolStripMenuItem contextMenuItemAlignment = new ToolStripMenuItem("Alignment")
+				{
+					Enabled = TimelineControl.grid.OkToUseAlignmentHelper(TimelineControl.SelectedElements)
+				};
 				//Disables the Alignment menu if too many effects are selected in a row.
-				contextMenuItemAlignment.Enabled = TimelineControl.grid.OkToUseAlignmentHelper(TimelineControl.SelectedElements);
 				if (!contextMenuItemAlignment.Enabled)
 				{
 					contextMenuItemAlignment.ToolTipText = @"Disabled, maximum selected effects per row is 4.";
 				}
 
-				ToolStripMenuItem contextMenuItemAlignStart = new ToolStripMenuItem("Align Start Times (shift)");
-				contextMenuItemAlignStart.ToolTipText = @"Holding shift will align the start times, while holding duration.";
+				ToolStripMenuItem contextMenuItemAlignStart = new ToolStripMenuItem("Align Start Times (shift)")
+				{
+					ToolTipText = @"Holding shift will align the start times, while holding duration."
+				};
 				contextMenuItemAlignStart.Click +=
 					(mySender, myE) =>
 						TimelineControl.grid.AlignElementStartTimes(TimelineControl.SelectedElements, element, ModifierKeys == Keys.Shift);
 
-				ToolStripMenuItem contextMenuItemAlignEnd = new ToolStripMenuItem("Align End Times (shift)");
-				contextMenuItemAlignEnd.ToolTipText = @"Holding shift will align the end times, while holding duration.";
+				ToolStripMenuItem contextMenuItemAlignEnd = new ToolStripMenuItem("Align End Times (shift)")
+				{
+					ToolTipText = @"Holding shift will align the end times, while holding duration."
+				};
 				contextMenuItemAlignEnd.Click +=
 					(mySender, myE) =>
 						TimelineControl.grid.AlignElementEndTimes(TimelineControl.SelectedElements, element, ModifierKeys == Keys.Shift);
@@ -1732,24 +1740,30 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				contextMenuItemAlignBoth.Click +=
 					(mySender, myE) => TimelineControl.grid.AlignElementStartEndTimes(TimelineControl.SelectedElements, element);
 
-				ToolStripMenuItem contextMenuItemMatchDuration = new ToolStripMenuItem("Match Duration (shift)");
-				contextMenuItemMatchDuration.ToolTipText =
-					@"Holding shift will hold the effects end time and adjust the start time, by default the end time is adjusted.";
+				ToolStripMenuItem contextMenuItemMatchDuration = new ToolStripMenuItem("Match Duration (shift)")
+				{
+					ToolTipText =
+						@"Holding shift will hold the effects end time and adjust the start time, by default the end time is adjusted."
+				};
 				contextMenuItemMatchDuration.Click +=
 					(mySender, myE) =>
 						TimelineControl.grid.AlignElementDurations(TimelineControl.SelectedElements, element, ModifierKeys == Keys.Shift);
 
-				ToolStripMenuItem contextMenuItemAlignStartToEnd = new ToolStripMenuItem("Align Start to End (shift)");
-				contextMenuItemAlignStartToEnd.ToolTipText =
-					@"Holding shift will hold the effects end time and only adjust the start time, by default the entire effect is moved.";
+				ToolStripMenuItem contextMenuItemAlignStartToEnd = new ToolStripMenuItem("Align Start to End (shift)")
+				{
+					ToolTipText =
+						@"Holding shift will hold the effects end time and only adjust the start time, by default the entire effect is moved."
+				};
 				contextMenuItemAlignStartToEnd.Click +=
 					(mySender, myE) =>
 						TimelineControl.grid.AlignElementStartToEndTimes(TimelineControl.SelectedElements, element,
 							ModifierKeys == Keys.Shift);
 
-				ToolStripMenuItem contextMenuItemAlignEndToStart = new ToolStripMenuItem("Align End to Start (shift)");
-				contextMenuItemAlignEndToStart.ToolTipText =
-					@"Holding shift will hold the effects start time and only adjust the end time, by default the entire effect is moved.";
+				ToolStripMenuItem contextMenuItemAlignEndToStart = new ToolStripMenuItem("Align End to Start (shift)")
+				{
+					ToolTipText =
+						@"Holding shift will hold the effects start time and only adjust the end time, by default the entire effect is moved."
+				};
 				contextMenuItemAlignEndToStart.Click +=
 					(mySender, myE) =>
 						TimelineControl.grid.AlignElementEndToStartTime(TimelineControl.SelectedElements, element,
@@ -1762,9 +1776,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				contextMenuItemAlignCenter.Click +=
 					(mySender, myE) => TimelineControl.grid.AlignElementCenters(TimelineControl.SelectedElements, element);
 
-				ToolStripMenuItem contextMenuItemDistributeEqually = new ToolStripMenuItem("Distribute Equally");
-				contextMenuItemDistributeEqually.ToolTipText =
-					@"This will stair step the selected elements, starting with the element that has the earlier start point on the time line.";
+				ToolStripMenuItem contextMenuItemDistributeEqually = new ToolStripMenuItem("Distribute Equally")
+				{
+					ToolTipText =
+						@"This will stair step the selected elements, starting with the element that has the earlier start point on the time line."
+				};
 				contextMenuItemDistributeEqually.Click += (mySender, myE) => DistributeSelectedEffectsEqually();
 
 				ToolStripMenuItem contextMenuItemAlignStartToMark = new ToolStripMenuItem("Align Start to nearest mark");
@@ -1880,14 +1896,20 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			//to be deleted from the edit menu. This is the work-around for that issue - JMB 12-14-2014
 			_contextMenuStrip.Items.Add("-");
 
-			ToolStripMenuItem contextMenuItemCopy = new ToolStripMenuItem("Copy", null, toolStripMenuItem_Copy_Click);
-			contextMenuItemCopy.ShortcutKeyDisplayString = @"Ctrl+C";
-			ToolStripMenuItem contextMenuItemCut = new ToolStripMenuItem("Cut", null, toolStripMenuItem_Cut_Click);
-			contextMenuItemCut.ShortcutKeyDisplayString = @"Ctrl+X";
+			ToolStripMenuItem contextMenuItemCopy = new ToolStripMenuItem("Copy", null, toolStripMenuItem_Copy_Click)
+			{
+				ShortcutKeyDisplayString = @"Ctrl+C"
+			};
+			ToolStripMenuItem contextMenuItemCut = new ToolStripMenuItem("Cut", null, toolStripMenuItem_Cut_Click)
+			{
+				ShortcutKeyDisplayString = @"Ctrl+X"
+			};
 			contextMenuItemCopy.Enabled = contextMenuItemCut.Enabled = TimelineControl.SelectedElements.Any();
-			ToolStripMenuItem contextMenuItemPaste = new ToolStripMenuItem("Paste", null, toolStripMenuItem_Paste_Click);
-			contextMenuItemPaste.ShortcutKeyDisplayString = @"Ctrl+V";
-			contextMenuItemPaste.Enabled = ClipboardHasData();
+			ToolStripMenuItem contextMenuItemPaste = new ToolStripMenuItem("Paste", null, toolStripMenuItem_Paste_Click)
+			{
+				ShortcutKeyDisplayString = @"Ctrl+V",
+				Enabled = ClipboardHasData()
+			};
 
 			_contextMenuStrip.Items.AddRange(new ToolStripItem[] {contextMenuItemCopy, contextMenuItemCut, contextMenuItemPaste});
 
@@ -1895,8 +1917,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				//Add Delete/Collections
 				ToolStripMenuItem contextMenuItemDelete = new ToolStripMenuItem("Delete Effect(s)", null,
-					toolStripMenuItem_deleteElements_Click);
-				contextMenuItemDelete.ShortcutKeyDisplayString = @"Del";
+					toolStripMenuItem_deleteElements_Click) {ShortcutKeyDisplayString = @"Del"};
 				_contextMenuStrip.Items.Add(contextMenuItemDelete);
 				_contextMenuStrip.Items.Add("-");
 				AddContextCollectionsMenu();
@@ -2471,9 +2492,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			if (mc == null)
 			{
-				MarkCollection newCollection = new MarkCollection();
-				newCollection.Name = name;
-				newCollection.MarkColor = color;
+				MarkCollection newCollection = new MarkCollection {Name = name, MarkColor = color};
 				_sequence.MarkCollections.Add(newCollection);
 				mc = newCollection;
 				SequenceModified();
@@ -3157,8 +3176,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void AddNodeAsRow(ElementNode node, Row parentRow)
 		{
 			// made the new row from the given node and add it to the control.
-			TimedSequenceRowLabel label = new TimedSequenceRowLabel();
-			label.Name = node.Name;
+			TimedSequenceRowLabel label = new TimedSequenceRowLabel {Name = node.Name};
 			Row newRow = TimelineControl.AddRow(label, parentRow, 32);
 			newRow.ElementRemoved += ElementRemovedFromRowHandler;
 			newRow.ElementAdded += ElementAddedToRowHandler;
@@ -5168,10 +5186,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
         private void translateFailureHandler(object sender, TranslateFailureEventArgs args)
         {
-            LipSyncTextConvertFailForm failForm = new LipSyncTextConvertFailForm();
-            failForm.errorLabel.Text = @"Unable to find mapping for "  + args.FailedWord + Environment.NewLine +
-                @"Please map using buttons below";
-            DialogResult dr = failForm.ShowDialog();
+            LipSyncTextConvertFailForm failForm = new LipSyncTextConvertFailForm
+            {
+	            errorLabel =
+	            {
+		            Text = @"Unable to find mapping for " + args.FailedWord + Environment.NewLine +
+		                   @"Please map using buttons below"
+	            }
+            };
+	        DialogResult dr = failForm.ShowDialog();
             if (dr == DialogResult.OK)
             {
                 LipSyncTextConvert.AddUserMaping(args.FailedWord + " " + failForm.TranslatedString);
