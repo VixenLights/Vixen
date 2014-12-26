@@ -524,7 +524,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private Form_Effects _effectsForm = null;
 
-		public Form_Effects EffectsForm
+		private Form_Effects EffectsForm
 		{
 			get
 			{
@@ -542,7 +542,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private Form_Marks _marksForm = null;
 
-		public Form_Marks MarksForm
+		private Form_Marks MarksForm
 		{
 			get
 			{
@@ -560,7 +560,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private Form_ToolPalette _toolPaletteForm = null;
 
-		public Form_ToolPalette ToolsForm
+		private Form_ToolPalette ToolsForm
 		{
 			get
 			{
@@ -593,12 +593,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private Form_Grid _gridForm = null;
 
-		public Form_Grid GridForm
+		private Form_Grid GridForm
 		{
 			get { return _gridForm != null ? _gridForm : _gridForm = new Form_Grid(); }
 		}
 
-		public TimelineControl TimelineControl
+		private TimelineControl TimelineControl
 		{
 			get { return _gridForm.TimelineControl; }
 		}
@@ -2632,7 +2632,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			updateButtonStates();
 		}
 
-		public void PlaySequence()
+		private void PlaySequence()
 		{
 			//MessageBox.Show("Call to play sequence");
 			if (delayOffToolStripMenuItem.Checked == false && timerPostponePlay.Enabled == false && toolStripButton_Stop.Enabled == false)
@@ -2709,7 +2709,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_PlaySequence(start, end);
 		}
 
-		public void PauseSequence()
+		private void PauseSequence()
 		{
 			if (_context == null)
 			{
@@ -2721,7 +2721,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			updateButtonStates(); // context provides no notification to/from pause state.
 		}
 
-		public void StopSequence()
+		private void StopSequence()
 		{
 			if (delayOffToolStripMenuItem.Checked != true)
 			{
@@ -2912,7 +2912,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// </summary>
 		/// <param name="nodes"></param>
 		/// <returns>A List of the TimedSequenceElements created and added to the TimelineControl.</returns>
-		public List<TimedSequenceElement> AddEffectNodes(IEnumerable<EffectNode> nodes)
+		private List<TimedSequenceElement> AddEffectNodes(IEnumerable<EffectNode> nodes)
 		{
 			return nodes.Select(AddEffectNode).ToList();
 		}
