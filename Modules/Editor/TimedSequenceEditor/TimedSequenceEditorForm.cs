@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -10,7 +9,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Forms;
-using System.Windows.Forms.VisualStyles;
 using System.Xml;
 using Common.Controls;
 using Common.Controls.Timeline;
@@ -60,15 +58,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private ITiming _timingSource;
 
 		// Delayed play countdown
-		private int DelayCountDown;
+		private int _delayCountDown;
 
 		private readonly Timer _autoSaveTimer = new Timer();
 
 		// Variables used by the add multiple effects dialog
-		private int am_LastEffectCount;
-		private TimeSpan am_LastStartTime;
-		private TimeSpan am_LastDuration;
-		private TimeSpan am_LastDurationBetween;
+		private int _amLastEffectCount;
+		private TimeSpan _amLastStartTime;
+		private TimeSpan _amLastDuration;
+		private TimeSpan _amLastDurationBetween;
 
 		// a mapping of effects in the sequence to the element that represent them in the grid.
 		private Dictionary<EffectNode, Element> _effectNodeToElement;
@@ -77,33 +75,33 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private Dictionary<ElementNode, List<Row>> _elementNodeToRows;
 
 		// the default time for a sequence if one is loaded with 0 time
-		private static readonly TimeSpan _defaultSequenceTime = TimeSpan.FromMinutes(1);
+		private static readonly TimeSpan DefaultSequenceTime = TimeSpan.FromMinutes(1);
 
 		// Undo manager
 		private UndoManager _undoMgr;
 
-		private TimeSpan? m_prevPlaybackStart = null;
-		private TimeSpan? m_prevPlaybackEnd = null;
+		private TimeSpan? _mPrevPlaybackStart = null;
+		private TimeSpan? _mPrevPlaybackEnd = null;
 
-		private bool m_modified = false;
+		private bool _mModified = false;
 
 		private float _timingSpeed = 1;
 
 		private float _timingChangeDelta = 0.25f;
 
-		private static readonly DataFormats.Format _clipboardFormatName =
+		private static readonly DataFormats.Format ClipboardFormatName =
 			DataFormats.GetFormat(typeof (TimelineElementsClipboardData).FullName);
 
 
-		private readonly ContextMenuStrip contextMenuStrip = new ContextMenuStrip();
+		private readonly ContextMenuStrip _contextMenuStrip = new ContextMenuStrip();
 
-		private string settingsPath;
-		private string ColorCollectionsPath;
+		private string _settingsPath;
+		private string _colorCollectionsPath;
 
 		private CurveLibrary _curveLibrary;
 		private ColorGradientLibrary _colorGradientLibrary;
 		private LipSyncMapLibrary _library;
-		private List<ColorCollection> _ColorCollections = new List<ColorCollection>();
+		private List<ColorCollection> _colorCollections = new List<ColorCollection>();
 
 		//Used for color collections
 		private static Random rnd = new Random();
@@ -204,16 +202,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void TimedSequenceEditorForm_Load(object sender, EventArgs e)
 		{
-			settingsPath =
+			_settingsPath =
 				Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Vixen",
 					"TimedSequenceEditorForm.xml");
-			ColorCollectionsPath =
+			_colorCollectionsPath =
 				Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Vixen",
 					"ColorCollections.xml");
 
-			if (File.Exists(settingsPath))
+			if (File.Exists(_settingsPath))
 			{
-				dockPanel.LoadFromXml(settingsPath, new DeserializeDockContent(DockingPanels_GetContentFromPersistString));
+				dockPanel.LoadFromXml(_settingsPath, new DeserializeDockContent(DockingPanels_GetContentFromPersistString));
 			}
 			else
 			{
@@ -368,7 +366,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			LoadAvailableEffects();
 			PopulateDragBoxFilterDropDown();
 			InitUndo();
-			updateButtonStates();
+			UpdateButtonStates();
 			UpdatePasteMenuStates();
 			LoadColorCollections();
 
@@ -405,9 +403,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
 		protected override void Dispose(bool disposing)
 		{
-			if (loadingTask != null && !loadingTask.IsCompleted && !loadingTask.IsFaulted && !loadingTask.IsCanceled)
+			if (_loadingTask != null && !_loadingTask.IsCompleted && !_loadingTask.IsFaulted && !_loadingTask.IsCanceled)
 			{
-				cancellationTokenSource.Cancel();
+				_cancellationTokenSource.Cancel();
 			}
 
 
@@ -588,7 +586,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void MarkCollection_Changed(Object sender, MarkCollectionArgs e)
 		{
-			sequenceModified();
+			SequenceModified();
 		}
 
 		private Form_Grid _gridForm = null;
@@ -658,7 +656,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					Row destination = TimelineControl.ActiveRow ?? TimelineControl.SelectedRow;
 					if (destination != null)
 					{
-						addNewEffectById((Guid) menuItem.Tag, destination, TimelineControl.CursorPosition,
+						AddNewEffectById((Guid) menuItem.Tag, destination, TimelineControl.CursorPosition,
 							TimeSpan.FromSeconds(2)); // TODO: get a proper time
 					}
 				};
@@ -697,7 +695,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// <summary>
 		/// Loads all nodes (groups/elements) currently in the system as rows in the timeline control.
 		/// </summary>
-		private void loadSystemNodesToRows(bool clearCurrentRows = true)
+		private void LoadSystemNodesToRows(bool clearCurrentRows = true)
 		{
 			TimelineControl.AllowGridResize = false;
 			_elementNodeToRows = new Dictionary<ElementNode, List<Row>>();
@@ -708,7 +706,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.EnableDisableHandlers(false);
 			foreach (ElementNode node in VixenSystem.Nodes.GetRootNodes())
 			{
-				addNodeAsRow(node, null);
+				AddNodeAsRow(node, null);
 			}
 			TimelineControl.EnableDisableHandlers(true);
 
@@ -718,10 +716,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void loadTimer_Elapsed(object sender, ElapsedEventArgs e)
 		{
-			updateToolStrip4(string.Format("Please Wait. Loading: {0}", loadingWatch.Elapsed));
+			UpdateToolStrip4(string.Format("Please Wait. Loading: {0}", _loadingWatch.Elapsed));
 		}
 
-		private delegate void updateToolStrip4Delegate(string text, int timeout = 0);
+		private delegate void UpdateToolStrip4Delegate(string text, int timeout = 0);
 
 		private Timer clearStatusTimer = new Timer();
 
@@ -731,11 +729,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// </summary>
 		/// <param name="text"></param>
 		/// <param name="timeOut"></param>
-		private void updateToolStrip4(string text, int timeOut = 0)
+		private void UpdateToolStrip4(string text, int timeOut = 0)
 		{
 			if (InvokeRequired)
 			{
-				Invoke(new updateToolStrip4Delegate(updateToolStrip4), text, timeOut);
+				Invoke(new UpdateToolStrip4Delegate(UpdateToolStrip4), text, timeOut);
 			}
 			else
 			{
@@ -760,24 +758,24 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			clearStatusTimer.Stop();
 			clearStatusTimer.Tick -= clearStatusTimer_Tick;
-			updateToolStrip4(string.Empty);
+			UpdateToolStrip4(string.Empty);
 		}
 
-		private System.Timers.Timer loadTimer = null;
-		private Stopwatch loadingWatch = null;
+		private System.Timers.Timer _loadTimer = null;
+		private Stopwatch _loadingWatch = null;
 
-		private void loadSequence(ISequence sequence)
+		private void LoadSequence(ISequence sequence)
 		{
 			var taskQueue = new Queue<Task>();
 
-			if (loadTimer == null)
+			if (_loadTimer == null)
 			{
-				loadTimer = new System.Timers.Timer();
-				loadTimer.Elapsed += loadTimer_Elapsed;
-				loadTimer.Interval = 250;
+				_loadTimer = new System.Timers.Timer();
+				_loadTimer.Elapsed += loadTimer_Elapsed;
+				_loadTimer.Interval = 250;
 			}
-			loadingWatch = Stopwatch.StartNew();
-			loadTimer.Enabled = true;
+			_loadingWatch = Stopwatch.StartNew();
+			_loadTimer.Enabled = true;
 			TimelineControl.SequenceLoading = true;
 
 			// Let's get the window on the screen. Make it appear to instantly load.
@@ -788,16 +786,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				// default the sequence to 1 minute if it's not set
 				if (_sequence.Length == TimeSpan.Zero)
-					_sequence.Length = _defaultSequenceTime;
+					_sequence.Length = DefaultSequenceTime;
 
 				SequenceLength = _sequence.Length;
-				setTitleBarText();
+				SetTitleBarText();
 
 				// update our program context with this sequence
 				OpenSequenceContext(sequence);
 
 				// clear out all the old data
-				loadSystemNodesToRows();
+				LoadSystemNodesToRows();
 
 				// load the new data: get all the commands in the sequence, and make a new element for each of them.
 				_effectNodeToElement = new Dictionary<EffectNode, Element>();
@@ -805,17 +803,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				TimelineControl.grid.SuppressInvalidate = true; //Hold off invalidating the grid while we bulk load.
 				TimelineControl.grid.SupressRendering = true; //Hold off rendering while we load elements. 
 				// This takes quite a bit of time so queue it up
-				taskQueue.Enqueue(Task.Factory.StartNew(() => addElementsForEffectNodes(_sequence.SequenceData.EffectData)));
+				taskQueue.Enqueue(Task.Factory.StartNew(() => AddElementsForEffectNodes(_sequence.SequenceData.EffectData)));
 
 
 				// Now that it is queued up, let 'er rip and start background rendering when complete.
 				Task.Factory.ContinueWhenAll(taskQueue.ToArray(), completedTasks =>
 				{
 					// Clear the loading toolbar
-					loadingWatch.Stop();
+					_loadingWatch.Stop();
 					TimelineControl.SequenceLoading = false;
-					loadTimer.Enabled = false;
-					updateToolStrip4(string.Empty);
+					_loadTimer.Enabled = false;
+					UpdateToolStrip4(string.Empty);
 					TimelineControl.grid.SupressRendering = false;
 					TimelineControl.grid.SuppressInvalidate = false;
 					TimelineControl.grid.RenderAllRows();
@@ -828,11 +826,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				if (String.IsNullOrEmpty(_sequence.FilePath))
 				{
-					sequenceModified();
+					SequenceModified();
 				}
 				else
 				{
-					sequenceNotModified();
+					SequenceNotModified();
 				}
 
 				MarksForm.Sequence = _sequence;
@@ -846,7 +844,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 
 
-				Logging.Debug(string.Format("Sequence {0} took {1} to load. ", sequence.Name, loadingWatch.Elapsed));
+				Logging.Debug(string.Format("Sequence {0} took {1} to load. ", sequence.Name, _loadingWatch.Elapsed));
 			}
 			catch (Exception ee)
 			{
@@ -860,7 +858,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// <param name="filePath">The filename to save the sequence to. If null, the filename in the sequence will be used.
 		/// If that is also null, the user will be prompted for a filename.</param>
 		/// <param name="forcePrompt">If true, the user will always be prompted for a filename to save the sequence to.</param>
-		private void saveSequence(string filePath = null, bool forcePrompt = false)
+		private void SaveSequence(string filePath = null, bool forcePrompt = false)
 		{
 			if (_sequence == null)
 			{
@@ -909,7 +907,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				_sequence.Save(filePath);
 			}
 
-			sequenceNotModified();
+			SequenceNotModified();
 		}
 
 		private void SaveColorCollections()
@@ -921,19 +919,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			};
 
 			DataContractSerializer dataSer = new DataContractSerializer(typeof (List<ColorCollection>));
-			var dataWriter = XmlWriter.Create(ColorCollectionsPath, xmlsettings);
-			dataSer.WriteObject(dataWriter, _ColorCollections);
+			var dataWriter = XmlWriter.Create(_colorCollectionsPath, xmlsettings);
+			dataSer.WriteObject(dataWriter, _colorCollections);
 			dataWriter.Close();
 		}
 
 		private void LoadColorCollections()
 		{
-			if (System.IO.File.Exists(ColorCollectionsPath))
+			if (System.IO.File.Exists(_colorCollectionsPath))
 			{
-				using (FileStream reader = new FileStream(ColorCollectionsPath, FileMode.Open, FileAccess.Read))
+				using (FileStream reader = new FileStream(_colorCollectionsPath, FileMode.Open, FileAccess.Read))
 				{
 					DataContractSerializer ser = new DataContractSerializer(typeof (List<ColorCollection>));
-					_ColorCollections = (List<ColorCollection>) ser.ReadObject(reader);
+					_colorCollections = (List<ColorCollection>) ser.ReadObject(reader);
 				}
 			}
 		}
@@ -1052,10 +1050,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// <summary>
 		/// Called to update the title bar with the filename and saved / unsaved status
 		/// </summary>
-		private void setTitleBarText()
+		private void SetTitleBarText()
 		{
 			if (InvokeRequired)
-				Invoke(new Delegates.GenericDelegate(setTitleBarText));
+				Invoke(new Delegates.GenericDelegate(SetTitleBarText));
 			else
 			{
 				//Set sequence name in title bar based on the module name and current sequence name JU 8/1/2012
@@ -1066,12 +1064,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		}
 
 		/// <summary>Called when the sequence is modified.</summary>
-		private void sequenceModified()
+		private void SequenceModified()
 		{
-			if (!m_modified)
+			if (!_mModified)
 			{
-				m_modified = true;
-				setTitleBarText();
+				_mModified = true;
+				SetTitleBarText();
 				SetAutoSave();
 				// TODO: Other things, like enable save button, etc.	
 			}
@@ -1079,12 +1077,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		}
 
 		/// <summary>Called when the sequence is no longer considered modified.</summary>
-		private void sequenceNotModified()
+		private void SequenceNotModified()
 		{
-			if (m_modified)
+			if (_mModified)
 			{
-				m_modified = false;
-				setTitleBarText();
+				_mModified = false;
+				SetTitleBarText();
 				SetAutoSave();
 				// TODO: Other things, like disable save button, etc.	
 			}
@@ -1126,7 +1124,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolStripMenuItem_removeAudio.Enabled = false;
 			toolStripButton_AssociateAudio.ToolTipText = @"Associate Audio";
 
-			sequenceModified();
+			SequenceModified();
 		}
 
 		/// <summary>
@@ -1188,7 +1186,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				{
 					//The only true check that needs to be done is the length of the sequence to the length of the audio
 					//Perhaps this was put here to avoid the popup annoyance when creating a new sequence... Ill leave it here
-					if (_sequence.Length == _defaultSequenceTime)
+					if (_sequence.Length == DefaultSequenceTime)
 					{
 						SequenceLength = length;
 					}
@@ -1205,7 +1203,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				toolStripMenuItem_removeAudio.Enabled = true;
 				toolStripButton_AssociateAudio.ToolTipText = string.Format("Associated Audio: {0}", Path.GetFileName(openFileDialog.FileName));
 
-				sequenceModified();
+				SequenceModified();
 			}
 
 		}
@@ -1216,14 +1214,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		//Switch statements are the best method at this time for these methods
 
-		private void ApplyColorGradientToEffects(String LibraryReferenceName, ColorGradient colorGradient)
+		private void ApplyColorGradientToEffects(String libraryReferenceName, ColorGradient colorGradient)
 		{
 			bool strayElement = false;
 
 			foreach (Element elem in TimelineControl.SelectedElements)
 			{
 				ColorGradient newColorGradient = new ColorGradient(colorGradient);
-				newColorGradient.LibraryReferenceName = LibraryReferenceName;
+				newColorGradient.LibraryReferenceName = libraryReferenceName;
 				newColorGradient.IsCurrentLibraryGradient = false;
 
 				string effectName = elem.EffectNode.Effect.EffectName;
@@ -1266,20 +1264,20 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				TimelineControl.grid.RenderElement(elem);
 			}
-			sequenceModified();
+			SequenceModified();
 			if (strayElement)
 				MessageBox.Show(
 					"One or more effects were selected that do not support color gradients.\nAll effects that do were updated.");
 		}
 
-		private void ApplyCurveToEffects(String LibraryReferenceName, Curve curve)
+		private void ApplyCurveToEffects(String libraryReferenceName, Curve curve)
 		{
 			bool strayElement = false;
 
 			foreach (Element elem in TimelineControl.SelectedElements)
 			{
 				Curve newCurve = new Curve(curve);
-				newCurve.LibraryReferenceName = LibraryReferenceName;
+				newCurve.LibraryReferenceName = libraryReferenceName;
 				newCurve.IsCurrentLibraryCurve = false;
 
 				string effectName = elem.EffectNode.Effect.EffectName;
@@ -1317,14 +1315,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				TimelineControl.grid.RenderElement(elem);
 			}
-			sequenceModified();
+			SequenceModified();
 			if (strayElement)
 				MessageBox.Show("One or more effects were selected that do not support curves.\nAll effects that do were updated.");
 		}
 
-		private void ApplyColorCollection(ColorCollection Collection, bool RandomOrder)
+		private void ApplyColorCollection(ColorCollection collection, bool randomOrder)
 		{
-			if (!Collection.Color.Any())
+			if (!collection.Color.Any())
 				return;
 
 			bool strayElement = false;
@@ -1341,32 +1339,32 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				validColors.AddRange(
 					elem.EffectNode.Effect.TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
 
-				if (RandomOrder)
+				if (randomOrder)
 				{
-					int r1 = rnd.Next(Collection.Color.Count());
-					int r2 = rnd.Next(Collection.Color.Count());
+					int r1 = rnd.Next(collection.Color.Count());
+					int r2 = rnd.Next(collection.Color.Count());
 
 					int n = 0;
 					while (r1 == r2 && n <= 5)
 					{
-						r2 = rnd.Next(Collection.Color.Count());
+						r2 = rnd.Next(collection.Color.Count());
 						n++;
 					}
 
-					thisColor = Collection.Color[r1];
-					thisColor2 = Collection.Color[r2];
+					thisColor = collection.Color[r1];
+					thisColor2 = collection.Color[r2];
 				}
 				else
 				{
-					if (iPos == Collection.Color.Count())
+					if (iPos == collection.Color.Count())
 					{
 						iPos = 0;
 					}
-					thisColor = Collection.Color[iPos];
+					thisColor = collection.Color[iPos];
 					iPos++;
 					if (effectName == "Alternating")
 					{
-						thisColor2 = Collection.Color[iPos];
+						thisColor2 = collection.Color[iPos];
 						iPos++;
 					}
 				}
@@ -1437,7 +1435,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				elem.EffectNode.Effect.ParameterValues = parms;
 				TimelineControl.grid.RenderElement(elem);
 			}
-			sequenceModified();
+			SequenceModified();
 			if (strayElement)
 				MessageBox.Show("One or more effects were selected that do not support curves.\nAll effects that do were updated.");
 		}
@@ -1514,13 +1512,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			TimedSequenceElement element = sender as TimedSequenceElement;
 			TimelineControl.grid.RenderElement(element);
-			sequenceModified();
+			SequenceModified();
 		}
 
 		protected void ElementTimeChangedHandler(object sender, EventArgs e)
 		{
 			//TimedSequenceElement element = sender as TimedSequenceElement;
-			sequenceModified();
+			SequenceModified();
 		}
 
 		protected void ElementRemovedFromRowHandler(object sender, ElementEventArgs e)
@@ -1555,7 +1553,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					row.AddElement(movedElement);
 			}
 
-			sequenceModified();
+			SequenceModified();
 		}
 
 		//Sorry about this, was the only way I could find to handle the escape press if
@@ -1592,7 +1590,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					}
 				}
 				AddEffectNodes(newEffects);
-				sequenceModified();
+				SequenceModified();
 				var act = new EffectsAddedUndoAction(this, newEffects);
 				_undoMgr.AddUndoAction(act);
 				SelectEffectNodes(newEffects);
@@ -1639,7 +1637,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					{
 						TimelineControl.grid.RenderElement(element);
 					}
-					sequenceModified();
+					SequenceModified();
 				}
 			}
 		}
@@ -1649,7 +1647,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (_sequence.TimePerPixel != TimelineControl.TimePerPixel)
 			{
 				_sequence.TimePerPixel = TimelineControl.TimePerPixel;
-				sequenceModified();
+				SequenceModified();
 			}
 
 		}
@@ -1657,7 +1655,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void timelineControl_ContextSelected(object sender, ContextSelectedEventArgs e)
 		{
 
-			contextMenuStrip.Items.Clear();
+			_contextMenuStrip.Items.Clear();
 
 			if (TimelineControl.SelectedElements.Any())
 			{
@@ -1682,7 +1680,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						(mySender, myE) => EditElements(TimelineControl.SelectedElements.Cast<TimedSequenceElement>());
 				}
 
-				contextMenuStrip.Items.Add(contextMenuItemEditEffects);
+				_contextMenuStrip.Items.Add(contextMenuItemEditEffects);
 			}
 
 			ToolStripMenuItem contextMenuItemAddEffect = new ToolStripMenuItem("Add Effect(s)");
@@ -1706,14 +1704,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							AddMultipleEffects(e.GridTime, effectDesriptor.EffectName, (Guid) contextMenuItemEffect.Tag, e.Row);
 						}
 						else
-							addNewEffectById((Guid) contextMenuItemEffect.Tag, e.Row, e.GridTime, TimeSpan.FromSeconds(2));
+							AddNewEffectById((Guid) contextMenuItemEffect.Tag, e.Row, e.GridTime, TimeSpan.FromSeconds(2));
 					}
 				};
 
 				contextMenuItemAddEffect.DropDownItems.Add(contextMenuItemEffect);
 			}
 
-			contextMenuStrip.Items.Add(contextMenuItemAddEffect);
+			_contextMenuStrip.Items.Add(contextMenuItemAddEffect);
 
 
 
@@ -1790,7 +1788,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				ToolStripMenuItem contextMenuItemAlignEndToMark = new ToolStripMenuItem("Align End to nearest mark");
 				contextMenuItemAlignEndToMark.Click += (mySender, myE) => AlignEffectsToNearestMarks(false);
 
-				contextMenuStrip.Items.Add(contextMenuItemAlignment);
+				_contextMenuStrip.Items.Add(contextMenuItemAlignment);
 				contextMenuItemAlignment.DropDown.Items.Add(contextMenuItemAlignStart);
 				contextMenuItemAlignment.DropDown.Items.Add(contextMenuItemAlignEnd);
 				contextMenuItemAlignment.DropDown.Items.Add(contextMenuItemAlignBoth);
@@ -1860,7 +1858,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					};
 					contextMenuItemManipulationCloneToOther.Enabled = (TimelineControl.SelectedElements.Count() > 2);
 
-					contextMenuStrip.Items.Add(contextMenuItemManipulation);
+					_contextMenuStrip.Items.Add(contextMenuItemManipulation);
 					contextMenuItemManipulation.DropDown.Items.Add(contextMenuItemManipulateDivide);
 					contextMenuItemManipulation.DropDown.Items.Add(contextMenuItemManipulationClone);
 					contextMenuItemManipulation.DropDown.Items.Add(contextMenuItemManipulationCloneToOther);
@@ -1887,7 +1885,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					contextMenuItemEditTime.Enabled = TimelineControl.grid.OkToUseAlignmentHelper(TimelineControl.SelectedElements);
 					if (!contextMenuItemEditTime.Enabled)
 						contextMenuItemEditTime.ToolTipText = @"Disabled, maximum selected effects per row is 4.";
-					contextMenuStrip.Items.Add(contextMenuItemEditTime);
+					_contextMenuStrip.Items.Add(contextMenuItemEditTime);
 
 				}
 			}
@@ -1895,7 +1893,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			//Add Copy/Cut/paste section
 			//Previously this section used the toolstripmenuitems from the main menu bar, however this caused those items
 			//to be deleted from the edit menu. This is the work-around for that issue - JMB 12-14-2014
-			contextMenuStrip.Items.Add("-");
+			_contextMenuStrip.Items.Add("-");
 
 			ToolStripMenuItem contextMenuItemCopy = new ToolStripMenuItem("Copy", null, toolStripMenuItem_Copy_Click);
 			contextMenuItemCopy.ShortcutKeyDisplayString = @"Ctrl+C";
@@ -1906,7 +1904,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			contextMenuItemPaste.ShortcutKeyDisplayString = @"Ctrl+V";
 			contextMenuItemPaste.Enabled = ClipboardHasData();
 
-			contextMenuStrip.Items.AddRange(new ToolStripItem[] {contextMenuItemCopy, contextMenuItemCut, contextMenuItemPaste});
+			_contextMenuStrip.Items.AddRange(new ToolStripItem[] {contextMenuItemCopy, contextMenuItemCut, contextMenuItemPaste});
 
 			if (TimelineControl.SelectedElements.Any())
 			{
@@ -1914,22 +1912,22 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				ToolStripMenuItem contextMenuItemDelete = new ToolStripMenuItem("Delete Effect(s)", null,
 					toolStripMenuItem_deleteElements_Click);
 				contextMenuItemDelete.ShortcutKeyDisplayString = @"Del";
-				contextMenuStrip.Items.Add(contextMenuItemDelete);
-				contextMenuStrip.Items.Add("-");
+				_contextMenuStrip.Items.Add(contextMenuItemDelete);
+				_contextMenuStrip.Items.Add("-");
 				AddContextCollectionsMenu();
 
 			}
 
 			e.AutomaticallyHandleSelection = false;
 
-			contextMenuStrip.Show(MousePosition);
+			_contextMenuStrip.Show(MousePosition);
 		}
 
 		private void AddContextCollectionsMenu()
 		{
 			ToolStripMenuItem contextMenuItemCollections = new ToolStripMenuItem("Collections");
 
-			if (TimelineControl.SelectedElements.Count() > 1 && _ColorCollections.Any())
+			if (TimelineControl.SelectedElements.Count() > 1 && _colorCollections.Any())
 			{
 				ToolStripMenuItem contextMenuItemColorCollections = new ToolStripMenuItem("Colors");
 				ToolStripMenuItem contextMenuItemRandomColors = new ToolStripMenuItem("Random");
@@ -1939,7 +1937,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				contextMenuItemColorCollections.DropDown.Items.Add(contextMenuItemRandomColors);
 				contextMenuItemColorCollections.DropDown.Items.Add(contextMenuItemSequentialColors);
 
-				foreach (ColorCollection collection in _ColorCollections)
+				foreach (ColorCollection collection in _colorCollections)
 				{
 					if (collection.Color.Any())
 					{
@@ -1957,8 +1955,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				if (contextMenuItemCollections.DropDownItems.Count > 0)
 				{
-					contextMenuStrip.Items.Add("-");
-					contextMenuStrip.Items.Add(contextMenuItemCollections);
+					_contextMenuStrip.Items.Add("-");
+					_contextMenuStrip.Items.Add(contextMenuItemCollections);
 				}
 			}
 
@@ -2054,10 +2052,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void ColorCollectionsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			ColorCollectionLibrary_Form RCCF = new ColorCollectionLibrary_Form(new List<ColorCollection>(_ColorCollections));
+			ColorCollectionLibrary_Form RCCF = new ColorCollectionLibrary_Form(new List<ColorCollection>(_colorCollections));
 			if (RCCF.ShowDialog() == DialogResult.OK)
 			{
-				_ColorCollections = RCCF.ColorCollections;
+				_colorCollections = RCCF.ColorCollections;
 				SaveColorCollections();
 			}
 			else
@@ -2066,69 +2064,69 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		private void AddMultipleEffects(TimeSpan StartTime, String EffectName, Guid EffectID, Row Row)
+		private void AddMultipleEffects(TimeSpan startTime, String effectName, Guid effectId, Row row)
 		{
 			var eDialog = new Form_AddMultipleEffects();
-			if (Control.ModifierKeys == (Keys.Shift | Keys.Control) && am_LastEffectCount > 0)
+			if (Control.ModifierKeys == (Keys.Shift | Keys.Control) && _amLastEffectCount > 0)
 			{
-				eDialog.EffectCount = am_LastEffectCount;
-				eDialog.StartTime = am_LastStartTime;
-				eDialog.Duration = am_LastDuration;
-				eDialog.DurationBetween = am_LastDurationBetween;
+				eDialog.EffectCount = _amLastEffectCount;
+				eDialog.StartTime = _amLastStartTime;
+				eDialog.Duration = _amLastDuration;
+				eDialog.DurationBetween = _amLastDurationBetween;
 			}
 			else
 			{
 				eDialog.EffectCount = 2;
-				eDialog.StartTime = StartTime;
+				eDialog.StartTime = startTime;
 				eDialog.Duration = TimeSpan.FromSeconds(2);
 				eDialog.DurationBetween = TimeSpan.FromSeconds(2);
 			}
-			eDialog.EffectName = EffectName;
+			eDialog.EffectName = effectName;
 			eDialog.SequenceLength = eDialog.EndTime = SequenceLength;
 			eDialog.MarkCollections = _sequence.MarkCollections;
 			eDialog.ShowDialog();
 
 			if (eDialog.DialogResult == DialogResult.OK)
 			{
-				am_LastEffectCount = eDialog.EffectCount;
-				am_LastStartTime = eDialog.StartTime;
-				am_LastDuration = eDialog.Duration;
-				am_LastDurationBetween = eDialog.DurationBetween;
+				_amLastEffectCount = eDialog.EffectCount;
+				_amLastStartTime = eDialog.StartTime;
+				_amLastDuration = eDialog.Duration;
+				_amLastDurationBetween = eDialog.DurationBetween;
 
 				var newEffects = new List<EffectNode>();
 
 				if (eDialog.AlignToBeatMarks)
 				{
-					newEffects = AddEffectsToBeatMarks(eDialog.CheckedMarks, eDialog.EffectCount, EffectID, eDialog.StartTime, eDialog.Duration, Row, eDialog.FillDuration, eDialog.SkipEOBeat);
+					newEffects = AddEffectsToBeatMarks(eDialog.CheckedMarks, eDialog.EffectCount, effectId, eDialog.StartTime, eDialog.Duration, row, eDialog.FillDuration, eDialog.SkipEOBeat);
 				}
 				else
 				{
-					TimeSpan NextStartTime = eDialog.StartTime;
+					TimeSpan nextStartTime = eDialog.StartTime;
 					for (int i = 0; i < eDialog.EffectCount; i++)
 					{
-						if (NextStartTime + eDialog.Duration > SequenceLength)
+						if (nextStartTime + eDialog.Duration > SequenceLength)
 						{
 							//if something went wrong in the forms calculations
 							break;
 						}
 						else
 						{
-							var newEffect = ApplicationServices.Get<IEffectModuleInstance>(EffectID);
+							var newEffect = ApplicationServices.Get<IEffectModuleInstance>(effectId);
 							try
 							{
-								newEffects.Add(CreateEffectNode(newEffect, Row, NextStartTime, eDialog.Duration));
-								NextStartTime = NextStartTime + eDialog.Duration + eDialog.DurationBetween;
+								newEffects.Add(CreateEffectNode(newEffect, row, nextStartTime, eDialog.Duration));
+								nextStartTime = nextStartTime + eDialog.Duration + eDialog.DurationBetween;
 							}
 							catch (Exception ex)
 							{
 								string msg = "TimedSequenceEditor AddMultipleElements: error adding effect of type " + newEffect.Descriptor.TypeId + " to row " +
-											 ((Row == null) ? "<null>" : Row.Name);
+											 ((row == null) ? "<null>" : row.Name);
 								Logging.ErrorException(msg, ex);
 							}
 						}
 					}
 					AddEffectNodes(newEffects);
-					sequenceModified();
+					SequenceModified();
 					var act = new EffectsAddedUndoAction(this, newEffects);
 					_undoMgr.AddUndoAction(act);
 				}
@@ -2143,64 +2141,64 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 			}
 		}
-		private List<EffectNode> AddEffectsToBeatMarks(ListView.CheckedListViewItemCollection CheckedMarks, int EffectCount, Guid EffectGuid, TimeSpan StartTime, TimeSpan Duration, Row Row, Boolean FillDuration, Boolean SkipEOBeat)
+		private List<EffectNode> AddEffectsToBeatMarks(ListView.CheckedListViewItemCollection checkedMarks, int effectCount, Guid effectGuid, TimeSpan startTime, TimeSpan duration, Row row, Boolean fillDuration, Boolean skipEOBeat)
 		{
-			List<TimeSpan> Times = new List<TimeSpan>();
-			bool SkipThisBeat = false;
+			List<TimeSpan> times = new List<TimeSpan>();
+			bool skipThisBeat = false;
 
-			foreach (ListViewItem ListItem in CheckedMarks)
+			foreach (ListViewItem listItem in checkedMarks)
 			{
-				foreach (MarkCollection MCItem in _sequence.MarkCollections)
+				foreach (MarkCollection mcItem in _sequence.MarkCollections)
 				{
-					if (MCItem.Name == ListItem.Text)
+					if (mcItem.Name == listItem.Text)
 					{
-						foreach (TimeSpan Mark in MCItem.Marks)
+						foreach (TimeSpan mark in mcItem.Marks)
 						{
-							if (Mark >= StartTime) Times.Add(Mark);
+							if (mark >= startTime) times.Add(mark);
 						}
 					}
 				}
 			}
 
-			Times.Sort();
+			times.Sort();
 
 			var newEffects = new List<EffectNode>();
 
-			if (Times.Count > 0)
+			if (times.Count > 0)
 			{
-				foreach (TimeSpan Mark in Times)
+				foreach (TimeSpan mark in times)
 				{
-					if (newEffects.Count < EffectCount)
+					if (newEffects.Count < effectCount)
 					{
-						if (!SkipEOBeat || (SkipEOBeat && !SkipThisBeat))
+						if (!skipEOBeat || (skipEOBeat && !skipThisBeat))
 						{
-							var newEffect = ApplicationServices.Get<IEffectModuleInstance>(EffectGuid);
+							var newEffect = ApplicationServices.Get<IEffectModuleInstance>(effectGuid);
 							try
 							{
-								if (FillDuration)
+								if (fillDuration)
 								{
-									if (Times.IndexOf(Mark) == Times.Count - 1) //The dialog hanles this, but just to make sure
+									if (times.IndexOf(mark) == times.Count - 1) //The dialog hanles this, but just to make sure
 										break; //We're done -- There are no more marks to fill, don't create it
-									Duration = Times[Times.IndexOf(Mark) + 1] - Mark;
-									if (Duration < TimeSpan.FromSeconds(.01)) Duration = TimeSpan.FromSeconds(.01);
+									duration = times[times.IndexOf(mark) + 1] - mark;
+									if (duration < TimeSpan.FromSeconds(.01)) duration = TimeSpan.FromSeconds(.01);
 								}
-								newEffects.Add(CreateEffectNode(newEffect, Row, Mark, Duration));
+								newEffects.Add(CreateEffectNode(newEffect, row, mark, duration));
 							}
 							catch (Exception ex)
 							{
 								string msg = "TimedSequenceEditor AddMultipleElements: error adding effect of type " + newEffect.Descriptor.TypeId + " to row " +
-											 ((Row == null) ? "<null>" : Row.Name);
+											 ((row == null) ? "<null>" : row.Name);
 								Logging.ErrorException(msg, ex);
 							}
 						}
-						SkipThisBeat = (SkipThisBeat ? false : true);
+						skipThisBeat = (skipThisBeat ? false : true);
 					}
 					else
 						break; //We're done creating, we've matched counts
 				}
 
 				AddEffectNodes(newEffects);
-				sequenceModified();
+				SequenceModified();
 				var act = new EffectsAddedUndoAction(this, newEffects);
 				_undoMgr.AddUndoAction(act);
 			}
@@ -2235,7 +2233,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			var totalDuration = endTime - startTime;
 			var effectDuration = totalDuration.TotalSeconds/totalElements;
-			TimeSpan effectTS = TimeSpan.FromSeconds(effectDuration);
+			TimeSpan effectTs = TimeSpan.FromSeconds(effectDuration);
 			//var msgString = string.Format("Total Elements: {0}\n Start Time: {1}\n End Time: {2}\n Total Duration: {3}\n Effect Duration: {4}\n TimeSpan Duration: {5}\n Start at last element: {6}", totalElements,startTime,endTime,totalDuration,effectDuration, effectTS.TotalSeconds, startAtLastElement);
 			//MessageBox.Show(msgString);
 			//Sanity Check - Keep effects from becoming less than minimum.
@@ -2253,21 +2251,21 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				//Lets move the first one
 				elementsToDistribute.Add(TimelineControl.SelectedElements.ElementAt(0),
-							new Tuple<TimeSpan, TimeSpan>(startTime, startTime + effectTS));
+							new Tuple<TimeSpan, TimeSpan>(startTime, startTime + effectTs));
 				for (int i = 1; i <= totalElements - 1; i++)
 				{
 					var thisStartTime = elementsToDistribute.Last().Value.Item2;
-					elementsToDistribute.Add(TimelineControl.SelectedElements.ElementAt(i), new Tuple<TimeSpan, TimeSpan>(thisStartTime, thisStartTime + effectTS));
+					elementsToDistribute.Add(TimelineControl.SelectedElements.ElementAt(i), new Tuple<TimeSpan, TimeSpan>(thisStartTime, thisStartTime + effectTs));
 				}
 			}
 			else
 			{
 				//Lets move the first(last) one
-				elementsToDistribute.Add(TimelineControl.SelectedElements.Last(), new Tuple<TimeSpan, TimeSpan>(startTime, startTime + effectTS));
+				elementsToDistribute.Add(TimelineControl.SelectedElements.Last(), new Tuple<TimeSpan, TimeSpan>(startTime, startTime + effectTs));
 				for (int i = totalElements - 2; i >= 0; i--)
 				{
 					var thisStartTime = elementsToDistribute.Last().Value.Item2; 
-					elementsToDistribute.Add(TimelineControl.SelectedElements.ElementAt(i), new Tuple<TimeSpan, TimeSpan>(thisStartTime, thisStartTime + effectTS));
+					elementsToDistribute.Add(TimelineControl.SelectedElements.ElementAt(i), new Tuple<TimeSpan, TimeSpan>(thisStartTime, thisStartTime + effectTs));
 				}
 			}
 
@@ -2427,13 +2425,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (autoPlay)
 				{
 					// Save the times for later restoration
-					m_prevPlaybackStart = TimelineControl.PlaybackStartTime;
-					m_prevPlaybackEnd = TimelineControl.PlaybackEndTime;
+					_mPrevPlaybackStart = TimelineControl.PlaybackStartTime;
+					_mPrevPlaybackEnd = TimelineControl.PlaybackEndTime;
 				}
 				else
 				{
-					m_prevPlaybackStart = e.Time;
-					m_prevPlaybackEnd = null;
+					_mPrevPlaybackStart = e.Time;
+					_mPrevPlaybackEnd = null;
 				}
 
 				// Set the timeline control
@@ -2472,7 +2470,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				{
 					mc.Marks.Add(e.Time);
 					PopulateMarkSnapTimes();
-					sequenceModified();
+					SequenceModified();
 				}
 			}
 		}
@@ -2495,7 +2493,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				newCollection.MarkColor = color;
 				_sequence.MarkCollections.Add(newCollection);
 				mc = newCollection;
-				sequenceModified();
+				SequenceModified();
 			}
 
 			return mc;
@@ -2515,7 +2513,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 			}
 			PopulateMarkSnapTimes();
-			sequenceModified();
+			SequenceModified();
 		}
 
 		private void timelineControl_DeleteMark(object sender, DeleteMarkEventArgs e)
@@ -2528,13 +2526,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 			}
 			PopulateMarkSnapTimes();
-			sequenceModified();
+			SequenceModified();
 		}
 
 		private void timelineControl_RulerBeginDragTimeRange(object sender, EventArgs e)
 		{
-			m_prevPlaybackStart = TimelineControl.PlaybackStartTime;
-			m_prevPlaybackEnd = TimelineControl.PlaybackEndTime;
+			_mPrevPlaybackStart = TimelineControl.PlaybackStartTime;
+			_mPrevPlaybackEnd = TimelineControl.PlaybackEndTime;
 		}
 
 		private void timelineControl_TimeRangeDragged(object sender, ModifierKeysEventArgs e)
@@ -2554,8 +2552,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			else
 			{
 				// We actually want to keep this range.
-				m_prevPlaybackStart = TimelineControl.PlaybackStartTime;
-				m_prevPlaybackEnd = TimelineControl.PlaybackEndTime;
+				_mPrevPlaybackStart = TimelineControl.PlaybackStartTime;
+				_mPrevPlaybackEnd = TimelineControl.PlaybackEndTime;
 			}
 		}
 
@@ -2618,7 +2616,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			//_context.ProgramEnded += _context_ProgramEnded;
 			_context.ContextEnded += context_ContextEnded;
 
-			updateButtonStates();
+			UpdateButtonStates();
 		}
 
 		private void CloseSequenceContext()
@@ -2629,7 +2627,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_context.ContextEnded -= context_ContextEnded;
 
 			VixenSystem.Contexts.ReleaseContext(_context);
-			updateButtonStates();
+			UpdateButtonStates();
 		}
 
 		private void PlaySequence()
@@ -2638,7 +2636,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (delayOffToolStripMenuItem.Checked == false && timerPostponePlay.Enabled == false && toolStripButton_Stop.Enabled == false)
 			{
 				//MessageBox.Show("Starting delay");
-				DelayCountDown = (timerPostponePlay.Interval / 1000);
+				_delayCountDown = (timerPostponePlay.Interval / 1000);
 				timerPostponePlay.Enabled = timerDelayCountdown.Enabled = true;
 				toolStripButton_Play.Image = Resources.hourglass;
 				//The Looping stuff kinda broke this, but we need to do this for consistency
@@ -2668,9 +2666,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (_context.IsPaused)
 			{
 				// continue execution from previous location.
-				start = _TimingSource.Position;
+				start = TimingSource.Position;
 				end = TimeSpan.MaxValue;
-				updateButtonStates(); // context provides no notification to/from pause state.
+				UpdateButtonStates(); // context provides no notification to/from pause state.
 			}
 			else
 			{
@@ -2683,8 +2681,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// <summary>
 		/// Plays the sequence from the specified starting point in TimeSpan format
 		/// </summary>
-		/// <param name="StartTime"></param>
-		public void PlaySequenceFrom(TimeSpan StartTime)
+		/// <param name="startTime"></param>
+		public void PlaySequenceFrom(TimeSpan startTime)
 		{
 			if (_context == null)
 			{
@@ -2697,13 +2695,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (_context.IsPaused)
 			{
 				// continue execution from previous location.
-				start = _TimingSource.Position;
+				start = TimingSource.Position;
 				end = TimeSpan.MaxValue;
-				updateButtonStates(); // context provides no notification to/from pause state.
+				UpdateButtonStates(); // context provides no notification to/from pause state.
 			}
 			else
 			{
-				start = StartTime;
+				start = startTime;
 				end = TimelineControl.PlaybackEndTime.GetValueOrDefault(TimeSpan.MaxValue);
 				if (start >= end)
 				{
@@ -2722,7 +2720,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 
 			_context.Pause();
-			updateButtonStates(); // context provides no notification to/from pause state.
+			UpdateButtonStates(); // context provides no notification to/from pause state.
 		}
 
 		private void StopSequence()
@@ -2756,8 +2754,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		protected void context_SequenceStarted(object sender, SequenceStartedEventArgs e)
 		{
 			timerPlaying.Start();
-			_TimingSource = e.TimingSource;
-			updateButtonStates();
+			TimingSource = e.TimingSource;
+			UpdateButtonStates();
 		}
 
 		protected void context_SequenceEnded(object sender, SequenceEventArgs e)
@@ -2771,23 +2769,23 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 
 			timerPlaying.Stop();
-			_TimingSource = null;
+			TimingSource = null;
 		}
 
 		protected void context_ContextEnded(object sender, EventArgs e)
 		{
-			updateButtonStates();
+			UpdateButtonStates();
 
-			TimelineControl.PlaybackStartTime = m_prevPlaybackStart;
-			TimelineControl.PlaybackEndTime = m_prevPlaybackEnd;
+			TimelineControl.PlaybackStartTime = _mPrevPlaybackStart;
+			TimelineControl.PlaybackEndTime = _mPrevPlaybackEnd;
 			TimelineControl.PlaybackCurrentTime = null;
 		}
 
 		protected void timerPlaying_Tick(object sender, EventArgs e)
 		{
-			if (_TimingSource != null)
+			if (TimingSource != null)
 			{
-				TimelineControl.PlaybackCurrentTime = _TimingSource.Position;
+				TimelineControl.PlaybackCurrentTime = TimingSource.Position;
 			}
 		}
 
@@ -2812,13 +2810,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private bool ClipboardHasData()
 		{
 			IDataObject dataObject = Clipboard.GetDataObject();
-			return dataObject != null && dataObject.GetDataPresent(_clipboardFormatName.Name);
+			return dataObject != null && dataObject.GetDataPresent(ClipboardFormatName.Name);
 		}
 
-		private void updateButtonStates()
+		private void UpdateButtonStates()
 		{
 			if (InvokeRequired)
-				Invoke(new Delegates.GenericDelegate(updateButtonStates));
+				Invoke(new Delegates.GenericDelegate(UpdateButtonStates));
 			else
 			{
 				if (_context == null)
@@ -2889,7 +2887,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 			}
 
-			sequenceModified();
+			SequenceModified();
 
 			//Add elements as a group to undo
 			var act = new EffectsAddedUndoAction(this, newElements.Select(x => x.EffectNode).ToArray());
@@ -2908,7 +2906,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			//Debug.WriteLine("{0}   AddEffectNode({1})", (int)DateTime.Now.TimeOfDay.TotalMilliseconds, node.Effect.InstanceId);
 			_sequence.InsertData(node);
 			//return addElementForEffectNode(node);
-			return addElementForEffectNodeTPL(node);
+			return AddElementForEffectNodeTpl(node);
 		}
 
 		/// <summary>
@@ -2966,13 +2964,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// <param name="row">The Common.Controls.Timeline.Row to add the effect to</param>
 		/// <param name="startTime">The start time of the effect</param>
 		/// <param name="timeSpan">The duration of the effect</param>
-		private void addNewEffectById(Guid effectId, Row row, TimeSpan startTime, TimeSpan timeSpan)
+		private void AddNewEffectById(Guid effectId, Row row, TimeSpan startTime, TimeSpan timeSpan)
 		{
 			//Debug.WriteLine("{0}   addNewEffectById({1})", (int)DateTime.Now.TimeOfDay.TotalMilliseconds, effectId);
 			// get a new instance of this effect, populate it, and make a node for it
 
 			IEffectModuleInstance effect = ApplicationServices.Get<IEffectModuleInstance>(effectId);
-			addEffectInstance(effect, row, startTime, timeSpan);
+			AddEffectInstance(effect, row, startTime, timeSpan);
 		}
 
 		/// <summary>
@@ -2984,7 +2982,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// <param name="startTime">The start time of the effect</param>
 		/// <param name="timeSpan">The duration of the effect</param>
 		/// <param name="parameterValues">Optional ParameterValues</param>
-		private void addEffectInstance(IEffectModuleInstance effectInstance, Row row, TimeSpan startTime, TimeSpan timeSpan, object[] parameterValues = null)
+		private void AddEffectInstance(IEffectModuleInstance effectInstance, Row row, TimeSpan startTime, TimeSpan timeSpan, object[] parameterValues = null)
 		{
 			try
 			{
@@ -3000,7 +2998,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (parameterValues != null) effectNode.Effect.ParameterValues = parameterValues;
 				// put it in the sequence and in the timeline display
 				AddEffectNode(effectNode);
-				sequenceModified();
+				SequenceModified();
 
 				var act = new EffectsAddedUndoAction(this, new[] { effectNode });
 				_undoMgr.AddUndoAction(act);
@@ -3035,14 +3033,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// the EffectNode references. It will also add callbacks to event handlers for the element.
 		/// </summary>
 		/// <param name="nodes">The EffectNode to make element(s) in the grid for.</param>
-		private void addElementsForEffectNodes(IEnumerable<IDataNode> nodes)
+		private void AddElementsForEffectNodes(IEnumerable<IDataNode> nodes)
 		{
 			Dictionary<Row, List<Element>> rowMap =
 			_elementNodeToRows.SelectMany(x => x.Value).ToList().ToDictionary(x => x, x => new List<Element>());
 
 			foreach (EffectNode node in nodes)
 			{
-				TimedSequenceElement element = setupNewElementFromNode(node);
+				TimedSequenceElement element = SetupNewElementFromNode(node);
 				foreach (ElementNode target in node.Effect.TargetNodes)
 				{
 					if (_elementNodeToRows.ContainsKey(target))
@@ -3083,12 +3081,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// the EffectNode references. It will also add callbacks to event handlers for the element.
 		/// </summary>
 		/// <param name="node">The EffectNode to make element(s) in the grid for.</param>
-		private TimedSequenceElement addElementForEffectNodeTPL(EffectNode node)
+		private TimedSequenceElement AddElementForEffectNodeTpl(EffectNode node)
 		{
-			TimedSequenceElement element = setupNewElementFromNode(node);
+			TimedSequenceElement element = SetupNewElementFromNode(node);
 
 			// for the effect, make a single element and add it to every row that represents its target elements
-			node.Effect.TargetNodes.AsParallel().WithCancellation(cancellationTokenSource.Token)
+			node.Effect.TargetNodes.AsParallel().WithCancellation(_cancellationTokenSource.Token)
 				.ForAll(target =>
 							{
 								if (_elementNodeToRows.ContainsKey(target))
@@ -3117,7 +3115,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			return element;
 		}
 
-		private TimedSequenceElement setupNewElementFromNode(EffectNode node)
+		private TimedSequenceElement SetupNewElementFromNode(EffectNode node)
 		{
 			TimedSequenceElement element = new TimedSequenceElement(node);
 			element.ContentChanged += ElementContentChangedHandler;
@@ -3130,7 +3128,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// </summary>
 		private void CheckAndRenderDirtyElements()
 		{
-			TimelineControl.Rows.AsParallel().WithCancellation(cancellationTokenSource.Token).ForAll(target =>
+			TimelineControl.Rows.AsParallel().WithCancellation(_cancellationTokenSource.Token).ForAll(target =>
 			{
 				foreach (Element elem in target)
 				{
@@ -3142,7 +3140,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			});
 		}
 
-		private void removeSelectedElements()
+		private void RemoveSelectedElements()
 		{
 			Element[] selected = TimelineControl.SelectedElements.ToArray();
 
@@ -3161,9 +3159,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				RemoveEffectNodeAndElement(elem.EffectNode);
 			}
 
-			sequenceModified();
+			SequenceModified();
 		}
 
+
+		private int _doEventsCounter = 0;
 
 		/// <summary>
 		/// Adds a single given element node as a row in the timeline control. Recursively adds all
@@ -3171,9 +3171,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// </summary>
 		/// <param name="node">The node to generate a row for.</param>
 		/// <param name="parentRow">The parent node the row should belong to, if any.</param>
-		private int doEventsCounter = 0;
-
-		private void addNodeAsRow(ElementNode node, Row parentRow)
+		private void AddNodeAsRow(ElementNode node, Row parentRow)
 		{
 			// made the new row from the given node and add it to the control.
 			TimedSequenceRowLabel label = new TimedSequenceRowLabel();
@@ -3192,14 +3190,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// This slows the load down just a little, but it
 			// allows the update of the load timer on the bottom of the 
 			// screen so Vixen doesn't appear to be locked up for very large sequences
-			if (doEventsCounter % 600 == 0)
+			if (_doEventsCounter % 600 == 0)
 				Application.DoEvents();
-			doEventsCounter++;
+			_doEventsCounter++;
 
 			// iterate through all if its children, adding them as needed
 			foreach (ElementNode child in node.Children)
 			{
-				addNodeAsRow(child, newRow);
+				AddNodeAsRow(child, newRow);
 			}
 		}
 
@@ -3227,7 +3225,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				var newEffects = (from elem in TimelineControl.SelectedElements let newEffectInstance = ApplicationServices.Get<IEffectModuleInstance>(effectGuid) select CreateEffectNode(newEffectInstance, elem.Row, elem.StartTime, elem.Duration)).ToList();
 
-				removeSelectedElements();
+				RemoveSelectedElements();
 				AddEffectNodes(newEffects);
 				SelectEffectNodes(newEffects);
 
@@ -3237,7 +3235,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			else
 			{
-			addNewEffectById(effectGuid, e.Row, startTime, duration);
+			AddNewEffectById(effectGuid, e.Row, startTime, duration);
 		}
 		}
 
@@ -3409,7 +3407,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					? mousePosition.X
 					: mousePosition.X - parameterPicker.Width;
 
-				updateToolStrip4("Chose the color property to set, press Escape to cancel.");
+				UpdateToolStrip4("Chose the color property to set, press Escape to cancel.");
 				var dr = parameterPicker.ShowDialog();
 				if (dr == DialogResult.OK)
 				{
@@ -3425,7 +3423,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							parms[parameterPicker.ParameterIndex] = colorList;
 							elem.EffectNode.Effect.ParameterValues = parms;
 							TimelineControl.grid.RenderElement(elem);
-							sequenceModified();
+							SequenceModified();
 							k++;
 						}
 					}
@@ -3441,7 +3439,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							parms[parameterPicker.ParameterIndex] = colorGradientList;
 							elem.EffectNode.Effect.ParameterValues = parms;
 							TimelineControl.grid.RenderElement(elem);
-							sequenceModified();
+							SequenceModified();
 							k++;
 						}
 					}
@@ -3465,16 +3463,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 							elem.EffectNode.Effect.ParameterValues = parms;
 							TimelineControl.grid.RenderElement(elem);
-							sequenceModified();
+							SequenceModified();
 							k++;
 						}
 					}
 					
-					updateToolStrip4("Color applied to " + k + " " + e.Element.EffectNode.Effect.EffectName + " effect(s).",60);
+					UpdateToolStrip4("Color applied to " + k + " " + e.Element.EffectNode.Effect.EffectName + " effect(s).",60);
 				}
 				else
 				{
-					updateToolStrip4("Color drop action cancled, no effects were modified.",60);
+					UpdateToolStrip4("Color drop action cancled, no effects were modified.",60);
 					return;
 				}
 			}
@@ -3482,7 +3480,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				if (!hasColor)
 				{
-					updateToolStrip4("No action taken, the target effect(s) do not support colors.",60);
+					UpdateToolStrip4("No action taken, the target effect(s) do not support colors.",60);
 					return;
 				}
 
@@ -3518,11 +3516,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 					elem.EffectNode.Effect.ParameterValues = parms;
 					TimelineControl.grid.RenderElement(elem);
-					sequenceModified();
+					SequenceModified();
 					k++;
 				}
 
-				updateToolStrip4("Color applied to " + k + " " + e.Element.EffectNode.Effect.EffectName + " effect(s).",60);
+				UpdateToolStrip4("Color applied to " + k + " " + e.Element.EffectNode.Effect.EffectName + " effect(s).",60);
 			}
 		}
 
@@ -3622,7 +3620,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					? mousePosition.X
 					: mousePosition.X - parameterPicker.Width;
 
-				updateToolStrip4("Chose the Curve property to set, press Escape cancel.");
+				UpdateToolStrip4("Chose the Curve property to set, press Escape cancel.");
 				var dr = parameterPicker.ShowDialog();
 				if (dr == DialogResult.OK)
 				{
@@ -3638,7 +3636,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							parms[parameterPicker.ParameterIndex] = curveList;
 							elem.EffectNode.Effect.ParameterValues = parms;
 							TimelineControl.grid.RenderElement(elem);
-							sequenceModified();
+							SequenceModified();
 							k++;
 						}
 					}
@@ -3651,16 +3649,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							parms[parameterPicker.ParameterIndex] = curve;
 							elem.EffectNode.Effect.ParameterValues = parms;
 							TimelineControl.grid.RenderElement(elem);
-							sequenceModified();
+							SequenceModified();
 							k++;
 						}
 					}
 					
-					updateToolStrip4("Curve " + e.Data.GetData(DataFormats.StringFormat) + " applied to " + k + " " + e.Element.EffectNode.Effect.EffectName + " effect(s).",60);
+					UpdateToolStrip4("Curve " + e.Data.GetData(DataFormats.StringFormat) + " applied to " + k + " " + e.Element.EffectNode.Effect.EffectName + " effect(s).",60);
 				}
 				else
 				{
-					updateToolStrip4("Curve drop action cancled, no effects were modified.",60);
+					UpdateToolStrip4("Curve drop action cancled, no effects were modified.",60);
 					return;
 				}
 			}
@@ -3668,7 +3666,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				if (!hasCurve)
 				{
-					updateToolStrip4("No action taken, the target effect(s) do not support curves.",60);
+					UpdateToolStrip4("No action taken, the target effect(s) do not support curves.",60);
 					return;
 				}
 
@@ -3681,11 +3679,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					parms[j] = curve;
 					elem.EffectNode.Effect.ParameterValues = parms;
 					TimelineControl.grid.RenderElement(elem);
-					sequenceModified();
+					SequenceModified();
 					k++;
 				}
 
-				updateToolStrip4("Curve " + e.Data.GetData(DataFormats.StringFormat) + " applied to " + k + " " + e.Element.EffectNode.Effect.EffectName + " effect(s).",60);
+				UpdateToolStrip4("Curve " + e.Data.GetData(DataFormats.StringFormat) + " applied to " + k + " " + e.Element.EffectNode.Effect.EffectName + " effect(s).",60);
 			}
 		}
 
@@ -3785,7 +3783,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					? mousePosition.X
 					: mousePosition.X - parameterPicker.Width;
 
-				updateToolStrip4("Chose the Color Gradient property to set, press Escape to cancel.");
+				UpdateToolStrip4("Chose the Color Gradient property to set, press Escape to cancel.");
 				var dr = parameterPicker.ShowDialog();
 				if (dr == DialogResult.OK)
 				{
@@ -3801,7 +3799,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							parms[parameterPicker.ParameterIndex] = colorGradientList;
 							elem.EffectNode.Effect.ParameterValues = parms;
 							TimelineControl.grid.RenderElement(elem);
-							sequenceModified();
+							SequenceModified();
 							k++;
 						}
 					}
@@ -3825,23 +3823,23 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 							elem.EffectNode.Effect.ParameterValues = parms;
 							TimelineControl.grid.RenderElement(elem);
-							sequenceModified();
+							SequenceModified();
 							k++;
 						}
 					}
 
-					updateToolStrip4("Color Gradient " + e.Data.GetData(DataFormats.StringFormat) + " applied to " + k + " " + e.Element.EffectNode.Effect.EffectName + " effect(s).",60);
+					UpdateToolStrip4("Color Gradient " + e.Data.GetData(DataFormats.StringFormat) + " applied to " + k + " " + e.Element.EffectNode.Effect.EffectName + " effect(s).",60);
 				}
 				else
 				{
-					updateToolStrip4("Color Gradient drop action cancled, no effects were modified.",60);
+					UpdateToolStrip4("Color Gradient drop action cancled, no effects were modified.",60);
 				}
 			}
 			else
 			{
 				if (!hasColorGradient)
 				{
-					updateToolStrip4("No action taken, the target effect(s) do not support Color Gradients.",60);
+					UpdateToolStrip4("No action taken, the target effect(s) do not support Color Gradients.",60);
 					return;
 				}
 
@@ -3866,11 +3864,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					}
 					elem.EffectNode.Effect.ParameterValues = parms;
 					TimelineControl.grid.RenderElement(elem);
-					sequenceModified();
+					SequenceModified();
 					k++;
 				}
 
-				updateToolStrip4("Color Gradient " + e.Data.GetData(DataFormats.StringFormat) + " applied to " + k + " " + e.Element.EffectNode.Effect.EffectName + " effect(s).",60);
+				UpdateToolStrip4("Color Gradient " + e.Data.GetData(DataFormats.StringFormat) + " applied to " + k + " " + e.Element.EffectNode.Effect.EffectName + " effect(s).",60);
 			}
 		}
 		
@@ -4097,7 +4095,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					{
 						row.RemoveElement(elem);
 						_sequence.RemoveData(((TimedSequenceElement)elem).EffectNode);
-						sequenceModified();
+						SequenceModified();
 					}
 				}
 				rownum++;
@@ -4109,7 +4107,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			
 
-			IDataObject dataObject = new DataObject(_clipboardFormatName);
+			IDataObject dataObject = new DataObject(ClipboardFormatName);
 			dataObject.SetData(result);
 			Clipboard.SetDataObject(dataObject, true);
 			_TimeLineSequenceClipboardContentsChanged(EventArgs.Empty);
@@ -4139,9 +4137,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (dataObject == null)
 				return result;
 
-			if (dataObject.GetDataPresent(_clipboardFormatName.Name))
+			if (dataObject.GetDataPresent(ClipboardFormatName.Name))
 			{
-				data = dataObject.GetData(_clipboardFormatName.Name) as TimelineElementsClipboardData;
+				data = dataObject.GetData(ClipboardFormatName.Name) as TimelineElementsClipboardData;
 			}
 
 			if (data == null)
@@ -4180,7 +4178,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			// put it in the sequence and in the timeline display
 			List<TimedSequenceElement> elements = AddEffectNodes(nodesToAdd);
-			sequenceModified();
+			SequenceModified();
 
 			var act = new EffectsPastedUndoAction(this, elements.Select(x => x.EffectNode));
 			_undoMgr.AddUndoAction(act);
@@ -4196,7 +4194,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void toolStripMenuItem_Save_Click(object sender, EventArgs e)
 		{
-			saveSequence();
+			SaveSequence();
 		}
 
 		private void toolStripMenuItem_AutoSave_Click(object sender, EventArgs e)
@@ -4206,7 +4204,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void toolStripMenuItem_SaveAs_Click(object sender, EventArgs e)
 		{
-			saveSequence(null, true);
+			SaveSequence(null, true);
 		}
 
 		private void toolStripMenuItem_Close_Click(object sender, EventArgs e)
@@ -4247,7 +4245,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void delayOffToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			timerPostponePlay.Interval = 100;
-			clearDelayPlayItemChecks();
+			ClearDelayPlayItemChecks();
 			delayOffToolStripMenuItem.Checked = true;
 			toolStripStatusLabel3.Visible = toolStripStatusLabel_delayPlay.Visible = false;
 			toolStripButton_Play.ToolTipText = "Play F5";
@@ -4256,7 +4254,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void delay5SecondsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			timerPostponePlay.Interval = 5000;
-			clearDelayPlayItemChecks();
+			ClearDelayPlayItemChecks();
 			delay5SecondsToolStripMenuItem.Checked = toolStripStatusLabel3.Visible = toolStripStatusLabel_delayPlay.Visible = true;
 			toolStripStatusLabel_delayPlay.Text = "5 Seconds";
 		}
@@ -4264,7 +4262,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void delay10SecondsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			timerPostponePlay.Interval = 10000;
-			clearDelayPlayItemChecks();
+			ClearDelayPlayItemChecks();
 			delay10SecondsToolStripMenuItem.Checked = toolStripStatusLabel3.Visible = toolStripStatusLabel_delayPlay.Visible = true;
 			toolStripStatusLabel_delayPlay.Text = "10 Seconds";
 		}
@@ -4272,7 +4270,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void delay20SecondsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			timerPostponePlay.Interval = 20000;
-			clearDelayPlayItemChecks();
+			ClearDelayPlayItemChecks();
 			delay20SecondsToolStripMenuItem.Checked = toolStripStatusLabel3.Visible = toolStripStatusLabel_delayPlay.Visible = true;
 			toolStripStatusLabel_delayPlay.Text = "20 Seconds";
 		}
@@ -4280,7 +4278,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void delay30SecondsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			timerPostponePlay.Interval = 30000;
-			clearDelayPlayItemChecks();
+			ClearDelayPlayItemChecks();
 			delay30SecondsToolStripMenuItem.Checked = toolStripStatusLabel3.Visible = toolStripStatusLabel_delayPlay.Visible = true;
 			toolStripStatusLabel_delayPlay.Text = "30 Seconds";
 		}
@@ -4288,7 +4286,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void delay60SecondsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			timerPostponePlay.Interval = 60000;
-			clearDelayPlayItemChecks();
+			ClearDelayPlayItemChecks();
 			delay60SecondsToolStripMenuItem.Checked = toolStripStatusLabel3.Visible = toolStripStatusLabel_delayPlay.Visible = true;
 			toolStripStatusLabel_delayPlay.Text = "60 Seconds";
 		}
@@ -4320,9 +4318,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				TimelineControl.ruler.DeleteSelectedMarks();
 			}
 			else
-				removeSelectedElements();
+				RemoveSelectedElements();
 			{
-				removeSelectedElements();
+				RemoveSelectedElements();
 			}
 		}
 
@@ -4485,7 +4483,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void toolStripButton_Start_Click(object sender, EventArgs e)
 		{
 			//TODO: JEMA - Check to see if this is functioning properly.
-			TimelineControl.PlaybackStartTime = m_prevPlaybackStart = TimeSpan.Zero;
+			TimelineControl.PlaybackStartTime = _mPrevPlaybackStart = TimeSpan.Zero;
 			TimelineControl.VisibleTimeStart = TimeSpan.Zero;
 		}
 
@@ -4507,7 +4505,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void toolStripButton_End_Click(object sender, EventArgs e)
 		{
 			//TODO: JEMA - Check to see if this is functioning properly.
-			TimelineControl.PlaybackStartTime = m_prevPlaybackEnd = _sequence.Length;
+			TimelineControl.PlaybackStartTime = _mPrevPlaybackEnd = _sequence.Length;
 
 			TimelineControl.VisibleTimeStart = TimelineControl.TotalTime - TimelineControl.VisibleTimeSpan;
 		}
@@ -4662,7 +4660,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		public bool IsModified
 		{
-			get { return m_modified; }
+			get { return _mModified; }
 		}
 
 		public void RefreshSequence()
@@ -4676,7 +4674,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// <param name="filePath"></param>
 		public void Save(string filePath = null)
 		{
-			saveSequence(filePath);
+			SaveSequence(filePath);
 		}
 
 		public ISelection Selection
@@ -4716,7 +4714,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		void IEditorUserInterface.EditorClosing()
 		{
 			
-			dockPanel.SaveAsXml(settingsPath);
+			dockPanel.SaveAsXml(_settingsPath);
 			MarksForm.Close();
 			EffectsForm.Close();
 
@@ -4779,7 +4777,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		TimeSpan ITiming.Position
 		{
-			get { return _TimingSource.Position; }
+			get { return TimingSource.Position; }
 			set { }
 		}
 
@@ -4794,7 +4792,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			set { _SetTimingSpeed(value); }
 		}
 
-		public bool positionHasValue
+		public bool PositionHasValue
 		{
 			get { return TimelineControl.PlaybackCurrentTime.HasValue; }
 		}
@@ -4833,7 +4831,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				_sequence.MarkCollections = manager.MarkCollections;
 				PopulateMarkSnapTimes();
-				sequenceModified();
+				SequenceModified();
 				MarksForm.PopulateMarkCollectionsList(null);
 			}
 		}
@@ -4845,9 +4843,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_timingSpeed = speed;
 
 			// If they haven't executed the sequence yet, the timing source member will not yet be set.
-			if (_TimingSource != null)
+			if (TimingSource != null)
 			{
-				_TimingSource.Speed = _timingSpeed;
+				TimingSource.Speed = _timingSpeed;
 			}
 
 			_UpdateTimingSpeedDisplay();
@@ -4879,7 +4877,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (_context.IsRunning && _context.IsPaused)
 			{
 				_context.Resume();
-				updateButtonStates();
+				UpdateButtonStates();
 			}
 			else
 			{
@@ -4897,7 +4895,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			//_SetTimingSpeed(_timingSpeed);
 		}
 
-		private ITiming _TimingSource
+		private ITiming TimingSource
 		{
 			get { return _timingSource; }
 			set
@@ -4924,15 +4922,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-		private readonly Task loadingTask = null;
+		private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
+		private readonly Task _loadingTask = null;
 
 		private void TimedSequenceEditorForm_Shown(object sender, EventArgs e)
 		{
 			Enabled = false;
 			FormBorderStyle = FormBorderStyle.FixedSingle;
 			//loadingTask = Task.Factory.StartNew(() => loadSequence(_sequence), token);
-			loadSequence(_sequence);
+			LoadSequence(_sequence);
 		}
 
 		private void cboAudioDevices_TextChanged(object sender, EventArgs e)
@@ -4958,7 +4956,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			PlaySequence();
 		}
 
-		private void clearDelayPlayItemChecks()
+		private void ClearDelayPlayItemChecks()
 		{
 			//Make sure Looping is not enabled
 			toolStripButton_Loop.Checked = toolStripMenuItem_Loop.Checked = false;
@@ -4970,8 +4968,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void timerDelayCountdown_Tick(object sender, EventArgs e)
 		{
-			DelayCountDown--;
-			toolStripStatusLabel_delayPlay.Text = string.Format("{0} Seconds", DelayCountDown);
+			_delayCountDown--;
+			toolStripStatusLabel_delayPlay.Text = string.Format("{0} Seconds", _delayCountDown);
 		}
 
 		private void curveEditorToolStripMenuItem_Click(object sender, EventArgs e)
@@ -4993,8 +4991,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
             if (mapSelector.Changed == true)
             {
                 mapSelector.Changed = false;
-                sequenceModified();
-                resetLipSyncNodes();
+                SequenceModified();
+                ResetLipSyncNodes();
                 VixenSystem.SaveSystemConfig();
 	        }
         }
@@ -5005,12 +5003,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
             if (!_library.DefaultMappingName.Equals(menu.Text))
             {
                 _library.DefaultMappingName = menu.Text; 
-                sequenceModified();
+                SequenceModified();
             }
             
         }
 
-        private void resetLipSyncNodes()
+        private void ResetLipSyncNodes()
         {
             foreach (Row row in TimelineControl.Rows)
             {
@@ -5103,11 +5101,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
                     }
                     
-                    IDataObject dataObject = new DataObject(_clipboardFormatName);
+                    IDataObject dataObject = new DataObject(ClipboardFormatName);
                     dataObject.SetData(result);
                     Clipboard.SetDataObject(dataObject, true);
                     _TimeLineSequenceClipboardContentsChanged(EventArgs.Empty);
-                    sequenceModified();
+                    SequenceModified();
 
                 }
                 rownum++;
@@ -5164,7 +5162,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
                 }
 
-                IDataObject dataObject = new DataObject(_clipboardFormatName);
+                IDataObject dataObject = new DataObject(ClipboardFormatName);
                 dataObject.SetData(result);
                 Clipboard.SetDataObject(dataObject, true);
                 _TimeLineSequenceClipboardContentsChanged(EventArgs.Empty);
@@ -5186,7 +5184,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
                     MessageBox.Show("Conversion Complete and copied to Clipboard \n Paste at first Mark offset", "Convert Text", MessageBoxButtons.OK);
                 }
 
-                sequenceModified();
+                SequenceModified();
 
             }
         }
@@ -5245,7 +5243,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
                 if (element.EffectNode.Effect.GetType() == typeof(LipSync))
                 {
                     ((LipSync)element.EffectNode.Effect).PhonemeMapping =  toolStripSender.Text;
-                    resetLipSyncNodes();
+                    ResetLipSyncNodes();
                 }
             });
 
