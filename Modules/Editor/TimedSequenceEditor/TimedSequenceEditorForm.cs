@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -2333,7 +2334,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			var dDialog = new EffectDistributionDialog();
 			var elementCount = TimelineControl.SelectedElements.Count();
 
-			dDialog.ElementCount = elementCount.ToString();
+			dDialog.ElementCount = elementCount.ToString(CultureInfo.InvariantCulture);
 			dDialog.StartTime = startTime;
 			dDialog.EndTime = endTime;
 			dDialog.RadioEqualDuration = true;
@@ -3548,7 +3549,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					return;
 				}
 
-				int j = 0;
+				int j;
 				
 				j = !isColorGradient ? e.Element.EffectNode.Effect.Parameters.TakeWhile(pSig => pSig.Type != typeof(Color)).Count() : e.Element.EffectNode.Effect.Parameters.TakeWhile(pSig => pSig.Type != typeof(ColorGradient)).Count();
 
@@ -5477,19 +5478,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 	public class TimeFormats
 	{
-		private static readonly string[] _positiveFormats = new string[]
-		                                                    	{
-		                                                    		@"m\:ss", @"m\:ss\.f", @"m\:ss\.ff", @"m\:ss\.fff",
-		                                                    		@"\:ss", @"\:ss\.f", @"\:ss\.ff", @"\:ss\.fff",
-		                                                    		@"%s", @"s\.f", @"s\.ff", @"s\.fff",
-		                                                    	};
+		private static readonly string[] _positiveFormats =
+		{
+			@"m\:ss", @"m\:ss\.f", @"m\:ss\.ff", @"m\:ss\.fff",
+			@"\:ss", @"\:ss\.f", @"\:ss\.ff", @"\:ss\.fff",
+			@"%s", @"s\.f", @"s\.ff", @"s\.fff"
+		};
 
-		private static readonly string[] _negativeFormats = new string[]
-		                                                    	{
-		                                                    		@"\-m\:ss", @"\-m\:ss\.f", @"\-m\:ss\.ff", @"\-m\:ss\.fff",
-		                                                    		@"\-\:ss", @"\-\:ss\.f", @"\-\:ss\.ff", @"\-\:ss\.fff",
-		                                                    		@"\-%s", @"\-s\.f", @"\-s\.ff", @"\-s\.fff",
-		                                                    	};
+		private static readonly string[] _negativeFormats =
+		{
+			@"\-m\:ss", @"\-m\:ss\.f", @"\-m\:ss\.ff", @"\-m\:ss\.fff",
+			@"\-\:ss", @"\-\:ss\.f", @"\-\:ss\.ff", @"\-\:ss\.fff",
+			@"\-%s", @"\-s\.f", @"\-s\.ff", @"\-s\.fff"
+		};
 
 		public static string[] AllFormats
 		{
