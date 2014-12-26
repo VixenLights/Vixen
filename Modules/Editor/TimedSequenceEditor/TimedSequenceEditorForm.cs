@@ -851,53 +851,66 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// <param name="forcePrompt">If true, the user will always be prompted for a filename to save the sequence to.</param>
 		private void SaveSequence(string filePath = null, bool forcePrompt = false)
 		{
-			if (_sequence == null)
+			if (_sequence != null)
 			{
-				Logging.Error("Trying to save a sequence that is null!");
-			}
-
-			if (filePath == null | forcePrompt)
-			{
-				if (_sequence.FilePath.Trim() == "" || forcePrompt)
+				if (filePath == null | forcePrompt)
 				{
-					// Updated to use the OS SaveFileDialog functionality 8/1/2012 JU
-					// Edit this type to be the more generic type to support importing into timed sequnces 12 FEB 2013 - JEMA
-					EditorModuleDescriptorBase descriptor = ((OwnerModule.Descriptor) as EditorModuleDescriptorBase);
-					saveFileDialog.InitialDirectory = SequenceService.SequenceDirectory;
-					string filter = descriptor.TypeName + " (*" + string.Join(", *", _sequence.FileExtension) + ")|*" +
-					                string.Join("; *", _sequence.FileExtension);
-					saveFileDialog.DefaultExt = _sequence.FileExtension;
-					saveFileDialog.Filter = filter;
-					DialogResult result = saveFileDialog.ShowDialog();
-					if (result == DialogResult.OK)
+					if (_sequence.FilePath.Trim() == "" || forcePrompt)
 					{
-						string name = saveFileDialog.FileName;
-						string extension = Path.GetExtension(saveFileDialog.FileName);
+						// Updated to use the OS SaveFileDialog functionality 8/1/2012 JU
+						// Edit this type to be the more generic type to support importing into timed sequnces 12 FEB 2013 - JEMA
+						EditorModuleDescriptorBase descriptor = ((OwnerModule.Descriptor) as EditorModuleDescriptorBase);
+						saveFileDialog.InitialDirectory = SequenceService.SequenceDirectory;
 
-						// if the given extension isn't valid for this type, then keep the name intact and add an extension
-						if (extension != _sequence.FileExtension)
+						//While this should never happen, ReSharper complains about it, added logging just in case.
+						if (descriptor != null)
 						{
-							name = name + _sequence.FileExtension;
-							Logging.Info("Incorrect extension provided for timed sequence, appending one.");
+							string filter = descriptor.TypeName + " (*" + string.Join(", *", _sequence.FileExtension) + ")|*" +
+							                string.Join("; *", _sequence.FileExtension);
+							saveFileDialog.DefaultExt = _sequence.FileExtension;
+							saveFileDialog.Filter = filter;
 						}
-						_sequence.Save(name);
+						else
+						{
+							Logging.Error("Save Sequence dialog filter descriptor is null!!");
+						}
+
+						DialogResult result = saveFileDialog.ShowDialog();
+						if (result == DialogResult.OK)
+						{
+							string name = saveFileDialog.FileName;
+							string extension = Path.GetExtension(saveFileDialog.FileName);
+
+							// if the given extension isn't valid for this type, then keep the name intact and add an extension
+							if (extension != _sequence.FileExtension)
+							{
+								name = name + _sequence.FileExtension;
+								Logging.Info("Incorrect extension provided for timed sequence, appending one.");
+							}
+							_sequence.Save(name);
+						}
+						else
+						{
+							//user canceled save
+							return;
+						}
 					}
 					else
 					{
-						//user canceled save
-						return;
+						_sequence.Save();
 					}
 				}
 				else
 				{
-					_sequence.Save();
+					_sequence.Save(filePath);
 				}
+
 			}
 			else
 			{
-				_sequence.Save(filePath);
+				Logging.Error("Trying to save a sequence that is null!");
 			}
-
+			
 			SequenceNotModified();
 		}
 
@@ -1017,18 +1030,25 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				IMediaModuleInstance media = _sequence.GetAllMedia().First();
 				Audio audio = media as Audio;
 				toolStripMenuItem_removeAudio.Enabled = true;
-				if (audio.MediaExists)
+				if (audio != null)
 				{
-					TimelineControl.Audio = audio;
-					toolStripButton_AssociateAudio.ToolTipText = string.Format("Associated Audio: {0}",
-						Path.GetFileName(audio.MediaFilePath));
+					if (audio.MediaExists)
+					{
+						TimelineControl.Audio = audio;
+						toolStripButton_AssociateAudio.ToolTipText = string.Format("Associated Audio: {0}",
+							Path.GetFileName(audio.MediaFilePath));
+					}
+					else
+					{
+						//We couldn't find the audio, ask the user what to do
+						//Since we are on a worker thread ...
+						ShowInvalidAudioDialogDelegate dialog = ShowInvalidAudioDialog;
+						BeginInvoke(dialog, audio.MediaFilePath);
+					}
 				}
 				else
 				{
-					//We couldn't find the audio, ask the user what to do
-					//Since we are on a worker thread ...
-					ShowInvalidAudioDialogDelegate dialog = ShowInvalidAudioDialog;
-					BeginInvoke(dialog,audio.MediaFilePath);
+					Logging.Error("Attempting to process audio, however audio is null!!");
 				}
 
 			}
@@ -1046,8 +1066,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				//Set sequence name in title bar based on the module name and current sequence name JU 8/1/2012
 				//Made this more generic to support importing 12 FEB 2013 - JEMA
-				Text = String.Format("{0} - [{1}{2}]", ((OwnerModule.Descriptor) as EditorModuleDescriptorBase).TypeName,
-					String.IsNullOrEmpty(_sequence.Name) ? "Untitled" : _sequence.Name, IsModified ? " *" : "");
+				var editorModuleDescriptorBase = (OwnerModule.Descriptor) as EditorModuleDescriptorBase;
+				if (editorModuleDescriptorBase != null)
+				{
+					Text = String.Format("{0} - [{1}{2}]", editorModuleDescriptorBase.TypeName,
+						String.IsNullOrEmpty(_sequence.Name) ? "Untitled" : _sequence.Name, IsModified ? " *" : "");
+				}
+				else
+				{
+					Logging.Error("Attempting to set Title bar text for editor, however the editorModuleDesciptorBase is null!!");
+				}
 			}
 		}
 
@@ -1524,20 +1552,28 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			ElementNode newElement = e.NewRow.Tag as ElementNode;
 			TimedSequenceElement movedElement = e.Element as TimedSequenceElement;
 
-			movedElement.TargetNodes = new[] {newElement};
-
-			// now that the effect that this element has been updated to accurately reflect the change,
-			// move the actual element around. It's a single element in the grid, belonging to multiple rows:
-			// so find all rows that represent the old element, remove the element from them, and also find
-			// all rows that represent the new element and add it to them.
-			foreach (Row row in TimelineControl)
+			if (movedElement != null)
 			{
-				ElementNode rowElement = row.Tag as ElementNode;
+				movedElement.TargetNodes = new[] {newElement};
 
-				if (rowElement == oldElement && row != e.OldRow)
-					row.RemoveElement(movedElement);
-				if (rowElement == newElement && row != e.NewRow)
-					row.AddElement(movedElement);
+				// now that the effect that this element has been updated to accurately reflect the change,
+				// move the actual element around. It's a single element in the grid, belonging to multiple rows:
+				// so find all rows that represent the old element, remove the element from them, and also find
+				// all rows that represent the new element and add it to them.
+				foreach (Row row in TimelineControl)
+				{
+					ElementNode rowElement = row.Tag as ElementNode;
+
+					if (rowElement == oldElement && row != e.OldRow)
+						row.RemoveElement(movedElement);
+					if (rowElement == newElement && row != e.NewRow)
+						row.AddElement(movedElement);
+				}
+			}
+
+			else
+			{
+				Logging.Error("movedElement is null in ElementChangedRowsHandler method!!");
 			}
 
 			SequenceModified();
@@ -1588,7 +1624,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			TimedSequenceElement element = e.Element as TimedSequenceElement;
 
-			if (element.EffectNode == null)
+			if (element == null || element.EffectNode == null)
 			{
 				Logging.Error("TimedSequenceEditor: Element double-clicked, and it doesn't have an associated effect!");
 				return;
@@ -2409,9 +2445,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void contextMenuStripElementSelectionItem_Click(object sender, EventArgs e)
 		{
-			TimedSequenceElement tse = (sender as ToolStripMenuItem).Tag as TimedSequenceElement;
-			if (tse != null)
-				TimelineControl.SelectElement(tse);
+			var toolStripMenuItem = sender as ToolStripMenuItem;
+			if (toolStripMenuItem != null)
+			{
+				TimedSequenceElement tse = toolStripMenuItem.Tag as TimedSequenceElement;
+				if (tse != null)
+					TimelineControl.SelectElement(tse);
+			}
+			else
+			{
+				Logging.Error("toolStripMenuItem is null in event handler contextMenuStripElementSelectionItem_Click");
+			}
 		}
 
 		private void timelineControl_RulerClicked(object sender, RulerClickedEventArgs e)
@@ -2549,7 +2593,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			if (autoPlay)
 			{
-				_PlaySequence(TimelineControl.PlaybackStartTime.Value, TimelineControl.PlaybackEndTime.Value);
+				if (TimelineControl.PlaybackStartTime != null && TimelineControl.PlaybackEndTime != null)
+					_PlaySequence(TimelineControl.PlaybackStartTime.Value, TimelineControl.PlaybackEndTime.Value);
+				else
+				{
+					Logging.Error("On autoPlay, PlaybackStartTime or PlaybackEndTime was null!!");
+				}
 			}
 			else
 			{
@@ -2801,7 +2850,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void CursorMovedHandler(object sender, EventArgs e)
 		{
-			toolStripStatusLabel_currentTime.Text = (e as TimeSpanEventArgs).Time.ToString("m\\:ss\\.fff");
+			var timeSpanEventArgs = e as TimeSpanEventArgs;
+			if (timeSpanEventArgs != null)
+				toolStripStatusLabel_currentTime.Text = timeSpanEventArgs.Time.ToString("m\\:ss\\.fff");
+			else
+			{
+				Logging.Error("CursorMovedHandler - timeSpanEventArgs = null!!");
+			}
 		}
 
 		private void UpdatePasteMenuStates()
@@ -2870,10 +2925,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				try
 				{
 					// get the target element
-					var targetNode = (ElementNode)element.Row.Tag;
+					if (element.Row != null)
+					{
+						var targetNode = (ElementNode) element.Row.Tag;
 
-					// populate the given effect instance with the appropriate target node and times, and wrap it in an effectNode
-					newEffect.TargetNodes = new[] { targetNode };
+						// populate the given effect instance with the appropriate target node and times, and wrap it in an effectNode
+						newEffect.TargetNodes = new[] {targetNode};
+					}
+					else
+					{
+						Logging.Error("CloneElements: Skipping element - element.Row is null!!");
+						continue;
+					}
+
 					newEffect.TimeSpan = element.Duration;
 					var effectNode = new EffectNode(newEffect, element.StartTime);
 
@@ -4530,7 +4594,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 
 			ToolStripMenuItem item = sender as ToolStripMenuItem;
-			if (!item.Checked)
+			if (item != null && !item.Checked)
 			{
 				foreach (ToolStripMenuItem subItem in item.Owner.Items)
 				{
@@ -4552,7 +4616,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void toolStripButtonCloseGapStrength_MenuItem_Click(object sender, EventArgs e)
 		{
 			ToolStripMenuItem item = sender as ToolStripMenuItem;
-			if (!item.Checked)
+			if (item != null && !item.Checked)
 			{
 				foreach (ToolStripMenuItem subItem in item.Owner.Items)
 				{
@@ -5206,8 +5270,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
             if (LipSyncTextConvertForm.Active == false)
             {
                 LipSyncTextConvertForm textConverter = new LipSyncTextConvertForm();
-                textConverter.NewTranslation += new EventHandler<NewTranslationEventArgs>(textConverterHandler);
-                textConverter.TranslateFailure += new EventHandler<TranslateFailureEventArgs>(translateFailureHandler);
+                textConverter.NewTranslation += textConverterHandler;
+                textConverter.TranslateFailure += translateFailureHandler;
                 textConverter.MarkCollections = _sequence.MarkCollections;
                 textConverter.Show(this);
             }
@@ -5215,7 +5279,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
         private void lipSyncMappingsToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
         {
-            this.changeMapToolStripMenuItem.Enabled =
+            changeMapToolStripMenuItem.Enabled =
              (_library.Library.Count > 1) &&
              (TimelineControl.SelectedElements.Any(effect => effect.EffectNode.Effect.GetType() == typeof(LipSync)));
         }
@@ -5224,13 +5288,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
         private void changeMapToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
         {
             string defaultText = _library.DefaultMappingName;
-            this.changeMapToolStripMenuItem.DropDownItems.Clear();
+            changeMapToolStripMenuItem.DropDownItems.Clear();
 
             foreach (LipSyncMapData mapping in _library.Library.Values)
             {
                 ToolStripMenuItem menuItem = new ToolStripMenuItem(mapping.LibraryReferenceName);
                 menuItem.Click += changeMappings_Click;
-                this.changeMapToolStripMenuItem.DropDownItems.Add(menuItem);
+                changeMapToolStripMenuItem.DropDownItems.Add(menuItem);
             }
         }
 
