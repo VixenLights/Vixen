@@ -586,7 +586,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private Form_Grid GridForm
 		{
-			get { return _gridForm != null ? _gridForm : _gridForm = new Form_Grid(); }
+			get { return _gridForm ?? (_gridForm = new Form_Grid()); }
 		}
 
 		private TimelineControl TimelineControl
@@ -599,16 +599,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			ToolStripMenuItem dbfInvertMenuItem = new ToolStripMenuItem("Invert Selection");
 			dbfInvertMenuItem.ShortcutKeys = Keys.Control | Keys.I;
 			dbfInvertMenuItem.ShowShortcutKeys = true;
-			dbfInvertMenuItem.MouseUp += (sender, e) =>
-			{
-				//Shortcut key counts as a .Click, so this goes here...
-				toolStripDropDownButton_DragBoxFilter.ShowDropDown();
-			};
+			dbfInvertMenuItem.MouseUp += (sender, e) => toolStripDropDownButton_DragBoxFilter.ShowDropDown();
 			dbfInvertMenuItem.Click += (sender, e) =>
 			{
 				foreach (ToolStripMenuItem mnuItem in toolStripDropDownButton_DragBoxFilter.DropDownItems)
 				{
-					mnuItem.Checked = (mnuItem.Checked ? false : true);
+					mnuItem.Checked = (!mnuItem.Checked);
 				}
 			};
 			toolStripDropDownButton_DragBoxFilter.DropDownItems.Add(dbfInvertMenuItem);
@@ -981,10 +977,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				using (var fmod = new FmodInstance())
 				{
 					cboAudioDevices.Items.Clear();
-					fmod.AudioDevices.OrderBy(a => a.Item1).Select(b => b.Item2).ToList().ForEach(device =>
-					{
-						cboAudioDevices.Items.Add(device);
-					});
+					fmod.AudioDevices.OrderBy(a => a.Item1).Select(b => b.Item2).ToList().ForEach(device => cboAudioDevices.Items.Add(device));
 					if (cboAudioDevices.Items.Count > 0)
 					{
 						cboAudioDevices.SelectedIndex = 0;
