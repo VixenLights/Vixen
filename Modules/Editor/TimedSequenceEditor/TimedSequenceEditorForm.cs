@@ -1266,8 +1266,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			SequenceModified();
 			if (strayElement)
-				MessageBox.Show(
-					"One or more effects were selected that do not support color gradients.\nAll effects that do were updated.");
+				MessageBox.Show(@"One or more effects were selected that do not support color gradients.\nAll effects that do were updated.");
 		}
 
 		private void ApplyCurveToEffects(String libraryReferenceName, Curve curve)
@@ -1317,7 +1316,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			SequenceModified();
 			if (strayElement)
-				MessageBox.Show("One or more effects were selected that do not support curves.\nAll effects that do were updated.");
+				MessageBox.Show(@"One or more effects were selected that do not support curves. All effects that do were updated.");
 		}
 
 		private void ApplyColorCollection(ColorCollection collection, bool randomOrder)
@@ -1437,7 +1436,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			SequenceModified();
 			if (strayElement)
-				MessageBox.Show("One or more effects were selected that do not support curves.\nAll effects that do were updated.");
+				MessageBox.Show(@"One or more effects were selected that do not support curves.\nAll effects that do were updated.");
 		}
 
 		#endregion
@@ -2052,10 +2051,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void ColorCollectionsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			ColorCollectionLibrary_Form RCCF = new ColorCollectionLibrary_Form(new List<ColorCollection>(_colorCollections));
-			if (RCCF.ShowDialog() == DialogResult.OK)
+			ColorCollectionLibrary_Form rccf = new ColorCollectionLibrary_Form(new List<ColorCollection>(_colorCollections));
+			if (rccf.ShowDialog() == DialogResult.OK)
 			{
-				_colorCollections = RCCF.ColorCollections;
+				_colorCollections = rccf.ColorCollections;
 				SaveColorCollections();
 			}
 			else
@@ -2242,7 +2241,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				MessageBox.Show(
 					string.Format(
 						"Unable to complete request. The resulting duration would fall below 50 milliseconds.\nCalculated duration: {0}",
-						effectDuration), "Warning", MessageBoxButtons.OK);
+						effectDuration), @"Warning", MessageBoxButtons.OK);
 				return;
 			}
 
@@ -2452,7 +2451,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				MarkCollection mc = null;
 				if (_sequence.MarkCollections.Count == 0)
 				{
-					if (MessageBox.Show("Marks are stored in Mark Collections. There are no mark collections available to store this mark. Would you like to create a new one?", "Creat a Mark Collection", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+					if (MessageBox.Show(@"Marks are stored in Mark Collections. There are no mark collections available to store this mark. Would you like to create a new one?", @"Creat a Mark Collection", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
 					{
 						mc = GetOrAddNewMarkCollection(Color.White, "Default Marks");
 						MarksForm.PopulateMarkCollectionsList(mc);
@@ -2463,7 +2462,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					mc = MarksForm.SelectedMarkCollection;
 					if (mc == null)
 					{
-						MessageBox.Show("Please select a mark collection in the Mark Manager window before adding a new mark to the timeline.", "New Mark", MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
+						MessageBox.Show(@"Please select a mark collection in the Mark Manager window before adding a new mark to the timeline.", @"New Mark", MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
 					}
 				}
 				if (mc != null)
@@ -2582,7 +2581,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void OnExecutionStateChanged(object sender, EventArgs e)
 		{
-			Console.WriteLine("tse: state changed: " + Execution.State);
+			Console.WriteLine(@"tse: state changed: " + Execution.State);
 			if (Execution.State.Equals("Closing"))
 			{
 				if (_context != null)
@@ -4248,7 +4247,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			ClearDelayPlayItemChecks();
 			delayOffToolStripMenuItem.Checked = true;
 			toolStripStatusLabel3.Visible = toolStripStatusLabel_delayPlay.Visible = false;
-			toolStripButton_Play.ToolTipText = "Play F5";
+			toolStripButton_Play.ToolTipText = @"Play F5";
 		}
 
 		private void delay5SecondsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -4256,7 +4255,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			timerPostponePlay.Interval = 5000;
 			ClearDelayPlayItemChecks();
 			delay5SecondsToolStripMenuItem.Checked = toolStripStatusLabel3.Visible = toolStripStatusLabel_delayPlay.Visible = true;
-			toolStripStatusLabel_delayPlay.Text = "5 Seconds";
+			toolStripStatusLabel_delayPlay.Text = @"5 Seconds";
 		}
 
 		private void delay10SecondsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -4264,7 +4263,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			timerPostponePlay.Interval = 10000;
 			ClearDelayPlayItemChecks();
 			delay10SecondsToolStripMenuItem.Checked = toolStripStatusLabel3.Visible = toolStripStatusLabel_delayPlay.Visible = true;
-			toolStripStatusLabel_delayPlay.Text = "10 Seconds";
+			toolStripStatusLabel_delayPlay.Text = @"10 Seconds";
 		}
 
 		private void delay20SecondsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -4272,7 +4271,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			timerPostponePlay.Interval = 20000;
 			ClearDelayPlayItemChecks();
 			delay20SecondsToolStripMenuItem.Checked = toolStripStatusLabel3.Visible = toolStripStatusLabel_delayPlay.Visible = true;
-			toolStripStatusLabel_delayPlay.Text = "20 Seconds";
+			toolStripStatusLabel_delayPlay.Text = @"20 Seconds";
 		}
 
 		private void delay30SecondsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -4280,7 +4279,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			timerPostponePlay.Interval = 30000;
 			ClearDelayPlayItemChecks();
 			delay30SecondsToolStripMenuItem.Checked = toolStripStatusLabel3.Visible = toolStripStatusLabel_delayPlay.Visible = true;
-			toolStripStatusLabel_delayPlay.Text = "30 Seconds";
+			toolStripStatusLabel_delayPlay.Text = @"30 Seconds";
 		}
 
 		private void delay60SecondsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -4288,7 +4287,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			timerPostponePlay.Interval = 60000;
 			ClearDelayPlayItemChecks();
 			delay60SecondsToolStripMenuItem.Checked = toolStripStatusLabel3.Visible = toolStripStatusLabel_delayPlay.Visible = true;
-			toolStripStatusLabel_delayPlay.Text = "60 Seconds";
+			toolStripStatusLabel_delayPlay.Text = @"60 Seconds";
 		}
 
 		#endregion
@@ -5047,7 +5046,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
             PapagayoDoc papagayoFile = new PapagayoDoc();
             FileDialog openDialog = new OpenFileDialog();
 
-            openDialog.Filter = "Papagayo files (*.pgo)|*.pgo|All files (*.*)|*.*";
+            openDialog.Filter = @"Papagayo files (*.pgo)|*.pgo|All files (*.*)|*.*";
             openDialog.FilterIndex = 1;
             if (openDialog.ShowDialog() != DialogResult.OK)
             {
@@ -5120,7 +5119,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
                 j++;
             }
             
-            MessageBox.Show(displayStr, "Papagayo Import", MessageBoxButtons.OK);
+            MessageBox.Show(displayStr, @"Papagayo Import", MessageBoxButtons.OK);
         }
 
         private void textConverterHandler(object sender, NewTranslationEventArgs args)
@@ -5181,7 +5180,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
                 if (pasted == 0)
                 {
-                    MessageBox.Show("Conversion Complete and copied to Clipboard \n Paste at first Mark offset", "Convert Text", MessageBoxButtons.OK);
+                    MessageBox.Show(@"Conversion Complete and copied to Clipboard \n Paste at first Mark offset", @"Convert Text", MessageBoxButtons.OK);
                 }
 
                 SequenceModified();
@@ -5192,8 +5191,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
         private void translateFailureHandler(object sender, TranslateFailureEventArgs args)
         {
             LipSyncTextConvertFailForm failForm = new LipSyncTextConvertFailForm();
-            failForm.errorLabel.Text = "Unable to find mapping for "  + args.FailedWord + Environment.NewLine +
-                "Please map using buttons below";
+            failForm.errorLabel.Text = @"Unable to find mapping for "  + args.FailedWord + Environment.NewLine +
+                @"Please map using buttons below";
             DialogResult dr = failForm.ShowDialog();
             if (dr == DialogResult.OK)
             {
