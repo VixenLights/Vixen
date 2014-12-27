@@ -839,7 +839,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			catch (Exception ee)
 			{
-				Logging.ErrorException("Error loading sequence.", ee);
+				Logging.ErrorException("TimedSequenceEditor: <LoadSequence> - Error loading sequence.", ee);
 			}
 		}
 
@@ -872,7 +872,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						}
 						else
 						{
-							Logging.Error("Save Sequence dialog filter descriptor is null!!");
+							Logging.Error("TimedSequenceEditor: <SaveSequence> - Save Sequence dialog filter could not be set, EditorModuleDescriptorBase is null!");
 						}
 
 						DialogResult result = saveFileDialog.ShowDialog();
@@ -885,7 +885,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							if (extension != _sequence.FileExtension)
 							{
 								name = name + _sequence.FileExtension;
-								Logging.Info("Incorrect extension provided for timed sequence, appending one.");
+								Logging.Info("TimedSequenceEditor: <SaveSequence> - Incorrect extension provided for timed sequence, appending one.");
 							}
 							_sequence.Save(name);
 						}
@@ -908,7 +908,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			else
 			{
-				Logging.Error("Trying to save a sequence that is null!");
+				Logging.Error("TimedSequenceEditor: <SaveSequence> - Trying to save with null _sequence!");
 			}
 			
 			SequenceNotModified();
@@ -1048,7 +1048,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 				else
 				{
-					Logging.Error("Attempting to process audio, however audio is null!!");
+					Logging.Error("TimedSequenceEditor: <PopulateWaveformAudio> - Attempting to process null audio!");
 				}
 
 			}
@@ -1074,7 +1074,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 				else
 				{
-					Logging.Error("Attempting to set Title bar text for editor, however the editorModuleDesciptorBase is null!!");
+					Logging.Error("TimedSequenceEditor: <SetTitleBarText> - editorModuleDesciptorBase is null!!");
 				}
 			}
 		}
@@ -1503,7 +1503,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			catch (Exception ex)
 			{
-				Logging.ErrorException("TimedSequenceEditor: Error updating rendering progress indicator.", ex);
+				Logging.ErrorException("TimedSequenceEditor: <OnRenderProgressChanged> - Error updating rendering progress indicator.", ex);
 			}
 		}
 
@@ -1574,7 +1574,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			else
 			{
-				Logging.Error("movedElement is null in ElementChangedRowsHandler method!!");
+				Logging.Error("TimedSequenceEditor: <ElementChangedRowsHandler> - movedElement is null!");
 			}
 
 			SequenceModified();
@@ -1607,7 +1607,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					}
 					catch (Exception ex)
 					{
-						string msg = "TimedSequenceEditor DrawMultipleElements: error adding effect of type " +
+						string msg = "TimedSequenceEditor: <DrawElement> - error adding effect of type " +
 						             newEffect.Descriptor.TypeId + " to row " +
 						             ((drawingRow == null) ? "<null>" : drawingRow.Name);
 						Logging.ErrorException(msg, ex);
@@ -1627,7 +1627,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			if (element == null || element.EffectNode == null)
 			{
-				Logging.Error("TimedSequenceEditor: Element double-clicked, and it doesn't have an associated effect!");
+				Logging.Error("TimedSequenceEditor: <ElementDoubleClickedHandler> - Element doesn't have an associated effect!");
 				return;
 			}
 
@@ -2161,7 +2161,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						}
 						catch (Exception ex)
 						{
-							string msg = "TimedSequenceEditor AddMultipleElements: error adding effect of type " + newEffect.Descriptor.TypeId + " to row " +
+							string msg = "TimedSequenceEditor: <AddMultipleEffects> - error adding effect of type " + newEffect.Descriptor.TypeId + " to row " +
 							             ((row == null) ? "<null>" : row.Name);
 							Logging.ErrorException(msg, ex);
 						}
@@ -2214,7 +2214,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							}
 							catch (Exception ex)
 							{
-								string msg = "TimedSequenceEditor AddMultipleElements: error adding effect of type " + newEffect.Descriptor.TypeId + " to row " +
+								string msg = "TimedSequenceEditor: <AddEffectsToBeatMarks> - error adding effect of type " + newEffect.Descriptor.TypeId + " to row " +
 											 ((row == null) ? "<null>" : row.Name);
 								Logging.ErrorException(msg, ex);
 							}
@@ -2440,7 +2440,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			else
 			{
-				Logging.Error("toolStripMenuItem is null in event handler contextMenuStripElementSelectionItem_Click");
+				Logging.Error("TimedSequenceEditor: <contextMenuStripElementSelectionItem_Click> - toolStripMenuItem is null!");
 			}
 		}
 
@@ -2448,7 +2448,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			if (_context == null)
 			{
-				Logging.Error("TimedSequenceEditor: StartPointClicked to Play with null context!");
+				Logging.Error("TimedSequenceEditor: <timelineControl_RulerCLicked> - StartPointClicked with null context!");
 				return;
 			}
 
@@ -2563,7 +2563,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			if (_context == null)
 			{
-				Logging.Error("TimedSequenceEditor: TimeRangeDragged with null context!");
+				Logging.Error("TimedSequenceEditor: <timelineControl_TimeRangeDragged> - null context!");
 				return;
 			}
 
@@ -2575,7 +2575,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					_PlaySequence(TimelineControl.PlaybackStartTime.Value, TimelineControl.PlaybackEndTime.Value);
 				else
 				{
-					Logging.Error("On autoPlay, PlaybackStartTime or PlaybackEndTime was null!!");
+					Logging.Error("TimedSequenceEditor: <timelineControl_TimeRangeDragged> - On autoPlay, PlaybackStartTime or PlaybackEndTime was null!");
 				}
 			}
 			else
@@ -2635,7 +2635,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_context = VixenSystem.Contexts.CreateSequenceContext(new ContextFeatures(ContextCaching.NoCaching), Sequence);
 			if (_context == null)
 			{
-				Logging.Error(@"Null context when attempting to play sequence.");
+				Logging.Error(@"TimedSequenceEditor: <OpenSequenceContext> - null _context when attempting to play sequence!");
 				MessageBox.Show(@"Unable to play this sequence.  See error log for details.");
 				return;
 			}
@@ -2686,7 +2686,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			if (_context == null)
 			{
-				Logging.Error("TimedSequenceEditor: attempt to Play with null context!");
+				Logging.Error("TimedSequenceEditor: <PlaySequence> - attempt to Play with null _context!");
 				return;
 			}
 
@@ -2715,7 +2715,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			if (_context == null)
 			{
-				Logging.Error("TimedSequenceEditor: attempt to Play with null context!");
+				Logging.Error("TimedSequenceEditor: <PlaySequenceFrom> - attempt to Play with null _context!");
 				return;
 			}
 
@@ -2744,7 +2744,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			if (_context == null)
 			{
-				Logging.Error("TimedSequenceEditor: attempt to Pause with null context!");
+				Logging.Error("TimedSequenceEditor: <PauseSequence> - attempt to Pause with null _context!");
 				return;
 			}
 
@@ -2772,7 +2772,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			if (_context == null)
 			{
-				Logging.Error("TimedSequenceEditor: attempt to Stop with null context!");
+				Logging.Error("TimedSequenceEditor: <StopSequence> - attempt to Stop with null _context!");
 				return;
 			}
 
@@ -2830,7 +2830,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				toolStripStatusLabel_currentTime.Text = timeSpanEventArgs.Time.ToString("m\\:ss\\.fff");
 			else
 			{
-				Logging.Error("CursorMovedHandler - timeSpanEventArgs = null!!");
+				Logging.Error("TimedSequenceEditor: <CursorMovedHandler> - timeSpanEventArgs = null!");
 			}
 		}
 
@@ -2909,7 +2909,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					}
 					else
 					{
-						Logging.Error("CloneElements: Skipping element - element.Row is null!!");
+						Logging.Error("TimedSequenceEditor: <CloneElements> - Skipping element; element.Row is null!");
 						continue;
 					}
 
@@ -3102,7 +3102,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						// we don't have a row for the element this effect is referencing; most likely, the row has
 						// been deleted, or we're opening someone else's sequence, etc. Big fat TODO: here for that, then.
 						// dunno what we want to do: prompt to add new elements for them? map them to others? etc.
-						const string message = "No Timeline.Row is associated with a target ElementNode for this EffectNode. It now exists in the sequence, but not in the GUI.";
+						const string message = "TimedSequenceEditor: <AddElementsForEffectNodes> - No Timeline.Row is associated with a target ElementNode for this EffectNode. It now exists in the sequence, but not in the GUI.";
 						Logging.Error(message);
 						MessageBox.Show(message);
 					}
@@ -3147,7 +3147,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 									// we don't have a row for the element this effect is referencing; most likely, the row has
 									// been deleted, or we're opening someone else's sequence, etc. Big fat TODO: here for that, then.
 									// dunno what we want to do: prompt to add new elements for them? map them to others? etc.
-									const string message = "No Timeline.Row is associated with a target ElementNode for this EffectNode. It now exists in the sequence, but not in the GUI.";
+									const string message = "TimedSequenceEditor: <AddElementForEffectNodeTpl> - No Timeline.Row is associated with a target ElementNode for this EffectNode. It now exists in the sequence, but not in the GUI.";
 									Logging.Error(message);
 									MessageBox.Show(message);
 								}
