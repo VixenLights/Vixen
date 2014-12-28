@@ -627,10 +627,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					//Either way...(the user is getting ready to use the filter)
 					toolStripButton_DragBoxFilter.Checked = true;
 				};
-				dbfMenuItem.Click += (sender, e) =>
-				{
-					toolStripDropDownButton_DragBoxFilter.ShowDropDown();
-				};
+				dbfMenuItem.Click += (sender, e) => toolStripDropDownButton_DragBoxFilter.ShowDropDown();
 				toolStripDropDownButton_DragBoxFilter.DropDownItems.Add(dbfMenuItem);
 			}
 		}
@@ -2198,7 +2195,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				{
 					if (newEffects.Count < effectCount)
 					{
-						if (!skipEoBeat || (skipEoBeat && !skipThisBeat))
+						if (!skipThisBeat)
 						{
 							var newEffect = ApplicationServices.Get<IEffectModuleInstance>(effectGuid);
 							try
@@ -2219,7 +2216,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 								Logging.ErrorException(msg, ex);
 							}
 						}
-						skipThisBeat = (!skipThisBeat);
+						
+						if (skipEoBeat) skipThisBeat = (!skipThisBeat);
 					}
 					else
 						break; //We're done creating, we've matched counts
