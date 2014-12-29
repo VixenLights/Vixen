@@ -27,7 +27,7 @@ namespace Vixen.IO.Xml.Serializer
 				string name = XmlHelper.GetAttribute(element, ATTR_NAME);
 				return new Element(id, name);
 			} catch (Exception e) {
-				logging.ErrorException("Error loading Element from XML", e);
+				logging.Error("Error loading Element from XML", e);
 				return null;
 			}
 		}

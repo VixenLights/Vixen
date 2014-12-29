@@ -50,7 +50,7 @@ namespace Dataweb.NShape
 	/// <remarks>Also providing methods to find shapes and process the collection 
 	/// items in every direction.</remarks>
 	/// <status>Reviewed</status>
-	public interface IReadOnlyShapeCollection : IReadOnlyCollection<Shape>
+	public interface IReadOnlyShapeCollection : Dataweb.NShape.Advanced.IReadOnlyCollection<Shape>
 	{
 		/// <summary>
 		/// Retrieves the greatest z-order within the collection.

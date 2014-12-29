@@ -15,7 +15,7 @@ namespace VixenModules.Script.CSharp
     /// Class to produce the template output
     /// </summary>
     
-    #line 1 "C:\Users\gizmo_000\GitHub\vixen\Modules\Script\CSharp\CSharp_Skeleton.tt"
+    #line 1 "C:\Users\ebrad\Documents\GitHub\vixen\Modules\Script\CSharp\CSharp_Skeleton.tt"
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "12.0.0.0")]
     public partial class CSharp_Skeleton : CSharp_SkeletonBase
     {
@@ -25,16 +25,16 @@ namespace VixenModules.Script.CSharp
         /// </summary>
         public virtual string TransformText()
         {
-            this.Write("using System;\n\nnamespace ");
+            this.Write("using System;\r\n\r\nnamespace ");
             
-            #line 1 "C:\Users\gizmo_000\GitHub\vixen\Modules\Script\CSharp\CSharp_Skeleton.tt"
+            #line 3 "C:\Users\ebrad\Documents\GitHub\vixen\Modules\Script\CSharp\CSharp_Skeleton.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Namespace));
             
             #line default
             #line hidden
-            this.Write(" {\n\tpublic partial class ");
+            this.Write(" {\r\n\tpublic partial class ");
             
-            #line 1 "C:\Users\gizmo_000\GitHub\vixen\Modules\Script\CSharp\CSharp_Skeleton.tt"
+            #line 4 "C:\Users\ebrad\Documents\GitHub\vixen\Modules\Script\CSharp\CSharp_Skeleton.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(ClassName));
             
             #line default

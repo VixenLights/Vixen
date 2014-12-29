@@ -96,7 +96,7 @@ namespace VixenModules.Output.CommandController
 							}
 							var response = request.GetResponse();
 						} catch (Exception e) {
-							Logging.ErrorException(e.Message, e);
+							Logging.Error(e.Message, e);
 							lastRdsText=string.Empty;
 						}
 					});
@@ -129,7 +129,7 @@ namespace VixenModules.Output.CommandController
 
 					} catch (Exception e) {
 
-						Logging.ErrorException(e.Message, e);
+						Logging.Error(e.Message, e);
 					}
 
 				});

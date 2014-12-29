@@ -109,7 +109,7 @@ namespace Dataweb.NShape.Controllers
 
 
 		/// <ToBeCompleted></ToBeCompleted>
-		public IReadOnlyCollection<Shape> Shapes
+		public Dataweb.NShape.Advanced.IReadOnlyCollection<Shape> Shapes
 		{
 			get { return shapes; }
 			set

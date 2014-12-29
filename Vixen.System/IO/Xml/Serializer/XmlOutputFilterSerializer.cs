@@ -38,7 +38,7 @@ namespace Vixen.IO.Xml.Serializer
 
 				return outputFilter;
 			} catch (Exception e) {
-				logging.ErrorException("Error loading Output Filter from XML", e);
+				logging.Error("Error loading Output Filter from XML", e);
 				return null;
 			}
 		}
