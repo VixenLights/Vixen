@@ -22,6 +22,7 @@ namespace VixenModules.Editor.ScriptEditor
 			comboBoxLanguage.DisplayMember = "LanguageName";
 			comboBoxLanguage.ValueMember = null;
 			comboBoxLanguage.DataSource = scriptModuleDescriptors;
+			comboBoxLanguage.Enabled = comboBoxLanguage.Items.Count > 1;
 		}
 
 		public string SelectedProjectName { get; private set; }
