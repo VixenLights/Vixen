@@ -8,6 +8,7 @@ using System.Collections.Concurrent;
 
 	public static class Extensions
 	{
+
 		public static int TryParseInt32(this string value, int defaultInt32)
 		{
 			int converted;
@@ -16,28 +17,6 @@ using System.Collections.Concurrent;
 			}
 
 			return converted;
-		}
-     
-
-		public static byte[] ToChannelValuesAsBytes(this ICommand[] outputStates)
-		{
-			if (outputStates == null) {
-				return new byte[0];
-			}
-
-			var channelValues = new byte[outputStates.Length];
-			for (int index = 0; index < outputStates.Length; index++) {
-				_8BitCommand command = outputStates[index] as _8BitCommand;
-				if (command == null) {
-					// State reset
-					channelValues[index] = 0;
-					continue;
-				}
-
-				channelValues[index] = command.CommandValue;
-			}
-			
-			return channelValues;
 		}
 
 		internal static Guid BufferToGuid(byte[] bfr, int offset)

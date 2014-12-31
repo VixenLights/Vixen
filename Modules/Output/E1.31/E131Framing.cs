@@ -25,15 +25,18 @@
 
 		private const int VECTOR_OFFSET = 2;
 
-		public E131Framing(ushort length, string source, byte sequence, ushort univ)
+		public E131Framing(ushort length, string source, byte sequence, ushort univ, int priority, bool blind)
 		{
 			this.FlagsLength = (ushort) (0x7000 | length);
 			this.Vector = 0x00000002;
 			this.SourceName = source;
-			this.Priority = 100;
+			this.Priority = (byte)priority;
 			this.Reserved = 0;
 			this.SequenceNumber = sequence;
-			this.Options = 0;
+            if (blind)
+                this.Options = 128;
+            else
+                this.Options = 0;
 			this.Universe = univ;
 		}
 

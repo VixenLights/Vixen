@@ -14,11 +14,11 @@
 		private const int ROOT_OFFSET = 0;
 
 		public E131Packet(
-			Guid guid, string source, byte sequence, ushort universe, byte[] values, int offset, int slots)
+			Guid guid, string source, byte sequence, ushort universe, byte[] values, int offset, int slots, int priority, bool blind)
 		{
 			this.E131DeviceManagementProtocol = new E131DeviceManagementProtocol(values, offset, slots);
 			this.E131Framing = new E131Framing(
-				(ushort) (E131Framing.PHYBUFFER_SIZE + this.E131DeviceManagementProtocol.Length), source, sequence, universe);
+				(ushort) (E131Framing.PHYBUFFER_SIZE + this.E131DeviceManagementProtocol.Length), source, sequence, universe, priority, blind);
 			this.E131Root = new E131Root((ushort) (E131Root.PDU_SIZE + this.E131Framing.Length), guid);
 		}
 

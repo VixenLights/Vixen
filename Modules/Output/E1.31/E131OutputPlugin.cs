@@ -61,6 +61,10 @@ namespace VixenModules.Controller.E131
     using VixenModules.Output.E131;
     using System.Linq;
     using Vixen.Sys;
+    using Vixen.Services;
+    using Vixen.Sys.Output;
+    using NLog;
+
     // -----------------------------------------------------------------
     // 
     // OutputPlugin - the output plugin class for vixen
@@ -72,10 +76,32 @@ namespace VixenModules.Controller.E131
         // our option settings
 
         private E131ModuleDataModel _data;
+        private int _eventCnt;
+
+
+        // a stringbuilder to store warnings, errors, and statistics
+        private StringBuilder _messageTexts;
+
+        // a sorted list of NetworkInterface object to use for sockets
+        private SortedList<string, NetworkInterface> _nicTable;
+
+        private long _totalTicks;
+
+        private bool isSetupOpen;
+        private bool hasStarted;
+
+        private byte[] channelValues;
+
+        /// <summary>
+        /// Is the E1.31 control currently running?
+        /// </summary>
+        private bool running = true;
+
+        internal static List<int> EmployedUniverses = new List<int>();
+        internal static SortedList<string, int> unicasts = new SortedList<string, int>();
 
         public override Vixen.Module.IModuleDataModel ModuleData
         {
-
             get
             {
                 return _data;
@@ -86,62 +112,11 @@ namespace VixenModules.Controller.E131
             }
         }
 
-
-        private int _eventCnt;
-
-
-        // a stringbuilder to store warnings, errors, and statistics
-        private StringBuilder _messageTexts;
-
-        // a table of UniverseEntry objects to hold all universes
-
-        // a sorted list of NetworkInterface object to use for sockets
-        private SortedList<string, NetworkInterface> _nicTable;
-
-        private long _totalTicks;
-
-
-
-
-
-        private bool isSetupOpen;
-        private bool hasStarted;
-
         public E131OutputPlugin()
         {
             DataPolicyFactory = new DataPolicyFactory();
             isSetupOpen = false;
             hasStarted = false;
-        }
-
-        public void Initialize()
-        {
-            // load all of our xml into working objects
-            this.LoadSetupNodeInfo();
-
-            // find all of the network interfaces & build a sorted list indexed by Id
-            this._nicTable = new SortedList<string, NetworkInterface>();
-
-            NetworkInterface[] nics = NetworkInterface.GetAllNetworkInterfaces();
-            foreach (var nic in nics)
-            {
-                if (nic.NetworkInterfaceType.CompareTo(NetworkInterfaceType.Tunnel) != 0)
-                {
-                    this._nicTable.Add(nic.Id, nic);
-                }
-            }
-            _data.Universes.ForEach(u =>
-            {
-                if (!E131OutputPlugin.EmployedUniverses.Contains(u.Universe))
-                    E131OutputPlugin.EmployedUniverses.Add(u.Universe);
-                if (u.Unicast != null)
-                {
-                    if (!unicasts.ContainsKey(u.Unicast))
-                    {
-                        unicasts.Add(u.Unicast, 0);
-                    }
-                }
-            });
         }
 
         // -------------------------------------------------------------
@@ -152,15 +127,7 @@ namespace VixenModules.Controller.E131
         // -------------------------------------------------------------
         public override bool Setup()
         {
-            //initialize setupNode
-
-
-            //Initialize();
             isSetupOpen = true;
-
-
-
-            // define/create objects
 
             using (var setupForm = new SetupForm())
             {
@@ -172,18 +139,23 @@ namespace VixenModules.Controller.E131
                 foreach (var uE in _data.Universes)
                 {
                     setupForm.UniverseAdd(
-                        uE.Active, uE.Universe, uE.Start + 1, uE.Size, uE.Unicast, uE.Multicast, uE.Ttl);
+                        uE.Active, uE.Universe, uE.Start + 1, uE.Size);
 
                     if (!E131OutputPlugin.EmployedUniverses.Contains(uE.Universe))
                         E131OutputPlugin.EmployedUniverses.Add(uE.Universe);
 
                     initialUniverseList.Add(uE.Universe);
                 }
-
+                
                 setupForm.WarningsOption = _data.Warnings;
                 setupForm.StatisticsOption = _data.Statistics;
 				setupForm.EventRepeatCount = _data.EventRepeatCount;
 				setupForm.EventSuppressCount = _data.EventSuppressCount;
+                setupForm.AutoPopulateStart = _data.AutoPopulate;
+                setupForm.Blind = _data.Blind;
+                setupForm.Priority = _data.Priority;
+                setupForm.SetDestination(_data.Multicast, _data.Unicast);
+
                 setupForm.Text = (new E131ModuleDescriptor()).TypeName + " Controller Setup - " + VixenSystem.OutputControllers.Single(controller => controller.ModuleInstanceId == _data.ModuleInstanceId).Name;
 
                 if (setupForm.ShowDialog() == DialogResult.OK)
@@ -194,9 +166,24 @@ namespace VixenModules.Controller.E131
                     _data.Statistics = setupForm.StatisticsOption;
 					_data.EventRepeatCount = setupForm.EventRepeatCount;
 					_data.EventSuppressCount = setupForm.EventSuppressCount;
+                    _data.AutoPopulate = setupForm.AutoPopulateStart;
+                    _data.Blind = setupForm.Blind;
+                    _data.Priority = setupForm.Priority;
                     _data.Universes.Clear();
 
+                    var destination = new Tuple<string, string>(null, null);
+
+                    destination = setupForm.GetDestination();
+
+                    _data.Unicast = destination.Item1;
+                    _data.Multicast = destination.Item2;
+
                     initialUniverseList.ForEach(u => E131OutputPlugin.EmployedUniverses.RemoveAll(t => u == t));
+
+                    OutputController thisController = VixenSystem.OutputControllers.Single(controller => controller.ModuleInstanceId == _data.ModuleInstanceId);
+
+                    for (int x = 0; x < thisController.Outputs.Length; x++)
+                        thisController.Outputs[x].Name = "Output #" + (x + 1).ToString();
 
                     // add each of the universes as a child
                     for (int i = 0; i < setupForm.UniverseCount; i++)
@@ -205,17 +192,23 @@ namespace VixenModules.Controller.E131
                         int universe = 0;
                         int start = 0;
                         int size = 0;
-                        string unicast = string.Empty;
-                        string multicast = string.Empty;
-                        int ttl = 0;
 
                         if (setupForm.UniverseGet(
-                            i, ref active, ref universe, ref start, ref size, ref unicast, ref multicast, ref ttl))
+                            i, ref active, ref universe, ref start, ref size))
                         {
-                            _data.Universes.Add(new UniverseEntry(i, active, universe, start - 1, size, unicast, multicast, ttl));
+                            _data.Universes.Add(new UniverseEntry(i, active, universe, start - 1, size));
                             //Only add the universe if it doesnt already exist
                             if (!E131OutputPlugin.EmployedUniverses.Contains(universe))
                                 E131OutputPlugin.EmployedUniverses.Add(universe);
+
+                            
+                            for (int x = start - 1; x < start + size - 1; x++)
+                               if(x < thisController.Outputs.Length)
+                                   if (_data.Unicast == string.Empty || _data.Unicast == null)
+                                        thisController.Outputs[x].Name = "#" + (x + 1).ToString() + " " + universe.ToString() + "-" + (x  - start+2).ToString() + ": Multicast";
+                                    else
+                                        thisController.Outputs[x].Name = "#" + (x + 1).ToString() + " " + universe.ToString() + "-" + (x -start+2).ToString() + ": " + _data.Unicast.ToString();
+                            
                         }
                     }
 
@@ -232,8 +225,7 @@ namespace VixenModules.Controller.E131
             return true;
         }
 
-        internal static List<int> EmployedUniverses = new List<int>();
-        internal static SortedList<string, int> unicasts = new SortedList<string, int>();
+
 
         public override bool HasSetup
         {
@@ -332,6 +324,9 @@ namespace VixenModules.Controller.E131
         // -------------------------------------------------------------
         public override void Start()
         {
+
+            running = true;
+
             // working copy of networkinterface object
             NetworkInterface networkInterface;
 
@@ -344,25 +339,57 @@ namespace VixenModules.Controller.E131
             // a sortedlist containing the multicast sockets we've already done
             var nicSockets = new SortedList<string, Socket>();
 
-            // Load the NICs and XML file
-            this.Initialize();
+            // load all of our xml into working objects
+            this.LoadSetupNodeInfo();
+
 
             // initialize plugin wide stats
             this._eventCnt = 0;
             this._totalTicks = 0;
 
+            if (_data.Unicast == null && _data.Multicast == null)
+                if (_data.Universes[0] != null)
+                {
+                    _data.Unicast = _data.Universes[0].Unicast;
+                    _data.Multicast = _data.Universes[0].Multicast;
+                }
+
+            // find all of the network interfaces & build a sorted list indexed by Id
+            this._nicTable = new SortedList<string, NetworkInterface>();
+
+            NetworkInterface[] nics = NetworkInterface.GetAllNetworkInterfaces();
+            foreach (var nic in nics)
+            {
+                if (nic.NetworkInterfaceType.CompareTo(NetworkInterfaceType.Tunnel) != 0 && !nic.Name.Contains("loopback"))
+                {
+                    this._nicTable.Add(nic.Id, nic);
+                }
+            }
+
+            _data.Universes.ForEach(u =>
+            {
+                if (!E131OutputPlugin.EmployedUniverses.Contains(u.Universe))
+                    E131OutputPlugin.EmployedUniverses.Add(u.Universe);
+            });
+            if (_data.Unicast != null)
+            {
+                if (!unicasts.ContainsKey(_data.Unicast))
+                {
+                    unicasts.Add(_data.Unicast, 0);
+                }
+            }
+
             // initialize messageTexts stringbuilder to hold all warnings/errors
             this._messageTexts = new StringBuilder();
-
 
             // now we need to scan the universeTable
             foreach (var uE in _data.Universes)
             {
                 // if it's still active we'll look into making a socket for it
-                if (uE.Active)
+                if (running && uE.Active)
                 {
                     // if it's unicast it's fairly easy to do
-                    if (uE.Unicast != null)
+                    if (_data.Unicast != null)
                     {
                         // is this the first unicast universe?
                         if (unicastSocket == null)
@@ -374,23 +401,44 @@ namespace VixenModules.Controller.E131
                         // use the common unicastsocket
                         uE.Socket = unicastSocket;
 
-                        // try to parse our ip address
-                        if (!IPAddress.TryParse(uE.Unicast, out ipAddress))
+                        IPAddress[] ips = null;
+
+                        try
                         {
-                            // oops - bad ip, fuss and deactivate
-                            uE.Active = false;
-                            uE.Socket = null;
-                            this._messageTexts.AppendLine(string.Format("Invalid Unicast IP: {0} - {1}", uE.Unicast, uE.RowUnivToText));
+                            ips = Dns.GetHostAddresses(_data.Unicast);
                         }
-                        else
+                        catch
                         {
-                            // if good, make our destination endpoint
-                            uE.DestIpEndPoint = new IPEndPoint(ipAddress, 5568);
+                            //Probably couldn't find the host name
+                            NLog.LogManager.GetCurrentClassLogger().Warn("Couldn't connect to host "+_data.Unicast+".");
+                            running = false;
+                        }
+
+                        if (ips != null)
+                        {
+                            IPAddress ip = null;
+                            foreach (IPAddress i in ips)
+                                if (i.AddressFamily == AddressFamily.InterNetwork)
+                                    ip = i;
+
+                            // try to parse our ip address
+                            if (ip == null)
+                            {
+                                // oops - bad ip, fuss and deactivate
+                                NLog.LogManager.GetCurrentClassLogger().Warn("Couldn't connect to host " + _data.Unicast + ".");
+                                running = false;
+                                uE.Socket = null;
+                            }
+                            else
+                            {
+                                // if good, make our destination endpoint
+                                uE.DestIpEndPoint = new IPEndPoint(ip, 5568);
+                            }
                         }
                     }
 
                     // if it's multicast roll up your sleeves we've got work to do
-					else if (uE.Multicast != null)
+					else if (_data.Multicast != null)
 					{
 						// create an ipaddress object based on multicast universe ip rules
 						var multicastIpAddress =
@@ -400,22 +448,22 @@ namespace VixenModules.Controller.E131
 						var multicastIpEndPoint = new IPEndPoint(multicastIpAddress, 5568);
 
 						// first check for multicast id in nictable
-						if (!this._nicTable.ContainsKey(uE.Multicast))
+                        if (!this._nicTable.ContainsKey(_data.Multicast))
 						{
 							// no - deactivate and scream & yell!!
-							uE.Active = false;
-							this._messageTexts.AppendLine(string.Format("Invalid Multicast NIC ID: {0} - {1}", uE.Multicast, uE.RowUnivToText));
+                            NLog.LogManager.GetCurrentClassLogger().Warn("Couldn't connect to use nic " + _data.Multicast + " for multicasting.");
+                            running = false;
 						}
 						else
 						{
 							// yes - let's get a working networkinterface object
-							networkInterface = this._nicTable[uE.Multicast];
+                            networkInterface = this._nicTable[_data.Multicast];
 
 							// have we done this multicast id before?
-							if (nicSockets.ContainsKey(uE.Multicast))
+                            if (nicSockets.ContainsKey(_data.Multicast))
 							{
 								// yes - easy to do - use existing socket
-								uE.Socket = nicSockets[uE.Multicast];
+                                uE.Socket = nicSockets[_data.Multicast];
 
 								// setup destipendpoint based on multicast universe ip rules
 								uE.DestIpEndPoint = multicastIpEndPoint;
@@ -424,8 +472,8 @@ namespace VixenModules.Controller.E131
 							else if (networkInterface.OperationalStatus != OperationalStatus.Up)
 							{
 								// no - deactivate and scream & yell!!
-								uE.Active = false;
-								this._messageTexts.AppendLine(string.Format("Multicast Interface Down: {0} - {1}", networkInterface.Name , uE.RowUnivToText));
+                                NLog.LogManager.GetCurrentClassLogger().Warn("Nic " + _data.Multicast + " is available for multicasting bur currently down.");
+                                running = false;
 							}
 							else
 							{
@@ -463,13 +511,13 @@ namespace VixenModules.Controller.E131
 
 									// set the multicasttimetolive option
 									uE.Socket.SetSocketOption(
-										SocketOptionLevel.IP, SocketOptionName.MulticastTimeToLive, uE.Ttl);
+										SocketOptionLevel.IP, SocketOptionName.MulticastTimeToLive, 64);
 
 									// setup destipendpoint based on multicast universe ip rules
 									uE.DestIpEndPoint = multicastIpEndPoint;
 
 									// add this socket to the socket table for reuse
-									nicSockets.Add(uE.Multicast, uE.Socket);
+									nicSockets.Add(_data.Multicast, uE.Socket);
 								}
 							}
 						}
@@ -480,12 +528,12 @@ namespace VixenModules.Controller.E131
 					}
 
                     // if still active we need to create an empty packet
-                    if (uE.Active)
+                    if (running)
                     {
                         var zeroBfr = new byte[uE.Size];
 						for (int i = 0; i < uE.Size; i++)  // init to unlikely value for later compares
 							zeroBfr[i] = (byte)i;
-                        var e131Packet = new E131Packet(_data.ModuleInstanceId, string.Empty, 0, (ushort)uE.Universe, zeroBfr, 0, uE.Size);
+                        var e131Packet = new E131Packet(_data.ModuleInstanceId, "Vixen 3", 0, (ushort)uE.Universe, zeroBfr, 0, uE.Size, _data.Priority, _data.Blind);
                         uE.PhyBuffer = e131Packet.PhyBuffer;
                     }
                 }
@@ -526,13 +574,6 @@ namespace VixenModules.Controller.E131
 
         public override void UpdateState(int chainIndex, ICommand[] outputStates)
         {
-            UpdateState(chainIndex, outputStates.ToChannelValuesAsBytes());
-        }
-
-
-
-        public void UpdateState(int chainIndex, byte[] channelValues)
-        {
             Stopwatch stopWatch = Stopwatch.StartNew();
 
             //Make sure the setup form is closed & the plugin has started
@@ -540,7 +581,29 @@ namespace VixenModules.Controller.E131
             {
                 return;
             }
-            DateTime lastUpdate;
+
+            if (outputStates == null)
+            {
+                channelValues = new byte[0];
+            }
+
+            if (channelValues == null || channelValues.Length != outputStates.Length)
+                channelValues = new byte[outputStates.Length];
+
+            _8BitCommand command;
+
+            for (int index = 0; index < outputStates.Length; index++)
+            {
+                command = outputStates[index] as _8BitCommand;
+                if (command == null)
+                {
+                    // State reset
+                    channelValues[index] = 0;
+                    continue;
+                }
+
+                channelValues[index] = command.CommandValue;
+            }
 
 			// no longer used, but I'm leaving it just in case we need it later...
 			/*
@@ -575,7 +638,7 @@ namespace VixenModules.Controller.E131
 					continue;
 
                 //Check if the universe is active and inside a valid channel range
-                if ( !uE.Active || uE.Start >= OutputCount)
+                if ( !uE.Active || uE.Start >= OutputCount || !running)
 					continue;
 
                 //Check the universe size boundary.
@@ -641,6 +704,9 @@ namespace VixenModules.Controller.E131
                 _data.Statistics = false;
 				_data.EventRepeatCount = 0;
 				_data.EventSuppressCount = 0;
+                _data.AutoPopulate = true;
+                _data.Blind = false;
+                _data.Priority = 100;
             }
 
             if (_data.Universes == null)
