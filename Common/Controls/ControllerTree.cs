@@ -235,8 +235,8 @@ namespace Common.Controls
 
 			for (int i = 0; i < controller.OutputCount; i++) {
 				TreeNode channelNode = new TreeNode();
-				channelNode.Name = "#" + (i+1);
-				channelNode.Text = "#" + (i+1);
+                channelNode.Name = controller.Outputs[i].Name;
+                channelNode.Text = controller.Outputs[i].Name;
 				channelNode.Tag = i;
 
 				IDataFlowComponentReference source = controller.Outputs[i].Source;
