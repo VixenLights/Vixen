@@ -31,7 +31,8 @@ Sequencer
 * Fixed a bug in the rendering progress bar logic that could cause it to hang in an incomplete state.
 * Fixed an issue where effects would render multiple times (unnecessarily).
 * Fix some display issues with stacking effects and row heights in the sequence editor.
-* 
+* Fixed a missing detection of a modified sequence when the length of the sequence is changed.
+* Fixed some issues with crashes when using looping.
 
 Effects
 * Fixed for memory overflows in the Twinkle during certain settings that would allow it to create to many twinkles.
@@ -51,7 +52,8 @@ Controllers
 * Improved exception hanlding of serial port scanning routine. 
 * Fix E1.31 display setup screen font corruption
 
-
+Scheduler
+* Fixed an issue with crashes/locks when using looped shows/schedules.
 
 Vixen Release Notes – 3.1 (update 1)
 Features

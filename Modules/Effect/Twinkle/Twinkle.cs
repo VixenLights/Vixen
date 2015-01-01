@@ -310,7 +310,7 @@ namespace VixenModules.Effect.Twinkle
 					
 					pulse.TargetNodes = new [] {node};
 					pulse.TimeSpan = twinkle.Duration;
-					pulse.LevelCurve = new Curve(new PointPairList(new double[] { 0, 50, 100 }, new double[] { twinkle.curvePoints[0], twinkle.curvePoints[1], twinkle.curvePoints[2] }));
+					pulse.LevelCurve = new Curve(new PointPairList(new double[] { 0, 50, 100 }, new [] { twinkle.curvePoints[0], twinkle.curvePoints[1], twinkle.curvePoints[2] }));
 
 					// figure out what color gradient to use for the pulse
 					switch (ColorHandling) {
@@ -440,10 +440,10 @@ namespace VixenModules.Effect.Twinkle
 				}
 
 				// generate the levels/curve for it
-				int minLevel = (int)MinimumLevel;
+				double minLevel = MinimumLevel;
 				int maxLevelVariation = (int) ((LevelVariation/100.0)*(MaximumLevel - MinimumLevel));
 				int reduction = _random.Next(maxLevelVariation);
-				int maxLevel = (int)MaximumLevel - reduction;
+				double maxLevel = MaximumLevel - reduction;
 
 				IndividualTwinkleDetails occurance = new IndividualTwinkleDetails();
 				occurance.StartTime = current;
@@ -481,7 +481,7 @@ namespace VixenModules.Effect.Twinkle
 		{
 			public TimeSpan StartTime;
 			public TimeSpan Duration;
-			public int[] curvePoints;
+			public double[] curvePoints;
 		}
 	}
 }
