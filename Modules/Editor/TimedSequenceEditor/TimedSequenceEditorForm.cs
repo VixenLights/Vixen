@@ -224,39 +224,22 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			XMLProfileSettings xml = new XMLProfileSettings();
 
 			//Get preferences
-			_autoSaveTimer.Interval = xml.GetSetting(XMLProfileSettings.SettingType.Preferences,
-				string.Format("{0}/AutoSaveInterval", Name), 300000);
+			_autoSaveTimer.Interval = xml.GetSetting(XMLProfileSettings.SettingType.Preferences, string.Format("{0}/AutoSaveInterval", Name), 300000);
 
 			//Restore App Settings
-			dockPanel.DockLeftPortion = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings,
-				string.Format("{0}/DockLeftPortion", Name), 150);
-			dockPanel.DockRightPortion = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings,
-				string.Format("{0}/DockRightPortion", Name), 150);
-			autoSaveToolStripMenuItem.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings,
-				string.Format("{0}/AutoSaveEnabled", Name), true);
-			toolStripButton_SnapTo.Checked =
-				toolStripMenuItem_SnapTo.Checked =
-					xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SnapToSelected", Name), true);
-			PopulateSnapStrength(xml.GetSetting(XMLProfileSettings.SettingType.AppSettings,
-				string.Format("{0}/SnapStrength", Name), 2));
-			TimelineControl.grid.CloseGap_Threshold = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings,
-				string.Format("{0}/CloseGapThreshold", Name), ".100");
-			toolStripMenuItem_ResizeIndicator.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings,
-				string.Format("{0}/ResizeIndicatorEnabled", Name), false);
-			toolStripButton_DrawMode.Checked =
-				TimelineControl.grid.EnableDrawMode =
-					xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/DrawModeSelected", Name), false);
-			toolStripButton_SelectionMode.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings,
-				string.Format("{0}/SelectionModeSelected", Name), true);
-			ToolsForm.LinkCurves = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings,
-				string.Format("{0}/ToolPaletteLinkCurves", Name), false);
-			ToolsForm.LinkGradients = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings,
-				string.Format("{0}/ToolPaletteLinkGradients", Name), false);
-			cADStyleSelectionBoxToolStripMenuItem.Checked =
-				TimelineControl.grid.aCadStyleSelectionBox =
-					xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CadStyleSelectionBox", Name), false);
-			CheckRiColorMenuItem(xml.GetSetting(XMLProfileSettings.SettingType.AppSettings,
-				string.Format("{0}/ResizeIndicatorColor", Name), "Red"));
+			dockPanel.DockLeftPortion = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/DockLeftPortion", Name), 150);
+			dockPanel.DockRightPortion = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/DockRightPortion", Name), 150);
+			autoSaveToolStripMenuItem.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/AutoSaveEnabled", Name), true);
+			toolStripButton_SnapTo.Checked = toolStripMenuItem_SnapTo.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SnapToSelected", Name), true);
+			PopulateSnapStrength(xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SnapStrength", Name), 2));
+			TimelineControl.grid.CloseGap_Threshold = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CloseGapThreshold", Name), ".100");
+			toolStripMenuItem_ResizeIndicator.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ResizeIndicatorEnabled", Name), false);
+			toolStripButton_DrawMode.Checked = TimelineControl.grid.EnableDrawMode = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/DrawModeSelected", Name), false);
+			toolStripButton_SelectionMode.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SelectionModeSelected", Name), true);
+			ToolsForm.LinkCurves = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolPaletteLinkCurves", Name), false);
+			ToolsForm.LinkGradients = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolPaletteLinkGradients", Name), false);
+			cADStyleSelectionBoxToolStripMenuItem.Checked = TimelineControl.grid.aCadStyleSelectionBox = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CadStyleSelectionBox", Name), false);
+			CheckRiColorMenuItem(xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ResizeIndicatorColor", Name), "Red"));
 
 			foreach (ToolStripItem toolStripItem in toolStripDropDownButton_SnapToStrength.DropDownItems)
 			{
