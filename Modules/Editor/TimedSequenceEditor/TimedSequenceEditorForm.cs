@@ -4445,7 +4445,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (success)
 				{
 					SequenceLength = time;
-					sequenceModified();
+					SequenceModified();
 					break;
 				}
 				
