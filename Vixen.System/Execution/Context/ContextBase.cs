@@ -220,9 +220,5 @@ namespace Vixen.Execution.Context
 			}
 		}
 
-		~ContextBase()
-		{
-			Dispose(false);
-		}
 	}
 }

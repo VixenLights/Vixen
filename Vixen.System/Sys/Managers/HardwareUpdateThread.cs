@@ -265,20 +265,18 @@ namespace Vixen.Sys.Managers
 
 		public void Dispose()
 		{
-			_Dispose();
-		}
-
-		~HardwareUpdateThread()
-		{
-			_Dispose();
+			Dispose(true);
 			GC.SuppressFinalize(this);
 		}
 
-		private void _Dispose()
+		protected void Dispose(bool disposing)
 		{
-			_finished.Dispose();
-			_updateSignalerSync.Dispose();
-			_pauseSignal.Dispose();
+			if (disposing)
+			{
+				_finished.Dispose();
+				_updateSignalerSync.Dispose();
+				_pauseSignal.Dispose();	
+			}
 		}
 	}
 }

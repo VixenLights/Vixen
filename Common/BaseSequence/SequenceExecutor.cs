@@ -405,11 +405,6 @@ namespace BaseSequence
 
 		#region Dispose
 
-		~SequenceExecutor()
-		{
-			Dispose(false);
-		}
-
 		public void Dispose()
 		{
 			Dispose(true);
