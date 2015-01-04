@@ -460,7 +460,6 @@ namespace VixenModules.App.SuperScheduler
 			action.ActionComplete -= OnSequentialActionComplete;
 			RunningActions.Remove(action);
 			ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Sequential action complete: " + action.ShowItem.Name);
-			action.Dispose();
 			if (!StartShutdownIfRequested())
 			{
 				ScheduleExecutor.Logging.Info("OnSequentialActionComplete: Shutdown NOT requested");
@@ -517,6 +516,19 @@ namespace VixenModules.App.SuperScheduler
 			}
 		}
 
+		private void StopSequential()
+		{
+			foreach (ShowItem item in Show.GetItems(ShowItemType.Sequential))
+			{
+				Shows.Action action = item.GetAction();
+				if (action.IsRunning)
+				{
+					action.Stop();
+				}
+				action.Dispose();
+			}	
+		}
+
 		#endregion // Background Items
 
 		#region Shutdown Items
@@ -537,7 +549,7 @@ namespace VixenModules.App.SuperScheduler
 				ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Starting shutdown");
 
 				StopBackground();
-
+				StopSequential();
 				ItemQueue.Clear();
 
 				State = StateType.Shutdown;
