@@ -28,7 +28,7 @@ namespace Vixen.IO.Xml.Serializer
 				}
 				return null;
 			} catch (Exception e) {
-				logging.ErrorException("Error loading Compressed File from XML", e);
+				logging.Error("Error loading Compressed File from XML", e);
 				return null;
 			}
 
