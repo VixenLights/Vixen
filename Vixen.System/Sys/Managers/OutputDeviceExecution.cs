@@ -125,7 +125,7 @@ namespace Vixen.Sys.Managers
 					_StartDevice(outputDevice);
 				}
 				catch (Exception ex) {
-					Logging.ErrorException("Error starting device " + outputDevice.Name, ex);
+					Logging.Error("Error starting device " + outputDevice.Name, ex);
 				}
 			}
 		}
@@ -137,7 +137,7 @@ namespace Vixen.Sys.Managers
 					_StopDevice(outputDevice);
 				}
 				catch (Exception ex) {
-					Logging.ErrorException("Error trying to stop device " + outputDevice.Name, ex);
+					Logging.Error("Error trying to stop device " + outputDevice.Name, ex);
 				}
 			}
 		}
@@ -149,7 +149,7 @@ namespace Vixen.Sys.Managers
 					_PauseDevice(outputDevice);
 				}
 				catch (Exception ex) {
-					Logging.ErrorException("Error trying to pause device " + outputDevice.Name, ex);
+					Logging.Error("Error trying to pause device " + outputDevice.Name, ex);
 				}
 			}
 		}
@@ -161,7 +161,7 @@ namespace Vixen.Sys.Managers
 					_ResumeDevice(outputDevice);
 				}
 				catch (Exception ex) {
-					Logging.ErrorException("Error trying to resume device " + outputDevice.Name, ex);
+					Logging.Error("Error trying to resume device " + outputDevice.Name, ex);
 				}
 			}
 		}
