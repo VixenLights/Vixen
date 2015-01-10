@@ -113,7 +113,7 @@ namespace Vixen.IO.Xml.Serializer
 
 				return node;
 			} catch (Exception e) {
-				logging.ErrorException("Error loading Element Node from XML", e);
+				logging.Error("Error loading Element Node from XML", e);
 				return null;
 			}
 		}

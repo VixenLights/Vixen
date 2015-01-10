@@ -34,7 +34,7 @@ namespace Vixen.Sys
 		//			returnValue = true;
 		//		} 
 		//	} catch (Exception e) {
-		//		Logging.ErrorException(e.Message, e);
+		//		Logging.Error(e.Message, e);
 
 		//	}
 		//	return returnValue;

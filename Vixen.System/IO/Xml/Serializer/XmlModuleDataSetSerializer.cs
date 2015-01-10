@@ -32,7 +32,7 @@ namespace Vixen.IO.Xml.Serializer
 				dataSet.Deserialize(dataModelSerializer);
 				return dataSet;
 			} catch (Exception e) {
-				logging.ErrorException("Error loading Data Set from XML", e);
+				logging.Error("Error loading Data Set from XML", e);
 				return null;
 			}
 		}
