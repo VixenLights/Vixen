@@ -90,7 +90,7 @@ namespace VixenModules.Preview.VixenPreview
 					});
 				} catch (Exception e)
 				{
-					Logging.ErrorException(e.Message, e);
+					Logging.Error(e.Message, e);
 				}
 				
 				gdiControl.EndUpdate();

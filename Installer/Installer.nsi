@@ -234,11 +234,11 @@ Function .onInit
 	${EndIf}
 
 
-	;Here we check for Client .NET 4.0 profile. To check for Full .NET 4.0, replace "Client" with "Full"
-	ReadRegDWORD $0 HKLM 'SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full' Install
-	${If} $0 == ''
+	;Here we check for Client .NET 4.5.2 profile. To check for Full .NET 4.5.2, replace "Client" with "Full"
+	ReadRegDWORD $0 HKLM 'SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full' Release
+	${If} $0 != '379893'
 		StrCpy $InstallDotNET "Yes"
-		MessageBox MB_OK|MB_ICONINFORMATION "${PRODUCT_NAME} requires that the Microsoft .NET Framework 4.0 is installed. The Microsoft .NET Framework will be downloaded and installed automatically during installation of ${PRODUCT_NAME}."
+		MessageBox MB_OK|MB_ICONINFORMATION "${PRODUCT_NAME} requires that the Microsoft .NET Framework 4.5.2 is installed. The Microsoft .NET Framework will be downloaded and installed automatically during installation of ${PRODUCT_NAME}."
 		Return
 	${EndIf}
 	
@@ -249,16 +249,16 @@ Section "Application" SEC01
 
 	; Get .NET if required
 	${If} $InstallDotNET == "Yes"
-		inetc::get /caption "Downloading Microsoft .NET Framework 4.0" /canceltext "Cancel" "http://download.microsoft.com/download/9/5/A/95A9616B-7A37-4AF6-BC36-D6EA96C8DAAE/dotNetFx40_Full_x86_x64.exe" "$TEMP\dotNetFx40_Full_x86_x64.exe" /end
+		inetc::get /caption "Downloading Microsoft .NET Framework 4.5.2" /canceltext "Cancel" "http://download.microsoft.com/download/E/2/1/E21644B5-2DF2-47C2-91BD-63C560427900/NDP452-KB2901907-x86-x64-AllOS-ENU.exe" "$TEMP\NDP452-KB2901907-x86-x64-AllOS-ENU.exe" /end
 		Pop $1
  
 		${If} $1 != "OK"
-			Delete "$TEMP\dotNetFx40_Full_x86_x64.exe"
+			Delete "$TEMP\NDP452-KB2901907-x86-x64-AllOS-ENU.exe"
 			Abort "Installation cancelled."
 		${EndIf}
 		 
-		ExecWait "$TEMP\dotNetFx40_Full_x86_x64.exe"
-		Delete "$TEMP\dotNetFx40_Full_x86_x64.exe"
+		ExecWait "$TEMP\NDP452-KB2901907-x86-x64-AllOS-ENU.exe"
+		Delete "$TEMP\NDP452-KB2901907-x86-x64-AllOS-ENU.exe"
 	${EndIf}
 
   ; only overwrite these if this installer has a newer version

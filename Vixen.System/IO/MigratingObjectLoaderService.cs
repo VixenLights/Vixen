@@ -39,7 +39,7 @@ namespace Vixen.IO
 				contentWriter.WriteContentToObject(content, objectToPopulate);
 			}
 			catch (Exception ex) {
-				Logging.ErrorException(string.Format("Error when migrating file {0} to the current version.", filePath), ex);
+				Logging.Error(string.Format("Error when migrating file {0} to the current version.", filePath), ex);
 			}
 
 			return objectToPopulate;

@@ -39,7 +39,7 @@ namespace Common.Controls
                     }
                     else
                     {
-                        logging.WarnException("Serial port exception encountered while scanning", e);
+                        logging.Warn("Serial port exception encountered while scanning", e);
                         continue;
                     }
                 }
