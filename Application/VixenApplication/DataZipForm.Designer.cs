@@ -45,12 +45,13 @@
 			this.label2 = new System.Windows.Forms.Label();
 			this.comboBoxProfiles = new System.Windows.Forms.ComboBox();
 			this.label1 = new System.Windows.Forms.Label();
-			this.buttonCreateZip = new System.Windows.Forms.Button();
+			this.buttonStartCancel = new System.Windows.Forms.Button();
 			this.buttonClose = new System.Windows.Forms.Button();
 			this.folderBrowserSaveFolder = new System.Windows.Forms.FolderBrowserDialog();
 			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
 			this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripProgressBar = new System.Windows.Forms.ToolStripProgressBar();
+			this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.statusStrip1.SuspendLayout();
@@ -232,15 +233,16 @@
 			this.label1.TabIndex = 2;
 			this.label1.Text = "Profile to zip";
 			// 
-			// buttonCreateZip
+			// buttonStartCancel
 			// 
-			this.buttonCreateZip.Location = new System.Drawing.Point(131, 263);
-			this.buttonCreateZip.Name = "buttonCreateZip";
-			this.buttonCreateZip.Size = new System.Drawing.Size(80, 23);
-			this.buttonCreateZip.TabIndex = 10;
-			this.buttonCreateZip.Text = "OK";
-			this.buttonCreateZip.UseVisualStyleBackColor = true;
-			this.buttonCreateZip.Click += new System.EventHandler(this.buttonCreateZip_Click);
+			this.buttonStartCancel.Cursor = System.Windows.Forms.Cursors.Arrow;
+			this.buttonStartCancel.Location = new System.Drawing.Point(131, 263);
+			this.buttonStartCancel.Name = "buttonStartCancel";
+			this.buttonStartCancel.Size = new System.Drawing.Size(80, 23);
+			this.buttonStartCancel.TabIndex = 10;
+			this.buttonStartCancel.Text = "Start";
+			this.buttonStartCancel.UseVisualStyleBackColor = true;
+			this.buttonStartCancel.Click += new System.EventHandler(this.buttonStartCancel_Click);
 			// 
 			// buttonClose
 			// 
@@ -249,8 +251,9 @@
 			this.buttonClose.Name = "buttonClose";
 			this.buttonClose.Size = new System.Drawing.Size(75, 23);
 			this.buttonClose.TabIndex = 1;
-			this.buttonClose.Text = "Cancel";
+			this.buttonClose.Text = "Close";
 			this.buttonClose.UseVisualStyleBackColor = true;
+			this.buttonClose.Click += new System.EventHandler(this.buttonClose_Click);
 			// 
 			// statusStrip1
 			// 
@@ -273,12 +276,17 @@
 			// 
 			this.toolStripProgressBar.Name = "toolStripProgressBar";
 			this.toolStripProgressBar.Size = new System.Drawing.Size(100, 16);
-			this.toolStripProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
+			this.toolStripProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
 			this.toolStripProgressBar.Visible = false;
+			// 
+			// backgroundWorker1
+			// 
+			this.backgroundWorker1.WorkerReportsProgress = true;
+			this.backgroundWorker1.WorkerSupportsCancellation = true;
 			// 
 			// DataZipForm
 			// 
-			this.AcceptButton = this.buttonCreateZip;
+			this.AcceptButton = this.buttonStartCancel;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.buttonClose;
@@ -286,7 +294,7 @@
 			this.Controls.Add(this.statusStrip1);
 			this.Controls.Add(this.buttonClose);
 			this.Controls.Add(this.groupBox1);
-			this.Controls.Add(this.buttonCreateZip);
+			this.Controls.Add(this.buttonStartCancel);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
@@ -308,7 +316,7 @@
 		#endregion
 
 		private System.Windows.Forms.GroupBox groupBox1;
-		private System.Windows.Forms.Button buttonCreateZip;
+		private System.Windows.Forms.Button buttonStartCancel;
 		private System.Windows.Forms.TextBox textBoxFileName;
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.Button buttonSetSaveFolder;
@@ -330,5 +338,6 @@
 		private System.Windows.Forms.StatusStrip statusStrip1;
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel;
 		private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar;
+		private System.ComponentModel.BackgroundWorker backgroundWorker1;
 	}
 }
