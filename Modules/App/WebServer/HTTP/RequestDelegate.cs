@@ -111,7 +111,7 @@ namespace VixenModules.App.WebServer.HTTP
 				}
 
 			} catch (Exception e) {
-				Logging.ErrorException(e.Message, e);
+				Logging.Error(e.Message, e);
 				headers.Status = "404 Not Found";
 			}
 

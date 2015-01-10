@@ -200,7 +200,7 @@ namespace Vixen.Sys
 					}
 				}
 				catch (Exception ex) {
-					Logging.ErrorException("Error loading modules from " + filePath, ex);
+					Logging.Error("Error loading modules from " + filePath, ex);
 				}
 			}
 
@@ -225,7 +225,7 @@ namespace Vixen.Sys
 					assembly = Assembly.LoadFrom(filePath);
 				}
 				catch (NotSupportedException se) {
-					Logging.ErrorException("Could not load module assembly " + filePath +
+					Logging.Error("Could not load module assembly " + filePath +
 					                          ".  See http://vanderbiest.org/blog/2010/08/11/system-notsupportedexception-when-referencing-to-an-assembly/", se);
 					return new IModuleDescriptor[0];
 				}
@@ -233,7 +233,7 @@ namespace Vixen.Sys
 					return new IModuleDescriptor[0];
 				}
 				catch (Exception ex) {
-					Logging.ErrorException(string.Format("Could not load module assembly {0}.", filePath), ex);
+					Logging.Error(string.Format("Could not load module assembly {0}.", filePath), ex);
 					return new IModuleDescriptor[0];
 				}
 
@@ -269,7 +269,7 @@ namespace Vixen.Sys
 						}
 					}
 					catch (Exception ex) {
-						Logging.ErrorException(string.Format("Error loading module descriptor {0} from {1}.", moduleDescriptorType.Name, Path.GetFileName(filePath)), ex);
+						Logging.Error(string.Format("Error loading module descriptor {0} from {1}.", moduleDescriptorType.Name, Path.GetFileName(filePath)), ex);
 					}
 				}
 			}
@@ -292,14 +292,14 @@ namespace Vixen.Sys
 					instance.StaticModuleData = GetModuleStaticData(instance);
 				}
 				catch (Exception ex) {
-					Logging.ErrorException("Error when assigning module static data.", ex);
+					Logging.Error("Error when assigning module static data.", ex);
 				}
 
 				try {
 					instance.ModuleData = _GetModuleData(instance);
 				}
 				catch (Exception ex) {
-					Logging.ErrorException("Error when assigning module data.", ex);
+					Logging.Error("Error when assigning module data.", ex);
 				}
 
 				// See if there are any templates to apply to the instance.
@@ -399,7 +399,7 @@ namespace Vixen.Sys
 						moduleImplementation.Repository.Add(moduleDescriptor.TypeId);
 					}
 					catch (Exception ex) {
-						Logging.ErrorException("Error occurred while adding module " + moduleDescriptor.FileName, ex);
+						Logging.Error("Error occurred while adding module " + moduleDescriptor.FileName, ex);
 					}
 				}
 			}
@@ -413,7 +413,7 @@ namespace Vixen.Sys
 						moduleImplementation.Repository.Remove(moduleDescriptor.TypeId);
 					}
 					catch (Exception ex) {
-						Logging.ErrorException("Error occurred while removing module " + moduleDescriptor.FileName, ex);
+						Logging.Error("Error occurred while removing module " + moduleDescriptor.FileName, ex);
 					}
 				}
 			}

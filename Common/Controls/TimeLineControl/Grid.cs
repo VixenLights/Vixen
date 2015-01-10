@@ -1956,19 +1956,19 @@ namespace Common.Controls.Timeline
 		                }
 		                catch (Exception ex)
 		                {
-		                    Logging.ErrorException("Error in rendering.", ex);
+		                    Logging.Error("Error in rendering.", ex);
 		                }
 		            });
 		        }
 		    }
 		    catch (OperationCanceledException ce)
 		    {
-                Logging.InfoException("Canceled render thread" , ce);
+                Logging.Info("Canceled render thread" , ce);
 		    }
 		    catch (Exception exception)
 		    {
 		        // there may be some threading exceptions; if so, they're unexpected.  Log them.
-		        Logging.ErrorException("background rendering worker exception:", exception);
+		        Logging.Error("background rendering worker exception:", exception);
 		    }
 		    renderWorkerFinished.Set();
 		}
@@ -2239,7 +2239,7 @@ namespace Common.Controls.Timeline
 					//Logging.Info("OnPaint: " + s.ElapsedMilliseconds);
 				}
 				catch (Exception ex) {
-					Logging.ErrorException("Exception in TimelineGrid.OnPaint()",ex);
+					Logging.Error("Exception in TimelineGrid.OnPaint()",ex);
 					MessageBox.Show(@"An unexpected error occured while drawing the grid. Please notify the Vixen team and provide the error logs.");
 				}
 		}

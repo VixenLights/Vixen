@@ -229,7 +229,7 @@ namespace Dataweb.NShape.Controllers
 		/// <summary>
 		/// Returns a collection of <see cref="T:Dataweb.NShape.Advanced.MenuItemDef" /> for constructing context menus etc.
 		/// </summary>
-		public IEnumerable<MenuItemDef> GetMenuItemDefs(IReadOnlyCollection<IModelObject> modelObjects)
+		public IEnumerable<MenuItemDef> GetMenuItemDefs(Dataweb.NShape.Advanced.IReadOnlyCollection<IModelObject> modelObjects)
 		{
 			if (modelObjects == null) throw new ArgumentNullException("modelObjects");
 
@@ -431,7 +431,7 @@ namespace Dataweb.NShape.Controllers
 
 		#region [Private] Methods: Create actions
 
-		private MenuItemDef CreateDeleteModelObjectsAction(IReadOnlyCollection<IModelObject> modelObjects)
+		private MenuItemDef CreateDeleteModelObjectsAction(Dataweb.NShape.Advanced.IReadOnlyCollection<IModelObject> modelObjects)
 		{
 			string description;
 			bool isFeasible;
@@ -458,7 +458,7 @@ namespace Dataweb.NShape.Controllers
 		}
 
 
-		private MenuItemDef CreateCopyModelObjectsAction(IReadOnlyCollection<IModelObject> modelObjects)
+		private MenuItemDef CreateCopyModelObjectsAction(Dataweb.NShape.Advanced.IReadOnlyCollection<IModelObject> modelObjects)
 		{
 			bool isFeasible = (modelObjects != null && modelObjects.Count > 0);
 			string description;
@@ -472,7 +472,7 @@ namespace Dataweb.NShape.Controllers
 		}
 
 
-		private MenuItemDef CreatePasteModelObjectsAction(IReadOnlyCollection<IModelObject> modelObjects)
+		private MenuItemDef CreatePasteModelObjectsAction(Dataweb.NShape.Advanced.IReadOnlyCollection<IModelObject> modelObjects)
 		{
 			bool isFeasible = (copyPasteBuffer.Count > 0 && modelObjects.Count <= 1);
 			string description;
@@ -492,7 +492,7 @@ namespace Dataweb.NShape.Controllers
 		}
 
 
-		private MenuItemDef CreateFindShapesAction(IReadOnlyCollection<IModelObject> modelObjects)
+		private MenuItemDef CreateFindShapesAction(Dataweb.NShape.Advanced.IReadOnlyCollection<IModelObject> modelObjects)
 		{
 			bool isFeasible = (diagramSetController != null);
 			string description = "Find and select all assigned shapes.";
