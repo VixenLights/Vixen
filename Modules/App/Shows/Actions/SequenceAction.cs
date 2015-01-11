@@ -104,7 +104,7 @@ namespace VixenModules.App.Shows
 			}
 			catch (Exception ex)
 			{
-				Logging.Error("Could not pre-render sequence " + ShowItem.Sequence_FileName + "; " + ex.Message);
+				Logging.ErrorException("Could not pre-render sequence " + ShowItem.Sequence_FileName + "; ",ex);
 			}
 		}
 

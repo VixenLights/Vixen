@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using Vixen.Data.Value;
 using Vixen.Module;
 using System.Drawing;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using VixenModules.App.Shows;
 
 namespace VixenModules.App.SuperScheduler
 {
@@ -138,15 +140,17 @@ namespace VixenModules.App.SuperScheduler
 			{
 				DateTime result = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day,
 										 _endTime.Hour, _endTime.Minute, _endTime.Second);
+
 				if (result < StartTime)
-					result = result.AddDays(1);
+				{
+					result = _endTime.AddDays(1);
+				}
 				return result;
 			}
-			set
-			{
-				_endTime = value;
-			}
+			set { _endTime = value; }
 		}
+
+		private DateTime InProcessEndTime { get; set; }
 
 		private Queue<Shows.ShowItem> itemQueue;
 		public Queue<Shows.ShowItem> ItemQueue
@@ -248,7 +252,7 @@ namespace VixenModules.App.SuperScheduler
 		{
 			if (State == StateType.Shutdown) return true;
 
-			if (EndTime.CompareTo(DateTime.Now) <= 0) return true;
+			if (InProcessEndTime.CompareTo(DateTime.Now) <= 0) return true;
 
 			return false;
 		}
@@ -287,6 +291,8 @@ namespace VixenModules.App.SuperScheduler
 		{
 			State = StateType.Running;
 
+			InProcessEndTime = EndTime;
+
 			ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Show started");
 
 			// Do this in a task so we don't stop Vixen while pre-processing!
@@ -305,10 +311,10 @@ namespace VixenModules.App.SuperScheduler
 		{
 			// Pre-Process all the actions to fill up our memory
 
-			Show.GetItems(Shows.ShowItemType.All).AsParallel().WithCancellation(tokenSourcePreProcessAll.Token).ForAll(
-				item => {
-					//foreach (Shows.ShowItem item in Show.GetItems(Shows.ShowItemType.All))
-					//{
+			//Show.GetItems(Shows.ShowItemType.All).AsParallel().WithCancellation(tokenSourcePreProcessAll.Token).ForAll(
+			//	item => {
+				foreach (ShowItem item in Show.GetItems(ShowItemType.All))
+				{
 					ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Pre-processing: " + item.Name);
 					var action = item.GetAction();
 
@@ -319,7 +325,7 @@ namespace VixenModules.App.SuperScheduler
 					//	return;
 					//};	
 
-				});
+				}
 
 		}
 

@@ -24,6 +24,7 @@ namespace VixenModules.Effect.Nutcracker
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private NutcrackerModuleData _data;
 		private EffectIntents _elementData = null;
+		private List<int> _stringPixelCounts = new List<int>(); 
 
 		public Nutcracker()
 		{
@@ -32,7 +33,9 @@ namespace VixenModules.Effect.Nutcracker
 
 		protected override void TargetNodesChanged()
 		{
-			//Nothing to do
+			CalculatePixelsPerString();
+			MaxPixelsPerString = _stringPixelCounts.Concat(new[] {0}).Max();
+			StringCount = CalculateMaxStringCount();
 		}
 
 		protected override void _PreRender(CancellationTokenSource tokenSource = null)
@@ -124,108 +127,70 @@ namespace VixenModules.Effect.Nutcracker
 			}
 		}
 
-		private int StringCount
+		public int StringCount { get; set; }
+
+		public int MaxPixelsPerString { get; set; }
+
+		private int CalculateMaxStringCount()
 		{
-			get
+			return FindLeafParents().Count();
+		}
+
+		private IEnumerable<ElementNode> FindLeafParents()
+		{
+			var nodes = new List<ElementNode>();
+			var nonLeafElements = new List<ElementNode>();
+			
+			if (TargetNodes.FirstOrDefault() != null)
 			{
-				List<ElementNode> nodes = new List<ElementNode>();
-				int childCount = 0;
-				if (TargetNodes.FirstOrDefault() != null)
+				nonLeafElements = TargetNodes.SelectMany(x => x.GetNonLeafEnumerator()).ToList();
+				foreach (var elementNode in TargetNodes)
 				{
-					List<ElementNode> nonLeafElements = TargetNodes.SelectMany(x => x.GetNonLeafEnumerator()).ToList();
-					foreach (var elementNode in TargetNodes)
+					foreach (var leafNode in elementNode.GetLeafEnumerator())
 					{
-						foreach (var leafNode in elementNode.GetLeafEnumerator())
-						{
-							nodes.AddRange(leafNode.Parents);
-						}
+						nodes.AddRange(leafNode.Parents);
 					}
-					//Some nodes can have multiple node parents with odd groupings so this fancy linq query makes sure that the parent
-					//node is part of the Target nodes lineage.
-					childCount = nodes.Distinct().Intersect(nonLeafElements).Count();
 				}
-
-				if (childCount == 0)
-					childCount = 1;
-
-				return childCount;
+				
 			}
-		}
+			//Some nodes can have multiple node parents with odd groupings so this fancy linq query makes sure that the parent
+			//node is part of the Target nodes lineage.
+			return nodes.Distinct().Intersect(nonLeafElements);
+		} 
 
-		private int PixelsPerString()
+		private void CalculatePixelsPerString()
 		{
-			int pps = PixelsPerString(TargetNodes.FirstOrDefault());
-			return pps;
-		}
-
-		private int PixelsPerString(ElementNode parentNode)
-		{
-			//TODO: what would we do if parentNode is null?
-			int pps = 0;
-			int leafCount = 0;
-			int groupCount = 0;
-			// if no groups are children, then return nChildren
-			// otherwise return the size of the first group
-			ElementNode firstGroup = null;
-			foreach (ElementNode node in parentNode.Children)
+			IEnumerable<ElementNode> nodes = FindLeafParents();
+			_stringPixelCounts.Clear();
+			foreach (var node in nodes)
 			{
-				if (node.IsLeaf) {
-					leafCount++;
-				}
-				else {
-					groupCount++;
-					if (firstGroup == null)
-						firstGroup = node;
-				}
+				_stringPixelCounts.Add(node.Count());
 			}
-			if (groupCount == 0) {
-				pps = leafCount;
-			}
-			else {
-				// this needs to be called on a group, first might be an element
-				//pps = PixelsPerStringx(parentNode.Children.FirstOrDefault());
-				// this is marginally better but its not clear what to do about further nesting
-				pps = PixelsPerString(firstGroup);
-			}
-
-            if (pps == 0)
-                pps = 1;
-
-			return pps;
 		}
 
 		// renders the given node to the internal ElementData dictionary. If the given node is
 		// not a element, will recursively descend until we render its elements.
 		private void RenderNode(ElementNode node)
 		{
-			int wid = 0;
-			int ht = 0;
+			int wid;
+			int ht;
 			if (_data.NutcrackerData.StringOrienation == NutcrackerEffects.StringOrientations.Horizontal)
 			{
-				wid = PixelsPerString();
+				wid = MaxPixelsPerString;
 				ht = StringCount;
 			}
 			else
 			{
 				wid = StringCount;
-				ht = PixelsPerString();
+				ht = MaxPixelsPerString;
 			}
 			int nFrames = (int)(TimeSpan.TotalMilliseconds / frameMs);
-			NutcrackerEffects nccore = new NutcrackerEffects(_data.NutcrackerData);
-			nccore.Duration = TimeSpan;
+			var nccore = new NutcrackerEffects(_data.NutcrackerData) {Duration = TimeSpan};
 			nccore.InitBuffer( wid, ht);
-			int totalPixels = nccore.PixelCount();
-			if( totalPixels != wid * ht)
-				throw new Exception("bad pixel count");
 			int numElements = node.Count();
-			if (numElements != totalPixels)
-				Logging.Warn( "numEle " + numElements + " != totalPixels " + totalPixels);
 			
 			TimeSpan startTime = TimeSpan.Zero;
-			//TimeSpan ms50 = new TimeSpan(0, 0, 0, 0, frameMs);
-			Stopwatch timer = new Stopwatch();
-			timer.Start();
-
+			
 			// OK, we're gonna create 1 intent per element
 			// that intent will hold framesToRender Color values
 			// that it will parcel out as intent states are called for...
@@ -234,10 +199,8 @@ namespace VixenModules.Effect.Nutcracker
 			var pixels = new RGBValue[numElements][];
 			for (int eidx = 0; eidx < numElements; eidx++)
 				pixels[eidx] = new RGBValue[nFrames];
-
+			List<ElementNode> nodes = FindLeafParents().ToList();
 			// generate all the pixels
-			int pps = PixelsPerString();
-			int sc = StringCount;
 			for (int frameNum = 0; frameNum < nFrames; frameNum++)
 			{
 				nccore.RenderNextEffect(_data.NutcrackerData.CurrentEffect);
@@ -245,9 +208,9 @@ namespace VixenModules.Effect.Nutcracker
 				if (_data.NutcrackerData.StringOrienation == NutcrackerEffects.StringOrientations.Horizontal)
 				{
 					int i = 0;
-					for (int y = 0; y < sc; y++)
+					for (int y = 0; y < ht; y++)
 					{
-						for (int x = 0; x < pps; x++)
+						for (int x = 0; x < _stringPixelCounts[y]; x++)
 						{
 							pixels[i][frameNum] = new RGBValue(nccore.GetPixel(x, y));
 							i++;
@@ -256,9 +219,14 @@ namespace VixenModules.Effect.Nutcracker
 				}
 				else
 				{
-					for (int i = 0; i < numElements; i++)
+					int i = 0;
+					for (int x = 0; x < wid; x++)
 					{
-						pixels[i][frameNum] = new RGBValue(nccore.GetPixel(i));
+						for (int y = 0; y < _stringPixelCounts[x]; y++)
+						{
+							pixels[i][frameNum] = new RGBValue(nccore.GetPixel(x, y));
+							i++;
+						}
 					}
 				}
 			};
@@ -273,9 +241,6 @@ namespace VixenModules.Effect.Nutcracker
 			}
 
 			nccore.Dispose();
-			timer.Stop();
-			Logging.Debug(" {0}ms, Frames: {1}, wid: {2}, ht: {3},  pix: {4}, intents: {5}",
-							timer.ElapsedMilliseconds, nFrames, wid, ht, totalPixels, _elementData.Count());
 		}
 
 	}

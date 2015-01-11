@@ -1754,6 +1754,10 @@ namespace VixenModules.Effect.Nutcracker
 			srand(1); // always have the same random numbers for each frame (state)
 			HSV hsv; //   we will define an hsv color model. The RGB colot model would have been "wxColour color;"
 			pixels_per_branch = (int) (0.5 + BufferHt/Branches);
+			if (pixels_per_branch == 0)
+			{
+				pixels_per_branch = 1;
+			}
 			maxFrame = (Branches + 1)*BufferWi;
 			int colorcnt = GetColorCount();
 			frame = (int) ((State/4)%maxFrame);
