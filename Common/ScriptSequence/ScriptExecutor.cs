@@ -51,7 +51,7 @@ namespace Common.ScriptSequence
 			return true;
 		}
 
-		public override void Dispose(bool disposing)
+		protected override void Dispose(bool disposing)
 		{
 			_StopScript();
 			base.Dispose(disposing);

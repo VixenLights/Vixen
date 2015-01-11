@@ -304,30 +304,39 @@ namespace VixenModules.Media.Audio
 			get { return _channel != null && _channel.Paused; }
 		}
 
-		~FmodInstance()
-		{
-			Dispose();
-		}
-
 		public void Dispose()
 		{
-			if (_audioSystem != null) {
-				if (fmodUpdateTimer != null)
-				{
-					fmodUpdateTimer.Stop();
-					fmodUpdateTimer.Elapsed -= fmodUpdateTimer_Elapsed;
-				}
-				//*** channel need to be disposed?  If so, then should reloading the channel
-				//    cause an intermediate disposal?
-				_audioSystem.Stop(_channel);
-
-				if (_channel != null) {
-					_audioSystem.ReleaseSound(_channel);
-				}
-				_audioSystem.Shutdown();
-				_audioSystem = null;
-			}
+			Dispose(true);
 			GC.SuppressFinalize(this);
+		}
+
+		protected virtual void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				if (_audioSystem != null)
+				{
+					if (fmodUpdateTimer != null)
+					{
+						fmodUpdateTimer.Stop();
+						fmodUpdateTimer.Elapsed -= fmodUpdateTimer_Elapsed;
+						fmodUpdateTimer.Dispose();
+					}
+					//*** channel need to be disposed?  If so, then should reloading the channel
+					//    cause an intermediate disposal?
+					_audioSystem.Stop(_channel);
+
+					if (_channel != null)
+					{
+						_audioSystem.ReleaseSound(_channel);
+					}
+					_audioSystem.Shutdown();
+					_audioSystem = null;
+				}
+			}
+
+			
+			
 		}
 
 		public TimeSpan Duration

@@ -15,7 +15,7 @@ using Vixen.Sys.Dispatch;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
-	internal class IntentRasterizer : IntentDispatch, IDisposable
+	internal class IntentRasterizer : IntentDispatch
 	{
 		private RectangleF _rect;
 		private Graphics _graphics;
@@ -51,11 +51,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				rectangle.Height
 				);
 
-			if (startColor == endColor) {
-				using (SolidBrush brush = new SolidBrush(startColor)) {
+			if (startColor == endColor)
+			{
+				using (SolidBrush brush = new SolidBrush(startColor))
+				{
 					_graphics.FillRectangle(brush, rectangle);
 				}
-			} else {
+			}
+			else
+			{
 				using (LinearGradientBrush brush = new LinearGradientBrush(
 					gradientRectangle, startColor, endColor, LinearGradientMode.Horizontal))
 				{
@@ -66,24 +70,26 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		}
 
 
-		public void DrawStaticArrayIntent(TimeSpan timespan, RectangleF rectangle, Func<TimeSpan, Color> startColorGetter, Func<TimeSpan, Color> endColorGetter)
+		public void DrawStaticArrayIntent(TimeSpan timespan, RectangleF rectangle, Func<TimeSpan, Color> startColorGetter,
+			Func<TimeSpan, Color> endColorGetter)
 		{
 			// StaticArrayIntents are fundementally sampled values (not gradients)
 			// so we try to improve their appearance by creating more samples to rasterize.
 			// The question is how many... each takes precious UI time to render.
 			// For now try almost easiest, fixed num per sec
 			// TODO: can we figure out what dimensions we're rendering for, and then rasterize based on that?  That's the ideal solution: one chunk per 2 pixels or so.
-			int nChunks = 1 + (int)(timespan -_startOffset).TotalMilliseconds/100;
-			TimeSpan tsStart = _startOffset;//TimeSpan.Zero;
+			int nChunks = 1 + (int) (timespan - _startOffset).TotalMilliseconds/100;
+			TimeSpan tsStart = _startOffset; //TimeSpan.Zero;
 			RectangleF drawRectangle = new RectangleF(rectangle.Location, rectangle.Size);
 			float rectWidth = rectangle.Width/nChunks;
-			for (int i = 1; i <= nChunks; i++) {
-				var tsEnd = TimeSpan.FromMilliseconds((timespan-_startOffset).TotalMilliseconds / nChunks * i) + _startOffset;
+			for (int i = 1; i <= nChunks; i++)
+			{
+				var tsEnd = TimeSpan.FromMilliseconds((timespan - _startOffset).TotalMilliseconds/nChunks*i) + _startOffset;
 
 				Color startColor = startColorGetter(tsStart);
 				Color endColor = startColorGetter(tsEnd);
 
-				float rectX = rectangle.X + (i - 1) * rectWidth;
+				float rectX = rectangle.X + (i - 1)*rectWidth;
 				drawRectangle.X = rectX;
 				drawRectangle.Width = rectWidth;
 
@@ -95,41 +101,36 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		public override void Handle(IIntent<LightingValue> obj)
 		{
-			if (obj is StaticArrayIntent<LightingValue>) {
+			if (obj is StaticArrayIntent<LightingValue>)
+			{
 				Func<TimeSpan, Color> scg = x => obj.GetStateAt(x).TrueFullColorWithAlpha;
 				Func<TimeSpan, Color> ecg = x => obj.GetStateAt(x - _oneTick).TrueFullColorWithAlpha;
 				DrawStaticArrayIntent(_endTime, _rect, scg, ecg);
-			} else {
+			}
+			else
+			{
 				Color startColor = obj.GetStateAt(_startOffset).TrueFullColorWithAlpha;
-				Color endColor = obj.GetStateAt(_endTime - (_endTime<obj.TimeSpan?TimeSpan.Zero:_oneTick)).TrueFullColorWithAlpha;
+				Color endColor =
+					obj.GetStateAt(_endTime - (_endTime < obj.TimeSpan ? TimeSpan.Zero : _oneTick)).TrueFullColorWithAlpha;
 				DrawGradient(startColor, endColor, _rect);
 			}
 		}
 
 		public override void Handle(IIntent<RGBValue> obj)
 		{
-			if (obj is StaticArrayIntent<RGBValue>) {
+			if (obj is StaticArrayIntent<RGBValue>)
+			{
 				Func<TimeSpan, Color> scg = x => obj.GetStateAt(x).ColorWithAplha;
 				Func<TimeSpan, Color> ecg = x => obj.GetStateAt(x - _oneTick).ColorWithAplha;
 				DrawStaticArrayIntent(_endTime, _rect, scg, ecg);
-			} else {
+			}
+			else
+			{
 				Color startColor = obj.GetStateAt(_startOffset).ColorWithAplha;
 				Color endColor = obj.GetStateAt(_endTime - (_endTime < obj.TimeSpan ? TimeSpan.Zero : _oneTick)).ColorWithAplha;
 				DrawGradient(startColor, endColor, _rect);
 			}
 		}
-
-		~IntentRasterizer()
-		{
-			Dispose(false);
-		}
-		protected void Dispose(bool disposing) {
-			if (disposing) { }
-			if (_graphics != null) 
-				_graphics.Dispose();
-		}
-		public void Dispose() {
-			Dispose(true);
-		}
 	}
+
 }

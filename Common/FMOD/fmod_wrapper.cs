@@ -676,29 +676,43 @@ namespace FMOD {
 
         #region IDisposable Members
 
-        public void Dispose() {
-            if(m_fadeTimer.Enabled) {
-                m_fadeTimer.Enabled = false;
-            }
-            bool playing = false;
-            if(m_channel != null) {
-                m_channel.isPlaying(ref playing);
-                if(playing) {
-                    m_channel.stop();
-                }
-                m_channel = null;
-            }
-            if(m_sound != null) {
-                m_sound.release();
-                m_sound = null;
-            }
+	    protected virtual void Dispose(bool disposing)
+	    {
+		    if (disposing)
+		    {
+				if (m_fadeTimer.Enabled)
+				{
+					m_fadeTimer.Enabled = false;
+				}
+				bool playing = false;
+				if (m_channel != null)
+				{
+					m_channel.isPlaying(ref playing);
+					if (playing)
+					{
+						m_channel.stop();
+					}
+					m_channel = null;
+				}
+				if (m_sound != null)
+				{
+					m_sound.release();
+					m_sound = null;
+				}   
+		    }
+		
+	    }
+
+        public void Dispose()
+        {
+	        Dispose(true);
             GC.SuppressFinalize(this);
         }
 
         #endregion
 
         ~SoundChannel() {
-            Dispose();
+            Dispose(false);
         }
     }
     #endregion
