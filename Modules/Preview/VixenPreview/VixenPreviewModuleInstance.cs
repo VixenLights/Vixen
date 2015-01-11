@@ -135,13 +135,17 @@ namespace VixenModules.Preview.VixenPreview
 			return base.Setup();
 		}
 
-		public override void Dispose()
+		protected override void Dispose(bool disposing)
 		{
-			if (displayForm != null)
-				displayForm.Close();
-			VixenSystem.Contexts.ContextCreated -= ProgramContextCreated;
-			VixenSystem.Contexts.ContextReleased -= ProgramContextReleased;
-			base.Dispose();
+			if (disposing)
+			{
+				if (displayForm != null)
+					displayForm.Close();
+				VixenSystem.Contexts.ContextCreated -= ProgramContextCreated;
+				VixenSystem.Contexts.ContextReleased -= ProgramContextReleased;	
+			}
+			
+			base.Dispose(disposing);
 		}
 
 		private void ExecutionNodesChanged(object sender, EventArgs e)

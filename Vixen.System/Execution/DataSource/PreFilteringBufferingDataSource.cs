@@ -56,12 +56,24 @@ namespace Vixen.Execution.DataSource
 			return _intentBuffer.GetDataAt(time);
 		}
 
+		protected virtual void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				if (_intentPreFilter != null)
+				{
+					_intentPreFilter.Dispose();
+					_intentPreFilter = null;
+				}
+				_intentBuffer = null;
+			}
+		}
+
+
 		public void Dispose()
 		{
-			if (_intentPreFilter != null) {
-				_intentPreFilter.Dispose();
-				_intentPreFilter = null;
-			}
+			Dispose(true);
+			GC.SuppressFinalize(this);
 		}
 	}
 }

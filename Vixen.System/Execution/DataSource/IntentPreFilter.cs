@@ -55,15 +55,18 @@ namespace Vixen.Execution.DataSource
 			}
 		}
 
-		~IntentPreFilter()
-		{
-			Dispose();
-		}
-
 		public void Dispose()
 		{
-			_RemoveInstrumentationValues();
+			Dispose(true);
 			GC.SuppressFinalize(this);
+		}
+
+		protected virtual void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				_RemoveInstrumentationValues();
+			}
 		}
 
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()

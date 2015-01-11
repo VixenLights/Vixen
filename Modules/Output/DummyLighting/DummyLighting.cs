@@ -103,18 +103,14 @@ namespace VixenModules.Output.DummyLighting
 			}
 		}
 
-		public override void Dispose()
+		protected override void Dispose(bool disposing)
 		{
 			if (!_form.IsDisposed) {
 				_form.Dispose();
 			}
 			_form = null;
-			GC.SuppressFinalize(this);
+			base.Dispose(disposing);
 		}
 
-		~DummyLighting()
-		{
-			_form = null;
-		}
 	}
 }

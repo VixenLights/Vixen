@@ -232,17 +232,13 @@ namespace Vixen.Execution.Context
 
 		#endregion
 
-		~ProgramContext()
-		{
-			Dispose();
-		}
-
 		protected override void Dispose(bool disposing)
 		{
-			_DisposeProgramExecutor();
-			// In case we're being disposed by something other than the
-			// act of being released.
-			VixenSystem.Contexts.ReleaseContext(this);
+			if (disposing)
+			{
+				_DisposeProgramExecutor();
+			}
+			base.Dispose(disposing);
 		}
 	}
 }

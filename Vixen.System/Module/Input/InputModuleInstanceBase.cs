@@ -102,17 +102,19 @@ namespace Vixen.Module.Input
 			return false;
 		}
 
-		public override void Dispose()
+		protected override void Dispose(bool disposing)
 		{
-			Dispose(true);
-			GC.SuppressFinalize(this);
-		}
-
-		protected virtual void Dispose(bool disposing)
-		{
-			Stop();
-			_pause.Dispose();
-			_pause = null;
+			
+			if (disposing)
+			{
+				Stop();
+				if (_pause != null)
+				{
+					_pause.Dispose();
+					_pause = null;
+				}	
+			}
+			
 		}
 
 		~InputModuleInstanceBase()
