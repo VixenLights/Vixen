@@ -59,7 +59,7 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="NLog, Version=3.1.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.3.1.0.0\lib\net45\NLog.dll</HintPath>
-       <Private>False</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -95,7 +95,6 @@
     <Compile Include="Common\ColorSpaces.cs" />
     <Compile Include="Common\ColorSpaceTypeConverter.cs" />
     <Compile Include="Common\Graphics.cs" />
-    <Compile Include="Common\MessageStack.cs" />
     <Compile Include="Data\Combinator\Color\NaiveColorCombinator.cs" />
     <Compile Include="Data\Combinator\DiscardExcessCombinator.cs" />
     <Compile Include="Data\Combinator\_16Bit\16BitHighestWinsCombinator.cs" />
@@ -264,17 +263,6 @@
     <Compile Include="Module\ModuleConsumer.cs" />
     <Compile Include="Module\ModuleTypeDataRetriever.cs" />
     <Compile Include="Module\Preview\PreviewElementIntentStates.cs" />
-    <Compile Include="Module\Script\ICompilerError.cs" />
-    <Compile Include="Module\Script\ICompilerParameters.cs" />
-    <Compile Include="Module\Script\ICompilerResults.cs" />
-    <Compile Include="Module\Script\IScriptCodeProvider.cs" />
-    <Compile Include="Module\Script\IScriptFrameworkGenerator.cs" />
-    <Compile Include="Module\Script\IScriptSkeletonGenerator.cs" />
-    <Compile Include="Module\Script\ScriptCompilerError.cs" />
-    <Compile Include="Module\Script\ScriptCompilerResults.cs" />
-    <Compile Include="Module\Script\IUserScriptHost.cs" />
-    <Compile Include="Module\Script\UserScriptHost.cs" />
-    <Compile Include="Module\Script\UserScriptNode.cs" />
     <Compile Include="Module\Service\IService.cs" />
     <Compile Include="Module\Service\IServiceModuleDescriptor.cs" />
     <Compile Include="Module\Service\IServiceModuleInstance.cs" />
@@ -614,14 +602,6 @@
     <Compile Include="Module\Property\PropertyModuleRepository.cs" />
     <Compile Include="Module\RuntimeBehavior\RuntimeBehaviorModuleInstanceBase.cs" />
     <Compile Include="Module\RuntimeBehavior\RuntimeBehaviorModuleDescriptorBase.cs" />
-    <Compile Include="Module\Script\IScript.cs" />
-    <Compile Include="Module\Script\IScriptModuleDescriptor.cs" />
-    <Compile Include="Module\Script\IScriptModuleInstance.cs" />
-    <Compile Include="Module\Script\ScriptModuleInstanceBase.cs" />
-    <Compile Include="Module\Script\ScriptModuleDescriptorBase.cs" />
-    <Compile Include="Module\Script\ScriptModuleImplementation.cs" />
-    <Compile Include="Module\Script\ScriptModuleManagement.cs" />
-    <Compile Include="Module\Script\ScriptModuleRepository.cs" />
     <Compile Include="Module\SequenceType\SequenceTypeModuleDescriptorBase.cs" />
     <Compile Include="Module\SequenceType\SequenceTypeModuleInstanceBase.cs" />
     <Compile Include="Module\Timing\TimingModuleInstanceBase.cs" />
