@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Collections.Concurrent;
 using VixenModules.Property.Location;
+using Common.Resources.Properties;
 
 namespace VixenModules.Preview.VixenPreview
 {
@@ -26,6 +27,7 @@ namespace VixenModules.Preview.VixenPreview
 
 		public GDIPreviewForm(VixenPreviewData data)
 		{
+			Icon = Resources.Icon_Vixen3;
 			InitializeComponent();
 			Data = data;
 		}
