@@ -461,7 +461,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			dockPanel.Dispose();
 
 			base.Dispose(disposing);
-			GC.Collect();
+			
 		}
 
 		private void ToolPalette_ColorDrag(object sender, EventArgs e)

@@ -218,14 +218,19 @@ namespace VixenModules.Media.Audio
 			}
 		}
 
-		public override void Dispose()
+		protected override void Dispose(bool disposing)
 		{
-			_DisposeAudio();
+			if (disposing)
+			{
+				_DisposeAudio();		
+			}
+			base.Dispose(disposing);
 		}
 
 		private void _DisposeAudio()
 		{
-			if (_audioSystem != null) {
+			if (_audioSystem != null)
+			{
 				_audioSystem.Stop();
 				_audioSystem.FrequencyDetected -= _audioSystem_FrequencyDetected;
 				_audioSystem.Dispose();

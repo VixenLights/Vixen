@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -46,6 +47,7 @@ namespace VixenModules.Preview.VixenPreview
 		{
 			if (!gdiControl.IsUpdating)
 			{
+				
 				IEnumerable<Element> elementArray = VixenSystem.Elements.Where(e => e.State.Any());
 
 				if (!elementArray.Any())

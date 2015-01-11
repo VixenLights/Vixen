@@ -26,11 +26,15 @@ namespace Vixen.Module.Script
 			return base.GetHashCode(obj);
 		}
 
-		public override void Dispose()
+		protected override void Dispose(bool disposing)
 		{
-			base.Dispose();
-			CodeProvider.Dispose();
-			CodeProvider = null;
+			if (disposing)
+			{
+				CodeProvider.Dispose();
+				CodeProvider = null;
+			}
+			base.Dispose(disposing);
+			
 		}
 	}
 }
