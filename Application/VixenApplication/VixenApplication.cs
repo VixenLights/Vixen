@@ -371,15 +371,15 @@ namespace VixenApplication
 
 		private void buttonNewSequence_Click(object sender, EventArgs e)
 		{
-            //If there is only one editor available, then don't show the context menu, just start it
-            if (contextMenuStripNewSequence.Items.Count == 1)
-            {
-                contextMenuStripNewSequence.Items[0].PerformClick();
-            }
-            else
-            {
-                contextMenuStripNewSequence.Show(buttonNewSequence, new Point(0, buttonNewSequence.Height));
-            }
+			//If there is only one editor available, then don't show the context menu, just start it
+			if (contextMenuStripNewSequence.Items.Count == 1)
+			{
+				contextMenuStripNewSequence.Items[0].PerformClick();
+			}
+			else
+			{
+				contextMenuStripNewSequence.Show(buttonNewSequence, new Point(0, buttonNewSequence.Height));
+			}
 			
 		}
 
