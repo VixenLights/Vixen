@@ -89,17 +89,13 @@ namespace Vixen.Execution.DataSource
 			}
 		}
 
-		~EffectNodeDataPump()
-		{
-			Dispose(false);
-		}
-
 		protected void Dispose(bool disposing)
 		{
 			if (disposing) {
 				if (_dataPumpThread != null)
 					_dataPumpThread.Abort();
 			}
+			_dataPumpThread = null;
 		}
 
 		public void Dispose()

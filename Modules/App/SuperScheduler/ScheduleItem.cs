@@ -410,7 +410,7 @@ namespace VixenModules.App.SuperScheduler
 				RunningActions.Remove(action);
 
 				ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Startup action complete: " + action.ShowItem.Name);
-				action = null;
+				action.Dispose();
 			}
 			ExecuteNextStartupItem();
 		}
@@ -518,7 +518,21 @@ namespace VixenModules.App.SuperScheduler
 			foreach (Shows.Action action in BackgroundActions)
 			{
 				action.Stop();
+				action.Dispose();
 			}
+		}
+
+		private void StopSequential()
+		{
+			foreach (ShowItem item in Show.GetItems(ShowItemType.Sequential))
+			{
+				Shows.Action action = item.GetAction();
+				if (action.IsRunning)
+				{
+					action.Stop();
+				}
+				action.Dispose();
+			}	
 		}
 
 		#endregion // Background Items
@@ -541,7 +555,7 @@ namespace VixenModules.App.SuperScheduler
 				ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Starting shutdown");
 
 				StopBackground();
-
+				StopSequential();
 				ItemQueue.Clear();
 
 				State = StateType.Shutdown;
