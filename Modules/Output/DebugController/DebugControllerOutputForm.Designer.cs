@@ -28,6 +28,7 @@
 		private void InitializeComponent()
 		{
 			this.textBoxOutput = new System.Windows.Forms.TextBox();
+			this.chkVerbose = new System.Windows.Forms.CheckBox();
 			this.SuspendLayout();
 			// 
 			// textBoxOutput
@@ -38,14 +39,26 @@
 			this.textBoxOutput.Location = new System.Drawing.Point(12, 12);
 			this.textBoxOutput.Multiline = true;
 			this.textBoxOutput.Name = "textBoxOutput";
-			this.textBoxOutput.Size = new System.Drawing.Size(514, 299);
+			this.textBoxOutput.Size = new System.Drawing.Size(514, 331);
 			this.textBoxOutput.TabIndex = 0;
+			// 
+			// chkVerbose
+			// 
+			this.chkVerbose.AutoSize = true;
+			this.chkVerbose.Location = new System.Drawing.Point(395, 366);
+			this.chkVerbose.Name = "chkVerbose";
+			this.chkVerbose.Size = new System.Drawing.Size(65, 17);
+			this.chkVerbose.TabIndex = 1;
+			this.chkVerbose.Text = "Verbose";
+			this.chkVerbose.UseVisualStyleBackColor = true;
+			this.chkVerbose.CheckedChanged += new System.EventHandler(this.chkVerbose_CheckedChanged);
 			// 
 			// DebugControllerOutputForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(538, 323);
+			this.ClientSize = new System.Drawing.Size(538, 405);
+			this.Controls.Add(this.chkVerbose);
 			this.Controls.Add(this.textBoxOutput);
 			this.DoubleBuffered = true;
 			this.Name = "DebugControllerOutputForm";
@@ -58,5 +71,6 @@
 		#endregion
 
 		private System.Windows.Forms.TextBox textBoxOutput;
+		private System.Windows.Forms.CheckBox chkVerbose;
 	}
 }
