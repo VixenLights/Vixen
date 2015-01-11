@@ -1210,111 +1210,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		//Switch statements are the best method at this time for these methods
 
-		private void ApplyColorGradientToEffects(String libraryReferenceName, ColorGradient colorGradient)
-		{
-			bool strayElement = false;
-
-			foreach (Element elem in TimelineControl.SelectedElements)
-			{
-				ColorGradient newColorGradient = new ColorGradient(colorGradient)
-				{
-					LibraryReferenceName = libraryReferenceName,
-					IsCurrentLibraryGradient = false
-				};
-
-				string effectName = elem.EffectNode.Effect.EffectName;
-				object[] parms = new object[elem.EffectNode.Effect.ParameterValues.Count()];
-				Array.Copy(elem.EffectNode.Effect.ParameterValues, parms, parms.Count());
-
-				switch (effectName)
-				{
-					case "Alternating":
-					case "Candle Flicker":
-					case "Custom Value":
-					case "LipSync":
-					case "Nutcracker":
-					case "Set Level":
-					case "Launcher":
-					case "RDS":
-						strayElement = true;
-						break;
-					case "Pulse":
-						parms[1] = newColorGradient;
-						break;
-					case "Chase":
-						parms[0] = 1; //GradientThroughWholeEffect;
-						parms[4] = newColorGradient;
-						break;
-					case "Spin":
-						parms[2] = 1; //GradientThroughWholeEffect;
-						parms[10] = newColorGradient;
-						break;
-					case "Twinkle":
-						parms[7] = 1; //GradientThroughWholeEffect;
-						parms[9] = newColorGradient;
-						break;
-					case "Wipe":
-						parms[0] = newColorGradient;
-						break;
-				}
-
-				elem.EffectNode.Effect.ParameterValues = parms;
-
-				TimelineControl.grid.RenderElement(elem);
-			}
-			SequenceModified();
-			if (strayElement)
-				MessageBox.Show(@"One or more effects were selected that do not support color gradients.\nAll effects that do were updated.");
-		}
-
-		private void ApplyCurveToEffects(String libraryReferenceName, Curve curve)
-		{
-			bool strayElement = false;
-
-			foreach (Element elem in TimelineControl.SelectedElements)
-			{
-				Curve newCurve = new Curve(curve) {LibraryReferenceName = libraryReferenceName, IsCurrentLibraryCurve = false};
-
-				string effectName = elem.EffectNode.Effect.EffectName;
-				object[] parms = new object[elem.EffectNode.Effect.ParameterValues.Count()];
-				Array.Copy(elem.EffectNode.Effect.ParameterValues, parms, parms.Count());
-
-				switch (effectName)
-				{
-					case "Alternating":
-					case "Candle Flicker":
-					case "Custom Value":
-					case "LipSync":
-					case "Nutcracker":
-					case "Set Level":
-					case "Twinkle":
-					case "Launcher":
-					case "RDS":
-						strayElement = true;
-						break;
-					case "Pulse":
-						parms[0] = newCurve;
-						break;
-					case "Chase":
-						parms[5] = newCurve;
-						break;
-					case "Spin":
-						parms[11] = newCurve;
-						break;
-					case "Wipe":
-						parms[2] = newCurve;
-						break;
-				}
-
-				elem.EffectNode.Effect.ParameterValues = parms;
-
-				TimelineControl.grid.RenderElement(elem);
-			}
-			SequenceModified();
-			if (strayElement)
-				MessageBox.Show(@"One or more effects were selected that do not support curves. All effects that do were updated.");
-		}
-
 		private void ApplyColorCollection(ColorCollection collection, bool randomOrder)
 		{
 			if (!collection.Color.Any())
@@ -1936,7 +1831,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				ToolStripMenuItem contextMenuItemDelete = new ToolStripMenuItem("Delete Effect(s)", null,
 					toolStripMenuItem_deleteElements_Click) {ShortcutKeyDisplayString = @"Del"};
 				_contextMenuStrip.Items.Add(contextMenuItemDelete);
-				_contextMenuStrip.Items.Add("-");
 				AddContextCollectionsMenu();
 
 			}
@@ -1980,30 +1874,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				{
 					_contextMenuStrip.Items.Add("-");
 					_contextMenuStrip.Items.Add(contextMenuItemCollections);
-				}
-			}
-
-			if (_curveLibrary.Any())
-			{
-				ToolStripMenuItem contextMenuItemCurveLibrary = new ToolStripMenuItem("Curves");
-				contextMenuItemCollections.DropDown.Items.Add(contextMenuItemCurveLibrary);
-				foreach (KeyValuePair<string, Curve> curve in _curveLibrary)
-				{
-					ToolStripMenuItem contextMenuItemCurve = new ToolStripMenuItem(curve.Key);
-					contextMenuItemCurve.Click += (mySender, myE) => ApplyCurveToEffects(curve.Key, curve.Value);
-					contextMenuItemCurveLibrary.DropDown.Items.Add(contextMenuItemCurve);
-				}
-			}
-
-			if (_colorGradientLibrary.Any())
-			{
-				ToolStripMenuItem contextMenuItemColorGradientLibrary = new ToolStripMenuItem("Color Gradient");
-				contextMenuItemCollections.DropDown.Items.Add(contextMenuItemColorGradientLibrary);
-				foreach (KeyValuePair<string, ColorGradient> colorGradient in _colorGradientLibrary)
-				{
-					ToolStripMenuItem contextMenuItemColorGradient = new ToolStripMenuItem(colorGradient.Key);
-					contextMenuItemColorGradient.Click += (mySender, myE) => ApplyColorGradientToEffects(colorGradient.Key, colorGradient.Value);
-					contextMenuItemColorGradientLibrary.DropDown.Items.Add(contextMenuItemColorGradient);
 				}
 			}
 		}
@@ -5339,6 +5209,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (moveElements.Any()) TimelineControl.grid.MoveResizeElements(moveElements);
 		}
 
+		/// <summary>
+		/// Returns the TimeSpan location of the nearest mark to the given TimeSpan
+		/// Located within the threshhold: TimelineControl.grid.CloseGap_Threshold
+		/// </summary>
+		/// <param name="referenceTimeSpan"></param>
+		/// <returns></returns>
 		private TimeSpan FindNearestMark(TimeSpan referenceTimeSpan)
 		{
 			List<TimeSpan> marksInRange = new List<TimeSpan>();
