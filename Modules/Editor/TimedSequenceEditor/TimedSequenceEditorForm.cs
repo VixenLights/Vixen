@@ -815,7 +815,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 
 
-				Logging.Debug(string.Format("Sequence {0} took {1} to load. ", sequence.Name, _loadingWatch.Elapsed));
+				Logging.Debug("Sequence {0} took {1} to load.", sequence.Name, _loadingWatch.Elapsed);
 			}
 			catch (Exception ee)
 			{
