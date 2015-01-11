@@ -579,11 +579,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			return setupControl;
 		}
 
-		~PreviewBaseShape()
-		{
-			Dispose(false);
-		}
-
 		protected void Dispose(bool disposing)
 		{
 			if (disposing) {

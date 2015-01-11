@@ -216,11 +216,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
         }
         
-        ~PreviewPixel()
-		{
-			Dispose(false);
-		}
-
 		protected void Dispose(bool disposing)
 		{
 			if (disposing) {
