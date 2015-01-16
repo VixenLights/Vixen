@@ -131,6 +131,12 @@
     <Compile Include="DragAndDropListView.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="EffectParameterPickerControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="EffectParameterPickerControl.Designer.cs">
+      <DependentUpon>EffectParameterPickerControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="ElementTree.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -361,6 +367,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DiscreteColorPickerItem.resx">
       <DependentUpon>DiscreteColorPickerItem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EffectParameterPickerControl.resx">
+      <DependentUpon>EffectParameterPickerControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ElementTree.resx">
       <DependentUpon>ElementTree.cs</DependentUpon>

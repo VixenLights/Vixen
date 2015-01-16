@@ -718,11 +718,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			//Handle delay until playback actually starts
 			if (!_playbackStarted) {
-				_playbackStarted = _timedSequenceEditorForm.positionHasValue;
+				_playbackStarted = _timedSequenceEditorForm.PositionHasValue;
 			}
 			else {
 				//detect if sequence reached the end
-				if ((!_timedSequenceEditorForm.positionHasValue) || 
+				if ((!_timedSequenceEditorForm.PositionHasValue) || 
 					(_timingSource.Position.TotalMilliseconds > _timedSequenceEditorForm.Sequence.Length.TotalMilliseconds)) 
 				{
 					sequenceStop();
