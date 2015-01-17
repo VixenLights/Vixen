@@ -218,7 +218,7 @@ namespace VersionControl
                 catch (Exception eee)
                 {
 
-                    Logging.ErrorException(eee.Message,eee);
+                    Logging.Error(eee.Message,eee);
                 }
 
                 restoringFile = false;

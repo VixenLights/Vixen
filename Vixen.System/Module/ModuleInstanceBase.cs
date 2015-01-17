@@ -26,8 +26,15 @@ namespace Vixen.Module
 
 		public virtual IModuleDescriptor Descriptor { get; set; }
 
-		public virtual void Dispose()
+		public void Dispose()
 		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		protected virtual void Dispose(bool disposing)
+		{
+			
 		}
 
 		public virtual IModuleInstance Clone()

@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using System.Diagnostics;
 using System.IO;
 using System.Xml.Serialization;
+using System.Runtime;
 using Vixen.Module.Editor;
 using Vixen.Module.SequenceType;
 using Vixen.Services;
@@ -40,6 +41,8 @@ namespace VixenApplication
 				_ProcessArg(arg);
 			}
 
+			StartJITProfiler();
+
 			if (_rootDataDirectory == null)
 				ProcessProfiles();
 
@@ -66,6 +69,23 @@ namespace VixenApplication
 
 		}
 
+		private void StartJITProfiler()
+		{
+			try
+			{
+				string perfDataPath = 
+					System.IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData), "Vixen");
+				if (!System.IO.Directory.Exists(perfDataPath))
+					System.IO.Directory.CreateDirectory(perfDataPath);
+
+				ProfileOptimization.SetProfileRoot(perfDataPath);
+				ProfileOptimization.StartProfile("~perfData.tmp");
+			}
+			catch (Exception e)
+			{
+				Logging.Warn("JIT Profiling Disabled", e);
+			}
+		}
 
 		private void VixenApp_FormClosing(object sender, FormClosingEventArgs e)
 		{
@@ -351,7 +371,16 @@ namespace VixenApplication
 
 		private void buttonNewSequence_Click(object sender, EventArgs e)
 		{
-			contextMenuStripNewSequence.Show(buttonNewSequence, new Point(0, buttonNewSequence.Height));
+			//If there is only one editor available, then don't show the context menu, just start it
+			if (contextMenuStripNewSequence.Items.Count == 1)
+			{
+				contextMenuStripNewSequence.Items[0].PerformClick();
+			}
+			else
+			{
+				contextMenuStripNewSequence.Show(buttonNewSequence, new Point(0, buttonNewSequence.Height));
+			}
+			
 		}
 
 		private void buttonOpenSequence_Click(object sender, EventArgs e)
@@ -395,7 +424,7 @@ namespace VixenApplication
 				}
 			}
 			catch (Exception ex) {
-				Logging.ErrorException("Error trying to open file '" + filename + "': ", ex);
+				Logging.Error("Error trying to open file '" + filename + "': ", ex);
 				MessageBox.Show("Error trying to open file '" + filename + "'.", "Error opening file", MessageBoxButtons.OK);
 			}
 		}

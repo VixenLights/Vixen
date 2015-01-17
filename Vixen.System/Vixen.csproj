@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Vixen</RootNamespace>
     <AssemblyName>Vixen</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -42,6 +42,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>$(SolutionDir)\Release64\</OutputPath>
@@ -52,11 +53,12 @@
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="NLog">
-      <HintPath>..\packages\NLog.2.0.1.2\lib\net40\NLog.dll</HintPath>
+    <Reference Include="NLog, Version=3.1.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.3.1.0.0\lib\net45\NLog.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -93,7 +95,6 @@
     <Compile Include="Common\ColorSpaces.cs" />
     <Compile Include="Common\ColorSpaceTypeConverter.cs" />
     <Compile Include="Common\Graphics.cs" />
-    <Compile Include="Common\MessageStack.cs" />
     <Compile Include="Data\Combinator\Color\NaiveColorCombinator.cs" />
     <Compile Include="Data\Combinator\DiscardExcessCombinator.cs" />
     <Compile Include="Data\Combinator\_16Bit\16BitHighestWinsCombinator.cs" />
@@ -262,17 +263,6 @@
     <Compile Include="Module\ModuleConsumer.cs" />
     <Compile Include="Module\ModuleTypeDataRetriever.cs" />
     <Compile Include="Module\Preview\PreviewElementIntentStates.cs" />
-    <Compile Include="Module\Script\ICompilerError.cs" />
-    <Compile Include="Module\Script\ICompilerParameters.cs" />
-    <Compile Include="Module\Script\ICompilerResults.cs" />
-    <Compile Include="Module\Script\IScriptCodeProvider.cs" />
-    <Compile Include="Module\Script\IScriptFrameworkGenerator.cs" />
-    <Compile Include="Module\Script\IScriptSkeletonGenerator.cs" />
-    <Compile Include="Module\Script\ScriptCompilerError.cs" />
-    <Compile Include="Module\Script\ScriptCompilerResults.cs" />
-    <Compile Include="Module\Script\IUserScriptHost.cs" />
-    <Compile Include="Module\Script\UserScriptHost.cs" />
-    <Compile Include="Module\Script\UserScriptNode.cs" />
     <Compile Include="Module\Service\IService.cs" />
     <Compile Include="Module\Service\IServiceModuleDescriptor.cs" />
     <Compile Include="Module\Service\IServiceModuleInstance.cs" />
@@ -612,14 +602,6 @@
     <Compile Include="Module\Property\PropertyModuleRepository.cs" />
     <Compile Include="Module\RuntimeBehavior\RuntimeBehaviorModuleInstanceBase.cs" />
     <Compile Include="Module\RuntimeBehavior\RuntimeBehaviorModuleDescriptorBase.cs" />
-    <Compile Include="Module\Script\IScript.cs" />
-    <Compile Include="Module\Script\IScriptModuleDescriptor.cs" />
-    <Compile Include="Module\Script\IScriptModuleInstance.cs" />
-    <Compile Include="Module\Script\ScriptModuleInstanceBase.cs" />
-    <Compile Include="Module\Script\ScriptModuleDescriptorBase.cs" />
-    <Compile Include="Module\Script\ScriptModuleImplementation.cs" />
-    <Compile Include="Module\Script\ScriptModuleManagement.cs" />
-    <Compile Include="Module\Script\ScriptModuleRepository.cs" />
     <Compile Include="Module\SequenceType\SequenceTypeModuleDescriptorBase.cs" />
     <Compile Include="Module\SequenceType\SequenceTypeModuleInstanceBase.cs" />
     <Compile Include="Module\Timing\TimingModuleInstanceBase.cs" />

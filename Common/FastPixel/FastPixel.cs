@@ -302,11 +302,6 @@ namespace FastPixel
 			}
 		}
 
-		~FastPixel()
-		{
-			Dispose(false);
-		}
-
 		protected void Dispose(bool disposing)
 		{
 			if (disposing) {
@@ -314,6 +309,8 @@ namespace FastPixel
 					_bitmap.Dispose();
 			}
 			_bitmap = null;
+			rgbValues = null;
+			bmpData = null;
 		}
 
 		public void Dispose()
