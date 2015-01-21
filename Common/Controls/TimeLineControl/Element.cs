@@ -403,9 +403,10 @@ namespace Common.Controls.Timeline
 				{
 					g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
 
-					string s = string.Format("{0} \r\n Start: {1} \r\n Length: {2}", 
+					string s = string.Format("{0} \r\n Start: {1} \r\n End: {2} \r\n Length: {3}", 
 						EffectNode.Effect.EffectName,
 						StartTime.ToString(@"m\:ss\.fff"),
+						EndTime.ToString(@"m\:ss\.fff"),
 						Duration.ToString(@"m\:ss\.fff"));
 
 					SizeF textSize = g.MeasureString(s, TextFont);

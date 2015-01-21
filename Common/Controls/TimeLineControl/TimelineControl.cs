@@ -246,6 +246,21 @@ namespace Common.Controls.Timeline
 		}
 
 		[Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public IEnumerable<string> SelectedElementTypes
+		{
+			get
+			{
+				List<string> elementTypesList = new List<string>();
+				foreach (Element element in grid.SelectedElements.Where(element => !elementTypesList.Contains(element.EffectNode.Effect.EffectName)))
+				{
+					elementTypesList.Add(element.EffectNode.Effect.EffectName);
+				}
+
+				return elementTypesList;
+			}
+		}
+
+		[Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public IEnumerable<Row> Rows
 		{
 			get { return grid.Rows; }
