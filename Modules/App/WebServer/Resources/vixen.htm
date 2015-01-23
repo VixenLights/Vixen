@@ -9,120 +9,145 @@
         <link rel="stylesheet" href="/resx/vixen.css" />
     </head>
 <body>
-    <div data-role="page" id="Home" data-title="Home" >     
-        <div data-role="header" data-id="fixednav" data-position="fixed">
-            <h2>Vixen Web Control</h2>    
-            <div data-role="navbar" >
-                <ul>
-                    <li><a href="#Home" class="ui-btn-active ui-state-persist">Home</a></li>
-                    <li><a href="#Elements">Elements</a></li>
-                    <li><a href="#Sequences">Sequences</a></li>
-                </ul>
-            </div>
-        </div>
-        <div data-role="content">
-            <div>
-                <img class="logo" src="/resx/images/v3logo.png" />
-            </div>        
-        </div>
-        <div data-role="footer">
-            
-        </div>
-    </div>
-    <div data-role="page" id="Elements" data-title="Elements" >     
-        <div data-role="header" data-id="fixednav" data-position="fixed">
-            <h2>Elements</h2>    
-            <div data-role="navbar">
-                <ul>
-                    <li><a href="#Home">Home</a></li>
-                    <li><a href="#Elements" class="ui-btn-active ui-state-persist">Elements</a></li>
-                    <li><a href="#Sequences">Sequences</a></li>
-                </ul>
-            </div>
-        </div>
-        <div id="element-content" data-role="content">
-            <div data-role="collapsible">
-                <h3>All Elements</h3>
-                <form data-ajax="false" data-bind="submit: turnOnElement">
-                    <input type="hidden" name="id" value="all" data-role="none" /> 
-                    <input type="hidden" name="time" data-role="none" data-bind="value: elementOnTime"/>
-                    <div data-role="fieldcontain">
-                        <label for="allColor">Color:</label>
-                        <input type="color" id="allColor" name="color" value="#FFFFFF"/>
-                    </div>
-                    <button type="submit">Turn on</button> 
-                </form>
-            </div>
-            <div id="element-list" data-bind="template: { name: 'element-template', foreach: elements, afterRender: afterElementsRendered }">
-                  
-            </div>
-        </div>
-        <script type="text/html" id="element-template">
-            <div data-role="collapsible">
-                <h3 data-bind="text: Name"></h3>
-                <form data-ajax="false" data-bind="submit: turnOnElement" >
-                    <div data-role="fieldcontain" data-bind="if: Colors.length > 0">
-                        <div data-role="controlgroup" data-bind="foreach:Colors">
-                            <input type="radio" name="color" data-bind="value: $data, attr: { id: $parent.Name + $data }, checked: $parent.Colors[0]"/>
-                            <label data-bind="attr: { for: $parent.Name + $data }, text:$data, style:{ background: $data}"></label>
-                        </div>
-                    </div>
-                    <div data-role="fieldcontain" data-bind="ifnot:Colors.length > 0">
-                        <label data-bind="attr: { for: Name }">Color:</label>
-                        <input type="color" data-bind="attr: { id: Name }" name="color" value="#FFFFFF"/>
-                    </div>
-                    <input type="hidden" name="id" data-role="none" data-bind="value:Id"/>
-                    <input type="hidden" name="time" data-role="none" data-bind="value: $root.elementOnTime"/>
-                    <button type="submit">Turn on</button>
-                </form>
-                <div data-bind="template: { name: 'element-template', foreach: Children }">
-                        
-                </div>
+	<div data-role="page" id="Home" data-title="Home" >     
+		<div data-role="header" data-id="fixednav" data-position="fixed">
+			<h2>Vixen Web Control</h2>    
+			<div data-role="navbar" >
+				<ul>
+					<li><a href="#Home" class="ui-btn-active ui-state-persist">Home</a></li>
+					<li><a href="#Elements">Elements</a></li>
+					<li><a href="#Sequences">Sequences</a></li>
+				</ul>
+			</div>
+		</div>
+		<div role="main" class="ui-content">
+			<div>
+				<img class="logo" src="/resx/images/v3logo.png" />
+			</div>
+		</div>
+		<div data-role="footer">
+			<span data-bind="text: status"></span>    
+		</div>
+	</div>
 
-            </div>
-        </script> 
+	<div data-role="page" id="Elements" data-title="Element">
+		<div data-role="header" data-id="fixednav" data-position="fixed">
+			<h2>Element Control</h2>
+			<div data-role="navbar">
+				<ul>
+					<li><a href="#Home">Home</a></li>
+					<li><a href="#Elements" class="ui-btn-active ui-state-persist">Elements</a></li>
+					<li><a href="#Sequences">Sequences</a></li>
+				</ul>
+			</div>
+		</div>
+		<div role="main" class="ui-content">
+			<form class="ui-filterable">
+				<input id="elementSearch-input" data-type="search" placeholder="Find an Element..."/>
+			</form>
+			<ul data-role="listview" data-bind="foreach:elementResults" data-filter="true" data-inset="true" id="ElementSetFiltered" data-input="#elementSearch-input">
+				<li>
+					<a href="#ElementControlPage" data-bind="text: Name, click: $parent.elementClicked"></a>
+				</li>
+			</ul>
+			<div data-role="footer">
+				<span data-bind="text: status"></span>
+			</div>
+		</div>
+	</div>
+	
+	<div data-role="page" id="Sequences" data-title="Sequences">
+		<div data-role="header" data-id="fixednav" data-position="fixed">
+			<h2>Sequences</h2>
+			<div data-role="navbar">
+				<ul>
+					<li><a href="#Home">Home</a></li>
+					<li><a href="#Elements">Elements</a></li>
+					<li><a href="#Sequences" class="ui-btn-active ui-state-persist">Sequences</a></li>
+				</ul>
+			</div>
+		</div>
+		<div role="main" class="ui-content">
+			<label for="select-sequence" class="select">Sequences:</label>
+			<select name="select-sequence" id="select-sequence" data-bind="options: sequences, optionsCaption: 'Select Sequence', optionsText: 'Name', optionsValue: 'FileName'">
+				<option value="standard"></option>
+			</select>
 
-        <div data-role="footer" data-id="fixedfooter" data-position="fixed">
-            <div data-role="fieldcontain">
-                <label for="elementOnTime">Time on:</label>
-                <input type="number" id="elementOnTime" data-bind="value: elementOnTime"/>
-            </div>  
-            <span data-bind="text: status"></span>  
-        </div>
-    </div>
+			<button data-role="button" data-bind="click: $root.playSequence">Play</button>
+			<button data-role="button" data-bind="click: $root.stopSequence">Stop</button>
+			<button data-role="button" data-bind="click: $root.getStatus">Status</button>
+		</div>
+		<div data-role="footer">
+			<span data-bind="text: status"></span>
+		</div>
+	</div>
 
-    <div data-role="page" id="Sequences" data-title="Sequences" >     
-        <div data-role="header" data-id="fixednav" data-position="fixed">
-            <h2>Sequences</h2>    
-            <div data-role="navbar">
-                <ul>
-                    <li><a href="#Home">Home</a></li>
-                    <li><a href="#Elements">Elements</a></li>
-                    <li><a href="#Sequences" class="ui-btn-active ui-state-persist">Sequences</a></li>
-                </ul>
-            </div>
-        </div>
-        <div data-role="content">
-            <label for="select-sequence" class="select">Sequences:</label>
-            <select name="select-sequence" id="select-sequence" data-bind="options: sequences, optionsCaption: 'Select Sequence', optionsText: 'Name', optionsValue: 'FileName'">
-                <option value="standard"></option>
-            </select>
-    
-            <button data-role="button" data-bind="click: playSequence">Play</button>
-            <button data-role="button" data-bind="click: stopSequence">Stop</button>
-            <button data-role="button" data-bind="click: getStatus">Status</button>
-        </div>
-        <div data-role="footer">
-            <span data-bind="text: status"></span>    
-        </div>
-    </div>
+	<div data-role="page" id="ElementControlPage" data-title="Element Control">
+		<div data-role="header" data-id="fixednav" data-position="fixed">
+			<h2>Element Control</h2>
+			<div data-role="navbar">
+				<ul>
+					<li><a href="#Home">Home</a></li>
+					<li><a href="#Elements">Elements</a></li>
+					<li><a href="#Sequences">Sequences</a></li>
+				</ul>
+			</div>
+		</div>
+		<div role="main" class="ui-content">
+			<!-- ko if:selectedElement   -->
+			<div data-bind="template: { name: 'element-template'}"></div>
+			<!-- /ko -->
+		</div>
+		<div data-role="footer" data-id="fixedfooter" data-position="fixed">
+			<div data-role="fieldcontain">
+				<label for="elementOnTime">Time on:</label>
+				<input type="number" id="elementOnTime" data-bind="value: elementOnTime" />
+			</div>
+			<span data-bind="text: status"></span>
+		</div>
+	</div>
+	
+	<!-- knockout template -->
 
+	<script type="text/html" id="element-template">
+		<!-- ko if:selectedElement   -->
+		<div id="elementControlContainer" data-bind="with:selectedElement">
+			<a href="#" data-bind="click: $root.navigateParent" data-direction="reverse" class="ui-btn ui-icon-arrow-u ui-btn-icon-left ui-corner-all ui-shadow ui-btn-inline">Up</a>
+			<!-- ko if:Children-->
+			<ul data-role="listview" data-bind="foreach:Children, jqmRefreshList:Children" data-inset="true">
+				<li>
+					<a href="#" data-bind="text: Name, click: $root.navigateChild"></a>
+				</li>
+			</ul>
+			<!-- /ko -->
+			<h3 data-bind="text: Name"></h3>
+			<form data-ajax="false" data-bind="submit: $root.turnOnElement">
+				<!--div data-role="fieldcontain" data-bind="if: Colors.length > 0"-->
+				<fieldset data-role="controlgroup" data-bind="if: Colors.length > 0">
+					<legend>Color(s)</legend>
+					<!-- ko foreach:Colors -->
+					<input type="radio" name="color" data-bind="value: $data, attr: { id: $parent.Name + $data }, checked: $parent.Colors[0]" />
+					<label data-bind="attr: { for: $parent.Name + $data }, text:$data, style:{ background: $data}"></label>
+					<!-- /ko -->
+				</fieldset>
+				<!--div-->
+				<div data-role="fieldcontain" data-bind="ifnot:Colors.length > 0">
+					<label data-bind="attr: { for: Name }">Color:</label>
+					<input type="color" data-bind="attr: { id: Name }" name="color" value="#FFFFFF" />
+				</div>
+				<input type="hidden" name="id" data-role="none" data-bind="value:Id" />
+				<input type="hidden" name="time" data-role="none" data-bind="value: $root.elementOnTime" />
+				<button type="submit">Turn on</button>
+			</form>
 
-    
-    <script src="/resx/jquery-1.11.2.min.js"></script>
-    <script src="/resx/jquery.mobile-1.4.5.min.js"></script>
-    <script src="/resx/knockout-3.2.0.js"></script>
-    <script src="/resx/vixen.js"></script>
-    
+		</div>
+		<!-- /ko -->
+	</script>
+	
+	<script src="/resx/jquery-1.11.2.min.js"></script>
+		<script src="/resx/jquery.mobile-1.4.5.min.js"></script>
+		<script src="/resx/knockout-3.2.0.js"></script>
+		<script src="/resx/vixen.js"></script>
+
 </body>
 </html>

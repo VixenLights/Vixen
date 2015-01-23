@@ -61,9 +61,33 @@ namespace VixenModules.App.WebServer.Actions
 					GetChildElements(request, response);
 					return;
 				}
+				if (request.Uri.StartsWith("/api/element/searchElements"))
+				{
+					SearchChildElements(request, response);
+					return;
+				}
 			}
 
 			UnsupportedOperation(request, response);
+		}
+
+		private void SearchChildElements(HttpRequestHead request, IHttpResponseDelegate response)
+		{
+			
+			NameValueCollection parms = GetParameters(request);
+			if (parms.HasKeys() && parms["q"] == null)
+			{
+				HttpResponseHead headers = GetHeaders(0, HttpStatusCode.BadRequest.ToString());
+				response.OnResponse(headers, new BufferedProducer(""));
+				return;
+			}
+			string name = parms.Get("q");
+			List<Element> elements = new List<Element>();
+			IEnumerable<ElementNode> elementNodes = VixenSystem.Nodes.GetAllNodes().Where(x => x.Name.StartsWith(name));
+			elementNodes.AsParallel().ForAll(node => AddNodes(elements,node));
+			//IEnumerable<Element> elements = elementNodes.Where(x => x.Name.StartsWith(name)).Select(y => new Element{Id = y.Id, Name = y.Name, Colors = ColorModule.getValidColorsForElementNode(y, true).Select(ColorTranslator.ToHtml).ToList()});
+
+			SerializeResponse(elements.OrderBy(x => x.Name), response);
 		}
 
 		private void GetElements(HttpRequestHead request, IHttpResponseDelegate response)
