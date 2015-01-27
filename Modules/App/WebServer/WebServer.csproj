@@ -37,24 +37,53 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Kayak">
-      <HintPath>..\..\..\packages\Kayak.0.7.2\lib\Kayak.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="Microsoft.Owin, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Microsoft.Owin.3.0.0\lib\net45\Microsoft.Owin.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\..\packages\Newtonsoft.Json.5.0.6\lib\net40\Newtonsoft.Json.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="Microsoft.Owin.Diagnostics">
+      <HintPath>..\..\..\packages\Microsoft.Owin.Diagnostics.3.0.0\lib\net45\Microsoft.Owin.Diagnostics.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.FileSystems, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Microsoft.Owin.FileSystems.3.0.0\lib\net45\Microsoft.Owin.FileSystems.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.HttpListener, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Microsoft.Owin.Host.HttpListener.3.0.0\lib\net45\Microsoft.Owin.Host.HttpListener.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Hosting, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Microsoft.Owin.Hosting.3.0.0\lib\net45\Microsoft.Owin.Hosting.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.StaticFiles, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Microsoft.Owin.StaticFiles.3.0.0\lib\net45\Microsoft.Owin.StaticFiles.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NLog, Version=3.1.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\NLog.3.1.0.0\lib\net45\NLog.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Nowin">
+      <HintPath>..\..\..\packages\Nowin.0.13.5.0\lib\net45\Nowin.dll</HintPath>
+    </Reference>
+    <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Microsoft.AspNet.WebApi.Client.5.2.2\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Http, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Microsoft.AspNet.WebApi.Core.5.2.2\lib\net45\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.Owin, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Microsoft.AspNet.WebApi.Owin.5.2.2\lib\net45\System.Web.Http.Owin.dll</HintPath>
+    </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -63,23 +92,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Actions\BaseController.cs" />
-    <Compile Include="Actions\ElementController.cs" />
-    <Compile Include="Actions\IController.cs" />
-    <Compile Include="Actions\PlayController.cs" />
-    <Compile Include="Actions\SchedulerController.cs" />
-    <Compile Include="HTTP\ControllerFactory.cs" />
+    <Compile Include="Controllers\ElementController.cs" />
+    <Compile Include="Controllers\PlayController.cs" />
+    <Compile Include="Filter\ArgumentExceptionFilterAttribute.cs" />
+    <Compile Include="RequestLogger.cs" />
+    <Compile Include="Model\ElementEffect.cs" />
     <Compile Include="Model\Element.cs" />
     <Compile Include="Model\Sequence.cs" />
     <Compile Include="Model\Status.cs" />
+    <Compile Include="Service\ElementsHelper.cs" />
+    <Compile Include="Service\SequenceHelper.cs" />
+    <Compile Include="Startup.cs" />
     <Compile Include="WebSettingsEventArgs.cs" />
     <Compile Include="Module.cs" />
     <Compile Include="Data.cs" />
     <Compile Include="Descriptor.cs" />
-    <Compile Include="HTTP\BufferedConsumer.cs" />
-    <Compile Include="HTTP\BufferedProducer.cs" />
-    <Compile Include="HTTP\RequestDelegate.cs" />
-    <Compile Include="HTTP\SchedulerDelegate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -95,10 +122,19 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <EmbeddedResource Include="Resources\jquery.mobile-1.4.5.min.map" />
-    <EmbeddedResource Include="Resources\jquery-1.11.2.min.map" />
+    <EmbeddedResource Include="www\js\jquery-1.11.2.min.map">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="www\js\jquery.mobile-1.4.5.min.map">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Common\Controls\Controls.csproj">
+      <Project>{A54FB6A1-A9C3-488C-B961-41B8DBC81B36}</Project>
+      <Name>Controls</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Vixen.System\Vixen.csproj">
       <Project>{50b78623-fcf4-48af-93ff-fa87c937028f}</Project>
       <Name>Vixen</Name>
@@ -119,239 +155,690 @@
       <Name>Color</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\ColorGradients\ColorGradients.csproj">
+      <Project>{1b189b36-02af-4a57-9e1b-6dc833212725}</Project>
+      <Name>ColorGradients</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Curves\Curves.csproj">
+      <Project>{f0ba7127-61b4-453a-802b-abcb5a0d3d54}</Project>
+      <Name>Curves</Name>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\knockout-3.2.0.js" />
-    <EmbeddedResource Include="Resources\jquery-1.11.2.min.js" />
-    <EmbeddedResource Include="Resources\images\icons-png\action-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\action-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\alert-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\alert-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\arrow-d-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\arrow-d-l-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\arrow-d-l-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\arrow-d-r-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\arrow-d-r-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\arrow-d-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\arrow-l-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\arrow-l-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\arrow-r-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\arrow-r-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\arrow-u-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\arrow-u-l-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\arrow-u-l-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\arrow-u-r-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\arrow-u-r-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\arrow-u-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\audio-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\audio-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\back-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\back-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\bars-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\bars-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\bullets-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\bullets-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\calendar-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\calendar-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\camera-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\camera-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\carat-d-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\carat-d-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\carat-l-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\carat-l-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\carat-r-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\carat-r-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\carat-u-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\carat-u-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\check-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\check-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\clock-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\clock-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\cloud-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\cloud-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\comment-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\comment-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\delete-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\delete-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\edit-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\edit-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\eye-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\eye-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\forbidden-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\forbidden-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\forward-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\forward-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\gear-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\gear-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\grid-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\grid-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\heart-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\heart-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\home-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\home-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\info-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\info-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\location-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\location-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\lock-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\lock-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\mail-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\mail-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\minus-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\minus-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\navigation-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\navigation-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\phone-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\phone-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\plus-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\plus-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\power-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\power-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\recycle-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\recycle-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\refresh-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\refresh-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\search-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\search-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\shop-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\shop-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\star-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\star-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\tag-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\tag-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\user-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\user-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\video-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-png\video-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-svg\action-black.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\action-white.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\alert-black.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\alert-white.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\arrow-d-black.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\arrow-d-l-black.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\arrow-d-l-white.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\arrow-d-r-black.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\arrow-d-r-white.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\arrow-d-white.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\arrow-l-black.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\arrow-l-white.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\arrow-r-black.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\arrow-r-white.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\arrow-u-black.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\arrow-u-l-black.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\arrow-u-l-white.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\arrow-u-r-black.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\arrow-u-r-white.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\arrow-u-white.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\audio-black.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\audio-white.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\back-black.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\back-white.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\bars-black.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\bars-white.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\bullets-black.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\bullets-white.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\calendar-black.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\calendar-white.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\camera-black.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\camera-white.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\carat-d-black.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\carat-d-white.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\carat-l-black.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\carat-l-white.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\carat-r-black.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\carat-r-white.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\carat-u-black.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\carat-u-white.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\check-black.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\check-white.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\clock-black.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\clock-white.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\cloud-black.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\cloud-white.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\comment-black.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\comment-white.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\delete-black.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\delete-white.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\edit-black.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\edit-white.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\eye-black.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\eye-white.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\forbidden-black.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\forbidden-white.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\forward-black.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\forward-white.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\gear-black.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\gear-white.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\grid-black.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\grid-white.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\heart-black.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\heart-white.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\home-black.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\home-white.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\info-black.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\info-white.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\location-black.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\location-white.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\lock-black.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\lock-white.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\mail-black.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\mail-white.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\minus-black.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\minus-white.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\navigation-black.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\navigation-white.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\phone-black.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\phone-white.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\plus-black.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\plus-white.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\power-black.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\power-white.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\recycle-black.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\recycle-white.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\refresh-black.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\refresh-white.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\search-black.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\search-white.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\shop-black.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\shop-white.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\star-black.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\star-white.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\tag-black.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\tag-white.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\user-black.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\user-white.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\video-black.svg" />
-    <EmbeddedResource Include="Resources\images\icons-svg\video-white.svg" />
-    <EmbeddedResource Include="Resources\jquery.mobile-1.4.5.min.css" />
-    <EmbeddedResource Include="Resources\jquery.mobile-1.4.5.min.js" />
-    <EmbeddedResource Include="Resources\jquery.mobile.theme-1.4.5.min.css" />
-    <EmbeddedResource Include="Resources\vixen.htm" />
+    <Content Include="www\images\V3Logo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <EmbeddedResource Include="www\js\vixen.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="www\index.htm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="www\style\vixen.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="www\js\knockout-3.2.0.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="www\style\jquery.mobile.theme-1.4.5.min.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="www\style\jquery.mobile.structure-1.4.5.min.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="www\style\jquery.mobile.inline-svg-1.4.5.min.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="www\style\jquery.mobile.inline-png-1.4.5.min.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="www\style\jquery.mobile.icons-1.4.5.min.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="www\style\jquery.mobile.external-png-1.4.5.min.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="www\js\jquery.mobile-1.4.5.min.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="www\style\jquery.mobile-1.4.5.min.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="www\js\jquery.fittext.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="www\js\jquery-1.11.2.min.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <Content Include="www\js\moment.min.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\ajax-loader.gif">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-18-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-18-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-36-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-36-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\action-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\action-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\alert-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\alert-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\arrow-d-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\arrow-d-l-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\arrow-d-l-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\arrow-d-r-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\arrow-d-r-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\arrow-d-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\arrow-l-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\arrow-l-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\arrow-r-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\arrow-r-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\arrow-u-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\arrow-u-l-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\arrow-u-l-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\arrow-u-r-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\arrow-u-r-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\arrow-u-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\audio-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\audio-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\back-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\back-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\bars-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\bars-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\bullets-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\bullets-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\calendar-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\calendar-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\camera-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\camera-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\carat-d-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\carat-d-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\carat-l-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\carat-l-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\carat-r-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\carat-r-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\carat-u-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\carat-u-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\check-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\check-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\clock-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\clock-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\cloud-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\cloud-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\comment-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\comment-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\delete-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\delete-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\edit-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\edit-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\eye-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\eye-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\forbidden-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\forbidden-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\forward-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\forward-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\gear-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\gear-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\grid-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\grid-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\heart-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\heart-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\home-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\home-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\info-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\info-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\location-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\location-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\lock-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\lock-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\mail-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\mail-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\minus-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\minus-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\navigation-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\navigation-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\phone-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\phone-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\plus-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\plus-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\power-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\power-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\recycle-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\recycle-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\refresh-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\refresh-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\search-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\search-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\shop-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\shop-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\star-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\star-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\tag-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\tag-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\user-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\user-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\video-black.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-png\video-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\action-black.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\action-white.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\alert-black.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\alert-white.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\arrow-d-black.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\arrow-d-l-black.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\arrow-d-l-white.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\arrow-d-r-black.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\arrow-d-r-white.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\arrow-d-white.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\arrow-l-black.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\arrow-l-white.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\arrow-r-black.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\arrow-r-white.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\arrow-u-black.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\arrow-u-l-black.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\arrow-u-l-white.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\arrow-u-r-black.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\arrow-u-r-white.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\arrow-u-white.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\audio-black.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\audio-white.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\back-black.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\back-white.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\bars-black.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\bars-white.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\bullets-black.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\bullets-white.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\calendar-black.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\calendar-white.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\camera-black.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\camera-white.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\carat-d-black.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\carat-d-white.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\carat-l-black.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\carat-l-white.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\carat-r-black.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\carat-r-white.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\carat-u-black.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\carat-u-white.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\check-black.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\check-white.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\clock-black.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\clock-white.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\cloud-black.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\cloud-white.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\comment-black.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\comment-white.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\delete-black.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\delete-white.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\edit-black.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\edit-white.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\eye-black.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\eye-white.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\forbidden-black.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\forbidden-white.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\forward-black.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\forward-white.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\gear-black.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\gear-white.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\grid-black.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\grid-white.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\heart-black.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\heart-white.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\home-black.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\home-white.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\info-black.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\info-white.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\location-black.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\location-white.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\lock-black.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\lock-white.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\mail-black.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\mail-white.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\minus-black.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\minus-white.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\navigation-black.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\navigation-white.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\phone-black.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\phone-white.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\plus-black.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\plus-white.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\power-black.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\power-white.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\recycle-black.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\recycle-white.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\refresh-black.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\refresh-white.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\search-black.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\search-white.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\shop-black.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\shop-white.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\star-black.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\star-white.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\tag-black.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\tag-white.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\user-black.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\user-white.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\video-black.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\icons-svg\video-white.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources\vixen.js" />
-    <EmbeddedResource Include="Resources\vixen.css" />
-    <EmbeddedResource Include="..\..\..\Application\VixenApplication\Resources\V3Logo.png">
-      <Link>Resources\images\V3Logo.png</Link>
-    </EmbeddedResource>
-    <Content Include="elements.html" />
-    <EmbeddedResource Include="Resources\jquery.fittext.js" />
-    <EmbeddedResource Include="Resources\jquery.mobile.external-png-1.4.5.min.css" />
-    <EmbeddedResource Include="Resources\jquery.mobile.icons-1.4.5.min.css" />
-    <EmbeddedResource Include="Resources\jquery.mobile.inline-png-1.4.5.min.css" />
-    <EmbeddedResource Include="Resources\jquery.mobile.inline-svg-1.4.5.min.css" />
-    <EmbeddedResource Include="Resources\jquery.mobile.structure-1.4.5.min.css" />
-    <EmbeddedResource Include="Resources\images\ajax-loader.gif" />
-    <EmbeddedResource Include="Resources\images\icons-18-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-18-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-36-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-36-white.png" />
     <EmbeddedResource Include="Settings.resx">
       <DependentUpon>Settings.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -1,34 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Kayak;
-using Kayak.Http;
+using Microsoft.Owin.Hosting;
+using NLog;
 using Vixen.Execution.Context;
 using Vixen.Module;
 using Vixen.Module.App;
 using Vixen.Sys;
-using VixenModules.App.WebServer.HTTP;
 
 namespace VixenModules.App.WebServer
 {
 	public class Module : AppModuleInstanceBase
 	{
-
+		private static readonly NLog.Logger Logging = LogManager.GetCurrentClassLogger();
 		private const string MENU_ID_ROOT = "WebserverRoot";
 
-		public Module()
-		{
-			scheduler = KayakScheduler.Factory.Create(new SchedulerDelegate());
-		}
 		internal static LiveContext LiveContext { get; set; }
 
-		private IScheduler scheduler;
-		private IServer server;
+		//Webserver object
+		private IDisposable server;
 		private Data _data;
 		private IApplication _application;
 		private AppCommand _showCommand;
@@ -36,7 +26,7 @@ namespace VixenModules.App.WebServer
 		public override IModuleDataModel StaticModuleData
 		{
 			get { return _data; }
-			set { _data = (Data)value; }
+			set { _data = (Data) value; }
 		}
 
 		public override IApplication Application
@@ -49,22 +39,27 @@ namespace VixenModules.App.WebServer
 			_AddApplicationMenu();
 			_SetServerEnableState(_data.IsEnabled, _data.HttpPort);
 		}
+
 		private bool _AppSupportsCommands()
 		{
 			return _application != null && _application.AppCommands != null;
 		}
+
 		private AppCommand _GetToolsMenu()
 		{
 			AppCommand toolsMenu = _application.AppCommands.Find("Tools");
-			if (toolsMenu == null) {
+			if (toolsMenu == null)
+			{
 				toolsMenu = new AppCommand("Tools", "Tools");
 				_application.AppCommands.Add(toolsMenu);
 			}
 			return toolsMenu;
 		}
+
 		private void _AddApplicationMenu()
 		{
-			if (_AppSupportsCommands()) {
+			if (_AppSupportsCommands())
+			{
 				AppCommand toolsMenu = _GetToolsMenu();
 				AppCommand rootCommand = new AppCommand(MENU_ID_ROOT, "Web Server");
 
@@ -76,18 +71,28 @@ namespace VixenModules.App.WebServer
 
 		private void _SetServerEnableState(bool value, int port)
 		{
-			if (value) {
+			if (value)
+			{
 				if (server != null) _SetServerEnableState(false, port);
+				var options = new StartOptions {ServerFactory = "Nowin"}; //use the Nowin server to listen for connections
+				options.Urls.Add(string.Format("http://*:{0}/", port));
 
-				server = KayakServer.Factory.CreateHttp(new RequestDelegate(), scheduler);
-				server.Listen(new IPEndPoint(IPAddress.Any, port));
+				try
+				{
+					server = WebApp.Start<Startup>(options);
+				}
+				catch (Exception ex)
+				{
+					Logging.Error("Unable to start web server.", ex);
+					return;
+				}
 				LiveContext = VixenSystem.Contexts.CreateLiveContext("Web Server");
 				LiveContext.Start();
-				Thread T = new Thread(new ThreadStart(scheduler.Start));
-				T.Start();
-			} else {
-				scheduler.Stop();
-				if (server != null) {
+			}
+			else
+			{
+				if (server != null)
+				{
 					server.Dispose();
 					server = null;
 				}
@@ -105,14 +110,17 @@ namespace VixenModules.App.WebServer
 		private AppCommand _CreateShowCommand()
 		{
 			AppCommand showCommand = new AppCommand("WebserverConfigure", "Configure");
-			showCommand.Click += (sender, e) => {
-				using (Settings cs = new Settings(_data)) {
+			showCommand.Click += (sender, e) =>
+			{
+				using (Settings cs = new Settings(_data))
+				{
 					cs.SettingsChanged += cs_SettingsChanged;
-					if (cs.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+					if (cs.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+					{
 
 						_data.HttpPort = cs.Port;
 						_data.IsEnabled = cs.WebServerEnabled;
-						
+
 					}
 					_SetServerEnableState(_data.IsEnabled, _data.HttpPort);
 				}
@@ -121,14 +129,15 @@ namespace VixenModules.App.WebServer
 			return showCommand;
 		}
 
-		void cs_SettingsChanged(object sender, WebSettingsEventArgs e)
+		private void cs_SettingsChanged(object sender, WebSettingsEventArgs e)
 		{
 			_SetServerEnableState(e.IsEnabled, e.Port);
 		}
 
 		private void _RemoveApplicationMenu()
 		{
-			if (_AppSupportsCommands()) {
+			if (_AppSupportsCommands())
+			{
 				AppCommand toolsMenu = _GetToolsMenu();
 				toolsMenu.Remove(MENU_ID_ROOT);
 			}
@@ -136,16 +145,15 @@ namespace VixenModules.App.WebServer
 
 		public override void Unloading()
 		{
-			_SetServerEnableState(false,0);
+			_SetServerEnableState(false, 0);
 			//We are the only current consumer of LiveContext, so shut it off when we are done.
 			if (LiveContext != null)
 			{
-				VixenSystem.Contexts.ReleaseContext(LiveContext);	
+				VixenSystem.Contexts.ReleaseContext(LiveContext);
 			}
 		}
 
-
+		
 	}
-
 
 }
