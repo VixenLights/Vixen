@@ -6,16 +6,14 @@
 	max-width: 385px;
 }
 
-.ui-li-static.ui-collapsible > .ui-collapsible-heading {
-	margin: 0;
+/* Hack for IE11 list styles on first load
+	http://stackoverflow.com/questions/20356311/internet-explorer-11-ignores-list-stylenone-on-the-first-load
+*/
+html[data-useragent*='rv:11.0'] .ui-navbar li {
+	list-style-image: url(data:0);
 }
-.ui-li-static.ui-collapsible {
-	padding: 0;
-}
-.ui-li-static.ui-collapsible > .ui-collapsible-heading > .ui-btn {
-	border-top-width: 0;
-}
-.ui-li-static.ui-collapsible > .ui-collapsible-heading.ui-collapsible-heading-collapsed > .ui-btn,
-.ui-li-static.ui-collapsible > .ui-collapsible-content {
-	border-bottom-width: 0;
+
+.controlgroup-textinput{
+	padding-top:.22em;
+	padding-bottom:0;
 }

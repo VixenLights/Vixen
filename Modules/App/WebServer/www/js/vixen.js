@@ -13,12 +13,18 @@ function ViewModel() {
 	self.elementOnTime = ko.observable(30);
 	self.elementResults = ko.observableArray();
 	self.selectedElement = ko.observable();
+	self.selectedColor = ko.observable("#FFFFFF");
 	self.elementTree = ko.observableArray();
 	self.selectedSequence = ko.observable();
 	
 	self.elementClicked = function (elem) {
 
 		self.selectedElement(elem);
+		if (elem.Colors.length > 0) {
+			self.selectedColor(elem.Colors[0]);
+		} else {
+			self.selectedColor("#FFFFFF");
+		}
 		$('#elementControlContainer').trigger('create');
 		$(":mobile-pagecontainer").pagecontainer("change", "#ElementControlPage", { changeHash: false });
 		return false;
@@ -108,9 +114,9 @@ function ViewModel() {
 			});
 	}
 
-	self.turnOnElement = function(element) {
-		var parms = $(element).serialize();
-		$.get(elementUrl + '/on', parms)
+	self.turnOnElement = function() {
+		//var parms = $(element).serialize();
+		$.get(elementUrl + '/on', {id:self.selectedElement().Id, time:self.elementOnTime, color:self.selectedColor})
 			.done(function (status) {
 				self.status(status.Message);
 				self.updateStatus(model.elementOnTime());
@@ -221,6 +227,11 @@ $('#Sequences').on('pagecreate', function (event) {
     model.getSequences();
     model.getStatus();
 });
+
+var b = document.documentElement;
+b.setAttribute('data-useragent', navigator.userAgent);
+b.setAttribute('data-platform', navigator.platform);
+b.className += ((!!('ontouchstart' in window) || !!('onmsgesturechange' in window)) ? ' touch' : '');
 
 
 

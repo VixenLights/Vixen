@@ -1,41 +1,21 @@
 ﻿<!DOCTYPE html>
 
 <html>
-    <head>
-        <title>Vixen 3 Web Interface</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta http-equiv="X-UA-Compatable" content="IE=Edge,chrome=1"/>
-        <link rel="stylesheet" href="/style/jquery.mobile-1.4.5.min.css" />
-        <link rel="stylesheet" href="/style/vixen.css" />
-    </head>
-<body>
-	<div data-role="page" id="Home" data-title="Home" >     
-		<div data-role="header" data-id="fixednav" data-position="fixed">
-			<h2>Vixen Web Control</h2>    
-			<div data-role="navbar" >
-				<ul>
-					<li><a href="#Home" class="ui-btn-active ui-state-persist">Home</a></li>
-					<li><a href="#Elements">Elements</a></li>
-					<li><a href="#Sequences">Sequences</a></li>
-				</ul>
-			</div>
-		</div>
-		<div role="main" class="ui-content">
-			<div>
-				<img class="logo" src="/images/V3Logo.png" />
-			</div>
-		</div>
-		<div data-role="footer">
-			<span data-bind="text: status"></span>    
-		</div>
-	</div>
+	<head>
+		<title>Vixen 3 Web Interface</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatable" content="IE=Edge,chrome=1"/>
+		<link rel="stylesheet" href="/style/jquery.mobile-1.4.5.min.css" />
+		<link rel="stylesheet" href="/style/vixen.css" />
+	</head>
 
+<body>
 	<div data-role="page" id="Elements" data-title="Element">
 		<div data-role="header" data-id="fixednav" data-position="fixed">
-			<h2>Element Control</h2>
+			<h2>Vixen</h2>
+			<img src="/images/V3Logo.png" class="ui-btn-left" style="max-height: 50%"/>
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#Home">Home</a></li>
 					<li><a href="#Elements" class="ui-btn-active ui-state-persist">Elements</a></li>
 					<li><a href="#Sequences">Sequences</a></li>
 				</ul>
@@ -58,10 +38,10 @@
 	
 	<div data-role="page" id="Sequences" data-title="Sequences">
 		<div data-role="header" data-id="fixednav" data-position="fixed">
-			<h2>Sequences</h2>
+			<h2>Vixen</h2>
+			<img src="/images/V3Logo.png" class="ui-btn-left" style="max-height: 50%" />
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#Home">Home</a></li>
 					<li><a href="#Elements">Elements</a></li>
 					<li><a href="#Sequences" class="ui-btn-active ui-state-persist">Sequences</a></li>
 				</ul>
@@ -84,10 +64,10 @@
 
 	<div data-role="page" id="ElementControlPage" data-title="Element Control">
 		<div data-role="header" data-id="fixednav" data-position="fixed">
-			<h2>Element Control</h2>
+			<h2>Vixen</h2>
+			<img src="/images/V3Logo.png" class="ui-btn-left" style="max-height: 50%" />
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#Home">Home</a></li>
 					<li><a href="#Elements" class="ui-btn-active ui-state-persist">Elements</a></li>
 					<li><a href="#Sequences">Sequences</a></li>
 				</ul>
@@ -99,10 +79,12 @@
 			<!-- /ko -->
 		</div>
 		<div data-role="footer" data-id="fixedfooter" data-position="fixed">
-			<div class="ui-field-contain">
-				<label for="elementOnTime">Time on:</label>
-				<input type="number" name="elementOnTime" id="elementOnTime" data-bind="value: elementOnTime" />
+			
+			<div data-role="controlgroup" data-type="horizontal" data-mini="true">
+				<input type="number" name="elementOnTime" id="elementOnTime" data-bind="value: elementOnTime" data-wrapper-class="controlgroup-textinput ui-btn" />
+				<button type="button" value="On" data-bind="click: $root.turnOnElement, enabled:selectedElement">On</button>
 			</div>
+			
 			<span data-bind="text: status"></span>
 		</div>
 	</div>
@@ -112,35 +94,29 @@
 	<script type="text/html" id="element-template">
 		<!-- ko if:selectedElement   -->
 		<div id="elementControlContainer" data-bind="with:selectedElement">
-			<a href="#" data-bind="click: $root.navigateParent" data-direction="reverse" class="ui-btn ui-icon-arrow-u ui-btn-icon-left ui-corner-all ui-shadow ui-btn-inline">Up</a>
+			<a href="#" data-bind="click: $root.navigateParent" data-mini="true"  data-direction="reverse" class="ui-btn ui-icon-arrow-u ui-btn-icon-left ui-corner-all ui-shadow ui-btn-inline">Up</a>
 			<h3 data-bind="text: Name"></h3>
-			<form data-ajax="false" data-bind="submit: $root.turnOnElement">
-				<!--div data-role="fieldcontain" data-bind="if: Colors.length > 0"-->
-				<fieldset data-role="controlgroup" data-type="horizontal"  data-bind="if: Colors.length > 0">
-					<legend>Color(s)</legend>
-					<!-- ko foreach:Colors -->
-					<input type="radio" name="color" data-mini="true" data-bind="value: $data, attr: { id: $parent.Name + $data }, checked: $parent.Colors[0]" />
-					<label data-bind="attr: { for: $parent.Name + $data }, text:$data, style:{ background: $data}"></label>
-					<!-- /ko -->
-				</fieldset>
-				<!--div-->
-				<div class="ui-field-contain" data-bind="ifnot:Colors.length > 0">
-					<label data-bind="attr: { for: Name }">Color:</label>
-					<input type="color" data-bind="attr: { id: Name }" name="color" value="#FFFFFF" />
-				</div>
-				<input type="hidden" name="id" data-role="none" data-bind="value:Id" />
-				<input type="hidden" name="time" data-role="none" data-bind="value: $root.elementOnTime" />
-				<button type="submit">Turn on</button>
-				<h3 data-bind="text:Children?'Child Elements':''"></h3>
-				<!-- ko if:Children-->
-				<ul data-role="listview" data-bind="foreach:Children, jqmRefreshList:Children" data-inset="true">
-					<li>
-						<a href="#" data-bind="text: Name, click: $root.navigateChild"></a>
-					</li>
-				</ul>
+			<fieldset data-role="controlgroup" data-type="horizontal"  data-bind="if: Colors.length > 0">
+				<legend>Color(s)</legend>
+				<!-- ko foreach:Colors -->
+				<input type="radio" name="color" data-mini="true" data-bind="value: $data, attr: { id: $parent.Name + $data }, checked:$root.selectedColor" />
+				<label data-bind="attr: { for: $parent.Name + $data }, text:$data, style:{ background: $data}"></label>
 				<!-- /ko -->
-			</form>
-
+			</fieldset>
+			
+			<div class="ui-field-contain" data-bind="ifnot:Colors.length > 0">
+				<label data-bind="attr: { for: Name }">Color:</label>
+				<input type="color" data-bind="attr: { id: Name }" name="color" value="#FFFFFF" />
+			</div>
+			<h3 data-bind="text:Children?'Child Elements':''"></h3>
+			<!-- ko if:Children-->
+			<ul data-role="listview" data-bind="foreach:Children, jqmRefreshList:Children" data-inset="true">
+				<li>
+					<a href="#" data-bind="text: Name, click: $root.navigateChild"></a>
+				</li>
+			</ul>
+			<!-- /ko -->
+			
 		</div>
 		<!-- /ko -->
 	</script>
