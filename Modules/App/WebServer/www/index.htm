@@ -29,7 +29,7 @@
 				<li>
 					<h1 class="element-header" data-bind="text: Name"></h1>
 					<button class="button-aside" data-icon="carat-r" data-iconpos="notext" value="Down" data-bind="click: $parent.elementClicked, visible:Children"></button>
-					<form data-ajax="false" data-bind="submit: $root.turnOnElement">
+					<form data-ajax="false">
 						<!-- ko if:Colors.length > 0 -->
 						<fieldset data-role="controlgroup" data-type="horizontal" data-bind="foreach:Colors">
 							<input type="radio" name="color" data-mini="true" data-bind="value: $data, attr: { id: $parent.Name + $data }, checked:$parent.Colors[0]" />
@@ -42,12 +42,10 @@
 							<input type="color" data-mini="true" data-bind="attr: { id: Name }" name="color" value="#FFFFFF" />
 						</div>
 						<!-- /ko -->
-						<input type="hidden" name="id" data-role="none" data-bind="value:Id" />
-						<input type="submit" data-mini="true" value="On">
-						<!--</div>-->
+						<button data-bind="click: function(data, event) { $root.turnOnElement(data, event, true) }" class="ui-btn ui-btn-inline ui-corner-all ui-shadow">Timed</button>
+						<button data-bind="click: function(data, event) { $root.turnOnElement(data, event, false) }" class="ui-btn ui-btn-inline ui-corner-all ui-shadow">On</button>
+						<button data-bind="click: $root.turnOffElement" class="ui-btn ui-btn-inline ui-corner-all ui-shadow">Off</button>
 					</form>
-					
-					<!--<a href="#ElementControlPage" data-bind="click: $parent.elementClicked"></a>-->
 				</li>
 			</ul>
 		</div>
@@ -128,8 +126,7 @@
 				<li>
 					<h1 class="element-header" data-bind="text: Name"></h1>
 					<button class="button-aside" data-icon="carat-r" data-iconpos="notext" value="Down" data-bind="click: $parent.navigateChild, visible:Children"></button>
-					<form data-ajax="false" data-bind="submit: $root.turnOnElement">
-						
+					<form>
 						<fieldset data-role="controlgroup" data-type="horizontal" data-bind="if: Colors.length > 0">
 							<!-- ko foreach:Colors -->
 							<input type="radio" name="color" data-mini="true" data-bind="value: $data, attr: { id: $parent.Name + $data + 'Child' }, checked:$parent.Colors[0]" />
@@ -141,9 +138,9 @@
 							<label data-bind="attr: { for: Name }">Color:</label>
 							<input type="color" data-bind="attr: { id: Name }" name="color" value="#FFFFFF" />
 						</div>
-						<input type="hidden" name="id" data-role="none" data-bind="value:Id" />
-						
-						<input type="submit" value="On">
+						<button data-bind="click: function(data, event) { $root.turnOnElement(data, event, true) }" class="ui-btn ui-btn-inline ui-corner-all ui-shadow">Timed</button>
+						<button data-bind="click: function(data, event) { $root.turnOnElement(data, event, false) }" class="ui-btn ui-btn-inline ui-corner-all ui-shadow">On</button>
+						<button data-bind="click: $root.turnOffElement" class="ui-btn ui-btn-inline ui-corner-all ui-shadow">Off</button>
 					</form>
 				</li>
 			</ul>

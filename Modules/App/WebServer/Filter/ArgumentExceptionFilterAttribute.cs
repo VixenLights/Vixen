@@ -6,12 +6,13 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http.Filters;
+using NLog;
 
 namespace VixenModules.App.WebServer.Filter
 {
 	public class ArgumentExceptionFilterAttribute : ExceptionFilterAttribute
 	{
-
+		private static readonly NLog.Logger Logging = LogManager.GetCurrentClassLogger();
 		public override void OnException(HttpActionExecutedContext context)
 		{
 			if (context.Exception is ArgumentException)
@@ -29,6 +30,12 @@ namespace VixenModules.App.WebServer.Filter
 					ReasonPhrase = context.Exception.Message.Replace(Environment.NewLine, " ")
 				};
 			}
+
+			Logging.Error("Exception in web server", context.Exception);
+			context.Response = new HttpResponseMessage(HttpStatusCode.InternalServerError)
+			{
+				ReasonPhrase = context.Exception.Message.Replace(Environment.NewLine, " ")
+			};
 		}		
 	}
 }

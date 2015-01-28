@@ -11,7 +11,7 @@ namespace Vixen.Execution.Context
 	{
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private ElementStateSourceCollection _elementStates;
-		private IContextCurrentEffects _currentEffects;
+		internal IContextCurrentEffects _currentEffects;
 		private HashSet<Guid> _affectedElements;
 		private IntentStateBuilder _elementStateBuilder;
 		private bool _disposed;

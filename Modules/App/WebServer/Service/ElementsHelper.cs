@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Web.Script.Serialization;
+using Vixen.Execution.Context;
 using Vixen.Module;
 using Vixen.Module.Effect;
 using Vixen.Services;
@@ -126,6 +127,23 @@ namespace VixenModules.App.WebServer.Service
 
 		}
 
+		public static Status TurnOffElement(Guid id)
+		{
+			var status = new Status();
+			ElementNode node = VixenSystem.Nodes.GetElementNode(id);
+			if (node != null)
+			{
+				Module.LiveContext.TerminateNode(node.Id);
+				status.Message = string.Format("{0} element turned off.", node.Name);
+			}
+			else
+			{
+				throw new ArgumentException(@"Element id is invalid", "id");
+			}
+			
+			return status;
+		}
+
 		public static Status TurnOnElement(Guid id, int seconds, double intensity, string color)
 		{
 			//if (string.IsNullOrEmpty(id))
@@ -165,7 +183,7 @@ namespace VixenModules.App.WebServer.Service
 
 			var effect = new SetLevel
 			{
-				TimeSpan = TimeSpan.FromSeconds(seconds),
+				TimeSpan = seconds>0?TimeSpan.FromSeconds(seconds):TimeSpan.FromDays(30),
 				IntensityLevel = intensity/100,
 				TargetNodes = new[] { VixenSystem.Nodes.GetElementNode(id) }
 					//allElements ? VixenSystem.Nodes.GetRootNodes().ToArray() : new[] { VixenSystem.Nodes.GetElementNode(elementId) }

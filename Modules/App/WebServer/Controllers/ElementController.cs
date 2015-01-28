@@ -50,6 +50,12 @@ namespace VixenModules.App.WebServer.Controllers
 		}
 
 		[HttpPost]
+		public Status Off(Element element)
+		{
+			return ElementsHelper.TurnOffElement(element.Id);
+		}
+
+		[HttpPost]
 		public Status Effect(ElementEffect effect)
 		{
 			return ElementsHelper.Effect(effect);

@@ -104,11 +104,17 @@ function ViewModel() {
 			});
 	}
 
-	self.turnOnElement = function(element) {
-		var a = $(element).serializeArray();
+	self.turnOnElement = function(data, event, timed) {
+		var a = $(event.target.parentNode).serializeArray();;
 
-		var parms = {};
+		//model data
+		var parms = {
+			id : data.Id,
+			duration : timed?self.timeout():0,
+			intensity:self.elementIntensity()
+		};
 		
+		//supplement with form data for the Color
 		$.each(a, function () {
 			if (parms[this.name] !== undefined) {
 				if (!parms[this.name].push) {
@@ -120,9 +126,6 @@ function ViewModel() {
 			}
 		});
 
-
-		parms.duration = self.timeout();
-		parms.intensity=self.elementIntensity();
 		$.ajax({url: elementUrl + '/on',
 				type: 'POST',
 				contentType: "application/json",
@@ -131,6 +134,27 @@ function ViewModel() {
 			.done(function (status) {
 				self.status(status.Message);
 				self.updateStatus(self.timeout());
+			}).error(function (jqXHR, status, error) {
+				self.status(error);
+				self.hideLoading();
+			});
+		return false;
+	}
+
+	self.turnOffElement = function (data, event) {
+		
+		var parms = {
+			id: data.Id
+		};
+		
+		$.ajax({
+			url: elementUrl + '/off',
+			type: 'POST',
+			contentType: "application/json",
+			data: ko.toJSON(parms)
+		})
+			.done(function (status) {
+				self.status(status.Message);
 			}).error(function (jqXHR, status, error) {
 				self.status(error);
 				self.hideLoading();
