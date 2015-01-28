@@ -126,33 +126,38 @@ namespace VixenModules.App.WebServer.Service
 
 		}
 
-		public static Status TurnOnElement(string id, int seconds, string color)
+		public static Status TurnOnElement(Guid id, int seconds, double intensity, string color)
 		{
-			if (string.IsNullOrEmpty(id))
-			{
-				throw new ArgumentNullException(id);
-			}
+			//if (string.IsNullOrEmpty(id))
+			//{
+			//	throw new ArgumentNullException(id);
+			//}
 			var status = new Status();
 
 			if (!string.IsNullOrEmpty(color) && (color.Length != 7 || !	color.StartsWith("#")))
 			{
 				throw new ArgumentException(@"Invalid color", color);
 			}
-			
-			Guid elementId = Guid.Empty;
-			bool allElements = false;
-			
-			if ("all".Equals(id))
+
+			if (intensity > 100 || intensity < 0)
 			{
-				allElements = true;
+				intensity = 100;
 			}
-			else
-			{
-				if (!Guid.TryParse(id, out elementId))
-				{
-					throw new ArgumentException(@"Invalid Element id", id);
-				}
-			}
+			
+			//Guid elementId = Guid.Empty;
+			//bool allElements = false;
+			
+			//if ("all".Equals(id))
+			//{
+			//	allElements = true;
+			//}
+			//else
+			//{
+			//	if (!Guid.TryParse(id, out elementId))
+			//	{
+			//		throw new ArgumentException(@"Invalid Element id", id);
+			//	}
+			//}
 		
 			//TODO the following logic for all does not properly deal with discrete color elements when turning all on
 			//TODO they will not respond to turning on white if they are set up with a filter.
@@ -161,9 +166,9 @@ namespace VixenModules.App.WebServer.Service
 			var effect = new SetLevel
 			{
 				TimeSpan = TimeSpan.FromSeconds(seconds),
-				IntensityLevel = 1,
-				TargetNodes =
-					allElements ? VixenSystem.Nodes.GetRootNodes().ToArray() : new[] { VixenSystem.Nodes.GetElementNode(elementId) }
+				IntensityLevel = intensity/100,
+				TargetNodes = new[] { VixenSystem.Nodes.GetElementNode(id) }
+					//allElements ? VixenSystem.Nodes.GetRootNodes().ToArray() : new[] { VixenSystem.Nodes.GetElementNode(elementId) }
 			};
 
 			if (!string.IsNullOrEmpty(color))
@@ -174,7 +179,7 @@ namespace VixenModules.App.WebServer.Service
 			
 			Module.LiveContext.Execute(new EffectNode(effect, TimeSpan.Zero));
 			status.Message = string.Format("{0} element(s) turned on for {1} seconds at 100% intensity.",
-				allElements ? "All" : VixenSystem.Nodes.GetElementNode(elementId).Name, seconds);
+				VixenSystem.Nodes.GetElementNode(id).Name, seconds);
 
 			return status;
 		}
@@ -198,7 +203,7 @@ namespace VixenModules.App.WebServer.Service
 			if (effectDescriptor != null)
 			{
 				var effect = ApplicationServices.Get<IEffectModuleInstance>(effectDescriptor.TypeId);
-				EffectNode effectNode = CreateEffectNode(effect, node, TimeSpan.FromMilliseconds(elementEffect.Milliseconds));
+				EffectNode effectNode = CreateEffectNode(effect, node, TimeSpan.FromMilliseconds(elementEffect.Duration));
 
 				Object[] newValues = effectNode.Effect.ParameterValues;
 				int index = 0;
@@ -242,7 +247,7 @@ namespace VixenModules.App.WebServer.Service
 				ApplyOptionParameters(effectNode, elementEffect.Options);
 				Module.LiveContext.Execute(effectNode);
 				status.Message = string.Format("{0} element(s) turned effect {1} for {2} milliseconds.",
-				VixenSystem.Nodes.GetElementNode(elementEffect.Id).Name, elementEffect.EffectName, elementEffect.Milliseconds);
+				VixenSystem.Nodes.GetElementNode(elementEffect.Id).Name, elementEffect.EffectName, elementEffect.Duration);
 			}
 			
 			return status;

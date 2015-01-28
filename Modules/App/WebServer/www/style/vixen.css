@@ -17,3 +17,25 @@ html[data-useragent*='rv:11.0'] .ui-navbar li {
 	padding-top:.22em;
 	padding-bottom:0;
 }
+
+li h1.element-header {
+	margin: .7em 0 1em;
+}
+
+.button-aside{
+	position: absolute;
+	top: 1em;
+	right: 1em;
+	margin: 0;
+	text-align: right;
+}
+
+/*.ui-input-text.ui-body-inherit.ui-corner-all.ui-shadow-inset {
+	width: 6em;
+	float: left;
+}*/
+
+label.timeLabel {
+	/*width: 3em;
+	margin-right: 0;*/
+}

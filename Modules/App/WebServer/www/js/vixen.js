@@ -10,7 +10,8 @@ function ViewModel() {
 	self.sequences = ko.observableArray();
 	self.selectedSequence = ko.observable();
 	self.status = ko.observable();
-	self.elementOnTime = ko.observable(30);
+	self.timeout = ko.observable(30);
+	self.elementIntensity = ko.observable(100);
 	self.elementResults = ko.observableArray();
 	self.selectedElement = ko.observable();
 	self.selectedColor = ko.observable("#FFFFFF");
@@ -20,12 +21,6 @@ function ViewModel() {
 	self.elementClicked = function (elem) {
 
 		self.selectedElement(elem);
-		if (elem.Colors.length > 0) {
-			self.selectedColor(elem.Colors[0]);
-		} else {
-			self.selectedColor("#FFFFFF");
-		}
-		$('#elementControlContainer').trigger('create');
 		$(":mobile-pagecontainer").pagecontainer("change", "#ElementControlPage", { changeHash: false });
 		return false;
 	}
@@ -33,7 +28,6 @@ function ViewModel() {
 		self.showLoading();
 		self.elementTree.push(self.selectedElement());
 		self.selectedElement(elem);
-		$('#elementControlContainer').trigger('create');
 		self.hideLoading();
 		return false;
 	}
@@ -42,7 +36,6 @@ function ViewModel() {
 		if (self.elementTree().length > 0) {
 			self.showLoading();
 			self.selectedElement(self.elementTree().pop());
-			$('#elementControlContainer').trigger('create');
 			self.hideLoading();
 		} else {
 			$(":mobile-pagecontainer").pagecontainer("change", "#Elements");
@@ -92,9 +85,7 @@ function ViewModel() {
 				.then(function(response) {
 					self.elementResults(response);
 					self.selectedElement(response[0]);
-					//$('#ElementSearch').trigger('create');
-					$('#ElementSetFiltered').listview('refresh');
-					$('#ElementSetFiltered').trigger('updatelayout');
+					//$('#ElementSetFiltered').trigger('create');
 					self.hideLoading();
 				});
 		} else {
@@ -106,20 +97,40 @@ function ViewModel() {
 		$.get(elementUrl + '/getElements')
 			.done(function (data) {
 				self.elementResults(data);
-				$('#ElementSetFiltered').listview('refresh');
-				$('#ElementSetFiltered').trigger('updatelayout');
+				//$('#ElementSetFiltered').trigger('create');
 			}).error(function (jqXHR, status, error) {
 				self.status(error);
 				self.hideLoading();
 			});
 	}
 
-	self.turnOnElement = function() {
-		//var parms = $(element).serialize();
-		$.get(elementUrl + '/on', {id:self.selectedElement().Id, time:self.elementOnTime, color:self.selectedColor})
+	self.turnOnElement = function(element) {
+		var a = $(element).serializeArray();
+
+		var parms = {};
+		
+		$.each(a, function () {
+			if (parms[this.name] !== undefined) {
+				if (!parms[this.name].push) {
+					parms[this.name] = [parms[this.name]];
+				}
+				parms[this.name].push(this.value || '');
+			} else {
+				parms[this.name] = this.value || '';
+			}
+		});
+
+
+		parms.duration = self.timeout();
+		parms.intensity=self.elementIntensity();
+		$.ajax({url: elementUrl + '/on',
+				type: 'POST',
+				contentType: "application/json",
+				data: ko.toJSON(parms)
+		})
 			.done(function (status) {
 				self.status(status.Message);
-				self.updateStatus(model.elementOnTime());
+				self.updateStatus(self.timeout());
 			}).error(function (jqXHR, status, error) {
 				self.status(error);
 				self.hideLoading();
@@ -183,21 +194,46 @@ function ViewModel() {
 
 };
 
+ko.bindingHandlers.jqmSlider = {
+	// Initialize slider
+	init: function (element, valueAccessor) {
+		var valueUnwrapped = ko.utils.unwrapObservable(valueAccessor());
+		setTimeout(function () {
+			// $(element) doesn't work as that has been removed from the DOM
+			var curSlider = $('#' + element.id);
+			// helper function that updates the slider and refreshes the thumb location
+			function setSliderValue(newValue) {
+				curSlider.val(newValue).slider('refresh');
+			}
+			// subscribe to the bound observable and update the slider when it changes
+			valueAccessor().subscribe(setSliderValue);
+			// set up the initial value from the observable
+			setSliderValue(valueUnwrapped);
+			// subscribe to the slider's change event and update the bound observable
+			curSlider.bind('change', function () {
+				valueAccessor()(curSlider.val());
+			});
+		}, 0);
+	}
+};
+
+
 ko.bindingHandlers.jqmRefreshList = {
 	update: function (element, valueAccessor) {
 		ko.utils.unwrapObservable(valueAccessor()); //just to create a dependency
-		var listview = $(element).parents()
-                             .andSelf()
-                             .filter("[data-role='listview']");
-
+		var listview = $(element);
 		if (listview) {
 			try {
+				model.showLoading();
+				$(listview).trigger('create');
 				$(listview).listview('refresh');
 				$(listview).trigger('updatelayout');
 			} catch (e) {
 				// if the listview is not initialised, the above call with throw an exception
-				// there doe snot appear to be any way to easily test for this state, so
+				// there does not appear to be any way to easily test for this state, so
 				// we just swallow the exception here.
+			} finally {
+				model.hideLoading();
 			}
 		}
 

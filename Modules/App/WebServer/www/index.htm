@@ -25,13 +25,39 @@
 			<form class="ui-filterable">
 				<input id="elementSearch-input" data-type="search" placeholder="Find an Element..."/>
 			</form>
-			<ul data-role="listview" data-bind="foreach:elementResults" data-filter="true" data-inset="true" id="ElementSetFiltered" data-input="#elementSearch-input">
+			<ul data-role="listview" data-bind="foreach:elementResults, jqmRefreshList:elementResults" data-filter="true" data-inset="true" id="ElementSetFiltered" data-input="#elementSearch-input">
 				<li>
-					<a href="#ElementControlPage" data-bind="text: Name, click: $parent.elementClicked"></a>
+					<h1 class="element-header" data-bind="text: Name"></h1>
+					<button class="button-aside" data-icon="carat-r" data-iconpos="notext" value="Down" data-bind="click: $parent.elementClicked, visible:Children"></button>
+					<form data-ajax="false" data-bind="submit: $root.turnOnElement">
+						<!-- ko if:Colors.length > 0 -->
+						<fieldset data-role="controlgroup" data-type="horizontal" data-bind="foreach:Colors">
+							<input type="radio" name="color" data-mini="true" data-bind="value: $data, attr: { id: $parent.Name + $data }, checked:$parent.Colors[0]" />
+							<label data-bind="attr: { for: $parent.Name + $data }, text:$data, style:{ background: $data}"></label>
+						</fieldset>
+						<!-- /ko -->
+						<!-- ko ifnot:Colors.length > 0 -->
+						<div class="ui-field-contain">
+							<label data-bind="attr: { for: Name }" class="ui-hidden-accessible">Color:</label>
+							<input type="color" data-mini="true" data-bind="attr: { id: Name }" name="color" value="#FFFFFF" />
+						</div>
+						<!-- /ko -->
+						<input type="hidden" name="id" data-role="none" data-bind="value:Id" />
+						<input type="submit" data-mini="true" value="On">
+						<!--</div>-->
+					</form>
+					
+					<!--<a href="#ElementControlPage" data-bind="click: $parent.elementClicked"></a>-->
 				</li>
 			</ul>
 		</div>
-		<div data-role="footer">
+		<div data-role="footer" data-id="fixedfooter" data-position="fixed">
+			
+			<label class="timeLabel" for="elementOnTime">Time/Intensity:</label>
+			<input type="number" name="elementOnTime" id="elementOnTime" data-bind="value: timeout" data-mini="true"/>
+			
+			<label for="slider1" class="ui-hidden-accessible">Intensity:</label>
+			<input type="range" name="intensity" id="slider1" data-highlight="true" min="0" max="100" data-bind="jqmSlider: elementIntensity">
 			<span data-bind="text: status"></span>
 		</div>
 	</div>
@@ -79,43 +105,48 @@
 			<!-- /ko -->
 		</div>
 		<div data-role="footer" data-id="fixedfooter" data-position="fixed">
+			<!-- ko if:selectedElement   -->
 			
-			<div data-role="controlgroup" data-type="horizontal" data-mini="true">
-				<input type="number" name="elementOnTime" id="elementOnTime" data-bind="value: elementOnTime" data-wrapper-class="controlgroup-textinput ui-btn" />
-				<button type="button" value="On" data-bind="click: $root.turnOnElement, enabled:selectedElement">On</button>
-			</div>
+			<label class="timeLabel" for="elementOnTime">Time/Intensity</label>
+			<input type="number" name="elementOnTime" id="elementOnTime" data-bind="value: timeout" />
 			
+			<label for="slider2" class="ui-hidden-accessible">Intensity:</label>
+			<input type="range" name="intensity" id="slider2" data-highlight="true" min="0" max="100" data-bind="jqmSlider: elementIntensity">
 			<span data-bind="text: status"></span>
+			<!-- /ko -->
 		</div>
 	</div>
 	
 	<!-- knockout template -->
 
 	<script type="text/html" id="element-template">
-		<!-- ko if:selectedElement   -->
-		<div id="elementControlContainer" data-bind="with:selectedElement">
+		<!-- ko if:selectedElement().Children   -->
+		<div id="elementControlContainer">
 			<a href="#" data-bind="click: $root.navigateParent" data-mini="true"  data-direction="reverse" class="ui-btn ui-icon-arrow-u ui-btn-icon-left ui-corner-all ui-shadow ui-btn-inline">Up</a>
-			<h3 data-bind="text: Name"></h3>
-			<fieldset data-role="controlgroup" data-type="horizontal"  data-bind="if: Colors.length > 0">
-				<legend>Color(s)</legend>
-				<!-- ko foreach:Colors -->
-				<input type="radio" name="color" data-mini="true" data-bind="value: $data, attr: { id: $parent.Name + $data }, checked:$root.selectedColor" />
-				<label data-bind="attr: { for: $parent.Name + $data }, text:$data, style:{ background: $data}"></label>
-				<!-- /ko -->
-			</fieldset>
-			
-			<div class="ui-field-contain" data-bind="ifnot:Colors.length > 0">
-				<label data-bind="attr: { for: Name }">Color:</label>
-				<input type="color" data-bind="attr: { id: Name }" name="color" value="#FFFFFF" />
-			</div>
-			<h3 data-bind="text:Children?'Child Elements':''"></h3>
-			<!-- ko if:Children-->
-			<ul data-role="listview" data-bind="foreach:Children, jqmRefreshList:Children" data-inset="true">
+
+			<ul data-role="listview" data-bind="foreach:selectedElement().Children , jqmRefreshList:selectedElement().Children" data-inset="true">
 				<li>
-					<a href="#" data-bind="text: Name, click: $root.navigateChild"></a>
+					<h1 class="element-header" data-bind="text: Name"></h1>
+					<button class="button-aside" data-icon="carat-r" data-iconpos="notext" value="Down" data-bind="click: $parent.navigateChild, visible:Children"></button>
+					<form data-ajax="false" data-bind="submit: $root.turnOnElement">
+						
+						<fieldset data-role="controlgroup" data-type="horizontal" data-bind="if: Colors.length > 0">
+							<!-- ko foreach:Colors -->
+							<input type="radio" name="color" data-mini="true" data-bind="value: $data, attr: { id: $parent.Name + $data + 'Child' }, checked:$parent.Colors[0]" />
+							<label data-bind="attr: { for: $parent.Name + $data  + 'Child' }, text:$data, style:{ background: $data}"></label>
+							<!-- /ko -->
+						</fieldset>
+
+						<div class="ui-field-contain" data-bind="ifnot:Colors.length > 0">
+							<label data-bind="attr: { for: Name }">Color:</label>
+							<input type="color" data-bind="attr: { id: Name }" name="color" value="#FFFFFF" />
+						</div>
+						<input type="hidden" name="id" data-role="none" data-bind="value:Id" />
+						
+						<input type="submit" value="On">
+					</form>
 				</li>
 			</ul>
-			<!-- /ko -->
 			
 		</div>
 		<!-- /ko -->

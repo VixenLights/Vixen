@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Web.Http;
 using Microsoft.SqlServer.Server;
 using VixenModules.App.WebServer.Filter;
@@ -42,10 +43,10 @@ namespace VixenModules.App.WebServer.Controllers
 			return helper.GetParentElements(id);
 		}
 
-		[HttpGet]
-		public Status On(string id, int time, string color)
+		[HttpPost]
+		public Status On(ElementState elementState)
 		{
-			return ElementsHelper.TurnOnElement(id, time, color);
+			return ElementsHelper.TurnOnElement(elementState.Id, elementState.Duration, elementState.Intensity, elementState.Color);
 		}
 
 		[HttpPost]
