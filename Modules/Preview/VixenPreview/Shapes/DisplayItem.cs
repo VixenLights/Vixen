@@ -85,11 +85,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 		}
 
-		~DisplayItem()
-		{
-			Dispose(false);
-		}
-
 		protected void Dispose(bool disposing)
 		{
 			if (disposing) {

@@ -43,7 +43,7 @@ namespace Vixen.Execution.Context
 				IsRunning = true;
 			}
 			catch (Exception ex) {
-				Logging.ErrorException(ex.Message,ex);
+				Logging.Error(ex.Message,ex);
 			}
 		}
 
@@ -209,14 +209,16 @@ namespace Vixen.Execution.Context
 		protected virtual void Dispose(bool disposing)
 		{
 			if (!_disposed) {
-				Stop();
+				if (disposing)
+				{
+					if (IsRunning)
+					{
+						Stop();		
+					}
+				}
 				_disposed = true;
 			}
 		}
 
-		~ContextBase()
-		{
-			Dispose(false);
-		}
 	}
 }

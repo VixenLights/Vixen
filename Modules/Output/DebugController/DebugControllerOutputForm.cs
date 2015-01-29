@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Vixen.Commands;
+using Vixen.Sys;
 
 namespace VixenModules.Output.DebugController
 {
@@ -26,19 +27,19 @@ namespace VixenModules.Output.DebugController
 		public DebugControllerOutputForm()
 		{
 			InitializeComponent();
-			Verbose = true;
+			chkVerbose.Checked = Verbose = false;
 			AppendText = false;
 
 			_timer = new Stopwatch();
-			MsPerUpdate = 200;
+			//MsPerUpdate = VixenSystem.DefaultUpdateInterval;
 			_lastUpdateMs = int.MinValue;
 			_timer.Start();
 		}
 
 		public void UpdateState(ICommand[] outputStates)
 		{
-			if (_timer.ElapsedMilliseconds < _lastUpdateMs + MsPerUpdate)
-				return;
+			//if (_timer.ElapsedMilliseconds < _lastUpdateMs + MsPerUpdate)
+			//	return;
 
 			_lastUpdateMs = _timer.ElapsedMilliseconds;
 
@@ -91,6 +92,11 @@ namespace VixenModules.Output.DebugController
 				textBoxOutput.AppendText(text);
 			else
 				textBoxOutput.Text = text;
+		}
+
+		private void chkVerbose_CheckedChanged(object sender, EventArgs e)
+		{
+			Verbose = chkVerbose.Checked;
 		}
 	}
 }

@@ -65,7 +65,7 @@
 			this.treeEffects.ShowLines = false;
 			this.treeEffects.ShowPlusMinus = false;
 			this.treeEffects.ShowRootLines = false;
-			this.treeEffects.Size = new System.Drawing.Size(256, 402);
+			this.treeEffects.Size = new System.Drawing.Size(209, 442);
 			this.treeEffects.TabIndex = 0;
 			this.treeEffects.AfterCollapse += new System.Windows.Forms.TreeViewEventHandler(this.treeEffects_AfterCollapse);
 			this.treeEffects.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.treeEffects_AfterExpand);
@@ -86,7 +86,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(256, 402);
+			this.ClientSize = new System.Drawing.Size(209, 442);
 			this.ControlBox = false;
 			this.Controls.Add(this.treeEffects);
 			this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
