@@ -43,7 +43,7 @@ namespace VixenApplication
 			}
 			catch (Exception ex)
 			{
-				Logging.FatalException(ErrorMsg, ex);
+				Logging.Fatal(ErrorMsg, ex);
 				Environment.Exit(1);
 			}
 		}
@@ -63,7 +63,7 @@ namespace VixenApplication
 		private static void LogMessageAndExit(Exception ex)
 		{
 			// Since we can't prevent the app from terminating, log this to the event log. 
-			Logging.FatalException(ErrorMsg, ex);
+			Logging.Fatal(ErrorMsg, ex);
 			Environment.Exit(1);
 		}
 

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -10,8 +10,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Common.Resources</RootNamespace>
     <AssemblyName>Resources</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>$(SolutionDir)\Release64\Common\</OutputPath>
@@ -28,6 +29,7 @@
     <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>$(SolutionDir)\Release\Common\</OutputPath>
@@ -44,8 +46,13 @@
     <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NLog, Version=3.1.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NLog.3.1.0.0\lib\net45\NLog.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -198,6 +205,7 @@
     <None Include="magnifier_zoom_out.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
     <None Include="zoom.png" />
   </ItemGroup>
   <ItemGroup>
@@ -234,6 +242,9 @@
     <None Include="add.png" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="fill_gaps.png" />
+    <Content Include="table_chart_left.png" />
+    <Content Include="folder_open.png" />
     <None Include="hourglass_link.png" />
     <None Include="hourglass_go.png" />
     <None Include="hourglass_delete.png" />
@@ -365,7 +376,6 @@
     <None Include="data_grid.png" />
     <None Include="data_sort.png" />
     <None Include="data_table.png" />
-    <None Include="control_play_red.png" />
     <None Include="clipboard_empty.png" />
     <None Include="clipboard_invoice.png" />
     <None Include="clipboard_sign.png" />
@@ -386,7 +396,6 @@
     <None Include="clock_red.png" />
     <None Include="clock_select_remain.png" />
     <None Include="clock_stop.png" />
-    <None Include="arrow_loop.png" />
     <None Include="arrow_branch.png" />
     <None Include="arrow_divide.png" />
     <None Include="arrow_in.png" />
@@ -403,6 +412,7 @@
     <None Include="arrow_turn_left.png" />
     <None Include="arrow_turn_right.png" />
     <Content Include="cursor_arrow.png" />
+    <Content Include="disk.png" />
     <Content Include="folder.png" />
     <Content Include="folder_add.png" />
     <Content Include="folder_delete.png" />

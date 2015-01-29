@@ -179,7 +179,7 @@ namespace Vixen.Sys.Managers
 				_threadState = ExecutionState.Stopped;
 				_finished.Set();
 
-				Logging.ErrorException(string.Format("Controller {0} error", OutputDevice.Name), ex);
+				Logging.Error(string.Format("Controller {0} error", OutputDevice.Name), ex);
 				OnError();
 			}
 		}
@@ -265,20 +265,18 @@ namespace Vixen.Sys.Managers
 
 		public void Dispose()
 		{
-			_Dispose();
-		}
-
-		~HardwareUpdateThread()
-		{
-			_Dispose();
+			Dispose(true);
 			GC.SuppressFinalize(this);
 		}
 
-		private void _Dispose()
+		protected void Dispose(bool disposing)
 		{
-			_finished.Dispose();
-			_updateSignalerSync.Dispose();
-			_pauseSignal.Dispose();
+			if (disposing)
+			{
+				_finished.Dispose();
+				_updateSignalerSync.Dispose();
+				_pauseSignal.Dispose();	
+			}
 		}
 	}
 }

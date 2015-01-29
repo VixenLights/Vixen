@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using Common.Controls;
 using Common.Controls.Timeline;
 using Common.Resources.Properties;
 using System.IO;
@@ -18,9 +14,7 @@ using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using Vixen.Services;
 using Vixen.Module.App;
-using Vixen.Sys;
 using WeifenLuo.WinFormsUI.Docking;
-using Vixen.Module.Effect;
 using System.Runtime.InteropServices;
 
 
@@ -42,9 +36,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		public void ListViewItem_SetSpacing(ListView listview, short leftPadding, short topPadding)
 		{
-			const int LVM_FIRST = 0x1000;
-			const int LVM_SETICONSPACING = LVM_FIRST + 53;
-			SendMessage(listview.Handle, LVM_SETICONSPACING, IntPtr.Zero, (IntPtr)MakeLong(leftPadding, topPadding));
+			const int lvmFirst = 0x1000;
+			const int lvmSeticonspacing = lvmFirst + 53;
+			SendMessage(listview.Handle, lvmSeticonspacing, IntPtr.Zero, (IntPtr)MakeLong(leftPadding, topPadding));
 		}
 
 		#endregion
@@ -80,11 +74,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		#region Private Members
 
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
-		private List<Color> colors = new List<Color>();
-		private string colorFilePath;
+		private List<Color> _colors = new List<Color>();
+		private string _colorFilePath;
 		private CurveLibrary _curveLibrary;
 		private ColorGradientLibrary _colorGradientLibrary;
-		private string lastFolder;
+		private string _lastFolder;
 		private bool ShiftPressed
 		{
 			get { return ModifierKeys.HasFlag(Keys.Shift); }
@@ -106,6 +100,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolStripButtonNewColor.Image = Resources.add;
 			toolStripButtonDeleteColor.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStripButtonDeleteColor.Image = Resources.delete;
+			toolStripButtonExportColors.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			toolStripButtonExportColors.Image = Resources.disk;
+			toolStripButtonImportColors.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			toolStripButtonImportColors.Image = Resources.folder_open;
 
 			toolStripButtonEditCurve.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStripButtonEditCurve.Image = Resources.pencil;
@@ -113,6 +111,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolStripButtonNewCurve.Image = Resources.add;
 			toolStripButtonDeleteCurve.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStripButtonDeleteCurve.Image = Resources.delete;
+			toolStripButtonExportCurves.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			toolStripButtonExportCurves.Image = Resources.disk;
+			toolStripButtonImportCurves.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			toolStripButtonImportCurves.Image = Resources.folder_open;
 
 			toolStripButtonEditGradient.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStripButtonEditGradient.Image = Resources.pencil;
@@ -120,17 +122,21 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolStripButtonNewGradient.Image = Resources.add;
 			toolStripButtonDeleteGradient.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStripButtonDeleteGradient.Image = Resources.delete;
+			toolStripButtonExportGradients.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			toolStripButtonExportGradients.Image = Resources.disk;
+			toolStripButtonImportGradients.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			toolStripButtonImportGradients.Image = Resources.folder_open;
 
-			ListViewItem_SetSpacing(this.listViewColors, 48 + 5, 48 + 5);
-			ListViewItem_SetSpacing(this.listViewCurves, 48 + 5, 48 + 30);
-			ListViewItem_SetSpacing(this.listViewGradients, 48 + 5, 48 + 30);
+			ListViewItem_SetSpacing(listViewColors, 48 + 5, 48 + 5);
+			ListViewItem_SetSpacing(listViewCurves, 48 + 5, 48 + 30);
+			ListViewItem_SetSpacing(listViewGradients, 48 + 5, 48 + 30);
 		}
 
 		private void ColorPalette_Load(object sender, EventArgs e)
 		{
-			colorFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Vixen", "ColorPalette.xml");
+			_colorFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Vixen", "ColorPalette.xml");
 
-			if (File.Exists(colorFilePath))
+			if (File.Exists(_colorFilePath))
 			{
 				Load_ColorPaletteFile();
 				PopulateColors();
@@ -162,27 +168,27 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		public void Load_ColorPaletteFile()
 		{
-			if (System.IO.File.Exists(colorFilePath))
+			if (File.Exists(_colorFilePath))
 			{
-				using (FileStream reader = new FileStream(colorFilePath, FileMode.Open, FileAccess.Read))
+				using (FileStream reader = new FileStream(_colorFilePath, FileMode.Open, FileAccess.Read))
 				{
 					DataContractSerializer ser = new DataContractSerializer(typeof(List<Color>));
-					colors = (List<Color>)ser.ReadObject(reader);
+					_colors = (List<Color>)ser.ReadObject(reader);
 				}
 			}
 		}
 
 		public void Save_ColorPaletteFile()
 		{
-			var xmlsettings = new XmlWriterSettings()
+			var xmlsettings = new XmlWriterSettings
 			{
 				Indent = true,
 				IndentChars = "\t",
 			};
 
 			DataContractSerializer dataSer = new DataContractSerializer(typeof(List<Color>));
-			var dataWriter = XmlWriter.Create(colorFilePath, xmlsettings);
-			dataSer.WriteObject(dataWriter, colors);
+			var dataWriter = XmlWriter.Create(_colorFilePath, xmlsettings);
+			dataSer.WriteObject(dataWriter, _colors);
 			dataWriter.Close();
 		}
 
@@ -193,7 +199,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			listViewColors.LargeImageList = new ImageList { ColorDepth = ColorDepth.Depth32Bit, ImageSize = new Size(48, 48) };
 
-			foreach (Color colorItem in colors)
+			foreach (Color colorItem in _colors)
 			{
 				Bitmap result = new Bitmap(48, 48);
 				Graphics gfx = Graphics.FromImage(result);
@@ -205,10 +211,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				listViewColors.LargeImageList.Images.Add(colorItem.ToString(), result);
 
-				ListViewItem item = new ListViewItem();
-				item.ToolTipText = string.Format("R: {0} G: {1} B: {2}", colorItem.R, colorItem.G, colorItem.B);
-				item.ImageKey = colorItem.ToString();
-				item.Tag = colorItem;
+				ListViewItem item = new ListViewItem
+				{
+					ToolTipText = string.Format("R: {0} G: {1} B: {2}", colorItem.R, colorItem.G, colorItem.B),
+					ImageKey = colorItem.ToString(),
+					Tag = colorItem
+				};
+
 				listViewColors.Items.Add(item);
 			}
 			listViewColors.EndUpdate();
@@ -217,10 +226,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void Update_ColorOrder()
 		{
-			colors.Clear();
+			_colors.Clear();
 			foreach (ListViewItem item in listViewColors.Items)
 			{
-				colors.Add((Color)item.Tag);
+				_colors.Add((Color)item.Tag);
 			}
 			Save_ColorPaletteFile();
 		}
@@ -243,12 +252,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				listViewCurves.LargeImageList.Images.Add(name, c.GenerateCurveImage(new Size(48, 48)));
 
-				ListViewItem item = new ListViewItem();
-				item.Text = name;
-				item.Name = name;
-				item.ImageKey = name;
+				ListViewItem item = new ListViewItem {Text = name, Name = name, ImageKey = name};
 
-				listViewCurves.Items.Add(item);
+				if (item != null) listViewCurves.Items.Add(item);
 			}
 
 			listViewCurves.EndUpdate();
@@ -276,10 +282,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				gfx.DrawRectangle(new Pen(Color.Black, 2), 0, 0, 48, 48);
 				listViewGradients.LargeImageList.Images.Add(name, result);
 
-				ListViewItem item = new ListViewItem();
-				item.Text = name;
-				item.Name = name;
-				item.ImageKey = name;
+				ListViewItem item = new ListViewItem {Text = name, Name = name, ImageKey = name};
 
 				listViewGradients.Items.Add(item);
 			}
@@ -306,20 +309,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				cp.LockValue_V = true;
 				cp.Color = XYZ.FromRGB((Color)listViewColors.SelectedItems[0].Tag);
 				DialogResult result = cp.ShowDialog();
-				if (result == DialogResult.OK)
-				{
-					Color ColorValue = cp.Color.ToRGB().ToArgb();
+				if (result != DialogResult.OK) return;
+				Color colorValue = cp.Color.ToRGB().ToArgb();
 
-					listViewColors.BeginUpdate();
-					listViewColors.SelectedItems[0].ToolTipText = string.Format("R: {0} G: {1} B: {2}", ColorValue.R, ColorValue.G, ColorValue.B);
-					listViewColors.SelectedItems[0].ImageKey = ColorValue.ToString();
-					listViewColors.SelectedItems[0].Tag = ColorValue;
-					listViewColors.EndUpdate();
+				listViewColors.BeginUpdate();
+				listViewColors.SelectedItems[0].ToolTipText = string.Format("R: {0} G: {1} B: {2}", colorValue.R, colorValue.G, colorValue.B);
+				listViewColors.SelectedItems[0].ImageKey = colorValue.ToString();
+				listViewColors.SelectedItems[0].Tag = colorValue;
+				listViewColors.EndUpdate();
 
-					Update_ColorOrder();
-					PopulateColors();
-
-				}
+				Update_ColorOrder();
+				PopulateColors();
 			}
 		}
 
@@ -330,14 +330,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				cp.LockValue_V = true;
 				cp.Color = XYZ.FromRGB(Color.White);
 				DialogResult result = cp.ShowDialog();
-				if (result == DialogResult.OK)
-				{
-					Color ColorValue = cp.Color.ToRGB().ToArgb();
+				if (result != DialogResult.OK) return;
+				Color colorValue = cp.Color.ToRGB().ToArgb();
 
-					colors.Add(ColorValue);
-					PopulateColors();
-					Save_ColorPaletteFile();
-				}
+				_colors.Add(colorValue);
+				PopulateColors();
+				Save_ColorPaletteFile();
 			}
 		}
 
@@ -346,11 +344,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (listViewColors.SelectedItems == null)
 				return;
 
-			DialogResult result = MessageBox.Show("Are you sure you want to delete this color?", "Delete color?", MessageBoxButtons.YesNoCancel);
+			DialogResult result = MessageBox.Show(@"Are you sure you want to delete this color?", @"Delete color?", MessageBoxButtons.YesNoCancel);
 
-			if (result == System.Windows.Forms.DialogResult.Yes)
+			if (result == DialogResult.Yes)
 			{
-				colors.Remove((Color)listViewColors.SelectedItems[0].Tag);
+				_colors.Remove((Color)listViewColors.SelectedItems[0].Tag);
 			}
 
 			PopulateColors();
@@ -388,14 +386,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				if (dialog.Response == string.Empty)
 				{
-					MessageBox.Show("Please enter a name.");
+					MessageBox.Show(@"Please enter a name.");
 					continue;
 				}
 
 				if (_curveLibrary.Contains(dialog.Response))
 				{
-					DialogResult result = MessageBox.Show("There is already a curve with that name. Do you want to overwrite it?",
-														  "Overwrite curve?", MessageBoxButtons.YesNoCancel);
+					DialogResult result = MessageBox.Show(@"There is already a curve with that name. Do you want to overwrite it?",
+														  @"Overwrite curve?", MessageBoxButtons.YesNoCancel);
 					if (result == DialogResult.Yes)
 					{
 						_curveLibrary.AddCurve(dialog.Response, new Curve());
@@ -403,7 +401,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						Populate_Curves();
 						break;
 					}
-					else if (result == DialogResult.Cancel)
+
+					if (result == DialogResult.Cancel)
 					{
 						break;
 					}
@@ -422,10 +421,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (listViewCurves.SelectedItems.Count == 0)
 				return;
 
-			DialogResult result = MessageBox.Show("If you delete this library curve, ALL places it is used will be unlinked and will" +
-								" become independent curves. Are you sure you want to continue?", "Delete library curve?", MessageBoxButtons.YesNoCancel);
+			DialogResult result = MessageBox.Show(@"If you delete this library curve, ALL places it is used will be unlinked and will" +
+								@" become independent curves. Are you sure you want to continue?", @"Delete library curve?", MessageBoxButtons.YesNoCancel);
 
-			if (result == System.Windows.Forms.DialogResult.Yes)
+			if (result == DialogResult.Yes)
 			{
 				_curveLibrary.RemoveCurve(listViewCurves.SelectedItems[0].Name);
 
@@ -464,26 +463,27 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			Common.Controls.TextDialog dialog = new Common.Controls.TextDialog("Gradient name?");
 
-			while (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+			while (dialog.ShowDialog() == DialogResult.OK)
 			{
 				if (dialog.Response == string.Empty)
 				{
-					MessageBox.Show("Please enter a name.");
+					MessageBox.Show(@"Please enter a name.");
 					continue;
 				}
 
 				if (_colorGradientLibrary.Contains(dialog.Response))
 				{
-					DialogResult result = MessageBox.Show("There is already a gradient with that name. Do you want to overwrite it?",
-														  "Overwrite gradient?", MessageBoxButtons.YesNoCancel);
-					if (result == System.Windows.Forms.DialogResult.Yes)
+					DialogResult result = MessageBox.Show(@"There is already a gradient with that name. Do you want to overwrite it?",
+														  @"Overwrite gradient?", MessageBoxButtons.YesNoCancel);
+					if (result == DialogResult.Yes)
 					{
 						_colorGradientLibrary.AddColorGradient(dialog.Response, new ColorGradient());
 						_colorGradientLibrary.EditLibraryItem(dialog.Response);
 						Populate_Gradients();
 						break;
 					}
-					else if (result == System.Windows.Forms.DialogResult.Cancel)
+					
+					if (result == DialogResult.Cancel)
 					{
 						break;
 					}
@@ -503,11 +503,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				return;
 
 			DialogResult result =
-				MessageBox.Show("If you delete this library gradient, ALL places it is used will be unlinked and will" +
-								" become independent gradients. Are you sure you want to continue?", "Delete library gradient?",
+				MessageBox.Show(@"If you delete this library gradient, ALL places it is used will be unlinked and will" +
+								@" become independent gradients. Are you sure you want to continue?", @"Delete library gradient?",
 								MessageBoxButtons.YesNoCancel);
 
-			if (result == System.Windows.Forms.DialogResult.Yes)
+			if (result == DialogResult.Yes)
 			{
 				_colorGradientLibrary.RemoveColorGradient(listViewGradients.SelectedItems[0].Name);
 			}
@@ -560,13 +560,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (listViewColors.SelectedItems.Count == 0)
 				return;
 			Point p = listViewColors.PointToClient(new Point(e.X, e.Y));
-			ListViewItem MovetoNewPosition = listViewColors.GetItemAt(p.X, p.Y);
-			if (MovetoNewPosition == null) return;
-			ListViewItem DropToNewPosition = (e.Data.GetData(typeof(ListView.SelectedListViewItemCollection)) as ListView.SelectedListViewItemCollection)[0];
-			ListViewItem CloneToNew = (ListViewItem)DropToNewPosition.Clone();
-			int index = MovetoNewPosition.Index;
-			listViewColors.Items.Remove(DropToNewPosition);
-			listViewColors.Items.Insert(index, CloneToNew);
+			ListViewItem movetoNewPosition = listViewColors.GetItemAt(p.X, p.Y);
+			if (movetoNewPosition == null) return;
+			ListViewItem dropToNewPosition = (e.Data.GetData(typeof(ListView.SelectedListViewItemCollection)) as ListView.SelectedListViewItemCollection)[0];
+			ListViewItem cloneToNew = (ListViewItem)dropToNewPosition.Clone();
+			int index = movetoNewPosition.Index;
+			listViewColors.Items.Remove(dropToNewPosition);
+			listViewColors.Items.Insert(index, cloneToNew);
 			listViewColors.Alignment = ListViewAlignment.SnapToGrid;
 			Update_ColorOrder();
 		}
@@ -616,69 +616,71 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void toolStripButtonExportColors_Click(object sender, EventArgs e)
 		{
-			SaveFileDialog saveFileDialog = new SaveFileDialog();
-			saveFileDialog.DefaultExt = ".vfc";
-			saveFileDialog.Filter = "Vixen 3 Favorite Colors (*.vfc)|*.vfc|All Files (*.*)|*.*";
-			if (lastFolder != string.Empty) saveFileDialog.InitialDirectory = lastFolder;
-			if (saveFileDialog.ShowDialog() == DialogResult.OK)
+			SaveFileDialog saveFileDialog = new SaveFileDialog
 			{
-				lastFolder = Path.GetDirectoryName(saveFileDialog.FileName);
+				DefaultExt = ".vfc",
+				Filter = @"Vixen 3 Favorite Colors (*.vfc)|*.vfc|All Files (*.*)|*.*"
+			};
 
-				var xmlsettings = new XmlWriterSettings()
-				{
-					Indent = true,
-					IndentChars = "\t",
-				};
+			if (_lastFolder != string.Empty) saveFileDialog.InitialDirectory = _lastFolder;
+			if (saveFileDialog.ShowDialog() != DialogResult.OK) return;
+			_lastFolder = Path.GetDirectoryName(saveFileDialog.FileName);
 
-				try
-				{
-					DataContractSerializer ser = new DataContractSerializer(typeof(List<Color>));
-					var writer = XmlWriter.Create(saveFileDialog.FileName, xmlsettings);
-					ser.WriteObject(writer, colors);
-					writer.Close();
-				}
-				catch (Exception ex)
-				{
-					Logging.Error("While exporting Favorite Colors: " + saveFileDialog.FileName + " " + ex.InnerException);
-					MessageBox.Show("Unable to export data, please check the error log for details", "Unable to export", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-				}
+			var xmlsettings = new XmlWriterSettings
+			{
+				Indent = true,
+				IndentChars = "\t",
+			};
+
+			try
+			{
+				DataContractSerializer ser = new DataContractSerializer(typeof(List<Color>));
+				var writer = XmlWriter.Create(saveFileDialog.FileName, xmlsettings);
+				ser.WriteObject(writer, _colors);
+				writer.Close();
+			}
+			catch (Exception ex)
+			{
+				Logging.Error("While exporting Favorite Colors: " + saveFileDialog.FileName + " " + ex.InnerException);
+				MessageBox.Show(@"Unable to export data, please check the error log for details", @"Unable to export", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 			}
 		}
 
 		private void toolStripButtonImportColors_Click(object sender, EventArgs e)
 		{
-			OpenFileDialog openFileDialog = new OpenFileDialog();
-			openFileDialog.DefaultExt = ".vfc";
-			openFileDialog.Filter = "Vixen 3 Favorite Colors (*.vfc)|*.vfc|All Files (*.*)|*.*";
-			openFileDialog.FilterIndex = 0;
-			if (lastFolder != string.Empty) openFileDialog.InitialDirectory = lastFolder;
-			if (openFileDialog.ShowDialog() == DialogResult.OK)
+			OpenFileDialog openFileDialog = new OpenFileDialog
 			{
-				lastFolder = Path.GetDirectoryName(openFileDialog.FileName);
-				List<Color> _colors = new List<Color>();
+				DefaultExt = ".vfc",
+				Filter = @"Vixen 3 Favorite Colors (*.vfc)|*.vfc|All Files (*.*)|*.*",
+				FilterIndex = 0
+			};
 
-				try
+			if (_lastFolder != string.Empty) openFileDialog.InitialDirectory = _lastFolder;
+			if (openFileDialog.ShowDialog() != DialogResult.OK) return;
+			_lastFolder = Path.GetDirectoryName(openFileDialog.FileName);
+			List<Color> colors = new List<Color>();
+
+			try
+			{
+				using (FileStream reader = new FileStream(openFileDialog.FileName, FileMode.Open, FileAccess.Read))
 				{
-					using (FileStream reader = new FileStream(openFileDialog.FileName, FileMode.Open, FileAccess.Read))
-					{
-						DataContractSerializer ser = new DataContractSerializer(typeof(List<Color>));
-						_colors = (List<Color>)ser.ReadObject(reader);
-					}
-
-					foreach (Color color in _colors)
-					{
-						colors.Add(color);
-					}
+					DataContractSerializer ser = new DataContractSerializer(typeof(List<Color>));
+					colors = (List<Color>)ser.ReadObject(reader);
 				}
-				catch (Exception ex)
+
+				foreach (Color color in colors)
 				{
-					Logging.Error("Invalid file while importing Favorite Colors: " + openFileDialog.FileName + " " + ex.InnerException);
-					MessageBox.Show("Sorry, we didn't reconize the data in that file as valid Favorite Color data.", "Invalid file", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-
+					_colors.Add(color);
 				}
-				PopulateColors();
-				Save_ColorPaletteFile();
 			}
+			catch (Exception ex)
+			{
+				Logging.Error("Invalid file while importing Favorite Colors: " + openFileDialog.FileName + " " + ex.InnerException);
+				MessageBox.Show(@"Sorry, we didn't reconize the data in that file as valid Favorite Color data.", @"Invalid file", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+			}
+			PopulateColors();
+			Save_ColorPaletteFile();
 		}
 
 		#endregion
@@ -687,83 +689,79 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void toolStripButtonExportCurves_Click(object sender, EventArgs e)
 		{
-			SaveFileDialog saveFileDialog = new SaveFileDialog();
-			saveFileDialog.DefaultExt = ".vcl";
-			saveFileDialog.Filter = "Vixen 3 Curve Library (*.vcl)|*.vcl|All Files (*.*)|*.*";
-			if (lastFolder != string.Empty) saveFileDialog.InitialDirectory = lastFolder;
-			if (saveFileDialog.ShowDialog() == DialogResult.OK)
+			SaveFileDialog saveFileDialog = new SaveFileDialog
 			{
-				lastFolder = Path.GetDirectoryName(saveFileDialog.FileName);
+				DefaultExt = ".vcl",
+				Filter = @"Vixen 3 Curve Library (*.vcl)|*.vcl|All Files (*.*)|*.*"
+			};
 
-				var xmlsettings = new XmlWriterSettings()
-				{
-					Indent = true,
-					IndentChars = "\t",
-				};
+			if (_lastFolder != string.Empty) saveFileDialog.InitialDirectory = _lastFolder;
+			if (saveFileDialog.ShowDialog() != DialogResult.OK) return;
+			_lastFolder = Path.GetDirectoryName(saveFileDialog.FileName);
 
-				try
-				{
-					Dictionary<string, Curve> _curves = new Dictionary<string, Curve>();
-					foreach (KeyValuePair<string, Curve> curve in _curveLibrary)
-					{
-						_curves.Add(curve.Key, curve.Value);
-					}
+			var xmlsettings = new XmlWriterSettings
+			{
+				Indent = true,
+				IndentChars = "\t",
+			};
 
-					DataContractSerializer ser = new DataContractSerializer(typeof(Dictionary<string, Curve>));
-					var writer = XmlWriter.Create(saveFileDialog.FileName, xmlsettings);
-					ser.WriteObject(writer, _curves);
-					writer.Close();
-				}
-				catch (Exception ex)
-				{
-					Logging.Error("While exporting Curve Library: " + saveFileDialog.FileName + " " + ex.InnerException);
-					MessageBox.Show("Unable to export data, please check the error log for details", "Unable to export", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-				}
+			try
+			{
+				Dictionary<string, Curve> curves = _curveLibrary.ToDictionary(curve => curve.Key, curve => curve.Value);
+
+				DataContractSerializer ser = new DataContractSerializer(typeof(Dictionary<string, Curve>));
+				var writer = XmlWriter.Create(saveFileDialog.FileName, xmlsettings);
+				ser.WriteObject(writer, curves);
+				writer.Close();
+			}
+			catch (Exception ex)
+			{
+				Logging.Error("While exporting Curve Library: " + saveFileDialog.FileName + " " + ex.InnerException);
+				MessageBox.Show(@"Unable to export data, please check the error log for details", @"Unable to export", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 			}
 		}
 
 		private void toolStripButtonImportCurves_Click(object sender, EventArgs e)
 		{
-			OpenFileDialog openFileDialog = new OpenFileDialog();
-			openFileDialog.DefaultExt = ".vcl";
-			openFileDialog.Filter = "Vixen 3 Curve Library (*.vcl)|*.vcl|All Files (*.*)|*.*";
-			openFileDialog.FilterIndex = 0;
-			if (lastFolder != string.Empty) openFileDialog.InitialDirectory = lastFolder;
-			if (openFileDialog.ShowDialog() == DialogResult.OK)
+			OpenFileDialog openFileDialog = new OpenFileDialog
 			{
-				lastFolder = Path.GetDirectoryName(openFileDialog.FileName);
-				Dictionary<string, Curve> _curves = new Dictionary<string, Curve>();
+				DefaultExt = ".vcl",
+				Filter = @"Vixen 3 Curve Library (*.vcl)|*.vcl|All Files (*.*)|*.*",
+				FilterIndex = 0
+			};
+			if (_lastFolder != string.Empty) openFileDialog.InitialDirectory = _lastFolder;
+			if (openFileDialog.ShowDialog() != DialogResult.OK) return;
+			_lastFolder = Path.GetDirectoryName(openFileDialog.FileName);
+			Dictionary<string, Curve> curves = new Dictionary<string, Curve>();
 
-				try
+			try
+			{
+				using (FileStream reader = new FileStream(openFileDialog.FileName, FileMode.Open, FileAccess.Read))
 				{
-					using (FileStream reader = new FileStream(openFileDialog.FileName, FileMode.Open, FileAccess.Read))
-					{
-						DataContractSerializer ser = new DataContractSerializer(typeof(Dictionary<string, Curve>));
-						_curves = (Dictionary<string, Curve>)ser.ReadObject(reader);
-					}
-
-					foreach (KeyValuePair<string, Curve> curve in _curves)
-					{
-						//This was just easier than prompting for a rename
-						//and rechecking, and repormpting... and on and on and on...
-						string curveName = curve.Key;
-						int i = 2;
-						while (_curveLibrary.Contains(curveName))
-						{
-							curveName = curve.Key + " " + i;
-							i++;
-						}
-
-						_curveLibrary.AddCurve(curveName, curve.Value);
-					}
+					DataContractSerializer ser = new DataContractSerializer(typeof(Dictionary<string, Curve>));
+					curves = (Dictionary<string, Curve>)ser.ReadObject(reader);
 				}
-				catch (Exception ex)
+
+				foreach (KeyValuePair<string, Curve> curve in curves)
 				{
-					Logging.Error("Invalid file while importing Curve Library: " + openFileDialog.FileName + " " + ex.InnerException);
-					MessageBox.Show("Sorry, we didn't reconize the data in that file as valid Curve Library data.", "Invalid file", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+					//This was just easier than prompting for a rename
+					//and rechecking, and repormpting... and on and on and on...
+					string curveName = curve.Key;
+					int i = 2;
+					while (_curveLibrary.Contains(curveName))
+					{
+						curveName = curve.Key + " " + i;
+						i++;
+					}
+
+					_curveLibrary.AddCurve(curveName, curve.Value);
+				}
+			}
+			catch (Exception ex)
+			{
+				Logging.Error("Invalid file while importing Curve Library: " + openFileDialog.FileName + " " + ex.InnerException);
+				MessageBox.Show(@"Sorry, we didn't reconize the data in that file as valid Curve Library data.", @"Invalid file", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 					
-				}
-
 			}
 		}
 
@@ -774,82 +772,79 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void toolStripButtonExportGradients_Click(object sender, EventArgs e)
 		{
-			SaveFileDialog saveFileDialog = new SaveFileDialog();
-			saveFileDialog.DefaultExt = ".vgl";
-			saveFileDialog.Filter = "Vixen 3 Color Gradient Library (*.vgl)|*.vgl|All Files (*.*)|*.*";
-			if (lastFolder != string.Empty) saveFileDialog.InitialDirectory = lastFolder;
-			if (saveFileDialog.ShowDialog() == DialogResult.OK)
+			SaveFileDialog saveFileDialog = new SaveFileDialog
 			{
-				lastFolder = Path.GetDirectoryName(saveFileDialog.FileName);
+				DefaultExt = ".vgl",
+				Filter = @"Vixen 3 Color Gradient Library (*.vgl)|*.vgl|All Files (*.*)|*.*"
+			};
 
-				var xmlsettings = new XmlWriterSettings()
-				{
-					Indent = true,
-					IndentChars = "\t",
-				};
+			if (_lastFolder != string.Empty) saveFileDialog.InitialDirectory = _lastFolder;
+			if (saveFileDialog.ShowDialog() != DialogResult.OK) return;
+			_lastFolder = Path.GetDirectoryName(saveFileDialog.FileName);
 
-				try
-				{
-					Dictionary<string, ColorGradient> _gradients = new Dictionary<string, ColorGradient>();
-					foreach (KeyValuePair<string, ColorGradient> gradient in _colorGradientLibrary)
-					{
-						_gradients.Add(gradient.Key, gradient.Value);
-					}
+			var xmlsettings = new XmlWriterSettings
+			{
+				Indent = true,
+				IndentChars = "\t",
+			};
 
-					DataContractSerializer ser = new DataContractSerializer(typeof(Dictionary<string, ColorGradient>));
-					var writer = XmlWriter.Create(saveFileDialog.FileName, xmlsettings);
-					ser.WriteObject(writer, _gradients);
-					writer.Close();
-				}
-				catch (Exception ex)
-				{
-					Logging.Error("While exporting Color Gradient Library: " + saveFileDialog.FileName + " " + ex.InnerException);
-					MessageBox.Show("Unable to export data, please check the error log for details", "Unable to export", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-				}
+			try
+			{
+				Dictionary<string, ColorGradient> gradients = _colorGradientLibrary.ToDictionary(gradient => gradient.Key, gradient => gradient.Value);
+
+				DataContractSerializer ser = new DataContractSerializer(typeof(Dictionary<string, ColorGradient>));
+				var writer = XmlWriter.Create(saveFileDialog.FileName, xmlsettings);
+				ser.WriteObject(writer, gradients);
+				writer.Close();
+			}
+			catch (Exception ex)
+			{
+				Logging.Error("While exporting Color Gradient Library: " + saveFileDialog.FileName + " " + ex.InnerException);
+				MessageBox.Show(@"Unable to export data, please check the error log for details", @"Unable to export", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 			}
 		}
 
 		private void toolStripButtonImportGradients_Click(object sender, EventArgs e)
 		{
-			OpenFileDialog openFileDialog = new OpenFileDialog();
-			openFileDialog.DefaultExt = ".vgl";
-			openFileDialog.Filter = "Vixen 3 Color Gradient Library (*.vgl)|*.vgl|All Files (*.*)|*.*";
-			openFileDialog.FilterIndex = 0;
-			if (lastFolder != string.Empty) openFileDialog.InitialDirectory = lastFolder;
-			if (openFileDialog.ShowDialog() == DialogResult.OK)
+			OpenFileDialog openFileDialog = new OpenFileDialog
 			{
-				lastFolder = Path.GetDirectoryName(openFileDialog.FileName);
-				Dictionary<string, ColorGradient> _gradients = new Dictionary<string, ColorGradient>();
+				DefaultExt = ".vgl",
+				Filter = @"Vixen 3 Color Gradient Library (*.vgl)|*.vgl|All Files (*.*)|*.*",
+				FilterIndex = 0
+			};
 
-				try
+			if (_lastFolder != string.Empty) openFileDialog.InitialDirectory = _lastFolder;
+			if (openFileDialog.ShowDialog() != DialogResult.OK) return;
+			_lastFolder = Path.GetDirectoryName(openFileDialog.FileName);
+			Dictionary<string, ColorGradient> gradients = new Dictionary<string, ColorGradient>();
+
+			try
+			{
+				using (FileStream reader = new FileStream(openFileDialog.FileName, FileMode.Open, FileAccess.Read))
 				{
-					using (FileStream reader = new FileStream(openFileDialog.FileName, FileMode.Open, FileAccess.Read))
+					DataContractSerializer ser = new DataContractSerializer(typeof(Dictionary<string, ColorGradient>));
+					gradients = (Dictionary<string, ColorGradient>)ser.ReadObject(reader);
+				}
+
+				foreach (KeyValuePair<string, ColorGradient> gradient in gradients)
+				{
+					//This was just easier than prompting for a rename
+					//and rechecking, and repormpting... and on and on and on...
+					string gradientName = gradient.Key;
+					int i = 2;
+					while (_colorGradientLibrary.Contains(gradientName))
 					{
-						DataContractSerializer ser = new DataContractSerializer(typeof(Dictionary<string, ColorGradient>));
-						_gradients = (Dictionary<string, ColorGradient>)ser.ReadObject(reader);
+						gradientName = gradient.Key + " " + i;
+						i++;
 					}
 
-					foreach (KeyValuePair<string, ColorGradient> gradient in _gradients)
-					{
-						//This was just easier than prompting for a rename
-						//and rechecking, and repormpting... and on and on and on...
-						string gradientName = gradient.Key;
-						int i = 2;
-						while (_colorGradientLibrary.Contains(gradientName))
-						{
-							gradientName = gradient.Key + " " + i;
-							i++;
-						}
-
-						_colorGradientLibrary.AddColorGradient(gradientName, gradient.Value);
-					}
+					_colorGradientLibrary.AddColorGradient(gradientName, gradient.Value);
 				}
-				catch (Exception ex)
-				{
-					Logging.Error("Invalid file while importing Color Gradient Library: " + openFileDialog.FileName + " " + ex.InnerException);
-					MessageBox.Show("Sorry, we didn't reconize the data in that file as valid Color Gradient Library data.", "Invalid file", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-
-				}
+			}
+			catch (Exception ex)
+			{
+				Logging.Error("Invalid file while importing Color Gradient Library: " + openFileDialog.FileName + " " + ex.InnerException);
+				MessageBox.Show(@"Sorry, we didn't reconize the data in that file as valid Color Gradient Library data.", @"Invalid file", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
 			}
 		}

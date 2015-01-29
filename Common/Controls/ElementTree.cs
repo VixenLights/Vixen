@@ -380,7 +380,8 @@ namespace Common.Controls
 						// if we're moving nodes within the same group, but earlier in the group, then increment the target position each time.
 						// This is because when the target is AFTER the current position, the shuffling offsets the nodes so that the target
 						// index can stay the same. This isn't the case for the reverse case.
-						if (newParentNode == oldParentNode && index < currentIndex)
+						if ((newParentNode != oldParentNode) ||
+							(newParentNode == oldParentNode && index < currentIndex))
 							index++;
 					} else {
 						VixenSystem.Nodes.MoveNode(sourceNode, newParentNode, oldParentNode);

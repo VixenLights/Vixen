@@ -140,7 +140,7 @@ namespace VixenModules.Output.BlinkyLinky
 				Logging.Debug(LogTag + "(WriteTimeout default is " + _networkStream.WriteTimeout + ")");
 			}
 			catch (Exception ex) {
-				Logging.WarnException(LogTag + "Failed stream for host", ex);
+				Logging.Warn(LogTag + "Failed stream for host", ex);
 				_tcpClient.Close();
 				return false;
 			}

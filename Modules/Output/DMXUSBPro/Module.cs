@@ -61,17 +61,22 @@ namespace VixenModules.Output.DmxUsbPro
 			base.Start();
 		}
 
-		public override void Dispose()
+		protected override void Dispose(bool disposing)
 		{
-			if (this._serialPort != null) {
-				if (this._serialPort.IsOpen) {
-					this._serialPort.Close();
-					this._serialPort.Dispose();
-					this._serialPort = null;
-				}
+			if (disposing)
+			{
+				if (_serialPort != null)
+				{
+					if (_serialPort.IsOpen)
+					{
+						_serialPort.Close();
+						_serialPort.Dispose();
+						_serialPort = null;
+					}
+				}	
 			}
-
-			base.Dispose();
+			
+			base.Dispose(disposing);
 		}
 
 		public override void Stop()

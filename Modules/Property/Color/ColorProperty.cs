@@ -18,11 +18,15 @@ namespace VixenModules.Property.Color
 			ColorStaticData.ColorSetChanged += ColorSetChangedHandler;
 		}
 
-		~ColorModule()
+		protected override void Dispose(bool disposing)
 		{
-			ColorStaticData.ColorSetChanged -= ColorSetChangedHandler;
+			if (disposing)
+			{
+				ColorStaticData.ColorSetChanged -= ColorSetChangedHandler;	
+			}
+			base.Dispose(disposing);
 		}
-		
+
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		// if the color sets in the static data ("library") change, clear our reference to it,

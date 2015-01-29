@@ -13,6 +13,7 @@ namespace Vixen.Execution.Context
 		public event EventHandler<SequenceEventArgs> SequenceEnded;
 		public event EventHandler<ExecutorMessageEventArgs> Message;
 		public event EventHandler<ExecutorMessageEventArgs> Error;
+		private bool disposed = false;
 
 		public ISequence Sequence
 		{
@@ -213,16 +214,19 @@ namespace Vixen.Execution.Context
 		}
 
 		#endregion
-
-		~SequenceContext()
-		{
-			Dispose(false);
-		}
-
+		
 		protected override void Dispose(bool disposing)
 		{
-			_DisposeSequenceExecutor();
-			GC.SuppressFinalize(this);
+			if (!disposed)
+			{
+				if (disposing)
+				{
+					_DisposeSequenceExecutor();
+				}
+				disposed = true;
+				
+			}
+			base.Dispose(disposing);
 		}
 	}
 }
