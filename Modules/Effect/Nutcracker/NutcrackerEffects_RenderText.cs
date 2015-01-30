@@ -22,7 +22,23 @@ namespace VixenModules.Effect.Nutcracker
 					var maxlinesize = new[] { Convert.ToInt32(graphics.MeasureString(line1, font).Width), Convert.ToInt32(graphics.MeasureString(line2, font).Width), Convert.ToInt32(graphics.MeasureString(line3, font).Width), Convert.ToInt32(graphics.MeasureString(line4, font).Width) };
 					int maxtextsize = maxlinesize.Max();
 					int maxIndex = maxlinesize.ToList().IndexOf(maxtextsize);
+					int numberLines;
 					SizeF textsize = graphics.MeasureString(line[maxIndex], font);
+					if (line4 != "")
+					{
+						numberLines = 4;
+					}
+					else
+					{
+						if (line3 != "")
+						{
+							numberLines = 3;
+						}
+						else
+						{
+							numberLines = line2 != "" ? 2 : 1;
+						}
+					}
 					do
 					{
 						using (Brush brush = new SolidBrush(c[i]))
@@ -43,15 +59,15 @@ namespace VixenModules.Effect.Nutcracker
 									break;
 							}
 							int maxwidth = Convert.ToInt32(textsize.Width);
-							int maxht = Convert.ToInt32(textsize.Height);
+							int maxht = Convert.ToInt32(textsize.Height * numberLines);
 							int extraLeft = IsGoingLeft(dir) ? BufferWi - (int) textsize.Width : 0;
 							int extraRight = IsGoingRight(dir) ? BufferWi - (int) textsize.Width : 0;
-							int extraDown = IsGoingDown(dir) ? BufferHt - (int) textsize.Height : 0;
-							int extraUp = IsGoingUp(dir) ? BufferHt - (int) textsize.Height : 0;
+							int extraDown = IsGoingDown(dir) ? BufferHt - (int)(textsize.Height * numberLines) : 0;
+							int extraUp = IsGoingUp(dir) ? BufferHt - (int)(textsize.Height * numberLines) : 0;
 							int xlimit = (BufferWi + maxwidth)*8 + 1;
 							int ylimit = (BufferHt + maxht)*8 + 1;
 							int offsetLeft = (position*maxwidth/100) - maxwidth/2;
-							int offsetTop = (maxht*5) - (position*maxht*8/100);
+							int offsetTop = maxht/2 - (position*maxht/100);
 								graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
 								Point point;
 							switch (dir)
@@ -87,7 +103,7 @@ namespace VixenModules.Effect.Nutcracker
 									point = new Point(offsetLeft,
 										Convert.ToInt32(centerStop
 											? Math.Min((int) (State/8 - BufferHt), extraDown/2)
-											: State%ylimit/8 - BufferHt));
+											: State % ylimit / 8 - BufferHt));
 									graphics.DrawString(msg, font, brush, point);
 									break;
 								default:
