@@ -93,7 +93,7 @@
 								<form>
 									<div class="row">
 										<div class="col-xs-2 col-sm-1 element-picker">
-											<input class="btn btn-default" type="color" data-bind="attr: { id: Name }, jqmColorPicker:Colors, default:'#FFFFFF'" name="color" aria-label="color" />
+											<input class="btn btn-default" type="color" data-bind="attr: { id: Name }, spectrumColorPicker:Colors, default:'#FFFFFF'" name="color" aria-label="color" />
 										</div>
 										<div class="col-xs-7 col-sm-6 element-btn-group">
 											<div class="element-button">
@@ -131,7 +131,7 @@
 				</div>
 			
 			<div class="tab-pane" id="Sequences">
-				<div>
+				<div class="container">
 					<label class="control-label" for="select-sequence">Sequences:</label>
 					<select class="form-control" name="select-sequence" id="select-sequence" data-bind="options: sequences, optionsCaption: 'Select Sequence...', optionsText: 'Name', value:selectedSequence">
 						<option value="standard"></option>

@@ -276,6 +276,7 @@ function ViewModel() {
 
 ko.bindingHandlers.jqmSlider = {
 	// Initialize slider
+	//https://github.com/seiyria/bootstrap-slider#options
 	init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
 		var valueUnwrapped = ko.utils.unwrapObservable(valueAccessor());
 		$(element).slider({
@@ -292,7 +293,8 @@ ko.bindingHandlers.jqmSlider = {
 	}
 };
 
-ko.bindingHandlers.jqmColorPicker = {
+//https://bgrins.github.io/spectrum/
+ko.bindingHandlers.spectrumColorPicker = {
 	init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
 		var defaultColor = allBindings.get('default') || "#FFFFFF";
 		var colors = bindingContext.$data.Colors;
