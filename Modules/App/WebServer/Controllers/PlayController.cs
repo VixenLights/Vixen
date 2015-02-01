@@ -9,7 +9,7 @@ using VixenModules.App.WebServer.Service;
 namespace VixenModules.App.WebServer.Controllers
 {
 	[ArgumentExceptionFilter]
-	public class PlayController : ApiController
+	public class PlayController : BaseController
 	{
 		[HttpGet]
 		public Status Status()
@@ -28,12 +28,8 @@ namespace VixenModules.App.WebServer.Controllers
 			Status status = SequenceHelper.PlaySequence(sequence.FileName);
 			if (status == null)
 			{
-				var resp = new HttpResponseMessage(HttpStatusCode.NotFound)
-				{
-					Content = new StringContent(string.Format("No sequence with name = {0}", sequence.FileName)),
-					ReasonPhrase = "Sequence Not Found"
-				};
-				throw new HttpResponseException(resp);
+				CreateResponseMessage(HttpStatusCode.NotFound, 
+					string.Format("No sequence with name = {0}", sequence.FileName), @"Sequence Not Found");
 			}
 
 			return status;

@@ -92,6 +92,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\ElementController.cs" />
     <Compile Include="Controllers\PlayController.cs" />
     <Compile Include="Filter\ArgumentExceptionFilterAttribute.cs" />

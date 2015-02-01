@@ -30,6 +30,11 @@ namespace VixenModules.App.WebServer.Service
 			return sequences;
 		}
 
+		/// <summary>
+		/// Play a sequence of a given file name.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <returns></returns>
 		public static Status PlaySequence(string name){
 			
 			var status = new Status();
@@ -74,6 +79,10 @@ namespace VixenModules.App.WebServer.Service
 
 		}
 
+		/// <summary>
+		/// Pause the current playing sequence.
+		/// </summary>
+		/// <returns>Status</returns>
 		public static Status PauseSequence()
 		{
 			var status = new Status();
@@ -89,6 +98,10 @@ namespace VixenModules.App.WebServer.Service
 			return status;
 		}
 
+		/// <summary>
+		/// Stop the current playing sequnce. Does not effect scheduled sequences.
+		/// </summary>
+		/// <returns></returns>
 		public static Status StopSequence()
 		{
 			var status = new Status();
@@ -104,6 +117,10 @@ namespace VixenModules.App.WebServer.Service
 			return status;
 		}
 
+		/// <summary>
+		/// Retrieve the status of any sequences playing. 
+		/// </summary>
+		/// <returns>Status</returns>
 		public static Status Status()
 		{
 			var status = new Status();

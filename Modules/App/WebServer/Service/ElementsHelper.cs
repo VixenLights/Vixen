@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Web.Script.Serialization;
-using Vixen.Execution.Context;
 using Vixen.Module;
 using Vixen.Module.Effect;
 using Vixen.Services;
@@ -20,9 +17,16 @@ using Element = VixenModules.App.WebServer.Model.Element;
 
 namespace VixenModules.App.WebServer.Service
 {
+	/// <summary>
+	/// Class to manipulate elements.
+	/// </summary>
 	internal class ElementsHelper
 	{
-
+		/// <summary>
+		/// Searches for any elements that start with the requested string ignoring case
+		/// </summary>
+		/// <param name="query"></param>
+		/// <returns></returns>
 		public IEnumerable<Element> SearchElements(string query)
 		{
 			if (string.IsNullOrEmpty(query))
@@ -39,6 +43,10 @@ namespace VixenModules.App.WebServer.Service
 			return elements.OrderBy(x => x.Name);
 		}
 
+		/// <summary>
+		/// Gets a list of all elements
+		/// </summary>
+		/// <returns></returns>
 		public IEnumerable<Element> GetElements()
 		{
 			IEnumerable<ElementNode> elementNodes = VixenSystem.Nodes.GetRootNodes();
@@ -51,6 +59,11 @@ namespace VixenModules.App.WebServer.Service
 
 		}
 
+		/// <summary>
+		/// Gets the immediate child elements for a node id.
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
 		public IEnumerable<Element> GetChildElements(string id)
 		{
 			var elements = new List<Element>();
@@ -73,6 +86,11 @@ namespace VixenModules.App.WebServer.Service
 			return elements;
 		}
 
+		/// <summary>
+		/// Gets the direct parents of a given node. Nodes can have multiple parents.
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
 		public IEnumerable<Element> GetParentElements(string id)
 		{
 
@@ -127,6 +145,12 @@ namespace VixenModules.App.WebServer.Service
 
 		}
 
+		/// <summary>
+		/// Turns off the element for a given node id. Looks for any active effects in the Live Context we 
+		/// are using and clears them on that node. Does not distinguish between effects or who originated them.
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns>Status</returns>
 		public static Status TurnOffElement(Guid id)
 		{
 			var status = new Status();
@@ -144,6 +168,15 @@ namespace VixenModules.App.WebServer.Service
 			return status;
 		}
 
+		/// <summary>
+		/// Turns on a given element with a SetLevel effect given the parameters. If the seconds are zero, the 
+		/// effect will be given a duration of 30 days to simulate the element staying on. 
+		/// </summary>
+		/// <param name="id"></param>
+		/// <param name="seconds"></param>
+		/// <param name="intensity"></param>
+		/// <param name="color"></param>
+		/// <returns></returns>
 		public static Status TurnOnElement(Guid id, int seconds, double intensity, string color)
 		{
 			ElementNode node = VixenSystem.Nodes.GetElementNode(id);
@@ -164,18 +197,14 @@ namespace VixenModules.App.WebServer.Service
 				intensity = 100;
 			}
 			
-			//TODO the following logic for all does not properly deal with discrete color elements when turning all on
-			//TODO they will not respond to turning on white if they are set up with a filter.
-			//TODO enhance this to figure out what colors there are and turn them all on when we are turning all elements on.
-
 			var effect = new SetLevel
 			{
 				TimeSpan = seconds>0?TimeSpan.FromSeconds(seconds):TimeSpan.FromDays(30),
 				IntensityLevel = intensity/100,
 				TargetNodes = new[] { node }
-					//allElements ? VixenSystem.Nodes.GetRootNodes().ToArray() : new[] { VixenSystem.Nodes.GetElementNode(elementId) }
 			};
 
+			//TODO check the passed color against the element to see if the element supports it
 			if (!string.IsNullOrEmpty(color))
 			{
 				Color elementColor = ColorTranslator.FromHtml(color);
@@ -198,6 +227,11 @@ namespace VixenModules.App.WebServer.Service
 			return status;
 		}
 
+		/// <summary>
+		/// Experimental method to attempt to execute any type of effect. Unused at the moment and needs work.
+		/// </summary>
+		/// <param name="elementEffect"></param>
+		/// <returns></returns>
 		public static Status Effect(ElementEffect elementEffect)
 		{
 			if (elementEffect == null)
@@ -231,7 +265,7 @@ namespace VixenModules.App.WebServer.Service
 					{
 						if (sig.Type == typeof(ColorGradient))
 						{
-							ColorGradient cg = new ColorGradient();
+							var cg = new ColorGradient();
 							cg.Colors.Clear();
 							foreach (var d in elementEffect.Color)
 							{
@@ -244,12 +278,12 @@ namespace VixenModules.App.WebServer.Service
 							if (sig.Type == typeof(Curve))
 							{
 
-								PointPairList pointPairList = new PointPairList();
+								var pointPairList = new PointPairList();
 								foreach (KeyValuePair<double, double> keyValuePair in elementEffect.LevelCurve)
 								{
 									pointPairList.Add(keyValuePair.Key, keyValuePair.Value);
 								}
-								Curve curve = new Curve(pointPairList);
+								var curve = new Curve(pointPairList);
 								newValues[index] = curve;
 							}
 
@@ -278,8 +312,7 @@ namespace VixenModules.App.WebServer.Service
 				{
 					//determine the type, we need to handle a few special cases ourselves
 					//This is a bit messy, but will work for now.
-					
-							
+						
 					if (sig.Type == typeof(string)) //might already be the right type
 					{
 						newValues[index] = options[sig.Name];
@@ -290,8 +323,9 @@ namespace VixenModules.App.WebServer.Service
 					}
 							
 				}
-			}
 				index++;
+			}
+				
 			
 			effectNode.Effect.ParameterValues = newValues;
 		}

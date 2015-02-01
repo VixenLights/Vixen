@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Web.Http;
-using Microsoft.SqlServer.Server;
 using VixenModules.App.WebServer.Filter;
 using VixenModules.App.WebServer.Model;
 using VixenModules.App.WebServer.Service;
@@ -9,7 +7,7 @@ using VixenModules.App.WebServer.Service;
 namespace VixenModules.App.WebServer.Controllers
 {
 	[ArgumentExceptionFilter]
-	public class ElementController: ApiController
+	public class ElementController: BaseController
 	{
 
 		public IEnumerable<Element> Get()
