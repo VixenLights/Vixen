@@ -33,10 +33,16 @@ li h1.element-header {
 	vertical-align: baseline;
 }
 
-.btn-group.inline {
-	float: none;
+.btn-plain {
+	margin-top: -2px;
+	border: none;
+	background: none;
+	padding: 0;
 }
 
+.form-control-pull-left {
+	right: 40px;
+}
 
 /* Spectrum Color */
 

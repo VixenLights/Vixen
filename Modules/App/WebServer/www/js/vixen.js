@@ -2,6 +2,8 @@
 var playerUrl = apiUrl + "/play";
 var elementUrl = apiUrl + "/element";
 var timeoutTimer;
+var storeTimeKey = "timeout";
+var storeIntesityKey = "intensity";
 
 function ViewModel() {
 
@@ -12,6 +14,7 @@ function ViewModel() {
 	self.status = ko.observable();
 	self.timeout = ko.observable(30);
 	self.elementIntensity = ko.observable(100);
+	self.delayedElementIntensity = ko.pureComputed(self.elementIntensity).extend({ rateLimit: { timeout: 500, method: "notifyWhenChangesStop" } });
 	self.elementResults = ko.observableArray();
 	self.elements = ko.observable();
 	self.selectedElement = ko.observable();
@@ -22,14 +25,17 @@ function ViewModel() {
 	self.searchToken = ko.observable();
 	self.delayedSearchToken = ko.pureComputed(self.searchToken).extend({ rateLimit: { timeout: 300, method: "notifyWhenChangesStop" } });
 	self.searchTokenHold = "";
+	self.searchResultsOverflow = ko.observable(false);
 	
+	self.clearSearch = function() {
+		self.searchToken("");
+	}
+
 	self.navigateChild = function (elem) {
 		self.showLoading();
 		self.elementTree.push(self.elements());
 		if (self.search()) {
 			self.search(false);
-			//self.searchTokenHold = self.searchToken();
-			//self.searchToken("");
 		}
 
 		self.elements(elem.Children);
@@ -42,7 +48,6 @@ function ViewModel() {
 		self.showLoading();
 		self.elements(self.elementTree().pop());
 		if (self.elementTree().length == 0) {
-			//self.searchToken(self.searchTokenHold);
 			self.search(true);
 		}
 		self.hideLoading();
@@ -90,19 +95,25 @@ function ViewModel() {
 					q: value
 				}
 			})
-				.then(function(response) {
-					self.elements(response);
+				.then(function (response) {
+					if (response.length < 50) {
+						self.elements(response);
+						self.searchResultsOverflow(false);
+					} else {
+						self.searchResultsOverflow(true);
+					}
+					
 					self.hideLoading();
 				});
 		} else {
+			self.showLoading();
 			self.getElements();
+			self.searchResultsOverflow(false);
+			self.hideLoading();
 		}
 	}
-	self.delayedSearchToken.subscribe(function(val) {
-		self.searchElements(val);
-	});
 
-	self.getElements = function() {
+	self.getElements = function () {
 		$.get(elementUrl + '/getElements')
 			.done(function (data) {
 				self.elements(data);
@@ -212,6 +223,21 @@ function ViewModel() {
 			});
 	}
 
+	//subscriptions
+
+	self.delayedSearchToken.subscribe(function (val) {
+		self.searchElements(val);
+	});
+
+	self.timeout.subscribe(function(val) {
+		amplify.store(storeTimeKey, val);
+	});
+
+	self.delayedElementIntensity.subscribe(function(val) {
+		amplify.store(storeIntesityKey, val);
+	});
+	
+
 	self.showLoading = function() {
 		setTimeout(function () {
 			$('#loading-indicator').show();
@@ -222,6 +248,28 @@ function ViewModel() {
 		setTimeout(function () {
 			$('#loading-indicator').hide();
 		}, 300);
+	}
+
+	self.retrieveStoredSettings = function () {
+		var intensity = amplify.store(storeIntesityKey);
+		if (intensity) {
+			self.elementIntensity(intensity);
+		}
+		var time = amplify.store(storeTimeKey);
+		if (time) {
+			self.timeout(time);
+		}
+		
+	}
+
+	self.init = function ()
+	{
+		self.showLoading();
+		self.getStatus();
+		self.getElements();
+		self.retrieveStoredSettings();
+		self.getSequences();
+		self.hideLoading();
 	}
 
 };
@@ -237,46 +285,10 @@ ko.bindingHandlers.jqmSlider = {
 		}).on("change", function() {
 			valueAccessor()( $(element).slider('getValue'));
 		});
-
-		//setTimeout(function () {
-		//	// $(element) doesn't work as that has been removed from the DOM
-		//	var curSlider = $('#' + element.id);
-		//	// helper function that updates the slider and refreshes the thumb location
-		//	function setSliderValue(newValue) {
-		//		curSlider.val(newValue).slider('refresh');
-		//	}
-		//	// subscribe to the bound observable and update the slider when it changes
-		//	valueAccessor().subscribe(setSliderValue);
-		//	// set up the initial value from the observable
-		//	setSliderValue(valueUnwrapped);
-		//	// subscribe to the slider's change event and update the bound observable
-		//	curSlider.bind('change', function () {
-		//		valueAccessor()(curSlider.val());
-		//	});
-		//}, 0);
-	}
-};
-
-
-ko.bindingHandlers.jqmRefreshList = {
-	update: function (element, valueAccessor) {
-		ko.utils.unwrapObservable(valueAccessor()); //just to create a dependency
-		var listview = $(element);
-		if (listview) {
-			try {
-				model.showLoading();
-				//$(listview).trigger('create');
-				$(listview).listview('refresh');
-				$(listview).trigger('updatelayout');
-			} catch (e) {
-				// if the listview is not initialised, the above call with throw an exception
-				// there does not appear to be any way to easily test for this state, so
-				// we just swallow the exception here.
-			} finally {
-				model.hideLoading();
-			}
-		}
-
+	},
+	update: function(element, valueAccessor) {
+		var value = ko.unwrap(valueAccessor());
+		$(element).slider('setValue', value);
 	}
 };
 
@@ -325,9 +337,7 @@ ko.bindingHandlers.jqmColorPicker = {
 var model = new ViewModel();
 ko.applyBindings(model);
 
-model.getStatus();
-model.getElements();
-model.getSequences();
+model.init();
 
 var b = document.documentElement;
 b.setAttribute('data-useragent', navigator.userAgent);

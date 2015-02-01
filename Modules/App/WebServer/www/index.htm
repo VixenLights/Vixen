@@ -59,69 +59,76 @@
 					</div>
 				</div>
 				<form data-bind="visible:search">
-					<div class="input-group">
-						<label for="elementSearch-input" class="sr-only">Search</label>
-						<input class="form-control" id="elementSearch-input" type="search" placeholder="Find an Element..." data-bind='value:searchToken, valueUpdate: ["input", "afterkeydown"]' />
-						<span class="input-group-btn">
-							<button class="btn btn-default" type="button">
+					<div class="form-group has-success has-feedback" data-bind="css:{'has-success':searchResultsOverflow() == false,'has-error':searchResultsOverflow()}">
+						<div class="input-group">
+							<label for="elementSearch-input" class="sr-only">Search</label>
+							<input class="form-control" id="elementSearch-input" type="search" placeholder="Find an Element..." data-bind='value:searchToken, valueUpdate: ["input", "afterkeydown"]' />
+							
+							<span class="input-group-addon btn" data-bind="click:clearSearch">
 								<span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
-							</button>
-						</span>
-					</div>
-				</form>
-				<!-- ko ifnot:search -->
-				<button data-bind="click: navigateParent" class="btn btn-default">
-					<span class="glyphicon glyphicon-circle-arrow-left" aria-hidden="true"></span>
-				</button>
-				<!-- /ko -->
-				<ul class="list-group" data-bind="foreach:elements" id="ElementSetFiltered">
-					<li class="list-group-item">
-						<form>
-							<div class="row">
-								<div class="col-xs-12 col-sm-4">
-									<label data-bind="text:Name"></label>
-								</div>
-								<div class="col-xs-2 col-sm-1 element-picker">
-									<input class="btn btn-default" type="color" data-bind="attr: { id: Name }, jqmColorPicker:Colors, default:'#FFFFFF'" name="color" aria-label="color" />
-								</div>
-								<div class="col-xs-7 col-sm-6 element-btn-group">
-									<div class="element-button">
-										<button data-bind="click: function(data, event) { $root.turnOnElement(data, event, true) }" class="btn btn-default" aria-label="Timed">
-											<span class="glyphicon glyphicon-time glyphicon-lg" aria-hidden="true"></span>
-										</button>
-									</div>
-									<div class="element-button">
-										<button data-bind="click: function(data, event) { $root.turnOnElement(data, event, false) }" class="btn btn-default" aria-label="On">
-											<span class="glyphicon glyphicon-play-circle glyphicon-lg" aria-hidden="true"></span>
-										</button>
-									</div>
-									<div class="element-button">
-										<button data-bind="click: $root.turnOffElement" class="btn btn-default" aria-label="Off">
-											<span class="glyphicon glyphicon-off glyphicon-lg" aria-hidden="true"></span>
-										</button>
-									</div>
-								</div>
-
-								<div class="col-xs-2 col-sm-1 element-button element-nav">
-									<button class="btn btn-default" data-bind="click: $parent.navigateChild, visible:Children" aria-label="Navigate Children">
-										<span class="glyphicon glyphicon-circle-arrow-right glyphicon-lg" aria-hidden="true"></span>
-									</button>
-								</div>
-							</div>
-
-						</form>
-					</li>
-				</ul>
-				
-				<footer id="footer">
-					<div class="navbar-default navbar-fixed-bottom">
-						<div class="container">
-							<span data-bind="text: status"></span>
+							</span>
 						</div>
 					</div>
-				</footer>
 
-			</div>
+				</form>
+				<!-- ko ifnot:search -->
+				<button data-bind="click: navigateParent" class="btn-plain">
+					<span class="glyphicon glyphicon-circle-arrow-left glyphicon-lg" aria-hidden="true"></span>
+				</button>
+				<!-- /ko -->
+				
+				<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true" data-bind="foreach:elements">
+					<div class="panel panel-default">
+						<div class="panel-heading" role="tab" data-bind="attr:{id: 'Header' + $index()}">
+							<h4 class="panel-title">
+								<a data-bind="text:Name, attr:{href:'#Element' + $index(), 'aria-controls':'Element' + $index()}" class="collapsed" data-toggle="collapse" data-parent="#accordion" aria-expanded="false">
+								</a>
+								<button class="btn-plain pull-right" data-bind="click: $parent.navigateChild, visible:Children" aria-label="Navigate Children">
+									<span class="glyphicon glyphicon-circle-arrow-right glyphicon-lg" aria-hidden="true"></span>
+								</button>
+							</h4>
+						</div>
+						<div class="panel-collapse collapse" role="tabpanel" data-bind="attr:{id:'Element'+$index(), 'aria-labelledby': 'Header' + $index()}">
+							<div class="panel-body">
+								<form>
+									<div class="row">
+										<div class="col-xs-2 col-sm-1 element-picker">
+											<input class="btn btn-default" type="color" data-bind="attr: { id: Name }, jqmColorPicker:Colors, default:'#FFFFFF'" name="color" aria-label="color" />
+										</div>
+										<div class="col-xs-7 col-sm-6 element-btn-group">
+											<div class="element-button">
+												<button data-bind="click: function(data, event) { $root.turnOnElement(data, event, true) }" class="btn btn-default" aria-label="Timed">
+													<span class="glyphicon glyphicon-time glyphicon-lg" aria-hidden="true"></span>
+												</button>
+											</div>
+											<div class="element-button">
+												<button data-bind="click: function(data, event) { $root.turnOnElement(data, event, false) }" class="btn btn-default" aria-label="On">
+													<span class="glyphicon glyphicon-play-circle glyphicon-lg" aria-hidden="true"></span>
+												</button>
+											</div>
+											<div class="element-button">
+												<button data-bind="click: $root.turnOffElement" class="btn btn-default" aria-label="Off">
+													<span class="glyphicon glyphicon-off glyphicon-lg" aria-hidden="true"></span>
+												</button>
+											</div>
+										</div>
+									</div>
+
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+
+					<footer id="footer">
+						<div class="navbar-default navbar-fixed-bottom">
+							<div class="container">
+								<span data-bind="text: status"></span>
+							</div>
+						</div>
+					</footer>
+
+				</div>
 			
 			<div class="tab-pane" id="Sequences">
 				<div>
@@ -131,7 +138,7 @@
 					</select>
 					<br/>
 					<div class="btn-toolbar">
-						<div class="btn-group inline" role="group">
+						<div class="btn-group" role="group">
 							<button class="btn btn-default btn-lg" data-bind="click: $root.playSequence, enable:selectedSequence">
 								<span class="glyphicon glyphicon-play-circle" aria-hidden="true"></span>
 							</button>
@@ -161,6 +168,7 @@
 		<script src="/js/moment.min.js"></script>
 		<script src="/js/bootstrap-slider.min.js"></script>
 		<script src="/js/spectrum.js"></script>
+		<script src="/js/amplify.min.js"></script>
 		<script src="/js/vixen.js"></script>
 	</body>
 </html>
