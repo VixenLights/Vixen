@@ -1,9 +1,6 @@
 ﻿
-.logo
-{
-	width: 100%;
-	height: auto;
-	max-width: 385px;
+body {
+  padding-top: 70px;
 }
 
 /* Hack for IE11 list styles on first load
@@ -30,12 +27,98 @@ li h1.element-header {
 	text-align: right;
 }
 
-/*.ui-input-text.ui-body-inherit.ui-corner-all.ui-shadow-inset {
-	width: 6em;
-	float: left;
-}*/
-
-label.timeLabel {
-	/*width: 3em;
-	margin-right: 0;*/
+.aside {
+	display: inline-block;
+	float: right;
+	vertical-align: baseline;
 }
+
+.btn-group.inline {
+	float: none;
+}
+
+
+/* Spectrum Color */
+
+.sp-big .sp-palette .sp-thumb-el {
+    width:20px;
+    height: 20px;
+ 
+}
+
+.sp-dd {
+    padding: 0 0;
+    font-size:0;
+}
+.sp-preview{
+    position:relative;
+    width:30px;
+    height: 30px;
+    border: solid 1px #222;
+    margin-right: 0;
+    float:left;
+    z-index: 0;
+}
+
+.sp-bigger.sp-container {
+	z-index: 0;
+}
+
+.sp-big.sp-container {
+	z-index: 50;
+}
+
+.sp-bigger .sp-palette .sp-thumb-el, .sp-big .sp-palette .sp-thumb-el {
+    width:35px;
+    height: 35px;
+}
+
+
+@media (max-device-width: 480px) {
+	.slider-handle {
+		width: 24px;
+		height: 24px;
+	}
+
+	.element-nav {
+		margin-left: 0;
+	}
+
+	.element-picker {
+		padding-right: 0;
+		padding-left: 0;
+		margin-left: 15px;
+	}
+}
+
+.element-button {
+	padding-right: 5px;
+	padding-left: 5px;
+	width: 50px;
+	float: left;
+}
+
+.element-btn-group {
+	padding-right: 0;
+	padding-left: 0;
+	/*width: 58%;*/
+}
+
+span.glyphicon-lg {
+    font-size: 1.5em;
+}
+
+#loading-indicator {
+	position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-left: -50px; /* half width of the spinner gif */
+    margin-top: -50px; /* half height of the spinner gif */
+    text-align:center;
+    z-index:500;
+    overflow: auto;
+    width: 100px; /* width of the spinner gif */
+    height: 102px; /*hight of the spinner gif +2px to fix IE8 issue */
+}
+
+

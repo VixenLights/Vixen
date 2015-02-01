@@ -3,157 +3,164 @@
 <html>
 	<head>
 		<title>Vixen 3 Web Interface</title>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta http-equiv="X-UA-Compatable" content="IE=Edge,chrome=1"/>
-		<link rel="stylesheet" href="/style/jquery.mobile-1.4.5.min.css" />
+		<link rel="stylesheet" href="/style/bootstrap.css" />
+		<link rel="stylesheet" href="/style/bootstrap-slider.min.css"/>
+		<link rel="stylesheet" href="/style/spectrum.css"/>
 		<link rel="stylesheet" href="/style/vixen.css" />
 	</head>
 
-<body>
-	<div data-role="page" id="Elements" data-title="Element">
-		<div data-role="header" data-id="fixednav" data-position="fixed">
-			<h2>Vixen</h2>
-			<img src="/images/V3Logo.png" class="ui-btn-left" style="max-height: 50%"/>
-			<div data-role="navbar">
-				<ul>
-					<li><a href="#Elements" class="ui-btn-active ui-state-persist">Elements</a></li>
-					<li><a href="#Sequences">Sequences</a></li>
-				</ul>
+	<body>
+		<nav class="navbar navbar-default navbar-fixed-top">
+			<div class="container">
+				<div class="navbar-header">
+					<button class="btn btn-default navbar-btn pull-right visible-xs-inline-block" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" aria-label="Settings">
+						<span class="glyphicon glyphicon-cog"></span>
+					</button>
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="http://vixenlights.com">
+						<img src="/images/V3Logo.png" style="max-height: 100%" />
+					</a>
+				</div>
+				
+				<div id="navbar" class="navbar-collapse collapse">
+					<ul class="nav navbar-nav">
+						<li class="active"><a href="#Elements" data-toggle="tab">Elements</a></li>
+						<li><a href="#Sequences" data-toggle="tab">Sequences</a>
+						</li>
+					</ul>
+					<button class="btn btn-default navbar-btn pull-right hidden-xs" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" aria-label="Settings">
+						<span class="glyphicon glyphicon-cog"></span>
+					</button>
+				</div>
+					
 			</div>
-		</div>
-		<div role="main" class="ui-content">
-			<form class="ui-filterable">
-				<input id="elementSearch-input" data-type="search" placeholder="Find an Element..."/>
-			</form>
-			<ul data-role="listview" data-bind="foreach:elementResults, jqmRefreshList:elementResults" data-filter="true" data-inset="true" id="ElementSetFiltered" data-input="#elementSearch-input">
-				<li>
-					<h1 class="element-header" data-bind="text: Name"></h1>
-					<button class="button-aside" data-icon="carat-r" data-iconpos="notext" value="Down" data-bind="click: $parent.elementClicked, visible:Children"></button>
-					<form data-ajax="false">
-						<!-- ko if:Colors.length > 0 -->
-						<fieldset data-role="controlgroup" data-type="horizontal" data-bind="foreach:Colors">
-							<input type="radio" name="color" data-mini="true" data-bind="value: $data, attr: { id: $parent.Name + $data }, checked:$parent.Colors[0]" />
-							<label data-bind="attr: { for: $parent.Name + $data }, text:$data, style:{ background: $data}"></label>
-						</fieldset>
-						<!-- /ko -->
-						<!-- ko ifnot:Colors.length > 0 -->
-						<div class="ui-field-contain">
-							<label data-bind="attr: { for: Name }" class="ui-hidden-accessible">Color:</label>
-							<input type="color" data-mini="true" data-bind="attr: { id: Name }" name="color" value="#FFFFFF" />
+		</nav>
+		<div class="tab-content container">
+			<div class="tab-pane active" id="Elements">
+				<div class="collapse navbar navbar-default navbar-fixed-bottom" id="collapseExample">
+					<div class="well">
+						<div class="form-inline">
+							<div class="form-group">
+								<label for="elementOnTime" class="control-label">Time:</label>
+								<input class="form-control" type="number" name="elementOnTime" id="elementOnTime" data-bind="value: timeout" />
+							</div>
+							<div class="form-group">
+								<label for="slider" class="control-label">Intensity:</label>
+								<input class="form-control" type="range" name="intensity" id="slider" data-bind="jqmSlider: elementIntensity, min:0, max:100, value:100">
+							</div>
 						</div>
-						<!-- /ko -->
-						<button data-bind="click: function(data, event) { $root.turnOnElement(data, event, true) }" class="ui-btn ui-btn-inline ui-corner-all ui-shadow">Timed</button>
-						<button data-bind="click: function(data, event) { $root.turnOnElement(data, event, false) }" class="ui-btn ui-btn-inline ui-corner-all ui-shadow">On</button>
-						<button data-bind="click: $root.turnOffElement" class="ui-btn ui-btn-inline ui-corner-all ui-shadow">Off</button>
-					</form>
-				</li>
-			</ul>
-		</div>
-		<div data-role="footer" data-id="fixedfooter" data-position="fixed">
-			
-			<label class="timeLabel" for="elementOnTime">Time/Intensity:</label>
-			<input type="number" name="elementOnTime" id="elementOnTime" data-bind="value: timeout" data-mini="true"/>
-			
-			<label for="slider1" class="ui-hidden-accessible">Intensity:</label>
-			<input type="range" name="intensity" id="slider1" data-highlight="true" min="0" max="100" data-bind="jqmSlider: elementIntensity">
-			<span data-bind="text: status"></span>
-		</div>
-	</div>
-	
-	<div data-role="page" id="Sequences" data-title="Sequences">
-		<div data-role="header" data-id="fixednav" data-position="fixed">
-			<h2>Vixen</h2>
-			<img src="/images/V3Logo.png" class="ui-btn-left" style="max-height: 50%" />
-			<div data-role="navbar">
-				<ul>
-					<li><a href="#Elements">Elements</a></li>
-					<li><a href="#Sequences" class="ui-btn-active ui-state-persist">Sequences</a></li>
+					</div>
+				</div>
+				<form data-bind="visible:search">
+					<div class="input-group">
+						<label for="elementSearch-input" class="sr-only">Search</label>
+						<input class="form-control" id="elementSearch-input" type="search" placeholder="Find an Element..." data-bind='value:searchToken, valueUpdate: ["input", "afterkeydown"]' />
+						<span class="input-group-btn">
+							<button class="btn btn-default" type="button">
+								<span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
+							</button>
+						</span>
+					</div>
+				</form>
+				<!-- ko ifnot:search -->
+				<button data-bind="click: navigateParent" class="btn btn-default">
+					<span class="glyphicon glyphicon-circle-arrow-left" aria-hidden="true"></span>
+				</button>
+				<!-- /ko -->
+				<ul class="list-group" data-bind="foreach:elements" id="ElementSetFiltered">
+					<li class="list-group-item">
+						<form>
+							<div class="row">
+								<div class="col-xs-12 col-sm-4">
+									<label data-bind="text:Name"></label>
+								</div>
+								<div class="col-xs-2 col-sm-1 element-picker">
+									<input class="btn btn-default" type="color" data-bind="attr: { id: Name }, jqmColorPicker:Colors, default:'#FFFFFF'" name="color" aria-label="color" />
+								</div>
+								<div class="col-xs-7 col-sm-6 element-btn-group">
+									<div class="element-button">
+										<button data-bind="click: function(data, event) { $root.turnOnElement(data, event, true) }" class="btn btn-default" aria-label="Timed">
+											<span class="glyphicon glyphicon-time glyphicon-lg" aria-hidden="true"></span>
+										</button>
+									</div>
+									<div class="element-button">
+										<button data-bind="click: function(data, event) { $root.turnOnElement(data, event, false) }" class="btn btn-default" aria-label="On">
+											<span class="glyphicon glyphicon-play-circle glyphicon-lg" aria-hidden="true"></span>
+										</button>
+									</div>
+									<div class="element-button">
+										<button data-bind="click: $root.turnOffElement" class="btn btn-default" aria-label="Off">
+											<span class="glyphicon glyphicon-off glyphicon-lg" aria-hidden="true"></span>
+										</button>
+									</div>
+								</div>
+
+								<div class="col-xs-2 col-sm-1 element-button element-nav">
+									<button class="btn btn-default" data-bind="click: $parent.navigateChild, visible:Children" aria-label="Navigate Children">
+										<span class="glyphicon glyphicon-circle-arrow-right glyphicon-lg" aria-hidden="true"></span>
+									</button>
+								</div>
+							</div>
+
+						</form>
+					</li>
 				</ul>
-			</div>
-		</div>
-		<div role="main" class="ui-content">
-			<label for="select-sequence" class="select">Sequences:</label>
-			<select name="select-sequence" id="select-sequence" data-bind="options: sequences, optionsCaption: 'Select Sequence...', optionsText: 'Name', value:selectedSequence">
-				<option value="standard"></option>
-			</select>
-
-			<button data-role="button" data-bind="click: $root.playSequence, enable:selectedSequence">Play</button>
-			<button data-role="button" data-bind="click: $root.stopSequence">Stop</button>
-			<button data-role="button" data-bind="click: $root.getStatus">Status</button>
-		</div>
-		<div data-role="footer">
-			<span data-bind="text: status"></span>
-		</div>
-	</div>
-
-	<div data-role="page" id="ElementControlPage" data-title="Element Control">
-		<div data-role="header" data-id="fixednav" data-position="fixed">
-			<h2>Vixen</h2>
-			<img src="/images/V3Logo.png" class="ui-btn-left" style="max-height: 50%" />
-			<div data-role="navbar">
-				<ul>
-					<li><a href="#Elements" class="ui-btn-active ui-state-persist">Elements</a></li>
-					<li><a href="#Sequences">Sequences</a></li>
-				</ul>
-			</div>
-		</div>
-		<div role="main" class="ui-content">
-			<!-- ko if:selectedElement   -->
-			<div data-bind="template: { name: 'element-template'}"></div>
-			<!-- /ko -->
-		</div>
-		<div data-role="footer" data-id="fixedfooter" data-position="fixed">
-			<!-- ko if:selectedElement   -->
-			
-			<label class="timeLabel" for="elementOnTime">Time/Intensity</label>
-			<input type="number" name="elementOnTime" id="elementOnTime" data-bind="value: timeout" />
-			
-			<label for="slider2" class="ui-hidden-accessible">Intensity:</label>
-			<input type="range" name="intensity" id="slider2" data-highlight="true" min="0" max="100" data-bind="jqmSlider: elementIntensity">
-			<span data-bind="text: status"></span>
-			<!-- /ko -->
-		</div>
-	</div>
-	
-	<!-- knockout template -->
-
-	<script type="text/html" id="element-template">
-		<!-- ko if:selectedElement().Children   -->
-		<div id="elementControlContainer">
-			<a href="#" data-bind="click: $root.navigateParent" data-mini="true"  data-direction="reverse" class="ui-btn ui-icon-arrow-u ui-btn-icon-left ui-corner-all ui-shadow ui-btn-inline">Up</a>
-
-			<ul data-role="listview" data-bind="foreach:selectedElement().Children , jqmRefreshList:selectedElement().Children" data-inset="true">
-				<li>
-					<h1 class="element-header" data-bind="text: Name"></h1>
-					<button class="button-aside" data-icon="carat-r" data-iconpos="notext" value="Down" data-bind="click: $parent.navigateChild, visible:Children"></button>
-					<form>
-						<fieldset data-role="controlgroup" data-type="horizontal" data-bind="if: Colors.length > 0">
-							<!-- ko foreach:Colors -->
-							<input type="radio" name="color" data-mini="true" data-bind="value: $data, attr: { id: $parent.Name + $data + 'Child' }, checked:$parent.Colors[0]" />
-							<label data-bind="attr: { for: $parent.Name + $data  + 'Child' }, text:$data, style:{ background: $data}"></label>
-							<!-- /ko -->
-						</fieldset>
-
-						<div class="ui-field-contain" data-bind="ifnot:Colors.length > 0">
-							<label data-bind="attr: { for: Name }">Color:</label>
-							<input type="color" data-bind="attr: { id: Name }" name="color" value="#FFFFFF" />
+				
+				<footer id="footer">
+					<div class="navbar-default navbar-fixed-bottom">
+						<div class="container">
+							<span data-bind="text: status"></span>
 						</div>
-						<button data-bind="click: function(data, event) { $root.turnOnElement(data, event, true) }" class="ui-btn ui-btn-inline ui-corner-all ui-shadow">Timed</button>
-						<button data-bind="click: function(data, event) { $root.turnOnElement(data, event, false) }" class="ui-btn ui-btn-inline ui-corner-all ui-shadow">On</button>
-						<button data-bind="click: $root.turnOffElement" class="ui-btn ui-btn-inline ui-corner-all ui-shadow">Off</button>
-					</form>
-				</li>
-			</ul>
-			
-		</div>
-		<!-- /ko -->
-	</script>
-	
-	<script src="/js/jquery-1.11.2.min.js"></script>
-	<script src="/js/jquery.mobile-1.4.5.min.js"></script>
-	<script src="/js/knockout-3.2.0.js"></script>
-	<script src="/js/moment.min.js"></script>
-	<script src="/js/vixen.js"></script>
+					</div>
+				</footer>
 
-</body>
+			</div>
+			
+			<div class="tab-pane" id="Sequences">
+				<div>
+					<label class="control-label" for="select-sequence">Sequences:</label>
+					<select class="form-control" name="select-sequence" id="select-sequence" data-bind="options: sequences, optionsCaption: 'Select Sequence...', optionsText: 'Name', value:selectedSequence">
+						<option value="standard"></option>
+					</select>
+					<br/>
+					<div class="btn-toolbar">
+						<div class="btn-group inline" role="group">
+							<button class="btn btn-default btn-lg" data-bind="click: $root.playSequence, enable:selectedSequence">
+								<span class="glyphicon glyphicon-play-circle" aria-hidden="true"></span>
+							</button>
+							<button class="btn btn-default btn-lg" data-bind="click: $root.stopSequence">
+								<span class="glyphicon glyphicon-stop" aria-hidden="true"></span>
+							</button>
+							<button class="btn btn-default btn-lg" data-bind="click: $root.getStatus">
+								<span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+							</button>
+						</div>
+					</div>
+					<footer>
+						<div class="navbar-default navbar-fixed-bottom">
+							<div class="container">
+								<span data-bind="text: status"></span>
+							</div>
+						</div>
+					</footer>
+				</div>
+			
+			</div>
+		</div>
+		<img src="/images/ajax-loader.gif" id="loading-indicator" style="display:none" />
+		<script src="/js/jquery-1.11.2.min.js"></script>
+		<script src="/js/bootstrap.min.js"></script>
+		<script src="/js/knockout-3.2.0.js"></script>
+		<script src="/js/moment.min.js"></script>
+		<script src="/js/bootstrap-slider.min.js"></script>
+		<script src="/js/spectrum.js"></script>
+		<script src="/js/vixen.js"></script>
+	</body>
 </html>

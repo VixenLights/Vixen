@@ -13,33 +13,40 @@ function ViewModel() {
 	self.timeout = ko.observable(30);
 	self.elementIntensity = ko.observable(100);
 	self.elementResults = ko.observableArray();
+	self.elements = ko.observable();
 	self.selectedElement = ko.observable();
 	self.selectedColor = ko.observable("#FFFFFF");
 	self.elementTree = ko.observableArray();
 	self.selectedSequence = ko.observable();
+	self.search = ko.observable(true);
+	self.searchToken = ko.observable();
+	self.delayedSearchToken = ko.pureComputed(self.searchToken).extend({ rateLimit: { timeout: 300, method: "notifyWhenChangesStop" } });
+	self.searchTokenHold = "";
 	
-	self.elementClicked = function (elem) {
-
-		self.selectedElement(elem);
-		$(":mobile-pagecontainer").pagecontainer("change", "#ElementControlPage", { changeHash: false });
-		return false;
-	}
 	self.navigateChild = function (elem) {
 		self.showLoading();
-		self.elementTree.push(self.selectedElement());
-		self.selectedElement(elem);
+		self.elementTree.push(self.elements());
+		if (self.search()) {
+			self.search(false);
+			//self.searchTokenHold = self.searchToken();
+			//self.searchToken("");
+		}
+
+		self.elements(elem.Children);
 		self.hideLoading();
 		return false;
 	}
 
 	self.navigateParent = function (elem) {
-		if (self.elementTree().length > 0) {
-			self.showLoading();
-			self.selectedElement(self.elementTree().pop());
-			self.hideLoading();
-		} else {
-			$(":mobile-pagecontainer").pagecontainer("change", "#Elements");
+		
+		self.showLoading();
+		self.elements(self.elementTree().pop());
+		if (self.elementTree().length == 0) {
+			//self.searchToken(self.searchTokenHold);
+			self.search(true);
 		}
+		self.hideLoading();
+		
 		return false;
 	}
 
@@ -73,6 +80,7 @@ function ViewModel() {
 
 	//Element retrieval 
 	self.searchElements = function (value) {
+		
 		if (value && value.length > 0) {
 			self.showLoading();
 			$.ajax({
@@ -83,21 +91,21 @@ function ViewModel() {
 				}
 			})
 				.then(function(response) {
-					self.elementResults(response);
-					self.selectedElement(response[0]);
-					//$('#ElementSetFiltered').trigger('create');
+					self.elements(response);
 					self.hideLoading();
 				});
 		} else {
 			self.getElements();
 		}
 	}
+	self.delayedSearchToken.subscribe(function(val) {
+		self.searchElements(val);
+	});
 
 	self.getElements = function() {
 		$.get(elementUrl + '/getElements')
 			.done(function (data) {
-				self.elementResults(data);
-				//$('#ElementSetFiltered').trigger('create');
+				self.elements(data);
 			}).error(function (jqXHR, status, error) {
 				self.status(error);
 				self.hideLoading();
@@ -105,7 +113,7 @@ function ViewModel() {
 	}
 
 	self.turnOnElement = function(data, event, timed) {
-		var a = $(event.target.parentNode).serializeArray();;
+		var a = $(event.target).closest("form").serializeArray();;
 
 		//model data
 		var parms = {
@@ -127,9 +135,9 @@ function ViewModel() {
 		});
 
 		$.ajax({url: elementUrl + '/on',
-				type: 'POST',
-				contentType: "application/json",
-				data: ko.toJSON(parms)
+			type: 'POST',
+			datatype: "JSON",
+			data:parms
 		})
 			.done(function (status) {
 				self.status(status.Message);
@@ -150,8 +158,8 @@ function ViewModel() {
 		$.ajax({
 			url: elementUrl + '/off',
 			type: 'POST',
-			contentType: "application/json",
-			data: ko.toJSON(parms)
+			dataType:"JSON",
+			data: parms
 		})
 			.done(function (status) {
 				self.status(status.Message);
@@ -180,8 +188,8 @@ function ViewModel() {
 		$.ajax({
 			url: playerUrl + '/playSequence',
 			type: 'POST',
-			contentType: "application/json",
-			data: ko.toJSON(self.selectedSequence)
+			dataType:"json",
+			data: self.selectedSequence()
 			})
 			.done(function (status) {
 				self.status(status.Message);
@@ -206,13 +214,13 @@ function ViewModel() {
 
 	self.showLoading = function() {
 		setTimeout(function () {
-			$.mobile.loading('show');
+			$('#loading-indicator').show();
 		}, 1);
 	}
 
 	self.hideLoading = function() {
 		setTimeout(function () {
-			$.mobile.loading('hide');
+			$('#loading-indicator').hide();
 		}, 300);
 	}
 
@@ -220,24 +228,32 @@ function ViewModel() {
 
 ko.bindingHandlers.jqmSlider = {
 	// Initialize slider
-	init: function (element, valueAccessor) {
+	init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
 		var valueUnwrapped = ko.utils.unwrapObservable(valueAccessor());
-		setTimeout(function () {
-			// $(element) doesn't work as that has been removed from the DOM
-			var curSlider = $('#' + element.id);
-			// helper function that updates the slider and refreshes the thumb location
-			function setSliderValue(newValue) {
-				curSlider.val(newValue).slider('refresh');
-			}
-			// subscribe to the bound observable and update the slider when it changes
-			valueAccessor().subscribe(setSliderValue);
-			// set up the initial value from the observable
-			setSliderValue(valueUnwrapped);
-			// subscribe to the slider's change event and update the bound observable
-			curSlider.bind('change', function () {
-				valueAccessor()(curSlider.val());
-			});
-		}, 0);
+		$(element).slider({
+			min: allBindings.get("min")||0,
+			max: allBindings.get("max") || 100,
+			value: allBindings.get("value") || valueUnwrapped
+		}).on("change", function() {
+			valueAccessor()( $(element).slider('getValue'));
+		});
+
+		//setTimeout(function () {
+		//	// $(element) doesn't work as that has been removed from the DOM
+		//	var curSlider = $('#' + element.id);
+		//	// helper function that updates the slider and refreshes the thumb location
+		//	function setSliderValue(newValue) {
+		//		curSlider.val(newValue).slider('refresh');
+		//	}
+		//	// subscribe to the bound observable and update the slider when it changes
+		//	valueAccessor().subscribe(setSliderValue);
+		//	// set up the initial value from the observable
+		//	setSliderValue(valueUnwrapped);
+		//	// subscribe to the slider's change event and update the bound observable
+		//	curSlider.bind('change', function () {
+		//		valueAccessor()(curSlider.val());
+		//	});
+		//}, 0);
 	}
 };
 
@@ -249,7 +265,7 @@ ko.bindingHandlers.jqmRefreshList = {
 		if (listview) {
 			try {
 				model.showLoading();
-				$(listview).trigger('create');
+				//$(listview).trigger('create');
 				$(listview).listview('refresh');
 				$(listview).trigger('updatelayout');
 			} catch (e) {
@@ -264,34 +280,63 @@ ko.bindingHandlers.jqmRefreshList = {
 	}
 };
 
+ko.bindingHandlers.jqmColorPicker = {
+	init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+		var defaultColor = allBindings.get('default') || "#FFFFFF";
+		var colors = bindingContext.$data.Colors;
+		if (colors.length>0) {
+			$(element).spectrum({
+				color: colors[0],
+				change: function (color) {
+					$(element).val(color.toHexString());
+				},
+				theme: "sp-bigger",
+				hideAfterPaletteSelect: true,
+				//flat:true,
+				showPaletteOnly: true,
+				palette: colors
+			}).val(colors[0]);
+		} else {
+			$(element).spectrum({
+				color: defaultColor,
+				change: function (color) {
+					$(element).val(color.toHexString());
+				},
+				theme: "sp-big",
+				showInput: true,
+				preferredFormat: "hex",
+				chooseText: "Ok",
+				localStorageKey: "spectrum.color",
+				hideAfterPaletteSelect: true,
+				showPaletteOnly: true,
+				togglePaletteOnly: true,
+				togglePaletteMoreText: 'more',
+				togglePaletteLessText: 'less',
+				maxSelectionSize: 4,
+				palette: [
+					['red', 'green', 'blue', 'white']
+				]
+			}).val(defaultColor);
+		}
+		
+	}
+};
+
 var model = new ViewModel();
 ko.applyBindings(model);
 
 model.getStatus();
-
-
-// event stuff
-$(document).on("pagecreate", "#Elements", function () {
-	$("#ElementSetFiltered").on("filterablebeforefilter", function (e, data) {
-		var $input = $(data.input);
-		var value = $input.val();
-		model.searchElements(value);
-	});
-});
-
-$('#Elements').on('pagecreate', function (event) {
-    model.getElements();
-});
-
-$('#Sequences').on('pagecreate', function (event) {
-    model.getSequences();
-    model.getStatus();
-});
+model.getElements();
+model.getSequences();
 
 var b = document.documentElement;
 b.setAttribute('data-useragent', navigator.userAgent);
 b.setAttribute('data-platform', navigator.platform);
 b.className += ((!!('ontouchstart' in window) || !!('onmsgesturechange' in window)) ? ' touch' : '');
 
-
+$(document).on('click', '.navbar-collapse.in', function (e) {
+	if ($(e.target).is('a')) {
+		$(this).collapse('hide');
+	}
+});
 

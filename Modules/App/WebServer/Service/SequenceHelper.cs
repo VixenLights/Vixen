@@ -65,12 +65,28 @@ namespace VixenModules.App.WebServer.Service
 
 		private static void context_ContextEnded(object sender, EventArgs e)
 		{
-			if (_context != null)
+			var context = sender as IContext;
+			if (context != null)
 			{
-				_context.ContextEnded -= context_ContextEnded;
-				VixenSystem.Contexts.ReleaseContext(_context);
+				context.ContextEnded -= context_ContextEnded;
+				VixenSystem.Contexts.ReleaseContext(context);
 			}
 
+		}
+
+		public static Status PauseSequence()
+		{
+			var status = new Status();
+			if (_context != null && _context.IsRunning)
+			{
+				status.Message = string.Format("{0} paused.", _context.Sequence.Name);
+				_context.Pause();
+			}
+			else
+			{
+				status.Message = "Nothing playing.";
+			}
+			return status;
 		}
 
 		public static Status StopSequence()

@@ -40,6 +40,12 @@ namespace VixenModules.App.WebServer.Controllers
 		}
 
 		[HttpPost]
+		public Status PauseSequence()
+		{
+			return SequenceHelper.StopSequence();
+		}
+
+		[HttpPost]
 		public Status StopSequence()
 		{
 			return SequenceHelper.StopSequence();

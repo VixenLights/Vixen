@@ -134,7 +134,7 @@ namespace VixenModules.App.WebServer.Service
 			if (node != null)
 			{
 				Module.LiveContext.TerminateNode(node.Id);
-				status.Message = string.Format("{0} element turned off.", node.Name);
+				status.Message = string.Format("{0} turned off.", node.Name);
 			}
 			else
 			{
@@ -146,10 +146,12 @@ namespace VixenModules.App.WebServer.Service
 
 		public static Status TurnOnElement(Guid id, int seconds, double intensity, string color)
 		{
-			//if (string.IsNullOrEmpty(id))
-			//{
-			//	throw new ArgumentNullException(id);
-			//}
+			ElementNode node = VixenSystem.Nodes.GetElementNode(id);
+			if (node == null)
+			{
+				throw new ArgumentException(@"Invalid element id.", "id");
+			}
+
 			var status = new Status();
 
 			if (!string.IsNullOrEmpty(color) && (color.Length != 7 || !	color.StartsWith("#")))
@@ -162,21 +164,6 @@ namespace VixenModules.App.WebServer.Service
 				intensity = 100;
 			}
 			
-			//Guid elementId = Guid.Empty;
-			//bool allElements = false;
-			
-			//if ("all".Equals(id))
-			//{
-			//	allElements = true;
-			//}
-			//else
-			//{
-			//	if (!Guid.TryParse(id, out elementId))
-			//	{
-			//		throw new ArgumentException(@"Invalid Element id", id);
-			//	}
-			//}
-		
 			//TODO the following logic for all does not properly deal with discrete color elements when turning all on
 			//TODO they will not respond to turning on white if they are set up with a filter.
 			//TODO enhance this to figure out what colors there are and turn them all on when we are turning all elements on.
@@ -185,7 +172,7 @@ namespace VixenModules.App.WebServer.Service
 			{
 				TimeSpan = seconds>0?TimeSpan.FromSeconds(seconds):TimeSpan.FromDays(30),
 				IntensityLevel = intensity/100,
-				TargetNodes = new[] { VixenSystem.Nodes.GetElementNode(id) }
+				TargetNodes = new[] { node }
 					//allElements ? VixenSystem.Nodes.GetRootNodes().ToArray() : new[] { VixenSystem.Nodes.GetElementNode(elementId) }
 			};
 
@@ -196,8 +183,17 @@ namespace VixenModules.App.WebServer.Service
 			}
 			
 			Module.LiveContext.Execute(new EffectNode(effect, TimeSpan.Zero));
-			status.Message = string.Format("{0} element(s) turned on for {1} seconds at 100% intensity.",
-				VixenSystem.Nodes.GetElementNode(id).Name, seconds);
+			if (seconds == 0)
+			{
+				status.Message = string.Format("{0} turned on at {1}% intensity.",
+				node.Name, intensity);	
+			}
+			else
+			{
+				status.Message = string.Format("{0} turned on for {1} seconds at {2}% intensity.",
+				node.Name, seconds, intensity);	
+			}
+			
 
 			return status;
 		}
