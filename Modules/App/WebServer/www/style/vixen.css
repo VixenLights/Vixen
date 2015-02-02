@@ -1,6 +1,12 @@
 ﻿
 body {
-  padding-top: 70px;
+	height: 100%;
+	width: 100%;
+}
+
+html {
+	height: 100%;
+	width: 100%;
 }
 
 /* Hack for IE11 list styles on first load
@@ -8,6 +14,25 @@ body {
 */
 html[data-useragent*='rv:11.0'] .ui-navbar li {
 	list-style-image: url(data:0);
+}
+
+#Elements {
+	padding-top: 70px;
+}
+
+#Sequences {
+	height: 100%;
+	padding-top: 70px;
+}
+
+@media (max-device-width: 480px) {
+	#Sequences {
+		height: 600px;
+	}
+}
+
+.logo {
+	max-height: 125%;
 }
 
 .controlgroup-textinput{
@@ -107,7 +132,6 @@ li h1.element-header {
 .element-btn-group {
 	padding-right: 0;
 	padding-left: 0;
-	/*width: 58%;*/
 }
 
 span.glyphicon-lg {
@@ -126,5 +150,8 @@ span.glyphicon-lg {
     width: 100px; /* width of the spinner gif */
     height: 102px; /*hight of the spinner gif +2px to fix IE8 issue */
 }
+
+
+
 
 
