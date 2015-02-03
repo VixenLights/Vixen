@@ -34,7 +34,7 @@ namespace Vixen.IO.Binary.SequenceCache
 				}
 				catch (Exception e)
 				{
-					Logging.ErrorException("Error deserializing cache instance", e);	
+					Logging.Error("Error deserializing cache instance", e);	
 				}
 				
 				

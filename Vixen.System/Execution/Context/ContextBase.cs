@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Vixen.Execution.DataSource;
 using Vixen.Module.Timing;
 using Vixen.Sys;
@@ -42,7 +43,7 @@ namespace Vixen.Execution.Context
 				IsRunning = true;
 			}
 			catch (Exception ex) {
-				Logging.ErrorException(ex.Message,ex);
+				Logging.Error(ex.Message,ex);
 			}
 		}
 
@@ -112,9 +113,7 @@ namespace Vixen.Execution.Context
 
 		private void _DiscoverIntentsFromCurrentEffects(TimeSpan currentTime, IntentDiscoveryAction intentDiscoveryAction)
 		{
-			lock (_currentEffects) {
-				_DiscoverIntentsFromEffects(currentTime, _currentEffects, intentDiscoveryAction);
-			}
+			_DiscoverIntentsFromEffects(currentTime, _currentEffects, intentDiscoveryAction);
 		}
 
 		private void _DiscoverIntentsFromEffects(TimeSpan currentTime, IEnumerable<IEffectNode> effects,
@@ -161,11 +160,10 @@ namespace Vixen.Execution.Context
 
 		private void _ResetElementStates()
 		{
-			lock (_currentEffects) {
-				_currentEffects.Reset();
-				_InitializeElementStateBuilder();
-				_LatchElementStatesFromBuilder(_elementStates.ElementsInCollection);
-			}
+			_currentEffects.Reset();
+			_InitializeElementStateBuilder();
+			_LatchElementStatesFromBuilder(_elementStates.ElementsInCollection);
+			
 		}
 
 		protected abstract IDataSource _DataSource { get; }
@@ -197,7 +195,6 @@ namespace Vixen.Execution.Context
 
 		protected virtual void OnContextEnded(EventArgs e)
 		{
-			_ResetElementStates();
 			if (ContextEnded != null) {
 				ContextEnded(this, e);
 			}
@@ -212,14 +209,16 @@ namespace Vixen.Execution.Context
 		protected virtual void Dispose(bool disposing)
 		{
 			if (!_disposed) {
-				Stop();
+				if (disposing)
+				{
+					if (IsRunning)
+					{
+						Stop();		
+					}
+				}
 				_disposed = true;
 			}
 		}
 
-		~ContextBase()
-		{
-			Dispose(false);
-		}
 	}
 }

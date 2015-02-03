@@ -80,18 +80,15 @@ namespace Vixen.Execution.DataSource
 			}
 		}
 
-		~SequenceDataPump()
-		{
-			Dispose(false);
-		}
-
 		protected void Dispose(bool disposing)
 		{
-			if (disposing) {
+			if (disposing)
+			{
 				if (_dataPumpThread != null)
 					_dataPumpThread.Abort();
-				if (_effectNodeQueue != null)
-					_effectNodeQueue.Dispose();
+				_dataPumpThread = null;
+				Sequence = null;
+				_effectNodeQueue = null;
 			}
 		}
 

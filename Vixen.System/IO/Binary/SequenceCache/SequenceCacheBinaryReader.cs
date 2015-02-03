@@ -31,7 +31,7 @@ namespace Vixen.IO.Binary.SequenceCache
 				}
 				catch (Exception e)
 				{
-					Logging.ErrorException("Error serializing cache instance", e);	
+					Logging.Error("Error serializing cache instance", e);	
 				}
 				
 				stream.Flush();

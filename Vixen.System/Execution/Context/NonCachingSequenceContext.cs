@@ -25,6 +25,13 @@ namespace Vixen.Execution.Context
 			base.OnSequenceStarted(e);
 		}
 
+		protected override void OnSequenceReStarted(Sys.SequenceStartedEventArgs e)
+		{
+			_dataSource.Stop();
+			_dataSource.Start();
+			base.OnSequenceReStarted(e);
+		}
+
 		protected override void OnSequenceEnded(Sys.SequenceEventArgs e)
 		{
 			_dataSource.Stop();

@@ -9,9 +9,11 @@ namespace Vixen.Execution.Context
 		private ISequence _sequence;
 
 		public event EventHandler<SequenceStartedEventArgs> SequenceStarted;
+		public event EventHandler<SequenceStartedEventArgs> SequenceReStarted;
 		public event EventHandler<SequenceEventArgs> SequenceEnded;
 		public event EventHandler<ExecutorMessageEventArgs> Message;
 		public event EventHandler<ExecutorMessageEventArgs> Error;
+		private bool disposed = false;
 
 		public ISequence Sequence
 		{
@@ -108,14 +110,17 @@ namespace Vixen.Execution.Context
 		private void _AssignEventHandlers()
 		{
 			_sequenceExecutor.SequenceStarted += _SequenceExecutorSequenceStarted;
+			_sequenceExecutor.SequenceReStarted += _sequenceExecutor_SequenceReStarted;
 			_sequenceExecutor.SequenceEnded += _SequenceExecutorSequenceEnded;
 			_sequenceExecutor.Message += _SequenceExecutorMessage;
 			_sequenceExecutor.Error += _SequenceExecutorError;
 		}
 
+		
 		private void _RemoveEventHandlers()
 		{
 			_sequenceExecutor.SequenceStarted -= _SequenceExecutorSequenceStarted;
+			_sequenceExecutor.SequenceReStarted -= _sequenceExecutor_SequenceReStarted;
 			_sequenceExecutor.SequenceEnded -= _SequenceExecutorSequenceEnded;
 			_sequenceExecutor.Message -= _SequenceExecutorMessage;
 			_sequenceExecutor.Error -= _SequenceExecutorError;
@@ -148,12 +153,28 @@ namespace Vixen.Execution.Context
 			OnSequenceStarted(e);
 		}
 
+		private void _sequenceExecutor_SequenceReStarted(object sender, SequenceStartedEventArgs e)
+		{
+			OnSequenceReStarted(e);
+		}
+
+
 		protected virtual void OnSequenceStarted(SequenceStartedEventArgs e)
 		{
 			if (SequenceStarted != null) {
 				SequenceStarted(this, e);
 			}
 		}
+
+		protected virtual void OnSequenceReStarted(SequenceStartedEventArgs e)
+		{
+			//_ResetElementStates();
+			if (SequenceReStarted != null)
+			{
+				SequenceReStarted(this, e);
+			}
+		}
+
 
 		private void _SequenceExecutorSequenceEnded(object sender, SequenceEventArgs e)
 		{
@@ -193,16 +214,19 @@ namespace Vixen.Execution.Context
 		}
 
 		#endregion
-
-		~SequenceContext()
-		{
-			Dispose(false);
-		}
-
+		
 		protected override void Dispose(bool disposing)
 		{
-			_DisposeSequenceExecutor();
-			GC.SuppressFinalize(this);
+			if (!disposed)
+			{
+				if (disposing)
+				{
+					_DisposeSequenceExecutor();
+				}
+				disposed = true;
+				
+			}
+			base.Dispose(disposing);
 		}
 	}
 }

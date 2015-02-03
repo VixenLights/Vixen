@@ -70,7 +70,6 @@ namespace Vixen.Execution.DataSource
 			IsRunning = false;
 			_dataPumpThread.Join(1000);
 			_dataPumpThread = null;
-			_effectNodeQueue.Dispose();
 			_effectNodeQueue = null;
 			dataLoadStarted = false;
 		}
@@ -90,19 +89,13 @@ namespace Vixen.Execution.DataSource
 			}
 		}
 
-		~EffectNodeDataPump()
-		{
-			Dispose(false);
-		}
-
 		protected void Dispose(bool disposing)
 		{
 			if (disposing) {
 				if (_dataPumpThread != null)
 					_dataPumpThread.Abort();
-				if (_effectNodeQueue != null)
-					_effectNodeQueue.Dispose();
 			}
+			_dataPumpThread = null;
 		}
 
 		public void Dispose()

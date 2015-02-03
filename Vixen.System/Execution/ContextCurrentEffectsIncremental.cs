@@ -13,7 +13,8 @@ namespace Vixen.Execution
 	internal class ContextCurrentEffectsIncremental : IContextCurrentEffects
 	{
 		private readonly List<IEffectNode> _currentEffects;
-		private readonly HashSet<Guid> _affectedElements; 
+		private readonly HashSet<Guid> _affectedElements;
+		private TimeSpan _lastUpdateTime = TimeSpan.Zero;
 
 		public ContextCurrentEffectsIncremental()
 		{
@@ -28,6 +29,12 @@ namespace Vixen.Execution
 		/// <returns>Ids of the affected elements.</returns>
 		public HashSet<Guid> UpdateCurrentEffects(IDataSource dataSource, TimeSpan currentTime)
 		{
+			if (_lastUpdateTime > currentTime)
+			{
+				//Make sure the current effects are cleared if we go back to a earlier time.
+				Reset();
+			}
+			_lastUpdateTime = currentTime;
 			// Get the effects that are newly qualified.
 			IEnumerable<IEffectNode> newQualifiedEffects = dataSource.GetDataAt(currentTime);
 			// Add them to the current effect list.
@@ -43,23 +50,15 @@ namespace Vixen.Execution
 
 		public void Reset()
 		{
-			lock (_currentEffects)
-			{
-				if (_currentEffects != null)
-					_currentEffects.Clear();
-			}
-			
+			if (_currentEffects != null)
+				_currentEffects.Clear();		
 		}
 
 		private void _GetElementsAffected(IEnumerable<IEffectNode> effects)
 		{
-			lock (_currentEffects)
-			{
-				_affectedElements.Clear();
-				_affectedElements.UnionWith(effects.SelectMany(x => x.Effect.EffectedElementIds));
-				//return new HashSet<Guid>(effects.SelectMany(x => x.Effect.TargetNodes).SelectMany(y => y.GetElementEnumerator()).Select(z => z.Id).Distinct());	
-			}
-			
+			_affectedElements.Clear();
+			_affectedElements.UnionWith(effects.SelectMany(x => x.Effect.EffectedElementIds));
+			//return new HashSet<Guid>(effects.SelectMany(x => x.Effect.TargetNodes).SelectMany(y => y.GetElementEnumerator()).Select(z => z.Id).Distinct());	
 		}
 
 		private void _RemoveExpiredEffects(TimeSpan currentTime)
