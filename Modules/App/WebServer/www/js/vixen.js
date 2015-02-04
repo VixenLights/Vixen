@@ -26,6 +26,7 @@ function ViewModel() {
 	self.delayedSearchToken = ko.pureComputed(self.searchToken).extend({ rateLimit: { timeout: 300, method: "notifyWhenChangesStop" } });
 	self.searchTokenHold = "";
 	self.searchResultsOverflow = ko.observable(false);
+	self.autoUpdateId = 0;
 	
 	self.clearSearch = function() {
 		self.searchToken("");
@@ -60,6 +61,12 @@ function ViewModel() {
 		$.get(playerUrl + '/status')
 			.done(function (status) {
 				self.status(status.Message);
+				if (status.SequenceState === 0) {
+					if (self.autoUpdateId != 0) {
+						clearInterval(self.autoUpdateId);
+						self.autoUpdateId = 0;
+					}
+				}
 			});
 	}
 
@@ -205,8 +212,9 @@ function ViewModel() {
 			.done(function (status) {
 				self.status(status.Message);
 				self.hideLoading();
-				var time = status.Message.substring(status.Message.length - 16);
-				self.updateStatus(moment.duration(time).asSeconds());
+				//var time = status.Message.substring(status.Message.length - 16);
+				self.autoUpdateId = setInterval(self.getStatus, 1000);
+				//self.updateStatus(moment.duration(time).asSeconds());
 		}).error(function(jqXHR, status, error) {
 				self.status(error);
 				self.hideLoading();
@@ -269,6 +277,7 @@ function ViewModel() {
 		self.getElements();
 		self.retrieveStoredSettings();
 		self.getSequences();
+		//self.autoUpdateId = setInterval(self.getStatus, 1000);
 		self.hideLoading();
 	}
 

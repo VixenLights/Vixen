@@ -35,9 +35,9 @@ namespace VixenModules.App.WebServer.Service
 		/// </summary>
 		/// <param name="name"></param>
 		/// <returns></returns>
-		public static Status PlaySequence(string name){
+		public static SequenceStatus PlaySequence(string name){
 			
-			var status = new Status();
+			var status = new SequenceStatus();
 
 			if (string.IsNullOrEmpty(name))
 			{
@@ -47,6 +47,8 @@ namespace VixenModules.App.WebServer.Service
 			string fileName = HttpUtility.UrlDecode(name);
 			if (_context != null && (_context.IsRunning))
 			{
+				status.SequenceState = SequenceStatus.State.Playing;
+				status.Name = _context.Sequence.Name;
 				status.Message = string.Format("Already playing {0}", _context.Sequence.Name);
 			}
 			else
@@ -62,6 +64,8 @@ namespace VixenModules.App.WebServer.Service
 				_context = VixenSystem.Contexts.CreateSequenceContext(new ContextFeatures(ContextCaching.NoCaching), sequence);
 				_context.ContextEnded += context_ContextEnded;
 				_context.Play(TimeSpan.Zero, sequence.Length);
+				status.SequenceState = SequenceStatus.State.Playing;
+				status.Name = _context.Sequence.Name;
 				status.Message = string.Format("Playing sequence {0} of length {1}", sequence.Name, sequence.Length);
 			}
 
@@ -83,16 +87,18 @@ namespace VixenModules.App.WebServer.Service
 		/// Pause the current playing sequence.
 		/// </summary>
 		/// <returns>Status</returns>
-		public static Status PauseSequence()
+		public static SequenceStatus PauseSequence()
 		{
-			var status = new Status();
+			var status = new SequenceStatus();
 			if (_context != null && _context.IsRunning)
 			{
+				status.SequenceState = SequenceStatus.State.Paused;
 				status.Message = string.Format("{0} paused.", _context.Sequence.Name);
 				_context.Pause();
 			}
 			else
 			{
+				status.SequenceState = SequenceStatus.State.Stopped;
 				status.Message = "Nothing playing.";
 			}
 			return status;
@@ -102,12 +108,16 @@ namespace VixenModules.App.WebServer.Service
 		/// Stop the current playing sequnce. Does not effect scheduled sequences.
 		/// </summary>
 		/// <returns></returns>
-		public static Status StopSequence()
+		public static SequenceStatus StopSequence()
 		{
-			var status = new Status();
+			var status = new SequenceStatus()
+			{
+				Name = _context.Sequence.Name,
+				SequenceState = SequenceStatus.State.Stopped
+			};
 			if (_context != null && _context.IsRunning)
 			{
-				status.Message = string.Format("Stopping {0}", _context.Sequence.Name);
+				status.Message = string.Format("Stopped {0}", _context.Sequence.Name);
 				_context.Stop();
 			}
 			else
@@ -121,16 +131,19 @@ namespace VixenModules.App.WebServer.Service
 		/// Retrieve the status of any sequences playing. 
 		/// </summary>
 		/// <returns>Status</returns>
-		public static Status Status()
+		public static SequenceStatus Status()
 		{
-			var status = new Status();
+			var status = new SequenceStatus();
 			if (_context != null && _context.IsRunning)
 			{
+				status.Name = _context.Sequence.Name;
+				status.SequenceState = SequenceStatus.State.Playing;
 				status.Message = string.Format("{0} sequence is playing at position {1}", _context.Sequence.Name,
 					_context.GetTimeSnapshot());
 			}
 			else
 			{
+				status.SequenceState = SequenceStatus.State.Stopped;
 				status.Message = "Nothing playing.";
 			}
 

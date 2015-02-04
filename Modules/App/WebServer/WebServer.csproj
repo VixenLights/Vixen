@@ -97,6 +97,7 @@
     <Compile Include="Controllers\PlayController.cs" />
     <Compile Include="Filter\ArgumentExceptionFilterAttribute.cs" />
     <Compile Include="Model\ElementState.cs" />
+    <Compile Include="Model\SequenceStatus.cs" />
     <Compile Include="RequestLogger.cs" />
     <Compile Include="Model\ElementEffect.cs" />
     <Compile Include="Model\Element.cs" />
