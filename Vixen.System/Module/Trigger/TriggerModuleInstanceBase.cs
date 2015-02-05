@@ -103,22 +103,15 @@ namespace Vixen.Module.Trigger
 			return false;
 		}
 
-		public override void Dispose()
+		protected override void Dispose(bool disposing)
 		{
-			Dispose(true);
-			GC.SuppressFinalize(this);
-		}
-
-		protected virtual void Dispose(bool disposing)
-		{
-			Stop();
-			_pause.Dispose();
-			_pause = null;
-		}
-
-		~TriggerModuleInstanceBase()
-		{
-			Dispose(false);
+			if (disposing)
+			{
+				Stop();
+				_pause.Dispose();
+				_pause = null;	
+			}
+			base.Dispose(disposing);
 		}
 
 		private void _TriggerSet(object sender, EventArgs e)

@@ -49,7 +49,7 @@ namespace Vixen.IO.Xml.Serializer
 
 				return preview;
 			} catch (Exception e) {
-				logging.ErrorException("Error loading Preview from XML", e);
+				logging.Error("Error loading Preview from XML", e);
 				return null;
 			}
 		}

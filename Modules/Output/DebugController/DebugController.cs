@@ -88,14 +88,18 @@ namespace VixenModules.Output.DebugController
 			}
 		}
 
-		public override void Dispose()
+		protected override void Dispose(bool disposing)
 		{
-			if (_form != null && !_form.IsDisposed) {
-				_form.Dispose();
+			if (disposing)
+			{
+				if (_form != null && !_form.IsDisposed)
+				{
+					_form.Dispose();
+				}
+				_form = null;	
 			}
-			_form = null;
-
-			base.Dispose();
+		
+			base.Dispose(disposing);
 		}
 	}
 

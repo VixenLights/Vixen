@@ -127,7 +127,7 @@ namespace Dataweb.NShape.WinFormsUI
 		/// Gets a readonly collection of selected model objects.
 		/// </summary>
 		[Browsable(false)]
-		public IReadOnlyCollection<IModelObject> SelectedModelObjects
+		public Dataweb.NShape.Advanced.IReadOnlyCollection<IModelObject> SelectedModelObjects
 		{
 			get { return selectedModelObjects; }
 		}

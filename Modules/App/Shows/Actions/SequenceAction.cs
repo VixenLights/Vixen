@@ -15,7 +15,7 @@ using VixenModules.Sequence.Timed;
 
 namespace VixenModules.App.Shows
 {
-	public class SequenceAction : Action, IDisposable
+	public class SequenceAction : Action
 	{
 		private ISequenceContext _sequenceContext = null;
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
@@ -104,7 +104,7 @@ namespace VixenModules.App.Shows
 			}
 			catch (Exception ex)
 			{
-				Logging.Error("Could not pre-render sequence " + ShowItem.Sequence_FileName + "; " + ex.Message);
+				Logging.ErrorException("Could not pre-render sequence " + ShowItem.Sequence_FileName + "; ",ex);
 			}
 		}
 
@@ -124,34 +124,36 @@ namespace VixenModules.App.Shows
 
 		private void sequence_Ended(object sender, EventArgs e)
 		{
-			IContext context = sender as IContext;
 			base.Complete();
 		}
 
 		private void DisposeCurrentContext()
 		{
-			_sequenceContext.SequenceEnded -= sequence_Ended;
-			VixenSystem.Contexts.ReleaseContext(_sequenceContext);
-			_sequenceContext.Dispose();
-			TimedSequence tSequence = (sequence as TimedSequence);
-			tSequence.Dispose();
-			sequence = null;
-			_sequenceContext = null;
-		}
-
-		~SequenceAction()
-		{
-			Dispose();
-		}
-
-		public override void Dispose()
-		{
 			if (_sequenceContext != null)
 			{
-				DisposeCurrentContext();
-			}
+				_sequenceContext.SequenceEnded -= sequence_Ended;
+				VixenSystem.Contexts.ReleaseContext(_sequenceContext);
+				var tSequence = (sequence as TimedSequence);
+				if (tSequence != null)
+				{
+					tSequence.Dispose();
+				}
 
-			GC.Collect();
+			}
 		}
+
+		protected override void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				DisposeCurrentContext();
+				
+			}
+			sequence = null;
+			_sequenceContext = null;
+			base.Dispose(disposing);
+		}
+
+		
 	}
 }

@@ -129,7 +129,7 @@ namespace VixenModules.App.Scheduler
 				_SetEnableState(true);
 			}
 			catch (Exception ex) {
-				Logging.ErrorException("Could not execute sequence " + item.FilePath + "; " , ex);
+				Logging.Error("Could not execute sequence " + item.FilePath + "; " , ex);
 			}
 		}
 

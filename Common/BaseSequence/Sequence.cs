@@ -175,7 +175,15 @@ namespace BaseSequence
 			Dispose(false);
 		}
 		protected void Dispose(bool disposing) {
-			if (disposing) {
+			if (disposing)
+			{
+				var sequenceMedia = GetAllMedia();
+				if (sequenceMedia != null && sequenceMedia.Any())
+					foreach (IMediaModuleInstance media in sequenceMedia)
+					{
+						media.Stop();
+						media.Dispose();
+					}
 				SequenceData= null;
 				InsertDataListener= null;
 			}

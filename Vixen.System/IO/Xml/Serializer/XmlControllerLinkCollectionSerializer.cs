@@ -34,7 +34,7 @@ namespace Vixen.IO.Xml.Serializer
 
 				return controllerLinks;
 			} catch (Exception e) {
-				logging.ErrorException("Error loading Controller Links from XML", e);
+				logging.Error("Error loading Controller Links from XML", e);
 				return null;
 			}
 		}
