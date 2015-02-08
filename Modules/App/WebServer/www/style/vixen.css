@@ -16,23 +16,53 @@ html[data-useragent*='rv:11.0'] .ui-navbar li {
 	list-style-image: url(data:0);
 }
 
-#Elements {
+#Elements, #Sequences {
 	padding-top: 70px;
 }
 
-#Sequences {
+#ContextStatus {
 	height: 100%;
-	padding-top: 70px;
+}
+
+.margin-small {
+	margin: 1em;
+}
+
+.padding-side-sm {
+	
 }
 
 @media (max-device-width: 480px) {
-	#Sequences {
+	#ContextStatus {
+		/*padding-top: 70px;*/
 		height: 600px;
 	}
+
+	#Sequences {
+		padding-top: 0;
+	}
+
+	.margin-small {
+		margin: .5em;
+	}
+
+	.padding-side-sm {
+		padding-left: .5em;
+		padding-right: .5em;
+	}
+	
 }
 
 .logo {
 	max-height: 125%;
+}
+
+.ellipsis {
+	overflow: hidden; 
+	text-overflow: ellipsis; 
+	white-space: nowrap;
+	max-width: 60%;
+	display: inline-block;
 }
 
 .controlgroup-textinput{
@@ -136,6 +166,10 @@ li h1.element-header {
 
 span.glyphicon-lg {
     font-size: 1.5em;
+}
+
+span.glyphicon-small {
+    font-size: .75em;
 }
 
 #loading-indicator {

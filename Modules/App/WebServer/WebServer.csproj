@@ -37,6 +37,9 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.AspNet.SignalR.Core">
+      <HintPath>..\..\..\packages\Microsoft.AspNet.SignalR.Core.2.2.0\lib\net45\Microsoft.AspNet.SignalR.Core.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Owin, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Microsoft.Owin.3.0.0\lib\net45\Microsoft.Owin.dll</HintPath>
     </Reference>
@@ -51,6 +54,9 @@
     </Reference>
     <Reference Include="Microsoft.Owin.Hosting, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Microsoft.Owin.Hosting.3.0.0\lib\net45\Microsoft.Owin.Hosting.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security">
+      <HintPath>..\..\..\packages\Microsoft.Owin.Security.2.1.0\lib\net45\Microsoft.Owin.Security.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Owin.StaticFiles, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Microsoft.Owin.StaticFiles.3.0.0\lib\net45\Microsoft.Owin.StaticFiles.dll</HintPath>
@@ -96,8 +102,9 @@
     <Compile Include="Controllers\ElementController.cs" />
     <Compile Include="Controllers\PlayController.cs" />
     <Compile Include="Filter\ArgumentExceptionFilterAttribute.cs" />
+    <Compile Include="Hubs\ContextHub.cs" />
     <Compile Include="Model\ElementState.cs" />
-    <Compile Include="Model\SequenceStatus.cs" />
+    <Compile Include="Model\ContextStatus.cs" />
     <Compile Include="RequestLogger.cs" />
     <Compile Include="Model\ElementEffect.cs" />
     <Compile Include="Model\Element.cs" />
@@ -105,6 +112,7 @@
     <Compile Include="Model\Status.cs" />
     <Compile Include="Service\ElementsHelper.cs" />
     <Compile Include="Service\SequenceHelper.cs" />
+    <Compile Include="Service\ContextStateFeeder.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="WebSettingsEventArgs.cs" />
     <Compile Include="Module.cs" />
@@ -210,6 +218,15 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="www\js\jquery.easing.min.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\js\jquery.signalr-2.1.0.min.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\js\knockout-3.2.0.debug.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\js\moment-duration-format.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="www\js\npm.js">

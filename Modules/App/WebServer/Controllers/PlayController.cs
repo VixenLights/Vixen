@@ -25,26 +25,19 @@ namespace VixenModules.App.WebServer.Controllers
 		[HttpPost]
 		public Status PlaySequence(Sequence sequence)
 		{
-			Status status = SequenceHelper.PlaySequence(sequence.FileName);
-			if (status == null)
-			{
-				CreateResponseMessage(HttpStatusCode.NotFound, 
-					string.Format("No sequence with name = {0}", sequence.FileName), @"Sequence Not Found");
-			}
-
-			return status;
+			return SequenceHelper.PlaySequence(sequence);
 		}
 
 		[HttpPost]
-		public Status PauseSequence()
+		public Status PauseSequence(Sequence sequence)
 		{
-			return SequenceHelper.StopSequence();
+			return SequenceHelper.PauseSequence(sequence);
 		}
 
 		[HttpPost]
-		public Status StopSequence()
+		public Status StopSequence(Sequence sequence)
 		{
-			return SequenceHelper.StopSequence();
+			return SequenceHelper.StopSequence(sequence);
 		}
 	}
 }

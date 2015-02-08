@@ -40,6 +40,9 @@
 					<li>
 						<a class="page-scroll" href="#Sequences">Sequences</a>
 					</li>
+					<li>
+						<a class="page-scroll" href="#ContextStatus">Now Playing</a>
+					</li>
 				</ul>
 				<button class="btn btn-default navbar-btn pull-right hidden-xs" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" aria-label="Settings">
 					<span class="glyphicon glyphicon-cog"></span>
@@ -115,28 +118,82 @@
 
 		</section>
 		<section id="Sequences" class="col-xs-12 col-sm-6">
-
-			
-				<label class="control-label" for="select-sequence">Sequences:</label>
-				<select class="form-control" name="select-sequence" id="select-sequence" data-bind="options: sequences, optionsCaption: 'Select Sequence...', optionsText: 'Name', value:selectedSequence">
-					<option value="standard"></option>
-				</select>
-				<br />
-				<div class="btn-toolbar">
-					<div class="btn-group" role="group">
-						<button class="btn btn-default" data-bind="click: $root.playSequence, enable:selectedSequence">
-							<span class="glyphicon glyphicon-play-circle glyphicon-lg" aria-hidden="true"></span>
-						</button>
-						<button class="btn btn-default" data-bind="click: $root.stopSequence">
-							<span class="glyphicon glyphicon-stop glyphicon-lg" aria-hidden="true"></span>
-						</button>
-						<button class="btn btn-default" data-bind="click: $root.getStatus">
-							<span class="glyphicon glyphicon-refresh glyphicon-lg" aria-hidden="true"></span>
-						</button>
+			<div class="panel panel-default">
+				<!-- Default panel contents -->
+				<div class="panel-heading">
+					<h3 class="panel-title">Sequences</h3>
+				</div>
+				<div class="margin-small">
+					<label class="sr-only" for="select-sequence">Sequences:</label>
+					<select class="form-control" name="select-sequence" id="select-sequence" data-bind="options: sequences, optionsCaption: 'Select Sequence...', optionsText: 'Name', value:selectedSequence">
+						<option value="standard"></option>
+					</select>
+					<br />
+					<div class="btn-toolbar">
+						<div class="btn-group" role="group">
+							<button class="btn btn-default" data-bind="click: $root.playSequence, enable:selectedSequence">
+								<span class="glyphicon glyphicon-play-circle glyphicon-lg" aria-hidden="true"></span>
+							</button>
+							<button class="btn btn-default" data-bind="click: $root.stopSequence, enable:selectedSequence">
+								<span class="glyphicon glyphicon-stop glyphicon-lg" aria-hidden="true"></span>
+							</button>
+							<button class="btn btn-default" data-bind="click: $root.pauseSequence, enable:selectedSequence">
+								<span class="glyphicon glyphicon-pause glyphicon-lg" aria-hidden="true"></span>
+							</button>
+						</div>
 					</div>
 				</div>
+			</div>
+</section>
+		
+		<section id="ContextStatus" class="col-xs-12 col-sm-6">
 			
+			<div class="panel panel-default">
+				<!-- Default panel contents -->
+				<div class="panel-heading">
+					<h3 class="panel-title">Now Playing</h3>
+				</div>
 
+				<div class="panel-group margin-small" id="#nowplaying-accordian" role="tablist" aria-multiselectable="false" data-bind="foreach: nowPlayingList">
+
+					<div class="panel panel-default">
+						
+
+						<div class="panel-heading padding-side-sm" role="tab" data-bind="attr:{id: 'nowplaying-header' + $index()}">
+							<h4 class="panel-title">
+								<a data-bind="text:Sequence.Name, attr:{href:'#Sequence' + $index(), 'aria-controls':'Sequence' + $index()}" class="collapsed ellipsis" data-toggle="collapse" data-parent="#nowplaying-accordion" aria-expanded="false"></a>
+								<span class="glyphicon glyphicon-small pull-left" data-bind="css:$root.contextStatus($data.State())"></span>
+								<span class="pull-right" data-bind="duration:Position, format:'hh:mm:ss', trim:false"></span>
+							</h4>
+						</div>
+						<div class="panel-collapse collapse" role="tabpanel" data-bind="attr:{id:'Sequence' + $index(), 'aria-labelledby': 'nowplaying-header' + $index()}">
+							<div class="panel-body">
+								<form>
+									<div class="row">
+
+										<div class="col-xs-9">
+											<div class="btn-group" role="group">
+												<button class="btn btn-default" data-bind="click: $root.playSequence, enable: $root.isPaused($data.State())">
+													<span class="glyphicon glyphicon-play-circle glyphicon-lg" aria-hidden="true"></span>
+												</button>
+												<button class="btn btn-default" data-bind="click: $root.stopSequence">
+													<span class="glyphicon glyphicon-stop glyphicon-lg" aria-hidden="true"></span>
+												</button>
+												<button class="btn btn-default" data-bind="click: $root.pauseSequence, enable: $root.isPlaying($data.State())">
+													<span class="glyphicon glyphicon-pause glyphicon-lg" aria-hidden="true"></span>
+												</button>
+											</div>
+										</div>
+									</div>
+
+								</form>
+
+							</div>
+						</div>
+
+					</div>
+				</div> 
+				</div>
 		</section>
 	</div>
 		<div class="collapse navbar navbar-default navbar-fixed-bottom" id="collapseExample">
@@ -162,14 +219,18 @@
 			</div>
 		</footer>
 		<img src="/images/ajax-loader.gif" id="loading-indicator" style="display:none" />
-		<script src="/js/jquery-1.11.2.min.js"></script>
-		<script src="/js/bootstrap.min.js"></script>
-		<script src="/js/jquery.easing.min.js"></script>
-		<script src="/js/knockout-3.2.0.js"></script>
-		<script src="/js/moment.min.js"></script>
-		<script src="/js/bootstrap-slider.min.js"></script>
-		<script src="/js/spectrum.js"></script>
-		<script src="/js/amplify.min.js"></script>
-		<script src="/js/vixen.js"></script>
+	<script src="/js/jquery-1.11.2.min.js"></script>
+	<script src="/js/bootstrap.min.js"></script>
+	<script src="/js/jquery.easing.min.js"></script>
+	<script src="/js/knockout-3.2.0.js"></script>
+	<script src="/js/moment.min.js"></script>
+	<script src="/js/moment-duration-format.js"></script>
+	<script src="/js/bootstrap-slider.min.js"></script>
+	<script src="/js/spectrum.js"></script>
+	<script src="/js/amplify.min.js"></script>
+	<script src="/js/jquery.signalr-2.1.0.min.js"></script>
+	<!--Reference the autogenerated SignalR hub script. -->
+	<script src="/signalr/hubs"></script>
+	<script src="/js/vixen.js"></script>
 </body>
 </html>

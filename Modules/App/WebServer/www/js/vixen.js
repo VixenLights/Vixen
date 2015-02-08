@@ -26,8 +26,33 @@ function ViewModel() {
 	self.delayedSearchToken = ko.pureComputed(self.searchToken).extend({ rateLimit: { timeout: 300, method: "notifyWhenChangesStop" } });
 	self.searchTokenHold = "";
 	self.searchResultsOverflow = ko.observable(false);
-	self.autoUpdateId = 0;
+	self.nowPlayingList = ko.observableArray([]).extend({ rateLimit: 25 });
 	
+	
+	self.contextStatus = function(state) {
+		var icon;
+		switch (state) {
+		case 1:
+			icon = "glyphicon-play";
+			break;
+		case 2:
+			icon = "glyphicon-pause";
+			break;
+		case 0:
+		default:
+			icon = "glyphicon-stop";
+		}
+		return icon;
+	};
+
+	self.isPlaying = function (state) {
+		return state == 1;
+	};
+
+	self.isPaused = function (state) {
+		return state == 2;
+	};
+
 	self.clearSearch = function() {
 		self.searchToken("");
 	}
@@ -61,12 +86,6 @@ function ViewModel() {
 		$.get(playerUrl + '/status')
 			.done(function (status) {
 				self.status(status.Message);
-				if (status.SequenceState === 0) {
-					if (self.autoUpdateId != 0) {
-						clearInterval(self.autoUpdateId);
-						self.autoUpdateId = 0;
-					}
-				}
 			});
 	}
 
@@ -173,12 +192,7 @@ function ViewModel() {
 			id: data.Id
 		};
 		
-		$.ajax({
-			url: elementUrl + '/off',
-			type: 'POST',
-			dataType:"JSON",
-			data: parms
-		})
+		$.post(elementUrl + '/off', parms, null, 'JSON')
 			.done(function (status) {
 				self.status(status.Message);
 			}).error(function (jqXHR, status, error) {
@@ -190,31 +204,40 @@ function ViewModel() {
 
 	//Sequence functions
 
-	self.stopSequence = function() {
-		$.post(playerUrl + '/stopSequence')
+	self.stopSequence = function(data) {
+		$.post(playerUrl + '/stopSequence', data.Sequence ? ko.mapping.toJS(data.Sequence) : data.selectedSequence(), null, 'JSON')
 			.done(function (status) {
 				self.status(status.Message);
-				self.getStatus();
+				self.updateStatus(5);
 			}).error(function (jqXHR, status, error) {
 				self.status(error);
 				self.hideLoading();
 			});
 	}
 
-	self.playSequence = function() {
+	self.pauseSequence = function (data) {
+		$.post(playerUrl + '/pauseSequence', data.Sequence ? ko.mapping.toJS(data.Sequence) : data.selectedSequence(), null, 'JSON')
+			.done(function (status) {
+				self.status(status.Message);
+				self.updateStatus(5);
+			}).error(function (jqXHR, status, error) {
+				self.status(error);
+				self.hideLoading();
+			});
+	}
+
+	self.playSequence = function(data) {
 		self.showLoading();
 		$.ajax({
 			url: playerUrl + '/playSequence',
 			type: 'POST',
 			dataType:"json",
-			data: self.selectedSequence()
+			data: data.Sequence ? ko.mapping.toJS(data.Sequence) : data.selectedSequence()
 			})
 			.done(function (status) {
 				self.status(status.Message);
+				self.updateStatus(5);
 				self.hideLoading();
-				//var time = status.Message.substring(status.Message.length - 16);
-				self.autoUpdateId = setInterval(self.getStatus, 1000);
-				//self.updateStatus(moment.duration(time).asSeconds());
 		}).error(function(jqXHR, status, error) {
 				self.status(error);
 				self.hideLoading();
@@ -244,6 +267,10 @@ function ViewModel() {
 	self.delayedElementIntensity.subscribe(function(val) {
 		amplify.store(storeIntesityKey, val);
 	});
+
+	//self.nowPlayingList.subscribe(function (val) {
+	//	alert("now Playing");
+	//});
 	
 
 	self.showLoading = function() {
@@ -270,6 +297,61 @@ function ViewModel() {
 		
 	}
 
+	self.initSysytemStatusHub = function () {
+
+		//register for updates
+		$.connection.ContextStates.client.updatePlayingContextStates = self.updatePlayingStates;
+
+		// Start the connection
+		$.connection.hub.start();
+	}
+
+	self.updatePlayingStates = function (states) {
+		//The knockout mapping plugin was not working correctly in IE only so this is a
+		//direct mapping to only add or remove what changed to prevent recreating 
+		//the whole DOM for the now playing on each refresh. Need to revist why IE is the only one
+		//that did not work with the plugin. This is probably faster anyway.
+
+		//Remove old and update existing.
+		for (var index2 = 0; index2 < self.nowPlayingList().length; ++index2) {
+			var remove = true;
+			for (var index = 0; index < states.length; ++index) {
+				if (states[index].Sequence.Name === self.nowPlayingList()[index2].Sequence.Name()) {
+					self.nowPlayingList()[index2].Position(states[index].Position);
+					self.nowPlayingList()[index2].State(states[index].State);
+					remove = false;
+					break;
+				}
+			}
+			if (remove) {
+				self.nowPlayingList.remove(self.nowPlayingList()[index2]);
+			}
+		}
+
+		//Add new
+		for (var index = 0; index < states.length; ++index) {
+			var add = true;
+			for (var index2 = 0; index2 < self.nowPlayingList().length; ++index2) {
+				if (states[index].Sequence.Name === self.nowPlayingList()[index2].Sequence.Name()) {
+					add = false;
+					break;
+				}
+			}
+			if (add) {
+				var state = {
+					Position: ko.observable(states[index].Position),
+					State: ko.observable(states[index].State),
+					Sequence: {
+						FileName: ko.observable(states[index].Sequence.FileName),
+						Name: ko.observable(states[index].Sequence.Name)
+					}
+				}
+
+				self.nowPlayingList.push(state);
+			}
+		}
+	}
+
 	self.init = function ()
 	{
 		self.showLoading();
@@ -277,10 +359,23 @@ function ViewModel() {
 		self.getElements();
 		self.retrieveStoredSettings();
 		self.getSequences();
-		//self.autoUpdateId = setInterval(self.getStatus, 1000);
+		self.initSysytemStatusHub();
 		self.hideLoading();
 	}
 
+};
+
+ko.bindingHandlers.duration = {
+	update: function (element, valueAccessor, allBindingsAccessor) {
+		var value = ko.unwrap(valueAccessor());
+
+		var duration = moment.duration(value);
+		var format = allBindingsAccessor().format || 'MM/DD/YYYY';
+		var trim = allBindingsAccessor().trim || true;
+		var formatted = duration.format(format, { trim:trim });
+
+		element.innerText = formatted;
+	}
 };
 
 ko.bindingHandlers.jqmSlider = {
@@ -366,9 +461,11 @@ $(document).on('click', '.navbar-collapse.in', function (e) {
 $(function () {
 	$('a.page-scroll').bind('click', function (event) {
 		var $anchor = $(this);
+		var top = $($anchor.attr('href')).offset().top;
+		var offset = top == 0 ? top : top - $(".navbar-header").height() - 20;
 		$('html, body').stop().animate({
-			scrollTop: $($anchor.attr('href')).offset().top
-		}, 1500, 'easeInOutExpo');
+			scrollTop: offset
+	}, 1500, 'easeInOutExpo');
 		event.preventDefault();
 	});
 });

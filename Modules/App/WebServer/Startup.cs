@@ -19,6 +19,8 @@ namespace VixenModules.App.WebServer
 		{
 			//logger for testing
 			//app.Use(typeof (RequestLogger));
+
+			app.MapSignalR();
 			
 			//Where our content lives
 			string contentPath = Path.Combine(Environment.CurrentDirectory, @".\Modules\App\www");
@@ -57,6 +59,8 @@ namespace VixenModules.App.WebServer
 				);
 
 			app.UseWebApi(config);
+
+			
 
 		}
 
