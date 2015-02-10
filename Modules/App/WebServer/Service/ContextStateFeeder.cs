@@ -46,7 +46,8 @@ namespace VixenModules.App.WebServer.Service
 
 		public IEnumerable<ContextStatus> GetAllStates()
 		{
-			return _contextStatuses.ToList();
+			return _contextStatuses.Where(x => x.State.Equals(ContextStatus.States.Playing) ||
+			                                   x.State.Equals(ContextStatus.States.Paused));
 		}
 
 		private void UpdateContextStatus(object state)

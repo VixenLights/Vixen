@@ -4,6 +4,11 @@ var elementUrl = apiUrl + "/element";
 var timeoutTimer;
 var storeTimeKey = "timeout";
 var storeIntesityKey = "intensity";
+var sequenceStatusMapping = {
+	key: function (item) {
+		return ko.utils.unwrapObservable(item.Sequence.Name);
+	}
+}
 
 function ViewModel() {
 
@@ -26,7 +31,7 @@ function ViewModel() {
 	self.delayedSearchToken = ko.pureComputed(self.searchToken).extend({ rateLimit: { timeout: 300, method: "notifyWhenChangesStop" } });
 	self.searchTokenHold = "";
 	self.searchResultsOverflow = ko.observable(false);
-	self.nowPlayingList = ko.observableArray([]).extend({ rateLimit: 25 });
+	self.nowPlayingList = ko.observableArray().extend({ rateLimit: 25 });
 	
 	
 	self.contextStatus = function(state) {
@@ -171,11 +176,7 @@ function ViewModel() {
 			}
 		});
 
-		$.ajax({url: elementUrl + '/on',
-			type: 'POST',
-			datatype: "JSON",
-			data:parms
-		})
+		$.post(elementUrl + '/on', parms, null, 'JSON')
 			.done(function (status) {
 				self.status(status.Message);
 				self.updateStatus(self.timeout());
@@ -228,20 +229,15 @@ function ViewModel() {
 
 	self.playSequence = function(data) {
 		self.showLoading();
-		$.ajax({
-			url: playerUrl + '/playSequence',
-			type: 'POST',
-			dataType:"json",
-			data: data.Sequence ? ko.mapping.toJS(data.Sequence) : data.selectedSequence()
-			})
+		$.post(playerUrl + '/playSequence', data.Sequence ? ko.mapping.toJS(data.Sequence) : data.selectedSequence(), null, 'JSON')
 			.done(function (status) {
 				self.status(status.Message);
 				self.updateStatus(5);
 				self.hideLoading();
-		}).error(function(jqXHR, status, error) {
-				self.status(error);
-				self.hideLoading();
-		});
+			}).error(function(jqXHR, status, error) {
+					self.status(error);
+					self.hideLoading();
+			});
 	}
 
 	self.getSequences = function() {
@@ -267,11 +263,6 @@ function ViewModel() {
 	self.delayedElementIntensity.subscribe(function(val) {
 		amplify.store(storeIntesityKey, val);
 	});
-
-	//self.nowPlayingList.subscribe(function (val) {
-	//	alert("now Playing");
-	//});
-	
 
 	self.showLoading = function() {
 		setTimeout(function () {
@@ -307,49 +298,8 @@ function ViewModel() {
 	}
 
 	self.updatePlayingStates = function (states) {
-		//The knockout mapping plugin was not working correctly in IE only so this is a
-		//direct mapping to only add or remove what changed to prevent recreating 
-		//the whole DOM for the now playing on each refresh. Need to revist why IE is the only one
-		//that did not work with the plugin. This is probably faster anyway.
-
-		//Remove old and update existing.
-		for (var index2 = 0; index2 < self.nowPlayingList().length; ++index2) {
-			var remove = true;
-			for (var index = 0; index < states.length; ++index) {
-				if (states[index].Sequence.Name === self.nowPlayingList()[index2].Sequence.Name()) {
-					self.nowPlayingList()[index2].Position(states[index].Position);
-					self.nowPlayingList()[index2].State(states[index].State);
-					remove = false;
-					break;
-				}
-			}
-			if (remove) {
-				self.nowPlayingList.remove(self.nowPlayingList()[index2]);
-			}
-		}
-
-		//Add new
-		for (var index = 0; index < states.length; ++index) {
-			var add = true;
-			for (var index2 = 0; index2 < self.nowPlayingList().length; ++index2) {
-				if (states[index].Sequence.Name === self.nowPlayingList()[index2].Sequence.Name()) {
-					add = false;
-					break;
-				}
-			}
-			if (add) {
-				var state = {
-					Position: ko.observable(states[index].Position),
-					State: ko.observable(states[index].State),
-					Sequence: {
-						FileName: ko.observable(states[index].Sequence.FileName),
-						Name: ko.observable(states[index].Sequence.Name)
-					}
-				}
-
-				self.nowPlayingList.push(state);
-			}
-		}
+		//mapping plugin is a modified version to fix an IE bug detecting Arrays
+		ko.mapping.fromJS(states, sequenceStatusMapping, self.nowPlayingList);
 	}
 
 	self.init = function ()

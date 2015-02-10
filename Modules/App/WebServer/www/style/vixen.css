@@ -33,7 +33,7 @@ html[data-useragent*='rv:11.0'] .ui-navbar li {
 }
 
 @media (max-device-width: 480px) {
-	#ContextStatus {
+	#NowPlaying {
 		/*padding-top: 70px;*/
 		height: 600px;
 	}
@@ -65,27 +65,9 @@ html[data-useragent*='rv:11.0'] .ui-navbar li {
 	display: inline-block;
 }
 
-.controlgroup-textinput{
-	padding-top:.22em;
-	padding-bottom:0;
-}
 
 li h1.element-header {
 	margin: .7em 0 1em;
-}
-
-.button-aside{
-	position: absolute;
-	top: 1em;
-	right: 1em;
-	margin: 0;
-	text-align: right;
-}
-
-.aside {
-	display: inline-block;
-	float: right;
-	vertical-align: baseline;
 }
 
 .btn-plain {
@@ -95,9 +77,6 @@ li h1.element-header {
 	padding: 0;
 }
 
-.form-control-pull-left {
-	right: 40px;
-}
 
 /* Spectrum Color */
 
@@ -170,6 +149,16 @@ span.glyphicon-lg {
 
 span.glyphicon-small {
     font-size: .75em;
+}
+
+span.glyphicon-addon {
+	font-size: 1.5em;
+	top: 2px;
+}
+
+.btn-addon-icon {
+	padding-top: 3px;
+	padding-bottom: 3px;
 }
 
 #loading-indicator {
