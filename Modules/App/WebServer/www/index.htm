@@ -1,15 +1,15 @@
 ﻿<!DOCTYPE html>
 
 <html>
-	<head>
-		<title>Vixen 3 Web Interface</title>
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<meta http-equiv="X-UA-Compatable" content="IE=Edge,chrome=1"/>
-		<link rel="stylesheet" href="/style/bootstrap.css" />
-		<link rel="stylesheet" href="/style/bootstrap-slider.min.css"/>
-		<link rel="stylesheet" href="/style/spectrum.css"/>
-		<link rel="stylesheet" href="/style/vixen.css" />
-	</head>
+<head>
+	<title>Vixen 3 Web Interface</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatable" content="IE=Edge,chrome=1" />
+	<link rel="stylesheet" href="/style/bootstrap.css" />
+	<link rel="stylesheet" href="/style/bootstrap-slider.min.css" />
+	<link rel="stylesheet" href="/style/spectrum.css" />
+	<link rel="stylesheet" href="/style/vixen.css" />
+</head>
 
 <body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
 	<nav class="navbar navbar-default navbar-fixed-top">
@@ -25,7 +25,7 @@
 					<span class="icon-bar"></span>
 				</button>
 				<a class="navbar-brand" href="http://vixenlights.com">
-					<img src="/images/V3Logo.png" class="img-responsive logo" alt="Vixen Logo"/>
+					<img src="/images/V3Logo.png" class="img-responsive logo" alt="Vixen Logo" />
 				</a>
 			</div>
 
@@ -138,9 +138,9 @@
 				</div>
 			</div>
 		</section>
-		
+
 		<section id="NowPlaying" class="col-xs-12 col-sm-6 pull-right">
-			
+
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					<h3 class="panel-title">Now Playing</h3>
@@ -181,33 +181,33 @@
 						</div>
 
 					</div>
-				</div> 
 				</div>
+			</div>
 		</section>
 	</div>
-		<div class="collapse navbar navbar-default navbar-fixed-bottom" id="collapseExample">
-			<div class="well">
-				<div class="form-inline">
-					<div class="form-group">
-						<label for="elementOnTime" class="control-label">Time:</label>
-						<input class="form-control" type="number" name="elementOnTime" id="elementOnTime" data-bind="value: timeout" />
-					</div>
-					<div class="form-group">
-						<label for="slider" class="control-label">Intensity:</label>
-						<input class="form-control" type="range" name="intensity" id="slider" data-bind="jqmSlider: elementIntensity, min:0, max:100, value:100">
-					</div>
+	<div class="collapse navbar navbar-default navbar-fixed-bottom" id="collapseExample">
+		<div class="well">
+			<div class="form-inline">
+				<div class="form-group">
+					<label for="elementOnTime" class="control-label">Time:</label>
+					<input class="form-control" type="number" name="elementOnTime" id="elementOnTime" data-bind="value: timeout" />
+				</div>
+				<div class="form-group">
+					<label for="slider" class="control-label">Intensity:</label>
+					<input class="form-control" type="range" name="intensity" id="slider" data-bind="jqmSlider: elementIntensity, min:0, max:100, value:100">
 				</div>
 			</div>
 		</div>
+	</div>
 
-		<footer id="footer">
-			<div class="navbar-default navbar-fixed-bottom">
-				<div class="container">
-					<span data-bind="text: status"></span>
-				</div>
+	<footer id="footer">
+		<div class="navbar-default navbar-fixed-bottom">
+			<div class="container">
+				<span data-bind="text: status"></span>
 			</div>
-		</footer>
-		<img src="/images/ajax-loader.gif" id="loading-indicator" style="display:none" />
+		</div>
+	</footer>
+	<img src="/images/ajax-loader.gif" id="loading-indicator" style="display:none" />
 	<script src="/js/jquery-1.11.2.min.js"></script>
 	<script src="/js/bootstrap.min.js"></script>
 	<script src="/js/jquery.easing.min.js"></script>
