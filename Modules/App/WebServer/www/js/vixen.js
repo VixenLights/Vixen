@@ -2,6 +2,7 @@
 var playerUrl = apiUrl + "/play";
 var elementUrl = apiUrl + "/element";
 var timeoutTimer;
+var searchLimit = 75;
 var storeTimeKey = "timeout";
 var storeIntesityKey = "intensity";
 var sequenceStatusMapping = {
@@ -127,7 +128,7 @@ function ViewModel() {
 				}
 			})
 				.then(function (response) {
-					if (response.length < 50) {
+					if (response.length < searchLimit) {
 						self.elements(response);
 						self.searchResultsOverflow(false);
 					} else {
