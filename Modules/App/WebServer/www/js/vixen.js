@@ -4,7 +4,8 @@ var elementUrl = apiUrl + "/element";
 var timeoutTimer;
 var searchLimit = 75;
 var storeTimeKey = "timeout";
-var storeIntesityKey = "intensity";
+var storeIntensityKey = "intensity";
+var storeSequenceKey = "sequence";
 var sequenceStatusMapping = {
 	key: function (item) {
 		return ko.utils.unwrapObservable(item.Sequence.Name);
@@ -235,6 +236,12 @@ function ViewModel() {
 		$.get(playerUrl + '/getSequences')
 			.done(function (data) {
 				self.sequences(data);
+				var selectedSequence = amplify.store(storeSequenceKey);
+				if (selectedSequence.Name) {
+					self.selectedSequence(
+						self.findSequence(selectedSequence.Name)
+					);
+				}
 			}).error(function(jqXHR, status, error) {
 				self.status(error);
 				self.hideLoading();
@@ -252,7 +259,11 @@ function ViewModel() {
 	});
 
 	self.delayedElementIntensity.subscribe(function(val) {
-		amplify.store(storeIntesityKey, val);
+		amplify.store(storeIntensityKey, val);
+	});
+
+	self.selectedSequence.subscribe(function (val) {
+		amplify.store(storeSequenceKey, val);
 	});
 
 	self.showLoading = function() {
@@ -268,7 +279,7 @@ function ViewModel() {
 	}
 
 	self.retrieveStoredSettings = function () {
-		var intensity = amplify.store(storeIntesityKey);
+		var intensity = amplify.store(storeIntensityKey);
 		if (intensity) {
 			self.elementIntensity(intensity);
 		}
@@ -293,12 +304,20 @@ function ViewModel() {
 		ko.mapping.fromJS(states, sequenceStatusMapping, self.nowPlayingList);
 	}
 
+	self.findSequence = function (sequenceName) {
+		for (var i = 0, len = model.sequences().length; i < len; i++) {
+			if (model.sequences()[i].Name === sequenceName)
+				return model.sequences()[i]; // Return as soon as the object is found
+		}
+		return null; // The object was not found
+	}
+
 	self.init = function ()
 	{
 		self.showLoading();
 		self.getElements();
-		self.retrieveStoredSettings();
 		self.getSequences();
+		self.retrieveStoredSettings();
 		self.initSysytemStatusHub();
 		self.hideLoading();
 	}
