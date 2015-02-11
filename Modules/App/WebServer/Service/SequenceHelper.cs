@@ -17,7 +17,6 @@ namespace VixenModules.App.WebServer.Service
 	internal class SequenceHelper
 	{
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
-		//private static ISequenceContext _context; 
 
 		public static IEnumerable<Sequence> GetSequences()
 		{
@@ -130,17 +129,7 @@ namespace VixenModules.App.WebServer.Service
 				}
 				status.Message = string.Format(@"Sequence {0} paused.", sequence.Name);
 			}
-			//if (_context != null && _context.IsRunning)
-			//{
-			//	status.State = ContextStatus.States.Paused;
-			//	status.Message = string.Format("{0} paused.", _context.Sequence.Name);
-			//	_context.Pause();
-			//}
-			//else
-			//{
-			//	status.State = ContextStatus.States.Stopped;
-			//	status.Message = "Nothing playing.";
-			//}
+			
 			return status;
 		}
 
@@ -170,40 +159,23 @@ namespace VixenModules.App.WebServer.Service
 				}
 				status.Message = string.Format(@"Sequence {0} stopped.", sequence.Name);
 			}
-			//if (_context != null && _context.IsRunning)
-			//{
-			//	status.Message = string.Format("Stopped {0}", _context.Sequence.Name);
-			//	_context.Stop();
-			//}
-			//else
-			//{
-			//	status.Message = "Nothing playing.";
-			//}
+			
 			return status;
 		}
 
 		/// <summary>
-		/// Retrieve the status of any sequences playing. 
+		/// Retrieve the status of any sequences playing. **Deprecated**
 		/// </summary>
 		/// <returns>Status</returns>
 		public static ContextStatus Status()
 		{
-			var status = new ContextStatus();
-			
-			//if (_context != null && _context.IsRunning)
-			//{
-			//	status.Name = _context.Sequence.Name;
-			//	status.State = ContextStatus.States.Playing;
-			//	status.Message = string.Format("{0} sequence is playing at position {1}", _context.Sequence.Name,
-			//		_context.GetTimeSnapshot());
-			//}
-			//else
-			//{
-				//status.State = ContextStatus.States.Stopped;
-				status.Message = "Deprecated";
-			//}
+			var status = new ContextStatus()
+			{
+				Message = "Deprecated"
+			};
 
 			return status;
+
 		}
 	}
 }

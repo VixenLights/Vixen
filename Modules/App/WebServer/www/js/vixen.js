@@ -105,16 +105,6 @@ function ViewModel() {
 
 	}
 
-	self.updateStatus = function (seconds) {
-		if (timeoutTimer) {
-			clearTimeout(timeoutTimer);
-		}
-		timeoutTimer = setTimeout(function () {
-			self.getStatus();
-		}, seconds * 1000);
-
-	}
-
 	//Element retrieval 
 	self.searchElements = function (value) {
 		
@@ -180,7 +170,7 @@ function ViewModel() {
 		$.post(elementUrl + '/on', parms, null, 'JSON')
 			.done(function (status) {
 				self.status(status.Message);
-				self.updateStatus(self.timeout());
+				self.clearStatus(self.timeout());
 			}).error(function (jqXHR, status, error) {
 				self.status(error);
 				self.hideLoading();
@@ -210,7 +200,7 @@ function ViewModel() {
 		$.post(playerUrl + '/stopSequence', data.Sequence ? ko.mapping.toJS(data.Sequence) : data.selectedSequence(), null, 'JSON')
 			.done(function (status) {
 				self.status(status.Message);
-				self.updateStatus(5);
+				self.clearStatus(5);
 			}).error(function (jqXHR, status, error) {
 				self.status(error);
 				self.hideLoading();
@@ -221,7 +211,7 @@ function ViewModel() {
 		$.post(playerUrl + '/pauseSequence', data.Sequence ? ko.mapping.toJS(data.Sequence) : data.selectedSequence(), null, 'JSON')
 			.done(function (status) {
 				self.status(status.Message);
-				self.updateStatus(5);
+				self.clearStatus(5);
 			}).error(function (jqXHR, status, error) {
 				self.status(error);
 				self.hideLoading();
@@ -233,7 +223,7 @@ function ViewModel() {
 		$.post(playerUrl + '/playSequence', data.Sequence ? ko.mapping.toJS(data.Sequence) : data.selectedSequence(), null, 'JSON')
 			.done(function (status) {
 				self.status(status.Message);
-				self.updateStatus(5);
+				self.clearStatus(5);
 				self.hideLoading();
 			}).error(function(jqXHR, status, error) {
 					self.status(error);
@@ -306,7 +296,6 @@ function ViewModel() {
 	self.init = function ()
 	{
 		self.showLoading();
-		self.getStatus();
 		self.getElements();
 		self.retrieveStoredSettings();
 		self.getSequences();
