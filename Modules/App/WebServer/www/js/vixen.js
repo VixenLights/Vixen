@@ -237,7 +237,7 @@ function ViewModel() {
 			.done(function (data) {
 				self.sequences(data);
 				var selectedSequence = amplify.store(storeSequenceKey);
-				if (selectedSequence.Name) {
+				if (selectedSequence && selectedSequence.Name) {
 					self.selectedSequence(
 						self.findSequence(selectedSequence.Name)
 					);
