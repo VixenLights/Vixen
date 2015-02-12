@@ -12,7 +12,7 @@ namespace VixenModules.App.WebServer.Controllers
 	public class PlayController : BaseController
 	{
 		[HttpGet]
-		public Status Status()
+		public IEnumerable<Status> Status()
 		{
 			return SequenceHelper.Status();
 		}

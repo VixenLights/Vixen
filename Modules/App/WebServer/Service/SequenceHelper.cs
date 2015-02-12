@@ -167,15 +167,9 @@ namespace VixenModules.App.WebServer.Service
 		/// Retrieve the status of any sequences playing. **Deprecated**
 		/// </summary>
 		/// <returns>Status</returns>
-		public static ContextStatus Status()
+		public static IEnumerable<Status> Status()
 		{
-			var status = new ContextStatus()
-			{
-				Message = "Deprecated"
-			};
-
-			return status;
-
+			return ContextStateFeeder.Instance.GetAllStates();
 		}
 	}
 }
