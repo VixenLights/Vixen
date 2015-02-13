@@ -18,7 +18,7 @@ namespace VixenModules.App.WebServer
 		internal static LiveContext LiveContext { get; set; }
 
 		//Webserver object
-		private IDisposable server;
+		private IDisposable _server;
 		private Data _data;
 		private IApplication _application;
 		private AppCommand _showCommand;
@@ -73,29 +73,29 @@ namespace VixenModules.App.WebServer
 		{
 			if (value)
 			{
-				if (server != null) _SetServerEnableState(false, port);
-				var options = new StartOptions {ServerFactory = "Nowin"}; //use the Nowin server to listen for connections
+				StopServer();
+				var options = new StartOptions {ServerFactory = "Nowin"}; //use the Nowin _server to listen for connections
 				options.Urls.Add(string.Format("http://*:{0}/", port));
 
 				try
 				{
-					server = WebApp.Start<Startup>(options);
+					_server = WebApp.Start<Startup>(options);
 				}
 				catch (Exception ex)
 				{
-					Logging.Error("Unable to start web server.", ex);
+					Logging.Error("Unable to start web _server.", ex);
 					return;
 				}
-				LiveContext = VixenSystem.Contexts.CreateLiveContext("Web Server");
-				LiveContext.Start();
+				if (LiveContext == null)
+				{
+					LiveContext = VixenSystem.Contexts.CreateLiveContext("Web Server");
+					LiveContext.Start();
+				}
+				
 			}
 			else
 			{
-				if (server != null)
-				{
-					server.Dispose();
-					server = null;
-				}
+				StopServer();
 				if (LiveContext != null)
 				{
 					//We are the only current consumer of LiveContext, so shut it off when we are done.
@@ -105,7 +105,14 @@ namespace VixenModules.App.WebServer
 			}
 		}
 
-
+		private void StopServer()
+		{
+			if (_server != null)
+			{
+				_server.Dispose();
+				_server = null;
+			}	
+		}
 
 		private AppCommand _CreateShowCommand()
 		{
@@ -145,11 +152,12 @@ namespace VixenModules.App.WebServer
 
 		public override void Unloading()
 		{
-			_SetServerEnableState(false, 0);
+			StopServer();
 			//We are the only current consumer of LiveContext, so shut it off when we are done.
 			if (LiveContext != null)
 			{
 				VixenSystem.Contexts.ReleaseContext(LiveContext);
+				LiveContext = null;
 			}
 		}
 
