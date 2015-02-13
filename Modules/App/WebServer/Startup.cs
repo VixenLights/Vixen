@@ -34,6 +34,7 @@ namespace VixenModules.App.WebServer
 			options.StaticFileOptions.FileSystem = physicalFileSystem;
 			options.StaticFileOptions.ServeUnknownFileTypes = true;
 			options.DefaultFilesOptions.DefaultFileNames = new[] {"index.htm"}; //Default file to serve if none specified
+			options.StaticFileOptions.OnPrepareResponse = _ => _.OwinContext.Response.Headers.Add("X-UA-Compatible", new [] { "IE=Edge" });
 			app.UseFileServer(options);
 
 			var config = new HttpConfiguration();
