@@ -28,6 +28,7 @@ namespace VixenApplication
 		{
 			InitializeComponent();
 			Icon = Resources.Icon_Vixen3;
+			this.ShowInTaskbar = false;
 			_displayedController = null;
 		}
 

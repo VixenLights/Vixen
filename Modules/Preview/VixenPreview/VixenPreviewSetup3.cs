@@ -14,6 +14,7 @@ using System.IO;
 using VixenModules.Preview.VixenPreview.Shapes;
 using VixenModules.Property.Location;
 using System.Windows.Forms.Design;
+using Common.Resources.Properties;
 
 namespace VixenModules.Preview.VixenPreview {
     public partial class VixenPreviewSetup3 : Form
@@ -42,6 +43,9 @@ namespace VixenModules.Preview.VixenPreview {
 
 		public VixenPreviewSetup3() {
 			InitializeComponent();
+			Icon = Resources.Icon_Vixen3;
+			this.ShowInTaskbar = false;
+
 		}
 
 		private void VixenPreviewSetup3_Load(object sender, EventArgs e) {
