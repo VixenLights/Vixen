@@ -59,7 +59,7 @@ namespace VixenModules.App.Shows
 		private void buttonOK_Click(object sender, EventArgs e)
 		{
 			ShowData.Name = textBoxShowName.Text;
-            UpdateListViewItems();
+			UpdateListViewItems();
 			DialogResult = System.Windows.Forms.DialogResult.OK;
 			Close();
 		}
@@ -184,7 +184,7 @@ namespace VixenModules.App.Shows
 
 		private void LoadCurrentTab()
 		{
-            if (tabControlShowItems.SelectedTab == tabPageStartup)
+			if (tabControlShowItems.SelectedTab == tabPageStartup)
 			{
 				currentShowItemType = ShowItemType.Startup;
 			}
@@ -205,7 +205,7 @@ namespace VixenModules.App.Shows
 				currentShowItemType = ShowItemType.Shutdown;
 			}
 
-            SetHelpLabel();
+			SetHelpLabel();
 			LoadSelectedItem();
 			SetCurrentEditor("");
 			PopulateItemList(null);
@@ -225,14 +225,14 @@ namespace VixenModules.App.Shows
 				labelHelp.Text = tabControlShowItems.SelectedTab.Tag as String;
 		}
 
-        private void UpdateListViewItems()
-        {
-            foreach (ListViewItem lvItem in listViewShowItems.Items)
-            {
-                ShowItem item = lvItem.Tag as ShowItem;
-                item.ItemOrder = lvItem.Index;
-            }
-        }
+		private void UpdateListViewItems()
+		{
+			foreach (ListViewItem lvItem in listViewShowItems.Items)
+			{
+				ShowItem item = lvItem.Tag as ShowItem;
+				item.ItemOrder = lvItem.Index;
+			}
+		}
 
 		private void buttonAddItem_Click(object sender, EventArgs e)
 		{
@@ -241,31 +241,31 @@ namespace VixenModules.App.Shows
 			item.Action = ActionType.Sequence;
 			ListViewItem lvItem = AddItemToList(item);
 			lvItem.Selected = true;
-            UpdateListViewItems();
+			UpdateListViewItems();
 		}
 
 		private void buttonDeleteItem_Click(object sender, EventArgs e)
 		{
-            if (SelectedShowItem != null)
-            {
-                int index = SelectedShowItem.ItemOrder;
-                ShowData.DeleteItem(SelectedShowItem);
-                listViewShowItems.Items.RemoveAt(listViewShowItems.SelectedIndices[0]);
+			if (SelectedShowItem != null)
+			{
+				int index = SelectedShowItem.ItemOrder;
+				ShowData.DeleteItem(SelectedShowItem);
+				listViewShowItems.Items.RemoveAt(listViewShowItems.SelectedIndices[0]);
 
-                CheckButtons();
-                UpdateListViewItems();
-                if (index > 0)
-                {
-                    this.listViewShowItems.Items[index - 1].Selected = true;
-                }
-                else
-                {
-                    if (listViewShowItems.Items.Count != index)
-                    {
-                        this.listViewShowItems.Items[index].Selected = true;
-                    }
-                }
-            }
+				CheckButtons();
+				UpdateListViewItems();
+				if (index > 0)
+				{
+					this.listViewShowItems.Items[index - 1].Selected = true;
+				}
+				else
+				{
+					if (listViewShowItems.Items.Count != index)
+					{
+						this.listViewShowItems.Items[index].Selected = true;
+					}
+				}
+			}
 		}
 
 		private void listViewShowItems_AfterLabelEdit(object sender, LabelEditEventArgs e)
@@ -291,62 +291,62 @@ namespace VixenModules.App.Shows
 			CheckButtons();
 		}
 
-        private void listViewShowItems_Highlight(object sender, DrawListViewItemEventArgs e)
-        {
-            // If this item is the selected item
-            if (e.Item != null)
-            {
-                if (e.Item.Selected)
-                {
-                    // If the selected item has focus Set the colors to the normal colors for a selected item
-                    e.Item.ForeColor = SystemColors.HighlightText;
-                    e.Item.BackColor = SystemColors.Highlight;
-                }
-                else
-                {
-                    // Set the normal colors for items that are not selected
-                    e.Item.ForeColor = listViewShowItems.ForeColor;
-                    e.Item.BackColor = listViewShowItems.BackColor;
-                }
-                e.DrawBackground();
-                e.DrawText();
-            }
-        }
+		private void listViewShowItems_Highlight(object sender, DrawListViewItemEventArgs e)
+		{
+			// If this item is the selected item
+			if (e.Item != null)
+			{
+				if (e.Item.Selected)
+				{
+					// If the selected item has focus Set the colors to the normal colors for a selected item
+					e.Item.ForeColor = SystemColors.HighlightText;
+					e.Item.BackColor = SystemColors.Highlight;
+				}
+				else
+				{
+					// Set the normal colors for items that are not selected
+					e.Item.ForeColor = listViewShowItems.ForeColor;
+					e.Item.BackColor = listViewShowItems.BackColor;
+				}
+				e.DrawBackground();
+				e.DrawText();
+			}
+		}
 
-        #region Drag/Drop
+		#region Drag/Drop
 
-        private void listViewShowItems_ItemDrag(object sender, ItemDragEventArgs e)
-        {
-            listViewShowItems.DoDragDrop(listViewShowItems.SelectedItems, DragDropEffects.Move);
-        }
+		private void listViewShowItems_ItemDrag(object sender, ItemDragEventArgs e)
+		{
+			listViewShowItems.DoDragDrop(listViewShowItems.SelectedItems, DragDropEffects.Move);
+		}
 
-        private void listViewShowItems_DragEnter(object sender, DragEventArgs e)
-        {
-            if (e.Data.GetDataPresent(typeof(ListView.SelectedListViewItemCollection)))
-            {
-                e.Effect = DragDropEffects.Move;
-            }
-        }
+		private void listViewShowItems_DragEnter(object sender, DragEventArgs e)
+		{
+			if (e.Data.GetDataPresent(typeof(ListView.SelectedListViewItemCollection)))
+			{
+				e.Effect = DragDropEffects.Move;
+			}
+		}
 
-        private void listViewShowItems_DragDrop(object sender, DragEventArgs e)
-        {
-            listViewShowItems.Alignment = ListViewAlignment.Default;
-            if (listViewShowItems.SelectedItems.Count == 0)
-                return;
-            Point p = listViewShowItems.PointToClient(new Point(e.X, e.Y));
-            ListViewItem MovetoNewPosition = listViewShowItems.GetItemAt(p.X, p.Y);
-            if (MovetoNewPosition == null) return;
-            ListViewItem DropToNewPosition = (e.Data.GetData(typeof(ListView.SelectedListViewItemCollection)) as ListView.SelectedListViewItemCollection)[0];
-            ListViewItem CloneToNew = (ListViewItem)DropToNewPosition.Clone();
-            int index = MovetoNewPosition.Index;
-            listViewShowItems.Items.Remove(DropToNewPosition);
-            listViewShowItems.Items.Insert(index, CloneToNew);
-            listViewShowItems.Alignment = ListViewAlignment.SnapToGrid;
-            this.listViewShowItems.Items[index].Selected = true;
-            UpdateListViewItems();
-        }
+		private void listViewShowItems_DragDrop(object sender, DragEventArgs e)
+		{
+			listViewShowItems.Alignment = ListViewAlignment.Default;
+			if (listViewShowItems.SelectedItems.Count == 0)
+				return;
+			Point p = listViewShowItems.PointToClient(new Point(e.X, e.Y));
+			ListViewItem MovetoNewPosition = listViewShowItems.GetItemAt(p.X, p.Y);
+			if (MovetoNewPosition == null) return;
+			ListViewItem DropToNewPosition = (e.Data.GetData(typeof(ListView.SelectedListViewItemCollection)) as ListView.SelectedListViewItemCollection)[0];
+			ListViewItem CloneToNew = (ListViewItem)DropToNewPosition.Clone();
+			int index = MovetoNewPosition.Index;
+			listViewShowItems.Items.Remove(DropToNewPosition);
+			listViewShowItems.Items.Insert(index, CloneToNew);
+			listViewShowItems.Alignment = ListViewAlignment.SnapToGrid;
+			this.listViewShowItems.Items[index].Selected = true;
+			UpdateListViewItems();
+		}
 
-        #endregion
+		#endregion
 
 		private void listViewShowItems_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
 		{
