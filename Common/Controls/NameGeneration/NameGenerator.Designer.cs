@@ -55,11 +55,11 @@ namespace Common.Controls
 			// listViewNames
 			// 
 			this.listViewNames.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			| System.Windows.Forms.AnchorStyles.Left) 
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.listViewNames.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1,
-            this.columnHeader2});
+			this.columnHeader1,
+			this.columnHeader2});
 			this.listViewNames.FullRowSelect = true;
 			this.listViewNames.GridLines = true;
 			this.listViewNames.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
@@ -110,7 +110,7 @@ namespace Common.Controls
 			// groupBoxSelectedNamingRule
 			// 
 			this.groupBoxSelectedNamingRule.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
+			| System.Windows.Forms.AnchorStyles.Left)));
 			this.groupBoxSelectedNamingRule.Controls.Add(this.comboBoxRuleTypes);
 			this.groupBoxSelectedNamingRule.Controls.Add(this.buttonAddNewRule);
 			this.groupBoxSelectedNamingRule.Controls.Add(this.buttonDeleteRule);
@@ -157,9 +157,9 @@ namespace Common.Controls
 			// listViewGenerators
 			// 
 			this.listViewGenerators.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
+			| System.Windows.Forms.AnchorStyles.Left)));
 			this.listViewGenerators.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader3});
+			this.columnHeader3});
 			this.listViewGenerators.HideSelection = false;
 			this.listViewGenerators.Location = new System.Drawing.Point(6, 60);
 			this.listViewGenerators.MultiSelect = false;
@@ -178,7 +178,7 @@ namespace Common.Controls
 			// 
 			// buttonMoveRuleDown
 			// 
-			this.buttonMoveRuleDown.Location = new System.Drawing.Point(210, 99);
+			this.buttonMoveRuleDown.Location = new System.Drawing.Point(208, 90);
 			this.buttonMoveRuleDown.Name = "buttonMoveRuleDown";
 			this.buttonMoveRuleDown.Size = new System.Drawing.Size(30, 25);
 			this.buttonMoveRuleDown.TabIndex = 36;
@@ -188,7 +188,7 @@ namespace Common.Controls
 			// 
 			// buttonMoveRuleUp
 			// 
-			this.buttonMoveRuleUp.Location = new System.Drawing.Point(210, 69);
+			this.buttonMoveRuleUp.Location = new System.Drawing.Point(208, 60);
 			this.buttonMoveRuleUp.Name = "buttonMoveRuleUp";
 			this.buttonMoveRuleUp.Size = new System.Drawing.Size(30, 25);
 			this.buttonMoveRuleUp.TabIndex = 35;
@@ -208,23 +208,23 @@ namespace Common.Controls
 			// 
 			this.numericUpDownItemCount.Location = new System.Drawing.Point(218, 19);
 			this.numericUpDownItemCount.Maximum = new decimal(new int[] {
-            1000000,
-            0,
-            0,
-            0});
+			1000000,
+			0,
+			0,
+			0});
 			this.numericUpDownItemCount.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			this.numericUpDownItemCount.Name = "numericUpDownItemCount";
 			this.numericUpDownItemCount.Size = new System.Drawing.Size(52, 20);
 			this.numericUpDownItemCount.TabIndex = 34;
 			this.numericUpDownItemCount.Value = new decimal(new int[] {
-            5,
-            0,
-            0,
-            0});
+			5,
+			0,
+			0,
+			0});
 			this.numericUpDownItemCount.ValueChanged += new System.EventHandler(this.numericUpDownItemCount_ValueChanged);
 			// 
 			// label1
@@ -262,7 +262,7 @@ namespace Common.Controls
 			// textBoxNameFormat
 			// 
 			this.textBoxNameFormat.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
+			| System.Windows.Forms.AnchorStyles.Left)));
 			this.textBoxNameFormat.Location = new System.Drawing.Point(90, 54);
 			this.textBoxNameFormat.Name = "textBoxNameFormat";
 			this.textBoxNameFormat.Size = new System.Drawing.Size(180, 20);
@@ -272,7 +272,7 @@ namespace Common.Controls
 			// label3
 			// 
 			this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.label3.AutoSize = true;
 			this.label3.Location = new System.Drawing.Point(14, 57);
 			this.label3.Name = "label3";
