@@ -72,7 +72,6 @@ namespace Common.Controls
 			this.listViewNames.TabIndex = 1;
 			this.listViewNames.UseCompatibleStateImageBehavior = false;
 			this.listViewNames.View = System.Windows.Forms.View.Details;
-			this.listViewNames.SelectedIndexChanged += new System.EventHandler(this.listViewNames_SelectedIndexChanged);
 			this.listViewNames.Resize += new System.EventHandler(this.listViewNames_Resize);
 			// 
 			// columnHeader1
@@ -257,7 +256,6 @@ namespace Common.Controls
 			this.label2.TabIndex = 37;
 			this.label2.Text = "Use template:";
 			this.label2.Visible = false;
-			this.label2.Click += new System.EventHandler(this.label2_Click);
 			// 
 			// textBoxNameFormat
 			// 

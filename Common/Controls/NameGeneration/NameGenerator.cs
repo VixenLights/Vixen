@@ -410,15 +410,5 @@ namespace Common.Controls
 		{
 			PopulateNames();
 		}
-
-		private void listViewNames_SelectedIndexChanged(object sender, EventArgs e)
-		{
-
-		}
-
-		private void label2_Click(object sender, EventArgs e)
-		{
-
-		}
 	}
 }
