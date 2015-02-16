@@ -10,14 +10,14 @@ namespace Vixen.Rule.Name
 		public NumericCounter()
 		{
 			StartNumber = 1;
-			EndNumber = 10;
+			EndNumber = 5;
 			Step = 1;
 			Endless = false;
 		}
 
 		public string Name
 		{
-			get { return "Numbers"; }
+			get { return "Sequential Numbers"; }
 		}
 
 		public int IterationsInCycle
