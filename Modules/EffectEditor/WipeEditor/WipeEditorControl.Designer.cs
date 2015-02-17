@@ -44,13 +44,13 @@
 			this.groupBoxColor = new System.Windows.Forms.GroupBox();
 			this.colorGradientTypeEditorControlGradient = new VixenModules.EffectEditor.ColorGradientTypeEditor.ColorGradientTypeEditorControl();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.radioWipeOut = new System.Windows.Forms.RadioButton();
+			this.radioWipeIn = new System.Windows.Forms.RadioButton();
 			this.radioWipeLeft = new System.Windows.Forms.RadioButton();
 			this.radioWipeRight = new System.Windows.Forms.RadioButton();
 			this.radioWipeDown = new System.Windows.Forms.RadioButton();
 			this.radioWipeUp = new System.Windows.Forms.RadioButton();
 			this.toolTipWipe = new System.Windows.Forms.ToolTip(this.components);
-			this.radioWipeIn = new System.Windows.Forms.RadioButton();
-			this.radioWipeOut = new System.Windows.Forms.RadioButton();
 			this.groupBoxPulse.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownPulseWidth)).BeginInit();
@@ -65,10 +65,12 @@
 			this.groupBoxPulse.Controls.Add(this.groupBox2);
 			this.groupBoxPulse.Controls.Add(this.label1);
 			this.groupBoxPulse.Controls.Add(this.curveTypeEditorControlEachPulse);
-			this.groupBoxPulse.Location = new System.Drawing.Point(3, 3);
+			this.groupBoxPulse.Location = new System.Drawing.Point(4, 5);
+			this.groupBoxPulse.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.groupBoxPulse.Name = "groupBoxPulse";
-			this.groupBoxPulse.Size = new System.Drawing.Size(268, 223);
-			this.groupBoxPulse.TabIndex = 14;
+			this.groupBoxPulse.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.groupBoxPulse.Size = new System.Drawing.Size(402, 343);
+			this.groupBoxPulse.TabIndex = 0;
 			this.groupBoxPulse.TabStop = false;
 			this.groupBoxPulse.Text = "Pulse";
 			// 
@@ -80,20 +82,23 @@
 			this.groupBox2.Controls.Add(this.numericUpDownPulseWidth);
 			this.groupBox2.Controls.Add(this.numericUpDownNumPasses);
 			this.groupBox2.Controls.Add(this.numericUpDownPulseLength);
-			this.groupBox2.Location = new System.Drawing.Point(13, 95);
+			this.groupBox2.Location = new System.Drawing.Point(20, 146);
+			this.groupBox2.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(242, 122);
-			this.groupBox2.TabIndex = 17;
+			this.groupBox2.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.groupBox2.Size = new System.Drawing.Size(363, 188);
+			this.groupBox2.TabIndex = 1;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Pulse Length";
 			// 
 			// radioNumPasses
 			// 
 			this.radioNumPasses.AutoSize = true;
-			this.radioNumPasses.Location = new System.Drawing.Point(8, 56);
+			this.radioNumPasses.Location = new System.Drawing.Point(12, 86);
+			this.radioNumPasses.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.radioNumPasses.Name = "radioNumPasses";
-			this.radioNumPasses.Size = new System.Drawing.Size(107, 17);
-			this.radioNumPasses.TabIndex = 23;
+			this.radioNumPasses.Size = new System.Drawing.Size(156, 24);
+			this.radioNumPasses.TabIndex = 2;
 			this.radioNumPasses.Text = "Number of Wipes";
 			this.toolTipWipe.SetToolTip(this.radioNumPasses, "Number of wipes across the effect time.");
 			this.radioNumPasses.UseVisualStyleBackColor = true;
@@ -103,10 +108,11 @@
 			// 
 			this.radioPulseLength.AutoSize = true;
 			this.radioPulseLength.Checked = true;
-			this.radioPulseLength.Location = new System.Drawing.Point(8, 19);
+			this.radioPulseLength.Location = new System.Drawing.Point(12, 29);
+			this.radioPulseLength.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.radioPulseLength.Name = "radioPulseLength";
-			this.radioPulseLength.Size = new System.Drawing.Size(109, 17);
-			this.radioPulseLength.TabIndex = 22;
+			this.radioPulseLength.Size = new System.Drawing.Size(162, 24);
+			this.radioPulseLength.TabIndex = 0;
 			this.radioPulseLength.TabStop = true;
 			this.radioPulseLength.Text = "Pulse Length (ms)";
 			this.toolTipWipe.SetToolTip(this.radioPulseLength, "Specific pulse width. May result in partial wipe at end of the effect.");
@@ -115,9 +121,10 @@
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(13, 82);
+			this.label2.Location = new System.Drawing.Point(20, 126);
+			this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(104, 13);
+			this.label2.Size = new System.Drawing.Size(152, 20);
 			this.label2.TabIndex = 21;
 			this.label2.Text = "Pulse Width Percent";
 			this.toolTipWipe.SetToolTip(this.label2, "Pulse length as a percent of the wipe segment.");
@@ -125,62 +132,66 @@
 			// numericUpDownPulseWidth
 			// 
 			this.numericUpDownPulseWidth.Enabled = false;
-			this.numericUpDownPulseWidth.Location = new System.Drawing.Point(123, 80);
+			this.numericUpDownPulseWidth.Location = new System.Drawing.Point(184, 123);
+			this.numericUpDownPulseWidth.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.numericUpDownPulseWidth.Name = "numericUpDownPulseWidth";
-			this.numericUpDownPulseWidth.Size = new System.Drawing.Size(48, 20);
-			this.numericUpDownPulseWidth.TabIndex = 20;
+			this.numericUpDownPulseWidth.Size = new System.Drawing.Size(72, 26);
+			this.numericUpDownPulseWidth.TabIndex = 4;
 			// 
 			// numericUpDownNumPasses
 			// 
 			this.numericUpDownNumPasses.Enabled = false;
-			this.numericUpDownNumPasses.Location = new System.Drawing.Point(123, 53);
+			this.numericUpDownNumPasses.Location = new System.Drawing.Point(184, 82);
+			this.numericUpDownNumPasses.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.numericUpDownNumPasses.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			this.numericUpDownNumPasses.Name = "numericUpDownNumPasses";
-			this.numericUpDownNumPasses.Size = new System.Drawing.Size(48, 20);
-			this.numericUpDownNumPasses.TabIndex = 19;
+			this.numericUpDownNumPasses.Size = new System.Drawing.Size(72, 26);
+			this.numericUpDownNumPasses.TabIndex = 3;
 			this.numericUpDownNumPasses.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			// 
 			// numericUpDownPulseLength
 			// 
 			this.numericUpDownPulseLength.Increment = new decimal(new int[] {
-            50,
-            0,
-            0,
-            0});
-			this.numericUpDownPulseLength.Location = new System.Drawing.Point(123, 16);
+			50,
+			0,
+			0,
+			0});
+			this.numericUpDownPulseLength.Location = new System.Drawing.Point(184, 25);
+			this.numericUpDownPulseLength.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.numericUpDownPulseLength.Maximum = new decimal(new int[] {
-            100000,
-            0,
-            0,
-            0});
+			100000,
+			0,
+			0,
+			0});
 			this.numericUpDownPulseLength.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			this.numericUpDownPulseLength.Name = "numericUpDownPulseLength";
-			this.numericUpDownPulseLength.Size = new System.Drawing.Size(48, 20);
-			this.numericUpDownPulseLength.TabIndex = 12;
+			this.numericUpDownPulseLength.Size = new System.Drawing.Size(72, 26);
+			this.numericUpDownPulseLength.TabIndex = 1;
 			this.numericUpDownPulseLength.Value = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
+			10,
+			0,
+			0,
+			0});
 			// 
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(17, 45);
+			this.label1.Location = new System.Drawing.Point(26, 69);
+			this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(89, 13);
+			this.label1.Size = new System.Drawing.Size(130, 20);
 			this.label1.TabIndex = 15;
 			this.label1.Text = "Individual Pulses:";
 			// 
@@ -190,20 +201,23 @@
 			curve1.LibraryReferenceName = "";
 			this.curveTypeEditorControlEachPulse.CurveValue = curve1;
 			this.curveTypeEditorControlEachPulse.EffectParameterValues = new object[] {
-        ((object)(curve1))};
-			this.curveTypeEditorControlEachPulse.Location = new System.Drawing.Point(112, 9);
+		((object)(curve1))};
+			this.curveTypeEditorControlEachPulse.Location = new System.Drawing.Point(168, 14);
+			this.curveTypeEditorControlEachPulse.Margin = new System.Windows.Forms.Padding(6, 8, 6, 8);
 			this.curveTypeEditorControlEachPulse.Name = "curveTypeEditorControlEachPulse";
-			this.curveTypeEditorControlEachPulse.Size = new System.Drawing.Size(150, 80);
-			this.curveTypeEditorControlEachPulse.TabIndex = 14;
+			this.curveTypeEditorControlEachPulse.Size = new System.Drawing.Size(225, 123);
+			this.curveTypeEditorControlEachPulse.TabIndex = 0;
 			this.curveTypeEditorControlEachPulse.TargetEffect = null;
 			// 
 			// groupBoxColor
 			// 
 			this.groupBoxColor.Controls.Add(this.colorGradientTypeEditorControlGradient);
-			this.groupBoxColor.Location = new System.Drawing.Point(3, 232);
+			this.groupBoxColor.Location = new System.Drawing.Point(4, 357);
+			this.groupBoxColor.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.groupBoxColor.Name = "groupBoxColor";
-			this.groupBoxColor.Size = new System.Drawing.Size(268, 98);
-			this.groupBoxColor.TabIndex = 16;
+			this.groupBoxColor.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.groupBoxColor.Size = new System.Drawing.Size(402, 151);
+			this.groupBoxColor.TabIndex = 1;
 			this.groupBoxColor.TabStop = false;
 			this.groupBoxColor.Text = "Color Handling";
 			// 
@@ -215,10 +229,11 @@
 			colorGradient1.Title = null;
 			this.colorGradientTypeEditorControlGradient.ColorGradientValue = colorGradient1;
 			this.colorGradientTypeEditorControlGradient.EffectParameterValues = new object[] {
-        ((object)(colorGradient1))};
-			this.colorGradientTypeEditorControlGradient.Location = new System.Drawing.Point(6, 19);
+		((object)(colorGradient1))};
+			this.colorGradientTypeEditorControlGradient.Location = new System.Drawing.Point(9, 29);
+			this.colorGradientTypeEditorControlGradient.Margin = new System.Windows.Forms.Padding(6, 8, 6, 8);
 			this.colorGradientTypeEditorControlGradient.Name = "colorGradientTypeEditorControlGradient";
-			this.colorGradientTypeEditorControlGradient.Size = new System.Drawing.Size(249, 61);
+			this.colorGradientTypeEditorControlGradient.Size = new System.Drawing.Size(374, 94);
 			this.colorGradientTypeEditorControlGradient.TabIndex = 1;
 			this.colorGradientTypeEditorControlGradient.TargetEffect = null;
 			// 
@@ -230,21 +245,48 @@
 			this.groupBox1.Controls.Add(this.radioWipeRight);
 			this.groupBox1.Controls.Add(this.radioWipeDown);
 			this.groupBox1.Controls.Add(this.radioWipeUp);
-			this.groupBox1.Location = new System.Drawing.Point(3, 336);
+			this.groupBox1.Location = new System.Drawing.Point(4, 517);
+			this.groupBox1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(267, 85);
-			this.groupBox1.TabIndex = 17;
+			this.groupBox1.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.groupBox1.Size = new System.Drawing.Size(400, 131);
+			this.groupBox1.TabIndex = 2;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Wipe Direction";
 			this.toolTipWipe.SetToolTip(this.groupBox1, "Direction of wipe across the elements configured locations.");
 			// 
+			// radioWipeOut
+			// 
+			this.radioWipeOut.AutoSize = true;
+			this.radioWipeOut.Location = new System.Drawing.Point(210, 66);
+			this.radioWipeOut.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.radioWipeOut.Name = "radioWipeOut";
+			this.radioWipeOut.Size = new System.Drawing.Size(136, 24);
+			this.radioWipeOut.TabIndex = 5;
+			this.radioWipeOut.TabStop = true;
+			this.radioWipeOut.Text = "Burst Outward";
+			this.radioWipeOut.UseVisualStyleBackColor = true;
+			// 
+			// radioWipeIn
+			// 
+			this.radioWipeIn.AutoSize = true;
+			this.radioWipeIn.Location = new System.Drawing.Point(18, 66);
+			this.radioWipeIn.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.radioWipeIn.Name = "radioWipeIn";
+			this.radioWipeIn.Size = new System.Drawing.Size(124, 24);
+			this.radioWipeIn.TabIndex = 4;
+			this.radioWipeIn.TabStop = true;
+			this.radioWipeIn.Text = "Burst Inward";
+			this.radioWipeIn.UseVisualStyleBackColor = true;
+			// 
 			// radioWipeLeft
 			// 
 			this.radioWipeLeft.AutoSize = true;
-			this.radioWipeLeft.Location = new System.Drawing.Point(140, 19);
+			this.radioWipeLeft.Location = new System.Drawing.Point(210, 29);
+			this.radioWipeLeft.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.radioWipeLeft.Name = "radioWipeLeft";
-			this.radioWipeLeft.Size = new System.Drawing.Size(43, 17);
-			this.radioWipeLeft.TabIndex = 3;
+			this.radioWipeLeft.Size = new System.Drawing.Size(62, 24);
+			this.radioWipeLeft.TabIndex = 2;
 			this.radioWipeLeft.TabStop = true;
 			this.radioWipeLeft.Text = "Left";
 			this.radioWipeLeft.UseVisualStyleBackColor = true;
@@ -252,10 +294,11 @@
 			// radioWipeRight
 			// 
 			this.radioWipeRight.AutoSize = true;
-			this.radioWipeRight.Location = new System.Drawing.Point(204, 19);
+			this.radioWipeRight.Location = new System.Drawing.Point(306, 29);
+			this.radioWipeRight.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.radioWipeRight.Name = "radioWipeRight";
-			this.radioWipeRight.Size = new System.Drawing.Size(50, 17);
-			this.radioWipeRight.TabIndex = 2;
+			this.radioWipeRight.Size = new System.Drawing.Size(72, 24);
+			this.radioWipeRight.TabIndex = 3;
 			this.radioWipeRight.TabStop = true;
 			this.radioWipeRight.Text = "Right";
 			this.radioWipeRight.UseVisualStyleBackColor = true;
@@ -263,9 +306,10 @@
 			// radioWipeDown
 			// 
 			this.radioWipeDown.AutoSize = true;
-			this.radioWipeDown.Location = new System.Drawing.Point(66, 19);
+			this.radioWipeDown.Location = new System.Drawing.Point(99, 29);
+			this.radioWipeDown.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.radioWipeDown.Name = "radioWipeDown";
-			this.radioWipeDown.Size = new System.Drawing.Size(53, 17);
+			this.radioWipeDown.Size = new System.Drawing.Size(75, 24);
 			this.radioWipeDown.TabIndex = 1;
 			this.radioWipeDown.TabStop = true;
 			this.radioWipeDown.Text = "Down";
@@ -274,9 +318,10 @@
 			// radioWipeUp
 			// 
 			this.radioWipeUp.AutoSize = true;
-			this.radioWipeUp.Location = new System.Drawing.Point(12, 20);
+			this.radioWipeUp.Location = new System.Drawing.Point(18, 31);
+			this.radioWipeUp.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.radioWipeUp.Name = "radioWipeUp";
-			this.radioWipeUp.Size = new System.Drawing.Size(39, 17);
+			this.radioWipeUp.Size = new System.Drawing.Size(55, 24);
 			this.radioWipeUp.TabIndex = 0;
 			this.radioWipeUp.TabStop = true;
 			this.radioWipeUp.Text = "Up";
@@ -286,37 +331,16 @@
 			// 
 			this.toolTipWipe.ToolTipTitle = "Wipe Configuration";
 			// 
-			// radioWipeIn
-			// 
-			this.radioWipeIn.AutoSize = true;
-			this.radioWipeIn.Location = new System.Drawing.Point(12, 43);
-			this.radioWipeIn.Name = "radioWipeIn";
-			this.radioWipeIn.Size = new System.Drawing.Size(84, 17);
-			this.radioWipeIn.TabIndex = 4;
-			this.radioWipeIn.TabStop = true;
-			this.radioWipeIn.Text = "Burst Inward";
-			this.radioWipeIn.UseVisualStyleBackColor = true;
-			// 
-			// radioWipeOut
-			// 
-			this.radioWipeOut.AutoSize = true;
-			this.radioWipeOut.Location = new System.Drawing.Point(140, 43);
-			this.radioWipeOut.Name = "radioWipeOut";
-			this.radioWipeOut.Size = new System.Drawing.Size(92, 17);
-			this.radioWipeOut.TabIndex = 5;
-			this.radioWipeOut.TabStop = true;
-			this.radioWipeOut.Text = "Burst Outward";
-			this.radioWipeOut.UseVisualStyleBackColor = true;
-			// 
 			// WipeEditorControl
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.groupBoxColor);
 			this.Controls.Add(this.groupBoxPulse);
+			this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.Name = "WipeEditorControl";
-			this.Size = new System.Drawing.Size(277, 441);
+			this.Size = new System.Drawing.Size(416, 678);
 			this.groupBoxPulse.ResumeLayout(false);
 			this.groupBoxPulse.PerformLayout();
 			this.groupBox2.ResumeLayout(false);
