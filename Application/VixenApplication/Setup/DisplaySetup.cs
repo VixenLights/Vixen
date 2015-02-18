@@ -16,7 +16,6 @@ namespace VixenApplication
 	public partial class DisplaySetup : Form
 	{
 		private SetupElementsTree _setupElementsTree;
-		private SetupElementsPreview _setupElementsPreview;
 
 		private SetupPatchingSimple _setupPatchingSimple;
 		private SetupPatchingGraphical _setupPatchingGraphical;
@@ -46,9 +45,6 @@ namespace VixenApplication
 			_setupElementsTree = new SetupElementsTree(_elementTemplates, _elementSetupHelpers);
 			_setupElementsTree.Dock = DockStyle.Fill;
 			_setupElementsTree.MasterForm = this;
-			_setupElementsPreview = new SetupElementsPreview();
-			_setupElementsPreview.Dock = DockStyle.Fill;
-			_setupElementsPreview.MasterForm = this;
 
 			_setupPatchingSimple = new SetupPatchingSimple();
 			_setupPatchingSimple.Dock = DockStyle.Fill;
@@ -61,9 +57,10 @@ namespace VixenApplication
 			_setupControllersSimple.Dock = DockStyle.Fill;
 			_setupControllersSimple.MasterForm = this;
 
-			radioButtonElementTree.Checked = true;
+			activateControllersControl(_setupControllersSimple);
+			activateElementControl(_setupElementsTree);
+
 			radioButtonPatchingSimple.Checked = true;
-			radioButtonControllersStandard.Checked = true;
 		}
 
 
@@ -188,23 +185,6 @@ namespace VixenApplication
 			}
 		}
 
-
-
-
-
-
-		private void radioButtonElementTree_CheckedChanged(object sender, EventArgs e)
-		{
-			if ((sender as RadioButton).Checked)
-				activateElementControl(_setupElementsTree);
-		}
-
-		private void radioButtonElementPreview_CheckedChanged(object sender, EventArgs e)
-		{
-			if ((sender as RadioButton).Checked)
-				activateElementControl(_setupElementsPreview);
-		}
-
 		private void radioButtonPatchingSimple_CheckedChanged(object sender, EventArgs e)
 		{
 			if ((sender as RadioButton).Checked)
@@ -217,18 +197,10 @@ namespace VixenApplication
 				activatePatchingControl(_setupPatchingGraphical);
 		}
 
-		private void radioButtonControllersStandard_CheckedChanged(object sender, EventArgs e)
-		{
-			if ((sender as RadioButton).Checked)
-				activateControllersControl(_setupControllersSimple);
-		}
-
 		private void buttonHelp_Click(object sender, EventArgs e)
 		{
 			Common.VixenHelp.VixenHelp.ShowHelp(Common.VixenHelp.VixenHelp.HelpStrings.Setup_Main);
 		}
-
-
 
 		public void SelectElements(IEnumerable<ElementNode> elements)
 		{
