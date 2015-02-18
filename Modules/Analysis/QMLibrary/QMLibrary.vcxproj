@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{4004A720-E4D2-4AAF-B5F6-2288FFDC156A}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>QMSandbox2</RootNamespace>
+    <RootNamespace>QMLibrary</RootNamespace>
     <ProjectName>QMLibrary</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -45,6 +45,7 @@
     <PlatformToolset>v120</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>true</CLRSupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -80,10 +81,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)Release\Modules\Analysis\</OutDir>
+    <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)Release64\Modules\Analysis\</OutDir>
+    <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -140,7 +143,7 @@
       <PreprocessorDefinitions>_USE_MATH_DEFINES;WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <CompileAsManaged>true</CompileAsManaged>
       <ExceptionHandling>false</ExceptionHandling>
-      <AdditionalIncludeDirectories>WrapperFiles;QMFiles\vamp-plugin-sdk-2.5;QMFiles;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>WrapperFiles;QMFiles\vamp-plugin-sdk-2.5;QMFiles;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
@@ -163,7 +166,7 @@
       <PreprocessorDefinitions>_USE_MATH_DEFINES;WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <CompileAsManaged>true</CompileAsManaged>
       <ExceptionHandling>false</ExceptionHandling>
-      <AdditionalIncludeDirectories>WrapperFiles;QMFiles\vamp-plugin-sdk-2.5;QMFiles;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>WrapperFiles;QMFiles\vamp-plugin-sdk-2.5;QMFiles;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
@@ -177,12 +180,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="alloca.h" />
+    <ClInclude Include="QMBarBeatTrack.h" />
     <ClInclude Include="QMFiles\BarBeatTrack.h" />
     <ClInclude Include="QMFiles\dsp\onsets\DetectionFunction.h" />
     <ClInclude Include="QMFiles\maths\MathUtilities.h" />
     <ClInclude Include="QMFiles\vamp-plugin-sdk-2.5\vamp-sdk\RealTime.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="VampParamCtrl.h">
+      <FileType>CppControl</FileType>
+    </ClInclude>
+    <ClInclude Include="VampTrackBar.h">
+      <FileType>CppControl</FileType>
+    </ClInclude>
     <ClInclude Include="WrapperFiles\ManagedFeature.h" />
     <ClInclude Include="WrapperFiles\ManagedOutput.h" />
     <ClInclude Include="WrapperFiles\ManagedParameter.h" />
@@ -190,8 +200,8 @@
     <ClInclude Include="WrapperFiles\ManagedRealtime.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="QMBarBeatTrack.cpp" />
     <ClCompile Include="QMFiles\vamp-plugin-sdk-2.5\src\vamp-sdk\RealTime.cpp" />
-    <ClCompile Include="QMLibrary.cpp" />
     <ClCompile Include="QMFiles\BarBeatTrack.cpp">
       <AdditionalUsingDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </AdditionalUsingDirectories>
@@ -208,8 +218,29 @@
     <ClCompile Include="QMFiles\dsp\transforms\FFT.cpp" />
     <ClCompile Include="QMFiles\maths\MathUtilities.cpp" />
     <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="VampParamCtrl.cpp" />
+    <ClCompile Include="VampTrackBar.cpp" />
     <ClCompile Include="WrapperFiles\ManagedPlugin.cpp" />
     <ClCompile Include="WrapperFiles\ManagedRealtime.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing">
+      <Private>false</Private>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+    </Reference>
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="VampParamCtrl.resx">
+      <DependentUpon>VampParamCtrl.h</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VampTrackBar.resx">
+      <DependentUpon>VampTrackBar.h</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

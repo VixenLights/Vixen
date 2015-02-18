@@ -323,6 +323,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Analysis", "Analysis", "{98
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QMLibrary", "Modules\Analysis\QMLibrary\QMLibrary.vcxproj", "{4004A720-E4D2-4AAF-B5F6-2288FFDC156A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeatsAndBars", "Modules\Analysis\BeatsAndBars\BeatsAndBars.csproj", "{B848A227-50AA-4FF7-8B7F-73FE36893485}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Release|x64 = Release|x64
@@ -660,6 +662,10 @@ Global
 		{4004A720-E4D2-4AAF-B5F6-2288FFDC156A}.Release|x64.Build.0 = Release|x64
 		{4004A720-E4D2-4AAF-B5F6-2288FFDC156A}.Release|x86.ActiveCfg = Release|Win32
 		{4004A720-E4D2-4AAF-B5F6-2288FFDC156A}.Release|x86.Build.0 = Release|Win32
+		{B848A227-50AA-4FF7-8B7F-73FE36893485}.Release|x64.ActiveCfg = Release|x64
+		{B848A227-50AA-4FF7-8B7F-73FE36893485}.Release|x64.Build.0 = Release|x64
+		{B848A227-50AA-4FF7-8B7F-73FE36893485}.Release|x86.ActiveCfg = Release|x86
+		{B848A227-50AA-4FF7-8B7F-73FE36893485}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -768,6 +774,7 @@ Global
 		{12890B19-CBDF-473B-AF59-4DCA654E6ACA} = {01824B6E-B567-4974-849B-44A1ABEB4B39}
 		{9865500E-D5C0-4F51-8A6E-BFD7946C801A} = {FFEF21BE-17BF-4C68-AE19-409AE444AC53}
 		{4004A720-E4D2-4AAF-B5F6-2288FFDC156A} = {9865500E-D5C0-4F51-8A6E-BFD7946C801A}
+		{B848A227-50AA-4FF7-8B7F-73FE36893485} = {9865500E-D5C0-4F51-8A6E-BFD7946C801A}
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Everything.vsmdi

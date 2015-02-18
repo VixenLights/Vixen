@@ -32,6 +32,7 @@ using Vixen.Module.Timing;
 using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Sys.State;
+using VixenModules.Analysis.BeatsAndBars;
 using VixenModules.App.ColorGradients;
 using VixenModules.Sequence.Timed;
 using WeifenLuo.WinFormsUI.Docking;
@@ -5251,6 +5252,27 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 
 			return result;
+		}
+
+		private void beatBarDetectionToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			foreach (IMediaModuleInstance module in _sequence.GetAllMedia())
+			{
+				if (module is Audio)
+				{
+					BeatsAndBars audioFeatures = new BeatsAndBars((Audio)module);
+					List<MarkCollection> markList = audioFeatures.GenerateMarksFromFeatures();
+
+					foreach (MarkCollection mc in markList)
+					{
+						mc.MarkColor = Color.Yellow;
+						_sequence.MarkCollections.Add(mc);
+					}
+
+					MarksForm.PopulateMarkCollectionsList(null);
+					SequenceModified();
+				}
+			}
 		}
 
 	}

@@ -6,89 +6,90 @@
 using namespace System;
 using namespace msclr::interop;
 
-
-ManagedPlugin::ManagedPlugin(IntPtr plugin)
+namespace QMLibrary
+{
+	ManagedPlugin::ManagedPlugin()
 	{
-		m_plugin = (Vamp::Plugin*) plugin.ToPointer();
+
 
 	}
 
-bool ManagedPlugin::Initialise(size_t channels, size_t stepSize, size_t blockSize)
+	bool ManagedPlugin::Initialise(size_t channels, size_t stepSize, size_t blockSize)
 	{
 		return m_plugin->initialise(channels, stepSize, blockSize);
 	}
 
-void ManagedPlugin::Reset()
+	void ManagedPlugin::Reset()
 	{
 		m_plugin->reset();
 	}
 
-String^ ManagedPlugin::GetIdentifier()
+	String^ ManagedPlugin::GetIdentifier()
 	{
 		std::string str = m_plugin->getIdentifier();
 		return gcnew String(str.c_str());
 	}
 
-String^ ManagedPlugin::GetName()
+	String^ ManagedPlugin::GetName()
 	{
 		std::string str = m_plugin->getName();
 		return gcnew String(str.c_str());
 	}
 
-String^ ManagedPlugin::GetDescription()
+	String^ ManagedPlugin::GetDescription()
 	{
 		std::string str = m_plugin->getDescription();
 		return gcnew String(str.c_str());
 	}
 
-String^ ManagedPlugin::GetMaker()
+	String^ ManagedPlugin::GetMaker()
 	{
 		std::string str = m_plugin->getMaker();
 		return gcnew String(str.c_str());
 	}
 
-int ManagedPlugin::GetPluginVersion()
+	int ManagedPlugin::GetPluginVersion()
 	{
 		return m_plugin->getPluginVersion();
 	}
 
-String^ ManagedPlugin::GetCopyright()
+	String^ ManagedPlugin::GetCopyright()
 	{
 		std::string str = m_plugin->getCopyright();
 		return gcnew String(str.c_str());
 	}
 
-float ManagedPlugin::GetParameter(String^ paramStr)
+	float ManagedPlugin::GetParameter(String^ paramStr)
 	{
 		return m_plugin->getParameter(marshal_as<std::string>(paramStr));
 	}
 
-void ManagedPlugin::SetParameter(String^paramStr, float value)
+	void ManagedPlugin::SetParameter(String^paramStr, float value)
 	{
 		m_plugin->setParameter(marshal_as<std::string>(paramStr), value);
-}
+	}
 
-int ManagedPlugin::GetMinChannelCount()
-{
-	return m_plugin->getMinChannelCount();
-}
+	int ManagedPlugin::GetMinChannelCount()
+	{
+		return m_plugin->getMinChannelCount();
+	}
 
-int ManagedPlugin::GetMaxChannelCount()
-{
-	return m_plugin->getMaxChannelCount();
-}
+	int ManagedPlugin::GetMaxChannelCount()
+	{
+		return m_plugin->getMaxChannelCount();
+	}
 
-int ManagedPlugin::GetPreferredStepSize()
+	int ManagedPlugin::GetPreferredStepSize()
 	{
 		return m_plugin->getPreferredStepSize();
 	}
 
-int ManagedPlugin::GetPreferredBlockSize()
+	int ManagedPlugin::GetPreferredBlockSize()
 	{
 		return m_plugin->getPreferredBlockSize();
 	}
 
-ManagedParameterList^ ManagedPlugin::GetParameterDescriptors()
+	ManagedParameterList^ ManagedPlugin::GetParameterDescriptors()
 	{
 		ManagedParameterDescriptor^ paramDescr = nullptr;
 		ManagedParameterListPriv^ retVal = nullptr;
@@ -124,7 +125,7 @@ ManagedParameterList^ ManagedPlugin::GetParameterDescriptors()
 		return retVal;
 	}
 
-ManagedOutputList^ ManagedPlugin::GetOutputDescriptors()
+	ManagedOutputList^ ManagedPlugin::GetOutputDescriptors()
 	{
 		ManagedOutputDescriptor^ outDescr = nullptr;
 		ManagedOutputListPriv^ retVal = nullptr;
@@ -194,13 +195,13 @@ ManagedOutputList^ ManagedPlugin::GetOutputDescriptors()
 		return retVal;
 	}
 
-ManagedPlugin::InputDomain ManagedPlugin::GetInputDomain()
+	ManagedPlugin::InputDomain ManagedPlugin::GetInputDomain()
 	{
 		return InputDomain::TimeDomain;
 	}
 
 
-ManagedFeatureSet^ ManagedPlugin::convertToManagedFeatureSet(Vamp::Plugin::FeatureSet unManagedFS)
+	ManagedFeatureSet^ ManagedPlugin::convertToManagedFeatureSet(Vamp::Plugin::FeatureSet unManagedFS)
 	{
 		ManagedFeatureSetPriv^ retVal = gcnew ManagedFeatureSetPriv();
 
@@ -218,13 +219,13 @@ ManagedFeatureSet^ ManagedPlugin::convertToManagedFeatureSet(Vamp::Plugin::Featu
 					feature->hasDuration = true;
 					feature->duration = gcnew ManagedRealtime(flIterator->duration);
 				}
-				
+
 				if (flIterator->hasTimestamp)
 				{
 					feature->hasTimestamp = true;
 					feature->timestamp = gcnew ManagedRealtime(flIterator->timestamp);
 				}
-				
+
 				feature->label = gcnew String(flIterator->label.c_str());
 				cliext::vector<float>^ newVals = gcnew cliext::vector<float>();
 				std::vector<float>::iterator valueIter;
@@ -258,3 +259,4 @@ ManagedFeatureSet^ ManagedPlugin::convertToManagedFeatureSet(Vamp::Plugin::Featu
 		return convertToManagedFeatureSet(features);
 
 	}
+}
