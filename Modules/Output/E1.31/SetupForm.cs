@@ -40,6 +40,8 @@ namespace VixenModules.Output.E131
     using VixenModules.Controller.E131;
     using VixenModules.Controller.E131.J1Sys;
     using System.Drawing;
+    using System.Linq;
+    using Vixen.Sys;
 
     public partial class SetupForm : Form
     {
@@ -80,20 +82,16 @@ namespace VixenModules.Output.E131
                 }
 
                 // if not a tunnel
-                if (networkInterface.NetworkInterfaceType.CompareTo(NetworkInterfaceType.Tunnel) != 0)
+               if (networkInterface.NetworkInterfaceType != NetworkInterfaceType.Tunnel && networkInterface.NetworkInterfaceType != NetworkInterfaceType.Loopback && networkInterface.SupportsMulticast)
                 {
-                    // and supports multicast
-                    if (networkInterface.SupportsMulticast)
-                    {
-                        // then add it to multicasts table by name
-                        this.multicasts.Add(networkInterface.Name, 0);
+                    // then add it to multicasts table by name
+                    this.multicasts.Add(networkInterface.Name, 0);
 
-                        // add it to available nicIDs table
-                        this.nicIDs.Add(networkInterface.Id, networkInterface.Name);
+                    // add it to available nicIDs table
+                    this.nicIDs.Add(networkInterface.Id, networkInterface.Name);
 
-                        // add it to available nicNames table
-                        this.nicNames.Add(networkInterface.Name, networkInterface.Id);
-                    }
+                    // add it to available nicNames table
+                    this.nicNames.Add(networkInterface.Name, networkInterface.Id);
                 }
             }
 
@@ -179,12 +177,10 @@ namespace VixenModules.Output.E131
 
             set { this.warningsCheckBox.Checked = value; }
         }
-        List<int> existingUniv = new List<int>();
+
         public bool UniverseAdd(
             bool active, int universe, int start, int size)
         {
-            existingUniv.Add(universe);
-
             // all set, add the row - convert int's to strings ourselves
             this.univDGVN.Rows.Add(
                 new object[]
@@ -832,30 +828,52 @@ namespace VixenModules.Output.E131
             }
         }
 
+        private bool validateIsUniqueEndpoint()
+        {
+            return true;
+        }
+
         private void SetupForm_FormClosing(object sender, FormClosingEventArgs e)
         {
+
             if (this.DialogResult == System.Windows.Forms.DialogResult.OK)
-                for (int i = 0; i < UniverseCount; i++)
+            {
+                var destination = new Tuple<string, string>(null, null);
+                destination = GetDestination(); //Item1 Unicast, Item2 Multicast
+
+                foreach (E131OutputPlugin p in E131OutputPlugin.PluginInstances)
                 {
-                    bool active = true;
-                    int universe = 0;
-                    int start = 0;
-                    int size = 0;
+                    if (p.isSetupOpen) //don't validate against this instance of the plugin
+                        continue;
 
-                    if (UniverseGet(
-                        i, ref active, ref universe, ref start, ref size))
+                    //Conditions which we need to validate for overlap
+                    if(
+                        !(((p.ModuleData as E131ModuleDataModel).Unicast != null && destination.Item1 != null && (p.ModuleData as E131ModuleDataModel).Unicast != destination.Item1) //unicasting to different IPs
+                        || ((p.ModuleData as E131ModuleDataModel).Multicast != null && destination.Item2 != null && (p.ModuleData as E131ModuleDataModel).Multicast != destination.Item2))) //Multicasting to different networks
                     {
-                        if (!existingUniv.Contains(universe))
-                            if (E131OutputPlugin.EmployedUniverses.Contains(universe))
-                            {
-                                MessageBox.Show(string.Format("Universe {0} already exists on another controller.  Please configure a different universe to prevent hardware errors.  Multicast universes should only be configured on a single Vixen controller instance.  Unicast universes should all be unique.", universe), "Existing Universe", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                                e.Cancel = true;
-                                return;
-                            }
+                        int[] usedUniverses = (p.ModuleData as E131ModuleDataModel).Universes.Select(x => x.Universe).ToArray();
 
+                        for (int i = 0; i < UniverseCount; i++)
+                        {
+                            bool active = true;
+                            int universe = 0;
+                            int start = 0;
+                            int size = 0;
+
+                            if (UniverseGet(
+                                i, ref active, ref universe, ref start, ref size))
+                            {
+                                if (usedUniverses.Contains(universe))
+                                {
+                                    MessageBox.Show(string.Format("Universe {0} already exists on another controller transmitting to the same device or network. Please configure a different universe to prevent hardware errors.", universe), "Existing Universe", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                    e.Cancel = true;
+                                    return;
+                                }
+                            }
+                        }
                     }
                 }
-
+            }
 		}
 
         private void autoPopulateStart_CheckedChanged(object sender, EventArgs e)
@@ -905,8 +923,7 @@ namespace VixenModules.Output.E131
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
-
-            int maxUniverse = 1;
+            int maxUniverse = 0;
 
             //try to supply a more useful start value
             foreach (DataGridViewRow r in univDGVN.Rows)

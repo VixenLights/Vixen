@@ -87,7 +87,7 @@ namespace VixenModules.Controller.E131
 
         private long _totalTicks;
 
-        private bool isSetupOpen;
+        internal bool isSetupOpen;
         private bool hasStarted;
 
         private byte[] channelValues;
@@ -97,7 +97,7 @@ namespace VixenModules.Controller.E131
         /// </summary>
         private bool running = true;
 
-        internal static List<int> EmployedUniverses = new List<int>();
+        internal static List<E131OutputPlugin> PluginInstances = new List<E131OutputPlugin>();
         internal static SortedList<string, int> unicasts = new SortedList<string, int>();
 
         public override Vixen.Module.IModuleDataModel ModuleData
@@ -118,6 +118,7 @@ namespace VixenModules.Controller.E131
             isSetupOpen = false;
             hasStarted = false;
         }
+
 
         // -------------------------------------------------------------
         // 
@@ -140,10 +141,6 @@ namespace VixenModules.Controller.E131
                 {
                     setupForm.UniverseAdd(
                         uE.Active, uE.Universe, uE.Start + 1, uE.Size);
-
-                    if (!E131OutputPlugin.EmployedUniverses.Contains(uE.Universe))
-                        E131OutputPlugin.EmployedUniverses.Add(uE.Universe);
-
                     initialUniverseList.Add(uE.Universe);
                 }
                 
@@ -178,8 +175,6 @@ namespace VixenModules.Controller.E131
                     _data.Unicast = destination.Item1;
                     _data.Multicast = destination.Item2;
 
-                    initialUniverseList.ForEach(u => E131OutputPlugin.EmployedUniverses.RemoveAll(t => u == t));
-
                     OutputController thisController = VixenSystem.OutputControllers.Single(controller => controller.ModuleInstanceId == _data.ModuleInstanceId);
 
                     for (int x = 0; x < thisController.Outputs.Length; x++)
@@ -197,11 +192,7 @@ namespace VixenModules.Controller.E131
                             i, ref active, ref universe, ref start, ref size))
                         {
                             _data.Universes.Add(new UniverseEntry(i, active, universe, start - 1, size));
-                            //Only add the universe if it doesnt already exist
-                            if (!E131OutputPlugin.EmployedUniverses.Contains(universe))
-                                E131OutputPlugin.EmployedUniverses.Add(universe);
 
-                            
                             for (int x = start - 1; x < start + size - 1; x++)
                                if(x < thisController.Outputs.Length)
                                    if (_data.Unicast == string.Empty || _data.Unicast == null)
@@ -304,7 +295,13 @@ namespace VixenModules.Controller.E131
 
             // this._universeTable.Clear();
             if (this._nicTable != null) this._nicTable.Clear();
-            this._nicTable = new  SortedList<string, NetworkInterface>();  
+            this._nicTable = new  SortedList<string, NetworkInterface>();
+        }
+
+        public override void Stop()
+        {
+            base.Stop();
+            PluginInstances.Remove(this);
         }
 
         // -------------------------------------------------------------
@@ -326,6 +323,8 @@ namespace VixenModules.Controller.E131
         {
 
             running = true;
+            if(!PluginInstances.Contains(this))
+                PluginInstances.Add(this);
 
             // working copy of networkinterface object
             NetworkInterface networkInterface;
@@ -360,17 +359,12 @@ namespace VixenModules.Controller.E131
             NetworkInterface[] nics = NetworkInterface.GetAllNetworkInterfaces();
             foreach (var nic in nics)
             {
-                if (nic.NetworkInterfaceType.CompareTo(NetworkInterfaceType.Tunnel) != 0 && !nic.Name.Contains("loopback"))
+                if (nic.NetworkInterfaceType != NetworkInterfaceType.Tunnel && nic.NetworkInterfaceType != NetworkInterfaceType.Loopback)
                 {
                     this._nicTable.Add(nic.Id, nic);
                 }
             }
 
-            _data.Universes.ForEach(u =>
-            {
-                if (!E131OutputPlugin.EmployedUniverses.Contains(u.Universe))
-                    E131OutputPlugin.EmployedUniverses.Add(u.Universe);
-            });
             if (_data.Unicast != null)
             {
                 if (!unicasts.ContainsKey(_data.Unicast))

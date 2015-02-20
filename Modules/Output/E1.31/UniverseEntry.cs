@@ -203,7 +203,7 @@ namespace VixenModules.Controller.E131
         public string Unicast { get; private set; }
 
 		/// <summary>
-		///   Gets the Universe Number. Deprecated.
+		///   Gets the Universe Number.
 		/// </summary>
         [DataMember]
 		public int Universe { get; private set; }
