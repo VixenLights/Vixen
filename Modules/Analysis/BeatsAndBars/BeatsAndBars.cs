@@ -47,8 +47,19 @@ namespace VixenModules.Analysis.BeatsAndBars
 				ICollection<ManagedParameterDescriptor> parameterDescriptors =
 					m_plugin.GetParameterDescriptors();
 
+				ICollection<ManagedOutputDescriptor> outputDescriptors =
+					m_plugin.GetOutputDescriptors();
+
+				//Rename description for Beat Locations
+				outputDescriptors.First().description = "Beat Locations";
+				//Remove last two outputs as we have no interest in them here
+				outputDescriptors.Remove(outputDescriptors.Last());
+				outputDescriptors.Remove(outputDescriptors.Last());
+
 				BeatsAndBarsSettings bbSettings = new BeatsAndBarsSettings();
+				//bbSettings.Parameters(parameterDescriptors, outputDescriptors);
 				bbSettings.Parameters(parameterDescriptors);
+				bbSettings.Outputs(outputDescriptors);
 				bbSettings.ShowDialog();
 
 				IDictionary<int, ICollection<ManagedFeature>> featureSet;

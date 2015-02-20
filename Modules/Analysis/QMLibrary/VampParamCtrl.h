@@ -1,7 +1,6 @@
 #pragma once
 
 #include <WrapperFiles\ManagedParameter.h>
-#include <VampTrackBar.h>
 
 using namespace System;
 using namespace System::ComponentModel;
@@ -20,16 +19,18 @@ namespace QMLibrary {
 	public ref class VampParamCtrl : public System::Windows::Forms::UserControl
 	{
 	private:
-		Dictionary<VampTrackBar^, TextBox^>^ m_valueCtrls;
-		Dictionary<TextBox^, VampTrackBar^>^ m_trackBarCtrls;
+		Dictionary<TrackBar^, TextBox^>^ m_valueCtrls;
+		Dictionary<TextBox^, TrackBar^>^ m_trackBarCtrls;
 		Dictionary<ManagedParameterDescriptor^, TextBox^>^ m_paramToTextBoxMappings;
+
+		ToolTip^ m_toolTip = gcnew ToolTip();
 
 		TableLayoutPanel^ m_layoutPanel;
 		int m_rows = 0;
 
 		void trackBar_ValueChanged(Object^ sender, EventArgs^ e)
 		{
-			VampTrackBar^ trackBar = (VampTrackBar^)sender;
+			TrackBar^ trackBar = (TrackBar^)sender;
 			TextBox^ partnerBox = nullptr;
 			if (m_valueCtrls->TryGetValue(trackBar, partnerBox))
 			{
@@ -45,7 +46,7 @@ namespace QMLibrary {
 			try
 			{
 				double paramValue = Convert::ToDouble(paramTextBox->Text);
-				VampTrackBar^ trackBar = m_trackBarCtrls[paramTextBox];
+				TrackBar^ trackBar = m_trackBarCtrls[paramTextBox];
 				if ((trackBar->Minimum <= paramValue) && (trackBar->Maximum >= paramValue))
 				{
 					e->Cancel = false;
@@ -108,21 +109,29 @@ namespace QMLibrary {
 		{
 			InitializeComponent();
 
-			m_valueCtrls = gcnew Dictionary<VampTrackBar^, TextBox^>();
-			m_trackBarCtrls = gcnew Dictionary<TextBox^, VampTrackBar^>();
+			m_valueCtrls = gcnew Dictionary<TrackBar^, TextBox^>();
+			m_trackBarCtrls = gcnew Dictionary<TextBox^, TrackBar^>();
 			m_paramToTextBoxMappings = gcnew Dictionary<ManagedParameterDescriptor^, TextBox^>();
 
 			m_layoutPanel = gcnew TableLayoutPanel();
+			m_layoutPanel->Size = Drawing::Size(1, 1);
 			m_layoutPanel->ColumnCount = 3;
 			m_layoutPanel->ColumnStyles->Add(gcnew ColumnStyle(SizeType::AutoSize));
 			m_layoutPanel->ColumnStyles->Add(gcnew ColumnStyle(SizeType::AutoSize));
 			m_layoutPanel->ColumnStyles->Add(gcnew ColumnStyle(SizeType::AutoSize));
 			m_layoutPanel->RowStyles->Add(gcnew RowStyle(SizeType::AutoSize));
-			m_layoutPanel->Anchor = (AnchorStyles::Left | AnchorStyles::Right);
+			m_layoutPanel->Anchor = (AnchorStyles::Left | AnchorStyles::Right | AnchorStyles::Top);
 			m_layoutPanel->AutoSize = true;
+
+			m_layoutPanel->Location = Point(0, 0);
 
 			Controls->Add(m_layoutPanel);
 			m_rows = 0;
+
+			m_toolTip->AutoPopDelay = 5000;
+			m_toolTip->InitialDelay = 1000;
+			m_toolTip->ReshowDelay = 500;
+			m_toolTip->ShowAlways = true;
 
 		}
 
@@ -144,6 +153,7 @@ namespace QMLibrary {
 				Label^ paramLabel = gcnew Label();
 				paramLabel->Text = descriptor->name + ":";
 				m_layoutPanel->Controls->Add(paramLabel, 0, m_rows);
+				m_toolTip->SetToolTip(paramLabel, descriptor->description);
 
 				if (descriptor->valueNames->Count != 0)
 				{
@@ -160,18 +170,20 @@ namespace QMLibrary {
 					paramTextBox->Size = paramTextBox->Size + *offsetSize;
 					paramTextBox->CausesValidation = true;
 					paramTextBox->Validating += gcnew System::ComponentModel::CancelEventHandler(this, &VampParamCtrl::paramTextBox_Validating);
+					m_toolTip->SetToolTip(paramTextBox, descriptor->description);
 
 					m_layoutPanel->Controls->Add(paramTextBox, 1, m_rows);
 
 					if (descriptor->isQuantized)
 					{
-						VampTrackBar^ trackBar = gcnew VampTrackBar();
+						TrackBar^ trackBar = gcnew TrackBar();
 						trackBar->TickStyle = TickStyle::BottomRight;
 						trackBar->Minimum = descriptor->minValue;
 						trackBar->Maximum = descriptor->maxValue;
 						trackBar->TickFrequency = descriptor->quantizeStep;
 						trackBar->Value = descriptor->defaultValue;
 						trackBar->ValueChanged += gcnew System::EventHandler(this, &VampParamCtrl::trackBar_ValueChanged);
+						m_toolTip->SetToolTip(trackBar, descriptor->description);
 						m_layoutPanel->Controls->Add(trackBar, 2, m_rows);
 
 						m_valueCtrls[trackBar] = paramTextBox;
@@ -214,7 +226,7 @@ namespace QMLibrary {
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->Name = L"VampParamCtrl";
-			this->Size = System::Drawing::Size(337, 69);
+			this->Size = System::Drawing::Size(30, 18);
 			this->ResumeLayout(false);
 
 		}

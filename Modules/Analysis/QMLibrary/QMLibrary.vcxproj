@@ -187,10 +187,10 @@
     <ClInclude Include="QMFiles\vamp-plugin-sdk-2.5\vamp-sdk\RealTime.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="VampParamCtrl.h">
+    <ClInclude Include="VampOutputCtrl.h">
       <FileType>CppControl</FileType>
     </ClInclude>
-    <ClInclude Include="VampTrackBar.h">
+    <ClInclude Include="VampParamCtrl.h">
       <FileType>CppControl</FileType>
     </ClInclude>
     <ClInclude Include="WrapperFiles\ManagedFeature.h" />
@@ -218,8 +218,8 @@
     <ClCompile Include="QMFiles\dsp\transforms\FFT.cpp" />
     <ClCompile Include="QMFiles\maths\MathUtilities.cpp" />
     <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="VampOutputCtrl.cpp" />
     <ClCompile Include="VampParamCtrl.cpp" />
-    <ClCompile Include="VampTrackBar.cpp" />
     <ClCompile Include="WrapperFiles\ManagedPlugin.cpp" />
     <ClCompile Include="WrapperFiles\ManagedRealtime.cpp" />
   </ItemGroup>
@@ -235,11 +235,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="VampOutputCtrl.resx">
+      <DependentUpon>VampOutputCtrl.h</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="VampParamCtrl.resx">
       <DependentUpon>VampParamCtrl.h</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="VampTrackBar.resx">
-      <DependentUpon>VampTrackBar.h</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

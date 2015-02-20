@@ -50,7 +50,7 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="VampParamCtrl.h" />
-    <ClInclude Include="VampTrackBar.h" />
+    <ClInclude Include="VampOutputCtrl.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -107,7 +107,7 @@
     <ClCompile Include="VampParamCtrl.cpp">
       <Filter>Queen Mary Plugin Files</Filter>
     </ClCompile>
-    <ClCompile Include="VampTrackBar.cpp">
+    <ClCompile Include="VampOutputCtrl.cpp">
       <Filter>Queen Mary Plugin Files</Filter>
     </ClCompile>
   </ItemGroup>
