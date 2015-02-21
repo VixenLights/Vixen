@@ -14,6 +14,7 @@ namespace VixenModules.Output.E131
 			Universes = new List<UniverseEntry>();
             AutoPopulate = true;
             Priority = 100;
+            Universes.Add(new UniverseEntry(0, true, 1, 1, 1));
 		}
         
         [OnDeserializing]

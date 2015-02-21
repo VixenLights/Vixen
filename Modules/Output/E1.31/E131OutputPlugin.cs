@@ -321,7 +321,6 @@ namespace VixenModules.Controller.E131
         // -------------------------------------------------------------
         public override void Start()
         {
-
             running = true;
             if(!PluginInstances.Contains(this))
                 PluginInstances.Add(this);
@@ -711,25 +710,6 @@ namespace VixenModules.Controller.E131
                 ImportOldSettingsFile();
                 System.IO.File.Move("Modules\\Controller\\E131settings.xml", "Modules\\Controller\\E131settings.xml.old");
             }
-
-			foreach (var uE in _data.Universes)
-			{
-				// somehow.. maybe when moving a config from one system to another
-				// or when network ids come and go on the same system
-				// or if the serializer fails to load these
-				// if both of these are zero the Setup will fail leaving
-				// this instance in a bad state
-				// so make sure at least multicast is non-null
-				// Setup will report the error and deactivate this universe
-				// At least then we can start up without null ptr exceptions
-				if (uE.Unicast == null && uE.Multicast == null)
-				{
-					//Console.WriteLine("e131 fixing null multicast...");
-					uE.Multicast = "null";
-				}
-					
-			}
-
         }
 
         private void ImportOldSettingsFile()
