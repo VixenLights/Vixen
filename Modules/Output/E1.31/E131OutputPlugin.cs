@@ -517,7 +517,7 @@ namespace VixenModules.Controller.E131
 					}
 					else
 					{
-						throw new System.Exception("no uni or multi cast");
+						throw new System.Exception("No valid destination for this plugin instance.");
 					}
 
                     // if still active we need to create an empty packet
