@@ -938,14 +938,9 @@ namespace VixenModules.Output.E131
             updateDgvnStartValues();
         }
 
-        private void UnivDgvnInsertRow(object sender, DataGridViewRowEventArgs e)
+        private void UnivDgvnDeletedRow(object sender, DataGridViewRowEventArgs e)
         {
-
-        }
-
-        private void UnivDgvnDeleteRow(object sender, DataGridViewRowEventArgs e)
-        {
-
+            updateDgvnStartValues();
         }
     }
 }
