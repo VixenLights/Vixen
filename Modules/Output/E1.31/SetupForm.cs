@@ -752,19 +752,6 @@ namespace VixenModules.Output.E131
             }
         }
 
-        private void UnivDgvnDeleteRow(object sender, EventArgs e)
-        {
-            if (this.univDGVNCellEventArgs != null)
-            {
-                var row = this.univDGVN.Rows[this.univDGVNCellEventArgs.RowIndex];
-
-                if (!row.IsNewRow)
-                {
-                    this.univDGVN.Rows.RemoveAt(row.Index);
-                }
-            }
-        }
-
         private void UnivDgvnEditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
         {
             var columnIndex = univDGVN.CurrentCell.ColumnIndex;
@@ -936,6 +923,16 @@ namespace VixenModules.Output.E131
             this.univDGVN.Rows.Add(
             new object[] { 0, true, maxUniverse.ToString(), "1"});
             updateDgvnStartValues();
+        }
+
+        private void UnivDgvnInsertRow(object sender, DataGridViewRowEventArgs e)
+        {
+
+        }
+
+        private void UnivDgvnDeleteRow(object sender, DataGridViewRowEventArgs e)
+        {
+
         }
     }
 }

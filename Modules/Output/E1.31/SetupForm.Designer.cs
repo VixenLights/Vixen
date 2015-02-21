@@ -64,20 +64,20 @@ namespace VixenModules.Output.E131
             this.btnAddUnicast = new System.Windows.Forms.Button();
             this.lblDestination = new System.Windows.Forms.Label();
             this.comboDestination = new System.Windows.Forms.ComboBox();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.lblPriority = new System.Windows.Forms.Label();
-            this.numericPriority = new System.Windows.Forms.NumericUpDown();
-            this.chkBoxTransmitBlind = new System.Windows.Forms.CheckBox();
             this.univDGVN = new VixenModules.Output.E131.Controls.DataGridViewNumbered();
             this.startColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.activeColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.universeColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.sizeColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.lblPriority = new System.Windows.Forms.Label();
+            this.numericPriority = new System.Windows.Forms.NumericUpDown();
+            this.chkBoxTransmitBlind = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.univDGVN)).BeginInit();
             this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericPriority)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.univDGVN)).BeginInit();
             this.SuspendLayout();
             // 
             // rowManipulationContextMenuStrip
@@ -244,6 +244,77 @@ namespace VixenModules.Output.E131
             this.comboDestination.Size = new System.Drawing.Size(214, 21);
             this.comboDestination.TabIndex = 2;
             // 
+            // univDGVN
+            // 
+            this.univDGVN.AllowUserToAddRows = false;
+            this.univDGVN.BackgroundColor = this.BackColor;
+            this.univDGVN.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.startColumn,
+            this.activeColumn,
+            this.universeColumn,
+            this.sizeColumn});
+            this.univDGVN.ContextMenuStrip = this.rowManipulationContextMenuStrip;
+            this.univDGVN.Location = new System.Drawing.Point(87, 11);
+            this.univDGVN.Name = "univDGVN";
+            this.univDGVN.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.univDGVN.Size = new System.Drawing.Size(269, 295);
+            this.univDGVN.TabIndex = 1;
+            this.univDGVN.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.UnivDgvnCellEndEdit);
+            this.univDGVN.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.UnivDgvnCellEnter);
+            this.univDGVN.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.UnivDgvnCellMouseClick);
+            this.univDGVN.CellMouseEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.UnivDgvnCellMouseEnter);
+            this.univDGVN.CellValidated += new System.Windows.Forms.DataGridViewCellEventHandler(this.univDGVN_CellValidated);
+            this.univDGVN.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.UnivDgvnCellValidating);
+            this.univDGVN.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.UnivDgvnEditingControlShowing);
+            this.univDGVN.UserAddedRow += new System.Windows.Forms.DataGridViewRowEventHandler(this.UnivDgvnInsertRow);
+            // 
+            // startColumn
+            // 
+            this.startColumn.ContextMenuStrip = this.rowManipulationContextMenuStrip;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.startColumn.DefaultCellStyle = dataGridViewCellStyle1;
+            this.startColumn.HeaderText = "Start";
+            this.startColumn.MaxInputLength = 5;
+            this.startColumn.Name = "startColumn";
+            this.startColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.startColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.startColumn.ToolTipText = "Sort (LeftClick = Ascending, RightClick = Descending)";
+            this.startColumn.Width = 60;
+            // 
+            // activeColumn
+            // 
+            this.activeColumn.ContextMenuStrip = this.rowManipulationContextMenuStrip;
+            this.activeColumn.HeaderText = "On";
+            this.activeColumn.Name = "activeColumn";
+            this.activeColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.activeColumn.Width = 25;
+            // 
+            // universeColumn
+            // 
+            this.universeColumn.ContextMenuStrip = this.rowManipulationContextMenuStrip;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.universeColumn.DefaultCellStyle = dataGridViewCellStyle2;
+            this.universeColumn.HeaderText = "Universe";
+            this.universeColumn.MaxInputLength = 5;
+            this.universeColumn.Name = "universeColumn";
+            this.universeColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.universeColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.universeColumn.ToolTipText = "Sort (LeftClick = Ascending, RightClick = Descending)";
+            this.universeColumn.Width = 60;
+            // 
+            // sizeColumn
+            // 
+            this.sizeColumn.ContextMenuStrip = this.rowManipulationContextMenuStrip;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.sizeColumn.DefaultCellStyle = dataGridViewCellStyle3;
+            this.sizeColumn.HeaderText = "Size";
+            this.sizeColumn.MaxInputLength = 3;
+            this.sizeColumn.Name = "sizeColumn";
+            this.sizeColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.sizeColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.sizeColumn.ToolTipText = "Sort (LeftClick = Ascending, RightClick = Descending)";
+            this.sizeColumn.Width = 60;
+            // 
             // tabPage2
             // 
             this.tabPage2.Controls.Add(this.lblPriority);
@@ -300,78 +371,6 @@ namespace VixenModules.Output.E131
             this.chkBoxTransmitBlind.Text = "Transmit blind data.";
             this.chkBoxTransmitBlind.UseVisualStyleBackColor = true;
             // 
-            // univDGVN
-            // 
-            this.univDGVN.AllowUserToAddRows = false;
-            this.univDGVN.BackgroundColor = this.BackColor;
-            this.univDGVN.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.startColumn,
-            this.activeColumn,
-            this.universeColumn,
-            this.sizeColumn});
-            this.univDGVN.ContextMenuStrip = this.rowManipulationContextMenuStrip;
-            this.univDGVN.Location = new System.Drawing.Point(87, 11);
-            this.univDGVN.Name = "univDGVN";
-            this.univDGVN.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.univDGVN.Size = new System.Drawing.Size(269, 295);
-            this.univDGVN.TabIndex = 1;
-            this.univDGVN.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.UnivDgvnCellEndEdit);
-            this.univDGVN.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.UnivDgvnCellEnter);
-            this.univDGVN.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.UnivDgvnCellMouseClick);
-            this.univDGVN.CellMouseEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.UnivDgvnCellMouseEnter);
-            this.univDGVN.CellValidated += new System.Windows.Forms.DataGridViewCellEventHandler(this.univDGVN_CellValidated);
-            this.univDGVN.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.UnivDgvnCellValidating);
-            this.univDGVN.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.UnivDgvnEditingControlShowing);
-            this.univDGVN.UserAddedRow += new System.Windows.Forms.DataGridViewRowEventHandler(this.UnivDgvnInsertRow);
-            this.univDGVN.UserDeletedRow += new System.Windows.Forms.DataGridViewRowEventHandler(this.UnivDgvnDeleteRow);
-            // 
-            // startColumn
-            // 
-            this.startColumn.ContextMenuStrip = this.rowManipulationContextMenuStrip;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.startColumn.DefaultCellStyle = dataGridViewCellStyle1;
-            this.startColumn.HeaderText = "Start";
-            this.startColumn.MaxInputLength = 5;
-            this.startColumn.Name = "startColumn";
-            this.startColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.startColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.startColumn.ToolTipText = "Sort (LeftClick = Ascending, RightClick = Descending)";
-            this.startColumn.Width = 60;
-            // 
-            // activeColumn
-            // 
-            this.activeColumn.ContextMenuStrip = this.rowManipulationContextMenuStrip;
-            this.activeColumn.HeaderText = "On";
-            this.activeColumn.Name = "activeColumn";
-            this.activeColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.activeColumn.Width = 25;
-            // 
-            // universeColumn
-            // 
-            this.universeColumn.ContextMenuStrip = this.rowManipulationContextMenuStrip;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.universeColumn.DefaultCellStyle = dataGridViewCellStyle2;
-            this.universeColumn.HeaderText = "Universe";
-            this.universeColumn.MaxInputLength = 5;
-            this.universeColumn.Name = "universeColumn";
-            this.universeColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.universeColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.universeColumn.ToolTipText = "Sort (LeftClick = Ascending, RightClick = Descending)";
-            this.universeColumn.Width = 60;
-            // 
-            // sizeColumn
-            // 
-            this.sizeColumn.ContextMenuStrip = this.rowManipulationContextMenuStrip;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.sizeColumn.DefaultCellStyle = dataGridViewCellStyle3;
-            this.sizeColumn.HeaderText = "Size";
-            this.sizeColumn.MaxInputLength = 3;
-            this.sizeColumn.Name = "sizeColumn";
-            this.sizeColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.sizeColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.sizeColumn.ToolTipText = "Sort (LeftClick = Ascending, RightClick = Descending)";
-            this.sizeColumn.Width = 60;
-            // 
             // SetupForm
             // 
             this.AcceptButton = this.okButton;
@@ -385,15 +384,15 @@ namespace VixenModules.Output.E131
             this.Menu = this.mainMenu;
             this.Name = "SetupForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "sACN (E1.31) Setup Form";
+            this.Text = "Streaming ACN (E1.31) Configuration";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SetupForm_FormClosing);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.univDGVN)).EndInit();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericPriority)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.univDGVN)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
