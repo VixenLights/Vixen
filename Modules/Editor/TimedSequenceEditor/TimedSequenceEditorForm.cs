@@ -5261,13 +5261,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (module is Audio)
 				{
 					BeatsAndBars audioFeatures = new BeatsAndBars((Audio)module);
-					List<MarkCollection> markList = audioFeatures.GenerateMarksFromFeatures();
-
-					foreach (MarkCollection mc in markList)
-					{
-						mc.MarkColor = Color.Yellow;
-						_sequence.MarkCollections.Add(mc);
-					}
+					_sequence.MarkCollections = 
+						audioFeatures.GenerateMarksFromFeatures(_sequence.MarkCollections);
 
 					MarksForm.PopulateMarkCollectionsList(null);
 					SequenceModified();

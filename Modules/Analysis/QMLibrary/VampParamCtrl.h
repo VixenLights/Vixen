@@ -135,6 +135,24 @@ namespace QMLibrary {
 
 		}
 
+		String^ FindParamByIdentifier(String^ identifier)
+		{
+			String^ retVal = nullptr;
+			for (int j = 0; j < m_rows; j++)
+			{
+				Control^ control = m_layoutPanel->GetControlFromPosition(1, j);
+				if (control != nullptr)
+				{
+					if (((String^)(control->Tag))->CompareTo(identifier) == 0)
+					{
+						retVal = (String^)(control->Text);
+						break;
+					}
+				}
+			}
+			return retVal;
+		}
+
 		void InitParamControls(ManagedParameterList^ parameterDescriptors)
 		{
 
@@ -169,10 +187,11 @@ namespace QMLibrary {
 					paramTextBox->Size = paramTextBox->GetPreferredSize(Drawing::Size(0, 0));
 					paramTextBox->Size = paramTextBox->Size + *offsetSize;
 					paramTextBox->CausesValidation = true;
+					paramTextBox->Tag = gcnew String(descriptor->identifier);
 					paramTextBox->Validating += gcnew System::ComponentModel::CancelEventHandler(this, &VampParamCtrl::paramTextBox_Validating);
 					m_toolTip->SetToolTip(paramTextBox, descriptor->description);
 
-					m_layoutPanel->Controls->Add(paramTextBox, 1, m_rows);
+					m_layoutPanel->Controls->Add(paramTextBox, 1, m_rows - 1);
 
 					if (descriptor->isQuantized)
 					{

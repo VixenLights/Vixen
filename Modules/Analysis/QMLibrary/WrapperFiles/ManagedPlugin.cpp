@@ -64,7 +64,7 @@ namespace QMLibrary
 		return m_plugin->getParameter(marshal_as<std::string>(paramStr));
 	}
 
-	void ManagedPlugin::SetParameter(String^paramStr, float value)
+	void ManagedPlugin::SetParameter(String^ paramStr, float value)
 	{
 		m_plugin->setParameter(marshal_as<std::string>(paramStr), value);
 	}
