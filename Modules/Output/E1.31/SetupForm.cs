@@ -828,6 +828,19 @@ namespace VixenModules.Output.E131
                 var destination = new Tuple<string, string>(null, null);
                 destination = GetDestination(); //Item1 Unicast, Item2 Multicast
 
+                //prevent duplicates in this plugin instance
+                foreach (DataGridViewRow r1 in univDGVN.Rows)
+                {
+                    int univ = ((string)r1.Cells[UNIVERSE_COLUMN].Value).TryParseInt32(1);
+                    foreach(DataGridViewRow r2 in univDGVN.Rows){
+                        if(r1 != r2 && univ == ((string)r2.Cells[UNIVERSE_COLUMN].Value).TryParseInt32(1)){
+                            MessageBox.Show(string.Format("Universe numbers must be unique."));
+                            e.Cancel = true;
+                            return;
+                        }
+                    }
+                }
+
                 foreach (E131OutputPlugin p in E131OutputPlugin.PluginInstances)
                 {
                     if (p.isSetupOpen) //don't validate against this instance of the plugin
