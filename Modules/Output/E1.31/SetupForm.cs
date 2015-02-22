@@ -99,6 +99,8 @@ namespace VixenModules.Output.E131
             InitializeComponent();
             btnAdd.Text = "";
             btnAdd.Image = Tools.GetIcon(Resources.add, 16);
+            btnDelete.Text = "";
+            btnDelete.Image = Tools.GetIcon(Resources.delete, 16);
             SetDestinations();
         }
 
@@ -936,11 +938,25 @@ namespace VixenModules.Output.E131
             this.univDGVN.Rows.Add(
             new object[] { 0, true, maxUniverse.ToString(), "1"});
             updateDgvnStartValues();
+
+            foreach (DataGridViewRow r in univDGVN.Rows)
+                r.Selected = false;
+            univDGVN.Rows[univDGVN.Rows.Count-1].Selected = true;
         }
 
         private void UnivDgvnDeletedRow(object sender, DataGridViewRowEventArgs e)
         {
             updateDgvnStartValues();
+        }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            List<DataGridViewRow> toDelete = new List<DataGridViewRow>();
+            foreach (DataGridViewRow r in univDGVN.Rows)
+                if (r.Selected)
+                    toDelete.Add(r);
+            foreach (DataGridViewRow r in toDelete)
+                univDGVN.Rows.Remove(r);
         }
     }
 }

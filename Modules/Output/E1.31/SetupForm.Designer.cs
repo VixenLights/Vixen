@@ -73,6 +73,7 @@ namespace VixenModules.Output.E131
             this.lblPriority = new System.Windows.Forms.Label();
             this.numericPriority = new System.Windows.Forms.NumericUpDown();
             this.chkBoxTransmitBlind = new System.Windows.Forms.CheckBox();
+            this.btnDelete = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.univDGVN)).BeginInit();
@@ -193,6 +194,7 @@ namespace VixenModules.Output.E131
             // tabPage1
             // 
             this.tabPage1.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPage1.Controls.Add(this.btnDelete);
             this.tabPage1.Controls.Add(this.btnAdd);
             this.tabPage1.Controls.Add(this.btnAddUnicast);
             this.tabPage1.Controls.Add(this.lblDestination);
@@ -372,6 +374,16 @@ namespace VixenModules.Output.E131
             this.chkBoxTransmitBlind.Text = "Transmit blind data.";
             this.chkBoxTransmitBlind.UseVisualStyleBackColor = true;
             // 
+            // btnDelete
+            // 
+            this.btnDelete.Location = new System.Drawing.Point(362, 45);
+            this.btnDelete.Name = "btnDelete";
+            this.btnDelete.Size = new System.Drawing.Size(27, 28);
+            this.btnDelete.TabIndex = 6;
+            this.btnDelete.Text = "-";
+            this.btnDelete.UseVisualStyleBackColor = true;
+            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
+            // 
             // SetupForm
             // 
             this.AcceptButton = this.okButton;
@@ -425,5 +437,6 @@ namespace VixenModules.Output.E131
         private DataGridViewTextBoxColumn sizeColumn;
         private Button btnAddUnicast;
         private Button btnAdd;
+        private Button btnDelete;
     }
 }

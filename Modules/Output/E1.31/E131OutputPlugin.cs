@@ -153,7 +153,7 @@ namespace VixenModules.Controller.E131
                 setupForm.Priority = _data.Priority;
                 setupForm.SetDestination(_data.Multicast, _data.Unicast);
 
-                setupForm.Text = (new E131ModuleDescriptor()).TypeName + " Controller Setup - " + VixenSystem.OutputControllers.Single(controller => controller.ModuleInstanceId == _data.ModuleInstanceId).Name;
+                setupForm.Text = (new E131ModuleDescriptor()).TypeName + " Configuration - " + VixenSystem.OutputControllers.Single(controller => controller.ModuleInstanceId == _data.ModuleInstanceId).Name;
 
                 if (setupForm.ShowDialog() == DialogResult.OK)
                 {
