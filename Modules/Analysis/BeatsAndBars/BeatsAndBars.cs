@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Data.SqlTypes;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -42,22 +43,30 @@ namespace VixenModules.Analysis.BeatsAndBars
 			int i = 0;
 			int j = 0;
 
+			BeatsAndBarsProgress progressDlg = new BeatsAndBarsProgress();
+			progressDlg.Show();
+
 			int stepSize = m_plugin.GetPreferredStepSize();
 			byte[] bSamples = m_audioModule.GetSamples(0, (int)m_audioModule.NumberSamples);
 
 			int dataStep = m_audioModule.BytesPerSample;
 			float[] fSamplesAll = new float[m_audioModule.NumberSamples];
+
 			for (j = 0; j < bSamples.Length; j += dataStep)
 			{
 				fSamplesAll[j / dataStep] =
 					dataStep == 2 ? BitConverter.ToInt16(bSamples, j) : BitConverter.ToInt32(bSamples, j);
 			}
 
+			double progressVal = 0;
 			float[] fSamples = new float[m_plugin.GetPreferredBlockSize()];
 			for (j = 0;
 				((fSamplesAll.Length - j) >= m_plugin.GetPreferredBlockSize());
 				j += stepSize)
 			{
+				progressVal = ((double)j / (double) fSamplesAll.Length) * 100.0;
+				progressDlg.UpdateProgress((int) progressVal);
+
 				Array.Copy(fSamplesAll, j, fSamples, 0, fSamples.Length);
 				m_plugin.Process(fSamples,
 						ManagedRealtime.frame2RealTime(j, (uint)m_audioModule.Frequency));
@@ -68,6 +77,8 @@ namespace VixenModules.Analysis.BeatsAndBars
 			m_plugin.Process(fSamples,
 					ManagedRealtime.frame2RealTime(j, (uint)m_audioModule.Frequency));
 
+			progressDlg.Close();
+
 			return m_plugin.GetRemainingFeatures();
 			
 		}
@@ -76,15 +87,32 @@ namespace VixenModules.Analysis.BeatsAndBars
 		{
 			MarkCollection mc = new MarkCollection();
 			mc.Enabled = true;
-			mc.Name = settings.BeatCollectionName;
+			mc.Name = settings.CollectionName;
 			mc.MarkColor = settings.Color;
+
+			double lastFeatureMS = -1;
+			double featureMS = -1;
 
 			foreach (ManagedFeature feature in m_featureSet[output])
 			{
 				if (feature.hasTimestamp)
 				{
-					mc.Marks.Add(TimeSpan.FromMilliseconds(feature.timestamp.totalMilliseconds()));
+					featureMS = feature.timestamp.totalMilliseconds();
+					if ((lastFeatureMS != -1) && (settings.Divisions > 1))
+					{
+						double interval = (featureMS - lastFeatureMS) /settings.Divisions;
+						
+						for (double j = lastFeatureMS; j <= featureMS; j += interval)
+						{
+							mc.Marks.Add(TimeSpan.FromMilliseconds(j));
+						}
+					}
+					else
+					{
+						mc.Marks.Add(TimeSpan.FromMilliseconds(featureMS));
+					}
 				}
+				lastFeatureMS = featureMS;
 			}
 			return mc;
 		}
@@ -104,7 +132,8 @@ namespace VixenModules.Analysis.BeatsAndBars
 
 			BeatsAndBarsDialog bbSettings = new BeatsAndBarsDialog();
 			bbSettings.Parameters(parameterDescriptors);
-			bbSettings.Outputs(outputDescriptors);
+			bbSettings.MarkCollectionList = markCollection;
+
 			DialogResult result = bbSettings.ShowDialog();
 			if (result == DialogResult.OK)
 			{
@@ -118,14 +147,15 @@ namespace VixenModules.Analysis.BeatsAndBars
 
 				if (bbSettings.BeatSettings.Enabled)
 				{
+					markCollection.RemoveAll(x => x.Name.Equals(bbSettings.BeatSettings.CollectionName));
 					retVal.Add(ExtractMarksFromFeatureset(0, bbSettings.BeatSettings));
 				}
 
 				if (bbSettings.BarSettings.Enabled)
 				{
+					markCollection.RemoveAll(x => x.Name.Equals(bbSettings.BarSettings.CollectionName));
 					retVal.Add(ExtractMarksFromFeatureset(1, bbSettings.BarSettings));
 				}
-					
 			}
 
 			return retVal;

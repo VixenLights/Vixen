@@ -130,8 +130,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.markWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripMenuItem_associateAudio = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripMenuItem_removeAudio = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem_MarkManager = new System.Windows.Forms.ToolStripMenuItem();
 			this.modifySequenceLengthToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.curveEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -165,6 +163,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.contextMenuStripElementSelection = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.timerPostponePlay = new System.Windows.Forms.Timer(this.components);
 			this.timerDelayCountdown = new System.Windows.Forms.Timer(this.components);
+			this.toolStripMenuItem_associateAudio = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItem_removeAudio = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripOperations.SuspendLayout();
 			this.menuStrip.SuspendLayout();
 			this.statusStrip.SuspendLayout();
@@ -1027,34 +1028,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// toolsToolStripMenuItem
 			// 
 			this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripMenuItem_associateAudio,
-            this.toolStripMenuItem_removeAudio,
+            this.audioToolStripMenuItem,
             this.toolStripMenuItem_MarkManager,
             this.modifySequenceLengthToolStripMenuItem,
             this.curveEditorToolStripMenuItem,
             this.colorGradientEditorToolStripMenuItem,
             this.ColorCollectionsToolStripMenuItem,
             this.lipSyncMappingsToolStripMenuItem,
-            this.bulkEffectMoveToolStripMenuItem,
-            this.audioToolStripMenuItem});
+            this.bulkEffectMoveToolStripMenuItem});
 			this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
 			this.toolsToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
 			this.toolsToolStripMenuItem.Text = "Tools";
-			// 
-			// toolStripMenuItem_associateAudio
-			// 
-			this.toolStripMenuItem_associateAudio.Name = "toolStripMenuItem_associateAudio";
-			this.toolStripMenuItem_associateAudio.Size = new System.Drawing.Size(194, 22);
-			this.toolStripMenuItem_associateAudio.Text = "Associate Audio...";
-			this.toolStripMenuItem_associateAudio.Click += new System.EventHandler(this.toolStripMenuItem_associateAudio_Click);
-			// 
-			// toolStripMenuItem_removeAudio
-			// 
-			this.toolStripMenuItem_removeAudio.Enabled = false;
-			this.toolStripMenuItem_removeAudio.Name = "toolStripMenuItem_removeAudio";
-			this.toolStripMenuItem_removeAudio.Size = new System.Drawing.Size(194, 22);
-			this.toolStripMenuItem_removeAudio.Text = "Remove Audio";
-			this.toolStripMenuItem_removeAudio.Click += new System.EventHandler(this.toolStripMenuItem_removeAudio_Click);
 			// 
 			// toolStripMenuItem_MarkManager
 			// 
@@ -1149,6 +1133,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// audioToolStripMenuItem
 			// 
 			this.audioToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItem_associateAudio,
+            this.toolStripMenuItem_removeAudio,
+            this.toolStripSeparator7,
             this.beatBarDetectionToolStripMenuItem});
 			this.audioToolStripMenuItem.Name = "audioToolStripMenuItem";
 			this.audioToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
@@ -1367,6 +1354,24 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.timerDelayCountdown.Interval = 1000;
 			this.timerDelayCountdown.Tick += new System.EventHandler(this.timerDelayCountdown_Tick);
 			// 
+			// toolStripMenuItem_associateAudio
+			// 
+			this.toolStripMenuItem_associateAudio.Name = "toolStripMenuItem_associateAudio";
+			this.toolStripMenuItem_associateAudio.Size = new System.Drawing.Size(173, 22);
+			this.toolStripMenuItem_associateAudio.Text = "Associate Audio...";
+			// 
+			// toolStripMenuItem_removeAudio
+			// 
+			this.toolStripMenuItem_removeAudio.Enabled = false;
+			this.toolStripMenuItem_removeAudio.Name = "toolStripMenuItem_removeAudio";
+			this.toolStripMenuItem_removeAudio.Size = new System.Drawing.Size(173, 22);
+			this.toolStripMenuItem_removeAudio.Text = "Remove Audio";
+			// 
+			// toolStripSeparator7
+			// 
+			this.toolStripSeparator7.Name = "toolStripSeparator7";
+			this.toolStripSeparator7.Size = new System.Drawing.Size(170, 6);
+			// 
 			// TimedSequenceEditorForm
 			// 
 			this.AllowDrop = true;
@@ -1417,7 +1422,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_Close;
 		private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_associateAudio;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_MarkManager;
 		private System.Windows.Forms.OpenFileDialog openFileDialog;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_EditEffect;
@@ -1460,8 +1464,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private System.Windows.Forms.ContextMenuStrip contextMenuStripElementSelection;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel4;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel_RenderingElements;
-        private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar_RenderingElements;
-		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_removeAudio;
+		private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar_RenderingElements;
 		private WeifenLuo.WinFormsUI.Docking.DockPanel dockPanel;
 		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
 		private System.Windows.Forms.ToolStripMenuItem effectWindowToolStripMenuItem;
@@ -1532,5 +1535,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_CloseGap400;
 		private System.Windows.Forms.ToolStripMenuItem audioToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem beatBarDetectionToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_associateAudio;
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_removeAudio;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
 	}
 }

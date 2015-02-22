@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using QMLibrary;
+using VixenModules.Sequence.Timed;
 
 namespace VixenModules.Analysis.BeatsAndBars
 {
@@ -16,12 +17,18 @@ namespace VixenModules.Analysis.BeatsAndBars
 	{
 
 		private ToolTip m_toolTip;
-		private BeatBarSettings m_beatSettings;
-		private BeatBarSettings m_barSettings;
+		private static BeatBarSettings m_beatSettings = null;
+		private static BeatBarSettings m_barSettings = null;
+		private bool m_allowUpdates;
+		private bool m_allowClose;
 
 		public BeatsAndBarsDialog()
 		{
 			InitializeComponent();
+
+			m_allowUpdates = false;
+			m_allowClose = false;
+
 			m_toolTip = new ToolTip();
 			m_toolTip.AutoPopDelay = 5000;
 			m_toolTip.InitialDelay = 500;
@@ -37,15 +44,22 @@ namespace VixenModules.Analysis.BeatsAndBars
 			m_toolTip.SetToolTip(m_barsNameTB, "The Name of the Bar collection to generate");
 			m_toolTip.SetToolTip(m_barsSubmarks, "Number of evenly spaced submarks to generate per feature");
 
-			m_beatsCB.Checked = false;
-			m_barsCB.Checked = false;
+			m_beatSettings = m_beatSettings ?? new BeatBarSettings("Beats");
+			m_barSettings = m_barSettings ?? new BeatBarSettings("Bars");
 
-			m_beatSettings = new BeatBarSettings();
-			m_barSettings = new BeatBarSettings();
+			m_beatsCB.Checked = m_beatSettings.Enabled;
+			m_barsCB.Checked = m_barSettings.Enabled;
+
+			m_barsNameTB.Text = m_barSettings.CollectionName;
+			m_beatsNameTB.Text = m_beatSettings.CollectionName;
+
+			m_barsSubmarks.Text = m_barSettings.Divisions.ToString();
+			m_beatsSubMarks.Text = m_beatSettings.Divisions.ToString();
 
 			m_beatColorPanel.BackColor = m_beatSettings.Color;
 			m_barColorPanel.BackColor = m_barSettings.Color;
 
+			m_allowUpdates = true;
 			SetBeatBarOutputControls();
 		}
 
@@ -67,11 +81,9 @@ namespace VixenModules.Analysis.BeatsAndBars
 					m_paramsGroupBox.Location.X + m_paramsGroupBox.Height + offsetSize.Height);
 
 			m_goButton.Location = new Point(m_goButton.Location.X, m_outputGroupBox.Location.Y + m_outputGroupBox.Height + offsetSize.Height);
-
+			m_cancelButton.Location = new Point(m_cancelButton.Location.X, m_goButton.Location.Y);
 			this.ClientSize =  new Size(m_outputGroupBox.Location.X *2  + m_outputGroupBox.Width, 
 								 (m_paramsGroupBox.Location.Y) + m_goButton.Location.Y + m_goButton.Size.Height);
-
-
 		}
 
 		public BeatBarSettings BeatSettings
@@ -92,16 +104,12 @@ namespace VixenModules.Analysis.BeatsAndBars
 
 		public void Parameters(ICollection<ManagedParameterDescriptor> parameterDescriptors)
 		{
-			
 			this.m_vampParamCtrl.InitParamControls(parameterDescriptors);
 			DoDialogSizings();
 
 		}
 
-		public void Outputs(ICollection<ManagedOutputDescriptor> outputDescriptors)
-		{
-			DoDialogSizings();
-		}
+		public List<MarkCollection> MarkCollectionList { set; private get; } 
 
 		public float BeatsPerBar()
 		{
@@ -116,43 +124,39 @@ namespace VixenModules.Analysis.BeatsAndBars
 		}
 		private void SetBeatBarOutputControls()
 		{
-			m_beatsNameTB.Enabled = m_beatsCB.Checked;
-			m_beatsSubMarks.Enabled = m_beatsCB.Checked;
-			m_barsNameTB.Enabled = m_barsCB.Checked;
-			m_barsSubmarks.Enabled = m_barsCB.Checked;
+			if (m_allowUpdates)
+			{
+				m_beatsNameTB.Enabled = m_beatsCB.Checked;
+				m_beatsSubMarks.Enabled = m_beatsCB.Checked;
+				m_barsNameTB.Enabled = m_barsCB.Checked;
+				m_barsSubmarks.Enabled = m_barsCB.Checked;
 
-			m_beatSettings.Enabled = m_beatsCB.Checked;
-			m_beatSettings.BeatCollectionName = m_beatsNameTB.Text;
-			m_beatColorPanel.BackColor = m_beatsCB.Checked ? m_beatSettings.Color : SystemColors.Control;
-			m_beatColorPanel.Enabled = m_beatsCB.Checked;
+				m_beatSettings.Enabled = m_beatsCB.Checked;
+				m_beatSettings.CollectionName = m_beatsNameTB.Text;
+				m_beatColorPanel.BackColor = m_beatsCB.Checked ? m_beatSettings.Color : SystemColors.Control;
+				m_beatColorPanel.Enabled = m_beatsCB.Checked;
+				m_beatSettings.Divisions = Convert.ToInt32(m_beatsSubMarks.Text);
 
-			m_barSettings.Enabled = m_barsCB.Checked;
-			m_barSettings.BeatCollectionName = m_barsNameTB.Text;
-			m_barColorPanel.BackColor = m_barsCB.Checked ? m_barSettings.Color : SystemColors.Control;
-			m_barColorPanel.Enabled = m_barsCB.Checked;
+				m_barSettings.Enabled = m_barsCB.Checked;
+				m_barSettings.CollectionName = m_barsNameTB.Text;
+				m_barColorPanel.BackColor = m_barsCB.Checked ? m_barSettings.Color : SystemColors.Control;
+				m_barColorPanel.Enabled = m_barsCB.Checked;
+				m_barSettings.Divisions = Convert.ToInt32(m_barsSubmarks.Text);
+				
+			}
 		}
 
-		private void m_beatsCB_CheckedChanged(object sender, EventArgs e)
+		private void BeatsCB_CheckedChanged(object sender, EventArgs e)
 		{
 			SetBeatBarOutputControls();
 		}
 
-		private void m_barsCB_CheckedChanged(object sender, EventArgs e)
+		private void BarsCB_CheckedChanged(object sender, EventArgs e)
 		{
 			SetBeatBarOutputControls();
 		}
 
-		private void m_beatsNameTB_TextChanged(object sender, EventArgs e)
-		{
-			SetBeatBarOutputControls();
-		}
-
-		private void m_barsNameTB_TextChanged(object sender, EventArgs e)
-		{
-			SetBeatBarOutputControls();
-		}
-
-		private void m_beatColorPanel_Click(object sender, EventArgs e)
+		private void BeatColorPanel_Click(object sender, EventArgs e)
 		{
 			Common.Controls.ColorManagement.ColorPicker.ColorPicker picker =
 				new Common.Controls.ColorManagement.ColorPicker.ColorPicker();
@@ -165,7 +169,7 @@ namespace VixenModules.Analysis.BeatsAndBars
 			SetBeatBarOutputControls();
 		}
 
-		private void m_barColorPanel_Click(object sender, EventArgs e)
+		private void BarColorPanel_Click(object sender, EventArgs e)
 		{
 			Common.Controls.ColorManagement.ColorPicker.ColorPicker picker =
 				new Common.Controls.ColorManagement.ColorPicker.ColorPicker();
@@ -177,19 +181,69 @@ namespace VixenModules.Analysis.BeatsAndBars
 			}
 			SetBeatBarOutputControls();
 		}
+
+		private void GoButton_Click(object sender, EventArgs e)
+		{
+			SetBeatBarOutputControls();
+		}
+
+
+		private void BeatsAndBarsDialog_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			if (m_allowClose)
+			{
+				return;
+			}
+
+			if ((m_beatsCB.Checked) && 
+				(MarkCollectionList.FindIndex(x => x.Name.Equals(m_beatsNameTB.Text)) != -1))
+			{
+				if (MessageBox.Show("A collection by the name of " +
+									m_beatsNameTB.Text +
+									" already exists\nOverwrite?",
+									"Beat Settings",
+									MessageBoxButtons.YesNo) == DialogResult.No)
+				{
+					e.Cancel = true;
+					return;
+				}
+			}
+			
+			if ((m_barsCB.Checked) &&
+				(MarkCollectionList.FindIndex(x => x.Name.Equals(m_barsNameTB.Text)) != -1))
+			{
+				if (MessageBox.Show("A collection by the name of " +
+									m_barsNameTB.Text +
+									" already exists\nOverwrite?",
+									"Bar Settings",
+									MessageBoxButtons.YesNo) == DialogResult.No)
+				{
+					e.Cancel = true;
+					return;
+				}
+			}
+		
+		}
+
+		private void m_cancelButton_Click(object sender, EventArgs e)
+		{
+			m_allowClose = true;
+		}
 	}
 
 	public class BeatBarSettings
 	{
 		public bool Enabled { get; set; }
-		public String BeatCollectionName { get; set; }
+		public String CollectionName { get; set; }
 		public Color Color { get; set; }
+		public int Divisions { get; set; }
 
-		public BeatBarSettings()
+		public BeatBarSettings(String collectionName)
 		{
 			Enabled = false;
-			BeatCollectionName = "";
+			CollectionName = collectionName;
 			Color = Color.White;
+			Divisions = 0;
 		}
 
 	}

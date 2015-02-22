@@ -29,8 +29,10 @@
 		private void InitializeComponent()
 		{
 			this.m_paramsGroupBox = new System.Windows.Forms.GroupBox();
-			this.m_vampParamCtrl = new QMLibrary.VampParamCtrl();
 			this.m_outputGroupBox = new System.Windows.Forms.GroupBox();
+			this.label2 = new System.Windows.Forms.Label();
+			this.m_barColorPanel = new System.Windows.Forms.Panel();
+			this.m_beatColorPanel = new System.Windows.Forms.Panel();
 			this.m_barsSubmarks = new System.Windows.Forms.NumericUpDown();
 			this.m_beatsSubMarks = new System.Windows.Forms.NumericUpDown();
 			this.m_subMarksLabel = new System.Windows.Forms.Label();
@@ -40,9 +42,8 @@
 			this.m_barsCB = new System.Windows.Forms.CheckBox();
 			this.m_beatsCB = new System.Windows.Forms.CheckBox();
 			this.m_goButton = new System.Windows.Forms.Button();
-			this.m_beatColorPanel = new System.Windows.Forms.Panel();
-			this.m_barColorPanel = new System.Windows.Forms.Panel();
-			this.label2 = new System.Windows.Forms.Label();
+			this.m_cancelButton = new System.Windows.Forms.Button();
+			this.m_vampParamCtrl = new QMLibrary.VampParamCtrl();
 			this.m_paramsGroupBox.SuspendLayout();
 			this.m_outputGroupBox.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.m_barsSubmarks)).BeginInit();
@@ -58,17 +59,6 @@
 			this.m_paramsGroupBox.TabIndex = 2;
 			this.m_paramsGroupBox.TabStop = false;
 			this.m_paramsGroupBox.Text = "Parameters";
-			// 
-			// m_vampParamCtrl
-			// 
-			this.m_vampParamCtrl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.m_vampParamCtrl.AutoSize = true;
-			this.m_vampParamCtrl.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-			this.m_vampParamCtrl.Location = new System.Drawing.Point(6, 19);
-			this.m_vampParamCtrl.Name = "m_vampParamCtrl";
-			this.m_vampParamCtrl.Size = new System.Drawing.Size(344, 4);
-			this.m_vampParamCtrl.TabIndex = 0;
 			// 
 			// m_outputGroupBox
 			// 
@@ -89,6 +79,34 @@
 			this.m_outputGroupBox.TabIndex = 3;
 			this.m_outputGroupBox.TabStop = false;
 			this.m_outputGroupBox.Text = "Collections to Generate";
+			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label2.Location = new System.Drawing.Point(389, 26);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(34, 13);
+			this.label2.TabIndex = 12;
+			this.label2.Text = "Color:";
+			// 
+			// m_barColorPanel
+			// 
+			this.m_barColorPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.m_barColorPanel.Location = new System.Drawing.Point(392, 85);
+			this.m_barColorPanel.Name = "m_barColorPanel";
+			this.m_barColorPanel.Size = new System.Drawing.Size(57, 21);
+			this.m_barColorPanel.TabIndex = 11;
+			this.m_barColorPanel.Click += new System.EventHandler(this.BarColorPanel_Click);
+			// 
+			// m_beatColorPanel
+			// 
+			this.m_beatColorPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.m_beatColorPanel.Location = new System.Drawing.Point(392, 52);
+			this.m_beatColorPanel.Name = "m_beatColorPanel";
+			this.m_beatColorPanel.Size = new System.Drawing.Size(57, 21);
+			this.m_beatColorPanel.TabIndex = 10;
+			this.m_beatColorPanel.Click += new System.EventHandler(this.BeatColorPanel_Click);
 			// 
 			// m_barsSubmarks
 			// 
@@ -163,7 +181,6 @@
 			this.m_barsNameTB.Size = new System.Drawing.Size(168, 20);
 			this.m_barsNameTB.TabIndex = 4;
 			this.m_barsNameTB.Text = "Bars";
-			this.m_barsNameTB.TextChanged += new System.EventHandler(this.m_barsNameTB_TextChanged);
 			// 
 			// m_beatsNameTB
 			// 
@@ -172,7 +189,6 @@
 			this.m_beatsNameTB.Size = new System.Drawing.Size(168, 20);
 			this.m_beatsNameTB.TabIndex = 2;
 			this.m_beatsNameTB.Text = "Beats";
-			this.m_beatsNameTB.TextChanged += new System.EventHandler(this.m_beatsNameTB_TextChanged);
 			// 
 			// m_barsCB
 			// 
@@ -183,7 +199,7 @@
 			this.m_barsCB.TabIndex = 1;
 			this.m_barsCB.Text = "Bars";
 			this.m_barsCB.UseVisualStyleBackColor = true;
-			this.m_barsCB.CheckedChanged += new System.EventHandler(this.m_barsCB_CheckedChanged);
+			this.m_barsCB.CheckedChanged += new System.EventHandler(this.BarsCB_CheckedChanged);
 			// 
 			// m_beatsCB
 			// 
@@ -194,51 +210,47 @@
 			this.m_beatsCB.TabIndex = 0;
 			this.m_beatsCB.Text = "Beats";
 			this.m_beatsCB.UseVisualStyleBackColor = true;
-			this.m_beatsCB.CheckedChanged += new System.EventHandler(this.m_beatsCB_CheckedChanged);
+			this.m_beatsCB.CheckedChanged += new System.EventHandler(this.BeatsCB_CheckedChanged);
 			// 
 			// m_goButton
 			// 
 			this.m_goButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.m_goButton.Location = new System.Drawing.Point(117, 221);
+			this.m_goButton.Location = new System.Drawing.Point(314, 234);
 			this.m_goButton.Name = "m_goButton";
 			this.m_goButton.Size = new System.Drawing.Size(75, 23);
 			this.m_goButton.TabIndex = 4;
-			this.m_goButton.Text = "Go";
+			this.m_goButton.Text = "Generate";
 			this.m_goButton.UseVisualStyleBackColor = true;
+			this.m_goButton.Click += new System.EventHandler(this.GoButton_Click);
 			// 
-			// m_beatColorPanel
+			// m_cancelButton
 			// 
-			this.m_beatColorPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.m_beatColorPanel.Location = new System.Drawing.Point(392, 52);
-			this.m_beatColorPanel.Name = "m_beatColorPanel";
-			this.m_beatColorPanel.Size = new System.Drawing.Size(57, 21);
-			this.m_beatColorPanel.TabIndex = 10;
-			this.m_beatColorPanel.Click += new System.EventHandler(this.m_beatColorPanel_Click);
+			this.m_cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.m_cancelButton.Location = new System.Drawing.Point(405, 234);
+			this.m_cancelButton.Name = "m_cancelButton";
+			this.m_cancelButton.Size = new System.Drawing.Size(75, 23);
+			this.m_cancelButton.TabIndex = 5;
+			this.m_cancelButton.Text = "Cancel";
+			this.m_cancelButton.UseVisualStyleBackColor = true;
+			this.m_cancelButton.Click += new System.EventHandler(this.m_cancelButton_Click);
 			// 
-			// m_barColorPanel
+			// m_vampParamCtrl
 			// 
-			this.m_barColorPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.m_barColorPanel.Location = new System.Drawing.Point(392, 85);
-			this.m_barColorPanel.Name = "m_barColorPanel";
-			this.m_barColorPanel.Size = new System.Drawing.Size(57, 21);
-			this.m_barColorPanel.TabIndex = 11;
-			this.m_barColorPanel.Click += new System.EventHandler(this.m_barColorPanel_Click);
-			// 
-			// label2
-			// 
-			this.label2.AutoSize = true;
-			this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label2.Location = new System.Drawing.Point(389, 26);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(34, 13);
-			this.label2.TabIndex = 12;
-			this.label2.Text = "Color:";
+			this.m_vampParamCtrl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.m_vampParamCtrl.AutoSize = true;
+			this.m_vampParamCtrl.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.m_vampParamCtrl.Location = new System.Drawing.Point(6, 19);
+			this.m_vampParamCtrl.Name = "m_vampParamCtrl";
+			this.m_vampParamCtrl.Size = new System.Drawing.Size(344, 4);
+			this.m_vampParamCtrl.TabIndex = 0;
 			// 
 			// BeatsAndBarsDialog
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(519, 269);
+			this.Controls.Add(this.m_cancelButton);
 			this.Controls.Add(this.m_goButton);
 			this.Controls.Add(this.m_outputGroupBox);
 			this.Controls.Add(this.m_paramsGroupBox);
@@ -246,6 +258,7 @@
 			this.Name = "BeatsAndBarsDialog";
 			this.ShowIcon = false;
 			this.Text = "Beats and Bars";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.BeatsAndBarsDialog_FormClosing);
 			this.m_paramsGroupBox.ResumeLayout(false);
 			this.m_paramsGroupBox.PerformLayout();
 			this.m_outputGroupBox.ResumeLayout(false);
@@ -273,6 +286,7 @@
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Panel m_barColorPanel;
 		private System.Windows.Forms.Panel m_beatColorPanel;
+		private System.Windows.Forms.Button m_cancelButton;
 
 	}
 }

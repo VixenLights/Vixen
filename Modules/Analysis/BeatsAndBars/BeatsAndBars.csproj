@@ -78,6 +78,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BeatsAndBars.cs" />
+    <Compile Include="BeatsAndBarsProgress.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BeatsAndBarsProgress.Designer.cs">
+      <DependentUpon>BeatsAndBarsProgress.cs</DependentUpon>
+    </Compile>
     <Compile Include="BeatsAndBarsSettings.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -114,6 +120,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="BeatsAndBarsProgress.resx">
+      <DependentUpon>BeatsAndBarsProgress.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="BeatsAndBarsSettings.resx">
       <DependentUpon>BeatsAndBarsSettings.cs</DependentUpon>
     </EmbeddedResource>
