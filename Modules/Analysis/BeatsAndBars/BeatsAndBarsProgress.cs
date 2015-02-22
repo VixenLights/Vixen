@@ -12,6 +12,7 @@ namespace VixenModules.Analysis.BeatsAndBars
 {
 	public partial class BeatsAndBarsProgress : Form
 	{
+		private int m_lastValue = -1;
 		public BeatsAndBarsProgress()
 		{
 			InitializeComponent();
@@ -21,11 +22,18 @@ namespace VixenModules.Analysis.BeatsAndBars
 
 		public void UpdateProgress(int value)
 		{
-			progressBar1.Value = value;
-			percentLabel.Text = value.ToString() + "%";
-			progressBar1.Refresh();
-			percentLabel.Refresh();
-			generateLabel.Refresh();
+			if (value != m_lastValue)
+			{
+				progressBar1.Value = value;
+				percentLabel.Text = value.ToString() + "%";
+
+				foreach (Control ctrl in this.Controls)
+				{
+					ctrl.Refresh();
+				}
+
+				m_lastValue = value;
+			}
 		}
 
 	}

@@ -66,16 +66,16 @@
 			this.m_outputGroupBox.Controls.Add(this.m_barColorPanel);
 			this.m_outputGroupBox.Controls.Add(this.m_beatColorPanel);
 			this.m_outputGroupBox.Controls.Add(this.m_barsSubmarks);
-			this.m_outputGroupBox.Controls.Add(this.m_beatsSubMarks);
-			this.m_outputGroupBox.Controls.Add(this.m_subMarksLabel);
 			this.m_outputGroupBox.Controls.Add(this.label1);
 			this.m_outputGroupBox.Controls.Add(this.m_barsNameTB);
+			this.m_outputGroupBox.Controls.Add(this.m_beatsSubMarks);
 			this.m_outputGroupBox.Controls.Add(this.m_beatsNameTB);
+			this.m_outputGroupBox.Controls.Add(this.m_subMarksLabel);
 			this.m_outputGroupBox.Controls.Add(this.m_barsCB);
 			this.m_outputGroupBox.Controls.Add(this.m_beatsCB);
 			this.m_outputGroupBox.Location = new System.Drawing.Point(13, 64);
 			this.m_outputGroupBox.Name = "m_outputGroupBox";
-			this.m_outputGroupBox.Size = new System.Drawing.Size(494, 130);
+			this.m_outputGroupBox.Size = new System.Drawing.Size(453, 121);
 			this.m_outputGroupBox.TabIndex = 3;
 			this.m_outputGroupBox.TabStop = false;
 			this.m_outputGroupBox.Text = "Collections to Generate";
@@ -84,7 +84,7 @@
 			// 
 			this.label2.AutoSize = true;
 			this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label2.Location = new System.Drawing.Point(389, 26);
+			this.label2.Location = new System.Drawing.Point(241, 26);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(34, 13);
 			this.label2.TabIndex = 12;
@@ -93,7 +93,7 @@
 			// m_barColorPanel
 			// 
 			this.m_barColorPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.m_barColorPanel.Location = new System.Drawing.Point(392, 85);
+			this.m_barColorPanel.Location = new System.Drawing.Point(244, 85);
 			this.m_barColorPanel.Name = "m_barColorPanel";
 			this.m_barColorPanel.Size = new System.Drawing.Size(57, 21);
 			this.m_barColorPanel.TabIndex = 11;
@@ -102,7 +102,7 @@
 			// m_beatColorPanel
 			// 
 			this.m_beatColorPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.m_beatColorPanel.Location = new System.Drawing.Point(392, 52);
+			this.m_beatColorPanel.Location = new System.Drawing.Point(244, 52);
 			this.m_beatColorPanel.Name = "m_beatColorPanel";
 			this.m_beatColorPanel.Size = new System.Drawing.Size(57, 21);
 			this.m_beatColorPanel.TabIndex = 10;
@@ -110,7 +110,7 @@
 			// 
 			// m_barsSubmarks
 			// 
-			this.m_barsSubmarks.Location = new System.Drawing.Point(270, 87);
+			this.m_barsSubmarks.Location = new System.Drawing.Point(322, 87);
 			this.m_barsSubmarks.Maximum = new decimal(new int[] {
             99,
             0,
@@ -133,7 +133,7 @@
 			// 
 			// m_beatsSubMarks
 			// 
-			this.m_beatsSubMarks.Location = new System.Drawing.Point(270, 55);
+			this.m_beatsSubMarks.Location = new System.Drawing.Point(322, 55);
 			this.m_beatsSubMarks.Maximum = new decimal(new int[] {
             99,
             0,
@@ -158,7 +158,7 @@
 			// 
 			this.m_subMarksLabel.AutoSize = true;
 			this.m_subMarksLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.m_subMarksLabel.Location = new System.Drawing.Point(267, 26);
+			this.m_subMarksLabel.Location = new System.Drawing.Point(319, 26);
 			this.m_subMarksLabel.Name = "m_subMarksLabel";
 			this.m_subMarksLabel.Size = new System.Drawing.Size(97, 13);
 			this.m_subMarksLabel.TabIndex = 7;
@@ -168,7 +168,7 @@
 			// 
 			this.label1.AutoSize = true;
 			this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label1.Location = new System.Drawing.Point(76, 26);
+			this.label1.Location = new System.Drawing.Point(62, 26);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(38, 13);
 			this.label1.TabIndex = 6;
@@ -176,7 +176,7 @@
 			// 
 			// m_barsNameTB
 			// 
-			this.m_barsNameTB.Location = new System.Drawing.Point(79, 86);
+			this.m_barsNameTB.Location = new System.Drawing.Point(65, 86);
 			this.m_barsNameTB.Name = "m_barsNameTB";
 			this.m_barsNameTB.Size = new System.Drawing.Size(168, 20);
 			this.m_barsNameTB.TabIndex = 4;
@@ -184,7 +184,7 @@
 			// 
 			// m_beatsNameTB
 			// 
-			this.m_beatsNameTB.Location = new System.Drawing.Point(79, 54);
+			this.m_beatsNameTB.Location = new System.Drawing.Point(65, 54);
 			this.m_beatsNameTB.Name = "m_beatsNameTB";
 			this.m_beatsNameTB.Size = new System.Drawing.Size(168, 20);
 			this.m_beatsNameTB.TabIndex = 2;
@@ -215,7 +215,7 @@
 			// m_goButton
 			// 
 			this.m_goButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.m_goButton.Location = new System.Drawing.Point(314, 234);
+			this.m_goButton.Location = new System.Drawing.Point(306, 202);
 			this.m_goButton.Name = "m_goButton";
 			this.m_goButton.Size = new System.Drawing.Size(75, 23);
 			this.m_goButton.TabIndex = 4;
@@ -226,7 +226,7 @@
 			// m_cancelButton
 			// 
 			this.m_cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.m_cancelButton.Location = new System.Drawing.Point(405, 234);
+			this.m_cancelButton.Location = new System.Drawing.Point(397, 202);
 			this.m_cancelButton.Name = "m_cancelButton";
 			this.m_cancelButton.Size = new System.Drawing.Size(75, 23);
 			this.m_cancelButton.TabIndex = 5;
@@ -249,7 +249,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(519, 269);
+			this.ClientSize = new System.Drawing.Size(492, 246);
 			this.Controls.Add(this.m_cancelButton);
 			this.Controls.Add(this.m_goButton);
 			this.Controls.Add(this.m_outputGroupBox);

@@ -36,7 +36,7 @@
 			// progressBar1
 			// 
 			this.progressBar1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-			this.progressBar1.Location = new System.Drawing.Point(12, 47);
+			this.progressBar1.Location = new System.Drawing.Point(12, 37);
 			this.progressBar1.Name = "progressBar1";
 			this.progressBar1.Size = new System.Drawing.Size(187, 23);
 			this.progressBar1.TabIndex = 0;
@@ -45,7 +45,7 @@
 			// generateLabel
 			// 
 			this.generateLabel.AutoSize = true;
-			this.generateLabel.Location = new System.Drawing.Point(9, 19);
+			this.generateLabel.Location = new System.Drawing.Point(9, 9);
 			this.generateLabel.Name = "generateLabel";
 			this.generateLabel.Size = new System.Drawing.Size(94, 13);
 			this.generateLabel.TabIndex = 1;
@@ -64,7 +64,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(280, 96);
+			this.ClientSize = new System.Drawing.Size(235, 76);
 			this.ControlBox = false;
 			this.Controls.Add(this.percentLabel);
 			this.Controls.Add(this.generateLabel);
