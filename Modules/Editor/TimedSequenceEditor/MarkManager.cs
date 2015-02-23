@@ -919,79 +919,54 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void chkHighPass_CheckedChanged(object sender, EventArgs e)
 		{
-			try
-			{
-				var media = _timedSequenceEditorForm.Sequence.GetAllMedia().First();
-				// IMediaModuleInstance media = _sequence.GetAllMedia().First();
-				_audio = media as Audio;
-				_audio.FrequencyDetected += _audio_FrequencyDetected;
+			var media = _timedSequenceEditorForm.Sequence.GetAllMedia().First();
+			// IMediaModuleInstance media = _sequence.GetAllMedia().First();
+			_audio = media as Audio;
+			_audio.FrequencyDetected += _audio_FrequencyDetected;
 
-				_audio.HighPassFilterEnabled = this.chkHighPass.Checked;
-				_audio.HighPassFilterValue = (float)this.numHighPass.Value;
-			}
-			catch (Exception){
-			}
+			_audio.HighPassFilterEnabled = this.chkHighPass.Checked;
+			_audio.HighPassFilterValue = (float) this.numHighPass.Value;
 		}
 
 		private void chkLowPass_CheckedChanged(object sender, EventArgs e)
 		{
-			try
-			{
-				var media = _timedSequenceEditorForm.Sequence.GetAllMedia().First();
-				// IMediaModuleInstance media = _sequence.GetAllMedia().First();
-				_audio = media as Audio;
-				_audio.FrequencyDetected += _audio_FrequencyDetected;
+			var media = _timedSequenceEditorForm.Sequence.GetAllMedia().First();
+			// IMediaModuleInstance media = _sequence.GetAllMedia().First();
+			_audio = media as Audio;
+			_audio.FrequencyDetected += _audio_FrequencyDetected;
 
-				_audio.LowPassFilterEnabled = this.chkLowPass.Checked;
-				_audio.LowPassFilterValue = (float)this.numLowPass.Value;
-			}
-			catch (Exception){
-			}
+			_audio.LowPassFilterEnabled = this.chkLowPass.Checked;
+			_audio.LowPassFilterValue = (float) this.numLowPass.Value;
 		}
 
 		private void numLowPass_ValueChanged(object sender, EventArgs e)
 		{
-			try
-			{
-				var media = _timedSequenceEditorForm.Sequence.GetAllMedia().First();
-				// IMediaModuleInstance media = _sequence.GetAllMedia().First();
-				_audio = media as Audio;
-				_audio.FrequencyDetected += _audio_FrequencyDetected;
+			var media = _timedSequenceEditorForm.Sequence.GetAllMedia().First();
+			// IMediaModuleInstance media = _sequence.GetAllMedia().First();
+			_audio = media as Audio;
+			_audio.FrequencyDetected += _audio_FrequencyDetected;
 
-				_audio.LowPassFilterValue = (float) this.numLowPass.Value;
-			}
-			catch (Exception){
-			}
+			_audio.LowPassFilterValue = (float) this.numLowPass.Value;
 		}
 
 		private void numHighPass_ValueChanged(object sender, EventArgs e)
 		{
-			try
-			{
-				var media = _timedSequenceEditorForm.Sequence.GetAllMedia().First();
-				// IMediaModuleInstance media = _sequence.GetAllMedia().First();
-				_audio = media as Audio;
-				_audio.FrequencyDetected += _audio_FrequencyDetected;
+			var media = _timedSequenceEditorForm.Sequence.GetAllMedia().First();
+			// IMediaModuleInstance media = _sequence.GetAllMedia().First();
+			_audio = media as Audio;
+			_audio.FrequencyDetected += _audio_FrequencyDetected;
 
-				_audio.HighPassFilterValue = (float) this.numHighPass.Value;
-			}
-			catch (Exception){
-			}
+			_audio.HighPassFilterValue = (float) this.numHighPass.Value;
 		}
 
 		private void ChkAutoTapper_CheckedChanged(object sender, EventArgs e)
 		{
-			try
-			{
-				var media = _timedSequenceEditorForm.Sequence.GetAllMedia().First();
-				// IMediaModuleInstance media = _sequence.GetAllMedia().First();
-				_audio = media as Audio;
-				_audio.FrequencyDetected += _audio_FrequencyDetected;
+			var media = _timedSequenceEditorForm.Sequence.GetAllMedia().First();
+			// IMediaModuleInstance media = _sequence.GetAllMedia().First();
+			_audio = media as Audio;
+			_audio.FrequencyDetected += _audio_FrequencyDetected;
 
-				_audio.DetectFrequeniesEnabled = ChkAutoTapper.Checked;
-			}
-			catch (Exception){
-			}
+			_audio.DetectFrequeniesEnabled = ChkAutoTapper.Checked;
 		}
 
 		private void _audio_FrequencyDetectedSetText(object args)
@@ -1031,27 +1006,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void btnAutoDetectionSettings_Click(object sender, EventArgs e)
 		{
-			try
-			{
-				if (_audio == null)
-				{
-					var media = _timedSequenceEditorForm.Sequence.GetAllMedia().First();
-					// IMediaModuleInstance media = _sequence.GetAllMedia().First();
-					_audio = media as Audio;
-				}
-
-				if (audioDetectionSettings == null)
-					audioDetectionSettings = new AutomaticMusicDetection(_audio);
-				audioDetectionSettings.Indexes = detectionIndexes;
-
-				var result = audioDetectionSettings.ShowDialog();
-				if (result == System.Windows.Forms.DialogResult.OK)
-				{
-					detectionIndexes = audioDetectionSettings.Indexes;
-				}
+			if (_audio == null) {
+				var media = _timedSequenceEditorForm.Sequence.GetAllMedia().First();
+				// IMediaModuleInstance media = _sequence.GetAllMedia().First();
+				_audio = media as Audio;
 			}
-			catch (Exception)
-			{
+
+			if (audioDetectionSettings == null)
+				audioDetectionSettings = new AutomaticMusicDetection(_audio);
+			audioDetectionSettings.Indexes = detectionIndexes;
+
+			var result = audioDetectionSettings.ShowDialog();
+			if (result == System.Windows.Forms.DialogResult.OK) {
+				detectionIndexes = audioDetectionSettings.Indexes;
 			}
 		}
 
