@@ -1,43 +1,43 @@
 ﻿namespace VixenModules.Editor.TimedSequenceEditor
 {
-    partial class MarkManager
-    {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
-        private System.ComponentModel.IContainer components = null;
+	partial class MarkManager
+	{
+		/// <summary>
+		/// Required designer variable.
+		/// </summary>
+		private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && (components != null))
-            {
-                components.Dispose();
+		/// <summary>
+		/// Clean up any resources being used.
+		/// </summary>
+		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+		protected override void Dispose(bool disposing)
+		{
+			if (disposing && (components != null))
+			{
+				components.Dispose();
 
-            }
-            if (_audio != null)
-            {
-                _audio.DetectFrequeniesEnabled = false;
-                _audio.FrequencyDetected -= _audio_FrequencyDetected;
-                _audio = null;
-            }
-            if (audioDetectionSettings != null && disposing)
-                audioDetectionSettings.Dispose();
+			}
+			if (_audio != null)
+			{
+				_audio.DetectFrequeniesEnabled = false;
+				_audio.FrequencyDetected -= _audio_FrequencyDetected;
+				_audio = null;
+			}
+			if (audioDetectionSettings != null && disposing)
+				audioDetectionSettings.Dispose();
 
-            base.Dispose(disposing);
-        }
+			base.Dispose(disposing);
+		}
 
-        #region Windows Form Designer generated code
+		#region Windows Form Designer generated code
 
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent()
-        {
+		/// <summary>
+		/// Required method for Designer support - do not modify
+		/// the contents of this method with the code editor.
+		/// </summary>
+		private void InitializeComponent()
+		{
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MarkManager));
 			this.groupBoxMarkCollections = new System.Windows.Forms.GroupBox();
@@ -81,7 +81,7 @@
 			this.buttonCancel = new System.Windows.Forms.Button();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.groupBoxPlayback = new System.Windows.Forms.GroupBox();
-			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.groupBoxFreqDetection = new System.Windows.Forms.GroupBox();
 			this.btnCreateCollections = new System.Windows.Forms.Button();
 			this.label9 = new System.Windows.Forms.Label();
 			this.label8 = new System.Windows.Forms.Label();
@@ -89,7 +89,7 @@
 			this.radioAll = new System.Windows.Forms.RadioButton();
 			this.btnAutoDetectionSettings = new System.Windows.Forms.Button();
 			this.ChkAutoTapper = new System.Windows.Forms.CheckBox();
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.groupBoxAudioFilter = new System.Windows.Forms.GroupBox();
 			this.numHighPass = new System.Windows.Forms.NumericUpDown();
 			this.numLowPass = new System.Windows.Forms.NumericUpDown();
 			this.chkHighPass = new System.Windows.Forms.CheckBox();
@@ -122,8 +122,8 @@
 			this.groupBoxSelectedMarks.SuspendLayout();
 			this.groupBoxMarks.SuspendLayout();
 			this.groupBoxPlayback.SuspendLayout();
-			this.groupBox2.SuspendLayout();
-			this.groupBox1.SuspendLayout();
+			this.groupBoxFreqDetection.SuspendLayout();
+			this.groupBoxAudioFilter.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numHighPass)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numLowPass)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarPlayBack)).BeginInit();
@@ -137,18 +137,21 @@
 			this.groupBoxMarkCollections.Controls.Add(this.buttonRemoveCollection);
 			this.groupBoxMarkCollections.Controls.Add(this.buttonAddCollection);
 			this.groupBoxMarkCollections.Controls.Add(this.listViewMarkCollections);
-			this.groupBoxMarkCollections.Location = new System.Drawing.Point(12, 12);
+			this.groupBoxMarkCollections.Location = new System.Drawing.Point(18, 18);
+			this.groupBoxMarkCollections.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.groupBoxMarkCollections.Name = "groupBoxMarkCollections";
-			this.groupBoxMarkCollections.Size = new System.Drawing.Size(238, 328);
+			this.groupBoxMarkCollections.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.groupBoxMarkCollections.Size = new System.Drawing.Size(357, 505);
 			this.groupBoxMarkCollections.TabIndex = 1;
 			this.groupBoxMarkCollections.TabStop = false;
 			this.groupBoxMarkCollections.Text = "Mark Collections";
 			// 
 			// buttonExportBeatMarks
 			// 
-			this.buttonExportBeatMarks.Location = new System.Drawing.Point(6, 292);
+			this.buttonExportBeatMarks.Location = new System.Drawing.Point(9, 449);
+			this.buttonExportBeatMarks.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.buttonExportBeatMarks.Name = "buttonExportBeatMarks";
-			this.buttonExportBeatMarks.Size = new System.Drawing.Size(226, 23);
+			this.buttonExportBeatMarks.Size = new System.Drawing.Size(339, 35);
 			this.buttonExportBeatMarks.TabIndex = 11;
 			this.buttonExportBeatMarks.Text = "Export Beat Marks";
 			this.buttonExportBeatMarks.UseVisualStyleBackColor = true;
@@ -156,9 +159,10 @@
 			// 
 			// buttonImportAudacity
 			// 
-			this.buttonImportAudacity.Location = new System.Drawing.Point(6, 263);
+			this.buttonImportAudacity.Location = new System.Drawing.Point(9, 405);
+			this.buttonImportAudacity.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.buttonImportAudacity.Name = "buttonImportAudacity";
-			this.buttonImportAudacity.Size = new System.Drawing.Size(226, 23);
+			this.buttonImportAudacity.Size = new System.Drawing.Size(339, 35);
 			this.buttonImportAudacity.TabIndex = 10;
 			this.buttonImportAudacity.Text = "Import Beat Marks";
 			this.buttonImportAudacity.UseVisualStyleBackColor = true;
@@ -167,9 +171,10 @@
 			// buttonRemoveCollection
 			// 
 			this.buttonRemoveCollection.Enabled = false;
-			this.buttonRemoveCollection.Location = new System.Drawing.Point(122, 232);
+			this.buttonRemoveCollection.Location = new System.Drawing.Point(183, 357);
+			this.buttonRemoveCollection.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.buttonRemoveCollection.Name = "buttonRemoveCollection";
-			this.buttonRemoveCollection.Size = new System.Drawing.Size(110, 25);
+			this.buttonRemoveCollection.Size = new System.Drawing.Size(165, 38);
 			this.buttonRemoveCollection.TabIndex = 3;
 			this.buttonRemoveCollection.Text = "Remove Collection";
 			this.buttonRemoveCollection.UseVisualStyleBackColor = true;
@@ -177,9 +182,10 @@
 			// 
 			// buttonAddCollection
 			// 
-			this.buttonAddCollection.Location = new System.Drawing.Point(6, 232);
+			this.buttonAddCollection.Location = new System.Drawing.Point(9, 357);
+			this.buttonAddCollection.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.buttonAddCollection.Name = "buttonAddCollection";
-			this.buttonAddCollection.Size = new System.Drawing.Size(110, 25);
+			this.buttonAddCollection.Size = new System.Drawing.Size(165, 38);
 			this.buttonAddCollection.TabIndex = 2;
 			this.buttonAddCollection.Text = "Add Collection";
 			this.buttonAddCollection.UseVisualStyleBackColor = true;
@@ -188,16 +194,17 @@
 			// listViewMarkCollections
 			// 
 			this.listViewMarkCollections.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1,
-            this.columnHeader3,
-            this.columnHeader2});
+			this.columnHeader1,
+			this.columnHeader3,
+			this.columnHeader2});
 			this.listViewMarkCollections.FullRowSelect = true;
 			this.listViewMarkCollections.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
 			this.listViewMarkCollections.HideSelection = false;
-			this.listViewMarkCollections.Location = new System.Drawing.Point(6, 19);
+			this.listViewMarkCollections.Location = new System.Drawing.Point(9, 29);
+			this.listViewMarkCollections.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.listViewMarkCollections.MultiSelect = false;
 			this.listViewMarkCollections.Name = "listViewMarkCollections";
-			this.listViewMarkCollections.Size = new System.Drawing.Size(226, 207);
+			this.listViewMarkCollections.Size = new System.Drawing.Size(337, 316);
 			this.listViewMarkCollections.TabIndex = 1;
 			this.listViewMarkCollections.UseCompatibleStateImageBehavior = false;
 			this.listViewMarkCollections.View = System.Windows.Forms.View.Details;
@@ -222,9 +229,10 @@
 			// 
 			this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOK.Location = new System.Drawing.Point(563, 593);
+			this.buttonOK.Location = new System.Drawing.Point(844, 912);
+			this.buttonOK.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.buttonOK.Name = "buttonOK";
-			this.buttonOK.Size = new System.Drawing.Size(80, 25);
+			this.buttonOK.Size = new System.Drawing.Size(120, 38);
 			this.buttonOK.TabIndex = 2;
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
@@ -234,9 +242,11 @@
 			this.groupBoxSelectedMarkCollection.Controls.Add(this.groupBoxDetails);
 			this.groupBoxSelectedMarkCollection.Controls.Add(this.groupBoxOperations);
 			this.groupBoxSelectedMarkCollection.Controls.Add(this.groupBoxMarks);
-			this.groupBoxSelectedMarkCollection.Location = new System.Drawing.Point(256, 12);
+			this.groupBoxSelectedMarkCollection.Location = new System.Drawing.Point(384, 18);
+			this.groupBoxSelectedMarkCollection.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.groupBoxSelectedMarkCollection.Name = "groupBoxSelectedMarkCollection";
-			this.groupBoxSelectedMarkCollection.Size = new System.Drawing.Size(473, 329);
+			this.groupBoxSelectedMarkCollection.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.groupBoxSelectedMarkCollection.Size = new System.Drawing.Size(710, 506);
 			this.groupBoxSelectedMarkCollection.TabIndex = 3;
 			this.groupBoxSelectedMarkCollection.TabStop = false;
 			this.groupBoxSelectedMarkCollection.Text = "Selected Collection";
@@ -250,9 +260,11 @@
 			this.groupBoxDetails.Controls.Add(this.numericUpDownWeight);
 			this.groupBoxDetails.Controls.Add(this.textBoxCollectionName);
 			this.groupBoxDetails.Controls.Add(this.label1);
-			this.groupBoxDetails.Location = new System.Drawing.Point(6, 19);
+			this.groupBoxDetails.Location = new System.Drawing.Point(9, 29);
+			this.groupBoxDetails.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.groupBoxDetails.Name = "groupBoxDetails";
-			this.groupBoxDetails.Size = new System.Drawing.Size(154, 153);
+			this.groupBoxDetails.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.groupBoxDetails.Size = new System.Drawing.Size(231, 235);
 			this.groupBoxDetails.TabIndex = 9;
 			this.groupBoxDetails.TabStop = false;
 			this.groupBoxDetails.Text = "Details";
@@ -260,9 +272,10 @@
 			// checkBoxEnabled
 			// 
 			this.checkBoxEnabled.AutoSize = true;
-			this.checkBoxEnabled.Location = new System.Drawing.Point(17, 27);
+			this.checkBoxEnabled.Location = new System.Drawing.Point(26, 42);
+			this.checkBoxEnabled.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBoxEnabled.Name = "checkBoxEnabled";
-			this.checkBoxEnabled.Size = new System.Drawing.Size(65, 17);
+			this.checkBoxEnabled.Size = new System.Drawing.Size(94, 24);
 			this.checkBoxEnabled.TabIndex = 14;
 			this.checkBoxEnabled.Text = "Enabled";
 			this.checkBoxEnabled.UseVisualStyleBackColor = true;
@@ -271,67 +284,73 @@
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(18, 114);
+			this.label3.Location = new System.Drawing.Point(27, 175);
+			this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(34, 13);
+			this.label3.Size = new System.Drawing.Size(50, 20);
 			this.label3.TabIndex = 13;
 			this.label3.Text = "Color:";
 			// 
 			// panelColor
 			// 
 			this.panelColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.panelColor.Location = new System.Drawing.Point(58, 109);
+			this.panelColor.Location = new System.Drawing.Point(87, 168);
+			this.panelColor.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.panelColor.Name = "panelColor";
-			this.panelColor.Size = new System.Drawing.Size(60, 25);
+			this.panelColor.Size = new System.Drawing.Size(89, 37);
 			this.panelColor.TabIndex = 12;
 			this.panelColor.Click += new System.EventHandler(this.panelColor_Click);
 			// 
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(8, 85);
+			this.label2.Location = new System.Drawing.Point(12, 131);
+			this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(44, 13);
+			this.label2.Size = new System.Drawing.Size(63, 20);
 			this.label2.TabIndex = 11;
 			this.label2.Text = "Weight:";
 			// 
 			// numericUpDownWeight
 			// 
-			this.numericUpDownWeight.Location = new System.Drawing.Point(58, 83);
+			this.numericUpDownWeight.Location = new System.Drawing.Point(87, 128);
+			this.numericUpDownWeight.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.numericUpDownWeight.Maximum = new decimal(new int[] {
-            20,
-            0,
-            0,
-            0});
+			20,
+			0,
+			0,
+			0});
 			this.numericUpDownWeight.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			this.numericUpDownWeight.Name = "numericUpDownWeight";
-			this.numericUpDownWeight.Size = new System.Drawing.Size(46, 20);
+			this.numericUpDownWeight.Size = new System.Drawing.Size(69, 26);
 			this.numericUpDownWeight.TabIndex = 10;
 			this.numericUpDownWeight.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			this.numericUpDownWeight.ValueChanged += new System.EventHandler(this.numericUpDownWeight_ValueChanged);
 			// 
 			// textBoxCollectionName
 			// 
-			this.textBoxCollectionName.Location = new System.Drawing.Point(58, 57);
+			this.textBoxCollectionName.Location = new System.Drawing.Point(87, 88);
+			this.textBoxCollectionName.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.textBoxCollectionName.Name = "textBoxCollectionName";
-			this.textBoxCollectionName.Size = new System.Drawing.Size(87, 20);
+			this.textBoxCollectionName.Size = new System.Drawing.Size(128, 26);
 			this.textBoxCollectionName.TabIndex = 9;
 			this.textBoxCollectionName.TextChanged += new System.EventHandler(this.textBoxCollectionName_TextChanged);
 			// 
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(14, 60);
+			this.label1.Location = new System.Drawing.Point(21, 92);
+			this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(38, 13);
+			this.label1.Size = new System.Drawing.Size(55, 20);
 			this.label1.TabIndex = 8;
 			this.label1.Text = "Name:";
 			// 
@@ -345,9 +364,11 @@
 			this.groupBoxOperations.Controls.Add(this.buttonOffsetMarks);
 			this.groupBoxOperations.Controls.Add(this.buttonGenerateSubmarks);
 			this.groupBoxOperations.Controls.Add(this.buttonEvenlySpaceMarks);
-			this.groupBoxOperations.Location = new System.Drawing.Point(301, 19);
+			this.groupBoxOperations.Location = new System.Drawing.Point(452, 29);
+			this.groupBoxOperations.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.groupBoxOperations.Name = "groupBoxOperations";
-			this.groupBoxOperations.Size = new System.Drawing.Size(164, 296);
+			this.groupBoxOperations.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.groupBoxOperations.Size = new System.Drawing.Size(246, 455);
 			this.groupBoxOperations.TabIndex = 8;
 			this.groupBoxOperations.TabStop = false;
 			this.groupBoxOperations.Text = "Operations";
@@ -358,18 +379,21 @@
 			this.groupBoxSelectedMarks.Controls.Add(this.buttonDecreaseSelectedMarks);
 			this.groupBoxSelectedMarks.Controls.Add(this.label7);
 			this.groupBoxSelectedMarks.Controls.Add(this.textBoxTimeIncrement);
-			this.groupBoxSelectedMarks.Location = new System.Drawing.Point(8, 234);
+			this.groupBoxSelectedMarks.Location = new System.Drawing.Point(12, 360);
+			this.groupBoxSelectedMarks.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.groupBoxSelectedMarks.Name = "groupBoxSelectedMarks";
-			this.groupBoxSelectedMarks.Size = new System.Drawing.Size(151, 50);
+			this.groupBoxSelectedMarks.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.groupBoxSelectedMarks.Size = new System.Drawing.Size(226, 77);
 			this.groupBoxSelectedMarks.TabIndex = 10;
 			this.groupBoxSelectedMarks.TabStop = false;
 			this.groupBoxSelectedMarks.Text = "SelectedMarks";
 			// 
 			// buttonIncreaseSelectedMarks
 			// 
-			this.buttonIncreaseSelectedMarks.Location = new System.Drawing.Point(81, 13);
+			this.buttonIncreaseSelectedMarks.Location = new System.Drawing.Point(122, 20);
+			this.buttonIncreaseSelectedMarks.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.buttonIncreaseSelectedMarks.Name = "buttonIncreaseSelectedMarks";
-			this.buttonIncreaseSelectedMarks.Size = new System.Drawing.Size(32, 32);
+			this.buttonIncreaseSelectedMarks.Size = new System.Drawing.Size(48, 49);
 			this.buttonIncreaseSelectedMarks.TabIndex = 15;
 			this.buttonIncreaseSelectedMarks.Text = "+";
 			this.buttonIncreaseSelectedMarks.UseVisualStyleBackColor = true;
@@ -377,9 +401,10 @@
 			// 
 			// buttonDecreaseSelectedMarks
 			// 
-			this.buttonDecreaseSelectedMarks.Location = new System.Drawing.Point(116, 13);
+			this.buttonDecreaseSelectedMarks.Location = new System.Drawing.Point(174, 20);
+			this.buttonDecreaseSelectedMarks.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.buttonDecreaseSelectedMarks.Name = "buttonDecreaseSelectedMarks";
-			this.buttonDecreaseSelectedMarks.Size = new System.Drawing.Size(32, 32);
+			this.buttonDecreaseSelectedMarks.Size = new System.Drawing.Size(48, 49);
 			this.buttonDecreaseSelectedMarks.TabIndex = 14;
 			this.buttonDecreaseSelectedMarks.Text = "-";
 			this.buttonDecreaseSelectedMarks.UseVisualStyleBackColor = true;
@@ -388,25 +413,28 @@
 			// label7
 			// 
 			this.label7.AutoSize = true;
-			this.label7.Location = new System.Drawing.Point(59, 32);
+			this.label7.Location = new System.Drawing.Point(88, 49);
+			this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(20, 13);
+			this.label7.Size = new System.Drawing.Size(30, 20);
 			this.label7.TabIndex = 13;
 			this.label7.Text = "ms";
 			// 
 			// textBoxTimeIncrement
 			// 
-			this.textBoxTimeIncrement.Location = new System.Drawing.Point(19, 25);
+			this.textBoxTimeIncrement.Location = new System.Drawing.Point(28, 38);
+			this.textBoxTimeIncrement.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.textBoxTimeIncrement.Name = "textBoxTimeIncrement";
-			this.textBoxTimeIncrement.Size = new System.Drawing.Size(39, 20);
+			this.textBoxTimeIncrement.Size = new System.Drawing.Size(56, 26);
 			this.textBoxTimeIncrement.TabIndex = 10;
 			this.textBoxTimeIncrement.Text = "10";
 			// 
 			// generateGrid
 			// 
-			this.generateGrid.Location = new System.Drawing.Point(8, 203);
+			this.generateGrid.Location = new System.Drawing.Point(12, 312);
+			this.generateGrid.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.generateGrid.Name = "generateGrid";
-			this.generateGrid.Size = new System.Drawing.Size(151, 25);
+			this.generateGrid.Size = new System.Drawing.Size(226, 38);
 			this.generateGrid.TabIndex = 12;
 			this.generateGrid.Text = "Generate Grid";
 			this.toolTip1.SetToolTip(this.generateGrid, "Generate a \'grid\' of equally space marks across the sequence.");
@@ -415,9 +443,10 @@
 			// 
 			// buttonGenerateBeatMarks
 			// 
-			this.buttonGenerateBeatMarks.Location = new System.Drawing.Point(7, 172);
+			this.buttonGenerateBeatMarks.Location = new System.Drawing.Point(10, 265);
+			this.buttonGenerateBeatMarks.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.buttonGenerateBeatMarks.Name = "buttonGenerateBeatMarks";
-			this.buttonGenerateBeatMarks.Size = new System.Drawing.Size(151, 25);
+			this.buttonGenerateBeatMarks.Size = new System.Drawing.Size(226, 38);
 			this.buttonGenerateBeatMarks.TabIndex = 11;
 			this.buttonGenerateBeatMarks.Text = "Generate beat marks";
 			this.toolTip1.SetToolTip(this.buttonGenerateBeatMarks, "Generate more marks based on the frequency of the selected marks.");
@@ -426,9 +455,10 @@
 			// 
 			// buttonCopyAndOffsetMarks
 			// 
-			this.buttonCopyAndOffsetMarks.Location = new System.Drawing.Point(7, 141);
+			this.buttonCopyAndOffsetMarks.Location = new System.Drawing.Point(10, 217);
+			this.buttonCopyAndOffsetMarks.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.buttonCopyAndOffsetMarks.Name = "buttonCopyAndOffsetMarks";
-			this.buttonCopyAndOffsetMarks.Size = new System.Drawing.Size(151, 25);
+			this.buttonCopyAndOffsetMarks.Size = new System.Drawing.Size(226, 38);
 			this.buttonCopyAndOffsetMarks.TabIndex = 10;
 			this.buttonCopyAndOffsetMarks.Text = "Copy && offset marks";
 			this.toolTip1.SetToolTip(this.buttonCopyAndOffsetMarks, "Duplicate the selected marks, offsetting the new ones by a fixed amount of time.");
@@ -437,21 +467,23 @@
 			// 
 			// buttonPasteEffectsToMarks
 			// 
-			this.buttonPasteEffectsToMarks.Location = new System.Drawing.Point(7, 112);
+			this.buttonPasteEffectsToMarks.Location = new System.Drawing.Point(10, 172);
+			this.buttonPasteEffectsToMarks.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.buttonPasteEffectsToMarks.Name = "buttonPasteEffectsToMarks";
-			this.buttonPasteEffectsToMarks.Size = new System.Drawing.Size(151, 25);
+			this.buttonPasteEffectsToMarks.Size = new System.Drawing.Size(226, 38);
 			this.buttonPasteEffectsToMarks.TabIndex = 9;
 			this.buttonPasteEffectsToMarks.Text = "Paste effect to marks";
 			this.toolTip1.SetToolTip(this.buttonPasteEffectsToMarks, "Place a copy of the effect currently in the paste buffer to begin at each selecte" +
-        "d mark.");
+		"d mark.");
 			this.buttonPasteEffectsToMarks.UseVisualStyleBackColor = true;
 			this.buttonPasteEffectsToMarks.Click += new System.EventHandler(this.buttonPasteEffectsToMarks_Click);
 			// 
 			// buttonOffsetMarks
 			// 
-			this.buttonOffsetMarks.Location = new System.Drawing.Point(7, 19);
+			this.buttonOffsetMarks.Location = new System.Drawing.Point(10, 29);
+			this.buttonOffsetMarks.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.buttonOffsetMarks.Name = "buttonOffsetMarks";
-			this.buttonOffsetMarks.Size = new System.Drawing.Size(151, 25);
+			this.buttonOffsetMarks.Size = new System.Drawing.Size(226, 38);
 			this.buttonOffsetMarks.TabIndex = 6;
 			this.buttonOffsetMarks.Text = "Offset marks";
 			this.toolTip1.SetToolTip(this.buttonOffsetMarks, "Adjust selected marks left or right a fixed amount of time.");
@@ -460,9 +492,10 @@
 			// 
 			// buttonGenerateSubmarks
 			// 
-			this.buttonGenerateSubmarks.Location = new System.Drawing.Point(7, 81);
+			this.buttonGenerateSubmarks.Location = new System.Drawing.Point(10, 125);
+			this.buttonGenerateSubmarks.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.buttonGenerateSubmarks.Name = "buttonGenerateSubmarks";
-			this.buttonGenerateSubmarks.Size = new System.Drawing.Size(151, 25);
+			this.buttonGenerateSubmarks.Size = new System.Drawing.Size(226, 38);
 			this.buttonGenerateSubmarks.TabIndex = 8;
 			this.buttonGenerateSubmarks.Text = "Generate submarks";
 			this.toolTip1.SetToolTip(this.buttonGenerateSubmarks, "Create new marks by subdividing regions of other marks (select at least 2).");
@@ -471,9 +504,10 @@
 			// 
 			// buttonEvenlySpaceMarks
 			// 
-			this.buttonEvenlySpaceMarks.Location = new System.Drawing.Point(7, 50);
+			this.buttonEvenlySpaceMarks.Location = new System.Drawing.Point(10, 77);
+			this.buttonEvenlySpaceMarks.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.buttonEvenlySpaceMarks.Name = "buttonEvenlySpaceMarks";
-			this.buttonEvenlySpaceMarks.Size = new System.Drawing.Size(151, 25);
+			this.buttonEvenlySpaceMarks.Size = new System.Drawing.Size(226, 38);
 			this.buttonEvenlySpaceMarks.TabIndex = 7;
 			this.buttonEvenlySpaceMarks.Text = "Evenly space marks";
 			this.toolTip1.SetToolTip(this.buttonEvenlySpaceMarks, "Evenly space out the selected marks (choose at least 3 marks).");
@@ -486,9 +520,11 @@
 			this.groupBoxMarks.Controls.Add(this.buttonAddOrUpdateMark);
 			this.groupBoxMarks.Controls.Add(this.textBoxTime);
 			this.groupBoxMarks.Controls.Add(this.buttonSelectAllMarks);
-			this.groupBoxMarks.Location = new System.Drawing.Point(166, 19);
+			this.groupBoxMarks.Location = new System.Drawing.Point(249, 29);
+			this.groupBoxMarks.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.groupBoxMarks.Name = "groupBoxMarks";
-			this.groupBoxMarks.Size = new System.Drawing.Size(129, 296);
+			this.groupBoxMarks.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.groupBoxMarks.Size = new System.Drawing.Size(194, 455);
 			this.groupBoxMarks.TabIndex = 1;
 			this.groupBoxMarks.TabStop = false;
 			this.groupBoxMarks.Text = "Marks";
@@ -496,12 +532,13 @@
 			// listViewMarks
 			// 
 			this.listViewMarks.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.Times});
+			this.Times});
 			this.listViewMarks.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.listViewMarks.HideSelection = false;
-			this.listViewMarks.Location = new System.Drawing.Point(6, 19);
+			this.listViewMarks.Location = new System.Drawing.Point(9, 29);
+			this.listViewMarks.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.listViewMarks.Name = "listViewMarks";
-			this.listViewMarks.Size = new System.Drawing.Size(116, 203);
+			this.listViewMarks.Size = new System.Drawing.Size(172, 310);
 			this.listViewMarks.TabIndex = 8;
 			this.listViewMarks.UseCompatibleStateImageBehavior = false;
 			this.listViewMarks.View = System.Windows.Forms.View.Details;
@@ -514,9 +551,10 @@
 			// 
 			// buttonAddOrUpdateMark
 			// 
-			this.buttonAddOrUpdateMark.Location = new System.Drawing.Point(72, 228);
+			this.buttonAddOrUpdateMark.Location = new System.Drawing.Point(108, 351);
+			this.buttonAddOrUpdateMark.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.buttonAddOrUpdateMark.Name = "buttonAddOrUpdateMark";
-			this.buttonAddOrUpdateMark.Size = new System.Drawing.Size(50, 25);
+			this.buttonAddOrUpdateMark.Size = new System.Drawing.Size(75, 38);
 			this.buttonAddOrUpdateMark.TabIndex = 7;
 			this.buttonAddOrUpdateMark.Text = "Add";
 			this.buttonAddOrUpdateMark.UseVisualStyleBackColor = true;
@@ -524,16 +562,18 @@
 			// 
 			// textBoxTime
 			// 
-			this.textBoxTime.Location = new System.Drawing.Point(6, 231);
+			this.textBoxTime.Location = new System.Drawing.Point(9, 355);
+			this.textBoxTime.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.textBoxTime.Name = "textBoxTime";
-			this.textBoxTime.Size = new System.Drawing.Size(60, 20);
+			this.textBoxTime.Size = new System.Drawing.Size(88, 26);
 			this.textBoxTime.TabIndex = 6;
 			// 
 			// buttonSelectAllMarks
 			// 
-			this.buttonSelectAllMarks.Location = new System.Drawing.Point(6, 259);
+			this.buttonSelectAllMarks.Location = new System.Drawing.Point(9, 398);
+			this.buttonSelectAllMarks.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.buttonSelectAllMarks.Name = "buttonSelectAllMarks";
-			this.buttonSelectAllMarks.Size = new System.Drawing.Size(116, 25);
+			this.buttonSelectAllMarks.Size = new System.Drawing.Size(174, 38);
 			this.buttonSelectAllMarks.TabIndex = 5;
 			this.buttonSelectAllMarks.Text = "Select All";
 			this.buttonSelectAllMarks.UseVisualStyleBackColor = true;
@@ -543,17 +583,18 @@
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(649, 593);
+			this.buttonCancel.Location = new System.Drawing.Point(974, 912);
+			this.buttonCancel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.buttonCancel.Name = "buttonCancel";
-			this.buttonCancel.Size = new System.Drawing.Size(80, 25);
+			this.buttonCancel.Size = new System.Drawing.Size(120, 38);
 			this.buttonCancel.TabIndex = 4;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
 			// 
 			// groupBoxPlayback
 			// 
-			this.groupBoxPlayback.Controls.Add(this.groupBox2);
-			this.groupBoxPlayback.Controls.Add(this.groupBox1);
+			this.groupBoxPlayback.Controls.Add(this.groupBoxFreqDetection);
+			this.groupBoxPlayback.Controls.Add(this.groupBoxAudioFilter);
 			this.groupBoxPlayback.Controls.Add(this.label6);
 			this.groupBoxPlayback.Controls.Add(this.trackBarPlayBack);
 			this.groupBoxPlayback.Controls.Add(this.textBoxTimingSpeed);
@@ -568,34 +609,39 @@
 			this.groupBoxPlayback.Controls.Add(this.textBoxCurrentMark);
 			this.groupBoxPlayback.Controls.Add(this.buttonStop);
 			this.groupBoxPlayback.Controls.Add(this.groupBoxMode);
-			this.groupBoxPlayback.Location = new System.Drawing.Point(12, 346);
+			this.groupBoxPlayback.Location = new System.Drawing.Point(18, 532);
+			this.groupBoxPlayback.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.groupBoxPlayback.Name = "groupBoxPlayback";
-			this.groupBoxPlayback.Size = new System.Drawing.Size(717, 229);
+			this.groupBoxPlayback.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.groupBoxPlayback.Size = new System.Drawing.Size(1076, 352);
 			this.groupBoxPlayback.TabIndex = 5;
 			this.groupBoxPlayback.TabStop = false;
 			this.groupBoxPlayback.Text = "Playback";
 			// 
-			// groupBox2
+			// groupBoxFreqDetection
 			// 
-			this.groupBox2.Controls.Add(this.btnCreateCollections);
-			this.groupBox2.Controls.Add(this.label9);
-			this.groupBox2.Controls.Add(this.label8);
-			this.groupBox2.Controls.Add(this.radioSelected);
-			this.groupBox2.Controls.Add(this.radioAll);
-			this.groupBox2.Controls.Add(this.btnAutoDetectionSettings);
-			this.groupBox2.Controls.Add(this.ChkAutoTapper);
-			this.groupBox2.Location = new System.Drawing.Point(298, 101);
-			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(171, 118);
-			this.groupBox2.TabIndex = 19;
-			this.groupBox2.TabStop = false;
-			this.groupBox2.Text = "Automatic Frequency Detection";
+			this.groupBoxFreqDetection.Controls.Add(this.btnCreateCollections);
+			this.groupBoxFreqDetection.Controls.Add(this.label9);
+			this.groupBoxFreqDetection.Controls.Add(this.label8);
+			this.groupBoxFreqDetection.Controls.Add(this.radioSelected);
+			this.groupBoxFreqDetection.Controls.Add(this.radioAll);
+			this.groupBoxFreqDetection.Controls.Add(this.btnAutoDetectionSettings);
+			this.groupBoxFreqDetection.Controls.Add(this.ChkAutoTapper);
+			this.groupBoxFreqDetection.Location = new System.Drawing.Point(447, 155);
+			this.groupBoxFreqDetection.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.groupBoxFreqDetection.Name = "groupBoxFreqDetection";
+			this.groupBoxFreqDetection.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.groupBoxFreqDetection.Size = new System.Drawing.Size(256, 182);
+			this.groupBoxFreqDetection.TabIndex = 19;
+			this.groupBoxFreqDetection.TabStop = false;
+			this.groupBoxFreqDetection.Text = "Automatic Frequency Detection";
 			// 
 			// btnCreateCollections
 			// 
-			this.btnCreateCollections.Location = new System.Drawing.Point(90, 89);
+			this.btnCreateCollections.Location = new System.Drawing.Point(135, 137);
+			this.btnCreateCollections.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.btnCreateCollections.Name = "btnCreateCollections";
-			this.btnCreateCollections.Size = new System.Drawing.Size(75, 23);
+			this.btnCreateCollections.Size = new System.Drawing.Size(112, 35);
 			this.btnCreateCollections.TabIndex = 23;
 			this.btnCreateCollections.Text = "Create";
 			this.btnCreateCollections.UseVisualStyleBackColor = true;
@@ -604,27 +650,30 @@
 			// label9
 			// 
 			this.label9.AutoSize = true;
-			this.label9.Location = new System.Drawing.Point(7, 52);
+			this.label9.Location = new System.Drawing.Point(10, 80);
+			this.label9.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label9.Name = "label9";
-			this.label9.Size = new System.Drawing.Size(119, 13);
+			this.label9.Size = new System.Drawing.Size(180, 20);
 			this.label9.TabIndex = 22;
 			this.label9.Text = "Create Collection(s) For:";
 			// 
 			// label8
 			// 
 			this.label8.AutoSize = true;
-			this.label8.Location = new System.Drawing.Point(9, 39);
+			this.label8.Location = new System.Drawing.Point(14, 60);
+			this.label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label8.Name = "label8";
-			this.label8.Size = new System.Drawing.Size(19, 13);
+			this.label8.Size = new System.Drawing.Size(25, 20);
 			this.label8.TabIndex = 18;
-			this.label8.Text = "    ";
+			this.label8.Text = "	";
 			// 
 			// radioSelected
 			// 
 			this.radioSelected.AutoSize = true;
-			this.radioSelected.Location = new System.Drawing.Point(52, 72);
+			this.radioSelected.Location = new System.Drawing.Point(78, 111);
+			this.radioSelected.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.radioSelected.Name = "radioSelected";
-			this.radioSelected.Size = new System.Drawing.Size(67, 17);
+			this.radioSelected.Size = new System.Drawing.Size(97, 24);
 			this.radioSelected.TabIndex = 21;
 			this.radioSelected.Text = "Selected";
 			this.radioSelected.UseVisualStyleBackColor = true;
@@ -633,9 +682,10 @@
 			// 
 			this.radioAll.AutoSize = true;
 			this.radioAll.Checked = true;
-			this.radioAll.Location = new System.Drawing.Point(10, 71);
+			this.radioAll.Location = new System.Drawing.Point(15, 109);
+			this.radioAll.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.radioAll.Name = "radioAll";
-			this.radioAll.Size = new System.Drawing.Size(36, 17);
+			this.radioAll.Size = new System.Drawing.Size(51, 24);
 			this.radioAll.TabIndex = 20;
 			this.radioAll.TabStop = true;
 			this.radioAll.Text = "All";
@@ -643,9 +693,10 @@
 			// 
 			// btnAutoDetectionSettings
 			// 
-			this.btnAutoDetectionSettings.Location = new System.Drawing.Point(90, 20);
+			this.btnAutoDetectionSettings.Location = new System.Drawing.Point(135, 31);
+			this.btnAutoDetectionSettings.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.btnAutoDetectionSettings.Name = "btnAutoDetectionSettings";
-			this.btnAutoDetectionSettings.Size = new System.Drawing.Size(75, 23);
+			this.btnAutoDetectionSettings.Size = new System.Drawing.Size(112, 35);
 			this.btnAutoDetectionSettings.TabIndex = 18;
 			this.btnAutoDetectionSettings.Text = "Settings";
 			this.btnAutoDetectionSettings.UseVisualStyleBackColor = true;
@@ -654,74 +705,80 @@
 			// ChkAutoTapper
 			// 
 			this.ChkAutoTapper.AutoSize = true;
-			this.ChkAutoTapper.Location = new System.Drawing.Point(10, 26);
+			this.ChkAutoTapper.Location = new System.Drawing.Point(15, 40);
+			this.ChkAutoTapper.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.ChkAutoTapper.Name = "ChkAutoTapper";
-			this.ChkAutoTapper.Size = new System.Drawing.Size(65, 17);
+			this.ChkAutoTapper.Size = new System.Drawing.Size(94, 24);
 			this.ChkAutoTapper.TabIndex = 17;
 			this.ChkAutoTapper.Text = "Enabled";
 			this.ChkAutoTapper.UseVisualStyleBackColor = true;
 			this.ChkAutoTapper.CheckedChanged += new System.EventHandler(this.ChkAutoTapper_CheckedChanged);
 			// 
-			// groupBox1
+			// groupBoxAudioFilter
 			// 
-			this.groupBox1.Controls.Add(this.numHighPass);
-			this.groupBox1.Controls.Add(this.numLowPass);
-			this.groupBox1.Controls.Add(this.chkHighPass);
-			this.groupBox1.Controls.Add(this.chkLowPass);
-			this.groupBox1.Location = new System.Drawing.Point(475, 101);
-			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(229, 75);
-			this.groupBox1.TabIndex = 16;
-			this.groupBox1.TabStop = false;
-			this.groupBox1.Text = "Audio Filter";
+			this.groupBoxAudioFilter.Controls.Add(this.numHighPass);
+			this.groupBoxAudioFilter.Controls.Add(this.numLowPass);
+			this.groupBoxAudioFilter.Controls.Add(this.chkHighPass);
+			this.groupBoxAudioFilter.Controls.Add(this.chkLowPass);
+			this.groupBoxAudioFilter.Location = new System.Drawing.Point(712, 155);
+			this.groupBoxAudioFilter.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.groupBoxAudioFilter.Name = "groupBoxAudioFilter";
+			this.groupBoxAudioFilter.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.groupBoxAudioFilter.Size = new System.Drawing.Size(344, 115);
+			this.groupBoxAudioFilter.TabIndex = 16;
+			this.groupBoxAudioFilter.TabStop = false;
+			this.groupBoxAudioFilter.Text = "Audio Filter";
 			// 
 			// numHighPass
 			// 
-			this.numHighPass.Location = new System.Drawing.Point(95, 45);
+			this.numHighPass.Location = new System.Drawing.Point(142, 69);
+			this.numHighPass.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.numHighPass.Maximum = new decimal(new int[] {
-            22000,
-            0,
-            0,
-            0});
+			22000,
+			0,
+			0,
+			0});
 			this.numHighPass.Minimum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
+			10,
+			0,
+			0,
+			0});
 			this.numHighPass.Name = "numHighPass";
-			this.numHighPass.Size = new System.Drawing.Size(120, 20);
+			this.numHighPass.Size = new System.Drawing.Size(180, 26);
 			this.numHighPass.TabIndex = 3;
 			this.numHighPass.Value = new decimal(new int[] {
-            5000,
-            0,
-            0,
-            0});
+			5000,
+			0,
+			0,
+			0});
 			this.numHighPass.ValueChanged += new System.EventHandler(this.numHighPass_ValueChanged);
 			// 
 			// numLowPass
 			// 
-			this.numLowPass.Location = new System.Drawing.Point(95, 19);
+			this.numLowPass.Location = new System.Drawing.Point(142, 29);
+			this.numLowPass.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.numLowPass.Maximum = new decimal(new int[] {
-            22000,
-            0,
-            0,
-            0});
+			22000,
+			0,
+			0,
+			0});
 			this.numLowPass.Name = "numLowPass";
-			this.numLowPass.Size = new System.Drawing.Size(120, 20);
+			this.numLowPass.Size = new System.Drawing.Size(180, 26);
 			this.numLowPass.TabIndex = 2;
 			this.numLowPass.Value = new decimal(new int[] {
-            5000,
-            0,
-            0,
-            0});
+			5000,
+			0,
+			0,
+			0});
 			this.numLowPass.ValueChanged += new System.EventHandler(this.numLowPass_ValueChanged);
 			// 
 			// chkHighPass
 			// 
 			this.chkHighPass.AutoSize = true;
-			this.chkHighPass.Location = new System.Drawing.Point(15, 46);
+			this.chkHighPass.Location = new System.Drawing.Point(22, 71);
+			this.chkHighPass.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.chkHighPass.Name = "chkHighPass";
-			this.chkHighPass.Size = new System.Drawing.Size(74, 17);
+			this.chkHighPass.Size = new System.Drawing.Size(107, 24);
 			this.chkHighPass.TabIndex = 1;
 			this.chkHighPass.Text = "High Pass";
 			this.chkHighPass.UseVisualStyleBackColor = true;
@@ -730,9 +787,10 @@
 			// chkLowPass
 			// 
 			this.chkLowPass.AutoSize = true;
-			this.chkLowPass.Location = new System.Drawing.Point(15, 19);
+			this.chkLowPass.Location = new System.Drawing.Point(22, 29);
+			this.chkLowPass.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.chkLowPass.Name = "chkLowPass";
-			this.chkLowPass.Size = new System.Drawing.Size(72, 17);
+			this.chkLowPass.Size = new System.Drawing.Size(103, 24);
 			this.chkLowPass.TabIndex = 0;
 			this.chkLowPass.Text = "Low Pass";
 			this.chkLowPass.UseVisualStyleBackColor = true;
@@ -741,17 +799,19 @@
 			// label6
 			// 
 			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(221, 30);
+			this.label6.Location = new System.Drawing.Point(332, 46);
+			this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(75, 13);
+			this.label6.Size = new System.Drawing.Size(110, 20);
 			this.label6.TabIndex = 12;
 			this.label6.Text = "Timing Speed:";
 			// 
 			// trackBarPlayBack
 			// 
-			this.trackBarPlayBack.Location = new System.Drawing.Point(6, 65);
+			this.trackBarPlayBack.Location = new System.Drawing.Point(9, 100);
+			this.trackBarPlayBack.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.trackBarPlayBack.Name = "trackBarPlayBack";
-			this.trackBarPlayBack.Size = new System.Drawing.Size(703, 45);
+			this.trackBarPlayBack.Size = new System.Drawing.Size(1054, 69);
 			this.trackBarPlayBack.TabIndex = 5;
 			this.trackBarPlayBack.Scroll += new System.EventHandler(this.trackBarPlayBack_Scroll);
 			this.trackBarPlayBack.MouseDown += new System.Windows.Forms.MouseEventHandler(this.trackBarPlayBack_MouseDown);
@@ -759,25 +819,28 @@
 			// 
 			// textBoxTimingSpeed
 			// 
-			this.textBoxTimingSpeed.Location = new System.Drawing.Point(310, 28);
+			this.textBoxTimingSpeed.Location = new System.Drawing.Point(465, 43);
+			this.textBoxTimingSpeed.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.textBoxTimingSpeed.Name = "textBoxTimingSpeed";
-			this.textBoxTimingSpeed.Size = new System.Drawing.Size(58, 20);
+			this.textBoxTimingSpeed.Size = new System.Drawing.Size(85, 26);
 			this.textBoxTimingSpeed.TabIndex = 9;
 			// 
 			// labelTapperInstructions
 			// 
 			this.labelTapperInstructions.AutoSize = true;
-			this.labelTapperInstructions.Location = new System.Drawing.Point(19, 201);
+			this.labelTapperInstructions.Location = new System.Drawing.Point(28, 309);
+			this.labelTapperInstructions.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.labelTapperInstructions.Name = "labelTapperInstructions";
-			this.labelTapperInstructions.Size = new System.Drawing.Size(248, 13);
+			this.labelTapperInstructions.Size = new System.Drawing.Size(366, 20);
 			this.labelTapperInstructions.TabIndex = 14;
 			this.labelTapperInstructions.Text = "Click the box or use the spacebar to create a mark.";
 			// 
 			// buttonIncreasePlaybackSpeed
 			// 
-			this.buttonIncreasePlaybackSpeed.Location = new System.Drawing.Point(375, 21);
+			this.buttonIncreasePlaybackSpeed.Location = new System.Drawing.Point(562, 32);
+			this.buttonIncreasePlaybackSpeed.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.buttonIncreasePlaybackSpeed.Name = "buttonIncreasePlaybackSpeed";
-			this.buttonIncreasePlaybackSpeed.Size = new System.Drawing.Size(32, 32);
+			this.buttonIncreasePlaybackSpeed.Size = new System.Drawing.Size(48, 49);
 			this.buttonIncreasePlaybackSpeed.TabIndex = 11;
 			this.buttonIncreasePlaybackSpeed.Text = "+";
 			this.buttonIncreasePlaybackSpeed.UseVisualStyleBackColor = true;
@@ -785,35 +848,39 @@
 			// 
 			// textBoxPosition
 			// 
-			this.textBoxPosition.Location = new System.Drawing.Point(597, 28);
+			this.textBoxPosition.Location = new System.Drawing.Point(896, 43);
+			this.textBoxPosition.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.textBoxPosition.Name = "textBoxPosition";
 			this.textBoxPosition.ReadOnly = true;
-			this.textBoxPosition.Size = new System.Drawing.Size(89, 20);
+			this.textBoxPosition.Size = new System.Drawing.Size(132, 26);
 			this.textBoxPosition.TabIndex = 6;
 			// 
 			// label5
 			// 
 			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(507, 31);
+			this.label5.Location = new System.Drawing.Point(760, 48);
+			this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(84, 13);
+			this.label5.Size = new System.Drawing.Size(126, 20);
 			this.label5.TabIndex = 7;
 			this.label5.Text = "Current Position:";
 			// 
 			// panelMarkView
 			// 
 			this.panelMarkView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.panelMarkView.Location = new System.Drawing.Point(110, 116);
+			this.panelMarkView.Location = new System.Drawing.Point(165, 178);
+			this.panelMarkView.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.panelMarkView.Name = "panelMarkView";
-			this.panelMarkView.Size = new System.Drawing.Size(147, 73);
+			this.panelMarkView.Size = new System.Drawing.Size(220, 111);
 			this.panelMarkView.TabIndex = 8;
 			this.panelMarkView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panelMarkView_MouseDown);
 			// 
 			// buttonDecreasePlaySpeed
 			// 
-			this.buttonDecreasePlaySpeed.Location = new System.Drawing.Point(410, 21);
+			this.buttonDecreasePlaySpeed.Location = new System.Drawing.Point(615, 32);
+			this.buttonDecreasePlaySpeed.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.buttonDecreasePlaySpeed.Name = "buttonDecreasePlaySpeed";
-			this.buttonDecreasePlaySpeed.Size = new System.Drawing.Size(32, 32);
+			this.buttonDecreasePlaySpeed.Size = new System.Drawing.Size(48, 49);
 			this.buttonDecreasePlaySpeed.TabIndex = 10;
 			this.buttonDecreasePlaySpeed.Text = "-";
 			this.buttonDecreasePlaySpeed.UseVisualStyleBackColor = true;
@@ -822,17 +889,19 @@
 			// label4
 			// 
 			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(507, 201);
+			this.label4.Location = new System.Drawing.Point(760, 309);
+			this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(73, 13);
+			this.label4.Size = new System.Drawing.Size(107, 20);
 			this.label4.TabIndex = 4;
 			this.label4.Text = "Last Mark Hit:";
 			// 
 			// buttonPlay
 			// 
-			this.buttonPlay.Location = new System.Drawing.Point(20, 23);
+			this.buttonPlay.Location = new System.Drawing.Point(30, 35);
+			this.buttonPlay.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.buttonPlay.Name = "buttonPlay";
-			this.buttonPlay.Size = new System.Drawing.Size(32, 32);
+			this.buttonPlay.Size = new System.Drawing.Size(48, 49);
 			this.buttonPlay.TabIndex = 1;
 			this.buttonPlay.Text = "Play";
 			this.buttonPlay.UseVisualStyleBackColor = true;
@@ -840,17 +909,19 @@
 			// 
 			// textBoxCurrentMark
 			// 
-			this.textBoxCurrentMark.Location = new System.Drawing.Point(586, 198);
+			this.textBoxCurrentMark.Location = new System.Drawing.Point(879, 305);
+			this.textBoxCurrentMark.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.textBoxCurrentMark.Name = "textBoxCurrentMark";
 			this.textBoxCurrentMark.ReadOnly = true;
-			this.textBoxCurrentMark.Size = new System.Drawing.Size(90, 20);
+			this.textBoxCurrentMark.Size = new System.Drawing.Size(133, 26);
 			this.textBoxCurrentMark.TabIndex = 3;
 			// 
 			// buttonStop
 			// 
-			this.buttonStop.Location = new System.Drawing.Point(55, 23);
+			this.buttonStop.Location = new System.Drawing.Point(82, 35);
+			this.buttonStop.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.buttonStop.Name = "buttonStop";
-			this.buttonStop.Size = new System.Drawing.Size(32, 32);
+			this.buttonStop.Size = new System.Drawing.Size(48, 49);
 			this.buttonStop.TabIndex = 2;
 			this.buttonStop.Text = "Stop";
 			this.buttonStop.UseVisualStyleBackColor = true;
@@ -860,9 +931,11 @@
 			// 
 			this.groupBoxMode.Controls.Add(this.radioButtonPlayback);
 			this.groupBoxMode.Controls.Add(this.radioButtonTapper);
-			this.groupBoxMode.Location = new System.Drawing.Point(16, 107);
+			this.groupBoxMode.Location = new System.Drawing.Point(24, 165);
+			this.groupBoxMode.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.groupBoxMode.Name = "groupBoxMode";
-			this.groupBoxMode.Size = new System.Drawing.Size(88, 68);
+			this.groupBoxMode.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.groupBoxMode.Size = new System.Drawing.Size(132, 105);
 			this.groupBoxMode.TabIndex = 0;
 			this.groupBoxMode.TabStop = false;
 			this.groupBoxMode.Text = "Mode";
@@ -871,9 +944,10 @@
 			// 
 			this.radioButtonPlayback.AutoSize = true;
 			this.radioButtonPlayback.Checked = true;
-			this.radioButtonPlayback.Location = new System.Drawing.Point(6, 19);
+			this.radioButtonPlayback.Location = new System.Drawing.Point(9, 29);
+			this.radioButtonPlayback.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.radioButtonPlayback.Name = "radioButtonPlayback";
-			this.radioButtonPlayback.Size = new System.Drawing.Size(69, 17);
+			this.radioButtonPlayback.Size = new System.Drawing.Size(97, 24);
 			this.radioButtonPlayback.TabIndex = 1;
 			this.radioButtonPlayback.TabStop = true;
 			this.radioButtonPlayback.Text = "Playback";
@@ -883,9 +957,10 @@
 			// 
 			this.radioButtonTapper.AutoSize = true;
 			this.radioButtonTapper.Enabled = false;
-			this.radioButtonTapper.Location = new System.Drawing.Point(6, 42);
+			this.radioButtonTapper.Location = new System.Drawing.Point(9, 65);
+			this.radioButtonTapper.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.radioButtonTapper.Name = "radioButtonTapper";
-			this.radioButtonTapper.Size = new System.Drawing.Size(59, 17);
+			this.radioButtonTapper.Size = new System.Drawing.Size(84, 24);
 			this.radioButtonTapper.TabIndex = 0;
 			this.radioButtonTapper.Text = "Tapper";
 			this.radioButtonTapper.UseVisualStyleBackColor = true;
@@ -907,9 +982,9 @@
 			// 
 			// MarkManager
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(734, 626);
+			this.ClientSize = new System.Drawing.Size(1092, 937);
 			this.Controls.Add(this.groupBoxPlayback);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.groupBoxSelectedMarkCollection);
@@ -918,10 +993,11 @@
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.KeyPreview = true;
+			this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.MaximizeBox = false;
-			this.MaximumSize = new System.Drawing.Size(750, 665);
+			this.MaximumSize = new System.Drawing.Size(1114, 993);
 			this.MinimizeBox = false;
-			this.MinimumSize = new System.Drawing.Size(746, 351);
+			this.MinimumSize = new System.Drawing.Size(1108, 510);
 			this.Name = "MarkManager";
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
@@ -942,10 +1018,10 @@
 			this.groupBoxMarks.PerformLayout();
 			this.groupBoxPlayback.ResumeLayout(false);
 			this.groupBoxPlayback.PerformLayout();
-			this.groupBox2.ResumeLayout(false);
-			this.groupBox2.PerformLayout();
-			this.groupBox1.ResumeLayout(false);
-			this.groupBox1.PerformLayout();
+			this.groupBoxFreqDetection.ResumeLayout(false);
+			this.groupBoxFreqDetection.PerformLayout();
+			this.groupBoxAudioFilter.ResumeLayout(false);
+			this.groupBoxAudioFilter.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numHighPass)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numLowPass)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarPlayBack)).EndInit();
@@ -953,84 +1029,84 @@
 			this.groupBoxMode.PerformLayout();
 			this.ResumeLayout(false);
 
-        }
+		}
 
-        #endregion
+		#endregion
 
-        private System.Windows.Forms.GroupBox groupBoxMarkCollections;
-        private System.Windows.Forms.Button buttonRemoveCollection;
-        private System.Windows.Forms.Button buttonAddCollection;
-        private System.Windows.Forms.ListView listViewMarkCollections;
-        private System.Windows.Forms.ColumnHeader columnHeader1;
-        private System.Windows.Forms.ColumnHeader columnHeader2;
-        private System.Windows.Forms.Button buttonOK;
-        private System.Windows.Forms.GroupBox groupBoxSelectedMarkCollection;
-        private System.Windows.Forms.GroupBox groupBoxMarks;
-        private System.Windows.Forms.Button buttonSelectAllMarks;
-        private System.Windows.Forms.GroupBox groupBoxOperations;
-        private System.Windows.Forms.Button buttonAddOrUpdateMark;
-        private System.Windows.Forms.TextBox textBoxTime;
-        private System.Windows.Forms.Button buttonOffsetMarks;
-        private System.Windows.Forms.Button buttonGenerateSubmarks;
-        private System.Windows.Forms.Button buttonEvenlySpaceMarks;
-        private System.Windows.Forms.ColumnHeader columnHeader3;
-        private System.Windows.Forms.Button buttonCancel;
-        private System.Windows.Forms.ListView listViewMarks;
-        private System.Windows.Forms.ColumnHeader Times;
-        private System.Windows.Forms.GroupBox groupBoxDetails;
-        private System.Windows.Forms.CheckBox checkBoxEnabled;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Panel panelColor;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.NumericUpDown numericUpDownWeight;
-        private System.Windows.Forms.TextBox textBoxCollectionName;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button buttonPasteEffectsToMarks;
-        private System.Windows.Forms.Button buttonCopyAndOffsetMarks;
-        private System.Windows.Forms.Button buttonGenerateBeatMarks;
-        private System.Windows.Forms.Button generateGrid;
-        private System.Windows.Forms.ToolTip toolTip1;
-        private System.Windows.Forms.GroupBox groupBoxPlayback;
-        private System.Windows.Forms.GroupBox groupBoxMode;
-        private System.Windows.Forms.RadioButton radioButtonTapper;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.TextBox textBoxTimingSpeed;
-        private System.Windows.Forms.Button buttonIncreasePlaybackSpeed;
-        private System.Windows.Forms.Button buttonDecreasePlaySpeed;
-        private System.Windows.Forms.Panel panelMarkView;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.TextBox textBoxPosition;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox textBoxCurrentMark;
-        private System.Windows.Forms.Button buttonStop;
-        private System.Windows.Forms.Button buttonPlay;
-        private System.Windows.Forms.RadioButton radioButtonPlayback;
-        private System.Windows.Forms.Timer timerPlayback;
-        private System.Windows.Forms.Timer timerMarkHit;
-        private System.Windows.Forms.GroupBox groupBoxSelectedMarks;
-        private System.Windows.Forms.Button buttonIncreaseSelectedMarks;
-        private System.Windows.Forms.Button buttonDecreaseSelectedMarks;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.TextBox textBoxTimeIncrement;
-        private System.Windows.Forms.Label labelTapperInstructions;
-        private System.Windows.Forms.TrackBar trackBarPlayBack;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.NumericUpDown numHighPass;
-        private System.Windows.Forms.NumericUpDown numLowPass;
-        private System.Windows.Forms.CheckBox chkHighPass;
-        private System.Windows.Forms.CheckBox chkLowPass;
-        private System.Windows.Forms.CheckBox ChkAutoTapper;
-        private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.Button btnAutoDetectionSettings;
-        private System.Windows.Forms.Button btnCreateCollections;
-        private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.RadioButton radioSelected;
-        private System.Windows.Forms.RadioButton radioAll;
+		private System.Windows.Forms.GroupBox groupBoxMarkCollections;
+		private System.Windows.Forms.Button buttonRemoveCollection;
+		private System.Windows.Forms.Button buttonAddCollection;
+		private System.Windows.Forms.ListView listViewMarkCollections;
+		private System.Windows.Forms.ColumnHeader columnHeader1;
+		private System.Windows.Forms.ColumnHeader columnHeader2;
+		private System.Windows.Forms.Button buttonOK;
+		private System.Windows.Forms.GroupBox groupBoxSelectedMarkCollection;
+		private System.Windows.Forms.GroupBox groupBoxMarks;
+		private System.Windows.Forms.Button buttonSelectAllMarks;
+		private System.Windows.Forms.GroupBox groupBoxOperations;
+		private System.Windows.Forms.Button buttonAddOrUpdateMark;
+		private System.Windows.Forms.TextBox textBoxTime;
+		private System.Windows.Forms.Button buttonOffsetMarks;
+		private System.Windows.Forms.Button buttonGenerateSubmarks;
+		private System.Windows.Forms.Button buttonEvenlySpaceMarks;
+		private System.Windows.Forms.ColumnHeader columnHeader3;
+		private System.Windows.Forms.Button buttonCancel;
+		private System.Windows.Forms.ListView listViewMarks;
+		private System.Windows.Forms.ColumnHeader Times;
+		private System.Windows.Forms.GroupBox groupBoxDetails;
+		private System.Windows.Forms.CheckBox checkBoxEnabled;
+		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.Panel panelColor;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.NumericUpDown numericUpDownWeight;
+		private System.Windows.Forms.TextBox textBoxCollectionName;
+		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.Button buttonPasteEffectsToMarks;
+		private System.Windows.Forms.Button buttonCopyAndOffsetMarks;
+		private System.Windows.Forms.Button buttonGenerateBeatMarks;
+		private System.Windows.Forms.Button generateGrid;
+		private System.Windows.Forms.ToolTip toolTip1;
+		private System.Windows.Forms.GroupBox groupBoxPlayback;
+		private System.Windows.Forms.GroupBox groupBoxMode;
+		private System.Windows.Forms.RadioButton radioButtonTapper;
+		private System.Windows.Forms.Label label6;
+		private System.Windows.Forms.TextBox textBoxTimingSpeed;
+		private System.Windows.Forms.Button buttonIncreasePlaybackSpeed;
+		private System.Windows.Forms.Button buttonDecreasePlaySpeed;
+		private System.Windows.Forms.Panel panelMarkView;
+		private System.Windows.Forms.Label label5;
+		private System.Windows.Forms.TextBox textBoxPosition;
+		private System.Windows.Forms.Label label4;
+		private System.Windows.Forms.TextBox textBoxCurrentMark;
+		private System.Windows.Forms.Button buttonStop;
+		private System.Windows.Forms.Button buttonPlay;
+		private System.Windows.Forms.RadioButton radioButtonPlayback;
+		private System.Windows.Forms.Timer timerPlayback;
+		private System.Windows.Forms.Timer timerMarkHit;
+		private System.Windows.Forms.GroupBox groupBoxSelectedMarks;
+		private System.Windows.Forms.Button buttonIncreaseSelectedMarks;
+		private System.Windows.Forms.Button buttonDecreaseSelectedMarks;
+		private System.Windows.Forms.Label label7;
+		private System.Windows.Forms.TextBox textBoxTimeIncrement;
+		private System.Windows.Forms.Label labelTapperInstructions;
+		private System.Windows.Forms.TrackBar trackBarPlayBack;
+		private System.Windows.Forms.GroupBox groupBoxAudioFilter;
+		private System.Windows.Forms.NumericUpDown numHighPass;
+		private System.Windows.Forms.NumericUpDown numLowPass;
+		private System.Windows.Forms.CheckBox chkHighPass;
+		private System.Windows.Forms.CheckBox chkLowPass;
+		private System.Windows.Forms.CheckBox ChkAutoTapper;
+		private System.Windows.Forms.Label label8;
+		private System.Windows.Forms.GroupBox groupBoxFreqDetection;
+		private System.Windows.Forms.Button btnAutoDetectionSettings;
+		private System.Windows.Forms.Button btnCreateCollections;
+		private System.Windows.Forms.Label label9;
+		private System.Windows.Forms.RadioButton radioSelected;
+		private System.Windows.Forms.RadioButton radioAll;
 		private System.Windows.Forms.Button buttonImportAudacity;
 		private System.Windows.Forms.OpenFileDialog openFileDialog;
 		private System.Windows.Forms.Button buttonExportBeatMarks;
 		private System.Windows.Forms.SaveFileDialog saveFileDialog;
 
-    }
+	}
 }
