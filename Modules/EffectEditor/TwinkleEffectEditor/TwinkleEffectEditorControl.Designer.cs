@@ -31,7 +31,6 @@
 		{
 			VixenModules.App.ColorGradients.ColorGradient colorGradient2 = new VixenModules.App.ColorGradients.ColorGradient();
 			this.groupBoxLevels = new System.Windows.Forms.GroupBox();
-			this.valueUpDownLevelVariation = new Common.Controls.ControlsEx.ValueControls.ValueUpDown();
 			this.levelTypeEditorControlMaxValue = new VixenModules.EffectEditor.LevelTypeEditor.LevelTypeEditorControl();
 			this.levelTypeEditorControlMinValue = new VixenModules.EffectEditor.LevelTypeEditor.LevelTypeEditorControl();
 			this.label5 = new System.Windows.Forms.Label();
@@ -57,6 +56,7 @@
 			this.radioButtonSynchronizedElements = new System.Windows.Forms.RadioButton();
 			this.radioButtonIndividualElements = new System.Windows.Forms.RadioButton();
 			this.radioButtonApplyToLevel = new System.Windows.Forms.RadioButton();
+			this.numericUpDownVariation = new System.Windows.Forms.NumericUpDown();
 			this.groupBoxLevels.SuspendLayout();
 			this.groupBoxDetails.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownCoverage)).BeginInit();
@@ -65,11 +65,12 @@
 			this.groupBoxColor.SuspendLayout();
 			this.groupBoxElements.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownDepthOfEffect)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numericUpDownVariation)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// groupBoxLevels
 			// 
-			this.groupBoxLevels.Controls.Add(this.valueUpDownLevelVariation);
+			this.groupBoxLevels.Controls.Add(this.numericUpDownVariation);
 			this.groupBoxLevels.Controls.Add(this.levelTypeEditorControlMaxValue);
 			this.groupBoxLevels.Controls.Add(this.levelTypeEditorControlMinValue);
 			this.groupBoxLevels.Controls.Add(this.label5);
@@ -81,15 +82,6 @@
 			this.groupBoxLevels.TabIndex = 1;
 			this.groupBoxLevels.TabStop = false;
 			this.groupBoxLevels.Text = "Levels";
-			// 
-			// valueUpDownLevelVariation
-			// 
-			this.valueUpDownLevelVariation.Location = new System.Drawing.Point(106, 112);
-			this.valueUpDownLevelVariation.Name = "valueUpDownLevelVariation";
-			this.valueUpDownLevelVariation.Size = new System.Drawing.Size(90, 25);
-			this.valueUpDownLevelVariation.TabIndex = 2;
-			this.valueUpDownLevelVariation.Text = "valueUpDown1";
-			this.valueUpDownLevelVariation.Value = 50;
 			// 
 			// levelTypeEditorControlMaxValue
 			// 
@@ -414,6 +406,19 @@
 			this.radioButtonApplyToLevel.UseVisualStyleBackColor = true;
 			this.radioButtonApplyToLevel.CheckedChanged += new System.EventHandler(this.radioButtonEffectAppliesTo_CheckedChanged);
 			// 
+			// numericUpDownVariation
+			// 
+			this.numericUpDownVariation.Location = new System.Drawing.Point(106, 116);
+			this.numericUpDownVariation.Name = "numericUpDownVariation";
+			this.numericUpDownVariation.Size = new System.Drawing.Size(90, 20);
+			this.numericUpDownVariation.TabIndex = 9;
+			this.numericUpDownVariation.Value = 50;
+			this.numericUpDownVariation.Value = new decimal(new int[] {
+			50,
+			0,
+			0,
+			0});
+			// 
 			// TwinkleEffectEditorControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -436,6 +441,7 @@
 			this.groupBoxElements.ResumeLayout(false);
 			this.groupBoxElements.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownDepthOfEffect)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numericUpDownVariation)).EndInit();
 			this.ResumeLayout(false);
 
 		}
@@ -468,6 +474,6 @@
 		private System.Windows.Forms.RadioButton radioButtonApplyToLevel;
 		private LevelTypeEditorControl levelTypeEditorControlMinValue;
 		private LevelTypeEditorControl levelTypeEditorControlMaxValue;
-		private Common.Controls.ControlsEx.ValueControls.ValueUpDown valueUpDownLevelVariation;
+		private System.Windows.Forms.NumericUpDown numericUpDownVariation;
 	}
 }

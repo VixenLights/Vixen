@@ -96,8 +96,8 @@ namespace VixenModules.EffectEditor.TwinkleEffectEditor
 
 		public int LevelVariation
 		{
-			get { return valueUpDownLevelVariation.Value; }
-			set { valueUpDownLevelVariation.Value = value; }
+			get { return (int)numericUpDownVariation.Value; }
+			set { numericUpDownVariation.Value = value; }
 		}
 
 		public int AveragePulseTime
