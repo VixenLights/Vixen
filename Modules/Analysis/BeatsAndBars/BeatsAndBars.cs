@@ -22,6 +22,9 @@ namespace VixenModules.Analysis.BeatsAndBars
 		private IDictionary<int, ICollection<ManagedFeature>> m_featureSet;
 		private Audio m_audioModule = null;
 
+		private byte[] m_bSamples;
+		private float[] m_fSamplesAll;
+
 		public BeatsAndBars(Audio module)
 		{
 			m_audioModule = module;
@@ -47,33 +50,23 @@ namespace VixenModules.Analysis.BeatsAndBars
 			progressDlg.Show();
 
 			int stepSize = m_plugin.GetPreferredStepSize();
-			byte[] bSamples = m_audioModule.GetSamples(0, (int)m_audioModule.NumberSamples);
-
-			int dataStep = m_audioModule.BytesPerSample;
-			float[] fSamplesAll = new float[m_audioModule.NumberSamples];
-
-			for (j = 0; j < bSamples.Length; j += dataStep)
-			{
-				fSamplesAll[j / dataStep] =
-					dataStep == 2 ? BitConverter.ToInt16(bSamples, j) : BitConverter.ToInt32(bSamples, j);
-			}
 
 			double progressVal = 0;
 			float[] fSamples = new float[m_plugin.GetPreferredBlockSize()];
 			for (j = 0;
-				((fSamplesAll.Length - j) >= m_plugin.GetPreferredBlockSize());
+				((m_fSamplesAll.Length - j) >= m_plugin.GetPreferredBlockSize());
 				j += stepSize)
 			{
-				progressVal = ((double)j / (double) fSamplesAll.Length) * 100.0;
+				progressVal = ((double)j / (double) m_fSamplesAll.Length) * 100.0;
 				progressDlg.UpdateProgress((int) progressVal);
 
-				Array.Copy(fSamplesAll, j, fSamples, 0, fSamples.Length);
+				Array.Copy(m_fSamplesAll, j, fSamples, 0, fSamples.Length);
 				m_plugin.Process(fSamples,
 						ManagedRealtime.frame2RealTime(j, (uint)m_audioModule.Frequency));
 			}
 
 			Array.Clear(fSamples, 0, fSamples.Length);
-			Array.Copy(fSamplesAll, j, fSamples, 0, fSamplesAll.Length - j);
+			Array.Copy(m_fSamplesAll, j, fSamples, 0, m_fSamplesAll.Length - j);
 			m_plugin.Process(fSamples,
 					ManagedRealtime.frame2RealTime(j, (uint)m_audioModule.Frequency));
 
@@ -123,6 +116,16 @@ namespace VixenModules.Analysis.BeatsAndBars
 			m_plugin = new QMBarBeatTrack(m_audioModule.Frequency);
 
 			m_audioModule.LoadMedia(TimeSpan.Zero);
+			m_bSamples = m_audioModule.GetSamples(0, (int)m_audioModule.NumberSamples);
+			m_fSamplesAll = new float[m_audioModule.NumberSamples];
+
+			int dataStep = m_audioModule.BytesPerSample;
+
+			for (int j = 0; j < m_bSamples.Length; j += dataStep)
+			{
+				m_fSamplesAll[j / dataStep] = dataStep == 2 ? 
+					BitConverter.ToInt16(m_bSamples, j) : BitConverter.ToInt32(m_bSamples, j);
+			}
 
 			ICollection<ManagedParameterDescriptor> parameterDescriptors =
 				m_plugin.GetParameterDescriptors();
