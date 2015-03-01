@@ -73,6 +73,14 @@ namespace Vixen.Execution
 			}
 		}
 
+		public void RemoveEffects(IEnumerable<IEffectNode> nodes)
+		{
+			foreach (var effectNode in nodes)
+			{
+				_currentEffects.Remove(effectNode);
+			}
+		}
+
 		private bool _IsExpired(TimeSpan currentTime, EffectNode effectNode)
 		{
 			return currentTime > effectNode.EndTime;

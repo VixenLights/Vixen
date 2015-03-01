@@ -37,24 +37,68 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Kayak">
-      <HintPath>..\..\..\packages\Kayak.0.7.2\lib\Kayak.dll</HintPath>
+    <Reference Include="Microsoft.AspNet.SignalR.Core">
+      <HintPath>..\..\..\packages\Microsoft.AspNet.SignalR.Core.2.2.0\lib\net45\Microsoft.AspNet.SignalR.Core.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\..\packages\Newtonsoft.Json.5.0.6\lib\net40\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Microsoft.Owin">
+      <HintPath>..\..\..\packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.FileSystems">
+      <HintPath>..\..\..\packages\Microsoft.Owin.FileSystems.3.0.1\lib\net45\Microsoft.Owin.FileSystems.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Hosting">
+      <HintPath>..\..\..\packages\Microsoft.Owin.Hosting.3.0.1\lib\net45\Microsoft.Owin.Hosting.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\Microsoft.Owin.Security.3.0.1\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.StaticFiles">
+      <HintPath>..\..\..\packages\Microsoft.Owin.StaticFiles.3.0.1\lib\net45\Microsoft.Owin.StaticFiles.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="NLog, Version=3.1.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\NLog.3.1.0.0\lib\net45\NLog.dll</HintPath>
-       <Private>False</Private>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Nowin">
+      <HintPath>..\..\..\packages\Nowin.0.13.6.0\lib\net45\Nowin.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Http, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\Microsoft.AspNet.WebApi.Core.5.2.3\lib\net45\System.Web.Http.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Web.Http.Owin">
+      <HintPath>..\..\..\packages\Microsoft.AspNet.WebApi.Owin.5.2.3\lib\net45\System.Web.Http.Owin.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -63,22 +107,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Actions\BaseController.cs" />
-    <Compile Include="Actions\ElementController.cs" />
-    <Compile Include="Actions\IController.cs" />
-    <Compile Include="Actions\PlayController.cs" />
-    <Compile Include="HTTP\ControllerFactory.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\ElementController.cs" />
+    <Compile Include="Controllers\PlayController.cs" />
+    <Compile Include="Filter\ArgumentExceptionFilterAttribute.cs" />
+    <Compile Include="Hubs\ContextHub.cs" />
+    <Compile Include="Model\ElementState.cs" />
+    <Compile Include="Model\ContextStatus.cs" />
+    <Compile Include="RequestLogger.cs" />
+    <Compile Include="Model\ElementEffect.cs" />
     <Compile Include="Model\Element.cs" />
     <Compile Include="Model\Sequence.cs" />
     <Compile Include="Model\Status.cs" />
+    <Compile Include="Service\ElementsHelper.cs" />
+    <Compile Include="Service\SequenceHelper.cs" />
+    <Compile Include="Service\ContextStateFeeder.cs" />
+    <Compile Include="Startup.cs" />
     <Compile Include="WebSettingsEventArgs.cs" />
     <Compile Include="Module.cs" />
     <Compile Include="Data.cs" />
     <Compile Include="Descriptor.cs" />
-    <Compile Include="HTTP\BufferedConsumer.cs" />
-    <Compile Include="HTTP\BufferedProducer.cs" />
-    <Compile Include="HTTP\RequestDelegate.cs" />
-    <Compile Include="HTTP\SchedulerDelegate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -93,14 +141,44 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
-    <EmbeddedResource Include="Resources\jquery.mobile-1.3.2.min.map" />
-    <EmbeddedResource Include="Resources\jquery-1.10.2.min.map" />
+    <EmbeddedResource Include="www\js\jquery-1.11.2.min.map">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Include="www\fonts\glyphicons-halflings-regular.eot">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="www\fonts\glyphicons-halflings-regular.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="www\fonts\glyphicons-halflings-regular.woff">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="www\fonts\glyphicons-halflings-regular.woff2">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="www\style\bootstrap-theme.css.map">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="www\style\bootstrap.css.map">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Common\Controls\Controls.csproj">
+      <Project>{A54FB6A1-A9C3-488C-B961-41B8DBC81B36}</Project>
+      <Name>Controls</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Vixen.System\Vixen.csproj">
       <Project>{50b78623-fcf4-48af-93ff-fa87c937028f}</Project>
       <Name>Vixen</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Effect\Nutcracker\Nutcracker.csproj">
+      <Project>{49ec1f56-362b-4880-805c-474b6b5bc91b}</Project>
+      <Name>Nutcracker</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Effect\SetLevel\SetLevel.csproj">
@@ -113,39 +191,129 @@
       <Name>Color</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\ColorGradients\ColorGradients.csproj">
+      <Project>{1b189b36-02af-4a57-9e1b-6dc833212725}</Project>
+      <Name>ColorGradients</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Curves\Curves.csproj">
+      <Project>{f0ba7127-61b4-453a-802b-abcb5a0d3d54}</Project>
+      <Name>Curves</Name>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\vixen.htm" />
-    <EmbeddedResource Include="Resources\knockout-3.0.0.js" />
+    <Content Include="www\fonts\glyphicons-halflings-regular.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\images\ajax-loader.gif">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\images\V3Logo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\js\amplify.min.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\js\bootstrap-slider.min.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\js\bootstrap.min.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\js\jquery.easing.min.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\js\jquery.signalr-2.1.0.min.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\js\knockout.mapping.min.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\js\moment-duration-format.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\js\npm.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\js\spectrum.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\bootstrap-slider.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\bootstrap-slider.min.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\bootstrap-theme.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\bootstrap-theme.min.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\bootstrap.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\bootstrap.min.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\images\ajax-loader.gif">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\jqm-icon-pack-fa.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="www\style\spectrum.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <EmbeddedResource Include="www\js\vixen.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="www\index.htm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="www\style\vixen.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="www\js\knockout-3.2.0.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="www\style\jquery.mobile.theme-1.4.5.min.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="www\style\jquery.mobile.structure-1.4.5.min.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="www\style\jquery.mobile.inline-svg-1.4.5.min.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="www\style\jquery.mobile.inline-png-1.4.5.min.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="www\style\jquery.mobile.icons-1.4.5.min.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="www\style\jquery.mobile.external-png-1.4.5.min.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="www\style\jquery.mobile-1.4.5.min.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="www\js\jquery-1.11.2.min.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <Content Include="www\js\moment.min.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources\vixen.js" />
-    <EmbeddedResource Include="Resources\vixen.css" />
-    <EmbeddedResource Include="..\..\..\Application\VixenApplication\Resources\V3Logo.png">
-      <Link>Resources\images\V3Logo.png</Link>
-    </EmbeddedResource>
-    <Content Include="elements.html" />
-    <EmbeddedResource Include="Resources\jquery.fittext.js" />
-    <Content Include="Resources\jquery.mobile-1.3.2.css" />
-    <Content Include="Resources\jquery.mobile-1.3.2.js" />
-    <Content Include="Resources\jquery.mobile.structure-1.3.2.css" />
-    <Content Include="Resources\jquery.mobile.structure-1.3.2.min.css" />
-    <Content Include="Resources\jquery.mobile.theme-1.3.2.css" />
-    <Content Include="Resources\jquery.mobile.theme-1.3.2.min.css" />
-    <EmbeddedResource Include="Resources\images\ajax-loader.gif" />
-    <EmbeddedResource Include="Resources\images\icons-18-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-18-white.png" />
-    <EmbeddedResource Include="Resources\images\icons-36-black.png" />
-    <EmbeddedResource Include="Resources\images\icons-36-white.png" />
-    <EmbeddedResource Include="Resources\jquery-1.10.2.min.js" />
-    <EmbeddedResource Include="Resources\jquery.mobile-1.3.2.min.css" />
-    <EmbeddedResource Include="Resources\jquery.mobile-1.3.2.min.js" />
     <EmbeddedResource Include="Settings.resx">
       <DependentUpon>Settings.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
