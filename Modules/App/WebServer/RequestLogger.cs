@@ -7,7 +7,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Owin;
 using Microsoft.Owin.Extensions;
-using Microsoft.Owin.Diagnostics;
 
 namespace VixenModules.App.WebServer
 {
