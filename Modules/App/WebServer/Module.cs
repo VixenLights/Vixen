@@ -74,9 +74,7 @@ namespace VixenModules.App.WebServer
 			if (value)
 			{
 				StopServer();
-				var options = new StartOptions {ServerFactory = "Nowin"}; //use the Nowin _server to listen for connections
-				options.Urls.Add(string.Format("http://*:{0}/", port));
-
+				var options = new StartOptions {ServerFactory = "Nowin", Port = port}; //use the Nowin _server to listen for connections
 				try
 				{
 					_server = WebApp.Start<Startup>(options);
