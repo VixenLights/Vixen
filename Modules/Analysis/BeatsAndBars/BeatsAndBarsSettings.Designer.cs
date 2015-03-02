@@ -29,17 +29,18 @@
 		private void InitializeComponent()
 		{
 			this.label2 = new System.Windows.Forms.Label();
-			this.BeatColorPanel = new System.Windows.Forms.Panel();
+			this.BaseColorPanel = new System.Windows.Forms.Panel();
 			this.label1 = new System.Windows.Forms.Label();
 			this.BeatsNameTB = new System.Windows.Forms.TextBox();
-			this.m_goButton = new System.Windows.Forms.Button();
-			this.m_cancelButton = new System.Windows.Forms.Button();
+			this.GenerateButton = new System.Windows.Forms.Button();
+			this.CancelButton = new System.Windows.Forms.Button();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.BeatSplitsCB = new System.Windows.Forms.CheckBox();
-			this.EverythingCB = new System.Windows.Forms.CheckBox();
-			this.BeatCountsDB = new System.Windows.Forms.CheckBox();
+			this.AllFeaturesCB = new System.Windows.Forms.CheckBox();
+			this.BeatCountsCB = new System.Windows.Forms.CheckBox();
 			this.BarsCB = new System.Windows.Forms.CheckBox();
+			this.PreviewButton = new System.Windows.Forms.Button();
 			this.musicStaff1 = new VixenModules.Analysis.BeatsAndBars.MusicStaff();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
@@ -55,14 +56,14 @@
 			this.label2.TabIndex = 12;
 			this.label2.Text = "Base Color:";
 			// 
-			// BeatColorPanel
+			// BaseColorPanel
 			// 
-			this.BeatColorPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.BeatColorPanel.Location = new System.Drawing.Point(270, 47);
-			this.BeatColorPanel.Name = "BeatColorPanel";
-			this.BeatColorPanel.Size = new System.Drawing.Size(57, 21);
-			this.BeatColorPanel.TabIndex = 10;
-			this.BeatColorPanel.Click += new System.EventHandler(this.BeatColorPanel_Click);
+			this.BaseColorPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.BaseColorPanel.Location = new System.Drawing.Point(270, 47);
+			this.BaseColorPanel.Name = "BaseColorPanel";
+			this.BaseColorPanel.Size = new System.Drawing.Size(57, 21);
+			this.BaseColorPanel.TabIndex = 10;
+			this.BaseColorPanel.Click += new System.EventHandler(this.BeatColorPanel_Click);
 			// 
 			// label1
 			// 
@@ -82,27 +83,27 @@
 			this.BeatsNameTB.TabIndex = 2;
 			this.BeatsNameTB.Text = "Beats";
 			// 
-			// m_goButton
+			// GenerateButton
 			// 
-			this.m_goButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.m_goButton.Location = new System.Drawing.Point(455, 364);
-			this.m_goButton.Name = "m_goButton";
-			this.m_goButton.Size = new System.Drawing.Size(75, 23);
-			this.m_goButton.TabIndex = 4;
-			this.m_goButton.Text = "Generate";
-			this.m_goButton.UseVisualStyleBackColor = true;
-			this.m_goButton.Click += new System.EventHandler(this.GoButton_Click);
+			this.GenerateButton.DialogResult = System.Windows.Forms.DialogResult.OK;
+			this.GenerateButton.Location = new System.Drawing.Point(455, 364);
+			this.GenerateButton.Name = "GenerateButton";
+			this.GenerateButton.Size = new System.Drawing.Size(75, 23);
+			this.GenerateButton.TabIndex = 4;
+			this.GenerateButton.Text = "Generate";
+			this.GenerateButton.UseVisualStyleBackColor = true;
+			this.GenerateButton.Click += new System.EventHandler(this.GoButton_Click);
 			// 
-			// m_cancelButton
+			// CancelButton
 			// 
-			this.m_cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.m_cancelButton.Location = new System.Drawing.Point(540, 364);
-			this.m_cancelButton.Name = "m_cancelButton";
-			this.m_cancelButton.Size = new System.Drawing.Size(75, 23);
-			this.m_cancelButton.TabIndex = 5;
-			this.m_cancelButton.Text = "Cancel";
-			this.m_cancelButton.UseVisualStyleBackColor = true;
-			this.m_cancelButton.Click += new System.EventHandler(this.m_cancelButton_Click);
+			this.CancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.CancelButton.Location = new System.Drawing.Point(540, 364);
+			this.CancelButton.Name = "CancelButton";
+			this.CancelButton.Size = new System.Drawing.Size(75, 23);
+			this.CancelButton.TabIndex = 5;
+			this.CancelButton.Text = "Cancel";
+			this.CancelButton.UseVisualStyleBackColor = true;
+			this.CancelButton.Click += new System.EventHandler(this.CancelButton_Click);
 			// 
 			// groupBox1
 			// 
@@ -117,13 +118,13 @@
 			// groupBox2
 			// 
 			this.groupBox2.Controls.Add(this.BeatSplitsCB);
-			this.groupBox2.Controls.Add(this.EverythingCB);
-			this.groupBox2.Controls.Add(this.BeatCountsDB);
+			this.groupBox2.Controls.Add(this.AllFeaturesCB);
+			this.groupBox2.Controls.Add(this.BeatCountsCB);
 			this.groupBox2.Controls.Add(this.BarsCB);
 			this.groupBox2.Controls.Add(this.label1);
 			this.groupBox2.Controls.Add(this.BeatsNameTB);
 			this.groupBox2.Controls.Add(this.label2);
-			this.groupBox2.Controls.Add(this.BeatColorPanel);
+			this.groupBox2.Controls.Add(this.BaseColorPanel);
 			this.groupBox2.Location = new System.Drawing.Point(12, 199);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(608, 146);
@@ -141,25 +142,25 @@
 			this.BeatSplitsCB.Text = "Beat Splits";
 			this.BeatSplitsCB.UseVisualStyleBackColor = true;
 			// 
-			// EverythingCB
+			// AllFeaturesCB
 			// 
-			this.EverythingCB.AutoSize = true;
-			this.EverythingCB.Location = new System.Drawing.Point(170, 107);
-			this.EverythingCB.Name = "EverythingCB";
-			this.EverythingCB.Size = new System.Drawing.Size(76, 17);
-			this.EverythingCB.TabIndex = 15;
-			this.EverythingCB.Text = "Everything";
-			this.EverythingCB.UseVisualStyleBackColor = true;
+			this.AllFeaturesCB.AutoSize = true;
+			this.AllFeaturesCB.Location = new System.Drawing.Point(170, 107);
+			this.AllFeaturesCB.Name = "AllFeaturesCB";
+			this.AllFeaturesCB.Size = new System.Drawing.Size(81, 17);
+			this.AllFeaturesCB.TabIndex = 15;
+			this.AllFeaturesCB.Text = "All Features";
+			this.AllFeaturesCB.UseVisualStyleBackColor = true;
 			// 
-			// BeatCountsDB
+			// BeatCountsCB
 			// 
-			this.BeatCountsDB.AutoSize = true;
-			this.BeatCountsDB.Location = new System.Drawing.Point(35, 107);
-			this.BeatCountsDB.Name = "BeatCountsDB";
-			this.BeatCountsDB.Size = new System.Drawing.Size(84, 17);
-			this.BeatCountsDB.TabIndex = 14;
-			this.BeatCountsDB.Text = "Beat Counts";
-			this.BeatCountsDB.UseVisualStyleBackColor = true;
+			this.BeatCountsCB.AutoSize = true;
+			this.BeatCountsCB.Location = new System.Drawing.Point(35, 107);
+			this.BeatCountsCB.Name = "BeatCountsCB";
+			this.BeatCountsCB.Size = new System.Drawing.Size(84, 17);
+			this.BeatCountsCB.TabIndex = 14;
+			this.BeatCountsCB.Text = "Beat Counts";
+			this.BeatCountsCB.UseVisualStyleBackColor = true;
 			// 
 			// BarsCB
 			// 
@@ -170,6 +171,15 @@
 			this.BarsCB.TabIndex = 13;
 			this.BarsCB.Text = "Bars";
 			this.BarsCB.UseVisualStyleBackColor = true;
+			// 
+			// PreviewButton
+			// 
+			this.PreviewButton.Location = new System.Drawing.Point(12, 364);
+			this.PreviewButton.Name = "PreviewButton";
+			this.PreviewButton.Size = new System.Drawing.Size(75, 23);
+			this.PreviewButton.TabIndex = 15;
+			this.PreviewButton.Text = "Preview";
+			this.PreviewButton.UseVisualStyleBackColor = true;
 			// 
 			// musicStaff1
 			// 
@@ -185,10 +195,11 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(634, 418);
+			this.Controls.Add(this.PreviewButton);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
-			this.Controls.Add(this.m_cancelButton);
-			this.Controls.Add(this.m_goButton);
+			this.Controls.Add(this.CancelButton);
+			this.Controls.Add(this.GenerateButton);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.Name = "BeatsAndBarsDialog";
 			this.ShowIcon = false;
@@ -203,19 +214,20 @@
 
 		#endregion
 
-		private System.Windows.Forms.Button m_goButton;
+		private System.Windows.Forms.Button GenerateButton;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.TextBox BeatsNameTB;
 		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.Panel BeatColorPanel;
-		private System.Windows.Forms.Button m_cancelButton;
+		private System.Windows.Forms.Panel BaseColorPanel;
+		private System.Windows.Forms.Button CancelButton;
 		private MusicStaff musicStaff1;
 		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.GroupBox groupBox2;
-		private System.Windows.Forms.CheckBox EverythingCB;
-		private System.Windows.Forms.CheckBox BeatCountsDB;
+		private System.Windows.Forms.CheckBox AllFeaturesCB;
+		private System.Windows.Forms.CheckBox BeatCountsCB;
 		private System.Windows.Forms.CheckBox BarsCB;
 		private System.Windows.Forms.CheckBox BeatSplitsCB;
+		private System.Windows.Forms.Button PreviewButton;
 
 	}
 }

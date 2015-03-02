@@ -5264,8 +5264,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					_sequence.MarkCollections = 
 						audioFeatures.GenerateMarksFromFeatures(_sequence.MarkCollections);
 
+
+
 					MarksForm.PopulateMarkCollectionsList(null);
 					SequenceModified();
+					break;
+
 				}
 			}
 		}
