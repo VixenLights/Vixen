@@ -196,7 +196,6 @@ namespace VixenModules.Analysis.BeatsAndBars
 				mc.Enabled = true;
 				mc.Name = collectionNames[j - 1];
 
-
 				foreach (KeyValuePair<int,double> tsValue in tsValuePairs)
 				{
 					if (tsValue.Key == j)

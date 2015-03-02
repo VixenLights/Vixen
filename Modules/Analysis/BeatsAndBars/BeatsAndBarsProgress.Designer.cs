@@ -50,6 +50,7 @@
 			this.generateLabel.Size = new System.Drawing.Size(94, 13);
 			this.generateLabel.TabIndex = 1;
 			this.generateLabel.Text = "Generating Marks:";
+			this.generateLabel.UseWaitCursor = true;
 			// 
 			// percentLabel
 			// 
@@ -59,6 +60,7 @@
 			this.percentLabel.Size = new System.Drawing.Size(21, 13);
 			this.percentLabel.TabIndex = 2;
 			this.percentLabel.Text = "0%";
+			this.percentLabel.UseWaitCursor = true;
 			// 
 			// BeatsAndBarsProgress
 			// 
@@ -73,6 +75,7 @@
 			this.MinimizeBox = false;
 			this.Name = "BeatsAndBarsProgress";
 			this.ShowIcon = false;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Beats and Bars";
 			this.UseWaitCursor = true;
 			this.ResumeLayout(false);

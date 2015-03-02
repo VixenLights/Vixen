@@ -103,7 +103,6 @@
 			this.CancelButton.TabIndex = 5;
 			this.CancelButton.Text = "Cancel";
 			this.CancelButton.UseVisualStyleBackColor = true;
-			this.CancelButton.Click += new System.EventHandler(this.CancelButton_Click);
 			// 
 			// groupBox1
 			// 
@@ -141,6 +140,7 @@
 			this.BeatSplitsCB.TabIndex = 16;
 			this.BeatSplitsCB.Text = "Beat Splits";
 			this.BeatSplitsCB.UseVisualStyleBackColor = true;
+			this.BeatSplitsCB.CheckedChanged += new System.EventHandler(this.BeatSplitsCB_CheckedChanged);
 			// 
 			// AllFeaturesCB
 			// 
@@ -151,6 +151,7 @@
 			this.AllFeaturesCB.TabIndex = 15;
 			this.AllFeaturesCB.Text = "All Features";
 			this.AllFeaturesCB.UseVisualStyleBackColor = true;
+			this.AllFeaturesCB.CheckedChanged += new System.EventHandler(this.AllFeaturesCB_CheckedChanged);
 			// 
 			// BeatCountsCB
 			// 
@@ -161,6 +162,7 @@
 			this.BeatCountsCB.TabIndex = 14;
 			this.BeatCountsCB.Text = "Beat Counts";
 			this.BeatCountsCB.UseVisualStyleBackColor = true;
+			this.BeatCountsCB.CheckedChanged += new System.EventHandler(this.BeatCountsCB_CheckedChanged);
 			// 
 			// BarsCB
 			// 
@@ -171,6 +173,7 @@
 			this.BarsCB.TabIndex = 13;
 			this.BarsCB.Text = "Bars";
 			this.BarsCB.UseVisualStyleBackColor = true;
+			this.BarsCB.CheckedChanged += new System.EventHandler(this.BarsCB_CheckedChanged);
 			// 
 			// PreviewButton
 			// 
@@ -203,8 +206,8 @@
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.Name = "BeatsAndBarsDialog";
 			this.ShowIcon = false;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Beats and Bars";
-			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.BeatsAndBarsDialog_FormClosing);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox2.PerformLayout();

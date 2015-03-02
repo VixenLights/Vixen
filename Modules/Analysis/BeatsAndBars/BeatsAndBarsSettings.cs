@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using QMLibrary;
 using VixenModules.Sequence.Timed;
@@ -15,11 +10,9 @@ namespace VixenModules.Analysis.BeatsAndBars
 	
 	public partial class BeatsAndBarsDialog : Form
 	{
-
 		private ToolTip m_toolTip;
 		private static BeatBarSettingsData m_settingsData = null;
 		private bool m_allowUpdates;
-		private bool m_allowClose;
 		private ManagedPlugin m_plugin;
 
 		public BeatsAndBarsDialog(ManagedPlugin plugin)
@@ -27,7 +20,6 @@ namespace VixenModules.Analysis.BeatsAndBars
 			InitializeComponent();
 
 			m_allowUpdates = false;
-			m_allowClose = false;
 
 			m_toolTip = new ToolTip();
 			m_toolTip.AutoPopDelay = 5000;
@@ -36,11 +28,23 @@ namespace VixenModules.Analysis.BeatsAndBars
 			m_toolTip.ShowAlways = true;
 			m_toolTip.Active = true;
 
+			m_toolTip.SetToolTip(AllFeaturesCB, "Single Collection containing all features");
+			m_toolTip.SetToolTip(BarsCB, "Single Collection containing starting location of each measure/bar");
+			m_toolTip.SetToolTip(BeatCountsCB, "Generates a beat collection for each beat count");
+			m_toolTip.SetToolTip(BeatSplitsCB, "Generates a beat collection for each beat count and each beat count split");
+			m_toolTip.SetToolTip(BeatsNameTB, "Base name of each collection");
+			m_toolTip.SetToolTip(BaseColorPanel, "Base color of each collection");
+
 			m_settingsData = m_settingsData ?? new BeatBarSettingsData("Beats");
 
 			m_plugin = plugin;
 
 			BaseColorPanel.BackColor = m_settingsData.Color;
+
+			BarsCB.Checked = true;
+			AllFeaturesCB.Checked = true;
+			BeatCountsCB.Checked = true;
+			BeatSplitsCB.Checked = false;
 
 			m_allowUpdates = true;
 			SetBeatBarOutputSettings();
@@ -57,7 +61,7 @@ namespace VixenModules.Analysis.BeatsAndBars
 
 		public void Parameters(ICollection<ManagedParameterDescriptor> parameterDescriptors)
 		{
-			//this.m_vampParamCtrl.InitParamControls(parameterDescriptors);
+			
 		}
 
 		public List<MarkCollection> MarkCollectionList { set; private get; } 
@@ -86,8 +90,16 @@ namespace VixenModules.Analysis.BeatsAndBars
 				m_settingsData.BeatsPerBar = musicStaff1.BeatsPerBar;
 				m_settingsData.NoteSize = musicStaff1.NoteSize;
 			}
-		}
 
+			GenerateButton.Enabled = false;
+			if (AllFeaturesCB.Checked ||
+			    BarsCB.Checked ||
+			    BeatCountsCB.Checked ||
+			    BeatSplitsCB.Checked)
+			{
+				GenerateButton.Enabled = true;
+			}
+		}
 
 		private void BeatColorPanel_Click(object sender, EventArgs e)
 		{
@@ -108,41 +120,37 @@ namespace VixenModules.Analysis.BeatsAndBars
 			m_plugin.Initialise(1,
 				(uint)m_plugin.GetPreferredStepSize(),
 				(uint)m_plugin.GetPreferredBlockSize());
-
-			SetBeatBarOutputSettings();
-
-		}
-
-
-		private void BeatsAndBarsDialog_FormClosing(object sender, FormClosingEventArgs e)
-		{
-			if (m_allowClose)
-			{
-				return;
-			}
-
-			if (MarkCollectionList.FindIndex(x => x.Name.Equals(BeatsNameTB.Text)) != -1)
-			{
-				if (MessageBox.Show("A collection by the name of " +
-									BeatsNameTB.Text +
-									" already exists\nOverwrite?",
-									"Beat Settings",
-									MessageBoxButtons.YesNo) == DialogResult.No)
-				{
-					e.Cancel = true;
-					return;
-				}
-			}
-		}
-
-		private void CancelButton_Click(object sender, EventArgs e)
-		{
-			m_allowClose = true;
+			SetBeatBarOutputSettings();				
 		}
 
 		private void musicStaff1_Paint(object sender, PaintEventArgs e)
 		{
+			if (!musicStaff1.SplitBeats)
+			{
+				BeatSplitsCB.Checked = false;
+			}
+
 			BeatSplitsCB.Enabled = musicStaff1.SplitBeats;
+		}
+
+		private void BarsCB_CheckedChanged(object sender, EventArgs e)
+		{
+			SetBeatBarOutputSettings();
+		}
+
+		private void BeatCountsCB_CheckedChanged(object sender, EventArgs e)
+		{
+			SetBeatBarOutputSettings();
+		}
+
+		private void BeatSplitsCB_CheckedChanged(object sender, EventArgs e)
+		{
+			SetBeatBarOutputSettings();
+		}
+
+		private void AllFeaturesCB_CheckedChanged(object sender, EventArgs e)
+		{
+			SetBeatBarOutputSettings();
 		}
 	}
 
@@ -179,7 +187,7 @@ namespace VixenModules.Analysis.BeatsAndBars
 			
 			for (int j = 0; j < collections; j++)
 			{
-				retVal[j] = CollectionBaseName + " 1/" + actualNoteSize + " Note - " + j;
+				retVal[j] = CollectionBaseName + " 1/" + actualNoteSize + " Note - " + (j + 1);
 			}
 
 			return retVal;
