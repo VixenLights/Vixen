@@ -15,7 +15,11 @@ namespace VixenModules.Analysis.BeatsAndBars
 	{
 		private const int TSLABEL_XOFFSET = 85;
 		private const int FIRST_BAR_OFFSET = TSLABEL_XOFFSET + 35;
-		private const int DIV_Y_OFFSET = 10;
+		private const int DIV_Y_OFFSET = 20;
+		private const int VAL_LABEL_OFFSET = 25;
+		private const int LABEL_VAL_OFFSET = 5;
+		private double m_beatPeriod;
+
 
 		public MusicStaff()
 		{
@@ -25,6 +29,10 @@ namespace VixenModules.Analysis.BeatsAndBars
 
 			BeatsPerBarLabel.BackColor = Color.Transparent;
 			NoteSizeLabel.BackColor = Color.Transparent;
+
+			BPMLabelVal.TextAlign = ContentAlignment.MiddleLeft;
+			BarPeriodLabelVal.TextAlign = ContentAlignment.MiddleLeft;
+			DivTimeLabelVal.TextAlign = ContentAlignment.MiddleLeft;
 
 		}
 
@@ -107,6 +115,23 @@ namespace VixenModules.Analysis.BeatsAndBars
 			NoteSizeLabel.Location =
 				new Point(TSLABEL_XOFFSET, BeatsPerBarLabel.Location.Y + BeatsPerBarLabel.Height + 1);
 
+			BPMLabelVal.Text = (60000/m_beatPeriod).ToString("F1");
+			BPMLabelVal.Location = 
+				new Point(BPMLabel.Location.X + BPMLabel.PreferredWidth + LABEL_VAL_OFFSET, BPMLabel.Location.Y);
+
+			BarPeriodLabel.Location =
+				new Point(BPMLabelVal.Location.X + BPMLabelVal.PreferredWidth + VAL_LABEL_OFFSET, BPMLabelVal.Location.Y);
+			BarPeriodLabelVal.Location =
+				new Point(BarPeriodLabel.Location.X + BarPeriodLabel.PreferredWidth + LABEL_VAL_OFFSET, BarPeriodLabel.Location.Y);
+			BarPeriodLabelVal.Text = (m_beatPeriod * BeatsPerBar / 1000).ToString("F2");
+
+			double divTime = splitBeatsCB.Checked ? m_beatPeriod/2 : m_beatPeriod;
+			DivTimeLabel.Location =
+				new Point(BarPeriodLabelVal.Location.X + BarPeriodLabelVal.PreferredWidth + VAL_LABEL_OFFSET, BarPeriodLabelVal.Location.Y);
+			DivTimeLabelVal.Location =
+				new Point(DivTimeLabel.Location.X + DivTimeLabel.PreferredWidth + LABEL_VAL_OFFSET, DivTimeLabel.Location.Y);
+			DivTimeLabelVal.Text = divTime.ToString("F0");
+
 		}
 
 		private void staffBox1_Paint(object sender, PaintEventArgs e)
@@ -119,9 +144,8 @@ namespace VixenModules.Analysis.BeatsAndBars
 
 				Bitmap noteBitmap = NotesizeBitmap;
 
-				// Create points that define line.
 				Point point1 = new Point(FIRST_BAR_OFFSET + (int)(interval * j), 
-					BeatsPerBarLabel.Location.Y - DIV_Y_OFFSET);
+					pictureBox1.Location.Y - DIV_Y_OFFSET);
 
 				if ((splitBeatsCB.Checked) && ((j %2) == 1))
 				{
@@ -155,6 +179,21 @@ namespace VixenModules.Analysis.BeatsAndBars
 		private void splitBeatsCB_CheckedChanged(object sender, EventArgs e)
 		{
 			Invalidate();
+		}
+
+		public double BeatPeriod
+		{
+			get
+			{
+				return m_beatPeriod; 
+				
+			}
+
+			set
+			{
+				m_beatPeriod = value;
+				Invalidate();
+			}
 		}
 	}
 }

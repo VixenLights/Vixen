@@ -13,9 +13,9 @@ namespace VixenModules.Analysis.BeatsAndBars
 		private ToolTip m_toolTip;
 		private static BeatBarSettingsData m_settingsData = null;
 		private bool m_allowUpdates;
-		private ManagedPlugin m_plugin;
+		private BeatBarPreviewData m_previewData;
 
-		public BeatsAndBarsDialog(ManagedPlugin plugin)
+		public BeatsAndBarsDialog()
 		{
 			InitializeComponent();
 
@@ -33,13 +33,12 @@ namespace VixenModules.Analysis.BeatsAndBars
 			m_toolTip.SetToolTip(BeatCountsCB, "Generates a beat collection for each beat count");
 			m_toolTip.SetToolTip(BeatSplitsCB, "Generates a beat collection for each beat count and each beat count split");
 			m_toolTip.SetToolTip(BeatsNameTB, "Base name of each collection");
-			m_toolTip.SetToolTip(BaseColorPanel, "Base color of each collection");
+			m_toolTip.SetToolTip(AllColorPanel, "Color of All Features Collection");
+			m_toolTip.SetToolTip(BarsColorPanel, "Color of Bars Collection");
+			m_toolTip.SetToolTip(BeatCountsColorPanel, "Color of Beat Counts Collection");
+			m_toolTip.SetToolTip(BeatSplitsColorPanel, "Color of Beat Splits Collection");
 
 			m_settingsData = m_settingsData ?? new BeatBarSettingsData("Beats");
-
-			m_plugin = plugin;
-
-			BaseColorPanel.BackColor = m_settingsData.Color;
 
 			BarsCB.Checked = true;
 			AllFeaturesCB.Checked = true;
@@ -58,21 +57,22 @@ namespace VixenModules.Analysis.BeatsAndBars
 			}
 		}
 
-
-		public void Parameters(ICollection<ManagedParameterDescriptor> parameterDescriptors)
-		{
-			
-		}
-
-		public List<MarkCollection> MarkCollectionList { set; private get; } 
-
-		public float BeatsPerBar
+		public BeatBarPreviewData PreviewData
 		{
 			get
 			{
-				return musicStaff1.BeatsPerBar;	
+				return m_previewData;
+			}
+
+			set
+			{
+				m_previewData = value;
+				musicStaff1.BeatPeriod = m_previewData.BeatPeriod;
 			}
 		}
+		public void Parameters(ICollection<ManagedParameterDescriptor> parameterDescriptors) { }
+
+		public List<MarkCollection> MarkCollectionList { set; private get; } 
 
 		private void SetBeatBarOutputSettings()
 		{
@@ -84,8 +84,12 @@ namespace VixenModules.Analysis.BeatsAndBars
 				m_settingsData.BeatSplitsEnabled = BeatSplitsCB.Checked;
 
 				m_settingsData.CollectionBaseName = BeatsNameTB.Text;
-				m_settingsData.Color = BaseColorPanel.BackColor;
 				m_settingsData.Divisions = (musicStaff1.SplitBeats ? 2 : 1);
+
+				m_settingsData.AllFeaturesColor = AllColorPanel.BackColor;
+				m_settingsData.BarsColor = BarsColorPanel.BackColor;
+				m_settingsData.BeatCountsColor = BeatCountsColorPanel.BackColor;
+				m_settingsData.BeatSplitsColor = BeatSplitsColorPanel.BackColor;
 
 				m_settingsData.BeatsPerBar = musicStaff1.BeatsPerBar;
 				m_settingsData.NoteSize = musicStaff1.NoteSize;
@@ -101,25 +105,22 @@ namespace VixenModules.Analysis.BeatsAndBars
 			}
 		}
 
-		private void BeatColorPanel_Click(object sender, EventArgs e)
+		private void ColorPanel_Click(object sender, EventArgs e)
 		{
+			Panel colorPanel = sender as Panel;
 			Common.Controls.ColorManagement.ColorPicker.ColorPicker picker =
 				new Common.Controls.ColorManagement.ColorPicker.ColorPicker();
 
 			DialogResult result = picker.ShowDialog();
 			if (result == DialogResult.OK)
 			{
-				m_settingsData.Color = picker.Color.ToRGB().ToArgb();
+				colorPanel.BackColor = picker.Color.ToRGB().ToArgb();
 			}
+			SetBeatBarOutputSettings();
 		}
 
 		private void GoButton_Click(object sender, EventArgs e)
 		{
-			m_plugin.SetParameter("bpb", BeatsPerBar);
-
-			m_plugin.Initialise(1,
-				(uint)m_plugin.GetPreferredStepSize(),
-				(uint)m_plugin.GetPreferredBlockSize());
 			SetBeatBarOutputSettings();				
 		}
 
@@ -130,80 +131,37 @@ namespace VixenModules.Analysis.BeatsAndBars
 				BeatSplitsCB.Checked = false;
 			}
 
+			BeatSplitsColorPanel.Enabled = musicStaff1.SplitBeats;
 			BeatSplitsCB.Enabled = musicStaff1.SplitBeats;
 		}
 
 		private void BarsCB_CheckedChanged(object sender, EventArgs e)
 		{
+			BarsColorPanel.Enabled = BarsCB.Checked;
 			SetBeatBarOutputSettings();
 		}
 
 		private void BeatCountsCB_CheckedChanged(object sender, EventArgs e)
 		{
+			BeatCountsColorPanel.Enabled = BeatCountsCB.Checked;
 			SetBeatBarOutputSettings();
 		}
 
 		private void BeatSplitsCB_CheckedChanged(object sender, EventArgs e)
 		{
+			BeatSplitsColorPanel.Enabled = BeatSplitsCB.Checked;
 			SetBeatBarOutputSettings();
 		}
 
 		private void AllFeaturesCB_CheckedChanged(object sender, EventArgs e)
 		{
+			AllColorPanel.Enabled = AllFeaturesCB.Checked;
 			SetBeatBarOutputSettings();
 		}
-	}
 
-	public class BeatBarSettingsData
-	{
-		public bool BarsEnabled { get; set; }
-		public bool BeatCollectionsEnabled { get; set; }
-		public bool BeatSplitsEnabled { get; set; }
-		public bool AllFeaturesEnabled { get; set; }
-		public String CollectionBaseName { get; set; }
-
-		public Color Color { get; set; }
-		public int Divisions { get; set; }
-
-		public int BeatsPerBar { get; set; }
-		public int NoteSize { get; set; }
-
-		public String AllCollectionName
+		private void PreviewButton_Click(object sender, EventArgs e)
 		{
-			get { return CollectionBaseName + " - All"; }
+
 		}
-
-		public String BarsCollectionName
-		{
-			get { return CollectionBaseName + " - Bars";  }
-		}
-
-		public String[] BeatCollectionNames(bool addDivisions)
-		{
-			int collections = BeatsPerBar * ((addDivisions) ? Divisions : 1);
-			int actualNoteSize = NoteSize * ((addDivisions) ? Divisions : 1);
-			
-			String[] retVal = new string[collections];
-			
-			for (int j = 0; j < collections; j++)
-			{
-				retVal[j] = CollectionBaseName + " 1/" + actualNoteSize + " Note - " + (j + 1);
-			}
-
-			return retVal;
-		}
-
-		public BeatBarSettingsData(String collectionBaseName)
-		{
-			BarsEnabled = false;
-			BeatCollectionsEnabled = false;
-			BeatSplitsEnabled = false;
-			AllFeaturesEnabled = false;
-
-			CollectionBaseName = collectionBaseName;
-			Color = Color.White;
-			Divisions = 1;
-		}
-
 	}
 }

@@ -5262,7 +5262,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				{
 					BeatsAndBars audioFeatures = new BeatsAndBars((Audio)module);
 					_sequence.MarkCollections = 
-						audioFeatures.GenerateMarksFromFeatures(_sequence.MarkCollections);
+						audioFeatures.DoBeatBarDetection(_sequence.MarkCollections);
 
 
 
