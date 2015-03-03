@@ -211,15 +211,10 @@ namespace BaseSequence
 				_endCheckTimer.Enabled=false;
 			}
 			
-			TimingSource.Stop();
-			
-			//Reset our position. No need to stop the media, we will just reset its position.
+			//Reset our position. No need to stop the source, we will just reset its position.
 			TimingSource.Position = StartTime;
 			
 			OnSequenceReStarted(new SequenceStartedEventArgs(Sequence, TimingSource, StartTime, EndTime));
-			
-			//Fire it back up again.
-			TimingSource.Start();
 			
 			while (TimingSource.Position == StartTime)
 			{
