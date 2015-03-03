@@ -5,7 +5,7 @@ using System.Text;
 
 namespace VixenModules.App.WebServer.Model
 {
-	class Status
+	public class Status
 	{
 		public string Message { get; set; }
 	}

@@ -1,4 +1,7 @@
-﻿using Vixen.Execution.DataSource;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Vixen.Execution.DataSource;
 using Vixen.Module.Timing;
 using Vixen.Sys;
 
@@ -17,6 +20,12 @@ namespace Vixen.Execution.Context
 		{
 			_name = name;
 			_dataSource = new LiveDataSource();
+		}
+
+		public void TerminateNode(Guid targetNode)
+		{
+			IEnumerable<IEffectNode> nodes = _currentEffects.Where(x => x.Effect.TargetNodes.Any(t => t.Id.Equals(targetNode))).ToList();
+			_currentEffects.RemoveEffects(nodes);
 		}
 
 		public override string Name
