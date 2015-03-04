@@ -123,7 +123,7 @@ namespace VixenModules.Analysis.BeatsAndBars
 				new Point(BPMLabelVal.Location.X + BPMLabelVal.PreferredWidth + VAL_LABEL_OFFSET, BPMLabelVal.Location.Y);
 			BarPeriodLabelVal.Location =
 				new Point(BarPeriodLabel.Location.X + BarPeriodLabel.PreferredWidth + LABEL_VAL_OFFSET, BarPeriodLabel.Location.Y);
-			BarPeriodLabelVal.Text = (m_beatPeriod * BeatsPerBar / 1000).ToString("F2");
+			BarPeriodLabelVal.Text = (BarPeriod / 1000).ToString("F2");
 
 			double divTime = splitBeatsCB.Checked ? m_beatPeriod/2 : m_beatPeriod;
 			DivTimeLabel.Location =
@@ -133,6 +133,9 @@ namespace VixenModules.Analysis.BeatsAndBars
 			DivTimeLabelVal.Text = divTime.ToString("F0");
 
 		}
+
+		public delegate void SettingChangedEventHandler(object sender, EventArgs e);
+		public event SettingChangedEventHandler SettingChanged;
 
 		private void staffBox1_Paint(object sender, PaintEventArgs e)
 		{
@@ -163,6 +166,11 @@ namespace VixenModules.Analysis.BeatsAndBars
 			if (BeatsPerBar < 16)
 			{
 				BeatsPerBar++;
+				if (SettingChanged != null)
+				{
+					SettingChanged(sender, e);
+				}
+
 				Invalidate();
 			}
 		}
@@ -172,28 +180,38 @@ namespace VixenModules.Analysis.BeatsAndBars
 			if (BeatsPerBar > 2)
 			{
 				BeatsPerBar--;
+				if (SettingChanged != null)
+				{
+					SettingChanged(sender, e);
+				}
+					
 				Invalidate();
 			}
 		}
 
 		private void splitBeatsCB_CheckedChanged(object sender, EventArgs e)
 		{
+			if (SettingChanged != null)
+			{
+				SettingChanged(sender, e);
+			}
 			Invalidate();
 		}
 
 		public double BeatPeriod
 		{
-			get
-			{
-				return m_beatPeriod; 
-				
-			}
+			get { return m_beatPeriod; }
 
 			set
 			{
 				m_beatPeriod = value;
 				Invalidate();
 			}
+		}
+
+		public double BarPeriod
+		{
+			get { return m_beatPeriod*BeatsPerBar;  }
 		}
 	}
 }

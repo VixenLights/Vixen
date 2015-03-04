@@ -33,17 +33,17 @@
 			this.GenerateButton = new System.Windows.Forms.Button();
 			this.CancelButton = new System.Windows.Forms.Button();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.musicStaff1 = new VixenModules.Analysis.BeatsAndBars.MusicStaff();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.AllColorPanel = new System.Windows.Forms.Panel();
+			this.BeatSplitsColorPanel = new System.Windows.Forms.Panel();
+			this.BeatCountsColorPanel = new System.Windows.Forms.Panel();
+			this.BarsColorPanel = new System.Windows.Forms.Panel();
 			this.BeatSplitsCB = new System.Windows.Forms.CheckBox();
 			this.AllFeaturesCB = new System.Windows.Forms.CheckBox();
 			this.BeatCountsCB = new System.Windows.Forms.CheckBox();
 			this.BarsCB = new System.Windows.Forms.CheckBox();
-			this.PreviewButton = new System.Windows.Forms.Button();
-			this.BarsColorPanel = new System.Windows.Forms.Panel();
-			this.BeatCountsColorPanel = new System.Windows.Forms.Panel();
-			this.BeatSplitsColorPanel = new System.Windows.Forms.Panel();
-			this.AllColorPanel = new System.Windows.Forms.Panel();
-			this.musicStaff1 = new VixenModules.Analysis.BeatsAndBars.MusicStaff();
+			this.PreviewGroupBox = new System.Windows.Forms.GroupBox();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.SuspendLayout();
@@ -69,7 +69,7 @@
 			// GenerateButton
 			// 
 			this.GenerateButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.GenerateButton.Location = new System.Drawing.Point(455, 328);
+			this.GenerateButton.Location = new System.Drawing.Point(455, 485);
 			this.GenerateButton.Name = "GenerateButton";
 			this.GenerateButton.Size = new System.Drawing.Size(75, 23);
 			this.GenerateButton.TabIndex = 4;
@@ -80,7 +80,7 @@
 			// CancelButton
 			// 
 			this.CancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.CancelButton.Location = new System.Drawing.Point(540, 328);
+			this.CancelButton.Location = new System.Drawing.Point(540, 485);
 			this.CancelButton.Name = "CancelButton";
 			this.CancelButton.Size = new System.Drawing.Size(75, 23);
 			this.CancelButton.TabIndex = 5;
@@ -97,6 +97,16 @@
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Divisons";
 			// 
+			// musicStaff1
+			// 
+			this.musicStaff1.BeatPeriod = 0D;
+			this.musicStaff1.BeatsPerBar = 4;
+			this.musicStaff1.Location = new System.Drawing.Point(6, 19);
+			this.musicStaff1.Name = "musicStaff1";
+			this.musicStaff1.Size = new System.Drawing.Size(597, 151);
+			this.musicStaff1.TabIndex = 6;
+			this.musicStaff1.Paint += new System.Windows.Forms.PaintEventHandler(this.musicStaff1_Paint);
+			// 
 			// groupBox2
 			// 
 			this.groupBox2.Controls.Add(this.AllColorPanel);
@@ -109,12 +119,52 @@
 			this.groupBox2.Controls.Add(this.BarsCB);
 			this.groupBox2.Controls.Add(this.label1);
 			this.groupBox2.Controls.Add(this.BeatsNameTB);
-			this.groupBox2.Location = new System.Drawing.Point(12, 196);
+			this.groupBox2.Location = new System.Drawing.Point(12, 353);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(608, 114);
 			this.groupBox2.TabIndex = 14;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Output";
+			// 
+			// AllColorPanel
+			// 
+			this.AllColorPanel.BackColor = System.Drawing.Color.White;
+			this.AllColorPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.AllColorPanel.Location = new System.Drawing.Point(505, 73);
+			this.AllColorPanel.Name = "AllColorPanel";
+			this.AllColorPanel.Size = new System.Drawing.Size(24, 21);
+			this.AllColorPanel.TabIndex = 18;
+			this.AllColorPanel.Click += new System.EventHandler(this.ColorPanel_Click);
+			// 
+			// BeatSplitsColorPanel
+			// 
+			this.BeatSplitsColorPanel.BackColor = System.Drawing.Color.Lime;
+			this.BeatSplitsColorPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.BeatSplitsColorPanel.Location = new System.Drawing.Point(224, 73);
+			this.BeatSplitsColorPanel.Name = "BeatSplitsColorPanel";
+			this.BeatSplitsColorPanel.Size = new System.Drawing.Size(24, 21);
+			this.BeatSplitsColorPanel.TabIndex = 17;
+			this.BeatSplitsColorPanel.Click += new System.EventHandler(this.ColorPanel_Click);
+			// 
+			// BeatCountsColorPanel
+			// 
+			this.BeatCountsColorPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
+			this.BeatCountsColorPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.BeatCountsColorPanel.Location = new System.Drawing.Point(363, 73);
+			this.BeatCountsColorPanel.Name = "BeatCountsColorPanel";
+			this.BeatCountsColorPanel.Size = new System.Drawing.Size(24, 21);
+			this.BeatCountsColorPanel.TabIndex = 17;
+			this.BeatCountsColorPanel.Click += new System.EventHandler(this.ColorPanel_Click);
+			// 
+			// BarsColorPanel
+			// 
+			this.BarsColorPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
+			this.BarsColorPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.BarsColorPanel.Location = new System.Drawing.Point(86, 73);
+			this.BarsColorPanel.Name = "BarsColorPanel";
+			this.BarsColorPanel.Size = new System.Drawing.Size(24, 21);
+			this.BarsColorPanel.TabIndex = 16;
+			this.BarsColorPanel.Click += new System.EventHandler(this.ColorPanel_Click);
 			// 
 			// BeatSplitsCB
 			// 
@@ -160,72 +210,21 @@
 			this.BarsCB.UseVisualStyleBackColor = true;
 			this.BarsCB.CheckedChanged += new System.EventHandler(this.BarsCB_CheckedChanged);
 			// 
-			// PreviewButton
+			// PreviewGroupBox
 			// 
-			this.PreviewButton.Location = new System.Drawing.Point(12, 328);
-			this.PreviewButton.Name = "PreviewButton";
-			this.PreviewButton.Size = new System.Drawing.Size(75, 23);
-			this.PreviewButton.TabIndex = 15;
-			this.PreviewButton.Text = "Preview";
-			this.PreviewButton.UseVisualStyleBackColor = true;
-			this.PreviewButton.Click += new System.EventHandler(this.PreviewButton_Click);
-			// 
-			// BarsColorPanel
-			// 
-			this.BarsColorPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
-			this.BarsColorPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.BarsColorPanel.Location = new System.Drawing.Point(86, 73);
-			this.BarsColorPanel.Name = "BarsColorPanel";
-			this.BarsColorPanel.Size = new System.Drawing.Size(24, 21);
-			this.BarsColorPanel.TabIndex = 16;
-			this.BarsColorPanel.Click += new System.EventHandler(this.ColorPanel_Click);
-			// 
-			// BeatCountsColorPanel
-			// 
-			this.BeatCountsColorPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-			this.BeatCountsColorPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.BeatCountsColorPanel.Location = new System.Drawing.Point(363, 73);
-			this.BeatCountsColorPanel.Name = "BeatCountsColorPanel";
-			this.BeatCountsColorPanel.Size = new System.Drawing.Size(24, 21);
-			this.BeatCountsColorPanel.TabIndex = 17;
-			this.BeatCountsColorPanel.Click += new System.EventHandler(this.ColorPanel_Click);
-			// 
-			// BeatSplitsColorPanel
-			// 
-			this.BeatSplitsColorPanel.BackColor = System.Drawing.Color.Lime;
-			this.BeatSplitsColorPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.BeatSplitsColorPanel.Location = new System.Drawing.Point(224, 73);
-			this.BeatSplitsColorPanel.Name = "BeatSplitsColorPanel";
-			this.BeatSplitsColorPanel.Size = new System.Drawing.Size(24, 21);
-			this.BeatSplitsColorPanel.TabIndex = 17;
-			this.BeatSplitsColorPanel.Click += new System.EventHandler(this.ColorPanel_Click);
-			// 
-			// AllColorPanel
-			// 
-			this.AllColorPanel.BackColor = System.Drawing.Color.White;
-			this.AllColorPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.AllColorPanel.Location = new System.Drawing.Point(505, 73);
-			this.AllColorPanel.Name = "AllColorPanel";
-			this.AllColorPanel.Size = new System.Drawing.Size(24, 21);
-			this.AllColorPanel.TabIndex = 18;
-			this.AllColorPanel.Click += new System.EventHandler(this.ColorPanel_Click);
-			// 
-			// musicStaff1
-			// 
-			this.musicStaff1.BeatPeriod = 0D;
-			this.musicStaff1.BeatsPerBar = 4;
-			this.musicStaff1.Location = new System.Drawing.Point(6, 19);
-			this.musicStaff1.Name = "musicStaff1";
-			this.musicStaff1.Size = new System.Drawing.Size(597, 151);
-			this.musicStaff1.TabIndex = 6;
-			this.musicStaff1.Paint += new System.Windows.Forms.PaintEventHandler(this.musicStaff1_Paint);
+			this.PreviewGroupBox.Location = new System.Drawing.Point(12, 196);
+			this.PreviewGroupBox.Name = "PreviewGroupBox";
+			this.PreviewGroupBox.Size = new System.Drawing.Size(612, 126);
+			this.PreviewGroupBox.TabIndex = 15;
+			this.PreviewGroupBox.TabStop = false;
+			this.PreviewGroupBox.Text = "Preview";
 			// 
 			// BeatsAndBarsDialog
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(634, 376);
-			this.Controls.Add(this.PreviewButton);
+			this.ClientSize = new System.Drawing.Size(634, 520);
+			this.Controls.Add(this.PreviewGroupBox);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.CancelButton);
@@ -255,11 +254,11 @@
 		private System.Windows.Forms.CheckBox BeatCountsCB;
 		private System.Windows.Forms.CheckBox BarsCB;
 		private System.Windows.Forms.CheckBox BeatSplitsCB;
-		private System.Windows.Forms.Button PreviewButton;
 		private System.Windows.Forms.Panel AllColorPanel;
 		private System.Windows.Forms.Panel BeatSplitsColorPanel;
 		private System.Windows.Forms.Panel BeatCountsColorPanel;
 		private System.Windows.Forms.Panel BarsColorPanel;
+		private System.Windows.Forms.GroupBox PreviewGroupBox;
 
 	}
 }

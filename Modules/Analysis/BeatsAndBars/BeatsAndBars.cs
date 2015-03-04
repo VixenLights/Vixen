@@ -254,6 +254,28 @@ namespace VixenModules.Analysis.BeatsAndBars
 			IDictionary<int, ICollection<ManagedFeature>> featureSet = GenerateFeatures(plugin, m_fSamplesPreview, false);
 			previewData.BeatPeriod = EstimateBeatPeriod(featureSet[2]);
 
+			BeatBarSettingsData settings = new BeatBarSettingsData("Preview");
+			settings.Divisions = 1;
+			settings.BeatSplitsEnabled = false;
+			settings.NoteSize = 4;
+			settings.BeatsPerBar = 4;
+
+			List<MarkCollection> collections = ExtractBeatCollectionsFromFeatureSet(featureSet[2], settings);
+			MarkCollection allCollection = new MarkCollection();
+			allCollection.Name = "Beat Marks";
+			collections.ForEach(x => allCollection.Marks.AddRange(x.Marks));
+			allCollection.Marks.Sort();
+			previewData.PreviewCollection = allCollection;
+
+			settings.BeatSplitsEnabled = true;
+			settings.Divisions = 2;
+			collections = ExtractSplitCollectionsFromFeatureSet(featureSet[2], settings);
+			allCollection = new MarkCollection();
+			allCollection.Name = "Beat Split Marks";
+			collections.ForEach(x => allCollection.Marks.AddRange(x.Marks));
+			allCollection.Marks.Sort();
+			previewData.PreviewSplitCollection = allCollection;
+
 			return previewData;
 		}
 
@@ -327,7 +349,7 @@ namespace VixenModules.Analysis.BeatsAndBars
 
 			Array.Copy(m_fSamplesAll, m_fSamplesPreview, m_fSamplesPreview.Length);
 
-			BeatsAndBarsDialog bbSettings = new BeatsAndBarsDialog();
+			BeatsAndBarsDialog bbSettings = new BeatsAndBarsDialog(m_audioModule);
 			bbSettings.PreviewData = GeneratePreviewData();
 			bbSettings.MarkCollectionList = markCollection;
 
@@ -356,6 +378,8 @@ namespace VixenModules.Analysis.BeatsAndBars
 		}
 
 		public double BeatPeriod { get; set; }
+		public MarkCollection PreviewCollection { get; set; }
+		public MarkCollection PreviewSplitCollection { get; set; }
 	}
 
 	public class BeatBarSettingsData

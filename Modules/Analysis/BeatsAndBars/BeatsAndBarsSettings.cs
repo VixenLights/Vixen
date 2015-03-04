@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using Common.Controls.Timeline;
 using QMLibrary;
+using VixenModules.Media.Audio;
 using VixenModules.Sequence.Timed;
 
 namespace VixenModules.Analysis.BeatsAndBars
@@ -14,8 +16,10 @@ namespace VixenModules.Analysis.BeatsAndBars
 		private static BeatBarSettingsData m_settingsData = null;
 		private bool m_allowUpdates;
 		private BeatBarPreviewData m_previewData;
+		private PreviewWaveform m_previewWaveForm;
 
-		public BeatsAndBarsDialog()
+
+		public BeatsAndBarsDialog(Audio audio)
 		{
 			InitializeComponent();
 
@@ -47,6 +51,31 @@ namespace VixenModules.Analysis.BeatsAndBars
 
 			m_allowUpdates = true;
 			SetBeatBarOutputSettings();
+
+			m_previewWaveForm = new PreviewWaveform(audio);
+			m_previewWaveForm.Width = musicStaff1.Width;
+			m_previewWaveForm.Height = 75;
+			m_previewWaveForm.Location = new Point(musicStaff1.Location.X, 25);
+
+			musicStaff1.SettingChanged += MusicStaffSettingsChanged;
+
+			PreviewGroupBox.Controls.Add(m_previewWaveForm);
+/*	
+			TimeInfo info = new TimeInfo();
+			info.TotalTime = new TimeSpan(0,0,0,2);
+
+		
+			Waveform wave = new Waveform(info);
+			wave.Audio = m_audio;
+			wave.BorderStyle = BorderStyle.FixedSingle;
+			wave.Width = musicStaff1.Width;
+			wave.Location = new Point(musicStaff1.Location.X, 25);
+			wave.Height = 75;
+
+			info.TotalTime = new TimeSpan(0,0,0,4);
+			
+			PreviewGroupBox.Controls.Add(wave);
+	*/
 		}
 
 		public BeatBarSettingsData Settings
@@ -68,6 +97,7 @@ namespace VixenModules.Analysis.BeatsAndBars
 			{
 				m_previewData = value;
 				musicStaff1.BeatPeriod = m_previewData.BeatPeriod;
+				SetBeatBarOutputSettings();
 			}
 		}
 		public void Parameters(ICollection<ManagedParameterDescriptor> parameterDescriptors) { }
@@ -93,16 +123,19 @@ namespace VixenModules.Analysis.BeatsAndBars
 
 				m_settingsData.BeatsPerBar = musicStaff1.BeatsPerBar;
 				m_settingsData.NoteSize = musicStaff1.NoteSize;
+
+				UpdatePreviewWaveform();
+
+				GenerateButton.Enabled = false;
+				if (AllFeaturesCB.Checked ||
+					BarsCB.Checked ||
+					BeatCountsCB.Checked ||
+					BeatSplitsCB.Checked)
+				{
+					GenerateButton.Enabled = true;
+				}
 			}
 
-			GenerateButton.Enabled = false;
-			if (AllFeaturesCB.Checked ||
-			    BarsCB.Checked ||
-			    BeatCountsCB.Checked ||
-			    BeatSplitsCB.Checked)
-			{
-				GenerateButton.Enabled = true;
-			}
 		}
 
 		private void ColorPanel_Click(object sender, EventArgs e)
@@ -124,7 +157,7 @@ namespace VixenModules.Analysis.BeatsAndBars
 			SetBeatBarOutputSettings();				
 		}
 
-		private void musicStaff1_Paint(object sender, PaintEventArgs e)
+		private void MusicStaffSettingsChanged(object sender, EventArgs e)
 		{
 			if (!musicStaff1.SplitBeats)
 			{
@@ -133,6 +166,27 @@ namespace VixenModules.Analysis.BeatsAndBars
 
 			BeatSplitsColorPanel.Enabled = musicStaff1.SplitBeats;
 			BeatSplitsCB.Enabled = musicStaff1.SplitBeats;
+
+			UpdatePreviewWaveform();
+		}
+
+		private void UpdatePreviewWaveform()
+		{
+			if (PreviewData != null)
+			{
+				m_previewWaveForm.IntervalMarks =
+					(musicStaff1.SplitBeats) ?
+					PreviewData.PreviewSplitCollection.Marks :
+					PreviewData.PreviewCollection.Marks;
+
+				m_previewWaveForm.PreviewPeriod = TimeSpan.FromMilliseconds(musicStaff1.BarPeriod);
+				Refresh();
+			}
+		}
+
+		private void musicStaff1_Paint(object sender, PaintEventArgs e)
+		{
+
 		}
 
 		private void BarsCB_CheckedChanged(object sender, EventArgs e)
@@ -157,11 +211,6 @@ namespace VixenModules.Analysis.BeatsAndBars
 		{
 			AllColorPanel.Enabled = AllFeaturesCB.Checked;
 			SetBeatBarOutputSettings();
-		}
-
-		private void PreviewButton_Click(object sender, EventArgs e)
-		{
-
 		}
 	}
 }
