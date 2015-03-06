@@ -84,15 +84,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (txtStartTime.MaskFull)
 			{
 				toolTip.ToolTipTitle = "Invalid Time";
-				toolTip.Show("You cannot enter any more data into the time field.", txtStartTime, 0, -20, 5000);
+				toolTip.Show("You cannot enter any more data into the time field.", txtStartTime, 100, -40, 3000);
 			} else if (e.Position == txtStartTime.Mask.Length)
 			{
 				toolTip.ToolTipTitle = "Invalid Time";
-				toolTip.Show("You cannot add extra number to the end of this time.", txtStartTime, 0, -20, 5000);
+				toolTip.Show("You cannot add extra number to the end of this time.", txtStartTime, 100, -40, 3000);
 			} else
 			{
 				toolTip.ToolTipTitle = "Invalid Time";
-				toolTip.Show("You can only add numeric characters (0-9) into this time field.", txtStartTime, 0, -20, 5000);
+				toolTip.Show("You can only add numeric characters (0-9) into this time field.", txtStartTime, 100, -40, 3000);
 			}
 			btnOk.Enabled = false;
 
@@ -103,15 +103,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (txtDuration.MaskFull)
 			{
 				toolTip.ToolTipTitle = "Invalid Time";
-				toolTip.Show("You cannot enter any more data into the time field.", txtDuration, 0, -20, 5000);
+				toolTip.Show("You cannot enter any more data into the time field.", txtDuration, 100, -40, 3000);
 			} else if (e.Position == txtStartTime.Mask.Length)
 			{
 				toolTip.ToolTipTitle = "Invalid Time";
-				toolTip.Show("You cannot add extra number to the end of this time.", txtDuration, 0, -20, 5000);
+				toolTip.Show("You cannot add extra number to the end of this time.", txtDuration, 100, -40, 3000);
 			} else
 			{
 				toolTip.ToolTipTitle = "Invalid Time";
-				toolTip.Show("You can only add numeric characters (0-9) into this time field.", txtDuration, 0, -20, 5000);
+				toolTip.Show("You can only add numeric characters (0-9) into this time field.", txtDuration, 100, -40, 3000);
 			}
 			btnOk.Enabled = false;
 		}
