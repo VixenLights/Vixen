@@ -1011,6 +1011,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				IMediaModuleInstance media = _sequence.GetAllMedia().First();
 				Audio audio = media as Audio;
 				toolStripMenuItem_removeAudio.Enabled = true;
+				beatBarDetectionToolStripMenuItem.Enabled = true;
 				if (audio != null)
 				{
 					if (audio.MediaExists)
@@ -1119,6 +1120,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			//Disable the menu item
 			toolStripMenuItem_removeAudio.Enabled = false;
+			beatBarDetectionToolStripMenuItem.Enabled = false;
 			toolStripButton_AssociateAudio.ToolTipText = @"Associate Audio";
 
 			SequenceModified();
@@ -1198,6 +1200,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 
 				toolStripMenuItem_removeAudio.Enabled = true;
+				beatBarDetectionToolStripMenuItem.Enabled = true;
 				toolStripButton_AssociateAudio.ToolTipText = string.Format("Associated Audio: {0}", Path.GetFileName(openFileDialog.FileName));
 
 				SequenceModified();
@@ -5254,7 +5257,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			return result;
 		}
 
-		private void beatBarDetectionToolStripMenuItem_Click(object sender, EventArgs e)
+		private void toolStripMenuItem_BeatBarDetection_Click(object sender, EventArgs e)
 		{
 			foreach (IMediaModuleInstance module in _sequence.GetAllMedia())
 			{

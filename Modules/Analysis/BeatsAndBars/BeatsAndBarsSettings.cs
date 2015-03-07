@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using Common.Controls.Timeline;
 using QMLibrary;
@@ -60,22 +61,6 @@ namespace VixenModules.Analysis.BeatsAndBars
 			musicStaff1.SettingChanged += MusicStaffSettingsChanged;
 
 			PreviewGroupBox.Controls.Add(m_previewWaveForm);
-/*	
-			TimeInfo info = new TimeInfo();
-			info.TotalTime = new TimeSpan(0,0,0,2);
-
-		
-			Waveform wave = new Waveform(info);
-			wave.Audio = m_audio;
-			wave.BorderStyle = BorderStyle.FixedSingle;
-			wave.Width = musicStaff1.Width;
-			wave.Location = new Point(musicStaff1.Location.X, 25);
-			wave.Height = 75;
-
-			info.TotalTime = new TimeSpan(0,0,0,4);
-			
-			PreviewGroupBox.Controls.Add(wave);
-	*/
 		}
 
 		public BeatBarSettingsData Settings
@@ -166,6 +151,7 @@ namespace VixenModules.Analysis.BeatsAndBars
 
 			BeatSplitsColorPanel.Enabled = musicStaff1.SplitBeats;
 			BeatSplitsCB.Enabled = musicStaff1.SplitBeats;
+			BeatSplitsCB.Checked = musicStaff1.SplitBeats;
 
 			UpdatePreviewWaveform();
 		}
@@ -179,7 +165,8 @@ namespace VixenModules.Analysis.BeatsAndBars
 					PreviewData.PreviewSplitCollection.Marks :
 					PreviewData.PreviewCollection.Marks;
 
-				m_previewWaveForm.PreviewPeriod = TimeSpan.FromMilliseconds(musicStaff1.BarPeriod);
+				m_previewWaveForm.PreviewPeriod = PreviewData.PreviewSplitCollection.Marks.Max();
+	
 				Refresh();
 			}
 		}

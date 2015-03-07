@@ -1073,10 +1073,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// 
 			// beatBarDetectionToolStripMenuItem
 			// 
+			this.beatBarDetectionToolStripMenuItem.Enabled = false;
 			this.beatBarDetectionToolStripMenuItem.Name = "beatBarDetectionToolStripMenuItem";
 			this.beatBarDetectionToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
 			this.beatBarDetectionToolStripMenuItem.Text = "Beat/Bar Detection";
-			this.beatBarDetectionToolStripMenuItem.Click += new System.EventHandler(this.beatBarDetectionToolStripMenuItem_Click);
+			this.beatBarDetectionToolStripMenuItem.Click += new System.EventHandler(this.toolStripMenuItem_BeatBarDetection_Click);
 			// 
 			// toolStripMenuItem_MarkManager
 			// 
