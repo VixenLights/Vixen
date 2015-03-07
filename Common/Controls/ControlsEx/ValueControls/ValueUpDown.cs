@@ -22,7 +22,7 @@ namespace Common.Controls.ControlsEx.ValueControls
 			private MiniTracker _tracker;
 
 			private Orientation _trackerorientation =
-				Orientation.Vertical;
+				Orientation.Horizontal;
 
 			#endregion
 
@@ -145,9 +145,9 @@ namespace Common.Controls.ControlsEx.ValueControls
 		private bool _mouseentered = false, _dropped = false;
 
 		private ElementInfo[] _elements = new ElementInfo[]
-		                                  	{
-		                                  		new ElementInfo(), new ElementInfo(), new ElementInfo()
-		                                  	};
+										  	{
+										  		new ElementInfo(), new ElementInfo(), new ElementInfo()
+										  	};
 
 		private int _currelement = -1;
 
@@ -192,8 +192,8 @@ namespace Common.Controls.ControlsEx.ValueControls
 
 			this.Size = new Size(72, 25);
 			this.SetStyle(ControlStyles.ResizeRedraw |
-			              ControlStyles.FixedHeight |
-			              ControlStyles.DoubleBuffer, true);
+						  ControlStyles.FixedHeight |
+						  ControlStyles.DoubleBuffer, true);
 		}
 
 		protected override void Dispose(bool disposing)
@@ -213,7 +213,7 @@ namespace Common.Controls.ControlsEx.ValueControls
 		{
 			for (int i = 0; i < _elements.Length; i++) {
 				if (_elements[i].Bounds.Contains(x, y) &&
-				    _elements[i].State != ElementState.disabled)
+					_elements[i].State != ElementState.disabled)
 					return i;
 			}
 			return -1;
@@ -238,7 +238,7 @@ namespace Common.Controls.ControlsEx.ValueControls
 		{
 			double rs;
 			if (double.TryParse(txt, System.Globalization.NumberStyles.Integer,
-			                    null, out rs)) {
+								null, out rs)) {
 				result = (int) rs;
 				return true;
 			}
@@ -343,7 +343,7 @@ namespace Common.Controls.ControlsEx.ValueControls
 				Rectangle rct = new Rectangle(0, 0, this.Width, 22);
 				e.Graphics.FillRectangle(Brushes.White, rct);
 				e.Graphics.DrawRectangle(_mouseentered ? SystemPens.Highlight : SystemPens.ControlDark,
-				                         rct.X, rct.Y, rct.Width - 1, rct.Height - 1);
+										 rct.X, rct.Y, rct.Width - 1, rct.Height - 1);
 				rct.X = this.Width - 15;
 				rct.Y = 1;
 				rct.Height -= 2;
@@ -393,7 +393,7 @@ namespace Common.Controls.ControlsEx.ValueControls
 		{
 			base.OnMouseLeave(e);
 			if (!_mouseentered || _dropped ||
-			    this.RectangleToScreen(this.ClientRectangle).Contains(Control.MousePosition)) return;
+				this.RectangleToScreen(this.ClientRectangle).Contains(Control.MousePosition)) return;
 			_mouseentered = false;
 			if (_currelement != -1) {
 				_elements[_currelement].State = ElementState.normal;
