@@ -41,19 +41,19 @@ namespace VixenModules.EffectEditor.TwinkleEffectEditor
 			get
 			{
 				return new object[]
-				       	{
-				       		IndividualElements,
-				       		MinimumLevel,
-				       		MaximumLevel,
-				       		LevelVariation,
-				       		AveragePulseTime,
-				       		PulseTimeVariation,
-				       		AverageCoverage,
-				       		ColorHandling,
-				       		StaticColor,
-				       		ColorGradient,
-				       		DepthOfEffect
-				       	};
+					   	{
+					   		IndividualElements,
+					   		MinimumLevel,
+					   		MaximumLevel,
+					   		LevelVariation,
+					   		AveragePulseTime,
+					   		PulseTimeVariation,
+					   		AverageCoverage,
+					   		ColorHandling,
+					   		StaticColor,
+					   		ColorGradient,
+					   		DepthOfEffect
+					   	};
 			}
 			set
 			{
@@ -96,8 +96,8 @@ namespace VixenModules.EffectEditor.TwinkleEffectEditor
 
 		public int LevelVariation
 		{
-			get { return (int) numericUpDownLevelVariation.Value; }
-			set { numericUpDownLevelVariation.Value = value; }
+			get { return (int)numericUpDownVariation.Value; }
+			set { numericUpDownVariation.Value = value; }
 		}
 
 		public int AveragePulseTime

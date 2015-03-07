@@ -53,9 +53,9 @@
 			this.radioButtonApplyToLevel = new System.Windows.Forms.RadioButton();
 			this.groupByDepthOfEffect = new System.Windows.Forms.GroupBox();
 			this.numericUpDownDepthOfEffect = new System.Windows.Forms.NumericUpDown();
+			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.curveTypeEditorControlChaseMovement = new VixenModules.EffectEditor.CurveTypeEditor.CurveTypeEditorControl();
 			this.levelTypeEditorControlDefaultLevel = new VixenModules.EffectEditor.LevelTypeEditor.LevelTypeEditorControl();
-			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownPulseTimeOverlap)).BeginInit();
 			this.groupBoxPulse.SuspendLayout();
 			this.groupBoxColor.SuspendLayout();
@@ -84,38 +84,38 @@
 			// numericUpDownPulseTimeOverlap
 			// 
 			this.numericUpDownPulseTimeOverlap.Increment = new decimal(new int[] {
-            50,
-            0,
-            0,
-            0});
+			50,
+			0,
+			0,
+			0});
 			this.numericUpDownPulseTimeOverlap.Location = new System.Drawing.Point(162, 122);
 			this.numericUpDownPulseTimeOverlap.Maximum = new decimal(new int[] {
-            100000,
-            0,
-            0,
-            0});
+			100000,
+			0,
+			0,
+			0});
 			this.numericUpDownPulseTimeOverlap.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			this.numericUpDownPulseTimeOverlap.Name = "numericUpDownPulseTimeOverlap";
 			this.numericUpDownPulseTimeOverlap.Size = new System.Drawing.Size(48, 20);
-			this.numericUpDownPulseTimeOverlap.TabIndex = 12;
+			this.numericUpDownPulseTimeOverlap.TabIndex = 1;
 			this.numericUpDownPulseTimeOverlap.Value = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
+			10,
+			0,
+			0,
+			0});
 			// 
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(301, 221);
+			this.label2.Location = new System.Drawing.Point(299, 221);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(69, 13);
+			this.label2.Size = new System.Drawing.Size(86, 13);
 			this.label2.TabIndex = 18;
-			this.label2.Text = "Default level:";
+			this.label2.Text = "Default level (%):";
 			// 
 			// groupBoxPulse
 			// 
@@ -128,7 +128,7 @@
 			this.groupBoxPulse.Location = new System.Drawing.Point(3, 89);
 			this.groupBoxPulse.Name = "groupBoxPulse";
 			this.groupBoxPulse.Size = new System.Drawing.Size(268, 193);
-			this.groupBoxPulse.TabIndex = 13;
+			this.groupBoxPulse.TabIndex = 1;
 			this.groupBoxPulse.TabStop = false;
 			this.groupBoxPulse.Text = "Pulse";
 			// 
@@ -138,10 +138,10 @@
 			this.chkExtendPulseToStart.Location = new System.Drawing.Point(13, 170);
 			this.chkExtendPulseToStart.Name = "chkExtendPulseToStart";
 			this.chkExtendPulseToStart.Size = new System.Drawing.Size(92, 17);
-			this.chkExtendPulseToStart.TabIndex = 18;
+			this.chkExtendPulseToStart.TabIndex = 3;
 			this.chkExtendPulseToStart.Text = "Pulse Start Fill";
 			this.toolTip1.SetToolTip(this.chkExtendPulseToStart, "This allows the beginning value of each pulse to be extended to the start of the " +
-        "effect.");
+		"effect.");
 			this.chkExtendPulseToStart.UseVisualStyleBackColor = true;
 			// 
 			// chkExtendPulseToEnd
@@ -150,10 +150,10 @@
 			this.chkExtendPulseToEnd.Location = new System.Drawing.Point(13, 147);
 			this.chkExtendPulseToEnd.Name = "chkExtendPulseToEnd";
 			this.chkExtendPulseToEnd.Size = new System.Drawing.Size(89, 17);
-			this.chkExtendPulseToEnd.TabIndex = 17;
+			this.chkExtendPulseToEnd.TabIndex = 2;
 			this.chkExtendPulseToEnd.Text = "Pulse End Fill";
 			this.toolTip1.SetToolTip(this.chkExtendPulseToEnd, "This allows the last value of each pulse to be extended to the end of the effect." +
-        "");
+		"");
 			this.chkExtendPulseToEnd.UseVisualStyleBackColor = true;
 			// 
 			// label3
@@ -171,11 +171,12 @@
 			curve1.LibraryReferenceName = "";
 			this.curveTypeEditorControlEachPulse.CurveValue = curve1;
 			this.curveTypeEditorControlEachPulse.EffectParameterValues = new object[] {
-        ((object)(curve1))};
+		((object)(curve1))};
 			this.curveTypeEditorControlEachPulse.Location = new System.Drawing.Point(105, 23);
+			this.curveTypeEditorControlEachPulse.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.curveTypeEditorControlEachPulse.Name = "curveTypeEditorControlEachPulse";
 			this.curveTypeEditorControlEachPulse.Size = new System.Drawing.Size(150, 80);
-			this.curveTypeEditorControlEachPulse.TabIndex = 14;
+			this.curveTypeEditorControlEachPulse.TabIndex = 0;
 			this.curveTypeEditorControlEachPulse.TargetEffect = null;
 			// 
 			// radioButtonGradientAcrossItems
@@ -184,7 +185,7 @@
 			this.radioButtonGradientAcrossItems.Location = new System.Drawing.Point(6, 126);
 			this.radioButtonGradientAcrossItems.Name = "radioButtonGradientAcrossItems";
 			this.radioButtonGradientAcrossItems.Size = new System.Drawing.Size(282, 17);
-			this.radioButtonGradientAcrossItems.TabIndex = 9;
+			this.radioButtonGradientAcrossItems.TabIndex = 4;
 			this.radioButtonGradientAcrossItems.TabStop = true;
 			this.radioButtonGradientAcrossItems.Text = "The gradient is spread over the range of sub-elements.";
 			this.radioButtonGradientAcrossItems.UseVisualStyleBackColor = true;
@@ -195,7 +196,7 @@
 			this.radioButtonStaticColor.Location = new System.Drawing.Point(6, 32);
 			this.radioButtonStaticColor.Name = "radioButtonStaticColor";
 			this.radioButtonStaticColor.Size = new System.Drawing.Size(82, 17);
-			this.radioButtonStaticColor.TabIndex = 7;
+			this.radioButtonStaticColor.TabIndex = 0;
 			this.radioButtonStaticColor.TabStop = true;
 			this.radioButtonStaticColor.Text = "Static Color:";
 			this.radioButtonStaticColor.UseVisualStyleBackColor = true;
@@ -212,7 +213,7 @@
 			this.groupBoxColor.Location = new System.Drawing.Point(277, 3);
 			this.groupBoxColor.Name = "groupBoxColor";
 			this.groupBoxColor.Size = new System.Drawing.Size(295, 205);
-			this.groupBoxColor.TabIndex = 15;
+			this.groupBoxColor.TabIndex = 3;
 			this.groupBoxColor.TabStop = false;
 			this.groupBoxColor.Text = "Color Handling";
 			// 
@@ -220,11 +221,12 @@
 			// 
 			this.colorTypeEditorControlStaticColor.ColorValue = System.Drawing.Color.Empty;
 			this.colorTypeEditorControlStaticColor.EffectParameterValues = new object[] {
-        ((object)(System.Drawing.Color.Empty))};
+		((object)(System.Drawing.Color.Empty))};
 			this.colorTypeEditorControlStaticColor.Location = new System.Drawing.Point(94, 20);
+			this.colorTypeEditorControlStaticColor.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.colorTypeEditorControlStaticColor.Name = "colorTypeEditorControlStaticColor";
 			this.colorTypeEditorControlStaticColor.Size = new System.Drawing.Size(40, 40);
-			this.colorTypeEditorControlStaticColor.TabIndex = 8;
+			this.colorTypeEditorControlStaticColor.TabIndex = 1;
 			this.colorTypeEditorControlStaticColor.TargetEffect = null;
 			// 
 			// label7
@@ -242,7 +244,7 @@
 			this.radioButtonGradientIndividual.Location = new System.Drawing.Point(6, 103);
 			this.radioButtonGradientIndividual.Name = "radioButtonGradientIndividual";
 			this.radioButtonGradientIndividual.Size = new System.Drawing.Size(241, 17);
-			this.radioButtonGradientIndividual.TabIndex = 2;
+			this.radioButtonGradientIndividual.TabIndex = 3;
 			this.radioButtonGradientIndividual.TabStop = true;
 			this.radioButtonGradientIndividual.Text = "Each individual pulse uses the entire gradient.";
 			this.radioButtonGradientIndividual.UseVisualStyleBackColor = true;
@@ -255,11 +257,12 @@
 			colorGradient1.Title = null;
 			this.colorGradientTypeEditorControlGradient.ColorGradientValue = colorGradient1;
 			this.colorGradientTypeEditorControlGradient.EffectParameterValues = new object[] {
-        ((object)(colorGradient1))};
+		((object)(colorGradient1))};
 			this.colorGradientTypeEditorControlGradient.Location = new System.Drawing.Point(94, 152);
+			this.colorGradientTypeEditorControlGradient.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.colorGradientTypeEditorControlGradient.Name = "colorGradientTypeEditorControlGradient";
 			this.colorGradientTypeEditorControlGradient.Size = new System.Drawing.Size(100, 40);
-			this.colorGradientTypeEditorControlGradient.TabIndex = 1;
+			this.colorGradientTypeEditorControlGradient.TabIndex = 5;
 			this.colorGradientTypeEditorControlGradient.TargetEffect = null;
 			// 
 			// radioButtonGradientOverWhole
@@ -268,10 +271,10 @@
 			this.radioButtonGradientOverWhole.Location = new System.Drawing.Point(6, 67);
 			this.radioButtonGradientOverWhole.Name = "radioButtonGradientOverWhole";
 			this.radioButtonGradientOverWhole.Size = new System.Drawing.Size(263, 30);
-			this.radioButtonGradientOverWhole.TabIndex = 0;
+			this.radioButtonGradientOverWhole.TabIndex = 2;
 			this.radioButtonGradientOverWhole.TabStop = true;
 			this.radioButtonGradientOverWhole.Text = "The gradient is shown over the whole effect.\r\nAll elements display the same color" +
-    " at a given time.";
+	" at a given time.";
 			this.radioButtonGradientOverWhole.UseVisualStyleBackColor = true;
 			// 
 			// label5
@@ -289,7 +292,7 @@
 			this.radioButtonApplyToAllElements.Location = new System.Drawing.Point(6, 21);
 			this.radioButtonApplyToAllElements.Name = "radioButtonApplyToAllElements";
 			this.radioButtonApplyToAllElements.Size = new System.Drawing.Size(82, 17);
-			this.radioButtonApplyToAllElements.TabIndex = 24;
+			this.radioButtonApplyToAllElements.TabIndex = 0;
 			this.radioButtonApplyToAllElements.TabStop = true;
 			this.radioButtonApplyToAllElements.Text = "All Elements";
 			this.radioButtonApplyToAllElements.UseVisualStyleBackColor = true;
@@ -301,7 +304,7 @@
 			this.radioButtonApplyToLevel.Location = new System.Drawing.Point(6, 43);
 			this.radioButtonApplyToLevel.Name = "radioButtonApplyToLevel";
 			this.radioButtonApplyToLevel.Size = new System.Drawing.Size(218, 17);
-			this.radioButtonApplyToLevel.TabIndex = 25;
+			this.radioButtonApplyToLevel.TabIndex = 1;
 			this.radioButtonApplyToLevel.TabStop = true;
 			this.radioButtonApplyToLevel.Text = "Only Groups/Elements nested this deep: ";
 			this.radioButtonApplyToLevel.UseVisualStyleBackColor = true;
@@ -315,7 +318,7 @@
 			this.groupByDepthOfEffect.Location = new System.Drawing.Point(3, 288);
 			this.groupByDepthOfEffect.Name = "groupByDepthOfEffect";
 			this.groupByDepthOfEffect.Size = new System.Drawing.Size(268, 74);
-			this.groupByDepthOfEffect.TabIndex = 26;
+			this.groupByDepthOfEffect.TabIndex = 2;
 			this.groupByDepthOfEffect.TabStop = false;
 			this.groupByDepthOfEffect.Text = "Effect Applies To";
 			// 
@@ -323,23 +326,23 @@
 			// 
 			this.numericUpDownDepthOfEffect.Location = new System.Drawing.Point(220, 43);
 			this.numericUpDownDepthOfEffect.Maximum = new decimal(new int[] {
-            99,
-            0,
-            0,
-            0});
+			99,
+			0,
+			0,
+			0});
 			this.numericUpDownDepthOfEffect.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			this.numericUpDownDepthOfEffect.Name = "numericUpDownDepthOfEffect";
 			this.numericUpDownDepthOfEffect.Size = new System.Drawing.Size(42, 20);
-			this.numericUpDownDepthOfEffect.TabIndex = 26;
+			this.numericUpDownDepthOfEffect.TabIndex = 2;
 			this.numericUpDownDepthOfEffect.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			// 
 			// curveTypeEditorControlChaseMovement
 			// 
@@ -347,22 +350,24 @@
 			curve2.LibraryReferenceName = "";
 			this.curveTypeEditorControlChaseMovement.CurveValue = curve2;
 			this.curveTypeEditorControlChaseMovement.EffectParameterValues = new object[] {
-        ((object)(curve2))};
+		((object)(curve2))};
 			this.curveTypeEditorControlChaseMovement.Location = new System.Drawing.Point(108, 3);
+			this.curveTypeEditorControlChaseMovement.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.curveTypeEditorControlChaseMovement.Name = "curveTypeEditorControlChaseMovement";
 			this.curveTypeEditorControlChaseMovement.Size = new System.Drawing.Size(150, 80);
-			this.curveTypeEditorControlChaseMovement.TabIndex = 17;
+			this.curveTypeEditorControlChaseMovement.TabIndex = 0;
 			this.curveTypeEditorControlChaseMovement.TargetEffect = null;
 			// 
 			// levelTypeEditorControlDefaultLevel
 			// 
 			this.levelTypeEditorControlDefaultLevel.EffectParameterValues = new object[] {
-        ((object)(1D))};
+		((object)(1D))};
 			this.levelTypeEditorControlDefaultLevel.LevelValue = 1D;
 			this.levelTypeEditorControlDefaultLevel.Location = new System.Drawing.Point(399, 214);
+			this.levelTypeEditorControlDefaultLevel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.levelTypeEditorControlDefaultLevel.Name = "levelTypeEditorControlDefaultLevel";
-			this.levelTypeEditorControlDefaultLevel.Size = new System.Drawing.Size(90, 39);
-			this.levelTypeEditorControlDefaultLevel.TabIndex = 16;
+			this.levelTypeEditorControlDefaultLevel.Size = new System.Drawing.Size(97, 39);
+			this.levelTypeEditorControlDefaultLevel.TabIndex = 6;
 			this.levelTypeEditorControlDefaultLevel.TargetEffect = null;
 			// 
 			// ChaseEffectEditorControl

@@ -29,12 +29,11 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			VixenModules.App.ColorGradients.ColorGradient colorGradient1 = new VixenModules.App.ColorGradients.ColorGradient();
+			VixenModules.App.ColorGradients.ColorGradient colorGradient2 = new VixenModules.App.ColorGradients.ColorGradient();
 			this.groupBoxLevels = new System.Windows.Forms.GroupBox();
 			this.levelTypeEditorControlMaxValue = new VixenModules.EffectEditor.LevelTypeEditor.LevelTypeEditorControl();
 			this.levelTypeEditorControlMinValue = new VixenModules.EffectEditor.LevelTypeEditor.LevelTypeEditorControl();
 			this.label5 = new System.Windows.Forms.Label();
-			this.numericUpDownLevelVariation = new System.Windows.Forms.NumericUpDown();
 			this.label2 = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
 			this.groupBoxDetails = new System.Windows.Forms.GroupBox();
@@ -57,8 +56,8 @@
 			this.radioButtonSynchronizedElements = new System.Windows.Forms.RadioButton();
 			this.radioButtonIndividualElements = new System.Windows.Forms.RadioButton();
 			this.radioButtonApplyToLevel = new System.Windows.Forms.RadioButton();
+			this.numericUpDownVariation = new System.Windows.Forms.NumericUpDown();
 			this.groupBoxLevels.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.numericUpDownLevelVariation)).BeginInit();
 			this.groupBoxDetails.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownCoverage)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownPulseTimeVariation)).BeginInit();
@@ -66,14 +65,15 @@
 			this.groupBoxColor.SuspendLayout();
 			this.groupBoxElements.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownDepthOfEffect)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numericUpDownVariation)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// groupBoxLevels
 			// 
+			this.groupBoxLevels.Controls.Add(this.numericUpDownVariation);
 			this.groupBoxLevels.Controls.Add(this.levelTypeEditorControlMaxValue);
 			this.groupBoxLevels.Controls.Add(this.levelTypeEditorControlMinValue);
 			this.groupBoxLevels.Controls.Add(this.label5);
-			this.groupBoxLevels.Controls.Add(this.numericUpDownLevelVariation);
 			this.groupBoxLevels.Controls.Add(this.label2);
 			this.groupBoxLevels.Controls.Add(this.label1);
 			this.groupBoxLevels.Location = new System.Drawing.Point(3, 147);
@@ -88,9 +88,10 @@
 			this.levelTypeEditorControlMaxValue.EffectParameterValues = new object[] {
 		((object)(1D))};
 			this.levelTypeEditorControlMaxValue.LevelValue = 1D;
-			this.levelTypeEditorControlMaxValue.Location = new System.Drawing.Point(90, 63);
+			this.levelTypeEditorControlMaxValue.Location = new System.Drawing.Point(104, 62);
+			this.levelTypeEditorControlMaxValue.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.levelTypeEditorControlMaxValue.Name = "levelTypeEditorControlMaxValue";
-			this.levelTypeEditorControlMaxValue.Size = new System.Drawing.Size(114, 39);
+			this.levelTypeEditorControlMaxValue.Size = new System.Drawing.Size(100, 39);
 			this.levelTypeEditorControlMaxValue.TabIndex = 1;
 			this.levelTypeEditorControlMaxValue.TargetEffect = null;
 			// 
@@ -99,50 +100,39 @@
 			this.levelTypeEditorControlMinValue.EffectParameterValues = new object[] {
 		((object)(1D))};
 			this.levelTypeEditorControlMinValue.LevelValue = 1D;
-			this.levelTypeEditorControlMinValue.Location = new System.Drawing.Point(90, 20);
+			this.levelTypeEditorControlMinValue.Location = new System.Drawing.Point(104, 19);
+			this.levelTypeEditorControlMinValue.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.levelTypeEditorControlMinValue.Name = "levelTypeEditorControlMinValue";
-			this.levelTypeEditorControlMinValue.Size = new System.Drawing.Size(114, 39);
+			this.levelTypeEditorControlMinValue.Size = new System.Drawing.Size(100, 39);
 			this.levelTypeEditorControlMinValue.TabIndex = 0;
 			this.levelTypeEditorControlMinValue.TargetEffect = null;
 			// 
 			// label5
 			// 
 			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(4, 110);
+			this.label5.Location = new System.Drawing.Point(4, 118);
 			this.label5.Name = "label5";
 			this.label5.Size = new System.Drawing.Size(96, 13);
 			this.label5.TabIndex = 5;
 			this.label5.Text = "Level variation (%):";
-			// 
-			// numericUpDownLevelVariation
-			// 
-			this.numericUpDownLevelVariation.Location = new System.Drawing.Point(122, 108);
-			this.numericUpDownLevelVariation.Name = "numericUpDownLevelVariation";
-			this.numericUpDownLevelVariation.Size = new System.Drawing.Size(59, 20);
-			this.numericUpDownLevelVariation.TabIndex = 2;
-			this.numericUpDownLevelVariation.Value = new decimal(new int[] {
-			50,
-			0,
-			0,
-			0});
 			// 
 			// label2
 			// 
 			this.label2.AutoSize = true;
 			this.label2.Location = new System.Drawing.Point(4, 75);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(83, 13);
+			this.label2.Size = new System.Drawing.Size(100, 13);
 			this.label2.TabIndex = 3;
-			this.label2.Text = "Maximum Level:";
+			this.label2.Text = "Maximum Level (%):";
 			// 
 			// label1
 			// 
 			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(4, 33);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(80, 13);
+			this.label1.Size = new System.Drawing.Size(97, 13);
 			this.label1.TabIndex = 2;
-			this.label1.Text = "Minimum Level:";
+			this.label1.Text = "Minimum Level (%):";
 			// 
 			// groupBoxDetails
 			// 
@@ -319,13 +309,13 @@
 			// 
 			// colorGradientTypeEditorControlGradient
 			// 
-			colorGradient1.Gammacorrected = false;
-			colorGradient1.IsCurrentLibraryGradient = false;
-			colorGradient1.LibraryReferenceName = "";
-			colorGradient1.Title = null;
-			this.colorGradientTypeEditorControlGradient.ColorGradientValue = colorGradient1;
+			colorGradient2.Gammacorrected = false;
+			colorGradient2.IsCurrentLibraryGradient = false;
+			colorGradient2.LibraryReferenceName = "";
+			colorGradient2.Title = null;
+			this.colorGradientTypeEditorControlGradient.ColorGradientValue = colorGradient2;
 			this.colorGradientTypeEditorControlGradient.EffectParameterValues = new object[] {
-		((object)(colorGradient1))};
+		((object)(colorGradient2))};
 			this.colorGradientTypeEditorControlGradient.Location = new System.Drawing.Point(79, 156);
 			this.colorGradientTypeEditorControlGradient.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.colorGradientTypeEditorControlGradient.Name = "colorGradientTypeEditorControlGradient";
@@ -416,6 +406,19 @@
 			this.radioButtonApplyToLevel.UseVisualStyleBackColor = true;
 			this.radioButtonApplyToLevel.CheckedChanged += new System.EventHandler(this.radioButtonEffectAppliesTo_CheckedChanged);
 			// 
+			// numericUpDownVariation
+			// 
+			this.numericUpDownVariation.Location = new System.Drawing.Point(106, 116);
+			this.numericUpDownVariation.Name = "numericUpDownVariation";
+			this.numericUpDownVariation.Size = new System.Drawing.Size(90, 20);
+			this.numericUpDownVariation.TabIndex = 9;
+			this.numericUpDownVariation.Value = 50;
+			this.numericUpDownVariation.Value = new decimal(new int[] {
+			50,
+			0,
+			0,
+			0});
+			// 
 			// TwinkleEffectEditorControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -428,7 +431,6 @@
 			this.Size = new System.Drawing.Size(504, 316);
 			this.groupBoxLevels.ResumeLayout(false);
 			this.groupBoxLevels.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.numericUpDownLevelVariation)).EndInit();
 			this.groupBoxDetails.ResumeLayout(false);
 			this.groupBoxDetails.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownCoverage)).EndInit();
@@ -439,6 +441,7 @@
 			this.groupBoxElements.ResumeLayout(false);
 			this.groupBoxElements.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownDepthOfEffect)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numericUpDownVariation)).EndInit();
 			this.ResumeLayout(false);
 
 		}
@@ -455,7 +458,6 @@
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.NumericUpDown numericUpDownAveragePulseTime;
 		private System.Windows.Forms.Label label5;
-		private System.Windows.Forms.NumericUpDown numericUpDownLevelVariation;
 		private System.Windows.Forms.Label label6;
 		private System.Windows.Forms.NumericUpDown numericUpDownCoverage;
 		private System.Windows.Forms.Label label7;
@@ -472,5 +474,6 @@
 		private System.Windows.Forms.RadioButton radioButtonApplyToLevel;
 		private LevelTypeEditorControl levelTypeEditorControlMinValue;
 		private LevelTypeEditorControl levelTypeEditorControlMaxValue;
+		private System.Windows.Forms.NumericUpDown numericUpDownVariation;
 	}
 }

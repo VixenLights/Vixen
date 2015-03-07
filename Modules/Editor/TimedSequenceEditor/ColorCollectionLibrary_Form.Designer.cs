@@ -51,13 +51,14 @@
 			// 
 			this.listViewColors.AllowDrop = true;
 			this.listViewColors.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			| System.Windows.Forms.AnchorStyles.Left) 
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.listViewColors.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.listViewColors.Location = new System.Drawing.Point(15, 55);
+			this.listViewColors.Location = new System.Drawing.Point(22, 85);
+			this.listViewColors.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.listViewColors.Name = "listViewColors";
 			this.listViewColors.ShowItemToolTips = true;
-			this.listViewColors.Size = new System.Drawing.Size(542, 201);
+			this.listViewColors.Size = new System.Drawing.Size(930, 538);
 			this.listViewColors.TabIndex = 0;
 			this.listViewColors.UseCompatibleStateImageBehavior = false;
 			this.listViewColors.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.listViewColors_ItemDrag);
@@ -68,21 +69,21 @@
 			// lblLibraryName
 			// 
 			this.lblLibraryName.AutoSize = true;
-			this.lblLibraryName.Location = new System.Drawing.Point(13, 31);
+			this.lblLibraryName.Location = new System.Drawing.Point(20, 48);
+			this.lblLibraryName.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.lblLibraryName.Name = "lblLibraryName";
-			this.lblLibraryName.Size = new System.Drawing.Size(80, 13);
+			this.lblLibraryName.Size = new System.Drawing.Size(119, 20);
 			this.lblLibraryName.TabIndex = 1;
 			this.lblLibraryName.Text = "Color Collection";
 			// 
 			// comboBoxCollections
 			// 
-			this.comboBoxCollections.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
 			this.comboBoxCollections.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.comboBoxCollections.FormattingEnabled = true;
-			this.comboBoxCollections.Location = new System.Drawing.Point(99, 28);
+			this.comboBoxCollections.Location = new System.Drawing.Point(148, 43);
+			this.comboBoxCollections.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.comboBoxCollections.Name = "comboBoxCollections";
-			this.comboBoxCollections.Size = new System.Drawing.Size(165, 21);
+			this.comboBoxCollections.Size = new System.Drawing.Size(308, 28);
 			this.comboBoxCollections.TabIndex = 2;
 			this.comboBoxCollections.SelectedIndexChanged += new System.EventHandler(this.comboBoxCollections_SelectedIndexChanged);
 			// 
@@ -90,9 +91,10 @@
 			// 
 			this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.btnOK.Location = new System.Drawing.Point(345, 262);
+			this.btnOK.Location = new System.Drawing.Point(637, 634);
+			this.btnOK.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.btnOK.Name = "btnOK";
-			this.btnOK.Size = new System.Drawing.Size(103, 23);
+			this.btnOK.Size = new System.Drawing.Size(154, 35);
 			this.btnOK.TabIndex = 8;
 			this.btnOK.Text = "OK";
 			this.btnOK.UseVisualStyleBackColor = true;
@@ -102,9 +104,10 @@
 			// 
 			this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.btnCancel.Location = new System.Drawing.Point(454, 262);
+			this.btnCancel.Location = new System.Drawing.Point(800, 634);
+			this.btnCancel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.btnCancel.Name = "btnCancel";
-			this.btnCancel.Size = new System.Drawing.Size(103, 23);
+			this.btnCancel.Size = new System.Drawing.Size(154, 35);
 			this.btnCancel.TabIndex = 9;
 			this.btnCancel.Text = "Cancel";
 			this.btnCancel.UseVisualStyleBackColor = true;
@@ -112,101 +115,105 @@
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(327, 31);
+			this.label1.Location = new System.Drawing.Point(490, 48);
+			this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(60, 13);
+			this.label1.Size = new System.Drawing.Size(89, 20);
 			this.label1.TabIndex = 11;
 			this.label1.Text = "Description";
 			// 
 			// textBoxDescription
 			// 
 			this.textBoxDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.textBoxDescription.Enabled = false;
-			this.textBoxDescription.Location = new System.Drawing.Point(393, 28);
+			this.textBoxDescription.Location = new System.Drawing.Point(590, 43);
+			this.textBoxDescription.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.textBoxDescription.Name = "textBoxDescription";
-			this.textBoxDescription.Size = new System.Drawing.Size(164, 20);
+			this.textBoxDescription.Size = new System.Drawing.Size(363, 26);
 			this.textBoxDescription.TabIndex = 12;
 			this.textBoxDescription.KeyUp += new System.Windows.Forms.KeyEventHandler(this.textBoxDescription_KeyUp);
 			// 
 			// menuStrip1
 			// 
+			this.menuStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
 			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.colorCollectionsToolStripMenuItem,
-            this.addColorToolStripMenuItem,
-            this.removeColorToolStripMenuItem});
+			this.colorCollectionsToolStripMenuItem,
+			this.addColorToolStripMenuItem,
+			this.removeColorToolStripMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(573, 24);
+			this.menuStrip1.Padding = new System.Windows.Forms.Padding(9, 3, 0, 3);
+			this.menuStrip1.Size = new System.Drawing.Size(979, 35);
 			this.menuStrip1.TabIndex = 13;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
 			// colorCollectionsToolStripMenuItem
 			// 
 			this.colorCollectionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.newCollectionToolStripMenuItem,
-            this.deleteCollectionToolStripMenuItem,
-            this.toolStripMenuItem1,
-            this.exportCollectionToolStripMenuItem,
-            this.importCollectionToolStripMenuItem});
+			this.newCollectionToolStripMenuItem,
+			this.deleteCollectionToolStripMenuItem,
+			this.toolStripMenuItem1,
+			this.exportCollectionToolStripMenuItem,
+			this.importCollectionToolStripMenuItem});
 			this.colorCollectionsToolStripMenuItem.Name = "colorCollectionsToolStripMenuItem";
-			this.colorCollectionsToolStripMenuItem.Size = new System.Drawing.Size(110, 20);
+			this.colorCollectionsToolStripMenuItem.Size = new System.Drawing.Size(158, 29);
 			this.colorCollectionsToolStripMenuItem.Text = "Color Collections";
 			// 
 			// newCollectionToolStripMenuItem
 			// 
 			this.newCollectionToolStripMenuItem.Name = "newCollectionToolStripMenuItem";
-			this.newCollectionToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+			this.newCollectionToolStripMenuItem.Size = new System.Drawing.Size(230, 30);
 			this.newCollectionToolStripMenuItem.Text = "New Collection";
 			this.newCollectionToolStripMenuItem.Click += new System.EventHandler(this.newCollectionToolStripMenuItem_Click);
 			// 
 			// deleteCollectionToolStripMenuItem
 			// 
 			this.deleteCollectionToolStripMenuItem.Name = "deleteCollectionToolStripMenuItem";
-			this.deleteCollectionToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+			this.deleteCollectionToolStripMenuItem.Size = new System.Drawing.Size(230, 30);
 			this.deleteCollectionToolStripMenuItem.Text = "Delete Collection";
 			this.deleteCollectionToolStripMenuItem.Click += new System.EventHandler(this.deleteCollectionToolStripMenuItem_Click);
 			// 
 			// toolStripMenuItem1
 			// 
 			this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-			this.toolStripMenuItem1.Size = new System.Drawing.Size(169, 6);
+			this.toolStripMenuItem1.Size = new System.Drawing.Size(227, 6);
 			// 
 			// exportCollectionToolStripMenuItem
 			// 
 			this.exportCollectionToolStripMenuItem.Name = "exportCollectionToolStripMenuItem";
-			this.exportCollectionToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+			this.exportCollectionToolStripMenuItem.Size = new System.Drawing.Size(230, 30);
 			this.exportCollectionToolStripMenuItem.Text = "Export Collections";
 			this.exportCollectionToolStripMenuItem.Click += new System.EventHandler(this.exportCollectionToolStripMenuItem_Click);
 			// 
 			// importCollectionToolStripMenuItem
 			// 
 			this.importCollectionToolStripMenuItem.Name = "importCollectionToolStripMenuItem";
-			this.importCollectionToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+			this.importCollectionToolStripMenuItem.Size = new System.Drawing.Size(230, 30);
 			this.importCollectionToolStripMenuItem.Text = "Import Collections";
 			this.importCollectionToolStripMenuItem.Click += new System.EventHandler(this.importCollectionToolStripMenuItem_Click);
 			// 
 			// addColorToolStripMenuItem
 			// 
 			this.addColorToolStripMenuItem.Name = "addColorToolStripMenuItem";
-			this.addColorToolStripMenuItem.Size = new System.Drawing.Size(73, 20);
+			this.addColorToolStripMenuItem.Size = new System.Drawing.Size(106, 29);
 			this.addColorToolStripMenuItem.Text = "Add Color";
 			this.addColorToolStripMenuItem.Click += new System.EventHandler(this.addColorToolStripMenuItem_Click);
 			// 
 			// removeColorToolStripMenuItem
 			// 
 			this.removeColorToolStripMenuItem.Name = "removeColorToolStripMenuItem";
-			this.removeColorToolStripMenuItem.Size = new System.Drawing.Size(94, 20);
+			this.removeColorToolStripMenuItem.Size = new System.Drawing.Size(137, 29);
 			this.removeColorToolStripMenuItem.Text = "Remove Color";
 			this.removeColorToolStripMenuItem.Click += new System.EventHandler(this.removeColorToolStripMenuItem_Click);
 			// 
 			// ColorCollectionLibrary_Form
 			// 
 			this.AcceptButton = this.btnOK;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.btnCancel;
-			this.ClientSize = new System.Drawing.Size(573, 297);
+			this.ClientSize = new System.Drawing.Size(979, 688);
 			this.Controls.Add(this.textBoxDescription);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.btnCancel);
@@ -217,9 +224,10 @@
 			this.Controls.Add(this.menuStrip1);
 			this.DoubleBuffered = true;
 			this.MainMenuStrip = this.menuStrip1;
+			this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
-			this.MinimumSize = new System.Drawing.Size(487, 336);
+			this.MinimumSize = new System.Drawing.Size(720, 487);
 			this.Name = "ColorCollectionLibrary_Form";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Color Collection Editor";
