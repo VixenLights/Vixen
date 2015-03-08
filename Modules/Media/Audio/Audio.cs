@@ -319,7 +319,13 @@ namespace VixenModules.Media.Audio
 				}
 				return TimeSpan.Zero;
 			}
-			set { }
+			set
+			{
+				if (_audioSystem != null)
+				{
+					_audioSystem.Position = (long)value.TotalMilliseconds;
+				}
+			}
 		}
 
 		public TimeSpan MediaDuration

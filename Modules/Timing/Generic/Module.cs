@@ -23,8 +23,9 @@ namespace VixenModules.Timing.Generic
 			get { return _stopwatch.Elapsed + _offset; }
 			set
 			{
-				if (!_stopwatch.IsRunning) {
-					_offset = value;
+				_offset = value;
+				if (_stopwatch.IsRunning) {
+					_stopwatch.Restart();
 				}
 			}
 		}

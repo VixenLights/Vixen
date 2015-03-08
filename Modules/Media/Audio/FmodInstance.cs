@@ -292,6 +292,14 @@ namespace VixenModules.Media.Audio
 				}
 				return 0;
 			}
+
+			set
+			{
+				if (_channel != null)
+				{
+					_channel.Position = (uint)value;
+				} 
+			}
 		}
 
 		public bool IsPlaying
