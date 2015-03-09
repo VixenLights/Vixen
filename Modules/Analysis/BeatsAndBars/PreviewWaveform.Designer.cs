@@ -15,6 +15,7 @@
 		{
 			if (disposing && (components != null))
 			{
+				_DisposePreviewWaveform();
 				components.Dispose();
 			}
 			base.Dispose(disposing);

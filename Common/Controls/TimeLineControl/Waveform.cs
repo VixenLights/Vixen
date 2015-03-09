@@ -304,10 +304,13 @@ namespace Common.Controls.Timeline
 		}
 		protected override void Dispose(bool disposing)
 		{
-			if (audio != null) {
+			//Only delete the Audio if Dispose call is explicit.
+			if ((audio != null) && (disposing == true)) 
+			{
 				audio.Dispose();
 				audio= null;
 			}
+
 			if (samples != null) {
 				samples.Clear();
 				samples	 = null;

@@ -119,5 +119,15 @@ namespace VixenModules.Analysis.BeatsAndBars
 				}
 			}
 		}
+
+		private void _DisposePreviewWaveform()
+		{
+			if (m_waveform != null)
+			{
+				m_waveform.Paint += PreviewWaveform_Paint;
+				m_waveform.Dispose();
+				m_waveform = null;
+			}
+		}
 	}
 }

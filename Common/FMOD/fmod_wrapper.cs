@@ -585,12 +585,12 @@ namespace FMOD {
             get {
                 // In milliseconds
                 uint value = 0;
-                if(m_channel != null) {
+				float freq = 0;
+				if(m_channel != null) {
                     m_channel.getPosition(ref value, TIMEUNIT.MS);
+					m_channel.getFrequency(ref freq);
                 }
 				// if we're at 0 or not at normal speed, don't bother with our timer
-				float freq = 0;
-                m_channel.getFrequency(ref freq);
 				if (value == 0 || freq != m_normalFrequency)
 					return value;
 				uint value2 = m_ptimer.GetPosition();
