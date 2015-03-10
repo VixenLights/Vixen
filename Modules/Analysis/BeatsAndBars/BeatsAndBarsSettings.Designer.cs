@@ -140,7 +140,7 @@
 			// 
 			this.BeatSplitsColorPanel.BackColor = System.Drawing.Color.Lime;
 			this.BeatSplitsColorPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.BeatSplitsColorPanel.Location = new System.Drawing.Point(224, 73);
+			this.BeatSplitsColorPanel.Location = new System.Drawing.Point(372, 73);
 			this.BeatSplitsColorPanel.Name = "BeatSplitsColorPanel";
 			this.BeatSplitsColorPanel.Size = new System.Drawing.Size(24, 21);
 			this.BeatSplitsColorPanel.TabIndex = 17;
@@ -150,7 +150,7 @@
 			// 
 			this.BeatCountsColorPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
 			this.BeatCountsColorPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.BeatCountsColorPanel.Location = new System.Drawing.Point(363, 73);
+			this.BeatCountsColorPanel.Location = new System.Drawing.Point(236, 73);
 			this.BeatCountsColorPanel.Name = "BeatCountsColorPanel";
 			this.BeatCountsColorPanel.Size = new System.Drawing.Size(24, 21);
 			this.BeatCountsColorPanel.TabIndex = 17;
@@ -169,7 +169,7 @@
 			// BeatSplitsCB
 			// 
 			this.BeatSplitsCB.AutoSize = true;
-			this.BeatSplitsCB.Location = new System.Drawing.Point(142, 77);
+			this.BeatSplitsCB.Location = new System.Drawing.Point(290, 77);
 			this.BeatSplitsCB.Name = "BeatSplitsCB";
 			this.BeatSplitsCB.Size = new System.Drawing.Size(76, 17);
 			this.BeatSplitsCB.TabIndex = 16;
@@ -191,7 +191,7 @@
 			// BeatCountsCB
 			// 
 			this.BeatCountsCB.AutoSize = true;
-			this.BeatCountsCB.Location = new System.Drawing.Point(273, 77);
+			this.BeatCountsCB.Location = new System.Drawing.Point(146, 77);
 			this.BeatCountsCB.Name = "BeatCountsCB";
 			this.BeatCountsCB.Size = new System.Drawing.Size(84, 17);
 			this.BeatCountsCB.TabIndex = 14;
