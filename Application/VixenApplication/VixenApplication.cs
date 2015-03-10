@@ -178,36 +178,81 @@ namespace VixenApplication
 		private void ProcessProfiles()
 		{
 			XMLProfileSettings profile = new XMLProfileSettings();
-			string loadAction = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "LoadAction", "LoadSelected");
+
+			// if we don't have any profiles yet, fall through so the "Default" profile will be created
 			int profileCount = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "ProfileCount", 0);
+			if (profileCount == 0)
+			{
+				return;
+			}
+
+			// now that we know we have profiles, get the rest of the settings
+			string loadAction = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "LoadAction", "LoadSelected");
 			int profileToLoad = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "ProfileToLoad", -1);
-			// why ask if there is 0 or 1 profile?
-			if (loadAction == "Ask" && profileCount > 1) {
-				SelectProfile f = new SelectProfile();
-				if (f.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-					_rootDataDirectory = f.DataFolder;
+
+			// try to load the selected profile
+			if (loadAction != "Ask" && profileToLoad > -1 && profileToLoad < profileCount)
+			{
+				string directory = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + profileToLoad + "/DataFolder", string.Empty);
+				if (!string.IsNullOrEmpty(directory) && Directory.Exists(directory))
+				{
+					_rootDataDirectory = directory;
+				}
+				else
+				{
+					string name = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + profileToLoad + "/Name", string.Empty);
+					MessageBox.Show("Selected profile '" + name + "' data directory does not exist!" + Environment.NewLine + Environment.NewLine + 
+									directory + Environment.NewLine + Environment.NewLine +
+									"Select a different profile to load or use the Profile Editor to create a new profile.",
+									"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				}
 			}
-			else 
-				// So we're to use the "selected" one...
+
+			// if _rootDataDirectory is still empty at this point either we're configured to always ask or loading the selected profile failed
+			// keep asking until we get a good profile directory
+			while (string.IsNullOrEmpty(_rootDataDirectory))
 			{
-				// If we don't have any profiles, get outta here
-				if (profileCount == 0 || profileToLoad < 0) {
-					return;
-				}
-				else {
-					if (profileToLoad < profileCount) {
-						_rootDataDirectory = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + profileToLoad.ToString() + "/DataFolder", string.Empty);
-						if (_rootDataDirectory != string.Empty) {
-							if (!System.IO.Directory.Exists(_rootDataDirectory))
-								System.IO.Directory.CreateDirectory(_rootDataDirectory);
-						}
-						else {
-							_rootDataDirectory = null;
-						}
+				SelectProfile selectProfile = new SelectProfile();
+				DialogResult result = selectProfile.ShowDialog();
+
+				if (result == DialogResult.OK)
+				{
+					string directory = selectProfile.DataFolder;
+					if (!string.IsNullOrEmpty(directory) && Directory.Exists(directory))
+					{
+						_rootDataDirectory = directory;
+						break;
+					}
+					else
+					{
+						MessageBox.Show(
+							"The data directory for the selected profile does not exist!" + Environment.NewLine + Environment.NewLine + 
+							directory + Environment.NewLine + Environment.NewLine +
+							"Select a different profile to load or use the Profile Editor to create a new profile.",
+							"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 					}
 				}
+				else if (result == DialogResult.Cancel)
+				{
+					DialogResult exit = MessageBox.Show(
+						Application.ProductName + " cannot continue without a vaild profile." + Environment.NewLine + Environment.NewLine +
+						"Are you sure you want to exit " + Application.ProductName + "?",
+						Application.ProductName,
+						MessageBoxButtons.YesNo,
+						MessageBoxIcon.None,
+						MessageBoxDefaultButton.Button2);
+					if (exit == DialogResult.Yes)
+					{
+						Environment.Exit(0);
+					}
+				}
+				else
+				{
+					// SelectProfile.ShowDialog() should only return DialogResult.OK or Cancel, how did we get here?
+					throw new NotImplementedException("SelectProfile.ShowDialog() returned " + result.ToString());
+				}
 			}
+
 			SetLogFilePaths();
 		}
 
