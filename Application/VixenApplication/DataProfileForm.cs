@@ -37,7 +37,7 @@ namespace VixenApplication
 		{
 			XMLProfileSettings profile = new XMLProfileSettings();
 
-			radioButtonAskMe.Checked = (profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "LoadAction", "Ask") == "Ask");
+			radioButtonAskMe.Checked = (profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "LoadAction", "LoadSelected") == "Ask");
 			radioButtonLoadThisProfile.Checked = (!radioButtonAskMe.Checked);
 
 			ProfileItem selectedItem = comboBoxLoadThisProfile.SelectedItem as ProfileItem;
@@ -147,13 +147,31 @@ namespace VixenApplication
 				ProfileItem item = comboBoxProfiles.Items[i] as ProfileItem;
 				profile.PutSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + i + "/Name", item.Name);
 				profile.PutSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + i + "/DataFolder", item.DataFolder);
-                //We're getting out of here and expect a restart by user, if the specified DataFolder doesn't exist, we should create it.
-                
-                if (item.DataFolder != string.Empty)
-                {
-                    if (!Directory.Exists(item.DataFolder))
-                        Directory.CreateDirectory(item.DataFolder);
-                }
+				if (!Directory.Exists(item.DataFolder))
+				{
+					DialogResult create = MessageBox.Show(
+						"The data directory '" + item.DataFolder + "' for profile '" + item.Name + "' does not exist.  Would you like to create it?",
+						Application.ProductName, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+					if (create == DialogResult.Yes)
+					{
+						try
+						{
+							Directory.CreateDirectory(item.DataFolder);
+						}
+						catch (Exception)
+						{
+							DialogResult result = MessageBox.Show(
+								"Could not create new profile directory: " + item.DataFolder + Environment.NewLine + Environment.NewLine +
+								"Click OK to ignore and continue, or Cancel to go back and edit.",
+								"Error", MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
+							if (result == DialogResult.Cancel)
+							{
+								DialogResult = DialogResult.None;
+								return;
+							}
+						}
+					}
+				}
             }
 
 			profile.PutSetting(XMLProfileSettings.SettingType.Profiles, "LoadAction",
