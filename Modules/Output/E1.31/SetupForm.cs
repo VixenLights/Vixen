@@ -937,7 +937,7 @@ namespace VixenModules.Output.E131
             }
             maxUniverse++;
             this.univDGVN.Rows.Add(
-            new object[] { 0, true, maxUniverse.ToString(), "1"});
+            new object[] { 0, true, maxUniverse.ToString(), "510"});
             updateDgvnStartValues();
 
             foreach (DataGridViewRow r in univDGVN.Rows)
