@@ -60,9 +60,10 @@ namespace VixenModules.Output.E131
             this.autoPopulateStart = new System.Windows.Forms.CheckBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.btnDelete = new System.Windows.Forms.Button();
-            this.btnAdd = new System.Windows.Forms.Button();
+            this.btnDeleteUnicast = new System.Windows.Forms.Button();
             this.btnAddUnicast = new System.Windows.Forms.Button();
+            this.btnDeleteUniverse = new System.Windows.Forms.Button();
+            this.btnAddUniverse = new System.Windows.Forms.Button();
             this.lblDestination = new System.Windows.Forms.Label();
             this.comboDestination = new System.Windows.Forms.ComboBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
@@ -94,7 +95,7 @@ namespace VixenModules.Output.E131
             // warningsCheckBox
             // 
             this.warningsCheckBox.AutoSize = true;
-            this.warningsCheckBox.Location = new System.Drawing.Point(24, 45);
+            this.warningsCheckBox.Location = new System.Drawing.Point(41, 45);
             this.warningsCheckBox.Name = "warningsCheckBox";
             this.warningsCheckBox.Size = new System.Drawing.Size(241, 17);
             this.warningsCheckBox.TabIndex = 2;
@@ -103,7 +104,7 @@ namespace VixenModules.Output.E131
             // statisticsCheckBox
             // 
             this.statisticsCheckBox.AutoSize = true;
-            this.statisticsCheckBox.Location = new System.Drawing.Point(24, 71);
+            this.statisticsCheckBox.Location = new System.Drawing.Point(41, 71);
             this.statisticsCheckBox.Name = "statisticsCheckBox";
             this.statisticsCheckBox.Size = new System.Drawing.Size(240, 17);
             this.statisticsCheckBox.TabIndex = 3;
@@ -111,7 +112,7 @@ namespace VixenModules.Output.E131
             // 
             // eventRepeatCountTextBox
             // 
-            this.eventRepeatCountTextBox.Location = new System.Drawing.Point(24, 157);
+            this.eventRepeatCountTextBox.Location = new System.Drawing.Point(48, 169);
             this.eventRepeatCountTextBox.MaxLength = 2;
             this.eventRepeatCountTextBox.Name = "eventRepeatCountTextBox";
             this.eventRepeatCountTextBox.Size = new System.Drawing.Size(30, 20);
@@ -123,18 +124,18 @@ namespace VixenModules.Output.E131
             // label
             // 
             this.label.AutoSize = true;
-            this.label.Location = new System.Drawing.Point(74, 157);
+            this.label.Location = new System.Drawing.Point(84, 169);
             this.label.Name = "label";
-            this.label.Size = new System.Drawing.Size(360, 26);
+            this.label.Size = new System.Drawing.Size(177, 78);
             this.label.TabIndex = 5;
-            this.label.Text = "Max Repeat Count:  Set to 0 to send all events (even 0s) to each universe,\r\nSet t" +
-    "o >0 to stop repeating frames after N duplicates are sent.";
+            this.label.Text = "Max Repeat Count\r\n\r\nSet to 0 to send all events (even 0s)\r\nto each universe, Set " +
+    "to >0 to stop\r\nrepeating frames after N duplicates\r\nare sent.";
             // 
             // okButton
             // 
             this.okButton.AutoSize = true;
             this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.okButton.Location = new System.Drawing.Point(292, 397);
+            this.okButton.Location = new System.Drawing.Point(188, 447);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(75, 23);
             this.okButton.TabIndex = 101;
@@ -144,7 +145,7 @@ namespace VixenModules.Output.E131
             // 
             this.cancelButton.AutoSize = true;
             this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancelButton.Location = new System.Drawing.Point(385, 398);
+            this.cancelButton.Location = new System.Drawing.Point(281, 448);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(75, 23);
             this.cancelButton.TabIndex = 102;
@@ -152,7 +153,7 @@ namespace VixenModules.Output.E131
             // 
             // eventSuppressCountTextBox
             // 
-            this.eventSuppressCountTextBox.Location = new System.Drawing.Point(24, 193);
+            this.eventSuppressCountTextBox.Location = new System.Drawing.Point(48, 283);
             this.eventSuppressCountTextBox.MaxLength = 2;
             this.eventSuppressCountTextBox.Name = "eventSuppressCountTextBox";
             this.eventSuppressCountTextBox.Size = new System.Drawing.Size(30, 20);
@@ -164,17 +165,17 @@ namespace VixenModules.Output.E131
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(74, 193);
+            this.label1.Location = new System.Drawing.Point(84, 283);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(324, 26);
+            this.label1.Size = new System.Drawing.Size(162, 78);
             this.label1.TabIndex = 104;
-            this.label1.Text = "Max Suppress Count:  Only used if Max Repeat Count is not  0. \r\nSet to >0 to allo" +
-    "w every Nth duplicate frame in a universe to go out.";
+            this.label1.Text = "Max Suppress Count\r\n\r\nOnly used if Max Repeat Count\r\nis not  0. Set to >0 to allo" +
+    "w every\r\nNth duplicate frame in a universe\r\nto go out.";
             // 
             // autoPopulateStart
             // 
             this.autoPopulateStart.AutoSize = true;
-            this.autoPopulateStart.Location = new System.Drawing.Point(24, 22);
+            this.autoPopulateStart.Location = new System.Drawing.Point(41, 22);
             this.autoPopulateStart.Name = "autoPopulateStart";
             this.autoPopulateStart.Size = new System.Drawing.Size(169, 17);
             this.autoPopulateStart.TabIndex = 105;
@@ -188,73 +189,85 @@ namespace VixenModules.Output.E131
             this.tabControl1.Location = new System.Drawing.Point(12, 8);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(452, 376);
+            this.tabControl1.Size = new System.Drawing.Size(354, 432);
             this.tabControl1.TabIndex = 106;
             // 
             // tabPage1
             // 
             this.tabPage1.BackColor = System.Drawing.SystemColors.Control;
-            this.tabPage1.Controls.Add(this.btnDelete);
-            this.tabPage1.Controls.Add(this.btnAdd);
+            this.tabPage1.Controls.Add(this.btnDeleteUnicast);
             this.tabPage1.Controls.Add(this.btnAddUnicast);
+            this.tabPage1.Controls.Add(this.btnDeleteUniverse);
+            this.tabPage1.Controls.Add(this.btnAddUniverse);
             this.tabPage1.Controls.Add(this.lblDestination);
             this.tabPage1.Controls.Add(this.comboDestination);
             this.tabPage1.Controls.Add(this.univDGVN);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(444, 350);
+            this.tabPage1.Size = new System.Drawing.Size(346, 406);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Universes";
             // 
-            // btnDelete
+            // btnRemoveUnicast
             // 
-            this.btnDelete.Location = new System.Drawing.Point(362, 45);
-            this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(27, 28);
-            this.btnDelete.TabIndex = 6;
-            this.btnDelete.Text = "-";
-            this.btnDelete.UseVisualStyleBackColor = true;
-            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
-            // 
-            // btnAdd
-            // 
-            this.btnAdd.Location = new System.Drawing.Point(362, 11);
-            this.btnAdd.Name = "btnAdd";
-            this.btnAdd.Size = new System.Drawing.Size(27, 28);
-            this.btnAdd.TabIndex = 5;
-            this.btnAdd.Text = "+";
-            this.btnAdd.UseVisualStyleBackColor = true;
-            this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
+            this.btnDeleteUnicast.Location = new System.Drawing.Point(265, 343);
+            this.btnDeleteUnicast.Name = "btnRemoveUnicast";
+            this.btnDeleteUnicast.Size = new System.Drawing.Size(27, 28);
+            this.btnDeleteUnicast.TabIndex = 8;
+            this.btnDeleteUnicast.Text = "-";
+            this.btnDeleteUnicast.UseVisualStyleBackColor = true;
+            this.btnDeleteUnicast.Click += new System.EventHandler(this.btnRemoveUnicast_Click);
             // 
             // btnAddUnicast
             // 
-            this.btnAddUnicast.Location = new System.Drawing.Point(331, 316);
+            this.btnAddUnicast.Location = new System.Drawing.Point(232, 343);
             this.btnAddUnicast.Name = "btnAddUnicast";
-            this.btnAddUnicast.Size = new System.Drawing.Size(105, 24);
-            this.btnAddUnicast.TabIndex = 4;
-            this.btnAddUnicast.Text = "Add Unicast IP";
+            this.btnAddUnicast.Size = new System.Drawing.Size(27, 28);
+            this.btnAddUnicast.TabIndex = 7;
+            this.btnAddUnicast.Text = "+";
             this.btnAddUnicast.UseVisualStyleBackColor = true;
-            this.btnAddUnicast.Click += new System.EventHandler(this.btnAddUnicast_Click);
+            this.btnAddUnicast.Click += new System.EventHandler(this.btnAddUnicast_Click_1);
+            // 
+            // btnDeleteUniverse
+            // 
+            this.btnDeleteUniverse.Location = new System.Drawing.Point(298, 45);
+            this.btnDeleteUniverse.Name = "btnDeleteUniverse";
+            this.btnDeleteUniverse.Size = new System.Drawing.Size(27, 28);
+            this.btnDeleteUniverse.TabIndex = 6;
+            this.btnDeleteUniverse.Text = "-";
+            this.btnDeleteUniverse.UseVisualStyleBackColor = true;
+            this.btnDeleteUniverse.Click += new System.EventHandler(this.btnDelete_Click);
+            // 
+            // btnAddUniverse
+            // 
+            this.btnAddUniverse.Location = new System.Drawing.Point(298, 11);
+            this.btnAddUniverse.Name = "btnAddUniverse";
+            this.btnAddUniverse.Size = new System.Drawing.Size(27, 28);
+            this.btnAddUniverse.TabIndex = 5;
+            this.btnAddUniverse.Text = "+";
+            this.btnAddUniverse.UseVisualStyleBackColor = true;
+            this.btnAddUniverse.Click += new System.EventHandler(this.btnAdd_Click);
             // 
             // lblDestination
             // 
             this.lblDestination.AutoSize = true;
             this.lblDestination.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDestination.Location = new System.Drawing.Point(2, 314);
+            this.lblDestination.Location = new System.Drawing.Point(19, 345);
             this.lblDestination.Name = "lblDestination";
-            this.lblDestination.Size = new System.Drawing.Size(107, 24);
+            this.lblDestination.Size = new System.Drawing.Size(102, 24);
             this.lblDestination.TabIndex = 3;
-            this.lblDestination.Text = "Destination:";
+            this.lblDestination.Text = "Destination";
             // 
             // comboDestination
             // 
             this.comboDestination.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboDestination.FormattingEnabled = true;
-            this.comboDestination.Location = new System.Drawing.Point(111, 317);
+            this.comboDestination.Location = new System.Drawing.Point(23, 374);
             this.comboDestination.Name = "comboDestination";
-            this.comboDestination.Size = new System.Drawing.Size(214, 21);
+            this.comboDestination.Size = new System.Drawing.Size(269, 21);
             this.comboDestination.TabIndex = 2;
+            this.comboDestination.SelectedIndexChanged += new System.EventHandler(this.comboDestination_SelectedIndexChanged);
             // 
             // tabPage2
             // 
@@ -271,7 +284,7 @@ namespace VixenModules.Output.E131
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(444, 350);
+            this.tabPage2.Size = new System.Drawing.Size(346, 406);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Advanced Options";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -279,7 +292,7 @@ namespace VixenModules.Output.E131
             // lblPriority
             // 
             this.lblPriority.AutoSize = true;
-            this.lblPriority.Location = new System.Drawing.Point(91, 126);
+            this.lblPriority.Location = new System.Drawing.Point(108, 126);
             this.lblPriority.Name = "lblPriority";
             this.lblPriority.Size = new System.Drawing.Size(70, 13);
             this.lblPriority.TabIndex = 108;
@@ -287,7 +300,7 @@ namespace VixenModules.Output.E131
             // 
             // numericPriority
             // 
-            this.numericPriority.Location = new System.Drawing.Point(24, 122);
+            this.numericPriority.Location = new System.Drawing.Point(41, 122);
             this.numericPriority.Maximum = new decimal(new int[] {
             200,
             0,
@@ -305,7 +318,7 @@ namespace VixenModules.Output.E131
             // chkBoxTransmitBlind
             // 
             this.chkBoxTransmitBlind.AutoSize = true;
-            this.chkBoxTransmitBlind.Location = new System.Drawing.Point(24, 95);
+            this.chkBoxTransmitBlind.Location = new System.Drawing.Point(41, 95);
             this.chkBoxTransmitBlind.Name = "chkBoxTransmitBlind";
             this.chkBoxTransmitBlind.Size = new System.Drawing.Size(118, 17);
             this.chkBoxTransmitBlind.TabIndex = 106;
@@ -322,10 +335,10 @@ namespace VixenModules.Output.E131
             this.universeColumn,
             this.sizeColumn});
             this.univDGVN.ContextMenuStrip = this.rowManipulationContextMenuStrip;
-            this.univDGVN.Location = new System.Drawing.Point(87, 11);
+            this.univDGVN.Location = new System.Drawing.Point(23, 11);
             this.univDGVN.Name = "univDGVN";
             this.univDGVN.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-            this.univDGVN.Size = new System.Drawing.Size(269, 295);
+            this.univDGVN.Size = new System.Drawing.Size(269, 317);
             this.univDGVN.TabIndex = 1;
             this.univDGVN.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.UnivDgvnCellEndEdit);
             this.univDGVN.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.UnivDgvnCellEnter);
@@ -390,7 +403,7 @@ namespace VixenModules.Output.E131
             // 
             this.AcceptButton = this.okButton;
             this.CancelButton = this.cancelButton;
-            this.ClientSize = new System.Drawing.Size(469, 433);
+            this.ClientSize = new System.Drawing.Size(377, 480);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.okButton);
@@ -437,8 +450,9 @@ namespace VixenModules.Output.E131
         private DataGridViewCheckBoxColumn activeColumn;
         private DataGridViewTextBoxColumn universeColumn;
         private DataGridViewTextBoxColumn sizeColumn;
+        private Button btnAddUniverse;
+        private Button btnDeleteUniverse;
+        private Button btnDeleteUnicast;
         private Button btnAddUnicast;
-        private Button btnAdd;
-        private Button btnDelete;
     }
 }

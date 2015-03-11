@@ -8,6 +8,7 @@
 		public UnicastForm()
 		{
 			this.InitializeComponent();
+            ipTextBox.BringToFront();
 		}
 
 		public string IpAddrText
@@ -46,10 +47,12 @@
                 networkNameTextBox.Enabled = true;
                 ipTextBox.Enabled = false;
                 ipRadio.Checked = false;
+                networkNameTextBox.BringToFront();
             }
             else
             {
                 networkNameTextBox.Enabled = false;
+                ipTextBox.BringToFront();
                 ipTextBox.Enabled = true;
                 ipRadio.Checked = true;
             }

@@ -97,10 +97,15 @@ namespace VixenModules.Output.E131
 
             // finally initialize the form
             InitializeComponent();
-            btnAdd.Text = "";
-            btnAdd.Image = Tools.GetIcon(Resources.add, 16);
-            btnDelete.Text = "";
-            btnDelete.Image = Tools.GetIcon(Resources.delete, 16);
+            btnAddUniverse.Text = "";
+            btnAddUniverse.Image = Tools.GetIcon(Resources.add, 16);
+            btnDeleteUniverse.Text = "";
+            btnDeleteUniverse.Image = Tools.GetIcon(Resources.delete, 16);
+
+            btnAddUnicast.Text = "";
+            btnAddUnicast.Image = Tools.GetIcon(Resources.add, 16);
+            btnDeleteUnicast.Text = "";
+            btnDeleteUnicast.Image = Tools.GetIcon(Resources.delete, 16);
             SetDestinations();
         }
 
@@ -818,11 +823,6 @@ namespace VixenModules.Output.E131
             }
         }
 
-        private bool validateIsUniqueEndpoint()
-        {
-            return true;
-        }
-
         private void SetupForm_FormClosing(object sender, FormClosingEventArgs e)
         {
 
@@ -918,11 +918,6 @@ namespace VixenModules.Output.E131
             updateDgvnStartValues();
         }
 
-        private void btnAddUnicast_Click(object sender, EventArgs e)
-        {
-            AddUnicastIp();
-        }
-
         private void btnAdd_Click(object sender, EventArgs e)
         {
             int maxUniverse = 0;
@@ -980,6 +975,49 @@ namespace VixenModules.Output.E131
         {
             if (e.KeyCode == Keys.Delete)
                 btnDelete_Click(null, null);
+        }
+
+        private void btnAddUnicast_Click_1(object sender, EventArgs e)
+        {
+            AddUnicastIp();
+        }
+
+        private void btnRemoveUnicast_Click(object sender, EventArgs e)
+        {
+            if (comboDestination.SelectedItem.ToString().StartsWith("Multicast"))
+            {
+                MessageBox.Show("Multicast destinations cannot be removed.", "Streaming ACN (E1.31)", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            //Validate that the unicast destination isn't in use by another instance of the plugin
+
+            var destination = new Tuple<string, string>(null, null);
+            destination = GetDestination(); //Item1 Unicast, Item2 Multicast
+
+            foreach (E131OutputPlugin p in E131OutputPlugin.PluginInstances)
+            {
+                if (p.isSetupOpen) //don't validate against this instance of the plugin
+                    continue;
+
+                if ((p.ModuleData as E131ModuleDataModel).Unicast == destination.Item1)
+                {
+                    MessageBox.Show("This destination is in use by another instance of the plugin and cannot be removed.", "Streaming ACN (E1.31)", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+            }
+
+            E131OutputPlugin.unicasts.Remove(destination.Item1);
+            SetDestinations();
+            comboDestination.SelectedIndex = 0;
+        }
+
+        private void comboDestination_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboDestination.SelectedItem.ToString().StartsWith("Multicast"))
+                btnDeleteUnicast.Enabled = false;
+            else
+                btnDeleteUnicast.Enabled = true;
         }
     }
 }
