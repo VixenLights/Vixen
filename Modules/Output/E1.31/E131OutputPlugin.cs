@@ -207,7 +207,7 @@ namespace VixenModules.Controller.E131
                     running = false; //prevent updates
 
                     // update in memory table to match xml
-                    this.Shutdown();
+                    this.Stop();
                     this.Start();
                 }
             }
@@ -226,48 +226,57 @@ namespace VixenModules.Controller.E131
 
         // -------------------------------------------------------------
         // 
-        // 	Shutdown() - called when execution is stopped or the
+        // 	Stop() - called when execution is stopped or the
         // 				 plugin instance is no longer going to be
         // 				 referenced
         // 
         // -------------------------------------------------------------
-        public void Shutdown()
+        public override void Stop()
         {
+            base.Stop();
+            PluginInstances.Remove(this);
             running = false;
 
-            // keep track of interface ids we have shutdown
-            var idList = new SortedList<string, int>();
-
-            // iterate through universetable
-            foreach (var uE in _data.Universes)
+            //Close open sockets
+            //If unicast then all universes are sharing a socket
+            //so just close the first/only one.
+            if (_data.Unicast != null)
             {
-                // assume multicast
-                string id = uE.Multicast;
-
-                // if unicast use psuedo id
-                if (uE.Unicast != null)
+                if (_data.Universes != null && _data.Universes[0].Socket != null)
                 {
-                    id = "unicast";
+                    _data.Universes[0].Socket.Shutdown(SocketShutdown.Both);
+                    _data.Universes[0].Socket.Close();
                 }
+            }
+            else if (_data.Multicast != null)
+            {
+                // keep track of interface ids we have shutdown
+                var idList = new SortedList<string, int>();
 
-                // if active
-                if (uE.Active)
+                // iterate through universetable
+                foreach (var uE in _data.Universes)
                 {
-                    // and a usable socket
-                    if (uE.Socket != null)
+                    // assume multicast
+                    string id = _data.Multicast;
+
+                    // if active
+                    if (uE.Active)
                     {
-                        // if not already done
-                        if (!idList.ContainsKey(id))
+                        // and a usable socket
+                        if (uE.Socket != null)
                         {
-                            // record it & shut it down
-                            idList.Add(id, 1);
-                            uE.Socket.Shutdown(SocketShutdown.Both);
-                            uE.Socket.Close();
+                            // if not already done
+                            if (!idList.ContainsKey(id))
+                            {
+                                // record it & shut it down
+                                idList.Add(id, 1);
+                                uE.Socket.Shutdown(SocketShutdown.Both);
+                                uE.Socket.Close();
+                            }
                         }
                     }
                 }
             }
-
 
             if (_data.Statistics)
             {
@@ -298,13 +307,8 @@ namespace VixenModules.Controller.E131
 
             // this._universeTable.Clear();
             if (this._nicTable != null) this._nicTable.Clear();
-            this._nicTable = new  SortedList<string, NetworkInterface>();
-        }
+            this._nicTable = new SortedList<string, NetworkInterface>();
 
-        public override void Stop()
-        {
-            base.Stop();
-            PluginInstances.Remove(this);
         }
 
         // -------------------------------------------------------------
