@@ -88,14 +88,13 @@ namespace VixenModules.Controller.E131
         private long _totalTicks;
 
         internal bool isSetupOpen;
-        private bool hasStarted;
 
         private byte[] channelValues;
 
         /// <summary>
-        /// Is the E1.31 control currently running?
+        /// Is the E1.31 controller currently running?
         /// </summary>
-        private bool running = true;
+        private bool running = false;
 
         internal static List<E131OutputPlugin> PluginInstances = new List<E131OutputPlugin>();
         internal static SortedList<string, int> unicasts = new SortedList<string, int>();
@@ -118,7 +117,7 @@ namespace VixenModules.Controller.E131
         {
             DataPolicyFactory = new DataPolicyFactory();
             isSetupOpen = false;
-            hasStarted = false;
+            running = false;
         }
 
 
@@ -205,7 +204,7 @@ namespace VixenModules.Controller.E131
                         }
                     }
 
-                    hasStarted = false; //prevent updates
+                    running = false; //prevent updates
 
                     // update in memory table to match xml
                     this.Shutdown();
@@ -325,7 +324,10 @@ namespace VixenModules.Controller.E131
         // -------------------------------------------------------------
         public override void Start()
         {
-            running = true;
+            bool cleanStart = true;
+            
+            base.Start();
+
             if(!PluginInstances.Contains(this))
                 PluginInstances.Add(this);
 
@@ -387,7 +389,7 @@ namespace VixenModules.Controller.E131
             foreach (var uE in _data.Universes)
             {
                 // if it's still active we'll look into making a socket for it
-                if (running && uE.Active)
+                if (cleanStart && uE.Active)
                 {
                     // if it's unicast it's fairly easy to do
                     if (_data.Unicast != null)
@@ -412,7 +414,7 @@ namespace VixenModules.Controller.E131
                         {
                             //Probably couldn't find the host name
                             NLog.LogManager.GetCurrentClassLogger().Warn("Couldn't connect to host "+_data.Unicast+".");
-                            running = false;
+                            cleanStart = false;
                         }
 
                         if (ips != null)
@@ -427,7 +429,7 @@ namespace VixenModules.Controller.E131
                             {
                                 // oops - bad ip, fuss and deactivate
                                 NLog.LogManager.GetCurrentClassLogger().Warn("Couldn't connect to host " + _data.Unicast + ".");
-                                running = false;
+                                cleanStart = false;
                                 uE.Socket = null;
                             }
                             else
@@ -458,7 +460,7 @@ namespace VixenModules.Controller.E131
                                 MessageBox.Show("The Streaming ACN (E1.31) plugin could not find one or more of the multicast interfaces specified. Please verify your network and plugin configuration.", "Vixen 3 Streaming ACN (E1.31) plugin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                 _missingInterfaceWarning = true;
                             }
-                            running = false;
+                            cleanStart = false;
 						}
 						else
 						{
@@ -479,7 +481,7 @@ namespace VixenModules.Controller.E131
 							{
 								// no - deactivate and scream & yell!!
                                 NLog.LogManager.GetCurrentClassLogger().Warn("Nic " + _data.Multicast + " is available for multicasting bur currently down.");
-                                running = false;
+                                cleanStart = false;
 							}
 							else
 							{
@@ -530,11 +532,12 @@ namespace VixenModules.Controller.E131
 					}
 					else
 					{
-						throw new System.Exception("No valid destination for this plugin instance.");
+                        NLog.LogManager.GetCurrentClassLogger().Warn("E1.31 plugin failed to start due to unassigned destinations. This can happen with newly created plugin instances that have yet to be configured.");
+                        cleanStart = false;
 					}
 
                     // if still active we need to create an empty packet
-                    if (running)
+                    if (cleanStart)
                     {
                         var zeroBfr = new byte[uE.Size];
 						for (int i = 0; i < uE.Size; i++)  // init to unlikely value for later compares
@@ -543,7 +546,8 @@ namespace VixenModules.Controller.E131
                         uE.PhyBuffer = e131Packet.PhyBuffer;
                     }
                 }
-                hasStarted = true;
+                if(cleanStart)
+                    running = true;
             }
 
             // any warnings/errors recorded?
@@ -583,10 +587,11 @@ namespace VixenModules.Controller.E131
             Stopwatch stopWatch = Stopwatch.StartNew();
 
             //Make sure the setup form is closed & the plugin has started
-            if (isSetupOpen && hasStarted)
+            if (isSetupOpen || !running)
             {
                 return;
             }
+
 
             if (outputStates == null)
             {
