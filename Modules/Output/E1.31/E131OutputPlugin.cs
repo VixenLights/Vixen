@@ -544,8 +544,6 @@ namespace VixenModules.Controller.E131
                     if (cleanStart)
                     {
                         var zeroBfr = new byte[uE.Size];
-						for (int i = 0; i < uE.Size; i++)  // init to unlikely value for later compares
-							zeroBfr[i] = (byte)i;
                         var e131Packet = new E131Packet(_data.ModuleInstanceId, "Vixen 3", 0, (ushort)uE.Universe, zeroBfr, 0, uE.Size, _data.Priority, _data.Blind);
                         uE.PhyBuffer = e131Packet.PhyBuffer;
                     }
