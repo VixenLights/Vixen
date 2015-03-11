@@ -628,9 +628,10 @@ namespace VixenModules.Output.E131
             // if it's the headers - sort 'em
             if (e.RowIndex == -1)
             {
-                if (autoPopulateStart.Checked && !shownSortError)
+                if (!autoPopulateStart.Checked)
                 {
-                    MessageBox.Show("Sorting is not available while Vixen manages the start values.");
+                    if(!shownSortError)
+                        MessageBox.Show("Sorting is not available while Vixen manages the start values.");
                     shownSortError = true;
                 } else
                 {
@@ -953,10 +954,33 @@ namespace VixenModules.Output.E131
         {
             List<DataGridViewRow> toDelete = new List<DataGridViewRow>();
             foreach (DataGridViewRow r in univDGVN.Rows)
-                if (r.Selected)
-                    toDelete.Add(r);
+                foreach (DataGridViewCell c in r.Cells)
+                    if (c.Selected)
+                    {
+                        toDelete.Add(r);
+                        break;
+                    }
+
             foreach (DataGridViewRow r in toDelete)
                 univDGVN.Rows.Remove(r);
+            updateDgvnStartValues();
+        }
+
+        private void UnivDgvnInsertRow(object sender, DataGridViewRowEventArgs e)
+        {
+
+        }
+
+        private void univDGVN_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (Char)Keys.Delete)
+                btnDelete_Click(null, null);
+        }
+
+        private void univDGVN_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+                btnDelete_Click(null, null);
         }
     }
 }

@@ -99,6 +99,8 @@ namespace VixenModules.Controller.E131
 
         internal static List<E131OutputPlugin> PluginInstances = new List<E131OutputPlugin>();
         internal static SortedList<string, int> unicasts = new SortedList<string, int>();
+        private static bool _updateWarn = false;
+        private static bool _missingInterfaceWarning = false;
 
         public override Vixen.Module.IModuleDataModel ModuleData
         {
@@ -232,6 +234,8 @@ namespace VixenModules.Controller.E131
         // -------------------------------------------------------------
         public void Shutdown()
         {
+            running = false;
+
             // keep track of interface ids we have shutdown
             var idList = new SortedList<string, int>();
 
@@ -346,10 +350,14 @@ namespace VixenModules.Controller.E131
             this._totalTicks = 0;
 
             if (_data.Unicast == null && _data.Multicast == null)
-                if (_data.Universes[0] != null)
+                if (_data.Universes[0] != null && (_data.Universes[0].Multicast != null || _data.Universes[0].Unicast != null))
                 {
                     _data.Unicast = _data.Universes[0].Unicast;
                     _data.Multicast = _data.Universes[0].Multicast;
+                    if(!_updateWarn){
+                        MessageBox.Show("The E1.31 plugin is importing data from an older version of the plugin. Please verify the new Streaming ACN (E1.31) configuration.", "Vixen 3 Streaming ACN (E1.31) plugin", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        _updateWarn = true;
+                    }
                 }
 
             // find all of the network interfaces & build a sorted list indexed by Id
@@ -445,6 +453,11 @@ namespace VixenModules.Controller.E131
 						{
 							// no - deactivate and scream & yell!!
                             NLog.LogManager.GetCurrentClassLogger().Warn("Couldn't connect to use nic " + _data.Multicast + " for multicasting.");
+                            if (!_missingInterfaceWarning)
+                            {
+                                MessageBox.Show("The Streaming ACN (E1.31) plugin could not find one or more of the multicast interfaces specified. Please verify your network and plugin configuration.", "Vixen 3 Streaming ACN (E1.31) plugin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                _missingInterfaceWarning = true;
+                            }
                             running = false;
 						}
 						else
