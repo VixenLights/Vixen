@@ -349,7 +349,7 @@ namespace VixenModules.Output.E131
                     E131OutputPlugin.unicasts.Add(ipAddressText, 0);
                     this.SetDestinations();
                 }
-
+                comboDestination.SelectedItem = "Unicast " + ipAddressText;
             }
         }
 
@@ -921,7 +921,6 @@ namespace VixenModules.Output.E131
         private void btnAddUnicast_Click(object sender, EventArgs e)
         {
             AddUnicastIp();
-            SetDestinations();
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
