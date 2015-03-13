@@ -28,9 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.pictureBox1 = new System.Windows.Forms.PictureBox();
-			this.tsLeftButton = new System.Windows.Forms.Button();
-			this.tsRightButton = new System.Windows.Forms.Button();
+			this.staffPictureBox = new System.Windows.Forms.PictureBox();
 			this.tsLabel = new System.Windows.Forms.Label();
 			this.BeatsPerBarLabel = new System.Windows.Forms.Label();
 			this.NoteSizeLabel = new System.Windows.Forms.Label();
@@ -41,50 +39,31 @@
 			this.BarPeriodLabelVal = new System.Windows.Forms.Label();
 			this.DivTimeLabel = new System.Windows.Forms.Label();
 			this.DivTimeLabelVal = new System.Windows.Forms.Label();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.staffPictureBox)).BeginInit();
 			this.SuspendLayout();
 			// 
-			// pictureBox1
+			// staffPictureBox
 			// 
-			this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			this.staffPictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.pictureBox1.Image = global::VixenModules.Analysis.BeatsAndBars.Properties.Resources.fullstaff;
-			this.pictureBox1.Location = new System.Drawing.Point(5, 31);
-			this.pictureBox1.Name = "pictureBox1";
-			this.pictureBox1.Size = new System.Drawing.Size(390, 76);
-			this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-			this.pictureBox1.TabIndex = 0;
-			this.pictureBox1.TabStop = false;
-			this.pictureBox1.Paint += new System.Windows.Forms.PaintEventHandler(this.staffBox1_Paint);
-			// 
-			// tsLeftButton
-			// 
-			this.tsLeftButton.Location = new System.Drawing.Point(73, 113);
-			this.tsLeftButton.Name = "tsLeftButton";
-			this.tsLeftButton.Size = new System.Drawing.Size(27, 23);
-			this.tsLeftButton.TabIndex = 1;
-			this.tsLeftButton.Text = "<-";
-			this.tsLeftButton.UseVisualStyleBackColor = true;
-			this.tsLeftButton.Click += new System.EventHandler(this.tsLeftButton_Click);
-			// 
-			// tsRightButton
-			// 
-			this.tsRightButton.Location = new System.Drawing.Point(193, 113);
-			this.tsRightButton.Name = "tsRightButton";
-			this.tsRightButton.Size = new System.Drawing.Size(27, 23);
-			this.tsRightButton.TabIndex = 2;
-			this.tsRightButton.Text = "->";
-			this.tsRightButton.UseVisualStyleBackColor = true;
-			this.tsRightButton.Click += new System.EventHandler(this.tsRightButton_Click);
+			this.staffPictureBox.Image = global::VixenModules.Analysis.BeatsAndBars.Properties.Resources.fullstaff;
+			this.staffPictureBox.Location = new System.Drawing.Point(5, 31);
+			this.staffPictureBox.Name = "staffPictureBox";
+			this.staffPictureBox.Size = new System.Drawing.Size(390, 76);
+			this.staffPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+			this.staffPictureBox.TabIndex = 0;
+			this.staffPictureBox.TabStop = false;
+			this.staffPictureBox.Click += new System.EventHandler(this.pictureBox1_Click);
+			this.staffPictureBox.Paint += new System.Windows.Forms.PaintEventHandler(this.staffBox1_Paint);
 			// 
 			// tsLabel
 			// 
 			this.tsLabel.AutoSize = true;
-			this.tsLabel.Location = new System.Drawing.Point(106, 118);
+			this.tsLabel.Location = new System.Drawing.Point(3, 114);
 			this.tsLabel.Name = "tsLabel";
-			this.tsLabel.Size = new System.Drawing.Size(81, 13);
+			this.tsLabel.Size = new System.Drawing.Size(172, 13);
 			this.tsLabel.TabIndex = 3;
-			this.tsLabel.Text = "Time Signature:";
+			this.tsLabel.Text = "Click staff to change time signature";
 			// 
 			// BeatsPerBarLabel
 			// 
@@ -95,6 +74,7 @@
 			this.BeatsPerBarLabel.Size = new System.Drawing.Size(16, 20);
 			this.BeatsPerBarLabel.TabIndex = 4;
 			this.BeatsPerBarLabel.Text = "0";
+			this.BeatsPerBarLabel.Click += new System.EventHandler(this.BeatsPerBarLabel_Click);
 			// 
 			// NoteSizeLabel
 			// 
@@ -105,11 +85,12 @@
 			this.NoteSizeLabel.Size = new System.Drawing.Size(16, 20);
 			this.NoteSizeLabel.TabIndex = 5;
 			this.NoteSizeLabel.Text = "0";
+			this.NoteSizeLabel.Click += new System.EventHandler(this.NoteSizeLabel_Click);
 			// 
 			// splitBeatsCB
 			// 
 			this.splitBeatsCB.AutoSize = true;
-			this.splitBeatsCB.Location = new System.Drawing.Point(253, 119);
+			this.splitBeatsCB.Location = new System.Drawing.Point(229, 114);
 			this.splitBeatsCB.Name = "splitBeatsCB";
 			this.splitBeatsCB.Size = new System.Drawing.Size(76, 17);
 			this.splitBeatsCB.TabIndex = 6;
@@ -200,13 +181,11 @@
 			this.Controls.Add(this.NoteSizeLabel);
 			this.Controls.Add(this.BeatsPerBarLabel);
 			this.Controls.Add(this.tsLabel);
-			this.Controls.Add(this.tsRightButton);
-			this.Controls.Add(this.tsLeftButton);
-			this.Controls.Add(this.pictureBox1);
+			this.Controls.Add(this.staffPictureBox);
 			this.Name = "MusicStaff";
 			this.Size = new System.Drawing.Size(398, 143);
 			this.Paint += new System.Windows.Forms.PaintEventHandler(this.MusicStaff_Paint);
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.staffPictureBox)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -214,9 +193,7 @@
 
 		#endregion
 
-		private System.Windows.Forms.PictureBox pictureBox1;
-		private System.Windows.Forms.Button tsLeftButton;
-		private System.Windows.Forms.Button tsRightButton;
+		private System.Windows.Forms.PictureBox staffPictureBox;
 		private System.Windows.Forms.Label tsLabel;
 		private System.Windows.Forms.Label BeatsPerBarLabel;
 		private System.Windows.Forms.Label NoteSizeLabel;

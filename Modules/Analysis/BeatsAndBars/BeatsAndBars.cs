@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using Vixen.Module.Analysis;
 using VixenModules.Media.Audio;
@@ -76,6 +77,17 @@ namespace VixenModules.Analysis.BeatsAndBars
 			return retVal;
 		}
 
+		private void RemoveDuplicateMarks(ref MarkCollection mcOrig, List<MarkCollection> otherCollections)
+		{
+			if (otherCollections != null)
+			{
+				foreach (var otherCollection in otherCollections)
+				{
+					mcOrig.Marks.RemoveAll(x => otherCollection.Marks.Contains(x));
+				}
+			}
+		}
+
 		private MarkCollection 
 			ExtractAllMarksFromFeatureSet(ICollection<ManagedFeature> featureSet, 
 											BeatBarSettingsData settings)
@@ -133,7 +145,8 @@ namespace VixenModules.Analysis.BeatsAndBars
 
 		private List<MarkCollection> 
 			ExtractBeatCollectionsFromFeatureSet(ICollection<ManagedFeature> featureSet, 
-													BeatBarSettingsData settings)
+													BeatBarSettingsData settings,
+													List<MarkCollection> otherMarks = null)
 		{
 			List<MarkCollection> retVal = new List<MarkCollection>();
 			string[] collectionNames = settings.BeatCollectionNames(false);
@@ -154,6 +167,7 @@ namespace VixenModules.Analysis.BeatsAndBars
 						mc.Marks.Add(TimeSpan.FromMilliseconds(featureMS));
 					}
 				}
+				RemoveDuplicateMarks(ref mc, otherMarks);
 				retVal.Add(mc);
 			}
 			return retVal;
@@ -161,7 +175,8 @@ namespace VixenModules.Analysis.BeatsAndBars
 
 		private List<MarkCollection> 
 			ExtractSplitCollectionsFromFeatureSet(ICollection<ManagedFeature> featureSet, 
-													BeatBarSettingsData settings)
+													BeatBarSettingsData settings,
+													List<MarkCollection> otherMarks = null )
 		{		
 			List<MarkCollection> retVal = new List<MarkCollection>();
 			string[] collectionNames = settings.BeatCollectionNames(true);
@@ -211,7 +226,7 @@ namespace VixenModules.Analysis.BeatsAndBars
 						mc.Marks.Add(TimeSpan.FromMilliseconds(tsValue.Value));
 					}
 				}
-
+				RemoveDuplicateMarks(ref mc, otherMarks);
 				retVal.Add(mc);
 			}
 			return retVal;
@@ -290,19 +305,11 @@ namespace VixenModules.Analysis.BeatsAndBars
 		private List<MarkCollection> BuildMarkCollections(List<MarkCollection> markCollection, 
 															BeatBarSettingsData settings)
 		{
-			List<MarkCollection> retVal = markCollection;
+			List<MarkCollection> retVal = new List<MarkCollection>();
 
 			m_featureSet = GenerateFeatures(m_plugin, m_fSamplesAll);
 			String[] beatCollectionNames = settings.BeatCollectionNames(false);
 			String[] splitCollectionNames = settings.BeatCollectionNames(true);
-
-			if (settings.AllFeaturesEnabled)
-			{
-				markCollection.RemoveAll(x => x.Name.Equals(settings.AllCollectionName));
-				MarkCollection mc = ExtractAllMarksFromFeatureSet(m_featureSet[0], settings);
-				mc.MarkColor = settings.AllFeaturesColor;
-				retVal.Add(mc);
-			}
 
 			if (settings.BarsEnabled)
 			{
@@ -318,7 +325,7 @@ namespace VixenModules.Analysis.BeatsAndBars
 				{
 					markCollection.RemoveAll(x => x.Name.Equals(name));
 				}
-				List<MarkCollection> mcl = ExtractBeatCollectionsFromFeatureSet(m_featureSet[2], settings);
+				List<MarkCollection> mcl = ExtractBeatCollectionsFromFeatureSet(m_featureSet[2], settings, retVal);
 				mcl.ForEach(x => x.MarkColor = settings.BeatCountsColor);
 				retVal.AddRange(mcl);
 			}
@@ -329,12 +336,22 @@ namespace VixenModules.Analysis.BeatsAndBars
 				{
 					markCollection.RemoveAll(x => x.Name.Equals(name));
 				}
-				List<MarkCollection> mcl = ExtractSplitCollectionsFromFeatureSet(m_featureSet[2], settings);
+				List<MarkCollection> mcl = ExtractSplitCollectionsFromFeatureSet(m_featureSet[2], settings, retVal);
 				mcl.ForEach(x => x.MarkColor = settings.BeatSplitsColor);
 				retVal.AddRange(mcl);
 			}
 
-			return retVal;
+			if (settings.AllFeaturesEnabled)
+			{
+				markCollection.RemoveAll(x => x.Name.Equals(settings.AllCollectionName));
+				MarkCollection mc = ExtractAllMarksFromFeatureSet(m_featureSet[0], settings);
+				mc.MarkColor = settings.AllFeaturesColor;
+				retVal.Add(mc);
+			}
+
+			retVal.RemoveAll(x => x.Marks.Count == 0);
+			retVal.AddRange(markCollection);
+			return retVal.OrderBy(x => x.Name).ToList();
 		}
 
 		public List<MarkCollection> DoBeatBarDetection(List<MarkCollection> markCollection)
@@ -420,7 +437,7 @@ namespace VixenModules.Analysis.BeatsAndBars
 
 		public String BarsCollectionName
 		{
-			get { return CollectionBaseName + " - Bars"; }
+			get { return CollectionBaseName + " 1/" + NoteSize + " Beat #1 (Bar)"; }
 		}
 
 		public String[] BeatCollectionNames(bool addDivisions)
@@ -432,7 +449,9 @@ namespace VixenModules.Analysis.BeatsAndBars
 
 			for (int j = 0; j < collections; j++)
 			{
-				retVal[j] = CollectionBaseName + " 1/" + actualNoteSize + " Note - " + (j + 1);
+				decimal colNum = ((addDivisions) ? (j/2) : j) + 1;
+				retVal[j] = CollectionBaseName + " Beat #" + colNum +
+				            ((addDivisions && (j%1) == 0) ? "a" : "");
 			}
 
 			return retVal;

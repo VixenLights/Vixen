@@ -43,31 +43,33 @@ namespace VixenModules.Analysis.BeatsAndBars
 			get { return splitBeatsCB.Checked; }
 		}
 
+		private int CalcNoteSize(int bpb)
+		{
+			int retVal = 0;
+			if (bpb == 2)
+			{
+				retVal = 2;
+			}
+			else if (bpb <= 4)
+			{
+				retVal = 4;
+			}
+			else if (bpb <= 8)
+			{
+				retVal = 8;
+			}
+			else if (bpb <= 16)
+			{
+				retVal = 16;
+			}
+
+			return retVal;
+			
+		}
+
 		public int NoteSize
 		{
-			get
-			{
-				int retVal = 0;
-				if (BeatsPerBar == 2)
-				{
-					retVal = 2;
-				}
-				else if (BeatsPerBar <= 4)
-				{
-					retVal = 4;
-				}
-				else if (BeatsPerBar <= 8)
-				{
-					retVal = 8;
-				}
-				else if (BeatsPerBar <= 16)
-				{
-					retVal = 16;
-				}
-
-				return retVal;
-
-			}
+			get { return CalcNoteSize(BeatsPerBar); }
 		}
 
 		private Bitmap NotesizeBitmap
@@ -105,12 +107,12 @@ namespace VixenModules.Analysis.BeatsAndBars
 		
 		private void MusicStaff_Paint(object sender, PaintEventArgs e)
 		{
-			pictureBox1.Invalidate();
+			staffPictureBox.Invalidate();
 			BeatsPerBarLabel.Text = BeatsPerBar.ToString();
 			NoteSizeLabel.Text = NoteSize.ToString();
 
 			BeatsPerBarLabel.Location =
-				new Point(TSLABEL_XOFFSET, pictureBox1.Location.Y + 17);
+				new Point(TSLABEL_XOFFSET, staffPictureBox.Location.Y + 17);
 
 			NoteSizeLabel.Location =
 				new Point(TSLABEL_XOFFSET, BeatsPerBarLabel.Location.Y + BeatsPerBarLabel.Height + 1);
@@ -143,12 +145,12 @@ namespace VixenModules.Analysis.BeatsAndBars
 			int marksInBar = BeatsPerBar * ((splitBeatsCB.Checked) ? 2 : 1);
 			for (int j = 0; j < marksInBar; j++)
 			{
-				decimal interval = (decimal)(pictureBox1.Width - 16 - FIRST_BAR_OFFSET) / marksInBar;
+				decimal interval = (decimal)(staffPictureBox.Width - 16 - FIRST_BAR_OFFSET) / marksInBar;
 
 				Bitmap noteBitmap = NotesizeBitmap;
 
 				Point point1 = new Point(FIRST_BAR_OFFSET + (int)(interval * j), 
-					pictureBox1.Location.Y - DIV_Y_OFFSET);
+					staffPictureBox.Location.Y - DIV_Y_OFFSET);
 
 				if ((splitBeatsCB.Checked) && ((j %2) == 1))
 				{
@@ -170,7 +172,6 @@ namespace VixenModules.Analysis.BeatsAndBars
 				{
 					SettingChanged(sender, e);
 				}
-
 				Invalidate();
 			}
 		}
@@ -212,6 +213,52 @@ namespace VixenModules.Analysis.BeatsAndBars
 		public double BarPeriod
 		{
 			get { return m_beatPeriod*BeatsPerBar;  }
+		}
+
+		private void ContextTSChanged(object sender, EventArgs e)
+		{
+			MenuItem mi = sender as MenuItem;
+			BeatsPerBar = Convert.ToInt32(mi.Tag);
+
+			if (SettingChanged != null)
+			{
+				SettingChanged(sender, e);
+			}
+
+			Invalidate();
+			
+		}
+
+		private void ShowContextmenu(Control parentControl, Point displayPoint)
+		{
+			ContextMenu mnuContextMenu = new ContextMenu();
+			for (int j = 2; j <= 16; j++)
+			{
+				MenuItem mi = new MenuItem(j.ToString() + "/" + CalcNoteSize(j).ToString(), new EventHandler(ContextTSChanged));
+				if (j == BeatsPerBar)
+				{
+					mi.Checked = true;
+				}
+				mi.Tag = j;
+				mnuContextMenu.MenuItems.Add(mi);
+			}
+			this.ContextMenu = mnuContextMenu;
+			mnuContextMenu.Show(parentControl, displayPoint);
+		}
+
+		private void BeatsPerBarLabel_Click(object sender, EventArgs e)
+		{
+			ShowContextmenu(BeatsPerBarLabel, new Point(0,0));
+		}
+
+		private void NoteSizeLabel_Click(object sender, EventArgs e)
+		{
+			ShowContextmenu(NoteSizeLabel, new Point(0,0));
+		}
+
+		private void pictureBox1_Click(object sender, EventArgs e)
+		{
+			ShowContextmenu(staffPictureBox, staffPictureBox.PointToClient(Cursor.Position));
 		}
 	}
 }
