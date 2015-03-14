@@ -111,4 +111,8 @@
       <Filter>Queen Mary Plugin Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="VampOutputCtrl.resx" />
+    <EmbeddedResource Include="VampParamCtrl.resx" />
+  </ItemGroup>
 </Project>

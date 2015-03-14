@@ -78,6 +78,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BeatsAndBars.cs" />
+    <Compile Include="BeatsAndBarsDescriptor.cs" />
     <Compile Include="BeatsAndBarsProgress.cs">
       <SubType>Form</SubType>
     </Compile>
