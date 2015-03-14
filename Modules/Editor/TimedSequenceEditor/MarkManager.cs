@@ -236,6 +236,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 
 			PopulateMarkCollectionsList();
+			if (listViewMarkCollections.Items.Count > 0)
+			{
+				listViewMarkCollections.Items[0].Selected = true;
+				listViewMarkCollections.Items[0].Focused = true;
+			}
 		}
 
 		private void buttonAddOrUpdateMark_Click(object sender, EventArgs e)
@@ -1332,6 +1337,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						}
 					}
 				}
+			}
+		}
+
+		private void listViewMarkCollections_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Delete)
+			{
+				buttonRemoveCollection_Click(null, null);
 			}
 		}
 	}

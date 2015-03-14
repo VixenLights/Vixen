@@ -26,6 +26,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			numericUpDownStandardNudge.Value = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/StandardNudge", Name), 10);
 			numericUpDownSuperNudge.Value = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SuperNudge", Name), 20); ;
 			//xml = null;
+
 		}
 
 		public TimelineControl TimelineControl { get; set; }
@@ -112,7 +113,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void listViewMarkCollections_AfterLabelEdit(object sender, LabelEditEventArgs e)
 		{
 			MarkCollection mc = (listViewMarkCollections.Items[e.Item].Tag as MarkCollection);
-            mc.Name = e.Label ?? mc.Name;
+			mc.Name = e.Label ?? mc.Name;
 			OnChangedMarkCollection(new MarkCollectionArgs(mc));
 		}
 
@@ -130,12 +131,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			if (listViewMarkCollections.SelectedItems.Count > 0)
 			{
-				MarkCollection mc = (listViewMarkCollections.SelectedItems[0].Tag as MarkCollection);
-				if (MessageBox.Show("Are you sure you want to delete the selected Mark Collection?", "Delete Mark Collection", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+				if (MessageBox.Show("Are you sure you want to delete the selected Marks in the Collection?", "Delete Mark Collection", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
 				{
-					listViewMarkCollections.SelectedItems[0].Remove();
-					Sequence.MarkCollections.Remove(mc);
-					OnChangedMarkCollection(new MarkCollectionArgs(null));
+					foreach (ListViewItem item in listViewMarkCollections.SelectedItems)
+					{
+						listViewMarkCollections.SelectedItems[0].Remove();
+						OnChangedMarkCollection(new MarkCollectionArgs(null));
+						MarkCollection mc = item.Tag as MarkCollection;
+						Sequence.MarkCollections.Remove(mc);
+					}
 				}
 			}
 			else
@@ -159,6 +163,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			var xml = new XMLProfileSettings();
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/StandardNudge", Name), Convert.ToInt32(numericUpDownStandardNudge.Value));
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SuperNudge", Name), Convert.ToInt32(numericUpDownSuperNudge.Value));
+		}
+
+		private void listViewMarkCollections_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+		{
+			if (e.KeyCode == Keys.Delete)
+			{
+				toolStripButtonDeleteMarkCollection_Click(null, null);
+			}
 		}
 
 	}
