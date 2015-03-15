@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -79,13 +80,10 @@ namespace VixenModules.Preview.VixenPreview {
 		}
 
 		public void Setup() {
-			if (System.IO.File.Exists(Data.BackgroundFileName)) {
-				//	direct2DControlWinForm1.Scene = new DisplayScene(Image.FromFile(Data.BackgroundFileName), DisplayID);
-				BackgroundImage = Image.FromFile(Data.BackgroundFileName);
-			}
-			else
-				BackgroundImage = null;
-
+			
+			var file = Path.Combine(VixenPreviewDescriptor.ModulePath, Data.BackgroundFileName);
+			BackgroundImage = File.Exists(file) ? Image.FromFile(file) : null;
+			
 			//Sometimes the preview shows up outside the bounds of the display....
 			//this will reset that value if it happens
 
