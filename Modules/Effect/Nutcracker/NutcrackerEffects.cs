@@ -1964,9 +1964,9 @@ namespace VixenModules.Effect.Nutcracker
 					using (var fs = typeof(Nutcracker).Assembly.GetManifestResourceStream(NewPictureName))
 					image = Image.FromStream(fs);     
 				}
-				else if (File.Exists(NewPictureName))
+				else if (File.Exists(Path.Combine(NutcrackerDescriptor.ModulePath, NewPictureName)))
 				{
-					using (var fs = new FileStream(NewPictureName, FileMode.Open, FileAccess.Read))
+					using (var fs = new FileStream(Path.Combine(NutcrackerDescriptor.ModulePath, NewPictureName), FileMode.Open, FileAccess.Read))
 					{
 						image = Image.FromStream(fs);
 					}

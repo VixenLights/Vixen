@@ -20,7 +20,7 @@ namespace VixenModules.Effect.Nutcracker
 				return;
 			}
 
-			var f = new FileStream(gledFilename, FileMode.Open, FileAccess.Read);
+			var f = new FileStream(Path.Combine(NutcrackerDescriptor.ModulePath, gledFilename), FileMode.Open, FileAccess.Read);
 
 			long fileLength = f.Length;
 

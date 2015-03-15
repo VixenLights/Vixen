@@ -963,7 +963,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 
 		private void LoadPicture()
 		{
-			textPictureFileName.Text = Data.Picture_FileName;
+			textPictureFileName.Text = Path.Combine(NutcrackerDescriptor.ModulePath, Data.Picture_FileName); 
 			comboBoxPictureDirection.SelectedIndex = Data.Picture_Direction;
 			trackPictureGifSpeed.Value = Data.Picture_GifSpeed;
 			trackPictureGifSpeed.Enabled = true;
@@ -978,15 +978,15 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			fileDialog.Filter = "All Files|*.*|jpg|*.jpg|jpeg|*.jpeg|gif|.gif|png|*.png|bmp|*.bmp";
 			if (fileDialog.ShowDialog() == DialogResult.OK) {
 				// Copy the file to the Vixen folder
-				var imageFile = new System.IO.FileInfo(fileDialog.FileName);
-				var destFileName = System.IO.Path.Combine(NutcrackerDescriptor.ModulePath, imageFile.Name);
+				var imageFile = new FileInfo(fileDialog.FileName);
+				var destFileName = Path.Combine(NutcrackerDescriptor.ModulePath, imageFile.Name);
 				var sourceFileName = imageFile.FullName;
 				if (sourceFileName != destFileName) {
-					System.IO.File.Copy(sourceFileName, destFileName, true);
+					File.Copy(sourceFileName, destFileName, true);
 				}
 
 				textPictureFileName.Text = destFileName;
-				Data.Picture_FileName = destFileName;
+				Data.Picture_FileName = imageFile.Name;
 			}
 		}
 
@@ -1228,15 +1228,15 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			fileDialog.Filter = "All Files|*.*|jpg|*.jpg|jpeg|*.jpeg|gif|.gif|png|*.png|bmp|*.bmp";
 			if (fileDialog.ShowDialog() == DialogResult.OK) {
 				// Copy the file to the Vixen folder
-				var imageFile = new System.IO.FileInfo(fileDialog.FileName);
-				var destFileName = System.IO.Path.Combine(NutcrackerDescriptor.ModulePath, imageFile.Name);
+				var imageFile = new FileInfo(fileDialog.FileName);
+				var destFileName = Path.Combine(NutcrackerDescriptor.ModulePath, imageFile.Name);
 				var sourceFileName = imageFile.FullName;
 				if (sourceFileName != destFileName) {
-					System.IO.File.Copy(sourceFileName, destFileName, true);
+					File.Copy(sourceFileName, destFileName, true);
 				}
 
 				textPictureTileFileName.Text = destFileName;
-				Data.PictureTile_FileName = destFileName;
+				Data.PictureTile_FileName = imageFile.Name;
 			}
 		}
 
@@ -1264,7 +1264,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 				}
 
 				textGlediatorFileName.Text = destFileName;
-				Data.Glediator_FileName = destFileName;
+				Data.Glediator_FileName = gledFile.Name;
 			}
 		}
 

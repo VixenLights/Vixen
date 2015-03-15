@@ -35,8 +35,9 @@ namespace Vixen.IO.Xml.Sequence
 			XElement xmlContent = content as XElement;
 			if (xmlContent == null) throw new InvalidOperationException("Content must be an XElement.");
 
-			ISequenceTypeModuleInstance sequenceTypeModule = _GetSequenceTypeModule(_fileType);
-			return sequenceTypeModule.ClassVersion;
+			int version = XmlRootAttributeVersion.GetVersion(xmlContent);
+
+			return version > 0 ? version : 0;
 		}
 
 		private ISequenceTypeDataModel _GenerateSequenceData(XElement xmlContent)
