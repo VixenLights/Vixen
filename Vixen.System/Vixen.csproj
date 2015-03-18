@@ -257,6 +257,14 @@
     <Compile Include="IO\Xml\XElementFileReader.cs" />
     <Compile Include="IO\Xml\XElementFileWriter.cs" />
     <Compile Include="IO\Xml\XmlRootAttributeVersion.cs" />
+    <Compile Include="Module\Analysis\AnalysisModuleDescriptorBase.cs" />
+    <Compile Include="Module\Analysis\AnalysisModuleImplementation.cs" />
+    <Compile Include="Module\Analysis\AnalysisModuleInstanceBase.cs" />
+    <Compile Include="Module\Analysis\AnalysisModuleManagement.cs" />
+    <Compile Include="Module\Analysis\AnalysisModuleRepository.cs" />
+    <Compile Include="Module\Analysis\IAnalysis.cs" />
+    <Compile Include="Module\Analysis\IAnalysisModuleDescriptor.cs" />
+    <Compile Include="Module\Analysis\IAnalysisModuleInstance.cs" />
     <Compile Include="Module\IModuleConsumer.cs" />
     <Compile Include="Module\IModuleDataRetriever.cs" />
     <Compile Include="Module\ModuleInstanceDataRetriever.cs" />

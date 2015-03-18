@@ -1,0 +1,23 @@
+
+QM Vamp Plugins
+===============
+
+To Install
+==========
+
+This package contains plugins for Win32 systems (Windows XP, Vista).
+
+To install them, copy the files
+
+   qm-vamp-plugins.dll
+   qm-vamp-plugins.cat
+   qm-vamp-plugins.n3
+
+into the folder
+
+   "C:\Program Files\Vamp Plugins\"
+
+You may also install them elsewhere, if you set the VAMP_PATH environment
+variable to a semicolon-separated list of the folders in which plugins
+may be found.  e.g., "C:\My Plugins;C:\Program Files\Vamp Plugins".
+
