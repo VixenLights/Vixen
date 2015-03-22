@@ -40,7 +40,7 @@ namespace VixenModules.Sequence.Vixen2x
 
 		public override IContentMigrator CreateMigrator()
 		{
-			return new SequenceMigrator();
+			return new Vixen2xSequenceMigrator();
 		}
 
 		public override ISequenceExecutor CreateExecutor()

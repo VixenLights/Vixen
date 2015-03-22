@@ -50,9 +50,9 @@ namespace VixenModules.Sequence.Timed
 			get { return "1.0"; }
 		}
 
-		public override int ClassVersion
+		public override int ObjectVersion
 		{
-			get { return 3; }
+			get { return 1; }
 		}
 	}
 }

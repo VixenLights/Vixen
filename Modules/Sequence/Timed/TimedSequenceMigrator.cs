@@ -9,15 +9,19 @@ using Vixen.IO;
 
 namespace VixenModules.Sequence.Timed
 {
-	public class SequenceMigrator : IContentMigrator<XElement>
+	/// <summary>
+	/// Class to conduct sequence migrations
+	/// The Version atribute in the descriptor for the sequence determines the current version and is
+	/// used to determine if migration should occur
+	/// </summary>
+	public class TimedSequenceMigrator : IContentMigrator<XElement>
 	{
-		public SequenceMigrator()
+		public TimedSequenceMigrator()
 		{
 			ValidMigrations = new[]
 				{
-									new MigrationSegment<XElement>(0, 1, _EmptyMigration),
-									new MigrationSegment<XElement>(1, 2, _EmptyMigration),
-									new MigrationSegment<XElement>(2, 3, _Version_0_to_3)
+									new MigrationSegment<XElement>(0, 1, _Version_0_to_1)
+									
 				};
 		}
 
@@ -47,16 +51,13 @@ namespace VixenModules.Sequence.Timed
 			get { return ValidMigrations; }
 		}
 
-		private XElement _EmptyMigration(XElement content)
-		{
-			return content;
-		}
-
-		private XElement _Version_0_to_3(XElement content)
+		private XElement _Version_0_to_1(XElement content)
 		{
 			//  3/14/2015
 			//Migrate full path name of the background image to just the filename. Code will now look 
  			//relative to the profile for the module path to the filenames
+			//This is the first introduction of versioning for sequences so not versioned files are considered version 0
+			//new files and migrated ones will have a version atribute in the root element
 			var namespaces = new XmlNamespaceManager(new NameTable());
 			XNamespace ns = "http://schemas.datacontract.org/2004/07/VixenModules.Sequence.Timed";
 			namespaces.AddNamespace("", ns.NamespaceName);

@@ -70,7 +70,7 @@ namespace Vixen.IO.Xml.Sequence
 		private void WriteVersion(XmlWriter xmlWriter)
 		{
 			ISequenceTypeModuleInstance sequenceTypeModule = _GetSequenceTypeModule(_fileType);
-			int version = sequenceTypeModule.ClassVersion;
+			int version = sequenceTypeModule.ObjectVersion;
 			xmlWriter.WriteAttributeString("version", version.ToString(CultureInfo.InvariantCulture));
 		}
 

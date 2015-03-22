@@ -18,9 +18,9 @@ namespace Vixen.Module.SequenceType
 			get { return ((ISequenceTypeModuleDescriptor) Descriptor).FileExtension; }
 		}
 
-		public int ClassVersion
+		public int ObjectVersion
 		{
-			get { return ((ISequenceTypeModuleDescriptor) Descriptor).ClassVersion; }
+			get { return ((ISequenceTypeModuleDescriptor) Descriptor).ObjectVersion; }
 		}
 
 		public abstract ISequence CreateSequence();

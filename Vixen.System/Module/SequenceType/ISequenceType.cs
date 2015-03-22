@@ -16,7 +16,7 @@ namespace Vixen.Module.SequenceType
 		ISequenceCache CreateSequenceCache();
 		IContentMigrator CreateMigrator();
 		ISequenceExecutor CreateExecutor();
-		int ClassVersion { get; }
+		int ObjectVersion { get; }
 
 		// if this sequence type is a custom sequence loader; ie. generally implying that it's an
 		// importing module type (to load other sequences from other software)

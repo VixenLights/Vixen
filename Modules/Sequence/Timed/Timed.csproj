@@ -43,7 +43,7 @@
     <Compile Include="MarkCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ColorCollection.cs" />
-    <Compile Include="SequenceMigrator.cs" />
+    <Compile Include="TimedSequenceMigrator.cs" />
     <Compile Include="TimedSequence.cs" />
     <Compile Include="TimedSequenceCache.cs" />
     <Compile Include="TimedSequenceData.cs" />
