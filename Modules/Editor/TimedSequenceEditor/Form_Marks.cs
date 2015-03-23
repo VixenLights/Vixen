@@ -129,23 +129,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void toolStripButtonDeleteMarkCollection_Click(object sender, EventArgs e)
 		{
-			if (listViewMarkCollections.SelectedItems.Count > 0)
-			{
-				if (MessageBox.Show("Are you sure you want to delete the selected Marks in the Collection?", "Delete Mark Collection", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
-				{
-					foreach (ListViewItem item in listViewMarkCollections.SelectedItems)
-					{
-						listViewMarkCollections.SelectedItems[0].Remove();
-						OnChangedMarkCollection(new MarkCollectionArgs(null));
-						MarkCollection mc = item.Tag as MarkCollection;
-						Sequence.MarkCollections.Remove(mc);
-					}
-				}
-			}
-			else
-			{
-				MessageBox.Show("Please select a Mark Collection to delete and press the delete button again.", "Delete Mark Collection", MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
-			}
+			DeleteSelectedMarkCollections();
 		}
 
 		private void numericUpDownStandardNudge_ValueChanged(object sender, EventArgs e)
@@ -169,7 +153,28 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			if (e.KeyCode == Keys.Delete)
 			{
-				toolStripButtonDeleteMarkCollection_Click(null, null);
+				DeleteSelectedMarkCollections();
+			}
+		}
+
+		private void DeleteSelectedMarkCollections()
+		{
+			if (listViewMarkCollections.SelectedItems.Count > 0)
+			{
+				if (MessageBox.Show("Are you sure you want to delete the selected Marks in the Collection?", "Delete Mark Collection", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+				{
+					foreach (ListViewItem item in listViewMarkCollections.SelectedItems)
+					{
+						listViewMarkCollections.SelectedItems[0].Remove();
+						OnChangedMarkCollection(new MarkCollectionArgs(null));
+						MarkCollection mc = item.Tag as MarkCollection;
+						Sequence.MarkCollections.Remove(mc);
+					}
+				}
+			}
+			else
+			{
+				MessageBox.Show("Please select a Mark Collection to delete and press the delete button again.", "Delete Mark Collection", MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
 			}
 		}
 

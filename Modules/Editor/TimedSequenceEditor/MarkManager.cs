@@ -224,14 +224,22 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void buttonRemoveCollection_Click(object sender, EventArgs e)
 		{
-			if (listViewMarkCollections.SelectedItems.Count > 0) {
-				foreach (ListViewItem item in listViewMarkCollections.SelectedItems) {
+			DeleteSelectedMarkCollections();
+		}
+
+		private void DeleteSelectedMarkCollections()
+		{
+			if (listViewMarkCollections.SelectedItems.Count > 0)
+			{
+				foreach (ListViewItem item in listViewMarkCollections.SelectedItems)
+				{
 					MarkCollection mc = item.Tag as MarkCollection;
 					MarkCollections.Remove(mc);
 				}
 			}
 
-			if (!MarkCollections.Contains(_displayedCollection)) {
+			if (!MarkCollections.Contains(_displayedCollection))
+			{
 				PopulateFormWithMarkCollection(null);
 			}
 
@@ -240,6 +248,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				listViewMarkCollections.Items[0].Selected = true;
 				listViewMarkCollections.Items[0].Focused = true;
+			}
+		}
+
+		private void listViewMarkCollections_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Delete)
+			{
+				DeleteSelectedMarkCollections();
 			}
 		}
 
@@ -1337,14 +1353,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						}
 					}
 				}
-			}
-		}
-
-		private void listViewMarkCollections_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Delete)
-			{
-				buttonRemoveCollection_Click(null, null);
 			}
 		}
 	}
