@@ -393,8 +393,11 @@ namespace Common.Controls
 			bool result = false;
 			if (controller.HasSetup) {
 				result = controller.Setup();
-				if (result)
-					OnControllersChanged();
+                if (result)
+                {
+                    OnControllersChanged();
+                    PopulateControllerTree();
+                }
 			}
 			return result;
 		}
