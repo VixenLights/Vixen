@@ -192,7 +192,7 @@ namespace VixenModules.Controller.E131
                         if (setupForm.UniverseGet(
                             i, ref active, ref universe, ref start, ref size))
                         {
-                            _data.Universes.Add(new UniverseEntry(i, active, universe, start - 1, size));
+                            _data.Universes.Add(new UniverseEntry(i, active, universe, start - 1, size,destination.Item1, destination.Item2));
 
                             for (int x = start - 1; x < start + size - 1; x++)
                                if(x < thisController.Outputs.Length)

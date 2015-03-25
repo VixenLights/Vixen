@@ -65,6 +65,30 @@ namespace VixenModules.Controller.E131
             this.SlotCount = 0;
         }
 
+        public UniverseEntry(
+        int rowNum, bool active, int universe, int start, int size, string unicast, string multicast)
+        {
+            this.RowNum = rowNum;
+            this.Active = active;
+            this.Universe = universe;
+            this.Start = start;
+            this.Size = size;
+            this.Unicast = unicast; //deprecated
+            this.Multicast = multicast; //deprecated
+            this.Ttl = 64; //deprecated
+
+            this.Socket = null;
+            this.DestIpEndPoint = null;
+            this.PhyBuffer = null;
+            this.EventRepeatCount = 0;
+            this.EventSuppressCount = 0;
+
+            this.seqNum = 0;
+
+            this.PktCount = 0;
+            this.SlotCount = 0;
+        }
+
 		/// <summary>
 		///   Gets or sets a value indicating whether the universe is active.
 		/// </summary>
