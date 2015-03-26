@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Runtime.Serialization;
 using Vixen.Module.Media;
 using Vixen.Services;
@@ -12,7 +13,7 @@ namespace Vixen.Module.SequenceType.Surrogate
 		{
 			TypeId = mediaModuleInstance.Descriptor.TypeId;
 			InstanceId = mediaModuleInstance.InstanceId;
-			FilePath = mediaModuleInstance.MediaFilePath;
+			FileName = Path.GetFileName(mediaModuleInstance.MediaFilePath);
 		}
 
 		[DataMember]
@@ -22,11 +23,11 @@ namespace Vixen.Module.SequenceType.Surrogate
 		public Guid InstanceId { get; private set; }
 
 		[DataMember]
-		public string FilePath { get; private set; }
+		public string FileName { get; private set; }
 
 		public IMediaModuleInstance CreateMedia()
 		{
-			IMediaModuleInstance module = MediaService.Instance.GetMedia(FilePath);
+			IMediaModuleInstance module = MediaService.Instance.GetMedia(FileName);
 			module.InstanceId = InstanceId;
 			return module;
 		}

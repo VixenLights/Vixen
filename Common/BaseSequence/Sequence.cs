@@ -85,7 +85,7 @@ namespace BaseSequence
 
 		public IMediaModuleInstance AddMedia(string filePath)
 		{
-			IMediaModuleInstance media = MediaService.Instance.GetMedia(filePath);
+			IMediaModuleInstance media = MediaService.Instance.ImportMedia(filePath);
 			if (media != null) {
 				AddMedia(media);
 			}

@@ -6,6 +6,7 @@ using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using Vixen.IO;
+using Vixen.Services;
 
 namespace VixenModules.Sequence.Timed
 {
@@ -66,7 +67,7 @@ namespace VixenModules.Sequence.Timed
 			XNamespace d1p1 = "http://schemas.microsoft.com/2003/10/Serialization/Arrays";
 			namespaces.AddNamespace("d1p1", d1p1.NamespaceName);
 
-			//Fix the paths on the Nutcracker Picture filenames
+			//Fix the paths on the Nutcracker Picture filenames so they are now relative to the profile instead of full paths
 			IEnumerable<XElement> fileNameElements =
 				content.XPathSelectElements(
 					"_dataModels/d1p1:anyType/d2p1:NutcrackerData/d2p1:Picture_FileName",
@@ -78,7 +79,7 @@ namespace VixenModules.Sequence.Timed
 				fileNameElement.SetValue(fileName);
 			}
 
-			//Fix the paths on the Nutcracker Picture filenames
+			//Fix the paths on the Nutcracker Picture filenames  so they are now relative to the profile instead of full paths
 			fileNameElements =
 				content.XPathSelectElements(
 					"_dataModels/d1p1:anyType/d2p1:NutcrackerData/d2p1:PictureTile_FileName",
@@ -94,7 +95,7 @@ namespace VixenModules.Sequence.Timed
 				
 			}
 
-			//Fix the paths on the Nutcracker Glediator filenames
+			//Fix the paths on the Nutcracker Glediator filenames so they are now relative to the profile instead of full paths
 			fileNameElements =
 				content.XPathSelectElements(
 					"_dataModels/d1p1:anyType/d2p1:NutcrackerData/d2p1:Glediator_FileName",
@@ -105,11 +106,54 @@ namespace VixenModules.Sequence.Timed
 				string fileName = Path.GetFileName(fileNameElement.Value);
 				fileNameElement.SetValue(fileName);
 			}
+
+
+			//Fix the audio paths on Media so they are now relative to the profile instead of full paths
+			fileNameElements =
+				content.XPathSelectElements(
+					"_mediaSurrogates/MediaSurrogate/FilePath",
+					namespaces);
+
+			foreach (var fileNameElement in fileNameElements)
+			{
+				string filePath = fileNameElement.Value;
+				string fileName = Path.GetFileName(filePath);
+				fileNameElement.SetValue(fileName);
+				fileNameElement.Name = "FileName";
+				string newPath = Path.Combine(MediaService.MediaDirectory, fileName);
+				if (File.Exists(filePath) && !File.Exists(newPath))
+				{
+					File.Copy(filePath, newPath);	
+				}
+					
+			}
+
+			//Fix the provider source name
+			IEnumerable<XElement> timingElements =
+				content.XPathSelectElements(
+					"_selectedTimingProviderSurrogate",
+					namespaces);
+
+			foreach (var timingElement in timingElements)
+			{
+				XElement type = timingElement.Element("ProviderType");
+				if (type != null && type.Value.Equals("Media"))
+				{
+					XElement source = timingElement.Element("SourceName");
+					if (source != null)
+					{
+						string fileName = Path.GetFileName(source.Value);
+						source.SetValue(fileName);		
+					}
+					
+				}
+				
+			}
 			
 			return content;
 		}
 
-		public static bool IsNutcrackerResource(string s)
+		private bool IsNutcrackerResource(string s)
 		{
 			return s.Contains("VixenModules.Effect.Nutcracker");
 		}
