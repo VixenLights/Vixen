@@ -242,6 +242,9 @@
     <None Include="add.png" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="fill_gaps.png" />
+    <Content Include="table_chart_left.png" />
+    <Content Include="folder_open.png" />
     <None Include="hourglass_link.png" />
     <None Include="hourglass_go.png" />
     <None Include="hourglass_delete.png" />
@@ -373,7 +376,6 @@
     <None Include="data_grid.png" />
     <None Include="data_sort.png" />
     <None Include="data_table.png" />
-    <None Include="control_play_red.png" />
     <None Include="clipboard_empty.png" />
     <None Include="clipboard_invoice.png" />
     <None Include="clipboard_sign.png" />
@@ -394,7 +396,6 @@
     <None Include="clock_red.png" />
     <None Include="clock_select_remain.png" />
     <None Include="clock_stop.png" />
-    <None Include="arrow_loop.png" />
     <None Include="arrow_branch.png" />
     <None Include="arrow_divide.png" />
     <None Include="arrow_in.png" />
@@ -411,6 +412,7 @@
     <None Include="arrow_turn_left.png" />
     <None Include="arrow_turn_right.png" />
     <Content Include="cursor_arrow.png" />
+    <Content Include="disk.png" />
     <Content Include="folder.png" />
     <Content Include="folder_add.png" />
     <Content Include="folder_delete.png" />

@@ -185,6 +185,8 @@ namespace Common.Controls.Timeline
 
 		public int SnapStrength { get; set; }
 
+		public string CloseGap_Threshold { get; set; }
+		
 		public bool ResizeIndicator_Enabled { get; set; }
 
 		public string ResizeIndicator_Color { get; set; }
@@ -430,7 +432,17 @@ namespace Common.Controls.Timeline
 				{
 					if (selectedRow.Selected)
 					{
-						selectedRow.SelectAllElements();
+						if (DragBoxFilterEnabled)
+						{
+							foreach (Element element in selectedRow)
+							{
+								element.Selected = DragBoxFilterTypes.Contains(element.EffectNode.Effect.TypeId);
+							}
+						}
+						else
+						{
+							selectedRow.SelectAllElements();
+						}
 						FirstSelectedRow = selectedRow;
 					} else
 					{
@@ -452,7 +464,17 @@ namespace Common.Controls.Timeline
 							if (Rows[i].Visible)
 							{
 								Rows[i].Selected = true;
-								Rows[i].SelectAllElements();
+								if (DragBoxFilterEnabled)
+								{
+									foreach (Element element in Rows[i])
+									{
+										element.Selected = DragBoxFilterTypes.Contains(element.EffectNode.Effect.TypeId);
+									}
+								}
+								else
+								{
+									Rows[i].SelectAllElements();									
+								}
 							}
 						}
 					}else{	
@@ -460,7 +482,17 @@ namespace Common.Controls.Timeline
 							if (Rows[i].Visible)
 							{
 								Rows[i].Selected = true;
-								Rows[i].SelectAllElements();
+								if (DragBoxFilterEnabled)
+								{
+									foreach (Element element in Rows[i])
+									{
+										element.Selected = DragBoxFilterTypes.Contains(element.EffectNode.Effect.TypeId);
+									}
+								}
+								else
+								{
+									Rows[i].SelectAllElements();
+								}
 							}
 						}
 					}
@@ -471,7 +503,17 @@ namespace Common.Controls.Timeline
 				ClearSelectedElements();
 				ClearSelectedRows(selectedRow);
 				ClearActiveRows();
-				selectedRow.SelectAllElements();
+				if (DragBoxFilterEnabled)
+				{
+					foreach (Element element in selectedRow)
+					{
+						element.Selected = DragBoxFilterTypes.Contains(element.EffectNode.Effect.TypeId);
+					}
+				}
+				else
+				{
+					selectedRow.SelectAllElements();					
+				}
 				FirstSelectedRow = selectedRow;
 			}
 
@@ -768,7 +810,8 @@ namespace Common.Controls.Timeline
 		/// </summary>
 		/// <param name="elements"></param>
 		/// <param name="referenceElement"></param>
-		public void AlignElementStartToEndTimes(IEnumerable<Element> elements, Element referenceElement)
+		/// <param name="holdEndTime"></param>
+		public void AlignElementStartToEndTimes(IEnumerable<Element> elements, Element referenceElement, bool holdEndTime)
 		{
 			if (!OkToUseAlignmentHelper(elements))
 			{
@@ -780,14 +823,13 @@ namespace Common.Controls.Timeline
 			foreach (Element selectedElement in elements)
 			{
 				if (selectedElement.EndTime == referenceElement.EndTime) continue;
-				//Need to make sure element is not moved beyond time, if going to do so we need to adjust duration while moving otherwise element becomes invalid and not clickable
-				if ((referenceElement.EndTime + selectedElement.Duration) > TotalTime)
-				{
-					elementsToAlign.Add(selectedElement, new Tuple<TimeSpan, TimeSpan>(referenceElement.EndTime, TotalTime));
-					continue;
-				}
-				//if the end time is going to be before the start time, we should just move the selectedelement
-				elementsToAlign.Add(selectedElement, new Tuple<TimeSpan, TimeSpan>(referenceElement.EndTime, referenceElement.EndTime + selectedElement.Duration));
+
+				var startTime = referenceElement.EndTime;
+				var endTime = holdEndTime ? selectedElement.EndTime : startTime + selectedElement.Duration;
+				if (endTime - startTime < TimeSpan.FromSeconds(.05)) endTime = startTime + selectedElement.Duration;
+				if (endTime > TotalTime) endTime = TotalTime;
+
+				elementsToAlign.Add(selectedElement, new Tuple<TimeSpan, TimeSpan>(startTime, endTime));
 			}
 
 			MoveResizeElements(elementsToAlign, ElementMoveType.Align);
@@ -798,7 +840,8 @@ namespace Common.Controls.Timeline
 		/// </summary>
 		/// <param name="elements"></param>
 		/// <param name="referenceElement"></param>
-		public void AlignElementEndToStartTime(IEnumerable<Element> elements, Element referenceElement)
+		/// <param name="holdStartTime"></param>
+		public void AlignElementEndToStartTime(IEnumerable<Element> elements, Element referenceElement, bool holdStartTime)
 		{
 			if (!OkToUseAlignmentHelper(elements))
 			{
@@ -810,18 +853,13 @@ namespace Common.Controls.Timeline
 			foreach (Element selectedElement in elements)
 			{
 				if (selectedElement.StartTime == referenceElement.StartTime) continue;
-				//if the start time is going to be after the end time, we should just move the selectedelement
-				//We don't need to wory about making sure the element will not go before 0, it works properly as it is.
-				if (referenceElement.StartTime < selectedElement.EndTime)
-				{
-					elementsToAlign.Add(selectedElement, new Tuple<TimeSpan, TimeSpan>(
-						(referenceElement.StartTime - selectedElement.Duration) > TimeSpan.Zero ? 
-						referenceElement.StartTime - selectedElement.Duration : TimeSpan.Zero, referenceElement.StartTime));
-				}
-				else
-				{
-					elementsToAlign.Add(selectedElement, new Tuple<TimeSpan, TimeSpan>(selectedElement.StartTime, referenceElement.StartTime));
-				}
+
+				var endTime = referenceElement.StartTime;
+				var startTime = holdStartTime ? selectedElement.StartTime : endTime - selectedElement.Duration;
+				if (endTime - startTime < TimeSpan.FromSeconds(.05)) startTime = endTime - selectedElement.Duration;
+				if (startTime < TimeSpan.Zero) startTime = TimeSpan.Zero;
+				
+				elementsToAlign.Add(selectedElement, new Tuple<TimeSpan, TimeSpan>(startTime, endTime));
 			}
 
 			MoveResizeElements(elementsToAlign, ElementMoveType.Align);
@@ -850,6 +888,65 @@ namespace Common.Controls.Timeline
 			}
 
 			MoveResizeElements(elementsToAlign, ElementMoveType.Align);
+		}
+
+		/// <summary>
+		/// Splits the given elements at the given time as clones.
+		/// </summary>
+		/// <param name="elements"></param>
+		/// <param name="splitTime"></param>
+		public void SplitElementsAtTime(List<Element> elements, TimeSpan splitTime)
+		{
+			//Clone the elements
+			List<Element> newElements = SelectedElementsCloneDelegate.Invoke(elements);
+
+			//Adjust the end time of the elements
+			elements.ForEach(elem => MoveResizeElement(elem, elem.StartTime, splitTime - elem.StartTime));
+
+			//Adjust the start time of the new elements
+			newElements.ForEach(elem => MoveResizeElement(elem, splitTime, elem.EndTime - splitTime));
+
+		}
+
+		/// <summary>
+		/// Closes the gap between elements in which the gap is less than the set threshold - time in seconds.
+		/// If any effects are selected, this applies to only selected effects, otherwise it applies to all elements
+		/// of the sequence.
+		/// </summary>
+		public void CloseGapsBetweenElements()
+		{
+			if (!SelectedElements.Any())
+			{
+				var result = MessageBox.Show(@"This action will apply to your entire sequence, are you sure ?",
+					@"Close element gaps", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+				if (result == DialogResult.No) return;
+			}
+
+			Dictionary<Element, Tuple<TimeSpan, TimeSpan>> moveElements = new Dictionary<Element, Tuple<TimeSpan, TimeSpan>>();
+	
+			foreach (Row row in Rows)
+			{
+				List<Element> elements = new List<Element>();
+				elements = SelectedElements.Any() ? row.SelectedElements.ToList() : row.ToList();
+
+				if (!elements.Any()) continue;
+
+				Element activeElement = elements.First();
+				foreach (Element element in elements.Skip(1))
+				{
+					//NOTE: we check for duplicate entries because the same row can be a member of more than one group
+					//in which case the element can also exist more than once, but we only need to modify one instance of it to get them all.
+					if (element.StartTime.TotalSeconds - activeElement.EndTime.TotalSeconds < Convert.ToDouble(CloseGap_Threshold) && element.StartTime != activeElement.EndTime && !moveElements.ContainsKey(element))
+					{
+						moveElements.Add(element,
+							new Tuple<TimeSpan, TimeSpan>(activeElement.EndTime, element.EndTime));
+					}
+
+					activeElement = element;
+				}
+			}
+
+			MoveResizeElements(moveElements);
 		}
 
 		/// <summary>

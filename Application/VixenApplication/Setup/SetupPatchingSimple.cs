@@ -342,10 +342,10 @@ namespace VixenApplication.Setup
 
 			if (patchSources > 0 && patchDestinations > 0) {
 				if (patchSources > patchDestinations) {
-					warning = "Warning: too many elements, some will not be patched from";
+					warning = "WARNING: too many elements, some will not be patched";
 				}
 				if (patchDestinations > patchSources) {
-					warning = "Warning: too many outputs, some will not be patched to";
+					warning = "WARNING: too many outputs, some will not be patched";
 				}
 			}
 

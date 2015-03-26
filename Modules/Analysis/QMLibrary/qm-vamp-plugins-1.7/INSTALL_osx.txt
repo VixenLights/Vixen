@@ -1,0 +1,21 @@
+
+QM Vamp Plugins
+===============
+
+To Install
+==========
+
+This package contains plugins for the Apple OS/X operating system,
+compatible with both PPC and Intel hardware.
+
+To install them, copy the files
+
+   qm-vamp-plugins.dylib
+   qm-vamp-plugins.cat
+   qm-vamp-plugins.n3
+
+to either
+
+   /Library/Audio/Plug-Ins/Vamp/      (for plugins to be available to all users)
+   $HOME/Library/Audio/Plug-Ins/Vamp/ (for plugins to be available to you only)
+

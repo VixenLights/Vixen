@@ -1,0 +1,226 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+	<title>Vixen 3 Web Interface</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatable" content="IE=Edge,chrome=1" />
+	<link rel="stylesheet" href="/style/bootstrap.css" />
+	<link rel="stylesheet" href="/style/bootstrap-slider.min.css" />
+	<link rel="stylesheet" href="/style/spectrum.css" />
+	<link rel="stylesheet" href="/style/vixen.css" />
+</head>
+
+<body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
+	<nav class="navbar navbar-default navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button class="btn btn-default navbar-btn pull-right visible-xs-inline-block" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" aria-label="Settings">
+					<span class="glyphicon glyphicon-cog"></span>
+				</button>
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="http://vixenlights.com">
+					<img src="/images/V3Logo.png" class="img-responsive logo" alt="Vixen Logo" />
+				</a>
+			</div>
+
+			<div id="navbar" class="navbar-collapse collapse">
+				<ul class="nav navbar-nav hidden-sm hidden-md hidden-lg">
+					<li class="hidden">
+						<a class="page-scroll" href="#page-top"></a>
+					</li>
+					<li>
+						<a class="page-scroll" href="#Elements">Elements</a>
+					</li>
+					<li>
+						<a class="page-scroll" href="#Sequences">Sequences</a>
+					</li>
+					<li>
+						<a class="page-scroll" href="#NowPlaying">Now Playing</a>
+					</li>
+				</ul>
+				<button class="btn btn-default navbar-btn pull-right hidden-xs" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" aria-label="Settings">
+					<span class="glyphicon glyphicon-cog"></span>
+				</button>
+			</div>
+
+		</div>
+	</nav>
+	<div class="container">
+		<section id="Elements" class="col-xs-12 col-sm-6">
+			<form data-bind="visible:search">
+				<div class="form-group has-success has-feedback" data-bind="css:{'has-success':searchResultsOverflow() == false,'has-error':searchResultsOverflow()}">
+					<div class="input-group">
+						<label for="elementSearch-input" class="sr-only">Search</label>
+						<input class="form-control" id="elementSearch-input" type="search" placeholder="Find an Element..." data-bind='textInput:searchToken' />
+
+						<span class="input-group-addon btn" data-bind="click:clearSearch">
+							<span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
+						</span>
+					</div>
+				</div>
+
+			</form>
+			<!-- ko ifnot:search -->
+			<button data-bind="click: navigateParent" class="btn-plain">
+				<span class="glyphicon glyphicon-circle-arrow-left glyphicon-lg" aria-hidden="true"></span>
+			</button>
+			<!-- /ko -->
+
+			<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="false" data-bind="foreach:elements">
+				<div class="panel panel-default">
+					<div class="panel-heading" role="tab" data-bind="attr:{id: 'Header' + $index()}">
+						<h4 class="panel-title">
+							<a data-bind="text:Name, attr:{href:'#Element' + $index(), 'aria-controls':'Element' + $index()}" class="collapsed" data-toggle="collapse" data-parent="#accordion" aria-expanded="false">
+							</a>
+							<button class="btn-plain pull-right" data-bind="click: $parent.navigateChild, visible:Children" aria-label="Navigate Children">
+								<span class="glyphicon glyphicon-circle-arrow-right glyphicon-lg" aria-hidden="true"></span>
+							</button>
+						</h4>
+					</div>
+					<div class="panel-collapse collapse" role="tabpanel" data-bind="attr:{id:'Element' + $index(), 'aria-labelledby': 'Header' + $index()}">
+						<div class="panel-body">
+							<form>
+								<div class="row">
+									<div class="col-xs-2 col-sm-2 element-picker">
+										<input class="btn btn-default" type="color" data-bind="attr: { id: Name }, spectrumColorPicker:Colors, default:'#FFFFFF'" name="color" aria-label="color" />
+									</div>
+									<div class="col-xs-7 element-btn-group">
+										<div class="element-button">
+											<button data-bind="click: function(data, event) { $root.turnOnElement(data, event, true) }" class="btn btn-default" aria-label="Timed">
+												<span class="glyphicon glyphicon-time glyphicon-lg" aria-hidden="true"></span>
+											</button>
+										</div>
+										<div class="element-button">
+											<button data-bind="click: function(data, event) { $root.turnOnElement(data, event, false) }" class="btn btn-default" aria-label="On">
+												<span class="glyphicon glyphicon-play-circle glyphicon-lg" aria-hidden="true"></span>
+											</button>
+										</div>
+										<div class="element-button">
+											<button data-bind="click: $root.turnOffElement" class="btn btn-default" aria-label="Off">
+												<span class="glyphicon glyphicon-off glyphicon-lg" aria-hidden="true"></span>
+											</button>
+										</div>
+									</div>
+								</div>
+
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+		</section>
+		<section id="Sequences" class="col-xs-12 col-sm-6">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">Sequences</h3>
+				</div>
+				<div class="margin-small">
+					<div class="input-group">
+						<label class="sr-only" for="select-sequence">Sequences:</label>
+						<select class="form-control" name="select-sequence" id="select-sequence" data-bind="options: sequences, optionsCaption: 'Select Sequence...', optionsText: 'Name', value:selectedSequence">
+							<option value="standard"></option>
+						</select>
+						<span class="input-group-btn">
+							<button class="btn btn-default btn-addon-icon" type="button" data-bind="click: $root.playSequence, enable:selectedSequence">
+								<span class="glyphicon glyphicon-play-circle glyphicon-addon" aria-hidden="true"></span>
+							</button>
+						</span>
+					</div>
+
+				</div>
+			</div>
+		</section>
+
+		<section id="NowPlaying" class="col-xs-12 col-sm-6 pull-right">
+
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">Now Playing</h3>
+				</div>
+
+				<div class="panel-group margin-small" id="nowplaying-accordian" role="tablist" aria-multiselectable="false" data-bind="foreach: nowPlayingList">
+
+					<div class="panel panel-default">
+						<div class="panel-heading padding-side-sm" role="tab" data-bind="attr:{id: 'nowplaying-header' + $index()}">
+							<h4 class="panel-title">
+								<a data-bind="text:Sequence.Name, attr:{href:'#Sequence' + $index(), 'aria-controls':'Sequence' + $index()}" class="collapsed ellipsis" data-toggle="collapse" data-parent="#nowplaying-accordian" aria-expanded="false"></a>
+								<span class="glyphicon glyphicon-small pull-left" data-bind="css:$root.contextStatus($data.State())"></span>
+								<span class="pull-right" data-bind="duration:Position, format:'hh:mm:ss', trim:false"></span>
+							</h4>
+						</div>
+						<div class="panel-collapse collapse" role="tabpanel" data-bind="attr:{id:'Sequence' + $index(), 'aria-labelledby': 'nowplaying-header' + $index()}">
+							<div class="panel-body">
+								<form>
+									<div class="row">
+										<div class="col-xs-9">
+											<div class="btn-group" role="group">
+												<button class="btn btn-default" data-bind="click: $root.playSequence, enable: $root.isPaused($data.State())">
+													<span class="glyphicon glyphicon-play-circle glyphicon-lg" aria-hidden="true"></span>
+												</button>
+												<button class="btn btn-default" data-bind="click: $root.stopSequence">
+													<span class="glyphicon glyphicon-stop glyphicon-lg" aria-hidden="true"></span>
+												</button>
+												<button class="btn btn-default" data-bind="click: $root.pauseSequence, enable: $root.isPlaying($data.State())">
+													<span class="glyphicon glyphicon-pause glyphicon-lg" aria-hidden="true"></span>
+												</button>
+											</div>
+										</div>
+									</div>
+
+								</form>
+
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</section>
+	</div>
+	<div class="collapse navbar navbar-default navbar-fixed-bottom" id="collapseExample">
+		<div class="well">
+			<div class="form-inline">
+				<div class="form-group">
+					<label for="elementOnTime" class="control-label">Time:</label>
+					<input class="form-control" type="number" name="elementOnTime" id="elementOnTime" data-bind="value: timeout" />
+				</div>
+				<div class="form-group">
+					<label for="slider" class="control-label">Intensity:</label>
+					<input class="form-control" type="range" name="intensity" id="slider" data-bind="jqmSlider: elementIntensity, min:0, max:100, value:100">
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<footer id="footer">
+		<div class="navbar-default navbar-fixed-bottom">
+			<div class="container">
+				<span data-bind="text: status"></span>
+			</div>
+		</div>
+	</footer>
+	<img src="/images/ajax-loader.gif" id="loading-indicator" style="display:none" />
+	<script src="/js/jquery-1.11.2.min.js"></script>
+	<script src="/js/bootstrap.min.js"></script>
+	<script src="/js/jquery.easing.min.js"></script>
+	<script src="/js/knockout-3.2.0.js"></script>
+	<script src="/js/knockout.mapping.min.js"></script>
+	<script src="/js/moment.min.js"></script>
+	<script src="/js/moment-duration-format.js"></script>
+	<script src="/js/bootstrap-slider.min.js"></script>
+	<script src="/js/spectrum.js"></script>
+	<script src="/js/amplify.min.js"></script>
+	<script src="/js/jquery.signalr-2.1.0.min.js"></script>
+	<!--Reference the autogenerated SignalR hub script. -->
+	<script src="/signalr/hubs"></script>
+	<script src="/js/vixen.js"></script>
+</body>
+</html>

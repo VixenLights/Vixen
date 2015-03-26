@@ -1,0 +1,4 @@
+repo: 15a568c5a680112c9257cd3349b78dc2ad8ecb8d
+node: 7c7424761fcd4aa892f98df27d06ed24e4d5e2ff
+branch: default
+tag: qm-vamp-plugins-v1.7

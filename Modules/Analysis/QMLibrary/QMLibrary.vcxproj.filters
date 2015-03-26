@@ -1,0 +1,118 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Vamp Wrapper Files">
+      <UniqueIdentifier>{3b3c68a7-e7e1-486b-ac5a-4177a94d9db4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Queen Mary Wrapper Files">
+      <UniqueIdentifier>{79e079cc-6178-487f-8e8a-87a759d0e443}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Vamp SDK Files">
+      <UniqueIdentifier>{88bd0532-79f2-4250-84d3-2856f5fed9f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Queen Mary Plugin Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="QMFiles\BarBeatTrack.h">
+      <Filter>Queen Mary Plugin Files</Filter>
+    </ClInclude>
+    <ClInclude Include="QMFiles\dsp\onsets\DetectionFunction.h">
+      <Filter>Queen Mary Plugin Files</Filter>
+    </ClInclude>
+    <ClInclude Include="QMFiles\maths\MathUtilities.h">
+      <Filter>Queen Mary Plugin Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WrapperFiles\ManagedPlugin.h">
+      <Filter>Vamp Wrapper Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WrapperFiles\ManagedParameter.h">
+      <Filter>Vamp Wrapper Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WrapperFiles\ManagedOutput.h">
+      <Filter>Vamp Wrapper Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WrapperFiles\ManagedFeature.h">
+      <Filter>Vamp Wrapper Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WrapperFiles\ManagedRealtime.h">
+      <Filter>Vamp Wrapper Files</Filter>
+    </ClInclude>
+    <ClInclude Include="QMFiles\vamp-plugin-sdk-2.5\vamp-sdk\RealTime.h">
+      <Filter>Vamp SDK Files</Filter>
+    </ClInclude>
+    <ClInclude Include="QMBarBeatTrack.h">
+      <Filter>Queen Mary Wrapper Files</Filter>
+    </ClInclude>
+    <ClInclude Include="alloca.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="VampParamCtrl.h" />
+    <ClInclude Include="VampOutputCtrl.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Queen Mary Plugin Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QMFiles\BarBeatTrack.cpp">
+      <Filter>Queen Mary Plugin Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QMFiles\dsp\onsets\DetectionFunction.cpp">
+      <Filter>Queen Mary Plugin Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QMFiles\dsp\onsets\PeakPicking.cpp">
+      <Filter>Queen Mary Plugin Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QMFiles\dsp\phasevocoder\PhaseVocoder.cpp">
+      <Filter>Queen Mary Plugin Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QMFiles\dsp\rateconversion\Decimator.cpp">
+      <Filter>Queen Mary Plugin Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QMFiles\dsp\signalconditioning\DFProcess.cpp">
+      <Filter>Queen Mary Plugin Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QMFiles\dsp\signalconditioning\Filter.cpp">
+      <Filter>Queen Mary Plugin Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QMFiles\dsp\signalconditioning\FiltFilt.cpp">
+      <Filter>Queen Mary Plugin Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QMFiles\dsp\tempotracking\DownBeat.cpp">
+      <Filter>Queen Mary Plugin Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QMFiles\dsp\tempotracking\TempoTrackV2.cpp">
+      <Filter>Queen Mary Plugin Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QMFiles\dsp\transforms\FFT.cpp">
+      <Filter>Queen Mary Plugin Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QMFiles\maths\MathUtilities.cpp">
+      <Filter>Queen Mary Plugin Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WrapperFiles\ManagedPlugin.cpp">
+      <Filter>Vamp Wrapper Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WrapperFiles\ManagedRealtime.cpp">
+      <Filter>Vamp Wrapper Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QMFiles\vamp-plugin-sdk-2.5\src\vamp-sdk\RealTime.cpp">
+      <Filter>Vamp SDK Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QMBarBeatTrack.cpp">
+      <Filter>Queen Mary Wrapper Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VampParamCtrl.cpp">
+      <Filter>Queen Mary Plugin Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VampOutputCtrl.cpp">
+      <Filter>Queen Mary Plugin Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="VampOutputCtrl.resx" />
+    <EmbeddedResource Include="VampParamCtrl.resx" />
+  </ItemGroup>
+</Project>

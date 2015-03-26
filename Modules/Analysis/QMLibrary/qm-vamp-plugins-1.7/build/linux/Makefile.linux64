@@ -1,0 +1,11 @@
+
+CFLAGS := -DNDEBUG -O3 -fno-exceptions -fPIC -ffast-math -msse -msse2 -mfpmath=sse -ftree-vectorize -fomit-frame-pointer -DUSE_PTHREADS
+
+CXXFLAGS := $(CFLAGS)
+
+LDFLAGS	 := -shared -Lbuild/linux/amd64 -Wl,-Bstatic -lqm-dsp -lvamp-sdk -L/usr/lib/sse2/atlas -L/usr/lib/atlas/sse -llapack -lcblas -latlas -Wl,-Bdynamic -lpthread -Wl,--version-script=vamp-plugin.map
+
+PLUGIN_EXT   := .so
+
+include build/general/Makefile.inc
+

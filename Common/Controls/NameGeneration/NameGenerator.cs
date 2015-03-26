@@ -6,6 +6,7 @@ using Common.Controls.NameGeneration;
 using Common.Resources;
 using Vixen.Rule;
 using Vixen.Rule.Name;
+using System.Drawing;
 
 namespace Common.Controls
 {
@@ -42,6 +43,10 @@ namespace Common.Controls
 			buttonMoveRuleUp.Text = "";
 			buttonMoveRuleDown.Image = Tools.GetIcon(Resources.Properties.Resources.arrow_down, 16);
 			buttonMoveRuleDown.Text = "";
+			buttonAddNewRule.Image = Tools.GetIcon(Resources.Properties.Resources.add, 16);
+			buttonAddNewRule.Text = "";
+			buttonDeleteRule.Image = Tools.GetIcon(Resources.Properties.Resources.delete, 16);
+			buttonDeleteRule.Text = "";
 
 			Generators = new List<INamingGenerator>();
 
@@ -79,8 +84,8 @@ namespace Common.Controls
 
 			ResizeListviewColumns();
 			PopulateNames();
+			listViewGenerators.Items[0].Selected = true;
 		}
-
 
 		public List<string> Names { get; set; }
 
@@ -101,7 +106,7 @@ namespace Common.Controls
 			int i = 1;
 			foreach (INamingGenerator namingGenerator in Generators) {
 				ListViewItem item = new ListViewItem();
-				item.Text = string.Format("{{0}}: {1}", i, namingGenerator.Name);
+				item.Text = string.Format("<{0}> {1}", i, namingGenerator.Name);
 				item.Tag = namingGenerator;
 				listViewGenerators.Items.Add(item);
 				i++;
@@ -235,7 +240,7 @@ namespace Common.Controls
 					substitution = names[i];
 				}
 
-				string newFormat = format.Replace("{" + depth + "}", substitution);
+				string newFormat = format.Replace("<" + depth + ">", substitution);
 
 				// if this is the last generator, use the single string; otherwise, recurse so the next
 				// generator can have a crack at it as well.
@@ -245,7 +250,7 @@ namespace Common.Controls
 				else {
 					// if the sub-generator didn't make anything, add the name directly and treat this one as the final.
 					IEnumerable<string> subResult = GenerateNames(depth + 1, newFormat, currentNumber + result.Count, maxNumber);
-                    if (subResult.Any())
+					if (subResult.Any())
 						result.AddRange(subResult);
 					else
 						result.Add(newFormat);
@@ -276,25 +281,58 @@ namespace Common.Controls
 
 			AddNewNamingGenerator(newGenerator);
 			listViewGenerators.Items[listViewGenerators.Items.Count - 1].Selected = true;
+			int index = listViewGenerators.SelectedIndices[0];
+			if (textBoxNameFormat.Text.Contains("<" + (index + 1) + ">"))
+			{
+
+			}
+			else
+			{
+				textBoxNameFormat.Text = textBoxNameFormat.Text + string.Format(" <{0}>", index + 1);
+			}
 			PopulateNames();
 		}
 
 		private void buttonDeleteRule_Click(object sender, EventArgs e)
 		{
+			int index = listViewGenerators.SelectedIndices[0];
 			if (listViewGenerators.SelectedIndices.Count <= 0)
 				return;
 
 			RemoveNamingGenerator(listViewGenerators.SelectedIndices[0]);
+
 			DisplayNamingGenerator(null);
+			if (index > 0)
+			{
+	//			this.listViewGenerators.Items[index - 1].BackColor = Color.DodgerBlue;
+				this.listViewGenerators.Items[index - 1].Selected = true;
+			}
+			else
+			{
+				if (listViewGenerators.Items.Count != index)
+				{
+	//				this.listViewGenerators.Items[index].BackColor = Color.DodgerBlue;
+					this.listViewGenerators.Items[index].Selected = true;
+				}
+			}
+			if (index < listViewGenerators.Items.Count)
+			{
+				textBoxNameFormat.Text = textBoxNameFormat.Text.Replace(" <" + (listViewGenerators.Items.Count + 1) + ">", "");
+				textBoxNameFormat.Text = textBoxNameFormat.Text.Replace("<" + (listViewGenerators.Items.Count + 1) + ">", "");
+			}
+			else
+			{
+				textBoxNameFormat.Text = textBoxNameFormat.Text.Replace(" <" + (index + 1) + ">", "");
+				textBoxNameFormat.Text = textBoxNameFormat.Text.Replace("<" + (index + 1) + ">", "");
+			}
 			PopulateNames();
 		}
 
 		private void buttonMoveRuleUp_Click(object sender, EventArgs e)
 		{
+			int index = listViewGenerators.SelectedIndices[0];
 			if (listViewGenerators.SelectedIndices.Count <= 0)
 				return;
-
-			int index = listViewGenerators.SelectedIndices[0];
 			if (index <= 0)
 				return;
 
@@ -303,14 +341,15 @@ namespace Common.Controls
 			Generators[index] = ng;
 			SyncGeneratorsToListView();
 			PopulateNames();
+			this.listViewGenerators.Items[index - 1].Selected = true;
 		}
 
 		private void buttonMoveRuleDown_Click(object sender, EventArgs e)
 		{
+			int index = listViewGenerators.SelectedIndices[0];
 			if (listViewGenerators.SelectedIndices.Count <= 0)
 				return;
 
-			int index = listViewGenerators.SelectedIndices[0];
 			if (index >= Generators.Count - 1)
 				return;
 
@@ -319,6 +358,26 @@ namespace Common.Controls
 			Generators[index] = ng;
 			SyncGeneratorsToListView();
 			PopulateNames();
+			this.listViewGenerators.Items[index + 1].Selected = true;
+		}
+
+		private void listViewGenerators_Highlight(object sender, DrawListViewItemEventArgs e)
+		{
+			// If this item is the selected item
+			if (e.Item.Selected)
+			{
+				// If the selected item has focus Set the colors to the normal colors for a selected item
+				e.Item.ForeColor = SystemColors.HighlightText;
+				e.Item.BackColor = SystemColors.Highlight;
+			}
+			else
+			{
+				// Set the normal colors for items that are not selected
+				e.Item.ForeColor = listViewGenerators.ForeColor;
+				e.Item.BackColor = listViewGenerators.BackColor;
+			}
+			e.DrawBackground();
+			e.DrawText();
 		}
 
 		private void listViewNames_Resize(object sender, EventArgs e)

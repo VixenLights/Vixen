@@ -87,7 +87,9 @@
 			// 
 			// toolTip
 			// 
-			this.toolTip.IsBalloon = true;
+			this.toolTip.AutoPopDelay = 3000;
+			this.toolTip.InitialDelay = 500;
+			this.toolTip.ReshowDelay = 100;
 			// 
 			// EffectTimeEditor
 			// 

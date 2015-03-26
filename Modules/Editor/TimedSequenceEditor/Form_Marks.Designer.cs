@@ -51,9 +51,9 @@
 			// toolStrip1
 			// 
 			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripButtonEditMarkCollection,
-            this.toolStripButtonAddMarkCollection,
-            this.toolStripButtonDeleteMarkCollection});
+			this.toolStripButtonEditMarkCollection,
+			this.toolStripButtonAddMarkCollection,
+			this.toolStripButtonDeleteMarkCollection});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 0);
 			this.toolStrip1.Name = "toolStrip1";
 			this.toolStrip1.Size = new System.Drawing.Size(256, 25);
@@ -96,10 +96,10 @@
 			// 
 			this.numericUpDownStandardNudge.Location = new System.Drawing.Point(7, 20);
 			this.numericUpDownStandardNudge.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
+			1000,
+			0,
+			0,
+			0});
 			this.numericUpDownStandardNudge.Name = "numericUpDownStandardNudge";
 			this.numericUpDownStandardNudge.Size = new System.Drawing.Size(48, 20);
 			this.numericUpDownStandardNudge.TabIndex = 1;
@@ -110,10 +110,10 @@
 			// 
 			this.numericUpDownSuperNudge.Location = new System.Drawing.Point(72, 20);
 			this.numericUpDownSuperNudge.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
+			1000,
+			0,
+			0,
+			0});
 			this.numericUpDownSuperNudge.Name = "numericUpDownSuperNudge";
 			this.numericUpDownSuperNudge.Size = new System.Drawing.Size(48, 20);
 			this.numericUpDownSuperNudge.TabIndex = 3;
@@ -135,7 +135,7 @@
 			// label3
 			// 
 			this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.label3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
 			this.label3.Location = new System.Drawing.Point(3, 3);
 			this.label3.Name = "label3";
@@ -156,21 +156,20 @@
 			// 
 			this.listViewMarkCollections.CheckBoxes = true;
 			this.listViewMarkCollections.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1});
+			this.columnHeader1});
 			this.listViewMarkCollections.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.listViewMarkCollections.FullRowSelect = true;
 			this.listViewMarkCollections.HideSelection = false;
 			this.listViewMarkCollections.LabelEdit = true;
 			this.listViewMarkCollections.Location = new System.Drawing.Point(0, 25);
-			this.listViewMarkCollections.MultiSelect = false;
 			this.listViewMarkCollections.Name = "listViewMarkCollections";
-			this.listViewMarkCollections.Scrollable = false;
 			this.listViewMarkCollections.Size = new System.Drawing.Size(256, 331);
 			this.listViewMarkCollections.TabIndex = 8;
 			this.listViewMarkCollections.UseCompatibleStateImageBehavior = false;
 			this.listViewMarkCollections.View = System.Windows.Forms.View.Details;
 			this.listViewMarkCollections.AfterLabelEdit += new System.Windows.Forms.LabelEditEventHandler(this.listViewMarkCollections_AfterLabelEdit);
 			this.listViewMarkCollections.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.listViewMarkCollections_ItemCheck);
+			this.listViewMarkCollections.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.listViewMarkCollections_PreviewKeyDown);
 			// 
 			// columnHeader1
 			// 

@@ -28,14 +28,13 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			this.tabControlShowItems = new System.Windows.Forms.TabControl();
 			this.tabPageStartup = new System.Windows.Forms.TabPage();
 			this.tabPageBackground = new System.Windows.Forms.TabPage();
 			this.tabPageSequential = new System.Windows.Forms.TabPage();
 			this.tabPageInput = new System.Windows.Forms.TabPage();
 			this.tabPageShutdown = new System.Windows.Forms.TabPage();
-			this.buttonMoveItemDown = new System.Windows.Forms.Button();
-			this.buttonMoveItemUp = new System.Windows.Forms.Button();
 			this.buttonDeleteItem = new System.Windows.Forms.Button();
 			this.buttonAddItem = new System.Windows.Forms.Button();
 			this.groupBoxAction = new System.Windows.Forms.GroupBox();
@@ -51,6 +50,7 @@
 			this.listViewShowItems = new System.Windows.Forms.ListView();
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.labelHelp = new System.Windows.Forms.Label();
+			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.tabControlShowItems.SuspendLayout();
 			this.groupBoxAction.SuspendLayout();
 			this.groupBox2.SuspendLayout();
@@ -74,7 +74,7 @@
 			// 
 			this.tabPageStartup.Location = new System.Drawing.Point(4, 22);
 			this.tabPageStartup.Name = "tabPageStartup";
-			this.tabPageStartup.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPageStartup.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
 			this.tabPageStartup.Size = new System.Drawing.Size(319, 0);
 			this.tabPageStartup.TabIndex = 0;
 			this.tabPageStartup.Tag = "These items are run once, in order, during startup.";
@@ -85,7 +85,7 @@
 			// 
 			this.tabPageBackground.Location = new System.Drawing.Point(4, 22);
 			this.tabPageBackground.Name = "tabPageBackground";
-			this.tabPageBackground.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPageBackground.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
 			this.tabPageBackground.Size = new System.Drawing.Size(319, 0);
 			this.tabPageBackground.TabIndex = 1;
 			this.tabPageBackground.Tag = "These items are always run in the background.";
@@ -122,29 +122,9 @@
 			this.tabPageShutdown.Text = "Shutdown";
 			this.tabPageShutdown.UseVisualStyleBackColor = true;
 			// 
-			// buttonMoveItemDown
-			// 
-			this.buttonMoveItemDown.Location = new System.Drawing.Point(265, 310);
-			this.buttonMoveItemDown.Name = "buttonMoveItemDown";
-			this.buttonMoveItemDown.Size = new System.Drawing.Size(24, 24);
-			this.buttonMoveItemDown.TabIndex = 10;
-			this.buttonMoveItemDown.Text = "v";
-			this.buttonMoveItemDown.UseVisualStyleBackColor = true;
-			this.buttonMoveItemDown.Click += new System.EventHandler(this.buttonMoveItemDown_Click);
-			// 
-			// buttonMoveItemUp
-			// 
-			this.buttonMoveItemUp.Location = new System.Drawing.Point(240, 310);
-			this.buttonMoveItemUp.Name = "buttonMoveItemUp";
-			this.buttonMoveItemUp.Size = new System.Drawing.Size(24, 24);
-			this.buttonMoveItemUp.TabIndex = 9;
-			this.buttonMoveItemUp.Text = "^";
-			this.buttonMoveItemUp.UseVisualStyleBackColor = true;
-			this.buttonMoveItemUp.Click += new System.EventHandler(this.buttonMoveItemUp_Click);
-			// 
 			// buttonDeleteItem
 			// 
-			this.buttonDeleteItem.Location = new System.Drawing.Point(315, 310);
+			this.buttonDeleteItem.Location = new System.Drawing.Point(315, 421);
 			this.buttonDeleteItem.Name = "buttonDeleteItem";
 			this.buttonDeleteItem.Size = new System.Drawing.Size(24, 24);
 			this.buttonDeleteItem.TabIndex = 7;
@@ -154,7 +134,7 @@
 			// 
 			// buttonAddItem
 			// 
-			this.buttonAddItem.Location = new System.Drawing.Point(290, 310);
+			this.buttonAddItem.Location = new System.Drawing.Point(290, 421);
 			this.buttonAddItem.Name = "buttonAddItem";
 			this.buttonAddItem.Size = new System.Drawing.Size(24, 24);
 			this.buttonAddItem.TabIndex = 5;
@@ -196,14 +176,14 @@
 			// 
 			this.groupBoxItemEdit.Location = new System.Drawing.Point(345, 129);
 			this.groupBoxItemEdit.Name = "groupBoxItemEdit";
-			this.groupBoxItemEdit.Size = new System.Drawing.Size(442, 205);
+			this.groupBoxItemEdit.Size = new System.Drawing.Size(442, 286);
 			this.groupBoxItemEdit.TabIndex = 1;
 			this.groupBoxItemEdit.TabStop = false;
 			this.groupBoxItemEdit.Text = "Item Information";
 			// 
 			// buttonOK
 			// 
-			this.buttonOK.Location = new System.Drawing.Point(631, 345);
+			this.buttonOK.Location = new System.Drawing.Point(631, 456);
 			this.buttonOK.Name = "buttonOK";
 			this.buttonOK.Size = new System.Drawing.Size(75, 23);
 			this.buttonOK.TabIndex = 1;
@@ -213,8 +193,7 @@
 			// 
 			// buttonCancel
 			// 
-			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(712, 345);
+			this.buttonCancel.Location = new System.Drawing.Point(712, 456);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(75, 23);
 			this.buttonCancel.TabIndex = 2;
@@ -225,7 +204,7 @@
 			// buttonHelp
 			// 
 			this.buttonHelp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.buttonHelp.Location = new System.Drawing.Point(12, 345);
+			this.buttonHelp.Location = new System.Drawing.Point(12, 456);
 			this.buttonHelp.Name = "buttonHelp";
 			this.buttonHelp.Size = new System.Drawing.Size(60, 23);
 			this.buttonHelp.TabIndex = 62;
@@ -264,6 +243,7 @@
 			// 
 			// listViewShowItems
 			// 
+			this.listViewShowItems.AllowDrop = true;
 			this.listViewShowItems.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1});
 			this.listViewShowItems.FullRowSelect = true;
@@ -272,14 +252,20 @@
 			this.listViewShowItems.Location = new System.Drawing.Point(12, 78);
 			this.listViewShowItems.MultiSelect = false;
 			this.listViewShowItems.Name = "listViewShowItems";
-			this.listViewShowItems.Size = new System.Drawing.Size(327, 226);
+			this.listViewShowItems.OwnerDraw = true;
+			this.listViewShowItems.Size = new System.Drawing.Size(327, 337);
 			this.listViewShowItems.TabIndex = 64;
 			this.listViewShowItems.Tag = "";
+			this.toolTip1.SetToolTip(this.listViewShowItems, "Left click Sequence and drag to re-arrange show order");
 			this.listViewShowItems.UseCompatibleStateImageBehavior = false;
 			this.listViewShowItems.View = System.Windows.Forms.View.Details;
 			this.listViewShowItems.AfterLabelEdit += new System.Windows.Forms.LabelEditEventHandler(this.listViewShowItems_AfterLabelEdit);
+			this.listViewShowItems.DrawItem += new System.Windows.Forms.DrawListViewItemEventHandler(this.listViewShowItems_Highlight);
+			this.listViewShowItems.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.listViewShowItems_ItemDrag);
 			this.listViewShowItems.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.listViewShowItems_ItemSelectionChanged);
 			this.listViewShowItems.SelectedIndexChanged += new System.EventHandler(this.listViewShowItems_SelectedIndexChanged);
+			this.listViewShowItems.DragDrop += new System.Windows.Forms.DragEventHandler(this.listViewShowItems_DragDrop);
+			this.listViewShowItems.DragEnter += new System.Windows.Forms.DragEventHandler(this.listViewShowItems_DragEnter);
 			// 
 			// columnHeader1
 			// 
@@ -288,24 +274,28 @@
 			// 
 			// labelHelp
 			// 
-			this.labelHelp.Location = new System.Drawing.Point(12, 307);
+			this.labelHelp.Location = new System.Drawing.Point(12, 418);
 			this.labelHelp.Name = "labelHelp";
-			this.labelHelp.Size = new System.Drawing.Size(222, 35);
+			this.labelHelp.Size = new System.Drawing.Size(273, 35);
 			this.labelHelp.TabIndex = 65;
 			this.labelHelp.Text = "Help";
+			// 
+			// toolTip1
+			// 
+			this.toolTip1.AutomaticDelay = 300;
+			this.toolTip1.AutoPopDelay = 10000;
+			this.toolTip1.InitialDelay = 300;
+			this.toolTip1.ReshowDelay = 60;
 			// 
 			// ShowEditorForm
 			// 
 			this.AcceptButton = this.buttonOK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.CancelButton = this.buttonCancel;
-			this.ClientSize = new System.Drawing.Size(799, 380);
+			this.ClientSize = new System.Drawing.Size(799, 491);
 			this.Controls.Add(this.labelHelp);
 			this.Controls.Add(this.listViewShowItems);
-			this.Controls.Add(this.buttonMoveItemDown);
 			this.Controls.Add(this.groupBoxAction);
-			this.Controls.Add(this.buttonMoveItemUp);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.buttonDeleteItem);
 			this.Controls.Add(this.buttonHelp);
@@ -343,9 +333,7 @@
 		private System.Windows.Forms.GroupBox groupBoxItemEdit;
 		private System.Windows.Forms.Button buttonDeleteItem;
 		private System.Windows.Forms.Button buttonAddItem;
-		private System.Windows.Forms.Button buttonHelp;
-		private System.Windows.Forms.Button buttonMoveItemDown;
-		private System.Windows.Forms.Button buttonMoveItemUp;
+        private System.Windows.Forms.Button buttonHelp;
 		private System.Windows.Forms.GroupBox groupBox2;
 		private System.Windows.Forms.GroupBox groupBoxAction;
 		private System.Windows.Forms.ComboBox comboBoxActions;
@@ -355,5 +343,6 @@
 		private System.Windows.Forms.Label labelHelp;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.TextBox textBoxShowName;
+        private System.Windows.Forms.ToolTip toolTip1;
 	}
 }

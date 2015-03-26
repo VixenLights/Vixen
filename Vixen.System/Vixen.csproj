@@ -257,6 +257,14 @@
     <Compile Include="IO\Xml\XElementFileReader.cs" />
     <Compile Include="IO\Xml\XElementFileWriter.cs" />
     <Compile Include="IO\Xml\XmlRootAttributeVersion.cs" />
+    <Compile Include="Module\Analysis\AnalysisModuleDescriptorBase.cs" />
+    <Compile Include="Module\Analysis\AnalysisModuleImplementation.cs" />
+    <Compile Include="Module\Analysis\AnalysisModuleInstanceBase.cs" />
+    <Compile Include="Module\Analysis\AnalysisModuleManagement.cs" />
+    <Compile Include="Module\Analysis\AnalysisModuleRepository.cs" />
+    <Compile Include="Module\Analysis\IAnalysis.cs" />
+    <Compile Include="Module\Analysis\IAnalysisModuleDescriptor.cs" />
+    <Compile Include="Module\Analysis\IAnalysisModuleInstance.cs" />
     <Compile Include="Module\IModuleConsumer.cs" />
     <Compile Include="Module\IModuleDataRetriever.cs" />
     <Compile Include="Module\ModuleInstanceDataRetriever.cs" />
@@ -275,12 +283,10 @@
     <Compile Include="Rule\IElementTemplate.cs" />
     <Compile Include="Rule\INamingTemplate.cs" />
     <Compile Include="Rule\IPatchingRule.cs" />
-    <Compile Include="Rule\Name\GridNamingTemplate.cs" />
     <Compile Include="Rule\Name\LetterCounter.cs" />
     <Compile Include="Rule\Name\LetterIterator.cs" />
     <Compile Include="Rule\Name\NumberedNamingTemplate.cs" />
     <Compile Include="Rule\Name\NumericCounter.cs" />
-    <Compile Include="Rule\Name\RGBNamingTemplate.cs" />
     <Compile Include="Rule\Name\WordIterator.cs" />
     <Compile Include="Rule\Patch\ElementsToSingleController.cs" />
     <Compile Include="Services\IFileService.cs" />

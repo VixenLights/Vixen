@@ -43,6 +43,14 @@ namespace Vixen.Execution
 			return allAffectedElements;
 		}
 
+		public void RemoveEffects(IEnumerable<IEffectNode> nodes)
+		{
+			foreach (var effectNode in nodes)
+			{
+				_currentEffects.Remove(effectNode);
+			}
+		}
+
 		public void Reset()
 		{
 			_currentEffects.Clear();

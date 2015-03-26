@@ -40,7 +40,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private Audio _audio = null;
 
 		public MarkManager(List<MarkCollection> markCollections, IExecutionControl executionControl, ITiming timingSource,
-		                   TimedSequenceEditorForm timedSequenceEditorForm)
+						   TimedSequenceEditorForm timedSequenceEditorForm)
 		{
 			InitializeComponent();
 			Icon = Resources.Icon_Vixen3;
@@ -71,8 +71,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			PopulateFormWithMarkCollection(null, true);
 			updateTimingSpeedTextbox();
 			trackBarPlayBack.SetRange(0, (int) _timedSequenceEditorForm.Sequence.Length.TotalMilliseconds);
+			if (_timedSequenceEditorForm.Sequence.SequenceData.Media.Count > 0)
+			{
+				groupBoxFreqDetection.Enabled = true;
+				groupBoxAudioFilter.Enabled = true;
+			}
+			else
+			{
+				groupBoxFreqDetection.Enabled = false;
+				groupBoxAudioFilter.Enabled = false;
+			}
 		}
-
 
 		private double GetGrayValueForColor(Color c)
 		{
@@ -92,8 +101,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				item.SubItems.Add(mc.MarkCount.ToString());
 				item.BackColor = (mc.Enabled) ? mc.MarkColor : SystemColors.Window;
 				item.ForeColor = (mc.Enabled)
-				                 	? ((GetGrayValueForColor(mc.MarkColor) > 128) ? Color.Black : Color.White)
-				                 	: SystemColors.InactiveCaptionText;
+								 	? ((GetGrayValueForColor(mc.MarkColor) > 128) ? Color.Black : Color.White)
+								 	: SystemColors.InactiveCaptionText;
 				item.Tag = mc;
 
 				if (mc == _displayedCollection)
@@ -114,8 +123,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					item.SubItems[2].Text = collection.Marks.Count.ToString();
 					item.BackColor = (collection.Enabled) ? collection.MarkColor : SystemColors.Window;
 					item.ForeColor = (collection.Enabled)
-					                 	? ((GetGrayValueForColor(collection.MarkColor) > 128) ? Color.Black : Color.White)
-					                 	: SystemColors.InactiveCaptionText;
+									 	? ((GetGrayValueForColor(collection.MarkColor) > 128) ? Color.Black : Color.White)
+									 	: SystemColors.InactiveCaptionText;
 				}
 			}
 		}
@@ -215,18 +224,39 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void buttonRemoveCollection_Click(object sender, EventArgs e)
 		{
-			if (listViewMarkCollections.SelectedItems.Count > 0) {
-				foreach (ListViewItem item in listViewMarkCollections.SelectedItems) {
+			DeleteSelectedMarkCollections();
+		}
+
+		private void DeleteSelectedMarkCollections()
+		{
+			if (listViewMarkCollections.SelectedItems.Count > 0)
+			{
+				foreach (ListViewItem item in listViewMarkCollections.SelectedItems)
+				{
 					MarkCollection mc = item.Tag as MarkCollection;
 					MarkCollections.Remove(mc);
 				}
 			}
 
-			if (!MarkCollections.Contains(_displayedCollection)) {
+			if (!MarkCollections.Contains(_displayedCollection))
+			{
 				PopulateFormWithMarkCollection(null);
 			}
 
 			PopulateMarkCollectionsList();
+			if (listViewMarkCollections.Items.Count > 0)
+			{
+				listViewMarkCollections.Items[0].Selected = true;
+				listViewMarkCollections.Items[0].Focused = true;
+			}
+		}
+
+		private void listViewMarkCollections_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Delete)
+			{
+				DeleteSelectedMarkCollections();
+			}
 		}
 
 		private void buttonAddOrUpdateMark_Click(object sender, EventArgs e)
@@ -255,7 +285,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			else {
 				MessageBox.Show("Error parsing time: please use the format '<minutes>:<seconds>.<milliseconds>'",
-				                "Error parsing time");
+								"Error parsing time");
 			}
 		}
 
@@ -306,7 +336,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 				else {
 					MessageBox.Show("Error parsing time: please use the format '<minutes>:<seconds>.<milliseconds>'",
-					                "Error parsing time");
+									"Error parsing time");
 				}
 			}
 		}
@@ -385,7 +415,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							options.Add(new KeyValuePair<string, object>(mc.Name, mc));
 						}
 						Common.Controls.ListSelectDialog selector = new Common.Controls.ListSelectDialog("Destination Mark Collection?",
-						                                                                                 options);
+																										 options);
 						if (selector.ShowDialog() == DialogResult.OK) {
 							destination = selector.SelectedItem as MarkCollection;
 						}
@@ -405,7 +435,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 				else {
 					MessageBox.Show("Error parsing number: please enter a whole number for the number of divisions.",
-					                "Error parsing number");
+									"Error parsing number");
 				}
 			}
 		}
@@ -520,7 +550,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 				else {
 					MessageBox.Show("Error parsing time: please use the format '<minutes>:<seconds>.<milliseconds>'",
-					                "Error parsing time");
+									"Error parsing time");
 				}
 			}
 		}
@@ -592,7 +622,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 				else {
 					MessageBox.Show("Error parsing time: please use the format '<minutes>:<seconds>.<milliseconds>', or leave empty",
-					                "Error parsing time");
+									"Error parsing time");
 				}
 			}
 		}
@@ -622,7 +652,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 				else {
 					MessageBox.Show("Error parsing time: please use the format '<minutes>:<seconds>.<milliseconds>'",
-					                "Error parsing time");
+									"Error parsing time");
 				}
 			}
 		}
@@ -718,11 +748,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			//Handle delay until playback actually starts
 			if (!_playbackStarted) {
-				_playbackStarted = _timedSequenceEditorForm.positionHasValue;
+				_playbackStarted = _timedSequenceEditorForm.PositionHasValue;
 			}
 			else {
 				//detect if sequence reached the end
-				if ((!_timedSequenceEditorForm.positionHasValue) || 
+				if ((!_timedSequenceEditorForm.PositionHasValue) || 
 					(_timingSource.Position.TotalMilliseconds > _timedSequenceEditorForm.Sequence.Length.TotalMilliseconds)) 
 				{
 					sequenceStop();
@@ -1049,13 +1079,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				TimeSpan lastValue = TimeSpan.FromMilliseconds(0);
 
 				values.OrderBy(a => a).ToList().ForEach(v =>
-				                                        	{
-				                                        		var xtime = v - TimeSpan.FromMilliseconds(settings.MusicAccuracy);
-				                                        		if (xtime > lastValue) {
-				                                        			collection.Marks.Add(v);
-				                                        			lastValue = v;
-				                                        		}
-				                                        	});
+															{
+																var xtime = v - TimeSpan.FromMilliseconds(settings.MusicAccuracy);
+																if (xtime > lastValue) {
+																	collection.Marks.Add(v);
+																	lastValue = v;
+																}
+															});
 
 				lock (MarkCollections) {
 					MarkCollections.RemoveAll(r => r.Name == collection.Name);
@@ -1153,7 +1183,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					// Remove the \r so we're just left with a \n (allows importing of Sean's Audacity beat marks
 					everything = everything.Replace("\r", "");
 					string[] lines = everything.Split(new string[] {"\n"}, StringSplitOptions.RemoveEmptyEntries);
-                    if (lines.Any())
+					if (lines.Any())
 					{
 						AddNewCollection(Color.Yellow, "Audacity Marks");
 						foreach (string line in lines)

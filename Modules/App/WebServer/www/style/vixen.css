@@ -1,0 +1,180 @@
+﻿
+body {
+	height: 100%;
+	width: 100%;
+}
+
+html {
+	height: 100%;
+	width: 100%;
+}
+
+/* Hack for IE11 list styles on first load
+	http://stackoverflow.com/questions/20356311/internet-explorer-11-ignores-list-stylenone-on-the-first-load
+*/
+html[data-useragent*='rv:11.0'] .ui-navbar li {
+	list-style-image: url(data:0);
+}
+
+#Elements, #Sequences {
+	padding-top: 70px;
+}
+
+#ContextStatus {
+	height: 100%;
+}
+
+.margin-small {
+	margin: 1em;
+}
+
+.padding-side-sm {
+	
+}
+
+@media (max-device-width: 480px) {
+	#NowPlaying {
+		/*padding-top: 70px;*/
+		height: 600px;
+	}
+
+	#Sequences {
+		padding-top: 0;
+	}
+
+	.margin-small {
+		margin: .5em;
+	}
+
+	.padding-side-sm {
+		padding-left: .5em;
+		padding-right: .5em;
+	}
+	
+}
+
+.logo {
+	max-height: 125%;
+}
+
+.ellipsis {
+	overflow: hidden; 
+	text-overflow: ellipsis; 
+	white-space: nowrap;
+	max-width: 60%;
+	display: inline-block;
+}
+
+
+li h1.element-header {
+	margin: .7em 0 1em;
+}
+
+.btn-plain {
+	margin-top: -2px;
+	border: none;
+	background: none;
+	padding: 0;
+}
+
+
+/* Spectrum Color */
+
+.sp-big .sp-palette .sp-thumb-el {
+    width:20px;
+    height: 20px;
+ 
+}
+
+.sp-dd {
+    padding: 0 0;
+    font-size:0;
+}
+.sp-preview{
+    position:relative;
+    width:30px;
+    height: 30px;
+    border: solid 1px #222;
+    margin-right: 0;
+    float:left;
+    z-index: 0;
+}
+
+.sp-bigger.sp-container {
+	z-index: 0;
+}
+
+.sp-big.sp-container {
+	z-index: 50;
+}
+
+.sp-bigger .sp-palette .sp-thumb-el, .sp-big .sp-palette .sp-thumb-el {
+    width:35px;
+    height: 35px;
+}
+
+
+@media (max-device-width: 480px) {
+	.slider-handle {
+		width: 24px;
+		height: 24px;
+	}
+
+	.element-nav {
+		margin-left: 0;
+	}
+
+	.element-picker {
+		padding-right: 0;
+		padding-left: 0;
+		margin-left: 15px;
+	}
+}
+
+.element-button {
+	padding-right: 5px;
+	padding-left: 5px;
+	width: 50px;
+	float: left;
+}
+
+.element-btn-group {
+	padding-right: 0;
+	padding-left: 0;
+}
+
+span.glyphicon-lg {
+    font-size: 1.5em;
+}
+
+span.glyphicon-small {
+    font-size: .75em;
+}
+
+span.glyphicon-addon {
+	font-size: 1.5em;
+	top: 2px;
+}
+
+.btn-addon-icon {
+	padding-top: 3px;
+	padding-bottom: 3px;
+}
+
+#loading-indicator {
+	position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-left: -50px; /* half width of the spinner gif */
+    margin-top: -50px; /* half height of the spinner gif */
+    text-align:center;
+    z-index:500;
+    overflow: auto;
+    width: 100px; /* width of the spinner gif */
+    height: 102px; /*hight of the spinner gif +2px to fix IE8 issue */
+}
+
+
+
+
+
