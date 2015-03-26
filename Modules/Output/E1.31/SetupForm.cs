@@ -828,6 +828,35 @@ namespace VixenModules.Output.E131
 
             if (this.DialogResult == System.Windows.Forms.DialogResult.OK)
             {
+                bool overlapWarning = false;
+
+                //Validate that a given Vixen input channel doesn't go to multiple sACN output channels
+                //Technically nothing bad will happen, but the user should be aware as it is most likely an accident.
+                foreach(DataGridViewRow r1 in univDGVN.Rows){
+                    foreach (DataGridViewRow r2 in univDGVN.Rows)
+                    {
+                        if (r1 != r2)
+                        {
+                            int r1LowerBound = ((string)r1.Cells[START_COLUMN].Value).TryParseInt32(0);
+                            int r1UpperBound  = (((string)r1.Cells[START_COLUMN].Value).TryParseInt32(0) + ((string)r1.Cells[SIZE_COLUMN].Value).TryParseInt32(0)-1);
+                            int r2LowerBound = ((string)r2.Cells[START_COLUMN].Value).TryParseInt32(0);
+                            int r2UpperBound  = (((string)r2.Cells[START_COLUMN].Value).TryParseInt32(0) + ((string)r2.Cells[SIZE_COLUMN].Value).TryParseInt32(0)-1);
+
+                            if ((r1LowerBound >= r2LowerBound && r1LowerBound <= r2UpperBound) || (r1UpperBound >= r2LowerBound && r1UpperBound <= r2UpperBound))
+                            {
+                                DialogResult result = MessageBox.Show("The start values seem to be setup in an unusual way. You are sending identical lighting values to multiple sACN outputs. The start value column refers to where a given universe starts reading values in from the list of output channel data from Vixen. For example, setting Universe 1's start value to 5 will map Channel 1 in Universe 1 to output channel #5 in the Vixen controller setup. Would you like to review your settings?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning,MessageBoxDefaultButton.Button2);
+                                if (result == DialogResult.Yes){
+                                    e.Cancel = true;
+                                    return;
+                                }
+                                overlapWarning = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (overlapWarning) break;
+                }
+
                 var destination = new Tuple<string, string>(null, null);
                 destination = GetDestination(); //Item1 Unicast, Item2 Multicast
 
@@ -844,6 +873,8 @@ namespace VixenModules.Output.E131
                     }
                 }
 
+                //Validate that the same universe isn't being broadcasted to the same devices from multiple
+                //instances of the plugin
                 foreach (E131OutputPlugin p in E131OutputPlugin.PluginInstances)
                 {
                     if (p.isSetupOpen) //don't validate against this instance of the plugin

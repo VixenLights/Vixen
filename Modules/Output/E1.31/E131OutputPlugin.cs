@@ -137,13 +137,6 @@ namespace VixenModules.Controller.E131
                 setupForm.PluginChannelCount = this.OutputCount;
 
                 List<int> initialUniverseList = new List<int>();
-                // for each universe add it to setup form
-                foreach (var uE in _data.Universes)
-                {
-                    setupForm.UniverseAdd(
-                        uE.Active, uE.Universe, uE.Start + 1, uE.Size);
-                    initialUniverseList.Add(uE.Universe);
-                }
                 
                 setupForm.WarningsOption = _data.Warnings;
                 setupForm.StatisticsOption = _data.Statistics;
@@ -153,6 +146,14 @@ namespace VixenModules.Controller.E131
                 setupForm.Blind = _data.Blind;
                 setupForm.Priority = _data.Priority;
                 setupForm.SetDestination(_data.Multicast, _data.Unicast);
+
+                // for each universe add it to setup form
+                foreach (var uE in _data.Universes)
+                {
+                    setupForm.UniverseAdd(
+                        uE.Active, uE.Universe, uE.Start + 1, uE.Size);
+                    initialUniverseList.Add(uE.Universe);
+                }
 
                 setupForm.Text = (new E131ModuleDescriptor()).TypeName + " Configuration - " + VixenSystem.OutputControllers.Single(controller => controller.ModuleInstanceId == _data.ModuleInstanceId).Name;
 
