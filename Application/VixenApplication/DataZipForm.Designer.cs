@@ -94,7 +94,7 @@
 			this.checkBoxMedia.AutoSize = true;
 			this.checkBoxMedia.Checked = true;
 			this.checkBoxMedia.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.checkBoxMedia.Location = new System.Drawing.Point(6, 65);
+			this.checkBoxMedia.Location = new System.Drawing.Point(7, 65);
 			this.checkBoxMedia.Name = "checkBoxMedia";
 			this.checkBoxMedia.Size = new System.Drawing.Size(55, 17);
 			this.checkBoxMedia.TabIndex = 19;
@@ -106,7 +106,7 @@
 			this.checkBoxLogs.AutoSize = true;
 			this.checkBoxLogs.Checked = true;
 			this.checkBoxLogs.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.checkBoxLogs.Location = new System.Drawing.Point(6, 19);
+			this.checkBoxLogs.Location = new System.Drawing.Point(169, 42);
 			this.checkBoxLogs.Name = "checkBoxLogs";
 			this.checkBoxLogs.Size = new System.Drawing.Size(49, 17);
 			this.checkBoxLogs.TabIndex = 13;
@@ -118,7 +118,7 @@
 			this.checkBoxTemplate.AutoSize = true;
 			this.checkBoxTemplate.Checked = true;
 			this.checkBoxTemplate.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.checkBoxTemplate.Location = new System.Drawing.Point(169, 42);
+			this.checkBoxTemplate.Location = new System.Drawing.Point(90, 42);
 			this.checkBoxTemplate.Name = "checkBoxTemplate";
 			this.checkBoxTemplate.Size = new System.Drawing.Size(70, 17);
 			this.checkBoxTemplate.TabIndex = 18;
@@ -130,7 +130,7 @@
 			this.checkBoxModule.AutoSize = true;
 			this.checkBoxModule.Checked = true;
 			this.checkBoxModule.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.checkBoxModule.Location = new System.Drawing.Point(90, 19);
+			this.checkBoxModule.Location = new System.Drawing.Point(6, 19);
 			this.checkBoxModule.Name = "checkBoxModule";
 			this.checkBoxModule.Size = new System.Drawing.Size(61, 17);
 			this.checkBoxModule.TabIndex = 14;
@@ -142,7 +142,7 @@
 			this.checkBoxSystem.AutoSize = true;
 			this.checkBoxSystem.Checked = true;
 			this.checkBoxSystem.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.checkBoxSystem.Location = new System.Drawing.Point(90, 42);
+			this.checkBoxSystem.Location = new System.Drawing.Point(7, 42);
 			this.checkBoxSystem.Name = "checkBoxSystem";
 			this.checkBoxSystem.Size = new System.Drawing.Size(60, 17);
 			this.checkBoxSystem.TabIndex = 17;
@@ -154,7 +154,7 @@
 			this.checkBoxProgram.AutoSize = true;
 			this.checkBoxProgram.Checked = true;
 			this.checkBoxProgram.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.checkBoxProgram.Location = new System.Drawing.Point(169, 19);
+			this.checkBoxProgram.Location = new System.Drawing.Point(90, 19);
 			this.checkBoxProgram.Name = "checkBoxProgram";
 			this.checkBoxProgram.Size = new System.Drawing.Size(65, 17);
 			this.checkBoxProgram.TabIndex = 15;
@@ -166,7 +166,7 @@
 			this.checkBoxSequence.AutoSize = true;
 			this.checkBoxSequence.Checked = true;
 			this.checkBoxSequence.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.checkBoxSequence.Location = new System.Drawing.Point(6, 42);
+			this.checkBoxSequence.Location = new System.Drawing.Point(169, 19);
 			this.checkBoxSequence.Name = "checkBoxSequence";
 			this.checkBoxSequence.Size = new System.Drawing.Size(75, 17);
 			this.checkBoxSequence.TabIndex = 16;
