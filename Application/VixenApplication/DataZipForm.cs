@@ -1,4 +1,5 @@
-﻿using Common.Controls;
+﻿using System.Threading;
+using Common.Controls;
 using Common.Resources;
 using Common.Resources.Properties;
 using NLog;
@@ -45,9 +46,10 @@ namespace VixenApplication
 			_working = false;
 		}
 
-		private void ArchiveProfile(List<string> profileExclusions, bool includeApplication=true)
+		private void ArchiveProfile(List<string> profileExclusions, bool includeLogs, bool includeUserSettings)
 		{
 			ProfileItem item = _item;
+			
 			string outPath = Path.Combine(textBoxSaveFolder.Text, textBoxFileName.Text + ".zip");
 
 			String appDataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"Vixen");
@@ -58,12 +60,15 @@ namespace VixenApplication
 
 			UpdateStatus("Zipping profile please wait...");
 			Archive(item.DataFolder, profileExclusions, parentFolder, outPath);
-			if (includeApplication)
+			if (includeLogs)
 			{
 				UpdateStatus("Zipping logs please wait...");
-				Archive(logDataFolder, new List<string>(), Path.Combine(parentFolder, @"Core Logs"), outPath);
-				UpdateStatus("Zipping user preferences please wait...");
-				Archive(appDataFolder, new List<string>(), Path.Combine(parentFolder, @"User Settings"), outPath);	
+				Archive(logDataFolder, new List<string>(), Path.Combine(parentFolder, @"Core Logs"), outPath);	
+			}
+			if (includeUserSettings)
+			{
+				UpdateStatus("Zipping user settings please wait...");
+				Archive(appDataFolder, new List<string>(), Path.Combine(parentFolder, @"User Settings"), outPath);
 			}
 			
 		}
@@ -98,7 +103,7 @@ namespace VixenApplication
 				exclusions.Add(@"\Media");
 			}
 
-			ArchiveProfile(exclusions, checkBoxApplication.Checked);
+			ArchiveProfile(exclusions, checkBoxLogs.Checked, checkBoxUserSettings.Checked);
 			
 			EndCompressUIState();			
 		}
@@ -166,6 +171,11 @@ namespace VixenApplication
 			{
 				MessageBox.Show(@"Please choose a filename for the zip file.", @"Missing Zip file name");
 				return;
+			}
+
+			if (".zip".Equals(Path.GetExtension(textBoxFileName.Text)))
+			{
+				textBoxFileName.Text = Path.GetFileNameWithoutExtension(textBoxFileName.Text);
 			}
 			
 			string outPath = Path.Combine(textBoxSaveFolder.Text, textBoxFileName.Text + ".zip");
@@ -298,9 +308,5 @@ namespace VixenApplication
 			return true;
 		}
 
-		private void buttonClose_Click(object sender, EventArgs e)
-		{
-
-		}
 	}
 }

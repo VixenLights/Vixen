@@ -31,7 +31,7 @@
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.checkBoxMedia = new System.Windows.Forms.CheckBox();
-			this.checkBoxApplication = new System.Windows.Forms.CheckBox();
+			this.checkBoxLogs = new System.Windows.Forms.CheckBox();
 			this.checkBoxTemplate = new System.Windows.Forms.CheckBox();
 			this.checkBoxModule = new System.Windows.Forms.CheckBox();
 			this.checkBoxSystem = new System.Windows.Forms.CheckBox();
@@ -50,6 +50,7 @@
 			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
 			this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripProgressBar = new System.Windows.Forms.ToolStripProgressBar();
+			this.checkBoxUserSettings = new System.Windows.Forms.CheckBox();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.statusStrip1.SuspendLayout();
@@ -67,14 +68,15 @@
 			this.groupBox1.Controls.Add(this.label1);
 			this.groupBox1.Location = new System.Drawing.Point(12, 12);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(280, 254);
+			this.groupBox1.Size = new System.Drawing.Size(280, 250);
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
 			// 
 			// groupBox2
 			// 
+			this.groupBox2.Controls.Add(this.checkBoxUserSettings);
 			this.groupBox2.Controls.Add(this.checkBoxMedia);
-			this.groupBox2.Controls.Add(this.checkBoxApplication);
+			this.groupBox2.Controls.Add(this.checkBoxLogs);
 			this.groupBox2.Controls.Add(this.checkBoxTemplate);
 			this.groupBox2.Controls.Add(this.checkBoxModule);
 			this.groupBox2.Controls.Add(this.checkBoxSystem);
@@ -85,7 +87,7 @@
 			this.groupBox2.Size = new System.Drawing.Size(264, 90);
 			this.groupBox2.TabIndex = 19;
 			this.groupBox2.TabStop = false;
-			this.groupBox2.Text = "Data to zip";
+			this.groupBox2.Text = "Profile artifacts to include";
 			// 
 			// checkBoxMedia
 			// 
@@ -99,17 +101,17 @@
 			this.checkBoxMedia.Text = "Media";
 			this.checkBoxMedia.UseVisualStyleBackColor = true;
 			// 
-			// checkBoxApplication
+			// checkBoxLogs
 			// 
-			this.checkBoxApplication.AutoSize = true;
-			this.checkBoxApplication.Checked = true;
-			this.checkBoxApplication.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.checkBoxApplication.Location = new System.Drawing.Point(6, 19);
-			this.checkBoxApplication.Name = "checkBoxApplication";
-			this.checkBoxApplication.Size = new System.Drawing.Size(78, 17);
-			this.checkBoxApplication.TabIndex = 13;
-			this.checkBoxApplication.Text = "Application";
-			this.checkBoxApplication.UseVisualStyleBackColor = true;
+			this.checkBoxLogs.AutoSize = true;
+			this.checkBoxLogs.Checked = true;
+			this.checkBoxLogs.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.checkBoxLogs.Location = new System.Drawing.Point(6, 19);
+			this.checkBoxLogs.Name = "checkBoxLogs";
+			this.checkBoxLogs.Size = new System.Drawing.Size(49, 17);
+			this.checkBoxLogs.TabIndex = 13;
+			this.checkBoxLogs.Text = "Logs";
+			this.checkBoxLogs.UseVisualStyleBackColor = true;
 			// 
 			// checkBoxTemplate
 			// 
@@ -173,7 +175,7 @@
 			// 
 			// textBoxFileName
 			// 
-			this.textBoxFileName.Location = new System.Drawing.Point(9, 217);
+			this.textBoxFileName.Location = new System.Drawing.Point(9, 216);
 			this.textBoxFileName.Name = "textBoxFileName";
 			this.textBoxFileName.Size = new System.Drawing.Size(233, 20);
 			this.textBoxFileName.TabIndex = 9;
@@ -183,9 +185,9 @@
 			this.label3.AutoSize = true;
 			this.label3.Location = new System.Drawing.Point(9, 200);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(172, 13);
+			this.label3.Size = new System.Drawing.Size(176, 13);
 			this.label3.TabIndex = 8;
-			this.label3.Text = "Zip file name, without .zip extention";
+			this.label3.Text = "Archive file name, without extension";
 			// 
 			// buttonSetSaveFolder
 			// 
@@ -209,9 +211,9 @@
 			this.label2.AutoSize = true;
 			this.label2.Location = new System.Drawing.Point(6, 157);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(117, 13);
+			this.label2.Size = new System.Drawing.Size(124, 13);
 			this.label2.TabIndex = 5;
-			this.label2.Text = "Folder to save zip file in";
+			this.label2.Text = "Folder to save archive to";
 			// 
 			// comboBoxProfiles
 			// 
@@ -226,9 +228,9 @@
 			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(6, 112);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(64, 13);
+			this.label1.Size = new System.Drawing.Size(86, 13);
 			this.label1.TabIndex = 2;
-			this.label1.Text = "Profile to zip";
+			this.label1.Text = "Profile to archive";
 			// 
 			// buttonStartCancel
 			// 
@@ -250,13 +252,12 @@
 			this.buttonClose.TabIndex = 1;
 			this.buttonClose.Text = "Close";
 			this.buttonClose.UseVisualStyleBackColor = true;
-			this.buttonClose.Click += new System.EventHandler(this.buttonClose_Click);
 			// 
 			// statusStrip1
 			// 
 			this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripStatusLabel,
-            this.toolStripProgressBar});
+            this.toolStripProgressBar,
+            this.toolStripStatusLabel});
 			this.statusStrip1.Location = new System.Drawing.Point(0, 322);
 			this.statusStrip1.Name = "statusStrip1";
 			this.statusStrip1.Size = new System.Drawing.Size(303, 22);
@@ -266,8 +267,7 @@
 			// toolStripStatusLabel
 			// 
 			this.toolStripStatusLabel.Name = "toolStripStatusLabel";
-			this.toolStripStatusLabel.Size = new System.Drawing.Size(122, 17);
-			this.toolStripStatusLabel.Text = "Waiting for user input";
+			this.toolStripStatusLabel.Size = new System.Drawing.Size(0, 17);
 			// 
 			// toolStripProgressBar
 			// 
@@ -275,6 +275,18 @@
 			this.toolStripProgressBar.Size = new System.Drawing.Size(100, 16);
 			this.toolStripProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
 			this.toolStripProgressBar.Visible = false;
+			// 
+			// checkBoxUserSettings
+			// 
+			this.checkBoxUserSettings.AutoSize = true;
+			this.checkBoxUserSettings.Checked = true;
+			this.checkBoxUserSettings.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.checkBoxUserSettings.Location = new System.Drawing.Point(90, 65);
+			this.checkBoxUserSettings.Name = "checkBoxUserSettings";
+			this.checkBoxUserSettings.Size = new System.Drawing.Size(89, 17);
+			this.checkBoxUserSettings.TabIndex = 20;
+			this.checkBoxUserSettings.Text = "User Settings";
+			this.checkBoxUserSettings.UseVisualStyleBackColor = true;
 			// 
 			// DataZipForm
 			// 
@@ -292,7 +304,7 @@
 			this.MinimizeBox = false;
 			this.Name = "DataZipForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Data Zip Wizard";
+			this.Text = "Profile Archive Wizard";
 			this.Load += new System.EventHandler(this.DataZipForm_Load);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
@@ -319,7 +331,7 @@
 		private System.Windows.Forms.Button buttonClose;
 		private System.Windows.Forms.FolderBrowserDialog folderBrowserSaveFolder;
 		private System.Windows.Forms.GroupBox groupBox2;
-		private System.Windows.Forms.CheckBox checkBoxApplication;
+		private System.Windows.Forms.CheckBox checkBoxLogs;
 		private System.Windows.Forms.CheckBox checkBoxTemplate;
 		private System.Windows.Forms.CheckBox checkBoxModule;
 		private System.Windows.Forms.CheckBox checkBoxSystem;
@@ -329,5 +341,6 @@
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel;
 		private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar;
 		private System.Windows.Forms.CheckBox checkBoxMedia;
+		private System.Windows.Forms.CheckBox checkBoxUserSettings;
 	}
 }
