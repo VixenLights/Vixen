@@ -171,7 +171,7 @@ namespace VixenModules.Effect.Nutcracker
 			{
 				Fire_Hue = 0;
 			}
-			if (Meteor_Colors < 1)
+			if (Meteor_Colors < 0)
 				Meteor_Colors = 1;
 			if (Meteor_Count < 1)
 				Meteor_Count = 10;
