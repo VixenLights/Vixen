@@ -219,6 +219,14 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			foreach (TabPage tab in tabEffectProperties.TabPages) {
 				if (tab.Text == tabName) {
 					tabEffectProperties.SelectedTab = tab;
+					if (tab.Text.Equals("Fire"))
+					{
+						groupBoxColors.Enabled = false;
+					}
+					else
+					{
+						groupBoxColors.Enabled = true;
+					}
 					break;
 				}
 			}
@@ -651,6 +659,12 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 		private void LoadFire()
 		{
 			trackFireHeight.Value = Data.Fire_Height;
+			trackFireHueShift.Value = Data.Fire_Hue;
+		}
+
+		private void trackFireHueShift_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender, Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
+		{
+			Data.Fire_Hue = trackFireHueShift.Value;
 		}
 
 		private void trackFireHeight_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender,

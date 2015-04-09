@@ -60,6 +60,7 @@ namespace VixenModules.Effect.Nutcracker
 
 		// Fire
 		[DataMember] public int Fire_Height = 50;
+		[DataMember] public int Fire_Hue = 0;
 
 		// Garlands
 		[DataMember] public int Garland_Type = 1;
@@ -166,6 +167,10 @@ namespace VixenModules.Effect.Nutcracker
 				Palette = new Palette();
 			if (Fire_Height < 1)
 				Fire_Height = 50;
+			if (Fire_Hue < 0)
+			{
+				Fire_Hue = 0;
+			}
 			if (Meteor_Colors < 1)
 				Meteor_Colors = 1;
 			if (Meteor_Count < 1)
