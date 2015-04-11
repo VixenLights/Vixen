@@ -41,12 +41,12 @@
 			this.currentTimeLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.stopButton = new System.Windows.Forms.Button();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
-			this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
-			this.textBox1 = new System.Windows.Forms.TextBox();
 			this.networkListView = new Common.Controls.ListViewEx();
 			this.controllerColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.channelsColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.mappingColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+			this.textBox1 = new System.Windows.Forms.TextBox();
 			this.groupBox1.SuspendLayout();
 			this.statusStrip1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
@@ -145,6 +145,7 @@
 			// 
 			// stopButton
 			// 
+			this.stopButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.stopButton.Location = new System.Drawing.Point(208, 354);
 			this.stopButton.Name = "stopButton";
 			this.stopButton.Size = new System.Drawing.Size(75, 23);
@@ -164,23 +165,6 @@
 			this.groupBox2.TabIndex = 16;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Network";
-			// 
-			// backgroundWorker1
-			// 
-			this.backgroundWorker1.WorkerReportsProgress = true;
-			this.backgroundWorker1.WorkerSupportsCancellation = true;
-			// 
-			// textBox1
-			// 
-			this.textBox1.BackColor = System.Drawing.SystemColors.Control;
-			this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
-			this.textBox1.Location = new System.Drawing.Point(14, 13);
-			this.textBox1.Multiline = true;
-			this.textBox1.Name = "textBox1";
-			this.textBox1.Size = new System.Drawing.Size(398, 37);
-			this.textBox1.TabIndex = 17;
-			this.textBox1.Text = "You must have all of your required display elements to controller outputs fully p" +
-    "atched in the Display Setup for the export to produce correct results..";
 			// 
 			// networkListView
 			// 
@@ -216,10 +200,29 @@
 			this.mappingColumn.Text = "Mapping";
 			this.mappingColumn.Width = 128;
 			// 
+			// backgroundWorker1
+			// 
+			this.backgroundWorker1.WorkerReportsProgress = true;
+			this.backgroundWorker1.WorkerSupportsCancellation = true;
+			// 
+			// textBox1
+			// 
+			this.textBox1.BackColor = System.Drawing.SystemColors.Control;
+			this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			this.textBox1.Location = new System.Drawing.Point(14, 13);
+			this.textBox1.Multiline = true;
+			this.textBox1.Name = "textBox1";
+			this.textBox1.Size = new System.Drawing.Size(398, 37);
+			this.textBox1.TabIndex = 17;
+			this.textBox1.Text = "You must have all of your required display elements to controller outputs fully p" +
+    "atched in the Display Setup for the export to produce correct results..";
+			// 
 			// ExportDialog
 			// 
+			this.AcceptButton = this.startButton;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.CancelButton = this.stopButton;
 			this.ClientSize = new System.Drawing.Size(430, 414);
 			this.Controls.Add(this.textBox1);
 			this.Controls.Add(this.groupBox2);

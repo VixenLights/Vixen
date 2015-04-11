@@ -74,7 +74,7 @@
 			// 
 			this.tabPageStartup.Location = new System.Drawing.Point(4, 22);
 			this.tabPageStartup.Name = "tabPageStartup";
-			this.tabPageStartup.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+			this.tabPageStartup.Padding = new System.Windows.Forms.Padding(3);
 			this.tabPageStartup.Size = new System.Drawing.Size(319, 0);
 			this.tabPageStartup.TabIndex = 0;
 			this.tabPageStartup.Tag = "These items are run once, in order, during startup.";
@@ -85,7 +85,7 @@
 			// 
 			this.tabPageBackground.Location = new System.Drawing.Point(4, 22);
 			this.tabPageBackground.Name = "tabPageBackground";
-			this.tabPageBackground.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+			this.tabPageBackground.Padding = new System.Windows.Forms.Padding(3);
 			this.tabPageBackground.Size = new System.Drawing.Size(319, 0);
 			this.tabPageBackground.TabIndex = 1;
 			this.tabPageBackground.Tag = "These items are always run in the background.";
@@ -193,6 +193,7 @@
 			// 
 			// buttonCancel
 			// 
+			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.buttonCancel.Location = new System.Drawing.Point(712, 456);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(75, 23);
@@ -292,6 +293,7 @@
 			this.AcceptButton = this.buttonOK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.CancelButton = this.buttonCancel;
 			this.ClientSize = new System.Drawing.Size(799, 491);
 			this.Controls.Add(this.labelHelp);
 			this.Controls.Add(this.listViewShowItems);
