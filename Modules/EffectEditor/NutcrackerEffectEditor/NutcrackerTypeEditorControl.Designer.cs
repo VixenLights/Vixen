@@ -24,7 +24,6 @@
 			this.label22 = new System.Windows.Forms.Label();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.chkFitToTime = new System.Windows.Forms.CheckBox();
-			this.label6 = new System.Windows.Forms.Label();
 			this.checkBoxColor6 = new System.Windows.Forms.CheckBox();
 			this.checkBoxColor4 = new System.Windows.Forms.CheckBox();
 			this.panelColor6 = new System.Windows.Forms.Panel();
@@ -189,6 +188,7 @@
 			this.trackCurtainSwagWidth = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
 			this.tabGlediator = new System.Windows.Forms.TabPage();
+			this.lblGlediatorExperimental = new System.Windows.Forms.Label();
 			this.lblGlediator = new System.Windows.Forms.Label();
 			this.buttonGlediatorFile = new System.Windows.Forms.Button();
 			this.textGlediatorFileName = new System.Windows.Forms.TextBox();
@@ -205,7 +205,9 @@
 			this.scrollPixelSize = new Common.Controls.ControlsEx.ValueControls.HValueScrollBar();
 			this.label44 = new System.Windows.Forms.Label();
 			this.buttonHelp = new System.Windows.Forms.Button();
-			this.lblGlediatorExperimental = new System.Windows.Forms.Label();
+			this.trackFireHueShift = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
+			this.labelFireHueShift = new System.Windows.Forms.Label();
+			this.groupBoxColors = new System.Windows.Forms.GroupBox();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.tabEffectProperties.SuspendLayout();
@@ -234,6 +236,7 @@
 			this.tabGlediator.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarSpeed)).BeginInit();
 			this.groupBox3.SuspendLayout();
+			this.groupBoxColors.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// timerRender
@@ -291,20 +294,8 @@
 			// 
 			// groupBox2
 			// 
+			this.groupBox2.Controls.Add(this.groupBoxColors);
 			this.groupBox2.Controls.Add(this.chkFitToTime);
-			this.groupBox2.Controls.Add(this.label6);
-			this.groupBox2.Controls.Add(this.checkBoxColor6);
-			this.groupBox2.Controls.Add(this.checkBoxColor4);
-			this.groupBox2.Controls.Add(this.panelColor6);
-			this.groupBox2.Controls.Add(this.panelColor4);
-			this.groupBox2.Controls.Add(this.checkBoxColor5);
-			this.groupBox2.Controls.Add(this.checkBoxColor3);
-			this.groupBox2.Controls.Add(this.panelColor5);
-			this.groupBox2.Controls.Add(this.panelColor3);
-			this.groupBox2.Controls.Add(this.checkBoxColor2);
-			this.groupBox2.Controls.Add(this.panelColor2);
-			this.groupBox2.Controls.Add(this.checkBoxColor1);
-			this.groupBox2.Controls.Add(this.panelColor1);
 			this.groupBox2.Controls.Add(this.tabEffectProperties);
 			this.groupBox2.Controls.Add(this.comboBoxEffect);
 			this.groupBox2.Controls.Add(this.label1);
@@ -327,19 +318,10 @@
 			this.chkFitToTime.UseVisualStyleBackColor = true;
 			this.chkFitToTime.CheckedChanged += new System.EventHandler(this.chkFitToTime_CheckedChanged);
 			// 
-			// label6
-			// 
-			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(300, 21);
-			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(39, 13);
-			this.label6.TabIndex = 14;
-			this.label6.Text = "Colors:";
-			// 
 			// checkBoxColor6
 			// 
 			this.checkBoxColor6.AutoSize = true;
-			this.checkBoxColor6.Location = new System.Drawing.Point(295, 177);
+			this.checkBoxColor6.Location = new System.Drawing.Point(5, 151);
 			this.checkBoxColor6.Name = "checkBoxColor6";
 			this.checkBoxColor6.Size = new System.Drawing.Size(15, 14);
 			this.checkBoxColor6.TabIndex = 13;
@@ -349,7 +331,7 @@
 			// checkBoxColor4
 			// 
 			this.checkBoxColor4.AutoSize = true;
-			this.checkBoxColor4.Location = new System.Drawing.Point(295, 129);
+			this.checkBoxColor4.Location = new System.Drawing.Point(5, 103);
 			this.checkBoxColor4.Name = "checkBoxColor4";
 			this.checkBoxColor4.Size = new System.Drawing.Size(15, 14);
 			this.checkBoxColor4.TabIndex = 13;
@@ -359,7 +341,7 @@
 			// panelColor6
 			// 
 			this.panelColor6.BackColor = System.Drawing.Color.Black;
-			this.panelColor6.Location = new System.Drawing.Point(316, 175);
+			this.panelColor6.Location = new System.Drawing.Point(26, 149);
 			this.panelColor6.Name = "panelColor6";
 			this.panelColor6.Size = new System.Drawing.Size(26, 16);
 			this.panelColor6.TabIndex = 12;
@@ -368,7 +350,7 @@
 			// panelColor4
 			// 
 			this.panelColor4.BackColor = System.Drawing.Color.Yellow;
-			this.panelColor4.Location = new System.Drawing.Point(316, 127);
+			this.panelColor4.Location = new System.Drawing.Point(26, 101);
 			this.panelColor4.Name = "panelColor4";
 			this.panelColor4.Size = new System.Drawing.Size(26, 16);
 			this.panelColor4.TabIndex = 12;
@@ -377,7 +359,7 @@
 			// checkBoxColor5
 			// 
 			this.checkBoxColor5.AutoSize = true;
-			this.checkBoxColor5.Location = new System.Drawing.Point(295, 153);
+			this.checkBoxColor5.Location = new System.Drawing.Point(5, 127);
 			this.checkBoxColor5.Name = "checkBoxColor5";
 			this.checkBoxColor5.Size = new System.Drawing.Size(15, 14);
 			this.checkBoxColor5.TabIndex = 11;
@@ -387,7 +369,7 @@
 			// checkBoxColor3
 			// 
 			this.checkBoxColor3.AutoSize = true;
-			this.checkBoxColor3.Location = new System.Drawing.Point(295, 105);
+			this.checkBoxColor3.Location = new System.Drawing.Point(5, 79);
 			this.checkBoxColor3.Name = "checkBoxColor3";
 			this.checkBoxColor3.Size = new System.Drawing.Size(15, 14);
 			this.checkBoxColor3.TabIndex = 11;
@@ -397,7 +379,7 @@
 			// panelColor5
 			// 
 			this.panelColor5.BackColor = System.Drawing.Color.White;
-			this.panelColor5.Location = new System.Drawing.Point(316, 151);
+			this.panelColor5.Location = new System.Drawing.Point(26, 125);
 			this.panelColor5.Name = "panelColor5";
 			this.panelColor5.Size = new System.Drawing.Size(26, 16);
 			this.panelColor5.TabIndex = 10;
@@ -406,7 +388,7 @@
 			// panelColor3
 			// 
 			this.panelColor3.BackColor = System.Drawing.Color.Blue;
-			this.panelColor3.Location = new System.Drawing.Point(316, 103);
+			this.panelColor3.Location = new System.Drawing.Point(26, 77);
 			this.panelColor3.Name = "panelColor3";
 			this.panelColor3.Size = new System.Drawing.Size(26, 16);
 			this.panelColor3.TabIndex = 10;
@@ -415,7 +397,7 @@
 			// checkBoxColor2
 			// 
 			this.checkBoxColor2.AutoSize = true;
-			this.checkBoxColor2.Location = new System.Drawing.Point(295, 81);
+			this.checkBoxColor2.Location = new System.Drawing.Point(5, 55);
 			this.checkBoxColor2.Name = "checkBoxColor2";
 			this.checkBoxColor2.Size = new System.Drawing.Size(15, 14);
 			this.checkBoxColor2.TabIndex = 9;
@@ -425,7 +407,7 @@
 			// panelColor2
 			// 
 			this.panelColor2.BackColor = System.Drawing.Color.Green;
-			this.panelColor2.Location = new System.Drawing.Point(316, 79);
+			this.panelColor2.Location = new System.Drawing.Point(26, 53);
 			this.panelColor2.Name = "panelColor2";
 			this.panelColor2.Size = new System.Drawing.Size(26, 16);
 			this.panelColor2.TabIndex = 8;
@@ -434,7 +416,7 @@
 			// checkBoxColor1
 			// 
 			this.checkBoxColor1.AutoSize = true;
-			this.checkBoxColor1.Location = new System.Drawing.Point(295, 57);
+			this.checkBoxColor1.Location = new System.Drawing.Point(5, 31);
 			this.checkBoxColor1.Name = "checkBoxColor1";
 			this.checkBoxColor1.Size = new System.Drawing.Size(15, 14);
 			this.checkBoxColor1.TabIndex = 7;
@@ -444,7 +426,7 @@
 			// panelColor1
 			// 
 			this.panelColor1.BackColor = System.Drawing.Color.Red;
-			this.panelColor1.Location = new System.Drawing.Point(316, 55);
+			this.panelColor1.Location = new System.Drawing.Point(26, 29);
 			this.panelColor1.Name = "panelColor1";
 			this.panelColor1.Size = new System.Drawing.Size(26, 16);
 			this.panelColor1.TabIndex = 6;
@@ -1663,7 +1645,7 @@
 			this.Butterfly.Controls.Add(this.trackButterflyStyle);
 			this.Butterfly.Location = new System.Drawing.Point(4, 5);
 			this.Butterfly.Name = "Butterfly";
-			this.Butterfly.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+			this.Butterfly.Padding = new System.Windows.Forms.Padding(3);
 			this.Butterfly.Size = new System.Drawing.Size(266, 243);
 			this.Butterfly.TabIndex = 1;
 			this.Butterfly.Text = "Butterfly";
@@ -1786,7 +1768,7 @@
 			this.Bars.Controls.Add(this.trackBarPaletteRepeat);
 			this.Bars.Location = new System.Drawing.Point(4, 5);
 			this.Bars.Name = "Bars";
-			this.Bars.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+			this.Bars.Padding = new System.Windows.Forms.Padding(3);
 			this.Bars.Size = new System.Drawing.Size(266, 243);
 			this.Bars.TabIndex = 0;
 			this.Bars.Text = "Bars";
@@ -1928,7 +1910,7 @@
 			this.ColorWash.Controls.Add(this.trackColorWashCount);
 			this.ColorWash.Location = new System.Drawing.Point(4, 5);
 			this.ColorWash.Name = "ColorWash";
-			this.ColorWash.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+			this.ColorWash.Padding = new System.Windows.Forms.Padding(3);
 			this.ColorWash.Size = new System.Drawing.Size(266, 243);
 			this.ColorWash.TabIndex = 2;
 			this.ColorWash.Text = "ColorWash";
@@ -1979,11 +1961,13 @@
 			// 
 			// Fire
 			// 
+			this.Fire.Controls.Add(this.labelFireHueShift);
+			this.Fire.Controls.Add(this.trackFireHueShift);
 			this.Fire.Controls.Add(this.label12);
 			this.Fire.Controls.Add(this.trackFireHeight);
 			this.Fire.Location = new System.Drawing.Point(4, 5);
 			this.Fire.Name = "Fire";
-			this.Fire.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+			this.Fire.Padding = new System.Windows.Forms.Padding(3);
 			this.Fire.Size = new System.Drawing.Size(266, 243);
 			this.Fire.TabIndex = 3;
 			this.Fire.Text = "Fire";
@@ -2070,7 +2054,7 @@
 			this.Curtain.Controls.Add(this.trackCurtainSwagWidth);
 			this.Curtain.Location = new System.Drawing.Point(4, 5);
 			this.Curtain.Name = "Curtain";
-			this.Curtain.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+			this.Curtain.Padding = new System.Windows.Forms.Padding(3);
 			this.Curtain.Size = new System.Drawing.Size(266, 243);
 			this.Curtain.TabIndex = 18;
 			this.Curtain.Text = "Curtain";
@@ -2160,7 +2144,7 @@
 			// 
 			this.tabPage1.Location = new System.Drawing.Point(4, 5);
 			this.tabPage1.Name = "tabPage1";
-			this.tabPage1.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
 			this.tabPage1.Size = new System.Drawing.Size(266, 243);
 			this.tabPage1.TabIndex = 19;
 			this.tabPage1.Text = "tabPage1";
@@ -2174,11 +2158,22 @@
 			this.tabGlediator.Controls.Add(this.textGlediatorFileName);
 			this.tabGlediator.Location = new System.Drawing.Point(4, 5);
 			this.tabGlediator.Name = "tabGlediator";
-			this.tabGlediator.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+			this.tabGlediator.Padding = new System.Windows.Forms.Padding(3);
 			this.tabGlediator.Size = new System.Drawing.Size(266, 243);
 			this.tabGlediator.TabIndex = 20;
 			this.tabGlediator.Text = "Glediator";
 			this.tabGlediator.UseVisualStyleBackColor = true;
+			// 
+			// lblGlediatorExperimental
+			// 
+			this.lblGlediatorExperimental.AutoSize = true;
+			this.lblGlediatorExperimental.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblGlediatorExperimental.ForeColor = System.Drawing.Color.Red;
+			this.lblGlediatorExperimental.Location = new System.Drawing.Point(13, 16);
+			this.lblGlediatorExperimental.Name = "lblGlediatorExperimental";
+			this.lblGlediatorExperimental.Size = new System.Drawing.Size(122, 16);
+			this.lblGlediatorExperimental.TabIndex = 3;
+			this.lblGlediatorExperimental.Text = "*** Experimental ***";
 			// 
 			// lblGlediator
 			// 
@@ -2228,7 +2223,7 @@
 			// 
 			// trackBarSpeed
 			// 
-			this.trackBarSpeed.Location = new System.Drawing.Point(357, 38);
+			this.trackBarSpeed.Location = new System.Drawing.Point(350, 42);
 			this.trackBarSpeed.Maximum = 20;
 			this.trackBarSpeed.Minimum = 1;
 			this.trackBarSpeed.Name = "trackBarSpeed";
@@ -2328,16 +2323,45 @@
 			this.buttonHelp.UseVisualStyleBackColor = true;
 			this.buttonHelp.Click += new System.EventHandler(this.buttonHelp_Click);
 			// 
-			// lblGlediatorExperimental
+			// trackFireHueShift
 			// 
-			this.lblGlediatorExperimental.AutoSize = true;
-			this.lblGlediatorExperimental.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.lblGlediatorExperimental.ForeColor = System.Drawing.Color.Red;
-			this.lblGlediatorExperimental.Location = new System.Drawing.Point(13, 16);
-			this.lblGlediatorExperimental.Name = "lblGlediatorExperimental";
-			this.lblGlediatorExperimental.Size = new System.Drawing.Size(122, 16);
-			this.lblGlediatorExperimental.TabIndex = 3;
-			this.lblGlediatorExperimental.Text = "*** Experimental ***";
+			this.trackFireHueShift.Location = new System.Drawing.Point(93, 34);
+			this.trackFireHueShift.Name = "trackFireHueShift";
+			this.trackFireHueShift.Size = new System.Drawing.Size(167, 23);
+			this.trackFireHueShift.TabIndex = 15;
+			this.trackFireHueShift.Text = "Hue Shift";
+			this.trackFireHueShift.Value = 1;
+			this.trackFireHueShift.ValueChanged += new Common.Controls.ControlsEx.ValueControls.ValueChangedEH(this.trackFireHueShift_ValueChanged);
+			// 
+			// labelFireHueShift
+			// 
+			this.labelFireHueShift.AutoSize = true;
+			this.labelFireHueShift.Location = new System.Drawing.Point(6, 34);
+			this.labelFireHueShift.Name = "labelFireHueShift";
+			this.labelFireHueShift.Size = new System.Drawing.Size(54, 13);
+			this.labelFireHueShift.TabIndex = 16;
+			this.labelFireHueShift.Text = "Hue Shift:";
+			// 
+			// groupBoxColors
+			// 
+			this.groupBoxColors.Controls.Add(this.panelColor5);
+			this.groupBoxColors.Controls.Add(this.checkBoxColor2);
+			this.groupBoxColors.Controls.Add(this.panelColor3);
+			this.groupBoxColors.Controls.Add(this.checkBoxColor6);
+			this.groupBoxColors.Controls.Add(this.panelColor2);
+			this.groupBoxColors.Controls.Add(this.checkBoxColor1);
+			this.groupBoxColors.Controls.Add(this.checkBoxColor4);
+			this.groupBoxColors.Controls.Add(this.checkBoxColor3);
+			this.groupBoxColors.Controls.Add(this.panelColor1);
+			this.groupBoxColors.Controls.Add(this.panelColor6);
+			this.groupBoxColors.Controls.Add(this.checkBoxColor5);
+			this.groupBoxColors.Controls.Add(this.panelColor4);
+			this.groupBoxColors.Location = new System.Drawing.Point(290, 21);
+			this.groupBoxColors.Name = "groupBoxColors";
+			this.groupBoxColors.Size = new System.Drawing.Size(58, 189);
+			this.groupBoxColors.TabIndex = 16;
+			this.groupBoxColors.TabStop = false;
+			this.groupBoxColors.Text = "Colors:";
 			// 
 			// NutcrackerTypeEditorControl
 			// 
@@ -2402,6 +2426,8 @@
 			((System.ComponentModel.ISupportInitialize)(this.trackBarSpeed)).EndInit();
 			this.groupBox3.ResumeLayout(false);
 			this.groupBox3.PerformLayout();
+			this.groupBoxColors.ResumeLayout(false);
+			this.groupBoxColors.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -2443,8 +2469,7 @@
         private System.Windows.Forms.CheckBox checkBoxColor2;
         private System.Windows.Forms.Panel panelColor2;
         private System.Windows.Forms.CheckBox checkBoxColor1;
-        private System.Windows.Forms.Panel panelColor1;
-        private System.Windows.Forms.Label label6;
+		private System.Windows.Forms.Panel panelColor1;
         private System.Windows.Forms.ColorDialog colorDialog;
         private System.Windows.Forms.Label label9;
         private Common.Controls.ControlsEx.ValueControls.HMiniTracker trackButterflyBkgrdSkip;
@@ -2598,5 +2623,8 @@
 		private System.Windows.Forms.Button buttonGlediatorFile;
 		private System.Windows.Forms.Label lblGlediator;
 		private System.Windows.Forms.Label lblGlediatorExperimental;
+		private System.Windows.Forms.GroupBox groupBoxColors;
+		private System.Windows.Forms.Label labelFireHueShift;
+		private Common.Controls.ControlsEx.ValueControls.HMiniTracker trackFireHueShift;
 	}
 }

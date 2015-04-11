@@ -832,7 +832,7 @@ namespace VixenModules.Effect.Nutcracker
 		//}
 
 		// 10 <= HeightPct <= 100
-		private void RenderFire(int HeightPct)
+		private void RenderFire(int HeightPct, int hueShift = 0)
 		{
 			if (FireBuffer.Count() != BufferWi*BufferHt)
 			{
@@ -890,6 +890,13 @@ namespace VixenModules.Effect.Nutcracker
 				for (x = 0; x < BufferWi; x++) {
 					//SetPixel(x,y,FirePalette[y]);
 					Color color = FirePalette[GetFireBuffer(x, y)];
+					if (hueShift > 0)
+					{
+						HSV hsv = HSV.ColorToHSV(color);
+						hsv.Hue = hsv.Hue + (hueShift / 100.0f);
+						color = HSV.HSVtoColor(hsv);	
+					}
+					
 					if (color.R == 0 && color.G == 0 && color.B == 0)
 						color = Color.Transparent;
 					SetPixel(x, y, color);
@@ -2105,7 +2112,7 @@ namespace VixenModules.Effect.Nutcracker
 					RenderColorWash(Data.ColorWash_FadeHorizontal, Data.ColorWash_FadeVertical, Data.ColorWash_Count);
 					break;
 				case Effects.Fire:
-					RenderFire(Data.Fire_Height);
+					RenderFire(Data.Fire_Height, Data.Fire_Hue);
 					break;
 				case Effects.Life:
 					RenderLife(Data.Life_CellsToStart, Data.Life_Type);

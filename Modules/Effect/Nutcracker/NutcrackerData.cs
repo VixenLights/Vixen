@@ -21,7 +21,7 @@ namespace VixenModules.Effect.Nutcracker
 	[KnownType(typeof (SerializableFont)),
 	 KnownType(typeof (System.Drawing.FontStyle)),
 	 KnownType(typeof (System.Drawing.GraphicsUnit))]
-	public class NutcrackerData
+	public class NutcrackerData : ICloneable
 	{
 		public NutcrackerData()
 		{
@@ -60,6 +60,7 @@ namespace VixenModules.Effect.Nutcracker
 
 		// Fire
 		[DataMember] public int Fire_Height = 50;
+		[DataMember] public int Fire_Hue = 0;
 
 		// Garlands
 		[DataMember] public int Garland_Type = 1;
@@ -155,6 +156,8 @@ namespace VixenModules.Effect.Nutcracker
 		[DataMember]
 		public string Glediator_FileName;
 
+		
+
 
 		[OnDeserialized]
 		private void OnDeserialized(StreamingContext context)
@@ -166,7 +169,11 @@ namespace VixenModules.Effect.Nutcracker
 				Palette = new Palette();
 			if (Fire_Height < 1)
 				Fire_Height = 50;
-			if (Meteor_Colors < 1)
+			if (Fire_Hue < 0)
+			{
+				Fire_Hue = 0;
+			}
+			if (Meteor_Colors < 0)
 				Meteor_Colors = 1;
 			if (Meteor_Count < 1)
 				Meteor_Count = 10;
@@ -227,6 +234,16 @@ namespace VixenModules.Effect.Nutcracker
 			{
 				Curtain_SwagWidth = 3;
 			}
+		}
+
+		public object Clone()
+		{
+			Object data = MemberwiseClone();
+			var ndata = data as NutcrackerData;
+			//Override the non value types
+			ndata.Palette = new Palette{Colors = Palette.Colors.ToArray(), ColorsActive = Palette.ColorsActive.ToArray()};
+			ndata.Text_Font = new SerializableFont(Text_Font.FontValue);
+			return ndata;
 		}
 	}
 }

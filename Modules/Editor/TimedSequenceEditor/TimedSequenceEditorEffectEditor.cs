@@ -63,6 +63,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			_controls = new List<IEffectEditorControl>();
 			object[] values = _effectNode.Effect.ParameterValues;
+			if (_effectNode.Effect.EffectName.Equals("Nutcracker"))
+			{
+				var data = _effectNode.Effect.ParameterValues.First() as ICloneable;
+				values = new []{data.Clone()};
+			}
+			
+			
 			_cleanValues = _effectNode.Effect.ParameterValues;
 
 			// if there were multiple controls returned, or there was only a single control needed (ie. the efffect parameters had only
