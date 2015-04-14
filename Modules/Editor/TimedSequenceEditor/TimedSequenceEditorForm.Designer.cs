@@ -129,6 +129,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.effectWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.markWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.gridWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.audioToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem_associateAudio = new System.Windows.Forms.ToolStripMenuItem();
@@ -956,7 +957,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
             this.toolStripMenuItem1,
             this.effectWindowToolStripMenuItem,
             this.markWindowToolStripMenuItem,
-            this.toolWindowToolStripMenuItem});
+            this.toolWindowToolStripMenuItem,
+            this.gridWindowToolStripMenuItem});
 			this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
 			this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
 			this.viewToolStripMenuItem.Text = "View";
@@ -1024,6 +1026,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolWindowToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
 			this.toolWindowToolStripMenuItem.Text = "Preset Window";
 			this.toolWindowToolStripMenuItem.Click += new System.EventHandler(this.toolWindowToolStripMenuItem_Click);
+			// 
+			// gridWindowToolStripMenuItem
+			// 
+			this.gridWindowToolStripMenuItem.Name = "gridWindowToolStripMenuItem";
+			this.gridWindowToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+			this.gridWindowToolStripMenuItem.Text = "Timeline Window";
+			this.gridWindowToolStripMenuItem.Click += new System.EventHandler(this.gridWindowToolStripMenuItem_Click);
 			// 
 			// toolsToolStripMenuItem
 			// 
@@ -1541,5 +1550,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_associateAudio;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_removeAudio;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
+		private System.Windows.Forms.ToolStripMenuItem gridWindowToolStripMenuItem;
 	}
 }

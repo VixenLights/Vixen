@@ -216,10 +216,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			else
 			{
-				GridForm.Show(dockPanel);
+				GridForm.Show(dockPanel, DockState.Document);
 				ToolsForm.Show(dockPanel, DockState.DockLeft);
 				MarksForm.Show(dockPanel, DockState.DockLeft);
 				EffectsForm.Show(dockPanel, DockState.DockLeft);
+			}
+
+			if (GridForm.IsHidden)
+			{
+				GridForm.DockState = DockState.Document;
 			}
 
 			XMLProfileSettings xml = new XMLProfileSettings();
@@ -4311,6 +4316,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			} while (true);
 		}
 
+		private void gridWindowToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+
+			if (GridForm.IsHidden)
+			{
+				GridForm.DockState = DockState.Document;
+				GridForm.Show(dockPanel, DockState.Document);
+			}
+			
+		}
+
 		private void effectWindowToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			if (EffectsForm.DockState == DockState.Unknown)
@@ -4836,6 +4852,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			effectWindowToolStripMenuItem.Checked = (EffectsForm.DockState != DockState.Unknown);
 			markWindowToolStripMenuItem.Checked = (MarksForm.DockState != DockState.Unknown);
 			toolWindowToolStripMenuItem.Checked = (ToolsForm.DockState != DockState.Unknown);
+			gridWindowToolStripMenuItem.Checked = !GridForm.IsHidden;
 		}
 
 		private void timerPostponePlay_Tick(object sender, EventArgs e)
