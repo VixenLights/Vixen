@@ -31,14 +31,7 @@ namespace VixenModules.Effect.Alternating
 
 		private void InitPropertyDescriptors()
 		{
-			SetBrowsable("Color1", StaticColor1);
-			SetBrowsable("IntensityLevel1", StaticColor1);
-			SetBrowsable("ColorGradient1", !StaticColor1);
-			SetBrowsable("Curve1", !StaticColor1);
-			SetBrowsable("Color2", StaticColor2);
-			SetBrowsable("IntensityLevel2", StaticColor2);
-			SetBrowsable("ColorGradient2", !StaticColor2);
-			SetBrowsable("Curve2", !StaticColor2);
+			UpdateAllAttributes();
 			TypeDescriptor.Refresh(this);
 		}
 
@@ -248,13 +241,12 @@ namespace VixenModules.Effect.Alternating
 			{
 				_data.StaticColor1 = value;
 				IsDirty = true;
-				SetBrowsable("Color1", value);
-				SetBrowsable("IntensityLevel1", value);
-				SetBrowsable("ColorGradient1", !value);
-				SetBrowsable("Curve1", !value);
+				UpdateColorOneAttributes();
 				TypeDescriptor.Refresh(this);
 			}
 		}
+
+		
 
 		[Value]
 		[Category(@"Effect Color Type")]
@@ -268,10 +260,7 @@ namespace VixenModules.Effect.Alternating
 			{
 				_data.StaticColor2 = value;
 				IsDirty = true;
-				SetBrowsable("Color2",value);
-				SetBrowsable("IntensityLevel2", value);
-				SetBrowsable("ColorGradient2", !value);
-				SetBrowsable("Curve2", !value);
+				UpdateColorTwoAttributes();
 				TypeDescriptor.Refresh(this);
 			}
 		}
@@ -366,6 +355,34 @@ namespace VixenModules.Effect.Alternating
 			}
 			protected set { base.IsDirty = value; }
 		}
+
+		#region Attributes
+
+		private void UpdateAllAttributes()
+		{
+			UpdateColorOneAttributes();
+			UpdateColorTwoAttributes();
+		}
+
+
+		private void UpdateColorOneAttributes()
+		{
+			SetBrowsable("Color1", StaticColor1);
+			SetBrowsable("IntensityLevel1", StaticColor1);
+			SetBrowsable("ColorGradient1", !StaticColor1);
+			SetBrowsable("Curve1", !StaticColor1);
+		}
+
+		private void UpdateColorTwoAttributes()
+		{
+			SetBrowsable("Color2", StaticColor2);
+			SetBrowsable("IntensityLevel2", StaticColor2);
+			SetBrowsable("ColorGradient2", !StaticColor2);
+			SetBrowsable("Curve2", !StaticColor2);
+		}
+
+		#endregion
+
 
 		// renders the given node to the internal ElementData dictionary. If the given node is
 		// not a element, will recursively descend until we render its elements.
