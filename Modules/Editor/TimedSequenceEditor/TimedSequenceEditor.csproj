@@ -127,6 +127,12 @@
     <Compile Include="Form_AddMultipleEffects.Designer.cs">
       <DependentUpon>Form_AddMultipleEffects.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormEffectEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormEffectEditor.Designer.cs">
+      <DependentUpon>FormEffectEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="Form_Marks.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -241,6 +247,9 @@
     <EmbeddedResource Include="ExportDialog.resx">
       <DependentUpon>ExportDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FormEffectEditor.resx">
+      <DependentUpon>FormEffectEditor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormParameterPicker.resx">
       <DependentUpon>FormParameterPicker.cs</DependentUpon>
     </EmbeddedResource>
@@ -331,6 +340,11 @@
     <ProjectReference Include="..\..\App\LipSync\LipSyncApp.csproj">
       <Project>{e3689e21-2204-48b9-8370-d45ee4a23451}</Project>
       <Name>LipSyncApp</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\EffectEditor\EffectTypeEditors\EffectTypeEditors.csproj">
+      <Project>{67B27730-D0D9-4AE7-8C8E-B41DE61C3798}</Project>
+      <Name>EffectTypeEditors</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Effect\LipSync\LipSync.csproj">

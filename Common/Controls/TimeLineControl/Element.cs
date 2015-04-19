@@ -81,6 +81,11 @@ namespace Common.Controls.Timeline
 				
 		}
 
+		public void  UpdateNotifyContentChanged()
+		{
+			OnContentChanged();
+		}
+
 		#endregion
 
 		#region Properties

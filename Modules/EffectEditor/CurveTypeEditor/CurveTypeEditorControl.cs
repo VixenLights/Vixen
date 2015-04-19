@@ -52,8 +52,14 @@ namespace VixenModules.EffectEditor.CurveTypeEditor
 
 		private void panelCurve_Click(object sender, EventArgs e)
 		{
+			ShowEditor();
+		}
+
+		public void ShowEditor()
+		{
 			CurveEditor editor = new CurveEditor(CurveValue);
-			if (editor.ShowDialog() == DialogResult.OK) {
+			if (editor.ShowDialog() == DialogResult.OK)
+			{
 				CurveValue = editor.Curve;
 			}
 		}

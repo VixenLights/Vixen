@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -11,17 +12,18 @@ using Vixen.Sys;
 namespace Vixen.Module.Effect
 {
 	[Serializable]
-	public abstract class EffectModuleInstanceBase : ModuleInstanceBase, IEffectModuleInstance,
+	public abstract class EffectModuleInstanceBase : ModuleInstanceBase, ICustomTypeDescriptor, IEffectModuleInstance,
 	                                                 IEqualityComparer<IEffectModuleInstance>,
 	                                                 IEquatable<IEffectModuleInstance>,
 	                                                 IEqualityComparer<EffectModuleInstanceBase>,
-	                                                 IEquatable<EffectModuleInstanceBase>
+	                                                 IEquatable<EffectModuleInstanceBase> 
 	{
 		private ElementNode[] _targetNodes;
 		private TimeSpan _timeSpan;
 		private DefaultValueArrayMember _parameterValues;
 		protected ElementIntents _elementIntents;
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private List<PropertyDescriptor> properties = new List<PropertyDescriptor>(); 
 
 		protected EffectModuleInstanceBase()
 		{
@@ -30,11 +32,14 @@ namespace Vixen.Module.Effect
 			IsDirty = true;
 			_parameterValues = new DefaultValueArrayMember(this);
 			_elementIntents = new ElementIntents();
+			properties = InitializeProperties();
 		}
 
+		[Browsable(false)]
 		public virtual bool IsDirty { get; protected set; }
 		private bool IsRendering;
 
+		[Browsable(false)]
 		public ElementNode[] TargetNodes
 		{
 			get { return _targetNodes; }
@@ -50,8 +55,10 @@ namespace Vixen.Module.Effect
 			}
 		}
 
+		[Browsable(false)]
 		public IEnumerable<Guid> EffectedElementIds { get; set; }
 
+		[Browsable(false)]
 		public TimeSpan TimeSpan
 		{
 			get { return _timeSpan; }
@@ -64,6 +71,7 @@ namespace Vixen.Module.Effect
 			}
 		}
 
+		[Browsable(false)]
 		public object[] ParameterValues
 		{
 			get { return _parameterValues.Values; }
@@ -129,21 +137,27 @@ namespace Vixen.Module.Effect
 
 		protected abstract EffectIntents _Render();
 
+		[DisplayName(@"Effect Name")]
+		[Category(@"Effect")]
 		public virtual string EffectName
 		{
-			get { return ((IEffectModuleDescriptor) Descriptor).EffectName; }
+			get { return Descriptor!=null?((IEffectModuleDescriptor) Descriptor).EffectName:""; }
 		}
 
+		[DisplayName(@"Effect Group")]
+		[Category(@"Effect")]
 		public EffectGroups EffectGroup
 		{
 			get { return ((IEffectModuleDescriptor)Descriptor).EffectGroup; }
 		}
 
+		[Browsable(false)]
 		public ParameterSignature Parameters
 		{
 			get { return ((IEffectModuleDescriptor) Descriptor).Parameters; }
 		}
 
+		[Browsable(false)]
 		public Guid[] PropertyDependencies
 		{
 			get { return ((EffectModuleDescriptorBase) Descriptor).PropertyDependencies; }
@@ -264,9 +278,123 @@ namespace Vixen.Module.Effect
 
 		#region IEffectModuleInstance Members
 
+		[Browsable(false)]
 		public virtual bool ForceGenerateVisualRepresentation
 		{
 			get { return false; }
+		}
+
+		#endregion
+
+		#region ICustomTypeDescriptor
+
+
+
+		public virtual AttributeCollection GetAttributes()
+		{
+			return TypeDescriptor.GetAttributes(this, true);
+		}
+
+		public virtual string GetClassName()
+		{
+			return TypeDescriptor.GetClassName(this, true);
+		}
+
+		public virtual string GetComponentName()
+		{
+			return TypeDescriptor.GetComponentName(this, true);
+		}
+
+		public virtual TypeConverter GetConverter()
+		{
+			return TypeDescriptor.GetConverter(this, true);
+		}
+
+		public virtual EventDescriptor GetDefaultEvent()
+		{
+			return TypeDescriptor.GetDefaultEvent(this, true);
+		}
+
+		public virtual PropertyDescriptor GetDefaultProperty()
+		{
+			return TypeDescriptor.GetDefaultProperty(this, true);
+		}
+
+		public virtual object GetEditor(Type editorBaseType)
+		{
+			return TypeDescriptor.GetEditor(this, editorBaseType, true);
+		}
+
+		public virtual EventDescriptorCollection GetEvents()
+		{
+			return TypeDescriptor.GetEvents(this, true);
+		}
+
+		public virtual EventDescriptorCollection GetEvents(Attribute[] attributes)
+		{
+			return TypeDescriptor.GetEvents(this, attributes, true);
+		}
+
+		public PropertyDescriptorCollection GetPropertiesImpl()
+		{
+			return GetPropertiesImpl(null);
+		}
+
+		public PropertyDescriptorCollection GetProperties()
+		{
+			return new PropertyDescriptorCollection(properties.ToArray());
+		}
+
+		public virtual PropertyDescriptorCollection GetProperties(Attribute[] attributes)
+		{
+			if (!properties.Any())
+			{
+				properties = InitializeProperties();
+			}
+			List<PropertyDescriptor> propertyDescriptors = properties.FindAll(pd => pd.Attributes.Contains(attributes));
+			PropertyDescriptorCollection propertyDescriptorCollection = new PropertyDescriptorCollection(propertyDescriptors.ToArray());
+
+			return propertyDescriptorCollection;
+			
+		}
+
+		public virtual PropertyDescriptorCollection GetPropertiesImpl(Attribute[] attributes)
+		{
+			return TypeDescriptor.GetProperties(this, attributes, true);
+		}
+
+		public virtual object GetPropertyOwner(PropertyDescriptor pd)
+		{
+			return this;
+		}
+
+		private List<PropertyDescriptor> InitializeProperties()
+		{
+			return GetPropertiesImpl().Cast<PropertyDescriptor>().ToList();
+		}
+
+
+		public void SetBrowsable(string property, bool browsable)
+		{
+			lock (properties)
+			{
+				var t = properties.Select(prop =>
+				{
+					if (prop.Name.Equals(property))
+					{
+						List<Attribute> newAttributes =
+							prop.Attributes.Cast<Attribute>().Where(attribute => !(attribute is BrowsableAttribute)).ToList();
+						newAttributes.Add(new BrowsableAttribute(browsable));
+						return TypeDescriptor.CreateProperty(GetType(), prop, newAttributes.ToArray());
+					}
+
+					return prop;
+
+				});
+
+				properties = t.ToList();
+
+			}			
 		}
 
 		#endregion

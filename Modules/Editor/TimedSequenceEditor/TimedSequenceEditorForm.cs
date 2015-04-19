@@ -196,6 +196,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				return MarksForm;
 			if (persistString == typeof (Form_ToolPalette).ToString())
 				return ToolsForm;
+			if (persistString == typeof(FormEffectEditor).ToString())
+				return EffectEditorForm;
 			
 			//Else
 			throw new NotImplementedException("Unable to find docking window type: " + persistString);
@@ -220,6 +222,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				ToolsForm.Show(dockPanel, DockState.DockLeft);
 				MarksForm.Show(dockPanel, DockState.DockLeft);
 				EffectsForm.Show(dockPanel, DockState.DockLeft);
+				EffectEditorForm.Show(dockPanel, DockState.DockRight);
 			}
 
 			if (GridForm.IsHidden)
@@ -333,6 +336,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimeLineSequenceClipboardContentsChanged += TimelineSequenceTimeLineSequenceClipboardContentsChanged;
 			TimelineControl.CursorMoved += CursorMovedHandler;
 			TimelineControl.ElementsSelected += timelineControl_ElementsSelected;
+			TimelineControl.SelectionChanged += TimelineControl_SelectionChanged;
 			TimelineControl.ContextSelected += timelineControl_ContextSelected;
 			TimelineControl.SequenceLoading = false;
 			TimelineControl.TimePerPixelChanged += TimelineControl_TimePerPixelChanged;
@@ -418,6 +422,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			EffectsForm.EscapeDrawMode -= EscapeDrawMode;
 			EffectsForm.Dispose();
+
+			EffectEditorForm.Dispose();
 
 			MarksForm.EditMarkCollection -= MarkCollection_Edit;
 			MarksForm.MarkCollectionChecked -= MarkCollection_Checked;
@@ -554,6 +560,22 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				
 				_toolPaletteForm = new Form_ToolPalette(TimelineControl);
 				return _toolPaletteForm;
+			}
+		}
+
+		private FormEffectEditor _effectEditorForm;
+
+		private FormEffectEditor EffectEditorForm
+		{
+			get
+			{
+				if (_effectEditorForm != null && !_effectEditorForm.IsDisposed)
+				{
+					return _effectEditorForm;
+				}
+
+				_effectEditorForm = new FormEffectEditor(TimelineControl);
+				return _effectEditorForm;
 			}
 		}
 
@@ -2263,8 +2285,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
+		private void TimelineControl_SelectionChanged(object sender, EventArgs e)
+		{
+			EffectEditorForm.Elements = TimelineControl.grid.SelectedElements.ToList();
+		}
+
+
 		private void timelineControl_ElementsSelected(object sender, ElementsSelectedEventArgs e)
 		{
+
 			if (e.ElementsUnderCursor != null && e.ElementsUnderCursor.Count() > 1)
 			{
 				contextMenuStripElementSelection.Items.Clear();
@@ -4327,6 +4356,22 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			
 		}
 
+		private void effectEditorWindowToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (EffectEditorForm.DockState == DockState.Unknown)
+			{
+				DockState dockState = EffectEditorForm.DockState;
+				if (dockState == DockState.Unknown) dockState = DockState.DockRight;
+				EffectEditorForm.Show(dockPanel, dockState);
+			}
+			else
+			{
+				EffectEditorForm.Close();
+			}
+
+		}
+
+
 		private void effectWindowToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			if (EffectsForm.DockState == DockState.Unknown)
@@ -4624,7 +4669,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			var xml = new XMLProfileSettings();
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/DockLeftPortion", Name), (int)dockPanel.DockLeftPortion);
-			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/DockRightPortion", Name), (int)dockPanel.DockLeftPortion);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/DockRightPortion", Name), (int)dockPanel.DockRightPortion);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/AutoSaveEnabled", Name), autoSaveToolStripMenuItem.Checked);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/DrawModeSelected", Name), toolStripButton_DrawMode.Checked);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SelectionModeSelected", Name), toolStripButton_SelectionMode.Checked);
@@ -4853,6 +4898,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			markWindowToolStripMenuItem.Checked = (MarksForm.DockState != DockState.Unknown);
 			toolWindowToolStripMenuItem.Checked = (ToolsForm.DockState != DockState.Unknown);
 			gridWindowToolStripMenuItem.Checked = !GridForm.IsHidden;
+			effectEditorWindowToolStripMenuItem.Checked = (EffectEditorForm.DockState != DockState.Unknown);
 		}
 
 		private void timerPostponePlay_Tick(object sender, EventArgs e)

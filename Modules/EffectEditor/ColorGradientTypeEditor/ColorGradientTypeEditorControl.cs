@@ -86,11 +86,21 @@ namespace VixenModules.EffectEditor.ColorGradientTypeEditor
 
 		private void panelGradient_Click(object sender, EventArgs e)
 		{
-			using (ColorGradientEditor cge = new ColorGradientEditor(ColorGradientValue, _discreteColors, _validDiscreteColors)) {
+			ShowEditor();
+		}
+
+		public DialogResult ShowEditor()
+		{
+			using (ColorGradientEditor cge = new ColorGradientEditor(ColorGradientValue, _discreteColors, _validDiscreteColors))
+			{
 				DialogResult result = cge.ShowDialog();
-				if (result == DialogResult.OK) {
+				if (result == DialogResult.OK)
+				{
 					ColorGradientValue = cge.Gradient;
 				}
+
+				return result;
+
 			}
 		}
 	}

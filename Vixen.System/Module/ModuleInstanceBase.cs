@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace Vixen.Module
 {
@@ -13,17 +14,22 @@ namespace Vixen.Module
 			InstanceId = Guid.NewGuid();
 		}
 
+		[Browsable(false)]
 		public Guid InstanceId { get; set; }
 
+		[Browsable(false)]
 		public Guid TypeId
 		{
 			get { return Descriptor.TypeId; }
 		}
 
+		[Browsable(false)]
 		public virtual IModuleDataModel ModuleData { get; set; }
 
+		[Browsable(false)]
 		public virtual IModuleDataModel StaticModuleData { get; set; }
 
+		[Browsable(false)]
 		public virtual IModuleDescriptor Descriptor { get; set; }
 
 		public void Dispose()

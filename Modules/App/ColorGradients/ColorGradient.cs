@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
@@ -17,6 +18,7 @@ namespace VixenModules.App.ColorGradients
 	/// ColorBlend object
 	/// </summary>
 	[DataContract]
+	[TypeConverter(typeof(GradientTypeConverter))]
 	public class ColorGradient : ICloneable
 	{
 		/// <summary>

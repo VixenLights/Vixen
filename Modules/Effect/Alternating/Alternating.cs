@@ -1,21 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Design;
 using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
 using System.Threading;
-using Vixen.Data.Value;
-using Vixen.Intent;
 using Vixen.Module;
 using Vixen.Module.Effect;
 using Vixen.Sys;
 using Vixen.Sys.Attribute;
-using System.Threading.Tasks;
 using VixenModules.App.ColorGradients;
-using VixenModules.Property.Color;
 using VixenModules.App.Curves;
-using ZedGraph;
+using VixenModules.EffectEditor.EffectTypeEditors;
+using VixenModules.EffectEditor.TypeConverters;
+using VixenModules.Property.Color;
 
 namespace VixenModules.Effect.Alternating
 {
@@ -23,10 +21,25 @@ namespace VixenModules.Effect.Alternating
 	public class Alternating : EffectModuleInstanceBase
 	{
 		private AlternatingData _data;
-		private EffectIntents _elementData = null;
+		private EffectIntents _elementData;
+
 		public Alternating()
 		{
 			_data = new AlternatingData();
+			InitPropertyDescriptors();
+		}
+
+		private void InitPropertyDescriptors()
+		{
+			SetBrowsable("Color1", StaticColor1);
+			SetBrowsable("IntensityLevel1", StaticColor1);
+			SetBrowsable("ColorGradient1", !StaticColor1);
+			SetBrowsable("Curve1", !StaticColor1);
+			SetBrowsable("Color2", StaticColor2);
+			SetBrowsable("IntensityLevel2", StaticColor2);
+			SetBrowsable("ColorGradient2", !StaticColor2);
+			SetBrowsable("Curve2", !StaticColor2);
+			TypeDescriptor.Refresh(this);
 		}
 
 		protected override void TargetNodesChanged()
@@ -90,10 +103,19 @@ namespace VixenModules.Effect.Alternating
 		public override IModuleDataModel ModuleData
 		{
 			get { return _data; }
-			set { _data = value as AlternatingData; }
+			set
+			{
+				_data = value as AlternatingData;
+				InitPropertyDescriptors();
+			}
 		}
 
 		[Value]
+		[Category(@"Effect Brightness")]
+		[Editor(typeof(EffectLevelTypeEditor), typeof(UITypeEditor))]
+		[TypeConverter(typeof(LevelTypeConverter))]
+		[DisplayName(@"Color 1")]
+		[Description(@"Controls the brightness of color 1.")]
 		public double IntensityLevel1
 		{
 			get { return _data.Level1; }
@@ -105,6 +127,11 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		[Value]
+		[Category(@"Effect Color")]
+		[Editor(typeof(EffectColorTypeEditor), typeof(UITypeEditor))]
+		[TypeConverter(typeof(ColorTypeConverter))]
+		[DisplayName(@"Color 1")]
+		[Description(@"Sets the first color.")]
 		public Color Color1
 		{
 			get
@@ -119,6 +146,11 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		[Value]
+		[Category(@"Effect Brightness")]
+		[Editor(typeof(EffectLevelTypeEditor), typeof(UITypeEditor))]
+		[TypeConverter(typeof(LevelTypeConverter))]
+		[DisplayName(@"Color 2")]
+		[Description(@"Controls the brightness of color 2.")]
 		public double IntensityLevel2
 		{
 			get { return _data.Level2; }
@@ -130,6 +162,11 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		[Value]
+		[Category(@"Effect Color")]
+		[Editor(typeof(EffectColorTypeEditor), typeof(UITypeEditor))]
+		[TypeConverter(typeof(ColorTypeConverter))]
+		[DisplayName(@"Color 2")]
+		[Description(@"Sets the second color.")]
 		public Color Color2
 		{
 			get
@@ -144,6 +181,11 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		[Value]
+		[Category(@"Effect Properties")]
+		[Editor(typeof(EffectRangeTypeEditor), typeof(UITypeEditor))]
+		//[TypeConverter(typeof(RangeTypeConverter))]
+		[DisplayName(@"Alternate Interval")]
+		[Description(@"Specifies how often the effect should switch in milliseconds.")]
 		public int Interval
 		{
 			get { return _data.Interval; }
@@ -155,7 +197,8 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		[Value]
-		public int DepthOfEffect
+		[Browsable(false)]
+		public int DepthOfEffect //this property is not currently used
 		{
 			get { return _data.DepthOfEffect; }
 			set
@@ -166,6 +209,9 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		[Value]
+		[Category(@"Effect Properties")]
+		[DisplayName(@"Group Effect")]
+		[Description(@"Indicates how many levels deep the effect should be grouped.")]
 		public int GroupEffect
 		{
 			get { return _data.GroupEffect; }
@@ -177,6 +223,9 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		[Value]
+		[Category(@"Effect Properties")]
+		[DisplayName(@"Make Display Static")]
+		[Description(@"Indicates that the effect should be the same on all elements.")]
 		public bool Enable
 		{
 			get { return _data.Enable; }
@@ -188,6 +237,10 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		[Value]
+		[Category(@"Effect Color Type")]
+		[DisplayName(@"Color 1")]
+		[Description(@"Indicates the first color is a static color.")]
+		[TypeConverter(typeof(ColorSelectionTypeConverter))]
 		public bool StaticColor1
 		{
 			get { return _data.StaticColor1; }
@@ -195,10 +248,19 @@ namespace VixenModules.Effect.Alternating
 			{
 				_data.StaticColor1 = value;
 				IsDirty = true;
+				SetBrowsable("Color1", value);
+				SetBrowsable("IntensityLevel1", value);
+				SetBrowsable("ColorGradient1", !value);
+				SetBrowsable("Curve1", !value);
+				TypeDescriptor.Refresh(this);
 			}
 		}
 
 		[Value]
+		[Category(@"Effect Color Type")]
+		[DisplayName(@"Color 2")]
+		[Description(@"Indicates the second color is a static color.")]
+		[TypeConverter(typeof(ColorSelectionTypeConverter))]
 		public bool StaticColor2
 		{
 			get { return _data.StaticColor2; }
@@ -206,10 +268,18 @@ namespace VixenModules.Effect.Alternating
 			{
 				_data.StaticColor2 = value;
 				IsDirty = true;
+				SetBrowsable("Color2",value);
+				SetBrowsable("IntensityLevel2", value);
+				SetBrowsable("ColorGradient2", !value);
+				SetBrowsable("Curve2", !value);
+				TypeDescriptor.Refresh(this);
 			}
 		}
 
 		[Value]
+		[Category(@"Effect Color")]
+		[DisplayName(@"Color 1")]
+		[Description(@"Sets the first color.")]
 		public ColorGradient ColorGradient1
 		{
 			get
@@ -224,6 +294,9 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		[Value]
+		[Category(@"Effect Color")]
+		[DisplayName(@"Color 2")]
+		[Description(@"Sets the second color.")]
 		public ColorGradient ColorGradient2
 		{
 			get
@@ -238,6 +311,9 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		[Value]
+		[Category(@"Effect Brightness")]
+		[DisplayName(@"Color 1")]
+		[Description(@"Controls the individual brightness curve of the first gradient.")]
 		public Curve Curve1
 		{
 			get { return _data.Curve1; }
@@ -249,6 +325,9 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		[Value]
+		[Category(@"Effect Brightness")]
+		[DisplayName(@"Color 2")]
+		[Description(@"Controls the individual brightness curve of the second gradient.")]
 		public Curve Curve2
 		{
 			get { return _data.Curve2; }
@@ -297,7 +376,7 @@ namespace VixenModules.Effect.Alternating
 			 
 			if (Enable) {
 				//intervals = Math.DivRem((long)TimeSpan.TotalMilliseconds, (long)Interval, out rem);
-				intervals = Math.Ceiling(TimeSpan.TotalMilliseconds / (double)Interval);
+				intervals = Math.Ceiling(TimeSpan.TotalMilliseconds / Interval);
 			}
 
 			TimeSpan startTime = TimeSpan.Zero;
@@ -340,7 +419,7 @@ namespace VixenModules.Effect.Alternating
 			if ((StaticColor1 && altColor) || StaticColor2 && !altColor) {
 
 				var level = new SetLevel.SetLevel();
-				level.TargetNodes = new ElementNode[] { element };
+				level.TargetNodes = new[] { element };
 				level.Color = altColor ? Color1 : Color2;
 				level.TimeSpan = intervalTime;
 				level.IntensityLevel = altColor ? IntensityLevel1 : IntensityLevel2;
@@ -348,7 +427,7 @@ namespace VixenModules.Effect.Alternating
 
 			} else {
 				var pulse = new Pulse.Pulse();
-				pulse.TargetNodes = new ElementNode[] { element };
+				pulse.TargetNodes = new[] { element };
 				pulse.TimeSpan = intervalTime;
 				pulse.ColorGradient = altColor ? ColorGradient1 : ColorGradient2;
 				pulse.LevelCurve = altColor ? Curve1 : Curve2;
@@ -359,4 +438,5 @@ namespace VixenModules.Effect.Alternating
 			_elementData.Add(result);
 		}
 	}
+
 }

@@ -71,28 +71,41 @@ namespace VixenModules.EffectEditor.ColorTypeEditor
 
 		private void panelColor_Click(object sender, EventArgs e)
 		{
-			if (_discreteColors) {
-				using (DiscreteColorPicker dcp = new DiscreteColorPicker()) {
+			ShowEditor();
+		}
+
+		public void ShowEditor()
+		{
+			if (_discreteColors)
+			{
+				using (DiscreteColorPicker dcp = new DiscreteColorPicker())
+				{
 					dcp.ValidColors = _validDiscreteColors;
 					dcp.SingleColorOnly = true;
 					dcp.SelectedColors = new List<Color> {ColorValue};
 					DialogResult result = dcp.ShowDialog();
-					if (result == DialogResult.OK) {
-						if (dcp.SelectedColors.Count() == 0) {
+					if (result == DialogResult.OK)
+					{
+						if (dcp.SelectedColors.Count() == 0)
+						{
 							ColorValue = Color.White;
 						}
-						else {
+						else
+						{
 							ColorValue = dcp.SelectedColors.First();
 						}
 					}
 				}
 			}
-			else {
-				using (ColorPicker cp = new ColorPicker()) {
+			else
+			{
+				using (ColorPicker cp = new ColorPicker())
+				{
 					cp.LockValue_V = true;
 					cp.Color = XYZ.FromRGB(ColorValue);
 					DialogResult result = cp.ShowDialog();
-					if (result == DialogResult.OK) {
+					if (result == DialogResult.OK)
+					{
 						ColorValue = cp.Color.ToRGB().ToArgb();
 					}
 				}

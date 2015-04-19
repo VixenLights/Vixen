@@ -1,26 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Threading;
-using Vixen.Data.Value;
+using NLog;
 using Vixen.Intent;
-using Vixen.Sys;
 using Vixen.Module;
 using Vixen.Module.Effect;
+using Vixen.Sys;
 using Vixen.Sys.Attribute;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
-using System.Drawing;
-using ZedGraph;
 using VixenModules.Property.Color;
+using ZedGraph;
 
 namespace VixenModules.Effect.Chase
 {
 	public class Chase : EffectModuleInstanceBase
 	{
-		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private static Logger Logging = LogManager.GetCurrentClassLogger();
 		private ChaseData _data;
-		private EffectIntents _elementData = null;
+		private EffectIntents _elementData;
 
 		public Chase()
 		{
@@ -145,6 +146,9 @@ namespace VixenModules.Effect.Chase
 		}
 
 		[Value]
+		[Category(@"Effect Properties")]
+		[DisplayName(@"Pulse Level Curve")]
+		[Description(@"Controls the individual pulse shape.")]
 		public Curve PulseCurve
 		{
 			get { return _data.PulseCurve; }
@@ -156,6 +160,9 @@ namespace VixenModules.Effect.Chase
 		}
 
 		[Value]
+		[Category(@"Effect Properties")]
+		[DisplayName(@"Chase direction")]
+		[Description(@"Controls the chase direction.")]
 		public Curve ChaseMovement
 		{
 			get { return _data.ChaseMovement; }
@@ -239,7 +246,7 @@ namespace VixenModules.Effect.Chase
 						bool discreteColors = ColorModule.isElementNodeDiscreteColored(target);
 
 						pulse = new Pulse.Pulse();
-						pulse.TargetNodes = new ElementNode[] {target};
+						pulse.TargetNodes = new[] {target};
 						pulse.TimeSpan = TimeSpan;
 						double level = DefaultLevel*100.0;
 
@@ -247,21 +254,21 @@ namespace VixenModules.Effect.Chase
 						switch (ColorHandling) {
 							case ChaseColorHandling.GradientForEachPulse:
 								pulse.ColorGradient = StaticColorGradient;
-								pulse.LevelCurve = new Curve(new PointPairList(new double[] {0, 100}, new double[] {level, level}));
+								pulse.LevelCurve = new Curve(new PointPairList(new double[] {0, 100}, new[] {level, level}));
 								pulseData = pulse.Render();
 								_elementData.Add(pulseData);
 								break;
 
 							case ChaseColorHandling.GradientThroughWholeEffect:
 								pulse.ColorGradient = ColorGradient;
-								pulse.LevelCurve = new Curve(new PointPairList(new double[] {0, 100}, new double[] {level, level}));
+								pulse.LevelCurve = new Curve(new PointPairList(new double[] {0, 100}, new[] {level, level}));
 								pulseData = pulse.Render();
 								_elementData.Add(pulseData);
 								break;
 
 							case ChaseColorHandling.StaticColor:
 								pulse.ColorGradient = StaticColorGradient;
-								pulse.LevelCurve = new Curve(new PointPairList(new double[] {0, 100}, new double[] {level, level}));
+								pulse.LevelCurve = new Curve(new PointPairList(new double[] {0, 100}, new[] {level, level}));
 								pulseData = pulse.Render();
 								_elementData.Add(pulseData);
 								break;
@@ -275,7 +282,7 @@ namespace VixenModules.Effect.Chase
 										if (tokenSource != null && tokenSource.IsCancellationRequested)
 											return;
 										double value = level*colorProportion.Item2;
-										pulse.LevelCurve = new Curve(new PointPairList(new double[] {0, 100}, new double[] {value, value}));
+										pulse.LevelCurve = new Curve(new PointPairList(new double[] {0, 100}, new[] {value, value}));
 										pulse.ColorGradient = new ColorGradient(colorProportion.Item1);
 										pulseData = pulse.Render();
 										_elementData.Add(pulseData);
@@ -283,7 +290,7 @@ namespace VixenModules.Effect.Chase
 								}
 								else {
 									pulse.ColorGradient = new ColorGradient(ColorGradient.GetColorAt(positionWithinGroup));
-									pulse.LevelCurve = new Curve(new PointPairList(new double[] {0, 100}, new double[] {level, level}));
+									pulse.LevelCurve = new Curve(new PointPairList(new double[] {0, 100}, new[] {level, level}));
 									pulseData = pulse.Render();
 									_elementData.Add(pulseData);
 								}
@@ -310,7 +317,7 @@ namespace VixenModules.Effect.Chase
 			for (TimeSpan current = TimeSpan.Zero; current <= TimeSpan; current += increment) {
 				if (tokenSource != null && tokenSource.IsCancellationRequested)
 					return;
-				double currentPercentageIntoChase = ((double) current.Ticks/(double) chaseTime.Ticks)*100.0;
+				double currentPercentageIntoChase = (current.Ticks/(double) chaseTime.Ticks)*100.0;
 
 				double currentMovementPosition = ChaseMovement.GetValue(currentPercentageIntoChase);
 				int currentNodeIndex = (int) ((currentMovementPosition/100.0)*targetNodeCount);
