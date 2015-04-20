@@ -4,6 +4,7 @@ using Vixen.Module;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using System.ComponentModel;
+using VixenModules.EffectEditor.TypeConverters;
 
 namespace VixenModules.Effect.Spin
 {
@@ -103,25 +104,38 @@ namespace VixenModules.Effect.Spin
 		}
 	}
 
+	[TypeConverter(typeof(EnumDescriptionTypeConverter))]
 	public enum SpinSpeedFormat
 	{
+		[Description("Revolution Count")]
 		RevolutionCount,
+		[Description("Revolution Freq")]
 		RevolutionFrequency,
+		[Description("Fixed Time")]
 		FixedTime
 	}
 
+	[TypeConverter(typeof(EnumDescriptionTypeConverter))]
 	public enum SpinPulseLengthFormat
 	{
+		[Description("Fixed Time")]
 		FixedTime,
+		[Description("Percent Revolution")]
 		PercentageOfRevolution,
+		[Description("Distribute Evenly")]
 		EvenlyDistributedAcrossSegments
 	}
 
+	[TypeConverter(typeof(EnumDescriptionTypeConverter))]
 	public enum SpinColorHandling
 	{
+		[Description("Single Color")]
 		StaticColor,
+		[Description("Gradient Thru Effect")]
 		GradientThroughWholeEffect,
+		[Description("Gradient Per Pulse")]
 		GradientForEachPulse,
+		[Description("Gradient Accross Items")]
 		ColorAcrossItems
 	}
 }

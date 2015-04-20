@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Design;
 using System.Linq;
 using System.Threading;
 using NLog;
@@ -12,6 +13,8 @@ using Vixen.Sys;
 using Vixen.Sys.Attribute;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
+using VixenModules.EffectEditor.EffectTypeEditors;
+using VixenModules.EffectEditor.TypeConverters;
 using VixenModules.Property.Color;
 using ZedGraph;
 
@@ -26,6 +29,7 @@ namespace VixenModules.Effect.Chase
 		public Chase()
 		{
 			_data = new ChaseData();
+			InitAllAttributes();
 		}
 
 		protected override void TargetNodesChanged()
@@ -48,7 +52,11 @@ namespace VixenModules.Effect.Chase
 		public override IModuleDataModel ModuleData
 		{
 			get { return _data; }
-			set { _data = value as ChaseData; }
+			set
+			{
+				_data = value as ChaseData;
+				InitAllAttributes();
+			}
 		}
 
 		public override bool IsDirty
@@ -76,6 +84,9 @@ namespace VixenModules.Effect.Chase
 		}
 
 		[Value]
+		[Category(@"Effect Color")]
+		[DisplayName(@"Color Handling")]
+		[Description(@"Controls how the chase color is handled.")]
 		public ChaseColorHandling ColorHandling
 		{
 			get { return _data.ColorHandling; }
@@ -83,11 +94,15 @@ namespace VixenModules.Effect.Chase
 			{
 				_data.ColorHandling = value;
 				IsDirty = true;
+				UpdateColorHandlingAttributes();
 			}
 		}
 
 
 		[Value]
+		[Category(@"Effect Properties")]
+		[DisplayName(@"Pulse Overlap")]
+		[Description(@"Controls how many milliseconds the individual pulses overlap.")]
 		public int PulseOverlap
 		{
 			get { return _data.PulseOverlap; }
@@ -99,6 +114,11 @@ namespace VixenModules.Effect.Chase
 		}
 
 		[Value]
+		[Category(@"Effect Brightness")]
+		[Editor(typeof(EffectLevelTypeEditor), typeof(UITypeEditor))]
+		[TypeConverter(typeof(LevelTypeConverter))]
+		[DisplayName(@"Default Brightness")]
+		[Description(@"Controls the default brightness of the inactive elements in the effect.")]
 		public double DefaultLevel
 		{
 			get { return _data.DefaultLevel; }
@@ -110,6 +130,11 @@ namespace VixenModules.Effect.Chase
 		}
 
 		[Value]
+		[Category(@"Effect Color")]
+		[Editor(typeof(EffectColorTypeEditor), typeof(UITypeEditor))]
+		[TypeConverter(typeof(ColorTypeConverter))]
+		[DisplayName(@"Color")]
+		[Description(@"Sets the chase color.")]
 		public Color StaticColor
 		{
 			get
@@ -132,6 +157,9 @@ namespace VixenModules.Effect.Chase
 		}
 
 		[Value]
+		[Category(@"Effect Color")]
+		[DisplayName(@"Color")]
+		[Description(@"Sets the chase color.")]
 		public ColorGradient ColorGradient
 		{
 			get
@@ -146,8 +174,8 @@ namespace VixenModules.Effect.Chase
 		}
 
 		[Value]
-		[Category(@"Effect Properties")]
-		[DisplayName(@"Pulse Level Curve")]
+		[Category(@"Effect Brightness")]
+		[DisplayName(@"Pulse Brightness")]
 		[Description(@"Controls the individual pulse shape.")]
 		public Curve PulseCurve
 		{
@@ -174,6 +202,9 @@ namespace VixenModules.Effect.Chase
 		}
 
 		[Value]
+		[Category(@"Effect Properties")]
+		[DisplayName(@"Group Effect")]
+		[Description(@"Indicates how many levels deep the effect should be grouped. 0 indicates all elements.")]
 		public int DepthOfEffect
 		{
 			get { return _data.DepthOfEffect; }
@@ -185,6 +216,9 @@ namespace VixenModules.Effect.Chase
 		}
 
 		[Value]
+		[Category(@"Effect Properties")]
+		[DisplayName(@"Extend Pulse to Start")]
+		[Description(@"Extends the pulse back to the start of the effect from it's normal starting position.")]
 		public bool ExtendPulseToStart
 		{
 			get { return _data.ExtendPulseToStart; }
@@ -196,6 +230,9 @@ namespace VixenModules.Effect.Chase
 		}
 
 		[Value]
+		[Category(@"Effect Properties")]
+		[DisplayName(@"Extend Pulse to End")]
+		[Description(@"Extends the pulse to the end of the effect from beyond it's normal ending position.")]
 		public bool ExtendPulseToEnd
 		{
 			get { return _data.ExtendPulseToEnd; }
@@ -205,6 +242,23 @@ namespace VixenModules.Effect.Chase
 				IsDirty = true;
 			}
 		}
+
+		#region Attributes
+
+		private void InitAllAttributes()
+		{
+			UpdateColorHandlingAttributes();	
+		}
+
+
+		private void UpdateColorHandlingAttributes()
+		{
+			SetBrowsable("StaticColor", ColorHandling.Equals(ChaseColorHandling.StaticColor));
+			SetBrowsable("ColorGradient", !ColorHandling.Equals(ChaseColorHandling.StaticColor));
+			
+		}
+
+		#endregion
 
 		//Validate that the we are using valid colors and set appropriate defaults if not.
 		private void CheckForInvalidColorData()

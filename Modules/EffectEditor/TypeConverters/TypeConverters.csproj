@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EnumDescriptionTypeConverter.cs" />
     <Compile Include="ColorSelectionTypeConverter.cs" />
     <Compile Include="ColorTypeConverter.cs" />
     <Compile Include="LevelTypeConverter.cs" />

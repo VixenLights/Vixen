@@ -176,7 +176,6 @@ namespace VixenModules.Effect.Alternating
 		[Value]
 		[Category(@"Effect Properties")]
 		[Editor(typeof(EffectRangeTypeEditor), typeof(UITypeEditor))]
-		//[TypeConverter(typeof(RangeTypeConverter))]
 		[DisplayName(@"Alternate Interval")]
 		[Description(@"Specifies how often the effect should switch in milliseconds.")]
 		public int Interval
