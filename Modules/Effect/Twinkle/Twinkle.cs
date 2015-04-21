@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using Vixen.Sys;
@@ -9,6 +10,9 @@ using Vixen.Sys.Attribute;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using System.Drawing;
+using System.Drawing.Design;
+using VixenModules.EffectEditor.EffectTypeEditors;
+using VixenModules.EffectEditor.TypeConverters;
 using ZedGraph;
 using VixenModules.Property.Color;
 
@@ -25,6 +29,7 @@ namespace VixenModules.Effect.Twinkle
 		public Twinkle()
 		{
 			_data = new TwinkleData();
+			UpdateAllAttributes();
 		}
 
 		protected override void TargetNodesChanged()
@@ -79,7 +84,11 @@ namespace VixenModules.Effect.Twinkle
 		public override IModuleDataModel ModuleData
 		{
 			get { return _data; }
-			set { _data = value as TwinkleData; }
+			set
+			{
+				_data = value as TwinkleData;
+				UpdateAllAttributes();
+			}
 		}
 
 		public override bool IsDirty
@@ -106,6 +115,9 @@ namespace VixenModules.Effect.Twinkle
 		}
 
 		[Value]
+		[Category(@"Effect Levels")]
+		[DisplayName(@"Min Brightness")]
+		[Description(@"Controls the minimum brightness of a pulse in the twinkle.")]
 		public double MinimumLevel
 		{
 			get { return _data.MinimumLevel; }
@@ -117,6 +129,9 @@ namespace VixenModules.Effect.Twinkle
 		}
 
 		[Value]
+		[Category(@"Effect Levels")]
+		[DisplayName(@"Max Brightness")]
+		[Description(@"Controls the maximum brightness of a pulse in the twinkle.")]
 		public double MaximumLevel
 		{
 			get { return _data.MaximumLevel; }
@@ -128,6 +143,9 @@ namespace VixenModules.Effect.Twinkle
 		}
 
 		[Value]
+		[Category(@"Effect Levels")]
+		[DisplayName(@"Brightness Variation")]
+		[Description(@"Controls how much percent variation in the brightness level of each pulse in the twinkle.")]
 		public int LevelVariation
 		{
 			get { return _data.LevelVariation; }
@@ -139,6 +157,9 @@ namespace VixenModules.Effect.Twinkle
 		}
 
 		[Value]
+		[Category(@"Effect Confguration")]
+		[DisplayName(@"Avg Pulse Time")]
+		[Description(@"Controls how long the averge pulse time in in the twinkle.")]
 		public int AveragePulseTime
 		{
 			get { return _data.AveragePulseTime; }
@@ -150,6 +171,9 @@ namespace VixenModules.Effect.Twinkle
 		}
 
 		[Value]
+		[Category(@"Effect Confguration")]
+		[DisplayName(@"Variation")]
+		[Description(@"Controls how much variation in the length of the pulses that make up the twinkle.")]
 		public int PulseTimeVariation
 		{
 			get { return _data.PulseTimeVariation; }
@@ -161,6 +185,9 @@ namespace VixenModules.Effect.Twinkle
 		}
 
 		[Value]
+		[Category(@"Effect Confguration")]
+		[DisplayName(@"Coverage")]
+		[Description(@"Controls how much of the effect by percent is covered in twinkles.")]
 		public int AverageCoverage
 		{
 			get { return _data.AverageCoverage; }
@@ -172,6 +199,9 @@ namespace VixenModules.Effect.Twinkle
 		}
 
 		[Value]
+		[Category(@"Effect Color")]
+		[DisplayName(@"Color Handling")]
+		[Description(@"Controls how the Twinkle color is handled.")]
 		public TwinkleColorHandling ColorHandling
 		{
 			get { return _data.ColorHandling; }
@@ -179,10 +209,17 @@ namespace VixenModules.Effect.Twinkle
 			{
 				_data.ColorHandling = value;
 				IsDirty = true;
+				UpdateColorHandlingAttributes();
+				TypeDescriptor.Refresh(this);
 			}
 		}
 
 		[Value]
+		[Category(@"Effect Color")]
+		[Editor(typeof(EffectColorTypeEditor), typeof(UITypeEditor))]
+		[TypeConverter(typeof(ColorTypeConverter))]
+		[DisplayName(@"Color")]
+		[Description(@"Sets the chase color.")]
 		public Color StaticColor
 		{
 			get
@@ -197,6 +234,9 @@ namespace VixenModules.Effect.Twinkle
 		}
 
 		[Value]
+		[Category(@"Effect Color")]
+		[DisplayName(@"Color")]
+		[Description(@"Sets the Twinkle color.")]
 		public ColorGradient ColorGradient
 		{
 			get
@@ -209,6 +249,25 @@ namespace VixenModules.Effect.Twinkle
 				IsDirty = true;
 			}
 		}
+		#region Attributes
+
+		private void UpdateAllAttributes()
+		{
+			UpdateColorHandlingAttributes();
+			TypeDescriptor.Refresh(this);
+		}
+
+		private void UpdateColorHandlingAttributes()
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(2)
+			{
+				{"StaticColor", ColorHandling.Equals(TwinkleColorHandling.StaticColor)},
+				{"ColorGradient", !ColorHandling.Equals(TwinkleColorHandling.StaticColor)}
+			};
+			SetBrowsable(propertyStates);
+		}
+
+		#endregion
 
 		//Created to hold a ColorGradient version of color rather than continually creating them from Color for static colors.
 		protected ColorGradient StaticColorGradient
