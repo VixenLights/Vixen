@@ -198,5 +198,7 @@ namespace VixenModules.App.Curves
 
 			return result;
 		}
+
+		
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -13,6 +14,8 @@ using VixenModules.App.Curves;
 using VixenModules.Effect.Pulse;
 using VixenModules.Property.Location;
 using System.Drawing;
+using System.Drawing.Design;
+using VixenModules.EffectEditor.TypeConverters;
 using VixenModules.Property.Color;
 
 namespace VixenModules.Effect.Wipe
@@ -21,9 +24,11 @@ namespace VixenModules.Effect.Wipe
 	{
 		public WipeModule()
 		{
-
+			_data = new WipeData();
+			UpdateAttributes();
 		}
-		WipeData _data = new WipeData();
+
+		private WipeData _data; 
 		private EffectIntents _elementData = null;
 
 		protected override void TargetNodesChanged()
@@ -470,7 +475,11 @@ namespace VixenModules.Effect.Wipe
 		public override IModuleDataModel ModuleData
 		{
 			get { return _data; }
-			set { _data = value as WipeData; }
+			set
+			{
+				_data = value as WipeData;
+				UpdateAttributes();
+			}
 		}
 
 
@@ -488,6 +497,9 @@ namespace VixenModules.Effect.Wipe
 		}
 
 		[Value]
+		[Category(@"Effect Color")]
+		[DisplayName(@"Color")]
+		[Description(@"Sets the Wipe color.")]
 		public ColorGradient ColorGradient
 		{
 			get
@@ -502,6 +514,9 @@ namespace VixenModules.Effect.Wipe
 		}
 
 		[Value]
+		[Category(@"Effect Direction")]
+		[DisplayName(@"Direction")]
+		[Description(@"Controls how the direction of the wipe.")]
 		public WipeDirection Direction
 		{
 			get { return _data.Direction; }
@@ -513,6 +528,9 @@ namespace VixenModules.Effect.Wipe
 		}
 
 		[Value]
+		[Category(@"Effect Brightness")]
+		[DisplayName(@"Pulse Brightness")]
+		[Description(@"Controls the individual pulse shape.")]
 		public Curve Curve
 		{
 			get { return _data.Curve; }
@@ -524,6 +542,9 @@ namespace VixenModules.Effect.Wipe
 		}
 
 		[Value]
+		[Category(@"Effect Pulse")]
+		[DisplayName(@"Pulse Time")]
+		[Description(@"Controls the individual pulse length in milliseconds.")]
 		public int PulseTime
 		{
 			get { return _data.PulseTime; }
@@ -535,6 +556,10 @@ namespace VixenModules.Effect.Wipe
 		}
 
 		[Value]
+		[Category(@"Effect Type")]
+		[DisplayName(@"Type")]
+		[Description(@"Controls how the wipe behaves. Either by a count of passes, or by time related to pulse length.")]
+		[TypeConverter(typeof(WipeSelectionTypeConverter))]
 		public bool WipeByCount
 		{
 			get { return _data.WipeByCount; }
@@ -542,10 +567,15 @@ namespace VixenModules.Effect.Wipe
 			{
 				_data.WipeByCount = value;
 				IsDirty = true;
+				UpdateAttributes();
+				TypeDescriptor.Refresh(this);
 			}
 		}
 
 		[Value]
+		[Category(@"Effect Pulse")]
+		[DisplayName(@"Wipe Count")]
+		[Description(@"Controls the number of passes the wipe makes.")]
 		public int PassCount
 		{
 			get { return _data.PassCount; }
@@ -557,6 +587,10 @@ namespace VixenModules.Effect.Wipe
 		}
 
 		[Value]
+		[Category(@"Effect Pulse")]
+		[DisplayName(@"Pulse Percent")]
+		[Description(@"Controls the length of the pulse as a percentage of the effect time.")]
+		[TypeConverter(typeof(PercentTypeConverter))]
 		public double PulsePercent
 		{
 			get { return _data.PulsePercent; }
@@ -566,6 +600,21 @@ namespace VixenModules.Effect.Wipe
 				IsDirty = true;
 			}
 		}
+
+		#region Attributes
+
+		private void UpdateAttributes()
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(4)
+			{
+				{"PassCount", WipeByCount},
+				{"PulsePercent", WipeByCount},
+				{"PulseTime", !WipeByCount}
+			};
+			SetBrowsable(propertyStates);
+		}
+
+		#endregion
 
 	}
 }

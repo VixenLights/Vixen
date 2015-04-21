@@ -33,25 +33,25 @@
 			// 
 			// propertyGridEffectProperties
 			// 
-			this.propertyGridEffectProperties.BackColor = System.Drawing.Color.DimGray;
+			this.propertyGridEffectProperties.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
 			this.propertyGridEffectProperties.CategoryForeColor = System.Drawing.Color.WhiteSmoke;
-			this.propertyGridEffectProperties.CategorySplitterColor = System.Drawing.Color.Silver;
+			this.propertyGridEffectProperties.CategorySplitterColor = System.Drawing.Color.Black;
 			this.propertyGridEffectProperties.CommandsBorderColor = System.Drawing.Color.DarkGray;
 			this.propertyGridEffectProperties.CommandsForeColor = System.Drawing.Color.Silver;
 			this.propertyGridEffectProperties.DisabledItemForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(127)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
 			this.propertyGridEffectProperties.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.propertyGridEffectProperties.HelpBackColor = System.Drawing.Color.DimGray;
-			this.propertyGridEffectProperties.HelpBorderColor = System.Drawing.Color.DarkGray;
+			this.propertyGridEffectProperties.HelpBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
+			this.propertyGridEffectProperties.HelpBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
 			this.propertyGridEffectProperties.HelpForeColor = System.Drawing.Color.Silver;
-			this.propertyGridEffectProperties.LineColor = System.Drawing.Color.DimGray;
+			this.propertyGridEffectProperties.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
 			this.propertyGridEffectProperties.Location = new System.Drawing.Point(0, 0);
 			this.propertyGridEffectProperties.Name = "propertyGridEffectProperties";
-			this.propertyGridEffectProperties.SelectedItemWithFocusBackColor = System.Drawing.SystemColors.ControlLight;
-			this.propertyGridEffectProperties.SelectedItemWithFocusForeColor = System.Drawing.Color.DimGray;
+			this.propertyGridEffectProperties.SelectedItemWithFocusBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
+			this.propertyGridEffectProperties.SelectedItemWithFocusForeColor = System.Drawing.Color.Gainsboro;
 			this.propertyGridEffectProperties.Size = new System.Drawing.Size(367, 521);
 			this.propertyGridEffectProperties.TabIndex = 2;
-			this.propertyGridEffectProperties.ViewBackColor = System.Drawing.Color.DimGray;
-			this.propertyGridEffectProperties.ViewBorderColor = System.Drawing.Color.DimGray;
+			this.propertyGridEffectProperties.ViewBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
+			this.propertyGridEffectProperties.ViewBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
 			this.propertyGridEffectProperties.ViewForeColor = System.Drawing.Color.Silver;
 			// 
 			// FormEffectEditor

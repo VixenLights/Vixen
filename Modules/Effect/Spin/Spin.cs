@@ -10,6 +10,8 @@ using Vixen.Sys.Attribute;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using System.Drawing;
+using System.Drawing.Design;
+using VixenModules.EffectEditor.EffectTypeEditors;
 using VixenModules.EffectEditor.TypeConverters;
 using ZedGraph;
 using VixenModules.Property.Color;
@@ -25,6 +27,7 @@ namespace VixenModules.Effect.Spin
 		public Spin()
 		{
 			_data = new SpinData();
+			InitAllAttributes();
 		}
 
 		protected override void TargetNodesChanged()
@@ -61,7 +64,11 @@ namespace VixenModules.Effect.Spin
 		public override IModuleDataModel ModuleData
 		{
 			get { return _data; }
-			set { _data = value as SpinData; }
+			set
+			{
+				_data = value as SpinData;
+				InitAllAttributes();
+			}
 		}
 
 		public override bool IsDirty
@@ -84,6 +91,9 @@ namespace VixenModules.Effect.Spin
 		}
 
 		[Value]
+		[Category(@"Effect Speed")]
+		[DisplayName(@"Speed Format")]
+		[Description(@"Controls how the individual spins occur.")]
 		public SpinSpeedFormat SpeedFormat
 		{
 			get { return _data.SpeedFormat; }
@@ -91,10 +101,15 @@ namespace VixenModules.Effect.Spin
 			{
 				_data.SpeedFormat = value;
 				IsDirty = true;
+				UpdateSpeedFormatAttributes();
+				TypeDescriptor.Refresh(this);
 			}
 		}
 
 		[Value]
+		[Category(@"Effect Pulse")]
+		[DisplayName(@"Pulse Type")]
+		[Description(@"Controls how individual pulses are applied accross the effect.")]
 		public SpinPulseLengthFormat PulseLengthFormat
 		{
 			get { return _data.PulseLengthFormat; }
@@ -102,10 +117,15 @@ namespace VixenModules.Effect.Spin
 			{
 				_data.PulseLengthFormat = value;
 				IsDirty = true;
+				UpdatePulseLengthFormatAttributes();
+				TypeDescriptor.Refresh(this);
 			}
 		}
 
 		[Value]
+		[Category(@"Effect Color")]
+		[DisplayName(@"Color Handling")]
+		[Description(@"Controls how the spin color is handled.")]
 		public SpinColorHandling ColorHandling
 		{
 			get { return _data.ColorHandling; }
@@ -113,10 +133,15 @@ namespace VixenModules.Effect.Spin
 			{
 				_data.ColorHandling = value;
 				IsDirty = true;
+				UpdateColorHandlingAttributes();
+				TypeDescriptor.Refresh(this);
 			}
 		}
 
 		[Value]
+		[Category(@"Effect Speed")]
+		[DisplayName(@"Revolution Count")]
+		[Description(@"Controls how many revolutions of the spin will occur.")]
 		public double RevolutionCount
 		{
 			get { return _data.RevolutionCount; }
@@ -128,6 +153,9 @@ namespace VixenModules.Effect.Spin
 		}
 
 		[Value]
+		[Category(@"Effect Speed")]
+		[DisplayName(@"Revolution Frequency")]
+		[Description(@"Controls the frequency in Hz at which the spin occurs.")]
 		public double RevolutionFrequency
 		{
 			get { return _data.RevolutionFrequency; }
@@ -139,6 +167,9 @@ namespace VixenModules.Effect.Spin
 		}
 
 		[Value]
+		[Category(@"Effect Speed")]
+		[DisplayName(@"Revolution Time")]
+		[Description(@"Controls the duration in milliseconds at which the spin occurs.")]
 		public int RevolutionTime
 		{
 			get { return _data.RevolutionTime; }
@@ -150,6 +181,9 @@ namespace VixenModules.Effect.Spin
 		}
 
 		[Value]
+		[Category(@"Effect Pulse")]
+		[DisplayName(@"Pulse Length")]
+		[Description(@"Controls how long each pulse is in milliseconds.")]
 		public int PulseTime
 		{
 			get { return _data.PulseTime; }
@@ -161,6 +195,9 @@ namespace VixenModules.Effect.Spin
 		}
 
 		[Value]
+		[Category(@"Effect Pulse")]
+		[DisplayName(@"Pulse Percent")]
+		[Description(@"Controls how long each pulse is as a percentage of the spin.")]
 		public int PulsePercentage
 		{
 			get { return _data.PulsePercentage; }
@@ -172,6 +209,11 @@ namespace VixenModules.Effect.Spin
 		}
 
 		[Value]
+		[Category(@"Effect Brightness")]
+		[Editor(typeof(EffectLevelTypeEditor), typeof(UITypeEditor))]
+		[TypeConverter(typeof(LevelTypeConverter))]
+		[DisplayName(@"Default Brightness")]
+		[Description(@"Controls the default brightness of the inactive elements in the effect.")]
 		public double DefaultLevel
 		{
 			get { return _data.DefaultLevel; }
@@ -183,6 +225,11 @@ namespace VixenModules.Effect.Spin
 		}
 
 		[Value]
+		[Category(@"Effect Color")]
+		[Editor(typeof(EffectColorTypeEditor), typeof(UITypeEditor))]
+		[TypeConverter(typeof(ColorTypeConverter))]
+		[DisplayName(@"Color")]
+		[Description(@"Sets the chase color.")]
 		public Color StaticColor
 		{
 			get
@@ -199,6 +246,9 @@ namespace VixenModules.Effect.Spin
 		}
 
 		[Value]
+		[Category(@"Effect Color")]
+		[DisplayName(@"Color")]
+		[Description(@"Sets the chase color.")]
 		public ColorGradient ColorGradient
 		{
 			get
@@ -221,6 +271,9 @@ namespace VixenModules.Effect.Spin
 		}
 
 		[Value]
+		[Category(@"Effect Brightness")]
+		[DisplayName(@"Pulse Brightness")]
+		[Description(@"Controls the individual pulse shape.")]
 		public Curve PulseCurve
 		{
 			get { return _data.PulseCurve; }
@@ -232,6 +285,9 @@ namespace VixenModules.Effect.Spin
 		}
 
 		[Value]
+		[Category(@"Effect Direction")]
+		[DisplayName(@"Spin Direction")]
+		[Description(@"Controls the direction of the spin.")]
 		public bool ReverseSpin
 		{
 			get { return _data.ReverseSpin; }
@@ -243,6 +299,9 @@ namespace VixenModules.Effect.Spin
 		}
 
 		[Value]
+		[Category(@"Effect Depth")]
+		[DisplayName(@"Levels Deep")]
+		[Description(@"Indicates how many levels deep the effect should be grouped. 0 indicates all elements.")]
 		public int DepthOfEffect
 		{
 			get { return _data.DepthOfEffect; }
@@ -252,6 +311,50 @@ namespace VixenModules.Effect.Spin
 				IsDirty = true;
 			}
 		}
+
+		#region Attributes
+
+		private void InitAllAttributes()
+		{
+			UpdateColorHandlingAttributes();
+			UpdateSpeedFormatAttributes();
+			UpdatePulseLengthFormatAttributes();
+			TypeDescriptor.Refresh(this);
+		}
+
+
+		private void UpdateColorHandlingAttributes()
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(2)
+			{
+				{"StaticColor", ColorHandling.Equals(SpinColorHandling.StaticColor)},
+				{"ColorGradient", !ColorHandling.Equals(SpinColorHandling.StaticColor)}
+			};
+			SetBrowsable(propertyStates);
+		}
+
+		private void UpdateSpeedFormatAttributes()
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(3)
+			{
+				{"RevolutionCount", SpeedFormat.Equals(SpinSpeedFormat.RevolutionCount)},
+				{"RevolutionTime", SpeedFormat.Equals(SpinSpeedFormat.FixedTime)},
+				{"RevolutionFrequency", SpeedFormat.Equals(SpinSpeedFormat.RevolutionFrequency)}
+			};
+			SetBrowsable(propertyStates);
+		}
+
+		private void UpdatePulseLengthFormatAttributes()
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(2)
+			{
+				{"PulseTime", PulseLengthFormat.Equals(SpinPulseLengthFormat.FixedTime)},
+				{"PulsePercentage", PulseLengthFormat.Equals(SpinPulseLengthFormat.PercentageOfRevolution)}
+			};
+			SetBrowsable(propertyStates);
+		}
+
+		#endregion
 
 		private void DoRendering(CancellationTokenSource tokenSource = null)
 		{

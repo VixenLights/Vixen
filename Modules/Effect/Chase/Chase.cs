@@ -95,12 +95,13 @@ namespace VixenModules.Effect.Chase
 				_data.ColorHandling = value;
 				IsDirty = true;
 				UpdateColorHandlingAttributes();
+				TypeDescriptor.Refresh(this);
 			}
 		}
 
 
 		[Value]
-		[Category(@"Effect Properties")]
+		[Category(@"Effect Pulse")]
 		[DisplayName(@"Pulse Overlap")]
 		[Description(@"Controls how many milliseconds the individual pulses overlap.")]
 		public int PulseOverlap
@@ -188,7 +189,7 @@ namespace VixenModules.Effect.Chase
 		}
 
 		[Value]
-		[Category(@"Effect Properties")]
+		[Category(@"Effect Direction")]
 		[DisplayName(@"Chase direction")]
 		[Description(@"Controls the chase direction.")]
 		public Curve ChaseMovement
@@ -202,8 +203,8 @@ namespace VixenModules.Effect.Chase
 		}
 
 		[Value]
-		[Category(@"Effect Properties")]
-		[DisplayName(@"Group Effect")]
+		[Category(@"Effect Depth")]
+		[DisplayName(@"Levels Deep")]
 		[Description(@"Indicates how many levels deep the effect should be grouped. 0 indicates all elements.")]
 		public int DepthOfEffect
 		{
@@ -216,7 +217,7 @@ namespace VixenModules.Effect.Chase
 		}
 
 		[Value]
-		[Category(@"Effect Properties")]
+		[Category(@"Effect Pulse")]
 		[DisplayName(@"Extend Pulse to Start")]
 		[Description(@"Extends the pulse back to the start of the effect from it's normal starting position.")]
 		public bool ExtendPulseToStart
@@ -230,7 +231,7 @@ namespace VixenModules.Effect.Chase
 		}
 
 		[Value]
-		[Category(@"Effect Properties")]
+		[Category(@"Effect Pulse")]
 		[DisplayName(@"Extend Pulse to End")]
 		[Description(@"Extends the pulse to the end of the effect from beyond it's normal ending position.")]
 		public bool ExtendPulseToEnd
@@ -247,15 +248,17 @@ namespace VixenModules.Effect.Chase
 
 		private void InitAllAttributes()
 		{
-			UpdateColorHandlingAttributes();	
+			UpdateColorHandlingAttributes();
+			TypeDescriptor.Refresh(this);
 		}
 
 
 		private void UpdateColorHandlingAttributes()
 		{
-			SetBrowsable("StaticColor", ColorHandling.Equals(ChaseColorHandling.StaticColor));
-			SetBrowsable("ColorGradient", !ColorHandling.Equals(ChaseColorHandling.StaticColor));
-			
+			Dictionary<string,bool> propertyStates = new Dictionary<string, bool>(2); 
+			propertyStates.Add("StaticColor", ColorHandling.Equals(ChaseColorHandling.StaticColor));
+			propertyStates.Add("ColorGradient", !ColorHandling.Equals(ChaseColorHandling.StaticColor));
+			SetBrowsable(propertyStates);
 		}
 
 		#endregion

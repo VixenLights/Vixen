@@ -1,17 +1,15 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Drawing.Design;
 using System.Linq;
 using System.Windows.Forms;
-using Common.Controls.PropertyEditor;
-using Vixen.Module.Effect;
-using WeifenLuo.WinFormsUI.Docking;
 using Common.Controls.Timeline;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.EffectEditor.EffectTypeEditors;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -19,7 +17,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 	{
 		private IEnumerable<Element> _elements;
 		private TimelineControl _timelineControl;
-		//private EffectEditor _editor;
 		public FormEffectEditor(TimelineControl timelineControl)
 		{
 			InitializeComponent();
@@ -28,11 +25,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			table.Add(typeof(Curve), typeof(EffectCurveTypeEditor).AssemblyQualifiedName);
 			
 			TypeDescriptor.AddEditorTable(typeof(UITypeEditor), table);
-			//propertyGridEffectProperties.AutoScroll = true;
-			//_editor = new EffectEditor();
-			//_editor.Anchor=AnchorStyles.Top|AnchorStyles.Bottom|AnchorStyles.Left|AnchorStyles.Right;
-			//_editor.AutoSize = true;
-			//panelEditControls.Controls.Add(_editor);
 			_timelineControl = timelineControl;
 			foreach (var control in propertyGridEffectProperties.Controls)
 			{
@@ -49,7 +41,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			propertyGridEffectProperties.PropertyValueChanged += propertyGridEffectProperties_PropertyValueChanged;
 		}
 
-		void toolStripButtonPreview_Click(object sender, System.EventArgs e)
+		void toolStripButtonPreview_Click(object sender, EventArgs e)
 		{
 			
 		}
@@ -69,8 +61,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			set
 			{
 				_elements = value;
-				//EffectEditor editor = new EffectEditor();
-				//_editor.SelectedObjects = _elements.Select(x => x.EffectNode.Effect).ToArray();
 				propertyGridEffectProperties.SelectedObjects = _elements.Select(x => x.EffectNode.Effect).ToArray();
 			} 
 		}

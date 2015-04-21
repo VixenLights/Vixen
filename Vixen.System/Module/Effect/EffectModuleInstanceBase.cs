@@ -376,15 +376,22 @@ namespace Vixen.Module.Effect
 
 		public void SetBrowsable(string property, bool browsable)
 		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1) {{property, browsable}};
+			SetBrowsable(propertyStates);
+		}
+
+		public void SetBrowsable(Dictionary<string, bool> propertyStates)
+		{
 			lock (properties)
 			{
 				var t = properties.Select(prop =>
 				{
-					if (prop.Name.Equals(property))
+					if (propertyStates.ContainsKey(prop.Name))
 					{
+						bool state = propertyStates[prop.Name];
 						List<Attribute> newAttributes =
 							prop.Attributes.Cast<Attribute>().Where(attribute => !(attribute is BrowsableAttribute)).ToList();
-						newAttributes.Add(new BrowsableAttribute(browsable));
+						newAttributes.Add(new BrowsableAttribute(state));
 						return TypeDescriptor.CreateProperty(GetType(), prop, newAttributes.ToArray());
 					}
 
@@ -394,7 +401,7 @@ namespace Vixen.Module.Effect
 
 				properties = t.ToList();
 
-			}			
+			}
 		}
 
 		#endregion

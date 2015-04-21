@@ -13,7 +13,6 @@ using Vixen.Sys;
 using Vixen.Sys.Attribute;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
-using VixenModules.EffectEditor.EffectTypeEditors;
 using VixenModules.Property.Color;
 using ZedGraph;
 
@@ -60,7 +59,6 @@ namespace VixenModules.Effect.Pulse
 
 		[Value]
 		[Category(@"Effect Brightness")]
-		[EditorAttribute(typeof(EffectCurveTypeEditor), typeof(UITypeEditor))]
 		[DisplayName(@"Brightness Curve")]
 		[Description(@"Controls the brightness of the effect.")]
 		public Curve LevelCurve
@@ -75,7 +73,6 @@ namespace VixenModules.Effect.Pulse
 
 		[Value]
 		[Category(@"Effect Color")]
-		[EditorAttribute(typeof(EffectColorGradientTypeEditor), typeof(UITypeEditor))]
 		[DisplayName(@"Color")]
 		[Description(@"Controls the color gradient of the effect.")]
 		public ColorGradient ColorGradient

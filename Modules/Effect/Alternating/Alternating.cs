@@ -201,8 +201,8 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		[Value]
-		[Category(@"Effect Properties")]
-		[DisplayName(@"Group Effect")]
+		[Category(@"Effect Depth")]
+		[DisplayName(@"Levels Deep")]
 		[Description(@"Indicates how many levels deep the effect should be grouped.")]
 		public int GroupEffect
 		{
@@ -366,18 +366,26 @@ namespace VixenModules.Effect.Alternating
 
 		private void UpdateColorOneAttributes()
 		{
-			SetBrowsable("Color1", StaticColor1);
-			SetBrowsable("IntensityLevel1", StaticColor1);
-			SetBrowsable("ColorGradient1", !StaticColor1);
-			SetBrowsable("Curve1", !StaticColor1);
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(4)
+			{
+				{"Color1", StaticColor1},
+				{"IntensityLevel1", StaticColor1},
+				{"ColorGradient1", !StaticColor1},
+				{"Curve1", !StaticColor1}
+			};
+			SetBrowsable(propertyStates);
 		}
 
 		private void UpdateColorTwoAttributes()
 		{
-			SetBrowsable("Color2", StaticColor2);
-			SetBrowsable("IntensityLevel2", StaticColor2);
-			SetBrowsable("ColorGradient2", !StaticColor2);
-			SetBrowsable("Curve2", !StaticColor2);
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(4)
+			{
+				{"Color2", StaticColor2},
+				{"IntensityLevel2", StaticColor2},
+				{"ColorGradient2", !StaticColor2},
+				{"Curve2", !StaticColor2}
+			};
+			SetBrowsable(propertyStates);
 		}
 
 		#endregion

@@ -73,6 +73,11 @@
       <Name>Curves</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\EffectEditor\EffectTypeEditors\EffectTypeEditors.csproj">
+      <Project>{67B27730-D0D9-4AE7-8C8E-B41DE61C3798}</Project>
+      <Name>EffectTypeEditors</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\EffectEditor\TypeConverters\TypeConverters.csproj">
       <Project>{4FBD9FC9-515A-44C8-AC64-D0908BCD3B11}</Project>
       <Name>TypeConverters</Name>
