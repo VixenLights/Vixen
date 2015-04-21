@@ -32,7 +32,6 @@ namespace VixenModules.Effect.Alternating
 		private void InitPropertyDescriptors()
 		{
 			UpdateAllAttributes();
-			TypeDescriptor.Refresh(this);
 		}
 
 		protected override void TargetNodesChanged()
@@ -361,6 +360,7 @@ namespace VixenModules.Effect.Alternating
 		{
 			UpdateColorOneAttributes();
 			UpdateColorTwoAttributes();
+			TypeDescriptor.Refresh(this);
 		}
 
 

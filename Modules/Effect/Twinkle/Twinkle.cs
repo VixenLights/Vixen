@@ -118,6 +118,8 @@ namespace VixenModules.Effect.Twinkle
 		[Category(@"Effect Levels")]
 		[DisplayName(@"Min Brightness")]
 		[Description(@"Controls the minimum brightness of a pulse in the twinkle.")]
+		[TypeConverter(typeof(LevelTypeConverter))]
+		[Editor(typeof(EffectLevelTypeEditor), typeof(UITypeEditor))]
 		public double MinimumLevel
 		{
 			get { return _data.MinimumLevel; }
@@ -132,6 +134,8 @@ namespace VixenModules.Effect.Twinkle
 		[Category(@"Effect Levels")]
 		[DisplayName(@"Max Brightness")]
 		[Description(@"Controls the maximum brightness of a pulse in the twinkle.")]
+		[TypeConverter(typeof(LevelTypeConverter))]
+		[Editor(typeof(EffectLevelTypeEditor), typeof(UITypeEditor))]
 		public double MaximumLevel
 		{
 			get { return _data.MaximumLevel; }
@@ -146,6 +150,7 @@ namespace VixenModules.Effect.Twinkle
 		[Category(@"Effect Levels")]
 		[DisplayName(@"Brightness Variation")]
 		[Description(@"Controls how much percent variation in the brightness level of each pulse in the twinkle.")]
+		[TypeConverter(typeof(DoublePercentTypeConverter))]
 		public int LevelVariation
 		{
 			get { return _data.LevelVariation; }
@@ -188,6 +193,7 @@ namespace VixenModules.Effect.Twinkle
 		[Category(@"Effect Confguration")]
 		[DisplayName(@"Coverage")]
 		[Description(@"Controls how much of the effect by percent is covered in twinkles.")]
+		[TypeConverter(typeof(DoublePercentTypeConverter))]
 		public int AverageCoverage
 		{
 			get { return _data.AverageCoverage; }
@@ -277,6 +283,9 @@ namespace VixenModules.Effect.Twinkle
 		}
 
 		[Value]
+		[Category(@"Effect Depth")]
+		[DisplayName(@"Levels Deep")]
+		[Description(@"Indicates how many levels deep the effect should be grouped. 0 indicates all elements.")]
 		public int DepthOfEffect
 		{
 			get { return _data.DepthOfEffect; }

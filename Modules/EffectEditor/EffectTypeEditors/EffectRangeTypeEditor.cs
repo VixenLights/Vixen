@@ -1,7 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Drawing.Design;
+using System.Globalization;
 using System.Windows.Forms.Design;
+using VixenModules.EffectEditor.TypeConverters;
 
 namespace VixenModules.EffectEditor.EffectTypeEditors
 {
@@ -19,10 +21,21 @@ namespace VixenModules.EffectEditor.EffectTypeEditors
 
 			if (service != null && context != null)
 			{
-				// This is the code you want to run when the [...] is clicked and after it has been verified.
-				RangeTypeEditorControl control = new RangeTypeEditorControl {Value = Convert.ToInt32(value ?? 1)};
+				object myValue = context.PropertyDescriptor.Converter.ConvertTo(context, CultureInfo.CurrentCulture, value, typeof (string));
+				
+				RangeTypeEditorControl control = new RangeTypeEditorControl{Value = 0};
+				AttributeCollection attributes = context.PropertyDescriptor.Attributes;
+				RangeAttribute attribute = (RangeAttribute)attributes[typeof(RangeAttribute)];
+				if (attribute != null)
+				{
+					control.LowerBounds = attribute.Lower;
+					control.UpperBounds = attribute.Upper;
+
+				}
+				control.Value = Convert.ToInt32(myValue ?? 1);
 				service.DropDownControl(control);
-				value = control.Value;
+				object val = context.PropertyDescriptor.Converter.ConvertFrom(context, CultureInfo.CurrentCulture, control.Value);
+				value = val;
 			}
 
 			return value;

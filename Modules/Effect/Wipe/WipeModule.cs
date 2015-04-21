@@ -15,6 +15,7 @@ using VixenModules.Effect.Pulse;
 using VixenModules.Property.Location;
 using System.Drawing;
 using System.Drawing.Design;
+using VixenModules.EffectEditor.EffectTypeEditors;
 using VixenModules.EffectEditor.TypeConverters;
 using VixenModules.Property.Color;
 
@@ -590,7 +591,9 @@ namespace VixenModules.Effect.Wipe
 		[Category(@"Effect Pulse")]
 		[DisplayName(@"Pulse Percent")]
 		[Description(@"Controls the length of the pulse as a percentage of the effect time.")]
-		[TypeConverter(typeof(PercentTypeConverter))]
+		[TypeConverter(typeof(RangeTypeConverter))]
+		[Editor(typeof(EffectRangeTypeEditor), typeof(UITypeEditor))]
+		[Range]
 		public double PulsePercent
 		{
 			get { return _data.PulsePercent; }
