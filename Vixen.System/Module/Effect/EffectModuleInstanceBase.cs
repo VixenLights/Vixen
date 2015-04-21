@@ -85,7 +85,16 @@ namespace Vixen.Module.Effect
 			if (IsDirty && !IsRendering)
 			{
 				IsRendering = true;
-				PreRender();
+				try
+				{
+					PreRender();
+				}
+				catch (Exception e)
+				{
+					//Trap any errors to prevent the effect from staying in a state of rendering.
+					Logging.Error(String.Format("Error rendering {0}", EffectName), e);
+				}
+				
 				IsRendering = false;
 			}
 			else
