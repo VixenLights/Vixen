@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Drawing;
+using System.Drawing.Design;
 using System.Runtime.Serialization;
 using System.Threading;
 using Vixen.Commands;
@@ -12,6 +14,8 @@ using Vixen.Sys;
 using Vixen.Module;
 using Vixen.Module.Effect;
 using Vixen.Sys.Attribute;
+using VixenModules.EffectEditor.EffectTypeEditors;
+using VixenModules.EffectEditor.TypeConverters;
 
 namespace VixenModules.Effect.CustomValue
 {
@@ -141,7 +145,11 @@ namespace VixenModules.Effect.CustomValue
 		public override IModuleDataModel ModuleData
 		{
 			get { return _data; }
-			set { _data = value as CustomValueData; }
+			set
+			{
+				_data = value as CustomValueData;
+				UpdateAllAttributes();
+			}
 		}
 
 		public CustomValueModule()
@@ -202,6 +210,9 @@ namespace VixenModules.Effect.CustomValue
 		}
 
 		[Value]
+		[Category(@"Effect Type")]
+		[DisplayName(@"Type")]
+		[Description(@"Sets the type of the value.")]
 		public CustomValueType ValueType
 		{
 			get { return _data.ValueType; }
@@ -209,10 +220,15 @@ namespace VixenModules.Effect.CustomValue
 			{
 				_data.ValueType = value;
 				IsDirty = true;
+				UpdateCustomAttributes();
+				TypeDescriptor.Refresh(this);
 			}
 		}
 
 		[Value]
+		[Category(@"Effect Value")]
+		[DisplayName(@"8 Bit Value")]
+		[Description(@"Sets the value.")]
 		public byte Value8Bit
 		{
 			get { return _data.Value8Bit; }
@@ -224,6 +240,9 @@ namespace VixenModules.Effect.CustomValue
 		}
 
 		[Value]
+		[Category(@"Effect Value")]
+		[DisplayName(@"16 Bit Value")]
+		[Description(@"Sets the value.")]
 		public ushort Value16Bit
 		{
 			get { return _data.Value16Bit; }
@@ -235,6 +254,9 @@ namespace VixenModules.Effect.CustomValue
 		}
 
 		[Value]
+		[Category(@"Effect Value")]
+		[DisplayName(@"32 Bit Value")]
+		[Description(@"Sets the value.")]
 		public uint Value32Bit
 		{
 			get { return _data.Value32Bit; }
@@ -246,6 +268,9 @@ namespace VixenModules.Effect.CustomValue
 		}
 
 		[Value]
+		[Category(@"Effect Value")]
+		[DisplayName(@"64 Bit Value")]
+		[Description(@"Sets the value.")]
 		public ulong Value64Bit
 		{
 			get { return _data.Value64Bit; }
@@ -257,6 +282,11 @@ namespace VixenModules.Effect.CustomValue
 		}
 
 		[Value]
+		[Category(@"Effect Value")]
+		[DisplayName(@"Color Value")]
+		[TypeConverter(typeof(ColorTypeConverter))]
+		[Editor(typeof(EffectColorTypeEditor), typeof(UITypeEditor))]
+		[Description(@"Sets the value.")]
 		public Color ColorValue
 		{
 			get { return _data.ColorValue; }
@@ -268,6 +298,9 @@ namespace VixenModules.Effect.CustomValue
 		}
 
 		[Value]
+		[Category(@"Effect Value")]
+		[DisplayName(@"String Value")]
+		[Description(@"Sets the value.")]
 		public string StringValue
 		{
 			get { return _data.StringValue; }
@@ -278,17 +311,49 @@ namespace VixenModules.Effect.CustomValue
 			}
 		}
 
+		#region Attributes
+
+		private void UpdateAllAttributes()
+		{
+			UpdateCustomAttributes();
+			
+		}
+
+		private void UpdateCustomAttributes()
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(4)
+			{
+				{"Value8Bit", ValueType.Equals(CustomValueType._8Bit)},
+				{"Value16Bit", ValueType.Equals(CustomValueType._16Bit)},
+				{"Value32Bit", ValueType.Equals(CustomValueType._32Bit)},
+				{"Value64Bit", ValueType.Equals(CustomValueType._64Bit)},
+				{"StringValue", ValueType.Equals(CustomValueType.String)},
+				{"ColorValue", ValueType.Equals(CustomValueType.Color)}
+			};
+			SetBrowsable(propertyStates);
+		}
+
+		#endregion
+
 	}
 
 
 
+
+	[TypeConverter(typeof(EnumDescriptionTypeConverter))]
 	public enum CustomValueType
 	{
+		[Description(@"8 Bit Value")]
 		_8Bit,
+		[Description(@"16 Bit Value")]
 		_16Bit,
+		[Description(@"32 Bit Value")]
 		_32Bit,
+		[Description(@"64 Bit Value")]
 		_64Bit,
+		[Description(@"Color Value")]
 		Color,
+		[Description(@"String Value")]
 		String,
 	};
 }

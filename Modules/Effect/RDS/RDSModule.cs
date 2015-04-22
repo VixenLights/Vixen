@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Text;
 using System.IO;
@@ -47,6 +48,9 @@ namespace VixenModules.Effect.RDS
 		}
 
 		[Value]
+		[Category(@"Effect Text")]
+		[DisplayName(@"RDS Text")]
+		[Description(@"Text to send")]
 		public string Title
 		{
 			get { return _data.Title; }
@@ -58,6 +62,7 @@ namespace VixenModules.Effect.RDS
 		}
 
 		[Value]
+		[Browsable(false)]
 		public string Artist
 		{
 			get
