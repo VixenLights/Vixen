@@ -431,7 +431,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripButton_SnapTo.Name = "toolStripButton_SnapTo";
 			this.toolStripButton_SnapTo.Size = new System.Drawing.Size(54, 24);
 			this.toolStripButton_SnapTo.Text = "Snap To";
-			this.toolStripButton_SnapTo.ToolTipText = "Snap To Marks / Elementses";
+			this.toolStripButton_SnapTo.ToolTipText = "Snap To Marks / Effect";
 			this.toolStripButton_SnapTo.CheckedChanged += new System.EventHandler(this.toolStripButton_SnapTo_CheckedChanged);
 			// 
 			// toolStripDropDownButton_SnapToStrength
@@ -812,14 +812,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// 
 			this.addEffectToolStripMenuItem.Name = "addEffectToolStripMenuItem";
 			this.addEffectToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
-			this.addEffectToolStripMenuItem.Text = "Add Elementses";
+			this.addEffectToolStripMenuItem.Text = "Add Effect";
 			// 
 			// toolStripMenuItem_EditEffect
 			// 
 			this.toolStripMenuItem_EditEffect.Name = "toolStripMenuItem_EditEffect";
 			this.toolStripMenuItem_EditEffect.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.E)));
 			this.toolStripMenuItem_EditEffect.Size = new System.Drawing.Size(215, 22);
-			this.toolStripMenuItem_EditEffect.Text = "Edit Elementses(s)...";
+			this.toolStripMenuItem_EditEffect.Text = "Edit Effect(s)...";
 			this.toolStripMenuItem_EditEffect.Click += new System.EventHandler(this.toolStripMenuItem_EditEffect_Click);
 			// 
 			// toolStripSeparator2
@@ -864,7 +864,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.selectAllElementsToolStripMenuItem.Name = "selectAllElementsToolStripMenuItem";
 			this.selectAllElementsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
 			this.selectAllElementsToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
-			this.selectAllElementsToolStripMenuItem.Text = "Select All Elementses";
+			this.selectAllElementsToolStripMenuItem.Text = "Select All Elements";
 			this.selectAllElementsToolStripMenuItem.Click += new System.EventHandler(this.selectAllElementsToolStripMenuItem_Click);
 			// 
 			// toolStripMenuItem_deleteElements
@@ -872,7 +872,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripMenuItem_deleteElements.Name = "toolStripMenuItem_deleteElements";
 			this.toolStripMenuItem_deleteElements.ShortcutKeys = System.Windows.Forms.Keys.Delete;
 			this.toolStripMenuItem_deleteElements.Size = new System.Drawing.Size(215, 22);
-			this.toolStripMenuItem_deleteElements.Text = "Delete Elementses(s)";
+			this.toolStripMenuItem_deleteElements.Text = "Delete Element(s)";
 			this.toolStripMenuItem_deleteElements.Click += new System.EventHandler(this.toolStripMenuItem_deleteElements_Click);
 			// 
 			// toolStripSeparator10
@@ -888,7 +888,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripMenuItem_SnapTo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.toolStripMenuItem_SnapTo.Name = "toolStripMenuItem_SnapTo";
 			this.toolStripMenuItem_SnapTo.Size = new System.Drawing.Size(215, 22);
-			this.toolStripMenuItem_SnapTo.Text = "Snap To Marks / Elementses";
+			this.toolStripMenuItem_SnapTo.Text = "Snap To Marks / Effects";
 			this.toolStripMenuItem_SnapTo.CheckedChanged += new System.EventHandler(this.toolStripMenuItem_SnapTo_CheckedChanged);
 			// 
 			// toolStripMenuItem_ResizeIndicator
@@ -1012,7 +1012,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// 
 			this.effectWindowToolStripMenuItem.Name = "effectWindowToolStripMenuItem";
 			this.effectWindowToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
-			this.effectWindowToolStripMenuItem.Text = "Elementses Window";
+			this.effectWindowToolStripMenuItem.Text = "Effect Window";
 			this.effectWindowToolStripMenuItem.Click += new System.EventHandler(this.effectWindowToolStripMenuItem_Click);
 			// 
 			// markWindowToolStripMenuItem
@@ -1040,7 +1040,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// 
 			this.effectEditorWindowToolStripMenuItem.Name = "effectEditorWindowToolStripMenuItem";
 			this.effectEditorWindowToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
-			this.effectEditorWindowToolStripMenuItem.Text = "Elementses Editor Window";
+			this.effectEditorWindowToolStripMenuItem.Text = "Effect Editor Window";
 			this.effectEditorWindowToolStripMenuItem.Click += new System.EventHandler(this.effectEditorWindowToolStripMenuItem_Click);
 			// 
 			// toolsToolStripMenuItem
@@ -1163,7 +1163,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// 
 			this.changeMapToolStripMenuItem.Name = "changeMapToolStripMenuItem";
 			this.changeMapToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
-			this.changeMapToolStripMenuItem.Text = "Change Elementses Map";
+			this.changeMapToolStripMenuItem.Text = "Change Element Map";
 			this.changeMapToolStripMenuItem.DropDownOpening += new System.EventHandler(this.changeMapToolStripMenuItem_DropDownOpening);
 			// 
 			// lyricConverterToolStripMenuItem
@@ -1184,7 +1184,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// 
 			this.bulkEffectMoveToolStripMenuItem.Name = "bulkEffectMoveToolStripMenuItem";
 			this.bulkEffectMoveToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
-			this.bulkEffectMoveToolStripMenuItem.Text = "Bulk Elementses Move";
+			this.bulkEffectMoveToolStripMenuItem.Text = "Bulk Effects Move";
 			this.bulkEffectMoveToolStripMenuItem.Click += new System.EventHandler(this.bulkEffectMoveToolStripMenuItem_Click);
 			// 
 			// helpDocumentationToolStripMenuItem
@@ -1285,7 +1285,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// 
 			this.toolStripStatusLabel_RenderingElements.Name = "toolStripStatusLabel_RenderingElements";
 			this.toolStripStatusLabel_RenderingElements.Size = new System.Drawing.Size(115, 19);
-			this.toolStripStatusLabel_RenderingElements.Text = "Rendering Elementses:";
+			this.toolStripStatusLabel_RenderingElements.Text = "Rendering ELements:";
 			this.toolStripStatusLabel_RenderingElements.Visible = false;
 			// 
 			// toolStripProgressBar_RenderingElements

@@ -136,6 +136,7 @@
     <ProjectReference Include="..\TypeConverters\TypeConverters.csproj">
       <Project>{4FBD9FC9-515A-44C8-AC64-D0908BCD3B11}</Project>
       <Name>TypeConverters</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -68,6 +68,7 @@
     <ProjectReference Include="..\..\..\Common\ValueTypes\ValueTypes.csproj">
       <Project>{D9A7E8BC-5617-486D-9DA5-89C5861A0F88}</Project>
       <Name>ValueTypes</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
