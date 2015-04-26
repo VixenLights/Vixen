@@ -38,7 +38,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 			}
 
+			timelineControl.SelectionChanged += timelineControl_SelectionChanged;
 			propertyGridEffectProperties.PropertyValueChanged += propertyGridEffectProperties_PropertyValueChanged;
+		}
+
+		void timelineControl_SelectionChanged(object sender, EventArgs e)
+		{
+			propertyGridEffectProperties.SelectedObjects = _timelineControl.SelectedElements.Select(x => x.EffectNode.Effect).ToArray();
 		}
 
 		void toolStripButtonPreview_Click(object sender, EventArgs e)

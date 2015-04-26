@@ -60,10 +60,12 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.DimGray;
 			this.ClientSize = new System.Drawing.Size(367, 521);
+			this.ControlBox = false;
 			this.Controls.Add(this.propertyGridEffectProperties);
 			this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.ForeColor = System.Drawing.Color.Silver;
 			this.Name = "FormEffectEditor";
+			this.Text = "Effect Editor";
 			this.ResumeLayout(false);
 
 		}

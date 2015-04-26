@@ -336,7 +336,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimeLineSequenceClipboardContentsChanged += TimelineSequenceTimeLineSequenceClipboardContentsChanged;
 			TimelineControl.CursorMoved += CursorMovedHandler;
 			TimelineControl.ElementsSelected += timelineControl_ElementsSelected;
-			TimelineControl.SelectionChanged += TimelineControl_SelectionChanged;
 			TimelineControl.ContextSelected += timelineControl_ContextSelected;
 			TimelineControl.SequenceLoading = false;
 			TimelineControl.TimePerPixelChanged += TimelineControl_TimePerPixelChanged;
@@ -2285,10 +2284,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		private void TimelineControl_SelectionChanged(object sender, EventArgs e)
-		{
-			EffectEditorForm.Elements = TimelineControl.grid.SelectedElements.ToList();
-		}
 
 
 		private void timelineControl_ElementsSelected(object sender, ElementsSelectedEventArgs e)
