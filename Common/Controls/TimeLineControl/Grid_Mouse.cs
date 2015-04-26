@@ -556,6 +556,7 @@ namespace Common.Controls.Timeline
 			SelectionArea = Util.RectangleFromPoints(topLeft, bottomRight);
 			selectElementsWithin(SelectionArea);
 			Invalidate();
+			Update();
 		}
 
 		private void MouseUp_DragSelect(Point gridLocation)
