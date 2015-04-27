@@ -1,7 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
 using System.ComponentModel.Design.Serialization;
+using System.Drawing;
 using System.Globalization;
+using System.Reflection;
 
 namespace VixenModules.App.ColorGradients
 {
@@ -31,14 +33,25 @@ namespace VixenModules.App.ColorGradients
 		{
 			if (destinationType == null)
 				throw new ArgumentNullException("destinationType");
-			if (value is ColorGradient)
+
+			if (destinationType == typeof(InstanceDescriptor))
 			{
-				ColorGradient cg = (ColorGradient) value;
-				if (cg.IsLibraryReference)
+				ConstructorInfo ci = typeof(ColorGradient).GetConstructor(new[] { typeof(ColorGradient) });
+				ColorGradient gradient = (ColorGradient)value;
+				return new InstanceDescriptor(ci, new object[] { gradient });
+			}
+
+			if (destinationType == typeof (string))
+			{
+				if (value is ColorGradient)
 				{
-					return cg.LibraryReferenceName; 
+					ColorGradient cg = (ColorGradient) value;
+					if (cg.IsLibraryReference)
+					{
+						return cg.LibraryReferenceName;
+					}
+					return "Gradient";
 				}
-				return "Gradient";
 			}
 
 			return base.ConvertTo(context, culture, value, destinationType);

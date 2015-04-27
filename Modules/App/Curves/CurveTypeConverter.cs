@@ -1,7 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
 using System.ComponentModel.Design.Serialization;
+using System.Drawing;
 using System.Globalization;
+using System.Reflection;
 
 namespace VixenModules.App.Curves
 {
@@ -23,6 +25,10 @@ namespace VixenModules.App.Curves
 		{
 			if (destinationType == typeof(InstanceDescriptor))
 				return true;
+			if (destinationType == typeof (string))
+			{
+				return true;
+			}
 			return base.CanConvertTo(context, destinationType);
 		}
 
@@ -31,15 +37,26 @@ namespace VixenModules.App.Curves
 			if (destinationType == null)
 				throw new ArgumentNullException("destinationType");
 
-			if (value is Curve)
+			if (destinationType == typeof(InstanceDescriptor))
 			{
-				Curve cg = (Curve)value;
-				if (cg.IsLibraryReference)
-				{
-					return cg.LibraryReferenceName;
-				}
-				return "Curve";
+				ConstructorInfo ci = typeof(Curve).GetConstructor(new []{typeof(Curve)});
+				Curve curve = (Curve)value;
+				return new InstanceDescriptor(ci, new object[] { curve });
 			}
+
+			if (destinationType == typeof (string))
+			{
+				if (value is Curve)
+				{
+					Curve cg = (Curve)value;
+					if (cg.IsLibraryReference)
+					{
+						return cg.LibraryReferenceName;
+					}
+					return "Curve";
+				}
+			}
+			
 
 			return base.ConvertTo(context, culture, value, destinationType);
 		}

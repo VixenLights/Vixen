@@ -44,6 +44,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		void timelineControl_SelectionChanged(object sender, EventArgs e)
 		{
+			_elements = _timelineControl.SelectedElements;
 			propertyGridEffectProperties.SelectedObjects = _timelineControl.SelectedElements.Select(x => x.EffectNode.Effect).ToArray();
 		}
 

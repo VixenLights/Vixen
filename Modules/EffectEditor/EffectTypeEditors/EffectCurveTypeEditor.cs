@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
+using System.Linq;
 using Vixen.Module.Effect;
 using VixenModules.App.Curves;
 using VixenModules.EffectEditor.CurveTypeEditor;
@@ -18,9 +19,22 @@ namespace VixenModules.EffectEditor.EffectTypeEditors
 		public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider, object value)
 		{
 
-			if (value != null && context != null)
+			if (context != null)
 			{
-				IEffect effect = context.Instance as IEffect;
+				IEffect effect = null;
+				if (context.Instance.GetType().IsArray)
+				{
+					IEffect[] effects = context.Instance as IEffect[];
+					if (effects != null)
+					{
+						effect = effects.First();
+						value = new Curve();
+					}
+				}
+				else
+				{
+					effect = context.Instance as IEffect;
+				}
 				if (effect != null)
 				{
 					CurveTypeEditorControl control = new CurveTypeEditorControl();

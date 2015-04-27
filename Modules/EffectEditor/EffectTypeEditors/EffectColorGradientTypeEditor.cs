@@ -31,6 +31,7 @@ namespace VixenModules.EffectEditor.EffectTypeEditors
 					if (effects != null)
 					{
 						effect = effects.First();
+						value = new ColorGradient(Color.White);
 					}
 				}
 				else
