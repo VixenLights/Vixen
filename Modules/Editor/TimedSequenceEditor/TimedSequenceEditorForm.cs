@@ -1354,7 +1354,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 
 				elem.EffectNode.Effect.ParameterValues = parms;
-				TimelineControl.grid.RenderElement(elem);
+				//TimelineControl.grid.RenderElement(elem);
+				elem.UpdateNotifyContentChanged();
 			}
 			SequenceModified();
 			if (strayElement)
@@ -1564,7 +1565,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				{
 					foreach (Element element in editElements)
 					{
-						TimelineControl.grid.RenderElement(element);
+						//TimelineControl.grid.RenderElement(element);
+						element.UpdateNotifyContentChanged();
 					}
 					SequenceModified();
 				}
@@ -3346,7 +3348,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							colorList[parameterPicker.ParameterListIndex] = color;
 							parms[parameterPicker.ParameterIndex] = colorList;
 							elem.EffectNode.Effect.ParameterValues = parms;
-							TimelineControl.grid.RenderElement(elem);
+							//TimelineControl.grid.RenderElement(elem);
+							elem.UpdateNotifyContentChanged();
 							SequenceModified();
 							k++;
 						}
@@ -3362,7 +3365,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							colorGradientList[parameterPicker.ParameterListIndex] = new ColorGradient(color);
 							parms[parameterPicker.ParameterIndex] = colorGradientList;
 							elem.EffectNode.Effect.ParameterValues = parms;
-							TimelineControl.grid.RenderElement(elem);
+							//TimelineControl.grid.RenderElement(elem);
+							elem.UpdateNotifyContentChanged();
 							SequenceModified();
 							k++;
 						}
@@ -3386,7 +3390,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							}
 
 							elem.EffectNode.Effect.ParameterValues = parms;
-							TimelineControl.grid.RenderElement(elem);
+							//TimelineControl.grid.RenderElement(elem);
+							elem.UpdateNotifyContentChanged();
 							SequenceModified();
 							k++;
 						}
@@ -3436,7 +3441,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					}
 
 					elem.EffectNode.Effect.ParameterValues = parms;
-					TimelineControl.grid.RenderElement(elem);
+					//TimelineControl.grid.RenderElement(elem);
+					elem.UpdateNotifyContentChanged();
 					SequenceModified();
 					k++;
 				}
@@ -3556,7 +3562,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							curveList[parameterPicker.ParameterListIndex] = new Curve(curve);
 							parms[parameterPicker.ParameterIndex] = curveList;
 							elem.EffectNode.Effect.ParameterValues = parms;
-							TimelineControl.grid.RenderElement(elem);
+							//TimelineControl.grid.RenderElement(elem);
+							elem.UpdateNotifyContentChanged();
 							SequenceModified();
 							k++;
 						}
@@ -3569,7 +3576,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							object[] parms = elem.EffectNode.Effect.ParameterValues;
 							parms[parameterPicker.ParameterIndex] = curve;
 							elem.EffectNode.Effect.ParameterValues = parms;
-							TimelineControl.grid.RenderElement(elem);
+							//TimelineControl.grid.RenderElement(elem);
+							elem.UpdateNotifyContentChanged();
 							SequenceModified();
 							k++;
 						}
@@ -3598,7 +3606,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					object[] parms = elem.EffectNode.Effect.ParameterValues;
 					parms[j] = curve;
 					elem.EffectNode.Effect.ParameterValues = parms;
-					TimelineControl.grid.RenderElement(elem);
+					//TimelineControl.grid.RenderElement(elem);
+					elem.UpdateNotifyContentChanged();
 					SequenceModified();
 					k++;
 				}
@@ -3718,7 +3727,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							colorGradientList[parameterPicker.ParameterListIndex] = new ColorGradient(colorGradient);
 							parms[parameterPicker.ParameterIndex] = colorGradientList;
 							elem.EffectNode.Effect.ParameterValues = parms;
-							TimelineControl.grid.RenderElement(elem);
+							//TimelineControl.grid.RenderElement(elem);
+							elem.UpdateNotifyContentChanged();
 							SequenceModified();
 							k++;
 						}
@@ -3742,7 +3752,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							}
 
 							elem.EffectNode.Effect.ParameterValues = parms;
-							TimelineControl.grid.RenderElement(elem);
+							//TimelineControl.grid.RenderElement(elem);
+							elem.UpdateNotifyContentChanged();
 							SequenceModified();
 							k++;
 						}
@@ -3783,7 +3794,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							break;
 					}
 					elem.EffectNode.Effect.ParameterValues = parms;
-					TimelineControl.grid.RenderElement(elem);
+					//TimelineControl.grid.RenderElement(elem);
+					elem.UpdateNotifyContentChanged();
 					SequenceModified();
 					k++;
 				}

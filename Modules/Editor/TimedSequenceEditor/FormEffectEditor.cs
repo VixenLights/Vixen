@@ -15,7 +15,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 {
 	public partial class FormEffectEditor : DockContent
 	{
-		private IEnumerable<Element> _elements;
+		private IEnumerable<Element> _elements = new List<Element>();
 		private TimelineControl _timelineControl;
 		public FormEffectEditor(TimelineControl timelineControl)
 		{
@@ -31,6 +31,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (control is ToolStrip)
 				{
 					ToolStrip ts = control as ToolStrip;
+					foreach (ToolStripItem item in ts.Items)
+					{
+						item.Visible = false;
+					}
 					ToolStripItem toolStripButtonPreview = new ToolStripButton();
 					toolStripButtonPreview.Text = @"Preview";
 					toolStripButtonPreview.Click += toolStripButtonPreview_Click;
@@ -44,8 +48,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		void timelineControl_SelectionChanged(object sender, EventArgs e)
 		{
-			_elements = _timelineControl.SelectedElements;
-			propertyGridEffectProperties.SelectedObjects = _timelineControl.SelectedElements.Select(x => x.EffectNode.Effect).ToArray();
+			Elements = _timelineControl.SelectedElements;
 		}
 
 		void toolStripButtonPreview_Click(object sender, EventArgs e)
@@ -67,9 +70,32 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			get { return _elements; }
 			set
 			{
+				RemoveElementContentChangedListener();
 				_elements = value;
+				AddElementContentChangedListener();
 				propertyGridEffectProperties.SelectedObjects = _elements.Select(x => x.EffectNode.Effect).ToArray();
 			} 
+		}
+
+		private void AddElementContentChangedListener()
+		{
+			foreach (var element in _elements)
+			{
+				element.ContentChanged += element_ContentChanged;
+			}
+		}
+
+		private void RemoveElementContentChangedListener()
+		{
+			foreach (var element in _elements)
+			{
+				element.ContentChanged -= element_ContentChanged;
+			}
+		}
+
+		private void element_ContentChanged(object sender, EventArgs e)
+		{
+			propertyGridEffectProperties.Refresh();
 		}
 	}
 }
