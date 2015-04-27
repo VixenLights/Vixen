@@ -199,6 +199,22 @@ namespace VixenModules.App.Curves
 			return result;
 		}
 
-		
+		public override bool Equals(object obj)
+		{
+			if (obj is Curve)
+			{
+				Curve curve = (Curve)obj;
+				if (IsLibraryReference && curve.IsLibraryReference && LibraryReferenceName.Equals(curve.LibraryReferenceName))
+				{
+					return true;
+				}
+
+				if (Points.Equals(curve.Points))
+				{
+					return true;
+				}
+			}
+			return base.Equals(obj);
+		}
 	}
 }

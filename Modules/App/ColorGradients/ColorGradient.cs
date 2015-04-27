@@ -140,6 +140,37 @@ namespace VixenModules.App.ColorGradients
 		[CollectionDataContract]
 		public class PointList<T> : CollectionBase<T> where T : Point, IComparable<T>
 		{
+			protected bool Equals(PointList<T> obj)
+			{
+				
+				PointList<T> rhs = obj as PointList<T>;
+				if (Count != rhs.Count)
+					return false;
+
+				for (int i = 0; i < this.Count; i++)
+				{
+					if (!this[i].Equals(rhs[i]))
+						return false;
+				}
+
+				return true;
+			}
+
+			public override int GetHashCode()
+			{
+				return base.GetHashCode();
+			}
+
+			public override bool Equals(object obj)
+			{
+				if (obj is PointList<T>)
+				{
+					return Equals(obj as PointList<T>);
+				}
+				return base.Equals(obj);
+
+			}
+
 			#region change events
 
 			public event EventHandler<ModifiedEventArgs> Changed;
@@ -213,6 +244,7 @@ namespace VixenModules.App.ColorGradients
 				Array.Sort(ret);
 				return ret;
 			}
+
 		}
 
 		#region variables
@@ -1006,6 +1038,33 @@ namespace VixenModules.App.ColorGradients
 
 			return result;
 		}
+
+		#region Equals
+
+		public override bool Equals(object obj)
+		{
+			if (obj is ColorGradient)
+			{
+				ColorGradient color = (ColorGradient)obj;
+				if (IsLibraryReference && color.IsLibraryReference && LibraryReferenceName.Equals(color.LibraryReferenceName))
+				{
+					return true;
+				}
+
+				if (Colors.Equals(color.Colors) && Alphas.Equals(color.Alphas))
+				{
+					return true;
+				}
+			}
+			return base.Equals(obj);
+		}
+
+		public override int GetHashCode()
+		{
+			return Colors.GetHashCode() ^ Alphas.GetHashCode();
+		}
+
+		#endregion
 
 		#region Library-linking gradients
 
