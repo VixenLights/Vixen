@@ -2,6 +2,8 @@
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
+using System.Linq;
+using System.Windows.Forms;
 using Vixen.Module.Effect;
 using VixenModules.EffectEditor.ColorTypeEditor;
 
@@ -17,19 +19,38 @@ namespace VixenModules.EffectEditor.EffectTypeEditors
 		public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider, object value)
 		{
 
-			if (value != null && context != null)
+			if (context != null)
 			{
-				IEffect effect = context.Instance as IEffect;
+				ColorTypeEditorControl control = new ColorTypeEditorControl();
+				IEffect effect = null;
+				if (context.Instance.GetType().IsArray)
+				{
+					IEffect[] effects = context.Instance as IEffect[];
+					if (effects != null)
+					{
+						effect = effects.First();
+					}
+				}
+				else
+				{
+					effect = context.Instance as IEffect;
+				}
 				if (effect != null)
 				{
-					ColorTypeEditorControl control = new ColorTypeEditorControl
+					control.TargetEffect = effect;
+					if (value != null)
 					{
-						TargetEffect = effect,
-						ColorValue = (Color)value
-					};
-					control.ShowEditor();
-					value = control.ColorValue;
+						control.ColorValue = (Color)value;
+					}
+					DialogResult result = control.ShowEditor();
+					if (result == DialogResult.OK)
+					{
+						value = control.ColorValue;	
+					}
+		
 				}
+
+
 			}
 			
 			return value;

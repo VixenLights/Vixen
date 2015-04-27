@@ -54,7 +54,11 @@ namespace VixenModules.Effect.Pulse
 		public override IModuleDataModel ModuleData
 		{
 			get { return _data; }
-			set { _data = value as PulseData; }
+			set
+			{
+				_data = value as PulseData;
+				IsDirty = true;
+			}
 		}
 
 		[Value]

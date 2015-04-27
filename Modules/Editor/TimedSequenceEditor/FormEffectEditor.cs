@@ -15,9 +15,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 {
 	public partial class FormEffectEditor : DockContent
 	{
-		private IEnumerable<Element> _elements = new List<Element>();
-		private TimelineControl _timelineControl;
-		public FormEffectEditor(TimelineControl timelineControl)
+		//private IEnumerable<Element> _elements = new List<Element>();
+		private Dictionary<Element, EffectModelCandidate> _elements = new Dictionary<Element, EffectModelCandidate>();
+		private readonly TimedSequenceEditorForm _sequenceEditorForm;
+		public FormEffectEditor(TimedSequenceEditorForm sequenceEditorForm)
 		{
 			InitializeComponent();
 			Hashtable table = new Hashtable();
@@ -25,7 +26,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			table.Add(typeof(Curve), typeof(EffectCurveTypeEditor).AssemblyQualifiedName);
 			
 			TypeDescriptor.AddEditorTable(typeof(UITypeEditor), table);
-			_timelineControl = timelineControl;
+			_sequenceEditorForm = sequenceEditorForm;
 			foreach (var control in propertyGridEffectProperties.Controls)
 			{
 				if (control is ToolStrip)
@@ -42,13 +43,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 			}
 
-			timelineControl.SelectionChanged += timelineControl_SelectionChanged;
+			sequenceEditorForm.TimelineControl.SelectionChanged += timelineControl_SelectionChanged;
 			propertyGridEffectProperties.PropertyValueChanged += propertyGridEffectProperties_PropertyValueChanged;
 		}
 
 		void timelineControl_SelectionChanged(object sender, EventArgs e)
 		{
-			Elements = _timelineControl.SelectedElements;
+			Elements = _sequenceEditorForm.TimelineControl.SelectedElements;
 		}
 
 		void toolStripButtonPreview_Click(object sender, EventArgs e)
@@ -58,36 +59,47 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		void propertyGridEffectProperties_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
 		{
-			foreach (var element in _elements)
+			_sequenceEditorForm.AddEffectsModifiedToUndo(new Dictionary<Element, EffectModelCandidate>(_elements), e.ChangedItem.Label);
+			var keys = new List<Element>(Elements);
+			foreach (var element in keys)
 			{
-				element.UpdateNotifyContentChanged();	
+				element.UpdateNotifyContentChanged();
+				_elements[element]=new EffectModelCandidate(element.EffectNode.Effect);
 			}
 			
 		}
 
 		public IEnumerable<Element> Elements
 		{
-			get { return _elements; }
+			get { return _elements.Keys; }
 			set
 			{
 				RemoveElementContentChangedListener();
-				_elements = value;
-				AddElementContentChangedListener();
-				propertyGridEffectProperties.SelectedObjects = _elements.Select(x => x.EffectNode.Effect).ToArray();
+				_elements.Clear();
+				AddElements(value);
+				propertyGridEffectProperties.SelectedObjects = _elements.Keys.Select(x => x.EffectNode.Effect).ToArray();
 			} 
 		}
 
-		private void AddElementContentChangedListener()
+		private void AddElements(IEnumerable<Element> elements)
 		{
-			foreach (var element in _elements)
+			foreach (var element in elements)
 			{
-				element.ContentChanged += element_ContentChanged;
+				_elements.Add(element, new EffectModelCandidate(element.EffectNode.Effect));
+				AddElementContentChangedListener(element);
 			}
+		}
+
+		private void AddElementContentChangedListener(Element element)
+		{
+			
+			element.ContentChanged += element_ContentChanged;
+			
 		}
 
 		private void RemoveElementContentChangedListener()
 		{
-			foreach (var element in _elements)
+			foreach (var element in Elements)
 			{
 				element.ContentChanged -= element_ContentChanged;
 			}

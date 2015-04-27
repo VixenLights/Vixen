@@ -148,6 +148,7 @@ namespace VixenModules.Effect.CustomValue
 			set
 			{
 				_data = value as CustomValueData;
+				IsDirty = true;
 				UpdateAllAttributes();
 			}
 		}

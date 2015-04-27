@@ -110,7 +110,11 @@ namespace VixenModules.Effect.LipSync
         public override IModuleDataModel ModuleData
         {
             get { return _data; }
-            set { _data = value as LipSyncData; }
+	        set
+	        {
+		        _data = value as LipSyncData;
+				IsDirty = true;
+	        }
         }
 
         [Value]

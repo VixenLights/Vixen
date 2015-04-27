@@ -55,6 +55,7 @@ namespace VixenModules.Effect.Chase
 			set
 			{
 				_data = value as ChaseData;
+				IsDirty = true;
 				InitAllAttributes();
 			}
 		}

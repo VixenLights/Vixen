@@ -19,7 +19,6 @@ using Vixen;
 using Vixen.Cache.Sequence;
 using Vixen.Execution;
 using Vixen.Execution.Context;
-using Vixen.Module;
 using Vixen.Module.App;
 using VixenModules.App.Curves;
 using VixenModules.App.LipSyncApp;
@@ -34,6 +33,7 @@ using Vixen.Sys;
 using Vixen.Sys.State;
 using VixenModules.Analysis.BeatsAndBars;
 using VixenModules.App.ColorGradients;
+using VixenModules.Editor.TimedSequenceEditor.Undo;
 using VixenModules.Sequence.Timed;
 using WeifenLuo.WinFormsUI.Docking;
 using Element = Common.Controls.Timeline.Element;
@@ -573,7 +573,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					return _effectEditorForm;
 				}
 
-				_effectEditorForm = new FormEffectEditor(TimelineControl);
+				_effectEditorForm = new FormEffectEditor(this);
 				return _effectEditorForm;
 			}
 		}
@@ -600,7 +600,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			get { return _gridForm ?? (_gridForm = new Form_Grid()); }
 		}
 
-		private TimelineControl TimelineControl
+		internal TimelineControl TimelineControl
 		{
 			get { return _gridForm.TimelineControl; }
 		}
@@ -4010,8 +4010,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 					int relativeVisibleRow = rownum - result.FirstVisibleRow;
 
-					TimelineElementsClipboardData.EffectModelCandidate modelCandidate =
-						new TimelineElementsClipboardData.EffectModelCandidate(elem.EffectNode.Effect)
+					EffectModelCandidate modelCandidate =
+						new EffectModelCandidate(elem.EffectNode.Effect)
 							{
 								Duration = elem.Duration,
 								StartTime = elem.StartTime
@@ -4079,9 +4079,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			List<Row> visibleRows = new List<Row>(TimelineControl.VisibleRows);
 			int topTargetRoxIndex = visibleRows.IndexOf(targetRow);
 			List<EffectNode> nodesToAdd = new List<EffectNode>();
-			foreach (KeyValuePair<TimelineElementsClipboardData.EffectModelCandidate, int> kvp in data.EffectModelCandidates)
+			foreach (KeyValuePair<EffectModelCandidate, int> kvp in data.EffectModelCandidates)
 			{
-				TimelineElementsClipboardData.EffectModelCandidate effectModelCandidate = kvp.Key;
+				EffectModelCandidate effectModelCandidate = kvp.Key;
 				int relativeRow = kvp.Value;
 
 				int targetRowIndex = topTargetRoxIndex + relativeRow;
@@ -4610,6 +4610,25 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.grid.SwapElementPlacement(changedElements);
 		}
 
+		//private void SwapEffectData(Dictionary<Element, EffectModelCandidate> changedElements)
+		//{
+		//	List<Element> keys = new List<Element>(changedElements.Keys);
+		//	foreach (var element in keys)
+		//	{
+		//		EffectModelCandidate modelCandidate =
+		//			new EffectModelCandidate(element.EffectNode.Effect)();
+
+		//		element.EffectNode.Effect.ModuleData = changedElements[element].GetEffectData(); ;
+		//		changedElements[element] = modelCandidate;
+		//		element.UpdateNotifyContentChanged();
+		//	}
+		//}
+
+		public void AddEffectsModifiedToUndo(Dictionary<Element, EffectModelCandidate> modifiedEffectElements, string labelName="properties")
+		{
+			_undoMgr.AddUndoAction(new EffectsModifiedUndoAction(modifiedEffectElements, labelName));
+		}
+
 		#endregion
 
 		#region IEditorUserInterface implementation
@@ -5043,8 +5062,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
                         ((LipSync)effect).LyricData = phoneme.LyricData;
 
                         TimeSpan startTime = TimeSpan.FromMilliseconds(phoneme.StartMS);
-                        TimelineElementsClipboardData.EffectModelCandidate modelCandidate =
-                              new TimelineElementsClipboardData.EffectModelCandidate(effect)
+                        EffectModelCandidate modelCandidate =
+                              new EffectModelCandidate(effect)
                               {
                                   Duration = TimeSpan.FromMilliseconds(phoneme.DurationMS - 1),
                                   StartTime = startTime,
@@ -5104,8 +5123,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
                     ((LipSync)effect).StaticPhoneme = data.Phoneme.ToString().ToUpper();
                     ((LipSync)effect).LyricData = data.LyricData;
 
-                    TimelineElementsClipboardData.EffectModelCandidate modelCandidate =
-                          new TimelineElementsClipboardData.EffectModelCandidate(effect)
+                    EffectModelCandidate modelCandidate =
+                          new EffectModelCandidate(effect)
                           {
                               Duration = data.Duration,
                               StartTime = data.StartOffset
@@ -5365,38 +5384,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		public TimeSpan EarliestStartTime { get; set; }
 
-		/// <summary>
-		/// Class to hold effect data to allow it to be placed on the clipboard and be reconstructed when later pasted
-		/// </summary>
-		[Serializable]
-		public class EffectModelCandidate
-		{
-			private readonly Type _moduleDataClass;
-			private readonly MemoryStream _effectData;
-
-			public EffectModelCandidate(IEffectModuleInstance effect)
-			{
-				_moduleDataClass = effect.Descriptor.ModuleDataClass;
-				DataContractSerializer ds = new DataContractSerializer(_moduleDataClass);
-
-				TypeId = effect.Descriptor.TypeId;
-				_effectData = new MemoryStream();
-				using (XmlDictionaryWriter w = XmlDictionaryWriter.CreateBinaryWriter(_effectData))
-					ds.WriteObject(w, effect.ModuleData);
-			}
-
-			public TimeSpan StartTime { get; set; }
-			public TimeSpan Duration { get; set; }
-			public Guid TypeId { get; private set; }
-
-			public IModuleDataModel GetEffectData()
-			{
-				DataContractSerializer ds = new DataContractSerializer(_moduleDataClass);
-				MemoryStream effectDataIn = new MemoryStream(_effectData.ToArray());
-				using (XmlDictionaryReader r = XmlDictionaryReader.CreateBinaryReader(effectDataIn, XmlDictionaryReaderQuotas.Max))
-					return (IModuleDataModel) ds.ReadObject(r);
-			}
-		}
+		
 	}
 
 	public class TimeFormats

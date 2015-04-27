@@ -97,7 +97,11 @@ namespace VixenModules.Effect.Nutcracker
 				_data.NutcrackerData.TargetNodes = TargetNodes;
 				return _data;
 			}
-			set { _data = value as NutcrackerModuleData; }
+			set
+			{
+				_data = value as NutcrackerModuleData;
+				IsDirty = true;
+			}
 		}
 
 		public double IntensityLevel

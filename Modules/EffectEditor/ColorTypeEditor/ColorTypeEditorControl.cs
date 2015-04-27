@@ -74,8 +74,9 @@ namespace VixenModules.EffectEditor.ColorTypeEditor
 			ShowEditor();
 		}
 
-		public void ShowEditor()
+		public DialogResult ShowEditor()
 		{
+			DialogResult result = DialogResult.Cancel;
 			if (_discreteColors)
 			{
 				using (DiscreteColorPicker dcp = new DiscreteColorPicker())
@@ -83,7 +84,7 @@ namespace VixenModules.EffectEditor.ColorTypeEditor
 					dcp.ValidColors = _validDiscreteColors;
 					dcp.SingleColorOnly = true;
 					dcp.SelectedColors = new List<Color> {ColorValue};
-					DialogResult result = dcp.ShowDialog();
+					result = dcp.ShowDialog();
 					if (result == DialogResult.OK)
 					{
 						if (dcp.SelectedColors.Count() == 0)
@@ -95,6 +96,7 @@ namespace VixenModules.EffectEditor.ColorTypeEditor
 							ColorValue = dcp.SelectedColors.First();
 						}
 					}
+
 				}
 			}
 			else
@@ -103,13 +105,15 @@ namespace VixenModules.EffectEditor.ColorTypeEditor
 				{
 					cp.LockValue_V = true;
 					cp.Color = XYZ.FromRGB(ColorValue);
-					DialogResult result = cp.ShowDialog();
+					result = cp.ShowDialog();
 					if (result == DialogResult.OK)
 					{
 						ColorValue = cp.Color.ToRGB().ToArgb();
 					}
 				}
 			}
+
+			return result;
 		}
 	}
 }

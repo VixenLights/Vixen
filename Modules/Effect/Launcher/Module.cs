@@ -54,7 +54,11 @@ namespace Launcher
 		public override IModuleDataModel ModuleData
 		{
 			get { return _data; }
-			set { _data = value as Data; }
+			set
+			{
+				_data = value as Data;
+				IsDirty = true;
+			}
 		}
 		public override bool ForceGenerateVisualRepresentation { get { return true; } }
 	

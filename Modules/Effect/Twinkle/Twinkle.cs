@@ -87,6 +87,7 @@ namespace VixenModules.Effect.Twinkle
 			set
 			{
 				_data = value as TwinkleData;
+				IsDirty = true;
 				UpdateAllAttributes();
 			}
 		}

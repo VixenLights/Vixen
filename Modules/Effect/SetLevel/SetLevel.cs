@@ -54,7 +54,11 @@ namespace VixenModules.Effect.SetLevel
 		public override IModuleDataModel ModuleData
 		{
 			get { return _data; }
-			set { _data = value as SetLevelData; }
+			set
+			{
+				_data = value as SetLevelData;
+				IsDirty = true;
+			}
 		}
 
 		[Value]

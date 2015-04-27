@@ -98,6 +98,7 @@ namespace VixenModules.Effect.Alternating
 			set
 			{
 				_data = value as AlternatingData;
+				IsDirty = true;
 				InitPropertyDescriptors();
 			}
 		}

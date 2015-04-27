@@ -479,6 +479,7 @@ namespace VixenModules.Effect.Wipe
 			set
 			{
 				_data = value as WipeData;
+				IsDirty = true;
 				UpdateAttributes();
 			}
 		}

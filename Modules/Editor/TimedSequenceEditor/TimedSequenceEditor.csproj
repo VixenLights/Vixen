@@ -109,6 +109,7 @@
     <Compile Include="BeatMarkExportDialog.Designer.cs">
       <DependentUpon>BeatMarkExportDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="EffectModelCandidate.cs" />
     <Compile Include="ExportDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -222,7 +223,13 @@
     <Compile Include="Form_ToolPalette.Designer.cs">
       <DependentUpon>Form_ToolPalette.cs</DependentUpon>
     </Compile>
-    <Compile Include="Undo.cs" />
+    <Compile Include="Undo\EffectsAddedRemovedUndoAction.cs" />
+    <Compile Include="Undo\EffectsAddedUndoAction.cs" />
+    <Compile Include="Undo\EffectsModifiedUndoAction.cs" />
+    <Compile Include="Undo\EffectsPastedUndoAction.cs" />
+    <Compile Include="Undo\EffectsRemovedUndoAction.cs" />
+    <Compile Include="Undo\ElementsTimeChangedUndoAction.cs" />
+    <Compile Include="Undo\EffectsCutUndoAction.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

@@ -25,7 +25,11 @@ namespace VixenModules.Effect.Candle
 		public override IModuleDataModel ModuleData
 		{
 			get { return _data; }
-			set { _data = (CandleData) value; }
+			set
+			{
+				_data = (CandleData) value;
+				IsDirty = true;
+			}
 		}
 
 		protected override void TargetNodesChanged()

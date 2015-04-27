@@ -112,7 +112,11 @@ namespace VixenModules.Effect.RDS
 		public override IModuleDataModel ModuleData
 		{
 			get { return _data; }
-			set { _data = value as RDSData; }
+			set
+			{
+				_data = value as RDSData;
+				IsDirty = true;
+			}
 		}
 	}
 }
