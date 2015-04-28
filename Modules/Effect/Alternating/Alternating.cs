@@ -174,9 +174,9 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		[Value]
-		[Category(@"Effect Properties")]
+		[Category(@"Effect Interval")]
 		[Editor(typeof(EffectRangeTypeEditor), typeof(UITypeEditor))]
-		[DisplayName(@"Alternate Interval")]
+		[DisplayName(@"Change Interval")]
 		[Description(@"Specifies how often the effect should switch in milliseconds.")]
 		public int Interval
 		{
@@ -216,7 +216,7 @@ namespace VixenModules.Effect.Alternating
 
 		[Value]
 		[Category(@"Effect Properties")]
-		[DisplayName(@"Make Display Static")]
+		[DisplayName(@"Static Effect")]
 		[Description(@"Indicates that the effect should be the same on all elements.")]
 		public bool Enable
 		{
