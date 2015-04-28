@@ -14,6 +14,7 @@ using System.Drawing;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Collections.Concurrent;
+using System.ComponentModel;
 using System.Diagnostics;
 
 namespace VixenModules.Effect.Nutcracker
@@ -104,19 +105,20 @@ namespace VixenModules.Effect.Nutcracker
 			}
 		}
 
-		public double IntensityLevel
-		{
-			get { return 100; }
-			set { IsDirty = true; }
-		}
+		//public double IntensityLevel
+		//{
+		//	get { return 100; }
+		//	set { IsDirty = true; }
+		//}
 
-		public Color Color
-		{
-			get { return SystemColors.ActiveBorder; }
-			set { IsDirty = true; }
-		}
+		//public Color Color
+		//{
+		//	get { return SystemColors.ActiveBorder; }
+		//	set { IsDirty = true; }
+		//}
 
 		[Value]
+		[Browsable(false)]
 		public NutcrackerData NutcrackerData
 		{
 			get
@@ -131,8 +133,16 @@ namespace VixenModules.Effect.Nutcracker
 			}
 		}
 
+		[ReadOnly(true)]
+		[Category(@"Effect Confguration")]
+		[DisplayName(@"String Count")]
+		[Description(@"The count of strings the effect will use.")]
 		public int StringCount { get; set; }
 
+		[ReadOnly(true)]
+		[Category(@"Effect Confguration")]
+		[DisplayName(@"Pixels Per String")]
+		[Description(@"The count of pixels on each string.")]
 		public int MaxPixelsPerString { get; set; }
 
 		private int CalculateMaxStringCount()

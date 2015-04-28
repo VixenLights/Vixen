@@ -105,6 +105,9 @@ namespace VixenModules.Effect.Twinkle
 		}
 
 		[Value]
+		[Category(@"Effect Depth")]
+		[DisplayName(@"Individual Elements")]
+		[Description(@"Controls whether each individual element is twinkled independantly or all at once.")]
 		public bool IndividualElements
 		{
 			get { return _data.IndividualChannels; }
