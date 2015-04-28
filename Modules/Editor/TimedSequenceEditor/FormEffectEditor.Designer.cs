@@ -33,10 +33,11 @@
 			// 
 			// propertyGridEffectProperties
 			// 
-			this.propertyGridEffectProperties.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
+			this.propertyGridEffectProperties.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(120)))), ((int)(((byte)(120)))), ((int)(((byte)(120)))));
 			this.propertyGridEffectProperties.CategoryForeColor = System.Drawing.Color.WhiteSmoke;
 			this.propertyGridEffectProperties.CategorySplitterColor = System.Drawing.Color.Black;
-			this.propertyGridEffectProperties.CommandsBorderColor = System.Drawing.Color.DarkGray;
+			this.propertyGridEffectProperties.CommandsBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
+			this.propertyGridEffectProperties.CommandsBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
 			this.propertyGridEffectProperties.CommandsForeColor = System.Drawing.Color.Silver;
 			this.propertyGridEffectProperties.DisabledItemForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(127)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
 			this.propertyGridEffectProperties.Dock = System.Windows.Forms.DockStyle.Fill;

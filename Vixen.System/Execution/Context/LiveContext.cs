@@ -43,6 +43,17 @@ namespace Vixen.Execution.Context
 			_dataSource.AddData(data);
 		}
 
+		public void Execute(IEnumerable<EffectNode> data)
+		{
+			_dataSource.AddData(data);
+		}
+
+		public void Clear()
+		{	
+			_dataSource.ClearData();
+			ClearCurrentEffects();	
+		}
+
 		protected override IDataSource _DataSource
 		{
 			get { return _dataSource; }

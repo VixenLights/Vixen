@@ -26,6 +26,11 @@ namespace Vixen.Execution.DataSource
 			}
 		}
 
+		public void ClearData()
+		{
+			_data.Clear();			
+		}
+
 		public IEnumerable<IEffectNode> GetDataAt(TimeSpan time)
 		{
 			IEffectNode[] data = _data.Get(time).ToArray();

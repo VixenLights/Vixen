@@ -158,6 +158,11 @@ namespace Vixen.Execution.Context
 			}
 		}
 
+		protected void ClearCurrentEffects()
+		{
+			_currentEffects.Reset();
+		}
+
 		private void _ResetElementStates()
 		{
 			_currentEffects.Reset();
