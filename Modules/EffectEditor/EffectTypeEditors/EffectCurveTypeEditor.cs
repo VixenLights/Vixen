@@ -57,8 +57,8 @@ namespace VixenModules.EffectEditor.EffectTypeEditors
 			if (e.Value is Curve)
 			{
 				Curve curve = (Curve)e.Value;
-				Bitmap bitmap = curve.GenerateCurveImage(e.Bounds.Size);
-				e.Graphics.DrawImageUnscaled(bitmap, e.Bounds);
+				Bitmap bitmap = curve.GenerateGenericCurveImage(e.Bounds.Size);
+				e.Graphics.DrawImage(bitmap, e.Bounds);
 				bitmap.Dispose();
 			}
 		}

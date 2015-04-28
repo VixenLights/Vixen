@@ -1,7 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Linq;
 using System.Runtime.Serialization;
+using System.Windows.Forms;
 using Vixen.Module.App;
 using Vixen.Services;
 using ZedGraph;
@@ -171,6 +173,46 @@ namespace VixenModules.App.Curves
 		{
 			LibraryReferenceName = string.Empty;
 			LibraryReferencedCurve = null;
+		}
+
+		public Bitmap GenerateGenericCurveImage(Size size)
+		{
+			Bitmap result = new Bitmap(size.Width, size.Height);
+
+			using (Graphics g = Graphics.FromImage(result))
+			{
+				using (Brush b = new SolidBrush(Color.White))
+				{
+					using (Pen p = new Pen(Color.Black, 1))
+					{
+						g.FillRectangle(b, new Rectangle(0, 0, size.Width, size.Height));
+					
+						PointPair lastPoint = null;
+						foreach (var point in Points)
+						{
+							if (lastPoint == null)
+							{
+								lastPoint = point;
+								continue;
+							}
+							g.DrawLine(p, TransformPoint(lastPoint, size), TransformPoint(point, size));
+							lastPoint = point;
+						}	
+					}
+				}
+				
+			}
+
+			return result;
+		}
+
+		private Point TransformPoint(PointPair points, Size bounds)
+		{
+			int X = (int)points.X;
+			int Y = Math.Abs((int)points.Y - 100);
+			Y = (int)(Y*(bounds.Height/100f));
+			X = (int)(X*(bounds.Width/100f));
+			return new Point(X,Y);
 		}
 
 		public Bitmap GenerateCurveImage(Size size)
