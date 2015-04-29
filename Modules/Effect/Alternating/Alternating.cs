@@ -11,6 +11,7 @@ using Vixen.Sys;
 using Vixen.Sys.Attribute;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
+using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using VixenModules.EffectEditor.EffectTypeEditors;
 using VixenModules.EffectEditor.TypeConverters;
 using VixenModules.Property.Color;
@@ -104,11 +105,11 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		[Value]
-		[Category(@"Effect Brightness")]
+		[ProviderCategory(@"Brightness")]
 		[Editor(typeof(EffectLevelTypeEditor), typeof(UITypeEditor))]
 		[TypeConverter(typeof(LevelTypeConverter))]
-		[DisplayName(@"Color 1")]
-		[Description(@"Controls the brightness of color 1.")]
+		[ProviderDisplayName(@"ColorOne")]
+		[ProviderDescription(@"Brightness")]
 		public double IntensityLevel1
 		{
 			get { return _data.Level1; }
@@ -120,10 +121,10 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		[Value]
-		[Category(@"Effect Color")]
+		[ProviderCategory(@"Color")]
 		[Editor(typeof(EffectColorTypeEditor), typeof(UITypeEditor))]
 		[TypeConverter(typeof(ColorTypeConverter))]
-		[DisplayName(@"Color 1")]
+		[ProviderDisplayName(@"ColorOne")]
 		[Description(@"Sets the first color.")]
 		public Color Color1
 		{
@@ -139,11 +140,11 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		[Value]
-		[Category(@"Effect Brightness")]
+		[ProviderCategory(@"Brightness")]
 		[Editor(typeof(EffectLevelTypeEditor), typeof(UITypeEditor))]
 		[TypeConverter(typeof(LevelTypeConverter))]
-		[DisplayName(@"Color 2")]
-		[Description(@"Controls the brightness of color 2.")]
+		[ProviderDisplayName(@"ColorTwo")]
+		[ProviderDescription(@"Brightness")]
 		public double IntensityLevel2
 		{
 			get { return _data.Level2; }
@@ -155,10 +156,10 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		[Value]
-		[Category(@"Effect Color")]
+		[ProviderCategory(@"Color")]
 		[Editor(typeof(EffectColorTypeEditor), typeof(UITypeEditor))]
 		[TypeConverter(typeof(ColorTypeConverter))]
-		[DisplayName(@"Color 2")]
+		[ProviderDisplayName(@"ColorTwo")]
 		[Description(@"Sets the second color.")]
 		public Color Color2
 		{
@@ -174,9 +175,9 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		[Value]
-		[Category(@"Effect Interval")]
+		[ProviderCategory(@"Interval")]
 		[Editor(typeof(EffectRangeTypeEditor), typeof(UITypeEditor))]
-		[DisplayName(@"Change Interval")]
+		[ProviderDisplayName(@"ChangeInterval")]
 		[Description(@"Specifies how often the effect should switch in milliseconds.")]
 		public int Interval
 		{
@@ -201,9 +202,9 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		[Value]
-		[Category(@"Effect Depth")]
-		[DisplayName(@"Levels Deep")]
-		[Description(@"Indicates how many levels deep the effect should be grouped.")]
+		[ProviderCategory(@"Depth")]
+		[ProviderDisplayName(@"Depth")]
+		[ProviderDescription(@"Depth.")]
 		public int GroupEffect
 		{
 			get { return _data.GroupEffect; }
@@ -215,8 +216,8 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		[Value]
-		[Category(@"Effect Properties")]
-		[DisplayName(@"Static Effect")]
+		[ProviderCategory(@"Config")]
+		[ProviderDisplayName(@"StaticEffect")]
 		[Description(@"Indicates that the effect should be the same on all elements.")]
 		public bool Enable
 		{
@@ -229,9 +230,9 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		[Value]
-		[Category(@"Effect Color Type")]
-		[DisplayName(@"Color 1")]
-		[Description(@"Indicates the first color is a static color.")]
+		[ProviderCategory(@"ColorType")]
+		[ProviderDisplayName(@"ColorOne")]
+		[ProviderDescription(@"StaticColorIndicator")]
 		[TypeConverter(typeof(ColorSelectionTypeConverter))]
 		public bool StaticColor1
 		{
@@ -248,9 +249,9 @@ namespace VixenModules.Effect.Alternating
 		
 
 		[Value]
-		[Category(@"Effect Color Type")]
-		[DisplayName(@"Color 2")]
-		[Description(@"Indicates the second color is a static color.")]
+		[ProviderCategory(@"ColorType")]
+		[ProviderDisplayName(@"ColorTwo")]
+		[ProviderDescription(@"StaticColorIndicator")]
 		[TypeConverter(typeof(ColorSelectionTypeConverter))]
 		public bool StaticColor2
 		{
@@ -265,9 +266,9 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		[Value]
-		[Category(@"Effect Color")]
-		[DisplayName(@"Color 1")]
-		[Description(@"Sets the first color.")]
+		[ProviderCategory(@"Color")]
+		[ProviderDisplayName(@"ColorOne")]
+		[ProviderDescription(@"Color")]
 		public ColorGradient ColorGradient1
 		{
 			get
@@ -282,8 +283,8 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		[Value]
-		[Category(@"Effect Color")]
-		[DisplayName(@"Color 2")]
+		[ProviderCategory(@"Color")]
+		[ProviderDisplayName(@"ColorTwo")]
 		[Description(@"Sets the second color.")]
 		public ColorGradient ColorGradient2
 		{
@@ -299,8 +300,8 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		[Value]
-		[Category(@"Effect Brightness")]
-		[DisplayName(@"Color 1")]
+		[ProviderCategory(@"Brightness")]
+		[ProviderDisplayName(@"ColorOneBrightness")]
 		[Description(@"Controls the individual brightness curve of the first gradient.")]
 		public Curve Curve1
 		{
@@ -313,8 +314,8 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		[Value]
-		[Category(@"Effect Brightness")]
-		[DisplayName(@"Color 2")]
+		[ProviderCategory(@"Brightness")]
+		[ProviderDisplayName(@"ColorTwoBrightness")]
 		[Description(@"Controls the individual brightness curve of the second gradient.")]
 		public Curve Curve2
 		{

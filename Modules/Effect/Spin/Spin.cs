@@ -1,20 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
+using System.Drawing.Design;
 using System.Linq;
 using System.Threading;
-using Vixen.Sys;
+using NLog;
 using Vixen.Module;
 using Vixen.Module.Effect;
+using Vixen.Sys;
 using Vixen.Sys.Attribute;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
-using System.Drawing;
-using System.Drawing.Design;
+using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using VixenModules.EffectEditor.EffectTypeEditors;
 using VixenModules.EffectEditor.TypeConverters;
-using ZedGraph;
 using VixenModules.Property.Color;
+using ZedGraph;
 
 namespace VixenModules.Effect.Spin
 {
@@ -22,7 +24,7 @@ namespace VixenModules.Effect.Spin
 	{
 		private SpinData _data;
 		private EffectIntents _elementData = null;
-		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private static Logger Logging = LogManager.GetCurrentClassLogger();
 
 		public Spin()
 		{
@@ -92,9 +94,9 @@ namespace VixenModules.Effect.Spin
 		}
 
 		[Value]
-		[Category(@"Effect Speed")]
-		[DisplayName(@"Speed Format")]
-		[Description(@"Controls how the individual spins occur.")]
+		[ProviderCategory(@"Speed")]
+		[ProviderDisplayName(@"SpeedFormat")]
+		[ProviderDescription(@"SpinSpeedFormat")]
 		public SpinSpeedFormat SpeedFormat
 		{
 			get { return _data.SpeedFormat; }
@@ -108,9 +110,9 @@ namespace VixenModules.Effect.Spin
 		}
 
 		[Value]
-		[Category(@"Effect Pulse")]
-		[DisplayName(@"Pulse Type")]
-		[Description(@"Controls how individual pulses are applied accross the effect.")]
+		[ProviderCategory(@"Pulse")]
+		[ProviderDisplayName(@"PulseType")]
+		[ProviderDescription(@"PulseType")]
 		public SpinPulseLengthFormat PulseLengthFormat
 		{
 			get { return _data.PulseLengthFormat; }
@@ -124,9 +126,9 @@ namespace VixenModules.Effect.Spin
 		}
 
 		[Value]
-		[Category(@"Effect Color")]
-		[DisplayName(@"Color Handling")]
-		[Description(@"Controls how the spin color is handled.")]
+		[ProviderCategory(@"Color")]
+		[ProviderDisplayName(@"ColorHandling")]
+		[ProviderDescription(@"ColorHandling")]
 		public SpinColorHandling ColorHandling
 		{
 			get { return _data.ColorHandling; }
@@ -140,9 +142,9 @@ namespace VixenModules.Effect.Spin
 		}
 
 		[Value]
-		[Category(@"Effect Speed")]
-		[DisplayName(@"Revolution Count")]
-		[Description(@"Controls how many revolutions of the spin will occur.")]
+		[ProviderCategory(@"Speed")]
+		[ProviderDisplayName(@"RevolutionCount")]
+		[ProviderDescription(@"RevolutionCount")]
 		public double RevolutionCount
 		{
 			get { return _data.RevolutionCount; }
@@ -154,9 +156,9 @@ namespace VixenModules.Effect.Spin
 		}
 
 		[Value]
-		[Category(@"Effect Speed")]
-		[DisplayName(@"Revolution Frequency")]
-		[Description(@"Controls the frequency in Hz at which the spin occurs.")]
+		[ProviderCategory(@"Speed")]
+		[ProviderDisplayName(@"RevolutionFrequency")]
+		[ProviderDescription(@"RevolutionFrequency")]
 		public double RevolutionFrequency
 		{
 			get { return _data.RevolutionFrequency; }
@@ -168,9 +170,9 @@ namespace VixenModules.Effect.Spin
 		}
 
 		[Value]
-		[Category(@"Effect Speed")]
-		[DisplayName(@"Revolution Time")]
-		[Description(@"Controls the duration in milliseconds at which the spin occurs.")]
+		[ProviderCategory(@"Speed")]
+		[ProviderDisplayName(@"RevolutionTime")]
+		[ProviderDescription(@"RevolutionTime")]
 		public int RevolutionTime
 		{
 			get { return _data.RevolutionTime; }
@@ -182,9 +184,9 @@ namespace VixenModules.Effect.Spin
 		}
 
 		[Value]
-		[Category(@"Effect Pulse")]
-		[DisplayName(@"Pulse Length")]
-		[Description(@"Controls how long each pulse is in milliseconds.")]
+		[ProviderCategory(@"Pulse")]
+		[ProviderDisplayName(@"PulseDuration")]
+		[ProviderDescription(@"PulseDuration")]
 		public int PulseTime
 		{
 			get { return _data.PulseTime; }
@@ -196,9 +198,9 @@ namespace VixenModules.Effect.Spin
 		}
 
 		[Value]
-		[Category(@"Effect Pulse")]
-		[DisplayName(@"Pulse Percent")]
-		[Description(@"Controls how long each pulse is as a percentage of the spin.")]
+		[ProviderCategory(@"Pulse")]
+		[ProviderDisplayName(@"PulsePercent")]
+		[ProviderDescription(@"PulseSpinPercent")]
 		public int PulsePercentage
 		{
 			get { return _data.PulsePercentage; }
@@ -210,11 +212,11 @@ namespace VixenModules.Effect.Spin
 		}
 
 		[Value]
-		[Category(@"Effect Brightness")]
+		[ProviderCategory(@"Brightness")]
+		[ProviderDisplayName(@"DefaultBrightness")]
+		[ProviderDescription(@"DefaultBrightness")]
 		[Editor(typeof(EffectLevelTypeEditor), typeof(UITypeEditor))]
 		[TypeConverter(typeof(LevelTypeConverter))]
-		[DisplayName(@"Default Brightness")]
-		[Description(@"Controls the default brightness of the inactive elements in the effect.")]
 		public double DefaultLevel
 		{
 			get { return _data.DefaultLevel; }
@@ -226,11 +228,11 @@ namespace VixenModules.Effect.Spin
 		}
 
 		[Value]
-		[Category(@"Effect Color")]
+		[ProviderCategory(@"Color")]
+		[ProviderDisplayName(@"Color")]
+		[ProviderDescription(@"Color")]
 		[Editor(typeof(EffectColorTypeEditor), typeof(UITypeEditor))]
 		[TypeConverter(typeof(ColorTypeConverter))]
-		[DisplayName(@"Color")]
-		[Description(@"Sets the chase color.")]
 		public Color StaticColor
 		{
 			get
@@ -247,9 +249,9 @@ namespace VixenModules.Effect.Spin
 		}
 
 		[Value]
-		[Category(@"Effect Color")]
-		[DisplayName(@"Color")]
-		[Description(@"Sets the chase color.")]
+		[ProviderCategory(@"Color")]
+		[ProviderDisplayName(@"Color")]
+		[ProviderDescription(@"Color")]
 		public ColorGradient ColorGradient
 		{
 			get
@@ -272,9 +274,9 @@ namespace VixenModules.Effect.Spin
 		}
 
 		[Value]
-		[Category(@"Effect Brightness")]
-		[DisplayName(@"Pulse Brightness")]
-		[Description(@"Controls the individual pulse shape.")]
+		[ProviderCategory(@"Brightness")]
+		[ProviderDisplayName(@"Brightness")]
+		[ProviderDescription(@"PulseShape")]
 		public Curve PulseCurve
 		{
 			get { return _data.PulseCurve; }
@@ -286,9 +288,9 @@ namespace VixenModules.Effect.Spin
 		}
 
 		[Value]
-		[Category(@"Effect Direction")]
-		[DisplayName(@"Spin Direction")]
-		[Description(@"Controls the direction of the spin.")]
+		[ProviderCategory(@"Direction")]
+		[ProviderDisplayName(@"Direction")]
+		[ProviderDescription(@"Direction")]
 		public bool ReverseSpin
 		{
 			get { return _data.ReverseSpin; }
@@ -300,9 +302,9 @@ namespace VixenModules.Effect.Spin
 		}
 
 		[Value]
-		[Category(@"Effect Depth")]
-		[DisplayName(@"Levels Deep")]
-		[Description(@"Indicates how many levels deep the effect should be grouped. 0 indicates all elements.")]
+		[ProviderCategory(@"Depth")]
+		[ProviderDisplayName(@"Depth")]
+		[ProviderDescription(@"Depth")]
 		public int DepthOfEffect
 		{
 			get { return _data.DepthOfEffect; }

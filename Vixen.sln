@@ -352,6 +352,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TypeConverters", "Modules\E
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EffectTypeEditors", "Modules\EffectEditor\EffectTypeEditors\EffectTypeEditors.csproj", "{67B27730-D0D9-4AE7-8C8E-B41DE61C3798}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EffectDescriptorAttributes", "EffectDescriptorAttributes\EffectDescriptorAttributes.csproj", "{1C84DA63-A5DB-4086-88AE-B2B43FCCAD7B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1566,6 +1568,19 @@ Global
 		{67B27730-D0D9-4AE7-8C8E-B41DE61C3798}.Release|x64.Build.0 = Release|x64
 		{67B27730-D0D9-4AE7-8C8E-B41DE61C3798}.Release|x86.ActiveCfg = Release|x86
 		{67B27730-D0D9-4AE7-8C8E-B41DE61C3798}.Release|x86.Build.0 = Release|x86
+		{1C84DA63-A5DB-4086-88AE-B2B43FCCAD7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C84DA63-A5DB-4086-88AE-B2B43FCCAD7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C84DA63-A5DB-4086-88AE-B2B43FCCAD7B}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{1C84DA63-A5DB-4086-88AE-B2B43FCCAD7B}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{1C84DA63-A5DB-4086-88AE-B2B43FCCAD7B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1C84DA63-A5DB-4086-88AE-B2B43FCCAD7B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1C84DA63-A5DB-4086-88AE-B2B43FCCAD7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C84DA63-A5DB-4086-88AE-B2B43FCCAD7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C84DA63-A5DB-4086-88AE-B2B43FCCAD7B}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{1C84DA63-A5DB-4086-88AE-B2B43FCCAD7B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{1C84DA63-A5DB-4086-88AE-B2B43FCCAD7B}.Release|x64.ActiveCfg = Release|Any CPU
+		{1C84DA63-A5DB-4086-88AE-B2B43FCCAD7B}.Release|x86.ActiveCfg = Release|x86
+		{1C84DA63-A5DB-4086-88AE-B2B43FCCAD7B}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1677,6 +1692,7 @@ Global
 		{B848A227-50AA-4FF7-8B7F-73FE36893485} = {9865500E-D5C0-4F51-8A6E-BFD7946C801A}
 		{4FBD9FC9-515A-44C8-AC64-D0908BCD3B11} = {04563307-41A9-4BB8-B13F-B364BE966B85}
 		{67B27730-D0D9-4AE7-8C8E-B41DE61C3798} = {04563307-41A9-4BB8-B13F-B364BE966B85}
+		{1C84DA63-A5DB-4086-88AE-B2B43FCCAD7B} = {04563307-41A9-4BB8-B13F-B364BE966B85}
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Everything.vsmdi

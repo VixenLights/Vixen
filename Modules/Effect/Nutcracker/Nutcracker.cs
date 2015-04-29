@@ -16,6 +16,7 @@ using System.Threading;
 using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Diagnostics;
+using VixenModules.EffectEditor.EffectDescriptorAttributes;
 
 namespace VixenModules.Effect.Nutcracker
 {
@@ -134,13 +135,13 @@ namespace VixenModules.Effect.Nutcracker
 		}
 
 		[ReadOnly(true)]
-		[Category(@"Effect Confguration")]
+		[ProviderCategory(@"Config")]
 		[DisplayName(@"String Count")]
 		[Description(@"The count of strings the effect will use.")]
 		public int StringCount { get; set; }
 
 		[ReadOnly(true)]
-		[Category(@"Effect Confguration")]
+		[ProviderCategory(@"Config")]
 		[DisplayName(@"Pixels Per String")]
 		[Description(@"The count of pixels on each string.")]
 		public int MaxPixelsPerString { get; set; }

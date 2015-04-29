@@ -14,6 +14,7 @@ using Vixen.Sys;
 using Vixen.Module;
 using Vixen.Module.Effect;
 using Vixen.Sys.Attribute;
+using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using VixenModules.EffectEditor.EffectTypeEditors;
 using VixenModules.EffectEditor.TypeConverters;
 
@@ -211,8 +212,8 @@ namespace VixenModules.Effect.CustomValue
 		}
 
 		[Value]
-		[Category(@"Effect Type")]
-		[DisplayName(@"Type")]
+		[ProviderCategory(@"Type")]
+		[ProviderDisplayName(@"Type")]
 		[Description(@"Sets the type of the value.")]
 		public CustomValueType ValueType
 		{
@@ -227,7 +228,7 @@ namespace VixenModules.Effect.CustomValue
 		}
 
 		[Value]
-		[Category(@"Effect Value")]
+		[ProviderCategory(@"Value")]
 		[DisplayName(@"8 Bit Value")]
 		[Description(@"Sets the value.")]
 		public byte Value8Bit
@@ -241,7 +242,7 @@ namespace VixenModules.Effect.CustomValue
 		}
 
 		[Value]
-		[Category(@"Effect Value")]
+		[ProviderCategory(@"Value")]
 		[DisplayName(@"16 Bit Value")]
 		[Description(@"Sets the value.")]
 		public ushort Value16Bit
@@ -255,7 +256,7 @@ namespace VixenModules.Effect.CustomValue
 		}
 
 		[Value]
-		[Category(@"Effect Value")]
+		[ProviderCategory(@"Value")]
 		[DisplayName(@"32 Bit Value")]
 		[Description(@"Sets the value.")]
 		public uint Value32Bit
@@ -269,7 +270,7 @@ namespace VixenModules.Effect.CustomValue
 		}
 
 		[Value]
-		[Category(@"Effect Value")]
+		[ProviderCategory(@"Value")]
 		[DisplayName(@"64 Bit Value")]
 		[Description(@"Sets the value.")]
 		public ulong Value64Bit
@@ -283,7 +284,7 @@ namespace VixenModules.Effect.CustomValue
 		}
 
 		[Value]
-		[Category(@"Effect Value")]
+		[ProviderCategory(@"Value")]
 		[DisplayName(@"Color Value")]
 		[TypeConverter(typeof(ColorTypeConverter))]
 		[Editor(typeof(EffectColorTypeEditor), typeof(UITypeEditor))]
@@ -299,7 +300,7 @@ namespace VixenModules.Effect.CustomValue
 		}
 
 		[Value]
-		[Category(@"Effect Value")]
+		[ProviderCategory(@"Value")]
 		[DisplayName(@"String Value")]
 		[Description(@"Sets the value.")]
 		public string StringValue

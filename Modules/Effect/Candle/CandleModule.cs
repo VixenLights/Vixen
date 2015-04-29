@@ -11,6 +11,7 @@ using Vixen.Module;
 using Vixen.Module.Effect;
 using Vixen.Sys;
 using Vixen.Sys.Attribute;
+using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using VixenModules.EffectEditor.EffectTypeEditors;
 using VixenModules.EffectEditor.TypeConverters;
 
@@ -38,9 +39,9 @@ namespace VixenModules.Effect.Candle
 		}
 
 		[Value]
-		[Category(@"Effect Flicker")]
-		[DisplayName(@"Frequency")]
-		[Description(@"Sets flicker frequency in changes per second.")]
+		[ProviderCategory(@"Flicker")]
+		[ProviderDisplayName(@"Frequency")]
+		[ProviderDescription(@"FlickerFrequency")]
 		public int FlickerFrequency
 		{
 			get { return _data.FlickerFrequency; }
@@ -48,9 +49,9 @@ namespace VixenModules.Effect.Candle
 		}
 
 		[Value]
-		[Category(@"Effect Flicker")]
-		[DisplayName(@"Change Percent")]
-		[Description(@"Sets percentage of change.")]
+		[ProviderCategory(@"Flicker")]
+		[ProviderDisplayName(@"ChangePercent")]
+		[ProviderDescription(@"ChangePercent")]
 		[TypeConverter(typeof(PercentageTypeConverter))]
 		[Editor(typeof(EffectRangeTypeEditor), typeof(UITypeEditor))]
 		[Range]
@@ -61,9 +62,9 @@ namespace VixenModules.Effect.Candle
 		}
 
 		[Value]
-		[Category(@"Effect Brightness")]
-		[DisplayName(@"Min Brightness")]
-		[Description(@"Sets minimum level of brightness.")]
+		[ProviderCategory(@"Brightness")]
+		[ProviderDisplayName(@"MinBrightness")]
+		[ProviderDescription(@"MinBrightness.")]
 		[TypeConverter(typeof(PercentageTypeConverter))]
 		[Editor(typeof(EffectRangeTypeEditor), typeof(UITypeEditor))]
 		[Range]
@@ -74,9 +75,9 @@ namespace VixenModules.Effect.Candle
 		}
 
 		[Value]
-		[Category(@"Effect Brightness")]
-		[DisplayName(@"Max Brightness")]
-		[Description(@"Sets maximum brightness level.")]
+		[ProviderCategory(@"Brightness")]
+		[ProviderDisplayName(@"MaxBrightness")]
+		[ProviderDescription(@"MaxBrightness")]
 		[TypeConverter(typeof(PercentageTypeConverter))]
 		[Editor(typeof(EffectRangeTypeEditor), typeof(UITypeEditor))]
 		[Range]
@@ -87,9 +88,9 @@ namespace VixenModules.Effect.Candle
 		}
 
 		[Value]
-		[Category(@"Effect Flicker")]
-		[DisplayName(@"Flicker Percent")]
-		[Description(@"Sets percentage of flicker.")]
+		[ProviderCategory(@"Flicker")]
+		[ProviderDisplayName(@"FlickerPercent")]
+		[ProviderDescription(@"FlickerPercent")]
 		[TypeConverter(typeof(PercentageTypeConverter))]
 		[Editor(typeof(EffectRangeTypeEditor), typeof(UITypeEditor))]
 		[Range]
@@ -100,9 +101,9 @@ namespace VixenModules.Effect.Candle
 		}
 
 		[Value]
-		[Category(@"Effect Flicker")]
-		[DisplayName(@"Deviation Percent")]
-		[Description(@"Sets percent of deviation.")]
+		[ProviderCategory(@"Flicker")]
+		[ProviderDisplayName(@"DeviationPercent")]
+		[ProviderDescription(@"DeviationPercent")]
 		[TypeConverter(typeof(PercentageTypeConverter))]
 		[Editor(typeof(EffectRangeTypeEditor), typeof(UITypeEditor))]
 		[Range]

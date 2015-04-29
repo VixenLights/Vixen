@@ -1,23 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
+using System.Drawing.Design;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Module;
 using Vixen.Module.Effect;
 using Vixen.Sys;
 using Vixen.Sys.Attribute;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
-using VixenModules.Effect.Pulse;
-using VixenModules.Property.Location;
-using System.Drawing;
-using System.Drawing.Design;
+using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using VixenModules.EffectEditor.EffectTypeEditors;
 using VixenModules.EffectEditor.TypeConverters;
 using VixenModules.Property.Color;
+using VixenModules.Property.Location;
 
 namespace VixenModules.Effect.Wipe
 {
@@ -54,7 +52,7 @@ namespace VixenModules.Effect.Wipe
 												.SelectMany(x => x.GetLeafEnumerator())
 												.OrderByDescending(x =>
 												{
-													var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
+													var prop = x.Properties.Get(LocationDescriptor._typeId);
 													if (prop != null)
 													{
 														return ((LocationData)prop.ModuleData).Y;
@@ -64,7 +62,7 @@ namespace VixenModules.Effect.Wipe
 												})
 												.ThenBy(x =>
 												{
-													var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
+													var prop = x.Properties.Get(LocationDescriptor._typeId);
 													if (prop != null)
 													{
 														return ((LocationData)prop.ModuleData).X;
@@ -74,7 +72,7 @@ namespace VixenModules.Effect.Wipe
 												})
 												.GroupBy(x =>
 												{
-													var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
+													var prop = x.Properties.Get(LocationDescriptor._typeId);
 													if (prop != null)
 													{
 														return ((LocationData)prop.ModuleData).Y;
@@ -89,7 +87,7 @@ namespace VixenModules.Effect.Wipe
 					renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator())
 												.OrderBy(x =>
 												{
-													var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
+													var prop = x.Properties.Get(LocationDescriptor._typeId);
 													if (prop != null)
 													{
 														return ((LocationData)prop.ModuleData).Y;
@@ -99,7 +97,7 @@ namespace VixenModules.Effect.Wipe
 												})
 												.ThenBy(x =>
 												{
-													var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
+													var prop = x.Properties.Get(LocationDescriptor._typeId);
 													if (prop != null)
 													{
 														return ((LocationData)prop.ModuleData).X;
@@ -109,7 +107,7 @@ namespace VixenModules.Effect.Wipe
 												})
 												.GroupBy(x =>
 												{
-													var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
+													var prop = x.Properties.Get(LocationDescriptor._typeId);
 													if (prop != null)
 													{
 														return ((LocationData)prop.ModuleData).Y;
@@ -124,7 +122,7 @@ namespace VixenModules.Effect.Wipe
 					renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator())
 												.OrderBy(x =>
 												{
-													var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
+													var prop = x.Properties.Get(LocationDescriptor._typeId);
 													if (prop != null)
 													{
 														return ((LocationData)prop.ModuleData).X;
@@ -134,7 +132,7 @@ namespace VixenModules.Effect.Wipe
 												})
 												.ThenBy(x =>
 												{
-													var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
+													var prop = x.Properties.Get(LocationDescriptor._typeId);
 													if (prop != null)
 													{
 														return ((LocationData)prop.ModuleData).Y;
@@ -144,7 +142,7 @@ namespace VixenModules.Effect.Wipe
 												})
 												.GroupBy(x =>
 												{
-													var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
+													var prop = x.Properties.Get(LocationDescriptor._typeId);
 													if (prop != null)
 													{
 														return ((LocationData)prop.ModuleData).X;
@@ -159,7 +157,7 @@ namespace VixenModules.Effect.Wipe
 					renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator())
 												.OrderByDescending(x =>
 												{
-													var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
+													var prop = x.Properties.Get(LocationDescriptor._typeId);
 													if (prop != null)
 													{
 														return ((LocationData)prop.ModuleData).X;
@@ -168,7 +166,7 @@ namespace VixenModules.Effect.Wipe
 												})
 												.ThenBy(x =>
 												{
-													var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
+													var prop = x.Properties.Get(LocationDescriptor._typeId);
 													if (prop != null)
 													{
 														return ((LocationData)prop.ModuleData).Y;
@@ -177,7 +175,7 @@ namespace VixenModules.Effect.Wipe
 												})
 												.GroupBy(x =>
 												{
-													var prop = x.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
+													var prop = x.Properties.Get(LocationDescriptor._typeId);
 													if (prop != null)
 													{
 														return ((LocationData)prop.ModuleData).X;
@@ -304,7 +302,7 @@ namespace VixenModules.Effect.Wipe
 			var burstNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator())
 													   .Select(s =>
 													   {
-														   var prop = s.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
+														   var prop = s.Properties.Get(LocationDescriptor._typeId);
 														   if (prop != null)
 														   {
 															   return new Tuple<ElementNode, int, int, int>(s, ((LocationData)prop.ModuleData).X, ((LocationData)prop.ModuleData).Y, ((LocationData)prop.ModuleData).Z);
@@ -346,7 +344,7 @@ namespace VixenModules.Effect.Wipe
 						 .Select(s => s.Item1).ToList();
 				yNodes.RemoveAll(s =>
 				{
-					var prop = s.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
+					var prop = s.Properties.Get(LocationDescriptor._typeId);
 					if (prop != null)
 					{
 						return ((LocationData)prop.ModuleData).X < minX + i || ((LocationData)prop.ModuleData).X > maxX - i;
@@ -355,7 +353,7 @@ namespace VixenModules.Effect.Wipe
 				});
 				xNodes.RemoveAll(s =>
 				{
-					var prop = s.Properties.Get(VixenModules.Property.Location.LocationDescriptor._typeId);
+					var prop = s.Properties.Get(LocationDescriptor._typeId);
 					if (prop != null)
 					{
 						return ((LocationData)prop.ModuleData).Y < minY + i || ((LocationData)prop.ModuleData).Y > maxY - i;
@@ -499,9 +497,9 @@ namespace VixenModules.Effect.Wipe
 		}
 
 		[Value]
-		[Category(@"Effect Color")]
-		[DisplayName(@"Color")]
-		[Description(@"Sets the Wipe color.")]
+		[ProviderCategory(@"Color")]
+		[ProviderDisplayName(@"Color")]
+		[ProviderDescription(@"Color")]
 		public ColorGradient ColorGradient
 		{
 			get
@@ -516,9 +514,9 @@ namespace VixenModules.Effect.Wipe
 		}
 
 		[Value]
-		[Category(@"Effect Direction")]
+		[ProviderCategory(@"Direction")]
 		[DisplayName(@"Direction")]
-		[Description(@"Controls how the direction of the wipe.")]
+		[ProviderDescription(@"Direction")]
 		public WipeDirection Direction
 		{
 			get { return _data.Direction; }
@@ -530,9 +528,9 @@ namespace VixenModules.Effect.Wipe
 		}
 
 		[Value]
-		[Category(@"Effect Brightness")]
-		[DisplayName(@"Pulse Brightness")]
-		[Description(@"Controls the individual pulse shape.")]
+		[ProviderCategory(@"Brightness")]
+		[ProviderDisplayName(@"Brightness")]
+		[ProviderDescription(@"PulseShape")]
 		public Curve Curve
 		{
 			get { return _data.Curve; }
@@ -544,9 +542,9 @@ namespace VixenModules.Effect.Wipe
 		}
 
 		[Value]
-		[Category(@"Effect Pulse")]
-		[DisplayName(@"Pulse Time")]
-		[Description(@"Controls the individual pulse length in milliseconds.")]
+		[ProviderCategory(@"Pulse")]
+		[ProviderDisplayName(@"PulseDuration")]
+		[ProviderDescription(@"PulseDuration")]
 		public int PulseTime
 		{
 			get { return _data.PulseTime; }
@@ -558,9 +556,9 @@ namespace VixenModules.Effect.Wipe
 		}
 
 		[Value]
-		[Category(@"Effect Type")]
-		[DisplayName(@"Type")]
-		[Description(@"Controls how the wipe behaves. Either by a count of passes, or by time related to pulse length.")]
+		[ProviderCategory(@"EffectType")]
+		[ProviderDisplayName(@"Type")]
+		[Description(@"WipeType")]
 		[TypeConverter(typeof(WipeSelectionTypeConverter))]
 		public bool WipeByCount
 		{
@@ -575,9 +573,9 @@ namespace VixenModules.Effect.Wipe
 		}
 
 		[Value]
-		[Category(@"Effect Pulse")]
-		[DisplayName(@"Wipe Count")]
-		[Description(@"Controls the number of passes the wipe makes.")]
+		[ProviderCategory(@"Pulse")]
+		[ProviderDisplayName(@"WipeCount")]
+		[Description(@"WipeCount")]
 		public int PassCount
 		{
 			get { return _data.PassCount; }
@@ -589,9 +587,9 @@ namespace VixenModules.Effect.Wipe
 		}
 
 		[Value]
-		[Category(@"Effect Pulse")]
-		[DisplayName(@"Pulse Percent")]
-		[Description(@"Controls the length of the pulse as a percentage of the effect time.")]
+		[ProviderCategory(@"Pulse")]
+		[ProviderDisplayName(@"PulsePercent")]
+		[ProviderDescription(@"WipePulsePercent")]
 		[TypeConverter(typeof(RangeTypeConverter))]
 		[Editor(typeof(EffectRangeTypeEditor), typeof(UITypeEditor))]
 		[Range]

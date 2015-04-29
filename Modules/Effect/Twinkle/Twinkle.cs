@@ -11,6 +11,7 @@ using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using System.Drawing;
 using System.Drawing.Design;
+using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using VixenModules.EffectEditor.EffectTypeEditors;
 using VixenModules.EffectEditor.TypeConverters;
 using ZedGraph;
@@ -105,9 +106,9 @@ namespace VixenModules.Effect.Twinkle
 		}
 
 		[Value]
-		[Category(@"Effect Depth")]
-		[DisplayName(@"Individual Elements")]
-		[Description(@"Controls whether each individual element is twinkled independantly or all at once.")]
+		[ProviderCategory(@"Depth")]
+		[ProviderDisplayName(@"IndividualElements")]
+		[ProviderDescription(@"TwinkleDepth")]
 		public bool IndividualElements
 		{
 			get { return _data.IndividualChannels; }
@@ -119,9 +120,9 @@ namespace VixenModules.Effect.Twinkle
 		}
 
 		[Value]
-		[Category(@"Effect Levels")]
-		[DisplayName(@"Min Brightness")]
-		[Description(@"Controls the minimum brightness of a pulse in the twinkle.")]
+		[ProviderCategory(@"Brightness")]
+		[ProviderDisplayName(@"MinBrightness")]
+		[ProviderDescription(@"MinBrightness")]
 		[TypeConverter(typeof(LevelTypeConverter))]
 		[Editor(typeof(EffectLevelTypeEditor), typeof(UITypeEditor))]
 		public double MinimumLevel
@@ -135,9 +136,9 @@ namespace VixenModules.Effect.Twinkle
 		}
 
 		[Value]
-		[Category(@"Effect Levels")]
-		[DisplayName(@"Max Brightness")]
-		[Description(@"Controls the maximum brightness of a pulse in the twinkle.")]
+		[ProviderCategory(@"Brightness")]
+		[ProviderDisplayName(@"MaxBrightness")]
+		[ProviderDescription(@"MaxBrightness")]
 		[TypeConverter(typeof(LevelTypeConverter))]
 		[Editor(typeof(EffectLevelTypeEditor), typeof(UITypeEditor))]
 		public double MaximumLevel
@@ -151,9 +152,9 @@ namespace VixenModules.Effect.Twinkle
 		}
 
 		[Value]
-		[Category(@"Effect Levels")]
-		[DisplayName(@"Brightness Variation")]
-		[Description(@"Controls how much percent variation in the brightness level of each pulse in the twinkle.")]
+		[ProviderCategory(@"Brightness")]
+		[ProviderDisplayName(@"Variation")]
+		[Description(@"TwinkleVariation")]
 		[TypeConverter(typeof(DoublePercentTypeConverter))]
 		public int LevelVariation
 		{
@@ -166,9 +167,9 @@ namespace VixenModules.Effect.Twinkle
 		}
 
 		[Value]
-		[Category(@"Effect Confguration")]
-		[DisplayName(@"Avg Pulse Time")]
-		[Description(@"Controls how long the averge pulse time in in the twinkle.")]
+		[ProviderCategory(@"Config")]
+		[ProviderDisplayName(@"AveragePulseTime")]
+		[Description(@"TwinkleAvgPulseTime")]
 		public int AveragePulseTime
 		{
 			get { return _data.AveragePulseTime; }
@@ -180,9 +181,9 @@ namespace VixenModules.Effect.Twinkle
 		}
 
 		[Value]
-		[Category(@"Effect Confguration")]
-		[DisplayName(@"Variation")]
-		[Description(@"Controls how much variation in the length of the pulses that make up the twinkle.")]
+		[ProviderCategory(@"Config")]
+		[ProviderDisplayName(@"Variation")]
+		[ProviderDescription(@"TwinkleVariation")]
 		public int PulseTimeVariation
 		{
 			get { return _data.PulseTimeVariation; }
@@ -194,9 +195,9 @@ namespace VixenModules.Effect.Twinkle
 		}
 
 		[Value]
-		[Category(@"Effect Confguration")]
-		[DisplayName(@"Coverage")]
-		[Description(@"Controls how much of the effect by percent is covered in twinkles.")]
+		[ProviderCategory(@"Config")]
+		[ProviderDisplayName(@"Coverage")]
+		[ProviderDescription(@"TwinkleCoverage")]
 		[TypeConverter(typeof(DoublePercentTypeConverter))]
 		public int AverageCoverage
 		{
@@ -209,9 +210,9 @@ namespace VixenModules.Effect.Twinkle
 		}
 
 		[Value]
-		[Category(@"Effect Color")]
-		[DisplayName(@"Color Handling")]
-		[Description(@"Controls how the Twinkle color is handled.")]
+		[ProviderCategory(@"Color")]
+		[ProviderDisplayName(@"ColorHandling")]
+		[ProviderDescription(@"ColorHandling")]
 		public TwinkleColorHandling ColorHandling
 		{
 			get { return _data.ColorHandling; }
@@ -225,11 +226,11 @@ namespace VixenModules.Effect.Twinkle
 		}
 
 		[Value]
-		[Category(@"Effect Color")]
+		[ProviderCategory(@"Color")]
+		[ProviderDisplayName(@"Color")]
+		[ProviderDescription(@"Color")]
 		[Editor(typeof(EffectColorTypeEditor), typeof(UITypeEditor))]
 		[TypeConverter(typeof(ColorTypeConverter))]
-		[DisplayName(@"Color")]
-		[Description(@"Sets the chase color.")]
 		public Color StaticColor
 		{
 			get
@@ -244,9 +245,9 @@ namespace VixenModules.Effect.Twinkle
 		}
 
 		[Value]
-		[Category(@"Effect Color")]
-		[DisplayName(@"Color")]
-		[Description(@"Sets the Twinkle color.")]
+		[ProviderCategory(@"Color")]
+		[ProviderDisplayName(@"Color")]
+		[ProviderDescription(@"Color")]
 		public ColorGradient ColorGradient
 		{
 			get
@@ -287,8 +288,8 @@ namespace VixenModules.Effect.Twinkle
 		}
 
 		[Value]
-		[Category(@"Effect Depth")]
-		[DisplayName(@"Levels Deep")]
+		[ProviderCategory(@"Depth")]
+		[ProviderDisplayName(@"Depth")]
 		[Description(@"Indicates how many levels deep the effect should be grouped. 0 indicates all elements.")]
 		public int DepthOfEffect
 		{

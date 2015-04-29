@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
+using System.Drawing.Design;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using Vixen.Data.Value;
 using Vixen.Intent;
-using Vixen.Sys;
 using Vixen.Module;
 using Vixen.Module.Effect;
+using Vixen.Sys;
 using Vixen.Sys.Attribute;
-using System.Drawing;
-using System.Drawing.Design;
+using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using VixenModules.EffectEditor.EffectTypeEditors;
 using VixenModules.EffectEditor.TypeConverters;
 using VixenModules.Property.Color;
@@ -62,11 +62,11 @@ namespace VixenModules.Effect.SetLevel
 		}
 
 		[Value]
-		[DisplayName(@"Level")]
-		[Category(@"Effect Brightness")]
-		[EditorAttribute(typeof(EffectLevelTypeEditor), typeof(UITypeEditor))]
+		[ProviderDisplayName(@"Brightness")]
+		[ProviderCategory(@"Brightness")]
+		[ProviderDescription(@"Brightness")]
+		[Editor(typeof(EffectLevelTypeEditor), typeof(UITypeEditor))]
 		[TypeConverter(typeof(LevelTypeConverter))]
-		[Description(@"Controls the brightness of the effect.")]
 		public double IntensityLevel
 		{
 			get { return _data.level; }
@@ -78,10 +78,11 @@ namespace VixenModules.Effect.SetLevel
 		}
 
 		[Value]
-		[Category(@"Effect Color")]
-		[EditorAttribute(typeof(EffectColorTypeEditor), typeof(UITypeEditor))]
+		[ProviderCategory(@"Color")]
+		[ProviderDisplayName(@"Color")]
+		[ProviderDescription(@"Color")]
+		[Editor(typeof(EffectColorTypeEditor), typeof(UITypeEditor))]
 		[TypeConverter(typeof(ColorTypeConverter))]
-		[Description(@"Controls the color of the effect.")]
 		public Color Color
 		{
 			get

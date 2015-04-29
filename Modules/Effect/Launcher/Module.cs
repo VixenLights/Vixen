@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,7 @@ using Vixen.Module;
 using Vixen.Module.Effect;
 using Vixen.Sys;
 using Vixen.Sys.Attribute;
+using VixenModules.EffectEditor.EffectDescriptorAttributes;
 
 namespace Launcher
 {
@@ -84,6 +86,9 @@ namespace Launcher
 		}
 
 		[Value]
+		[ProviderCategory(@"Config")]
+		[DisplayName(@"Description")]
+		[Description(@"Sets the description.")]
 		public string Description
 		{
 			get
@@ -97,6 +102,9 @@ namespace Launcher
 			}
 		}
 		[Value]
+		[ProviderCategory(@"Config")]
+		[DisplayName(@"Executable")]
+		[Description(@"Sets the executable.")]
 		public string Executable
 		{
 			get
@@ -111,6 +119,9 @@ namespace Launcher
 		}
 
 		[Value]
+		[ProviderCategory(@"Config")]
+		[DisplayName(@"Arguments")]
+		[Description(@"Sets the arguments to use on the executable.")]
 		public string Arguments
 		{
 			get { return _data.Arguments; }

@@ -1,0 +1,213 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Brightness" xml:space="preserve">
+    <value>Controls the brightness of the effect.</value>
+  </data>
+  <data name="ChangePercent" xml:space="preserve">
+    <value>Sets percentage of change.</value>
+  </data>
+  <data name="Color" xml:space="preserve">
+    <value>Controls the color of the effect.</value>
+  </data>
+  <data name="ColorHandling" xml:space="preserve">
+    <value>Controls how the color is handled.</value>
+  </data>
+  <data name="DefaultBrightness" xml:space="preserve">
+    <value>Controls the default brightness of the inactive elements in the effect.</value>
+  </data>
+  <data name="Depth" xml:space="preserve">
+    <value>Indicates how many levels deep the effect should be grouped.</value>
+  </data>
+  <data name="DeviationPercent" xml:space="preserve">
+    <value>Sets percent of deviation.</value>
+  </data>
+  <data name="Direction" xml:space="preserve">
+    <value>Controls the direction of the effect.</value>
+  </data>
+  <data name="ExtendPulseEnd" xml:space="preserve">
+    <value>Extends the pulse to the end of the effect from beyond it's normal ending position.</value>
+  </data>
+  <data name="ExtendPulseStart" xml:space="preserve">
+    <value>Extends the pulse back to the start of the effect from it's normal starting position.</value>
+  </data>
+  <data name="FlickerFrequency" xml:space="preserve">
+    <value>Sets flicker frequency in changes per second.</value>
+  </data>
+  <data name="FlickerPercent" xml:space="preserve">
+    <value>Sets percentage of flicker.</value>
+  </data>
+  <data name="MaxBrightness" xml:space="preserve">
+    <value>Controls the maximum brightness of a pulse.</value>
+  </data>
+  <data name="MinBrightness" xml:space="preserve">
+    <value>Controls the minimum brightness of a pulse.</value>
+  </data>
+  <data name="PulseDuration" xml:space="preserve">
+    <value>Controls how long each pulse is in milliseconds.</value>
+  </data>
+  <data name="PulseOverlap" xml:space="preserve">
+    <value>Controls how many milliseconds the individual pulses overlap.</value>
+  </data>
+  <data name="PulseShape" xml:space="preserve">
+    <value>Controls the individual pulse shape.</value>
+  </data>
+  <data name="PulseSpinPercent" xml:space="preserve">
+    <value>Controls how long each pulse is as a percentage of the spin.</value>
+  </data>
+  <data name="PulseType" xml:space="preserve">
+    <value>Controls how individual pulses are applied accross the effect.</value>
+  </data>
+  <data name="RevolutionCount" xml:space="preserve">
+    <value>Controls how many revolutions of the spin will occur.</value>
+  </data>
+  <data name="RevolutionFrequency" xml:space="preserve">
+    <value>Controls the frequency in Hz at which the spin occurs.</value>
+  </data>
+  <data name="RevolutionTime" xml:space="preserve">
+    <value>Controls the duration in milliseconds at which the spin occurs.</value>
+  </data>
+  <data name="SpinSpeedFormat" xml:space="preserve">
+    <value>Controls how the individual spins occur.</value>
+  </data>
+  <data name="StaticColorIndicator" xml:space="preserve">
+    <value>Indicates the color is a static color.</value>
+  </data>
+  <data name="TwinkleAvgPulseTime" xml:space="preserve">
+    <value>Controls how long the averge pulse time in in the twinkle.</value>
+  </data>
+  <data name="TwinkleCoverage" xml:space="preserve">
+    <value>Controls how much of the effect by percent is covered in twinkles.</value>
+  </data>
+  <data name="TwinkleDepth" xml:space="preserve">
+    <value>Controls whether each individual element is twinkled independantly or all at once.</value>
+  </data>
+  <data name="TwinkleVariation" xml:space="preserve">
+    <value>Controls how much percent variation in the brightness level of each pulse in the twinkle.</value>
+  </data>
+  <data name="WipeCount" xml:space="preserve">
+    <value>Controls the number of passes the wipe makes.</value>
+  </data>
+  <data name="WipePulsePercent" xml:space="preserve">
+    <value>Controls the length of the pulse as a percentage of the effect time.</value>
+  </data>
+  <data name="WipeType" xml:space="preserve">
+    <value>Controls how the wipe behaves. Either by a count of passes, or by time related to pulse length.</value>
+  </data>
+</root>

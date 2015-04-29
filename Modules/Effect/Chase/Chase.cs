@@ -13,6 +13,7 @@ using Vixen.Sys;
 using Vixen.Sys.Attribute;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
+using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using VixenModules.EffectEditor.EffectTypeEditors;
 using VixenModules.EffectEditor.TypeConverters;
 using VixenModules.Property.Color;
@@ -85,9 +86,9 @@ namespace VixenModules.Effect.Chase
 		}
 
 		[Value]
-		[Category(@"Effect Color")]
-		[DisplayName(@"Color Handling")]
-		[Description(@"Controls how the chase color is handled.")]
+		[ProviderCategory(@"Color")]
+		[ProviderDisplayName(@"ColorHandling")]
+		[ProviderDescription(@"ColorHandling")]
 		public ChaseColorHandling ColorHandling
 		{
 			get { return _data.ColorHandling; }
@@ -102,9 +103,9 @@ namespace VixenModules.Effect.Chase
 
 
 		[Value]
-		[Category(@"Effect Pulse")]
-		[DisplayName(@"Pulse Overlap")]
-		[Description(@"Controls how many milliseconds the individual pulses overlap.")]
+		[ProviderCategory(@"Pulse")]
+		[ProviderDisplayName(@"PulseOverlap")]
+		[ProviderDescription(@"PulseOverlap")]
 		public int PulseOverlap
 		{
 			get { return _data.PulseOverlap; }
@@ -116,11 +117,11 @@ namespace VixenModules.Effect.Chase
 		}
 
 		[Value]
-		[Category(@"Effect Brightness")]
+		[ProviderCategory(@"Brightness")]
+		[ProviderDisplayName(@"DefaultBrightness")]
+		[ProviderDescription(@"DefaultBrightness")]
 		[Editor(typeof(EffectLevelTypeEditor), typeof(UITypeEditor))]
 		[TypeConverter(typeof(LevelTypeConverter))]
-		[DisplayName(@"Default Brightness")]
-		[Description(@"Controls the default brightness of the inactive elements in the effect.")]
 		public double DefaultLevel
 		{
 			get { return _data.DefaultLevel; }
@@ -132,11 +133,11 @@ namespace VixenModules.Effect.Chase
 		}
 
 		[Value]
-		[Category(@"Effect Color")]
+		[ProviderCategory(@"Color")]
+		[ProviderDisplayName(@"Color")]
+		[ProviderDescription(@"Color")]
 		[Editor(typeof(EffectColorTypeEditor), typeof(UITypeEditor))]
 		[TypeConverter(typeof(ColorTypeConverter))]
-		[DisplayName(@"Color")]
-		[Description(@"Sets the chase color.")]
 		public Color StaticColor
 		{
 			get
@@ -159,9 +160,9 @@ namespace VixenModules.Effect.Chase
 		}
 
 		[Value]
-		[Category(@"Effect Color")]
-		[DisplayName(@"Color")]
-		[Description(@"Sets the chase color.")]
+		[ProviderCategory(@"Color")]
+		[ProviderDisplayName(@"Color")]
+		[ProviderDescription(@"Color")]
 		public ColorGradient ColorGradient
 		{
 			get
@@ -176,9 +177,9 @@ namespace VixenModules.Effect.Chase
 		}
 
 		[Value]
-		[Category(@"Effect Brightness")]
-		[DisplayName(@"Pulse Brightness")]
-		[Description(@"Controls the individual pulse shape.")]
+		[ProviderCategory(@"Brightness")]
+		[ProviderDisplayName(@"Brightness")]
+		[ProviderDescription(@"PulseShape")]
 		public Curve PulseCurve
 		{
 			get { return _data.PulseCurve; }
@@ -190,9 +191,9 @@ namespace VixenModules.Effect.Chase
 		}
 
 		[Value]
-		[Category(@"Effect Direction")]
-		[DisplayName(@"Chase direction")]
-		[Description(@"Controls the chase direction.")]
+		[ProviderCategory(@"Direction")]
+		[ProviderDisplayName(@"Direction")]
+		[ProviderDescription(@"Direction")]
 		public Curve ChaseMovement
 		{
 			get { return _data.ChaseMovement; }
@@ -204,9 +205,9 @@ namespace VixenModules.Effect.Chase
 		}
 
 		[Value]
-		[Category(@"Effect Depth")]
-		[DisplayName(@"Levels Deep")]
-		[Description(@"Indicates how many levels deep the effect should be grouped. 0 indicates all elements.")]
+		[ProviderCategory(@"Depth")]
+		[ProviderDisplayName(@"Depth")]
+		[ProviderDescription(@"Depth")]
 		public int DepthOfEffect
 		{
 			get { return _data.DepthOfEffect; }
@@ -218,9 +219,9 @@ namespace VixenModules.Effect.Chase
 		}
 
 		[Value]
-		[Category(@"Effect Pulse")]
-		[DisplayName(@"Extend Pulse to Start")]
-		[Description(@"Extends the pulse back to the start of the effect from it's normal starting position.")]
+		[ProviderCategory(@"Pulse")]
+		[ProviderDisplayName(@"ExtendPulseStart")]
+		[ProviderDescription(@"ExtendPulseStart")]
 		public bool ExtendPulseToStart
 		{
 			get { return _data.ExtendPulseToStart; }
@@ -232,9 +233,9 @@ namespace VixenModules.Effect.Chase
 		}
 
 		[Value]
-		[Category(@"Effect Pulse")]
-		[DisplayName(@"Extend Pulse to End")]
-		[Description(@"Extends the pulse to the end of the effect from beyond it's normal ending position.")]
+		[ProviderCategory(@"Pulse")]
+		[ProviderDisplayName(@"ExtendPulseEnd")]
+		[ProviderDescription(@"ExtendPulseEnd")]
 		public bool ExtendPulseToEnd
 		{
 			get { return _data.ExtendPulseToEnd; }
