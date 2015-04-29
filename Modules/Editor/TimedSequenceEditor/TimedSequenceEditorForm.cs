@@ -3321,7 +3321,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					i++;
 				}
 			}
-
+			Dictionary<Element, EffectModelCandidate> changedElements = new Dictionary<Element, EffectModelCandidate>();
 			if (parameterPickerControls.Count > 1 || isColorList || isColorGradientList)
 			{
 				FormParameterPicker parameterPicker = new FormParameterPicker(parameterPickerControls)
@@ -3337,11 +3337,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				var dr = parameterPicker.ShowDialog();
 				if (dr == DialogResult.OK)
 				{
+					
+					
 					int k = 1;
 					if (isColorList)
 					{
 						foreach (Element elem in elementList)
 						{
+							if (!changedElements.ContainsKey(elem))
+							{
+								changedElements.Add(elem, new EffectModelCandidate(elem.EffectNode.Effect));	
+							}
 							object[] parms = elem.EffectNode.Effect.ParameterValues;
 							List<Color> colorList = (List<Color>)parms[parameterPicker.ParameterIndex];
 							if (parameterPicker.ParameterListIndex >= colorList.Count) continue;							
@@ -3359,6 +3365,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					{
 						foreach (Element elem in elementList)
 						{
+							if (!changedElements.ContainsKey(elem))
+							{
+								changedElements.Add(elem, new EffectModelCandidate(elem.EffectNode.Effect));
+							}
 							object[] parms = elem.EffectNode.Effect.ParameterValues;
 							List<ColorGradient> colorGradientList = (List<ColorGradient>) parms[parameterPicker.ParameterIndex];
 							if (parameterPicker.ParameterListIndex >= colorGradientList.Count) continue;
@@ -3376,6 +3386,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					{
 						foreach (Element elem in elementList)
 						{
+							if (!changedElements.ContainsKey(elem))
+							{
+								changedElements.Add(elem, new EffectModelCandidate(elem.EffectNode.Effect));
+							}
 							object[] parms = elem.EffectNode.Effect.ParameterValues;
 							parms[parameterPicker.ParameterIndex] = color;
 
@@ -3417,6 +3431,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				int k = 0;
 				foreach (Element elem in elementList)
 				{
+					if (!changedElements.ContainsKey(elem))
+					{
+						changedElements.Add(elem, new EffectModelCandidate(elem.EffectNode.Effect));
+					}
 					object[] parms = elem.EffectNode.Effect.ParameterValues;
 					if (!isColorGradient)
 					{
@@ -3446,7 +3464,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					SequenceModified();
 					k++;
 				}
-
+				AddEffectsModifiedToUndo(changedElements);
 				UpdateToolStrip4("Color applied to " + k + " " + e.Element.EffectNode.Effect.EffectName + " effect(s).",60);
 			}
 		}
@@ -3535,7 +3553,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					i++;
 				}
 			}
-
+			Dictionary<Element, EffectModelCandidate> changedElements = new Dictionary<Element, EffectModelCandidate>();
 			if (parameterPickerControls.Count > 1)
 			{
 				FormParameterPicker parameterPicker = new FormParameterPicker(parameterPickerControls)
@@ -3556,6 +3574,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					{
 						foreach (Element elem in elementList)
 						{
+							if (!changedElements.ContainsKey(elem))
+							{
+								changedElements.Add(elem, new EffectModelCandidate(elem.EffectNode.Effect));
+							}
 							object[] parms = elem.EffectNode.Effect.ParameterValues;
 							List<Curve> curveList = (List<Curve>)parms[parameterPicker.ParameterIndex];
 							if (parameterPicker.ParameterListIndex >= curveList.Count) continue;
@@ -3573,6 +3595,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					{
 						foreach (Element elem in elementList)
 						{
+							if (!changedElements.ContainsKey(elem))
+							{
+								changedElements.Add(elem, new EffectModelCandidate(elem.EffectNode.Effect));
+							}
 							object[] parms = elem.EffectNode.Effect.ParameterValues;
 							parms[parameterPicker.ParameterIndex] = curve;
 							elem.EffectNode.Effect.ParameterValues = parms;
@@ -3603,6 +3629,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				int k = 0;
 				foreach (Element elem in elementList)
 				{
+					if (!changedElements.ContainsKey(elem))
+					{
+						changedElements.Add(elem, new EffectModelCandidate(elem.EffectNode.Effect));
+					}
 					object[] parms = elem.EffectNode.Effect.ParameterValues;
 					parms[j] = curve;
 					elem.EffectNode.Effect.ParameterValues = parms;
@@ -3700,7 +3730,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					i++;
 				}
 			}
-
+			Dictionary<Element, EffectModelCandidate> changedElements = new Dictionary<Element, EffectModelCandidate>();
 			if (parameterPickerControls.Count > 1)
 			{
 				FormParameterPicker parameterPicker = new FormParameterPicker(parameterPickerControls)
@@ -3721,6 +3751,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					{
 						foreach (Element elem in elementList)
 						{
+							if (!changedElements.ContainsKey(elem))
+							{
+								changedElements.Add(elem, new EffectModelCandidate(elem.EffectNode.Effect));
+							}
 							object[] parms = elem.EffectNode.Effect.ParameterValues;
 							List<ColorGradient> colorGradientList = (List<ColorGradient>)parms[parameterPicker.ParameterIndex];
 							if (parameterPicker.ParameterListIndex >= colorGradientList.Count) continue;
@@ -3738,6 +3772,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					{
 						foreach (Element elem in elementList)
 						{
+							if (!changedElements.ContainsKey(elem))
+							{
+								changedElements.Add(elem, new EffectModelCandidate(elem.EffectNode.Effect));
+							}
 							object[] parms = elem.EffectNode.Effect.ParameterValues;
 							parms[parameterPicker.ParameterIndex] = colorGradient;
 
@@ -3779,6 +3817,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				int k = 0;
 				foreach (Element elem in elementList)
 				{
+					if (!changedElements.ContainsKey(elem))
+					{
+						changedElements.Add(elem, new EffectModelCandidate(elem.EffectNode.Effect));
+					}
 					object[] parms = elem.EffectNode.Effect.ParameterValues;
 					parms[j] = colorGradient;
 					switch (elem.EffectNode.Effect.EffectName)
