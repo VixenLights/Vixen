@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Text;
@@ -55,6 +56,7 @@ namespace Vixen.IO.Xml.Sequence
 				throw new Exception(string.Format("Can't save sequence {0}, no serializer present. ", sequence.Name));
 
 			serializer.WriteStartObject(xmlWriter, sequence.SequenceData);
+			WriteVersion(xmlWriter);
 			_WriteKnownNamespaces(xmlWriter);
 			serializer.WriteObjectContent(xmlWriter, sequence.SequenceData);
 			serializer.WriteEndObject(xmlWriter);
@@ -63,6 +65,13 @@ namespace Vixen.IO.Xml.Sequence
 		private ISequenceTypeModuleInstance _GetSequenceTypeModule(string fileType)
 		{
 			return SequenceTypeService.Instance.CreateSequenceFactory(fileType);
+		}
+
+		private void WriteVersion(XmlWriter xmlWriter)
+		{
+			ISequenceTypeModuleInstance sequenceTypeModule = _GetSequenceTypeModule(_fileType);
+			int version = sequenceTypeModule.ObjectVersion;
+			xmlWriter.WriteAttributeString("version", version.ToString(CultureInfo.InvariantCulture));
 		}
 
 		private void _WriteKnownNamespaces(XmlWriter xmlWriter)

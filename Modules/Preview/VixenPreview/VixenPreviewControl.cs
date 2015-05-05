@@ -315,34 +315,38 @@ namespace VixenModules.Preview.VixenPreview
             }
 		}
 
-		public void LoadBackground(string fileName)
+		public void LoadBackground(string file)
 		{
-			if (System.IO.File.Exists(fileName)) {
-				try {
-					using (FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read)) {
-						using (Bitmap loadedBitmap = new Bitmap(fs)) {
+			
+			var fileName = Path.Combine(VixenPreviewDescriptor.ModulePath, file);
+			if (File.Exists(fileName))
+			{
+				try
+				{
+					using (var fs = new FileStream(fileName, FileMode.Open, FileAccess.Read))
+					{
+						using (var loadedBitmap = new Bitmap(fs))
+						{
 							Background = loadedBitmap.Clone(new Rectangle(0, 0, loadedBitmap.Width, loadedBitmap.Height),
-							                                 PixelFormat.Format32bppPArgb);
-                            //Console.WriteLine("Background->" + fileName);
-                        }
-                        fs.Close();
-                        DefaultBackground = false;
+																PixelFormat.Format32bppPArgb);
+						}
+						fs.Close();
+						DefaultBackground = false;
 					}
 				}
-				catch (Exception ex) {
-                    //_background = new Bitmap(Width, Height);
-                    //SetupBackgroundAlphaImage();
-                    //DefaultBackground = true;
-                    Background = null;
-					MessageBox.Show("There was an error loading the background image: " + ex.Message, "Error",
-					                MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
+				catch (Exception ex)
+				{
+					Background = null;
+					Logging.Error("There was error loading the preview background image.", ex);
+					MessageBox.Show(@"There was an error loading the background image: " + ex.Message, @"Error",
+									MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
 				}
 			}
-			else {
-                //_background = new Bitmap(Width, Height);
-                Background = null;
+			else
+			{
+				Background = null;
 			}
-
+			
 			SetupBackgroundAlphaImage();
 		}
 
@@ -351,12 +355,6 @@ namespace VixenModules.Preview.VixenPreview
 			if (Data.BackgroundFileName != null) {
 				LoadBackground(Data.BackgroundFileName);
 			}
-            //else
-            //{
-            //    _background = new Bitmap(Width, Height);
-            //    SetupBackgroundAlphaImage();
-            //    DefaultBackground = true;
-            //}
 		}
 
 		private void SetupBackgroundAlphaImage()
@@ -1361,16 +1359,16 @@ namespace VixenModules.Preview.VixenPreview
 
 		public void ResizeBackground(int width, int height)
 		{
-			double aspect = (double) width/(double) _background.Width;
+			double aspect = width/(double) _background.Width;
 			Bitmap newBackground = PreviewTools.ResizeBitmap(new Bitmap(_background), new Size(width, height));
 			// Copy the file to the Vixen folder
-			string imageFileName = Guid.NewGuid().ToString() + ".jpg";
-			var destFileName = System.IO.Path.Combine(VixenPreviewDescriptor.ModulePath, imageFileName);
+			string imageFileName = Guid.NewGuid() + ".jpg";
+			var destFileName = Path.Combine(VixenPreviewDescriptor.ModulePath, imageFileName);
 			newBackground.Save(destFileName, ImageFormat.Jpeg);
-			Data.BackgroundFileName = destFileName;
-			LoadBackground(destFileName);
+			Data.BackgroundFileName = imageFileName;
+			LoadBackground();
 
-			foreach (Shapes.DisplayItem item in DisplayItems) {
+			foreach (DisplayItem item in DisplayItems) {
 				item.Shape.Resize(aspect);
 			}
             EraseScreen();

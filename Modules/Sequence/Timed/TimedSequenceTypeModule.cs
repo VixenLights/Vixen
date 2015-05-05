@@ -24,7 +24,7 @@ namespace VixenModules.Sequence.Timed
 
 		public override IContentMigrator CreateMigrator()
 		{
-			return new SequenceMigrator();
+			return new TimedSequenceMigrator();
 		}
 
 		public override ISequenceExecutor CreateExecutor()

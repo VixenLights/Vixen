@@ -25,7 +25,7 @@ namespace Vixen.Module.SequenceType
 
 		public abstract string FileExtension { get; }
 
-		public abstract int ClassVersion { get; }
+		public abstract int ObjectVersion { get; }
 
 		// Default to true unless overridden in derived class
 		public virtual bool CanCreateNew

@@ -1,41 +1,36 @@
-﻿using System;
-using System.IO;
-using System.IO.Compression;
-using System.ComponentModel;
-using System.Drawing;
-using System.Windows.Forms;
-using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
+using Common.Controls;
 using Common.Resources;
 using Common.Resources.Properties;
-using Common.Controls;
 using NLog;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
+using System.IO.Compression;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace VixenApplication
 {
 	public partial class DataZipForm : Form
 	{
-		private int _fileCount;
-		private int _filesComplete;
-		private bool _doZip;
+		private bool _working;
 		private ProfileItem _item;
-		private string _statusText;
-		private static NLog.Logger Logging = LogManager.GetCurrentClassLogger();
+		private delegate void StatusDelegate(string text);
+		private static Logger Logging = LogManager.GetCurrentClassLogger();
+		private readonly BackgroundWorker _bw = new BackgroundWorker();
 
 		public DataZipForm()
 		{
 			InitializeComponent();
 			Icon = Resources.Icon_Vixen3;
 			buttonSetSaveFolder.Image = Tools.GetIcon(Resources.folder, 16);
-			buttonSetSaveFolder.Text = "";
-			radioButtonZipEverything.Checked = true;
-			groupBox2.Enabled = false;
+			_bw.WorkerReportsProgress=true;
+			_bw.WorkerSupportsCancellation = true;
+			_bw.DoWork += bw_DoWork;
+			_bw.ProgressChanged += backgroundWorker1_ProgressChanged;
 
-			backgroundWorker1.DoWork += new DoWorkEventHandler(backgroundWorker1_DoWork);
-			backgroundWorker1.ProgressChanged += new ProgressChangedEventHandler(backgroundWorker1_ProgressChanged);
-
-			_doZip = false;
-			backgroundWorker1.RunWorkerAsync();
 		}
 
 		private void DataZipForm_Load(object sender, EventArgs e)
@@ -44,220 +39,184 @@ namespace VixenApplication
 		}
 
 		#region Background Thread
-		private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
+		private void bw_DoWork(object sender, DoWorkEventArgs e)
 		{
-			while (true)
-			{
-				Thread.Sleep(500);
-				if (_doZip)
-				{
-					CompressSelectedFiles();
-					_doZip = false;
-				}
+			_working = true;
+			CompressSelectedFiles();
+			_working = false;
+		}
 
+		private void ArchiveProfile(List<string> profileExclusions, bool includeLogs, bool includeUserSettings)
+		{
+			ProfileItem item = _item;
+			
+			string outPath = Path.Combine(textBoxSaveFolder.Text, textBoxFileName.Text + ".zip");
+
+			String appDataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"Vixen");
+			String logDataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), @"Vixen 3", @"logs");
+
+			string folderFullPath = Path.GetFullPath(item.DataFolder);
+			string parentFolder = folderFullPath.Split(Path.DirectorySeparatorChar).Last();
+
+			UpdateStatus("Zipping profile please wait...");
+			Archive(item.DataFolder, profileExclusions, parentFolder, outPath);
+			if (includeLogs)
+			{
+				UpdateStatus("Zipping logs please wait...");
+				Archive(logDataFolder, new List<string>(), Path.Combine(parentFolder, @"Core Logs"), outPath);	
 			}
+			if (includeUserSettings)
+			{
+				UpdateStatus("Zipping user settings please wait...");
+				Archive(appDataFolder, new List<string>(), Path.Combine(parentFolder, @"User Settings"), outPath);
+			}
+			
 		}
 
 		private void CompressSelectedFiles()
 		{
 			StartCompressUIState();
 
-			ProfileItem item = _item;
-			string folderName = item.DataFolder;
-			string outPath = textBoxSaveFolder.Text + "\\" + textBoxFileName.Text + ".zip";
-
-			_fileCount = 0;
-			_filesComplete = 0;
-
-			int folderOffset = folderName.Length + (folderName.EndsWith("\\") ? 0 : 1);
-			String AppDataFolder = System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData) + "\\Vixen";
-			int AppFolderOffSet = AppDataFolder.Length + (AppDataFolder.EndsWith("\\") ? 0 : 1);
-			String LogDataFolder = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments) + "\\Vixen 3\\logs";
-			int LogFolderOffSet = LogDataFolder.Length + (LogDataFolder.EndsWith("\\") ? 0 : 1);
-
-			if (radioButtonZipEverything.Checked)
+			var exclusions = new List<string>();
+			if (!checkBoxModule.Checked)
 			{
-				_fileCount = CountFiles(folderName);
-				_fileCount += CountFiles(AppDataFolder, false);
-				_fileCount += CountFiles(LogDataFolder, false);
-
-				UpdateStatus("Zipping everything please wait...");
-				CompressFolder(folderName, outPath, folderOffset);
-				//Now Get the files from the AppData Folder
-				CompressFolder(AppDataFolder, outPath, AppFolderOffSet - 7, false);
-				//Now Get the files from the Log folder
-				CompressFolder(LogDataFolder, outPath, LogFolderOffSet - 6, false);
+				exclusions.Add(@"\Module Data Files");
 			}
-			else
+			if (!checkBoxProgram.Checked)
 			{
-				if (checkBoxApplication.Checked)
-				{
-					_fileCount = CountFiles(folderName);
-					_fileCount += CountFiles(AppDataFolder, false);
-					_fileCount += CountFiles(LogDataFolder, false);
-
-					UpdateStatus("Zipping application files...");
-					folderName = item.DataFolder;
-					CompressFolder(folderName, outPath, folderOffset, false);
-					//Now Get the files from the AppData Folder
-					CompressFolder(AppDataFolder, outPath, AppFolderOffSet - 7, false);
-					//Now Get the files from the Log folder
-					CompressFolder(LogDataFolder, outPath, LogFolderOffSet - 6, false);
-				}
-				if (checkBoxModule.Checked)
-				{
-					UpdateStatus("Zipping module files...");
-					folderName = item.DataFolder + "\\Module Data Files";
-					_fileCount = CountFiles(folderName);
-					CompressFolder(folderName, outPath, folderOffset);
-				}
-				if (checkBoxProgram.Checked)
-				{
-					UpdateStatus("Zipping program files...");
-					folderName = item.DataFolder + "\\Program";
-					_fileCount = CountFiles(folderName);
-					CompressFolder(folderName, outPath, folderOffset);
-				}
-				if (checkBoxSequence.Checked)
-				{
-					UpdateStatus("Zipping sequence files...");
-					folderName = item.DataFolder + "\\Sequence";
-					_fileCount = CountFiles(folderName);
-					CompressFolder(folderName, outPath, folderOffset);
-				}
-				if (checkBoxSystem.Checked)
-				{
-					UpdateStatus("Zipping system files...");
-					folderName = item.DataFolder + "\\SystemData";
-					_fileCount = CountFiles(folderName);
-					CompressFolder(folderName, outPath, folderOffset);
-				}
-				if (checkBoxTemplate.Checked)
-				{
-					UpdateStatus("Zipping template files...");
-					folderName = item.DataFolder + "\\Template";
-					_fileCount = CountFiles(folderName);
-					CompressFolder(folderName, outPath, folderOffset);
-				}
+				exclusions.Add(@"\Program");
+			}
+			if (!checkBoxSequence.Checked)
+			{
+				exclusions.Add(@"\Sequence");
+			}
+			if (!checkBoxSystem.Checked)
+			{
+				exclusions.Add(@"\SystemData");
+			}
+			if (!checkBoxTemplate.Checked)
+			{
+				exclusions.Add(@"\Template");
+			}
+			if (!checkBoxMedia.Checked)
+			{
+				exclusions.Add(@"\Media");
 			}
 
+			ArchiveProfile(exclusions, checkBoxLogs.Checked, checkBoxUserSettings.Checked);
+			
 			EndCompressUIState();			
 		}
 
 		private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs args)
 		{
-			try
-			{
-				int value = (int)((float)_filesComplete / (float)_fileCount * 100.0);
-				value = Math.Max(0, value);
-				value = Math.Min(100, value);
-				toolStripProgressBar.Value = value;
-			}
-			catch (Exception e) { }
-
+			toolStripProgressBar.Value = args.ProgressPercentage;
 		}
 		#endregion
 
 		private void PopulateProfileList()
 		{
-			XMLProfileSettings profile = new XMLProfileSettings();
+			var profile = new XMLProfileSettings();
 
 			int profileCount = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "ProfileCount", 0);
 			if (profileCount == 0)
 			{
-				MessageBox.Show("Unable to locate any profiles.");
+				MessageBox.Show(@"Unable to locate any profiles.");
 				return;
 			}
-			else
+
+			for (int i = 0; i < profileCount; i++)
 			{
-				for (int i = 0; i < profileCount; i++)
+				var item = new ProfileItem
 				{
-					ProfileItem item = new ProfileItem();
-					item.Name = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + i.ToString() + "/Name", "");
-					item.DataFolder = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + i.ToString() + "/DataFolder", "");
-					comboBoxProfiles.Items.Add(item);
-				}
+					Name = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + i.ToString() + "/Name", ""),
+					DataFolder =
+						profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + i.ToString() + "/DataFolder", "")
+				};
+				comboBoxProfiles.Items.Add(item);
 			}
 			comboBoxProfiles.SelectedIndex = 0;
+			textBoxFileName.Text=@"VixenProfile";
+			textBoxSaveFolder.Text = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 		}
 
 		private void buttonSetSaveFolder_Click(object sender, EventArgs e)
 		{
-			if (folderBrowserSaveFolder.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+			if (folderBrowserSaveFolder.ShowDialog() == DialogResult.OK) {
 				textBoxSaveFolder.Text = folderBrowserSaveFolder.SelectedPath;
 			}
 		}
 
 		private void buttonStartCancel_Click(object sender, EventArgs e)
 		{
-			if (_doZip == false)
+			if (_working)
 			{
-				if (textBoxSaveFolder.Text == "")
-				{
-					MessageBox.Show("Please choose a folder to create the zip file in.", "Missing save folder");
-					return;
-				}
-				if (textBoxFileName.Text == "")
-				{
-					MessageBox.Show("Please choose a filename for the zip file.", "Missing Zip file name");
-					return;
-				}
-
-				_item = comboBoxProfiles.SelectedItem as ProfileItem;
-				if (_item == null)
-				{
-					//Oops.. Get outta here
-					MessageBox.Show("Unable to find datafolder for that profile.", "Error");
-					return;
-				}
-
-				string folderName = _item.DataFolder;
-				string outPath = textBoxSaveFolder.Text + "\\" + textBoxFileName.Text + ".zip";
-
-				if (System.IO.File.Exists(outPath))
-				{
-					if (MessageBox.Show("The file name you have enter already exists, do you wish to overwrite it ?", "File exists", MessageBoxButtons.YesNo) == DialogResult.Yes)
-					{
-						System.IO.File.Delete(outPath);
-					}
-					else
-					{
-						return;
-					}
-				}
-
-				if (!Directory.Exists(textBoxSaveFolder.Text))
-				{
-					if (MessageBox.Show("The destination folder does not exists, would you like to create it ?", "Folder not found", MessageBoxButtons.YesNo) == DialogResult.No)
-					{
-						return;
-					}
-					else
-						Directory.CreateDirectory(textBoxSaveFolder.Text);
-				}
-
-				_doZip = true;
-				buttonStartCancel.Text = "Stop";
-				buttonClose.Enabled = false;
+				_bw.CancelAsync();
+				return;
 			}
-			else
+			_item = comboBoxProfiles.SelectedItem as ProfileItem;
+			if (_item == null)
 			{
-				_doZip = false;
-				backgroundWorker1.CancelAsync();
+				//Oops.. Get outta here
+				MessageBox.Show(@"Unable to find datafolder for that profile.", @"Error");
+				return;
 			}
 
+			if (textBoxSaveFolder.Text == "")
+			{
+				MessageBox.Show(@"Please choose a folder to create the zip file in.", @"Missing save folder");
+				return;
+			}
+			if (textBoxFileName.Text == "")
+			{
+				MessageBox.Show(@"Please choose a filename for the zip file.", @"Missing Zip file name");
+				return;
+			}
+
+			if (".zip".Equals(Path.GetExtension(textBoxFileName.Text)))
+			{
+				textBoxFileName.Text = Path.GetFileNameWithoutExtension(textBoxFileName.Text);
+			}
+			
+			string outPath = Path.Combine(textBoxSaveFolder.Text, textBoxFileName.Text + ".zip");
+
+			if (!Directory.Exists(textBoxSaveFolder.Text))
+			{
+				if (MessageBox.Show(@"The destination folder does not exist, would you like to create it ?", @"Folder not found", MessageBoxButtons.YesNo) == DialogResult.No)
+				{
+					return;
+				}
+
+				Directory.CreateDirectory(textBoxSaveFolder.Text);
+			}
+			else if (File.Exists(outPath))
+			{
+				if (MessageBox.Show(@"The file name you have enter already exists, do you wish to overwrite it ?", @"File exists", MessageBoxButtons.YesNo) == DialogResult.Yes)
+				{
+					File.Delete(outPath);
+				}
+				else
+				{
+					return;
+				}
+			}
+
+			buttonStartCancel.Text = "Stop";
+			buttonClose.Enabled = false;
+			_bw.RunWorkerAsync();
+			
 		}
 
 		private void StartCompressUIState()
 		{
-			if (this.InvokeRequired)
+			if (InvokeRequired)
 			{
-				this.BeginInvoke(new Action(StartCompressUIState));
+				BeginInvoke(new Action(StartCompressUIState));
 			}
 			else
 			{
 				toolStripProgressBar.Visible = true;
-				this.UseWaitCursor = true;
+				UseWaitCursor = true;
 				buttonStartCancel.UseWaitCursor = false;
 				comboBoxProfiles.Enabled = false;
 				textBoxFileName.Enabled = false;
@@ -268,15 +227,15 @@ namespace VixenApplication
 
 		private void EndCompressUIState()
 		{
-			if (this.InvokeRequired)
+			if (InvokeRequired)
 			{
-				this.BeginInvoke(new Action(EndCompressUIState));
+				BeginInvoke(new Action(EndCompressUIState));
 			}
 			else
 			{
 				UpdateStatus("Complete");
 				toolStripProgressBar.Visible = false;
-				this.UseWaitCursor = false;
+				UseWaitCursor = false;
 				buttonStartCancel.Text = "Start";
 				buttonClose.Enabled = true;
 				comboBoxProfiles.Enabled = true;
@@ -288,103 +247,66 @@ namespace VixenApplication
 
 		private void UpdateStatus(string text)
 		{
-			_statusText = text;
-			_UpdateStatusInvoke();
+			BeginInvoke(new StatusDelegate(_UpdateStatus), text);
 		}
 
-		private void _UpdateStatusInvoke()
+		private void _UpdateStatus(string text)
 		{
-			if (this.InvokeRequired)
-			{
-				this.BeginInvoke(new Action(_UpdateStatusInvoke));
-				return;
-			}
-			else
-			{
-				toolStripStatusLabel.Text = _statusText;
-			}
+			toolStripStatusLabel.Text = text;	
 		}
 
-		private int CountFiles(string folder, bool includeSubFolders = true)
+		private void Archive(string folder, IList<string> exceptions, string parentFolder, string archivePath)
 		{
-			int retVal = 0;
-			if (Directory.Exists(folder))
+			string folderFullPath = Path.GetFullPath(folder);
+			
+			IEnumerable<string> files = Directory.EnumerateFiles(folder,
+					"*.*", SearchOption.AllDirectories);
+			int fileCount = files.Count();
+			int filesComplete = 0;
+			using (ZipArchive archive = ZipFile.Open(archivePath, ZipArchiveMode.Update))
 			{
-				retVal += Directory.GetFiles(folder).Length;
-			}
-  
-			if (includeSubFolders == true)
-			{
-				string[] folders = Directory.GetDirectories(folder);
-				foreach (string subFolder in folders)
+				foreach (string file in files)
 				{
-					retVal += CountFiles(subFolder);
-				}
-			}
-			return retVal;
-		}
-
-		private void CompressFolder(string folder, string outPath, int folderOffset, bool includeSubFolders = true)
-		{
-			if (_doZip)
-			{
-				try
-				{
-					using (ZipArchive zipStream = ZipFile.Open(outPath, ZipArchiveMode.Update))
+					if (_bw.CancellationPending)
 					{
-						if (!Directory.Exists(folder))
-							return;
-
-						string[] files = Directory.GetFiles(folder);
-						foreach (string filename in files)
+						break;
+					}
+					if (!Excluded(file, exceptions))
+					{
+						try
 						{
-							if (_doZip)
+							var addFile = Path.GetFullPath(file);
+							if (addFile != archivePath)
 							{
-								string entryName = filename.Substring(folderOffset);
-								try
-								{
-									zipStream.CreateEntryFromFile(filename, entryName);
-								}
-								catch (Exception e)
-								{
-									Logging.Warn("Zip Wizard - Could not add file:" + filename, e);
-								}
-								
-								_filesComplete++;
-								backgroundWorker1.ReportProgress(0);
+								addFile = addFile.Substring(folderFullPath.Length);
+								archive.CreateEntryFromFile(file, parentFolder + addFile);
+								filesComplete++;
+								var value = (int)(filesComplete /(double)fileCount * 100.0);
+								_bw.ReportProgress(value);
 							}
 						}
-
+						catch (IOException ex)
+						{
+							Logging.Error("An error occured adding files to archive", ex);
+						}
 					}
 				}
-				catch (Exception e)
-				{
-					Logging.Error("Zip Wizard - Unable to create archive", e);
-				}
-
 			}
-			if (includeSubFolders != true)
-				return;
-			string[] folders = Directory.GetDirectories(folder);
-			foreach (string subFolder in folders)
+
+		}
+
+		private static bool Excluded(string file, IList<string> exceptions)
+		{
+			List<String> folderNames = (from folder in exceptions
+										where folder.StartsWith(@"\")
+											|| folder.StartsWith(@"/")
+										select folder).ToList<string>();
+			if (!exceptions.Contains(Path.GetExtension(file)))
 			{
-					CompressFolder(subFolder, outPath, folderOffset);
+				return folderNames.Any(folderException => Path.GetDirectoryName(file).Contains(folderException));
 			}
+			return true;
 		}
 
-		private void radioButtonZipEverything_Click(object sender, EventArgs e)
-		{
-			groupBox2.Enabled = false;
-		}
-
-		private void radioButtonUsersChoice_Click(object sender, EventArgs e)
-		{
-			groupBox2.Enabled = true;
-		}
-
-		private void buttonClose_Click(object sender, EventArgs e)
-		{
-
-		}
 	}
 }

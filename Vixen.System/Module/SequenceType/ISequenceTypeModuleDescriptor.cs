@@ -11,6 +11,6 @@ namespace Vixen.Module.SequenceType
 
 		bool CanCreateNew { get; }
 
-		int ClassVersion { get; }
+		int ObjectVersion { get; }
 	}
 }

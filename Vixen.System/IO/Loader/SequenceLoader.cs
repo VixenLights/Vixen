@@ -30,7 +30,7 @@ namespace Vixen.IO.Loader
 			if (sequence == null) return null;
 
 			sequence = MigratingObjectLoaderService.Instance.LoadFromFile(sequence, filePath, fileReader, contentWriter,
-			                                                              contentMigrator, sequenceTypeModule.ClassVersion);
+			                                                              contentMigrator, sequenceTypeModule.ObjectVersion);
 
 			if (sequence != null) sequence.FilePath = filePath;
 

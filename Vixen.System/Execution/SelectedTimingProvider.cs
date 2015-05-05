@@ -19,8 +19,7 @@ namespace Vixen.Execution
 			return
 				selectedTimingProvider != null &&
 				!string.IsNullOrEmpty(selectedTimingProvider.ProviderType) &&
-				!string.IsNullOrEmpty(selectedTimingProvider.SourceName) &&
-				System.IO.File.Exists( selectedTimingProvider.SourceName);
+				!string.IsNullOrEmpty(selectedTimingProvider.SourceName);
 		}
 	}
 }

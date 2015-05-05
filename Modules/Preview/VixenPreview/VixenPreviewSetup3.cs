@@ -67,7 +67,8 @@ namespace VixenModules.Preview.VixenPreview {
 			previewForm.Preview.elementsForm = elementsForm;
 			previewForm.Preview.propertiesForm = propertiesForm;
 
-			previewForm.Preview.LoadBackground(Data.BackgroundFileName);
+			previewForm.Preview.LoadBackground();	
+			
 			trackBarBackgroundAlpha.Value = Data.BackgroundAlpha;
 			previewForm.Preview.Reload();
 
@@ -94,11 +95,10 @@ namespace VixenModules.Preview.VixenPreview {
 		}
 
 		private void buttonSetBackground_Click(object sender, EventArgs e) {
-			if (dialogSelectBackground.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+			if (dialogSelectBackground.ShowDialog() == DialogResult.OK) {
 				// Copy the file to the Vixen folder
-				var imageFile = new System.IO.FileInfo(dialogSelectBackground.FileName);
-				//var destFileName = Path.Combine(VixenPreviewDescriptor.ModulePath, imageFile.Name);
-                string imageFileName = Guid.NewGuid().ToString() + Path.GetExtension(dialogSelectBackground.FileName);
+				var imageFile = new FileInfo(dialogSelectBackground.FileName);
+                string imageFileName = Guid.NewGuid() + Path.GetExtension(dialogSelectBackground.FileName);
                 var destFileName = Path.Combine(VixenPreviewDescriptor.ModulePath, imageFileName);
 				var sourceFileName = imageFile.FullName;
 				if (sourceFileName != destFileName) {
@@ -106,8 +106,8 @@ namespace VixenModules.Preview.VixenPreview {
 				}
 
 				// Set the backgrounds
-				Data.BackgroundFileName = destFileName;
-				previewForm.Preview.LoadBackground(dialogSelectBackground.FileName);
+				Data.BackgroundFileName = imageFileName;
+				previewForm.Preview.LoadBackground();
 				trackBarBackgroundAlpha.Value = trackBarBackgroundAlpha.Maximum;
 				previewForm.Preview.BackgroundAlpha = trackBarBackgroundAlpha.Value;
 			}

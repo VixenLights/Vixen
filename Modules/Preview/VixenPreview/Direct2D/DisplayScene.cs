@@ -362,14 +362,10 @@ namespace VixenModules.Preview.VixenPreview.Direct2D {
 					}
 				}
 
-			if (System.IO.File.Exists(Data.BackgroundFileName))
-				BackgroundImage = Image.FromFile(Data.BackgroundFileName);
-			else
-				BackgroundImage = null;
-
-			//LoadBackground();
-			//}
-
+			
+			var file = Path.Combine(VixenPreviewDescriptor.ModulePath, Data.BackgroundFileName);
+			BackgroundImage = File.Exists(file) ? Image.FromFile(file) : null;
+			
 		}
 
 

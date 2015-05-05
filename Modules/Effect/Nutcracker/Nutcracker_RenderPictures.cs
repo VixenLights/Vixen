@@ -28,7 +28,7 @@ namespace VixenModules.Effect.Nutcracker
 					//This crazyness is to allow the file handle to be released on the file we are using. Otherwise it is locked
 					//And if you try to use the same image when you switch to picture tiles, it will have an 
 					//file locked error
-					using (var fs = new FileStream(newPictureName, FileMode.Open, FileAccess.Read))
+					using (var fs = new FileStream(Path.Combine(NutcrackerDescriptor.ModulePath, newPictureName), FileMode.Open, FileAccess.Read))
 					{
 						var ms = new MemoryStream();
 						fs.CopyTo(ms);
