@@ -188,9 +188,9 @@
 			// listViewMarkCollections
 			// 
 			this.listViewMarkCollections.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-			this.columnHeader1,
-			this.columnHeader3,
-			this.columnHeader2});
+            this.columnHeader1,
+            this.columnHeader3,
+            this.columnHeader2});
 			this.listViewMarkCollections.FullRowSelect = true;
 			this.listViewMarkCollections.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
 			this.listViewMarkCollections.HideSelection = false;
@@ -299,23 +299,23 @@
 			// 
 			this.numericUpDownWeight.Location = new System.Drawing.Point(58, 83);
 			this.numericUpDownWeight.Maximum = new decimal(new int[] {
-			20,
-			0,
-			0,
-			0});
+            20,
+            0,
+            0,
+            0});
 			this.numericUpDownWeight.Minimum = new decimal(new int[] {
-			1,
-			0,
-			0,
-			0});
+            1,
+            0,
+            0,
+            0});
 			this.numericUpDownWeight.Name = "numericUpDownWeight";
 			this.numericUpDownWeight.Size = new System.Drawing.Size(46, 20);
 			this.numericUpDownWeight.TabIndex = 2;
 			this.numericUpDownWeight.Value = new decimal(new int[] {
-			1,
-			0,
-			0,
-			0});
+            1,
+            0,
+            0,
+            0});
 			this.numericUpDownWeight.ValueChanged += new System.EventHandler(this.numericUpDownWeight_ValueChanged);
 			// 
 			// textBoxCollectionName
@@ -443,7 +443,7 @@
 			this.buttonPasteEffectsToMarks.TabIndex = 3;
 			this.buttonPasteEffectsToMarks.Text = "Paste effect to marks";
 			this.toolTip1.SetToolTip(this.buttonPasteEffectsToMarks, "Place a copy of the effect currently in the paste buffer to begin at each selecte" +
-		"d mark.");
+        "d mark.");
 			this.buttonPasteEffectsToMarks.UseVisualStyleBackColor = true;
 			this.buttonPasteEffectsToMarks.Click += new System.EventHandler(this.buttonPasteEffectsToMarks_Click);
 			// 
@@ -496,7 +496,7 @@
 			// listViewMarks
 			// 
 			this.listViewMarks.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-			this.Times});
+            this.Times});
 			this.listViewMarks.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.listViewMarks.HideSelection = false;
 			this.listViewMarks.Location = new System.Drawing.Point(6, 19);
@@ -679,41 +679,41 @@
 			// 
 			this.numHighPass.Location = new System.Drawing.Point(95, 45);
 			this.numHighPass.Maximum = new decimal(new int[] {
-			22000,
-			0,
-			0,
-			0});
+            22000,
+            0,
+            0,
+            0});
 			this.numHighPass.Minimum = new decimal(new int[] {
-			10,
-			0,
-			0,
-			0});
+            10,
+            0,
+            0,
+            0});
 			this.numHighPass.Name = "numHighPass";
 			this.numHighPass.Size = new System.Drawing.Size(120, 20);
 			this.numHighPass.TabIndex = 3;
 			this.numHighPass.Value = new decimal(new int[] {
-			5000,
-			0,
-			0,
-			0});
+            5000,
+            0,
+            0,
+            0});
 			this.numHighPass.ValueChanged += new System.EventHandler(this.numHighPass_ValueChanged);
 			// 
 			// numLowPass
 			// 
 			this.numLowPass.Location = new System.Drawing.Point(95, 19);
 			this.numLowPass.Maximum = new decimal(new int[] {
-			22000,
-			0,
-			0,
-			0});
+            22000,
+            0,
+            0,
+            0});
 			this.numLowPass.Name = "numLowPass";
 			this.numLowPass.Size = new System.Drawing.Size(120, 20);
 			this.numLowPass.TabIndex = 1;
 			this.numLowPass.Value = new decimal(new int[] {
-			5000,
-			0,
-			0,
-			0});
+            5000,
+            0,
+            0,
+            0});
 			this.numLowPass.ValueChanged += new System.EventHandler(this.numLowPass_ValueChanged);
 			// 
 			// chkHighPass
@@ -907,9 +907,11 @@
 			// 
 			// MarkManager
 			// 
+			this.AcceptButton = this.buttonOK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(732, 625);
+			this.CancelButton = this.buttonCancel;
+			this.ClientSize = new System.Drawing.Size(732, 626);
 			this.Controls.Add(this.groupBoxPlayback);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.groupBoxSelectedMarkCollection);

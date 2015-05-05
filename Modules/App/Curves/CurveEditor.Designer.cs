@@ -42,12 +42,12 @@ namespace VixenModules.App.Curves
 			this.yLabel = new System.Windows.Forms.Label();
 			this.xLabel = new System.Windows.Forms.Label();
 			this.grpCurve = new System.Windows.Forms.GroupBox();
-			this.btnInvert = new System.Windows.Forms.Button();
-			this.btnReverse = new System.Windows.Forms.Button();
-			this.lblSelectedPoint = new System.Windows.Forms.Label();
 			this.btnUpdateCoordinates = new System.Windows.Forms.Button();
+			this.lblSelectedPoint = new System.Windows.Forms.Label();
 			this.txtYValue = new Common.Controls.NumericTextBox();
 			this.txtXValue = new Common.Controls.NumericTextBox();
+			this.btnInvert = new System.Windows.Forms.Button();
+			this.btnReverse = new System.Windows.Forms.Button();
 			this.zedGraphControl = new ZedGraph.ZedGraphControl();
 			this.groupBoxLibrary.SuspendLayout();
 			this.grpCurve.SuspendLayout();
@@ -195,6 +195,44 @@ namespace VixenModules.App.Curves
 			this.grpCurve.TabStop = false;
 			this.grpCurve.Text = "Curve";
 			// 
+			// btnUpdateCoordinates
+			// 
+			this.btnUpdateCoordinates.Enabled = false;
+			this.btnUpdateCoordinates.Location = new System.Drawing.Point(203, 43);
+			this.btnUpdateCoordinates.Name = "btnUpdateCoordinates";
+			this.btnUpdateCoordinates.Size = new System.Drawing.Size(100, 25);
+			this.btnUpdateCoordinates.TabIndex = 15;
+			this.btnUpdateCoordinates.Text = "Update";
+			this.btnUpdateCoordinates.UseVisualStyleBackColor = true;
+			this.btnUpdateCoordinates.Click += new System.EventHandler(this.btnUpdateCoordinates_Click);
+			// 
+			// lblSelectedPoint
+			// 
+			this.lblSelectedPoint.AutoSize = true;
+			this.lblSelectedPoint.Location = new System.Drawing.Point(216, 22);
+			this.lblSelectedPoint.Name = "lblSelectedPoint";
+			this.lblSelectedPoint.Size = new System.Drawing.Size(76, 13);
+			this.lblSelectedPoint.TabIndex = 14;
+			this.lblSelectedPoint.Text = "Selected Point";
+			// 
+			// txtYValue
+			// 
+			this.txtYValue.AllowSpace = false;
+			this.txtYValue.Enabled = false;
+			this.txtYValue.Location = new System.Drawing.Point(347, 49);
+			this.txtYValue.Name = "txtYValue";
+			this.txtYValue.Size = new System.Drawing.Size(119, 20);
+			this.txtYValue.TabIndex = 13;
+			// 
+			// txtXValue
+			// 
+			this.txtXValue.AllowSpace = false;
+			this.txtXValue.Enabled = false;
+			this.txtXValue.Location = new System.Drawing.Point(347, 19);
+			this.txtXValue.Name = "txtXValue";
+			this.txtXValue.Size = new System.Drawing.Size(119, 20);
+			this.txtXValue.TabIndex = 12;
+			// 
 			// btnInvert
 			// 
 			this.btnInvert.Location = new System.Drawing.Point(13, 49);
@@ -214,44 +252,6 @@ namespace VixenModules.App.Curves
 			this.btnReverse.Text = "Reverse Curve";
 			this.btnReverse.UseVisualStyleBackColor = true;
 			this.btnReverse.Click += new System.EventHandler(this.btnReverse_Click);
-			// 
-			// lblSelectedPoint
-			// 
-			this.lblSelectedPoint.AutoSize = true;
-			this.lblSelectedPoint.Location = new System.Drawing.Point(216, 22);
-			this.lblSelectedPoint.Name = "lblSelectedPoint";
-			this.lblSelectedPoint.Size = new System.Drawing.Size(76, 13);
-			this.lblSelectedPoint.TabIndex = 14;
-			this.lblSelectedPoint.Text = "Selected Point";
-			// 
-			// btnUpdateCoordinates
-			// 
-			this.btnUpdateCoordinates.Enabled = false;
-			this.btnUpdateCoordinates.Location = new System.Drawing.Point(203, 43);
-			this.btnUpdateCoordinates.Name = "btnUpdateCoordinates";
-			this.btnUpdateCoordinates.Size = new System.Drawing.Size(100, 25);
-			this.btnUpdateCoordinates.TabIndex = 15;
-			this.btnUpdateCoordinates.Text = "Update";
-			this.btnUpdateCoordinates.UseVisualStyleBackColor = true;
-			this.btnUpdateCoordinates.Click += new System.EventHandler(this.btnUpdateCoordinates_Click);
-			// 
-			// txtYValue
-			// 
-			this.txtYValue.AllowSpace = false;
-			this.txtYValue.Enabled = false;
-			this.txtYValue.Location = new System.Drawing.Point(347, 49);
-			this.txtYValue.Name = "txtYValue";
-			this.txtYValue.Size = new System.Drawing.Size(119, 20);
-			this.txtYValue.TabIndex = 13;
-			// 
-			// txtXValue
-			// 
-			this.txtXValue.AllowSpace = false;
-			this.txtXValue.Enabled = false;
-			this.txtXValue.Location = new System.Drawing.Point(347, 19);
-			this.txtXValue.Name = "txtXValue";
-			this.txtXValue.Size = new System.Drawing.Size(119, 20);
-			this.txtXValue.TabIndex = 12;
 			// 
 			// zedGraphControl
 			// 
@@ -287,8 +287,10 @@ namespace VixenModules.App.Curves
 			// 
 			// CurveEditor
 			// 
+			this.AcceptButton = this.buttonOK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.CancelButton = this.buttonCancel;
 			this.ClientSize = new System.Drawing.Size(495, 656);
 			this.Controls.Add(this.grpCurve);
 			this.Controls.Add(this.groupBoxLibrary);
