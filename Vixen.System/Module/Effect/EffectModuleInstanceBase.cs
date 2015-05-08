@@ -4,8 +4,10 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
+using Vixen.Annotations;
 using Vixen.Services;
 using Vixen.Sys;
 
@@ -16,7 +18,8 @@ namespace Vixen.Module.Effect
 	                                                 IEqualityComparer<IEffectModuleInstance>,
 	                                                 IEquatable<IEffectModuleInstance>,
 	                                                 IEqualityComparer<EffectModuleInstanceBase>,
-	                                                 IEquatable<EffectModuleInstanceBase> 
+	                                                 IEquatable<EffectModuleInstanceBase>,
+														INotifyPropertyChanged
 	{
 		private ElementNode[] _targetNodes;
 		private TimeSpan _timeSpan;
@@ -351,8 +354,8 @@ namespace Vixen.Module.Effect
 			{
 				properties = InitializeProperties();
 			}
-			List<PropertyDescriptor> propertyDescriptors = properties.FindAll(pd => pd.Attributes.Contains(attributes));
-			PropertyDescriptorCollection propertyDescriptorCollection = new PropertyDescriptorCollection(propertyDescriptors.ToArray());
+			//List<PropertyDescriptor> propertyDescriptors = properties.FindAll(pd => pd.Attributes.Contains(attributes));
+			PropertyDescriptorCollection propertyDescriptorCollection = new PropertyDescriptorCollection(properties.ToArray());
 
 			return propertyDescriptorCollection;
 			
@@ -405,5 +408,14 @@ namespace Vixen.Module.Effect
 		}
 
 		#endregion
+
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		[NotifyPropertyChangedInvocator]
+		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+		{
+			var handler = PropertyChanged;
+			if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+		}
 	}
 }

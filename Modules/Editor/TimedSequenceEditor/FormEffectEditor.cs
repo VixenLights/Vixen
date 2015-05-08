@@ -2,11 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Drawing.Design;
 using System.Linq;
 using System.Timers;
+using System.Windows;
+using System.Windows.Controls.WpfPropertyGrid.Themes;
 using System.Windows.Forms;
+using System.Windows.Forms.Integration;
 using Vixen.Execution.Context;
 using Vixen.Sys;
 using VixenModules.App.ColorGradients;
@@ -15,6 +17,7 @@ using VixenModules.EffectEditor.EffectTypeEditors;
 using WeifenLuo.WinFormsUI.Docking;
 using Action = System.Action;
 using Element = Common.Controls.Timeline.Element;
+using PropertyGrid = System.Windows.Controls.WpfPropertyGrid.PropertyGrid;
 using Timer = System.Timers.Timer;
 
 namespace VixenModules.Editor.TimedSequenceEditor
@@ -26,9 +29,20 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private readonly ToolStripButton _toolStripButtonPreview;
 		private LiveContext _previewContext;
 		private readonly Timer _previewLoopTimer = new Timer();
+		private readonly PropertyGrid propertyGridEffectProperties;
 
 		public FormEffectEditor(TimedSequenceEditorForm sequenceEditorForm)
 		{
+			if (System.Windows.Application.Current == null)
+			{
+				// create the Application object
+				new System.Windows.Application();
+			}
+			ResourceDictionary dict = new ResourceDictionary();
+
+			dict.Source = new Uri("/System.Windows.Controls.WpfPropertyGrid.Themes;component/Kaxaml/Theme.xaml", UriKind.Relative);
+
+			System.Windows.Application.Current.Resources.MergedDictionaries.Add(dict);
 			InitializeComponent();
 			//This should be refactored out of here and into the actual type classes, but due to some circular dependencies it is not possible until the 
 			//old effect editors are removed.
@@ -42,29 +56,55 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			//End refactor block
 
 			_sequenceEditorForm = sequenceEditorForm;
-			foreach (var control in propertyGridEffectProperties.Controls)
+			var host = new ElementHost { Dock = DockStyle.Fill };
+
+			propertyGridEffectProperties = new PropertyGrid
 			{
-				if (control is ToolStrip)
-				{
-					ToolStrip ts = control as ToolStrip;
-					foreach (ToolStripItem item in ts.Items)
-					{
-						item.Visible = false;
-					}
-					_toolStripButtonPreview = new ToolStripButton
-					{
-						CheckOnClick = true,
-						ForeColor = Color.WhiteSmoke,
-						Text = @"Preview"
-					};
-					_toolStripButtonPreview.Click += toolStripButtonPreview_Click;
-					ts.Items.Add(_toolStripButtonPreview);
-				}
-			}
+				Layout = new System.Windows.Controls.WpfPropertyGrid.Design.CategorizedLayout(),
+				ShowReadOnlyProperties = true
+			};
+			//System.Windows.Forms.PropertyGrid
+			
+			//KaxamlTheme theme = new KaxamlTheme();
+			
+			host.Child = propertyGridEffectProperties;
+
+			Controls.Add(host);
+			//foreach (var control in propertyGridEffectProperties.Controls)
+			//{
+			//	if (control is ToolStrip)
+			//	{
+			//		ToolStrip ts = control as ToolStrip;
+			//		foreach (ToolStripItem item in ts.Items)
+			//		{
+			//			item.Visible = false;
+			//		}
+			//		_toolStripButtonPreview = new ToolStripButton
+			//		{
+			//			CheckOnClick = true,
+			//			ForeColor = Color.WhiteSmoke,
+			//			Text = @"Preview"
+			//		};
+			//		_toolStripButtonPreview.Click += toolStripButtonPreview_Click;
+			//		ts.Items.Add(_toolStripButtonPreview);
+			//	}
+			//}
 
 			sequenceEditorForm.TimelineControl.SelectionChanged += timelineControl_SelectionChanged;
+			//propertyGridEffectProperties.PropertyValueChanged += propertyGridEffectProperties_PropertyValueChanged;
 			propertyGridEffectProperties.PropertyValueChanged += propertyGridEffectProperties_PropertyValueChanged;
 			_previewLoopTimer.Elapsed += PreviewLoopTimerOnElapsed;
+		}
+
+		void propertyGridEffectProperties_PropertyValueChanged(object sender, System.Windows.Controls.WpfPropertyGrid.PropertyValueChangedEventArgs e)
+		{
+			_sequenceEditorForm.AddEffectsModifiedToUndo(new Dictionary<Element, EffectModelCandidate>(_elements), e.Property.DisplayName);
+			var keys = new List<Element>(Elements);
+			foreach (var element in keys)
+			{
+				element.UpdateNotifyContentChanged();
+				_elements[element] = new EffectModelCandidate(element.EffectNode.Effect);
+			}
 		}
 
 		internal IEnumerable<Element> Elements
@@ -75,7 +115,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				RemoveElementContentChangedListener();
 				_elements.Clear();
 				AddElements(value);
-				SetPreviewState();
+				//SetPreviewState();
+				//if (_elements.Any())
+				//{
+				//	propertyGridEffectProperties.SelectedObject = _elements.Keys.Select(x => x.EffectNode.Effect).First();
+				//}
+				//else
+				//{
+				//	propertyGridEffectProperties.SelectedObject = null;
+
+				//}
+				
 				propertyGridEffectProperties.SelectedObjects = _elements.Keys.Select(x => x.EffectNode.Effect).ToArray();
 			} 
 		}
@@ -111,21 +161,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			Elements = _sequenceEditorForm.TimelineControl.SelectedElements;
 		}
 
-		private void propertyGridEffectProperties_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
-		{
-			_sequenceEditorForm.AddEffectsModifiedToUndo(new Dictionary<Element, EffectModelCandidate>(_elements), e.ChangedItem.Label);
-			var keys = new List<Element>(Elements);
-			foreach (var element in keys)
-			{
-				element.UpdateNotifyContentChanged();
-				_elements[element] = new EffectModelCandidate(element.EffectNode.Effect);
-			}
-
-		}
-
 		private void element_ContentChanged(object sender, EventArgs e)
 		{
-			propertyGridEffectProperties.Refresh();
+			propertyGridEffectProperties.InvalidateVisual();
 		}
 
 		#endregion

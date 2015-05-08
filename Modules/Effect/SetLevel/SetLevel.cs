@@ -5,6 +5,8 @@ using System.Drawing;
 using System.Drawing.Design;
 using System.Linq;
 using System.Threading;
+using System.Windows.Controls.WpfPropertyGrid;
+using System.Windows.Controls.WpfPropertyGrid.Controls;
 using Vixen.Data.Value;
 using Vixen.Intent;
 using Vixen.Module;
@@ -65,8 +67,8 @@ namespace VixenModules.Effect.SetLevel
 		[ProviderDisplayName(@"Brightness")]
 		[ProviderCategory(@"Brightness")]
 		[ProviderDescription(@"Brightness")]
-		[Editor(typeof(EffectLevelTypeEditor), typeof(UITypeEditor))]
-		[TypeConverter(typeof(LevelTypeConverter))]
+		[PropertyEditor(typeof(SliderLevelEditor))]
+		[NumberRange(0, 100, 1)]    
 		public double IntensityLevel
 		{
 			get { return _data.level; }
@@ -74,6 +76,7 @@ namespace VixenModules.Effect.SetLevel
 			{
 				_data.level = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
@@ -81,8 +84,7 @@ namespace VixenModules.Effect.SetLevel
 		[ProviderCategory(@"Color")]
 		[ProviderDisplayName(@"Color")]
 		[ProviderDescription(@"Color")]
-		[Editor(typeof(EffectColorTypeEditor), typeof(UITypeEditor))]
-		[TypeConverter(typeof(ColorTypeConverter))]
+		[PropertyEditor(typeof(ColorEditor))]
 		public Color Color
 		{
 			get
@@ -94,6 +96,7 @@ namespace VixenModules.Effect.SetLevel
 			{
 				_data.color = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 

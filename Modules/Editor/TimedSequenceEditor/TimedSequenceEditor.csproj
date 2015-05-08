@@ -66,17 +66,22 @@
       <HintPath>..\..\..\packages\NLog.3.1.0.0\lib\net45\NLog.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
     <Reference Include="WeifenLuo.WinFormsUI.Docking">
       <HintPath>..\..\..\packages\DockPanelSuite.2.9.0.0\lib\net40\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AudacityImportDialog.cs">
@@ -97,6 +102,7 @@
     <Compile Include="BulkEffectMoveForm.Designer.cs">
       <DependentUpon>BulkEffectMoveForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="BusinessObject.cs" />
     <Compile Include="EffectDistributionDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -327,6 +333,16 @@
     <ProjectReference Include="..\..\..\Common\Resources\Resources.csproj">
       <Project>{F7A80169-6310-4585-9D58-A6F6F5C5B380}</Project>
       <Name>Resources</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Common\WpfPropertyGrid.Themes\WpfPropertyGrid.Themes.csproj">
+      <Project>{dd5c7e14-01cc-44fc-81bc-5c6cf6bb2ad9}</Project>
+      <Name>WpfPropertyGrid.Themes</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Common\WpfPropertyGrid\WpfPropertyGrid.csproj">
+      <Project>{5a48b67f-1e7e-4ed6-a201-f6cc8e7e6788}</Project>
+      <Name>WpfPropertyGrid</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Analysis\BeatsAndBars\BeatsAndBars.csproj">

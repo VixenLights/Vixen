@@ -556,7 +556,7 @@ namespace VixenModules.Effect.Wipe
 		}
 
 		[Value]
-		[ProviderCategory(@"EffectType")]
+		[ProviderCategory(@"Type")]
 		[ProviderDisplayName(@"Type")]
 		[Description(@"WipeType")]
 		[TypeConverter(typeof(WipeSelectionTypeConverter))]

@@ -5,6 +5,8 @@ using System.Drawing;
 using System.Drawing.Design;
 using System.Linq;
 using System.Threading;
+using System.Windows.Controls.WpfPropertyGrid;
+using System.Windows.Controls.WpfPropertyGrid.Controls;
 using Vixen.Module;
 using Vixen.Module.Effect;
 using Vixen.Sys;
@@ -106,8 +108,10 @@ namespace VixenModules.Effect.Alternating
 
 		[Value]
 		[ProviderCategory(@"Brightness")]
-		[Editor(typeof(EffectLevelTypeEditor), typeof(UITypeEditor))]
-		[TypeConverter(typeof(LevelTypeConverter))]
+		//[Editor(typeof(EffectLevelTypeEditor), typeof(UITypeEditor))]
+		//[TypeConverter(typeof(LevelTypeConverter))]
+		[PropertyEditor(typeof(SliderLevelEditor))]
+		[NumberRange(0, 100, 1)]  
 		[ProviderDisplayName(@"ColorOne")]
 		[ProviderDescription(@"Brightness")]
 		public double IntensityLevel1
@@ -117,13 +121,15 @@ namespace VixenModules.Effect.Alternating
 			{
 				_data.Level1 = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
 		[Value]
 		[ProviderCategory(@"Color")]
-		[Editor(typeof(EffectColorTypeEditor), typeof(UITypeEditor))]
-		[TypeConverter(typeof(ColorTypeConverter))]
+		//[Editor(typeof(EffectColorTypeEditor), typeof(UITypeEditor))]
+		//[TypeConverter(typeof(ColorTypeConverter))]
+		[PropertyEditor(typeof(ColorEditor))]
 		[ProviderDisplayName(@"ColorOne")]
 		[Description(@"Sets the first color.")]
 		public Color Color1
@@ -136,13 +142,16 @@ namespace VixenModules.Effect.Alternating
 			{
 				_data.Color1 = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
 		[Value]
 		[ProviderCategory(@"Brightness")]
-		[Editor(typeof(EffectLevelTypeEditor), typeof(UITypeEditor))]
-		[TypeConverter(typeof(LevelTypeConverter))]
+		//[Editor(typeof(EffectLevelTypeEditor), typeof(UITypeEditor))]
+		//[TypeConverter(typeof(LevelTypeConverter))]
+		[PropertyEditor(typeof(SliderLevelEditor))]
+		[NumberRange(0, 100, 1)]  
 		[ProviderDisplayName(@"ColorTwo")]
 		[ProviderDescription(@"Brightness")]
 		public double IntensityLevel2
@@ -152,13 +161,15 @@ namespace VixenModules.Effect.Alternating
 			{
 				_data.Level2 = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
 		[Value]
 		[ProviderCategory(@"Color")]
-		[Editor(typeof(EffectColorTypeEditor), typeof(UITypeEditor))]
-		[TypeConverter(typeof(ColorTypeConverter))]
+		//[Editor(typeof(EffectColorTypeEditor), typeof(UITypeEditor))]
+		//[TypeConverter(typeof(ColorTypeConverter))]
+		[PropertyEditor(typeof(ColorEditor))]
 		[ProviderDisplayName(@"ColorTwo")]
 		[Description(@"Sets the second color.")]
 		public Color Color2
@@ -171,6 +182,7 @@ namespace VixenModules.Effect.Alternating
 			{
 				_data.Color2 = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
@@ -204,7 +216,7 @@ namespace VixenModules.Effect.Alternating
 		[Value]
 		[ProviderCategory(@"Depth")]
 		[ProviderDisplayName(@"Depth")]
-		[ProviderDescription(@"Depth.")]
+		[ProviderDescription(@"Depth")]
 		public int GroupEffect
 		{
 			get { return _data.GroupEffect; }
@@ -243,6 +255,7 @@ namespace VixenModules.Effect.Alternating
 				IsDirty = true;
 				UpdateColorOneAttributes();
 				TypeDescriptor.Refresh(this);
+				OnPropertyChanged();
 			}
 		}
 
@@ -262,6 +275,7 @@ namespace VixenModules.Effect.Alternating
 				IsDirty = true;
 				UpdateColorTwoAttributes();
 				TypeDescriptor.Refresh(this);
+				OnPropertyChanged();
 			}
 		}
 

@@ -64,7 +64,7 @@ namespace VixenModules.Effect.Candle
 		[Value]
 		[ProviderCategory(@"Brightness")]
 		[ProviderDisplayName(@"MinBrightness")]
-		[ProviderDescription(@"MinBrightness.")]
+		[ProviderDescription(@"MinBrightness")]
 		[TypeConverter(typeof(PercentageTypeConverter))]
 		[Editor(typeof(EffectRangeTypeEditor), typeof(UITypeEditor))]
 		[Range]
