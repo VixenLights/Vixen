@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="FilePath.cs" />
     <Compile Include="Percentage.cs" />
+    <Compile Include="PercentageTypeConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

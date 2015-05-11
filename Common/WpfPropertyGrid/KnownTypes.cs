@@ -18,6 +18,7 @@ using System.ComponentModel;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Windows.Input;
+using Vixen.Attributes;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using Color = System.Drawing.Color;

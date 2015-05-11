@@ -81,6 +81,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\BoolDescriptionAttribute.cs" />
+    <Compile Include="Attributes\BrowsableCategoryAttribute.cs" />
+    <Compile Include="Attributes\BrowsablePropertyAttribute.cs" />
+    <Compile Include="Attributes\CategoryEditorAttribute.cs" />
+    <Compile Include="Attributes\CategoryOrderAttribute.cs" />
+    <Compile Include="Attributes\FlatternHierarchyAttribute.cs" />
+    <Compile Include="Attributes\NumberRangeAttribute.cs" />
+    <Compile Include="Attributes\PropertyEditorAttribute.cs" />
+    <Compile Include="Attributes\PropertyOrderAttribute.cs" />
     <Compile Include="Cache\Event\CacheEventArgs.cs" />
     <Compile Include="Cache\Event\CacheStartedEventArgs.cs" />
     <Compile Include="Cache\Sequence\ISequenceCache.cs" />
@@ -815,6 +824,15 @@
     <Compile Include="Sys\VixenSystem.cs" />
     <Compile Include="Sys\WindowsMultimedia.cs" />
     <Compile Include="Sys\XmlHelper.cs" />
+    <Compile Include="TypeConverters\BooleanStringTypeConverter.cs" />
+    <Compile Include="TypeConverters\ColorSelectionTypeConverter.cs" />
+    <Compile Include="TypeConverters\ColorTypeConverter.cs" />
+    <Compile Include="TypeConverters\DoublePercentTypeConverter.cs" />
+    <Compile Include="TypeConverters\EnumDescriptionTypeConverter.cs" />
+    <Compile Include="TypeConverters\LevelTypeConverter.cs" />
+    <Compile Include="TypeConverters\RangeAttribute.cs" />
+    <Compile Include="TypeConverters\RangeTypeConverter.cs" />
+    <Compile Include="TypeConverters\WipeSelectionTypeConverter.cs" />
     <Compile Include="Utility\cEventHelper.cs" />
     <Compile Include="Utility\MiniStackTrace.cs" />
     <Compile Include="Utility\PathUtility.cs" />

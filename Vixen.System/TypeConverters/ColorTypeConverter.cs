@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Drawing;
 
-namespace VixenModules.EffectEditor.TypeConverters
+namespace Vixen.TypeConverters
 {
 	public class ColorTypeConverter : ColorConverter
 	{

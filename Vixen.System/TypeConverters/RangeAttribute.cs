@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace VixenModules.EffectEditor.TypeConverters
+namespace Vixen.TypeConverters
 {
 	[AttributeUsage(AttributeTargets.All)]
 	public class RangeAttribute : Attribute

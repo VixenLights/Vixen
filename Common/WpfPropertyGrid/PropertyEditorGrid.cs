@@ -20,6 +20,7 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Input;
 using System.Windows.Media;
+using Vixen.Attributes;
 
 namespace System.Windows.Controls.WpfPropertyGrid
 {

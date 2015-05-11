@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Globalization;
 
-namespace VixenModules.EffectEditor.TypeConverters
+namespace Vixen.TypeConverters
 {
 	public class RangeTypeConverter : TypeConverter
 	{

@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace System.Windows.Controls.WpfPropertyGrid.Metadata
+namespace Vixen.Attributes
 {
 	/// <summary>
 	/// Specifies a range.

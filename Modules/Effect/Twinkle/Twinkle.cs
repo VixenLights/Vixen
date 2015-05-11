@@ -11,9 +11,9 @@ using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using System.Drawing;
 using System.Drawing.Design;
+using Vixen.TypeConverters;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using VixenModules.EffectEditor.EffectTypeEditors;
-using VixenModules.EffectEditor.TypeConverters;
 using ZedGraph;
 using VixenModules.Property.Color;
 

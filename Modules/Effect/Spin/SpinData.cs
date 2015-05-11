@@ -4,7 +4,7 @@ using Vixen.Module;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using System.ComponentModel;
-using VixenModules.EffectEditor.TypeConverters;
+using Vixen.TypeConverters;
 
 namespace VixenModules.Effect.Spin
 {

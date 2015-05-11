@@ -53,16 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EnumDescriptionTypeConverter.cs" />
-    <Compile Include="ColorSelectionTypeConverter.cs" />
-    <Compile Include="ColorTypeConverter.cs" />
-    <Compile Include="LevelTypeConverter.cs" />
-    <Compile Include="PercentageTypeConverter.cs" />
-    <Compile Include="DoublePercentTypeConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RangeAttribute.cs" />
-    <Compile Include="RangeTypeConverter.cs" />
-    <Compile Include="WipeSelectionTypeConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Common\ValueTypes\ValueTypes.csproj">

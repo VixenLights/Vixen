@@ -14,9 +14,9 @@ using Vixen.Sys;
 using Vixen.Module;
 using Vixen.Module.Effect;
 using Vixen.Sys.Attribute;
+using Vixen.TypeConverters;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using VixenModules.EffectEditor.EffectTypeEditors;
-using VixenModules.EffectEditor.TypeConverters;
 
 namespace VixenModules.Effect.CustomValue
 {

@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel;
-using VixenModules.EffectEditor.TypeConverters;
+using Vixen.TypeConverters;
 
 namespace VixenModules.Effect.Wipe {
 	[TypeConverter(typeof(EnumDescriptionTypeConverter))]

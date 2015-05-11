@@ -1,8 +1,9 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Globalization;
-using System.Windows.Controls.WpfPropertyGrid.Metadata;
+using Vixen.Attributes;
 
-namespace System.Windows.Controls.WpfPropertyGrid.Converters
+namespace Vixen.TypeConverters
 {
 	public class BooleanStringTypeConverter:TypeConverter
 	{

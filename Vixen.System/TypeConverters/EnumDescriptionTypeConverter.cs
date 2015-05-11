@@ -1,9 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Globalization;
-using System.Reflection;
 
-namespace VixenModules.EffectEditor.TypeConverters
+namespace Vixen.TypeConverters
 {
 	public class EnumDescriptionTypeConverter : EnumConverter
 	{

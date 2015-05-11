@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Controls.WpfPropertyGrid;
 using System.Windows.Controls.WpfPropertyGrid.Controls;
+using Vixen.Attributes;
 using Vixen.Data.Value;
 using Vixen.Intent;
 using Vixen.Module;
@@ -15,7 +16,6 @@ using Vixen.Sys;
 using Vixen.Sys.Attribute;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using VixenModules.EffectEditor.EffectTypeEditors;
-using VixenModules.EffectEditor.TypeConverters;
 using VixenModules.Property.Color;
 
 namespace VixenModules.Effect.SetLevel

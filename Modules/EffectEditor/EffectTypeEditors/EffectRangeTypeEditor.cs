@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Drawing.Design;
 using System.Globalization;
 using System.Windows.Forms.Design;
-using VixenModules.EffectEditor.TypeConverters;
+using Vixen.TypeConverters;
 
 namespace VixenModules.EffectEditor.EffectTypeEditors
 {

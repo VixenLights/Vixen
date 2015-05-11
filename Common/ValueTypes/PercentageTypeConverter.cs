@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Common.ValueTypes;
 
-namespace VixenModules.EffectEditor.TypeConverters
+namespace Common.ValueTypes
 {
 	public class PercentageTypeConverter : TypeConverter
 	{

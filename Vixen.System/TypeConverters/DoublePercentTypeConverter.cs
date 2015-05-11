@@ -1,10 +1,8 @@
 ﻿using System;
-using System.CodeDom;
 using System.ComponentModel;
 using System.Globalization;
-using System.Xml.Schema;
 
-namespace VixenModules.EffectEditor.TypeConverters
+namespace Vixen.TypeConverters
 {
 	/// <summary>
 	/// Ensures Percent type values are in range.

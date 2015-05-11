@@ -159,7 +159,6 @@
     <Compile Include="Controls\SliderEditorBase.cs" />
     <Compile Include="Controls\SliderLevelEditor.cs" />
     <Compile Include="Converters\BitmapImageConverter.cs" />
-    <Compile Include="Converters\BooleanStringTypeConverter.cs" />
     <Compile Include="Converters\DebugConverter.cs" />
     <Compile Include="Converters\EnumValueConverter.cs" />
     <Compile Include="Converters\ExpanderHeaderWidthConverter.cs" />
@@ -190,10 +189,6 @@
     <Compile Include="EditorKeys.cs" />
     <Compile Include="GridEntryCollection.cs" />
     <Compile Include="KnownTypes.cs" />
-    <Compile Include="Metadata\BoolDescriptionAttribute.cs" />
-    <Compile Include="Metadata\CategoryEditorAttribute.cs" />
-    <Compile Include="Metadata\CategoryOrderAttribute.cs" />
-    <Compile Include="Metadata\PropertyEditorAttribute.cs" />
     <Compile Include="MetadataRepository.cs" />
     <Compile Include="PropertyEditingEventArgs.cs" />
     <Compile Include="PropertyEditing\Filters\PropertyFilterAppliedEventArgs.cs" />
@@ -212,13 +207,8 @@
     <Compile Include="Design\TabbedLayout.cs" />
     <Compile Include="Design\TabbedLayoutItem.cs" />
     <Compile Include="Metadata\AttributesContainer.cs" />
-    <Compile Include="Metadata\BrowsableCategoryAttribute.cs" />
-    <Compile Include="Metadata\BrowsablePropertyAttribute.cs" />
-    <Compile Include="Metadata\FlatternHierarchyAttribute.cs" />
     <Compile Include="Input\PropertyGridCommands.cs" />
-    <Compile Include="Metadata\NumberRangeAttribute.cs" />
     <Compile Include="Controls\DoubleEditor.cs" />
-    <Compile Include="Metadata\PropertyOrderAttribute.cs" />
     <Compile Include="ObjectServices.cs" />
     <Compile Include="PropertyGrid.Commands.cs" />
     <Compile Include="PropertyGridUtils.cs" />
@@ -278,6 +268,11 @@
     <ProjectReference Include="..\..\Modules\App\Curves\Curves.csproj">
       <Project>{F0BA7127-61B4-453A-802B-ABCB5A0D3D54}</Project>
       <Name>Curves</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Vixen.System\Vixen.csproj">
+      <Project>{50b78623-fcf4-48af-93ff-fa87c937028f}</Project>
+      <Name>Vixen</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>

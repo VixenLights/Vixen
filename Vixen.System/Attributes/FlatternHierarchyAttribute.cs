@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace System.Windows.Controls.WpfPropertyGrid
+
+using System;
+
+namespace Vixen.Attributes
 {
   /// <summary>
   /// Specifies whether the property hierarchy should be flatterned for visualization.

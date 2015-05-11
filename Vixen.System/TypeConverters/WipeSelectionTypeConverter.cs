@@ -2,9 +2,9 @@
 using System.ComponentModel;
 using System.Globalization;
 
-namespace VixenModules.EffectEditor.TypeConverters
+namespace Vixen.TypeConverters
 {
-	public class ColorSelectionTypeConverter : TypeConverter
+	public class WipeSelectionTypeConverter: TypeConverter
 	{
 		public override bool GetStandardValuesSupported(ITypeDescriptorContext context)
 		{
@@ -15,7 +15,7 @@ namespace VixenModules.EffectEditor.TypeConverters
 		{
 			return true;
 		}
-		
+
 		public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
 		{
 			if (sourceType == typeof(string))
@@ -29,9 +29,9 @@ namespace VixenModules.EffectEditor.TypeConverters
 		{
 			if (value.GetType() == typeof(string))
 			{
-				if (((string)value).ToLower() == "static")
+				if (((string)value).ToLower() == "by count")
 					return true;
-				if (((string)value).ToLower() == "gradient")
+				if (((string)value).ToLower() == "by pulse length")
 					return false;
 				throw new Exception("Values must be \"Static\" or \"Gradient\"");
 			}
@@ -51,13 +51,13 @@ namespace VixenModules.EffectEditor.TypeConverters
 		{
 			if (destinationType == typeof(string))
 			{
-				return (((bool)value) ? "Static" : "Gradient");
+				return (((bool)value) ? "By Count" : "By Pulse Length");
 			}
 			return base.ConvertTo(context, culture, value, destinationType);
 		}
 		public override StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)
 		{
-			string[] bools = { "Static", "Gradient" };
+			bool[] bools = { true, false };
 			StandardValuesCollection svc = new StandardValuesCollection(bools);
 			return svc;
 		}

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 using System.Collections.Generic;
+using Vixen.Attributes;
 
 namespace System.Windows.Controls.WpfPropertyGrid
 {
