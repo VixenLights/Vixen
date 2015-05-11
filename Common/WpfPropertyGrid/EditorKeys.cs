@@ -23,11 +23,14 @@ namespace System.Windows.Controls.WpfPropertyGrid
     private static readonly Type ThisType = typeof(EditorKeys);
     private static readonly ComponentResourceKey _NamedColorEditorKey = new ComponentResourceKey(ThisType, "NamedColorEditor");
 	private static readonly ComponentResourceKey _ColorEditorKey = new ComponentResourceKey(ThisType, "ColorEditor");
+	private static readonly ComponentResourceKey _CurveEditorKey = new ComponentResourceKey(ThisType, "CurveEditor");
+	private static readonly ComponentResourceKey _GradientEditorKey = new ComponentResourceKey(ThisType, "GradientEditor");
     private static readonly ComponentResourceKey _PasswordEditorKey = new ComponentResourceKey(ThisType, "PasswordEditor");
     private static readonly ComponentResourceKey _DefaultEditorKey = new ComponentResourceKey(ThisType, "DefaultEditor");
     private static readonly ComponentResourceKey _BooleanEditorKey = new ComponentResourceKey(ThisType, "BooleanEditor");
     private static readonly ComponentResourceKey _DoubleEditorKey = new ComponentResourceKey(ThisType, "DoubleEditor");
     private static readonly ComponentResourceKey _EnumEditorKey = new ComponentResourceKey(ThisType, "EnumEditor");
+	private static readonly ComponentResourceKey _ComboBoxEditorKey = new ComponentResourceKey(ThisType, "ComboBoxEditor");
     private static readonly ComponentResourceKey _SliderEditorKey = new ComponentResourceKey(ThisType, "SliderEditor");
 	private static readonly ComponentResourceKey _SliderLevelEditorKey = new ComponentResourceKey(ThisType, "SliderLevelEditor");
     private static readonly ComponentResourceKey _FontFamilyEditorKey = new ComponentResourceKey(ThisType, "FontFamilyEditor");
@@ -40,6 +43,18 @@ namespace System.Windows.Controls.WpfPropertyGrid
     /// </summary>
     /// <value>The named color editor key.</value>
     public static ComponentResourceKey NamedColorEditorKey { get { return _NamedColorEditorKey; } }
+
+	/// <summary>
+	/// Gets the Curve editor key.
+	/// </summary>
+	/// <value>The named color editor key.</value>
+	public static ComponentResourceKey CurveEditorKey { get { return _CurveEditorKey; } }
+
+	/// <summary>
+	/// Gets the Gradient editor key.
+	/// </summary>
+	/// <value>The named color editor key.</value>
+	public static ComponentResourceKey GradientEditorKey { get { return _GradientEditorKey; } }
 
 	/// <summary>
 	/// Gets the NamedColor editor key.
@@ -76,6 +91,12 @@ namespace System.Windows.Controls.WpfPropertyGrid
     /// </summary>
     /// <value>The enum editor key.</value>
     public static ComponentResourceKey EnumEditorKey { get { return _EnumEditorKey; } }
+
+	/// <summary>
+	/// Gets the combobox editor key.
+	/// </summary>
+	/// <value>The enum editor key.</value>
+	public static ComponentResourceKey ComboBoxEditorKey { get { return _ComboBoxEditorKey; } }
 
     /// <summary>
     /// Gets the slider editor key.

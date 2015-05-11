@@ -991,6 +991,11 @@ namespace VixenModules.App.ColorGradients
 			}
 		}
 
+		public Bitmap GenericImage
+		{
+			get { return GenerateColorGradientImage(new Size(50, 50), false); }
+		}
+
 		public Bitmap GenerateColorGradientImage(Size size, bool discreteColors)
 		{
 			Bitmap result = new Bitmap(size.Width, size.Height);

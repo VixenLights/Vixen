@@ -102,7 +102,6 @@
     <Compile Include="BulkEffectMoveForm.Designer.cs">
       <DependentUpon>BulkEffectMoveForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="BusinessObject.cs" />
     <Compile Include="EffectDistributionDialog.cs">
       <SubType>Form</SubType>
     </Compile>

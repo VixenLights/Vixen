@@ -14,32 +14,33 @@ using Vixen.Sys;
 namespace Vixen.Module.Effect
 {
 	[Serializable]
-	public abstract class EffectModuleInstanceBase : ModuleInstanceBase, ICustomTypeDescriptor, IEffectModuleInstance,
-	                                                 IEqualityComparer<IEffectModuleInstance>,
-	                                                 IEquatable<IEffectModuleInstance>,
-	                                                 IEqualityComparer<EffectModuleInstanceBase>,
-	                                                 IEquatable<EffectModuleInstanceBase>,
-														INotifyPropertyChanged
+	public abstract class EffectModuleInstanceBase : ModuleInstanceBase, IEffectModuleInstance,
+		IEqualityComparer<IEffectModuleInstance>,
+		IEquatable<IEffectModuleInstance>,
+		IEqualityComparer<EffectModuleInstanceBase>,
+		IEquatable<EffectModuleInstanceBase>,
+		INotifyPropertyChanged, ICustomTypeDescriptor
 	{
 		private ElementNode[] _targetNodes;
 		private TimeSpan _timeSpan;
 		private DefaultValueArrayMember _parameterValues;
 		protected ElementIntents _elementIntents;
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
-		private List<PropertyDescriptor> properties = new List<PropertyDescriptor>(); 
+		private readonly Dictionary<string, bool> _browsableState = new Dictionary<string, bool>();
 
 		protected EffectModuleInstanceBase()
 		{
-			_targetNodes = new ElementNode[0]; //set member directly on creation to prevent target node changed events from occuring.
+			_targetNodes = new ElementNode[0];
+				//set member directly on creation to prevent target node changed events from occuring.
 			TimeSpan = TimeSpan.Zero;
 			IsDirty = true;
 			_parameterValues = new DefaultValueArrayMember(this);
 			_elementIntents = new ElementIntents();
-			properties = InitializeProperties();
 		}
 
 		[Browsable(false)]
 		public virtual bool IsDirty { get; protected set; }
+
 		private bool IsRendering;
 
 		[Browsable(false)]
@@ -48,7 +49,8 @@ namespace Vixen.Module.Effect
 			get { return _targetNodes; }
 			set
 			{
-				if (value != _targetNodes) {
+				if (value != _targetNodes)
+				{
 					_targetNodes = value;
 					_EnsureTargetNodeProperties();
 					CalculateAffectedElements();
@@ -67,7 +69,8 @@ namespace Vixen.Module.Effect
 			get { return _timeSpan; }
 			set
 			{
-				if (value != _timeSpan) {
+				if (value != _timeSpan)
+				{
 					_timeSpan = value;
 					IsDirty = true;
 				}
@@ -105,7 +108,7 @@ namespace Vixen.Module.Effect
 					//Trap any errors to prevent the effect from staying in a state of rendering.
 					Logging.Error(String.Format("Error rendering {0}", EffectName), e);
 				}
-				
+
 				IsRendering = false;
 			}
 			else
@@ -115,9 +118,9 @@ namespace Vixen.Module.Effect
 				while (IsRendering)
 				{
 					Thread.Sleep(1);
-				}	
+				}
 			}
-			
+
 			return _Render();
 		}
 
@@ -126,7 +129,7 @@ namespace Vixen.Module.Effect
 			EffectIntents effectIntents = Render();
 			// NB: the ElementData.Restrict method takes a start and end time, not a start and duration
 			effectIntents = EffectIntents.Restrict(effectIntents, restrictingOffsetTime,
-			                                       restrictingOffsetTime + restrictingTimeSpan);
+				restrictingOffsetTime + restrictingTimeSpan);
 			return effectIntents;
 		}
 
@@ -144,14 +147,14 @@ namespace Vixen.Module.Effect
 		[Category(@"Effect")]
 		public virtual string EffectName
 		{
-			get { return Descriptor!=null?((IEffectModuleDescriptor) Descriptor).EffectName:""; }
+			get { return Descriptor != null ? ((IEffectModuleDescriptor) Descriptor).EffectName : ""; }
 		}
 
 		[DisplayName(@"Effect Group")]
 		[Category(@"Effect")]
 		public EffectGroups EffectGroup
 		{
-			get { return ((IEffectModuleDescriptor)Descriptor).EffectGroup; }
+			get { return ((IEffectModuleDescriptor) Descriptor).EffectGroup; }
 		}
 
 		[Browsable(false)]
@@ -177,8 +180,10 @@ namespace Vixen.Module.Effect
 			string DisplayValue = string.Format("{0}", this.EffectName);
 
 
-			using (Font AdjustedFont =  Vixen.Common.Graphics.GetAdjustedFont(g, DisplayValue, clipRectangle, "Arial")) {
-				using (var StringBrush = new SolidBrush(Color.Black)) {
+			using (Font AdjustedFont = Vixen.Common.Graphics.GetAdjustedFont(g, DisplayValue, clipRectangle, "Arial"))
+			{
+				using (var StringBrush = new SolidBrush(Color.Black))
+				{
 					//g.Clear(Color.White);
 					g.DrawRectangle(Pens.Black, clipRectangle.X, clipRectangle.Y, clipRectangle.Width - 1, clipRectangle.Height - 1);
 
@@ -187,6 +192,7 @@ namespace Vixen.Module.Effect
 				}
 			}
 		}
+
 		public virtual ElementIntents GetElementIntents(TimeSpan effectRelativeTime)
 		{
 			_elementIntents.Clear();
@@ -199,7 +205,8 @@ namespace Vixen.Module.Effect
 		private void _AddLocalIntents(TimeSpan effectRelativeTime)
 		{
 			EffectIntents effectIntents = Render();
-			foreach (Guid elementId in effectIntents.ElementIds) {
+			foreach (Guid elementId in effectIntents.ElementIds)
+			{
 				IIntentNode[] elementIntents = effectIntents.GetElementIntentsAtTime(elementId, effectRelativeTime);
 				_elementIntents.AddIntentNodeToElement(elementId, elementIntents);
 			}
@@ -217,17 +224,22 @@ namespace Vixen.Module.Effect
 			if (TargetNodes == null || TargetNodes.Length == 0)
 				return;
 
-			if (!ApplicationServices.AreAllEffectRequiredPropertiesPresent(this)) {
+			if (!ApplicationServices.AreAllEffectRequiredPropertiesPresent(this))
+			{
 				EffectModuleDescriptorBase effectDescriptor =
 					Modules.GetDescriptorById<EffectModuleDescriptorBase>(Descriptor.TypeId);
-				using (var ms = new MemoryStream()) {
-					using (var sw = new StreamWriter(ms)) {
+				using (var ms = new MemoryStream())
+				{
+					using (var sw = new StreamWriter(ms))
+					{
 						sw.WriteLine("The \"{0}\" effect has property requirements that are missing:\n", effectDescriptor.TypeName);
 
-						foreach (ElementNode elementNode in TargetNodes) {
+						foreach (ElementNode elementNode in TargetNodes)
+						{
 							Guid[] missingPropertyIds =
 								effectDescriptor.PropertyDependencies.Except(elementNode.Properties.Select(x => x.Descriptor.TypeId)).ToArray();
-							if (missingPropertyIds.Length > 0) {
+							if (missingPropertyIds.Length > 0)
+							{
 								sw.WriteLine((elementNode.Children.Any() ? "Group " : "Element ") + elementNode.Name);
 								missingPropertyIds.Select(x => string.Format(" - Property {0}", Modules.GetDescriptorById(x).TypeName)).ToList()
 									.ForEach(p => { sw.WriteLine(p); });
@@ -235,7 +247,8 @@ namespace Vixen.Module.Effect
 						}
 						sw.Flush();
 						ms.Position = 0;
-						using (var sr = new StreamReader(ms)) {
+						using (var sr = new StreamReader(ms))
+						{
 							throw new InvalidOperationException(sr.ReadToEnd());
 						}
 						// throw new InvalidOperationException(string.Join(Environment.NewLine, message));
@@ -289,9 +302,20 @@ namespace Vixen.Module.Effect
 
 		#endregion
 
+		#region INotifyPropertyChanged
+
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		[NotifyPropertyChangedInvocator]
+		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+		{
+			var handler = PropertyChanged;
+			if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+		}
+
+		#endregion
+
 		#region ICustomTypeDescriptor
-
-
 
 		public virtual AttributeCollection GetAttributes()
 		{
@@ -338,60 +362,28 @@ namespace Vixen.Module.Effect
 			return TypeDescriptor.GetEvents(this, attributes, true);
 		}
 
-		public PropertyDescriptorCollection GetPropertiesImpl()
+		public PropertyDescriptorCollection GetProperties()
 		{
 			return GetPropertiesImpl(null);
 		}
 
-		public PropertyDescriptorCollection GetProperties()
-		{
-			return new PropertyDescriptorCollection(properties.ToArray());
-		}
-
 		public virtual PropertyDescriptorCollection GetProperties(Attribute[] attributes)
 		{
-			if (!properties.Any())
-			{
-				properties = InitializeProperties();
-			}
-			//List<PropertyDescriptor> propertyDescriptors = properties.FindAll(pd => pd.Attributes.Contains(attributes));
-			PropertyDescriptorCollection propertyDescriptorCollection = new PropertyDescriptorCollection(properties.ToArray());
+			return GetPropertiesImpl(attributes);
 
-			return propertyDescriptorCollection;
-			
 		}
 
 		public virtual PropertyDescriptorCollection GetPropertiesImpl(Attribute[] attributes)
 		{
-			return TypeDescriptor.GetProperties(this, attributes, true);
-		}
-
-		public virtual object GetPropertyOwner(PropertyDescriptor pd)
-		{
-			return this;
-		}
-
-		private List<PropertyDescriptor> InitializeProperties()
-		{
-			return GetPropertiesImpl().Cast<PropertyDescriptor>().ToList();
-		}
-
-
-		public void SetBrowsable(string property, bool browsable)
-		{
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1) {{property, browsable}};
-			SetBrowsable(propertyStates);
-		}
-
-		public void SetBrowsable(Dictionary<string, bool> propertyStates)
-		{
-			lock (properties)
+			PropertyDescriptorCollection propertyDescriptorCollection = TypeDescriptor.GetProperties(this, attributes, true);
+			//Enhance the base properties with our updated browsable attributes
+			lock (_browsableState)
 			{
-				var t = properties.Select(prop =>
+				var t = propertyDescriptorCollection.Cast<PropertyDescriptor>().Select(prop =>
 				{
-					if (propertyStates.ContainsKey(prop.Name))
+					if (_browsableState.ContainsKey(prop.Name))
 					{
-						bool state = propertyStates[prop.Name];
+						bool state = _browsableState[prop.Name];
 						List<Attribute> newAttributes =
 							prop.Attributes.Cast<Attribute>().Where(attribute => !(attribute is BrowsableAttribute)).ToList();
 						newAttributes.Add(new BrowsableAttribute(state));
@@ -402,20 +394,44 @@ namespace Vixen.Module.Effect
 
 				});
 
-				properties = t.ToList();
+				return new PropertyDescriptorCollection(t.ToArray());
+			}
+
+		}
+
+		public virtual object GetPropertyOwner(PropertyDescriptor pd)
+		{
+			return this;
+		}
+
+		public void SetBrowsable(string property, bool browsable)
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1) {{property, browsable}};
+			SetBrowsable(propertyStates);
+		}
+
+		public void SetBrowsable(Dictionary<string, bool> propertyStates)
+		{
+			lock (_browsableState)
+			{
+				foreach (var propertyState in propertyStates)
+				{
+					if (_browsableState.ContainsKey(propertyState.Key))
+					{
+						_browsableState[propertyState.Key] = propertyState.Value;
+					}
+					else
+					{
+						_browsableState.Add(propertyState.Key, propertyState.Value);
+					}
+				}
 
 			}
+
 		}
+
 
 		#endregion
-
-		public event PropertyChangedEventHandler PropertyChanged;
-
-		[NotifyPropertyChangedInvocator]
-		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-		{
-			var handler = PropertyChanged;
-			if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
-		}
 	}
+
 }

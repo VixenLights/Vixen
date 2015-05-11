@@ -46,7 +46,7 @@ namespace System.Windows.Controls.WpfPropertyGrid.Controls
     /// <summary>
     /// Identifies the <see cref="PropertyEditingStarted"/> routed event.
     /// </summary>
-    public static readonly RoutedEvent PropertyEditingStartedEvent = PropertyGrid.PropertyEditingStartedEvent.AddOwner(ThisType);
+    public static readonly RoutedEvent PropertyEditingStartedEvent = PropertyEditorGrid.PropertyEditingStartedEvent.AddOwner(ThisType);
 
     /// <summary>
     /// Occurs when property editing is started.
@@ -64,7 +64,7 @@ namespace System.Windows.Controls.WpfPropertyGrid.Controls
     /// <summary>
     /// Identifies the <see cref="PropertyEditingFinished"/> routed event.
     /// </summary>
-    public static readonly RoutedEvent PropertyEditingFinishedEvent = PropertyGrid.PropertyEditingFinishedEvent.AddOwner(ThisType);
+    public static readonly RoutedEvent PropertyEditingFinishedEvent = PropertyEditorGrid.PropertyEditingFinishedEvent.AddOwner(ThisType);
 
     /// <summary>
     /// Occurs when property editing is finished.

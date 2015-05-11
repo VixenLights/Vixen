@@ -224,7 +224,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Controls how individual pulses are applied accross the effect..
+        ///   Looks up a localized string similar to Controls how individual pulses are applied across the effect..
         /// </summary>
         internal static string PulseType {
             get {

@@ -20,7 +20,7 @@ namespace System.Windows.Controls.WpfPropertyGrid
   /// <summary>
   /// Specifies a base item for a property grid.
   /// </summary>
-  public abstract class GridEntry : INotifyPropertyChanged, IPropertyFilterTarget, IDisposable
+  public abstract class GridEntry : ITypeDescriptorContext, INotifyPropertyChanged, IPropertyFilterTarget, IDisposable
   {
     /// <summary>
     /// Gets the name of the encapsulated item.
@@ -59,7 +59,7 @@ namespace System.Windows.Controls.WpfPropertyGrid
     /// Gets or sets the owner of the item.
     /// </summary>
     /// <value>The owner of the item.</value>
-    public PropertyGrid Owner { get; protected set; }
+    public PropertyEditorGrid Owner { get; protected set; }
 
     private Editor _editor;
     /// <summary>
@@ -147,7 +147,9 @@ namespace System.Windows.Controls.WpfPropertyGrid
       Dispose(false);
     }
 
-    #endregion
+	  
+
+	  #endregion
 
     #region IPropertyFilterTarget Members
 
@@ -209,5 +211,15 @@ namespace System.Windows.Controls.WpfPropertyGrid
     }
 
     #endregion
+
+	#region ITypeDescriptorContext
+	public abstract object GetService(Type serviceType);
+	  public abstract bool OnComponentChanging();
+	  public abstract void OnComponentChanged();
+	  public abstract IContainer Container { get; }
+	  public abstract object Instance { get; }
+	  public abstract PropertyDescriptor PropertyDescriptor { get; }
+
+	#endregion
   }
 }

@@ -151,7 +151,7 @@ namespace System.Windows.Controls.WpfPropertyGrid
       if (string.IsNullOrEmpty(value)) return null;
       if (!_property.Converter.CanConvertFrom(typeof(string)))
         throw new InvalidOperationException("Value to String conversion is not supported!");
-      return _property.Converter.ConvertFromString(null, GetSerializationCulture(), value);
+      return _property.Converter.ConvertFromString(_property, GetSerializationCulture(), value);
     }
 
     /// <summary>
@@ -169,7 +169,7 @@ namespace System.Windows.Controls.WpfPropertyGrid
 
       var converter = this._property.Converter;
       if (converter.CanConvertTo(typeof(string)))
-        collectionValue = converter.ConvertToString(null, GetSerializationCulture(), value);
+        collectionValue = converter.ConvertToString(_property, GetSerializationCulture(), value);
       else
         collectionValue = value.ToString();
 

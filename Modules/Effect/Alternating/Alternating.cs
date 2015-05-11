@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Drawing.Design;
 using System.Linq;
 using System.Threading;
 using System.Windows.Controls.WpfPropertyGrid;
 using System.Windows.Controls.WpfPropertyGrid.Controls;
+using System.Windows.Controls.WpfPropertyGrid.Converters;
+using System.Windows.Controls.WpfPropertyGrid.Metadata;
 using Vixen.Module;
 using Vixen.Module.Effect;
 using Vixen.Sys;
@@ -14,8 +15,6 @@ using Vixen.Sys.Attribute;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
-using VixenModules.EffectEditor.EffectTypeEditors;
-using VixenModules.EffectEditor.TypeConverters;
 using VixenModules.Property.Color;
 
 namespace VixenModules.Effect.Alternating
@@ -102,17 +101,16 @@ namespace VixenModules.Effect.Alternating
 			{
 				_data = value as AlternatingData;
 				IsDirty = true;
+				OnPropertyChanged();
 				InitPropertyDescriptors();
 			}
 		}
 
 		[Value]
 		[ProviderCategory(@"Brightness")]
-		//[Editor(typeof(EffectLevelTypeEditor), typeof(UITypeEditor))]
-		//[TypeConverter(typeof(LevelTypeConverter))]
 		[PropertyEditor(typeof(SliderLevelEditor))]
 		[NumberRange(0, 100, 1)]  
-		[ProviderDisplayName(@"ColorOne")]
+		[ProviderDisplayName(@"ColorOneBrightness")]
 		[ProviderDescription(@"Brightness")]
 		public double IntensityLevel1
 		{
@@ -127,9 +125,6 @@ namespace VixenModules.Effect.Alternating
 
 		[Value]
 		[ProviderCategory(@"Color")]
-		//[Editor(typeof(EffectColorTypeEditor), typeof(UITypeEditor))]
-		//[TypeConverter(typeof(ColorTypeConverter))]
-		[PropertyEditor(typeof(ColorEditor))]
 		[ProviderDisplayName(@"ColorOne")]
 		[Description(@"Sets the first color.")]
 		public Color Color1
@@ -148,11 +143,9 @@ namespace VixenModules.Effect.Alternating
 
 		[Value]
 		[ProviderCategory(@"Brightness")]
-		//[Editor(typeof(EffectLevelTypeEditor), typeof(UITypeEditor))]
-		//[TypeConverter(typeof(LevelTypeConverter))]
 		[PropertyEditor(typeof(SliderLevelEditor))]
-		[NumberRange(0, 100, 1)]  
-		[ProviderDisplayName(@"ColorTwo")]
+		[NumberRange(0, 100, 1)]
+		[ProviderDisplayName(@"ColorTwoBrightness")]
 		[ProviderDescription(@"Brightness")]
 		public double IntensityLevel2
 		{
@@ -167,9 +160,6 @@ namespace VixenModules.Effect.Alternating
 
 		[Value]
 		[ProviderCategory(@"Color")]
-		//[Editor(typeof(EffectColorTypeEditor), typeof(UITypeEditor))]
-		//[TypeConverter(typeof(ColorTypeConverter))]
-		[PropertyEditor(typeof(ColorEditor))]
 		[ProviderDisplayName(@"ColorTwo")]
 		[Description(@"Sets the second color.")]
 		public Color Color2
@@ -188,7 +178,6 @@ namespace VixenModules.Effect.Alternating
 
 		[Value]
 		[ProviderCategory(@"Interval")]
-		[Editor(typeof(EffectRangeTypeEditor), typeof(UITypeEditor))]
 		[ProviderDisplayName(@"ChangeInterval")]
 		[Description(@"Specifies how often the effect should switch in milliseconds.")]
 		public int Interval
@@ -198,6 +187,7 @@ namespace VixenModules.Effect.Alternating
 			{
 				_data.Interval = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
@@ -210,6 +200,7 @@ namespace VixenModules.Effect.Alternating
 			{
 				_data.DepthOfEffect = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
@@ -224,6 +215,7 @@ namespace VixenModules.Effect.Alternating
 			{
 				_data.GroupEffect = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
@@ -231,6 +223,9 @@ namespace VixenModules.Effect.Alternating
 		[ProviderCategory(@"Config")]
 		[ProviderDisplayName(@"StaticEffect")]
 		[Description(@"Indicates that the effect should be the same on all elements.")]
+		[TypeConverter(typeof(BooleanStringTypeConverter))]
+		[BoolDescription("Yes", "No")]
+		[PropertyEditor(typeof(ComboBoxEditor))]
 		public bool Enable
 		{
 			get { return _data.Enable; }
@@ -238,14 +233,17 @@ namespace VixenModules.Effect.Alternating
 			{
 				_data.Enable = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
 		[Value]
 		[ProviderCategory(@"ColorType")]
-		[ProviderDisplayName(@"ColorOne")]
+		[ProviderDisplayName(@"ColorOneType")]
 		[ProviderDescription(@"StaticColorIndicator")]
-		[TypeConverter(typeof(ColorSelectionTypeConverter))]
+		[TypeConverter(typeof(BooleanStringTypeConverter))]
+		[BoolDescription("Static", "Gradient")]
+		[PropertyEditor(typeof(ComboBoxEditor))]
 		public bool StaticColor1
 		{
 			get { return _data.StaticColor1; }
@@ -253,9 +251,9 @@ namespace VixenModules.Effect.Alternating
 			{
 				_data.StaticColor1 = value;
 				IsDirty = true;
+				OnPropertyChanged();
 				UpdateColorOneAttributes();
 				TypeDescriptor.Refresh(this);
-				OnPropertyChanged();
 			}
 		}
 
@@ -263,9 +261,11 @@ namespace VixenModules.Effect.Alternating
 
 		[Value]
 		[ProviderCategory(@"ColorType")]
-		[ProviderDisplayName(@"ColorTwo")]
+		[ProviderDisplayName(@"ColorTwoType")]
 		[ProviderDescription(@"StaticColorIndicator")]
-		[TypeConverter(typeof(ColorSelectionTypeConverter))]
+		[TypeConverter(typeof(BooleanStringTypeConverter))]
+		[BoolDescription("Static", "Gradient")]
+		[PropertyEditor(typeof(ComboBoxEditor))]
 		public bool StaticColor2
 		{
 			get { return _data.StaticColor2; }
@@ -273,9 +273,9 @@ namespace VixenModules.Effect.Alternating
 			{
 				_data.StaticColor2 = value;
 				IsDirty = true;
+				OnPropertyChanged();
 				UpdateColorTwoAttributes();
 				TypeDescriptor.Refresh(this);
-				OnPropertyChanged();
 			}
 		}
 
@@ -293,6 +293,7 @@ namespace VixenModules.Effect.Alternating
 			{
 				_data.ColorGradient1 = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
@@ -310,6 +311,7 @@ namespace VixenModules.Effect.Alternating
 			{
 				_data.ColorGradient2 = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
@@ -324,6 +326,7 @@ namespace VixenModules.Effect.Alternating
 			{
 				_data.Curve1 = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
@@ -338,6 +341,7 @@ namespace VixenModules.Effect.Alternating
 			{
 				_data.Curve2 = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 

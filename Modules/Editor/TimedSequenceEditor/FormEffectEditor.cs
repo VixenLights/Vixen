@@ -6,10 +6,12 @@ using System.Drawing.Design;
 using System.Linq;
 using System.Timers;
 using System.Windows;
+using System.Windows.Controls.WpfPropertyGrid;
 using System.Windows.Controls.WpfPropertyGrid.Themes;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
 using Vixen.Execution.Context;
+using Vixen.Module.Effect;
 using Vixen.Sys;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
@@ -17,7 +19,6 @@ using VixenModules.EffectEditor.EffectTypeEditors;
 using WeifenLuo.WinFormsUI.Docking;
 using Action = System.Action;
 using Element = Common.Controls.Timeline.Element;
-using PropertyGrid = System.Windows.Controls.WpfPropertyGrid.PropertyGrid;
 using Timer = System.Timers.Timer;
 
 namespace VixenModules.Editor.TimedSequenceEditor
@@ -29,10 +30,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private readonly ToolStripButton _toolStripButtonPreview;
 		private LiveContext _previewContext;
 		private readonly Timer _previewLoopTimer = new Timer();
-		private readonly PropertyGrid propertyGridEffectProperties;
+		private readonly PropertyEditorGrid _propertyEditorGridEffectPropertiesEditor;
 
 		public FormEffectEditor(TimedSequenceEditorForm sequenceEditorForm)
 		{
+			
+
 			if (System.Windows.Application.Current == null)
 			{
 				// create the Application object
@@ -44,21 +47,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			System.Windows.Application.Current.Resources.MergedDictionaries.Add(dict);
 			InitializeComponent();
-			//This should be refactored out of here and into the actual type classes, but due to some circular dependencies it is not possible until the 
-			//old effect editors are removed.
-			Hashtable table = new Hashtable
-			{
-				{typeof (ColorGradient), typeof (EffectColorGradientTypeEditor).AssemblyQualifiedName},
-				{typeof (Curve), typeof (EffectCurveTypeEditor).AssemblyQualifiedName}
-			};
-
-			TypeDescriptor.AddEditorTable(typeof(UITypeEditor), table);
-			//End refactor block
-
+			
 			_sequenceEditorForm = sequenceEditorForm;
 			var host = new ElementHost { Dock = DockStyle.Fill };
 
-			propertyGridEffectProperties = new PropertyGrid
+			_propertyEditorGridEffectPropertiesEditor = new PropertyEditorGrid
 			{
 				Layout = new System.Windows.Controls.WpfPropertyGrid.Design.CategorizedLayout(),
 				ShowReadOnlyProperties = true
@@ -67,10 +60,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			
 			//KaxamlTheme theme = new KaxamlTheme();
 			
-			host.Child = propertyGridEffectProperties;
+			host.Child = _propertyEditorGridEffectPropertiesEditor;
 
 			Controls.Add(host);
-			//foreach (var control in propertyGridEffectProperties.Controls)
+			//foreach (var control in _propertyEditorGridEffectPropertiesEditor.Controls)
 			//{
 			//	if (control is ToolStrip)
 			//	{
@@ -91,12 +84,20 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			//}
 
 			sequenceEditorForm.TimelineControl.SelectionChanged += timelineControl_SelectionChanged;
-			//propertyGridEffectProperties.PropertyValueChanged += propertyGridEffectProperties_PropertyValueChanged;
-			propertyGridEffectProperties.PropertyValueChanged += propertyGridEffectProperties_PropertyValueChanged;
+			//_propertyEditorGridEffectPropertiesEditor.PropertyValueChanged += PropertyEditorGridEffectPropertiesEditorPropertyEditorValueChanged;
+			_propertyEditorGridEffectPropertiesEditor.PropertyValueChanged += PropertyEditorGridEffectPropertiesEditorPropertyEditorValueChanged;
 			_previewLoopTimer.Elapsed += PreviewLoopTimerOnElapsed;
+
+			TypeDescriptor.Refreshed += TypeDescriptor_Refreshed;
 		}
 
-		void propertyGridEffectProperties_PropertyValueChanged(object sender, System.Windows.Controls.WpfPropertyGrid.PropertyValueChangedEventArgs e)
+		void TypeDescriptor_Refreshed(RefreshEventArgs e)
+		{
+			TypeDescriptor.GetProperties(e.TypeChanged);
+			Console.Out.WriteLine("Got refresh {0}", e.TypeChanged);
+		}
+
+		void PropertyEditorGridEffectPropertiesEditorPropertyEditorValueChanged(object sender, System.Windows.Controls.WpfPropertyGrid.PropertyValueChangedEventArgs e)
 		{
 			_sequenceEditorForm.AddEffectsModifiedToUndo(new Dictionary<Element, EffectModelCandidate>(_elements), e.Property.DisplayName);
 			var keys = new List<Element>(Elements);
@@ -118,15 +119,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				//SetPreviewState();
 				//if (_elements.Any())
 				//{
-				//	propertyGridEffectProperties.SelectedObject = _elements.Keys.Select(x => x.EffectNode.Effect).First();
+				//	_propertyEditorGridEffectPropertiesEditor.SelectedObject = _elements.Keys.Select(x => x.EffectNode.Effect).First();
 				//}
 				//else
 				//{
-				//	propertyGridEffectProperties.SelectedObject = null;
+				//	_propertyEditorGridEffectPropertiesEditor.SelectedObject = null;
 
 				//}
 				
-				propertyGridEffectProperties.SelectedObjects = _elements.Keys.Select(x => x.EffectNode.Effect).ToArray();
+				_propertyEditorGridEffectPropertiesEditor.SelectedObjects = _elements.Keys.Select(x => x.EffectNode.Effect).ToArray();
 			} 
 		}
 
@@ -163,7 +164,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void element_ContentChanged(object sender, EventArgs e)
 		{
-			propertyGridEffectProperties.InvalidateVisual();
+			_propertyEditorGridEffectPropertiesEditor.InvalidateVisual();
 		}
 
 		#endregion

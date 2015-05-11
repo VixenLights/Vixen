@@ -57,7 +57,7 @@ namespace VixenModules.EffectEditor.TypeConverters
 		}
 		public override StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)
 		{
-			bool[] bools = { true, false };
+			string[] bools = { "Static", "Gradient" };
 			StandardValuesCollection svc = new StandardValuesCollection(bools);
 			return svc;
 		}

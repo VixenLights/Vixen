@@ -134,6 +134,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Color 1 Type.
+        /// </summary>
+        internal static string ColorOneType {
+            get {
+                return ResourceManager.GetString("ColorOneType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Color 2.
         /// </summary>
         internal static string ColorTwo {
@@ -148,6 +157,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string ColorTwoBrightness {
             get {
                 return ResourceManager.GetString("ColorTwoBrightness", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Color 2 Type.
+        /// </summary>
+        internal static string ColorTwoType {
+            get {
+                return ResourceManager.GetString("ColorTwoType", resourceCulture);
             }
         }
         

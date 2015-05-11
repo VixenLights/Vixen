@@ -141,11 +141,17 @@
   <data name="ColorOneBrightness" xml:space="preserve">
     <value>Color 1 Intensity</value>
   </data>
+  <data name="ColorOneType" xml:space="preserve">
+    <value>Color 1 Type</value>
+  </data>
   <data name="ColorTwo" xml:space="preserve">
     <value>Color 2</value>
   </data>
   <data name="ColorTwoBrightness" xml:space="preserve">
     <value>Color 2 Intensity</value>
+  </data>
+  <data name="ColorTwoType" xml:space="preserve">
+    <value>Color 2 Type</value>
   </data>
   <data name="Coverage" xml:space="preserve">
     <value>Coverage</value>

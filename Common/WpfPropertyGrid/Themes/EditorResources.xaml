@@ -4,7 +4,8 @@
   xmlns:local="clr-namespace:System.Windows.Controls.WpfPropertyGrid"
   xmlns:design="clr-namespace:System.Windows.Controls.WpfPropertyGrid.Design"
   xmlns:controls="clr-namespace:System.Windows.Controls.WpfPropertyGrid.Controls"
-  xmlns:converters="clr-namespace:System.Windows.Controls.WpfPropertyGrid.Converters">
+  xmlns:converters="clr-namespace:System.Windows.Controls.WpfPropertyGrid.Converters"
+  xmlns:system="clr-namespace:System;assembly=mscorlib">
 
   <local:NamedColorList x:Key="NamedColorList"/>
   <converters:NullValueConverter x:Key="NullValueConverter"/>
@@ -14,7 +15,9 @@
 	<converters:LevelValueConverter x:Key="LevelValueConverter"/>
 	<converters:SystemColorToSolidBrushConverter x:Key="SystemColorToSolidBrushConverter"/>
 	<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+	<converters:BitmapImageConverter x:Key="BitmapImageConverter"/>
 	<converters:DebugConverter x:Key="DebugConverter"/>
+	
 
   <DataTemplate x:Key="{x:Static local:EditorKeys.ComplexPropertyEditorKey}">
     <Expander>
@@ -42,7 +45,14 @@
 			/>
   </DataTemplate>
 
-  <DataTemplate x:Key="{x:Static local:EditorKeys.EnumEditorKey}">
+	<DataTemplate x:Key="{x:Static local:EditorKeys.ComboBoxEditorKey}">
+		<ComboBox x:Name="Combo_part_editor" ItemsSource="{Binding ParentProperty.StandardValues}" SelectedValue="{Binding StringValue}">
+			
+			
+		</ComboBox>
+	</DataTemplate>
+
+	<DataTemplate x:Key="{x:Static local:EditorKeys.EnumEditorKey}">
     <controls:EnumDropdown
       x:Name="PART_editor"
       Style="{DynamicResource {x:Type ComboBox}}"
@@ -91,17 +101,45 @@
 				<ColumnDefinition Width="Auto" />
 				<ColumnDefinition Width="Auto" />
 			</Grid.ColumnDefinitions>
-			<Rectangle Fill="{Binding Value, Converter={StaticResource SystemColorToSolidBrushConverter}}" Grid.Column="0" Width="25" Height="25" Margin="2" HorizontalAlignment="Center">
-				<Rectangle.InputBindings>
-					<MouseBinding Gesture="LeftClick" Command="local:PropertyEditorCommands.ShowDialogEditor" CommandParameter="{Binding}"/>
-				</Rectangle.InputBindings>
-			</Rectangle>
+			<Border BorderThickness="1" BorderBrush="#888888">
+				<Rectangle Fill="{Binding Value, Converter={StaticResource SystemColorToSolidBrushConverter}}" Grid.Column="0" Width="25" Height="25" Margin="0" HorizontalAlignment="Center">
+					<Rectangle.InputBindings>
+						<MouseBinding Gesture="LeftClick" Command="local:PropertyEditorCommands.ShowDialogEditor" CommandParameter="{Binding}"/>
+					</Rectangle.InputBindings>
+				</Rectangle>
+			</Border>
 			<TextBlock x:Name="PART_editor" Text="{Binding StringValue}" Grid.Column="1" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center"/>
 			<!--<Button Grid.Column="2" Margin="2,0,0,0" Content="Edit"  
               Command="local:PropertyEditorCommands.ShowDialogEditor"
               CommandParameter="{Binding}"
               Visibility="{Binding IsEditable, Converter={StaticResource BooleanToVisibilityConverter}}"/>-->
 		</Grid>
+	</DataTemplate>
+
+	<DataTemplate x:Key="{x:Static local:EditorKeys.CurveEditorKey}">
+		<StackPanel Orientation="Horizontal">
+			<Border BorderThickness="1" BorderBrush="#888888">
+				<Image Source="{Binding Value.GenericImage, Converter={StaticResource BitmapImageConverter}}" Height="25" Width="25">
+					<Image.InputBindings>
+						<MouseBinding Gesture="LeftClick" Command="local:PropertyEditorCommands.ShowDialogEditor" CommandParameter="{Binding}"/>
+					</Image.InputBindings>
+				</Image>
+			</Border>
+			<TextBlock Text="{Binding StringValue}" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+		</StackPanel>
+	</DataTemplate>
+
+	<DataTemplate x:Key="{x:Static local:EditorKeys.GradientEditorKey}">
+		<StackPanel Orientation="Horizontal">
+			<Border BorderThickness="1" BorderBrush="#888888">
+				<Image Source="{Binding Value.GenericImage, Converter={StaticResource BitmapImageConverter}}" Height="25" Width="25">
+					<Image.InputBindings>
+						<MouseBinding Gesture="LeftClick" Command="local:PropertyEditorCommands.ShowDialogEditor" CommandParameter="{Binding}"/>
+					</Image.InputBindings>
+				</Image>
+			</Border>
+			<TextBlock Text="{Binding StringValue}" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+		</StackPanel>
 	</DataTemplate>
 
 	<DataTemplate x:Key="{x:Static local:EditorKeys.BrushEditorKey}">

@@ -17,7 +17,7 @@ using System.Windows.Input;
 
 namespace System.Windows.Controls.WpfPropertyGrid
 {
-  public partial class PropertyGrid
+  public partial class PropertyEditorGrid
   {
     /// <summary>
     /// Initializes the command bindings.

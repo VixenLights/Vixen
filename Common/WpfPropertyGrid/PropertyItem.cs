@@ -29,8 +29,8 @@ namespace System.Windows.Controls.WpfPropertyGrid
     #region Fields
     private readonly object _component;
     private object _unwrappedComponent;
-    private readonly PropertyDescriptor _descriptor;        
-    private readonly AttributesContainer _metadata;
+    private PropertyDescriptor _descriptor;        
+    private AttributesContainer _metadata;
     #endregion
 
     #region Filtering API
@@ -104,24 +104,55 @@ namespace System.Windows.Controls.WpfPropertyGrid
     #endregion
 
     #region PropertyDescriptor
-    /// <summary>
+
+	
+	  /// <summary>
     /// Gets PropertyDescriptor instance for the underlying property.
     /// </summary>
-    public PropertyDescriptor PropertyDescriptor
+    public override PropertyDescriptor PropertyDescriptor
     {
       get { return _descriptor; }
     } 
     #endregion
 
-    #region ctor/init
+	#region ITypeDescriptorContext
+	public override object GetService(Type serviceType)
+	{
+		if (serviceType == typeof(PropertyItem))
+			return this;
+		return null;
+	}
 
-    /// <summary>
+	public override bool OnComponentChanging()
+	{
+		throw new NotSupportedException();
+	}
+
+	public override void OnComponentChanged()
+	{
+		throw new NotSupportedException();
+	}
+
+	public override IContainer Container
+	{
+		get { throw new NotSupportedException(); }
+	}
+
+	public override object Instance
+	{
+		get { return CreatePropertyValueInstance(); }
+	}
+	#endregion
+
+	#region ctor/init
+
+	/// <summary>
     /// Initializes a new instance of the <see cref="PropertyItem"/> class.
     /// </summary>
     /// <param name="owner">The owner.</param>
     /// <param name="component">The component property belongs to.</param>
     /// <param name="descriptor">The property descriptor</param>
-    public PropertyItem(PropertyGrid owner, object component, PropertyDescriptor descriptor)
+    public PropertyItem(PropertyEditorGrid owner, object component, PropertyDescriptor descriptor)
       : this(null)
     {
       if (owner == null) throw new ArgumentNullException("owner");
@@ -205,7 +236,7 @@ namespace System.Windows.Controls.WpfPropertyGrid
     #endregion
 
     #region CategoryName
-    private readonly string _categoryName;
+    private string _categoryName;
     /// <summary>
     /// Gets the name of the category that this property resides in.
     /// </summary>
@@ -257,7 +288,7 @@ namespace System.Windows.Controls.WpfPropertyGrid
     #endregion
 
     #region IsLocalizable
-    private readonly bool _isLocalizable;
+    private bool _isLocalizable;
     /// <summary>
     /// Gets a value indicating whether the encapsulated property is localizable.
     /// </summary>
@@ -321,7 +352,7 @@ namespace System.Windows.Controls.WpfPropertyGrid
       get
       {
         if (Converter.GetStandardValuesSupported())
-          return Converter.GetStandardValues();
+          return Converter.GetStandardValues(this);
 
         return new ArrayList(0);
       }
@@ -454,6 +485,21 @@ namespace System.Windows.Controls.WpfPropertyGrid
     #endregion
 
     #region Methods
+
+	  public void RefreshDescriptors(PropertyDescriptor descriptor)
+	  {
+		  Name = descriptor.Name;
+		  _descriptor = descriptor;
+
+		  IsBrowsable = descriptor.IsBrowsable;
+		  _isReadOnly = descriptor.IsReadOnly;
+		  _description = descriptor.Description;
+		  _categoryName = descriptor.Category;
+		  _isLocalizable = descriptor.IsLocalizable;
+
+		  _metadata = new AttributesContainer(descriptor.Attributes);
+		  _descriptor.AddValueChanged(Component, ComponentValueChanged);  
+	  }
     /// <summary>
     /// Clears the value.
     /// </summary>

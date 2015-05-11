@@ -38,10 +38,13 @@
       <HintPath>..\..\..\packages\NLog.3.1.0.0\lib\net45\NLog.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -79,16 +82,6 @@
     <ProjectReference Include="..\..\App\Curves\Curves.csproj">
       <Project>{f0ba7127-61b4-453a-802b-abcb5a0d3d54}</Project>
       <Name>Curves</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\EffectEditor\EffectTypeEditors\EffectTypeEditors.csproj">
-      <Project>{67B27730-D0D9-4AE7-8C8E-B41DE61C3798}</Project>
-      <Name>EffectTypeEditors</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\EffectEditor\TypeConverters\TypeConverters.csproj">
-      <Project>{4FBD9FC9-515A-44C8-AC64-D0908BCD3B11}</Project>
-      <Name>TypeConverters</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Property\Color\Color.csproj">

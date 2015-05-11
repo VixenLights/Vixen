@@ -158,7 +158,7 @@ namespace System.Windows.Controls.WpfPropertyGrid.Design
       }
       else
       {
-        // TODO: Access the PropertyGrid to get TypeEditor or PropertyEditor ExtendedTemplate here!
+        // TODO: Access the PropertyEditorGrid to get TypeEditor or PropertyEditor ExtendedTemplate here!
         
         // Check whether property value editor is actually an extended one
         if (property.Editor.ExtendedTemplate == null) return;

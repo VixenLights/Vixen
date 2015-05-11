@@ -951,7 +951,7 @@
   
   <!-- PropertyGrid -->
   
-  <Style TargetType="{x:Type pg:PropertyGrid}" BasedOn="{StaticResource {x:Type pg:PropertyGrid}}">    
+  <Style TargetType="{x:Type pg:PropertyEditorGrid}" BasedOn="{StaticResource {x:Type pg:PropertyEditorGrid}}">    
     <Setter Property="Background">
       <Setter.Value>
         <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1.0">

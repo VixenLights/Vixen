@@ -58,7 +58,7 @@ namespace System.Windows.Controls.WpfPropertyGrid
       int num = (leftOrder == rightOrder) ? 0 : leftOrder.CompareTo(rightOrder);
       if (num != 0) return num;
 
-      return string.Compare(x.Name, y.Name, true);
+      return string.Compare(x.DisplayName, y.DisplayName, true);
     }
   }
 }

@@ -144,7 +144,7 @@ namespace System.Windows.Controls.WpfPropertyGrid
     /// </summary>
     /// <param name="owner">The owner.</param>
     /// <param name="name">The name.</param>
-    public CategoryItem(PropertyGrid owner, string name)
+    public CategoryItem(PropertyEditorGrid owner, string name)
     {
       if (owner == null) throw new ArgumentNullException("owner");
       if (string.IsNullOrEmpty(name)) throw new ArgumentNullException("name");
@@ -158,7 +158,7 @@ namespace System.Windows.Controls.WpfPropertyGrid
     /// </summary>
     /// <param name="owner">The owner.</param>
     /// <param name="category">The category.</param>
-    public CategoryItem(PropertyGrid owner, CategoryAttribute category)
+    public CategoryItem(PropertyEditorGrid owner, CategoryAttribute category)
       : this(owner, category.Category)
     {
       Attribute = category;
@@ -235,5 +235,40 @@ namespace System.Windows.Controls.WpfPropertyGrid
       entry.ApplyFilter(filter);
       return entry.MatchesFilter;
     }
+
+	#region ITypeDescriptorContext
+	public override object GetService(Type serviceType)
+	{
+		if (serviceType == typeof(PropertyItem))
+			return this;
+		return null;
+	}
+
+	public override bool OnComponentChanging()
+	{
+		throw new NotSupportedException();
+	}
+
+	public override void OnComponentChanged()
+	{
+		throw new NotSupportedException();
+	}
+
+	public override IContainer Container
+	{
+		get { throw new NotSupportedException(); }
+	}
+
+	public override object Instance
+	{
+		get { return Instance; }
+	}
+
+	  public override PropertyDescriptor PropertyDescriptor
+	  {
+		  get { throw new NotSupportedException(); }
+	  }
+
+	  #endregion
   }
 }

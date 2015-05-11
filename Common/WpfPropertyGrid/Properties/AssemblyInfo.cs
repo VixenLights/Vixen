@@ -25,11 +25,11 @@ using System.Runtime.CompilerServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("WPF PropertyGrid")]
-[assembly: AssemblyDescription("WPF PropertyGrid Control")]
+[assembly: AssemblyTitle("WPF PropertyEditorGrid")]
+[assembly: AssemblyDescription("WPF PropertyEditorGrid Control")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("WPF PropertyGrid")]
+[assembly: AssemblyProduct("WPF PropertyEditorGrid")]
 [assembly: AssemblyCopyright("Copyright © 2010-2011 Denys Vuika")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

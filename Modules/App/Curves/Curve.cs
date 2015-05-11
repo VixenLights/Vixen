@@ -175,15 +175,23 @@ namespace VixenModules.App.Curves
 			LibraryReferencedCurve = null;
 		}
 
+		public Bitmap GenericImage
+		{
+			get
+			{
+				return GenerateGenericCurveImage(new Size(50,50));
+			}
+		}
+
 		public Bitmap GenerateGenericCurveImage(Size size)
 		{
 			Bitmap result = new Bitmap(size.Width, size.Height);
 
 			using (Graphics g = Graphics.FromImage(result))
 			{
-				using (Brush b = new SolidBrush(Color.White))
+				using (Brush b = new SolidBrush(Color.Black))
 				{
-					using (Pen p = new Pen(Color.Black, 1))
+					using (Pen p = new Pen(Color.FromArgb(255,136,136,136), 2))
 					{
 						g.FillRectangle(b, new Rectangle(0, 0, size.Width, size.Height));
 					

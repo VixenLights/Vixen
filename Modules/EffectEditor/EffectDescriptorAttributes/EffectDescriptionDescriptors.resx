@@ -172,7 +172,7 @@
     <value>Controls how long each pulse is as a percentage of the spin.</value>
   </data>
   <data name="PulseType" xml:space="preserve">
-    <value>Controls how individual pulses are applied accross the effect.</value>
+    <value>Controls how individual pulses are applied across the effect.</value>
   </data>
   <data name="RevolutionCount" xml:space="preserve">
     <value>Controls how many revolutions of the spin will occur.</value>
