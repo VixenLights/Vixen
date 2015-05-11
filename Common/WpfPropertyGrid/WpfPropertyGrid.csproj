@@ -157,6 +157,7 @@
     <Compile Include="Controls\CurveEditor.cs" />
     <Compile Include="Controls\SliderEditor.cs" />
     <Compile Include="Controls\SliderEditorBase.cs" />
+    <Compile Include="Controls\SliderPercentageEditor.cs" />
     <Compile Include="Controls\SliderLevelEditor.cs" />
     <Compile Include="Converters\BitmapImageConverter.cs" />
     <Compile Include="Converters\DebugConverter.cs" />
@@ -166,6 +167,7 @@
     <Compile Include="Converters\FontStretchConverterDecorator.cs" />
     <Compile Include="Converters\FontStyleConverterDecorator.cs" />
     <Compile Include="Converters\FontWeightConverterDecorator.cs" />
+    <Compile Include="Converters\PercentageValueConverter.cs" />
     <Compile Include="Converters\LevelValueConverter.cs" />
     <Compile Include="Converters\MultiBooleanToVisibilityConverter.cs" />
     <Compile Include="Converters\NullValueConverter.cs" />
@@ -273,6 +275,11 @@
     <ProjectReference Include="..\..\Vixen.System\Vixen.csproj">
       <Project>{50b78623-fcf4-48af-93ff-fa87c937028f}</Project>
       <Name>Vixen</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\ValueTypes\ValueTypes.csproj">
+      <Project>{D9A7E8BC-5617-486D-9DA5-89C5861A0F88}</Project>
+      <Name>ValueTypes</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>

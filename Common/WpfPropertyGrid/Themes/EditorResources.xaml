@@ -16,6 +16,7 @@
 	<converters:SystemColorToSolidBrushConverter x:Key="SystemColorToSolidBrushConverter"/>
 	<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 	<converters:BitmapImageConverter x:Key="BitmapImageConverter"/>
+	<converters:PercentageValueConverter x:Key="PercentageValueConverter"/>
 	<converters:DebugConverter x:Key="DebugConverter"/>
 	
 
@@ -156,7 +157,7 @@
 
   <DataTemplate x:Key="{x:Static local:EditorKeys.SliderEditorKey}">
     <Slider x:Name="PART_editor"
-            Value="{Binding Value}"
+            Value="{Binding Value, Mode=TwoWay}"
             Minimum="{Binding ParentProperty.Metadata[NumberRange].Minimum, FallbackValue=0}"
             Maximum="{Binding ParentProperty.Metadata[NumberRange].Maximum, FallbackValue=100}"
             TickFrequency="{Binding ParentProperty.Metadata[NumberRange].Tick, FallbackValue=1}"
@@ -172,6 +173,21 @@
 	<DataTemplate x:Key="{x:Static local:EditorKeys.SliderLevelEditorKey}">
 		<Slider x:Name="PART_editor"
             Value="{Binding Value, Mode=TwoWay,Converter={StaticResource LevelValueConverter}}"
+            Minimum="{Binding ParentProperty.Metadata[NumberRange].Minimum, FallbackValue=0}"
+            Maximum="{Binding ParentProperty.Metadata[NumberRange].Maximum, FallbackValue=100}"
+            TickFrequency="{Binding ParentProperty.Metadata[NumberRange].Tick, FallbackValue=1}"
+            AutoToolTipPrecision="{Binding ParentProperty.Metadata[NumberRange].Precision, FallbackValue=0}"
+            AutoToolTipPlacement="BottomRight"
+            IsDirectionReversed="False"
+            IsMoveToPointEnabled="True"
+            IsSnapToTickEnabled="False"
+            IsEnabled="{Binding IsEditable}"
+            />
+	</DataTemplate>
+
+	<DataTemplate x:Key="{x:Static local:EditorKeys.SliderPercentageEditorKey}">
+		<Slider x:Name="PART_editor"
+            Value="{Binding Value, Mode=TwoWay,Converter={StaticResource PercentageValueConverter}}"
             Minimum="{Binding ParentProperty.Metadata[NumberRange].Minimum, FallbackValue=0}"
             Maximum="{Binding ParentProperty.Metadata[NumberRange].Maximum, FallbackValue=100}"
             TickFrequency="{Binding ParentProperty.Metadata[NumberRange].Tick, FallbackValue=1}"

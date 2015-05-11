@@ -33,6 +33,7 @@ namespace System.Windows.Controls.WpfPropertyGrid
 	private static readonly ComponentResourceKey _ComboBoxEditorKey = new ComponentResourceKey(ThisType, "ComboBoxEditor");
     private static readonly ComponentResourceKey _SliderEditorKey = new ComponentResourceKey(ThisType, "SliderEditor");
 	private static readonly ComponentResourceKey _SliderLevelEditorKey = new ComponentResourceKey(ThisType, "SliderLevelEditor");
+	private static readonly ComponentResourceKey _SliderPercentageEditorKey = new ComponentResourceKey(ThisType, "SliderPercentageEditor");
     private static readonly ComponentResourceKey _FontFamilyEditorKey = new ComponentResourceKey(ThisType, "FontFamilyEditor");
     private static readonly ComponentResourceKey _BrushEditorKey = new ComponentResourceKey(ThisType, "BrushEditor");
     private static readonly ComponentResourceKey _DefaultCategoryEditorKey = new ComponentResourceKey(ThisType, "DefaultCategoryEditor");
@@ -105,10 +106,16 @@ namespace System.Windows.Controls.WpfPropertyGrid
     public static ComponentResourceKey SliderEditorKey { get { return _SliderEditorKey; } }
 
 	/// <summary>
-	/// Gets the slider editor key.
+	/// Gets the slider level editor key.
 	/// </summary>
 	/// <value>The slider editor key.</value>
 	public static ComponentResourceKey SliderLevelEditorKey { get { return _SliderLevelEditorKey; } }
+
+	/// <summary>
+	/// Gets the slider percentage editor key.
+	/// </summary>
+	/// <value>The slider editor key.</value>
+	public static ComponentResourceKey SliderPercentageEditorKey { get { return _SliderPercentageEditorKey; } }
 
     /// <summary>
     /// Gets the font family editor key.

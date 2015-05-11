@@ -4,7 +4,9 @@ using System.Drawing;
 using System.Drawing.Design;
 using System.Linq;
 using System.Threading;
+using System.Windows.Controls.WpfPropertyGrid.Controls;
 using Common.ValueTypes;
+using Vixen.Attributes;
 using Vixen.Data.Value;
 using Vixen.Intent;
 using Vixen.Module;
@@ -45,7 +47,11 @@ namespace VixenModules.Effect.Candle
 		public int FlickerFrequency
 		{
 			get { return _data.FlickerFrequency; }
-			set { _data.FlickerFrequency = value; }
+			set
+			{
+				_data.FlickerFrequency = value;
+				OnPropertyChanged();
+			}
 		}
 
 		[Value]
@@ -53,64 +59,70 @@ namespace VixenModules.Effect.Candle
 		[ProviderDisplayName(@"ChangePercent")]
 		[ProviderDescription(@"ChangePercent")]
 		[TypeConverter(typeof(PercentageTypeConverter))]
-		[Editor(typeof(EffectRangeTypeEditor), typeof(UITypeEditor))]
-		[Range]
 		public Percentage ChangePercentage
 		{
 			get { return _data.ChangePercentage; }
-			set { _data.ChangePercentage = value; }
+			set
+			{
+				_data.ChangePercentage = value;
+				OnPropertyChanged();
+			}
 		}
 
 		[Value]
 		[ProviderCategory(@"Brightness")]
 		[ProviderDisplayName(@"MinBrightness")]
 		[ProviderDescription(@"MinBrightness")]
-		[TypeConverter(typeof(PercentageTypeConverter))]
-		[Editor(typeof(EffectRangeTypeEditor), typeof(UITypeEditor))]
-		[Range]
 		public Percentage MinLevel
 		{
 			get { return _data.MinLevel; }
-			set { _data.MinLevel = value; }
+			set
+			{
+				_data.MinLevel = value;
+				OnPropertyChanged();
+			}
 		}
 
 		[Value]
 		[ProviderCategory(@"Brightness")]
 		[ProviderDisplayName(@"MaxBrightness")]
 		[ProviderDescription(@"MaxBrightness")]
-		[TypeConverter(typeof(PercentageTypeConverter))]
-		[Editor(typeof(EffectRangeTypeEditor), typeof(UITypeEditor))]
-		[Range]
 		public Percentage MaxLevel
 		{
 			get { return _data.MaxLevel; }
-			set { _data.MaxLevel = value; }
+			set
+			{
+				_data.MaxLevel = value;
+				OnPropertyChanged();
+			}
 		}
 
 		[Value]
 		[ProviderCategory(@"Flicker")]
 		[ProviderDisplayName(@"FlickerPercent")]
 		[ProviderDescription(@"FlickerPercent")]
-		[TypeConverter(typeof(PercentageTypeConverter))]
-		[Editor(typeof(EffectRangeTypeEditor), typeof(UITypeEditor))]
-		[Range]
 		public Percentage FlickerFrequencyDeviationCap
 		{
 			get { return _data.FlickerFrequencyDeviationCap; }
-			set { _data.FlickerFrequencyDeviationCap = value; }
+			set
+			{
+				_data.FlickerFrequencyDeviationCap = value;
+				OnPropertyChanged();
+			}
 		}
 
 		[Value]
 		[ProviderCategory(@"Flicker")]
 		[ProviderDisplayName(@"DeviationPercent")]
 		[ProviderDescription(@"DeviationPercent")]
-		[TypeConverter(typeof(PercentageTypeConverter))]
-		[Editor(typeof(EffectRangeTypeEditor), typeof(UITypeEditor))]
-		[Range]
 		public Percentage ChangePercentageDeviationCap
 		{
 			get { return _data.ChangePercentageDeviationCap; }
-			set { _data.ChangePercentageDeviationCap = value; }
+			set
+			{
+				_data.ChangePercentageDeviationCap = value;
+				OnPropertyChanged();
+			}
 		}
 
 		protected override void _PreRender(CancellationTokenSource cancellationToken = null)

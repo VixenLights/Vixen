@@ -38,6 +38,7 @@ namespace System.Windows.Controls.WpfPropertyGrid
 	   { KnownTypes.Wpf.Color, new TypeEditor(KnownTypes.Wpf.Color, EditorKeys.ColorEditorKey) },
 	    { KnownTypes.Wpf.Curve, new TypeEditor(KnownTypes.Wpf.Curve, EditorKeys.CurveEditorKey) },
 		{ KnownTypes.Wpf.ColorGradient, new TypeEditor(KnownTypes.Wpf.ColorGradient, EditorKeys.GradientEditorKey) },
+		{ KnownTypes.Wpf.Percentage, new TypeEditor(KnownTypes.Wpf.Percentage, EditorKeys.SliderPercentageEditorKey) },
       { typeof(Enum), new TypeEditor(typeof(Enum), EditorKeys.EnumEditorKey) }
     };
 

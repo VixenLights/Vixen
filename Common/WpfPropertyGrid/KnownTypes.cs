@@ -18,6 +18,7 @@ using System.ComponentModel;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Windows.Input;
+using Common.ValueTypes;
 using Vixen.Attributes;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
@@ -73,6 +74,7 @@ namespace System.Windows.Controls.WpfPropertyGrid
 	  public static readonly Type Color = typeof(Color);
 	  public static readonly Type Curve = typeof(Curve);
 	  public static readonly Type ColorGradient = typeof(ColorGradient);
+	  public static readonly Type Percentage = typeof(Percentage);
     }
 
     public static class Wpg
