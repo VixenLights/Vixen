@@ -16,7 +16,7 @@ namespace VixenModules.Effect.Chase
 		GradientThroughWholeEffect,
 		[Description("Gradient Per Pulse")]
 		GradientForEachPulse,
-		[Description("Gradient Accross Items")]
+		[Description("Gradient Across Items")]
 		ColorAcrossItems
 	}
 }

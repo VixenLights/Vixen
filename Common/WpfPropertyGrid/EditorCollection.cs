@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Windows.Controls.WpfPropertyGrid.Controls;
 using Vixen.Attributes;
 
 namespace System.Windows.Controls.WpfPropertyGrid
@@ -35,9 +36,9 @@ namespace System.Windows.Controls.WpfPropertyGrid
       { KnownTypes.Wpf.Cursor, new TypeEditor(KnownTypes.Wpf.Cursor, EditorKeys.EnumEditorKey) },
       { KnownTypes.Wpf.FontFamily, new TypeEditor(KnownTypes.Wpf.FontFamily, EditorKeys.FontFamilyEditorKey) },
       { KnownTypes.Wpf.Brush, new TypeEditor(KnownTypes.Wpf.Brush, EditorKeys.BrushEditorKey) },
-	   { KnownTypes.Wpf.Color, new TypeEditor(KnownTypes.Wpf.Color, EditorKeys.ColorEditorKey) },
-	    { KnownTypes.Wpf.Curve, new TypeEditor(KnownTypes.Wpf.Curve, EditorKeys.CurveEditorKey) },
-		{ KnownTypes.Wpf.ColorGradient, new TypeEditor(KnownTypes.Wpf.ColorGradient, EditorKeys.GradientEditorKey) },
+	   { KnownTypes.Wpf.Color, new ColorEditor() },
+	    { KnownTypes.Wpf.Curve, new CurveEditor() },
+		{ KnownTypes.Wpf.ColorGradient, new GradientEditor() },
 		{ KnownTypes.Wpf.Percentage, new TypeEditor(KnownTypes.Wpf.Percentage, EditorKeys.SliderPercentageEditorKey) },
       { typeof(Enum), new TypeEditor(typeof(Enum), EditorKeys.EnumEditorKey) }
     };

@@ -222,6 +222,7 @@ namespace VixenModules.Effect.CustomValue
 			{
 				_data.ValueType = value;
 				IsDirty = true;
+				OnPropertyChanged();
 				UpdateCustomAttributes();
 				TypeDescriptor.Refresh(this);
 			}
@@ -238,6 +239,7 @@ namespace VixenModules.Effect.CustomValue
 			{
 				_data.Value8Bit = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
@@ -252,6 +254,7 @@ namespace VixenModules.Effect.CustomValue
 			{
 				_data.Value16Bit = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
@@ -266,6 +269,7 @@ namespace VixenModules.Effect.CustomValue
 			{
 				_data.Value32Bit = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
@@ -280,14 +284,13 @@ namespace VixenModules.Effect.CustomValue
 			{
 				_data.Value64Bit = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
 		[Value]
 		[ProviderCategory(@"Value")]
 		[DisplayName(@"Color Value")]
-		[TypeConverter(typeof(ColorTypeConverter))]
-		[Editor(typeof(EffectColorTypeEditor), typeof(UITypeEditor))]
 		[Description(@"Sets the value.")]
 		public Color ColorValue
 		{
@@ -296,6 +299,7 @@ namespace VixenModules.Effect.CustomValue
 			{
 				_data.ColorValue = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
@@ -310,6 +314,7 @@ namespace VixenModules.Effect.CustomValue
 			{
 				_data.StringValue = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 

@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using Vixen.Annotations;
+using Vixen.Attributes;
 using Vixen.Services;
 using Vixen.Sys;
 
@@ -145,6 +146,7 @@ namespace Vixen.Module.Effect
 
 		[DisplayName(@"Effect Name")]
 		[Category(@"Effect")]
+		[PropertyOrder(1)]
 		public virtual string EffectName
 		{
 			get { return Descriptor != null ? ((IEffectModuleDescriptor) Descriptor).EffectName : ""; }
@@ -152,6 +154,7 @@ namespace Vixen.Module.Effect
 
 		[DisplayName(@"Effect Group")]
 		[Category(@"Effect")]
+		[PropertyOrder(2)]
 		public EffectGroups EffectGroup
 		{
 			get { return ((IEffectModuleDescriptor) Descriptor).EffectGroup; }

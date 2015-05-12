@@ -87,6 +87,7 @@
     <Compile Include="Attributes\CategoryEditorAttribute.cs" />
     <Compile Include="Attributes\CategoryOrderAttribute.cs" />
     <Compile Include="Attributes\FlatternHierarchyAttribute.cs" />
+    <Compile Include="Attributes\IOrderableAttribute.cs" />
     <Compile Include="Attributes\NumberRangeAttribute.cs" />
     <Compile Include="Attributes\PropertyEditorAttribute.cs" />
     <Compile Include="Attributes\PropertyOrderAttribute.cs" />

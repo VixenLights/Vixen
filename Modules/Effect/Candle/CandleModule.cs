@@ -15,7 +15,6 @@ using Vixen.Sys;
 using Vixen.Sys.Attribute;
 using Vixen.TypeConverters;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
-using VixenModules.EffectEditor.EffectTypeEditors;
 
 namespace VixenModules.Effect.Candle
 {
@@ -58,7 +57,6 @@ namespace VixenModules.Effect.Candle
 		[ProviderCategory(@"Flicker")]
 		[ProviderDisplayName(@"ChangePercent")]
 		[ProviderDescription(@"ChangePercent")]
-		[TypeConverter(typeof(PercentageTypeConverter))]
 		public Percentage ChangePercentage
 		{
 			get { return _data.ChangePercentage; }

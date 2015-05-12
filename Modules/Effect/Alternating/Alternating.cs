@@ -4,9 +4,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
-using System.Windows.Controls.WpfPropertyGrid;
 using System.Windows.Controls.WpfPropertyGrid.Controls;
-using System.Windows.Controls.WpfPropertyGrid.Converters;
 using Vixen.Attributes;
 using Vixen.Module;
 using Vixen.Module.Effect;
@@ -108,9 +106,8 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		[Value]
-		[ProviderCategory(@"Brightness")]
+		[ProviderCategory(@"Brightness",3)]
 		[PropertyEditor(typeof(SliderLevelEditor))]
-		[NumberRange(0, 100, 1)]  
 		[ProviderDisplayName(@"ColorOneBrightness")]
 		[ProviderDescription(@"Brightness")]
 		public double IntensityLevel1
@@ -125,7 +122,7 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		[Value]
-		[ProviderCategory(@"Color")]
+		[ProviderCategory(@"Color",2)]
 		[ProviderDisplayName(@"ColorOne")]
 		[Description(@"Sets the first color.")]
 		public Color Color1
@@ -143,9 +140,8 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		[Value]
-		[ProviderCategory(@"Brightness")]
+		[ProviderCategory(@"Brightness",3)]
 		[PropertyEditor(typeof(SliderLevelEditor))]
-		[NumberRange(0, 100, 1)]
 		[ProviderDisplayName(@"ColorTwoBrightness")]
 		[ProviderDescription(@"Brightness")]
 		public double IntensityLevel2
@@ -160,7 +156,7 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		[Value]
-		[ProviderCategory(@"Color")]
+		[ProviderCategory(@"Color",2)]
 		[ProviderDisplayName(@"ColorTwo")]
 		[Description(@"Sets the second color.")]
 		public Color Color2
@@ -178,7 +174,7 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		[Value]
-		[ProviderCategory(@"Interval")]
+		[ProviderCategory(@"Interval",4)]
 		[ProviderDisplayName(@"ChangeInterval")]
 		[Description(@"Specifies how often the effect should switch in milliseconds.")]
 		public int Interval
@@ -206,7 +202,7 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		[Value]
-		[ProviderCategory(@"Depth")]
+		[ProviderCategory(@"Depth",10)]
 		[ProviderDisplayName(@"Depth")]
 		[ProviderDescription(@"Depth")]
 		public int GroupEffect
@@ -221,7 +217,7 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		[Value]
-		[ProviderCategory(@"Config")]
+		[ProviderCategory(@"Config",5)]
 		[ProviderDisplayName(@"StaticEffect")]
 		[Description(@"Indicates that the effect should be the same on all elements.")]
 		[TypeConverter(typeof(BooleanStringTypeConverter))]
@@ -239,7 +235,7 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		[Value]
-		[ProviderCategory(@"ColorType")]
+		[ProviderCategory(@"ColorType",1)]
 		[ProviderDisplayName(@"ColorOneType")]
 		[ProviderDescription(@"StaticColorIndicator")]
 		[TypeConverter(typeof(BooleanStringTypeConverter))]
@@ -261,7 +257,7 @@ namespace VixenModules.Effect.Alternating
 		
 
 		[Value]
-		[ProviderCategory(@"ColorType")]
+		[ProviderCategory(@"ColorType",1)]
 		[ProviderDisplayName(@"ColorTwoType")]
 		[ProviderDescription(@"StaticColorIndicator")]
 		[TypeConverter(typeof(BooleanStringTypeConverter))]
@@ -281,7 +277,7 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		[Value]
-		[ProviderCategory(@"Color")]
+		[ProviderCategory(@"Color",2)]
 		[ProviderDisplayName(@"ColorOne")]
 		[ProviderDescription(@"Color")]
 		public ColorGradient ColorGradient1
@@ -299,7 +295,7 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		[Value]
-		[ProviderCategory(@"Color")]
+		[ProviderCategory(@"Color",2)]
 		[ProviderDisplayName(@"ColorTwo")]
 		[Description(@"Sets the second color.")]
 		public ColorGradient ColorGradient2
@@ -317,7 +313,7 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		[Value]
-		[ProviderCategory(@"Brightness")]
+		[ProviderCategory(@"Brightness",3)]
 		[ProviderDisplayName(@"ColorOneBrightness")]
 		[Description(@"Controls the individual brightness curve of the first gradient.")]
 		public Curve Curve1
@@ -332,7 +328,7 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		[Value]
-		[ProviderCategory(@"Brightness")]
+		[ProviderCategory(@"Brightness",3)]
 		[ProviderDisplayName(@"ColorTwoBrightness")]
 		[Description(@"Controls the individual brightness curve of the second gradient.")]
 		public Curve Curve2

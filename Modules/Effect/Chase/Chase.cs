@@ -2,20 +2,19 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Drawing.Design;
 using System.Linq;
 using System.Threading;
+using System.Windows.Controls.WpfPropertyGrid.Controls;
 using NLog;
+using Vixen.Attributes;
 using Vixen.Intent;
 using Vixen.Module;
 using Vixen.Module.Effect;
 using Vixen.Sys;
 using Vixen.Sys.Attribute;
-using Vixen.TypeConverters;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
-using VixenModules.EffectEditor.EffectTypeEditors;
 using VixenModules.Property.Color;
 using ZedGraph;
 
@@ -86,9 +85,10 @@ namespace VixenModules.Effect.Chase
 		}
 
 		[Value]
-		[ProviderCategory(@"Color")]
+		[ProviderCategory(@"Color",0)]
 		[ProviderDisplayName(@"ColorHandling")]
 		[ProviderDescription(@"ColorHandling")]
+		[PropertyOrder(1)]
 		public ChaseColorHandling ColorHandling
 		{
 			get { return _data.ColorHandling; }
@@ -96,6 +96,7 @@ namespace VixenModules.Effect.Chase
 			{
 				_data.ColorHandling = value;
 				IsDirty = true;
+				OnPropertyChanged();
 				UpdateColorHandlingAttributes();
 				TypeDescriptor.Refresh(this);
 			}
@@ -103,7 +104,7 @@ namespace VixenModules.Effect.Chase
 
 
 		[Value]
-		[ProviderCategory(@"Pulse")]
+		[ProviderCategory(@"Pulse",3)]
 		[ProviderDisplayName(@"PulseOverlap")]
 		[ProviderDescription(@"PulseOverlap")]
 		public int PulseOverlap
@@ -113,15 +114,16 @@ namespace VixenModules.Effect.Chase
 			{
 				_data.PulseOverlap = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
 		[Value]
-		[ProviderCategory(@"Brightness")]
+		[ProviderCategory(@"Brightness",1)]
 		[ProviderDisplayName(@"DefaultBrightness")]
 		[ProviderDescription(@"DefaultBrightness")]
-		[Editor(typeof(EffectLevelTypeEditor), typeof(UITypeEditor))]
-		[TypeConverter(typeof(LevelTypeConverter))]
+		[PropertyOrder(2)]
+		[PropertyEditor(typeof(SliderLevelEditor))]
 		public double DefaultLevel
 		{
 			get { return _data.DefaultLevel; }
@@ -129,15 +131,15 @@ namespace VixenModules.Effect.Chase
 			{
 				_data.DefaultLevel = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
 		[Value]
-		[ProviderCategory(@"Color")]
+		[ProviderCategory(@"Color",0)]
 		[ProviderDisplayName(@"Color")]
 		[ProviderDescription(@"Color")]
-		[Editor(typeof(EffectColorTypeEditor), typeof(UITypeEditor))]
-		[TypeConverter(typeof(ColorTypeConverter))]
+		[PropertyOrder(2)]
 		public Color StaticColor
 		{
 			get
@@ -149,6 +151,7 @@ namespace VixenModules.Effect.Chase
 			{
 				_data.StaticColor = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
@@ -160,9 +163,10 @@ namespace VixenModules.Effect.Chase
 		}
 
 		[Value]
-		[ProviderCategory(@"Color")]
+		[ProviderCategory(@"Color",0)]
 		[ProviderDisplayName(@"Color")]
 		[ProviderDescription(@"Color")]
+		[PropertyOrder(3)]
 		public ColorGradient ColorGradient
 		{
 			get
@@ -173,13 +177,15 @@ namespace VixenModules.Effect.Chase
 			{
 				_data.ColorGradient = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
 		[Value]
-		[ProviderCategory(@"Brightness")]
+		[ProviderCategory(@"Brightness",1)]
 		[ProviderDisplayName(@"Brightness")]
 		[ProviderDescription(@"PulseShape")]
+		[PropertyOrder(1)]
 		public Curve PulseCurve
 		{
 			get { return _data.PulseCurve; }
@@ -187,11 +193,12 @@ namespace VixenModules.Effect.Chase
 			{
 				_data.PulseCurve = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
 		[Value]
-		[ProviderCategory(@"Direction")]
+		[ProviderCategory(@"Direction",2)]
 		[ProviderDisplayName(@"Direction")]
 		[ProviderDescription(@"Direction")]
 		public Curve ChaseMovement
@@ -201,11 +208,12 @@ namespace VixenModules.Effect.Chase
 			{
 				_data.ChaseMovement = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
 		[Value]
-		[ProviderCategory(@"Depth")]
+		[ProviderCategory(@"Depth",4)]
 		[ProviderDisplayName(@"Depth")]
 		[ProviderDescription(@"Depth")]
 		public int DepthOfEffect
@@ -215,11 +223,12 @@ namespace VixenModules.Effect.Chase
 			{
 				_data.DepthOfEffect = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
 		[Value]
-		[ProviderCategory(@"Pulse")]
+		[ProviderCategory(@"Pulse",3)]
 		[ProviderDisplayName(@"ExtendPulseStart")]
 		[ProviderDescription(@"ExtendPulseStart")]
 		public bool ExtendPulseToStart
@@ -229,11 +238,12 @@ namespace VixenModules.Effect.Chase
 			{
 				_data.ExtendPulseToStart = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
 		[Value]
-		[ProviderCategory(@"Pulse")]
+		[ProviderCategory(@"Pulse",3)]
 		[ProviderDisplayName(@"ExtendPulseEnd")]
 		[ProviderDescription(@"ExtendPulseEnd")]
 		public bool ExtendPulseToEnd
@@ -243,6 +253,7 @@ namespace VixenModules.Effect.Chase
 			{
 				_data.ExtendPulseToEnd = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 

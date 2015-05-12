@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
@@ -62,7 +61,7 @@ namespace VixenModules.Effect.Pulse
 		}
 
 		[Value]
-		[ProviderCategory(@"Brightness")]
+		[ProviderCategory(@"Brightness",2)]
 		[ProviderDisplayName(@"Brightness")]
 		[ProviderDescription(@"Brightness")]
 		public Curve LevelCurve
@@ -76,7 +75,7 @@ namespace VixenModules.Effect.Pulse
 		}
 
 		[Value]
-		[ProviderCategory(@"Color")]
+		[ProviderCategory(@"Color",1)]
 		[ProviderDisplayName(@"Color")]
 		[ProviderDescription(@"Color")]
 		public ColorGradient ColorGradient

@@ -47,10 +47,7 @@
   </DataTemplate>
 
 	<DataTemplate x:Key="{x:Static local:EditorKeys.ComboBoxEditorKey}">
-		<ComboBox x:Name="Combo_part_editor" ItemsSource="{Binding ParentProperty.StandardValues}" SelectedValue="{Binding StringValue}">
-			
-			
-		</ComboBox>
+		<ComboBox x:Name="Combo_part_editor" ItemsSource="{Binding ParentProperty.StandardValues}" SelectedValue="{Binding StringValue}"/>
 	</DataTemplate>
 
 	<DataTemplate x:Key="{x:Static local:EditorKeys.EnumEditorKey}">

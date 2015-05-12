@@ -1,23 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Windows.Forms;
+using VixenModules.App.Curves;
 
 namespace System.Windows.Controls.WpfPropertyGrid.Controls
 {
-	public class CurveEditor:PropertyEditor
+	public class CurveEditor:TypeEditor
 	{
 		public CurveEditor()
 		{
+			EditedType = KnownTypes.Wpf.Curve;	
 			InlineTemplate = EditorKeys.CurveEditorKey;
+			ExtendedTemplate = null;
 		}
 
 		public override void ShowDialog(PropertyItemValue propertyValue, IInputElement commandSource)
 		{
 			if (propertyValue == null) return;
 			if (propertyValue.ParentProperty.IsReadOnly) return;
-			MessageBox.Show("edit");
+
+			if (propertyValue.Value is Curve)
+			{
+				Curve curveValue = propertyValue.Value as Curve;
+				VixenModules.App.Curves.CurveEditor editor = new VixenModules.App.Curves.CurveEditor(curveValue);
+				if (editor.ShowDialog() == DialogResult.OK)
+				{
+					propertyValue.Value = editor.Curve;
+				}
+			}
+			
 		}
 	}
 }

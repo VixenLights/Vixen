@@ -848,6 +848,11 @@ namespace System.Windows.Controls.WpfPropertyGrid
       // Create a new CategoryItem
       var categoryItem = new CategoryItem(this, attribute);
       categoryItem.IsBrowsable = ShouldDisplayCategory(categoryItem.Name);
+	    if (attribute is IOrderableAttribute)
+	    {
+		    IOrderableAttribute attr = (IOrderableAttribute) attribute;
+		    categoryItem.Order = attr.Order;
+	    }
 
       // Return resulting item
       return categoryItem;

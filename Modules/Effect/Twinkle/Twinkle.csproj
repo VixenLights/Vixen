@@ -86,11 +86,6 @@
       <Name>EffectTypeEditors</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\EffectEditor\TypeConverters\TypeConverters.csproj">
-      <Project>{4FBD9FC9-515A-44C8-AC64-D0908BCD3B11}</Project>
-      <Name>TypeConverters</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\Property\Color\Color.csproj">
       <Project>{73068A83-B3B7-4A2C-923D-71C7886CD5E3}</Project>
       <Name>Color</Name>
