@@ -107,13 +107,33 @@ namespace System.Windows.Controls.WpfPropertyGrid
     #region PropertyDescriptor
 
 	
-	  /// <summary>
+	/// <summary>
     /// Gets PropertyDescriptor instance for the underlying property.
     /// </summary>
     public override PropertyDescriptor PropertyDescriptor
     {
       get { return _descriptor; }
-    } 
+    }
+
+	/// <summary>
+	/// Gets PropertyDescriptor instance for the underlying property.
+	/// </summary>
+	public PropertyDescriptor UnderLyingPropertyDescriptor(int index)
+	{
+		
+			if (_descriptor is MergedPropertyDescriptor)
+			{
+				return ((MergedPropertyDescriptor) _descriptor)[index];
+			}
+			else
+			{
+				return _descriptor;
+			}	
+		
+	} 
+
+
+
     #endregion
 
 	#region ITypeDescriptorContext
@@ -576,7 +596,7 @@ namespace System.Windows.Controls.WpfPropertyGrid
           var convertedValue = Converter.ConvertFrom(value);
           SetValueCore(convertedValue);
         }
-	      if (oldValue != null)
+	      if (oldValue != null && oldValues==null)
 	      {
 			  OnValueChanged(new [] {oldValue} , GetValue());
 	      }

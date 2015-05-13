@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
 using Common.Controls;
 using Common.Controls.Timeline;
 
@@ -10,23 +9,23 @@ namespace VixenModules.Editor.TimedSequenceEditor.Undo
 {
 	public class EffectsPropertyModifiedUndoAction:UndoAction
 	{
-		public EffectsPropertyModifiedUndoAction(Dictionary<Element, Object> objValues, PropertyDescriptor property)
+		public EffectsPropertyModifiedUndoAction(Dictionary<Element, Tuple<Object, PropertyDescriptor>> effectPropertyValues)
 		{
-			ElementValues = objValues;
-			Property = property;
-			
+			if (effectPropertyValues == null) throw new ArgumentNullException("effectPropertyValues");
+			ElementValues = effectPropertyValues;
+			DisplayName = effectPropertyValues.First().Value.Item2.DisplayName;
 		}
 
-		public Dictionary<Element, Object> ElementValues { get; private set; }
-		public PropertyDescriptor Property { get; private set; }
-
+		public Dictionary<Element, Tuple<Object, PropertyDescriptor>> ElementValues { get; private set; }
+		public string DisplayName { get; private set; }
 		public override void Undo()
 		{
 			foreach (var element in ElementValues.Keys.ToList())
 			{
-				object temp = Property.GetValue(element.EffectNode.Effect);
-				Property.SetValue(element.EffectNode.Effect, ElementValues[element]);
-				ElementValues[element] = temp;
+				Tuple<Object, PropertyDescriptor> value = ElementValues[element];
+				object temp = value.Item2.GetValue(element.EffectNode.Effect);
+				value.Item2.SetValue(element.EffectNode.Effect, ElementValues[element].Item1);
+				ElementValues[element] = new Tuple<object, PropertyDescriptor>(temp,value.Item2);
 				element.UpdateNotifyContentChanged();
 			}
 			
@@ -38,7 +37,10 @@ namespace VixenModules.Editor.TimedSequenceEditor.Undo
 		{
 			foreach (var element in ElementValues.Keys.ToList())
 			{
-				Property.SetValue(element.EffectNode.Effect, ElementValues[element]);
+				Tuple<Object, PropertyDescriptor> value = ElementValues[element];
+				object temp = value.Item2.GetValue(element.EffectNode.Effect);
+				value.Item2.SetValue(element.EffectNode.Effect, ElementValues[element].Item1);
+				ElementValues[element] = new Tuple<object, PropertyDescriptor>(temp, value.Item2);
 				element.UpdateNotifyContentChanged();
 			}
 			
@@ -47,7 +49,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Undo
 
 		public override string Description
 		{
-			get { return string.Format("{0} Effect(s) {1} modified", ElementValues.Count, Property.DisplayName);; } 
+			get { return string.Format("{0} Effect(s) {1} modified", ElementValues.Count, DisplayName);; } 
 		}
 	}
 }

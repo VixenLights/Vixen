@@ -16,15 +16,12 @@ namespace System.Windows.Controls.WpfPropertyGrid.Controls
 		{
 			if (propertyValue == null) return;
 			if (propertyValue.ParentProperty.IsReadOnly) return;
-
-			if (propertyValue.Value is Curve)
+			
+			Curve curveValue = propertyValue.Value as Curve;
+			VixenModules.App.Curves.CurveEditor editor = new VixenModules.App.Curves.CurveEditor(curveValue??new Curve());
+			if (editor.ShowDialog() == DialogResult.OK)
 			{
-				Curve curveValue = propertyValue.Value as Curve;
-				VixenModules.App.Curves.CurveEditor editor = new VixenModules.App.Curves.CurveEditor(curveValue);
-				if (editor.ShowDialog() == DialogResult.OK)
-				{
-					propertyValue.Value = editor.Curve;
-				}
+				propertyValue.Value = editor.Curve;
 			}
 			
 		}

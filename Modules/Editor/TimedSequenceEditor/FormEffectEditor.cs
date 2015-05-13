@@ -37,7 +37,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public FormEffectEditor(TimedSequenceEditorForm sequenceEditorForm)
 		{
 			
-
 			if (System.Windows.Application.Current == null)
 			{
 				// create the Application object
@@ -86,29 +85,24 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			//}
 
 			sequenceEditorForm.TimelineControl.SelectionChanged += timelineControl_SelectionChanged;
-			//_propertyEditorGridEffectPropertiesEditor.PropertyValueChanged += PropertyEditorGridEffectPropertiesEditorPropertyEditorValueChanged;
-			_propertyEditorGridEffectPropertiesEditor.PropertyValueChanged += PropertyEditorGridEffectPropertiesEditorPropertyEditorValueChanged;
+			_propertyEditorGridEffectPropertiesEditor.PropertyValueChanged += PropertyEditorValueChanged;
 			_previewLoopTimer.Elapsed += PreviewLoopTimerOnElapsed;
-
-			TypeDescriptor.Refreshed += TypeDescriptor_Refreshed;
 		}
 
-		void TypeDescriptor_Refreshed(RefreshEventArgs e)
-		{
-			TypeDescriptor.GetProperties(e.TypeChanged);
-			Console.Out.WriteLine("Got refresh {0}", e.TypeChanged);
-		}
-
-		void PropertyEditorGridEffectPropertiesEditorPropertyEditorValueChanged(object sender, System.Windows.Controls.WpfPropertyGrid.PropertyValueChangedEventArgs e)
-		{
 		
-			//_sequenceEditorForm.AddEffectsModifiedToUndo(new Dictionary<Element, EffectModelCandidate>(_elements), e.Property.DisplayName);
-			//var keys = new List<Element>(Elements);
-			
-			var propertyValues = _elements.Zip(e.OldValue, (k, v) => new {k, v}).ToDictionary(x => x.k, x => x.v);
-			_elements.ForEach(x => x.UpdateNotifyContentChanged());
-			
-			var undo = new EffectsPropertyModifiedUndoAction(propertyValues,e.Property.PropertyDescriptor);
+		void PropertyEditorValueChanged(object sender, System.Windows.Controls.WpfPropertyGrid.PropertyValueChangedEventArgs e)
+		{
+			Dictionary<Element, Tuple<Object, PropertyDescriptor>> elementValues = new Dictionary<Element, Tuple<object, PropertyDescriptor>>();
+
+			int i = 0;
+			foreach (var element in _elements)
+			{
+				element.UpdateNotifyContentChanged();
+				elementValues.Add(element, new Tuple<object, PropertyDescriptor>(e.OldValue[i], e.Property.UnderLyingPropertyDescriptor(i)));
+				i++;
+			}
+
+			var undo = new EffectsPropertyModifiedUndoAction(elementValues);
 			_sequenceEditorForm.AddEffectsModifiedToUndo(undo);
 		}
 
@@ -117,47 +111,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			get { return _elements; }
 			set
 			{
-				//RemoveElementContentChangedListener();
 				_elements.Clear();
-				AddElements(value);
+				_elements.AddRange(value);
 				//SetPreviewState();
-				//if (_elements.Any())
-				//{
-				//	_propertyEditorGridEffectPropertiesEditor.SelectedObject = _elements.Keys.Select(x => x.EffectNode.Effect).First();
-				//}
-				//else
-				//{
-				//	_propertyEditorGridEffectPropertiesEditor.SelectedObject = null;
-
-				//}
 				
 				_propertyEditorGridEffectPropertiesEditor.SelectedObjects = _elements.Select(x => x.EffectNode.Effect).ToArray();
 			} 
-		}
-
-		private void AddElements(IEnumerable<Element> elements)
-		{
-			_elements.AddRange(elements);
-			//foreach (var element in elements)
-			//{
-			//	_elements.Add(element);
-			//	//AddElementContentChangedListener(element);
-			//}
-		}
-
-		private void AddElementContentChangedListener(Element element)
-		{
-			
-			element.ContentChanged += element_ContentChanged;
-			
-		}
-
-		private void RemoveElementContentChangedListener()
-		{
-			foreach (var element in Elements)
-			{
-				element.ContentChanged -= element_ContentChanged;
-			}
 		}
 
 		#region Events
@@ -165,11 +124,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void timelineControl_SelectionChanged(object sender, EventArgs e)
 		{
 			Elements = _sequenceEditorForm.TimelineControl.SelectedElements;
-		}
-
-		private void element_ContentChanged(object sender, EventArgs e)
-		{
-			_propertyEditorGridEffectPropertiesEditor.InvalidateVisual();
 		}
 
 		#endregion

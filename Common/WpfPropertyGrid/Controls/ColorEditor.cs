@@ -27,7 +27,11 @@ namespace System.Windows.Controls.WpfPropertyGrid.Controls
 			
 			HashSet<Color> discreteColors = GetDiscreteColors(propertyValue.ParentProperty.Component);
 
-			Color colorValue = (Color)propertyValue.Value;
+			Color colorValue=Color.Black;
+			if (propertyValue.Value != null)
+			{
+				colorValue = (Color)propertyValue.Value;	
+			}
 			DialogResult result;
 			if (discreteColors.Any())
 			{
@@ -35,7 +39,7 @@ namespace System.Windows.Controls.WpfPropertyGrid.Controls
 				{
 					dcp.ValidColors = discreteColors;
 					dcp.SingleColorOnly = true;
-					dcp.SelectedColors = new List<Color> { colorValue };
+					dcp.SelectedColors = new List<Color> { colorValue };	
 					result = dcp.ShowDialog();
 					if (result == DialogResult.OK)
 					{
@@ -68,6 +72,17 @@ namespace System.Windows.Controls.WpfPropertyGrid.Controls
 			{
 				IEffect effect = (IEffect)component;
 				validColors.AddRange(effect.TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
+			}
+			else if (component is Array)
+			{
+				foreach (var item in (Array)component)
+				{
+					if (item is IEffect)
+					{
+						IEffect effect = (IEffect)item;
+						validColors.AddRange(effect.TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
+					}
+				}
 			}
 
 			return validColors;
