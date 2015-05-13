@@ -35,5 +35,6 @@ namespace Common.Controls.Undo
 			Property.SetValue(Object, OldValue, null);
 			base.Redo();
 		}
+
 	}
 }

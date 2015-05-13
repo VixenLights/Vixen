@@ -11,9 +11,14 @@ namespace System.Windows.Controls.WpfPropertyGrid.Converters
 
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			Color color = (Color)value;
-			Media.Color converted = Media.Color.FromArgb(color.A, color.R, color.G, color.B);
-			return new SolidColorBrush(converted);
+			if (value != null)
+			{
+				Color color = (Color)value;
+				Media.Color converted = Media.Color.FromArgb(color.A, color.R, color.G, color.B);
+				return new SolidColorBrush(converted);	
+			}
+			return new SolidColorBrush(Media.Color.FromArgb(255,255,255,255));
+			
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

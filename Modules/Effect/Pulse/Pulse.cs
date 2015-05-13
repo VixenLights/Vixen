@@ -71,6 +71,7 @@ namespace VixenModules.Effect.Pulse
 			{
 				_data.LevelCurve = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
@@ -88,6 +89,7 @@ namespace VixenModules.Effect.Pulse
 			{
 				_data.ColorGradient = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 

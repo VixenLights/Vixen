@@ -158,7 +158,7 @@ namespace System.Windows.Controls.WpfPropertyGrid
       }
     }
 
-    private void OnPropertyItemValueChanged(PropertyItem property, object oldValue, object newValue)
+    private void OnPropertyItemValueChanged(PropertyItem property, object[] oldValue, object newValue)
     {
       RaisePropertyValueChangedEvent(property, oldValue);
     }
@@ -420,7 +420,7 @@ namespace System.Windows.Controls.WpfPropertyGrid
       remove { RemoveHandler(PropertyValueChangedEvent, value); }
     }
 
-    private void RaisePropertyValueChangedEvent(PropertyItem property, object oldValue)
+    private void RaisePropertyValueChangedEvent(PropertyItem property, object[] oldValue)
     {
       var args = new PropertyValueChangedEventArgs(PropertyValueChangedEvent, property, oldValue);
       RaiseEvent(args);

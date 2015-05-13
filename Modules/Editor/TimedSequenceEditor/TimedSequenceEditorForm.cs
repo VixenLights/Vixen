@@ -4671,6 +4671,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_undoMgr.AddUndoAction(new EffectsModifiedUndoAction(modifiedEffectElements, labelName));
 		}
 
+		public void AddEffectsModifiedToUndo(EffectsPropertyModifiedUndoAction modifiedElements)
+		{
+			_undoMgr.AddUndoAction(modifiedElements);
+		}
+
 		#endregion
 
 		#region IEditorUserInterface implementation

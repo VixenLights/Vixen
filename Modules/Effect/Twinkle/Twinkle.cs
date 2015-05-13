@@ -11,6 +11,8 @@ using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using System.Drawing;
 using System.Drawing.Design;
+using System.Windows.Controls.WpfPropertyGrid.Controls;
+using Vixen.Attributes;
 using Vixen.TypeConverters;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using VixenModules.EffectEditor.EffectTypeEditors;
@@ -106,7 +108,7 @@ namespace VixenModules.Effect.Twinkle
 		}
 
 		[Value]
-		[ProviderCategory(@"Depth")]
+		[ProviderCategory(@"Depth", 10)]
 		[ProviderDisplayName(@"IndividualElements")]
 		[ProviderDescription(@"TwinkleDepth")]
 		public bool IndividualElements
@@ -120,11 +122,10 @@ namespace VixenModules.Effect.Twinkle
 		}
 
 		[Value]
-		[ProviderCategory(@"Brightness")]
+		[ProviderCategory(@"Brightness",2)]
 		[ProviderDisplayName(@"MinBrightness")]
 		[ProviderDescription(@"MinBrightness")]
-		[TypeConverter(typeof(LevelTypeConverter))]
-		[Editor(typeof(EffectLevelTypeEditor), typeof(UITypeEditor))]
+		[PropertyEditor(typeof(SliderLevelEditor))]
 		public double MinimumLevel
 		{
 			get { return _data.MinimumLevel; }
@@ -136,11 +137,10 @@ namespace VixenModules.Effect.Twinkle
 		}
 
 		[Value]
-		[ProviderCategory(@"Brightness")]
+		[ProviderCategory(@"Brightness",2)]
 		[ProviderDisplayName(@"MaxBrightness")]
 		[ProviderDescription(@"MaxBrightness")]
-		[TypeConverter(typeof(LevelTypeConverter))]
-		[Editor(typeof(EffectLevelTypeEditor), typeof(UITypeEditor))]
+		[PropertyEditor(typeof(SliderLevelEditor))]
 		public double MaximumLevel
 		{
 			get { return _data.MaximumLevel; }
@@ -152,10 +152,10 @@ namespace VixenModules.Effect.Twinkle
 		}
 
 		[Value]
-		[ProviderCategory(@"Brightness")]
+		[ProviderCategory(@"Brightness",2)]
 		[ProviderDisplayName(@"Variation")]
 		[Description(@"TwinkleVariation")]
-		[TypeConverter(typeof(DoublePercentTypeConverter))]
+		[PropertyEditor(typeof(SliderEditor))]
 		public int LevelVariation
 		{
 			get { return _data.LevelVariation; }
@@ -167,7 +167,7 @@ namespace VixenModules.Effect.Twinkle
 		}
 
 		[Value]
-		[ProviderCategory(@"Config")]
+		[ProviderCategory(@"Config",3)]
 		[ProviderDisplayName(@"AveragePulseTime")]
 		[Description(@"TwinkleAvgPulseTime")]
 		public int AveragePulseTime
@@ -181,9 +181,10 @@ namespace VixenModules.Effect.Twinkle
 		}
 
 		[Value]
-		[ProviderCategory(@"Config")]
+		[ProviderCategory(@"Config",3)]
 		[ProviderDisplayName(@"Variation")]
 		[ProviderDescription(@"TwinkleVariation")]
+		[PropertyEditor(typeof(SliderEditor))]
 		public int PulseTimeVariation
 		{
 			get { return _data.PulseTimeVariation; }
@@ -195,10 +196,10 @@ namespace VixenModules.Effect.Twinkle
 		}
 
 		[Value]
-		[ProviderCategory(@"Config")]
+		[ProviderCategory(@"Config",3)]
 		[ProviderDisplayName(@"Coverage")]
 		[ProviderDescription(@"TwinkleCoverage")]
-		[TypeConverter(typeof(DoublePercentTypeConverter))]
+		[PropertyEditor(typeof(SliderEditor))]
 		public int AverageCoverage
 		{
 			get { return _data.AverageCoverage; }
@@ -210,9 +211,10 @@ namespace VixenModules.Effect.Twinkle
 		}
 
 		[Value]
-		[ProviderCategory(@"Color")]
+		[ProviderCategory(@"Color",1)]
 		[ProviderDisplayName(@"ColorHandling")]
 		[ProviderDescription(@"ColorHandling")]
+		[PropertyOrder(1)]
 		public TwinkleColorHandling ColorHandling
 		{
 			get { return _data.ColorHandling; }
@@ -226,11 +228,10 @@ namespace VixenModules.Effect.Twinkle
 		}
 
 		[Value]
-		[ProviderCategory(@"Color")]
+		[ProviderCategory(@"Color",1)]
 		[ProviderDisplayName(@"Color")]
 		[ProviderDescription(@"Color")]
-		[Editor(typeof(EffectColorTypeEditor), typeof(UITypeEditor))]
-		[TypeConverter(typeof(ColorTypeConverter))]
+		[PropertyOrder(2)]
 		public Color StaticColor
 		{
 			get
@@ -245,9 +246,10 @@ namespace VixenModules.Effect.Twinkle
 		}
 
 		[Value]
-		[ProviderCategory(@"Color")]
+		[ProviderCategory(@"Color",1)]
 		[ProviderDisplayName(@"Color")]
 		[ProviderDescription(@"Color")]
+		[PropertyOrder(3)]
 		public ColorGradient ColorGradient
 		{
 			get

@@ -232,6 +232,7 @@
     <Compile Include="Undo\EffectsAddedUndoAction.cs" />
     <Compile Include="Undo\EffectsModifiedUndoAction.cs" />
     <Compile Include="Undo\EffectsPastedUndoAction.cs" />
+    <Compile Include="Undo\EffectsPropertyModifiedUndoAction.cs" />
     <Compile Include="Undo\EffectsRemovedUndoAction.cs" />
     <Compile Include="Undo\ElementsTimeChangedUndoAction.cs" />
     <Compile Include="Undo\EffectsCutUndoAction.cs" />

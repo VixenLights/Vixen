@@ -156,6 +156,7 @@
     <Compile Include="Controls\ComboBoxEditor.cs" />
     <Compile Include="Controls\GradientEditor.cs" />
     <Compile Include="Controls\CurveEditor.cs" />
+    <Compile Include="Controls\SliderDoubleEditor.cs" />
     <Compile Include="Controls\SliderEditor.cs" />
     <Compile Include="Controls\SliderEditorBase.cs" />
     <Compile Include="Controls\SliderPercentageEditor.cs" />
@@ -168,6 +169,7 @@
     <Compile Include="Converters\FontStretchConverterDecorator.cs" />
     <Compile Include="Converters\FontStyleConverterDecorator.cs" />
     <Compile Include="Converters\FontWeightConverterDecorator.cs" />
+    <Compile Include="Converters\IntToDoubleConverter.cs" />
     <Compile Include="Converters\PercentageValueConverter.cs" />
     <Compile Include="Converters\LevelValueConverter.cs" />
     <Compile Include="Converters\MultiBooleanToVisibilityConverter.cs" />

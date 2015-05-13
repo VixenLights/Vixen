@@ -29,14 +29,14 @@ namespace System.Windows.Controls.WpfPropertyGrid.Converters
 
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-      Debugger.Break();
+     // Debugger.Break();
 		Console.Out.WriteLine("Convert {0} to {1}", value, targetType);
       return value;
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
     {
-      Debugger.Break();
+     // Debugger.Break();
 	  Console.Out.WriteLine("Convert Back {0}", value);
       return value;
     }

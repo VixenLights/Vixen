@@ -5,6 +5,8 @@ using System.Drawing;
 using System.Drawing.Design;
 using System.Linq;
 using System.Threading;
+using System.Windows.Controls.WpfPropertyGrid.Controls;
+using Vixen.Attributes;
 using Vixen.Module;
 using Vixen.Module.Effect;
 using Vixen.Sys;
@@ -13,7 +15,6 @@ using Vixen.TypeConverters;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
-using VixenModules.EffectEditor.EffectTypeEditors;
 using VixenModules.Property.Color;
 using VixenModules.Property.Location;
 
@@ -497,7 +498,7 @@ namespace VixenModules.Effect.Wipe
 		}
 
 		[Value]
-		[ProviderCategory(@"Color")]
+		[ProviderCategory(@"Color",3)]
 		[ProviderDisplayName(@"Color")]
 		[ProviderDescription(@"Color")]
 		public ColorGradient ColorGradient
@@ -510,11 +511,12 @@ namespace VixenModules.Effect.Wipe
 			{
 				_data.ColorGradient = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
 		[Value]
-		[ProviderCategory(@"Direction")]
+		[ProviderCategory(@"Direction",2)]
 		[DisplayName(@"Direction")]
 		[ProviderDescription(@"Direction")]
 		public WipeDirection Direction
@@ -524,11 +526,12 @@ namespace VixenModules.Effect.Wipe
 			{
 				_data.Direction = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
 		[Value]
-		[ProviderCategory(@"Brightness")]
+		[ProviderCategory(@"Brightness",4)]
 		[ProviderDisplayName(@"Brightness")]
 		[ProviderDescription(@"PulseShape")]
 		public Curve Curve
@@ -538,11 +541,12 @@ namespace VixenModules.Effect.Wipe
 			{
 				_data.Curve = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
 		[Value]
-		[ProviderCategory(@"Pulse")]
+		[ProviderCategory(@"Pulse",6)]
 		[ProviderDisplayName(@"PulseDuration")]
 		[ProviderDescription(@"PulseDuration")]
 		public int PulseTime
@@ -552,14 +556,17 @@ namespace VixenModules.Effect.Wipe
 			{
 				_data.PulseTime = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
 		[Value]
-		[ProviderCategory(@"Type")]
+		[ProviderCategory(@"Type",1)]
 		[ProviderDisplayName(@"Type")]
 		[Description(@"WipeType")]
-		[TypeConverter(typeof(WipeSelectionTypeConverter))]
+		[TypeConverter(typeof(BooleanStringTypeConverter))]
+		[BoolDescription("Count", "Pulse Length")]
+		[PropertyEditor(typeof(ComboBoxEditor))]
 		public bool WipeByCount
 		{
 			get { return _data.WipeByCount; }
@@ -567,13 +574,14 @@ namespace VixenModules.Effect.Wipe
 			{
 				_data.WipeByCount = value;
 				IsDirty = true;
+				OnPropertyChanged();
 				UpdateAttributes();
 				TypeDescriptor.Refresh(this);
 			}
 		}
 
 		[Value]
-		[ProviderCategory(@"Pulse")]
+		[ProviderCategory(@"Type",1)]
 		[ProviderDisplayName(@"WipeCount")]
 		[Description(@"WipeCount")]
 		public int PassCount
@@ -583,16 +591,15 @@ namespace VixenModules.Effect.Wipe
 			{
 				_data.PassCount = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
 		[Value]
-		[ProviderCategory(@"Pulse")]
+		[ProviderCategory(@"Pulse",7)]
 		[ProviderDisplayName(@"PulsePercent")]
 		[ProviderDescription(@"WipePulsePercent")]
-		[TypeConverter(typeof(RangeTypeConverter))]
-		[Editor(typeof(EffectRangeTypeEditor), typeof(UITypeEditor))]
-		[Range]
+		[PropertyEditor(typeof(SliderDoubleEditor))]
 		public double PulsePercent
 		{
 			get { return _data.PulsePercent; }
@@ -600,6 +607,7 @@ namespace VixenModules.Effect.Wipe
 			{
 				_data.PulsePercent = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 

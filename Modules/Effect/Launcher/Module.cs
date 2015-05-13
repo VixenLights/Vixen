@@ -99,6 +99,7 @@ namespace Launcher
 			{
 				_data.Description=value;
 				IsDirty=true;
+				OnPropertyChanged();
 			}
 		}
 		[Value]
@@ -115,6 +116,7 @@ namespace Launcher
 			{
 				_data.Executable=value;
 				IsDirty=true;
+				OnPropertyChanged();
 			}
 		}
 
@@ -129,6 +131,7 @@ namespace Launcher
 			{
 				_data.Arguments=value;
 				IsDirty=true;
+				OnPropertyChanged();
 			}
 		}
 

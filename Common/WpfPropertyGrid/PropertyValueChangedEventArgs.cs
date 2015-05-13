@@ -29,7 +29,7 @@ namespace System.Windows.Controls.WpfPropertyGrid
     /// Gets the old value.
     /// </summary>
     /// <value>The old value.</value>
-    public object OldValue { get; private set; }
+    public object[] OldValue { get; private set; }
     /// <summary>
     /// Gets the new value.
     /// </summary>
@@ -47,7 +47,7 @@ namespace System.Windows.Controls.WpfPropertyGrid
     /// <param name="routedEvent">The routed event.</param>
     /// <param name="property">The property.</param>
     /// <param name="oldValue">The old value.</param>
-    public PropertyValueChangedEventArgs(RoutedEvent routedEvent, PropertyItem property, object oldValue)
+    public PropertyValueChangedEventArgs(RoutedEvent routedEvent, PropertyItem property, object[] oldValue)
       : base(routedEvent, property)
     {
       Property = property;

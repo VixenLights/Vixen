@@ -32,6 +32,7 @@ namespace System.Windows.Controls.WpfPropertyGrid
     private static readonly ComponentResourceKey _EnumEditorKey = new ComponentResourceKey(ThisType, "EnumEditor");
 	private static readonly ComponentResourceKey _ComboBoxEditorKey = new ComponentResourceKey(ThisType, "ComboBoxEditor");
     private static readonly ComponentResourceKey _SliderEditorKey = new ComponentResourceKey(ThisType, "SliderEditor");
+	private static readonly ComponentResourceKey _SliderDoubleEditorKey = new ComponentResourceKey(ThisType, "SliderDoubleEditor");
 	private static readonly ComponentResourceKey _SliderLevelEditorKey = new ComponentResourceKey(ThisType, "SliderLevelEditor");
 	private static readonly ComponentResourceKey _SliderPercentageEditorKey = new ComponentResourceKey(ThisType, "SliderPercentageEditor");
     private static readonly ComponentResourceKey _FontFamilyEditorKey = new ComponentResourceKey(ThisType, "FontFamilyEditor");
@@ -104,6 +105,13 @@ namespace System.Windows.Controls.WpfPropertyGrid
     /// </summary>
     /// <value>The slider editor key.</value>
     public static ComponentResourceKey SliderEditorKey { get { return _SliderEditorKey; } }
+
+
+	/// <summary>
+	/// Gets the slider double editor key.
+	/// </summary>
+	/// <value>The slider editor key.</value>
+	public static ComponentResourceKey SliderDoubleEditorKey { get { return _SliderDoubleEditorKey; } }
 
 	/// <summary>
 	/// Gets the slider level editor key.

@@ -58,6 +58,7 @@ namespace VixenModules.Effect.RDS
 			{
 				_data.Title=value;
 				IsDirty=true;
+				OnPropertyChanged();
 			}
 		}
 
@@ -73,6 +74,7 @@ namespace VixenModules.Effect.RDS
 			{
 				_data.Artist=value;
 				IsDirty=true;
+				OnPropertyChanged();
 			}
 		}
 

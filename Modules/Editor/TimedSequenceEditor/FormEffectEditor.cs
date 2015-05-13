@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing.Design;
 using System.Linq;
+using System.Reflection;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls.WpfPropertyGrid;
@@ -15,6 +16,7 @@ using Vixen.Module.Effect;
 using Vixen.Sys;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
+using VixenModules.Editor.TimedSequenceEditor.Undo;
 using VixenModules.EffectEditor.EffectTypeEditors;
 using WeifenLuo.WinFormsUI.Docking;
 using Action = System.Action;
@@ -25,7 +27,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 {
 	public partial class FormEffectEditor : DockContent
 	{
-		private readonly Dictionary<Element, EffectModelCandidate> _elements = new Dictionary<Element, EffectModelCandidate>();
+		private readonly List<Element> _elements = new List<Element>();
 		private readonly TimedSequenceEditorForm _sequenceEditorForm;
 		private readonly ToolStripButton _toolStripButtonPreview;
 		private LiveContext _previewContext;
@@ -99,21 +101,23 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		void PropertyEditorGridEffectPropertiesEditorPropertyEditorValueChanged(object sender, System.Windows.Controls.WpfPropertyGrid.PropertyValueChangedEventArgs e)
 		{
-			_sequenceEditorForm.AddEffectsModifiedToUndo(new Dictionary<Element, EffectModelCandidate>(_elements), e.Property.DisplayName);
-			var keys = new List<Element>(Elements);
-			foreach (var element in keys)
-			{
-				element.UpdateNotifyContentChanged();
-				_elements[element] = new EffectModelCandidate(element.EffectNode.Effect);
-			}
+		
+			//_sequenceEditorForm.AddEffectsModifiedToUndo(new Dictionary<Element, EffectModelCandidate>(_elements), e.Property.DisplayName);
+			//var keys = new List<Element>(Elements);
+			
+			var propertyValues = _elements.Zip(e.OldValue, (k, v) => new {k, v}).ToDictionary(x => x.k, x => x.v);
+			_elements.ForEach(x => x.UpdateNotifyContentChanged());
+			
+			var undo = new EffectsPropertyModifiedUndoAction(propertyValues,e.Property.PropertyDescriptor);
+			_sequenceEditorForm.AddEffectsModifiedToUndo(undo);
 		}
 
 		internal IEnumerable<Element> Elements
 		{
-			get { return _elements.Keys; }
+			get { return _elements; }
 			set
 			{
-				RemoveElementContentChangedListener();
+				//RemoveElementContentChangedListener();
 				_elements.Clear();
 				AddElements(value);
 				//SetPreviewState();
@@ -127,17 +131,18 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				//}
 				
-				_propertyEditorGridEffectPropertiesEditor.SelectedObjects = _elements.Keys.Select(x => x.EffectNode.Effect).ToArray();
+				_propertyEditorGridEffectPropertiesEditor.SelectedObjects = _elements.Select(x => x.EffectNode.Effect).ToArray();
 			} 
 		}
 
 		private void AddElements(IEnumerable<Element> elements)
 		{
-			foreach (var element in elements)
-			{
-				_elements.Add(element, new EffectModelCandidate(element.EffectNode.Effect));
-				AddElementContentChangedListener(element);
-			}
+			_elements.AddRange(elements);
+			//foreach (var element in elements)
+			//{
+			//	_elements.Add(element);
+			//	//AddElementContentChangedListener(element);
+			//}
 		}
 
 		private void AddElementContentChangedListener(Element element)

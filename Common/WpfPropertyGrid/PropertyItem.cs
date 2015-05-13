@@ -15,6 +15,7 @@
  */
 using System.Collections;
 using System.ComponentModel;
+using System.Windows.Controls.WpfPropertyGrid.Internal;
 
 namespace System.Windows.Controls.WpfPropertyGrid
 {
@@ -195,11 +196,11 @@ namespace System.Windows.Controls.WpfPropertyGrid
     /// <summary>
     /// Occurs when property value is changed.
     /// </summary>
-    public event Action<PropertyItem, object, object> ValueChanged;
+    public event Action<PropertyItem, object[], object> ValueChanged;
 
-    private void OnValueChanged(object oldValue, object newValue)
+    private void OnValueChanged(object[] oldValue, object newValue)
     {
-      Action<PropertyItem, object, object> handler = ValueChanged;
+      Action<PropertyItem, object[], object> handler = ValueChanged;
       if (handler != null)
         handler(this, oldValue, newValue);
     }
@@ -509,7 +510,7 @@ namespace System.Windows.Controls.WpfPropertyGrid
 
       var oldValue = GetValue();
       _descriptor.ResetValue(_component);
-      OnValueChanged(oldValue, GetValue());
+      OnValueChanged(new []{oldValue}, GetValue());
       OnPropertyChanged("PropertyValue");
     }
 
@@ -523,6 +524,13 @@ namespace System.Windows.Controls.WpfPropertyGrid
       var target = GetViaCustomTypeDescriptor(_component, _descriptor);
       return _descriptor.GetValue(target);
     }
+
+	public object[] GetValues()
+	{
+		if (!(_descriptor is MergedPropertyDescriptor)) return null;
+		var target = GetViaCustomTypeDescriptor(_component, _descriptor);
+		return ((MergedPropertyDescriptor)_descriptor).GetValues((Array)target);
+	}
 
     private void SetValueCore(object value)
     {
@@ -551,6 +559,8 @@ namespace System.Windows.Controls.WpfPropertyGrid
       if (IsReadOnly) return;
             
       var oldValue = GetValue();
+	  var oldValues = GetValues();
+	    
       try
       {
         if (value != null && value.Equals(oldValue)) return;
@@ -566,7 +576,15 @@ namespace System.Windows.Controls.WpfPropertyGrid
           var convertedValue = Converter.ConvertFrom(value);
           SetValueCore(convertedValue);
         }
-        OnValueChanged(oldValue, GetValue());
+	      if (oldValue != null)
+	      {
+			  OnValueChanged(new [] {oldValue} , GetValue());
+	      }
+	      else
+	      {
+			  OnValueChanged(oldValues, GetValue());
+	      }
+        
       }
       catch
       {

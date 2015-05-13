@@ -249,7 +249,7 @@ namespace System.Windows.Controls.WpfPropertyGrid.Internal
       return this.collection;
     }
 
-    internal object[] GetValues(Array components)
+    public object[] GetValues(Array components)
     {
       object[] objArray = new object[components.Length];
 
