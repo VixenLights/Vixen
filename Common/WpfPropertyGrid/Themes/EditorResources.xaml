@@ -3,27 +3,20 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:local="clr-namespace:System.Windows.Controls.WpfPropertyGrid"
   xmlns:design="clr-namespace:System.Windows.Controls.WpfPropertyGrid.Design"
-  xmlns:controls="clr-namespace:System.Windows.Controls.WpfPropertyGrid.Controls"
-  xmlns:converters="clr-namespace:System.Windows.Controls.WpfPropertyGrid.Converters"
-  xmlns:system="clr-namespace:System;assembly=mscorlib"
-  xmlns:input="clr-namespace:System.Windows.Controls.WpfPropertyGrid.Input">
+  xmlns:controls="clr-namespace:System.Windows.Controls.WpfPropertyGrid.Controls">
 
-  <local:NamedColorList x:Key="NamedColorList"/>
-  <converters:NullValueConverter x:Key="NullValueConverter"/>
-  <converters:EnumValueConverter x:Key="EnumValueConverter"/>
-  <converters:MultiBooleanToVisibilityConverter x:Key="MultiBooleanToVisibilityConverter"/>
-  <converters:ExpanderHeaderWidthConverter x:Key="ExpanderHeaderWidthConverter"/>
-	<converters:LevelValueConverter x:Key="LevelValueConverter"/>
-	<converters:SystemColorToSolidBrushConverter x:Key="SystemColorToSolidBrushConverter"/>
-	<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-	<converters:BitmapImageConverter x:Key="BitmapImageConverter"/>
-	<converters:PercentageValueConverter x:Key="PercentageValueConverter"/>
-	<converters:IntToDoubleConverter x:Key="IntToDoubleConverter"/>
-	<converters:CurveToImageConverter x:Key="CurveToImageConverter"/>
-	<converters:ColorGradientToImageConverter x:Key="ColorGradientToImageConverter"/>
-	<converters:DebugConverter x:Key="DebugConverter"/>
+	<ResourceDictionary.MergedDictionaries>
+		<ResourceDictionary Source="Converters.xaml"/>
+		<ResourceDictionary Source="CurveEditor.xaml"/>
+		<ResourceDictionary Source="SystemColorEditor.xaml"/>
+		<ResourceDictionary Source="ColorGradientEditor.xaml"/>
+		<ResourceDictionary Source="SliderEditor.xaml"/>
+		<ResourceDictionary Source="EnumEditor.xaml"/>
+		<ResourceDictionary Source="TextEditor.xaml"/>
+		<ResourceDictionary Source="FontEditor.xaml"/>
+	</ResourceDictionary.MergedDictionaries>
+
 	
-
   <DataTemplate x:Key="{x:Static local:EditorKeys.ComplexPropertyEditorKey}">
     <Expander>
       <Expander.Header>
@@ -38,195 +31,16 @@
     <design:PropertyItemsLayout ItemsSource="{Binding Properties}"/>
   </DataTemplate>
 
-  <!--Note that commit on typing cannot work together with the roolback since every keystroke is committed and the roolback value is lost-->
-  <DataTemplate x:Key="{x:Static local:EditorKeys.DefaultEditorKey}">
-    <TextBox
-			x:Name="PART_editor"
-			Text="{Binding StringValue, Mode=TwoWay}"
-			IsReadOnly="{Binding IsReadOnly}"
-			local:TextBoxExtender.CommitOnEnter="true"
-			local:TextBoxExtender.RollbackOnEscape="true"
-			local:TextBoxExtender.CommitOnTyping="false"
-			/>
-  </DataTemplate>
-
+  
 	<DataTemplate x:Key="{x:Static local:EditorKeys.ComboBoxEditorKey}">
 		<ComboBox x:Name="Combo_part_editor" ItemsSource="{Binding ParentProperty.StandardValues}" SelectedValue="{Binding StringValue}"/>
 	</DataTemplate>
 
-	<DataTemplate x:Key="{x:Static local:EditorKeys.EnumEditorKey}">
-    <controls:EnumDropdown
-      x:Name="PART_editor"
-      Style="{DynamicResource {x:Type ComboBox}}"
-      PropertyValue="{Binding}"
-      IsEnabled="{Binding IsEditable}">
-      <ComboBox.ItemTemplate>
-        <DataTemplate>
-          <TextBlock Text="{Binding Path=., Converter={StaticResource EnumValueConverter}}" />
-        </DataTemplate>
-      </ComboBox.ItemTemplate>
-    </controls:EnumDropdown>
-  </DataTemplate>
-
+	
   <DataTemplate x:Key="{x:Static local:EditorKeys.BooleanEditorKey}">
     <CheckBox x:Name="PART_editor" IsChecked="{Binding Value}" IsEnabled="{Binding IsEditable}" />
   </DataTemplate>
 
-  <DataTemplate x:Key="{x:Static local:EditorKeys.FontFamilyEditorKey}">
-    <ComboBox
-      x:Name="PART_editor"
-      SelectedValue="{Binding Value}"
-      ItemsSource="{Binding Source={x:Static Fonts.SystemFontFamilies}}"
-      IsEnabled="{Binding IsEditable}">
-      <ComboBox.ItemTemplate>
-        <DataTemplate>
-          <TextBlock Text="{Binding}" FontFamily="{Binding}"/>
-        </DataTemplate>
-      </ComboBox.ItemTemplate>
-    </ComboBox>
-  </DataTemplate>
-
-  <DataTemplate x:Key="{x:Static local:EditorKeys.NamedColorEditorKey}" DataType="{x:Type local:NamedColor}">
-    <Grid>
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="Auto" />
-        <ColumnDefinition Width="*"/>
-      </Grid.ColumnDefinitions>
-      <Rectangle Fill="{Binding Brush}" Grid.Column="0" Width="100" Height="20" Margin="2" HorizontalAlignment="Center"/>
-      <TextBlock x:Name="PART_editor" Margin="5,2,2,2" Text="{Binding Name}" Grid.Column="1" HorizontalAlignment="Center"/>
-    </Grid>
-  </DataTemplate>
-
-	<DataTemplate x:Key="{x:Static local:EditorKeys.ColorEditorKey}">
-		<Grid>
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="Auto" />
-				<ColumnDefinition Width="Auto" />
-			</Grid.ColumnDefinitions>
-			<Border BorderThickness="1" BorderBrush="#888888">
-				<Rectangle Fill="{Binding Value, Converter={StaticResource SystemColorToSolidBrushConverter}}" Grid.Column="0" Width="25" Height="25" Margin="0" HorizontalAlignment="Center"
-						   input:DragDropManager.DropTargetAdvisor="{Binding}">
-					<Rectangle.InputBindings>
-						<MouseBinding Gesture="LeftClick" Command="local:PropertyEditorCommands.ShowDialogEditor" CommandParameter="{Binding}"/>
-					</Rectangle.InputBindings>
-				</Rectangle>
-			</Border>
-			<TextBlock x:Name="PART_editor" Text="{Binding StringValue}" Grid.Column="1" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-			<!--<Button Grid.Column="2" Margin="2,0,0,0" Content="Edit"  
-              Command="local:PropertyEditorCommands.ShowDialogEditor"
-              CommandParameter="{Binding}"
-              Visibility="{Binding IsEditable, Converter={StaticResource BooleanToVisibilityConverter}}"/>-->
-		</Grid>
-	</DataTemplate>
-
-	<DataTemplate x:Key="{x:Static local:EditorKeys.CurveEditorKey}">
-		<StackPanel Orientation="Horizontal">
-			<Border BorderThickness="1" BorderBrush="#888888">
-				<Image Source="{Binding Value, Converter={StaticResource CurveToImageConverter}}" Height="25" Width="25"
-					   input:DragDropManager.DropTargetAdvisor="{Binding}">
-					<Image.InputBindings>
-						<MouseBinding Gesture="LeftClick" Command="local:PropertyEditorCommands.ShowDialogEditor" CommandParameter="{Binding}"/>
-					</Image.InputBindings>
-				</Image>
-			</Border>
-			<TextBlock Text="{Binding StringValue}" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-		</StackPanel>
-	</DataTemplate>
-
-	<DataTemplate x:Key="{x:Static local:EditorKeys.GradientEditorKey}">
-		<StackPanel Orientation="Horizontal">
-			<Border BorderThickness="1" BorderBrush="#888888">
-				<Image Source="{Binding Value, Converter={StaticResource ColorGradientToImageConverter}}" Height="25" Width="25"
-					   input:DragDropManager.DropTargetAdvisor="{Binding}">
-					<Image.InputBindings>
-						<MouseBinding Gesture="LeftClick" Command="local:PropertyEditorCommands.ShowDialogEditor" CommandParameter="{Binding}"/>
-					</Image.InputBindings>
-				</Image>
-			</Border>
-			<TextBlock Text="{Binding StringValue}" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-		</StackPanel>
-	</DataTemplate>
-
-	<DataTemplate x:Key="{x:Static local:EditorKeys.BrushEditorKey}">
-    <ComboBox
-      x:Name="PART_editor"
-      Text="{Binding Path=StringValue, Mode=TwoWay, Converter={StaticResource NullValueConverter}}"
-      ItemsSource="{Binding Source={StaticResource NamedColorList}}"
-      ItemTemplate="{DynamicResource {x:Static local:EditorKeys.NamedColorEditorKey}}"
-      SelectedValuePath="Name"
-      IsEditable="{Binding IsEditable}"
-      IsEnabled="{Binding IsEditable}"/>
-  </DataTemplate>
-
-
-  <DataTemplate x:Key="{x:Static local:EditorKeys.SliderEditorKey}">
-    <Slider x:Name="PART_editor"
-            Value="{Binding Value, Mode=TwoWay, Converter={StaticResource IntToDoubleConverter}}"
-            Minimum="{Binding ParentProperty.Metadata[NumberRange].Minimum, FallbackValue=0}"
-            Maximum="{Binding ParentProperty.Metadata[NumberRange].Maximum, FallbackValue=100}"
-            TickFrequency="{Binding ParentProperty.Metadata[NumberRange].Tick, FallbackValue=1}"
-            AutoToolTipPrecision="{Binding ParentProperty.Metadata[NumberRange].Precision, FallbackValue=0}"
-            AutoToolTipPlacement="BottomRight"
-            IsDirectionReversed="False"
-            IsMoveToPointEnabled="True"
-            IsSnapToTickEnabled="False"
-            IsEnabled="{Binding IsEditable}"
-            />
-  </DataTemplate>
-
-	<DataTemplate x:Key="{x:Static local:EditorKeys.SliderDoubleEditorKey}">
-		<Slider x:Name="PART_editor"
-            Value="{Binding Value, Mode=TwoWay}"
-            Minimum="{Binding ParentProperty.Metadata[NumberRange].Minimum, FallbackValue=0}"
-            Maximum="{Binding ParentProperty.Metadata[NumberRange].Maximum, FallbackValue=100}"
-            TickFrequency="{Binding ParentProperty.Metadata[NumberRange].Tick, FallbackValue=1}"
-            AutoToolTipPrecision="{Binding ParentProperty.Metadata[NumberRange].Precision, FallbackValue=0}"
-            AutoToolTipPlacement="BottomRight"
-            IsDirectionReversed="False"
-            IsMoveToPointEnabled="True"
-            IsSnapToTickEnabled="False"
-            IsEnabled="{Binding IsEditable}"
-            />
-	</DataTemplate>
-
-	<DataTemplate x:Key="{x:Static local:EditorKeys.SliderLevelEditorKey}">
-		<Slider x:Name="PART_editor"
-            Value="{Binding Value, Mode=TwoWay,Converter={StaticResource LevelValueConverter}}"
-            Minimum="{Binding ParentProperty.Metadata[NumberRange].Minimum, FallbackValue=0}"
-            Maximum="{Binding ParentProperty.Metadata[NumberRange].Maximum, FallbackValue=100}"
-            TickFrequency="{Binding ParentProperty.Metadata[NumberRange].Tick, FallbackValue=1}"
-            AutoToolTipPrecision="{Binding ParentProperty.Metadata[NumberRange].Precision, FallbackValue=0}"
-            AutoToolTipPlacement="BottomRight"
-            IsDirectionReversed="False"
-            IsMoveToPointEnabled="True"
-            IsSnapToTickEnabled="False"
-            IsEnabled="{Binding IsEditable}"
-            />
-	</DataTemplate>
-
-	<DataTemplate x:Key="{x:Static local:EditorKeys.SliderPercentageEditorKey}">
-		<Slider x:Name="PART_editor"
-            Value="{Binding Value, Mode=TwoWay,Converter={StaticResource PercentageValueConverter}}"
-            Minimum="{Binding ParentProperty.Metadata[NumberRange].Minimum, FallbackValue=0}"
-            Maximum="{Binding ParentProperty.Metadata[NumberRange].Maximum, FallbackValue=100}"
-            TickFrequency="{Binding ParentProperty.Metadata[NumberRange].Tick, FallbackValue=1}"
-            AutoToolTipPrecision="{Binding ParentProperty.Metadata[NumberRange].Precision, FallbackValue=0}"
-            AutoToolTipPlacement="BottomRight"
-            IsDirectionReversed="False"
-            IsMoveToPointEnabled="True"
-            IsSnapToTickEnabled="False"
-            IsEnabled="{Binding IsEditable}"
-            />
-	</DataTemplate>
-
-	<DataTemplate x:Key="{x:Static local:EditorKeys.PasswordEditorKey}">
-    <PasswordBox
-      x:Name="PART_editor"
-      local:PasswordBoxExtender.BindPassword="true"
-      local:PasswordBoxExtender.BoundPassword="{Binding StringValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-      IsEnabled="{Binding IsEditable}"
-      />
-  </DataTemplate>
 
   <DataTemplate x:Key="{x:Static local:EditorKeys.DoubleEditorKey}">
     <controls:DoubleEditor

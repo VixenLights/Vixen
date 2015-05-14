@@ -12,7 +12,6 @@
     <ResourceDictionary Source="/System.Windows.Controls.WpfPropertyGrid;component/Design/AlphabeticalLayout.xaml"/>
     <ResourceDictionary Source="/System.Windows.Controls.WpfPropertyGrid;component/Design/CategorizedLayout.xaml"/>
     <ResourceDictionary Source="/System.Windows.Controls.WpfPropertyGrid;component/Design/TabbedLayout.xaml"/>
-
-
+	
 	</ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>
