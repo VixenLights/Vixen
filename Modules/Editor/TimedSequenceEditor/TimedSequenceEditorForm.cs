@@ -3478,7 +3478,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			List<Element> elementList = getElementList.Item1;
 			var multipleEffectTypes = getElementList.Item2;
 			List<EffectParameterPickerControl> parameterPickerControls = new List<EffectParameterPickerControl>();
-			Curve curve = new Curve(_curveLibrary.GetCurve(e.Data.GetData(DataFormats.StringFormat).ToString()));
+			Curve curve = e.Data.GetData(typeof(Curve)) as Curve;//new Curve(_curveLibrary.GetCurve(e.Data.GetData(DataFormats.StringFormat).ToString()));
 			var mousePosition = MousePosition; //Position of mouse when drop happened
 			var hasCurve = false;
 			var isCurveList = false;
@@ -3492,17 +3492,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (dr == DialogResult.Cancel) return;
 			}
 
-			if (ToolsForm.LinkCurves)
+			if (!ToolsForm.LinkCurves)
+			//{
+			//	curve.LibraryReferenceName = e.Data.GetData(DataFormats.StringFormat).ToString();
+			//}
+			//else
 			{
-				curve.LibraryReferenceName = e.Data.GetData(DataFormats.StringFormat).ToString();
-			}
-			else
-			{
+				curve = new Curve(curve);
 				curve.LibraryReferenceName = string.Empty;
+				curve.IsCurrentLibraryCurve = false;
 				curve.UnlinkFromLibraryCurve();
 			}
 
-			curve.IsCurrentLibraryCurve = false;
+			
 			
 			int i = 0;			
 			foreach (ParameterSpecification pSig in e.Element.EffectNode.Effect.Parameters)
@@ -3655,7 +3657,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			List<Element> elementList = getElementList.Item1;
 			var multipleEffectTypes = getElementList.Item2;
 			List<EffectParameterPickerControl> parameterPickerControls = new List<EffectParameterPickerControl>();
-			ColorGradient colorGradient = new ColorGradient(_colorGradientLibrary.GetColorGradient(e.Data.GetData(DataFormats.StringFormat).ToString()));
+			ColorGradient gradientModel = e.Data.GetData(typeof(ColorGradient)) as ColorGradient;
+			if (gradientModel == null)
+			{
+				return;
+			}
+			ColorGradient colorGradient = new ColorGradient(gradientModel);
 			var mousePosition = MousePosition; //Position of mouse when drop happened
 			var hasColorGradient = false;
 			var isColorGradientList = false;

@@ -314,12 +314,14 @@ namespace System.Windows.Controls.WpfPropertyGrid
 		TypeDescriptor.Refreshed += OnTypeDescriptorRefreshed;	
 		Loaded += PropertyGrid_Loaded;
 		Unloaded +=PropertyGrid_Unloaded;
+		DragEnter += OnDragEnter;
+		Drop += OnDrop;
 		// Wire command bindings
 		InitializeCommandBindings();
 
     }
 
-	private void ShowDescription(object sender, RoutedEventArgs e)
+	  private void ShowDescription(object sender, RoutedEventArgs e)
     {
       if (e.OriginalSource == null || !(e.OriginalSource is FrameworkElement) ||
           (e.OriginalSource as FrameworkElement).DataContext == null ||
@@ -1095,7 +1097,20 @@ namespace System.Windows.Controls.WpfPropertyGrid
         }
       }
     }
-    /// <summary>
+
+
+	private void OnDrop(object sender, DragEventArgs dragEventArgs)
+	{
+		Console.Out.WriteLine(sender);
+	}
+
+	private void OnDragEnter(object sender, DragEventArgs dragEventArgs)
+	{
+		Console.Out.WriteLine(sender);
+	}
+
+
+	  /// <summary>
     /// Invoked when an unhandled <see cref="UIElement.KeyDown"/> attached event reaches an element in its route that is derived from this class. Implement this method to add class handling for this event.
     /// </summary>
     /// <param name="e">The <see cref="T:System.Windows.Input.KeyEventArgs"/> that contains the event data.</param>

@@ -5,7 +5,8 @@
   xmlns:design="clr-namespace:System.Windows.Controls.WpfPropertyGrid.Design"
   xmlns:controls="clr-namespace:System.Windows.Controls.WpfPropertyGrid.Controls"
   xmlns:converters="clr-namespace:System.Windows.Controls.WpfPropertyGrid.Converters"
-  xmlns:system="clr-namespace:System;assembly=mscorlib">
+  xmlns:system="clr-namespace:System;assembly=mscorlib"
+  xmlns:input="clr-namespace:System.Windows.Controls.WpfPropertyGrid.Input">
 
   <local:NamedColorList x:Key="NamedColorList"/>
   <converters:NullValueConverter x:Key="NullValueConverter"/>
@@ -19,6 +20,7 @@
 	<converters:PercentageValueConverter x:Key="PercentageValueConverter"/>
 	<converters:IntToDoubleConverter x:Key="IntToDoubleConverter"/>
 	<converters:DebugConverter x:Key="DebugConverter"/>
+	<input:PropertyItemDragDropAdvisor x:Key="PropertyItemDragDropAdvisor"/>
 	
 
   <DataTemplate x:Key="{x:Static local:EditorKeys.ComplexPropertyEditorKey}">
@@ -101,7 +103,8 @@
 				<ColumnDefinition Width="Auto" />
 			</Grid.ColumnDefinitions>
 			<Border BorderThickness="1" BorderBrush="#888888">
-				<Rectangle Fill="{Binding Value, Converter={StaticResource SystemColorToSolidBrushConverter}}" Grid.Column="0" Width="25" Height="25" Margin="0" HorizontalAlignment="Center">
+				<Rectangle Fill="{Binding Value, Converter={StaticResource SystemColorToSolidBrushConverter}}" Grid.Column="0" Width="25" Height="25" Margin="0" HorizontalAlignment="Center"
+						   input:DragDropManager.DropTargetAdvisor="{Binding}">
 					<Rectangle.InputBindings>
 						<MouseBinding Gesture="LeftClick" Command="local:PropertyEditorCommands.ShowDialogEditor" CommandParameter="{Binding}"/>
 					</Rectangle.InputBindings>
@@ -118,7 +121,8 @@
 	<DataTemplate x:Key="{x:Static local:EditorKeys.CurveEditorKey}">
 		<StackPanel Orientation="Horizontal">
 			<Border BorderThickness="1" BorderBrush="#888888">
-				<Image Source="{Binding Value.GenericImage, Converter={StaticResource BitmapImageConverter}}" Height="25" Width="25">
+				<Image Source="{Binding Value.GenericImage, Converter={StaticResource BitmapImageConverter}}" Height="25" Width="25"
+					   input:DragDropManager.DropTargetAdvisor="{Binding}">
 					<Image.InputBindings>
 						<MouseBinding Gesture="LeftClick" Command="local:PropertyEditorCommands.ShowDialogEditor" CommandParameter="{Binding}"/>
 					</Image.InputBindings>
@@ -131,7 +135,8 @@
 	<DataTemplate x:Key="{x:Static local:EditorKeys.GradientEditorKey}">
 		<StackPanel Orientation="Horizontal">
 			<Border BorderThickness="1" BorderBrush="#888888">
-				<Image Source="{Binding Value.GenericImage, Converter={StaticResource BitmapImageConverter}}" Height="25" Width="25">
+				<Image Source="{Binding Value.GenericImage, Converter={StaticResource BitmapImageConverter}}" Height="25" Width="25"
+					   input:DragDropManager.DropTargetAdvisor="{Binding}">
 					<Image.InputBindings>
 						<MouseBinding Gesture="LeftClick" Command="local:PropertyEditorCommands.ShowDialogEditor" CommandParameter="{Binding}"/>
 					</Image.InputBindings>

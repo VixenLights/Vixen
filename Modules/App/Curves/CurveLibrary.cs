@@ -7,6 +7,7 @@ using Vixen.Module.App;
 
 namespace VixenModules.App.Curves
 {
+	[Serializable]
 	public class CurveLibrary : AppModuleInstanceBase, IEnumerable<KeyValuePair<string, Curve>>
 	{
 		private CurveLibraryStaticData _data;

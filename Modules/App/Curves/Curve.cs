@@ -11,6 +11,7 @@ using ZedGraph;
 namespace VixenModules.App.Curves
 {
 	[DataContract]
+	[Serializable]
 	[TypeConverter(typeof(CurveTypeConverter))]
 	public class Curve
 	{

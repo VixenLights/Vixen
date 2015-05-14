@@ -14,15 +14,27 @@
  * limitations under the License.
  */
 using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Drawing;
 using System.Globalization;
+using System.Linq;
+using System.Windows.Controls.WpfPropertyGrid.Converters;
+using System.Windows.Controls.WpfPropertyGrid.Input;
+using System.Windows.Media;
+using Vixen.Module.Effect;
+using Vixen.Sys;
+using VixenModules.Property.Color;
+using Color = System.Drawing.Color;
+using Rectangle = System.Windows.Shapes.Rectangle;
 
 namespace System.Windows.Controls.WpfPropertyGrid
 {
   /// <summary>
   /// Provides a wrapper around property value to be used at presentation level.
   /// </summary>
-  public class PropertyItemValue : INotifyPropertyChanged
+  public class PropertyItemValue : INotifyPropertyChanged, IDropTargetAdvisor
   {
     private readonly PropertyItem _property;
 
@@ -227,7 +239,7 @@ namespace System.Windows.Controls.WpfPropertyGrid
     /// <param name="valueToValidate">The value to validate.</param>
     protected void ValidateValue(object valueToValidate)
     {
-      //throw new NotImplementedException();
+		//throw new NotImplementedException();
       // Do nothing            
     }
 
@@ -449,5 +461,82 @@ namespace System.Windows.Controls.WpfPropertyGrid
     }
 
     #endregion
+
+	  public UIElement TargetUI { get; set; }
+	  public bool ApplyMouseOffset { get; private set; }
+	  public bool IsValidDataObject(IDataObject obj)
+	  {
+		  if (obj.GetDataPresent(ParentProperty.PropertyType))
+		  {
+			  if (ParentProperty.PropertyType == typeof(Color))
+			  {
+				  HashSet<Color> discreteColors = GetDiscreteColors(ParentProperty.Component);
+				  Color c = (Color)obj.GetData(ParentProperty.PropertyType);
+				  if (discreteColors.Contains(c))
+				  {
+					  return true;
+				  }
+			  }
+			  else
+			  {
+				  return true;
+			  }
+		  }
+
+		  return false;
+		  
+	  }
+
+	  public void OnDropCompleted(IDataObject obj, Point dropPoint)
+	  {
+		  Value = obj.GetData(ParentProperty.PropertyType);
+	  }
+
+	  public UIElement GetVisualFeedback(IDataObject obj)
+	  {
+		  //Object data = obj.GetData(ParentProperty.PropertyType);
+		  //Rectangle rect = new Rectangle
+		  //{
+		  //	Width = 15,
+		  //	Height = 15,
+		  //	Fill =
+		  //		new SolidColorBrush(
+		  //			SystemColorToSolidBrushConverter.ColorToColor((Drawing.Color) data)),
+		  //	Opacity = 1,
+		  //	IsHitTestVisible = false
+		  //};
+
+		  //return rect;
+		  return null;
+
+	  }
+
+	  public UIElement GetTopContainer()
+	  {
+		  return TargetUI;
+	  }
+
+	  private HashSet<Color> GetDiscreteColors(Object component)
+	  {
+		  HashSet<Color> validColors = new HashSet<Color>();
+		  if (component is IEffect)
+		  {
+			  IEffect effect = (IEffect)component;
+			  validColors.AddRange(effect.TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
+		  }
+		  else if (component is Array)
+		  {
+			  foreach (var item in (Array)component)
+			  {
+				  if (item is IEffect)
+				  {
+					  IEffect effect = (IEffect)item;
+					  validColors.AddRange(effect.TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
+				  }
+			  }
+		  }
+
+		  return validColors;
+	  }
   }
 }

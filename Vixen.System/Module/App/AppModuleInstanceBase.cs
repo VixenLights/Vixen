@@ -6,6 +6,7 @@ using Vixen.Sys;
 
 namespace Vixen.Module.App
 {
+	[Serializable]
 	public abstract class AppModuleInstanceBase : ModuleInstanceBase, IAppModuleInstance,
 	                                              IEqualityComparer<IAppModuleInstance>, IEquatable<IAppModuleInstance>,
 	                                              IEqualityComparer<AppModuleInstanceBase>,

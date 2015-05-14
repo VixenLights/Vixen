@@ -7,6 +7,7 @@ using Vixen.Module.App;
 
 namespace VixenModules.App.ColorGradients
 {
+	[Serializable]
 	public class ColorGradientLibrary : AppModuleInstanceBase, IEnumerable<KeyValuePair<string, ColorGradient>>
 	{
 		private ColorGradientLibraryStaticData _data;

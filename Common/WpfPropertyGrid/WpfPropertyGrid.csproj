@@ -193,6 +193,11 @@
     <Compile Include="Editor.cs" />
     <Compile Include="EditorKeys.cs" />
     <Compile Include="GridEntryCollection.cs" />
+    <Compile Include="Input\DragDropManager.cs" />
+    <Compile Include="Input\DropPreviewAdorner.cs" />
+    <Compile Include="Input\IDragSourceAdvisor.cs" />
+    <Compile Include="Input\IDropTargetAdvisor.cs" />
+    <Compile Include="Input\PropertyItemDragDropAdvisor.cs" />
     <Compile Include="KnownTypes.cs" />
     <Compile Include="MetadataRepository.cs" />
     <Compile Include="PropertyEditingEventArgs.cs" />

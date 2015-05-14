@@ -252,7 +252,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				listViewCurves.LargeImageList.Images.Add(name, c.GenerateCurveImage(new Size(48, 48)));
 
-				ListViewItem item = new ListViewItem {Text = name, Name = name, ImageKey = name};
+				ListViewItem item = new ListViewItem {Text = name, Name = name, ImageKey = name, Tag = c};
 
 				if (item != null) listViewCurves.Items.Add(item);
 			}
@@ -282,7 +282,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				gfx.DrawRectangle(new Pen(Color.Black, 2), 0, 0, 48, 48);
 				listViewGradients.LargeImageList.Images.Add(name, result);
 
-				ListViewItem item = new ListViewItem {Text = name, Name = name, ImageKey = name};
+				ListViewItem item = new ListViewItem {Text = name, Name = name, ImageKey = name, Tag = gradient};
 
 				listViewGradients.Items.Add(item);
 			}
@@ -590,7 +590,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				return;
 
 			StartCurveDrag(this, e);
-			listViewCurves.DoDragDrop(listViewCurves.SelectedItems[0].Name, DragDropEffects.Copy);
+			listViewCurves.DoDragDrop(listViewCurves.SelectedItems[0].Tag, DragDropEffects.Copy);
 		}
 
 		#endregion
@@ -603,7 +603,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				return;
 
 			StartGradientDrag(this, e);
-			listViewGradients.DoDragDrop(listViewGradients.SelectedItems[0].Name, DragDropEffects.Copy);
+			listViewGradients.DoDragDrop(listViewGradients.SelectedItems[0].Tag, DragDropEffects.Copy);
 		}
 
 		#endregion

@@ -18,6 +18,7 @@ namespace VixenModules.App.ColorGradients
 	/// ColorBlend object
 	/// </summary>
 	[DataContract]
+	[Serializable]
 	[TypeConverter(typeof(GradientTypeConverter))]
 	public class ColorGradient : ICloneable
 	{
@@ -25,6 +26,7 @@ namespace VixenModules.App.ColorGradients
 		/// class for holding a gradient point
 		/// </summary>
 		[DataContract]
+		[Serializable]
 		public abstract class Point : IComparable<double>
 		{
 			[DataMember] private double _position;
@@ -138,6 +140,7 @@ namespace VixenModules.App.ColorGradients
 		/// controls connected to this colorblend
 		/// </summary>
 		[CollectionDataContract]
+		[Serializable]
 		public class PointList<T> : CollectionBase<T> where T : Point, IComparable<T>
 		{
 			protected bool Equals(PointList<T> obj)
@@ -255,6 +258,7 @@ namespace VixenModules.App.ColorGradients
 		[DataMember] private String _title = null;
 
 		// doesn't get serialized; it's instantiated as needed.
+		[NonSerialized]
 		private ColorBlend _blend = null;
 		private Color? _blendFilterColor = null;
 
@@ -1168,6 +1172,7 @@ namespace VixenModules.App.ColorGradients
 	/// encapsulates an alpha value with focus point
 	/// </summary>
 	[DataContract]
+	[Serializable]
 	public class AlphaPoint : ColorGradient.Point, IComparable<AlphaPoint>, ICloneable
 	{
 		//variables
@@ -1259,6 +1264,7 @@ namespace VixenModules.App.ColorGradients
 	/// encapsulates a color value with focus point
 	/// </summary>
 	[DataContract]
+	[Serializable]
 	public class ColorPoint : ColorGradient.Point, IComparable<ColorPoint>, ICloneable
 	{
 		//variables
@@ -1359,6 +1365,7 @@ namespace VixenModules.App.ColorGradients
 	/// <summary>
 	/// event handling class for insert, delete and clear
 	/// </summary>
+	[Serializable]
 	public class ModifiedEventArgs : EventArgs
 	{
 		private Action _action;
