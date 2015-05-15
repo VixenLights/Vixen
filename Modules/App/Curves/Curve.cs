@@ -184,13 +184,13 @@ namespace VixenModules.App.Curves
 			}
 		}
 
-		public Bitmap GenerateGenericCurveImage(Size size)
+		public Bitmap GenerateGenericCurveImage(Size size, bool inactive=false)
 		{
 			Bitmap result = new Bitmap(size.Width, size.Height);
 
 			using (Graphics g = Graphics.FromImage(result))
 			{
-				using (Brush b = new SolidBrush(Color.Black))
+				using (Brush b = new SolidBrush(inactive?Color.DimGray:Color.Black))
 				{
 					using (Pen p = new Pen(Color.FromArgb(255,136,136,136), 2))
 					{

@@ -152,9 +152,10 @@
   <ItemGroup>
     <Compile Include="CategoryEditor.cs" />
     <Compile Include="CategoryItem.cs" />
-    <Compile Include="Controls\ColorEditor.cs" />
+    <Compile Include="Controls\BaseColorTypeEditor.cs" />
+    <Compile Include="Controls\ColorTypeEditor.cs" />
     <Compile Include="Controls\ComboBoxEditor.cs" />
-    <Compile Include="Controls\GradientEditor.cs" />
+    <Compile Include="Controls\GradientTypeEditor.cs" />
     <Compile Include="Controls\CurveEditor.cs" />
     <Compile Include="Controls\SliderDoubleEditor.cs" />
     <Compile Include="Controls\SliderEditor.cs" />
@@ -162,6 +163,8 @@
     <Compile Include="Controls\SliderPercentageEditor.cs" />
     <Compile Include="Controls\SliderLevelEditor.cs" />
     <Compile Include="Converters\BitmapImageConverter.cs" />
+    <Compile Include="Converters\ColorGradientToImageConverter.cs" />
+    <Compile Include="Converters\CurveToImageConverter.cs" />
     <Compile Include="Converters\DebugConverter.cs" />
     <Compile Include="Converters\EnumValueConverter.cs" />
     <Compile Include="Converters\ExpanderHeaderWidthConverter.cs" />
@@ -197,9 +200,9 @@
     <Compile Include="Input\DropPreviewAdorner.cs" />
     <Compile Include="Input\IDragSourceAdvisor.cs" />
     <Compile Include="Input\IDropTargetAdvisor.cs" />
-    <Compile Include="Input\PropertyItemDragDropAdvisor.cs" />
     <Compile Include="KnownTypes.cs" />
     <Compile Include="MetadataRepository.cs" />
+    <Compile Include="PreviewStateChanged.cs" />
     <Compile Include="PropertyEditingEventArgs.cs" />
     <Compile Include="PropertyEditing\Filters\PropertyFilterAppliedEventArgs.cs" />
     <Compile Include="PropertyEditing\NamedColor.cs" />

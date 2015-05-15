@@ -19,8 +19,9 @@
 	<converters:BitmapImageConverter x:Key="BitmapImageConverter"/>
 	<converters:PercentageValueConverter x:Key="PercentageValueConverter"/>
 	<converters:IntToDoubleConverter x:Key="IntToDoubleConverter"/>
+	<converters:CurveToImageConverter x:Key="CurveToImageConverter"/>
+	<converters:ColorGradientToImageConverter x:Key="ColorGradientToImageConverter"/>
 	<converters:DebugConverter x:Key="DebugConverter"/>
-	<input:PropertyItemDragDropAdvisor x:Key="PropertyItemDragDropAdvisor"/>
 	
 
   <DataTemplate x:Key="{x:Static local:EditorKeys.ComplexPropertyEditorKey}">
@@ -121,7 +122,7 @@
 	<DataTemplate x:Key="{x:Static local:EditorKeys.CurveEditorKey}">
 		<StackPanel Orientation="Horizontal">
 			<Border BorderThickness="1" BorderBrush="#888888">
-				<Image Source="{Binding Value.GenericImage, Converter={StaticResource BitmapImageConverter}}" Height="25" Width="25"
+				<Image Source="{Binding Value, Converter={StaticResource CurveToImageConverter}}" Height="25" Width="25"
 					   input:DragDropManager.DropTargetAdvisor="{Binding}">
 					<Image.InputBindings>
 						<MouseBinding Gesture="LeftClick" Command="local:PropertyEditorCommands.ShowDialogEditor" CommandParameter="{Binding}"/>
@@ -135,7 +136,7 @@
 	<DataTemplate x:Key="{x:Static local:EditorKeys.GradientEditorKey}">
 		<StackPanel Orientation="Horizontal">
 			<Border BorderThickness="1" BorderBrush="#888888">
-				<Image Source="{Binding Value.GenericImage, Converter={StaticResource BitmapImageConverter}}" Height="25" Width="25"
+				<Image Source="{Binding Value, Converter={StaticResource ColorGradientToImageConverter}}" Height="25" Width="25"
 					   input:DragDropManager.DropTargetAdvisor="{Binding}">
 					<Image.InputBindings>
 						<MouseBinding Gesture="LeftClick" Command="local:PropertyEditorCommands.ShowDialogEditor" CommandParameter="{Binding}"/>

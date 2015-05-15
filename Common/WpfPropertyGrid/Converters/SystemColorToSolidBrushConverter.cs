@@ -14,10 +14,9 @@ namespace System.Windows.Controls.WpfPropertyGrid.Converters
 			if (value != null)
 			{
 				Color color = (Color)value;
-				Media.Color converted = Media.Color.FromArgb(color.A, color.R, color.G, color.B);
-				return new SolidColorBrush(converted);	
+				return new SolidColorBrush(ColorToColor(color));	
 			}
-			return new SolidColorBrush(Media.Color.FromArgb(255,255,255,255));
+			return new SolidColorBrush(ColorToColor(Color.DimGray));
 			
 		}
 

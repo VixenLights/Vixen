@@ -50,6 +50,22 @@ namespace System.Windows.Controls.WpfPropertyGrid
 
     #endregion
 
+	public delegate void PreviewStateChangedEventHandler(object sender, PreviewStateEventArgs e);
+	/// <summary>
+	/// Occurs when a property value changes.
+	/// </summary>
+	public event PreviewStateChangedEventHandler PreviewChanged;
+
+	/// <summary>
+	/// Called when preview state changes.
+	/// </summary>
+	/// <param name="state">State</param>
+	protected virtual void OnPreviewStateChanged(bool state)
+	{
+		var handler = PreviewChanged;
+		if (handler != null) handler(this, new PreviewStateEventArgs(state));
+	}
+
     #region Static fields
 
     private static readonly Type ThisType = typeof(PropertyEditorGrid);
@@ -204,7 +220,7 @@ namespace System.Windows.Controls.WpfPropertyGrid
 
     #endregion
 
-    #endregion
+	#endregion
 
     #region Properties
 

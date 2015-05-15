@@ -1,22 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using System.Drawing;
-using System.Drawing.Design;
 using System.Runtime.Serialization;
 using System.Threading;
 using Vixen.Commands;
 using Vixen.Data.Value;
 using Vixen.Intent;
-using Vixen.Sys;
 using Vixen.Module;
 using Vixen.Module.Effect;
+using Vixen.Sys;
 using Vixen.Sys.Attribute;
 using Vixen.TypeConverters;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
-using VixenModules.EffectEditor.EffectTypeEditors;
 
 namespace VixenModules.Effect.CustomValue
 {

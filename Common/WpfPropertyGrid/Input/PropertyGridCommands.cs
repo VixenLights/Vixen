@@ -40,6 +40,7 @@ namespace System.Windows.Controls.WpfPropertyGrid
     private static readonly RoutedUICommand _HideAttachedProperties = new RoutedUICommand("Hide Attached Properties", "HideAttachedProperties", ThisType);
     private static readonly RoutedUICommand _ToggleAttachedProperties = new RoutedUICommand("Toggle Attached Properties", "ToggleAttachedProperties", ThisType);
     private static readonly RoutedUICommand _ClosePropertyTab = new RoutedUICommand("Close Property Tab", "ClosePropertyTabCommand", ThisType);
+	private static readonly RoutedUICommand _TogglePreview = new RoutedUICommand("Toggle Preview", "TogglePreviewCommand", ThisType);
 
     /// <summary>
     /// Represents a command for the control to show property filter box.
@@ -100,6 +101,11 @@ namespace System.Windows.Controls.WpfPropertyGrid
     /// Represents a command for the control to close active property tab.
     /// </summary>
     public static RoutedUICommand ClosePropertyTab { get { return _ClosePropertyTab; } }
+
+	/// <summary>
+	/// Represents a command for the control to toggle the preview.
+	/// </summary>
+	public static RoutedUICommand TogglePreview { get { return _TogglePreview; } }
 
     #endregion
   }

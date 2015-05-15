@@ -79,9 +79,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EffectColorGradientTypeEditor.cs" />
     <Compile Include="EffectColorTypeEditor.cs" />
-    <Compile Include="EffectCurveTypeEditor.cs" />
     <Compile Include="EffectLevelTypeEditor.cs" />
     <Compile Include="EffectRangeTypeEditor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

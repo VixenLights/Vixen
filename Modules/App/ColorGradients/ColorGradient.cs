@@ -815,7 +815,8 @@ namespace VixenModules.App.ColorGradients
 		public object Clone()
 		{
 			ColorGradient ret = new ColorGradient();
-
+			ret.Colors.Clear(); // Defaults to having a color
+			ret.Alphas.Clear(); // Defaults to having a color
 			if (_title != null)
 				ret._title = (string) _title.Clone();
 			ret._gammacorrected = _gammacorrected;

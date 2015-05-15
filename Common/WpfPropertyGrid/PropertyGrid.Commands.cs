@@ -36,6 +36,7 @@ namespace System.Windows.Controls.WpfPropertyGrid
       CommandBindings.Add(new CommandBinding(PropertyGridCommands.HideFilter, OnHideFilterCommand));      
       CommandBindings.Add(new CommandBinding(PropertyGridCommands.ToggleFilter, OnToggleFilterCommand));
       CommandBindings.Add(new CommandBinding(PropertyEditorCommands.ShowDialogEditor, OnShowDialogEditor));
+	  CommandBindings.Add(new CommandBinding(PropertyGridCommands.TogglePreview, OnTogglePreviewCommand));
     }
 
     #region Commands
@@ -111,6 +112,13 @@ namespace System.Windows.Controls.WpfPropertyGrid
       if (editor != null)// && editor.HasDialogTemplate)
         editor.ShowDialog(value, this);
     }
+
+
+	private void OnTogglePreviewCommand(object sender, ExecutedRoutedEventArgs e)
+	{
+		OnPreviewStateChanged((bool)e.Parameter);
+	}
+
     #endregion
   }
 }

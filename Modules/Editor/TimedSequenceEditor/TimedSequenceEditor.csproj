@@ -365,11 +365,6 @@
       <Name>LipSyncApp</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\EffectEditor\EffectTypeEditors\EffectTypeEditors.csproj">
-      <Project>{67B27730-D0D9-4AE7-8C8E-B41DE61C3798}</Project>
-      <Name>EffectTypeEditors</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\Effect\LipSync\LipSync.csproj">
       <Project>{6de9a846-ac25-40b6-b8b2-b306ec9f2569}</Project>
       <Name>LipSync</Name>

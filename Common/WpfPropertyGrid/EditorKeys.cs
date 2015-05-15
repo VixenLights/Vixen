@@ -22,9 +22,9 @@ namespace System.Windows.Controls.WpfPropertyGrid
   {
     private static readonly Type ThisType = typeof(EditorKeys);
     private static readonly ComponentResourceKey _NamedColorEditorKey = new ComponentResourceKey(ThisType, "NamedColorEditor");
-	private static readonly ComponentResourceKey _ColorEditorKey = new ComponentResourceKey(ThisType, "ColorEditor");
+	private static readonly ComponentResourceKey _ColorEditorKey = new ComponentResourceKey(ThisType, "ColorTypeEditor");
 	private static readonly ComponentResourceKey _CurveEditorKey = new ComponentResourceKey(ThisType, "CurveEditor");
-	private static readonly ComponentResourceKey _GradientEditorKey = new ComponentResourceKey(ThisType, "GradientEditor");
+	private static readonly ComponentResourceKey _GradientEditorKey = new ComponentResourceKey(ThisType, "GradientTypeEditor");
     private static readonly ComponentResourceKey _PasswordEditorKey = new ComponentResourceKey(ThisType, "PasswordEditor");
     private static readonly ComponentResourceKey _DefaultEditorKey = new ComponentResourceKey(ThisType, "DefaultEditor");
     private static readonly ComponentResourceKey _BooleanEditorKey = new ComponentResourceKey(ThisType, "BooleanEditor");

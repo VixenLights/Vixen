@@ -1,30 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Threading;
-using Vixen.Sys;
+using System.Windows.Controls.WpfPropertyGrid.Controls;
+using NLog;
+using Vixen.Attributes;
 using Vixen.Module;
 using Vixen.Module.Effect;
+using Vixen.Sys;
 using Vixen.Sys.Attribute;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
-using System.Drawing;
-using System.Drawing.Design;
-using System.Windows.Controls.WpfPropertyGrid.Controls;
-using Vixen.Attributes;
-using Vixen.TypeConverters;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
-using VixenModules.EffectEditor.EffectTypeEditors;
-using ZedGraph;
 using VixenModules.Property.Color;
+using ZedGraph;
 
 namespace VixenModules.Effect.Twinkle
 {
 	public class Twinkle : EffectModuleInstanceBase
 	{
 		private static Random _random = new Random();
-		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private static Logger Logging = LogManager.GetCurrentClassLogger();
 
 		private TwinkleData _data;
 		private EffectIntents _elementData = null;

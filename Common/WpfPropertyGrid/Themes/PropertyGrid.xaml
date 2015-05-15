@@ -14,7 +14,18 @@
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type local:PropertyEditorGrid}">
           <DockPanel LastChildFill="True" Background="{TemplateBinding Background}">
-            <!--<controls:SearchTextBox DockPanel.Dock="Top"
+						<StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+							<ToggleButton 
+								HorizontalAlignment="Center" 
+								Margin="5" 
+								Padding="5" 
+								Width="60" 
+								Content="Preview"
+								Command="local:PropertyGridCommands.TogglePreview"
+								CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}"
+								/>
+						</StackPanel>
+						<!--<controls:SearchTextBox DockPanel.Dock="Top"
                                     Text="{Binding Path=PropertyFilter, RelativeSource={RelativeSource TemplatedParent}, UpdateSourceTrigger=PropertyChanged}"
                                     Visibility="{TemplateBinding PropertyFilterVisibility}" />-->
 

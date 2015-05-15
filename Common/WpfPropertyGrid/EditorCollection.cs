@@ -36,9 +36,9 @@ namespace System.Windows.Controls.WpfPropertyGrid
       { KnownTypes.Wpf.Cursor, new TypeEditor(KnownTypes.Wpf.Cursor, EditorKeys.EnumEditorKey) },
       { KnownTypes.Wpf.FontFamily, new TypeEditor(KnownTypes.Wpf.FontFamily, EditorKeys.FontFamilyEditorKey) },
       { KnownTypes.Wpf.Brush, new TypeEditor(KnownTypes.Wpf.Brush, EditorKeys.BrushEditorKey) },
-	   { KnownTypes.Wpf.Color, new ColorEditor() },
+	   { KnownTypes.Wpf.Color, new ColorTypeEditor() },
 	    { KnownTypes.Wpf.Curve, new CurveEditor() },
-		{ KnownTypes.Wpf.ColorGradient, new GradientEditor() },
+		{ KnownTypes.Wpf.ColorGradient, new GradientTypeEditor() },
 		{ KnownTypes.Wpf.Percentage, new TypeEditor(KnownTypes.Wpf.Percentage, EditorKeys.SliderPercentageEditorKey) },
       { typeof(Enum), new TypeEditor(typeof(Enum), EditorKeys.EnumEditorKey) }
     };

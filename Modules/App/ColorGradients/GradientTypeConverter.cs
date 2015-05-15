@@ -52,6 +52,7 @@ namespace VixenModules.App.ColorGradients
 					}
 					return "Gradient";
 				}
+
 			}
 
 			return base.ConvertTo(context, culture, value, destinationType);
