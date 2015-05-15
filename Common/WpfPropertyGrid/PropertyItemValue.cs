@@ -23,6 +23,7 @@ using System.Linq;
 using System.Windows.Controls.WpfPropertyGrid.Input;
 using Vixen.Module.Effect;
 using Vixen.Sys;
+using VixenModules.App.ColorGradients;
 using VixenModules.Property.Color;
 
 namespace System.Windows.Controls.WpfPropertyGrid
@@ -462,9 +463,9 @@ namespace System.Windows.Controls.WpfPropertyGrid
 	  public bool ApplyMouseOffset { get; private set; }
 	  public bool IsValidDataObject(IDataObject obj)
 	  {
-		  if (obj.GetDataPresent(ParentProperty.PropertyType))
+		  if (obj.GetDataPresent(ParentProperty.PropertyType) || ParentProperty.PropertyType == typeof(ColorGradient) && obj.GetDataPresent(typeof(Color)))
 		  {
-			  if (ParentProperty.PropertyType == typeof(Color))
+			  if (ParentProperty.PropertyType == typeof(Color) || obj.GetDataPresent(typeof(Color)))
 			  {
 				  HashSet<Color> discreteColors = GetDiscreteColors(ParentProperty.Component);
 				  if (discreteColors.Any())
@@ -487,7 +488,19 @@ namespace System.Windows.Controls.WpfPropertyGrid
 
 	  public void OnDropCompleted(IDataObject obj, Point dropPoint)
 	  {
-		  Value = obj.GetData(ParentProperty.PropertyType);
+		  Object data = obj.GetData(ParentProperty.PropertyType);
+		  if (data!=null && data.GetType() == ParentProperty.PropertyType)
+		  {
+			  Value = data;
+		  }
+		  else {
+			  //Check to see if we are trying to assign color to a gradient
+				data = obj.GetData(typeof(Color));
+				if (data is Color && ParentProperty.PropertyType == typeof (ColorGradient))
+				{
+					Value = new ColorGradient((Color)data);
+				}
+		  }
 	  }
 
 	  public UIElement GetVisualFeedback(IDataObject obj)
