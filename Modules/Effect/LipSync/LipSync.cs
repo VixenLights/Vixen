@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -8,6 +9,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Reflection;
 using System.Resources;
+using System.Windows.Controls.WpfPropertyGrid.Controls;
+using Vixen.Attributes;
 using Vixen.Commands;
 using Vixen.Data.Value;
 using Vixen.Intent;
@@ -19,6 +22,7 @@ using Vixen.Sys;
 using Vixen.Sys.Attribute;
 using VixenModules.App.LipSyncApp;
 using VixenModules.Effect;
+using VixenModules.EffectEditor.EffectDescriptorAttributes;
 
 namespace VixenModules.Effect.LipSync
 {
@@ -27,7 +31,7 @@ namespace VixenModules.Effect.LipSync
     {
         private LipSyncData _data;
         private EffectIntents _elementData = null;
-        static Dictionary<string, Bitmap> _phonemeBitmaps = null;
+		static Dictionary<PhonemeType, Bitmap> _phonemeBitmaps = null;
         private LipSyncMapLibrary _library = null;
 
 
@@ -73,7 +77,7 @@ namespace VixenModules.Effect.LipSync
                     _data.PhonemeMapping = _library.DefaultMappingName;
                 }
 
-                PhonemeType phoneme = (PhonemeType)System.Enum.Parse(typeof(PhonemeType), _data.StaticPhoneme); 
+                PhonemeType phoneme = _data.StaticPhoneme; 
                 if (_library.Library.TryGetValue(_data.PhonemeMapping, out mapData))
                 {
 
@@ -82,7 +86,7 @@ namespace VixenModules.Effect.LipSync
                         LipSyncMapItem item = mapData.FindMapItem(element.Name);
                         if (item != null)
                         {
-                            if (mapData.PhonemeState(element.Name, _data.StaticPhoneme, item))
+                            if (mapData.PhonemeState(element.Name, _data.StaticPhoneme.ToString(), item))
                             {
                                 var level = new SetLevel.SetLevel();
                                 level.TargetNodes = new ElementNode[] { element };
@@ -118,17 +122,26 @@ namespace VixenModules.Effect.LipSync
         }
 
         [Value]
-        public String StaticPhoneme
+		[ProviderCategory("Config")]
+		[DisplayName(@"Phoneme")]
+		[Description(@"The Phoenme mouth affiliation")]
+        public PhonemeType StaticPhoneme
         {
             get { return _data.StaticPhoneme; }
             set
             {
                 _data.StaticPhoneme = value;
                 IsDirty = true;
+				OnPropertyChanged();
             }
         }
 
         [Value]
+		[ProviderCategory("Config")]
+		[DisplayName(@"Phoneme mapping")]
+		[Description(@"The mapping associated.")]
+		[PropertyEditor(typeof(ComboBoxEditor))]
+		[TypeConverter(typeof(PhonemeMappingConverter))]
         public String PhonemeMapping
         {
             get { return _data.PhonemeMapping;  }
@@ -136,10 +149,14 @@ namespace VixenModules.Effect.LipSync
             {
                 _data.PhonemeMapping = value;
                 IsDirty = true;
+				OnPropertyChanged();
             }
         }
 
         [Value]
+		[ProviderCategory("Config")]
+		[DisplayName(@"Lyric")]
+		[Description(@"The lyric verbiage.")]
         public String LyricData
         {
             get { return _data.LyricData; }
@@ -147,6 +164,7 @@ namespace VixenModules.Effect.LipSync
             {
                 _data.LyricData = value;
                 IsDirty = true;
+				OnPropertyChanged();
             }
         }
 
@@ -158,18 +176,18 @@ namespace VixenModules.Effect.LipSync
                 if (assembly != null)
                 {
                     ResourceManager rm = new ResourceManager("VixenModules.App.LipSyncApp.LipSyncResources", assembly);
-                    _phonemeBitmaps = new Dictionary<string, Bitmap>();
-                    _phonemeBitmaps.Add("AI", (Bitmap)rm.GetObject("AI"));
-                    _phonemeBitmaps.Add("E", (Bitmap)rm.GetObject("E"));
-                    _phonemeBitmaps.Add("ETC", (Bitmap)rm.GetObject("etc"));
-                    _phonemeBitmaps.Add("FV", (Bitmap)rm.GetObject("FV"));
-                    _phonemeBitmaps.Add("L", (Bitmap)rm.GetObject("L"));
-                    _phonemeBitmaps.Add("MBP", (Bitmap)rm.GetObject("MBP"));
-                    _phonemeBitmaps.Add("O", (Bitmap)rm.GetObject("O"));
-                    _phonemeBitmaps.Add("PREVIEW", (Bitmap)rm.GetObject("Preview"));
-                    _phonemeBitmaps.Add("REST", (Bitmap)rm.GetObject("rest"));
-                    _phonemeBitmaps.Add("U", (Bitmap)rm.GetObject("U"));
-                    _phonemeBitmaps.Add("WQ", (Bitmap)rm.GetObject("WQ"));
+                    _phonemeBitmaps = new Dictionary<PhonemeType, Bitmap>();
+                    _phonemeBitmaps.Add(PhonemeType.AI, (Bitmap)rm.GetObject("AI"));
+                    _phonemeBitmaps.Add(PhonemeType.E, (Bitmap)rm.GetObject("E"));
+					_phonemeBitmaps.Add(PhonemeType.ETC, (Bitmap)rm.GetObject("etc"));
+					_phonemeBitmaps.Add(PhonemeType.FV, (Bitmap)rm.GetObject("FV"));
+					_phonemeBitmaps.Add(PhonemeType.L, (Bitmap)rm.GetObject("L"));
+					_phonemeBitmaps.Add(PhonemeType.MBP, (Bitmap)rm.GetObject("MBP"));
+					_phonemeBitmaps.Add(PhonemeType.O, (Bitmap)rm.GetObject("O"));
+                    //_phonemeBitmaps.Add("PREVIEW", (Bitmap)rm.GetObject("Preview"));
+                    _phonemeBitmaps.Add(PhonemeType.REST, (Bitmap)rm.GetObject("rest"));
+                    _phonemeBitmaps.Add(PhonemeType.U, (Bitmap)rm.GetObject("U"));
+					_phonemeBitmaps.Add(PhonemeType.WQ, (Bitmap)rm.GetObject("WQ"));
                 }
             }
         }
@@ -185,15 +203,15 @@ namespace VixenModules.Effect.LipSync
         {
             try
             {
-                if (StaticPhoneme == "")
-                {
-                    StaticPhoneme = "REST";
-                }
+				//if (StaticPhoneme == "")
+				//{
+				//	StaticPhoneme = "REST";
+				//}
 
                 string DisplayValue = string.IsNullOrWhiteSpace(LyricData) ? "-" : LyricData;
                 Bitmap displayImage = null;
                 Bitmap scaledImage = null;
-                if (_phonemeBitmaps.TryGetValue(StaticPhoneme, out displayImage) == true)
+                if (_phonemeBitmaps.TryGetValue(StaticPhoneme, out displayImage))
                 {
                     scaledImage = new Bitmap(displayImage, 
                                             Math.Min(clipRectangle.Height,clipRectangle.Width), 

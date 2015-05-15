@@ -5112,7 +5112,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
                         IEffectModuleInstance effect =
                             ApplicationServices.Get<IEffectModuleInstance>(new LipSyncDescriptor().TypeId);
 
-                        ((LipSync)effect).StaticPhoneme = phoneme.TypeName.ToUpper();
+						((LipSync)effect).StaticPhoneme = (App.LipSyncApp.PhonemeType)Enum.Parse(typeof(App.LipSyncApp.PhonemeType), phoneme.TypeName.ToUpper());
                         ((LipSync)effect).LyricData = phoneme.LyricData;
 
                         TimeSpan startTime = TimeSpan.FromMilliseconds(phoneme.StartMS);
@@ -5174,7 +5174,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
                     IEffectModuleInstance effect =
                         ApplicationServices.Get<IEffectModuleInstance>(new LipSyncDescriptor().TypeId);
 
-                    ((LipSync)effect).StaticPhoneme = data.Phoneme.ToString().ToUpper();
+					((LipSync)effect).StaticPhoneme = (App.LipSyncApp.PhonemeType)Enum.Parse(typeof(App.LipSyncApp.PhonemeType), data.Phoneme.ToString().ToUpper());
                     ((LipSync)effect).LyricData = data.LyricData;
 
                     EffectModelCandidate modelCandidate =

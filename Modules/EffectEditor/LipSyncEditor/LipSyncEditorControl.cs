@@ -83,7 +83,7 @@ namespace VixenModules.EffectEditor.LipSyncEditor
             { 
                 return new object[] 
                 {
-                    StaticPhoneme,
+                    (PhonemeType)Enum.Parse(typeof(PhonemeType), StaticPhoneme),
                     PhonemeMapping,
                     LyricData
                 }; 
@@ -112,7 +112,7 @@ namespace VixenModules.EffectEditor.LipSyncEditor
                     }
                 }
 
-                StaticPhoneme = (string)value[0];
+                StaticPhoneme = ((PhonemeType)value[0]).ToString();
                 PhonemeMapping = (string)value[1];
                 LyricData = (string)value[2];
             }
