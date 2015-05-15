@@ -7,7 +7,6 @@ using Vixen.TypeConverters;
 
 namespace VixenModules.Effect.Chase
 {
-	[TypeConverter(typeof(EnumDescriptionTypeConverter))]
 	public enum ChaseColorHandling
 	{
 		[Description("Single Color")]

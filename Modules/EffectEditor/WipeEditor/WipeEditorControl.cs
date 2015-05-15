@@ -1,25 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using Vixen.Module.EffectEditor;
+using NLog;
 using Vixen.Module.Effect;
-using VixenModules.Effect.Wipe;
-using VixenModules.App.Curves;
+using Vixen.Module.EffectEditor;
 using VixenModules.App.ColorGradients;
-using Common.Controls.ColorManagement.ColorModels;
-using Vixen.Sys;
+using VixenModules.App.Curves;
+using VixenModules.Effect.Wipe;
 
 namespace VixenModules.EffectEditor.WipeEditor {
 	public partial class WipeEditorControl : UserControl, IEffectEditorControl {
 		public WipeEditorControl() {
 			InitializeComponent();
 		}
-		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private static Logger Logging = LogManager.GetCurrentClassLogger();
 
 		public object[] EffectParameterValues {
 			get {

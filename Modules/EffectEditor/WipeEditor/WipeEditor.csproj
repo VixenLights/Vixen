@@ -36,7 +36,7 @@
   <ItemGroup>
     <Reference Include="NLog, Version=3.1.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\NLog.3.1.0.0\lib\net45\NLog.dll</HintPath>
-       <Private>False</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -44,9 +44,7 @@
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -61,11 +59,6 @@
     <Compile Include="WipeEditorModule.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Common\Controls\Controls.csproj">
-      <Project>{a54fb6a1-a9c3-488c-b961-41b8dbc81b36}</Project>
-      <Name>Controls</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\Vixen.System\Vixen.csproj">
       <Project>{50b78623-fcf4-48af-93ff-fa87c937028f}</Project>
       <Name>Vixen</Name>
@@ -89,11 +82,6 @@
     <ProjectReference Include="..\ColorGradientTypeEditor\ColorGradientTypeEditor.csproj">
       <Project>{48cf28ec-8dc9-44f8-a258-bd264df187d9}</Project>
       <Name>ColorGradientTypeEditor</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\ColorTypeEditor\ColorTypeEditor.csproj">
-      <Project>{3b7309d6-5d6a-4265-a0b9-b65e0ddfcb12}</Project>
-      <Name>ColorTypeEditor</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\CurveTypeEditor\CurveTypeEditor.csproj">

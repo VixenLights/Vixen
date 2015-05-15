@@ -15,6 +15,8 @@ namespace VixenModules.App.Curves
 	[TypeConverter(typeof(CurveTypeConverter))]
 	public class Curve
 	{
+		
+
 		public static Color ActiveCurveGridColor = Color.RoyalBlue;
 		public static Color InactiveCurveGridColor = Color.DarkGray;
 
@@ -254,18 +256,27 @@ namespace VixenModules.App.Curves
 		{
 			if (obj is Curve)
 			{
-				Curve curve = (Curve)obj;
-				if (IsLibraryReference && curve.IsLibraryReference && LibraryReferenceName.Equals(curve.LibraryReferenceName))
-				{
-					return true;
-				}
-
-				if (Points.Equals(curve.Points))
-				{
-					return true;
-				}
+				return Equals((Curve) obj);
 			}
 			return base.Equals(obj);
+		}
+
+		protected bool Equals(Curve other)
+		{
+			return Equals(_points, other._points) && Equals(_library, other._library) && string.Equals(_libraryReferenceName, other._libraryReferenceName) && Equals(LibraryReferencedCurve, other.LibraryReferencedCurve) && IsCurrentLibraryCurve == other.IsCurrentLibraryCurve;
+		}
+
+		public override int GetHashCode()
+		{
+			unchecked
+			{
+				var hashCode = (_points != null ? _points.GetHashCode() : 0);
+				hashCode = (hashCode * 397) ^ (_library != null ? _library.GetHashCode() : 0);
+				hashCode = (hashCode * 397) ^ (_libraryReferenceName != null ? _libraryReferenceName.GetHashCode() : 0);
+				hashCode = (hashCode * 397) ^ (LibraryReferencedCurve != null ? LibraryReferencedCurve.GetHashCode() : 0);
+				hashCode = (hashCode * 397) ^ IsCurrentLibraryCurve.GetHashCode();
+				return hashCode;
+			}
 		}
 	}
 }

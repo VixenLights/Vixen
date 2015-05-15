@@ -343,7 +343,6 @@ namespace VixenModules.Effect.CustomValue
 
 
 
-	[TypeConverter(typeof(EnumDescriptionTypeConverter))]
 	public enum CustomValueType
 	{
 		[Description(@"8 Bit Value")]

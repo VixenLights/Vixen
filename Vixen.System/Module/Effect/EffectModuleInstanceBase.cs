@@ -5,9 +5,8 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading;
-using Vixen.Annotations;
+using NLog;
 using Vixen.Attributes;
 using Vixen.Services;
 using Vixen.Sys;
@@ -26,7 +25,7 @@ namespace Vixen.Module.Effect
 		private TimeSpan _timeSpan;
 		private DefaultValueArrayMember _parameterValues;
 		protected ElementIntents _elementIntents;
-		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private static Logger Logging = LogManager.GetCurrentClassLogger();
 		private readonly Dictionary<string, bool> _browsableState = new Dictionary<string, bool>();
 
 		protected EffectModuleInstanceBase()
@@ -177,13 +176,13 @@ namespace Vixen.Module.Effect
 		//	g.Clear(Color.White);
 		//	g.DrawRectangle(Pens.Black, clipRectangle.X, clipRectangle.Y, clipRectangle.Width - 1, clipRectangle.Height - 1);
 		//}
-		public virtual void GenerateVisualRepresentation(System.Drawing.Graphics g, System.Drawing.Rectangle clipRectangle)
+		public virtual void GenerateVisualRepresentation(Graphics g, Rectangle clipRectangle)
 		{
 
 			string DisplayValue = string.Format("{0}", this.EffectName);
 
 
-			using (Font AdjustedFont = Vixen.Common.Graphics.GetAdjustedFont(g, DisplayValue, clipRectangle, "Arial"))
+			using (Font AdjustedFont = Common.Graphics.GetAdjustedFont(g, DisplayValue, clipRectangle, "Arial"))
 			{
 				using (var StringBrush = new SolidBrush(Color.Black))
 				{
@@ -309,7 +308,6 @@ namespace Vixen.Module.Effect
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
-		[NotifyPropertyChangedInvocator]
 		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
 		{
 			var handler = PropertyChanged;

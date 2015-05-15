@@ -1,8 +1,7 @@
 ﻿<ResourceDictionary 
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-  xmlns:mwt="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
-  xmlns:l="clr-namespace:System.Windows.Controls.WpfPropertyGrid.Controls">
+	xmlns:l="clr-namespace:System.Windows.Controls.WpfPropertyGrid.Controls">
 
   <SolidColorBrush x:Key="SearchTextBox_Background" Color="White" />
   <SolidColorBrush x:Key="SearchTextBox_Foreground" Color="Black" />

@@ -104,7 +104,6 @@ namespace VixenModules.Effect.Spin
 		}
 	}
 
-	[TypeConverter(typeof(EnumDescriptionTypeConverter))]
 	public enum SpinSpeedFormat
 	{
 		[Description("Revolution Count")]
@@ -115,7 +114,6 @@ namespace VixenModules.Effect.Spin
 		FixedTime
 	}
 
-	[TypeConverter(typeof(EnumDescriptionTypeConverter))]
 	public enum SpinPulseLengthFormat
 	{
 		[Description("Fixed Time")]
@@ -126,7 +124,6 @@ namespace VixenModules.Effect.Spin
 		EvenlyDistributedAcrossSegments
 	}
 
-	[TypeConverter(typeof(EnumDescriptionTypeConverter))]
 	public enum SpinColorHandling
 	{
 		[Description("Single Color")]

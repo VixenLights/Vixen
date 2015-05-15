@@ -7,7 +7,6 @@ using Vixen.TypeConverters;
 
 namespace VixenModules.Effect.Twinkle
 {
-	[TypeConverter(typeof(EnumDescriptionTypeConverter))]
 	public enum TwinkleColorHandling
 	{
 		[Description("Single Color")]

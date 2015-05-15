@@ -2,7 +2,7 @@
 using Vixen.TypeConverters;
 
 namespace VixenModules.Effect.Wipe {
-	[TypeConverter(typeof(EnumDescriptionTypeConverter))]
+	
 	public enum WipeDirection {
 		[Description("Wipe Up")]
 		Up = 0,

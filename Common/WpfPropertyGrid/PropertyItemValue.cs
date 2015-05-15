@@ -467,16 +467,18 @@ namespace System.Windows.Controls.WpfPropertyGrid
 			  if (ParentProperty.PropertyType == typeof(Color))
 			  {
 				  HashSet<Color> discreteColors = GetDiscreteColors(ParentProperty.Component);
-				  Color c = (Color)obj.GetData(ParentProperty.PropertyType);
-				  if (discreteColors.Contains(c))
+				  if (discreteColors.Any())
 				  {
-					  return true;
+					  Color c = (Color)obj.GetData(ParentProperty.PropertyType);
+					  if (!discreteColors.Contains(c))
+					  {
+						  return false;
+					  }
 				  }
+				  
 			  }
-			  else
-			  {
-				  return true;
-			  }
+			  return true;
+			  
 		  }
 
 		  return false;
@@ -490,21 +492,7 @@ namespace System.Windows.Controls.WpfPropertyGrid
 
 	  public UIElement GetVisualFeedback(IDataObject obj)
 	  {
-		  //Object data = obj.GetData(ParentProperty.PropertyType);
-		  //Rectangle rect = new Rectangle
-		  //{
-		  //	Width = 15,
-		  //	Height = 15,
-		  //	Fill =
-		  //		new SolidColorBrush(
-		  //			SystemColorToSolidBrushConverter.ColorToColor((Drawing.Color) data)),
-		  //	Opacity = 1,
-		  //	IsHitTestVisible = false
-		  //};
-
-		  //return rect;
 		  return null;
-
 	  }
 
 	  public UIElement GetTopContainer()
