@@ -13,21 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
-using System.Windows.Controls.WpfPropertyGrid.Converters;
 using System.Windows.Controls.WpfPropertyGrid.Input;
-using System.Windows.Media;
 using Vixen.Module.Effect;
 using Vixen.Sys;
 using VixenModules.Property.Color;
-using Color = System.Drawing.Color;
-using Rectangle = System.Windows.Shapes.Rectangle;
 
 namespace System.Windows.Controls.WpfPropertyGrid
 {

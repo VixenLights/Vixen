@@ -152,7 +152,7 @@ namespace VixenModules.Effect.Twinkle
 		[Value]
 		[ProviderCategory(@"Brightness",2)]
 		[ProviderDisplayName(@"Variation")]
-		[Description(@"TwinkleVariation")]
+		[ProviderDescription(@"TwinkleLevelVariation")]
 		[PropertyEditor(typeof(SliderEditor))]
 		public int LevelVariation
 		{
@@ -167,7 +167,7 @@ namespace VixenModules.Effect.Twinkle
 		[Value]
 		[ProviderCategory(@"Config",3)]
 		[ProviderDisplayName(@"AveragePulseTime")]
-		[Description(@"TwinkleAvgPulseTime")]
+		[ProviderDescription(@"TwinkleAvgPulseTime")]
 		public int AveragePulseTime
 		{
 			get { return _data.AveragePulseTime; }
@@ -181,7 +181,7 @@ namespace VixenModules.Effect.Twinkle
 		[Value]
 		[ProviderCategory(@"Config",3)]
 		[ProviderDisplayName(@"Variation")]
-		[ProviderDescription(@"TwinkleVariation")]
+		[ProviderDescription(@"TwinklePulseTimeVariation")]
 		[PropertyEditor(typeof(SliderEditor))]
 		public int PulseTimeVariation
 		{

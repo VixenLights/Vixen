@@ -51,9 +51,9 @@ namespace VixenModules.App.Curves
 					Curve cg = (Curve)value;
 					if (cg.IsLibraryReference)
 					{
-						return cg.LibraryReferenceName;
+						return string.Format("Library: {0}", cg.LibraryReferenceName);
 					}
-					return "Curve";
+					return "Standalone Curve";
 				}
 			}
 			

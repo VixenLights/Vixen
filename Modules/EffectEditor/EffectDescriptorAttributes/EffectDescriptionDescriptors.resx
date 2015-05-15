@@ -190,7 +190,7 @@
     <value>Indicates the color is a static color.</value>
   </data>
   <data name="TwinkleAvgPulseTime" xml:space="preserve">
-    <value>Controls how long the averge pulse time in in the twinkle.</value>
+    <value>Controls how long the averge pulse time is in the twinkle.</value>
   </data>
   <data name="TwinkleCoverage" xml:space="preserve">
     <value>Controls how much of the effect by percent is covered in twinkles.</value>
@@ -198,8 +198,11 @@
   <data name="TwinkleDepth" xml:space="preserve">
     <value>Controls whether each individual element is twinkled independantly or all at once.</value>
   </data>
-  <data name="TwinkleVariation" xml:space="preserve">
+  <data name="TwinkleLevelVariation" xml:space="preserve">
     <value>Controls how much percent variation in the brightness level of each pulse in the twinkle.</value>
+  </data>
+  <data name="TwinklePulseTimeVariation" xml:space="preserve">
+    <value>Controls how much percent variation in the time of each pulse in the twinkle.</value>
   </data>
   <data name="WipeCount" xml:space="preserve">
     <value>Controls the number of passes the wipe makes.</value>

@@ -48,9 +48,9 @@ namespace VixenModules.App.ColorGradients
 					ColorGradient cg = (ColorGradient) value;
 					if (cg.IsLibraryReference)
 					{
-						return cg.LibraryReferenceName;
+						return string.Format("Library: {0}", cg.LibraryReferenceName);
 					}
-					return "Gradient";
+					return "Standalone Gradient";
 				}
 
 			}

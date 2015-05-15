@@ -278,7 +278,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Controls how long the averge pulse time in in the twinkle..
+        ///   Looks up a localized string similar to Controls how long the averge pulse time is in the twinkle..
         /// </summary>
         internal static string TwinkleAvgPulseTime {
             get {
@@ -307,9 +307,18 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         /// <summary>
         ///   Looks up a localized string similar to Controls how much percent variation in the brightness level of each pulse in the twinkle..
         /// </summary>
-        internal static string TwinkleVariation {
+        internal static string TwinkleLevelVariation {
             get {
-                return ResourceManager.GetString("TwinkleVariation", resourceCulture);
+                return ResourceManager.GetString("TwinkleLevelVariation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Controls how much percent variation in the time of each pulse in the twinkle..
+        /// </summary>
+        internal static string TwinklePulseTimeVariation {
+            get {
+                return ResourceManager.GetString("TwinklePulseTimeVariation", resourceCulture);
             }
         }
         
