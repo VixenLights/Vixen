@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -23,29 +24,28 @@ using Vixen.Attributes;
 namespace System.Windows.Controls.WpfPropertyGrid
 {
 	/// <summary>
-	/// Defines a collection of value Editors (Type, Category and Property editors).
+	///     Defines a collection of value Editors (Type, Category and Property editors).
 	/// </summary>
 	public class EditorCollection : Collection<Editor>
 	{
 		private static readonly Dictionary<Type, Editor> Cache = new Dictionary<Type, Editor>
-    {
-      { typeof(Boolean), new TypeEditor(typeof(Boolean), EditorKeys.BooleanEditorKey) },
-      { KnownTypes.Wpf.FontStretch, new TypeEditor(KnownTypes.Wpf.FontStretch, EditorKeys.EnumEditorKey) },
-      { KnownTypes.Wpf.FontStyle, new TypeEditor(KnownTypes.Wpf.FontStyle, EditorKeys.EnumEditorKey) },
-      { KnownTypes.Wpf.FontWeight, new TypeEditor(KnownTypes.Wpf.FontWeight, EditorKeys.EnumEditorKey) },
-      { KnownTypes.Wpf.Cursor, new TypeEditor(KnownTypes.Wpf.Cursor, EditorKeys.EnumEditorKey) },
-      { KnownTypes.Wpf.FontFamily, new TypeEditor(KnownTypes.Wpf.FontFamily, EditorKeys.FontFamilyEditorKey) },
-      { KnownTypes.Wpf.Brush, new TypeEditor(KnownTypes.Wpf.Brush, EditorKeys.BrushEditorKey) },
-	  { KnownTypes.Wpf.Integer, new TypeEditor(KnownTypes.Wpf.Integer, EditorKeys.IntegerEditorKey) },
-	   { KnownTypes.Wpf.Color, new ColorTypeEditor() },
-	    { KnownTypes.Wpf.Curve, new CurveEditor() },
-		{ KnownTypes.Wpf.ColorGradient, new GradientTypeEditor() },
-		{ KnownTypes.Wpf.Percentage, new TypeEditor(KnownTypes.Wpf.Percentage, EditorKeys.SliderPercentageEditorKey) },
-      { typeof(Enum), new TypeEditor(typeof(Enum), EditorKeys.EnumEditorKey) }
-    };
+		{
+			{typeof (bool), new TypeEditor(typeof (bool), EditorKeys.BooleanEditorKey)},
+			{KnownTypes.Wpf.FontStretch, new TypeEditor(KnownTypes.Wpf.FontStretch, EditorKeys.EnumEditorKey)},
+			{KnownTypes.Wpf.FontStyle, new TypeEditor(KnownTypes.Wpf.FontStyle, EditorKeys.EnumEditorKey)},
+			{KnownTypes.Wpf.FontWeight, new TypeEditor(KnownTypes.Wpf.FontWeight, EditorKeys.EnumEditorKey)},
+			{KnownTypes.Wpf.Cursor, new TypeEditor(KnownTypes.Wpf.Cursor, EditorKeys.EnumEditorKey)},
+			{KnownTypes.Wpf.FontFamily, new TypeEditor(KnownTypes.Wpf.FontFamily, EditorKeys.FontFamilyEditorKey)},
+			{KnownTypes.Wpf.Integer, new TypeEditor(KnownTypes.Wpf.Integer, EditorKeys.IntegerEditorKey)},
+			{KnownTypes.Wpf.Color, new ColorTypeEditor()},
+			{KnownTypes.Wpf.Curve, new CurveEditor()},
+			{KnownTypes.Wpf.ColorGradient, new GradientTypeEditor()},
+			{KnownTypes.Wpf.Percentage, new TypeEditor(KnownTypes.Wpf.Percentage, EditorKeys.SliderPercentageEditorKey)},
+			{typeof (Enum), new TypeEditor(typeof (Enum), EditorKeys.EnumEditorKey)}
+		};
 
 		/// <summary>
-		/// Finds the type editor.
+		///     Finds the type editor.
 		/// </summary>
 		/// <param name="editedType">Edited type.</param>
 		/// <returns>Editor for Type</returns>
@@ -54,12 +54,12 @@ namespace System.Windows.Controls.WpfPropertyGrid
 			if (editedType == null) throw new ArgumentNullException("editedType");
 
 			return this
-			  .OfType<TypeEditor>()
-			  .FirstOrDefault(item => item.EditedType.IsAssignableFrom(editedType));
+				.OfType<TypeEditor>()
+				.FirstOrDefault(item => item.EditedType.IsAssignableFrom(editedType));
 		}
 
 		/// <summary>
-		/// Finds the property editor.
+		///     Finds the property editor.
 		/// </summary>
 		/// <param name="declaringType">Declaring type.</param>
 		/// <param name="propertyName">Name of the property.</param>
@@ -70,13 +70,13 @@ namespace System.Windows.Controls.WpfPropertyGrid
 			if (string.IsNullOrEmpty(propertyName)) throw new ArgumentNullException("propertyName");
 
 			return this
-			  .OfType<PropertyEditor>()
-			  .Where(item => item.DeclaringType.IsAssignableFrom(declaringType))
-			  .FirstOrDefault(item => item.PropertyName == propertyName);
+				.OfType<PropertyEditor>()
+				.Where(item => item.DeclaringType.IsAssignableFrom(declaringType))
+				.FirstOrDefault(item => item.PropertyName == propertyName);
 		}
 
 		/// <summary>
-		/// Finds the category editor.
+		///     Finds the category editor.
 		/// </summary>
 		/// <param name="declaringType">Declaring type.</param>
 		/// <param name="categoryName">Name of the category.</param>
@@ -87,13 +87,13 @@ namespace System.Windows.Controls.WpfPropertyGrid
 			if (string.IsNullOrEmpty(categoryName)) throw new ArgumentNullException("categoryName");
 
 			return this
-			  .OfType<CategoryEditor>()
-			  .Where(item => item.DeclaringType.IsAssignableFrom(declaringType))
-			  .FirstOrDefault(item => item.CategoryName == categoryName);
+				.OfType<CategoryEditor>()
+				.Where(item => item.DeclaringType.IsAssignableFrom(declaringType))
+				.FirstOrDefault(item => item.CategoryName == categoryName);
 		}
 
 		/// <summary>
-		/// Gets the property editor by attributes.
+		///     Gets the property editor by attributes.
 		/// </summary>
 		/// <param name="attributes">The attributes.</param>
 		/// <returns>Editor for Property</returns>
@@ -108,7 +108,7 @@ namespace System.Windows.Controls.WpfPropertyGrid
 			{
 				var editorType = Type.GetType(attribute.EditorType);
 				if (editorType == null || !KnownTypes.Wpg.Editor.IsAssignableFrom(editorType)) return null;
-				return (Editor)Activator.CreateInstance(editorType);
+				return (Editor) Activator.CreateInstance(editorType);
 			}
 			catch
 			{
@@ -117,7 +117,7 @@ namespace System.Windows.Controls.WpfPropertyGrid
 		}
 
 		/// <summary>
-		/// Gets the category editor by attributes.
+		///     Gets the category editor by attributes.
 		/// </summary>
 		/// <param name="declaringType">Type of the declaring.</param>
 		/// <param name="categoryName">Name of the category.</param>
@@ -126,20 +126,20 @@ namespace System.Windows.Controls.WpfPropertyGrid
 		{
 			if (declaringType == null || string.IsNullOrEmpty(categoryName)) return null;
 
-			string name = categoryName.ToUpperInvariant();
+			var name = categoryName.ToUpperInvariant();
 
-			CategoryEditorAttribute attribute = declaringType
-			  .GetCustomAttributes(KnownTypes.Attributes.CategoryEditorAttribute, true)
-			  .OfType<CategoryEditorAttribute>()
-			  .FirstOrDefault(attr => attr.CategoryName == name);
+			var attribute = declaringType
+				.GetCustomAttributes(KnownTypes.Attributes.CategoryEditorAttribute, true)
+				.OfType<CategoryEditorAttribute>()
+				.FirstOrDefault(attr => attr.CategoryName == name);
 
 			if (attribute == null) return null;
 
 			try
 			{
-				Type editorType = Type.GetType(attribute.EditorType);
+				var editorType = Type.GetType(attribute.EditorType);
 				if (editorType == null || !KnownTypes.Wpg.Editor.IsAssignableFrom(editorType)) return null;
-				return (Editor)Activator.CreateInstance(editorType);
+				return (Editor) Activator.CreateInstance(editorType);
 			}
 			catch
 			{
@@ -148,7 +148,7 @@ namespace System.Windows.Controls.WpfPropertyGrid
 		}
 
 		/// <summary>
-		/// Gets the editor.
+		///     Gets the editor.
 		/// </summary>
 		/// <param name="categoryItem">The category item.</param>
 		/// <returns>Editor for Category</returns>
@@ -159,11 +159,11 @@ namespace System.Windows.Controls.WpfPropertyGrid
 			if (categoryItem.Owner == null)
 				return null;
 
-			object declaringObject = ObjectServices.GetUnwrappedObject(categoryItem.Owner.SelectedObject);
+			var declaringObject = ObjectServices.GetUnwrappedObject(categoryItem.Owner.SelectedObject);
 			if (declaringObject == null)
 				return null;
 
-			Type declaringType = declaringObject.GetType();
+			var declaringType = declaringObject.GetType();
 
 			Editor editor = FindCategoryEditor(declaringType, categoryItem.Name);
 			if (editor != null) return editor;
@@ -175,7 +175,7 @@ namespace System.Windows.Controls.WpfPropertyGrid
 		}
 
 		/// <summary>
-		/// Gets the editor.
+		///     Gets the editor.
 		/// </summary>
 		/// <param name="propertyItem">The property item.</param>
 		/// <returns>Editor for Property</returns>
@@ -193,7 +193,7 @@ namespace System.Windows.Controls.WpfPropertyGrid
 
 			if (propertyItem.Component != null && !string.IsNullOrEmpty(propertyItem.Name))
 			{
-				object declaringObject = ObjectServices.GetUnwrappedObject(propertyItem.Owner.SelectedObject);
+				var declaringObject = ObjectServices.GetUnwrappedObject(propertyItem.Owner.SelectedObject);
 				editor = FindPropertyEditor(declaringObject.GetType(), propertyItem.Name);
 				if (editor != null) return editor;
 			}
@@ -201,7 +201,7 @@ namespace System.Windows.Controls.WpfPropertyGrid
 			if (propertyItem.PropertyValue.HasSubProperties)
 				return new TypeEditor(propertyItem.PropertyType, EditorKeys.ComplexPropertyEditorKey);
 
-			bool hasType = propertyItem.PropertyType != null;
+			var hasType = propertyItem.PropertyType != null;
 
 			if (hasType)
 			{
@@ -218,7 +218,7 @@ namespace System.Windows.Controls.WpfPropertyGrid
 				}
 				if (propertyItem.IsReadOnly)
 				{
-					return new TypeEditor(propertyItem.PropertyType,EditorKeys.LabelEditorKey);
+					return new TypeEditor(propertyItem.PropertyType, EditorKeys.LabelEditorKey);
 				}
 				return new TypeEditor(propertyItem.PropertyType, EditorKeys.DefaultEditorKey);
 			}

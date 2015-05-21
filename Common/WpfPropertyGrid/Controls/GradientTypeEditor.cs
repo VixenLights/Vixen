@@ -12,7 +12,7 @@ using VixenModules.Property.Color;
 
 namespace System.Windows.Controls.WpfPropertyGrid.Controls
 {
-	public class GradientTypeEditor:BaseColorTypeEditor
+	public class GradientTypeEditor : BaseColorTypeEditor
 	{
 		public GradientTypeEditor()
 		{
@@ -34,9 +34,9 @@ namespace System.Windows.Controls.WpfPropertyGrid.Controls
 			}
 			else
 			{
-				gradient=discreteColors.Any()?new ColorGradient(discreteColors.First()):new ColorGradient(Color.White);	
+				gradient = discreteColors.Any() ? new ColorGradient(discreteColors.First()) : new ColorGradient(Color.White);
 			}
-			
+
 			ColorGradientEditor editor = new ColorGradientEditor(gradient, discreteColors.Any(), discreteColors);
 			if (editor.ShowDialog() == DialogResult.OK)
 			{

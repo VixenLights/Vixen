@@ -13,20 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 namespace System.Windows.Controls.WpfPropertyGrid
 {
-  /// <summary>
-  /// Specifies the source of value exception
-  /// </summary>
-  public enum ValueExceptionSource
-  {
-    /// <summary>
-    /// Exception occurred during a Get operation
-    /// </summary>
-    Get,
-    /// <summary>
-    /// Exception occurred during a Set operation
-    /// </summary>
-    Set
-  }
+	/// <summary>
+	/// Specifies the source of value exception
+	/// </summary>
+	public enum ValueExceptionSource
+	{
+		/// <summary>
+		/// Exception occurred during a Get operation
+		/// </summary>
+		Get,
+
+		/// <summary>
+		/// Exception occurred during a Set operation
+		/// </summary>
+		Set
+	}
 }

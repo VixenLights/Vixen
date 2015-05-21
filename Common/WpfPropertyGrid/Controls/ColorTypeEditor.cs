@@ -24,13 +24,13 @@ namespace System.Windows.Controls.WpfPropertyGrid.Controls
 		{
 			if (propertyValue == null) return;
 			if (propertyValue.ParentProperty.IsReadOnly) return;
-			
+
 			HashSet<Color> discreteColors = GetDiscreteColors(propertyValue.ParentProperty.Component);
 
-			Color colorValue=Color.Black;
+			Color colorValue = Color.Black;
 			if (propertyValue.Value != null)
 			{
-				colorValue = (Color)propertyValue.Value;	
+				colorValue = (Color) propertyValue.Value;
 			}
 			DialogResult result;
 			if (discreteColors.Any())
@@ -39,13 +39,12 @@ namespace System.Windows.Controls.WpfPropertyGrid.Controls
 				{
 					dcp.ValidColors = discreteColors;
 					dcp.SingleColorOnly = true;
-					dcp.SelectedColors = new List<Color> { colorValue };	
+					dcp.SelectedColors = new List<Color> {colorValue};
 					result = dcp.ShowDialog();
 					if (result == DialogResult.OK)
 					{
 						propertyValue.Value = !dcp.SelectedColors.Any() ? discreteColors.First() : dcp.SelectedColors.First();
 					}
-
 				}
 			}
 			else
@@ -61,8 +60,6 @@ namespace System.Windows.Controls.WpfPropertyGrid.Controls
 					}
 				}
 			}
-
-
 		}
 	}
 }

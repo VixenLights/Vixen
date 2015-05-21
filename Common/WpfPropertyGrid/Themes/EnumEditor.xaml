@@ -3,15 +3,15 @@
                     xmlns:local="clr-namespace:System.Windows.Controls.WpfPropertyGrid"
                     xmlns:controls="clr-namespace:System.Windows.Controls.WpfPropertyGrid.Controls">
 	<ResourceDictionary.MergedDictionaries>
-		<ResourceDictionary Source="Converters.xaml"/>
+		<ResourceDictionary Source="Converters.xaml" />
 	</ResourceDictionary.MergedDictionaries>
 
 	<DataTemplate x:Key="{x:Static local:EditorKeys.EnumEditorKey}">
 		<controls:EnumDropdown
-      x:Name="PART_editor"
-      Style="{DynamicResource {x:Type ComboBox}}"
-      PropertyValue="{Binding}"
-      IsEnabled="{Binding IsEditable}">
+			x:Name="PART_editor"
+			Style="{DynamicResource {x:Type ComboBox}}"
+			PropertyValue="{Binding}"
+			IsEnabled="{Binding IsEditable}">
 			<ComboBox.ItemTemplate>
 				<DataTemplate>
 					<TextBlock Text="{Binding Path=., Converter={StaticResource EnumValueConverter}}" />

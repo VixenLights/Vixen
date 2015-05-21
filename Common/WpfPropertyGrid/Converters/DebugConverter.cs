@@ -20,27 +20,27 @@ using System.Windows.Data;
 
 namespace System.Windows.Controls.WpfPropertyGrid.Converters
 {
-  /// <summary>
-  /// Value converter that can be used for editor debugging purposes.   
-  /// </summary>
-  public class DebugConverter : IValueConverter
-  {
-    #region IValueConverter Members
+	/// <summary>
+	/// Value converter that can be used for editor debugging purposes.   
+	/// </summary>
+	public class DebugConverter : IValueConverter
+	{
+		#region IValueConverter Members
 
-    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-    {
-     // Debugger.Break();
-		Console.Out.WriteLine("Convert {0} to {1}", value, targetType);
-      return value;
-    }
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			// Debugger.Break();
+			Console.Out.WriteLine("Convert {0} to {1}", value, targetType);
+			return value;
+		}
 
-    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-    {
-     // Debugger.Break();
-	  Console.Out.WriteLine("Convert Back {0}", value);
-      return value;
-    }
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			// Debugger.Break();
+			Console.Out.WriteLine("Convert Back {0}", value);
+			return value;
+		}
 
-    #endregion
-  }
+		#endregion
+	}
 }

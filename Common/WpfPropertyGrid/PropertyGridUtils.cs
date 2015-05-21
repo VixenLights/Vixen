@@ -13,29 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 using System.Collections.Generic;
 using System.Linq;
 
 namespace System.Windows.Controls.WpfPropertyGrid
 {
-  internal static class PropertyGridUtils
-  {
-    public static IEnumerable<T> GetAttributes<T>(object target)
-    {
-      if (target == null) throw new ArgumentNullException("target");
-      return GetAttributes<T>(target.GetType());
-    }
+	internal static class PropertyGridUtils
+	{
+		public static IEnumerable<T> GetAttributes<T>(object target)
+		{
+			if (target == null) throw new ArgumentNullException("target");
+			return GetAttributes<T>(target.GetType());
+		}
 
-    public static IEnumerable<T> GetAttributes<T>(Type type)
-    {
-      if (type == null) throw new ArgumentNullException("type");
+		public static IEnumerable<T> GetAttributes<T>(Type type)
+		{
+			if (type == null) throw new ArgumentNullException("type");
 
-      var attributes =
-         from T attribute
-           in type.GetCustomAttributes(typeof(T), true)
-         select attribute;
+			var attributes =
+				from T attribute
+					in type.GetCustomAttributes(typeof (T), true)
+				select attribute;
 
-      return attributes;
-    }    
-  }
+			return attributes;
+		}
+	}
 }

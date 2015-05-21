@@ -13,119 +13,78 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Windows.Controls.WpfPropertyGrid.Converters;
+using System.Windows.Controls.WpfPropertyGrid.Internal;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
-using System.Collections.Generic;
-using System.Windows.Controls.WpfPropertyGrid.Converters;
 
 namespace System.Windows.Controls.WpfPropertyGrid
 {
-  using Internal;
+	internal static class ObjectServices
+	{
+		private static readonly Type[] CultureInvariantTypes =
+		{
+			typeof (CornerRadius),
+			typeof (Point3D),
+			typeof (Point4D),
+			typeof (Point3DCollection),
+			typeof (Matrix3D),
+			typeof (Quaternion),
+			typeof (Rect3D),
+			typeof (Size3D),
+			typeof (Vector3D),
+			typeof (Vector3DCollection),
+			typeof (PointCollection),
+			typeof (VectorCollection),
+			typeof (Point),
+			typeof (Rect),
+			typeof (Size),
+			typeof (Thickness),
+			typeof (Vector)
+		};
 
-  internal static class ObjectServices
-  {
-    private static readonly Type[] CultureInvariantTypes = new Type[] 
-    { 
-      typeof(CornerRadius), 
-      typeof(Point3D), 
-      typeof(Point4D), 
-      typeof(Point3DCollection), 
-      typeof(Matrix3D), 
-      typeof(Quaternion), 
-      typeof(Rect3D), 
-      typeof(Size3D), 
-      typeof(Vector3D), 
-      typeof(Vector3DCollection), 
-      typeof(PointCollection), 
-      typeof(VectorCollection), 
-      typeof(Point), 
-      typeof(Rect), 
-      typeof(Size), 
-      typeof(Thickness), 
-      typeof(Vector)     
-    };
+		private static readonly string[] StringConverterMembers = {"Content", "Header", "ToolTip", "Tag"};
 
-    private static readonly string[] StringConverterMembers = { "Content", "Header", "ToolTip", "Tag" };
+		[Obsolete("This member will be superceded by PropertyItem.SerializationCulture in the next versions of component",
+			false)]
+		public static CultureInfo GetSerializationCulture(Type propertyType)
+		{
+			var currentCulture = CultureInfo.CurrentCulture;
 
-    #region DefaultStringConverter
-    private static StringConverter _defaultStringConverter;
-    public static StringConverter DefaultStringConverter
-    {
-      get
-      {
-        if (_defaultStringConverter == null)
-          _defaultStringConverter = new StringConverter();
-        return _defaultStringConverter;
-      }
-    } 
-    #endregion
+			if (propertyType == null) return currentCulture;
 
-    #region DefaultFontStretchConverterDecorator
-    private static FontStretchConverterDecorator _defaultFontStretchConverterDecorator;
-    public static FontStretchConverterDecorator DefaultFontStretchConverterDecorator
-    {
-      get { return _defaultFontStretchConverterDecorator ?? (_defaultFontStretchConverterDecorator = new FontStretchConverterDecorator()); }
-    } 
-    #endregion
+			if ((Array.IndexOf(CultureInvariantTypes, propertyType) == -1) && !typeof (Geometry).IsAssignableFrom(propertyType))
+				return currentCulture;
 
-    #region DefaultFontStyleConverterDecorator
-    private static FontStyleConverterDecorator _DefaultFontStyleConverterDecorator;
-    public static FontStyleConverterDecorator DefaultFontStyleConverterDecorator
-    {
-      get
-      {
-        if (_DefaultFontStyleConverterDecorator == null)
-          _DefaultFontStyleConverterDecorator = new FontStyleConverterDecorator();
-        return _DefaultFontStyleConverterDecorator;
-      }
-    } 
-    #endregion
+			return CultureInfo.InvariantCulture;
+		}
 
-    #region DefaultFontWeightConverterDecorator
-    private static FontWeightConverterDecorator _defaultFontWeightConverterDecorator;
-    public static FontWeightConverterDecorator DefaultFontWeightConverterDecorator
-    {
-      get { return _defaultFontWeightConverterDecorator ?? (_defaultFontWeightConverterDecorator = new FontWeightConverterDecorator()); }
-    } 
-    #endregion
+		public static TypeConverter GetPropertyConverter(PropertyDescriptor propertyDescriptor)
+		{
+			if (propertyDescriptor == null)
+				throw new ArgumentNullException("propertyDescriptor");
 
-    [Obsolete("This member will be superceded by PropertyItem.SerializationCulture in the next versions of component", false)]
-    public static CultureInfo GetSerializationCulture(Type propertyType)
-    {
-      var currentCulture = CultureInfo.CurrentCulture;
+			if (StringConverterMembers.Contains(propertyDescriptor.Name)
+			    && propertyDescriptor.PropertyType.IsAssignableFrom(typeof (object)))
+				return DefaultStringConverter;
+			if (typeof (FontStretch).IsAssignableFrom(propertyDescriptor.PropertyType))
+				return DefaultFontStretchConverterDecorator;
+			if (typeof (FontStyle).IsAssignableFrom(propertyDescriptor.PropertyType))
+				return DefaultFontStyleConverterDecorator;
+			if (typeof (FontWeight).IsAssignableFrom(propertyDescriptor.PropertyType))
+				return DefaultFontWeightConverterDecorator;
+			return propertyDescriptor.Converter;
+		}
 
-      if (propertyType == null) return currentCulture;
+		#region MultiSelected Objects Support
 
-      if ((Array.IndexOf(CultureInvariantTypes, propertyType) == -1) && !typeof(Geometry).IsAssignableFrom(propertyType))
-        return currentCulture;
-
-      return CultureInfo.InvariantCulture;
-    }
-
-    public static TypeConverter GetPropertyConverter(PropertyDescriptor propertyDescriptor)
-    {
-      if (propertyDescriptor == null) 
-        throw new ArgumentNullException("propertyDescriptor");
-
-      if (StringConverterMembers.Contains(propertyDescriptor.Name) 
-        && propertyDescriptor.PropertyType.IsAssignableFrom(typeof(object)))
-        return DefaultStringConverter;
-      if (typeof(FontStretch).IsAssignableFrom(propertyDescriptor.PropertyType))
-        return DefaultFontStretchConverterDecorator;
-      if (typeof(FontStyle).IsAssignableFrom(propertyDescriptor.PropertyType))
-        return DefaultFontStyleConverterDecorator;
-      if (typeof(FontWeight).IsAssignableFrom(propertyDescriptor.PropertyType))
-        return DefaultFontWeightConverterDecorator;
-      return propertyDescriptor.Converter;
-    }
-
-    #region MultiSelected Objects Support
-
-    // This is an obsolete code left for performance improvements demo. Will be removed in the future versions.
-    /*
+		// This is an obsolete code left for performance improvements demo. Will be removed in the future versions.
+		/*
     static Func<PropertyDescriptor, bool> IsBrowsable = (prop) => prop.IsBrowsable;
     static Func<PropertyDescriptor, bool> IsMergable = (prop) =>
     {
@@ -148,11 +107,11 @@ namespace System.Windows.Controls.WpfPropertyGrid
       return result;
     }
     */
-        
-    internal static IEnumerable<PropertyDescriptor> GetMergedProperties(IEnumerable<object> targets)
-    {
-      // This is an obsolete code left for performance improvements demo. Will be removed in the future versions.
-      /*
+
+		internal static IEnumerable<PropertyDescriptor> GetMergedProperties(IEnumerable<object> targets)
+		{
+			// This is an obsolete code left for performance improvements demo. Will be removed in the future versions.
+			/*
       List<PropertyDescriptor> mergedProperties = new List<PropertyDescriptor>();
 
       IEnumerable<PropertyDescriptor> commonProperties = GetCommonProperties(targets);
@@ -170,23 +129,85 @@ namespace System.Windows.Controls.WpfPropertyGrid
       return mergedProperties;
       */
 
-      var merged = new List<PropertyDescriptor>();
-      var props = MetadataRepository.GetCommonProperties(targets);
-      foreach (var pData in props)
-      {
-        var descriptors = targets.Select(target => MetadataRepository.GetProperty(target, pData.Name).Descriptor);
-        merged.Add(new MergedPropertyDescriptor(descriptors.ToArray()));
-      }
-      
-      return merged;
-    }
+			var merged = new List<PropertyDescriptor>();
+			var props = MetadataRepository.GetCommonProperties(targets);
+			foreach (var pData in props)
+			{
+				var descriptors = targets.Select(target => MetadataRepository.GetProperty(target, pData.Name).Descriptor);
+				merged.Add(new MergedPropertyDescriptor(descriptors.ToArray()));
+			}
 
-    #endregion
+			return merged;
+		}
 
-    internal static object GetUnwrappedObject(object currentObject)
-    {
-      var customTypeDescriptor = currentObject as ICustomTypeDescriptor;
-      return customTypeDescriptor != null ? customTypeDescriptor.GetPropertyOwner(null) : currentObject;
-    }
-  }
+		#endregion
+
+		internal static object GetUnwrappedObject(object currentObject)
+		{
+			var customTypeDescriptor = currentObject as ICustomTypeDescriptor;
+			return customTypeDescriptor != null ? customTypeDescriptor.GetPropertyOwner(null) : currentObject;
+		}
+
+		#region DefaultStringConverter
+
+		private static StringConverter _defaultStringConverter;
+
+		public static StringConverter DefaultStringConverter
+		{
+			get
+			{
+				if (_defaultStringConverter == null)
+					_defaultStringConverter = new StringConverter();
+				return _defaultStringConverter;
+			}
+		}
+
+		#endregion
+
+		#region DefaultFontStretchConverterDecorator
+
+		private static FontStretchConverterDecorator _defaultFontStretchConverterDecorator;
+
+		public static FontStretchConverterDecorator DefaultFontStretchConverterDecorator
+		{
+			get
+			{
+				return _defaultFontStretchConverterDecorator ??
+				       (_defaultFontStretchConverterDecorator = new FontStretchConverterDecorator());
+			}
+		}
+
+		#endregion
+
+		#region DefaultFontStyleConverterDecorator
+
+		private static FontStyleConverterDecorator _DefaultFontStyleConverterDecorator;
+
+		public static FontStyleConverterDecorator DefaultFontStyleConverterDecorator
+		{
+			get
+			{
+				if (_DefaultFontStyleConverterDecorator == null)
+					_DefaultFontStyleConverterDecorator = new FontStyleConverterDecorator();
+				return _DefaultFontStyleConverterDecorator;
+			}
+		}
+
+		#endregion
+
+		#region DefaultFontWeightConverterDecorator
+
+		private static FontWeightConverterDecorator _defaultFontWeightConverterDecorator;
+
+		public static FontWeightConverterDecorator DefaultFontWeightConverterDecorator
+		{
+			get
+			{
+				return _defaultFontWeightConverterDecorator ??
+				       (_defaultFontWeightConverterDecorator = new FontWeightConverterDecorator());
+			}
+		}
+
+		#endregion
+	}
 }

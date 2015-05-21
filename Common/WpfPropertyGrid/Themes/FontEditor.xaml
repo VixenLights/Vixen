@@ -2,18 +2,18 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:System.Windows.Controls.WpfPropertyGrid">
 	<ResourceDictionary.MergedDictionaries>
-		<ResourceDictionary Source="Converters.xaml"/>
+		<ResourceDictionary Source="Converters.xaml" />
 	</ResourceDictionary.MergedDictionaries>
 
 	<DataTemplate x:Key="{x:Static local:EditorKeys.FontFamilyEditorKey}">
 		<ComboBox
-      x:Name="PART_editor"
-      SelectedValue="{Binding Value}"
-      ItemsSource="{Binding Source={x:Static Fonts.SystemFontFamilies}}"
-      IsEnabled="{Binding IsEditable}">
+			x:Name="PART_editor"
+			SelectedValue="{Binding Value}"
+			ItemsSource="{Binding Source={x:Static Fonts.SystemFontFamilies}}"
+			IsEnabled="{Binding IsEditable}">
 			<ComboBox.ItemTemplate>
 				<DataTemplate>
-					<TextBlock Text="{Binding}" FontFamily="{Binding}"/>
+					<TextBlock Text="{Binding}" FontFamily="{Binding}" />
 				</DataTemplate>
 			</ComboBox.ItemTemplate>
 		</ComboBox>

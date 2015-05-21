@@ -2,66 +2,62 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:System.Windows.Controls.WpfPropertyGrid">
 	<ResourceDictionary.MergedDictionaries>
-		<ResourceDictionary Source="Converters.xaml"/>
+		<ResourceDictionary Source="Converters.xaml" />
 	</ResourceDictionary.MergedDictionaries>
 
 	<DataTemplate x:Key="{x:Static local:EditorKeys.SliderEditorKey}">
 		<Slider x:Name="PART_editor"
-            Value="{Binding Value, Mode=TwoWay, Converter={StaticResource IntToDoubleConverter}}"
-            Minimum="{Binding ParentProperty.Metadata[NumberRange].Minimum, FallbackValue=0}"
-            Maximum="{Binding ParentProperty.Metadata[NumberRange].Maximum, FallbackValue=100}"
-            TickFrequency="{Binding ParentProperty.Metadata[NumberRange].Tick, FallbackValue=1}"
-            AutoToolTipPrecision="{Binding ParentProperty.Metadata[NumberRange].Precision, FallbackValue=0}"
-            AutoToolTipPlacement="BottomRight"
-            IsDirectionReversed="False"
-            IsMoveToPointEnabled="True"
-            IsSnapToTickEnabled="False"
-            IsEnabled="{Binding IsEditable}"
-            />
+		        Value="{Binding Value, Mode=TwoWay, Converter={StaticResource IntToDoubleConverter}}"
+		        Minimum="{Binding ParentProperty.Metadata[NumberRange].Minimum, FallbackValue=0}"
+		        Maximum="{Binding ParentProperty.Metadata[NumberRange].Maximum, FallbackValue=100}"
+		        TickFrequency="{Binding ParentProperty.Metadata[NumberRange].Tick, FallbackValue=1}"
+		        AutoToolTipPrecision="{Binding ParentProperty.Metadata[NumberRange].Precision, FallbackValue=0}"
+		        AutoToolTipPlacement="BottomRight"
+		        IsDirectionReversed="False"
+		        IsMoveToPointEnabled="True"
+		        IsSnapToTickEnabled="False"
+		        IsEnabled="{Binding IsEditable}" />
 	</DataTemplate>
 
 	<DataTemplate x:Key="{x:Static local:EditorKeys.SliderDoubleEditorKey}">
 		<Slider x:Name="PART_editor"
-            Value="{Binding Value, Mode=TwoWay}"
-            Minimum="{Binding ParentProperty.Metadata[NumberRange].Minimum, FallbackValue=0}"
-            Maximum="{Binding ParentProperty.Metadata[NumberRange].Maximum, FallbackValue=100}"
-            TickFrequency="{Binding ParentProperty.Metadata[NumberRange].Tick, FallbackValue=1}"
-            AutoToolTipPrecision="{Binding ParentProperty.Metadata[NumberRange].Precision, FallbackValue=0}"
-            AutoToolTipPlacement="BottomRight"
-            IsDirectionReversed="False"
-            IsMoveToPointEnabled="True"
-            IsSnapToTickEnabled="False"
-            IsEnabled="{Binding IsEditable}"
-            />
+		        Value="{Binding Value, Mode=TwoWay}"
+		        Minimum="{Binding ParentProperty.Metadata[NumberRange].Minimum, FallbackValue=0}"
+		        Maximum="{Binding ParentProperty.Metadata[NumberRange].Maximum, FallbackValue=100}"
+		        TickFrequency="{Binding ParentProperty.Metadata[NumberRange].Tick, FallbackValue=1}"
+		        AutoToolTipPrecision="{Binding ParentProperty.Metadata[NumberRange].Precision, FallbackValue=0}"
+		        AutoToolTipPlacement="BottomRight"
+		        IsDirectionReversed="False"
+		        IsMoveToPointEnabled="True"
+		        IsSnapToTickEnabled="False"
+		        IsEnabled="{Binding IsEditable}" />
 	</DataTemplate>
 
 	<DataTemplate x:Key="{x:Static local:EditorKeys.SliderLevelEditorKey}">
 		<Slider x:Name="PART_editor"
-            Value="{Binding Value, Mode=TwoWay,Converter={StaticResource LevelValueConverter}}"
-            Minimum="{Binding ParentProperty.Metadata[NumberRange].Minimum, FallbackValue=0}"
-            Maximum="{Binding ParentProperty.Metadata[NumberRange].Maximum, FallbackValue=100}"
-            TickFrequency="{Binding ParentProperty.Metadata[NumberRange].Tick, FallbackValue=1}"
-            AutoToolTipPrecision="{Binding ParentProperty.Metadata[NumberRange].Precision, FallbackValue=0}"
-            AutoToolTipPlacement="BottomRight"
-            IsDirectionReversed="False"
-            IsMoveToPointEnabled="True"
-            IsSnapToTickEnabled="False"
-            IsEnabled="{Binding IsEditable}"
-            />
+		        Value="{Binding Value, Mode=TwoWay,Converter={StaticResource LevelValueConverter}}"
+		        Minimum="{Binding ParentProperty.Metadata[NumberRange].Minimum, FallbackValue=0}"
+		        Maximum="{Binding ParentProperty.Metadata[NumberRange].Maximum, FallbackValue=100}"
+		        TickFrequency="{Binding ParentProperty.Metadata[NumberRange].Tick, FallbackValue=1}"
+		        AutoToolTipPrecision="{Binding ParentProperty.Metadata[NumberRange].Precision, FallbackValue=0}"
+		        AutoToolTipPlacement="BottomRight"
+		        IsDirectionReversed="False"
+		        IsMoveToPointEnabled="True"
+		        IsSnapToTickEnabled="False"
+		        IsEnabled="{Binding IsEditable}" />
 	</DataTemplate>
 
 	<DataTemplate x:Key="{x:Static local:EditorKeys.SliderPercentageEditorKey}">
 		<Slider x:Name="PART_editor"
-            Value="{Binding Value, Mode=TwoWay,Converter={StaticResource PercentageValueConverter}}"
-            Minimum="{Binding ParentProperty.Metadata[NumberRange].Minimum, FallbackValue=0}"
-            Maximum="{Binding ParentProperty.Metadata[NumberRange].Maximum, FallbackValue=100}"
-            TickFrequency="{Binding ParentProperty.Metadata[NumberRange].Tick, FallbackValue=1}"
-            AutoToolTipPrecision="{Binding ParentProperty.Metadata[NumberRange].Precision, FallbackValue=0}"
-            AutoToolTipPlacement="BottomRight"
-            IsDirectionReversed="False"
-            IsMoveToPointEnabled="True"
-            IsSnapToTickEnabled="False"
-            IsEnabled="{Binding IsEditable}"
-            />
+		        Value="{Binding Value, Mode=TwoWay,Converter={StaticResource PercentageValueConverter}}"
+		        Minimum="{Binding ParentProperty.Metadata[NumberRange].Minimum, FallbackValue=0}"
+		        Maximum="{Binding ParentProperty.Metadata[NumberRange].Maximum, FallbackValue=100}"
+		        TickFrequency="{Binding ParentProperty.Metadata[NumberRange].Tick, FallbackValue=1}"
+		        AutoToolTipPrecision="{Binding ParentProperty.Metadata[NumberRange].Precision, FallbackValue=0}"
+		        AutoToolTipPlacement="BottomRight"
+		        IsDirectionReversed="False"
+		        IsMoveToPointEnabled="True"
+		        IsSnapToTickEnabled="False"
+		        IsEnabled="{Binding IsEditable}" />
 	</DataTemplate>
 </ResourceDictionary>

@@ -237,8 +237,6 @@
     <Compile Include="PreviewStateChanged.cs" />
     <Compile Include="PropertyEditingEventArgs.cs" />
     <Compile Include="PropertyEditing\Filters\PropertyFilterAppliedEventArgs.cs" />
-    <Compile Include="PropertyEditing\NamedColor.cs" />
-    <Compile Include="PropertyEditing\NamedColorList.cs" />
     <Compile Include="PropertyEditor.cs" />
     <Compile Include="GridEntry.cs" />
     <Compile Include="ResourceLocator.cs" />
@@ -281,7 +279,6 @@
     <Compile Include="PropertyEditorGrid.cs" />
     <Compile Include="PropertyItem.cs" />
     <Compile Include="PropertyItemValue.cs" />
-    <Compile Include="Utils\PasswordBoxExtender.cs" />
     <Compile Include="Utils\TextBoxExtender.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

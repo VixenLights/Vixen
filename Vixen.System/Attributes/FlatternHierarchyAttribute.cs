@@ -18,10 +18,14 @@ using System;
 
 namespace Vixen.Attributes
 {
-  /// <summary>
-  /// Specifies whether the property hierarchy should be flatterned for visualization.
-  /// </summary>
-  [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
-  [Obsolete("This attribute is deprecated and is no longer supported by PropertyEditorGrid. Please consider using custom type descriptors or ModelView classes in order to gain flattern behavior.", false)]
-  public sealed class FlatternHierarchyAttribute : Attribute { }
+	/// <summary>
+	///     Specifies whether the property hierarchy should be flatterned for visualization.
+	/// </summary>
+	[AttributeUsage(AttributeTargets.Property)]
+	[Obsolete(
+		"This attribute is deprecated and is no longer supported by PropertyEditorGrid. Please consider using custom type descriptors or ModelView classes in order to gain flattern behavior.",
+		false)]
+	public sealed class FlatternHierarchyAttribute : Attribute
+	{
+	}
 }

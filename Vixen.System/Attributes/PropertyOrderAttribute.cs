@@ -18,25 +18,25 @@ using System;
 
 namespace Vixen.Attributes
 {
-  /// <summary>
-  /// Specifies the order of property.
-  /// </summary>
-  [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
-  public sealed class PropertyOrderAttribute : Attribute
-  {
-    /// <summary>
-    /// Gets or sets the order.
-    /// </summary>
-    /// <value>The order.</value>
-    public int Order { get; private set; }
+	/// <summary>
+	///     Specifies the order of property.
+	/// </summary>
+	[AttributeUsage(AttributeTargets.Property)]
+	public sealed class PropertyOrderAttribute : Attribute
+	{
+		/// <summary>
+		///     Initializes a new instance of the <see cref="PropertyOrderAttribute" /> class.
+		/// </summary>
+		/// <param name="order">The order.</param>
+		public PropertyOrderAttribute(int order)
+		{
+			Order = order;
+		}
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="PropertyOrderAttribute"/> class.
-    /// </summary>
-    /// <param name="order">The order.</param>
-    public PropertyOrderAttribute(int order)
-    {
-      Order = order;
-    }
-  }
+		/// <summary>
+		///     Gets or sets the order.
+		/// </summary>
+		/// <value>The order.</value>
+		public int Order { get; private set; }
+	}
 }

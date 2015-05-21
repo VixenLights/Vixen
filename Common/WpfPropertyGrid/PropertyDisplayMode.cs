@@ -13,24 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 namespace System.Windows.Controls.WpfPropertyGrid
 {
-  /// <summary>
-  /// Defines modes for property visualization.
-  /// </summary>
-  public enum PropertyDisplayMode
-  {
-    /// <summary>
-    /// Show all properties.
-    /// </summary>
-    All,
-    /// <summary>
-    /// Show dependency properties only.
-    /// </summary>
-    Dependency,
-    /// <summary>
-    /// Show native CLR properties only.
-    /// </summary>
-    Native
-  }
+	/// <summary>
+	///     Defines modes for property visualization.
+	/// </summary>
+	public enum PropertyDisplayMode
+	{
+		/// <summary>
+		///     Show all properties.
+		/// </summary>
+		All,
+
+		/// <summary>
+		///     Show dependency properties only.
+		/// </summary>
+		Dependency,
+
+		/// <summary>
+		///     Show native CLR properties only.
+		/// </summary>
+		Native
+	}
 }

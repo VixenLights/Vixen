@@ -2,7 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:System.Windows.Controls.WpfPropertyGrid">
 	<ResourceDictionary.MergedDictionaries>
-		<ResourceDictionary Source="Converters.xaml"/>
+		<ResourceDictionary Source="Converters.xaml" />
 	</ResourceDictionary.MergedDictionaries>
 
 	<!--Note that commit on typing cannot work together with the roolback since every keystroke is committed and the roolback value is lost-->
@@ -13,24 +13,13 @@
 			IsReadOnly="{Binding IsReadOnly}"
 			local:TextBoxExtender.CommitOnEnter="true"
 			local:TextBoxExtender.RollbackOnEscape="true"
-			local:TextBoxExtender.CommitOnTyping="false"
-			/>
+			local:TextBoxExtender.CommitOnTyping="false" />
 	</DataTemplate>
 
 	<DataTemplate x:Key="{x:Static local:EditorKeys.LabelEditorKey}">
 		<Label
 			x:Name="PART_editor"
-			Content="{Binding StringValue, Mode=TwoWay}"
-			/>
-	</DataTemplate>
-
-	<DataTemplate x:Key="{x:Static local:EditorKeys.PasswordEditorKey}">
-		<PasswordBox
-      x:Name="PART_editor"
-      local:PasswordBoxExtender.BindPassword="true"
-      local:PasswordBoxExtender.BoundPassword="{Binding StringValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-      IsEnabled="{Binding IsEditable}"
-      />
+			Content="{Binding StringValue, Mode=TwoWay}" />
 	</DataTemplate>
 
 </ResourceDictionary>

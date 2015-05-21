@@ -3,7 +3,7 @@ using System.Windows.Data;
 
 namespace System.Windows.Controls.WpfPropertyGrid.Converters
 {
-	public class IntToDoubleConverter: IValueConverter
+	public class IntToDoubleConverter : IValueConverter
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{

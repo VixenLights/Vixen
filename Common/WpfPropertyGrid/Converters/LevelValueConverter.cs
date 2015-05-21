@@ -4,7 +4,7 @@ using Common.ValueTypes;
 
 namespace System.Windows.Controls.WpfPropertyGrid.Converters
 {
-	public class LevelValueConverter: IValueConverter
+	public class LevelValueConverter : IValueConverter
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{

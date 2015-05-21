@@ -3,11 +3,11 @@ using VixenModules.App.Curves;
 
 namespace System.Windows.Controls.WpfPropertyGrid.Controls
 {
-	public class CurveEditor:TypeEditor
+	public class CurveEditor : TypeEditor
 	{
 		public CurveEditor()
 		{
-			EditedType = KnownTypes.Wpf.Curve;	
+			EditedType = KnownTypes.Wpf.Curve;
 			InlineTemplate = EditorKeys.CurveEditorKey;
 			ExtendedTemplate = null;
 		}
@@ -16,14 +16,13 @@ namespace System.Windows.Controls.WpfPropertyGrid.Controls
 		{
 			if (propertyValue == null) return;
 			if (propertyValue.ParentProperty.IsReadOnly) return;
-			
+
 			Curve curveValue = propertyValue.Value as Curve;
-			VixenModules.App.Curves.CurveEditor editor = new VixenModules.App.Curves.CurveEditor(curveValue??new Curve());
+			VixenModules.App.Curves.CurveEditor editor = new VixenModules.App.Curves.CurveEditor(curveValue ?? new Curve());
 			if (editor.ShowDialog() == DialogResult.OK)
 			{
 				propertyValue.Value = editor.Curve;
 			}
-			
 		}
 	}
 }

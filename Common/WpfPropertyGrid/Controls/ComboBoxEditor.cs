@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace System.Windows.Controls.WpfPropertyGrid.Controls
 {
-	public class ComboBoxEditor: PropertyEditor
+	public class ComboBoxEditor : PropertyEditor
 	{
 		public ComboBoxEditor()
 		{

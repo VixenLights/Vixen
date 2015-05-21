@@ -3,10 +3,8 @@
                     xmlns:input="clr-namespace:System.Windows.Controls.WpfPropertyGrid.Input"
                     xmlns:local="clr-namespace:System.Windows.Controls.WpfPropertyGrid">
 	<ResourceDictionary.MergedDictionaries>
-		<ResourceDictionary Source="Converters.xaml"/>
+		<ResourceDictionary Source="Converters.xaml" />
 	</ResourceDictionary.MergedDictionaries>
-
-	<local:NamedColorList x:Key="NamedColorList"/>
 
 	<DataTemplate x:Key="{x:Static local:EditorKeys.ColorEditorKey}">
 		<Grid>
@@ -15,42 +13,22 @@
 				<ColumnDefinition Width="Auto" />
 			</Grid.ColumnDefinitions>
 			<Border BorderThickness="1" BorderBrush="#888888">
-				<Rectangle Fill="{Binding Value, Converter={StaticResource SystemColorToSolidBrushConverter}}" Grid.Column="0" Width="25" Height="25" Margin="0" HorizontalAlignment="Center"
-						   input:DragDropManager.DropTargetAdvisor="{Binding}">
+				<Rectangle Fill="{Binding Value, Converter={StaticResource SystemColorToSolidBrushConverter}}" Grid.Column="0"
+				           Width="25" Height="25" Margin="0" HorizontalAlignment="Center"
+				           input:DragDropManager.DropTargetAdvisor="{Binding}">
 					<Rectangle.InputBindings>
-						<MouseBinding Gesture="LeftClick" Command="local:PropertyEditorCommands.ShowDialogEditor" CommandParameter="{Binding}"/>
+						<MouseBinding Gesture="LeftClick" Command="local:PropertyEditorCommands.ShowDialogEditor"
+						              CommandParameter="{Binding}" />
 					</Rectangle.InputBindings>
 				</Rectangle>
 			</Border>
-			<TextBlock x:Name="PART_editor" Text="{Binding StringValue}" Grid.Column="1" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+			<TextBlock x:Name="PART_editor" Text="{Binding StringValue}" Grid.Column="1" Margin="5" VerticalAlignment="Center"
+			           HorizontalAlignment="Center" />
 			<!--<Button Grid.Column="2" Margin="2,0,0,0" Content="Edit"  
               Command="local:PropertyEditorCommands.ShowDialogEditor"
               CommandParameter="{Binding}"
               Visibility="{Binding IsEditable, Converter={StaticResource BooleanToVisibilityConverter}}"/>-->
 		</Grid>
 	</DataTemplate>
-
-	<DataTemplate x:Key="{x:Static local:EditorKeys.NamedColorEditorKey}" DataType="{x:Type local:NamedColor}">
-		<Grid>
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="Auto" />
-				<ColumnDefinition Width="*"/>
-			</Grid.ColumnDefinitions>
-			<Rectangle Fill="{Binding Brush}" Grid.Column="0" Width="100" Height="20" Margin="2" HorizontalAlignment="Center"/>
-			<TextBlock x:Name="PART_editor" Margin="5,2,2,2" Text="{Binding Name}" Grid.Column="1" HorizontalAlignment="Center"/>
-		</Grid>
-	</DataTemplate>
-
-	<DataTemplate x:Key="{x:Static local:EditorKeys.BrushEditorKey}">
-		<ComboBox
-      x:Name="PART_editor"
-      Text="{Binding Path=StringValue, Mode=TwoWay, Converter={StaticResource NullValueConverter}}"
-      ItemsSource="{Binding Source={StaticResource NamedColorList}}"
-      ItemTemplate="{DynamicResource {x:Static local:EditorKeys.NamedColorEditorKey}}"
-      SelectedValuePath="Name"
-      IsEditable="{Binding IsEditable}"
-      IsEnabled="{Binding IsEditable}"/>
-	</DataTemplate>
-
 
 </ResourceDictionary>

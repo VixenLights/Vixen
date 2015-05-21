@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 namespace System.Windows.Controls.WpfPropertyGrid.Design
 {
-  /// <summary>
-  /// Specifies a layout for properties.
-  /// </summary>
-  public class PropertyItemsLayout : GridEntryLayout<PropertyContainer>
-  {    
-  }
+	/// <summary>
+	/// Specifies a layout for properties.
+	/// </summary>
+	public class PropertyItemsLayout : GridEntryLayout<PropertyContainer>
+	{
+	}
 }

@@ -8,16 +8,16 @@ namespace System.Windows.Controls.WpfPropertyGrid.Input
 		private static readonly string DragOffsetFormat = "DnD.DragOffset";
 
 		public static readonly DependencyProperty DragSourceAdvisorProperty =
-			DependencyProperty.RegisterAttached("DragSourceAdvisor", typeof(IDragSourceAdvisor),
-												typeof(DragDropManager),
-												new FrameworkPropertyMetadata(
-													OnDragSourceAdvisorChanged));
+			DependencyProperty.RegisterAttached("DragSourceAdvisor", typeof (IDragSourceAdvisor),
+				typeof (DragDropManager),
+				new FrameworkPropertyMetadata(
+					OnDragSourceAdvisorChanged));
 
 		public static readonly DependencyProperty DropTargetAdvisorProperty =
-			DependencyProperty.RegisterAttached("DropTargetAdvisor", typeof(IDropTargetAdvisor),
-												typeof(DragDropManager),
-												new FrameworkPropertyMetadata(
-													OnDropTargetAdvisorChanged));
+			DependencyProperty.RegisterAttached("DropTargetAdvisor", typeof (IDropTargetAdvisor),
+				typeof (DragDropManager),
+				new FrameworkPropertyMetadata(
+					OnDropTargetAdvisorChanged));
 
 		private static Point _adornerPosition;
 
@@ -68,7 +68,7 @@ namespace System.Windows.Controls.WpfPropertyGrid.Input
 		#region Property Change handlers
 
 		private static void OnDragSourceAdvisorChanged(DependencyObject depObj,
-													   DependencyPropertyChangedEventArgs args)
+			DependencyPropertyChangedEventArgs args)
 		{
 			UIElement sourceElt = depObj as UIElement;
 			if (args.NewValue != null && args.OldValue == null)
@@ -90,7 +90,7 @@ namespace System.Windows.Controls.WpfPropertyGrid.Input
 		}
 
 		private static void OnDropTargetAdvisorChanged(DependencyObject depObj,
-													   DependencyPropertyChangedEventArgs args)
+			DependencyPropertyChangedEventArgs args)
 		{
 			UIElement targetElt = depObj as UIElement;
 			if (args.NewValue != null && args.OldValue == null)
@@ -173,7 +173,7 @@ namespace System.Windows.Controls.WpfPropertyGrid.Input
 			_offsetPoint = new Point();
 			if (CurrentDropTargetAdvisor.ApplyMouseOffset && e.Data.GetData(DragOffsetFormat) != null)
 			{
-				_offsetPoint = (Point)e.Data.GetData(DragOffsetFormat);
+				_offsetPoint = (Point) e.Data.GetData(DragOffsetFormat);
 			}
 			CreatePreviewAdorner(sender as UIElement, e.Data);
 
@@ -188,17 +188,17 @@ namespace System.Windows.Controls.WpfPropertyGrid.Input
 			}
 
 			else if ((e.AllowedEffects & DragDropEffects.Move) == 0 &&
-					 (e.AllowedEffects & DragDropEffects.Copy) == 0)
+			         (e.AllowedEffects & DragDropEffects.Copy) == 0)
 			{
 				e.Effects = DragDropEffects.None;
 			}
 
 			else if ((e.AllowedEffects & DragDropEffects.Move) != 0 &&
-					 (e.AllowedEffects & DragDropEffects.Copy) != 0)
+			         (e.AllowedEffects & DragDropEffects.Copy) != 0)
 			{
 				e.Effects = ((e.KeyStates & DragDropKeyStates.ControlKey) != 0)
-								? DragDropEffects.Copy
-								: DragDropEffects.Move;
+					? DragDropEffects.Copy
+					: DragDropEffects.Move;
 			}
 		}
 
@@ -261,9 +261,9 @@ namespace System.Windows.Controls.WpfPropertyGrid.Input
 		private static bool IsDragGesture(Point point)
 		{
 			bool hGesture = Math.Abs(point.X - _dragStartPoint.X) >
-							SystemParameters.MinimumHorizontalDragDistance;
+			                SystemParameters.MinimumHorizontalDragDistance;
 			bool vGesture = Math.Abs(point.Y - _dragStartPoint.Y) >
-							SystemParameters.MinimumVerticalDragDistance;
+			                SystemParameters.MinimumVerticalDragDistance;
 
 			return (hGesture | vGesture);
 		}

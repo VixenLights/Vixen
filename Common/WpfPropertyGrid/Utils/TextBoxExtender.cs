@@ -15,226 +15,235 @@
  */
 
 using System.Windows.Input;
-using System.Windows.Data;
 
 namespace System.Windows.Controls.WpfPropertyGrid
 {
-    /// <summary>
-    /// Provides additional facilities for TextBox control.  
-    /// </summary>
-    public static class TextBoxExtender
-    {
-        #region CommitOnEnter
-        ///<summary>
-        ///</summary>
-        public static readonly DependencyProperty CommitOnEnterProperty = DependencyProperty.RegisterAttached("CommitOnEnter", typeof(bool), typeof(TextBoxExtender), new FrameworkPropertyMetadata(false, OnCommitOnEnterChanged));
+	/// <summary>
+	///     Provides additional facilities for TextBox control.
+	/// </summary>
+	public static class TextBoxExtender
+	{
+		#region CommitOnEnter
 
-        private static void OnCommitOnEnterChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
-        {
-            var textbox = sender as TextBox;
-            if (textbox == null) return;
+		/// <summary>
+		/// </summary>
+		public static readonly DependencyProperty CommitOnEnterProperty = DependencyProperty.RegisterAttached(
+			"CommitOnEnter", typeof (bool), typeof (TextBoxExtender),
+			new FrameworkPropertyMetadata(false, OnCommitOnEnterChanged));
 
-            var wasBound = (bool)(e.OldValue);
-            var needToBind = (bool)(e.NewValue);
+		private static void OnCommitOnEnterChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+		{
+			var textbox = sender as TextBox;
+			if (textbox == null) return;
 
-            if (wasBound)
-                textbox.KeyUp -= TextBoxCommitValue;
+			var wasBound = (bool) (e.OldValue);
+			var needToBind = (bool) (e.NewValue);
 
-            if (needToBind)
-                textbox.KeyUp += TextBoxCommitValue;
-        }
+			if (wasBound)
+				textbox.KeyUp -= TextBoxCommitValue;
 
-        static void TextBoxCommitValue(object sender, KeyEventArgs e)
-        {
-            var textbox = sender as TextBox;
-            if (textbox == null) return;
+			if (needToBind)
+				textbox.KeyUp += TextBoxCommitValue;
+		}
 
-            if ((e.Key == Key.Enter))
-            {
-                BindingExpression expression = textbox.GetBindingExpression(TextBox.TextProperty);
-                if (expression != null) expression.UpdateSource();
-                e.Handled = true;
-            }
-        }
+		private static void TextBoxCommitValue(object sender, KeyEventArgs e)
+		{
+			var textbox = sender as TextBox;
+			if (textbox == null) return;
 
-        public static void SetCommitOnEnter(TextBox target, bool value)
-        {
-            target.SetValue(CommitOnEnterProperty, value);
-        }
+			if ((e.Key == Key.Enter))
+			{
+				var expression = textbox.GetBindingExpression(TextBox.TextProperty);
+				if (expression != null) expression.UpdateSource();
+				e.Handled = true;
+			}
+		}
 
-        public static bool GetCommitOnEnter(TextBox target)
-        {
-            return (bool)target.GetValue(CommitOnEnterProperty);
-        }
-        #endregion
+		public static void SetCommitOnEnter(TextBox target, bool value)
+		{
+			target.SetValue(CommitOnEnterProperty, value);
+		}
 
-        #region CommitOnTyping
-        public static readonly DependencyProperty CommitOnTypingProperty = DependencyProperty.RegisterAttached("CommitOnTyping", typeof(bool), typeof(TextBoxExtender), new FrameworkPropertyMetadata(false, OnCommitOnTypingChanged));
+		public static bool GetCommitOnEnter(TextBox target)
+		{
+			return (bool) target.GetValue(CommitOnEnterProperty);
+		}
 
-        private static void OnCommitOnTypingChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
-        {
-            var textbox = sender as TextBox;
-            if (textbox == null) return;
+		#endregion
 
-            var wasBound = (bool)(e.OldValue);
-            var needToBind = (bool)(e.NewValue);
+		#region CommitOnTyping
 
-            if (wasBound)
-                textbox.KeyUp -= TextBoxCommitValueWhileTyping;
+		public static readonly DependencyProperty CommitOnTypingProperty =
+			DependencyProperty.RegisterAttached("CommitOnTyping", typeof (bool), typeof (TextBoxExtender),
+				new FrameworkPropertyMetadata(false, OnCommitOnTypingChanged));
 
-            if (needToBind)
-                textbox.KeyUp += TextBoxCommitValueWhileTyping;
-        }
+		private static void OnCommitOnTypingChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+		{
+			var textbox = sender as TextBox;
+			if (textbox == null) return;
 
-        static void TextBoxCommitValueWhileTyping(object sender, KeyEventArgs e)
-        {
-            
+			var wasBound = (bool) (e.OldValue);
+			var needToBind = (bool) (e.NewValue);
 
-            if (e.Key != Key.Escape)//keep the escape for the roolback active
-            {
-                var textbox = sender as TextBox;
-                if (textbox == null) return;
-                BindingExpression expression = textbox.GetBindingExpression(TextBox.TextProperty);
-                if (expression != null) expression.UpdateSource();
-                e.Handled = true;
-            }
-            
-        }
+			if (wasBound)
+				textbox.KeyUp -= TextBoxCommitValueWhileTyping;
 
-        public static void SetCommitOnTyping(TextBox target, bool value)
-        {
-            target.SetValue(CommitOnTypingProperty, value);
-        }
+			if (needToBind)
+				textbox.KeyUp += TextBoxCommitValueWhileTyping;
+		}
 
-        public static bool GetCommitOnTyping(TextBox target)
-        {
-            return (bool)target.GetValue(CommitOnTypingProperty);
-        }
-        #endregion
+		private static void TextBoxCommitValueWhileTyping(object sender, KeyEventArgs e)
+		{
+			if (e.Key != Key.Escape) //keep the escape for the roolback active
+			{
+				var textbox = sender as TextBox;
+				if (textbox == null) return;
+				var expression = textbox.GetBindingExpression(TextBox.TextProperty);
+				if (expression != null) expression.UpdateSource();
+				e.Handled = true;
+			}
+		}
 
-        #region RollbackOnEscape
-        public static readonly DependencyProperty RollbackOnEscapeProperty =
-          DependencyProperty.RegisterAttached("RollbackOnEscape", typeof(bool), typeof(TextBoxExtender), new FrameworkPropertyMetadata(false, OnRollbackOnEscapeChanged));
+		public static void SetCommitOnTyping(TextBox target, bool value)
+		{
+			target.SetValue(CommitOnTypingProperty, value);
+		}
 
-        private static void OnRollbackOnEscapeChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
-        {
-            var textbox = sender as TextBox;
-            if (textbox == null) return;
+		public static bool GetCommitOnTyping(TextBox target)
+		{
+			return (bool) target.GetValue(CommitOnTypingProperty);
+		}
 
-            var wasBound = (bool)(e.OldValue);
-            var needToBind = (bool)(e.NewValue);
+		#endregion
 
-            if (wasBound)
-                textbox.KeyUp -= TextBoxRollbackValue;
+		#region RollbackOnEscape
 
-            if (needToBind)
-                textbox.KeyUp += TextBoxRollbackValue;
-        }
+		public static readonly DependencyProperty RollbackOnEscapeProperty =
+			DependencyProperty.RegisterAttached("RollbackOnEscape", typeof (bool), typeof (TextBoxExtender),
+				new FrameworkPropertyMetadata(false, OnRollbackOnEscapeChanged));
 
-        public static void SetRollbackOnEscape(TextBox target, bool value)
-        {
-            target.SetValue(RollbackOnEscapeProperty, value);
-        }
+		private static void OnRollbackOnEscapeChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+		{
+			var textbox = sender as TextBox;
+			if (textbox == null) return;
 
-        public static bool GetRollbackOnEscape(TextBox target)
-        {
-            return (bool)target.GetValue(RollbackOnEscapeProperty);
-        }
+			var wasBound = (bool) (e.OldValue);
+			var needToBind = (bool) (e.NewValue);
 
-        static void TextBoxRollbackValue(object sender, KeyEventArgs e)
-        {
-            var textbox = sender as TextBox;
-            if (textbox == null) return;
+			if (wasBound)
+				textbox.KeyUp -= TextBoxRollbackValue;
 
-            if (e.Key == Key.Escape)
-            {
-                BindingExpression expression = textbox.GetBindingExpression(TextBox.TextProperty);
-                if (expression != null) expression.UpdateTarget();
-                e.Handled = true;
-            }
-        }
-        #endregion
+			if (needToBind)
+				textbox.KeyUp += TextBoxRollbackValue;
+		}
 
-        #region SelectAllOnFocus
-        /// <summary>
-        /// Identifies the SelectAllOnFocus attached property.
-        /// </summary>
-        public static readonly DependencyProperty SelectAllOnFocusProperty =
-          DependencyProperty.RegisterAttached("SelectAllOnFocus", typeof(bool), typeof(TextBoxExtender),
-          new FrameworkPropertyMetadata(false, OnSelectAllOnFocusChanged));
+		public static void SetRollbackOnEscape(TextBox target, bool value)
+		{
+			target.SetValue(RollbackOnEscapeProperty, value);
+		}
 
-        /// <summary>
-        /// Sets the select all on focus.
-        /// </summary>
-        /// <param name="target">The target.</param>
-        /// <param name="value">if set to <c>true</c> [value].</param>
-        public static void SetSelectAllOnFocus(DependencyObject target, bool value)
-        {
-            target.SetValue(SelectAllOnFocusProperty, value);
-        }
+		public static bool GetRollbackOnEscape(TextBox target)
+		{
+			return (bool) target.GetValue(RollbackOnEscapeProperty);
+		}
 
-        /// <summary>
-        /// Determines whether the all the text should be selected on focus.
-        /// </summary>
-        /// <param name="target">The target.</param>
-        /// <returns>
-        /// 	<c>true</c> if text should be selected on focus; otherwise, <c>false</c>.
-        /// </returns>  
-        public static bool GetSelectAllOnFocus(DependencyObject target)
-        {
-            return (bool)target.GetValue(SelectAllOnFocusProperty);
-        }
+		private static void TextBoxRollbackValue(object sender, KeyEventArgs e)
+		{
+			var textbox = sender as TextBox;
+			if (textbox == null) return;
 
-        private static void OnSelectAllOnFocusChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var box = d as TextBox;
+			if (e.Key == Key.Escape)
+			{
+				var expression = textbox.GetBindingExpression(TextBox.TextProperty);
+				if (expression != null) expression.UpdateTarget();
+				e.Handled = true;
+			}
+		}
 
-            if (box == null) return;
+		#endregion
 
-            var wasBound = (bool)(e.OldValue);
-            var needToBind = (bool)(e.NewValue);
+		#region SelectAllOnFocus
 
-            if (wasBound)
-                UnhookEvents(box);
+		/// <summary>
+		///     Identifies the SelectAllOnFocus attached property.
+		/// </summary>
+		public static readonly DependencyProperty SelectAllOnFocusProperty =
+			DependencyProperty.RegisterAttached("SelectAllOnFocus", typeof (bool), typeof (TextBoxExtender),
+				new FrameworkPropertyMetadata(false, OnSelectAllOnFocusChanged));
 
-            if (needToBind)
-                HookEvents(box);
-        }
+		/// <summary>
+		///     Sets the select all on focus.
+		/// </summary>
+		/// <param name="target">The target.</param>
+		/// <param name="value">if set to <c>true</c> [value].</param>
+		public static void SetSelectAllOnFocus(DependencyObject target, bool value)
+		{
+			target.SetValue(SelectAllOnFocusProperty, value);
+		}
 
-        static void HookEvents(TextBox box)
-        {
-            box.MouseDoubleClick += HandleGotFocus;
-            box.GotKeyboardFocus += HandleGotFocus;
-            box.PreviewMouseLeftButtonDown += SelectivelyIgnoreMouseButton;
-        }
+		/// <summary>
+		///     Determines whether the all the text should be selected on focus.
+		/// </summary>
+		/// <param name="target">The target.</param>
+		/// <returns>
+		///     <c>true</c> if text should be selected on focus; otherwise, <c>false</c>.
+		/// </returns>
+		public static bool GetSelectAllOnFocus(DependencyObject target)
+		{
+			return (bool) target.GetValue(SelectAllOnFocusProperty);
+		}
 
-        static void UnhookEvents(TextBox box)
-        {
-            box.MouseDoubleClick -= HandleGotFocus;
-            box.GotKeyboardFocus -= HandleGotFocus;
-            box.PreviewMouseLeftButtonDown -= SelectivelyIgnoreMouseButton;
-        }
+		private static void OnSelectAllOnFocusChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+		{
+			var box = d as TextBox;
 
-        static void HandleGotFocus(object sender, RoutedEventArgs e)
-        {
-            TextBox tb = (sender as TextBox);
-            if (tb != null)
-                tb.SelectAll();
-        }
+			if (box == null) return;
 
-        static void SelectivelyIgnoreMouseButton(object sender, MouseButtonEventArgs e)
-        {
-            TextBox tb = (sender as TextBox);
+			var wasBound = (bool) (e.OldValue);
+			var needToBind = (bool) (e.NewValue);
 
-            if (tb != null)
-            {
-                if (!tb.IsKeyboardFocusWithin)
-                {
-                    e.Handled = true;
-                    tb.Focus();
-                }
-            }
-        }
-        #endregion
-    }
+			if (wasBound)
+				UnhookEvents(box);
+
+			if (needToBind)
+				HookEvents(box);
+		}
+
+		private static void HookEvents(TextBox box)
+		{
+			box.MouseDoubleClick += HandleGotFocus;
+			box.GotKeyboardFocus += HandleGotFocus;
+			box.PreviewMouseLeftButtonDown += SelectivelyIgnoreMouseButton;
+		}
+
+		private static void UnhookEvents(TextBox box)
+		{
+			box.MouseDoubleClick -= HandleGotFocus;
+			box.GotKeyboardFocus -= HandleGotFocus;
+			box.PreviewMouseLeftButtonDown -= SelectivelyIgnoreMouseButton;
+		}
+
+		private static void HandleGotFocus(object sender, RoutedEventArgs e)
+		{
+			var tb = (sender as TextBox);
+			if (tb != null)
+				tb.SelectAll();
+		}
+
+		private static void SelectivelyIgnoreMouseButton(object sender, MouseButtonEventArgs e)
+		{
+			var tb = (sender as TextBox);
+
+			if (tb != null)
+			{
+				if (!tb.IsKeyboardFocusWithin)
+				{
+					e.Handled = true;
+					tb.Focus();
+				}
+			}
+		}
+
+		#endregion
+	}
 }

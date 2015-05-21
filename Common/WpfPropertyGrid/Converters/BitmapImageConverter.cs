@@ -14,13 +14,13 @@ namespace System.Windows.Controls.WpfPropertyGrid.Converters
 		{
 			if (value is Bitmap)
 			{
-				return BitmapToMediaImage((Bitmap)value);
+				return BitmapToMediaImage((Bitmap) value);
 			}
 			else
 			{
 				Debugger.Break();
 			}
-			
+
 
 			throw new NotSupportedException();
 		}
@@ -32,7 +32,6 @@ namespace System.Windows.Controls.WpfPropertyGrid.Converters
 
 		public static object BitmapToMediaImage(Bitmap bitmap)
 		{
-
 			using (MemoryStream stream = new MemoryStream())
 			{
 				bitmap.Save(stream, ImageFormat.Bmp);

@@ -13,39 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 using System.Globalization;
 
 namespace System.Windows.Controls.WpfPropertyGrid
 {
-  /// <summary>
-  /// Property filter predicate.
-  /// </summary>
-  public class PropertyFilterPredicate
-  {
-    /// <summary>
-    /// Gets or sets the match text.
-    /// </summary>
-    /// <value>The match text.</value>
-    public string MatchText { get; private set; }
+	/// <summary>
+	/// Property filter predicate.
+	/// </summary>
+	public class PropertyFilterPredicate
+	{
+		/// <summary>
+		/// Gets or sets the match text.
+		/// </summary>
+		/// <value>The match text.</value>
+		public string MatchText { get; private set; }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="PropertyFilterPredicate"/> class.
-    /// </summary>
-    /// <param name="matchText">The match text.</param>
-    public PropertyFilterPredicate(string matchText)
-    {
-      if (matchText == null) throw new ArgumentNullException("matchText");
-      MatchText = matchText.ToUpper(CultureInfo.CurrentCulture);
-    }
+		/// <summary>
+		/// Initializes a new instance of the <see cref="PropertyFilterPredicate"/> class.
+		/// </summary>
+		/// <param name="matchText">The match text.</param>
+		public PropertyFilterPredicate(string matchText)
+		{
+			if (matchText == null) throw new ArgumentNullException("matchText");
+			MatchText = matchText.ToUpper(CultureInfo.CurrentCulture);
+		}
 
-    /// <summary>
-    /// Matches the specified target.
-    /// </summary>
-    /// <param name="target">The target.</param>
-    /// <returns><c>true</c> if target matches predicate; otherwise, <c>false</c>.</returns>
-    public virtual bool Match(string target)
-    {
-      return ((target != null) && target.ToUpper(CultureInfo.CurrentCulture).Contains(MatchText));
-    }    
-  }
+		/// <summary>
+		/// Matches the specified target.
+		/// </summary>
+		/// <param name="target">The target.</param>
+		/// <returns><c>true</c> if target matches predicate; otherwise, <c>false</c>.</returns>
+		public virtual bool Match(string target)
+		{
+			return ((target != null) && target.ToUpper(CultureInfo.CurrentCulture).Contains(MatchText));
+		}
+	}
 }
