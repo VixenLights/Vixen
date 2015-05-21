@@ -974,7 +974,7 @@
   
   <!-- TabbedLayout -->
 
-  <Style TargetType="{x:Type pg:TabbedLayout}">
+  <!--<Style TargetType="{x:Type pg:TabbedLayout}">
     <Setter Property="SnapsToDevicePixels" Value="True" />
     <Setter Property="FocusVisualStyle" Value="{x:Null}" />
     <Setter Property="IsSynchronizedWithCurrentItem" Value="True"/>
@@ -1023,7 +1023,7 @@
       </Setter.Value>
     </Setter>
 
-  </Style>
+  </Style>-->
 
   <Style x:Key="CloseButton" TargetType="{x:Type Button}">
     <Setter Property="OverridesDefaultStyle" Value="True" />
@@ -1101,7 +1101,7 @@
     </Setter>
   </Style>
   
-  <Style TargetType="{x:Type pg:TabbedLayoutItem}">
+  <!--<Style TargetType="{x:Type pg:TabbedLayoutItem}">
     <Setter Property="SnapsToDevicePixels" Value="True" />
     <Setter Property="FocusVisualStyle" Value="{x:Null}" />
     <Setter Property="Foreground" Value="#FFF" />
@@ -1184,6 +1184,6 @@
     </Setter>
   </Style>
   
-  <Style TargetType="{x:Type pg:ExtendedPropertyEditorTab}" BasedOn="{StaticResource {x:Type pg:TabbedLayoutItem}}"/>
+  <Style TargetType="{x:Type pg:ExtendedPropertyEditorTab}" BasedOn="{StaticResource {x:Type pg:TabbedLayoutItem}}"/>-->
 	
 </ResourceDictionary>

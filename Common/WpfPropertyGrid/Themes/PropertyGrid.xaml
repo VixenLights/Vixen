@@ -3,7 +3,6 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:local="clr-namespace:System.Windows.Controls.WpfPropertyGrid"
 	xmlns:design="clr-namespace:System.Windows.Controls.WpfPropertyGrid.Design"
-	xmlns:controls="clr-namespace:System.Windows.Controls.WpfPropertyGrid.Controls"
 	xmlns:converters="clr-namespace:System.Windows.Controls.WpfPropertyGrid.Converters">
 
 	<BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter" />
@@ -24,10 +23,7 @@
 								Command="local:PropertyGridCommands.TogglePreview"
 								CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}" />
 						</StackPanel>
-						<!--<controls:SearchTextBox DockPanel.Dock="Top"
-                                    Text="{Binding Path=PropertyFilter, RelativeSource={RelativeSource TemplatedParent}, UpdateSourceTrigger=PropertyChanged}"
-                                    Visibility="{TemplateBinding PropertyFilterVisibility}" />-->
-
+						
 						<!--<Border DockPanel.Dock="Bottom" Height="70" Margin="2">-->
 						<!--<TextBlock x:Name="DescriptionBlock"  Margin="5" Foreground="DimGray" TextWrapping="Wrap" TextTrimming="WordEllipsis" Text="{TemplateBinding CurrentDescription}"/>-->
 						<!--<TextBox x:Name="DescriptionBlock"  TextWrapping="Wrap" IsReadOnly="True" Text="{TemplateBinding CurrentDescription}"/>

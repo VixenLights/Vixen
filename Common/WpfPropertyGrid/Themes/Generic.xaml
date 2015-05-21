@@ -4,15 +4,12 @@
 	<ResourceDictionary.MergedDictionaries>
 
 		<ResourceDictionary Source="/System.Windows.Controls.WpfPropertyGrid;component/Themes/EditorResources.xaml" />
-		<ResourceDictionary Source="/System.Windows.Controls.WpfPropertyGrid;component/Themes/SearchTextBox.xaml" />
 
 		<ResourceDictionary Source="/System.Windows.Controls.WpfPropertyGrid;component/Themes/DoubleEditor.xaml" />
 		<ResourceDictionary Source="/System.Windows.Controls.WpfPropertyGrid;component/Themes/IntegerEditor.xaml" />
 		<ResourceDictionary Source="/System.Windows.Controls.WpfPropertyGrid;component/Themes/PropertyGrid.xaml" />
 
-		<ResourceDictionary Source="/System.Windows.Controls.WpfPropertyGrid;component/Design/AlphabeticalLayout.xaml" />
 		<ResourceDictionary Source="/System.Windows.Controls.WpfPropertyGrid;component/Design/CategorizedLayout.xaml" />
-		<ResourceDictionary Source="/System.Windows.Controls.WpfPropertyGrid;component/Design/TabbedLayout.xaml" />
 
 	</ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

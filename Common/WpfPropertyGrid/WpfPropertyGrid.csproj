@@ -106,12 +106,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Design\TabbedLayout.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Themes\Converters.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -172,12 +166,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Themes\SearchTextBox.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CategoryEditor.cs" />
@@ -213,12 +201,10 @@
     <Compile Include="DataResource.cs" />
     <Compile Include="Design\GridEntryContainer.cs" />
     <Compile Include="Design\GridEntryLayout.cs" />
-    <Compile Include="Design\TabbedLayoutTemplateSelector.cs" />
     <Compile Include="EditorCollection.cs" />
     <Compile Include="Controls\SearchTextBox.cs" />
     <Compile Include="Design\CategoryContainer.cs" />
     <Compile Include="Controls\EnumDropdown.cs" />
-    <Compile Include="Design\ExtendedPropertyEditorTab.cs" />
     <Compile Include="Design\CategoryEditorContentPresenter.cs" />
     <Compile Include="Design\CategoryItemsLayout.cs" />
     <Compile Include="Design\PropertyContainer.cs" />
@@ -247,8 +233,6 @@
     <Compile Include="Internal\MergedPropertyDescriptor.cs" />
     <Compile Include="Design\AlphabeticalLayout.cs" />
     <Compile Include="Design\CategorizedLayout.cs" />
-    <Compile Include="Design\TabbedLayout.cs" />
-    <Compile Include="Design\TabbedLayoutItem.cs" />
     <Compile Include="Metadata\AttributesContainer.cs" />
     <Compile Include="Input\PropertyGridCommands.cs" />
     <Compile Include="Controls\DoubleEditor.cs" />
