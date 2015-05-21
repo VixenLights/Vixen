@@ -3,7 +3,8 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:local="clr-namespace:System.Windows.Controls.WpfPropertyGrid"
 	xmlns:design="clr-namespace:System.Windows.Controls.WpfPropertyGrid.Design"
-	xmlns:converters="clr-namespace:System.Windows.Controls.WpfPropertyGrid.Converters">
+	xmlns:converters="clr-namespace:System.Windows.Controls.WpfPropertyGrid.Converters"
+	xmlns:controls="clr-namespace:System.Windows.Controls.WpfPropertyGrid.Controls">
 
 	<BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter" />
 	<converters:MultiBooleanToVisibilityConverter x:Key="multiBooleanToVisibilityConverter" />
@@ -14,14 +15,28 @@
 				<ControlTemplate TargetType="{x:Type local:PropertyEditorGrid}">
 					<DockPanel LastChildFill="True" Background="{TemplateBinding Background}">
 						<StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
-							<ToggleButton
+							<!--<ToggleButton
 								HorizontalAlignment="Center"
 								Margin="5"
 								Padding="5"
 								Width="60"
 								Content="Preview"
 								Command="local:PropertyGridCommands.TogglePreview"
-								CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}" />
+								CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}" />-->
+							<Label Content="Effect Preview" VerticalAlignment="Center"/>
+							<controls:ToggleSwitch 
+								Command="local:PropertyGridCommands.TogglePreview"
+								CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}"
+								CheckedText="On"
+								Height="20"
+								HorizontalAlignment="Left"
+								Margin="10,10,10,10"
+								x:Name="previewToggleSwitch"
+								Padding="0"
+								UncheckedText="Off"
+								VerticalAlignment="Top"
+								Width="50">
+							</controls:ToggleSwitch>
 						</StackPanel>
 						
 						<!--<Border DockPanel.Dock="Bottom" Height="70" Margin="2">-->

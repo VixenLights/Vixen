@@ -160,7 +160,7 @@
 	<Style TargetType="{x:Type Label}">
 		<Setter Property="Foreground" Value="#DDD"/>
 	</Style>
-
+	
   <!-- TextBox -->
 
   <Style TargetType="{x:Type TextBox}">
@@ -955,8 +955,77 @@
       </Setter.Value>
     </Setter>
   </Style>-->
-  
-  <!-- PropertyGrid -->
+
+	<Style TargetType="{x:Type pg:ToggleSwitch}">
+		<Setter Property="Background" Value="Black"/>
+		<Setter Property="BorderThickness" Value="1"/>
+		<Setter Property="CheckedForeground" Value="#DDD"/>
+		<Setter Property="CornerRadius" Value="3"/>
+		<Setter Property="FontSize" Value="8pt"/>
+		<Setter Property="FontWeight" Value="Normal"/>
+		<Setter Property="ThumbBorderThickness" Value="1"/>
+		<Setter Property="ThumbCornerRadius" Value="3"/>
+		<Setter Property="ThumbGlowColor" Value="#FCFCF6"/>
+		<Setter Property="ThumbShineCornerRadius" Value="6,6,5,5"/>
+		<Setter Property="UncheckedForeground" Value="#DDD"/>
+		<Setter Property="BorderBrush">
+			<Setter.Value>
+				<LinearGradientBrush EndPoint="0,0"
+                                     StartPoint="0,1">
+					<GradientStop Color="#959595"
+                                  Offset="0" />
+					<GradientStop Color="#A1A1A1"
+                                  Offset="0.5" />
+					<GradientStop Color="#555555"
+                                  Offset="1" />
+				</LinearGradientBrush>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="CheckedBackground">
+			<Setter.Value>
+				<LinearGradientBrush EndPoint="0,1"
+                                     StartPoint="0,0">
+					<GradientStop Color="#6298FE"
+                                  Offset="0" />
+					<GradientStop Color="#2F6AEA"
+                                  Offset="0.5" />
+					<GradientStop Color="#1E41A5"
+                                  Offset="1" />
+				</LinearGradientBrush>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="ThumbBackground">
+			<Setter.Value>
+				<LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+					<GradientStop Offset="0.0" Color="#505050" />
+					<GradientStop Offset="1.2" Color="#383838" />
+				</LinearGradientBrush>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="UncheckedBackground">
+			<Setter.Value>
+				<LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+					<GradientStop Offset="0.0" Color="#505050" />
+					<GradientStop Offset="1.2" Color="#383838" />
+				</LinearGradientBrush>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="ThumbBorderBrush">
+			<Setter.Value>
+				<LinearGradientBrush EndPoint="0,1"
+                                     StartPoint="0,0">
+					<GradientStop Color="#F6F6F6"
+                                  Offset="0" />
+					<GradientStop Color="#959595"
+                                  Offset="0.5" />
+					<GradientStop Color="#565656"
+                                  Offset="1" />
+				</LinearGradientBrush>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<!-- PropertyGrid -->
   
   <Style TargetType="{x:Type pg:PropertyEditorGrid}" BasedOn="{StaticResource {x:Type pg:PropertyEditorGrid}}">    
     <Setter Property="Background">

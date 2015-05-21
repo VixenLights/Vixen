@@ -166,6 +166,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Themes\ToggleSwitch.Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CategoryEditor.cs" />
@@ -181,6 +185,7 @@
     <Compile Include="Controls\SliderEditorBase.cs" />
     <Compile Include="Controls\SliderPercentageEditor.cs" />
     <Compile Include="Controls\SliderLevelEditor.cs" />
+    <Compile Include="Controls\ToggleSwitch.cs" />
     <Compile Include="Converters\BitmapImageConverter.cs" />
     <Compile Include="Converters\ColorGradientToImageConverter.cs" />
     <Compile Include="Converters\CurveToImageConverter.cs" />
@@ -196,6 +201,7 @@
     <Compile Include="Converters\LevelValueConverter.cs" />
     <Compile Include="Converters\MultiBooleanToVisibilityConverter.cs" />
     <Compile Include="Converters\NullValueConverter.cs" />
+    <Compile Include="Converters\StringNullOrEmptyToVisibilityConverter.cs" />
     <Compile Include="Converters\SystemColorToSolidBrushConverter.cs" />
     <Compile Include="Converters\TargetElementDepthConverter.cs" />
     <Compile Include="DataResource.cs" />
@@ -263,6 +269,8 @@
     <Compile Include="PropertyEditorGrid.cs" />
     <Compile Include="PropertyItem.cs" />
     <Compile Include="PropertyItemValue.cs" />
+    <Compile Include="Utils\ClipBorder.cs" />
+    <Compile Include="Utils\GeometryHelper.cs" />
     <Compile Include="Utils\TextBoxExtender.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
