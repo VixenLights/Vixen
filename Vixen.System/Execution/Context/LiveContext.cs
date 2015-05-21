@@ -51,7 +51,7 @@ namespace Vixen.Execution.Context
 		public void Clear()
 		{	
 			_dataSource.ClearData();
-			ClearCurrentEffects();	
+			_currentEffects.Reset();
 		}
 
 		protected override IDataSource _DataSource

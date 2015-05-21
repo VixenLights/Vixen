@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Threading;
 using System.Windows.Controls.WpfPropertyGrid.Controls;
+using System.Windows.Controls.WpfPropertyGrid.Converters;
 using Vixen.Attributes;
 using Vixen.Module;
 using Vixen.Module.Effect;
@@ -177,6 +178,7 @@ namespace VixenModules.Effect.Alternating
 		[ProviderCategory(@"Interval",4)]
 		[ProviderDisplayName(@"ChangeInterval")]
 		[Description(@"Specifies how often the effect should switch in milliseconds.")]
+		[NumberRange(0,5000,1,0)]
 		public int Interval
 		{
 			get { return _data.Interval; }
@@ -205,6 +207,10 @@ namespace VixenModules.Effect.Alternating
 		[ProviderCategory(@"Depth",10)]
 		[ProviderDisplayName(@"Depth")]
 		[ProviderDescription(@"Depth")]
+		[Offset(1)]
+		[TypeConverter(typeof(TargetElementDepthConverter))]
+		[PropertyEditor(typeof(ComboBoxEditor))]
+		[MergableProperty(false)]
 		public int GroupEffect
 		{
 			get { return _data.GroupEffect; }

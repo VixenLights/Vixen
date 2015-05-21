@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Threading;
 using System.Windows.Controls.WpfPropertyGrid.Controls;
+using System.Windows.Controls.WpfPropertyGrid.Converters;
 using NLog;
 using Vixen.Attributes;
 using Vixen.Intent;
@@ -216,6 +217,9 @@ namespace VixenModules.Effect.Chase
 		[ProviderCategory(@"Depth",4)]
 		[ProviderDisplayName(@"Depth")]
 		[ProviderDescription(@"Depth")]
+		[TypeConverter(typeof(TargetElementDepthConverter))]
+		[PropertyEditor(typeof(ComboBoxEditor))]
+		[MergableProperty(false)]
 		public int DepthOfEffect
 		{
 			get { return _data.DepthOfEffect; }

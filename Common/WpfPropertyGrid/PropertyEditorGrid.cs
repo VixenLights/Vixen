@@ -618,15 +618,22 @@ namespace System.Windows.Controls.WpfPropertyGrid
 
         if (value != null)
         {
-          _properties = value;
+			_properties = value;
+	        EffectName = "";
+	        if (PropertyComparer != null)
+	        {
+		        _properties.Sort(PropertyComparer);
+	        }
 
-          if (PropertyComparer != null)
-            _properties.Sort(PropertyComparer);
-
-          foreach (var item in _properties)
-            HookPropertyChanged(item);
+	        foreach (var item in _properties)
+	        {
+		        HookPropertyChanged(item);
+		        if (item.Name.Equals("EffectName"))
+		        {
+			        EffectName = item.PropertyValue.StringValue;
+		        }
+	        }
         }
-
         OnPropertyChanged("Properties");
         OnPropertyChanged("HasProperties");
         OnPropertyChanged("BrowsableProperties");
@@ -690,7 +697,18 @@ namespace System.Windows.Controls.WpfPropertyGrid
       }
     }
 
-    private GridEntryCollection<CategoryItem> _categories;
+	  private string _effectName="";
+	  public string EffectName
+	  {
+		  get { return _effectName; }
+		  set
+		  {
+			  _effectName = value;
+			  OnPropertyChanged("EffectName");
+		  }
+	  }
+
+	  private GridEntryCollection<CategoryItem> _categories;
     /// <summary>
     /// Gets or sets the categories of the selected object(s).
     /// </summary>
@@ -1045,7 +1063,6 @@ namespace System.Windows.Controls.WpfPropertyGrid
 
 	private void UpdateBrowsable()
 	{
-
 		if (SelectedObjects == null || SelectedObjects.Length == 0) throw new ArgumentNullException("components");
 		MetadataRepository.Clear();
 		// TODO: PropertyItem is to be wired with PropertyData rather than pure PropertyDescriptor in the next version!
@@ -1057,11 +1074,9 @@ namespace System.Windows.Controls.WpfPropertyGrid
 		foreach (var descriptor in descriptors)
 		{
 			PropertyItem item = Properties.First(x => x.Name.Equals(descriptor.Name));
-			//Console.Out.WriteLine("Property {0} IsBrowsable {1}, Descriptor {2} IsBrowsable {3} ",item.Name, item.IsBrowsable,descriptor.Name, descriptor.IsBrowsable);
 			bool isBrowsable = ShoudDisplayProperty(descriptor);
 			if (item.IsBrowsable != isBrowsable)
 			{
-				Console.Out.WriteLine("Changing browsable for {0}", item.Name);
 				item.IsBrowsable = isBrowsable;
 			}
 			

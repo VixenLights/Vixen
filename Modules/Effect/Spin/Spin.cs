@@ -6,6 +6,7 @@ using System.Drawing.Design;
 using System.Linq;
 using System.Threading;
 using System.Windows.Controls.WpfPropertyGrid.Controls;
+using System.Windows.Controls.WpfPropertyGrid.Converters;
 using NLog;
 using Vixen.Attributes;
 using Vixen.Module;
@@ -332,6 +333,9 @@ namespace VixenModules.Effect.Spin
 		[ProviderCategory(@"Depth",20)]
 		[ProviderDisplayName(@"Depth")]
 		[ProviderDescription(@"Depth")]
+		[TypeConverter(typeof(TargetElementDepthConverter))]
+		[PropertyEditor(typeof(ComboBoxEditor))]
+		[MergableProperty(false)]
 		public int DepthOfEffect
 		{
 			get { return _data.DepthOfEffect; }

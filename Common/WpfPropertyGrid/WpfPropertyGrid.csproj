@@ -120,6 +120,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Themes\IntegerEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Themes\FontEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -181,6 +185,7 @@
     <Compile Include="Controls\BaseColorTypeEditor.cs" />
     <Compile Include="Controls\ColorTypeEditor.cs" />
     <Compile Include="Controls\ComboBoxEditor.cs" />
+    <Compile Include="Controls\IntegerEditor.cs" />
     <Compile Include="Controls\GradientTypeEditor.cs" />
     <Compile Include="Controls\CurveEditor.cs" />
     <Compile Include="Controls\SliderDoubleEditor.cs" />
@@ -204,6 +209,7 @@
     <Compile Include="Converters\MultiBooleanToVisibilityConverter.cs" />
     <Compile Include="Converters\NullValueConverter.cs" />
     <Compile Include="Converters\SystemColorToSolidBrushConverter.cs" />
+    <Compile Include="Converters\TargetElementDepthConverter.cs" />
     <Compile Include="DataResource.cs" />
     <Compile Include="Design\GridEntryContainer.cs" />
     <Compile Include="Design\GridEntryLayout.cs" />

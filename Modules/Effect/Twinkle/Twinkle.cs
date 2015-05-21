@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Threading;
 using System.Windows.Controls.WpfPropertyGrid.Controls;
+using System.Windows.Controls.WpfPropertyGrid.Converters;
 using NLog;
 using Vixen.Attributes;
 using Vixen.Module;
@@ -291,6 +292,9 @@ namespace VixenModules.Effect.Twinkle
 		[ProviderCategory(@"Depth")]
 		[ProviderDisplayName(@"Depth")]
 		[Description(@"Indicates how many levels deep the effect should be grouped. 0 indicates all elements.")]
+		[TypeConverter(typeof(TargetElementDepthConverter))]
+		[PropertyEditor(typeof(ComboBoxEditor))]
+		[MergableProperty(false)]
 		public int DepthOfEffect
 		{
 			get { return _data.DepthOfEffect; }

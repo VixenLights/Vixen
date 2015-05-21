@@ -53,7 +53,7 @@ namespace VixenModules.App.Curves
 					{
 						return string.Format("Library: {0}", cg.LibraryReferenceName);
 					}
-					return "Standalone Curve";
+					return "";
 				}
 			}
 			

@@ -63,6 +63,7 @@
     <ProjectReference Include="..\..\..\Common\WpfPropertyGrid\WpfPropertyGrid.csproj">
       <Project>{5A48B67F-1E7E-4ED6-A201-F6CC8E7E6788}</Project>
       <Name>WpfPropertyGrid</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Vixen.System\Vixen.csproj">
       <Project>{50b78623-fcf4-48af-93ff-fa87c937028f}</Project>

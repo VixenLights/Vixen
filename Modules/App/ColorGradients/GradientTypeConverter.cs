@@ -50,7 +50,7 @@ namespace VixenModules.App.ColorGradients
 					{
 						return string.Format("Library: {0}", cg.LibraryReferenceName);
 					}
-					return "Standalone Gradient";
+					return "";
 				}
 
 			}

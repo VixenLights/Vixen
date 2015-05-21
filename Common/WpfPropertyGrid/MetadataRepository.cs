@@ -211,17 +211,18 @@ namespace System.Windows.Controls.WpfPropertyGrid
 
     public static IEnumerable<PropertyData> GetCommonProperties(IEnumerable<object> targets)
     {
-      if (targets == null) return Enumerable.Empty<PropertyData>();
+      if (targets == null ) return Enumerable.Empty<PropertyData>();
+		
 
       IEnumerable<PropertyData> result = null;
 
       foreach (object target in targets)
       {
-        var properties = DoGetProperties(target).Where(prop => prop.IsBrowsable && prop.IsMergable);
+        var properties = DoGetProperties(target).Where(prop => prop.IsBrowsable && prop.IsMergable || prop.Name.Equals("EffectName"));
         result = (result == null) ? properties : result.Intersect(properties);
       }
 
-      return (result != null) ? result : Enumerable.Empty<PropertyData>();
+      return result ?? Enumerable.Empty<PropertyData>();
     }
 
     public static PropertyData GetProperty(object target, string propertyName)

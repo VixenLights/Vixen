@@ -17,6 +17,13 @@
 			/>
 	</DataTemplate>
 
+	<DataTemplate x:Key="{x:Static local:EditorKeys.LabelEditorKey}">
+		<Label
+			x:Name="PART_editor"
+			Content="{Binding StringValue, Mode=TwoWay}"
+			/>
+	</DataTemplate>
+
 	<DataTemplate x:Key="{x:Static local:EditorKeys.PasswordEditorKey}">
 		<PasswordBox
       x:Name="PART_editor"

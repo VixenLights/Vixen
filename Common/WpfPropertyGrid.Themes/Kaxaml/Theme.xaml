@@ -121,7 +121,7 @@
           <BulletDecorator Background="Transparent">
             <BulletDecorator.Bullet>
               <Grid Width="11" Height="11" Margin="0,1,0,0">
-                <Border x:Name="Background" Background="#444444" CornerRadius="0" />
+                <Border x:Name="Background" Background="#575757" CornerRadius="0" />
                 <Border x:Name="BackgroundHighlighted" BorderBrush="#808080" BorderThickness="0,0,0,1" CornerRadius="0" />
                 <Border x:Name="BackgroundSunken" BorderBrush="#101010" BorderThickness="0,1,0,0" CornerRadius="0" />
                 <Path x:Name="Arrow" 
@@ -153,6 +153,13 @@
       </Setter.Value>
     </Setter>
   </Style>
+	
+	
+	<!-- Label -->
+	
+	<Style TargetType="{x:Type Label}">
+		<Setter Property="Foreground" Value="#DDD"/>
+	</Style>
 
   <!-- TextBox -->
 
@@ -177,8 +184,8 @@
           </Grid>
           <ControlTemplate.Triggers>
             <Trigger Property="IsEnabled" Value="False">
-              <Setter Property="Foreground" Value="#777"/>
-              <Setter Property="Opacity" Value="0.75"/>
+              <Setter Property="Foreground" Value="#DDD"/>
+              <Setter Property="Opacity" Value="1"/>
             </Trigger>
           </ControlTemplate.Triggers>
         </ControlTemplate>

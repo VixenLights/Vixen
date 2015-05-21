@@ -36,6 +36,7 @@ namespace System.Windows.Controls.WpfPropertyGrid
       { KnownTypes.Wpf.Cursor, new TypeEditor(KnownTypes.Wpf.Cursor, EditorKeys.EnumEditorKey) },
       { KnownTypes.Wpf.FontFamily, new TypeEditor(KnownTypes.Wpf.FontFamily, EditorKeys.FontFamilyEditorKey) },
       { KnownTypes.Wpf.Brush, new TypeEditor(KnownTypes.Wpf.Brush, EditorKeys.BrushEditorKey) },
+	  { KnownTypes.Wpf.Integer, new TypeEditor(KnownTypes.Wpf.Integer, EditorKeys.IntegerEditorKey) },
 	   { KnownTypes.Wpf.Color, new ColorTypeEditor() },
 	    { KnownTypes.Wpf.Curve, new CurveEditor() },
 		{ KnownTypes.Wpf.ColorGradient, new GradientTypeEditor() },
@@ -215,7 +216,10 @@ namespace System.Windows.Controls.WpfPropertyGrid
 					if (cachedEditor.Key.IsAssignableFrom(propertyItem.PropertyType))
 						return cachedEditor.Value;
 				}
-
+				if (propertyItem.IsReadOnly)
+				{
+					return new TypeEditor(propertyItem.PropertyType,EditorKeys.LabelEditorKey);
+				}
 				return new TypeEditor(propertyItem.PropertyType, EditorKeys.DefaultEditorKey);
 			}
 

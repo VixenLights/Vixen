@@ -144,16 +144,13 @@ namespace Vixen.Module.Effect
 		protected abstract EffectIntents _Render();
 
 		[DisplayName(@"Effect Name")]
-		[Category(@"Effect")]
-		[PropertyOrder(1)]
+		[Browsable(false)]
 		public virtual string EffectName
 		{
 			get { return Descriptor != null ? ((IEffectModuleDescriptor) Descriptor).EffectName : ""; }
 		}
 
-		[DisplayName(@"Effect Group")]
-		[Category(@"Effect")]
-		[PropertyOrder(2)]
+		[Browsable(false)]
 		public EffectGroups EffectGroup
 		{
 			get { return ((IEffectModuleDescriptor) Descriptor).EffectGroup; }

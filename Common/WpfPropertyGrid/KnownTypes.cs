@@ -75,6 +75,7 @@ namespace System.Windows.Controls.WpfPropertyGrid
 	  public static readonly Type Curve = typeof(Curve);
 	  public static readonly Type ColorGradient = typeof(ColorGradient);
 	  public static readonly Type Percentage = typeof(Percentage);
+	  public static readonly Type Integer = typeof (int);
     }
 
     public static class Wpg

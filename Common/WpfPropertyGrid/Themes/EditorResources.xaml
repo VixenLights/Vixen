@@ -54,4 +54,16 @@
         />
   </DataTemplate>
 
+	<DataTemplate x:Key="{x:Static local:EditorKeys.IntegerEditorKey}">
+		<controls:IntegerEditor
+        x:Name="PART_editor"
+        Value="{Binding Value, Mode=TwoWay}"
+        Minimum="{Binding ParentProperty.Metadata[NumberRange].Minimum}"
+        Maximum="{Binding ParentProperty.Metadata[NumberRange].Maximum}"
+        DefaultChange="{Binding ParentProperty.Metadata[NumberRange].Tick}"
+        MaxPrecision="{Binding ParentProperty.Metadata[NumberRange].Precision}"
+        IsEnabled="{Binding IsEditable}"
+        />
+	</DataTemplate>
+
 </ResourceDictionary>

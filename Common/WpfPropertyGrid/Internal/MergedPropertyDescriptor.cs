@@ -77,7 +77,7 @@ namespace System.Windows.Controls.WpfPropertyGrid.Internal
       {
         object target = targets.GetValue(i);
 
-        descriptors[i].AddValueChanged(target, OnValueChanged);
+        descriptors[i].RemoveValueChanged(target, OnValueChanged);
         if (handlers != null)
         {
           EventHandler h = (EventHandler)this.handlers[target];

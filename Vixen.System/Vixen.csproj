@@ -89,6 +89,7 @@
     <Compile Include="Attributes\FlatternHierarchyAttribute.cs" />
     <Compile Include="Attributes\IOrderableAttribute.cs" />
     <Compile Include="Attributes\NumberRangeAttribute.cs" />
+    <Compile Include="Attributes\OffsetAttribute.cs" />
     <Compile Include="Attributes\PropertyEditorAttribute.cs" />
     <Compile Include="Attributes\PropertyOrderAttribute.cs" />
     <Compile Include="Cache\Event\CacheEventArgs.cs" />

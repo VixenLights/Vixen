@@ -27,8 +27,10 @@ namespace System.Windows.Controls.WpfPropertyGrid
 	private static readonly ComponentResourceKey _GradientEditorKey = new ComponentResourceKey(ThisType, "GradientTypeEditor");
     private static readonly ComponentResourceKey _PasswordEditorKey = new ComponentResourceKey(ThisType, "PasswordEditor");
     private static readonly ComponentResourceKey _DefaultEditorKey = new ComponentResourceKey(ThisType, "DefaultEditor");
+	private static readonly ComponentResourceKey _LabelEditorKey = new ComponentResourceKey(ThisType, "LabelEditor");
     private static readonly ComponentResourceKey _BooleanEditorKey = new ComponentResourceKey(ThisType, "BooleanEditor");
     private static readonly ComponentResourceKey _DoubleEditorKey = new ComponentResourceKey(ThisType, "DoubleEditor");
+	private static readonly ComponentResourceKey _IntegerEditorKey = new ComponentResourceKey(ThisType, "IntegerEditor");
     private static readonly ComponentResourceKey _EnumEditorKey = new ComponentResourceKey(ThisType, "EnumEditor");
 	private static readonly ComponentResourceKey _ComboBoxEditorKey = new ComponentResourceKey(ThisType, "ComboBoxEditor");
     private static readonly ComponentResourceKey _SliderEditorKey = new ComponentResourceKey(ThisType, "SliderEditor");
@@ -76,6 +78,12 @@ namespace System.Windows.Controls.WpfPropertyGrid
     /// <value>The default editor key.</value>
     public static ComponentResourceKey DefaultEditorKey { get { return _DefaultEditorKey; } }
 
+	/// <summary>
+	/// Gets the default editor key.
+	/// </summary>
+	/// <value>The default editor key.</value>
+	public static ComponentResourceKey LabelEditorKey { get { return _LabelEditorKey; } }
+
     /// <summary>
     /// Gets the boolean editor key.
     /// </summary>
@@ -87,6 +95,12 @@ namespace System.Windows.Controls.WpfPropertyGrid
     /// </summary>
     /// <value>The double editor key.</value>
     public static ComponentResourceKey DoubleEditorKey { get { return _DoubleEditorKey; } }
+
+	/// <summary>
+	/// Gets the integer editor key.
+	/// </summary>
+	/// <value>The double editor key.</value>
+	public static ComponentResourceKey IntegerEditorKey { get { return _IntegerEditorKey; } }
 
     /// <summary>
     /// Gets the enum editor key.
