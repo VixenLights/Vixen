@@ -165,10 +165,15 @@ namespace VixenModules.Preview.VixenPreview
 			}
 
 			gdiControl.BackgroundAlpha = Data.BackgroundAlpha;
-			
-			var file = Path.Combine(VixenPreviewDescriptor.ModulePath, Data.BackgroundFileName);
-			gdiControl.Background = File.Exists(file) ? Image.FromFile(file) : null;
-			
+			if (string.IsNullOrEmpty(Data.BackgroundFileName))
+			{
+				gdiControl.Background = null;
+			}
+			else
+			{
+				var file = Path.Combine(VixenPreviewDescriptor.ModulePath, Data.BackgroundFileName);
+				gdiControl.Background = File.Exists(file) ? Image.FromFile(file) : null;
+			}
 			LayoutProps();
 		}
 
