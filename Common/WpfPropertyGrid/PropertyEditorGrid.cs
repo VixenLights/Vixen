@@ -22,6 +22,8 @@ using System.Linq;
 using System.Windows.Controls.WpfPropertyGrid.Controls;
 using System.Windows.Controls.WpfPropertyGrid.Design;
 using System.Windows.Controls.WpfPropertyGrid.Editors;
+using System.Windows.Controls.WpfPropertyGrid.PropertyEditing;
+using System.Windows.Controls.WpfPropertyGrid.PropertyEditing.Filters;
 using System.Windows.Input;
 using System.Windows.Media;
 using Vixen.Attributes;

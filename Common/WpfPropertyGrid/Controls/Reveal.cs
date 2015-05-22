@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 using System.Windows.Media.Animation;
 
-namespace System.Windows.Controls.WpfPropertyGrid.Themes.Kaxaml
+namespace System.Windows.Controls.WpfPropertyGrid.Controls
 {
   public class Reveal : Decorator
   {

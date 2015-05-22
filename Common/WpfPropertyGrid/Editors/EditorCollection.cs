@@ -18,12 +18,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Windows.Controls.WpfPropertyGrid.Editors;
 using Vixen.Attributes;
-using Vixen.Module.EffectEditor;
 
-namespace System.Windows.Controls.WpfPropertyGrid
+namespace System.Windows.Controls.WpfPropertyGrid.Editors
 {
 	/// <summary>
 	///     Defines a collection of value Editors (Type, Category and Property editors).

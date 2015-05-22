@@ -17,7 +17,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace System.Windows.Controls.WpfPropertyGrid
+namespace System.Windows.Controls.WpfPropertyGrid.PropertyEditing.Filters
 {
 	/// <summary>
 	/// Specifies a default property filter.

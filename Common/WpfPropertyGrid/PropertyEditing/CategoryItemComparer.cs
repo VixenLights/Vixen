@@ -16,7 +16,7 @@
 
 using System.Collections.Generic;
 
-namespace System.Windows.Controls.WpfPropertyGrid
+namespace System.Windows.Controls.WpfPropertyGrid.PropertyEditing
 {
 	/// <summary>
 	/// Default <see cref="CategoryItem"/> comparer.

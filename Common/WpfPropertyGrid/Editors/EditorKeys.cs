@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace System.Windows.Controls.WpfPropertyGrid
+namespace System.Windows.Controls.WpfPropertyGrid.Editors
 {
 	/// <summary>
 	///     Contains a set of editor keys.

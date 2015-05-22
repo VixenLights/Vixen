@@ -40,7 +40,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			ResourceDictionary dict = new ResourceDictionary
 			{
-				Source = new Uri("/System.Windows.Controls.WpfPropertyGrid.Themes;component/Kaxaml/Theme.xaml", UriKind.Relative)
+				Source = new Uri("/System.Windows.Controls.WpfPropertyGrid;component/Themes/Theme.xaml", UriKind.Relative)
 			};
 
 

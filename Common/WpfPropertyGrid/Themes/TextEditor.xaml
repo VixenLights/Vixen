@@ -1,12 +1,13 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:System.Windows.Controls.WpfPropertyGrid">
+                    xmlns:local="clr-namespace:System.Windows.Controls.WpfPropertyGrid"
+                    xmlns:editors="clr-namespace:System.Windows.Controls.WpfPropertyGrid.Editors">
 	<ResourceDictionary.MergedDictionaries>
 		<ResourceDictionary Source="Converters.xaml" />
 	</ResourceDictionary.MergedDictionaries>
 
 	<!--Note that commit on typing cannot work together with the roolback since every keystroke is committed and the roolback value is lost-->
-	<DataTemplate x:Key="{x:Static local:EditorKeys.DefaultEditorKey}">
+	<DataTemplate x:Key="{x:Static editors:EditorKeys.DefaultEditorKey}">
 		<TextBox
 			x:Name="PART_editor"
 			Text="{Binding StringValue, Mode=TwoWay}"
@@ -16,7 +17,7 @@
 			local:TextBoxExtender.CommitOnTyping="false" />
 	</DataTemplate>
 
-	<DataTemplate x:Key="{x:Static local:EditorKeys.LabelEditorKey}">
+	<DataTemplate x:Key="{x:Static editors:EditorKeys.LabelEditorKey}">
 		<Label
 			x:Name="PART_editor"
 			Content="{Binding StringValue, Mode=TwoWay}" />

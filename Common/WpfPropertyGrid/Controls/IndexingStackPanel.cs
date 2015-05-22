@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 using System.Windows.Controls.Primitives;
 
-namespace System.Windows.Controls.WpfPropertyGrid.Themes.Kaxaml
+namespace System.Windows.Controls.WpfPropertyGrid.Controls
 {
   public class IndexingStackPanel : StackPanel
   {

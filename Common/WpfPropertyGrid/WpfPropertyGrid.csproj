@@ -68,6 +68,7 @@
     <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationFramework.Aero" />
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -166,6 +167,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Themes\Theme.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Themes\ToggleSwitch.Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -174,7 +179,9 @@
   <ItemGroup>
     <Compile Include="CategoryEditor.cs" />
     <Compile Include="CategoryItem.cs" />
+    <Compile Include="Controls\IndexingStackPanel.cs" />
     <Compile Include="Controls\IntegerEditor.cs" />
+    <Compile Include="Controls\Reveal.cs" />
     <Compile Include="Controls\SliderEditorBase.cs" />
     <Compile Include="Controls\ToggleSwitch.cs" />
     <Compile Include="Converters\BitmapImageConverter.cs" />
@@ -197,7 +204,7 @@
     <Compile Include="DataResource.cs" />
     <Compile Include="Design\GridEntryContainer.cs" />
     <Compile Include="Design\GridEntryLayout.cs" />
-    <Compile Include="EditorCollection.cs" />
+    <Compile Include="Editors\EditorCollection.cs" />
     <Compile Include="Controls\SearchTextBox.cs" />
     <Compile Include="Design\CategoryContainer.cs" />
     <Compile Include="Controls\EnumDropdown.cs" />
@@ -207,7 +214,7 @@
     <Compile Include="Design\PropertyEditorContentPresenter.cs" />
     <Compile Include="Design\PropertyItemsLayout.cs" />
     <Compile Include="Design\PropertyNameTextBlock.cs" />
-    <Compile Include="EditorKeys.cs" />
+    <Compile Include="Editors\EditorKeys.cs" />
     <Compile Include="Editors\BaseColorTypeEditor.cs" />
     <Compile Include="Editors\ColorTypeEditor.cs" />
     <Compile Include="Editors\SelectionEditor.cs" />

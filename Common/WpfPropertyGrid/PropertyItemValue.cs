@@ -21,6 +21,7 @@ using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Controls.WpfPropertyGrid.Input;
+using System.Windows.Controls.WpfPropertyGrid.PropertyEditing;
 using Vixen.Module.Effect;
 using Vixen.Sys;
 using VixenModules.App.ColorGradients;
@@ -348,7 +349,7 @@ namespace System.Windows.Controls.WpfPropertyGrid
 		/// <summary>
 		///     Raises the <see cref="PropertyValueException" /> event.
 		/// </summary>
-		/// <param name="e">The <see cref="WpfPropertyGrid.ValueExceptionEventArgs" /> instance containing the event data.</param>
+		/// <param name="e">The <see cref="ValueExceptionEventArgs" /> instance containing the event data.</param>
 		protected virtual void OnPropertyValueException(ValueExceptionEventArgs e)
 		{
 			if (e == null) throw new ArgumentNullException("e");

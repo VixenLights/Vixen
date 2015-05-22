@@ -334,8 +334,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EffectDescriptorAttributes"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfPropertyGrid", "Common\WpfPropertyGrid\WpfPropertyGrid.csproj", "{5A48B67F-1E7E-4ED6-A201-F6CC8E7E6788}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfPropertyGrid.Themes", "Common\WpfPropertyGrid.Themes\WpfPropertyGrid.Themes.csproj", "{DD5C7E14-01CC-44FC-81BC-5C6CF6BB2AD9}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1553,22 +1551,6 @@ Global
 		{5A48B67F-1E7E-4ED6-A201-F6CC8E7E6788}.Release|x64.Build.0 = Release|x64
 		{5A48B67F-1E7E-4ED6-A201-F6CC8E7E6788}.Release|x86.ActiveCfg = Release|x86
 		{5A48B67F-1E7E-4ED6-A201-F6CC8E7E6788}.Release|x86.Build.0 = Release|x86
-		{DD5C7E14-01CC-44FC-81BC-5C6CF6BB2AD9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DD5C7E14-01CC-44FC-81BC-5C6CF6BB2AD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DD5C7E14-01CC-44FC-81BC-5C6CF6BB2AD9}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{DD5C7E14-01CC-44FC-81BC-5C6CF6BB2AD9}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{DD5C7E14-01CC-44FC-81BC-5C6CF6BB2AD9}.Debug|x64.ActiveCfg = Debug|x64
-		{DD5C7E14-01CC-44FC-81BC-5C6CF6BB2AD9}.Debug|x64.Build.0 = Debug|x64
-		{DD5C7E14-01CC-44FC-81BC-5C6CF6BB2AD9}.Debug|x86.ActiveCfg = Debug|x86
-		{DD5C7E14-01CC-44FC-81BC-5C6CF6BB2AD9}.Debug|x86.Build.0 = Debug|x86
-		{DD5C7E14-01CC-44FC-81BC-5C6CF6BB2AD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DD5C7E14-01CC-44FC-81BC-5C6CF6BB2AD9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DD5C7E14-01CC-44FC-81BC-5C6CF6BB2AD9}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{DD5C7E14-01CC-44FC-81BC-5C6CF6BB2AD9}.Release|Mixed Platforms.Build.0 = Release|x86
-		{DD5C7E14-01CC-44FC-81BC-5C6CF6BB2AD9}.Release|x64.ActiveCfg = Release|x64
-		{DD5C7E14-01CC-44FC-81BC-5C6CF6BB2AD9}.Release|x64.Build.0 = Release|x64
-		{DD5C7E14-01CC-44FC-81BC-5C6CF6BB2AD9}.Release|x86.ActiveCfg = Release|x86
-		{DD5C7E14-01CC-44FC-81BC-5C6CF6BB2AD9}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1680,7 +1662,6 @@ Global
 		{B848A227-50AA-4FF7-8B7F-73FE36893485} = {9865500E-D5C0-4F51-8A6E-BFD7946C801A}
 		{1C84DA63-A5DB-4086-88AE-B2B43FCCAD7B} = {04563307-41A9-4BB8-B13F-B364BE966B85}
 		{5A48B67F-1E7E-4ED6-A201-F6CC8E7E6788} = {25A1ED22-180F-4B61-84FC-55790AA11254}
-		{DD5C7E14-01CC-44FC-81BC-5C6CF6BB2AD9} = {25A1ED22-180F-4B61-84FC-55790AA11254}
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Everything.vsmdi

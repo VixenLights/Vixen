@@ -16,7 +16,7 @@
 
 using System.Globalization;
 
-namespace System.Windows.Controls.WpfPropertyGrid
+namespace System.Windows.Controls.WpfPropertyGrid.PropertyEditing.Filters
 {
 	/// <summary>
 	/// Property filter predicate.

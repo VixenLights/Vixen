@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace System.Windows.Controls.WpfPropertyGrid
+namespace System.Windows.Controls.WpfPropertyGrid.PropertyEditing.Filters
 {
 	/// <summary>
 	/// Contains state information and data related to FilterApplied event.

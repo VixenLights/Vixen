@@ -17,6 +17,7 @@
 using System.Collections;
 using System.ComponentModel;
 using System.Windows.Controls.WpfPropertyGrid.Internal;
+using System.Windows.Controls.WpfPropertyGrid.PropertyEditing.Filters;
 
 namespace System.Windows.Controls.WpfPropertyGrid
 {

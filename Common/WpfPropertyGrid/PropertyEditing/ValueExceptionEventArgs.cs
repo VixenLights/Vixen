@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace System.Windows.Controls.WpfPropertyGrid
+namespace System.Windows.Controls.WpfPropertyGrid.PropertyEditing
 {
 	/// <summary>
 	/// Contains event data related to value exceptions.

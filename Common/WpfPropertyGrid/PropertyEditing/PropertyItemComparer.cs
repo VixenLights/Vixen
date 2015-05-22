@@ -17,7 +17,7 @@
 using System.Collections.Generic;
 using Vixen.Attributes;
 
-namespace System.Windows.Controls.WpfPropertyGrid
+namespace System.Windows.Controls.WpfPropertyGrid.PropertyEditing
 {
 	/// <summary>
 	/// Default <see cref="PropertyItem"/> comparer.
