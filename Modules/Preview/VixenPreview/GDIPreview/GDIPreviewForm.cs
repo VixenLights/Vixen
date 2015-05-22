@@ -171,8 +171,8 @@ namespace VixenModules.Preview.VixenPreview
             }
             else
             {
-			var file = Path.Combine(VixenPreviewDescriptor.ModulePath, Data.BackgroundFileName);
-			gdiControl.Background = File.Exists(file) ? Image.FromFile(file) : null;
+                var file = Path.Combine(VixenPreviewDescriptor.ModulePath, Data.BackgroundFileName);
+                gdiControl.Background = File.Exists(file) ? Image.FromFile(file) : null;
             }
 			LayoutProps();
 		}
