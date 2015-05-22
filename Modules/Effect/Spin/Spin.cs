@@ -5,8 +5,6 @@ using System.Drawing;
 using System.Drawing.Design;
 using System.Linq;
 using System.Threading;
-using System.Windows.Controls.WpfPropertyGrid.Controls;
-using System.Windows.Controls.WpfPropertyGrid.Converters;
 using NLog;
 using Vixen.Attributes;
 using Vixen.Module;
@@ -217,7 +215,7 @@ namespace VixenModules.Effect.Spin
 		[ProviderCategory(@"Pulse",5)]
 		[ProviderDisplayName(@"PulsePercent")]
 		[ProviderDescription(@"PulseSpinPercent")]
-		[PropertyEditor(typeof(SliderEditor))]
+		[PropertyEditor("SliderEditor")]
 		[PropertyOrder(3)]
 		public int PulsePercentage
 		{
@@ -234,7 +232,7 @@ namespace VixenModules.Effect.Spin
 		[ProviderCategory(@"Brightness",2)]
 		[ProviderDisplayName(@"DefaultBrightness")]
 		[ProviderDescription(@"DefaultBrightness")]
-		[PropertyEditor(typeof (SliderLevelEditor))]
+		[PropertyEditor("LevelEditor")]
 		[PropertyOrder(2)]
 		public double DefaultLevel
 		{
@@ -317,7 +315,7 @@ namespace VixenModules.Effect.Spin
 		[ProviderDescription(@"Direction")]
 		[TypeConverter(typeof(BooleanStringTypeConverter))]
 		[BoolDescription("Forward", "Reverse")]
-		[PropertyEditor(typeof(ComboBoxEditor))]
+		[PropertyEditor("SelectionEditor")]
 		public bool ReverseSpin
 		{
 			get { return _data.ReverseSpin; }
@@ -334,7 +332,7 @@ namespace VixenModules.Effect.Spin
 		[ProviderDisplayName(@"Depth")]
 		[ProviderDescription(@"Depth")]
 		[TypeConverter(typeof(TargetElementDepthConverter))]
-		[PropertyEditor(typeof(ComboBoxEditor))]
+		[PropertyEditor("SelectionEditor")]
 		[MergableProperty(false)]
 		public int DepthOfEffect
 		{

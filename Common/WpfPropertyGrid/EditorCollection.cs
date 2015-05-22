@@ -18,8 +18,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Windows.Controls.WpfPropertyGrid.Controls;
+using System.Runtime.CompilerServices;
+using System.Windows.Controls.WpfPropertyGrid.Editors;
 using Vixen.Attributes;
+using Vixen.Module.EffectEditor;
 
 namespace System.Windows.Controls.WpfPropertyGrid
 {
@@ -28,20 +30,19 @@ namespace System.Windows.Controls.WpfPropertyGrid
 	/// </summary>
 	public class EditorCollection : Collection<Editor>
 	{
+		private static readonly string EditorNamespace = typeof(Editor).Namespace;
 		private static readonly Dictionary<Type, Editor> Cache = new Dictionary<Type, Editor>
 		{
 			{typeof (bool), new TypeEditor(typeof (bool), EditorKeys.BooleanEditorKey)},
-			{KnownTypes.Wpf.FontStretch, new TypeEditor(KnownTypes.Wpf.FontStretch, EditorKeys.EnumEditorKey)},
-			{KnownTypes.Wpf.FontStyle, new TypeEditor(KnownTypes.Wpf.FontStyle, EditorKeys.EnumEditorKey)},
-			{KnownTypes.Wpf.FontWeight, new TypeEditor(KnownTypes.Wpf.FontWeight, EditorKeys.EnumEditorKey)},
-			{KnownTypes.Wpf.Cursor, new TypeEditor(KnownTypes.Wpf.Cursor, EditorKeys.EnumEditorKey)},
-			{KnownTypes.Wpf.FontFamily, new TypeEditor(KnownTypes.Wpf.FontFamily, EditorKeys.FontFamilyEditorKey)},
 			{KnownTypes.Wpf.Integer, new TypeEditor(KnownTypes.Wpf.Integer, EditorKeys.IntegerEditorKey)},
 			{KnownTypes.Wpf.Color, new ColorTypeEditor()},
 			{KnownTypes.Wpf.Curve, new CurveEditor()},
 			{KnownTypes.Wpf.ColorGradient, new GradientTypeEditor()},
 			{KnownTypes.Wpf.Percentage, new TypeEditor(KnownTypes.Wpf.Percentage, EditorKeys.SliderPercentageEditorKey)},
-			{typeof (Enum), new TypeEditor(typeof (Enum), EditorKeys.EnumEditorKey)}
+			{typeof (Enum), new TypeEditor(typeof (Enum), EditorKeys.EnumEditorKey)},
+			{KnownTypes.Wpf.FontStyle, new TypeEditor(KnownTypes.Wpf.FontStyle, EditorKeys.EnumEditorKey)},
+			{KnownTypes.Wpf.FontWeight, new TypeEditor(KnownTypes.Wpf.FontWeight, EditorKeys.EnumEditorKey)},
+			{KnownTypes.Wpf.FontFamily, new TypeEditor(KnownTypes.Wpf.FontFamily, EditorKeys.FontFamilyEditorKey)}
 		};
 
 		/// <summary>
@@ -106,7 +107,7 @@ namespace System.Windows.Controls.WpfPropertyGrid
 
 			try
 			{
-				var editorType = Type.GetType(attribute.EditorType);
+				var editorType = Type.GetType(attribute.EditorType)??Type.GetType(string.Format("{0}.{1}",EditorNamespace, attribute.EditorType));
 				if (editorType == null || !KnownTypes.Wpg.Editor.IsAssignableFrom(editorType)) return null;
 				return (Editor) Activator.CreateInstance(editorType);
 			}

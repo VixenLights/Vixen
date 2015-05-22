@@ -4,8 +4,6 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
-using System.Windows.Controls.WpfPropertyGrid.Controls;
-using System.Windows.Controls.WpfPropertyGrid.Converters;
 using Vixen.Attributes;
 using Vixen.Module;
 using Vixen.Module.Effect;
@@ -108,7 +106,7 @@ namespace VixenModules.Effect.Alternating
 
 		[Value]
 		[ProviderCategory(@"Brightness",3)]
-		[PropertyEditor(typeof(SliderLevelEditor))]
+		[PropertyEditor("LevelEditor")]
 		[ProviderDisplayName(@"ColorOneBrightness")]
 		[ProviderDescription(@"Brightness")]
 		public double IntensityLevel1
@@ -142,7 +140,7 @@ namespace VixenModules.Effect.Alternating
 
 		[Value]
 		[ProviderCategory(@"Brightness",3)]
-		[PropertyEditor(typeof(SliderLevelEditor))]
+		[PropertyEditor("LevelEditor")]
 		[ProviderDisplayName(@"ColorTwoBrightness")]
 		[ProviderDescription(@"Brightness")]
 		public double IntensityLevel2
@@ -191,26 +189,25 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		[Value]
-		[Browsable(false)]
+		[ProviderCategory(@"Depth", 10)]
+		[ProviderDisplayName(@"Depth")]
+		[ProviderDescription(@"Depth")]
+		[Offset(1)]
+		[TypeConverter(typeof(TargetElementDepthConverter))]
+		[PropertyEditor("SelectionEditor")]
+		[MergableProperty(false)]
 		public int DepthOfEffect //this property is not currently used
 		{
-			get { return _data.DepthOfEffect; }
+			get { return GroupEffect; }
 			set
 			{
-				_data.DepthOfEffect = value;
-				IsDirty = true;
+				GroupEffect = value;
 				OnPropertyChanged();
 			}
 		}
 
 		[Value]
-		[ProviderCategory(@"Depth",10)]
-		[ProviderDisplayName(@"Depth")]
-		[ProviderDescription(@"Depth")]
-		[Offset(1)]
-		[TypeConverter(typeof(TargetElementDepthConverter))]
-		[PropertyEditor(typeof(ComboBoxEditor))]
-		[MergableProperty(false)]
+		[Browsable(false)]
 		public int GroupEffect
 		{
 			get { return _data.GroupEffect; }
@@ -228,7 +225,7 @@ namespace VixenModules.Effect.Alternating
 		[Description(@"Indicates that the effect should be the same on all elements.")]
 		[TypeConverter(typeof(BooleanStringTypeConverter))]
 		[BoolDescription("Yes", "No")]
-		[PropertyEditor(typeof(ComboBoxEditor))]
+		[PropertyEditor("SelectionEditor")]
 		public bool Enable
 		{
 			get { return _data.Enable; }
@@ -246,7 +243,7 @@ namespace VixenModules.Effect.Alternating
 		[ProviderDescription(@"StaticColorIndicator")]
 		[TypeConverter(typeof(BooleanStringTypeConverter))]
 		[BoolDescription("Static", "Gradient")]
-		[PropertyEditor(typeof(ComboBoxEditor))]
+		[PropertyEditor("SelectionEditor")]
 		public bool StaticColor1
 		{
 			get { return _data.StaticColor1; }
@@ -268,7 +265,7 @@ namespace VixenModules.Effect.Alternating
 		[ProviderDescription(@"StaticColorIndicator")]
 		[TypeConverter(typeof(BooleanStringTypeConverter))]
 		[BoolDescription("Static", "Gradient")]
-		[PropertyEditor(typeof(ComboBoxEditor))]
+		[PropertyEditor("SelectionEditor")]
 		public bool StaticColor2
 		{
 			get { return _data.StaticColor2; }

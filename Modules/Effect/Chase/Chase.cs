@@ -4,8 +4,6 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
-using System.Windows.Controls.WpfPropertyGrid.Controls;
-using System.Windows.Controls.WpfPropertyGrid.Converters;
 using NLog;
 using Vixen.Attributes;
 using Vixen.Intent;
@@ -13,6 +11,7 @@ using Vixen.Module;
 using Vixen.Module.Effect;
 using Vixen.Sys;
 using Vixen.Sys.Attribute;
+using Vixen.TypeConverters;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
@@ -124,7 +123,7 @@ namespace VixenModules.Effect.Chase
 		[ProviderDisplayName(@"DefaultBrightness")]
 		[ProviderDescription(@"DefaultBrightness")]
 		[PropertyOrder(2)]
-		[PropertyEditor(typeof(SliderLevelEditor))]
+		[PropertyEditor("LevelEditor")]
 		public double DefaultLevel
 		{
 			get { return _data.DefaultLevel; }
@@ -218,7 +217,7 @@ namespace VixenModules.Effect.Chase
 		[ProviderDisplayName(@"Depth")]
 		[ProviderDescription(@"Depth")]
 		[TypeConverter(typeof(TargetElementDepthConverter))]
-		[PropertyEditor(typeof(ComboBoxEditor))]
+		[PropertyEditor("SelectionEditor")]
 		[MergableProperty(false)]
 		public int DepthOfEffect
 		{

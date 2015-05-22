@@ -2,13 +2,19 @@
 using System.Drawing;
 using System.Linq;
 using Vixen.Module.Effect;
+using Vixen.Module.EffectEditor;
 using Vixen.Sys;
 using VixenModules.Property.Color;
 
-namespace System.Windows.Controls.WpfPropertyGrid.Controls
+namespace System.Windows.Controls.WpfPropertyGrid.Editors
 {
-	public class BaseColorTypeEditor : TypeEditor
+	public abstract class BaseColorTypeEditor : TypeEditor
 	{
+		protected BaseColorTypeEditor(Type editedType, object inlineTemplate)
+			: base(editedType, inlineTemplate, null)
+		{
+		}
+
 		protected HashSet<Color> GetDiscreteColors(Object component)
 		{
 			HashSet<Color> validColors = new HashSet<Color>();

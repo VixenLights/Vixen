@@ -4,7 +4,6 @@ using System.Drawing;
 using System.Drawing.Design;
 using System.Linq;
 using System.Threading;
-using System.Windows.Controls.WpfPropertyGrid.Controls;
 using Common.ValueTypes;
 using Vixen.Attributes;
 using Vixen.Data.Value;

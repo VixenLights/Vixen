@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace System.Windows.Controls.WpfPropertyGrid
+namespace System.Windows.Controls.WpfPropertyGrid.Editors
 {
 	/// <summary>
 	///     Provides value editing service for a property value.

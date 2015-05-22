@@ -112,8 +112,10 @@ namespace System.Windows.Controls.WpfPropertyGrid
 
 			var editor = property.Editor;
 			// TODO: Finish DialogTemplate implementation
-			if (editor != null) // && editor.HasDialogTemplate)
-				editor.ShowDialog(value, this);
+			if (editor != null && !value.ParentProperty.IsReadOnly) // && editor.HasDialogTemplate)
+			{
+				value.Value = editor.ShowDialog(value.ParentProperty.Component, value.Value, this);
+			}
 		}
 
 

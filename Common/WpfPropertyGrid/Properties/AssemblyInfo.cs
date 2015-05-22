@@ -72,7 +72,6 @@ using System.Runtime.CompilerServices;
 // [assembly: AssemblyVersion("2010.5.*")]
 [assembly: AssemblyVersion("2010.11.10")]
 [assembly: AssemblyFileVersion("2010.11.10")]
-[assembly: CLSCompliant(true)]
 
 [assembly: XmlnsDefinition("http://schemas.denisvuyka.wordpress.com/wpfpropertygrid", "System.Windows.Controls.WpfPropertyGrid")]
 [assembly: XmlnsDefinition("http://schemas.denisvuyka.wordpress.com/wpfpropertygrid", "System.Windows.Controls.WpfPropertyGrid.Controls")]

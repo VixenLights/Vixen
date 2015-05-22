@@ -44,11 +44,6 @@
       <Name>Vixen</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Common\WpfPropertyGrid\WpfPropertyGrid.csproj">
-      <Project>{5A48B67F-1E7E-4ED6-A201-F6CC8E7E6788}</Project>
-      <Name>WpfPropertyGrid</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\EffectEditor\EffectDescriptorAttributes\EffectDescriptorAttributes.csproj">
       <Project>{1C84DA63-A5DB-4086-88AE-B2B43FCCAD7B}</Project>
       <Name>EffectDescriptorAttributes</Name>
@@ -66,7 +61,6 @@
     <Compile Include="SetLevelDescriptor.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="NLog, Version=3.1.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\NLog.3.1.0.0\lib\net45\NLog.dll</HintPath>
       <Private>False</Private>
@@ -74,7 +68,6 @@
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Images\Effect48.png" />

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
@@ -6,7 +7,7 @@ using Vixen.Attributes;
 using Vixen.Module.Effect;
 using Vixen.Sys;
 
-namespace System.Windows.Controls.WpfPropertyGrid.Converters
+namespace Vixen.TypeConverters
 {
 	public class TargetElementDepthConverter : TypeConverter
 	{
@@ -41,7 +42,7 @@ namespace System.Windows.Controls.WpfPropertyGrid.Converters
 			int depth = 0;
 			if (context != null)
 			{
-				IEffect effect = (IEffect) ((PropertyItem) context).UnwrappedComponent;
+				IEffect effect = (IEffect) context.Instance;
 
 				if (effect.TargetNodes.FirstOrDefault() != null)
 				{

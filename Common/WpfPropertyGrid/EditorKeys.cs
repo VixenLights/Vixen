@@ -23,7 +23,6 @@ namespace System.Windows.Controls.WpfPropertyGrid
 	{
 		private static readonly Type ThisType = typeof (EditorKeys);
 
-		private static readonly ComponentResourceKey _NamedColorEditorKey = new ComponentResourceKey(ThisType,"NamedColorEditor");
 		private static readonly ComponentResourceKey _ColorEditorKey = new ComponentResourceKey(ThisType, "ColorTypeEditor");
 		private static readonly ComponentResourceKey _CurveEditorKey = new ComponentResourceKey(ThisType, "CurveEditor");
 		private static readonly ComponentResourceKey _GradientEditorKey = new ComponentResourceKey(ThisType,"GradientTypeEditor");
@@ -43,18 +42,9 @@ namespace System.Windows.Controls.WpfPropertyGrid
 		private static readonly ComponentResourceKey _ComplexPropertyEditorKey = new ComponentResourceKey(ThisType, "ComplexPropertyEditor");
 
 		/// <summary>
-		///     Gets the NamedColor editor key.
-		/// </summary>
-		/// <value>The named color editor key.</value>
-		public static ComponentResourceKey NamedColorEditorKey
-		{
-			get { return _NamedColorEditorKey; }
-		}
-
-		/// <summary>
 		///     Gets the Curve editor key.
 		/// </summary>
-		/// <value>The named color editor key.</value>
+		/// <value>The curve editor key.</value>
 		public static ComponentResourceKey CurveEditorKey
 		{
 			get { return _CurveEditorKey; }

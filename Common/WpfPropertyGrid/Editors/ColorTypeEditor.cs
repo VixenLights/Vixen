@@ -5,32 +5,29 @@ using System.Windows.Forms;
 using Common.Controls;
 using Common.Controls.ColorManagement.ColorModels;
 using Common.Controls.ColorManagement.ColorPicker;
-using Vixen.Module.Effect;
-using Vixen.Sys;
-using VixenModules.Property.Color;
 
-namespace System.Windows.Controls.WpfPropertyGrid.Controls
+namespace System.Windows.Controls.WpfPropertyGrid.Editors
 {
 	public class ColorTypeEditor : BaseColorTypeEditor
 	{
 		public ColorTypeEditor()
+			: base(typeof(Color), EditorKeys.ColorEditorKey)
 		{
-			EditedType = KnownTypes.Wpf.Color;
-			InlineTemplate = EditorKeys.ColorEditorKey;
-			ExtendedTemplate = null;
 		}
 
-		public override void ShowDialog(PropertyItemValue propertyValue, IInputElement commandSource)
+		public override Object ShowDialog(Object effect, Object propertyValue, IInputElement commandSource)
 		{
-			if (propertyValue == null) return;
-			if (propertyValue.ParentProperty.IsReadOnly) return;
-
-			HashSet<Color> discreteColors = GetDiscreteColors(propertyValue.ParentProperty.Component);
+			if (propertyValue == null)
+			{
+				return propertyValue;
+			}
+			
+			HashSet<Color> discreteColors = GetDiscreteColors(effect);
 
 			Color colorValue = Color.Black;
-			if (propertyValue.Value != null)
+			if (propertyValue != null)
 			{
-				colorValue = (Color) propertyValue.Value;
+				colorValue = (Color)propertyValue;
 			}
 			DialogResult result;
 			if (discreteColors.Any())
@@ -43,7 +40,7 @@ namespace System.Windows.Controls.WpfPropertyGrid.Controls
 					result = dcp.ShowDialog();
 					if (result == DialogResult.OK)
 					{
-						propertyValue.Value = !dcp.SelectedColors.Any() ? discreteColors.First() : dcp.SelectedColors.First();
+						propertyValue = !dcp.SelectedColors.Any() ? discreteColors.First() : dcp.SelectedColors.First();
 					}
 				}
 			}
@@ -56,10 +53,12 @@ namespace System.Windows.Controls.WpfPropertyGrid.Controls
 					result = cp.ShowDialog();
 					if (result == DialogResult.OK)
 					{
-						propertyValue.Value = cp.Color.ToRGB().ToArgb();
+						propertyValue = cp.Color.ToRGB().ToArgb();
 					}
 				}
 			}
+
+			return propertyValue;
 		}
 	}
 }

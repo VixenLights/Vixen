@@ -174,17 +174,8 @@
   <ItemGroup>
     <Compile Include="CategoryEditor.cs" />
     <Compile Include="CategoryItem.cs" />
-    <Compile Include="Controls\BaseColorTypeEditor.cs" />
-    <Compile Include="Controls\ColorTypeEditor.cs" />
-    <Compile Include="Controls\ComboBoxEditor.cs" />
     <Compile Include="Controls\IntegerEditor.cs" />
-    <Compile Include="Controls\GradientTypeEditor.cs" />
-    <Compile Include="Controls\CurveEditor.cs" />
-    <Compile Include="Controls\SliderDoubleEditor.cs" />
-    <Compile Include="Controls\SliderEditor.cs" />
     <Compile Include="Controls\SliderEditorBase.cs" />
-    <Compile Include="Controls\SliderPercentageEditor.cs" />
-    <Compile Include="Controls\SliderLevelEditor.cs" />
     <Compile Include="Controls\ToggleSwitch.cs" />
     <Compile Include="Converters\BitmapImageConverter.cs" />
     <Compile Include="Converters\ColorGradientToImageConverter.cs" />
@@ -203,7 +194,6 @@
     <Compile Include="Converters\NullValueConverter.cs" />
     <Compile Include="Converters\StringNullOrEmptyToVisibilityConverter.cs" />
     <Compile Include="Converters\SystemColorToSolidBrushConverter.cs" />
-    <Compile Include="Converters\TargetElementDepthConverter.cs" />
     <Compile Include="DataResource.cs" />
     <Compile Include="Design\GridEntryContainer.cs" />
     <Compile Include="Design\GridEntryLayout.cs" />
@@ -217,8 +207,19 @@
     <Compile Include="Design\PropertyEditorContentPresenter.cs" />
     <Compile Include="Design\PropertyItemsLayout.cs" />
     <Compile Include="Design\PropertyNameTextBlock.cs" />
-    <Compile Include="Editor.cs" />
     <Compile Include="EditorKeys.cs" />
+    <Compile Include="Editors\BaseColorTypeEditor.cs" />
+    <Compile Include="Editors\ColorTypeEditor.cs" />
+    <Compile Include="Editors\SelectionEditor.cs" />
+    <Compile Include="Editors\CurveEditor.cs" />
+    <Compile Include="Editors\Editor.cs" />
+    <Compile Include="Editors\GradientTypeEditor.cs" />
+    <Compile Include="Editors\PropertyEditor.cs" />
+    <Compile Include="Editors\SliderDoubleEditor.cs" />
+    <Compile Include="Editors\SliderEditor.cs" />
+    <Compile Include="Editors\LevelEditor.cs" />
+    <Compile Include="Editors\SliderPercentageEditor.cs" />
+    <Compile Include="Editors\TypeEditor.cs" />
     <Compile Include="GridEntryCollection.cs" />
     <Compile Include="Input\DragDropManager.cs" />
     <Compile Include="Input\DropPreviewAdorner.cs" />
@@ -229,10 +230,8 @@
     <Compile Include="PreviewStateChanged.cs" />
     <Compile Include="PropertyEditingEventArgs.cs" />
     <Compile Include="PropertyEditing\Filters\PropertyFilterAppliedEventArgs.cs" />
-    <Compile Include="PropertyEditor.cs" />
     <Compile Include="GridEntry.cs" />
     <Compile Include="ResourceLocator.cs" />
-    <Compile Include="TypeEditor.cs" />
     <Compile Include="PropertyValueChangedEventArgs.cs" />
     <Compile Include="Input\PropertyEditorCommands.cs" />
     <Compile Include="Internal\MathUtil.cs" />

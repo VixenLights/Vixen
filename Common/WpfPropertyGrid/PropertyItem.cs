@@ -194,7 +194,7 @@ namespace System.Windows.Controls.WpfPropertyGrid
 
 		public override object Instance
 		{
-			get { return CreatePropertyValueInstance(); }
+			get { return UnwrappedComponent; }
 		}
 
 		#endregion

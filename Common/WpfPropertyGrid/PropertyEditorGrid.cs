@@ -21,9 +21,11 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Controls.WpfPropertyGrid.Controls;
 using System.Windows.Controls.WpfPropertyGrid.Design;
+using System.Windows.Controls.WpfPropertyGrid.Editors;
 using System.Windows.Input;
 using System.Windows.Media;
 using Vixen.Attributes;
+using Vixen.Module.EffectEditor;
 
 namespace System.Windows.Controls.WpfPropertyGrid
 {
@@ -705,16 +707,6 @@ namespace System.Windows.Controls.WpfPropertyGrid
 			}
 		}
 
-		private void OnDrop(object sender, DragEventArgs dragEventArgs)
-		{
-			Console.Out.WriteLine(sender);
-		}
-
-		private void OnDragEnter(object sender, DragEventArgs dragEventArgs)
-		{
-			Console.Out.WriteLine(sender);
-		}
-
 		/// <summary>
 		///     Invoked when an unhandled <see cref="UIElement.KeyDown" /> attached event reaches an element in its route that is
 		///     derived from this class. Implement this method to add class handling for this event.
@@ -899,20 +891,17 @@ namespace System.Windows.Controls.WpfPropertyGrid
 
 		private void PropertyGrid_Unloaded(object sender, RoutedEventArgs e)
 		{
-			Console.Out.WriteLine("Unload");
 			TypeDescriptor.Refreshed -= OnTypeDescriptorRefreshed;
 		}
 
 		private void PropertyGrid_Loaded(object sender, RoutedEventArgs e)
 		{
-			Console.Out.WriteLine("Load");
-			//TypeDescriptor.Refreshed += OnTypeDescriptorRefreshed;	
+			TypeDescriptor.Refreshed += OnTypeDescriptorRefreshed;	
 		}
 
 
 		private void OnTypeDescriptorRefreshed(RefreshEventArgs e)
 		{
-			Console.Out.WriteLine("Refresh");
 			if (!Dispatcher.CheckAccess())
 			{
 				Dispatcher.Invoke(new RefreshEventHandler(OnTypeDescriptorRefreshedInvoke), e);
@@ -1105,13 +1094,10 @@ namespace System.Windows.Controls.WpfPropertyGrid
 			EventManager.RegisterClassHandler(typeof (PropertyEditorGrid), GotFocusEvent, new RoutedEventHandler(ShowDescription),
 				true);
 
-			// Assign Layout to be Alphabetical by default
-			Layout = new AlphabeticalLayout();
-			TypeDescriptor.Refreshed += OnTypeDescriptorRefreshed;
+			// Assign Layout to be Categorized by default
+			Layout = new CategorizedLayout();
 			Loaded += PropertyGrid_Loaded;
 			Unloaded += PropertyGrid_Unloaded;
-			DragEnter += OnDragEnter;
-			Drop += OnDrop;
 			// Wire command bindings
 			InitializeCommandBindings();
 		}
@@ -1237,7 +1223,6 @@ namespace System.Windows.Controls.WpfPropertyGrid
 			var wildcard = browsableProperties.FirstOrDefault(item => item.PropertyName == BrowsablePropertyAttribute.All);
 			if (wildcard != null) return wildcard.Browsable;
 
-			//Console.Out.WriteLine("Checking raw prop... {0} {1}",propertyDescriptor.Name , propertyDescriptor.IsBrowsable);
 			// Return default/standard Browsable settings for the property
 			return propertyDescriptor.IsBrowsable;
 		}

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
-using System.Windows.Controls.WpfPropertyGrid.Controls;
 using Vixen.Attributes;
 using Vixen.Data.Value;
 using Vixen.Intent;
@@ -63,7 +62,7 @@ namespace VixenModules.Effect.SetLevel
 		[ProviderCategory(@"Brightness",2)]
 		[ProviderDisplayName(@"Brightness")]
 		[ProviderDescription(@"Brightness")]
-		[PropertyEditor(typeof(SliderLevelEditor))]
+		[PropertyEditor("LevelEditor")]
 		public double IntensityLevel
 		{
 			get { return _data.level; }

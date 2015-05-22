@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+using System.Windows.Controls.WpfPropertyGrid.Editors;
+using Vixen.Module.EffectEditor;
+
 namespace System.Windows.Controls.WpfPropertyGrid
 {
 	/// <summary>

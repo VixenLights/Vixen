@@ -9,7 +9,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Reflection;
 using System.Resources;
-using System.Windows.Controls.WpfPropertyGrid.Controls;
 using Vixen.Attributes;
 using Vixen.Commands;
 using Vixen.Data.Value;
@@ -140,7 +139,7 @@ namespace VixenModules.Effect.LipSync
 		[ProviderCategory("Config")]
 		[DisplayName(@"Phoneme mapping")]
 		[Description(@"The mapping associated.")]
-		[PropertyEditor(typeof(ComboBoxEditor))]
+		[PropertyEditor("SelectionEditor")]
 		[TypeConverter(typeof(PhonemeMappingConverter))]
         public String PhonemeMapping
         {

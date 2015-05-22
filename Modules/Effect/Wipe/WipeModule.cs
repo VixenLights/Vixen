@@ -5,7 +5,6 @@ using System.Drawing;
 using System.Drawing.Design;
 using System.Linq;
 using System.Threading;
-using System.Windows.Controls.WpfPropertyGrid.Controls;
 using Vixen.Attributes;
 using Vixen.Module;
 using Vixen.Module.Effect;
@@ -566,7 +565,7 @@ namespace VixenModules.Effect.Wipe
 		[Description(@"WipeType")]
 		[TypeConverter(typeof(BooleanStringTypeConverter))]
 		[BoolDescription("Count", "Pulse Length")]
-		[PropertyEditor(typeof(ComboBoxEditor))]
+		[PropertyEditor("SelectionEditor")]
 		public bool WipeByCount
 		{
 			get { return _data.WipeByCount; }
@@ -599,7 +598,7 @@ namespace VixenModules.Effect.Wipe
 		[ProviderCategory(@"Pulse",7)]
 		[ProviderDisplayName(@"PulsePercent")]
 		[ProviderDescription(@"WipePulsePercent")]
-		[PropertyEditor(typeof(SliderDoubleEditor))]
+		[PropertyEditor("SliderDoubleEditor")]
 		public double PulsePercent
 		{
 			get { return _data.PulsePercent; }

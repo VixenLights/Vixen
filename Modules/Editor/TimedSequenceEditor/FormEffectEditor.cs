@@ -5,10 +5,12 @@ using System.Linq;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls.WpfPropertyGrid;
-using System.Windows.Controls.WpfPropertyGrid.Design;
+using System.Windows.Controls.WpfPropertyGrid.Controls;
+using System.Windows.Controls.WpfPropertyGrid.Editors;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
 using Vixen.Execution.Context;
+using Vixen.Module.Effect;
 using Vixen.Sys;
 using VixenModules.Editor.TimedSequenceEditor.Undo;
 using WeifenLuo.WinFormsUI.Docking;
@@ -50,7 +52,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			_propertyEditorGridEffectPropertiesEditor = new PropertyEditorGrid
 			{
-				Layout = new CategorizedLayout(),
 				ShowReadOnlyProperties = true,
 				PropertyFilterVisibility = Visibility.Hidden
 			};
@@ -63,6 +64,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_propertyEditorGridEffectPropertiesEditor.PropertyValueChanged += PropertyEditorValueChanged;
 			_propertyEditorGridEffectPropertiesEditor.PreviewChanged += _propertyEditorGridEffectPropertiesEditor_PreviewChanged;
 			_previewLoopTimer.Elapsed += PreviewLoopTimerOnElapsed;
+			_propertyEditorGridEffectPropertiesEditor.Editors.Add(new SelectionEditor(typeof(IEffect), "DepthOfEffect"));
 		}
 
 		internal IEnumerable<Element> Elements
@@ -85,14 +87,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			Elements = _sequenceEditorForm.TimelineControl.SelectedElements;
 		}
 
-		void _propertyEditorGridEffectPropertiesEditor_PreviewChanged(object sender, PreviewStateEventArgs e)
+		private void _propertyEditorGridEffectPropertiesEditor_PreviewChanged(object sender, PreviewStateEventArgs e)
 		{
 			_previewState = e.State;
 			TogglePreviewState();
 		}
 
 
-		void PropertyEditorValueChanged(object sender, PropertyValueChangedEventArgs e)
+		private void PropertyEditorValueChanged(object sender, PropertyValueChangedEventArgs e)
 		{
 			Dictionary<Element, Tuple<Object, PropertyDescriptor>> elementValues = new Dictionary<Element, Tuple<object, PropertyDescriptor>>();
 

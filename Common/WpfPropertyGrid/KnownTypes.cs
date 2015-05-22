@@ -16,11 +16,13 @@
 
 using System.Collections;
 using System.ComponentModel;
+using System.Windows.Controls.WpfPropertyGrid.Editors;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using Common.ValueTypes;
 using Vixen.Attributes;
+using Vixen.Module.EffectEditor;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using Color = System.Drawing.Color;

@@ -15,6 +15,8 @@
  */
 
 using System.ComponentModel;
+using System.Windows.Controls.WpfPropertyGrid.Editors;
+using Vixen.Module.EffectEditor;
 
 namespace System.Windows.Controls.WpfPropertyGrid
 {
