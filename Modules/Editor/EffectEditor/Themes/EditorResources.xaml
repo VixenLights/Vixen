@@ -1,0 +1,68 @@
+﻿<ResourceDictionary
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:controls="clr-namespace:VixenModules.Editor.EffectEditor.Controls"
+	xmlns:design="clr-namespace:VixenModules.Editor.EffectEditor.Design"
+	xmlns:editors="clr-namespace:VixenModules.Editor.EffectEditor.Editors">
+
+	<ResourceDictionary.MergedDictionaries>
+		<ResourceDictionary Source="Converters.xaml" />
+		<ResourceDictionary Source="CurveEditor.xaml" />
+		<ResourceDictionary Source="SystemColorEditor.xaml" />
+		<ResourceDictionary Source="ColorGradientEditor.xaml" />
+		<ResourceDictionary Source="SliderEditor.xaml" />
+		<ResourceDictionary Source="EnumEditor.xaml" />
+		<ResourceDictionary Source="TextEditor.xaml" />
+		<ResourceDictionary Source="FontEditor.xaml" />
+	</ResourceDictionary.MergedDictionaries>
+
+
+	<DataTemplate x:Key="{x:Static editors:EditorKeys.ComplexPropertyEditorKey}">
+		<Expander>
+			<Expander.Header>
+				<TextBox Text="{Binding Value, Mode=OneWay}" IsEnabled="False"
+				         Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Expander}}, Mode=OneWay, Path=ActualWidth, Converter={StaticResource ExpanderHeaderWidthConverter}, ConverterParameter=-29}" />
+			</Expander.Header>
+			<design:PropertyItemsLayout Grid.IsSharedSizeScope="True" ItemsSource="{Binding SubProperties}" />
+		</Expander>
+	</DataTemplate>
+
+	<DataTemplate x:Key="{x:Static editors:EditorKeys.DefaultCategoryEditorKey}">
+		<design:PropertyItemsLayout ItemsSource="{Binding Properties}" />
+	</DataTemplate>
+
+
+	<DataTemplate x:Key="{x:Static editors:EditorKeys.ComboBoxEditorKey}">
+		<ComboBox x:Name="Combo_part_editor" ItemsSource="{Binding ParentProperty.StandardValues}"
+		          SelectedValue="{Binding StringValue}" />
+	</DataTemplate>
+
+
+	<DataTemplate x:Key="{x:Static editors:EditorKeys.BooleanEditorKey}">
+		<CheckBox x:Name="PART_editor" IsChecked="{Binding Value}" IsEnabled="{Binding IsEditable}" />
+	</DataTemplate>
+
+
+	<DataTemplate x:Key="{x:Static editors:EditorKeys.DoubleEditorKey}">
+		<controls:DoubleEditor
+			x:Name="PART_editor"
+			Value="{Binding Value, Mode=TwoWay}"
+			Minimum="{Binding ParentProperty.Metadata[NumberRange].Minimum}"
+			Maximum="{Binding ParentProperty.Metadata[NumberRange].Maximum}"
+			DefaultChange="{Binding ParentProperty.Metadata[NumberRange].Tick}"
+			MaxPrecision="{Binding ParentProperty.Metadata[NumberRange].Precision}"
+			IsEnabled="{Binding IsEditable}" />
+	</DataTemplate>
+
+	<DataTemplate x:Key="{x:Static editors:EditorKeys.IntegerEditorKey}">
+		<controls:IntegerEditor
+			x:Name="PART_editor"
+			Value="{Binding Value, Mode=TwoWay}"
+			Minimum="{Binding ParentProperty.Metadata[NumberRange].Minimum}"
+			Maximum="{Binding ParentProperty.Metadata[NumberRange].Maximum}"
+			DefaultChange="{Binding ParentProperty.Metadata[NumberRange].Tick}"
+			MaxPrecision="{Binding ParentProperty.Metadata[NumberRange].Precision}"
+			IsEnabled="{Binding IsEditable}" />
+	</DataTemplate>
+
+</ResourceDictionary>

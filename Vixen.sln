@@ -332,7 +332,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeatsAndBars", "Modules\Ana
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EffectDescriptorAttributes", "Modules\EffectEditor\EffectDescriptorAttributes\EffectDescriptorAttributes.csproj", "{1C84DA63-A5DB-4086-88AE-B2B43FCCAD7B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfPropertyGrid", "Common\WpfPropertyGrid\WpfPropertyGrid.csproj", "{5A48B67F-1E7E-4ED6-A201-F6CC8E7E6788}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EffectEditor", "Modules\Editor\EffectEditor\EffectEditor.csproj", "{5A48B67F-1E7E-4ED6-A201-F6CC8E7E6788}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -1661,7 +1661,7 @@ Global
 		{4004A720-E4D2-4AAF-B5F6-2288FFDC156A} = {9865500E-D5C0-4F51-8A6E-BFD7946C801A}
 		{B848A227-50AA-4FF7-8B7F-73FE36893485} = {9865500E-D5C0-4F51-8A6E-BFD7946C801A}
 		{1C84DA63-A5DB-4086-88AE-B2B43FCCAD7B} = {04563307-41A9-4BB8-B13F-B364BE966B85}
-		{5A48B67F-1E7E-4ED6-A201-F6CC8E7E6788} = {25A1ED22-180F-4B61-84FC-55790AA11254}
+		{5A48B67F-1E7E-4ED6-A201-F6CC8E7E6788} = {E28B32DB-012C-4B34-A515-0D4D4E8FD7F9}
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Everything.vsmdi

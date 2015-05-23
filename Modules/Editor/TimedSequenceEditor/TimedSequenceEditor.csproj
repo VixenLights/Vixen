@@ -59,6 +59,11 @@
       <Name>Vixen</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\EffectEditor\EffectEditor.csproj">
+      <Project>{5a48b67f-1e7e-4ed6-a201-f6cc8e7e6788}</Project>
+      <Name>EffectEditor</Name>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
@@ -68,6 +73,7 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="PresentationFramework.Aero" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -190,6 +196,7 @@
     <Compile Include="ParameterEditor.Designer.cs">
       <DependentUpon>ParameterEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
@@ -237,9 +244,7 @@
     <Compile Include="Undo\ElementsTimeChangedUndoAction.cs" />
     <Compile Include="Undo\EffectsCutUndoAction.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="EffectEditor\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="Resources\magnet.png" />
   </ItemGroup>
@@ -337,9 +342,9 @@
       <Name>Resources</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Common\WpfPropertyGrid\WpfPropertyGrid.csproj">
-      <Project>{5a48b67f-1e7e-4ed6-a201-f6cc8e7e6788}</Project>
-      <Name>WpfPropertyGrid</Name>
+    <ProjectReference Include="..\..\..\Common\ValueTypes\ValueTypes.csproj">
+      <Project>{D9A7E8BC-5617-486D-9DA5-89C5861A0F88}</Project>
+      <Name>ValueTypes</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Analysis\BeatsAndBars\BeatsAndBars.csproj">

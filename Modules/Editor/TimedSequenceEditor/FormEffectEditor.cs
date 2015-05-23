@@ -4,19 +4,18 @@ using System.ComponentModel;
 using System.Linq;
 using System.Timers;
 using System.Windows;
-using System.Windows.Controls.WpfPropertyGrid;
-using System.Windows.Controls.WpfPropertyGrid.Controls;
-using System.Windows.Controls.WpfPropertyGrid.Editors;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
 using Vixen.Execution.Context;
 using Vixen.Module.Effect;
 using Vixen.Sys;
+using VixenModules.Editor.EffectEditor;
+using VixenModules.Editor.EffectEditor.Editors;
 using VixenModules.Editor.TimedSequenceEditor.Undo;
 using WeifenLuo.WinFormsUI.Docking;
 using Application = System.Windows.Application;
 using Element = Common.Controls.Timeline.Element;
-using PropertyValueChangedEventArgs = System.Windows.Controls.WpfPropertyGrid.PropertyValueChangedEventArgs;
+using PropertyValueChangedEventArgs = VixenModules.Editor.EffectEditor.PropertyValueChangedEventArgs;
 using Timer = System.Timers.Timer;
 
 namespace VixenModules.Editor.TimedSequenceEditor
@@ -27,7 +26,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private readonly TimedSequenceEditorForm _sequenceEditorForm;
 		private LiveContext _previewContext;
 		private readonly Timer _previewLoopTimer = new Timer();
-		private readonly PropertyEditorGrid _propertyEditorGridEffectPropertiesEditor;
+		private readonly EffectPropertyEditorGrid _effectPropertyEditorGridEffectEffectPropertiesEditor;
 		private bool _previewState;
 
 		public FormEffectEditor(TimedSequenceEditorForm sequenceEditorForm)
@@ -40,7 +39,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			ResourceDictionary dict = new ResourceDictionary
 			{
-				Source = new Uri("/System.Windows.Controls.WpfPropertyGrid;component/Themes/Theme.xaml", UriKind.Relative)
+				Source = new Uri("/VixenModules.Editor.EffectEditor;component/Themes/Theme.xaml", UriKind.Relative)
 			};
 
 
@@ -50,21 +49,21 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_sequenceEditorForm = sequenceEditorForm;
 			var host = new ElementHost { Dock = DockStyle.Fill };
 
-			_propertyEditorGridEffectPropertiesEditor = new PropertyEditorGrid
+			_effectPropertyEditorGridEffectEffectPropertiesEditor = new EffectPropertyEditorGrid
 			{
 				ShowReadOnlyProperties = true,
 				PropertyFilterVisibility = Visibility.Hidden
 			};
 			
-			host.Child = _propertyEditorGridEffectPropertiesEditor;
+			host.Child = _effectPropertyEditorGridEffectEffectPropertiesEditor;
 
 			Controls.Add(host);
 			
 			sequenceEditorForm.TimelineControl.SelectionChanged += timelineControl_SelectionChanged;
-			_propertyEditorGridEffectPropertiesEditor.PropertyValueChanged += PropertyEditorValueChanged;
-			_propertyEditorGridEffectPropertiesEditor.PreviewChanged += _propertyEditorGridEffectPropertiesEditor_PreviewChanged;
+			_effectPropertyEditorGridEffectEffectPropertiesEditor.PropertyValueChanged += EffectPropertyEditorValueChanged;
+			_effectPropertyEditorGridEffectEffectPropertiesEditor.PreviewChanged += EffectPropertyEditorGridEffectEffectPropertiesEditorPreviewChanged;
 			_previewLoopTimer.Elapsed += PreviewLoopTimerOnElapsed;
-			_propertyEditorGridEffectPropertiesEditor.Editors.Add(new SelectionEditor(typeof(IEffect), "DepthOfEffect"));
+			_effectPropertyEditorGridEffectEffectPropertiesEditor.Editors.Add(new SelectionEditor(typeof(IEffect), "DepthOfEffect"));
 		}
 
 		internal IEnumerable<Element> Elements
@@ -76,7 +75,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				_elements.AddRange(value);
 				SetPreviewState();
 				
-				_propertyEditorGridEffectPropertiesEditor.SelectedObjects = _elements.Select(x => x.EffectNode.Effect).ToArray();
+				_effectPropertyEditorGridEffectEffectPropertiesEditor.SelectedObjects = _elements.Select(x => x.EffectNode.Effect).ToArray();
 			} 
 		}
 
@@ -87,14 +86,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			Elements = _sequenceEditorForm.TimelineControl.SelectedElements;
 		}
 
-		private void _propertyEditorGridEffectPropertiesEditor_PreviewChanged(object sender, PreviewStateEventArgs e)
+		private void EffectPropertyEditorGridEffectEffectPropertiesEditorPreviewChanged(object sender, PreviewStateEventArgs e)
 		{
 			_previewState = e.State;
 			TogglePreviewState();
 		}
 
 
-		private void PropertyEditorValueChanged(object sender, PropertyValueChangedEventArgs e)
+		private void EffectPropertyEditorValueChanged(object sender, PropertyValueChangedEventArgs e)
 		{
 			Dictionary<Element, Tuple<Object, PropertyDescriptor>> elementValues = new Dictionary<Element, Tuple<object, PropertyDescriptor>>();
 
