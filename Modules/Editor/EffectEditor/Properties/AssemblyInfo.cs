@@ -1,20 +1,4 @@
-﻿/*
- * Copyright © 2010, Denys Vuika
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *  http://www.apache.org/licenses/LICENSE-2.0
- *  
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-using System;
+﻿using System;
 using System.Reflection;
 using System.Resources;
 using System.Runtime.InteropServices;
@@ -30,7 +14,7 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("WPF EffectPropertyEditorGrid")]
-[assembly: AssemblyCopyright("Copyright © 2010-2011 Denys Vuika")]
+[assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -69,13 +53,5 @@ using System.Runtime.CompilerServices;
 //
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
-// [assembly: AssemblyVersion("2010.5.*")]
-[assembly: AssemblyVersion("2010.11.10")]
-[assembly: AssemblyFileVersion("2010.11.10")]
-
-[assembly: XmlnsDefinition("http://schemas.denisvuyka.wordpress.com/wpfpropertygrid", "VixenModules.Editor.EffectEditor")]
-[assembly: XmlnsDefinition("http://schemas.denisvuyka.wordpress.com/wpfpropertygrid", "VixenModules.Editor.EffectEditor.Controls")]
-[assembly: XmlnsDefinition("http://schemas.denisvuyka.wordpress.com/wpfpropertygrid", "VixenModules.Editor.EffectEditor.Design")]
-
-// http://msdn.microsoft.com/en-us/library/system.runtime.compilerservices.internalsvisibletoattribute.aspx
-[assembly: InternalsVisibleTo("WpfPropertyGrid.UnitTests, PublicKey=00240000048000009400000006020000002400005253413100040000010001004da09578b80bee870f7d2419e782b0e9b817e2c2cd8864f642212da0efafd446cea165f9bd4714b8e1dcaa7420b9f2ad0efa0b41d0e6e8a5928d8b8c97c5734aab7c7e810573646cc34e3b0ab74d62e9adb57da175f9bca9bdc13658b0536fed45fc96dd284e789ce06ccf7746f2298d8e04c791cfd334ebb0bf9e31f7b5ced9")]
+[assembly: AssemblyVersion("2015.05.10")]
+[assembly: AssemblyFileVersion("2015.05.10")]

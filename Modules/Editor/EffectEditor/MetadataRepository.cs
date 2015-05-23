@@ -103,7 +103,7 @@ namespace VixenModules.Editor.EffectEditor
 
 		public bool IsCollection
 		{
-			get { return KnownTypes.Collections.IList.IsAssignableFrom(PropertyType); }
+			get { return KnownTypes.Collections.List.IsAssignableFrom(PropertyType); }
 		}
 
 		public DesignerSerializationVisibility SerializationVisibility
@@ -117,8 +117,7 @@ namespace VixenModules.Editor.EffectEditor
 			{
 				if (_SerializationCulture == null)
 				{
-					_SerializationCulture = (CultureInvariantTypes.Contains(PropertyType) ||
-					                         KnownTypes.Wpf.Geometry.IsAssignableFrom(PropertyType))
+					_SerializationCulture = (CultureInvariantTypes.Contains(PropertyType))
 						? CultureInfo.InvariantCulture
 						: CultureInfo.CurrentCulture;
 				}
@@ -140,23 +139,6 @@ namespace VixenModules.Editor.EffectEditor
 
 		private static readonly List<Type> CultureInvariantTypes = new List<Type>
 		{
-			KnownTypes.Wpf.CornerRadius,
-			KnownTypes.Wpf.Point3D,
-			KnownTypes.Wpf.Point4D,
-			KnownTypes.Wpf.Point3DCollection,
-			KnownTypes.Wpf.Matrix3D,
-			KnownTypes.Wpf.Quaternion,
-			KnownTypes.Wpf.Rect3D,
-			KnownTypes.Wpf.Size3D,
-			KnownTypes.Wpf.Vector3D,
-			KnownTypes.Wpf.Vector3DCollection,
-			KnownTypes.Wpf.PointCollection,
-			KnownTypes.Wpf.VectorCollection,
-			KnownTypes.Wpf.Point,
-			KnownTypes.Wpf.Rect,
-			KnownTypes.Wpf.Size,
-			KnownTypes.Wpf.Thickness,
-			KnownTypes.Wpf.Vector
 		};
 
 		private static readonly string[] StringConverterMembers = {"Content", "Header", "ToolTip", "Tag"};

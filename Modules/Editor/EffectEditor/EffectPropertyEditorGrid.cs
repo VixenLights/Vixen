@@ -42,12 +42,6 @@ namespace VixenModules.Editor.EffectEditor
 
 		private static readonly Type ThisType = typeof (EffectPropertyEditorGrid);
 
-		private static Attribute[] DefaultPropertiesFilter =
-		{
-			new PropertyFilterAttribute(PropertyFilterOptions.SetValues | PropertyFilterOptions.UnsetValues |
-			                            PropertyFilterOptions.Valid)
-		};
-
 		/// <summary>
 		///     CurrentDescription Dependency Property
 		/// </summary>
@@ -619,36 +613,17 @@ namespace VixenModules.Editor.EffectEditor
 		{
 			if (components == null || components.Length == 0) throw new ArgumentNullException("components");
 
-			// This is an obsolete code left for performance improvements demo. Will be removed in the future versions.
-			/*
-      var descriptors = component.Length == 1
-        ? TypeDescriptor.GetProperties(component[0], DefaultPropertiesFilter).OfType<PropertyDescriptor>()
-        : ObjectServices.GetMergedProperties(component);
-      */
-
-			// TODO: PropertyItem is to be wired with PropertyData rather than pure PropertyDescriptor in the next version!
 			var descriptors = (components.Length == 1)
 				? MetadataRepository.GetProperties(components[0]).Select(prop => prop.Descriptor)
 				: ObjectServices.GetMergedProperties(components);
 
-			IList<PropertyItem> propertyCollection = new List<PropertyItem>();
-
-			foreach (var propertyDescriptor in descriptors)
-				// This is an obsolete code left for performance improvements demo. Will be removed in the future versions.
-				//CollectProperties(component, propertyDescriptor, propertyCollection);
-			{
-				var item = CreatePropertyItem(propertyDescriptor);
-				if (item != null) propertyCollection.Add(item);
-			}
-
-			return propertyCollection;
+			return descriptors.Select(CreatePropertyItem).Where(item => item != null).ToList();
 		}
 
 		private void UpdateBrowsable()
 		{
 			if (SelectedObjects == null || SelectedObjects.Length == 0) throw new ArgumentNullException("components");
 			MetadataRepository.Clear();
-			// TODO: PropertyItem is to be wired with PropertyData rather than pure PropertyDescriptor in the next version!
 			var descriptors = (SelectedObjects.Length == 1)
 				? MetadataRepository.GetProperties(SelectedObjects[0]).Select(prop => prop.Descriptor)
 				: ObjectServices.GetMergedProperties(SelectedObjects);
@@ -671,26 +646,6 @@ namespace VixenModules.Editor.EffectEditor
 			OnPropertyChanged("HasProperties");
 			OnPropertyChanged("BrowsableProperties");
 		}
-
-		// This is an obsolete code left for performance improvements demo. Will be removed in the future versions.
-		/*
-    private void CollectProperties(object component, PropertyDescriptor descriptor, IList<PropertyItem> propertyList)
-    {
-      if (descriptor.Attributes[typeof(FlatternHierarchyAttribute)] == null)
-      {
-        PropertyItem item = CreatePropertyItem(descriptor);
-        if (item != null)
-          propertyList.Add(item);
-      }
-      else
-      {
-        component = descriptor.GetValue(component);
-        PropertyDescriptorCollection properties = TypeDescriptor.GetProperties(component);
-        foreach (PropertyDescriptor propertyDescriptor in properties)
-          CollectProperties(component, propertyDescriptor, propertyList);
-      }
-    }
-    */
 
 		private static void VerifySelectedObjects(object[] value)
 		{
@@ -1194,17 +1149,10 @@ namespace VixenModules.Editor.EffectEditor
 			// Check whether readonly properties are to be displayed
 			if (descriptor.IsReadOnly && !ShowReadOnlyProperties) return null;
 
-			// Note: superceded by ShouldDisplayProperty method call
-			// Check whether property is browsable and add it to the collection
-			// if (!descriptor.IsBrowsable) return null;
-
-			//PropertyItem item = new PropertyItem(this, this.SelectedObject, descriptor);      
-
 			var item = (currentObjects.Length > 1)
 				? new PropertyItem(this, currentObjects, descriptor)
 				: new PropertyItem(this, SelectedObject, descriptor);
 
-			//item.OverrideIsBrowsable(new bool?(ShoudDisplayProperty(descriptor)));
 			item.IsBrowsable = ShoudDisplayProperty(descriptor);
 
 			return item;

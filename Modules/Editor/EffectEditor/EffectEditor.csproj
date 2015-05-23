@@ -171,7 +171,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Themes\ToggleSwitch.Generic.xaml">
+    <Page Include="Themes\ToggleSwitch.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -201,7 +201,6 @@
     <Compile Include="Converters\NullValueConverter.cs" />
     <Compile Include="Converters\StringNullOrEmptyToVisibilityConverter.cs" />
     <Compile Include="Converters\SystemColorToSolidBrushConverter.cs" />
-    <Compile Include="DataResource.cs" />
     <Compile Include="Design\GridEntryContainer.cs" />
     <Compile Include="Design\GridEntryLayout.cs" />
     <Compile Include="Editors\EditorCollection.cs" />
@@ -291,10 +290,6 @@
   <ItemGroup>
     <Resource Include="Themes\Images\clear.png" />
     <Resource Include="Themes\Images\search.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <CodeAnalysisDictionary Include="CustomDictionary.xml">
-    </CodeAnalysisDictionary>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="License.txt" />

@@ -33,10 +33,10 @@ namespace VixenModules.Editor.EffectEditor.Editors
 		{
 			{typeof (bool), new TypeEditor(typeof (bool), EditorKeys.BooleanEditorKey)},
 			{KnownTypes.Wpf.Integer, new TypeEditor(KnownTypes.Wpf.Integer, EditorKeys.IntegerEditorKey)},
-			{KnownTypes.Wpf.Color, new ColorTypeEditor()},
-			{KnownTypes.Wpf.Curve, new CurveEditor()},
-			{KnownTypes.Wpf.ColorGradient, new GradientTypeEditor()},
-			{KnownTypes.Wpf.Percentage, new TypeEditor(KnownTypes.Wpf.Percentage, EditorKeys.SliderPercentageEditorKey)},
+			{KnownTypes.Vixen.Color, new ColorTypeEditor()},
+			{KnownTypes.Vixen.Curve, new CurveEditor()},
+			{KnownTypes.Vixen.ColorGradient, new GradientTypeEditor()},
+			{KnownTypes.Vixen.Percentage, new TypeEditor(KnownTypes.Vixen.Percentage, EditorKeys.SliderPercentageEditorKey)},
 			{typeof (Enum), new TypeEditor(typeof (Enum), EditorKeys.EnumEditorKey)},
 			{KnownTypes.Wpf.FontStyle, new TypeEditor(KnownTypes.Wpf.FontStyle, EditorKeys.EnumEditorKey)},
 			{KnownTypes.Wpf.FontWeight, new TypeEditor(KnownTypes.Wpf.FontWeight, EditorKeys.EnumEditorKey)},
@@ -106,7 +106,7 @@ namespace VixenModules.Editor.EffectEditor.Editors
 			try
 			{
 				var editorType = Type.GetType(attribute.EditorType)??Type.GetType(string.Format("{0}.{1}",EditorNamespace, attribute.EditorType));
-				if (editorType == null || !KnownTypes.Wpg.Editor.IsAssignableFrom(editorType)) return null;
+				if (editorType == null || !KnownTypes.Editors.Editor.IsAssignableFrom(editorType)) return null;
 				return (Editor) Activator.CreateInstance(editorType);
 			}
 			catch
@@ -137,7 +137,7 @@ namespace VixenModules.Editor.EffectEditor.Editors
 			try
 			{
 				var editorType = Type.GetType(attribute.EditorType);
-				if (editorType == null || !KnownTypes.Wpg.Editor.IsAssignableFrom(editorType)) return null;
+				if (editorType == null || !KnownTypes.Editors.Editor.IsAssignableFrom(editorType)) return null;
 				return (Editor) Activator.CreateInstance(editorType);
 			}
 			catch

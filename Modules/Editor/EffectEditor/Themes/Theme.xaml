@@ -6,7 +6,7 @@
 	xmlns:utils="clr-namespace:VixenModules.Editor.EffectEditor.Utils"
 	xmlns:pg="clr-namespace:VixenModules.Editor.EffectEditor">
   
-  <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"/>
+  <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     
   <!-- Button -->
 
@@ -701,7 +701,7 @@
 
             <!--<theme:Reveal x:Name="ContentReveal" Grid.Row="1" VerticalReveal="FromTopToBottom" HorizontalReveal="None">-->
             <!-- the extra border here is required because Reveal doesn't account for margins -->
-            <Border Grid.Row="1" Visibility="{Binding Path=IsExpanded, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource booleanToVisibilityConverter}}">
+            <Border Grid.Row="1" Visibility="{Binding Path=IsExpanded, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BooleanToVisibilityConverter}}">
               <Border BorderThickness="0.5,1,0,0" BorderBrush="#6000" Background="#10FFFFFF" CornerRadius="2,3,2,2" SnapsToDevicePixels="True" Margin="2" >
                 <Border BorderThickness="0,0,0.5,1" BorderBrush="#20FFFFFF" CornerRadius="2,3,2,2">
                   <ContentPresenter x:Name="PART_ContentPresenter" Content="{TemplateBinding Content}" ToolTipService.IsEnabled="False" />

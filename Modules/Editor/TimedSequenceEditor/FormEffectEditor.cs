@@ -63,7 +63,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_effectPropertyEditorGridEffectEffectPropertiesEditor.PropertyValueChanged += EffectPropertyEditorValueChanged;
 			_effectPropertyEditorGridEffectEffectPropertiesEditor.PreviewChanged += EffectPropertyEditorGridEffectEffectPropertiesEditorPreviewChanged;
 			_previewLoopTimer.Elapsed += PreviewLoopTimerOnElapsed;
-			_effectPropertyEditorGridEffectEffectPropertiesEditor.Editors.Add(new SelectionEditor(typeof(IEffect), "DepthOfEffect"));
 		}
 
 		internal IEnumerable<Element> Elements
