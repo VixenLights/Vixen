@@ -586,11 +586,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void listViewCurves_ItemDrag(object sender, ItemDragEventArgs e)
 		{
-			if (listViewCurves.SelectedItems == null)
-				return;
-
 			StartCurveDrag(this, e);
-			listViewCurves.DoDragDrop(listViewCurves.SelectedItems[0].Tag, DragDropEffects.Copy);
+			Curve newCurve = new Curve((Curve)listViewCurves.SelectedItems[0].Tag);
+			if (LinkCurves)
+			{
+				newCurve.LibraryReferenceName = listViewCurves.SelectedItems[0].Name;
+			}
+			newCurve.IsCurrentLibraryCurve = false;
+			listViewCurves.DoDragDrop(newCurve, DragDropEffects.Copy);
 		}
 
 		#endregion
@@ -599,11 +602,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void listViewGradient_ItemDrag(object sender, ItemDragEventArgs e)
 		{
-			if (listViewGradients.SelectedItems == null)
-				return;
-
 			StartGradientDrag(this, e);
-			listViewGradients.DoDragDrop(listViewGradients.SelectedItems[0].Tag, DragDropEffects.Copy);
+
+			ColorGradient newGradient = new ColorGradient((ColorGradient)listViewGradients.SelectedItems[0].Tag);
+			if (LinkGradients)
+			{
+				newGradient.LibraryReferenceName = listViewGradients.SelectedItems[0].Name;
+			}
+			newGradient.IsCurrentLibraryGradient = false;
+			listViewGradients.DoDragDrop(newGradient, DragDropEffects.Copy);
 		}
 
 		#endregion
