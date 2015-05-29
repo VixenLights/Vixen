@@ -37,6 +37,10 @@ namespace VixenModules.Effect.Alternating
 		protected override void TargetNodesChanged()
 		{
 			CheckForInvalidColorData();
+			if (DepthOfEffect > TargetNodes.FirstOrDefault().GetMaxChildDepth())
+			{
+				DepthOfEffect = 1;
+			}
 		}
 
 		protected override void _PreRender(CancellationTokenSource cancellationToken = null)
@@ -105,10 +109,11 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		[Value]
-		[ProviderCategory(@"Brightness",3)]
+		[ProviderCategory(@"ColorOne", 1)]
 		[PropertyEditor("LevelEditor")]
-		[ProviderDisplayName(@"ColorOneBrightness")]
+		[ProviderDisplayName(@"Brightness")]
 		[ProviderDescription(@"Brightness")]
+		[PropertyOrder(3)]
 		public double IntensityLevel1
 		{
 			get { return _data.Level1; }
@@ -121,9 +126,10 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		[Value]
-		[ProviderCategory(@"Color",2)]
-		[ProviderDisplayName(@"ColorOne")]
-		[Description(@"Sets the first color.")]
+		[ProviderCategory(@"ColorOne",1)]
+		[ProviderDisplayName(@"Color")]
+		[ProviderDescription(@"Color")]
+		[PropertyOrder(2)]
 		public Color Color1
 		{
 			get
@@ -139,10 +145,11 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		[Value]
-		[ProviderCategory(@"Brightness",3)]
-		[PropertyEditor("LevelEditor")]
-		[ProviderDisplayName(@"ColorTwoBrightness")]
+		[ProviderCategory(@"ColorTwo", 2)]
+		[ProviderDisplayName(@"Brightness")]
 		[ProviderDescription(@"Brightness")]
+		[PropertyEditor("LevelEditor")]
+		[PropertyOrder(3)]
 		public double IntensityLevel2
 		{
 			get { return _data.Level2; }
@@ -155,9 +162,10 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		[Value]
-		[ProviderCategory(@"Color",2)]
-		[ProviderDisplayName(@"ColorTwo")]
-		[Description(@"Sets the second color.")]
+		[ProviderCategory(@"ColorTwo", 2)]
+		[ProviderDisplayName(@"Color")]
+		[ProviderDescription(@"Color")]
+		[PropertyOrder(2)]
 		public Color Color2
 		{
 			get
@@ -238,12 +246,13 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		[Value]
-		[ProviderCategory(@"ColorType",1)]
-		[ProviderDisplayName(@"ColorOneType")]
+		[ProviderCategory(@"ColorOne", 1)]
+		[ProviderDisplayName(@"Type")]
 		[ProviderDescription(@"StaticColorIndicator")]
 		[TypeConverter(typeof(BooleanStringTypeConverter))]
 		[BoolDescription("Static", "Gradient")]
 		[PropertyEditor("SelectionEditor")]
+		[PropertyOrder(1)]
 		public bool StaticColor1
 		{
 			get { return _data.StaticColor1; }
@@ -260,12 +269,13 @@ namespace VixenModules.Effect.Alternating
 		
 
 		[Value]
-		[ProviderCategory(@"ColorType",1)]
-		[ProviderDisplayName(@"ColorTwoType")]
+		[ProviderCategory(@"ColorTwo", 2)]
+		[ProviderDisplayName(@"Type")]
 		[ProviderDescription(@"StaticColorIndicator")]
 		[TypeConverter(typeof(BooleanStringTypeConverter))]
 		[BoolDescription("Static", "Gradient")]
 		[PropertyEditor("SelectionEditor")]
+		[PropertyOrder(1)]
 		public bool StaticColor2
 		{
 			get { return _data.StaticColor2; }
@@ -280,9 +290,10 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		[Value]
-		[ProviderCategory(@"Color",2)]
-		[ProviderDisplayName(@"ColorOne")]
+		[ProviderCategory(@"ColorOne",1)]
+		[ProviderDisplayName(@"Color")]
 		[ProviderDescription(@"Color")]
+		[PropertyOrder(2)]
 		public ColorGradient ColorGradient1
 		{
 			get
@@ -298,9 +309,10 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		[Value]
-		[ProviderCategory(@"Color",2)]
-		[ProviderDisplayName(@"ColorTwo")]
-		[Description(@"Sets the second color.")]
+		[ProviderCategory(@"ColorTwo",2)]
+		[ProviderDisplayName(@"Color")]
+		[ProviderDescription(@"Color")]
+		[PropertyOrder(2)]
 		public ColorGradient ColorGradient2
 		{
 			get
@@ -316,9 +328,10 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		[Value]
-		[ProviderCategory(@"Brightness",3)]
-		[ProviderDisplayName(@"ColorOneBrightness")]
-		[Description(@"Controls the individual brightness curve of the first gradient.")]
+		[ProviderCategory(@"ColorOne",1)]
+		[ProviderDisplayName(@"Brightness")]
+		[ProviderDescription(@"Brightness")]
+		[PropertyOrder(3)]
 		public Curve Curve1
 		{
 			get { return _data.Curve1; }
@@ -331,9 +344,10 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		[Value]
-		[ProviderCategory(@"Brightness",3)]
-		[ProviderDisplayName(@"ColorTwoBrightness")]
-		[Description(@"Controls the individual brightness curve of the second gradient.")]
+		[ProviderCategory(@"ColorTwo",2)]
+		[ProviderDisplayName(@"Brightness")]
+		[ProviderDescription(@"Brightness")]
+		[PropertyOrder(3)]
 		public Curve Curve2
 		{
 			get { return _data.Curve2; }

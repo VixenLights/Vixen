@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using Vixen.Attributes;
 using Vixen.Commands;
 using Vixen.Data.Value;
 using Vixen.Intent;
@@ -89,6 +90,7 @@ namespace Launcher
 		[ProviderCategory(@"Config")]
 		[DisplayName(@"Description")]
 		[Description(@"Sets the description.")]
+		[PropertyOrder(1)]
 		public string Description
 		{
 			get
@@ -106,6 +108,8 @@ namespace Launcher
 		[ProviderCategory(@"Config")]
 		[DisplayName(@"Executable")]
 		[Description(@"Sets the executable.")]
+		[PropertyOrder(2)]
+		[PropertyEditor("FilePathEditor")]
 		public string Executable
 		{
 			get
@@ -124,6 +128,7 @@ namespace Launcher
 		[ProviderCategory(@"Config")]
 		[DisplayName(@"Arguments")]
 		[Description(@"Sets the arguments to use on the executable.")]
+		[PropertyOrder(3)]
 		public string Arguments
 		{
 			get { return _data.Arguments; }

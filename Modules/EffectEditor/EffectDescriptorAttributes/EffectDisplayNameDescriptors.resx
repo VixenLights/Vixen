@@ -138,23 +138,14 @@
   <data name="ColorOne" xml:space="preserve">
     <value>Color 1</value>
   </data>
-  <data name="ColorOneBrightness" xml:space="preserve">
-    <value>Color 1 Intensity</value>
-  </data>
-  <data name="ColorOneType" xml:space="preserve">
-    <value>Color 1 Type</value>
-  </data>
   <data name="ColorTwo" xml:space="preserve">
     <value>Color 2</value>
   </data>
-  <data name="ColorTwoBrightness" xml:space="preserve">
-    <value>Color 2 Intensity</value>
-  </data>
-  <data name="ColorTwoType" xml:space="preserve">
-    <value>Color 2 Type</value>
-  </data>
   <data name="Coverage" xml:space="preserve">
     <value>Coverage</value>
+  </data>
+  <data name="DataType" xml:space="preserve">
+    <value>Data Type</value>
   </data>
   <data name="DefaultBrightness" xml:space="preserve">
     <value>Default Brightness</value>
@@ -163,7 +154,7 @@
     <value>Levels Deep</value>
   </data>
   <data name="DeviationPercent" xml:space="preserve">
-    <value>Deviation Percent</value>
+    <value>Deviation</value>
   </data>
   <data name="Direction" xml:space="preserve">
     <value>Direction</value>
@@ -175,7 +166,7 @@
     <value>Extend Pulse to Start</value>
   </data>
   <data name="FlickerPercent" xml:space="preserve">
-    <value>Flicker Percent</value>
+    <value>Flicker</value>
   </data>
   <data name="Frequency" xml:space="preserve">
     <value>Frequency</value>
@@ -190,10 +181,10 @@
     <value>Individual Elements</value>
   </data>
   <data name="MaxBrightness" xml:space="preserve">
-    <value>Max Brightness</value>
+    <value>Max</value>
   </data>
   <data name="MinBrightness" xml:space="preserve">
-    <value>Min Brightness</value>
+    <value>Min</value>
   </data>
   <data name="PulseDuration" xml:space="preserve">
     <value>Duration</value>
@@ -202,7 +193,7 @@
     <value>Pulse Overlap</value>
   </data>
   <data name="PulsePercent" xml:space="preserve">
-    <value>Pulse Percent</value>
+    <value>Pulse Length</value>
   </data>
   <data name="PulseType" xml:space="preserve">
     <value>Pulse Type</value>
@@ -211,7 +202,7 @@
     <value>Revolution Count</value>
   </data>
   <data name="RevolutionFrequency" xml:space="preserve">
-    <value>Revolution Frequency</value>
+    <value>Revolution</value>
   </data>
   <data name="RevolutionTime" xml:space="preserve">
     <value>Revolution Time</value>

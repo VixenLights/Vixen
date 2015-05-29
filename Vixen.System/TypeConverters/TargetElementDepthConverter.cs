@@ -32,6 +32,11 @@ namespace Vixen.TypeConverters
 			return value.ToString();
 		}
 
+		public override bool GetStandardValuesExclusive(ITypeDescriptorContext context)
+		{
+			return true;
+		}
+
 		public override bool GetStandardValuesSupported(ITypeDescriptorContext context)
 		{
 			return true;
@@ -46,8 +51,8 @@ namespace Vixen.TypeConverters
 
 				if (effect.TargetNodes.FirstOrDefault() != null)
 				{
-					IEnumerable<ElementNode> leafs = effect.TargetNodes.SelectMany(x => x.GetLeafEnumerator());
-					depth = leafs.Select(leaf => leaf.GetAllParentNodes().Count()).Concat(new[] {depth}).Max();
+					//IEnumerable<ElementNode> leafs = effect.TargetNodes.SelectMany(x => x.GetLeafEnumerator());
+					depth = effect.TargetNodes.FirstOrDefault().GetMaxChildDepth();
 				}
 			}
 

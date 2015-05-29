@@ -61,7 +61,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Effect Brightness.
+        ///   Looks up a localized string similar to Brightness.
         /// </summary>
         internal static string Brightness {
             get {
@@ -70,7 +70,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Effect Color.
+        ///   Looks up a localized string similar to Color.
         /// </summary>
         internal static string Color {
             get {
@@ -79,7 +79,25 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Effect Color Type.
+        ///   Looks up a localized string similar to Color 1.
+        /// </summary>
+        internal static string ColorOne {
+            get {
+                return ResourceManager.GetString("ColorOne", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Color 2.
+        /// </summary>
+        internal static string ColorTwo {
+            get {
+                return ResourceManager.GetString("ColorTwo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Color Type.
         /// </summary>
         internal static string ColorType {
             get {
@@ -88,7 +106,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Effect Configuration.
+        ///   Looks up a localized string similar to Configuration.
         /// </summary>
         internal static string Config {
             get {
@@ -97,7 +115,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Effect Depth.
+        ///   Looks up a localized string similar to Depth.
         /// </summary>
         internal static string Depth {
             get {
@@ -106,7 +124,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Effect Direction.
+        ///   Looks up a localized string similar to Direction.
         /// </summary>
         internal static string Direction {
             get {
@@ -115,7 +133,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Effect Flicker.
+        ///   Looks up a localized string similar to Flicker.
         /// </summary>
         internal static string Flicker {
             get {
@@ -124,7 +142,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Effect Interval.
+        ///   Looks up a localized string similar to Interval.
         /// </summary>
         internal static string Interval {
             get {
@@ -133,7 +151,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Effect Pulse.
+        ///   Looks up a localized string similar to Pulse.
         /// </summary>
         internal static string Pulse {
             get {
@@ -142,7 +160,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Effect Speed.
+        ///   Looks up a localized string similar to Speed.
         /// </summary>
         internal static string Speed {
             get {
@@ -151,20 +169,11 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Effect Type.
+        ///   Looks up a localized string similar to Type.
         /// </summary>
         internal static string Type {
             get {
                 return ResourceManager.GetString("Type", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Effect Value.
-        /// </summary>
-        internal static string Value {
-            get {
-                return ResourceManager.GetString("Value", resourceCulture);
             }
         }
     }

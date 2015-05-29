@@ -216,6 +216,7 @@
     <Compile Include="Editors\EditorKeys.cs" />
     <Compile Include="Editors\BaseColorTypeEditor.cs" />
     <Compile Include="Editors\ColorTypeEditor.cs" />
+    <Compile Include="Editors\FilePathEditor.cs" />
     <Compile Include="Editors\SelectionEditor.cs" />
     <Compile Include="Editors\CurveEditor.cs" />
     <Compile Include="Editors\Editor.cs" />

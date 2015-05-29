@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Threading;
 using Vixen.Sys;
@@ -8,7 +9,7 @@ namespace Vixen.Module.Effect
 {
 	// Effect instances are no longer singletons that render for all, they now contain
 	// state necessary for rendering per-instance.
-	public interface IEffect
+	public interface IEffect: INotifyPropertyChanged
 	{
 		bool IsDirty { get; }
 

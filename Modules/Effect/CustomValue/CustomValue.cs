@@ -208,8 +208,8 @@ namespace VixenModules.Effect.CustomValue
 		}
 
 		[Value]
-		[ProviderCategory(@"Type")]
-		[ProviderDisplayName(@"Type")]
+		[ProviderCategory(@"Config")]
+		[ProviderDisplayName(@"DataType")]
 		[Description(@"Sets the type of the value.")]
 		public CustomValueType ValueType
 		{
@@ -225,8 +225,8 @@ namespace VixenModules.Effect.CustomValue
 		}
 
 		[Value]
-		[ProviderCategory(@"Value")]
-		[DisplayName(@"8 Bit Value")]
+		[ProviderCategory(@"Config")]
+		[DisplayName(@"Value")]
 		[Description(@"Sets the value.")]
 		public byte Value8Bit
 		{
@@ -240,8 +240,8 @@ namespace VixenModules.Effect.CustomValue
 		}
 
 		[Value]
-		[ProviderCategory(@"Value")]
-		[DisplayName(@"16 Bit Value")]
+		[ProviderCategory(@"Config")]
+		[DisplayName(@"Value")]
 		[Description(@"Sets the value.")]
 		public ushort Value16Bit
 		{
@@ -255,8 +255,8 @@ namespace VixenModules.Effect.CustomValue
 		}
 
 		[Value]
-		[ProviderCategory(@"Value")]
-		[DisplayName(@"32 Bit Value")]
+		[ProviderCategory(@"Config")]
+		[DisplayName(@"Value")]
 		[Description(@"Sets the value.")]
 		public uint Value32Bit
 		{
@@ -270,8 +270,8 @@ namespace VixenModules.Effect.CustomValue
 		}
 
 		[Value]
-		[ProviderCategory(@"Value")]
-		[DisplayName(@"64 Bit Value")]
+		[ProviderCategory(@"Config")]
+		[DisplayName(@"Value")]
 		[Description(@"Sets the value.")]
 		public ulong Value64Bit
 		{
@@ -285,9 +285,9 @@ namespace VixenModules.Effect.CustomValue
 		}
 
 		[Value]
-		[ProviderCategory(@"Value")]
-		[DisplayName(@"Color Value")]
-		[Description(@"Sets the value.")]
+		[ProviderCategory(@"Config")]
+		[DisplayName(@"Value")]
+		[Description(@"Sets the value of the Color.")]
 		public Color ColorValue
 		{
 			get { return _data.ColorValue; }
@@ -300,9 +300,9 @@ namespace VixenModules.Effect.CustomValue
 		}
 
 		[Value]
-		[ProviderCategory(@"Value")]
-		[DisplayName(@"String Value")]
-		[Description(@"Sets the value.")]
+		[ProviderCategory(@"Config")]
+		[DisplayName(@"Value")]
+		[Description(@"Sets the value as a string.")]
 		public string StringValue
 		{
 			get { return _data.StringValue; }

@@ -258,6 +258,21 @@ namespace Vixen.Sys
 			return Parents.Concat(Parents.SelectMany(x => x.GetAllParentNodes()));
 		}
 
+		public int GetMaxChildDepth()
+		{
+			return GetDepth(this);
+		}
+
+		private int GetDepth(ElementNode node)
+		{
+			if (node.IsLeaf)
+			{
+				return 1;
+			}
+			var subLevel = node.Children.Select(GetDepth);
+			return !subLevel.Any() ? 1 : subLevel.Max() + 1;
+		}
+
 		#endregion
 
 		#region Static members

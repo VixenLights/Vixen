@@ -125,24 +125,6 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Color 1 Intensity.
-        /// </summary>
-        internal static string ColorOneBrightness {
-            get {
-                return ResourceManager.GetString("ColorOneBrightness", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Color 1 Type.
-        /// </summary>
-        internal static string ColorOneType {
-            get {
-                return ResourceManager.GetString("ColorOneType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Color 2.
         /// </summary>
         internal static string ColorTwo {
@@ -152,29 +134,20 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Color 2 Intensity.
-        /// </summary>
-        internal static string ColorTwoBrightness {
-            get {
-                return ResourceManager.GetString("ColorTwoBrightness", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Color 2 Type.
-        /// </summary>
-        internal static string ColorTwoType {
-            get {
-                return ResourceManager.GetString("ColorTwoType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Coverage.
         /// </summary>
         internal static string Coverage {
             get {
                 return ResourceManager.GetString("Coverage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data Type.
+        /// </summary>
+        internal static string DataType {
+            get {
+                return ResourceManager.GetString("DataType", resourceCulture);
             }
         }
         
@@ -197,7 +170,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Deviation Percent.
+        ///   Looks up a localized string similar to Deviation.
         /// </summary>
         internal static string DeviationPercent {
             get {
@@ -233,7 +206,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Flicker Percent.
+        ///   Looks up a localized string similar to Flicker.
         /// </summary>
         internal static string FlickerPercent {
             get {
@@ -278,7 +251,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Max Brightness.
+        ///   Looks up a localized string similar to Max.
         /// </summary>
         internal static string MaxBrightness {
             get {
@@ -287,7 +260,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Min Brightness.
+        ///   Looks up a localized string similar to Min.
         /// </summary>
         internal static string MinBrightness {
             get {
@@ -314,7 +287,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Pulse Percent.
+        ///   Looks up a localized string similar to Pulse Length.
         /// </summary>
         internal static string PulsePercent {
             get {
@@ -341,7 +314,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Revolution Frequency.
+        ///   Looks up a localized string similar to Revolution.
         /// </summary>
         internal static string RevolutionFrequency {
             get {

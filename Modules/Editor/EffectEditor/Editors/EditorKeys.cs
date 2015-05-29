@@ -43,6 +43,17 @@ namespace VixenModules.Editor.EffectEditor.Editors
 		private static readonly ComponentResourceKey _FontFamilyEditorKey = new ComponentResourceKey(ThisType, "FontFamilyEditor");
 		private static readonly ComponentResourceKey _DefaultCategoryEditorKey = new ComponentResourceKey(ThisType, "DefaultCategoryEditor");
 		private static readonly ComponentResourceKey _ComplexPropertyEditorKey = new ComponentResourceKey(ThisType, "ComplexPropertyEditor");
+		private static readonly ComponentResourceKey _FilePathEditorKey = new ComponentResourceKey(typeof(EditorKeys), "FilePathEditor");
+
+
+		/// <summary>
+		///     Gets the File editor key.
+		/// </summary>
+		/// <value>The curve editor key.</value>
+		public static ComponentResourceKey FilePathEditorKey
+		{
+			get { return _FilePathEditorKey; }
+		}
 
 		/// <summary>
 		///     Gets the Curve editor key.

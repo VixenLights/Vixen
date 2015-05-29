@@ -19,7 +19,7 @@ namespace Vixen.Module.Effect
 		IEquatable<IEffectModuleInstance>,
 		IEqualityComparer<EffectModuleInstanceBase>,
 		IEquatable<EffectModuleInstanceBase>,
-		INotifyPropertyChanged, ICustomTypeDescriptor
+		ICustomTypeDescriptor
 	{
 		private ElementNode[] _targetNodes;
 		private TimeSpan _timeSpan;
@@ -56,6 +56,7 @@ namespace Vixen.Module.Effect
 					CalculateAffectedElements();
 					TargetNodesChanged();
 					IsDirty = true;
+					OnPropertyChanged();
 				}
 			}
 		}

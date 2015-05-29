@@ -118,39 +118,42 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Brightness" xml:space="preserve">
-    <value>Effect Brightness</value>
+    <value>Brightness</value>
   </data>
   <data name="Color" xml:space="preserve">
-    <value>Effect Color</value>
+    <value>Color</value>
+  </data>
+  <data name="ColorOne" xml:space="preserve">
+    <value>Color 1</value>
+  </data>
+  <data name="ColorTwo" xml:space="preserve">
+    <value>Color 2</value>
   </data>
   <data name="ColorType" xml:space="preserve">
-    <value>Effect Color Type</value>
+    <value>Color Type</value>
   </data>
   <data name="Config" xml:space="preserve">
-    <value>Effect Configuration</value>
+    <value>Configuration</value>
   </data>
   <data name="Depth" xml:space="preserve">
-    <value>Effect Depth</value>
+    <value>Depth</value>
   </data>
   <data name="Direction" xml:space="preserve">
-    <value>Effect Direction</value>
+    <value>Direction</value>
   </data>
   <data name="Flicker" xml:space="preserve">
-    <value>Effect Flicker</value>
+    <value>Flicker</value>
   </data>
   <data name="Interval" xml:space="preserve">
-    <value>Effect Interval</value>
+    <value>Interval</value>
   </data>
   <data name="Pulse" xml:space="preserve">
-    <value>Effect Pulse</value>
+    <value>Pulse</value>
   </data>
   <data name="Speed" xml:space="preserve">
-    <value>Effect Speed</value>
+    <value>Speed</value>
   </data>
   <data name="Type" xml:space="preserve">
-    <value>Effect Type</value>
-  </data>
-  <data name="Value" xml:space="preserve">
-    <value>Effect Value</value>
+    <value>Type</value>
   </data>
 </root>

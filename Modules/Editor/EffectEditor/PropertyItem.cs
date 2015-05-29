@@ -17,6 +17,7 @@
 using System;
 using System.Collections;
 using System.ComponentModel;
+using Vixen.Module.Effect;
 using VixenModules.Editor.EffectEditor.Internal;
 using VixenModules.Editor.EffectEditor.Metadata;
 using VixenModules.Editor.EffectEditor.PropertyEditing.Filters;
@@ -187,7 +188,8 @@ namespace VixenModules.Editor.EffectEditor
 
 		public override void OnComponentChanged()
 		{
-			throw new NotSupportedException();
+			//If our parent component changed, our standard values may have changed and we need to refresh them.
+			OnPropertyChanged("StandardValues");
 		}
 
 		public override IContainer Container
@@ -244,6 +246,10 @@ namespace VixenModules.Editor.EffectEditor
 		private void ComponentValueChanged(object sender, EventArgs e)
 		{
 			OnPropertyChanged("PropertyValue");
+			if (Name.Equals("TargetNodes"))
+			{
+				Owner.ComponentChanged();
+			}
 		}
 
 		#endregion

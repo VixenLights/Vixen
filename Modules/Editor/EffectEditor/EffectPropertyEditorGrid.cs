@@ -25,6 +25,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using Vixen.Attributes;
+using Vixen.Module.Effect;
 using VixenModules.Editor.EffectEditor.Controls;
 using VixenModules.Editor.EffectEditor.Design;
 using VixenModules.Editor.EffectEditor.Editors;
@@ -170,19 +171,19 @@ namespace VixenModules.Editor.EffectEditor
 		///     Gets or sets the selected object.
 		/// </summary>
 		/// <value>The selected object.</value>
-		public object SelectedObject
+		public IEffect SelectedObject
 		{
 			get { return (currentObjects != null && currentObjects.Length != 0) ? currentObjects[0] : null; }
-			set { SelectedObjects = (value == null) ? new object[0] : new[] {value}; }
+			set { SelectedObjects = (value == null) ? new IEffect[0] : new[] {value}; }
 		}
 
 		/// <summary>
 		///     Gets or sets the selected objects.
 		/// </summary>
 		/// <value>The selected objects.</value>
-		public object[] SelectedObjects
+		public IEffect[] SelectedObjects
 		{
-			get { return (currentObjects == null) ? new object[0] : (object[]) currentObjects.Clone(); }
+			get { return (currentObjects == null) ? new IEffect[0] : (IEffect[]) currentObjects.Clone(); }
 			set
 			{
 				// Ensure there are no nulls in the array
@@ -207,7 +208,7 @@ namespace VixenModules.Editor.EffectEditor
 					// Assign new objects and reload
 					if (value == null)
 					{
-						currentObjects = new object[0];
+						currentObjects = new IEffect[0];
 						DoReload();
 					}
 					else
@@ -218,7 +219,7 @@ namespace VixenModules.Editor.EffectEditor
 							var oldValue = (currentObjects != null && currentObjects.Length > 0) ? currentObjects[0] : null;
 							var newValue = (value.Length > 0) ? value[0] : null;
 
-							currentObjects = (object[]) value.Clone();
+							currentObjects = (IEffect[]) value.Clone();
 
 							if (oldValue != null && newValue != null && oldValue.GetType().Equals(newValue.GetType()))
 								SwapSelectedObject(newValue);
@@ -230,7 +231,7 @@ namespace VixenModules.Editor.EffectEditor
 						// process multiple selection
 						else
 						{
-							currentObjects = (object[]) value.Clone();
+							currentObjects = (IEffect[]) value.Clone();
 							DoReload();
 						}
 					}
@@ -609,7 +610,7 @@ namespace VixenModules.Editor.EffectEditor
 			return categories.Values.ToList();
 		}
 
-		private IEnumerable<PropertyItem> CollectProperties(object[] components)
+		private IEnumerable<PropertyItem> CollectProperties(IEffect[] components)
 		{
 			if (components == null || components.Length == 0) throw new ArgumentNullException("components");
 
@@ -805,6 +806,14 @@ namespace VixenModules.Editor.EffectEditor
 
 		#region Private members
 
+		internal void ComponentChanged()
+		{
+			foreach (var propertyItem in Properties)
+			{
+				propertyItem.OnComponentChanged();
+			}
+		}
+
 		private void DoReload()
 		{
 			//Clear the metadata
@@ -845,6 +854,7 @@ namespace VixenModules.Editor.EffectEditor
 
 				Categories = categories; //new CategoryCollection(CollectCategories(properties));
 				Properties = new GridEntryCollection<PropertyItem>(properties);
+				
 			}
 		}
 
@@ -925,7 +935,7 @@ namespace VixenModules.Editor.EffectEditor
 		private List<BrowsablePropertyAttribute> browsableProperties = new List<BrowsablePropertyAttribute>();
 		private List<BrowsableCategoryAttribute> browsableCategories = new List<BrowsableCategoryAttribute>();
 
-		private object[] currentObjects;
+		private IEffect[] currentObjects;
 
 		#endregion
 
