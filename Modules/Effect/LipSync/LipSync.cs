@@ -191,11 +191,6 @@ namespace VixenModules.Effect.LipSync
             }
         }
 
-        public override string EffectName
-        {
-            get { return ((IEffectModuleDescriptor)Descriptor).EffectName + " - " + StaticPhoneme; }
-        }
-
         public override bool ForceGenerateVisualRepresentation { get { return true; } }
 
         public override void GenerateVisualRepresentation(System.Drawing.Graphics g, System.Drawing.Rectangle clipRectangle)
