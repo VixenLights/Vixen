@@ -3090,7 +3090,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				RemoveEffectNodeAndElement(elem.EffectNode);
 			}
-
+			TimelineControl.grid.ClearSelectedElements();
 			SequenceModified();
 		}
 
@@ -4275,11 +4275,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				TimelineControl.ruler.DeleteSelectedMarks();
 			}
-			else
-				RemoveSelectedElements();
-			{
-				RemoveSelectedElements();
-			}
+			
+			RemoveSelectedElements();
+			
 		}
 
 		private void selectAllElementsToolStripMenuItem_Click(object sender, EventArgs e)
