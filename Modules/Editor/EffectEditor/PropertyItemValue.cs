@@ -25,6 +25,7 @@ using System.Windows;
 using Vixen.Module.Effect;
 using Vixen.Sys;
 using VixenModules.App.ColorGradients;
+using VixenModules.App.Curves;
 using VixenModules.Editor.EffectEditor.Input;
 using VixenModules.Editor.EffectEditor.PropertyEditing;
 using VixenModules.Property.Color;
@@ -35,7 +36,7 @@ namespace VixenModules.Editor.EffectEditor
 	/// <summary>
 	///     Provides a wrapper around property value to be used at presentation level.
 	/// </summary>
-	public class PropertyItemValue : INotifyPropertyChanged, IDropTargetAdvisor
+	public class PropertyItemValue : INotifyPropertyChanged, IDropTargetAdvisor, IDragSourceAdvisor
 	{
 		private readonly bool _hasSubProperties;
 		private readonly PropertyItem _property;
@@ -150,6 +151,37 @@ namespace VixenModules.Editor.EffectEditor
 		public UIElement GetVisualFeedback(IDataObject obj)
 		{
 			return null;
+		}
+
+		public UIElement SourceUI { get; set; }
+
+		public DragDropEffects SupportedEffects
+		{
+			get
+			{
+				return DragDropEffects.Copy;
+			} 
+			
+		}
+
+		public DataObject GetDataObject(UIElement draggedElt)
+		{
+			return new DataObject(Value);
+		}
+
+		public void FinishDrag(UIElement draggedElt, DragDropEffects finalEffects)
+		{
+			
+		}
+
+		public bool IsDraggable(UIElement dragElt)
+		{
+			if (ParentProperty.PropertyType == typeof(Curve) || ParentProperty.PropertyType == typeof(ColorGradient)
+				|| ParentProperty.PropertyType == typeof(Color))
+			{
+				return true;	
+			}
+			return false;
 		}
 
 		public UIElement GetTopContainer()

@@ -10,9 +10,9 @@
 		<StackPanel Orientation="Horizontal">
 			<Border BorderThickness="1" BorderBrush="#888888">
 				<Image Source="{Binding Value, Converter={StaticResource ColorGradientToImageConverter}}" Height="25" Width="25"
-				       input:DragDropManager.DropTargetAdvisor="{Binding}">
+				       input:DragDropManager.DropTargetAdvisor="{Binding}" input:DragDropManager.DragSourceAdvisor="{Binding}">
 					<Image.InputBindings>
-						<MouseBinding Gesture="LeftClick" Command="input:PropertyEditorCommands.ShowDialogEditor"
+						<MouseBinding Gesture="LeftDoubleClick" Command="input:PropertyEditorCommands.ShowDialogEditor"
 						              CommandParameter="{Binding}" />
 					</Image.InputBindings>
 				</Image>

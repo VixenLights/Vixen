@@ -542,30 +542,6 @@ namespace Common.Controls.Timeline
 			remove { if (grid != null) grid.ElementChangedRows -= value; }
 		}
 
-		public event EventHandler<TimelineDropEventArgs> DataDropped
-		{
-			add { grid.DataDropped += value; }
-			remove { if (grid != null) grid.DataDropped -= value; }
-		}
-
-		public event EventHandler<ToolDropEventArgs> ColorDropped
-		{
-			add { grid.ColorDropped += value; }
-			remove { if (grid != null) grid.ColorDropped -= value; }
-		}
-
-		public event EventHandler<ToolDropEventArgs> CurveDropped
-		{
-			add { grid.CurveDropped += value; }
-			remove { if (grid != null) grid.CurveDropped -= value; }
-		}
-
-		public event EventHandler<ToolDropEventArgs> GradientDropped
-		{
-			add { grid.GradientDropped += value; }
-			remove { if (grid != null) grid.GradientDropped -= value; }
-		}
-
 		public event EventHandler<ElementsChangedTimesEventArgs> ElementsMovedNew
 		{
 			add { grid.ElementsMovedNew += value; }

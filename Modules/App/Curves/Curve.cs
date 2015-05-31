@@ -58,6 +58,7 @@ namespace VixenModules.App.Curves
 
 		protected Curve LibraryReferencedCurve { get; set; }
 
+		[NonSerialized]
 		private CurveLibrary _library;
 
 		private CurveLibrary Library
@@ -176,14 +177,6 @@ namespace VixenModules.App.Curves
 		{
 			LibraryReferenceName = string.Empty;
 			LibraryReferencedCurve = null;
-		}
-
-		public Bitmap GenericImage
-		{
-			get
-			{
-				return GenerateGenericCurveImage(new Size(50,50));
-			}
 		}
 
 		public Bitmap GenerateGenericCurveImage(Size size, bool inactive=false)

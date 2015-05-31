@@ -13,7 +13,7 @@ namespace VixenModules.Editor.EffectEditor.Converters
 			if (value is ColorGradient)
 			{
 				ColorGradient colorGradient = (ColorGradient) value;
-				return BitmapImageConverter.BitmapToMediaImage(colorGradient.GenericImage);
+				return BitmapImageConverter.BitmapToMediaImage(colorGradient.GenerateColorGradientImage(new Size(50, 50), false));
 			}
 
 			return

@@ -24,7 +24,7 @@ namespace Common.Controls.Timeline
 		/// Translates a location (Point) so that its coordinates represent the coordinates on the underlying timeline, taking into account scroll position.
 		/// </summary>
 		/// <param name="originalLocation"></param>
-		protected Point translateLocation(Point originalLocation)
+		public Point TranslateLocation(Point originalLocation)
 		{
 			// Translate this location based on the auto scroll position.
 			Point p = originalLocation;
@@ -36,7 +36,7 @@ namespace Common.Controls.Timeline
 		{
 			base.OnMouseDown(e);
 
-			Point gridLocation = mouseDownGridLocation = translateLocation(e.Location);
+			Point gridLocation = mouseDownGridLocation = TranslateLocation(e.Location);
 
 			m_lastGridLocation = gridLocation; //new
 			m_mouseDownElementRow = rowAt(gridLocation);
@@ -146,7 +146,7 @@ namespace Common.Controls.Timeline
 		{
 			base.OnMouseUp(e);
 
-			Point gridLocation = mouseUpGridLocation = translateLocation(e.Location);
+			Point gridLocation = mouseUpGridLocation = TranslateLocation(e.Location);
 
 			if (e.Button == MouseButtons.Middle && _beginEffectDraw)
 			{
@@ -248,7 +248,7 @@ namespace Common.Controls.Timeline
 		{
 			base.OnMouseDoubleClick(e);
 
-			Point gridLocation = translateLocation(e.Location);
+			Point gridLocation = TranslateLocation(e.Location);
 			Element elem = elementAt(gridLocation);
 
 			if (elem != null) {
@@ -265,7 +265,7 @@ namespace Common.Controls.Timeline
 
 		protected void ShowToolTip(Point location) 
 		{
-			Point gridLocation = translateLocation(location);
+			Point gridLocation = TranslateLocation(location);
 			List<Element> elements = elementsAt(gridLocation);
 			//Determine if we have new elements captured.
 			if (capturedElements.Except(elements).Any() || elements.Except(capturedElements).Any())
@@ -319,7 +319,7 @@ namespace Common.Controls.Timeline
 		///<summary>Calls a different MouseMove_ function depending on the current drag state.</summary>
 		private void HandleMouseMove(MouseEventArgs e)
 		{
-			Point gridLocation = translateLocation(e.Location);
+			Point gridLocation = TranslateLocation(e.Location);
 			if (m_mouseDownElements != null)
 			{
 				if (ModifierKeys == Keys.Shift && m_mouseDownElements.Any())
@@ -408,7 +408,7 @@ namespace Common.Controls.Timeline
 		//private void MouseMove_DragNormal(MouseEventArgs e)
 		private void MouseMove_Normal(Point gridLocation)
 		{
-			//Point gridLocation = translateLocation(e.Location);
+			//Point gridLocation = TranslateLocation(e.Location);
 
 			// Are we in a 'resize zone' at the front or back of an element?
 			Element element = elementAt(gridLocation);
@@ -670,7 +670,7 @@ namespace Common.Controls.Timeline
 		/*
         private void MouseMove_DragMoving_OLD(MouseEventArgs e)
         {
-            Point gridLocation = translateLocation(e.Location);
+            Point gridLocation = TranslateLocation(e.Location);
 
             // if we don't have anything selected, there's no point dragging anything...
             if (SelectedElements.Count() == 0)

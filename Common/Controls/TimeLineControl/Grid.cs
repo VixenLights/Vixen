@@ -91,13 +91,16 @@ namespace Common.Controls.Timeline
 
 			// Drag & Drop
 			AllowDrop = true;
-			DragEnter += TimelineGrid_DragEnter;
-			DragDrop += TimelineGrid_DragDrop;
+			//DragEnter += TimelineGrid_DragEnter;
+			//DragDrop += TimelineGrid_DragDrop;
+			//DragOver += TimelineGrid_DragOver;
 			StartBackgroundRendering();
 			CurrentDragSnapPoints = new SortedDictionary<TimeSpan, List<SnapDetails>>();
 			EnableSnapTo = true;
 			SnapStrength = 2;
 		}
+
+		
 
 		protected override void Dispose(bool disposing)
 		{
@@ -1105,6 +1108,18 @@ namespace Common.Controls.Timeline
 			}
 
 			return containingRow;
+		}
+
+		public Element ElementAtPosition(Point p)
+		{
+			Point client = PointToClient(p);
+			Point gridPoint = TranslateLocation(client);
+			return elementAt(gridPoint);
+		}
+
+		public Row RowAtPosition(Point p)
+		{
+			return rowAt(p);
 		}
 
 		/// <summary>
@@ -2343,64 +2358,6 @@ namespace Common.Controls.Timeline
 
 		#endregion
 
-		#region External Drag/Drop
-
-		private void TimelineGrid_DragDrop(object sender, DragEventArgs e)
-		{
-			Point client = PointToClient(new Point(e.X, e.Y));
-			Point gridPoint = translateLocation(client);
-
-			Row row = rowAt(gridPoint);
-			TimeSpan time = pixelsToTime(gridPoint.X);
-			IDataObject data = e.Data;
-
-			if (DataDropped != null)
-				if (!isColorDrop && !isCurveDrop && !isGradientDrop)
-					DataDropped(this, new TimelineDropEventArgs(row, time, data));
-				else
-				{
-					if (isColorDrop)
-					{
-						isColorDrop = false;
-						
-						if (elementAt(gridPoint) == null)
-							return;
-
-						ColorDropped(this, new ToolDropEventArgs(row, time, elementAt(gridPoint), data,MouseButtonDown));
-					}
-					if (isCurveDrop)
-					{
-						isCurveDrop = false;
-
-						if (elementAt(gridPoint) == null)
-							return;
-
-						CurveDropped(this, new ToolDropEventArgs(row, time, elementAt(gridPoint), data, MouseButtonDown));
-					}
-					if (isGradientDrop)
-					{
-						isGradientDrop = false;
-
-						if (elementAt(gridPoint) == null)
-							return;
-
-						GradientDropped(this, new ToolDropEventArgs(row, time, elementAt(gridPoint), data, MouseButtonDown));
-					}
-				}
-		}
-
-		private void TimelineGrid_DragEnter(object sender, DragEventArgs e)
-		{
-			e.Effect = DragDropEffects.Copy;
-			MouseButtonDown = Control.MouseButtons; //We need to know which mouse button is down on DragEnter, Buttons are not down in DragDrop so we get it here.
-		}
-
-		internal event EventHandler<TimelineDropEventArgs> DataDropped;
-		internal event EventHandler<ToolDropEventArgs> ColorDropped;
-		internal event EventHandler<ToolDropEventArgs> CurveDropped;
-		internal event EventHandler<ToolDropEventArgs> GradientDropped;
-
-		#endregion
 	}
 
 	public class SnapDetails

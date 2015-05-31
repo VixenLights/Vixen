@@ -100,7 +100,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (e.Button == MouseButtons.Left && _beginDragDrop)
 			{
 				_beginDragDrop = false;
-				DataObject data = new DataObject(DataFormats.Serializable, _mNode.Tag);
+				DataObject data = new DataObject(_mNode.Tag);
 				DoDragDrop(data, DragDropEffects.Copy);
 			}
 		}

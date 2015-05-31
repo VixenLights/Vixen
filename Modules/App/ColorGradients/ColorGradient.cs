@@ -260,6 +260,7 @@ namespace VixenModules.App.ColorGradients
 		// doesn't get serialized; it's instantiated as needed.
 		[NonSerialized]
 		private ColorBlend _blend = null;
+		[NonSerialized]
 		private Color? _blendFilterColor = null;
 
 		#endregion
@@ -996,11 +997,6 @@ namespace VixenModules.App.ColorGradients
 			}
 		}
 
-		public Bitmap GenericImage
-		{
-			get { return GenerateColorGradientImage(new Size(50, 50), false); }
-		}
-
 		public Bitmap GenerateColorGradientImage(Size size, bool discreteColors)
 		{
 			Bitmap result = new Bitmap(size.Width, size.Height);
@@ -1078,8 +1074,10 @@ namespace VixenModules.App.ColorGradients
 
 		#region Library-linking gradients
 
+		[NonSerialized]
 		private ColorGradient _libraryReferencedGradient;
 
+		[NonSerialized]
 		private ColorGradientLibrary _library;
 
 		private ColorGradientLibrary Library

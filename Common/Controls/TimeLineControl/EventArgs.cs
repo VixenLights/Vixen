@@ -115,33 +115,6 @@ namespace Common.Controls.Timeline
 		public TimeSpan Time { get; private set; }
 	}
 
-	public class TimelineDropEventArgs : TimelineEventArgs
-	{
-		public TimelineDropEventArgs(Row row, TimeSpan time, IDataObject data)
-			: base(row, time)
-		{
-			Data = data;
-		}
-
-		public IDataObject Data { get; private set; }
-	}
-
-	public class ToolDropEventArgs : TimelineEventArgs
-	{
-		//Wouldn't compile untill I added row and time, not needed but...
-		public ToolDropEventArgs(Row row, TimeSpan time, Element elem, IDataObject data, MouseButtons mouseButton)
-			: base(row, time)
-		{
-			Element = elem;
-			Data = data;
-			MouseButton = mouseButton;
-		}
-
-		public IDataObject Data { get; private set; }
-		public Element Element { get; private set; }
-		public MouseButtons MouseButton { get; private set; }
-	}
-
 	public class ElementsChangedTimesEventArgs : EventArgs
 	{
 		public ElementsChangedTimesEventArgs(ElementMoveInfo info, ElementMoveType type)

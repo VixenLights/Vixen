@@ -15,9 +15,9 @@
 			<Border BorderThickness="1" BorderBrush="#888888">
 				<Rectangle Fill="{Binding Value, Converter={StaticResource SystemColorToSolidBrushConverter}}" Grid.Column="0"
 				           Width="25" Height="25" Margin="0" HorizontalAlignment="Center"
-				           input:DragDropManager.DropTargetAdvisor="{Binding}">
+				           input:DragDropManager.DropTargetAdvisor="{Binding}" input:DragDropManager.DragSourceAdvisor="{Binding}">
 					<Rectangle.InputBindings>
-						<MouseBinding Gesture="LeftClick" Command="input:PropertyEditorCommands.ShowDialogEditor"
+						<MouseBinding Gesture="LeftDoubleClick" Command="input:PropertyEditorCommands.ShowDialogEditor"
 						              CommandParameter="{Binding}" />
 					</Rectangle.InputBindings>
 				</Rectangle>
