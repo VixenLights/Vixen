@@ -517,17 +517,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (e.Data.GetDataPresent(typeof (ColorGradient)))
 				{
 					ColorGradient cg = (ColorGradient)e.Data.GetData(typeof (ColorGradient));
-					GradientDropped(element, cg);
+					HandleGradientDrop(element, cg);
 				}
 				else if (e.Data.GetDataPresent(typeof (Curve)))
 				{
 					Curve curve = (Curve) e.Data.GetData(typeof (Curve));
-					CurveDropped(element, curve);
+					HandleCurveDrop(element, curve);
 				}
 				else if (e.Data.GetDataPresent(typeof(Color)))
 				{
 					Color color = (Color)e.Data.GetData(typeof(Color));
-					ColorDropped(element, color);
+					HandleColorDrop(element, color);
 				}
 				
 			}
@@ -555,8 +555,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 
 				var propertyData = MetadataRepository.GetProperties(element.EffectNode.Effect);
-				if (dataObject.GetDataPresent(typeof(Color)) && 
-					propertyData.Any(x => x.PropertyType == typeof (Color) && x.IsBrowsable))
+				if (dataObject.GetDataPresent(typeof(Color)) &&
+					propertyData.Any(x => (x.PropertyType == typeof(Color) || x.PropertyType == typeof(ColorGradient)) && x.IsBrowsable))
 				{
 					return DragDropEffects.Copy;
 				}
@@ -3255,669 +3255,302 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			return new Tuple<List<Element>, bool>(elementList,multipleEffectTypes);
 		}
 
-		#region Preset Library Color Drop
-		private void ColorDropped(Element element, Color color)
+		private void UpdateEffectProperty(PropertyDescriptor descriptor, Element element, Object value)
 		{
-			Tuple<List<Element>, bool> getElementList = BuildElementListForItemDrop(element);
-			List<Element> elementList = getElementList.Item1;
-			var multipleEffectTypes = getElementList.Item2;
-			List<EffectParameterPickerControl> parameterPickerControls = new List<EffectParameterPickerControl>();
-			var mousePosition = MousePosition; //Position of mouse when drop happened
-			var hasColor = false;
-			var isColorGradient = false;
-			var isColorList = false;
-			var isColorGradientList = false;
+			descriptor.SetValue(element.EffectNode.Effect, value);
+			element.UpdateNotifyContentChanged();
+			SequenceModified();
+		}
 
-			if (multipleEffectTypes)
-			{
-				var dr =
+		private bool ShowMultipleEffectDropMessage(string name)
+		{
+			var dr =
 					MessageBox.Show(@"Multiple type effects selected, this will only apply to effects of the type: " +
-									element.EffectNode.Effect.EffectName, @"Multiple Type Effects", MessageBoxButtons.OKCancel);
-				
-				if (dr == DialogResult.Cancel) return;
+									name, @"Multiple Type Effects", MessageBoxButtons.OKCancel);
+
+			if (dr == DialogResult.Cancel)
+			{
+				return false;
 			}
 
-			int i = 0;
-			//Seach for typeof Color
-			foreach (ParameterSpecification pSig in element.EffectNode.Effect.Parameters)
+			return true;
+		}
+
+		#region Preset Library Color Drop
+
+		private void HandleColorDrop(Element element, Color color)
+		{
+			var elements = element.Selected ? TimelineControl.SelectedElements.Where(x => x.EffectNode.Effect.GetType() == element.EffectNode.Effect.GetType()) : new[] {element};
+
+			if (elements.Count() > 1 && elements.Count() != TimelineControl.SelectedElements.Count())
 			{
-				if (pSig.Type == typeof (Color))
+				if(!ShowMultipleEffectDropMessage(element.EffectNode.Effect.EffectName))
 				{
-					hasColor = true;
-
-					EffectParameterPickerControl effectParameterPickerControl = new EffectParameterPickerControl
-					{
-						ParameterIndex = i,
-						ParameterName = pSig.Name,
-						ParameterImage = getColorBitmap((Color)element.EffectNode.Effect.ParameterValues[i])
-					};
-					
-					parameterPickerControls.Add(effectParameterPickerControl);
-				}
-				i++;
-			}
-
-
-			//Seach for typeof ColorGradient
-			if (parameterPickerControls.Count == 0)
-			{
-				i = 0;
-				foreach (ParameterSpecification pSig in element.EffectNode.Effect.Parameters)
-				{
-					if (pSig.Type == typeof(ColorGradient))
-					{
-						hasColor = isColorGradient = true;
-
-						EffectParameterPickerControl effectParameterPickerControl = new EffectParameterPickerControl
-						{
-							ParameterIndex = i,
-							ParameterName = pSig.Name,
-							ParameterImage = getColorGradientBitmap((ColorGradient)element.EffectNode.Effect.ParameterValues[i])
-						};
-
-						parameterPickerControls.Add(effectParameterPickerControl);
-					}
-					i++;
+					return;
 				}
 			}
-
-			//Seach for typeof List<Color>
-			if (parameterPickerControls.Count == 0)
+			Dictionary<Element, Tuple<Object, PropertyDescriptor>> elementValues = new Dictionary<Element, Tuple<object, PropertyDescriptor>>();
+			
+			var properties = MetadataRepository.GetProperties(element.EffectNode.Effect).Where(x => (x.PropertyType == typeof(Color) ||
+				x.PropertyType == typeof(ColorGradient)) && x.IsBrowsable);
+			if (properties.Count() == 1)
 			{
-				i = 0;
-				foreach (ParameterSpecification pSig in element.EffectNode.Effect.Parameters)
+				var property = properties.First();
+				if (property.PropertyType == typeof (Color))
 				{
-					if (pSig.Type == typeof (List<Color>))
+					foreach (var e in elements)
 					{
-						hasColor = isColorList = true;
-
-						List<Color> colorList = (List<Color>) element.EffectNode.Effect.ParameterValues[i];
-
-						int colorIndex = 0;
-						foreach (Color colorItem in colorList)
-						{
-							EffectParameterPickerControl effectParameterPickerControl = new EffectParameterPickerControl
-							{
-								ParameterIndex = i,
-								ParameterListIndex = colorIndex,
-								ParameterName = "Color " + (colorIndex + 1),
-								ParameterImage = getColorBitmap(colorItem)
-							};
-
-							parameterPickerControls.Add(effectParameterPickerControl);
-							colorIndex++;
-						}
+						elementValues.Add(e, new Tuple<object, PropertyDescriptor>(property.Descriptor.GetValue(e.EffectNode.Effect), property.Descriptor));
+						UpdateEffectProperty(property.Descriptor, e, color);
 					}
-					i++;
 				}
-
-			}
-
-			//Seach for typeof List<ColorGradient>
-			if (parameterPickerControls.Count == 0)
-			{
-				i = 0;
-				foreach (ParameterSpecification pSig in element.EffectNode.Effect.Parameters)
+				else if (property.PropertyType == typeof (ColorGradient))
 				{
-					if (pSig.Type == typeof(List<ColorGradient>))
+					foreach (var e in elements)
 					{
-						hasColor = isColorGradientList = true;
-
-						List<ColorGradient> gradientList = (List<ColorGradient>)element.EffectNode.Effect.ParameterValues[i];
-
-						int gradientIndex = 0;
-						foreach (ColorGradient gradientItem in gradientList)
-						{
-							EffectParameterPickerControl effectParameterPickerControl = new EffectParameterPickerControl
-							{
-								ParameterIndex = i,
-								ParameterListIndex = gradientIndex,
-								ParameterName = "ColorGradient " + (gradientIndex + 1),
-								ParameterImage = getColorGradientBitmap(gradientItem)
-							};
-
-							parameterPickerControls.Add(effectParameterPickerControl);
-							gradientIndex++;
-						}
+						elementValues.Add(e, new Tuple<object, PropertyDescriptor>(property.Descriptor.GetValue(e.EffectNode.Effect), property.Descriptor));
+						UpdateEffectProperty(property.Descriptor, e, new ColorGradient(color));
 					}
-					i++;
-				}
-			}
-			Dictionary<Element, EffectModelCandidate> changedElements = new Dictionary<Element, EffectModelCandidate>();
-			if (parameterPickerControls.Count > 1 || isColorList || isColorGradientList)
-			{
-				FormParameterPicker parameterPicker = new FormParameterPicker(parameterPickerControls)
-				{
-					StartPosition = FormStartPosition.Manual,
-					Top = mousePosition.Y
-				};
-				parameterPicker.Left = ((mousePosition.X + parameterPicker.Width) < Screen.PrimaryScreen.Bounds.Width)
-					? mousePosition.X
-					: mousePosition.X - parameterPicker.Width;
-
-				UpdateToolStrip4("Chose the color property to set, press Escape to cancel.");
-				var dr = parameterPicker.ShowDialog();
-				if (dr == DialogResult.OK)
-				{
-					
-					
-					int k = 1;
-					if (isColorList)
-					{
-						foreach (Element elem in elementList)
-						{
-							if (!changedElements.ContainsKey(elem))
-							{
-								changedElements.Add(elem, new EffectModelCandidate(elem.EffectNode.Effect));	
-							}
-							object[] parms = elem.EffectNode.Effect.ParameterValues;
-							List<Color> colorList = (List<Color>)parms[parameterPicker.ParameterIndex];
-							if (parameterPicker.ParameterListIndex >= colorList.Count) continue;							
-							colorList[parameterPicker.ParameterListIndex] = color;
-							parms[parameterPicker.ParameterIndex] = colorList;
-							elem.EffectNode.Effect.ParameterValues = parms;
-							//TimelineControl.grid.RenderElement(elem);
-							elem.UpdateNotifyContentChanged();
-							SequenceModified();
-							k++;
-						}
-					}
-
-					if (isColorGradientList)
-					{
-						foreach (Element elem in elementList)
-						{
-							if (!changedElements.ContainsKey(elem))
-							{
-								changedElements.Add(elem, new EffectModelCandidate(elem.EffectNode.Effect));
-							}
-							object[] parms = elem.EffectNode.Effect.ParameterValues;
-							List<ColorGradient> colorGradientList = (List<ColorGradient>) parms[parameterPicker.ParameterIndex];
-							if (parameterPicker.ParameterListIndex >= colorGradientList.Count) continue;
-							colorGradientList[parameterPicker.ParameterListIndex] = new ColorGradient(color);
-							parms[parameterPicker.ParameterIndex] = colorGradientList;
-							elem.EffectNode.Effect.ParameterValues = parms;
-							//TimelineControl.grid.RenderElement(elem);
-							elem.UpdateNotifyContentChanged();
-							SequenceModified();
-							k++;
-						}
-					}
-
-					if (!isColorList && !isColorGradientList)
-					{
-						foreach (Element elem in elementList)
-						{
-							if (!changedElements.ContainsKey(elem))
-							{
-								changedElements.Add(elem, new EffectModelCandidate(elem.EffectNode.Effect));
-							}
-							object[] parms = elem.EffectNode.Effect.ParameterValues;
-							parms[parameterPicker.ParameterIndex] = color;
-
-							switch (elem.EffectNode.Effect.EffectName)
-							{
-								case "Alternating":
-									if (parameterPicker.ParameterIndex == 1)
-										parms[8] = true;
-									else
-										parms[9] = true;
-									break;
-							}
-
-							elem.EffectNode.Effect.ParameterValues = parms;
-							//TimelineControl.grid.RenderElement(elem);
-							elem.UpdateNotifyContentChanged();
-							SequenceModified();
-							k++;
-						}
-					}
-					
-					UpdateToolStrip4("Color applied to " + k + " " + element.EffectNode.Effect.EffectName + " effect(s).",60);
-				}
-				else
-				{
-					UpdateToolStrip4("Color drop action cancled, no effects were modified.",60);
 				}
 			}
 			else
 			{
-				if (!hasColor)
+				//We have more than one color type property
+				List<EffectParameterPickerControl> parameterPickerControls = properties.Select(propertyData => new EffectParameterPickerControl
 				{
-					UpdateToolStrip4("No action taken, the target effect(s) do not support colors.",60);
-					return;
+					PropertyInfo = propertyData.Descriptor, 
+					ParameterImage = propertyData.PropertyType == typeof (Color) ? GetColorBitmap((Color) propertyData.Descriptor.GetValue(element.EffectNode.Effect)) : GetColorGradientBitmap((ColorGradient) propertyData.Descriptor.GetValue(element.EffectNode.Effect))
+				}).ToList();
+
+				FormParameterPicker parameterPicker = new FormParameterPicker(parameterPickerControls)
+				{
+					StartPosition = FormStartPosition.Manual,
+					Top = MousePosition.Y
+				};
+				parameterPicker.Left = ((MousePosition.X + parameterPicker.Width) < Screen.FromControl(this).Bounds.Width)
+					? MousePosition.X
+					: MousePosition.X - parameterPicker.Width;
+
+				UpdateToolStrip4("Choose the property to set, press Escape to cancel.", 60);
+				var dr = parameterPicker.ShowDialog();
+				if (dr == DialogResult.OK)
+				{
+					
+					foreach (var e in elements)
+					{
+						if (parameterPicker.PropertyInfo.PropertyType == typeof (Color))
+						{
+							elementValues.Add(e, new Tuple<object, PropertyDescriptor>(parameterPicker.PropertyInfo.GetValue(element.EffectNode.Effect), parameterPicker.PropertyInfo));
+							UpdateEffectProperty(parameterPicker.PropertyInfo, e, color );
+						}
+						else if (parameterPicker.PropertyInfo.PropertyType == typeof(ColorGradient))
+						{
+							elementValues.Add(e, new Tuple<object, PropertyDescriptor>(parameterPicker.PropertyInfo.GetValue(element.EffectNode.Effect), parameterPicker.PropertyInfo));
+							UpdateEffectProperty(parameterPicker.PropertyInfo, e, new ColorGradient(color));
+						}
+					}
+				}
+				else
+				{
+					UpdateToolStrip4(String.Empty);
 				}
 
-				int j = !isColorGradient ? element.EffectNode.Effect.Parameters.TakeWhile(pSig => pSig.Type != typeof(Color)).Count() : element.EffectNode.Effect.Parameters.TakeWhile(pSig => pSig.Type != typeof(ColorGradient)).Count();
-
-				int k = 0;
-				foreach (Element elem in elementList)
-				{
-					if (!changedElements.ContainsKey(elem))
-					{
-						changedElements.Add(elem, new EffectModelCandidate(elem.EffectNode.Effect));
-					}
-					object[] parms = elem.EffectNode.Effect.ParameterValues;
-					if (!isColorGradient)
-					{
-						parms[j] = color;
-					}
-					else
-					{
-						parms[j] = new ColorGradient(color);	
-					}
-
-					switch (elem.EffectNode.Effect.EffectName)
-					{
-						case "Chase":
-							parms[0] = 0;
-							break;
-						case "Spin":
-							parms[2] = 0;
-							break;
-						case "Twinkle":
-							parms[7] = 0;
-							break;
-					}
-
-					elem.EffectNode.Effect.ParameterValues = parms;
-					//TimelineControl.grid.RenderElement(elem);
-					elem.UpdateNotifyContentChanged();
-					SequenceModified();
-					k++;
-				}
-				AddEffectsModifiedToUndo(changedElements);
-				UpdateToolStrip4("Color applied to " + k + " " + element.EffectNode.Effect.EffectName + " effect(s).",60);
 			}
+			if (elementValues.Any())
+			{
+				var undo = new EffectsPropertyModifiedUndoAction(elementValues);
+				AddEffectsModifiedToUndo(undo);
+				UpdateToolStrip4("Color applied to " + elementValues.Count() + " " + element.EffectNode.Effect.EffectName + " effect(s).", 60);
+			}
+			
 		}
 
 		#endregion Preset Library Color Drop
 
 		#region Preset Library Curve Drop
-		private void CurveDropped(Element element, Curve curve)
+		
+		private void HandleCurveDrop(Element element, Curve curve)
 		{
-			if (curve == null) return;
-			Tuple<List<Element>, bool> getElementList = BuildElementListForItemDrop(element);
-			List<Element> elementList = getElementList.Item1;
-			var multipleEffectTypes = getElementList.Item2;
-			List<EffectParameterPickerControl> parameterPickerControls = new List<EffectParameterPickerControl>();
-			var mousePosition = MousePosition; //Position of mouse when drop happened
-			var hasCurve = false;
-			var isCurveList = false;
+			var elements = element.Selected ? TimelineControl.SelectedElements.Where(x => x.EffectNode.Effect.GetType() == element.EffectNode.Effect.GetType()) : new[] { element };
 
-			if (multipleEffectTypes)
+			if (elements.Count() > 1 && elements.Count() != TimelineControl.SelectedElements.Count())
 			{
-				var dr =
-					MessageBox.Show(@"Multiple type effects selected, this will only apply to effects of the type: " +
-					                element.EffectNode.Effect.EffectName, @"Multiple Type Effects", MessageBoxButtons.OKCancel);
-				
-				if (dr == DialogResult.Cancel) return;
-			}
-
-			int i = 0;			
-			foreach (ParameterSpecification pSig in element.EffectNode.Effect.Parameters)
-			{
-				if (pSig.Type == typeof (Curve))
+				if (!ShowMultipleEffectDropMessage(element.EffectNode.Effect.EffectName))
 				{
-					hasCurve = true;
-
-					EffectParameterPickerControl effectParameterPickerControl = new EffectParameterPickerControl
-					{
-						ParameterIndex = i,
-						ParameterName = pSig.Name,
-						ParameterImage = getCurveBitmap((Curve)element.EffectNode.Effect.ParameterValues[i])
-					};
-
-					parameterPickerControls.Add(effectParameterPickerControl);
-				}
-				i++;
-			}
-
-			//Seach for typeof List<Curve>
-			if (parameterPickerControls.Count == 0)
-			{
-				i = 0;
-				foreach (ParameterSpecification pSig in element.EffectNode.Effect.Parameters)
-				{
-					if (pSig.Type == typeof(List<Curve>))
-					{
-						hasCurve = isCurveList = true;
-
-						List<Curve> curveList = (List<Curve>)element.EffectNode.Effect.ParameterValues[i];
-
-						int curveIndex = 0;
-						foreach (Curve curveItem in curveList)
-						{
-							EffectParameterPickerControl effectParameterPickerControl = new EffectParameterPickerControl
-							{
-								ParameterIndex = i,
-								ParameterListIndex = curveIndex,
-								ParameterName = "Curve " + (curveIndex + 1),
-								ParameterImage = getCurveBitmap(curveItem)
-							};
-
-							parameterPickerControls.Add(effectParameterPickerControl);
-							curveIndex++;
-						}
-					}
-					i++;
+					return;
 				}
 			}
-			Dictionary<Element, EffectModelCandidate> changedElements = new Dictionary<Element, EffectModelCandidate>();
-			if (parameterPickerControls.Count > 1)
-			{
-				FormParameterPicker parameterPicker = new FormParameterPicker(parameterPickerControls)
-				{
-					StartPosition = FormStartPosition.Manual,
-					Top = mousePosition.Y
-				};
-				parameterPicker.Left = ((mousePosition.X + parameterPicker.Width) < Screen.PrimaryScreen.Bounds.Width)
-					? mousePosition.X
-					: mousePosition.X - parameterPicker.Width;
+			Dictionary<Element, Tuple<Object, PropertyDescriptor>> elementValues = new Dictionary<Element, Tuple<object, PropertyDescriptor>>();
 
-				UpdateToolStrip4("Chose the Curve property to set, press Escape cancel.");
-				var dr = parameterPicker.ShowDialog();
-				if (dr == DialogResult.OK)
+			var properties = MetadataRepository.GetProperties(element.EffectNode.Effect).Where(x => x.PropertyType == typeof(Curve) && x.IsBrowsable);
+			if (properties.Count() == 1)
+			{
+				var property = properties.First();
+
+				foreach (var e in elements)
 				{
-					int k = 0;
-					if (isCurveList)
-					{
-						foreach (Element elem in elementList)
-						{
-							if (!changedElements.ContainsKey(elem))
-							{
-								changedElements.Add(elem, new EffectModelCandidate(elem.EffectNode.Effect));
-							}
-							object[] parms = elem.EffectNode.Effect.ParameterValues;
-							List<Curve> curveList = (List<Curve>)parms[parameterPicker.ParameterIndex];
-							if (parameterPicker.ParameterListIndex >= curveList.Count) continue;
-							curveList[parameterPicker.ParameterListIndex] = new Curve(curve);
-							parms[parameterPicker.ParameterIndex] = curveList;
-							elem.EffectNode.Effect.ParameterValues = parms;
-							//TimelineControl.grid.RenderElement(elem);
-							elem.UpdateNotifyContentChanged();
-							SequenceModified();
-							k++;
-						}
-					}
-					
-					else //!isCurveList
-					{
-						foreach (Element elem in elementList)
-						{
-							if (!changedElements.ContainsKey(elem))
-							{
-								changedElements.Add(elem, new EffectModelCandidate(elem.EffectNode.Effect));
-							}
-							object[] parms = elem.EffectNode.Effect.ParameterValues;
-							parms[parameterPicker.ParameterIndex] = curve;
-							elem.EffectNode.Effect.ParameterValues = parms;
-							//TimelineControl.grid.RenderElement(elem);
-							elem.UpdateNotifyContentChanged();
-							SequenceModified();
-							k++;
-						}
-					}
-					
-					UpdateToolStrip4("Curve " + curve.LibraryReferenceName + " applied to " + k + " " + element.EffectNode.Effect.EffectName + " effect(s).",60);
+					elementValues.Add(e, new Tuple<object, PropertyDescriptor>(property.Descriptor.GetValue(e.EffectNode.Effect), property.Descriptor));
+					UpdateEffectProperty(property.Descriptor, e, curve);
 				}
-				else
-				{
-					UpdateToolStrip4("Curve drop action cancled, no effects were modified.",60);
-				}
+
 			}
 			else
 			{
-				if (!hasCurve)
+				//We have more than one property of the same type
+				List<EffectParameterPickerControl> parameterPickerControls = properties.Select(propertyData => new EffectParameterPickerControl
 				{
-					UpdateToolStrip4("No action taken, the target effect(s) do not support curves.",60);
-					return;
-				}
+					PropertyInfo = propertyData.Descriptor,
+					ParameterImage = GetCurveBitmap((Curve)propertyData.Descriptor.GetValue(element.EffectNode.Effect))
+				}).ToList();
 
-				int j = element.EffectNode.Effect.Parameters.TakeWhile(pSig => pSig.Type != typeof (Curve)).Count();
-
-				int k = 0;
-				foreach (Element elem in elementList)
+				FormParameterPicker parameterPicker = new FormParameterPicker(parameterPickerControls)
 				{
-					if (!changedElements.ContainsKey(elem))
+					StartPosition = FormStartPosition.Manual,
+					Top = MousePosition.Y
+				};
+				parameterPicker.Left = ((MousePosition.X + parameterPicker.Width) < Screen.FromControl(this).Bounds.Width)
+					? MousePosition.X
+					: MousePosition.X - parameterPicker.Width;
+
+				UpdateToolStrip4("Choose the property to set, press Escape to cancel.", 60);
+				var dr = parameterPicker.ShowDialog();
+				if (dr == DialogResult.OK)
+				{
+					foreach (var e in elements)
 					{
-						changedElements.Add(elem, new EffectModelCandidate(elem.EffectNode.Effect));
+						elementValues.Add(e,
+							new Tuple<object, PropertyDescriptor>(parameterPicker.PropertyInfo.GetValue(element.EffectNode.Effect),
+								parameterPicker.PropertyInfo));
+						UpdateEffectProperty(parameterPicker.PropertyInfo, e, curve);
 					}
-					object[] parms = elem.EffectNode.Effect.ParameterValues;
-					parms[j] = curve;
-					elem.EffectNode.Effect.ParameterValues = parms;
-					//TimelineControl.grid.RenderElement(elem);
-					elem.UpdateNotifyContentChanged();
-					SequenceModified();
-					k++;
+				}
+				else
+				{
+					UpdateToolStrip4(String.Empty);
 				}
 
-				UpdateToolStrip4("Curve " + curve.LibraryReferenceName + " applied to " + k + " " + element.EffectNode.Effect.EffectName + " effect(s).",60);
 			}
+			if (elementValues.Any())
+			{
+				var undo = new EffectsPropertyModifiedUndoAction(elementValues);
+				AddEffectsModifiedToUndo(undo);
+				UpdateToolStrip4("Curve applied to " + elementValues.Count() + " " + element.EffectNode.Effect.EffectName + " effect(s).", 60);
+			}
+			
+
 		}
 
 		#endregion Preset Library Curve Drop
 
 		#region Preset Library Color Gradient Drop
-		private void GradientDropped(Element element, ColorGradient colorGradient)
+
+		private void HandleGradientDrop(Element element, ColorGradient gradient)
 		{
-			if (colorGradient == null) return;
-			Tuple<List<Element>, bool> getElementList = BuildElementListForItemDrop(element);
-			List<Element> elementList = getElementList.Item1;
-			var multipleEffectTypes = getElementList.Item2;
-			List<EffectParameterPickerControl> parameterPickerControls = new List<EffectParameterPickerControl>();
-			
-			var mousePosition = MousePosition; //Position of mouse when drop happened
-			var hasColorGradient = false;
-			var isColorGradientList = false;
+			var elements = element.Selected ? TimelineControl.SelectedElements.Where(x => x.EffectNode.Effect.GetType() == element.EffectNode.Effect.GetType()) : new[] { element };
 
-			if (multipleEffectTypes)
+			if (elements.Count() > 1 && elements.Count() != TimelineControl.SelectedElements.Count())
 			{
-				var dr =
-					MessageBox.Show(@"Multiple type effects selected, this will only apply to effects of the type: " +
-									element.EffectNode.Effect.EffectName, @"Multiple Type Effects", MessageBoxButtons.OKCancel);
-
-				if (dr == DialogResult.Cancel) return;
-			}
-
-			int i = 0;
-			foreach (ParameterSpecification pSig in element.EffectNode.Effect.Parameters)
-			{
-				if (pSig.Type == typeof(ColorGradient))
+				if (!ShowMultipleEffectDropMessage(element.EffectNode.Effect.EffectName))
 				{
-					hasColorGradient = true;
-
-					EffectParameterPickerControl effectParameterPickerControl = new EffectParameterPickerControl
-					{
-						ParameterIndex = i,
-						ParameterName = pSig.Name,
-						ParameterImage = getColorGradientBitmap((ColorGradient)element.EffectNode.Effect.ParameterValues[i])
-					};
-
-					parameterPickerControls.Add(effectParameterPickerControl);
-				}
-				i++;
-			}
-
-			//Seach for typeof List<ColorGradient>
-			if (parameterPickerControls.Count == 0)
-			{
-				i = 0;
-				foreach (ParameterSpecification pSig in element.EffectNode.Effect.Parameters)
-				{
-					if (pSig.Type == typeof(List<ColorGradient>))
-					{
-						hasColorGradient = isColorGradientList = true;
-
-						List<ColorGradient> gradientList = (List<ColorGradient>)element.EffectNode.Effect.ParameterValues[i];
-
-						int gradientIndex = 0;
-						foreach (ColorGradient gradientItem in gradientList)
-						{
-							EffectParameterPickerControl effectParameterPickerControl = new EffectParameterPickerControl
-							{
-								ParameterIndex = i,
-								ParameterListIndex = gradientIndex,
-								ParameterName = "ColorGradient " + (gradientIndex + 1),
-								ParameterImage = getColorGradientBitmap(gradientItem)
-							};
-
-							parameterPickerControls.Add(effectParameterPickerControl);
-							gradientIndex++;
-						}
-					}
-					i++;
+					return;
 				}
 			}
-			Dictionary<Element, EffectModelCandidate> changedElements = new Dictionary<Element, EffectModelCandidate>();
-			if (parameterPickerControls.Count > 1)
+			Dictionary<Element, Tuple<Object, PropertyDescriptor>> elementValues = new Dictionary<Element, Tuple<object, PropertyDescriptor>>();
+
+			var properties = MetadataRepository.GetProperties(element.EffectNode.Effect).Where(x => x.PropertyType == typeof(ColorGradient) && x.IsBrowsable);
+			if (properties.Count() == 1)
 			{
-				FormParameterPicker parameterPicker = new FormParameterPicker(parameterPickerControls)
+				var property = properties.First();
+
+				foreach (var e in elements)
 				{
-					StartPosition = FormStartPosition.Manual,
-					Top = mousePosition.Y
-				};
-				parameterPicker.Left = ((mousePosition.X + parameterPicker.Width) < Screen.PrimaryScreen.Bounds.Width)
-					? mousePosition.X
-					: mousePosition.X - parameterPicker.Width;
-
-				UpdateToolStrip4("Chose the Color Gradient property to set, press Escape to cancel.");
-				var dr = parameterPicker.ShowDialog();
-				if (dr == DialogResult.OK)
-				{
-					int k = 0;
-					if (isColorGradientList)
-					{
-						foreach (Element elem in elementList)
-						{
-							if (!changedElements.ContainsKey(elem))
-							{
-								changedElements.Add(elem, new EffectModelCandidate(elem.EffectNode.Effect));
-							}
-							object[] parms = elem.EffectNode.Effect.ParameterValues;
-							List<ColorGradient> colorGradientList = (List<ColorGradient>)parms[parameterPicker.ParameterIndex];
-							if (parameterPicker.ParameterListIndex >= colorGradientList.Count) continue;
-							colorGradientList[parameterPicker.ParameterListIndex] = new ColorGradient(colorGradient);
-							parms[parameterPicker.ParameterIndex] = colorGradientList;
-							elem.EffectNode.Effect.ParameterValues = parms;
-							//TimelineControl.grid.RenderElement(elem);
-							elem.UpdateNotifyContentChanged();
-							SequenceModified();
-							k++;
-						}
-					}
-					
-					else
-					{
-						foreach (Element elem in elementList)
-						{
-							if (!changedElements.ContainsKey(elem))
-							{
-								changedElements.Add(elem, new EffectModelCandidate(elem.EffectNode.Effect));
-							}
-							object[] parms = elem.EffectNode.Effect.ParameterValues;
-							parms[parameterPicker.ParameterIndex] = colorGradient;
-
-							switch (elem.EffectNode.Effect.EffectName)
-							{
-								case "Alternating":
-									if (parameterPicker.ParameterIndex == 10)
-										parms[8] = false;
-									else
-										parms[9] = false;
-									break;
-							}
-
-							elem.EffectNode.Effect.ParameterValues = parms;
-							//TimelineControl.grid.RenderElement(elem);
-							elem.UpdateNotifyContentChanged();
-							SequenceModified();
-							k++;
-						}
-					}
-
-					UpdateToolStrip4("Color Gradient " + colorGradient.LibraryReferenceName + " applied to " + k + " " + element.EffectNode.Effect.EffectName + " effect(s).",60);
+					elementValues.Add(e, new Tuple<object, PropertyDescriptor>(property.Descriptor.GetValue(e.EffectNode.Effect), property.Descriptor));
+					UpdateEffectProperty(property.Descriptor, e, gradient);
 				}
-				else
-				{
-					UpdateToolStrip4("Color Gradient drop action canceled, no effects were modified.",60);
-				}
+
 			}
 			else
 			{
-				if (!hasColorGradient)
+				//We have more than one property of the same type
+				List<EffectParameterPickerControl> parameterPickerControls = properties.Select(propertyData => new EffectParameterPickerControl
 				{
-					UpdateToolStrip4("No action taken, the target effect(s) do not support Color Gradients.",60);
-					return;
+					PropertyInfo = propertyData.Descriptor,
+					ParameterImage = GetColorGradientBitmap((ColorGradient)propertyData.Descriptor.GetValue(element.EffectNode.Effect))
+				}).ToList();
+
+				FormParameterPicker parameterPicker = new FormParameterPicker(parameterPickerControls)
+				{
+					StartPosition = FormStartPosition.Manual,
+					Top = MousePosition.Y
+				};
+				parameterPicker.Left = ((MousePosition.X + parameterPicker.Width) < Screen.FromControl(this).Bounds.Width)
+					? MousePosition.X
+					: MousePosition.X - parameterPicker.Width;
+
+				UpdateToolStrip4("Choose the property to set, press Escape to cancel.", 60);
+				var dr = parameterPicker.ShowDialog();
+				if (dr == DialogResult.OK)
+				{
+					foreach (var e in elements)
+					{
+						elementValues.Add(e, new Tuple<object, PropertyDescriptor>(parameterPicker.PropertyInfo.GetValue(element.EffectNode.Effect), parameterPicker.PropertyInfo));
+						UpdateEffectProperty(parameterPicker.PropertyInfo, e, gradient);
+					}
+				}
+				else
+				{
+					UpdateToolStrip4(String.Empty);
 				}
 
-				int j = element.EffectNode.Effect.Parameters.TakeWhile(pSig => pSig.Type != typeof(ColorGradient)).Count();
 
-				int k = 0;
-				foreach (Element elem in elementList)
-				{
-					if (!changedElements.ContainsKey(elem))
-					{
-						changedElements.Add(elem, new EffectModelCandidate(elem.EffectNode.Effect));
-					}
-					object[] parms = elem.EffectNode.Effect.ParameterValues;
-					parms[j] = colorGradient;
-					switch (elem.EffectNode.Effect.EffectName)
-					{
-						case "Chase":
-							parms[0] = ToolsForm.GradientHandling;
-							break;
-						case "Spin":
-							parms[2] = ToolsForm.GradientHandling;
-							break;
-						case "Twinkle":
-							parms[7] = ToolsForm.GradientHandling;
-							break;
-					}
-					elem.EffectNode.Effect.ParameterValues = parms;
-					//TimelineControl.grid.RenderElement(elem);
-					elem.UpdateNotifyContentChanged();
-					SequenceModified();
-					k++;
-				}
-
-				UpdateToolStrip4("Color Gradient " + colorGradient.LibraryReferenceName + " applied to " + k + " " + element.EffectNode.Effect.EffectName + " effect(s).",60);
 			}
+			if (elementValues.Any())
+			{
+				var undo = new EffectsPropertyModifiedUndoAction(elementValues);
+				AddEffectsModifiedToUndo(undo);
+				UpdateToolStrip4("Gradient applied to " + elementValues.Count() + " " + element.EffectNode.Effect.EffectName + " effect(s).", 60);
+			}
+
+			
+
 		}
 		
 		#endregion Preset Library Color Gradient Drop
 
 		#region Bitmap methods for PL item drops
 
-		private Bitmap getColorBitmap(Color color)
+		private Bitmap GetColorBitmap(Color color)
 		{
 			Bitmap colorBitmap = new Bitmap(48, 48);
 			Graphics gfx = Graphics.FromImage(colorBitmap);
 			using (SolidBrush brush = new SolidBrush(color))
 			{
 				gfx.FillRectangle(brush, 0, 0, 48, 48);
-				gfx.DrawRectangle(new Pen(Color.Black, 2), 0, 0, 48, 48);
 			}
 
-			return colorBitmap;
+			return drawBitmapBorder(colorBitmap);
 		}
 
-		private Bitmap getCurveBitmap(Curve curve)
+		private Bitmap GetCurveBitmap(Curve curve)
 		{
 			var curveBitmap = new Bitmap((curve.GenerateCurveImage(new Size(48, 48))));
-			Graphics gfx = Graphics.FromImage(curveBitmap);
-			gfx.DrawRectangle(new Pen(Color.Black, 2), 0, 0, 48, 48);
-
-			return curveBitmap;
+			return drawBitmapBorder(curveBitmap);
 		}
 
-		private Bitmap getColorGradientBitmap(ColorGradient colorGradient)
+		private Bitmap GetColorGradientBitmap(ColorGradient colorGradient)
 		{
 			var gradientBitmap = new Bitmap((colorGradient.GenerateColorGradientImage(new Size(48, 48), false)));
-			Graphics gfx = Graphics.FromImage(gradientBitmap);
-			gfx.DrawRectangle(new Pen(Color.Black, 2), 0, 0, 48, 48);
+			return drawBitmapBorder(gradientBitmap);
+		}
 
-			return gradientBitmap;
+		private Bitmap drawBitmapBorder(Bitmap image)
+		{
+			Graphics gfx = Graphics.FromImage(image);
+			using (Pen p = new Pen(Color.Black, 2))
+			{
+				gfx.DrawRectangle(p, 0, 0, image.Width, image.Height);	
+			}
+			return image;	
 		}
 
 		#endregion Bitmap methods for PL item drops
