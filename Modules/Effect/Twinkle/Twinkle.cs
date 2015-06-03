@@ -120,6 +120,9 @@ namespace VixenModules.Effect.Twinkle
 			{
 				_data.IndividualChannels = value;
 				IsDirty = true;
+				UpdateDepthAttributes();
+				TypeDescriptor.Refresh(this);
+				OnPropertyChanged();
 			}
 		}
 
@@ -135,6 +138,7 @@ namespace VixenModules.Effect.Twinkle
 			{
 				_data.MinimumLevel = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
@@ -150,6 +154,7 @@ namespace VixenModules.Effect.Twinkle
 			{
 				_data.MaximumLevel = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
@@ -165,6 +170,7 @@ namespace VixenModules.Effect.Twinkle
 			{
 				_data.LevelVariation = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
@@ -179,6 +185,7 @@ namespace VixenModules.Effect.Twinkle
 			{
 				_data.AveragePulseTime = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
@@ -194,6 +201,7 @@ namespace VixenModules.Effect.Twinkle
 			{
 				_data.PulseTimeVariation = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
@@ -209,6 +217,7 @@ namespace VixenModules.Effect.Twinkle
 			{
 				_data.AverageCoverage = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
@@ -226,6 +235,7 @@ namespace VixenModules.Effect.Twinkle
 				IsDirty = true;
 				UpdateColorHandlingAttributes();
 				TypeDescriptor.Refresh(this);
+				OnPropertyChanged();
 			}
 		}
 
@@ -244,6 +254,7 @@ namespace VixenModules.Effect.Twinkle
 			{
 				_data.StaticColor = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
@@ -262,6 +273,7 @@ namespace VixenModules.Effect.Twinkle
 			{
 				_data.ColorGradient = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 		#region Attributes
@@ -269,6 +281,7 @@ namespace VixenModules.Effect.Twinkle
 		private void UpdateAllAttributes()
 		{
 			UpdateColorHandlingAttributes();
+			UpdateDepthAttributes();
 			TypeDescriptor.Refresh(this);
 		}
 
@@ -278,6 +291,15 @@ namespace VixenModules.Effect.Twinkle
 			{
 				{"StaticColor", ColorHandling.Equals(TwinkleColorHandling.StaticColor)},
 				{"ColorGradient", !ColorHandling.Equals(TwinkleColorHandling.StaticColor)}
+			};
+			SetBrowsable(propertyStates);
+		}
+
+		private void UpdateDepthAttributes()
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1)
+			{
+				{"DepthOfEffect", IndividualElements}
 			};
 			SetBrowsable(propertyStates);
 		}
@@ -305,6 +327,7 @@ namespace VixenModules.Effect.Twinkle
 			{
 				_data.DepthOfEffect = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 

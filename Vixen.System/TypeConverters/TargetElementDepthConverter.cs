@@ -23,7 +23,7 @@ namespace Vixen.TypeConverters
 
 		public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
 		{
-			return Convert.ToSingle(value);
+			return Convert.ToInt32(value);
 		}
 
 		public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value,
