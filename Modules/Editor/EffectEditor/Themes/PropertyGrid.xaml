@@ -66,7 +66,7 @@
 				</MultiBinding>
 			</Setter.Value>
 		</Setter>
-		<Setter Property="ToolTip" Value="{Binding Entry.ToolTip, RelativeSource={RelativeSource Self}}" />
+		<!--<Setter Property="ToolTip" Value="{Binding Entry.ToolTip, RelativeSource={RelativeSource Self}}" />-->
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate>
@@ -75,7 +75,7 @@
 							<ColumnDefinition Width="*" SharedSizeGroup="PropertyNameSizeGroup" />
 							<ColumnDefinition Width="*" />
 						</Grid.ColumnDefinitions>
-						<design:PropertyNameTextBlock Grid.Column="0" Margin="0,0,8,0"
+						<design:PropertyNameTextBlock Grid.Column="0" Margin="0,0,8,0" ToolTip="{Binding ToolTip}"
 						                              Text="{Binding DisplayName, Mode=OneTime}"
 						                              Foreground="{Binding ItemsForeground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:EffectPropertyEditorGrid}}}" />
 						<design:PropertyEditorContentPresenter Grid.Column="1" VerticalAlignment="Center" />

@@ -4,11 +4,27 @@
   xmlns:aero="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
 	xmlns:controls="clr-namespace:VixenModules.Editor.EffectEditor.Controls"
 	xmlns:utils="clr-namespace:VixenModules.Editor.EffectEditor.Utils"
-	xmlns:pg="clr-namespace:VixenModules.Editor.EffectEditor">
+	xmlns:pg="clr-namespace:VixenModules.Editor.EffectEditor"
+	xmlns:sys="clr-namespace:System;assembly=mscorlib">
   
   <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-    
-  <!-- Button -->
+
+	<Style TargetType="ToolTip">
+		<Style.Triggers>
+			<Trigger Property="Content"
+                 Value="{x:Static sys:String.Empty}">
+				<Setter Property="Visibility"
+                    Value="Collapsed" />
+			</Trigger>
+			<Trigger Property="Content"
+                 Value="{x:Null}">
+				<Setter Property="Visibility"
+                    Value="Collapsed" />
+			</Trigger>
+		</Style.Triggers>
+	</Style>
+	
+	<!-- Button -->
 
   <Style TargetType="{x:Type Button}">
     <Setter Property="SnapsToDevicePixels" Value="true"/>
@@ -19,7 +35,7 @@
     <Setter Property="MinHeight" Value="20"/>
     <Setter Property="VerticalContentAlignment" Value="Center"/>
     <Setter Property="HorizontalContentAlignment" Value="Center"/>
-
+	
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type Button}">
@@ -41,7 +57,7 @@
               </Border.Background>
             </Border>
             <Border x:Name="BackgroundSunken" BorderBrush="#000000" BorderThickness="0,0,0,1" CornerRadius="3" />
-            <ContentPresenter x:Name="Content" Margin="0,0,0,2" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" RecognizesAccessKey="True"/>
+            <ContentPresenter x:Name="Content" Margin="5,2" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" RecognizesAccessKey="True"/>
           </Grid>
           <ControlTemplate.Triggers>
             <Trigger Property="IsMouseOver" Value="true">
@@ -161,8 +177,34 @@
 	<Style TargetType="{x:Type Label}">
 		<Setter Property="Foreground" Value="#DDD"/>
 	</Style>
+
+	<!-- ListView -->
+
+	<Style TargetType="{x:Type ListView}">
+		<Style.Resources>
+			<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#808080" />
+			<SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#FF333333" />
+			<SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
+			<SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="#FF333333"/>
+		</Style.Resources>
+		<Setter Property="Foreground" Value="#DDD"/>
+		<Setter Property="Background" Value="#FF333333"/>
+		<Setter Property="BorderThickness" Value="0"/>
+	</Style>
+
+	<Style TargetType="{x:Type ItemsControl}">
+		<Setter Property="Foreground" Value="#DDD"/>
+		<Setter Property="Background" Value="#FF333333"/>
+		<Setter Property="BorderThickness" Value="0"/>
+		
+	</Style>
 	
-  <!-- TextBox -->
+	<Style TargetType="{x:Type ListViewItem}">
+		<Setter Property="Background" Value="#FF333333"/>	
+		
+	</Style>
+
+		<!-- TextBox -->
 
   <Style TargetType="{x:Type TextBox}">
     <Setter Property="SnapsToDevicePixels" Value="True"/>

@@ -20,6 +20,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using Vixen.Attributes;
+using VixenModules.App.ColorGradients;
+using VixenModules.Editor.EffectEditor.Controls;
 
 namespace VixenModules.Editor.EffectEditor.Editors
 {
@@ -36,6 +38,7 @@ namespace VixenModules.Editor.EffectEditor.Editors
 			{KnownTypes.Vixen.Color, new ColorTypeEditor()},
 			{KnownTypes.Vixen.Curve, new CurveEditor()},
 			{KnownTypes.Vixen.ColorGradient, new GradientTypeEditor()},
+			{typeof(List<ColorGradient>), new TypeEditor(typeof(List<ColorGradient>),EditorKeys.ColorGradientPaletteEditorKey)},
 			{KnownTypes.Vixen.Percentage, new TypeEditor(KnownTypes.Vixen.Percentage, EditorKeys.SliderPercentageEditorKey)},
 			{typeof (Enum), new TypeEditor(typeof (Enum), EditorKeys.EnumEditorKey)},
 			{KnownTypes.Wpf.FontStyle, new TypeEditor(KnownTypes.Wpf.FontStyle, EditorKeys.EnumEditorKey)},
@@ -223,6 +226,20 @@ namespace VixenModules.Editor.EffectEditor.Editors
 			}
 
 			return null;
+		}
+
+		public Editor GetEditor(Type declaringType)
+		{
+			Editor editor = FindTypeEditor(declaringType);
+			if (editor != null) return editor;
+
+			foreach (var cachedEditor in Cache)
+			{
+				if (cachedEditor.Key.IsAssignableFrom(declaringType))
+					return cachedEditor.Value;
+			}
+
+			return new TypeEditor(declaringType, EditorKeys.DefaultEditorKey);
 		}
 	}
 }

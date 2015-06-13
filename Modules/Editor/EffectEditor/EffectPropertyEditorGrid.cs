@@ -570,6 +570,11 @@ namespace VixenModules.Editor.EffectEditor
 			return null;
 		}
 
+		internal EditorCollection GetEditors()
+		{
+			return Editors;
+		}
+
 		private void SwapSelectedObject(object value)
 		{
 			//foreach (PropertyItem property in this.Properties)

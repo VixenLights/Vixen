@@ -115,6 +115,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Themes\ColorGradientPaletteEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Themes\IntegerEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -179,6 +183,7 @@
   <ItemGroup>
     <Compile Include="CategoryEditor.cs" />
     <Compile Include="CategoryItem.cs" />
+    <Compile Include="Controls\ColorGradientPaletteEditor.cs" />
     <Compile Include="Controls\IndexingStackPanel.cs" />
     <Compile Include="Controls\IntegerEditor.cs" />
     <Compile Include="Controls\Reveal.cs" />
@@ -232,10 +237,14 @@
     <Compile Include="Input\DropPreviewAdorner.cs" />
     <Compile Include="Input\IDragSourceAdvisor.cs" />
     <Compile Include="Input\IDropTargetAdvisor.cs" />
+    <Compile Include="Internal\CollectionItems.cs" />
+    <Compile Include="Internal\CollectionItemValue.cs" />
+    <Compile Include="Internal\CollectionPropertyDescriptor.cs" />
     <Compile Include="KnownTypes.cs" />
     <Compile Include="MetadataRepository.cs" />
     <Compile Include="PreviewStateChanged.cs" />
     <Compile Include="PropertyEditingEventArgs.cs" />
+    <Compile Include="PropertyEditing\CollectionChangedEventArgs.cs" />
     <Compile Include="PropertyEditing\Filters\PropertyFilterAppliedEventArgs.cs" />
     <Compile Include="GridEntry.cs" />
     <Compile Include="ResourceLocator.cs" />

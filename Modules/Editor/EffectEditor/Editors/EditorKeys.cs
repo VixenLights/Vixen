@@ -44,7 +44,7 @@ namespace VixenModules.Editor.EffectEditor.Editors
 		private static readonly ComponentResourceKey _DefaultCategoryEditorKey = new ComponentResourceKey(ThisType, "DefaultCategoryEditor");
 		private static readonly ComponentResourceKey _ComplexPropertyEditorKey = new ComponentResourceKey(ThisType, "ComplexPropertyEditor");
 		private static readonly ComponentResourceKey _FilePathEditorKey = new ComponentResourceKey(typeof(EditorKeys), "FilePathEditor");
-
+		private static readonly ComponentResourceKey _ColorGradientPaletteEditorKey = new ComponentResourceKey(ThisType, "ColorGradientPaletteEditor");
 
 		/// <summary>
 		///     Gets the File editor key.
@@ -134,6 +134,15 @@ namespace VixenModules.Editor.EffectEditor.Editors
 		public static ComponentResourceKey EnumEditorKey
 		{
 			get { return _EnumEditorKey; }
+		}
+
+		/// <summary>
+		///     Gets the enum editor key.
+		/// </summary>
+		/// <value>The enum editor key.</value>
+		public static ComponentResourceKey ColorGradientPaletteEditorKey
+		{
+			get { return _ColorGradientPaletteEditorKey; }
 		}
 
 		/// <summary>

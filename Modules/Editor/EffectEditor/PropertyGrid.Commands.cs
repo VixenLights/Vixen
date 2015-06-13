@@ -17,6 +17,7 @@
 using System.Windows;
 using System.Windows.Input;
 using VixenModules.Editor.EffectEditor.Input;
+using VixenModules.Editor.EffectEditor.Internal;
 
 namespace VixenModules.Editor.EffectEditor
 {
@@ -42,7 +43,10 @@ namespace VixenModules.Editor.EffectEditor
 			CommandBindings.Add(new CommandBinding(PropertyGridCommands.ToggleFilter, OnToggleFilterCommand));
 			CommandBindings.Add(new CommandBinding(PropertyEditorCommands.ShowDialogEditor, OnShowDialogEditor));
 			CommandBindings.Add(new CommandBinding(PropertyGridCommands.TogglePreview, OnTogglePreviewCommand));
+			CommandBindings.Add(new CommandBinding(PropertyEditorCommands.AddCollectionItem, OnAddCollectionItemCommand));
 		}
+
+		
 
 		#region Commands
 
@@ -103,12 +107,41 @@ namespace VixenModules.Editor.EffectEditor
 				: Visibility.Visible;
 		}
 
+		private void OnAddCollectionItemCommand(object sender, ExecutedRoutedEventArgs e)
+		{
+			var value = e.Parameter as PropertyItemValue;
+			if (value != null)
+			{
+				value.AddItemToCollection();
+			}
+		}
+
 		// TODO: refactoring needed
 		private void OnShowDialogEditor(object sender, ExecutedRoutedEventArgs e)
 		{
 			var value = e.Parameter as PropertyItemValue;
-			if (value == null) return;
+			if (value != null)
+			{
+				ShowDialogEditor(value);
+			}
+			else
+			{
+				var collectionItem = e.Parameter as CollectionItemValue;
+				if (collectionItem != null)
+				{
+					var grid = sender as EffectPropertyEditorGrid;
+					if (grid != null)
+					{
+						Editors.Editor editor = grid.GetEditors().GetEditor(collectionItem.ItemType);
+						ShowDialogEditor(collectionItem, editor);		
+					}
+					
+				}
+			}
+		}
 
+		private void ShowDialogEditor(PropertyItemValue value)
+		{
 			var property = value.ParentProperty;
 			if (property == null) return;
 
@@ -117,7 +150,15 @@ namespace VixenModules.Editor.EffectEditor
 			if (editor != null && !value.ParentProperty.IsReadOnly) // && editor.HasDialogTemplate)
 			{
 				value.Value = editor.ShowDialog(value.ParentProperty.Component, value.Value, this);
-			}
+			}	
+		}
+
+		private void ShowDialogEditor(CollectionItemValue value, Editors.Editor editor)
+		{
+			// TODO: Finish DialogTemplate implementation
+			
+			value.Value = editor.ShowDialog(value.ParentProperty.Component, value.Value, this);
+			
 		}
 
 

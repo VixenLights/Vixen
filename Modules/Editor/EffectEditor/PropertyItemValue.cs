@@ -17,6 +17,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing;
 using System.Globalization;
@@ -27,6 +28,7 @@ using Vixen.Sys;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Editor.EffectEditor.Input;
+using VixenModules.Editor.EffectEditor.Internal;
 using VixenModules.Editor.EffectEditor.PropertyEditing;
 using VixenModules.Property.Color;
 using Point = System.Windows.Point;
@@ -41,6 +43,8 @@ namespace VixenModules.Editor.EffectEditor
 		private readonly bool _hasSubProperties;
 		private readonly PropertyItem _property;
 		private readonly GridEntryCollection<PropertyItem> _subProperties = new GridEntryCollection<PropertyItem>();
+		private readonly ObservableCollection<CollectionItemValue> _collectionItemValues = new ObservableCollection<CollectionItemValue>();
+		private IList _collectionValues;
 
 		#region ctor
 
@@ -73,10 +77,28 @@ namespace VixenModules.Editor.EffectEditor
 				}
 			}
 
+			if (property.IsCollection)
+			{
+				LoadCollectionValues();
+			}
+
 			_property.PropertyChanged += ParentPropertyChanged;
 		}
 
+		
+
 		#endregion
+
+		private void LoadCollectionValues()
+		{
+			_collectionValues = (IList)_property.GetValue();
+			_collectionItemValues.Clear();
+			for (int i = 0; i < _collectionValues.Count; i++)
+			{
+				var collectionitem = new CollectionItemValue(this, i);
+				_collectionItemValues.Add(collectionitem);
+			}
+		}
 
 		/// <summary>
 		///     Gets the parent property.
@@ -90,6 +112,33 @@ namespace VixenModules.Editor.EffectEditor
 		public GridEntryCollection<PropertyItem> SubProperties
 		{
 			get { return _subProperties; }
+		}
+
+		internal ObservableCollection<CollectionItemValue> CollectionValues
+		{
+			get
+			{
+				return _collectionItemValues;
+			}
+		}
+
+		public void AddItemToCollection()
+		{
+			if (!IsCollection) return;
+			if (_collectionItemValues.Any())
+			{
+				object item = Activator.CreateInstance(_collectionItemValues[0].ItemType);
+				_property.AddCollectionValue(item);
+			}
+		}
+
+		public void RemoveItemFromCollection(int index)
+		{
+			if (!IsCollection) return;
+			if (_collectionItemValues.Any())
+			{
+				_property.RemoveCollectionValue(index);
+			}
 		}
 
 		/// <summary>
@@ -204,7 +253,13 @@ namespace VixenModules.Editor.EffectEditor
 		private void ParentPropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
 			if (e.PropertyName == "PropertyValue")
+			{
+				if (IsCollection)
+				{
+					LoadCollectionValues();
+				}
 				NotifyRootValueChanged();
+			}
 
 			if (e.PropertyName == "IsReadOnly")
 			{
@@ -263,6 +318,11 @@ namespace VixenModules.Editor.EffectEditor
 		///     Occurs when sub property changed.
 		/// </summary>
 		public event EventHandler SubPropertyChanged;
+
+		/// <summary>
+		///     Occurs when Collection value changed.
+		/// </summary>
+		public event EventHandler CollectionValueChanged;
 
 		#endregion
 
@@ -500,6 +560,28 @@ namespace VixenModules.Editor.EffectEditor
 			}
 		}
 
+		public object GetCollectionValue(int index)
+		{
+			return _collectionValues[index];
+		}
+
+		public TypeConverter CollectionItemConverter
+		{
+			get { return TypeDescriptor.GetConverter(GetCollectionValue(0)); }
+		}
+
+		public Type CollectionItemType
+		{
+			get { return GetCollectionValue(0).GetType(); }
+		}
+
+
+		public void SetCollectionValue(Object value, int index)
+		{
+			_property.SetCollectionValue(value, index);
+			NotifyCollectionValueChanged(index);
+		}
+
 		#endregion
 
 		#region Helper properties
@@ -549,6 +631,7 @@ namespace VixenModules.Editor.EffectEditor
 		/// </summary>
 		protected virtual void NotifyRootValueChanged()
 		{
+			
 			OnPropertyChanged("IsDefaultValue");
 			OnPropertyChanged("IsMixedValue");
 			OnPropertyChanged("IsCollection");
@@ -575,6 +658,16 @@ namespace VixenModules.Editor.EffectEditor
 			OnSubPropertyChanged();
 		}
 
+		/// <summary>
+		///     Notifies a collection value changed.
+		/// </summary>
+		protected void NotifyCollectionValueChanged(int index)
+		{
+			NotifyValueChanged();
+			OnRootValueChanged();
+			OnCollectionValueChanged(index);
+		}
+
 		private void NotifyValueChanged()
 		{
 			OnPropertyChanged("Value");
@@ -592,6 +685,13 @@ namespace VixenModules.Editor.EffectEditor
 			var handler = SubPropertyChanged;
 			if (handler != null) handler(this, EventArgs.Empty);
 		}
+
+		private void OnCollectionValueChanged(int index)
+		{
+			var handler = CollectionValueChanged;
+			if (handler != null) handler(this, new CollectionChangedEventArgs(index));
+		}
+
 
 		#endregion
 	}

@@ -16,8 +16,12 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
+using System.Linq.Expressions;
 using Vixen.Module.Effect;
+using Vixen.Sys;
 using VixenModules.Editor.EffectEditor.Internal;
 using VixenModules.Editor.EffectEditor.Metadata;
 using VixenModules.Editor.EffectEditor.PropertyEditing.Filters;
@@ -634,6 +638,60 @@ namespace VixenModules.Editor.EffectEditor
 
 			if (target != null)
 				_descriptor.SetValue(target, value);
+		}
+
+		internal void SetCollectionValue(object value, int index)
+		{
+			if (!IsCollection || IsReadOnly) return;
+			//TODO Implement some flavor of generic equals on the collection as some point
+			var collectionValue = (IList)GetValue();
+			if (collectionValue != null)
+			{
+				var oldValue = CreateList(PropertyType, collectionValue);
+				collectionValue[index] = value;
+				OnValueChanged(new object[] { oldValue }, GetValue());
+				OnPropertyChanged("PropertyValue");
+			}
+
+		}
+
+		internal void AddCollectionValue(object value)
+		{
+			if (!IsCollection || IsReadOnly) return;
+			//TODO Implement some flavor of generic equals on the collection as some point
+			var collectionValue = (IList)GetValue();
+			if (collectionValue != null)
+			{
+				var oldValue = CreateList(PropertyType, collectionValue);
+				collectionValue.Add(value);
+				OnValueChanged(new object[] { oldValue }, GetValue());
+				OnPropertyChanged("PropertyValue");
+			}
+
+		}
+
+		internal void RemoveCollectionValue(int index)
+		{
+			if (!IsCollection || IsReadOnly) return;
+			var collectionValue = (IList)GetValue();
+			if (collectionValue != null)
+			{
+				var oldValue = CreateList(PropertyType, collectionValue);
+				collectionValue.RemoveAt(index);
+				OnValueChanged(new object[] { oldValue }, GetValue());
+				OnPropertyChanged("PropertyValue");
+			}
+
+		}
+
+		private IList CreateList(Type t, IList values)
+		{
+			var instance = (IList)Activator.CreateInstance(t);
+			foreach (var value in values)
+			{
+				instance.Add(value);
+			}
+			return instance;
 		}
 
 		/// <summary>

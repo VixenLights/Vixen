@@ -29,6 +29,12 @@ namespace VixenModules.Editor.EffectEditor.Input
 		private static readonly RoutedUICommand _ShowDialogEditor = new RoutedUICommand("Show Dialog Editor",
 			"ShowDialogEditorCommand", ThisType);
 
+		private static readonly RoutedUICommand _AddCollectionItem = new RoutedUICommand("Add Collection Item",
+			"AddCollectionItemCommand", ThisType);
+
+		private static readonly RoutedUICommand _RemoveCollectionItem = new RoutedUICommand("Remove Collection Item",
+			"RemoveCollectionItemCommand", ThisType);
+
 		private static readonly RoutedUICommand _ShowExtendedEditor = new RoutedUICommand("Show Extended Editor",
 			"ShowExtendedEditorCommand", ThisType);
 
@@ -38,6 +44,22 @@ namespace VixenModules.Editor.EffectEditor.Input
 		public static RoutedUICommand ShowDialogEditor
 		{
 			get { return _ShowDialogEditor; }
+		}
+
+		/// <summary>
+		/// Defines a command to add a itme to a collection property.
+		/// </summary>    
+		public static RoutedUICommand AddCollectionItem
+		{
+			get { return _AddCollectionItem; }
+		}
+
+		/// <summary>
+		/// Defines a command to add a itme to a collection property.
+		/// </summary>    
+		public static RoutedUICommand RemoveCollectionItem
+		{
+			get { return _RemoveCollectionItem; }
 		}
 
 		/// <summary>
