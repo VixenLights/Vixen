@@ -18,6 +18,7 @@ namespace VixenModules.Effect.Bars
 			Direction = BarDirection.Up;
 			Speed = 5;
 			Repeat = 1;
+			FitToTime = false;
 			Orientation=StringOrientation.Vertical;
 		}
 
@@ -40,6 +41,9 @@ namespace VixenModules.Effect.Bars
 		public bool Show3D { get; set; }
 
 		[DataMember]
+		public bool FitToTime { get; set; }
+
+		[DataMember]
 		public StringOrientation Orientation { get; set; }
 
 		public override IModuleDataModel Clone()
@@ -52,7 +56,8 @@ namespace VixenModules.Effect.Bars
 				Repeat = Repeat,
 				Orientation = Orientation,
 				Show3D = Show3D,
-				Highlight = Highlight
+				Highlight = Highlight,
+				FitToTime = FitToTime
 			};
 			return result;
 		}

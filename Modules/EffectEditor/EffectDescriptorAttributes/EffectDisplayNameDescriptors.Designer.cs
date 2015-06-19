@@ -206,6 +206,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Fit To Time.
+        /// </summary>
+        internal static string FitTime {
+            get {
+                return ResourceManager.GetString("FitTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Flicker.
         /// </summary>
         internal static string FlickerPercent {
@@ -368,6 +377,24 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string Setup {
+            get {
+                return ResourceManager.GetString("Setup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 3D.
+        /// </summary>
+        internal static string Show3D {
+            get {
+                return ResourceManager.GetString("Show3D", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Speed.
         /// </summary>
         internal static string Speed {
@@ -400,15 +427,6 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string StringCount {
             get {
                 return ResourceManager.GetString("StringCount", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 3D.
-        /// </summary>
-        internal static string ThreeD {
-            get {
-                return ResourceManager.GetString("ThreeD", resourceCulture);
             }
         }
         

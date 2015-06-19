@@ -160,6 +160,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Setup.
+        /// </summary>
+        internal static string Setup {
+            get {
+                return ResourceManager.GetString("Setup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Speed.
         /// </summary>
         internal static string Speed {

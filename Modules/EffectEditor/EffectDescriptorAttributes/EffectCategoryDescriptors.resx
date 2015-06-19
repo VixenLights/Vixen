@@ -150,6 +150,9 @@
   <data name="Pulse" xml:space="preserve">
     <value>Pulse</value>
   </data>
+  <data name="Setup" xml:space="preserve">
+    <value>Setup</value>
+  </data>
   <data name="Speed" xml:space="preserve">
     <value>Speed</value>
   </data>

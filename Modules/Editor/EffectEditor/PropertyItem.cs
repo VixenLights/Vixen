@@ -665,6 +665,7 @@ namespace VixenModules.Editor.EffectEditor
 			{
 				var oldValue = CreateList(PropertyType, collectionValue);
 				collectionValue.Add(value);
+				SetValueCore(collectionValue);
 				OnValueChanged(new object[] { oldValue }, GetValue());
 				OnPropertyChanged("PropertyValue");
 			}
@@ -679,6 +680,7 @@ namespace VixenModules.Editor.EffectEditor
 			{
 				var oldValue = CreateList(PropertyType, collectionValue);
 				collectionValue.RemoveAt(index);
+				SetValueCore(collectionValue);
 				OnValueChanged(new object[] { oldValue }, GetValue());
 				OnPropertyChanged("PropertyValue");
 			}

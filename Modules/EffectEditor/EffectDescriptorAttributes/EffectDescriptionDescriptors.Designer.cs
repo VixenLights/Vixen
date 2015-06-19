@@ -152,6 +152,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Try to fit the effect into the given timespan..
+        /// </summary>
+        internal static string FitTime {
+            get {
+                return ResourceManager.GetString("FitTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sets flicker frequency in changes per second..
         /// </summary>
         internal static string FlickerFrequency {
@@ -287,6 +296,24 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string Setup {
+            get {
+                return ResourceManager.GetString("Setup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Adds a 3D effect..
+        /// </summary>
+        internal static string Show3D {
+            get {
+                return ResourceManager.GetString("Show3D", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Controls how the individual spins occur..
         /// </summary>
         internal static string SpinSpeedFormat {
@@ -310,15 +337,6 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string StringCount {
             get {
                 return ResourceManager.GetString("StringCount", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Adds a 3D effect..
-        /// </summary>
-        internal static string ThreeD {
-            get {
-                return ResourceManager.GetString("ThreeD", resourceCulture);
             }
         }
         

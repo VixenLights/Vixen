@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -23,27 +24,11 @@ namespace VixenModules.Effect.Bars
 {
 	public class Bars:PixelEffectBase
 	{
-		private static Logger Logging = LogManager.GetCurrentClassLogger();
 		private BarsData _data;
-		private EffectIntents _elementData;
-
+		
 		public Bars()
 		{
 			_data = new BarsData();
-		}
-
-		protected override void _PreRender(CancellationTokenSource tokenSource = null)
-		{
-			_elementData = new EffectIntents();
-
-			foreach (ElementNode node in TargetNodes)
-			{
-				if (tokenSource != null && tokenSource.IsCancellationRequested)
-					return;
-
-				if (node != null)
-					RenderNode(node);
-			}
 		}
 
 		public override bool IsDirty
@@ -60,32 +45,29 @@ namespace VixenModules.Effect.Bars
 			protected set { base.IsDirty = value; }
 		}
 
-		protected override EffectIntents _Render()
-		{
-			return _elementData;
-		}
-
+		
 		[Value]
 		[ProviderCategory(@"Config", 0)]
 		[ProviderDisplayName(@"Orientation")]
 		[ProviderDescription(@"Orientation")]
-		//[PropertyOrder(1)]
+		[Browsable(false)]
 		public StringOrientation Orientation
 		{
 			get { return _data.Orientation; }
 			set
 			{
 				_data.Orientation = value;
+				StringOrientation = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
 		}
 
 		[Value]
-		[ProviderCategory(@"Direction", 0)]
+		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Direction")]
 		[ProviderDescription(@"Direction")]
-		//[PropertyOrder(1)]
+		[PropertyOrder(0)]
 		public BarDirection Direction
 		{
 			get { return _data.Direction; }
@@ -98,10 +80,10 @@ namespace VixenModules.Effect.Bars
 		}
 
 		[Value]
-		[ProviderCategory(@"Color", 1)]
+		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Color")]
 		[ProviderDescription(@"Color")]
-		//[PropertyOrder(1)]
+		[PropertyOrder(3)]
 		public List<ColorGradient> Colors
 		{
 			get { return _data.Colors; }
@@ -119,6 +101,7 @@ namespace VixenModules.Effect.Bars
 		[ProviderDescription(@"Color")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1,20,1)]
+		[PropertyOrder(1)]
 		public int Speed
 		{
 			get { return _data.Speed; }
@@ -135,6 +118,8 @@ namespace VixenModules.Effect.Bars
 		[ProviderDisplayName(@"Repeat")]
 		[ProviderDescription(@"Repeat")]
 		[PropertyEditor("SliderEditor")]
+		[NumberRange(1, 10, 1)]
+		[PropertyOrder(2)]
 		public int Repeat
 		{
 			get { return _data.Repeat; }
@@ -150,6 +135,7 @@ namespace VixenModules.Effect.Bars
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Highlight")]
 		[ProviderDescription(@"Highlight")]
+		[PropertyOrder(4)]
 		public bool Highlight
 		{
 			get { return _data.Highlight; }
@@ -165,12 +151,29 @@ namespace VixenModules.Effect.Bars
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Show3D")]
 		[ProviderDescription(@"Show3D")]
+		[PropertyOrder(4)]
 		public bool Show3D
 		{
 			get { return _data.Show3D; }
 			set
 			{
 				_data.Show3D = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"FitTime")]
+		[ProviderDescription(@"FitTime")]
+		[PropertyOrder(6)]
+		public bool FitToTime
+		{
+			get { return _data.FitToTime; }
+			set
+			{
+				_data.FitToTime = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -183,159 +186,12 @@ namespace VixenModules.Effect.Bars
 			{
 				_data = value as BarsData;
 				IsDirty = true;
-				//InitAllAttributes();
 			}
 		}
 
-		
-		private void RenderNode(ElementNode node)
-		{
-			var frameMs = 50;
-			int wid;
-			int ht;
-			if (Orientation ==StringOrientation.Horizontal)
-			{
-				wid = MaxPixelsPerString;
-				ht = StringCount;
-			}
-			else
-			{
-				wid = StringCount;
-				ht = MaxPixelsPerString;
-			}
-			int nFrames = (int)(TimeSpan.TotalMilliseconds / 50);
-			
-			InitBuffer();
-			int numElements = node.Count();
-			
-			TimeSpan startTime = TimeSpan.Zero;
-			
-			// OK, we're gonna create 1 intent per element
-			// that intent will hold framesToRender Color values
-			// that it will parcel out as intent states are called for...
-			
-			// set up arrays to hold the generated colors
-			var pixels = new RGBValue[numElements][];
-			for (int eidx = 0; eidx < numElements; eidx++)
-				pixels[eidx] = new RGBValue[nFrames];
-			List<ElementNode> nodes = FindLeafParents().ToList();
-			// generate all the pixels
-			for (int frameNum = 0; frameNum < nFrames; frameNum++)
-			{
-				RenderBars(frameNum);
-				// peel off this frames pixels...
-				if (Orientation == StringOrientation.Horizontal)
-				{
-					int i = 0;
-					for (int y = 0; y < ht; y++)
-					{
-						for (int x = 0; x < StringPixelCounts[y]; x++)
-						{
-							pixels[i][frameNum] = _pixels[x][y];
-							i++;
-						}
-					}
-				}
-				else
-				{
-					int i = 0;
-					for (int x = 0; x < wid; x++)
-					{
-						for (int y = 0; y < StringPixelCounts[x]; y++)
-						{
-							pixels[i][frameNum] = _pixels[x][y];
-							i++;
-						}
-					}
-				}
-			};
-
-			// create the intents
-			var frameTs = new TimeSpan(0, 0, 0, 0, frameMs);
-			List<Element> elements = node.ToList();
-			for (int eidx = 0; eidx < numElements; eidx++)
-			{
-				IIntent intent = new StaticArrayIntent<RGBValue>(frameTs, pixels[eidx], TimeSpan);
-				_elementData.AddIntentForElement(elements[eidx].Id, intent, startTime);
-			}
-
-			
-		
-		}
-
-		private double GetEffectTimeIntervalPosition(int frame)
-		{
-			double retval;
-			if (TimeSpan == TimeSpan.Zero)
-			{
-				retval = 1;
-			}
-			else
-			{
-				retval = frame / (TimeSpan.TotalMilliseconds / 50);
-			}
-			return retval;
-		}
-
-		private RGBValue[][] _pixels;
-		public void InitBuffer()
-		{
-			
-			if (Orientation == StringOrientation.Horizontal)
-			{
-				_pixels = new RGBValue[MaxPixelsPerString][];
-				for (int i = 0; i < MaxPixelsPerString; i++)
-				{
-					_pixels[i] = new RGBValue[StringCount];
-				}	
-			}
-			else
-			{
-				_pixels = new RGBValue[StringCount][];
-				for (int i = 0; i < StringCount; i++)
-				{
-					_pixels[i] = new RGBValue[MaxPixelsPerString];
-				}
-			}
-		}
-
-		public int BufferHt
-		{
-			get
-			{
-				return Orientation == StringOrientation.Horizontal?StringCount:MaxPixelsPerString;	
-			} 
-			
-		}
-
-		public int BufferWi
-		{
-			get
-			{
-				return Orientation == StringOrientation.Horizontal ? MaxPixelsPerString : StringCount;
-			}
-		}
-
-		// 0,0 is lower left
-		public void SetPixel(int x, int y, Color color)
-		{
-			if (x >= 0 && x < BufferWi && y >= 0 && y < BufferHt)
-			{
-				_pixels[x][y] = new RGBValue(color);
-			}
-		}
-
-		// 0,0 is lower left
-		public void SetPixel(int x, int y, HSV hsv)
-		{
-			Color color = hsv.ToRGB().ToArgb();
-			SetPixel(x, y, color);
-		}
-
-		public void RenderBars(int frame)
+		protected override void RenderEffect(int frame)
 		{
 			int x, y, n, colorIdx;
-			//HSV hsv;
 			int colorcnt = Colors.Count();
 			int barCount = Repeat * colorcnt;
 			double position = GetEffectTimeIntervalPosition(frame);
@@ -349,9 +205,8 @@ namespace VixenModules.Effect.Bars
 				int halfHt = BufferHt / 2;
 				int blockHt = colorcnt * barHt;
 				if (blockHt < 1) blockHt = 1;
-				int fOffset = Convert.ToInt32(position * blockHt);
+				int fOffset = Convert.ToInt32(FitToTime ? position * blockHt : Speed * frame / 4 % blockHt);
 				fOffset = Convert.ToInt32(Direction == BarDirection.AlternateUp || Direction == BarDirection.AlternateDown ? (Speed*frame / 20) * barHt : fOffset);
-				//direction = direction > 4 ? direction - 8 : direction;
 				
 				for (y = 0; y < BufferHt; y++)
 				{
@@ -410,9 +265,9 @@ namespace VixenModules.Effect.Bars
 				int halfWi = BufferWi / 2;
 				int blockWi = colorcnt * barWi;
 				if (blockWi < 1) blockWi = 1;
-				int fOffset = Convert.ToInt32(position * blockWi);
+				int fOffset = Convert.ToInt32(FitToTime ? position * blockWi : Speed * frame / 4 % blockWi);
 				fOffset = Convert.ToInt32(Direction > BarDirection.AlternateDown ? (Speed*frame / 20) * barWi : fOffset);
-				//direction = direction > 9 ? direction - 6 : direction;
+				
 				for (x = 0; x < BufferWi; x++)
 				{
 					n = x + fOffset;

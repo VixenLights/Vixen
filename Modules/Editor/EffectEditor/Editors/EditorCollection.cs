@@ -187,6 +187,11 @@ namespace VixenModules.Editor.EffectEditor.Editors
 
 			Editor editor;
 
+			if (propertyItem.IsReadOnly)
+			{
+				return new TypeEditor(propertyItem.PropertyType, EditorKeys.LabelEditorKey);
+			}
+
 			if (propertyItem.Attributes != null)
 			{
 				editor = GetPropertyEditorByAttributes(propertyItem.Attributes);
@@ -218,10 +223,7 @@ namespace VixenModules.Editor.EffectEditor.Editors
 					if (cachedEditor.Key.IsAssignableFrom(propertyItem.PropertyType))
 						return cachedEditor.Value;
 				}
-				if (propertyItem.IsReadOnly)
-				{
-					return new TypeEditor(propertyItem.PropertyType, EditorKeys.LabelEditorKey);
-				}
+				
 				return new TypeEditor(propertyItem.PropertyType, EditorKeys.DefaultEditorKey);
 			}
 
