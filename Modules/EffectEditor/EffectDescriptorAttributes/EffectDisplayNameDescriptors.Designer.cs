@@ -242,6 +242,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Highlight.
+        /// </summary>
+        internal static string Highlight {
+            get {
+                return ResourceManager.GetString("Highlight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Individual Elements.
         /// </summary>
         internal static string IndividualElements {
@@ -265,6 +274,24 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string MinBrightness {
             get {
                 return ResourceManager.GetString("MinBrightness", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to String Orientation.
+        /// </summary>
+        internal static string Orientation {
+            get {
+                return ResourceManager.GetString("Orientation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pixels Per String.
+        /// </summary>
+        internal static string PixelsPerString {
+            get {
+                return ResourceManager.GetString("PixelsPerString", resourceCulture);
             }
         }
         
@@ -305,6 +332,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Repeat.
+        /// </summary>
+        internal static string Repeat {
+            get {
+                return ResourceManager.GetString("Repeat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Revolution Count.
         /// </summary>
         internal static string RevolutionCount {
@@ -332,6 +368,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Speed.
+        /// </summary>
+        internal static string Speed {
+            get {
+                return ResourceManager.GetString("Speed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Speed Format.
         /// </summary>
         internal static string SpeedFormat {
@@ -346,6 +391,24 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string StaticEffect {
             get {
                 return ResourceManager.GetString("StaticEffect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to String Count.
+        /// </summary>
+        internal static string StringCount {
+            get {
+                return ResourceManager.GetString("StringCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 3D.
+        /// </summary>
+        internal static string ThreeD {
+            get {
+                return ResourceManager.GetString("ThreeD", resourceCulture);
             }
         }
         

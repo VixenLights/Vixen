@@ -649,6 +649,7 @@ namespace VixenModules.Editor.EffectEditor
 			{
 				var oldValue = CreateList(PropertyType, collectionValue);
 				collectionValue[index] = value;
+				SetValueCore(collectionValue);
 				OnValueChanged(new object[] { oldValue }, GetValue());
 				OnPropertyChanged("PropertyValue");
 			}

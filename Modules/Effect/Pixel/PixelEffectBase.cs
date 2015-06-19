@@ -1,36 +1,35 @@
-﻿
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using Vixen.Module.Effect;
 using Vixen.Sys;
+using VixenModules.EffectEditor.EffectDescriptorAttributes;
 
-namespace Vixen.Module.Effect
+namespace VixenModules.Effect.Pixel
 {
-	public abstract class PixelEffectModuleBase:EffectModuleInstanceBase
+	public abstract class PixelEffectBase : EffectModuleInstanceBase
 	{
-
-		protected readonly List<int> _stringPixelCounts = new List<int>(); 
-		
+		protected readonly List<int> StringPixelCounts = new List<int>();
 
 		[ReadOnly(true)]
-		[Category(@"Config")]
-		[DisplayName(@"String Count")]
-		[Description(@"The count of strings the effect will use.")]
+		[ProviderCategory(@"Config")]
+		[ProviderDisplayName(@"StringCount")]
+		[ProviderDescription(@"StringCount")]
 		public int StringCount { get; set; }
 
 		[ReadOnly(true)]
-		[Category(@"Config")]
-		[DisplayName(@"Pixels Per String")]
-		[Description(@"The count of pixels on each string.")]
+		[ProviderCategory(@"Config")]
+		[ProviderDisplayName(@"PixelsPerString")]
+		[Description(@"PixelsPerString")]
 		public int MaxPixelsPerString { get; set; }
 
 		private void CalculatePixelsPerString()
 		{
 			IEnumerable<ElementNode> nodes = FindLeafParents();
-			_stringPixelCounts.Clear();
+			StringPixelCounts.Clear();
 			foreach (var node in nodes)
 			{
-				_stringPixelCounts.Add(node.Count());
+				StringPixelCounts.Add(node.Count());
 			}
 		}
 
@@ -40,7 +39,7 @@ namespace Vixen.Module.Effect
 			return FindLeafParents().Count();
 		}
 
-		private IEnumerable<ElementNode> FindLeafParents()
+		protected IEnumerable<ElementNode> FindLeafParents()
 		{
 			var nodes = new List<ElementNode>();
 			var nonLeafElements = new List<ElementNode>();
@@ -65,9 +64,8 @@ namespace Vixen.Module.Effect
 		protected override void TargetNodesChanged()
 		{
 			CalculatePixelsPerString();
-			MaxPixelsPerString = _stringPixelCounts.Concat(new[] { 0 }).Max();
+			MaxPixelsPerString = StringPixelCounts.Concat(new[] { 0 }).Max();
 			StringCount = CalculateMaxStringCount();
 		}
-
 	}
 }

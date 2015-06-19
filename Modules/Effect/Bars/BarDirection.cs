@@ -4,13 +4,29 @@ namespace VixenModules.Effect.Bars
 {
 	public enum BarDirection
 	{
-		[Description("Moves up")]
+		[Description("Moves Up")]
 		Up,
-		[Description("Moves down")]
+		[Description("Moves Down")]
 		Down,
+		[Description("Expands")]
+		Expand,
+		[Description("Compresses")]
+		Compress,
 		[Description("Moves Left")]
 		Left,
 		[Description("Moves Right")]
-		Right
+		Right,
+		[Description("Horizontal Expand")]
+		HExpand,
+		[Description("Horizontal Compress")]
+		HCompress,
+		[Description("Alternate Up")]
+		AlternateUp,
+		[Description("Alternate Down")]
+		AlternateDown,
+		[Description("Alternate Left")]
+		AlternateLeft,
+		[Description("Alternate Right")]
+		AlternateRight
 	}
 }

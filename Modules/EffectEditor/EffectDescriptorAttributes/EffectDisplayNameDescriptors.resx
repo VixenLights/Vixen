@@ -177,6 +177,9 @@
   <data name="GradientTwo" xml:space="preserve">
     <value>Gradient 2</value>
   </data>
+  <data name="Highlight" xml:space="preserve">
+    <value>Highlight</value>
+  </data>
   <data name="IndividualElements" xml:space="preserve">
     <value>Individual Elements</value>
   </data>
@@ -185,6 +188,12 @@
   </data>
   <data name="MinBrightness" xml:space="preserve">
     <value>Min</value>
+  </data>
+  <data name="Orientation" xml:space="preserve">
+    <value>String Orientation</value>
+  </data>
+  <data name="PixelsPerString" xml:space="preserve">
+    <value>Pixels Per String</value>
   </data>
   <data name="PulseDuration" xml:space="preserve">
     <value>Duration</value>
@@ -198,6 +207,9 @@
   <data name="PulseType" xml:space="preserve">
     <value>Pulse Type</value>
   </data>
+  <data name="Repeat" xml:space="preserve">
+    <value>Repeat</value>
+  </data>
   <data name="RevolutionCount" xml:space="preserve">
     <value>Revolution Count</value>
   </data>
@@ -207,11 +219,20 @@
   <data name="RevolutionTime" xml:space="preserve">
     <value>Revolution Time</value>
   </data>
+  <data name="Speed" xml:space="preserve">
+    <value>Speed</value>
+  </data>
   <data name="SpeedFormat" xml:space="preserve">
     <value>Speed Format</value>
   </data>
   <data name="StaticEffect" xml:space="preserve">
     <value>Static Effect</value>
+  </data>
+  <data name="StringCount" xml:space="preserve">
+    <value>String Count</value>
+  </data>
+  <data name="ThreeD" xml:space="preserve">
+    <value>3D</value>
   </data>
   <data name="Type" xml:space="preserve">
     <value>Type</value>

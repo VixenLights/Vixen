@@ -280,7 +280,6 @@
     <Compile Include="Module\Analysis\IAnalysis.cs" />
     <Compile Include="Module\Analysis\IAnalysisModuleDescriptor.cs" />
     <Compile Include="Module\Analysis\IAnalysisModuleInstance.cs" />
-    <Compile Include="Module\Effect\PixelEffectModuleBase.cs" />
     <Compile Include="Module\IModuleConsumer.cs" />
     <Compile Include="Module\IModuleDataRetriever.cs" />
     <Compile Include="Module\ModuleInstanceDataRetriever.cs" />

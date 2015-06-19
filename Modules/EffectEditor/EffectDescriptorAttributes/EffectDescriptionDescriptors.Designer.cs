@@ -170,6 +170,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Controls whether there are highlights added..
+        /// </summary>
+        internal static string Highlight {
+            get {
+                return ResourceManager.GetString("Highlight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Controls the maximum brightness of a pulse..
         /// </summary>
         internal static string MaxBrightness {
@@ -184,6 +193,24 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string MinBrightness {
             get {
                 return ResourceManager.GetString("MinBrightness", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The orientation of the strings..
+        /// </summary>
+        internal static string Orientation {
+            get {
+                return ResourceManager.GetString("Orientation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The count of pixels on each string..
+        /// </summary>
+        internal static string PixelsPerString {
+            get {
+                return ResourceManager.GetString("PixelsPerString", resourceCulture);
             }
         }
         
@@ -274,6 +301,24 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string StaticColorIndicator {
             get {
                 return ResourceManager.GetString("StaticColorIndicator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The count of strings the effect will use..
+        /// </summary>
+        internal static string StringCount {
+            get {
+                return ResourceManager.GetString("StringCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Adds a 3D effect..
+        /// </summary>
+        internal static string ThreeD {
+            get {
+                return ResourceManager.GetString("ThreeD", resourceCulture);
             }
         }
         
