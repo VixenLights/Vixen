@@ -112,18 +112,30 @@ namespace VixenModules.Editor.EffectEditor
 			if (obj.GetDataPresent(ParentProperty.PropertyType) ||
 			    ParentProperty.PropertyType == typeof (ColorGradient) && obj.GetDataPresent(typeof (Color)))
 			{
-				if (ParentProperty.PropertyType == typeof (Color) || obj.GetDataPresent(typeof (Color)))
+				
+				var discreteColors = GetDiscreteColors(ParentProperty.Component);
+				if (discreteColors.Any())
 				{
-					var discreteColors = GetDiscreteColors(ParentProperty.Component);
-					if (discreteColors.Any())
+					if (ParentProperty.PropertyType == typeof (Color) || obj.GetDataPresent(typeof (Color)))
 					{
-						var c = (Color) obj.GetData(ParentProperty.PropertyType);
+						var c = (Color) obj.GetData(typeof (Color));
 						if (!discreteColors.Contains(c))
 						{
 							return false;
 						}
 					}
+					else
+					{
+						var c = (ColorGradient)obj.GetData(typeof(ColorGradient));
+						var colors = c.Colors.Select(x => x.Color.ToRGB().ToArgb());
+						if (!discreteColors.IsSupersetOf(colors))
+						{
+							return false;
+						}	
+					}
 				}
+				
+				
 				return true;
 			}
 

@@ -558,11 +558,31 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (dataObject.GetDataPresent(typeof(Color)) &&
 					propertyData.Any(x => (x.PropertyType == typeof(Color) || x.PropertyType == typeof(ColorGradient)) && x.IsBrowsable))
 				{
+					var discreteColors = GetDiscreteColors(element.EffectNode.Effect);
+					if (discreteColors.Any())
+					{
+						var c = (Color)dataObject.GetData(typeof(Color));
+						if (!discreteColors.Contains(c))
+						{
+							return DragDropEffects.None;
+						}
+					}
+					
 					return DragDropEffects.Copy;
 				}
 				if (dataObject.GetDataPresent(typeof(ColorGradient)) &&
 					propertyData.Any(x => x.PropertyType == typeof(ColorGradient) && x.IsBrowsable))
 				{
+					var discreteColors = GetDiscreteColors(element.EffectNode.Effect);
+					if (discreteColors.Any())
+					{
+						var c = (ColorGradient)dataObject.GetData(typeof(ColorGradient));
+						var colors = c.Colors.Select(x => x.Color.ToRGB().ToArgb());
+						if (!discreteColors.IsSupersetOf(colors))
+						{
+							return DragDropEffects.None;
+						}
+					}
 					return DragDropEffects.Copy;
 				}
 				if (dataObject.GetDataPresent(typeof(Curve)) &&
@@ -572,9 +592,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 			}
 
-			
-
 			return DragDropEffects.None;	
+		}
+
+		private HashSet<Color> GetDiscreteColors(IEffect effect)
+		{
+			var validColors = new HashSet<Color>();
+			validColors.AddRange(effect.TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
+	
+			return validColors;
 		}
 
 		private Form_Effects _effectsForm;
