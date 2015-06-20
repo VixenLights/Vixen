@@ -1639,11 +1639,21 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (elements == null)
 				return;
 
+			//Restrict the pop up editor to only Nutcracker effects for now. All other effects are supported by the new
+			//effect editor docker. This will be deprecated in some future version once the Nutcracker effects are converted
+			//to indivudual supported effects.
+			elementType = "Nutcracker";
+
 			IEnumerable<TimedSequenceElement> editElements;
 
 			editElements = elementType == null
 				? elements
 				: elements.Where(element => element.EffectNode.Effect.EffectName == elementType);
+
+			if (!editElements.Any())
+			{
+				return;
+			}
 
 			using (
 				TimedSequenceEditorEffectEditor editor = new TimedSequenceEditorEffectEditor(editElements.Select(x => x.EffectNode))

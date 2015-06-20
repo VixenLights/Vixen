@@ -17,6 +17,8 @@ namespace VixenModules.Effect.Pixel
 	public abstract class PixelEffectBase : EffectModuleInstanceBase
 	{
 
+		private const short FrameTime = 50;
+
 		protected PixelEffectBase()
 		{
 			StringOrientation = StringOrientation.Vertical;
@@ -165,9 +167,8 @@ namespace VixenModules.Effect.Pixel
 
 		protected void RenderNode(ElementNode node)
 		{
-			var frameMs = 50;
-			
-			int nFrames = (int)(TimeSpan.TotalMilliseconds / 50);
+	
+			int nFrames = (int)(TimeSpan.TotalMilliseconds / FrameTime);
 
 			InitBuffer();
 			int numElements = node.Count();
@@ -212,7 +213,7 @@ namespace VixenModules.Effect.Pixel
 			};
 
 			// create the intents
-			var frameTs = new TimeSpan(0, 0, 0, 0, frameMs);
+			var frameTs = new TimeSpan(0, 0, 0, 0, FrameTime);
 			List<Element> elements = node.ToList();
 			for (int eidx = 0; eidx < numElements; eidx++)
 			{
@@ -223,16 +224,16 @@ namespace VixenModules.Effect.Pixel
 
 		protected double GetEffectTimeIntervalPosition(int frame)
 		{
-			double retval;
+			double position;
 			if (TimeSpan == TimeSpan.Zero)
 			{
-				retval = 1;
+				position = 0;
 			}
 			else
 			{
-				retval = frame / (TimeSpan.TotalMilliseconds / 50);
+				position = (frame * FrameTime) / TimeSpan.TotalMilliseconds;
 			}
-			return retval;
+			return position;
 		}
 	}
 }

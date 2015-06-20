@@ -200,19 +200,28 @@ namespace VixenModules.Effect.Bars
 
 			if (Direction < BarDirection.Left || Direction == BarDirection.AlternateUp || Direction == BarDirection.AlternateDown)
 			{
-				int barHt = BufferHt / barCount + 1;
+				int barHt = BufferHt / barCount;
 				if (barHt < 1) barHt = 1;
 				int halfHt = BufferHt / 2;
 				int blockHt = colorcnt * barHt;
 				if (blockHt < 1) blockHt = 1;
-				int fOffset = Convert.ToInt32(FitToTime ? position * blockHt : Speed * frame / 4 % blockHt);
-				fOffset = Convert.ToInt32(Direction == BarDirection.AlternateUp || Direction == BarDirection.AlternateDown ? (Speed*frame / 20) * barHt : fOffset);
-				
+				int fOffset = (int)(FitToTime ? position * blockHt : Speed * frame / 4 % blockHt);
+				if(Direction == BarDirection.AlternateUp || Direction == BarDirection.AlternateDown)
+				{
+					fOffset = (int)(Math.Floor(position*barCount)*barHt);
+				}
+				int indexAdjust = 1;
+				if (Direction == BarDirection.Compress || Direction == BarDirection.Down)
+				{
+					indexAdjust = 0;
+				}
 				for (y = 0; y < BufferHt; y++)
 				{
 					n = y + fOffset;
-					colorIdx = (n % blockHt) / barHt;
-					Color c = Colors[colorIdx].GetColorAt( (((double)n % blockHt) / barHt) - colorIdx  );
+					colorIdx = ((n + indexAdjust) % blockHt) / barHt;
+					//we need the integer division here to make things work
+					double colorPosition = ((double)(n + indexAdjust) / barHt) - ((n + indexAdjust) / barHt);
+					Color c = Colors[colorIdx].GetColorAt(colorPosition);
 					var hsv = HSV.FromRGB(c);
 					if (Highlight && n % barHt == 0) hsv.S = 0.0f;
 					if (Show3D) hsv.V *= (float)(barHt - n % barHt - 1) / barHt;
@@ -260,19 +269,23 @@ namespace VixenModules.Effect.Bars
 			}
 			else
 			{
-				int barWi = BufferWi / barCount + 1;
+				int barWi = BufferWi / barCount;
 				if (barWi < 1) barWi = 1;
 				int halfWi = BufferWi / 2;
 				int blockWi = colorcnt * barWi;
 				if (blockWi < 1) blockWi = 1;
-				int fOffset = Convert.ToInt32(FitToTime ? position * blockWi : Speed * frame / 4 % blockWi);
-				fOffset = Convert.ToInt32(Direction > BarDirection.AlternateDown ? (Speed*frame / 20) * barWi : fOffset);
+				int fOffset = (int)(FitToTime ? position * blockWi : Speed * frame / 4 % blockWi);
+				if (Direction > BarDirection.AlternateDown)
+				{
+					fOffset = (Speed*frame/20)*barWi;
+				} 
 				
 				for (x = 0; x < BufferWi; x++)
 				{
 					n = x + fOffset;
-					colorIdx = (n % blockWi) / barWi;
-					Color c = Colors[colorIdx].GetColorAt((((double)n % blockWi) / barWi) - colorIdx);
+					colorIdx = ((n + 1) % blockWi) / barWi;
+					double colorPosition = ((double)(n + 1) / barWi) - ((n + 1) / barWi);
+					Color c = Colors[colorIdx].GetColorAt( colorPosition );
 					var hsv = HSV.FromRGB(c);
 					if (Highlight && n % barWi == 0) hsv.S = 0.0f;
 					if (Show3D) hsv.V *= (float)(barWi - n % barWi - 1) / barWi;

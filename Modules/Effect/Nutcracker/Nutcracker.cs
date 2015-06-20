@@ -117,6 +117,12 @@ namespace VixenModules.Effect.Nutcracker
 		//	get { return SystemColors.ActiveBorder; }
 		//	set { IsDirty = true; }
 		//}
+		[Category("Warning")]
+		[DisplayName(" ")]
+		public string Warning
+		{
+			get { return "Not supported in this editor."; }
+		}
 
 		[Value]
 		[Browsable(false)]
@@ -134,16 +140,10 @@ namespace VixenModules.Effect.Nutcracker
 			}
 		}
 
-		[ReadOnly(true)]
-		[ProviderCategory(@"Config")]
-		[DisplayName(@"String Count")]
-		[Description(@"The count of strings the effect will use.")]
+		[Browsable(false)]
 		public int StringCount { get; set; }
 
-		[ReadOnly(true)]
-		[ProviderCategory(@"Config")]
-		[DisplayName(@"Pixels Per String")]
-		[Description(@"The count of pixels on each string.")]
+		[Browsable(false)]
 		public int MaxPixelsPerString { get; set; }
 
 		private int CalculateMaxStringCount()
