@@ -175,6 +175,7 @@ namespace VixenModules.App.ColorGradients
 			}
 
 			#region change events
+
 			[field: NonSerialized]
 			public event EventHandler<ModifiedEventArgs> Changed;
 
@@ -803,6 +804,7 @@ namespace VixenModules.App.ColorGradients
 			if (Changed != null)
 				Changed(this, e);
 		}
+
 		[field: NonSerialized]
 		public event EventHandler Changed;
 

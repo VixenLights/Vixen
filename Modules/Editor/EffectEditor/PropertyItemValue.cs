@@ -162,7 +162,7 @@ namespace VixenModules.Editor.EffectEditor
 			    ParentProperty.PropertyType == typeof (ColorGradient) && obj.GetDataPresent(typeof (Color)))
 			{
 				
-				var discreteColors = GetDiscreteColors(ParentProperty.Component);
+				var discreteColors = Util.GetDiscreteColors(ParentProperty.Component);
 				if (discreteColors.Any())
 				{
 					if (ParentProperty.PropertyType == typeof (Color) || obj.GetDataPresent(typeof (Color)))
@@ -275,29 +275,6 @@ namespace VixenModules.Editor.EffectEditor
 		protected virtual CultureInfo GetSerializationCulture()
 		{
 			return ObjectServices.GetSerializationCulture(_property.PropertyType);
-		}
-
-		private HashSet<Color> GetDiscreteColors(object component)
-		{
-			var validColors = new HashSet<Color>();
-			if (component is IEffect)
-			{
-				var effect = (IEffect) component;
-				validColors.AddRange(effect.TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
-			}
-			else if (component is Array)
-			{
-				foreach (var item in (Array) component)
-				{
-					if (item is IEffect)
-					{
-						var effect = (IEffect) item;
-						validColors.AddRange(effect.TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
-					}
-				}
-			}
-
-			return validColors;
 		}
 
 		#region Events

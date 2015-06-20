@@ -2,14 +2,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Resources;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using VixenModules.App.ColorGradients;
+using VixenModules.App.Curves;
 using VixenModules.Editor.EffectEditor.Input;
 using VixenModules.Editor.EffectEditor.PropertyEditing;
+using Point = System.Windows.Point;
 
 namespace VixenModules.Editor.EffectEditor.Internal
 {
@@ -199,44 +203,100 @@ namespace VixenModules.Editor.EffectEditor.Internal
 		public bool ApplyMouseOffset { get; private set; }
 		public bool IsValidDataObject(IDataObject obj)
 		{
-			throw new NotImplementedException();
+			if (obj.GetDataPresent(ItemType) ||
+				ItemType == typeof(ColorGradient) && obj.GetDataPresent(typeof(Color)))
+			{
+
+				var discreteColors = Util.GetDiscreteColors(ParentProperty.Component);
+				if (discreteColors.Any())
+				{
+					if (ItemType == typeof(Color) || obj.GetDataPresent(typeof(Color)))
+					{
+						var c = (Color)obj.GetData(typeof(Color));
+						if (!discreteColors.Contains(c))
+						{
+							return false;
+						}
+					}
+					else
+					{
+						var c = (ColorGradient)obj.GetData(typeof(ColorGradient));
+						var colors = c.Colors.Select(x => x.Color.ToRGB().ToArgb());
+						if (!discreteColors.IsSupersetOf(colors))
+						{
+							return false;
+						}
+					}
+				}
+
+
+				return true;
+			}
+
+			return false;
 		}
 
 		public void OnDropCompleted(IDataObject obj, Point dropPoint)
 		{
-			throw new NotImplementedException();
+			var data = obj.GetData(ItemType);
+			if (data != null && data.GetType() == ItemType)
+			{
+				Value = data;
+			}
+			else
+			{
+				//Check to see if we are trying to assign color to a gradient
+				data = obj.GetData(typeof(Color));
+				if (data is Color && ItemType == typeof(ColorGradient))
+				{
+					Value = new ColorGradient((Color)data);
+				}
+			}
 		}
 
 		public UIElement GetVisualFeedback(IDataObject obj)
 		{
-			throw new NotImplementedException();
+			return null;
 		}
 
 		public UIElement SourceUI { get; set; }
-		public DragDropEffects SupportedEffects { get; private set; }
+
+		public DragDropEffects SupportedEffects
+		{
+			get
+			{
+				return DragDropEffects.Copy;
+			} 
+		}
+
 		public DataObject GetDataObject(UIElement draggedElt)
 		{
-			throw new NotImplementedException();
+			return new DataObject(Value);
 		}
 
 		public void FinishDrag(UIElement draggedElt, DragDropEffects finalEffects)
 		{
-			throw new NotImplementedException();
+			
 		}
 
 		public bool IsDraggable(UIElement dragElt)
 		{
+			if (ItemType == typeof(Curve) || ItemType == typeof(ColorGradient)
+				|| ItemType == typeof(Color))
+			{
+				return true;
+			}
 			return false;
 		}
 
 		UIElement IDragSourceAdvisor.GetTopContainer()
 		{
-			throw new NotImplementedException();
+			return TargetUI;
 		}
 
 		UIElement IDropTargetAdvisor.GetTopContainer()
 		{
-			throw new NotImplementedException();
+			return TargetUI;
 		}
 	}
 }
