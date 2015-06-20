@@ -62,6 +62,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Applies the gradient blend vertically..
+        /// </summary>
+        internal static string Blend {
+            get {
+                return ResourceManager.GetString("Blend", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Controls the brightness of the effect..
         /// </summary>
         internal static string Brightness {
@@ -296,6 +305,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The amount of twist in the spiral..
+        /// </summary>
+        internal static string Rotation {
+            get {
+                return ResourceManager.GetString("Rotation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
         internal static string Setup {
@@ -341,6 +359,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Controls how thick the spiral leg is..
+        /// </summary>
+        internal static string Thickness {
+            get {
+                return ResourceManager.GetString("Thickness", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Controls how long the averge pulse time is in the twinkle..
         /// </summary>
         internal static string TwinkleAvgPulseTime {
@@ -382,6 +409,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string TwinklePulseTimeVariation {
             get {
                 return ResourceManager.GetString("TwinklePulseTimeVariation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Changes the orientation of the gradient..
+        /// </summary>
+        internal static string VerticalBlend {
+            get {
+                return ResourceManager.GetString("VerticalBlend", resourceCulture);
             }
         }
         

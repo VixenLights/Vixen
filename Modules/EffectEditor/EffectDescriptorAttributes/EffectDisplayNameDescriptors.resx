@@ -120,6 +120,9 @@
   <data name="AveragePulseTime" xml:space="preserve">
     <value>Avg Pulse Time</value>
   </data>
+  <data name="Blend" xml:space="preserve">
+    <value>Blend</value>
+  </data>
   <data name="Brightness" xml:space="preserve">
     <value>Intensity</value>
   </data>
@@ -222,6 +225,9 @@
   <data name="RevolutionTime" xml:space="preserve">
     <value>Revolution Time</value>
   </data>
+  <data name="Rotation" xml:space="preserve">
+    <value>Rotation</value>
+  </data>
   <data name="Setup" xml:space="preserve">
     <value />
   </data>
@@ -240,11 +246,17 @@
   <data name="StringCount" xml:space="preserve">
     <value>String Count</value>
   </data>
+  <data name="Thickness" xml:space="preserve">
+    <value>Thickness</value>
+  </data>
   <data name="Type" xml:space="preserve">
     <value>Type</value>
   </data>
   <data name="Variation" xml:space="preserve">
     <value>Variation</value>
+  </data>
+  <data name="VerticalBlend" xml:space="preserve">
+    <value>Vertical Blend</value>
   </data>
   <data name="WipeCount" xml:space="preserve">
     <value>Wipe Count</value>

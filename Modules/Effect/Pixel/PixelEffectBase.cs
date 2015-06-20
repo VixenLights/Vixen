@@ -126,24 +126,23 @@ namespace VixenModules.Effect.Pixel
 		
 		protected StringOrientation StringOrientation { get; set; }
 
-		private RGBValue[][] _pixels;
+		private Color[][] _pixels;
 		protected void InitBuffer()
 		{
+			_pixels = new Color[BufferWi][];
+			for (int i = 0; i < BufferWi; i++)
+			{
+				_pixels[i] = new Color[BufferHt];
+			}	
+		}
 
-			if (StringOrientation == StringOrientation.Horizontal)
+		public void ClearBuffer()
+		{
+			for (int i=0; i < BufferWi; i++)
 			{
-				_pixels = new RGBValue[MaxPixelsPerString][];
-				for (int i = 0; i < MaxPixelsPerString; i++)
+				for (int z = 0; z < BufferHt; z++)
 				{
-					_pixels[i] = new RGBValue[StringCount];
-				}
-			}
-			else
-			{
-				_pixels = new RGBValue[StringCount][];
-				for (int i = 0; i < StringCount; i++)
-				{
-					_pixels[i] = new RGBValue[MaxPixelsPerString];
+					_pixels[i][z] = Color.Transparent;
 				}
 			}
 		}
@@ -153,7 +152,7 @@ namespace VixenModules.Effect.Pixel
 		{
 			if (x >= 0 && x < BufferWi && y >= 0 && y < BufferHt)
 			{
-				_pixels[x][y] = new RGBValue(color);
+				_pixels[x][y] = color;
 			}
 		}
 
@@ -183,6 +182,7 @@ namespace VixenModules.Effect.Pixel
 			// generate all the pixels
 			for (int frameNum = 0; frameNum < nFrames; frameNum++)
 			{
+				ClearBuffer();
 				RenderEffect(frameNum);
 				// peel off this frames pixels...
 				if (StringOrientation == StringOrientation.Horizontal)
@@ -192,7 +192,7 @@ namespace VixenModules.Effect.Pixel
 					{
 						for (int x = 0; x < StringPixelCounts[y]; x++)
 						{
-							pixels[i][frameNum] = _pixels[x][y];
+							pixels[i][frameNum] = new RGBValue(_pixels[x][y]);
 							i++;
 						}
 					}
@@ -204,7 +204,7 @@ namespace VixenModules.Effect.Pixel
 					{
 						for (int y = 0; y < StringPixelCounts[x]; y++)
 						{
-							pixels[i][frameNum] = _pixels[x][y];
+							pixels[i][frameNum] = new RGBValue(_pixels[x][y]);
 							i++;
 						}
 					}

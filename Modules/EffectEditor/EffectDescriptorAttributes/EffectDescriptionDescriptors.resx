@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Blend" xml:space="preserve">
+    <value>Applies the gradient blend vertically.</value>
+  </data>
   <data name="Brightness" xml:space="preserve">
     <value>Controls the brightness of the effect.</value>
   </data>
@@ -195,6 +198,9 @@
   <data name="RevolutionTime" xml:space="preserve">
     <value>Controls the duration in milliseconds at which the spin occurs.</value>
   </data>
+  <data name="Rotation" xml:space="preserve">
+    <value>The amount of twist in the spiral.</value>
+  </data>
   <data name="Setup" xml:space="preserve">
     <value />
   </data>
@@ -210,6 +216,9 @@
   <data name="StringCount" xml:space="preserve">
     <value>The count of strings the effect will use.</value>
   </data>
+  <data name="Thickness" xml:space="preserve">
+    <value>Controls how thick the spiral leg is.</value>
+  </data>
   <data name="TwinkleAvgPulseTime" xml:space="preserve">
     <value>Controls how long the averge pulse time is in the twinkle.</value>
   </data>
@@ -224,6 +233,9 @@
   </data>
   <data name="TwinklePulseTimeVariation" xml:space="preserve">
     <value>Controls how much percent variation in the time of each pulse in the twinkle.</value>
+  </data>
+  <data name="VerticalBlend" xml:space="preserve">
+    <value>Changes the orientation of the gradient.</value>
   </data>
   <data name="WipeCount" xml:space="preserve">
     <value>Controls the number of passes the wipe makes.</value>
