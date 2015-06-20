@@ -2213,6 +2213,7 @@ namespace Common.Controls.Timeline
 			if (capturedElements.Any())
 			{
 				Element element = capturedElements.First();
+				if (element == null) return;
 				//This element may be part of more than one row. So it's internal Display rect can be wrong thus
 				//placing the info tool tip in the wrong place
 				//Until that is fixed which is a bigger effort lets use our current row for part of the rectangle.
