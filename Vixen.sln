@@ -340,6 +340,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pixel", "Modules\Effect\Pix
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spiral", "Modules\Effect\Spiral\Spiral.csproj", "{37C170E7-E5A3-4A9F-8B6F-1E7AE62B113B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Text", "Modules\Effect\Text\Text.csproj", "{F0874098-3486-47B4-B594-CABE7D867A2F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1603,6 +1605,22 @@ Global
 		{37C170E7-E5A3-4A9F-8B6F-1E7AE62B113B}.Release|x64.Build.0 = Release|x64
 		{37C170E7-E5A3-4A9F-8B6F-1E7AE62B113B}.Release|x86.ActiveCfg = Release|x86
 		{37C170E7-E5A3-4A9F-8B6F-1E7AE62B113B}.Release|x86.Build.0 = Release|x86
+		{F0874098-3486-47B4-B594-CABE7D867A2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0874098-3486-47B4-B594-CABE7D867A2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0874098-3486-47B4-B594-CABE7D867A2F}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{F0874098-3486-47B4-B594-CABE7D867A2F}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{F0874098-3486-47B4-B594-CABE7D867A2F}.Debug|x64.ActiveCfg = Debug|x64
+		{F0874098-3486-47B4-B594-CABE7D867A2F}.Debug|x64.Build.0 = Debug|x64
+		{F0874098-3486-47B4-B594-CABE7D867A2F}.Debug|x86.ActiveCfg = Debug|x86
+		{F0874098-3486-47B4-B594-CABE7D867A2F}.Debug|x86.Build.0 = Debug|x86
+		{F0874098-3486-47B4-B594-CABE7D867A2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F0874098-3486-47B4-B594-CABE7D867A2F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F0874098-3486-47B4-B594-CABE7D867A2F}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{F0874098-3486-47B4-B594-CABE7D867A2F}.Release|Mixed Platforms.Build.0 = Release|x86
+		{F0874098-3486-47B4-B594-CABE7D867A2F}.Release|x64.ActiveCfg = Release|x64
+		{F0874098-3486-47B4-B594-CABE7D867A2F}.Release|x64.Build.0 = Release|x64
+		{F0874098-3486-47B4-B594-CABE7D867A2F}.Release|x86.ActiveCfg = Release|x86
+		{F0874098-3486-47B4-B594-CABE7D867A2F}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1717,6 +1735,7 @@ Global
 		{BFE7A351-F16D-42C7-91DF-F96ACAF87381} = {0E86725B-55F2-43AB-96A9-2B9B89BE4473}
 		{4ED66B3A-E4C0-40C5-B19F-67B8486121CA} = {0E86725B-55F2-43AB-96A9-2B9B89BE4473}
 		{37C170E7-E5A3-4A9F-8B6F-1E7AE62B113B} = {0E86725B-55F2-43AB-96A9-2B9B89BE4473}
+		{F0874098-3486-47B4-B594-CABE7D867A2F} = {0E86725B-55F2-43AB-96A9-2B9B89BE4473}
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Everything.vsmdi

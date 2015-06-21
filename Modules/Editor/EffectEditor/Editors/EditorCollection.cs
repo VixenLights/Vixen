@@ -41,9 +41,7 @@ namespace VixenModules.Editor.EffectEditor.Editors
 			{typeof(List<ColorGradient>), new TypeEditor(typeof(List<ColorGradient>),EditorKeys.ColorGradientPaletteEditorKey)},
 			{KnownTypes.Vixen.Percentage, new TypeEditor(KnownTypes.Vixen.Percentage, EditorKeys.SliderPercentageEditorKey)},
 			{typeof (Enum), new TypeEditor(typeof (Enum), EditorKeys.EnumEditorKey)},
-			{KnownTypes.Wpf.FontStyle, new TypeEditor(KnownTypes.Wpf.FontStyle, EditorKeys.EnumEditorKey)},
-			{KnownTypes.Wpf.FontWeight, new TypeEditor(KnownTypes.Wpf.FontWeight, EditorKeys.EnumEditorKey)},
-			{KnownTypes.Wpf.FontFamily, new TypeEditor(KnownTypes.Wpf.FontFamily, EditorKeys.FontFamilyEditorKey)}
+			{KnownTypes.Windows.Font, new FontEditor()}
 		};
 
 		/// <summary>
@@ -205,9 +203,6 @@ namespace VixenModules.Editor.EffectEditor.Editors
 				if (editor != null) return editor;
 			}
 
-			if (propertyItem.PropertyValue.HasSubProperties)
-				return new TypeEditor(propertyItem.PropertyType, EditorKeys.ComplexPropertyEditorKey);
-
 			var hasType = propertyItem.PropertyType != null;
 
 			if (hasType)
@@ -224,6 +219,13 @@ namespace VixenModules.Editor.EffectEditor.Editors
 						return cachedEditor.Value;
 				}
 				
+			}
+
+			if (propertyItem.PropertyValue.HasSubProperties)
+				return new TypeEditor(propertyItem.PropertyType, EditorKeys.ComplexPropertyEditorKey);
+
+			if (hasType)
+			{
 				return new TypeEditor(propertyItem.PropertyType, EditorKeys.DefaultEditorKey);
 			}
 

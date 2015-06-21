@@ -8,7 +8,7 @@ namespace VixenModules.Editor.EffectEditor.Editors
 	{
 		public FilePathEditor()
 		{
-			this.InlineTemplate = EditorKeys.FilePathEditorKey;
+			InlineTemplate = EditorKeys.FilePathEditorKey;
 		}
 
 		public override Object ShowDialog(Object effect, Object propertyValue, IInputElement commandSource)

@@ -17,17 +17,17 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes
 
 		public static string GetCategoryString(string key)
 		{
-			return CategoryManager.GetString(key) ?? "Unknown";
+			return CategoryManager.GetString(key) ?? key;
 		}
 
 		public static string GetDisplayNameString(string key)
 		{
-			return DisplayNameManager.GetString(key) ?? "Unknown";
+			return DisplayNameManager.GetString(key) ?? key;
 		}
 
 		public static string GetDescriptionString(string key)
 		{
-			return DescriptionManager.GetString(key) ?? "Unknown";
+			return DescriptionManager.GetString(key) ?? key;
 		}
 	}
 }

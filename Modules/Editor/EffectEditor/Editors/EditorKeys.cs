@@ -40,11 +40,11 @@ namespace VixenModules.Editor.EffectEditor.Editors
 		private static readonly ComponentResourceKey _SliderDoubleEditorKey = new ComponentResourceKey(ThisType, "SliderDoubleEditor");
 		private static readonly ComponentResourceKey _SliderLevelEditorKey = new ComponentResourceKey(ThisType, "SliderLevelEditor");
 		private static readonly ComponentResourceKey _SliderPercentageEditorKey = new ComponentResourceKey(ThisType, "SliderPercentageEditor");
-		private static readonly ComponentResourceKey _FontFamilyEditorKey = new ComponentResourceKey(ThisType, "FontFamilyEditor");
 		private static readonly ComponentResourceKey _DefaultCategoryEditorKey = new ComponentResourceKey(ThisType, "DefaultCategoryEditor");
 		private static readonly ComponentResourceKey _ComplexPropertyEditorKey = new ComponentResourceKey(ThisType, "ComplexPropertyEditor");
 		private static readonly ComponentResourceKey _FilePathEditorKey = new ComponentResourceKey(typeof(EditorKeys), "FilePathEditor");
 		private static readonly ComponentResourceKey _ColorGradientPaletteEditorKey = new ComponentResourceKey(ThisType, "ColorGradientPaletteEditor");
+		private static readonly ComponentResourceKey _FontEditorKey = new ComponentResourceKey(typeof(EditorKeys), "FontEditor");
 
 		/// <summary>
 		///     Gets the File editor key.
@@ -53,6 +53,15 @@ namespace VixenModules.Editor.EffectEditor.Editors
 		public static ComponentResourceKey FilePathEditorKey
 		{
 			get { return _FilePathEditorKey; }
+		}
+
+		/// <summary>
+		///     Gets the Font editor key.
+		/// </summary>
+		/// <value>The curve editor key.</value>
+		public static ComponentResourceKey FontEditorKey
+		{
+			get { return _FontEditorKey; }
 		}
 
 		/// <summary>
@@ -188,15 +197,6 @@ namespace VixenModules.Editor.EffectEditor.Editors
 		public static ComponentResourceKey SliderPercentageEditorKey
 		{
 			get { return _SliderPercentageEditorKey; }
-		}
-
-		/// <summary>
-		///     Gets the font family editor key.
-		/// </summary>
-		/// <value>The font family editor key.</value>
-		public static ComponentResourceKey FontFamilyEditorKey
-		{
-			get { return _FontFamilyEditorKey; }
 		}
 
 		/// <summary>

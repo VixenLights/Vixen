@@ -52,6 +52,12 @@ namespace VixenModules.Editor.EffectEditor
 			public static readonly Type Integer = typeof (int);
 		}
 
+		public static class Windows
+		{
+			public static readonly Type Font = typeof(Font);
+			
+		}
+
 		public static class Editors
 		{
 			public static readonly Type Editor = typeof (EffectEditor.Editors.Editor);
