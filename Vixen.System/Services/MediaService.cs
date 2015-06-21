@@ -24,7 +24,7 @@ namespace Vixen.Services
 		{
 			string fileName = Path.GetFileName(filePath);
 			string newPath = Path.Combine(MediaDirectory, fileName);
-			File.Copy(filePath, newPath);	
+			File.Copy(filePath, newPath, true);	
 			
 			return GetMedia(Path.Combine(MediaDirectory, newPath));
 
