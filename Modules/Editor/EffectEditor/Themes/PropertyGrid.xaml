@@ -14,7 +14,9 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type local:EffectPropertyEditorGrid}">
+					
 					<DockPanel LastChildFill="True" Background="{TemplateBinding Background}">
+						
 						<StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
 							<!--<ToggleButton
 								HorizontalAlignment="Center"
@@ -44,9 +46,11 @@
 						<!--<TextBlock x:Name="DescriptionBlock"  Margin="5" Foreground="DimGray" TextWrapping="Wrap" TextTrimming="WordEllipsis" Text="{TemplateBinding CurrentDescription}"/>-->
 						<!--<TextBox x:Name="DescriptionBlock"  TextWrapping="Wrap" IsReadOnly="True" Text="{TemplateBinding CurrentDescription}"/>
             </Border>-->
-						<ContentPresenter FocusManager.IsFocusScope="True" ContentSource="Layout" />
-
+						<ScrollViewer VerticalScrollBarVisibility="Auto">
+							<ContentPresenter FocusManager.IsFocusScope="True" ContentSource="Layout"/>
+						</ScrollViewer>
 					</DockPanel>
+					
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
