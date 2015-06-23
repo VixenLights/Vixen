@@ -89,6 +89,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Center Stop.
+        /// </summary>
+        internal static string CenterStop {
+            get {
+                return ResourceManager.GetString("CenterStop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Change Interval.
         /// </summary>
         internal static string ChangeInterval {
@@ -233,11 +242,29 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Font.
+        /// </summary>
+        internal static string Font {
+            get {
+                return ResourceManager.GetString("Font", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Frequency.
         /// </summary>
         internal static string Frequency {
             get {
                 return ResourceManager.GetString("Frequency", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Gradient Mode.
+        /// </summary>
+        internal static string GradientMode {
+            get {
+                return ResourceManager.GetString("GradientMode", resourceCulture);
             }
         }
         
@@ -310,6 +337,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string PixelsPerString {
             get {
                 return ResourceManager.GetString("PixelsPerString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Position.
+        /// </summary>
+        internal static string Position {
+            get {
+                return ResourceManager.GetString("Position", resourceCulture);
             }
         }
         
@@ -395,15 +431,6 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string Setup {
-            get {
-                return ResourceManager.GetString("Setup", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to 3D.
         /// </summary>
         internal static string Show3D {
@@ -445,6 +472,42 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string StringCount {
             get {
                 return ResourceManager.GetString("StringCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Text Line 1.
+        /// </summary>
+        internal static string TextLine1 {
+            get {
+                return ResourceManager.GetString("TextLine1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Text Line 2.
+        /// </summary>
+        internal static string TextLine2 {
+            get {
+                return ResourceManager.GetString("TextLine2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Text Line 3.
+        /// </summary>
+        internal static string TextLine3 {
+            get {
+                return ResourceManager.GetString("TextLine3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Text Line 4.
+        /// </summary>
+        internal static string TextLine4 {
+            get {
+                return ResourceManager.GetString("TextLine4", resourceCulture);
             }
         }
         

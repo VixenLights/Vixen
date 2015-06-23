@@ -126,6 +126,9 @@
   <data name="Brightness" xml:space="preserve">
     <value>Intensity</value>
   </data>
+  <data name="CenterStop" xml:space="preserve">
+    <value>Center Stop</value>
+  </data>
   <data name="ChangeInterval" xml:space="preserve">
     <value>Change Interval</value>
   </data>
@@ -174,8 +177,14 @@
   <data name="FlickerPercent" xml:space="preserve">
     <value>Flicker</value>
   </data>
+  <data name="Font" xml:space="preserve">
+    <value>Font</value>
+  </data>
   <data name="Frequency" xml:space="preserve">
     <value>Frequency</value>
+  </data>
+  <data name="GradientMode" xml:space="preserve">
+    <value>Gradient Mode</value>
   </data>
   <data name="GradientOne" xml:space="preserve">
     <value>Gradient 1</value>
@@ -200,6 +209,9 @@
   </data>
   <data name="PixelsPerString" xml:space="preserve">
     <value>Pixels Per String</value>
+  </data>
+  <data name="Position" xml:space="preserve">
+    <value>Position</value>
   </data>
   <data name="PulseDuration" xml:space="preserve">
     <value>Duration</value>
@@ -228,9 +240,6 @@
   <data name="Rotation" xml:space="preserve">
     <value>Rotation</value>
   </data>
-  <data name="Setup" xml:space="preserve">
-    <value />
-  </data>
   <data name="Show3D" xml:space="preserve">
     <value>3D</value>
   </data>
@@ -245,6 +254,18 @@
   </data>
   <data name="StringCount" xml:space="preserve">
     <value>String Count</value>
+  </data>
+  <data name="TextLine1" xml:space="preserve">
+    <value>Text Line 1</value>
+  </data>
+  <data name="TextLine2" xml:space="preserve">
+    <value>Text Line 2</value>
+  </data>
+  <data name="TextLine3" xml:space="preserve">
+    <value>Text Line 3</value>
+  </data>
+  <data name="TextLine4" xml:space="preserve">
+    <value>Text Line 4</value>
   </data>
   <data name="Thickness" xml:space="preserve">
     <value>Thickness</value>

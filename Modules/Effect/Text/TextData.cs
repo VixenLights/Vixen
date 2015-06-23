@@ -20,6 +20,7 @@ namespace VixenModules.Effect.Text
 			Speed = 5;
 			Position = 60;
 			CenterStop = false;
+			FitToTime = false;
 			Line1 = String.Empty;
 			Line2 = String.Empty;
 			Line3 = String.Empty;
@@ -39,6 +40,12 @@ namespace VixenModules.Effect.Text
 
 		[DataMember]
 		public bool CenterStop { get; set; }
+
+		[DataMember]
+		public bool FitToTime { get; set; }
+
+		[DataMember]
+		public GradientMode GradientMode { get; set; }
 
 		[DataMember]
 		public int Position { get; set; }

@@ -19,11 +19,6 @@ namespace VixenModules.Effect.Pixel
 
 		private const short FrameTime = 50;
 
-		protected PixelEffectBase()
-		{
-			StringOrientation = StringOrientation.Vertical;
-		}
-
 		protected readonly List<int> StringPixelCounts = new List<int>();
 
 		protected EffectIntents _elementData;
@@ -48,19 +43,25 @@ namespace VixenModules.Effect.Pixel
 		}
 
 		[ReadOnly(true)]
-		[ProviderCategory(@"Setup")]
+		[ProviderCategory(@"Setup",0)]
 		[ProviderDisplayName(@"StringCount")]
 		[ProviderDescription(@"StringCount")]
 		[PropertyOrder(0)]
 		public int StringCount { get; set; }
 
 		[ReadOnly(true)]
-		[ProviderCategory(@"Setup")]
+		[ProviderCategory(@"Setup",0)]
 		[ProviderDisplayName(@"PixelsPerString")]
 		[Description(@"PixelsPerString")]
 		[PropertyEditor("Label")]
 		[PropertyOrder(1)]
 		public int MaxPixelsPerString { get; set; }
+
+		[ProviderCategory(@"Setup", 0)]
+		[ProviderDisplayName(@"Orientation")]
+		[ProviderDescription(@"Orientation")]
+		[PropertyOrder(2)]
+		public abstract StringOrientation StringOrientation { get; set; }
 
 		private void CalculatePixelsPerString()
 		{
@@ -124,9 +125,6 @@ namespace VixenModules.Effect.Pixel
 				return StringOrientation == StringOrientation.Horizontal ? MaxPixelsPerString : StringCount;
 			}
 		}
-
-		
-		protected StringOrientation StringOrientation { get; set; }
 
 		private Color[][] _pixels;
 		protected void InitBuffer()

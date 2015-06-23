@@ -160,7 +160,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Setup.
+        ///   Looks up a localized string similar to String Setup.
         /// </summary>
         internal static string Setup {
             get {

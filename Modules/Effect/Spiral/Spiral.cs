@@ -222,6 +222,19 @@ namespace VixenModules.Effect.Spiral
 			}
 		}
 
+		[Browsable(false)]
+		public override StringOrientation StringOrientation
+		{
+			get
+			{
+				return StringOrientation.Vertical;
+			}
+			set
+			{
+				//Read only
+			}
+		}
+
 		public override IModuleDataModel ModuleData
 		{
 			get { return _data; }
@@ -313,5 +326,7 @@ namespace VixenModules.Effect.Spiral
 				}
 			}
 		}
+
+		
 	}
 }

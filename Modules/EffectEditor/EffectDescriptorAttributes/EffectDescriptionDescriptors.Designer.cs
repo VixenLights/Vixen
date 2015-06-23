@@ -80,6 +80,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Moves the text into view and stops it in the center..
+        /// </summary>
+        internal static string CenterStop {
+            get {
+                return ResourceManager.GetString("CenterStop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sets percentage of change..
         /// </summary>
         internal static string ChangePercent {
@@ -161,7 +170,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Try to fit the effect into the given timespan..
+        ///   Looks up a localized string similar to Times the effect so that it will fit in the allotted time span..
         /// </summary>
         internal static string FitTime {
             get {
@@ -184,6 +193,24 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string FlickerPercent {
             get {
                 return ResourceManager.GetString("FlickerPercent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The text font..
+        /// </summary>
+        internal static string Font {
+            get {
+                return ResourceManager.GetString("Font", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Controls how the gradient is applied to the effect..
+        /// </summary>
+        internal static string GradientMode {
+            get {
+                return ResourceManager.GetString("GradientMode", resourceCulture);
             }
         }
         
@@ -215,7 +242,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The orientation of the strings..
+        ///   Looks up a localized string similar to Defines the direction of the strings and controls how the effect is oriented on the element..
         /// </summary>
         internal static string Orientation {
             get {
@@ -229,6 +256,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string PixelsPerString {
             get {
                 return ResourceManager.GetString("PixelsPerString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Controls the centering of the text on the element..
+        /// </summary>
+        internal static string Position {
+            get {
+                return ResourceManager.GetString("Position", resourceCulture);
             }
         }
         
@@ -355,6 +391,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string StringCount {
             get {
                 return ResourceManager.GetString("StringCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A line of text to be displayed..
+        /// </summary>
+        internal static string TextLine {
+            get {
+                return ResourceManager.GetString("TextLine", resourceCulture);
             }
         }
         

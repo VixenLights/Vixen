@@ -45,6 +45,18 @@ namespace VixenModules.Effect.Bars
 			protected set { base.IsDirty = value; }
 		}
 
+		[Browsable(false)]
+		public override StringOrientation StringOrientation
+		{
+			get
+			{
+				return StringOrientation.Vertical;
+			}
+			set
+			{
+				//Read only
+			}
+		}
 		
 		[Value]
 		[ProviderCategory(@"Config", 0)]
