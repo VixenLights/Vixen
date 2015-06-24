@@ -30,16 +30,13 @@ namespace VixenModules.Effect.Pixel
 
 		protected override void _PreRender(CancellationTokenSource tokenSource = null)
 		{
-			_elementData = new EffectIntents();
-
+			EffectIntents data = new EffectIntents();
 			foreach (ElementNode node in TargetNodes)
 			{
-				if (tokenSource != null && tokenSource.IsCancellationRequested)
-					return;
-
 				if (node != null)
-					RenderNode(node);
+					data.Add(RenderNode(node));
 			}
+			_elementData = data;
 		}
 
 		[ReadOnly(true)]
@@ -163,9 +160,9 @@ namespace VixenModules.Effect.Pixel
 			SetPixel(x, y, color);
 		}
 
-		protected void RenderNode(ElementNode node)
+		protected EffectIntents RenderNode(ElementNode node)
 		{
-	
+			EffectIntents effectIntents = new EffectIntents();
 			int nFrames = (int)(TimeSpan.TotalMilliseconds / FrameTime);
 
 			InitBuffer();
@@ -216,8 +213,10 @@ namespace VixenModules.Effect.Pixel
 			for (int eidx = 0; eidx < numElements; eidx++)
 			{
 				IIntent intent = new StaticArrayIntent<RGBValue>(frameTs, pixels[eidx], TimeSpan);
-				_elementData.AddIntentForElement(elements[eidx].Id, intent, startTime);
+				effectIntents.AddIntentForElement(elements[eidx].Id, intent, startTime);
 			}
+
+			return effectIntents;
 		}
 
 		protected double GetEffectTimeIntervalPosition(int frame)

@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Text;
 using System.Linq;
-using Common.Controls.ColorManagement.ColorModels;
+using System.Text;
 using Vixen.Attributes;
 using Vixen.Module;
 using Vixen.Sys.Attribute;
@@ -21,7 +22,7 @@ namespace VixenModules.Effect.Text
 		public Text()
 		{
 			_data = new TextData();
-			UpdateSpeedAttribute();
+			UpdateAllAttributes();
 		}
 
 		public override bool IsDirty
@@ -38,6 +39,7 @@ namespace VixenModules.Effect.Text
 			protected set { base.IsDirty = value; }
 		}
 
+		#region String Setup properties
 
 		[Value]
 		public override StringOrientation StringOrientation
@@ -51,6 +53,10 @@ namespace VixenModules.Effect.Text
 			}
 		}
 
+		#endregion
+
+		#region Config properties
+
 		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Direction")]
@@ -63,6 +69,7 @@ namespace VixenModules.Effect.Text
 			{
 				_data.Direction = value;
 				IsDirty = true;
+				UpdatePositionXAttribute();
 				OnPropertyChanged();
 			}
 		}
@@ -102,6 +109,61 @@ namespace VixenModules.Effect.Text
 				OnPropertyChanged();
 			}
 		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"PositionX")]
+		[ProviderDescription(@"Position")]
+		[PropertyEditor("SliderEditor")]
+		[NumberRange(-100, 100, 1)]
+		[PropertyOrder(2)]
+		public int PositionX
+		{
+			get { return _data.PositionX; }
+			set
+			{
+				_data.PositionX = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"FitTime")]
+		[ProviderDescription(@"FitTime")]
+		[PropertyOrder(4)]
+		public bool FitToTime
+		{
+			get { return _data.FitToTime; }
+			set
+			{
+				_data.FitToTime = value;
+				IsDirty = true;
+				UpdateSpeedAttribute();
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"CenterStop")]
+		[ProviderDescription(@"CenterStop")]
+		[PropertyOrder(3)]
+		public bool CenterStop
+		{
+			get { return _data.CenterStop; }
+			set
+			{
+				_data.CenterStop = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		#endregion
+
+		#region Text properties
 
 		[Value]
 		[ProviderCategory(@"Text", 2)]
@@ -183,38 +245,9 @@ namespace VixenModules.Effect.Text
 			}
 		}
 
-		[Value]
-		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"FitTime")]
-		[ProviderDescription(@"FitTime")]
-		[PropertyOrder(4)]
-		public bool FitToTime
-		{
-			get { return _data.FitToTime; }
-			set
-			{
-				_data.FitToTime = value;
-				IsDirty = true;
-				UpdateSpeedAttribute();
-				OnPropertyChanged();
-			}
-		}
+		#endregion
 
-		[Value]
-		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"CenterStop")]
-		[ProviderDescription(@"CenterStop")]
-		[PropertyOrder(3)]
-		public bool CenterStop
-		{
-			get { return _data.CenterStop; }
-			set
-			{
-				_data.CenterStop = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
+		#region Color properties
 
 		[Value]
 		[ProviderCategory(@"Color", 3)]
@@ -248,25 +281,51 @@ namespace VixenModules.Effect.Text
 			}
 		}
 
+		#endregion
+
 		public override IModuleDataModel ModuleData
 		{
 			get { return _data; }
 			set
 			{
 				_data = value as TextData;
-				UpdateSpeedAttribute();
+				UpdateAllAttributes();
 				IsDirty = true;
 			}
 		}
 
-		private void UpdateSpeedAttribute()
+		private void UpdateAllAttributes()
+		{
+			UpdateSpeedAttribute(false);
+			UpdatePositionXAttribute(false);
+			TypeDescriptor.Refresh(this);
+		}
+
+		private void UpdateSpeedAttribute(bool refresh=true)
 		{
 			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1)
 			{
 				{"Speed", !FitToTime}
 			};
 			SetBrowsable(propertyStates);
-			TypeDescriptor.Refresh(this);
+			if (refresh)
+			{
+				TypeDescriptor.Refresh(this);
+			}
+		}
+
+		private void UpdatePositionXAttribute(bool refresh=true)
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1)
+			{
+				{"PositionX", Direction==TextDirection.None}
+			};
+			SetBrowsable(propertyStates);
+
+			if(refresh)
+			{
+				TypeDescriptor.Refresh(this);
+			}
 		}
 
 		protected override void RenderEffect(int frame)
@@ -275,210 +334,203 @@ namespace VixenModules.Effect.Text
 			{
 				using (Graphics graphics = Graphics.FromImage(bitmap))
 				{
-					var line = new[] {Line1, Line2, Line3, Line4};
+					
+					var line = new[] { Line1, Line2, Line3, Line4 };
+					var textLines = new List<String>();
+					
+					int numberLines=0;
+					
+					SizeF textsize = new SizeF(0,0);
+					
+					foreach (string t in line)
+					{
+						if(!String.IsNullOrEmpty(t))
+						{
+							numberLines++;
+							var size = graphics.MeasureString(t, Font);
+							if (size.Width > textsize.Width)
+							{
+								textsize = size;
+							}
+							textLines.Add(t);
+							continue;
+						}
+						break;
+					}
+					int maxTextSize = Convert.ToInt32(textsize.Width*.95);
+					int maxht = Convert.ToInt32(textsize.Height * numberLines);
+					int xlimit = (BufferWi + maxTextSize) * 8 + 1;
+					int ylimit = (BufferHt + maxht) * 8 + 1;
+					int offsetLeft = (((BufferWi - maxTextSize) / 2) * 2 + Position) / 2;
+					int offsetTop = (((BufferHt - maxht)/2)*2 + Position) / 2;
+					double intervalPosition = GetEffectTimeIntervalPosition(frame);
+
 					int i = 0;
-					string msg = "";
-					var stringMeasures = new[]
+					
+					Point point;
+					
+					switch (Direction)
 					{
-						Convert.ToInt32(graphics.MeasureString(Line1, Font).Width),
-						Convert.ToInt32(graphics.MeasureString(Line2, Font).Width),
-						Convert.ToInt32(graphics.MeasureString(Line3, Font).Width),
-						Convert.ToInt32(graphics.MeasureString(Line4, Font).Width)
-					};
-					int maxtextsize = stringMeasures.Max();
-					int maxIndex = stringMeasures.ToList().IndexOf(maxtextsize);
-					int numberLines;
-					SizeF textsize = graphics.MeasureString(line[maxIndex], Font);
-					if (Line4 != "")
-					{
-						numberLines = 4;
-					}
-					else
-					{
-						if (Line3 != "")
-						{
-							numberLines = 3;
-						}
-						else
-						{
-							numberLines = Line2 != "" ? 2 : 1;
-						}
-					}
-					do
-					{
+						case TextDirection.Left:
+							// left
+							int leftX;
+							if (FitToTime)
+							{
+								leftX = BufferWi - (int)(intervalPosition * (textsize.Width + BufferWi));
+							}
+							else
+							{
+								leftX = BufferWi - (Speed * frame) % xlimit / 8;
+							}
+							
+							point =
+								new Point(Convert.ToInt32(CenterStop ? Math.Max(leftX, (BufferWi - (int)textsize.Width) / 2) : leftX), offsetTop);
 
-						//using (LinearGradientBrush brush = new LinearGradientBrush(new Rectangle(0, 0, BufferWi, BufferHt), Color.Black, Color.Black, LinearGradientMode.Horizontal))//(Colors[i % Colors.Count()].GetColorAt(0)))
-						//{
+							DrawText(textLines, graphics, point);
+							
+							break;
+						case TextDirection.Right:
+							// right
+							int rightX;
+							if (FitToTime)
+							{
+								rightX = -maxTextSize + (int)(intervalPosition * (maxTextSize + BufferWi));
+							}
+							else
+							{
+								rightX = (Speed * frame) % xlimit / 8 - BufferWi;
+							}
+							point =
+								new Point(Convert.ToInt32(CenterStop ? Math.Min(rightX, (BufferWi - (int)textsize.Width) / 2) : rightX), offsetTop);
+							DrawText(textLines, graphics, point);
+							break;
+						case TextDirection.Up:
+							// up
+
+							int upY;
+							if (FitToTime)
+							{
+								upY = BufferHt - (int)(((textsize.Height * numberLines) + BufferHt) * intervalPosition);
+							}
+							else
+							{
+								upY = BufferHt - (Speed * frame) % ylimit / 8;
+							}
+
+							point = new Point(offsetLeft,
+								Convert.ToInt32(CenterStop ? Math.Max(upY, (BufferHt - (int)(textsize.Height * numberLines)) / 2): upY));
+							DrawText(textLines, graphics, point);
+							break;
+						case TextDirection.Down:
+							// down
+							int downY;
+							if (FitToTime)
+							{
+								downY = -(int)(textsize.Height * numberLines) + (int)(((textsize.Height * numberLines) + BufferHt) * intervalPosition);
+							}
+							else
+							{
+								downY = (Speed * frame) % ylimit / 8 - BufferHt;
+							}
+							point = new Point(offsetLeft,
+								Convert.ToInt32(CenterStop
+									? Math.Min(downY, (BufferHt - (int)(textsize.Height * numberLines)) / 2)
+									: downY));
+							DrawText(textLines, graphics, point);
+							break;
+						default:
+							// no movement - centered
+							point = new Point(((BufferWi-maxTextSize)/2)+PositionX, offsetTop);
+							DrawText(textLines, graphics, point);
+							break;
+					}
+
+					// copy to buffer
+					for (int x = 0; x < BufferWi; x++)
+					{
+						for (int y = 0; y < BufferHt; y++)
+						{
+							Color color = bitmap.GetPixel(x, BufferHt - y - 1);
+							SetPixel(x, y, color);
+						}
+					}
 						
-							switch (i)
-							{
-								case 0:
-									msg = line[i];
-									break;
-								case 1:
-									msg = "\n" + line[i];
-									break;
-								case 2:
-									msg = "\n\n" + line[i];
-									break;
-								case 3:
-									msg = "\n\n\n" + line[i];
-									break;
-							}
-							int maxwidth = Convert.ToInt32(textsize.Width);
-							int maxht = Convert.ToInt32(textsize.Height*numberLines);
-							int xlimit = (BufferWi + maxwidth)*8 + 1;
-							int ylimit = (BufferHt + maxht)*8 + 1;
-							int offsetLeft = (Position*maxwidth/100) - maxwidth/2;
-							int offsetTop = maxht/2 - (Position*maxht/100);
-							double percent = GetEffectTimeIntervalPosition(frame);
-							Point point;
-							ColorGradient cg = Colors[i % Colors.Count()];
-							switch (Direction)
-							{
-								case TextDirection.Left:
-									// left
-									int leftX;
-									if (FitToTime)
-									{
-										leftX = BufferWi - (int) (percent*(textsize.Width + BufferWi));
-									}
-									else
-									{
-										leftX = BufferWi - (Speed*frame)%xlimit/8;
-									}
-									point =
-										new Point(Convert.ToInt32(CenterStop?Math.Max(leftX, (BufferWi - (int)textsize.Width) / 2): leftX), offsetTop);
-									DrawText(msg,graphics,point,cg);
-									break;
-								case TextDirection.Right:
-									// right
-									int rightX;
-									if (FitToTime)
-									{
-										rightX =   -maxtextsize + (int)(percent*(maxtextsize+BufferWi));
-									}
-									else
-									{
-										rightX = (Speed * frame) % xlimit / 8 - BufferWi;
-									}
-									point =
-										new Point(Convert.ToInt32(CenterStop? Math.Min(rightX, (BufferWi - (int)textsize.Width) / 2): rightX), offsetTop);
-									DrawText(msg,graphics,point,cg);
-									break;
-								case TextDirection.Up:
-									// up
-
-									int upY;
-									if (FitToTime)
-									{
-										upY = BufferHt - (int)( ((textsize.Height * numberLines) + BufferHt) * percent);
-									}
-									else
-									{
-										upY = BufferHt - (Speed * frame) % ylimit / 8;
-									}
-
-									point = new Point(offsetLeft,
-										Convert.ToInt32(CenterStop? Math.Max(upY, (BufferHt - (int)(textsize.Height * numberLines)) / 2)
-											: upY));
-									DrawText(msg,graphics,point,cg);
-									break;
-								case TextDirection.Down:
-									// down
-									int downY;
-									if (FitToTime)
-									{
-										downY = -(int)(textsize.Height * numberLines) + (int)(((textsize.Height * numberLines) + BufferHt) * percent);
-									}
-									else
-									{
-										downY = (Speed * frame) % ylimit / 8 - BufferHt;
-									}
-									point = new Point(offsetLeft,
-										Convert.ToInt32(CenterStop
-											? Math.Min(downY, (BufferHt - (int)(textsize.Height * numberLines)) / 2)
-											: downY));
-									DrawText(msg,graphics,point,cg);
-									break;
-								default:
-									// no movement - centered
-									point = new Point(0, offsetTop);
-									DrawText(msg,graphics,point,cg);
-									break;
-							}
-
-							// copy to buffer
-							for (int x = 0; x < BufferWi; x++)
-							{
-								for (int y = 0; y < BufferHt; y++)
-								{
-									Color color = bitmap.GetPixel(x, BufferHt - y - 1);
-									SetPixel(x, y, color);
-								}
-							}
-						//}
-						i++;
-					} while (i < numberLines);
+						
 				}
 
 			}
 		}
 
-		private void DrawText(string text, Graphics g, Point p, ColorGradient cg)
+		private void DrawText(IEnumerable<String> textLines, Graphics g, Point p)
 		{
 			switch (GradientMode)
 			{
 				case GradientMode.AcrossElement:
-					DrawTextAcrossGradient(text, g, p, cg, LinearGradientMode.Horizontal);
+					DrawTextAcrossGradient(textLines, g, p, LinearGradientMode.Horizontal);
 					break;
 				case GradientMode.AcrossText:
-					DrawTextWithGradient(text, g, p, cg, LinearGradientMode.Horizontal);
+					DrawTextWithGradient(textLines, g, p, LinearGradientMode.Horizontal);
 					break;
 				case GradientMode.VerticalAcrossElement:
-					DrawTextAcrossGradient(text, g, p, cg, LinearGradientMode.Vertical);
+					DrawTextAcrossGradient(textLines, g, p, LinearGradientMode.Vertical);
 					break;
 				case GradientMode.VerticalAcrossText:
-					DrawTextWithGradient(text, g, p, cg, LinearGradientMode.Vertical);
+					DrawTextWithGradient(textLines, g, p, LinearGradientMode.Vertical);
 					break;
 				case GradientMode.DiagonalAcrossElement:
-					DrawTextAcrossGradient(text, g, p, cg, LinearGradientMode.ForwardDiagonal);
+					DrawTextAcrossGradient(textLines, g, p, LinearGradientMode.ForwardDiagonal);
 					break;
 				case GradientMode.DiagonalAcrossText:
-					DrawTextWithGradient(text, g, p, cg, LinearGradientMode.ForwardDiagonal);
+					DrawTextWithGradient(textLines, g, p, LinearGradientMode.ForwardDiagonal);
 					break;
 				case GradientMode.BackwardDiagonalAcrossElement:
-					DrawTextAcrossGradient(text, g, p, cg, LinearGradientMode.BackwardDiagonal);
+					DrawTextAcrossGradient(textLines, g, p, LinearGradientMode.BackwardDiagonal);
 					break;
 				case GradientMode.BackwardDiagonalAcrossText:
-					DrawTextWithGradient(text, g, p, cg, LinearGradientMode.BackwardDiagonal);
+					DrawTextWithGradient(textLines, g, p, LinearGradientMode.BackwardDiagonal);
 					break;
 			}
 		}
 
 
-		private void DrawTextWithGradient(string text, Graphics g, Point p, ColorGradient cg, LinearGradientMode mode)
+		private void DrawTextWithGradient(IEnumerable<String> textLines, Graphics g, Point p, LinearGradientMode mode)
 		{
-			var size = g.MeasureString(text, Font);
-			var brush = new LinearGradientBrush(new Rectangle(p.X, p.Y, (int) size.Width, (int) size.Height), Color.Black,
-				Color.Black, mode) {InterpolationColors = cg.GetColorBlend()};
-			DrawTextWithBrush(text, brush, g, p, mode);
-			brush.Dispose();
+			int i = 0;
+			foreach (var text in textLines)
+			{
+				var size = g.MeasureString(text, Font);
+				ColorGradient cg = Colors[i % Colors.Count()];
+				var brush = new LinearGradientBrush(new Rectangle(p.X, p.Y, (int)size.Width, (int)size.Height), Color.Black,
+					Color.Black, mode) { InterpolationColors = cg.GetColorBlend() };
+				DrawTextWithBrush(text, brush, g, p, mode);
+				brush.Dispose();
+				p.Y += (int)size.Height;
+				i++;
+			}
+			
 		}
 
-		private void DrawTextAcrossGradient(string text, Graphics g, Point p, ColorGradient cg, LinearGradientMode mode)
+		private void DrawTextAcrossGradient(IEnumerable<String> textLines, Graphics g, Point p, LinearGradientMode mode)
 		{
-			var brush = new LinearGradientBrush(new Rectangle(0, p.Y, BufferWi, (int) g.MeasureString(text, Font).Height),
-				Color.Black,
-				Color.Black, mode) {InterpolationColors = cg.GetColorBlend()};
-			DrawTextWithBrush(text, brush, g, p, mode);
-			brush.Dispose();
+			int i = 0;
+			foreach (var text in textLines)
+			{
+				var size = g.MeasureString(text, Font);
+				ColorGradient cg = Colors[i % Colors.Count()];
+				var brush = new LinearGradientBrush(new Rectangle(0, p.Y, BufferWi, (int)g.MeasureString(text, Font).Height),
+					Color.Black,
+					Color.Black, mode) { InterpolationColors = cg.GetColorBlend() };
+				DrawTextWithBrush(text, brush, g, p, mode);
+				brush.Dispose();
+				p.Y += (int)size.Height;
+				i++;
+			}
 		}
 
 		private void DrawTextWithBrush(string text, Brush brush, Graphics g, Point p, LinearGradientMode mode)
 		{
-			g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
-			g.DrawString(text, Font, brush, p);	
+			g.TextRenderingHint = TextRenderingHint.SingleBitPerPixelGridFit;
+			g.DrawString(text, Font, brush, p);
 		}
 	}
 }

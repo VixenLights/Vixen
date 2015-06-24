@@ -38,7 +38,7 @@ namespace VixenModules.Effect.Spiral
 
 		
 		[Value]
-		[ProviderCategory(@"Config", 0)]
+		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Orientation")]
 		[ProviderDescription(@"Orientation")]
 		[Browsable(false)]
@@ -107,10 +107,10 @@ namespace VixenModules.Effect.Spiral
 		}
 
 		[Value]
-		[ProviderCategory(@"Config", 1)]
+		[ProviderCategory(@"Color", 2)]
 		[ProviderDisplayName(@"Color")]
 		[ProviderDescription(@"Color")]
-		[PropertyOrder(3)]
+		[PropertyOrder(1)]
 		public List<ColorGradient> Colors
 		{
 			get { return _data.Colors; }

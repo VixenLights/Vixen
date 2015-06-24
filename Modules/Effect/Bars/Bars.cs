@@ -1,21 +1,12 @@
 ﻿using System;
-using System.CodeDom;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
-using System.Threading;
 using Common.Controls.ColorManagement.ColorModels;
-using NLog;
 using Vixen.Attributes;
-using Vixen.Data.Value;
-using Vixen.Intent;
 using Vixen.Module;
-using Vixen.Module.Effect;
-using Vixen.Sys;
 using Vixen.Sys.Attribute;
-using Vixen.TypeConverters;
 using VixenModules.App.ColorGradients;
 using VixenModules.Effect.Pixel;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
@@ -29,6 +20,7 @@ namespace VixenModules.Effect.Bars
 		public Bars()
 		{
 			_data = new BarsData();
+			UpdateSpeedAttribute();
 		}
 
 		public override bool IsDirty
@@ -45,31 +37,12 @@ namespace VixenModules.Effect.Bars
 			protected set { base.IsDirty = value; }
 		}
 
-		[Browsable(false)]
 		public override StringOrientation StringOrientation
-		{
-			get
-			{
-				return StringOrientation.Vertical;
-			}
-			set
-			{
-				//Read only
-			}
-		}
-		
-		[Value]
-		[ProviderCategory(@"Config", 0)]
-		[ProviderDisplayName(@"Orientation")]
-		[ProviderDescription(@"Orientation")]
-		[Browsable(false)]
-		public StringOrientation Orientation
 		{
 			get { return _data.Orientation; }
 			set
 			{
 				_data.Orientation = value;
-				StringOrientation = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -91,11 +64,13 @@ namespace VixenModules.Effect.Bars
 			}
 		}
 
+
+
 		[Value]
-		[ProviderCategory(@"Config", 1)]
+		[ProviderCategory(@"Color", 2)]
 		[ProviderDisplayName(@"Color")]
 		[ProviderDescription(@"Color")]
-		[PropertyOrder(3)]
+		[PropertyOrder(1)]
 		public List<ColorGradient> Colors
 		{
 			get { return _data.Colors; }
@@ -110,10 +85,10 @@ namespace VixenModules.Effect.Bars
 		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Speed")]
-		[ProviderDescription(@"Color")]
+		[ProviderDescription(@"Speed")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1,20,1)]
-		[PropertyOrder(1)]
+		[PropertyOrder(7)]
 		public int Speed
 		{
 			get { return _data.Speed; }
@@ -163,7 +138,7 @@ namespace VixenModules.Effect.Bars
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Show3D")]
 		[ProviderDescription(@"Show3D")]
-		[PropertyOrder(4)]
+		[PropertyOrder(5)]
 		public bool Show3D
 		{
 			get { return _data.Show3D; }
@@ -187,6 +162,7 @@ namespace VixenModules.Effect.Bars
 			{
 				_data.FitToTime = value;
 				IsDirty = true;
+				UpdateSpeedAttribute();
 				OnPropertyChanged();
 			}
 		}
@@ -197,8 +173,19 @@ namespace VixenModules.Effect.Bars
 			set
 			{
 				_data = value as BarsData;
+				UpdateSpeedAttribute();
 				IsDirty = true;
 			}
+		}
+
+		private void UpdateSpeedAttribute()
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1)
+			{
+				{"Speed", !FitToTime}
+			};
+			SetBrowsable(propertyStates);
+			TypeDescriptor.Refresh(this);
 		}
 
 		protected override void RenderEffect(int frame)
@@ -235,7 +222,7 @@ namespace VixenModules.Effect.Bars
 					double colorPosition = ((double)(n + indexAdjust) / barHt) - ((n + indexAdjust) / barHt);
 					Color c = Colors[colorIdx].GetColorAt(colorPosition);
 					var hsv = HSV.FromRGB(c);
-					if (Highlight && n % barHt == 0) hsv.S = 0.0f;
+					if (Highlight && (n + indexAdjust) % barHt == 0) hsv.S = 0.0f;
 					if (Show3D) hsv.V *= (float)(barHt - n % barHt - 1) / barHt;
 					switch (Direction)
 					{

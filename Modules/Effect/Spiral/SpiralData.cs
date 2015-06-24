@@ -13,7 +13,7 @@ namespace VixenModules.Effect.Spiral
 	{
 		public SpiralData()
 		{
-			Colors = new List<ColorGradient>{new ColorGradient(Color.Red), new ColorGradient(Color.Green), new ColorGradient(Color.Blue)};
+			Colors = new List<ColorGradient>{new ColorGradient(Color.Red), new ColorGradient(Color.Lime), new ColorGradient(Color.Blue)};
 			Direction = SpiralDirection.Forward;
 			Speed = 5;
 			Repeat = 1;

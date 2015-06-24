@@ -14,7 +14,7 @@ namespace VixenModules.Effect.Bars
 
 		public BarsData()
 		{
-			Colors = new List<ColorGradient>{new ColorGradient(Color.Red), new ColorGradient(Color.Green), new ColorGradient(Color.Blue)};
+			Colors = new List<ColorGradient>{new ColorGradient(Color.Red), new ColorGradient(Color.Lime), new ColorGradient(Color.Blue)};
 			Direction = BarDirection.Up;
 			Speed = 5;
 			Repeat = 1;
