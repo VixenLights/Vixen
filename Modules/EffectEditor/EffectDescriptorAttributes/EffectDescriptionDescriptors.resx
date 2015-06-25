@@ -171,8 +171,17 @@
   <data name="GradientMode" xml:space="preserve">
     <value>Controls how the gradient is applied to the effect.</value>
   </data>
+  <data name="Height" xml:space="preserve">
+    <value>Controls the height of the fire.</value>
+  </data>
   <data name="Highlight" xml:space="preserve">
     <value>Controls whether there are highlights added.</value>
+  </data>
+  <data name="HueShift" xml:space="preserve">
+    <value>Controls the color of the fire.</value>
+  </data>
+  <data name="Location" xml:space="preserve">
+    <value>Controls the location.</value>
   </data>
   <data name="MaxBrightness" xml:space="preserve">
     <value>Controls the maximum brightness of a pulse.</value>

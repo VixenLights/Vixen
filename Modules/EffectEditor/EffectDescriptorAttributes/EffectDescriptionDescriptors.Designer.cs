@@ -224,11 +224,38 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Controls the height of the fire..
+        /// </summary>
+        internal static string Height {
+            get {
+                return ResourceManager.GetString("Height", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Controls whether there are highlights added..
         /// </summary>
         internal static string Highlight {
             get {
                 return ResourceManager.GetString("Highlight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Controls the color of the fire..
+        /// </summary>
+        internal static string HueShift {
+            get {
+                return ResourceManager.GetString("HueShift", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Controls the location..
+        /// </summary>
+        internal static string Location {
+            get {
+                return ResourceManager.GetString("Location", resourceCulture);
             }
         }
         

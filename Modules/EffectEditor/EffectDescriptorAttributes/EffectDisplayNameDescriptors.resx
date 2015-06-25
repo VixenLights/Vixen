@@ -195,11 +195,20 @@
   <data name="GradientTwo" xml:space="preserve">
     <value>Gradient 2</value>
   </data>
+  <data name="Height" xml:space="preserve">
+    <value>Height</value>
+  </data>
   <data name="Highlight" xml:space="preserve">
     <value>Highlight</value>
   </data>
+  <data name="HueShift" xml:space="preserve">
+    <value>Hue Shift</value>
+  </data>
   <data name="IndividualElements" xml:space="preserve">
     <value>Individual Elements</value>
+  </data>
+  <data name="Location" xml:space="preserve">
+    <value>Location</value>
   </data>
   <data name="MaxBrightness" xml:space="preserve">
     <value>Max</value>
