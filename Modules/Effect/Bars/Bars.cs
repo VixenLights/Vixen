@@ -8,6 +8,7 @@ using Vixen.Attributes;
 using Vixen.Module;
 using Vixen.Sys.Attribute;
 using VixenModules.App.ColorGradients;
+using VixenModules.App.Curves;
 using VixenModules.Effect.Pixel;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 
@@ -174,6 +175,25 @@ namespace VixenModules.Effect.Bars
 
 		#endregion
 
+		#region Level properties
+
+		[Value]
+		[ProviderCategory(@"Brightness", 3)]
+		[ProviderDisplayName(@"Brightness")]
+		[ProviderDescription(@"Brightness")]
+		public Curve LevelCurve
+		{
+			get { return _data.LevelCurve; }
+			set
+			{
+				_data.LevelCurve = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		#endregion
+
 		public override IModuleDataModel ModuleData
 		{
 			get { return _data; }
@@ -231,6 +251,9 @@ namespace VixenModules.Effect.Bars
 					var hsv = HSV.FromRGB(c);
 					if (Highlight && (n + indexAdjust) % barHt == 0) hsv.S = 0.0f;
 					if (Show3D) hsv.V *= (float)(barHt - n % barHt - 1) / barHt;
+
+					hsv.V = hsv.V * LevelCurve.GetValue(position*100) / 100;
+
 					switch (Direction)
 					{
 						case BarDirection.Down:

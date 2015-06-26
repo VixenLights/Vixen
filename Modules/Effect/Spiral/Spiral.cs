@@ -8,6 +8,7 @@ using Vixen.Attributes;
 using Vixen.Module;
 using Vixen.Sys.Attribute;
 using VixenModules.App.ColorGradients;
+using VixenModules.App.Curves;
 using VixenModules.Effect.Pixel;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 
@@ -36,7 +37,8 @@ namespace VixenModules.Effect.Spiral
 			protected set { base.IsDirty = value; }
 		}
 
-		
+		#region Config properties
+
 		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Orientation")]
@@ -101,22 +103,6 @@ namespace VixenModules.Effect.Spiral
 			set
 			{
 				_data.Repeat = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Color", 2)]
-		[ProviderDisplayName(@"Color")]
-		[ProviderDescription(@"Color")]
-		[PropertyOrder(1)]
-		public List<ColorGradient> Colors
-		{
-			get { return _data.Colors; }
-			set
-			{
-				_data.Colors = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -235,6 +221,48 @@ namespace VixenModules.Effect.Spiral
 			}
 		}
 
+		#endregion
+
+		#region Color properties
+
+		[Value]
+		[ProviderCategory(@"Color", 2)]
+		[ProviderDisplayName(@"Color")]
+		[ProviderDescription(@"Color")]
+		[PropertyOrder(1)]
+		public List<ColorGradient> Colors
+		{
+			get { return _data.Colors; }
+			set
+			{
+				_data.Colors = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		#endregion
+
+		#region Level properties
+
+		[Value]
+		[ProviderCategory(@"Brightness", 3)]
+		[ProviderDisplayName(@"Brightness")]
+		[ProviderDescription(@"Brightness")]
+		public Curve LevelCurve
+		{
+			get { return _data.LevelCurve; }
+			set
+			{
+				_data.LevelCurve = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		#endregion
+
+
 		public override IModuleDataModel ModuleData
 		{
 			get { return _data; }
@@ -279,9 +307,9 @@ namespace VixenModules.Effect.Spiral
 				thicknessState = (int)(spiralGap * (1.0 - position));
 			}
 
-			//spiralGap += (spiralGap == 0?1:0);
 			spiralThickness += thicknessState;
-
+			double level = LevelCurve.GetValue(position * 100) / 100;
+			;
 			for (int ns = 0; ns < spiralCount; ns++)
 			{
 				var strandBase = ns * deltaStrands;
@@ -295,7 +323,7 @@ namespace VixenModules.Effect.Spiral
 					for (y = 0; y < BufferHt; y++)
 					{
 						Color color;
-						var x = (strand + ((int)spiralState / 10) + (y * Rotation / BufferHt)) % BufferWi;
+						var x = (strand + (spiralState / 10) + (y * Rotation / BufferHt)) % BufferWi;
 						if (x < 0) x += BufferWi;
 						if (Blend)
 						{
@@ -308,6 +336,7 @@ namespace VixenModules.Effect.Spiral
 						if (Show3D)
 						{
 							var hsv = HSV.FromRGB(color);
+							
 							if (Rotation < 0)
 							{
 								hsv.V = (float)((double)(thick + 1) / spiralThickness);
@@ -316,11 +345,14 @@ namespace VixenModules.Effect.Spiral
 							{
 								hsv.V = (float)((double)(spiralThickness - thick) / spiralThickness);
 							}
+							hsv.V = hsv.V * level;
 							frameBuffer.SetPixel(x, y, hsv);
 						}
 						else
 						{
-							frameBuffer.SetPixel(x, y, color);
+							var hsv = HSV.FromRGB(color);
+							hsv.V = hsv.V * level;
+							frameBuffer.SetPixel(x, y, hsv);
 						}
 					}
 				}

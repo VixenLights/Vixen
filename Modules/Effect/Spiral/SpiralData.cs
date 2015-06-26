@@ -4,7 +4,9 @@ using System.Linq;
 using System.Runtime.Serialization;
 using Vixen.Module;
 using VixenModules.App.ColorGradients;
+using VixenModules.App.Curves;
 using VixenModules.Effect.Pixel;
+using ZedGraph;
 
 namespace VixenModules.Effect.Spiral
 {
@@ -20,6 +22,7 @@ namespace VixenModules.Effect.Spiral
 			Blend = false;
 			Rotation = 20;
 			Thickness = 60;
+			LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
 			Orientation=StringOrientation.Vertical;
 		}
 
@@ -56,6 +59,9 @@ namespace VixenModules.Effect.Spiral
 		[DataMember]
 		public StringOrientation Orientation { get; set; }
 
+		[DataMember]
+		public Curve LevelCurve { get; set; }
+
 		public override IModuleDataModel Clone()
 		{
 			SpiralData result = new SpiralData
@@ -68,7 +74,8 @@ namespace VixenModules.Effect.Spiral
 				Show3D = Show3D,
 				Thickness = Thickness,
 				Rotation = Rotation,
-				Blend = Blend
+				Blend = Blend,
+				LevelCurve = new Curve(LevelCurve)
 			};
 			return result;
 		}

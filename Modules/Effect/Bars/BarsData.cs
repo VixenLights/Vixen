@@ -4,7 +4,9 @@ using System.Linq;
 using System.Runtime.Serialization;
 using Vixen.Module;
 using VixenModules.App.ColorGradients;
+using VixenModules.App.Curves;
 using VixenModules.Effect.Pixel;
+using ZedGraph;
 
 namespace VixenModules.Effect.Bars
 {
@@ -19,6 +21,7 @@ namespace VixenModules.Effect.Bars
 			Speed = 5;
 			Repeat = 1;
 			FitToTime = true;
+			LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
 			Orientation=StringOrientation.Vertical;
 		}
 
@@ -42,6 +45,9 @@ namespace VixenModules.Effect.Bars
 
 		[DataMember]
 		public bool FitToTime { get; set; }
+
+		[DataMember]
+		public Curve LevelCurve { get; set; }
 
 		[DataMember]
 		public StringOrientation Orientation { get; set; }

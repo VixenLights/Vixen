@@ -74,6 +74,21 @@ namespace VixenModules.Effect.Fire
 			}
 		}
 
+		[Browsable(false)]
+		public override StringOrientation StringOrientation
+		{
+			get
+			{
+				return StringOrientation.Vertical;
+			}
+			set
+			{
+				//Read only
+			}
+		}
+
+		#region Color
+
 		[Value]
 		[ProviderCategory(@"Color", 2)]
 		[ProviderDisplayName(@"HueShift")]
@@ -92,18 +107,28 @@ namespace VixenModules.Effect.Fire
 			}
 		}
 
-		[Browsable(false)]
-		public override StringOrientation StringOrientation
+		#endregion
+
+		#region Level properties
+
+		[Value]
+		[ProviderCategory(@"Brightness", 3)]
+		[ProviderDisplayName(@"Brightness")]
+		[ProviderDescription(@"Brightness")]
+		public Curve LevelCurve
 		{
-			get
-			{
-				return StringOrientation.Vertical;
-			}
+			get { return _data.LevelCurve; }
 			set
 			{
-				//Read only
+				_data.LevelCurve = value;
+				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
+
+		#endregion
+
+		
 
 		public override IModuleDataModel ModuleData
 		{
@@ -146,7 +171,7 @@ namespace VixenModules.Effect.Fire
 			{
 				Array.Resize(ref _fireBuffer, BufferWi * BufferHt);
 			}
-
+			double position = GetEffectTimeIntervalPosition(frame);
 			int x, y;
 			if (frame == 0)
 			{
@@ -240,18 +265,20 @@ namespace VixenModules.Effect.Fire
 						yp = t;
 					}
 
-
 					Color color = FirePalette.GetColor(GetFireBuffer(x, y, maxWi, maxHt));
+					var hsv = HSV.FromRGB(color);
 					if (HueShift > 0)
 					{
-						HSV hsv = HSV.FromRGB(color);
 						hsv.H = hsv.H + (HueShift / 100.0f);
-						color = hsv.ToRGB().ToArgb();
 					}
 
-					if (color.R == 0 && color.G == 0 && color.B == 0)
-						color = Color.Transparent;
-					frameBuffer.SetPixel(xp, yp, color);
+					hsv.V = hsv.V * LevelCurve.GetValue(position * 100) / 100;
+					//if (color.R == 0 && color.G == 0 && color.B == 0)
+					//{
+					//	color = Color.Transparent;
+					//}
+					
+					frameBuffer.SetPixel(xp, yp, hsv);
 				}
 			}
 		}
