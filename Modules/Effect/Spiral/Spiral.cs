@@ -245,7 +245,7 @@ namespace VixenModules.Effect.Spiral
 			}
 		}
 
-		protected override void RenderEffect(int frame)
+		protected override void RenderEffect(int frame, ref PixelFrameBuffer frameBuffer)
 		{
 			int colorcnt = Colors.Count();
 			int spiralCount = colorcnt * Repeat;
@@ -316,11 +316,11 @@ namespace VixenModules.Effect.Spiral
 							{
 								hsv.V = (float)((double)(spiralThickness - thick) / spiralThickness);
 							}
-							SetPixel(x, y, hsv);
+							frameBuffer.SetPixel(x, y, hsv);
 						}
 						else
 						{
-							SetPixel(x, y, color);
+							frameBuffer.SetPixel(x, y, color);
 						}
 					}
 				}

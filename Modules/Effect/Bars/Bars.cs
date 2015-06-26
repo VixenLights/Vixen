@@ -188,7 +188,7 @@ namespace VixenModules.Effect.Bars
 			TypeDescriptor.Refresh(this);
 		}
 
-		protected override void RenderEffect(int frame)
+		protected override void RenderEffect(int frame, ref PixelFrameBuffer frameBuffer)
 		{
 			int x, y, n, colorIdx;
 			int colorcnt = Colors.Count();
@@ -231,7 +231,7 @@ namespace VixenModules.Effect.Bars
 							// down
 							for (x = 0; x < BufferWi; x++)
 							{
-								SetPixel(x, y, hsv);
+								frameBuffer.SetPixel(x, y, hsv);
 							}
 							break;
 						case BarDirection.Expand:
@@ -240,8 +240,8 @@ namespace VixenModules.Effect.Bars
 							{
 								for (x = 0; x < BufferWi; x++)
 								{
-									SetPixel(x, y, hsv);
-									SetPixel(x, BufferHt - y - 1, hsv);
+									frameBuffer.SetPixel(x, y, hsv);
+									frameBuffer.SetPixel(x, BufferHt - y - 1, hsv);
 								}
 							}
 							break;
@@ -251,8 +251,8 @@ namespace VixenModules.Effect.Bars
 							{
 								for (x = 0; x < BufferWi; x++)
 								{
-									SetPixel(x, y, hsv);
-									SetPixel(x, BufferHt - y - 1, hsv);
+									frameBuffer.SetPixel(x, y, hsv);
+									frameBuffer.SetPixel(x, BufferHt - y - 1, hsv);
 								}
 							}
 							break;
@@ -260,7 +260,7 @@ namespace VixenModules.Effect.Bars
 							// up & AlternateUp
 							for (x = 0; x < BufferWi; x++)
 							{
-								SetPixel(x, BufferHt - y - 1, hsv);
+								frameBuffer.SetPixel(x, BufferHt - y - 1, hsv);
 							}
 							break;
 					}
@@ -295,7 +295,7 @@ namespace VixenModules.Effect.Bars
 							// right
 							for (y = 0; y < BufferHt; y++)
 							{
-								SetPixel(BufferWi - x - 1, y, hsv);
+								frameBuffer.SetPixel(BufferWi - x - 1, y, hsv);
 							}
 							break;
 						case BarDirection.HExpand:
@@ -304,8 +304,8 @@ namespace VixenModules.Effect.Bars
 							{
 								for (y = 0; y < BufferHt; y++)
 								{
-									SetPixel(x, y, hsv);
-									SetPixel(BufferWi - x - 1, y, hsv);
+									frameBuffer.SetPixel(x, y, hsv);
+									frameBuffer.SetPixel(BufferWi - x - 1, y, hsv);
 								}
 							}
 							break;
@@ -315,8 +315,8 @@ namespace VixenModules.Effect.Bars
 							{
 								for (y = 0; y < BufferHt; y++)
 								{
-									SetPixel(x, y, hsv);
-									SetPixel(BufferWi - x - 1, y, hsv);
+									frameBuffer.SetPixel(x, y, hsv);
+									frameBuffer.SetPixel(BufferWi - x - 1, y, hsv);
 								}
 							}
 							break;
@@ -324,7 +324,7 @@ namespace VixenModules.Effect.Bars
 							// left & AlternateLeft
 							for (y = 0; y < BufferHt; y++)
 							{
-								SetPixel(x, y, hsv);
+								frameBuffer.SetPixel(x, y, hsv);
 							}
 							break;
 					}

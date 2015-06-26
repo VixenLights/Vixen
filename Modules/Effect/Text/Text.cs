@@ -314,7 +314,7 @@ namespace VixenModules.Effect.Text
 
 		private int maxTextSize;
 		
-		protected override void RenderEffect(int frame)
+		protected override void RenderEffect(int frame, ref PixelFrameBuffer frameBuffer)
 		{
 			using (var bitmap = new Bitmap(BufferWi, BufferHt))
 			{
@@ -422,13 +422,13 @@ namespace VixenModules.Effect.Text
 							break;
 					}
 
-					// copy to buffer
+					// copy to frameBuffer
 					for (int x = 0; x < BufferWi; x++)
 					{
 						for (int y = 0; y < BufferHt; y++)
 						{
 							Color color = bitmap.GetPixel(x, BufferHt - y - 1);
-							SetPixel(x, y, color);
+							frameBuffer.SetPixel(x, y, color);
 						}
 					}
 						

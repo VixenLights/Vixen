@@ -80,6 +80,9 @@ namespace VixenModules.Effect.Text
 				PositionX = PositionX,
 				Text = Text.ToList(),
 				GradientMode = GradientMode,
+				TextMode = TextMode,
+				CenterText = CenterText,
+				FitToTime = FitToTime,
 				Font = new SerializableFont(Font.FontValue)
 			};
 			return result;
