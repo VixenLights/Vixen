@@ -48,6 +48,8 @@ namespace VixenModules.Effect.Bars
 			}
 		}
 
+		#region Config properties
+
 		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Direction")]
@@ -64,31 +66,13 @@ namespace VixenModules.Effect.Bars
 			}
 		}
 
-
-
-		[Value]
-		[ProviderCategory(@"Color", 2)]
-		[ProviderDisplayName(@"Color")]
-		[ProviderDescription(@"Color")]
-		[PropertyOrder(1)]
-		public List<ColorGradient> Colors
-		{
-			get { return _data.Colors; }
-			set
-			{
-				_data.Colors = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
 		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Speed")]
 		[ProviderDescription(@"Speed")]
 		[PropertyEditor("SliderEditor")]
-		[NumberRange(1,20,1)]
-		[PropertyOrder(7)]
+		[NumberRange(1, 20, 1)]
+		[PropertyOrder(1)]
 		public int Speed
 		{
 			get { return _data.Speed; }
@@ -166,6 +150,29 @@ namespace VixenModules.Effect.Bars
 				OnPropertyChanged();
 			}
 		}
+
+		#endregion
+
+		#region Color properties
+
+
+		[Value]
+		[ProviderCategory(@"Color", 2)]
+		[ProviderDisplayName(@"Color")]
+		[ProviderDescription(@"Color")]
+		[PropertyOrder(1)]
+		public List<ColorGradient> Colors
+		{
+			get { return _data.Colors; }
+			set
+			{
+				_data.Colors = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		#endregion
 
 		public override IModuleDataModel ModuleData
 		{

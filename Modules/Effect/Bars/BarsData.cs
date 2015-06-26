@@ -18,7 +18,7 @@ namespace VixenModules.Effect.Bars
 			Direction = BarDirection.Up;
 			Speed = 5;
 			Repeat = 1;
-			FitToTime = false;
+			FitToTime = true;
 			Orientation=StringOrientation.Vertical;
 		}
 
