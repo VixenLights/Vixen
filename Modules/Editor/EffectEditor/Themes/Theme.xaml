@@ -200,42 +200,46 @@
 	</Style>
 	
 	<Style TargetType="{x:Type ListViewItem}">
-		<Setter Property="Background" Value="#FF333333"/>	
-		
+		<Setter Property="Background" Value="#FF333333"/>
+		<Setter Property="IsTabStop" Value="False"/>
 	</Style>
 
 		<!-- TextBox -->
 
-  <Style TargetType="{x:Type TextBox}">
-    <Setter Property="SnapsToDevicePixels" Value="True"/>
-    <Setter Property="OverridesDefaultStyle" Value="True"/>
-    <Setter Property="Foreground" Value="#DDD"/>
-    <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
-    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-    <Setter Property="MinWidth" Value="100"/>
-    <Setter Property="MinHeight" Value="18"/>
-    <Setter Property="AllowDrop" Value="true"/>
-    <Setter Property="utils:TextBoxExtender.SelectAllOnFocus" Value="True"/>
-    <Setter Property="Template">
-      <Setter.Value>
-        <ControlTemplate TargetType="{x:Type TextBoxBase}">
-          <Grid>
-            <Border x:Name="Background" Background="#444444" CornerRadius="2" />
-            <Border x:Name="BackgroundHighlighted" BorderBrush="#808080" BorderThickness="0,0,0,1" CornerRadius="2" />
-            <Border x:Name="BackgroundSunken" BorderBrush="#101010" BorderThickness="0,1,0,0" CornerRadius="2" />
-            <ScrollViewer Margin="0,2,0,0" x:Name="PART_ContentHost" />
-          </Grid>
-          <ControlTemplate.Triggers>
-            <Trigger Property="IsEnabled" Value="False">
-              <Setter Property="Foreground" Value="#DDD"/>
-              <Setter Property="Opacity" Value="1"/>
-            </Trigger>
-          </ControlTemplate.Triggers>
-        </ControlTemplate>
-      </Setter.Value>
-    </Setter>
-  </Style>
-		
+	<Style TargetType="{x:Type TextBox}">
+		<Setter Property="SnapsToDevicePixels" Value="True"/>
+		<Setter Property="OverridesDefaultStyle" Value="True"/>
+		<Setter Property="Foreground" Value="#DDD"/>
+		<Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
+		<Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+		<Setter Property="MinWidth" Value="200"/>
+		<Setter Property="MinHeight" Value="18"/>
+		<Setter Property="AllowDrop" Value="true"/>
+		<Setter Property="utils:TextBoxExtender.SelectAllOnFocus" Value="True"/>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type TextBoxBase}">
+					<Grid>
+						<Border x:Name="Background" Background="#444444" CornerRadius="2" />
+						<Border x:Name="BackgroundHighlighted" BorderBrush="#808080" BorderThickness="0,0,0,1" CornerRadius="2" />
+						<Border x:Name="BackgroundSunken" BorderBrush="#101010" BorderThickness="0,1,0,0" CornerRadius="2" />
+						<ScrollViewer Margin="0,2,0,0" x:Name="PART_ContentHost" />
+					</Grid>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsEnabled" Value="False">
+							<Setter Property="Foreground" Value="#DDD"/>
+							<Setter Property="Opacity" Value="1"/>
+							<Setter Property="IsTabStop" Value="False"/>
+						</Trigger>
+						<Trigger Property="IsReadOnly" Value="True">
+							<Setter Property="IsTabStop" Value="False"/>
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
 	<!-- PasswordBox -->
 
   <Style TargetType="{x:Type PasswordBox}">

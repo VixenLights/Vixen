@@ -682,13 +682,13 @@ namespace VixenModules.Editor.EffectEditor
 			if (e.Key == Key.Tab && e.OriginalSource is DependencyObject) //tabbing over the property editors
 			{
 				var source = e.OriginalSource as DependencyObject;
-				var element = Keyboard.Modifiers == ModifierKeys.Shift ? GetTabElement(source, -1) : GetTabElement(source, 1);
-				if (element != null)
-				{
-					element.Focus();
-					e.Handled = true;
-					return;
-				}
+				//var element = Keyboard.Modifiers == ModifierKeys.Shift ? GetTabElement(source, -1) : GetTabElement(source, 1);
+				//if (element != null)
+				//{
+				//	element.Focus();
+				//	e.Handled = true;
+				//	return;
+				//}
 			}
 
 			base.OnKeyDown(e);
@@ -719,7 +719,9 @@ namespace VixenModules.Editor.EffectEditor
 				}
 			}
 			else
+			{
 				container = FindVisualParent<PropertyContainer>(source);
+			}
 
 			var spanel = FindVisualParent<StackPanel>(container);
 			if (spanel != null && spanel.Children.Contains(container))

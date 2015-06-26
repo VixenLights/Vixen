@@ -89,6 +89,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Center each line of text instead of left justified..
+        /// </summary>
+        internal static string CenterText {
+            get {
+                return ResourceManager.GetString("CenterText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sets percentage of change..
         /// </summary>
         internal static string ChangePercent {
@@ -395,11 +404,20 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A line of text to be displayed..
+        ///   Looks up a localized string similar to The text to be displayed..
         /// </summary>
-        internal static string TextLine {
+        internal static string TextLines {
             get {
-                return ResourceManager.GetString("TextLine", resourceCulture);
+                return ResourceManager.GetString("TextLines", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Controls the orientation of the text lines..
+        /// </summary>
+        internal static string TextMode {
+            get {
+                return ResourceManager.GetString("TextMode", resourceCulture);
             }
         }
         

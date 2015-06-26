@@ -129,6 +129,9 @@
   <data name="CenterStop" xml:space="preserve">
     <value>Center Stop</value>
   </data>
+  <data name="CenterText" xml:space="preserve">
+    <value>Center Text</value>
+  </data>
   <data name="ChangeInterval" xml:space="preserve">
     <value>Change Interval</value>
   </data>
@@ -255,17 +258,11 @@
   <data name="StringCount" xml:space="preserve">
     <value>String Count</value>
   </data>
-  <data name="TextLine1" xml:space="preserve">
-    <value>Text Line 1</value>
+  <data name="TextLines" xml:space="preserve">
+    <value>Text Line(s)</value>
   </data>
-  <data name="TextLine2" xml:space="preserve">
-    <value>Text Line 2</value>
-  </data>
-  <data name="TextLine3" xml:space="preserve">
-    <value>Text Line 3</value>
-  </data>
-  <data name="TextLine4" xml:space="preserve">
-    <value>Text Line 4</value>
+  <data name="TextMode" xml:space="preserve">
+    <value>Text Mode</value>
   </data>
   <data name="Thickness" xml:space="preserve">
     <value>Thickness</value>

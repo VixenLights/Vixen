@@ -98,6 +98,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Center Text.
+        /// </summary>
+        internal static string CenterText {
+            get {
+                return ResourceManager.GetString("CenterText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Change Interval.
         /// </summary>
         internal static string ChangeInterval {
@@ -476,38 +485,20 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Text Line 1.
+        ///   Looks up a localized string similar to Text Line(s).
         /// </summary>
-        internal static string TextLine1 {
+        internal static string TextLines {
             get {
-                return ResourceManager.GetString("TextLine1", resourceCulture);
+                return ResourceManager.GetString("TextLines", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Text Line 2.
+        ///   Looks up a localized string similar to Text Mode.
         /// </summary>
-        internal static string TextLine2 {
+        internal static string TextMode {
             get {
-                return ResourceManager.GetString("TextLine2", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Text Line 3.
-        /// </summary>
-        internal static string TextLine3 {
-            get {
-                return ResourceManager.GetString("TextLine3", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Text Line 4.
-        /// </summary>
-        internal static string TextLine4 {
-            get {
-                return ResourceManager.GetString("TextLine4", resourceCulture);
+                return ResourceManager.GetString("TextMode", resourceCulture);
             }
         }
         

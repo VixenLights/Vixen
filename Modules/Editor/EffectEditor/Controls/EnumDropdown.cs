@@ -17,6 +17,7 @@
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace VixenModules.Editor.EffectEditor.Controls
 {
@@ -73,8 +74,19 @@ namespace VixenModules.Editor.EffectEditor.Controls
 			IsSynchronizedWithCurrentItem = false;
 			Loaded += EnumDropdownLoaded;
 			Unloaded += EnumDropdownUnloaded;
+			PreviewKeyDown += EnumDropdown_PreviewKeyDown;
 		}
 
+		void EnumDropdown_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+		{
+			if (e.Key == Key.Down)
+			{
+				IsDropDownOpen = true;
+			}
+			
+		}
+
+		
 		private void EnumDropdownLoaded(object sender, RoutedEventArgs e)
 		{
 			var value = PropertyValue;

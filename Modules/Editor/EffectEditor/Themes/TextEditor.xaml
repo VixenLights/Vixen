@@ -2,7 +2,8 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:editors="clr-namespace:VixenModules.Editor.EffectEditor.Editors"
                     xmlns:utils="clr-namespace:VixenModules.Editor.EffectEditor.Utils"
-                    xmlns:input="clr-namespace:VixenModules.Editor.EffectEditor.Input">
+                    xmlns:input="clr-namespace:VixenModules.Editor.EffectEditor.Input"
+                    xmlns:controls="clr-namespace:VixenModules.Editor.EffectEditor.Controls">
 	<ResourceDictionary.MergedDictionaries>
 		<ResourceDictionary Source="Converters.xaml" />
 	</ResourceDictionary.MergedDictionaries>
@@ -43,4 +44,35 @@
 		</Grid>
 	</DataTemplate>
 
+	<DataTemplate x:Key="{x:Static editors:EditorKeys.StringCollectionEditorKey}">
+		<StackPanel>
+			<controls:CollectionView
+				x:Name="PART_stringeditor"
+				Style="{DynamicResource {x:Type ListView}}"
+				PropertyValue="{Binding}"
+				IsEnabled="{Binding IsEditable}"
+				IsSynchronizedWithCurrentItem="True"
+				KeyboardNavigation.TabNavigation="Continue">
+				<ListView.ItemsPanel>
+					<ItemsPanelTemplate>
+						<WrapPanel Orientation="Vertical" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type StackPanel}}, Path=ActualWidth}"></WrapPanel>
+					</ItemsPanelTemplate>
+				</ListView.ItemsPanel>
+				<ListView.ItemTemplate>
+					<DataTemplate>
+						<TextBox Margin="2 7 7 5" Text="{Binding StringValue}" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type StackPanel}}, Path=ActualWidth}"/>
+					</DataTemplate>
+				</ListView.ItemTemplate>
+			</controls:CollectionView>
+			<StackPanel Orientation="Horizontal">
+				<Button Margin="5" Content="Add" HorizontalAlignment="Left" Padding="5,2"
+				  Command="input:PropertyEditorCommands.AddCollectionItem"
+				  CommandParameter="{Binding}" 
+				  Visibility="{Binding IsEditable, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+				<Button Margin="5" Content="Remove" HorizontalAlignment="Left" Padding="5,2" FocusManager.IsFocusScope="True"
+				  Command="input:PropertyEditorCommands.RemoveCollectionItem"
+				  CommandParameter="{Binding}" Visibility="{Binding IsEditable, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+			</StackPanel>
+		</StackPanel>
+	</DataTemplate>
 </ResourceDictionary>

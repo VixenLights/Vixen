@@ -127,7 +127,17 @@ namespace VixenModules.Editor.EffectEditor
 			if (!IsCollection) return;
 			if (_collectionItemValues.Any())
 			{
-				object item = Activator.CreateInstance(_collectionItemValues[0].ItemType);
+				object item;
+				var oType = _collectionItemValues[0].ItemType;
+				if (oType == typeof (string))
+				{
+					item = String.Empty;
+				}
+				else
+				{
+					item = Activator.CreateInstance(_collectionItemValues[0].ItemType);	
+				}
+				
 				_property.AddCollectionValue(item);
 			}
 		}

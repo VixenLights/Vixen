@@ -66,6 +66,7 @@
 				</MultiBinding>
 			</Setter.Value>
 		</Setter>
+		<Setter Property="IsTabStop" Value="False"/>
 		<!--<Setter Property="ToolTip" Value="{Binding Entry.ToolTip, RelativeSource={RelativeSource Self}}" />-->
 		<Setter Property="Template">
 			<Setter.Value>
@@ -96,6 +97,7 @@
 				</MultiBinding>
 			</Setter.Value>
 		</Setter>
+		<Setter Property="IsTabStop" Value="False"/>
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate>

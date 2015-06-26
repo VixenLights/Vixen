@@ -9,33 +9,35 @@
 
 	<DataTemplate x:Key="{x:Static editors:EditorKeys.ColorGradientPaletteEditorKey}">
 		<StackPanel>
-			<controls:ColorGradientPaletteEditor
+			<controls:CollectionView
 				x:Name="PART_editor"
 				Style="{DynamicResource {x:Type ListView}}"
 				PropertyValue="{Binding}"
-				IsEnabled="{Binding IsEditable}">
+				IsEnabled="{Binding IsEditable}"
+				KeyboardNavigation.TabNavigation="Continue">
 				<ListView.ItemsPanel>
 					<ItemsPanelTemplate>
-						<WrapPanel Orientation="Horizontal"></WrapPanel>
+						<WrapPanel Orientation="Horizontal" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type StackPanel}}, Path=ActualWidth}"></WrapPanel>
 					</ItemsPanelTemplate>
 				</ListView.ItemsPanel>
 				<ListView.ItemTemplate>
 					<DataTemplate>
 						<StackPanel Orientation="Horizontal" Margin="5">
 							<Border BorderThickness="1" BorderBrush="#888888">
-								<Image Source="{Binding Value, Converter={StaticResource ColorGradientToImageConverter}}" Height="25" Width="25"
+								<Image Source="{Binding Value, Converter={StaticResource ColorGradientToImageConverter}}" Height="25" Width="25" Focusable="True"
 								input:DragDropManager.DropTargetAdvisor="{Binding}" input:DragDropManager.DragSourceAdvisor="{Binding}" ToolTip="{Binding StringValue}">
 									<Image.InputBindings>
 										<MouseBinding Gesture="LeftDoubleClick" Command="input:PropertyEditorCommands.ShowDialogEditor"
 												CommandParameter="{Binding}" />
+										<KeyBinding Key="Enter" Command="input:PropertyEditorCommands.ShowDialogEditor"
+												CommandParameter="{Binding}"/>
 									</Image.InputBindings>
 								</Image>
 							</Border>
-							<!--<TextBlock Text="{Binding StringValue}" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" />-->
 						</StackPanel>
 					</DataTemplate>
 				</ListView.ItemTemplate>
-			</controls:ColorGradientPaletteEditor>
+			</controls:CollectionView>
 			<StackPanel Orientation="Horizontal">
 			<Button Margin="5" Content="Add" HorizontalAlignment="Left" Padding="5,2"
 				  Command="input:PropertyEditorCommands.AddCollectionItem"
@@ -43,8 +45,7 @@
 				  Visibility="{Binding IsEditable, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 			<Button Margin="5" Content="Remove" HorizontalAlignment="Left" Padding="5,2" FocusManager.IsFocusScope="True"
 				  Command="input:PropertyEditorCommands.RemoveCollectionItem"
-				  CommandParameter="{Binding}" 
-				  Visibility="{Binding IsEditable, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+				  CommandParameter="{Binding}" Visibility="{Binding IsEditable, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 			</StackPanel>
 		</StackPanel>
 	</DataTemplate>

@@ -1,35 +1,50 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using VixenModules.Editor.EffectEditor.Input;
 
 namespace VixenModules.Editor.EffectEditor.Controls
 {
-	public class ColorGradientPaletteEditor: ListView
+	public class CollectionView: ListView
 	{
 		/// <summary>
-		/// Initializes a new instance of the <see cref="ColorGradientPaletteEditor"/> class.
+		/// Initializes a new instance of the <see cref="CollectionView"/> class.
 		/// </summary>
-		public ColorGradientPaletteEditor()
+		public CollectionView()
 		{
-			CommandBindings.Add(new CommandBinding(PropertyEditorCommands.RemoveCollectionItem, OnRemoveCollectionItemCommand));
+			CommandBindings.Add(new CommandBinding(PropertyEditorCommands.RemoveCollectionItem, OnRemoveCollectionItemCommand, CanExecuteDelete));
+			LostFocus += CollectionView_LostFocus;
 			//IsSynchronizedWithCurrentItem = false;
+		}
+
+		private void CanExecuteDelete(object sender, CanExecuteRoutedEventArgs canExecuteRoutedEventArgs)
+		{
+			canExecuteRoutedEventArgs.CanExecute=Items.Count > 1 && SelectedItems.Count > 0;
+			canExecuteRoutedEventArgs.Handled = true;
+		}
+
+		private void CollectionView_LostFocus(object sender, RoutedEventArgs e)
+		{
+			if (SelectedItems.Count > 0)
+			{
+				SelectedIndex = -1;
+			}
+			
 		}
 
 		private void OnRemoveCollectionItemCommand(object sender, ExecutedRoutedEventArgs e)
 		{
 			var value = e.Parameter as PropertyItemValue;
-			if (value != null)
+			if (value != null && SelectedIndex >=0)
 			{
-				value.RemoveItemFromCollection(SelectedIndex);
+				if (Items.Count > 1)
+				{
+					value.RemoveItemFromCollection(SelectedIndex);
+				}
 			}
+			
 		}
-
-		#region Fields
-
-		private bool _wrappedEvents;
-
-		#endregion
 
 		#region PropertyValue property
 
@@ -37,7 +52,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 		/// Identifies the <see cref="PropertyValue"/> dependency property.
 		/// </summary>
 		public static readonly DependencyProperty PropertyValueProperty =
-			DependencyProperty.Register("PropertyValue", typeof(PropertyItemValue), typeof(ColorGradientPaletteEditor),
+			DependencyProperty.Register("PropertyValue", typeof(PropertyItemValue), typeof(CollectionView),
 				new PropertyMetadata(null, OnPropertyValueChanged));
 
 		/// <summary>
@@ -52,17 +67,15 @@ namespace VixenModules.Editor.EffectEditor.Controls
 
 		private static void OnPropertyValueChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
 		{
-			var editor = (ColorGradientPaletteEditor)sender;
+			var editor = (CollectionView)sender;
 			
 			var newValue = e.NewValue as PropertyItemValue;
 			if (newValue == null) return;
 
 			editor.ItemsSource = newValue.CollectionValues;
-			
 		}
 
 		#endregion
 
-		
 	}
 }

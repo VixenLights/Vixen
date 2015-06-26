@@ -55,10 +55,10 @@ namespace VixenModules.Effect.Text
 
 		#endregion
 
-		#region Config properties
+		#region Movement properties
 
 		[Value]
-		[ProviderCategory(@"Config", 1)]
+		[ProviderCategory(@"Movement", 1)]
 		[ProviderDisplayName(@"Direction")]
 		[ProviderDescription(@"Direction")]
 		[PropertyOrder(1)]
@@ -75,7 +75,7 @@ namespace VixenModules.Effect.Text
 		}
 
 		[Value]
-		[ProviderCategory(@"Config", 1)]
+		[ProviderCategory(@"Movement", 1)]
 		[ProviderDisplayName(@"Speed")]
 		[ProviderDescription(@"Speed")]
 		[PropertyEditor("SliderEditor")]
@@ -93,7 +93,7 @@ namespace VixenModules.Effect.Text
 		}
 
 		[Value]
-		[ProviderCategory(@"Config", 1)]
+		[ProviderCategory(@"Movement", 1)]
 		[ProviderDisplayName(@"Position")]
 		[ProviderDescription(@"Position")]
 		[PropertyEditor("SliderEditor")]
@@ -111,7 +111,7 @@ namespace VixenModules.Effect.Text
 		}
 
 		[Value]
-		[ProviderCategory(@"Config", 1)]
+		[ProviderCategory(@"Movement", 1)]
 		[ProviderDisplayName(@"PositionX")]
 		[ProviderDescription(@"Position")]
 		[PropertyEditor("SliderEditor")]
@@ -129,7 +129,7 @@ namespace VixenModules.Effect.Text
 		}
 
 		[Value]
-		[ProviderCategory(@"Config", 1)]
+		[ProviderCategory(@"Movement", 1)]
 		[ProviderDisplayName(@"FitTime")]
 		[ProviderDescription(@"FitTime")]
 		[PropertyOrder(4)]
@@ -146,7 +146,7 @@ namespace VixenModules.Effect.Text
 		}
 
 		[Value]
-		[ProviderCategory(@"Config", 1)]
+		[ProviderCategory(@"Movement", 1)]
 		[ProviderDisplayName(@"CenterStop")]
 		[ProviderDescription(@"CenterStop")]
 		[PropertyOrder(3)]
@@ -167,63 +167,15 @@ namespace VixenModules.Effect.Text
 
 		[Value]
 		[ProviderCategory(@"Text", 2)]
-		[ProviderDisplayName(@"TextLine1")]
-		[ProviderDescription(@"TextLine")]
+		[ProviderDisplayName(@"TextLines")]
+		[ProviderDescription(@"TextLines")]
 		[PropertyOrder(1)]
-		public string Line1
+		public List<string> TextLines
 		{
-			get { return _data.Line1; }
+			get { return _data.Text; }
 			set
 			{
-				_data.Line1 = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Text", 2)]
-		[ProviderDisplayName(@"TextLine2")]
-		[ProviderDescription(@"TextLine")]
-		[PropertyOrder(2)]
-		public string Line2
-		{
-			get { return _data.Line2; }
-			set
-			{
-				_data.Line2 = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Text", 2)]
-		[ProviderDisplayName(@"TextLine3")]
-		[ProviderDescription(@"TextLine")]
-		[PropertyOrder(3)]
-		public string Line3
-		{
-			get { return _data.Line3; }
-			set
-			{
-				_data.Line3 = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Text", 2)]
-		[ProviderDisplayName(@"TextLine4")]
-		[ProviderDescription(@"TextLine")]
-		[PropertyOrder(4)]
-		public string Line4
-		{
-			get { return _data.Line4; }
-			set
-			{
-				_data.Line4 = value;
+				_data.Text = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -233,13 +185,45 @@ namespace VixenModules.Effect.Text
 		[ProviderCategory(@"Text", 2)]
 		[ProviderDisplayName(@"Font")]
 		[ProviderDescription(@"Font")]
-		[PropertyOrder(5)]
+		[PropertyOrder(2)]
 		public Font Font
 		{
 			get { return _data.Font.FontValue; }
 			set
 			{
 				_data.Font.FontValue = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Text", 2)]
+		[ProviderDisplayName(@"CenterText")]
+		[ProviderDescription(@"CenterText")]
+		[PropertyOrder(3)]
+		public bool CenterText
+		{
+			get { return _data.CenterText; }
+			set
+			{
+				_data.CenterText = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Text", 2)]
+		[ProviderDisplayName(@"TextMode")]
+		[ProviderDescription(@"TextMode")]
+		[PropertyOrder(4)]
+		public TextMode TextMode
+		{
+			get { return _data.TextMode; }
+			set
+			{
+				_data.TextMode = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -328,36 +312,31 @@ namespace VixenModules.Effect.Text
 			}
 		}
 
+		private int maxTextSize;
+		
 		protected override void RenderEffect(int frame)
 		{
 			using (var bitmap = new Bitmap(BufferWi, BufferHt))
 			{
 				using (Graphics graphics = Graphics.FromImage(bitmap))
 				{
-					
-					var line = new[] { Line1, Line2, Line3, Line4 };
-					var textLines = new List<String>();
-					
-					int numberLines=0;
+					var text = TextMode == TextMode.Normal ? TextLines.Where(x => !String.IsNullOrEmpty(x)).ToList() : SplitTextIntoCharacters(TextLines);
+					int numberLines=text.Count();
 					
 					SizeF textsize = new SizeF(0,0);
 					
-					foreach (string t in line)
+					foreach (string t in text)
 					{
 						if(!String.IsNullOrEmpty(t))
 						{
-							numberLines++;
 							var size = graphics.MeasureString(t, Font);
 							if (size.Width > textsize.Width)
 							{
 								textsize = size;
-							}
-							textLines.Add(t);
-							continue;
+							}	
 						}
-						break;
 					}
-					int maxTextSize = Convert.ToInt32(textsize.Width*.95);
+					maxTextSize = Convert.ToInt32(textsize.Width*.95);
 					int maxht = Convert.ToInt32(textsize.Height * numberLines);
 					int xlimit = (BufferWi + maxTextSize) * 8 + 1;
 					int ylimit = (BufferHt + maxht) * 8 + 1;
@@ -365,8 +344,6 @@ namespace VixenModules.Effect.Text
 					int offsetTop = (((BufferHt - maxht)/2)*2 + Position) / 2;
 					double intervalPosition = GetEffectTimeIntervalPosition(frame);
 
-					int i = 0;
-					
 					Point point;
 					
 					switch (Direction)
@@ -386,7 +363,7 @@ namespace VixenModules.Effect.Text
 							point =
 								new Point(Convert.ToInt32(CenterStop ? Math.Max(leftX, (BufferWi - (int)textsize.Width) / 2) : leftX), offsetTop);
 
-							DrawText(textLines, graphics, point);
+							DrawText(text, graphics, point);
 							
 							break;
 						case TextDirection.Right:
@@ -402,7 +379,7 @@ namespace VixenModules.Effect.Text
 							}
 							point =
 								new Point(Convert.ToInt32(CenterStop ? Math.Min(rightX, (BufferWi - (int)textsize.Width) / 2) : rightX), offsetTop);
-							DrawText(textLines, graphics, point);
+							DrawText(text, graphics, point);
 							break;
 						case TextDirection.Up:
 							// up
@@ -419,7 +396,7 @@ namespace VixenModules.Effect.Text
 
 							point = new Point(offsetLeft,
 								Convert.ToInt32(CenterStop ? Math.Max(upY, (BufferHt - (int)(textsize.Height * numberLines)) / 2): upY));
-							DrawText(textLines, graphics, point);
+							DrawText(text, graphics, point);
 							break;
 						case TextDirection.Down:
 							// down
@@ -436,12 +413,12 @@ namespace VixenModules.Effect.Text
 								Convert.ToInt32(CenterStop
 									? Math.Min(downY, (BufferHt - (int)(textsize.Height * numberLines)) / 2)
 									: downY));
-							DrawText(textLines, graphics, point);
+							DrawText(text, graphics, point);
 							break;
 						default:
 							// no movement - centered
 							point = new Point(((BufferWi-maxTextSize)/2)+PositionX, offsetTop);
-							DrawText(textLines, graphics, point);
+							DrawText(text, graphics, point);
 							break;
 					}
 
@@ -459,6 +436,18 @@ namespace VixenModules.Effect.Text
 				}
 
 			}
+		}
+
+		private List<string> SplitTextIntoCharacters(List<string> textLines)
+		{
+			List<string> splitText = new List<string>();
+			foreach (var textLine in textLines)
+			{
+				splitText.AddRange(textLine.ToCharArray().Select(c => c.ToString()));
+				splitText.Add(Environment.NewLine);
+			}
+			splitText.RemoveAt(splitText.Count-1);
+			return splitText;
 		}
 
 		private void DrawText(IEnumerable<String> textLines, Graphics g, Point p)
@@ -498,14 +487,38 @@ namespace VixenModules.Effect.Text
 			int i = 0;
 			foreach (var text in textLines)
 			{
+				
 				var size = g.MeasureString(text, Font);
+				var offset = maxTextSize - (int)size.Width;
+				var offsetPoint = new Point(p.X + offset / 2, p.Y);
+				var brushPointX = p.X;
+				if (CenterText && TextMode == TextMode.Rotated)
+				{
+					brushPointX =p.X-offset/2;
+				}
+				else if (CenterText)
+				{
+					brushPointX = offsetPoint.X;
+				}
 				ColorGradient cg = Colors[i % Colors.Count()];
-				var brush = new LinearGradientBrush(new Rectangle(p.X, p.Y, (int)size.Width, (int)size.Height), Color.Black,
+				var brush = new LinearGradientBrush(new Rectangle(brushPointX, p.Y, TextMode==TextMode.Rotated?maxTextSize:(int)size.Width, (int)size.Height), Color.Black,
 					Color.Black, mode) { InterpolationColors = cg.GetColorBlend() };
-				DrawTextWithBrush(text, brush, g, p, mode);
+				
+				DrawTextWithBrush(text, brush, g, CenterText?offsetPoint:p);
 				brush.Dispose();
 				p.Y += (int)size.Height;
-				i++;
+				if (TextMode == TextMode.Normal)
+				{
+					i++;
+				}
+				else
+				{
+					if (text == Environment.NewLine)
+					{
+						i++;
+					}	
+				}
+				
 			}
 			
 		}
@@ -516,18 +529,32 @@ namespace VixenModules.Effect.Text
 			foreach (var text in textLines)
 			{
 				var size = g.MeasureString(text, Font);
+				var offset = maxTextSize - (int)size.Width;
+				var offsetPoint = new Point(p.X + offset / 2, p.Y);
+
 				ColorGradient cg = Colors[i % Colors.Count()];
-				var brush = new LinearGradientBrush(new Rectangle(0, p.Y, BufferWi, (int)g.MeasureString(text, Font).Height),
+				var brush = new LinearGradientBrush(new Rectangle(0, 0, BufferWi, BufferHt),
 					Color.Black,
 					Color.Black, mode) { InterpolationColors = cg.GetColorBlend() };
-				DrawTextWithBrush(text, brush, g, p, mode);
+				DrawTextWithBrush(text, brush, g, CenterText ? offsetPoint : p);
 				brush.Dispose();
+
 				p.Y += (int)size.Height;
-				i++;
+				if (TextMode == TextMode.Normal)
+				{
+					i++;
+				}
+				else
+				{
+					if (text == Environment.NewLine)
+					{
+						i++;
+					}
+				}
 			}
 		}
 
-		private void DrawTextWithBrush(string text, Brush brush, Graphics g, Point p, LinearGradientMode mode)
+		private void DrawTextWithBrush(string text, Brush brush, Graphics g, Point p)
 		{
 			g.TextRenderingHint = TextRenderingHint.SingleBitPerPixelGridFit;
 			g.DrawString(text, Font, brush, p);

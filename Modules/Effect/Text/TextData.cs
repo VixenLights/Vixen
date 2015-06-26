@@ -22,10 +22,7 @@ namespace VixenModules.Effect.Text
 			PositionX = 0;
 			CenterStop = false;
 			FitToTime = true;
-			Line1 = String.Empty;
-			Line2 = String.Empty;
-			Line3 = String.Empty;
-			Line4 = String.Empty;
+			Text = new List<string>{String.Empty};
 			GradientMode = GradientMode.AcrossElement;
 			Orientation=StringOrientation.Vertical;
 			Font = new SerializableFont(new Font("Arial", 8));
@@ -44,10 +41,16 @@ namespace VixenModules.Effect.Text
 		public bool CenterStop { get; set; }
 
 		[DataMember]
+		public bool CenterText { get; set; }
+
+		[DataMember]
 		public bool FitToTime { get; set; }
 
 		[DataMember]
 		public GradientMode GradientMode { get; set; }
+
+		[DataMember]
+		public TextMode TextMode { get; set; }
 
 		[DataMember]
 		public int Position { get; set; }
@@ -56,16 +59,7 @@ namespace VixenModules.Effect.Text
 		public int PositionX { get; set; }
 
 		[DataMember]
-		public string Line1 { get; set; }
-
-		[DataMember]
-		public string Line2 { get; set; }
-
-		[DataMember]
-		public string Line3 { get; set; }
-
-		[DataMember]
-		public string Line4 { get; set; }
+		public List<string> Text { get; set; }
 
 		[DataMember]
 		public SerializableFont Font { get; set; }
@@ -84,10 +78,7 @@ namespace VixenModules.Effect.Text
 				Orientation = Orientation,
 				Position = Position,
 				PositionX = PositionX,
-				Line1 = Line1,
-				Line2 = Line2,
-				Line3 = Line3,
-				Line4 = Line4,
+				Text = Text.ToList(),
 				GradientMode = GradientMode,
 				Font = new SerializableFont(Font.FontValue)
 			};

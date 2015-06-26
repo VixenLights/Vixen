@@ -147,6 +147,9 @@
   <data name="Interval" xml:space="preserve">
     <value>Interval</value>
   </data>
+  <data name="Movement" xml:space="preserve">
+    <value>Movement</value>
+  </data>
   <data name="Pulse" xml:space="preserve">
     <value>Pulse</value>
   </data>

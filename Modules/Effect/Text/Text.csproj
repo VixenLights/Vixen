@@ -88,6 +88,7 @@
     <Compile Include="TextDescriptor.cs" />
     <Compile Include="GradientMode.cs" />
     <Compile Include="TextDirection.cs" />
+    <Compile Include="TextMode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
