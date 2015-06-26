@@ -19,6 +19,7 @@ namespace Common.Controls.Timeline
 		private static readonly Brush InfoBrush = new SolidBrush(Color.FromArgb(128,0,0,0));
 		protected internal bool SuspendEvents = false;
 		private Bitmap _cachedImage;
+		private Size _cachedImageSize= new Size(0,0);
 		private TimeSpan _elementVisibleStartTime;
 		private TimeSpan _elementVisibleEndTime;
 		
@@ -364,17 +365,19 @@ namespace Common.Controls.Timeline
 			}
 
 			if (_cachedImage == null || visibleStartOffset != _elementVisibleStartTime || 
-				visibleEndOffset != _elementVisibleEndTime || _cachedImage.Height != imageSize.Height || 
-				_cachedImage.Width != imageSize.Width)
+				visibleEndOffset != _elementVisibleEndTime || _cachedImageSize.Height != imageSize.Height || 
+				_cachedImageSize.Width != imageSize.Width)
 			{
-				_cachedImage = new Bitmap(imageSize.Width, imageSize.Height);
-				using (Graphics g = Graphics.FromImage(_cachedImage))
+				var image = new Bitmap(imageSize.Width, imageSize.Height);
+				using (Graphics g = Graphics.FromImage(image))
 				{
 					DrawCanvasContent(g, visibleStartOffset, visibleEndOffset, overallWidth, redBorder);
 					AddSelectionOverlayToCanvas(g, _selected, startTime <= StartTime, endTime >= EndTime, redBorder);
 				}
 				_elementVisibleStartTime = visibleStartOffset;
 				_elementVisibleEndTime = visibleEndOffset;
+				_cachedImageSize = image.Size;
+				_cachedImage = image;
 			}
 			
 			return _cachedImage;
