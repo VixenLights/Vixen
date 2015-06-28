@@ -273,6 +273,16 @@ namespace VixenModules.Effect.Spiral
 			}
 		}
 
+		protected override void SetupRender()
+		{
+			//Nothing to setup
+		}
+
+		protected override void CleanUpRender()
+		{
+			//Nothing to clean up
+		}
+
 		protected override void RenderEffect(int frame, ref PixelFrameBuffer frameBuffer)
 		{
 			int colorcnt = Colors.Count();

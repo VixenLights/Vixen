@@ -215,6 +215,16 @@ namespace VixenModules.Effect.Bars
 			TypeDescriptor.Refresh(this);
 		}
 
+		protected override void SetupRender()
+		{
+			//Nothing to setup
+		}
+
+		protected override void CleanUpRender()
+		{
+			//Nothing to clean up
+		}
+
 		protected override void RenderEffect(int frame, ref PixelFrameBuffer frameBuffer)
 		{
 			int x, y, n, colorIdx;

@@ -312,7 +312,17 @@ namespace VixenModules.Effect.Text
 			}
 		}
 
-		private int maxTextSize;
+		private int _maxTextSize;
+
+		protected override void SetupRender()
+		{
+			//Nothing to setup
+		}
+
+		protected override void CleanUpRender()
+		{
+			//Nothing to clean up
+		}
 		
 		protected override void RenderEffect(int frame, ref PixelFrameBuffer frameBuffer)
 		{
@@ -336,11 +346,11 @@ namespace VixenModules.Effect.Text
 							}	
 						}
 					}
-					maxTextSize = Convert.ToInt32(textsize.Width*.95);
+					_maxTextSize = Convert.ToInt32(textsize.Width*.95);
 					int maxht = Convert.ToInt32(textsize.Height * numberLines);
-					int xlimit = (BufferWi + maxTextSize) * 8 + 1;
+					int xlimit = (BufferWi + _maxTextSize) * 8 + 1;
 					int ylimit = (BufferHt + maxht) * 8 + 1;
-					int offsetLeft = (((BufferWi - maxTextSize) / 2) * 2 + Position) / 2;
+					int offsetLeft = (((BufferWi - _maxTextSize) / 2) * 2 + Position) / 2;
 					int offsetTop = (((BufferHt - maxht)/2)*2 + Position) / 2;
 					double intervalPosition = GetEffectTimeIntervalPosition(frame);
 
@@ -371,7 +381,7 @@ namespace VixenModules.Effect.Text
 							int rightX;
 							if (FitToTime)
 							{
-								rightX = -maxTextSize + (int)(intervalPosition * (maxTextSize + BufferWi));
+								rightX = -_maxTextSize + (int)(intervalPosition * (_maxTextSize + BufferWi));
 							}
 							else
 							{
@@ -417,7 +427,7 @@ namespace VixenModules.Effect.Text
 							break;
 						default:
 							// no movement - centered
-							point = new Point(((BufferWi-maxTextSize)/2)+PositionX, offsetTop);
+							point = new Point(((BufferWi-_maxTextSize)/2)+PositionX, offsetTop);
 							DrawText(text, graphics, point);
 							break;
 					}
@@ -489,7 +499,7 @@ namespace VixenModules.Effect.Text
 			{
 				
 				var size = g.MeasureString(text, Font);
-				var offset = maxTextSize - (int)size.Width;
+				var offset = _maxTextSize - (int)size.Width;
 				var offsetPoint = new Point(p.X + offset / 2, p.Y);
 				var brushPointX = p.X;
 				if (CenterText && TextMode == TextMode.Rotated)
@@ -501,7 +511,7 @@ namespace VixenModules.Effect.Text
 					brushPointX = offsetPoint.X;
 				}
 				ColorGradient cg = Colors[i % Colors.Count()];
-				var brush = new LinearGradientBrush(new Rectangle(brushPointX, p.Y, TextMode==TextMode.Rotated?maxTextSize:(int)size.Width, (int)size.Height), Color.Black,
+				var brush = new LinearGradientBrush(new Rectangle(brushPointX, p.Y, TextMode==TextMode.Rotated?_maxTextSize:(int)size.Width, (int)size.Height), Color.Black,
 					Color.Black, mode) { InterpolationColors = cg.GetColorBlend() };
 				
 				DrawTextWithBrush(text, brush, g, CenterText?offsetPoint:p);
@@ -529,7 +539,7 @@ namespace VixenModules.Effect.Text
 			foreach (var text in textLines)
 			{
 				var size = g.MeasureString(text, Font);
-				var offset = maxTextSize - (int)size.Width;
+				var offset = _maxTextSize - (int)size.Width;
 				var offsetPoint = new Point(p.X + offset / 2, p.Y);
 
 				ColorGradient cg = Colors[i % Colors.Count()];

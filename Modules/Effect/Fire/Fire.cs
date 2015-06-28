@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
@@ -7,7 +6,6 @@ using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Attributes;
 using Vixen.Module;
 using Vixen.Sys.Attribute;
-using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Effect.Pixel;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
@@ -165,12 +163,18 @@ namespace VixenModules.Effect.Fire
 			return _random.Next();
 		}
 
+		protected override void SetupRender()
+		{
+			_fireBuffer = new int[BufferWi*BufferHt];
+		}
+
+		protected override void CleanUpRender()
+		{
+			_fireBuffer = null;
+		}
+
 		protected override void RenderEffect(int frame, ref PixelFrameBuffer frameBuffer)
 		{
-			if (_fireBuffer.Count() != BufferWi * BufferHt)
-			{
-				Array.Resize(ref _fireBuffer, BufferWi * BufferHt);
-			}
 			double position = GetEffectTimeIntervalPosition(frame);
 			int x, y;
 			if (frame == 0)

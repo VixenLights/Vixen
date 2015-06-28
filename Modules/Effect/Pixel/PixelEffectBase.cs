@@ -28,6 +28,7 @@ namespace VixenModules.Effect.Pixel
 
 		protected override void _PreRender(CancellationTokenSource tokenSource = null)
 		{
+			SetupRender();
 			EffectIntents data = new EffectIntents();
 			foreach (ElementNode node in TargetNodes)
 			{
@@ -35,6 +36,7 @@ namespace VixenModules.Effect.Pixel
 					data.Add(RenderNode(node));
 			}
 			_elementData = data;
+			CleanUpRender();
 		}
 
 		[ReadOnly(true)]
@@ -102,7 +104,9 @@ namespace VixenModules.Effect.Pixel
 			StringCount = CalculateMaxStringCount();
 		}
 
+		protected abstract void SetupRender();
 		protected abstract void RenderEffect(int frameNum, ref PixelFrameBuffer frameBuffer);
+		protected abstract void CleanUpRender();
 
 		protected int BufferHt
 		{
