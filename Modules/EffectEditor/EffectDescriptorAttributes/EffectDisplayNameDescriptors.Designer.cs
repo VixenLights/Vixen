@@ -233,6 +233,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to File Name.
+        /// </summary>
+        internal static string Filename {
+            get {
+                return ResourceManager.GetString("Filename", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fit To Time.
         /// </summary>
         internal static string FitTime {
@@ -265,6 +274,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string Frequency {
             get {
                 return ResourceManager.GetString("Frequency", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Animation Speed.
+        /// </summary>
+        internal static string GifSpeed {
+            get {
+                return ResourceManager.GetString("GifSpeed", resourceCulture);
             }
         }
         
@@ -467,6 +485,24 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Scale.
+        /// </summary>
+        internal static string ScalePercent {
+            get {
+                return ResourceManager.GetString("ScalePercent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scale To Grid.
+        /// </summary>
+        internal static string ScaleToGrid {
+            get {
+                return ResourceManager.GetString("ScaleToGrid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 3D.
         /// </summary>
         internal static string Show3D {
@@ -571,6 +607,24 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string WipeCount {
             get {
                 return ResourceManager.GetString("WipeCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to X Offset.
+        /// </summary>
+        internal static string XOffset {
+            get {
+                return ResourceManager.GetString("XOffset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Y Offset.
+        /// </summary>
+        internal static string YOffset {
+            get {
+                return ResourceManager.GetString("YOffset", resourceCulture);
             }
         }
     }

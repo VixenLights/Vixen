@@ -179,6 +179,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The selected file name..
+        /// </summary>
+        internal static string Filename {
+            get {
+                return ResourceManager.GetString("Filename", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Times the effect so that it will fit in the allotted time span..
         /// </summary>
         internal static string FitTime {
@@ -211,6 +220,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string Font {
             get {
                 return ResourceManager.GetString("Font", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Controls the speed at which a gif animates if the image is a animated gif..
+        /// </summary>
+        internal static string GifSpeed {
+            get {
+                return ResourceManager.GetString("GifSpeed", resourceCulture);
             }
         }
         
@@ -386,6 +404,24 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Controls the percent of the scaling to reduce the size of large images to fit..
+        /// </summary>
+        internal static string ScalePercent {
+            get {
+                return ResourceManager.GetString("ScalePercent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Automatically sets the scaling to match the grid size..
+        /// </summary>
+        internal static string ScaleToGrid {
+            get {
+                return ResourceManager.GetString("ScaleToGrid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
         internal static string Setup {
@@ -535,6 +571,24 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string WipeType {
             get {
                 return ResourceManager.GetString("WipeType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can help to adjust the position of the image. May not work in all cases..
+        /// </summary>
+        internal static string XOffset {
+            get {
+                return ResourceManager.GetString("XOffset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can help to adjust the position of the image. May not work in all cases..
+        /// </summary>
+        internal static string YOffset {
+            get {
+                return ResourceManager.GetString("YOffset", resourceCulture);
             }
         }
     }

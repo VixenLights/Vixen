@@ -319,7 +319,7 @@ namespace VixenModules.Effect.Spiral
 
 			spiralThickness += thicknessState;
 			double level = LevelCurve.GetValue(position * 100) / 100;
-			;
+			
 			for (int ns = 0; ns < spiralCount; ns++)
 			{
 				var strandBase = ns * deltaStrands;

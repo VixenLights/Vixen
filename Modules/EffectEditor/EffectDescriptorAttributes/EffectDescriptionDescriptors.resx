@@ -156,6 +156,9 @@
   <data name="ExtendPulseStart" xml:space="preserve">
     <value>Extends the pulse back to the start of the effect from it's normal starting position.</value>
   </data>
+  <data name="Filename" xml:space="preserve">
+    <value>The selected file name.</value>
+  </data>
   <data name="FitTime" xml:space="preserve">
     <value>Times the effect so that it will fit in the allotted time span.</value>
   </data>
@@ -167,6 +170,9 @@
   </data>
   <data name="Font" xml:space="preserve">
     <value>The text font.</value>
+  </data>
+  <data name="GifSpeed" xml:space="preserve">
+    <value>Controls the speed at which a gif animates if the image is a animated gif.</value>
   </data>
   <data name="GradientMode" xml:space="preserve">
     <value>Controls how the gradient is applied to the effect.</value>
@@ -225,6 +231,12 @@
   <data name="Rotation" xml:space="preserve">
     <value>The amount of twist in the spiral.</value>
   </data>
+  <data name="ScalePercent" xml:space="preserve">
+    <value>Controls the percent of the scaling to reduce the size of large images to fit.</value>
+  </data>
+  <data name="ScaleToGrid" xml:space="preserve">
+    <value>Automatically sets the scaling to match the grid size.</value>
+  </data>
   <data name="Setup" xml:space="preserve">
     <value />
   </data>
@@ -275,5 +287,11 @@
   </data>
   <data name="WipeType" xml:space="preserve">
     <value>Controls how the wipe behaves. Either by a count of passes, or by time related to pulse length.</value>
+  </data>
+  <data name="XOffset" xml:space="preserve">
+    <value>Can help to adjust the position of the image. May not work in all cases.</value>
+  </data>
+  <data name="YOffset" xml:space="preserve">
+    <value>Can help to adjust the position of the image. May not work in all cases.</value>
   </data>
 </root>
