@@ -241,7 +241,7 @@ namespace VixenModules.Effect.Bars
 				int halfHt = BufferHt / 2;
 				int blockHt = colorcnt * barHt;
 				if (blockHt < 1) blockHt = 1;
-				int fOffset = (int)(FitToTime ? position * blockHt : Speed * frame / 4 % blockHt);
+				int fOffset = (int)(FitToTime ? position * blockHt * Repeat : Speed * frame / 4 % blockHt);
 				if(Direction == BarDirection.AlternateUp || Direction == BarDirection.AlternateDown)
 				{
 					fOffset = (int)(Math.Floor(position*barCount)*barHt);
