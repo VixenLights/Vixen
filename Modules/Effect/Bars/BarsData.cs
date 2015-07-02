@@ -63,7 +63,8 @@ namespace VixenModules.Effect.Bars
 				Orientation = Orientation,
 				Show3D = Show3D,
 				Highlight = Highlight,
-				FitToTime = FitToTime
+				FitToTime = FitToTime,
+				LevelCurve = new Curve(LevelCurve)
 			};
 			return result;
 		}

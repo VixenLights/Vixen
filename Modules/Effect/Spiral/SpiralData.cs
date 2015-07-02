@@ -75,7 +75,9 @@ namespace VixenModules.Effect.Spiral
 				Thickness = Thickness,
 				Rotation = Rotation,
 				Blend = Blend,
-				LevelCurve = new Curve(LevelCurve)
+				LevelCurve = new Curve(LevelCurve),
+				Grow = Grow,
+				Shrink = Shrink
 			};
 			return result;
 		}
