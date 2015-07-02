@@ -162,6 +162,9 @@
   <data name="FitTime" xml:space="preserve">
     <value>Times the effect so that it will fit in the allotted time span.</value>
   </data>
+  <data name="FlakeCount" xml:space="preserve">
+    <value>Controls the amount of flakes.</value>
+  </data>
   <data name="FlickerFrequency" xml:space="preserve">
     <value>Sets flicker frequency in changes per second.</value>
   </data>
@@ -242,6 +245,9 @@
   </data>
   <data name="Show3D" xml:space="preserve">
     <value>Adds a 3D effect.</value>
+  </data>
+  <data name="SnowflakeType" xml:space="preserve">
+    <value>Controls the typeof the snowflake.</value>
   </data>
   <data name="SpinSpeedFormat" xml:space="preserve">
     <value>Controls how the individual spins occur.</value>

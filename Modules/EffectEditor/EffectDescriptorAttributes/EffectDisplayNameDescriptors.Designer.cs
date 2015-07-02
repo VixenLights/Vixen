@@ -89,6 +89,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Center Color.
+        /// </summary>
+        internal static string CenterColor {
+            get {
+                return ResourceManager.GetString("CenterColor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Center Stop.
         /// </summary>
         internal static string CenterStop {
@@ -251,6 +260,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Flake Count.
+        /// </summary>
+        internal static string FlakeCount {
+            get {
+                return ResourceManager.GetString("FlakeCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Flicker.
         /// </summary>
         internal static string FlickerPercent {
@@ -386,6 +404,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Outer Color.
+        /// </summary>
+        internal static string OuterColor {
+            get {
+                return ResourceManager.GetString("OuterColor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Pixels Per String.
         /// </summary>
         internal static string PixelsPerString {
@@ -508,6 +535,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string Show3D {
             get {
                 return ResourceManager.GetString("Show3D", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Snowflake Type.
+        /// </summary>
+        internal static string SnowflakeType {
+            get {
+                return ResourceManager.GetString("SnowflakeType", resourceCulture);
             }
         }
         

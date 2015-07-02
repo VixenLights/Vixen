@@ -197,6 +197,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Controls the amount of flakes..
+        /// </summary>
+        internal static string FlakeCount {
+            get {
+                return ResourceManager.GetString("FlakeCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sets flicker frequency in changes per second..
         /// </summary>
         internal static string FlickerFrequency {
@@ -436,6 +445,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string Show3D {
             get {
                 return ResourceManager.GetString("Show3D", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Controls the typeof the snowflake..
+        /// </summary>
+        internal static string SnowflakeType {
+            get {
+                return ResourceManager.GetString("SnowflakeType", resourceCulture);
             }
         }
         

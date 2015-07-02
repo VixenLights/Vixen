@@ -3,13 +3,13 @@ using Common.Controls.ColorManagement.ColorModels;
 
 namespace VixenModules.Effect.Pixel
 {
-	public struct PixelFrameBuffer
+	public class PixelFrameBuffer
 	{
 		private Color[][] _pixels;
 		private readonly int _bufferWi;
 		private readonly int _bufferHt;
 
-		public PixelFrameBuffer(int width, int height) : this()
+		public PixelFrameBuffer(int width, int height) 
 		{
 			_bufferWi = width;
 			_bufferHt = height;

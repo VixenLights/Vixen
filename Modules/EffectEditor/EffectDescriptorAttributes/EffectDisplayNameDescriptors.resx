@@ -126,6 +126,9 @@
   <data name="Brightness" xml:space="preserve">
     <value>Intensity</value>
   </data>
+  <data name="CenterColor" xml:space="preserve">
+    <value>Center Color</value>
+  </data>
   <data name="CenterStop" xml:space="preserve">
     <value>Center Stop</value>
   </data>
@@ -180,6 +183,9 @@
   <data name="FitTime" xml:space="preserve">
     <value>Fit To Time</value>
   </data>
+  <data name="FlakeCount" xml:space="preserve">
+    <value>Flake Count</value>
+  </data>
   <data name="FlickerPercent" xml:space="preserve">
     <value>Flicker</value>
   </data>
@@ -225,6 +231,9 @@
   <data name="Orientation" xml:space="preserve">
     <value>String Orientation</value>
   </data>
+  <data name="OuterColor" xml:space="preserve">
+    <value>Outer Color</value>
+  </data>
   <data name="PixelsPerString" xml:space="preserve">
     <value>Pixels Per String</value>
   </data>
@@ -266,6 +275,9 @@
   </data>
   <data name="Show3D" xml:space="preserve">
     <value>3D</value>
+  </data>
+  <data name="SnowflakeType" xml:space="preserve">
+    <value>Snowflake Type</value>
   </data>
   <data name="Speed" xml:space="preserve">
     <value>Speed</value>
