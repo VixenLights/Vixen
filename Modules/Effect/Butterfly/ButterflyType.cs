@@ -6,7 +6,7 @@ namespace VixenModules.Effect.Butterfly
 	{
 		[Description("1")]
 		Type1,
-		[Description("3")]
+		[Description("2")]
 		Type2,
 		[Description("3")]
 		Type3,
