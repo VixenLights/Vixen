@@ -41,23 +41,6 @@ namespace VixenModules.Effect.Spiral
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Orientation")]
-		[ProviderDescription(@"Orientation")]
-		[Browsable(false)]
-		public StringOrientation Orientation
-		{
-			get { return _data.Orientation; }
-			set
-			{
-				_data.Orientation = value;
-				StringOrientation = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Direction")]
 		[ProviderDescription(@"Direction")]
 		[PropertyOrder(0)]
