@@ -120,11 +120,20 @@
   <data name="AveragePulseTime" xml:space="preserve">
     <value>Avg Pulse Time</value>
   </data>
+  <data name="BackgroundChunks" xml:space="preserve">
+    <value>Background Chunks</value>
+  </data>
+  <data name="BackgroundSkips" xml:space="preserve">
+    <value>Background Skips</value>
+  </data>
   <data name="Blend" xml:space="preserve">
     <value>Blend</value>
   </data>
   <data name="Brightness" xml:space="preserve">
     <value>Intensity</value>
+  </data>
+  <data name="ButterflyType" xml:space="preserve">
+    <value>Butterfly Type</value>
   </data>
   <data name="CenterColor" xml:space="preserve">
     <value>Center Color</value>
@@ -149,6 +158,9 @@
   </data>
   <data name="ColorOne" xml:space="preserve">
     <value>Color 1</value>
+  </data>
+  <data name="ColorScheme" xml:space="preserve">
+    <value>Color Scheme</value>
   </data>
   <data name="ColorTwo" xml:space="preserve">
     <value>Color 2</value>

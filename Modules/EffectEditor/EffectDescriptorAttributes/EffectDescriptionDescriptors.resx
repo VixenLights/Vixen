@@ -117,11 +117,20 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="BackgroundChunks" xml:space="preserve">
+    <value>Controls the amount of background chunks.</value>
+  </data>
+  <data name="BackgroundSkips" xml:space="preserve">
+    <value>Controls the amount of background skips.</value>
+  </data>
   <data name="Blend" xml:space="preserve">
     <value>Applies the gradient blend vertically.</value>
   </data>
   <data name="Brightness" xml:space="preserve">
     <value>Controls the brightness of the effect.</value>
+  </data>
+  <data name="ButterflyType" xml:space="preserve">
+    <value>Controls the type of pattern.</value>
   </data>
   <data name="CenterStop" xml:space="preserve">
     <value>Moves the text into view and stops it in the center.</value>
@@ -137,6 +146,9 @@
   </data>
   <data name="ColorHandling" xml:space="preserve">
     <value>Controls how the color is handled.</value>
+  </data>
+  <data name="ColorScheme" xml:space="preserve">
+    <value>Controls the color scheme.</value>
   </data>
   <data name="DefaultBrightness" xml:space="preserve">
     <value>Controls the default brightness of the inactive elements in the effect.</value>

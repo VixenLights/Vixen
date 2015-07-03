@@ -15,7 +15,7 @@ namespace VixenModules.Effect.Pixel
 	public abstract class PixelEffectBase : EffectModuleInstanceBase
 	{
 
-		private const short FrameTime = 50;
+		protected const short FrameTime = 50;
 
 		protected readonly List<int> StringPixelCounts = new List<int>();
 

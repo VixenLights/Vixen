@@ -71,6 +71,24 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Background Chunks.
+        /// </summary>
+        internal static string BackgroundChunks {
+            get {
+                return ResourceManager.GetString("BackgroundChunks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Background Skips.
+        /// </summary>
+        internal static string BackgroundSkips {
+            get {
+                return ResourceManager.GetString("BackgroundSkips", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Blend.
         /// </summary>
         internal static string Blend {
@@ -85,6 +103,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string Brightness {
             get {
                 return ResourceManager.GetString("Brightness", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Butterfly Type.
+        /// </summary>
+        internal static string ButterflyType {
+            get {
+                return ResourceManager.GetString("ButterflyType", resourceCulture);
             }
         }
         
@@ -157,6 +184,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string ColorOne {
             get {
                 return ResourceManager.GetString("ColorOne", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Color Scheme.
+        /// </summary>
+        internal static string ColorScheme {
+            get {
+                return ResourceManager.GetString("ColorScheme", resourceCulture);
             }
         }
         
