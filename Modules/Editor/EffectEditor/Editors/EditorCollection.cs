@@ -18,10 +18,10 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using Vixen.Attributes;
 using VixenModules.App.ColorGradients;
-using VixenModules.Editor.EffectEditor.Controls;
 
 namespace VixenModules.Editor.EffectEditor.Editors
 {
@@ -39,6 +39,7 @@ namespace VixenModules.Editor.EffectEditor.Editors
 			{KnownTypes.Vixen.Curve, new CurveEditor()},
 			{KnownTypes.Vixen.ColorGradient, new GradientTypeEditor()},
 			{typeof(List<ColorGradient>), new TypeEditor(typeof(List<ColorGradient>),EditorKeys.ColorGradientPaletteEditorKey)},
+			{typeof(List<Color>), new TypeEditor(typeof(List<Color>),EditorKeys.ColorPaletteEditorKey)},
 			{typeof(List<string>), new TypeEditor(typeof(List<string>),EditorKeys.StringCollectionEditorKey)},
 			{KnownTypes.Vixen.Percentage, new TypeEditor(KnownTypes.Vixen.Percentage, EditorKeys.SliderPercentageEditorKey)},
 			{typeof (Enum), new TypeEditor(typeof (Enum), EditorKeys.EnumEditorKey)},

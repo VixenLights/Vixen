@@ -162,6 +162,9 @@
   <data name="Direction" xml:space="preserve">
     <value>Controls the direction of the effect.</value>
   </data>
+  <data name="Explosions" xml:space="preserve">
+    <value>Controls how many explosions occur.</value>
+  </data>
   <data name="ExtendPulseEnd" xml:space="preserve">
     <value>Extends the pulse to the end of the effect from beyond it's normal ending position.</value>
   </data>
@@ -212,6 +215,12 @@
   </data>
   <data name="Orientation" xml:space="preserve">
     <value>Defines the direction of the strings and controls how the effect is oriented on the element.</value>
+  </data>
+  <data name="ParticleFade" xml:space="preserve">
+    <value>Controls how fast the particles fade.</value>
+  </data>
+  <data name="Particles" xml:space="preserve">
+    <value>Controls how many particles will be created.</value>
   </data>
   <data name="PixelsPerString" xml:space="preserve">
     <value>The count of pixels on each string.</value>
@@ -293,6 +302,9 @@
   </data>
   <data name="TwinklePulseTimeVariation" xml:space="preserve">
     <value>Controls how much percent variation in the time of each pulse in the twinkle.</value>
+  </data>
+  <data name="Velocity" xml:space="preserve">
+    <value>Controls the velocity of the particles.</value>
   </data>
   <data name="VerticalBlend" xml:space="preserve">
     <value>Changes the orientation of the gradient.</value>

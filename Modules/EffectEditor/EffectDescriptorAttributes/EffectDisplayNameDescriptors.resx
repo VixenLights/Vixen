@@ -153,6 +153,9 @@
   <data name="Color" xml:space="preserve">
     <value>Color</value>
   </data>
+  <data name="ColorGradient" xml:space="preserve">
+    <value>Color Gradient</value>
+  </data>
   <data name="ColorHandling" xml:space="preserve">
     <value>Color Handling</value>
   </data>
@@ -182,6 +185,9 @@
   </data>
   <data name="Direction" xml:space="preserve">
     <value>Direction</value>
+  </data>
+  <data name="Explosions" xml:space="preserve">
+    <value>Explosions</value>
   </data>
   <data name="ExtendPulseEnd" xml:space="preserve">
     <value>Extend Pulse to End</value>
@@ -245,6 +251,12 @@
   </data>
   <data name="OuterColor" xml:space="preserve">
     <value>Outer Color</value>
+  </data>
+  <data name="ParticleFade" xml:space="preserve">
+    <value>Particle Fade</value>
+  </data>
+  <data name="Particles" xml:space="preserve">
+    <value>Particles</value>
   </data>
   <data name="PixelsPerString" xml:space="preserve">
     <value>Pixels Per String</value>
@@ -317,6 +329,9 @@
   </data>
   <data name="Variation" xml:space="preserve">
     <value>Variation</value>
+  </data>
+  <data name="Velocity" xml:space="preserve">
+    <value>Velocity</value>
   </data>
   <data name="VerticalBlend" xml:space="preserve">
     <value>Vertical Blend</value>

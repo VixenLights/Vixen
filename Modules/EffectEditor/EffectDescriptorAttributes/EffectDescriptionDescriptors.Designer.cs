@@ -197,6 +197,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Controls how many explosions occur..
+        /// </summary>
+        internal static string Explosions {
+            get {
+                return ResourceManager.GetString("Explosions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Extends the pulse to the end of the effect from beyond it&apos;s normal ending position..
         /// </summary>
         internal static string ExtendPulseEnd {
@@ -346,6 +355,24 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string Orientation {
             get {
                 return ResourceManager.GetString("Orientation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Controls how fast the particles fade..
+        /// </summary>
+        internal static string ParticleFade {
+            get {
+                return ResourceManager.GetString("ParticleFade", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Controls how many particles will be created..
+        /// </summary>
+        internal static string Particles {
+            get {
+                return ResourceManager.GetString("Particles", resourceCulture);
             }
         }
         
@@ -589,6 +616,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string TwinklePulseTimeVariation {
             get {
                 return ResourceManager.GetString("TwinklePulseTimeVariation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Controls the velocity of the particles..
+        /// </summary>
+        internal static string Velocity {
+            get {
+                return ResourceManager.GetString("Velocity", resourceCulture);
             }
         }
         

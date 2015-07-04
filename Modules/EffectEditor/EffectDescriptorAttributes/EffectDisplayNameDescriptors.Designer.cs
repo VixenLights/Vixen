@@ -170,6 +170,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Color Gradient.
+        /// </summary>
+        internal static string ColorGradient {
+            get {
+                return ResourceManager.GetString("ColorGradient", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Color Handling.
         /// </summary>
         internal static string ColorHandling {
@@ -256,6 +265,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string Direction {
             get {
                 return ResourceManager.GetString("Direction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Explosions.
+        /// </summary>
+        internal static string Explosions {
+            get {
+                return ResourceManager.GetString("Explosions", resourceCulture);
             }
         }
         
@@ -445,6 +463,24 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string OuterColor {
             get {
                 return ResourceManager.GetString("OuterColor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Particle Fade.
+        /// </summary>
+        internal static string ParticleFade {
+            get {
+                return ResourceManager.GetString("ParticleFade", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Particles.
+        /// </summary>
+        internal static string Particles {
+            get {
+                return ResourceManager.GetString("Particles", resourceCulture);
             }
         }
         
@@ -661,6 +697,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string Variation {
             get {
                 return ResourceManager.GetString("Variation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Velocity.
+        /// </summary>
+        internal static string Velocity {
+            get {
+                return ResourceManager.GetString("Velocity", resourceCulture);
             }
         }
         

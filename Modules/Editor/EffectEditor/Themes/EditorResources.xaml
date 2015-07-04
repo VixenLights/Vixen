@@ -15,6 +15,7 @@
 		<ResourceDictionary Source="TextEditor.xaml" />
 		<ResourceDictionary Source="FontEditor.xaml" />
 		<ResourceDictionary Source="ColorGradientPaletteEditor.xaml" />
+		<ResourceDictionary Source="ColorPaletteEditor.xaml" />
 	</ResourceDictionary.MergedDictionaries>
 
 
