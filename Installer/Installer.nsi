@@ -121,7 +121,7 @@ VIAddVersionKey "FileVersion" "${AssemblyVersion_1}.${AssemblyVersion_2}.${Assem
 !else
 	!define PRODUCT_NAME_FULL "Vixen"
 	InstallDir "${PROG_FILES}\Vixen"
-	!if ${AssemblyVersion_1} == 0
+	!if ${PATCHNUMBER} == 0
 		Name "${PRODUCT_NAME} ${MAJORVERSION}.${MINORVERSION} (${BITS_READABLE})"
 		OutFile ".\${PRODUCT_NAME}-${MAJORVERSION}.${MINORVERSION}-Setup-${BITS}bit.exe"
 	!else
