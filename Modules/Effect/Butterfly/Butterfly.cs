@@ -142,7 +142,7 @@ namespace VixenModules.Effect.Butterfly
 
 		[Value]
 		[ProviderCategory(@"Color", 2)]
-		[ProviderDisplayName(@"Color")]
+		[ProviderDisplayName(@"ColorGradient")]
 		[ProviderDescription(@"Color")]
 		[PropertyOrder(2)]
 		public ColorGradient Color

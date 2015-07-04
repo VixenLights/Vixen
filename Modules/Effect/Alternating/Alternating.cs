@@ -291,7 +291,7 @@ namespace VixenModules.Effect.Alternating
 
 		[Value]
 		[ProviderCategory(@"ColorOne",1)]
-		[ProviderDisplayName(@"Color")]
+		[ProviderDisplayName(@"ColorGradient")]
 		[ProviderDescription(@"Color")]
 		[PropertyOrder(2)]
 		public ColorGradient ColorGradient1
@@ -310,7 +310,7 @@ namespace VixenModules.Effect.Alternating
 
 		[Value]
 		[ProviderCategory(@"ColorTwo",2)]
-		[ProviderDisplayName(@"Color")]
+		[ProviderDisplayName(@"ColorGradient")]
 		[ProviderDescription(@"Color")]
 		[PropertyOrder(2)]
 		public ColorGradient ColorGradient2

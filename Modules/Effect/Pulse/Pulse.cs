@@ -77,7 +77,7 @@ namespace VixenModules.Effect.Pulse
 
 		[Value]
 		[ProviderCategory(@"Color",1)]
-		[ProviderDisplayName(@"Color")]
+		[ProviderDisplayName(@"ColorGradient")]
 		[ProviderDescription(@"Color")]
 		public ColorGradient ColorGradient
 		{

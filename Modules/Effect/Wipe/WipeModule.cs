@@ -498,7 +498,7 @@ namespace VixenModules.Effect.Wipe
 
 		[Value]
 		[ProviderCategory(@"Color",3)]
-		[ProviderDisplayName(@"Color")]
+		[ProviderDisplayName(@"ColorGradient")]
 		[ProviderDescription(@"Color")]
 		public ColorGradient ColorGradient
 		{

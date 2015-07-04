@@ -273,7 +273,7 @@ namespace VixenModules.Effect.Spin
 
 		[Value]
 		[ProviderCategory(@"Color",1)]
-		[ProviderDisplayName(@"Color")]
+		[ProviderDisplayName(@"ColorGradient")]
 		[ProviderDescription(@"Color")]
 		[PropertyOrder(3)]
 		public ColorGradient ColorGradient

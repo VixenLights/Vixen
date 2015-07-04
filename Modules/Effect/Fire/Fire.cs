@@ -23,6 +23,8 @@ namespace VixenModules.Effect.Fire
 			_data = new FireData();
 		}
 
+		#region
+
 		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Location")]
@@ -67,6 +69,8 @@ namespace VixenModules.Effect.Fire
 				//Read only
 			}
 		}
+
+		#endregion
 
 		#region Color
 

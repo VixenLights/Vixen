@@ -159,7 +159,7 @@ namespace VixenModules.Effect.Bars
 
 		[Value]
 		[ProviderCategory(@"Color", 2)]
-		[ProviderDisplayName(@"Color")]
+		[ProviderDisplayName(@"ColorGradients")]
 		[ProviderDescription(@"Color")]
 		[PropertyOrder(1)]
 		public List<ColorGradient> Colors

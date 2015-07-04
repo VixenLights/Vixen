@@ -168,7 +168,7 @@ namespace VixenModules.Effect.Chase
 
 		[Value]
 		[ProviderCategory(@"Color",0)]
-		[ProviderDisplayName(@"Color")]
+		[ProviderDisplayName(@"ColorGradient")]
 		[ProviderDescription(@"Color")]
 		[PropertyOrder(3)]
 		public ColorGradient ColorGradient

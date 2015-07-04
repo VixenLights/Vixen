@@ -154,13 +154,19 @@
     <value>Color</value>
   </data>
   <data name="ColorGradient" xml:space="preserve">
-    <value>Color Gradient</value>
+    <value>Gradient</value>
+  </data>
+  <data name="ColorGradients" xml:space="preserve">
+    <value>Gradients</value>
   </data>
   <data name="ColorHandling" xml:space="preserve">
     <value>Color Handling</value>
   </data>
   <data name="ColorOne" xml:space="preserve">
     <value>Color 1</value>
+  </data>
+  <data name="Colors" xml:space="preserve">
+    <value>Colors</value>
   </data>
   <data name="ColorScheme" xml:space="preserve">
     <value>Color Scheme</value>

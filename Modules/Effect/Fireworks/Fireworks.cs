@@ -6,8 +6,6 @@ using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Attributes;
 using Vixen.Module;
 using Vixen.Sys.Attribute;
-using Vixen.Sys.State.Execution;
-using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Effect.Pixel;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
@@ -133,7 +131,7 @@ namespace VixenModules.Effect.Fireworks
 
 		[Value]
 		[ProviderCategory(@"Color", 2)]
-		[ProviderDisplayName(@"Color")]
+		[ProviderDisplayName(@"Colors")]
 		[ProviderDescription(@"Color")]
 		[PropertyOrder(1)]
 		public List<Color> Colors

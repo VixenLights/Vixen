@@ -170,11 +170,20 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Color Gradient.
+        ///   Looks up a localized string similar to Gradient.
         /// </summary>
         internal static string ColorGradient {
             get {
                 return ResourceManager.GetString("ColorGradient", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Gradients.
+        /// </summary>
+        internal static string ColorGradients {
+            get {
+                return ResourceManager.GetString("ColorGradients", resourceCulture);
             }
         }
         
@@ -193,6 +202,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string ColorOne {
             get {
                 return ResourceManager.GetString("ColorOne", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Colors.
+        /// </summary>
+        internal static string Colors {
+            get {
+                return ResourceManager.GetString("Colors", resourceCulture);
             }
         }
         
