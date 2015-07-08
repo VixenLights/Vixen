@@ -2,7 +2,6 @@
 using Vixen.Module.Effect;
 using Vixen.Sys;
 using Vixen.Sys.Attribute;
-using VixenModules.Effect.Fire;
 
 namespace VixenModules.Effect.Picture
 {

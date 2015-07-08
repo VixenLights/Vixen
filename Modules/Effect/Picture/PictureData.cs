@@ -2,11 +2,10 @@
 using System.Runtime.Serialization;
 using Vixen.Module;
 using VixenModules.App.Curves;
-using VixenModules.Effect.Picture;
 using VixenModules.Effect.Pixel;
 using ZedGraph;
 
-namespace VixenModules.Effect.Fire
+namespace VixenModules.Effect.Picture
 {
 	[DataContract]
 	public class PictureData: ModuleDataModelBase
