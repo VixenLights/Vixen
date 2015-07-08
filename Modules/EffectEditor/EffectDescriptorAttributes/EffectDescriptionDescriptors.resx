@@ -213,6 +213,12 @@
   <data name="HueShift" xml:space="preserve">
     <value>Controls the color of the fire.</value>
   </data>
+  <data name="Interval" xml:space="preserve">
+    <value>Specifies how often the effect should switch in milliseconds.</value>
+  </data>
+  <data name="IntervalSkip" xml:space="preserve">
+    <value>Controls the interval skip.</value>
+  </data>
   <data name="Iterations" xml:space="preserve">
     <value>Controls the number of times the pattern repeats over the timespan.</value>
   </data>
@@ -293,6 +299,9 @@
   </data>
   <data name="StaticColorIndicator" xml:space="preserve">
     <value>Indicates the color is a static color.</value>
+  </data>
+  <data name="StaticEffect" xml:space="preserve">
+    <value>Indicates that the effect should be the same on all elements.</value>
   </data>
   <data name="StringCount" xml:space="preserve">
     <value>The count of strings the effect will use.</value>

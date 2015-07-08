@@ -203,15 +203,14 @@ namespace VixenModules.Editor.EffectEditor.Internal
 		public bool ApplyMouseOffset { get; private set; }
 		public bool IsValidDataObject(IDataObject obj)
 		{
-			if ((obj.GetDataPresent(typeof(Color)) || obj.GetDataPresent(typeof(ColorGradient))) && SupportsColor())
+			if ((obj.GetDataPresent(typeof (Color)) || obj.GetDataPresent(typeof (ColorGradient))) && SupportsColor())
 			{
-
 				var discreteColors = Util.GetDiscreteColors(ParentProperty.Component);
 				if (discreteColors.Any())
 				{
-					if (ItemType == typeof(Color) || obj.GetDataPresent(typeof(Color)))
+					if (obj.GetDataPresent(typeof (Color)))
 					{
-						var c = (Color)obj.GetData(typeof(Color));
+						var c = (Color) obj.GetData(typeof (Color));
 						if (!discreteColors.Contains(c))
 						{
 							return false;
@@ -219,7 +218,7 @@ namespace VixenModules.Editor.EffectEditor.Internal
 					}
 					else
 					{
-						var c = (ColorGradient)obj.GetData(typeof(ColorGradient));
+						var c = (ColorGradient) obj.GetData(typeof (ColorGradient));
 						var colors = c.Colors.Select(x => x.Color.ToRGB().ToArgb());
 						if (!discreteColors.IsSupersetOf(colors))
 						{
@@ -228,7 +227,11 @@ namespace VixenModules.Editor.EffectEditor.Internal
 					}
 				}
 
-
+				return true;
+			}
+			
+			if (obj.GetDataPresent((typeof (Curve))) && SupportsCurve())
+			{
 				return true;
 			}
 
@@ -242,17 +245,23 @@ namespace VixenModules.Editor.EffectEditor.Internal
 
 		private bool SupportsColor()
 		{
-			return SupportsColorGradient() || ItemType == typeof(Color);
+			bool supported = ItemType == typeof(ColorGradient) || ItemType == typeof(Color) || (ItemType == typeof(GradientLevelPair) && DragDropTargetType.GetTargetType(TargetUI).Equals("ColorGradient"));
+
+			return supported;
 		}
 
 		private bool SupportsColorGradient()
 		{
-			return ItemType == typeof(ColorGradient);
+			bool supported = ItemType == typeof(ColorGradient) || (ItemType == typeof(GradientLevelPair) && DragDropTargetType.GetTargetType(TargetUI).Equals("ColorGradient"));
+
+			return supported;
 		}
 
 		private bool SupportsCurve()
 		{
-			return ItemType == typeof(Curve);
+			bool supported = ItemType == typeof(Curve) || (ItemType == typeof(GradientLevelPair) && DragDropTargetType.GetTargetType(TargetUI).Equals("Curve"));
+
+			return supported;
 		}
 
 		public void OnDropCompleted(IDataObject obj, Point dropPoint)
@@ -262,14 +271,39 @@ namespace VixenModules.Editor.EffectEditor.Internal
 			{
 				Value = data;
 			}
-			else
+				//Our type does not match, so either we are applying Color to a Gradient or something to a GradientLevelPair
+			else if (obj.GetDataPresent(typeof(Color)))
 			{
-				//Check to see if we are trying to assign color to a gradient
 				data = obj.GetData(typeof(Color));
-				if (data is Color && SupportsColorGradient())
-				{
-					Value = new ColorGradient((Color)data);
-				}
+				HandleColorDrop((Color)data);
+			}
+			else if (obj.GetDataPresent(typeof (ColorGradient)) && ItemType == typeof(GradientLevelPair))
+			{
+				var cg = obj.GetData(typeof (ColorGradient)) as ColorGradient;
+				var glp = (GradientLevelPair) Value;
+				glp.ColorGradient = cg;
+				Value = glp;
+			}
+			else if (obj.GetDataPresent(typeof(Curve)) && ItemType == typeof(GradientLevelPair))
+			{
+				var c = obj.GetData(typeof(Curve)) as Curve;
+				var glp = (GradientLevelPair)Value;
+				glp.Curve = c;
+				Value = glp;
+			}
+		}
+
+		private void HandleColorDrop(Color c)
+		{
+			if (ItemType == typeof (ColorGradient))
+			{
+				Value = new ColorGradient(c);
+			}
+			else if (ItemType == typeof (GradientLevelPair))
+			{
+				var glp = (GradientLevelPair) Value;
+				glp.ColorGradient = new ColorGradient(c);
+				Value = glp;
 			}
 		}
 
@@ -290,6 +324,15 @@ namespace VixenModules.Editor.EffectEditor.Internal
 
 		public DataObject GetDataObject(UIElement draggedElt)
 		{
+			if (ItemType == typeof (GradientLevelPair))
+			{
+				var item = (GradientLevelPair) Value;
+				if (DragDropTargetType.GetTargetType(SourceUI).Equals("Curve"))
+				{
+					return new DataObject(item.Curve);
+				}
+				return new DataObject(item.ColorGradient);
+			}
 			return new DataObject(Value);
 		}
 
@@ -301,7 +344,7 @@ namespace VixenModules.Editor.EffectEditor.Internal
 		public bool IsDraggable(UIElement dragElt)
 		{
 			if (ItemType == typeof(Curve) || ItemType == typeof(ColorGradient)
-				|| ItemType == typeof(Color))
+				|| ItemType == typeof(Color) || ItemType == typeof(GradientLevelPair))
 			{
 				return true;
 			}

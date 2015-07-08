@@ -38,12 +38,34 @@ namespace VixenModules.Editor.EffectEditor.Input
 		private static readonly RoutedUICommand _ShowExtendedEditor = new RoutedUICommand("Show Extended Editor",
 			"ShowExtendedEditorCommand", ThisType);
 
+		private static readonly RoutedUICommand _ShowGradientLevelCurveEditor = new RoutedUICommand("Show Gradient Level Curve Editor",
+			"ShowGradientLevelCurveEditorCommand", ThisType);
+
+		private static readonly RoutedUICommand _ShowGradientLevelGradientEditor = new RoutedUICommand("Show Gradient Level Gradient Editor",
+			"ShowGradientLevelGradientEditorCommand", ThisType);
+
 		/// <summary>
 		/// Defines a command to show dialog editor for a property.
 		/// </summary>    
 		public static RoutedUICommand ShowDialogEditor
 		{
 			get { return _ShowDialogEditor; }
+		}
+
+		/// <summary>
+		/// Defines a command to show dialog editor for a GradientLevelPair property.
+		/// </summary>    
+		public static RoutedUICommand ShowGradientLevelCurveEditor
+		{
+			get { return _ShowGradientLevelCurveEditor; }
+		}
+
+		/// <summary>
+		/// Defines a command to show dialog editor for a GradientLevelPair property.
+		/// </summary>    
+		public static RoutedUICommand ShowGradientLevelGradientEditor
+		{
+			get { return _ShowGradientLevelGradientEditor; }
 		}
 
 		/// <summary>

@@ -45,6 +45,11 @@
       <Name>Resources</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\Curves\Curves.csproj">
+      <Project>{F0BA7127-61B4-453A-802B-ABCB5A0D3D54}</Project>
+      <Name>Curves</Name>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="NLog, Version=3.1.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
@@ -88,6 +93,7 @@
     <Compile Include="GradientEditPanel.designer.cs">
       <DependentUpon>GradientEditPanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="GradientLevelPair.cs" />
     <Compile Include="GradientTypeConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

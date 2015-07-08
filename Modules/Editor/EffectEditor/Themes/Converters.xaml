@@ -13,5 +13,6 @@
 	<converters:IntToDoubleConverter x:Key="IntToDoubleConverter" />
 	<converters:CurveToImageConverter x:Key="CurveToImageConverter" />
 	<converters:ColorGradientToImageConverter x:Key="ColorGradientToImageConverter" />
+	<converters:ObjectToTypeConverter x:Key="ObjectToTypeConverter" />
 	<converters:DebugConverter x:Key="DebugConverter" />
 </ResourceDictionary>

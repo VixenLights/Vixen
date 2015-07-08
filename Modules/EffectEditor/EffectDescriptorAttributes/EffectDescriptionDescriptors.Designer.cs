@@ -350,6 +350,24 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Specifies how often the effect should switch in milliseconds..
+        /// </summary>
+        internal static string Interval {
+            get {
+                return ResourceManager.GetString("Interval", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Controls the interval skip..
+        /// </summary>
+        internal static string IntervalSkip {
+            get {
+                return ResourceManager.GetString("IntervalSkip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Controls the number of times the pattern repeats over the timespan..
         /// </summary>
         internal static string Iterations {
@@ -589,6 +607,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string StaticColorIndicator {
             get {
                 return ResourceManager.GetString("StaticColorIndicator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indicates that the effect should be the same on all elements..
+        /// </summary>
+        internal static string StaticEffect {
+            get {
+                return ResourceManager.GetString("StaticEffect", resourceCulture);
             }
         }
         

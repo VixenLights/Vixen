@@ -144,7 +144,7 @@
   <data name="CenterText" xml:space="preserve">
     <value>Center Text</value>
   </data>
-  <data name="ChangeInterval" xml:space="preserve">
+  <data name="Interval" xml:space="preserve">
     <value>Change Interval</value>
   </data>
   <data name="ChangePercent" xml:space="preserve">
@@ -350,6 +350,9 @@
   </data>
   <data name="YOffset" xml:space="preserve">
     <value>Y Offset</value>
+  </data>
+  <data name="IntervalSkip" xml:space="preserve">
+    <value>Interval Skip</value>
   </data>
   <data name="Iterations" xml:space="preserve">
     <value>Iterations</value>

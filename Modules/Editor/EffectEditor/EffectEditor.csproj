@@ -107,6 +107,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Themes\GradientLevelPairEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Themes\ColorPaletteEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -196,6 +200,7 @@
     <Compile Include="Controls\ToggleSwitch.cs" />
     <Compile Include="Converters\BitmapImageConverter.cs" />
     <Compile Include="Converters\ColorGradientToImageConverter.cs" />
+    <Compile Include="Converters\ObjectToTypeConverter.cs" />
     <Compile Include="Converters\CurveToImageConverter.cs" />
     <Compile Include="Converters\DebugConverter.cs" />
     <Compile Include="Converters\EnumValueConverter.cs" />
@@ -241,6 +246,7 @@
     <Compile Include="Editors\TypeEditor.cs" />
     <Compile Include="GridEntryCollection.cs" />
     <Compile Include="Input\DragDropManager.cs" />
+    <Compile Include="Input\DragDropTargetType.cs" />
     <Compile Include="Input\DropPreviewAdorner.cs" />
     <Compile Include="Input\IDragSourceAdvisor.cs" />
     <Compile Include="Input\IDropTargetAdvisor.cs" />

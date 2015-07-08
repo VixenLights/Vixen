@@ -79,9 +79,6 @@ namespace VixenModules.Editor.EffectEditor.Input
 				sourceElt.PreviewMouseMove += DragSource_PreviewMouseMove;
 				sourceElt.PreviewMouseUp += DragSource_PreviewMouseUp;
 
-				// Set the Drag source UI
-				IDragSourceAdvisor advisor = args.NewValue as IDragSourceAdvisor;
-				advisor.SourceUI = sourceElt;
 			}
 			else if (args.NewValue == null && args.OldValue != null)
 			{
@@ -102,10 +99,6 @@ namespace VixenModules.Editor.EffectEditor.Input
 				targetElt.PreviewDragLeave += DropTarget_PreviewDragLeave;
 				targetElt.PreviewDrop += DropTarget_PreviewDrop;
 				targetElt.AllowDrop = true;
-
-				// Set the Drag source UI
-				IDropTargetAdvisor advisor = args.NewValue as IDropTargetAdvisor;
-				advisor.TargetUI = targetElt;
 			}
 			else if (args.NewValue == null && args.OldValue != null)
 			{
@@ -168,6 +161,7 @@ namespace VixenModules.Editor.EffectEditor.Input
 		{
 			// Get the current drop target advisor
 			CurrentDropTargetAdvisor = GetDropTargetAdvisor(sender as DependencyObject);
+			CurrentDropTargetAdvisor.TargetUI = sender as UIElement;
 
 			UpdateEffects(e);
 
@@ -213,6 +207,7 @@ namespace VixenModules.Editor.EffectEditor.Input
 		{
 			// Make this the new drag source
 			CurrentDragSourceAdvisor = GetDragSourceAdvisor(sender as DependencyObject);
+			CurrentDragSourceAdvisor.SourceUI = sender as UIElement;
 
 			if (CurrentDragSourceAdvisor.IsDraggable(e.Source as UIElement) == false)
 			{

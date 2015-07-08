@@ -152,15 +152,6 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Change Interval.
-        /// </summary>
-        internal static string ChangeInterval {
-            get {
-                return ResourceManager.GetString("ChangeInterval", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Change Percent.
         /// </summary>
         internal static string ChangePercent {
@@ -445,6 +436,24 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string IndividualElements {
             get {
                 return ResourceManager.GetString("IndividualElements", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change Interval.
+        /// </summary>
+        internal static string Interval {
+            get {
+                return ResourceManager.GetString("Interval", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Interval Skip.
+        /// </summary>
+        internal static string IntervalSkip {
+            get {
+                return ResourceManager.GetString("IntervalSkip", resourceCulture);
             }
         }
         

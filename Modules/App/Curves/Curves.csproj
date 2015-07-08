@@ -79,6 +79,7 @@
       <DependentUpon>CurveLibrarySelector.cs</DependentUpon>
     </Compile>
     <Compile Include="CurveLibraryStaticData.cs" />
+    <Compile Include="CurveType.cs" />
     <Compile Include="CurveTypeConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ZedGraph\ArrowObj.cs" />

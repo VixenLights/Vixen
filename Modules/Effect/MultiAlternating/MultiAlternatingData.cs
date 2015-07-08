@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Module;
 using VixenModules.App.ColorGradients;
-using VixenModules.App.Curves;
 
-namespace VixenModules.Effect.Alternating {
+namespace VixenModules.Effect.MultiAlternating {
 	[DataContract]
-	public class AlternatingData : ModuleDataModelBase {
+	public class MultiAlternatingData : ModuleDataModelBase {
 
 		[DataMember]
 		public List<GradientLevelPair> Colors { get; set; }
@@ -36,7 +32,7 @@ namespace VixenModules.Effect.Alternating {
 
 		private int _groupEffect = 1;
 
-		public AlternatingData()
+		public MultiAlternatingData()
 		{
 			Colors = new List<GradientLevelPair> {new GradientLevelPair(Color.Red), new GradientLevelPair(Color.Lime)};
 
@@ -50,7 +46,7 @@ namespace VixenModules.Effect.Alternating {
 		public override IModuleDataModel Clone() {
 			var gradientLevelList = new List<GradientLevelPair>();
 			gradientLevelList.AddRange(Colors.ToList());
-			var result = new AlternatingData
+			var result = new MultiAlternatingData
 			{
 				Colors = gradientLevelList,
 				EnableStatic = EnableStatic,

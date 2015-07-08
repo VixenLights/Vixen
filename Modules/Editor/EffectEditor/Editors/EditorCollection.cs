@@ -40,6 +40,7 @@ namespace VixenModules.Editor.EffectEditor.Editors
 			{KnownTypes.Vixen.ColorGradient, new GradientTypeEditor()},
 			{typeof(List<ColorGradient>), new TypeEditor(typeof(List<ColorGradient>),EditorKeys.ColorGradientPaletteEditorKey)},
 			{typeof(List<Color>), new TypeEditor(typeof(List<Color>),EditorKeys.ColorPaletteEditorKey)},
+			{typeof(List<GradientLevelPair>), new TypeEditor(typeof(List<GradientLevelPair>),EditorKeys.GradientLevelPairEditorKey)},
 			{typeof(List<string>), new TypeEditor(typeof(List<string>),EditorKeys.StringCollectionEditorKey)},
 			{KnownTypes.Vixen.Percentage, new TypeEditor(KnownTypes.Vixen.Percentage, EditorKeys.SliderPercentageEditorKey)},
 			{typeof (Enum), new TypeEditor(typeof (Enum), EditorKeys.EnumEditorKey)},

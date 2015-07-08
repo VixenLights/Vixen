@@ -39,9 +39,26 @@ namespace VixenModules.App.Curves
 
 		// default Curve constructor makes a ramp with x = y.
 		public Curve()
-			: this(new PointPairList(new[] {0.0, 100.0}, new[] {0.0, 100.0}))
+			: this(CurveType.RampUp)
 		{
 		}
+
+		public Curve(CurveType type)
+		{
+			switch (type)
+			{
+				case CurveType.RampUp:
+					Points = new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.0, 100.0 });
+					break;
+				case CurveType.RampDown:
+					Points = new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 0.0 });
+					break;
+				case CurveType.Flat100:
+					Points = new PointPairList(new[] { 0.0, 100.0 }, new[] { 1000.0, 100.0 });
+					break;
+			}
+		}
+
 
 		private PointPairList _points;
 

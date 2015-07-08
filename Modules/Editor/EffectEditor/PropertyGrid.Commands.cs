@@ -16,6 +16,8 @@
 
 using System.Windows;
 using System.Windows.Input;
+using VixenModules.App.ColorGradients;
+using VixenModules.App.Curves;
 using VixenModules.Editor.EffectEditor.Input;
 using VixenModules.Editor.EffectEditor.Internal;
 
@@ -44,9 +46,9 @@ namespace VixenModules.Editor.EffectEditor
 			CommandBindings.Add(new CommandBinding(PropertyEditorCommands.ShowDialogEditor, OnShowDialogEditor));
 			CommandBindings.Add(new CommandBinding(PropertyGridCommands.TogglePreview, OnTogglePreviewCommand));
 			CommandBindings.Add(new CommandBinding(PropertyEditorCommands.AddCollectionItem, OnAddCollectionItemCommand));
+			CommandBindings.Add(new CommandBinding(PropertyEditorCommands.ShowGradientLevelCurveEditor, OnShowGradientLevelCurveCommand));
+			CommandBindings.Add(new CommandBinding(PropertyEditorCommands.ShowGradientLevelGradientEditor, OnShowGradientLevelGradientCommand));
 		}
-
-		
 
 		#region Commands
 
@@ -140,6 +142,54 @@ namespace VixenModules.Editor.EffectEditor
 			}
 		}
 
+		private void OnShowGradientLevelGradientCommand(object sender, ExecutedRoutedEventArgs e)
+		{
+			var collectionItem = e.Parameter as CollectionItemValue;
+			if (collectionItem != null)
+			{
+				var grid = sender as EffectPropertyEditorGrid;
+				if (grid != null)
+				{
+					Editors.Editor editor = grid.GetEditors().GetEditor(typeof(ColorGradient));
+					GradientLevelPair glp = collectionItem.Value as GradientLevelPair;
+					if (glp != null)
+					{
+						var newValue = editor.ShowDialog(collectionItem.ParentProperty.Component, glp.ColorGradient, this);
+						if (newValue is ColorGradient)
+						{
+							glp.ColorGradient = (ColorGradient)newValue;
+							collectionItem.Value = glp;
+						}
+					}
+				}
+			}
+		}
+
+		private void OnShowGradientLevelCurveCommand(object sender, ExecutedRoutedEventArgs e)
+		{
+			var collectionItem = e.Parameter as CollectionItemValue;
+			if (collectionItem != null)
+			{
+				var grid = sender as EffectPropertyEditorGrid;
+				if (grid != null)
+				{
+					Editors.Editor editor = grid.GetEditors().GetEditor(typeof(Curve));
+					GradientLevelPair glp = collectionItem.Value as GradientLevelPair;
+					if (glp != null)
+					{
+						var newValue = editor.ShowDialog(collectionItem.ParentProperty.Component, glp.Curve, this);
+						if (newValue is Curve)
+						{
+							glp.Curve = (Curve) newValue;
+							collectionItem.Value = glp;
+						}
+					}
+					
+				}
+
+			}
+		}
+
 		private void ShowDialogEditor(PropertyItemValue value)
 		{
 			var property = value.ParentProperty;
@@ -161,7 +211,7 @@ namespace VixenModules.Editor.EffectEditor
 			
 		}
 
-
+		
 		private void OnTogglePreviewCommand(object sender, ExecutedRoutedEventArgs e)
 		{
 			OnPreviewStateChanged((bool) e.Parameter);
