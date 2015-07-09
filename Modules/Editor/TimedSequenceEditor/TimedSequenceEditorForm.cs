@@ -1688,13 +1688,23 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_contextMenuStrip.Items.Clear();
 
 			ToolStripMenuItem contextMenuItemAddEffect = new ToolStripMenuItem("Add Effect(s)");
-
-			foreach (
-				IEffectModuleDescriptor effectDesriptor in
-					ApplicationServices.GetModuleDescriptors<IEffectModuleInstance>().Cast<IEffectModuleDescriptor>())
+			IEnumerable<IEffectModuleDescriptor> effectDesriptors =
+				ApplicationServices.GetModuleDescriptors<IEffectModuleInstance>()
+					.Cast<IEffectModuleDescriptor>()
+					.OrderBy(x => x.EffectGroup)
+					.ThenBy(n => n.EffectName);
+			EffectGroups group = effectDesriptors.First().EffectGroup;
+			foreach (IEffectModuleDescriptor effectDesriptor in effectDesriptors)
 			{
+				if (effectDesriptor.EffectGroup != group)
+				{
+					ToolStripSeparator seperator = new ToolStripSeparator();
+					contextMenuItemAddEffect.DropDownItems.Add(seperator);
+					group = effectDesriptor.EffectGroup;
+				}
 				// Add an entry to the menu
 				ToolStripMenuItem contextMenuItemEffect = new ToolStripMenuItem(effectDesriptor.EffectName);
+				contextMenuItemEffect.Image = effectDesriptor.GetRepresentativeImage(48, 48);
 				contextMenuItemEffect.Tag = effectDesriptor.TypeId;
 				contextMenuItemEffect.ToolTipText = @"Use Shift key to add multiple effects of the same type.";
 				contextMenuItemEffect.Click += (mySender, myE) =>
@@ -1711,7 +1721,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							AddNewEffectById((Guid) contextMenuItemEffect.Tag, e.Row, e.GridTime, TimeSpan.FromSeconds(2));
 					}
 				};
-
+				
 				contextMenuItemAddEffect.DropDownItems.Add(contextMenuItemEffect);
 			}
 
