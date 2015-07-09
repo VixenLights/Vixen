@@ -15,7 +15,7 @@ namespace VixenModules.Effect.Fire
 
 		public override EffectGroups EffectGroup
 		{
-			get { return EffectGroups.Basic; }
+			get { return EffectGroups.Pixel; }
 		}
 
 		public override string TypeName

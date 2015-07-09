@@ -80,7 +80,7 @@
     <Compile Include="Butterfly.cs" />
     <Compile Include="ButterflyData.cs" />
     <Compile Include="ColorScheme.cs" />
-    <Compile Include="SnowflakesDescriptor.cs" />
+    <Compile Include="ButterflyDescriptor.cs" />
     <Compile Include="ButterflyType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Direction.cs" />

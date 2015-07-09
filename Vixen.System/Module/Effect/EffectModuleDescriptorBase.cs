@@ -8,7 +8,7 @@ namespace Vixen.Module.Effect {
 	public enum EffectGroups
 	{
 		Basic,
-		Advanced,
+		Pixel,
 		Device
 	}
 

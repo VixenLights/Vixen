@@ -134,7 +134,7 @@ namespace VixenModules.Output.ElexolUSBIO
 			this.groupBox2.Size = new System.Drawing.Size(405, 157);
 			this.groupBox2.TabIndex = 1;
 			this.groupBox2.TabStop = false;
-			this.groupBox2.Text = "Advanced";
+			this.groupBox2.Text = "Pixel";
 			// 
 			// lblMinIntensity
 			// 

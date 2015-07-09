@@ -25,7 +25,7 @@ namespace VixenModules.Effect.Nutcracker
 
 		public override EffectGroups EffectGroup
 		{
-			get { return EffectGroups.Basic; }
+			get { return EffectGroups.Pixel; }
 		}
 
 		public override Guid TypeId

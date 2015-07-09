@@ -30,7 +30,7 @@
 		{
 			this.components = new System.ComponentModel.Container();
 			System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Basic Lighting");
-			System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Advanced Lighting");
+			System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Pixel Lighting");
 			System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Device Action");
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form_Effects));
 			this.treeEffects = new System.Windows.Forms.TreeView();
@@ -51,7 +51,7 @@
 			treeNode1.Text = "Basic Lighting";
 			treeNode2.ImageKey = "bullet_arrow_Right.png";
 			treeNode2.Name = "treeAdvanced";
-			treeNode2.Text = "Advanced Lighting";
+			treeNode2.Text = "Pixel Lighting";
 			treeNode3.ImageKey = "bullet_arrow_Right.png";
 			treeNode3.Name = "treeDevice";
 			treeNode3.SelectedImageKey = "(default)";

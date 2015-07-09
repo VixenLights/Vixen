@@ -26,9 +26,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void Form_Effects_Load(object sender, EventArgs e)
 		{
-			// Remove "Advanced Lighting" for now
-			treeEffects.Nodes.RemoveAt(1);
-			treeEffects.Sorted = true;
+			//treeEffects.Sorted = true;
 			LoadAvailableEffects();
 		}
 
@@ -51,7 +49,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					case EffectGroups.Basic:
 						parentNode = treeEffects.Nodes["treeBasic"];
 						break;
-					case EffectGroups.Advanced:
+					case EffectGroups.Pixel:
 						parentNode = treeEffects.Nodes["treeAdvanced"];
 						break;
 					case EffectGroups.Device:

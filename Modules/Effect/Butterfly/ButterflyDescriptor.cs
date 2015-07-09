@@ -4,7 +4,7 @@ using Vixen.Sys;
 
 namespace VixenModules.Effect.Butterfly
 {
-	public class SnowflakesDescriptor : EffectModuleDescriptorBase
+	public class ButterflyDescriptor : EffectModuleDescriptorBase
 	{
 		private static readonly Guid _typeId = new Guid("e2ef89d5-c3b3-47e7-a776-f31b4193fc76");
 
@@ -15,7 +15,7 @@ namespace VixenModules.Effect.Butterfly
 
 		public override EffectGroups EffectGroup
 		{
-			get { return EffectGroups.Basic; }
+			get { return EffectGroups.Pixel; }
 		}
 
 		public override string TypeName
