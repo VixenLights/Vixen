@@ -26,7 +26,7 @@ namespace VixenModules.Effect.Alternating
 		public Alternating()
 		{
 			_data = new AlternatingData();
-			//InitPropertyDescriptors();
+			InitAllAttributes();
 		}
 
 		protected override void TargetNodesChanged()
@@ -80,7 +80,11 @@ namespace VixenModules.Effect.Alternating
 		public override IModuleDataModel ModuleData
 		{
 			get { return _data; }
-			set { _data = value as AlternatingData; }
+			set
+			{
+				_data = value as AlternatingData;
+				InitAllAttributes();
+			}
 		}
 
 		#region Color
@@ -105,6 +109,25 @@ namespace VixenModules.Effect.Alternating
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"StaticEffect")]
+		[Description(@"StaticEffect")]
+		[TypeConverter(typeof(BooleanStringTypeConverter))]
+		[BoolDescription("Yes", "No")]
+		[PropertyEditor("SelectionEditor")]
+		[PropertyOrder(0)]
+		public bool EnableStatic
+		{
+			get { return _data.EnableStatic; }
+			set
+			{
+				_data.EnableStatic = value;
+				IsDirty = true;
+				UpdateIntervalAttribute();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Interval")]
 		[Description(@"Interval")]
 		[NumberRange(0, 5000, 1, 0)]
@@ -123,6 +146,7 @@ namespace VixenModules.Effect.Alternating
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"IntervalSkip")]
 		[Description(@"IntervalSkip")]
+		[PropertyEditor("SliderEditor")]
 		[NumberRange(0, 10, 1)]
 		[PropertyOrder(2)]
 		public int IntervalSkipCount
@@ -131,26 +155,6 @@ namespace VixenModules.Effect.Alternating
 			set
 			{
 				_data.IntervalSkipCount = value;
-				IsDirty = true;
-			}
-		}
-
-
-
-		[Value]
-		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"StaticEffect")]
-		[Description(@"StaticEffect")]
-		[TypeConverter(typeof (BooleanStringTypeConverter))]
-		[BoolDescription("Yes", "No")]
-		[PropertyEditor("SelectionEditor")]
-		[PropertyOrder(3)]
-		public bool EnableStatic
-		{
-			get { return _data.EnableStatic; }
-			set
-			{
-				_data.EnableStatic = value;
 				IsDirty = true;
 			}
 		}
@@ -187,7 +191,29 @@ namespace VixenModules.Effect.Alternating
 			}
 		}
 
+		#region Attributes
 
+		private void InitAllAttributes()
+		{
+			UpdateIntervalAttribute(false);
+			TypeDescriptor.Refresh(this);
+		}
+
+
+		private void UpdateIntervalAttribute(bool refresh=true)
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(2);
+			propertyStates.Add("IntervalSkipCount", !EnableStatic);
+			propertyStates.Add("Interval", !EnableStatic);
+			SetBrowsable(propertyStates);
+			SetBrowsable(propertyStates);
+			if (refresh)
+			{
+				TypeDescriptor.Refresh(this);
+			}
+		}
+
+		#endregion
 
 		public override bool IsDirty
 		{

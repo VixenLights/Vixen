@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Module;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
@@ -38,9 +35,9 @@ namespace VixenModules.Effect.Alternating {
 
 		public AlternatingData()
 		{
-			Colors = new List<GradientLevelPair> {new GradientLevelPair(Color.Red), new GradientLevelPair(Color.Lime)};
+			Colors = new List<GradientLevelPair> {new GradientLevelPair(Color.Red, CurveType.Flat100), new GradientLevelPair(Color.Lime, CurveType.Flat100)};
 
-			EnableStatic = true;
+			EnableStatic = false;
 			Interval = 500;
 			DepthOfEffect = 0;
 			GroupEffect = 1;

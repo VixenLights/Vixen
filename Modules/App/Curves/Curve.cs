@@ -54,7 +54,7 @@ namespace VixenModules.App.Curves
 					Points = new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 0.0 });
 					break;
 				case CurveType.Flat100:
-					Points = new PointPairList(new[] { 0.0, 100.0 }, new[] { 1000.0, 100.0 });
+					Points = new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 });
 					break;
 			}
 		}
