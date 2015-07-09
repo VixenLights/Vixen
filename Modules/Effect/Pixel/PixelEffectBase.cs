@@ -20,6 +20,8 @@ namespace VixenModules.Effect.Pixel
 		protected readonly List<int> StringPixelCounts = new List<int>();
 
 		private EffectIntents _elementData;
+		private int _stringCount;
+		private int _maxPixelsPerString;
 
 		protected override EffectIntents _Render()
 		{
@@ -40,19 +42,37 @@ namespace VixenModules.Effect.Pixel
 		}
 
 		[ReadOnly(true)]
-		[ProviderCategory(@"Setup",0)]
+		[ProviderCategory(@"Setup", 0)]
 		[ProviderDisplayName(@"StringCount")]
 		[ProviderDescription(@"StringCount")]
 		[PropertyOrder(0)]
-		public int StringCount { get; private set; }
+		public int StringCount
+		{
+			get { return _stringCount; }
+			private set
+			{
+				_stringCount = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
 
 		[ReadOnly(true)]
-		[ProviderCategory(@"Setup",0)]
+		[ProviderCategory(@"Setup", 0)]
 		[ProviderDisplayName(@"PixelsPerString")]
 		[Description(@"PixelsPerString")]
 		[PropertyEditor("Label")]
 		[PropertyOrder(1)]
-		public int MaxPixelsPerString { get; private set; }
+		public int MaxPixelsPerString
+		{
+			get { return _maxPixelsPerString; }
+			private set
+			{
+				_maxPixelsPerString = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
 
 		[ProviderCategory(@"Setup", 0)]
 		[ProviderDisplayName(@"Orientation")]

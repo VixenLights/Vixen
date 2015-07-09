@@ -17,7 +17,7 @@ namespace VixenModules.Effect.Spiral
 		{
 			Colors = new List<ColorGradient>{new ColorGradient(Color.Red), new ColorGradient(Color.Lime), new ColorGradient(Color.Blue)};
 			Direction = SpiralDirection.Forward;
-			Speed = 5;
+			Speed = 1;
 			Repeat = 1;
 			Blend = false;
 			Rotation = 20;

@@ -275,7 +275,7 @@ namespace VixenModules.Effect.Spiral
 			int spiralGap = deltaStrands - spiralThickness;
 			int thicknessState = 0;
 			int spiralState = 0;
-			double position = GetEffectTimeIntervalPosition(frame);
+			double position = (GetEffectTimeIntervalPosition(frame) * Speed)%1;
 
 			switch (Direction)
 			{
@@ -301,7 +301,7 @@ namespace VixenModules.Effect.Spiral
 			}
 
 			spiralThickness += thicknessState;
-			double level = LevelCurve.GetValue(position * 100) / 100;
+			double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
 			
 			for (int ns = 0; ns < spiralCount; ns++)
 			{
