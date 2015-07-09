@@ -20,8 +20,11 @@ namespace VixenModules.Editor.EffectEditor.Controls
 
 		private void CanExecuteDelete(object sender, CanExecuteRoutedEventArgs canExecuteRoutedEventArgs)
 		{
-			canExecuteRoutedEventArgs.CanExecute=Items.Count > 1 && SelectedItems.Count > 0;
-			canExecuteRoutedEventArgs.Handled = true;
+			if (canExecuteRoutedEventArgs.Parameter.Equals(PropertyValue))
+			{
+				canExecuteRoutedEventArgs.CanExecute = Items.Count > 1 && SelectedItems.Count > 0;
+				canExecuteRoutedEventArgs.Handled = true;	
+			}
 		}
 
 		private void CollectionView_LostFocus(object sender, RoutedEventArgs e)
