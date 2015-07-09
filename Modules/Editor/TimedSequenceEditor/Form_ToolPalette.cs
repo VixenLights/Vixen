@@ -45,8 +45,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		#region Public Members
 
-		public int GradientHandling	{ get { return comboBoxGradientHandling.SelectedIndex + 1; } }
-		
 		public bool LinkCurves
 		{ 
 			get { return checkBoxLinkCurves.Checked; }
@@ -153,8 +151,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				_colorGradientLibrary.GradientChanged += GradientLibrary_GradientChanged;
 			}
 			
-			comboBoxGradientHandling.SelectedIndex = 0;
-
 		}
 
 		#endregion

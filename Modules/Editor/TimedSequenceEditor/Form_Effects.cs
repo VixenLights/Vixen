@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using System.Drawing;
 using Common.Controls.Timeline;
-using Vixen.Module.App;
 using Vixen.Module.Effect;
 using Vixen.Services;
 using WeifenLuo.WinFormsUI.Docking;
