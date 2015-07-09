@@ -337,15 +337,7 @@ namespace Vixen.Sys.Output
 			if (output.State != null) {
 
 				IDataPolicy effectiveDataPolicy = _dataPolicyProvider.GetDataPolicyForOutput(output);
-				ICommand command = effectiveDataPolicy.GenerateCommand(output.State);
-				if (command != null)
-				{
-					List<ICommand> commands = new List<ICommand>();
-					commands.Add(command);
-					CommandsDataFlowData data = new CommandsDataFlowData(commands);
-					command = effectiveDataPolicy.GenerateCommand(data);
-				}
-				return command;
+				return effectiveDataPolicy.GenerateCommand(output.State);
 			}
 			return null;
 		}
