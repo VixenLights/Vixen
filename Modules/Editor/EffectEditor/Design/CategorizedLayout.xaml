@@ -9,19 +9,23 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type design:CategorizedLayout}">
-					<StackPanel>
-
-						<Border Visibility="{Binding EffectName, Converter={converters:StringNullOrEmptyToVisibilityConverter}}" BorderThickness="0.5,1,0.5,1" BorderBrush="#6000" Background="#10FFFFFF" CornerRadius="2,3,2,2" SnapsToDevicePixels="True"  >
-							<Border BorderThickness=".5,1,0.5,1" BorderBrush="#20FFFFFF" CornerRadius="2,3,2,2" Margin="2">
-								<Label x:Name="EffectName" Content="{Binding EffectName, Mode=OneWay}" HorizontalAlignment="Center" FontWeight="Bold" FontSize="10pt" />
+					<DockPanel LastChildFill="True">
+						<StackPanel DockPanel.Dock="Top" HorizontalAlignment="Stretch">
+							<Border Visibility="{Binding EffectName, Converter={converters:StringNullOrEmptyToVisibilityConverter}}" BorderThickness="0.5,1,0.5,1" BorderBrush="#6000" Background="#10FFFFFF" CornerRadius="2,3,2,2" SnapsToDevicePixels="True"  >
+								<Border BorderThickness=".5,1,0.5,1" BorderBrush="#20FFFFFF" CornerRadius="2,3,2,2" Margin="2">
+									<Label x:Name="EffectName" Content="{Binding EffectName, Mode=OneWay}" HorizontalAlignment="Center" FontWeight="Bold" FontSize="10pt" />
+								</Border>
 							</Border>
-						</Border>
+						</StackPanel>
 						
 						<ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-							<design:CategoryItemsLayout Grid.IsSharedSizeScope="True" ItemsSource="{Binding Categories}"
-							                            Background="{Binding ItemsBackground}" />
+							<StackPanel Orientation="Vertical">
+								<design:CategoryItemsLayout Grid.IsSharedSizeScope="True" ItemsSource="{Binding Categories}"
+																Background="{Binding ItemsBackground}" />
+							</StackPanel>
 						</ScrollViewer>
-					</StackPanel>
+						
+					</DockPanel>
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>

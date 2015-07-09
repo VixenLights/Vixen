@@ -170,7 +170,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Gradient.
+        ///   Looks up a localized string similar to Color Gradient.
         /// </summary>
         internal static string ColorGradient {
             get {

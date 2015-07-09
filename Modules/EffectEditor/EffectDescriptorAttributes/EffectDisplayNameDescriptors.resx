@@ -154,7 +154,7 @@
     <value>Color</value>
   </data>
   <data name="ColorGradient" xml:space="preserve">
-    <value>Gradient</value>
+    <value>Color Gradient</value>
   </data>
   <data name="ColorGradients" xml:space="preserve">
     <value>Gradients</value>

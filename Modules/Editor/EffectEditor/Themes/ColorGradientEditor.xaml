@@ -9,7 +9,8 @@
 	<DataTemplate x:Key="{x:Static editors:EditorKeys.GradientEditorKey}">
 		<StackPanel Orientation="Horizontal">
 			<Border BorderThickness="1" BorderBrush="#888888">
-				<Image Source="{Binding Value, Converter={StaticResource ColorGradientToImageConverter}}" Height="25" Width="25" Focusable="True"
+				<Image Source="{Binding Value, Converter={StaticResource ColorGradientToImageConverter}}" Height="25" Width="25" 
+					   Focusable="True" ToolTip="{Binding StringValue}"
 				       input:DragDropManager.DropTargetAdvisor="{Binding}" input:DragDropManager.DragSourceAdvisor="{Binding}">
 					<Image.InputBindings>
 						<MouseBinding Gesture="LeftDoubleClick" Command="input:PropertyEditorCommands.ShowDialogEditor"
@@ -19,7 +20,6 @@
 					</Image.InputBindings>
 				</Image>
 			</Border>
-			<TextBlock Text="{Binding StringValue}" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" />
 		</StackPanel>
 	</DataTemplate>
 </ResourceDictionary>

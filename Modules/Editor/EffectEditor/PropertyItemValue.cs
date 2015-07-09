@@ -168,8 +168,7 @@ namespace VixenModules.Editor.EffectEditor
 
 		public bool IsValidDataObject(IDataObject obj)
 		{
-			if (obj.GetDataPresent(ParentProperty.PropertyType) ||
-			    ParentProperty.PropertyType == typeof (ColorGradient) && obj.GetDataPresent(typeof (Color)))
+			if ((obj.GetDataPresent(typeof(Color)) || obj.GetDataPresent(typeof(ColorGradient))) && SupportsColor())
 			{
 				
 				var discreteColors = Util.GetDiscreteColors(ParentProperty.Component);
@@ -194,11 +193,30 @@ namespace VixenModules.Editor.EffectEditor
 					}
 				}
 				
-				
+				return true;
+			}
+
+			if (obj.GetDataPresent((typeof(Curve))) && SupportsCurve())
+			{
 				return true;
 			}
 
 			return false;
+		}
+
+		private bool SupportsColor()
+		{
+			return SupportsColorGradient() || ParentProperty.PropertyType == typeof (Color);
+		}
+
+		private bool SupportsColorGradient()
+		{
+			return ParentProperty.PropertyType == typeof(ColorGradient);
+		}
+
+		private bool SupportsCurve()
+		{
+			return ParentProperty.PropertyType == typeof(Curve);
 		}
 
 		public void OnDropCompleted(IDataObject obj, Point dropPoint)
@@ -212,7 +230,7 @@ namespace VixenModules.Editor.EffectEditor
 			{
 				//Check to see if we are trying to assign color to a gradient
 				data = obj.GetData(typeof (Color));
-				if (data is Color && ParentProperty.PropertyType == typeof (ColorGradient))
+				if (data is Color && SupportsColorGradient())
 				{
 					Value = new ColorGradient((Color) data);
 				}
@@ -247,8 +265,7 @@ namespace VixenModules.Editor.EffectEditor
 
 		public bool IsDraggable(UIElement dragElt)
 		{
-			if (ParentProperty.PropertyType == typeof(Curve) || ParentProperty.PropertyType == typeof(ColorGradient)
-				|| ParentProperty.PropertyType == typeof(Color))
+			if (SupportsCurve() || SupportsColor())
 			{
 				return true;	
 			}

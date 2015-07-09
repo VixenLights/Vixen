@@ -203,8 +203,7 @@ namespace VixenModules.Editor.EffectEditor.Internal
 		public bool ApplyMouseOffset { get; private set; }
 		public bool IsValidDataObject(IDataObject obj)
 		{
-			if (obj.GetDataPresent(ItemType) ||
-				ItemType == typeof(ColorGradient) && obj.GetDataPresent(typeof(Color)))
+			if ((obj.GetDataPresent(typeof(Color)) || obj.GetDataPresent(typeof(ColorGradient))) && SupportsColor())
 			{
 
 				var discreteColors = Util.GetDiscreteColors(ParentProperty.Component);
@@ -233,7 +232,27 @@ namespace VixenModules.Editor.EffectEditor.Internal
 				return true;
 			}
 
+			if (obj.GetDataPresent((typeof(Curve))) && SupportsCurve())
+			{
+				return true;
+			}
+
 			return false;
+		}
+
+		private bool SupportsColor()
+		{
+			return SupportsColorGradient() || ItemType == typeof(Color);
+		}
+
+		private bool SupportsColorGradient()
+		{
+			return ItemType == typeof(ColorGradient);
+		}
+
+		private bool SupportsCurve()
+		{
+			return ItemType == typeof(Curve);
 		}
 
 		public void OnDropCompleted(IDataObject obj, Point dropPoint)
@@ -247,7 +266,7 @@ namespace VixenModules.Editor.EffectEditor.Internal
 			{
 				//Check to see if we are trying to assign color to a gradient
 				data = obj.GetData(typeof(Color));
-				if (data is Color && ItemType == typeof(ColorGradient))
+				if (data is Color && SupportsColorGradient())
 				{
 					Value = new ColorGradient((Color)data);
 				}

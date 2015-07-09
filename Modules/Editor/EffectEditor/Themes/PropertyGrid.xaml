@@ -7,8 +7,8 @@
 	xmlns:input="clr-namespace:VixenModules.Editor.EffectEditor.Input"
 	xmlns:local="clr-namespace:VixenModules.Editor.EffectEditor">
 
-	<BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter" />
-	<converters:MultiBooleanToVisibilityConverter x:Key="multiBooleanToVisibilityConverter" />
+	<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+	<converters:MultiBooleanToVisibilityConverter x:Key="MultiBooleanToVisibilityConverter" />
 
 	<Style TargetType="{x:Type local:EffectPropertyEditorGrid}">
 		<Setter Property="Template">
@@ -18,14 +18,6 @@
 					<DockPanel LastChildFill="True" Background="{TemplateBinding Background}">
 						
 						<StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
-							<!--<ToggleButton
-								HorizontalAlignment="Center"
-								Margin="5"
-								Padding="5"
-								Width="60"
-								Content="Preview"
-								Command="local:PropertyGridCommands.TogglePreview"
-								CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}" />-->
 							<Label Content="Effect Preview" VerticalAlignment="Center"/>
 							<controls:ToggleSwitch 
 								Command="input:PropertyGridCommands.TogglePreview"
@@ -42,13 +34,8 @@
 							</controls:ToggleSwitch>
 						</StackPanel>
 						
-						<!--<Border DockPanel.Dock="Bottom" Height="70" Margin="2">-->
-						<!--<TextBlock x:Name="DescriptionBlock"  Margin="5" Foreground="DimGray" TextWrapping="Wrap" TextTrimming="WordEllipsis" Text="{TemplateBinding CurrentDescription}"/>-->
-						<!--<TextBox x:Name="DescriptionBlock"  TextWrapping="Wrap" IsReadOnly="True" Text="{TemplateBinding CurrentDescription}"/>
-            </Border>-->
-						<ScrollViewer VerticalScrollBarVisibility="Auto">
-							<ContentPresenter FocusManager.IsFocusScope="True" ContentSource="Layout"/>
-						</ScrollViewer>
+						<ContentPresenter FocusManager.IsFocusScope="True" ContentSource="Layout"/>
+						
 					</DockPanel>
 					
 				</ControlTemplate>
@@ -59,7 +46,7 @@
 	<Style x:Key="{x:Type design:PropertyContainer}" TargetType="{x:Type design:PropertyContainer}">
 		<Setter Property="Visibility">
 			<Setter.Value>
-				<MultiBinding Converter="{StaticResource multiBooleanToVisibilityConverter}" UpdateSourceTrigger="PropertyChanged"
+				<MultiBinding Converter="{StaticResource MultiBooleanToVisibilityConverter}" UpdateSourceTrigger="PropertyChanged"
 				              Mode="OneWay">
 					<Binding Path="IsBrowsable" />
 					<Binding Path="MatchesFilter" />
@@ -89,7 +76,7 @@
 	<Style x:Key="{x:Type design:CategoryContainer}" TargetType="{x:Type design:CategoryContainer}">
 		<Setter Property="Visibility">
 			<Setter.Value>
-				<MultiBinding Converter="{StaticResource multiBooleanToVisibilityConverter}" UpdateSourceTrigger="PropertyChanged"
+				<MultiBinding Converter="{StaticResource MultiBooleanToVisibilityConverter}" UpdateSourceTrigger="PropertyChanged"
 				              Mode="OneWay">
 					<Binding Path="IsBrowsable" />
 					<Binding Path="HasVisibleProperties" />
