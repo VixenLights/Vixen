@@ -1058,8 +1058,13 @@ namespace VixenModules.App.ColorGradients
 				{
 					return true;
 				}
-
-				if (Colors.Equals(color.Colors) && Alphas.Equals(color.Alphas))
+				
+				if (IsLibraryReference || color.IsLibraryReference)
+				{
+					return false;
+				}
+				
+				if (Colors.Equals(color.Colors) && Alphas.Equals(color.Alphas) )
 				{
 					return true;
 				}
