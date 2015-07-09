@@ -15,6 +15,8 @@ namespace VixenModules.Controller.E131
 	public class UniverseEntry
 	{
         public UniverseEntry() { }
+
+        //Deprecated - Kept for transition
 		public UniverseEntry(
 			int rowNum, bool active, int universe, int start, int size, string unicast, string multicast, int ttl)
 		{
@@ -23,9 +25,9 @@ namespace VixenModules.Controller.E131
 			this.Universe = universe;
 			this.Start = start;
 			this.Size = size;
-			this.Unicast = unicast;
-			this.Multicast = multicast;
-			this.Ttl = ttl;
+			this.Unicast = unicast; //deprecated
+			this.Multicast = multicast; //deprecated
+			this.Ttl = ttl; //deprecated
 
 			this.Socket = null;
 			this.DestIpEndPoint = null;
@@ -38,6 +40,54 @@ namespace VixenModules.Controller.E131
 			this.PktCount = 0;
 			this.SlotCount = 0;
 		}
+
+        public UniverseEntry(
+        int rowNum, bool active, int universe, int start, int size)
+        {
+            this.RowNum = rowNum;
+            this.Active = active;
+            this.Universe = universe;
+            this.Start = start;
+            this.Size = size;
+            this.Unicast = null; //deprecated
+            this.Multicast = null; //deprecated
+            this.Ttl = 64; //deprecated
+
+            this.Socket = null;
+            this.DestIpEndPoint = null;
+            this.PhyBuffer = null;
+            this.EventRepeatCount = 0;
+            this.EventSuppressCount = 0;
+
+            this.seqNum = 0;
+
+            this.PktCount = 0;
+            this.SlotCount = 0;
+        }
+
+        public UniverseEntry(
+        int rowNum, bool active, int universe, int start, int size, string unicast, string multicast)
+        {
+            this.RowNum = rowNum;
+            this.Active = active;
+            this.Universe = universe;
+            this.Start = start;
+            this.Size = size;
+            this.Unicast = unicast; //deprecated
+            this.Multicast = multicast; //deprecated
+            this.Ttl = 64; //deprecated
+
+            this.Socket = null;
+            this.DestIpEndPoint = null;
+            this.PhyBuffer = null;
+            this.EventRepeatCount = 0;
+            this.EventSuppressCount = 0;
+
+            this.seqNum = 0;
+
+            this.PktCount = 0;
+            this.SlotCount = 0;
+        }
 
 		/// <summary>
 		///   Gets or sets a value indicating whether the universe is active.
@@ -165,19 +215,19 @@ namespace VixenModules.Controller.E131
 		}
 
 		/// <summary>
-		///   Gets the time to live
+		///   Gets the time to live. Deprecated.
 		/// </summary>
         [DataMember]
         public int Ttl { get; private set; }
 
 		/// <summary>
-		///   Gets the Unicast IP Address
+		///   Gets the Unicast IP Address. Deprecated.
 		/// </summary>
         [DataMember]
         public string Unicast { get; private set; }
 
 		/// <summary>
-		///   Gets the Universe Number
+		///   Gets the Universe Number.
 		/// </summary>
         [DataMember]
 		public int Universe { get; private set; }
