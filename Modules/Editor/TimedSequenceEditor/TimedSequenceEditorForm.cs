@@ -1687,32 +1687,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			_contextMenuStrip.Items.Clear();
 
-			if (TimelineControl.SelectedElements.Any())
-			{
-				//Build Edit Menu
-				ToolStripMenuItem contextMenuItemEditEffects = new ToolStripMenuItem("Edit Effect(s)");
-				contextMenuItemEditEffects.ShortcutKeyDisplayString = @"Ctrl+E";
-
-				if (TimelineControl.SelectedElementTypes.Count() > 1)
-				{
-					foreach (string effectType in TimelineControl.SelectedElementTypes)
-					{
-						ToolStripMenuItem toolStripMenuEditEffectType = new ToolStripMenuItem(effectType);
-						toolStripMenuEditEffectType.Click +=
-							(mySender, myE) => EditElements(TimelineControl.SelectedElements.Cast<TimedSequenceElement>(), effectType);
-						contextMenuItemEditEffects.DropDownItems.Add(toolStripMenuEditEffectType);
-					}
-
-				}
-				else
-				{
-					contextMenuItemEditEffects.Click +=
-						(mySender, myE) => EditElements(TimelineControl.SelectedElements.Cast<TimedSequenceElement>());
-				}
-
-				_contextMenuStrip.Items.Add(contextMenuItemEditEffects);
-			}
-
 			ToolStripMenuItem contextMenuItemAddEffect = new ToolStripMenuItem("Add Effect(s)");
 
 			foreach (

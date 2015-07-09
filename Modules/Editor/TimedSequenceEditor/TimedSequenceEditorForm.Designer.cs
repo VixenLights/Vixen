@@ -103,7 +103,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripMenuItem_Close = new System.Windows.Forms.ToolStripMenuItem();
 			this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.addEffectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripMenuItem_EditEffect = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripMenuItem_Cut = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem_Copy = new System.Windows.Forms.ToolStripMenuItem();
@@ -792,7 +791,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// 
 			this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.addEffectToolStripMenuItem,
-            this.toolStripMenuItem_EditEffect,
             this.toolStripSeparator2,
             this.toolStripMenuItem_Cut,
             this.toolStripMenuItem_Copy,
@@ -813,14 +811,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.addEffectToolStripMenuItem.Name = "addEffectToolStripMenuItem";
 			this.addEffectToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
 			this.addEffectToolStripMenuItem.Text = "Add Effect";
-			// 
-			// toolStripMenuItem_EditEffect
-			// 
-			this.toolStripMenuItem_EditEffect.Name = "toolStripMenuItem_EditEffect";
-			this.toolStripMenuItem_EditEffect.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.E)));
-			this.toolStripMenuItem_EditEffect.Size = new System.Drawing.Size(215, 22);
-			this.toolStripMenuItem_EditEffect.Text = "Edit Effect(s)...";
-			this.toolStripMenuItem_EditEffect.Click += new System.EventHandler(this.toolStripMenuItem_EditEffect_Click);
 			// 
 			// toolStripSeparator2
 			// 
@@ -1148,35 +1138,35 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// defaultMapToolStripMenuItem
 			// 
 			this.defaultMapToolStripMenuItem.Name = "defaultMapToolStripMenuItem";
-			this.defaultMapToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+			this.defaultMapToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
 			this.defaultMapToolStripMenuItem.Text = "Default Map";
 			this.defaultMapToolStripMenuItem.DropDownOpening += new System.EventHandler(this.defaultMapToolStripMenuItem_DropDownOpening);
 			// 
 			// phonemeMappingsToolStripMenuItem
 			// 
 			this.phonemeMappingsToolStripMenuItem.Name = "phonemeMappingsToolStripMenuItem";
-			this.phonemeMappingsToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+			this.phonemeMappingsToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
 			this.phonemeMappingsToolStripMenuItem.Text = "Edit Maps";
 			this.phonemeMappingsToolStripMenuItem.Click += new System.EventHandler(this.editMapsToolStripMenuItem_Click);
 			// 
 			// changeMapToolStripMenuItem
 			// 
 			this.changeMapToolStripMenuItem.Name = "changeMapToolStripMenuItem";
-			this.changeMapToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+			this.changeMapToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
 			this.changeMapToolStripMenuItem.Text = "Change Element Map";
 			this.changeMapToolStripMenuItem.DropDownOpening += new System.EventHandler(this.changeMapToolStripMenuItem_DropDownOpening);
 			// 
 			// lyricConverterToolStripMenuItem
 			// 
 			this.lyricConverterToolStripMenuItem.Name = "lyricConverterToolStripMenuItem";
-			this.lyricConverterToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+			this.lyricConverterToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
 			this.lyricConverterToolStripMenuItem.Text = "Lyric Converter";
 			this.lyricConverterToolStripMenuItem.Click += new System.EventHandler(this.textConverterToolStripMenuItem_Click);
 			// 
 			// papagayoImportToolStripMenuItem
 			// 
 			this.papagayoImportToolStripMenuItem.Name = "papagayoImportToolStripMenuItem";
-			this.papagayoImportToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+			this.papagayoImportToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
 			this.papagayoImportToolStripMenuItem.Text = "Papagayo Import";
 			this.papagayoImportToolStripMenuItem.Click += new System.EventHandler(this.papagayoImportToolStripMenuItem_Click);
 			// 
@@ -1284,7 +1274,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// toolStripStatusLabel_RenderingElements
 			// 
 			this.toolStripStatusLabel_RenderingElements.Name = "toolStripStatusLabel_RenderingElements";
-			this.toolStripStatusLabel_RenderingElements.Size = new System.Drawing.Size(115, 19);
+			this.toolStripStatusLabel_RenderingElements.Size = new System.Drawing.Size(118, 19);
 			this.toolStripStatusLabel_RenderingElements.Text = "Rendering ELements:";
 			this.toolStripStatusLabel_RenderingElements.Visible = false;
 			// 
@@ -1445,7 +1435,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_MarkManager;
 		private System.Windows.Forms.OpenFileDialog openFileDialog;
-		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_EditEffect;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_Cut;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_Copy;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_Paste;
