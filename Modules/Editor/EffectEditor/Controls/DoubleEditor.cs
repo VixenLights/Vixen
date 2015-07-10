@@ -25,7 +25,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 	/// <summary>
 	/// Simple Expression Blend like double editor.
 	/// </summary>
-	public class DoubleEditor : Control
+	public class DoubleEditor : RepeatEditor
 	{
 		private static readonly Type ThisType = typeof (DoubleEditor);
 
@@ -37,6 +37,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 		private double _changeValue;
 		private double _changeOffset;
 		private bool _isMouseDown;
+		private double _holdValue;
 
 		private const double DragTolerance = 2.0;
 
@@ -408,42 +409,54 @@ namespace VixenModules.Editor.EffectEditor.Controls
 				e.Handled = true;
 				IsDragging = false;
 				_isMouseDown = false;
+				StopTimer();
+				SetValue();
 			}
 
 			ReleaseMouseCapture();
+			
 		}
 
 		#endregion Base Class Overrides
 
 		#region Helpers
 
-		private void CalculateValue(double chageValue)
+		private void CalculateValue(double changeValue)
 		{
 			//
-			// Calculate the base ammount of chage based on...
+			// Calculate the base ammount of change based on...
 			//
 			// On Mouse Click & Control Key Press
 			if ((Keyboard.Modifiers & ModifierKeys.Control) != ModifierKeys.None)
-				chageValue *= SmallChange;
+				changeValue *= SmallChange;
 			// On Mouse Click & Shift Key Press
 			else if ((Keyboard.Modifiers & ModifierKeys.Shift) != ModifierKeys.None)
-				chageValue *= LargeChange;
+				changeValue *= LargeChange;
 			else
-				chageValue *= DefaultChange;
+				changeValue *= DefaultChange;
 
-			_changeOffset += chageValue;
+			_changeOffset += changeValue;
 			double newValue = _changeValue + _changeOffset;
 			//
 			// Make sure the change is line up with Max/Min Limits and set the precission as specified.
-			Value = EnforceLimitsAndPrecision(newValue);
-
-			return;
+			_holdValue = EnforceLimitsAndPrecision(newValue);
+			var template = Template;
+			var textControl = (TextBox)template.FindName("textboxEditor", this);
+			_holdValue = EnforceLimitsAndPrecision(newValue);
+			textControl.Text = _holdValue.ToString();
+			StartTimer();
 		}
 
 		private double EnforceLimitsAndPrecision(double value)
 		{
 			return Math.Round(Math.Max(Minimum, Math.Min(Maximum, value)), MaxPrecision);
 		}
+
+		protected override void SetValue()
+		{
+			Value = _holdValue;
+		}
+
 
 		#endregion Helpers
 

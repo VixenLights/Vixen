@@ -12,7 +12,7 @@
 							<ColumnDefinition Width="2*" />
 							<ColumnDefinition Width="8*" />
 						</Grid.ColumnDefinitions>
-						<TextBox x:Name="PART_editor" Grid.Column="0" Grid.ColumnSpan="2"
+						<TextBox x:Name="textboxEditor" Grid.Column="0" Grid.ColumnSpan="2"
 						         Text="{Binding Path=Value, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" />
 						<Rectangle Grid.Column="1" x:Name="PART_dragger" Stroke="Transparent" Fill="Transparent" />
 					</Grid>

@@ -25,7 +25,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 	/// <summary>
 	/// Simple Expression Blend like integer editor.
 	/// </summary>
-	public class IntegerEditor : Control
+	public class IntegerEditor : RepeatEditor
 	{
 		private static readonly Type ThisType = typeof (IntegerEditor);
 
@@ -37,6 +37,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 		private int _changeValue;
 		private double _changeOffset;
 		private bool _isMouseDown;
+		private int _holdValue ;
 
 		private const double DragTolerance = 2.0;
 
@@ -408,6 +409,8 @@ namespace VixenModules.Editor.EffectEditor.Controls
 				e.Handled = true;
 				IsDragging = false;
 				_isMouseDown = false;
+				StopTimer();
+				SetValue();
 			}
 
 			ReleaseMouseCapture();
@@ -435,9 +438,17 @@ namespace VixenModules.Editor.EffectEditor.Controls
 			int newValue = (int) (_changeValue + _changeOffset);
 			//
 			// Make sure the change is line up with Max/Min Limits and set the precission as specified.
-			Value = EnforceLimitsAndPrecision(newValue);
+			var template = Template;
+			var textControl = (TextBox)template.FindName("textboxEditor", this);
+			_holdValue = EnforceLimitsAndPrecision(newValue);
+			textControl.Text = _holdValue.ToString();
+			StartTimer();
+			
+		}
 
-			return;
+		protected override void SetValue()
+		{
+			Value = _holdValue;
 		}
 
 		private int EnforceLimitsAndPrecision(int value)
