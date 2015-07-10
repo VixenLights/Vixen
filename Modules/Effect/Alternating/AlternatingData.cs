@@ -23,12 +23,6 @@ namespace VixenModules.Effect.Alternating {
 		public int DepthOfEffect { get; set; }
 
 		[DataMember]
-		public int GroupEffect {
-			get { return _groupEffect < 1 ? 1 : _groupEffect; }
-			set { _groupEffect = value < 0 ? 1 : value; }
-		}
-
-		[DataMember]
 		public int IntervalSkipCount { get; set; }
 
 		private int _groupEffect = 1;
@@ -40,7 +34,6 @@ namespace VixenModules.Effect.Alternating {
 			EnableStatic = false;
 			Interval = 500;
 			DepthOfEffect = 0;
-			GroupEffect = 1;
 			IntervalSkipCount = 1;
 		}
 
@@ -53,7 +46,6 @@ namespace VixenModules.Effect.Alternating {
 				EnableStatic = EnableStatic,
 				Interval = Interval,
 				DepthOfEffect = DepthOfEffect,
-				GroupEffect = GroupEffect,
 				IntervalSkipCount = IntervalSkipCount
 			};
 			return result;

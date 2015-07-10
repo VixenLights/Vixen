@@ -31,7 +31,14 @@ namespace VixenModules.Effect.Alternating
 
 		protected override void TargetNodesChanged()
 		{
-			CheckForInvalidColorData();
+			if (TargetNodes.Any())
+			{
+				CheckForInvalidColorData();
+				if (DepthOfEffect > TargetNodes.FirstOrDefault().GetMaxChildDepth() - 1)
+				{
+					DepthOfEffect = 0;
+				}
+			}
 		}
 
 		protected override void _PreRender(CancellationTokenSource cancellationToken = null)
@@ -179,18 +186,6 @@ namespace VixenModules.Effect.Alternating
 			}
 		}
 
-		[Value]
-		[Browsable(false)]
-		public int GroupEffect
-		{
-			get { return _data.GroupEffect; }
-			set
-			{
-				_data.GroupEffect = value;
-				IsDirty = true;
-			}
-		}
-
 		#region Attributes
 
 		private void InitAllAttributes()
@@ -258,9 +253,9 @@ namespace VixenModules.Effect.Alternating
 				while (currentNode < totalElements)
 				{
 
-					var elements = nodes.Skip(currentNode).Take(GroupEffect);
+					var elements = nodes.Skip(currentNode).Take(DepthOfEffect+1);
 
-					currentNode += GroupEffect;
+					currentNode += (DepthOfEffect+1);
 
 					foreach (var element in elements)
 					{

@@ -199,7 +199,6 @@ namespace VixenModules.Sequence.Timed
 				XElement level2 = alternatingElement.XPathSelectElement("d2p1:Level2", namespaces);
 				XElement colorGradient2 = alternatingElement.XPathSelectElement("d2p1:ColorGradient2", namespaces);
 				XElement curve2 = alternatingElement.XPathSelectElement("d2p1:Curve2", namespaces);
-				XElement depth = alternatingElement.XPathSelectElement("d2p1:DepthOfEffect", namespaces);
 				XElement enable = alternatingElement.XPathSelectElement("d2p1:Enable", namespaces);
 				XElement groupEffect = alternatingElement.XPathSelectElement("d2p1:GroupEffect", namespaces);
 				XElement interval = alternatingElement.XPathSelectElement("d2p1:Interval", namespaces);
@@ -242,15 +241,20 @@ namespace VixenModules.Sequence.Timed
 					gradientLevelPairs.Add(new GradientLevelPair(cg1, c1));	
 				}
 				
+
 				//Build the new data model
+				int grouplevel = DeSerializer<int>(groupEffect);
+				if (grouplevel > 0)
+				{
+					grouplevel -= 1;
+				}
 				AlternatingData data = new AlternatingData
 				{
 					Colors = gradientLevelPairs,
 					ModuleInstanceId = DeSerializer<Guid>(moduleInstanceId),
 					ModuleTypeId = DeSerializer<Guid>(moduleTypeId),
 					EnableStatic = !DeSerializer<bool>(enable),
-					DepthOfEffect = DeSerializer<int>(depth),
-					GroupEffect = DeSerializer<int>(groupEffect),
+					DepthOfEffect = grouplevel,
 					Interval = DeSerializer<int>(interval),
 					IntervalSkipCount = 1
 				};
