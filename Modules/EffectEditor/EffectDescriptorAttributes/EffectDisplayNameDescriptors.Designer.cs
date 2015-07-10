@@ -377,6 +377,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Gradient Level Pairs.
+        /// </summary>
+        internal static string GradientLevelPair {
+            get {
+                return ResourceManager.GetString("GradientLevelPair", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Gradient Mode.
         /// </summary>
         internal static string GradientMode {

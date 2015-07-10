@@ -198,6 +198,9 @@
   <data name="GifSpeed" xml:space="preserve">
     <value>Controls the speed at which a gif animates if the image is a animated gif.</value>
   </data>
+  <data name="GradientLevelPair" xml:space="preserve">
+    <value>Controls the Color Gradient and Level Curve that are associated together to provide the color for the effect.</value>
+  </data>
   <data name="GradientMode" xml:space="preserve">
     <value>Controls how the gradient is applied to the effect.</value>
   </data>

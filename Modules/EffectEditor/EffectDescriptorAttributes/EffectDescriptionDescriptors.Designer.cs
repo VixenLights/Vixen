@@ -305,6 +305,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Controls the Color Gradient and Level Curve that are associated together to provide the color for the effect..
+        /// </summary>
+        internal static string GradientLevelPair {
+            get {
+                return ResourceManager.GetString("GradientLevelPair", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Controls how the gradient is applied to the effect..
         /// </summary>
         internal static string GradientMode {

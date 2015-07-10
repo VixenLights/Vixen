@@ -13,7 +13,7 @@ namespace VixenModules.App.ColorGradients
 		public GradientLevelPair()
 		{
 			ColorGradient = new ColorGradient();
-			Curve = new Curve();
+			Curve = new Curve(CurveType.Flat100);
 		}
 
 		/// <summary>
