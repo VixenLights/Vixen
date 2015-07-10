@@ -501,17 +501,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void TimelineControlGrid_DragDrop(object sender, DragEventArgs e)
 		{
+			Point p = new Point(e.X, e.Y);
 			//Check for effect drop
 			if (e.Data.GetDataPresent(typeof(Guid)))
 			{
 				Guid g = (Guid)e.Data.GetData(typeof(Guid));
-				Point p = TimelineControl.grid.PointToClient(new Point(e.X, e.Y));
-				
-				EffectDropped(g, TimelineControl.grid.TranslateLocation(p));
+				EffectDropped(g,TimelineControl.grid.TimeAtPosition(p), TimelineControl.grid.RowAtPosition(p));
 			}
 
 			//Everything else applies to a element
-			Element element = TimelineControl.grid.ElementAtPosition(new Point(e.X, e.Y));
+			Element element = TimelineControl.grid.ElementAtPosition(p);
 			if (element != null)
 			{
 				if (e.Data.GetDataPresent(typeof (ColorGradient)))
@@ -546,7 +545,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private DragDropEffects IsValidDataObject(IDataObject dataObject, Point mouseLocation)
 		{
-			if (dataObject.GetDataPresent(typeof(Guid)))
+			if (dataObject.GetDataPresent(typeof(Guid)) && TimelineControl.grid.RowAtPosition(mouseLocation)!=null)
 			{
 				return DragDropEffects.Copy;
 			}
@@ -3214,12 +3213,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		#region Effect & Preset Library Drag/Drop
 
-		private void EffectDropped(Guid effectGuid, Point location)
+		private void EffectDropped(Guid effectGuid, TimeSpan startTime, Row row)
 		{
 			//Modified 12-3-2014 to allow Control-Drop of effects to replace selected effects
 			
 			TimeSpan duration = TimeSpan.FromSeconds(2.0); // TODO: need a default value here. I suggest a per-effect default.
-			TimeSpan startTime = Util.Min(TimelineControl.PixelsToTime(location.X), (_sequence.Length - duration)); // Ensure the element is inside the grid.
+			//TimeSpan startTime = Util.Min(TimelineControl.PixelsToTime(location.X), (_sequence.Length - duration)); // Ensure the element is inside the grid.
 
 			if (ModifierKeys.HasFlag(Keys.Control) && TimelineControl.SelectedElements.Any())
 			{
@@ -3244,7 +3243,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			else
 			{
-			AddNewEffectById(effectGuid, TimelineControl.grid.RowAtPosition(location), startTime, duration);
+			AddNewEffectById(effectGuid, row, startTime, duration);
 		}
 		}
 

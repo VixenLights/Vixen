@@ -1119,7 +1119,20 @@ namespace Common.Controls.Timeline
 
 		public Row RowAtPosition(Point p)
 		{
-			return rowAt(p);
+			Point client = PointToClient(p);
+			Point gridPoint = TranslateLocation(client);
+			return rowAt(gridPoint);
+		}
+
+		public Point GridPoint(Point p)
+		{
+			Point client = PointToClient(p);
+			return TranslateLocation(client);
+		}
+
+		public TimeSpan TimeAtPosition(Point p)
+		{
+			return PixelsToTime(GridPoint(p).X);
 		}
 
 		/// <summary>
