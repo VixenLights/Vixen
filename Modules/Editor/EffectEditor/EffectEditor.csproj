@@ -200,7 +200,6 @@
     <Compile Include="Controls\ToggleSwitch.cs" />
     <Compile Include="Converters\BitmapImageConverter.cs" />
     <Compile Include="Converters\ColorGradientToImageConverter.cs" />
-    <Compile Include="Converters\ObjectToTypeConverter.cs" />
     <Compile Include="Converters\CurveToImageConverter.cs" />
     <Compile Include="Converters\DebugConverter.cs" />
     <Compile Include="Converters\EnumValueConverter.cs" />
