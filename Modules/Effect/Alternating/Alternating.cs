@@ -11,7 +11,6 @@ using Vixen.Sys;
 using Vixen.Sys.Attribute;
 using Vixen.TypeConverters;
 using VixenModules.App.ColorGradients;
-using VixenModules.App.Curves;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using VixenModules.Property.Color;
 
@@ -110,7 +109,7 @@ namespace VixenModules.Effect.Alternating
 		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"StaticEffect")]
-		[Description(@"StaticEffect")]
+		[ProviderDescription(@"StaticEffect")]
 		[TypeConverter(typeof(BooleanStringTypeConverter))]
 		[BoolDescription("Yes", "No")]
 		[PropertyEditor("SelectionEditor")]
@@ -147,7 +146,7 @@ namespace VixenModules.Effect.Alternating
 		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Interval")]
-		[Description(@"Interval")]
+		[ProviderDescription(@"Interval")]
 		[NumberRange(0, 10000, 1, 0)]
 		[PropertyOrder(2)]
 		public int Interval
@@ -164,7 +163,7 @@ namespace VixenModules.Effect.Alternating
 		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"IntervalSkip")]
-		[Description(@"IntervalSkip")]
+		[ProviderDescription(@"IntervalSkip")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1, 10, 1)]
 		[PropertyOrder(3)]
