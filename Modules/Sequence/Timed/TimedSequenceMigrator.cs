@@ -4,10 +4,12 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using Common.Controls.ColorManagement.ColorModels;
+using NLog.Targets;
 using Vixen.IO;
 using Vixen.Module;
 using Vixen.Services;
@@ -63,6 +65,8 @@ namespace VixenModules.Sequence.Timed
 
 		private XElement _Version_0_to_1(XElement content)
 		{
+			MessageBox.Show(
+				@"Migrating sequence from version 0 to version 1.\nChanges include moving Nutcracker and Audio files to the common media folder.");
 			//  3/14/2015
 			//Migrate full path name of the background image to just the filename. Code will now look 
  			//relative to the profile for the module path to the filenames
@@ -164,6 +168,8 @@ namespace VixenModules.Sequence.Timed
 
 		private XElement _Version_1_to_2(XElement content)
 		{
+			MessageBox.Show(
+				@"Migrating sequence from version 1 to version 2.\nChanges include upgrades to the Alternating effect to allow more than 2 colors.");
 			//This migration deals with changing the Alternating effect to a Multi Alternating
 			//Style that allows N number of colors. 
 			var namespaces = new XmlNamespaceManager(new NameTable());
