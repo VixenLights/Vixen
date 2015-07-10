@@ -20,12 +20,10 @@ namespace VixenModules.Effect.Alternating {
 		public bool EnableStatic { get; set; }
 
 		[DataMember]
-		public int DepthOfEffect { get; set; }
+		public int GroupLevel { get; set; }
 
 		[DataMember]
 		public int IntervalSkipCount { get; set; }
-
-		private int _groupEffect = 1;
 
 		public AlternatingData()
 		{
@@ -33,7 +31,7 @@ namespace VixenModules.Effect.Alternating {
 
 			EnableStatic = false;
 			Interval = 500;
-			DepthOfEffect = 0;
+			GroupLevel = 1;
 			IntervalSkipCount = 1;
 		}
 
@@ -45,7 +43,7 @@ namespace VixenModules.Effect.Alternating {
 				Colors = gradientLevelList,
 				EnableStatic = EnableStatic,
 				Interval = Interval,
-				DepthOfEffect = DepthOfEffect,
+				GroupLevel = GroupLevel,
 				IntervalSkipCount = IntervalSkipCount
 			};
 			return result;

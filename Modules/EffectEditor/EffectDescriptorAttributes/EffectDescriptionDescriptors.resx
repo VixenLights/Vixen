@@ -199,10 +199,13 @@
     <value>Controls the speed at which a gif animates if the image is a animated gif.</value>
   </data>
   <data name="GradientLevelPair" xml:space="preserve">
-    <value>Controls the Color Gradient and Level Curve that are associated together to provide the color for the effect.</value>
+    <value>Controls the color gradient and brightness curve that are associated together to provide the color(s) for the effect.</value>
   </data>
   <data name="GradientMode" xml:space="preserve">
     <value>Controls how the gradient is applied to the effect.</value>
+  </data>
+  <data name="GroupLevel" xml:space="preserve">
+    <value>Controls the grouping together of elements that will be in the same state.</value>
   </data>
   <data name="Grow" xml:space="preserve">
     <value>Grow the legs of the spiral.</value>
@@ -220,7 +223,7 @@
     <value>Specifies how often the effect should switch in milliseconds.</value>
   </data>
   <data name="IntervalSkip" xml:space="preserve">
-    <value>Controls the interval skip.</value>
+    <value>Controls the offset into the color list for the alternate state in the effect. One is the default and would shift the colors back and forth by one.</value>
   </data>
   <data name="Iterations" xml:space="preserve">
     <value>Controls the number of times the pattern repeats over the timespan.</value>

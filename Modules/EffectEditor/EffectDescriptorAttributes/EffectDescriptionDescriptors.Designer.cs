@@ -305,7 +305,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Controls the Color Gradient and Level Curve that are associated together to provide the color for the effect..
+        ///   Looks up a localized string similar to Controls the color gradient and brightness curve that are associated together to provide the color(s) for the effect..
         /// </summary>
         internal static string GradientLevelPair {
             get {
@@ -319,6 +319,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string GradientMode {
             get {
                 return ResourceManager.GetString("GradientMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Controls the grouping together of elements that will be in the same state..
+        /// </summary>
+        internal static string GroupLevel {
+            get {
+                return ResourceManager.GetString("GroupLevel", resourceCulture);
             }
         }
         
@@ -368,7 +377,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Controls the interval skip..
+        ///   Looks up a localized string similar to Controls the offset into the color list for the alternate state in the effect. One is the default and would shift the colors back and forth by one..
         /// </summary>
         internal static string IntervalSkip {
             get {

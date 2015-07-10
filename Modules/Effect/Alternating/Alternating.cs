@@ -34,29 +34,20 @@ namespace VixenModules.Effect.Alternating
 			if (TargetNodes.Any())
 			{
 				CheckForInvalidColorData();
-				if (DepthOfEffect > TargetNodes.FirstOrDefault().GetMaxChildDepth() - 1)
-				{
-					DepthOfEffect = 0;
-				}
 			}
 		}
 
 		protected override void _PreRender(CancellationTokenSource cancellationToken = null)
 		{
-			_elementData = new EffectIntents();
+			EffectIntents data = new EffectIntents();
 
-			var targetNodes = TargetNodes.AsParallel();
-
-			if (cancellationToken != null)
-				targetNodes = targetNodes.WithCancellation(cancellationToken.Token);
-
-			targetNodes.ForAll(node =>
+			foreach (ElementNode node in TargetNodes)
 			{
 				if (node != null)
-					RenderNode(node);
-			});
+					data.Add(RenderNode(node));
+			}
 
-
+			_elementData = data;
 		}
 
 		//Validate that the we are using valid colors and set appropriate defaults if not.
@@ -108,6 +99,7 @@ namespace VixenModules.Effect.Alternating
 			{
 				_data.Colors = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
@@ -131,6 +123,24 @@ namespace VixenModules.Effect.Alternating
 				_data.EnableStatic = value;
 				IsDirty = true;
 				UpdateIntervalAttribute();
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 10)]
+		[ProviderDisplayName(@"GroupLevel")]
+		[ProviderDescription(@"GroupLevel")]
+		[NumberRange(1, 5000, 1)]
+		[PropertyOrder(1)]
+		public int GroupLevel
+		{
+			get { return _data.GroupLevel; }
+			set
+			{
+				_data.GroupLevel = value;
+				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
@@ -139,7 +149,7 @@ namespace VixenModules.Effect.Alternating
 		[ProviderDisplayName(@"Interval")]
 		[Description(@"Interval")]
 		[NumberRange(0, 10000, 1, 0)]
-		[PropertyOrder(1)]
+		[PropertyOrder(2)]
 		public int Interval
 		{
 			get { return _data.Interval; }
@@ -147,6 +157,7 @@ namespace VixenModules.Effect.Alternating
 			{
 				_data.Interval = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
@@ -156,7 +167,7 @@ namespace VixenModules.Effect.Alternating
 		[Description(@"IntervalSkip")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1, 10, 1)]
-		[PropertyOrder(2)]
+		[PropertyOrder(3)]
 		public int IntervalSkipCount
 		{
 			get { return _data.IntervalSkipCount; }
@@ -164,28 +175,13 @@ namespace VixenModules.Effect.Alternating
 			{
 				_data.IntervalSkipCount = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
+
 
 		#endregion
 
-
-		[Value]
-		[ProviderCategory(@"Depth", 10)]
-		[ProviderDisplayName(@"Depth")]
-		[ProviderDescription(@"Depth")]
-		[TypeConverter(typeof (TargetElementDepthConverter))]
-		[PropertyEditor("SelectionEditor")]
-		[MergableProperty(false)]
-		public int DepthOfEffect
-		{
-			get { return _data.DepthOfEffect; }
-			set
-			{
-				_data.DepthOfEffect = value;
-				IsDirty = true;
-			}
-		}
 
 		#region Attributes
 
@@ -227,14 +223,14 @@ namespace VixenModules.Effect.Alternating
 
 		// renders the given node to the internal ElementData dictionary. If the given node is
 		// not a element, will recursively descend until we render its elements.
-		private void RenderNode(ElementNode node)
+		private EffectIntents RenderNode(ElementNode node)
 		{
-			
+			EffectIntents effectIntents = new EffectIntents();
 			int intervals = 1;
-			var colorOffsetIndex = 0;
-			var gradientLevelItem = colorOffsetIndex;
+			var gradientLevelItem = 0;
 			int colorCount = Colors.Count();
-
+			bool alternate = false;
+			
 			if (!EnableStatic)
 			{
 				intervals = Convert.ToInt32(Math.Ceiling(TimeSpan.TotalMilliseconds/Interval));
@@ -256,28 +252,30 @@ namespace VixenModules.Effect.Alternating
 				while (currentNode < totalElements)
 				{
 
-					var elements = nodes.Skip(currentNode).Take(DepthOfEffect+1);
+					var elements = nodes.Skip(currentNode).Take(GroupLevel);
 
-					currentNode += (DepthOfEffect+1);
+					currentNode += (GroupLevel);
 
 					foreach (var element in elements)
 					{
-						RenderElement(Colors[gradientLevelItem], ref startTime, ref intervalTime, element);
+						RenderElement(Colors[gradientLevelItem], ref startTime, ref intervalTime, element, effectIntents);
 					}
 
 					gradientLevelItem = ++gradientLevelItem%colorCount;
 
 				}
 
-				colorOffsetIndex += IntervalSkipCount;
-				gradientLevelItem = colorOffsetIndex%colorCount;
+				alternate = !alternate;
+				gradientLevelItem = alternate?IntervalSkipCount % colorCount:0;
 				
 				startTime += intervalTime;
 			}
+
+			return effectIntents;
 		}
 
 		private void RenderElement(GradientLevelPair gradientLevelPair, ref TimeSpan startTime, ref TimeSpan intervalTime,
-			ElementNode element)
+			ElementNode element, EffectIntents effectIntents)
 		{
 			var pulse = new Pulse.Pulse
 			{
@@ -290,7 +288,7 @@ namespace VixenModules.Effect.Alternating
 			var result = pulse.Render();
 
 			result.OffsetAllCommandsByTime(startTime);
-			_elementData.Add(result);
+			effectIntents.Add(result);
 
 		}
 	}

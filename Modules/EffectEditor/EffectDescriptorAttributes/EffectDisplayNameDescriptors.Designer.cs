@@ -377,7 +377,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Gradient Level Pairs.
+        ///   Looks up a localized string similar to Color &amp; Brightness.
         /// </summary>
         internal static string GradientLevelPair {
             get {
@@ -409,6 +409,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string GradientTwo {
             get {
                 return ResourceManager.GetString("GradientTwo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Group Level.
+        /// </summary>
+        internal static string GroupLevel {
+            get {
+                return ResourceManager.GetString("GroupLevel", resourceCulture);
             }
         }
         
@@ -458,7 +467,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Interval Skip.
+        ///   Looks up a localized string similar to Color Offset.
         /// </summary>
         internal static string IntervalSkip {
             get {

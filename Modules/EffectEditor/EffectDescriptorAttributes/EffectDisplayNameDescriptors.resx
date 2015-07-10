@@ -352,10 +352,13 @@
     <value>Y Offset</value>
   </data>
   <data name="IntervalSkip" xml:space="preserve">
-    <value>Interval Skip</value>
+    <value>Color Offset</value>
   </data>
   <data name="GradientLevelPair" xml:space="preserve">
-    <value>Gradient Level Pairs</value>
+    <value>Color &amp; Brightness</value>
+  </data>
+  <data name="GroupLevel" xml:space="preserve">
+    <value>Group Level</value>
   </data>
   <data name="Iterations" xml:space="preserve">
     <value>Iterations</value>

@@ -251,18 +251,13 @@ namespace VixenModules.Sequence.Timed
 				
 
 				//Build the new data model
-				int grouplevel = DeSerializer<int>(groupEffect);
-				if (grouplevel > 0)
-				{
-					grouplevel -= 1;
-				}
 				AlternatingData data = new AlternatingData
 				{
 					Colors = gradientLevelPairs,
 					ModuleInstanceId = DeSerializer<Guid>(moduleInstanceId),
 					ModuleTypeId = DeSerializer<Guid>(moduleTypeId),
 					EnableStatic = !DeSerializer<bool>(enable),
-					DepthOfEffect = grouplevel,
+					GroupLevel = DeSerializer<int>(groupEffect),
 					Interval = DeSerializer<int>(interval),
 					IntervalSkipCount = 1
 				};
