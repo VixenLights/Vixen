@@ -16,11 +16,6 @@ namespace VixenModules.Editor.EffectEditor.Editors
 
 		public override Object ShowDialog(Object effect, Object propertyValue, IInputElement commandSource)
 		{
-			if (propertyValue == null)
-			{
-				return propertyValue;
-			}
-			
 			ColorGradient gradient = null;
 			var value = propertyValue as ColorGradient;
 			HashSet<Color> discreteColors = GetDiscreteColors(effect);

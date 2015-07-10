@@ -13,13 +13,8 @@ namespace VixenModules.Editor.EffectEditor.Editors
 
 		public override Object ShowDialog(Object effect, Object propertyValue, IInputElement commandSource)
 		{
-			if (propertyValue == null)
-			{
-				return propertyValue;
-			}
-			
 			Curve curveValue = propertyValue as Curve;
-			VixenModules.App.Curves.CurveEditor editor = new VixenModules.App.Curves.CurveEditor(curveValue ?? new Curve());
+			App.Curves.CurveEditor editor = new App.Curves.CurveEditor(curveValue ?? new Curve());
 			if (editor.ShowDialog() == DialogResult.OK)
 			{
 				propertyValue = editor.Curve;

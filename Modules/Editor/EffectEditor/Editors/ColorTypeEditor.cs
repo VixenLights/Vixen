@@ -19,17 +19,16 @@ namespace VixenModules.Editor.EffectEditor.Editors
 
 		public override Object ShowDialog(Object effect, Object propertyValue, IInputElement commandSource)
 		{
-			if (propertyValue == null)
-			{
-				return propertyValue;
-			}
-			
 			HashSet<Color> discreteColors = GetDiscreteColors(effect);
 
-			Color colorValue = Color.Black;
+			Color colorValue;
 			if (propertyValue != null)
 			{
 				colorValue = (Color)propertyValue;
+			}
+			else
+			{
+				colorValue = discreteColors.Any() ? discreteColors.First() : Color.White;
 			}
 			DialogResult result;
 			if (discreteColors.Any())
