@@ -35,7 +35,7 @@ namespace VixenModules.Effect.Picture
 
 		[Value]
 		[ProviderCategory(@"Movement", 1)]
-		[ProviderDisplayName(@"EffectType")]
+		[ProviderDisplayName(@"Type")]
 		[ProviderDescription(@"EffectType")]
 		[PropertyOrder(0)]
 		public EffectType Type

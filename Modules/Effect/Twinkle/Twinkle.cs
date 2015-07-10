@@ -319,7 +319,7 @@ namespace VixenModules.Effect.Twinkle
 		[Value]
 		[ProviderCategory(@"Depth")]
 		[ProviderDisplayName(@"Depth")]
-		[Description(@"Indicates how many levels deep the effect should be grouped. 0 indicates all elements.")]
+		[ProviderDescription(@"Depth")]
 		[TypeConverter(typeof(TargetElementDepthConverter))]
 		[PropertyEditor("SelectionEditor")]
 		[MergableProperty(false)]

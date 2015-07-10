@@ -197,6 +197,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Controls the type of movement..
+        /// </summary>
+        internal static string EffectType {
+            get {
+                return ResourceManager.GetString("EffectType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Controls how many explosions occur..
         /// </summary>
         internal static string Explosions {
@@ -296,6 +305,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Grow the legs of the spiral..
+        /// </summary>
+        internal static string Grow {
+            get {
+                return ResourceManager.GetString("Grow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Controls the height of the fire..
         /// </summary>
         internal static string Height {
@@ -319,6 +337,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string HueShift {
             get {
                 return ResourceManager.GetString("HueShift", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Controls the number of times the pattern repeats over the timespan..
+        /// </summary>
+        internal static string Iterations {
+            get {
+                return ResourceManager.GetString("Iterations", resourceCulture);
             }
         }
         
@@ -440,6 +467,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Controls the number of times the color pattern repeats within the pattern..
+        /// </summary>
+        internal static string Repeat {
+            get {
+                return ResourceManager.GetString("Repeat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Controls how many revolutions of the spin will occur..
         /// </summary>
         internal static string RevolutionCount {
@@ -512,7 +548,16 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Controls the typeof the snowflake..
+        ///   Looks up a localized string similar to Shrink the legs of the spiral..
+        /// </summary>
+        internal static string Shrink {
+            get {
+                return ResourceManager.GetString("Shrink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Controls the type of snowflake..
         /// </summary>
         internal static string SnowflakeType {
             get {

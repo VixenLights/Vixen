@@ -60,7 +60,7 @@ namespace VixenModules.Effect.Pixel
 		[ReadOnly(true)]
 		[ProviderCategory(@"Setup", 0)]
 		[ProviderDisplayName(@"PixelsPerString")]
-		[Description(@"PixelsPerString")]
+		[ProviderDescription(@"PixelsPerString")]
 		[PropertyEditor("Label")]
 		[PropertyOrder(1)]
 		public int MaxPixelsPerString

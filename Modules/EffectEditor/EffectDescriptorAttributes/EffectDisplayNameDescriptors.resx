@@ -351,4 +351,7 @@
   <data name="YOffset" xml:space="preserve">
     <value>Y Offset</value>
   </data>
+  <data name="Iterations" xml:space="preserve">
+    <value>Iterations</value>
+  </data>
 </root>

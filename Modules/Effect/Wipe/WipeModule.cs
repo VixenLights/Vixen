@@ -562,7 +562,7 @@ namespace VixenModules.Effect.Wipe
 		[Value]
 		[ProviderCategory(@"Type",1)]
 		[ProviderDisplayName(@"Type")]
-		[Description(@"WipeType")]
+		[ProviderDescription(@"WipeType")]
 		[TypeConverter(typeof(BooleanStringTypeConverter))]
 		[BoolDescription("Count", "Pulse Length")]
 		[PropertyEditor("SelectionEditor")]
@@ -582,7 +582,7 @@ namespace VixenModules.Effect.Wipe
 		[Value]
 		[ProviderCategory(@"Type",1)]
 		[ProviderDisplayName(@"WipeCount")]
-		[Description(@"WipeCount")]
+		[ProviderDescription(@"WipeCount")]
 		public int PassCount
 		{
 			get { return _data.PassCount; }

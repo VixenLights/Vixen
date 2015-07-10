@@ -162,6 +162,9 @@
   <data name="Direction" xml:space="preserve">
     <value>Controls the direction of the effect.</value>
   </data>
+  <data name="EffectType" xml:space="preserve">
+    <value>Controls the type of movement.</value>
+  </data>
   <data name="Explosions" xml:space="preserve">
     <value>Controls how many explosions occur.</value>
   </data>
@@ -195,6 +198,9 @@
   <data name="GradientMode" xml:space="preserve">
     <value>Controls how the gradient is applied to the effect.</value>
   </data>
+  <data name="Grow" xml:space="preserve">
+    <value>Grow the legs of the spiral.</value>
+  </data>
   <data name="Height" xml:space="preserve">
     <value>Controls the height of the fire.</value>
   </data>
@@ -203,6 +209,9 @@
   </data>
   <data name="HueShift" xml:space="preserve">
     <value>Controls the color of the fire.</value>
+  </data>
+  <data name="Iterations" xml:space="preserve">
+    <value>Controls the number of times the pattern repeats over the timespan.</value>
   </data>
   <data name="Location" xml:space="preserve">
     <value>Controls the location.</value>
@@ -243,6 +252,9 @@
   <data name="PulseType" xml:space="preserve">
     <value>Controls how individual pulses are applied across the effect.</value>
   </data>
+  <data name="Repeat" xml:space="preserve">
+    <value>Controls the number of times the color pattern repeats within the pattern.</value>
+  </data>
   <data name="RevolutionCount" xml:space="preserve">
     <value>Controls how many revolutions of the spin will occur.</value>
   </data>
@@ -267,8 +279,11 @@
   <data name="Show3D" xml:space="preserve">
     <value>Adds a 3D effect.</value>
   </data>
+  <data name="Shrink" xml:space="preserve">
+    <value>Shrink the legs of the spiral.</value>
+  </data>
   <data name="SnowflakeType" xml:space="preserve">
-    <value>Controls the typeof the snowflake.</value>
+    <value>Controls the type of snowflake.</value>
   </data>
   <data name="SpinSpeedFormat" xml:space="preserve">
     <value>Controls how the individual spins occur.</value>
