@@ -100,6 +100,7 @@ namespace VixenModules.Effect.Alternating
 		[ProviderCategory(@"Color", 2)]
 		[ProviderDisplayName(@"GradientLevelPair")]
 		[ProviderDescription(@"GradientLevelPair")]
+		[MergableProperty(false)]
 		public List<GradientLevelPair> Colors
 		{
 			get { return _data.Colors; }
@@ -137,7 +138,7 @@ namespace VixenModules.Effect.Alternating
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Interval")]
 		[Description(@"Interval")]
-		[NumberRange(0, 5000, 1, 0)]
+		[NumberRange(0, 10000, 1, 0)]
 		[PropertyOrder(1)]
 		public int Interval
 		{
@@ -154,7 +155,7 @@ namespace VixenModules.Effect.Alternating
 		[ProviderDisplayName(@"IntervalSkip")]
 		[Description(@"IntervalSkip")]
 		[PropertyEditor("SliderEditor")]
-		[NumberRange(0, 10, 1)]
+		[NumberRange(1, 10, 1)]
 		[PropertyOrder(2)]
 		public int IntervalSkipCount
 		{
@@ -228,9 +229,11 @@ namespace VixenModules.Effect.Alternating
 		// not a element, will recursively descend until we render its elements.
 		private void RenderNode(ElementNode node)
 		{
+			
 			int intervals = 1;
-			var gradientLevelItem = 0;
-			var startColor = true;
+			var colorOffsetIndex = 0;
+			var gradientLevelItem = colorOffsetIndex;
+			int colorCount = Colors.Count();
 
 			if (!EnableStatic)
 			{
@@ -239,6 +242,8 @@ namespace VixenModules.Effect.Alternating
 
 			var startTime = TimeSpan.Zero;
 
+			var nodes = node.GetLeafEnumerator();
+			
 			for (int i = 0; i < intervals; i++)
 			{
 				var intervalTime = intervals == 1
@@ -247,8 +252,6 @@ namespace VixenModules.Effect.Alternating
 
 				int totalElements = node.Count();
 				int currentNode = 0;
-
-				var nodes = node.GetLeafEnumerator();
 
 				while (currentNode < totalElements)
 				{
@@ -262,20 +265,13 @@ namespace VixenModules.Effect.Alternating
 						RenderElement(Colors[gradientLevelItem], ref startTime, ref intervalTime, element);
 					}
 
-					gradientLevelItem++;
-					if (gradientLevelItem >= Colors.Count())
-					{
-						gradientLevelItem = 0;
-					}
+					gradientLevelItem = ++gradientLevelItem%colorCount;
 
 				}
-				startColor = !startColor;
-				gradientLevelItem += IntervalSkipCount;
-				gradientLevelItem = (gradientLevelItem%Colors.Count());
-				if (gradientLevelItem >= Colors.Count() || gradientLevelItem < 0)
-				{
-					gradientLevelItem = 0;
-				}
+
+				colorOffsetIndex += IntervalSkipCount;
+				gradientLevelItem = colorOffsetIndex%colorCount;
+				
 				startTime += intervalTime;
 			}
 		}
