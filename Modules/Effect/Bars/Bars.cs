@@ -21,7 +21,6 @@ namespace VixenModules.Effect.Bars
 		public Bars()
 		{
 			_data = new BarsData();
-			UpdateSpeedAttribute();
 		}
 
 		public override bool IsDirty
@@ -38,6 +37,7 @@ namespace VixenModules.Effect.Bars
 			protected set { base.IsDirty = value; }
 		}
 
+		[Browsable(false)]
 		public override StringOrientation StringOrientation
 		{
 			get { return _data.Orientation; }
@@ -69,8 +69,8 @@ namespace VixenModules.Effect.Bars
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Speed")]
-		[ProviderDescription(@"Speed")]
+		[ProviderDisplayName(@"Iterations")]
+		[ProviderDescription(@"Iterations")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1, 20, 1)]
 		[PropertyOrder(1)]
@@ -135,23 +135,6 @@ namespace VixenModules.Effect.Bars
 			}
 		}
 
-		[Value]
-		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"FitTime")]
-		[ProviderDescription(@"FitTime")]
-		[PropertyOrder(6)]
-		public bool FitToTime
-		{
-			get { return _data.FitToTime; }
-			set
-			{
-				_data.FitToTime = value;
-				IsDirty = true;
-				UpdateSpeedAttribute();
-				OnPropertyChanged();
-			}
-		}
-
 		#endregion
 
 		#region Color properties
@@ -200,19 +183,8 @@ namespace VixenModules.Effect.Bars
 			set
 			{
 				_data = value as BarsData;
-				UpdateSpeedAttribute();
 				IsDirty = true;
 			}
-		}
-
-		private void UpdateSpeedAttribute()
-		{
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1)
-			{
-				{"Speed", !FitToTime}
-			};
-			SetBrowsable(propertyStates);
-			TypeDescriptor.Refresh(this);
 		}
 
 		protected override void SetupRender()
@@ -230,27 +202,24 @@ namespace VixenModules.Effect.Bars
 			int x, y, n, colorIdx;
 			int colorcnt = Colors.Count();
 			int barCount = Repeat * colorcnt;
-			double position = GetEffectTimeIntervalPosition(frame);
+			double position = (GetEffectTimeIntervalPosition(frame) * Speed) % 1;
 			if (barCount < 1) barCount = 1;
 
 
 			if (Direction < BarDirection.Left || Direction == BarDirection.AlternateUp || Direction == BarDirection.AlternateDown)
 			{
-				int barHt = BufferHt / barCount;
+				int barHt = BufferHt / barCount+1;
 				if (barHt < 1) barHt = 1;
 				int halfHt = BufferHt / 2;
 				int blockHt = colorcnt * barHt;
 				if (blockHt < 1) blockHt = 1;
-				int fOffset = (int)(FitToTime ? position * blockHt * Repeat : Speed * frame / 4 % blockHt);
+				int fOffset = (int) (position*blockHt*Repeat);// : Speed * frame / 4 % blockHt);
 				if(Direction == BarDirection.AlternateUp || Direction == BarDirection.AlternateDown)
 				{
 					fOffset = (int)(Math.Floor(position*barCount)*barHt);
 				}
 				int indexAdjust = 1;
-				if (Direction == BarDirection.Compress || Direction == BarDirection.Down)
-				{
-					indexAdjust = 0;
-				}
+				
 				for (y = 0; y < BufferHt; y++)
 				{
 					n = y + fOffset;
@@ -262,7 +231,7 @@ namespace VixenModules.Effect.Bars
 					if (Highlight && (n + indexAdjust) % barHt == 0) hsv.S = 0.0f;
 					if (Show3D) hsv.V *= (float)(barHt - n % barHt - 1) / barHt;
 
-					hsv.V = hsv.V * LevelCurve.GetValue(position*100) / 100;
+					hsv.V = hsv.V * LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
 
 					switch (Direction)
 					{
@@ -308,26 +277,28 @@ namespace VixenModules.Effect.Bars
 			}
 			else
 			{
-				int barWi = BufferWi / barCount;
+				int barWi = BufferWi / barCount+1;
 				if (barWi < 1) barWi = 1;
 				int halfWi = BufferWi / 2;
 				int blockWi = colorcnt * barWi;
 				if (blockWi < 1) blockWi = 1;
-				int fOffset = (int)(FitToTime ? position * blockWi : Speed * frame / 4 % blockWi);
+				int fOffset = (int)(position * blockWi * Repeat);
 				if (Direction > BarDirection.AlternateDown)
 				{
-					fOffset = (Speed*frame/20)*barWi;
+					fOffset = (int)(Math.Floor(position * barCount) * barWi);
 				} 
 				
 				for (x = 0; x < BufferWi; x++)
 				{
 					n = x + fOffset;
 					colorIdx = ((n + 1) % blockWi) / barWi;
+					//we need the integer division here to make things work
 					double colorPosition = ((double)(n + 1) / barWi) - ((n + 1) / barWi);
 					Color c = Colors[colorIdx].GetColorAt( colorPosition );
 					var hsv = HSV.FromRGB(c);
 					if (Highlight && n % barWi == 0) hsv.S = 0.0f;
 					if (Show3D) hsv.V *= (float)(barWi - n % barWi - 1) / barWi;
+					hsv.V = hsv.V * LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
 					switch (Direction)
 					{
 						case BarDirection.Right:

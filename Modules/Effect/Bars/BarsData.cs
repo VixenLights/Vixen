@@ -18,9 +18,8 @@ namespace VixenModules.Effect.Bars
 		{
 			Colors = new List<ColorGradient>{new ColorGradient(Color.Red), new ColorGradient(Color.Lime), new ColorGradient(Color.Blue)};
 			Direction = BarDirection.Up;
-			Speed = 5;
+			Speed = 1;
 			Repeat = 1;
-			FitToTime = true;
 			LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
 			Orientation=StringOrientation.Vertical;
 		}
@@ -44,9 +43,6 @@ namespace VixenModules.Effect.Bars
 		public bool Show3D { get; set; }
 
 		[DataMember]
-		public bool FitToTime { get; set; }
-
-		[DataMember]
 		public Curve LevelCurve { get; set; }
 
 		[DataMember]
@@ -63,7 +59,6 @@ namespace VixenModules.Effect.Bars
 				Orientation = Orientation,
 				Show3D = Show3D,
 				Highlight = Highlight,
-				FitToTime = FitToTime,
 				LevelCurve = new Curve(LevelCurve)
 			};
 			return result;

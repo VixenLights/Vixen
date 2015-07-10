@@ -711,7 +711,7 @@ namespace VixenModules.Editor.EffectEditor
 
 			try
 			{
-				if (value != null && value.Equals(oldValue)) return;
+				if ((value == null && oldValue == null) || value != null && value.Equals(oldValue)) return;
 
 				if (PropertyType == typeof (object) ||
 				    value == null && PropertyType.IsClass ||
