@@ -35,10 +35,13 @@ namespace VixenModules.Effect.Twinkle
 
 		protected override void TargetNodesChanged()
 		{
-			CheckForInvalidColorData();
-			if (DepthOfEffect > TargetNodes.FirstOrDefault().GetMaxChildDepth() - 1)
+			if (TargetNodes.Any())
 			{
-				DepthOfEffect = 0;
+				CheckForInvalidColorData();
+				if (DepthOfEffect > TargetNodes.FirstOrDefault().GetMaxChildDepth() - 1)
+				{
+					DepthOfEffect = 0;
+				}
 			}
 		}
 
