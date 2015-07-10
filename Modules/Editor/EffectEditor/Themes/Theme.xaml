@@ -10,6 +10,26 @@
   <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 
 	<Style TargetType="ToolTip">
+		<Setter Property="OverridesDefaultStyle" Value="True"/>
+		<Setter Property="Foreground" Value="#DDD"/>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type ToolTip}" >
+					<StackPanel Margin="7,1" >
+						<Border Background="#444444" CornerRadius="3" BorderThickness="1" BorderBrush="#888888">
+							<ContentPresenter Margin="7" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+						</Border>
+					</StackPanel>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="ContentTemplate">
+			<Setter.Value>
+				<DataTemplate>
+					<TextBlock TextWrapping="Wrap" MaxWidth="400" TextAlignment="Left" Text="{Binding}" Foreground="#DDD" Background="#444444"/>
+				</DataTemplate>
+			</Setter.Value>
+		</Setter>
 		<Style.Triggers>
 			<Trigger Property="Content"
                  Value="{x:Static sys:String.Empty}">
