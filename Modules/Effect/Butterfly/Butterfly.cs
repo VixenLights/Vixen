@@ -52,11 +52,45 @@ namespace VixenModules.Effect.Butterfly
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"Direction")]
+		[ProviderDescription(@"Direction")]
+		[PropertyOrder(1)]
+		public Direction Direction
+		{
+			get { return _data.Direction; }
+			set
+			{
+				_data.Direction = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"Iterations")]
+		[ProviderDescription(@"Iterations")]
+		[PropertyEditor("SliderEditor")]
+		[NumberRange(1, 20, 1)]
+		[PropertyOrder(2)]
+		public int Iterations
+		{
+			get { return _data.Iterations; }
+			set
+			{
+				_data.Iterations = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Repeat")]
 		[ProviderDescription(@"Repeat")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1, 20, 1)]
-		[PropertyOrder(1)]
+		[PropertyOrder(3)]
 		public int Repeat
 		{
 			get { return _data.Repeat; }
@@ -74,7 +108,7 @@ namespace VixenModules.Effect.Butterfly
 		[ProviderDescription(@"BackgroundSkips")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(2, 10, 1)]
-		[PropertyOrder(2)]
+		[PropertyOrder(4)]
 		public int BackgroundSkips
 		{
 			get { return _data.BackgroundSkips; }
@@ -92,29 +126,13 @@ namespace VixenModules.Effect.Butterfly
 		[ProviderDescription(@"BackgroundChunks")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1, 10, 1)]
-		[PropertyOrder(2)]
+		[PropertyOrder(5)]
 		public int BackgroundChunks
 		{
 			get { return _data.BackgroundChunks; }
 			set
 			{
 				_data.BackgroundChunks = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Direction")]
-		[ProviderDescription(@"Direction")]
-		[PropertyOrder(3)]
-		public Direction Direction
-		{
-			get { return _data.Direction; }
-			set
-			{
-				_data.Direction = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -213,7 +231,7 @@ namespace VixenModules.Effect.Butterfly
 
 			double h=0.0;
 			int maxframe=BufferHt;
-			double position = GetEffectTimeIntervalPosition(effectFrame);
+			double position = (GetEffectTimeIntervalPosition(effectFrame) * Iterations) % 1;
 			int curState = (int)(TimeSpan.TotalMilliseconds*position*repeat);
 			int frame = (BufferHt * curState / (int)TimeSpan.TotalMilliseconds) % maxframe;
 			double offset=curState/TimeSpan.TotalMilliseconds;
@@ -324,7 +342,7 @@ namespace VixenModules.Effect.Butterfly
 
 					}
 					HSV hsv = new HSV(h, 1.0, 1.0);
-					double level = LevelCurve.GetValue(position * 100) / 100;
+					double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(effectFrame) * 100) / 100;
 					if (BackgroundChunks <= 1 || (int)(h*BackgroundChunks) % BackgroundSkips != 0)
 					{
 						if (ColorScheme == ColorScheme.Gradient)

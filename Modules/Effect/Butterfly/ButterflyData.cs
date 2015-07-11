@@ -17,6 +17,7 @@ namespace VixenModules.Effect.Butterfly
 			Gradient = new ColorGradient();
 			Gradient.Colors.Add(new ColorPoint(Color.Red,0.0));
 			Gradient.Colors.Add(new ColorPoint(Color.Lime, 1.0));
+			Iterations = 1;
 			ColorScheme = ColorScheme.Gradient;
 			ButterflyType = ButterflyType.Type1;
 			Repeat = 1;
@@ -52,6 +53,9 @@ namespace VixenModules.Effect.Butterfly
 		public Curve LevelCurve { get; set; }
 
 		[DataMember]
+		public int Iterations { get; set; }
+
+		[DataMember]
 		public StringOrientation Orientation { get; set; }
 
 		public override IModuleDataModel Clone()
@@ -67,7 +71,8 @@ namespace VixenModules.Effect.Butterfly
 				Gradient = Gradient,
 				Direction = Direction,
 				BackgroundChunks = BackgroundChunks,
-				ColorScheme = ColorScheme
+				ColorScheme = ColorScheme,
+				Iterations = Iterations
 			};
 			return result;
 		}
