@@ -220,6 +220,24 @@ namespace VixenModules.Effect.Alternating
 			protected set { base.IsDirty = value; }
 		}
 
+		//(Numbers represent color/curve pairs, rows are elements columns are intervals)
+		//12341234
+		//23412341
+		//34123412
+		//41234123
+
+		//An offset of 2
+		//12341234
+		//34123412
+		//12341234
+		//34123412
+
+		//Offset 3
+		//12341234
+		//41234123
+		//23412341
+		//12341234
+
 		// renders the given node to the internal ElementData dictionary. If the given node is
 		// not a element, will recursively descend until we render its elements.
 		private EffectIntents RenderNode(ElementNode node)
@@ -227,8 +245,9 @@ namespace VixenModules.Effect.Alternating
 			EffectIntents effectIntents = new EffectIntents();
 			int intervals = 1;
 			var gradientLevelItem = 0;
+			var startIndexOffset = 0;
+			var skip = IntervalSkipCount;
 			int colorCount = Colors.Count();
-			bool alternate = false;
 			
 			if (!EnableStatic)
 			{
@@ -250,9 +269,7 @@ namespace VixenModules.Effect.Alternating
 
 				while (currentNode < totalElements)
 				{
-
 					var elements = nodes.Skip(currentNode).Take(GroupLevel);
-
 					currentNode += (GroupLevel);
 
 					foreach (var element in elements)
@@ -261,11 +278,10 @@ namespace VixenModules.Effect.Alternating
 					}
 
 					gradientLevelItem = ++gradientLevelItem%colorCount;
-
 				}
 
-				alternate = !alternate;
-				gradientLevelItem = alternate?IntervalSkipCount % colorCount:0;
+				startIndexOffset = (skip+startIndexOffset) % colorCount;
+				gradientLevelItem = startIndexOffset;
 				
 				startTime += intervalTime;
 			}
