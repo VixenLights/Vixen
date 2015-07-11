@@ -57,8 +57,8 @@ namespace VixenModules.Effect.Spiral
 		
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Speed")]
-		[ProviderDescription(@"Color")]
+		[ProviderDisplayName(@"Iterations")]
+		[ProviderDescription(@"Iterations")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1,20,1)]
 		[PropertyOrder(1)]
