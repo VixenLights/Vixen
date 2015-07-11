@@ -56,6 +56,11 @@ namespace Vixen.Execution
 			_currentEffects.Clear();
 		}
 
+		public bool Resetting()
+		{
+			return false;
+		}
+
 		private HashSet<Guid> _GetAffectedElements(IEnumerable<IEffectNode> effectNodes)
 		{
 			return new HashSet<Guid>(effectNodes.SelectMany(x => x.Effect.TargetNodes).SelectMany(y => y.GetElementEnumerator()).Select(z => z.Id));

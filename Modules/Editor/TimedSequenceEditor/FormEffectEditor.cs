@@ -61,7 +61,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			
 			sequenceEditorForm.TimelineControl.SelectionChanged += timelineControl_SelectionChanged;
 			_effectPropertyEditorGridEffectEffectPropertiesEditor.PropertyValueChanged += EffectPropertyEditorValueChanged;
-			_effectPropertyEditorGridEffectEffectPropertiesEditor.PreviewChanged += EffectPropertyEditorGridEffectEffectPropertiesEditorPreviewChanged;
+			_effectPropertyEditorGridEffectEffectPropertiesEditor.PreviewChanged += EditorPreviewStateChanged;
 			_previewLoopTimer.Elapsed += PreviewLoopTimerOnElapsed;
 		}
 
@@ -85,7 +85,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			Elements = _sequenceEditorForm.TimelineControl.SelectedElements;
 		}
 
-		private void EffectPropertyEditorGridEffectEffectPropertiesEditorPreviewChanged(object sender, PreviewStateEventArgs e)
+		private void EditorPreviewStateChanged(object sender, PreviewStateEventArgs e)
 		{
 			_previewState = e.State;
 			TogglePreviewState();

@@ -48,10 +48,17 @@ namespace Vixen.Execution.Context
 			_dataSource.AddData(data);
 		}
 
-		public void Clear()
+		public void Clear(bool waitForReset = true)
 		{	
 			_dataSource.ClearData();
 			_currentEffects.Reset();
+			if (waitForReset)
+			{
+				while (_currentEffects.Resetting())
+				{
+					//wait for reset to occur.
+				}
+			}
 		}
 
 		protected override IDataSource _DataSource

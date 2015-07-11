@@ -54,6 +54,11 @@ namespace Vixen.Execution
 			_reset = true;
 		}
 
+		public bool Resetting()
+		{
+			return _reset;
+		}
+
 		private void _GetElementsAffected(IEnumerable<IEffectNode> effects)
 		{
 			_affectedElements.Clear();
