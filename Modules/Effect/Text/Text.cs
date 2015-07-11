@@ -76,8 +76,8 @@ namespace VixenModules.Effect.Text
 
 		[Value]
 		[ProviderCategory(@"Movement", 1)]
-		[ProviderDisplayName(@"Speed")]
-		[ProviderDescription(@"Speed")]
+		[ProviderDisplayName(@"Iterations")]
+		[ProviderDescription(@"Iterations")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1, 20, 1)]
 		[PropertyOrder(6)]
@@ -124,23 +124,6 @@ namespace VixenModules.Effect.Text
 			{
 				_data.PositionX = value;
 				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Movement", 1)]
-		[ProviderDisplayName(@"FitTime")]
-		[ProviderDescription(@"FitTime")]
-		[PropertyOrder(4)]
-		public bool FitToTime
-		{
-			get { return _data.FitToTime; }
-			set
-			{
-				_data.FitToTime = value;
-				IsDirty = true;
-				UpdateSpeedAttribute();
 				OnPropertyChanged();
 			}
 		}
@@ -280,23 +263,23 @@ namespace VixenModules.Effect.Text
 
 		private void UpdateAllAttributes()
 		{
-			UpdateSpeedAttribute(false);
+			//UpdateSpeedAttribute(false);
 			UpdatePositionXAttribute(false);
 			TypeDescriptor.Refresh(this);
 		}
 
-		private void UpdateSpeedAttribute(bool refresh=true)
-		{
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1)
-			{
-				{"Speed", !FitToTime}
-			};
-			SetBrowsable(propertyStates);
-			if (refresh)
-			{
-				TypeDescriptor.Refresh(this);
-			}
-		}
+		//private void UpdateSpeedAttribute(bool refresh=true)
+		//{
+		//	Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1)
+		//	{
+		//		{"Speed", !FitToTime}
+		//	};
+		//	SetBrowsable(propertyStates);
+		//	if (refresh)
+		//	{
+		//		TypeDescriptor.Refresh(this);
+		//	}
+		//}
 
 		private void UpdatePositionXAttribute(bool refresh=true)
 		{
@@ -352,23 +335,14 @@ namespace VixenModules.Effect.Text
 					int ylimit = (BufferHt + maxht) * 8 + 1;
 					int offsetLeft = (((BufferWi - _maxTextSize) / 2) * 2 + Position) / 2;
 					int offsetTop = (((BufferHt - maxht)/2)*2 + Position) / 2;
-					double intervalPosition = GetEffectTimeIntervalPosition(frame);
-
+					double intervalPosition = (GetEffectTimeIntervalPosition(frame) * Speed) % 1;
 					Point point;
 					
 					switch (Direction)
 					{
 						case TextDirection.Left:
 							// left
-							int leftX;
-							if (FitToTime)
-							{
-								leftX = BufferWi - (int)(intervalPosition * (textsize.Width + BufferWi));
-							}
-							else
-							{
-								leftX = BufferWi - (Speed * frame) % xlimit / 8;
-							}
+							int leftX = BufferWi - (int)(intervalPosition * (textsize.Width + BufferWi));
 							
 							point =
 								new Point(Convert.ToInt32(CenterStop ? Math.Max(leftX, (BufferWi - (int)textsize.Width) / 2) : leftX), offsetTop);
@@ -378,47 +352,24 @@ namespace VixenModules.Effect.Text
 							break;
 						case TextDirection.Right:
 							// right
-							int rightX;
-							if (FitToTime)
-							{
-								rightX = -_maxTextSize + (int)(intervalPosition * (_maxTextSize + BufferWi));
-							}
-							else
-							{
-								rightX = (Speed * frame) % xlimit / 8 - BufferWi;
-							}
+							int	rightX = -_maxTextSize + (int)(intervalPosition * (_maxTextSize + BufferWi));
+							
 							point =
 								new Point(Convert.ToInt32(CenterStop ? Math.Min(rightX, (BufferWi - (int)textsize.Width) / 2) : rightX), offsetTop);
 							DrawText(text, graphics, point);
 							break;
 						case TextDirection.Up:
 							// up
-
-							int upY;
-							if (FitToTime)
-							{
-								upY = BufferHt - (int)(((textsize.Height * numberLines) + BufferHt) * intervalPosition);
-							}
-							else
-							{
-								upY = BufferHt - (Speed * frame) % ylimit / 8;
-							}
-
+							int	upY = BufferHt - (int)(((textsize.Height * numberLines) + BufferHt) * intervalPosition);
+							
 							point = new Point(offsetLeft,
 								Convert.ToInt32(CenterStop ? Math.Max(upY, (BufferHt - (int)(textsize.Height * numberLines)) / 2): upY));
 							DrawText(text, graphics, point);
 							break;
 						case TextDirection.Down:
 							// down
-							int downY;
-							if (FitToTime)
-							{
-								downY = -(int)(textsize.Height * numberLines) + (int)(((textsize.Height * numberLines) + BufferHt) * intervalPosition);
-							}
-							else
-							{
-								downY = (Speed * frame) % ylimit / 8 - BufferHt;
-							}
+							int	downY = -(int)(textsize.Height * numberLines) + (int)(((textsize.Height * numberLines) + BufferHt) * intervalPosition);
+			
 							point = new Point(offsetLeft,
 								Convert.ToInt32(CenterStop
 									? Math.Min(downY, (BufferHt - (int)(textsize.Height * numberLines)) / 2)

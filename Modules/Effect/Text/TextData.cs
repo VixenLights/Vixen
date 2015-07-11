@@ -15,13 +15,12 @@ namespace VixenModules.Effect.Text
 	{
 		public TextData()
 		{
-			Colors = new List<ColorGradient>{new ColorGradient(Color.Red), new ColorGradient(Color.Lime), new ColorGradient(Color.Blue)};
-			Direction = TextDirection.Up;
-			Speed = 5;
+			Colors = new List<ColorGradient>{new ColorGradient(Color.Red)};
+			Direction = TextDirection.Left;
+			Speed = 1;
 			Position = 0;
 			PositionX = 0;
 			CenterStop = false;
-			FitToTime = true;
 			Text = new List<string>{String.Empty};
 			GradientMode = GradientMode.AcrossElement;
 			Orientation=StringOrientation.Vertical;
@@ -42,9 +41,6 @@ namespace VixenModules.Effect.Text
 
 		[DataMember]
 		public bool CenterText { get; set; }
-
-		[DataMember]
-		public bool FitToTime { get; set; }
 
 		[DataMember]
 		public GradientMode GradientMode { get; set; }
@@ -82,7 +78,6 @@ namespace VixenModules.Effect.Text
 				GradientMode = GradientMode,
 				TextMode = TextMode,
 				CenterText = CenterText,
-				FitToTime = FitToTime,
 				Font = new SerializableFont(Font.FontValue)
 			};
 			return result;
