@@ -217,26 +217,28 @@ namespace VixenModules.Editor.EffectEditor.Input
 			_draggedElt = e.Source as UIElement;
 			_dragStartPoint = e.GetPosition(CurrentDragSourceAdvisor.GetTopContainer());
 			_offsetPoint = e.GetPosition(_draggedElt);
-			_isMouseDown = true;
 		}
 
 		private static void DragSource_PreviewMouseMove(object sender, MouseEventArgs e)
 		{
-			if (_isMouseDown && IsDragGesture(e.GetPosition(CurrentDragSourceAdvisor.GetTopContainer())))
+			if (e.LeftButton == MouseButtonState.Pressed &&
+			    IsDragGesture(e.GetPosition(CurrentDragSourceAdvisor.GetTopContainer())))
 			{
 				DragStarted(sender as UIElement);
+			}
+			else
+			{
+				Mouse.Capture(null);
 			}
 		}
 
 		private static void DragSource_PreviewMouseUp(object sender, MouseButtonEventArgs e)
 		{
-			_isMouseDown = false;
 			Mouse.Capture(null);
 		}
 
 		private static void DragStarted(UIElement uiElt)
 		{
-			_isMouseDown = false;
 			Mouse.Capture(uiElt);
 
 			DataObject data = CurrentDragSourceAdvisor.GetDataObject(_draggedElt);
