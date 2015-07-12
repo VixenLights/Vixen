@@ -51,9 +51,9 @@
 			// toolStrip1
 			// 
 			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.toolStripButtonEditMarkCollection,
-			this.toolStripButtonAddMarkCollection,
-			this.toolStripButtonDeleteMarkCollection});
+            this.toolStripButtonEditMarkCollection,
+            this.toolStripButtonAddMarkCollection,
+            this.toolStripButtonDeleteMarkCollection});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 0);
 			this.toolStrip1.Name = "toolStrip1";
 			this.toolStrip1.Size = new System.Drawing.Size(256, 25);
@@ -96,10 +96,10 @@
 			// 
 			this.numericUpDownStandardNudge.Location = new System.Drawing.Point(7, 20);
 			this.numericUpDownStandardNudge.Maximum = new decimal(new int[] {
-			1000,
-			0,
-			0,
-			0});
+            1000,
+            0,
+            0,
+            0});
 			this.numericUpDownStandardNudge.Name = "numericUpDownStandardNudge";
 			this.numericUpDownStandardNudge.Size = new System.Drawing.Size(48, 20);
 			this.numericUpDownStandardNudge.TabIndex = 1;
@@ -110,10 +110,10 @@
 			// 
 			this.numericUpDownSuperNudge.Location = new System.Drawing.Point(72, 20);
 			this.numericUpDownSuperNudge.Maximum = new decimal(new int[] {
-			1000,
-			0,
-			0,
-			0});
+            1000,
+            0,
+            0,
+            0});
 			this.numericUpDownSuperNudge.Name = "numericUpDownSuperNudge";
 			this.numericUpDownSuperNudge.Size = new System.Drawing.Size(48, 20);
 			this.numericUpDownSuperNudge.TabIndex = 3;
@@ -135,8 +135,9 @@
 			// label3
 			// 
 			this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-			| System.Windows.Forms.AnchorStyles.Right)));
-			this.label3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.label3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
+			this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.label3.Location = new System.Drawing.Point(3, 3);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(253, 14);
@@ -146,6 +147,7 @@
 			// label2
 			// 
 			this.label2.AutoSize = true;
+			this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.label2.Location = new System.Drawing.Point(56, 23);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(12, 13);
@@ -154,10 +156,12 @@
 			// 
 			// listViewMarkCollections
 			// 
+			this.listViewMarkCollections.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.listViewMarkCollections.CheckBoxes = true;
 			this.listViewMarkCollections.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-			this.columnHeader1});
+            this.columnHeader1});
 			this.listViewMarkCollections.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.listViewMarkCollections.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.listViewMarkCollections.FullRowSelect = true;
 			this.listViewMarkCollections.HideSelection = false;
 			this.listViewMarkCollections.LabelEdit = true;
@@ -180,6 +184,8 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoScroll = true;
+			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.ClientSize = new System.Drawing.Size(256, 402);
 			this.ControlBox = false;
 			this.Controls.Add(this.listViewMarkCollections);

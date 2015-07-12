@@ -125,6 +125,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			listViewCurves.AllowDrop = true;
 			listViewGradients.AllowDrop = true;
 
+			listViewColors.BackColor = Color.FromArgb(68, 68, 68);
+			listViewCurves.BackColor = Color.FromArgb(68, 68, 68);
+			listViewGradients.BackColor = Color.FromArgb(68, 68, 68);
 		}
 
 		private void ColorPalette_Load(object sender, EventArgs e)
@@ -209,7 +212,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			using (SolidBrush brush = new SolidBrush(colorItem))
 			{
 				gfx.FillRectangle(brush, 0, 0, 48, 48);
-				gfx.DrawRectangle(new Pen(Color.Black, 2), 0, 0, 48, 48);
+				gfx.DrawRectangle(new Pen(Color.FromArgb(136,136,136), 2), 0, 0, 48, 48);
 			}
 
 			listViewColors.LargeImageList.Images.Add(colorItem.ToString(), result);
@@ -220,6 +223,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				ImageKey = colorItem.ToString(),
 				Tag = colorItem
 			};
+			item.ForeColor = Color.FromArgb(221, 221, 221);
 			return item;
 		}
 
@@ -249,10 +253,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				Curve c = kvp.Value;
 				string name = kvp.Key;
 
-				listViewCurves.LargeImageList.Images.Add(name, c.GenerateCurveImage(new Size(48, 48)));
+				var image = c.GenerateGenericCurveImage(new Size(48, 48));
+				Graphics gfx = Graphics.FromImage(image);
+				gfx.DrawRectangle(new Pen(Color.FromArgb(136, 136, 136), 2), 0, 0, 48, 48);
+
+				listViewCurves.LargeImageList.Images.Add(name, image);
 
 				ListViewItem item = new ListViewItem {Text = name, Name = name, ImageKey = name, Tag = c};
-
+				item.ForeColor = Color.FromArgb(221, 221, 221);
 				if (item != null) listViewCurves.Items.Add(item);
 			}
 
@@ -278,10 +286,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				var result = new Bitmap(gradient.GenerateColorGradientImage(new Size(48, 48), false), 48, 48);
 				Graphics gfx = Graphics.FromImage(result);
-				gfx.DrawRectangle(new Pen(Color.Black, 2), 0, 0, 48, 48);
+				gfx.DrawRectangle(new Pen(Color.FromArgb(136,136,136), 2), 0, 0, 48, 48);
 				listViewGradients.LargeImageList.Images.Add(name, result);
 
 				ListViewItem item = new ListViewItem {Text = name, Name = name, ImageKey = name, Tag = gradient};
+				item.ForeColor = Color.FromArgb(221, 221, 221);
 
 				listViewGradients.Items.Add(item);
 			}

@@ -64,7 +64,7 @@ namespace Common.Controls.Timeline
 			RowSeparatorColor = Color.Black;
 			MajorGridlineColor = Color.FromArgb(120, 120, 120);
 			GridlineInterval = TimeSpan.FromSeconds(1.0);
-			BackColor = Color.FromArgb(60, 60, 60);
+			BackColor = Color.FromArgb(68, 68, 68);
 			SelectionColor = Color.FromArgb(100, 40, 100, 160);
 			SelectionBorder = Color.Blue;
 			DrawColor = Color.FromArgb(100, 255, 255, 255);

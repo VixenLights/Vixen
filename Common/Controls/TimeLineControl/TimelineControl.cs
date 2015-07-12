@@ -145,7 +145,7 @@ namespace Common.Controls.Timeline
 		private void InitializePanel1()
 		{
 			splitContainer.Panel1.SuspendLayout();
-			splitContainer.Panel1.BackColor = Color.FromArgb(200, 200, 200);
+			splitContainer.Panel1.BackColor = Color.FromArgb(51, 51, 51); ;//Color.FromArgb(200, 200, 200);
 
 			// Row List
 			timelineRowList = new RowList()

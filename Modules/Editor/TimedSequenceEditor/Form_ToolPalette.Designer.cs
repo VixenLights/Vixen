@@ -90,6 +90,7 @@
 			// 
 			// toolStripColors
 			// 
+			this.toolStripColors.BackColor = System.Drawing.SystemColors.Control;
 			this.toolStripColors.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripButtonEditColor,
             this.toolStripButtonNewColor,
@@ -157,6 +158,7 @@
 			this.listViewColors.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.listViewColors.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.listViewColors.Location = new System.Drawing.Point(0, 28);
 			this.listViewColors.MultiSelect = false;
 			this.listViewColors.Name = "listViewColors";
@@ -172,18 +174,20 @@
 			// 
 			// tabCurves
 			// 
+			this.tabCurves.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.tabCurves.Controls.Add(this.toolStripCurves);
 			this.tabCurves.Controls.Add(this.checkBoxLinkCurves);
 			this.tabCurves.Controls.Add(this.listViewCurves);
+			this.tabCurves.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.tabCurves.Location = new System.Drawing.Point(4, 22);
 			this.tabCurves.Name = "tabCurves";
 			this.tabCurves.Size = new System.Drawing.Size(518, 364);
 			this.tabCurves.TabIndex = 2;
 			this.tabCurves.Text = "Curves";
-			this.tabCurves.UseVisualStyleBackColor = true;
 			// 
 			// toolStripCurves
 			// 
+			this.toolStripCurves.BackColor = System.Drawing.SystemColors.Control;
 			this.toolStripCurves.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripButtonEditCurve,
             this.toolStripButtonNewCurve,
@@ -262,6 +266,7 @@
 			this.listViewCurves.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.listViewCurves.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.listViewCurves.Location = new System.Drawing.Point(0, 28);
 			this.listViewCurves.Name = "listViewCurves";
 			this.listViewCurves.Size = new System.Drawing.Size(518, 310);
@@ -275,6 +280,7 @@
 			// 
 			// tabGradients
 			// 
+			this.tabGradients.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.tabGradients.Controls.Add(this.toolStripGradients);
 			this.tabGradients.Controls.Add(this.checkBoxLinkGradients);
 			this.tabGradients.Controls.Add(this.listViewGradients);
@@ -283,10 +289,10 @@
 			this.tabGradients.Size = new System.Drawing.Size(518, 364);
 			this.tabGradients.TabIndex = 1;
 			this.tabGradients.Text = "Gradients";
-			this.tabGradients.UseVisualStyleBackColor = true;
 			// 
 			// toolStripGradients
 			// 
+			this.toolStripGradients.BackColor = System.Drawing.SystemColors.Control;
 			this.toolStripGradients.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripButtonEditGradient,
             this.toolStripButtonNewGradient,
@@ -352,6 +358,7 @@
 			// 
 			this.checkBoxLinkGradients.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.checkBoxLinkGradients.AutoSize = true;
+			this.checkBoxLinkGradients.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBoxLinkGradients.Location = new System.Drawing.Point(3, 344);
 			this.checkBoxLinkGradients.Name = "checkBoxLinkGradients";
 			this.checkBoxLinkGradients.Size = new System.Drawing.Size(123, 17);
@@ -365,6 +372,7 @@
 			this.listViewGradients.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.listViewGradients.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.listViewGradients.Location = new System.Drawing.Point(3, 28);
 			this.listViewGradients.Name = "listViewGradients";
 			this.listViewGradients.Size = new System.Drawing.Size(518, 310);
@@ -380,6 +388,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.BackColor = System.Drawing.SystemColors.Window;
 			this.ClientSize = new System.Drawing.Size(526, 390);
 			this.ControlBox = false;
 			this.Controls.Add(this.tabControl1);
@@ -388,6 +397,7 @@
             | WeifenLuo.WinFormsUI.Docking.DockAreas.DockTop) 
             | WeifenLuo.WinFormsUI.Docking.DockAreas.DockBottom)));
 			this.DoubleBuffered = true;
+			this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Name = "Form_ToolPalette";
 			this.Text = "Preset Libraries";
 			this.Load += new System.EventHandler(this.ColorPalette_Load);

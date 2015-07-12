@@ -24,8 +24,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void Form_Effects_Load(object sender, EventArgs e)
 		{
-			//treeEffects.Sorted = true;
+			
 			LoadAvailableEffects();
+			
 		}
 
 
@@ -55,6 +56,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						break;
 				}
 				TreeNode node = new TreeNode(effectDesriptor.EffectName) {Tag = effectDesriptor.TypeId};
+				node.ForeColor = Color.FromArgb(221, 221, 221);
 				parentNode.Nodes.Add(node);
 				// Set the image
 				Image image = effectDesriptor.GetRepresentativeImage(48, 48);
@@ -139,12 +141,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void treeEffects_AfterExpand(object sender, TreeViewEventArgs e)
 		{
-			SetNodeImage(e.Node, "bullet_arrow_down.png");
+			SetNodeImage(e.Node, "downarrow.png");
 		}
 
 		private void treeEffects_AfterCollapse(object sender, TreeViewEventArgs e)
 		{
-			SetNodeImage(e.Node, "bullet_arrow_Right.png");
+			SetNodeImage(e.Node, "rightarrow.png");
 		}
 
 		private void treeEffects_AfterSelect(object sender, TreeViewEventArgs e)
