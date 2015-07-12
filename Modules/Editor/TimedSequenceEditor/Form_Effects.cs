@@ -77,6 +77,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					treeEffects.Nodes[0].Expand();
 					treeEffects.Nodes[1].Expand();
 				}
+				treeEffects.Nodes[0].EnsureVisible();
+			
 			}
 		}
 

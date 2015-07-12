@@ -1028,7 +1028,7 @@
 		<Setter Property="BorderThickness" Value="1"/>
 		<Setter Property="CheckedForeground" Value="#DDD"/>
 		<Setter Property="CornerRadius" Value="3"/>
-		<Setter Property="FontSize" Value="8pt"/>
+		<Setter Property="FontSize" Value="7.5pt"/>
 		<Setter Property="FontWeight" Value="Normal"/>
 		<Setter Property="ThumbBorderThickness" Value="1"/>
 		<Setter Property="ThumbCornerRadius" Value="3"/>
@@ -1105,7 +1105,7 @@
       </Setter.Value>
     </Setter>
     <Setter Property="ItemsBackground" Value="#FF333333"/>
-    <Setter Property="ItemsForeground" Value="White"/>
+    <Setter Property="ItemsForeground" Value="#DDDDDD"/>
   </Style>
   
   <!-- TabbedLayout -->
