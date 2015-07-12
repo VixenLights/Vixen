@@ -15,8 +15,7 @@ namespace VixenModules.Effect.Picture
 			EffectType = EffectType.RenderPictureNone;
 			ScalePercent = 1;
 			ScaleToGrid = false;
-			Speed = 5;
-			GifSpeed = 1;
+			Speed = 1;
 			FileName = String.Empty;
 			Orientation=StringOrientation.Vertical;
 			XOffset = 0;
@@ -26,9 +25,6 @@ namespace VixenModules.Effect.Picture
 
 		[DataMember]
 		public EffectType EffectType { get; set; }
-
-		[DataMember]
-		public int GifSpeed { get; set; }
 
 		[DataMember]
 		public int Speed { get; set; }
@@ -70,7 +66,6 @@ namespace VixenModules.Effect.Picture
 				ScaleToGrid = ScaleToGrid,
 				Orientation = Orientation,
 				LevelCurve = new Curve(LevelCurve),
-				GifSpeed = GifSpeed,
 				FileName = FileName
 			};
 			return result;

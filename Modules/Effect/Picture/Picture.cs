@@ -51,23 +51,6 @@ namespace VixenModules.Effect.Picture
 
 		[Value]
 		[ProviderCategory(@"Movement", 1)]
-		[ProviderDisplayName(@"FitTime")]
-		[ProviderDescription(@"FitTime")]
-		[PropertyOrder(4)]
-		public bool FitToTime
-		{
-			get { return _data.FitToTime; }
-			set
-			{
-				_data.FitToTime = value;
-				IsDirty = true;
-				UpdateSpeedAttribute();
-				OnPropertyChanged();
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Movement", 1)]
 		[ProviderDisplayName(@"XOffset")]
 		[ProviderDescription(@"XOffset")]
 		[PropertyEditor("SliderEditor")]
@@ -102,19 +85,20 @@ namespace VixenModules.Effect.Picture
 			}
 		}
 
+		
 		[Value]
-		[ProviderCategory(@"Movement", 1)]
-		[ProviderDisplayName(@"GifSpeed")]
-		[ProviderDescription(@"GifSpeed")]
+		[ProviderCategory(@"Movement", 2)]
+		[ProviderDisplayName(@"Iterations")]
+		[ProviderDescription(@"Iterations")]
 		[PropertyEditor("SliderEditor")]
-		[NumberRange(0, 20, 1)]
-		[PropertyOrder(4)]
-		public int GifSpeed
+		[NumberRange(1, 20, 1)]
+		[PropertyOrder(2)]
+		public int Speed
 		{
-			get { return _data.GifSpeed; }
+			get { return _data.Speed; }
 			set
 			{
-				_data.GifSpeed = value;
+				_data.Speed = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -156,26 +140,6 @@ namespace VixenModules.Effect.Picture
 				OnPropertyChanged();
 			}
 		}
-
-		[Value]
-		[ProviderCategory(@"Config", 2)]
-		[ProviderDisplayName(@"Speed")]
-		[ProviderDescription(@"Speed")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(1, 20, 1)]
-		[PropertyOrder(2)]
-		public int Speed
-		{
-			get { return _data.Speed; }
-			set
-			{
-				_data.Speed = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
-		
 
 		[Value]
 		[ProviderCategory(@"Config", 2)]
@@ -255,24 +219,11 @@ namespace VixenModules.Effect.Picture
 
 		private void UpdateAttributes()
 		{
-			UpdateSpeedAttribute(false);
 			UpdateScaleAttribute(false);
 			TypeDescriptor.Refresh(this);
 		}
 
-		private void UpdateSpeedAttribute(bool refresh = true)
-		{
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1)
-			{
-				{"Speed", !FitToTime}
-			};
-			SetBrowsable(propertyStates);
-			if (refresh)
-			{
-				TypeDescriptor.Refresh(this);
-			}
-		}
-
+		
 		private void UpdateScaleAttribute(bool refresh = true)
 		{
 			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1)
@@ -369,24 +320,12 @@ namespace VixenModules.Effect.Picture
 		{
 			if (_image == null) return;
 			const int speedfactor = 4;
-			double position = GetEffectTimeIntervalPosition(frame);
-			double level = LevelCurve.GetValue(position * 100) / 100;
-
-			if (_frameCount > 1)
-			{
-				if (FitToTime && GifSpeed==0)
-				{
-					CalculateImageNumberByPosition(position);
-				}
-				else
-				{
-					CalculateImageNumberBySpeed();
-				}
-
-				_image.SelectActiveFrame(_dimension,(int) _currentGifImageNum);
+			double position = (GetEffectTimeIntervalPosition(frame) * Speed) % 1;
+			double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
+			
+			CalculateImageNumberByPosition(position);
+			_image.SelectActiveFrame(_dimension,(int) _currentGifImageNum);
 				
-			}
-
 			_scaledImage = ScaleToGrid ? ScaleImage(_image, BufferWi, BufferHt) : ScaleImage(_image, _image.Width * ScalePercent / 100, _image.Height * ScalePercent / 100);
 			_fp = new FastPixel.FastPixel(_scaledImage);
 			
@@ -403,29 +342,14 @@ namespace VixenModules.Effect.Picture
 				case EffectType.RenderPicturePeekaboo0:
 				case EffectType.RenderPicturePeekaboo180:
 					//Peek a boo
-					if (FitToTime)
+					yoffset = -(BufferHt) + (int)((BufferHt+5)*position*2);
+					if (yoffset > 10)
 					{
-						yoffset = -(BufferHt) + (int)((BufferHt+5)*position*2);
-						if (yoffset > 10)
-						{
-							yoffset = -yoffset + 10; //reverse direction
-						}
-						else if (yoffset >= -1)
-						{
-							yoffset = -1; //pause in middle
-						}
+						yoffset = -yoffset + 10; //reverse direction
 					}
-					else
+					else if (yoffset >= -1)
 					{
-						yoffset = Convert.ToInt32(state / speedfactor - BufferHt);
-						if (yoffset > 10)
-						{
-							yoffset = -yoffset + 10; //reverse direction
-						}
-						else if (yoffset > 0)
-						{
-							yoffset = 0; //pause in middle
-						}
+						yoffset = -1; //pause in middle
 					}
 					
 					break;
@@ -449,38 +373,23 @@ namespace VixenModules.Effect.Picture
 						yoffset = (imgwidth - BufferHt) / 2; //adjust offsets for other axis	
 					}
 
-					if (FitToTime)
+					if (Orientation == StringOrientation.Vertical)
 					{
-						if (Orientation == StringOrientation.Vertical)
-						{
-							xoffset = -(BufferHt) + (int) ((BufferHt + 5)*position*2);
-						}
-						else
-						{
-							xoffset = -(BufferWi) + (int)((BufferWi + 5) * position * 2);
-						}
-						if (xoffset > 10)
-						{
-							xoffset = -xoffset + 10; //reverse direction
-						}
-						else if (xoffset >= -1)
-						{
-							xoffset = -1; //pause in middle
-						}
+						xoffset = -(BufferHt) + (int) ((BufferHt + 5)*position*2);
 					}
 					else
 					{
-						xoffset = Convert.ToInt32(state/speedfactor - BufferHt); // * speedfactor; //draw_at = (state < BufferHt)? state
-					
-						if (xoffset > 10)
-						{
-							xoffset = -xoffset + 10; //reverse direction
-						}
-						else if (xoffset > 0)
-						{
-							xoffset = 0; //pause in middle
-						}
+						xoffset = -(BufferWi) + (int)((BufferWi + 5) * position * 2);
 					}
+					if (xoffset > 10)
+					{
+						xoffset = -xoffset + 10; //reverse direction
+					}
+					else if (xoffset >= -1)
+					{
+						xoffset = -1; //pause in middle
+					}
+					
 					break;
 			}
 
@@ -501,104 +410,46 @@ namespace VixenModules.Effect.Picture
 						{
 							case EffectType.RenderPictureLeft:
 								// left
-								int leftX;
-								if (FitToTime)
-								{
-									
-									leftX = x + (BufferWi - (int)(position * (imgwidth + BufferWi)));
-								}
-								else
-								{
-									leftX = Convert.ToInt32(x + BufferWi - (state%((imgwidth + BufferWi)*speedfactor))/speedfactor);
-								}
+								int leftX = x + (BufferWi - (int)(position * (imgwidth + BufferWi)));
+								
 								frameBuffer.SetPixel(leftX + xOffsetAdj, yoffset - y + yOffsetAdj, hsv);
 								break;
 							case EffectType.RenderPictureRight:
 								// right
-								int rightX;
-								if (FitToTime)
-								{
-									rightX = x + -imgwidth + (int)(position * (imgwidth + BufferWi));
-								}
-								else
-								{
-									rightX = Convert.ToInt32(x + (state % ((imgwidth + BufferWi) * speedfactor)) / speedfactor - imgwidth);
-								}
-
+								int rightX = x + -imgwidth + (int)(position * (imgwidth + BufferWi));
+								
 								frameBuffer.SetPixel(rightX + xOffsetAdj, yoffset - y + yOffsetAdj, hsv);
 								break;
 							case EffectType.RenderPictureUp:
 								// up
-								int upY;
-								if (FitToTime)
-								{
-									upY = (int)((imght + BufferHt) *position) - y;
-								}
-								else
-								{
-									upY = Convert.ToInt32((state%((imght + BufferHt)*speedfactor))/speedfactor - y);
-								}
+								int upY = (int)((imght + BufferHt) *position) - y;
+								
 								frameBuffer.SetPixel(x - xoffset + xOffsetAdj, upY + yOffsetAdj, hsv);
 								break;
 							case EffectType.RenderPictureDown:
 								// down
-								int downY;
-								if (FitToTime)
-								{
-									downY = (BufferHt + imght-1)  - (int)((imght + BufferHt) * position) - y;
-								}
-								else
-								{
-									downY = Convert.ToInt32(BufferHt + imght - y - (state % ((imght + BufferHt) * speedfactor)) / speedfactor);
-								}
+								int downY = (BufferHt + imght-1)  - (int)((imght + BufferHt) * position) - y;
+								
 								frameBuffer.SetPixel(x - xoffset + xOffsetAdj, downY+yOffsetAdj, hsv);
 								break;
 							case EffectType.RenderPictureUpleft:
-								int upLeftY;
-								if (FitToTime)
-								{
-									upLeftY = (int)((imght + BufferHt) * position) - y;
-								}
-								else
-								{
-									upLeftY = Convert.ToInt32((state % ((imght + BufferHt) * speedfactor)) / speedfactor - y);
-								}
+								int upLeftY = (int)((imght + BufferHt) * position) - y;
+								
 								frameBuffer.SetPixel(Convert.ToInt32(x + BufferWi - (state % ((imgwidth + BufferWi) * speedfactor)) / speedfactor) + xOffsetAdj, upLeftY+yOffsetAdj, hsv);
 								break; // up-left
 							case EffectType.RenderPictureDownleft:
-								int downLeftY;
-								if (FitToTime)
-								{
-									downLeftY = BufferHt + imght - (int)((imght + BufferHt) * position) - y;
-								}
-								else
-								{
-									downLeftY = Convert.ToInt32(BufferHt + imght - y - (state % ((imght + BufferHt) * speedfactor)) / speedfactor);
-								}
+								int downLeftY = BufferHt + imght - (int)((imght + BufferHt) * position) - y;
+								
 								frameBuffer.SetPixel(Convert.ToInt32(x + BufferWi - (state % ((imgwidth + BufferWi) * speedfactor)) / speedfactor) + xOffsetAdj, downLeftY+yOffsetAdj, hsv);
 								break; // down-left
 							case EffectType.RenderPictureUpright:
-								int upRightY;
-								if (FitToTime)
-								{
-									upRightY = (int)((imght + BufferHt) * position) - y;
-								}
-								else
-								{
-									upRightY = Convert.ToInt32((state % ((imght + BufferHt) * speedfactor)) / speedfactor - y);
-								}
+								int upRightY = (int)((imght + BufferHt) * position) - y;
+								
 								frameBuffer.SetPixel(Convert.ToInt32(x + (state % ((imgwidth + BufferWi) * speedfactor)) / speedfactor - imgwidth)+xOffsetAdj, upRightY+yOffsetAdj, hsv);
 								break; // up-right
 							case EffectType.RenderPictureDownright:
-								int downRightY;
-								if (FitToTime)
-								{
-									downRightY = BufferHt + imght - (int)((imght + BufferHt) * position) - y;
-								}
-								else
-								{
-									downRightY = Convert.ToInt32(BufferHt + imght - y - (state % ((imght + BufferHt) * speedfactor)) / speedfactor);
-								}
+								int downRightY = BufferHt + imght - (int)((imght + BufferHt) * position) - y;
+								
 								frameBuffer.SetPixel(Convert.ToInt32(x + (state % ((imgwidth + BufferWi) * speedfactor)) / speedfactor - imgwidth) + xOffsetAdj, downRightY+yOffsetAdj, hsv);
 								break; // down-right
 							case EffectType.RenderPicturePeekaboo0:
@@ -632,23 +483,7 @@ namespace VixenModules.Effect.Picture
 
 		private void CalculateImageNumberByPosition(double position)
 		{
-			_currentGifImageNum = position*(_frameCount-1);
-		}
-
-		private void CalculateImageNumberBySpeed()
-		{
-			if (GifSpeed > 0)
-			{
-				_currentGifImageNum += GifSpeed*.05;
-			}
-			else
-			{
-				_currentGifImageNum++;
-			}
-			if (_currentGifImageNum >= _frameCount)
-			{
-				_currentGifImageNum = 0;
-			}
+			_currentGifImageNum = Math.Round(position*(_frameCount-1));
 		}
 
 		public static Bitmap ScaleImage(Image image, int maxWidth, int maxHeight)
