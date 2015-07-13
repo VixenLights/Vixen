@@ -66,8 +66,8 @@ namespace VixenModules.Sequence.Timed
 		private XElement _Version_0_to_1(XElement content)
 		{
 			MessageBox.Show(
-				@"Migrating sequence from version 0 to version 1.\nChanges include moving Nutcracker and Audio files to the common media folder.\n"+
-				@"These changes are not backward compatible");
+				string.Format("Migrating sequence from version 0 to version 1. Changes include moving Nutcracker and Audio files to the common media folder.{0}{0}"+
+				"These changes are not backward compatible", Environment.NewLine), "Sequence Upgrade", MessageBoxButtons.OK, MessageBoxIcon.Information);
 			//  3/14/2015
 			//Migrate full path name of the background image to just the filename. Code will now look 
  			//relative to the profile for the module path to the filenames
@@ -170,8 +170,10 @@ namespace VixenModules.Sequence.Timed
 		private XElement _Version_1_to_2(XElement content)
 		{
 			MessageBox.Show(
-				@"Migrating sequence from version 1 to version 2.\nChanges include upgrades to the Alternating effect to allow more than 2 colors.\n" +
-				@"These changes are not backward compatible");
+				string.Format(
+					"Migrating sequence from version 1 to version 2. Changes include upgrades to the Alternating effect to allow more than 2 colors.{0}{0}" +
+					"These changes are not backward compatible.",
+					Environment.NewLine), "Sequence Upgrade", MessageBoxButtons.OK, MessageBoxIcon.Information);
 			//This migration deals with changing the Alternating effect to a Multi Alternating
 			//Style that allows N number of colors. 
 			var namespaces = new XmlNamespaceManager(new NameTable());

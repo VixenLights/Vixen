@@ -40,7 +40,7 @@ namespace Vixen.IO
 		{
 			if (contentVersion > targetVersion)
 			{
-				MessageBox.Show("You are attempting to open a configuration from a newer version of Vixen that may not be compatible.");
+				MessageBox.Show("You are attempting to open a configuration from a newer version of Vixen that may not be compatible.", "Migration", MessageBoxButton.OK, MessageBoxImage.Warning);
 			}
 			return contentVersion < targetVersion;
 		}
