@@ -344,6 +344,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 			base.OnMouseDown(e);
 			if (e.LeftButton == MouseButtonState.Pressed)
 			{
+				_holdValue = Value;
 				_isMouseDown = true;
 				_dragStartPoint = e.GetPosition(this);
 
