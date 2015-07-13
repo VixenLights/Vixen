@@ -50,8 +50,8 @@
 		<controls:DoubleEditor
 			x:Name="PART_editor"
 			Value="{Binding Value, Mode=TwoWay}"
-			Delay="250"
-			Interval="100"
+			Delay="300"
+			Interval="500"
 			Minimum="{Binding ParentProperty.Metadata[NumberRange].Minimum}"
 			Maximum="{Binding ParentProperty.Metadata[NumberRange].Maximum}"
 			DefaultChange="{Binding ParentProperty.Metadata[NumberRange].Tick}"
@@ -63,8 +63,8 @@
 		<controls:IntegerEditor
 			x:Name="PART_editor"
 			Value="{Binding Value, Mode=TwoWay}"
-			Delay="250"
-			Interval="100"
+			Delay="300"
+			Interval="500"
 			Minimum="{Binding ParentProperty.Metadata[NumberRange].Minimum}"
 			Maximum="{Binding ParentProperty.Metadata[NumberRange].Maximum}"
 			DefaultChange="{Binding ParentProperty.Metadata[NumberRange].Tick}"

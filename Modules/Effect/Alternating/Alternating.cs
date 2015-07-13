@@ -246,8 +246,11 @@ namespace VixenModules.Effect.Alternating
 			int intervals = 1;
 			var gradientLevelItem = 0;
 			var startIndexOffset = 0;
+			//make local hold variables to prevent changes in the middle of rendering.
+			int group = GroupLevel;
 			var skip = IntervalSkipCount;
 			int colorCount = Colors.Count();
+			
 			
 			if (!EnableStatic)
 			{
@@ -269,8 +272,8 @@ namespace VixenModules.Effect.Alternating
 
 				while (currentNode < totalElements)
 				{
-					var elements = nodes.Skip(currentNode).Take(GroupLevel);
-					currentNode += (GroupLevel);
+					var elements = nodes.Skip(currentNode).Take(group);
+					currentNode += (group);
 
 					foreach (var element in elements)
 					{

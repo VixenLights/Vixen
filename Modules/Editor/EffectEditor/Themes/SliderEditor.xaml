@@ -7,7 +7,9 @@
 
 	<DataTemplate x:Key="{x:Static editors:EditorKeys.SliderEditorKey}">
 		<Slider x:Name="PART_editor"
-		        Value="{Binding Value, Delay=250, Mode=TwoWay, Converter={StaticResource IntToDoubleConverter}}"
+				Delay="300"
+				Interval="500"
+		        Value="{Binding Value, Delay=300, Mode=TwoWay, Converter={StaticResource IntToDoubleConverter}}"
 		        Minimum="{Binding ParentProperty.Metadata[NumberRange].Minimum, FallbackValue=0}"
 		        Maximum="{Binding ParentProperty.Metadata[NumberRange].Maximum, FallbackValue=100}"
 		        TickFrequency="{Binding ParentProperty.Metadata[NumberRange].Tick, FallbackValue=1}"
@@ -21,9 +23,9 @@
 
 	<DataTemplate x:Key="{x:Static editors:EditorKeys.SliderDoubleEditorKey}">
 		<Slider x:Name="PART_editor"
-				Delay="250"
-				Interval="100"
-		        Value="{Binding Value, Delay=250, Mode=TwoWay}"
+				Delay="300"
+				Interval="500"
+		        Value="{Binding Value, Delay=300, Mode=TwoWay}"
 		        Minimum="{Binding ParentProperty.Metadata[NumberRange].Minimum, FallbackValue=0}"
 		        Maximum="{Binding ParentProperty.Metadata[NumberRange].Maximum, FallbackValue=100}"
 		        TickFrequency="{Binding ParentProperty.Metadata[NumberRange].Tick, FallbackValue=1}"
@@ -37,9 +39,9 @@
 
 	<DataTemplate x:Key="{x:Static editors:EditorKeys.SliderLevelEditorKey}">
 		<Slider x:Name="PART_editor"
-				Delay="250"
-				Interval="100"
-		        Value="{Binding Value, Delay=250, Mode=TwoWay,Converter={StaticResource LevelValueConverter}}"
+				Delay="300"
+				Interval="500"
+		        Value="{Binding Value, Delay=300, Mode=TwoWay,Converter={StaticResource LevelValueConverter}}"
 		        Minimum="{Binding ParentProperty.Metadata[NumberRange].Minimum, FallbackValue=0}"
 		        Maximum="{Binding ParentProperty.Metadata[NumberRange].Maximum, FallbackValue=100}"
 		        TickFrequency="{Binding ParentProperty.Metadata[NumberRange].Tick, FallbackValue=1}"
@@ -53,9 +55,9 @@
 
 	<DataTemplate x:Key="{x:Static editors:EditorKeys.SliderPercentageEditorKey}">
 		<Slider x:Name="PART_editor"
-				Delay="250"
-				Interval="100"
-		        Value="{Binding Value, Delay=250, Mode=TwoWay,Converter={StaticResource PercentageValueConverter}}"
+				Delay="300"
+				Interval="500"
+		        Value="{Binding Value, Delay=300, Mode=TwoWay,Converter={StaticResource PercentageValueConverter}}"
 		        Minimum="{Binding ParentProperty.Metadata[NumberRange].Minimum, FallbackValue=0}"
 		        Maximum="{Binding ParentProperty.Metadata[NumberRange].Maximum, FallbackValue=100}"
 		        TickFrequency="{Binding ParentProperty.Metadata[NumberRange].Tick, FallbackValue=1}"
