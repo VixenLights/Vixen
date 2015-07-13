@@ -88,11 +88,13 @@ SetCompressorDictSize 64
 	!define BITS 32
 	!define BITS_READABLE "32-bit"
 	!define PROG_FILES $PROGRAMFILES
+	!define VC++_REDIST_NAME "vcredist_x86.exe"
 !else
 	!define BUILD_DIR ".\Release64"
 	!define BITS 64
 	!define BITS_READABLE "64-bit"
 	!define PROG_FILES $PROGRAMFILES64
+	!define VC++_REDIST_NAME "vcredist_x64.exe"
 !endif
 
 
@@ -148,15 +150,6 @@ VIAddVersionKey "FileVersion" "${AssemblyVersion_1}.${AssemblyVersion_2}.${Assem
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
 !define PRODUCT_STARTMENU_REGVAL "NSIS:StartMenuDir"
-
-
-
-
-
-
-
-
-
 
 ; for logging
 !define LVM_GETITEMCOUNT 0x1004
@@ -241,7 +234,7 @@ Function .onInit
 		MessageBox MB_OK|MB_ICONINFORMATION "${PRODUCT_NAME} requires that the Microsoft .NET Framework 4.5.2 is installed. The Microsoft .NET Framework will be downloaded and installed automatically during installation of ${PRODUCT_NAME}."
 		Return
 	${EndIf}
-	
+
 FunctionEnd
 
 
@@ -266,6 +259,9 @@ Section "Application" SEC01
   SetOutPath "$INSTDIR"
   File /r /x *.res /x *.obj /x *.pch /x *.pdb "${BUILD_DIR}\*.*"
 
+  ;Save the VC++ Redistributable files as part of the install image
+  File /oname=$TEMP\${VC++_REDIST_NAME} "${INSTALLERDIR}\Redist\${VC++_REDIST_NAME}"
+  ExecWait "$TEMP\${VC++_REDIST_NAME} /install /quiet"
 
   ; Shortcuts
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
@@ -354,6 +350,8 @@ Section Uninstall
   Delete /REBOOTOK "$INSTDIR\Modules\OutputFilter\DimmingCurve.dll"
   Delete /REBOOTOK "$INSTDIR\Modules\OutputFilter\ColorBreakdown.dll"
   Delete /REBOOTOK "$INSTDIR\Modules\Media\Audio.dll"
+  Delete /REBOOTOK "$INSTDIR\Modules\Analysis\BeatsAndBars.dll"
+  Delete /REBOOTOK "$INSTDIR\Modules\Analysis\QMLibrary.dll"
   Delete /REBOOTOK "$INSTDIR\Modules\EffectEditor\ValueTypes.dll"
   Delete /REBOOTOK "$INSTDIR\Modules\EffectEditor\TwinkleEffectEditor.dll"
   Delete /REBOOTOK "$INSTDIR\Modules\EffectEditor\SpinEffectEditor.dll"

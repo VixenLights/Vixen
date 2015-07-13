@@ -36,7 +36,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Curves", "Modules\App\Curve
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimedSequenceEditor", "Modules\Editor\TimedSequenceEditor\TimedSequenceEditor.csproj", "{47EA8E72-BEAB-44D0-893D-8F184FCFEF31}"
 	ProjectSection(ProjectDependencies) = postProject
+		{4004A720-E4D2-4AAF-B5F6-2288FFDC156A} = {4004A720-E4D2-4AAF-B5F6-2288FFDC156A}
 		{50B78623-FCF4-48AF-93FF-FA87C937028F} = {50B78623-FCF4-48AF-93FF-FA87C937028F}
+		{B848A227-50AA-4FF7-8B7F-73FE36893485} = {B848A227-50AA-4FF7-8B7F-73FE36893485}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pulse", "Modules\Effect\Pulse\Pulse.csproj", "{A815A79E-305D-4167-A0BC-FFA590BB4644}"
@@ -324,6 +326,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QMLibrary", "Modules\Analysis\QMLibrary\QMLibrary.vcxproj", "{4004A720-E4D2-4AAF-B5F6-2288FFDC156A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeatsAndBars", "Modules\Analysis\BeatsAndBars\BeatsAndBars.csproj", "{B848A227-50AA-4FF7-8B7F-73FE36893485}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4004A720-E4D2-4AAF-B5F6-2288FFDC156A} = {4004A720-E4D2-4AAF-B5F6-2288FFDC156A}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

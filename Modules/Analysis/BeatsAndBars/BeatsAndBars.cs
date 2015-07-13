@@ -374,7 +374,9 @@ namespace VixenModules.Analysis.BeatsAndBars
 						BitConverter.ToInt16(m_bSamples, j) : BitConverter.ToInt32(m_bSamples, j);
 				}
 
-				Array.Copy(m_fSamplesAll, m_fSamplesPreview, m_fSamplesPreview.Length);
+				Array.Copy(m_fSamplesAll,
+							m_fSamplesPreview,
+							(int)Math.Min((m_audioModule.Frequency * PREVIEW_TIME), m_fSamplesAll.Length));
 
 				BeatsAndBarsDialog bbSettings = new BeatsAndBarsDialog(m_audioModule);
 				bbSettings.PreviewData = GeneratePreviewData();
