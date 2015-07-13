@@ -172,10 +172,10 @@
     <value>Controls how many explosions occur.</value>
   </data>
   <data name="ExtendPulseEnd" xml:space="preserve">
-    <value>Extends the pulse to the end of the effect from beyond it's normal ending position.</value>
+    <value>Extends the pulse to the end of the effect from beyond it's normal ending position. The extension will be at the ending color and ending value of the brightness intensity. If the intensity ends in zero, this will have no effect.</value>
   </data>
   <data name="ExtendPulseStart" xml:space="preserve">
-    <value>Extends the pulse back to the start of the effect from it's normal starting position.</value>
+    <value>Extends the pulse back to the start of the effect from it's normal starting position. The extension will be at the starting color and starting brightness intensity. If the intensity starts at zero, which is the default, this will have no effect.</value>
   </data>
   <data name="Filename" xml:space="preserve">
     <value>The selected file name.</value>

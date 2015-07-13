@@ -224,7 +224,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Extends the pulse to the end of the effect from beyond it&apos;s normal ending position..
+        ///   Looks up a localized string similar to Extends the pulse to the end of the effect from beyond it&apos;s normal ending position. The extension will be at the ending color and ending value of the brightness intensity. If the intensity ends in zero, this will have no effect..
         /// </summary>
         internal static string ExtendPulseEnd {
             get {
@@ -233,7 +233,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Extends the pulse back to the start of the effect from it&apos;s normal starting position..
+        ///   Looks up a localized string similar to Extends the pulse back to the start of the effect from it&apos;s normal starting position. The extension will be at the starting color and starting brightness intensity. If the intensity starts at zero, which is the default, this will have no effect..
         /// </summary>
         internal static string ExtendPulseStart {
             get {

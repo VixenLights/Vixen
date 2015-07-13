@@ -163,6 +163,7 @@
 			this.listViewMarkCollections.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.listViewMarkCollections.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.listViewMarkCollections.FullRowSelect = true;
+			this.listViewMarkCollections.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.listViewMarkCollections.HideSelection = false;
 			this.listViewMarkCollections.LabelEdit = true;
 			this.listViewMarkCollections.Location = new System.Drawing.Point(0, 25);
