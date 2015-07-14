@@ -153,6 +153,12 @@
       <DependentUpon>PictureComboBox.cs</DependentUpon>
     </Compile>
     <Compile Include="PictureComboBoxItem.cs" />
+    <Compile Include="MessageBoxForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MessageBoxForm.Designer.cs">
+      <DependentUpon>MessageBoxForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="TimelineControl\BlockingCollectionExtensions.cs" />
     <Compile Include="TimelineControl\DelegateBasedObserver.cs" />
     <Compile Include="TimelineControl\Grid.cs">
@@ -375,6 +381,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ElementTree.resx">
       <DependentUpon>ElementTree.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MessageBoxForm.resx">
+      <DependentUpon>MessageBoxForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Wizard\WizardForm.resx">
       <DependentUpon>WizardForm.cs</DependentUpon>

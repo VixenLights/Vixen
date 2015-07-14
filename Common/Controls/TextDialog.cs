@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Resources.Properties;
 
 namespace Common.Controls
 {
@@ -14,6 +15,8 @@ namespace Common.Controls
 		public TextDialog(string prompt)
 		{
 			InitializeComponent();
+			buttonCancel.BackgroundImage = Resources.Properties.Resources.HeadingBackgroundImage;
+			buttonOk.BackgroundImage = Resources.Properties.Resources.HeadingBackgroundImage;
 			labelPrompt.Text = prompt;
 		}
 

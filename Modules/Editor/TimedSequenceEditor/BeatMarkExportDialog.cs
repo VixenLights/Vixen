@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Resources.Properties;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -14,6 +15,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public BeatMarkExportDialog()
 		{
 			InitializeComponent();
+			buttonCancel.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonOK.BackgroundImage = Resources.HeadingBackgroundImage;
 		}
 
 		public bool IsVixen3Selection

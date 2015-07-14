@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using Common.Controls;
 using Common.Resources;
 using VixenModules.Sequence.Timed;
 using Vixen.Execution;
@@ -44,18 +45,36 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			InitializeComponent();
 			Icon = Resources.Icon_Vixen3;
-			buttonPlay.Image = Tools.GetIcon(Resources.control_play_blue, 16);
+			buttonPlay.Image = Tools.GetIcon(Resources.control_play_blue, 24);
 			buttonPlay.Text = "";
-			buttonStop.Image = Tools.GetIcon(Resources.control_stop_blue, 16);
+			buttonStop.Image = Tools.GetIcon(Resources.control_stop_blue, 24);
 			buttonStop.Text = "";
-			buttonIncreasePlaybackSpeed.Image = Tools.GetIcon(Resources.plus, 16);
+			buttonStop.Enabled = false;
+			buttonIncreasePlaybackSpeed.Image = Tools.GetIcon(Resources.add, 24);
 			buttonIncreasePlaybackSpeed.Text = "";
-			buttonDecreasePlaySpeed.Image = Tools.GetIcon(Resources.minus, 16);
+			buttonDecreasePlaySpeed.Image = Tools.GetIcon(Resources.minus, 24);
 			buttonDecreasePlaySpeed.Text = "";
-			buttonIncreaseSelectedMarks.Image = Tools.GetIcon(Resources.plus, 16);
+			buttonIncreaseSelectedMarks.Image = Tools.GetIcon(Resources.add, 24);
 			buttonIncreaseSelectedMarks.Text = "";
-			buttonDecreaseSelectedMarks.Image = Tools.GetIcon(Resources.minus, 16);
+			buttonDecreaseSelectedMarks.Image = Tools.GetIcon(Resources.minus, 24);
 			buttonDecreaseSelectedMarks.Text = "";
+			buttonImportAudacity.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonExportBeatMarks.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonAddCollection.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonRemoveCollection.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonCancel.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonOK.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonCopyAndOffsetMarks.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonAddOrUpdateMark.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonEvenlySpaceMarks.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonGenerateBeatMarks.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonOffsetMarks.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonPasteEffectsToMarks.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonSelectAllMarks.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonGenerateSubmarks.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonGenerateGrid.BackgroundImage = Resources.HeadingBackgroundImage;
+			btnAutoDetectionSettings.BackgroundImage = Resources.HeadingBackgroundImage;
+			btnCreateCollections.BackgroundImage = Resources.HeadingBackgroundImage;
 
 			MarkCollections = markCollections;
 			_executionControl = executionControl;
@@ -99,10 +118,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				item.Text = mc.Name;
 				item.SubItems.Add(mc.Level.ToString());
 				item.SubItems.Add(mc.MarkCount.ToString());
-				item.BackColor = (mc.Enabled) ? mc.MarkColor : SystemColors.Window;
-				item.ForeColor = (mc.Enabled)
-								 	? ((GetGrayValueForColor(mc.MarkColor) > 128) ? Color.Black : Color.White)
-								 	: SystemColors.InactiveCaptionText;
+				item.ForeColor = mc.MarkColor;
 				item.Tag = mc;
 
 				if (mc == _displayedCollection)
@@ -121,10 +137,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					item.SubItems[0].Text = collection.Name;
 					item.SubItems[1].Text = collection.Level.ToString();
 					item.SubItems[2].Text = collection.Marks.Count.ToString();
-					item.BackColor = (collection.Enabled) ? collection.MarkColor : SystemColors.Window;
-					item.ForeColor = (collection.Enabled)
-									 	? ((GetGrayValueForColor(collection.MarkColor) > 128) ? Color.Black : Color.White)
-									 	: SystemColors.InactiveCaptionText;
+					item.ForeColor = collection.MarkColor;
 				}
 			}
 		}
@@ -139,19 +152,21 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (collection == null) {
 				textBoxCollectionName.Text = "";
 				numericUpDownWeight.Value = 1;
-				panelColor.BackColor = SystemColors.Control;
 				checkBoxEnabled.Checked = false;
 			}
 			else {
 				textBoxCollectionName.Text = collection.Name;
 				numericUpDownWeight.Value = collection.Level;
-				panelColor.BackColor = collection.MarkColor;
 				checkBoxEnabled.Checked = collection.Enabled;
 			}
 
 			PopulateMarkListFromMarkCollection(collection);
 
-			groupBoxSelectedMarkCollection.Enabled = (collection != null);
+			groupBoxDetails.Enabled = (collection != null);
+			groupBoxOperations.Enabled = (collection != null);
+			buttonSelectAllMarks.Enabled = (collection != null);
+			buttonAddOrUpdateMark.Enabled = (collection != null);
+			textBoxTime.Enabled = (collection != null);
 		}
 
 		private void PopulateMarkListFromMarkCollection(MarkCollection collection)
@@ -284,8 +299,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 			}
 			else {
-				MessageBox.Show("Error parsing time: please use the format '<minutes>:<seconds>.<milliseconds>'",
-								"Error parsing time");
+				var messageBoxData = "Error parsing time: please use the format '<minutes>:<seconds>.<milliseconds>'";
+				var messageBoxTitle = "Error parsing time";
+				var messageBox = new MessageBoxForm(messageBoxData, messageBoxTitle);
+				messageBox.ShowDialog();
 			}
 		}
 
@@ -335,16 +352,22 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					}
 				}
 				else {
-					MessageBox.Show("Error parsing time: please use the format '<minutes>:<seconds>.<milliseconds>'",
-									"Error parsing time");
+					var messageBoxData = "Error parsing time: please use the format '<minutes>:<seconds>.<milliseconds>'";
+					var messageBoxTitle = "Error parsing time";
+					var messageBox = new MessageBoxForm(messageBoxData, messageBoxTitle);
+					messageBox.ShowDialog();
 				}
 			}
 		}
 
 		private void buttonEvenlySpaceMarks_Click(object sender, EventArgs e)
 		{
-			if (listViewMarks.SelectedItems.Count < 3) {
-				MessageBox.Show("Select at least three marks to space evenly.", "Need more marks");
+			if (listViewMarks.SelectedItems.Count < 3) 
+			{
+				var messageBoxData = "Select at least three marks to space evenly.";
+				var messageBoxTitle = "Select more marks";
+				var messageBox = new MessageBoxForm(messageBoxData, messageBoxTitle);
+				messageBox.ShowDialog();
 				return;
 			}
 
@@ -375,8 +398,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void buttonGenerateSubmarks_Click(object sender, EventArgs e)
 		{
-			if (listViewMarks.SelectedItems.Count < 2) {
-				MessageBox.Show("Select at least two marks to generate times between.", "Need more marks");
+			if (listViewMarks.SelectedItems.Count < 2)
+			{
+				var messageBoxData = "Select at least two marks to generate times between.";
+				var messageBoxTitle = "Select more marks";
+				var messageBox = new MessageBoxForm(messageBoxData, messageBoxTitle);
+				messageBox.ShowDialog();
 				return;
 			}
 
@@ -434,8 +461,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					UpdateMarkCollectionInList(destination);
 				}
 				else {
-					MessageBox.Show("Error parsing number: please enter a whole number for the number of divisions.",
-									"Error parsing number");
+					var messageBoxData = "Error parsing number: please enter a whole number for the number of divisions.";
+					var messageBoxTitle = "Error parsing number";
+					var messageBox = new MessageBoxForm(messageBoxData, messageBoxTitle);
+					messageBox.ShowDialog();
 				}
 			}
 		}
@@ -504,8 +533,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void buttonPasteEffectsToMarks_Click(object sender, EventArgs e)
 		{
-			if (listViewMarks.SelectedItems.Count < 1) {
-				MessageBox.Show("Select at least one mark to paste effects to.", "Need more marks");
+			string messageBoxData = "";
+			string messageBoxTitle = "";
+			var messageBox = new MessageBoxForm(messageBoxData, messageBoxTitle);
+			if (listViewMarks.SelectedItems.Count < 1)
+			{
+				messageBoxData = "Select at least one mark to paste effects to.";
+				messageBoxTitle = "Select more marks";
+				messageBox = new MessageBoxForm(messageBoxData, messageBoxTitle);
+				messageBox.ShowDialog();
 				return;
 			}
 
@@ -513,19 +549,28 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			foreach (ListViewItem item in listViewMarks.SelectedItems) {
 				int totalPasted = _timedSequenceEditorForm.ClipboardPaste((TimeSpan) item.Tag);
 				if (totalPasted <= 0) {
-					MessageBox.Show("Copy an effect to paste to the clipboard in the sequence editor.", "Need an effect");
+					messageBoxData = "Copy an effect to paste to the clipboard in the sequence editor.";
+					messageBoxTitle = "Need an effect";
+					messageBox = new MessageBoxForm(messageBoxData, messageBoxTitle);
+					messageBox.ShowDialog();
 					return;
 				}
 				count += totalPasted;
 			}
-
-			MessageBox.Show(string.Format("{0} effects pasted.", count));
+			messageBoxData = (string.Format("{0} effects pasted.", count));
+			messageBoxTitle = "Need an effect";
+			messageBox = new MessageBoxForm(messageBoxData, messageBoxTitle);
+			messageBox.ShowDialog();
 		}
 
 		private void buttonCopyAndOffsetMarks_Click(object sender, EventArgs e)
 		{
-			if (listViewMarks.SelectedItems.Count < 1) {
-				MessageBox.Show("Select at least one mark duplicate and offset.", "Need more marks");
+			if (listViewMarks.SelectedItems.Count < 1)
+			{
+				var messageBoxData = "Select at least one mark duplicate and offset.";
+				var messageBoxTitle = "Select more marks";
+				var messageBox = new MessageBoxForm(messageBoxData, messageBoxTitle);
+				messageBox.ShowDialog();
 				return;
 			}
 
@@ -549,8 +594,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					UpdateMarkCollectionInList(_displayedCollection);
 				}
 				else {
-					MessageBox.Show("Error parsing time: please use the format '<minutes>:<seconds>.<milliseconds>'",
-									"Error parsing time");
+					var messageBoxData = "Error parsing time: please use the format '<minutes>:<seconds>.<milliseconds>'";
+					var messageBoxTitle = "Error parsing time";
+					var messageBox = new MessageBoxForm(messageBoxData, messageBoxTitle);
+					messageBox.ShowDialog();
 				}
 			}
 		}
@@ -563,8 +610,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					"Information", MessageBoxButtons.YesNo) == DialogResult.No)
 				return;
 
-			if (listViewMarks.SelectedItems.Count < 2) {
-				MessageBox.Show("Select at least two marks to be able to determine an average time interval.", "Need more marks");
+			if (listViewMarks.SelectedItems.Count < 2)
+			{
+				var messageBoxData = "Select at least two marks to be able to determine an average time interval.";
+				var messageBoxTitle = "Select more marks";
+				var messageBox = new MessageBoxForm(messageBoxData, messageBoxTitle);
+				messageBox.ShowDialog();
 				return;
 			}
 
@@ -621,8 +672,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					UpdateMarkCollectionInList(_displayedCollection);
 				}
 				else {
-					MessageBox.Show("Error parsing time: please use the format '<minutes>:<seconds>.<milliseconds>', or leave empty",
-									"Error parsing time");
+					var messageBoxData = "Error parsing time: please use the format '<minutes>:<seconds>.<milliseconds>', or leave empty";
+					var messageBoxTitle = "Error parsing time";
+					var messageBox = new MessageBoxForm(messageBoxData, messageBoxTitle);
+					messageBox.ShowDialog();
 				}
 			}
 		}
@@ -651,8 +704,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					UpdateMarkCollectionInList(_displayedCollection);
 				}
 				else {
-					MessageBox.Show("Error parsing time: please use the format '<minutes>:<seconds>.<milliseconds>'",
-									"Error parsing time");
+					var messageBoxData = "Error parsing time: please use the format '<minutes>:<seconds>.<milliseconds>'";
+					var messageBoxTitle = "Error parsing time";
+					var messageBox = new MessageBoxForm(messageBoxData, messageBoxTitle);
+					messageBox.ShowDialog();
 				}
 			}
 		}
@@ -693,12 +748,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void updateControlsforPlaying()
 		{
-			groupBoxSelectedMarkCollection.Enabled = false;
+			groupBoxDetails.Enabled = false;
+			groupBoxOperations.Enabled = false;
+			buttonSelectAllMarks.Enabled = false;
+			buttonAddOrUpdateMark.Enabled = false;
+			textBoxTime.Enabled = false;
 			buttonPlay.Enabled = false;
 			buttonStop.Enabled = true;
 			groupBoxMode.Enabled = false;
 			textBoxCurrentMark.Text = "";
-			groupBoxMarkCollections.Enabled = false;
+			panelMarkCollectionsButtons.Enabled = false;
 			try {
 				if (_audio != null)
 					_audio.FrequencyDetected -= _audio_FrequencyDetected;
@@ -715,11 +774,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void updateControlsForStopped()
 		{
-			groupBoxSelectedMarkCollection.Enabled = true;
+			groupBoxDetails.Enabled = true;
+			groupBoxOperations.Enabled = true;
+			buttonSelectAllMarks.Enabled = true;
+			buttonAddOrUpdateMark.Enabled = true;
+			textBoxTime.Enabled = true;
 			buttonPlay.Enabled = true;
 			buttonStop.Enabled = false;
 			groupBoxMode.Enabled = true;
-			groupBoxMarkCollections.Enabled = true;
+			panelMarkCollectionsButtons.Enabled = true;
 		}
 
 		private void buttonPlay_Click(object sender, EventArgs e)
@@ -740,7 +803,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void timerMarkHit_Tick(object sender, EventArgs e)
 		{
-			panelMarkView.BackColor = SystemColors.Control;
+			panelMarkView.BackColor = Color.FromArgb(68, 68, 68);
 			timerMarkHit.Stop();
 		}
 
@@ -1047,7 +1110,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			audioDetectionSettings.Indexes = detectionIndexes;
 
 			var result = audioDetectionSettings.ShowDialog();
-			if (result == System.Windows.Forms.DialogResult.OK) {
+			if (result == DialogResult.OK) {
 				detectionIndexes = audioDetectionSettings.Indexes;
 			}
 		}
@@ -1240,8 +1303,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				_displayedCollection.Marks.Add(time);
 			}
 			else {
-				MessageBox.Show("Error parsing time: please use the format '<minutes>:<seconds>.<milliseconds>'",
-								"Error parsing time");
+				var messageBoxData = "Error parsing time: please use the format '<minutes>:<seconds>.<milliseconds>'";
+				var messageBoxTitle = "Error parsing time";
+				var messageBox = new MessageBoxForm(messageBoxData, messageBoxTitle);
+				messageBox.ShowDialog();
 			}
 		}
 
@@ -1263,7 +1328,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			if (MarkCollections.Count == 0)
 			{
-				MessageBox.Show("Unable to find marks collection for export");
+				var messageBoxData = "Unable to find marks collection for export";
+				var messageBoxTitle = "";
+				var messageBox = new MessageBoxForm(messageBoxData, messageBoxTitle);
+				messageBox.ShowDialog();
 				return;
 			}
 
@@ -1355,5 +1423,137 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 			}
 		}
+
+		#region Used to set the text color when buttons are disabled
+
+		private void buttonOffsetMarks_Paint(object sender, PaintEventArgs e)
+		{
+			string paintText = "Offset Marks";
+			var btnControl = buttonOffsetMarks;
+			PaintButtons(sender, e, paintText, btnControl);
+		}
+
+		private void buttonEvenlySpaceMarks_Paint(object sender, PaintEventArgs e)
+		{
+			string paintText = "Evenly space marks";
+			var btnControl = buttonEvenlySpaceMarks;
+			PaintButtons(sender, e, paintText, btnControl);
+		}
+
+		private void buttonGenerateSubmarks_Paint(object sender, PaintEventArgs e)
+		{
+			string paintText = "Generate submarks";
+			var btnControl = buttonGenerateSubmarks;
+			PaintButtons(sender, e, paintText, btnControl);
+		}
+
+		private void buttonPasteEffectsToMarks_Paint(object sender, PaintEventArgs e)
+		{
+			string paintText = "Paste effects to marks";
+			var btnControl = buttonPasteEffectsToMarks;
+			PaintButtons(sender, e, paintText, btnControl);
+		}
+
+		private void btnAutoDetectionSettings_Paint(object sender, PaintEventArgs e)
+		{
+			string paintText = "Settings";
+			var btnControl = btnAutoDetectionSettings;
+			PaintButtons(sender, e, paintText, btnControl);
+		}
+
+		private void btnCreateCollections_Paint(object sender, PaintEventArgs e)
+		{
+			string paintText = "Create";
+			var btnControl = btnCreateCollections;
+			PaintButtons(sender, e, paintText, btnControl);
+		}
+
+		private void buttonCopyAndOffsetMarks_Paint(object sender, PaintEventArgs e)
+		{
+			string paintText = "Copy & offset marks";
+			var btnControl = buttonCopyAndOffsetMarks;
+			PaintButtons(sender, e, paintText, btnControl);
+		}
+
+		private void buttonGenerateBeatMarks_Paint(object sender, PaintEventArgs e)
+		{
+			string paintText = "Generate beat marks";
+			var btnControl = buttonGenerateBeatMarks;
+			PaintButtons(sender, e, paintText, btnControl);
+		}
+
+		private void buttonGenerateGrid_Paint(object sender, PaintEventArgs e)
+		{
+			string paintText = "Generate Grid";
+			var btnControl = buttonGenerateGrid;
+			PaintButtons(sender, e, paintText, btnControl);
+		}
+
+		private void buttonRemoveCollection_Paint(object sender, PaintEventArgs e)
+		{
+			string paintText = "Generate Grid";
+			var btnControl = buttonRemoveCollection;
+			PaintButtons(sender, e, paintText, btnControl);
+		}
+
+		private void buttonOffsetMarks_EnabledChanged(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.ForeColor = btn.Enabled ? Color.WhiteSmoke : Color.Gray;
+		}
+
+		private void buttonEvenlySpaceMarks_EnabledChanged(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.ForeColor = btn.Enabled ? Color.WhiteSmoke : Color.Gray;
+		}
+
+		private void buttonGenerateSubmarks_EnabledChanged(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.ForeColor = btn.Enabled ? Color.WhiteSmoke : Color.Gray;
+		}
+
+		private void buttonPasteEffectsToMarks_EnabledChanged(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.ForeColor = btn.Enabled ? Color.WhiteSmoke : Color.Gray;
+		}
+
+		private void buttonCopyAndOffsetMarks_EnabledChanged(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.ForeColor = btn.Enabled ? Color.WhiteSmoke : Color.Gray;
+		}
+
+		private void buttonGenerateBeatMarks_EnabledChanged(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.ForeColor = btn.Enabled ? Color.WhiteSmoke : Color.Gray;
+		}
+
+		private void buttonGenerateGrid_EnabledChanged(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.ForeColor = btn.Enabled ? Color.WhiteSmoke : Color.Gray;
+		}
+
+		private void buttonRemoveCollection_EnabledChanged(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.ForeColor = btn.Enabled ? Color.WhiteSmoke : Color.Gray;
+		}
+
+		private void PaintButtons(object sender, PaintEventArgs e, string paintText, Button btnControl)
+		{
+			var btn = (Button)sender;
+			var drawBrush = new SolidBrush(btn.ForeColor);
+			var sf = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
+			btnControl.Text = string.Empty;
+			e.Graphics.DrawString(paintText, btn.Font, drawBrush, e.ClipRectangle, sf);
+			drawBrush.Dispose();
+			sf.Dispose();
+		}
+		#endregion
 	}
 }

@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Resources.Properties;
 using VixenModules.Media.Audio;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
@@ -18,6 +19,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public AutomaticMusicDetection(Audio audio)
 		{
 			InitializeComponent();
+			buttonCancel.BackgroundImage = Resources.HeadingBackgroundImage;
+			btnOk.BackgroundImage = Resources.HeadingBackgroundImage;
+			btnPreviewAudio.BackgroundImage = Resources.HeadingBackgroundImage;
 			_audio = audio;
 			_audio.FrequencyDetected += _audio_FrequencyDetected;
 			freqTimer = new Timer();
