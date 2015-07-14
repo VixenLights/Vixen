@@ -72,7 +72,6 @@
 			this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripStatusLabelExecutionState = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripStatusLabel_memory = new System.Windows.Forms.ToolStripStatusLabel();
-			this.label1 = new System.Windows.Forms.Label();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.labelDebugVersion = new System.Windows.Forms.Label();
 			this.menuStripMain.SuspendLayout();
@@ -232,6 +231,7 @@
 			// 
 			// toolStripSeparator1
 			// 
+			this.toolStripSeparator1.ForeColor = System.Drawing.SystemColors.ControlText;
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
 			this.toolStripSeparator1.Size = new System.Drawing.Size(263, 6);
 			// 
@@ -245,6 +245,7 @@
 			// label2
 			// 
 			this.label2.AutoSize = true;
+			this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.label2.Location = new System.Drawing.Point(22, 154);
 			this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label2.Name = "label2";
@@ -254,6 +255,10 @@
 			// 
 			// buttonOpenSequence
 			// 
+			this.buttonOpenSequence.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.buttonOpenSequence.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+			this.buttonOpenSequence.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.buttonOpenSequence.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.buttonOpenSequence.Location = new System.Drawing.Point(27, 91);
 			this.buttonOpenSequence.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.buttonOpenSequence.Name = "buttonOpenSequence";
@@ -262,9 +267,15 @@
 			this.buttonOpenSequence.Text = "Open Sequence...";
 			this.buttonOpenSequence.UseVisualStyleBackColor = true;
 			this.buttonOpenSequence.Click += new System.EventHandler(this.buttonOpenSequence_Click);
+			this.buttonOpenSequence.MouseLeave += new System.EventHandler(this.buttonOpenSequence_MouseLeave);
+			this.buttonOpenSequence.MouseHover += new System.EventHandler(this.buttonOpenSequence_MouseHover);
 			// 
 			// buttonNewSequence
 			// 
+			this.buttonNewSequence.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.buttonNewSequence.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+			this.buttonNewSequence.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.buttonNewSequence.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.buttonNewSequence.Location = new System.Drawing.Point(27, 35);
 			this.buttonNewSequence.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.buttonNewSequence.Name = "buttonNewSequence";
@@ -273,6 +284,8 @@
 			this.buttonNewSequence.Text = "New Sequence...";
 			this.buttonNewSequence.UseVisualStyleBackColor = true;
 			this.buttonNewSequence.Click += new System.EventHandler(this.buttonNewSequence_Click);
+			this.buttonNewSequence.MouseLeave += new System.EventHandler(this.buttonNewSequence_MouseLeave);
+			this.buttonNewSequence.MouseHover += new System.EventHandler(this.buttonNewSequence_MouseHover);
 			// 
 			// groupBoxSequences
 			// 
@@ -280,6 +293,7 @@
 			this.groupBoxSequences.Controls.Add(this.buttonNewSequence);
 			this.groupBoxSequences.Controls.Add(this.buttonOpenSequence);
 			this.groupBoxSequences.Controls.Add(this.label2);
+			this.groupBoxSequences.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.groupBoxSequences.Location = new System.Drawing.Point(18, 308);
 			this.groupBoxSequences.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.groupBoxSequences.Name = "groupBoxSequences";
@@ -288,6 +302,7 @@
 			this.groupBoxSequences.TabIndex = 0;
 			this.groupBoxSequences.TabStop = false;
 			this.groupBoxSequences.Text = "Sequences";
+			this.groupBoxSequences.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxSequences_Paint);
 			// 
 			// listViewRecentSequences
 			// 
@@ -319,7 +334,7 @@
 			// labelVersion
 			// 
 			this.labelVersion.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.labelVersion.ForeColor = System.Drawing.Color.Black;
+			this.labelVersion.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.labelVersion.Location = new System.Drawing.Point(510, 206);
 			this.labelVersion.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.labelVersion.Name = "labelVersion";
@@ -331,6 +346,7 @@
 			// 
 			this.groupBoxSystemConfig.Controls.Add(this.buttonSetupDisplay);
 			this.groupBoxSystemConfig.Controls.Add(this.buttonSetupOutputPreviews);
+			this.groupBoxSystemConfig.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.groupBoxSystemConfig.Location = new System.Drawing.Point(368, 308);
 			this.groupBoxSystemConfig.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.groupBoxSystemConfig.Name = "groupBoxSystemConfig";
@@ -339,9 +355,14 @@
 			this.groupBoxSystemConfig.TabIndex = 1;
 			this.groupBoxSystemConfig.TabStop = false;
 			this.groupBoxSystemConfig.Text = "System Configuration";
+			this.groupBoxSystemConfig.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxSystemConfig_Paint);
 			// 
 			// buttonSetupDisplay
 			// 
+			this.buttonSetupDisplay.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.buttonSetupDisplay.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+			this.buttonSetupDisplay.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.buttonSetupDisplay.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.buttonSetupDisplay.Location = new System.Drawing.Point(18, 35);
 			this.buttonSetupDisplay.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.buttonSetupDisplay.Name = "buttonSetupDisplay";
@@ -350,9 +371,15 @@
 			this.buttonSetupDisplay.Text = "Setup Display";
 			this.buttonSetupDisplay.UseVisualStyleBackColor = true;
 			this.buttonSetupDisplay.Click += new System.EventHandler(this.buttonSetupDisplay_Click);
+			this.buttonSetupDisplay.MouseLeave += new System.EventHandler(this.buttonSetupDisplay_MouseLeave);
+			this.buttonSetupDisplay.MouseHover += new System.EventHandler(this.buttonSetupDisplay_MouseHover);
 			// 
 			// buttonSetupOutputPreviews
 			// 
+			this.buttonSetupOutputPreviews.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.buttonSetupOutputPreviews.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+			this.buttonSetupOutputPreviews.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.buttonSetupOutputPreviews.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.buttonSetupOutputPreviews.Location = new System.Drawing.Point(18, 91);
 			this.buttonSetupOutputPreviews.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.buttonSetupOutputPreviews.Name = "buttonSetupOutputPreviews";
@@ -361,6 +388,8 @@
 			this.buttonSetupOutputPreviews.Text = "Setup Previews";
 			this.buttonSetupOutputPreviews.UseVisualStyleBackColor = true;
 			this.buttonSetupOutputPreviews.Click += new System.EventHandler(this.buttonSetupOutputPreviews_Click);
+			this.buttonSetupOutputPreviews.MouseLeave += new System.EventHandler(this.buttonSetupOutputPreviews_MouseLeave);
+			this.buttonSetupOutputPreviews.MouseHover += new System.EventHandler(this.buttonSetupOutputPreviews_MouseHover);
 			// 
 			// statusStrip
 			// 
@@ -395,6 +424,7 @@
 			// toolStripStatusLabelExecutionState
 			// 
 			this.toolStripStatusLabelExecutionState.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Right;
+			this.toolStripStatusLabelExecutionState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.toolStripStatusLabelExecutionState.Name = "toolStripStatusLabelExecutionState";
 			this.toolStripStatusLabelExecutionState.Size = new System.Drawing.Size(175, 37);
 			this.toolStripStatusLabelExecutionState.Text = "Execution: Unknown";
@@ -402,20 +432,12 @@
 			// toolStripStatusLabel_memory
 			// 
 			this.toolStripStatusLabel_memory.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.toolStripStatusLabel_memory.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.toolStripStatusLabel_memory.Name = "toolStripStatusLabel_memory";
 			this.toolStripStatusLabel_memory.Size = new System.Drawing.Size(450, 37);
 			this.toolStripStatusLabel_memory.Spring = true;
 			this.toolStripStatusLabel_memory.Text = "Resource Usage";
 			this.toolStripStatusLabel_memory.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			// 
-			// label1
-			// 
-			this.label1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.label1.Location = new System.Drawing.Point(0, 297);
-			this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(692, 3);
-			this.label1.TabIndex = 15;
 			// 
 			// pictureBox1
 			// 
@@ -430,7 +452,7 @@
 			// labelDebugVersion
 			// 
 			this.labelDebugVersion.Font = new System.Drawing.Font("Arial", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.labelDebugVersion.ForeColor = System.Drawing.Color.Black;
+			this.labelDebugVersion.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.labelDebugVersion.Location = new System.Drawing.Point(513, 255);
 			this.labelDebugVersion.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.labelDebugVersion.Name = "labelDebugVersion";
@@ -442,9 +464,9 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.ClientSize = new System.Drawing.Size(692, 715);
 			this.Controls.Add(this.labelDebugVersion);
-			this.Controls.Add(this.label1);
 			this.Controls.Add(this.statusStrip);
 			this.Controls.Add(this.labelVersion);
 			this.Controls.Add(this.groupBoxSystemConfig);
@@ -463,6 +485,7 @@
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.VixenApp_FormClosing);
 			this.Load += new System.EventHandler(this.VixenApplication_Load);
 			this.Shown += new System.EventHandler(this.VixenApplication_Shown);
+			this.Paint += new System.Windows.Forms.PaintEventHandler(this.VixenApplication_Paint);
 			this.menuStripMain.ResumeLayout(false);
 			this.menuStripMain.PerformLayout();
 			this.groupBoxSequences.ResumeLayout(false);
@@ -504,7 +527,6 @@
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel_memory;
 		private System.Windows.Forms.Button buttonSetupOutputPreviews;
 		private System.Windows.Forms.PictureBox pictureBox1;
-		private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ToolStripMenuItem profilesToolStripMenuItem;
 		private System.Windows.Forms.Label labelDebugVersion;
 		private System.Windows.Forms.Button buttonSetupDisplay;
