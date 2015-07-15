@@ -33,7 +33,7 @@ namespace Vixen.Execution
 			if (_lastUpdateTime > currentTime)
 			{
 				//Make sure the current effects are cleared if we go back to a earlier time.
-				Reset();
+				_currentEffects.Clear();
 			}
 			_lastUpdateTime = currentTime;
 			// Get the effects that are newly qualified.
