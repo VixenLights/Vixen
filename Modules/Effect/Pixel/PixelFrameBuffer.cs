@@ -8,11 +8,18 @@ namespace VixenModules.Effect.Pixel
 		private Color[][] _pixels;
 		private readonly int _bufferWi;
 		private readonly int _bufferHt;
+		private readonly Color _baseColor;
 
-		public PixelFrameBuffer(int width, int height) 
+		public PixelFrameBuffer(int width, int height) :this(width, height, Color.Transparent)
+		{
+			
+		}
+
+		public PixelFrameBuffer(int width, int height, Color baseColor)
 		{
 			_bufferWi = width;
 			_bufferHt = height;
+			_baseColor = baseColor;
 			InitBuffer();
 		}
 
@@ -31,7 +38,7 @@ namespace VixenModules.Effect.Pixel
 			{
 				for (int z = 0; z < _bufferHt; z++)
 				{
-					_pixels[i][z] = Color.Transparent;
+					_pixels[i][z] = _baseColor;
 				}
 			}
 		}

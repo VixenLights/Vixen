@@ -89,6 +89,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Base Color.
+        /// </summary>
+        internal static string BaseColor {
+            get {
+                return ResourceManager.GetString("BaseColor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Blend.
         /// </summary>
         internal static string Blend {
@@ -683,6 +692,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Text Color Gradients.
+        /// </summary>
+        internal static string TextColors {
+            get {
+                return ResourceManager.GetString("TextColors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Text Line(s).
         /// </summary>
         internal static string TextLines {
@@ -715,6 +733,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string Type {
             get {
                 return ResourceManager.GetString("Type", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use Base Color.
+        /// </summary>
+        internal static string UseBaseColor {
+            get {
+                return ResourceManager.GetString("UseBaseColor", resourceCulture);
             }
         }
         

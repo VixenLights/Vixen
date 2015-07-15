@@ -80,6 +80,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Controls the base color that will be used for the background of the effect..
+        /// </summary>
+        internal static string BaseColor {
+            get {
+                return ResourceManager.GetString("BaseColor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Applies the gradient blend vertically..
         /// </summary>
         internal static string Blend {
@@ -661,6 +670,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string TwinklePulseTimeVariation {
             get {
                 return ResourceManager.GetString("TwinklePulseTimeVariation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indicates if a underlying base color should be used..
+        /// </summary>
+        internal static string UseBaseColor {
+            get {
+                return ResourceManager.GetString("UseBaseColor", resourceCulture);
             }
         }
         

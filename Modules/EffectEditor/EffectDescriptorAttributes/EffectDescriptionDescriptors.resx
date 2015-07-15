@@ -123,6 +123,9 @@
   <data name="BackgroundSkips" xml:space="preserve">
     <value>Controls the amount of background skips.</value>
   </data>
+  <data name="BaseColor" xml:space="preserve">
+    <value>Controls the base color that will be used for the background of the effect.</value>
+  </data>
   <data name="Blend" xml:space="preserve">
     <value>Applies the gradient blend vertically.</value>
   </data>
@@ -317,6 +320,9 @@
   </data>
   <data name="TwinklePulseTimeVariation" xml:space="preserve">
     <value>Controls how much percent variation in the time of each pulse in the twinkle.</value>
+  </data>
+  <data name="UseBaseColor" xml:space="preserve">
+    <value>Indicates if a underlying base color should be used.</value>
   </data>
   <data name="Velocity" xml:space="preserve">
     <value>Controls the velocity of the particles.</value>

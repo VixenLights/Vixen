@@ -354,4 +354,13 @@
   <data name="Iterations" xml:space="preserve">
     <value>Iterations</value>
   </data>
+  <data name="BaseColor" xml:space="preserve">
+    <value>Base Color</value>
+  </data>
+  <data name="TextColors" xml:space="preserve">
+    <value>Text Color Gradients</value>
+  </data>
+  <data name="UseBaseColor" xml:space="preserve">
+    <value>Use Base Color</value>
+  </data>
 </root>

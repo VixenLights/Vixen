@@ -16,6 +16,8 @@ namespace VixenModules.Effect.Text
 		public TextData()
 		{
 			Colors = new List<ColorGradient>{new ColorGradient(Color.Red)};
+			BaseColor = Color.Lime;
+			UseBaseColor = false;
 			Direction = TextDirection.Left;
 			Speed = 1;
 			Position = 0;
@@ -29,6 +31,12 @@ namespace VixenModules.Effect.Text
 
 		[DataMember]
 		public List<ColorGradient> Colors { get; set; }
+
+		[DataMember]
+		public Color BaseColor { get; set; }
+
+		[DataMember]
+		public bool UseBaseColor { get; set; }
 
 		[DataMember]
 		public TextDirection Direction { get; set; }
@@ -78,6 +86,8 @@ namespace VixenModules.Effect.Text
 				GradientMode = GradientMode,
 				TextMode = TextMode,
 				CenterText = CenterText,
+				UseBaseColor = UseBaseColor,
+				BaseColor = BaseColor,
 				Font = new SerializableFont(Font.FontValue)
 			};
 			return result;

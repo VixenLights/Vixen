@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Threading;
 using Vixen.Attributes;
@@ -80,6 +81,15 @@ namespace VixenModules.Effect.Pixel
 		[PropertyOrder(2)]
 		public abstract StringOrientation StringOrientation { get; set; }
 
+		[Browsable(false)]
+		public virtual Color BaseColor { 
+			get { return Color.Transparent; }
+			set { }
+		}
+
+		[Browsable(false)]
+		public virtual bool UseBaseColor { get; set; }
+		
 		private void CalculatePixelsPerString()
 		{
 			IEnumerable<ElementNode> nodes = FindLeafParents();
@@ -150,7 +160,7 @@ namespace VixenModules.Effect.Pixel
 			EffectIntents effectIntents = new EffectIntents();
 			int nFrames = (int)(TimeSpan.TotalMilliseconds / FrameTime);
 
-			var buffer = new PixelFrameBuffer(BufferWi, BufferHt);
+			var buffer = new PixelFrameBuffer(BufferWi, BufferHt, UseBaseColor?BaseColor:Color.Transparent);
 			
 			int numElements = node.Count();
 

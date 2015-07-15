@@ -9,6 +9,7 @@ using System.Text;
 using Vixen.Attributes;
 using Vixen.Module;
 using Vixen.Sys.Attribute;
+using Vixen.TypeConverters;
 using VixenModules.App.ColorGradients;
 using VixenModules.Effect.Pixel;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
@@ -18,6 +19,7 @@ namespace VixenModules.Effect.Text
 	public class Text : PixelEffectBase
 	{
 		private TextData _data;
+		private static Color EmptyColor = Color.FromArgb(0, 0, 0, 0);
 
 		public Text()
 		{
@@ -218,9 +220,25 @@ namespace VixenModules.Effect.Text
 
 		[Value]
 		[ProviderCategory(@"Color", 3)]
+		[ProviderDisplayName(@"TextColors")]
+		[ProviderDescription(@"Color")]
+		[PropertyOrder(0)]
+		public List<ColorGradient> Colors
+		{
+			get { return _data.Colors; }
+			set
+			{
+				_data.Colors = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Color", 3)]
 		[ProviderDisplayName(@"GradientMode")]
 		[ProviderDescription(@"GradientMode")]
-		[PropertyOrder(2)]
+		[PropertyOrder(1)]
 		public GradientMode GradientMode
 		{
 			get { return _data.GradientMode; }
@@ -234,15 +252,37 @@ namespace VixenModules.Effect.Text
 
 		[Value]
 		[ProviderCategory(@"Color", 3)]
-		[ProviderDisplayName(@"ColorGradients")]
-		[ProviderDescription(@"Color")]
-		[PropertyOrder(1)]
-		public List<ColorGradient> Colors
+		[ProviderDisplayName(@"UseBaseColor")]
+		[ProviderDescription(@"UseBaseColor")]
+		[TypeConverter(typeof(BooleanStringTypeConverter))]
+		[BoolDescription("Yes", "No")]
+		[PropertyEditor("SelectionEditor")]
+		[Browsable(true)]
+		[PropertyOrder(2)]
+		public override bool UseBaseColor
 		{
-			get { return _data.Colors; }
+			get { return _data.UseBaseColor; }
 			set
 			{
-				_data.Colors = value;
+				_data.UseBaseColor = value;
+				IsDirty = true;
+				UpdateBaseColorAttribute();
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Color", 3)]
+		[ProviderDisplayName(@"BaseColor")]
+		[ProviderDescription(@"BaseColor")]
+		[Browsable(true)]
+		[PropertyOrder(3)]
+		public override Color BaseColor
+		{
+			get { return _data.BaseColor; }
+			set
+			{
+				_data.BaseColor = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -263,23 +303,23 @@ namespace VixenModules.Effect.Text
 
 		private void UpdateAllAttributes()
 		{
-			//UpdateSpeedAttribute(false);
+			UpdateBaseColorAttribute(false);
 			UpdatePositionXAttribute(false);
 			TypeDescriptor.Refresh(this);
 		}
 
-		//private void UpdateSpeedAttribute(bool refresh=true)
-		//{
-		//	Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1)
-		//	{
-		//		{"Speed", !FitToTime}
-		//	};
-		//	SetBrowsable(propertyStates);
-		//	if (refresh)
-		//	{
-		//		TypeDescriptor.Refresh(this);
-		//	}
-		//}
+		private void UpdateBaseColorAttribute(bool refresh = true)
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1)
+			{
+				{"BaseColor", UseBaseColor}
+			};
+			SetBrowsable(propertyStates);
+			if (refresh)
+			{
+				TypeDescriptor.Refresh(this);
+			}
+		}
 
 		private void UpdatePositionXAttribute(bool refresh=true)
 		{
@@ -389,7 +429,11 @@ namespace VixenModules.Effect.Text
 						for (int y = 0; y < BufferHt; y++)
 						{
 							Color color = bitmap.GetPixel(x, BufferHt - y - 1);
-							frameBuffer.SetPixel(x, y, color);
+							if (!EmptyColor.Equals(color))
+							{
+								frameBuffer.SetPixel(x, y, color);	
+							}
+							
 						}
 					}
 						
