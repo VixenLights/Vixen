@@ -29,16 +29,16 @@ namespace Common.Controls {
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MessageBoxForm));
 			this.labelPrompt = new System.Windows.Forms.Label();
 			this.buttonOk = new System.Windows.Forms.Button();
+			this.buttonCancel = new System.Windows.Forms.Button();
+			this.buttonNo = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// labelPrompt
 			// 
-			this.labelPrompt.AutoSize = true;
-			this.labelPrompt.ForeColor = System.Drawing.Color.WhiteSmoke;
-			this.labelPrompt.Location = new System.Drawing.Point(23, 43);
-			this.labelPrompt.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.labelPrompt.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.labelPrompt.Location = new System.Drawing.Point(15, 22);
 			this.labelPrompt.Name = "labelPrompt";
-			this.labelPrompt.Size = new System.Drawing.Size(17, 20);
+			this.labelPrompt.Size = new System.Drawing.Size(368, 48);
 			this.labelPrompt.TabIndex = 0;
 			this.labelPrompt.Text = "[]";
 			// 
@@ -46,29 +46,65 @@ namespace Common.Controls {
 			// 
 			this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOk.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+			this.buttonOk.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.buttonOk.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonOk.ForeColor = System.Drawing.Color.WhiteSmoke;
-			this.buttonOk.Location = new System.Drawing.Point(456, 113);
-			this.buttonOk.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.buttonOk.Location = new System.Drawing.Point(113, 73);
 			this.buttonOk.Name = "buttonOk";
-			this.buttonOk.Size = new System.Drawing.Size(120, 39);
+			this.buttonOk.Size = new System.Drawing.Size(80, 25);
 			this.buttonOk.TabIndex = 2;
 			this.buttonOk.Text = "OK";
 			this.buttonOk.UseVisualStyleBackColor = true;
+			this.buttonOk.MouseLeave += new System.EventHandler(this.buttonOk_MouseLeave);
+			this.buttonOk.MouseHover += new System.EventHandler(this.buttonOk_MouseHover);
+			// 
+			// buttonCancel
+			// 
+			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.buttonCancel.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+			this.buttonCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.buttonCancel.ForeColor = System.Drawing.Color.WhiteSmoke;
+			this.buttonCancel.Location = new System.Drawing.Point(303, 73);
+			this.buttonCancel.Name = "buttonCancel";
+			this.buttonCancel.Size = new System.Drawing.Size(80, 25);
+			this.buttonCancel.TabIndex = 3;
+			this.buttonCancel.Text = "CANCEL";
+			this.buttonCancel.UseVisualStyleBackColor = true;
+			this.buttonCancel.Visible = false;
+			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonCancel_MouseLeave);
+			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonCancel_MouseHover);
+			// 
+			// buttonNo
+			// 
+			this.buttonNo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonNo.DialogResult = System.Windows.Forms.DialogResult.No;
+			this.buttonNo.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+			this.buttonNo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.buttonNo.ForeColor = System.Drawing.Color.WhiteSmoke;
+			this.buttonNo.Location = new System.Drawing.Point(209, 73);
+			this.buttonNo.Name = "buttonNo";
+			this.buttonNo.Size = new System.Drawing.Size(80, 25);
+			this.buttonNo.TabIndex = 4;
+			this.buttonNo.Text = "NO";
+			this.buttonNo.UseVisualStyleBackColor = true;
+			this.buttonNo.Visible = false;
+			this.buttonNo.MouseLeave += new System.EventHandler(this.buttonNo_MouseLeave);
+			this.buttonNo.MouseHover += new System.EventHandler(this.buttonNo_MouseHover);
 			// 
 			// MessageBoxForm
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
-			this.ClientSize = new System.Drawing.Size(598, 166);
+			this.ClientSize = new System.Drawing.Size(399, 108);
+			this.Controls.Add(this.buttonNo);
+			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.buttonOk);
 			this.Controls.Add(this.labelPrompt);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.KeyPreview = true;
-			this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "MessageBoxForm";
@@ -77,7 +113,6 @@ namespace Common.Controls {
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Select more marks";
 			this.ResumeLayout(false);
-			this.PerformLayout();
 
 		}
 
@@ -85,5 +120,7 @@ namespace Common.Controls {
 
 		private System.Windows.Forms.Label labelPrompt;
 		private System.Windows.Forms.Button buttonOk;
+		private Button buttonCancel;
+		private Button buttonNo;
 	}
 }

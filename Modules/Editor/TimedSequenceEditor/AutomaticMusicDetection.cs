@@ -162,5 +162,35 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			this.Accuracy = (int) numericUpDown1.Value;
 		}
+
+		private void btnOk_MouseHover(object sender, EventArgs e)
+		{
+			btnOk.BackgroundImage = Resources.HeadingBackgroundImageHover;
+		}
+
+		private void btnOk_MouseLeave(object sender, EventArgs e)
+		{
+			btnOk.BackgroundImage = Resources.HeadingBackgroundImage;
+		}
+
+		private void buttonCancel_MouseHover(object sender, EventArgs e)
+		{
+			buttonCancel.BackgroundImage = Resources.HeadingBackgroundImageHover;
+		}
+
+		private void buttonCancel_MouseLeave(object sender, EventArgs e)
+		{
+			buttonCancel.BackgroundImage = Resources.HeadingBackgroundImage;
+		}
+
+		private void btnPreviewAudio_MouseHover(object sender, EventArgs e)
+		{
+			btnPreviewAudio.BackgroundImage = Resources.HeadingBackgroundImageHover;
+		}
+
+		private void btnPreviewAudio_MouseLeave(object sender, EventArgs e)
+		{
+			btnPreviewAudio.BackgroundImage = Resources.HeadingBackgroundImage;
+		}
 	}
 }

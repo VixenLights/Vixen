@@ -37,54 +37,75 @@
 			// buttonOk
 			// 
 			this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonOk.BackColor = System.Drawing.Color.Transparent;
 			this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOk.Location = new System.Drawing.Point(155, 164);
-			this.buttonOk.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.buttonOk.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+			this.buttonOk.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+			this.buttonOk.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+			this.buttonOk.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+			this.buttonOk.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.buttonOk.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.buttonOk.Location = new System.Drawing.Point(175, 205);
+			this.buttonOk.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.buttonOk.Name = "buttonOk";
-			this.buttonOk.Size = new System.Drawing.Size(107, 31);
+			this.buttonOk.Size = new System.Drawing.Size(120, 39);
 			this.buttonOk.TabIndex = 22;
 			this.buttonOk.Text = "OK";
-			this.buttonOk.UseVisualStyleBackColor = true;
+			this.buttonOk.UseVisualStyleBackColor = false;
+			this.buttonOk.MouseLeave += new System.EventHandler(this.buttonOk_MouseLeave);
+			this.buttonOk.MouseHover += new System.EventHandler(this.buttonOk_MouseHover);
 			// 
 			// buttonCancel
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonCancel.BackColor = System.Drawing.Color.Transparent;
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(269, 164);
-			this.buttonCancel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.buttonCancel.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+			this.buttonCancel.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+			this.buttonCancel.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+			this.buttonCancel.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+			this.buttonCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.buttonCancel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.buttonCancel.Location = new System.Drawing.Point(303, 205);
+			this.buttonCancel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.buttonCancel.Name = "buttonCancel";
-			this.buttonCancel.Size = new System.Drawing.Size(107, 31);
+			this.buttonCancel.Size = new System.Drawing.Size(120, 39);
 			this.buttonCancel.TabIndex = 23;
 			this.buttonCancel.Text = "Cancel";
-			this.buttonCancel.UseVisualStyleBackColor = true;
+			this.buttonCancel.UseVisualStyleBackColor = false;
+			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonCancel_MouseLeave);
+			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonCancel_MouseHover);
 			// 
 			// listBoxItems
 			// 
 			this.listBoxItems.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.listBoxItems.BackColor = System.Drawing.Color.WhiteSmoke;
+			this.listBoxItems.ForeColor = System.Drawing.Color.Black;
 			this.listBoxItems.FormattingEnabled = true;
-			this.listBoxItems.ItemHeight = 16;
-			this.listBoxItems.Location = new System.Drawing.Point(16, 15);
-			this.listBoxItems.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.listBoxItems.ItemHeight = 20;
+			this.listBoxItems.Location = new System.Drawing.Point(18, 19);
+			this.listBoxItems.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.listBoxItems.Name = "listBoxItems";
-			this.listBoxItems.Size = new System.Drawing.Size(359, 132);
+			this.listBoxItems.Size = new System.Drawing.Size(403, 164);
 			this.listBoxItems.TabIndex = 24;
 			this.listBoxItems.SelectedIndexChanged += new System.EventHandler(this.listBoxItems_SelectedIndexChanged);
 			this.listBoxItems.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listBoxItems_MouseDoubleClick);
 			// 
 			// ListSelectDialog
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(392, 209);
+			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
+			this.ClientSize = new System.Drawing.Size(441, 261);
 			this.Controls.Add(this.listBoxItems);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.buttonOk);
 			this.DoubleBuffered = true;
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-			this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "ListSelectDialog";

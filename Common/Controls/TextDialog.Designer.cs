@@ -55,9 +55,12 @@
 			// 
 			this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOk.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+			this.buttonOk.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+			this.buttonOk.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+			this.buttonOk.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+			this.buttonOk.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.buttonOk.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonOk.ForeColor = System.Drawing.Color.WhiteSmoke;
+			this.buttonOk.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.buttonOk.Location = new System.Drawing.Point(332, 109);
 			this.buttonOk.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.buttonOk.Name = "buttonOk";
@@ -65,14 +68,19 @@
 			this.buttonOk.TabIndex = 2;
 			this.buttonOk.Text = "OK";
 			this.buttonOk.UseVisualStyleBackColor = true;
+			this.buttonOk.MouseLeave += new System.EventHandler(this.buttonOk_MouseLeave);
+			this.buttonOk.MouseHover += new System.EventHandler(this.buttonOk_MouseHover);
 			// 
 			// buttonCancel
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+			this.buttonCancel.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+			this.buttonCancel.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+			this.buttonCancel.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+			this.buttonCancel.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.buttonCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonCancel.ForeColor = System.Drawing.Color.WhiteSmoke;
+			this.buttonCancel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.buttonCancel.Location = new System.Drawing.Point(460, 109);
 			this.buttonCancel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.buttonCancel.Name = "buttonCancel";
@@ -80,6 +88,8 @@
 			this.buttonCancel.TabIndex = 3;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
+			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonCancel_MouseLeave);
+			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonCancel_MouseHover);
 			// 
 			// TextDialog
 			// 

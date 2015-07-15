@@ -19,6 +19,8 @@ namespace Common.Controls
 			_formTitle = formTitle;
 			_items = items;
 			InitializeComponent();
+			buttonCancel.BackgroundImage = Resources.Properties.Resources.HeadingBackgroundImage;
+			buttonOk.BackgroundImage = Resources.Properties.Resources.HeadingBackgroundImage;
 		}
 
 		public Object SelectedItem
@@ -92,6 +94,26 @@ namespace Common.Controls
 				this.DialogResult = DialogResult.Cancel;
 				this.Close();
 			}
+		}
+
+		private void buttonOk_MouseHover(object sender, EventArgs e)
+		{
+			buttonOk.BackgroundImage = Resources.Properties.Resources.HeadingBackgroundImageHover;
+		}
+
+		private void buttonOk_MouseLeave(object sender, EventArgs e)
+		{
+			buttonOk.BackgroundImage = Resources.Properties.Resources.HeadingBackgroundImage;
+		}
+
+		private void buttonCancel_MouseHover(object sender, EventArgs e)
+		{
+			buttonCancel.BackgroundImage = Resources.Properties.Resources.HeadingBackgroundImageHover;
+		}
+
+		private void buttonCancel_MouseLeave(object sender, EventArgs e)
+		{
+			buttonCancel.BackgroundImage = Resources.Properties.Resources.HeadingBackgroundImage;
 		}
 	}
 }

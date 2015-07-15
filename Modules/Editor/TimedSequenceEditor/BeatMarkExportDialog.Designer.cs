@@ -37,11 +37,10 @@
 			// radioAudacityFormat
 			// 
 			this.radioAudacityFormat.AutoSize = true;
-			this.radioAudacityFormat.ForeColor = System.Drawing.Color.WhiteSmoke;
-			this.radioAudacityFormat.Location = new System.Drawing.Point(57, 76);
-			this.radioAudacityFormat.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.radioAudacityFormat.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.radioAudacityFormat.Location = new System.Drawing.Point(38, 49);
 			this.radioAudacityFormat.Name = "radioAudacityFormat";
-			this.radioAudacityFormat.Size = new System.Drawing.Size(145, 24);
+			this.radioAudacityFormat.Size = new System.Drawing.Size(98, 17);
 			this.radioAudacityFormat.TabIndex = 1;
 			this.radioAudacityFormat.TabStop = true;
 			this.radioAudacityFormat.Text = "Audacity format";
@@ -50,11 +49,10 @@
 			// radioVixen3Format
 			// 
 			this.radioVixen3Format.AutoSize = true;
-			this.radioVixen3Format.ForeColor = System.Drawing.Color.WhiteSmoke;
-			this.radioVixen3Format.Location = new System.Drawing.Point(57, 41);
-			this.radioVixen3Format.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.radioVixen3Format.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.radioVixen3Format.Location = new System.Drawing.Point(38, 27);
 			this.radioVixen3Format.Name = "radioVixen3Format";
-			this.radioVixen3Format.Size = new System.Drawing.Size(136, 24);
+			this.radioVixen3Format.Size = new System.Drawing.Size(92, 17);
 			this.radioVixen3Format.TabIndex = 0;
 			this.radioVixen3Format.TabStop = true;
 			this.radioVixen3Format.Text = "Vixen 3 format";
@@ -62,51 +60,54 @@
 			// 
 			// buttonOK
 			// 
+			this.buttonOK.BackColor = System.Drawing.Color.Transparent;
 			this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOK.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+			this.buttonOK.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.buttonOK.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonOK.ForeColor = System.Drawing.Color.WhiteSmoke;
-			this.buttonOK.Location = new System.Drawing.Point(20, 138);
-			this.buttonOK.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.buttonOK.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.buttonOK.Location = new System.Drawing.Point(13, 90);
 			this.buttonOK.Name = "buttonOK";
-			this.buttonOK.Size = new System.Drawing.Size(112, 35);
+			this.buttonOK.Size = new System.Drawing.Size(75, 23);
 			this.buttonOK.TabIndex = 1;
 			this.buttonOK.Text = "OK";
-			this.buttonOK.UseVisualStyleBackColor = true;
+			this.buttonOK.UseVisualStyleBackColor = false;
+			this.buttonOK.MouseLeave += new System.EventHandler(this.buttonOK_MouseLeave);
+			this.buttonOK.MouseHover += new System.EventHandler(this.buttonOK_MouseHover);
 			// 
 			// buttonCancel
 			// 
+			this.buttonCancel.BackColor = System.Drawing.Color.Transparent;
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+			this.buttonCancel.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.buttonCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonCancel.ForeColor = System.Drawing.Color.WhiteSmoke;
-			this.buttonCancel.Location = new System.Drawing.Point(141, 138);
-			this.buttonCancel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.buttonCancel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.buttonCancel.Location = new System.Drawing.Point(94, 90);
 			this.buttonCancel.Name = "buttonCancel";
-			this.buttonCancel.Size = new System.Drawing.Size(112, 35);
+			this.buttonCancel.Size = new System.Drawing.Size(75, 23);
 			this.buttonCancel.TabIndex = 2;
 			this.buttonCancel.Text = "Cancel";
-			this.buttonCancel.UseVisualStyleBackColor = true;
+			this.buttonCancel.UseVisualStyleBackColor = false;
+			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonCancel_MouseLeave);
+			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonCancel_MouseHover);
 			// 
 			// BeatMarkExportDialog
 			// 
 			this.AcceptButton = this.buttonOK;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.CancelButton = this.buttonCancel;
-			this.ClientSize = new System.Drawing.Size(278, 194);
+			this.ClientSize = new System.Drawing.Size(189, 137);
 			this.ControlBox = false;
 			this.Controls.Add(this.radioAudacityFormat);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.radioVixen3Format);
 			this.Controls.Add(this.buttonOK);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-			this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.MaximizeBox = false;
-			this.MaximumSize = new System.Drawing.Size(300, 250);
+			this.MaximumSize = new System.Drawing.Size(205, 176);
 			this.MinimizeBox = false;
-			this.MinimumSize = new System.Drawing.Size(300, 250);
+			this.MinimumSize = new System.Drawing.Size(205, 176);
 			this.Name = "BeatMarkExportDialog";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Export Beat Marks";

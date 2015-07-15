@@ -180,6 +180,7 @@
 			// checkBox1
 			// 
 			this.checkBox1.AutoSize = true;
+			this.checkBox1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox1.Location = new System.Drawing.Point(22, 29);
 			this.checkBox1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox1.Name = "checkBox1";
@@ -193,6 +194,7 @@
 			// checkBox2
 			// 
 			this.checkBox2.AutoSize = true;
+			this.checkBox2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox2.Location = new System.Drawing.Point(94, 29);
 			this.checkBox2.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox2.Name = "checkBox2";
@@ -206,6 +208,7 @@
 			// checkBox3
 			// 
 			this.checkBox3.AutoSize = true;
+			this.checkBox3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox3.Location = new System.Drawing.Point(166, 28);
 			this.checkBox3.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox3.Name = "checkBox3";
@@ -219,6 +222,7 @@
 			// checkBox4
 			// 
 			this.checkBox4.AutoSize = true;
+			this.checkBox4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox4.Location = new System.Drawing.Point(238, 29);
 			this.checkBox4.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox4.Name = "checkBox4";
@@ -232,6 +236,7 @@
 			// checkBox5
 			// 
 			this.checkBox5.AutoSize = true;
+			this.checkBox5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox5.Location = new System.Drawing.Point(310, 28);
 			this.checkBox5.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox5.Name = "checkBox5";
@@ -245,6 +250,7 @@
 			// checkBox6
 			// 
 			this.checkBox6.AutoSize = true;
+			this.checkBox6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox6.Location = new System.Drawing.Point(382, 29);
 			this.checkBox6.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox6.Name = "checkBox6";
@@ -258,6 +264,7 @@
 			// checkBox7
 			// 
 			this.checkBox7.AutoSize = true;
+			this.checkBox7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox7.Location = new System.Drawing.Point(454, 28);
 			this.checkBox7.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox7.Name = "checkBox7";
@@ -271,6 +278,7 @@
 			// checkBox8
 			// 
 			this.checkBox8.AutoSize = true;
+			this.checkBox8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox8.Location = new System.Drawing.Point(526, 28);
 			this.checkBox8.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox8.Name = "checkBox8";
@@ -284,6 +292,7 @@
 			// checkBox9
 			// 
 			this.checkBox9.AutoSize = true;
+			this.checkBox9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox9.Location = new System.Drawing.Point(598, 28);
 			this.checkBox9.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox9.Name = "checkBox9";
@@ -297,6 +306,7 @@
 			// checkBox10
 			// 
 			this.checkBox10.AutoSize = true;
+			this.checkBox10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox10.Location = new System.Drawing.Point(670, 29);
 			this.checkBox10.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox10.Name = "checkBox10";
@@ -310,6 +320,7 @@
 			// checkBox11
 			// 
 			this.checkBox11.AutoSize = true;
+			this.checkBox11.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox11.Location = new System.Drawing.Point(729, 29);
 			this.checkBox11.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox11.Name = "checkBox11";
@@ -323,6 +334,7 @@
 			// checkBox12
 			// 
 			this.checkBox12.AutoSize = true;
+			this.checkBox12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox12.Location = new System.Drawing.Point(798, 29);
 			this.checkBox12.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox12.Name = "checkBox12";
@@ -349,7 +361,7 @@
 			this.groupBox1.Controls.Add(this.checkBox6);
 			this.groupBox1.Controls.Add(this.checkBox7);
 			this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
-			this.groupBox1.ForeColor = System.Drawing.Color.WhiteSmoke;
+			this.groupBox1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.groupBox1.Location = new System.Drawing.Point(0, 0);
 			this.groupBox1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.groupBox1.Name = "groupBox1";
@@ -375,7 +387,7 @@
 			this.groupBox2.Controls.Add(this.checkBox23);
 			this.groupBox2.Controls.Add(this.checkBox24);
 			this.groupBox2.Dock = System.Windows.Forms.DockStyle.Top;
-			this.groupBox2.ForeColor = System.Drawing.Color.WhiteSmoke;
+			this.groupBox2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.groupBox2.Location = new System.Drawing.Point(0, 69);
 			this.groupBox2.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.groupBox2.Name = "groupBox2";
@@ -388,6 +400,7 @@
 			// checkBox13
 			// 
 			this.checkBox13.AutoSize = true;
+			this.checkBox13.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox13.Location = new System.Drawing.Point(22, 29);
 			this.checkBox13.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox13.Name = "checkBox13";
@@ -401,6 +414,7 @@
 			// checkBox14
 			// 
 			this.checkBox14.AutoSize = true;
+			this.checkBox14.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox14.Location = new System.Drawing.Point(798, 29);
 			this.checkBox14.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox14.Name = "checkBox14";
@@ -414,6 +428,7 @@
 			// checkBox15
 			// 
 			this.checkBox15.AutoSize = true;
+			this.checkBox15.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox15.Location = new System.Drawing.Point(94, 29);
 			this.checkBox15.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox15.Name = "checkBox15";
@@ -427,6 +442,7 @@
 			// checkBox16
 			// 
 			this.checkBox16.AutoSize = true;
+			this.checkBox16.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox16.Location = new System.Drawing.Point(729, 29);
 			this.checkBox16.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox16.Name = "checkBox16";
@@ -440,6 +456,7 @@
 			// checkBox17
 			// 
 			this.checkBox17.AutoSize = true;
+			this.checkBox17.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox17.Location = new System.Drawing.Point(166, 28);
 			this.checkBox17.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox17.Name = "checkBox17";
@@ -453,6 +470,7 @@
 			// checkBox18
 			// 
 			this.checkBox18.AutoSize = true;
+			this.checkBox18.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox18.Location = new System.Drawing.Point(670, 29);
 			this.checkBox18.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox18.Name = "checkBox18";
@@ -466,6 +484,7 @@
 			// checkBox19
 			// 
 			this.checkBox19.AutoSize = true;
+			this.checkBox19.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox19.Location = new System.Drawing.Point(238, 29);
 			this.checkBox19.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox19.Name = "checkBox19";
@@ -479,6 +498,7 @@
 			// checkBox20
 			// 
 			this.checkBox20.AutoSize = true;
+			this.checkBox20.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox20.Location = new System.Drawing.Point(598, 28);
 			this.checkBox20.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox20.Name = "checkBox20";
@@ -492,6 +512,7 @@
 			// checkBox21
 			// 
 			this.checkBox21.AutoSize = true;
+			this.checkBox21.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox21.Location = new System.Drawing.Point(310, 28);
 			this.checkBox21.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox21.Name = "checkBox21";
@@ -505,6 +526,7 @@
 			// checkBox22
 			// 
 			this.checkBox22.AutoSize = true;
+			this.checkBox22.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox22.Location = new System.Drawing.Point(526, 28);
 			this.checkBox22.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox22.Name = "checkBox22";
@@ -518,6 +540,7 @@
 			// checkBox23
 			// 
 			this.checkBox23.AutoSize = true;
+			this.checkBox23.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox23.Location = new System.Drawing.Point(382, 29);
 			this.checkBox23.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox23.Name = "checkBox23";
@@ -531,6 +554,7 @@
 			// checkBox24
 			// 
 			this.checkBox24.AutoSize = true;
+			this.checkBox24.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox24.Location = new System.Drawing.Point(454, 28);
 			this.checkBox24.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox24.Name = "checkBox24";
@@ -557,7 +581,7 @@
 			this.groupBox3.Controls.Add(this.checkBox35);
 			this.groupBox3.Controls.Add(this.checkBox36);
 			this.groupBox3.Dock = System.Windows.Forms.DockStyle.Top;
-			this.groupBox3.ForeColor = System.Drawing.Color.WhiteSmoke;
+			this.groupBox3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.groupBox3.Location = new System.Drawing.Point(0, 138);
 			this.groupBox3.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.groupBox3.Name = "groupBox3";
@@ -570,6 +594,7 @@
 			// checkBox25
 			// 
 			this.checkBox25.AutoSize = true;
+			this.checkBox25.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox25.Location = new System.Drawing.Point(22, 29);
 			this.checkBox25.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox25.Name = "checkBox25";
@@ -583,6 +608,7 @@
 			// checkBox26
 			// 
 			this.checkBox26.AutoSize = true;
+			this.checkBox26.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox26.Location = new System.Drawing.Point(798, 29);
 			this.checkBox26.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox26.Name = "checkBox26";
@@ -596,6 +622,7 @@
 			// checkBox27
 			// 
 			this.checkBox27.AutoSize = true;
+			this.checkBox27.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox27.Location = new System.Drawing.Point(94, 29);
 			this.checkBox27.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox27.Name = "checkBox27";
@@ -609,6 +636,7 @@
 			// checkBox28
 			// 
 			this.checkBox28.AutoSize = true;
+			this.checkBox28.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox28.Location = new System.Drawing.Point(729, 29);
 			this.checkBox28.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox28.Name = "checkBox28";
@@ -622,6 +650,7 @@
 			// checkBox29
 			// 
 			this.checkBox29.AutoSize = true;
+			this.checkBox29.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox29.Location = new System.Drawing.Point(166, 28);
 			this.checkBox29.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox29.Name = "checkBox29";
@@ -635,6 +664,7 @@
 			// checkBox30
 			// 
 			this.checkBox30.AutoSize = true;
+			this.checkBox30.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox30.Location = new System.Drawing.Point(670, 29);
 			this.checkBox30.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox30.Name = "checkBox30";
@@ -648,6 +678,7 @@
 			// checkBox31
 			// 
 			this.checkBox31.AutoSize = true;
+			this.checkBox31.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox31.Location = new System.Drawing.Point(238, 29);
 			this.checkBox31.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox31.Name = "checkBox31";
@@ -661,6 +692,7 @@
 			// checkBox32
 			// 
 			this.checkBox32.AutoSize = true;
+			this.checkBox32.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox32.Location = new System.Drawing.Point(598, 28);
 			this.checkBox32.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox32.Name = "checkBox32";
@@ -674,6 +706,7 @@
 			// checkBox33
 			// 
 			this.checkBox33.AutoSize = true;
+			this.checkBox33.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox33.Location = new System.Drawing.Point(310, 28);
 			this.checkBox33.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox33.Name = "checkBox33";
@@ -687,6 +720,7 @@
 			// checkBox34
 			// 
 			this.checkBox34.AutoSize = true;
+			this.checkBox34.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox34.Location = new System.Drawing.Point(526, 28);
 			this.checkBox34.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox34.Name = "checkBox34";
@@ -700,6 +734,7 @@
 			// checkBox35
 			// 
 			this.checkBox35.AutoSize = true;
+			this.checkBox35.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox35.Location = new System.Drawing.Point(382, 29);
 			this.checkBox35.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox35.Name = "checkBox35";
@@ -713,6 +748,7 @@
 			// checkBox36
 			// 
 			this.checkBox36.AutoSize = true;
+			this.checkBox36.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox36.Location = new System.Drawing.Point(454, 28);
 			this.checkBox36.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox36.Name = "checkBox36";
@@ -739,7 +775,7 @@
 			this.groupBox4.Controls.Add(this.checkBox47);
 			this.groupBox4.Controls.Add(this.checkBox48);
 			this.groupBox4.Dock = System.Windows.Forms.DockStyle.Top;
-			this.groupBox4.ForeColor = System.Drawing.Color.WhiteSmoke;
+			this.groupBox4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.groupBox4.Location = new System.Drawing.Point(0, 207);
 			this.groupBox4.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.groupBox4.Name = "groupBox4";
@@ -752,6 +788,7 @@
 			// checkBox37
 			// 
 			this.checkBox37.AutoSize = true;
+			this.checkBox37.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox37.Location = new System.Drawing.Point(22, 29);
 			this.checkBox37.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox37.Name = "checkBox37";
@@ -765,6 +802,7 @@
 			// checkBox38
 			// 
 			this.checkBox38.AutoSize = true;
+			this.checkBox38.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox38.Location = new System.Drawing.Point(798, 29);
 			this.checkBox38.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox38.Name = "checkBox38";
@@ -778,6 +816,7 @@
 			// checkBox39
 			// 
 			this.checkBox39.AutoSize = true;
+			this.checkBox39.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox39.Location = new System.Drawing.Point(94, 29);
 			this.checkBox39.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox39.Name = "checkBox39";
@@ -791,6 +830,7 @@
 			// checkBox40
 			// 
 			this.checkBox40.AutoSize = true;
+			this.checkBox40.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox40.Location = new System.Drawing.Point(729, 29);
 			this.checkBox40.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox40.Name = "checkBox40";
@@ -804,6 +844,7 @@
 			// checkBox41
 			// 
 			this.checkBox41.AutoSize = true;
+			this.checkBox41.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox41.Location = new System.Drawing.Point(166, 28);
 			this.checkBox41.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox41.Name = "checkBox41";
@@ -817,6 +858,7 @@
 			// checkBox42
 			// 
 			this.checkBox42.AutoSize = true;
+			this.checkBox42.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox42.Location = new System.Drawing.Point(670, 29);
 			this.checkBox42.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox42.Name = "checkBox42";
@@ -830,6 +872,7 @@
 			// checkBox43
 			// 
 			this.checkBox43.AutoSize = true;
+			this.checkBox43.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox43.Location = new System.Drawing.Point(238, 29);
 			this.checkBox43.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox43.Name = "checkBox43";
@@ -843,6 +886,7 @@
 			// checkBox44
 			// 
 			this.checkBox44.AutoSize = true;
+			this.checkBox44.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox44.Location = new System.Drawing.Point(598, 28);
 			this.checkBox44.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox44.Name = "checkBox44";
@@ -856,6 +900,7 @@
 			// checkBox45
 			// 
 			this.checkBox45.AutoSize = true;
+			this.checkBox45.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox45.Location = new System.Drawing.Point(310, 28);
 			this.checkBox45.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox45.Name = "checkBox45";
@@ -869,6 +914,7 @@
 			// checkBox46
 			// 
 			this.checkBox46.AutoSize = true;
+			this.checkBox46.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox46.Location = new System.Drawing.Point(526, 28);
 			this.checkBox46.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox46.Name = "checkBox46";
@@ -882,6 +928,7 @@
 			// checkBox47
 			// 
 			this.checkBox47.AutoSize = true;
+			this.checkBox47.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox47.Location = new System.Drawing.Point(382, 29);
 			this.checkBox47.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox47.Name = "checkBox47";
@@ -895,6 +942,7 @@
 			// checkBox48
 			// 
 			this.checkBox48.AutoSize = true;
+			this.checkBox48.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox48.Location = new System.Drawing.Point(454, 28);
 			this.checkBox48.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox48.Name = "checkBox48";
@@ -921,7 +969,7 @@
 			this.groupBox5.Controls.Add(this.checkBox59);
 			this.groupBox5.Controls.Add(this.checkBox60);
 			this.groupBox5.Dock = System.Windows.Forms.DockStyle.Top;
-			this.groupBox5.ForeColor = System.Drawing.Color.WhiteSmoke;
+			this.groupBox5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.groupBox5.Location = new System.Drawing.Point(0, 276);
 			this.groupBox5.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.groupBox5.Name = "groupBox5";
@@ -934,6 +982,7 @@
 			// checkBox49
 			// 
 			this.checkBox49.AutoSize = true;
+			this.checkBox49.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox49.Location = new System.Drawing.Point(22, 29);
 			this.checkBox49.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox49.Name = "checkBox49";
@@ -947,6 +996,7 @@
 			// checkBox50
 			// 
 			this.checkBox50.AutoSize = true;
+			this.checkBox50.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox50.Location = new System.Drawing.Point(798, 29);
 			this.checkBox50.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox50.Name = "checkBox50";
@@ -960,6 +1010,7 @@
 			// checkBox51
 			// 
 			this.checkBox51.AutoSize = true;
+			this.checkBox51.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox51.Location = new System.Drawing.Point(94, 29);
 			this.checkBox51.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox51.Name = "checkBox51";
@@ -973,6 +1024,7 @@
 			// checkBox52
 			// 
 			this.checkBox52.AutoSize = true;
+			this.checkBox52.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox52.Location = new System.Drawing.Point(729, 29);
 			this.checkBox52.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox52.Name = "checkBox52";
@@ -986,6 +1038,7 @@
 			// checkBox53
 			// 
 			this.checkBox53.AutoSize = true;
+			this.checkBox53.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox53.Location = new System.Drawing.Point(166, 28);
 			this.checkBox53.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox53.Name = "checkBox53";
@@ -999,6 +1052,7 @@
 			// checkBox54
 			// 
 			this.checkBox54.AutoSize = true;
+			this.checkBox54.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox54.Location = new System.Drawing.Point(670, 29);
 			this.checkBox54.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox54.Name = "checkBox54";
@@ -1012,6 +1066,7 @@
 			// checkBox55
 			// 
 			this.checkBox55.AutoSize = true;
+			this.checkBox55.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox55.Location = new System.Drawing.Point(238, 29);
 			this.checkBox55.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox55.Name = "checkBox55";
@@ -1025,6 +1080,7 @@
 			// checkBox56
 			// 
 			this.checkBox56.AutoSize = true;
+			this.checkBox56.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox56.Location = new System.Drawing.Point(598, 28);
 			this.checkBox56.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox56.Name = "checkBox56";
@@ -1038,6 +1094,7 @@
 			// checkBox57
 			// 
 			this.checkBox57.AutoSize = true;
+			this.checkBox57.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox57.Location = new System.Drawing.Point(310, 28);
 			this.checkBox57.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox57.Name = "checkBox57";
@@ -1051,6 +1108,7 @@
 			// checkBox58
 			// 
 			this.checkBox58.AutoSize = true;
+			this.checkBox58.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox58.Location = new System.Drawing.Point(526, 28);
 			this.checkBox58.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox58.Name = "checkBox58";
@@ -1064,6 +1122,7 @@
 			// checkBox59
 			// 
 			this.checkBox59.AutoSize = true;
+			this.checkBox59.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox59.Location = new System.Drawing.Point(382, 29);
 			this.checkBox59.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox59.Name = "checkBox59";
@@ -1077,6 +1136,7 @@
 			// checkBox60
 			// 
 			this.checkBox60.AutoSize = true;
+			this.checkBox60.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox60.Location = new System.Drawing.Point(454, 28);
 			this.checkBox60.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox60.Name = "checkBox60";
@@ -1103,7 +1163,7 @@
 			this.groupBox6.Controls.Add(this.checkBox71);
 			this.groupBox6.Controls.Add(this.checkBox72);
 			this.groupBox6.Dock = System.Windows.Forms.DockStyle.Top;
-			this.groupBox6.ForeColor = System.Drawing.Color.WhiteSmoke;
+			this.groupBox6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.groupBox6.Location = new System.Drawing.Point(0, 345);
 			this.groupBox6.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.groupBox6.Name = "groupBox6";
@@ -1116,6 +1176,7 @@
 			// checkBox61
 			// 
 			this.checkBox61.AutoSize = true;
+			this.checkBox61.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox61.Location = new System.Drawing.Point(22, 29);
 			this.checkBox61.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox61.Name = "checkBox61";
@@ -1129,6 +1190,7 @@
 			// checkBox62
 			// 
 			this.checkBox62.AutoSize = true;
+			this.checkBox62.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox62.Location = new System.Drawing.Point(798, 29);
 			this.checkBox62.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox62.Name = "checkBox62";
@@ -1142,6 +1204,7 @@
 			// checkBox63
 			// 
 			this.checkBox63.AutoSize = true;
+			this.checkBox63.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox63.Location = new System.Drawing.Point(94, 29);
 			this.checkBox63.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox63.Name = "checkBox63";
@@ -1155,6 +1218,7 @@
 			// checkBox64
 			// 
 			this.checkBox64.AutoSize = true;
+			this.checkBox64.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox64.Location = new System.Drawing.Point(729, 29);
 			this.checkBox64.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox64.Name = "checkBox64";
@@ -1168,6 +1232,7 @@
 			// checkBox65
 			// 
 			this.checkBox65.AutoSize = true;
+			this.checkBox65.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox65.Location = new System.Drawing.Point(166, 28);
 			this.checkBox65.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox65.Name = "checkBox65";
@@ -1181,6 +1246,7 @@
 			// checkBox66
 			// 
 			this.checkBox66.AutoSize = true;
+			this.checkBox66.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox66.Location = new System.Drawing.Point(670, 29);
 			this.checkBox66.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox66.Name = "checkBox66";
@@ -1194,6 +1260,7 @@
 			// checkBox67
 			// 
 			this.checkBox67.AutoSize = true;
+			this.checkBox67.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox67.Location = new System.Drawing.Point(238, 29);
 			this.checkBox67.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox67.Name = "checkBox67";
@@ -1207,6 +1274,7 @@
 			// checkBox68
 			// 
 			this.checkBox68.AutoSize = true;
+			this.checkBox68.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox68.Location = new System.Drawing.Point(598, 28);
 			this.checkBox68.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox68.Name = "checkBox68";
@@ -1220,6 +1288,7 @@
 			// checkBox69
 			// 
 			this.checkBox69.AutoSize = true;
+			this.checkBox69.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox69.Location = new System.Drawing.Point(310, 28);
 			this.checkBox69.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox69.Name = "checkBox69";
@@ -1233,6 +1302,7 @@
 			// checkBox70
 			// 
 			this.checkBox70.AutoSize = true;
+			this.checkBox70.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox70.Location = new System.Drawing.Point(526, 28);
 			this.checkBox70.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox70.Name = "checkBox70";
@@ -1246,6 +1316,7 @@
 			// checkBox71
 			// 
 			this.checkBox71.AutoSize = true;
+			this.checkBox71.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox71.Location = new System.Drawing.Point(382, 29);
 			this.checkBox71.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox71.Name = "checkBox71";
@@ -1259,6 +1330,7 @@
 			// checkBox72
 			// 
 			this.checkBox72.AutoSize = true;
+			this.checkBox72.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox72.Location = new System.Drawing.Point(454, 28);
 			this.checkBox72.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox72.Name = "checkBox72";
@@ -1285,7 +1357,7 @@
 			this.groupBox7.Controls.Add(this.checkBox83);
 			this.groupBox7.Controls.Add(this.checkBox84);
 			this.groupBox7.Dock = System.Windows.Forms.DockStyle.Top;
-			this.groupBox7.ForeColor = System.Drawing.Color.WhiteSmoke;
+			this.groupBox7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.groupBox7.Location = new System.Drawing.Point(0, 414);
 			this.groupBox7.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.groupBox7.Name = "groupBox7";
@@ -1298,6 +1370,7 @@
 			// checkBox73
 			// 
 			this.checkBox73.AutoSize = true;
+			this.checkBox73.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox73.Location = new System.Drawing.Point(22, 29);
 			this.checkBox73.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox73.Name = "checkBox73";
@@ -1311,6 +1384,7 @@
 			// checkBox74
 			// 
 			this.checkBox74.AutoSize = true;
+			this.checkBox74.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox74.Location = new System.Drawing.Point(798, 29);
 			this.checkBox74.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox74.Name = "checkBox74";
@@ -1324,6 +1398,7 @@
 			// checkBox75
 			// 
 			this.checkBox75.AutoSize = true;
+			this.checkBox75.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox75.Location = new System.Drawing.Point(94, 29);
 			this.checkBox75.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox75.Name = "checkBox75";
@@ -1337,6 +1412,7 @@
 			// checkBox76
 			// 
 			this.checkBox76.AutoSize = true;
+			this.checkBox76.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox76.Location = new System.Drawing.Point(729, 29);
 			this.checkBox76.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox76.Name = "checkBox76";
@@ -1350,6 +1426,7 @@
 			// checkBox77
 			// 
 			this.checkBox77.AutoSize = true;
+			this.checkBox77.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox77.Location = new System.Drawing.Point(166, 28);
 			this.checkBox77.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox77.Name = "checkBox77";
@@ -1363,6 +1440,7 @@
 			// checkBox78
 			// 
 			this.checkBox78.AutoSize = true;
+			this.checkBox78.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox78.Location = new System.Drawing.Point(670, 29);
 			this.checkBox78.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox78.Name = "checkBox78";
@@ -1376,6 +1454,7 @@
 			// checkBox79
 			// 
 			this.checkBox79.AutoSize = true;
+			this.checkBox79.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox79.Location = new System.Drawing.Point(238, 29);
 			this.checkBox79.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox79.Name = "checkBox79";
@@ -1389,6 +1468,7 @@
 			// checkBox80
 			// 
 			this.checkBox80.AutoSize = true;
+			this.checkBox80.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox80.Location = new System.Drawing.Point(598, 28);
 			this.checkBox80.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox80.Name = "checkBox80";
@@ -1402,6 +1482,7 @@
 			// checkBox81
 			// 
 			this.checkBox81.AutoSize = true;
+			this.checkBox81.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox81.Location = new System.Drawing.Point(310, 28);
 			this.checkBox81.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox81.Name = "checkBox81";
@@ -1415,6 +1496,7 @@
 			// checkBox82
 			// 
 			this.checkBox82.AutoSize = true;
+			this.checkBox82.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox82.Location = new System.Drawing.Point(526, 28);
 			this.checkBox82.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox82.Name = "checkBox82";
@@ -1428,6 +1510,7 @@
 			// checkBox83
 			// 
 			this.checkBox83.AutoSize = true;
+			this.checkBox83.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox83.Location = new System.Drawing.Point(382, 29);
 			this.checkBox83.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox83.Name = "checkBox83";
@@ -1441,6 +1524,7 @@
 			// checkBox84
 			// 
 			this.checkBox84.AutoSize = true;
+			this.checkBox84.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox84.Location = new System.Drawing.Point(454, 28);
 			this.checkBox84.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox84.Name = "checkBox84";
@@ -1467,7 +1551,7 @@
 			this.groupBox8.Controls.Add(this.checkBox95);
 			this.groupBox8.Controls.Add(this.checkBox96);
 			this.groupBox8.Dock = System.Windows.Forms.DockStyle.Top;
-			this.groupBox8.ForeColor = System.Drawing.Color.WhiteSmoke;
+			this.groupBox8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.groupBox8.Location = new System.Drawing.Point(0, 483);
 			this.groupBox8.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.groupBox8.Name = "groupBox8";
@@ -1480,6 +1564,7 @@
 			// checkBox85
 			// 
 			this.checkBox85.AutoSize = true;
+			this.checkBox85.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox85.Location = new System.Drawing.Point(22, 29);
 			this.checkBox85.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox85.Name = "checkBox85";
@@ -1493,6 +1578,7 @@
 			// checkBox86
 			// 
 			this.checkBox86.AutoSize = true;
+			this.checkBox86.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox86.Location = new System.Drawing.Point(798, 29);
 			this.checkBox86.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox86.Name = "checkBox86";
@@ -1506,6 +1592,7 @@
 			// checkBox87
 			// 
 			this.checkBox87.AutoSize = true;
+			this.checkBox87.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox87.Location = new System.Drawing.Point(94, 29);
 			this.checkBox87.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox87.Name = "checkBox87";
@@ -1519,6 +1606,7 @@
 			// checkBox88
 			// 
 			this.checkBox88.AutoSize = true;
+			this.checkBox88.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox88.Location = new System.Drawing.Point(729, 29);
 			this.checkBox88.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox88.Name = "checkBox88";
@@ -1532,6 +1620,7 @@
 			// checkBox89
 			// 
 			this.checkBox89.AutoSize = true;
+			this.checkBox89.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox89.Location = new System.Drawing.Point(166, 28);
 			this.checkBox89.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox89.Name = "checkBox89";
@@ -1545,6 +1634,7 @@
 			// checkBox90
 			// 
 			this.checkBox90.AutoSize = true;
+			this.checkBox90.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox90.Location = new System.Drawing.Point(670, 29);
 			this.checkBox90.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox90.Name = "checkBox90";
@@ -1558,6 +1648,7 @@
 			// checkBox91
 			// 
 			this.checkBox91.AutoSize = true;
+			this.checkBox91.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox91.Location = new System.Drawing.Point(238, 29);
 			this.checkBox91.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox91.Name = "checkBox91";
@@ -1571,6 +1662,7 @@
 			// checkBox92
 			// 
 			this.checkBox92.AutoSize = true;
+			this.checkBox92.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox92.Location = new System.Drawing.Point(598, 28);
 			this.checkBox92.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox92.Name = "checkBox92";
@@ -1584,6 +1676,7 @@
 			// checkBox93
 			// 
 			this.checkBox93.AutoSize = true;
+			this.checkBox93.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox93.Location = new System.Drawing.Point(310, 28);
 			this.checkBox93.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox93.Name = "checkBox93";
@@ -1597,6 +1690,7 @@
 			// checkBox94
 			// 
 			this.checkBox94.AutoSize = true;
+			this.checkBox94.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox94.Location = new System.Drawing.Point(526, 28);
 			this.checkBox94.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox94.Name = "checkBox94";
@@ -1610,6 +1704,7 @@
 			// checkBox95
 			// 
 			this.checkBox95.AutoSize = true;
+			this.checkBox95.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox95.Location = new System.Drawing.Point(382, 29);
 			this.checkBox95.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox95.Name = "checkBox95";
@@ -1623,6 +1718,7 @@
 			// checkBox96
 			// 
 			this.checkBox96.AutoSize = true;
+			this.checkBox96.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox96.Location = new System.Drawing.Point(454, 28);
 			this.checkBox96.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox96.Name = "checkBox96";
@@ -1649,7 +1745,7 @@
 			this.groupBox9.Controls.Add(this.checkBox107);
 			this.groupBox9.Controls.Add(this.checkBox108);
 			this.groupBox9.Dock = System.Windows.Forms.DockStyle.Top;
-			this.groupBox9.ForeColor = System.Drawing.Color.WhiteSmoke;
+			this.groupBox9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.groupBox9.Location = new System.Drawing.Point(0, 552);
 			this.groupBox9.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.groupBox9.Name = "groupBox9";
@@ -1662,6 +1758,7 @@
 			// checkBox97
 			// 
 			this.checkBox97.AutoSize = true;
+			this.checkBox97.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox97.Location = new System.Drawing.Point(22, 29);
 			this.checkBox97.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox97.Name = "checkBox97";
@@ -1675,6 +1772,7 @@
 			// checkBox98
 			// 
 			this.checkBox98.AutoSize = true;
+			this.checkBox98.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox98.Location = new System.Drawing.Point(798, 29);
 			this.checkBox98.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox98.Name = "checkBox98";
@@ -1688,6 +1786,7 @@
 			// checkBox99
 			// 
 			this.checkBox99.AutoSize = true;
+			this.checkBox99.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox99.Location = new System.Drawing.Point(94, 29);
 			this.checkBox99.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox99.Name = "checkBox99";
@@ -1701,6 +1800,7 @@
 			// checkBox100
 			// 
 			this.checkBox100.AutoSize = true;
+			this.checkBox100.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox100.Location = new System.Drawing.Point(729, 29);
 			this.checkBox100.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox100.Name = "checkBox100";
@@ -1714,6 +1814,7 @@
 			// checkBox101
 			// 
 			this.checkBox101.AutoSize = true;
+			this.checkBox101.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox101.Location = new System.Drawing.Point(166, 28);
 			this.checkBox101.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox101.Name = "checkBox101";
@@ -1727,6 +1828,7 @@
 			// checkBox102
 			// 
 			this.checkBox102.AutoSize = true;
+			this.checkBox102.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox102.Location = new System.Drawing.Point(670, 29);
 			this.checkBox102.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox102.Name = "checkBox102";
@@ -1740,6 +1842,7 @@
 			// checkBox103
 			// 
 			this.checkBox103.AutoSize = true;
+			this.checkBox103.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox103.Location = new System.Drawing.Point(238, 29);
 			this.checkBox103.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox103.Name = "checkBox103";
@@ -1753,6 +1856,7 @@
 			// checkBox104
 			// 
 			this.checkBox104.AutoSize = true;
+			this.checkBox104.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox104.Location = new System.Drawing.Point(598, 28);
 			this.checkBox104.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox104.Name = "checkBox104";
@@ -1766,6 +1870,7 @@
 			// checkBox105
 			// 
 			this.checkBox105.AutoSize = true;
+			this.checkBox105.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox105.Location = new System.Drawing.Point(310, 28);
 			this.checkBox105.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox105.Name = "checkBox105";
@@ -1779,6 +1884,7 @@
 			// checkBox106
 			// 
 			this.checkBox106.AutoSize = true;
+			this.checkBox106.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox106.Location = new System.Drawing.Point(526, 28);
 			this.checkBox106.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox106.Name = "checkBox106";
@@ -1792,6 +1898,7 @@
 			// checkBox107
 			// 
 			this.checkBox107.AutoSize = true;
+			this.checkBox107.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox107.Location = new System.Drawing.Point(382, 29);
 			this.checkBox107.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox107.Name = "checkBox107";
@@ -1805,6 +1912,7 @@
 			// checkBox108
 			// 
 			this.checkBox108.AutoSize = true;
+			this.checkBox108.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox108.Location = new System.Drawing.Point(454, 28);
 			this.checkBox108.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox108.Name = "checkBox108";
@@ -1831,7 +1939,7 @@
 			this.groupBox10.Controls.Add(this.checkBox119);
 			this.groupBox10.Controls.Add(this.checkBox120);
 			this.groupBox10.Dock = System.Windows.Forms.DockStyle.Top;
-			this.groupBox10.ForeColor = System.Drawing.Color.WhiteSmoke;
+			this.groupBox10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.groupBox10.Location = new System.Drawing.Point(0, 621);
 			this.groupBox10.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.groupBox10.Name = "groupBox10";
@@ -1844,6 +1952,7 @@
 			// checkBox109
 			// 
 			this.checkBox109.AutoSize = true;
+			this.checkBox109.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox109.Location = new System.Drawing.Point(22, 29);
 			this.checkBox109.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox109.Name = "checkBox109";
@@ -1857,6 +1966,7 @@
 			// checkBox110
 			// 
 			this.checkBox110.AutoSize = true;
+			this.checkBox110.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox110.Location = new System.Drawing.Point(798, 29);
 			this.checkBox110.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox110.Name = "checkBox110";
@@ -1870,6 +1980,7 @@
 			// checkBox111
 			// 
 			this.checkBox111.AutoSize = true;
+			this.checkBox111.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox111.Location = new System.Drawing.Point(94, 29);
 			this.checkBox111.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox111.Name = "checkBox111";
@@ -1883,6 +1994,7 @@
 			// checkBox112
 			// 
 			this.checkBox112.AutoSize = true;
+			this.checkBox112.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox112.Location = new System.Drawing.Point(729, 29);
 			this.checkBox112.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox112.Name = "checkBox112";
@@ -1896,6 +2008,7 @@
 			// checkBox113
 			// 
 			this.checkBox113.AutoSize = true;
+			this.checkBox113.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox113.Location = new System.Drawing.Point(166, 28);
 			this.checkBox113.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox113.Name = "checkBox113";
@@ -1909,6 +2022,7 @@
 			// checkBox114
 			// 
 			this.checkBox114.AutoSize = true;
+			this.checkBox114.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox114.Location = new System.Drawing.Point(670, 29);
 			this.checkBox114.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox114.Name = "checkBox114";
@@ -1922,6 +2036,7 @@
 			// checkBox115
 			// 
 			this.checkBox115.AutoSize = true;
+			this.checkBox115.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox115.Location = new System.Drawing.Point(238, 29);
 			this.checkBox115.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox115.Name = "checkBox115";
@@ -1935,6 +2050,7 @@
 			// checkBox116
 			// 
 			this.checkBox116.AutoSize = true;
+			this.checkBox116.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox116.Location = new System.Drawing.Point(598, 28);
 			this.checkBox116.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox116.Name = "checkBox116";
@@ -1948,6 +2064,7 @@
 			// checkBox117
 			// 
 			this.checkBox117.AutoSize = true;
+			this.checkBox117.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox117.Location = new System.Drawing.Point(310, 28);
 			this.checkBox117.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox117.Name = "checkBox117";
@@ -1961,6 +2078,7 @@
 			// checkBox118
 			// 
 			this.checkBox118.AutoSize = true;
+			this.checkBox118.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox118.Location = new System.Drawing.Point(526, 28);
 			this.checkBox118.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox118.Name = "checkBox118";
@@ -1974,6 +2092,7 @@
 			// checkBox119
 			// 
 			this.checkBox119.AutoSize = true;
+			this.checkBox119.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox119.Location = new System.Drawing.Point(382, 29);
 			this.checkBox119.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox119.Name = "checkBox119";
@@ -1987,6 +2106,7 @@
 			// checkBox120
 			// 
 			this.checkBox120.AutoSize = true;
+			this.checkBox120.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBox120.Location = new System.Drawing.Point(454, 28);
 			this.checkBox120.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBox120.Name = "checkBox120";
@@ -2000,8 +2120,12 @@
 			// buttonCancel
 			// 
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+			this.buttonCancel.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+			this.buttonCancel.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+			this.buttonCancel.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+			this.buttonCancel.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.buttonCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.buttonCancel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.buttonCancel.Location = new System.Drawing.Point(711, 700);
 			this.buttonCancel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.buttonCancel.Name = "buttonCancel";
@@ -2009,12 +2133,18 @@
 			this.buttonCancel.TabIndex = 22;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
+			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonCancel_MouseLeave);
+			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonCancel_MouseHover);
 			// 
 			// btnOk
 			// 
 			this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.btnOk.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+			this.btnOk.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+			this.btnOk.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+			this.btnOk.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+			this.btnOk.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.btnOk.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.btnOk.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.btnOk.Location = new System.Drawing.Point(590, 700);
 			this.btnOk.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.btnOk.Name = "btnOk";
@@ -2022,11 +2152,16 @@
 			this.btnOk.TabIndex = 23;
 			this.btnOk.Text = "OK";
 			this.btnOk.UseVisualStyleBackColor = true;
+			this.btnOk.MouseLeave += new System.EventHandler(this.btnOk_MouseLeave);
+			this.btnOk.MouseHover += new System.EventHandler(this.btnOk_MouseHover);
 			// 
 			// btnPreviewAudio
 			// 
-			this.btnPreviewAudio.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+			this.btnPreviewAudio.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+			this.btnPreviewAudio.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+			this.btnPreviewAudio.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.btnPreviewAudio.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.btnPreviewAudio.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.btnPreviewAudio.Location = new System.Drawing.Point(22, 702);
 			this.btnPreviewAudio.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.btnPreviewAudio.Name = "btnPreviewAudio";
@@ -2035,9 +2170,12 @@
 			this.btnPreviewAudio.Text = "Preview Audio";
 			this.btnPreviewAudio.UseVisualStyleBackColor = true;
 			this.btnPreviewAudio.Click += new System.EventHandler(this.btnPreviewAudio_Click);
+			this.btnPreviewAudio.MouseLeave += new System.EventHandler(this.btnPreviewAudio_MouseLeave);
+			this.btnPreviewAudio.MouseHover += new System.EventHandler(this.btnPreviewAudio_MouseHover);
 			// 
 			// numericUpDown1
 			// 
+			this.numericUpDown1.ForeColor = System.Drawing.Color.Black;
 			this.numericUpDown1.Location = new System.Drawing.Point(382, 705);
 			this.numericUpDown1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.numericUpDown1.Maximum = new decimal(new int[] {
@@ -2053,6 +2191,7 @@
 			// label1
 			// 
 			this.label1.AutoSize = true;
+			this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.label1.Location = new System.Drawing.Point(296, 708);
 			this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label1.Name = "label1";
@@ -2083,7 +2222,7 @@
 			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
-			this.ForeColor = System.Drawing.Color.WhiteSmoke;
+			this.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.Name = "AutomaticMusicDetection";

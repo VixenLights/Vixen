@@ -50,5 +50,29 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				return radioVixen3Beats.Checked;
 			}
 		}
+
+		private void btnOk_MouseHover(object sender, EventArgs e)
+		{
+
+			btnOk.BackgroundImage = Resources.HeadingBackgroundImageHover;
+		}
+
+		private void btnOk_MouseLeave(object sender, EventArgs e)
+		{
+
+			btnOk.BackgroundImage = Resources.HeadingBackgroundImage;
+		}
+
+		private void btnCancel_MouseHover(object sender, EventArgs e)
+		{
+
+			btnCancel.BackgroundImage = Resources.HeadingBackgroundImageHover;
+		}
+
+		private void btnCancel_MouseLeave(object sender, EventArgs e)
+		{
+
+			btnCancel.BackgroundImage = Resources.HeadingBackgroundImage;
+		}
 	}
 }

@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using System.Runtime.Serialization;
 using Common.Controls.ColorManagement.ColorModels;
+using Common.Resources.Properties;
 
 namespace Common.Controls.ColorManagement.ColorPicker
 {
@@ -61,6 +62,8 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			_fader = fader;
 
 			InitializeComponent();
+			btnOK.BackgroundImage = Resources.Properties.Resources.HeadingBackgroundImage;
+			btnCancel.BackgroundImage = Resources.Properties.Resources.HeadingBackgroundImage;
 
 			UpdateUI();
 			filter = new ShiftKeyFilter();
@@ -123,14 +126,14 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			this.lblSecond_2 = new System.Windows.Forms.Label();
 			this.lblSecond_3 = new System.Windows.Forms.Label();
 			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-			this.lblColorOut = new Common.Controls.ColorManagement.ColorPicker.ColorLabel();
-			this.colorSelectionFader1 = new Common.Controls.ColorManagement.ColorPicker.ColorSelectionFader();
-			this.colorSelectionPlane1 = new Common.Controls.ColorManagement.ColorPicker.ColorSelectionPlane();
 			this.quickPickBox = new System.Windows.Forms.GroupBox();
 			this.whiteButton = new System.Windows.Forms.Button();
 			this.blueButton = new System.Windows.Forms.Button();
 			this.greenButton = new System.Windows.Forms.Button();
 			this.redButton = new System.Windows.Forms.Button();
+			this.lblColorOut = new Common.Controls.ColorManagement.ColorPicker.ColorLabel();
+			this.colorSelectionFader1 = new Common.Controls.ColorManagement.ColorPicker.ColorSelectionFader();
+			this.colorSelectionPlane1 = new Common.Controls.ColorManagement.ColorPicker.ColorSelectionPlane();
 			this.quickPickBox.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -143,14 +146,32 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			// btnCancel
 			// 
 			resources.ApplyResources(this.btnCancel, "btnCancel");
+			this.btnCancel.BackColor = System.Drawing.Color.Transparent;
 			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.btnCancel.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+			this.btnCancel.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+			this.btnCancel.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+			this.btnCancel.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+			this.btnCancel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.btnCancel.Name = "btnCancel";
+			this.btnCancel.UseVisualStyleBackColor = false;
+			this.btnCancel.MouseLeave += new System.EventHandler(this.btnCancel_MouseLeave);
+			this.btnCancel.MouseHover += new System.EventHandler(this.btnCancel_MouseHover);
 			// 
 			// btnOK
 			// 
 			resources.ApplyResources(this.btnOK, "btnOK");
+			this.btnOK.BackColor = System.Drawing.Color.Transparent;
 			this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
+			this.btnOK.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+			this.btnOK.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+			this.btnOK.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+			this.btnOK.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+			this.btnOK.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.btnOK.Name = "btnOK";
+			this.btnOK.UseVisualStyleBackColor = false;
+			this.btnOK.MouseLeave += new System.EventHandler(this.btnOK_MouseLeave);
+			this.btnOK.MouseHover += new System.EventHandler(this.btnOK_MouseHover);
 			// 
 			// contextMenu
 			// 
@@ -233,6 +254,8 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			// 
 			// tbHSV_H
 			// 
+			this.tbHSV_H.BackColor = System.Drawing.Color.WhiteSmoke;
+			this.tbHSV_H.ForeColor = System.Drawing.Color.Black;
 			resources.ApplyResources(this.tbHSV_H, "tbHSV_H");
 			this.tbHSV_H.Name = "tbHSV_H";
 			this.tbHSV_H.KeyUp += new System.Windows.Forms.KeyEventHandler(this.tbValue_KeyUp);
@@ -240,6 +263,8 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			// 
 			// tbHSV_S
 			// 
+			this.tbHSV_S.BackColor = System.Drawing.Color.WhiteSmoke;
+			this.tbHSV_S.ForeColor = System.Drawing.Color.Black;
 			resources.ApplyResources(this.tbHSV_S, "tbHSV_S");
 			this.tbHSV_S.Name = "tbHSV_S";
 			this.tbHSV_S.KeyUp += new System.Windows.Forms.KeyEventHandler(this.tbValue_KeyUp);
@@ -247,6 +272,8 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			// 
 			// tbHSV_V
 			// 
+			this.tbHSV_V.BackColor = System.Drawing.Color.WhiteSmoke;
+			this.tbHSV_V.ForeColor = System.Drawing.Color.Black;
 			resources.ApplyResources(this.tbHSV_V, "tbHSV_V");
 			this.tbHSV_V.Name = "tbHSV_V";
 			this.tbHSV_V.KeyUp += new System.Windows.Forms.KeyEventHandler(this.tbValue_KeyUp);
@@ -254,6 +281,8 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			// 
 			// tbSecond_1
 			// 
+			this.tbSecond_1.BackColor = System.Drawing.Color.WhiteSmoke;
+			this.tbSecond_1.ForeColor = System.Drawing.Color.Black;
 			resources.ApplyResources(this.tbSecond_1, "tbSecond_1");
 			this.tbSecond_1.Name = "tbSecond_1";
 			this.tbSecond_1.KeyUp += new System.Windows.Forms.KeyEventHandler(this.tbValue_KeyUp);
@@ -261,6 +290,8 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			// 
 			// tbSecond_2
 			// 
+			this.tbSecond_2.BackColor = System.Drawing.Color.WhiteSmoke;
+			this.tbSecond_2.ForeColor = System.Drawing.Color.Black;
 			resources.ApplyResources(this.tbSecond_2, "tbSecond_2");
 			this.tbSecond_2.Name = "tbSecond_2";
 			this.tbSecond_2.KeyUp += new System.Windows.Forms.KeyEventHandler(this.tbValue_KeyUp);
@@ -268,6 +299,8 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			// 
 			// tbSecond_3
 			// 
+			this.tbSecond_3.BackColor = System.Drawing.Color.WhiteSmoke;
+			this.tbSecond_3.ForeColor = System.Drawing.Color.Black;
 			resources.ApplyResources(this.tbSecond_3, "tbSecond_3");
 			this.tbSecond_3.Name = "tbSecond_3";
 			this.tbSecond_3.KeyUp += new System.Windows.Forms.KeyEventHandler(this.tbValue_KeyUp);
@@ -275,31 +308,37 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			// 
 			// lblHSV_H
 			// 
+			this.lblHSV_H.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			resources.ApplyResources(this.lblHSV_H, "lblHSV_H");
 			this.lblHSV_H.Name = "lblHSV_H";
 			// 
 			// lblHSV_S
 			// 
+			this.lblHSV_S.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			resources.ApplyResources(this.lblHSV_S, "lblHSV_S");
 			this.lblHSV_S.Name = "lblHSV_S";
 			// 
 			// lblHSV_V
 			// 
+			this.lblHSV_V.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			resources.ApplyResources(this.lblHSV_V, "lblHSV_V");
 			this.lblHSV_V.Name = "lblHSV_V";
 			// 
 			// lblSecond_1
 			// 
+			this.lblSecond_1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			resources.ApplyResources(this.lblSecond_1, "lblSecond_1");
 			this.lblSecond_1.Name = "lblSecond_1";
 			// 
 			// lblSecond_2
 			// 
+			this.lblSecond_2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			resources.ApplyResources(this.lblSecond_2, "lblSecond_2");
 			this.lblSecond_2.Name = "lblSecond_2";
 			// 
 			// lblSecond_3
 			// 
+			this.lblSecond_3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			resources.ApplyResources(this.lblSecond_3, "lblSecond_3");
 			this.lblSecond_3.Name = "lblSecond_3";
 			// 
@@ -310,11 +349,61 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			this.toolTip.InitialDelay = 1000;
 			this.toolTip.ReshowDelay = 200;
 			// 
+			// quickPickBox
+			// 
+			this.quickPickBox.Controls.Add(this.whiteButton);
+			this.quickPickBox.Controls.Add(this.blueButton);
+			this.quickPickBox.Controls.Add(this.greenButton);
+			this.quickPickBox.Controls.Add(this.redButton);
+			this.quickPickBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			resources.ApplyResources(this.quickPickBox, "quickPickBox");
+			this.quickPickBox.Name = "quickPickBox";
+			this.quickPickBox.TabStop = false;
+			this.quickPickBox.Paint += new System.Windows.Forms.PaintEventHandler(this.quickPickBox_Paint);
+			// 
+			// whiteButton
+			// 
+			this.whiteButton.BackColor = System.Drawing.Color.White;
+			this.whiteButton.ForeColor = System.Drawing.Color.Black;
+			resources.ApplyResources(this.whiteButton, "whiteButton");
+			this.whiteButton.Name = "whiteButton";
+			this.whiteButton.UseVisualStyleBackColor = false;
+			this.whiteButton.Click += new System.EventHandler(this.whiteButton_Click);
+			// 
+			// blueButton
+			// 
+			this.blueButton.BackColor = System.Drawing.Color.Blue;
+			this.blueButton.ForeColor = System.Drawing.Color.Black;
+			resources.ApplyResources(this.blueButton, "blueButton");
+			this.blueButton.Name = "blueButton";
+			this.blueButton.UseVisualStyleBackColor = false;
+			this.blueButton.Click += new System.EventHandler(this.blueButton_Click);
+			// 
+			// greenButton
+			// 
+			this.greenButton.BackColor = System.Drawing.Color.Green;
+			this.greenButton.ForeColor = System.Drawing.Color.Black;
+			resources.ApplyResources(this.greenButton, "greenButton");
+			this.greenButton.Name = "greenButton";
+			this.greenButton.UseVisualStyleBackColor = false;
+			this.greenButton.Click += new System.EventHandler(this.greenButton_Click);
+			// 
+			// redButton
+			// 
+			this.redButton.BackColor = System.Drawing.Color.Red;
+			this.redButton.ForeColor = System.Drawing.Color.Black;
+			resources.ApplyResources(this.redButton, "redButton");
+			this.redButton.Name = "redButton";
+			this.redButton.UseVisualStyleBackColor = false;
+			this.redButton.Click += new System.EventHandler(this.redButton_Click);
+			// 
 			// lblColorOut
 			// 
 			resources.ApplyResources(this.lblColorOut, "lblColorOut");
+			this.lblColorOut.BackColor = System.Drawing.Color.WhiteSmoke;
 			this.lblColorOut.Color = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
 			this.lblColorOut.ContextMenu = this.contextMenu;
+			this.lblColorOut.ForeColor = System.Drawing.Color.Black;
 			this.lblColorOut.Name = "lblColorOut";
 			this.lblColorOut.OldColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
 			this.toolTip.SetToolTip(this.lblColorOut, resources.GetString("lblColorOut.ToolTip"));
@@ -334,52 +423,11 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			this.colorSelectionPlane1.TabStop = false;
 			this.toolTip.SetToolTip(this.colorSelectionPlane1, resources.GetString("colorSelectionPlane1.ToolTip"));
 			// 
-			// quickPickBox
-			// 
-			this.quickPickBox.Controls.Add(this.whiteButton);
-			this.quickPickBox.Controls.Add(this.blueButton);
-			this.quickPickBox.Controls.Add(this.greenButton);
-			this.quickPickBox.Controls.Add(this.redButton);
-			resources.ApplyResources(this.quickPickBox, "quickPickBox");
-			this.quickPickBox.Name = "quickPickBox";
-			this.quickPickBox.TabStop = false;
-			// 
-			// whiteButton
-			// 
-			this.whiteButton.BackColor = System.Drawing.Color.White;
-			resources.ApplyResources(this.whiteButton, "whiteButton");
-			this.whiteButton.Name = "whiteButton";
-			this.whiteButton.UseVisualStyleBackColor = false;
-			this.whiteButton.Click += new System.EventHandler(this.whiteButton_Click);
-			// 
-			// blueButton
-			// 
-			this.blueButton.BackColor = System.Drawing.Color.Blue;
-			resources.ApplyResources(this.blueButton, "blueButton");
-			this.blueButton.Name = "blueButton";
-			this.blueButton.UseVisualStyleBackColor = false;
-			this.blueButton.Click += new System.EventHandler(this.blueButton_Click);
-			// 
-			// greenButton
-			// 
-			this.greenButton.BackColor = System.Drawing.Color.Green;
-			resources.ApplyResources(this.greenButton, "greenButton");
-			this.greenButton.Name = "greenButton";
-			this.greenButton.UseVisualStyleBackColor = false;
-			this.greenButton.Click += new System.EventHandler(this.greenButton_Click);
-			// 
-			// redButton
-			// 
-			this.redButton.BackColor = System.Drawing.Color.Red;
-			resources.ApplyResources(this.redButton, "redButton");
-			this.redButton.Name = "redButton";
-			this.redButton.UseVisualStyleBackColor = false;
-			this.redButton.Click += new System.EventHandler(this.redButton_Click);
-			// 
 			// ColorPicker
 			// 
 			this.AcceptButton = this.btnOK;
 			resources.ApplyResources(this, "$this");
+			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.CancelButton = this.btnCancel;
 			this.Controls.Add(this.quickPickBox);
 			this.Controls.Add(this.lblColorOut);
@@ -406,6 +454,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			this.Controls.Add(this.lblSecond_1);
 			this.Controls.Add(this.lblSecond_2);
 			this.Controls.Add(this.lblSecond_3);
+			this.ForeColor = System.Drawing.Color.Black;
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
@@ -900,6 +949,62 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			UpdatetbValue(null);
 		}
 
-	
+		private void btnOK_MouseHover(object sender, EventArgs e)
+		{
+			btnOK.BackgroundImage = Resources.Properties.Resources.HeadingBackgroundImageHover;
+		}
+
+		private void btnOK_MouseLeave(object sender, EventArgs e)
+		{
+			btnOK.BackgroundImage = Resources.Properties.Resources.HeadingBackgroundImage;
+		}
+
+		private void btnCancel_MouseHover(object sender, EventArgs e)
+		{
+			btnCancel.BackgroundImage = Resources.Properties.Resources.HeadingBackgroundImageHover;
+		}
+
+		private void btnCancel_MouseLeave(object sender, EventArgs e)
+		{
+			btnCancel.BackgroundImage = Resources.Properties.Resources.HeadingBackgroundImage;
+		}
+
+		#region Draw GroupBox border
+		//set color for box borders.
+		private Color _borderColor = System.Drawing.Color.FromArgb(100, 100, 100);
+
+		public Color BorderColor
+		{
+			get { return _borderColor; }
+			set { _borderColor = value; }
+		}
+
+		private void PaintGroupBoxes(Object sender, PaintEventArgs e)
+		{
+			//used to draw the boards and text for the groupboxes to change the default box color.
+			//get the text size in groupbox
+			Size tSize = TextRenderer.MeasureText((sender as GroupBox).Text, Font);
+
+			//draw the border
+			Rectangle borderRect = e.ClipRectangle;
+			borderRect.Y = (borderRect.Y + (tSize.Height / 2));
+			borderRect.Height = (borderRect.Height - (tSize.Height / 2));
+			ControlPaint.DrawBorder(e.Graphics, borderRect, _borderColor, ButtonBorderStyle.Solid);
+
+			//draw the text
+			Rectangle textRect = e.ClipRectangle;
+			textRect.X = (textRect.X + 6);
+			textRect.Width = tSize.Width + 10;
+			textRect.Height = tSize.Height;
+			e.Graphics.FillRectangle(new SolidBrush(BackColor), textRect);
+			e.Graphics.DrawString((sender as GroupBox).Text, Font, new SolidBrush(System.Drawing.Color.FromArgb(221, 221, 221)), textRect);
+		}
+
+		private void quickPickBox_Paint(object sender, PaintEventArgs e)
+		{
+			PaintGroupBoxes(sender, e);
+		}
+		
+		#endregion
 	}
 }

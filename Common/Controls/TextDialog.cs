@@ -44,5 +44,25 @@ namespace Common.Controls
 		{
 			get { return textBoxResponse.Text; }
 		}
+
+		private void buttonOk_MouseHover(object sender, EventArgs e)
+		{
+			buttonOk.BackgroundImage = Resources.Properties.Resources.HeadingBackgroundImageHover;
+		}
+
+		private void buttonOk_MouseLeave(object sender, EventArgs e)
+		{
+			buttonOk.BackgroundImage = Resources.Properties.Resources.HeadingBackgroundImage;
+		}
+
+		private void buttonCancel_MouseHover(object sender, EventArgs e)
+		{
+			buttonCancel.BackgroundImage = Resources.Properties.Resources.HeadingBackgroundImageHover;
+		}
+
+		private void buttonCancel_MouseLeave(object sender, EventArgs e)
+		{
+			buttonCancel.BackgroundImage = Resources.Properties.Resources.HeadingBackgroundImage;
+		}
 	}
 }
