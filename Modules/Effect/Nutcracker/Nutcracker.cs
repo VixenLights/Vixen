@@ -14,7 +14,9 @@ using System.Drawing;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Collections.Concurrent;
+using System.ComponentModel;
 using System.Diagnostics;
+using VixenModules.EffectEditor.EffectDescriptorAttributes;
 
 namespace VixenModules.Effect.Nutcracker
 {
@@ -97,22 +99,33 @@ namespace VixenModules.Effect.Nutcracker
 				_data.NutcrackerData.TargetNodes = TargetNodes;
 				return _data;
 			}
-			set { _data = value as NutcrackerModuleData; }
+			set
+			{
+				_data = value as NutcrackerModuleData;
+				IsDirty = true;
+			}
 		}
 
-		public double IntensityLevel
-		{
-			get { return 100; }
-			set { IsDirty = true; }
-		}
+		//public double IntensityLevel
+		//{
+		//	get { return 100; }
+		//	set { IsDirty = true; }
+		//}
 
-		public Color Color
+		//public Color Color
+		//{
+		//	get { return SystemColors.ActiveBorder; }
+		//	set { IsDirty = true; }
+		//}
+		[Category("Warning")]
+		[DisplayName(" ")]
+		public string Warning
 		{
-			get { return SystemColors.ActiveBorder; }
-			set { IsDirty = true; }
+			get { return "Not supported in this editor."; }
 		}
 
 		[Value]
+		[Browsable(false)]
 		public NutcrackerData NutcrackerData
 		{
 			get
@@ -127,8 +140,10 @@ namespace VixenModules.Effect.Nutcracker
 			}
 		}
 
+		[Browsable(false)]
 		public int StringCount { get; set; }
 
+		[Browsable(false)]
 		public int MaxPixelsPerString { get; set; }
 
 		private int CalculateMaxStringCount()

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using Common.Controls;
@@ -22,11 +23,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void ParameterControl_Clicked(object sender, EventArgs e)
 		{
 			EffectParameterPickerControl control = (EffectParameterPickerControl)sender;
-			ParameterIndex = control.ParameterIndex;
-			ParameterListIndex = control.ParameterListIndex;
+			PropertyInfo = control.PropertyInfo;
 			DialogResult = DialogResult.OK;
 			Close();
 		}
+
+		public PropertyDescriptor PropertyInfo { get; private set; }
 
 		public int ParameterIndex { get; set; }
 

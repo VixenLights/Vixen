@@ -145,7 +145,7 @@ namespace Common.Controls.Timeline
 		private void InitializePanel1()
 		{
 			splitContainer.Panel1.SuspendLayout();
-			splitContainer.Panel1.BackColor = Color.FromArgb(200, 200, 200);
+			splitContainer.Panel1.BackColor = Color.FromArgb(51, 51, 51); ;//Color.FromArgb(200, 200, 200);
 
 			// Row List
 			timelineRowList = new RowList()
@@ -540,30 +540,6 @@ namespace Common.Controls.Timeline
 		{
 			add { grid.ElementChangedRows += value; }
 			remove { if (grid != null) grid.ElementChangedRows -= value; }
-		}
-
-		public event EventHandler<TimelineDropEventArgs> DataDropped
-		{
-			add { grid.DataDropped += value; }
-			remove { if (grid != null) grid.DataDropped -= value; }
-		}
-
-		public event EventHandler<ToolDropEventArgs> ColorDropped
-		{
-			add { grid.ColorDropped += value; }
-			remove { if (grid != null) grid.ColorDropped -= value; }
-		}
-
-		public event EventHandler<ToolDropEventArgs> CurveDropped
-		{
-			add { grid.CurveDropped += value; }
-			remove { if (grid != null) grid.CurveDropped -= value; }
-		}
-
-		public event EventHandler<ToolDropEventArgs> GradientDropped
-		{
-			add { grid.GradientDropped += value; }
-			remove { if (grid != null) grid.GradientDropped -= value; }
 		}
 
 		public event EventHandler<ElementsChangedTimesEventArgs> ElementsMovedNew

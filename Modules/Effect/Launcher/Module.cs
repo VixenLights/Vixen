@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using Vixen.Attributes;
 using Vixen.Commands;
 using Vixen.Data.Value;
 using Vixen.Intent;
@@ -11,6 +13,7 @@ using Vixen.Module;
 using Vixen.Module.Effect;
 using Vixen.Sys;
 using Vixen.Sys.Attribute;
+using VixenModules.EffectEditor.EffectDescriptorAttributes;
 
 namespace Launcher
 {
@@ -54,7 +57,11 @@ namespace Launcher
 		public override IModuleDataModel ModuleData
 		{
 			get { return _data; }
-			set { _data = value as Data; }
+			set
+			{
+				_data = value as Data;
+				IsDirty = true;
+			}
 		}
 		public override bool ForceGenerateVisualRepresentation { get { return true; } }
 	
@@ -80,6 +87,10 @@ namespace Launcher
 		}
 
 		[Value]
+		[ProviderCategory(@"Config")]
+		[DisplayName(@"Description")]
+		[Description(@"Sets the description.")]
+		[PropertyOrder(1)]
 		public string Description
 		{
 			get
@@ -90,9 +101,15 @@ namespace Launcher
 			{
 				_data.Description=value;
 				IsDirty=true;
+				OnPropertyChanged();
 			}
 		}
 		[Value]
+		[ProviderCategory(@"Config")]
+		[DisplayName(@"Executable")]
+		[Description(@"Sets the executable.")]
+		[PropertyOrder(2)]
+		[PropertyEditor("FilePathEditor")]
 		public string Executable
 		{
 			get
@@ -103,10 +120,15 @@ namespace Launcher
 			{
 				_data.Executable=value;
 				IsDirty=true;
+				OnPropertyChanged();
 			}
 		}
 
 		[Value]
+		[ProviderCategory(@"Config")]
+		[DisplayName(@"Arguments")]
+		[Description(@"Sets the arguments to use on the executable.")]
+		[PropertyOrder(3)]
 		public string Arguments
 		{
 			get { return _data.Arguments; }
@@ -114,6 +136,7 @@ namespace Launcher
 			{
 				_data.Arguments=value;
 				IsDirty=true;
+				OnPropertyChanged();
 			}
 		}
 

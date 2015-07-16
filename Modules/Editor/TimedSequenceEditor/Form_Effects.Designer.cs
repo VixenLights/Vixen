@@ -30,7 +30,7 @@
 		{
 			this.components = new System.ComponentModel.Container();
 			System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Basic Lighting");
-			System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Advanced Lighting");
+			System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Pixel Lighting");
 			System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Device Action");
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form_Effects));
 			this.treeEffects = new System.Windows.Forms.TreeView();
@@ -39,22 +39,26 @@
 			// 
 			// treeEffects
 			// 
+			this.treeEffects.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.treeEffects.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.treeEffects.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.treeEffects.FullRowSelect = true;
 			this.treeEffects.ImageIndex = 0;
 			this.treeEffects.ImageList = this.effectTreeImages;
 			this.treeEffects.ItemHeight = 22;
 			this.treeEffects.Location = new System.Drawing.Point(0, 0);
 			this.treeEffects.Name = "treeEffects";
-			treeNode1.ImageKey = "bullet_arrow_Right.png";
+			treeNode1.ImageKey = "rightarrow.png";
 			treeNode1.Name = "treeBasic";
+			treeNode1.SelectedImageIndex = 1;
 			treeNode1.Text = "Basic Lighting";
-			treeNode2.ImageKey = "bullet_arrow_Right.png";
+			treeNode2.ImageKey = "rightarrow.png";
 			treeNode2.Name = "treeAdvanced";
-			treeNode2.Text = "Advanced Lighting";
-			treeNode3.ImageKey = "bullet_arrow_Right.png";
+			treeNode2.SelectedImageIndex = 1;
+			treeNode2.Text = "Pixel Lighting";
+			treeNode3.ImageKey = "rightarrow.png";
 			treeNode3.Name = "treeDevice";
-			treeNode3.SelectedImageKey = "(default)";
+			treeNode3.SelectedImageIndex = 1;
 			treeNode3.StateImageKey = "(none)";
 			treeNode3.Text = "Device Action";
 			this.treeEffects.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
@@ -77,15 +81,16 @@
 			// effectTreeImages
 			// 
 			this.effectTreeImages.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("effectTreeImages.ImageStream")));
-			this.effectTreeImages.TransparentColor = System.Drawing.Color.Transparent;
-			this.effectTreeImages.Images.SetKeyName(0, "bullet_arrow_Right.png");
-			this.effectTreeImages.Images.SetKeyName(1, "bullet_arrow_down.png");
+			this.effectTreeImages.TransparentColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
+			this.effectTreeImages.Images.SetKeyName(0, "rightarrow.png");
+			this.effectTreeImages.Images.SetKeyName(1, "downarrow.png");
 			this.effectTreeImages.Images.SetKeyName(2, "blank.png");
 			// 
 			// Form_Effects
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.ClientSize = new System.Drawing.Size(209, 442);
 			this.ControlBox = false;
 			this.Controls.Add(this.treeEffects);

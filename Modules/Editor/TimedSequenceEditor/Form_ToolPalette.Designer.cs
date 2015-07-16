@@ -54,8 +54,6 @@
 			this.toolStripButtonExportGradients = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButtonImportGradients = new System.Windows.Forms.ToolStripButton();
 			this.checkBoxLinkGradients = new System.Windows.Forms.CheckBox();
-			this.comboBoxGradientHandling = new System.Windows.Forms.ComboBox();
-			this.label1 = new System.Windows.Forms.Label();
 			this.listViewGradients = new System.Windows.Forms.ListView();
 			this.tabControl1.SuspendLayout();
 			this.tabColors.SuspendLayout();
@@ -92,6 +90,7 @@
 			// 
 			// toolStripColors
 			// 
+			this.toolStripColors.BackColor = System.Drawing.SystemColors.Control;
 			this.toolStripColors.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripButtonEditColor,
             this.toolStripButtonNewColor,
@@ -159,6 +158,7 @@
 			this.listViewColors.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.listViewColors.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.listViewColors.Location = new System.Drawing.Point(0, 28);
 			this.listViewColors.MultiSelect = false;
 			this.listViewColors.Name = "listViewColors";
@@ -174,18 +174,20 @@
 			// 
 			// tabCurves
 			// 
+			this.tabCurves.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.tabCurves.Controls.Add(this.toolStripCurves);
 			this.tabCurves.Controls.Add(this.checkBoxLinkCurves);
 			this.tabCurves.Controls.Add(this.listViewCurves);
+			this.tabCurves.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.tabCurves.Location = new System.Drawing.Point(4, 22);
 			this.tabCurves.Name = "tabCurves";
 			this.tabCurves.Size = new System.Drawing.Size(518, 364);
 			this.tabCurves.TabIndex = 2;
 			this.tabCurves.Text = "Curves";
-			this.tabCurves.UseVisualStyleBackColor = true;
 			// 
 			// toolStripCurves
 			// 
+			this.toolStripCurves.BackColor = System.Drawing.SystemColors.Control;
 			this.toolStripCurves.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripButtonEditCurve,
             this.toolStripButtonNewCurve,
@@ -264,6 +266,7 @@
 			this.listViewCurves.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.listViewCurves.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.listViewCurves.Location = new System.Drawing.Point(0, 28);
 			this.listViewCurves.Name = "listViewCurves";
 			this.listViewCurves.Size = new System.Drawing.Size(518, 310);
@@ -271,24 +274,25 @@
 			this.listViewCurves.UseCompatibleStateImageBehavior = false;
 			this.listViewCurves.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.listViewCurves_ItemDrag);
 			this.listViewCurves.SelectedIndexChanged += new System.EventHandler(this.listViewCurves_SelectedIndexChanged);
+			this.listViewCurves.DragDrop += new System.Windows.Forms.DragEventHandler(this.listViewCurves_DragDrop);
+			this.listViewCurves.DragEnter += new System.Windows.Forms.DragEventHandler(this.listViewCurves_DragEnter);
 			this.listViewCurves.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listViewCurves_MouseDoubleClick);
 			// 
 			// tabGradients
 			// 
+			this.tabGradients.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.tabGradients.Controls.Add(this.toolStripGradients);
 			this.tabGradients.Controls.Add(this.checkBoxLinkGradients);
-			this.tabGradients.Controls.Add(this.comboBoxGradientHandling);
-			this.tabGradients.Controls.Add(this.label1);
 			this.tabGradients.Controls.Add(this.listViewGradients);
 			this.tabGradients.Location = new System.Drawing.Point(4, 22);
 			this.tabGradients.Name = "tabGradients";
 			this.tabGradients.Size = new System.Drawing.Size(518, 364);
 			this.tabGradients.TabIndex = 1;
 			this.tabGradients.Text = "Gradients";
-			this.tabGradients.UseVisualStyleBackColor = true;
 			// 
 			// toolStripGradients
 			// 
+			this.toolStripGradients.BackColor = System.Drawing.SystemColors.Control;
 			this.toolStripGradients.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripButtonEditGradient,
             this.toolStripButtonNewGradient,
@@ -354,6 +358,7 @@
 			// 
 			this.checkBoxLinkGradients.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.checkBoxLinkGradients.AutoSize = true;
+			this.checkBoxLinkGradients.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBoxLinkGradients.Location = new System.Drawing.Point(3, 344);
 			this.checkBoxLinkGradients.Name = "checkBoxLinkGradients";
 			this.checkBoxLinkGradients.Size = new System.Drawing.Size(123, 17);
@@ -361,50 +366,29 @@
 			this.checkBoxLinkGradients.Text = "Maintain Library Link";
 			this.checkBoxLinkGradients.UseVisualStyleBackColor = true;
 			// 
-			// comboBoxGradientHandling
-			// 
-			this.comboBoxGradientHandling.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.comboBoxGradientHandling.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboBoxGradientHandling.FormattingEnabled = true;
-			this.comboBoxGradientHandling.Items.AddRange(new object[] {
-            "The gradient is shown over the whole effect.",
-            "Each pulse uses the entire gradient.",
-            "The gradient is spread over the sub-elements."});
-			this.comboBoxGradientHandling.Location = new System.Drawing.Point(3, 317);
-			this.comboBoxGradientHandling.Name = "comboBoxGradientHandling";
-			this.comboBoxGradientHandling.Size = new System.Drawing.Size(512, 21);
-			this.comboBoxGradientHandling.TabIndex = 8;
-			// 
-			// label1
-			// 
-			this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(0, 301);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(92, 13);
-			this.label1.TabIndex = 7;
-			this.label1.Text = "Gradient Handling";
-			// 
 			// listViewGradients
 			// 
 			this.listViewGradients.AllowDrop = true;
 			this.listViewGradients.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.listViewGradients.Location = new System.Drawing.Point(0, 28);
+			this.listViewGradients.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
+			this.listViewGradients.Location = new System.Drawing.Point(3, 28);
 			this.listViewGradients.Name = "listViewGradients";
-			this.listViewGradients.Size = new System.Drawing.Size(518, 270);
+			this.listViewGradients.Size = new System.Drawing.Size(518, 310);
 			this.listViewGradients.TabIndex = 0;
 			this.listViewGradients.UseCompatibleStateImageBehavior = false;
 			this.listViewGradients.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.listViewGradient_ItemDrag);
 			this.listViewGradients.SelectedIndexChanged += new System.EventHandler(this.listViewGradients_SelectedIndexChanged);
+			this.listViewGradients.DragDrop += new System.Windows.Forms.DragEventHandler(this.listViewGradients_DragDrop);
+			this.listViewGradients.DragEnter += new System.Windows.Forms.DragEventHandler(this.listViewGradients_DragEnter);
 			this.listViewGradients.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listViewGradients_MouseDoubleClick);
 			// 
 			// Form_ToolPalette
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.BackColor = System.Drawing.SystemColors.Window;
 			this.ClientSize = new System.Drawing.Size(526, 390);
 			this.ControlBox = false;
 			this.Controls.Add(this.tabControl1);
@@ -444,8 +428,6 @@
 		private System.Windows.Forms.ListView listViewCurves;
 		private System.Windows.Forms.TabPage tabGradients;
 		private System.Windows.Forms.CheckBox checkBoxLinkGradients;
-		private System.Windows.Forms.ComboBox comboBoxGradientHandling;
-		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.ListView listViewGradients;
 		private System.Windows.Forms.ToolStrip toolStripColors;
 		private System.Windows.Forms.ToolStripButton toolStripButtonEditColor;

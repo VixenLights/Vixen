@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
 using Vixen.Data.Value;
 using Vixen.Intent;
-using Vixen.Sys;
 using Vixen.Module;
 using Vixen.Module.Effect;
+using Vixen.Sys;
 using Vixen.Sys.Attribute;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
+using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using VixenModules.Property.Color;
 using ZedGraph;
 
@@ -53,10 +53,17 @@ namespace VixenModules.Effect.Pulse
 		public override IModuleDataModel ModuleData
 		{
 			get { return _data; }
-			set { _data = value as PulseData; }
+			set
+			{
+				_data = value as PulseData;
+				IsDirty = true;
+			}
 		}
 
 		[Value]
+		[ProviderCategory(@"Brightness",2)]
+		[ProviderDisplayName(@"Brightness")]
+		[ProviderDescription(@"Brightness")]
 		public Curve LevelCurve
 		{
 			get { return _data.LevelCurve; }
@@ -64,10 +71,14 @@ namespace VixenModules.Effect.Pulse
 			{
 				_data.LevelCurve = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
 		[Value]
+		[ProviderCategory(@"Color",1)]
+		[ProviderDisplayName(@"ColorGradient")]
+		[ProviderDescription(@"Color")]
 		public ColorGradient ColorGradient
 		{
 			get
@@ -78,6 +89,7 @@ namespace VixenModules.Effect.Pulse
 			{
 				_data.ColorGradient = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 

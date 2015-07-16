@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Threading;
+using Vixen.Attributes;
 using Vixen.Data.Value;
 using Vixen.Intent;
-using Vixen.Sys;
 using Vixen.Module;
 using Vixen.Module.Effect;
+using Vixen.Sys;
 using Vixen.Sys.Attribute;
-using System.Drawing;
+using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using VixenModules.Property.Color;
 
 namespace VixenModules.Effect.SetLevel
@@ -50,10 +52,18 @@ namespace VixenModules.Effect.SetLevel
 		public override IModuleDataModel ModuleData
 		{
 			get { return _data; }
-			set { _data = value as SetLevelData; }
+			set
+			{
+				_data = value as SetLevelData;
+				IsDirty = true;
+			}
 		}
 
 		[Value]
+		[ProviderCategory(@"Brightness",2)]
+		[ProviderDisplayName(@"Brightness")]
+		[ProviderDescription(@"Brightness")]
+		[PropertyEditor("LevelEditor")]
 		public double IntensityLevel
 		{
 			get { return _data.level; }
@@ -61,10 +71,14 @@ namespace VixenModules.Effect.SetLevel
 			{
 				_data.level = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
 		[Value]
+		[ProviderCategory(@"Color",1)]
+		[ProviderDisplayName(@"Color")]
+		[ProviderDescription(@"Color")]
 		public Color Color
 		{
 			get
@@ -76,6 +90,7 @@ namespace VixenModules.Effect.SetLevel
 			{
 				_data.color = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 

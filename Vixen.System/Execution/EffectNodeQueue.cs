@@ -32,6 +32,11 @@ namespace Vixen.Execution
 			_queue.Enqueue(item);
 		}
 
+		public void Clear()
+		{
+			_queue.Clear();
+		}
+
 		public IEnumerable<IEffectNode> Get(TimeSpan time)
 		{
 			IEffectNode effectNode;

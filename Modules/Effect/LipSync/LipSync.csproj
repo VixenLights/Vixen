@@ -39,22 +39,18 @@
   <ItemGroup>
     <Reference Include="NLog, Version=3.1.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\NLog.3.1.0.0\lib\net45\NLog.dll</HintPath>
-       <Private>False</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="LipSync.cs" />
     <Compile Include="LipSyncData.cs" />
     <Compile Include="LipSyncDescriptor.cs" />
+    <Compile Include="PhonemeMappingConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -67,6 +63,10 @@
       <Project>{e3689e21-2204-48b9-8370-d45ee4a23451}</Project>
       <Name>LipSyncApp</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\EffectEditor\EffectDescriptorAttributes\EffectDescriptorAttributes.csproj">
+      <Project>{1C84DA63-A5DB-4086-88AE-B2B43FCCAD7B}</Project>
+      <Name>EffectDescriptorAttributes</Name>
     </ProjectReference>
     <ProjectReference Include="..\SetLevel\SetLevel.csproj">
       <Project>{8910163e-a2a3-4f8b-b5d8-0e311166b8ba}</Project>

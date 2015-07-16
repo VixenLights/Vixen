@@ -158,6 +158,8 @@
     <Compile Include="TimelineControl\Grid.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Undo\AddToListUndoAction.cs" />
+    <Compile Include="Undo\ModifyItemUndoAction.cs" />
     <Compile Include="Wizard\Wizard.cs" />
     <Compile Include="Wizard\WizardForm.cs">
       <SubType>Form</SubType>
@@ -330,7 +332,7 @@
       <DependentUpon>UndoDropDownControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Undo\UndoManager.cs" />
-    <Compile Include="Undo\GenericUndoActions.cs" />
+    <Compile Include="Undo\RemoveFromListUndoAction.cs" />
     <Compile Include="Wizard\WizardStage.cs">
       <SubType>UserControl</SubType>
     </Compile>

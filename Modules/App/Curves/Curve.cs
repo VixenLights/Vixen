@@ -1,21 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Windows.Forms;
-using System.Linq;
-using System.Text;
+using System.ComponentModel;
 using System.Drawing;
+using System.Linq;
 using System.Runtime.Serialization;
-using Vixen.Module;
+using System.Windows.Forms;
 using Vixen.Module.App;
 using Vixen.Services;
-using Vixen.Sys;
 using ZedGraph;
 
 namespace VixenModules.App.Curves
 {
 	[DataContract]
+	[Serializable]
+	[TypeConverter(typeof(CurveTypeConverter))]
 	public class Curve
 	{
+		
+
 		public static Color ActiveCurveGridColor = Color.RoyalBlue;
 		public static Color InactiveCurveGridColor = Color.DarkGray;
 
@@ -38,9 +39,26 @@ namespace VixenModules.App.Curves
 
 		// default Curve constructor makes a ramp with x = y.
 		public Curve()
-			: this(new PointPairList(new[] {0.0, 100.0}, new[] {0.0, 100.0}))
+			: this(CurveType.RampUp)
 		{
 		}
+
+		public Curve(CurveType type)
+		{
+			switch (type)
+			{
+				case CurveType.RampUp:
+					Points = new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.0, 100.0 });
+					break;
+				case CurveType.RampDown:
+					Points = new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 0.0 });
+					break;
+				case CurveType.Flat100:
+					Points = new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 });
+					break;
+			}
+		}
+
 
 		private PointPairList _points;
 
@@ -57,6 +75,7 @@ namespace VixenModules.App.Curves
 
 		protected Curve LibraryReferencedCurve { get; set; }
 
+		[NonSerialized]
 		private CurveLibrary _library;
 
 		private CurveLibrary Library
@@ -177,6 +196,46 @@ namespace VixenModules.App.Curves
 			LibraryReferencedCurve = null;
 		}
 
+		public Bitmap GenerateGenericCurveImage(Size size, bool inactive=false)
+		{
+			Bitmap result = new Bitmap(size.Width, size.Height);
+
+			using (Graphics g = Graphics.FromImage(result))
+			{
+				using (Brush b = new SolidBrush(inactive?Color.DimGray:Color.Black))
+				{
+					using (Pen p = new Pen(Color.FromArgb(255,136,136,136), 2))
+					{
+						g.FillRectangle(b, new Rectangle(0, 0, size.Width, size.Height));
+					
+						PointPair lastPoint = null;
+						foreach (var point in Points)
+						{
+							if (lastPoint == null)
+							{
+								lastPoint = point;
+								continue;
+							}
+							g.DrawLine(p, TransformPoint(lastPoint, size), TransformPoint(point, size));
+							lastPoint = point;
+						}	
+					}
+				}
+				
+			}
+
+			return result;
+		}
+
+		private Point TransformPoint(PointPair points, Size bounds)
+		{
+			int X = (int)points.X;
+			int Y = Math.Abs((int)points.Y - 100);
+			Y = (int)(Y*(bounds.Height/100f));
+			X = (int)(X*(bounds.Width/100f));
+			return new Point(X,Y);
+		}
+
 		public Bitmap GenerateCurveImage(Size size)
 		{
 			GraphPane pane = new GraphPane(new RectangleF(0, 0, size.Width, size.Height), string.Empty, string.Empty, string.Empty);
@@ -201,6 +260,33 @@ namespace VixenModules.App.Curves
 			}
 
 			return result;
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (obj is Curve)
+			{
+				return Equals((Curve) obj);
+			}
+			return base.Equals(obj);
+		}
+
+		protected bool Equals(Curve other)
+		{
+			return Equals(_points, other._points) && Equals(_library, other._library) && string.Equals(_libraryReferenceName, other._libraryReferenceName) && Equals(LibraryReferencedCurve, other.LibraryReferencedCurve) && IsCurrentLibraryCurve == other.IsCurrentLibraryCurve;
+		}
+
+		public override int GetHashCode()
+		{
+			unchecked
+			{
+				var hashCode = (_points != null ? _points.GetHashCode() : 0);
+				hashCode = (hashCode * 397) ^ (_library != null ? _library.GetHashCode() : 0);
+				hashCode = (hashCode * 397) ^ (_libraryReferenceName != null ? _libraryReferenceName.GetHashCode() : 0);
+				hashCode = (hashCode * 397) ^ (LibraryReferencedCurve != null ? LibraryReferencedCurve.GetHashCode() : 0);
+				hashCode = (hashCode * 397) ^ IsCurrentLibraryCurve.GetHashCode();
+				return hashCode;
+			}
 		}
 	}
 }

@@ -4,6 +4,7 @@ using Vixen.Module;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using System.ComponentModel;
+using Vixen.TypeConverters;
 
 namespace VixenModules.Effect.Spin
 {
@@ -75,7 +76,7 @@ namespace VixenModules.Effect.Spin
 			PulseTime = 100;
 			PulsePercentage = 10;
 			DefaultLevel = 0;
-			StaticColor = Color.Empty;
+			StaticColor = Color.White;
 			ColorGradient = new ColorGradient(Color.White);
 			PulseCurve = new Curve();
 			ReverseSpin = false;
@@ -105,23 +106,33 @@ namespace VixenModules.Effect.Spin
 
 	public enum SpinSpeedFormat
 	{
+		[Description("Revolution Count")]
 		RevolutionCount,
+		[Description("Revolution Freq")]
 		RevolutionFrequency,
+		[Description("Fixed Time")]
 		FixedTime
 	}
 
 	public enum SpinPulseLengthFormat
 	{
+		[Description("Fixed Time")]
 		FixedTime,
+		[Description("Percent Revolution")]
 		PercentageOfRevolution,
+		[Description("Distribute Evenly")]
 		EvenlyDistributedAcrossSegments
 	}
 
 	public enum SpinColorHandling
 	{
+		[Description("Single Color")]
 		StaticColor,
+		[Description("Gradient Thru Effect")]
 		GradientThroughWholeEffect,
+		[Description("Gradient Per Pulse")]
 		GradientForEachPulse,
+		[Description("Gradient Across Items")]
 		ColorAcrossItems
 	}
 }

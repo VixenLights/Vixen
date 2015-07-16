@@ -1,23 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Threading;
-using Vixen.Sys;
+using NLog;
+using Vixen.Attributes;
 using Vixen.Module;
 using Vixen.Module.Effect;
+using Vixen.Sys;
 using Vixen.Sys.Attribute;
+using Vixen.TypeConverters;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
-using System.Drawing;
-using ZedGraph;
+using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using VixenModules.Property.Color;
+using ZedGraph;
 
 namespace VixenModules.Effect.Twinkle
 {
 	public class Twinkle : EffectModuleInstanceBase
 	{
 		private static Random _random = new Random();
-		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private static Logger Logging = LogManager.GetCurrentClassLogger();
 
 		private TwinkleData _data;
 		private EffectIntents _elementData = null;
@@ -25,11 +30,19 @@ namespace VixenModules.Effect.Twinkle
 		public Twinkle()
 		{
 			_data = new TwinkleData();
+			UpdateAllAttributes();
 		}
 
 		protected override void TargetNodesChanged()
 		{
-			CheckForInvalidColorData();
+			if (TargetNodes.Any())
+			{
+				CheckForInvalidColorData();
+				if (DepthOfEffect > TargetNodes.FirstOrDefault().GetMaxChildDepth() - 1)
+				{
+					DepthOfEffect = 0;
+				}
+			}
 		}
 
 		protected override void _PreRender(CancellationTokenSource tokenSource = null)
@@ -79,7 +92,12 @@ namespace VixenModules.Effect.Twinkle
 		public override IModuleDataModel ModuleData
 		{
 			get { return _data; }
-			set { _data = value as TwinkleData; }
+			set
+			{
+				_data = value as TwinkleData;
+				IsDirty = true;
+				UpdateAllAttributes();
+			}
 		}
 
 		public override bool IsDirty
@@ -95,6 +113,9 @@ namespace VixenModules.Effect.Twinkle
 		}
 
 		[Value]
+		[ProviderCategory(@"Depth", 10)]
+		[ProviderDisplayName(@"IndividualElements")]
+		[ProviderDescription(@"TwinkleDepth")]
 		public bool IndividualElements
 		{
 			get { return _data.IndividualChannels; }
@@ -102,10 +123,17 @@ namespace VixenModules.Effect.Twinkle
 			{
 				_data.IndividualChannels = value;
 				IsDirty = true;
+				UpdateDepthAttributes();
+				TypeDescriptor.Refresh(this);
+				OnPropertyChanged();
 			}
 		}
 
 		[Value]
+		[ProviderCategory(@"Brightness",2)]
+		[ProviderDisplayName(@"MinBrightness")]
+		[ProviderDescription(@"MinBrightness")]
+		[PropertyEditor("LevelEditor")]
 		public double MinimumLevel
 		{
 			get { return _data.MinimumLevel; }
@@ -113,10 +141,15 @@ namespace VixenModules.Effect.Twinkle
 			{
 				_data.MinimumLevel = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
 		[Value]
+		[ProviderCategory(@"Brightness",2)]
+		[ProviderDisplayName(@"MaxBrightness")]
+		[ProviderDescription(@"MaxBrightness")]
+		[PropertyEditor("LevelEditor")]
 		public double MaximumLevel
 		{
 			get { return _data.MaximumLevel; }
@@ -124,10 +157,15 @@ namespace VixenModules.Effect.Twinkle
 			{
 				_data.MaximumLevel = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
 		[Value]
+		[ProviderCategory(@"Brightness",2)]
+		[ProviderDisplayName(@"Variation")]
+		[ProviderDescription(@"TwinkleLevelVariation")]
+		[PropertyEditor("SliderEditor")]
 		public int LevelVariation
 		{
 			get { return _data.LevelVariation; }
@@ -135,10 +173,14 @@ namespace VixenModules.Effect.Twinkle
 			{
 				_data.LevelVariation = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
 		[Value]
+		[ProviderCategory(@"Config",3)]
+		[ProviderDisplayName(@"AveragePulseTime")]
+		[ProviderDescription(@"TwinkleAvgPulseTime")]
 		public int AveragePulseTime
 		{
 			get { return _data.AveragePulseTime; }
@@ -146,10 +188,15 @@ namespace VixenModules.Effect.Twinkle
 			{
 				_data.AveragePulseTime = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
 		[Value]
+		[ProviderCategory(@"Config",3)]
+		[ProviderDisplayName(@"Variation")]
+		[ProviderDescription(@"TwinklePulseTimeVariation")]
+		[PropertyEditor("SliderEditor")]
 		public int PulseTimeVariation
 		{
 			get { return _data.PulseTimeVariation; }
@@ -157,10 +204,15 @@ namespace VixenModules.Effect.Twinkle
 			{
 				_data.PulseTimeVariation = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
 		[Value]
+		[ProviderCategory(@"Config",3)]
+		[ProviderDisplayName(@"Coverage")]
+		[ProviderDescription(@"TwinkleCoverage")]
+		[PropertyEditor("SliderEditor")]
 		public int AverageCoverage
 		{
 			get { return _data.AverageCoverage; }
@@ -168,10 +220,15 @@ namespace VixenModules.Effect.Twinkle
 			{
 				_data.AverageCoverage = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
 		[Value]
+		[ProviderCategory(@"Color",1)]
+		[ProviderDisplayName(@"ColorHandling")]
+		[ProviderDescription(@"ColorHandling")]
+		[PropertyOrder(1)]
 		public TwinkleColorHandling ColorHandling
 		{
 			get { return _data.ColorHandling; }
@@ -179,10 +236,17 @@ namespace VixenModules.Effect.Twinkle
 			{
 				_data.ColorHandling = value;
 				IsDirty = true;
+				UpdateColorHandlingAttributes();
+				TypeDescriptor.Refresh(this);
+				OnPropertyChanged();
 			}
 		}
 
 		[Value]
+		[ProviderCategory(@"Color",1)]
+		[ProviderDisplayName(@"Color")]
+		[ProviderDescription(@"Color")]
+		[PropertyOrder(2)]
 		public Color StaticColor
 		{
 			get
@@ -193,10 +257,15 @@ namespace VixenModules.Effect.Twinkle
 			{
 				_data.StaticColor = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
 		[Value]
+		[ProviderCategory(@"Color",1)]
+		[ProviderDisplayName(@"ColorGradient")]
+		[ProviderDescription(@"Color")]
+		[PropertyOrder(3)]
 		public ColorGradient ColorGradient
 		{
 			get
@@ -207,8 +276,38 @@ namespace VixenModules.Effect.Twinkle
 			{
 				_data.ColorGradient = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
+		#region Attributes
+
+		private void UpdateAllAttributes()
+		{
+			UpdateColorHandlingAttributes();
+			UpdateDepthAttributes();
+			TypeDescriptor.Refresh(this);
+		}
+
+		private void UpdateColorHandlingAttributes()
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(2)
+			{
+				{"StaticColor", ColorHandling.Equals(TwinkleColorHandling.StaticColor)},
+				{"ColorGradient", !ColorHandling.Equals(TwinkleColorHandling.StaticColor)}
+			};
+			SetBrowsable(propertyStates);
+		}
+
+		private void UpdateDepthAttributes()
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1)
+			{
+				{"DepthOfEffect", IndividualElements}
+			};
+			SetBrowsable(propertyStates);
+		}
+
+		#endregion
 
 		//Created to hold a ColorGradient version of color rather than continually creating them from Color for static colors.
 		protected ColorGradient StaticColorGradient
@@ -218,6 +317,12 @@ namespace VixenModules.Effect.Twinkle
 		}
 
 		[Value]
+		[ProviderCategory(@"Depth")]
+		[ProviderDisplayName(@"Depth")]
+		[ProviderDescription(@"Depth")]
+		[TypeConverter(typeof(TargetElementDepthConverter))]
+		[PropertyEditor("SelectionEditor")]
+		[MergableProperty(false)]
 		public int DepthOfEffect
 		{
 			get { return _data.DepthOfEffect; }
@@ -225,6 +330,7 @@ namespace VixenModules.Effect.Twinkle
 			{
 				_data.DepthOfEffect = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 

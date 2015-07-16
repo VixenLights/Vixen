@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Windows;
 
 namespace Vixen.IO
 {
@@ -37,6 +38,10 @@ namespace Vixen.IO
 
 		private bool _MigrationNeeded(int contentVersion, int targetVersion)
 		{
+			if (contentVersion > targetVersion)
+			{
+				MessageBox.Show("You are attempting to open a configuration from a newer version of Vixen that may not be compatible.", "Migration", MessageBoxButton.OK, MessageBoxImage.Warning);
+			}
 			return contentVersion < targetVersion;
 		}
 

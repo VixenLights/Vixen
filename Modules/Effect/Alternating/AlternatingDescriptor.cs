@@ -68,24 +68,7 @@ namespace VixenModules.Effect.Alternating
 
 		public override ParameterSignature Parameters
 		{
-			get
-			{
-				return new ParameterSignature(
-					new ParameterSpecification("Level1", typeof(double)),
-					new ParameterSpecification("Color1", typeof(Color)),
-					new ParameterSpecification("Level2", typeof(double)),
-					new ParameterSpecification("Color2", typeof(Color)),
-					new ParameterSpecification("Interval", typeof(double)),
-					new ParameterSpecification("Enable", typeof(bool)),
-					new ParameterSpecification("DepthOfEffect", typeof(int)),
-					new ParameterSpecification("GroupEffect", typeof(int)),
-					new ParameterSpecification("StaticColor1", typeof(bool)),
-					new ParameterSpecification("StaticColor2", typeof(bool)),
-					new ParameterSpecification("ColorGradient1", typeof(ColorGradient)),
-					new ParameterSpecification("ColorGradient2", typeof(ColorGradient)),
-					new ParameterSpecification("Curve1", typeof(Curve)),
-					new ParameterSpecification("Curve2", typeof(Curve)));
-			}
+			get { return new ParameterSignature(); }
 		}
 	}
 }

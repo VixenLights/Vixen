@@ -1,16 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Threading;
-using Vixen.Sys;
+using NLog;
+using Vixen.Attributes;
 using Vixen.Module;
 using Vixen.Module.Effect;
+using Vixen.Sys;
 using Vixen.Sys.Attribute;
+using Vixen.TypeConverters;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
-using System.Drawing;
-using ZedGraph;
+using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using VixenModules.Property.Color;
+using ZedGraph;
 
 namespace VixenModules.Effect.Spin
 {
@@ -18,16 +23,25 @@ namespace VixenModules.Effect.Spin
 	{
 		private SpinData _data;
 		private EffectIntents _elementData = null;
-		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private static Logger Logging = LogManager.GetCurrentClassLogger();
 
 		public Spin()
 		{
 			_data = new SpinData();
+			InitAllAttributes();
 		}
 
 		protected override void TargetNodesChanged()
 		{
-			CheckForInvalidColorData();
+			if (TargetNodes.Any())
+			{
+				CheckForInvalidColorData();
+				if (DepthOfEffect > TargetNodes.FirstOrDefault().GetMaxChildDepth() - 1)
+				{
+					DepthOfEffect = 0;
+				}
+			}
+			
 		}
 
 		protected override void _PreRender(CancellationTokenSource tokenSource = null)
@@ -59,7 +73,12 @@ namespace VixenModules.Effect.Spin
 		public override IModuleDataModel ModuleData
 		{
 			get { return _data; }
-			set { _data = value as SpinData; }
+			set
+			{
+				_data = value as SpinData;
+				IsDirty = true;
+				InitAllAttributes();
+			}
 		}
 
 		public override bool IsDirty
@@ -82,6 +101,10 @@ namespace VixenModules.Effect.Spin
 		}
 
 		[Value]
+		[ProviderCategory(@"Speed",4)]
+		[ProviderDisplayName(@"SpeedFormat")]
+		[ProviderDescription(@"SpinSpeedFormat")]
+		[PropertyOrder(1)]
 		public SpinSpeedFormat SpeedFormat
 		{
 			get { return _data.SpeedFormat; }
@@ -89,10 +112,17 @@ namespace VixenModules.Effect.Spin
 			{
 				_data.SpeedFormat = value;
 				IsDirty = true;
+				OnPropertyChanged();
+				UpdateSpeedFormatAttributes();
+				TypeDescriptor.Refresh(this);
 			}
 		}
 
 		[Value]
+		[ProviderCategory(@"Pulse",5)]
+		[ProviderDisplayName(@"PulseType")]
+		[ProviderDescription(@"PulseType")]
+		[PropertyOrder(1)]
 		public SpinPulseLengthFormat PulseLengthFormat
 		{
 			get { return _data.PulseLengthFormat; }
@@ -100,10 +130,17 @@ namespace VixenModules.Effect.Spin
 			{
 				_data.PulseLengthFormat = value;
 				IsDirty = true;
+				OnPropertyChanged();
+				UpdatePulseLengthFormatAttributes();
+				TypeDescriptor.Refresh(this);
 			}
 		}
 
 		[Value]
+		[ProviderCategory(@"Color",1)]
+		[ProviderDisplayName(@"ColorHandling")]
+		[ProviderDescription(@"ColorHandling")]
+		[PropertyOrder(1)]
 		public SpinColorHandling ColorHandling
 		{
 			get { return _data.ColorHandling; }
@@ -111,10 +148,17 @@ namespace VixenModules.Effect.Spin
 			{
 				_data.ColorHandling = value;
 				IsDirty = true;
+				OnPropertyChanged();
+				UpdateColorHandlingAttributes();
+				TypeDescriptor.Refresh(this);
 			}
 		}
 
 		[Value]
+		[ProviderCategory(@"Speed",4)]
+		[ProviderDisplayName(@"RevolutionCount")]
+		[ProviderDescription(@"RevolutionCount")]
+		[PropertyOrder(3)]
 		public double RevolutionCount
 		{
 			get { return _data.RevolutionCount; }
@@ -122,10 +166,15 @@ namespace VixenModules.Effect.Spin
 			{
 				_data.RevolutionCount = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
 		[Value]
+		[ProviderCategory(@"Speed",4)]
+		[ProviderDisplayName(@"RevolutionFrequency")]
+		[ProviderDescription(@"RevolutionFrequency")]
+		[PropertyOrder(4)]
 		public double RevolutionFrequency
 		{
 			get { return _data.RevolutionFrequency; }
@@ -133,10 +182,15 @@ namespace VixenModules.Effect.Spin
 			{
 				_data.RevolutionFrequency = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
 		[Value]
+		[ProviderCategory(@"Speed",4)]
+		[ProviderDisplayName(@"RevolutionTime")]
+		[ProviderDescription(@"RevolutionTime")]
+		[PropertyOrder(5)]
 		public int RevolutionTime
 		{
 			get { return _data.RevolutionTime; }
@@ -144,10 +198,15 @@ namespace VixenModules.Effect.Spin
 			{
 				_data.RevolutionTime = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
 		[Value]
+		[ProviderCategory(@"Pulse",5)]
+		[ProviderDisplayName(@"PulseDuration")]
+		[ProviderDescription(@"PulseDuration")]
+		[PropertyOrder(2)]
 		public int PulseTime
 		{
 			get { return _data.PulseTime; }
@@ -155,10 +214,16 @@ namespace VixenModules.Effect.Spin
 			{
 				_data.PulseTime = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
 		[Value]
+		[ProviderCategory(@"Pulse",5)]
+		[ProviderDisplayName(@"PulsePercent")]
+		[ProviderDescription(@"PulseSpinPercent")]
+		[PropertyEditor("SliderEditor")]
+		[PropertyOrder(3)]
 		public int PulsePercentage
 		{
 			get { return _data.PulsePercentage; }
@@ -166,10 +231,16 @@ namespace VixenModules.Effect.Spin
 			{
 				_data.PulsePercentage = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
 		[Value]
+		[ProviderCategory(@"Brightness",2)]
+		[ProviderDisplayName(@"DefaultBrightness")]
+		[ProviderDescription(@"DefaultBrightness")]
+		[PropertyEditor("LevelEditor")]
+		[PropertyOrder(2)]
 		public double DefaultLevel
 		{
 			get { return _data.DefaultLevel; }
@@ -177,10 +248,15 @@ namespace VixenModules.Effect.Spin
 			{
 				_data.DefaultLevel = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
 		[Value]
+		[ProviderCategory(@"Color",1)]
+		[ProviderDisplayName(@"Color")]
+		[ProviderDescription(@"Color")]
+		[PropertyOrder(2)]
 		public Color StaticColor
 		{
 			get
@@ -193,10 +269,15 @@ namespace VixenModules.Effect.Spin
 			{
 				_data.StaticColor = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
 		[Value]
+		[ProviderCategory(@"Color",1)]
+		[ProviderDisplayName(@"ColorGradient")]
+		[ProviderDescription(@"Color")]
+		[PropertyOrder(3)]
 		public ColorGradient ColorGradient
 		{
 			get
@@ -208,6 +289,7 @@ namespace VixenModules.Effect.Spin
 			{
 				_data.ColorGradient = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
@@ -219,6 +301,10 @@ namespace VixenModules.Effect.Spin
 		}
 
 		[Value]
+		[ProviderCategory(@"Brightness",2)]
+		[ProviderDisplayName(@"Brightness")]
+		[ProviderDescription(@"PulseShape")]
+		[PropertyOrder(1)]
 		public Curve PulseCurve
 		{
 			get { return _data.PulseCurve; }
@@ -226,10 +312,17 @@ namespace VixenModules.Effect.Spin
 			{
 				_data.PulseCurve = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
 		[Value]
+		[ProviderCategory(@"Direction",3)]
+		[ProviderDisplayName(@"Direction")]
+		[ProviderDescription(@"Direction")]
+		[TypeConverter(typeof(BooleanStringTypeConverter))]
+		[BoolDescription("Forward", "Reverse")]
+		[PropertyEditor("SelectionEditor")]
 		public bool ReverseSpin
 		{
 			get { return _data.ReverseSpin; }
@@ -237,10 +330,17 @@ namespace VixenModules.Effect.Spin
 			{
 				_data.ReverseSpin = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
 		[Value]
+		[ProviderCategory(@"Depth",20)]
+		[ProviderDisplayName(@"Depth")]
+		[ProviderDescription(@"Depth")]
+		[TypeConverter(typeof(TargetElementDepthConverter))]
+		[PropertyEditor("SelectionEditor")]
+		[MergableProperty(false)]
 		public int DepthOfEffect
 		{
 			get { return _data.DepthOfEffect; }
@@ -248,8 +348,53 @@ namespace VixenModules.Effect.Spin
 			{
 				_data.DepthOfEffect = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
+
+		#region Attributes
+
+		private void InitAllAttributes()
+		{
+			UpdateColorHandlingAttributes();
+			UpdateSpeedFormatAttributes();
+			UpdatePulseLengthFormatAttributes();
+			TypeDescriptor.Refresh(this);
+		}
+
+
+		private void UpdateColorHandlingAttributes()
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(2)
+			{
+				{"StaticColor", ColorHandling.Equals(SpinColorHandling.StaticColor)},
+				{"ColorGradient", !ColorHandling.Equals(SpinColorHandling.StaticColor)}
+			};
+			SetBrowsable(propertyStates);
+		}
+
+		private void UpdateSpeedFormatAttributes()
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(3)
+			{
+				{"RevolutionCount", SpeedFormat.Equals(SpinSpeedFormat.RevolutionCount)},
+				{"RevolutionTime", SpeedFormat.Equals(SpinSpeedFormat.FixedTime)},
+				{"RevolutionFrequency", SpeedFormat.Equals(SpinSpeedFormat.RevolutionFrequency)}
+			};
+			SetBrowsable(propertyStates);
+		}
+
+		private void UpdatePulseLengthFormatAttributes()
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(2)
+			{
+				{"PulseTime", PulseLengthFormat.Equals(SpinPulseLengthFormat.FixedTime)},
+				{"PulsePercentage", PulseLengthFormat.Equals(SpinPulseLengthFormat.PercentageOfRevolution)}
+			};
+			SetBrowsable(propertyStates);
+		}
+
+		#endregion
 
 		private void DoRendering(CancellationTokenSource tokenSource = null)
 		{

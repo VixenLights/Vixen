@@ -9,6 +9,7 @@ namespace Common.Controls.ColorManagement.ColorModels
 	/// CIE XYZ color space
 	/// </summary>
 	[DataContract, TypeConverter(typeof (XYZTypeConverter))]
+	[Serializable]
 	public struct XYZ
 	{
 		public static readonly XYZ Empty = new XYZ();

@@ -15,6 +15,7 @@ namespace Vixen.Execution
 		private readonly List<IEffectNode> _currentEffects;
 		private readonly HashSet<Guid> _affectedElements;
 		private TimeSpan _lastUpdateTime = TimeSpan.Zero;
+		private bool _reset = false;
 
 		public ContextCurrentEffectsIncremental()
 		{
@@ -32,7 +33,7 @@ namespace Vixen.Execution
 			if (_lastUpdateTime > currentTime)
 			{
 				//Make sure the current effects are cleared if we go back to a earlier time.
-				Reset();
+				_currentEffects.Clear();
 			}
 			_lastUpdateTime = currentTime;
 			// Get the effects that are newly qualified.
@@ -50,8 +51,12 @@ namespace Vixen.Execution
 
 		public void Reset()
 		{
-			if (_currentEffects != null)
-				_currentEffects.Clear();		
+			_reset = true;
+		}
+
+		public bool Resetting()
+		{
+			return _reset;
 		}
 
 		private void _GetElementsAffected(IEnumerable<IEffectNode> effects)
@@ -63,6 +68,12 @@ namespace Vixen.Execution
 
 		private void _RemoveExpiredEffects(TimeSpan currentTime)
 		{
+			if (_reset)
+			{
+				_currentEffects.Clear();
+				_reset = false;
+				return;
+			}
 			// Remove expired effects.
 			foreach (var effectNode1 in _currentEffects.ToArray())
 			{

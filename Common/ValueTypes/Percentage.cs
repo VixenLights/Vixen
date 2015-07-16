@@ -1,9 +1,11 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Runtime.Serialization;
 
 namespace Common.ValueTypes
 {
 	[DataContract]
+	[TypeConverter(typeof(PercentageTypeConverter))]
 	public struct Percentage : IEquatable<Percentage>
 	{
 		public Percentage(float value)

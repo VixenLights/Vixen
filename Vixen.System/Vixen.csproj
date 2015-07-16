@@ -61,6 +61,8 @@
       <HintPath>..\packages\NLog.3.1.0.0\lib\net45\NLog.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core">
@@ -71,6 +73,7 @@
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -79,8 +82,20 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\BoolDescriptionAttribute.cs" />
+    <Compile Include="Attributes\BrowsableCategoryAttribute.cs" />
+    <Compile Include="Attributes\BrowsablePropertyAttribute.cs" />
+    <Compile Include="Attributes\CategoryEditorAttribute.cs" />
+    <Compile Include="Attributes\CategoryOrderAttribute.cs" />
+    <Compile Include="Attributes\FlatternHierarchyAttribute.cs" />
+    <Compile Include="Attributes\IOrderableAttribute.cs" />
+    <Compile Include="Attributes\NumberRangeAttribute.cs" />
+    <Compile Include="Attributes\OffsetAttribute.cs" />
+    <Compile Include="Attributes\PropertyEditorAttribute.cs" />
+    <Compile Include="Attributes\PropertyOrderAttribute.cs" />
     <Compile Include="Cache\Event\CacheEventArgs.cs" />
     <Compile Include="Cache\Event\CacheStartedEventArgs.cs" />
     <Compile Include="Cache\Sequence\ISequenceCache.cs" />
@@ -814,6 +829,8 @@
     <Compile Include="Sys\VixenSystem.cs" />
     <Compile Include="Sys\WindowsMultimedia.cs" />
     <Compile Include="Sys\XmlHelper.cs" />
+    <Compile Include="TypeConverters\BooleanStringTypeConverter.cs" />
+    <Compile Include="TypeConverters\TargetElementDepthConverter.cs" />
     <Compile Include="Utility\cEventHelper.cs" />
     <Compile Include="Utility\MiniStackTrace.cs" />
     <Compile Include="Utility\PathUtility.cs" />

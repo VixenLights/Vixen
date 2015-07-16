@@ -1,85 +1,72 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
 using System.Threading;
-using Vixen.Data.Value;
-using Vixen.Intent;
+using Vixen.Attributes;
 using Vixen.Module;
 using Vixen.Module.Effect;
 using Vixen.Sys;
 using Vixen.Sys.Attribute;
-using System.Threading.Tasks;
+using Vixen.TypeConverters;
 using VixenModules.App.ColorGradients;
+using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using VixenModules.Property.Color;
-using VixenModules.App.Curves;
-using ZedGraph;
 
 namespace VixenModules.Effect.Alternating
 {
-	 
+
 	public class Alternating : EffectModuleInstanceBase
 	{
 		private AlternatingData _data;
-		private EffectIntents _elementData = null;
+		private EffectIntents _elementData;
+
 		public Alternating()
 		{
 			_data = new AlternatingData();
+			InitAllAttributes();
 		}
 
 		protected override void TargetNodesChanged()
 		{
-			CheckForInvalidColorData();
+			if (TargetNodes.Any())
+			{
+				CheckForInvalidColorData();
+			}
 		}
 
 		protected override void _PreRender(CancellationTokenSource cancellationToken = null)
 		{
-			_elementData = new EffectIntents();
-			
-			var targetNodes = TargetNodes.AsParallel();
-			
-			if (cancellationToken != null)
-				targetNodes = targetNodes.WithCancellation(cancellationToken.Token);
-			
-			targetNodes.ForAll(node => {
+			EffectIntents data = new EffectIntents();
+
+			foreach (ElementNode node in TargetNodes)
+			{
 				if (node != null)
-				RenderNode(node);
-			});
-	 
-			 
+					data.Add(RenderNode(node));
+			}
+
+			_elementData = data;
 		}
 
 		//Validate that the we are using valid colors and set appropriate defaults if not.
+		//we only need to check against 1 color variable,
+		//it should be checked at a later time than what this is doing currently
 		private void CheckForInvalidColorData()
 		{
 			// check for sane default colors when first rendering it
-			HashSet<Color> validColors = new HashSet<Color>();
+			var validColors = new HashSet<Color>();
 			validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
-	
-			//Validate Color 1
-			if (validColors.Any() && 
-				(!validColors.Contains(_data.Color1.ToArgb()) || !_data.ColorGradient1.GetColorsInGradient().IsSubsetOf(validColors)))
-			{
-				Color1 = validColors.First();
-				ColorGradient1 = new ColorGradient(validColors.First());
-			}
 
-			//Validate color 2
-			if (validColors.Any() &&
-				(!validColors.Contains(_data.Color2.ToArgb()) || !_data.ColorGradient2.GetColorsInGradient().IsSubsetOf(validColors)))
+			//We need to beable to modify the list in the loop, since a collection used in foreach is immuatable we need to use a for loop
+			for (int i = 0; i < Colors.Count; i++)
 			{
-				if (validColors.Count > 1)
+				if (validColors.Any() && !Colors[i].ColorGradient.GetColorsInGradient().IsSubsetOf(validColors))
 				{
-					Color2 = validColors.ElementAt(1);
-					ColorGradient2 = new ColorGradient(validColors.ElementAt(1));
-				} else
-				{
-					Color2 = validColors.First();
-					ColorGradient2 = new ColorGradient(validColors.First());
+					Colors[i].ColorGradient = new ColorGradient(validColors.First());
 				}
 			}
+
 		}
 
 		protected override EffectIntents _Render()
@@ -90,60 +77,78 @@ namespace VixenModules.Effect.Alternating
 		public override IModuleDataModel ModuleData
 		{
 			get { return _data; }
-			set { _data = value as AlternatingData; }
-		}
-
-		[Value]
-		public double IntensityLevel1
-		{
-			get { return _data.Level1; }
 			set
 			{
-				_data.Level1 = value;
-				IsDirty = true;
+				_data = value as AlternatingData;
+				InitAllAttributes();
 			}
 		}
 
+		#region Color
+
 		[Value]
-		public Color Color1
+		[ProviderCategory(@"Color", 2)]
+		[ProviderDisplayName(@"GradientLevelPair")]
+		[ProviderDescription(@"GradientLevelPair")]
+		[MergableProperty(false)]
+		public List<GradientLevelPair> Colors
 		{
-			get
-			{
-				return _data.Color1;
-			}
+			get { return _data.Colors; }
 			set
 			{
-				_data.Color1 = value;
+				_data.Colors = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
+		#endregion
+
+		#region Config
+
 		[Value]
-		public double IntensityLevel2
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"StaticEffect")]
+		[ProviderDescription(@"StaticEffect")]
+		[TypeConverter(typeof(BooleanStringTypeConverter))]
+		[BoolDescription("Yes", "No")]
+		[PropertyEditor("SelectionEditor")]
+		[PropertyOrder(0)]
+		public bool EnableStatic
 		{
-			get { return _data.Level2; }
+			get { return _data.EnableStatic; }
 			set
 			{
-				_data.Level2 = value;
+				_data.EnableStatic = value;
 				IsDirty = true;
+				UpdateIntervalAttribute();
+				OnPropertyChanged();
 			}
 		}
 
 		[Value]
-		public Color Color2
+		[ProviderCategory(@"Config", 10)]
+		[ProviderDisplayName(@"GroupLevel")]
+		[ProviderDescription(@"GroupLevel")]
+		[NumberRange(1, 5000, 1)]
+		[PropertyOrder(1)]
+		public int GroupLevel
 		{
-			get
-			{
-				return _data.Color2;
-			}
+			get { return _data.GroupLevel; }
 			set
 			{
-				_data.Color2 = value;
+				_data.GroupLevel = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
 		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"Interval")]
+		[ProviderDescription(@"Interval")]
+		[NumberRange(0, 10000, 1, 0)]
+		[PropertyOrder(2)]
 		public int Interval
 		{
 			get { return _data.Interval; }
@@ -151,134 +156,61 @@ namespace VixenModules.Effect.Alternating
 			{
 				_data.Interval = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
 		[Value]
-		public int DepthOfEffect
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"IntervalSkip")]
+		[ProviderDescription(@"IntervalSkip")]
+		[PropertyEditor("SliderEditor")]
+		[NumberRange(1, 10, 1)]
+		[PropertyOrder(3)]
+		public int IntervalSkipCount
 		{
-			get { return _data.DepthOfEffect; }
+			get { return _data.IntervalSkipCount; }
 			set
 			{
-				_data.DepthOfEffect = value;
+				_data.IntervalSkipCount = value;
 				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
-		[Value]
-		public int GroupEffect
+
+		#endregion
+
+
+		#region Attributes
+
+		private void InitAllAttributes()
 		{
-			get { return _data.GroupEffect; }
-			set
+			UpdateIntervalAttribute(false);
+			TypeDescriptor.Refresh(this);
+		}
+
+
+		private void UpdateIntervalAttribute(bool refresh=true)
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(2);
+			propertyStates.Add("IntervalSkipCount", !EnableStatic);
+			propertyStates.Add("Interval", !EnableStatic);
+			SetBrowsable(propertyStates);
+			SetBrowsable(propertyStates);
+			if (refresh)
 			{
-				_data.GroupEffect = value;
-				IsDirty = true;
+				TypeDescriptor.Refresh(this);
 			}
 		}
 
-		[Value]
-		public bool Enable
-		{
-			get { return _data.Enable; }
-			set
-			{
-				_data.Enable = value;
-				IsDirty = true;
-			}
-		}
-
-		[Value]
-		public bool StaticColor1
-		{
-			get { return _data.StaticColor1; }
-			set
-			{
-				_data.StaticColor1 = value;
-				IsDirty = true;
-			}
-		}
-
-		[Value]
-		public bool StaticColor2
-		{
-			get { return _data.StaticColor2; }
-			set
-			{
-				_data.StaticColor2 = value;
-				IsDirty = true;
-			}
-		}
-
-		[Value]
-		public ColorGradient ColorGradient1
-		{
-			get
-			{
-				return _data.ColorGradient1;
-			}
-			set
-			{
-				_data.ColorGradient1 = value;
-				IsDirty = true;
-			}
-		}
-
-		[Value]
-		public ColorGradient ColorGradient2
-		{
-			get
-			{
-				return _data.ColorGradient2;
-			}
-			set
-			{
-				_data.ColorGradient2 = value;
-				IsDirty = true;
-			}
-		}
-
-		[Value]
-		public Curve Curve1
-		{
-			get { return _data.Curve1; }
-			set
-			{
-				_data.Curve1 = value;
-				IsDirty = true;
-			}
-		}
-
-		[Value]
-		public Curve Curve2
-		{
-			get { return _data.Curve2; }
-			set
-			{
-				_data.Curve2 = value;
-				IsDirty = true;
-			}
-		}
+		#endregion
 
 		public override bool IsDirty
 		{
 			get
 			{
-				if (!Curve1.CheckLibraryReference())
-				{
-					base.IsDirty = true;
-				}
-
-				if (!Curve2.CheckLibraryReference())
-				{
-					base.IsDirty = true;
-				}
-
-				if (!ColorGradient1.CheckLibraryReference())
-				{
-					base.IsDirty = true;
-				}
-
-				if (!ColorGradient2.CheckLibraryReference())
+				if (Colors.Any(x => !x.ColorGradient.CheckLibraryReference() || !x.Curve.CheckLibraryReference()))
 				{
 					base.IsDirty = true;
 				}
@@ -288,75 +220,95 @@ namespace VixenModules.Effect.Alternating
 			protected set { base.IsDirty = value; }
 		}
 
+		//(Numbers represent color/curve pairs, rows are elements columns are intervals)
+		//12341234
+		//23412341
+		//34123412
+		//41234123
+
+		//An offset of 2
+		//12341234
+		//34123412
+		//12341234
+		//34123412
+
+		//Offset 3
+		//12341234
+		//41234123
+		//23412341
+		//12341234
+
 		// renders the given node to the internal ElementData dictionary. If the given node is
 		// not a element, will recursively descend until we render its elements.
-		private void RenderNode(ElementNode node)
+		private EffectIntents RenderNode(ElementNode node)
 		{
-			bool startingColor = false;
-			double intervals = 1;
-			 
-			if (Enable) {
-				//intervals = Math.DivRem((long)TimeSpan.TotalMilliseconds, (long)Interval, out rem);
-				intervals = Math.Ceiling(TimeSpan.TotalMilliseconds / (double)Interval);
+			EffectIntents effectIntents = new EffectIntents();
+			int intervals = 1;
+			var gradientLevelItem = 0;
+			var startIndexOffset = 0;
+			//make local hold variables to prevent changes in the middle of rendering.
+			int group = GroupLevel;
+			var skip = IntervalSkipCount;
+			int colorCount = Colors.Count();
+			
+			
+			if (!EnableStatic)
+			{
+				intervals = Convert.ToInt32(Math.Ceiling(TimeSpan.TotalMilliseconds/Interval));
 			}
 
-			TimeSpan startTime = TimeSpan.Zero;
-		 
-			for (int i = 0; i < intervals; i++) {
-				bool altColor = startingColor;
+			var startTime = TimeSpan.Zero;
+
+			var nodes = node.GetLeafEnumerator();
+			
+			for (int i = 0; i < intervals; i++)
+			{
 				var intervalTime = intervals == 1
-									? TimeSpan
-									: TimeSpan.FromMilliseconds(Interval);
+					? TimeSpan
+					: TimeSpan.FromMilliseconds(Interval);
 
 				int totalElements = node.Count();
 				int currentNode = 0;
 
-				var nodes = node.GetLeafEnumerator();
-
-				while (currentNode < totalElements) {
-
-					var elements = nodes.Skip(currentNode).Take(GroupEffect);
-
-					currentNode += GroupEffect;
+				while (currentNode < totalElements)
+				{
+					var elements = nodes.Skip(currentNode).Take(group);
+					currentNode += (group);
 
 					foreach (var element in elements)
 					{
-						RenderElement(altColor, ref startTime, ref intervalTime, element);	
+						RenderElement(Colors[gradientLevelItem], ref startTime, ref intervalTime, element, effectIntents);
 					}
 
-					altColor = !altColor;
+					gradientLevelItem = ++gradientLevelItem%colorCount;
 				}
 
-
+				startIndexOffset = (skip+startIndexOffset) % colorCount;
+				gradientLevelItem = startIndexOffset;
+				
 				startTime += intervalTime;
-				startingColor = !startingColor;
 			}
+
+			return effectIntents;
 		}
 
-		private void RenderElement(bool altColor, ref TimeSpan startTime, ref TimeSpan intervalTime, ElementNode element)
+		private void RenderElement(GradientLevelPair gradientLevelPair, ref TimeSpan startTime, ref TimeSpan intervalTime,
+			ElementNode element, EffectIntents effectIntents)
 		{
-			EffectIntents result;
+			var pulse = new Pulse.Pulse
+			{
+				TargetNodes = new[] {element},
+				TimeSpan = intervalTime,
+				ColorGradient = gradientLevelPair.ColorGradient,
+				LevelCurve = gradientLevelPair.Curve
+			};
 
-			if ((StaticColor1 && altColor) || StaticColor2 && !altColor) {
-
-				var level = new SetLevel.SetLevel();
-				level.TargetNodes = new ElementNode[] { element };
-				level.Color = altColor ? Color1 : Color2;
-				level.TimeSpan = intervalTime;
-				level.IntensityLevel = altColor ? IntensityLevel1 : IntensityLevel2;
-				result = level.Render();
-
-			} else {
-				var pulse = new Pulse.Pulse();
-				pulse.TargetNodes = new ElementNode[] { element };
-				pulse.TimeSpan = intervalTime;
-				pulse.ColorGradient = altColor ? ColorGradient1 : ColorGradient2;
-				pulse.LevelCurve = altColor ? Curve1 : Curve2;
-				result = pulse.Render();
-			}
+			var result = pulse.Render();
 
 			result.OffsetAllCommandsByTime(startTime);
-			_elementData.Add(result);
+			effectIntents.Add(result);
+
 		}
 	}
+
 }

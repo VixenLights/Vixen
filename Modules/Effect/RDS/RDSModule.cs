@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Text;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -47,6 +47,9 @@ namespace VixenModules.Effect.RDS
 		}
 
 		[Value]
+		[Category(@"Effect Text")]
+		[DisplayName(@"RDS Text")]
+		[Description(@"Text to send")]
 		public string Title
 		{
 			get { return _data.Title; }
@@ -54,10 +57,12 @@ namespace VixenModules.Effect.RDS
 			{
 				_data.Title=value;
 				IsDirty=true;
+				OnPropertyChanged();
 			}
 		}
 
 		[Value]
+		[Browsable(false)]
 		public string Artist
 		{
 			get
@@ -68,6 +73,7 @@ namespace VixenModules.Effect.RDS
 			{
 				_data.Artist=value;
 				IsDirty=true;
+				OnPropertyChanged();
 			}
 		}
 
@@ -107,7 +113,11 @@ namespace VixenModules.Effect.RDS
 		public override IModuleDataModel ModuleData
 		{
 			get { return _data; }
-			set { _data = value as RDSData; }
+			set
+			{
+				_data = value as RDSData;
+				IsDirty = true;
+			}
 		}
 	}
 }

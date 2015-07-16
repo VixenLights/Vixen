@@ -59,6 +59,11 @@
       <Name>Vixen</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\EffectEditor\EffectEditor.csproj">
+      <Project>{5a48b67f-1e7e-4ed6-a201-f6cc8e7e6788}</Project>
+      <Name>EffectEditor</Name>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
@@ -66,17 +71,23 @@
       <HintPath>..\..\..\packages\NLog.3.1.0.0\lib\net45\NLog.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="PresentationFramework.Aero" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
     <Reference Include="WeifenLuo.WinFormsUI.Docking">
       <HintPath>..\..\..\packages\DockPanelSuite.2.9.0.0\lib\net40\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AudacityImportDialog.cs">
@@ -109,6 +120,7 @@
     <Compile Include="BeatMarkExportDialog.Designer.cs">
       <DependentUpon>BeatMarkExportDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="EffectModelCandidate.cs" />
     <Compile Include="ExportDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -126,6 +138,12 @@
     </Compile>
     <Compile Include="Form_AddMultipleEffects.Designer.cs">
       <DependentUpon>Form_AddMultipleEffects.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormEffectEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormEffectEditor.Designer.cs">
+      <DependentUpon>FormEffectEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="Form_Marks.cs">
       <SubType>Form</SubType>
@@ -178,6 +196,7 @@
     <Compile Include="ParameterEditor.Designer.cs">
       <DependentUpon>ParameterEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
@@ -216,7 +235,14 @@
     <Compile Include="Form_ToolPalette.Designer.cs">
       <DependentUpon>Form_ToolPalette.cs</DependentUpon>
     </Compile>
-    <Compile Include="Undo.cs" />
+    <Compile Include="Undo\EffectsAddedRemovedUndoAction.cs" />
+    <Compile Include="Undo\EffectsAddedUndoAction.cs" />
+    <Compile Include="Undo\EffectsModifiedUndoAction.cs" />
+    <Compile Include="Undo\EffectsPastedUndoAction.cs" />
+    <Compile Include="Undo\EffectsPropertyModifiedUndoAction.cs" />
+    <Compile Include="Undo\EffectsRemovedUndoAction.cs" />
+    <Compile Include="Undo\ElementsTimeChangedUndoAction.cs" />
+    <Compile Include="Undo\EffectsCutUndoAction.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -240,6 +266,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ExportDialog.resx">
       <DependentUpon>ExportDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormEffectEditor.resx">
+      <DependentUpon>FormEffectEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormParameterPicker.resx">
       <DependentUpon>FormParameterPicker.cs</DependentUpon>
@@ -311,6 +340,11 @@
     <ProjectReference Include="..\..\..\Common\Resources\Resources.csproj">
       <Project>{F7A80169-6310-4585-9D58-A6F6F5C5B380}</Project>
       <Name>Resources</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Common\ValueTypes\ValueTypes.csproj">
+      <Project>{D9A7E8BC-5617-486D-9DA5-89C5861A0F88}</Project>
+      <Name>ValueTypes</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Analysis\BeatsAndBars\BeatsAndBars.csproj">

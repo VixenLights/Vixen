@@ -1,0 +1,62 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="clr-namespace:VixenModules.Editor.EffectEditor.Controls"
+                    xmlns:editors="clr-namespace:VixenModules.Editor.EffectEditor.Editors"
+                    xmlns:input="clr-namespace:VixenModules.Editor.EffectEditor.Input">
+	<ResourceDictionary.MergedDictionaries>
+		<ResourceDictionary Source="Converters.xaml" />
+	</ResourceDictionary.MergedDictionaries>
+
+	<DataTemplate x:Key="{x:Static editors:EditorKeys.GradientLevelPairEditorKey}">
+		<StackPanel>
+			<controls:CollectionView
+				x:Name="PART_editor"
+				Style="{DynamicResource {x:Type ListView}}"
+				PropertyValue="{Binding}"
+				IsEnabled="{Binding IsEditable}"
+				KeyboardNavigation.TabNavigation="Continue">
+				<ListView.ItemsPanel>
+					<ItemsPanelTemplate>
+						<WrapPanel Orientation="Vertical" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type StackPanel}}, Path=ActualWidth}"></WrapPanel>
+					</ItemsPanelTemplate>
+				</ListView.ItemsPanel>
+				<ListView.ItemTemplate>
+					<DataTemplate>
+						<StackPanel Orientation="Horizontal" Margin="5">
+							<Border BorderThickness="1" BorderBrush="#888888">
+								<Image input:DragDropTargetType.TargetType="ColorGradient" Source="{Binding Value.ColorGradient, Converter={StaticResource ColorGradientToImageConverter}}" 
+									   Height="25" Width="25" Focusable="True"
+									input:DragDropManager.DropTargetAdvisor="{Binding}" input:DragDropManager.DragSourceAdvisor="{Binding}" ToolTip="{Binding Value.ColorGradient.LibraryReferenceName}">
+									<Image.InputBindings>
+										<MouseBinding Gesture="LeftDoubleClick" Command="input:PropertyEditorCommands.ShowGradientLevelGradientEditor"
+												CommandParameter="{Binding}" />
+									</Image.InputBindings>
+								</Image>
+							</Border>
+							<Border BorderThickness="1" BorderBrush="#888888" Margin="10 0 0 0">
+								<Image input:DragDropTargetType.TargetType="Curve"  Source="{Binding Value.Curve, Converter={StaticResource CurveToImageConverter}}" 
+									   Height="25" Width="25" Focusable="True"
+									input:DragDropManager.DropTargetAdvisor="{Binding}" input:DragDropManager.DragSourceAdvisor="{Binding}" ToolTip="{Binding Value.Curve.LibraryReferenceName}">
+									<Image.InputBindings>
+										<MouseBinding Gesture="LeftDoubleClick" Command="input:PropertyEditorCommands.ShowGradientLevelCurveEditor"
+						              CommandParameter="{Binding}" />
+									</Image.InputBindings>
+								</Image>
+							</Border>
+						</StackPanel>
+					</DataTemplate>
+				</ListView.ItemTemplate>
+			</controls:CollectionView>
+			<StackPanel Orientation="Horizontal">
+			<Button Margin="5" Content="Add" HorizontalAlignment="Left" Padding="5,2"
+				  Command="input:PropertyEditorCommands.AddCollectionItem"
+				  CommandParameter="{Binding}"
+				  Visibility="{Binding IsEditable, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+			<Button Margin="5" Content="Remove" HorizontalAlignment="Left" Padding="5,2" FocusManager.IsFocusScope="True"
+				  Command="input:PropertyEditorCommands.RemoveCollectionItem"
+				  CommandParameter="{Binding}" Visibility="{Binding IsEditable, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+			</StackPanel>
+		</StackPanel>
+	</DataTemplate>
+
+</ResourceDictionary>

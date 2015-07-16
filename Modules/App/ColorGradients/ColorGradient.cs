@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
@@ -17,12 +18,15 @@ namespace VixenModules.App.ColorGradients
 	/// ColorBlend object
 	/// </summary>
 	[DataContract]
+	[Serializable]
+	[TypeConverter(typeof(GradientTypeConverter))]
 	public class ColorGradient : ICloneable
 	{
 		/// <summary>
 		/// class for holding a gradient point
 		/// </summary>
 		[DataContract]
+		[Serializable]
 		public abstract class Point : IComparable<double>
 		{
 			[DataMember] private double _position;
@@ -126,7 +130,7 @@ namespace VixenModules.App.ColorGradients
 				if (Changed != null)
 					Changed(this, new ModifiedEventArgs(Action.Modified, this));
 			}
-
+			[field: NonSerialized]
 			public event EventHandler<ModifiedEventArgs> Changed;
 		}
 
@@ -136,10 +140,43 @@ namespace VixenModules.App.ColorGradients
 		/// controls connected to this colorblend
 		/// </summary>
 		[CollectionDataContract]
+		[Serializable]
 		public class PointList<T> : CollectionBase<T> where T : Point, IComparable<T>
 		{
+			protected bool Equals(PointList<T> obj)
+			{
+				
+				PointList<T> rhs = obj as PointList<T>;
+				if (Count != rhs.Count)
+					return false;
+
+				for (int i = 0; i < this.Count; i++)
+				{
+					if (!this[i].Equals(rhs[i]))
+						return false;
+				}
+
+				return true;
+			}
+
+			public override int GetHashCode()
+			{
+				return base.GetHashCode();
+			}
+
+			public override bool Equals(object obj)
+			{
+				if (obj is PointList<T>)
+				{
+					return Equals(obj as PointList<T>);
+				}
+				return base.Equals(obj);
+
+			}
+
 			#region change events
 
+			[field: NonSerialized]
 			public event EventHandler<ModifiedEventArgs> Changed;
 
 			public void PointChangedHandler(object sender, ModifiedEventArgs e)
@@ -211,6 +248,7 @@ namespace VixenModules.App.ColorGradients
 				Array.Sort(ret);
 				return ret;
 			}
+
 		}
 
 		#region variables
@@ -221,7 +259,9 @@ namespace VixenModules.App.ColorGradients
 		[DataMember] private String _title = null;
 
 		// doesn't get serialized; it's instantiated as needed.
+		[NonSerialized]
 		private ColorBlend _blend = null;
+		[NonSerialized]
 		private Color? _blendFilterColor = null;
 
 		#endregion
@@ -765,6 +805,7 @@ namespace VixenModules.App.ColorGradients
 				Changed(this, e);
 		}
 
+		[field: NonSerialized]
 		public event EventHandler Changed;
 
 		#endregion
@@ -777,7 +818,8 @@ namespace VixenModules.App.ColorGradients
 		public object Clone()
 		{
 			ColorGradient ret = new ColorGradient();
-
+			ret.Colors.Clear(); // Defaults to having a color
+			ret.Alphas.Clear(); // Defaults to having a color
 			if (_title != null)
 				ret._title = (string) _title.Clone();
 			ret._gammacorrected = _gammacorrected;
@@ -1005,10 +1047,44 @@ namespace VixenModules.App.ColorGradients
 			return result;
 		}
 
+		#region Equals
+
+		public override bool Equals(object obj)
+		{
+			if (obj is ColorGradient)
+			{
+				ColorGradient color = (ColorGradient)obj;
+				if (IsLibraryReference && color.IsLibraryReference && LibraryReferenceName.Equals(color.LibraryReferenceName))
+				{
+					return true;
+				}
+				
+				if (IsLibraryReference || color.IsLibraryReference)
+				{
+					return false;
+				}
+				
+				if (Colors.Equals(color.Colors) && Alphas.Equals(color.Alphas) )
+				{
+					return true;
+				}
+			}
+			return base.Equals(obj);
+		}
+
+		public override int GetHashCode()
+		{
+			return Colors.GetHashCode() ^ Alphas.GetHashCode();
+		}
+
+		#endregion
+
 		#region Library-linking gradients
 
+		[NonSerialized]
 		private ColorGradient _libraryReferencedGradient;
 
+		[NonSerialized]
 		private ColorGradientLibrary _library;
 
 		private ColorGradientLibrary Library
@@ -1102,6 +1178,7 @@ namespace VixenModules.App.ColorGradients
 	/// encapsulates an alpha value with focus point
 	/// </summary>
 	[DataContract]
+	[Serializable]
 	public class AlphaPoint : ColorGradient.Point, IComparable<AlphaPoint>, ICloneable
 	{
 		//variables
@@ -1193,6 +1270,7 @@ namespace VixenModules.App.ColorGradients
 	/// encapsulates a color value with focus point
 	/// </summary>
 	[DataContract]
+	[Serializable]
 	public class ColorPoint : ColorGradient.Point, IComparable<ColorPoint>, ICloneable
 	{
 		//variables
@@ -1293,6 +1371,7 @@ namespace VixenModules.App.ColorGradients
 	/// <summary>
 	/// event handling class for insert, delete and clear
 	/// </summary>
+	[Serializable]
 	public class ModifiedEventArgs : EventArgs
 	{
 		private Action _action;
