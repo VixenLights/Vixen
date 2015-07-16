@@ -154,7 +154,7 @@ namespace VixenModules.Editor.EffectEditor
 					GradientLevelPair glp = collectionItem.Value as GradientLevelPair;
 					if (glp != null)
 					{
-						var newValue = editor.ShowDialog(collectionItem.ParentProperty.Component, glp.ColorGradient, this);
+						var newValue = editor.ShowDialog(collectionItem.ParentProperty, glp.ColorGradient, this);
 						if (newValue is ColorGradient)
 						{
 							glp.ColorGradient = (ColorGradient)newValue;
@@ -177,7 +177,7 @@ namespace VixenModules.Editor.EffectEditor
 					GradientLevelPair glp = collectionItem.Value as GradientLevelPair;
 					if (glp != null)
 					{
-						var newValue = editor.ShowDialog(collectionItem.ParentProperty.Component, glp.Curve, this);
+						var newValue = editor.ShowDialog(collectionItem.ParentProperty, glp.Curve, this);
 						if (newValue is Curve)
 						{
 							glp.Curve = (Curve) newValue;
@@ -199,7 +199,7 @@ namespace VixenModules.Editor.EffectEditor
 			// TODO: Finish DialogTemplate implementation
 			if (editor != null && !value.ParentProperty.IsReadOnly) // && editor.HasDialogTemplate)
 			{
-				value.Value = editor.ShowDialog(value.ParentProperty.Component, value.Value, this);
+				value.Value = editor.ShowDialog(value.ParentProperty, value.Value, this);
 			}	
 		}
 
@@ -207,7 +207,7 @@ namespace VixenModules.Editor.EffectEditor
 		{
 			// TODO: Finish DialogTemplate implementation
 			
-			value.Value = editor.ShowDialog(value.ParentProperty.Component, value.Value, this);
+			value.Value = editor.ShowDialog(value.ParentProperty, value.Value, this);
 			
 		}
 

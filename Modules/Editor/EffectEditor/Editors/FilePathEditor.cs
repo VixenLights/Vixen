@@ -11,7 +11,7 @@ namespace VixenModules.Editor.EffectEditor.Editors
 			InlineTemplate = EditorKeys.FilePathEditorKey;
 		}
 
-		public override Object ShowDialog(Object effect, Object propertyValue, IInputElement commandSource)
+		public override Object ShowDialog(PropertyItem propertyItem, Object propertyValue, IInputElement commandSource)
 		{
 			OpenFileDialog ofd = new OpenFileDialog
 			{

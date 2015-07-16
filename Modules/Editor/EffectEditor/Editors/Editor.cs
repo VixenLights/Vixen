@@ -87,10 +87,10 @@ namespace VixenModules.Editor.EffectEditor.Editors
 		/// <summary>
 		///     Shows the dialog for editing property value.
 		/// </summary>
-		/// <param name="effect"></param>
+		/// <param name="property"></param>
 		/// <param name="value"></param>
 		/// <param name="commandSource">The command source.</param>
-		public virtual Object ShowDialog(Object effect, Object value, IInputElement commandSource)
+		public virtual Object ShowDialog(PropertyItem property, Object value, IInputElement commandSource)
 		{
 			return value;
 		}

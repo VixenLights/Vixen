@@ -17,9 +17,9 @@ namespace VixenModules.Editor.EffectEditor.Editors
 		{
 		}
 
-		public override Object ShowDialog(Object effect, Object propertyValue, IInputElement commandSource)
+		public override Object ShowDialog(PropertyItem propertyItem, Object propertyValue, IInputElement commandSource)
 		{
-			HashSet<Color> discreteColors = GetDiscreteColors(effect);
+			HashSet<Color> discreteColors = GetDiscreteColors(propertyItem.Component);
 
 			Color colorValue;
 			if (propertyValue != null)
@@ -38,6 +38,7 @@ namespace VixenModules.Editor.EffectEditor.Editors
 					dcp.ValidColors = discreteColors;
 					dcp.SingleColorOnly = true;
 					dcp.SelectedColors = new List<Color> {colorValue};
+					dcp.Text = propertyItem.DisplayName;
 					result = dcp.ShowDialog();
 					if (result == DialogResult.OK)
 					{
@@ -51,6 +52,7 @@ namespace VixenModules.Editor.EffectEditor.Editors
 				{
 					cp.LockValue_V = true;
 					cp.Color = XYZ.FromRGB(colorValue);
+					cp.Text = propertyItem.DisplayName;
 					result = cp.ShowDialog();
 					if (result == DialogResult.OK)
 					{

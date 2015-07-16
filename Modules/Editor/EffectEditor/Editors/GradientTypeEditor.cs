@@ -14,11 +14,11 @@ namespace VixenModules.Editor.EffectEditor.Editors
 		{
 		}
 
-		public override Object ShowDialog(Object effect, Object propertyValue, IInputElement commandSource)
+		public override Object ShowDialog(PropertyItem propertyItem, Object propertyValue, IInputElement commandSource)
 		{
-			ColorGradient gradient = null;
+			ColorGradient gradient;
 			var value = propertyValue as ColorGradient;
-			HashSet<Color> discreteColors = GetDiscreteColors(effect);
+			HashSet<Color> discreteColors = GetDiscreteColors(propertyItem.Component);
 			if (value != null)
 			{
 				gradient = value;
@@ -29,6 +29,7 @@ namespace VixenModules.Editor.EffectEditor.Editors
 			}
 
 			ColorGradientEditor editor = new ColorGradientEditor(gradient, discreteColors.Any(), discreteColors);
+			editor.Text = propertyItem.DisplayName;
 			if (editor.ShowDialog() == DialogResult.OK)
 			{
 				propertyValue = editor.Gradient;

@@ -11,7 +11,7 @@ namespace VixenModules.Editor.EffectEditor.Editors
 			
 		}
 
-		public override object ShowDialog(object effect, object value, IInputElement commandSource)
+		public override object ShowDialog(PropertyItem propertyItem, object value, IInputElement commandSource)
 		{
 			FontDialog ofd = new FontDialog();
 			ofd.ShowColor = false;
