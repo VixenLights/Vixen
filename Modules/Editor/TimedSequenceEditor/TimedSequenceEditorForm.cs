@@ -2638,7 +2638,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				toolStripButton_Play.Image = Resources.hourglass;
 				//The Looping stuff kinda broke this, but we need to do this for consistency
 				toolStripButton_Play.Enabled = true;
-				playToolStripMenuItem.Enabled = EffectsForm.Enabled = false;
+				playToolStripMenuItem.Enabled = false;
 				toolStripButton_Stop.Enabled = stopToolStripMenuItem.Enabled = true;
 			}
 
@@ -2732,7 +2732,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				timerPostponePlay.Enabled = timerDelayCountdown.Enabled = false;
 				toolStripButton_Play.Image = Resources.control_play_blue;
-				toolStripButton_Play.Enabled = playToolStripMenuItem.Enabled = EffectsForm.Enabled = true;
+				toolStripButton_Play.Enabled = playToolStripMenuItem.Enabled = true;
 				toolStripButton_Stop.Enabled = stopToolStripMenuItem.Enabled = false;
 				//We are stopping the delay, there is no context, so get out of here to avoid false entry into error log
 				return;
@@ -2824,7 +2824,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					toolStripButton_Play.Enabled = playToolStripMenuItem.Enabled = false;
 					toolStripButton_Pause.Enabled = pauseToolStripMenuItem.Enabled = false;
 					toolStripButton_Stop.Enabled = stopToolStripMenuItem.Enabled = false;
-					EffectsForm.Enabled = false;
 					return;
 				}
 
@@ -2841,14 +2840,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						toolStripButton_Pause.Enabled = pauseToolStripMenuItem.Enabled = true;
 					}
 					toolStripButton_Stop.Enabled = stopToolStripMenuItem.Enabled = true;
-					EffectsForm.Enabled = false;
 				}
 				else // Stopped
 				{
 					toolStripButton_Play.Enabled = playToolStripMenuItem.Enabled = true;
 					toolStripButton_Pause.Enabled = pauseToolStripMenuItem.Enabled = false;
 					toolStripButton_Stop.Enabled = stopToolStripMenuItem.Enabled = false;
-					EffectsForm.Enabled = true;
 				}
 			}
 		}
