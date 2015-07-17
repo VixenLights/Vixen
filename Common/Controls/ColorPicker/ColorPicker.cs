@@ -126,14 +126,14 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			this.lblSecond_2 = new System.Windows.Forms.Label();
 			this.lblSecond_3 = new System.Windows.Forms.Label();
 			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+			this.lblColorOut = new Common.Controls.ColorManagement.ColorPicker.ColorLabel();
+			this.colorSelectionFader1 = new Common.Controls.ColorManagement.ColorPicker.ColorSelectionFader();
+			this.colorSelectionPlane1 = new Common.Controls.ColorManagement.ColorPicker.ColorSelectionPlane();
 			this.quickPickBox = new System.Windows.Forms.GroupBox();
 			this.whiteButton = new System.Windows.Forms.Button();
 			this.blueButton = new System.Windows.Forms.Button();
 			this.greenButton = new System.Windows.Forms.Button();
 			this.redButton = new System.Windows.Forms.Button();
-			this.lblColorOut = new Common.Controls.ColorManagement.ColorPicker.ColorLabel();
-			this.colorSelectionFader1 = new Common.Controls.ColorManagement.ColorPicker.ColorSelectionFader();
-			this.colorSelectionPlane1 = new Common.Controls.ColorManagement.ColorPicker.ColorSelectionPlane();
 			this.quickPickBox.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -155,8 +155,8 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			this.btnCancel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.UseVisualStyleBackColor = false;
-			this.btnCancel.MouseLeave += new System.EventHandler(this.btnCancel_MouseLeave);
-			this.btnCancel.MouseHover += new System.EventHandler(this.btnCancel_MouseHover);
+			this.btnCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.btnCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// btnOK
 			// 
@@ -170,8 +170,8 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			this.btnOK.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.btnOK.Name = "btnOK";
 			this.btnOK.UseVisualStyleBackColor = false;
-			this.btnOK.MouseLeave += new System.EventHandler(this.btnOK_MouseLeave);
-			this.btnOK.MouseHover += new System.EventHandler(this.btnOK_MouseHover);
+			this.btnOK.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.btnOK.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// contextMenu
 			// 
@@ -349,6 +349,32 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			this.toolTip.InitialDelay = 1000;
 			this.toolTip.ReshowDelay = 200;
 			// 
+			// lblColorOut
+			// 
+			resources.ApplyResources(this.lblColorOut, "lblColorOut");
+			this.lblColorOut.BackColor = System.Drawing.Color.WhiteSmoke;
+			this.lblColorOut.Color = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+			this.lblColorOut.ContextMenu = this.contextMenu;
+			this.lblColorOut.ForeColor = System.Drawing.Color.Black;
+			this.lblColorOut.Name = "lblColorOut";
+			this.lblColorOut.OldColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+			this.toolTip.SetToolTip(this.lblColorOut, resources.GetString("lblColorOut.ToolTip"));
+			this.lblColorOut.ColorChanged += new System.EventHandler(this.lblColorOut_ColorChanged);
+			// 
+			// colorSelectionFader1
+			// 
+			resources.ApplyResources(this.colorSelectionFader1, "colorSelectionFader1");
+			this.colorSelectionFader1.Name = "colorSelectionFader1";
+			this.colorSelectionFader1.TabStop = false;
+			this.toolTip.SetToolTip(this.colorSelectionFader1, resources.GetString("colorSelectionFader1.ToolTip"));
+			// 
+			// colorSelectionPlane1
+			// 
+			resources.ApplyResources(this.colorSelectionPlane1, "colorSelectionPlane1");
+			this.colorSelectionPlane1.Name = "colorSelectionPlane1";
+			this.colorSelectionPlane1.TabStop = false;
+			this.toolTip.SetToolTip(this.colorSelectionPlane1, resources.GetString("colorSelectionPlane1.ToolTip"));
+			// 
 			// quickPickBox
 			// 
 			this.quickPickBox.Controls.Add(this.whiteButton);
@@ -359,7 +385,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			resources.ApplyResources(this.quickPickBox, "quickPickBox");
 			this.quickPickBox.Name = "quickPickBox";
 			this.quickPickBox.TabStop = false;
-			this.quickPickBox.Paint += new System.Windows.Forms.PaintEventHandler(this.quickPickBox_Paint);
+			this.quickPickBox.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
 			// whiteButton
 			// 
@@ -396,32 +422,6 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			this.redButton.Name = "redButton";
 			this.redButton.UseVisualStyleBackColor = false;
 			this.redButton.Click += new System.EventHandler(this.redButton_Click);
-			// 
-			// lblColorOut
-			// 
-			resources.ApplyResources(this.lblColorOut, "lblColorOut");
-			this.lblColorOut.BackColor = System.Drawing.Color.WhiteSmoke;
-			this.lblColorOut.Color = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-			this.lblColorOut.ContextMenu = this.contextMenu;
-			this.lblColorOut.ForeColor = System.Drawing.Color.Black;
-			this.lblColorOut.Name = "lblColorOut";
-			this.lblColorOut.OldColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-			this.toolTip.SetToolTip(this.lblColorOut, resources.GetString("lblColorOut.ToolTip"));
-			this.lblColorOut.ColorChanged += new System.EventHandler(this.lblColorOut_ColorChanged);
-			// 
-			// colorSelectionFader1
-			// 
-			resources.ApplyResources(this.colorSelectionFader1, "colorSelectionFader1");
-			this.colorSelectionFader1.Name = "colorSelectionFader1";
-			this.colorSelectionFader1.TabStop = false;
-			this.toolTip.SetToolTip(this.colorSelectionFader1, resources.GetString("colorSelectionFader1.ToolTip"));
-			// 
-			// colorSelectionPlane1
-			// 
-			resources.ApplyResources(this.colorSelectionPlane1, "colorSelectionPlane1");
-			this.colorSelectionPlane1.Name = "colorSelectionPlane1";
-			this.colorSelectionPlane1.TabStop = false;
-			this.toolTip.SetToolTip(this.colorSelectionPlane1, resources.GetString("colorSelectionPlane1.ToolTip"));
 			// 
 			// ColorPicker
 			// 
@@ -949,26 +949,6 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			UpdatetbValue(null);
 		}
 
-		private void btnOK_MouseHover(object sender, EventArgs e)
-		{
-			btnOK.BackgroundImage = Resources.Properties.Resources.HeadingBackgroundImageHover;
-		}
-
-		private void btnOK_MouseLeave(object sender, EventArgs e)
-		{
-			btnOK.BackgroundImage = Resources.Properties.Resources.HeadingBackgroundImage;
-		}
-
-		private void btnCancel_MouseHover(object sender, EventArgs e)
-		{
-			btnCancel.BackgroundImage = Resources.Properties.Resources.HeadingBackgroundImageHover;
-		}
-
-		private void btnCancel_MouseLeave(object sender, EventArgs e)
-		{
-			btnCancel.BackgroundImage = Resources.Properties.Resources.HeadingBackgroundImage;
-		}
-
 		#region Draw GroupBox border
 		//set color for box borders.
 		private Color _borderColor = System.Drawing.Color.FromArgb(100, 100, 100);
@@ -979,7 +959,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			set { _borderColor = value; }
 		}
 
-		private void PaintGroupBoxes(Object sender, PaintEventArgs e)
+		private void groupBoxes_Paint(object sender, PaintEventArgs e)
 		{
 			//used to draw the boards and text for the groupboxes to change the default box color.
 			//get the text size in groupbox
@@ -999,12 +979,20 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			e.Graphics.FillRectangle(new SolidBrush(BackColor), textRect);
 			e.Graphics.DrawString((sender as GroupBox).Text, Font, new SolidBrush(System.Drawing.Color.FromArgb(221, 221, 221)), textRect);
 		}
-
-		private void quickPickBox_Paint(object sender, PaintEventArgs e)
-		{
-			PaintGroupBoxes(sender, e);
-		}
 		
 		#endregion
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.Properties.Resources.HeadingBackgroundImage;
+		}
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.Properties.Resources.HeadingBackgroundImageHover;
+		}
+
 	}
 }

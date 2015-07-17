@@ -55,8 +55,8 @@ namespace Common.Controls {
 			this.buttonOk.TabIndex = 2;
 			this.buttonOk.Text = "OK";
 			this.buttonOk.UseVisualStyleBackColor = true;
-			this.buttonOk.MouseLeave += new System.EventHandler(this.buttonOk_MouseLeave);
-			this.buttonOk.MouseHover += new System.EventHandler(this.buttonOk_MouseHover);
+			this.buttonOk.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonOk.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonCancel
 			// 
@@ -72,8 +72,8 @@ namespace Common.Controls {
 			this.buttonCancel.Text = "CANCEL";
 			this.buttonCancel.UseVisualStyleBackColor = true;
 			this.buttonCancel.Visible = false;
-			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonCancel_MouseLeave);
-			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonCancel_MouseHover);
+			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonNo
 			// 
@@ -89,8 +89,8 @@ namespace Common.Controls {
 			this.buttonNo.Text = "NO";
 			this.buttonNo.UseVisualStyleBackColor = true;
 			this.buttonNo.Visible = false;
-			this.buttonNo.MouseLeave += new System.EventHandler(this.buttonNo_MouseLeave);
-			this.buttonNo.MouseHover += new System.EventHandler(this.buttonNo_MouseHover);
+			this.buttonNo.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonNo.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// MessageBoxForm
 			// 

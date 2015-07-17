@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("asdfadsa");
 			System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("rewqrewq");
 			System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem("vbcbxvxc");
@@ -35,7 +36,7 @@
 			System.Windows.Forms.ListViewItem listViewItem5 = new System.Windows.Forms.ListViewItem("ytreyre");
 			System.Windows.Forms.ListViewItem listViewItem6 = new System.Windows.Forms.ListViewItem("xvcbxvcx");
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(VixenApplication));
-			this.contextMenuStripNewSequence = new System.Windows.Forms.ContextMenuStrip();
+			this.contextMenuStripNewSequence = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
 			this.menuStripMain = new System.Windows.Forms.MenuStrip();
 			this.vixenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -98,8 +99,7 @@
             this.vixenToolStripMenuItem});
 			this.menuStripMain.Location = new System.Drawing.Point(0, 0);
 			this.menuStripMain.Name = "menuStripMain";
-			this.menuStripMain.Padding = new System.Windows.Forms.Padding(9, 3, 0, 3);
-			this.menuStripMain.Size = new System.Drawing.Size(692, 35);
+			this.menuStripMain.Size = new System.Drawing.Size(461, 24);
 			this.menuStripMain.TabIndex = 2;
 			this.menuStripMain.Text = "menuStrip1";
 			// 
@@ -114,26 +114,26 @@
             this.toolStripSeparator1,
             this.exitToolStripMenuItem});
 			this.vixenToolStripMenuItem.Name = "vixenToolStripMenuItem";
-			this.vixenToolStripMenuItem.Size = new System.Drawing.Size(82, 29);
+			this.vixenToolStripMenuItem.Size = new System.Drawing.Size(57, 20);
 			this.vixenToolStripMenuItem.Text = "System";
 			// 
 			// logsToolStripMenuItem
 			// 
 			this.logsToolStripMenuItem.Name = "logsToolStripMenuItem";
-			this.logsToolStripMenuItem.Size = new System.Drawing.Size(266, 30);
+			this.logsToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.logsToolStripMenuItem.Text = "Logs";
 			// 
 			// viewInstalledModulesToolStripMenuItem
 			// 
 			this.viewInstalledModulesToolStripMenuItem.Name = "viewInstalledModulesToolStripMenuItem";
-			this.viewInstalledModulesToolStripMenuItem.Size = new System.Drawing.Size(266, 30);
+			this.viewInstalledModulesToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.viewInstalledModulesToolStripMenuItem.Text = "View Installed Modules";
 			this.viewInstalledModulesToolStripMenuItem.Click += new System.EventHandler(this.viewInstalledModulesToolStripMenuItem_Click);
 			// 
 			// profilesToolStripMenuItem
 			// 
 			this.profilesToolStripMenuItem.Name = "profilesToolStripMenuItem";
-			this.profilesToolStripMenuItem.Size = new System.Drawing.Size(266, 30);
+			this.profilesToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.profilesToolStripMenuItem.Text = "Profiles...";
 			this.profilesToolStripMenuItem.Click += new System.EventHandler(this.profilesToolStripMenuItem_Click);
 			// 
@@ -149,59 +149,59 @@
             this.setupControllersToolStripMenuItem,
             this.setupFiltersPatchingToolStripMenuItem});
 			this.systemConfigurationToolStripMenuItem.Name = "systemConfigurationToolStripMenuItem";
-			this.systemConfigurationToolStripMenuItem.Size = new System.Drawing.Size(266, 30);
+			this.systemConfigurationToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.systemConfigurationToolStripMenuItem.Text = "System Configuration";
 			// 
 			// setupDisplayToolStripMenuItem
 			// 
 			this.setupDisplayToolStripMenuItem.Name = "setupDisplayToolStripMenuItem";
-			this.setupDisplayToolStripMenuItem.Size = new System.Drawing.Size(311, 30);
+			this.setupDisplayToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
 			this.setupDisplayToolStripMenuItem.Text = "Setup Display";
 			this.setupDisplayToolStripMenuItem.Click += new System.EventHandler(this.setupDisplayToolStripMenuItem_Click);
 			// 
 			// setupPreviewsToolStripMenuItem
 			// 
 			this.setupPreviewsToolStripMenuItem.Name = "setupPreviewsToolStripMenuItem";
-			this.setupPreviewsToolStripMenuItem.Size = new System.Drawing.Size(311, 30);
+			this.setupPreviewsToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
 			this.setupPreviewsToolStripMenuItem.Text = "Setup Previews";
 			this.setupPreviewsToolStripMenuItem.Click += new System.EventHandler(this.setupPreviewsToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator2
 			// 
 			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(308, 6);
+			this.toolStripSeparator2.Size = new System.Drawing.Size(218, 6);
 			// 
 			// oldConfigurationInterfacesToolStripMenuItem
 			// 
 			this.oldConfigurationInterfacesToolStripMenuItem.Enabled = false;
 			this.oldConfigurationInterfacesToolStripMenuItem.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.oldConfigurationInterfacesToolStripMenuItem.Name = "oldConfigurationInterfacesToolStripMenuItem";
-			this.oldConfigurationInterfacesToolStripMenuItem.Size = new System.Drawing.Size(311, 30);
+			this.oldConfigurationInterfacesToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
 			this.oldConfigurationInterfacesToolStripMenuItem.Text = "Old Configuration Interfaces";
 			// 
 			// toolStripSeparator3
 			// 
 			this.toolStripSeparator3.Name = "toolStripSeparator3";
-			this.toolStripSeparator3.Size = new System.Drawing.Size(308, 6);
+			this.toolStripSeparator3.Size = new System.Drawing.Size(218, 6);
 			// 
 			// setupElementsGroupsToolStripMenuItem
 			// 
 			this.setupElementsGroupsToolStripMenuItem.Name = "setupElementsGroupsToolStripMenuItem";
-			this.setupElementsGroupsToolStripMenuItem.Size = new System.Drawing.Size(311, 30);
+			this.setupElementsGroupsToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
 			this.setupElementsGroupsToolStripMenuItem.Text = "Setup Elements && Groups";
 			this.setupElementsGroupsToolStripMenuItem.Click += new System.EventHandler(this.setupElementsGroupsToolStripMenuItem_Click);
 			// 
 			// setupControllersToolStripMenuItem
 			// 
 			this.setupControllersToolStripMenuItem.Name = "setupControllersToolStripMenuItem";
-			this.setupControllersToolStripMenuItem.Size = new System.Drawing.Size(311, 30);
+			this.setupControllersToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
 			this.setupControllersToolStripMenuItem.Text = "Setup Controllers";
 			this.setupControllersToolStripMenuItem.Click += new System.EventHandler(this.setupControllersToolStripMenuItem_Click);
 			// 
 			// setupFiltersPatchingToolStripMenuItem
 			// 
 			this.setupFiltersPatchingToolStripMenuItem.Name = "setupFiltersPatchingToolStripMenuItem";
-			this.setupFiltersPatchingToolStripMenuItem.Size = new System.Drawing.Size(311, 30);
+			this.setupFiltersPatchingToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
 			this.setupFiltersPatchingToolStripMenuItem.Text = "Setup Filters && Patching";
 			this.setupFiltersPatchingToolStripMenuItem.Click += new System.EventHandler(this.setupFiltersPatchingToolStripMenuItem_Click);
 			// 
@@ -211,20 +211,20 @@
             this.startToolStripMenuItem,
             this.stopToolStripMenuItem});
 			this.executionToolStripMenuItem.Name = "executionToolStripMenuItem";
-			this.executionToolStripMenuItem.Size = new System.Drawing.Size(266, 30);
+			this.executionToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.executionToolStripMenuItem.Text = "Execution Engine";
 			// 
 			// startToolStripMenuItem
 			// 
 			this.startToolStripMenuItem.Name = "startToolStripMenuItem";
-			this.startToolStripMenuItem.Size = new System.Drawing.Size(122, 30);
+			this.startToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
 			this.startToolStripMenuItem.Text = "Start";
 			this.startToolStripMenuItem.Click += new System.EventHandler(this.startToolStripMenuItem_Click);
 			// 
 			// stopToolStripMenuItem
 			// 
 			this.stopToolStripMenuItem.Name = "stopToolStripMenuItem";
-			this.stopToolStripMenuItem.Size = new System.Drawing.Size(122, 30);
+			this.stopToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
 			this.stopToolStripMenuItem.Text = "Stop";
 			this.stopToolStripMenuItem.Click += new System.EventHandler(this.stopToolStripMenuItem_Click);
 			// 
@@ -232,12 +232,12 @@
 			// 
 			this.toolStripSeparator1.ForeColor = System.Drawing.SystemColors.ControlText;
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(263, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(192, 6);
 			// 
 			// exitToolStripMenuItem
 			// 
 			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-			this.exitToolStripMenuItem.Size = new System.Drawing.Size(266, 30);
+			this.exitToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.exitToolStripMenuItem.Text = "Shutdown and E&xit";
 			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
 			// 
@@ -245,10 +245,9 @@
 			// 
 			this.label2.AutoSize = true;
 			this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.label2.Location = new System.Drawing.Point(22, 154);
-			this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.label2.Location = new System.Drawing.Point(15, 100);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(150, 20);
+			this.label2.Size = new System.Drawing.Size(102, 13);
 			this.label2.TabIndex = 8;
 			this.label2.Text = "Recent Sequences:";
 			// 
@@ -258,16 +257,15 @@
 			this.buttonOpenSequence.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.buttonOpenSequence.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonOpenSequence.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonOpenSequence.Location = new System.Drawing.Point(27, 91);
-			this.buttonOpenSequence.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.buttonOpenSequence.Location = new System.Drawing.Point(18, 59);
 			this.buttonOpenSequence.Name = "buttonOpenSequence";
-			this.buttonOpenSequence.Size = new System.Drawing.Size(270, 46);
+			this.buttonOpenSequence.Size = new System.Drawing.Size(180, 30);
 			this.buttonOpenSequence.TabIndex = 1;
 			this.buttonOpenSequence.Text = "Open Sequence...";
 			this.buttonOpenSequence.UseVisualStyleBackColor = true;
 			this.buttonOpenSequence.Click += new System.EventHandler(this.buttonOpenSequence_Click);
-			this.buttonOpenSequence.MouseLeave += new System.EventHandler(this.buttonOpenSequence_MouseLeave);
-			this.buttonOpenSequence.MouseHover += new System.EventHandler(this.buttonOpenSequence_MouseHover);
+			this.buttonOpenSequence.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonOpenSequence.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonNewSequence
 			// 
@@ -275,16 +273,15 @@
 			this.buttonNewSequence.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.buttonNewSequence.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonNewSequence.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonNewSequence.Location = new System.Drawing.Point(27, 35);
-			this.buttonNewSequence.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.buttonNewSequence.Location = new System.Drawing.Point(18, 23);
 			this.buttonNewSequence.Name = "buttonNewSequence";
-			this.buttonNewSequence.Size = new System.Drawing.Size(270, 46);
+			this.buttonNewSequence.Size = new System.Drawing.Size(180, 30);
 			this.buttonNewSequence.TabIndex = 0;
 			this.buttonNewSequence.Text = "New Sequence...";
 			this.buttonNewSequence.UseVisualStyleBackColor = true;
 			this.buttonNewSequence.Click += new System.EventHandler(this.buttonNewSequence_Click);
-			this.buttonNewSequence.MouseLeave += new System.EventHandler(this.buttonNewSequence_MouseLeave);
-			this.buttonNewSequence.MouseHover += new System.EventHandler(this.buttonNewSequence_MouseHover);
+			this.buttonNewSequence.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonNewSequence.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// groupBoxSequences
 			// 
@@ -293,15 +290,13 @@
 			this.groupBoxSequences.Controls.Add(this.buttonOpenSequence);
 			this.groupBoxSequences.Controls.Add(this.label2);
 			this.groupBoxSequences.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.groupBoxSequences.Location = new System.Drawing.Point(18, 308);
-			this.groupBoxSequences.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.groupBoxSequences.Location = new System.Drawing.Point(12, 200);
 			this.groupBoxSequences.Name = "groupBoxSequences";
-			this.groupBoxSequences.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-			this.groupBoxSequences.Size = new System.Drawing.Size(327, 349);
+			this.groupBoxSequences.Size = new System.Drawing.Size(218, 227);
 			this.groupBoxSequences.TabIndex = 0;
 			this.groupBoxSequences.TabStop = false;
 			this.groupBoxSequences.Text = "Sequences";
-			this.groupBoxSequences.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxSequences_Paint);
+			this.groupBoxSequences.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
 			// listViewRecentSequences
 			// 
@@ -318,11 +313,10 @@
             listViewItem4,
             listViewItem5,
             listViewItem6});
-			this.listViewRecentSequences.Location = new System.Drawing.Point(27, 178);
-			this.listViewRecentSequences.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.listViewRecentSequences.Location = new System.Drawing.Point(18, 116);
 			this.listViewRecentSequences.MultiSelect = false;
 			this.listViewRecentSequences.Name = "listViewRecentSequences";
-			this.listViewRecentSequences.Size = new System.Drawing.Size(268, 152);
+			this.listViewRecentSequences.Size = new System.Drawing.Size(180, 100);
 			this.listViewRecentSequences.TabIndex = 3;
 			this.listViewRecentSequences.UseCompatibleStateImageBehavior = false;
 			this.listViewRecentSequences.View = System.Windows.Forms.View.Details;
@@ -336,10 +330,9 @@
 			// 
 			this.labelVersion.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.labelVersion.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.labelVersion.Location = new System.Drawing.Point(510, 206);
-			this.labelVersion.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.labelVersion.Location = new System.Drawing.Point(340, 134);
 			this.labelVersion.Name = "labelVersion";
-			this.labelVersion.Size = new System.Drawing.Size(120, 39);
+			this.labelVersion.Size = new System.Drawing.Size(80, 25);
 			this.labelVersion.TabIndex = 1;
 			this.labelVersion.Text = "[0.0.0]";
 			// 
@@ -348,15 +341,13 @@
 			this.groupBoxSystemConfig.Controls.Add(this.buttonSetupDisplay);
 			this.groupBoxSystemConfig.Controls.Add(this.buttonSetupOutputPreviews);
 			this.groupBoxSystemConfig.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.groupBoxSystemConfig.Location = new System.Drawing.Point(368, 308);
-			this.groupBoxSystemConfig.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.groupBoxSystemConfig.Location = new System.Drawing.Point(245, 200);
 			this.groupBoxSystemConfig.Name = "groupBoxSystemConfig";
-			this.groupBoxSystemConfig.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-			this.groupBoxSystemConfig.Size = new System.Drawing.Size(306, 158);
+			this.groupBoxSystemConfig.Size = new System.Drawing.Size(204, 103);
 			this.groupBoxSystemConfig.TabIndex = 1;
 			this.groupBoxSystemConfig.TabStop = false;
 			this.groupBoxSystemConfig.Text = "System Configuration";
-			this.groupBoxSystemConfig.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxSystemConfig_Paint);
+			this.groupBoxSystemConfig.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
 			// buttonSetupDisplay
 			// 
@@ -364,16 +355,15 @@
 			this.buttonSetupDisplay.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.buttonSetupDisplay.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonSetupDisplay.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonSetupDisplay.Location = new System.Drawing.Point(18, 35);
-			this.buttonSetupDisplay.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.buttonSetupDisplay.Location = new System.Drawing.Point(12, 23);
 			this.buttonSetupDisplay.Name = "buttonSetupDisplay";
-			this.buttonSetupDisplay.Size = new System.Drawing.Size(270, 46);
+			this.buttonSetupDisplay.Size = new System.Drawing.Size(180, 30);
 			this.buttonSetupDisplay.TabIndex = 0;
 			this.buttonSetupDisplay.Text = "Setup Display";
 			this.buttonSetupDisplay.UseVisualStyleBackColor = true;
 			this.buttonSetupDisplay.Click += new System.EventHandler(this.buttonSetupDisplay_Click);
-			this.buttonSetupDisplay.MouseLeave += new System.EventHandler(this.buttonSetupDisplay_MouseLeave);
-			this.buttonSetupDisplay.MouseHover += new System.EventHandler(this.buttonSetupDisplay_MouseHover);
+			this.buttonSetupDisplay.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonSetupDisplay.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonSetupOutputPreviews
 			// 
@@ -381,16 +371,15 @@
 			this.buttonSetupOutputPreviews.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.buttonSetupOutputPreviews.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonSetupOutputPreviews.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonSetupOutputPreviews.Location = new System.Drawing.Point(18, 91);
-			this.buttonSetupOutputPreviews.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.buttonSetupOutputPreviews.Location = new System.Drawing.Point(12, 59);
 			this.buttonSetupOutputPreviews.Name = "buttonSetupOutputPreviews";
-			this.buttonSetupOutputPreviews.Size = new System.Drawing.Size(270, 46);
+			this.buttonSetupOutputPreviews.Size = new System.Drawing.Size(180, 30);
 			this.buttonSetupOutputPreviews.TabIndex = 1;
 			this.buttonSetupOutputPreviews.Text = "Setup Previews";
 			this.buttonSetupOutputPreviews.UseVisualStyleBackColor = true;
 			this.buttonSetupOutputPreviews.Click += new System.EventHandler(this.buttonSetupOutputPreviews_Click);
-			this.buttonSetupOutputPreviews.MouseLeave += new System.EventHandler(this.buttonSetupOutputPreviews_MouseLeave);
-			this.buttonSetupOutputPreviews.MouseHover += new System.EventHandler(this.buttonSetupOutputPreviews_MouseHover);
+			this.buttonSetupOutputPreviews.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonSetupOutputPreviews.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// statusStrip
 			// 
@@ -401,10 +390,9 @@
             this.toolStripStatusLabel1,
             this.toolStripStatusLabelExecutionState,
             this.toolStripStatusLabel_memory});
-			this.statusStrip.Location = new System.Drawing.Point(0, 673);
+			this.statusStrip.Location = new System.Drawing.Point(0, 438);
 			this.statusStrip.Name = "statusStrip";
-			this.statusStrip.Padding = new System.Windows.Forms.Padding(2, 0, 21, 0);
-			this.statusStrip.Size = new System.Drawing.Size(692, 42);
+			this.statusStrip.Size = new System.Drawing.Size(461, 27);
 			this.statusStrip.SizingGrip = false;
 			this.statusStrip.TabIndex = 13;
 			this.statusStrip.Text = "statusStrip";
@@ -414,12 +402,12 @@
 			this.toolStripStatusLabelExecutionLight.AutoSize = false;
 			this.toolStripStatusLabelExecutionLight.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
 			this.toolStripStatusLabelExecutionLight.Name = "toolStripStatusLabelExecutionLight";
-			this.toolStripStatusLabelExecutionLight.Size = new System.Drawing.Size(22, 37);
+			this.toolStripStatusLabelExecutionLight.Size = new System.Drawing.Size(22, 22);
 			// 
 			// toolStripStatusLabel1
 			// 
 			this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-			this.toolStripStatusLabel1.Size = new System.Drawing.Size(22, 37);
+			this.toolStripStatusLabel1.Size = new System.Drawing.Size(13, 22);
 			this.toolStripStatusLabel1.Text = "  ";
 			// 
 			// toolStripStatusLabelExecutionState
@@ -427,7 +415,7 @@
 			this.toolStripStatusLabelExecutionState.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Right;
 			this.toolStripStatusLabelExecutionState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.toolStripStatusLabelExecutionState.Name = "toolStripStatusLabelExecutionState";
-			this.toolStripStatusLabelExecutionState.Size = new System.Drawing.Size(175, 37);
+			this.toolStripStatusLabelExecutionState.Size = new System.Drawing.Size(119, 22);
 			this.toolStripStatusLabelExecutionState.Text = "Execution: Unknown";
 			// 
 			// toolStripStatusLabel_memory
@@ -435,7 +423,7 @@
 			this.toolStripStatusLabel_memory.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.toolStripStatusLabel_memory.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.toolStripStatusLabel_memory.Name = "toolStripStatusLabel_memory";
-			this.toolStripStatusLabel_memory.Size = new System.Drawing.Size(450, 37);
+			this.toolStripStatusLabel_memory.Size = new System.Drawing.Size(292, 22);
 			this.toolStripStatusLabel_memory.Spring = true;
 			this.toolStripStatusLabel_memory.Text = "Resource Usage";
 			this.toolStripStatusLabel_memory.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -443,10 +431,9 @@
 			// pictureBox1
 			// 
 			this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-			this.pictureBox1.Location = new System.Drawing.Point(50, 42);
-			this.pictureBox1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.pictureBox1.Location = new System.Drawing.Point(33, 27);
 			this.pictureBox1.Name = "pictureBox1";
-			this.pictureBox1.Size = new System.Drawing.Size(589, 254);
+			this.pictureBox1.Size = new System.Drawing.Size(393, 165);
 			this.pictureBox1.TabIndex = 14;
 			this.pictureBox1.TabStop = false;
 			// 
@@ -454,19 +441,18 @@
 			// 
 			this.labelDebugVersion.Font = new System.Drawing.Font("Arial", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.labelDebugVersion.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.labelDebugVersion.Location = new System.Drawing.Point(513, 255);
-			this.labelDebugVersion.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.labelDebugVersion.Location = new System.Drawing.Point(342, 166);
 			this.labelDebugVersion.Name = "labelDebugVersion";
-			this.labelDebugVersion.Size = new System.Drawing.Size(117, 34);
+			this.labelDebugVersion.Size = new System.Drawing.Size(78, 22);
 			this.labelDebugVersion.TabIndex = 16;
 			this.labelDebugVersion.Text = "[0.0.0]";
 			// 
 			// VixenApplication
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
-			this.ClientSize = new System.Drawing.Size(692, 715);
+			this.ClientSize = new System.Drawing.Size(461, 465);
 			this.Controls.Add(this.labelDebugVersion);
 			this.Controls.Add(this.statusStrip);
 			this.Controls.Add(this.labelVersion);
@@ -477,9 +463,8 @@
 			this.DoubleBuffered = true;
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MainMenuStrip = this.menuStripMain;
-			this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.MaximizeBox = false;
-			this.MinimumSize = new System.Drawing.Size(690, 638);
+			this.MinimumSize = new System.Drawing.Size(465, 428);
 			this.Name = "VixenApplication";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Vixen Administration";

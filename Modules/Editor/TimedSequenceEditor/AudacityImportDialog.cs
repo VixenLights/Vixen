@@ -51,28 +51,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		private void btnOk_MouseHover(object sender, EventArgs e)
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
-
-			btnOk.BackgroundImage = Resources.HeadingBackgroundImageHover;
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.HeadingBackgroundImageHover;
 		}
 
-		private void btnOk_MouseLeave(object sender, EventArgs e)
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
 		{
-
-			btnOk.BackgroundImage = Resources.HeadingBackgroundImage;
-		}
-
-		private void btnCancel_MouseHover(object sender, EventArgs e)
-		{
-
-			btnCancel.BackgroundImage = Resources.HeadingBackgroundImageHover;
-		}
-
-		private void btnCancel_MouseLeave(object sender, EventArgs e)
-		{
-
-			btnCancel.BackgroundImage = Resources.HeadingBackgroundImage;
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.HeadingBackgroundImage;
 		}
 	}
 }

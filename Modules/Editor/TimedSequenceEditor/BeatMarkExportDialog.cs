@@ -40,24 +40,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				radioVixen3Format.Checked = true;
 			}
 
-			private void buttonOK_MouseHover(object sender, EventArgs e)
+			private void buttonBackground_MouseHover(object sender, EventArgs e)
 			{
-				buttonOK.BackgroundImage = Resources.HeadingBackgroundImageHover;
+				var btn = (Button)sender;
+				btn.BackgroundImage = Resources.HeadingBackgroundImageHover;
 			}
 
-			private void buttonOK_MouseLeave(object sender, EventArgs e)
+			private void buttonBackground_MouseLeave(object sender, EventArgs e)
 			{
-				buttonOK.BackgroundImage = Resources.HeadingBackgroundImage;
-			}
-
-			private void buttonCancel_MouseHover(object sender, EventArgs e)
-			{
-				buttonCancel.BackgroundImage = Resources.HeadingBackgroundImageHover;
-			}
-
-			private void buttonCancel_MouseLeave(object sender, EventArgs e)
-			{
-				buttonCancel.BackgroundImage = Resources.HeadingBackgroundImage;
+				var btn = (Button)sender;
+				btn.BackgroundImage = Resources.HeadingBackgroundImage;
 			}
 	}
 }

@@ -71,8 +71,8 @@
 			this.buttonOK.TabIndex = 1;
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = false;
-			this.buttonOK.MouseLeave += new System.EventHandler(this.buttonOK_MouseLeave);
-			this.buttonOK.MouseHover += new System.EventHandler(this.buttonOK_MouseHover);
+			this.buttonOK.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonOK.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonCancel
 			// 
@@ -87,8 +87,8 @@
 			this.buttonCancel.TabIndex = 2;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = false;
-			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonCancel_MouseLeave);
-			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonCancel_MouseHover);
+			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// BeatMarkExportDialog
 			// 

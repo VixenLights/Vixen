@@ -95,8 +95,8 @@
 			this.btnCancel.TabIndex = 1;
 			this.btnCancel.Text = "Cancel";
 			this.btnCancel.UseVisualStyleBackColor = false;
-			this.btnCancel.MouseLeave += new System.EventHandler(this.btnCancel_MouseLeave);
-			this.btnCancel.MouseHover += new System.EventHandler(this.btnCancel_MouseHover);
+			this.btnCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.btnCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// btnOk
 			// 
@@ -111,8 +111,8 @@
 			this.btnOk.TabIndex = 2;
 			this.btnOk.Text = "Ok";
 			this.btnOk.UseVisualStyleBackColor = false;
-			this.btnOk.MouseLeave += new System.EventHandler(this.btnOk_MouseLeave);
-			this.btnOk.MouseHover += new System.EventHandler(this.btnOk_MouseHover);
+			this.btnOk.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.btnOk.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// AudacityImportDialog
 			// 

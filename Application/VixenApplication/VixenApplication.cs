@@ -757,19 +757,18 @@ namespace VixenApplication
 			get { return _borderColor; }
 			set { _borderColor = value; }
 		}
-
-		private void PaintGroupBoxes(object sender, PaintEventArgs e)
+		private void groupBoxes_Paint(object sender, PaintEventArgs e)
 		{
 			//used to draw the boards and text for the groupboxes to change the default box color.
 			//get the text size in groupbox
-			Size tSize = TextRenderer.MeasureText((sender as GroupBox ).Text, Font);
+			Size tSize = TextRenderer.MeasureText((sender as GroupBox).Text, Font);
 
 			//draw the border
 			Rectangle borderRect = e.ClipRectangle;
 			borderRect.Y = (borderRect.Y + (tSize.Height / 2));
 			borderRect.Height = (borderRect.Height - (tSize.Height / 2));
 			ControlPaint.DrawBorder(e.Graphics, borderRect, _borderColor, ButtonBorderStyle.Solid);
-				
+
 			//draw the text
 			Rectangle textRect = e.ClipRectangle;
 			textRect.X = (textRect.X + 6);
@@ -777,56 +776,6 @@ namespace VixenApplication
 			textRect.Height = tSize.Height;
 			e.Graphics.FillRectangle(new SolidBrush(BackColor), textRect);
 			e.Graphics.DrawString((sender as GroupBox).Text, Font, new SolidBrush(Color.FromArgb(221, 221, 221)), textRect);
-		}
-
-		private void groupBoxSystemConfig_Paint(object sender, PaintEventArgs e)
-		{
-			PaintGroupBoxes(sender, e);
-		}
-
-		private void groupBoxSequences_Paint(object sender, PaintEventArgs e)
-		{
-			PaintGroupBoxes(sender, e);
-		}
-
-		private void buttonNewSequence_MouseHover(object sender, EventArgs e)
-		{
-			buttonNewSequence.BackgroundImage = Resources.HeadingBackgroundImageHover;
-		}
-
-		private void buttonNewSequence_MouseLeave(object sender, EventArgs e)
-		{
-			buttonNewSequence.BackgroundImage = Resources.HeadingBackgroundImage;
-		}
-
-		private void buttonOpenSequence_MouseHover(object sender, EventArgs e)
-		{
-			buttonOpenSequence.BackgroundImage = Resources.HeadingBackgroundImageHover;
-		}
-
-		private void buttonOpenSequence_MouseLeave(object sender, EventArgs e)
-		{
-			buttonOpenSequence.BackgroundImage = Resources.HeadingBackgroundImage;
-		}
-
-		private void buttonSetupDisplay_MouseHover(object sender, EventArgs e)
-		{
-			buttonSetupDisplay.BackgroundImage = Resources.HeadingBackgroundImageHover;
-		}
-
-		private void buttonSetupDisplay_MouseLeave(object sender, EventArgs e)
-		{
-			buttonSetupDisplay.BackgroundImage = Resources.HeadingBackgroundImage;
-		}
-
-		private void buttonSetupOutputPreviews_MouseHover(object sender, EventArgs e)
-		{
-			buttonSetupOutputPreviews.BackgroundImage = Resources.HeadingBackgroundImageHover;
-		}
-
-		private void buttonSetupOutputPreviews_MouseLeave(object sender, EventArgs e)
-		{
-			buttonSetupOutputPreviews.BackgroundImage = Resources.HeadingBackgroundImage;
 		}
 
 		private void VixenApplication_Paint(object sender, PaintEventArgs e)
@@ -837,5 +786,17 @@ namespace VixenApplication
 				e.Graphics.DrawLine(borderColor, 0, pictureBox1.Size.Height + 30, ActiveForm.Width, pictureBox1.Size.Height + 30);
 		}
 		#endregion
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.HeadingBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.HeadingBackgroundImage;
+		}
 	}
 }

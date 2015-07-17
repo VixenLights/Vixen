@@ -1435,60 +1435,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		#region Used to set the text color when buttons are disabled
 
-		private void buttonOffsetMarks_EnabledChanged(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.ForeColor = btn.Enabled ? Color.FromArgb(221, 221, 221) : Color.Gray;
-		}
-
-		private void buttonEvenlySpaceMarks_EnabledChanged(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.ForeColor = btn.Enabled ? Color.FromArgb(221, 221, 221) : Color.Gray;
-		}
-
-		private void buttonGenerateSubmarks_EnabledChanged(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.ForeColor = btn.Enabled ? Color.FromArgb(221, 221, 221) : Color.Gray;
-		}
-
-		private void buttonPasteEffectsToMarks_EnabledChanged(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.ForeColor = btn.Enabled ? Color.FromArgb(221, 221, 221) : Color.Gray;
-		}
-
-		private void buttonCopyAndOffsetMarks_EnabledChanged(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.ForeColor = btn.Enabled ? Color.FromArgb(221, 221, 221) : Color.Gray;
-		}
-
-		private void buttonGenerateBeatMarks_EnabledChanged(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.ForeColor = btn.Enabled ? Color.FromArgb(221, 221, 221) : Color.Gray;
-		}
-
-		private void buttonGenerateGrid_EnabledChanged(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.ForeColor = btn.Enabled ? Color.FromArgb(221, 221, 221) : Color.Gray;
-		}
-
-		private void buttonRemoveCollection_EnabledChanged(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.ForeColor = btn.Enabled ? Color.FromArgb(221,221,221) : Color.Gray;
-		}
-		private void buttonAddOrUpdateMark_EnabledChanged(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.ForeColor = btn.Enabled ? Color.FromArgb(221, 221, 221) : Color.Gray;
-		}
-
-		private void buttonSelectAllMarks_EnabledChanged(object sender, EventArgs e)
+		private void buttonTextColorChange(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
 			btn.ForeColor = btn.Enabled ? Color.FromArgb(221, 221, 221) : Color.Gray;
@@ -1512,7 +1459,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			set { _borderColor = value; }
 		}
 
-		private void PaintGroupBoxes(Object sender, PaintEventArgs e)
+		private void groupBoxs_Paint(object sender, PaintEventArgs e)
 		{
 			//used to draw the boards and text for the groupboxes to change the default box color.
 			//get the text size in groupbox
@@ -1532,227 +1479,20 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			e.Graphics.FillRectangle(new SolidBrush(BackColor), textRect);
 			e.Graphics.DrawString((sender as GroupBox).Text, Font, new SolidBrush(Color.FromArgb(221, 221, 221)), textRect);
 		}
-
-		private void groupBoxMarkCollections_Paint(object sender, PaintEventArgs e)
-		{
-			PaintGroupBoxes(sender, e);
-		}
-
-		private void groupBoxSelectedMarkCollection_Paint(object sender, PaintEventArgs e)
-		{
-			PaintGroupBoxes(sender, e);
-		}
-
-		private void groupBoxDetails_Paint(object sender, PaintEventArgs e)
-		{
-			PaintGroupBoxes(sender, e);
-		}
-
-		private void groupBoxMarks_Paint(object sender, PaintEventArgs e)
-		{
-			PaintGroupBoxes(sender, e);
-		}
-
-		private void groupBoxOperations_Paint(object sender, PaintEventArgs e)
-		{
-			PaintGroupBoxes(sender, e);
-		}
-
-		private void groupBoxPlayback_Paint(object sender, PaintEventArgs e)
-		{
-			PaintGroupBoxes(sender, e);
-		}
-
-		private void groupBoxMode_Paint(object sender, PaintEventArgs e)
-		{
-			PaintGroupBoxes(sender, e);
-		}
-
-		private void groupBoxFreqDetection_Paint(object sender, PaintEventArgs e)
-		{
-			PaintGroupBoxes(sender, e);
-		}
-
-		private void groupBoxAudioFilter_Paint(object sender, PaintEventArgs e)
-		{
-			PaintGroupBoxes(sender, e);
-		}
-
-		private void groupBoxSelectedMarks_Paint(object sender, PaintEventArgs e)
-		{
-			PaintGroupBoxes(sender, e);
-		}
 		#endregion
 
 		#region Set button background for mouse hover and leave
-		private void buttonAddCollection_MouseHover(object sender, EventArgs e)
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
-			buttonAddCollection.BackgroundImage = Resources.HeadingBackgroundImageHover;
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.HeadingBackgroundImageHover;
 		}
 
-		private void buttonAddCollection_MouseLeave(object sender, EventArgs e)
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
 		{
-			buttonAddCollection.BackgroundImage = Resources.HeadingBackgroundImage;
-		}
-
-		private void buttonRemoveCollection_MouseHover(object sender, EventArgs e)
-		{
-			buttonRemoveCollection.BackgroundImage = Resources.HeadingBackgroundImageHover;
-		}
-
-		private void buttonRemoveCollection_MouseLeave(object sender, EventArgs e)
-		{
-			buttonRemoveCollection.BackgroundImage = Resources.HeadingBackgroundImage;
-		}
-
-		private void buttonImportAudacity_MouseHover(object sender, EventArgs e)
-		{
-			buttonImportAudacity.BackgroundImage = Resources.HeadingBackgroundImageHover;
-		}
-
-		private void buttonImportAudacity_MouseLeave(object sender, EventArgs e)
-		{
-			buttonImportAudacity.BackgroundImage = Resources.HeadingBackgroundImage;
-		}
-
-		private void buttonExportBeatMarks_MouseHover(object sender, EventArgs e)
-		{
-			buttonExportBeatMarks.BackgroundImage = Resources.HeadingBackgroundImageHover;
-		}
-
-		private void buttonExportBeatMarks_MouseLeave(object sender, EventArgs e)
-		{
-			buttonExportBeatMarks.BackgroundImage = Resources.HeadingBackgroundImage;
-		}
-
-		private void buttonOffsetMarks_MouseHover(object sender, EventArgs e)
-		{
-			buttonOffsetMarks.BackgroundImage = Resources.HeadingBackgroundImageHover;
-		}
-
-		private void buttonOffsetMarks_MouseLeave(object sender, EventArgs e)
-		{
-			buttonOffsetMarks.BackgroundImage = Resources.HeadingBackgroundImage;
-		}
-
-		private void buttonEvenlySpaceMarks_MouseHover(object sender, EventArgs e)
-		{
-			buttonEvenlySpaceMarks.BackgroundImage = Resources.HeadingBackgroundImageHover;
-		}
-
-		private void buttonEvenlySpaceMarks_MouseLeave(object sender, EventArgs e)
-		{
-			buttonEvenlySpaceMarks.BackgroundImage = Resources.HeadingBackgroundImage;
-		}
-
-		private void buttonGenerateSubmarks_MouseHover(object sender, EventArgs e)
-		{
-			buttonGenerateSubmarks.BackgroundImage = Resources.HeadingBackgroundImageHover;
-		}
-
-		private void buttonGenerateSubmarks_MouseLeave(object sender, EventArgs e)
-		{
-			buttonGenerateSubmarks.BackgroundImage = Resources.HeadingBackgroundImage;
-		}
-
-		private void buttonPasteEffectsToMarks_MouseHover(object sender, EventArgs e)
-		{
-			buttonPasteEffectsToMarks.BackgroundImage = Resources.HeadingBackgroundImageHover;
-		}
-
-		private void buttonPasteEffectsToMarks_MouseLeave(object sender, EventArgs e)
-		{
-			buttonPasteEffectsToMarks.BackgroundImage = Resources.HeadingBackgroundImage;
-		}
-
-		private void buttonCopyAndOffsetMarks_MouseHover(object sender, EventArgs e)
-		{
-			buttonCopyAndOffsetMarks.BackgroundImage = Resources.HeadingBackgroundImageHover;
-		}
-
-		private void buttonCopyAndOffsetMarks_MouseLeave(object sender, EventArgs e)
-		{
-			buttonCopyAndOffsetMarks.BackgroundImage = Resources.HeadingBackgroundImage;
-		}
-
-		private void buttonGenerateBeatMarks_MouseHover(object sender, EventArgs e)
-		{
-			buttonGenerateBeatMarks.BackgroundImage = Resources.HeadingBackgroundImageHover;
-		}
-
-		private void buttonGenerateBeatMarks_MouseLeave(object sender, EventArgs e)
-		{
-			buttonGenerateBeatMarks.BackgroundImage = Resources.HeadingBackgroundImage;
-		}
-
-		private void buttonGenerateGrid_MouseHover(object sender, EventArgs e)
-		{
-			buttonGenerateGrid.BackgroundImage = Resources.HeadingBackgroundImageHover;
-		}
-
-		private void buttonGenerateGrid_MouseLeave(object sender, EventArgs e)
-		{
-			buttonGenerateGrid.BackgroundImage = Resources.HeadingBackgroundImage;
-		}
-
-		private void buttonSelectAllMarks_MouseHover(object sender, EventArgs e)
-		{
-			buttonSelectAllMarks.BackgroundImage = Resources.HeadingBackgroundImageHover;
-		}
-
-		private void buttonSelectAllMarks_MouseLeave(object sender, EventArgs e)
-		{
-			buttonSelectAllMarks.BackgroundImage = Resources.HeadingBackgroundImage;
-		}
-
-		private void btnAutoDetectionSettings_MouseHover(object sender, EventArgs e)
-		{
-			btnAutoDetectionSettings.BackgroundImage = Resources.HeadingBackgroundImageHover;
-		}
-
-		private void btnAutoDetectionSettings_MouseLeave(object sender, EventArgs e)
-		{
-			btnAutoDetectionSettings.BackgroundImage = Resources.HeadingBackgroundImage;
-		}
-
-		private void btnCreateCollections_MouseHover(object sender, EventArgs e)
-		{
-			btnCreateCollections.BackgroundImage = Resources.HeadingBackgroundImageHover;
-		}
-
-		private void btnCreateCollections_MouseLeave(object sender, EventArgs e)
-		{
-			btnCreateCollections.BackgroundImage = Resources.HeadingBackgroundImage;
-		}
-
-		private void buttonOK_MouseHover(object sender, EventArgs e)
-		{
-			buttonOK.BackgroundImage = Resources.HeadingBackgroundImageHover;
-		}
-
-		private void buttonOK_MouseLeave(object sender, EventArgs e)
-		{
-			buttonOK.BackgroundImage = Resources.HeadingBackgroundImage;
-		}
-
-		private void buttonCancel_MouseHover(object sender, EventArgs e)
-		{
-			buttonCancel.BackgroundImage = Resources.HeadingBackgroundImageHover;
-		}
-
-		private void buttonCancel_MouseLeave(object sender, EventArgs e)
-		{
-			buttonCancel.BackgroundImage = Resources.HeadingBackgroundImage;
-		}
-
-		private void buttonAddOrUpdateMark_MouseHover(object sender, EventArgs e)
-		{
-			buttonAddOrUpdateMark.BackgroundImage = Resources.HeadingBackgroundImageHover;
-		}
-
-		private void buttonAddOrUpdateMark_MouseLeave(object sender, EventArgs e)
-		{
-			buttonAddOrUpdateMark.BackgroundImage = Resources.HeadingBackgroundImage;
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.HeadingBackgroundImage;
 		}
 		#endregion
 	}
