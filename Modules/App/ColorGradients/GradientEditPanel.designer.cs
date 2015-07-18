@@ -49,6 +49,7 @@
 			this.grpStops.Controls.Add(this.label4);
 			this.grpStops.Name = "grpStops";
 			this.grpStops.TabStop = false;
+			this.grpStops.Paint += new System.Windows.Forms.PaintEventHandler(this.grpStops_Paint);
 			// 
 			// lblColorSelect
 			// 
@@ -67,25 +68,36 @@
 			// btnDeleteColor
 			// 
 			resources.ApplyResources(this.btnDeleteColor, "btnDeleteColor");
+			this.btnDeleteColor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
+			this.btnDeleteColor.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+			this.btnDeleteColor.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+			this.btnDeleteColor.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+			this.btnDeleteColor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.btnDeleteColor.Name = "btnDeleteColor";
-			this.btnDeleteColor.UseVisualStyleBackColor = true;
+			this.btnDeleteColor.UseVisualStyleBackColor = false;
 			this.btnDeleteColor.Click += new System.EventHandler(this.btnDeleteColor_Click);
+			this.btnDeleteColor.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.btnDeleteColor.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// label5
 			// 
 			resources.ApplyResources(this.label5, "label5");
+			this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.label5.Name = "label5";
 			// 
 			// label4
 			// 
 			resources.ApplyResources(this.label4, "label4");
+			this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.label4.Name = "label4";
 			// 
 			// edit
 			// 
 			resources.ApplyResources(this.edit, "edit");
+			this.edit.DiscreteColors = false;
 			this.edit.Name = "edit";
 			this.edit.ReadOnly = false;
+			this.edit.ValidDiscreteColors = null;
 			this.edit.SelectionChanged += new System.EventHandler(this.edit_GradientChanged);
 			this.edit.GradientChanged += new System.EventHandler(this.edit_GradientChanged);
 			this.edit.KeyDown += new System.Windows.Forms.KeyEventHandler(this.edit_KeyDown);
@@ -96,7 +108,6 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.Controls.Add(this.grpStops);
 			this.Controls.Add(this.edit);
-			this.MinimumSize = new System.Drawing.Size(357, 120);
 			this.Name = "GradientEditPanel";
 			this.grpStops.ResumeLayout(false);
 			this.ResumeLayout(false);

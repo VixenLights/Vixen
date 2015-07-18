@@ -192,6 +192,9 @@
   <data name="btnDeleteColor.Enabled" type="System.Boolean, mscorlib">
     <value>False</value>
   </data>
+  <data name="btnDeleteColor.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
+    <value>Flat</value>
+  </data>
   <data name="btnDeleteColor.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
@@ -344,6 +347,9 @@
   </metadata>
   <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
     <value>6, 13</value>
+  </data>
+  <data name="$this.MinimumSize" type="System.Drawing.Size, System.Drawing">
+    <value>357, 120</value>
   </data>
   <data name="$this.Size" type="System.Drawing.Size, System.Drawing">
     <value>357, 126</value>
