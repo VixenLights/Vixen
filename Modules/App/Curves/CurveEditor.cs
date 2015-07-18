@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using Common.Resources.Properties;
 using Vixen.Module.App;
 using Vixen.Services;
 using ZedGraph;
@@ -16,13 +17,23 @@ namespace VixenModules.App.Curves
 			InitializeComponent();
 			Icon = Common.Resources.Properties.Resources.Icon_Vixen3;
 
+			buttonCancel.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonEditLibraryCurve.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonLoadCurveFromLibrary.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonOK.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonSaveCurveToLibrary.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonUnlinkCurve.BackgroundImage = Resources.HeadingBackgroundImage;
+			btnInvert.BackgroundImage = Resources.HeadingBackgroundImage;
+			btnReverse.BackgroundImage = Resources.HeadingBackgroundImage;
+			btnUpdateCoordinates.BackgroundImage = Resources.HeadingBackgroundImage;
+
 			zedGraphControl.GraphPane.XAxis.MajorGrid.IsVisible = true;
-			zedGraphControl.GraphPane.XAxis.MajorGrid.Color = Color.Gray;
+			zedGraphControl.GraphPane.XAxis.MajorGrid.Color = Color.FromArgb(221,221,221);
 			zedGraphControl.GraphPane.XAxis.MajorGrid.DashOff = 4;
 			zedGraphControl.GraphPane.XAxis.MajorGrid.DashOn = 2;
 
 			zedGraphControl.GraphPane.YAxis.MajorGrid.IsVisible = true;
-			zedGraphControl.GraphPane.YAxis.MajorGrid.Color = Color.Gray;
+			zedGraphControl.GraphPane.YAxis.MajorGrid.Color = Color.FromArgb(221, 221, 221);
 			zedGraphControl.GraphPane.YAxis.MajorGrid.DashOff = 4;
 			zedGraphControl.GraphPane.YAxis.MajorGrid.DashOn = 2;
 
@@ -39,8 +50,8 @@ namespace VixenModules.App.Curves
 			zedGraphControl.GraphPane.Legend.IsVisible = false;
 			zedGraphControl.GraphPane.Title.IsVisible = false;
 
-			zedGraphControl.GraphPane.Fill = new Fill(SystemColors.Control);
-			zedGraphControl.GraphPane.Border = new Border(SystemColors.Control, 0);
+			zedGraphControl.GraphPane.Fill = new Fill(Color.FromArgb(68,68,68));
+			zedGraphControl.GraphPane.Border = new Border(Color.FromArgb(68,68,68), 0);
 
 			zedGraphControl.GraphPane.AxisChange();
 		}
@@ -202,7 +213,13 @@ namespace VixenModules.App.Curves
 				txtXValue.Text = string.Empty;
 				txtYValue.Text = string.Empty;
 				btnUpdateCoordinates.Enabled = false;
-				zedGraphControl.GraphPane.Chart.Fill = new Fill(Color.AliceBlue);
+				zedGraphControl.GraphPane.Chart.Fill = new Fill(Color.FromArgb(68,68,68));
+				zedGraphControl.GraphPane.Chart.Border.Color = Color.FromArgb(221, 221, 221);
+				zedGraphControl.GraphPane.XAxis.MajorGrid.Color = Color.FromArgb(221, 221, 221);
+				zedGraphControl.GraphPane.YAxis.MajorGrid.Color = Color.FromArgb(221, 221, 221);
+				zedGraphControl.GraphPane.Title.FontSpec.FontColor = Color.FromArgb(221, 221, 221);
+				zedGraphControl.GraphPane.XAxis.Scale.FontSpec.FontColor = Color.FromArgb(221, 221, 221);
+				zedGraphControl.GraphPane.YAxis.Scale.FontSpec.FontColor = Color.FromArgb(221, 221, 221);
 			}
 			else {
 				if (curve.IsLibraryReference) {
@@ -234,7 +251,13 @@ namespace VixenModules.App.Curves
 				txtXValue.Text = string.Empty;
 				txtYValue.Text = string.Empty;
 				btnUpdateCoordinates.Enabled = false;
-				zedGraphControl.GraphPane.Chart.Fill = new Fill(SystemColors.Control);
+				zedGraphControl.GraphPane.Chart.Fill = new Fill(Color.FromArgb(68, 68, 68));
+				zedGraphControl.GraphPane.Chart.Border.Color = Color.FromArgb(221, 221, 221);
+				zedGraphControl.GraphPane.XAxis.MajorGrid.Color = Color.FromArgb(221, 221, 221);
+				zedGraphControl.GraphPane.YAxis.MajorGrid.Color = Color.FromArgb(221, 221, 221);
+				zedGraphControl.GraphPane.Title.FontSpec.FontColor = Color.FromArgb(221, 221, 221);
+				zedGraphControl.GraphPane.XAxis.Scale.FontSpec.FontColor = Color.FromArgb(221, 221, 221);
+				zedGraphControl.GraphPane.YAxis.Scale.FontSpec.FontColor = Color.FromArgb(221, 221, 221);
 
 				Text = "Curve Editor";
 			}
@@ -336,5 +359,49 @@ namespace VixenModules.App.Curves
 			zedGraphControl.DragEditingPair.Y = Convert.ToDouble(txtYValue.Text);
 			zedGraphControl.Invalidate();
 		}
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.HeadingBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.HeadingBackgroundImage;
+		}
+
+		#region Draw lines and GroupBox borders
+		//set color for box borders.
+		private Color _borderColor = Color.FromArgb(100, 100, 100);
+
+		public Color BorderColor
+		{
+			get { return _borderColor; }
+			set { _borderColor = value; }
+		}
+
+		private void groupBoxes_Paint(object sender, PaintEventArgs e)
+		{
+			//used to draw the boards and text for the groupboxes to change the default box color.
+			//get the text size in groupbox
+			Size tSize = TextRenderer.MeasureText((sender as GroupBox).Text, Font);
+
+			//draw the border
+			Rectangle borderRect = e.ClipRectangle;
+			borderRect.Y = (borderRect.Y + (tSize.Height / 2));
+			borderRect.Height = (borderRect.Height - (tSize.Height / 2));
+			ControlPaint.DrawBorder(e.Graphics, borderRect, _borderColor, ButtonBorderStyle.Solid);
+
+			//draw the text
+			Rectangle textRect = e.ClipRectangle;
+			textRect.X = (textRect.X + 6);
+			textRect.Width = tSize.Width + 10;
+			textRect.Height = tSize.Height;
+			e.Graphics.FillRectangle(new SolidBrush(BackColor), textRect);
+			e.Graphics.DrawString((sender as GroupBox).Text, Font, new SolidBrush(Color.FromArgb(221, 221, 221)), textRect);
+		}
+		#endregion
 	}
 }

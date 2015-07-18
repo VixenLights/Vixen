@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Resources.Properties;
 using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Module.App;
@@ -17,6 +18,11 @@ namespace VixenModules.App.Curves
 		public CurveLibrarySelector()
 		{
 			InitializeComponent();
+			buttonCancel.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonDeleteCurve.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonEditCurve.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonNewCurve.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonOK.BackgroundImage = Resources.HeadingBackgroundImage;
 			Icon = Common.Resources.Properties.Resources.Icon_Vixen3;
 			DoubleClickMode = Mode.Ok;
 		}
@@ -53,21 +59,21 @@ namespace VixenModules.App.Curves
 			listViewCurves.BeginUpdate();
 			listViewCurves.Items.Clear();
 
-			listViewCurves.LargeImageList = new ImageList();
+			listViewCurves.LargeImageList = new ImageList { ColorDepth = ColorDepth.Depth32Bit, ImageSize = new Size(68, 68) };
 
-			foreach (KeyValuePair<string, Curve> kvp in Library) {
+			foreach (KeyValuePair<string, Curve> kvp in Library)
+			{
 				Curve c = kvp.Value;
 				string name = kvp.Key;
 
-				listViewCurves.LargeImageList.ImageSize = new Size(64, 64);
-				listViewCurves.LargeImageList.Images.Add(name, c.GenerateCurveImage(new Size(64, 64)));
+				var image = c.GenerateGenericCurveImage(new Size(68, 68));
+				Graphics gfx = Graphics.FromImage(image);
+				gfx.DrawRectangle(new Pen(Color.FromArgb(136, 136, 136), 2), 0, 0, 68, 68);
 
-				ListViewItem item = new ListViewItem();
-				item.Text = name;
-				item.Name = name;
-				item.ImageKey = name;
-				item.Tag = c;
+				listViewCurves.LargeImageList.Images.Add(name, image);
 
+				ListViewItem item = new ListViewItem { Text = name, Name = name, ImageKey = name, Tag = c };
+				item.ForeColor = Color.FromArgb(221, 221, 221);
 				listViewCurves.Items.Add(item);
 			}
 
@@ -211,6 +217,24 @@ namespace VixenModules.App.Curves
 		{
 			Ok,
 			Edit
+		}
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.HeadingBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.HeadingBackgroundImage;
+		}
+
+		private void buttonTextColorChange(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.ForeColor = btn.Enabled ? Color.FromArgb(221, 221, 221) : Color.Gray;
 		}
 
 	}
