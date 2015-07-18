@@ -616,6 +616,7 @@ namespace Common.Controls
 			cutNodesToolStripMenuItem.Enabled = false; // (SelectedTreeNodes.Count > 0);
 			copyNodesToolStripMenuItem.Enabled = (SelectedTreeNodes.Count > 0);
 			pasteNodesToolStripMenuItem.Enabled = (_clipboardNodes != null);
+			pasteAsNewToolStripMenuItem.Enabled = (_clipboardNodes != null);
 			copyPropertiesToolStripMenuItem.Enabled = (SelectedTreeNodes.Count == 1);
 			pastePropertiesToolStripMenuItem.Enabled = (SelectedTreeNodes.Count > 0) && (_clipboardProperties != null);
 			nodePropertiesToolStripMenuItem.Enabled = (SelectedTreeNodes.Count > 0);
@@ -677,7 +678,7 @@ namespace Common.Controls
 			IEnumerable<ElementNode> invalidSourceNodes = invalidNodesForTarget.Intersect(_clipboardNodes);
             if (invalidSourceNodes.Any())
             {
-				SystemSounds.Asterisk.Play();
+				SystemSounds.Hand.Play();
 			}
 			else {
 				// Check to see if the new parent node would be 'losing' the Element (ie. becoming a
@@ -694,6 +695,83 @@ namespace Common.Controls
 
 				PopulateNodeTree();
 				OnElementsChanged();
+			}
+		}
+
+		private void pasteNodesAsNewToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (_clipboardNodes == null)
+				return;
+
+			ElementNode destinationNode = null;
+			TreeNode selectedTreeNode = treeview.SelectedNode;
+
+			if (selectedTreeNode != null)
+				destinationNode = selectedTreeNode.Tag as ElementNode;
+
+			if (destinationNode!= null && destinationNode.IsLeaf)
+			{
+				SystemSounds.Hand.Play();
+			}
+			else
+			{
+				// Check to see if the new parent node would be 'losing' the Element (ie. becoming a
+				// group instead of a leaf node with a element/patches). Prompt the user first.
+				if (CheckAndPromptIfNodeWillLosePatches(destinationNode))
+					return;
+
+				foreach (ElementNode cn in _clipboardNodes)
+				{
+					DuplicateNodes(cn, destinationNode);
+				}
+
+				if (selectedTreeNode != null)
+					selectedTreeNode.Expand();
+
+				PopulateNodeTree();
+				OnElementsChanged();
+			}
+
+		}
+
+		public void DuplicateNodes(ElementNode node, ElementNode parent = null)
+		{
+			//We need to make a map to ensure we can map all existing nodes back.
+			Dictionary<Guid, ElementNode> leafNodeMap = new Dictionary<Guid, ElementNode>();
+
+			//Create a new top level node
+			ElementNode newNode = ElementNodeService.Instance.CreateSingle(parent, node.Name,node.IsLeaf);
+			if (!node.IsLeaf)
+			{
+				DuplicateChildNodes(node, newNode, leafNodeMap);
+			}
+
+		}
+
+		private void DuplicateChildNodes(ElementNode node, ElementNode newNode, Dictionary<Guid, ElementNode> leafNodeMap)
+		{
+			foreach (ElementNode childNode in node.Children)
+			{
+				if (childNode.IsLeaf)
+				{
+					if (leafNodeMap.ContainsKey(childNode.Id))
+					{
+						VixenSystem.Nodes.AddChildToParent(leafNodeMap[childNode.Id],newNode);
+					}
+					else
+					{
+						ElementNode newChild = ElementNodeService.Instance.CreateSingle(newNode, childNode.Name);
+						leafNodeMap.Add(childNode.Id, newChild);
+					}
+				}
+				else
+				{
+					ElementNode newChild = ElementNodeService.Instance.CreateSingle(newNode, childNode.Name, false);
+					if (childNode.Children.Any())
+					{
+						DuplicateChildNodes(childNode, newChild, leafNodeMap);
+					}
+				}
 			}
 		}
 

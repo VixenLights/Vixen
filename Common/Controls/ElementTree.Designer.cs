@@ -48,6 +48,7 @@
 			this.moveHereToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.copyHereToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.treeview = new Common.Controls.MultiSelectTreeview();
+			this.pasteAsNewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStripTreeView.SuspendLayout();
 			this.contextMenuStripDragging.SuspendLayout();
 			this.SuspendLayout();
@@ -70,6 +71,7 @@
             this.cutNodesToolStripMenuItem,
             this.copyNodesToolStripMenuItem,
             this.pasteNodesToolStripMenuItem,
+            this.pasteAsNewToolStripMenuItem,
             this.toolStripSeparator1,
             this.nodePropertiesToolStripMenuItem,
             this.toolStripSeparator2,
@@ -79,7 +81,7 @@
             this.createGroupWithNodesToolStripMenuItem,
             this.renameNodesToolStripMenuItem});
 			this.contextMenuStripTreeView.Name = "contextMenuStripTreeView";
-			this.contextMenuStripTreeView.Size = new System.Drawing.Size(155, 236);
+			this.contextMenuStripTreeView.Size = new System.Drawing.Size(155, 258);
 			this.contextMenuStripTreeView.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStripTreeView_Opening);
 			// 
 			// cutNodesToolStripMenuItem
@@ -217,6 +219,14 @@
 			this.treeview.UsingCustomDragCursor = false;
 			this.treeview.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treeview_KeyDown);
 			// 
+			// pasteAsNewToolStripMenuItem
+			// 
+			this.pasteAsNewToolStripMenuItem.Enabled = false;
+			this.pasteAsNewToolStripMenuItem.Name = "pasteAsNewToolStripMenuItem";
+			this.pasteAsNewToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+			this.pasteAsNewToolStripMenuItem.Text = "Paste as New";
+			this.pasteAsNewToolStripMenuItem.Click += new System.EventHandler(this.pasteNodesAsNewToolStripMenuItem_Click);
+			// 
 			// ElementTree
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -252,5 +262,6 @@
 		private System.Windows.Forms.ContextMenuStrip contextMenuStripDragging;
 		private System.Windows.Forms.ToolStripMenuItem moveHereToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem copyHereToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem pasteAsNewToolStripMenuItem;
 	}
 }
