@@ -221,7 +221,7 @@ namespace VixenModules.Editor.EffectEditor.Input
 
 		private static void DragSource_PreviewMouseMove(object sender, MouseEventArgs e)
 		{
-			if (e.LeftButton == MouseButtonState.Pressed &&
+			if (CurrentDragSourceAdvisor != null && e.LeftButton == MouseButtonState.Pressed &&
 			    IsDragGesture(e.GetPosition(CurrentDragSourceAdvisor.GetTopContainer())))
 			{
 				DragStarted(sender as UIElement);
@@ -239,6 +239,7 @@ namespace VixenModules.Editor.EffectEditor.Input
 
 		private static void DragStarted(UIElement uiElt)
 		{
+			if (uiElt == null) return;
 			Mouse.Capture(uiElt);
 
 			DataObject data = CurrentDragSourceAdvisor.GetDataObject(_draggedElt);
