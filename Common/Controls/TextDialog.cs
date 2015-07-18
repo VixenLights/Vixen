@@ -48,7 +48,7 @@ namespace Common.Controls
 		private void buttonBackground_MouseLeave(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.Properties.Resources.HeadingBackgroundImageHover;
+			btn.BackgroundImage = Resources.Properties.Resources.HeadingBackgroundImage;
 		}
 
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
