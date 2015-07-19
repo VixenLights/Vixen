@@ -1,3 +1,90 @@
+Vixen Release Notes - 3.2
+
+Features
+
+General
+
+.NET 4.5.2 upgrade.
+
+Sequencer
+
+Brand new modern docking effect editor.
+Live effect preview while editing. See the effect play as you edit it in the real preview.
+More in depth drag and drop support for Colors, Curves, and Color Gradients. Drag any of them from the preset libraries to the timeline on an effect or into the new editor. 
+Much better undo/redo support for effect properties. 
+Built in Beats and Bars detection using the Vamp Queen Mary plugins.
+New Dark Theme to provide a better editing experience.
+
+
+Effects
+
+The monolithic Nutcracker module has been placed into retire state.
+8 revamped Nutracker inspired effects targeting pixel props. More to come in future releases.
+Bars - Supports Vixen gradients, intensity curves and fits in the effect time.
+Butterfly - New types added plus support for Vixen gradients, intensity curves and fits into the effect time.
+Fire - Has color Hue support and intensity.
+Fireworks
+Picture 
+Snowflakes - Supports intensity curve.
+Spiral - Supports Vixen gradients, intensity curves and fits in the effect time.
+Text - Huge overhaul. Supports gradients, unlimited phrases, background color, more orientations and ways to apply the gradient.
+
+Alternating - This effect has been updated to support more than two colors. 
+
+
+Profile
+
+Media resources are now contained within the profile making the profile more portable by just copying it. Old profiles are migrated forward to support this.
+
+Profile zip wizard has been updated and now works much better and supports excluding the media folder.
+
+
+Bug Fixes / Features by ticket
+
+VIX-815 Intensity Curve
+VIX-813 Alternating Effect v108
+VIX-810 App Crash 108 creating new sequence
+VIX-807 Effect preview Build 108
+VIX-805 error while selecting several elements at one time
+VIX-804 open program click anything in menu bar it errors and closesd
+VIX-800 Crash when clicking Color in Effect Editor
+VIX-798 Copy to New functionality for Elements
+VIX-797 vixen dev build 103 closes down
+VIX-795 VC++ redistributable needs added to ISS
+VIX-793 Create a new Dockable Effect Editor.
+VIX-786 Setup new preview generates fatal error
+VIX-783 Profile work to clean up full path references.
+VIX-779 Missing Sequencer
+VIX-777 Nutcracker Meteor effect color issues
+VIX-776 NC speed settings
+VIX-775 Fire NC effect color
+VIX-771 Be able to select Multiple Mark Collections for deletion.
+VIX-739 Invalid time balloon covers controls
+VIX-737 reduced Timing speed doesn't work when looped
+VIX-736 Add intelligent Beat/Bar Detection (aka Queen Mary Plugins)
+VIX-735 Mark manger can crash Vixen when no audio has been added.
+VIX-732 Tab Order on all Forms require checking and re-ordering
+VIX-728 Add a different color per line and improve text position for Text Effect in Nutcracker
+VIX-711 Preview Screen needs an icon
+VIX-700 Inconsistent support of Default keys in dialog boxes
+VIX-695 Twinkle Configuration causes preview to freeze
+VIX-694 Twinkle misspelled
+VIX-669 Couple of minor Issues with Show setup form in Scheduler/Show Editor
+VIX-661 Notice of inability to connect
+VIX-653 E.131 Configuration
+VIX-645 Name Generation Form revisions
+VIX-628 Display Setup UI Cleanup
+VIX-571 SACN controller start values should auto populate
+VIX-453 Unable to configure Universe 1 in E1.31 controller
+VIX-356 Web pages very slow to load and sometimes don't work
+VIX-345 Alternating effect can benefit from more colors
+VIX-342 Upon loading on a new computer, should prompt if network interfaces are not available.
+VIX-222 Twinkle effect editor tab stops all out of whack
+
+
+
+
+
 Vixen Release Notes – 3.1 (update 2)
 Features
 Preview
