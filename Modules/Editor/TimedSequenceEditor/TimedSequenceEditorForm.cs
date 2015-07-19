@@ -629,10 +629,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 
 				_marksForm = new Form_Marks(TimelineControl) {Sequence = _sequence};
+				_marksForm.PopulateMarkCollectionsList(null);
 				_marksForm.MarkCollectionChecked += MarkCollection_Checked;
 				_marksForm.EditMarkCollection += MarkCollection_Edit;
 				_marksForm.ChangedMarkCollection += MarkCollection_Changed;
-				_marksForm.PopulateMarkCollectionsList(null);
 				_marksForm.Closing += _marksForm_Closing;
 
 				return _marksForm;
@@ -673,16 +673,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void _marksForm_Closing(object sender, CancelEventArgs e)
 		{
-			_marksForm.MarkCollectionChecked -= MarkCollection_Checked;
-			_marksForm.EditMarkCollection -= MarkCollection_Edit;
-			_marksForm.ChangedMarkCollection -= MarkCollection_Changed;
-			_marksForm.Closing -= _marksForm_Closing;
+			MarksForm.MarkCollectionChecked -= MarkCollection_Checked;
+			MarksForm.EditMarkCollection -= MarkCollection_Edit;
+			MarksForm.ChangedMarkCollection -= MarkCollection_Changed;
+			MarksForm.Closing -= _marksForm_Closing;
 		}
 
 		private void _effectsForm_Closing(object sender, CancelEventArgs e)
 		{
-			_effectsForm.EscapeDrawMode -= EscapeDrawMode;
-			_effectsForm.Closing -= _effectsForm_Closing;
+			EffectsForm.EscapeDrawMode -= EscapeDrawMode;
+			EffectsForm.Closing -= _effectsForm_Closing;
 		}
 
 
@@ -4666,11 +4666,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void menuStrip_MenuActivate(object sender, EventArgs e)
 		{
-			effectWindowToolStripMenuItem.Checked = (EffectsForm.DockState != DockState.Unknown);
-			markWindowToolStripMenuItem.Checked = (_marksForm.DockState != DockState.Unknown);
-			toolWindowToolStripMenuItem.Checked = (ToolsForm.DockState != DockState.Unknown);
+			//Check against the private object because it may not even be created and we don't want opening the menu
+			//to create the form if the user does not activate it. 
+			effectWindowToolStripMenuItem.Checked = !(_effectsForm == null || _effectsForm.DockState == DockState.Unknown);
+			markWindowToolStripMenuItem.Checked = !(_marksForm == null || _marksForm.DockState == DockState.Unknown);
+			toolWindowToolStripMenuItem.Checked = !(_toolPaletteForm==null || _toolPaletteForm.DockState == DockState.Unknown);
 			gridWindowToolStripMenuItem.Checked = !GridForm.IsHidden;
-			effectEditorWindowToolStripMenuItem.Checked = (EffectEditorForm.DockState != DockState.Unknown);
+			effectEditorWindowToolStripMenuItem.Checked = !(_effectEditorForm == null || EffectEditorForm.DockState == DockState.Unknown);
 		}
 
 		private void timerPostponePlay_Tick(object sender, EventArgs e)
