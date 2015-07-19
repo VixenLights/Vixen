@@ -175,10 +175,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					foreach (ListViewItem item in listViewMarkCollections.SelectedItems)
 					{
 						listViewMarkCollections.SelectedItems[0].Remove();
-						OnChangedMarkCollection(new MarkCollectionArgs(null));
 						MarkCollection mc = item.Tag as MarkCollection;
 						Sequence.MarkCollections.Remove(mc);
 					}
+					OnChangedMarkCollection(new MarkCollectionArgs(null));
 				}
 			}
 			else

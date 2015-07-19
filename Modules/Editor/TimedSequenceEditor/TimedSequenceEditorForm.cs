@@ -325,12 +325,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.MarkMoved += timelineControl_MarkMoved;
 			TimelineControl.DeleteMark += timelineControl_DeleteMark;
 
-			EffectsForm.EscapeDrawMode += EscapeDrawMode;
-
-			MarksForm.MarkCollectionChecked += MarkCollection_Checked;
-			MarksForm.EditMarkCollection += MarkCollection_Edit;
-			MarksForm.ChangedMarkCollection += MarkCollection_Changed;
-
 			TimelineControl.SelectionChanged += TimelineControlOnSelectionChanged;
 			TimelineControl.grid.MouseDown += TimelineControl_MouseDown;
 			TimeLineSequenceClipboardContentsChanged += TimelineSequenceTimeLineSequenceClipboardContentsChanged;
@@ -422,16 +416,18 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.MarkMoved -= timelineControl_MarkMoved;
 			TimelineControl.DeleteMark -= timelineControl_DeleteMark;
 
-			EffectsForm.EscapeDrawMode -= EscapeDrawMode;
-			EffectsForm.Dispose();
+			if (_effectsForm != null && !_effectsForm.IsDisposed)
+			{
+				EffectsForm.Dispose();
+			}
 
 			EffectEditorForm.Dispose();
 
-			MarksForm.EditMarkCollection -= MarkCollection_Edit;
-			MarksForm.MarkCollectionChecked -= MarkCollection_Checked;
-			MarksForm.ChangedMarkCollection -= MarkCollection_Changed;
-			MarksForm.Dispose();
-
+			if (_marksForm != null && !_marksForm.IsDisposed)
+			{
+				_marksForm.Dispose();	
+			}
+			
 			ToolsForm.Dispose();
 
 			TimelineControl.SelectionChanged -= TimelineControlOnSelectionChanged;
@@ -614,10 +610,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 				
 				_effectsForm = new Form_Effects(TimelineControl);
+				_effectsForm.EscapeDrawMode += EscapeDrawMode;
+				_effectsForm.Closing += _effectsForm_Closing;
 				return _effectsForm;
 			}
 		}
 
+		
 		private Form_Marks _marksForm;
 
 		private Form_Marks MarksForm
@@ -628,8 +627,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				{
 					return _marksForm;
 				}
-				
-				_marksForm = new Form_Marks(TimelineControl);
+
+				_marksForm = new Form_Marks(TimelineControl) {Sequence = _sequence};
+				_marksForm.MarkCollectionChecked += MarkCollection_Checked;
+				_marksForm.EditMarkCollection += MarkCollection_Edit;
+				_marksForm.ChangedMarkCollection += MarkCollection_Changed;
+				_marksForm.PopulateMarkCollectionsList(null);
+				_marksForm.Closing += _marksForm_Closing;
+
 				return _marksForm;
 			}
 		}
@@ -666,9 +671,26 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
+		private void _marksForm_Closing(object sender, CancelEventArgs e)
+		{
+			_marksForm.MarkCollectionChecked -= MarkCollection_Checked;
+			_marksForm.EditMarkCollection -= MarkCollection_Edit;
+			_marksForm.ChangedMarkCollection -= MarkCollection_Changed;
+			_marksForm.Closing -= _marksForm_Closing;
+		}
+
+		private void _effectsForm_Closing(object sender, CancelEventArgs e)
+		{
+			_effectsForm.EscapeDrawMode -= EscapeDrawMode;
+			_effectsForm.Closing -= _effectsForm_Closing;
+		}
+
+
+
 		private void MarkCollection_Checked(object sender, MarkCollectionArgs e)
 		{
 			PopulateMarkSnapTimes();
+			SequenceModified();
 		}
 
 		private void MarkCollection_Edit(Object sender, EventArgs e)
@@ -678,6 +700,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void MarkCollection_Changed(Object sender, MarkCollectionArgs e)
 		{
+			PopulateMarkSnapTimes();
 			SequenceModified();
 		}
 
@@ -919,9 +942,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					SequenceNotModified();
 				}
 
-				MarksForm.Sequence = _sequence;
-				MarksForm.PopulateMarkCollectionsList(null);
-				PopulateMarkSnapTimes();
+				//PopulateMarkSnapTimes();
 
 				if (_sequence.TimePerPixel > TimeSpan.Zero)
 				{
@@ -4112,8 +4133,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				DockState dockState = EffectsForm.DockState;
 				if (dockState == DockState.Unknown) dockState = DockState.DockLeft;
 				EffectsForm.Show(dockPanel, dockState);
-				//We have to re-subscribe to the event handlers
-				EffectsForm.EscapeDrawMode += EscapeDrawMode;
 			}
 			else
 			{
@@ -4648,7 +4667,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void menuStrip_MenuActivate(object sender, EventArgs e)
 		{
 			effectWindowToolStripMenuItem.Checked = (EffectsForm.DockState != DockState.Unknown);
-			markWindowToolStripMenuItem.Checked = (MarksForm.DockState != DockState.Unknown);
+			markWindowToolStripMenuItem.Checked = (_marksForm.DockState != DockState.Unknown);
 			toolWindowToolStripMenuItem.Checked = (ToolsForm.DockState != DockState.Unknown);
 			gridWindowToolStripMenuItem.Checked = !GridForm.IsHidden;
 			effectEditorWindowToolStripMenuItem.Checked = (EffectEditorForm.DockState != DockState.Unknown);
@@ -5082,9 +5101,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					BeatsAndBars audioFeatures = new BeatsAndBars((Audio)module);
 					_sequence.MarkCollections = 
 						audioFeatures.DoBeatBarDetection(_sequence.MarkCollections);
-
-
-
+					
 					MarksForm.PopulateMarkCollectionsList(null);
 					SequenceModified();
 					break;
