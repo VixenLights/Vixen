@@ -28,176 +28,208 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.okButton = new System.Windows.Forms.Button();
-            this.cancelButton = new System.Windows.Forms.Button();
-            this.stringMappingRadio = new System.Windows.Forms.RadioButton();
-            this.matrixMappingRadio = new System.Windows.Forms.RadioButton();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.stringsUpDown = new System.Windows.Forms.NumericUpDown();
-            this.pixelsUpDown = new System.Windows.Forms.NumericUpDown();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.stringsUpDown)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pixelsUpDown)).BeginInit();
-            this.SuspendLayout();
-            // 
-            // okButton
-            // 
-            this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.okButton.Location = new System.Drawing.Point(40, 154);
-            this.okButton.Name = "okButton";
-            this.okButton.Size = new System.Drawing.Size(59, 23);
-            this.okButton.TabIndex = 0;
-            this.okButton.Text = "OK";
-            this.okButton.UseVisualStyleBackColor = true;
-            // 
-            // cancelButton
-            // 
-            this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancelButton.Location = new System.Drawing.Point(101, 154);
-            this.cancelButton.Name = "cancelButton";
-            this.cancelButton.Size = new System.Drawing.Size(59, 23);
-            this.cancelButton.TabIndex = 1;
-            this.cancelButton.Text = "Cancel";
-            this.cancelButton.UseVisualStyleBackColor = true;
-            // 
-            // stringMappingRadio
-            // 
-            this.stringMappingRadio.AutoSize = true;
-            this.stringMappingRadio.Checked = true;
-            this.stringMappingRadio.Location = new System.Drawing.Point(6, 19);
-            this.stringMappingRadio.Name = "stringMappingRadio";
-            this.stringMappingRadio.Size = new System.Drawing.Size(96, 17);
-            this.stringMappingRadio.TabIndex = 2;
-            this.stringMappingRadio.TabStop = true;
-            this.stringMappingRadio.Text = "String Mapping";
-            this.stringMappingRadio.UseVisualStyleBackColor = true;
-            // 
-            // matrixMappingRadio
-            // 
-            this.matrixMappingRadio.AutoSize = true;
-            this.matrixMappingRadio.Location = new System.Drawing.Point(6, 42);
-            this.matrixMappingRadio.Name = "matrixMappingRadio";
-            this.matrixMappingRadio.Size = new System.Drawing.Size(134, 17);
-            this.matrixMappingRadio.TabIndex = 3;
-            this.matrixMappingRadio.Text = "Pixel Matrix / Megatree";
-            this.matrixMappingRadio.UseVisualStyleBackColor = true;
-            this.matrixMappingRadio.CheckedChanged += new System.EventHandler(this.matrixMappingRadio_CheckedChanged);
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.stringsUpDown);
-            this.groupBox1.Controls.Add(this.pixelsUpDown);
-            this.groupBox1.Controls.Add(this.matrixMappingRadio);
-            this.groupBox1.Controls.Add(this.stringMappingRadio);
-            this.groupBox1.Controls.Add(this.label3);
-            this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Location = new System.Drawing.Point(12, 12);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(143, 131);
-            this.groupBox1.TabIndex = 4;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Map Type";
-            // 
-            // stringsUpDown
-            // 
-            this.stringsUpDown.Location = new System.Drawing.Point(76, 65);
-            this.stringsUpDown.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
-            this.stringsUpDown.Maximum = new decimal(new int[] {
+			this.buttonOk = new System.Windows.Forms.Button();
+			this.buttonCancel = new System.Windows.Forms.Button();
+			this.stringMappingRadio = new System.Windows.Forms.RadioButton();
+			this.matrixMappingRadio = new System.Windows.Forms.RadioButton();
+			this.groupBoxMapType = new System.Windows.Forms.GroupBox();
+			this.stringsUpDown = new System.Windows.Forms.NumericUpDown();
+			this.pixelsUpDown = new System.Windows.Forms.NumericUpDown();
+			this.label3 = new System.Windows.Forms.Label();
+			this.label2 = new System.Windows.Forms.Label();
+			this.groupBoxMapType.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.stringsUpDown)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.pixelsUpDown)).BeginInit();
+			this.SuspendLayout();
+			// 
+			// buttonOk
+			// 
+			this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
+			this.buttonOk.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+			this.buttonOk.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+			this.buttonOk.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+			this.buttonOk.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+			this.buttonOk.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.buttonOk.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.buttonOk.Location = new System.Drawing.Point(310, 190);
+			this.buttonOk.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.buttonOk.Name = "buttonOk";
+			this.buttonOk.Size = new System.Drawing.Size(88, 35);
+			this.buttonOk.TabIndex = 0;
+			this.buttonOk.Text = "OK";
+			this.buttonOk.UseVisualStyleBackColor = true;
+			this.buttonOk.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonOk.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
+			// 
+			// buttonCancel
+			// 
+			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.buttonCancel.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+			this.buttonCancel.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+			this.buttonCancel.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+			this.buttonCancel.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+			this.buttonCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.buttonCancel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.buttonCancel.Location = new System.Drawing.Point(402, 190);
+			this.buttonCancel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.buttonCancel.Name = "buttonCancel";
+			this.buttonCancel.Size = new System.Drawing.Size(88, 35);
+			this.buttonCancel.TabIndex = 1;
+			this.buttonCancel.Text = "Cancel";
+			this.buttonCancel.UseVisualStyleBackColor = true;
+			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
+			// 
+			// stringMappingRadio
+			// 
+			this.stringMappingRadio.AutoSize = true;
+			this.stringMappingRadio.Checked = true;
+			this.stringMappingRadio.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.stringMappingRadio.Location = new System.Drawing.Point(37, 29);
+			this.stringMappingRadio.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.stringMappingRadio.Name = "stringMappingRadio";
+			this.stringMappingRadio.Size = new System.Drawing.Size(141, 24);
+			this.stringMappingRadio.TabIndex = 2;
+			this.stringMappingRadio.TabStop = true;
+			this.stringMappingRadio.Text = "String Mapping";
+			this.stringMappingRadio.UseVisualStyleBackColor = true;
+			// 
+			// matrixMappingRadio
+			// 
+			this.matrixMappingRadio.AutoSize = true;
+			this.matrixMappingRadio.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.matrixMappingRadio.Location = new System.Drawing.Point(236, 29);
+			this.matrixMappingRadio.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.matrixMappingRadio.Name = "matrixMappingRadio";
+			this.matrixMappingRadio.Size = new System.Drawing.Size(192, 24);
+			this.matrixMappingRadio.TabIndex = 3;
+			this.matrixMappingRadio.Text = "Pixel Matrix / Megatree";
+			this.matrixMappingRadio.UseVisualStyleBackColor = true;
+			this.matrixMappingRadio.CheckedChanged += new System.EventHandler(this.matrixMappingRadio_CheckedChanged);
+			// 
+			// groupBoxMapType
+			// 
+			this.groupBoxMapType.Controls.Add(this.stringsUpDown);
+			this.groupBoxMapType.Controls.Add(this.pixelsUpDown);
+			this.groupBoxMapType.Controls.Add(this.matrixMappingRadio);
+			this.groupBoxMapType.Controls.Add(this.stringMappingRadio);
+			this.groupBoxMapType.Controls.Add(this.label3);
+			this.groupBoxMapType.Controls.Add(this.label2);
+			this.groupBoxMapType.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.groupBoxMapType.Location = new System.Drawing.Point(18, 18);
+			this.groupBoxMapType.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.groupBoxMapType.Name = "groupBoxMapType";
+			this.groupBoxMapType.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.groupBoxMapType.Size = new System.Drawing.Size(471, 162);
+			this.groupBoxMapType.TabIndex = 4;
+			this.groupBoxMapType.TabStop = false;
+			this.groupBoxMapType.Text = "Map Type";
+			this.groupBoxMapType.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
+			// 
+			// stringsUpDown
+			// 
+			this.stringsUpDown.Location = new System.Drawing.Point(341, 64);
+			this.stringsUpDown.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+			this.stringsUpDown.Maximum = new decimal(new int[] {
             999,
             0,
             0,
             0});
-            this.stringsUpDown.Minimum = new decimal(new int[] {
+			this.stringsUpDown.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
-            this.stringsUpDown.Name = "stringsUpDown";
-            this.stringsUpDown.Size = new System.Drawing.Size(51, 20);
-            this.stringsUpDown.TabIndex = 29;
-            this.stringsUpDown.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.stringsUpDown.Value = new decimal(new int[] {
+			this.stringsUpDown.Name = "stringsUpDown";
+			this.stringsUpDown.Size = new System.Drawing.Size(76, 26);
+			this.stringsUpDown.TabIndex = 29;
+			this.stringsUpDown.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+			this.stringsUpDown.Value = new decimal(new int[] {
             1,
             0,
             0,
             0});
-            this.stringsUpDown.ValueChanged += new System.EventHandler(this.stringsUpDown_ValueChanged);
-            // 
-            // pixelsUpDown
-            // 
-            this.pixelsUpDown.Location = new System.Drawing.Point(76, 91);
-            this.pixelsUpDown.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
-            this.pixelsUpDown.Maximum = new decimal(new int[] {
+			this.stringsUpDown.ValueChanged += new System.EventHandler(this.stringsUpDown_ValueChanged);
+			// 
+			// pixelsUpDown
+			// 
+			this.pixelsUpDown.Location = new System.Drawing.Point(341, 104);
+			this.pixelsUpDown.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+			this.pixelsUpDown.Maximum = new decimal(new int[] {
             999,
             0,
             0,
             0});
-            this.pixelsUpDown.Minimum = new decimal(new int[] {
+			this.pixelsUpDown.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
-            this.pixelsUpDown.Name = "pixelsUpDown";
-            this.pixelsUpDown.Size = new System.Drawing.Size(51, 20);
-            this.pixelsUpDown.TabIndex = 28;
-            this.pixelsUpDown.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.pixelsUpDown.Value = new decimal(new int[] {
+			this.pixelsUpDown.Name = "pixelsUpDown";
+			this.pixelsUpDown.Size = new System.Drawing.Size(76, 26);
+			this.pixelsUpDown.TabIndex = 28;
+			this.pixelsUpDown.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+			this.pixelsUpDown.Value = new decimal(new int[] {
             1,
             0,
             0,
             0});
-            this.pixelsUpDown.ValueChanged += new System.EventHandler(this.pixelsUpDown_ValueChanged);
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(25, 94);
-            this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(34, 13);
-            this.label3.TabIndex = 27;
-            this.label3.Text = "Pixels";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(25, 67);
-            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(39, 13);
-            this.label2.TabIndex = 26;
-            this.label2.Text = "Strings";
-            // 
-            // LipSyncNewMapType
-            // 
-            this.AcceptButton = this.okButton;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.CancelButton = this.cancelButton;
-            this.ClientSize = new System.Drawing.Size(172, 189);
-            this.Controls.Add(this.cancelButton);
-            this.Controls.Add(this.okButton);
-            this.Controls.Add(this.groupBox1);
-            this.Name = "LipSyncNewMapType";
-            this.Text = "LipSyncNewMapType";
-            this.Load += new System.EventHandler(this.LipSyncNewMapType_Load);
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.stringsUpDown)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pixelsUpDown)).EndInit();
-            this.ResumeLayout(false);
+			this.pixelsUpDown.ValueChanged += new System.EventHandler(this.pixelsUpDown_ValueChanged);
+			// 
+			// label3
+			// 
+			this.label3.AutoSize = true;
+			this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.label3.Location = new System.Drawing.Point(265, 109);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(49, 20);
+			this.label3.TabIndex = 27;
+			this.label3.Text = "Pixels";
+			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.label2.Location = new System.Drawing.Point(265, 67);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(59, 20);
+			this.label2.TabIndex = 26;
+			this.label2.Text = "Strings";
+			// 
+			// LipSyncNewMapType
+			// 
+			this.AcceptButton = this.buttonOk;
+			this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
+			this.CancelButton = this.buttonCancel;
+			this.ClientSize = new System.Drawing.Size(503, 246);
+			this.Controls.Add(this.buttonCancel);
+			this.Controls.Add(this.buttonOk);
+			this.Controls.Add(this.groupBoxMapType);
+			this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.MaximumSize = new System.Drawing.Size(525, 302);
+			this.MinimumSize = new System.Drawing.Size(525, 302);
+			this.Name = "LipSyncNewMapType";
+			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
+			this.Text = "LipSyncNewMapType";
+			this.Load += new System.EventHandler(this.LipSyncNewMapType_Load);
+			this.groupBoxMapType.ResumeLayout(false);
+			this.groupBoxMapType.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.stringsUpDown)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.pixelsUpDown)).EndInit();
+			this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.Button okButton;
-        private System.Windows.Forms.Button cancelButton;
+        private System.Windows.Forms.Button buttonOk;
+        private System.Windows.Forms.Button buttonCancel;
         public System.Windows.Forms.RadioButton stringMappingRadio;
         public System.Windows.Forms.RadioButton matrixMappingRadio;
-        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox groupBoxMapType;
         private System.Windows.Forms.NumericUpDown stringsUpDown;
         private System.Windows.Forms.NumericUpDown pixelsUpDown;
         private System.Windows.Forms.Label label3;

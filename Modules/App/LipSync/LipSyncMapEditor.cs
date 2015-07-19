@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Resources;
 using System.Reflection;
+using Common.Resources.Properties;
 using Vixen.Sys;
 
 namespace VixenModules.App.LipSyncApp
@@ -31,6 +32,10 @@ namespace VixenModules.App.LipSyncApp
         public LipSyncMapEditor(LipSyncMapData mapData)
         {
             InitializeComponent();
+			buttonCancel.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonOK.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonAssign.BackgroundImage = Resources.HeadingBackgroundImage;
+			Icon = Resources.Icon_Vixen3;
             _doMatrixUpdate = false;
             LoadResourceBitmaps();
             this.MapData = mapData;
@@ -96,15 +101,11 @@ namespace VixenModules.App.LipSyncApp
             ElementNode theNode = VixenSystem.Nodes.ToList().Find(
                 delegate(ElementNode node)
                 {
-                    if (node.IsLeaf)
+                    if (node.IsLeaf & node.Element != null)
                     {
                         return node.Element.Name.Equals(elementName);
                     }
-                    else
-                    {
-                        return node.Name.Equals(elementName);
-                    }
-                    
+                    return node.Name.Equals(elementName);
                 }
             );
 
@@ -411,7 +412,7 @@ namespace VixenModules.App.LipSyncApp
             }
         }
 
-        private void Assign_Click(object sender, EventArgs e)
+        private void buttonAssign_Click(object sender, EventArgs e)
         {
             LipSyncNodeSelect nodeSelectDlg = new LipSyncNodeSelect();
             //nodeSelectDlg.MaxNodes = _mapping.MapItems.Count;
@@ -459,5 +460,17 @@ namespace VixenModules.App.LipSyncApp
                 reconfigureDataTable();
             }
         }
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.HeadingBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.HeadingBackgroundImage;
+		}
     }
 }

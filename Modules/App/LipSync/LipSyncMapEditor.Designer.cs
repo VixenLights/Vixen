@@ -34,7 +34,7 @@
 			this.label1 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.nameTextBox = new System.Windows.Forms.TextBox();
-			this.assignButton = new System.Windows.Forms.Button();
+			this.buttonAssign = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -42,6 +42,11 @@
 			// 
 			this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
+			this.buttonOK.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+			this.buttonOK.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+			this.buttonOK.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+			this.buttonOK.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+			this.buttonOK.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonOK.Location = new System.Drawing.Point(577, 424);
 			this.buttonOK.Name = "buttonOK";
 			this.buttonOK.Size = new System.Drawing.Size(80, 25);
@@ -49,20 +54,30 @@
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
 			this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+			this.buttonOK.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonOK.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonCancel
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.buttonCancel.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+			this.buttonCancel.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+			this.buttonCancel.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+			this.buttonCancel.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+			this.buttonCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonCancel.Location = new System.Drawing.Point(663, 424);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(80, 25);
 			this.buttonCancel.TabIndex = 15;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
+			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// dataGridView1
 			// 
+			this.dataGridView1.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
 			this.dataGridView1.Location = new System.Drawing.Point(12, 59);
 			this.dataGridView1.Name = "dataGridView1";
@@ -94,36 +109,47 @@
 			// 
 			// nameTextBox
 			// 
+			this.nameTextBox.BackColor = System.Drawing.Color.WhiteSmoke;
+			this.nameTextBox.ForeColor = System.Drawing.Color.Black;
 			this.nameTextBox.Location = new System.Drawing.Point(53, 32);
 			this.nameTextBox.Name = "nameTextBox";
 			this.nameTextBox.Size = new System.Drawing.Size(130, 20);
 			this.nameTextBox.TabIndex = 24;
 			// 
-			// assignButton
+			// buttonAssign
 			// 
-			this.assignButton.Location = new System.Drawing.Point(318, 27);
-			this.assignButton.Name = "assignButton";
-			this.assignButton.Size = new System.Drawing.Size(80, 25);
-			this.assignButton.TabIndex = 25;
-			this.assignButton.Text = "Assign";
-			this.assignButton.UseVisualStyleBackColor = true;
-			this.assignButton.Click += new System.EventHandler(this.Assign_Click);
+			this.buttonAssign.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+			this.buttonAssign.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+			this.buttonAssign.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+			this.buttonAssign.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+			this.buttonAssign.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.buttonAssign.Location = new System.Drawing.Point(318, 27);
+			this.buttonAssign.Name = "buttonAssign";
+			this.buttonAssign.Size = new System.Drawing.Size(80, 25);
+			this.buttonAssign.TabIndex = 25;
+			this.buttonAssign.Text = "Assign";
+			this.buttonAssign.UseVisualStyleBackColor = true;
+			this.buttonAssign.Click += new System.EventHandler(this.buttonAssign_Click);
+			this.buttonAssign.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonAssign.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// LipSyncMapEditor
 			// 
 			this.AcceptButton = this.buttonOK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.CancelButton = this.buttonCancel;
 			this.ClientSize = new System.Drawing.Size(755, 461);
-			this.Controls.Add(this.assignButton);
+			this.Controls.Add(this.buttonAssign);
 			this.Controls.Add(this.nameTextBox);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.dataGridView1);
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.buttonCancel);
-			this.MinimumSize = new System.Drawing.Size(200, 240);
+			this.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.MinimumSize = new System.Drawing.Size(771, 500);
 			this.Name = "LipSyncMapEditor";
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
@@ -146,7 +172,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox nameTextBox;
-        private System.Windows.Forms.Button assignButton;
+        private System.Windows.Forms.Button buttonAssign;
 
     }
 }

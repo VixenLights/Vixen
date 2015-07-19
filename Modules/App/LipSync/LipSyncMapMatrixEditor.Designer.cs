@@ -37,11 +37,11 @@
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
 			this.blackCheckBox = new System.Windows.Forms.CheckBox();
 			this.lipSyncMapColorCtrl1 = new VixenModules.App.LipSyncApp.LipSyncMapColorCtrl();
-			this.assignButton = new System.Windows.Forms.Button();
+			this.buttonAssign = new System.Windows.Forms.Button();
 			this.label6 = new System.Windows.Forms.Label();
-			this.clearButton = new System.Windows.Forms.Button();
-			this.importButton = new System.Windows.Forms.Button();
-			this.exportButton = new System.Windows.Forms.Button();
+			this.buttonClear = new System.Windows.Forms.Button();
+			this.buttonImport = new System.Windows.Forms.Button();
+			this.buttonExport = new System.Windows.Forms.Button();
 			this.nameTextBox = new System.Windows.Forms.TextBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.phonemeLabel = new System.Windows.Forms.Label();
@@ -58,6 +58,12 @@
 			// 
 			this.buttonOK.Anchor = System.Windows.Forms.AnchorStyles.Right;
 			this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
+			this.buttonOK.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+			this.buttonOK.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+			this.buttonOK.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+			this.buttonOK.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+			this.buttonOK.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.buttonOK.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.buttonOK.Location = new System.Drawing.Point(495, 143);
 			this.buttonOK.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
 			this.buttonOK.Name = "buttonOK";
@@ -66,11 +72,19 @@
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
 			this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+			this.buttonOK.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonOK.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonCancel
 			// 
 			this.buttonCancel.Anchor = System.Windows.Forms.AnchorStyles.Right;
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.buttonCancel.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+			this.buttonCancel.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+			this.buttonCancel.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+			this.buttonCancel.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+			this.buttonCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.buttonCancel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.buttonCancel.Location = new System.Drawing.Point(494, 174);
 			this.buttonCancel.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
 			this.buttonCancel.Name = "buttonCancel";
@@ -78,9 +92,12 @@
 			this.buttonCancel.TabIndex = 15;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
+			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// dataGridView1
 			// 
+			this.dataGridView1.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
 			this.dataGridView1.Location = new System.Drawing.Point(25, 145);
 			this.dataGridView1.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
@@ -93,6 +110,7 @@
 			// label5
 			// 
 			this.label5.AutoSize = true;
+			this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.label5.Location = new System.Drawing.Point(221, 97);
 			this.label5.Name = "label5";
 			this.label5.Size = new System.Drawing.Size(34, 13);
@@ -102,9 +120,9 @@
 			// zoomTrackbar
 			// 
 			this.zoomTrackbar.AutoSize = false;
-			this.zoomTrackbar.BackColor = System.Drawing.SystemColors.ActiveBorder;
+			this.zoomTrackbar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.zoomTrackbar.Location = new System.Drawing.Point(259, 92);
-			this.zoomTrackbar.Margin = new System.Windows.Forms.Padding(1);
+			this.zoomTrackbar.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
 			this.zoomTrackbar.Maximum = 25;
 			this.zoomTrackbar.Minimum = -50;
 			this.zoomTrackbar.Name = "zoomTrackbar";
@@ -117,6 +135,7 @@
 			// 
 			this.groupBox3.Controls.Add(this.blackCheckBox);
 			this.groupBox3.Controls.Add(this.lipSyncMapColorCtrl1);
+			this.groupBox3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.groupBox3.Location = new System.Drawing.Point(383, 14);
 			this.groupBox3.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
 			this.groupBox3.Name = "groupBox3";
@@ -125,12 +144,14 @@
 			this.groupBox3.TabIndex = 29;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "Pen";
+			this.groupBox3.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
 			// blackCheckBox
 			// 
 			this.blackCheckBox.AutoSize = true;
 			this.blackCheckBox.Checked = true;
 			this.blackCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.blackCheckBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.blackCheckBox.Location = new System.Drawing.Point(14, 70);
 			this.blackCheckBox.Name = "blackCheckBox";
 			this.blackCheckBox.Size = new System.Drawing.Size(123, 17);
@@ -140,7 +161,9 @@
 			// 
 			// lipSyncMapColorCtrl1
 			// 
+			this.lipSyncMapColorCtrl1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.lipSyncMapColorCtrl1.Color = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+			this.lipSyncMapColorCtrl1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.lipSyncMapColorCtrl1.HSVColor = ((Common.Controls.ColorManagement.ColorModels.HSV)(resources.GetObject("lipSyncMapColorCtrl1.HSVColor")));
 			this.lipSyncMapColorCtrl1.Intensity = 1D;
 			this.lipSyncMapColorCtrl1.Location = new System.Drawing.Point(4, 14);
@@ -149,60 +172,94 @@
 			this.lipSyncMapColorCtrl1.Size = new System.Drawing.Size(188, 56);
 			this.lipSyncMapColorCtrl1.TabIndex = 0;
 			// 
-			// assignButton
+			// buttonAssign
 			// 
-			this.assignButton.Location = new System.Drawing.Point(296, 28);
-			this.assignButton.Name = "assignButton";
-			this.assignButton.Size = new System.Drawing.Size(75, 23);
-			this.assignButton.TabIndex = 32;
-			this.assignButton.Text = "Assign";
-			this.assignButton.UseVisualStyleBackColor = true;
-			this.assignButton.Click += new System.EventHandler(this.assignButton_Click);
+			this.buttonAssign.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+			this.buttonAssign.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+			this.buttonAssign.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+			this.buttonAssign.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+			this.buttonAssign.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.buttonAssign.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.buttonAssign.Location = new System.Drawing.Point(296, 28);
+			this.buttonAssign.Name = "buttonAssign";
+			this.buttonAssign.Size = new System.Drawing.Size(75, 23);
+			this.buttonAssign.TabIndex = 32;
+			this.buttonAssign.Text = "Assign";
+			this.buttonAssign.UseVisualStyleBackColor = true;
+			this.buttonAssign.Click += new System.EventHandler(this.buttonAssign_Click);
+			this.buttonAssign.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonAssign.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// label6
 			// 
 			this.label6.AutoSize = true;
+			this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.label6.Location = new System.Drawing.Point(240, 33);
 			this.label6.Name = "label6";
 			this.label6.Size = new System.Drawing.Size(50, 13);
 			this.label6.TabIndex = 33;
 			this.label6.Text = "Elements";
 			// 
-			// clearButton
+			// buttonClear
 			// 
-			this.clearButton.Anchor = System.Windows.Forms.AnchorStyles.Right;
-			this.clearButton.Location = new System.Drawing.Point(500, 350);
-			this.clearButton.Name = "clearButton";
-			this.clearButton.Size = new System.Drawing.Size(75, 23);
-			this.clearButton.TabIndex = 37;
-			this.clearButton.Text = "Clear";
-			this.clearButton.UseVisualStyleBackColor = true;
-			this.clearButton.Click += new System.EventHandler(this.clearButton_Click);
+			this.buttonClear.Anchor = System.Windows.Forms.AnchorStyles.Right;
+			this.buttonClear.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+			this.buttonClear.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+			this.buttonClear.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+			this.buttonClear.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+			this.buttonClear.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.buttonClear.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.buttonClear.Location = new System.Drawing.Point(500, 350);
+			this.buttonClear.Name = "buttonClear";
+			this.buttonClear.Size = new System.Drawing.Size(75, 23);
+			this.buttonClear.TabIndex = 37;
+			this.buttonClear.Text = "Clear";
+			this.buttonClear.UseVisualStyleBackColor = true;
+			this.buttonClear.Click += new System.EventHandler(this.buttonClear_Click);
+			this.buttonClear.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonClear.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
-			// importButton
+			// buttonImport
 			// 
-			this.importButton.Anchor = System.Windows.Forms.AnchorStyles.Right;
-			this.importButton.Location = new System.Drawing.Point(500, 256);
-			this.importButton.Name = "importButton";
-			this.importButton.Size = new System.Drawing.Size(75, 23);
-			this.importButton.TabIndex = 39;
-			this.importButton.Text = "Import";
-			this.importButton.UseVisualStyleBackColor = true;
-			this.importButton.Click += new System.EventHandler(this.importButton_Click);
+			this.buttonImport.Anchor = System.Windows.Forms.AnchorStyles.Right;
+			this.buttonImport.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+			this.buttonImport.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+			this.buttonImport.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+			this.buttonImport.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+			this.buttonImport.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.buttonImport.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.buttonImport.Location = new System.Drawing.Point(500, 256);
+			this.buttonImport.Name = "buttonImport";
+			this.buttonImport.Size = new System.Drawing.Size(75, 23);
+			this.buttonImport.TabIndex = 39;
+			this.buttonImport.Text = "Import";
+			this.buttonImport.UseVisualStyleBackColor = true;
+			this.buttonImport.Click += new System.EventHandler(this.buttonImport_Click);
+			this.buttonImport.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonImport.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
-			// exportButton
+			// buttonExport
 			// 
-			this.exportButton.Anchor = System.Windows.Forms.AnchorStyles.Right;
-			this.exportButton.Location = new System.Drawing.Point(500, 285);
-			this.exportButton.Name = "exportButton";
-			this.exportButton.Size = new System.Drawing.Size(75, 23);
-			this.exportButton.TabIndex = 40;
-			this.exportButton.Text = "Export";
-			this.exportButton.UseVisualStyleBackColor = true;
-			this.exportButton.Click += new System.EventHandler(this.exportButton_Click);
+			this.buttonExport.Anchor = System.Windows.Forms.AnchorStyles.Right;
+			this.buttonExport.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+			this.buttonExport.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+			this.buttonExport.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+			this.buttonExport.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+			this.buttonExport.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.buttonExport.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.buttonExport.Location = new System.Drawing.Point(500, 285);
+			this.buttonExport.Name = "buttonExport";
+			this.buttonExport.Size = new System.Drawing.Size(75, 23);
+			this.buttonExport.TabIndex = 40;
+			this.buttonExport.Text = "Export";
+			this.buttonExport.UseVisualStyleBackColor = true;
+			this.buttonExport.Click += new System.EventHandler(this.buttonExport_Click);
+			this.buttonExport.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonExport.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// nameTextBox
 			// 
+			this.nameTextBox.BackColor = System.Drawing.Color.WhiteSmoke;
 			this.nameTextBox.Location = new System.Drawing.Point(80, 26);
 			this.nameTextBox.Name = "nameTextBox";
 			this.nameTextBox.Size = new System.Drawing.Size(140, 20);
@@ -211,6 +268,7 @@
 			// label1
 			// 
 			this.label1.AutoSize = true;
+			this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.label1.Location = new System.Drawing.Point(24, 28);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(35, 13);
@@ -219,6 +277,7 @@
 			// 
 			// phonemeLabel
 			// 
+			this.phonemeLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.phonemeLabel.Location = new System.Drawing.Point(81, 59);
 			this.phonemeLabel.Name = "phonemeLabel";
 			this.phonemeLabel.Size = new System.Drawing.Size(47, 18);
@@ -259,7 +318,7 @@
 			this.AcceptButton = this.buttonOK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.BackColor = System.Drawing.SystemColors.ActiveBorder;
+			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
 			this.CancelButton = this.buttonCancel;
 			this.ClientSize = new System.Drawing.Size(597, 403);
@@ -271,22 +330,22 @@
 			this.Controls.Add(this.label5);
 			this.Controls.Add(this.nameTextBox);
 			this.Controls.Add(this.label1);
-			this.Controls.Add(this.exportButton);
-			this.Controls.Add(this.importButton);
-			this.Controls.Add(this.clearButton);
+			this.Controls.Add(this.buttonExport);
+			this.Controls.Add(this.buttonImport);
+			this.Controls.Add(this.buttonClear);
 			this.Controls.Add(this.label6);
-			this.Controls.Add(this.assignButton);
+			this.Controls.Add(this.buttonAssign);
 			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.dataGridView1);
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.buttonCancel);
 			this.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
-			this.MinimumSize = new System.Drawing.Size(605, 430);
+			this.MinimumSize = new System.Drawing.Size(603, 424);
 			this.Name = "LipSyncMapMatrixEditor";
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "LipSync Matrix Editor";
 			this.Load += new System.EventHandler(this.LipSyncMapSetup_Load);
 			this.Resize += new System.EventHandler(this.LipSyncBreakdownSetup_Resize);
@@ -309,12 +368,12 @@
         private LipSyncMapColorCtrl lipSyncMapColorCtrl1;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TrackBar zoomTrackbar;
-        private System.Windows.Forms.Button assignButton;
+        private System.Windows.Forms.Button buttonAssign;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.CheckBox blackCheckBox;
-        private System.Windows.Forms.Button clearButton;
-        private System.Windows.Forms.Button importButton;
-        private System.Windows.Forms.Button exportButton;
+        private System.Windows.Forms.Button buttonClear;
+        private System.Windows.Forms.Button buttonImport;
+        private System.Windows.Forms.Button buttonExport;
         private System.Windows.Forms.TextBox nameTextBox;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label phonemeLabel;

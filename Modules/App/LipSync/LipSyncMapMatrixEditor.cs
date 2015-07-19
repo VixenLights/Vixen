@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Resources;
 using System.Reflection;
+using Common.Resources.Properties;
 using Vixen.Sys;
 
 namespace VixenModules.App.LipSyncApp
@@ -45,7 +46,15 @@ namespace VixenModules.App.LipSyncApp
 
         public LipSyncMapMatrixEditor(LipSyncMapData mapData)
         {
+			Location = ActiveForm != null ? new Point(ActiveForm.Location.X - 150, ActiveForm.Location.Y - 100) : new Point(200, 100);
             InitializeComponent();
+			buttonAssign.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonCancel.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonClear.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonExport.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonImport.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonOK.BackgroundImage = Resources.HeadingBackgroundImage;
+			Icon = Resources.Icon_Vixen3;
             LoadResourceBitmaps();
             dataTables = new Dictionary<PhonemeType, DataTable>();
             this.MapData = (LipSyncMapData)mapData.Clone();
@@ -533,7 +542,7 @@ namespace VixenModules.App.LipSyncApp
         }
 
 
-        private void assignButton_Click(object sender, EventArgs e)
+        private void buttonAssign_Click(object sender, EventArgs e)
         {
             BuildMapDataFromDialog(); 
             assignNodes();
@@ -596,7 +605,7 @@ namespace VixenModules.App.LipSyncApp
             }
         }
 
-        private void importButton_Click(object sender, EventArgs e)
+        private void buttonImport_Click(object sender, EventArgs e)
         {
             OpenFileDialog fileDlg = new OpenFileDialog();
             fileDlg.Filter = "Image Files (*.bmp, *.jpg, *.png)|*.bmp;*.jpg;*.png|All Files(*.*)|*.*";
@@ -649,7 +658,7 @@ namespace VixenModules.App.LipSyncApp
             PrevPhonemeIndex();
         }
 
-        private void exportButton_Click(object sender, EventArgs e)
+        private void buttonExport_Click(object sender, EventArgs e)
         {
             BuildMapDataFromDialog();
 
@@ -685,11 +694,54 @@ namespace VixenModules.App.LipSyncApp
             }
         }
 
-        private void clearButton_Click(object sender, EventArgs e)
+        private void buttonClear_Click(object sender, EventArgs e)
         {
             currentDataTable = BuildBlankTable();
             updatedataGridView1();
             BuildMapDataFromDialog();
         }
-    }
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.HeadingBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.HeadingBackgroundImage;
+		}
+
+		#region Draw lines and GroupBox borders
+		//set color for box borders.
+		private Color _borderColor = Color.FromArgb(100, 100, 100);
+
+		public Color BorderColor
+		{
+			get { return _borderColor; }
+			set { _borderColor = value; }
+		}
+		private void groupBoxes_Paint(object sender, PaintEventArgs e)
+		{
+			//used to draw the boards and text for the groupboxes to change the default box color.
+			//get the text size in groupbox
+			Size tSize = TextRenderer.MeasureText((sender as GroupBox).Text, Font);
+
+			//draw the border
+			Rectangle borderRect = e.ClipRectangle;
+			borderRect.Y = (borderRect.Y + (tSize.Height / 2));
+			borderRect.Height = (borderRect.Height - (tSize.Height / 2));
+			ControlPaint.DrawBorder(e.Graphics, borderRect, _borderColor, ButtonBorderStyle.Solid);
+
+			//draw the text
+			Rectangle textRect = e.ClipRectangle;
+			textRect.X = (textRect.X + 6);
+			textRect.Width = tSize.Width + 10;
+			textRect.Height = tSize.Height;
+			e.Graphics.FillRectangle(new SolidBrush(BackColor), textRect);
+			e.Graphics.DrawString((sender as GroupBox).Text, Font, new SolidBrush(Color.FromArgb(221, 221, 221)), textRect);
+		}
+		#endregion
+	}
 }
