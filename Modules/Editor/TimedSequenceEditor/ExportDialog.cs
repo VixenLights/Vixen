@@ -40,6 +40,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
         {
             InitializeComponent();
 
+			buttonStart.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonStop.BackgroundImage = Resources.HeadingBackgroundImage;
             Icon = Resources.Icon_Vixen3;
             
             _sequence = sequence;
@@ -74,7 +76,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
         #region Background Thread
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
-        {
+		{
             TimeSpan renderCheck = new TimeSpan(0, 0, 0, 0, 250);
             while (_doProgressUpdate)
             {
@@ -100,7 +102,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
                 }
             }
             this.UseWaitCursor = false;
-            backgroundWorker1.ReportProgress(0);
+			backgroundWorker1.ReportProgress(0);
         }
 
         private void backgroundWorker1_Exporting(object sender, DoWorkEventArgs e)
@@ -114,7 +116,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
                 (_curPos.TotalMilliseconds /
                 (double)_sequence.Length.TotalMilliseconds) * 100;
 
-            backgroundWorker1.ReportProgress((int)_percentComplete);    
+            backgroundWorker1.ReportProgress((int)_percentComplete);
         }
 
         private void backgroundWorker1_Saving(object sender, DoWorkEventArgs e)
@@ -150,7 +152,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
             outputFormatComboBox.SelectedIndex = 0;
             resolutionComboBox.SelectedIndex = 1;
 
-            stopButton.Enabled = false;
+            buttonStop.Enabled = false;
 			networkListView.DragDrop += networkListView_DragDrop;
             //networkListView.Enabled = false;
 
@@ -175,7 +177,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		}
 
-        private void startButton_Click(object sender, EventArgs e)
+        private void buttonStart_Click(object sender, EventArgs e)
         {
             this.UseWaitCursor = true;
             _cancelled = false;
@@ -213,13 +215,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
             _doProgressUpdate = true;
             backgroundWorker1.RunWorkerAsync();
-
         }
 
-        private void cancelButton_Click(object sender, EventArgs e)
+        private void buttonCancel_Click(object sender, EventArgs e)
         {
             _cancelled = true;
-            _exportOps.Cancel();
+			_exportOps.Cancel();
         }
 
         private void ExportForm_FormClosed(object sender, FormClosedEventArgs e)
@@ -248,9 +249,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
                 return;
             }
 
-            startButton.Enabled = false;
+            buttonStart.Enabled = false;
             MessageBox.Show("File saved to " + _outFileName);
-            startButton.Enabled = true;
+            buttonStart.Enabled = true;
         }
 
         private void UpdateNetworkList()
@@ -298,8 +299,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
         private void setWorkingState(string message, bool isWorking, bool allowStop)
         {
             string newStatus = "";
-            startButton.Enabled = !isWorking;
-            stopButton.Enabled = allowStop;
+            buttonStart.Enabled = !isWorking;
+            buttonStop.Enabled = allowStop;
             outputFormatComboBox.Enabled = !isWorking;
             resolutionComboBox.Enabled = !isWorking;
             _doProgressUpdate = isWorking;
@@ -432,6 +433,49 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
         #endregion
 
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.HeadingBackgroundImageHover;
+		}
 
-    }
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.HeadingBackgroundImage;
+		}
+
+		#region Draw lines and GroupBox borders
+		//set color for box borders.
+		private Color _borderColor = Color.FromArgb(100, 100, 100);
+
+		public Color BorderColor
+		{
+			get { return _borderColor; }
+			set { _borderColor = value; }
+		}
+
+		private void groupBoxes_Paint(object sender, PaintEventArgs e)
+		{
+			//used to draw the boards and text for the groupboxes to change the default box color.
+			//get the text size in groupbox
+			Size tSize = TextRenderer.MeasureText((sender as GroupBox).Text, Font);
+
+			//draw the border
+			Rectangle borderRect = e.ClipRectangle;
+			borderRect.Y = (borderRect.Y + (tSize.Height / 2));
+			borderRect.Height = (borderRect.Height - (tSize.Height / 2));
+			ControlPaint.DrawBorder(e.Graphics, borderRect, _borderColor, ButtonBorderStyle.Solid);
+
+			//draw the text
+			Rectangle textRect = e.ClipRectangle;
+			textRect.X = (textRect.X + 6);
+			textRect.Width = tSize.Width + 10;
+			textRect.Height = tSize.Height;
+			e.Graphics.FillRectangle(new SolidBrush(BackColor), textRect);
+			e.Graphics.DrawString((sender as GroupBox).Text, Font, new SolidBrush(Color.FromArgb(221, 221, 221)), textRect);
+		}
+		#endregion
+
+	}
 }
