@@ -33,9 +33,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			btnCancel.BackgroundImage = Resources.HeadingBackgroundImage;
 			btnOK.BackgroundImage = Resources.HeadingBackgroundImage;
 			buttonAddColor.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonDeleteCollection.BackgroundImage = Resources.HeadingBackgroundImage;
 			buttonExportCollection.BackgroundImage = Resources.HeadingBackgroundImage;
 			buttonImportCollection.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonRemoveColor.BackgroundImage = Resources.HeadingBackgroundImage;
 			buttonNewCollection.BackgroundImage = Tools.GetIcon(Resources.add, 25);
 			buttonNewCollection.Text = "";
 			buttonDeleteCollection.BackgroundImage = Tools.GetIcon(Resources.minus, 25);
