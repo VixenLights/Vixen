@@ -2231,7 +2231,10 @@ namespace Common.Controls.Timeline
 				//placing the info tool tip in the wrong place
 				//Until that is fixed which is a bigger effort lets use our current row for part of the rectangle.
 				Row row = rowAt(m_lastGridLocation);
-				element.DrawInfo(g, new Rectangle(element.DisplayRect.X, row.DisplayTop, element.DisplayRect.Width, row.Height));
+				if (row != null) //null check to prevent mouse off screen locations trying to find a row.
+				{
+					element.DrawInfo(g, new Rectangle(element.DisplayRect.X, row.DisplayTop, element.DisplayRect.Width, row.Height));
+				}
 			}
 		}
 
