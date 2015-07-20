@@ -160,7 +160,7 @@
 			this.groupBoxMarkCollections.TabIndex = 0;
 			this.groupBoxMarkCollections.TabStop = false;
 			this.groupBoxMarkCollections.Text = "Mark Collections";
-			this.groupBoxMarkCollections.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxs_Paint);
+			this.groupBoxMarkCollections.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
 			// panelMarkCollectionsButtons
 			// 
@@ -339,7 +339,7 @@
 			this.groupBoxSelectedMarkCollection.TabIndex = 1;
 			this.groupBoxSelectedMarkCollection.TabStop = false;
 			this.groupBoxSelectedMarkCollection.Text = "Selected Collection";
-			this.groupBoxSelectedMarkCollection.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxs_Paint);
+			this.groupBoxSelectedMarkCollection.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
 			// groupBoxDetails
 			// 
@@ -359,7 +359,7 @@
 			this.groupBoxDetails.TabIndex = 0;
 			this.groupBoxDetails.TabStop = false;
 			this.groupBoxDetails.Text = "Details";
-			this.groupBoxDetails.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxs_Paint);
+			this.groupBoxDetails.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
 			// checkBoxEnabled
 			// 
@@ -473,7 +473,7 @@
 			this.groupBoxOperations.TabIndex = 2;
 			this.groupBoxOperations.TabStop = false;
 			this.groupBoxOperations.Text = "Operations";
-			this.groupBoxOperations.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxs_Paint);
+			this.groupBoxOperations.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
 			// groupBoxSelectedMarks
 			// 
@@ -489,7 +489,7 @@
 			this.groupBoxSelectedMarks.TabIndex = 7;
 			this.groupBoxSelectedMarks.TabStop = false;
 			this.groupBoxSelectedMarks.Text = "SelectedMarks";
-			this.groupBoxSelectedMarks.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxs_Paint);
+			this.groupBoxSelectedMarks.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
 			// panel3
 			// 
@@ -702,7 +702,7 @@
 			this.groupBoxMarks.TabIndex = 1;
 			this.groupBoxMarks.TabStop = false;
 			this.groupBoxMarks.Text = "Marks";
-			this.groupBoxMarks.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxs_Paint);
+			this.groupBoxMarks.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
 			// listViewMarks
 			// 
@@ -816,7 +816,7 @@
 			this.groupBoxPlayback.TabIndex = 2;
 			this.groupBoxPlayback.TabStop = false;
 			this.groupBoxPlayback.Text = "Playback";
-			this.groupBoxPlayback.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxs_Paint);
+			this.groupBoxPlayback.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
 			// panel4
 			// 
@@ -940,7 +940,7 @@
 			this.groupBoxFreqDetection.TabIndex = 8;
 			this.groupBoxFreqDetection.TabStop = false;
 			this.groupBoxFreqDetection.Text = "Automatic Frequency Detection";
-			this.groupBoxFreqDetection.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxs_Paint);
+			this.groupBoxFreqDetection.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
 			// btnCreateCollections
 			// 
@@ -1051,7 +1051,7 @@
 			this.groupBoxAudioFilter.TabIndex = 9;
 			this.groupBoxAudioFilter.TabStop = false;
 			this.groupBoxAudioFilter.Text = "Audio Filter";
-			this.groupBoxAudioFilter.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxs_Paint);
+			this.groupBoxAudioFilter.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
 			// numHighPass
 			// 
@@ -1224,7 +1224,7 @@
 			this.groupBoxMode.TabIndex = 7;
 			this.groupBoxMode.TabStop = false;
 			this.groupBoxMode.Text = "Mode";
-			this.groupBoxMode.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxs_Paint);
+			this.groupBoxMode.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
 			// radioButtonPlayback
 			// 

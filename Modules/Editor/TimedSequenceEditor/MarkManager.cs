@@ -1459,7 +1459,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			set { _borderColor = value; }
 		}
 
-		private void groupBoxs_Paint(object sender, PaintEventArgs e)
+		private void groupBoxes_Paint(object sender, PaintEventArgs e)
 		{
 			//used to draw the boards and text for the groupboxes to change the default box color.
 			//get the text size in groupbox
