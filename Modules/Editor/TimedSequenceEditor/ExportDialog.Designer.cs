@@ -64,7 +64,7 @@
 			this.buttonStart.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.buttonStart.Location = new System.Drawing.Point(118, 377);
 			this.buttonStart.Name = "buttonStart";
-			this.buttonStart.Size = new System.Drawing.Size(75, 23);
+			this.buttonStart.Size = new System.Drawing.Size(89, 23);
 			this.buttonStart.TabIndex = 8;
 			this.buttonStart.Text = "Start";
 			this.buttonStart.UseVisualStyleBackColor = true;
@@ -140,7 +140,7 @@
             this.currentTimeLabel});
 			this.statusStrip1.Location = new System.Drawing.Point(0, 415);
 			this.statusStrip1.Name = "statusStrip1";
-			this.statusStrip1.Size = new System.Drawing.Size(430, 22);
+			this.statusStrip1.Size = new System.Drawing.Size(444, 22);
 			this.statusStrip1.TabIndex = 14;
 			this.statusStrip1.Text = "statusStrip1";
 			// 
@@ -176,7 +176,7 @@
 			this.buttonStop.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.buttonStop.Location = new System.Drawing.Point(208, 377);
 			this.buttonStop.Name = "buttonStop";
-			this.buttonStop.Size = new System.Drawing.Size(75, 23);
+			this.buttonStop.Size = new System.Drawing.Size(89, 23);
 			this.buttonStop.TabIndex = 15;
 			this.buttonStop.Text = "Stop";
 			this.buttonStop.UseVisualStyleBackColor = true;
@@ -194,7 +194,7 @@
 			this.groupBox2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.groupBox2.Location = new System.Drawing.Point(8, 129);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(404, 233);
+			this.groupBox2.Size = new System.Drawing.Size(418, 233);
 			this.groupBox2.TabIndex = 16;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Network";
@@ -237,7 +237,7 @@
 			this.networkListView.Location = new System.Drawing.Point(6, 19);
 			this.networkListView.MultiSelect = false;
 			this.networkListView.Name = "networkListView";
-			this.networkListView.Size = new System.Drawing.Size(392, 208);
+			this.networkListView.Size = new System.Drawing.Size(406, 208);
 			this.networkListView.TabIndex = 1;
 			this.networkListView.UseCompatibleStateImageBehavior = false;
 			this.networkListView.View = System.Windows.Forms.View.Details;
@@ -264,15 +264,15 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.CancelButton = this.buttonStop;
-			this.ClientSize = new System.Drawing.Size(430, 437);
+			this.ClientSize = new System.Drawing.Size(444, 437);
 			this.Controls.Add(this.textBox1);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.buttonStop);
 			this.Controls.Add(this.statusStrip1);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.buttonStart);
-			this.MaximumSize = new System.Drawing.Size(446, 753);
-			this.MinimumSize = new System.Drawing.Size(446, 476);
+			this.MaximumSize = new System.Drawing.Size(460, 753);
+			this.MinimumSize = new System.Drawing.Size(460, 476);
 			this.Name = "ExportDialog";
 			this.Text = "Export Sequence";
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ExportDialog_FormClosed);
