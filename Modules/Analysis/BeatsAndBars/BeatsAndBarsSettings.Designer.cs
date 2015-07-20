@@ -52,6 +52,7 @@
 			// 
 			this.label1.AutoSize = true;
 			this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.label1.Location = new System.Drawing.Point(30, 25);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(114, 13);
@@ -69,6 +70,12 @@
 			// GenerateButton
 			// 
 			this.GenerateButton.DialogResult = System.Windows.Forms.DialogResult.OK;
+			this.GenerateButton.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+			this.GenerateButton.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+			this.GenerateButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+			this.GenerateButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+			this.GenerateButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.GenerateButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.GenerateButton.Location = new System.Drawing.Point(455, 485);
 			this.GenerateButton.Name = "GenerateButton";
 			this.GenerateButton.Size = new System.Drawing.Size(75, 23);
@@ -76,26 +83,38 @@
 			this.GenerateButton.Text = "Generate";
 			this.GenerateButton.UseVisualStyleBackColor = true;
 			this.GenerateButton.Click += new System.EventHandler(this.GoButton_Click);
+			this.GenerateButton.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.GenerateButton.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// CancelButton
 			// 
 			this.CancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.CancelButton.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+			this.CancelButton.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+			this.CancelButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+			this.CancelButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+			this.CancelButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.CancelButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.CancelButton.Location = new System.Drawing.Point(540, 485);
 			this.CancelButton.Name = "CancelButton";
 			this.CancelButton.Size = new System.Drawing.Size(75, 23);
 			this.CancelButton.TabIndex = 5;
 			this.CancelButton.Text = "Cancel";
 			this.CancelButton.UseVisualStyleBackColor = true;
+			this.CancelButton.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.CancelButton.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// groupBox1
 			// 
 			this.groupBox1.Controls.Add(this.musicStaff1);
+			this.groupBox1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.groupBox1.Location = new System.Drawing.Point(12, 12);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(612, 178);
 			this.groupBox1.TabIndex = 13;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Divisons";
+			this.groupBox1.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
 			// musicStaff1
 			// 
@@ -119,17 +138,20 @@
 			this.groupBox2.Controls.Add(this.BarsCB);
 			this.groupBox2.Controls.Add(this.label1);
 			this.groupBox2.Controls.Add(this.BeatsNameTB);
+			this.groupBox2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.groupBox2.Location = new System.Drawing.Point(12, 353);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(608, 114);
 			this.groupBox2.TabIndex = 14;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Output";
+			this.groupBox2.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
 			// AllColorPanel
 			// 
 			this.AllColorPanel.BackColor = System.Drawing.Color.White;
 			this.AllColorPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.AllColorPanel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.AllColorPanel.Location = new System.Drawing.Point(505, 73);
 			this.AllColorPanel.Name = "AllColorPanel";
 			this.AllColorPanel.Size = new System.Drawing.Size(24, 21);
@@ -140,6 +162,7 @@
 			// 
 			this.BeatSplitsColorPanel.BackColor = System.Drawing.Color.Lime;
 			this.BeatSplitsColorPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.BeatSplitsColorPanel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.BeatSplitsColorPanel.Location = new System.Drawing.Point(372, 73);
 			this.BeatSplitsColorPanel.Name = "BeatSplitsColorPanel";
 			this.BeatSplitsColorPanel.Size = new System.Drawing.Size(24, 21);
@@ -150,6 +173,7 @@
 			// 
 			this.BeatCountsColorPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
 			this.BeatCountsColorPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.BeatCountsColorPanel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.BeatCountsColorPanel.Location = new System.Drawing.Point(236, 73);
 			this.BeatCountsColorPanel.Name = "BeatCountsColorPanel";
 			this.BeatCountsColorPanel.Size = new System.Drawing.Size(24, 21);
@@ -160,6 +184,7 @@
 			// 
 			this.BarsColorPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
 			this.BarsColorPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.BarsColorPanel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.BarsColorPanel.Location = new System.Drawing.Point(86, 73);
 			this.BarsColorPanel.Name = "BarsColorPanel";
 			this.BarsColorPanel.Size = new System.Drawing.Size(24, 21);
@@ -169,6 +194,7 @@
 			// BeatSplitsCB
 			// 
 			this.BeatSplitsCB.AutoSize = true;
+			this.BeatSplitsCB.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.BeatSplitsCB.Location = new System.Drawing.Point(290, 77);
 			this.BeatSplitsCB.Name = "BeatSplitsCB";
 			this.BeatSplitsCB.Size = new System.Drawing.Size(76, 17);
@@ -180,6 +206,7 @@
 			// AllFeaturesCB
 			// 
 			this.AllFeaturesCB.AutoSize = true;
+			this.AllFeaturesCB.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.AllFeaturesCB.Location = new System.Drawing.Point(418, 77);
 			this.AllFeaturesCB.Name = "AllFeaturesCB";
 			this.AllFeaturesCB.Size = new System.Drawing.Size(81, 17);
@@ -191,6 +218,7 @@
 			// BeatCountsCB
 			// 
 			this.BeatCountsCB.AutoSize = true;
+			this.BeatCountsCB.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.BeatCountsCB.Location = new System.Drawing.Point(146, 77);
 			this.BeatCountsCB.Name = "BeatCountsCB";
 			this.BeatCountsCB.Size = new System.Drawing.Size(84, 17);
@@ -202,6 +230,7 @@
 			// BarsCB
 			// 
 			this.BarsCB.AutoSize = true;
+			this.BarsCB.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.BarsCB.Location = new System.Drawing.Point(33, 77);
 			this.BarsCB.Name = "BarsCB";
 			this.BarsCB.Size = new System.Drawing.Size(47, 17);
@@ -212,17 +241,20 @@
 			// 
 			// PreviewGroupBox
 			// 
+			this.PreviewGroupBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.PreviewGroupBox.Location = new System.Drawing.Point(12, 196);
 			this.PreviewGroupBox.Name = "PreviewGroupBox";
 			this.PreviewGroupBox.Size = new System.Drawing.Size(612, 126);
 			this.PreviewGroupBox.TabIndex = 15;
 			this.PreviewGroupBox.TabStop = false;
 			this.PreviewGroupBox.Text = "Preview";
+			this.PreviewGroupBox.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
 			// BeatsAndBarsDialog
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.ClientSize = new System.Drawing.Size(634, 520);
 			this.Controls.Add(this.PreviewGroupBox);
 			this.Controls.Add(this.groupBox2);

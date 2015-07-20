@@ -103,6 +103,26 @@ namespace VixenModules.Analysis.BeatsAndBars.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap HeadingBackgroundImage {
+            get {
+                object obj = ResourceManager.GetObject("HeadingBackgroundImage", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap HeadingBackgroundImageHover {
+            get {
+                object obj = ResourceManager.GetObject("HeadingBackgroundImageHover", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap quarternote {
             get {
                 object obj = ResourceManager.GetObject("quarternote", resourceCulture);
