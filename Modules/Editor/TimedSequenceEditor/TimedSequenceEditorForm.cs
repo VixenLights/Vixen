@@ -3344,6 +3344,23 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			return false;
 		}
 
+		private void ShowMultiDropMessage()
+		{
+			UpdateToolStrip4("Choose the property to set, press Escape to cancel.", 60);
+		}
+
+		private void CompleteDrop(Dictionary<Element, Tuple<object, PropertyDescriptor>> elementValues, String effectName)
+		{
+			if (elementValues.Any())
+			{
+				var undo = new EffectsPropertyModifiedUndoAction(elementValues);
+				AddEffectsModifiedToUndo(undo);
+				UpdateToolStrip4(
+					string.Format("Gradient applied to {0} {1} effect(s).", elementValues.Count(), effectName), 30);
+			}
+		}
+
+
 		#region Preset Library Color Drop
 
 		private void HandleColorDrop(Element element, Color color)
@@ -3415,7 +3432,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				
 				FormParameterPicker parameterPicker = CreateParameterPicker(parameterPickerControls);
 
-				UpdateToolStrip4("Choose the property to set, press Escape to cancel.", 60);
+				ShowMultiDropMessage();
 				var dr = parameterPicker.ShowDialog();
 				if (dr == DialogResult.OK)
 				{
@@ -3454,12 +3471,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 
 			}
-			if (elementValues.Any())
-			{
-				var undo = new EffectsPropertyModifiedUndoAction(elementValues);
-				AddEffectsModifiedToUndo(undo);
-				UpdateToolStrip4("Color applied to " + elementValues.Count() + " " + element.EffectNode.Effect.EffectName + " effect(s).", 60);
-			}
+			CompleteDrop(elementValues, element.EffectNode.Effect.EffectName);
 			
 		}
 
@@ -3526,7 +3538,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				FormParameterPicker parameterPicker = CreateParameterPicker(parameterPickerControls);
 
-				UpdateToolStrip4("Choose the property to set, press Escape to cancel.", 60);
+				ShowMultiDropMessage();
 				var dr = parameterPicker.ShowDialog();
 				if (dr == DialogResult.OK)
 				{
@@ -3562,14 +3574,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 
 			}
-			if (elementValues.Any())
-			{
-				var undo = new EffectsPropertyModifiedUndoAction(elementValues);
-				AddEffectsModifiedToUndo(undo);
-				UpdateToolStrip4("Curve applied to " + elementValues.Count() + " " + element.EffectNode.Effect.EffectName + " effect(s).", 60);
-			}
+			CompleteDrop(elementValues, element.EffectNode.Effect.EffectName);
 			
-
 		}
 
 		private void HandleCurveDropOnGradientLevelPairList(PropertyData property, Element element, Dictionary<Element, Tuple<object, PropertyDescriptor>> elementValues, Curve curve)
@@ -3577,11 +3583,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			List<GradientLevelPair> gradientLevelPairs = property.Descriptor.GetValue(element.EffectNode.Effect) as List<GradientLevelPair>;
 			if (gradientLevelPairs == null) return;
 
-			var parameterPickerControls = CreateGradientLevelPairPickerControls(property, gradientLevelPairs);
+			var parameterPickerControls = CreateGradientLevelPairPickerControls(property, gradientLevelPairs, false);
 
 			var parameterPicker = CreateParameterPicker(parameterPickerControls);
 
-			UpdateToolStrip4("Choose the property to set, press Escape to cancel.", 60);
+			ShowMultiDropMessage();
 			var dr = parameterPicker.ShowDialog();
 			if (dr == DialogResult.OK)
 			{
@@ -3670,7 +3676,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				
 				FormParameterPicker parameterPicker = CreateParameterPicker(parameterPickerControls);
 
-				UpdateToolStrip4("Choose the property to set, press Escape to cancel.", 60);
+				ShowMultiDropMessage();
 				var dr = parameterPicker.ShowDialog();
 				if (dr == DialogResult.OK)
 				{
@@ -3713,12 +3719,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 
 			}
-			if (elementValues.Any())
-			{
-				var undo = new EffectsPropertyModifiedUndoAction(elementValues);
-				AddEffectsModifiedToUndo(undo);
-				UpdateToolStrip4("Gradient applied to " + elementValues.Count() + " " + element.EffectNode.Effect.EffectName + " effect(s).", 60);
-			}
+			CompleteDrop(elementValues, element.EffectNode.Effect.EffectName);
 
 		}
 

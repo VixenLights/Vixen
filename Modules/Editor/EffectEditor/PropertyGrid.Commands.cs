@@ -157,8 +157,8 @@ namespace VixenModules.Editor.EffectEditor
 						var newValue = editor.ShowDialog(collectionItem.ParentProperty, glp.ColorGradient, this);
 						if (newValue is ColorGradient)
 						{
-							glp.ColorGradient = (ColorGradient)newValue;
-							collectionItem.Value = glp;
+							var newGradientLevelPair = new GradientLevelPair((ColorGradient)newValue, glp.Curve);
+							collectionItem.Value = newGradientLevelPair;
 						}
 					}
 				}
@@ -180,8 +180,8 @@ namespace VixenModules.Editor.EffectEditor
 						var newValue = editor.ShowDialog(collectionItem.ParentProperty, glp.Curve, this);
 						if (newValue is Curve)
 						{
-							glp.Curve = (Curve) newValue;
-							collectionItem.Value = glp;
+							var newGradientLevelPair = new GradientLevelPair(glp.ColorGradient, (Curve)newValue);
+							collectionItem.Value = newGradientLevelPair;
 						}
 					}
 					

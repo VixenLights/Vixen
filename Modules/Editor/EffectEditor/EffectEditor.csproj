@@ -68,6 +68,10 @@
     <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NLog, Version=3.1.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\NLog.3.1.0.0\lib\net45\NLog.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="PresentationFramework.Aero" />
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -304,6 +308,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
