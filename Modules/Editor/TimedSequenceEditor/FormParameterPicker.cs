@@ -24,6 +24,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			EffectParameterPickerControl control = (EffectParameterPickerControl)sender;
 			PropertyInfo = control.PropertyInfo;
+			SelectedControl = control;
 			DialogResult = DialogResult.OK;
 			Close();
 		}
@@ -32,7 +33,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		public int ParameterIndex { get; set; }
 
-		public int ParameterListIndex { get; set; }
+		public EffectParameterPickerControl SelectedControl { get; private set; }
 
 		private void flowLayoutPanel1_Paint(object sender, PaintEventArgs e)
 		{
