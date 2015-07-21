@@ -750,7 +750,7 @@ namespace VixenApplication
 
 		#region Draw lines and borders
 		//set color for box borders.
-		private Color _borderColor = Color.FromArgb(100,100,100);
+		private Color _borderColor = Color.FromArgb(80, 80, 80);
 
 		public Color BorderColor
 		{
@@ -780,7 +780,7 @@ namespace VixenApplication
 
 		private void VixenApplication_Paint(object sender, PaintEventArgs e)
 		{
-			Pen borderColor = new Pen(_borderColor, 2);
+			Pen borderColor = new Pen(_borderColor, 1);
 
 			if (ActiveForm != null)
 				e.Graphics.DrawLine(borderColor, 0, pictureBox1.Size.Height + 30, ActiveForm.Width, pictureBox1.Size.Height + 30);

@@ -4,12 +4,15 @@ using System.Drawing;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Windows.Forms;
+using System.Windows.Media;
 using System.Xml;
 using Common.Controls.ColorManagement.ColorModels;
 using Common.Controls.ColorManagement.ColorPicker;
 using Common.Resources;
 using Common.Resources.Properties;
 using VixenModules.Sequence.Timed;
+using Color = System.Drawing.Color;
+using Pen = System.Drawing.Pen;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -428,5 +431,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			btn.ForeColor = btn.Enabled ? Color.FromArgb(221, 221, 221) : Color.Gray;
 		}
 
+		private void comboBoxCollections_DrawItem(object sender, DrawItemEventArgs e)
+		{
+			int index = e.Index;
+			if (index < 0)
+			{
+				return;
+			}
+			var brush = new SolidBrush(Color.FromArgb(221, 221, 221));
+			e.DrawBackground();
+			e.Graphics.DrawString(comboBoxCollections.Items[index].ToString(), e.Font, brush, e.Bounds, StringFormat.GenericDefault);
+		}
 	}
 }

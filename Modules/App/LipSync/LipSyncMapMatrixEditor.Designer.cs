@@ -122,7 +122,7 @@
 			this.zoomTrackbar.AutoSize = false;
 			this.zoomTrackbar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.zoomTrackbar.Location = new System.Drawing.Point(259, 92);
-			this.zoomTrackbar.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+			this.zoomTrackbar.Margin = new System.Windows.Forms.Padding(1);
 			this.zoomTrackbar.Maximum = 25;
 			this.zoomTrackbar.Minimum = -50;
 			this.zoomTrackbar.Name = "zoomTrackbar";
@@ -259,7 +259,9 @@
 			// 
 			// nameTextBox
 			// 
-			this.nameTextBox.BackColor = System.Drawing.Color.WhiteSmoke;
+			this.nameTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
+			this.nameTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.nameTextBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.nameTextBox.Location = new System.Drawing.Point(80, 26);
 			this.nameTextBox.Name = "nameTextBox";
 			this.nameTextBox.Size = new System.Drawing.Size(140, 20);
@@ -287,6 +289,9 @@
 			// 
 			// nextPhonemeButton
 			// 
+			this.nextPhonemeButton.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+			this.nextPhonemeButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.nextPhonemeButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.nextPhonemeButton.Location = new System.Drawing.Point(134, 92);
 			this.nextPhonemeButton.Name = "nextPhonemeButton";
 			this.nextPhonemeButton.Size = new System.Drawing.Size(36, 23);
@@ -297,6 +302,9 @@
 			// 
 			// prevPhonemeButton
 			// 
+			this.prevPhonemeButton.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+			this.prevPhonemeButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.prevPhonemeButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.prevPhonemeButton.Location = new System.Drawing.Point(38, 92);
 			this.prevPhonemeButton.Name = "prevPhonemeButton";
 			this.prevPhonemeButton.Size = new System.Drawing.Size(36, 23);

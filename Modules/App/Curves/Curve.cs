@@ -17,7 +17,7 @@ namespace VixenModules.App.Curves
 	{
 		
 
-		public static Color ActiveCurveGridColor = Color.RoyalBlue;
+		public static Color ActiveCurveGridColor = Color.FromArgb(0,128,255);
 		public static Color InactiveCurveGridColor = Color.DarkGray;
 
 		public Curve(IPointList points)

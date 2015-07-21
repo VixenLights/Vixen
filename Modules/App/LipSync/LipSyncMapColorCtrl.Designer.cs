@@ -38,7 +38,9 @@
 			// 
 			// intensityUpDown
 			// 
-			this.intensityUpDown.ForeColor = System.Drawing.Color.Black;
+			this.intensityUpDown.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
+			this.intensityUpDown.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.intensityUpDown.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.intensityUpDown.Location = new System.Drawing.Point(140, 8);
 			this.intensityUpDown.Name = "intensityUpDown";
 			this.intensityUpDown.ReadOnly = true;

@@ -165,7 +165,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			PopulateMarkListFromMarkCollection(collection);
 
-			groupBoxDetails.Enabled = (collection != null);
+			checkBoxEnabled.AutoCheck = (collection != null);
+			textBoxCollectionName.Enabled = (collection != null);
+			numericUpDownWeight.Enabled = (collection != null);
+			panelColor.Enabled = (collection != null);
 			groupBoxOperations.Enabled = (collection != null);
 			buttonSelectAllMarks.Enabled = (collection != null);
 			buttonAddOrUpdateMark.Enabled = (collection != null);
@@ -210,8 +213,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 
 			buttonRemoveCollection.Enabled = (listViewMarkCollections.SelectedItems.Count > 0);
-			radioButtonTapper.Enabled = (listViewMarkCollections.SelectedItems.Count > 0);
+			radioButtonTapper.AutoCheck = (listViewMarkCollections.SelectedItems.Count > 0);
 			radioButtonPlayback.Checked = true;
+			radioButtonTapper.ForeColor = radioButtonTapper.AutoCheck ? Color.FromArgb(221, 221, 221) : Color.Gray;
 		}
 
 		private void listViewMarks_SelectedIndexChanged(object sender, EventArgs e)
@@ -507,7 +511,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void checkBoxEnabled_CheckedChanged(object sender, EventArgs e)
 		{
-			if (_displayedCollection != null && _displayedCollection.Enabled != checkBoxEnabled.Checked) {
+			if (_displayedCollection != null && _displayedCollection.Enabled != checkBoxEnabled.Checked)
+			{
 				_displayedCollection.Enabled = checkBoxEnabled.Checked;
 				UpdateMarkCollectionInList(_displayedCollection);
 			}
@@ -752,14 +757,20 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void updateControlsforPlaying()
 		{
-			groupBoxDetails.Enabled = false;
+			checkBoxEnabled.AutoCheck = false;
+			radioButtonTapper.AutoCheck = false;
+			radioButtonPlayback.AutoCheck = false;
+			radioButtonTapper.ForeColor = radioButtonTapper.AutoCheck ? Color.FromArgb(221, 221, 221) : Color.Gray;
+			radioButtonPlayback.ForeColor = radioButtonTapper.AutoCheck ? Color.FromArgb(221, 221, 221) : Color.Gray;
+			textBoxCollectionName.Enabled = false;
+			numericUpDownWeight.Enabled = false;
+			panelColor.Enabled = false;
 			groupBoxOperations.Enabled = false;
 			buttonSelectAllMarks.Enabled = false;
 			buttonAddOrUpdateMark.Enabled = false;
 			textBoxTime.Enabled = false;
 			buttonPlay.Enabled = false;
 			buttonStop.Enabled = true;
-			groupBoxMode.Enabled = false;
 			textBoxCurrentMark.Text = "";
 			panelMarkCollectionsButtons.Enabled = false;
 			try {
@@ -778,14 +789,20 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void updateControlsForStopped()
 		{
-			groupBoxDetails.Enabled = true;
+			checkBoxEnabled.AutoCheck = true;
+			radioButtonTapper.AutoCheck = true;
+			radioButtonPlayback.AutoCheck = true;
+			radioButtonTapper.ForeColor = radioButtonTapper.AutoCheck ? Color.FromArgb(221, 221, 221) : Color.Gray;
+			radioButtonPlayback.ForeColor = radioButtonTapper.AutoCheck ? Color.FromArgb(221, 221, 221) : Color.Gray;
+			textBoxCollectionName.Enabled = true;
+			numericUpDownWeight.Enabled = true;
+			panelColor.Enabled = true;
 			groupBoxOperations.Enabled = true;
 			buttonSelectAllMarks.Enabled = true;
 			buttonAddOrUpdateMark.Enabled = true;
 			textBoxTime.Enabled = true;
 			buttonPlay.Enabled = true;
 			buttonStop.Enabled = false;
-			groupBoxMode.Enabled = true;
 			panelMarkCollectionsButtons.Enabled = true;
 		}
 
@@ -1297,7 +1314,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			PopulateMarkCollectionsList();
 
 			//enable Tapper as long as a collection is selected.
-			radioButtonTapper.Enabled = (listViewMarkCollections.SelectedItems.Count > 0);
+			radioButtonTapper.AutoCheck = (listViewMarkCollections.SelectedItems.Count > 0);
 			radioButtonPlayback.Checked = true;
 
 			panelColor.BackColor = color;
@@ -1451,7 +1468,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		#region Draw lines and GroupBox borders
 		//set color for box borders.
-		private Color _borderColor = Color.FromArgb(100, 100, 100);
+		private Color _borderColor = Color.FromArgb(80, 80, 80);
 
 		public Color BorderColor
 		{
@@ -1495,5 +1512,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			btn.BackgroundImage = Resources.HeadingBackgroundImage;
 		}
 		#endregion
+
+		private void groupBoxOperations_EnabledChanged(object sender, EventArgs e)
+		{
+			checkBoxEnabled.ForeColor = groupBoxOperations.Enabled ? Color.FromArgb(221, 221, 221) : Color.Gray;
+			label1.ForeColor = groupBoxOperations.Enabled ? Color.FromArgb(221, 221, 221) : Color.Gray;
+			label2.ForeColor = groupBoxOperations.Enabled ? Color.FromArgb(221, 221, 221) : Color.Gray;
+			label3.ForeColor = groupBoxOperations.Enabled ? Color.FromArgb(221, 221, 221) : Color.Gray;
+		}
+
 	}
 }

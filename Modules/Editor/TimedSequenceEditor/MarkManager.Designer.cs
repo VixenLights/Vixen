@@ -55,6 +55,12 @@
 			this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.buttonOK = new System.Windows.Forms.Button();
 			this.groupBoxSelectedMarkCollection = new System.Windows.Forms.GroupBox();
+			this.groupBoxSelectedMarks = new System.Windows.Forms.GroupBox();
+			this.panel3 = new System.Windows.Forms.Panel();
+			this.buttonIncreaseSelectedMarks = new System.Windows.Forms.Button();
+			this.buttonDecreaseSelectedMarks = new System.Windows.Forms.Button();
+			this.label7 = new System.Windows.Forms.Label();
+			this.textBoxTimeIncrement = new System.Windows.Forms.TextBox();
 			this.groupBoxDetails = new System.Windows.Forms.GroupBox();
 			this.checkBoxEnabled = new System.Windows.Forms.CheckBox();
 			this.label3 = new System.Windows.Forms.Label();
@@ -64,12 +70,6 @@
 			this.textBoxCollectionName = new System.Windows.Forms.TextBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.groupBoxOperations = new System.Windows.Forms.GroupBox();
-			this.groupBoxSelectedMarks = new System.Windows.Forms.GroupBox();
-			this.panel3 = new System.Windows.Forms.Panel();
-			this.buttonIncreaseSelectedMarks = new System.Windows.Forms.Button();
-			this.buttonDecreaseSelectedMarks = new System.Windows.Forms.Button();
-			this.label7 = new System.Windows.Forms.Label();
-			this.textBoxTimeIncrement = new System.Windows.Forms.TextBox();
 			this.buttonGenerateGrid = new System.Windows.Forms.Button();
 			this.buttonGenerateBeatMarks = new System.Windows.Forms.Button();
 			this.buttonCopyAndOffsetMarks = new System.Windows.Forms.Button();
@@ -125,11 +125,11 @@
 			this.groupBoxMarkCollections.SuspendLayout();
 			this.panelMarkCollectionsButtons.SuspendLayout();
 			this.groupBoxSelectedMarkCollection.SuspendLayout();
+			this.groupBoxSelectedMarks.SuspendLayout();
+			this.panel3.SuspendLayout();
 			this.groupBoxDetails.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownWeight)).BeginInit();
 			this.groupBoxOperations.SuspendLayout();
-			this.groupBoxSelectedMarks.SuspendLayout();
-			this.panel3.SuspendLayout();
 			this.groupBoxMarks.SuspendLayout();
 			this.groupBoxPlayback.SuspendLayout();
 			this.panel4.SuspendLayout();
@@ -167,7 +167,7 @@
 			this.panelMarkCollectionsButtons.Controls.Add(this.buttonImportAudacity);
 			this.panelMarkCollectionsButtons.Controls.Add(this.buttonAddCollection);
 			this.panelMarkCollectionsButtons.Location = new System.Drawing.Point(5, 231);
-			this.panelMarkCollectionsButtons.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.panelMarkCollectionsButtons.Margin = new System.Windows.Forms.Padding(2);
 			this.panelMarkCollectionsButtons.Name = "panelMarkCollectionsButtons";
 			this.panelMarkCollectionsButtons.Size = new System.Drawing.Size(221, 92);
 			this.panelMarkCollectionsButtons.TabIndex = 3;
@@ -272,6 +272,7 @@
 			// listViewMarkCollections
 			// 
 			this.listViewMarkCollections.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
+			this.listViewMarkCollections.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.listViewMarkCollections.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader3,
@@ -323,6 +324,7 @@
 			// groupBoxSelectedMarkCollection
 			// 
 			this.groupBoxSelectedMarkCollection.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
+			this.groupBoxSelectedMarkCollection.Controls.Add(this.groupBoxSelectedMarks);
 			this.groupBoxSelectedMarkCollection.Controls.Add(this.groupBoxDetails);
 			this.groupBoxSelectedMarkCollection.Controls.Add(this.groupBoxOperations);
 			this.groupBoxSelectedMarkCollection.Controls.Add(this.groupBoxMarks);
@@ -334,6 +336,80 @@
 			this.groupBoxSelectedMarkCollection.TabStop = false;
 			this.groupBoxSelectedMarkCollection.Text = "Selected Collection";
 			this.groupBoxSelectedMarkCollection.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
+			// 
+			// groupBoxSelectedMarks
+			// 
+			this.groupBoxSelectedMarks.Controls.Add(this.panel3);
+			this.groupBoxSelectedMarks.Controls.Add(this.label7);
+			this.groupBoxSelectedMarks.Controls.Add(this.textBoxTimeIncrement);
+			this.groupBoxSelectedMarks.ForeColor = System.Drawing.Color.WhiteSmoke;
+			this.groupBoxSelectedMarks.Location = new System.Drawing.Point(307, 262);
+			this.groupBoxSelectedMarks.Name = "groupBoxSelectedMarks";
+			this.groupBoxSelectedMarks.Size = new System.Drawing.Size(164, 53);
+			this.groupBoxSelectedMarks.TabIndex = 7;
+			this.groupBoxSelectedMarks.TabStop = false;
+			this.groupBoxSelectedMarks.Text = "SelectedMarks";
+			this.groupBoxSelectedMarks.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
+			// 
+			// panel3
+			// 
+			this.panel3.Controls.Add(this.buttonIncreaseSelectedMarks);
+			this.panel3.Controls.Add(this.buttonDecreaseSelectedMarks);
+			this.panel3.Location = new System.Drawing.Point(75, 16);
+			this.panel3.Margin = new System.Windows.Forms.Padding(2);
+			this.panel3.Name = "panel3";
+			this.panel3.Size = new System.Drawing.Size(74, 34);
+			this.panel3.TabIndex = 14;
+			// 
+			// buttonIncreaseSelectedMarks
+			// 
+			this.buttonIncreaseSelectedMarks.FlatAppearance.BorderSize = 0;
+			this.buttonIncreaseSelectedMarks.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+			this.buttonIncreaseSelectedMarks.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+			this.buttonIncreaseSelectedMarks.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+			this.buttonIncreaseSelectedMarks.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.buttonIncreaseSelectedMarks.Location = new System.Drawing.Point(1, -1);
+			this.buttonIncreaseSelectedMarks.Name = "buttonIncreaseSelectedMarks";
+			this.buttonIncreaseSelectedMarks.Size = new System.Drawing.Size(32, 32);
+			this.buttonIncreaseSelectedMarks.TabIndex = 1;
+			this.buttonIncreaseSelectedMarks.Text = "+";
+			this.buttonIncreaseSelectedMarks.UseVisualStyleBackColor = true;
+			this.buttonIncreaseSelectedMarks.Click += new System.EventHandler(this.buttonIncreaseSelectedMarks_Click);
+			// 
+			// buttonDecreaseSelectedMarks
+			// 
+			this.buttonDecreaseSelectedMarks.FlatAppearance.BorderSize = 0;
+			this.buttonDecreaseSelectedMarks.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+			this.buttonDecreaseSelectedMarks.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+			this.buttonDecreaseSelectedMarks.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+			this.buttonDecreaseSelectedMarks.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.buttonDecreaseSelectedMarks.Location = new System.Drawing.Point(36, -1);
+			this.buttonDecreaseSelectedMarks.Name = "buttonDecreaseSelectedMarks";
+			this.buttonDecreaseSelectedMarks.Size = new System.Drawing.Size(32, 32);
+			this.buttonDecreaseSelectedMarks.TabIndex = 2;
+			this.buttonDecreaseSelectedMarks.Text = "-";
+			this.buttonDecreaseSelectedMarks.UseVisualStyleBackColor = true;
+			this.buttonDecreaseSelectedMarks.Click += new System.EventHandler(this.buttonDecreaseSelectedMarks_Click);
+			// 
+			// label7
+			// 
+			this.label7.AutoSize = true;
+			this.label7.Location = new System.Drawing.Point(54, 32);
+			this.label7.Name = "label7";
+			this.label7.Size = new System.Drawing.Size(20, 13);
+			this.label7.TabIndex = 13;
+			this.label7.Text = "ms";
+			// 
+			// textBoxTimeIncrement
+			// 
+			this.textBoxTimeIncrement.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
+			this.textBoxTimeIncrement.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.textBoxTimeIncrement.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.textBoxTimeIncrement.Location = new System.Drawing.Point(14, 25);
+			this.textBoxTimeIncrement.Name = "textBoxTimeIncrement";
+			this.textBoxTimeIncrement.Size = new System.Drawing.Size(38, 20);
+			this.textBoxTimeIncrement.TabIndex = 0;
+			this.textBoxTimeIncrement.Text = "10";
 			// 
 			// groupBoxDetails
 			// 
@@ -396,8 +472,9 @@
 			// 
 			// numericUpDownWeight
 			// 
-			this.numericUpDownWeight.BackColor = System.Drawing.Color.WhiteSmoke;
-			this.numericUpDownWeight.ForeColor = System.Drawing.Color.Black;
+			this.numericUpDownWeight.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
+			this.numericUpDownWeight.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.numericUpDownWeight.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.numericUpDownWeight.Location = new System.Drawing.Point(58, 83);
 			this.numericUpDownWeight.Maximum = new decimal(new int[] {
             20,
@@ -421,11 +498,12 @@
 			// 
 			// textBoxCollectionName
 			// 
-			this.textBoxCollectionName.BackColor = System.Drawing.Color.WhiteSmoke;
-			this.textBoxCollectionName.ForeColor = System.Drawing.Color.Black;
+			this.textBoxCollectionName.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
+			this.textBoxCollectionName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.textBoxCollectionName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.textBoxCollectionName.Location = new System.Drawing.Point(58, 57);
 			this.textBoxCollectionName.Name = "textBoxCollectionName";
-			this.textBoxCollectionName.Size = new System.Drawing.Size(87, 20);
+			this.textBoxCollectionName.Size = new System.Drawing.Size(86, 20);
 			this.textBoxCollectionName.TabIndex = 1;
 			this.textBoxCollectionName.TextChanged += new System.EventHandler(this.textBoxCollectionName_TextChanged);
 			// 
@@ -441,7 +519,6 @@
 			// 
 			// groupBoxOperations
 			// 
-			this.groupBoxOperations.Controls.Add(this.groupBoxSelectedMarks);
 			this.groupBoxOperations.Controls.Add(this.buttonGenerateGrid);
 			this.groupBoxOperations.Controls.Add(this.buttonGenerateBeatMarks);
 			this.groupBoxOperations.Controls.Add(this.buttonCopyAndOffsetMarks);
@@ -452,84 +529,12 @@
 			this.groupBoxOperations.ForeColor = System.Drawing.Color.WhiteSmoke;
 			this.groupBoxOperations.Location = new System.Drawing.Point(307, 19);
 			this.groupBoxOperations.Name = "groupBoxOperations";
-			this.groupBoxOperations.Size = new System.Drawing.Size(164, 296);
+			this.groupBoxOperations.Size = new System.Drawing.Size(164, 240);
 			this.groupBoxOperations.TabIndex = 2;
 			this.groupBoxOperations.TabStop = false;
 			this.groupBoxOperations.Text = "Operations";
+			this.groupBoxOperations.EnabledChanged += new System.EventHandler(this.groupBoxOperations_EnabledChanged);
 			this.groupBoxOperations.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
-			// 
-			// groupBoxSelectedMarks
-			// 
-			this.groupBoxSelectedMarks.Controls.Add(this.panel3);
-			this.groupBoxSelectedMarks.Controls.Add(this.label7);
-			this.groupBoxSelectedMarks.Controls.Add(this.textBoxTimeIncrement);
-			this.groupBoxSelectedMarks.ForeColor = System.Drawing.Color.WhiteSmoke;
-			this.groupBoxSelectedMarks.Location = new System.Drawing.Point(8, 234);
-			this.groupBoxSelectedMarks.Name = "groupBoxSelectedMarks";
-			this.groupBoxSelectedMarks.Size = new System.Drawing.Size(151, 55);
-			this.groupBoxSelectedMarks.TabIndex = 7;
-			this.groupBoxSelectedMarks.TabStop = false;
-			this.groupBoxSelectedMarks.Text = "SelectedMarks";
-			this.groupBoxSelectedMarks.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
-			// 
-			// panel3
-			// 
-			this.panel3.Controls.Add(this.buttonIncreaseSelectedMarks);
-			this.panel3.Controls.Add(this.buttonDecreaseSelectedMarks);
-			this.panel3.Location = new System.Drawing.Point(75, 16);
-			this.panel3.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-			this.panel3.Name = "panel3";
-			this.panel3.Size = new System.Drawing.Size(74, 34);
-			this.panel3.TabIndex = 14;
-			// 
-			// buttonIncreaseSelectedMarks
-			// 
-			this.buttonIncreaseSelectedMarks.FlatAppearance.BorderSize = 0;
-			this.buttonIncreaseSelectedMarks.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-			this.buttonIncreaseSelectedMarks.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-			this.buttonIncreaseSelectedMarks.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-			this.buttonIncreaseSelectedMarks.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonIncreaseSelectedMarks.Location = new System.Drawing.Point(1, -1);
-			this.buttonIncreaseSelectedMarks.Name = "buttonIncreaseSelectedMarks";
-			this.buttonIncreaseSelectedMarks.Size = new System.Drawing.Size(32, 32);
-			this.buttonIncreaseSelectedMarks.TabIndex = 1;
-			this.buttonIncreaseSelectedMarks.Text = "+";
-			this.buttonIncreaseSelectedMarks.UseVisualStyleBackColor = true;
-			this.buttonIncreaseSelectedMarks.Click += new System.EventHandler(this.buttonIncreaseSelectedMarks_Click);
-			// 
-			// buttonDecreaseSelectedMarks
-			// 
-			this.buttonDecreaseSelectedMarks.FlatAppearance.BorderSize = 0;
-			this.buttonDecreaseSelectedMarks.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-			this.buttonDecreaseSelectedMarks.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-			this.buttonDecreaseSelectedMarks.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-			this.buttonDecreaseSelectedMarks.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonDecreaseSelectedMarks.Location = new System.Drawing.Point(36, -1);
-			this.buttonDecreaseSelectedMarks.Name = "buttonDecreaseSelectedMarks";
-			this.buttonDecreaseSelectedMarks.Size = new System.Drawing.Size(32, 32);
-			this.buttonDecreaseSelectedMarks.TabIndex = 2;
-			this.buttonDecreaseSelectedMarks.Text = "-";
-			this.buttonDecreaseSelectedMarks.UseVisualStyleBackColor = true;
-			this.buttonDecreaseSelectedMarks.Click += new System.EventHandler(this.buttonDecreaseSelectedMarks_Click);
-			// 
-			// label7
-			// 
-			this.label7.AutoSize = true;
-			this.label7.Location = new System.Drawing.Point(54, 32);
-			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(20, 13);
-			this.label7.TabIndex = 13;
-			this.label7.Text = "ms";
-			// 
-			// textBoxTimeIncrement
-			// 
-			this.textBoxTimeIncrement.BackColor = System.Drawing.Color.WhiteSmoke;
-			this.textBoxTimeIncrement.ForeColor = System.Drawing.Color.Black;
-			this.textBoxTimeIncrement.Location = new System.Drawing.Point(14, 25);
-			this.textBoxTimeIncrement.Name = "textBoxTimeIncrement";
-			this.textBoxTimeIncrement.Size = new System.Drawing.Size(39, 20);
-			this.textBoxTimeIncrement.TabIndex = 0;
-			this.textBoxTimeIncrement.Text = "10";
 			// 
 			// buttonGenerateGrid
 			// 
@@ -676,6 +681,7 @@
 			// listViewMarks
 			// 
 			this.listViewMarks.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
+			this.listViewMarks.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.listViewMarks.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.Times});
 			this.listViewMarks.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
@@ -713,11 +719,12 @@
 			// 
 			// textBoxTime
 			// 
-			this.textBoxTime.BackColor = System.Drawing.Color.WhiteSmoke;
-			this.textBoxTime.ForeColor = System.Drawing.Color.Black;
+			this.textBoxTime.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
+			this.textBoxTime.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.textBoxTime.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.textBoxTime.Location = new System.Drawing.Point(6, 231);
 			this.textBoxTime.Name = "textBoxTime";
-			this.textBoxTime.Size = new System.Drawing.Size(60, 20);
+			this.textBoxTime.Size = new System.Drawing.Size(59, 20);
 			this.textBoxTime.TabIndex = 1;
 			// 
 			// buttonSelectAllMarks
@@ -784,7 +791,7 @@
 			// 
 			this.panel4.Controls.Add(this.labelTapperInstructions);
 			this.panel4.Location = new System.Drawing.Point(17, 198);
-			this.panel4.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.panel4.Margin = new System.Windows.Forms.Padding(2);
 			this.panel4.Name = "panel4";
 			this.panel4.Size = new System.Drawing.Size(270, 19);
 			this.panel4.TabIndex = 17;
@@ -804,7 +811,7 @@
 			this.panel2.Controls.Add(this.buttonIncreasePlaybackSpeed);
 			this.panel2.Controls.Add(this.buttonDecreasePlaySpeed);
 			this.panel2.Location = new System.Drawing.Point(371, 18);
-			this.panel2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.panel2.Margin = new System.Windows.Forms.Padding(2);
 			this.panel2.Name = "panel2";
 			this.panel2.Size = new System.Drawing.Size(85, 43);
 			this.panel2.TabIndex = 16;
@@ -846,7 +853,7 @@
 			this.panel1.Controls.Add(this.buttonPlay);
 			this.panel1.Controls.Add(this.buttonStop);
 			this.panel1.Location = new System.Drawing.Point(26, 18);
-			this.panel1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.panel1.Margin = new System.Windows.Forms.Padding(2);
 			this.panel1.Name = "panel1";
 			this.panel1.Size = new System.Drawing.Size(92, 42);
 			this.panel1.TabIndex = 15;
@@ -1004,8 +1011,9 @@
 			// 
 			// numHighPass
 			// 
-			this.numHighPass.BackColor = System.Drawing.Color.WhiteSmoke;
-			this.numHighPass.ForeColor = System.Drawing.Color.Black;
+			this.numHighPass.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
+			this.numHighPass.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.numHighPass.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.numHighPass.Location = new System.Drawing.Point(95, 45);
 			this.numHighPass.Maximum = new decimal(new int[] {
             22000,
@@ -1029,8 +1037,9 @@
 			// 
 			// numLowPass
 			// 
-			this.numLowPass.BackColor = System.Drawing.Color.WhiteSmoke;
-			this.numLowPass.ForeColor = System.Drawing.Color.Black;
+			this.numLowPass.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
+			this.numLowPass.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.numLowPass.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.numLowPass.Location = new System.Drawing.Point(95, 19);
 			this.numLowPass.Maximum = new decimal(new int[] {
             22000,
@@ -1093,17 +1102,19 @@
 			// 
 			// textBoxTimingSpeed
 			// 
-			this.textBoxTimingSpeed.BackColor = System.Drawing.Color.WhiteSmoke;
-			this.textBoxTimingSpeed.ForeColor = System.Drawing.Color.Black;
+			this.textBoxTimingSpeed.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
+			this.textBoxTimingSpeed.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.textBoxTimingSpeed.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.textBoxTimingSpeed.Location = new System.Drawing.Point(310, 28);
 			this.textBoxTimingSpeed.Name = "textBoxTimingSpeed";
-			this.textBoxTimingSpeed.Size = new System.Drawing.Size(58, 20);
+			this.textBoxTimingSpeed.Size = new System.Drawing.Size(57, 20);
 			this.textBoxTimingSpeed.TabIndex = 3;
 			// 
 			// textBoxPosition
 			// 
-			this.textBoxPosition.BackColor = System.Drawing.Color.WhiteSmoke;
-			this.textBoxPosition.ForeColor = System.Drawing.Color.Black;
+			this.textBoxPosition.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
+			this.textBoxPosition.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.textBoxPosition.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.textBoxPosition.Location = new System.Drawing.Point(597, 28);
 			this.textBoxPosition.Name = "textBoxPosition";
 			this.textBoxPosition.ReadOnly = true;
@@ -1141,11 +1152,13 @@
 			// 
 			// textBoxCurrentMark
 			// 
-			this.textBoxCurrentMark.BackColor = System.Drawing.Color.WhiteSmoke;
+			this.textBoxCurrentMark.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
+			this.textBoxCurrentMark.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.textBoxCurrentMark.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.textBoxCurrentMark.Location = new System.Drawing.Point(586, 198);
 			this.textBoxCurrentMark.Name = "textBoxCurrentMark";
 			this.textBoxCurrentMark.ReadOnly = true;
-			this.textBoxCurrentMark.Size = new System.Drawing.Size(90, 20);
+			this.textBoxCurrentMark.Size = new System.Drawing.Size(89, 20);
 			this.textBoxCurrentMark.TabIndex = 10;
 			// 
 			// groupBoxMode
@@ -1177,10 +1190,10 @@
 			// 
 			// radioButtonTapper
 			// 
+			this.radioButtonTapper.AutoCheck = false;
 			this.radioButtonTapper.AutoSize = true;
 			this.radioButtonTapper.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
-			this.radioButtonTapper.Enabled = false;
-			this.radioButtonTapper.ForeColor = System.Drawing.Color.WhiteSmoke;
+			this.radioButtonTapper.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.radioButtonTapper.Location = new System.Drawing.Point(9, 47);
 			this.radioButtonTapper.Name = "radioButtonTapper";
 			this.radioButtonTapper.Size = new System.Drawing.Size(59, 17);
@@ -1210,7 +1223,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.CancelButton = this.buttonCancel;
-			this.ClientSize = new System.Drawing.Size(728, 611);
+			this.ClientSize = new System.Drawing.Size(726, 605);
 			this.Controls.Add(this.groupBoxPlayback);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.groupBoxSelectedMarkCollection);
@@ -1220,9 +1233,9 @@
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.KeyPreview = true;
 			this.MaximizeBox = false;
-			this.MaximumSize = new System.Drawing.Size(744, 650);
+			this.MaximumSize = new System.Drawing.Size(742, 644);
 			this.MinimizeBox = false;
-			this.MinimumSize = new System.Drawing.Size(744, 650);
+			this.MinimumSize = new System.Drawing.Size(742, 644);
 			this.Name = "MarkManager";
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
@@ -1235,13 +1248,13 @@
 			this.groupBoxMarkCollections.PerformLayout();
 			this.panelMarkCollectionsButtons.ResumeLayout(false);
 			this.groupBoxSelectedMarkCollection.ResumeLayout(false);
+			this.groupBoxSelectedMarks.ResumeLayout(false);
+			this.groupBoxSelectedMarks.PerformLayout();
+			this.panel3.ResumeLayout(false);
 			this.groupBoxDetails.ResumeLayout(false);
 			this.groupBoxDetails.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownWeight)).EndInit();
 			this.groupBoxOperations.ResumeLayout(false);
-			this.groupBoxSelectedMarks.ResumeLayout(false);
-			this.groupBoxSelectedMarks.PerformLayout();
-			this.panel3.ResumeLayout(false);
 			this.groupBoxMarks.ResumeLayout(false);
 			this.groupBoxMarks.PerformLayout();
 			this.groupBoxPlayback.ResumeLayout(false);

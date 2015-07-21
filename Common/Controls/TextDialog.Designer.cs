@@ -33,7 +33,7 @@
 			// labelPrompt
 			// 
 			this.labelPrompt.AutoSize = true;
-			this.labelPrompt.ForeColor = System.Drawing.Color.WhiteSmoke;
+			this.labelPrompt.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.labelPrompt.Location = new System.Drawing.Point(12, 12);
 			this.labelPrompt.Name = "labelPrompt";
 			this.labelPrompt.Size = new System.Drawing.Size(13, 13);
@@ -44,6 +44,9 @@
 			// 
 			this.textBoxResponse.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.textBoxResponse.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
+			this.textBoxResponse.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.textBoxResponse.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.textBoxResponse.Location = new System.Drawing.Point(15, 38);
 			this.textBoxResponse.Name = "textBoxResponse";
 			this.textBoxResponse.Size = new System.Drawing.Size(372, 20);

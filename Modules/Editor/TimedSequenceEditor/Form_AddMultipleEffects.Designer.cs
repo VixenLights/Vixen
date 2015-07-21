@@ -144,7 +144,9 @@
 			// 
 			// txtStartTime
 			// 
-			this.txtStartTime.BackColor = System.Drawing.Color.WhiteSmoke;
+			this.txtStartTime.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
+			this.txtStartTime.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.txtStartTime.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.txtStartTime.Location = new System.Drawing.Point(145, 62);
 			this.txtStartTime.Name = "txtStartTime";
 			this.txtStartTime.Size = new System.Drawing.Size(100, 20);
@@ -155,7 +157,9 @@
 			// 
 			// txtDuration
 			// 
-			this.txtDuration.BackColor = System.Drawing.Color.WhiteSmoke;
+			this.txtDuration.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
+			this.txtDuration.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.txtDuration.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.txtDuration.Location = new System.Drawing.Point(145, 114);
 			this.txtDuration.Name = "txtDuration";
 			this.txtDuration.Size = new System.Drawing.Size(100, 20);
@@ -166,7 +170,9 @@
 			// 
 			// txtDurationBetween
 			// 
-			this.txtDurationBetween.BackColor = System.Drawing.Color.WhiteSmoke;
+			this.txtDurationBetween.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
+			this.txtDurationBetween.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.txtDurationBetween.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.txtDurationBetween.Location = new System.Drawing.Point(145, 140);
 			this.txtDurationBetween.Name = "txtDurationBetween";
 			this.txtDurationBetween.Size = new System.Drawing.Size(100, 20);
@@ -177,7 +183,9 @@
 			// 
 			// txtEffectCount
 			// 
-			this.txtEffectCount.BackColor = System.Drawing.Color.WhiteSmoke;
+			this.txtEffectCount.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
+			this.txtEffectCount.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.txtEffectCount.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.txtEffectCount.Location = new System.Drawing.Point(145, 36);
 			this.txtEffectCount.Name = "txtEffectCount";
 			this.txtEffectCount.Size = new System.Drawing.Size(100, 20);
@@ -345,7 +353,9 @@
 			// 
 			// txtEndTime
 			// 
-			this.txtEndTime.BackColor = System.Drawing.Color.WhiteSmoke;
+			this.txtEndTime.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
+			this.txtEndTime.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.txtEndTime.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.txtEndTime.Location = new System.Drawing.Point(145, 88);
 			this.txtEndTime.Name = "txtEndTime";
 			this.txtEndTime.Size = new System.Drawing.Size(100, 20);

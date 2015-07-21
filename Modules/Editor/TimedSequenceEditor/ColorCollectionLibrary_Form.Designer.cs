@@ -74,17 +74,24 @@
 			// 
 			// comboBoxCollections
 			// 
+			this.comboBoxCollections.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
+			this.comboBoxCollections.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
 			this.comboBoxCollections.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboBoxCollections.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.comboBoxCollections.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.comboBoxCollections.FormattingEnabled = true;
 			this.comboBoxCollections.Location = new System.Drawing.Point(99, 12);
+			this.comboBoxCollections.Margin = new System.Windows.Forms.Padding(1);
 			this.comboBoxCollections.Name = "comboBoxCollections";
 			this.comboBoxCollections.Size = new System.Drawing.Size(207, 21);
 			this.comboBoxCollections.TabIndex = 2;
+			this.comboBoxCollections.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.comboBoxCollections_DrawItem);
 			this.comboBoxCollections.SelectedIndexChanged += new System.EventHandler(this.comboBoxCollections_SelectedIndexChanged);
 			// 
 			// btnOK
 			// 
 			this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.btnOK.BackColor = System.Drawing.Color.Transparent;
 			this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
 			this.btnOK.FlatAppearance.BorderColor = System.Drawing.Color.Black;
 			this.btnOK.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
@@ -97,7 +104,7 @@
 			this.btnOK.Size = new System.Drawing.Size(103, 23);
 			this.btnOK.TabIndex = 8;
 			this.btnOK.Text = "OK";
-			this.btnOK.UseVisualStyleBackColor = true;
+			this.btnOK.UseVisualStyleBackColor = false;
 			this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
 			this.btnOK.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.btnOK.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
@@ -105,6 +112,7 @@
 			// btnCancel
 			// 
 			this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.btnCancel.BackColor = System.Drawing.Color.Transparent;
 			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.btnCancel.FlatAppearance.BorderColor = System.Drawing.Color.Black;
 			this.btnCancel.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
@@ -117,7 +125,7 @@
 			this.btnCancel.Size = new System.Drawing.Size(103, 23);
 			this.btnCancel.TabIndex = 9;
 			this.btnCancel.Text = "Cancel";
-			this.btnCancel.UseVisualStyleBackColor = true;
+			this.btnCancel.UseVisualStyleBackColor = false;
 			this.btnCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.btnCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -135,9 +143,10 @@
 			// 
 			this.textBoxDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.textBoxDescription.BackColor = System.Drawing.Color.WhiteSmoke;
+			this.textBoxDescription.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
+			this.textBoxDescription.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.textBoxDescription.Enabled = false;
-			this.textBoxDescription.ForeColor = System.Drawing.Color.Black;
+			this.textBoxDescription.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.textBoxDescription.Location = new System.Drawing.Point(460, 12);
 			this.textBoxDescription.Name = "textBoxDescription";
 			this.textBoxDescription.Size = new System.Drawing.Size(203, 20);
@@ -177,6 +186,7 @@
 			// buttonAddColor
 			// 
 			this.buttonAddColor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonAddColor.BackColor = System.Drawing.Color.Transparent;
 			this.buttonAddColor.FlatAppearance.BorderColor = System.Drawing.Color.Black;
 			this.buttonAddColor.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
 			this.buttonAddColor.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
@@ -188,7 +198,7 @@
 			this.buttonAddColor.Size = new System.Drawing.Size(103, 23);
 			this.buttonAddColor.TabIndex = 16;
 			this.buttonAddColor.Text = "Add Color";
-			this.buttonAddColor.UseVisualStyleBackColor = true;
+			this.buttonAddColor.UseVisualStyleBackColor = false;
 			this.buttonAddColor.EnabledChanged += new System.EventHandler(this.buttonTextColorChange);
 			this.buttonAddColor.Click += new System.EventHandler(this.buttonAddColor_Click);
 			this.buttonAddColor.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
@@ -197,6 +207,7 @@
 			// buttonImportCollection
 			// 
 			this.buttonImportCollection.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonImportCollection.BackColor = System.Drawing.Color.Transparent;
 			this.buttonImportCollection.FlatAppearance.BorderColor = System.Drawing.Color.Black;
 			this.buttonImportCollection.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
 			this.buttonImportCollection.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
@@ -208,7 +219,7 @@
 			this.buttonImportCollection.Size = new System.Drawing.Size(103, 23);
 			this.buttonImportCollection.TabIndex = 17;
 			this.buttonImportCollection.Text = "Import Collection";
-			this.buttonImportCollection.UseVisualStyleBackColor = true;
+			this.buttonImportCollection.UseVisualStyleBackColor = false;
 			this.buttonImportCollection.Click += new System.EventHandler(this.buttonImportCollection_Click);
 			this.buttonImportCollection.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonImportCollection.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
@@ -216,6 +227,7 @@
 			// buttonExportCollection
 			// 
 			this.buttonExportCollection.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonExportCollection.BackColor = System.Drawing.Color.Transparent;
 			this.buttonExportCollection.FlatAppearance.BorderColor = System.Drawing.Color.Black;
 			this.buttonExportCollection.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
 			this.buttonExportCollection.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
@@ -227,7 +239,7 @@
 			this.buttonExportCollection.Size = new System.Drawing.Size(103, 23);
 			this.buttonExportCollection.TabIndex = 18;
 			this.buttonExportCollection.Text = "Export Collection";
-			this.buttonExportCollection.UseVisualStyleBackColor = true;
+			this.buttonExportCollection.UseVisualStyleBackColor = false;
 			this.buttonExportCollection.Click += new System.EventHandler(this.buttonExportCollection_Click);
 			this.buttonExportCollection.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonExportCollection.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
@@ -235,6 +247,7 @@
 			// buttonRemoveColor
 			// 
 			this.buttonRemoveColor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonRemoveColor.BackColor = System.Drawing.Color.Transparent;
 			this.buttonRemoveColor.FlatAppearance.BorderColor = System.Drawing.Color.Black;
 			this.buttonRemoveColor.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
 			this.buttonRemoveColor.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
@@ -246,7 +259,7 @@
 			this.buttonRemoveColor.Size = new System.Drawing.Size(103, 23);
 			this.buttonRemoveColor.TabIndex = 19;
 			this.buttonRemoveColor.Text = "Remove Color";
-			this.buttonRemoveColor.UseVisualStyleBackColor = true;
+			this.buttonRemoveColor.UseVisualStyleBackColor = false;
 			this.buttonRemoveColor.EnabledChanged += new System.EventHandler(this.buttonTextColorChange);
 			this.buttonRemoveColor.Click += new System.EventHandler(this.buttonRemoveColor_Click);
 			this.buttonRemoveColor.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);

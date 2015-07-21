@@ -200,7 +200,7 @@ namespace VixenModules.App.ColorGradients
 
 		#region Draw lines and GroupBox borders
 		//set color for box borders.
-		private Color _borderColor = Color.FromArgb(100, 100, 100);
+		private Color _borderColor = Color.FromArgb(80,80,80);
 
 		public Color BorderColor
 		{

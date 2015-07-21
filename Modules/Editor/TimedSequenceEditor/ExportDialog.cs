@@ -447,7 +447,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		#region Draw lines and GroupBox borders
 		//set color for box borders.
-		private Color _borderColor = Color.FromArgb(100, 100, 100);
+		private Color _borderColor = Color.FromArgb(80, 80, 80);
 
 		public Color BorderColor
 		{
@@ -476,6 +476,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			e.Graphics.DrawString((sender as GroupBox).Text, Font, new SolidBrush(Color.FromArgb(221, 221, 221)), textRect);
 		}
 		#endregion
+
+		private void comboBoxes_DrawItem(object sender, DrawItemEventArgs e)
+		{
+			var btn = (ComboBox)sender;
+			int index = e.Index;
+			if (index < 0)
+			{
+				return;
+			}
+			var brush = new SolidBrush(Color.FromArgb(221, 221, 221));
+			e.DrawBackground();
+			e.Graphics.DrawString(btn.Items[index].ToString(), e.Font, brush, e.Bounds, StringFormat.GenericDefault);
+		}
 
 	}
 }

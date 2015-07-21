@@ -94,6 +94,7 @@
 			// 
 			// buttonEditLibraryItem
 			// 
+			this.buttonEditLibraryItem.BackColor = System.Drawing.Color.Transparent;
 			this.buttonEditLibraryItem.FlatAppearance.BorderColor = System.Drawing.Color.Black;
 			this.buttonEditLibraryItem.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
 			this.buttonEditLibraryItem.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
@@ -104,13 +105,14 @@
 			this.buttonEditLibraryItem.Size = new System.Drawing.Size(110, 25);
 			this.buttonEditLibraryItem.TabIndex = 4;
 			this.buttonEditLibraryItem.Text = "Edit Library Gradient";
-			this.buttonEditLibraryItem.UseVisualStyleBackColor = true;
+			this.buttonEditLibraryItem.UseVisualStyleBackColor = false;
 			this.buttonEditLibraryItem.Click += new System.EventHandler(this.buttonEditLibraryItem_Click);
 			this.buttonEditLibraryItem.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonEditLibraryItem.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonUnlink
 			// 
+			this.buttonUnlink.BackColor = System.Drawing.Color.Transparent;
 			this.buttonUnlink.FlatAppearance.BorderColor = System.Drawing.Color.Black;
 			this.buttonUnlink.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
 			this.buttonUnlink.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
@@ -121,7 +123,7 @@
 			this.buttonUnlink.Size = new System.Drawing.Size(100, 25);
 			this.buttonUnlink.TabIndex = 3;
 			this.buttonUnlink.Text = "Unlink Gradient";
-			this.buttonUnlink.UseVisualStyleBackColor = true;
+			this.buttonUnlink.UseVisualStyleBackColor = false;
 			this.buttonUnlink.Click += new System.EventHandler(this.buttonUnlink_Click);
 			this.buttonUnlink.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonUnlink.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
@@ -137,6 +139,7 @@
 			// 
 			// buttonSaveToLibrary
 			// 
+			this.buttonSaveToLibrary.BackColor = System.Drawing.Color.Transparent;
 			this.buttonSaveToLibrary.FlatAppearance.BorderColor = System.Drawing.Color.Black;
 			this.buttonSaveToLibrary.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
 			this.buttonSaveToLibrary.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
@@ -147,13 +150,14 @@
 			this.buttonSaveToLibrary.Size = new System.Drawing.Size(80, 25);
 			this.buttonSaveToLibrary.TabIndex = 1;
 			this.buttonSaveToLibrary.Text = "Save Preset";
-			this.buttonSaveToLibrary.UseVisualStyleBackColor = true;
+			this.buttonSaveToLibrary.UseVisualStyleBackColor = false;
 			this.buttonSaveToLibrary.Click += new System.EventHandler(this.buttonSaveToLibrary_Click);
 			this.buttonSaveToLibrary.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonSaveToLibrary.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonLoadFromLibrary
 			// 
+			this.buttonLoadFromLibrary.BackColor = System.Drawing.Color.Transparent;
 			this.buttonLoadFromLibrary.FlatAppearance.BorderColor = System.Drawing.Color.Black;
 			this.buttonLoadFromLibrary.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
 			this.buttonLoadFromLibrary.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
@@ -164,7 +168,7 @@
 			this.buttonLoadFromLibrary.Size = new System.Drawing.Size(80, 25);
 			this.buttonLoadFromLibrary.TabIndex = 0;
 			this.buttonLoadFromLibrary.Text = "Load Preset";
-			this.buttonLoadFromLibrary.UseVisualStyleBackColor = true;
+			this.buttonLoadFromLibrary.UseVisualStyleBackColor = false;
 			this.buttonLoadFromLibrary.Click += new System.EventHandler(this.buttonLoadFromLibrary_Click);
 			this.buttonLoadFromLibrary.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonLoadFromLibrary.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);

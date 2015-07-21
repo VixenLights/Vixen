@@ -28,12 +28,12 @@ namespace VixenModules.App.Curves
 			btnUpdateCoordinates.BackgroundImage = Resources.HeadingBackgroundImage;
 
 			zedGraphControl.GraphPane.XAxis.MajorGrid.IsVisible = true;
-			zedGraphControl.GraphPane.XAxis.MajorGrid.Color = Color.FromArgb(221,221,221);
+			zedGraphControl.GraphPane.XAxis.MajorGrid.Color = Color.FromArgb(100, 100, 100);
 			zedGraphControl.GraphPane.XAxis.MajorGrid.DashOff = 4;
 			zedGraphControl.GraphPane.XAxis.MajorGrid.DashOn = 2;
 
 			zedGraphControl.GraphPane.YAxis.MajorGrid.IsVisible = true;
-			zedGraphControl.GraphPane.YAxis.MajorGrid.Color = Color.FromArgb(221, 221, 221);
+			zedGraphControl.GraphPane.YAxis.MajorGrid.Color = Color.FromArgb(100, 100, 100);
 			zedGraphControl.GraphPane.YAxis.MajorGrid.DashOff = 4;
 			zedGraphControl.GraphPane.YAxis.MajorGrid.DashOn = 2;
 
@@ -214,12 +214,12 @@ namespace VixenModules.App.Curves
 				txtYValue.Text = string.Empty;
 				btnUpdateCoordinates.Enabled = false;
 				zedGraphControl.GraphPane.Chart.Fill = new Fill(Color.FromArgb(68,68,68));
-				zedGraphControl.GraphPane.Chart.Border.Color = Color.FromArgb(221, 221, 221);
-				zedGraphControl.GraphPane.XAxis.MajorGrid.Color = Color.FromArgb(221, 221, 221);
-				zedGraphControl.GraphPane.YAxis.MajorGrid.Color = Color.FromArgb(221, 221, 221);
+				zedGraphControl.GraphPane.Chart.Border.Color = Color.FromArgb(100, 100, 100);
+				zedGraphControl.GraphPane.XAxis.MajorGrid.Color = Color.FromArgb(100, 100, 100);
+				zedGraphControl.GraphPane.YAxis.MajorGrid.Color = Color.FromArgb(100, 100, 100);
 				zedGraphControl.GraphPane.Title.FontSpec.FontColor = Color.FromArgb(221, 221, 221);
-				zedGraphControl.GraphPane.XAxis.Scale.FontSpec.FontColor = Color.FromArgb(221, 221, 221);
-				zedGraphControl.GraphPane.YAxis.Scale.FontSpec.FontColor = Color.FromArgb(221, 221, 221);
+				zedGraphControl.GraphPane.XAxis.Scale.FontSpec.FontColor = Color.FromArgb(100, 100, 100);
+				zedGraphControl.GraphPane.YAxis.Scale.FontSpec.FontColor = Color.FromArgb(100, 100, 100);
 			}
 			else {
 				if (curve.IsLibraryReference) {
@@ -252,12 +252,12 @@ namespace VixenModules.App.Curves
 				txtYValue.Text = string.Empty;
 				btnUpdateCoordinates.Enabled = false;
 				zedGraphControl.GraphPane.Chart.Fill = new Fill(Color.FromArgb(68, 68, 68));
-				zedGraphControl.GraphPane.Chart.Border.Color = Color.FromArgb(221, 221, 221);
-				zedGraphControl.GraphPane.XAxis.MajorGrid.Color = Color.FromArgb(221, 221, 221);
-				zedGraphControl.GraphPane.YAxis.MajorGrid.Color = Color.FromArgb(221, 221, 221);
+				zedGraphControl.GraphPane.Chart.Border.Color = Color.FromArgb(100, 100, 100);
+				zedGraphControl.GraphPane.XAxis.MajorGrid.Color = Color.FromArgb(100, 100, 100);
+				zedGraphControl.GraphPane.YAxis.MajorGrid.Color = Color.FromArgb(100, 100, 100);
 				zedGraphControl.GraphPane.Title.FontSpec.FontColor = Color.FromArgb(221, 221, 221);
-				zedGraphControl.GraphPane.XAxis.Scale.FontSpec.FontColor = Color.FromArgb(221, 221, 221);
-				zedGraphControl.GraphPane.YAxis.Scale.FontSpec.FontColor = Color.FromArgb(221, 221, 221);
+				zedGraphControl.GraphPane.XAxis.Scale.FontSpec.FontColor = Color.FromArgb(100, 100, 100);
+				zedGraphControl.GraphPane.YAxis.Scale.FontSpec.FontColor = Color.FromArgb(100, 100, 100);
 
 				Text = "Curve Editor";
 			}
@@ -372,9 +372,15 @@ namespace VixenModules.App.Curves
 			btn.BackgroundImage = Resources.HeadingBackgroundImage;
 		}
 
+		private void buttonTextColorChange(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.ForeColor = btn.Enabled ? Color.FromArgb(221, 221, 221) : Color.Gray;
+		}
+
 		#region Draw lines and GroupBox borders
 		//set color for box borders.
-		private Color _borderColor = Color.FromArgb(100, 100, 100);
+		private Color _borderColor = Color.FromArgb(80, 80, 80);
 
 		public Color BorderColor
 		{
@@ -403,5 +409,6 @@ namespace VixenModules.App.Curves
 			e.Graphics.DrawString((sender as GroupBox).Text, Font, new SolidBrush(Color.FromArgb(221, 221, 221)), textRect);
 		}
 		#endregion
+
 	}
 }

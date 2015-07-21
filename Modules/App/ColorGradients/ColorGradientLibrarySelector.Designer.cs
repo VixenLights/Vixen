@@ -38,6 +38,7 @@
 			// buttonCancel
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonCancel.BackColor = System.Drawing.Color.Transparent;
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.buttonCancel.FlatAppearance.BorderColor = System.Drawing.Color.Black;
 			this.buttonCancel.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
@@ -50,13 +51,14 @@
 			this.buttonCancel.Size = new System.Drawing.Size(80, 25);
 			this.buttonCancel.TabIndex = 5;
 			this.buttonCancel.Text = "Cancel";
-			this.buttonCancel.UseVisualStyleBackColor = true;
+			this.buttonCancel.UseVisualStyleBackColor = false;
 			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonOK
 			// 
 			this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonOK.BackColor = System.Drawing.Color.Transparent;
 			this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
 			this.buttonOK.FlatAppearance.BorderColor = System.Drawing.Color.Black;
 			this.buttonOK.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
@@ -69,7 +71,7 @@
 			this.buttonOK.Size = new System.Drawing.Size(80, 25);
 			this.buttonOK.TabIndex = 4;
 			this.buttonOK.Text = "OK";
-			this.buttonOK.UseVisualStyleBackColor = true;
+			this.buttonOK.UseVisualStyleBackColor = false;
 			this.buttonOK.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonOK.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -91,6 +93,7 @@
 			// buttonEditColorGradient
 			// 
 			this.buttonEditColorGradient.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonEditColorGradient.BackColor = System.Drawing.Color.Transparent;
 			this.buttonEditColorGradient.Enabled = false;
 			this.buttonEditColorGradient.FlatAppearance.BorderColor = System.Drawing.Color.Black;
 			this.buttonEditColorGradient.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
@@ -103,7 +106,7 @@
 			this.buttonEditColorGradient.Size = new System.Drawing.Size(90, 25);
 			this.buttonEditColorGradient.TabIndex = 7;
 			this.buttonEditColorGradient.Text = "Edit Gradient";
-			this.buttonEditColorGradient.UseVisualStyleBackColor = true;
+			this.buttonEditColorGradient.UseVisualStyleBackColor = false;
 			this.buttonEditColorGradient.Click += new System.EventHandler(this.buttonEditColorGradient_Click);
 			this.buttonEditColorGradient.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonEditColorGradient.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
@@ -111,6 +114,7 @@
 			// buttonDeleteColorGradient
 			// 
 			this.buttonDeleteColorGradient.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonDeleteColorGradient.BackColor = System.Drawing.Color.Transparent;
 			this.buttonDeleteColorGradient.Enabled = false;
 			this.buttonDeleteColorGradient.FlatAppearance.BorderColor = System.Drawing.Color.Black;
 			this.buttonDeleteColorGradient.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
@@ -123,7 +127,7 @@
 			this.buttonDeleteColorGradient.Size = new System.Drawing.Size(90, 25);
 			this.buttonDeleteColorGradient.TabIndex = 8;
 			this.buttonDeleteColorGradient.Text = "Delete Gradient";
-			this.buttonDeleteColorGradient.UseVisualStyleBackColor = true;
+			this.buttonDeleteColorGradient.UseVisualStyleBackColor = false;
 			this.buttonDeleteColorGradient.Click += new System.EventHandler(this.buttonDeleteColorGradient_Click);
 			this.buttonDeleteColorGradient.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonDeleteColorGradient.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
@@ -131,6 +135,7 @@
 			// buttonNewColorGradient
 			// 
 			this.buttonNewColorGradient.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonNewColorGradient.BackColor = System.Drawing.Color.Transparent;
 			this.buttonNewColorGradient.FlatAppearance.BorderColor = System.Drawing.Color.Black;
 			this.buttonNewColorGradient.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
 			this.buttonNewColorGradient.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
@@ -142,7 +147,7 @@
 			this.buttonNewColorGradient.Size = new System.Drawing.Size(90, 25);
 			this.buttonNewColorGradient.TabIndex = 9;
 			this.buttonNewColorGradient.Text = "New Gradient";
-			this.buttonNewColorGradient.UseVisualStyleBackColor = true;
+			this.buttonNewColorGradient.UseVisualStyleBackColor = false;
 			this.buttonNewColorGradient.Click += new System.EventHandler(this.buttonNewColorGradient_Click);
 			this.buttonNewColorGradient.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonNewColorGradient.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);

@@ -356,6 +356,7 @@
 			this.groupBox1.TabIndex = 12;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Octave 0 (16-30hz)";
+			this.groupBox1.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
 			// groupBox2
 			// 
@@ -380,6 +381,7 @@
 			this.groupBox2.TabIndex = 13;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Octave 1 (32 - 64hz)";
+			this.groupBox2.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
 			// checkBox13
 			// 
@@ -560,6 +562,7 @@
 			this.groupBox3.TabIndex = 14;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "Octave 2 (65-104hz)";
+			this.groupBox3.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
 			// checkBox25
 			// 
@@ -740,6 +743,7 @@
 			this.groupBox4.TabIndex = 15;
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = "Octave 3 (131-247hz)";
+			this.groupBox4.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
 			// checkBox37
 			// 
@@ -920,6 +924,7 @@
 			this.groupBox5.TabIndex = 16;
 			this.groupBox5.TabStop = false;
 			this.groupBox5.Text = "Octave 4 (262-494hz)";
+			this.groupBox5.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
 			// checkBox49
 			// 
@@ -1100,6 +1105,7 @@
 			this.groupBox6.TabIndex = 17;
 			this.groupBox6.TabStop = false;
 			this.groupBox6.Text = "Octave 5 (523-988hz)";
+			this.groupBox6.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
 			// checkBox61
 			// 
@@ -1280,6 +1286,7 @@
 			this.groupBox7.TabIndex = 18;
 			this.groupBox7.TabStop = false;
 			this.groupBox7.Text = "Octave 6 (1046-1976hz)";
+			this.groupBox7.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
 			// checkBox73
 			// 
@@ -1460,6 +1467,7 @@
 			this.groupBox8.TabIndex = 19;
 			this.groupBox8.TabStop = false;
 			this.groupBox8.Text = "Octave 7 (2093-3951hz)";
+			this.groupBox8.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
 			// checkBox85
 			// 
@@ -1640,6 +1648,7 @@
 			this.groupBox9.TabIndex = 20;
 			this.groupBox9.TabStop = false;
 			this.groupBox9.Text = "Octave 8 (4186-7902hz)";
+			this.groupBox9.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
 			// checkBox97
 			// 
@@ -1820,6 +1829,7 @@
 			this.groupBox10.TabIndex = 21;
 			this.groupBox10.TabStop = false;
 			this.groupBox10.Text = "Octave 9 (8372-15804hz)";
+			this.groupBox10.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
 			// checkBox109
 			// 
@@ -2032,7 +2042,8 @@
 			// 
 			// numericUpDown1
 			// 
-			this.numericUpDown1.ForeColor = System.Drawing.Color.Black;
+			this.numericUpDown1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
+			this.numericUpDown1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.numericUpDown1.Location = new System.Drawing.Point(255, 458);
 			this.numericUpDown1.Maximum = new decimal(new int[] {
             1000,
@@ -2040,7 +2051,7 @@
             0,
             0});
 			this.numericUpDown1.Name = "numericUpDown1";
-			this.numericUpDown1.Size = new System.Drawing.Size(54, 20);
+			this.numericUpDown1.Size = new System.Drawing.Size(65, 20);
 			this.numericUpDown1.TabIndex = 25;
 			this.numericUpDown1.ValueChanged += new System.EventHandler(this.numericUpDown1_ValueChanged);
 			// 
@@ -2080,6 +2091,7 @@
 			this.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.Name = "AutomaticMusicDetection";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Automatic Detection Settings";
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();

@@ -47,6 +47,9 @@
 			this.controllerColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.channelsColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.mappingColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.label1 = new System.Windows.Forms.Label();
+			this.label2 = new System.Windows.Forms.Label();
+			this.label5 = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			this.statusStrip1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
@@ -84,13 +87,17 @@
 			// 
 			// outputFormatComboBox
 			// 
-			this.outputFormatComboBox.BackColor = System.Drawing.Color.WhiteSmoke;
+			this.outputFormatComboBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
+			this.outputFormatComboBox.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
 			this.outputFormatComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.outputFormatComboBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.outputFormatComboBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.outputFormatComboBox.FormattingEnabled = true;
 			this.outputFormatComboBox.Location = new System.Drawing.Point(99, 21);
 			this.outputFormatComboBox.Name = "outputFormatComboBox";
 			this.outputFormatComboBox.Size = new System.Drawing.Size(121, 21);
 			this.outputFormatComboBox.TabIndex = 10;
+			this.outputFormatComboBox.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.comboBoxes_DrawItem);
 			// 
 			// label4
 			// 
@@ -104,17 +111,21 @@
 			// 
 			// resolutionComboBox
 			// 
-			this.resolutionComboBox.BackColor = System.Drawing.Color.WhiteSmoke;
+			this.resolutionComboBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
+			this.resolutionComboBox.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
 			this.resolutionComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.resolutionComboBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.resolutionComboBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.resolutionComboBox.FormattingEnabled = true;
 			this.resolutionComboBox.Items.AddRange(new object[] {
             "25",
             "50",
             "100"});
-			this.resolutionComboBox.Location = new System.Drawing.Point(323, 19);
+			this.resolutionComboBox.Location = new System.Drawing.Point(323, 21);
 			this.resolutionComboBox.Name = "resolutionComboBox";
 			this.resolutionComboBox.Size = new System.Drawing.Size(53, 21);
 			this.resolutionComboBox.TabIndex = 12;
+			this.resolutionComboBox.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.comboBoxes_DrawItem);
 			// 
 			// groupBox1
 			// 
@@ -190,6 +201,9 @@
 			this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox2.Controls.Add(this.label5);
+			this.groupBox2.Controls.Add(this.label2);
+			this.groupBox2.Controls.Add(this.label1);
 			this.groupBox2.Controls.Add(this.networkListView);
 			this.groupBox2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.groupBox2.Location = new System.Drawing.Point(8, 129);
@@ -225,19 +239,20 @@
 			this.networkListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.networkListView.BackColor = System.Drawing.Color.WhiteSmoke;
+			this.networkListView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
+			this.networkListView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.networkListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.controllerColumn,
             this.channelsColumn,
             this.mappingColumn});
-			this.networkListView.ForeColor = System.Drawing.Color.Black;
-			this.networkListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+			this.networkListView.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.networkListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.networkListView.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
             listViewItem1});
-			this.networkListView.Location = new System.Drawing.Point(6, 19);
+			this.networkListView.Location = new System.Drawing.Point(6, 35);
 			this.networkListView.MultiSelect = false;
 			this.networkListView.Name = "networkListView";
-			this.networkListView.Size = new System.Drawing.Size(406, 208);
+			this.networkListView.Size = new System.Drawing.Size(406, 192);
 			this.networkListView.TabIndex = 1;
 			this.networkListView.UseCompatibleStateImageBehavior = false;
 			this.networkListView.View = System.Windows.Forms.View.Details;
@@ -256,6 +271,33 @@
 			// 
 			this.mappingColumn.Text = "Mapping";
 			this.mappingColumn.Width = 128;
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(9, 19);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(51, 13);
+			this.label1.TabIndex = 2;
+			this.label1.Text = "Controller";
+			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(187, 19);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(51, 13);
+			this.label2.TabIndex = 3;
+			this.label2.Text = "Channels";
+			// 
+			// label5
+			// 
+			this.label5.AutoSize = true;
+			this.label5.Location = new System.Drawing.Point(266, 19);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(48, 13);
+			this.label5.TabIndex = 4;
+			this.label5.Text = "Mapping";
 			// 
 			// ExportDialog
 			// 
@@ -282,6 +324,7 @@
 			this.statusStrip1.ResumeLayout(false);
 			this.statusStrip1.PerformLayout();
 			this.groupBox2.ResumeLayout(false);
+			this.groupBox2.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -307,5 +350,8 @@
 		private System.Windows.Forms.ColumnHeader controllerColumn;
 		private System.Windows.Forms.ColumnHeader channelsColumn;
 		private System.Windows.Forms.ColumnHeader mappingColumn;
+		private System.Windows.Forms.Label label5;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.Label label1;
     }
 }

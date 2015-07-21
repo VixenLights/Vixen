@@ -170,11 +170,12 @@ namespace Common.Controls.ControlsEx.ValueControls
 			#region textbox
 
 			this._textbox = new TextBox();
-			this._textbox.Size = new Size(this.Width - 32, 20);
-			this._textbox.Location = new Point(2, 4);
-			this._textbox.BorderStyle = BorderStyle.None;
+			this._textbox.Size = new Size(this.Width - 31, 20);
+			this._textbox.Location = new Point(2, 2);
+			this._textbox.BorderStyle = BorderStyle.FixedSingle;
 			this._textbox.Text = this.Minimum.ToString();
-			this._textbox.BackColor = Color.White;
+			this._textbox.BackColor = Color.FromArgb(90,90,90);
+			this._textbox.ForeColor = Color.FromArgb(221,221,221);
 			this._textbox.MaxLength = 5;
 			this._textbox.KeyDown += new KeyEventHandler(_textbox_KeyDown);
 			this._textbox.KeyPress += new KeyPressEventHandler(_textbox_KeyPress);

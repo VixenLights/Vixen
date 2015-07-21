@@ -139,7 +139,7 @@
     <value>51, 21</value>
   </data>
   <data name="lblColorSelect.Size" type="System.Drawing.Size, System.Drawing">
-    <value>64, 20</value>
+    <value>64, 25</value>
   </data>
   <data name="lblColorSelect.TabIndex" type="System.Int32, mscorlib">
     <value>3</value>
@@ -202,7 +202,7 @@
     <value>263, 21</value>
   </data>
   <data name="btnDeleteColor.Size" type="System.Drawing.Size, System.Drawing">
-    <value>72, 22</value>
+    <value>72, 25</value>
   </data>
   <data name="btnDeleteColor.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
@@ -262,7 +262,7 @@
     <value>NoControl</value>
   </data>
   <data name="label4.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 21</value>
+    <value>6, 21</value>
   </data>
   <data name="label4.Size" type="System.Drawing.Size, System.Drawing">
     <value>39, 20</value>

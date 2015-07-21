@@ -47,7 +47,9 @@
 			// 
 			// txtStartTime
 			// 
-			this.txtStartTime.BackColor = System.Drawing.Color.WhiteSmoke;
+			this.txtStartTime.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
+			this.txtStartTime.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.txtStartTime.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.txtStartTime.Location = new System.Drawing.Point(104, 12);
 			this.txtStartTime.Name = "txtStartTime";
 			this.txtStartTime.Size = new System.Drawing.Size(100, 20);
@@ -58,7 +60,9 @@
 			// 
 			// txtEndTime
 			// 
-			this.txtEndTime.BackColor = System.Drawing.Color.WhiteSmoke;
+			this.txtEndTime.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
+			this.txtEndTime.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.txtEndTime.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.txtEndTime.Location = new System.Drawing.Point(104, 38);
 			this.txtEndTime.Name = "txtEndTime";
 			this.txtEndTime.Size = new System.Drawing.Size(100, 20);
@@ -69,7 +73,9 @@
 			// 
 			// txtOffset
 			// 
-			this.txtOffset.BackColor = System.Drawing.Color.WhiteSmoke;
+			this.txtOffset.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
+			this.txtOffset.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.txtOffset.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.txtOffset.Location = new System.Drawing.Point(104, 64);
 			this.txtOffset.Name = "txtOffset";
 			this.txtOffset.Size = new System.Drawing.Size(100, 20);

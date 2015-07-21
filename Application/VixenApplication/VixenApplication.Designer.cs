@@ -292,7 +292,7 @@
 			this.groupBoxSequences.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.groupBoxSequences.Location = new System.Drawing.Point(12, 200);
 			this.groupBoxSequences.Name = "groupBoxSequences";
-			this.groupBoxSequences.Size = new System.Drawing.Size(218, 227);
+			this.groupBoxSequences.Size = new System.Drawing.Size(218, 235);
 			this.groupBoxSequences.TabIndex = 0;
 			this.groupBoxSequences.TabStop = false;
 			this.groupBoxSequences.Text = "Sequences";
@@ -300,10 +300,10 @@
 			// 
 			// listViewRecentSequences
 			// 
-			this.listViewRecentSequences.BackColor = System.Drawing.Color.WhiteSmoke;
+			this.listViewRecentSequences.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
 			this.listViewRecentSequences.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1});
-			this.listViewRecentSequences.ForeColor = System.Drawing.Color.Black;
+			this.listViewRecentSequences.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.listViewRecentSequences.FullRowSelect = true;
 			this.listViewRecentSequences.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.listViewRecentSequences.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
@@ -316,7 +316,7 @@
 			this.listViewRecentSequences.Location = new System.Drawing.Point(18, 116);
 			this.listViewRecentSequences.MultiSelect = false;
 			this.listViewRecentSequences.Name = "listViewRecentSequences";
-			this.listViewRecentSequences.Size = new System.Drawing.Size(180, 100);
+			this.listViewRecentSequences.Size = new System.Drawing.Size(180, 113);
 			this.listViewRecentSequences.TabIndex = 3;
 			this.listViewRecentSequences.UseCompatibleStateImageBehavior = false;
 			this.listViewRecentSequences.View = System.Windows.Forms.View.Details;
@@ -401,29 +401,33 @@
 			// 
 			this.toolStripStatusLabelExecutionLight.AutoSize = false;
 			this.toolStripStatusLabelExecutionLight.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+			this.toolStripStatusLabelExecutionLight.Margin = new System.Windows.Forms.Padding(0, 1, 0, 1);
 			this.toolStripStatusLabelExecutionLight.Name = "toolStripStatusLabelExecutionLight";
-			this.toolStripStatusLabelExecutionLight.Size = new System.Drawing.Size(22, 22);
+			this.toolStripStatusLabelExecutionLight.Size = new System.Drawing.Size(22, 25);
 			// 
 			// toolStripStatusLabel1
 			// 
+			this.toolStripStatusLabel1.Margin = new System.Windows.Forms.Padding(0, 1, 0, 1);
 			this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-			this.toolStripStatusLabel1.Size = new System.Drawing.Size(13, 22);
+			this.toolStripStatusLabel1.Size = new System.Drawing.Size(13, 25);
 			this.toolStripStatusLabel1.Text = "  ";
 			// 
 			// toolStripStatusLabelExecutionState
 			// 
 			this.toolStripStatusLabelExecutionState.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Right;
 			this.toolStripStatusLabelExecutionState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.toolStripStatusLabelExecutionState.Margin = new System.Windows.Forms.Padding(0, 1, 0, 1);
 			this.toolStripStatusLabelExecutionState.Name = "toolStripStatusLabelExecutionState";
-			this.toolStripStatusLabelExecutionState.Size = new System.Drawing.Size(119, 22);
+			this.toolStripStatusLabelExecutionState.Size = new System.Drawing.Size(119, 25);
 			this.toolStripStatusLabelExecutionState.Text = "Execution: Unknown";
 			// 
 			// toolStripStatusLabel_memory
 			// 
 			this.toolStripStatusLabel_memory.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.toolStripStatusLabel_memory.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.toolStripStatusLabel_memory.Margin = new System.Windows.Forms.Padding(0, 1, 0, 1);
 			this.toolStripStatusLabel_memory.Name = "toolStripStatusLabel_memory";
-			this.toolStripStatusLabel_memory.Size = new System.Drawing.Size(292, 22);
+			this.toolStripStatusLabel_memory.Size = new System.Drawing.Size(292, 25);
 			this.toolStripStatusLabel_memory.Spring = true;
 			this.toolStripStatusLabel_memory.Text = "Resource Usage";
 			this.toolStripStatusLabel_memory.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -464,7 +468,7 @@
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MainMenuStrip = this.menuStripMain;
 			this.MaximizeBox = false;
-			this.MinimumSize = new System.Drawing.Size(465, 428);
+			this.MinimumSize = new System.Drawing.Size(463, 422);
 			this.Name = "VixenApplication";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Vixen Administration";

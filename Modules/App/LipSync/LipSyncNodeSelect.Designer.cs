@@ -52,10 +52,9 @@
 			this.buttonOk.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
 			this.buttonOk.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.buttonOk.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonOk.Location = new System.Drawing.Point(537, 449);
-			this.buttonOk.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.buttonOk.Location = new System.Drawing.Point(358, 292);
 			this.buttonOk.Name = "buttonOk";
-			this.buttonOk.Size = new System.Drawing.Size(112, 35);
+			this.buttonOk.Size = new System.Drawing.Size(75, 23);
 			this.buttonOk.TabIndex = 0;
 			this.buttonOk.Text = "OK";
 			this.buttonOk.UseVisualStyleBackColor = true;
@@ -70,10 +69,9 @@
 			this.buttonCancel.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
 			this.buttonCancel.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.buttonCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonCancel.Location = new System.Drawing.Point(658, 449);
-			this.buttonCancel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.buttonCancel.Location = new System.Drawing.Point(439, 292);
 			this.buttonCancel.Name = "buttonCancel";
-			this.buttonCancel.Size = new System.Drawing.Size(112, 35);
+			this.buttonCancel.Size = new System.Drawing.Size(75, 23);
 			this.buttonCancel.TabIndex = 1;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
@@ -82,15 +80,14 @@
 			// 
 			// chosenTargets
 			// 
-			this.chosenTargets.BackColor = System.Drawing.Color.WhiteSmoke;
-			this.chosenTargets.ForeColor = System.Drawing.Color.Black;
+			this.chosenTargets.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
+			this.chosenTargets.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.chosenTargets.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.chosenTargets.FormattingEnabled = true;
-			this.chosenTargets.ItemHeight = 20;
-			this.chosenTargets.Location = new System.Drawing.Point(490, 18);
-			this.chosenTargets.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.chosenTargets.Location = new System.Drawing.Point(327, 12);
 			this.chosenTargets.Name = "chosenTargets";
 			this.chosenTargets.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-			this.chosenTargets.Size = new System.Drawing.Size(278, 384);
+			this.chosenTargets.Size = new System.Drawing.Size(187, 262);
 			this.chosenTargets.TabIndex = 3;
 			// 
 			// buttonAdd
@@ -100,10 +97,9 @@
 			this.buttonAdd.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
 			this.buttonAdd.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.buttonAdd.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonAdd.Location = new System.Drawing.Point(346, 35);
-			this.buttonAdd.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.buttonAdd.Location = new System.Drawing.Point(231, 23);
 			this.buttonAdd.Name = "buttonAdd";
-			this.buttonAdd.Size = new System.Drawing.Size(100, 35);
+			this.buttonAdd.Size = new System.Drawing.Size(67, 23);
 			this.buttonAdd.TabIndex = 4;
 			this.buttonAdd.Text = "->";
 			this.buttonAdd.UseVisualStyleBackColor = true;
@@ -118,10 +114,9 @@
 			this.buttonRemove.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
 			this.buttonRemove.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.buttonRemove.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonRemove.Location = new System.Drawing.Point(346, 80);
-			this.buttonRemove.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.buttonRemove.Location = new System.Drawing.Point(231, 52);
 			this.buttonRemove.Name = "buttonRemove";
-			this.buttonRemove.Size = new System.Drawing.Size(100, 35);
+			this.buttonRemove.Size = new System.Drawing.Size(67, 23);
 			this.buttonRemove.TabIndex = 5;
 			this.buttonRemove.Text = "<-";
 			this.buttonRemove.UseVisualStyleBackColor = true;
@@ -136,10 +131,9 @@
 			this.buttonReset.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
 			this.buttonReset.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.buttonReset.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonReset.Location = new System.Drawing.Point(346, 125);
-			this.buttonReset.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.buttonReset.Location = new System.Drawing.Point(231, 81);
 			this.buttonReset.Name = "buttonReset";
-			this.buttonReset.Size = new System.Drawing.Size(100, 35);
+			this.buttonReset.Size = new System.Drawing.Size(67, 23);
 			this.buttonReset.TabIndex = 6;
 			this.buttonReset.Text = "Reset";
 			this.buttonReset.UseVisualStyleBackColor = true;
@@ -152,10 +146,9 @@
 			this.recurseCB.AutoSize = true;
 			this.recurseCB.Checked = true;
 			this.recurseCB.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.recurseCB.Location = new System.Drawing.Point(327, 378);
-			this.recurseCB.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.recurseCB.Location = new System.Drawing.Point(218, 246);
 			this.recurseCB.Name = "recurseCB";
-			this.recurseCB.Size = new System.Drawing.Size(148, 24);
+			this.recurseCB.Size = new System.Drawing.Size(103, 17);
 			this.recurseCB.TabIndex = 7;
 			this.recurseCB.Text = "Add Recursively";
 			this.recurseCB.UseVisualStyleBackColor = true;
@@ -163,10 +156,9 @@
 			// allowGroupsCheckbox
 			// 
 			this.allowGroupsCheckbox.AutoSize = true;
-			this.allowGroupsCheckbox.Location = new System.Drawing.Point(327, 343);
-			this.allowGroupsCheckbox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.allowGroupsCheckbox.Location = new System.Drawing.Point(218, 223);
 			this.allowGroupsCheckbox.Name = "allowGroupsCheckbox";
-			this.allowGroupsCheckbox.Size = new System.Drawing.Size(129, 24);
+			this.allowGroupsCheckbox.Size = new System.Drawing.Size(88, 17);
 			this.allowGroupsCheckbox.TabIndex = 8;
 			this.allowGroupsCheckbox.Text = "Allow Groups";
 			this.allowGroupsCheckbox.UseVisualStyleBackColor = true;
@@ -177,11 +169,9 @@
 			this.stringsGroupBox.Controls.Add(this.colsRadioButton);
 			this.stringsGroupBox.Controls.Add(this.rowsRadioButton);
 			this.stringsGroupBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.stringsGroupBox.Location = new System.Drawing.Point(308, 186);
-			this.stringsGroupBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.stringsGroupBox.Location = new System.Drawing.Point(205, 121);
 			this.stringsGroupBox.Name = "stringsGroupBox";
-			this.stringsGroupBox.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-			this.stringsGroupBox.Size = new System.Drawing.Size(174, 115);
+			this.stringsGroupBox.Size = new System.Drawing.Size(116, 75);
 			this.stringsGroupBox.TabIndex = 10;
 			this.stringsGroupBox.TabStop = false;
 			this.stringsGroupBox.Text = "Strings are:";
@@ -190,10 +180,9 @@
 			// colsRadioButton
 			// 
 			this.colsRadioButton.AutoSize = true;
-			this.colsRadioButton.Location = new System.Drawing.Point(20, 65);
-			this.colsRadioButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.colsRadioButton.Location = new System.Drawing.Point(13, 42);
 			this.colsRadioButton.Name = "colsRadioButton";
-			this.colsRadioButton.Size = new System.Drawing.Size(87, 24);
+			this.colsRadioButton.Size = new System.Drawing.Size(60, 17);
 			this.colsRadioButton.TabIndex = 11;
 			this.colsRadioButton.Text = "Vertical";
 			this.colsRadioButton.UseVisualStyleBackColor = true;
@@ -201,10 +190,9 @@
 			// rowsRadioButton
 			// 
 			this.rowsRadioButton.AutoSize = true;
-			this.rowsRadioButton.Location = new System.Drawing.Point(20, 29);
-			this.rowsRadioButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.rowsRadioButton.Location = new System.Drawing.Point(13, 19);
 			this.rowsRadioButton.Name = "rowsRadioButton";
-			this.rowsRadioButton.Size = new System.Drawing.Size(106, 24);
+			this.rowsRadioButton.Size = new System.Drawing.Size(72, 17);
 			this.rowsRadioButton.TabIndex = 9;
 			this.rowsRadioButton.Text = "Horizontal";
 			this.rowsRadioButton.UseVisualStyleBackColor = true;
@@ -212,7 +200,8 @@
 			// nodeTreeView
 			// 
 			this.nodeTreeView.AllowDrop = true;
-			this.nodeTreeView.BackColor = System.Drawing.Color.WhiteSmoke;
+			this.nodeTreeView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
+			this.nodeTreeView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.nodeTreeView.Cursor = System.Windows.Forms.Cursors.Default;
 			this.nodeTreeView.CustomDragCursor = null;
 			this.nodeTreeView.DragDefaultMode = System.Windows.Forms.DragDropEffects.Move;
@@ -220,23 +209,22 @@
 			this.nodeTreeView.DragDestinationNodeForeColor = System.Drawing.SystemColors.HighlightText;
 			this.nodeTreeView.DragSourceNodeBackColor = System.Drawing.SystemColors.ControlLight;
 			this.nodeTreeView.DragSourceNodeForeColor = System.Drawing.SystemColors.ControlText;
-			this.nodeTreeView.ForeColor = System.Drawing.Color.Black;
-			this.nodeTreeView.Location = new System.Drawing.Point(18, 18);
-			this.nodeTreeView.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.nodeTreeView.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.nodeTreeView.Location = new System.Drawing.Point(12, 12);
 			this.nodeTreeView.Name = "nodeTreeView";
 			this.nodeTreeView.SelectedNodes = ((System.Collections.Generic.List<System.Windows.Forms.TreeNode>)(resources.GetObject("nodeTreeView.SelectedNodes")));
-			this.nodeTreeView.Size = new System.Drawing.Size(278, 392);
+			this.nodeTreeView.Size = new System.Drawing.Size(187, 262);
 			this.nodeTreeView.TabIndex = 2;
 			this.nodeTreeView.UsingCustomDragCursor = false;
 			// 
 			// LipSyncNodeSelect
 			// 
 			this.AcceptButton = this.buttonOk;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.CancelButton = this.buttonCancel;
-			this.ClientSize = new System.Drawing.Size(789, 477);
+			this.ClientSize = new System.Drawing.Size(530, 321);
 			this.Controls.Add(this.stringsGroupBox);
 			this.Controls.Add(this.allowGroupsCheckbox);
 			this.Controls.Add(this.recurseCB);
@@ -248,9 +236,8 @@
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.buttonOk);
 			this.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-			this.MaximumSize = new System.Drawing.Size(811, 533);
-			this.MinimumSize = new System.Drawing.Size(811, 533);
+			this.MaximumSize = new System.Drawing.Size(546, 360);
+			this.MinimumSize = new System.Drawing.Size(546, 360);
 			this.Name = "LipSyncNodeSelect";
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;

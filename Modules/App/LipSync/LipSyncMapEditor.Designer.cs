@@ -92,7 +92,7 @@
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(253, 35);
+			this.label1.Location = new System.Drawing.Point(253, 33);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(50, 13);
 			this.label1.TabIndex = 22;
@@ -101,7 +101,7 @@
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(12, 35);
+			this.label2.Location = new System.Drawing.Point(12, 33);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(35, 13);
 			this.label2.TabIndex = 23;
@@ -109,9 +109,10 @@
 			// 
 			// nameTextBox
 			// 
-			this.nameTextBox.BackColor = System.Drawing.Color.WhiteSmoke;
-			this.nameTextBox.ForeColor = System.Drawing.Color.Black;
-			this.nameTextBox.Location = new System.Drawing.Point(53, 32);
+			this.nameTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
+			this.nameTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.nameTextBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.nameTextBox.Location = new System.Drawing.Point(53, 31);
 			this.nameTextBox.Name = "nameTextBox";
 			this.nameTextBox.Size = new System.Drawing.Size(130, 20);
 			this.nameTextBox.TabIndex = 24;

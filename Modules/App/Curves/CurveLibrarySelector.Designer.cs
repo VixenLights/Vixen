@@ -28,6 +28,7 @@
 			// buttonCancel
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonCancel.BackColor = System.Drawing.Color.Transparent;
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.buttonCancel.FlatAppearance.BorderColor = System.Drawing.Color.Black;
 			this.buttonCancel.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
@@ -40,13 +41,14 @@
 			this.buttonCancel.Size = new System.Drawing.Size(80, 25);
 			this.buttonCancel.TabIndex = 5;
 			this.buttonCancel.Text = "Cancel";
-			this.buttonCancel.UseVisualStyleBackColor = true;
+			this.buttonCancel.UseVisualStyleBackColor = false;
 			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonOK
 			// 
 			this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonOK.BackColor = System.Drawing.Color.Transparent;
 			this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
 			this.buttonOK.FlatAppearance.BorderColor = System.Drawing.Color.Black;
 			this.buttonOK.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
@@ -59,7 +61,7 @@
 			this.buttonOK.Size = new System.Drawing.Size(80, 25);
 			this.buttonOK.TabIndex = 4;
 			this.buttonOK.Text = "OK";
-			this.buttonOK.UseVisualStyleBackColor = true;
+			this.buttonOK.UseVisualStyleBackColor = false;
 			this.buttonOK.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonOK.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -80,6 +82,7 @@
 			// buttonEditCurve
 			// 
 			this.buttonEditCurve.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonEditCurve.BackColor = System.Drawing.Color.Transparent;
 			this.buttonEditCurve.Enabled = false;
 			this.buttonEditCurve.FlatAppearance.BorderColor = System.Drawing.Color.Black;
 			this.buttonEditCurve.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
@@ -92,7 +95,7 @@
 			this.buttonEditCurve.Size = new System.Drawing.Size(80, 25);
 			this.buttonEditCurve.TabIndex = 7;
 			this.buttonEditCurve.Text = "Edit Curve";
-			this.buttonEditCurve.UseVisualStyleBackColor = true;
+			this.buttonEditCurve.UseVisualStyleBackColor = false;
 			this.buttonEditCurve.EnabledChanged += new System.EventHandler(this.buttonTextColorChange);
 			this.buttonEditCurve.Click += new System.EventHandler(this.buttonEditCurve_Click);
 			this.buttonEditCurve.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
@@ -101,6 +104,7 @@
 			// buttonDeleteCurve
 			// 
 			this.buttonDeleteCurve.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonDeleteCurve.BackColor = System.Drawing.Color.Transparent;
 			this.buttonDeleteCurve.Enabled = false;
 			this.buttonDeleteCurve.FlatAppearance.BorderColor = System.Drawing.Color.Black;
 			this.buttonDeleteCurve.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
@@ -113,7 +117,7 @@
 			this.buttonDeleteCurve.Size = new System.Drawing.Size(80, 25);
 			this.buttonDeleteCurve.TabIndex = 8;
 			this.buttonDeleteCurve.Text = "Delete Curve";
-			this.buttonDeleteCurve.UseVisualStyleBackColor = true;
+			this.buttonDeleteCurve.UseVisualStyleBackColor = false;
 			this.buttonDeleteCurve.EnabledChanged += new System.EventHandler(this.buttonTextColorChange);
 			this.buttonDeleteCurve.Click += new System.EventHandler(this.buttonDeleteCurve_Click);
 			this.buttonDeleteCurve.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
@@ -122,6 +126,7 @@
 			// buttonNewCurve
 			// 
 			this.buttonNewCurve.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonNewCurve.BackColor = System.Drawing.Color.Transparent;
 			this.buttonNewCurve.FlatAppearance.BorderColor = System.Drawing.Color.Black;
 			this.buttonNewCurve.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
 			this.buttonNewCurve.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
@@ -133,7 +138,7 @@
 			this.buttonNewCurve.Size = new System.Drawing.Size(80, 25);
 			this.buttonNewCurve.TabIndex = 9;
 			this.buttonNewCurve.Text = "New Curve";
-			this.buttonNewCurve.UseVisualStyleBackColor = true;
+			this.buttonNewCurve.UseVisualStyleBackColor = false;
 			this.buttonNewCurve.Click += new System.EventHandler(this.buttonNewCurve_Click);
 			this.buttonNewCurve.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonNewCurve.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);

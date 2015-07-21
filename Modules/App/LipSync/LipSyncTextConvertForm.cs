@@ -22,6 +22,11 @@ namespace VixenModules.App.LipSyncApp
         public LipSyncTextConvertForm()
         {
             InitializeComponent();
+
+			markCollectionLabel.ForeColor = Color.Gray;
+			markAlignmentLabel.ForeColor = Color.Gray;
+			markStartOffsetLabel.ForeColor = Color.Gray;
+			markCollectionRadio.ForeColor = Color.Gray;
 			buttonConvert.BackgroundImage = Resources.HeadingBackgroundImage;
 			Icon = Resources.Icon_Vixen3;
             unMarkedPhonemes = 0;
@@ -275,7 +280,7 @@ namespace VixenModules.App.LipSyncApp
                 }
             }
 
-            markCollectionRadio.Enabled = false;
+            markCollectionRadio.AutoCheck = false;
 
             if (markCollectionCombo.Items.Count > 0)
             {
@@ -296,14 +301,18 @@ namespace VixenModules.App.LipSyncApp
                 }
                 populateStartOffsetCombo();
 
-                markCollectionRadio.Enabled = 
+				markCollectionRadio.AutoCheck = 
                     (markCollectionCombo.Items.Count > 0) && (startOffsetCombo.Items.Count > 0);
+	            markCollectionRadio.ForeColor = markCollectionRadio.AutoCheck ? Color.FromArgb(221, 221, 221) : Color.Gray;
             }
 
-            marksGroupBox.Enabled = enable;
-
+			
             if (enable)
             {
+				markCollectionCombo.Enabled = true;
+				startOffsetCombo.Enabled = true;
+				alignCombo.Enabled = true;
+
                 alignCombo.Items.Clear();
                 alignCombo.Items.Add("Phoneme");
                 alignCombo.Items.Add("Word");
@@ -312,6 +321,10 @@ namespace VixenModules.App.LipSyncApp
             }
             else
             {
+				markCollectionCombo.Enabled = false;
+				startOffsetCombo.Enabled = false;
+				alignCombo.Enabled = false;
+
                 markCollectionCombo.SelectedIndex = -1;
                 startOffsetCombo.SelectedIndex = -1;
             }
@@ -351,7 +364,7 @@ namespace VixenModules.App.LipSyncApp
 
 		#region Draw lines and GroupBox borders
 		//set color for box borders.
-		private Color _borderColor = Color.FromArgb(100, 100, 100);
+		private Color _borderColor = Color.FromArgb(80,80,80);
 
 		public Color BorderColor
 		{
@@ -384,6 +397,26 @@ namespace VixenModules.App.LipSyncApp
 		{
 			var btn = (Button)sender;
 			btn.ForeColor = btn.Enabled ? Color.FromArgb(221, 221, 221) : Color.Gray;
+		}
+
+		private void markCollectionCombo_EnabledChanged(object sender, EventArgs e)
+		{
+			markCollectionLabel.ForeColor = markCollectionCombo.Enabled ? Color.FromArgb(221, 221, 221) : Color.Gray;
+			markAlignmentLabel.ForeColor = markCollectionCombo.Enabled ? Color.FromArgb(221, 221, 221) : Color.Gray;
+			markStartOffsetLabel.ForeColor = markCollectionCombo.Enabled ? Color.FromArgb(221, 221, 221) : Color.Gray;
+		}
+
+		private void comboBoxes_DrawItem(object sender, DrawItemEventArgs e)
+		{
+			var btn = (ComboBox)sender;
+			int index = e.Index;
+			if (index < 0)
+			{
+				return;
+			}
+			var brush = new SolidBrush(Color.FromArgb(221, 221, 221));
+			e.DrawBackground();
+			e.Graphics.DrawString(btn.Items[index].ToString(), e.Font, brush, e.Bounds, StringFormat.GenericDefault);
 		}
 	}
 
