@@ -118,6 +118,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public TimedSequenceEditorForm()
 		{
 			InitializeComponent();
+
+			menuStrip.Renderer = new MyRenderer();
 			Icon = Resources.Icon_Vixen3;
 			toolStripButton_Start.Image = Resources.control_start_blue;
 			toolStripButton_Start.DisplayStyle = ToolStripItemDisplayStyle.Image;
@@ -2297,6 +2299,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				return;
 			}
 
+			if (TimelineControl.SelectedElements.Count() < 2)
+			{
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				var messageBox = new MessageBoxForm("Select at least two effects to distribute.", "Select more effects", false, false);
+				messageBox.ShowDialog();
+				return;
+			}
 			var startTime = TimelineControl.SelectedElements.First().StartTime;
 			var endTime = TimelineControl.SelectedElements.Last().EndTime;
 			if (startTime > endTime)
@@ -5395,5 +5404,70 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		}
 	}
 
+	#region Render Menustrip
+	class MyRenderer : ToolStripProfessionalRenderer
+	{
+		public MyRenderer() : base(new MyColors()) { }
 
+		protected override void OnRenderItemText(ToolStripItemTextRenderEventArgs e)
+		{
+			e.TextColor = Color.FromArgb(221, 221, 221);
+			base.OnRenderItemText(e);
+		}
+	}
+
+	class MyColors : ProfessionalColorTable
+	{
+		public override Color MenuItemSelected
+		{
+			get { return Color.FromArgb(68, 68, 68); }
+		}
+		public override Color MenuItemSelectedGradientBegin
+		{
+			get { return Color.FromArgb(90, 90, 90); }
+		}
+		public override Color MenuItemSelectedGradientEnd
+		{
+			get { return Color.FromArgb(90, 90, 90); }
+		}
+		public override Color MenuItemBorder
+		{
+			get { return Color.FromArgb(90, 90, 90); }
+		}
+
+		public override Color ImageMarginGradientBegin
+		{
+			get { return Color.FromArgb(90, 90, 90); }
+		}
+
+		public override Color ImageMarginGradientEnd
+		{
+			get { return Color.FromArgb(90, 90, 90); }
+		}
+
+		public override Color ImageMarginGradientMiddle
+		{
+			get { return Color.FromArgb(90, 90, 90); }
+		}
+
+		public override Color MenuItemPressedGradientBegin
+		{
+			get { return Color.FromArgb(90, 90, 90); }
+		}
+
+		public override Color MenuItemPressedGradientMiddle
+		{
+			get { return Color.FromArgb(90, 90, 90); }
+		}
+
+		public override Color MenuItemPressedGradientEnd
+		{
+			get { return Color.FromArgb(90, 90, 90); }
+		}
+		public override Color ToolStripDropDownBackground
+		{
+			get { return Color.FromArgb(90, 90, 90); }
+		}
+	}
+	#endregion
 }

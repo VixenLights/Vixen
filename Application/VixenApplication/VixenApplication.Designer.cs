@@ -94,11 +94,13 @@
 			// 
 			// menuStripMain
 			// 
+			this.menuStripMain.BackColor = System.Drawing.Color.Transparent;
 			this.menuStripMain.ImageScalingSize = new System.Drawing.Size(24, 24);
 			this.menuStripMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.vixenToolStripMenuItem});
 			this.menuStripMain.Location = new System.Drawing.Point(0, 0);
 			this.menuStripMain.Name = "menuStripMain";
+			this.menuStripMain.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
 			this.menuStripMain.Size = new System.Drawing.Size(461, 24);
 			this.menuStripMain.TabIndex = 2;
 			this.menuStripMain.Text = "menuStrip1";
@@ -113,18 +115,21 @@
             this.executionToolStripMenuItem,
             this.toolStripSeparator1,
             this.exitToolStripMenuItem});
+			this.vixenToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.vixenToolStripMenuItem.Name = "vixenToolStripMenuItem";
 			this.vixenToolStripMenuItem.Size = new System.Drawing.Size(57, 20);
 			this.vixenToolStripMenuItem.Text = "System";
 			// 
 			// logsToolStripMenuItem
 			// 
+			this.logsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.logsToolStripMenuItem.Name = "logsToolStripMenuItem";
 			this.logsToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.logsToolStripMenuItem.Text = "Logs";
 			// 
 			// viewInstalledModulesToolStripMenuItem
 			// 
+			this.viewInstalledModulesToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.viewInstalledModulesToolStripMenuItem.Name = "viewInstalledModulesToolStripMenuItem";
 			this.viewInstalledModulesToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.viewInstalledModulesToolStripMenuItem.Text = "View Installed Modules";
@@ -132,6 +137,7 @@
 			// 
 			// profilesToolStripMenuItem
 			// 
+			this.profilesToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.profilesToolStripMenuItem.Name = "profilesToolStripMenuItem";
 			this.profilesToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.profilesToolStripMenuItem.Text = "Profiles...";
@@ -148,12 +154,14 @@
             this.setupElementsGroupsToolStripMenuItem,
             this.setupControllersToolStripMenuItem,
             this.setupFiltersPatchingToolStripMenuItem});
+			this.systemConfigurationToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.systemConfigurationToolStripMenuItem.Name = "systemConfigurationToolStripMenuItem";
 			this.systemConfigurationToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.systemConfigurationToolStripMenuItem.Text = "System Configuration";
 			// 
 			// setupDisplayToolStripMenuItem
 			// 
+			this.setupDisplayToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.setupDisplayToolStripMenuItem.Name = "setupDisplayToolStripMenuItem";
 			this.setupDisplayToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
 			this.setupDisplayToolStripMenuItem.Text = "Setup Display";
@@ -161,6 +169,7 @@
 			// 
 			// setupPreviewsToolStripMenuItem
 			// 
+			this.setupPreviewsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.setupPreviewsToolStripMenuItem.Name = "setupPreviewsToolStripMenuItem";
 			this.setupPreviewsToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
 			this.setupPreviewsToolStripMenuItem.Text = "Setup Previews";
@@ -186,6 +195,7 @@
 			// 
 			// setupElementsGroupsToolStripMenuItem
 			// 
+			this.setupElementsGroupsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.setupElementsGroupsToolStripMenuItem.Name = "setupElementsGroupsToolStripMenuItem";
 			this.setupElementsGroupsToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
 			this.setupElementsGroupsToolStripMenuItem.Text = "Setup Elements && Groups";
@@ -193,6 +203,7 @@
 			// 
 			// setupControllersToolStripMenuItem
 			// 
+			this.setupControllersToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.setupControllersToolStripMenuItem.Name = "setupControllersToolStripMenuItem";
 			this.setupControllersToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
 			this.setupControllersToolStripMenuItem.Text = "Setup Controllers";
@@ -200,6 +211,7 @@
 			// 
 			// setupFiltersPatchingToolStripMenuItem
 			// 
+			this.setupFiltersPatchingToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.setupFiltersPatchingToolStripMenuItem.Name = "setupFiltersPatchingToolStripMenuItem";
 			this.setupFiltersPatchingToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
 			this.setupFiltersPatchingToolStripMenuItem.Text = "Setup Filters && Patching";
@@ -210,6 +222,7 @@
 			this.executionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.startToolStripMenuItem,
             this.stopToolStripMenuItem});
+			this.executionToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.executionToolStripMenuItem.Name = "executionToolStripMenuItem";
 			this.executionToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.executionToolStripMenuItem.Text = "Execution Engine";
@@ -236,6 +249,7 @@
 			// 
 			// exitToolStripMenuItem
 			// 
+			this.exitToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
 			this.exitToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.exitToolStripMenuItem.Text = "Shutdown and E&xit";

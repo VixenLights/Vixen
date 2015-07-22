@@ -34,6 +34,7 @@ namespace VixenApplication
 		public VixenApplication()
 		{
 			InitializeComponent();
+			menuStripMain.Renderer = new MyRenderer();
 			buttonNewSequence.BackgroundImage = Resources.HeadingBackgroundImage;
 			buttonOpenSequence.BackgroundImage = Resources.HeadingBackgroundImage;
 			buttonSetupDisplay.BackgroundImage = Resources.HeadingBackgroundImage;
@@ -119,8 +120,8 @@ namespace VixenApplication
 			foreach (string logName in di.GetFiles().Select(x => x.Name)) {
 				logsToolStripMenuItem.DropDownItems.Add(logName, null,
 				                                        (menuSender, menuArgs) => _ViewLog(((ToolStripMenuItem) menuSender).Text));
+			//	logsToolStripMenuItem.DropDownItems..ForeColor = Color.FromArgb(90, 90, 90);
 			}
-
 			PopulateRecentSequencesList();
 		}
 
@@ -799,4 +800,71 @@ namespace VixenApplication
 			btn.BackgroundImage = Resources.HeadingBackgroundImage;
 		}
 	}
+
+	#region Render Menustrip
+	class MyRenderer : ToolStripProfessionalRenderer
+	{
+		public MyRenderer() : base(new MyColors()) { }
+
+		protected override void OnRenderItemText(ToolStripItemTextRenderEventArgs e)
+		{
+			e.TextColor = Color.FromArgb(221, 221, 221);
+			base.OnRenderItemText(e);
+		}
+	}
+
+	class MyColors : ProfessionalColorTable
+	{
+		public override Color MenuItemSelected
+		{
+			get { return Color.FromArgb(68,68,68); }
+		}
+		public override Color MenuItemSelectedGradientBegin
+		{
+			get { return Color.FromArgb(90, 90, 90); }
+		}
+		public override Color MenuItemSelectedGradientEnd
+		{
+			get { return Color.FromArgb(90, 90, 90); }
+		}
+		public override Color MenuItemBorder
+		{
+			get { return Color.FromArgb(90, 90, 90); }
+		}
+
+		public override Color ImageMarginGradientBegin
+		{
+			get { return Color.FromArgb(90, 90, 90); }
+		}
+
+		public override Color ImageMarginGradientEnd
+		{
+			get { return Color.FromArgb(90, 90, 90); }
+		}
+
+		public override Color ImageMarginGradientMiddle
+		{
+			get { return Color.FromArgb(90, 90, 90); }
+		}
+
+		public override Color MenuItemPressedGradientBegin
+		{
+			get { return Color.FromArgb(90, 90, 90); }
+		}
+
+		public override Color MenuItemPressedGradientMiddle
+		{
+			get { return Color.FromArgb(90, 90, 90); }
+		}
+
+		public override Color MenuItemPressedGradientEnd
+		{
+			get { return Color.FromArgb(90, 90, 90); }
+		}
+		public override Color ToolStripDropDownBackground
+		{
+			get { return Color.FromArgb(90, 90, 90); }
+		}
+	}
+#endregion
 }
