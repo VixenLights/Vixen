@@ -581,7 +581,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// toolStripSeparator12
 			// 
 			this.toolStripSeparator12.Name = "toolStripSeparator12";
-			this.toolStripSeparator12.Size = new System.Drawing.Size(251, 6);
+			this.toolStripSeparator12.Size = new System.Drawing.Size(6, 25);
 			// 
 			// toolStripLabel3
 			// 
