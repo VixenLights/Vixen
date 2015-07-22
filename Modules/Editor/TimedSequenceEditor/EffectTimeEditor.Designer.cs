@@ -29,13 +29,21 @@
 			// 
 			// btnOk
 			// 
+			this.btnOk.BackColor = System.Drawing.Color.Transparent;
 			this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
+			this.btnOk.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+			this.btnOk.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+			this.btnOk.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+			this.btnOk.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+			this.btnOk.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.btnOk.Location = new System.Drawing.Point(32, 102);
 			this.btnOk.Name = "btnOk";
 			this.btnOk.Size = new System.Drawing.Size(75, 23);
 			this.btnOk.TabIndex = 1;
 			this.btnOk.Text = "Ok";
-			this.btnOk.UseVisualStyleBackColor = true;
+			this.btnOk.UseVisualStyleBackColor = false;
+			this.btnOk.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.btnOk.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// label1
 			// 
@@ -57,16 +65,27 @@
 			// 
 			// btnCancel
 			// 
+			this.btnCancel.BackColor = System.Drawing.Color.Transparent;
 			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.btnCancel.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+			this.btnCancel.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+			this.btnCancel.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+			this.btnCancel.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+			this.btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.btnCancel.Location = new System.Drawing.Point(113, 102);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(75, 23);
 			this.btnCancel.TabIndex = 5;
 			this.btnCancel.Text = "Cancel";
-			this.btnCancel.UseVisualStyleBackColor = true;
+			this.btnCancel.UseVisualStyleBackColor = false;
+			this.btnCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.btnCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// txtStartTime
 			// 
+			this.txtStartTime.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
+			this.txtStartTime.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.txtStartTime.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.txtStartTime.Location = new System.Drawing.Point(70, 36);
 			this.txtStartTime.Name = "txtStartTime";
 			this.txtStartTime.Size = new System.Drawing.Size(100, 20);
@@ -77,6 +96,9 @@
 			// 
 			// txtDuration
 			// 
+			this.txtDuration.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
+			this.txtDuration.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.txtDuration.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.txtDuration.Location = new System.Drawing.Point(70, 65);
 			this.txtDuration.Name = "txtDuration";
 			this.txtDuration.Size = new System.Drawing.Size(100, 20);
@@ -96,6 +118,7 @@
 			this.AcceptButton = this.btnOk;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.CancelButton = this.btnCancel;
 			this.ClientSize = new System.Drawing.Size(212, 167);
 			this.Controls.Add(this.txtDuration);
@@ -104,6 +127,7 @@
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.btnOk);
+			this.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "EffectTimeEditor";

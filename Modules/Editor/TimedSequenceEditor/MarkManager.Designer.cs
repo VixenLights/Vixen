@@ -151,7 +151,7 @@
 			this.groupBoxMarkCollections.Controls.Add(this.label11);
 			this.groupBoxMarkCollections.Controls.Add(this.label10);
 			this.groupBoxMarkCollections.Controls.Add(this.listViewMarkCollections);
-			this.groupBoxMarkCollections.ForeColor = System.Drawing.Color.WhiteSmoke;
+			this.groupBoxMarkCollections.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.groupBoxMarkCollections.Location = new System.Drawing.Point(12, 6);
 			this.groupBoxMarkCollections.Name = "groupBoxMarkCollections";
 			this.groupBoxMarkCollections.Size = new System.Drawing.Size(230, 328);
@@ -328,7 +328,7 @@
 			this.groupBoxSelectedMarkCollection.Controls.Add(this.groupBoxDetails);
 			this.groupBoxSelectedMarkCollection.Controls.Add(this.groupBoxOperations);
 			this.groupBoxSelectedMarkCollection.Controls.Add(this.groupBoxMarks);
-			this.groupBoxSelectedMarkCollection.ForeColor = System.Drawing.Color.WhiteSmoke;
+			this.groupBoxSelectedMarkCollection.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.groupBoxSelectedMarkCollection.Location = new System.Drawing.Point(247, 6);
 			this.groupBoxSelectedMarkCollection.Name = "groupBoxSelectedMarkCollection";
 			this.groupBoxSelectedMarkCollection.Size = new System.Drawing.Size(482, 329);
@@ -342,7 +342,7 @@
 			this.groupBoxSelectedMarks.Controls.Add(this.panel3);
 			this.groupBoxSelectedMarks.Controls.Add(this.label7);
 			this.groupBoxSelectedMarks.Controls.Add(this.textBoxTimeIncrement);
-			this.groupBoxSelectedMarks.ForeColor = System.Drawing.Color.WhiteSmoke;
+			this.groupBoxSelectedMarks.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.groupBoxSelectedMarks.Location = new System.Drawing.Point(307, 262);
 			this.groupBoxSelectedMarks.Name = "groupBoxSelectedMarks";
 			this.groupBoxSelectedMarks.Size = new System.Drawing.Size(164, 53);
@@ -420,7 +420,7 @@
 			this.groupBoxDetails.Controls.Add(this.numericUpDownWeight);
 			this.groupBoxDetails.Controls.Add(this.textBoxCollectionName);
 			this.groupBoxDetails.Controls.Add(this.label1);
-			this.groupBoxDetails.ForeColor = System.Drawing.Color.WhiteSmoke;
+			this.groupBoxDetails.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.groupBoxDetails.Location = new System.Drawing.Point(6, 19);
 			this.groupBoxDetails.Name = "groupBoxDetails";
 			this.groupBoxDetails.Size = new System.Drawing.Size(154, 153);
@@ -432,7 +432,7 @@
 			// checkBoxEnabled
 			// 
 			this.checkBoxEnabled.AutoSize = true;
-			this.checkBoxEnabled.ForeColor = System.Drawing.Color.WhiteSmoke;
+			this.checkBoxEnabled.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBoxEnabled.Location = new System.Drawing.Point(17, 27);
 			this.checkBoxEnabled.Name = "checkBoxEnabled";
 			this.checkBoxEnabled.Size = new System.Drawing.Size(65, 17);
@@ -444,7 +444,7 @@
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.ForeColor = System.Drawing.Color.WhiteSmoke;
+			this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.label3.Location = new System.Drawing.Point(18, 114);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(34, 13);
@@ -463,7 +463,7 @@
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.ForeColor = System.Drawing.Color.WhiteSmoke;
+			this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.label2.Location = new System.Drawing.Point(8, 85);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(44, 13);
@@ -510,7 +510,7 @@
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.ForeColor = System.Drawing.Color.WhiteSmoke;
+			this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.label1.Location = new System.Drawing.Point(14, 60);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(38, 13);
@@ -526,7 +526,7 @@
 			this.groupBoxOperations.Controls.Add(this.buttonOffsetMarks);
 			this.groupBoxOperations.Controls.Add(this.buttonGenerateSubmarks);
 			this.groupBoxOperations.Controls.Add(this.buttonEvenlySpaceMarks);
-			this.groupBoxOperations.ForeColor = System.Drawing.Color.WhiteSmoke;
+			this.groupBoxOperations.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.groupBoxOperations.Location = new System.Drawing.Point(307, 19);
 			this.groupBoxOperations.Name = "groupBoxOperations";
 			this.groupBoxOperations.Size = new System.Drawing.Size(164, 240);
@@ -669,7 +669,7 @@
 			this.groupBoxMarks.Controls.Add(this.buttonAddOrUpdateMark);
 			this.groupBoxMarks.Controls.Add(this.textBoxTime);
 			this.groupBoxMarks.Controls.Add(this.buttonSelectAllMarks);
-			this.groupBoxMarks.ForeColor = System.Drawing.Color.WhiteSmoke;
+			this.groupBoxMarks.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.groupBoxMarks.Location = new System.Drawing.Point(166, 19);
 			this.groupBoxMarks.Name = "groupBoxMarks";
 			this.groupBoxMarks.Size = new System.Drawing.Size(136, 296);
@@ -799,7 +799,7 @@
 			// labelTapperInstructions
 			// 
 			this.labelTapperInstructions.AutoSize = true;
-			this.labelTapperInstructions.ForeColor = System.Drawing.Color.WhiteSmoke;
+			this.labelTapperInstructions.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.labelTapperInstructions.Location = new System.Drawing.Point(3, 3);
 			this.labelTapperInstructions.Name = "labelTapperInstructions";
 			this.labelTapperInstructions.Size = new System.Drawing.Size(248, 13);
@@ -927,7 +927,7 @@
 			// label9
 			// 
 			this.label9.AutoSize = true;
-			this.label9.ForeColor = System.Drawing.Color.White;
+			this.label9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.label9.Location = new System.Drawing.Point(7, 52);
 			this.label9.Name = "label9";
 			this.label9.Size = new System.Drawing.Size(119, 13);
@@ -985,7 +985,7 @@
 			// ChkAutoTapper
 			// 
 			this.ChkAutoTapper.AutoSize = true;
-			this.ChkAutoTapper.ForeColor = System.Drawing.Color.WhiteSmoke;
+			this.ChkAutoTapper.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.ChkAutoTapper.Location = new System.Drawing.Point(10, 26);
 			this.ChkAutoTapper.Name = "ChkAutoTapper";
 			this.ChkAutoTapper.Size = new System.Drawing.Size(65, 17);
@@ -1059,7 +1059,7 @@
 			// chkHighPass
 			// 
 			this.chkHighPass.AutoSize = true;
-			this.chkHighPass.ForeColor = System.Drawing.Color.WhiteSmoke;
+			this.chkHighPass.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.chkHighPass.Location = new System.Drawing.Point(15, 46);
 			this.chkHighPass.Name = "chkHighPass";
 			this.chkHighPass.Size = new System.Drawing.Size(74, 17);
@@ -1071,7 +1071,7 @@
 			// chkLowPass
 			// 
 			this.chkLowPass.AutoSize = true;
-			this.chkLowPass.ForeColor = System.Drawing.Color.WhiteSmoke;
+			this.chkLowPass.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.chkLowPass.Location = new System.Drawing.Point(15, 19);
 			this.chkLowPass.Name = "chkLowPass";
 			this.chkLowPass.Size = new System.Drawing.Size(72, 17);
@@ -1143,7 +1143,7 @@
 			// label4
 			// 
 			this.label4.AutoSize = true;
-			this.label4.ForeColor = System.Drawing.Color.WhiteSmoke;
+			this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.label4.Location = new System.Drawing.Point(507, 201);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(73, 13);
@@ -1179,7 +1179,7 @@
 			this.radioButtonPlayback.AutoSize = true;
 			this.radioButtonPlayback.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.radioButtonPlayback.Checked = true;
-			this.radioButtonPlayback.ForeColor = System.Drawing.Color.WhiteSmoke;
+			this.radioButtonPlayback.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.radioButtonPlayback.Location = new System.Drawing.Point(9, 24);
 			this.radioButtonPlayback.Name = "radioButtonPlayback";
 			this.radioButtonPlayback.Size = new System.Drawing.Size(69, 17);
@@ -1229,6 +1229,7 @@
 			this.Controls.Add(this.groupBoxSelectedMarkCollection);
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.groupBoxMarkCollections);
+			this.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.KeyPreview = true;
