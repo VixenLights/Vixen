@@ -233,7 +233,7 @@ namespace VixenModules.App.LipSyncApp
 
 		#region Draw lines and GroupBox borders
 		//set color for box borders.
-		private Color _borderColor = Color.FromArgb(80, 80, 80);
+		private Color _borderColor = Color.FromArgb(136, 136, 136);
 
 		public Color BorderColor
 		{
@@ -247,6 +247,7 @@ namespace VixenModules.App.LipSyncApp
 			//get the text size in groupbox
 			Size tSize = TextRenderer.MeasureText((sender as GroupBox).Text, Font);
 
+			e.Graphics.Clear(BackColor);
 			//draw the border
 			Rectangle borderRect = e.ClipRectangle;
 			borderRect.Y = (borderRect.Y + (tSize.Height / 2));

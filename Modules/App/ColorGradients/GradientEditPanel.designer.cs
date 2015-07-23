@@ -50,7 +50,7 @@
 			this.grpStops.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.grpStops.Name = "grpStops";
 			this.grpStops.TabStop = false;
-			this.grpStops.Paint += new System.Windows.Forms.PaintEventHandler(this.grpStops_Paint);
+			this.grpStops.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
 			// btnDeleteColor
 			// 

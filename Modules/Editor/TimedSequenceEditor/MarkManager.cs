@@ -95,13 +95,41 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			trackBarPlayBack.SetRange(0, (int) _timedSequenceEditorForm.Sequence.Length.TotalMilliseconds);
 			if (_timedSequenceEditorForm.Sequence.SequenceData.Media.Count > 0)
 			{
-				groupBoxFreqDetection.Enabled = true;
-				groupBoxAudioFilter.Enabled = true;
+				btnAutoDetectionSettings.Enabled = true;
+				btnCreateCollections.Enabled = true;
+				ChkAutoTapper.AutoCheck = true;
+				radioAll.AutoCheck = true;
+				radioSelected.AutoCheck = true;
+				chkHighPass.AutoCheck = true;
+				chkLowPass.AutoCheck = true;
+				numHighPass.Enabled = true;
+				numLowPass.Enabled = true;
+				ChkAutoTapper.ForeColor = Color.FromArgb(221, 221, 221);
+				radioAll.ForeColor = Color.FromArgb(221, 221, 221);
+				radioSelected.ForeColor = Color.FromArgb(221, 221, 221);
+				chkHighPass.ForeColor = Color.FromArgb(221, 221, 221);
+				chkLowPass.ForeColor = Color.FromArgb(221, 221, 221);
+				numHighPass.ForeColor = Color.FromArgb(221, 221, 221);
+				numLowPass.ForeColor = Color.FromArgb(221, 221, 221);
 			}
 			else
 			{
-				groupBoxFreqDetection.Enabled = false;
-				groupBoxAudioFilter.Enabled = false;
+				btnAutoDetectionSettings.Enabled = false;
+				btnCreateCollections.Enabled = false;
+				ChkAutoTapper.AutoCheck = false;
+				radioAll.AutoCheck = false;
+				radioSelected.AutoCheck = false;
+				chkHighPass.AutoCheck = false;
+				chkLowPass.AutoCheck = false;
+				numHighPass.Enabled = false;
+				numLowPass.Enabled = false;
+				ChkAutoTapper.ForeColor = Color.Gray;
+				radioAll.ForeColor = Color.Gray;
+				radioSelected.ForeColor = Color.Gray;
+				chkHighPass.ForeColor = Color.Gray;
+				chkLowPass.ForeColor = Color.Gray;
+				numHighPass.ForeColor = Color.Gray;
+				numLowPass.ForeColor = Color.Gray;
 			}
 		}
 
@@ -1468,7 +1496,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		#region Draw lines and GroupBox borders
 		//set color for box borders.
-		private Color _borderColor = Color.FromArgb(80, 80, 80);
+		private Color _borderColor = Color.FromArgb(136, 136, 136);
 
 		public Color BorderColor
 		{
@@ -1482,6 +1510,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			//get the text size in groupbox
 			Size tSize = TextRenderer.MeasureText((sender as GroupBox).Text, Font);
 
+			e.Graphics.Clear(BackColor);
 			//draw the border
 			Rectangle borderRect = e.ClipRectangle;
 			borderRect.Y = (borderRect.Y + (tSize.Height / 2));

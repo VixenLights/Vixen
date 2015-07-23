@@ -289,7 +289,7 @@ namespace VixenModules.App.ColorGradients
 
 		#region Draw lines and GroupBox borders
 		//set color for box borders.
-		private Color _borderColor = Color.FromArgb(80, 80, 80);
+		private Color _borderColor = Color.FromArgb(136, 136, 136);
 
 		public Color BorderColor
 		{
@@ -297,12 +297,13 @@ namespace VixenModules.App.ColorGradients
 			set { _borderColor = value; }
 		}
 
-		private void grpStops_Paint(object sender, PaintEventArgs e)
+		private void groupBoxes_Paint(object sender, PaintEventArgs e)
 		{
 			//used to draw the boards and text for the groupboxes to change the default box color.
 			//get the text size in groupbox
 			Size tSize = TextRenderer.MeasureText((sender as GroupBox).Text, Font);
 
+			e.Graphics.Clear(BackColor);
 			//draw the border
 			Rectangle borderRect = e.ClipRectangle;
 			borderRect.Y = (borderRect.Y + (tSize.Height / 2));

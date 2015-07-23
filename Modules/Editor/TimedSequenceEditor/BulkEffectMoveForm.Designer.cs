@@ -166,7 +166,7 @@
 			this.groupBox1.TabIndex = 9;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Direction";
-			this.groupBox1.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxs_Paint);
+			this.groupBox1.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
 			// radioButtonBackward
 			// 

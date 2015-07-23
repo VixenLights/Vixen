@@ -20,21 +20,21 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TimedSequenceEditorForm));
-			WeifenLuo.WinFormsUI.Docking.DockPanelSkin dockPanelSkin1 = new WeifenLuo.WinFormsUI.Docking.DockPanelSkin();
-			WeifenLuo.WinFormsUI.Docking.AutoHideStripSkin autoHideStripSkin1 = new WeifenLuo.WinFormsUI.Docking.AutoHideStripSkin();
-			WeifenLuo.WinFormsUI.Docking.DockPanelGradient dockPanelGradient1 = new WeifenLuo.WinFormsUI.Docking.DockPanelGradient();
-			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient1 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
-			WeifenLuo.WinFormsUI.Docking.DockPaneStripSkin dockPaneStripSkin1 = new WeifenLuo.WinFormsUI.Docking.DockPaneStripSkin();
-			WeifenLuo.WinFormsUI.Docking.DockPaneStripGradient dockPaneStripGradient1 = new WeifenLuo.WinFormsUI.Docking.DockPaneStripGradient();
-			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient2 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
-			WeifenLuo.WinFormsUI.Docking.DockPanelGradient dockPanelGradient2 = new WeifenLuo.WinFormsUI.Docking.DockPanelGradient();
-			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient3 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
-			WeifenLuo.WinFormsUI.Docking.DockPaneStripToolWindowGradient dockPaneStripToolWindowGradient1 = new WeifenLuo.WinFormsUI.Docking.DockPaneStripToolWindowGradient();
-			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient4 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
-			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient5 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
-			WeifenLuo.WinFormsUI.Docking.DockPanelGradient dockPanelGradient3 = new WeifenLuo.WinFormsUI.Docking.DockPanelGradient();
-			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient6 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
-			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient7 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
+			WeifenLuo.WinFormsUI.Docking.DockPanelSkin dockPanelSkin4 = new WeifenLuo.WinFormsUI.Docking.DockPanelSkin();
+			WeifenLuo.WinFormsUI.Docking.AutoHideStripSkin autoHideStripSkin4 = new WeifenLuo.WinFormsUI.Docking.AutoHideStripSkin();
+			WeifenLuo.WinFormsUI.Docking.DockPanelGradient dockPanelGradient10 = new WeifenLuo.WinFormsUI.Docking.DockPanelGradient();
+			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient22 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
+			WeifenLuo.WinFormsUI.Docking.DockPaneStripSkin dockPaneStripSkin4 = new WeifenLuo.WinFormsUI.Docking.DockPaneStripSkin();
+			WeifenLuo.WinFormsUI.Docking.DockPaneStripGradient dockPaneStripGradient4 = new WeifenLuo.WinFormsUI.Docking.DockPaneStripGradient();
+			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient23 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
+			WeifenLuo.WinFormsUI.Docking.DockPanelGradient dockPanelGradient11 = new WeifenLuo.WinFormsUI.Docking.DockPanelGradient();
+			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient24 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
+			WeifenLuo.WinFormsUI.Docking.DockPaneStripToolWindowGradient dockPaneStripToolWindowGradient4 = new WeifenLuo.WinFormsUI.Docking.DockPaneStripToolWindowGradient();
+			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient25 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
+			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient26 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
+			WeifenLuo.WinFormsUI.Docking.DockPanelGradient dockPanelGradient12 = new WeifenLuo.WinFormsUI.Docking.DockPanelGradient();
+			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient27 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
+			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient28 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
 			this.toolStripOperations = new Common.Controls.ToolStripEx();
 			this.toolStripButton_Start = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButton_Play = new System.Windows.Forms.ToolStripButton();
@@ -1251,7 +1251,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// 
 			// statusStrip
 			// 
-			this.statusStrip.ImageScalingSize = new System.Drawing.Size(24, 24);
+			this.statusStrip.AutoSize = false;
+			this.statusStrip.Font = new System.Drawing.Font("Segoe UI", 9F);
+			this.statusStrip.ImageScalingSize = new System.Drawing.Size(22, 22);
 			this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel2,
             this.toolStripStatusLabel_currentTime,
@@ -1262,10 +1264,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
             this.toolStripStatusLabel4,
             this.toolStripStatusLabel_RenderingElements,
             this.toolStripProgressBar_RenderingElements});
-			this.statusStrip.Location = new System.Drawing.Point(0, 888);
+			this.statusStrip.Location = new System.Drawing.Point(0, 907);
 			this.statusStrip.Name = "statusStrip";
 			this.statusStrip.Padding = new System.Windows.Forms.Padding(2, 0, 21, 0);
-			this.statusStrip.Size = new System.Drawing.Size(2031, 49);
+			this.statusStrip.Size = new System.Drawing.Size(2031, 30);
 			this.statusStrip.TabIndex = 4;
 			this.statusStrip.Text = "statusStrip1";
 			// 
@@ -1273,8 +1275,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// 
 			this.toolStripStatusLabel2.AutoSize = false;
 			this.toolStripStatusLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.toolStripStatusLabel2.Margin = new System.Windows.Forms.Padding(0, 1, 0, 1);
 			this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-			this.toolStripStatusLabel2.Size = new System.Drawing.Size(120, 44);
+			this.toolStripStatusLabel2.Size = new System.Drawing.Size(120, 28);
 			this.toolStripStatusLabel2.Text = "Current Position:";
 			this.toolStripStatusLabel2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
@@ -1284,8 +1287,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripStatusLabel_currentTime.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Right;
 			this.toolStripStatusLabel_currentTime.BorderStyle = System.Windows.Forms.Border3DStyle.Bump;
 			this.toolStripStatusLabel_currentTime.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.toolStripStatusLabel_currentTime.Margin = new System.Windows.Forms.Padding(0, 1, 0, 1);
 			this.toolStripStatusLabel_currentTime.Name = "toolStripStatusLabel_currentTime";
-			this.toolStripStatusLabel_currentTime.Size = new System.Drawing.Size(70, 44);
+			this.toolStripStatusLabel_currentTime.Size = new System.Drawing.Size(70, 28);
 			this.toolStripStatusLabel_currentTime.Text = "0:00.000";
 			this.toolStripStatusLabel_currentTime.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
@@ -1293,8 +1297,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// 
 			this.toolStripStatusLabel1.AutoSize = false;
 			this.toolStripStatusLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.toolStripStatusLabel1.Margin = new System.Windows.Forms.Padding(0, 1, 0, 1);
 			this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-			this.toolStripStatusLabel1.Size = new System.Drawing.Size(140, 44);
+			this.toolStripStatusLabel1.Size = new System.Drawing.Size(140, 28);
 			this.toolStripStatusLabel1.Text = "Sequence Length:";
 			this.toolStripStatusLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
@@ -1304,8 +1309,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripStatusLabel_sequenceLength.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Right;
 			this.toolStripStatusLabel_sequenceLength.BorderStyle = System.Windows.Forms.Border3DStyle.Bump;
 			this.toolStripStatusLabel_sequenceLength.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.toolStripStatusLabel_sequenceLength.Margin = new System.Windows.Forms.Padding(0, 1, 0, 1);
 			this.toolStripStatusLabel_sequenceLength.Name = "toolStripStatusLabel_sequenceLength";
-			this.toolStripStatusLabel_sequenceLength.Size = new System.Drawing.Size(70, 44);
+			this.toolStripStatusLabel_sequenceLength.Size = new System.Drawing.Size(70, 28);
 			this.toolStripStatusLabel_sequenceLength.Text = "0:00.000";
 			this.toolStripStatusLabel_sequenceLength.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
@@ -1313,8 +1319,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// 
 			this.toolStripStatusLabel3.AutoSize = false;
 			this.toolStripStatusLabel3.ForeColor = System.Drawing.Color.Red;
+			this.toolStripStatusLabel3.Margin = new System.Windows.Forms.Padding(0, 1, 0, 1);
 			this.toolStripStatusLabel3.Name = "toolStripStatusLabel3";
-			this.toolStripStatusLabel3.Size = new System.Drawing.Size(120, 44);
+			this.toolStripStatusLabel3.Size = new System.Drawing.Size(120, 28);
 			this.toolStripStatusLabel3.Text = "Play Delayed:";
 			this.toolStripStatusLabel3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.toolStripStatusLabel3.Visible = false;
@@ -1325,30 +1332,35 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripStatusLabel_delayPlay.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Right;
 			this.toolStripStatusLabel_delayPlay.BorderStyle = System.Windows.Forms.Border3DStyle.Bump;
 			this.toolStripStatusLabel_delayPlay.ForeColor = System.Drawing.Color.Red;
+			this.toolStripStatusLabel_delayPlay.Margin = new System.Windows.Forms.Padding(0, 1, 0, 1);
 			this.toolStripStatusLabel_delayPlay.Name = "toolStripStatusLabel_delayPlay";
-			this.toolStripStatusLabel_delayPlay.Size = new System.Drawing.Size(80, 44);
+			this.toolStripStatusLabel_delayPlay.Size = new System.Drawing.Size(80, 28);
 			this.toolStripStatusLabel_delayPlay.Text = "00 Seconds";
 			this.toolStripStatusLabel_delayPlay.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.toolStripStatusLabel_delayPlay.Visible = false;
 			// 
 			// toolStripStatusLabel4
 			// 
+			this.toolStripStatusLabel4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.toolStripStatusLabel4.Margin = new System.Windows.Forms.Padding(0, 1, 0, 1);
 			this.toolStripStatusLabel4.Name = "toolStripStatusLabel4";
-			this.toolStripStatusLabel4.Size = new System.Drawing.Size(1608, 44);
+			this.toolStripStatusLabel4.Size = new System.Drawing.Size(1035, 28);
 			this.toolStripStatusLabel4.Spring = true;
 			// 
 			// toolStripStatusLabel_RenderingElements
 			// 
 			this.toolStripStatusLabel_RenderingElements.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.toolStripStatusLabel_RenderingElements.Margin = new System.Windows.Forms.Padding(0, 1, 0, 1);
 			this.toolStripStatusLabel_RenderingElements.Name = "toolStripStatusLabel_RenderingElements";
-			this.toolStripStatusLabel_RenderingElements.Size = new System.Drawing.Size(177, 44);
+			this.toolStripStatusLabel_RenderingElements.Size = new System.Drawing.Size(177, 28);
 			this.toolStripStatusLabel_RenderingElements.Text = "Rendering Elements:";
 			this.toolStripStatusLabel_RenderingElements.Visible = false;
 			// 
 			// toolStripProgressBar_RenderingElements
 			// 
+			this.toolStripProgressBar_RenderingElements.Margin = new System.Windows.Forms.Padding(0, 1, 0, 1);
 			this.toolStripProgressBar_RenderingElements.Name = "toolStripProgressBar_RenderingElements";
-			this.toolStripProgressBar_RenderingElements.Size = new System.Drawing.Size(150, 43);
+			this.toolStripProgressBar_RenderingElements.Size = new System.Drawing.Size(150, 28);
 			this.toolStripProgressBar_RenderingElements.Visible = false;
 			// 
 			// openFileDialog
@@ -1363,14 +1375,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// 
 			this.toolStripContainer.ContentPanel.Controls.Add(this.dockPanel);
 			this.toolStripContainer.ContentPanel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-			this.toolStripContainer.ContentPanel.Size = new System.Drawing.Size(2031, 816);
+			this.toolStripContainer.ContentPanel.Size = new System.Drawing.Size(2031, 835);
 			this.toolStripContainer.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.toolStripContainer.LeftToolStripPanelVisible = false;
 			this.toolStripContainer.Location = new System.Drawing.Point(0, 35);
 			this.toolStripContainer.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.toolStripContainer.Name = "toolStripContainer";
 			this.toolStripContainer.RightToolStripPanelVisible = false;
-			this.toolStripContainer.Size = new System.Drawing.Size(2031, 853);
+			this.toolStripContainer.Size = new System.Drawing.Size(2031, 872);
 			this.toolStripContainer.TabIndex = 5;
 			this.toolStripContainer.Text = "toolStripContainer1";
 			// 
@@ -1390,53 +1402,53 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.dockPanel.Location = new System.Drawing.Point(0, 0);
 			this.dockPanel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.dockPanel.Name = "dockPanel";
-			this.dockPanel.Size = new System.Drawing.Size(2031, 816);
-			dockPanelGradient1.EndColor = System.Drawing.SystemColors.ControlLight;
-			dockPanelGradient1.StartColor = System.Drawing.SystemColors.ControlLight;
-			autoHideStripSkin1.DockStripGradient = dockPanelGradient1;
-			tabGradient1.EndColor = System.Drawing.SystemColors.Control;
-			tabGradient1.StartColor = System.Drawing.SystemColors.Control;
-			tabGradient1.TextColor = System.Drawing.SystemColors.ControlDarkDark;
-			autoHideStripSkin1.TabGradient = tabGradient1;
-			autoHideStripSkin1.TextFont = new System.Drawing.Font("Segoe UI", 9F);
-			dockPanelSkin1.AutoHideStripSkin = autoHideStripSkin1;
-			tabGradient2.EndColor = System.Drawing.SystemColors.ControlLightLight;
-			tabGradient2.StartColor = System.Drawing.SystemColors.ControlLightLight;
-			tabGradient2.TextColor = System.Drawing.SystemColors.ControlText;
-			dockPaneStripGradient1.ActiveTabGradient = tabGradient2;
-			dockPanelGradient2.EndColor = System.Drawing.SystemColors.Control;
-			dockPanelGradient2.StartColor = System.Drawing.SystemColors.Control;
-			dockPaneStripGradient1.DockStripGradient = dockPanelGradient2;
-			tabGradient3.EndColor = System.Drawing.SystemColors.ControlLight;
-			tabGradient3.StartColor = System.Drawing.SystemColors.ControlLight;
-			tabGradient3.TextColor = System.Drawing.SystemColors.ControlText;
-			dockPaneStripGradient1.InactiveTabGradient = tabGradient3;
-			dockPaneStripSkin1.DocumentGradient = dockPaneStripGradient1;
-			dockPaneStripSkin1.TextFont = new System.Drawing.Font("Segoe UI", 9F);
-			tabGradient4.EndColor = System.Drawing.SystemColors.ActiveCaption;
-			tabGradient4.LinearGradientMode = System.Drawing.Drawing2D.LinearGradientMode.Vertical;
-			tabGradient4.StartColor = System.Drawing.SystemColors.GradientActiveCaption;
-			tabGradient4.TextColor = System.Drawing.SystemColors.ActiveCaptionText;
-			dockPaneStripToolWindowGradient1.ActiveCaptionGradient = tabGradient4;
-			tabGradient5.EndColor = System.Drawing.SystemColors.Control;
-			tabGradient5.StartColor = System.Drawing.SystemColors.Control;
-			tabGradient5.TextColor = System.Drawing.SystemColors.ControlText;
-			dockPaneStripToolWindowGradient1.ActiveTabGradient = tabGradient5;
-			dockPanelGradient3.EndColor = System.Drawing.SystemColors.ControlLight;
-			dockPanelGradient3.StartColor = System.Drawing.SystemColors.ControlLight;
-			dockPaneStripToolWindowGradient1.DockStripGradient = dockPanelGradient3;
-			tabGradient6.EndColor = System.Drawing.SystemColors.InactiveCaption;
-			tabGradient6.LinearGradientMode = System.Drawing.Drawing2D.LinearGradientMode.Vertical;
-			tabGradient6.StartColor = System.Drawing.SystemColors.GradientInactiveCaption;
-			tabGradient6.TextColor = System.Drawing.SystemColors.InactiveCaptionText;
-			dockPaneStripToolWindowGradient1.InactiveCaptionGradient = tabGradient6;
-			tabGradient7.EndColor = System.Drawing.Color.Transparent;
-			tabGradient7.StartColor = System.Drawing.Color.Transparent;
-			tabGradient7.TextColor = System.Drawing.SystemColors.ControlDarkDark;
-			dockPaneStripToolWindowGradient1.InactiveTabGradient = tabGradient7;
-			dockPaneStripSkin1.ToolWindowGradient = dockPaneStripToolWindowGradient1;
-			dockPanelSkin1.DockPaneStripSkin = dockPaneStripSkin1;
-			this.dockPanel.Skin = dockPanelSkin1;
+			this.dockPanel.Size = new System.Drawing.Size(2031, 835);
+			dockPanelGradient10.EndColor = System.Drawing.SystemColors.ControlLight;
+			dockPanelGradient10.StartColor = System.Drawing.SystemColors.ControlLight;
+			autoHideStripSkin4.DockStripGradient = dockPanelGradient10;
+			tabGradient22.EndColor = System.Drawing.SystemColors.Control;
+			tabGradient22.StartColor = System.Drawing.SystemColors.Control;
+			tabGradient22.TextColor = System.Drawing.SystemColors.ControlDarkDark;
+			autoHideStripSkin4.TabGradient = tabGradient22;
+			autoHideStripSkin4.TextFont = new System.Drawing.Font("Segoe UI", 9F);
+			dockPanelSkin4.AutoHideStripSkin = autoHideStripSkin4;
+			tabGradient23.EndColor = System.Drawing.SystemColors.ControlLightLight;
+			tabGradient23.StartColor = System.Drawing.SystemColors.ControlLightLight;
+			tabGradient23.TextColor = System.Drawing.SystemColors.ControlText;
+			dockPaneStripGradient4.ActiveTabGradient = tabGradient23;
+			dockPanelGradient11.EndColor = System.Drawing.SystemColors.Control;
+			dockPanelGradient11.StartColor = System.Drawing.SystemColors.Control;
+			dockPaneStripGradient4.DockStripGradient = dockPanelGradient11;
+			tabGradient24.EndColor = System.Drawing.SystemColors.ControlLight;
+			tabGradient24.StartColor = System.Drawing.SystemColors.ControlLight;
+			tabGradient24.TextColor = System.Drawing.SystemColors.ControlText;
+			dockPaneStripGradient4.InactiveTabGradient = tabGradient24;
+			dockPaneStripSkin4.DocumentGradient = dockPaneStripGradient4;
+			dockPaneStripSkin4.TextFont = new System.Drawing.Font("Segoe UI", 9F);
+			tabGradient25.EndColor = System.Drawing.SystemColors.ActiveCaption;
+			tabGradient25.LinearGradientMode = System.Drawing.Drawing2D.LinearGradientMode.Vertical;
+			tabGradient25.StartColor = System.Drawing.SystemColors.GradientActiveCaption;
+			tabGradient25.TextColor = System.Drawing.SystemColors.ActiveCaptionText;
+			dockPaneStripToolWindowGradient4.ActiveCaptionGradient = tabGradient25;
+			tabGradient26.EndColor = System.Drawing.SystemColors.Control;
+			tabGradient26.StartColor = System.Drawing.SystemColors.Control;
+			tabGradient26.TextColor = System.Drawing.SystemColors.ControlText;
+			dockPaneStripToolWindowGradient4.ActiveTabGradient = tabGradient26;
+			dockPanelGradient12.EndColor = System.Drawing.SystemColors.ControlLight;
+			dockPanelGradient12.StartColor = System.Drawing.SystemColors.ControlLight;
+			dockPaneStripToolWindowGradient4.DockStripGradient = dockPanelGradient12;
+			tabGradient27.EndColor = System.Drawing.SystemColors.InactiveCaption;
+			tabGradient27.LinearGradientMode = System.Drawing.Drawing2D.LinearGradientMode.Vertical;
+			tabGradient27.StartColor = System.Drawing.SystemColors.GradientInactiveCaption;
+			tabGradient27.TextColor = System.Drawing.SystemColors.InactiveCaptionText;
+			dockPaneStripToolWindowGradient4.InactiveCaptionGradient = tabGradient27;
+			tabGradient28.EndColor = System.Drawing.Color.Transparent;
+			tabGradient28.StartColor = System.Drawing.Color.Transparent;
+			tabGradient28.TextColor = System.Drawing.SystemColors.ControlDarkDark;
+			dockPaneStripToolWindowGradient4.InactiveTabGradient = tabGradient28;
+			dockPaneStripSkin4.ToolWindowGradient = dockPaneStripToolWindowGradient4;
+			dockPanelSkin4.DockPaneStripSkin = dockPaneStripSkin4;
+			this.dockPanel.Skin = dockPanelSkin4;
 			this.dockPanel.TabIndex = 13;
 			// 
 			// saveFileDialog

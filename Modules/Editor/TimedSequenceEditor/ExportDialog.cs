@@ -447,7 +447,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		#region Draw lines and GroupBox borders
 		//set color for box borders.
-		private Color _borderColor = Color.FromArgb(80, 80, 80);
+		private Color _borderColor = Color.FromArgb(136, 136, 136);
 
 		public Color BorderColor
 		{
@@ -461,6 +461,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			//get the text size in groupbox
 			Size tSize = TextRenderer.MeasureText((sender as GroupBox).Text, Font);
 
+			e.Graphics.Clear(BackColor);
 			//draw the border
 			Rectangle borderRect = e.ClipRectangle;
 			borderRect.Y = (borderRect.Y + (tSize.Height / 2));
@@ -488,6 +489,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			var brush = new SolidBrush(Color.FromArgb(221, 221, 221));
 			e.DrawBackground();
 			e.Graphics.DrawString(btn.Items[index].ToString(), e.Font, brush, e.Bounds, StringFormat.GenericDefault);
+		}
+
+		private void buttonTextColorChange(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.ForeColor = btn.Enabled ? Color.FromArgb(221, 221, 221) : Color.Gray;
 		}
 
 	}
