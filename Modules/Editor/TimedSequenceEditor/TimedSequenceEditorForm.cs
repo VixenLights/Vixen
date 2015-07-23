@@ -3346,7 +3346,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void ShowMultiDropMessage()
 		{
-			UpdateToolStrip4("Choose the property to set, press Escape to cancel.", 60);
+			UpdateToolStrip4("Choose the property to set, press Escape to cancel.", 4);
 		}
 
 		private void CompleteDrop(Dictionary<Element, Tuple<object, PropertyDescriptor>> elementValues, String effectName)
