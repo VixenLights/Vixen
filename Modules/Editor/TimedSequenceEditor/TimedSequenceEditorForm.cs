@@ -766,7 +766,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					if (destination != null)
 					{
 						AddNewEffectById((Guid) menuItem.Tag, destination, TimelineControl.CursorPosition,
-							TimeSpan.FromSeconds(2)); // TODO: get a proper time
+							TimeSpan.FromSeconds(2), true); // TODO: get a proper time
 					}
 				};
 				addEffectToolStripMenuItem.DropDownItems.Add(menuItem);
@@ -1738,7 +1738,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							AddMultipleEffects(e.GridTime, effectDesriptor.EffectName, (Guid) contextMenuItemEffect.Tag, e.Row);
 						}
 						else
-							AddNewEffectById((Guid) contextMenuItemEffect.Tag, e.Row, e.GridTime, TimeSpan.FromSeconds(2));
+							AddNewEffectById((Guid) contextMenuItemEffect.Tag, e.Row, e.GridTime, TimeSpan.FromSeconds(2), true);
 					}
 				};
 				
@@ -2991,13 +2991,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// <param name="row">The Common.Controls.Timeline.Row to add the effect to</param>
 		/// <param name="startTime">The start time of the effect</param>
 		/// <param name="timeSpan">The duration of the effect</param>
-		private void AddNewEffectById(Guid effectId, Row row, TimeSpan startTime, TimeSpan timeSpan)
+		/// <param name="select">Optional indicator to set as the sole selection in the timeline</param>
+		private void AddNewEffectById(Guid effectId, Row row, TimeSpan startTime, TimeSpan timeSpan, bool select=false)
 		{
 			//Debug.WriteLine("{0}   addNewEffectById({1})", (int)DateTime.Now.TimeOfDay.TotalMilliseconds, effectId);
 			// get a new instance of this effect, populate it, and make a node for it
 
 			IEffectModuleInstance effect = ApplicationServices.Get<IEffectModuleInstance>(effectId);
-			AddEffectInstance(effect, row, startTime, timeSpan);
+			AddEffectInstance(effect, row, startTime, timeSpan, select);
 		}
 
 		/// <summary>
@@ -3008,8 +3009,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// <param name="row">Common.Controls.Timeline.Row to add the effect instance to</param>
 		/// <param name="startTime">The start time of the effect</param>
 		/// <param name="timeSpan">The duration of the effect</param>
-		/// <param name="parameterValues">Optional ParameterValues</param>
-		private void AddEffectInstance(IEffectModuleInstance effectInstance, Row row, TimeSpan startTime, TimeSpan timeSpan, object[] parameterValues = null)
+		/// <param name="select">Optional indicator to set as the sole selection in the timeline</param>
+		private void AddEffectInstance(IEffectModuleInstance effectInstance, Row row, TimeSpan startTime, TimeSpan timeSpan, bool select = false)
 		{
 			try
 			{
@@ -3021,10 +3022,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 
 				var effectNode = CreateEffectNode(effectInstance, row, startTime, timeSpan);
-				// set the option parametervalues if not null
-				if (parameterValues != null) effectNode.Effect.ParameterValues = parameterValues;
 				// put it in the sequence and in the timeline display
-				AddEffectNode(effectNode);
+				Element element = AddEffectNode(effectNode);
+				if (select)
+				{
+					TimelineControl.grid.ClearSelectedElements();
+					TimelineControl.SelectElement(element);
+				}
 				SequenceModified();
 
 				var act = new EffectsAddedUndoAction(this, new[] { effectNode });
@@ -3261,7 +3265,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			else
 			{
-			AddNewEffectById(effectGuid, row, startTime, duration);
+				AddNewEffectById(effectGuid, row, startTime, duration, true);
 			}
 		}
 
@@ -3349,14 +3353,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			UpdateToolStrip4("Choose the property to set, press Escape to cancel.", 4);
 		}
 
-		private void CompleteDrop(Dictionary<Element, Tuple<object, PropertyDescriptor>> elementValues, String effectName)
+		private void CompleteDrop(Dictionary<Element, Tuple<object, PropertyDescriptor>> elementValues, Element element)
 		{
 			if (elementValues.Any())
 			{
 				var undo = new EffectsPropertyModifiedUndoAction(elementValues);
 				AddEffectsModifiedToUndo(undo);
+				TimelineControl.grid.ClearSelectedElements();
+				TimelineControl.SelectElement(element);
 				UpdateToolStrip4(
-					string.Format("Gradient applied to {0} {1} effect(s).", elementValues.Count(), effectName), 30);
+					string.Format("Gradient applied to {0} {1} effect(s).", elementValues.Count(), element.EffectNode.Effect.EffectName), 30);
 			}
 		}
 
@@ -3471,7 +3477,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 
 			}
-			CompleteDrop(elementValues, element.EffectNode.Effect.EffectName);
+			CompleteDrop(elementValues, element);
 			
 		}
 
@@ -3574,7 +3580,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 
 			}
-			CompleteDrop(elementValues, element.EffectNode.Effect.EffectName);
+			CompleteDrop(elementValues, element);
 			
 		}
 
@@ -3719,7 +3725,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 
 			}
-			CompleteDrop(elementValues, element.EffectNode.Effect.EffectName);
+			CompleteDrop(elementValues, element);
 
 		}
 
