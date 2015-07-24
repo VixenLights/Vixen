@@ -312,7 +312,7 @@
 			this.buttonOK.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.buttonOK.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonOK.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonOK.Location = new System.Drawing.Point(556, 577);
+			this.buttonOK.Location = new System.Drawing.Point(564, 577);
 			this.buttonOK.Name = "buttonOK";
 			this.buttonOK.Size = new System.Drawing.Size(80, 25);
 			this.buttonOK.TabIndex = 3;
@@ -752,7 +752,7 @@
 			this.buttonCancel.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.buttonCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonCancel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonCancel.Location = new System.Drawing.Point(641, 577);
+			this.buttonCancel.Location = new System.Drawing.Point(649, 577);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(80, 25);
 			this.buttonCancel.TabIndex = 4;
@@ -1134,6 +1134,7 @@
 			// panelMarkView
 			// 
 			this.panelMarkView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.panelMarkView.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.panelMarkView.Location = new System.Drawing.Point(110, 116);
 			this.panelMarkView.Name = "panelMarkView";
 			this.panelMarkView.Size = new System.Drawing.Size(147, 73);
@@ -1223,7 +1224,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.CancelButton = this.buttonCancel;
-			this.ClientSize = new System.Drawing.Size(726, 605);
+			this.ClientSize = new System.Drawing.Size(734, 606);
 			this.Controls.Add(this.groupBoxPlayback);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.groupBoxSelectedMarkCollection);
@@ -1234,7 +1235,7 @@
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.KeyPreview = true;
 			this.MaximizeBox = false;
-			this.MaximumSize = new System.Drawing.Size(742, 644);
+			this.MaximumSize = new System.Drawing.Size(750, 644);
 			this.MinimizeBox = false;
 			this.MinimumSize = new System.Drawing.Size(742, 644);
 			this.Name = "MarkManager";

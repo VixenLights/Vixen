@@ -23,6 +23,7 @@ using System;
 using System.Text;
 using System.Drawing;
 using System.Security.Permissions;
+using Common.Controls.Theme;
 
 namespace ZedGraph
 {
@@ -335,7 +336,7 @@ namespace ZedGraph
 			/// The default color for drawing frames around GasGaugeNeedle
 			/// (<see cref="ZedGraph.LineBase.Color"/> property).
 			/// </summary>
-			public static Color BorderColor = Color.Gray;
+			public static Color BorderColor = DarkThemeColorTable.BorderColor;
 
 			/// <summary>
 			/// The default fill type for filling the GasGaugeNeedle.

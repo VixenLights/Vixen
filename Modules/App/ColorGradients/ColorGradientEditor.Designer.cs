@@ -178,7 +178,7 @@
 			this.gradientEditPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.gradientEditPanel.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
+			this.gradientEditPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.gradientEditPanel.DiscreteColors = false;
 			this.gradientEditPanel.ForeColor = System.Drawing.Color.Black;
 			this.gradientEditPanel.Location = new System.Drawing.Point(12, 12);
@@ -197,7 +197,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.CancelButton = this.buttonCancel;
-			this.ClientSize = new System.Drawing.Size(434, 271);
+			this.ClientSize = new System.Drawing.Size(434, 272);
 			this.Controls.Add(this.gradientEditPanel);
 			this.Controls.Add(this.groupBoxLibrary);
 			this.Controls.Add(this.buttonCancel);

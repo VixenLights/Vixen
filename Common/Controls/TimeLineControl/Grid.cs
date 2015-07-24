@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Common.Controls.Theme;
 using NLog;
 using Vixen;
 using Vixen.Execution.Context;
@@ -64,7 +65,7 @@ namespace Common.Controls.Timeline
 			RowSeparatorColor = Color.Black;
 			MajorGridlineColor = Color.FromArgb(120, 120, 120);
 			GridlineInterval = TimeSpan.FromSeconds(1.0);
-			BackColor = Color.FromArgb(68, 68, 68);
+			BackColor = DarkThemeColorTable.BackgroundColor;
 			SelectionColor = Color.FromArgb(100, 40, 100, 160);
 			SelectionBorder = Color.Blue;
 			DrawColor = Color.FromArgb(100, 255, 255, 255);

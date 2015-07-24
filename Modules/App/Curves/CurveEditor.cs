@@ -7,6 +7,7 @@ using Vixen.Module.App;
 using Vixen.Services;
 using ZedGraph;
 using System.Linq;
+using Common.Controls.Theme;
 
 namespace VixenModules.App.Curves
 {
@@ -28,12 +29,12 @@ namespace VixenModules.App.Curves
 			btnUpdateCoordinates.BackgroundImage = Resources.HeadingBackgroundImage;
 
 			zedGraphControl.GraphPane.XAxis.MajorGrid.IsVisible = true;
-			zedGraphControl.GraphPane.XAxis.MajorGrid.Color = Color.FromArgb(100, 100, 100);
+			zedGraphControl.GraphPane.XAxis.MajorGrid.Color = DarkThemeColorTable.BorderColor;
 			zedGraphControl.GraphPane.XAxis.MajorGrid.DashOff = 4;
 			zedGraphControl.GraphPane.XAxis.MajorGrid.DashOn = 2;
 
 			zedGraphControl.GraphPane.YAxis.MajorGrid.IsVisible = true;
-			zedGraphControl.GraphPane.YAxis.MajorGrid.Color = Color.FromArgb(100, 100, 100);
+			zedGraphControl.GraphPane.YAxis.MajorGrid.Color = DarkThemeColorTable.BorderColor;
 			zedGraphControl.GraphPane.YAxis.MajorGrid.DashOff = 4;
 			zedGraphControl.GraphPane.YAxis.MajorGrid.DashOn = 2;
 
@@ -50,8 +51,8 @@ namespace VixenModules.App.Curves
 			zedGraphControl.GraphPane.Legend.IsVisible = false;
 			zedGraphControl.GraphPane.Title.IsVisible = false;
 
-			zedGraphControl.GraphPane.Fill = new Fill(Color.FromArgb(68,68,68));
-			zedGraphControl.GraphPane.Border = new Border(Color.FromArgb(68,68,68), 0);
+			zedGraphControl.GraphPane.Fill = new Fill(DarkThemeColorTable.BackgroundColor);
+			zedGraphControl.GraphPane.Border = new Border(DarkThemeColorTable.BackgroundColor, 0);
 
 			zedGraphControl.GraphPane.AxisChange();
 		}
@@ -183,6 +184,20 @@ namespace VixenModules.App.Curves
 
 		private void PopulateFormWithCurve(Curve curve)
 		{
+			zedGraphControl.GraphPane.Chart.Fill = new Fill(DarkThemeColorTable.BackgroundColor);
+			zedGraphControl.GraphPane.Chart.Border.Color = DarkThemeColorTable.BorderColor;
+			zedGraphControl.GraphPane.XAxis.MajorGrid.Color = DarkThemeColorTable.BorderColor;
+			zedGraphControl.GraphPane.XAxis.MinorGrid.Color = DarkThemeColorTable.BorderColor;
+			zedGraphControl.GraphPane.XAxis.MajorTic.Color = DarkThemeColorTable.BorderColor;
+			zedGraphControl.GraphPane.XAxis.MinorTic.Color = DarkThemeColorTable.BorderColor;
+			zedGraphControl.GraphPane.YAxis.MajorGrid.Color = DarkThemeColorTable.BorderColor;
+			zedGraphControl.GraphPane.YAxis.MinorGrid.Color = DarkThemeColorTable.BorderColor;
+			zedGraphControl.GraphPane.YAxis.MajorTic.Color = DarkThemeColorTable.BorderColor;
+			zedGraphControl.GraphPane.YAxis.MinorTic.Color = DarkThemeColorTable.BorderColor;
+			zedGraphControl.GraphPane.Title.FontSpec.FontColor = DarkThemeColorTable.ForeColor;
+			zedGraphControl.GraphPane.XAxis.Scale.FontSpec.FontColor = DarkThemeColorTable.ForeColor;
+			zedGraphControl.GraphPane.YAxis.Scale.FontSpec.FontColor = DarkThemeColorTable.ForeColor;
+
 			// if we're editing a curve from the library, treat it special
 			if (curve.IsCurrentLibraryCurve) {
 				zedGraphControl.GraphPane.CurveList.Clear();
@@ -213,13 +228,7 @@ namespace VixenModules.App.Curves
 				txtXValue.Text = string.Empty;
 				txtYValue.Text = string.Empty;
 				btnUpdateCoordinates.Enabled = false;
-				zedGraphControl.GraphPane.Chart.Fill = new Fill(Color.FromArgb(68,68,68));
-				zedGraphControl.GraphPane.Chart.Border.Color = Color.FromArgb(100, 100, 100);
-				zedGraphControl.GraphPane.XAxis.MajorGrid.Color = Color.FromArgb(100, 100, 100);
-				zedGraphControl.GraphPane.YAxis.MajorGrid.Color = Color.FromArgb(100, 100, 100);
-				zedGraphControl.GraphPane.Title.FontSpec.FontColor = Color.FromArgb(221, 221, 221);
-				zedGraphControl.GraphPane.XAxis.Scale.FontSpec.FontColor = Color.FromArgb(100, 100, 100);
-				zedGraphControl.GraphPane.YAxis.Scale.FontSpec.FontColor = Color.FromArgb(100, 100, 100);
+				
 			}
 			else {
 				if (curve.IsLibraryReference) {
@@ -251,14 +260,7 @@ namespace VixenModules.App.Curves
 				txtXValue.Text = string.Empty;
 				txtYValue.Text = string.Empty;
 				btnUpdateCoordinates.Enabled = false;
-				zedGraphControl.GraphPane.Chart.Fill = new Fill(Color.FromArgb(68, 68, 68));
-				zedGraphControl.GraphPane.Chart.Border.Color = Color.FromArgb(100, 100, 100);
-				zedGraphControl.GraphPane.XAxis.MajorGrid.Color = Color.FromArgb(100, 100, 100);
-				zedGraphControl.GraphPane.YAxis.MajorGrid.Color = Color.FromArgb(100, 100, 100);
-				zedGraphControl.GraphPane.Title.FontSpec.FontColor = Color.FromArgb(221, 221, 221);
-				zedGraphControl.GraphPane.XAxis.Scale.FontSpec.FontColor = Color.FromArgb(100, 100, 100);
-				zedGraphControl.GraphPane.YAxis.Scale.FontSpec.FontColor = Color.FromArgb(100, 100, 100);
-
+				
 				Text = "Curve Editor";
 			}
 
@@ -375,39 +377,14 @@ namespace VixenModules.App.Curves
 		private void buttonTextColorChange(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
-			btn.ForeColor = btn.Enabled ? Color.FromArgb(221, 221, 221) : Color.Gray;
+			btn.ForeColor = btn.Enabled ? DarkThemeColorTable.ForeColor : DarkThemeColorTable.ForeColorDisabled;
 		}
 
 		#region Draw lines and GroupBox borders
-		//set color for box borders.
-		private Color _borderColor = Color.FromArgb(136, 136, 136);
-
-		public Color BorderColor
-		{
-			get { return _borderColor; }
-			set { _borderColor = value; }
-		}
-
+		
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)
 		{
-			//used to draw the boards and text for the groupboxes to change the default box color.
-			//get the text size in groupbox
-			Size tSize = TextRenderer.MeasureText((sender as GroupBox).Text, Font);
-
-			e.Graphics.Clear(BackColor);
-			//draw the border
-			Rectangle borderRect = e.ClipRectangle;
-			borderRect.Y = (borderRect.Y + (tSize.Height / 2));
-			borderRect.Height = (borderRect.Height - (tSize.Height / 2));
-			ControlPaint.DrawBorder(e.Graphics, borderRect, _borderColor, ButtonBorderStyle.Solid);
-
-			//draw the text
-			Rectangle textRect = e.ClipRectangle;
-			textRect.X = (textRect.X + 6);
-			textRect.Width = tSize.Width + 10;
-			textRect.Height = tSize.Height;
-			e.Graphics.FillRectangle(new SolidBrush(BackColor), textRect);
-			e.Graphics.DrawString((sender as GroupBox).Text, Font, new SolidBrush(Color.FromArgb(221, 221, 221)), textRect);
+			DarkThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
 		}
 		#endregion
 

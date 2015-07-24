@@ -67,18 +67,18 @@
 			this.groupBoxSystemConfig = new System.Windows.Forms.GroupBox();
 			this.buttonSetupDisplay = new System.Windows.Forms.Button();
 			this.buttonSetupOutputPreviews = new System.Windows.Forms.Button();
-			this.statusStrip = new System.Windows.Forms.StatusStrip();
+			this.pictureBox1 = new System.Windows.Forms.PictureBox();
+			this.labelDebugVersion = new System.Windows.Forms.Label();
 			this.toolStripStatusLabelExecutionLight = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripStatusLabelExecutionState = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripStatusLabel_memory = new System.Windows.Forms.ToolStripStatusLabel();
-			this.pictureBox1 = new System.Windows.Forms.PictureBox();
-			this.labelDebugVersion = new System.Windows.Forms.Label();
+			this.statusStrip = new System.Windows.Forms.StatusStrip();
 			this.menuStripMain.SuspendLayout();
 			this.groupBoxSequences.SuspendLayout();
 			this.groupBoxSystemConfig.SuspendLayout();
-			this.statusStrip.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+			this.statusStrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// contextMenuStripNewSequence
@@ -334,6 +334,7 @@
 			this.listViewRecentSequences.TabIndex = 3;
 			this.listViewRecentSequences.UseCompatibleStateImageBehavior = false;
 			this.listViewRecentSequences.View = System.Windows.Forms.View.Details;
+			this.listViewRecentSequences.DrawItem += new System.Windows.Forms.DrawListViewItemEventHandler(this.listViewRecentSequences_DrawItem);
 			this.listViewRecentSequences.DoubleClick += new System.EventHandler(this.listViewRecentSequences_DoubleClick);
 			// 
 			// columnHeader1
@@ -395,21 +396,24 @@
 			this.buttonSetupOutputPreviews.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonSetupOutputPreviews.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
-			// statusStrip
+			// pictureBox1
 			// 
-			this.statusStrip.AutoSize = false;
-			this.statusStrip.ImageScalingSize = new System.Drawing.Size(24, 24);
-			this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripStatusLabelExecutionLight,
-            this.toolStripStatusLabel1,
-            this.toolStripStatusLabelExecutionState,
-            this.toolStripStatusLabel_memory});
-			this.statusStrip.Location = new System.Drawing.Point(0, 438);
-			this.statusStrip.Name = "statusStrip";
-			this.statusStrip.Size = new System.Drawing.Size(461, 27);
-			this.statusStrip.SizingGrip = false;
-			this.statusStrip.TabIndex = 13;
-			this.statusStrip.Text = "statusStrip";
+			this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
+			this.pictureBox1.Location = new System.Drawing.Point(33, 27);
+			this.pictureBox1.Name = "pictureBox1";
+			this.pictureBox1.Size = new System.Drawing.Size(393, 165);
+			this.pictureBox1.TabIndex = 14;
+			this.pictureBox1.TabStop = false;
+			// 
+			// labelDebugVersion
+			// 
+			this.labelDebugVersion.Font = new System.Drawing.Font("Arial", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.labelDebugVersion.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.labelDebugVersion.Location = new System.Drawing.Point(342, 166);
+			this.labelDebugVersion.Name = "labelDebugVersion";
+			this.labelDebugVersion.Size = new System.Drawing.Size(78, 22);
+			this.labelDebugVersion.TabIndex = 16;
+			this.labelDebugVersion.Text = "[0.0.0]";
 			// 
 			// toolStripStatusLabelExecutionLight
 			// 
@@ -446,24 +450,22 @@
 			this.toolStripStatusLabel_memory.Text = "Resource Usage";
 			this.toolStripStatusLabel_memory.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
-			// pictureBox1
+			// statusStrip
 			// 
-			this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-			this.pictureBox1.Location = new System.Drawing.Point(33, 27);
-			this.pictureBox1.Name = "pictureBox1";
-			this.pictureBox1.Size = new System.Drawing.Size(393, 165);
-			this.pictureBox1.TabIndex = 14;
-			this.pictureBox1.TabStop = false;
-			// 
-			// labelDebugVersion
-			// 
-			this.labelDebugVersion.Font = new System.Drawing.Font("Arial", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.labelDebugVersion.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.labelDebugVersion.Location = new System.Drawing.Point(342, 166);
-			this.labelDebugVersion.Name = "labelDebugVersion";
-			this.labelDebugVersion.Size = new System.Drawing.Size(78, 22);
-			this.labelDebugVersion.TabIndex = 16;
-			this.labelDebugVersion.Text = "[0.0.0]";
+			this.statusStrip.AutoSize = false;
+			this.statusStrip.GripMargin = new System.Windows.Forms.Padding(0);
+			this.statusStrip.ImageScalingSize = new System.Drawing.Size(24, 24);
+			this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusLabelExecutionLight,
+            this.toolStripStatusLabel1,
+            this.toolStripStatusLabelExecutionState,
+            this.toolStripStatusLabel_memory});
+			this.statusStrip.Location = new System.Drawing.Point(0, 438);
+			this.statusStrip.Name = "statusStrip";
+			this.statusStrip.Size = new System.Drawing.Size(461, 27);
+			this.statusStrip.SizingGrip = false;
+			this.statusStrip.TabIndex = 13;
+			this.statusStrip.Text = "statusStrip";
 			// 
 			// VixenApplication
 			// 
@@ -495,9 +497,9 @@
 			this.groupBoxSequences.ResumeLayout(false);
 			this.groupBoxSequences.PerformLayout();
 			this.groupBoxSystemConfig.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			this.statusStrip.ResumeLayout(false);
 			this.statusStrip.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -519,16 +521,11 @@
 		private System.Windows.Forms.Button buttonNewSequence;
 		private System.Windows.Forms.GroupBox groupBoxSequences;
 		private System.Windows.Forms.GroupBox groupBoxSystemConfig;
-		private System.Windows.Forms.StatusStrip statusStrip;
-		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelExecutionState;
-		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelExecutionLight;
 		private System.Windows.Forms.ToolStripMenuItem logsToolStripMenuItem;
 		private System.Windows.Forms.ListView listViewRecentSequences;
 		private System.Windows.Forms.ColumnHeader columnHeader1;
 		private System.Windows.Forms.ToolStripMenuItem viewInstalledModulesToolStripMenuItem;
 		private System.Windows.Forms.Label labelVersion;
-		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
-		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel_memory;
 		private System.Windows.Forms.Button buttonSetupOutputPreviews;
 		private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.ToolStripMenuItem profilesToolStripMenuItem;
@@ -543,6 +540,11 @@
 		private System.Windows.Forms.ToolStripMenuItem setupControllersToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem setupFiltersPatchingToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelExecutionLight;
+		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelExecutionState;
+		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel_memory;
+		private System.Windows.Forms.StatusStrip statusStrip;
 	}
 }
 

@@ -8,6 +8,7 @@ using System.Windows.Media;
 using System.Xml;
 using Common.Controls.ColorManagement.ColorModels;
 using Common.Controls.ColorManagement.ColorPicker;
+using Common.Controls.Theme;
 using Common.Resources;
 using Common.Resources.Properties;
 using VixenModules.Sequence.Timed;
@@ -25,6 +26,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private ColorCollection _currentCollection;
 		private Color _colorValue;
 		private string _lastFolder;
+		private readonly Pen _borderPen = new Pen(Color.FromArgb(136, 136, 136), 2);
 
 		#endregion
 
@@ -363,7 +365,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				using (SolidBrush brush = new SolidBrush(colorItem))
 				{
 					gfx.FillRectangle(brush, 0, 0, 48, 48);
-					gfx.DrawRectangle(new Pen(Color.Black, 2), 0, 0, 48, 48);
+					gfx.DrawRectangle(_borderPen, 0, 0, 48, 48);
 				}
 
 				listViewColors.LargeImageList.Images.Add(colorItem.ToString(), result);
@@ -428,7 +430,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void buttonTextColorChange(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
-			btn.ForeColor = btn.Enabled ? Color.FromArgb(221, 221, 221) : Color.Gray;
+			btn.ForeColor = btn.Enabled ? DarkThemeColorTable.ForeColor : DarkThemeColorTable.ForeColorDisabled;
 		}
 
 		private void comboBoxCollections_DrawItem(object sender, DrawItemEventArgs e)
@@ -438,7 +440,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				return;
 			}
-			var brush = new SolidBrush(Color.FromArgb(221, 221, 221));
+			var brush = new SolidBrush(DarkThemeColorTable.ForeColor);
 			e.DrawBackground();
 			e.Graphics.DrawString(comboBoxCollections.Items[index].ToString(), e.Font, brush, e.Bounds, StringFormat.GenericDefault);
 		}

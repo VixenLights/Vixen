@@ -13,6 +13,7 @@ using System.Timers;
 using System.Windows.Forms;
 using System.Xml;
 using Common.Controls;
+using Common.Controls.Theme;
 using Common.Controls.Timeline;
 using Common.Resources;
 using Common.Resources.Properties;
@@ -120,8 +121,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			InitializeComponent();
 
-			menuStrip.Renderer = new MyRenderer();
-			toolStripOperations.Renderer = new MyRenderer();
+			menuStrip.Renderer = new DarkThemeToolStripRenderer();
+			toolStripOperations.Renderer = new DarkThemeToolStripRenderer();
+			_contextMenuStrip.Renderer = new DarkThemeToolStripRenderer();
+			cboAudioDevices.ComboBox.DrawMode=DrawMode.OwnerDrawFixed;
+			cboAudioDevices.ComboBox.DrawItem += ComboBox_DrawItem;
 			Icon = Resources.Icon_Vixen3;
 			toolStripButton_Start.Image = Tools.GetIcon(Resources.control_start_blue,22);
 			toolStripButton_Start.DisplayStyle = ToolStripItemDisplayStyle.Image;
@@ -190,6 +194,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			Execution.ExecutionStateChanged += OnExecutionStateChanged;
 			_autoSaveTimer.Tick += AutoSaveEventProcessor;
 
+		}
+
+		void ComboBox_DrawItem(object sender, DrawItemEventArgs e)
+		{
+			DarkThemeComboRenderer.DrawItem(sender, e);
 		}
 
 		private IDockContent DockingPanels_GetContentFromPersistString(string persistString)
@@ -5406,85 +5415,4 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		}
 	}
 
-	#region Render Menustrip
-	class MyRenderer : ToolStripProfessionalRenderer
-	{
-		public MyRenderer() : base(new MyColors()) { }
-
-		protected override void OnRenderItemText(ToolStripItemTextRenderEventArgs e)
-		{
-			e.TextColor = Color.FromArgb(221, 221, 221);
-			base.OnRenderItemText(e);
-		}
-	}
-
-	class MyColors : ProfessionalColorTable
-	{
-		public override Color MenuItemSelected
-		{
-			get { return Color.FromArgb(68, 68, 68); }
-		}
-		public override Color MenuItemSelectedGradientBegin
-		{
-			get { return Color.FromArgb(90, 90, 90); }
-		}
-		public override Color MenuItemSelectedGradientEnd
-		{
-			get { return Color.FromArgb(90, 90, 90); }
-		}
-		public override Color MenuItemBorder
-		{
-			get { return Color.FromArgb(90, 90, 90); }
-		}
-
-		public override Color ImageMarginGradientBegin
-		{
-			get { return Color.FromArgb(90, 90, 90); }
-		}
-
-		public override Color ImageMarginGradientEnd
-		{
-			get { return Color.FromArgb(90, 90, 90); }
-		}
-
-		public override Color ImageMarginGradientMiddle
-		{
-			get { return Color.FromArgb(90, 90, 90); }
-		}
-
-		public override Color MenuItemPressedGradientBegin
-		{
-			get { return Color.FromArgb(90, 90, 90); }
-		}
-
-		public override Color MenuItemPressedGradientMiddle
-		{
-			get { return Color.FromArgb(90, 90, 90); }
-		}
-
-		public override Color MenuItemPressedGradientEnd
-		{
-			get { return Color.FromArgb(90, 90, 90); }
-		}
-		public override Color ToolStripDropDownBackground
-		{
-			get { return Color.FromArgb(90, 90, 90); }
-		}
-
-		public override Color CheckBackground
-		{
-			get { return Color.FromArgb(90, 90, 90); }
-		}
-
-		public override Color CheckSelectedBackground
-		{
-			get { return Color.FromArgb(68, 68, 68); }
-		}
-
-		public override Color CheckPressedBackground
-		{
-			get { return Color.FromArgb(68, 68, 68); }
-		}
-	}
-	#endregion
 }

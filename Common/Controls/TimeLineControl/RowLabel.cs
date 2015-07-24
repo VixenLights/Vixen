@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls.Theme;
 
 namespace Common.Controls.Timeline
 {
@@ -163,10 +164,10 @@ namespace Common.Controls.Timeline
 
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			using (SolidBrush backgroundBrush = new SolidBrush(Color.FromArgb(68,68,68))) {
-				using (SolidBrush toggleBrush = new SolidBrush(Color.FromArgb(68, 68, 68)))
+			using (SolidBrush backgroundBrush = new SolidBrush(DarkThemeColorTable.BackgroundColor)) {
+				using (SolidBrush toggleBrush = new SolidBrush(DarkThemeColorTable.BackgroundColor))
 				{
-					using (SolidBrush nodeIconBrush = new SolidBrush(Color.FromArgb(68, 68, 68)))
+					using (SolidBrush nodeIconBrush = new SolidBrush(DarkThemeColorTable.BackgroundColor))
 					{
 						using (SolidBrush textBrush = new SolidBrush(Color.Silver)) {
 							using (Pen wholeBorderPen = new Pen(Color.Black, 1)) {

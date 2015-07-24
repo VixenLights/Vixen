@@ -11,6 +11,7 @@ using Common.Resources.Properties;
 using VixenModules.Media.Audio;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
+using Common.Controls.Theme;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -176,35 +177,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		}
 
 		#region Draw lines and GroupBox borders
-		//set color for box borders.
-		private Color _borderColor = Color.FromArgb(136, 136, 136);
-
-		public Color BorderColor
-		{
-			get { return _borderColor; }
-			set { _borderColor = value; }
-		}
-
+		
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)
 		{
-			//used to draw the boards and text for the groupboxes to change the default box color.
-			//get the text size in groupbox
-			Size tSize = TextRenderer.MeasureText((sender as GroupBox).Text, Font);
-
-			e.Graphics.Clear(BackColor);
-			//draw the border
-			Rectangle borderRect = e.ClipRectangle;
-			borderRect.Y = (borderRect.Y + (tSize.Height / 2));
-			borderRect.Height = (borderRect.Height - (tSize.Height / 2));
-			ControlPaint.DrawBorder(e.Graphics, borderRect, _borderColor, ButtonBorderStyle.Solid);
-
-			//draw the text
-			Rectangle textRect = e.ClipRectangle;
-			textRect.X = (textRect.X + 6);
-			textRect.Width = tSize.Width + 10;
-			textRect.Height = tSize.Height;
-			e.Graphics.FillRectangle(new SolidBrush(BackColor), textRect);
-			e.Graphics.DrawString((sender as GroupBox).Text, Font, new SolidBrush(Color.FromArgb(221, 221, 221)), textRect);
+			DarkThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
 		}
 		#endregion
 	}

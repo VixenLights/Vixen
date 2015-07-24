@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+using Common.Controls.Theme;
 
 namespace Common.Controls.ControlsEx.ValueControls
 {
@@ -174,8 +175,8 @@ namespace Common.Controls.ControlsEx.ValueControls
 			this._textbox.Location = new Point(2, 2);
 			this._textbox.BorderStyle = BorderStyle.FixedSingle;
 			this._textbox.Text = this.Minimum.ToString();
-			this._textbox.BackColor = Color.FromArgb(90,90,90);
-			this._textbox.ForeColor = Color.FromArgb(221,221,221);
+			this._textbox.BackColor = DarkThemeColorTable.HighlightColor;
+			this._textbox.ForeColor = DarkThemeColorTable.ForeColor;
 			this._textbox.MaxLength = 5;
 			this._textbox.KeyDown += new KeyEventHandler(_textbox_KeyDown);
 			this._textbox.KeyPress += new KeyPressEventHandler(_textbox_KeyPress);
@@ -283,7 +284,7 @@ namespace Common.Controls.ControlsEx.ValueControls
 		// draws all elements
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			e.Graphics.Clear(SystemColors.Control);
+			e.Graphics.Clear(DarkThemeColorTable.BackgroundColor);
 			if (this.Height < 24 || this.Width < 24) return;
 			IntPtr data = Win32.OpenThemeData2(this.Handle, "Combobox");
 			if (data != IntPtr.Zero) //draw with winxp themes

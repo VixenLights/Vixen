@@ -14,6 +14,7 @@ using Vixen.Sys;
 using NLog;
 using Common.Resources.Properties;
 using Common.Controls;
+using Common.Controls.Theme;
 
 namespace VixenApplication
 {
@@ -34,11 +35,16 @@ namespace VixenApplication
 		public VixenApplication()
 		{
 			InitializeComponent();
-			menuStripMain.Renderer = new MyRenderer();
+			//Get rid of the ugly grip that we dont want to show anyway. 
+			//Workaround for a MS bug
+			statusStrip.Padding = new Padding(statusStrip.Padding.Left,
+			statusStrip.Padding.Top, statusStrip.Padding.Left, statusStrip.Padding.Bottom);
+			menuStripMain.Renderer = new DarkThemeToolStripRenderer();
 			buttonNewSequence.BackgroundImage = Resources.HeadingBackgroundImage;
 			buttonOpenSequence.BackgroundImage = Resources.HeadingBackgroundImage;
 			buttonSetupDisplay.BackgroundImage = Resources.HeadingBackgroundImage;
 			buttonSetupOutputPreviews.BackgroundImage = Resources.HeadingBackgroundImage;
+			listViewRecentSequences.OwnerDraw = true;
 
 			Icon = Resources.Icon_Vixen3;
 
@@ -761,24 +767,7 @@ namespace VixenApplication
 
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)
 		{
-			//used to draw the boards and text for the groupboxes to change the default box color.
-			//get the text size in groupbox
-			Size tSize = TextRenderer.MeasureText((sender as GroupBox).Text, Font);
-
-			e.Graphics.Clear(BackColor);
-			//draw the border
-			Rectangle borderRect = e.ClipRectangle;
-			borderRect.Y = (borderRect.Y + (tSize.Height / 2));
-			borderRect.Height = (borderRect.Height - (tSize.Height / 2));
-			ControlPaint.DrawBorder(e.Graphics, borderRect, _borderColor, ButtonBorderStyle.Solid);
-
-			//draw the text
-			Rectangle textRect = e.ClipRectangle;
-			textRect.X = (textRect.X + 6);
-			textRect.Width = tSize.Width + 8;
-			textRect.Height = tSize.Height;
-			e.Graphics.FillRectangle(new SolidBrush(BackColor), textRect);
-			e.Graphics.DrawString((sender as GroupBox).Text, Font, new SolidBrush(Color.FromArgb(221, 221, 221)), textRect);
+			DarkThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
 		}
 
 		private void VixenApplication_Paint(object sender, PaintEventArgs e)
@@ -801,72 +790,12 @@ namespace VixenApplication
 			var btn = (Button)sender;
 			btn.BackgroundImage = Resources.HeadingBackgroundImage;
 		}
-	}
 
-	#region Render Menustrip
-	class MyRenderer : ToolStripProfessionalRenderer
-	{
-		public MyRenderer() : base(new MyColors()) { }
-
-		protected override void OnRenderItemText(ToolStripItemTextRenderEventArgs e)
+		private void listViewRecentSequences_DrawItem(object sender, DrawListViewItemEventArgs e)
 		{
-			e.TextColor = Color.FromArgb(221, 221, 221);
-			base.OnRenderItemText(e);
+			DarkThemeListViewItemRenderer.DrawItem(sender, e);
 		}
 	}
 
-	class MyColors : ProfessionalColorTable
-	{
-		public override Color MenuItemSelected
-		{
-			get { return Color.FromArgb(68,68,68); }
-		}
-		public override Color MenuItemSelectedGradientBegin
-		{
-			get { return Color.FromArgb(90, 90, 90); }
-		}
-		public override Color MenuItemSelectedGradientEnd
-		{
-			get { return Color.FromArgb(90, 90, 90); }
-		}
-		public override Color MenuItemBorder
-		{
-			get { return Color.FromArgb(90, 90, 90); }
-		}
-
-		public override Color ImageMarginGradientBegin
-		{
-			get { return Color.FromArgb(90, 90, 90); }
-		}
-
-		public override Color ImageMarginGradientEnd
-		{
-			get { return Color.FromArgb(90, 90, 90); }
-		}
-
-		public override Color ImageMarginGradientMiddle
-		{
-			get { return Color.FromArgb(90, 90, 90); }
-		}
-
-		public override Color MenuItemPressedGradientBegin
-		{
-			get { return Color.FromArgb(90, 90, 90); }
-		}
-
-		public override Color MenuItemPressedGradientMiddle
-		{
-			get { return Color.FromArgb(90, 90, 90); }
-		}
-
-		public override Color MenuItemPressedGradientEnd
-		{
-			get { return Color.FromArgb(90, 90, 90); }
-		}
-		public override Color ToolStripDropDownBackground
-		{
-			get { return Color.FromArgb(90, 90, 90); }
-		}
-	}
-#endregion
+	
 }

@@ -76,12 +76,16 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Theme\DarkThemeComboRenderer.cs" />
+    <Compile Include="Theme\DarkThemeListViewItemRenderer.cs" />
     <Compile Include="ControllerTree.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="ControllerTree.Designer.cs">
       <DependentUpon>ControllerTree.cs</DependentUpon>
     </Compile>
+    <Compile Include="Theme\DarkThemeColorTable.cs" />
+    <Compile Include="Theme\DarkThemeToolStripRenderer.cs" />
     <Compile Include="Direct2D\AnimatedScene.cs" />
     <Compile Include="Direct2D\D3D10Image.cs" />
     <Compile Include="Direct2D\Direct2DControl.cs" />
@@ -159,6 +163,7 @@
     <Compile Include="MessageBoxForm.Designer.cs">
       <DependentUpon>MessageBoxForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Theme\DarkThemeGroupBoxRenderer.cs" />
     <Compile Include="TimelineControl\BlockingCollectionExtensions.cs" />
     <Compile Include="TimelineControl\DelegateBasedObserver.cs" />
     <Compile Include="TimelineControl\Grid.cs">

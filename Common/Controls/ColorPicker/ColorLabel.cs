@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Resources;
 using System.Windows.Forms;
 using Common.Controls.ColorManagement.ColorModels;
+using Common.Controls.Theme;
 
 namespace Common.Controls.ColorManagement.ColorPicker
 {
@@ -76,8 +77,9 @@ namespace Common.Controls.ColorManagement.ColorPicker
 				}
 			}
 			//draw broder
-			ControlPaint.DrawBorder3D(e.Graphics, 0, 0, this.Width, this.Height, Border3DStyle.SunkenOuter,
-			                          Border3DSide.All & ~Border3DSide.Middle);
+			ControlPaint.DrawBorder(e.Graphics,new Rectangle(0,0,Width, Height),DarkThemeColorTable.BorderColor,ButtonBorderStyle.Solid );
+			//ControlPaint.DrawBorder3D(e.Graphics, 0, 0, this.Width, this.Height, Border3DStyle.SunkenOuter,
+			//						  Border3DSide.All & ~Border3DSide.Middle);
 		}
 
 		protected override void OnMouseDown(MouseEventArgs e)

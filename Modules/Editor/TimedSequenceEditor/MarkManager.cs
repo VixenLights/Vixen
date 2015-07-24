@@ -19,6 +19,8 @@ using Common.Resources.Properties;
 using System.Xml.Serialization;
 using System.Runtime.Serialization;
 using System.Xml;
+using Common.Controls.Theme;
+using VixenModules.Editor.EffectEditor;
 
 
 namespace VixenModules.Editor.TimedSequenceEditor
@@ -75,7 +77,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			btnAutoDetectionSettings.BackgroundImage = Resources.HeadingBackgroundImage;
 			btnCreateCollections.BackgroundImage = Resources.HeadingBackgroundImage;
 			buttonRemoveCollection.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonRemoveCollection.ForeColor = buttonRemoveCollection.Enabled ? Color.FromArgb(221, 221, 221) : Color.Gray;
+			buttonRemoveCollection.ForeColor = buttonRemoveCollection.Enabled ? DarkThemeColorTable.ForeColor : DarkThemeColorTable.ForeColorDisabled;
 
 			labelTapperInstructions.Visible = false;
 
@@ -104,13 +106,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				chkLowPass.AutoCheck = true;
 				numHighPass.Enabled = true;
 				numLowPass.Enabled = true;
-				ChkAutoTapper.ForeColor = Color.FromArgb(221, 221, 221);
-				radioAll.ForeColor = Color.FromArgb(221, 221, 221);
-				radioSelected.ForeColor = Color.FromArgb(221, 221, 221);
-				chkHighPass.ForeColor = Color.FromArgb(221, 221, 221);
-				chkLowPass.ForeColor = Color.FromArgb(221, 221, 221);
-				numHighPass.ForeColor = Color.FromArgb(221, 221, 221);
-				numLowPass.ForeColor = Color.FromArgb(221, 221, 221);
+				ChkAutoTapper.ForeColor = DarkThemeColorTable.ForeColor;
+				radioAll.ForeColor = DarkThemeColorTable.ForeColor;
+				radioSelected.ForeColor = DarkThemeColorTable.ForeColor;
+				chkHighPass.ForeColor = DarkThemeColorTable.ForeColor;
+				chkLowPass.ForeColor = DarkThemeColorTable.ForeColor;
+				numHighPass.ForeColor = DarkThemeColorTable.ForeColor;
+				numLowPass.ForeColor = DarkThemeColorTable.ForeColor;
 			}
 			else
 			{
@@ -123,13 +125,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				chkLowPass.AutoCheck = false;
 				numHighPass.Enabled = false;
 				numLowPass.Enabled = false;
-				ChkAutoTapper.ForeColor = Color.Gray;
-				radioAll.ForeColor = Color.Gray;
-				radioSelected.ForeColor = Color.Gray;
-				chkHighPass.ForeColor = Color.Gray;
-				chkLowPass.ForeColor = Color.Gray;
-				numHighPass.ForeColor = Color.Gray;
-				numLowPass.ForeColor = Color.Gray;
+				ChkAutoTapper.ForeColor = DarkThemeColorTable.ForeColor;
+				radioAll.ForeColor = DarkThemeColorTable.ForeColor;
+				radioSelected.ForeColor = DarkThemeColorTable.ForeColor;
+				chkHighPass.ForeColor = DarkThemeColorTable.ForeColor;
+				chkLowPass.ForeColor = DarkThemeColorTable.ForeColor;
+				numHighPass.ForeColor = DarkThemeColorTable.ForeColor;
+				numLowPass.ForeColor = DarkThemeColorTable.ForeColor;
 			}
 		}
 
@@ -236,14 +238,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			else
 			{
-				panelColor.BackColor = Color.FromArgb(68,68,68);
+				panelColor.BackColor = DarkThemeColorTable.BackgroundColor;
 				PopulateFormWithMarkCollection(null);
 			}
 
 			buttonRemoveCollection.Enabled = (listViewMarkCollections.SelectedItems.Count > 0);
 			radioButtonTapper.AutoCheck = (listViewMarkCollections.SelectedItems.Count > 0);
 			radioButtonPlayback.Checked = true;
-			radioButtonTapper.ForeColor = radioButtonTapper.AutoCheck ? Color.FromArgb(221, 221, 221) : Color.Gray;
+			radioButtonTapper.ForeColor = radioButtonTapper.AutoCheck ? DarkThemeColorTable.ForeColor : DarkThemeColorTable.ForeColorDisabled;
 		}
 
 		private void listViewMarks_SelectedIndexChanged(object sender, EventArgs e)
@@ -788,8 +790,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			checkBoxEnabled.AutoCheck = false;
 			radioButtonTapper.AutoCheck = false;
 			radioButtonPlayback.AutoCheck = false;
-			radioButtonTapper.ForeColor = radioButtonTapper.AutoCheck ? Color.FromArgb(221, 221, 221) : Color.Gray;
-			radioButtonPlayback.ForeColor = radioButtonTapper.AutoCheck ? Color.FromArgb(221, 221, 221) : Color.Gray;
+			radioButtonTapper.ForeColor = radioButtonTapper.AutoCheck ? DarkThemeColorTable.ForeColor : DarkThemeColorTable.ForeColorDisabled;
+			radioButtonPlayback.ForeColor = radioButtonTapper.AutoCheck ? DarkThemeColorTable.ForeColor : DarkThemeColorTable.ForeColorDisabled;
 			textBoxCollectionName.Enabled = false;
 			numericUpDownWeight.Enabled = false;
 			panelColor.Enabled = false;
@@ -820,8 +822,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			checkBoxEnabled.AutoCheck = true;
 			radioButtonTapper.AutoCheck = true;
 			radioButtonPlayback.AutoCheck = true;
-			radioButtonTapper.ForeColor = radioButtonTapper.AutoCheck ? Color.FromArgb(221, 221, 221) : Color.Gray;
-			radioButtonPlayback.ForeColor = radioButtonTapper.AutoCheck ? Color.FromArgb(221, 221, 221) : Color.Gray;
+			radioButtonTapper.ForeColor = radioButtonTapper.AutoCheck ? DarkThemeColorTable.ForeColor : DarkThemeColorTable.ForeColorDisabled;
+			radioButtonPlayback.ForeColor = radioButtonTapper.AutoCheck ? DarkThemeColorTable.ForeColor : DarkThemeColorTable.ForeColorDisabled;
 			textBoxCollectionName.Enabled = true;
 			numericUpDownWeight.Enabled = true;
 			panelColor.Enabled = true;
@@ -852,7 +854,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void timerMarkHit_Tick(object sender, EventArgs e)
 		{
-			panelMarkView.BackColor = Color.FromArgb(68, 68, 68);
+			panelMarkView.BackColor = DarkThemeColorTable.BackgroundColor;
 			timerMarkHit.Stop();
 		}
 
@@ -1483,48 +1485,24 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void buttonTextColorChange(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
-			btn.ForeColor = btn.Enabled ? Color.FromArgb(221, 221, 221) : Color.Gray;
+			btn.ForeColor = btn.Enabled ? DarkThemeColorTable.ForeColor : DarkThemeColorTable.ForeColorDisabled;
 		}
 
 		private void panelMarkCollectionsButtons_EnabledChanged(object sender, EventArgs e)
 		{
-			buttonExportBeatMarks.ForeColor = buttonExportBeatMarks.Enabled ? Color.FromArgb(221, 221, 221) : Color.Gray;
-			buttonImportAudacity.ForeColor = buttonImportAudacity.Enabled ? Color.FromArgb(221, 221, 221) : Color.Gray;
-			buttonAddCollection.ForeColor = buttonAddCollection.Enabled ? Color.FromArgb(221, 221, 221) : Color.Gray;
+			buttonExportBeatMarks.ForeColor = buttonExportBeatMarks.Enabled ? DarkThemeColorTable.ForeColor : DarkThemeColorTable.ForeColorDisabled;
+			buttonImportAudacity.ForeColor = buttonImportAudacity.Enabled ? DarkThemeColorTable.ForeColor : DarkThemeColorTable.ForeColorDisabled;
+			buttonAddCollection.ForeColor = buttonAddCollection.Enabled ? DarkThemeColorTable.ForeColor : DarkThemeColorTable.ForeColorDisabled;
 		}
 		#endregion
 
 		#region Draw lines and GroupBox borders
-		//set color for box borders.
-		private Color _borderColor = Color.FromArgb(136, 136, 136);
-
-		public Color BorderColor
-		{
-			get { return _borderColor; }
-			set { _borderColor = value; }
-		}
-
+		
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)
 		{
-			//used to draw the boards and text for the groupboxes to change the default box color.
-			//get the text size in groupbox
-			Size tSize = TextRenderer.MeasureText((sender as GroupBox).Text, Font);
-
-			e.Graphics.Clear(BackColor);
-			//draw the border
-			Rectangle borderRect = e.ClipRectangle;
-			borderRect.Y = (borderRect.Y + (tSize.Height / 2));
-			borderRect.Height = (borderRect.Height - (tSize.Height / 2));
-			ControlPaint.DrawBorder(e.Graphics, borderRect, _borderColor, ButtonBorderStyle.Solid);
-
-			//draw the text
-			Rectangle textRect = e.ClipRectangle;
-			textRect.X = (textRect.X + 6);
-			textRect.Width = tSize.Width + 10;
-			textRect.Height = tSize.Height;
-			e.Graphics.FillRectangle(new SolidBrush(BackColor), textRect);
-			e.Graphics.DrawString((sender as GroupBox).Text, Font, new SolidBrush(Color.FromArgb(221, 221, 221)), textRect);
+			DarkThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
 		}
+
 		#endregion
 
 		#region Set button background for mouse hover and leave
@@ -1544,10 +1522,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void groupBoxOperations_EnabledChanged(object sender, EventArgs e)
 		{
-			checkBoxEnabled.ForeColor = groupBoxOperations.Enabled ? Color.FromArgb(221, 221, 221) : Color.Gray;
-			label1.ForeColor = groupBoxOperations.Enabled ? Color.FromArgb(221, 221, 221) : Color.Gray;
-			label2.ForeColor = groupBoxOperations.Enabled ? Color.FromArgb(221, 221, 221) : Color.Gray;
-			label3.ForeColor = groupBoxOperations.Enabled ? Color.FromArgb(221, 221, 221) : Color.Gray;
+			checkBoxEnabled.ForeColor = groupBoxOperations.Enabled ? DarkThemeColorTable.ForeColor : DarkThemeColorTable.ForeColorDisabled;
+			label1.ForeColor = groupBoxOperations.Enabled ? DarkThemeColorTable.ForeColor : DarkThemeColorTable.ForeColorDisabled;
+			label2.ForeColor = groupBoxOperations.Enabled ? DarkThemeColorTable.ForeColor : DarkThemeColorTable.ForeColorDisabled;
+			label3.ForeColor = groupBoxOperations.Enabled ? DarkThemeColorTable.ForeColor : DarkThemeColorTable.ForeColorDisabled;
 		}
 
 	}

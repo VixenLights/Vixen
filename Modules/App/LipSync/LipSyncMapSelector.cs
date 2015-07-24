@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Resources;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls.Theme;
 using Common.Resources.Properties;
 using Vixen.Services;
 using Vixen.Sys;
@@ -108,7 +109,7 @@ namespace VixenModules.App.LipSyncApp
 			//	listViewMappings.LargeImageList.Images.Add(name, image);
 
 			//	ListViewItem item = new ListViewItem { Text = name, Name = name, ImageKey = name, Tag = c };
-			//	item.ForeColor = Color.FromArgb(221, 221, 221);
+			//	item.ForeColor = DarkThemeColorTable.ForeColor;
 			//	listViewMappings.Items.Add(item);
 			//}
 
@@ -286,7 +287,7 @@ namespace VixenModules.App.LipSyncApp
 		private void buttonTextColorChange(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
-			btn.ForeColor = btn.Enabled ? Color.FromArgb(221, 221, 221) : Color.Gray;
+			btn.ForeColor = btn.Enabled ? DarkThemeColorTable.ForeColor : DarkThemeColorTable.ForeColorDisabled;
 		}
     }
 }
