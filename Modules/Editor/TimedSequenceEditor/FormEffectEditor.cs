@@ -152,13 +152,18 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_previewLoopTimer.Start();
 		}
 
-		private void PreviewStop()
+		public void PreviewStop()
 		{
 			_previewLoopTimer.Stop();
 			if (_previewContext != null)
 			{
 				_previewContext.Clear();
 			}
+		}
+
+		public void ResumePreview()
+		{
+			TogglePreviewState();
 		}
 
 		private void TogglePreviewState()

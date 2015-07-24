@@ -2797,6 +2797,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.PlaybackStartTime = _mPrevPlaybackStart;
 			TimelineControl.PlaybackEndTime = _mPrevPlaybackEnd;
 			TimelineControl.PlaybackCurrentTime = null;
+			EffectEditorForm.ResumePreview();
 		}
 
 		protected void timerPlaying_Tick(object sender, EventArgs e)
@@ -4821,6 +4822,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void _PlaySequence(TimeSpan rangeStart, TimeSpan rangeEnd)
 		{
+			EffectEditorForm.PreviewStop();
 			if (_context.IsRunning && _context.IsPaused)
 			{
 				_context.Resume();
@@ -5210,8 +5212,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		}
 		private void exportToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			EffectEditorForm.PreviewStop();
             ExportDialog ed = new ExportDialog(Sequence);
             ed.ShowDialog();
+			EffectEditorForm.ResumePreview();
 		}
 
 		private void bulkEffectMoveToolStripMenuItem_Click(object sender, EventArgs e)
