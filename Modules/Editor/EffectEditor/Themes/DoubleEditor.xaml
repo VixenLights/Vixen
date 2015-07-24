@@ -8,18 +8,15 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type controls:DoubleEditor}">
-					<Grid>
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="2*" />
-							<ColumnDefinition Width="8*" />
-						</Grid.ColumnDefinitions>
-						<TextBox x:Name="textboxEditor" Grid.Column="0" Grid.ColumnSpan="2"
+					<StackPanel>
+						<TextBox x:Name="textboxEditor" 
 						         Text="{Binding Path=Value, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" 
 								 utils:TextBoxExtender.CommitOnEnter="true"
 								 utils:TextBoxExtender.RollbackOnEscape="true"
 								 utils:TextBoxExtender.CommitOnTyping="false"/>
-						<Rectangle Grid.Column="1" x:Name="PART_dragger" Stroke="Transparent" Fill="Transparent" />
-					</Grid>
+
+						<Rectangle x:Name="PART_dragger" Stroke="Transparent" Fill="Transparent" Height="5" ></Rectangle>
+					</StackPanel>
 					<ControlTemplate.Triggers>
 						<Trigger Property="IsMouseOver" Value="True" SourceName="PART_dragger">
 							<Setter Property="Cursor" Value="SizeAll" />
