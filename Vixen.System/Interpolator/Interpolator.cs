@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -35,11 +36,12 @@ namespace Vixen.Interpolator
 
 	public static class Interpolator
 	{
-		private static Dictionary<Type, object> _interpolators;
+		//For thread safety. This can be accessed by multiple threads during rendering.
+		private static readonly ConcurrentDictionary<Type, object> _interpolators;
 
 		static Interpolator()
 		{
-			_interpolators = new Dictionary<Type, object>();
+			_interpolators = new ConcurrentDictionary<Type, object>();
 		}
 
 		public static Interpolator<T> Create<T>()
@@ -78,22 +80,7 @@ namespace Vixen.Interpolator
 				catch {
 					throw new Exception("Found an interpolator for type \"" + interpolatorType.Name + "\" but couldn't create it.");
 				}
-				// I saw an exception -- ONCE -- during debugging where SOMETHING on the following line was null, but in a worker thread.
-				// I think there might be a threading issue, but couldn't replicate it.  So, check for it and add logs, so we can
-				// at least debug it a bit better if users hit it.
-				// (was having trouble instantiating a LightingValueInterpolator.)
-				if (interpolator == null) {
-					NLog.Logger logging = NLog.LogManager.GetCurrentClassLogger();
-					logging.Error("Interpolator: _FindInassembly: interpolator variable is null. This should never happen, please report it.");
-				}
-				if (type == null) {
-					NLog.Logger logging = NLog.LogManager.GetCurrentClassLogger();
-					logging.Error("Interpolator: _FindInassembly: type variable is null. This should never happen, please report it.");
-				}
-				if (_interpolators == null) {
-					NLog.Logger logging = NLog.LogManager.GetCurrentClassLogger();
-					logging.Error("Interpolator: _FindInassembly: _interpolators variable is null. This should never happen, please report it.");
-				}
+				
 				_interpolators[type] = interpolator;
 			}
 			return (Interpolator<T>) interpolator;
