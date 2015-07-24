@@ -35,7 +35,7 @@
 			// 
 			// labelParameterName
 			// 
-			this.labelParameterName.Location = new System.Drawing.Point(0, 59);
+			this.labelParameterName.Location = new System.Drawing.Point(-1, 70);
 			this.labelParameterName.Name = "labelParameterName";
 			this.labelParameterName.Size = new System.Drawing.Size(113, 19);
 			this.labelParameterName.TabIndex = 1;
@@ -45,7 +45,7 @@
 			// 
 			// pictureParameterImage
 			// 
-			this.pictureParameterImage.Location = new System.Drawing.Point(29, 3);
+			this.pictureParameterImage.Location = new System.Drawing.Point(27, 12);
 			this.pictureParameterImage.Name = "pictureParameterImage";
 			this.pictureParameterImage.Size = new System.Drawing.Size(55, 55);
 			this.pictureParameterImage.TabIndex = 2;
@@ -59,7 +59,7 @@
 			this.Controls.Add(this.pictureParameterImage);
 			this.Controls.Add(this.labelParameterName);
 			this.Name = "EffectParameterPickerControl";
-			this.Size = new System.Drawing.Size(113, 78);
+			this.Size = new System.Drawing.Size(110, 95);
 			((System.ComponentModel.ISupportInitialize)(this.pictureParameterImage)).EndInit();
 			this.ResumeLayout(false);
 

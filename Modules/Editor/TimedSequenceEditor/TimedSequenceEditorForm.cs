@@ -3796,7 +3796,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private Bitmap GetCurveBitmap(Curve curve)
 		{
-			var curveBitmap = new Bitmap((curve.GenerateCurveImage(new Size(48, 48))));
+			var curveBitmap = new Bitmap((curve.GenerateGenericCurveImage(new Size(48, 48))));
 			return drawBitmapBorder(curveBitmap);
 		}
 
@@ -3809,7 +3809,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private Bitmap drawBitmapBorder(Bitmap image)
 		{
 			Graphics gfx = Graphics.FromImage(image);
-			using (Pen p = new Pen(Color.Black, 2))
+			using (Pen p = new Pen(Color.FromArgb(136,136,136), 2))
 			{
 				gfx.DrawRectangle(p, 0, 0, image.Width, image.Height);	
 			}
