@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Windows;
 using Vixen.Module.Media;
 using Vixen.Sys;
 using Vixen.Sys.Attribute;
@@ -24,7 +25,22 @@ namespace Vixen.Services
 		{
 			string fileName = Path.GetFileName(filePath);
 			string newPath = Path.Combine(MediaDirectory, fileName);
-			File.Copy(filePath, newPath, true);	
+			if (!filePath.Equals(newPath))
+			{
+				if (!File.Exists(newPath))
+				{
+					File.Copy(filePath, newPath, true);
+				}
+				else
+				{
+					MessageBoxResult result = MessageBox.Show("A Media file with the same name already exists in the profile. Replace Y/N?", "Replace?",
+						MessageBoxButton.YesNo);
+					if (result == MessageBoxResult.Yes)
+					{
+						File.Copy(filePath, newPath, true);
+					}
+				}	
+			}
 			
 			return GetMedia(Path.Combine(MediaDirectory, newPath));
 
