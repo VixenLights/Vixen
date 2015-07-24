@@ -184,6 +184,7 @@ namespace Vixen.Cache.Sequence
 			{
 				runningContext.Pause();
 			}
+			VixenSystem.Elements.ClearStates();
 			//Special context to pre cache commands. We don't need all the other fancy executor or timing as we will advance it ourselves
 			PreCachingSequenceContext context = VixenSystem.Contexts.GetCacheCompileContext();
 			context.Sequence = Sequence;
