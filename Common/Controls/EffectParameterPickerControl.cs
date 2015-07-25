@@ -27,15 +27,22 @@ namespace Common.Controls
 				_propertyInfo = value;
 				if (_propertyInfo != null)
 				{
-					labelParameterName.Text = _propertyInfo.DisplayName;
+					DisplayName = _propertyInfo.DisplayName;
 				}
 			}
+		}
+
+		public String DisplayName
+		{
+			set { labelParameterName.Text = value; } 
 		}
 
 		public Bitmap ParameterImage
 		{
 			set { pictureParameterImage.Image = value; }
 		}
+
+		public int Index { get; set; }
 
 		private void pictureParameterImage_Click(object sender, EventArgs e)
 		{

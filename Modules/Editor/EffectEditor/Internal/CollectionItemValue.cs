@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
-using System.Resources;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
+using NLog;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Editor.EffectEditor.Input;
@@ -21,6 +18,7 @@ namespace VixenModules.Editor.EffectEditor.Internal
 	{
 		private readonly PropertyItemValue _propertyItemValue;
 		private readonly int _index;
+		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 		public CollectionItemValue(PropertyItemValue propertyItemValue, int index)
 		{
 			_propertyItemValue = propertyItemValue;
@@ -34,7 +32,7 @@ namespace VixenModules.Editor.EffectEditor.Internal
 		protected object ConvertStringToValue(string value)
 		{
 			if (_propertyItemValue.CollectionItemType == typeof(string)) return value;
-			//if (value.Length == 0) return null;
+			
 			if (string.IsNullOrEmpty(value)) return null;
 			if (!_propertyItemValue.CollectionItemConverter.CanConvertFrom(typeof(string)))
 				throw new InvalidOperationException("Value to String conversion is not supported!");
@@ -110,8 +108,7 @@ namespace VixenModules.Editor.EffectEditor.Internal
 				}
 				catch (Exception exception)
 				{
-					//OnPropertyValueException(new ValueExceptionEventArgs("Cannot create value from string", this,
-					//	ValueExceptionSource.Set, exception));
+					Logging.Error("Unable to convert property to string." ,exception);
 				}
 			}
 		}
@@ -132,7 +129,7 @@ namespace VixenModules.Editor.EffectEditor.Internal
 				}
 				catch (Exception exception)
 				{
-					//OnPropertyValueException(new ValueExceptionEventArgs("Value Set Failed", this, ValueExceptionSource.Set, exception));
+					Logging.Error("Unable to set property value.", exception);
 				}
 
 			}
@@ -281,15 +278,15 @@ namespace VixenModules.Editor.EffectEditor.Internal
 			{
 				var cg = obj.GetData(typeof (ColorGradient)) as ColorGradient;
 				var glp = (GradientLevelPair) Value;
-				glp.ColorGradient = cg;
-				Value = glp;
+				var newGradientLevelPair = new GradientLevelPair(cg, glp.Curve);
+				Value = newGradientLevelPair;
 			}
 			else if (obj.GetDataPresent(typeof(Curve)) && ItemType == typeof(GradientLevelPair))
 			{
 				var c = obj.GetData(typeof(Curve)) as Curve;
 				var glp = (GradientLevelPair)Value;
-				glp.Curve = c;
-				Value = glp;
+				var newGradientLevelPair = new GradientLevelPair(glp.ColorGradient, c);
+				Value = newGradientLevelPair;
 			}
 		}
 
@@ -302,8 +299,8 @@ namespace VixenModules.Editor.EffectEditor.Internal
 			else if (ItemType == typeof (GradientLevelPair))
 			{
 				var glp = (GradientLevelPair) Value;
-				glp.ColorGradient = new ColorGradient(c);
-				Value = glp;
+				var newGradientLevelPair = new GradientLevelPair(new ColorGradient(c), glp.Curve);
+				Value = newGradientLevelPair;
 			}
 		}
 
