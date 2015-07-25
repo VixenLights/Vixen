@@ -271,7 +271,7 @@ namespace VixenModules.Effect.Spiral
 			int colorcnt = Colors.Count();
 			int spiralCount = colorcnt * Repeat;
 			int deltaStrands = BufferWi / spiralCount;
-			int spiralThickness = (deltaStrands * Thickness / 100);
+			int spiralThickness = (deltaStrands * Thickness / 100)+1;
 			int spiralGap = deltaStrands - spiralThickness;
 			int thicknessState = 0;
 			int spiralState = 0;
