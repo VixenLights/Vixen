@@ -113,7 +113,7 @@
 			this.textBoxPosition = new System.Windows.Forms.TextBox();
 			this.label5 = new System.Windows.Forms.Label();
 			this.panelMarkView = new System.Windows.Forms.Panel();
-			this.label4 = new System.Windows.Forms.Label();
+			this.lblLastMarkHit = new System.Windows.Forms.Label();
 			this.textBoxCurrentMark = new System.Windows.Forms.TextBox();
 			this.groupBoxMode = new System.Windows.Forms.GroupBox();
 			this.radioButtonPlayback = new System.Windows.Forms.RadioButton();
@@ -775,7 +775,7 @@
 			this.groupBoxPlayback.Controls.Add(this.textBoxPosition);
 			this.groupBoxPlayback.Controls.Add(this.label5);
 			this.groupBoxPlayback.Controls.Add(this.panelMarkView);
-			this.groupBoxPlayback.Controls.Add(this.label4);
+			this.groupBoxPlayback.Controls.Add(this.lblLastMarkHit);
 			this.groupBoxPlayback.Controls.Add(this.textBoxCurrentMark);
 			this.groupBoxPlayback.Controls.Add(this.groupBoxMode);
 			this.groupBoxPlayback.ForeColor = System.Drawing.Color.WhiteSmoke;
@@ -1141,15 +1141,15 @@
 			this.panelMarkView.TabIndex = 8;
 			this.panelMarkView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panelMarkView_MouseDown);
 			// 
-			// label4
+			// lblLastMarkHit
 			// 
-			this.label4.AutoSize = true;
-			this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.label4.Location = new System.Drawing.Point(507, 201);
-			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(73, 13);
-			this.label4.TabIndex = 4;
-			this.label4.Text = "Last Mark Hit:";
+			this.lblLastMarkHit.AutoSize = true;
+			this.lblLastMarkHit.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.lblLastMarkHit.Location = new System.Drawing.Point(507, 201);
+			this.lblLastMarkHit.Name = "lblLastMarkHit";
+			this.lblLastMarkHit.Size = new System.Drawing.Size(73, 13);
+			this.lblLastMarkHit.TabIndex = 4;
+			this.lblLastMarkHit.Text = "Last Mark Hit:";
 			// 
 			// textBoxCurrentMark
 			// 
@@ -1323,7 +1323,7 @@
 		private System.Windows.Forms.Panel panelMarkView;
 		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.TextBox textBoxPosition;
-		private System.Windows.Forms.Label label4;
+		private System.Windows.Forms.Label lblLastMarkHit;
 		private System.Windows.Forms.TextBox textBoxCurrentMark;
 		private System.Windows.Forms.Button buttonStop;
 		private System.Windows.Forms.Button buttonPlay;

@@ -106,6 +106,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				chkLowPass.AutoCheck = true;
 				numHighPass.Enabled = true;
 				numLowPass.Enabled = true;
+				radioButtonTapper.AutoCheck = true;
+				radioButtonPlayback.AutoCheck = true;
 				ChkAutoTapper.ForeColor = DarkThemeColorTable.ForeColor;
 				radioAll.ForeColor = DarkThemeColorTable.ForeColor;
 				radioSelected.ForeColor = DarkThemeColorTable.ForeColor;
@@ -113,6 +115,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				chkLowPass.ForeColor = DarkThemeColorTable.ForeColor;
 				numHighPass.ForeColor = DarkThemeColorTable.ForeColor;
 				numLowPass.ForeColor = DarkThemeColorTable.ForeColor;
+				radioButtonTapper.ForeColor = DarkThemeColorTable.ForeColor;
+				radioButtonPlayback.ForeColor = DarkThemeColorTable.ForeColor;
 			}
 			else
 			{
@@ -125,13 +129,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				chkLowPass.AutoCheck = false;
 				numHighPass.Enabled = false;
 				numLowPass.Enabled = false;
-				ChkAutoTapper.ForeColor = DarkThemeColorTable.ForeColor;
-				radioAll.ForeColor = DarkThemeColorTable.ForeColor;
-				radioSelected.ForeColor = DarkThemeColorTable.ForeColor;
-				chkHighPass.ForeColor = DarkThemeColorTable.ForeColor;
-				chkLowPass.ForeColor = DarkThemeColorTable.ForeColor;
-				numHighPass.ForeColor = DarkThemeColorTable.ForeColor;
-				numLowPass.ForeColor = DarkThemeColorTable.ForeColor;
+				radioButtonTapper.AutoCheck = false;
+				radioButtonPlayback.AutoCheck = false;
+				ChkAutoTapper.ForeColor = DarkThemeColorTable.ForeColorDisabled;
+				radioAll.ForeColor = DarkThemeColorTable.ForeColorDisabled;
+				radioSelected.ForeColor = DarkThemeColorTable.ForeColorDisabled;
+				chkHighPass.ForeColor = DarkThemeColorTable.ForeColorDisabled;
+				chkLowPass.ForeColor = DarkThemeColorTable.ForeColorDisabled;
+				numHighPass.ForeColor = DarkThemeColorTable.ForeColorDisabled;
+				numLowPass.ForeColor = DarkThemeColorTable.ForeColorDisabled;
+				radioButtonTapper.ForeColor = DarkThemeColorTable.ForeColorDisabled;
+				radioButtonPlayback.ForeColor = DarkThemeColorTable.ForeColorDisabled;
 			}
 		}
 
