@@ -47,9 +47,9 @@
 			this.staffPictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.staffPictureBox.Image = global::VixenModules.Analysis.BeatsAndBars.Properties.Resources.fullstaff;
-			this.staffPictureBox.Location = new System.Drawing.Point(5, 31);
+			this.staffPictureBox.Location = new System.Drawing.Point(3, 31);
 			this.staffPictureBox.Name = "staffPictureBox";
-			this.staffPictureBox.Size = new System.Drawing.Size(390, 76);
+			this.staffPictureBox.Size = new System.Drawing.Size(592, 76);
 			this.staffPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
 			this.staffPictureBox.TabIndex = 0;
 			this.staffPictureBox.TabStop = false;
@@ -69,10 +69,10 @@
 			// BeatsPerBarLabel
 			// 
 			this.BeatsPerBarLabel.AutoSize = true;
-			this.BeatsPerBarLabel.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.BeatsPerBarLabel.Location = new System.Drawing.Point(56, 48);
+			this.BeatsPerBarLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.BeatsPerBarLabel.Location = new System.Drawing.Point(88, 48);
 			this.BeatsPerBarLabel.Name = "BeatsPerBarLabel";
-			this.BeatsPerBarLabel.Size = new System.Drawing.Size(16, 20);
+			this.BeatsPerBarLabel.Size = new System.Drawing.Size(19, 20);
 			this.BeatsPerBarLabel.TabIndex = 4;
 			this.BeatsPerBarLabel.Text = "0";
 			this.BeatsPerBarLabel.Click += new System.EventHandler(this.BeatsPerBarLabel_Click);
@@ -80,10 +80,10 @@
 			// NoteSizeLabel
 			// 
 			this.NoteSizeLabel.AutoSize = true;
-			this.NoteSizeLabel.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.NoteSizeLabel.Location = new System.Drawing.Point(56, 68);
+			this.NoteSizeLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.NoteSizeLabel.Location = new System.Drawing.Point(88, 68);
 			this.NoteSizeLabel.Name = "NoteSizeLabel";
-			this.NoteSizeLabel.Size = new System.Drawing.Size(16, 20);
+			this.NoteSizeLabel.Size = new System.Drawing.Size(19, 20);
 			this.NoteSizeLabel.TabIndex = 5;
 			this.NoteSizeLabel.Text = "0";
 			this.NoteSizeLabel.Click += new System.EventHandler(this.NoteSizeLabel_Click);
@@ -193,7 +193,7 @@
 			this.Controls.Add(this.staffPictureBox);
 			this.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.Name = "MusicStaff";
-			this.Size = new System.Drawing.Size(398, 143);
+			this.Size = new System.Drawing.Size(600, 143);
 			this.Paint += new System.Windows.Forms.PaintEventHandler(this.MusicStaff_Paint);
 			((System.ComponentModel.ISupportInitialize)(this.staffPictureBox)).EndInit();
 			this.ResumeLayout(false);

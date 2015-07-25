@@ -13,7 +13,7 @@ namespace VixenModules.Analysis.BeatsAndBars
 {
 	public partial class MusicStaff : UserControl
 	{
-		private const int TSLABEL_XOFFSET = 85;
+		private const int TSLABEL_XOFFSET = 80;
 		private const int FIRST_BAR_OFFSET = TSLABEL_XOFFSET + 35;
 		private const int DIV_Y_OFFSET = 20;
 		private const int VAL_LABEL_OFFSET = 25;
