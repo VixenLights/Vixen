@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.Collections.Generic;
 using Common.Controls;
+using Common.Controls.Theme;
 using Common.Controls.Timeline;
 using Vixen.Module.Effect;
 using Vixen.Services;
@@ -18,6 +19,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			InitializeComponent();
 			TimelineControl = timelineControl;
+			toolStrip1.Renderer = new DarkThemeToolStripRenderer();
 		}
 
 		private void Form_Marks_Load(object sender, EventArgs e)

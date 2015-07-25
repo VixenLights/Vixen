@@ -84,7 +84,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			InitializeComponent();
 			TimelineControl = timelineControl;
 			Icon = Resources.Icon_Vixen3;
-
+			toolStripColors.Renderer=new DarkThemeToolStripRenderer();
+			toolStripGradients.Renderer = new DarkThemeToolStripRenderer();
+			toolStripCurves.Renderer = new DarkThemeToolStripRenderer();
 			toolStripButtonEditColor.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStripButtonEditColor.Image = Resources.pencil;
 			toolStripButtonNewColor.DisplayStyle = ToolStripItemDisplayStyle.Image;

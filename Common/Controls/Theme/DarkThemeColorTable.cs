@@ -69,6 +69,16 @@ namespace Common.Controls.Theme
 			get { return _backgroundColor; }
 		}
 
+		public override Color SeparatorDark 
+		{
+			get { return _backgroundColor; }
+		}
+
+		public override Color SeparatorLight
+		{
+			get { return _borderColor; }
+		}
+
 		public override Color StatusStripGradientBegin
 		{
 			get { return _backgroundColor; }
