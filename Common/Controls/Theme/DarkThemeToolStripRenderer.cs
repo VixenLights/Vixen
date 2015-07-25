@@ -29,13 +29,6 @@ namespace Common.Controls.Theme
 			}
 		}
 
-		protected override void OnRenderItemImage(ToolStripItemImageRenderEventArgs e)
-		{
-			base.OnRenderItemImage(e);
-			Graphics g = e.Graphics;
-			Rectangle bounds = new Rectangle(Point.Empty, e.Item.Size);
-		}
-
 		protected override void OnRenderItemBackground(ToolStripItemRenderEventArgs e)
 		{
 			base.OnRenderItemBackground(e);

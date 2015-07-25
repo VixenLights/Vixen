@@ -124,6 +124,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			menuStrip.Renderer = new DarkThemeToolStripRenderer();
 			toolStripOperations.Renderer = new DarkThemeToolStripRenderer();
 			_contextMenuStrip.Renderer = new DarkThemeToolStripRenderer();
+			statusStrip.Renderer = new DarkThemeToolStripRenderer();
 			cboAudioDevices.ComboBox.DrawMode=DrawMode.OwnerDrawFixed;
 			cboAudioDevices.ComboBox.DrawItem += ComboBox_DrawItem;
 			Icon = Resources.Icon_Vixen3;
@@ -3767,7 +3768,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			var parameterPicker = CreateParameterPicker(parameterPickerControls);
 
-			UpdateToolStrip4("Choose the property to set, press Escape to cancel.", 60);
+			ShowMultiDropMessage();
 			var dr = parameterPicker.ShowDialog();
 			if (dr == DialogResult.OK)
 			{
@@ -3788,7 +3789,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			var parameterPicker = CreateParameterPicker(parameterPickerControls);
 
-			UpdateToolStrip4("Choose the property to set, press Escape to cancel.", 60);
+			ShowMultiDropMessage();
 			var dr = parameterPicker.ShowDialog();
 			if (dr == DialogResult.OK)
 			{

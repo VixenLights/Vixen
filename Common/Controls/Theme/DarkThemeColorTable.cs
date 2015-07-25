@@ -22,9 +22,64 @@ namespace Common.Controls.Theme
 		}
 		public override Color MenuItemSelectedGradientEnd
 		{
-			get { return _highlightColor; }
+			get { return _backgroundColor; }
 		}
 		public override Color MenuItemBorder
+		{
+			get { return _borderColor; }
+		}
+
+		public override Color MenuStripGradientBegin
+		{
+			get { return _backgroundColor; }
+		}
+
+		public override Color MenuStripGradientEnd
+		{
+			get { return _backgroundColor; }
+		}
+
+		public override Color ToolStripGradientBegin
+		{
+			get { return _backgroundColor; }
+		}
+
+		public override Color ToolStripGradientEnd
+		{
+			get { return _backgroundColor; }
+		}
+
+		public override Color ToolStripPanelGradientBegin
+		{
+			get { return _backgroundColor; }
+		}
+
+		public override Color ToolStripPanelGradientEnd
+		{
+			get { return _backgroundColor; }
+		}
+
+		public override Color ToolStripContentPanelGradientBegin
+		{
+			get { return _backgroundColor; }
+		}
+
+		public override Color ToolStripContentPanelGradientEnd
+		{
+			get { return _backgroundColor; }
+		}
+
+		public override Color StatusStripGradientBegin
+		{
+			get { return _backgroundColor; }
+		}
+
+		public override Color StatusStripGradientEnd
+		{
+			get { return _backgroundColor; }
+		}
+
+		public override Color ToolStripBorder
 		{
 			get { return _borderColor; }
 		}
@@ -107,7 +162,17 @@ namespace Common.Controls.Theme
 		public override Color ButtonSelectedGradientEnd
 		{
 			get { return _highlightColor; }
-		} 
+		}
+
+		public override Color GripLight
+		{
+			get { return _borderColor; }
+		}
+
+		public override Color GripDark
+		{
+			get { return _backgroundColor; }
+		}
 
 		public static Color BorderColor
 		{

@@ -1342,7 +1342,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripStatusLabel4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.toolStripStatusLabel4.Margin = new System.Windows.Forms.Padding(0, 1, 0, 1);
 			this.toolStripStatusLabel4.Name = "toolStripStatusLabel4";
-			this.toolStripStatusLabel4.Size = new System.Drawing.Size(939, 17);
+			this.toolStripStatusLabel4.Size = new System.Drawing.Size(493, 17);
 			this.toolStripStatusLabel4.Spring = true;
 			// 
 			// toolStripStatusLabel_RenderingElements
