@@ -143,13 +143,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				_previewContext.Start();
 
 			}
-			IEnumerable<EffectNode> orderedNodes = Elements.Select(x => x.EffectNode).OrderBy(x => x.StartTime);
-			TimeSpan startOffset = orderedNodes.First().StartTime;
-			TimeSpan duration = orderedNodes.Last().EndTime - startOffset;
-			List<EffectNode> nodesToPlay = orderedNodes.Select(effectNode => new EffectNode(effectNode.Effect, effectNode.StartTime - startOffset)).ToList();
-			_previewContext.Execute(nodesToPlay);
-			_previewLoopTimer.Interval = duration.TotalMilliseconds;
-			_previewLoopTimer.Start();
+			IEnumerable<EffectNode> orderedNodes = Elements.Select(x => x.EffectNode).OrderBy(x => x.StartTime).ToList();
+			if (orderedNodes.Any())
+			{
+				TimeSpan startOffset = orderedNodes.First().StartTime;
+				TimeSpan duration = orderedNodes.Last().EndTime - startOffset;
+				List<EffectNode> nodesToPlay =
+					orderedNodes.Select(effectNode => new EffectNode(effectNode.Effect, effectNode.StartTime - startOffset)).ToList();
+				_previewContext.Execute(nodesToPlay);
+				_previewLoopTimer.Interval = duration.TotalMilliseconds;
+				_previewLoopTimer.Start();
+			}
 		}
 
 		public void PreviewStop()

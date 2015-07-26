@@ -38,15 +38,15 @@
 					</DataTemplate>
 				</ListView.ItemTemplate>
 			</controls:CollectionView>
-			<StackPanel Orientation="Horizontal">
-			<Button Margin="5" Content="Add" HorizontalAlignment="Left" Padding="5,2"
-				  Command="input:PropertyEditorCommands.AddCollectionItem"
-				  CommandParameter="{Binding}"
-				  Visibility="{Binding IsEditable, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-			<Button Margin="5" Content="Remove" HorizontalAlignment="Left" Padding="5,2" FocusManager.IsFocusScope="True"
-				  Command="input:PropertyEditorCommands.RemoveCollectionItem"
-				  CommandParameter="{Binding}" Visibility="{Binding IsEditable, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-			</StackPanel>
+			<WrapPanel Orientation="Horizontal">
+				<Button Margin="5" Content="Add" HorizontalAlignment="Left" Padding="5,2"
+					  Command="input:PropertyEditorCommands.AddCollectionItem"
+					  CommandParameter="{Binding}"
+					  Visibility="{Binding IsEditable, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+				<Button Margin="5" Content="Remove" HorizontalAlignment="Left" Padding="5,2" FocusManager.IsFocusScope="True"
+					  Command="input:PropertyEditorCommands.RemoveCollectionItem"
+					  CommandParameter="{Binding}" Visibility="{Binding IsEditable, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+			</WrapPanel>
 		</StackPanel>
 	</DataTemplate>
 

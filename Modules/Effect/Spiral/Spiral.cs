@@ -37,6 +37,22 @@ namespace VixenModules.Effect.Spiral
 			protected set { base.IsDirty = value; }
 		}
 
+		#region Setup
+		
+		[Value]
+		public override StringOrientation StringOrientation
+		{
+			get { return _data.Orientation; }
+			set
+			{
+				_data.Orientation = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		#endregion
+
 		#region Config properties
 
 		[Value]
@@ -191,19 +207,6 @@ namespace VixenModules.Effect.Spiral
 			}
 		}
 
-		[Browsable(false)]
-		public override StringOrientation StringOrientation
-		{
-			get
-			{
-				return StringOrientation.Vertical;
-			}
-			set
-			{
-				//Read only
-			}
-		}
-
 		#endregion
 
 		#region Color properties
@@ -271,7 +274,7 @@ namespace VixenModules.Effect.Spiral
 			int colorcnt = Colors.Count();
 			int spiralCount = colorcnt * Repeat;
 			int deltaStrands = BufferWi / spiralCount;
-			int spiralThickness = (deltaStrands * Thickness / 100);
+			int spiralThickness = (deltaStrands * Thickness / 100)+1;
 			int spiralGap = deltaStrands - spiralThickness;
 			int thicknessState = 0;
 			int spiralState = 0;

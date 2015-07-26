@@ -15,7 +15,11 @@ namespace VixenModules.Effect.Fire
 			Height = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
 			HueShift = 0;
 			LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
+			Orientation = StringOrientation.Vertical;
 		}
+
+		[DataMember]
+		public StringOrientation Orientation { get; set; }
 
 		[DataMember]
 		public FireDirection Location { get; set; }
@@ -36,6 +40,7 @@ namespace VixenModules.Effect.Fire
 				Location = Location,
 				Height = Height,
 				HueShift = HueShift,
+				Orientation = Orientation,
 				LevelCurve = new Curve(LevelCurve)
 			};
 			return result;

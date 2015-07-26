@@ -23,7 +23,23 @@ namespace VixenModules.Effect.Fire
 			_data = new FireData();
 		}
 
-		#region
+		#region Setup
+
+		[Value]
+		public override StringOrientation StringOrientation
+		{
+			get { return _data.Orientation; }
+			set
+			{
+				_data.Orientation = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		#endregion
+
+		#region Config
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
@@ -54,19 +70,6 @@ namespace VixenModules.Effect.Fire
 				_data.Height = value;
 				IsDirty = true;
 				OnPropertyChanged();
-			}
-		}
-
-		[Browsable(false)]
-		public override StringOrientation StringOrientation
-		{
-			get
-			{
-				return StringOrientation.Vertical;
-			}
-			set
-			{
-				//Read only
 			}
 		}
 
