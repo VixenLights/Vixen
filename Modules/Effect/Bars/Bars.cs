@@ -37,7 +37,9 @@ namespace VixenModules.Effect.Bars
 			protected set { base.IsDirty = value; }
 		}
 
-		[Browsable(false)]
+		#region Setup
+
+		[Value]
 		public override StringOrientation StringOrientation
 		{
 			get { return _data.Orientation; }
@@ -48,6 +50,8 @@ namespace VixenModules.Effect.Bars
 				OnPropertyChanged();
 			}
 		}
+
+		#endregion
 
 		#region Config properties
 

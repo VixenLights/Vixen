@@ -22,15 +22,21 @@ namespace VixenModules.Effect.Butterfly
 			_data = new ButterflyData();
 		}
 
-		[Browsable(false)]
+		#region Setup
+
+		[Value]
 		public override StringOrientation StringOrientation
 		{
-			get { return StringOrientation.Vertical; }
+			get { return _data.Orientation; }
 			set
 			{
-				
+				_data.Orientation = value;
+				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
+
+		#endregion
 
 		#region Config properties
 
