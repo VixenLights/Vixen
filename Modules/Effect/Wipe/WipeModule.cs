@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Drawing.Design;
 using System.Linq;
 using System.Threading;
 using Vixen.Attributes;
@@ -41,10 +40,7 @@ namespace VixenModules.Effect.Wipe
 			_elementData = new EffectIntents();
 
 			IEnumerable<IGrouping<int, ElementNode>> renderNodes = null;
-
-
-			var enumerator = TargetNodes.SelectMany(x => x.GetLeafEnumerator());
-			var b = enumerator;
+			
 			switch (_data.Direction)
 			{
 				case WipeDirection.Up:
@@ -201,8 +197,8 @@ namespace VixenModules.Effect.Wipe
 
 		private void RenderNonBurst(CancellationTokenSource tokenSource, IEnumerable<IGrouping<int, ElementNode>> renderNodes)
 		{
-
-			if (renderNodes != null && renderNodes.Count() > 0)
+			var pulse = new Pulse.Pulse();
+			if (renderNodes != null && renderNodes.Any())
 			{
 				TimeSpan effectTime = TimeSpan.Zero;
 				if (WipeByCount)
@@ -226,11 +222,10 @@ namespace VixenModules.Effect.Wipe
 									return;
 								if (element != null)
 								{
-									var pulse = new Pulse.Pulse();
-									pulse.TargetNodes = new ElementNode[] { element };
 									pulse.TimeSpan = segmentPulse;
 									pulse.ColorGradient = _data.ColorGradient;
 									pulse.LevelCurve = _data.Curve;
+									pulse.TargetNodes = new ElementNode[] { element };
 									result = pulse.Render();
 									result.OffsetAllCommandsByTime(effectTime);
 									_elementData.Add(result);
@@ -266,11 +261,10 @@ namespace VixenModules.Effect.Wipe
 
 									if (tokenSource != null && tokenSource.IsCancellationRequested)
 										return;
-									var pulse = new Pulse.Pulse();
-									pulse.TargetNodes = new ElementNode[] { element };
 									pulse.TimeSpan = segmentPulse;
 									pulse.ColorGradient = _data.ColorGradient;
 									pulse.LevelCurve = _data.Curve;
+									pulse.TargetNodes = new ElementNode[] { element };
 									result = pulse.Render();
 
 									result.OffsetAllCommandsByTime(effectTime);
@@ -321,9 +315,6 @@ namespace VixenModules.Effect.Wipe
 			var minY = burstNodes.Min(m => m.Item3);
 
 			var Steps = (int)(Math.Max(maxX - minX, maxY - minY) / 2);
-
-			bool startX = maxX - minX > maxY - minY; //Are we starting the stepping on X or Y axis (based on shape)
-
 
 			List<Tuple<int, ElementNode[]>> groups = new List<Tuple<int, ElementNode[]>>();
 
@@ -377,8 +368,8 @@ namespace VixenModules.Effect.Wipe
 					break;
 			}
 
-
-			if (renderNodes != null && renderNodes.Count() > 0)
+			var pulse = new Pulse.Pulse();
+			if (renderNodes != null && renderNodes.Any())
 			{
 				TimeSpan effectTime = TimeSpan.Zero;
 				if (WipeByCount)
@@ -402,11 +393,10 @@ namespace VixenModules.Effect.Wipe
 									return;
 								if (element != null)
 								{
-									var pulse = new Pulse.Pulse();
-									pulse.TargetNodes = new ElementNode[] { element };
 									pulse.TimeSpan = segmentPulse;
 									pulse.ColorGradient = _data.ColorGradient;
 									pulse.LevelCurve = _data.Curve;
+									pulse.TargetNodes = new ElementNode[] { element };
 									result = pulse.Render();
 									result.OffsetAllCommandsByTime(effectTime);
 									_elementData.Add(result);
@@ -442,11 +432,11 @@ namespace VixenModules.Effect.Wipe
 
 									if (tokenSource != null && tokenSource.IsCancellationRequested)
 										return;
-									var pulse = new Pulse.Pulse();
-									pulse.TargetNodes = new ElementNode[] { element };
+									
 									pulse.TimeSpan = segmentPulse;
 									pulse.ColorGradient = _data.ColorGradient;
 									pulse.LevelCurve = _data.Curve;
+									pulse.TargetNodes = new ElementNode[] { element };
 									result = pulse.Render();
 
 									result.OffsetAllCommandsByTime(effectTime);
