@@ -4,10 +4,16 @@ using System.Drawing;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Windows.Forms;
+using System.Windows.Media;
 using System.Xml;
 using Common.Controls.ColorManagement.ColorModels;
 using Common.Controls.ColorManagement.ColorPicker;
+using Common.Controls.Theme;
+using Common.Resources;
+using Common.Resources.Properties;
 using VixenModules.Sequence.Timed;
+using Color = System.Drawing.Color;
+using Pen = System.Drawing.Pen;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -20,6 +26,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private ColorCollection _currentCollection;
 		private Color _colorValue;
 		private string _lastFolder;
+		private readonly Pen _borderPen = new Pen(Color.FromArgb(136, 136, 136), 2);
 
 		#endregion
 
@@ -28,6 +35,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public ColorCollectionLibrary_Form(List<ColorCollection> collections)
 		{
 			InitializeComponent();
+			btnCancel.BackgroundImage = Resources.HeadingBackgroundImage;
+			btnOK.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonAddColor.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonExportCollection.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonImportCollection.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonRemoveColor.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonNewCollection.BackgroundImage = Tools.GetIcon(Resources.add, 25);
+			buttonNewCollection.Text = "";
+			buttonDeleteCollection.BackgroundImage = Tools.GetIcon(Resources.minus, 25);
+			buttonDeleteCollection.Text = "";
 			Icon = Common.Resources.Properties.Resources.Icon_Vixen3;
 			ColorCollections = collections;
 			PopulateCollectionList();
@@ -72,7 +89,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			_currentCollection = (ColorCollection)comboBoxCollections.SelectedItem;
 			textBoxDescription.Text = _currentCollection.Description;
-			deleteCollectionToolStripMenuItem.Enabled = textBoxDescription.Enabled = true;
+			buttonDeleteCollection.Enabled = textBoxDescription.Enabled = true;
 			PopulateCollectionColors(_currentCollection);
 		}
 
@@ -95,7 +112,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void listViewColors_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			removeColorToolStripMenuItem.Enabled = (listViewColors.SelectedItems.Count > 0);
+			buttonRemoveColor.Enabled = (listViewColors.SelectedItems.Count > 0);
 		}
 
 		private void textBoxDescription_KeyUp(object sender, KeyEventArgs e)
@@ -329,7 +346,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					comboBoxCollections.Items.Add(collection);
 				}
 			}
-			deleteCollectionToolStripMenuItem.Enabled = addColorToolStripMenuItem.Enabled = false;
+			buttonDeleteCollection.Enabled = buttonAddColor.Enabled = false;
 		}
 
 		private void PopulateCollectionColors(ColorCollection collection)
@@ -348,7 +365,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				using (SolidBrush brush = new SolidBrush(colorItem))
 				{
 					gfx.FillRectangle(brush, 0, 0, 48, 48);
-					gfx.DrawRectangle(new Pen(Color.Black, 2), 0, 0, 48, 48);
+					gfx.DrawRectangle(_borderPen, 0, 0, 48, 48);
 				}
 
 				listViewColors.LargeImageList.Images.Add(colorItem.ToString(), result);
@@ -363,10 +380,69 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				listViewColors.Items.Add(item);
 			}
 			listViewColors.EndUpdate();
-			addColorToolStripMenuItem.Enabled = true;
+			buttonAddColor.Enabled = true;
 		}
 
 		#endregion
 
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.HeadingBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.HeadingBackgroundImage;
+		}
+
+		private void buttonNewCollection_Click(object sender, EventArgs e)
+		{
+			NewColorCollection();
+		}
+
+		private void buttonDeleteCollection_Click(object sender, EventArgs e)
+		{
+			DeleteColorCollection();
+		}
+
+		private void buttonImportCollection_Click(object sender, EventArgs e)
+		{
+			ImportColorCollections();
+		}
+
+		private void buttonExportCollection_Click(object sender, EventArgs e)
+		{
+			ExportColorCollections();
+		}
+
+		private void buttonAddColor_Click(object sender, EventArgs e)
+		{
+			AddColorToCollection();
+		}
+
+		private void buttonRemoveColor_Click(object sender, EventArgs e)
+		{
+			RemoveColorFromCollection();
+		}
+
+		private void buttonTextColorChange(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.ForeColor = btn.Enabled ? DarkThemeColorTable.ForeColor : DarkThemeColorTable.ForeColorDisabled;
+		}
+
+		private void comboBoxCollections_DrawItem(object sender, DrawItemEventArgs e)
+		{
+			int index = e.Index;
+			if (index < 0)
+			{
+				return;
+			}
+			var brush = new SolidBrush(DarkThemeColorTable.ForeColor);
+			e.DrawBackground();
+			e.Graphics.DrawString(comboBoxCollections.Items[index].ToString(), e.Font, brush, e.Bounds, StringFormat.GenericDefault);
+		}
 	}
 }

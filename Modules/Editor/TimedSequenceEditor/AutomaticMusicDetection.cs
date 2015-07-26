@@ -7,9 +7,11 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Resources.Properties;
 using VixenModules.Media.Audio;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
+using Common.Controls.Theme;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -18,6 +20,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public AutomaticMusicDetection(Audio audio)
 		{
 			InitializeComponent();
+			buttonCancel.BackgroundImage = Resources.HeadingBackgroundImage;
+			btnOk.BackgroundImage = Resources.HeadingBackgroundImage;
+			btnPreviewAudio.BackgroundImage = Resources.HeadingBackgroundImage;
 			_audio = audio;
 			_audio.FrequencyDetected += _audio_FrequencyDetected;
 			freqTimer = new Timer();
@@ -158,5 +163,25 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			this.Accuracy = (int) numericUpDown1.Value;
 		}
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.HeadingBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.HeadingBackgroundImage;
+		}
+
+		#region Draw lines and GroupBox borders
+		
+		private void groupBoxes_Paint(object sender, PaintEventArgs e)
+		{
+			DarkThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
+		}
+		#endregion
 	}
 }

@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Resources.Properties;
 using NLog;
 using Vixen.Rule;
 using Vixen.Services;
@@ -24,6 +25,9 @@ namespace VixenApplication.Setup.ElementTemplates
         public LipSync()
         {
             InitializeComponent();
+			buttonCancel.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonOk.BackgroundImage = Resources.HeadingBackgroundImage;
+			Icon = Resources.Icon_Vixen3;
             treename = "LipSync";
         }
 
@@ -76,5 +80,17 @@ namespace VixenApplication.Setup.ElementTemplates
         {
             treename = textBoxTreeName.Text;
         }
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.HeadingBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.HeadingBackgroundImage;
+		}
     }
 }

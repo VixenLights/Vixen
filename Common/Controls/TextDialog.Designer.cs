@@ -26,15 +26,15 @@
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TextDialog));
 			this.labelPrompt = new System.Windows.Forms.Label();
 			this.textBoxResponse = new System.Windows.Forms.TextBox();
-			this.button1 = new System.Windows.Forms.Button();
-			this.button2 = new System.Windows.Forms.Button();
+			this.buttonOk = new System.Windows.Forms.Button();
+			this.buttonCancel = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// labelPrompt
 			// 
 			this.labelPrompt.AutoSize = true;
-			this.labelPrompt.Location = new System.Drawing.Point(16, 15);
-			this.labelPrompt.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.labelPrompt.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.labelPrompt.Location = new System.Drawing.Point(12, 12);
 			this.labelPrompt.Name = "labelPrompt";
 			this.labelPrompt.Size = new System.Drawing.Size(13, 13);
 			this.labelPrompt.TabIndex = 0;
@@ -44,49 +44,65 @@
 			// 
 			this.textBoxResponse.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.textBoxResponse.Location = new System.Drawing.Point(20, 47);
-			this.textBoxResponse.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.textBoxResponse.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
+			this.textBoxResponse.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.textBoxResponse.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.textBoxResponse.Location = new System.Drawing.Point(15, 38);
 			this.textBoxResponse.Name = "textBoxResponse";
-			this.textBoxResponse.Size = new System.Drawing.Size(495, 20);
+			this.textBoxResponse.Size = new System.Drawing.Size(372, 20);
 			this.textBoxResponse.TabIndex = 1;
 			// 
-			// button1
+			// buttonOk
 			// 
-			this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.button1.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.button1.Location = new System.Drawing.Point(295, 87);
-			this.button1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(107, 31);
-			this.button1.TabIndex = 2;
-			this.button1.Text = "OK";
-			this.button1.UseVisualStyleBackColor = true;
+			this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
+			this.buttonOk.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+			this.buttonOk.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+			this.buttonOk.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+			this.buttonOk.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+			this.buttonOk.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.buttonOk.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.buttonOk.Location = new System.Drawing.Point(221, 71);
+			this.buttonOk.Name = "buttonOk";
+			this.buttonOk.Size = new System.Drawing.Size(80, 25);
+			this.buttonOk.TabIndex = 2;
+			this.buttonOk.Text = "OK";
+			this.buttonOk.UseVisualStyleBackColor = true;
+			this.buttonOk.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonOk.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
-			// button2
+			// buttonCancel
 			// 
-			this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.button2.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.button2.Location = new System.Drawing.Point(409, 87);
-			this.button2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-			this.button2.Name = "button2";
-			this.button2.Size = new System.Drawing.Size(107, 31);
-			this.button2.TabIndex = 3;
-			this.button2.Text = "Cancel";
-			this.button2.UseVisualStyleBackColor = true;
+			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.buttonCancel.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+			this.buttonCancel.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+			this.buttonCancel.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+			this.buttonCancel.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+			this.buttonCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.buttonCancel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.buttonCancel.Location = new System.Drawing.Point(307, 71);
+			this.buttonCancel.Name = "buttonCancel";
+			this.buttonCancel.Size = new System.Drawing.Size(80, 25);
+			this.buttonCancel.TabIndex = 3;
+			this.buttonCancel.Text = "Cancel";
+			this.buttonCancel.UseVisualStyleBackColor = true;
+			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// TextDialog
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(532, 133);
-			this.Controls.Add(this.button2);
-			this.Controls.Add(this.button1);
+			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
+			this.ClientSize = new System.Drawing.Size(399, 108);
+			this.Controls.Add(this.buttonCancel);
+			this.Controls.Add(this.buttonOk);
 			this.Controls.Add(this.textBoxResponse);
 			this.Controls.Add(this.labelPrompt);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.KeyPreview = true;
-			this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "TextDialog";
@@ -103,7 +119,7 @@
 
 		private System.Windows.Forms.Label labelPrompt;
 		private System.Windows.Forms.TextBox textBoxResponse;
-		private System.Windows.Forms.Button button1;
-		private System.Windows.Forms.Button button2;
+		private System.Windows.Forms.Button buttonOk;
+		private System.Windows.Forms.Button buttonCancel;
 	}
 }

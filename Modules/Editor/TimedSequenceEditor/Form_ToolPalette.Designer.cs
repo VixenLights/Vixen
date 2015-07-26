@@ -79,18 +79,19 @@
 			// 
 			// tabColors
 			// 
+			this.tabColors.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.tabColors.Controls.Add(this.toolStripColors);
 			this.tabColors.Controls.Add(this.listViewColors);
+			this.tabColors.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.tabColors.Location = new System.Drawing.Point(4, 22);
 			this.tabColors.Name = "tabColors";
 			this.tabColors.Size = new System.Drawing.Size(518, 364);
 			this.tabColors.TabIndex = 0;
 			this.tabColors.Text = "Colors";
-			this.tabColors.UseVisualStyleBackColor = true;
 			// 
 			// toolStripColors
 			// 
-			this.toolStripColors.BackColor = System.Drawing.SystemColors.Control;
+			this.toolStripColors.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.toolStripColors.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripButtonEditColor,
             this.toolStripButtonNewColor,
@@ -187,7 +188,7 @@
 			// 
 			// toolStripCurves
 			// 
-			this.toolStripCurves.BackColor = System.Drawing.SystemColors.Control;
+			this.toolStripCurves.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.toolStripCurves.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripButtonEditCurve,
             this.toolStripButtonNewCurve,
@@ -284,6 +285,7 @@
 			this.tabGradients.Controls.Add(this.toolStripGradients);
 			this.tabGradients.Controls.Add(this.checkBoxLinkGradients);
 			this.tabGradients.Controls.Add(this.listViewGradients);
+			this.tabGradients.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.tabGradients.Location = new System.Drawing.Point(4, 22);
 			this.tabGradients.Name = "tabGradients";
 			this.tabGradients.Size = new System.Drawing.Size(518, 364);
@@ -292,7 +294,7 @@
 			// 
 			// toolStripGradients
 			// 
-			this.toolStripGradients.BackColor = System.Drawing.SystemColors.Control;
+			this.toolStripGradients.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.toolStripGradients.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripButtonEditGradient,
             this.toolStripButtonNewGradient,
@@ -388,7 +390,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.BackColor = System.Drawing.SystemColors.Window;
+			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.ClientSize = new System.Drawing.Size(526, 390);
 			this.ControlBox = false;
 			this.Controls.Add(this.tabControl1);

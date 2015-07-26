@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using Common.Resources.Properties;
 using Vixen.Module.App;
 using Vixen.Services;
 using ZedGraph;
 using System.Linq;
+using Common.Controls.Theme;
 
 namespace VixenModules.App.Curves
 {
@@ -16,13 +18,23 @@ namespace VixenModules.App.Curves
 			InitializeComponent();
 			Icon = Common.Resources.Properties.Resources.Icon_Vixen3;
 
+			buttonCancel.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonEditLibraryCurve.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonLoadCurveFromLibrary.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonOK.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonSaveCurveToLibrary.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonUnlinkCurve.BackgroundImage = Resources.HeadingBackgroundImage;
+			btnInvert.BackgroundImage = Resources.HeadingBackgroundImage;
+			btnReverse.BackgroundImage = Resources.HeadingBackgroundImage;
+			btnUpdateCoordinates.BackgroundImage = Resources.HeadingBackgroundImage;
+
 			zedGraphControl.GraphPane.XAxis.MajorGrid.IsVisible = true;
-			zedGraphControl.GraphPane.XAxis.MajorGrid.Color = Color.Gray;
+			zedGraphControl.GraphPane.XAxis.MajorGrid.Color = DarkThemeColorTable.BorderColor;
 			zedGraphControl.GraphPane.XAxis.MajorGrid.DashOff = 4;
 			zedGraphControl.GraphPane.XAxis.MajorGrid.DashOn = 2;
 
 			zedGraphControl.GraphPane.YAxis.MajorGrid.IsVisible = true;
-			zedGraphControl.GraphPane.YAxis.MajorGrid.Color = Color.Gray;
+			zedGraphControl.GraphPane.YAxis.MajorGrid.Color = DarkThemeColorTable.BorderColor;
 			zedGraphControl.GraphPane.YAxis.MajorGrid.DashOff = 4;
 			zedGraphControl.GraphPane.YAxis.MajorGrid.DashOn = 2;
 
@@ -39,8 +51,8 @@ namespace VixenModules.App.Curves
 			zedGraphControl.GraphPane.Legend.IsVisible = false;
 			zedGraphControl.GraphPane.Title.IsVisible = false;
 
-			zedGraphControl.GraphPane.Fill = new Fill(SystemColors.Control);
-			zedGraphControl.GraphPane.Border = new Border(SystemColors.Control, 0);
+			zedGraphControl.GraphPane.Fill = new Fill(DarkThemeColorTable.BackgroundColor);
+			zedGraphControl.GraphPane.Border = new Border(DarkThemeColorTable.BackgroundColor, 0);
 
 			zedGraphControl.GraphPane.AxisChange();
 		}
@@ -172,6 +184,20 @@ namespace VixenModules.App.Curves
 
 		private void PopulateFormWithCurve(Curve curve)
 		{
+			zedGraphControl.GraphPane.Chart.Fill = new Fill(DarkThemeColorTable.BackgroundColor);
+			zedGraphControl.GraphPane.Chart.Border.Color = DarkThemeColorTable.BorderColor;
+			zedGraphControl.GraphPane.XAxis.MajorGrid.Color = DarkThemeColorTable.BorderColor;
+			zedGraphControl.GraphPane.XAxis.MinorGrid.Color = DarkThemeColorTable.BorderColor;
+			zedGraphControl.GraphPane.XAxis.MajorTic.Color = DarkThemeColorTable.BorderColor;
+			zedGraphControl.GraphPane.XAxis.MinorTic.Color = DarkThemeColorTable.BorderColor;
+			zedGraphControl.GraphPane.YAxis.MajorGrid.Color = DarkThemeColorTable.BorderColor;
+			zedGraphControl.GraphPane.YAxis.MinorGrid.Color = DarkThemeColorTable.BorderColor;
+			zedGraphControl.GraphPane.YAxis.MajorTic.Color = DarkThemeColorTable.BorderColor;
+			zedGraphControl.GraphPane.YAxis.MinorTic.Color = DarkThemeColorTable.BorderColor;
+			zedGraphControl.GraphPane.Title.FontSpec.FontColor = DarkThemeColorTable.ForeColor;
+			zedGraphControl.GraphPane.XAxis.Scale.FontSpec.FontColor = DarkThemeColorTable.ForeColor;
+			zedGraphControl.GraphPane.YAxis.Scale.FontSpec.FontColor = DarkThemeColorTable.ForeColor;
+
 			// if we're editing a curve from the library, treat it special
 			if (curve.IsCurrentLibraryCurve) {
 				zedGraphControl.GraphPane.CurveList.Clear();
@@ -202,7 +228,7 @@ namespace VixenModules.App.Curves
 				txtXValue.Text = string.Empty;
 				txtYValue.Text = string.Empty;
 				btnUpdateCoordinates.Enabled = false;
-				zedGraphControl.GraphPane.Chart.Fill = new Fill(Color.AliceBlue);
+				
 			}
 			else {
 				if (curve.IsLibraryReference) {
@@ -234,8 +260,7 @@ namespace VixenModules.App.Curves
 				txtXValue.Text = string.Empty;
 				txtYValue.Text = string.Empty;
 				btnUpdateCoordinates.Enabled = false;
-				zedGraphControl.GraphPane.Chart.Fill = new Fill(SystemColors.Control);
-
+				
 				Text = "Curve Editor";
 			}
 
@@ -336,5 +361,32 @@ namespace VixenModules.App.Curves
 			zedGraphControl.DragEditingPair.Y = Convert.ToDouble(txtYValue.Text);
 			zedGraphControl.Invalidate();
 		}
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.HeadingBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.HeadingBackgroundImage;
+		}
+
+		private void buttonTextColorChange(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.ForeColor = btn.Enabled ? DarkThemeColorTable.ForeColor : DarkThemeColorTable.ForeColorDisabled;
+		}
+
+		#region Draw lines and GroupBox borders
+		
+		private void groupBoxes_Paint(object sender, PaintEventArgs e)
+		{
+			DarkThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
+		}
+		#endregion
+
 	}
 }

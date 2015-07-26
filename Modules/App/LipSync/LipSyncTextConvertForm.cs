@@ -6,6 +6,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls.Theme;
+using Common.Resources.Properties;
 using VixenModules.Sequence.Timed;
 
 namespace VixenModules.App.LipSyncApp
@@ -21,6 +23,13 @@ namespace VixenModules.App.LipSyncApp
         public LipSyncTextConvertForm()
         {
             InitializeComponent();
+
+			markCollectionLabel.ForeColor = Color.Gray;
+			markAlignmentLabel.ForeColor = Color.Gray;
+			markStartOffsetLabel.ForeColor = Color.Gray;
+			markCollectionRadio.ForeColor = Color.Gray;
+			buttonConvert.BackgroundImage = Resources.HeadingBackgroundImage;
+			Icon = Resources.Icon_Vixen3;
             unMarkedPhonemes = 0;
             _lastMarkIndex = -1;
         }
@@ -190,7 +199,7 @@ namespace VixenModules.App.LipSyncApp
 
         private void LipSyncTextConvert_Load(object sender, EventArgs e)
         {
-            convertButton.Enabled = false;
+            buttonConvert.Enabled = false;
             cursorRadio.Checked = true;
             setMarkControls(false);
         }
@@ -272,7 +281,7 @@ namespace VixenModules.App.LipSyncApp
                 }
             }
 
-            markCollectionRadio.Enabled = false;
+            markCollectionRadio.AutoCheck = false;
 
             if (markCollectionCombo.Items.Count > 0)
             {
@@ -293,14 +302,18 @@ namespace VixenModules.App.LipSyncApp
                 }
                 populateStartOffsetCombo();
 
-                markCollectionRadio.Enabled = 
+				markCollectionRadio.AutoCheck = 
                     (markCollectionCombo.Items.Count > 0) && (startOffsetCombo.Items.Count > 0);
+	            markCollectionRadio.ForeColor = markCollectionRadio.AutoCheck ? DarkThemeColorTable.ForeColor : Color.Gray;
             }
 
-            marksGroupBox.Enabled = enable;
-
+			
             if (enable)
             {
+				markCollectionCombo.Enabled = true;
+				startOffsetCombo.Enabled = true;
+				alignCombo.Enabled = true;
+
                 alignCombo.Items.Clear();
                 alignCombo.Items.Add("Phoneme");
                 alignCombo.Items.Add("Word");
@@ -309,6 +322,10 @@ namespace VixenModules.App.LipSyncApp
             }
             else
             {
+				markCollectionCombo.Enabled = false;
+				startOffsetCombo.Enabled = false;
+				alignCombo.Enabled = false;
+
                 markCollectionCombo.SelectedIndex = -1;
                 startOffsetCombo.SelectedIndex = -1;
             }
@@ -331,9 +348,55 @@ namespace VixenModules.App.LipSyncApp
 
         private void textBox_TextChanged(object sender, EventArgs e)
         {
-            convertButton.Enabled = !String.IsNullOrWhiteSpace(textBox.Text);
+            buttonConvert.Enabled = !String.IsNullOrWhiteSpace(textBox.Text);
         }
-    }
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.HeadingBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.HeadingBackgroundImage;
+		}
+
+		#region Draw lines and GroupBox borders
+		
+		private void groupBoxes_Paint(object sender, PaintEventArgs e)
+		{
+			DarkThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
+		}
+		#endregion
+
+		private void buttonTextColorChange(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.ForeColor = btn.Enabled ? DarkThemeColorTable.ForeColor : Color.Gray;
+		}
+
+		private void markCollectionCombo_EnabledChanged(object sender, EventArgs e)
+		{
+			markCollectionLabel.ForeColor = markCollectionCombo.Enabled ? DarkThemeColorTable.ForeColor : Color.Gray;
+			markAlignmentLabel.ForeColor = markCollectionCombo.Enabled ? DarkThemeColorTable.ForeColor : Color.Gray;
+			markStartOffsetLabel.ForeColor = markCollectionCombo.Enabled ? DarkThemeColorTable.ForeColor : Color.Gray;
+		}
+
+		private void comboBoxes_DrawItem(object sender, DrawItemEventArgs e)
+		{
+			var btn = (ComboBox)sender;
+			int index = e.Index;
+			if (index < 0)
+			{
+				return;
+			}
+			var brush = new SolidBrush(DarkThemeColorTable.ForeColor);
+			e.DrawBackground();
+			e.Graphics.DrawString(btn.Items[index].ToString(), e.Font, brush, e.Bounds, StringFormat.GenericDefault);
+		}
+	}
 
     public class LipSyncConvertData
     {

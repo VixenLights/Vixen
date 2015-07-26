@@ -8,6 +8,8 @@ using System.Reflection;
 using System.Resources;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls.Theme;
+using Common.Resources.Properties;
 using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Module.App;
@@ -21,8 +23,14 @@ namespace VixenModules.App.LipSyncApp
         public LipSyncMapSelector()
 		{
 			InitializeComponent();
+			buttonCancel.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonCloneMap.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonDeleteMap.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonEditMap.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonNewMap.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonOK.BackgroundImage = Resources.HeadingBackgroundImage;
             listViewMappings.Sorting = SortOrder.Ascending;
-			Icon = Common.Resources.Properties.Resources.Icon_Vixen3;
+			Icon = Resources.Icon_Vixen3;
             Changed = false;
 		}
 
@@ -86,6 +94,26 @@ namespace VixenModules.App.LipSyncApp
 
 			}
 			listViewMappings.EndUpdate();
+
+			//listViewMappings.LargeImageList = new ImageList { ColorDepth = ColorDepth.Depth32Bit, ImageSize = new Size(68, 68) };
+
+			//foreach (KeyValuePair<string, LipSyncMapData> kvp in Library)
+			//{
+			//	LipSyncMapData c = kvp.Value;
+			//	string name = kvp.Key;
+
+			//	var image = c.cGenerateGenericCurveImage(new Size(68, 68));
+			//	Graphics gfx = Graphics.FromImage(image);
+			//	gfx.VixenModules.App.Curves.DrawRectangle(new Pen(Color.FromArgb(136, 136, 136), 2), 0, 0, 68, 68);
+
+			//	listViewMappings.LargeImageList.Images.Add(name, image);
+
+			//	ListViewItem item = new ListViewItem { Text = name, Name = name, ImageKey = name, Tag = c };
+			//	item.ForeColor = DarkThemeColorTable.ForeColor;
+			//	listViewMappings.Items.Add(item);
+			//}
+
+			//listViewMappings.EndUpdate();
 
             buttonNewMap.Enabled = true;
             buttonEditMap.Enabled = false;
@@ -243,5 +271,23 @@ namespace VixenModules.App.LipSyncApp
             }
 
         }
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.HeadingBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.HeadingBackgroundImage;
+		}
+
+		private void buttonTextColorChange(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.ForeColor = btn.Enabled ? DarkThemeColorTable.ForeColor : DarkThemeColorTable.ForeColorDisabled;
+		}
     }
 }

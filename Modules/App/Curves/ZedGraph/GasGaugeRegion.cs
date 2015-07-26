@@ -23,6 +23,7 @@ using System;
 using System.Text;
 using System.Drawing;
 using System.Security.Permissions;
+using Common.Controls.Theme;
 
 namespace ZedGraph
 {
@@ -347,7 +348,7 @@ namespace ZedGraph
 			/// <summary>
 			/// The default value for the color of the <see cref="GasGaugeRegion"/> border
 			/// </summary>
-			public static Color BorderColor = Color.Gray;
+			public static Color BorderColor = DarkThemeColorTable.BorderColor;
 
 			/// <summary>
 			/// The default value for the color of the <see cref="GasGaugeRegion"/> fill

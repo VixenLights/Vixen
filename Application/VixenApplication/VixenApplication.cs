@@ -14,6 +14,7 @@ using Vixen.Sys;
 using NLog;
 using Common.Resources.Properties;
 using Common.Controls;
+using Common.Controls.Theme;
 
 namespace VixenApplication
 {
@@ -34,6 +35,17 @@ namespace VixenApplication
 		public VixenApplication()
 		{
 			InitializeComponent();
+			//Get rid of the ugly grip that we dont want to show anyway. 
+			//Workaround for a MS bug
+			statusStrip.Padding = new Padding(statusStrip.Padding.Left,
+			statusStrip.Padding.Top, statusStrip.Padding.Left, statusStrip.Padding.Bottom);
+			menuStripMain.Renderer = new DarkThemeToolStripRenderer();
+			buttonNewSequence.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonOpenSequence.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonSetupDisplay.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonSetupOutputPreviews.BackgroundImage = Resources.HeadingBackgroundImage;
+			listViewRecentSequences.OwnerDraw = true;
+
 			Icon = Resources.Icon_Vixen3;
 
 			string[] args = Environment.GetCommandLineArgs();
@@ -114,8 +126,8 @@ namespace VixenApplication
 			foreach (string logName in di.GetFiles().Select(x => x.Name)) {
 				logsToolStripMenuItem.DropDownItems.Add(logName, null,
 				                                        (menuSender, menuArgs) => _ViewLog(((ToolStripMenuItem) menuSender).Text));
+			//	logsToolStripMenuItem.DropDownItems..ForeColor = Color.FromArgb(90, 90, 90);
 			}
-
 			PopulateRecentSequencesList();
 		}
 
@@ -223,14 +235,11 @@ namespace VixenApplication
 						_rootDataDirectory = directory;
 						break;
 					}
-					else
-					{
-						MessageBox.Show(
-							"The data directory for the selected profile does not exist!" + Environment.NewLine + Environment.NewLine + 
-							directory + Environment.NewLine + Environment.NewLine +
-							"Select a different profile to load or use the Profile Editor to create a new profile.",
-							"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					}
+					MessageBox.Show(
+						"The data directory for the selected profile does not exist!" + Environment.NewLine + Environment.NewLine + 
+						directory + Environment.NewLine + Environment.NewLine +
+						"Select a different profile to load or use the Profile Editor to create a new profile.",
+						"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				}
 				else if (result == DialogResult.Cancel)
 				{
@@ -745,5 +754,48 @@ namespace VixenApplication
 		{
 			SetupDisplay();
 		}
+
+		#region Draw lines and borders
+		//set color for box borders.
+		private Color _borderColor = Color.FromArgb(136, 136, 136);
+
+		public Color BorderColor
+		{
+			get { return _borderColor; }
+			set { _borderColor = value; }
+		}
+
+		private void groupBoxes_Paint(object sender, PaintEventArgs e)
+		{
+			DarkThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
+		}
+
+		private void VixenApplication_Paint(object sender, PaintEventArgs e)
+		{
+			Pen borderColor = new Pen(_borderColor, 1);
+
+			if (ActiveForm != null)
+				e.Graphics.DrawLine(borderColor, 0, pictureBox1.Size.Height + 30, ActiveForm.Width, pictureBox1.Size.Height + 30);
+		}
+		#endregion
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.HeadingBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.HeadingBackgroundImage;
+		}
+
+		private void listViewRecentSequences_DrawItem(object sender, DrawListViewItemEventArgs e)
+		{
+			DarkThemeListViewItemRenderer.DrawItem(sender, e);
+		}
 	}
+
+	
 }

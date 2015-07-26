@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Globalization;
+using Common.Controls.Theme;
+using Common.Resources.Properties;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -16,6 +18,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public EffectDistributionDialog()
 		{
 			InitializeComponent();
+			btnCancel.BackgroundImage = Resources.HeadingBackgroundImage;
+			btnOK.BackgroundImage = Resources.HeadingBackgroundImage;
 		}
 		public string ElementCount
 		{
@@ -387,6 +391,26 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				btnOK.Enabled = false;
 			}
+		}
+
+		#region Draw lines and GroupBox borders
+		
+		private void groupBoxes_Paint(object sender, PaintEventArgs e)
+		{
+			DarkThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
+		}
+		#endregion
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.HeadingBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.HeadingBackgroundImage;
 		}
 	}
 }

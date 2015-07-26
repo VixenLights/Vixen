@@ -139,7 +139,7 @@
     <value>51, 21</value>
   </data>
   <data name="lblColorSelect.Size" type="System.Drawing.Size, System.Drawing">
-    <value>64, 20</value>
+    <value>64, 25</value>
   </data>
   <data name="lblColorSelect.TabIndex" type="System.Int32, mscorlib">
     <value>3</value>
@@ -192,6 +192,9 @@
   <data name="btnDeleteColor.Enabled" type="System.Boolean, mscorlib">
     <value>False</value>
   </data>
+  <data name="btnDeleteColor.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
+    <value>Flat</value>
+  </data>
   <data name="btnDeleteColor.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
@@ -199,7 +202,7 @@
     <value>263, 21</value>
   </data>
   <data name="btnDeleteColor.Size" type="System.Drawing.Size, System.Drawing">
-    <value>72, 22</value>
+    <value>72, 25</value>
   </data>
   <data name="btnDeleteColor.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
@@ -259,7 +262,7 @@
     <value>NoControl</value>
   </data>
   <data name="label4.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 21</value>
+    <value>6, 21</value>
   </data>
   <data name="label4.Size" type="System.Drawing.Size, System.Drawing">
     <value>39, 20</value>
@@ -344,6 +347,9 @@
   </metadata>
   <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
     <value>6, 13</value>
+  </data>
+  <data name="$this.MinimumSize" type="System.Drawing.Size, System.Drawing">
+    <value>357, 120</value>
   </data>
   <data name="$this.Size" type="System.Drawing.Size, System.Drawing">
     <value>357, 126</value>

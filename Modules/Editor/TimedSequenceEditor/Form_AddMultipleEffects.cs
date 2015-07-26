@@ -94,6 +94,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public Form_AddMultipleEffects()
 		{
 			InitializeComponent();
+			btnCancel.BackgroundImage = Resources.HeadingBackgroundImage;
+			btnOK.BackgroundImage = Resources.HeadingBackgroundImage;
 			btnShowBeatMarkOptions.Image = Resources.bullet_toggle_plus;
 			btnShowBeatMarkOptions.Text = "";
 			btnHideBeatMarkOptions.Image = Resources.bullet_toggle_minus;
@@ -339,6 +341,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void checkBoxAlignToBeatMarks_CheckStateChanged(object sender, EventArgs e)
 		{
 			txtDurationBetween.Enabled = (checkBoxAlignToBeatMarks.Checked ? false : true);
+			listBoxMarkCollections.Visible = !listBoxMarkCollections.Visible;
 			listBoxMarkCollections.Enabled = checkBoxFillDuration.Enabled = checkBoxSkipEOBeat.Enabled = checkBoxAlignToBeatMarks.Checked;
 			if (checkBoxAlignToBeatMarks.Checked)
 			{
@@ -426,7 +429,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (mc.Name != null)
 				{
 					var lvItems = new ListViewItem();
-					lvItems.BackColor = mc.MarkColor;
+					lvItems.ForeColor = mc.MarkColor;
 					lvItems.Text = mc.Name;
 					listBoxMarkCollections.Items.Add(lvItems);
 				}
@@ -492,6 +495,18 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		}
 
 		#endregion
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.HeadingBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.HeadingBackgroundImage;
+		}
 
 	}
 }

@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Resources.Properties;
 using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Module.App;
@@ -14,9 +15,16 @@ namespace VixenModules.App.ColorGradients
 {
 	public partial class ColorGradientLibrarySelector : Form
 	{
+		private readonly Pen _borderPen = new Pen(Color.FromArgb(136, 136, 136), 2);
+
 		public ColorGradientLibrarySelector()
 		{
 			InitializeComponent();
+			buttonCancel.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonDeleteColorGradient.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonEditColorGradient.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonNewColorGradient.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonOK.BackgroundImage = Resources.HeadingBackgroundImage;
 			Icon = Common.Resources.Properties.Resources.Icon_Vixen3;
 			DoubleClickMode = Mode.Ok;
 		}
@@ -60,8 +68,13 @@ namespace VixenModules.App.ColorGradients
 				ColorGradient gradient = kvp.Value;
 				string name = kvp.Key;
 
-				listViewColorGradients.LargeImageList.ImageSize = new Size(64, 64);
-				listViewColorGradients.LargeImageList.Images.Add(name, gradient.GenerateColorGradientImage(new Size(64, 64), false));
+				listViewColorGradients.LargeImageList.ImageSize = new Size(68, 68);
+
+				var image = gradient.GenerateColorGradientImage(new Size(68, 68), false);
+				Graphics gfx = Graphics.FromImage(image);
+				gfx.DrawRectangle(_borderPen, 0, 0, 68, 68);
+
+				listViewColorGradients.LargeImageList.Images.Add(name, image);
 
 				ListViewItem item = new ListViewItem();
 				item.Text = name;
@@ -174,7 +187,7 @@ namespace VixenModules.App.ColorGradients
 		}
 
 		private ColorGradientLibrary _library;
-
+		
 		private ColorGradientLibrary Library
 		{
 			get
@@ -199,6 +212,18 @@ namespace VixenModules.App.ColorGradients
 		{
 			Ok,
 			Edit
+		}
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.HeadingBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.HeadingBackgroundImage;
 		}
 
 	}

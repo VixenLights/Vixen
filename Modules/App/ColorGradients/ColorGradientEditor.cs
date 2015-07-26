@@ -6,6 +6,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls.Theme;
+using Common.Resources.Properties;
 using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Module.App;
@@ -20,6 +22,12 @@ namespace VixenModules.App.ColorGradients
 		public ColorGradientEditor(ColorGradient gradient, bool discreteColors, IEnumerable<Color> validDiscreteColors)
 		{
 			InitializeComponent();
+			buttonCancel.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonEditLibraryItem.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonLoadFromLibrary.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonOK.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonSaveToLibrary.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonUnlink.BackgroundImage = Resources.HeadingBackgroundImage;
 			Icon = Common.Resources.Properties.Resources.Icon_Vixen3;
 
 			gradientEditPanel.GradientChanged += GradientChangedHandler;
@@ -178,5 +186,25 @@ namespace VixenModules.App.ColorGradients
 			if (e.KeyCode == Keys.Escape)
 				DialogResult = DialogResult.Cancel;
 		}
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.HeadingBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.HeadingBackgroundImage;
+		}
+
+		#region Draw lines and GroupBox borders
+		
+		private void groupBoxes_Paint(object sender, PaintEventArgs e)
+		{
+			DarkThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
+		}
+		#endregion
 	}
 }

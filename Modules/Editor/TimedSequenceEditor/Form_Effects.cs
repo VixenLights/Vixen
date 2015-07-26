@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using Common.Controls.Theme;
 using Common.Controls.Timeline;
 using Vixen.Module.Effect;
 using Vixen.Services;
@@ -56,7 +57,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						break;
 				}
 				TreeNode node = new TreeNode(effectDesriptor.EffectName) {Tag = effectDesriptor.TypeId};
-				node.ForeColor = Color.FromArgb(221, 221, 221);
+				node.ForeColor = DarkThemeColorTable.ForeColor;
 				parentNode.Nodes.Add(node);
 				// Set the image
 				Image image = effectDesriptor.GetRepresentativeImage(48, 48);

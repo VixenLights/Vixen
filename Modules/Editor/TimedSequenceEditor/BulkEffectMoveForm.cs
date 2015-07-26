@@ -7,6 +7,8 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls.Theme;
+using Common.Resources.Properties;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -21,6 +23,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public BulkEffectMoveForm(TimeSpan startTime)
 		{
 			InitializeComponent();
+			btnCancel.BackgroundImage = Resources.HeadingBackgroundImage;
+			btnOk.BackgroundImage = Resources.HeadingBackgroundImage;
+			Icon = Resources.Icon_Vixen3;
 			Start = startTime;
 			End = startTime;
 			Offset = TimeSpan.Zero;
@@ -197,5 +202,25 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				btnOk.Enabled = false;
 			}
 		}
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.HeadingBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.HeadingBackgroundImage;
+		}
+
+		#region Draw lines and GroupBox borders
+		
+		private void groupBoxes_Paint(object sender, PaintEventArgs e)
+		{
+			DarkThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
+		}
+		#endregion
 	}
 }

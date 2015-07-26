@@ -16,6 +16,7 @@ using Vixen.Services;
 using Vixen.Module.App;
 using WeifenLuo.WinFormsUI.Docking;
 using System.Runtime.InteropServices;
+using Common.Controls.Theme;
 
 
 namespace VixenModules.Editor.TimedSequenceEditor
@@ -83,7 +84,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			InitializeComponent();
 			TimelineControl = timelineControl;
 			Icon = Resources.Icon_Vixen3;
-
+			toolStripColors.Renderer=new DarkThemeToolStripRenderer();
+			toolStripGradients.Renderer = new DarkThemeToolStripRenderer();
+			toolStripCurves.Renderer = new DarkThemeToolStripRenderer();
 			toolStripButtonEditColor.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStripButtonEditColor.Image = Resources.pencil;
 			toolStripButtonNewColor.DisplayStyle = ToolStripItemDisplayStyle.Image;
@@ -125,9 +128,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			listViewCurves.AllowDrop = true;
 			listViewGradients.AllowDrop = true;
 
-			listViewColors.BackColor = Color.FromArgb(68, 68, 68);
-			listViewCurves.BackColor = Color.FromArgb(68, 68, 68);
-			listViewGradients.BackColor = Color.FromArgb(68, 68, 68);
+			listViewColors.BackColor = DarkThemeColorTable.BackgroundColor;
+			listViewCurves.BackColor = DarkThemeColorTable.BackgroundColor;
+			listViewGradients.BackColor = DarkThemeColorTable.BackgroundColor;
 		}
 
 		private void ColorPalette_Load(object sender, EventArgs e)
@@ -223,7 +226,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				ImageKey = colorItem.ToString(),
 				Tag = colorItem
 			};
-			item.ForeColor = Color.FromArgb(221, 221, 221);
+			item.ForeColor = DarkThemeColorTable.ForeColor;
 			return item;
 		}
 
@@ -260,7 +263,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				listViewCurves.LargeImageList.Images.Add(name, image);
 
 				ListViewItem item = new ListViewItem {Text = name, Name = name, ImageKey = name, Tag = c};
-				item.ForeColor = Color.FromArgb(221, 221, 221);
+				item.ForeColor = DarkThemeColorTable.ForeColor;
 				if (item != null) listViewCurves.Items.Add(item);
 			}
 
@@ -290,7 +293,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				listViewGradients.LargeImageList.Images.Add(name, result);
 
 				ListViewItem item = new ListViewItem {Text = name, Name = name, ImageKey = name, Tag = gradient};
-				item.ForeColor = Color.FromArgb(221, 221, 221);
+				item.ForeColor = DarkThemeColorTable.ForeColor;
 
 				listViewGradients.Items.Add(item);
 			}

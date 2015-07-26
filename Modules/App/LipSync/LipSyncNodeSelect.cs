@@ -6,6 +6,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls.Theme;
+using Common.Resources.Properties;
 using Vixen.Sys;
 
 namespace VixenModules.App.LipSyncApp
@@ -17,7 +19,14 @@ namespace VixenModules.App.LipSyncApp
 
         public LipSyncNodeSelect()
         {
+			Location = ActiveForm != null ? new Point(ActiveForm.Location.X + 50, ActiveForm.Location.Y + 50) : new Point(400, 200);
             InitializeComponent();
+			buttonAdd.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonCancel.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonOk.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonRemove.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonReset.BackgroundImage = Resources.HeadingBackgroundImage;
+			Icon = Resources.Icon_Vixen3;
             Changed = false;
             _userAdd = false;
             _matrixOptsOnly = false;
@@ -110,7 +119,7 @@ namespace VixenModules.App.LipSyncApp
             }
         }
 
-        private void resetButton_Click(object sender, EventArgs e)
+        private void buttonReset_Click(object sender, EventArgs e)
         {
             _origNodeNames.Clear();
             chosenTargets.Items.Clear();
@@ -163,7 +172,7 @@ namespace VixenModules.App.LipSyncApp
             }
         }
 
-        private void addButton_Click(object sender, EventArgs e)
+        private void buttonAdd_Click(object sender, EventArgs e)
         {
             foreach (TreeNode treeNode in nodeTreeView.SelectedNodes)
             {
@@ -172,7 +181,7 @@ namespace VixenModules.App.LipSyncApp
             _userAdd = true;
         }
 
-        private void removeButton_Click(object sender, EventArgs e)
+        private void buttonRemove_Click(object sender, EventArgs e)
         {
             for (int i = chosenTargets.SelectedIndices.Count - 1; i >= 0; i--)
             {
@@ -210,5 +219,25 @@ namespace VixenModules.App.LipSyncApp
                 }
             }
         }
-    }
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.HeadingBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.HeadingBackgroundImage;
+		}
+
+		#region Draw lines and GroupBox borders
+		
+		private void groupBoxes_Paint(object sender, PaintEventArgs e)
+		{
+			DarkThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
+		}
+		#endregion
+	}
 }

@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using Common.Controls.Theme;
 using Common.Controls.Timeline;
 using QMLibrary;
+using VixenModules.Analysis.BeatsAndBars.Properties;
 using VixenModules.Media.Audio;
 using VixenModules.Sequence.Timed;
 
@@ -23,6 +25,9 @@ namespace VixenModules.Analysis.BeatsAndBars
 		public BeatsAndBarsDialog(Audio audio)
 		{
 			InitializeComponent();
+
+			CancelButton.BackgroundImage = Resources.HeadingBackgroundImage;
+			GenerateButton.BackgroundImage = Resources.HeadingBackgroundImage;
 
 			m_allowUpdates = false;
 
@@ -199,5 +204,25 @@ namespace VixenModules.Analysis.BeatsAndBars
 			AllColorPanel.Enabled = AllFeaturesCB.Checked;
 			SetBeatBarOutputSettings();
 		}
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.HeadingBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.HeadingBackgroundImage;
+		}
+
+		#region Draw lines and GroupBox borders
+		
+		private void groupBoxes_Paint(object sender, PaintEventArgs e)
+		{
+			DarkThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
+		}
+		#endregion
 	}
 }

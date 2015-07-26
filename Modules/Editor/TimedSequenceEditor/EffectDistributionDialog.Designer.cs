@@ -18,13 +18,18 @@
 			this.components = new System.ComponentModel.Container();
 			this.labelElementCount = new System.Windows.Forms.Label();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.txtEndTime = new System.Windows.Forms.MaskedTextBox();
+			this.txtStartTime = new System.Windows.Forms.MaskedTextBox();
 			this.label3 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.txtSpecifiedEffectDuration = new System.Windows.Forms.MaskedTextBox();
 			this.radioSpecifiedDuration = new System.Windows.Forms.RadioButton();
 			this.radioDoNotChangeDuration = new System.Windows.Forms.RadioButton();
 			this.radioEqualDuration = new System.Windows.Forms.RadioButton();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.txtSpacedPlacementDuration = new System.Windows.Forms.MaskedTextBox();
+			this.txtEffectPlacementOverlap = new System.Windows.Forms.MaskedTextBox();
 			this.radioPlacementSpacedDuration = new System.Windows.Forms.RadioButton();
 			this.radioEffectPlacementOverlap = new System.Windows.Forms.RadioButton();
 			this.radioStairStep = new System.Windows.Forms.RadioButton();
@@ -33,12 +38,7 @@
 			this.radioStartAtFirst = new System.Windows.Forms.RadioButton();
 			this.btnOK = new System.Windows.Forms.Button();
 			this.btnCancel = new System.Windows.Forms.Button();
-			this.txtStartTime = new System.Windows.Forms.MaskedTextBox();
-			this.txtEndTime = new System.Windows.Forms.MaskedTextBox();
 			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-			this.txtSpecifiedEffectDuration = new System.Windows.Forms.MaskedTextBox();
-			this.txtEffectPlacementOverlap = new System.Windows.Forms.MaskedTextBox();
-			this.txtSpacedPlacementDuration = new System.Windows.Forms.MaskedTextBox();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -60,12 +60,34 @@
 			this.groupBox1.Controls.Add(this.txtStartTime);
 			this.groupBox1.Controls.Add(this.label3);
 			this.groupBox1.Controls.Add(this.label2);
+			this.groupBox1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.groupBox1.Location = new System.Drawing.Point(16, 40);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(200, 82);
 			this.groupBox1.TabIndex = 1;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Time Control";
+			this.groupBox1.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
+			// 
+			// txtEndTime
+			// 
+			this.txtEndTime.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
+			this.txtEndTime.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.txtEndTime.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.txtEndTime.Location = new System.Drawing.Point(68, 52);
+			this.txtEndTime.Name = "txtEndTime";
+			this.txtEndTime.Size = new System.Drawing.Size(126, 20);
+			this.txtEndTime.TabIndex = 7;
+			// 
+			// txtStartTime
+			// 
+			this.txtStartTime.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
+			this.txtStartTime.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.txtStartTime.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.txtStartTime.Location = new System.Drawing.Point(68, 26);
+			this.txtStartTime.Name = "txtStartTime";
+			this.txtStartTime.Size = new System.Drawing.Size(126, 20);
+			this.txtStartTime.TabIndex = 6;
 			// 
 			// label3
 			// 
@@ -91,12 +113,24 @@
 			this.groupBox2.Controls.Add(this.radioSpecifiedDuration);
 			this.groupBox2.Controls.Add(this.radioDoNotChangeDuration);
 			this.groupBox2.Controls.Add(this.radioEqualDuration);
+			this.groupBox2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.groupBox2.Location = new System.Drawing.Point(16, 128);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(200, 90);
 			this.groupBox2.TabIndex = 2;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Duration Control";
+			this.groupBox2.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
+			// 
+			// txtSpecifiedEffectDuration
+			// 
+			this.txtSpecifiedEffectDuration.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
+			this.txtSpecifiedEffectDuration.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.txtSpecifiedEffectDuration.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.txtSpecifiedEffectDuration.Location = new System.Drawing.Point(125, 65);
+			this.txtSpecifiedEffectDuration.Name = "txtSpecifiedEffectDuration";
+			this.txtSpecifiedEffectDuration.Size = new System.Drawing.Size(69, 20);
+			this.txtSpecifiedEffectDuration.TabIndex = 8;
 			// 
 			// radioSpecifiedDuration
 			// 
@@ -138,12 +172,34 @@
 			this.groupBox3.Controls.Add(this.radioPlacementSpacedDuration);
 			this.groupBox3.Controls.Add(this.radioEffectPlacementOverlap);
 			this.groupBox3.Controls.Add(this.radioStairStep);
+			this.groupBox3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.groupBox3.Location = new System.Drawing.Point(16, 224);
 			this.groupBox3.Name = "groupBox3";
 			this.groupBox3.Size = new System.Drawing.Size(200, 93);
 			this.groupBox3.TabIndex = 3;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "Placement Control";
+			this.groupBox3.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
+			// 
+			// txtSpacedPlacementDuration
+			// 
+			this.txtSpacedPlacementDuration.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
+			this.txtSpacedPlacementDuration.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.txtSpacedPlacementDuration.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.txtSpacedPlacementDuration.Location = new System.Drawing.Point(125, 64);
+			this.txtSpacedPlacementDuration.Name = "txtSpacedPlacementDuration";
+			this.txtSpacedPlacementDuration.Size = new System.Drawing.Size(69, 20);
+			this.txtSpacedPlacementDuration.TabIndex = 11;
+			// 
+			// txtEffectPlacementOverlap
+			// 
+			this.txtEffectPlacementOverlap.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
+			this.txtEffectPlacementOverlap.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.txtEffectPlacementOverlap.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.txtEffectPlacementOverlap.Location = new System.Drawing.Point(125, 41);
+			this.txtEffectPlacementOverlap.Name = "txtEffectPlacementOverlap";
+			this.txtEffectPlacementOverlap.Size = new System.Drawing.Size(69, 20);
+			this.txtEffectPlacementOverlap.TabIndex = 10;
 			// 
 			// radioPlacementSpacedDuration
 			// 
@@ -182,12 +238,14 @@
 			// 
 			this.groupBox4.Controls.Add(this.radioStartAtLast);
 			this.groupBox4.Controls.Add(this.radioStartAtFirst);
+			this.groupBox4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.groupBox4.Location = new System.Drawing.Point(16, 323);
 			this.groupBox4.Name = "groupBox4";
 			this.groupBox4.Size = new System.Drawing.Size(200, 45);
 			this.groupBox4.TabIndex = 4;
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = "Starting point";
+			this.groupBox4.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
 			// radioStartAtLast
 			// 
@@ -213,64 +271,46 @@
 			// 
 			// btnOK
 			// 
+			this.btnOK.BackColor = System.Drawing.Color.Transparent;
 			this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
+			this.btnOK.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+			this.btnOK.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+			this.btnOK.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+			this.btnOK.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+			this.btnOK.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.btnOK.Location = new System.Drawing.Point(16, 374);
 			this.btnOK.Name = "btnOK";
 			this.btnOK.Size = new System.Drawing.Size(75, 23);
 			this.btnOK.TabIndex = 5;
 			this.btnOK.Text = "OK";
-			this.btnOK.UseVisualStyleBackColor = true;
+			this.btnOK.UseVisualStyleBackColor = false;
+			this.btnOK.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.btnOK.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// btnCancel
 			// 
+			this.btnCancel.BackColor = System.Drawing.Color.Transparent;
 			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.btnCancel.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+			this.btnCancel.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+			this.btnCancel.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+			this.btnCancel.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+			this.btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.btnCancel.Location = new System.Drawing.Point(141, 374);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(75, 23);
 			this.btnCancel.TabIndex = 6;
 			this.btnCancel.Text = "Cancel";
-			this.btnCancel.UseVisualStyleBackColor = true;
-			// 
-			// txtStartTime
-			// 
-			this.txtStartTime.Location = new System.Drawing.Point(68, 26);
-			this.txtStartTime.Name = "txtStartTime";
-			this.txtStartTime.Size = new System.Drawing.Size(126, 20);
-			this.txtStartTime.TabIndex = 6;
-			// 
-			// txtEndTime
-			// 
-			this.txtEndTime.Location = new System.Drawing.Point(68, 52);
-			this.txtEndTime.Name = "txtEndTime";
-			this.txtEndTime.Size = new System.Drawing.Size(126, 20);
-			this.txtEndTime.TabIndex = 7;
-			// 
-			// txtSpecifiedEffectDuration
-			// 
-			this.txtSpecifiedEffectDuration.Location = new System.Drawing.Point(125, 65);
-			this.txtSpecifiedEffectDuration.Name = "txtSpecifiedEffectDuration";
-			this.txtSpecifiedEffectDuration.Size = new System.Drawing.Size(69, 20);
-			this.txtSpecifiedEffectDuration.TabIndex = 8;
-			// 
-			// txtEffectPlacementOverlap
-			// 
-			this.txtEffectPlacementOverlap.Location = new System.Drawing.Point(125, 41);
-			this.txtEffectPlacementOverlap.Name = "txtEffectPlacementOverlap";
-			this.txtEffectPlacementOverlap.Size = new System.Drawing.Size(69, 20);
-			this.txtEffectPlacementOverlap.TabIndex = 10;
-			// 
-			// txtSpacedPlacementDuration
-			// 
-			this.txtSpacedPlacementDuration.Location = new System.Drawing.Point(125, 64);
-			this.txtSpacedPlacementDuration.Name = "txtSpacedPlacementDuration";
-			this.txtSpacedPlacementDuration.Size = new System.Drawing.Size(69, 20);
-			this.txtSpacedPlacementDuration.TabIndex = 11;
+			this.btnCancel.UseVisualStyleBackColor = false;
+			this.btnCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.btnCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// EffectDistributionDialog
 			// 
 			this.AcceptButton = this.btnOK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.CancelButton = this.btnCancel;
 			this.ClientSize = new System.Drawing.Size(228, 404);
 			this.ControlBox = false;
@@ -281,6 +321,7 @@
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.labelElementCount);
+			this.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.Name = "EffectDistributionDialog";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

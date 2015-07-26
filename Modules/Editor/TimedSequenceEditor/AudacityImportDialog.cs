@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Resources.Properties;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -14,6 +15,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public AudacityImportDialog()
 		{
 			InitializeComponent();
+			btnCancel.BackgroundImage = Resources.HeadingBackgroundImage;
+			btnOk.BackgroundImage = Resources.HeadingBackgroundImage;
 		}
 
 		public bool IsVampBeatSelection
@@ -46,6 +49,18 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				return radioVixen3Beats.Checked;
 			}
+		}
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.HeadingBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.HeadingBackgroundImage;
 		}
 	}
 }

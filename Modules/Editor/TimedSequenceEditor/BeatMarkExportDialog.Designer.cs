@@ -28,40 +28,17 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.radioVixen3Format = new System.Windows.Forms.RadioButton();
 			this.radioAudacityFormat = new System.Windows.Forms.RadioButton();
+			this.radioVixen3Format = new System.Windows.Forms.RadioButton();
 			this.buttonOK = new System.Windows.Forms.Button();
 			this.buttonCancel = new System.Windows.Forms.Button();
-			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
-			// 
-			// groupBox1
-			// 
-			this.groupBox1.Controls.Add(this.radioAudacityFormat);
-			this.groupBox1.Controls.Add(this.radioVixen3Format);
-			this.groupBox1.Location = new System.Drawing.Point(13, 13);
-			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(156, 71);
-			this.groupBox1.TabIndex = 0;
-			this.groupBox1.TabStop = false;
-			this.groupBox1.Text = "Export Beat Marks";
-			// 
-			// radioVixen3Format
-			// 
-			this.radioVixen3Format.AutoSize = true;
-			this.radioVixen3Format.Location = new System.Drawing.Point(7, 20);
-			this.radioVixen3Format.Name = "radioVixen3Format";
-			this.radioVixen3Format.Size = new System.Drawing.Size(92, 17);
-			this.radioVixen3Format.TabIndex = 0;
-			this.radioVixen3Format.TabStop = true;
-			this.radioVixen3Format.Text = "Vixen 3 format";
-			this.radioVixen3Format.UseVisualStyleBackColor = true;
 			// 
 			// radioAudacityFormat
 			// 
 			this.radioAudacityFormat.AutoSize = true;
-			this.radioAudacityFormat.Location = new System.Drawing.Point(7, 43);
+			this.radioAudacityFormat.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.radioAudacityFormat.Location = new System.Drawing.Point(38, 49);
 			this.radioAudacityFormat.Name = "radioAudacityFormat";
 			this.radioAudacityFormat.Size = new System.Drawing.Size(98, 17);
 			this.radioAudacityFormat.TabIndex = 1;
@@ -69,53 +46,79 @@
 			this.radioAudacityFormat.Text = "Audacity format";
 			this.radioAudacityFormat.UseVisualStyleBackColor = true;
 			// 
+			// radioVixen3Format
+			// 
+			this.radioVixen3Format.AutoSize = true;
+			this.radioVixen3Format.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.radioVixen3Format.Location = new System.Drawing.Point(38, 27);
+			this.radioVixen3Format.Name = "radioVixen3Format";
+			this.radioVixen3Format.Size = new System.Drawing.Size(92, 17);
+			this.radioVixen3Format.TabIndex = 0;
+			this.radioVixen3Format.TabStop = true;
+			this.radioVixen3Format.Text = "Vixen 3 format";
+			this.radioVixen3Format.UseVisualStyleBackColor = true;
+			// 
 			// buttonOK
 			// 
+			this.buttonOK.BackColor = System.Drawing.Color.Transparent;
 			this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
+			this.buttonOK.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+			this.buttonOK.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.buttonOK.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.buttonOK.Location = new System.Drawing.Point(13, 90);
 			this.buttonOK.Name = "buttonOK";
 			this.buttonOK.Size = new System.Drawing.Size(75, 23);
 			this.buttonOK.TabIndex = 1;
 			this.buttonOK.Text = "OK";
-			this.buttonOK.UseVisualStyleBackColor = true;
+			this.buttonOK.UseVisualStyleBackColor = false;
+			this.buttonOK.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonOK.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonCancel
 			// 
+			this.buttonCancel.BackColor = System.Drawing.Color.Transparent;
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.buttonCancel.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+			this.buttonCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.buttonCancel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.buttonCancel.Location = new System.Drawing.Point(94, 90);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(75, 23);
 			this.buttonCancel.TabIndex = 2;
 			this.buttonCancel.Text = "Cancel";
-			this.buttonCancel.UseVisualStyleBackColor = true;
+			this.buttonCancel.UseVisualStyleBackColor = false;
+			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// BeatMarkExportDialog
 			// 
 			this.AcceptButton = this.buttonOK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.CancelButton = this.buttonCancel;
-			this.ClientSize = new System.Drawing.Size(182, 122);
+			this.ClientSize = new System.Drawing.Size(189, 137);
 			this.ControlBox = false;
+			this.Controls.Add(this.radioAudacityFormat);
 			this.Controls.Add(this.buttonCancel);
+			this.Controls.Add(this.radioVixen3Format);
 			this.Controls.Add(this.buttonOK);
-			this.Controls.Add(this.groupBox1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
+			this.MaximumSize = new System.Drawing.Size(205, 176);
 			this.MinimizeBox = false;
+			this.MinimumSize = new System.Drawing.Size(205, 176);
 			this.Name = "BeatMarkExportDialog";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Export Beat Marks";
 			this.Load += new System.EventHandler(this.BeatMarkExportDialog_Load);
-			this.groupBox1.ResumeLayout(false);
-			this.groupBox1.PerformLayout();
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 
 		#endregion
 
-		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.RadioButton radioAudacityFormat;
 		private System.Windows.Forms.RadioButton radioVixen3Format;
 		private System.Windows.Forms.Button buttonOK;

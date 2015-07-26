@@ -50,6 +50,7 @@
 			// 
 			// toolStrip1
 			// 
+			this.toolStrip1.BackColor = System.Drawing.Color.Transparent;
 			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripButtonEditMarkCollection,
             this.toolStripButtonAddMarkCollection,

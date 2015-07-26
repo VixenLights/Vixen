@@ -6,6 +6,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls.Theme;
+using Common.Resources.Properties;
 
 namespace VixenModules.App.LipSyncApp
 {
@@ -13,7 +15,11 @@ namespace VixenModules.App.LipSyncApp
     {
         public LipSyncNewMapType()
         {
+			Location = ActiveForm != null ? new Point(ActiveForm.Location.X + 130, ActiveForm.Location.Y + 90) : new Point(500, 200);
             InitializeComponent();
+			buttonOk.BackgroundImage = Resources.HeadingBackgroundImage;
+			buttonCancel.BackgroundImage = Resources.HeadingBackgroundImage;
+			Icon = Resources.Icon_Vixen3;
         }
 
         public int StringCount { get; set; }
@@ -45,6 +51,25 @@ namespace VixenModules.App.LipSyncApp
             pixelsUpDown.Enabled = false;
         }
 
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.HeadingBackgroundImageHover;
+		}
 
-    }
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.HeadingBackgroundImage;
+		}
+
+		#region Draw lines and GroupBox borders
+		
+		private void groupBoxes_Paint(object sender, PaintEventArgs e)
+		{
+			DarkThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
+		}
+		#endregion
+
+	}
 }
