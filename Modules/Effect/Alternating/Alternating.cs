@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Vixen.Attributes;
 using Vixen.Module;
 using Vixen.Module.Effect;
@@ -250,7 +251,9 @@ namespace VixenModules.Effect.Alternating
 			int group = GroupLevel;
 			var skip = IntervalSkipCount;
 			int colorCount = Colors.Count();
-			
+			//Use a single pulse to do our work, we don't need to keep creating it and then thowing it away making the GC work
+			//hard for no reason.
+			var pulse = new Pulse.Pulse(); 
 			
 			if (!EnableStatic)
 			{
@@ -258,29 +261,28 @@ namespace VixenModules.Effect.Alternating
 			}
 
 			var startTime = TimeSpan.Zero;
-
 			var nodes = node.GetLeafEnumerator();
-			
-			for (int i = 0; i < intervals; i++)
-			{
-				var intervalTime = intervals == 1
+
+			var intervalTime = intervals == 1
 					? TimeSpan
 					: TimeSpan.FromMilliseconds(Interval);
 
-				int totalElements = node.Count();
-				int currentNode = 0;
+			pulse.TimeSpan = intervalTime;
+			
+			for (int i = 0; i < intervals; i++)
+			{
+				var elements = nodes.Select((x, index) => new { x, index })
+					.GroupBy(x => x.index / group, y => y.x);
 
-				while (currentNode < totalElements)
+				foreach (IGrouping<int, ElementNode> elementGroup in elements)
 				{
-					var elements = nodes.Skip(currentNode).Take(group);
-					currentNode += (group);
-
-					foreach (var element in elements)
+					var glp = Colors[gradientLevelItem];
+					foreach (var element in elementGroup)
 					{
-						RenderElement(Colors[gradientLevelItem], ref startTime, ref intervalTime, element, effectIntents);
+						RenderElement(pulse, glp, startTime, element, effectIntents);
 					}
+					gradientLevelItem = ++gradientLevelItem % colorCount;
 
-					gradientLevelItem = ++gradientLevelItem%colorCount;
 				}
 
 				startIndexOffset = (skip+startIndexOffset) % colorCount;
@@ -292,22 +294,17 @@ namespace VixenModules.Effect.Alternating
 			return effectIntents;
 		}
 
-		private void RenderElement(GradientLevelPair gradientLevelPair, ref TimeSpan startTime, ref TimeSpan intervalTime,
+		private void RenderElement(Pulse.Pulse pulse, GradientLevelPair gradientLevelPair, TimeSpan startTime,
 			ElementNode element, EffectIntents effectIntents)
 		{
-			var pulse = new Pulse.Pulse
-			{
-				TargetNodes = new[] {element},
-				TimeSpan = intervalTime,
-				ColorGradient = gradientLevelPair.ColorGradient,
-				LevelCurve = gradientLevelPair.Curve
-			};
-
+			pulse.ColorGradient = gradientLevelPair.ColorGradient;
+			pulse.LevelCurve = gradientLevelPair.Curve;
+			pulse.TargetNodes = new[] { element };
+			
 			var result = pulse.Render();
 
 			result.OffsetAllCommandsByTime(startTime);
 			effectIntents.Add(result);
-
 		}
 	}
 
