@@ -151,6 +151,23 @@ namespace VixenModules.App.Curves
 					PointPairList pointList = zedGraphControl.GraphPane.CurveList[0].Points as PointPairList;
 					double newX, newY;
 					zedGraphControl.GraphPane.ReverseTransform(e.Location, out newX, out newY);
+					//Verify the point is in the usable bounds.
+					if (newX > 100)
+					{
+						newX = 100;
+					}
+					else if(newX < 0)
+					{
+						newX = 0;
+					}
+					if (newY > 100)
+					{
+						newY = 100;
+					}
+					else if (newY < 0)
+					{
+						newY = 0;
+					}
 					pointList.Insert(0, newX, newY);
 					pointList.Sort();
 					zedGraphControl.Invalidate();
