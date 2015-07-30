@@ -60,7 +60,10 @@
 				</ListView.ItemsPanel>
 				<ListView.ItemTemplate>
 					<DataTemplate>
-						<TextBox Margin="2 7 7 5" Text="{Binding StringValue}" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type StackPanel}}, Path=ActualWidth}"/>
+						<TextBox Margin="2 7 7 5" Text="{Binding StringValue, Mode=TwoWay,UpdateSourceTrigger=Explicit}" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type StackPanel}}, Path=ActualWidth}"
+								 utils:TextBoxExtender.CommitOnEnter="true"
+								 utils:TextBoxExtender.RollbackOnEscape="true"
+			                     utils:TextBoxExtender.CommitOnTyping="false" />
 					</DataTemplate>
 				</ListView.ItemTemplate>
 			</controls:CollectionView>
