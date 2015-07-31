@@ -33,7 +33,7 @@ namespace VixenModules.App.ColorGradients
 			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			edit.SelectionDoubleClicked += edit_SelectionDoubleClicked;
-			LockColorEditorHSV_Value = true;
+			LockColorEditorHSV_Value = false;
 		}
 
 		#region handlers

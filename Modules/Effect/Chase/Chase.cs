@@ -486,7 +486,7 @@ namespace VixenModules.Effect.Chase
 			if (intentNode == null || intentNode.EndTime >= TimeSpan) return;
 			var lightingIntent = intentNode.Intent as LightingIntent;
 			if(lightingIntent != null && lightingIntent.EndValue.Intensity > 0){
-				var newCurve = new Curve(new PointPairList(new PointPairList(new[] { 0.0, 100 }, new[] { lightingIntent.EndValue.Intensity * 100, lightingIntent.EndValue.Intensity * 100 })));
+				var newCurve = new Curve(CurveType.Flat100);
 				var pulse = new Pulse.Pulse
 				{
 					TargetNodes = new[] {target},
@@ -506,10 +506,7 @@ namespace VixenModules.Effect.Chase
 			var lightingIntent = intentNode.Intent as LightingIntent;
 			if (lightingIntent!= null && lightingIntent.StartValue.Intensity > 0)
 			{
-				var newCurve =
-					new Curve(
-						new PointPairList(new PointPairList(new[] {0.0, 100},
-							new[] {lightingIntent.StartValue.Intensity*100, lightingIntent.StartValue.Intensity*100})));
+				var newCurve = new Curve(CurveType.Flat100);
 				var pulse = new Pulse.Pulse
 				{
 					TargetNodes = new[] {target},
