@@ -873,7 +873,8 @@ namespace VixenModules.App.ColorGradients
 		public ColorGradient GetSubGradient(double start, double end)
 		{
 			double range = end - start;
-			if (range < 0) {
+			if (range < 0)
+			{
 				throw new ArgumentException("end must be after start");
 			}
 
@@ -881,15 +882,19 @@ namespace VixenModules.App.ColorGradients
 			result.Colors.Clear();
 
 			result.Colors.Add(new ColorPoint(GetColorAt(start), 0));
-			foreach (ColorPoint cp in Colors) {
-				if (cp.Position > start && cp.Position < end) {
-					double scaledPos = (cp.Position - start)/range;
-					if (scaledPos > 1.0 || scaledPos < 0.0) {
-						throw new Exception("Error  calculating position: " + scaledPos + " out of range");
-					}
-					result.Colors.Add(new ColorPoint(cp.Color.ToRGB(), scaledPos));
+
+			//Sample the colors out for more accuracy
+			for (double d = start; d < end; d += .1d)
+			{
+				var c = GetColorAt(d);
+				double scaledPos = (d - start) / range;
+				if (scaledPos > 1.0 || scaledPos < 0.0)
+				{
+					throw new Exception("Error  calculating position: " + scaledPos + " out of range");
 				}
+				result.Colors.Add(new ColorPoint(c, scaledPos));
 			}
+
 			result.Colors.Add(new ColorPoint(GetColorAt(end), 1));
 
 			return result;
