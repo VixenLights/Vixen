@@ -487,14 +487,15 @@ namespace VixenModules.Effect.Chase
 			var lightingIntent = intentNode.Intent as LightingIntent;
 			if(lightingIntent != null && lightingIntent.EndValue.Intensity > 0){
 				var newCurve = new Curve(CurveType.Flat100);
-				var pulse = new Pulse.Pulse
-				{
-					TargetNodes = new[] {target},
-					LevelCurve = newCurve,
-					ColorGradient = gradient ?? new ColorGradient(lightingIntent.EndValue.FullColor),
-					TimeSpan = TimeSpan - intentNode.EndTime
-				};
-				EffectIntents result = pulse.Render();
+				//var pulse = new Pulse.Pulse
+				//{
+				//	TargetNodes = new[] {target},
+				//	LevelCurve = newCurve,
+				//	ColorGradient = gradient ?? new ColorGradient(lightingIntent.EndValue.FullColor),
+				//	TimeSpan = TimeSpan - intentNode.EndTime
+				//};
+				//EffectIntents result = pulse.Render();
+				var result = PulseRenderer.RenderNode(target, newCurve, gradient ?? new ColorGradient(lightingIntent.EndValue.FullColor), TimeSpan - intentNode.EndTime);
 				result.OffsetAllCommandsByTime(intentNode.EndTime);
 				_elementData.Add(result);
 			}
@@ -507,14 +508,15 @@ namespace VixenModules.Effect.Chase
 			if (lightingIntent!= null && lightingIntent.StartValue.Intensity > 0)
 			{
 				var newCurve = new Curve(CurveType.Flat100);
-				var pulse = new Pulse.Pulse
-				{
-					TargetNodes = new[] {target},
-					LevelCurve = newCurve,
-					ColorGradient = gradient ?? new ColorGradient(lightingIntent.StartValue.FullColor),
-					TimeSpan = intentNode.StartTime
-				};
-				EffectIntents result = pulse.Render();
+				//var pulse = new Pulse.Pulse
+				//{
+				//	TargetNodes = new[] {target},
+				//	LevelCurve = newCurve,
+				//	ColorGradient = gradient ?? new ColorGradient(lightingIntent.StartValue.FullColor),
+				//	TimeSpan = intentNode.StartTime
+				//};
+				//EffectIntents result = pulse.Render();
+				var result = PulseRenderer.RenderNode(target, newCurve, gradient ?? new ColorGradient(lightingIntent.StartValue.FullColor), intentNode.StartTime);
 				_elementData.Add(result);
 			}
 		}
@@ -522,18 +524,19 @@ namespace VixenModules.Effect.Chase
 		private void GeneratePulse(ElementNode target, TimeSpan startTime, TimeSpan duration, double currentMovementPosition)
 		{
 			EffectIntents result = null;
-			Pulse.Pulse pulse = new Pulse.Pulse();
-			pulse.TargetNodes = new[] {target};
-			pulse.TimeSpan = duration;
-			pulse.LevelCurve = new Curve(PulseCurve);
+			//Pulse.Pulse pulse = new Pulse.Pulse();
+			//pulse.TargetNodes = new[] {target};
+			//pulse.TimeSpan = duration;
+			//pulse.LevelCurve = new Curve(PulseCurve);
 
 			bool discreteColors = ColorModule.isElementNodeDiscreteColored(target);
 			IIntentNode intent;
 			// figure out what color gradient to use for the pulse
 			switch (ColorHandling) {
 				case ChaseColorHandling.GradientForEachPulse:
-					pulse.ColorGradient = ColorGradient;
-					result = pulse.Render();
+					//pulse.ColorGradient = ColorGradient;
+					//result = pulse.Render();
+					result = PulseRenderer.RenderNode(target, PulseCurve, ColorGradient, duration);
 					result.OffsetAllCommandsByTime(startTime);
 					if (ExtendPulseToStart && result.Count > 0)
 					{
@@ -575,9 +578,10 @@ namespace VixenModules.Effect.Chase
 								double proportion = ColorGradient.GetProportionOfColorAt(effectRelativePosition, color);
 								point.Y *= proportion;
 							}
-							pulse.LevelCurve = newCurve;
-							pulse.ColorGradient = new ColorGradient(color);
-							result = pulse.Render();
+							//pulse.LevelCurve = newCurve;
+							//pulse.ColorGradient = new ColorGradient(color);
+							result = PulseRenderer.RenderNode(target, newCurve, new ColorGradient(color), duration);
+							//result = pulse.Render();
 							result.OffsetAllCommandsByTime(startTime);
 							if (ExtendPulseToStart && result.Count > 0)
 							{
@@ -592,8 +596,9 @@ namespace VixenModules.Effect.Chase
 							}
 						}
 					} else {
-						pulse.ColorGradient = ColorGradient.GetSubGradient(startPos, endPos);
-						result = pulse.Render();
+						//pulse.ColorGradient = ColorGradient.GetSubGradient(startPos, endPos);
+						//result = pulse.Render();
+						result = PulseRenderer.RenderNode(target, PulseCurve, ColorGradient.GetSubGradient(startPos, endPos), duration);
 						result.OffsetAllCommandsByTime(startTime);
 						if (ExtendPulseToStart && result.Count > 0)
 						{
@@ -611,8 +616,9 @@ namespace VixenModules.Effect.Chase
 					break;
 
 				case ChaseColorHandling.StaticColor:
-					pulse.ColorGradient = StaticColorGradient;
-					result = pulse.Render();
+					//pulse.ColorGradient = StaticColorGradient;
+					//result = pulse.Render();
+					result = PulseRenderer.RenderNode(target, PulseCurve, StaticColorGradient, duration);
 					result.OffsetAllCommandsByTime(startTime);
 					if (ExtendPulseToStart && result.Count > 0)
 					{
@@ -637,9 +643,10 @@ namespace VixenModules.Effect.Chase
 							foreach (PointPair pointPair in newCurve.Points) {
 								pointPair.Y *= proportion;
 							}
-							pulse.LevelCurve = newCurve;
-							pulse.ColorGradient = new ColorGradient(colorProportion.Item1);
-							result = pulse.Render();
+							//pulse.LevelCurve = newCurve;
+							//pulse.ColorGradient = new ColorGradient(colorProportion.Item1);
+							//result = pulse.Render();
+							result = PulseRenderer.RenderNode(target, newCurve, new ColorGradient(colorProportion.Item1), duration);
 							result.OffsetAllCommandsByTime(startTime);
 							if (ExtendPulseToStart && result.Count > 0)
 							{
@@ -654,8 +661,9 @@ namespace VixenModules.Effect.Chase
 							}
 						}
 					} else {
-						pulse.ColorGradient = new ColorGradient(ColorGradient.GetColorAt(currentMovementPosition/100.0));
-						result = pulse.Render();
+						//pulse.ColorGradient = new ColorGradient(ColorGradient.GetColorAt(currentMovementPosition/100.0));
+						//result = pulse.Render();
+						result = PulseRenderer.RenderNode(target, PulseCurve, new ColorGradient(ColorGradient.GetColorAt(currentMovementPosition / 100.0)), duration);
 						result.OffsetAllCommandsByTime(startTime);
 						if (ExtendPulseToStart && result.Count > 0)
 						{

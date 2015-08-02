@@ -197,7 +197,7 @@ namespace VixenModules.Effect.Wipe
 
 		private void RenderNonBurst(CancellationTokenSource tokenSource, IEnumerable<IGrouping<int, ElementNode>> renderNodes)
 		{
-			var pulse = new Pulse.Pulse();
+			//var pulse = new Pulse.Pulse();
 			if (renderNodes != null && renderNodes.Any())
 			{
 				TimeSpan effectTime = TimeSpan.Zero;
@@ -222,11 +222,13 @@ namespace VixenModules.Effect.Wipe
 									return;
 								if (element != null)
 								{
-									pulse.TimeSpan = segmentPulse;
-									pulse.ColorGradient = _data.ColorGradient;
-									pulse.LevelCurve = _data.Curve;
-									pulse.TargetNodes = new ElementNode[] { element };
-									result = pulse.Render();
+
+									//pulse.TimeSpan = segmentPulse;
+									//pulse.ColorGradient = _data.ColorGradient;
+									//pulse.LevelCurve = _data.Curve;
+									//pulse.TargetNodes = new ElementNode[] { element };
+									//result = pulse.Render();
+									result = PulseRenderer.RenderNode(element, _data.Curve, _data.ColorGradient, segmentPulse);
 									result.OffsetAllCommandsByTime(effectTime);
 									_elementData.Add(result);
 								}
@@ -261,12 +263,12 @@ namespace VixenModules.Effect.Wipe
 
 									if (tokenSource != null && tokenSource.IsCancellationRequested)
 										return;
-									pulse.TimeSpan = segmentPulse;
-									pulse.ColorGradient = _data.ColorGradient;
-									pulse.LevelCurve = _data.Curve;
-									pulse.TargetNodes = new ElementNode[] { element };
-									result = pulse.Render();
-
+									//pulse.TimeSpan = segmentPulse;
+									//pulse.ColorGradient = _data.ColorGradient;
+									//pulse.LevelCurve = _data.Curve;
+									//pulse.TargetNodes = new ElementNode[] { element };
+									//result = pulse.Render();
+									result = PulseRenderer.RenderNode(element, _data.Curve, _data.ColorGradient, segmentPulse);
 									result.OffsetAllCommandsByTime(effectTime);
 									_elementData.Add(result);
 								}
@@ -368,7 +370,7 @@ namespace VixenModules.Effect.Wipe
 					break;
 			}
 
-			var pulse = new Pulse.Pulse();
+			//var pulse = new Pulse.Pulse();
 			if (renderNodes != null && renderNodes.Any())
 			{
 				TimeSpan effectTime = TimeSpan.Zero;
@@ -393,11 +395,12 @@ namespace VixenModules.Effect.Wipe
 									return;
 								if (element != null)
 								{
-									pulse.TimeSpan = segmentPulse;
-									pulse.ColorGradient = _data.ColorGradient;
-									pulse.LevelCurve = _data.Curve;
-									pulse.TargetNodes = new ElementNode[] { element };
-									result = pulse.Render();
+									//pulse.TimeSpan = segmentPulse;
+									//pulse.ColorGradient = _data.ColorGradient;
+									//pulse.LevelCurve = _data.Curve;
+									//pulse.TargetNodes = new ElementNode[] { element };
+									//result = pulse.Render();
+									result = PulseRenderer.RenderNode(element, _data.Curve, _data.ColorGradient, segmentPulse);
 									result.OffsetAllCommandsByTime(effectTime);
 									_elementData.Add(result);
 								}
@@ -433,12 +436,12 @@ namespace VixenModules.Effect.Wipe
 									if (tokenSource != null && tokenSource.IsCancellationRequested)
 										return;
 									
-									pulse.TimeSpan = segmentPulse;
-									pulse.ColorGradient = _data.ColorGradient;
-									pulse.LevelCurve = _data.Curve;
-									pulse.TargetNodes = new ElementNode[] { element };
-									result = pulse.Render();
-
+									//pulse.TimeSpan = segmentPulse;
+									//pulse.ColorGradient = _data.ColorGradient;
+									//pulse.LevelCurve = _data.Curve;
+									//pulse.TargetNodes = new ElementNode[] { element };
+									//result = pulse.Render();
+									result = PulseRenderer.RenderNode(element, _data.Curve, _data.ColorGradient, segmentPulse);
 									result.OffsetAllCommandsByTime(effectTime);
 									_elementData.Add(result);
 								}

@@ -144,28 +144,29 @@ namespace VixenModules.Effect.Pulse
 		// not a element, will recursively descend until we render its elements.
 		private void RenderNode(ElementNode node)
 		{
+			_elementData = PulseRenderer.RenderNode(node, LevelCurve, ColorGradient, TimeSpan);
 			//Collect all the points first.
-			double[] allPointsTimeOrdered = _GetAllSignificantDataPoints().ToArray();
-			foreach (ElementNode elementNode in node.GetLeafEnumerator()) {
-				// this is probably always going to be a single element for the given node, as
-				// we have iterated down to leaf nodes in RenderNode() above. May as well do
-				// it this way, though, in case something changes in future.
-				if (elementNode == null || elementNode.Element == null)
-					continue;
+			//double[] allPointsTimeOrdered = _GetAllSignificantDataPoints().ToArray();
+			//foreach (ElementNode elementNode in node.GetLeafEnumerator()) {
+			//	// this is probably always going to be a single element for the given node, as
+			//	// we have iterated down to leaf nodes in RenderNode() above. May as well do
+			//	// it this way, though, in case something changes in future.
+			//	if (elementNode == null || elementNode.Element == null)
+			//		continue;
 
-				ElementColorType colorType = ColorModule.getColorTypeForElementNode(elementNode);
+			//	ElementColorType colorType = ColorModule.getColorTypeForElementNode(elementNode);
 
-				if (colorType == ElementColorType.FullColor) {
-					addIntentsToElement(elementNode.Element, allPointsTimeOrdered);
-				}
-				else {
-					IEnumerable<Color> colors = ColorModule.getValidColorsForElementNode(elementNode, false)
-						 .Intersect(ColorGradient.GetColorsInGradient());
-					foreach (Color color in colors) {
-						addIntentsToElement(elementNode.Element, allPointsTimeOrdered, color);	
-					}
-				}
-			}
+			//	if (colorType == ElementColorType.FullColor) {
+			//		addIntentsToElement(elementNode.Element, allPointsTimeOrdered);
+			//	}
+			//	else {
+			//		IEnumerable<Color> colors = ColorModule.getValidColorsForElementNode(elementNode, false)
+			//			 .Intersect(ColorGradient.GetColorsInGradient());
+			//		foreach (Color color in colors) {
+			//			addIntentsToElement(elementNode.Element, allPointsTimeOrdered, color);	
+			//		}
+			//	}
+			//}
 		}
 
 		private void addIntentsToElement(Element element, double[] allPointsTimeOrdered, Color? color = null)

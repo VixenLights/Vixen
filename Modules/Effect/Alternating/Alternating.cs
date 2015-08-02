@@ -277,7 +277,6 @@ namespace VixenModules.Effect.Alternating
 			int colorCount = Colors.Count();
 			//Use a single pulse to do our work, we don't need to keep creating it and then thowing it away making the GC work
 			//hard for no reason.
-			var pulse = new Pulse.Pulse(); 
 			
 			if (!EnableStatic)
 			{
@@ -291,7 +290,6 @@ namespace VixenModules.Effect.Alternating
 					? TimeSpan
 					: TimeSpan.FromMilliseconds(Interval);
 
-			pulse.TimeSpan = intervalTime;
 			
 			for (int i = 0; i < intervals; i++)
 			{
@@ -303,7 +301,7 @@ namespace VixenModules.Effect.Alternating
 					var glp = Colors[gradientLevelItem];
 					foreach (var element in elementGroup)
 					{
-						RenderElement(pulse, glp, startTime, element, effectIntents);
+						RenderElement(glp, startTime, intervalTime, element, effectIntents);
 					}
 					gradientLevelItem = ++gradientLevelItem % colorCount;
 
@@ -318,15 +316,10 @@ namespace VixenModules.Effect.Alternating
 			return effectIntents;
 		}
 
-		private void RenderElement(Pulse.Pulse pulse, GradientLevelPair gradientLevelPair, TimeSpan startTime,
+		private void RenderElement(GradientLevelPair gradientLevelPair, TimeSpan startTime, TimeSpan interval,
 			ElementNode element, EffectIntents effectIntents)
 		{
-			pulse.ColorGradient = gradientLevelPair.ColorGradient;
-			pulse.LevelCurve = gradientLevelPair.Curve;
-			pulse.TargetNodes = new[] { element };
-			
-			var result = pulse.Render();
-
+			var result = PulseRenderer.RenderNode(element, gradientLevelPair.Curve, gradientLevelPair.ColorGradient, interval);
 			result.OffsetAllCommandsByTime(startTime);
 			effectIntents.Add(result);
 		}
