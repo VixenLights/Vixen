@@ -292,13 +292,13 @@ namespace VixenModules.EffectEditor.AudioMeterEffectEditor
             }
         }
 
-        private void GainBar_Scroll(object sender, EventArgs e)
+        private void GainBar_Scroll(object sender, EventArgs e) //Max
         {
             _gain = 50 - GainBar.Value;
             _range = (50 - RangeBar.Value) - _gain;
         }
 
-        private void RangeBar_Scroll(object sender, EventArgs e)
+        private void RangeBar_Scroll(object sender, EventArgs e) //Min
         {
             _range = (50 - RangeBar.Value) - _gain;
         }
