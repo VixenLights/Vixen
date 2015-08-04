@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
+using System.ComponentModel;
 using Vixen.Data.Value;
 using Vixen.Intent;
 using Vixen.Sys;
@@ -29,62 +30,6 @@ namespace VixenModules.Effect.VerticalMeter
 {
     public class VerticalMeter : AudioPluginBase
     {
-
-        #region Config Properties
-
-        [Value]
-        [ProviderCategory(@"Config",1)]
-        [ProviderDisplayName(@"Attack Time")]
-        [ProviderDescription(@"Attack Time")]
-        [PropertyEditor("SliderEditor")]
-        [NumberRange(0, 300, 10)]
-        [PropertyOrder(0)]
-        public int AttackTime
-        {
-            get { return _data.AttackTime; }
-            set { _data.AttackTime = value; _audioHelper.AttackTime = value; _audioHelper.RecalculateVolume(); IsDirty = true; OnPropertyChanged(); }
-        }
-
-        [Value]
-        [ProviderCategory(@"Config", 1)]
-        [ProviderDisplayName(@"Decay Time")]
-        [ProviderDescription(@"Decay Time")]
-        [PropertyEditor("SliderEditor")]
-        [NumberRange(0, 5000, 300)]
-        [PropertyOrder(1)]
-        public int DecayTime
-        {
-            get { return _data.DecayTime; }
-            set { _data.DecayTime = value; _audioHelper.DecayTime = value; _audioHelper.RecalculateVolume(); IsDirty = true; OnPropertyChanged(); }
-        }
-
-        [Value]
-        [ProviderCategory(@"Config", 1)]
-        [ProviderDisplayName(@"Minimum")]
-        [ProviderDescription(@"Minimum")]
-        [PropertyEditor("SliderEditor")]
-        [NumberRange(0, 50, 5)]
-        [PropertyOrder(2)]
-        public int DecayTime
-        {
-            get { return _data.DecayTime; }
-            set { _data.Range = (50 - value)-_data.Gain; IsDirty = true; OnPropertyChanged(); }
-        }
-
-        [Value]
-        [ProviderCategory(@"Config", 1)]
-        [ProviderDisplayName(@"Peak")]
-        [ProviderDescription(@"Peak")]
-        [PropertyEditor("SliderEditor")]
-        [NumberRange(0, 50, 5)]
-        [PropertyOrder(3)]
-        public int DecayTime
-        {
-            get { return _data.DecayTime; }
-            set {  _audioHelper.RecalculateVolume(); IsDirty = true; OnPropertyChanged(); }
-        }
-
-        #endregion Config Properties
 
         public bool Inverted
         {
@@ -120,7 +65,7 @@ namespace VixenModules.Effect.VerticalMeter
 
             int ElementCount = node.GetLeafEnumerator().Count();
             
-            int spacing = 30; //smoothness. Intent length in ms
+            int spacing = 15; //smoothness. Intent length in ms
             double threshold;
             LightingValue color;
 
@@ -146,6 +91,7 @@ namespace VixenModules.Effect.VerticalMeter
                     if (GradientPosition == 1)
                         GradientPosition = .999;
 
+                    //Audio max is at 0db. The threshold gets shifted from 0 to 1 to -1 to 0 and then scaled.
                     if (((VerticalMeterData)_data).Inverted)
                     {
                         threshold = (((double)(ElementCount - currentElement)) / ElementCount - 1) * _data.Range;

@@ -223,7 +223,7 @@ namespace VixenModules.Effect.AudioHelp
             _volume[0] = 20.0 * (double)Math.Log10((double)Math.Abs(_audioChannel[0]));
             double maxAttack = 30.0 / ((double)AttackTime/1000 * _audioSampleRate);
             double maxDecay = 30.0 / ((double)DecayTime / 1000 * _audioSampleRate);
-            double fastDecay = 30.0 / (25.0 / 1000 * _audioSampleRate);
+            double fastDecay = 30.0 / (10.0 / 1000 * _audioSampleRate);
             int maxVolumeIndex = 0;
             int minVolumeIndex = 0;
 

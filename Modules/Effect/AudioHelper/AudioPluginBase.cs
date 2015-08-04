@@ -21,6 +21,10 @@ using Vixen.Execution;
 using Vixen.Execution.Context;
 using VixenModules.Effect.AudioHelp;
 using System.Drawing.Drawing2D;
+using System.ComponentModel;
+using VixenModules.EffectEditor.EffectDescriptorAttributes;
+using Vixen.Attributes;
+
 
 namespace VixenModules.Effect.AudioHelp
 {
@@ -32,14 +36,21 @@ namespace VixenModules.Effect.AudioHelp
         protected EffectIntents _elementData = null;
         protected AudioHelper _audioHelper;
         protected Color[] _colors;
+
+        [Browsable(false)]
         public AudioHelper AudioHelper { get { return _audioHelper; } }
 
         private ColorGradient _workingGradient;
 
         #region Attribute Accessors
 
-
         [Value]
+        [ProviderCategory(@"Speed", 1)]
+        [ProviderDisplayName(@"Decay Time")]
+        [ProviderDescription(@"How quickly the meter falls from a volume peak")]
+        [PropertyEditor("SliderEditor")]
+        [NumberRange(0, 5000, 300)]
+        [PropertyOrder(2)]
         public int DecayTime
         {
             get { return _data.DecayTime; }
@@ -52,6 +63,12 @@ namespace VixenModules.Effect.AudioHelp
         }
 
         [Value]
+        [ProviderCategory(@"Speed", 1)]
+        [ProviderDisplayName(@"Attack Time")]
+        [ProviderDescription(@"How quickly the meter initially reacts to a volume peak")]
+        [PropertyEditor("SliderEditor")]
+        [NumberRange(0, 300, 10)]
+        [PropertyOrder(3)]
         public int AttackTime
         {
             get { return _data.AttackTime; }
@@ -64,6 +81,7 @@ namespace VixenModules.Effect.AudioHelp
         }
 
         [Value]
+        [ProviderDescription(@"Brings the peak volume of the selected audio range to the top of the meter")]
         public bool Normalize
         {
             get { return _data.Normalize; }
@@ -76,6 +94,12 @@ namespace VixenModules.Effect.AudioHelp
         }
 
         [Value]
+        [ProviderCategory(@"Speed", 1)]
+        [ProviderDisplayName(@"Gain")]
+        [ProviderDescription(@"Boosts the volume")]
+        [PropertyEditor("SliderEditor")]
+        [NumberRange(0, 50, .5)]
+        [PropertyOrder(1)]
         public int Gain
         {
             get { return _data.Gain; }
@@ -88,6 +112,12 @@ namespace VixenModules.Effect.AudioHelp
         }
 
         [Value]
+        [ProviderCategory(@"Speed", 1)]
+        [ProviderDisplayName(@"Range")]
+        [ProviderDescription(@"The range of the volume levels displayed by the meter")]
+        [PropertyEditor("SliderEditor")]
+        [NumberRange(0, 50, 1)]
+        [PropertyOrder(0)]
         public int Range
         {
             get { return _data.Range; }
@@ -99,6 +129,11 @@ namespace VixenModules.Effect.AudioHelp
         }
 
         [Value]
+        [ProviderCategory(@"Color", 1)]
+        [ProviderDisplayName(@"Green Gradient Position")]
+        [ProviderDescription(@"Green Gradient Position")]
+        [PropertyEditor("SliderEditor")]
+        [NumberRange(1, 99, 1)]
         public int GreenColorPosition
         {
             get { return _data.GreenColorPosition; }
@@ -111,6 +146,11 @@ namespace VixenModules.Effect.AudioHelp
         }
 
         [Value]
+        [ProviderCategory(@"Color", 1)]
+        [ProviderDisplayName(@"Red Gradient Position")]
+        [ProviderDescription(@"Red Gradient Position")]
+        [PropertyEditor("SliderEditor")]
+        [NumberRange(1, 99, 1)]
         public int RedColorPosition
         {
             get { return _data.RedColorPosition; }
@@ -123,6 +163,9 @@ namespace VixenModules.Effect.AudioHelp
         }
 
         [Value]
+        [ProviderCategory(@"Color", 1)]
+        [ProviderDisplayName(@"Custom Gradient")]
+        [ProviderDescription(@"Custom Gradient")]
         public ColorGradient MeterColorGradient
         {
             get { return _data.MeterColorGradient; }
@@ -135,6 +178,9 @@ namespace VixenModules.Effect.AudioHelp
         }
 
         [Value]
+        [ProviderCategory(@"Color", 1)]
+        [ProviderDisplayName(@"Coloring Style")]
+        [ProviderDescription(@"Coloring Sytle")]
         public MeterColorTypes MeterColorStyle
         {
             get { return _data.MeterColorStyle; }
@@ -204,7 +250,6 @@ namespace VixenModules.Effect.AudioHelp
                 if (node != null)
                     RenderNode(node);
             }
-            _audioHelper.freeMem();
         }
 
         protected override EffectIntents _Render()

@@ -58,6 +58,7 @@
     <ProjectReference Include="..\AudioHelper\AudioHelper.csproj">
       <Project>{c5c25088-6305-4d15-8469-52995e03c611}</Project>
       <Name>AudioHelper</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

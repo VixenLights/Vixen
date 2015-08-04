@@ -56,8 +56,8 @@ namespace VixenModules.Effect.Waveform
             DecayTime = 1500;
             AttackTime = 50;
             Normalize = true;
-            Gain = 5;
-            Range = 20;
+            Gain = 0;
+            Range = 10;
             RedColorPosition = 95;
             GreenColorPosition = 25;
             MeterColorStyle = MeterColorTypes.Linear;

@@ -156,6 +156,7 @@
     <ProjectReference Include="..\..\Effect\AudioHelper\AudioHelper.csproj">
       <Project>{c5c25088-6305-4d15-8469-52995e03c611}</Project>
       <Name>AudioHelper</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Vixen.System\Vixen.csproj">
       <Project>{50b78623-fcf4-48af-93ff-fa87c937028f}</Project>

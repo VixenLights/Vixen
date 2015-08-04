@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
+using System.ComponentModel;
 using Vixen.Data.Value;
 using Vixen.Intent;
 using Vixen.Sys;
@@ -21,6 +22,9 @@ using VixenModules.Media.Audio;
 using Vixen.Execution;
 using Vixen.Execution.Context;
 using VixenModules.Effect.AudioHelp;
+using VixenModules.EffectEditor.EffectDescriptorAttributes;
+using Vixen.Attributes;
+
 
 namespace VixenModules.Effect.Waveform
 {
@@ -39,6 +43,12 @@ namespace VixenModules.Effect.Waveform
         }
 
         [Value]
+        [ProviderCategory(@"Speed", 1)]
+        [ProviderDisplayName(@"Scroll Speed")]
+        [ProviderDescription(@"How fast the effect goes. Lower is faster")]
+        [PropertyEditor("SliderEditor")]
+        [NumberRange(0, 50, .5)]
+        [PropertyOrder(0)]
         public int ScrollSpeed
         {
             get { return ((WaveformData)_data).ScrollSpeed; }
