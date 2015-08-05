@@ -307,7 +307,7 @@ namespace VixenModules.Effect.Wipe
 													   })
 													   .Where(s => s.Item2 > 0) // Ignore the pseudo null values
 													   .ToList();
-
+			if (!burstNodes.Any()) return;
 			var maxX = burstNodes.Max(m => m.Item2);
 			var maxY = burstNodes.Max(m => m.Item3);
 
