@@ -15,6 +15,7 @@ namespace VixenModules.Effect.Butterfly
 		public ButterflyData()
 		{
 			Gradient = new ColorGradient();
+			Gradient.Colors.Clear();
 			Gradient.Colors.Add(new ColorPoint(Color.Red,0.0));
 			Gradient.Colors.Add(new ColorPoint(Color.Lime, 1.0));
 			Iterations = 1;
