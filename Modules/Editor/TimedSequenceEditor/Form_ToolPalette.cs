@@ -214,19 +214,22 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			Graphics gfx = Graphics.FromImage(result);
 			using (SolidBrush brush = new SolidBrush(colorItem))
 			{
-				gfx.FillRectangle(brush, 0, 0, 48, 48);
-				gfx.DrawRectangle(new Pen(Color.FromArgb(136,136,136), 2), 0, 0, 48, 48);
+				using (var p = new Pen(DarkThemeColorTable.BorderColor, 2))
+				{
+					gfx.FillRectangle(brush, 0, 0, 48, 48);
+					gfx.DrawRectangle(p, 0, 0, 48, 48);
+				}
 			}
-
+			gfx.Dispose();
 			listViewColors.LargeImageList.Images.Add(colorItem.ToString(), result);
 
 			ListViewItem item = new ListViewItem
 			{
 				ToolTipText = string.Format("R: {0} G: {1} B: {2}", colorItem.R, colorItem.G, colorItem.B),
 				ImageKey = colorItem.ToString(),
-				Tag = colorItem
+				Tag = colorItem,
+				ForeColor = DarkThemeColorTable.ForeColor
 			};
-			item.ForeColor = DarkThemeColorTable.ForeColor;
 			return item;
 		}
 
@@ -250,22 +253,31 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			listViewCurves.Items.Clear();
 
 			listViewCurves.LargeImageList = new ImageList { ColorDepth = ColorDepth.Depth32Bit, ImageSize = new Size(48, 48) };
-
-			foreach (KeyValuePair<string, Curve> kvp in _curveLibrary)
+			using (var p = new Pen(DarkThemeColorTable.BorderColor, 2))
 			{
-				Curve c = kvp.Value;
-				string name = kvp.Key;
+				foreach (KeyValuePair<string, Curve> kvp in _curveLibrary)
+				{
+					Curve c = kvp.Value;
+					string name = kvp.Key;
 
-				var image = c.GenerateGenericCurveImage(new Size(48, 48));
-				Graphics gfx = Graphics.FromImage(image);
-				gfx.DrawRectangle(new Pen(Color.FromArgb(136, 136, 136), 2), 0, 0, 48, 48);
+					var image = c.GenerateGenericCurveImage(new Size(48, 48));
+					Graphics gfx = Graphics.FromImage(image);
+					gfx.DrawRectangle(p, 0, 0, 48, 48);
+					gfx.Dispose();
+					listViewCurves.LargeImageList.Images.Add(name, image);
 
-				listViewCurves.LargeImageList.Images.Add(name, image);
-
-				ListViewItem item = new ListViewItem {Text = name, Name = name, ImageKey = name, Tag = c};
-				item.ForeColor = DarkThemeColorTable.ForeColor;
-				if (item != null) listViewCurves.Items.Add(item);
+					ListViewItem item = new ListViewItem
+					{
+						Text = name,
+						Name = name,
+						ImageKey = name,
+						Tag = c,
+						ForeColor = DarkThemeColorTable.ForeColor
+					};
+					listViewCurves.Items.Add(item);
+				}
 			}
+			
 
 			listViewCurves.EndUpdate();
 			toolStripButtonEditCurve.Enabled = toolStripButtonDeleteCurve.Enabled = false;
@@ -281,22 +293,32 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			listViewGradients.Items.Clear();
 
 			listViewGradients.LargeImageList = new ImageList { ColorDepth = ColorDepth.Depth32Bit, ImageSize = new Size(48, 48) };
-
-			foreach (KeyValuePair<string, ColorGradient> kvp in _colorGradientLibrary)
+			using (var p = new Pen(DarkThemeColorTable.BorderColor, 2))
 			{
-				ColorGradient gradient = kvp.Value;
-				string name = kvp.Key;
+				foreach (KeyValuePair<string, ColorGradient> kvp in _colorGradientLibrary)
+				{
+					ColorGradient gradient = kvp.Value;
+					string name = kvp.Key;
 
-				var result = new Bitmap(gradient.GenerateColorGradientImage(new Size(48, 48), false), 48, 48);
-				Graphics gfx = Graphics.FromImage(result);
-				gfx.DrawRectangle(new Pen(Color.FromArgb(136,136,136), 2), 0, 0, 48, 48);
-				listViewGradients.LargeImageList.Images.Add(name, result);
+					var result = new Bitmap(gradient.GenerateColorGradientImage(new Size(48, 48), false), 48, 48);
+					Graphics gfx = Graphics.FromImage(result);
+					gfx.DrawRectangle(p, 0, 0, 48, 48);
+					gfx.Dispose();
+					listViewGradients.LargeImageList.Images.Add(name, result);
+					
+					ListViewItem item = new ListViewItem
+					{
+						Text = name,
+						Name = name,
+						ImageKey = name,
+						Tag = gradient,
+						ForeColor = DarkThemeColorTable.ForeColor
+					};
 
-				ListViewItem item = new ListViewItem {Text = name, Name = name, ImageKey = name, Tag = gradient};
-				item.ForeColor = DarkThemeColorTable.ForeColor;
-
-				listViewGradients.Items.Add(item);
+					listViewGradients.Items.Add(item);
+				}
 			}
+			
 
 			listViewGradients.EndUpdate();
 			toolStripButtonEditGradient.Enabled = toolStripButtonDeleteGradient.Enabled = false;
