@@ -417,7 +417,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						{
 							_curveLibrary.EditLibraryCurve(dialog.Response);	
 						}
-						Populate_Curves();
 						break;
 					}
 
@@ -510,7 +509,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						{
 							_colorGradientLibrary.EditLibraryItem(dialog.Response);	
 						}
-						Populate_Gradients();
 						break;
 					}
 
@@ -971,6 +969,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		}
 
 		#endregion
+
+		private void Form_ToolPalette_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			_curveLibrary.CurveChanged -= CurveLibrary_CurveChanged;
+			_colorGradientLibrary.GradientChanged -= GradientLibrary_GradientChanged;
+		}
 
 		
 
