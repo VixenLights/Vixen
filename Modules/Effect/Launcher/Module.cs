@@ -37,17 +37,16 @@ namespace Launcher
 			_elementData = new EffectIntents();
 
 			var value = new CommandValue(new StringCommand(string.Format("{0}|{1},{2}", "Launcher", _data.Executable, _data.Arguments)));
-			
-			var targetNodes = TargetNodes.AsParallel();
-			
-			if (cancellationToken != null)
-				targetNodes = targetNodes.WithCancellation(cancellationToken.Token);
-			
-			targetNodes.ForAll(node => {
-				IIntent i = new CommandIntent(value, TimeSpan);
-				_elementData.AddIntentForElement(node.Element.Id, i, TimeSpan.Zero);
-			});
 
+			foreach (var node in TargetNodes)
+			{
+				foreach (var elementNode in node.GetLeafEnumerator())
+				{
+					IIntent i = new CommandIntent(value, TimeSpan);
+					_elementData.AddIntentForElement(elementNode.Element.Id, i, TimeSpan.Zero);	
+				}
+			}
+				
 		}
 
 		protected override Vixen.Sys.EffectIntents _Render()
