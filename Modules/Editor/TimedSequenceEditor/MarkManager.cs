@@ -47,6 +47,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			InitializeComponent();
 			Icon = Resources.Icon_Vixen3;
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
 			buttonPlay.Image = Tools.GetIcon(Resources.control_play_blue, 24);
 			buttonPlay.Text = "";
 			buttonStop.Image = Tools.GetIcon(Resources.control_stop_blue, 24);
@@ -60,24 +63,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			buttonIncreaseSelectedMarks.Text = "";
 			buttonDecreaseSelectedMarks.Image = Tools.GetIcon(Resources.minus, 24);
 			buttonDecreaseSelectedMarks.Text = "";
-			buttonImportAudacity.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonExportBeatMarks.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonAddCollection.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonCancel.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonOK.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonCopyAndOffsetMarks.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonAddOrUpdateMark.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonEvenlySpaceMarks.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonGenerateBeatMarks.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonOffsetMarks.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonPasteEffectsToMarks.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonSelectAllMarks.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonGenerateSubmarks.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonGenerateGrid.BackgroundImage = Resources.HeadingBackgroundImage;
-			btnAutoDetectionSettings.BackgroundImage = Resources.HeadingBackgroundImage;
-			btnCreateCollections.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonRemoveCollection.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonRemoveCollection.ForeColor = buttonRemoveCollection.Enabled ? DarkThemeColorTable.ForeColor : DarkThemeColorTable.ForeColorDisabled;
+			buttonRemoveCollection.ForeColor = buttonRemoveCollection.Enabled ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
 
 			labelTapperInstructions.Visible = false;
 
@@ -106,15 +92,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				chkLowPass.AutoCheck = true;
 				numHighPass.Enabled = true;
 				numLowPass.Enabled = true;
+				radioButtonTapper.AutoCheck = true;
 				radioButtonPlayback.AutoCheck = true;
-				ChkAutoTapper.ForeColor = DarkThemeColorTable.ForeColor;
-				radioAll.ForeColor = DarkThemeColorTable.ForeColor;
-				radioSelected.ForeColor = DarkThemeColorTable.ForeColor;
-				chkHighPass.ForeColor = DarkThemeColorTable.ForeColor;
-				chkLowPass.ForeColor = DarkThemeColorTable.ForeColor;
-				numHighPass.ForeColor = DarkThemeColorTable.ForeColor;
-				numLowPass.ForeColor = DarkThemeColorTable.ForeColor;
-				radioButtonPlayback.ForeColor = DarkThemeColorTable.ForeColor;
+				ChkAutoTapper.ForeColor = ThemeColorTable.ForeColor;
+				radioAll.ForeColor = ThemeColorTable.ForeColor;
+				radioSelected.ForeColor = ThemeColorTable.ForeColor;
+				chkHighPass.ForeColor = ThemeColorTable.ForeColor;
+				chkLowPass.ForeColor = ThemeColorTable.ForeColor;
+				numHighPass.ForeColor = ThemeColorTable.ForeColor;
+				numLowPass.ForeColor = ThemeColorTable.ForeColor;
+				radioButtonTapper.ForeColor = ThemeColorTable.ForeColor;
+				radioButtonPlayback.ForeColor = ThemeColorTable.ForeColor;
 			}
 			else
 			{
@@ -127,15 +115,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				chkLowPass.AutoCheck = false;
 				numHighPass.Enabled = false;
 				numLowPass.Enabled = false;
+				radioButtonTapper.AutoCheck = false;
 				radioButtonPlayback.AutoCheck = false;
-				ChkAutoTapper.ForeColor = DarkThemeColorTable.ForeColorDisabled;
-				radioAll.ForeColor = DarkThemeColorTable.ForeColorDisabled;
-				radioSelected.ForeColor = DarkThemeColorTable.ForeColorDisabled;
-				chkHighPass.ForeColor = DarkThemeColorTable.ForeColorDisabled;
-				chkLowPass.ForeColor = DarkThemeColorTable.ForeColorDisabled;
-				numHighPass.ForeColor = DarkThemeColorTable.ForeColorDisabled;
-				numLowPass.ForeColor = DarkThemeColorTable.ForeColorDisabled;
-				radioButtonPlayback.ForeColor = DarkThemeColorTable.ForeColorDisabled;
+				ChkAutoTapper.ForeColor = ThemeColorTable.ForeColorDisabled;
+				radioAll.ForeColor = ThemeColorTable.ForeColorDisabled;
+				radioSelected.ForeColor = ThemeColorTable.ForeColorDisabled;
+				chkHighPass.ForeColor = ThemeColorTable.ForeColorDisabled;
+				chkLowPass.ForeColor = ThemeColorTable.ForeColorDisabled;
+				numHighPass.ForeColor = ThemeColorTable.ForeColorDisabled;
+				numLowPass.ForeColor = ThemeColorTable.ForeColorDisabled;
+				radioButtonTapper.ForeColor = ThemeColorTable.ForeColorDisabled;
+				radioButtonPlayback.ForeColor = ThemeColorTable.ForeColorDisabled;
 			}
 		}
 
@@ -242,11 +232,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			else
 			{
-				panelColor.BackColor = DarkThemeColorTable.BackgroundColor;
+				panelColor.BackColor = ThemeColorTable.BackgroundColor;
 				PopulateFormWithMarkCollection(null);
 			}
 
 			buttonRemoveCollection.Enabled = (listViewMarkCollections.SelectedItems.Count > 0);
+			radioButtonTapper.AutoCheck = (listViewMarkCollections.SelectedItems.Count > 0);
+			radioButtonPlayback.Checked = true;
+			radioButtonTapper.ForeColor = radioButtonTapper.AutoCheck ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
 		}
 
 		private void listViewMarks_SelectedIndexChanged(object sender, EventArgs e)
@@ -263,7 +256,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void buttonAddCollection_Click(object sender, EventArgs e)
 		{
-			AddNewCollection(Color.Green);
+			AddNewCollection(ThemeColorTable.ForeColor);
 			//MarkCollection newCollection = new MarkCollection();
 			//newCollection.Name = "New Collection";
 			//MarkCollections.Add(newCollection);
@@ -780,21 +773,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					UpdateMarkCollectionInList(_displayedCollection);
 					_newTappedMarks.Clear();
 				}
-				else 
-				{
-					if (listViewMarks.Items.Count == 0)
-					{
-						messageBox = new MessageBoxForm("The Mark Collection is empty, would you like to remove it?", "", true, false);
-						messageBox.ShowDialog();
-						if (messageBox.DialogResult == DialogResult.OK)
-						{
-							listViewMarkCollections.Items.Remove(listViewMarkCollections.SelectedItems[0]);
-						}
-					}
-					else
-					{
-						_newTappedMarks.Clear();
-					}
+				else {
+					_newTappedMarks.Clear();
 				}
 			}
 		}
@@ -804,8 +784,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			checkBoxEnabled.AutoCheck = false;
 			radioButtonTapper.AutoCheck = false;
 			radioButtonPlayback.AutoCheck = false;
-			radioButtonTapper.ForeColor = DarkThemeColorTable.ForeColorDisabled;
-			radioButtonPlayback.ForeColor = DarkThemeColorTable.ForeColorDisabled;
+			radioButtonTapper.ForeColor = radioButtonTapper.AutoCheck ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
+			radioButtonPlayback.ForeColor = radioButtonTapper.AutoCheck ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
 			textBoxCollectionName.Enabled = false;
 			numericUpDownWeight.Enabled = false;
 			panelColor.Enabled = false;
@@ -836,8 +816,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			checkBoxEnabled.AutoCheck = true;
 			radioButtonTapper.AutoCheck = true;
 			radioButtonPlayback.AutoCheck = true;
-			radioButtonTapper.ForeColor = DarkThemeColorTable.ForeColor;
-			radioButtonPlayback.ForeColor = DarkThemeColorTable.ForeColor;
+			radioButtonTapper.ForeColor = radioButtonTapper.AutoCheck ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
+			radioButtonPlayback.ForeColor = radioButtonTapper.AutoCheck ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
 			textBoxCollectionName.Enabled = true;
 			numericUpDownWeight.Enabled = true;
 			panelColor.Enabled = true;
@@ -868,7 +848,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void timerMarkHit_Tick(object sender, EventArgs e)
 		{
-			panelMarkView.BackColor = DarkThemeColorTable.BackgroundColor;
+			panelMarkView.BackColor = ThemeColorTable.BackgroundColor;
 			timerMarkHit.Stop();
 		}
 
@@ -968,10 +948,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void _triggerResult()
 		{
-			if (_playbackStarted)
-			{
-				if (listViewMarkCollections.SelectedItems.Count == 0)
-				AddNewCollection(Color.Green);
+			if (_playbackStarted) {
 				// round the tapped time to the nearest millisecond
 				_newTappedMarks.Add(TimeSpan.FromMilliseconds(Math.Round(_timingSource.Position.TotalMilliseconds)));
 				panelMarkView.BackColor = _displayedCollection.MarkColor;
@@ -997,7 +974,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void radioButtonTapper_CheckedChanged(object sender, EventArgs e)
 		{
-			labelTapperInstructions.Visible = radioButtonTapper.Checked;
+			if (radioButtonTapper.Checked)
+				labelTapperInstructions.Visible = true;
+			else
+				labelTapperInstructions.Visible = false;
 		}
 
 		#endregion
@@ -1357,6 +1337,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			PopulateFormWithMarkCollection(newCollection);
 			PopulateMarkCollectionsList();
 
+			//enable Tapper as long as a collection is selected.
+			radioButtonTapper.AutoCheck = (listViewMarkCollections.SelectedItems.Count > 0);
+			radioButtonPlayback.Checked = true;
+
 			panelColor.BackColor = color;
 
 			return newCollection;
@@ -1495,14 +1479,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void buttonTextColorChange(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
-			btn.ForeColor = btn.Enabled ? DarkThemeColorTable.ForeColor : DarkThemeColorTable.ForeColorDisabled;
+			btn.ForeColor = btn.Enabled ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
 		}
 
 		private void panelMarkCollectionsButtons_EnabledChanged(object sender, EventArgs e)
 		{
-			buttonExportBeatMarks.ForeColor = buttonExportBeatMarks.Enabled ? DarkThemeColorTable.ForeColor : DarkThemeColorTable.ForeColorDisabled;
-			buttonImportAudacity.ForeColor = buttonImportAudacity.Enabled ? DarkThemeColorTable.ForeColor : DarkThemeColorTable.ForeColorDisabled;
-			buttonAddCollection.ForeColor = buttonAddCollection.Enabled ? DarkThemeColorTable.ForeColor : DarkThemeColorTable.ForeColorDisabled;
+			buttonExportBeatMarks.ForeColor = buttonExportBeatMarks.Enabled ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
+			buttonImportAudacity.ForeColor = buttonImportAudacity.Enabled ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
+			buttonAddCollection.ForeColor = buttonAddCollection.Enabled ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
 		}
 		#endregion
 
@@ -1510,7 +1494,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)
 		{
-			DarkThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
+			ThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
 		}
 
 		#endregion
@@ -1520,22 +1504,22 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.HeadingBackgroundImageHover;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImageHover ?? Resources.HeadingBackgroundImageHover;
 		}
 
 		private void buttonBackground_MouseLeave(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.HeadingBackgroundImage;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImage ?? Resources.HeadingBackgroundImage;
 		}
 		#endregion
 
 		private void groupBoxOperations_EnabledChanged(object sender, EventArgs e)
 		{
-			checkBoxEnabled.ForeColor = groupBoxOperations.Enabled ? DarkThemeColorTable.ForeColor : DarkThemeColorTable.ForeColorDisabled;
-			label1.ForeColor = groupBoxOperations.Enabled ? DarkThemeColorTable.ForeColor : DarkThemeColorTable.ForeColorDisabled;
-			label2.ForeColor = groupBoxOperations.Enabled ? DarkThemeColorTable.ForeColor : DarkThemeColorTable.ForeColorDisabled;
-			label3.ForeColor = groupBoxOperations.Enabled ? DarkThemeColorTable.ForeColor : DarkThemeColorTable.ForeColorDisabled;
+			checkBoxEnabled.ForeColor = groupBoxOperations.Enabled ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
+			label1.ForeColor = groupBoxOperations.Enabled ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
+			label2.ForeColor = groupBoxOperations.Enabled ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
+			label3.ForeColor = groupBoxOperations.Enabled ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
 		}
 
 	}

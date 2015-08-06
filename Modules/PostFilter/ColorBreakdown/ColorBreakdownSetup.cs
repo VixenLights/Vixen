@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Dynamic;
+using Common.Controls.Theme;
+using Common.Resources.Properties;
 
 namespace VixenModules.OutputFilter.ColorBreakdown
 {
@@ -17,6 +19,9 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 		public ColorBreakdownSetup(ColorBreakdownData breakdownData)
 		{
 			InitializeComponent();
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
 			_data = breakdownData;
 		}
 
@@ -130,6 +135,23 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 		private void checkBoxMixColors_CheckedChanged(object sender, EventArgs e)
 		{
 			_data.MixColors = checkBoxMixColors.Checked;
+		}
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImageHover ?? Resources.HeadingBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImage ?? Resources.HeadingBackgroundImage;
+		}
+
+		private void comboBox_DrawItem(object sender, DrawItemEventArgs e)
+		{
+			ThemeComboBoxRenderer.DrawItem(sender, e);
 		}
 	}
 }

@@ -36,6 +36,7 @@
 			this.comboBoxNewItemType = new System.Windows.Forms.ComboBox();
 			this.buttonAddTemplate = new System.Windows.Forms.Button();
 			this.groupBoxSelectedItems = new System.Windows.Forms.GroupBox();
+			this.panel1 = new System.Windows.Forms.Panel();
 			this.buttonConfigureProperty = new System.Windows.Forms.Button();
 			this.buttonRemoveProperty = new System.Windows.Forms.Button();
 			this.buttonAddProperty = new System.Windows.Forms.Button();
@@ -51,6 +52,7 @@
 			this.buttonRenameElements = new System.Windows.Forms.Button();
 			this.elementTree = new Common.Controls.ElementTree();
 			this.groupBoxSelectedItems.SuspendLayout();
+			this.panel1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// label1
@@ -66,89 +68,113 @@
 			// 
 			this.comboBoxNewItemType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.comboBoxNewItemType.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
 			this.comboBoxNewItemType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboBoxNewItemType.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.comboBoxNewItemType.FormattingEnabled = true;
 			this.comboBoxNewItemType.Location = new System.Drawing.Point(47, 12);
 			this.comboBoxNewItemType.Name = "comboBoxNewItemType";
 			this.comboBoxNewItemType.Size = new System.Drawing.Size(146, 21);
 			this.comboBoxNewItemType.TabIndex = 30;
+			this.comboBoxNewItemType.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.comboBox_DrawItem);
 			this.comboBoxNewItemType.SelectedIndexChanged += new System.EventHandler(this.comboBoxNewItemType_SelectedIndexChanged);
 			// 
 			// buttonAddTemplate
 			// 
 			this.buttonAddTemplate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonAddTemplate.BackColor = System.Drawing.Color.Transparent;
 			this.buttonAddTemplate.Enabled = false;
+			this.buttonAddTemplate.FlatAppearance.BorderSize = 0;
+			this.buttonAddTemplate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonAddTemplate.Location = new System.Drawing.Point(209, 10);
 			this.buttonAddTemplate.Name = "buttonAddTemplate";
 			this.buttonAddTemplate.Size = new System.Drawing.Size(24, 24);
 			this.buttonAddTemplate.TabIndex = 31;
 			this.buttonAddTemplate.Text = "+";
 			this.toolTip1.SetToolTip(this.buttonAddTemplate, "Add Elements");
-			this.buttonAddTemplate.UseVisualStyleBackColor = true;
+			this.buttonAddTemplate.UseVisualStyleBackColor = false;
 			this.buttonAddTemplate.Click += new System.EventHandler(this.buttonAddTemplate_Click);
 			// 
 			// groupBoxSelectedItems
 			// 
 			this.groupBoxSelectedItems.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.groupBoxSelectedItems.Controls.Add(this.buttonConfigureProperty);
-			this.groupBoxSelectedItems.Controls.Add(this.buttonRemoveProperty);
-			this.groupBoxSelectedItems.Controls.Add(this.buttonAddProperty);
-			this.groupBoxSelectedItems.Controls.Add(this.label3);
-			this.groupBoxSelectedItems.Controls.Add(this.listViewProperties);
-			this.groupBoxSelectedItems.Controls.Add(this.buttonRunHelperSetup);
-			this.groupBoxSelectedItems.Controls.Add(this.comboBoxSetupHelperType);
-			this.groupBoxSelectedItems.Controls.Add(this.label2);
+			this.groupBoxSelectedItems.Controls.Add(this.panel1);
 			this.groupBoxSelectedItems.Location = new System.Drawing.Point(3, 387);
 			this.groupBoxSelectedItems.Name = "groupBoxSelectedItems";
 			this.groupBoxSelectedItems.Size = new System.Drawing.Size(244, 159);
 			this.groupBoxSelectedItems.TabIndex = 33;
 			this.groupBoxSelectedItems.TabStop = false;
 			this.groupBoxSelectedItems.Text = "Selected Item(s):";
+			this.groupBoxSelectedItems.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
+			// 
+			// panel1
+			// 
+			this.panel1.Controls.Add(this.buttonConfigureProperty);
+			this.panel1.Controls.Add(this.buttonRemoveProperty);
+			this.panel1.Controls.Add(this.buttonAddProperty);
+			this.panel1.Controls.Add(this.label3);
+			this.panel1.Controls.Add(this.listViewProperties);
+			this.panel1.Controls.Add(this.buttonRunHelperSetup);
+			this.panel1.Controls.Add(this.comboBoxSetupHelperType);
+			this.panel1.Controls.Add(this.label2);
+			this.panel1.Location = new System.Drawing.Point(7, 16);
+			this.panel1.Name = "panel1";
+			this.panel1.Size = new System.Drawing.Size(232, 137);
+			this.panel1.TabIndex = 42;
 			// 
 			// buttonConfigureProperty
 			// 
 			this.buttonConfigureProperty.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonConfigureProperty.BackColor = System.Drawing.Color.Transparent;
 			this.buttonConfigureProperty.Enabled = false;
-			this.buttonConfigureProperty.Location = new System.Drawing.Point(130, 125);
+			this.buttonConfigureProperty.FlatAppearance.BorderSize = 0;
+			this.buttonConfigureProperty.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.buttonConfigureProperty.Location = new System.Drawing.Point(123, 109);
 			this.buttonConfigureProperty.Name = "buttonConfigureProperty";
 			this.buttonConfigureProperty.Size = new System.Drawing.Size(24, 24);
 			this.buttonConfigureProperty.TabIndex = 41;
 			this.buttonConfigureProperty.Text = "C";
 			this.toolTip1.SetToolTip(this.buttonConfigureProperty, "Configure Property");
-			this.buttonConfigureProperty.UseVisualStyleBackColor = true;
+			this.buttonConfigureProperty.UseVisualStyleBackColor = false;
 			this.buttonConfigureProperty.Click += new System.EventHandler(this.buttonConfigureProperty_Click);
 			// 
 			// buttonRemoveProperty
 			// 
 			this.buttonRemoveProperty.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonRemoveProperty.BackColor = System.Drawing.Color.Transparent;
 			this.buttonRemoveProperty.Enabled = false;
-			this.buttonRemoveProperty.Location = new System.Drawing.Point(100, 125);
+			this.buttonRemoveProperty.FlatAppearance.BorderSize = 0;
+			this.buttonRemoveProperty.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.buttonRemoveProperty.Location = new System.Drawing.Point(93, 109);
 			this.buttonRemoveProperty.Name = "buttonRemoveProperty";
 			this.buttonRemoveProperty.Size = new System.Drawing.Size(24, 24);
 			this.buttonRemoveProperty.TabIndex = 40;
 			this.buttonRemoveProperty.Text = "-";
 			this.toolTip1.SetToolTip(this.buttonRemoveProperty, "Delete Property");
-			this.buttonRemoveProperty.UseVisualStyleBackColor = true;
+			this.buttonRemoveProperty.UseVisualStyleBackColor = false;
 			this.buttonRemoveProperty.Click += new System.EventHandler(this.buttonRemoveProperty_Click);
 			// 
 			// buttonAddProperty
 			// 
 			this.buttonAddProperty.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonAddProperty.BackColor = System.Drawing.Color.Transparent;
 			this.buttonAddProperty.Enabled = false;
-			this.buttonAddProperty.Location = new System.Drawing.Point(70, 125);
+			this.buttonAddProperty.FlatAppearance.BorderSize = 0;
+			this.buttonAddProperty.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.buttonAddProperty.Location = new System.Drawing.Point(63, 109);
 			this.buttonAddProperty.Name = "buttonAddProperty";
 			this.buttonAddProperty.Size = new System.Drawing.Size(24, 24);
 			this.buttonAddProperty.TabIndex = 39;
 			this.buttonAddProperty.Text = "+";
 			this.toolTip1.SetToolTip(this.buttonAddProperty, "Add Property");
-			this.buttonAddProperty.UseVisualStyleBackColor = true;
+			this.buttonAddProperty.UseVisualStyleBackColor = false;
 			this.buttonAddProperty.Click += new System.EventHandler(this.buttonAddProperty_Click);
 			// 
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(9, 61);
+			this.label3.Location = new System.Drawing.Point(2, 45);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(57, 13);
 			this.label3.TabIndex = 38;
@@ -167,7 +193,7 @@
             listViewItem2,
             listViewItem3,
             listViewItem4});
-			this.listViewProperties.Location = new System.Drawing.Point(70, 61);
+			this.listViewProperties.Location = new System.Drawing.Point(63, 45);
 			this.listViewProperties.Name = "listViewProperties";
 			this.listViewProperties.Size = new System.Drawing.Size(160, 58);
 			this.listViewProperties.TabIndex = 37;
@@ -183,14 +209,17 @@
 			// buttonRunHelperSetup
 			// 
 			this.buttonRunHelperSetup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonRunHelperSetup.BackColor = System.Drawing.Color.Transparent;
 			this.buttonRunHelperSetup.Enabled = false;
-			this.buttonRunHelperSetup.Location = new System.Drawing.Point(206, 24);
+			this.buttonRunHelperSetup.FlatAppearance.BorderSize = 0;
+			this.buttonRunHelperSetup.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.buttonRunHelperSetup.Location = new System.Drawing.Point(199, 8);
 			this.buttonRunHelperSetup.Name = "buttonRunHelperSetup";
 			this.buttonRunHelperSetup.Size = new System.Drawing.Size(24, 24);
 			this.buttonRunHelperSetup.TabIndex = 36;
 			this.buttonRunHelperSetup.Text = "->";
 			this.toolTip1.SetToolTip(this.buttonRunHelperSetup, "Configure");
-			this.buttonRunHelperSetup.UseVisualStyleBackColor = true;
+			this.buttonRunHelperSetup.UseVisualStyleBackColor = false;
 			this.buttonRunHelperSetup.Click += new System.EventHandler(this.buttonRunSetupHelper_Click);
 			// 
 			// comboBoxSetupHelperType
@@ -198,17 +227,19 @@
 			this.comboBoxSetupHelperType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.comboBoxSetupHelperType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboBoxSetupHelperType.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.comboBoxSetupHelperType.FormattingEnabled = true;
-			this.comboBoxSetupHelperType.Location = new System.Drawing.Point(70, 26);
+			this.comboBoxSetupHelperType.Location = new System.Drawing.Point(63, 10);
 			this.comboBoxSetupHelperType.Name = "comboBoxSetupHelperType";
 			this.comboBoxSetupHelperType.Size = new System.Drawing.Size(120, 21);
 			this.comboBoxSetupHelperType.TabIndex = 35;
+			this.comboBoxSetupHelperType.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.comboBox_DrawItem);
 			this.comboBoxSetupHelperType.SelectedIndexChanged += new System.EventHandler(this.comboBoxSetupHelperType_SelectedIndexChanged);
 			// 
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(9, 29);
+			this.label2.Location = new System.Drawing.Point(2, 13);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(55, 13);
 			this.label2.TabIndex = 34;
@@ -224,37 +255,46 @@
 			// buttonSelectDestinationOutputs
 			// 
 			this.buttonSelectDestinationOutputs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonSelectDestinationOutputs.BackColor = System.Drawing.Color.Transparent;
+			this.buttonSelectDestinationOutputs.FlatAppearance.BorderSize = 0;
+			this.buttonSelectDestinationOutputs.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonSelectDestinationOutputs.Location = new System.Drawing.Point(70, 355);
 			this.buttonSelectDestinationOutputs.Name = "buttonSelectDestinationOutputs";
 			this.buttonSelectDestinationOutputs.Size = new System.Drawing.Size(24, 24);
 			this.buttonSelectDestinationOutputs.TabIndex = 41;
 			this.buttonSelectDestinationOutputs.Text = "S";
 			this.toolTip1.SetToolTip(this.buttonSelectDestinationOutputs, "Find outputs these elements are patched to");
-			this.buttonSelectDestinationOutputs.UseVisualStyleBackColor = true;
+			this.buttonSelectDestinationOutputs.UseVisualStyleBackColor = false;
 			this.buttonSelectDestinationOutputs.Click += new System.EventHandler(this.buttonSelectDestinationOutputs_Click);
 			// 
 			// buttonDeleteElements
 			// 
 			this.buttonDeleteElements.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonDeleteElements.BackColor = System.Drawing.Color.Transparent;
+			this.buttonDeleteElements.FlatAppearance.BorderSize = 0;
+			this.buttonDeleteElements.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonDeleteElements.Location = new System.Drawing.Point(10, 355);
 			this.buttonDeleteElements.Name = "buttonDeleteElements";
 			this.buttonDeleteElements.Size = new System.Drawing.Size(24, 24);
 			this.buttonDeleteElements.TabIndex = 42;
 			this.buttonDeleteElements.Text = "-";
 			this.toolTip1.SetToolTip(this.buttonDeleteElements, "Delete Elements");
-			this.buttonDeleteElements.UseVisualStyleBackColor = true;
+			this.buttonDeleteElements.UseVisualStyleBackColor = false;
 			this.buttonDeleteElements.Click += new System.EventHandler(this.buttonDeleteElements_Click);
 			// 
 			// buttonRenameElements
 			// 
 			this.buttonRenameElements.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonRenameElements.BackColor = System.Drawing.Color.Transparent;
+			this.buttonRenameElements.FlatAppearance.BorderSize = 0;
+			this.buttonRenameElements.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonRenameElements.Location = new System.Drawing.Point(40, 355);
 			this.buttonRenameElements.Name = "buttonRenameElements";
 			this.buttonRenameElements.Size = new System.Drawing.Size(24, 24);
 			this.buttonRenameElements.TabIndex = 43;
 			this.buttonRenameElements.Text = "R";
 			this.toolTip1.SetToolTip(this.buttonRenameElements, "Rename Elements");
-			this.buttonRenameElements.UseVisualStyleBackColor = true;
+			this.buttonRenameElements.UseVisualStyleBackColor = false;
 			this.buttonRenameElements.Click += new System.EventHandler(this.buttonRenameElements_Click);
 			// 
 			// elementTree
@@ -289,7 +329,8 @@
 			this.Name = "SetupElementsTree";
 			this.Size = new System.Drawing.Size(250, 550);
 			this.groupBoxSelectedItems.ResumeLayout(false);
-			this.groupBoxSelectedItems.PerformLayout();
+			this.panel1.ResumeLayout(false);
+			this.panel1.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -315,5 +356,6 @@
 		private System.Windows.Forms.Button buttonSelectDestinationOutputs;
 		private System.Windows.Forms.Button buttonDeleteElements;
 		private System.Windows.Forms.Button buttonRenameElements;
+		private System.Windows.Forms.Panel panel1;
 	}
 }

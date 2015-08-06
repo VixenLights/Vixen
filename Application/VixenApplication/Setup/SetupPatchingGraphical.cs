@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Common.Controls;
+using Common.Controls.Theme;
 using Common.Resources;
 using Common.Resources.Properties;
 using Dataweb.NShape;
@@ -84,6 +85,11 @@ namespace VixenApplication.Setup
 			buttonZoomOut.Text = "";
 			buttonZoomFit.Image = Tools.GetIcon(Resources.zoom_fit, 16);
 			buttonZoomFit.Text = "";
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
+			diagramDisplay.BackColorGradient = ThemeColorTable.TextBoxBackgroundColor;
+			diagramDisplay.BackColor = ThemeColorTable.TextBoxBackgroundColor;
 
 			project.LibrarySearchPaths.Add(@"Common\");
 			project.AutoLoadLibraries = true;

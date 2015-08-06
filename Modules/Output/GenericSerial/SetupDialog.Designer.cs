@@ -47,25 +47,27 @@
 			// btnCancel
 			// 
 			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.btnCancel.Location = new System.Drawing.Point(330, 358);
-			this.btnCancel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.btnCancel.Location = new System.Drawing.Point(220, 233);
 			this.btnCancel.Name = "btnCancel";
-			this.btnCancel.Size = new System.Drawing.Size(112, 35);
+			this.btnCancel.Size = new System.Drawing.Size(75, 23);
 			this.btnCancel.TabIndex = 3;
 			this.btnCancel.Text = "Cancel";
 			this.btnCancel.UseVisualStyleBackColor = true;
+			this.btnCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.btnCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// btnOkay
 			// 
 			this.btnOkay.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.btnOkay.Location = new System.Drawing.Point(208, 359);
-			this.btnOkay.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.btnOkay.Location = new System.Drawing.Point(139, 233);
 			this.btnOkay.Name = "btnOkay";
-			this.btnOkay.Size = new System.Drawing.Size(112, 35);
+			this.btnOkay.Size = new System.Drawing.Size(75, 23);
 			this.btnOkay.TabIndex = 2;
 			this.btnOkay.Text = "OK";
 			this.btnOkay.UseVisualStyleBackColor = true;
 			this.btnOkay.Click += new System.EventHandler(this.btnOkay_Click);
+			this.btnOkay.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.btnOkay.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// gbPacketData
 			// 
@@ -73,30 +75,28 @@
 			this.gbPacketData.Controls.Add(this.cbFooter);
 			this.gbPacketData.Controls.Add(this.tbHeader);
 			this.gbPacketData.Controls.Add(this.cbHeader);
-			this.gbPacketData.Location = new System.Drawing.Point(21, 135);
-			this.gbPacketData.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.gbPacketData.Location = new System.Drawing.Point(14, 88);
 			this.gbPacketData.Name = "gbPacketData";
-			this.gbPacketData.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-			this.gbPacketData.Size = new System.Drawing.Size(422, 214);
+			this.gbPacketData.Size = new System.Drawing.Size(281, 139);
 			this.gbPacketData.TabIndex = 1;
 			this.gbPacketData.TabStop = false;
 			this.gbPacketData.Text = "Packet Data";
+			this.gbPacketData.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
 			// tbFooter
 			// 
-			this.tbFooter.Location = new System.Drawing.Point(37, 162);
-			this.tbFooter.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.tbFooter.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.tbFooter.Location = new System.Drawing.Point(25, 105);
 			this.tbFooter.Name = "tbFooter";
-			this.tbFooter.Size = new System.Drawing.Size(373, 26);
+			this.tbFooter.Size = new System.Drawing.Size(250, 20);
 			this.tbFooter.TabIndex = 3;
 			// 
 			// cbFooter
 			// 
 			this.cbFooter.AutoSize = true;
-			this.cbFooter.Location = new System.Drawing.Point(10, 126);
-			this.cbFooter.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.cbFooter.Location = new System.Drawing.Point(7, 82);
 			this.cbFooter.Name = "cbFooter";
-			this.cbFooter.Size = new System.Drawing.Size(162, 24);
+			this.cbFooter.Size = new System.Drawing.Size(110, 17);
 			this.cbFooter.TabIndex = 2;
 			this.cbFooter.Text = "Send a text footer";
 			this.cbFooter.UseVisualStyleBackColor = true;
@@ -104,19 +104,18 @@
 			// 
 			// tbHeader
 			// 
-			this.tbHeader.Location = new System.Drawing.Point(37, 68);
-			this.tbHeader.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.tbHeader.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.tbHeader.Location = new System.Drawing.Point(25, 44);
 			this.tbHeader.Name = "tbHeader";
-			this.tbHeader.Size = new System.Drawing.Size(373, 26);
+			this.tbHeader.Size = new System.Drawing.Size(250, 20);
 			this.tbHeader.TabIndex = 1;
 			// 
 			// cbHeader
 			// 
 			this.cbHeader.AutoSize = true;
-			this.cbHeader.Location = new System.Drawing.Point(10, 31);
-			this.cbHeader.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.cbHeader.Location = new System.Drawing.Point(7, 20);
 			this.cbHeader.Name = "cbHeader";
-			this.cbHeader.Size = new System.Drawing.Size(170, 24);
+			this.cbHeader.Size = new System.Drawing.Size(116, 17);
 			this.cbHeader.TabIndex = 0;
 			this.cbHeader.Text = "Send a text header";
 			this.cbHeader.UseVisualStyleBackColor = true;
@@ -124,67 +123,64 @@
 			// 
 			// btnPortSetup
 			// 
-			this.btnPortSetup.Location = new System.Drawing.Point(179, 55);
-			this.btnPortSetup.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.btnPortSetup.Location = new System.Drawing.Point(119, 36);
 			this.btnPortSetup.Name = "btnPortSetup";
-			this.btnPortSetup.Size = new System.Drawing.Size(234, 35);
+			this.btnPortSetup.Size = new System.Drawing.Size(156, 23);
 			this.btnPortSetup.TabIndex = 0;
 			this.btnPortSetup.Text = "Setup/Change Serial Port";
 			this.btnPortSetup.UseVisualStyleBackColor = true;
 			this.btnPortSetup.Click += new System.EventHandler(this.btnPortSetup_Click);
+			this.btnPortSetup.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.btnPortSetup.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// groupBox1
 			// 
 			this.groupBox1.Controls.Add(this.lblSettings);
 			this.groupBox1.Controls.Add(this.lblSettingsLbl);
 			this.groupBox1.Controls.Add(this.btnPortSetup);
-			this.groupBox1.Location = new System.Drawing.Point(21, 19);
-			this.groupBox1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.groupBox1.Location = new System.Drawing.Point(14, 12);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-			this.groupBox1.Size = new System.Drawing.Size(422, 108);
+			this.groupBox1.Size = new System.Drawing.Size(281, 70);
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Serial Port Settings";
+			this.groupBox1.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
 			// lblSettings
 			// 
 			this.lblSettings.AutoSize = true;
-			this.lblSettings.Location = new System.Drawing.Point(96, 31);
-			this.lblSettings.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.lblSettings.Location = new System.Drawing.Point(64, 20);
 			this.lblSettings.Name = "lblSettings";
-			this.lblSettings.Size = new System.Drawing.Size(290, 20);
+			this.lblSettings.Size = new System.Drawing.Size(198, 13);
 			this.lblSettings.TabIndex = 1;
 			this.lblSettings.Text = "COM1: 115200, Space, 8, OnePointFive";
 			// 
 			// lblSettingsLbl
 			// 
 			this.lblSettingsLbl.AutoSize = true;
-			this.lblSettingsLbl.Location = new System.Drawing.Point(10, 31);
-			this.lblSettingsLbl.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.lblSettingsLbl.Location = new System.Drawing.Point(7, 20);
 			this.lblSettingsLbl.Name = "lblSettingsLbl";
-			this.lblSettingsLbl.Size = new System.Drawing.Size(76, 20);
+			this.lblSettingsLbl.Size = new System.Drawing.Size(51, 13);
 			this.lblSettingsLbl.TabIndex = 4;
 			this.lblSettingsLbl.Text = "Currently:";
 			// 
 			// SetupDialog
 			// 
 			this.AcceptButton = this.btnOkay;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.btnCancel;
-			this.ClientSize = new System.Drawing.Size(460, 405);
+			this.ClientSize = new System.Drawing.Size(311, 274);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.gbPacketData);
 			this.Controls.Add(this.btnOkay);
 			this.Controls.Add(this.btnCancel);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-			this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.MaximizeBox = false;
-			this.MaximumSize = new System.Drawing.Size(482, 461);
+			this.MaximumSize = new System.Drawing.Size(327, 313);
 			this.MinimizeBox = false;
-			this.MinimumSize = new System.Drawing.Size(482, 461);
+			this.MinimumSize = new System.Drawing.Size(327, 313);
 			this.Name = "SetupDialog";
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

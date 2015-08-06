@@ -91,7 +91,7 @@
 			// panel5
 			// 
 			this.panel5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-			| System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.panel5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.panel5.Controls.Add(this.buttonHelp);
 			this.panel5.Location = new System.Drawing.Point(0, 0);
@@ -114,11 +114,13 @@
 			this.buttonHelp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.buttonHelp.UseVisualStyleBackColor = true;
 			this.buttonHelp.Click += new System.EventHandler(this.buttonHelp_Click);
+			this.buttonHelp.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonHelp.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// panel4
 			// 
 			this.panel4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-			| System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.panel4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.panel4.Controls.Add(this.label5);
 			this.panel4.Controls.Add(this.label12);
@@ -173,10 +175,10 @@
 			this.numericUpDownDegrees.Location = new System.Drawing.Point(315, 100);
 			this.numericUpDownDegrees.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.numericUpDownDegrees.Maximum = new decimal(new int[] {
-			99999,
-			0,
-			0,
-			0});
+            99999,
+            0,
+            0,
+            0});
 			this.numericUpDownDegrees.Name = "numericUpDownDegrees";
 			this.numericUpDownDegrees.Size = new System.Drawing.Size(92, 26);
 			this.numericUpDownDegrees.TabIndex = 5;
@@ -188,10 +190,10 @@
 			this.numericUpDownStringCount.Location = new System.Drawing.Point(314, 165);
 			this.numericUpDownStringCount.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.numericUpDownStringCount.Maximum = new decimal(new int[] {
-			99999,
-			0,
-			0,
-			0});
+            99999,
+            0,
+            0,
+            0});
 			this.numericUpDownStringCount.Name = "numericUpDownStringCount";
 			this.numericUpDownStringCount.Size = new System.Drawing.Size(92, 26);
 			this.numericUpDownStringCount.TabIndex = 7;
@@ -200,7 +202,7 @@
 			// trackBarBaseHeight
 			// 
 			this.trackBarBaseHeight.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-			| System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.trackBarBaseHeight.Location = new System.Drawing.Point(10, 423);
 			this.trackBarBaseHeight.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.trackBarBaseHeight.Maximum = 300;
@@ -238,24 +240,24 @@
 			this.numericUpDownLightsPerString.Location = new System.Drawing.Point(314, 230);
 			this.numericUpDownLightsPerString.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.numericUpDownLightsPerString.Maximum = new decimal(new int[] {
-			99999,
-			0,
-			0,
-			0});
+            99999,
+            0,
+            0,
+            0});
 			this.numericUpDownLightsPerString.Name = "numericUpDownLightsPerString";
 			this.numericUpDownLightsPerString.Size = new System.Drawing.Size(92, 26);
 			this.numericUpDownLightsPerString.TabIndex = 9;
 			this.numericUpDownLightsPerString.Value = new decimal(new int[] {
-			4,
-			0,
-			0,
-			0});
+            4,
+            0,
+            0,
+            0});
 			this.numericUpDownLightsPerString.ValueChanged += new System.EventHandler(this.numericUpDownLightsPerString_ValueChanged);
 			// 
 			// trackBarTopWidth
 			// 
 			this.trackBarTopWidth.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-			| System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.trackBarTopWidth.Location = new System.Drawing.Point(15, 358);
 			this.trackBarTopWidth.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.trackBarTopWidth.Maximum = 500;
@@ -273,10 +275,10 @@
 			this.numericUpDownPixelSize.Location = new System.Drawing.Point(315, 35);
 			this.numericUpDownPixelSize.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.numericUpDownPixelSize.Maximum = new decimal(new int[] {
-			99999,
-			0,
-			0,
-			0});
+            99999,
+            0,
+            0,
+            0});
 			this.numericUpDownPixelSize.Name = "numericUpDownPixelSize";
 			this.numericUpDownPixelSize.Size = new System.Drawing.Size(92, 26);
 			this.numericUpDownPixelSize.TabIndex = 3;
@@ -288,10 +290,10 @@
 			this.numericUpDownBaseHeight.Location = new System.Drawing.Point(314, 423);
 			this.numericUpDownBaseHeight.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.numericUpDownBaseHeight.Maximum = new decimal(new int[] {
-			99999,
-			0,
-			0,
-			0});
+            99999,
+            0,
+            0,
+            0});
 			this.numericUpDownBaseHeight.Name = "numericUpDownBaseHeight";
 			this.numericUpDownBaseHeight.Size = new System.Drawing.Size(92, 26);
 			this.numericUpDownBaseHeight.TabIndex = 15;
@@ -310,7 +312,7 @@
 			// trackBarTopHeight
 			// 
 			this.trackBarTopHeight.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-			| System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.trackBarTopHeight.Location = new System.Drawing.Point(15, 294);
 			this.trackBarTopHeight.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.trackBarTopHeight.Maximum = 200;
@@ -325,7 +327,7 @@
 			// trackBarPixelSize
 			// 
 			this.trackBarPixelSize.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-			| System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.trackBarPixelSize.Location = new System.Drawing.Point(16, 35);
 			this.trackBarPixelSize.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.trackBarPixelSize.Maximum = 10;
@@ -353,10 +355,10 @@
 			this.numericUpDownTopHeight.Location = new System.Drawing.Point(314, 294);
 			this.numericUpDownTopHeight.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.numericUpDownTopHeight.Maximum = new decimal(new int[] {
-			99999,
-			0,
-			0,
-			0});
+            99999,
+            0,
+            0,
+            0});
 			this.numericUpDownTopHeight.Name = "numericUpDownTopHeight";
 			this.numericUpDownTopHeight.Size = new System.Drawing.Size(92, 26);
 			this.numericUpDownTopHeight.TabIndex = 11;
@@ -365,7 +367,7 @@
 			// trackBarLightsPerString
 			// 
 			this.trackBarLightsPerString.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-			| System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.trackBarLightsPerString.Location = new System.Drawing.Point(15, 230);
 			this.trackBarLightsPerString.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.trackBarLightsPerString.Maximum = 300;
@@ -380,7 +382,7 @@
 			// trackBarDegrees
 			// 
 			this.trackBarDegrees.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-			| System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.trackBarDegrees.Location = new System.Drawing.Point(16, 100);
 			this.trackBarDegrees.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.trackBarDegrees.Maximum = 360;
@@ -398,10 +400,10 @@
 			this.numericUpDownTopWidth.Location = new System.Drawing.Point(314, 358);
 			this.numericUpDownTopWidth.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.numericUpDownTopWidth.Maximum = new decimal(new int[] {
-			99999,
-			0,
-			0,
-			0});
+            99999,
+            0,
+            0,
+            0});
 			this.numericUpDownTopWidth.Name = "numericUpDownTopWidth";
 			this.numericUpDownTopWidth.Size = new System.Drawing.Size(92, 26);
 			this.numericUpDownTopWidth.TabIndex = 13;
@@ -420,7 +422,7 @@
 			// trackBarStringCount
 			// 
 			this.trackBarStringCount.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-			| System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.trackBarStringCount.Location = new System.Drawing.Point(15, 165);
 			this.trackBarStringCount.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.trackBarStringCount.Maximum = 120;
@@ -435,7 +437,7 @@
 			// panel3
 			// 
 			this.panel3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-			| System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.panel3.Controls.Add(this.label6);
 			this.panel3.Controls.Add(this.comboBoxStringType);
@@ -459,10 +461,11 @@
 			// 
 			this.comboBoxStringType.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.comboBoxStringType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboBoxStringType.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.comboBoxStringType.FormattingEnabled = true;
 			this.comboBoxStringType.Items.AddRange(new object[] {
-			"Standard",
-			"Pixel"});
+            "Standard",
+            "Pixel"});
 			this.comboBoxStringType.Location = new System.Drawing.Point(276, 10);
 			this.comboBoxStringType.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.comboBoxStringType.Name = "comboBoxStringType";
@@ -473,7 +476,7 @@
 			// panel2
 			// 
 			this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-			| System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.panel2.Controls.Add(this.label7);
 			this.panel2.Controls.Add(this.buttonLinkElements);
@@ -504,6 +507,8 @@
 			this.buttonLinkElements.Text = "Setup";
 			this.buttonLinkElements.UseVisualStyleBackColor = true;
 			this.buttonLinkElements.Click += new System.EventHandler(this.buttonLinkElements_Click);
+			this.buttonLinkElements.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonLinkElements.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// PreviewMegaTreeSetupControl
 			// 

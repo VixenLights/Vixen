@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls.Theme;
 
 namespace VixenModules.App.Shows
 {
@@ -18,6 +19,9 @@ namespace VixenModules.App.Shows
 		public ShowTypeEditor(ShowItem item, Guid currentShowID)
 		{
 			InitializeComponent();
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
 			_showItem = item;
 			_shows = ShowsData.ShowList;
 			_currentShowID = currentShowID;
@@ -54,6 +58,10 @@ namespace VixenModules.App.Shows
 			_showItem.Name = "Start show: " + item.Name;
 			FireChanged(_showItem.Name);
 		}
- 
+
+		private void comboBox_DrawItem(object sender, DrawItemEventArgs e)
+		{
+			ThemeComboBoxRenderer.DrawItem(sender, e);
+		}
 	}
 }

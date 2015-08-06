@@ -36,7 +36,7 @@
 			this.timelineControl.AllowGridResize = true;
 			this.timelineControl.Audio = null;
 			this.timelineControl.AutoSize = true;
-			this.timelineControl.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.timelineControl.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.timelineControl.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.timelineControl.Location = new System.Drawing.Point(0, 0);
 			this.timelineControl.Margin = new System.Windows.Forms.Padding(0);

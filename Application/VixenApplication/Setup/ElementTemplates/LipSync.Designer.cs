@@ -38,12 +38,12 @@
 			// 
 			this.textBoxTreeName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.textBoxTreeName.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
-			this.textBoxTreeName.BorderStyle = System.Windows.Forms.BorderStyle.None;
-			this.textBoxTreeName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.textBoxTreeName.BackColor = System.Drawing.SystemColors.Control;
+			this.textBoxTreeName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.textBoxTreeName.ForeColor = System.Drawing.SystemColors.ControlText;
 			this.textBoxTreeName.Location = new System.Drawing.Point(109, 23);
 			this.textBoxTreeName.Name = "textBoxTreeName";
-			this.textBoxTreeName.Size = new System.Drawing.Size(174, 13);
+			this.textBoxTreeName.Size = new System.Drawing.Size(174, 20);
 			this.textBoxTreeName.TabIndex = 14;
 			this.textBoxTreeName.Text = "LipSync";
 			// 
@@ -51,7 +51,7 @@
 			// 
 			this.label6.AutoSize = true;
 			this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.label6.Location = new System.Drawing.Point(12, 23);
+			this.label6.Location = new System.Drawing.Point(12, 25);
 			this.label6.Name = "label6";
 			this.label6.Size = new System.Drawing.Size(79, 13);
 			this.label6.TabIndex = 13;
@@ -107,10 +107,13 @@
 			this.Controls.Add(this.label6);
 			this.DoubleBuffered = true;
 			this.MaximizeBox = false;
+			this.MaximumSize = new System.Drawing.Size(311, 148);
 			this.MinimizeBox = false;
+			this.MinimumSize = new System.Drawing.Size(311, 148);
 			this.Name = "LipSync";
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
+			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "LipSync Setup";
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.LipSync_FormClosed);

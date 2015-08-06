@@ -26,8 +26,7 @@
 // or implied, of Joshua 1 Systems Inc.
 // =====================================================================
 
-namespace VixenModules.Output.E131
-{
+	using Common.Controls.Theme;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
@@ -43,6 +42,8 @@ namespace VixenModules.Output.E131
     using System.Linq;
     using Vixen.Sys;
 
+namespace VixenModules.Output.E131
+{
     public partial class SetupForm : Form
     {
         // column indexes - must be changed if column addrange code is changed
@@ -106,7 +107,11 @@ namespace VixenModules.Output.E131
             btnAddUnicast.Image = Tools.GetIcon(Resources.add, 16);
             btnDeleteUnicast.Text = "";
             btnDeleteUnicast.Image = Tools.GetIcon(Resources.delete, 16);
-            SetDestinations();
+			SetDestinations();
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
+			univDGVN.BackgroundColor = ThemeColorTable.BackgroundColor;
         }
 
         public int EventRepeatCount
@@ -1050,5 +1055,22 @@ namespace VixenModules.Output.E131
             else
                 btnDeleteUnicast.Enabled = true;
         }
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImageHover ?? Resources.HeadingBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImage ?? Resources.HeadingBackgroundImage;
+		}
+
+		private void comboBox_DrawItem(object sender, DrawItemEventArgs e)
+		{
+			ThemeComboBoxRenderer.DrawItem(sender, e);
+		}
     }
 }

@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Globalization;
+using Common.Controls.Theme;
+using Common.Resources.Properties;
 
 namespace VixenModules.Output.Olsen595
 {
@@ -17,6 +19,9 @@ namespace VixenModules.Output.Olsen595
 		public SetupDialog(Data data)
 		{
 			InitializeComponent();
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
 			_data = data;
 			_PortAddress = _data.Port;
 		}
@@ -42,6 +47,18 @@ namespace VixenModules.Output.Olsen595
 				return value;
 			}
 			set { textBoxPortAddress.Text = value.ToString("X"); }
+		}
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImageHover ?? Resources.HeadingBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImage ?? Resources.HeadingBackgroundImage;
 		}
 	}
 }

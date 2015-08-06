@@ -188,7 +188,7 @@
 			// 
 			// toolStripCurves
 			// 
-			this.toolStripCurves.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
+			this.toolStripCurves.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.toolStripCurves.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripButtonEditCurve,
             this.toolStripButtonNewCurve,

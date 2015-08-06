@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using Common.Controls.Theme;
 using Common.Resources;
 using Common.Resources.Properties;
 using Common.Controls;
@@ -18,6 +19,9 @@ namespace VixenApplication
 		public DataProfileForm()
 		{
 			InitializeComponent();
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
 			Icon = Resources.Icon_Vixen3;
 			buttonAddProfile.Image = Tools.GetIcon(Resources.add, 16);
 			buttonAddProfile.Text = "";
@@ -308,17 +312,7 @@ namespace VixenApplication
 		// This is my simple work-around. Just drawing the thing myself!
 		private void comboBox_DrawItem(object sender, DrawItemEventArgs e)
 		{
-			ComboBox c = sender as ComboBox;
-			if (e.Index > -1)
-			{
-				ProfileItem item = c.Items[e.Index] as ProfileItem;
-				e.Graphics.FillRectangle(e.State == DrawItemState.Focus ? Brushes.Blue : new SolidBrush(e.BackColor), e.Bounds);
-				e.Graphics.DrawString(item.Name, SystemFonts.DefaultFont, Brushes.Black, e.Bounds);
-			}
-			else
-			{
-				e.Graphics.FillRectangle(new SolidBrush(c.BackColor), e.Bounds);
-			}
+			ThemeComboBoxRenderer.DrawItem(sender, e);
 		}
 
 		private void textBoxProfileName_Leave(object sender, EventArgs e)
@@ -330,6 +324,22 @@ namespace VixenApplication
 		{
 			DataZipForm f = new DataZipForm();
 			f.ShowDialog();
+		}
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImage ?? Resources.HeadingBackgroundImage;
+		}
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImageHover ?? Resources.HeadingBackgroundImageHover;
+		}
+
+		private void groupBoxes_Paint(object sender, PaintEventArgs e)
+		{
+			ThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
 		}
 	}
 }

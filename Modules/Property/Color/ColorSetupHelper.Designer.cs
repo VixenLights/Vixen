@@ -30,7 +30,6 @@
 			this.buttonCancel = new System.Windows.Forms.Button();
 			this.buttonOk = new System.Windows.Forms.Button();
 			this.label1 = new System.Windows.Forms.Label();
-			this.colorPanelSingleColor = new VixenModules.Property.Color.ColorPanel();
 			this.buttonColorSetsSetup = new System.Windows.Forms.Button();
 			this.comboBoxColorSet = new System.Windows.Forms.ComboBox();
 			this.radioButtonOptionFullColor = new System.Windows.Forms.RadioButton();
@@ -38,6 +37,7 @@
 			this.radioButtonOptionSingle = new System.Windows.Forms.RadioButton();
 			this.label2 = new System.Windows.Forms.Label();
 			this.label3 = new System.Windows.Forms.Label();
+			this.colorPanelSingleColor = new VixenModules.Property.Color.ColorPanel();
 			this.SuspendLayout();
 			// 
 			// buttonCancel
@@ -50,6 +50,8 @@
 			this.buttonCancel.TabIndex = 22;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
+			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonOk
 			// 
@@ -62,6 +64,8 @@
 			this.buttonOk.TabIndex = 21;
 			this.buttonOk.Text = "OK";
 			this.buttonOk.UseVisualStyleBackColor = true;
+			this.buttonOk.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonOk.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// label1
 			// 
@@ -73,18 +77,6 @@
 			this.label1.TabIndex = 23;
 			this.label1.Text = "How do these items handle color?";
 			// 
-			// colorPanelSingleColor
-			// 
-			this.colorPanelSingleColor.BackColor = System.Drawing.Color.RoyalBlue;
-			this.colorPanelSingleColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.colorPanelSingleColor.Color = System.Drawing.Color.RoyalBlue;
-			this.colorPanelSingleColor.Enabled = false;
-			this.colorPanelSingleColor.Location = new System.Drawing.Point(58, 83);
-			this.colorPanelSingleColor.Margin = new System.Windows.Forms.Padding(4);
-			this.colorPanelSingleColor.Name = "colorPanelSingleColor";
-			this.colorPanelSingleColor.Size = new System.Drawing.Size(60, 30);
-			this.colorPanelSingleColor.TabIndex = 29;
-			// 
 			// buttonColorSetsSetup
 			// 
 			this.buttonColorSetsSetup.Enabled = false;
@@ -95,11 +87,14 @@
 			this.buttonColorSetsSetup.Text = "Edit Colors";
 			this.buttonColorSetsSetup.UseVisualStyleBackColor = true;
 			this.buttonColorSetsSetup.Click += new System.EventHandler(this.buttonColorSetsSetup_Click);
+			this.buttonColorSetsSetup.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonColorSetsSetup.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// comboBoxColorSet
 			// 
 			this.comboBoxColorSet.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.comboBoxColorSet.Enabled = false;
+			this.comboBoxColorSet.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.comboBoxColorSet.FormattingEnabled = true;
 			this.comboBoxColorSet.Location = new System.Drawing.Point(99, 190);
 			this.comboBoxColorSet.Name = "comboBoxColorSet";
@@ -160,11 +155,23 @@
 			this.label3.TabIndex = 31;
 			this.label3.Text = "Colors:";
 			// 
+			// colorPanelSingleColor
+			// 
+			this.colorPanelSingleColor.BackColor = System.Drawing.Color.RoyalBlue;
+			this.colorPanelSingleColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.colorPanelSingleColor.Color = System.Drawing.Color.RoyalBlue;
+			this.colorPanelSingleColor.Enabled = false;
+			this.colorPanelSingleColor.Location = new System.Drawing.Point(58, 83);
+			this.colorPanelSingleColor.Margin = new System.Windows.Forms.Padding(4);
+			this.colorPanelSingleColor.Name = "colorPanelSingleColor";
+			this.colorPanelSingleColor.Size = new System.Drawing.Size(60, 30);
+			this.colorPanelSingleColor.TabIndex = 29;
+			// 
 			// ColorSetupHelper
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(464, 322);
+			this.ClientSize = new System.Drawing.Size(464, 321);
 			this.Controls.Add(this.label3);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.colorPanelSingleColor);
@@ -179,8 +186,10 @@
 			this.MaximizeBox = false;
 			this.MaximumSize = new System.Drawing.Size(480, 360);
 			this.MinimizeBox = false;
+			this.MinimumSize = new System.Drawing.Size(480, 360);
 			this.Name = "ColorSetupHelper";
 			this.ShowIcon = false;
+			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Color Configuration";
 			this.Load += new System.EventHandler(this.ColorSetupHelper_Load);

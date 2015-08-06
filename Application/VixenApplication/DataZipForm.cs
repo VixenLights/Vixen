@@ -1,5 +1,6 @@
 ﻿using System.Threading;
 using Common.Controls;
+using Common.Controls.Theme;
 using Common.Resources;
 using Common.Resources.Properties;
 using NLog;
@@ -24,6 +25,10 @@ namespace VixenApplication
 		public DataZipForm()
 		{
 			InitializeComponent();
+			statusStrip1.Renderer = new ThemeToolStripRenderer();
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
 			Icon = Resources.Icon_Vixen3;
 			buttonSetSaveFolder.Image = Tools.GetIcon(Resources.folder, 16);
 			_bw.WorkerReportsProgress=true;
@@ -307,6 +312,21 @@ namespace VixenApplication
 			}
 			return true;
 		}
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImage ?? Resources.HeadingBackgroundImage;
+		}
 
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImageHover ?? Resources.HeadingBackgroundImageHover;
+		}
+
+		private void groupBoxes_Paint(object sender, PaintEventArgs e)
+		{
+			ThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
+		}
 	}
 }

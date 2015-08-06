@@ -69,7 +69,9 @@
 			// BeatsPerBarLabel
 			// 
 			this.BeatsPerBarLabel.AutoSize = true;
+			this.BeatsPerBarLabel.BackColor = System.Drawing.Color.LightGray;
 			this.BeatsPerBarLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.BeatsPerBarLabel.ForeColor = System.Drawing.Color.Black;
 			this.BeatsPerBarLabel.Location = new System.Drawing.Point(88, 48);
 			this.BeatsPerBarLabel.Name = "BeatsPerBarLabel";
 			this.BeatsPerBarLabel.Size = new System.Drawing.Size(19, 20);
@@ -80,7 +82,9 @@
 			// NoteSizeLabel
 			// 
 			this.NoteSizeLabel.AutoSize = true;
+			this.NoteSizeLabel.BackColor = System.Drawing.Color.LightGray;
 			this.NoteSizeLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.NoteSizeLabel.ForeColor = System.Drawing.Color.Black;
 			this.NoteSizeLabel.Location = new System.Drawing.Point(88, 68);
 			this.NoteSizeLabel.Name = "NoteSizeLabel";
 			this.NoteSizeLabel.Size = new System.Drawing.Size(19, 20);

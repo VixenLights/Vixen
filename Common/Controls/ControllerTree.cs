@@ -7,6 +7,7 @@ using System.Linq;
 using System.Media;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls.Theme;
 using Vixen.Data.Flow;
 using Vixen.Factory;
 using Vixen.Module;
@@ -30,6 +31,7 @@ namespace Common.Controls
 		public ControllerTree()
 		{
 			InitializeComponent();
+			contextMenuStripTreeView.Renderer = new ThemeToolStripRenderer();
 		}
 
 		private void ControllerTree_Load(object sender, EventArgs e)

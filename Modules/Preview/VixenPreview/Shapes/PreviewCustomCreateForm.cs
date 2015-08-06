@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
+using Common.Controls.Theme;
+using Common.Resources.Properties;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
@@ -15,6 +17,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public PreviewCustomCreateForm()
 		{
 			InitializeComponent();
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
 		}
 
 		public string TemplateName
@@ -38,6 +43,18 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				DialogResult = System.Windows.Forms.DialogResult.OK;
 				Close();
 			}
+		}
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImageHover ?? Resources.HeadingBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImage ?? Resources.HeadingBackgroundImage;
 		}
 	}
 }

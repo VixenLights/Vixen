@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Forms;
+using Common.Controls.Theme;
 using Vixen.Data.Value;
 using Vixen.Execution.Context;
 using Vixen.Sys;
@@ -37,6 +38,7 @@ namespace VixenModules.Preview.VixenPreview
         private bool DefaultBackground = true;
         Point zoomTo;
         private bool _displayItemsLoaded = false;
+		private static bool ClipboardPopulated = false;
 
 		private Tools _currentTool = Tools.Select;
 
@@ -263,7 +265,7 @@ namespace VixenModules.Preview.VixenPreview
 			: base()
 		{
 			InitializeComponent();
-
+			contextMenuStrip1.Renderer = new ThemeToolStripRenderer();
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.DoubleBuffer, true);
 		}
@@ -666,106 +668,68 @@ namespace VixenModules.Preview.VixenPreview
                 }
                 else if (e.Button == System.Windows.Forms.MouseButtons.Right)
                 {
-                    ContextMenu menu = null;
-                    MenuItem item;
+					contextMenuStrip1.Items.Clear();
+					SelectItemUnderPoint(translatedPoint, false);
 
-                    SelectItemUnderPoint(translatedPoint, false);
+					if (_selectedDisplayItem != null)
+					{
+						PreviewPoint selectedPoint = _selectedDisplayItem.Shape.PointInSelectPoint(translatedPoint);
+						if (_selectedDisplayItem.Shape.PointInShape(translatedPoint))
+						{
+							if (_selectedDisplayItem.Shape.GetType().ToString().Contains("PreviewCustom"))
+							{
+								contextMenuStrip1.Items.Add(new ToolStripMenuItem { Text = "Separate Template Items", Tag = "Separate" });
+							}
+						}
+					}
+					else if (SelectedDisplayItems.Count > 1)
+					{
+						contextMenuStrip1.Items.Add(new ToolStripMenuItem { Text = "Create Group...", Tag = "CreateGroup" });
+						contextMenuStrip1.Items.Add(new ToolStripSeparator());
+						contextMenuStrip1.Items.Add(new ToolStripMenuItem { Text = "Create Template...", Tag = "CreateTemplate" });
+					}
+					if (_selectedDisplayItem != null)
+					{
+						contextMenuStrip1.Items.Add(new ToolStripMenuItem { Text = "Cut", Tag = "Cut" });
+						contextMenuStrip1.Items.Add(new ToolStripMenuItem { Text = "Copy", Tag = "Copy" });
+					}
+					if (ClipboardPopulated)
+					{
+						if (_selectedDisplayItem == null & SelectedDisplayItems.Count > 1)
+						{
+							contextMenuStrip1.Items.Add(new ToolStripSeparator());
+						}
+						contextMenuStrip1.Items.Add(new ToolStripMenuItem { Text = "Paste", Tag = "Paste" });
+					}
+					if (_selectedDisplayItem != null)
+					{
+						contextMenuStrip1.Items.Add(new ToolStripMenuItem { Text = "Delete", Tag = "Delete" });
+					}
+					if (_selectedDisplayItem != null)
+					{
+						contextMenuStrip1.Items.Add(new ToolStripSeparator());
 
-                    if (_selectedDisplayItem != null)
-                    {
-                        PreviewPoint selectedPoint = _selectedDisplayItem.Shape.PointInSelectPoint(translatedPoint);
-                        if (_selectedDisplayItem.Shape.PointInShape(translatedPoint))
-                        {
-                            menu = new ContextMenu();
-                            if (_selectedDisplayItem.Shape.GetType().ToString().Contains("PreviewCustom"))
-                            {
-                                item = new MenuItem("Separate Template Items", OnItemContextMenuClick);
-                                item.Tag = "Separate";
-                                menu.MenuItems.Add(item);
-                            }
-                        }
-                    }
-                    else if (SelectedDisplayItems.Count > 1)
-                    {
-                        menu = new ContextMenu();
-
-                        item = new MenuItem("Create Group...", OnItemContextMenuClick);
-                        item.Tag = "CreateGroup";
-                        menu.MenuItems.Add(item);
-
-                        item = new MenuItem("-");
-                        menu.MenuItems.Add(item);
-
-                        item = new MenuItem("Create Template...", OnItemContextMenuClick);
-                        item.Tag = "CreateTemplate";
-                        menu.MenuItems.Add(item);
-                    }
-
-                    if (menu != null)
-                    {
-                        if (menu.MenuItems.Count > 0)
-                        {
-                            item = new MenuItem("-");
-                            menu.MenuItems.Add(item);
-                        }
-
-                        item = new MenuItem("Cut", OnItemContextMenuClick);
-                        item.Tag = "Cut";
-                        menu.MenuItems.Add(item);
-
-                        item = new MenuItem("Copy", OnItemContextMenuClick);
-                        item.Tag = "Copy";
-                        menu.MenuItems.Add(item);
-
-                        item = new MenuItem("Paste", OnItemContextMenuClick);
-                        item.Tag = "Paste";
-                        menu.MenuItems.Add(item);
-
-                        item = new MenuItem("Delete", OnItemContextMenuClick);
-                        item.Tag = "Delete";
-                        menu.MenuItems.Add(item);
-
-                        item = new MenuItem("-");
-                        menu.MenuItems.Add(item);
-
-                        if (Data.SaveLocations)
-                        {
-                            // Z location menu
-                            MenuItem locationItem = new MenuItem("Set Z Location to");
-                            menu.MenuItems.Add(locationItem);
-                            item = new MenuItem("0 Front", OnItemContextMenuClick);
-                            item.Tag = "0";
-                            locationItem.MenuItems.Add(item);
-                            item = new MenuItem("1", OnItemContextMenuClick);
-                            item.Tag = "1";
-                            locationItem.MenuItems.Add(item);
-                            item = new MenuItem("2", OnItemContextMenuClick);
-                            item.Tag = "2";
-                            locationItem.MenuItems.Add(item);
-                            item = new MenuItem("3", OnItemContextMenuClick);
-                            item.Tag = "3";
-                            locationItem.MenuItems.Add(item);
-                            item = new MenuItem("4 Middle", OnItemContextMenuClick);
-                            item.Tag = "4";
-                            locationItem.MenuItems.Add(item);
-                            item = new MenuItem("5", OnItemContextMenuClick);
-                            item.Tag = "5";
-                            locationItem.MenuItems.Add(item);
-                            item = new MenuItem("6", OnItemContextMenuClick);
-                            item.Tag = "6";
-                            locationItem.MenuItems.Add(item);
-                            item = new MenuItem("7", OnItemContextMenuClick);
-                            item.Tag = "7";
-                            locationItem.MenuItems.Add(item);
-                            item = new MenuItem("8", OnItemContextMenuClick);
-                            item.Tag = "8";
-                            locationItem.MenuItems.Add(item);
-                            item = new MenuItem("9 Back", OnItemContextMenuClick);
-                            item.Tag = "9";
-                            locationItem.MenuItems.Add(item);
-                        }
-                        menu.Show(this, e.Location);
-                    }
+						if (Data.SaveLocations & _selectedDisplayItem != null)
+						{
+							// Z location menu
+							contextMenuStrip1.Items.Add(new ToolStripMenuItem { Text = "Set Z Location to" });
+							// Z sub menu items
+							(contextMenuStrip1.Items[contextMenuStrip1.Items.Count - 1] as ToolStripMenuItem).DropDownItems.Add(new ToolStripMenuItem { Text = "0 Front", Tag = "0" });
+							(contextMenuStrip1.Items[contextMenuStrip1.Items.Count - 1] as ToolStripMenuItem).DropDownItems.Add(new ToolStripMenuItem { Text = "1", Tag = "1" });
+							(contextMenuStrip1.Items[contextMenuStrip1.Items.Count - 1] as ToolStripMenuItem).DropDownItems.Add(new ToolStripMenuItem { Text = "2", Tag = "2" });
+							(contextMenuStrip1.Items[contextMenuStrip1.Items.Count - 1] as ToolStripMenuItem).DropDownItems.Add(new ToolStripMenuItem { Text = "3", Tag = "3" });
+							(contextMenuStrip1.Items[contextMenuStrip1.Items.Count - 1] as ToolStripMenuItem).DropDownItems.Add(new ToolStripMenuItem { Text = "4 Middle", Tag = "4" });
+							(contextMenuStrip1.Items[contextMenuStrip1.Items.Count - 1] as ToolStripMenuItem).DropDownItems.Add(new ToolStripMenuItem { Text = "5", Tag = "5" });
+							(contextMenuStrip1.Items[contextMenuStrip1.Items.Count - 1] as ToolStripMenuItem).DropDownItems.Add(new ToolStripMenuItem { Text = "6", Tag = "6" });
+							(contextMenuStrip1.Items[contextMenuStrip1.Items.Count - 1] as ToolStripMenuItem).DropDownItems.Add(new ToolStripMenuItem { Text = "7", Tag = "7" });
+							(contextMenuStrip1.Items[contextMenuStrip1.Items.Count - 1] as ToolStripMenuItem).DropDownItems.Add(new ToolStripMenuItem { Text = "8", Tag = "8" });
+							(contextMenuStrip1.Items[contextMenuStrip1.Items.Count - 1] as ToolStripMenuItem).DropDownItems.Add(new ToolStripMenuItem { Text = "9 Back", Tag = "9" });
+						}
+					}
+					if (contextMenuStrip1.Items.Count > 0)
+					{
+						contextMenuStrip1.Show(this, e.Location);
+					}
                 }
                 else if (e.Button == System.Windows.Forms.MouseButtons.Middle)
                 {
@@ -1353,6 +1317,7 @@ namespace VixenModules.Preview.VixenPreview
                 string xml = PreviewTools.SerializeToString(SelectedDisplayItems);
                 Clipboard.SetData(DataFormats.Text, xml);
             }
+			ClipboardPopulated = true;
 		}
 
 		#endregion
@@ -1853,5 +1818,57 @@ namespace VixenModules.Preview.VixenPreview
                 e.IsInputKey = true;
             }
         }
+
+		private void contextMenuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+		{
+			var tag = e.ClickedItem.Tag;
+			if (e.ClickedItem.Tag == null)
+				return;
+			switch (tag.ToString())
+			{
+				case "CreateTemplate":
+					_selectedDisplayItem = CreateTemplate();
+					if (_selectedDisplayItem != null)
+					{
+						_selectedDisplayItem.Shape.Select(true);
+					}
+					break;
+				case "CreateGroup":
+					_selectedDisplayItem = CreateGroup();
+					if (_selectedDisplayItem != null)
+					{
+						_selectedDisplayItem.Shape.Select(true);
+					}
+					break;
+				case "Separate":
+					if (_selectedDisplayItem != null)
+						SeparateTemplateItems(_selectedDisplayItem);
+					break;
+				case "Cut":
+					Cut();
+					break;
+				case "Copy":
+					Copy();
+					break;
+				case "Paste":
+					Paste();
+					break;
+				case "Delete":
+					Delete();
+					break;
+				case "0":
+				case "1":
+				case "2":
+				case "3":
+				case "4":
+				case "5":
+				case "6":
+				case "7":
+				case "8":
+				case "9":
+					SetZForSelectedItems(Convert.ToInt32(tag));
+					break;
+			}
+		}
 	}
 }

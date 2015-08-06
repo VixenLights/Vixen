@@ -39,23 +39,27 @@
 			// btnOK
 			// 
 			this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.btnOK.Location = new System.Drawing.Point(168, 229);
+			this.btnOK.Location = new System.Drawing.Point(168, 115);
 			this.btnOK.Name = "btnOK";
 			this.btnOK.Size = new System.Drawing.Size(75, 23);
 			this.btnOK.TabIndex = 1;
 			this.btnOK.Text = "&OK";
 			this.btnOK.UseVisualStyleBackColor = true;
 			this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
+			this.btnOK.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.btnOK.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// btnCancel
 			// 
 			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.btnCancel.Location = new System.Drawing.Point(249, 229);
+			this.btnCancel.Location = new System.Drawing.Point(249, 115);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(75, 23);
 			this.btnCancel.TabIndex = 2;
 			this.btnCancel.Text = "&Cancel";
 			this.btnCancel.UseVisualStyleBackColor = true;
+			this.btnCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.btnCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// label1
 			// 
@@ -103,7 +107,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.btnCancel;
-			this.ClientSize = new System.Drawing.Size(336, 264);
+			this.ClientSize = new System.Drawing.Size(336, 147);
 			this.Controls.Add(this.ctlUpdateInteral);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.label1);
@@ -111,8 +115,11 @@
 			this.Controls.Add(this.btnOK);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
+			this.MaximumSize = new System.Drawing.Size(352, 186);
 			this.MinimizeBox = false;
+			this.MinimumSize = new System.Drawing.Size(352, 186);
 			this.Name = "OptionsDialog";
+			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Options";
 			this.Load += new System.EventHandler(this.OptionsDialog_Load);

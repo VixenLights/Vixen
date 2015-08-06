@@ -4,9 +4,12 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Resources;
 using System.Text;
 using System.Windows.Forms;
 using System.Net;
+using Common.Controls.Theme;
+using Common.Resources.Properties;
 
 namespace VixenModules.Output.BlinkyLinky
 {
@@ -15,6 +18,9 @@ namespace VixenModules.Output.BlinkyLinky
 		public BlinkyLinkySetup(BlinkyLinkyData data)
 		{
 			InitializeComponent();
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
 			Address = data.Address;
 			Port = data.Port;
 			Stream = data.Stream;
@@ -65,6 +71,23 @@ namespace VixenModules.Output.BlinkyLinky
 
 				numericUpDownStream.Value = value;
 			}
+		}
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImageHover ?? Resources.HeadingBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImage ?? Resources.HeadingBackgroundImage;
+		}
+
+		private void groupBoxes_Paint(object sender, PaintEventArgs e)
+		{
+			ThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
 		}
 	}
 }

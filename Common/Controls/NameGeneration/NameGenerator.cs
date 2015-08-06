@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using Common.Controls.NameGeneration;
+using Common.Controls.Theme;
 using Common.Resources;
 using Vixen.Rule;
 using Vixen.Rule.Name;
@@ -47,11 +48,16 @@ namespace Common.Controls
 			buttonAddNewRule.Text = "";
 			buttonDeleteRule.Image = Tools.GetIcon(Resources.Properties.Resources.delete, 16);
 			buttonDeleteRule.Text = "";
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
 
 			Generators = new List<INamingGenerator>();
 
 			listViewNames.Columns.Clear();
 			listViewNames.Columns.Add(new ColumnHeader {Text = "Name"});
+			labelColumnHeader1.Text = "Name";
+			labelColumnHeader2.Text = "";
 		}
 
 		public NameGenerator(IEnumerable<string> oldNames)
@@ -61,7 +67,9 @@ namespace Common.Controls
 			FixedCount = OldNames.Count();
 			listViewNames.Columns.Clear();
 			listViewNames.Columns.Add(new ColumnHeader {Text = "Old Name"});
-			listViewNames.Columns.Add(new ColumnHeader {Text = "New Name"});
+			listViewNames.Columns.Add(new ColumnHeader { Text = "New Name" });
+			labelColumnHeader1.Text = "Old Name";
+			labelColumnHeader2.Text = "New Name";
 		}
 
 		public NameGenerator(int fixedCount)
@@ -409,6 +417,28 @@ namespace Common.Controls
 		private void numericUpDownItemCount_ValueChanged(object sender, EventArgs e)
 		{
 			PopulateNames();
+		}
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImageHover ?? Resources.Properties.Resources.HeadingBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImage ?? Resources.Properties.Resources.HeadingBackgroundImage;
+		}
+
+		private void groupBoxes_Paint(object sender, PaintEventArgs e)
+		{
+			ThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
+		}
+
+		private void comboBox_DrawItem(object sender, DrawItemEventArgs e)
+		{
+			ThemeComboBoxRenderer.DrawItem(sender, e);
 		}
 	}
 }

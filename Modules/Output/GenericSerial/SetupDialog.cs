@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO.Ports;
 using System.Windows.Forms;
+using Common.Controls.Theme;
+using Common.Resources.Properties;
 
 namespace VixenModules.Output.GenericSerial
 {
@@ -12,6 +14,9 @@ namespace VixenModules.Output.GenericSerial
 		public SetupDialog(Data data)
 		{
 			InitializeComponent();
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
 
 			_data = data;
 			tbHeader.Enabled = false;
@@ -88,6 +93,23 @@ namespace VixenModules.Output.GenericSerial
 		{
 			set { _serialPort = value; }
 			get { return _serialPort; }
+		}
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImageHover ?? Resources.HeadingBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImage ?? Resources.HeadingBackgroundImage;
+		}
+
+		private void groupBoxes_Paint(object sender, PaintEventArgs e)
+		{
+			ThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
 		}
 	}
 }

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Common.Controls;
+using Common.Controls.Theme;
 using Common.Resources.Properties;
 using Common.Resources;
 using Vixen.Data.Flow;
@@ -43,6 +44,9 @@ namespace VixenApplication.Setup
 			buttonStopController.Text = "";
 			buttonStartController.Image = Tools.GetIcon(Resources.control_play_blue, 16);
 			buttonStartController.Text = "";
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
 
 			comboBoxNewControllerType.BeginUpdate();
 			foreach (KeyValuePair<Guid, string> kvp in ApplicationServices.GetAvailableModules<IControllerModuleInstance>()) {
@@ -104,7 +108,8 @@ namespace VixenApplication.Setup
 
 			buttonSelectSourceElements.Enabled = controllerTree.SelectedTreeNodes.Count > 0;
 
-			if (selectedControllerCount <= 0) {
+			if (selectedControllerCount <= 0)
+			{
 				labelControllerType.Text = "";
 				labelOutputCount.Text = "";
 			} else if (selectedControllerCount == 1) {
@@ -310,6 +315,16 @@ namespace VixenApplication.Setup
 				OnControllersChanged();
 				UpdateForm();
 			}
+		}
+
+		private void groupBoxes_Paint(object sender, PaintEventArgs e)
+		{
+			ThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
+		}
+
+		private void comboBox_DrawItem(object sender, DrawItemEventArgs e)
+		{
+			ThemeComboBoxRenderer.DrawItem(sender, e);
 		}
 	}
 }

@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls.Theme;
 using Common.Resources.Properties;
 
 namespace Common.Controls
@@ -15,9 +16,9 @@ namespace Common.Controls
 		public MessageBoxForm(string messageBoxData, string messageBoxTitle, bool buttonNoVisible, bool buttonCancelVisible)
 		{
 			InitializeComponent();
-			buttonOk.BackgroundImage = Resources.Properties.Resources.HeadingBackgroundImage;
-			buttonNo.BackgroundImage = Resources.Properties.Resources.HeadingBackgroundImage;
-			buttonCancel.BackgroundImage = Resources.Properties.Resources.HeadingBackgroundImage;
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
 			labelPrompt.Text = messageBoxData;
 			this.Text = messageBoxTitle;
 			buttonNo.Visible = buttonNoVisible;
@@ -35,13 +36,13 @@ namespace Common.Controls
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.Properties.Resources.HeadingBackgroundImageHover;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImageHover ?? Resources.Properties.Resources.HeadingBackgroundImageHover;
 		}
 
 		private void buttonBackground_MouseLeave(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.Properties.Resources.HeadingBackgroundImage;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImage ?? Resources.Properties.Resources.HeadingBackgroundImage;
 		}
 	}
 }

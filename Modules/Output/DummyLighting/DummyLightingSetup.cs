@@ -6,6 +6,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls.Theme;
+using Common.Resources.Properties;
 
 namespace VixenModules.Output.DummyLighting
 {
@@ -14,7 +16,10 @@ namespace VixenModules.Output.DummyLighting
 		public DummyLightingSetup(RenderStyle renderStyle, string formTitle)
 		{
 			InitializeComponent();
-			Icon = Common.Resources.Properties.Resources.Icon_Vixen3;
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
+			Icon = Resources.Icon_Vixen3;
 
 			RenderStyle = renderStyle;
 			FormTitle = formTitle;
@@ -51,6 +56,18 @@ namespace VixenModules.Output.DummyLighting
 				RenderStyle = RenderStyle.RGBMultiChannel;
 			if (radioButtonSingleRGB.Checked)
 				RenderStyle = RenderStyle.RGBSingleChannel;
+		}
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImageHover ?? Resources.HeadingBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImage ?? Resources.HeadingBackgroundImage;
 		}
 	}
 }

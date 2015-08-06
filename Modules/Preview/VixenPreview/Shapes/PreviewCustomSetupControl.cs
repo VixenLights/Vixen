@@ -6,6 +6,8 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls.Theme;
+using Common.Resources.Properties;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
@@ -14,6 +16,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public PreviewCustomSetupControl(PreviewBaseShape shape) : base(shape)
 		{
 			InitializeComponent();
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
+			comboBoxStringToEdit.ForeColor = ThemeColorTable.ForeColor;
 			foreach (PreviewBaseShape stringShape in Shape._strings) {
 				stringShape.OnPropertiesChanged += OnPropertiesChanged;
 			}
@@ -51,7 +57,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					item.Text = item.Text.Substring(item.Text.LastIndexOf('.') + 1);
 				}
 				if (item.Text == "")
-					item.Text = "Unnamed String";
+					item.Text = "String Name not assigned to this object. Select and add name";
 				comboBoxStringToEdit.Items.Add(item);
 			}
 			if (comboBoxStringToEdit.Items.Count > 0) {
@@ -59,7 +65,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					foreach (Common.Controls.ComboBoxItem item in comboBoxStringToEdit.Items)
 					{
 						if (item.Text == "")
-							item.Text = "Unnamed String";
+							item.Text = "String Name not assigned to this object. Select and add name";
 						if ((item.Value as PreviewBaseShape) == selectedShape) {
 							comboBoxStringToEdit.SelectedItem = item;
 							return;
@@ -70,6 +76,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					comboBoxStringToEdit.SelectedIndex = 0;
 				}
 			}
+			comboBoxStringToEdit.ForeColor = ThemeColorTable.ForeColor;
 		}
 
 		public void ShowSetupControl(PreviewBaseShape shape)
@@ -85,14 +92,32 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		private void comboBoxStringToEdit_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			Common.Controls.ComboBoxItem item = comboBoxStringToEdit.SelectedItem as Common.Controls.ComboBoxItem;
-			if (item != null) {
+			if (item != null)
+			{
 				if (item.Text == "")
-					item.Text = "Unnamed String";
+					item.Text = "String Name not assigned to this object. Select and add name";
 				PreviewBaseShape shape = item.Value as PreviewBaseShape;
 				if (shape != null) {
 					ShowSetupControl(shape);
 				}
 			}
+		}
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImageHover ?? Resources.HeadingBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImage ?? Resources.HeadingBackgroundImage;
+		}
+
+		private void comboBox_DrawItem(object sender, DrawItemEventArgs e)
+		{
+			ThemeComboBoxRenderer.DrawItem(sender, e);
 		}
 	}
 }

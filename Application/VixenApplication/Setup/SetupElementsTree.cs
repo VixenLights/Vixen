@@ -8,6 +8,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls.Theme;
 using Common.Resources;
 using Common.Resources.Properties;
 using Common.Controls;
@@ -42,6 +43,11 @@ namespace VixenApplication.Setup
 			buttonRenameElements.Text = "";
 			buttonSelectDestinationOutputs.Image = Tools.GetIcon(Resources.table_select_row, 16);
 			buttonSelectDestinationOutputs.Text = "";
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
+	//		comboBoxNewItemType.BackColor = ThemeColorTable.BackgroundColor;
+	//		comboBoxSetupHelperType.BackColor = ThemeColorTable.BackgroundColor;
 
 			comboBoxNewItemType.BeginUpdate();
 			foreach (IElementTemplate template in elementTemplates) {
@@ -369,6 +375,16 @@ namespace VixenApplication.Setup
 			if (elementTree.RenameSelectedElements()) {
 				OnElementsChanged();
 			}
+		}
+
+		private void groupBoxes_Paint(object sender, PaintEventArgs e)
+		{
+			ThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
+		}
+
+		private void comboBox_DrawItem(object sender, DrawItemEventArgs e)
+		{
+			ThemeComboBoxRenderer.DrawItem(sender, e);
 		}
 	}
 }

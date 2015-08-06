@@ -28,9 +28,10 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			this.label1 = new System.Windows.Forms.Label();
 			this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
-			this.toolTip1 = new System.Windows.Forms.ToolTip();
+			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.checkBoxStopCurrentShow = new System.Windows.Forms.CheckBox();
 			this.comboBoxShow = new System.Windows.Forms.ComboBox();
 			this.SuspendLayout();
@@ -59,12 +60,14 @@
 			// 
 			this.comboBoxShow.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.comboBoxShow.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
 			this.comboBoxShow.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.comboBoxShow.FormattingEnabled = true;
 			this.comboBoxShow.Location = new System.Drawing.Point(74, 3);
 			this.comboBoxShow.Name = "comboBoxShow";
 			this.comboBoxShow.Size = new System.Drawing.Size(213, 21);
 			this.comboBoxShow.TabIndex = 17;
+			this.comboBoxShow.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.comboBox_DrawItem);
 			this.comboBoxShow.SelectedIndexChanged += new System.EventHandler(this.comboBoxShow_SelectedIndexChanged);
 			// 
 			// ShowTypeEditor

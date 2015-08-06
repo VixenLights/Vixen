@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Text;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Windows.Forms;
 using System.Diagnostics;
 using System.IO;
+using System.Xml;
 using System.Xml.Serialization;
 using System.Runtime;
 using Vixen.Module.Editor;
@@ -39,12 +42,6 @@ namespace VixenApplication
 			//Workaround for a MS bug
 			statusStrip.Padding = new Padding(statusStrip.Padding.Left,
 			statusStrip.Padding.Top, statusStrip.Padding.Left, statusStrip.Padding.Bottom);
-			menuStripMain.Renderer = new DarkThemeToolStripRenderer();
-			buttonNewSequence.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonOpenSequence.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonSetupDisplay.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonSetupOutputPreviews.BackgroundImage = Resources.HeadingBackgroundImage;
-			listViewRecentSequences.OwnerDraw = true;
 
 			Icon = Resources.Icon_Vixen3;
 
@@ -77,6 +74,9 @@ namespace VixenApplication
 		}
 			var myMenu = new AppCommand("Options", "Options...");
 			myMenu.Click += optionsToolStripMenuItem_Click;
+			toolsMenu.Add(myMenu);
+			myMenu = new AppCommand("Theme", "Themes");
+			myMenu.Click += themeSetupMenuItem_Click;
 			toolsMenu.Add(myMenu);
 
 		}
@@ -116,6 +116,8 @@ namespace VixenApplication
 		private void VixenApplication_Load(object sender, EventArgs e)
 		{
 			initializeEditorTypes();
+
+			InitializeTheme();
 			openFileDialog.InitialDirectory = SequenceService.SequenceDirectory;
 
 			// Add menu items for the logs.
@@ -126,10 +128,61 @@ namespace VixenApplication
 			foreach (string logName in di.GetFiles().Select(x => x.Name)) {
 				logsToolStripMenuItem.DropDownItems.Add(logName, null,
 				                                        (menuSender, menuArgs) => _ViewLog(((ToolStripMenuItem) menuSender).Text));
-			//	logsToolStripMenuItem.DropDownItems..ForeColor = Color.FromArgb(90, 90, 90);
+			//	logsToolStripMenuItem.DropDownItems.ForeColor = Color.FromArgb(90, 90, 90);
 			}
 			PopulateRecentSequencesList();
 		}
+
+		#region Load or create default Theme file as required
+		private void InitializeTheme()
+		{
+			//Initializes Theme Colors
+			if (File.Exists(ThemeMainForm._vixenThemePath))
+			{
+				using (FileStream reader = new FileStream(ThemeMainForm._vixenThemePath, FileMode.Open, FileAccess.Read))
+				{
+					var i = 0;
+					DataContractSerializer ser = new DataContractSerializer(typeof (Color[]));
+					foreach (Color _colors in (Color[]) ser.ReadObject(reader))
+					{
+						ThemeLoadColors._vixenThemeColors[i] = _colors;
+						i++;
+					}
+				}
+			}
+			else
+			{
+				//This will only be run once to create the Theme file and add default Dark theme colors.
+				ThemeLoadColors.DarkTheme();
+
+				var xmlsettings = new XmlWriterSettings
+				{
+					Indent = true,
+					IndentChars = "\t",
+				};
+
+				//Create the file
+				DataContractSerializer dataSer = new DataContractSerializer(typeof (Color[]));
+				var dataWriter = XmlWriter.Create(ThemeMainForm._vixenThemePath, xmlsettings);
+				dataSer.WriteObject(dataWriter, ThemeLoadColors._vixenThemeColors);
+				dataWriter.Close();
+			}
+			//Add the colors from the file to the Theme Color Table
+			ThemeLoadColors.InitialLoadTheme();
+			//Render the new Theme to the Vixen Application form.
+			menuStripMain.Renderer = new ThemeToolStripRenderer();
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
+			statusStrip.BackColor = ThemeColorTable.BackgroundColor;
+			statusStrip.ForeColor = ThemeColorTable.ForeColor;
+			toolStripStatusLabel1.ForeColor = ThemeColorTable.ForeColor;
+			toolStripStatusLabelExecutionLight.ForeColor = ThemeColorTable.ForeColor;
+			toolStripStatusLabelExecutionState.ForeColor = ThemeColorTable.ForeColor;
+			toolStripStatusLabel_memory.ForeColor = ThemeColorTable.ForeColor;
+			Refresh(); //This is mainly used to initiate a redraw of the Groupbox theme
+		}
+		#endregion
 
 		private void VixenApplication_Shown(object sender, EventArgs e)
 		{
@@ -587,6 +640,24 @@ namespace VixenApplication
 				return;
 		}
 
+		private void themeSetupMenuItem_Click(object sender, EventArgs e)
+		{
+			var themeControl = new ThemeMainForm();
+			themeControl.ShowDialog();
+
+			menuStripMain.Renderer = new ThemeToolStripRenderer();
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
+			statusStrip.BackColor = ThemeColorTable.BackgroundColor;
+			statusStrip.ForeColor = ThemeColorTable.ForeColor;
+			toolStripStatusLabel1.ForeColor = ThemeColorTable.ForeColor;
+			toolStripStatusLabelExecutionLight.ForeColor = ThemeColorTable.ForeColor;
+			toolStripStatusLabelExecutionState.ForeColor = ThemeColorTable.ForeColor;
+			toolStripStatusLabel_memory.ForeColor = ThemeColorTable.ForeColor;
+			Refresh();
+		}
+
 		// we can't get passed in a state to display, since it may be called out-of-order if we're invoking across threads, etc.
 		// so instead, just take this as a notification to update with the current state of the execution engine.
 		private void updateExecutionState()
@@ -758,45 +829,32 @@ namespace VixenApplication
 			SetupDisplay();
 		}
 
-		#region Draw lines and borders
-		//set color for box borders.
-		private Color _borderColor = Color.FromArgb(136, 136, 136);
-
-		public Color BorderColor
-		{
-			get { return _borderColor; }
-			set { _borderColor = value; }
-		}
-
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)
 		{
-			DarkThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
+			ThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
 		}
 
 		private void VixenApplication_Paint(object sender, PaintEventArgs e)
 		{
-			Pen borderColor = new Pen(_borderColor, 1);
+			Pen borderColor = new Pen(ThemeColorTable.GroupBoxBorderColor, 1);
 
 			if (ActiveForm != null)
-				e.Graphics.DrawLine(borderColor, 0, pictureBox1.Size.Height + 30, ActiveForm.Width, pictureBox1.Size.Height + 30);
+			{
+	//			e.Graphics.DrawLine(borderColor, 0, pictureBox1.Size.Height + 30, ActiveForm.Width, pictureBox1.Size.Height + 30);
+				e.Graphics.DrawLine(borderColor, 0, ActiveForm.Height - 50, ActiveForm.Width, ActiveForm.Height - 50);
+			}
 		}
-		#endregion
 
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.HeadingBackgroundImageHover;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImageHover ?? Resources.HeadingBackgroundImageHover;
 		}
 
 		private void buttonBackground_MouseLeave(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.HeadingBackgroundImage;
-		}
-
-		private void listViewRecentSequences_DrawItem(object sender, DrawListViewItemEventArgs e)
-		{
-			DarkThemeListViewItemRenderer.DrawItem(sender, e);
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImage ?? Resources.HeadingBackgroundImage;
 		}
 	}
 

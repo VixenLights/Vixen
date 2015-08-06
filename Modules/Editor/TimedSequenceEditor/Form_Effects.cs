@@ -21,6 +21,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			InitializeComponent();
 			TimelineControl = timelineControl;
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
 		}
 
 		private void Form_Effects_Load(object sender, EventArgs e)
@@ -57,7 +60,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						break;
 				}
 				TreeNode node = new TreeNode(effectDesriptor.EffectName) {Tag = effectDesriptor.TypeId};
-				node.ForeColor = DarkThemeColorTable.ForeColor;
+				node.ForeColor = ThemeColorTable.ForeColor;
 				parentNode.Nodes.Add(node);
 				// Set the image
 				Image image = effectDesriptor.GetRepresentativeImage(48, 48);

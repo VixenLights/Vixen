@@ -49,9 +49,11 @@ namespace Common.Controls
 			this.parallelPortGroupBox.TabIndex = 0;
 			this.parallelPortGroupBox.TabStop = false;
 			this.parallelPortGroupBox.Text = "Parallel Port";
+			this.parallelPortGroupBox.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
 			// portTextBox
 			// 
+			this.portTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.portTextBox.Enabled = false;
 			this.portTextBox.Location = new System.Drawing.Point(210, 46);
 			this.portTextBox.Name = "portTextBox";
@@ -60,6 +62,8 @@ namespace Common.Controls
 			// 
 			// portComboBox
 			// 
+			this.portComboBox.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+			this.portComboBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.portComboBox.FormattingEnabled = true;
 			this.portComboBox.Items.AddRange(new object[] {
             "Standard port 1 (0378)",
@@ -70,6 +74,7 @@ namespace Common.Controls
 			this.portComboBox.Name = "portComboBox";
 			this.portComboBox.Size = new System.Drawing.Size(187, 21);
 			this.portComboBox.TabIndex = 1;
+			this.portComboBox.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.comboBox_DrawItem);
 			this.portComboBox.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
 			// 
 			// label1
@@ -91,6 +96,8 @@ namespace Common.Controls
 			this.OkButton.Text = "OK";
 			this.OkButton.UseVisualStyleBackColor = true;
 			this.OkButton.Click += new System.EventHandler(this.OkButton_Click);
+			this.OkButton.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.OkButton.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// canceButton
 			// 
@@ -101,6 +108,8 @@ namespace Common.Controls
 			this.canceButton.TabIndex = 2;
 			this.canceButton.Text = "Cancel";
 			this.canceButton.UseVisualStyleBackColor = true;
+			this.canceButton.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.canceButton.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// ParallelPortConfig
 			// 

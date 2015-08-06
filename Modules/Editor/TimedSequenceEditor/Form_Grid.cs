@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls.Theme;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace VixenModules.Editor.TimedSequenceEditor
@@ -15,6 +16,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public Form_Grid()
 		{
 			InitializeComponent();
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.ComboBoxBackColor;
+			ThemeUpdateControls.UpdateControls(this);
+
 		}
 
 		public Common.Controls.Timeline.TimelineControl TimelineControl 

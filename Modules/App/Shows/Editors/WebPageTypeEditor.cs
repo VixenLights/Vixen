@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using System.Diagnostics;
 using System.IO;
 using System.Xml.Serialization;
+using Common.Controls.Theme;
 using Common.Resources;
 using Common.Resources.Properties;
 using Vixen.Module.Editor;
@@ -23,6 +24,9 @@ namespace VixenModules.App.Shows
 		{
 			InitializeComponent();
 
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
 			buttonTest.Image = Tools.GetIcon(Resources.cog_go, 16);
 			buttonTest.Text = "";
 

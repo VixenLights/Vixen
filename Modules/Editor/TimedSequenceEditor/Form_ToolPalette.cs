@@ -84,9 +84,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			InitializeComponent();
 			TimelineControl = timelineControl;
 			Icon = Resources.Icon_Vixen3;
-			toolStripColors.Renderer=new DarkThemeToolStripRenderer();
-			toolStripGradients.Renderer = new DarkThemeToolStripRenderer();
-			toolStripCurves.Renderer = new DarkThemeToolStripRenderer();
 			toolStripButtonEditColor.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStripButtonEditColor.Image = Resources.pencil;
 			toolStripButtonNewColor.DisplayStyle = ToolStripItemDisplayStyle.Image;
@@ -128,9 +125,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			listViewCurves.AllowDrop = true;
 			listViewGradients.AllowDrop = true;
 
-			listViewColors.BackColor = DarkThemeColorTable.BackgroundColor;
-			listViewCurves.BackColor = DarkThemeColorTable.BackgroundColor;
-			listViewGradients.BackColor = DarkThemeColorTable.BackgroundColor;
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
+			//Over-ride the auto theme listview back color
+			listViewColors.BackColor = ThemeColorTable.BackgroundColor;
+			listViewCurves.BackColor = ThemeColorTable.BackgroundColor;
+			listViewGradients.BackColor = ThemeColorTable.BackgroundColor;
 		}
 
 		private void ColorPalette_Load(object sender, EventArgs e)
@@ -1001,8 +1002,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		
 
 		#endregion
-
-		
 
 	}
 }

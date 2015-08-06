@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Resources;
 using System.Reflection;
+using Common.Controls.Theme;
 using Common.Resources.Properties;
 using Vixen.Sys;
 
@@ -31,10 +32,10 @@ namespace VixenModules.App.LipSyncApp
 
         public LipSyncMapEditor(LipSyncMapData mapData)
         {
-            InitializeComponent();
-			buttonCancel.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonOK.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonAssign.BackgroundImage = Resources.HeadingBackgroundImage;
+			InitializeComponent();
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
 			Icon = Resources.Icon_Vixen3;
             _doMatrixUpdate = false;
             LoadResourceBitmaps();
@@ -464,13 +465,13 @@ namespace VixenModules.App.LipSyncApp
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.HeadingBackgroundImageHover;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImageHover ?? Resources.HeadingBackgroundImageHover;
 		}
 
 		private void buttonBackground_MouseLeave(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.HeadingBackgroundImage;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImage ?? Resources.HeadingBackgroundImage;
 		}
     }
 }

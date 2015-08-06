@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Common.Controls;
+using Common.Controls.Theme;
 using Common.Resources;
 using Common.Resources.Properties;
 
@@ -20,6 +21,9 @@ namespace VixenModules.Property.Color
 		{
 			_data = colorStaticData;
 			InitializeComponent();
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
 			Icon = Resources.Icon_Vixen3;
 			buttonAddColor.Image = Tools.GetIcon(Resources.add, 16);
 			buttonAddColor.Text = "";
@@ -48,13 +52,17 @@ namespace VixenModules.Property.Color
 		private void UpdateGroupBoxWithColorSet(string name, ColorSet cs)
 		{
 			if (cs == null) {
-				groupBoxColorSet.Enabled = false;
+				panelColorSet.Enabled = false;
+				label2.ForeColor = ThemeColorTable.ForeColorDisabled;
+				label3.ForeColor = ThemeColorTable.ForeColorDisabled;
 				textBoxName.Text = string.Empty;
 				tableLayoutPanelColors.Controls.Clear();
 				return;
 			}
 
-			groupBoxColorSet.Enabled = true;
+			panelColorSet.Enabled = true;
+			label2.ForeColor = ThemeColorTable.ForeColor;
+			label3.ForeColor = ThemeColorTable.ForeColor;
 			textBoxName.Text = name;
 
 			tableLayoutPanelColors.Controls.Clear();
@@ -138,7 +146,7 @@ namespace VixenModules.Property.Color
 
 		private bool displayedColorSetHasDifferences()
 		{
-			if (!groupBoxColorSet.Enabled)
+			if (!panelColorSet.Enabled)
 				return false;
 
 			if (_data.ContainsColorSet(textBoxName.Text)) {
@@ -206,6 +214,23 @@ namespace VixenModules.Property.Color
 						break;
 				}
 			}
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImage ?? Resources.HeadingBackgroundImage;
+		}
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImageHover ?? Resources.HeadingBackgroundImageHover;
+		}
+
+		private void groupBoxes_Paint(object sender, PaintEventArgs e)
+		{
+			ThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
 		}
 	}
 }

@@ -113,6 +113,8 @@ namespace VixenModules.App.Shows
 			}
 		}
 
+		public static bool diableShowAction;
+
 		[NonSerialized]
 		public Action currentAction = null;
 		public Action GetAction()

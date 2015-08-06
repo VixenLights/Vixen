@@ -1,4 +1,7 @@
-﻿namespace VixenModules.Controller.E131
+﻿using Common.Controls.Theme;
+using Common.Resources.Properties;
+
+namespace VixenModules.Controller.E131
 {
 	using System.Windows.Forms;
     using System.Net;
@@ -8,6 +11,9 @@
 		public UnicastForm()
 		{
 			this.InitializeComponent();
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
             ipTextBox.BringToFront();
 		}
 
@@ -63,5 +69,17 @@
         {
             updateChecked();
         }
+
+		private void buttonBackground_MouseHover(object sender, System.EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImageHover ?? Resources.HeadingBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, System.EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImage ?? Resources.HeadingBackgroundImage;
+		}
 	}
 }

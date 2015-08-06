@@ -29,7 +29,7 @@
 		{
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SetupPatchingGraphical));
-			Dataweb.NShape.RoleBasedSecurityManager roleBasedSecurityManager1 = new Dataweb.NShape.RoleBasedSecurityManager();
+			Dataweb.NShape.RoleBasedSecurityManager roleBasedSecurityManager4 = new Dataweb.NShape.RoleBasedSecurityManager();
 			this.diagramDisplay = new Dataweb.NShape.WinFormsUI.Display();
 			this.diagramSetController = new Dataweb.NShape.Controllers.DiagramSetController();
 			this.project = new Dataweb.NShape.Project(this.components);
@@ -53,7 +53,9 @@
 			this.diagramDisplay.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.diagramDisplay.BackColor = System.Drawing.Color.Transparent;
 			this.diagramDisplay.BackColorGradient = System.Drawing.SystemColors.Control;
+			this.diagramDisplay.BackgroundGradientAngle = 90;
 			this.diagramDisplay.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.diagramDisplay.DiagramSetController = this.diagramSetController;
 			this.diagramDisplay.GridColor = System.Drawing.Color.Gainsboro;
@@ -87,9 +89,9 @@
 			this.project.LibrarySearchPaths = ((System.Collections.Generic.IList<string>)(resources.GetObject("project.LibrarySearchPaths")));
 			this.project.Name = null;
 			this.project.Repository = this.cachedRepository;
-			roleBasedSecurityManager1.CurrentRole = Dataweb.NShape.StandardRole.Administrator;
-			roleBasedSecurityManager1.CurrentRoleName = "Administrator";
-			this.project.SecurityManager = roleBasedSecurityManager1;
+			roleBasedSecurityManager4.CurrentRole = Dataweb.NShape.StandardRole.Administrator;
+			roleBasedSecurityManager4.CurrentRoleName = "Administrator";
+			this.project.SecurityManager = roleBasedSecurityManager4;
 			// 
 			// cachedRepository
 			// 
@@ -131,25 +133,31 @@
 			// buttonDeleteFilter
 			// 
 			this.buttonDeleteFilter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonDeleteFilter.BackColor = System.Drawing.Color.Transparent;
+			this.buttonDeleteFilter.FlatAppearance.BorderSize = 0;
+			this.buttonDeleteFilter.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonDeleteFilter.Location = new System.Drawing.Point(33, 519);
 			this.buttonDeleteFilter.Name = "buttonDeleteFilter";
 			this.buttonDeleteFilter.Size = new System.Drawing.Size(24, 24);
 			this.buttonDeleteFilter.TabIndex = 43;
 			this.buttonDeleteFilter.Text = "-";
 			this.toolTip1.SetToolTip(this.buttonDeleteFilter, "Delete Filter");
-			this.buttonDeleteFilter.UseVisualStyleBackColor = true;
+			this.buttonDeleteFilter.UseVisualStyleBackColor = false;
 			this.buttonDeleteFilter.Click += new System.EventHandler(this.buttonDeleteFilter_Click);
 			// 
 			// buttonAddFilter
 			// 
 			this.buttonAddFilter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonAddFilter.BackColor = System.Drawing.Color.Transparent;
+			this.buttonAddFilter.FlatAppearance.BorderSize = 0;
+			this.buttonAddFilter.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonAddFilter.Location = new System.Drawing.Point(3, 519);
 			this.buttonAddFilter.Name = "buttonAddFilter";
 			this.buttonAddFilter.Size = new System.Drawing.Size(24, 24);
 			this.buttonAddFilter.TabIndex = 44;
 			this.buttonAddFilter.Text = "+";
 			this.toolTip1.SetToolTip(this.buttonAddFilter, "Add Filter");
-			this.buttonAddFilter.UseVisualStyleBackColor = true;
+			this.buttonAddFilter.UseVisualStyleBackColor = false;
 			this.buttonAddFilter.Click += new System.EventHandler(this.buttonAddFilter_Click);
 			// 
 			// toolTip1
@@ -162,37 +170,46 @@
 			// buttonZoomIn
 			// 
 			this.buttonZoomIn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonZoomIn.BackColor = System.Drawing.Color.Transparent;
+			this.buttonZoomIn.FlatAppearance.BorderSize = 0;
+			this.buttonZoomIn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonZoomIn.Location = new System.Drawing.Point(87, 519);
 			this.buttonZoomIn.Name = "buttonZoomIn";
 			this.buttonZoomIn.Size = new System.Drawing.Size(24, 24);
 			this.buttonZoomIn.TabIndex = 45;
 			this.buttonZoomIn.Text = "Z";
 			this.toolTip1.SetToolTip(this.buttonZoomIn, "Zoom In");
-			this.buttonZoomIn.UseVisualStyleBackColor = true;
+			this.buttonZoomIn.UseVisualStyleBackColor = false;
 			this.buttonZoomIn.Click += new System.EventHandler(this.buttonZoomIn_Click);
 			// 
 			// buttonZoomOut
 			// 
 			this.buttonZoomOut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonZoomOut.BackColor = System.Drawing.Color.Transparent;
+			this.buttonZoomOut.FlatAppearance.BorderSize = 0;
+			this.buttonZoomOut.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonZoomOut.Location = new System.Drawing.Point(117, 519);
 			this.buttonZoomOut.Name = "buttonZoomOut";
 			this.buttonZoomOut.Size = new System.Drawing.Size(24, 24);
 			this.buttonZoomOut.TabIndex = 46;
 			this.buttonZoomOut.Text = "Z";
 			this.toolTip1.SetToolTip(this.buttonZoomOut, "Zoom Out");
-			this.buttonZoomOut.UseVisualStyleBackColor = true;
+			this.buttonZoomOut.UseVisualStyleBackColor = false;
 			this.buttonZoomOut.Click += new System.EventHandler(this.buttonZoomOut_Click);
 			// 
 			// buttonZoomFit
 			// 
 			this.buttonZoomFit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonZoomFit.BackColor = System.Drawing.Color.Transparent;
+			this.buttonZoomFit.FlatAppearance.BorderSize = 0;
+			this.buttonZoomFit.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonZoomFit.Location = new System.Drawing.Point(147, 519);
 			this.buttonZoomFit.Name = "buttonZoomFit";
 			this.buttonZoomFit.Size = new System.Drawing.Size(24, 24);
 			this.buttonZoomFit.TabIndex = 47;
 			this.buttonZoomFit.Text = "Z";
 			this.toolTip1.SetToolTip(this.buttonZoomFit, "Zoom to Fit");
-			this.buttonZoomFit.UseVisualStyleBackColor = true;
+			this.buttonZoomFit.UseVisualStyleBackColor = false;
 			this.buttonZoomFit.Click += new System.EventHandler(this.buttonZoomFit_Click);
 			// 
 			// SetupPatchingGraphical

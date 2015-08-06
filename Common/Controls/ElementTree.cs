@@ -7,6 +7,7 @@ using System.Linq;
 using System.Media;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls.Theme;
 using Vixen.Module.Property;
 using Vixen.Services;
 using Vixen.Sys;
@@ -27,6 +28,7 @@ namespace Common.Controls
 		{
 			InitializeComponent();
 
+			contextMenuStripTreeView.Renderer = new ThemeToolStripRenderer();
 			treeview.DragFinishing += treeviewDragFinishingHandler;
 			treeview.DragOverVerify += treeviewDragVerifyHandler;
 			treeview.DragStart += treeview_DragStart;

@@ -23,12 +23,9 @@ namespace VixenModules.App.LipSyncApp
         public LipSyncMapSelector()
 		{
 			InitializeComponent();
-			buttonCancel.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonCloneMap.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonDeleteMap.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonEditMap.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonNewMap.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonOK.BackgroundImage = Resources.HeadingBackgroundImage;
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
             listViewMappings.Sorting = SortOrder.Ascending;
 			Icon = Resources.Icon_Vixen3;
             Changed = false;
@@ -275,19 +272,18 @@ namespace VixenModules.App.LipSyncApp
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.HeadingBackgroundImageHover;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImageHover ?? Resources.HeadingBackgroundImageHover;
 		}
 
 		private void buttonBackground_MouseLeave(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.HeadingBackgroundImage;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImage ?? Resources.HeadingBackgroundImage;
 		}
 
 		private void buttonTextColorChange(object sender, EventArgs e)
 		{
-			var btn = (Button)sender;
-			btn.ForeColor = btn.Enabled ? DarkThemeColorTable.ForeColor : DarkThemeColorTable.ForeColorDisabled;
+
 		}
     }
 }

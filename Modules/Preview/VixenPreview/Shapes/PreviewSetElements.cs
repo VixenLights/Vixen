@@ -7,6 +7,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls.Theme;
+using Common.Resources.Properties;
 using Vixen.Data.Flow;
 using Vixen.Module;
 using Vixen.Module.OutputFilter;
@@ -24,7 +26,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
         public PreviewSetElements(List<PreviewBaseShape> shapes)
         {
-            InitializeComponent();
+			InitializeComponent();
+			Icon = Resources.Icon_Vixen3;
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
             _shapes = shapes;
             connectStandardStrings = shapes[0].connectStandardStrings;
             int i = 1;
@@ -408,5 +414,22 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 UpdateListLinkedElements();
             }
         }
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImageHover ?? Resources.HeadingBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImage ?? Resources.HeadingBackgroundImage;
+		}
+
+		private void comboBox_DrawItem(object sender, DrawItemEventArgs e)
+		{
+			ThemeComboBoxRenderer.DrawItem(sender, e);
+		}
     }
 }

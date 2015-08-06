@@ -19,12 +19,11 @@ namespace VixenModules.App.Curves
 		public CurveLibrarySelector()
 		{
 			InitializeComponent();
-			buttonCancel.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonDeleteCurve.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonEditCurve.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonNewCurve.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonOK.BackgroundImage = Resources.HeadingBackgroundImage;
-			Icon = Common.Resources.Properties.Resources.Icon_Vixen3;
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			listViewCurves.BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
+			Icon = Resources.Icon_Vixen3;
 			DoubleClickMode = Mode.Ok;
 		}
 
@@ -74,7 +73,7 @@ namespace VixenModules.App.Curves
 				listViewCurves.LargeImageList.Images.Add(name, image);
 
 				ListViewItem item = new ListViewItem { Text = name, Name = name, ImageKey = name, Tag = c };
-				item.ForeColor = DarkThemeColorTable.ForeColor;
+				item.ForeColor = ThemeColorTable.ForeColor;
 				listViewCurves.Items.Add(item);
 			}
 
@@ -223,19 +222,19 @@ namespace VixenModules.App.Curves
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.HeadingBackgroundImageHover;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImageHover ?? Resources.HeadingBackgroundImageHover;
 		}
 
 		private void buttonBackground_MouseLeave(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.HeadingBackgroundImage;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImage ?? Resources.HeadingBackgroundImage;
 		}
 
 		private void buttonTextColorChange(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
-			btn.ForeColor = btn.Enabled ? DarkThemeColorTable.ForeColor : DarkThemeColorTable.ForeColorDisabled;
+			btn.ForeColor = btn.Enabled ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
 		}
 
 	}

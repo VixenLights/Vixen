@@ -20,6 +20,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			                                 provider.GetService(typeof (IWindowsFormsEditorService));
 			if (svc != null) {
 				List<PreviewBaseShape> shapes = value as List<PreviewBaseShape>;
+				if (shapes.Count < 1)
+				{
+					MessageBox.Show("Elements must have at least one shape. Remove the selected element.");
+					if (value != null) return value;
+				}
 				PreviewSetElements elementsDialog = new PreviewSetElements(shapes);
 				svc.ShowDialog(elementsDialog);
 				// update etc

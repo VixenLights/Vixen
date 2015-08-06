@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using Common.Controls.Theme;
+using Common.Resources.Properties;
 using Vixen.Data.Flow;
 using Vixen.Module.Effect;
 using Vixen.Module.OutputFilter;
@@ -20,6 +22,11 @@ namespace VixenModules.Property.Color
 		public ColorSetupHelper()
 		{
 			InitializeComponent();
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
+			colorPanelSingleColor.BackColor = System.Drawing.Color.RoyalBlue;
+			colorPanelSingleColor.Color = System.Drawing.Color.RoyalBlue;
 		}
 
 		public string HelperName
@@ -299,6 +306,18 @@ namespace VixenModules.Property.Color
 				cssf.ShowDialog();
 				PopulateColorSetsComboBox();
 			}
+		}
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImageHover ?? Resources.HeadingBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImage ?? Resources.HeadingBackgroundImage;
 		}
 
 

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Globalization;
+using Common.Controls.Theme;
 using VixenModules.Sequence.Timed;
 using Common.Resources.Properties;
 
@@ -94,8 +95,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public Form_AddMultipleEffects()
 		{
 			InitializeComponent();
-			btnCancel.BackgroundImage = Resources.HeadingBackgroundImage;
-			btnOK.BackgroundImage = Resources.HeadingBackgroundImage;
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
 			btnShowBeatMarkOptions.Image = Resources.bullet_toggle_plus;
 			btnShowBeatMarkOptions.Text = "";
 			btnHideBeatMarkOptions.Image = Resources.bullet_toggle_minus;
@@ -499,13 +501,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.HeadingBackgroundImageHover;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImageHover ?? Resources.HeadingBackgroundImageHover;
 		}
 
 		private void buttonBackground_MouseLeave(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.HeadingBackgroundImage;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImage ?? Resources.HeadingBackgroundImage;
 		}
 
 	}

@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls.Theme;
 using Common.Resources;
 using Common.Resources.Properties;
 
@@ -19,6 +20,9 @@ namespace VixenModules.App.SuperScheduler
 		{
 			InitializeComponent();
 
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
 			buttonHelp.Image = Tools.GetIcon(Resources.help, 16);
 			
 			_scheduleItem = scheduleItem;
@@ -137,10 +141,26 @@ namespace VixenModules.App.SuperScheduler
 			labelDuration.Text = "(the show will last " + t.Hours + " hours and " + t.Minutes + " minutes)";
 		}
 
-		private void comboBoxShow_SelectedIndexChanged(object sender, EventArgs e)
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
-
+			var btn = (Button)sender;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImageHover ?? Resources.HeadingBackgroundImageHover;
 		}
 
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImage ?? Resources.HeadingBackgroundImage;
+		}
+
+		private void groupBoxes_Paint(object sender, PaintEventArgs e)
+		{
+			ThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
+		}
+
+		private void comboBox_DrawItem(object sender, DrawItemEventArgs e)
+		{
+			ThemeComboBoxRenderer.DrawItem(sender, e);
+		}
 	}
 }

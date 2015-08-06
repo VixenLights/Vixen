@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using Common.Controls.Theme;
 using Common.Resources.Properties;
 using Vixen.Factory;
 using Vixen.Module;
@@ -28,6 +29,9 @@ namespace VixenApplication
 		{
 			InitializeComponent();
 			Icon = Resources.Icon_Vixen3;
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
 			this.ShowInTaskbar = false;
 			_displayedController = null;
 		}
@@ -148,12 +152,20 @@ namespace VixenApplication
 			if (oc == null) {
 				textBoxName.Text = string.Empty;
 				buttonDeleteController.Enabled = false;
-				groupBoxSelectedController.Enabled = false;
+				textBoxName.Enabled = false;
+				buttonUpdate.Enabled = false;
+				buttonConfigureController.Enabled = false;
+				label1.ForeColor = ThemeColorTable.ForeColorDisabled;
+				label2.ForeColor = ThemeColorTable.ForeColorDisabled;
 			}
 			else {
 				textBoxName.Text = oc.Name;
 				buttonDeleteController.Enabled = true;
-				groupBoxSelectedController.Enabled = true;
+				textBoxName.Enabled = true;
+				buttonUpdate.Enabled = true;
+				buttonConfigureController.Enabled = true;
+				label1.ForeColor = ThemeColorTable.ForeColor;
+				label2.ForeColor = ThemeColorTable.ForeColor;
 			}
 		}
 
@@ -209,6 +221,23 @@ namespace VixenApplication
 					}
 				}
 			}
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImage ?? Resources.HeadingBackgroundImage;
+		}
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImageHover ?? Resources.HeadingBackgroundImageHover;
+		}
+
+		private void groupBoxes_Paint(object sender, PaintEventArgs e)
+		{
+			ThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
 		}
 	}
 }

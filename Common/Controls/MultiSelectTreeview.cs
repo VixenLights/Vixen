@@ -8,6 +8,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows.Forms.Design;
+using Common.Controls.Theme;
 
 
 namespace Common.Controls
@@ -854,8 +855,8 @@ namespace Common.Controls
 				node.BackColor = SystemColors.Highlight;
 			}
 			else {
-				node.BackColor = SystemColors.HighlightText;
-				node.ForeColor = SystemColors.ControlText;
+				node.BackColor = ThemeColorTable.ListBoxBackColor;
+				node.ForeColor = ThemeColorTable.ForeColor;
 			}
 		}
 

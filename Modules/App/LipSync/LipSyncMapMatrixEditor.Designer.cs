@@ -64,10 +64,10 @@
 			this.buttonOK.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.buttonOK.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonOK.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonOK.Location = new System.Drawing.Point(495, 143);
+			this.buttonOK.Location = new System.Drawing.Point(501, 143);
 			this.buttonOK.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
 			this.buttonOK.Name = "buttonOK";
-			this.buttonOK.Size = new System.Drawing.Size(80, 25);
+			this.buttonOK.Size = new System.Drawing.Size(74, 25);
 			this.buttonOK.TabIndex = 16;
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
@@ -85,10 +85,10 @@
 			this.buttonCancel.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.buttonCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonCancel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonCancel.Location = new System.Drawing.Point(494, 174);
+			this.buttonCancel.Location = new System.Drawing.Point(500, 174);
 			this.buttonCancel.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
 			this.buttonCancel.Name = "buttonCancel";
-			this.buttonCancel.Size = new System.Drawing.Size(80, 25);
+			this.buttonCancel.Size = new System.Drawing.Size(75, 25);
 			this.buttonCancel.TabIndex = 15;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;

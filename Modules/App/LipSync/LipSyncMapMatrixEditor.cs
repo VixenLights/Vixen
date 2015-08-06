@@ -48,13 +48,10 @@ namespace VixenModules.App.LipSyncApp
         public LipSyncMapMatrixEditor(LipSyncMapData mapData)
         {
 			Location = ActiveForm != null ? new Point(ActiveForm.Location.X - 150, ActiveForm.Location.Y - 100) : new Point(200, 100);
-            InitializeComponent();
-			buttonAssign.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonCancel.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonClear.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonExport.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonImport.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonOK.BackgroundImage = Resources.HeadingBackgroundImage;
+			InitializeComponent();
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
 			Icon = Resources.Icon_Vixen3;
             LoadResourceBitmaps();
             dataTables = new Dictionary<PhonemeType, DataTable>();
@@ -705,21 +702,17 @@ namespace VixenModules.App.LipSyncApp
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.HeadingBackgroundImageHover;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImageHover ?? Resources.HeadingBackgroundImageHover;
 		}
 
 		private void buttonBackground_MouseLeave(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.HeadingBackgroundImage;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImage ?? Resources.HeadingBackgroundImage;
 		}
-
-		#region Draw lines and GroupBox borders
-		
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)
 		{
-			DarkThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
+			ThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
 		}
-		#endregion
 	}
 }

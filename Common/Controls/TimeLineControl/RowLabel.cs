@@ -164,10 +164,10 @@ namespace Common.Controls.Timeline
 
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			using (SolidBrush backgroundBrush = new SolidBrush(DarkThemeColorTable.BackgroundColor)) {
-				using (SolidBrush toggleBrush = new SolidBrush(DarkThemeColorTable.BackgroundColor))
+			using (SolidBrush backgroundBrush = new SolidBrush(ThemeColorTable.BackgroundColor)) {
+				using (SolidBrush toggleBrush = new SolidBrush(ThemeColorTable.BackgroundColor))
 				{
-					using (SolidBrush nodeIconBrush = new SolidBrush(DarkThemeColorTable.BackgroundColor))
+					using (SolidBrush nodeIconBrush = new SolidBrush(ThemeColorTable.BackgroundColor))
 					{
 						using (SolidBrush textBrush = new SolidBrush(Color.Silver)) {
 							using (Pen wholeBorderPen = new Pen(Color.Black, 1)) {

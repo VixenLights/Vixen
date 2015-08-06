@@ -35,12 +35,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public ColorCollectionLibrary_Form(List<ColorCollection> collections)
 		{
 			InitializeComponent();
-			btnCancel.BackgroundImage = Resources.HeadingBackgroundImage;
-			btnOK.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonAddColor.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonExportCollection.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonImportCollection.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonRemoveColor.BackgroundImage = Resources.HeadingBackgroundImage;
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
+			listViewColors.BackColor = ThemeColorTable.BackgroundColor;
 			buttonNewCollection.BackgroundImage = Tools.GetIcon(Resources.add, 25);
 			buttonNewCollection.Text = "";
 			buttonDeleteCollection.BackgroundImage = Tools.GetIcon(Resources.minus, 25);
@@ -388,13 +386,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.HeadingBackgroundImageHover;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImageHover ?? Resources.HeadingBackgroundImageHover;
 		}
 
 		private void buttonBackground_MouseLeave(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.HeadingBackgroundImage;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImage ?? Resources.HeadingBackgroundImage;
 		}
 
 		private void buttonNewCollection_Click(object sender, EventArgs e)
@@ -430,19 +428,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void buttonTextColorChange(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
-			btn.ForeColor = btn.Enabled ? DarkThemeColorTable.ForeColor : DarkThemeColorTable.ForeColorDisabled;
+			btn.ForeColor = btn.Enabled ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
 		}
 
-		private void comboBoxCollections_DrawItem(object sender, DrawItemEventArgs e)
+		private void comboBox_DrawItem(object sender, DrawItemEventArgs e)
 		{
-			int index = e.Index;
-			if (index < 0)
-			{
-				return;
-			}
-			var brush = new SolidBrush(DarkThemeColorTable.ForeColor);
-			e.DrawBackground();
-			e.Graphics.DrawString(comboBoxCollections.Items[index].ToString(), e.Font, brush, e.Bounds, StringFormat.GenericDefault);
+			ThemeComboBoxRenderer.DrawItem(sender, e);
 		}
 	}
 }

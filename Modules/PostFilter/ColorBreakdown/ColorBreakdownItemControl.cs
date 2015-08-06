@@ -8,6 +8,8 @@ using System.Text;
 using System.Windows.Forms;
 using Common.Controls.ColorManagement.ColorModels;
 using Common.Controls.ColorManagement.ColorPicker;
+using Common.Controls.Theme;
+using Common.Resources.Properties;
 using Vixen.Data.Value;
 
 namespace VixenModules.OutputFilter.ColorBreakdown
@@ -17,6 +19,9 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 		public ColorBreakdownItemControl()
 		{
 			InitializeComponent();
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
 			panelColor.BackColor = Color.White;
 			textBoxName.Text = "New Color";
 		}
@@ -64,6 +69,18 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 					panelColor.BackColor = cp.Color.ToRGB().ToArgb();
 				}
 			}
+		}
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImageHover ?? Resources.HeadingBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = ThemeColorTable.newBackGroundImage ?? Resources.HeadingBackgroundImage;
 		}
 	}
 }

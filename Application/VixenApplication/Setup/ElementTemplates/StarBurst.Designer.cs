@@ -43,65 +43,62 @@
 			// 
 			// numericUpDownPixelsPerString
 			// 
-			this.numericUpDownPixelsPerString.Location = new System.Drawing.Point(147, 168);
-			this.numericUpDownPixelsPerString.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.numericUpDownPixelsPerString.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.numericUpDownPixelsPerString.Location = new System.Drawing.Point(98, 109);
 			this.numericUpDownPixelsPerString.Maximum = new decimal(new int[] {
-			1000,
-			0,
-			0,
-			0});
+            1000,
+            0,
+            0,
+            0});
 			this.numericUpDownPixelsPerString.Minimum = new decimal(new int[] {
-			1,
-			0,
-			0,
-			0});
+            1,
+            0,
+            0,
+            0});
 			this.numericUpDownPixelsPerString.Name = "numericUpDownPixelsPerString";
-			this.numericUpDownPixelsPerString.Size = new System.Drawing.Size(117, 26);
+			this.numericUpDownPixelsPerString.Size = new System.Drawing.Size(78, 20);
 			this.numericUpDownPixelsPerString.TabIndex = 3;
 			this.numericUpDownPixelsPerString.Value = new decimal(new int[] {
-			50,
-			0,
-			0,
-			0});
+            50,
+            0,
+            0,
+            0});
 			// 
 			// label4
 			// 
 			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(18, 171);
-			this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.label4.Location = new System.Drawing.Point(12, 111);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(111, 20);
+			this.label4.Size = new System.Drawing.Size(79, 13);
 			this.label4.TabIndex = 17;
 			this.label4.Text = "Pixels / Spoke:";
 			// 
 			// label5
 			// 
 			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(18, 81);
-			this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.label5.Location = new System.Drawing.Point(12, 53);
 			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(106, 20);
+			this.label5.Size = new System.Drawing.Size(72, 13);
 			this.label5.TabIndex = 15;
 			this.label5.Text = "Spoke Count:";
 			// 
 			// textBoxTreeName
 			// 
 			this.textBoxTreeName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-			| System.Windows.Forms.AnchorStyles.Right)));
-			this.textBoxTreeName.Location = new System.Drawing.Point(147, 31);
-			this.textBoxTreeName.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.textBoxTreeName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.textBoxTreeName.Location = new System.Drawing.Point(98, 20);
 			this.textBoxTreeName.Name = "textBoxTreeName";
-			this.textBoxTreeName.Size = new System.Drawing.Size(275, 26);
+			this.textBoxTreeName.Size = new System.Drawing.Size(185, 20);
 			this.textBoxTreeName.TabIndex = 0;
 			this.textBoxTreeName.Text = "Starburst";
 			// 
 			// label6
 			// 
 			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(18, 35);
-			this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.label6.Location = new System.Drawing.Point(12, 23);
 			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(125, 20);
+			this.label6.Size = new System.Drawing.Size(83, 13);
 			this.label6.TabIndex = 13;
 			this.label6.Text = "Starburst Name:";
 			// 
@@ -109,56 +106,57 @@
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(289, 231);
-			this.buttonCancel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.buttonCancel.Location = new System.Drawing.Point(193, 150);
 			this.buttonCancel.Name = "buttonCancel";
-			this.buttonCancel.Size = new System.Drawing.Size(135, 39);
+			this.buttonCancel.Size = new System.Drawing.Size(90, 25);
 			this.buttonCancel.TabIndex = 5;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
+			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonOk
 			// 
 			this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOk.Location = new System.Drawing.Point(145, 231);
-			this.buttonOk.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.buttonOk.Location = new System.Drawing.Point(97, 150);
 			this.buttonOk.Name = "buttonOk";
-			this.buttonOk.Size = new System.Drawing.Size(135, 39);
+			this.buttonOk.Size = new System.Drawing.Size(90, 25);
 			this.buttonOk.TabIndex = 4;
 			this.buttonOk.Text = "OK";
 			this.buttonOk.UseVisualStyleBackColor = true;
+			this.buttonOk.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonOk.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// numericUpDownStrings
 			// 
-			this.numericUpDownStrings.Location = new System.Drawing.Point(147, 79);
-			this.numericUpDownStrings.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.numericUpDownStrings.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.numericUpDownStrings.Location = new System.Drawing.Point(98, 51);
 			this.numericUpDownStrings.Maximum = new decimal(new int[] {
-			1000,
-			0,
-			0,
-			0});
+            1000,
+            0,
+            0,
+            0});
 			this.numericUpDownStrings.Minimum = new decimal(new int[] {
-			1,
-			0,
-			0,
-			0});
+            1,
+            0,
+            0,
+            0});
 			this.numericUpDownStrings.Name = "numericUpDownStrings";
-			this.numericUpDownStrings.Size = new System.Drawing.Size(117, 26);
+			this.numericUpDownStrings.Size = new System.Drawing.Size(78, 20);
 			this.numericUpDownStrings.TabIndex = 1;
 			this.numericUpDownStrings.Value = new decimal(new int[] {
-			8,
-			0,
-			0,
-			0});
+            8,
+            0,
+            0,
+            0});
 			// 
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(18, 126);
-			this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.label1.Location = new System.Drawing.Point(12, 82);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(115, 20);
+			this.label1.Size = new System.Drawing.Size(77, 13);
 			this.label1.TabIndex = 22;
 			this.label1.Text = "Pixel Starburst:";
 			// 
@@ -167,19 +165,18 @@
 			this.checkBoxPixelTree.AutoSize = true;
 			this.checkBoxPixelTree.Checked = true;
 			this.checkBoxPixelTree.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.checkBoxPixelTree.Location = new System.Drawing.Point(147, 126);
-			this.checkBoxPixelTree.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.checkBoxPixelTree.Location = new System.Drawing.Point(98, 82);
 			this.checkBoxPixelTree.Name = "checkBoxPixelTree";
-			this.checkBoxPixelTree.Size = new System.Drawing.Size(22, 21);
+			this.checkBoxPixelTree.Size = new System.Drawing.Size(15, 14);
 			this.checkBoxPixelTree.TabIndex = 2;
 			this.checkBoxPixelTree.UseVisualStyleBackColor = true;
 			this.checkBoxPixelTree.CheckedChanged += new System.EventHandler(this.checkBoxPixelTree_CheckedChanged);
 			// 
 			// Starburst
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(442, 288);
+			this.ClientSize = new System.Drawing.Size(295, 187);
 			this.Controls.Add(this.checkBoxPixelTree);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.numericUpDownStrings);
@@ -191,12 +188,14 @@
 			this.Controls.Add(this.textBoxTreeName);
 			this.Controls.Add(this.label6);
 			this.DoubleBuffered = true;
-			this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.MaximizeBox = false;
+			this.MaximumSize = new System.Drawing.Size(311, 226);
 			this.MinimizeBox = false;
+			this.MinimumSize = new System.Drawing.Size(311, 226);
 			this.Name = "Starburst";
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
+			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Starburst Setup";
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Megatree_FormClosed);

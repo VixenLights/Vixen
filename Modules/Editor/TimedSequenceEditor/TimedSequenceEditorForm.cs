@@ -121,12 +121,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			InitializeComponent();
 
-			menuStrip.Renderer = new DarkThemeToolStripRenderer();
-			toolStripOperations.Renderer = new DarkThemeToolStripRenderer();
-			_contextMenuStrip.Renderer = new DarkThemeToolStripRenderer();
-			statusStrip.Renderer = new DarkThemeToolStripRenderer();
-			cboAudioDevices.ComboBox.DrawMode=DrawMode.OwnerDrawFixed;
-			cboAudioDevices.ComboBox.DrawItem += ComboBox_DrawItem;
+			menuStrip.Renderer = new ThemeToolStripRenderer();
+			toolStripOperations.Renderer = new ThemeToolStripRenderer();
+			_contextMenuStrip.Renderer = new ThemeToolStripRenderer();
+			statusStrip.Renderer = new ThemeToolStripRenderer();
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
 			Icon = Resources.Icon_Vixen3;
 			toolStripButton_Start.Image = Tools.GetIcon(Resources.control_start_blue,24);
 			toolStripButton_Start.DisplayStyle = ToolStripItemDisplayStyle.Image;
@@ -195,11 +196,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			Execution.ExecutionStateChanged += OnExecutionStateChanged;
 			_autoSaveTimer.Tick += AutoSaveEventProcessor;
 
-		}
-
-		void ComboBox_DrawItem(object sender, DrawItemEventArgs e)
-		{
-			DarkThemeComboRenderer.DrawItem(sender, e);
 		}
 
 		private IDockContent DockingPanels_GetContentFromPersistString(string persistString)
