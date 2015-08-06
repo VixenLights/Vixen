@@ -138,7 +138,10 @@ namespace VixenModules.Editor.EffectEditor.Controls
 		protected override void OnSelectionChanged(SelectionChangedEventArgs e)
 		{
 			// TODO: unsafe code!
-			PropertyValue.Value = e.AddedItems[0];
+			if (e.AddedItems.Count > 0)
+			{
+				PropertyValue.Value = e.AddedItems[0];
+			}
 			base.OnSelectionChanged(e);
 		}
 	}

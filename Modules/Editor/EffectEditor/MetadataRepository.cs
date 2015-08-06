@@ -208,7 +208,7 @@ namespace VixenModules.Editor.EffectEditor
 			return result.Values;
 		}
 
-		public static IEnumerable<PropertyData> GetCommonProperties(IEnumerable<object> targets)
+		public static IEnumerable<PropertyData> GetCommonProperties(IEnumerable<object> targets, bool browsable = true)
 		{
 			if (targets == null) return Enumerable.Empty<PropertyData>();
 
@@ -218,7 +218,7 @@ namespace VixenModules.Editor.EffectEditor
 			foreach (var target in targets)
 			{
 				var properties =
-					DoGetProperties(target).Where(prop => prop.IsBrowsable && prop.IsMergable || prop.Name.Equals("EffectName"));
+					DoGetProperties(target).Where(prop => prop.IsMergable || prop.Name.Equals("EffectName"));
 				result = (result == null) ? properties : result.Intersect(properties);
 			}
 
