@@ -36,6 +36,7 @@ namespace VixenModules.Editor.EffectEditor.Internal
 		private PropertyDescriptor[] descriptors;
 		private TriState localizable;
 		private TriState readOnly;
+		private TriState browsable;
 		private Hashtable handlers;
 		private bool internalValueSet = false;
 
@@ -386,6 +387,26 @@ namespace VixenModules.Editor.EffectEditor.Internal
 					}
 				}
 				return (this.readOnly == TriState.Yes);
+			}
+		}
+
+		public override bool IsBrowsable
+		{
+			get
+			{
+				if (browsable == TriState.Unknown)
+				{
+					browsable = TriState.Yes;
+					foreach (PropertyDescriptor descriptor in descriptors)
+					{
+						if (!descriptor.IsBrowsable)
+						{
+							browsable = TriState.No;
+							break;
+						}
+					}
+				}
+				return (browsable == TriState.Yes);
 			}
 		}
 

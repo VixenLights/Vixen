@@ -163,11 +163,11 @@ namespace VixenModules.Editor.EffectEditor
 
 	public static class MetadataRepository
 	{
-		private static readonly Dictionary<Type, PropertySet> Properties = new Dictionary<Type, PropertySet>();
-		private static readonly Dictionary<Type, AttributeSet> PropertyAttributes = new Dictionary<Type, AttributeSet>();
+		private static readonly Dictionary<Object, PropertySet> Properties = new Dictionary<Object, PropertySet>();
+		private static readonly Dictionary<Object, AttributeSet> PropertyAttributes = new Dictionary<Object, AttributeSet>();
 
-		private static readonly Dictionary<Type, HashSet<Attribute>> TypeAttributes =
-			new Dictionary<Type, HashSet<Attribute>>();
+		private static readonly Dictionary<Object, HashSet<Attribute>> TypeAttributes =
+			new Dictionary<Object, HashSet<Attribute>>();
 
 		private static readonly Attribute[] PropertyFilter =
 		{
@@ -232,7 +232,7 @@ namespace VixenModules.Editor.EffectEditor
 
 			PropertySet propertySet = null;
 
-			if (!Properties.TryGetValue(target.GetType(), out propertySet))
+			if (!Properties.TryGetValue(target, out propertySet))
 				propertySet = CollectProperties(target);
 
 			PropertyData property;
@@ -245,10 +245,10 @@ namespace VixenModules.Editor.EffectEditor
 
 		private static PropertySet CollectProperties(object target)
 		{
-			var targetType = target.GetType();
+			//var targetType = target.GetType();
 			PropertySet result;
 
-			if (!Properties.TryGetValue(targetType, out result))
+			if (!Properties.TryGetValue(target, out result))
 			{
 				result = new PropertySet();
 
@@ -258,7 +258,7 @@ namespace VixenModules.Editor.EffectEditor
 					CollectAttributes(target, descriptor);
 				}
 
-				Properties.Add(targetType, result);
+				Properties.Add(target, result);
 			}
 
 			return result;
@@ -277,17 +277,17 @@ namespace VixenModules.Editor.EffectEditor
 
 		private static HashSet<Attribute> CollectAttributes(object target)
 		{
-			var targetType = target.GetType();
+			//var targetType = target.GetType();
 			HashSet<Attribute> attributes;
 
-			if (!TypeAttributes.TryGetValue(targetType, out attributes))
+			if (!TypeAttributes.TryGetValue(target, out attributes))
 			{
 				attributes = new HashSet<Attribute>();
 
 				foreach (Attribute attribute in TypeDescriptor.GetAttributes(target))
 					attributes.Add(attribute);
 
-				TypeAttributes.Add(targetType, attributes);
+				TypeAttributes.Add(target, attributes);
 			}
 
 			return attributes;
@@ -295,14 +295,14 @@ namespace VixenModules.Editor.EffectEditor
 
 		private static HashSet<Attribute> CollectAttributes(object target, PropertyDescriptor descriptor)
 		{
-			var targetType = target.GetType();
+			//var targetType = target.GetType();
 			AttributeSet attributeSet;
 
-			if (!PropertyAttributes.TryGetValue(targetType, out attributeSet))
+			if (!PropertyAttributes.TryGetValue(target, out attributeSet))
 			{
 				// Create an empty attribute sequence
 				attributeSet = new AttributeSet();
-				PropertyAttributes.Add(targetType, attributeSet);
+				PropertyAttributes.Add(target, attributeSet);
 			}
 
 			HashSet<Attribute> attributes;
@@ -325,14 +325,14 @@ namespace VixenModules.Editor.EffectEditor
 			if (target == null) throw new ArgumentNullException("target");
 			if (string.IsNullOrEmpty(propertyName)) throw new ArgumentNullException("propertyName");
 
-			var targetType = target.GetType();
+			//var targetType = target.GetType();
 
-			if (!PropertyAttributes.ContainsKey(targetType))
+			if (!PropertyAttributes.ContainsKey(target))
 				CollectProperties(target);
 
 			AttributeSet attributeSet;
 
-			if (PropertyAttributes.TryGetValue(targetType, out attributeSet))
+			if (PropertyAttributes.TryGetValue(target, out attributeSet))
 			{
 				HashSet<Attribute> result;
 				if (attributeSet.TryGetValue(propertyName, out result))
