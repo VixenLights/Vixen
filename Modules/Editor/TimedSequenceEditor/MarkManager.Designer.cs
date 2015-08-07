@@ -1185,13 +1185,11 @@
 			this.radioButtonPlayback.Name = "radioButtonPlayback";
 			this.radioButtonPlayback.Size = new System.Drawing.Size(69, 17);
 			this.radioButtonPlayback.TabIndex = 1;
-			this.radioButtonPlayback.TabStop = true;
 			this.radioButtonPlayback.Text = "Playback";
 			this.radioButtonPlayback.UseVisualStyleBackColor = false;
 			// 
 			// radioButtonTapper
 			// 
-			this.radioButtonTapper.AutoCheck = false;
 			this.radioButtonTapper.AutoSize = true;
 			this.radioButtonTapper.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.radioButtonTapper.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
@@ -1224,7 +1222,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.CancelButton = this.buttonCancel;
-			this.ClientSize = new System.Drawing.Size(734, 606);
+			this.ClientSize = new System.Drawing.Size(734, 605);
 			this.Controls.Add(this.groupBoxPlayback);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.groupBoxSelectedMarkCollection);

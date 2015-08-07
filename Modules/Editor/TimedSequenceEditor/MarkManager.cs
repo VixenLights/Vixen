@@ -106,7 +106,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				chkLowPass.AutoCheck = true;
 				numHighPass.Enabled = true;
 				numLowPass.Enabled = true;
-				radioButtonTapper.AutoCheck = true;
 				radioButtonPlayback.AutoCheck = true;
 				ChkAutoTapper.ForeColor = DarkThemeColorTable.ForeColor;
 				radioAll.ForeColor = DarkThemeColorTable.ForeColor;
@@ -115,7 +114,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				chkLowPass.ForeColor = DarkThemeColorTable.ForeColor;
 				numHighPass.ForeColor = DarkThemeColorTable.ForeColor;
 				numLowPass.ForeColor = DarkThemeColorTable.ForeColor;
-				radioButtonTapper.ForeColor = DarkThemeColorTable.ForeColor;
 				radioButtonPlayback.ForeColor = DarkThemeColorTable.ForeColor;
 			}
 			else
@@ -129,7 +127,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				chkLowPass.AutoCheck = false;
 				numHighPass.Enabled = false;
 				numLowPass.Enabled = false;
-				radioButtonTapper.AutoCheck = false;
 				radioButtonPlayback.AutoCheck = false;
 				ChkAutoTapper.ForeColor = DarkThemeColorTable.ForeColorDisabled;
 				radioAll.ForeColor = DarkThemeColorTable.ForeColorDisabled;
@@ -138,7 +135,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				chkLowPass.ForeColor = DarkThemeColorTable.ForeColorDisabled;
 				numHighPass.ForeColor = DarkThemeColorTable.ForeColorDisabled;
 				numLowPass.ForeColor = DarkThemeColorTable.ForeColorDisabled;
-				radioButtonTapper.ForeColor = DarkThemeColorTable.ForeColorDisabled;
 				radioButtonPlayback.ForeColor = DarkThemeColorTable.ForeColorDisabled;
 			}
 		}
@@ -251,9 +247,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 
 			buttonRemoveCollection.Enabled = (listViewMarkCollections.SelectedItems.Count > 0);
-			radioButtonTapper.AutoCheck = (listViewMarkCollections.SelectedItems.Count > 0);
-			radioButtonPlayback.Checked = true;
-			radioButtonTapper.ForeColor = radioButtonTapper.AutoCheck ? DarkThemeColorTable.ForeColor : DarkThemeColorTable.ForeColorDisabled;
 		}
 
 		private void listViewMarks_SelectedIndexChanged(object sender, EventArgs e)
@@ -787,8 +780,21 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					UpdateMarkCollectionInList(_displayedCollection);
 					_newTappedMarks.Clear();
 				}
-				else {
-					_newTappedMarks.Clear();
+				else 
+				{
+					if (listViewMarks.Items.Count == 0)
+					{
+						messageBox = new MessageBoxForm("The Mark Collection is empty, would you like to remove it?", "", true, false);
+						messageBox.ShowDialog();
+						if (messageBox.DialogResult == DialogResult.OK)
+						{
+							listViewMarkCollections.Items.Remove(listViewMarkCollections.SelectedItems[0]);
+						}
+					}
+					else
+					{
+						_newTappedMarks.Clear();
+					}
 				}
 			}
 		}
@@ -798,8 +804,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			checkBoxEnabled.AutoCheck = false;
 			radioButtonTapper.AutoCheck = false;
 			radioButtonPlayback.AutoCheck = false;
-			radioButtonTapper.ForeColor = radioButtonTapper.AutoCheck ? DarkThemeColorTable.ForeColor : DarkThemeColorTable.ForeColorDisabled;
-			radioButtonPlayback.ForeColor = radioButtonTapper.AutoCheck ? DarkThemeColorTable.ForeColor : DarkThemeColorTable.ForeColorDisabled;
+			radioButtonTapper.ForeColor = DarkThemeColorTable.ForeColorDisabled;
+			radioButtonPlayback.ForeColor = DarkThemeColorTable.ForeColorDisabled;
 			textBoxCollectionName.Enabled = false;
 			numericUpDownWeight.Enabled = false;
 			panelColor.Enabled = false;
@@ -830,8 +836,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			checkBoxEnabled.AutoCheck = true;
 			radioButtonTapper.AutoCheck = true;
 			radioButtonPlayback.AutoCheck = true;
-			radioButtonTapper.ForeColor = radioButtonTapper.AutoCheck ? DarkThemeColorTable.ForeColor : DarkThemeColorTable.ForeColorDisabled;
-			radioButtonPlayback.ForeColor = radioButtonTapper.AutoCheck ? DarkThemeColorTable.ForeColor : DarkThemeColorTable.ForeColorDisabled;
+			radioButtonTapper.ForeColor = DarkThemeColorTable.ForeColor;
+			radioButtonPlayback.ForeColor = DarkThemeColorTable.ForeColor;
 			textBoxCollectionName.Enabled = true;
 			numericUpDownWeight.Enabled = true;
 			panelColor.Enabled = true;
@@ -962,7 +968,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void _triggerResult()
 		{
-			if (_playbackStarted) {
+			if (_playbackStarted)
+			{
+				if (listViewMarkCollections.SelectedItems.Count == 0)
+				AddNewCollection(Color.Green);
 				// round the tapped time to the nearest millisecond
 				_newTappedMarks.Add(TimeSpan.FromMilliseconds(Math.Round(_timingSource.Position.TotalMilliseconds)));
 				panelMarkView.BackColor = _displayedCollection.MarkColor;
@@ -988,10 +997,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void radioButtonTapper_CheckedChanged(object sender, EventArgs e)
 		{
-			if (radioButtonTapper.Checked)
-				labelTapperInstructions.Visible = true;
-			else
-				labelTapperInstructions.Visible = false;
+			labelTapperInstructions.Visible = radioButtonTapper.Checked;
 		}
 
 		#endregion
@@ -1350,10 +1356,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// so that the displayed collection is remembered and selected in the list.
 			PopulateFormWithMarkCollection(newCollection);
 			PopulateMarkCollectionsList();
-
-			//enable Tapper as long as a collection is selected.
-			radioButtonTapper.AutoCheck = (listViewMarkCollections.SelectedItems.Count > 0);
-			radioButtonPlayback.Checked = true;
 
 			panelColor.BackColor = color;
 
