@@ -7,10 +7,8 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
 using Vixen.Execution.Context;
-using Vixen.Module.Effect;
 using Vixen.Sys;
 using VixenModules.Editor.EffectEditor;
-using VixenModules.Editor.EffectEditor.Editors;
 using VixenModules.Editor.TimedSequenceEditor.Undo;
 using WeifenLuo.WinFormsUI.Docking;
 using Application = System.Windows.Application;
@@ -39,7 +37,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			ResourceDictionary dict = new ResourceDictionary
 			{
-				Source = new Uri("/VixenModules.Editor.EffectEditor;component/Themes/Theme.xaml", UriKind.Relative)
+				Source = new Uri("/EffectEditor;component/Themes/Theme.xaml", UriKind.Relative)
 			};
 
 

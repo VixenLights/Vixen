@@ -120,6 +120,14 @@ namespace Common.Controls
 
 				if (resultNode != null) {
 					treeview.AddSelectedNode(resultNode);
+					//ensure selected are visible
+					var parent = resultNode.Parent;
+					while (parent != null)
+					{
+						parent.Expand();
+						parent = parent.Parent;
+					}
+					
 				}
 			}
 

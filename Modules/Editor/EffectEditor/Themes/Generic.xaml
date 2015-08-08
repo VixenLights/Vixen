@@ -3,14 +3,14 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 	<ResourceDictionary.MergedDictionaries>
 
-		<ResourceDictionary Source="/VixenModules.Editor.EffectEditor;component/Themes/EditorResources.xaml" />
+		<ResourceDictionary Source="/EffectEditor;component/Themes/EditorResources.xaml" />
 
-		<ResourceDictionary Source="/VixenModules.Editor.EffectEditor;component/Themes/DoubleEditor.xaml" />
-		<ResourceDictionary Source="/VixenModules.Editor.EffectEditor;component/Themes/IntegerEditor.xaml" />
-		<ResourceDictionary Source="/VixenModules.Editor.EffectEditor;component/Themes/PropertyGrid.xaml" />
-		<ResourceDictionary Source="/VixenModules.Editor.EffectEditor;component/Themes/ToggleSwitch.xaml" />
+		<ResourceDictionary Source="/EffectEditor;component/Themes/DoubleEditor.xaml" />
+		<ResourceDictionary Source="/EffectEditor;component/Themes/IntegerEditor.xaml" />
+		<ResourceDictionary Source="/EffectEditor;component/Themes/PropertyGrid.xaml" />
+		<ResourceDictionary Source="/EffectEditor;component/Themes/ToggleSwitch.xaml" />
 
-		<ResourceDictionary Source="/VixenModules.Editor.EffectEditor;component/Design/CategorizedLayout.xaml" />
+		<ResourceDictionary Source="/EffectEditor;component/Design/CategorizedLayout.xaml" />
 
 	</ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

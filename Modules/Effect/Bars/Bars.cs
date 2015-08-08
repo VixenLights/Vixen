@@ -233,7 +233,7 @@ namespace VixenModules.Effect.Bars
 					Color c = Colors[colorIdx].GetColorAt(colorPosition);
 					var hsv = HSV.FromRGB(c);
 					if (Highlight && (n + indexAdjust) % barHt == 0) hsv.S = 0.0f;
-					if (Show3D) hsv.V *= (float)(barHt - n % barHt - 1) / barHt;
+					if (Show3D) hsv.V *= (float)(barHt - (n + indexAdjust) % barHt - 1) / barHt;
 
 					hsv.V = hsv.V * LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
 

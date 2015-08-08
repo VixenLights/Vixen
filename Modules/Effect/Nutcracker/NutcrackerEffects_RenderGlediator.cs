@@ -15,12 +15,14 @@ namespace VixenModules.Effect.Nutcracker
 	{
 		private void RenderGlediator(string gledFilename)
 		{
-			if (!File.Exists(gledFilename)) // if it doesnt exist, just return
+			if (gledFilename == null) return;
+			var filename = Path.Combine(NutcrackerDescriptor.ModulePath, gledFilename);
+			if (!File.Exists(filename)) // if it doesnt exist, just return
 			{
 				return;
 			}
 
-			var f = new FileStream(Path.Combine(NutcrackerDescriptor.ModulePath, gledFilename), FileMode.Open, FileAccess.Read);
+			var f = new FileStream(filename, FileMode.Open, FileAccess.Read);
 
 			long fileLength = f.Length;
 

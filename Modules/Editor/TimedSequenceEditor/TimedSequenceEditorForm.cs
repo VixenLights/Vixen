@@ -1363,126 +1363,134 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		//Switch statements are the best method at this time for these methods
 
+		private bool SupportsColor(Element element)
+		{
+			if (element == null) return false;
+			var propertyData = MetadataRepository.GetProperties(element.EffectNode.Effect);
+				
+			return propertyData.Any(x => (x.PropertyType == typeof(Color) || x.PropertyType == typeof(ColorGradient) || x.PropertyType == typeof(List<ColorGradient>) || x.PropertyType == typeof(List<GradientLevelPair>)) && x.IsBrowsable);
+				
+		}
+
+		private bool SupportsColorLists(Element element)
+		{
+			if (element == null) return false;
+			var propertyData = MetadataRepository.GetProperties(element.EffectNode.Effect);
+
+			return propertyData.Any(x => (x.PropertyType == typeof(List<ColorGradient>) || x.PropertyType == typeof(List<GradientLevelPair>)) && x.IsBrowsable);
+
+		}
+
+		private List<Color> GetSupportedColorsFromCollection(Element element, List<Color> colors )
+		{
+			var discreteColors = GetDiscreteColors(element.EffectNode.Effect);
+			if (discreteColors.Any())
+			{
+				return discreteColors.Intersect(colors).ToList();
+			}
+			return colors;
+		} 
+
+		private Color GetRandomColorFromCollection(List<Color> colors)
+		{
+			int item = rnd.Next(colors.Count());
+			return colors[item];
+		}
+
 		private void ApplyColorCollection(ColorCollection collection, bool randomOrder)
 		{
 			if (!collection.Color.Any())
 				return;
 
-			bool strayElement = false;
-			Color thisColor2 = Color.White;
-			int iPos = 0;
+			bool skipElements = false;
+			int index = 0;
 
 			foreach (Element elem in TimelineControl.SelectedElements)
 			{
-				string effectName = elem.EffectNode.Effect.EffectName;
-				object[] parms = new object[elem.EffectNode.Effect.ParameterValues.Count()];
-				List<Color> validColors = new List<Color>();
-
-				Array.Copy(elem.EffectNode.Effect.ParameterValues, parms, parms.Count());
-				validColors.AddRange(
-					elem.EffectNode.Effect.TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
-
-				Color thisColor;
-				if (randomOrder)
+				if (!SupportsColor(elem))
 				{
-					int r1 = rnd.Next(collection.Color.Count());
-					int r2 = rnd.Next(collection.Color.Count());
-
-					int n = 0;
-					while (r1 == r2 && n <= 5)
-					{
-						r2 = rnd.Next(collection.Color.Count());
-						n++;
-					}
-
-					thisColor = collection.Color[r1];
-					thisColor2 = collection.Color[r2];
+					skipElements = true;
+					continue;
 				}
-				else
-				{
-					if (iPos == collection.Color.Count())
-					{
-						iPos = 0;
-					}
-					thisColor = collection.Color[iPos];
-					iPos++;
-					if (effectName == "Alternating")
-					{
-						thisColor2 = collection.Color[iPos];
-						iPos++;
-					}
-				}
+				var colors = GetSupportedColorsFromCollection(elem, collection.Color);
+				
+				var properties = MetadataRepository.GetProperties(elem.EffectNode.Effect).Where(x => (x.PropertyType == typeof(Color) ||
+					x.PropertyType == typeof(ColorGradient) || x.PropertyType == typeof(List<ColorGradient>) || x.PropertyType == typeof(List<GradientLevelPair>)) && x.IsBrowsable);
 
-				if (validColors.Any() && !validColors.Contains(thisColor))
-				{
-					thisColor = validColors[rnd.Next(validColors.Count())];
-				}
+				Dictionary<Element, Tuple<Object, PropertyDescriptor>> elementValues = new Dictionary<Element, Tuple<object, PropertyDescriptor>>();
 
-				if (effectName == "Alternate")
+				foreach (var propertyData in properties)
 				{
-					if (validColors.Any() && !validColors.Contains(thisColor2))
+					
+					if (propertyData.PropertyType == typeof (Color))
 					{
-						thisColor2 = validColors[rnd.Next(validColors.Count())];
+						var color = randomOrder ? GetRandomColorFromCollection(colors) : colors[index++ % colors.Count];
+						elementValues.Add(elem,
+							new Tuple<object, PropertyDescriptor>(propertyData.Descriptor.GetValue(elem.EffectNode.Effect),
+								propertyData.Descriptor));
+						UpdateEffectProperty(propertyData.Descriptor, elem, color);
 					}
-
-					int n2 = 0;
-					while (thisColor2 == thisColor && n2 <= 5)
+					else
 					{
-						thisColor2 = validColors[rnd.Next(validColors.Count())];
-						n2++;
-					}
-				}
+						//The rest take a gradient.
+						if (propertyData.PropertyType == typeof(ColorGradient))
+						{
+							var color = randomOrder ? GetRandomColorFromCollection(colors) : colors[index++ % colors.Count];
+							elementValues.Add(elem,
+								new Tuple<object, PropertyDescriptor>(propertyData.Descriptor.GetValue(elem.EffectNode.Effect),
+									propertyData.Descriptor));
+							UpdateEffectProperty(propertyData.Descriptor, elem, new ColorGradient(color));
+						}
+						else if (propertyData.PropertyType == typeof(List<ColorGradient>))
+						{
+							var gradients = propertyData.Descriptor.GetValue(elem.EffectNode.Effect) as List<ColorGradient>;
+							if (gradients != null)
+							{
+								var newGradients = gradients.ToList();
+								for (int i = 0; i < newGradients.Count; i++)
+								{
+									newGradients[i] =
+										new ColorGradient(randomOrder ? GetRandomColorFromCollection(colors) : colors[index++ % colors.Count]);
+								}
+								elementValues.Add(elem,
+									new Tuple<object, PropertyDescriptor>(gradients,
+										propertyData.Descriptor));
+								UpdateEffectProperty(propertyData.Descriptor, elem, newGradients);
+							}
 
-				switch (effectName)
-				{
-					case "Candle Flicker":
-					case "LipSync":
-					case "Nutcracker":
-					case "Launcher":
-					case "RDS":
-						strayElement = true;
-						break;
-					case "Custom Value":
-						//Disabled until we fix the custom value null reference errors - not related to this.
-						//parms[0] = 4; //Set it to a type of color value
-						//parms[5] = thisColor;
-						strayElement = true;
-						break;
-					case "Alternating":
-						parms[1] = thisColor;
-						parms[3] = thisColor2;
-						parms[8] = parms[9] = true;
-						break;
-					case "Set Level":
-						parms[1] = thisColor;
-						break;
-					case "Pulse":
-						parms[1] = new ColorGradient(thisColor);
-						break;
-					case "Chase":
-						parms[0] = 0; // StaticColor
-						parms[3] = thisColor;
-						break;
-					case "Spin":
-						parms[2] = 0; // StaticColor
-						parms[9] = thisColor;
-						break;
-					case "Twinkle":
-						parms[7] = 0; // StaticColor
-						parms[8] = thisColor;
-						break;
-					case "Wipe":
-						parms[0] = new ColorGradient(thisColor);
-						break;
+						}
+						else if (propertyData.PropertyType == typeof(List<GradientLevelPair>))
+						{
+							var gradients = propertyData.Descriptor.GetValue(elem.EffectNode.Effect) as List<GradientLevelPair>;
+							if (gradients != null)
+							{
+								var newGradients = gradients.ToList();
+								for (int i = 0; i < newGradients.Count; i++)
+								{
+									newGradients[i] = new GradientLevelPair(new ColorGradient(randomOrder ? GetRandomColorFromCollection(colors) : colors[index++ % colors.Count]), new Curve(gradients[i].Curve));
+								}
+								elementValues.Add(elem,
+									new Tuple<object, PropertyDescriptor>(gradients,
+										propertyData.Descriptor));
+								UpdateEffectProperty(propertyData.Descriptor, elem, newGradients);
+							}
+
+						}
+
+					}
 				}
 
-				elem.EffectNode.Effect.ParameterValues = parms;
-				//TimelineControl.grid.RenderElement(elem);
-				elem.UpdateNotifyContentChanged();
+				if (elementValues.Any())
+				{
+					var undo = new EffectsPropertyModifiedUndoAction(elementValues);
+					AddEffectsModifiedToUndo(undo);
+				}
 			}
-			SequenceModified();
-			if (strayElement)
-				MessageBox.Show(@"One or more effects were selected that do not support curves.\nAll effects that do were updated.");
+
+			if (skipElements)
+			{
+				MessageBox.Show(@"One or more effects were selected that do not support colors.\nAll effects that do were updated.");
+			}
 		}
 
 		#endregion
@@ -1993,7 +2001,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			ToolStripMenuItem contextMenuItemCollections = new ToolStripMenuItem("Collections");
 
-			if (TimelineControl.SelectedElements.Count() > 1 && _colorCollections.Any())
+			if ((TimelineControl.SelectedElements.Count() > 1 
+				|| TimelineControl.SelectedElements.Count() == 1 && SupportsColorLists(TimelineControl.SelectedElements.FirstOrDefault())) 
+				&& _colorCollections.Any())
 			{
 				ToolStripMenuItem contextMenuItemColorCollections = new ToolStripMenuItem("Colors");
 				ToolStripMenuItem contextMenuItemRandomColors = new ToolStripMenuItem("Random");

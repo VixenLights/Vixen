@@ -634,14 +634,12 @@ namespace VixenModules.Editor.EffectEditor
 				? MetadataRepository.GetProperties(SelectedObjects[0]).Select(prop => prop.Descriptor)
 				: ObjectServices.GetMergedProperties(SelectedObjects);
 
-			var index = 0;
 			foreach (var descriptor in descriptors)
 			{
-				var item = Properties.First(x => x.Name.Equals(descriptor.Name));
-				var isBrowsable = ShoudDisplayProperty(descriptor);
-				if (item.IsBrowsable != isBrowsable)
+				var item = Properties.FirstOrDefault(x => x.Name.Equals(descriptor.Name));
+				if (item != null)
 				{
-					item.IsBrowsable = isBrowsable;
+					item.IsBrowsable = ShoudDisplayProperty(descriptor);
 				}
 			}
 

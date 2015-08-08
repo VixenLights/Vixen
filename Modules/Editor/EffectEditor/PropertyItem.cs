@@ -33,6 +33,7 @@ namespace VixenModules.Editor.EffectEditor
 	/// </summary>
 	public class PropertyItem : GridEntry, IPropertyFilterTarget
 	{
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private readonly PropertyItemValue _parentValue;
 		private PropertyItemValue _value;
 
@@ -733,9 +734,9 @@ namespace VixenModules.Editor.EffectEditor
 					OnValueChanged(oldValues, GetValue());
 				}
 			}
-			catch
+			catch(Exception e)
 			{
-				// TODO: Provide error feedback!
+				Logging.Error("An error occured setting the property value", e);	
 			}
 			OnPropertyChanged("PropertyValue");
 		}

@@ -220,7 +220,7 @@ namespace Common.Controls
 
 		public void AddSelectedNode(TreeNode node)
 		{
-			AddNodeToSelectedListIfNotInList(node);
+			//AddNodeToSelectedListIfNotInList(node);
 			ToggleNode(node, true);
 		}
 

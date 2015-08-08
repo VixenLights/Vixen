@@ -10,6 +10,12 @@ namespace Launcher
 	[DataContract]
 	public class  Data : ModuleDataModelBase
 	{
+		public Data()
+		{
+			Description = String.Empty;
+			Executable = String.Empty;
+			Arguments = String.Empty;
+		}
 
 		[DataMember]
 		public string Description { get; set; }

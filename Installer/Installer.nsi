@@ -234,7 +234,7 @@ Function .onInit
 		MessageBox MB_OK|MB_ICONINFORMATION "${PRODUCT_NAME} requires that the Microsoft .NET Framework 4.5.2 is installed. The Microsoft .NET Framework will be downloaded and installed automatically during installation of ${PRODUCT_NAME}."
 		Return
 	${EndIf}
-
+	
 FunctionEnd
 
 
@@ -253,6 +253,26 @@ Section "Application" SEC01
 		ExecWait "$TEMP\NDP452-KB2901907-x86-x64-AllOS-ENU.exe"
 		Delete "$TEMP\NDP452-KB2901907-x86-x64-AllOS-ENU.exe"
 	${EndIf}
+	
+	; Remove any old modules that are no longer used in case someone installs over an old version
+  Delete "$INSTDIR\Modules\SequenceType\Script.dll"
+  Delete "$INSTDIR\Modules\EffectEditor\RDSEditor.dll"
+  Delete "$INSTDIR\Modules\EffectEditor\LipSyncEditor.dll"
+  Delete "$INSTDIR\Modules\EffectEditor\LauncherEditor.dll"
+  Delete "$INSTDIR\Modules\EffectEditor\AlternatingEditor.dll"
+  Delete "$INSTDIR\Modules\EffectEditor\CustomValueEditor.dll"
+  Delete "$INSTDIR\Modules\EffectEditor\TwinkleEffectEditor.dll"
+  Delete "$INSTDIR\Modules\EffectEditor\SpinEffectEditor.dll"
+  Delete "$INSTDIR\Modules\EffectEditor\PercentageTypeEditor.dll"
+  Delete "$INSTDIR\Modules\EffectEditor\LevelTypeEditor.dll"
+  Delete "$INSTDIR\Modules\EffectEditor\IntUpDownEditor.dll"
+  Delete "$INSTDIR\Modules\EffectEditor\FilePathTypeEditor.dll"
+  Delete "$INSTDIR\Modules\EffectEditor\CurveTypeEditor.dll"
+  Delete "$INSTDIR\Modules\EffectEditor\ColorTypeEditor.dll"
+  Delete "$INSTDIR\Modules\EffectEditor\ColorGradientTypeEditor.dll"
+  Delete "$INSTDIR\Modules\EffectEditor\ChaseEffectEditor.dll"
+  Delete "$INSTDIR\Modules\EffectEditor\WipeEditor.dll"
+  Delete "$INSTDIR\Modules\Editor\VixenModules.Editor.EffectEditor.dll"
 
   ; only overwrite these if this installer has a newer version
   SetOverwrite ifnewer
@@ -363,6 +383,8 @@ Section Uninstall
   Delete /REBOOTOK "$INSTDIR\Modules\EffectEditor\ColorTypeEditor.dll"
   Delete /REBOOTOK "$INSTDIR\Modules\EffectEditor\ColorGradientTypeEditor.dll"
   Delete /REBOOTOK "$INSTDIR\Modules\EffectEditor\ChaseEffectEditor.dll"
+  Delete /REBOOTOK "$INSTDIR\Modules\EffectEditor\NutcrackerEffectEditor.dll"
+  Delete /REBOOTOK "$INSTDIR\Modules\EffectEditor\EffectDescriptorAttributes.dll"
   Delete /REBOOTOK "$INSTDIR\Modules\Effect\Twinkle.dll"
   Delete /REBOOTOK "$INSTDIR\Modules\Effect\Spin.dll"
   Delete /REBOOTOK "$INSTDIR\Modules\Effect\SetPosition.dll"
@@ -373,6 +395,8 @@ Section Uninstall
   Delete /REBOOTOK "$INSTDIR\Modules\Editor\TimedSequenceEditor.dll"
   Delete /REBOOTOK "$INSTDIR\Modules\Editor\ScriptEditor.dll"
   Delete /REBOOTOK "$INSTDIR\Modules\Editor\ScintillaNET.dll"
+  Delete /REBOOTOK "$INSTDIR\Modules\Editor\VixenModules.Editor.EffectEditor.dll"
+  Delete /REBOOTOK "$INSTDIR\Modules\Editor\EffectEditor.dll"
   Delete /REBOOTOK "$INSTDIR\Modules\Controller\Renard.dll"
   Delete /REBOOTOK "$INSTDIR\Modules\Controller\PSC.dll"
   Delete /REBOOTOK "$INSTDIR\Modules\Controller\OpenDMX.dll"
