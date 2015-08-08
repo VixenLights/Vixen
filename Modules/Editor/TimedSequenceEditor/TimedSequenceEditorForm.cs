@@ -1365,10 +1365,20 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private bool SupportsColor(Element element)
 		{
+			if (element == null) return false;
 			var propertyData = MetadataRepository.GetProperties(element.EffectNode.Effect);
 				
 			return propertyData.Any(x => (x.PropertyType == typeof(Color) || x.PropertyType == typeof(ColorGradient) || x.PropertyType == typeof(List<ColorGradient>) || x.PropertyType == typeof(List<GradientLevelPair>)) && x.IsBrowsable);
 				
+		}
+
+		private bool SupportsColorLists(Element element)
+		{
+			if (element == null) return false;
+			var propertyData = MetadataRepository.GetProperties(element.EffectNode.Effect);
+
+			return propertyData.Any(x => (x.PropertyType == typeof(List<ColorGradient>) || x.PropertyType == typeof(List<GradientLevelPair>)) && x.IsBrowsable);
+
 		}
 
 		private List<Color> GetSupportedColorsFromCollection(Element element, List<Color> colors )
@@ -1991,7 +2001,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			ToolStripMenuItem contextMenuItemCollections = new ToolStripMenuItem("Collections");
 
-			if (TimelineControl.SelectedElements.Count() > 1 && _colorCollections.Any())
+			if ((TimelineControl.SelectedElements.Count() > 1 
+				|| TimelineControl.SelectedElements.Count() == 1 && SupportsColorLists(TimelineControl.SelectedElements.FirstOrDefault())) 
+				&& _colorCollections.Any())
 			{
 				ToolStripMenuItem contextMenuItemColorCollections = new ToolStripMenuItem("Colors");
 				ToolStripMenuItem contextMenuItemRandomColors = new ToolStripMenuItem("Random");
