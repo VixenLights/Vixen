@@ -50,12 +50,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					item.Text = shape.GetType().ToString();
 					item.Text = item.Text.Substring(item.Text.LastIndexOf('.') + 1);
 				}
+				if (item.Text == "")
+					item.Text = "Unnamed String";
 				comboBoxStringToEdit.Items.Add(item);
 			}
 			if (comboBoxStringToEdit.Items.Count > 0) {
 				if (selectedShape != null) {
 					foreach (Common.Controls.ComboBoxItem item in comboBoxStringToEdit.Items)
 					{
+						if (item.Text == "")
+							item.Text = "Unnamed String";
 						if ((item.Value as PreviewBaseShape) == selectedShape) {
 							comboBoxStringToEdit.SelectedItem = item;
 							return;
@@ -82,6 +86,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			Common.Controls.ComboBoxItem item = comboBoxStringToEdit.SelectedItem as Common.Controls.ComboBoxItem;
 			if (item != null) {
+				if (item.Text == "")
+					item.Text = "Unnamed String";
 				PreviewBaseShape shape = item.Value as PreviewBaseShape;
 				if (shape != null) {
 					ShowSetupControl(shape);
